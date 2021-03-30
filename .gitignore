@@ -37,3 +37,10 @@ vignettes/*.pdf
 
 # R Environment Variables
 .Renviron
+
+# Other
+*DS_Store
+app-cache/*
+R/app-cache/*
+*.Rproj
+rsconnect/*
