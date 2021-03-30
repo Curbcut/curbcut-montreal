@@ -18,7 +18,7 @@ shinyServer(function(input, output, session) {
   # mode_switch_server("mode_switch")
   # accessibility_server("accessibility")
   why_dash_server("why_dash")
-  # meet_the_team_server("meet_the_team")
+  meet_the_team_server("meet_the_team")
 
     
   # Waiter ------------------------------------------------------------------
