@@ -1,0 +1,37 @@
+---
+title: "Sus design doc"
+author: "David Wachsmuth"
+date: "11/03/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Data frame construction
+
+- Each data frame should have a field which uniquely identifies each row. This should be the first field in the data frame, and should be named `ID`.
+
+- Field names should be composed as follows:
+  - All lowercase, with _ to separate words, e.g. `trans_total`
+  - A short, consistent subject prefix if relevant. So, e.g., all housing variables start with `housing_`, and all income variables start with `inc`.
+  - A suffix of `avg` if the variable is an average, `median` if it is a median, `prop` if it is a proportion, `dollar` if it is a dollar value, `ind` if it is an index score, and `_q3` if it is a quantile computed from the main variable. If none of these is present, Sus will assume the variable is a raw count. More than one of these suffixes can be simultaneously present, e.g. `housing_rent_avg_dollar`.
+  - For the suffix of `_q3`, the variable name preceding the suffix must be identical to the original variable name, so e.g. the quantile version of `housing_unafford_prop` is `housing_unafford_prop_q3`.
+  
+## Topic scripts
+
+To add new variables to pre-existing data frames (`borough`, `CT`, etc.), create a script inside dev/ with a name which describes the topic of the variables you are adding (e.g. "dev/climate_risk.R"). This script should work in the following way:
+
+- It will be called in the middle of the `build_geometries.R` master script, so it can assume that any packages attached in `build_geometries.R` are already attached, and can assume that the basic data frames (`borough`, `CT`, `DA` and `grid`) have been created. If the script needs additional packages or data, it should load them itself.
+- The script should add the fields it wants to add to all four of the data frames, with identical names in each case.
+- New fields should be added at the far right of the data frame, but before the `geometry` field. (In practice, add the fields to the far right, then have a final `relocate(geometry, .after = last_col())` call in your pipeline.)
+- Any new variable which is added needs to also have a quantile version added which has a "_q3" suffix.
+- Fields which are added need to strictly follow the conventions described above in "Data frame construction", including with regard to field naming and the presence of a "_q3" version of the field,
+- The script should also add a row to the `variable_explanations` data frame for each new variable added to one of the main data frames. This should presumably be done with `add_row()`. The row needs to have three fields:
+  - `var_code`: The name of the variable in the main data frames.
+  - `var_name`: A brief plain-language name of the variable, suitable for using as a title or an axis label.
+  - `explanation`: A lower-case phrase explaining the meaning of the variable, suitable for using in the middle of a sentence.
+- The script must not make any assumptions about the existence of any other topic scripts. I.e. it should be completely self-contained, and able to be run only in the presence of the raw data frames with the following variables: `ID`, `name`, `name_2`, `CTUID` (for the `DA` table), `CSDUID` (for the `DA`, `CT` and `grid` tables), `population`, `househoulds`, and `geometry`.
+- The script should not output anything to the console if it runs successfully. So make sure that there are no warnings or messages which run.
+- The script should clean up after itself. When the script is called, the global environment will only have five objects in it (the four main data frames plus `variable_explanations`), and this should be the case when the script finishes as well.
