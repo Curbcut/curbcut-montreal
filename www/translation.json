@@ -1,0 +1,20 @@
+{  "cultural_date_format": "%d-%m-%Y",
+  "languages": ["en", "fr"],
+  "translation": [
+      {"en": "Biodiversity", "fr": "la biodiversité"},
+ {"en": "Hello Shiny!", "fr": "Bonjour Shiny!"},
+      {"en": "Learn more:", "fr": "Apprendre encore plus"},
+      {
+        "en": "SUS Preview",
+        "fr": "Sus Aperçu"
+      },
+      {
+        "en": "The whole of an ecosystem is more than the sum of its parts. The health and resilience of our urban green spaces are determined by the quantity, quality, and composition of the species with cohabitat with.",
+        "fr": "L'ensemble d'un écosystème est plus que la somme de ses parties. La santé et la résilience de nos espaces verts urbains sont déterminées par la quantité, la qualité et la composition des espèces avec lesquelles cohabitent."
+      },
+      {
+        "en": "Montreal's biodiversity is the result of many competing factors...",
+        "fr": "La biodiversité de Montréal est le résultat de nombreux facteurs concurrents …"
+      }
+    ]
+}
