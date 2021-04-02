@@ -155,9 +155,9 @@ translation_fr <-
   add_row(en = "Average rent", fr = "Frais de logement mensuels moyens") %>%
   add_row(en = "Average rent is the average rent paid by tenants per month.", 
           fr = "Frais de logement mensuels moyens est le loyer moyen payé par les locataires par mois.") %>%
-  add_row(en = "Average property value", fr = "Valeur foncière moyenne") %>%
+  add_row(en = "Average property value", fr = "Valeur moyenne des logements") %>%
   add_row(en = "Average property value is the average value of dwellings.", 
-          fr = "Valeur foncière moyenne est la valeur moyenne des propriétés.") %>%
+          fr = "Valeur moyenne des logements est la valeur moyenne des logements occupés par un ménage propriétaire.") %>%
   add_row(en = "Unaffordable housing (%)", fr = "Logement inabordable (%)") %>%
   add_row(en = "Unaffordable housing (%) is the percentage of dwellings for which residents pay more than 30% of income on housing costs.", 
           fr = "Logement inabordable (%) est le pourcentage de logements pour lesquels les résidents paient plus de 30 % de leur revenu sur les frais de logement.") %>%
@@ -318,7 +318,7 @@ translation_fr <-
   # Housing
   add_row(en = "Tenant-occupied (%)", fr = "Locataire occupant (%)") %>% 
   add_row(en = "Average rent", fr = "Frais de logement mensuels moyens") %>% 
-  add_row(en = "Average property value", fr = "Value foncière moyenne") %>% 
+  add_row(en = "Average property value", fr = "Valeur moyenne des logements") %>% 
   add_row(en = "Unaffordable housing (%)", fr = "Logement inabordable (%)") %>% 
   add_row(en = "Unsuitable housing (%)", fr = "Logement inadéquat (%)") %>% 
   # Income
@@ -1150,67 +1150,37 @@ translation_fr <-
   add_row(en = "Please wait, this may take a few minutes",
           fr = "Veuillez patienter, ceci peut prendre quelques minutes") %>% 
   # Accessibility module
-  add_row(en = "Access to Urban Opportunities",
-          fr = "Accès aux opportunités urbaines") %>% 
-  add_row(en = "Dissemination Area",
-          fr = "Aire de diffusion") %>% 
-  add_row(en = "Route Planner",
-          fr = "Planificateur d'itinéraire") %>% 
-  add_row(en = "Cycling Network",
-          fr = "Réseau cycliste") %>% 
+  add_row(en = "Access to Urban Opportunities", fr = "Accès aux opportunités urbaines") %>% 
+  add_row(en = "Dissemination Area", fr = "Aire de diffusion") %>% 
+  add_row(en = "Route Planner", fr = "Planificateur d'itinéraire") %>% 
+  add_row(en = "Cycling Network", fr = "Réseau cycliste") %>% 
   # Accessibility destionations
-  add_row(en = "Select your destination",
-          fr = "Sélectionnez votre destination") %>%
-  add_row(en = "COVID-19 Testing Centre",
-          fr = "Centre de dépistage COVID-19") %>%
-  add_row(en = "Health Care",
-          fr = "Soins de santé") %>%
-  add_row(en = "Grocery Store",
-          fr = "Épicerie") %>%
-  add_row(en = "Pharmacy",
-          fr = "Pharmacie") %>%
-  add_row(en = "Eating Place",
-          fr = "Lieu de restauration") %>%
-  add_row(en = "Shortest Route",
-          fr = "Itinéraire le plus court") %>%
-  add_row(en = "Shortest Route",
-          fr = "Safest Route") %>%
-  add_row(en = "Route Information",
-          fr = "Informations sur l'itinéraire") %>%
-  add_row(en = "Elevation Profile",
-          fr = "Profil d'élévation") %>%
-  add_row(en = "Select a variable:",
-          fr = "Choisissez une variable:") %>%
-  add_row(en = "Travel Time to Closest Health Care",
-          fr = "Temps de trajet pour se rendre aux soins de santé les plus proches") %>%
-  add_row(en = "Travel Time to Closest Grocery",
-          fr = "Temps de trajet jusqu'à l'épicerie la plus proche") %>%
-  add_row(en = "Travel Time to Closest Pharmacy",
-          fr = "Temps de trajet jusqu'à la pharmacie la plus proche") %>%
-  add_row(en = "Number of Accessible Eating Places",
-          fr = "Nombre de lieux de restauration accessibles") %>%
-  add_row(en = "Journey Time",
-          fr = "Durée du trajet") %>%
-  add_row(en = "Route Distance",
-          fr = "Distance du trajet") %>%
-  add_row(en = "Cycling Facility",
-          fr = "Installations pour cyclistes") %>%
-  add_row(en = "CO2 Avoided",
-          fr = "CO2 évité") %>%
-  add_row(en = "Distance (m)",
-          fr = "Distance (m)") %>%
-  add_row(en = "Elevation (m)",
-          fr = "Élevation (m)") %>%
-  add_row(en = "km/sq(km)",
-          fr = "km/km2") %>%
-  add_row(en = "Low Income Rate (2016)",
-          fr = "Taux de faible revenu (2016)") %>%
-  add_row(en = "Cycling Rate",
-          fr = "Taux de cyclisme") %>%
-  add_row(en = "Density of Cycling Facility",
-          fr = "Densité de l'infrastructure cyclable") %>%
-  add_row(en = "Density of Cycling Facility",
-          fr = "Densité de l'infrastructure cyclable") %>%
+  add_row(en = "Select your destination", fr = "Sélectionnez votre destination") %>%
+  add_row(en = "COVID-19 Testing Centre", fr = "Centre de dépistage COVID-19") %>%
+  add_row(en = "Health Care", fr = "Soins de santé") %>%
+  add_row(en = "Grocery Store", fr = "Épicerie") %>%
+  add_row(en = "Pharmacy", fr = "Pharmacie") %>%
+  add_row(en = "Eating Place", fr = "Lieu de restauration") %>%
+  add_row(en = "Shortest Route", fr = "Itinéraire le plus court") %>%
+  add_row(en = "Shortest Route", fr = "Safest Route") %>%
+  add_row(en = "Route Information", fr = "Informations sur l'itinéraire") %>%
+  add_row(en = "Elevation Profile", fr = "Profil d'élévation") %>%
+  add_row(en = "Select a variable:", fr = "Choisissez une variable:") %>%
+  add_row(en = "Travel Time to Closest Health Care", fr = "Temps de trajet pour se rendre aux soins de santé les plus proches") %>%
+  add_row(en = "Travel Time to Closest Grocery", fr = "Temps de trajet jusqu'à l'épicerie la plus proche") %>%
+  add_row(en = "Travel Time to Closest Pharmacy", fr = "Temps de trajet jusqu'à la pharmacie la plus proche") %>%
+  add_row(en = "Number of Accessible Eating Places", fr = "Nombre de lieux de restauration accessibles") %>%
+  add_row(en = "Journey Time", fr = "Durée du trajet") %>%
+  add_row(en = "Route Distance", fr = "Distance du trajet") %>%
+  add_row(en = "Cycling Facility", fr = "Installations pour cyclistes") %>%
+  add_row(en = "CO2 Avoided", fr = "CO2 évité") %>%
+  add_row(en = "Distance (m)", fr = "Distance (m)") %>%
+  add_row(en = "Elevation (m)", fr = "Élevation (m)") %>%
+  add_row(en = "km/sq(km)", fr = "km/km2") %>%
+  add_row(en = "Low Income Rate (2016)", fr = "Taux de faible revenu (2016)") %>%
+  add_row(en = "Cycling Rate", fr = "Taux de cyclisme") %>%
+  add_row(en = "Density of Cycling Facility", fr = "Densité de l'infrastructure cyclable") %>%
+  add_row(en = "Density of Cycling Facility", fr = "Densité de l'infrastructure cyclable") %>%
   add_row(en = "Travel Time to Closest Health Care",
           fr = "Temps de trajet jusqu'à l'établissement de soins de santé le plus proche") %>%
   add_row(en = "Travel Time to Closest Grocery",
@@ -1251,6 +1221,17 @@ translation_fr <-
           fr = paste0("Les résidents de l'Île de Montréal vivent, en moyenne, à 0.7 km de la pharmacie la plus proche,",
                       "<br/>ce qui revient à 3 minutes de vélo. Dans l'ensemble, 92% des personnes vivent à moins de 5",
                       "<br/>minutes de vélo de la pharmacie la plus proche.")) %>%
+  # Climate change module
+  add_row(en = "Average rent ($)", fr = "Loyer moyen ($)") %>%
+  add_row(en = "Average property value ($)", fr = "Valeur moyenne des logements ($)") %>%
+  add_row(en = "Median household income ($)", fr = "Revenu médian des ménages ($)") %>%
+  add_row(en = "15-45 minutes to work (%)", fr = "Trajet de 15-45 minutes (%)") %>%
+  add_row(en = "More than 45 minutes to work (%)", fr = "Trajet de plus de 45 minutes (%)") %>%
+  add_row(en = "Destructive storms", fr = "Tempêtes destructrices") %>%
+  add_row(en = "Drought", fr = "Sécheresses") %>%
+  add_row(en = "Flood", fr = "Inondations") %>%
+  add_row(en = "Heat wave", fr = "Vagues de chaleur") %>%
+  add_row(en = "Heavy rain", fr = "Pluies abondantes") %>%
   distinct(en, .keep_all = T)
 
 write_csv(translation_fr, "translations/translation_fr.csv")
