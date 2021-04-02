@@ -1367,6 +1367,12 @@ translation_fr <-
           fr = paste0("À l'échelle {z$scale_singular}, {z$exp_left} varie de '{z$min_val}' à ",
                       "'{z$max_val}'. Une pluralité des {z$scale_plural} ({z$mode_prop}) ont une valeur ",
                       "de '{z$mode_val}', alors que {z$mode_prop_2} ont une valeur de '{z$mode_val_2}'.")) %>%
+  add_row(en = paste0("At the {z$scale_singular} scale, {z$exp_left} varies from {z$min_val} to {z$max_val}, ",
+                      "with an average value of {z$mean_val} and a median value of {z$median_val}. Two thirds ",
+                      "of {z$scale_plural} have a score between {z$quant_low} and {z$quant_high}."),
+          fr = paste0("À l'échelle {z$scale_singular}, {z$exp_left} varie de {z$min_val} à {z$max_val}, ",
+                      "avec une valeur moyenne de {z$mean_val} et une valeur médiane de {z$median_val}. Deux tiers ",
+                      "des {z$scale_plural} ont un score entre {z$quant_low} et {z$quant_high}.")) %>%
   add_row(en = paste0("Climate change will have increasingly negative impacts on communities across ",
                       "Montreal and Canada, affecting different populations in distinct ways and at varying ",
                       "rates. The City of Montreal did an exercise examining the risk of five climate risks, ",
