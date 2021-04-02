@@ -11,6 +11,11 @@ translation_fr <-
   add_row(en = "Learn more", fr = "En savoir plus") %>%
   add_row(en = "Compare", fr = "Comparez") %>%
   add_row(en = "SUS Preview", fr = "Aperçu du SUS") %>%
+  # Module names
+  add_row(en = "Home", fr = "Accueil") %>%
+  add_row(en = "Climate change risk", fr = "Vulnérabilité aux changements climatiques") %>%
+  add_row(en = "Accessibility to urban opportunities", fr = "Accessibilité aux opportunités urbaines") %>%
+  add_row(en = "Place explorer", fr = "Explorez un lieu") %>%
   # title_text.csv
   add_row(en = "Why a dashboard? The science behind Sus", fr = "Pourquoi un tableau de bord? La science derrière Sus") %>%
   add_row(en = paste0("The CanALE dataset (developed by Prof. Nancy Ross and her team) captures ",
@@ -1232,6 +1237,7 @@ translation_fr <-
   add_row(en = "Flood", fr = "Inondations") %>%
   add_row(en = "Heat wave", fr = "Vagues de chaleur") %>%
   add_row(en = "Heavy rain", fr = "Pluies abondantes") %>%
+  add_row(en = "250-metre grid", fr = "Cellule carrée de 250m sur 250m") %>%
   distinct(en, .keep_all = T)
 
 write_csv(translation_fr, "translations/translation_fr.csv")
