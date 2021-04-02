@@ -5,6 +5,11 @@ Compare,Comparez
 SUS Preview,Aperçu du SUS
 Home,Accueil
 Climate change risk,Vulnérabilité aux changements climatiques
+Climate change,Changements climatiques
+Covid-19,Covid-19
+Transport,Transport
+Ecology,Écologie
+Urban life,La vie urbaine
 Accessibility to urban opportunities,Accessibilité aux opportunités urbaines
 Place explorer,Explorez un lieu
 Why a dashboard? The science behind Sus,Pourquoi un tableau de bord? La science derrière Sus
@@ -348,3 +353,16 @@ Heat wave,Vagues de chaleur
 Heavy rain,Pluies abondantes
 250-metre grid,Cellule carrée de 250m sur 250m
 Boroughs and municipalities,Arrondissements et municipalités
+{selection$name_2} of {place_name},{selection$name_2} de {place_name}
+250-m,250-m
+areas,aires
+Insignificant,Insignifiant
+Minor,Mineur
+Moderate,Modéré
+Elevated,Élevé
+Major,Majeur
+The area around {selection$name},La zone entourant {selection$name}
+Census tract {selection$name},Secteur de recensement {selection$name}
+Dissemination area {selection$name},Aire de diffusion {selection$name}
+"At the {z$scale_singular} scale, {z$exp_left} varies from '{z$min_val}' to '{z$max_val}'. A plurality of {z$scale_plural} ({z$mode_prop}) have a value of '{z$mode_val}', while {z$mode_prop_2} have a value of '{z$mode_val_2}'.","À l'échelle {z$scale_singular}, {z$exp_left} varie de '{z$min_val}' à '{z$max_val}'. Une pluralité des {z$scale_plural} ({z$mode_prop}) ont une valeur de '{z$mode_val}', alors que {z$mode_prop_2} ont une valeur de '{z$mode_val_2}'."
+"Climate change will have increasingly negative impacts on communities across Montreal and Canada, affecting different populations in distinct ways and at varying rates. The City of Montreal did an exercise examining the risk of five climate risks, including heat waves, flooding, heavy rain, drought, and destructive storms, visualised here.","Les changements climatiques auront des impacts de plus en plus négatifs sur les communautés de Montréal et du Canada, affectant différentes populations de manière distincte, et à des rythmes différents. La Ville de Montréal a examiné cinq risques climatiques, dont les vagues de chaleur, les inondations, les pluies abondantes, la sécheresse et les tempêtes destructrices, visualisés ici."

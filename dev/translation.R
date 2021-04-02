@@ -15,6 +15,11 @@ translation_fr <-
   # Module names
   add_row(en = "Home", fr = "Accueil") %>%
   add_row(en = "Climate change risk", fr = "Vulnérabilité aux changements climatiques") %>%
+  add_row(en = "Climate change", fr = "Changements climatiques") %>%
+  add_row(en = "Covid-19", fr = "Covid-19") %>%
+  add_row(en = "Transport", fr = "Transport") %>%
+  add_row(en = "Ecology", fr = "Écologie") %>%
+  add_row(en = "Urban life", fr = "La vie urbaine") %>%
   add_row(en = "Accessibility to urban opportunities", fr = "Accessibilité aux opportunités urbaines") %>%
   add_row(en = "Place explorer", fr = "Explorez un lieu") %>%
   
@@ -1345,7 +1350,34 @@ translation_fr <-
   add_row(en = "Heavy rain", fr = "Pluies abondantes") %>%
   add_row(en = "250-metre grid", fr = "Cellule carrée de 250m sur 250m") %>%
   add_row(en = "Boroughs and municipalities", fr = "Arrondissements et municipalités") %>%
+  add_row(en = "{selection$name_2} of {place_name}", fr = "{selection$name_2} de {place_name}") %>%
+  add_row(en = "250-m", fr = "250-m") %>%
+  add_row(en = "areas", fr = "aires") %>%
+  add_row(en = "Insignificant", fr = "Insignifiant") %>%
+  add_row(en = "Minor", fr = "Mineur") %>%
+  add_row(en = "Moderate", fr = "Modéré") %>%
+  add_row(en = "Elevated", fr = "Élevé") %>%
+  add_row(en = "Major", fr = "Majeur") %>%
+  add_row(en = "The area around {selection$name}", fr = "La zone entourant {selection$name}") %>%
+  add_row(en = "Census tract {selection$name}", fr = "Secteur de recensement {selection$name}") %>%
+  add_row(en = "Dissemination area {selection$name}", fr = "Aire de diffusion {selection$name}") %>%
+  add_row(en = paste0("At the {z$scale_singular} scale, {z$exp_left} varies from '{z$min_val}' to ",
+                      "'{z$max_val}'. A plurality of {z$scale_plural} ({z$mode_prop}) have a value ",
+                      "of '{z$mode_val}', while {z$mode_prop_2} have a value of '{z$mode_val_2}'."),
+          fr = paste0("À l'échelle {z$scale_singular}, {z$exp_left} varie de '{z$min_val}' à ",
+                      "'{z$max_val}'. Une pluralité des {z$scale_plural} ({z$mode_prop}) ont une valeur ",
+                      "de '{z$mode_val}', alors que {z$mode_prop_2} ont une valeur de '{z$mode_val_2}'.")) %>%
+  add_row(en = paste0("Climate change will have increasingly negative impacts on communities across ",
+                      "Montreal and Canada, affecting different populations in distinct ways and at varying ",
+                      "rates. The City of Montreal did an exercise examining the risk of five climate risks, ",
+                      "including heat waves, flooding, heavy rain, drought, and destructive storms, visualised here."),
+          fr = paste0("Les changements climatiques auront des impacts de plus en plus négatifs sur les communautés ",
+                      "de Montréal et du Canada, affectant différentes populations de manière distincte, et ",
+                      "à des rythmes différents. La Ville de Montréal a examiné cinq risques climatiques, dont ",
+                      "les vagues de chaleur, les inondations, les pluies abondantes, la sécheresse et les tempêtes ",
+                      "destructrices, visualisés ici.")) %>%
   distinct(en, .keep_all = TRUE)
 
 qsave(translation_fr, "data/translation_fr.qs")
 write_csv(translation_fr, "translations/translation_fr.csv")
+

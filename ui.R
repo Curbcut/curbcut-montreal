@@ -22,7 +22,7 @@ ui <- dashboardPage(
       
       menuItem(i18n$t("Home"), tabName = "home"),
       
-      menuItem("Climate change", tabName = "climate",
+      menuItem(i18n$t("Climate change"), tabName = "climate",
                
                menuSubItem(i18n$t("Climate change risk"), tabName = "climate_risk"),
                conditionalPanel(condition = "input.tabs == 'climate_risk'",
@@ -31,20 +31,20 @@ ui <- dashboardPage(
                                 small_map_UI("climate_risk-left")),
                startExpanded = TRUE),
       
-      menuItem("Covid-19", tabName = "covid",
+      menuItem(i18n$t("Covid-19"), tabName = "covid",
                menuSubItem(i18n$t("Pedestrian realm"), tabName = "ped"),
                startExpanded = TRUE),
       
-      menuItem("Ecology", tabName = "ecology",
+      menuItem(i18n$t("Ecology"), tabName = "ecology",
                menuSubItem(i18n$t("Biodiversity"), tabName = "biodiversity"),
                startExpanded = TRUE),
       
-      menuItem("Transport", tabName = "transport",
+      menuItem(i18n$t("Transport"), tabName = "transport",
                menuSubItem(i18n$t("Accessibility to urban opportunities"), tabName = "accessibility"),
                menuSubItem(i18n$t("Commuter mode switching"), tabName = "mode"),
                startExpanded = TRUE),
       
-      menuItem("Urban life", tabName = "urban_life",
+      menuItem(i18n$t("Urban life"), tabName = "urban_life",
                menuSubItem(i18n$t("Active living potential"), tabName = "canale"),
                conditionalPanel(condition = "input.tabs == 'canale'",
                                 # The ID here needs to be duplicated for complicated
