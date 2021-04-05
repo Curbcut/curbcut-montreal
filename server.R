@@ -9,6 +9,14 @@ shinyServer(function(input, output, session) {
       if (input$language_button[1] %% 2 != 0) "en" else "fr"
       }, ignoreNULL = FALSE)
   
+  observeEvent(input$language_button,{
+    if (input$language_button[1] %% 2 != 0) {
+      update_lang(session, "en")
+    } else {
+      update_lang(session, "fr")
+    }
+  })
+  
   
   # Modules -----------------------------------------------------------------
 
