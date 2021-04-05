@@ -24,7 +24,7 @@ sus_translate_list <- function(x) {
   # Re-iterate in list depth to translate every name
   if (purrr::vec_depth(x) > 2) x <- purrr::map(x, ~{
     if (purrr::vec_depth(.x) > 1) sus_translate_list(.x) else (.x)
-    })
+  })
   
   x
   
@@ -38,18 +38,18 @@ sus_translate <- function(x) {
   if (sus_reactive_variables$active_language() == "en") {
     x
     
-  # French
+    # French
   } else if (sus_reactive_variables$active_language() == "fr") {
     
     # List
     if (is.list(x)) {
       sus_translate_list(x)
-    
-    # png
+      
+      # png
     } else if (any(stringr::str_detect(x, "_en.png"))) {
       stringr::str_replace(x, "_en.png", "_fr.png")
       
-    # Character
+      # Character
     } else if (is.character(x)) {
       
       # In some cases, there are multiple different strings to translate (e.g. 
@@ -70,7 +70,10 @@ sus_translate <- function(x) {
         translated[i] <- out
       }
       
+      # For vectors with names (such as used for x axis of some modules' graph)
+      if (!is.null(names(x))) names(translated) <- names(x)
+      
       translated
-  }
+    }
   }
 }

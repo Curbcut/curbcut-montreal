@@ -75,7 +75,7 @@ climate_risk_server <- function(id) {
                      names(var_list_climate_risk[which(sapply(
                        var_list_climate_risk, function(x) x == 
                          var_left_climate_risk()))])),
-                   var_left_label = climate_legend)
+                   var_left_label = sus_translate(climate_legend))
 
     # Did-you-know panel
     dyk_server("dyk", var_left_climate_risk, var_right_climate_risk)
