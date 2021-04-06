@@ -34,9 +34,12 @@ make_info_table_data <- function(id, x, var_left, var_right, select, zoom,
   
   var_type <- case_when(
     comp_type == "uni" & is.null(var_left_label) ~ "quant",
-    comp_type == "bi" & is.null(var_left_label) & is.null(var_right_label) ~ "quant_xy",
-    comp_type == "bi" & is.null(var_left_label) & !is.null(var_right_label) ~ "quant_x",
-    comp_type == "bi" & !is.null(var_left_label) & is.null(var_right_label) ~ "quant_y",
+    comp_type == "bi" & is.null(var_left_label) & is.null(var_right_label) ~ 
+      "quant_xy",
+    comp_type == "bi" & is.null(var_left_label) & !is.null(var_right_label) ~ 
+      "quant_x",
+    comp_type == "bi" & !is.null(var_left_label) & is.null(var_right_label) ~ 
+      "quant_y",
     TRUE ~ "qual")
   
   select_type <- case_when(is.na(select()) ~ "all", 
@@ -58,10 +61,7 @@ make_info_table_data <- function(id, x, var_left, var_right, select, zoom,
     "24720196", "24720200", "24720201") && select_type == "na") table_type <- 
     "kan_na"
   
-  print("TABLE TYPE")
-  print(table_type)
-  
-  
+
   ## Scale ---------------------------------------------------------------------
   
   scale_singular <- switch(zoom(), 
