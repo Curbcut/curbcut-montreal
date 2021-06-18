@@ -1,4 +1,5 @@
 #### Reverse geocode grid centroids ############################################
+# Dependent script: needs 'borough' object
 
 # This script makes thousands of expensive calls to Google's geocoding API, so
 # the geocoding portion should only be run a single time!
