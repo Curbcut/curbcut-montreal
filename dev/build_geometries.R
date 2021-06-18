@@ -5,17 +5,17 @@
 # Import DA, CT and borough geometries ------------------------------------
 # Independent script 
 
-source("dev/borough_geometries.R")
+source("dev/callee_scripts/borough_geometries.R")
 
 # Import grid geometries --------------------------------------------------
 # Independent script 
 
-source("dev/grid_geometries.R")
+source("dev/callee_scripts/grid_geometries.R")
 
 # Geocode grid centroids --------------------------------------------------
 # Dependent script: needs 'borough' object
 
-source("dev/grid_geocode.R")
+source("dev/callee_scripts/grid_geocode.R")
 
 # Add CSDUID, population and households to grid ---------------------------
 
@@ -70,11 +70,11 @@ rm(borough_index, DA_data, grid_census)
 # Add topic variables (modules) -----------------------------------------------------
 
 var_exp <- tibble(var_code = character(), var_name = character(),
-                                explanation = character())
-source("dev/census.R")
-source("dev/canale.R")
-source("dev/climate_risk.R")
-# source("dev/ped.R")
+        explanation = character())
+source("dev/modules/census.R")
+source("dev/modules/canale.R")
+source("dev/modules/climate_risk.R")
+# source("dev/modules/ped.R")
 
 
 # Save data files ---------------------------------------------------------
@@ -87,6 +87,7 @@ qsave(var_exp, file = "data/var_exp.qs")
 # Produce left and right maps ---------------------------------------------
 
 library(patchwork)
-source("dev/colours.R")
+source("dev/callee_scripts/colours.R")
+
 # Dependent script: needs 'borough' object
-source("dev/produce_maps.R")
+source("dev/callee_scripts/produce_maps.R")
