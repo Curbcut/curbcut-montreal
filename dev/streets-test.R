@@ -22,25 +22,32 @@ KV_Highway_People <- c("cycleway", "living_street", "pedestrian", "track", "road
 
 # Load Road ---------------------------------------------------------------
 
-# Retrieve OSM road features for Montreal
-streets <-
-  CMA_MTL_BB %>%
-  opq(timeout = 200) %>%
-  # Retrieve features with the key "highway" which means street
-  add_osm_feature(key = "highway") %>%
-  # Get the data as a sf data frame
-  osmdata_sf()
+# # Retrieve OSM road features for Montreal
+# streets <-
+#   CMA_MTL_BB %>%
+#   opq(timeout = 200) %>%
+#   # Retrieve features with the key "highway" which means street
+#   add_osm_feature(key = "highway") %>%
+#   # Get the data as a sf data frame
+#   osmdata_sf()
+# 
+# # Cast "non-area" polygons into line and bind with existing lines
+# streets <-
+#   streets$osm_polygons %>%
+#   filter(is.na(area) | area=='no') %>%
+#   st_set_agr("constant") %>%
+#   st_cast("LINESTRING") %>%
+#   bind_rows(streets$osm_lines) %>%
+#   as_tibble() %>%
+#   st_as_sf() %>%
+#   st_set_agr("constant")
+# 
+# # Save file 
+# qsave(streets, "dev/streets.qs")
 
-# Cast "non-area" polygons into line and bind with existing lines
-streets <-
-  streets$osm_polygons %>%
-  filter(is.na(area) | area=='no') %>%
-  st_set_agr("constant") %>%
-  st_cast("LINESTRING") %>%
-  bind_rows(streets$osm_lines) %>%
-  as_tibble() %>%
-  st_as_sf() %>%
-  st_set_agr("constant")
+# -----------------------------------------------------------------
+# Read file 
+streets <- qread("dev/streets.qs")
 
 # Line streets with highway value in KV_Highway_Cars
 car_streets <-
@@ -64,13 +71,21 @@ rm(CMA_MTL_BB, KV_Highway_Cars, KV_Highway_People, streets, car_streets)
 
 # Group streets by name ---------------------------------------------------
 
-# Names of the car streets in CMA MTL
-# Takes a while to run (< 5 mins)
-names_of_car_streets <-
-  car_streets_with_names %>%
-  st_transform(32618) %>%
-  group_by(name) %>%
-  summarise(count = n())
+# # Names of the car streets in CMA MTL
+# # Takes a while to run (< 5 mins)
+# names_of_car_streets <-
+#   car_streets_with_names %>%
+#   st_transform(32618) %>%
+#   group_by(name) %>%
+#   summarise(count = n())
+# 
+# # Save file
+# qsave(names_of_car_streets, "dev/names_of_car_streets.qs")
+
+# -----------------------------------------------------------------
+# Read file 
+names_of_car_streets <- qread("dev/names_of_car_streets.qs")
+
 
 # Add ID
 id <- as.numeric(rownames(names_of_car_streets))
@@ -81,7 +96,6 @@ names_of_car_streets <-
 rm(id, car_streets_with_names)
 
 # Check if in one connected cluster ---------------------------------------
-
 
 
 # ***** FUNCTIONS for the names_of_car_streets *****
@@ -108,14 +122,19 @@ com <- function(rownumber) {
 
 # ***** VECTORS to be merged into names_of_car_streets *****
 
+
 # T/F on whether the geometry at rownumber can be converted to LINESTRING format
-is_in_a_line <- foreach(i = 1:nrow(names_of_car_streets), .combine=c) %do%{
-  return(merged_geom(i) %>% st_geometry_type() == "LINESTRING")
-}
+# is_in_a_line <- foreach(i = 1:nrow(names_of_car_streets), .combine=c, .packages="foreach") %do%{
+#   return(merged_geom(i) %>% st_geometry_type() == "LINESTRING")
+# }
+
+is_in_a_line = sapply(1:nrow(names_of_car_streets), function(i) (merged_geom(i) %>% st_geometry_type() == "LINESTRING"))
+
 
 # numbers of strongly connected clusters for each geometry
-ngroup <- foreach(i = 1:nrow(names_of_car_streets), .combine=c) %do% com(i)$no
+# ngroup <- foreach(i = 1:nrow(names_of_car_streets), .combine=c, .packages="foreach") %do% com(i)$no
 
+ngroup = sapply(1:nrow(names_of_car_streets), function(i) com(i)$no)
 
 # ***** Merge the vectors *****
 
@@ -123,10 +142,10 @@ names_of_car_streets <-
   names_of_car_streets %>%
   mutate(linear = is_in_a_line) %>%
   mutate(numCluster = ngroup) %>%
-  mutate(connected = (ngroup==1), .before = ngroup) %>%
+  mutate(connected = (numCluster==1), .before = numCluster) %>%
   st_set_agr("constant")
 
-rm(i, is_in_a_line, ngroup, com, merged_geom)
+rm(is_in_a_line, ngroup, com, merged_geom)
 
 # Examples ----------------------------------------------------------------
 
