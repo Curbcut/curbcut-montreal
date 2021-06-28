@@ -5,6 +5,7 @@ library(qs)
 library(stplanr)
 library(igraph)
 
+
 # Variables ---------------------------------------------------------------
 
 # Bounding box of CMA Montreal 
@@ -58,7 +59,8 @@ car_streets <-
 car_streets_with_names <-
   car_streets %>%
   filter(!is.na(name)) %>%
-  select(osm_id, name, geometry)
+  select(osm_id, name, geometry) %>%
+  mutate(name = str_to_title(name))
 
 
 # Slice streets by intersection -------------------------------------------
@@ -73,52 +75,65 @@ rm(CMA_MTL_BB, KV_Highway_Cars, KV_Highway_People, streets, car_streets)
 
 # # Names of the car streets in CMA MTL
 # # Takes a while to run (< 5 mins)
-# names_of_car_streets <-
-#   car_streets_with_names %>%
-#   st_transform(32618) %>%
-#   group_by(name) %>%
-#   summarise(count = n())
+ names_of_car_streets <-
+   car_streets_with_names %>%
+   st_transform(32618) %>%
+   group_by(name) %>%
+   summarise(count = n())
 # 
 # # Save file
 # qsave(names_of_car_streets, "dev/names_of_car_streets.qs")
 
-# -----------------------------------------------------------------
+# Clip by borough ---------------------------------------------------------
+
 # Read file 
 names_of_car_streets <- qread("dev/names_of_car_streets.qs")
 
+# Need borough level data
+# Could retrieve the file from disk too
+source("dev/callee_scripts/borough_geometries.R")
+
+# Clip by borough
+clipped_car_streets <-
+  names_of_car_streets %>%
+  st_intersection(st_transform(borough, 32618))
 
 # Add ID
-id <- as.numeric(rownames(names_of_car_streets))
-names_of_car_streets <-
-  names_of_car_streets %>%
+# id <- as.numeric(rownames(names_of_car_streets))
+# names_of_car_streets <-
+#  names_of_car_streets %>%
+#  mutate(id = id, .before = name)
+
+id <- as.numeric(rownames(clipped_car_streets))
+clipped_car_streets <-
+  clipped_car_streets %>%
   mutate(id = id, .before = name)
 
-rm(id, car_streets_with_names)
+rm(id, car_streets_with_names, names_of_car_streets, CT, DA, borough)
 
-# Check if in one connected cluster ---------------------------------------
+# Check if in one connected cluster (names_of_car_streets) ----------------
 
 
 # ***** FUNCTIONS for the names_of_car_streets *****
 
 # returns the geometry at rownumber in LINESTRING if possible
 # (those cannot be in linear format are returned as MULTILINESTRING)
-merged_geom <- function(rownumber){
-  geom <- names_of_car_streets$geometry[[rownumber]]
-  tryCatch( return(st_line_merge(geom)),
-            error = function(c) return(geom) )
-}
+# merged_geom <- function(rownumber){
+#  geom <- names_of_car_streets$geometry[[rownumber]]
+#  tryCatch( return(st_line_merge(geom)),
+#            error = function(c) return(geom) )
+#}
 
 # returns the number of strongly connected clusters (components) of the geometry at rownumber
-com <- function(rownumber) {
-  merged_geom(rownumber) %>%
-  st_sfc() %>%
-  st_cast("LINESTRING") %>%
-  st_touches() %>%
-  graph.adjlist() %>%
-  components() %>%
-  return()
-}
-
+# com <- function(rownumber) {
+#  merged_geom(rownumber) %>%
+#  st_sfc() %>%
+#  st_cast("LINESTRING") %>%
+#  st_touches() %>%
+#  graph.adjlist() %>%
+#  components() %>%
+#  return()
+#}
 
 # ***** VECTORS to be merged into names_of_car_streets *****
 
@@ -128,26 +143,68 @@ com <- function(rownumber) {
 #   return(merged_geom(i) %>% st_geometry_type() == "LINESTRING")
 # }
 
-is_in_a_line = sapply(1:nrow(names_of_car_streets), function(i) (merged_geom(i) %>% st_geometry_type() == "LINESTRING"))
+# is_in_a_line <- sapply(1:nrow(names_of_car_streets), function(i) (merged_geom(i) %>% st_geometry_type() == "LINESTRING"))
 
 
 # numbers of strongly connected clusters for each geometry
 # ngroup <- foreach(i = 1:nrow(names_of_car_streets), .combine=c, .packages="foreach") %do% com(i)$no
 
-ngroup = sapply(1:nrow(names_of_car_streets), function(i) com(i)$no)
+# ngroup <- sapply(1:nrow(names_of_car_streets), function(i) com(i)$no)
 
 # ***** Merge the vectors *****
 
-names_of_car_streets <-
-  names_of_car_streets %>%
-  mutate(linear = is_in_a_line) %>%
-  mutate(numCluster = ngroup) %>%
+# names_of_car_streets <-
+#  names_of_car_streets %>%
+#  mutate(linear = is_in_a_line) %>%
+#  mutate(numCluster = ngroup) %>%
+#  mutate(connected = (numCluster==1), .before = numCluster) %>%
+#  st_set_agr("constant")
+
+# rm(is_in_a_line, ngroup, com, merged_geom)
+
+
+# Check if in one connected cluster (clipped_car_streets) ----------------
+# relies on borough data after running 'callee-scripts/borough_geometries.R'
+
+# FUNCTIONS
+
+merged_geom <- function(geom) {
+  tryCatch (
+    return (st_line_merge(geom)),
+    error = function(c) return(geom)
+  )
+}
+
+is_in_a_line <- function(geom){
+  return(st_geometry_type(merged_geom(geom)) == "LINESTRING")
+}
+
+com <- function(geom) {
+  c <- merged_geom(geom) %>%
+    st_sfc() %>%
+    st_cast("LINESTRING") %>%
+    st_touches() %>%
+    graph.adjlist() %>%
+    components()
+  return(c$no)
+}
+
+# Applying Functions
+
+# could be optimized?
+c <- sapply(clipped_car_streets$geometry, function(i) com(i))
+
+clipped_car_streets <-
+  clipped_car_streets %>%
+  mutate(linear = is_in_a_line(geometry), .before = geometry) %>%
+  mutate(numCluster = c, .before = geometry) %>%
   mutate(connected = (numCluster==1), .before = numCluster) %>%
-  st_set_agr("constant")
+  mutate(regionID = ID, .after=ID) %>%
+  mutate(regionName = name.1, .after=name.1) %>%
+  mutate(regionType = name_2, .after=name_2) %>%
+  select(-count, -ID, -name.1, -name_2) %>%
+  arrange(id)
 
-rm(is_in_a_line, ngroup, com, merged_geom)
+# mutate(connected = com(geometry)) somehow does not work
 
-# Examples ----------------------------------------------------------------
-
-names_of_car_streets %>%
-  filter(name == 'Rue Sherbrooke')
+rm(c, com, is_in_a_line, merged_geom)
