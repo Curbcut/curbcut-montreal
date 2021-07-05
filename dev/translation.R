@@ -383,16 +383,22 @@ translation_fr <-
   add_row(en = "Average property value", fr = "Value moyenne des logements") %>% 
   add_row(en = "Unaffordable housing (%)", fr = "Logement inabordable (%)") %>% 
   add_row(en = "Unsuitable housing (%)", fr = "Logement inadéquat (%)") %>% 
+  add_row(en = "Housing requiring major repairs (%)", fr = "Logement nécessitant des réparations majeures (%)") %>% 
+  add_row(en = "Owner housing stress (%)", fr = "Propriétaires dépensant plus de 30% du revenu sur le logement (%)") %>% 
+  add_row(en = "Renter housing stress (%)", fr = "Locataires dépensant plus de 30% du revenu sur le logement (%)") %>% 
   
   # Income
   add_row(en = "Median household income", fr = "Revenu médian des ménages") %>% 
   add_row(en = "Income under $50k (%)", fr = "Revenu inférieur à 50k (%)") %>% 
   add_row(en = "Income between $50k-$100k (%)", fr = "Revenu entre 50k-100k (%)") %>% 
   add_row(en = "Income above $100k (%)", fr = "Revenu supérieur à 100k (%)") %>% 
+  add_row(en = "Prevalence of low income (after-tax) (%)", fr = "Prévalence de faible revenu (après taxe) (%)") %>% 
   
   # Immigration
+  add_row(en = "Immigration and ethnicity", fr = "Immigration et ethnie") %>% 
   add_row(en = "Immigrants (%)", fr = "Immigrants (%)") %>% 
   add_row(en = "New immigrants (%)", fr = "Nouveaux immigrants (%)") %>% 
+  add_row(en = "Visible minorities (%)", fr = "Minorités visibles (%)") %>% 
   
   # Transportation / Trajet domicile-travail
   add_row(en = "Drive to work (%)", fr = "Conducteur (%)") %>% 

@@ -10,11 +10,15 @@ census_housing <- c(
   rent_avg_total = "v_CA16_4897",
   housing_rent_avg_dollar = "v_CA16_4901",
   value_avg_total = "v_CA16_4890",
+  major_repairs = "v_CA16_4872",
+  repairs_total = "v_CA16_4870",
   housing_value_avg_dollar = "v_CA16_4896",
   housing_unafford_total = "v_CA16_4886",
   housing_unafford = "v_CA16_4888",
   housing_unsuit_total = "v_CA16_4859",
-  housing_unsuit = "v_CA16_4860")
+  housing_unsuit = "v_CA16_4860",
+  housing_stress_renter_prop = "v_CA16_4899",
+  housing_stress_owner_prop = "v_CA16_4892")
 
 census_income <- c(
   inc_median_total = "v_CA16_2396",
@@ -35,12 +39,16 @@ census_income <- c(
   inc_80 = "v_CA16_2418",
   inc_90 = "v_CA16_2419",
   inc_100 = "v_CA16_2420",
-  inc_high = "v_CA16_2421")
+  inc_high = "v_CA16_2421",
+  inc_limat_prop = "v_CA16_2540",
+  inc_limat_total = "v_CA16_2510")
 
 census_immigration <- c(
   imm_total = "v_CA16_3405",
   imm = "v_CA16_3411",
-  imm_new = "v_CA16_3432")
+  imm_new = "v_CA16_3432",
+  imm_vm_total = "v_CA16_3954",
+  imm_vm = "v_CA16_3957")
 
 census_transport <- c(
   trans_total = "v_CA16_5792",
@@ -64,22 +72,26 @@ process_census_data <- function(data) {
   # Process housing
   var_list <- c("housing_tenant_prop", "housing_rent_avg_dollar", 
                 "housing_value_avg_dollar", "housing_unafford_prop",
-                "housing_unsuit_prop")
+                "housing_unsuit_prop", "housing_repairs_prop",
+                "housing_stressrenter_prop", "housing_stressowner_prop")
   
   data <- 
     data %>% 
     mutate(housing_tenant_prop = renter / tenure_households,
            housing_unafford_prop = housing_unafford / housing_unafford_total,
-           housing_unsuit_prop = housing_unsuit / housing_unsuit_total) %>% 
+           housing_unsuit_prop = housing_unsuit / housing_unsuit_total,
+           housing_repairs_prop = major_repairs / repairs_total,
+           housing_stressrenter_prop = housing_stress_renter_prop / 100,
+           housing_stressowner_prop = housing_stress_owner_prop / 100) %>% 
     select(-c(renter, tenure_households, housing_unafford, 
               housing_unafford_total, housing_unsuit, housing_unsuit_total,
-              rent_avg_total, value_avg_total)) %>% 
+              rent_avg_total, value_avg_total, major_repairs, repairs_total)) %>% 
     mutate(across(all_of(var_list), ntile, 3, .names = "{.col}_q3")) %>% 
     relocate(all_of(var_list), paste0(var_list, "_q3"), .before = geometry)
   
   # Process income
   var_list <- c("inc_median_dollar", "inc_50_prop", "inc_100_prop", 
-                "inc_high_prop")
+                "inc_high_prop", "inc_limat_prop")
   
   data <- 
     data %>% 
@@ -88,20 +100,23 @@ process_census_data <- function(data) {
                             inc_45 + inc_50) / inc_total,
            inc_100_prop = (inc_60 + inc_70 + inc_80 + inc_90 + 
                              inc_100) / inc_total,
-           inc_high_prop = inc_high / inc_total) %>% 
+           inc_high_prop = inc_high / inc_total,
+           inc_limat_prop = inc_limat_prop / 100) %>% 
     select(-c(inc_median_total, inc_5, inc_10, inc_15, inc_20, inc_25, inc_30, 
               inc_35, inc_40, inc_45, inc_50, inc_60, inc_70, inc_80, inc_90, 
-              inc_100, inc_high, inc_total)) %>% 
+              inc_100, inc_high, inc_total, inc_limat_total)) %>% 
     mutate(across(all_of(var_list), ntile, 3, .names = "{.col}_q3")) %>% 
     relocate(all_of(var_list), paste0(var_list, "_q3"), .before = geometry)
   
   # Process immigration
-  var_list <- c("imm_prop", "imm_new_prop")
+  var_list <- c("imm_prop", "imm_new_prop", "imm_vm_prop")
   
   data <- 
     data %>% 
-    mutate(imm_prop = imm / imm_total, imm_new_prop = imm_new / imm_total) %>% 
-    select(-imm, -imm_new, -imm_total) %>% 
+    mutate(imm_prop = imm / imm_total, 
+           imm_new_prop = imm_new / imm_total,
+           imm_vm_prop = imm_vm / imm_vm_total) %>% 
+    select(-c(imm, imm_new, imm_total, imm_vm, imm_vm_total)) %>% 
     mutate(across(all_of(var_list), ntile, 3, .names = "{.col}_q3")) %>% 
     relocate(all_of(var_list), paste0(var_list, "_q3"), .before = geometry)
   
@@ -205,9 +220,17 @@ borough <-
       weighted.mean(housing_value_avg_dollar, value_avg_total, na.rm = TRUE),
     inc_median_dollar = weighted.mean(inc_median_dollar, inc_median_total, 
                                       na.rm = TRUE),
-    across(c(tenure_households:value_avg_total, 
-             housing_unafford_total:inc_median_total, 
-             inc_total:trans_t_60_plus), sum, na.rm = TRUE), 
+    housing_stress_renter_prop = weighted.mean(housing_stress_renter_prop, rent_avg_total, 
+                                               na.rm = TRUE),
+    housing_stress_owner_prop = weighted.mean(housing_stress_owner_prop, value_avg_total, 
+                                              na.rm = TRUE),
+    inc_limat_prop = weighted.mean(inc_limat_prop, inc_limat_total, 
+                                   na.rm = TRUE),
+    across(c(tenure_households:repairs_total, 
+             housing_unafford_total:housing_unsuit,
+             inc_median_total,
+             inc_total:inc_high,
+             inc_limat_total:trans_t_60_plus), sum, na.rm = TRUE), 
     .groups = "drop") %>% 
   inner_join(borough, ., by = "ID") %>% 
   relocate(geometry, .after = last_col())
@@ -259,6 +282,12 @@ grid_census <-
       weighted.mean(housing_rent_avg_dollar, rent_avg_total, na.rm = TRUE),
     inc_median_dollar = 
       weighted.mean(inc_median_dollar, inc_median_total, na.rm = TRUE),
+    housing_stress_renter_prop = weighted.mean(housing_stress_renter_prop, rent_avg_total, 
+                                               na.rm = TRUE),
+    housing_stress_owner_prop = weighted.mean(housing_stress_owner_prop, value_avg_total, 
+                                              na.rm = TRUE),
+    inc_limat_prop = weighted.mean(inc_limat_prop, inc_limat_total, 
+                                   na.rm = TRUE),
     across(all_of(agg_list), sum, na.rm = TRUE)) %>% 
   mutate(across(where(is.numeric), ~replace(., is.nan(.), 0)))
 
@@ -299,6 +328,23 @@ var_exp <-
                          "accommodations without enough bedrooms according to ",
                          "the National Occupancy Standard")) %>% 
   add_row(
+    var_code = "housing_repairs_prop",
+    var_name = "Housing requiring major repairs (%)",
+    explanation = paste0("the percentage of households living in ", 
+                         "dwellings requiring major repairs")) %>% 
+  add_row(
+    var_code = "housing_stressowner_prop",
+    var_name = "Owner housing stress (%)",
+    explanation = paste0("the percentage of owner households that ", 
+                         "spend more than 30% of their income on ",
+                         "shelter costs")) %>% 
+  add_row(
+    var_code = "housing_stressrenter_prop",
+    var_name = "Renter housing stress (%)",
+    explanation = paste0("the percentage of renter households that ", 
+                         "spend more than 30% of their income on ",
+                         "shelter costs")) %>% 
+  add_row(
     var_code = "inc_median_dollar",
     var_name = "Median household income ($)",
     explanation = "median before-tax household income") %>% 
@@ -318,6 +364,12 @@ var_exp <-
     explanation = paste0("the percentage of households with an income higher ",
                          "than $100,000")) %>% 
   add_row(
+    var_code = "inc_limat_prop",
+    var_name = "Prevalence of low income (after-tax) (%)",
+    explanation = paste0("the prevalence of low income in private households ",
+                         "based on the Low income measure, after-tax", 
+                         "(LIM-AT)")) %>% 
+  add_row(
     var_code = "imm_prop",
     var_name = "Immigrants (%)",
     explanation = "the percentage of residents who are foreign-born") %>% 
@@ -326,6 +378,11 @@ var_exp <-
     var_name = "New immigrants (%)",
     explanation = paste0("the percentage of people who have immigrated in ", 
                          "the last five years")) %>% 
+  add_row(
+    var_code = "imm_vm_prop",
+    var_name = "Visible minorities (%)",
+    explanation = paste0("the percentage of people who identify as part ", 
+                         "of one or more visible minority groups")) %>% 
   add_row(
     var_code = "trans_car_prop",
     var_name = "Drive to work (%)",

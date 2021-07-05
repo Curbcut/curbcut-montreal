@@ -51,6 +51,14 @@ ui <- dashboardPage(
                                 # namespacing reasons!
                                 small_map_UI("canale-left")),
                startExpanded = TRUE),
+      
+      menuItem(i18n$t("Housing realm"), tabName = "housing_realm",
+               menuSubItem(i18n$t("Housing"), tabName = "housing"),
+               conditionalPanel(condition = "input.tabs == 'housing'",
+                                # The ID here needs to be duplicated for complicated
+                                # namespacing reasons!
+                                small_map_UI("housing-left")),
+               startExpanded = TRUE),
     
       hr(),
       
@@ -116,6 +124,7 @@ ui <- dashboardPage(
       # tabItem(tabName = "mode", Mode_switch_module_UI("Mode_switch_module")),
       # tabItem(tabName = "biodiversity", Biodiversity_module_UI("biodiversity_module", i18n = i18n)),
       # tabItem(tabName = "accessibility", Accessibility_module_UI("accessibility_module", i18n = i18n)),
+      tabItem(tabName = "housing", housing_UI("housing")),
       tabItem(tabName = "why_dash", why_dash_UI("why_dash")),
       tabItem(tabName = "meet_the_team", meet_the_team_UI("meet_the_team"))
       
