@@ -97,6 +97,12 @@ dissemination areas,aires de diffusion
 Census tract {dat$name},Secteur de recensement {dat$name}
 Dissemination area {dat$name},Aire de diffusion {dat$name}
 {dat$name_2} of {place_name},{dat$name_2} de {place_name}
+Housing requiring major repairs (%),Logement nécessitant des réparations majeures (%)
+Owner housing stress (%),Propriétaires dépensant plus de 30% du revenu sur le logement (%)
+Renter housing stress (%),Locataires dépensant plus de 30% du revenu sur le logement (%)
+Prevalence of low income (after-tax) (%),Prévalence de faible revenu (après taxe) (%)
+Immigration and ethnicity,Immigration et ethnie
+Visible minorities (%),Minorités visibles (%)
 Walk or cycle to work (%),À pied ou à vélo (%)
 Public transit to work (%),Transport en commun (%)
 15 minutes to work (%),Trajet de 15 minutes (%)
