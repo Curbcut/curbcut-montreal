@@ -74,6 +74,7 @@ var_exp <- tibble(var_code = character(), var_name = character(),
 source("dev/modules/census.R")
 source("dev/modules/canale.R")
 source("dev/modules/climate_risk.R")
+source("dev/modules/dmti.R")
 # source("dev/modules/ped.R")
 
 
