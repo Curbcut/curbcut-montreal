@@ -75,6 +75,7 @@ source("dev/modules/census.R")
 source("dev/modules/canale.R")
 source("dev/modules/climate_risk.R")
 source("dev/modules/dmti.R")
+source("dev/module/alley.R")
 # source("dev/modules/ped.R")
 
 
@@ -83,6 +84,8 @@ source("dev/modules/dmti.R")
 qsavem(borough, CT, DA, file = "data/census.qsm")
 qsave(grid, file = "data/grid.qs")
 qsave(var_exp, file = "data/var_exp.qs")
+qsave(green_space, file = "data/green_space.qs")
+# qsavem(green_space, ..., file = "data/alley.qsm")
 
 
 # Produce left and right maps ---------------------------------------------
