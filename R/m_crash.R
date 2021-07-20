@@ -62,7 +62,7 @@ crash_server <- function(id) {
 
     # Construct left variable string
     var_left_crash <- reactive(
-      str_remove(paste(
+      stringr::str_remove(paste(
         "crash", 
         var_left_crash_1(), 
         time(), 
