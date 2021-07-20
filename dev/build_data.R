@@ -7,6 +7,9 @@
 # Import DA, CT and borough geometries (independent script)
 source("dev/callee_scripts/borough_geometries.R")
 
+# Add centroids and buffers to DA (dependent script: needs 'DA')
+source("dev/callee_scripts/DA_centroids.R")
+
 # Import grid geometries (independent script)
 source("dev/callee_scripts/grid_geometries.R")
 
