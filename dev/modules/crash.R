@@ -27,27 +27,29 @@ crash <-
 process_crash <- function(x) {
   join_results <- 
     crash |> 
-    st_join(x) |> 
+    st_transform(32618) |> 
+    st_join(st_transform(x, 32618)) |> 
     st_drop_geometry() |> 
     group_by(ID, year = year(date), type) |> 
-    summarize(n = n(), 
-              # across(c(death_total:inj_cyc), sum, na.rm = TRUE), 
+    summarize(n = n(), .groups = "drop") |> 
+    group_by(ID, year) |> 
+    summarize(type = c(type, "total"), n = c(n, sum(n, na.rm = TRUE)),
               .groups = "drop") |> 
     pivot_wider(id_cols = "ID",
                 names_from = c("type", "year"),
                 names_prefix = "crash_",
                 names_sep = "_",
-                # values_from = c(n:inj_cyc)
-                values_from = n)
+                values_from = n) |> 
+    select(-contains("NA"))
   
   x |> 
     left_join(join_results, by = "ID") |> 
     relocate(starts_with("crash"), .before = geometry) |> 
     mutate(across(starts_with("crash"), 
-                  ~{.x / units::drop_units(st_area(geometry))},
-                  .names = "{.col}_prop_area"),
-           across(starts_with("crash"), ~{.x / population}, 
-                  .names = "{.col}_prop_pop"), .before = geometry) |> 
+                  .fns = list(
+                    prop_area = ~{.x / units::drop_units(st_area(geometry))},
+                    prop_pop = ~{.x / population}),
+                  .names = "{.col}_{.fn}"), .before = geometry) |> 
     mutate(across(starts_with("crash"), ntile, n = 3, .names = "{.col}_q3"), 
            .before = geometry) %>% 
     st_set_agr("constant")
