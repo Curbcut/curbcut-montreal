@@ -1,0 +1,20 @@
+---
+title: "Regionalism, internationalism, networks"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## PMD (Coderre administration): 
+
+The city will make itself an example of sustainable development both nationally and on the world stage by undertaking marquee projects such as the Université de Montréal Outremont campus and by hosting major international sustainability events. It will also tie itself to sustainable development and Fair Trade networks, both within Canada and internationally. The plan also presents a desire [, unfulfilled it seems,] to build a provincial network of municipalities to facilitate the exchange of ideas on sustainable development.
+
+##Plan climat (Plante administration): 
+
+The Plan climat underlines Montreal’s various international commitments under the Paris Accord and the One Planet Charter. The city’s emissions goals are in line with commitments made at the Climate Action Summit. The plan was also created in part by the office of ecological transition and resilience, born from the Rockefeller Foundation’s 100 Resilient Cities program, which Montreal joined in 2016. [This transnational network appears to have had significant influence on the Plan climat, particularly in terms of framing and language]. Commitments to an outward-facing internationalism are cut back on in this plan as the focus [at least rhetorically] shifts to the city as exemplary to its citizens, instead of as internationally exemplary.
+
+## Discussion
+
+The PMD is invested in making Montreal an outward-facing, international city for sustainability; not only as a case study or blueprint, but as a hub and host city bringing together businesses, governments and experts in the world of sustainability. The Plan climat, on the other hand, is more focused on the city not as an international example, but as an example to its constituents and stakeholders. This does not mean, however, that this plan is any less entrenched in international systems and agreements, or the framework of global city competition. Many of the Plan climat’s goals and policies are drawn from its membership in the Paris agreement, the One Planet Charter and C40. Its content, as well as many of the plan’s writers, come from Montreal’s involvement in the 100 Resilient Cities project. 
