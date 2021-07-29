@@ -1,0 +1,12 @@
+---
+title: "Intro"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Montreal Climate Planning Under Two Administrations
+
+As the need to address climate change has grown more pressing, cities have released plans that attempt to organize efforts at mitigating emissions of greenhouse gases, adapting to the effects of warming, and making their institutions, businesses and populations more resilient. This module explores the city of Montreal's last two climate plans, comparing their policies according to several cateogories which can be explored below:
