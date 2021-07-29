@@ -54,14 +54,20 @@ explore_server <- function(id, x, var_left, var_right, select, zoom,
   
   moduleServer(id, function(input, output, session) {
     
+    # Get var_type
+    var_type <- explore_var_type(id, x, var_left, var_right, select,
+                                 var_left_label, var_right_label)
+
+    observeEvent(var_type(), print(var_type()))
+    
     # Render info table
-    info_table_server("explore", x, var_left, var_right, select, zoom, 
+    info_table_server("explore", x, var_type, var_left, var_right, select, zoom, 
                       var_left_title, var_right_title = var_right_title,
                       var_left_label = var_left_label,
                       var_right_label = var_right_label)
     
     # Render the graph
-    explore_graph_server("explore", x, var_left, var_right, select, 
+    explore_graph_server("explore", x, var_type, var_left, var_right, select, 
                          var_left_title, var_left_label = var_left_label,
                          var_right_label = var_right_label)
     

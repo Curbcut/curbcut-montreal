@@ -7,7 +7,8 @@ centroids <-
   distinct(`DAuid/ADidu`, .keep_all = TRUE) %>%
   st_as_sf(coords = c("DArplong/ADlong", "DArplat/Adlat"), crs = 4326) %>%
   st_transform(32618) %>%
-  mutate(buffer = st_buffer(geometry, 1000)) %>%
+  mutate(buffer = st_buffer(geometry, 1000),
+         buffer = st_transform(buffer, 4326)) %>%
   select(ID = `DAuid/ADidu`, centroid = geometry, buffer) %>%
   st_transform(4326) %>%
   mutate(ID = as.character(ID)) %>%

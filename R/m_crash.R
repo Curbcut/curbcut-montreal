@@ -38,7 +38,8 @@ crash_server <- function(id) {
                       left_join(colour_borough, by = "group"),
                     stroke_width = 100, stroke_colour = "#FFFFFF", fill_colour = "fill", 
                     update_view = FALSE, id = "ID", auto_highlight = TRUE,
-                    highlight_colour = "#FFFFFF90")
+                    highlight_colour = "#FFFFFF90") %>%
+        add_heatmap(data = crash, update_view = FALSE)
     })
     
     # Zoom level

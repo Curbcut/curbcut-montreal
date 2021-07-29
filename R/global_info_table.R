@@ -1,8 +1,8 @@
 #' @return A named list with all the data components necessary to power the
 #' info_table module.
 
-make_info_table_data <- function(id, x, var_left, var_right, select, zoom, 
-                                 var_left_title, var_right_title,
+make_info_table_data <- function(id, x, var_type, var_left, var_right, select, 
+                                 zoom, var_left_title, var_right_title,
                                  var_left_label, var_right_label) {
   
   ## Titles and explanations ---------------------------------------------------
@@ -24,42 +24,22 @@ make_info_table_data <- function(id, x, var_left, var_right, select, zoom,
   active_right <- active_left
   if (var_right() != " ") active_right <- 
     nrow(filter(selection, !is.na(left_var), !is.na(right_var)))
+  cat("active_left:", active_left, "\n")
+  cat("active_right:", active_right, "\n")
+  cat("selection$ID: ", selection$ID, "\n")
+  cat("selection$ID length: ", length(selection$ID), "\n")
   
   
-  ## Decide on table type ------------------------------------------------------
+  ## Special case for Kahnawake and Kanesatake ---------------------------------
   
-  comp_type <- case_when(
-    var_right() == " " ~ "uni",
-    TRUE ~ "bi")
-  
-  var_type <- case_when(
-    comp_type == "uni" & is.null(var_left_label) ~ "quant",
-    comp_type == "bi" & is.null(var_left_label) & is.null(var_right_label) ~ 
-      "quant_xy",
-    comp_type == "bi" & is.null(var_left_label) & !is.null(var_right_label) ~ 
-      "quant_x",
-    comp_type == "bi" & !is.null(var_left_label) & is.null(var_right_label) ~ 
-      "quant_y",
-    TRUE ~ "qual")
-  
-  select_type <- case_when(is.na(select()) ~ "all", 
-                           comp_type == "uni" & active_left == 0 ~ "na",
-                           active_right == 0 ~ "na",
-                           TRUE ~ "select")
-  
-  table_type <- paste(comp_type, var_type, select_type, sep = "_")
-  if (select_type == "na") table_type <- paste0(comp_type, "_na")
-
-  # Special case for Kahnawake
   if (selection$ID %in% c("2467802", "4620832.00", 24670285) && 
-      select_type == "na") table_type <- "kah_na"
+      active_left == 0 && active_right == 0) var_type <- reactive("kah_na")
   
-  # Special case for Kanesatake
   if (selection$ID %in% c(
     "2472802", "4620732.03", "24720184", "24720186", "24720187", "24720188", 
     "24720190", "24720191", "24720192", "24720193", "24720194", "24720195", 
-    "24720196", "24720200", "24720201") && select_type == "na") table_type <- 
-    "kan_na"
+    "24720196", "24720200", "24720201") && active_left == 0 && 
+    active_right == 0) var_type <- reactive("kan_na")
   
 
   ## Scale ---------------------------------------------------------------------
@@ -92,7 +72,7 @@ make_info_table_data <- function(id, x, var_left, var_right, select, zoom,
     scale_singular == sus_translate("250-m") ~
       glue(sus_translate(paste0("The area around {selection$name}"))))
   
-  if (select_type == "select") {
+  if (grepl("select", var_type())) {
     if (zoom() == "borough") selection$name_2 <- 
         sus_translate(glue("{selection$name_2}"))
     
@@ -112,7 +92,7 @@ make_info_table_data <- function(id, x, var_left, var_right, select, zoom,
     pull(left_var_full) %>% 
     na.omit()
   
-  if (var_type == "quant") {
+  if (grepl("quant_", var_type())) {
     min_val <- round(min(vec_left), 2)
     max_val <- round(max(vec_left), 2)
     mean_val <- round(mean(vec_left), 2)
@@ -125,7 +105,7 @@ make_info_table_data <- function(id, x, var_left, var_right, select, zoom,
   
   ## Descriptive statistics for univariate quant selection ---------------------
   
-  if (table_type == "uni_quant_select") {
+  if (var_type() == "uni_quant_select") {
     
     poly_value <- selection$left_var_full
     quintile <- quantile(vec_left, c(0.2, 0.4, 0.6, 0.8))
@@ -152,7 +132,7 @@ make_info_table_data <- function(id, x, var_left, var_right, select, zoom,
   
   ## Descriptive statistics for univariate qual --------------------------------
   
-  if (var_type == "qual") {
+  if (grepl("qual_", var_type())) {
     
     min_val <- as.character(unique(min(vec_left, na.rm = TRUE)))
     min_val <- tolower(var_left_label[names(var_left_label) == min_val])
@@ -185,7 +165,7 @@ make_info_table_data <- function(id, x, var_left, var_right, select, zoom,
     exp_left = if (exists("exp_left")) exp_left else NULL,
     exp_right = if (exists("exp_right")) exp_right else NULL,
     selection = if (exists("selection")) selection else NULL,
-    table_type = if (exists("table_type")) table_type else NULL,
+    var_type = var_type(),
     scale_singular = if (exists("scale_singular")) scale_singular else NULL,
     scale_plural = if (exists("scale_plural")) scale_plural else NULL,
     place_name = if (exists("place_name")) place_name else NULL,

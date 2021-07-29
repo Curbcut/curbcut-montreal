@@ -13,10 +13,11 @@ info_table_UI <- function(id) {
   htmlOutput(NS(id, "info_table"))
   }
 
-info_table_server <- function(id, x, var_left, var_right, select, zoom, 
-                              var_left_title, var_right_title,
+info_table_server <- function(id, x, var_type, var_left, var_right, select, 
+                              zoom, var_left_title, var_right_title,
                               var_left_label, var_right_label) {
   stopifnot(is.reactive(x))
+  stopifnot(is.reactive(var_type))
   stopifnot(is.reactive(var_left))
   stopifnot(is.reactive(var_right))
   stopifnot(is.reactive(select))
@@ -28,14 +29,12 @@ info_table_server <- function(id, x, var_left, var_right, select, zoom,
     output$info_table <- renderUI({
       
       # Get data list
-      z <- make_info_table_data(id, x, var_left, var_right, select, zoom, 
-                                var_left_title, var_right_title,
+      z <- make_info_table_data(id, x, var_type, var_left, var_right, select, 
+                                zoom, var_left_title, var_right_title,
                                 var_left_label, var_right_label)
       
-      print(z$table_type)
-      
       # Special case for Kahnawake
-      if (z$table_type == "kah_na") {
+      if (z$var_type == "kah_na") {
         out <- HTML(glue(sus_translate(paste0(
           "<strong>Kahnawake Mohawk Territory</strong>",
           "<p>Statistics Canada does not gather the same ",
@@ -45,7 +44,7 @@ info_table_server <- function(id, x, var_left, var_right, select, zoom,
       }
       
       # Special case for Kanestake
-      if (z$table_type == "kan_na") {
+      if (z$var_type == "kan_na") {
         out <- HTML(glue(sus_translate(paste0(
           "<strong>Kanehsatà:ke</strong>",
           "<p>Statistics Canada does not gather the same ",
@@ -55,13 +54,13 @@ info_table_server <- function(id, x, var_left, var_right, select, zoom,
         }
         
       # Univariate, NA selection
-      if (z$table_type == "uni_na") {
+      if (z$var_type == "uni_na") {
         out <- HTML(glue(sus_translate(paste0(
           "{z$place_name} has no data available on {z$exp_left}."))))
         }
       
       # Univariate, quantitative, no selection
-      if (z$table_type == "uni_quant_all") {
+      if (z$var_type == "uni_quant_all") {
         out <- HTML(glue(sus_translate(paste0(
           "At the {z$scale_singular} scale, {z$exp_left} varies from ",
           "{z$min_val} to {z$max_val}, with an average value of {z$mean_val} ",
@@ -71,7 +70,7 @@ info_table_server <- function(id, x, var_left, var_right, select, zoom,
         }
       
       # Univariate, quantitative, valid selection
-      if (z$table_type == "uni_quant_select") {
+      if (z$var_type == "uni_quant_select") {
         out <- HTML(glue(sus_translate(paste0(
           "<strong>{z$place_heading}</strong>",
           "<p>{z$place_name} has a population of ",
@@ -84,7 +83,7 @@ info_table_server <- function(id, x, var_left, var_right, select, zoom,
         }
 
       # Univariate, qualitative, no selection
-      if (z$table_type == "uni_qual_all") {
+      if (z$var_type == "uni_qual_all") {
         out <- HTML(glue(sus_translate(paste0(
           "At the {z$scale_singular} scale, {z$exp_left} varies from ",
           "'{z$min_val}' to '{z$max_val}'. A plurality of {z$scale_plural} ",
@@ -93,7 +92,7 @@ info_table_server <- function(id, x, var_left, var_right, select, zoom,
         }
 
       # Univariate, qualitative, valid selection
-      if (z$table_type == "uni_qual_select") {
+      if (z$var_type == "uni_qual_select") {
         out <- HTML(glue(sus_translate(paste0(
           "<strong>{z$place_heading}</strong>",
           "<p>{z$place_name} has a population of ",
@@ -106,7 +105,7 @@ info_table_server <- function(id, x, var_left, var_right, select, zoom,
       }
       
       # Bivariate, quantitative, no selection
-      if (z$table_type == "bi_quant_xy_all") {
+      if (z$var_type == "bi_quantxy_all") {
         # If correlation is close to zero
         if (z$correlation < 0.05 && z$correlation > -0.05) {
           out <- HTML(glue(sus_translate(paste0(

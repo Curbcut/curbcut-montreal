@@ -39,8 +39,8 @@ qsave(var_exp, file = "data/var_exp.qs")
 qsavem(borough, CT, DA, file = "data/census.qsm")
 qsave(grid, file = "data/grid.qs")
 qsave(green_space, file = "data/green_space.qs")
-# qsavem(green_space, ..., file = "data/alley.qsm")
-# qsave(crash, file = "data/crash.qs")
+qsave(alleys, file = "data/alleys.qs")
+qsave(crash, file = "data/crash.qs")
 
 
 # Produce left and right maps ---------------------------------------------

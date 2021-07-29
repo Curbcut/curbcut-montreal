@@ -4,10 +4,11 @@ explore_graph_UI <- function(id) {
   plotOutput(NS(id, "explore_graph"), height = 150)
 }
 
-explore_graph_server <- function(id, x, var_left, var_right, select, 
+explore_graph_server <- function(id, x, var_type, var_left, var_right, select, 
                                  var_left_title, var_left_label = NULL, 
                                  var_right_label = NULL, plot_type = "auto") {
   stopifnot(is.reactive(x))
+  stopifnot(is.reactive(var_type))
   stopifnot(is.reactive(var_left))
   stopifnot(is.reactive(var_right))
   stopifnot(is.reactive(select))

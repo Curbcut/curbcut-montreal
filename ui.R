@@ -41,8 +41,13 @@ ui <- dashboardPage(
       # Covid ----
       menuItem(
         i18n$t("Covid-19"),
-        tabName = "covid",
-
+        tabName = "covid_main",
+        
+        # Covid interventions
+         menuSubItem(
+           i18n$t("Covid interventions"),
+           tabName = "covid"),
+      
         # Pedestrian realm
         menuSubItem(
           i18n$t("Pedestrian realm"),
@@ -76,6 +81,18 @@ ui <- dashboardPage(
           # The ID needs to be duplicated for complicated namespacing reasons!
           # small_map_UI("housing-left")
         ),
+        
+        startExpanded = TRUE),
+      
+      # Policy ----
+      menuItem(
+        i18n$t("Policy"),
+        tabName = "policy",
+        
+        # MCP
+        menuSubItem(
+          i18n$t("Montréal climate plans"),
+          tabName = "mcp"),
         
         startExpanded = TRUE),
       
@@ -189,8 +206,10 @@ ui <- dashboardPage(
       # tabItem(tabName = "biodiversity", Biodiversity_module_UI("biodiversity_module", i18n = i18n)),
       tabItem(tabName = "canale", canale_UI("canale")),
       tabItem(tabName = "climate_risk", climate_risk_UI("climate_risk")),
+      tabItem(tabName = "covid", covid_UI("covid")),
       tabItem(tabName = "crash", crash_UI("crash")),
       tabItem(tabName = "housing", housing_UI("housing")),
+      # tabItem(tabName = "mcp", mcp_UI("mcp")),
       tabItem(tabName = "meet_the_team", meet_the_team_UI("meet_the_team")),
       # tabItem(tabName = "mode", Mode_switch_module_UI("Mode_switch_module")),
       # tabItem(tabName = "ped", ped_UI("ped")),
