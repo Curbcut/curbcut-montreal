@@ -126,6 +126,12 @@ ui <- dashboardPage(
         menuSubItem(
           i18n$t("Safety"),
           tabName = "crash"),
+        
+        # Safety
+        menuSubItem(
+          i18n$t("Safety analysis"),
+          tabName = "crash_analysis"),
+        
 
         startExpanded = TRUE),
       

@@ -30,3 +30,8 @@ process_rmd <- function(file, path) {
 
 mcp_files <- list.files("dev/Rmd/mcp")
 walk(mcp_files, process_rmd, path = "mcp")
+
+
+# Crash -------------------------------------------------------------------
+
+process_rmd("crash.Rmd", "crash")

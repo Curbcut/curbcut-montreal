@@ -21,7 +21,7 @@ crash_analysis_server <- function(id) {
       })
     
     output$crash_analysis_output <- renderUI(includeHTML(
-      "www/crash/crash_analysis.html"))
+      "www/crash/crash.html"))
     
   })
 }
