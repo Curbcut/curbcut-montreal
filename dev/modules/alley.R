@@ -43,8 +43,12 @@ alleys_mn <-
 # Alleys visited
 alleys_visited <- 
   read_sf("dev/data/green_alleys/RV visited.shp") %>%
+  rename(name = Name)
+
+alleys_visited_processed <- 
+  alleys_visited %>%
   mutate(date = as.Date(NA)) %>% 
-  select(ID = Name, date) %>% 
+  select(ID = name, date) %>% 
   st_transform(32618) %>% 
   st_buffer(., 2) %>%
   st_transform(4326)
@@ -52,7 +56,7 @@ alleys_visited <-
 # Combine files ----------------------------------------
 
 alleys <- 
-  bind_rows(alleys_mtl, alleys_google, alleys_mn, alleys_visited) %>%
+  bind_rows(alleys_mtl, alleys_google, alleys_mn, alleys_visited_processed) %>%
   mutate(ID = seq_along(ID))
 
 alleys <- 
@@ -62,10 +66,46 @@ alleys <-
   relocate(ID, .after = alley_ID)
 
 
+# Add info about alleys visited -------------------------------------------
+
+alleys_visited <- 
+  alleys_visited %>%
+  mutate(name = str_remove(name, "^\\d*\\."),
+         name = str_trim(name))
+
+alleys_visited_text <- 
+  read_delim("dev/data/green_alleys/Alleys visited.csv", ";") %>%
+  mutate(Photo_id = str_remove(Photo_id, "\\\n.*$")) |> 
+  set_names(c("ID", "name", "type", "date", "description", "photo_ID"))
+
+alleys_visited_text |> 
+  anti_join(alleys_visited)
+
+alleys_visited$name
+alleys_visited_text$name
+alleys_visited_text$ID
+
+
+
+
 # Get borough text --------------------------------------------------------
 
 alley_text <- 
-  read_delim("dev/data/green_alleys/Info by borough.csv", ";")
+  read_csv("dev/data/green_alleys/Info by borough.csv") %>%
+  drop_na() %>%
+  set_names(c("name", "description")) %>%
+  mutate(name = case_when(
+    name == "Côte des Neiges - Notre Dame de Grâce" ~ 
+      "Côte-des-Neiges-Notre-Dame-de-Grâce",
+    name == "Plateau-Mont-Royal" ~ "Le Plateau-Mont-Royal",
+    name == "Sud-Ouest" ~ "Le Sud-Ouest",
+    name == "Rosemont-La Petite Patrie" ~ "Rosemont-La Petite-Patrie",
+    TRUE ~ name
+  )) %>%
+  left_join(st_drop_geometry(select(borough, name, ID)))
+
+
+
 
 
 # Clean up ----------------------------------------------------------------

@@ -18,31 +18,29 @@ dmti_slider <- list(
   init = 2016)
 
 # Dropdown menu 1
-var_list_left_dmti_1 <- list("Healthy Food Access" = "food",
-                             "Healthy City Features" = "city",
-                             "Healthy Street Features" = "street",
+var_list_left_dmti_1 <- list("Food Amenities" = "food",
+                             "City Features" = "city",
+                             "Street Features" = "street",
                              "Accessibility to Healthcare" = "access",
                              "Exposure to Pollutants" = "exposure")
 
-
 # Dropdown menu 2
-var_list_left_dmti_2 <- 
-  list("Healthy Food Retail" = "healthy")
+var_list_left_dmti_2 <- list("Healthy" = "healthy")
 
 var_list_left_dmti_2_food <-   
-  list("Healthy Food Retail" = "healthy",
-       "Unhealthy Food Retail" = "unhealthy",
-       "All Food Retail" = "total")
+  list("Healthy" = "healthy",
+       "Unhealthy" = "unhealthy",
+       "Total" = "total")
 
 var_list_left_dmti_2_city <-   
-  list("Healthy City Features" = "healthy",
-       "Unhealthy City Features" = "unhealthy",
-       "All City Features" = "total")
+  list("Healthy" = "healthy",
+       "Unhealthy" = "unhealthy",
+       "Total" = "total")
 
 var_list_left_dmti_2_street <-   
-  list("Healthy Street Features" = "healthy",
-       "Unhealthy Street Features" = "unhealthy",
-       "All Street Features" = "total")
+  list("Healthy" = "healthy",
+       "Unhealthy" = "unhealthy",
+       "Total" = "total")
 
 var_list_left_dmti_2_access <- 
   list("Healthcare Facilities" = "healthcare")
@@ -50,10 +48,8 @@ var_list_left_dmti_2_access <-
 var_list_left_dmti_2_exposure <- 
   list("Manufacturing" = "manufacturing")
 
-
 # Dropdown menu 3
-var_list_left_dmti_3 <- 
-  list("----" = " ")
+var_list_left_dmti_3 <- list("Count" = " ")
 
 var_list_left_dmti_3_food <- 
   list("Count" = " ",

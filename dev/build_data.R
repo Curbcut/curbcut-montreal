@@ -39,7 +39,7 @@ qsave(var_exp, file = "data/var_exp.qs")
 qsavem(borough, CT, DA, file = "data/census.qsm")
 qsave(grid, file = "data/grid.qs")
 qsave(green_space, file = "data/green_space.qs")
-qsave(alleys, file = "data/alleys.qs")
+qsavem(alleys, alley_text, file = "data/alleys.qsm")
 qsave(crash, file = "data/crash.qs")
 
 

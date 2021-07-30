@@ -2,7 +2,8 @@
 # Dependent script: needs 'DA'
 
 centroids <- 
-  read_csv("dev/data/2016_92-151_XBB.csv") %>%
+  read_csv("dev/data/2016_92-151_XBB.csv", col_types = cols(), 
+           progress = FALSE) %>%
   filter(`CMAuid/RMRidu` == "462") %>%
   distinct(`DAuid/ADidu`, .keep_all = TRUE) %>%
   st_as_sf(coords = c("DArplong/ADlong", "DArplat/Adlat"), crs = 4326) %>%
