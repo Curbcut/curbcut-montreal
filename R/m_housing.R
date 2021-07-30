@@ -60,7 +60,7 @@ housing_server <- function(id) {
     })
     
     # Left variable server
-    var_left_housing <- select_var_server("left", var_list_housing_left)
+    var_left_housing <- select_var_server("left", reactive(var_list_housing_left))
     
     # String to fetch maps and data
     df <- reactive(rv_housing$zoom)

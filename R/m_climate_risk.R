@@ -50,7 +50,8 @@ climate_risk_server <- function(id) {
       })
     
     # Left variable server
-    var_left_climate_risk <- select_var_server("left", var_list_climate_risk)
+    var_left_climate_risk <- select_var_server("left", 
+                                               reactive(var_list_climate_risk))
     
     # String to fetch maps and data
     df <- reactive({if (input$grid) "grid" else rv_climate_risk$zoom})

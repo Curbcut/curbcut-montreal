@@ -25,7 +25,7 @@ compare_server <- function(id, var_list, df, zoom = df) {
   moduleServer(id, function(input, output, session) {
     
     # Select variable
-    var_right <- select_var_server("compare", var_list)
+    var_right <- select_var_server("compare", reactive(var_list))
 
     # Right map
     small_map_server("right", reactive(paste0(

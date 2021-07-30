@@ -36,7 +36,7 @@ covid_server <- function(id) {
       })
     
     # Left variable server
-    var_left_covid <- select_var_server("left", var_list_covid)
+    var_left_covid <- select_var_server("left", reactive(var_list_covid))
     
     # Data 
     data_covid <- reactive(get(var_left_covid()))

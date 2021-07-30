@@ -67,7 +67,18 @@ ui <- dashboardPage(
 
         startExpanded = TRUE),
       
-      # Housing realm
+      # Health
+      menuItem(
+        i18n$t("Health"),
+        tabName = "health",
+        
+        # DMTI
+        menuSubItem(
+          i18n$t("Healthy Urban Features"),
+          tabName = "dmti"),
+        startExpanded = TRUE),
+      
+      # Housing realm ----
       menuItem(
         i18n$t("Housing realm"),
         tabName = "housing_realm",
@@ -208,6 +219,7 @@ ui <- dashboardPage(
       tabItem(tabName = "climate_risk", climate_risk_UI("climate_risk")),
       tabItem(tabName = "covid", covid_UI("covid")),
       tabItem(tabName = "crash", crash_UI("crash")),
+      tabItem(tabName = "dmti", dmti_UI("dmti")),
       tabItem(tabName = "housing", housing_UI("housing")),
       # tabItem(tabName = "mcp", mcp_UI("mcp")),
       tabItem(tabName = "meet_the_team", meet_the_team_UI("meet_the_team")),

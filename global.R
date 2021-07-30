@@ -31,6 +31,7 @@ options(shiny.trace = FALSE) # Set TRUE for debugging
 # Data --------------------------------------------------------------------
 
 qload("data/census.qsm")
+qload("data/covid.qsm")
 grid <- qread("data/grid.qs")
 green_space <- qread("data/green_space.qs")
 alleys <- qread("data/alleys.qs")

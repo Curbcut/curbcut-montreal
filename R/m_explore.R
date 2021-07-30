@@ -21,7 +21,6 @@
 #' character vector giving labels for the variable values of var_left or
 #' var_right.
 
-
 explore_UI <- function(id) {
   
   tagList(

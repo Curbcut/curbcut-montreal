@@ -71,6 +71,3 @@ alley_text <-
 # Clean up ----------------------------------------------------------------
 
 rm(alleys_mtl, alleys_google, alleys_mn, alleys_visited)
-
-alleys |> 
-  rename(paste0("alley", "test") = ID)

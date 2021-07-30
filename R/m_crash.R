@@ -55,8 +55,10 @@ crash_server <- function(id) {
                                       reactive(rv_crash$zoom))
     
     # Left variable servers
-    var_left_crash_1 <- select_var_server("left_1", var_list_left_crash_1)
-    var_left_crash_2 <- select_var_server("left_2", var_list_left_crash_2)
+    var_left_crash_1 <- select_var_server("left_1", 
+                                          reactive(var_list_left_crash_1))
+    var_left_crash_2 <- select_var_server("left_2", 
+                                          reactive(var_list_left_crash_2))
     
     # Get time from slider
     time <- slider_server("left")
