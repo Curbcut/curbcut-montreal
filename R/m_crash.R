@@ -6,6 +6,8 @@ crash_UI <- function(id) {
   tabItem(tabName = "crash",
           mapdeckOutput(NS(id, "map"), height = "92vh"),
           title_UI(NS(id, "title"),
+                   actionLink(NS(id, "crash_rmd"), label = "Analysis"),
+                   hr(),
                    select_var_UI(NS(id, "left_1"), var_list_left_crash_1),
                    select_var_UI(NS(id, "left_2"), var_list_left_crash_2),
                    slider_UI(NS(id, "left"), crash_slider$min, crash_slider$max, 
@@ -26,7 +28,7 @@ crash_server <- function(id) {
   moduleServer(id, function(input, output, session) {
     
     # Title bar
-    title_server("title", "alley")
+    title_server("title", "crash")
     
     # Map
     output$map <- renderMapdeck({
@@ -138,10 +140,13 @@ crash_server <- function(id) {
       }
     })
     
-    # # Clear click status if prompted
-    # # (Namespacing hardwired to explore module; could make it return a reactive)
-    # observeEvent(input$`explore-clear_selection`, {
-    #   rv_alley$poly_selected <- NA})
+    # Switch to analysis Rmd
+    observeEvent(input$crash_rmd, {
+      if (input$crash_rmd %% 2 != 0) {
+        print("BUTTON")
+        shinydashboard::updateTabItems(session, "tabs", "crash_analysis")
+      }
+    })
     
   })
 }
