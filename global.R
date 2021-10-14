@@ -28,7 +28,6 @@ suppressPackageStartupMessages({
 shinyOptions(cache = cachem::cache_disk("./app-cache"))
 options(shiny.trace = FALSE) # Set TRUE for debugging
 
-
 # Data --------------------------------------------------------------------
 
 qload("data/census.qsm")
@@ -41,6 +40,8 @@ qload("data/colours.qsm")
 title_text <- qread("data/title_text.qs")
 var_exp <- qread("data/var_exp.qs")
 
+min_census_year <- "1996"
+current_census <- "2016"
 
 # Translation -------------------------------------------------------------
 

@@ -30,7 +30,8 @@ canale_server <- function(id) {
         style = map_style, token = token_canale,
         zoom = map_zoom, location = map_location) %>%
         add_polygon(data = borough %>%
-                      mutate(group = paste(canale_ind_q3, "- 1")) %>%
+                      mutate(group = paste(eval(as.name(paste0("canale_ind_q3", "_", 
+                                                               current_census))), "- 1")) %>%
                       left_join(colour_borough, by = "group"),
           stroke_width = 100, stroke_colour = "#FFFFFF", fill_colour = "fill", 
           update_view = FALSE, id = "ID", auto_highlight = TRUE,
@@ -39,7 +40,7 @@ canale_server <- function(id) {
     
     # Zoom level
     observeEvent(input$map_view_change$zoom, {
-      rv_canale$zoom <- case_when(input$map_view_change$zoom >= 14 ~ "DA_2",
+      rv_canale$zoom <- case_when(#input$map_view_change$zoom >= 14 ~ "DA_2",
                                   input$map_view_change$zoom >= 12 ~ "DA",
                                   input$map_view_change$zoom >= 10.5 ~ "CT",
                                   TRUE ~ "borough")
@@ -51,17 +52,17 @@ canale_server <- function(id) {
 
     # Data
     data_canale <- data_server(id = "canale",
-                               var_left = reactive("canale_ind"),
+                               var_left = reactive(canale_ind),
                                var_right = var_right_canale,
                                df = reactive(rv_canale$zoom))
     
     # Explore panel
-    explore_server("explore", data_canale, reactive("canale_ind"),
+    explore_server("explore", data_canale, reactive(canale_ind),
                    var_right_canale, reactive(rv_canale$poly_selected),
                    reactive(rv_canale$zoom), reactive("CanALE index"))
 
     # Did-you-know panel
-    dyk_server("dyk", reactive("canale_ind"), var_right_canale)
+    dyk_server("dyk", reactive(canale_ind), var_right_canale)
 
     # Left map
     small_map_server("left", reactive(paste0(

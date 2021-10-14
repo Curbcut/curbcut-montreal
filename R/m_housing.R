@@ -6,7 +6,27 @@ housing_UI <- function(id) {
   tabItem(tabName = "housing",
           mapdeckOutput(NS(id, "map"), height = "92vh"),
           title_UI(NS(id, "title"),
-                   select_var_UI(NS(id, "left"), var_list_housing_left)
+                   select_var_UI(NS(id, "left"), var_list_housing_left), 
+                   #can't hide and show widgets when it isn't the original sliderInput function
+                   sliderInput(NS(id, "slider_housing"), "Select two census", 
+                               min = housing_slider$min,
+                               max = housing_slider$max, 
+                               step = housing_slider$interval, sep = "", 
+                               value = housing_slider$init),
+                   # slider_UI(NS(id, "slider_housing"), 
+                   #           slider_min = housing_slider$min, 
+                   #           slider_max = housing_slider$max, 
+                   #           slider_interval = housing_slider$interval, 
+                   #           slider_init = housing_slider$init),
+                   sliderInput(NS(id, "slider_bi_census"), "Select two census", 
+                               min = housing_slider$min,
+                               max = housing_slider$max, 
+                               step = housing_slider$interval, sep = "", 
+                               value = c("2006", "2016")),
+                   verbatimTextOutput(NS(id, "eso")),
+                   materialSwitch(inputId = NS(id, "bi_census"),
+                     label = "Two census comparison", right = TRUE),
+                   shinyjs::useShinyjs() # needed if we continue to have 2 sliders
                    ),
           right_panel(id, 
                       compare_UI(NS(id, "housing"), var_list_housing_right),
@@ -15,14 +35,35 @@ housing_UI <- function(id) {
           legend_bivar_UI(NS(id, "housing")))
 }
 
+
 # Server ------------------------------------------------------------------
 
 housing_server <- function(id) {
   moduleServer(id, function(input, output, session) {
     
+    # observe({
+    #   shinyjs::toggleState("slider_bi_census", condition = (input$bi_census == TRUE))
+    # })
+
+    
     # Title bar
     title_server("title", "housing")
     
+    # memory <- reactiveValues(previous = "housing_tenant_prop")
+    # 
+    # previous_value <- reactive({
+    #   
+    #   isolate(previous <- memory$previous)
+    #   
+    #   memory$previous <- data.frame(previous, var_left_housing_1()) %>% dplyr::select(ncol(.)-1, ncol(.))
+    #   
+    #   return(memory$previous[1,1])
+    # })
+    # 
+    # output$eso <- renderPrint({
+    #   data_housing()
+    # })
+
     # # Map
     # output$map <- renderMapdeck({
     #   mapdeck(
@@ -44,7 +85,8 @@ housing_server <- function(id) {
         style = map_style, token = token_housing,
         zoom = map_zoom, location = map_location) %>%
         add_polygon(data = borough %>%
-                      mutate(group = paste(housing_tenant_prop_q3, "- 1")) %>%
+                      mutate(group = paste(eval(as.name(paste0("housing_tenant_prop_q3", "_", 
+                                                  current_census))), "- 1")) %>%
                       left_join(colour_borough, by = "group"),
                     stroke_width = 100, stroke_colour = "#FFFFFF", fill_colour = "fill", 
                     update_view = FALSE, id = "ID", auto_highlight = TRUE,
@@ -59,17 +101,85 @@ housing_server <- function(id) {
         TRUE ~ "borough")
     })
     
-    # Left variable server
-    var_left_housing <- select_var_server("left", reactive(var_list_housing_left))
-    
     # String to fetch maps and data
     df <- reactive(rv_housing$zoom)
     #df <- reactive({if (input$grid) "grid" else rv_housing$zoom})
     
-    # Right variable server
-    var_right_housing <- compare_server("housing", var_list_housing_right, 
-                                        df)
+    # Enable or disable first and second slider.
+    observeEvent(input$bi_census, {
+      if(input$bi_census == F){
+        shinyjs::hide("slider_bi_census")
+      } else {
+        shinyjs::show("slider_bi_census")
+      }
+    })
     
+    observeEvent(input$bi_census, {
+      if(input$bi_census == F){
+        shinyjs::show("slider_housing")
+      } else {
+        shinyjs::hide("slider_housing")
+      }
+    })
+    
+    # Time variable depending on which slider
+    time <- reactive({
+      if (input$bi_census == F) {
+        input$slider_housing
+      } else {
+        input$slider_bi_census
+      }
+      })
+    
+    # Greyed out left list options, depending of the year(s) chosen
+    var_list_housing_left_available <- reactive({
+      if (input$bi_census == F) {
+      !eval(unlist(
+        purrr::modify_depth(var_list_housing_left, 2, paste0, "_", time())) %in% 
+        names(borough))
+      } else {
+        t_or_f <- unlist(purrr::modify_depth(var_list_housing_left, 2, paste0, "_", time())) %in% names(borough)
+        t_or_f <- unname(tapply(t_or_f, (seq_along(t_or_f)-1) %/% 2, sum)) - 1
+        t_or_f[!t_or_f %in% c(0,1)] <- 0
+        !t_or_f
+      }
+    })
+    
+    # Left variable server
+    var_left_housing_1 <- select_var_server("left", reactive(var_list_housing_left),
+                                            disabled_choices = reactive(var_list_housing_left_available()))
+    
+    # Construct left variable string
+    var_left_housing <- reactive(
+        paste(var_left_housing_1(), time(), sep = "_")
+    )
+
+    # Greyed out right list options, depending of the year chosen
+    var_list_housing_right_available <- reactive({
+      if (input$bi_census == F) {
+        (!eval(unlist(
+          purrr::modify_depth(var_list_housing_right, 2, paste0, "_", time())) %in%
+            names(borough))) %>% replace(1, F)
+      } else {
+        t_or_f <- unlist(lapply(unlist(var_list_housing_right), paste0, "_", time())) %in% names(borough)
+        t_or_f <- unname(tapply(t_or_f, (seq_along(t_or_f)-1) %/% 2, sum)) - 1
+        t_or_f[!t_or_f %in% c(0,1)] <- 0
+        (!t_or_f) %>% replace(1, F)
+      }
+    })
+
+
+    # Right variable server
+    var_right_housing_1 <- compare_server("housing", var_list_housing_right,
+                                          disabled_choices = reactive(var_list_housing_right_available()),
+                                          df)
+
+    var_right_housing <- reactive(
+      if (var_right_housing_1() != " ") {
+      paste(var_right_housing_1(), time(), sep = "_")
+      } else var_right_housing_1()
+    )
+
     # Data
     data_housing <- data_server("housing", var_left_housing,
                                 var_right_housing, df,
@@ -85,7 +195,7 @@ housing_server <- function(id) {
     #              names(var_list_housing_left))
     #            #var_left_label = sus_translate(climate_legend)
     #            )
-    
+
     # Explore panel
     explore_server("explore", data_housing, reactive("var_left_housing"),
                    var_right_housing, reactive(rv_housing$poly_selected),

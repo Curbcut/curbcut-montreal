@@ -7,6 +7,8 @@ token_canale <- paste0("pk.eyJ1IjoiZHdhY2hzbXV0aCIsImEiOiJja2g2Y2JpbDc",
 # Initialize reactive values
 rv_canale <- reactiveValues(poly_selected = NA, zoom = "borough")
 
+canale_ind <- paste0("canale_ind", "_", current_census)
+
 # Dropdown menu
 var_list_canale <- 
   list("----" = " ", 
@@ -31,3 +33,7 @@ var_list_canale <-
          "15 minutes to work (%)" = "trans_t_15_prop",
          "15-45 minutes to work (%)" = "trans_t_45_prop",
          "More than 45 minutes to work (%)" = "trans_t_45_plus_prop"))
+
+var_list_canale[-1] <-
+  var_list_canale[-1] %>%
+  purrr::modify_depth(2, ~paste0(., "_", current_census))

@@ -17,15 +17,20 @@ compare_UI <- function(id, var_list) {
   )
 }
 
-compare_server <- function(id, var_list, df, zoom = df) {
+compare_server <- function(id, var_list, df, zoom = df, disabled_choices = NULL) {
   stopifnot(!is.reactive(var_list))
   stopifnot(is.reactive(df))
   stopifnot(is.reactive(zoom))
 
   moduleServer(id, function(input, output, session) {
     
-    # Select variable
-    var_right <- select_var_server("compare", reactive(var_list))
+    # Select variable    
+    if (!is.null(disabled_choices)){
+      var_right <- select_var_server("compare", reactive(var_list), disabled = reactive(disabled_choices()))
+    } else {
+      var_right <- select_var_server("compare", reactive(var_list))
+      
+    }
 
     # Right map
     small_map_server("right", reactive(paste0(
