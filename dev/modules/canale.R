@@ -10,7 +10,7 @@ canale <-
   st_cast("MULTIPOLYGON") %>% 
   st_set_agr("constant") %>% 
   st_drop_geometry() %>% 
-  select(DAUID, CTUID, canale_ind = ale_index)
+  select(DAUID, CTUID, canale_ind_2016 = ale_index)
 
 
 # Add to existing geographies ---------------------------------------------
@@ -18,37 +18,37 @@ canale <-
 DA <- 
   DA %>% 
   left_join(canale, by = c("ID" = "DAUID", "CTUID")) %>% 
-  relocate(canale_ind, .before = geometry) %>% 
-  mutate(canale_ind_q3 = ntile(canale_ind, 3), .after = canale_ind) %>% 
+  relocate(canale_ind_2016, .before = geometry) %>% 
+  mutate(canale_ind_q3_2016 = ntile(canale_ind_2016, 3), .after = canale_ind_2016) %>% 
   st_set_agr("constant")
 
 CT <- 
   DA %>% 
   st_drop_geometry() %>% 
-  select(CTUID, households, canale_ind) %>% 
+  select(CTUID, households, canale_ind_2016) %>% 
   group_by(CTUID) %>% 
-  summarize(canale_ind = weighted.mean(canale_ind, 
+  summarize(canale_ind_2016 = weighted.mean(canale_ind_2016, 
                                        households, na.rm = TRUE)) %>% 
   left_join(CT, ., by = c("ID" = "CTUID")) %>% 
-  relocate(canale_ind, .before = geometry) %>% 
-  mutate(canale_ind_q3 = ntile(canale_ind, 3), .after = canale_ind) %>% 
+  relocate(canale_ind_2016, .before = geometry) %>% 
+  mutate(canale_ind_q3_2016 = ntile(canale_ind_2016, 3), .after = canale_ind_2016) %>% 
   st_set_agr("constant")
 
 borough <- 
   DA %>% 
   st_drop_geometry() %>% 
-  select(CSDUID, households, canale_ind) %>% 
+  select(CSDUID, households, canale_ind_2016) %>% 
   group_by(CSDUID) %>% 
-  summarize(canale_ind = weighted.mean(canale_ind, 
+  summarize(canale_ind_2016 = weighted.mean(canale_ind_2016, 
                                        households, na.rm = TRUE)) %>% 
   left_join(borough, ., by = c("ID" = "CSDUID")) %>% 
-  relocate(canale_ind, .before = geometry) %>% 
-  mutate(canale_ind_q3 = ntile(canale_ind, 3), .after = canale_ind) %>% 
+  relocate(canale_ind_2016, .before = geometry) %>% 
+  mutate(canale_ind_q3_2016 = ntile(canale_ind_2016, 3), .after = canale_ind_2016) %>% 
   st_set_agr("constant")
 
 DA_data <-
   DA %>% 
-  select(ID, canale_ind) %>% 
+  select(ID, canale_ind_2016) %>% 
   st_transform(32618) %>% 
   mutate(area = st_area(geometry)) %>% 
   st_set_agr("constant")
@@ -60,11 +60,11 @@ grid_data <-
   st_set_agr("constant") %>% 
   st_intersection(DA_data) %>% 
   mutate(area_prop = st_area(geometry) / area) %>% 
-  mutate(canale_ind = canale_ind * units::drop_units(area_prop)) %>% 
+  mutate(canale_ind_2016 = canale_ind_2016 * units::drop_units(area_prop)) %>% 
   select(-ID.1, -area, -area_prop) %>% 
   st_drop_geometry() %>% 
   group_by(ID) %>% 
-  summarize(canale_ind = weighted.mean(canale_ind, 
+  summarize(canale_ind_2016 = weighted.mean(canale_ind_2016, 
                                        households, na.rm = TRUE)) %>% 
   mutate(across(where(is.numeric), ~replace(., is.nan(.), 0)))
 
