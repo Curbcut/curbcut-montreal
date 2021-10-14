@@ -8,7 +8,7 @@ housing_UI <- function(id) {
           title_UI(NS(id, "title"),
                    select_var_UI(NS(id, "left"), var_list_housing_left), 
                    #can't hide and show widgets when it isn't the original sliderInput function
-                   sliderInput(NS(id, "slider_housing"), "Select two census", 
+                   sliderInput(NS(id, "slider_housing"), "Select a year", 
                                min = housing_slider$min,
                                max = housing_slider$max, 
                                step = housing_slider$interval, sep = "", 
@@ -18,7 +18,7 @@ housing_UI <- function(id) {
                    #           slider_max = housing_slider$max, 
                    #           slider_interval = housing_slider$interval, 
                    #           slider_init = housing_slider$init),
-                   sliderInput(NS(id, "slider_bi_census"), "Select two census", 
+                   sliderInput(NS(id, "slider_bi_census"), "Select two census year", 
                                min = housing_slider$min,
                                max = housing_slider$max, 
                                step = housing_slider$interval, sep = "", 
