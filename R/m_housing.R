@@ -237,7 +237,7 @@ housing_server <- function(id) {
     #            )
 
     # Explore panel
-    explore_server("explore", data_housing, reactive("var_left_housing"),
+    explore_server("explore", data_housing, var_left_housing,
                    var_right_housing, reactive(rv_housing$poly_selected),
                    reactive(rv_housing$zoom), reactive(names(var_list_housing_left))
                    )
