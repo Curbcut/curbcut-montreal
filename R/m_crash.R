@@ -15,7 +15,7 @@ crash_UI <- function(id) {
                              slider_max = crash_slider$max, 
                              slider_interval = crash_slider$interval, 
                              slider_init = crash_slider$init),
-                   htmlOutput(NS(id, "year_displayed"))
+                   htmlOutput(NS(id, "year_displayed_right"))
                    ),
           right_panel(id, 
                       compare_UI(NS(id, "crash"), var_list_right_crash),
@@ -35,13 +35,17 @@ crash_server <- function(id) {
     title_server("title", "crash")
     
     # Year displayed disclaimer
-    output$year_displayed <- renderText({
+    output$year_displayed_right <- renderText({
       year_shown <- str_extract(var_right_crash(), "\\d{4}$")
-      if (year_shown != time()){
-        str_glue("Displayed census data is for the closest available year (<b>{year_shown}</b>).<br>")
-      }
+      var <- str_remove(var_right_crash(), "_\\d{4}$")
+      var <- sus_translate(var_exp[var_exp$var_code == var,]$var_name)
       
+      if (year_shown != time() && var_right_crash() != " "){
+        str_glue(sus_translate(paste0("<p>Displayed data for <b>{var}</b> is for the ",
+                                    "closest available year <b>({year_shown})</b>.</p>")))
+      }
     })
+
     
     # Map
     output$map <- renderMapdeck({
@@ -53,8 +57,8 @@ crash_server <- function(id) {
                       left_join(colour_borough, by = "group"),
                     stroke_width = 100, stroke_colour = "#FFFFFF", fill_colour = "fill", 
                     update_view = FALSE, id = "ID", auto_highlight = TRUE,
-                    highlight_colour = "#FFFFFF90") %>%
-        add_heatmap(data = crash, update_view = FALSE)
+                    highlight_colour = "#FFFFFF90") #%>%
+        # add_heatmap(data = crash, update_view = FALSE)
     })
     
     # Zoom level
