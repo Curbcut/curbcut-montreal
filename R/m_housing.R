@@ -23,7 +23,7 @@ housing_UI <- function(id) {
                                max = housing_slider$max, 
                                step = housing_slider$interval, sep = "", 
                                value = c("2006", "2016")),
-                   htmlOutput(NS(id, "year_displayed")), br(),
+                   htmlOutput(NS(id, "year_displayed")),
                    materialSwitch(inputId = NS(id, "bi_census"),
                      label = "Two census comparison", right = TRUE),
                    shinyjs::useShinyjs() # needed if we continue to have 2 sliders
@@ -61,9 +61,9 @@ housing_server <- function(id) {
     # })
     # 
     output$year_displayed <- renderText({
-      year_showed <- str_extract(var_left_housing(), "\\d{4}$")
-      if (year_showed != time()){
-        str_glue("Displayed data is for the closest available year (<b>{year_showed}</b>).")
+      year_shown <- str_extract(var_left_housing(), "\\d{4}$")
+      if (year_shown != time()){
+        str_glue("Displayed data is for the closest available year (<b>{year_shown}</b>).<br>")
       }
 
     })
@@ -168,7 +168,7 @@ housing_server <- function(id) {
             names() %>% 
             str_extract(., "\\d{4}$") %>% 
             as.numeric() %>% na.omit()
-          closest_year <-  x[which.min(x - time())]
+          closest_year <-  x[which.min(abs(x - time()))]
           var <- paste0(str_remove(var, "_\\d{4}$"), "_", closest_year)
         }
         
@@ -211,7 +211,7 @@ housing_server <- function(id) {
             names() %>% 
             str_extract(., "\\d{4}$") %>% 
             as.numeric() %>% na.omit()
-          closest_year <-  x[which.min(x - time())]
+          closest_year <-  x[which.min(abs(x - time()))]
           var <- paste0(str_remove(var, "_\\d{4}$"), "_", closest_year)
         }
         

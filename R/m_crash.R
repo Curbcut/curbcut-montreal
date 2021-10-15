@@ -14,7 +14,8 @@ crash_UI <- function(id) {
                              slider_min = crash_slider$min, 
                              slider_max = crash_slider$max, 
                              slider_interval = crash_slider$interval, 
-                             slider_init = crash_slider$init)
+                             slider_init = crash_slider$init),
+                   htmlOutput(NS(id, "year_displayed"))
                    ),
           right_panel(id, 
                       compare_UI(NS(id, "crash"), var_list_right_crash),
@@ -32,6 +33,15 @@ crash_server <- function(id) {
     
     # Title bar
     title_server("title", "crash")
+    
+    # Year displayed disclaimer
+    output$year_displayed <- renderText({
+      year_shown <- str_extract(var_right_crash(), "\\d{4}$")
+      if (year_shown != time()){
+        str_glue("Displayed census data is for the closest available year (<b>{year_shown}</b>).<br>")
+      }
+      
+    })
     
     # Map
     output$map <- renderMapdeck({
@@ -55,9 +65,30 @@ crash_server <- function(id) {
                                  TRUE ~ "borough")
     })
     
+    
     # Compare panel
-    var_right_crash <- compare_server("crash", var_list_right_crash,
+    var_right_crash_1 <- compare_server("crash", var_list_right_crash,
                                       reactive(rv_crash$zoom))
+    
+    var_right_crash <- reactive({
+      if (var_right_crash_1() != " ") {
+        
+        var <- paste(var_right_crash_1(), time(), sep = "_")
+        
+        if (!var %in% names(borough)) {
+          x <- borough %>% 
+            select(contains(str_remove(var, "_\\d{4}$"))) %>% 
+            names() %>% 
+            str_extract(., "\\d{4}$") %>% 
+            as.numeric() %>% na.omit()
+          closest_year <-  x[which.min(abs(x - time()))]
+          var <- paste0(str_remove(var, "_\\d{4}$"), "_", closest_year)
+        }
+        
+        var
+        
+      } else var_right_crash_1()
+    })
     
     # Left variable servers
     var_left_crash_1 <- select_var_server("left_1", 

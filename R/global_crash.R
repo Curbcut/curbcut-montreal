@@ -31,7 +31,7 @@ var_list_right_crash <-
        "Housing" = list(
          "Tenant-occupied (%)" = "housing_tenant_prop",
          "Average rent ($)" = "housing_rent_avg_dollar",
-         "Average property value ($)" = "housing_prop_value_avg_dollar",
+         "Average property value ($)" = "housing_value_avg_dollar",
          "Unaffordable housing (%)" = "housing_unafford_prop",
          "Unsuitable housing (%)" = "housing_unsuit_prop"),
        "Income" = list(
