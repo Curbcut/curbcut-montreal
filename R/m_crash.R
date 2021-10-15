@@ -39,7 +39,7 @@ crash_server <- function(id) {
         style = map_style, token = token_crash,
         zoom = map_zoom, location = map_location) %>%
         add_polygon(data = borough %>%
-                      mutate(group = paste(crash_ped_2019_prop_area_q3, "- 1")) %>%
+                      mutate(group = paste(crash_ped_prop_area_q3_2019, "- 1")) %>%
                       left_join(colour_borough, by = "group"),
                     stroke_width = 100, stroke_colour = "#FFFFFF", fill_colour = "fill", 
                     update_view = FALSE, id = "ID", auto_highlight = TRUE,
@@ -73,9 +73,9 @@ crash_server <- function(id) {
       stringr::str_remove(paste(
         "crash", 
         var_left_crash_1(), 
-        time(), 
         var_left_crash_2(), 
-        sep = "_"), "_ $")
+        time(), 
+        sep = "_"), "_ ")
     )
     
     # Data 
