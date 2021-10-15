@@ -19,6 +19,12 @@ source("dev/callee_scripts/grid_geocode.R")
 # Add metadata to grid (dependent: needs 'borough', 'CT', 'DA' and 'grid')
 source("dev/callee_scripts/grid_process.R")
 
+# Import street edges (independent script)
+source("dev/callee_scripts/street_edge_geometries.R")
+
+# Geocode street edges centroids (dependent script: needs 'street')
+source("dev/callee_scripts/street_geocode.R")
+
 
 # Add topic variables (modules) -------------------------------------------
 
