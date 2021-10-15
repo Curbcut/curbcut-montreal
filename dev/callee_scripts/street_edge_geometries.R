@@ -63,7 +63,7 @@
 #   data.frame()
 # 
 # # Need to convert to SF in order to put in the st_nn
-# street_edges <-
+# streets <-
 #   net %>% 
 #   as_tibble() %>% 
 #   rowwise() %>% 
@@ -75,6 +75,6 @@
 #   transmute(ID = edge_id, name_2 = name, street_type = highway, geometry) %>% 
 #   st_as_sf(crs = 4326)
 # 
-# qsave(street_edges, "dev/data/streets.qs")
+# qsave(street, "dev/data/street.qs")
 
-streets <- qread("dev/data/streets.qs")
+street <- qread("dev/data/street.qs")
