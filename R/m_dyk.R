@@ -16,8 +16,7 @@ dyk_server <- function(id, var_left, var_right) {
     
     dyk_output <- reactive({
       
-      # Set up categories and variables
-      vars <- c(var_left(), var_right())
+      vars <- c(str_remove(var_left(), "_\\d{4}$"), str_remove(var_right(), "_\\d{4}$"))
       vars <- vars[vars != " "]
       categories <- 
         tibble(variable = vars) %>% 

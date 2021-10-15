@@ -20,10 +20,10 @@ make_info_table_data <- function(id, x, var_type, var_left, var_right, select,
   ## Selections ----------------------------------------------------------------
   
   selection <- x() %>% filter(ID == select())
-  active_left <- nrow(filter(selection, !is.na(left_var)))
+  active_left <- nrow(filter(selection, !is.na(left_var_q3)))
   active_right <- active_left
   if (var_right() != " ") active_right <- 
-    nrow(filter(selection, !is.na(left_var), !is.na(right_var)))
+    nrow(filter(selection, !is.na(left_var_q3), !is.na(right_var)))
   cat("active_left:", active_left, "\n")
   cat("active_right:", active_right, "\n")
   cat("selection$ID: ", selection$ID, "\n")
@@ -84,12 +84,12 @@ make_info_table_data <- function(id, x, var_type, var_left, var_right, select,
   }
   
   
-  ## Descriptive statistics for left_var ---------------------------------------
+  ## Descriptive statistics for left_var_q3 ---------------------------------------
   
   vec_left <-
     x() %>%
-    filter(!is.na(left_var), !is.na(left_var_full)) %>%
-    pull(left_var_full) %>% 
+    filter(!is.na(left_var_q3), !is.na(left_var)) %>%
+    pull(left_var) %>% 
     na.omit()
   
   if (grepl("quant_", var_type())) {
@@ -107,7 +107,7 @@ make_info_table_data <- function(id, x, var_type, var_left, var_right, select,
   
   if (var_type() == "uni_quant_select") {
     
-    poly_value <- selection$left_var_full
+    poly_value <- selection$left_var
     quintile <- quantile(vec_left, c(0.2, 0.4, 0.6, 0.8))
 
     larger_smaller <- case_when(
