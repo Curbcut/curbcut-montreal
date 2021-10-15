@@ -221,7 +221,7 @@ ui <- dashboardPage(
       # tabItem(tabName = "alley", alley_UI("alley")),
       tabItem(tabName = "canale", canale_UI("canale")),
       tabItem(tabName = "climate_risk", climate_risk_UI("climate_risk")),
-      # tabItem(tabName = "covid", covid_UI("covid")),
+      tabItem(tabName = "covid", covid_UI("covid")),
       # tabItem(tabName = "crash", crash_UI("crash")),
       # tabItem(tabName = "crash_analysis", crash_analysis_UI("crash_analysis")),
       # tabItem(tabName = "dmti", dmti_UI("dmti")),
