@@ -25,6 +25,9 @@ source("dev/callee_scripts/street_edge_geometries.R")
 # Geocode street edges centroids (dependent script: needs 'street')
 source("dev/callee_scripts/street_geocode.R")
 
+# Add metadata to street (dependent: needs 'borough', 'CT', 'DA' and 'street')
+source("dev/callee_scripts/street_process.R")
+
 
 # Add topic variables (modules) -------------------------------------------
 
