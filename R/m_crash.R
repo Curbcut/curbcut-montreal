@@ -10,8 +10,11 @@ crash_UI <- function(id) {
                    hr(),
                    select_var_UI(NS(id, "left_1"), var_list_left_crash_1),
                    select_var_UI(NS(id, "left_2"), var_list_left_crash_2),
-                   slider_UI(NS(id, "left"), crash_slider$min, crash_slider$max, 
-                             crash_slider$interval, crash_slider$init)
+                   slider_UI(NS(id, "left"), 
+                             slider_min = crash_slider$min, 
+                             slider_max = crash_slider$max, 
+                             slider_interval = crash_slider$interval, 
+                             slider_init = crash_slider$init)
                    ),
           right_panel(id, 
                       compare_UI(NS(id, "crash"), var_list_right_crash),
@@ -46,7 +49,7 @@ crash_server <- function(id) {
     
     # Zoom level
     observeEvent(input$map_view_change$zoom, {
-      rv_crash$zoom <- case_when(input$map_view_change$zoom >= 14 ~ "DA_2",
+      rv_crash$zoom <- case_when(#input$map_view_change$zoom >= 14 ~ "DA_2",
                                  input$map_view_change$zoom >= 12 ~ "DA",
                                  input$map_view_change$zoom >= 10.5 ~ "CT",
                                  TRUE ~ "borough")
