@@ -7,35 +7,33 @@
 
 # Geocode with frequent saves ---------------------------------------------
 
-# library(ggmap)
-# 
-# addresses <- 
-  # streets %>%
-  # st_drop_geometry() %>%
-  # mutate(name = NA_character_)
-#   
-# for (i in seq_along(street$ID)) {
-#   
-#   addresses[i,]$name <- 
-#     street %>% 
-#     slice(i) %>% 
-#     st_transform(32618) %>% 
-#     st_centroid() %>% 
-#     st_transform(4326) %>% 
-#     pull(geometry) %>% 
-#     unlist() %>% 
-#     revgeocode()
-#   
-#   qsave(addresses, "dev/data/street_geocode.qs")
-#   
-#   print(i)
-#   
-# }
-# 
-# rm(i)
-# 
+library(ggmap)
 
-addresses <- qread("dev/data/street_geocode.qs")
+address <-
+  street %>%
+  st_drop_geometry() |> 
+  mutate(name = NA_character_, .before = name_2)
+
+centroids <- 
+  street |> 
+  st_transform(32618) |> 
+  st_centroid() |> 
+  st_transform(4326) |> 
+  pull(geometry)
+
+for (i in seq_along(street$ID)) {
+
+  print(i)
+  address[i,]$name <- revgeocode(centroids[[i]])
+  if (i %% 100 == 0) qsave(address, "dev/data/street_geocode.qs")
+
+}
+
+qsave(address, "dev/data/street_geocode.qs")
+rm(i, centroids)
+
+
+address <- qread("dev/data/street_geocode.qs")
 
 
 # Parse results -----------------------------------------------------------

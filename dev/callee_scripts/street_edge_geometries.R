@@ -4,22 +4,27 @@
 # We should load data from OSM once in a while for updates, but this script
 # is very computing intensive. 
 
+library(osmdata)
+library(tidyverse)
+library(sf)
+library(qs)
 
-# Bounding Box, Highway Key Values -----------------------------------------
 
-# library(osmdata)
+# # Bounding Box, Highway Key Values -----------------------------------------
 # 
 # # Bounding box of CMA Montreal
 # CMA_mtl_bb <- c(-74.32797, 45.21754, -73.12856, 45.96849)
 # 
-# # Highway key values for Cars
-# kv_highway_cars <- c("motorway", "trunk", "primary", "secondary", "tertiary",
-#                      "residential", "unclassified", "service", "motorway_link",
-#                      "trunk_link", "primary_link", "secondary_link", "tertiary_link")
+# # Highway key values for cars
+# kv_highway_cars <- 
+#   c("motorway", "trunk", "primary", "secondary", "tertiary", "residential", 
+#     "unclassified", "service", "motorway_link", "trunk_link", "primary_link", 
+#     "secondary_link", "tertiary_link")
 # 
-# # # Highway key values for People
-# kv_highway_people <- c("cycleway", "living_street", "pedestrian", "track", "road",
-#                        "footway", "path", "steps", "crossing")
+# # # Highway key values for people
+# kv_highway_people <- 
+#   c("cycleway", "living_street", "pedestrian", "track", "road", "footway", 
+#     "path", "steps", "crossing")
 # 
 # 
 # # Load and Save OSM Road ---------------------------------------------------
@@ -36,7 +41,7 @@
 # # Cast "non-area" POLYGONS into LINESTRING and bind with existing LINESTRINGS
 # street_network <-
 #   street_network$osm_polygons %>%
-#   filter(is.na(area) | area=='no') %>%
+#   filter(is.na(area) | area == 'no') %>%
 #   st_set_agr("constant") %>%
 #   st_cast("LINESTRING") %>%
 #   bind_rows(street_network$osm_lines) %>%
@@ -50,31 +55,104 @@
 # qsave(street_network, "dev/data/street_network.qs")
 # 
 # 
-# # Slicing streets ---------------------------------------------------------
+# # Filter results ----------------------------------------------------------
 # 
-# # load the previously saved data
 # street_network <- qread("dev/data/street_network.qs")
 # 
-# library(dodgr)
+# street_network <- 
+#   street_network |> 
+#   st_filter(borough)
 # 
-# # Street slicing
-# net <-
-#   weight_streetnet(street_network, keep_cols = c("osm_id", "name")) %>%
-#   data.frame()
+# street_network <- 
+#   street_network |> 
+#   filter(highway %in% kv_highway_cars)
 # 
-# # Need to convert to SF in order to put in the st_nn
-# streets <-
-#   net %>% 
-#   as_tibble() %>% 
-#   rowwise() %>% 
-#   mutate(from_point = st_sfc(list(st_point(c(from_lon, from_lat)))),
-#          to_point = st_sfc(list(st_point(c(to_lon, to_lat)))),
-#          multi_point = st_union(from_point, to_point)) %>% 
-#   ungroup() %>% 
-#   mutate(geometry = st_cast(multi_point, "LINESTRING")) %>% 
-#   transmute(ID = edge_id, name_2 = name, street_type = highway, geometry) %>% 
-#   st_as_sf(crs = 4326)
+# rm(CMA_mtl_bb, kv_highway_cars, kv_highway_people)
 # 
-# qsave(street, "dev/data/street.qs")
+# 
+# # Slicing streets ---------------------------------------------------------
+# 
+# library(future)
+# plan(multisession)
+# options(future.globals.maxSize = Inf)
+# street_network <- st_transform(street_network, 32618)
+# 
+# # Make grid to parallelize calculations
+# street_grid <- st_make_grid(street_network, n = c(16, 8))
+# 
+# # Do calculations
+# street_list <-
+#   furrr::future_map(street_grid, ~{
+# 
+#     street <-
+#       street_network |>
+#       select(osm_id, geometry) |>
+#       st_filter(.x)
+# 
+#     if (nrow(street) > 0) {
+#       nodes <-
+#         street |>
+#         st_intersection() |>
+#         filter(st_is(geometry, "POINT"))
+# 
+#       if (nrow(nodes) > 0) {
+#         street <-
+#           street |>
+#           lwgeom::st_split(nodes) |>
+#           st_collection_extract("LINESTRING")
+#       }
+#     } else nodes <- NULL
+# 
+#     return(list(street, nodes))
+# 
+#   }, .progress = TRUE)
+# 
+# # Get street and nodes
+# street <- map_dfr(street_list, `[[`, 1) |> distinct()
+# nodes <- map_dfr(street_list, `[[`, 2)
+# 
+# # Check edges which crossed a grid boundary
+# street_grid_edges <- st_cast(street_grid, "LINESTRING")
+# edges_to_check <-
+#   street_network |>
+#   st_filter(street_grid_edges) |>
+#   pull(osm_id)
+# 
+# # Re-split these edges
+# new_street <-
+#   street_network |>
+#   select(osm_id, geometry) |>
+#   filter(osm_id %in% edges_to_check) |>
+#   lwgeom::st_split(nodes) |>
+#   st_collection_extract("LINESTRING")
+# 
+# # Merge with other results
+# street <-
+#   street |>
+#   filter(!osm_id %in% edges_to_check) |>
+#   bind_rows(new_street)
+# 
+# street <-
+#   street |>
+#   rowid_to_column("ID") |>
+#   select(ID, osm_id, geometry) |>
+#   st_transform(4326)
+# 
+# # Add name_2 and street_type from original OSM download
+# street <-
+#   street_network |>
+#   st_drop_geometry() |>
+#   select(osm_id, name_2 = name, street_type = highway) |>
+#   right_join(street) |> 
+#   relocate(name_2, street_type, .after = ID)
+# 
+# qsave(street, file = "dev/data/street.qs")
+# 
+# rm(street_network, street_grid, street_list, nodes, street_grid_edges,
+#    edges_to_check, new_street)
+
+
+# Load data after processing ----------------------------------------------
+
 
 street <- qread("dev/data/street.qs")
