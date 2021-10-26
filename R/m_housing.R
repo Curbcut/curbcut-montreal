@@ -26,9 +26,9 @@ housing_UI <- function(id) {
                    htmlOutput(NS(id, "year_displayed_left")),
                    htmlOutput(NS(id, "year_displayed_right")),
                    materialSwitch(inputId = NS(id, "bi_census"),
-                                  label = "Two census comparison", right = TRUE),
+                     label = "Two census comparison", right = TRUE),
                    shinyjs::useShinyjs() # needed if we continue to have 2 sliders
-          ),
+                   ),
           right_panel(id, 
                       compare_UI(NS(id, "housing"), var_list_housing_right),
                       explore_UI(NS(id, "explore")),
@@ -45,7 +45,7 @@ housing_server <- function(id) {
     # observe({
     #   shinyjs::toggleState("slider_bi_census", condition = (input$bi_census == TRUE))
     # })
-    
+
     
     # Title bar
     title_server("title", "housing")
@@ -67,19 +67,19 @@ housing_server <- function(id) {
       var <- sus_translate(var_exp[var_exp$var_code == var,]$var_name)
       if (year_shown != time()){
         str_glue(sus_translate(paste0("<p>Displayed data for <b>{var}</b> is for the ",
-                                      "closest available year <b>({year_shown})</b>.</p>")))
+        "closest available year <b>({year_shown})</b>.</p>")))
       }
     })
     
     output$year_displayed_right <- renderText({
-      year_shown <- str_extract(var_right_housing(), "\\d{4}$")
-      var <- str_remove(var_right_housing(), "_\\d{4}$")
-      var <- sus_translate(var_exp[var_exp$var_code == var,]$var_name)
-      
-      if (year_shown != time() && var_right_housing() != " "){
-        str_glue(sus_translate(paste0("<p>Displayed data for <b>{var}</b> is for the ",
-                                      "closest available year <b>({year_shown})</b>.</p>")))
-      }
+    year_shown <- str_extract(var_right_housing(), "\\d{4}$")
+    var <- str_remove(var_right_housing(), "_\\d{4}$")
+    var <- sus_translate(var_exp[var_exp$var_code == var,]$var_name)
+    
+    if (year_shown != time() && var_right_housing() != " "){
+      str_glue(sus_translate(paste0("<p>Displayed data for <b>{var}</b> is for the ",
+      "closest available year <b>({year_shown})</b>.</p>")))
+    }
     })
 
     # # Map
@@ -182,7 +182,7 @@ housing_server <- function(id) {
             names() %>% 
             str_extract(., "\\d{4}$") %>% 
             as.numeric() %>% na.omit()
-          closest_year <-  x[which.min(x - time())]
+          closest_year <-  x[which.min(abs(x - time()))]
           var <- paste0(str_remove(var, "_\\d{4}$"), "_", closest_year)
         }
         
@@ -225,7 +225,7 @@ housing_server <- function(id) {
             names() %>% 
             str_extract(., "\\d{4}$") %>% 
             as.numeric() %>% na.omit()
-          closest_year <-  x[which.min(x - time())]
+          closest_year <-  x[which.min(abs(x - time()))]
           var <- paste0(str_remove(var, "_\\d{4}$"), "_", closest_year)
         }
         
