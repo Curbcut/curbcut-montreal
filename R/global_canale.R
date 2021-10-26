@@ -7,6 +7,7 @@ token_canale <- paste0("pk.eyJ1IjoiZHdhY2hzbXV0aCIsImEiOiJja2g2Y2JpbDc",
 # Initialize reactive values
 rv_canale <- reactiveValues(poly_selected = NA, zoom = "borough")
 
+# canale ind for current census
 canale_ind <- paste0("canale_ind", "_", current_census)
 
 # Dropdown menu
@@ -37,3 +38,7 @@ var_list_canale <-
 var_list_canale[-1] <-
   var_list_canale[-1] %>%
   purrr::modify_depth(2, ~paste0(., "_", current_census))
+
+
+# Width of strokes on the map ---------------------------------------------
+canale_stroke_width <- list("borough" = 100, "CT" = 10, "DA" = 2)

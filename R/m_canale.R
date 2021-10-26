@@ -29,18 +29,18 @@ canale_server <- function(id) {
       mapdeck(
         style = map_style, token = token_canale,
         zoom = map_zoom, location = map_location) %>%
-        add_polygon(data = borough %>%
+        add_sf(data = borough %>%
                       mutate(group = paste(eval(as.name(paste0("canale_ind_q3", "_", 
                                                                current_census))), "- 1")) %>%
                       left_join(colour_borough, by = "group"),
-          stroke_width = 100, stroke_colour = "#FFFFFF", fill_colour = "fill", 
-          update_view = FALSE, id = "ID", auto_highlight = TRUE,
-          highlight_colour = "#FFFFFF90")
+                    stroke_width = 100, stroke_colour = "#FFFFFF", fill_colour = "fill", 
+                    update_view = FALSE, id = "ID", auto_highlight = TRUE,
+                    highlight_colour = "#FFFFFF90")
       })
     
     # Zoom level
     observeEvent(input$map_view_change$zoom, {
-      rv_canale$zoom <- case_when(#input$map_view_change$zoom >= 14 ~ "DA_2",
+      rv_canale$zoom <- case_when(input$map_view_change$zoom >= 13.5 ~ "street",#"DA_2",
                                   input$map_view_change$zoom >= 12 ~ "DA",
                                   input$map_view_change$zoom >= 10.5 ~ "CT",
                                   TRUE ~ "borough")
@@ -75,13 +75,9 @@ canale_server <- function(id) {
     observeEvent({
       var_right_canale()
       rv_canale$zoom}, {
-        width <- switch(rv_canale$zoom, "borough" = 100, "CT" = 10, 2)
-        mapdeck_update(map_id = NS(id, "map")) %>%
-          add_polygon(
-            data = data_canale(), stroke_width = width,
-            stroke_colour = "#FFFFFF", fill_colour = "fill",
-            update_view = FALSE, id = "ID", auto_highlight = TRUE,
-            highlight_colour = "#FFFFFF90")
+        
+        map_change(NS(id,"map"), data_canale, zoom = reactive(rv_canale$zoom))
+
         })
 
     # Update poly_selected on click
@@ -90,7 +86,15 @@ canale_server <- function(id) {
       if (is.null(lst$object$properties$id)) {
         rv_canale$poly_selected <- NA
       } else rv_canale$poly_selected <- lst$object$properties$id
-      })
+    })
+    
+    # # Update line_selected on click
+    # observeEvent(input$map_path_click, {
+    #   lst <- jsonlite::fromJSON(input$map_path_click)
+    #   if (is.null(lst$object$properties$id)) {
+    #     rv_canale$poly_selected <- NA
+    #   } else rv_canale$poly_selected <- lst$object$properties$id
+    # })
 
     # Clear poly_selected on zoom
     observeEvent(rv_canale$zoom, {rv_canale$poly_selected <- NA},
