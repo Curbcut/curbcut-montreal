@@ -23,7 +23,8 @@ housing_UI <- function(id) {
                                max = housing_slider$max, 
                                step = housing_slider$interval, sep = "", 
                                value = c("2006", "2016")),
-                   htmlOutput(NS(id, "year_displayed")), 
+                   htmlOutput(NS(id, "year_displayed_left")),
+                   htmlOutput(NS(id, "year_displayed_right")),
                    materialSwitch(inputId = NS(id, "bi_census"),
                      label = "Two census comparison", right = TRUE),
                    shinyjs::useShinyjs() # needed if we continue to have 2 sliders
@@ -60,12 +61,25 @@ housing_server <- function(id) {
     #   return(memory$previous[1,1])
     # })
     # 
-    output$year_displayed <- renderText({
-      year_showed <- str_extract(var_left_housing(), "\\d{4}$")
-      if (year_showed != time()){
-        str_glue("Displayed data is for the closest available year (<b>{year_showed}</b>).<br>")
+    output$year_displayed_left <- renderText({
+      year_shown <- str_extract(var_left_housing(), "\\d{4}$")
+      var <- str_remove(var_left_housing(), "_\\d{4}$")
+      var <- sus_translate(var_exp[var_exp$var_code == var,]$var_name)
+      if (year_shown != time()){
+        str_glue(sus_translate(paste0("<p>Displayed data for <b>{var}</b> is for the ",
+        "closest available year <b>({year_shown})</b>.</p>")))
       }
-
+    })
+    
+    output$year_displayed_right <- renderText({
+    year_shown <- str_extract(var_right_housing(), "\\d{4}$")
+    var <- str_remove(var_right_housing(), "_\\d{4}$")
+    var <- sus_translate(var_exp[var_exp$var_code == var,]$var_name)
+    
+    if (year_shown != time() && var_right_housing() != " "){
+      str_glue(sus_translate(paste0("<p>Displayed data for <b>{var}</b> is for the ",
+      "closest available year <b>({year_shown})</b>.</p>")))
+    }
     })
 
     # # Map
@@ -168,7 +182,7 @@ housing_server <- function(id) {
             names() %>% 
             str_extract(., "\\d{4}$") %>% 
             as.numeric() %>% na.omit()
-          closest_year <-  x[which.min(x - time())]
+          closest_year <-  x[which.min(abs(x - time()))]
           var <- paste0(str_remove(var, "_\\d{4}$"), "_", closest_year)
         }
         
@@ -211,7 +225,7 @@ housing_server <- function(id) {
             names() %>% 
             str_extract(., "\\d{4}$") %>% 
             as.numeric() %>% na.omit()
-          closest_year <-  x[which.min(x - time())]
+          closest_year <-  x[which.min(abs(x - time()))]
           var <- paste0(str_remove(var, "_\\d{4}$"), "_", closest_year)
         }
         

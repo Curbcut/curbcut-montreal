@@ -55,7 +55,7 @@ data_server <- function(id, var_left, var_right, df, zoom = df) {
                                   left_var = all_of(var_left()),
                                   left_var_q3 = paste0(str_remove(all_of(var_left()),
                                                                   "_\\d{4}$"), "_q3", 
-                                                       str_extract(var_left(), "_\\d{4}$"))) %>%
+                                                       na.omit(str_extract(var_left(), "_\\d{4}$")))) %>%
              { if (length(var_left()) == 2) 
                mutate(., left_var = (left_var2 - left_var1) / left_var1 * 100,
                       left_var_q3 = ntile(left_var, 3),
@@ -73,11 +73,11 @@ data_server <- function(id, var_left, var_right, df, zoom = df) {
                              left_var = all_of(var_left()),
                              left_var_q3 = paste0(str_remove(var_left(), "_\\d{4}$"), 
                                                   "_q3", 
-                                                  str_extract(var_left(), "_\\d{4}$")),
+                                                  na.omit(str_extract(var_left(), "_\\d{4}$"))),
                              right_var = all_of(var_right()), 
                              right_var_q3 = paste0(str_remove(var_right(), "_\\d{4}$"), 
                                                    "_q3", 
-                                                   str_extract(var_right(), "_\\d{4}$"))) %>% 
+                                                   na.omit(str_extract(var_right(), "_\\d{4}$")))) %>% 
                { if (length(var_left()) == 2 && length(var_right()) == 2) 
                  mutate(., left_var = (left_var2 - left_var1) / left_var1 * 100,
                         left_var_q3 = ntile(left_var, 3),

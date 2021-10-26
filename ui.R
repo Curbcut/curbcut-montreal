@@ -218,15 +218,15 @@ ui <- dashboardPage(
       )), 
       
       # Modules
-      # tabItem(tabName = "alley", alley_UI("alley")),
+      tabItem(tabName = "alley", alley_UI("alley")),
       tabItem(tabName = "canale", canale_UI("canale")),
-      # tabItem(tabName = "climate_risk", climate_risk_UI("climate_risk")),
-      # tabItem(tabName = "covid", covid_UI("covid")),
-      # tabItem(tabName = "crash", crash_UI("crash")),
-      # tabItem(tabName = "crash_analysis", crash_analysis_UI("crash_analysis")),
+      tabItem(tabName = "climate_risk", climate_risk_UI("climate_risk")),
+      tabItem(tabName = "covid", covid_UI("covid")),
+      tabItem(tabName = "crash", crash_UI("crash")),
+      tabItem(tabName = "crash_analysis", crash_analysis_UI("crash_analysis")),
       # tabItem(tabName = "dmti", dmti_UI("dmti")),
       tabItem(tabName = "housing", housing_UI("housing")),
-      # tabItem(tabName = "mcp", mcp_UI("mcp")),
+      tabItem(tabName = "mcp", mcp_UI("mcp")),
       tabItem(tabName = "meet_the_team", meet_the_team_UI("meet_the_team")),
       tabItem(tabName = "why_dash", why_dash_UI("why_dash"))
       

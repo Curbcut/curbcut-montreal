@@ -21,19 +21,19 @@ shinyServer(function(input, output, session) {
   # Modules -----------------------------------------------------------------
 
   # accessibility_server("accessibility")
-  # alley_server("alley")
+  alley_server("alley")
   canale_server("canale")
-  # climate_risk_server("climate_risk")
-  # covid_server("covid")
-  # crash_server("crash")
-  # crash_analysis_server("crash_analysis")
+  climate_risk_server("climate_risk")
+  covid_server("covid")
+  crash_server("crash")
+  crash_analysis_server("crash_analysis")
   # dmti_server("dmti")
   housing_server("housing")
-  # mcp_server("mcp")
-  # meet_the_team_server("meet_the_team")
+  mcp_server("mcp")
+  meet_the_team_server("meet_the_team")
   # mode_switch_server("mode_switch")
   # ped_server("ped")
-  # why_dash_server("why_dash")
+  why_dash_server("why_dash")
 
     
   # Waiter ------------------------------------------------------------------
