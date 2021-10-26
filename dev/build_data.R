@@ -19,6 +19,15 @@ source("dev/callee_scripts/grid_geocode.R")
 # Add metadata to grid (dependent: needs 'borough', 'CT', 'DA' and 'grid')
 source("dev/callee_scripts/grid_process.R")
 
+# Import street edges (independent script)
+source("dev/callee_scripts/street_edge_geometries.R")
+
+# Geocode street edges centroids (dependent script: needs 'street')
+source("dev/callee_scripts/street_geocode.R")
+
+# Add metadata to street (dependent: needs 'borough', 'CT', 'DA' and 'street')
+source("dev/callee_scripts/street_process.R")
+
 
 # Add topic variables (modules) -------------------------------------------
 
@@ -39,6 +48,7 @@ source("dev/modules/crash.R")
 qsave(var_exp, file = "data/var_exp.qs")
 qsavem(borough, CT, DA, file = "data/census.qsm")
 qsave(grid, file = "data/grid.qs")
+qsave(street, file = "data/street.qs")
 qsave(green_space, file = "data/green_space.qs")
 qsavem(alleys, alley_text, file = "data/alleys.qsm")
 qsave(crash, file = "data/crash.qs")
