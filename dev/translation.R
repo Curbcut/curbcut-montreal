@@ -1569,6 +1569,10 @@ translation_fr <-
                       "Les événements de pluie verglaçante ont augmenté de 26% de 1979 à 2008, et les fortes tempêtes de neige ont ",
                       "augmenté au cours des 70 dernières années. Aucune évaluation n'a pu être faite jusqu'à présent en ce qui concerne ",
                       "les autres types de tempêtes.</ul>")) %>%
+  add_row(en = paste0("<p>Displayed data for <b>{var}</b> is for the closest ",
+                      "available year <b>({year_shown})</b>.</p>"),
+          fr = paste0("<p>Les données représentées pour <b>{var}</b> sont celles de ",
+                      "l'année disponible la plus proche <b>({year_shown})</b>.</p>")) %>% 
   # add_row(en = "Covid interventions",
   #         fr = "Interventions (COVID)") %>%
   # add_row(en = "Healthy Urban Features",
