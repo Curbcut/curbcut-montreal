@@ -1573,26 +1573,26 @@ translation_fr <-
                       "available year <b>({year_shown})</b>.</p>"),
           fr = paste0("<p>Les données représentées pour <b>{var}</b> sont celles de ",
                       "l'année disponible la plus proche <b>({year_shown})</b>.</p>")) %>% 
-  # add_row(en = "Covid interventions",
-  #         fr = "Interventions (COVID)") %>%
-  # add_row(en = "Healthy Urban Features",
-  #         fr = "Caractéristiques d'une ville saine") %>%
-  # add_row(en = "Housing realm",
-  #         fr = "Domaine du logement") %>%
-  # add_row(en = "The housing realm",
-  #         fr = "Le domaine du logement") %>%
-  # add_row(en = "Montréal climate plans",
-  #         fr = "Plans climat de Montréal") %>%
-  # add_row(en = "Policy",
-  #         fr = "Politiques") %>%
-  # add_row(en = "Safety",
-  #         fr = "Sécurité") %>%
-  # add_row(en = "Safety analysis",
-  #         fr = "Analyse de la sécurité") %>%
-  # add_row(en = "Green alleys",
-  #         fr = "Ruelles vertes") %>%
-  # add_row(en = "Health",
-  #         fr = "Santé") %>%
+  add_row(en = "Covid interventions",
+          fr = "Interventions (COVID)") %>%
+  add_row(en = "Healthy Urban Features",
+          fr = "Caractéristiques d'une ville saine") %>%
+  add_row(en = "Housing realm",
+          fr = "Domaine du logement") %>%
+  add_row(en = "The housing realm",
+          fr = "Le domaine du logement") %>%
+  add_row(en = "Montréal climate plans",
+          fr = "Plans climat de Montréal") %>%
+  add_row(en = "Policy",
+          fr = "Politiques") %>%
+  add_row(en = "Safety",
+          fr = "Sécurité") %>%
+  add_row(en = "Safety analysis",
+          fr = "Analyse de la sécurité") %>%
+  add_row(en = "Green alleys",
+          fr = "Ruelles vertes") %>%
+  add_row(en = "Health",
+          fr = "Santé") %>%
   add_row(en = paste0("<strong>{z$place_heading}</strong>",
                       "<p>{z$place_name} has a population of ",
                       "{prettyNum(round(z$selection$population), ',')} and a ", 
