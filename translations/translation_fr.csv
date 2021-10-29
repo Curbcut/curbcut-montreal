@@ -421,6 +421,29 @@ Green alleys,Ruelles vertes
 Health,Santé
 "<strong>{z$place_heading}</strong><p>{z$place_name} has a population of {prettyNum(round(z$selection$population), ',')} and a {z$title_left} score ({z$exp_left}) of {round(z$poly_value, 2)}, which is {z$larger_smaller} the region-wide median of {z$median_val}.<p>{z$place_name} has a {z$poor_strong} relative score for this indicator, with {z$exp_left} higher than {z$percentile}% of {z$scale_plural} in the Montreal region.","<strong>{z$place_heading}</strong><p>{z$place_name} a une population de {prettyNum(round(z$selection$population), ',')} et un indice {z$title_left} ({z$exp_left}) de {round(z$poly_value, 2)}, ce qui est {z$larger_smaller} la médiane régionale de {z$median_val}.<p>{z$place_name} a un indice relativement {z$poor_strong} pour cet indicateur, avec {z$exp_left} supérieur à {z$percentile}% des {z$scale_plural} de la région de Montréal"
 Housing is important,Le logement est important
+May 2020,Mai 2020
+July 2020,Juillet 2020
+October 2020,Octobre 2020
+TK 2021,TK 2021
+Total,Total
+Pedestrian,Piéton
+Cyclist,Cycliste
+Other,Autre
+Count,Comte
+Per sq km,Par kilomètre carré
+Per 1000 residents,Pour 1000 résidents
+Introduction,Introduction
+Community and participation,Communauté et participation
+Greening,Verdir
+Food and agriculture,Alimentation et agriculture
+Land use,Utilisation des sols
+Mobility,Mobilité
+Equity,Equité
+Adaptation and resilience,Adaptation et résilience
+Economy,Économie
+Innovation,Innovation
+"Regionalism, internationalism and networks","Régionalisme, internationalisme et réseaux"
+Sustainability,Durabilité
 Lavaltrie,Lavaltrie
 Richelieu,Richelieu
 Saint-Mathias-sur-Richelieu,Saint-Mathias-sur-Richelieu
