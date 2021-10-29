@@ -1573,26 +1573,26 @@ translation_fr <-
                       "available year <b>({year_shown})</b>.</p>"),
           fr = paste0("<p>Les données représentées pour <b>{var}</b> sont celles de ",
                       "l'année disponible la plus proche <b>({year_shown})</b>.</p>")) %>% 
-  # add_row(en = "Covid interventions",
-  #         fr = "Interventions (COVID)") %>%
-  # add_row(en = "Healthy Urban Features",
-  #         fr = "Caractéristiques d'une ville saine") %>%
-  # add_row(en = "Housing realm",
-  #         fr = "Domaine du logement") %>%
-  # add_row(en = "The housing realm",
-  #         fr = "Le domaine du logement") %>%
-  # add_row(en = "Montréal climate plans",
-  #         fr = "Plans climat de Montréal") %>%
-  # add_row(en = "Policy",
-  #         fr = "Politiques") %>%
-  # add_row(en = "Safety",
-  #         fr = "Sécurité") %>%
-  # add_row(en = "Safety analysis",
-  #         fr = "Analyse de la sécurité") %>%
-  # add_row(en = "Green alleys",
-  #         fr = "Ruelles vertes") %>%
-  # add_row(en = "Health",
-  #         fr = "Santé") %>%
+  add_row(en = "Covid interventions",
+          fr = "Interventions (COVID)") %>%
+  add_row(en = "Healthy Urban Features",
+          fr = "Caractéristiques d'une ville saine") %>%
+  add_row(en = "Housing realm",
+          fr = "Domaine du logement") %>%
+  add_row(en = "The housing realm",
+          fr = "Le domaine du logement") %>%
+  add_row(en = "Montréal climate plans",
+          fr = "Plans climat de Montréal") %>%
+  add_row(en = "Policy",
+          fr = "Politiques") %>%
+  add_row(en = "Safety",
+          fr = "Sécurité") %>%
+  add_row(en = "Safety analysis",
+          fr = "Analyse de la sécurité") %>%
+  add_row(en = "Green alleys",
+          fr = "Ruelles vertes") %>%
+  add_row(en = "Health",
+          fr = "Santé") %>%
   add_row(en = paste0("<strong>{z$place_heading}</strong>",
                       "<p>{z$place_name} has a population of ",
                       "{prettyNum(round(z$selection$population), ',')} and a ", 
@@ -1610,6 +1610,52 @@ translation_fr <-
                       "{z$scale_plural} de la région de Montréal")) %>% 
   add_row(en = "Housing is important",
           fr = "Le logement est important") %>%
+  add_row(en = "May 2020",
+          fr = "Mai 2020") %>% 
+  add_row(en = "July 2020",
+          fr = "Juillet 2020") %>% 
+  add_row(en = "October 2020",
+          fr = "Octobre 2020") %>% 
+  add_row(en = "TK 2021",
+          fr = "TK 2021") %>% 
+  add_row(en = "Total",
+          fr = "Total") %>% 
+  add_row(en = "Pedestrian",
+          fr = "Piéton") %>% 
+  add_row(en = "Cyclist",
+          fr = "Cycliste") %>% 
+  add_row(en = "Other",
+          fr = "Autre") %>% 
+  add_row(en = "Count",
+          fr = "Comte") %>% 
+  add_row(en = "Per sq km",
+          fr = "Par kilomètre carré") %>% 
+  add_row(en = "Per 1000 residents",
+          fr = "Pour 1000 résidents") %>% 
+  add_row(en = "Introduction",
+          fr = "Introduction") %>% 
+  add_row(en = "Community and participation",
+          fr = "Communauté et participation") %>% 
+  add_row(en = "Greening",
+          fr = "Verdir") %>% 
+  add_row(en = "Food and agriculture",
+          fr = "Alimentation et agriculture") %>% 
+  add_row(en = "Land use",
+          fr = "Utilisation des sols") %>% 
+  add_row(en = "Mobility",
+          fr = "Mobilité") %>% 
+  add_row(en = "Equity",
+          fr = "Equité") %>% 
+  add_row(en = "Adaptation and resilience",
+          fr = "Adaptation et résilience") %>% 
+  add_row(en = "Economy",
+          fr = "Économie") %>% 
+  add_row(en = "Innovation",
+          fr = "Innovation") %>% 
+  add_row(en = "Regionalism, internationalism and networks",
+          fr = "Régionalisme, internationalisme et réseaux") %>% 
+  add_row(en = "Sustainability",
+          fr = "Durabilité") %>% 
   distinct(en, .keep_all = TRUE)
 
 
@@ -1630,6 +1676,37 @@ rm(borough, DA, CT)
 qsave(translation_fr, "data/translation_fr.qs")
 write_csv(translation_fr, "translations/translation_fr.csv")
 
+rm(translation_fr)
+
 # Deepl helper
-# glue('add_row(en = "{var_exp$explanation}",
-#               fr = "{deeplr::toFrench2(var_exp$explanation, auth_key = "my_key")}") %>% ')
+# to_translate <-
+#   str_extract_all("Warning: No translation text found for `May 2020`.
+# Warning: No translation text found for `July 2020`.
+# Warning: No translation text found for `October 2020`.
+# Warning: No translation text found for `TK 2021`.
+# Warning: No translation text found for `Total`.
+# Warning: No translation text found for `Pedestrian`.
+# Warning: No translation text found for `Cyclist`.
+# Warning: No translation text found for `Other`.
+# Warning: No translation text found for `Count`.
+# Warning: No translation text found for `Per sq km`.
+# Warning: No translation text found for `Per 1000 residents`.
+# Warning: No translation text found for `Introduction`.
+# Warning: No translation text found for `Community and participation`.
+# Warning: No translation text found for `Greening`.
+# Warning: No translation text found for `Food and agriculture`.
+# Warning: No translation text found for `Land use`.
+# Warning: No translation text found for `Mobility`.
+# Warning: No translation text found for `Equity`.
+# Warning: No translation text found for `Adaptation and resilience`.
+# Warning: No translation text found for `Economy`.
+# Warning: No translation text found for `Innovation`.
+# Warning: No translation text found for `Regionalism, internationalism and networks`.
+# Warning: No translation text found for `Sustainability`.", "`.*`") %>%
+#   unlist() %>%
+#   str_remove_all(., '`')
+# 
+# glue('add_row(en = "{to_translate}",
+#               fr = "{deeplr::toFrench2(to_translate, auth_key = "my_key")}") %>% ')
+# 
+#   
