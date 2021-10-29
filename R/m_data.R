@@ -49,14 +49,17 @@ data_server <- function(id, var_left, var_right, df, zoom = df) {
       # if (var_right() != " ") var_right <- paste0(var_right(), 
       #                                             if (!missing(time)) "_", time)
       
-      if (var_right() == " ") {
+      var_left <- unique(var_left())
+      var_right <- unique(var_right())
+      
+      if (var_right[1] == " ") {
         data <-
           (data %>% dplyr::select(ID, name, name_2, population, 
-                                  left_var = all_of(var_left()),
-                                  left_var_q3 = paste0(str_remove(all_of(var_left()),
+                                  left_var = all_of(var_left),
+                                  left_var_q3 = paste0(str_remove(all_of(var_left),
                                                                   "_\\d{4}$"), "_q3", 
-                                                       na.omit(str_extract(var_left(), "_\\d{4}$")))) %>%
-             { if (length(var_left()) == 2) 
+                                                       na.omit(str_extract(var_left, "_\\d{4}$")))) %>%
+             { if (length(var_left) == 2) 
                mutate(., left_var = (left_var2 - left_var1) / left_var1 * 100,
                       left_var_q3 = ntile(left_var, 3),
                       across(where(is.numeric), ~replace(., is.nan(.), NA)),
@@ -70,15 +73,15 @@ data_server <- function(id, var_left, var_right, df, zoom = df) {
           data <-
             (data %>%
                dplyr::select(ID, name, name_2, population, 
-                             left_var = all_of(var_left()),
-                             left_var_q3 = paste0(str_remove(var_left(), "_\\d{4}$"), 
+                             left_var = all_of(var_left),
+                             left_var_q3 = paste0(str_remove(var_left, "_\\d{4}$"), 
                                                   "_q3", 
-                                                  na.omit(str_extract(var_left(), "_\\d{4}$"))),
-                             right_var = all_of(var_right()), 
-                             right_var_q3 = paste0(str_remove(var_right(), "_\\d{4}$"), 
+                                                  na.omit(str_extract(var_left, "_\\d{4}$"))),
+                             right_var = all_of(var_right), 
+                             right_var_q3 = paste0(str_remove(var_right, "_\\d{4}$"), 
                                                    "_q3", 
-                                                   na.omit(str_extract(var_right(), "_\\d{4}$")))) %>% 
-               { if (length(var_left()) == 2 && length(var_right()) == 2) 
+                                                   na.omit(str_extract(var_right, "_\\d{4}$")))) %>% 
+               { if (length(var_left) == 2 && length(var_right) == 2) 
                  mutate(., left_var = (left_var2 - left_var1) / left_var1 * 100,
                         left_var_q3 = ntile(left_var, 3),
                         right_var = (right_var2 - right_var1) / right_var1 * 100,
