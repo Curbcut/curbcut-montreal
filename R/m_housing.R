@@ -218,8 +218,8 @@ housing_server <- function(id) {
       var_left_housing()
       var_right_housing()
       rv_housing$zoom}, {
-        map_change(NS(id, "map"), 
-                   df = data_housing(), 
+        map_change(NS(id, "map"),
+                   df = data_housing(),
                    zoom = reactive(rv_housing$zoom))
       }
     )

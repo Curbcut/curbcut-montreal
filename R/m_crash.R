@@ -62,7 +62,7 @@ crash_server <- function(id) {
         style = map_style, token = token_crash,
         zoom = map_zoom, location = map_location) %>%
         add_heatmap(data = crash, update_view = FALSE,
-                    colour_range = c("#E8E8E8", "#73AE80", "#72A48E", 
+                    colour_range = c("#AECBB4", "#91BD9A", "#73AE80", 
                                      "#70999B", "#6E8EA8", "#6C83B5"),
                     intensity = 2)
     })
@@ -78,7 +78,7 @@ crash_server <- function(id) {
             TRUE ~ "borough")
         } else {
           rv_crash$zoom <- case_when(
-            input$map_view_change$zoom >= 12 ~ "map_point",
+            input$map_view_change$zoom >= 14 ~ "map_point",
             TRUE ~ "map_heatmap")
         }
       
@@ -145,7 +145,10 @@ crash_server <- function(id) {
         (crash %>%
            { if (var_left_crash_1() %in% unique(crash$type))
              filter(., type == var_left_crash_1()) else .} %>%
-           filter(lubridate::year(date) == time()))
+           filter(lubridate::year(date) == time())) %>% 
+          mutate(fill = case_when(type == "ped" ~ "#91BD9AEE",
+                                  type == "cyc" ~ "#6C83B5EE",
+                                  TRUE ~ "#F39D60EE"))
       }
       
     })
