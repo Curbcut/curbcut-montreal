@@ -75,13 +75,11 @@ canale_server <- function(id) {
     observeEvent({
       var_right_canale()
       rv_canale$zoom}, {
-        width <- switch(rv_canale$zoom, "borough" = 100, "CT" = 10, 2)
-        mapdeck_update(map_id = NS(id, "map")) %>%
-          add_polygon(
-            data = data_canale(), stroke_width = width,
-            stroke_colour = "#FFFFFF", fill_colour = "fill",
-            update_view = FALSE, id = "ID", auto_highlight = TRUE,
-            highlight_colour = "#FFFFFF90")
+        
+        map_change(NS(id, "map"), 
+                   df = data_canale(), 
+                   zoom = reactive(rv_canale$zoom))
+
         })
 
     # Update poly_selected on click

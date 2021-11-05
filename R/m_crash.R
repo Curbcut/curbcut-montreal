@@ -8,6 +8,9 @@ crash_UI <- function(id) {
           title_UI(NS(id, "title"),
                    actionLink(NS(id, "crash_rmd"), label = "Analysis"),
                    hr(),
+                   pickerInput(NS(id, "geography"), 
+                               label = "Preferred aggregation of results:",
+                                choices = c("Heatmap", "Borough/CT/DA")),
                    select_var_UI(NS(id, "left_1"), var_list_left_crash_1),
                    select_var_UI(NS(id, "left_2"), var_list_left_crash_2),
                    slider_UI(NS(id, "left"), 
@@ -15,7 +18,8 @@ crash_UI <- function(id) {
                              slider_max = crash_slider$max, 
                              slider_interval = crash_slider$interval, 
                              slider_init = crash_slider$init),
-                   htmlOutput(NS(id, "year_displayed_right"))
+                   htmlOutput(NS(id, "year_displayed_right")),
+                   htmlOutput(NS(id, "eso"))
                    ),
           right_panel(id, 
                       compare_UI(NS(id, "crash"), var_list_right_crash),
@@ -33,6 +37,11 @@ crash_server <- function(id) {
     
     # Title bar
     title_server("title", "crash")
+    
+    output$eso <- renderText({
+      str_glue("{var_left_crash()}")
+    })
+    
     
     # Year displayed disclaimer
     output$year_displayed_right <- renderText({
@@ -52,27 +61,40 @@ crash_server <- function(id) {
       mapdeck(
         style = map_style, token = token_crash,
         zoom = map_zoom, location = map_location) %>%
-        add_polygon(data = borough %>%
-                      mutate(group = paste(crash_ped_prop_area_q3_2019, "- 1")) %>%
-                      left_join(colour_borough, by = "group"),
-                    stroke_width = 100, stroke_colour = "#FFFFFF", fill_colour = "fill", 
-                    update_view = FALSE, id = "ID", auto_highlight = TRUE,
-                    highlight_colour = "#FFFFFF90") #%>%
-        # add_heatmap(data = crash, update_view = FALSE)
+        add_heatmap(data = crash, update_view = FALSE,
+                    colour_range = c("#E8E8E8", "#73AE80", "#72A48E", 
+                                     "#70999B", "#6E8EA8", "#6C83B5"),
+                    intensity = 2)
     })
     
     # Zoom level
-    observeEvent(input$map_view_change$zoom, {
-      rv_crash$zoom <- case_when(#input$map_view_change$zoom >= 14 ~ "DA_2",
-                                 input$map_view_change$zoom >= 12 ~ "DA",
-                                 input$map_view_change$zoom >= 10.5 ~ "CT",
-                                 TRUE ~ "borough")
-    })
+    observeEvent({
+      input$geography
+      input$map_view_change$zoom}, {
+        if(input$geography == "Borough/CT/DA") {
+          rv_crash$zoom <- case_when(#input$map_view_change$zoom >= 14 ~ "DA_2",
+            input$map_view_change$zoom >= 12 ~ "DA",
+            input$map_view_change$zoom >= 10.5 ~ "CT",
+            TRUE ~ "borough")
+        } else {
+          rv_crash$zoom <- case_when(
+            input$map_view_change$zoom >= 12 ~ "map_point",
+            TRUE ~ "map_heatmap")
+        }
+      
+  })
     
     
     # Compare panel
-    var_right_crash_1 <- compare_server("crash", var_list_right_crash,
-                                      reactive(rv_crash$zoom))
+    ####################### TKTK NOW CAUSES THE APP TO CRASH WHEN GONE TO
+    ####################### CENSUS GEOGRAPHIES.
+    var_right_crash_1 <- reactive({
+      if(input$geography == "Borough/CT/DA") {
+        compare_server("crash", var_list_right_crash,
+                       reactive(rv_crash$zoom))
+      } else " "
+      
+    })
     
     var_right_crash <- reactive({
       if (var_right_crash_1() != " ") {
@@ -114,9 +136,20 @@ crash_server <- function(id) {
     )
     
     # Data 
-    data_crash <- data_server("crash", var_left_crash, var_right_crash, 
-                              reactive(rv_crash$zoom))
-
+    data_crash <- reactive({
+      
+      if(input$geography == "Borough/CT/DA") {
+        data_server("crash", var_left_crash, var_right_crash,
+                    reactive(rv_crash$zoom))
+      } else {
+        (crash %>%
+           { if (var_left_crash_1() %in% unique(crash$type))
+             filter(., type == var_left_crash_1()) else .} %>%
+           filter(lubridate::year(date) == time()))
+      }
+      
+    })
+    
     # # Explore panel
     # explore_server("explore", data_canale, reactive("canale_ind"),
     #                var_right_canale, reactive(rv_canale$poly_selected),
@@ -137,15 +170,13 @@ crash_server <- function(id) {
       var_left_crash()
       var_right_crash()
       rv_crash$zoom}, {
-        width <- switch(rv_crash$zoom, "borough" = 100, "CT" = 10, 2)
-        mapdeck_update(map_id = NS(id, "map")) %>%
-          add_polygon(
-            data = data_crash(), stroke_width = width,
-            stroke_colour = "#FFFFFF", fill_colour = "fill",
-            update_view = FALSE, id = "ID", auto_highlight = TRUE,
-            highlight_colour = "#FFFFFF90")
+        
+        map_change(NS(id, "map"), 
+                   df = data_crash(), 
+                   zoom = reactive(rv_crash$zoom))
+        
       })
-    
+
     # Update poly_selected on click
     observeEvent(input$map_polygon_click, {
       lst <- jsonlite::fromJSON(input$map_polygon_click)

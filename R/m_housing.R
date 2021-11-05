@@ -217,17 +217,11 @@ housing_server <- function(id) {
     observeEvent({
       var_left_housing()
       var_right_housing()
-      rv_housing$zoom
-    }, {
-
-      width <- switch(rv_housing$zoom, "borough" = 100, "CT" = 10, 2)
-
-      mapdeck_update(map_id = NS(id, "map")) %>%
-        add_polygon(data = data_housing(), stroke_width = width,
-                    stroke_colour = "#FFFFFF", fill_colour = "fill",
-                    update_view = FALSE, id = "ID", auto_highlight = TRUE,
-                    highlight_colour = "#FFFFFF90")
-    }
+      rv_housing$zoom}, {
+        map_change(NS(id, "map"), 
+                   df = data_housing(), 
+                   zoom = reactive(rv_housing$zoom))
+      }
     )
 
     # Update poly_selected on click
