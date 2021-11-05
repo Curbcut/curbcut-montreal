@@ -9,10 +9,12 @@ crash_UI <- function(id) {
                    actionLink(NS(id, "crash_rmd"), label = "Analysis"),
                    hr(),
                    pickerInput(NS(id, "geography"), 
-                               label = "Preferred aggregation of results:",
-                                choices = c("Heatmap", "Borough/CT/DA")),
-                   select_var_UI(NS(id, "left_1"), var_list_left_crash_1),
-                   select_var_UI(NS(id, "left_2"), var_list_left_crash_2),
+                               label = i18n$t("Preferred aggregation of results:"),
+                                choices = c("Borough/CT/DA", "Heatmap")),
+                   select_var_UI(NS(id, "left_1"), var_list_left_crash_1,
+                                 label = i18n$t("Type of crash: ")),
+                   select_var_UI(NS(id, "left_2"), var_list_left_crash_2,
+                                 label = i18n$t("Density preferred: ")),
                    slider_UI(NS(id, "left"), 
                              slider_min = crash_slider$min, 
                              slider_max = crash_slider$max, 
@@ -39,7 +41,7 @@ crash_server <- function(id) {
     title_server("title", "crash")
     
     output$eso <- renderText({
-      str_glue("{var_left_crash()}")
+      str_glue("{var_left_crash()} et {input$geography}")
     })
     
     
@@ -61,10 +63,16 @@ crash_server <- function(id) {
       mapdeck(
         style = map_style, token = token_crash,
         zoom = map_zoom, location = map_location) %>%
-        add_heatmap(data = crash, update_view = FALSE,
-                    colour_range = c("#AECBB4", "#91BD9A", "#73AE80", 
-                                     "#70999B", "#6E8EA8", "#6C83B5"),
-                    intensity = 2)
+        add_polygon(data = borough %>%
+                      mutate(group = paste(crash_ped_prop_area_q3_2019, "- 1")) %>%
+                      left_join(colour_borough, by = "group"),
+                    stroke_width = 100, stroke_colour = "#FFFFFF", fill_colour = "fill", 
+                    update_view = FALSE, id = "ID", auto_highlight = TRUE,
+                    highlight_colour = "#FFFFFF90") 
+        # add_heatmap(data = crash, update_view = FALSE,
+        #             colour_range = c("#AECBB4", "#91BD9A", "#73AE80", 
+        #                              "#70999B", "#6E8EA8", "#6C83B5"),
+        #             intensity = 2)
     })
     
     # Zoom level
@@ -86,15 +94,14 @@ crash_server <- function(id) {
     
     
     # Compare panel
-    ####################### TKTK NOW CAUSES THE APP TO CRASH WHEN GONE TO
-    ####################### CENSUS GEOGRAPHIES.
-    var_right_crash_1 <- reactive({
-      if(input$geography == "Borough/CT/DA") {
+    var_right_crash_1 <- #reactive({
+      
+      # if(input$geography == "Borough/CT/DA") {
         compare_server("crash", var_list_right_crash,
                        reactive(rv_crash$zoom))
-      } else " "
-      
-    })
+    #   } else " "
+    #   
+    # })
     
     var_right_crash <- reactive({
       if (var_right_crash_1() != " ") {
@@ -136,22 +143,22 @@ crash_server <- function(id) {
     )
     
     # Data 
-    data_crash <- reactive({
+    data_crash <- #reactive({
       
-      if(input$geography == "Borough/CT/DA") {
+      # if(input$geography == "Borough/CT/DA") {
         data_server("crash", var_left_crash, var_right_crash,
                     reactive(rv_crash$zoom))
-      } else {
-        (crash %>%
-           { if (var_left_crash_1() %in% unique(crash$type))
-             filter(., type == var_left_crash_1()) else .} %>%
-           filter(lubridate::year(date) == time())) %>% 
-          mutate(fill = case_when(type == "ped" ~ "#91BD9AEE",
-                                  type == "cyc" ~ "#6C83B5EE",
-                                  TRUE ~ "#F39D60EE"))
-      }
-      
-    })
+    #   } else {
+    #     (crash %>%
+    #        { if (var_left_crash_1() %in% unique(crash$type))
+    #          filter(., type == var_left_crash_1()) else .} %>%
+    #        filter(lubridate::year(date) == time())) %>% 
+    #       mutate(fill = case_when(type == "ped" ~ "#91BD9AEE",
+    #                               type == "cyc" ~ "#6C83B5EE",
+    #                               TRUE ~ "#F39D60EE"))
+    #   }
+    #   
+    # })
     
     # # Explore panel
     # explore_server("explore", data_canale, reactive("canale_ind"),
@@ -174,8 +181,8 @@ crash_server <- function(id) {
       var_right_crash()
       rv_crash$zoom}, {
         
-        map_change(NS(id, "map"), 
-                   df = data_crash(), 
+        map_change(NS(id, "map"),
+                   df = data_crash(),
                    zoom = reactive(rv_crash$zoom))
         
       })
