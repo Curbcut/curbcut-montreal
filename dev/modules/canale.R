@@ -19,7 +19,8 @@ DA <-
   DA %>% 
   left_join(canale, by = c("ID" = "DAUID", "CTUID")) %>% 
   relocate(canale_ind_2016, .before = geometry) %>% 
-  mutate(canale_ind_q3_2016 = ntile(canale_ind_2016, 3), .after = canale_ind_2016) %>% 
+  mutate(canale_ind_q3_2016 = ntile(canale_ind_2016, 3), 
+         .after = canale_ind_2016) %>% 
   st_set_agr("constant")
 
 CT <- 
@@ -31,7 +32,8 @@ CT <-
                                        households, na.rm = TRUE)) %>% 
   left_join(CT, ., by = c("ID" = "CTUID")) %>% 
   relocate(canale_ind_2016, .before = geometry) %>% 
-  mutate(canale_ind_q3_2016 = ntile(canale_ind_2016, 3), .after = canale_ind_2016) %>% 
+  mutate(canale_ind_q3_2016 = ntile(canale_ind_2016, 3), 
+         .after = canale_ind_2016) %>% 
   st_set_agr("constant")
 
 borough <- 
@@ -43,7 +45,8 @@ borough <-
                                        households, na.rm = TRUE)) %>% 
   left_join(borough, ., by = c("ID" = "CSDUID")) %>% 
   relocate(canale_ind_2016, .before = geometry) %>% 
-  mutate(canale_ind_q3_2016 = ntile(canale_ind_2016, 3), .after = canale_ind_2016) %>% 
+  mutate(canale_ind_q3_2016 = ntile(canale_ind_2016, 3), 
+         .after = canale_ind_2016) %>% 
   st_set_agr("constant")
 
 DA_data <-
@@ -73,6 +76,22 @@ grid <-
   left_join(grid_data, by = "ID") %>% 
   relocate(geometry, .after = last_col())
 
+building <- 
+  building |> 
+  left_join(canale, by = c("DAUID", "CTUID")) %>% 
+  relocate(canale_ind_2016, .before = geometry) %>% 
+  mutate(canale_ind_q3_2016 = ntile(canale_ind_2016, 3), 
+         .after = canale_ind_2016) %>% 
+  st_set_agr("constant")
+
+street <- 
+  street |> 
+  left_join(canale, by = c("DAUID", "CTUID")) %>% 
+  relocate(canale_ind_2016, .before = geometry) %>% 
+  mutate(canale_ind_q3_2016 = ntile(canale_ind_2016, 3), 
+         .after = canale_ind_2016) %>% 
+  st_set_agr("constant")
+
 rm(canale, DA_data, grid_data)
 
 
@@ -85,4 +104,4 @@ var_exp <-
     var_name = "CanALE index",
     explanation = "the potential for active living")
   
-# To save output, run dev/build_geometries.R, which calls this script
+# To save output, run dev/build_data.R, which calls this script

@@ -22,12 +22,16 @@ colour_DA <-
   colour_bivar %>% 
   mutate(fill = paste0(fill, "AA"))
 
-colour_DA_2 <- 
+colour_street <- 
   colour_bivar %>% 
-  mutate(fill = paste0(fill, "80"))
+  mutate(fill = paste0(fill, "AA"))
 
+colour_building <- 
+  colour_bivar %>%
+  mutate(fill = paste0(fill, "AA"))
+  
 colour_scale <- 
   c("#E8E8E8", "#B8D6BE", "#73AE80", "#E8E8E8", "#B5C0DA", "#6C83B5")
 
-qsavem(colour_bivar, colour_borough, colour_CT, colour_DA, colour_DA_2, 
-       colour_scale, file = "data/colours.qsm")
+qsavem(colour_bivar, colour_borough, colour_CT, colour_DA, colour_street, 
+       colour_building, colour_scale, file = "data/colours.qsm")

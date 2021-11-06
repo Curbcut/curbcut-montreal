@@ -1,52 +1,56 @@
 # Import DA, CT and borough geometries ------------------------------------
-# Independent script 
+# Independent script
 
-library(tidyverse)
-library(sf)
-library(qs)
-library(cancensus)
+suppressPackageStartupMessages({
+  library(tidyverse)
+  library(sf)
+  library(qs)
+  library(cancensus)
+  })
 
 # Variables to be selected from get_census
 var_select <- c("CTUID" = "CT_UID", "CSDUID" = "CSD_UID", "name" = "name",
                 "population" = "Population", "households" = "Households")
 
-
-# Function: download census
-# Parameters: target: "DA", "CT", "CSD"
-download <- function(target) {
-  result <- 
-    get_census("CA16", list(CMA = "24462"), target, geo_format = "sf", quiet = TRUE) %>% 
-    as_tibble() %>% 
-    st_as_sf() %>% 
-    select(ID = GeoUID, any_of(var_select), geometry) %>% 
-    arrange(ID) 
-   
-  if (target == "CSD") {
-    result %>%
-      filter(name != "Montréal (V)") %>%
-      mutate(type = "City", .after = name) %>%
-      mutate(name = str_replace_all(name, "\\(PE\\)", "--parish municipality")) %>% 
-      mutate(name = str_remove(name, " \\(.*\\)")) %>% 
-      st_set_agr("constant")
-  } else {
-    result %>% 
-      mutate(name = ID, .after = ID) %>% 
-      st_set_agr("constant")
-  }
-  
-  return (result)
-}
-
 # Download DAs
-DA <- download("DA")
+DA <- 
+  get_census("CA16", list(CMA = "24462"), "DA", geo_format = "sf", 
+             quiet = TRUE) %>% 
+  as_tibble() %>% 
+  st_as_sf() %>% 
+  select(ID = GeoUID, any_of(var_select), geometry) %>% 
+  arrange(ID) %>% 
+  mutate(name = ID, .after = ID) %>% 
+  st_set_agr("constant")
+
 # Download CTs
-CT <- download("CT")
+CT <-
+  get_census("CA16", list(CMA = "24462"), "CT", geo_format = "sf", 
+             quiet = TRUE) %>% 
+  as_tibble() %>% 
+  st_as_sf() %>% 
+  select(ID = GeoUID, any_of(var_select), geometry) %>% 
+  arrange(ID) %>% 
+  mutate(name = ID, .after = ID) %>% 
+  st_set_agr("constant")
+
 # Download CSDs
-CSD <- download("CSD")
+CSD <-
+  get_census("CA16", list(CMA = "24462"), "CSD", geo_format = "sf", 
+             quiet = TRUE) %>% 
+  as_tibble() %>% 
+  st_as_sf() %>% 
+  select(ID = GeoUID, any_of(var_select), geometry) %>% 
+  arrange(ID) %>% 
+  filter(name != "Montréal (V)") %>%
+  mutate(type = "City", .after = name) %>%
+  mutate(name = str_replace_all(name, "\\(PE\\)", "--parish municipality")) %>% 
+  mutate(name = str_remove(name, " \\(.*\\)")) %>% 
+  st_set_agr("constant")
 
 rm(var_select)
 
-# Get CMA boundary for clipping boroughs-------------------------------------
+# Get CMA boundary for clipping boroughs
 CMA <- 
   get_census("CA16", list(CMA = "24462"), geo_format = "sf", quiet = TRUE) %>% 
   st_set_agr("constant")
@@ -167,20 +171,19 @@ rm(borough_join, CSD, leftovers)
 
 # Add borough/CSD names ---------------------------------------------------
 
-# Function: add borough/CSD names to CT, DA
-# Parameters: data: DA, CT
-addNames <- function(data) {
-  data %>%
-    left_join(select(st_drop_geometry(borough), CSDUID = ID, name_2 = name), by = "CSDUID") %>% 
-    relocate(name_2, .after = name)
-  
-  return (data)
-}
-
 borough <- 
   borough %>% 
   rename(name_2 = type)
 
-CT <- addNames(CT)
+CT <- 
+  CT %>% 
+  left_join(select(st_drop_geometry(borough), CSDUID = ID, name_2 = name), 
+            by = "CSDUID") %>% 
+  relocate(name_2, .after = name)
 
-DA <- addNames(DA)
+DA <- 
+  DA %>% 
+  left_join(select(st_drop_geometry(borough), CSDUID = ID, name_2 = name), 
+            by = "CSDUID") %>% 
+  relocate(name_2, .after = name)
+
