@@ -6,11 +6,30 @@ map_change <- function(id, x, zoom, map_stroke_width = NULL) {
   stopifnot(is.reactive(x))
   stopifnot(is.reactive(zoom))
   
-  geom_type <-  switch(as.character(unique(st_geometry_type(x()))),
+  geom_type <- as.character(unique(st_geometry_type(x())))
+  geom_type <-  switch(geom_type,
+                       "POLYGON" = "polygon",
                        "MULTIPOLYGON" = "polygon",
-                       "LINESTRING" = "line") # add points for future
+                       "LINESTRING" = "line",
+                       "MULTILINESTRING" = "line",
+                       "MULTIPOINT" = "point",
+                       "POINT" = "point",
+                       "error")
+  
+  # Error handling
+  if (geom_type == "error") stop("`geom_type` is invalid in `map_change`.")
 
-  if (geom_type == "line") {
+  # Buildings should be extruded
+  if (zoom() == "building") {
+    mapdeck_update(map_id = id)  %>%
+      clear_polygon() %>%
+      clear_path() %>%
+      add_sf(data = x(),
+             update_view = FALSE, id = "ID", elevation = 5, 
+             fill_colour = "fill", auto_highlight = TRUE, 
+             highlight_colour = "#FFFFFF90")
+    
+  } else if (geom_type == "line") {
 
     mapdeck_update(map_id = id)  %>%
       clear_polygon() %>%
@@ -19,16 +38,11 @@ map_change <- function(id, x, zoom, map_stroke_width = NULL) {
              stroke_colour = "fill", auto_highlight = TRUE,
              highlight_colour = "#FFFFFF90")
 
-  } else {
+  } else if (geom_type == "polygon") {
 
-    if (is.null(map_stroke_width)) {width <- switch(zoom(), 
-                                                  "borough" = 100, 
-                                                  "CT" = 10, 
-                                                  "DA" = 2)
-    # At the moment we don't use other maps than census, but maybe at
-    # some point we'll want to project other stuff. Something like that, with
-    # some repair because I can't feed a list to switch, could be great:
-    } else width <- switch(zoom(), map_stroke_width)
+    if (is.null(map_stroke_width)) {
+      width <- switch(zoom(), "borough" = 100, "CT" = 10, "DA" = 2, 2)
+    } else width <- map_stroke_width
 
     mapdeck_update(map_id = id) %>%
       clear_path() %>%

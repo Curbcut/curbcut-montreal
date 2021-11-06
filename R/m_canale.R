@@ -26,29 +26,29 @@ canale_server <- function(id) {
     
     # Map
     output$map <- renderMapdeck({
-      mapdeck(
-        style = map_style, token = token_canale,
-        zoom = map_zoom, location = map_location) %>%
-        add_sf(data = borough %>%
-                      mutate(group = paste(eval(as.name(paste0("canale_ind_q3", "_", 
-                                                               current_census))), "- 1")) %>%
-                      left_join(colour_borough, by = "group"),
-                    stroke_width = 100, stroke_colour = "#FFFFFF", fill_colour = "fill", 
-                    update_view = FALSE, id = "ID", auto_highlight = TRUE,
-                    highlight_colour = "#FFFFFF90")
+      mapdeck(style = map_style, token = token_canale, zoom = map_zoom, 
+              location = map_location) %>%
+        add_sf(data = 
+                 borough %>%
+                 mutate(group = paste(eval(as.name(paste0(
+                   "canale_ind_q3", "_", current_census))), "- 1")) %>%
+                 left_join(colour_borough, by = "group"),
+               stroke_width = 100, stroke_colour = "#FFFFFF", 
+               fill_colour = "fill", update_view = FALSE, id = "ID", 
+               auto_highlight = TRUE, highlight_colour = "#FFFFFF90")
       })
     
     # Zoom level
     observeEvent(input$map_view_change$zoom, {
-      rv_canale$zoom <- case_when(input$map_view_change$zoom >= 13.5 ~ "street",#"DA_2",
+      rv_canale$zoom <- case_when(input$map_view_change$zoom >= 14 ~ "building",
                                   input$map_view_change$zoom >= 12 ~ "DA",
                                   input$map_view_change$zoom >= 10.5 ~ "CT",
-                                  TRUE ~ "borough")
-      })
+                                  TRUE ~ "borough")})
     
     # Compare panel
-    var_right_canale <- compare_server("canale", var_list_canale,
-                                       reactive(rv_canale$zoom))
+    var_right_canale <- compare_server(id = "canale", 
+                                       var_list = var_list_canale,
+                                       df = reactive(rv_canale$zoom))
 
     # Data
     data_canale <- data_server(id = "canale",
@@ -57,9 +57,14 @@ canale_server <- function(id) {
                                df = reactive(rv_canale$zoom))
     
     # Explore panel
-    explore_server("explore", data_canale, reactive(canale_ind),
-                   var_right_canale, reactive(rv_canale$poly_selected),
-                   reactive(rv_canale$zoom), reactive("CanALE index"))
+    explore_server(id = "explore", 
+                   x = data_canale, 
+                   var_left = reactive(canale_ind),
+                   var_right = var_right_canale, 
+                   select = reactive(rv_canale$poly_selected),
+                   zoom = reactive(rv_canale$zoom), 
+                   var_left_title = reactive("CanALE index"),
+                   building_as_DA = TRUE)
 
     # Did-you-know panel
     dyk_server("dyk", reactive(canale_ind), var_right_canale)
@@ -74,11 +79,9 @@ canale_server <- function(id) {
     # Update map in response to variable changes or zooming
     observeEvent({
       var_right_canale()
-      rv_canale$zoom}, {
-        
-        map_change(NS(id,"map"), data_canale, zoom = reactive(rv_canale$zoom))
-
-        })
+      rv_canale$zoom}, map_change(id = NS(id,"map"), 
+                                  x = data_canale, 
+                                  zoom = reactive(rv_canale$zoom)))
 
     # Update poly_selected on click
     observeEvent(input$map_polygon_click, {
@@ -88,14 +91,6 @@ canale_server <- function(id) {
       } else rv_canale$poly_selected <- lst$object$properties$id
     })
     
-    # # Update line_selected on click
-    # observeEvent(input$map_path_click, {
-    #   lst <- jsonlite::fromJSON(input$map_path_click)
-    #   if (is.null(lst$object$properties$id)) {
-    #     rv_canale$poly_selected <- NA
-    #   } else rv_canale$poly_selected <- lst$object$properties$id
-    # })
-
     # Clear poly_selected on zoom
     observeEvent(rv_canale$zoom, {rv_canale$poly_selected <- NA},
                  ignoreInit = TRUE)
@@ -111,7 +106,9 @@ canale_server <- function(id) {
 
         mapdeck_update(map_id = NS(id, "map")) %>%
           add_polygon(
-            data = data_to_add, stroke_width = width, stroke_colour = "#000000",
+            # data = data_to_add, stroke_width = width, stroke_colour = "#000000",
+            data = data_to_add, #stroke_width = 0.5, stroke_colour = "#FFFFFF",
+            elevation = 5,
             fill_colour = "fill", update_view = FALSE,
             layer_id = "poly_highlight", auto_highlight = TRUE,
             highlight_colour = "#FFFFFF90")
