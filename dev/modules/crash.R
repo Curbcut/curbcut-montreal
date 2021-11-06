@@ -2,15 +2,13 @@
 
 # This script relies on objects created in dev/census.R
 
-library(lubridate)
+suppressPackageStartupMessages(library(lubridate))
+
 
 # Get data ----------------------------------------------------------------
 
 crash <- 
-  read_sf("dev/data/collisions_routieres/collisions_routieres.shp")
-
-crash <- 
-  crash %>%
+  read_sf("dev/data/collisions_routieres/collisions_routieres.shp") %>%
   st_transform(4326) %>%
   st_set_agr("constant") |> 
   mutate(type = case_when(CD_GENRE_A == 32 ~ "ped",
@@ -62,6 +60,16 @@ CT <- crash_results[[2]]
 DA <- crash_results[[3]]
 grid <- crash_results[[4]]
 
-rm(crash_results, process_crash)
+building <- 
+  building |> 
+  left_join(select(as_tibble(DA), ID, starts_with("crash_")),
+            by = c("DAUID" = "ID")) |>
+  relocate(geometry, .after = last_col())
 
-names(borough)
+street <- 
+  street |> 
+  left_join(select(as_tibble(DA), ID, starts_with("crash_")),
+            by = c("DAUID" = "ID")) |>
+  relocate(geometry, .after = last_col())
+
+rm(crash_results, process_crash)
