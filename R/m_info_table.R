@@ -75,10 +75,10 @@ info_table_server <- function(id, x, var_type, var_left, var_right, select,
           "<strong>{z$place_heading}</strong>",
           "<p>{z$place_name} has a population of ",
           "{prettyNum(round(z$selection$population), ',')} and a ", 
-          "{z$title_left} score of {round(z$poly_value, 2)}, which is ", 
+          "{z$title_left} score ({z$exp_left}) of {round(z$poly_value, 2)}, which is ", 
           "{z$larger_smaller} the region-wide median of {z$median_val}.",
-          "<p>{z$place_name} has {z$poor_strong} potential for active ",
-          "living, with a {z$title_left} score higher than {z$percentile}% ",
+          "<p>{z$place_name} has a {z$poor_strong} relative score for this indicator, ",
+          "with {z$exp_left} higher than {z$percentile}% ",
           "of {z$scale_plural} in the Montreal region."))))
         }
 

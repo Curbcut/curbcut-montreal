@@ -5,13 +5,16 @@ explore_var_type <- function(id, x, var_left, var_right, select,
   
   reactive({
     
+    var_left <- str_remove(var_left(), "_\\d{4}$")
+    var_right <- str_remove(var_right(), "_\\d{4}$")
+    
     ## Titles and explanations ---------------------------------------------------
     
-    exp_left <- var_exp[var_exp$var_code == var_left(),]$explanation
-    exp_right <- var_exp[var_exp$var_code == var_right(),]$explanation
-    if (length(exp_left) == 0) warning("No var_exp: ", var_left(), call. = FALSE)
-    if (var_right() != " " && length(exp_right) == 0) warning(
-      "No var_exp: ", var_right(), call. = FALSE)
+    exp_left <- var_exp[var_exp$var_code == var_left,]$explanation
+    exp_right <- var_exp[var_exp$var_code == var_right,]$explanation
+    if (length(exp_left) == 0) warning("No var_exp: ", var_left, call. = FALSE)
+    if (var_right != " " && length(exp_right) == 0) warning(
+      "No var_exp: ", var_right, call. = FALSE)
     
     
     ## Selections ----------------------------------------------------------------

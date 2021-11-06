@@ -49,7 +49,9 @@ process_crash <- function(x) {
                     prop_pop = ~{.x / population}),
                   .names = "{.col}_{.fn}"), .before = geometry) |> 
     mutate(across(starts_with("crash"), ntile, n = 3, .names = "{.col}_q3"), 
-           .before = geometry) %>% 
+           .before = geometry) |> 
+    rename_with(~paste0(str_remove(., "_\\d{4}"), 
+                        str_extract(., "_\\d{4}")), starts_with("crash")) |> 
     st_set_agr("constant")
 }
 

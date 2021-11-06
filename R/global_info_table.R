@@ -5,16 +5,20 @@ make_info_table_data <- function(id, x, var_type, var_left, var_right, select,
                                  zoom, var_left_title, var_right_title,
                                  var_left_label, var_right_label) {
   
+  var_left <- str_remove(var_left(), "_\\d{4}$")
+  var_right <- str_remove(var_right(), "_\\d{4}$")
+  
   ## Titles and explanations ---------------------------------------------------
   
-  title_left <- sus_translate(var_left_title())
+  title_left <-   sus_translate(var_exp[var_exp$var_code == var_left,]$var_name)
+  
   title_right <- " "
   if (!is.null(var_right_title)) title_right <- sus_translate(var_right_title())
-  exp_left <- var_exp[var_exp$var_code == var_left(),]$explanation
-  exp_right <- var_exp[var_exp$var_code == var_right(),]$explanation
-  if (length(exp_left) == 0) warning("No var_exp: ", var_left(), call. = FALSE)
-  if (var_right() != " " && length(exp_right) == 0) warning(
-    "No var_exp: ", var_right(), call. = FALSE)
+  exp_left <- sus_translate(var_exp[var_exp$var_code == var_left,]$explanation)
+  exp_right <- sus_translate(var_exp[var_exp$var_code == var_right,]$explanation)
+  if (length(exp_left) == 0) warning("No var_exp: ", var_left, call. = FALSE)
+  if (var_right != " " && length(exp_right) == 0) warning(
+    "No var_exp: ", var_right, call. = FALSE)
   
   
   ## Selections ----------------------------------------------------------------
@@ -22,7 +26,7 @@ make_info_table_data <- function(id, x, var_type, var_left, var_right, select,
   selection <- x() %>% filter(ID == select())
   active_left <- nrow(filter(selection, !is.na(left_var_q3)))
   active_right <- active_left
-  if (var_right() != " ") active_right <- 
+  if (var_right != " ") active_right <- 
     nrow(filter(selection, !is.na(left_var_q3), !is.na(right_var)))
   cat("active_left:", active_left, "\n")
   cat("active_right:", active_right, "\n")

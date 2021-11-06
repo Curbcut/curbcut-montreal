@@ -8,22 +8,18 @@ housing_UI <- function(id) {
           title_UI(NS(id, "title"),
                    select_var_UI(NS(id, "left"), var_list_housing_left), 
                    #can't hide and show widgets when it isn't the original sliderInput function
-                   sliderInput(NS(id, "slider_housing"), "Select a year", 
+                   sliderInput(NS(id, "slider_housing"), "Select a year",
                                min = housing_slider$min,
-                               max = housing_slider$max, 
-                               step = housing_slider$interval, sep = "", 
+                               max = housing_slider$max,
+                               step = housing_slider$interval, sep = "",
                                value = housing_slider$init),
-                   # slider_UI(NS(id, "slider_housing"), 
-                   #           slider_min = housing_slider$min, 
-                   #           slider_max = housing_slider$max, 
-                   #           slider_interval = housing_slider$interval, 
-                   #           slider_init = housing_slider$init),
                    sliderInput(NS(id, "slider_bi_census"), "Select two census year", 
                                min = housing_slider$min,
                                max = housing_slider$max, 
                                step = housing_slider$interval, sep = "", 
                                value = c("2006", "2016")),
-                   htmlOutput(NS(id, "year_displayed")), 
+                   htmlOutput(NS(id, "year_displayed_left")),
+                   htmlOutput(NS(id, "year_displayed_right")),
                    materialSwitch(inputId = NS(id, "bi_census"),
                      label = "Two census comparison", right = TRUE),
                    shinyjs::useShinyjs() # needed if we continue to have 2 sliders
@@ -41,48 +37,41 @@ housing_UI <- function(id) {
 housing_server <- function(id) {
   moduleServer(id, function(input, output, session) {
     
-    # observe({
-    #   shinyjs::toggleState("slider_bi_census", condition = (input$bi_census == TRUE))
-    # })
-
-    
     # Title bar
     title_server("title", "housing")
     
-    # memory <- reactiveValues(previous = "housing_tenant_prop")
-    # 
-    # previous_value <- reactive({
-    #   
-    #   isolate(previous <- memory$previous)
-    #   
-    #   memory$previous <- data.frame(previous, var_left_housing_1()) %>% dplyr::select(ncol(.)-1, ncol(.))
-    #   
-    #   return(memory$previous[1,1])
-    # })
-    # 
-    output$year_displayed <- renderText({
-      year_showed <- str_extract(var_left_housing(), "\\d{4}$")
-      if (year_showed != time()){
-        str_glue("Displayed data is for the closest available year (<b>{year_showed}</b>).<br>")
+    # Nearest year of data disclaimer
+    output$year_displayed_left <- renderText({
+      
+      if(input$bi_census == F){
+        
+      year_shown <- str_extract(var_left_housing(), "\\d{4}$")
+      var <- str_remove(var_left_housing(), "_\\d{4}$")
+      var <- sus_translate(var_exp[var_exp$var_code == var,]$var_name)
+      
+      if (year_shown != time()){
+        str_glue(sus_translate(paste0("<p>Displayed data for <b>{var}</b> is for the ",
+        "closest available year <b>({year_shown})</b>.</p>")))
       }
-
+      }
     })
-
-    # # Map
-    # output$map <- renderMapdeck({
-    #   mapdeck(
-    #     style = map_style, token = token_housing,
-    #     zoom = map_zoom, location = map_location) %>%
-    #     add_polygon(data = {borough %>% 
-    #         dplyr::select(ID, name, name_2, population, 
-    #                       left_var_full = housing_tenant_prop,
-    #                       left_var = housing_tenant_prop_q3) %>% 
-    #         mutate(group = paste(left_var, "- 1")) %>% 
-    #         left_join(colour_borough, by = "group")}, stroke_width = 0, 
-    #         stroke_colour = "#FFFFFF", fill_colour = "fill", update_view = FALSE,
-    #         id = "ID", auto_highlight = TRUE, highlight_colour = "#FFFFFF90")
-    # })
-    # 
+    
+    output$year_displayed_right <- renderText({
+      
+      if(input$bi_census == F){
+        
+      year_shown <- str_extract(var_right_housing(), "\\d{4}$")
+      var <- str_remove(var_right_housing(), "_\\d{4}$")
+      var <- sus_translate(var_exp[var_exp$var_code == var,]$var_name)
+      
+      if (year_shown != time() && var_right_housing() != " "){
+        str_glue(sus_translate(paste0("<p>Displayed data for <b>{var}</b> is for the ",
+                                      "closest available year <b>({year_shown})</b>.</p>")))
+      }
+      
+      }
+    })
+    
     # Map
     output$map <- renderMapdeck({
       mapdeck(
@@ -107,8 +96,7 @@ housing_server <- function(id) {
     
     # String to fetch maps and data
     df <- reactive(rv_housing$zoom)
-    #df <- reactive({if (input$grid) "grid" else rv_housing$zoom})
-    
+
     # Enable or disable first and second slider.
     observeEvent(input$bi_census, {
       if(input$bi_census == F){
@@ -131,22 +119,15 @@ housing_server <- function(id) {
       if (input$bi_census == F) {
         input$slider_housing
       } else {
-        input$slider_bi_census
+         input$slider_bi_census
       }
       })
     
     # Greyed out left list options, depending of the year(s) chosen
     var_list_housing_left_available <- reactive({
       if (input$bi_census == F) {
-      # !eval(unlist(
-      #   purrr::modify_depth(var_list_housing_left, 2, paste0, "_", time())) %in%
-      #   names(borough))
         NULL
       } else {
-        # t_or_f <- unlist(purrr::modify_depth(var_list_housing_left, 2, paste0, "_", time())) %in% names(borough)
-        # t_or_f <- unname(tapply(t_or_f, (seq_along(t_or_f)-1) %/% 2, sum)) - 1
-        # t_or_f[!t_or_f %in% c(0,1)] <- 0
-        # !t_or_f
         disabled_var_list_housing_left
       }
     })
@@ -158,8 +139,7 @@ housing_server <- function(id) {
     
     # Construct left variable string
     var_left_housing <- reactive({
-      
-      if (input$bi_census == F) {
+
         var <- paste(var_left_housing_1(), time(), sep = "_")
         
         if (!var %in% names(borough)) {
@@ -168,28 +148,19 @@ housing_server <- function(id) {
             names() %>% 
             str_extract(., "\\d{4}$") %>% 
             as.numeric() %>% na.omit()
-          closest_year <-  x[which.min(x - time())]
+          closest_year <-  x[which.min(abs(x - time()))]
           var <- paste0(str_remove(var, "_\\d{4}$"), "_", closest_year)
         }
         
         var
-      } else {
-        paste(var_left_housing_1(), time(), sep = "_")
-      }
+
     })
 
     # Greyed out right list options, depending of the year chosen
     var_list_housing_right_available <- reactive({
       if (input$bi_census == F) {
-        # (!eval(unlist(
-        #   purrr::modify_depth(var_list_housing_right, 2, paste0, "_", time())) %in%
-        #     names(borough))) %>% replace(1, F)
         NULL
       } else {
-        # t_or_f <- unlist(lapply(unlist(var_list_housing_right), paste0, "_", time())) %in% names(borough)
-        # t_or_f <- unname(tapply(t_or_f, (seq_along(t_or_f)-1) %/% 2, sum)) - 1
-        # t_or_f[!t_or_f %in% c(0,1)] <- 0
-        # (!t_or_f) %>% replace(1, F)
         disabled_var_list_housing_right
       }
     })
@@ -201,40 +172,30 @@ housing_server <- function(id) {
                                           )
 
     var_right_housing <- reactive({
-      if (var_right_housing_1() != " ") {
       
-        var <- paste(var_right_housing_1(), time(), sep = "_")
+      if (var_right_housing_1() != " ") {
         
-        if (!var %in% names(borough)) {
+          var <- paste(var_right_housing_1(), time(), sep = "_")
+
+        if (!var[1] %in% names(borough)) {
           x <- borough %>% 
             select(contains(str_remove(var, "_\\d{4}$"))) %>% 
             names() %>% 
             str_extract(., "\\d{4}$") %>% 
             as.numeric() %>% na.omit()
-          closest_year <-  x[which.min(x - time())]
+          closest_year <-  x[which.min(abs(x - time()))]
           var <- paste0(str_remove(var, "_\\d{4}$"), "_", closest_year)
         }
         
         var
 
-        } else var_right_housing_1()
+      } else var_right_housing_1()
     })
 
     # Data
     data_housing <- data_server("housing", var_left_housing,
                                 var_right_housing, df,
                                 reactive(rv_housing$zoom))
-    # # Explore panel
-    # explore_server(id = "explore",
-    #            x = data_housing,
-    #            var_left = var_left_housing,
-    #            var_right = var_right_housing,
-    #            select = reactive(rv_housing$poly_selected),
-    #            zoom = df,
-    #            var_left_title = reactive(
-    #              names(var_list_housing_left))
-    #            #var_left_label = sus_translate(climate_legend)
-    #            )
 
     # Explore panel
     explore_server("explore", data_housing, var_left_housing,
