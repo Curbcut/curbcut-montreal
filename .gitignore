@@ -49,6 +49,12 @@ vignettes/*.pdf
 /dev/data/street.qs
 /dev/data/street_geocode.qs
 
+# Main data
+/data/building.qs
+/data/census.qsm
+/data/grid.qs
+/data/street.qs
+
 # Other
 *DS_Store
 *.Rproj
