@@ -38,9 +38,18 @@ vignettes/*.pdf
 # R Environment Variables
 .Renviron
 
+# Dev data
+/dev/data/2016*
+/dev/data/Quebec*
+/dev/data/collision*
+/dev/data/dmti*
+/dev/data/building.qs
+/dev/data/building_geocode.qs
+/dev/data/building_osm.qs
+/dev/data/street.qs
+/dev/data/street_geocode.qs
+
 # Other
 *DS_Store
-app-cache/*
-R/app-cache/*
 *.Rproj
 rsconnect/*

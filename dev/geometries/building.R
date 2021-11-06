@@ -9,21 +9,21 @@
 # CMA_mtl_bb <- c(-74.32797, 45.21754, -73.12856, 45.96849)
 # 
 # # Retrieve ALL OSM building features for Montreal
-# buildings_osm <-
+# building_osm <-
 #   CMA_mtl_bb %>%
 #   opq(timeout = 200) %>%
 #   add_osm_feature(key = "building") %>%
 #   osmdata_sf()
 # 
 # rm(CMA_mtl_bb)
-# qsave(buildings_osm, file = "dev/data/buildings_osm.qs")
+# qsave(building_osm, file = "dev/data/building_osm.qs")
 # 
-# buildings_osm <- qread("dev/data/buildings_osm.qs",
-#                        nthreads = future::availableCores())
+# building_osm <- qread("dev/data/building_osm.qs",
+#                       nthreads = future::availableCores())
 # 
 # building <-
-#   map_dfr(list(buildings_osm$osm_polygons, buildings_osm$osm_multipolygons,
-#                buildings_osm$osm_multilines), ~suppressWarnings({
+#   map_dfr(list(building_osm$osm_polygons, building_osm$osm_multipolygons,
+#                building_osm$osm_multilines), ~suppressWarnings({
 #                  .x |>
 #                    as_tibble() |>
 #                    st_as_sf() |>
@@ -124,7 +124,7 @@
 #   st_set_agr("constant")
 # 
 # rm(building_centroid, building_DA, building_merged, building_remaining, 
-#    buildings_osm, merged, self_intersects, to_merge, building_cma_id, reduce)
+#    building_osm, merged, self_intersects, to_merge, building_cma_id, reduce)
 # 
 # 
 # # Get MS buildings --------------------------------------------------------
