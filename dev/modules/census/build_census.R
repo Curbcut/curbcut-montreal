@@ -7,6 +7,20 @@
 newest_census_year <- "2016"
 
 
+
+# Add census data by topic ------------------------------------------------
+
+# source("dev/modules/census/census_housing.R")
+# source("dev/modules/census/census_income.R")
+# source("dev/modules/census/census_identity.R")
+# source("dev/modules/census/census_transport.R")
+# source("dev/modules/census/census_employment.R")
+# source("dev/modules/census/census_family.R")
+# source("dev/modules/census/census_language.R")
+# source("dev/modules/census/census_age.R")
+# source("dev/modules/census/census_education.R")
+
+
 # Add every census data to our 4 geometry dfs -----------------------------
 
 source("dev/modules/census/census_2016.R")

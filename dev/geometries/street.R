@@ -4,10 +4,12 @@
 # We should load data from OSM once in a while for updates, but this script
 # is very computing intensive. 
 
-library(osmdata)
-library(tidyverse)
-library(sf)
-library(qs)
+suppressPackageStartupMessages({
+  library(osmdata)
+  library(tidyverse)
+  library(sf)
+  library(qs)
+})
 
 
 # # Bounding Box, Highway Key Values -----------------------------------------
@@ -55,16 +57,16 @@ library(qs)
 # qsave(street_network, "dev/data/street_network.qs")
 # 
 # 
-# # Filter results ----------------------------------------------------------
+# Filter results ----------------------------------------------------------
 # 
 # street_network <- qread("dev/data/street_network.qs")
 # 
-# street_network <- 
-#   street_network |> 
+# street_network <-
+#   street_network |>
 #   st_filter(borough)
 # 
-# street_network <- 
-#   street_network |> 
+# street_network <-
+#   street_network |>
 #   filter(highway %in% kv_highway_cars)
 # 
 # rm(CMA_mtl_bb, kv_highway_cars, kv_highway_people)
@@ -105,7 +107,7 @@ library(qs)
 # 
 #     return(list(street, nodes))
 # 
-#   }, .progress = TRUE)
+#   }, .progress = FALSE)
 # 
 # # Get street and nodes
 # street <- map_dfr(street_list, `[[`, 1) |> distinct()
@@ -143,16 +145,68 @@ library(qs)
 #   street_network |>
 #   st_drop_geometry() |>
 #   select(osm_id, name_2 = name, street_type = highway) |>
-#   right_join(street) |> 
-#   relocate(name_2, street_type, .after = ID)
+#   right_join(street, by = "osm_id") |>
+#   relocate(name_2, street_type, .after = ID) |> 
+#   rename(osm_ID = osm_id) |> 
+#   st_as_sf() |> 
+#   st_set_agr("constant")
 # 
+# 
+# # Add census metadata from DA ---------------------------------------------
+# 
+# street_DA <- 
+#   street |> 
+#   st_set_agr("constant") |> 
+#   st_transform(32618) |> 
+#   st_centroid() |> 
+#   st_nearest_feature(st_transform(DA, 32618))
+# 
+# DA_to_add <- 
+#   DA |> 
+#   st_drop_geometry() |> 
+#   select(DAUID = ID, CTUID, CSDUID, population, households) |> 
+#   slice(street_DA)
+# 
+# street <-
+#   street |> 
+#   bind_cols(DA_to_add) |> 
+#   relocate(geometry, .after = last_col()) |> 
+#   st_set_agr("constant") |>
+#   arrange(ID) |> 
+#   relocate(osm_ID, .after = CSDUID)
+# 
+#
+# Add grid_ID -------------------------------------------------------------
+# 
+# street_grid <-
+#   street |>
+#   st_transform(32618) |>
+#   st_set_agr("constant") |> 
+#   st_centroid() |>
+#   st_join(st_transform(select(grid, grid_ID = ID, geometry), 32618)) |>
+#   st_drop_geometry() |>
+#   select(ID, grid_ID)
+# 
+# street <-
+#   street |>
+#   left_join(street_grid, by = "ID") |>
+#   relocate(grid_ID, .after = osm_ID) |> 
+#   st_set_agr("constant")
+#
 # qsave(street, file = "dev/data/street.qs")
 # 
-# rm(street_network, street_grid, street_list, nodes, street_grid_edges,
-#    edges_to_check, new_street)
+# rm(DA_to_add, new_street, nodes, street_grid, street_grid_edges, street_list,
+#    street_network, edges_to_check, street_DA)
 
 
 # Load data after processing ----------------------------------------------
 
-
 street <- qread("dev/data/street.qs")
+
+
+# Temporarily trim to island ----------------------------------------------
+
+street <- 
+  street |> 
+  st_filter(filter(borough, name_2 == "Borough"))
+

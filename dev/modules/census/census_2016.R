@@ -109,7 +109,8 @@ census_education <- c(
 
 source("dev/modules/census/census_retrieval_functions.R")
 
-census_geos <- census_retrieval("CA16", added_var_group = c(census_age, census_family, census_language))
+census_geos <- census_retrieval("CA16", added_var_group = 
+                                  c(census_age, census_family, census_language))
 
 rm(census_housing, census_identity, census_income, census_transport,
    census_age, census_education, census_employment, census_family,
@@ -135,16 +136,20 @@ process_census_data <- function(data) {
            housing_repairs_prop = major_repairs / repairs_total,
            housing_stress_renter_prop = housing_stress_renter_prop / 100,
            housing_stress_owner_prop = housing_stress_owner_prop / 100,
-           housing_mobility_one_prop = housing_mobility_one / housing_mobility_one_total,
-           housing_mobility_five_prop = housing_mobility_five / housing_mobility_five_total) %>% 
+           housing_mobility_one_prop = housing_mobility_one / 
+             housing_mobility_one_total,
+           housing_mobility_five_prop = housing_mobility_five / 
+             housing_mobility_five_total) %>% 
     select(-c(renter, tenure_households, housing_unafford, 
               housing_unafford_total, housing_unsuit, housing_unsuit_total,
               rent_avg_total, value_avg_total, major_repairs, repairs_total,
-              housing_mobility_one, housing_mobility_one_total, housing_mobility_five,
+              housing_mobility_one, housing_mobility_one_total, 
+              housing_mobility_five,
               housing_mobility_five_total)) %>% 
     mutate(across(all_of(var_list), ntile, 3, .names = "{.col}_q3")) %>% 
     relocate(all_of(var_list), paste0(var_list, "_q3"), .before = geometry) %>% 
-    rename_with(~paste0(.x, "_", year_census), all_of(c(var_list, paste0(var_list, "_q3"))))
+    rename_with(~paste0(.x, "_", year_census), 
+                all_of(c(var_list, paste0(var_list, "_q3"))))
   
   # Process income
   var_list <- c("inc_median_dollar", "inc_50_prop", "inc_100_prop", 
@@ -164,7 +169,8 @@ process_census_data <- function(data) {
               inc_100, inc_high, inc_total, inc_limat_total)) %>% 
     mutate(across(all_of(var_list), ntile, 3, .names = "{.col}_q3")) %>% 
     relocate(all_of(var_list), paste0(var_list, "_q3"), .before = geometry) %>% 
-    rename_with(~paste0(.x, "_", year_census), all_of(c(var_list, paste0(var_list, "_q3"))))
+    rename_with(~paste0(.x, "_", year_census), 
+                all_of(c(var_list, paste0(var_list, "_q3"))))
   
   # Process identity
   var_list <- c("iden_imm_prop", "iden_imm_new_prop", 
@@ -180,7 +186,8 @@ process_census_data <- function(data) {
               iden_aboriginal, iden_aboriginal_total)) %>% 
     mutate(across(all_of(var_list), ntile, 3, .names = "{.col}_q3")) %>% 
     relocate(all_of(var_list), paste0(var_list, "_q3"), .before = geometry) %>% 
-    rename_with(~paste0(.x, "_", year_census), all_of(c(var_list, paste0(var_list, "_q3"))))
+    rename_with(~paste0(.x, "_", year_census), 
+                all_of(c(var_list, paste0(var_list, "_q3"))))
   
   # Process transport
   var_list <- c("trans_car_prop", "trans_walk_or_bike_prop", 
@@ -201,20 +208,23 @@ process_census_data <- function(data) {
               trans_t_30, trans_t_45, trans_t_60, trans_t_60_plus)) %>% 
     mutate(across(all_of(var_list), ntile, 3, .names = "{.col}_q3")) %>% 
     relocate(all_of(var_list), paste0(var_list, "_q3"), .before = geometry) %>% 
-    rename_with(~paste0(.x, "_", year_census), all_of(c(var_list, paste0(var_list, "_q3"))))
+    rename_with(~paste0(.x, "_", year_census), 
+                all_of(c(var_list, paste0(var_list, "_q3"))))
   
   # Process employment
   var_list <- c("emp_professional_prop", "emp_creative_prop")
   
   data <- 
     data %>% 
-    mutate(emp_professional_prop = (emp_professional + emp_management) / emp_labour_total,
+    mutate(emp_professional_prop = (emp_professional + emp_management) / 
+             emp_labour_total,
            emp_creative_prop = (emp_cultural + emp_arts) / emp_labour_total) %>% 
     select(-c(emp_professional, emp_management, emp_cultural, emp_labour_total,
               emp_arts)) %>% 
     mutate(across(all_of(var_list), ntile, 3, .names = "{.col}_q3")) %>% 
     relocate(all_of(var_list), paste0(var_list, "_q3"), .before = geometry) %>% 
-    rename_with(~paste0(.x, "_", year_census), all_of(c(var_list, paste0(var_list, "_q3"))))
+    rename_with(~paste0(.x, "_", year_census), 
+                all_of(c(var_list, paste0(var_list, "_q3"))))
   
   # Process family
   var_list <- c("family_children_prop", "family_one_person_prop")
@@ -226,7 +236,8 @@ process_census_data <- function(data) {
     select(-c(family_children, family_one_person, family_total)) %>% 
     mutate(across(all_of(var_list), ntile, 3, .names = "{.col}_q3")) %>% 
     relocate(all_of(var_list), paste0(var_list, "_q3"), .before = geometry) %>% 
-    rename_with(~paste0(.x, "_", year_census), all_of(c(var_list, paste0(var_list, "_q3"))))
+    rename_with(~paste0(.x, "_", year_census), 
+                all_of(c(var_list, paste0(var_list, "_q3"))))
   
   # Process language 
   var_list <- c("lang_french_only_prop", "lang_eng_only_prop", 
@@ -242,7 +253,8 @@ process_census_data <- function(data) {
               lang_no_official, lang_total)) %>% 
     mutate(across(all_of(var_list), ntile, 3, .names = "{.col}_q3")) %>% 
     relocate(all_of(var_list), paste0(var_list, "_q3"), .before = geometry) %>% 
-    rename_with(~paste0(.x, "_", year_census), all_of(c(var_list, paste0(var_list, "_q3"))))
+    rename_with(~paste0(.x, "_", year_census), 
+                all_of(c(var_list, paste0(var_list, "_q3"))))
   
   # Process age
   var_list <- c("age_0_14_prop", "age_15_64_prop", "age_65_plus_prop")
@@ -255,7 +267,8 @@ process_census_data <- function(data) {
     select(-c(age_0_14, age_15_64, age_65_plus, age_total)) %>% 
     mutate(across(all_of(var_list), ntile, 3, .names = "{.col}_q3")) %>% 
     relocate(all_of(var_list), paste0(var_list, "_q3"), .before = geometry) %>% 
-    rename_with(~paste0(.x, "_", year_census), all_of(c(var_list, paste0(var_list, "_q3"))))
+    rename_with(~paste0(.x, "_", year_census), 
+                all_of(c(var_list, paste0(var_list, "_q3"))))
   
   # Process education 
   var_list <- c("edu_bachelor_above_prop", "edu_no_degree_prop")
@@ -267,7 +280,8 @@ process_census_data <- function(data) {
     select(-c(edu_bachelor_above, edu_no_degree, edu_total)) %>% 
     mutate(across(all_of(var_list), ntile, 3, .names = "{.col}_q3")) %>% 
     relocate(all_of(var_list), paste0(var_list, "_q3"), .before = geometry) %>% 
-    rename_with(~paste0(.x, "_", year_census), all_of(c(var_list, paste0(var_list, "_q3"))))
+    rename_with(~paste0(.x, "_", year_census), 
+                all_of(c(var_list, paste0(var_list, "_q3"))))
   
   data <- st_set_agr(data, "constant") %>%
     mutate(across(where(is.numeric), ~replace(., is.nan(.), 0))) %>%
@@ -303,8 +317,8 @@ avg_list <- str_subset(names(census_geos$DA_census), "avg|median|prop") %>%
 
 # Identify variables to be aggregated
 agg_list <-
-  setdiff(names(census_geos$DA_census), c("ID", "name", "CTUID", "CSDUID", "geometry", 
-                                          "area")) %>% 
+  setdiff(names(census_geos$DA_census), 
+          c("ID", "name", "CTUID", "CSDUID", "geometry", "area")) %>% 
   setdiff(avg_list)
 
 borough <-
@@ -379,12 +393,12 @@ grid_census <-
       weighted.mean(housing_rent_avg_dollar, rent_avg_total, na.rm = TRUE),
     inc_median_dollar = 
       weighted.mean(inc_median_dollar, inc_median_total, na.rm = TRUE),
-    housing_stress_renter_prop = weighted.mean(housing_stress_renter_prop, rent_avg_total, 
-                                               na.rm = TRUE),
-    housing_stress_owner_prop = weighted.mean(housing_stress_owner_prop, value_avg_total, 
-                                              na.rm = TRUE),
-    inc_limat_prop = weighted.mean(inc_limat_prop, inc_limat_total, 
-                                   na.rm = TRUE),
+    housing_stress_renter_prop = 
+      weighted.mean(housing_stress_renter_prop, rent_avg_total, na.rm = TRUE),
+    housing_stress_owner_prop = 
+      weighted.mean(housing_stress_owner_prop, value_avg_total, na.rm = TRUE),
+    inc_limat_prop = 
+      weighted.mean(inc_limat_prop, inc_limat_total, na.rm = TRUE),
     across(all_of(agg_list), sum, na.rm = TRUE)) %>% 
   mutate(across(where(is.numeric), ~replace(., is.nan(.), NA)))
 
@@ -393,5 +407,28 @@ grid <-
   left_join(grid_census, by = "ID") %>% 
   process_census_data()
 
-rm(census_geos, CSD, DA_data, grid_census, agg_list,
-   avg_list, process_census_data, year_census)
+
+# Process building and street ---------------------------------------------
+
+DA_data <- 
+  DA |> 
+  st_drop_geometry() |> 
+  select(-c(name:buffer))
+
+building <- 
+  building |> 
+  inner_join(DA_data, by = c("DAUID" = "ID")) |> 
+  relocate(geometry, .after = last_col())
+
+street <- 
+  street |> 
+  inner_join(DA_data, by = c("DAUID" = "ID")) |> 
+  relocate(geometry, .after = last_col())
+
+
+# Clean up ----------------------------------------------------------------
+
+rm(census_geos, CSD, DA_data, grid_census, agg_list, avg_list, 
+   process_census_data, year_census)
+
+

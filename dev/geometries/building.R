@@ -27,13 +27,13 @@
 #                  .x |>
 #                    as_tibble() |>
 #                    st_as_sf() |>
-#                    select(osm_id, geometry) |>
+#                    select(osm_ID = osm_id, geometry) |>
 #                    st_cast("MULTIPOLYGON") |>
 #                    st_make_valid()})) |>
 #   st_transform(32618) |>
-#   distinct(osm_id, .keep_all = TRUE) |>
+#   distinct(osm_ID, .keep_all = TRUE) |>
 #   st_cast("MULTIPOLYGON") |>
-#   mutate(ID = seq_along(osm_id), .before = osm_id)
+#   mutate(ID = seq_along(osm_ID), .before = osm_ID)
 # 
 # # Get centroids for self-intersection
 # building_centroid <-
@@ -77,7 +77,7 @@
 #   map_dfr(merged, ~{
 #     building |> 
 #       filter(ID %in% .x) |> 
-#       summarize(ID = ID[1], osm_id = osm_id[1])
+#       summarize(ID = ID[1], osm_ID = osm_ID[1])
 #   })
 # 
 # # Bind everything together
@@ -111,13 +111,13 @@
 # building <-
 #   building |>
 #   filter(ID %in% building_cma_id) |>
-#   inner_join(building_DA, by = c("ID", "osm_id")) |>
-#   select(ID, DAUID:households, osm_id, geometry)
+#   inner_join(building_DA, by = c("ID", "osm_ID")) |>
+#   select(ID, DAUID:households, osm_ID, geometry)
 # 
 # # Consolidate and clean up output
 # building <-
 #   building |>
-#   select(ID, name_2, DAUID, CTUID, CSDUID, osm_id, population, households,
+#   select(ID, name_2, DAUID, CTUID, CSDUID, osm_ID, population, households,
 #          geometry) |>
 #   st_make_valid() |>
 #   filter(!st_is_empty(geometry)) |> 
@@ -195,11 +195,30 @@
 #   st_transform(4326) |>
 #   st_set_agr("constant")
 # 
+# 
+# Add grid_ID -------------------------------------------------------------
+# 
+# building_grid <-
+#   building |>
+#   st_transform(32618) |>
+#   st_centroid() |> 
+#   st_join(st_transform(select(grid, grid_ID = ID, geometry), 32618)) |>
+#   st_drop_geometry() |> 
+#   select(ID, grid_ID)
+# 
+# building <- 
+#   building |> 
+#   left_join(building_grid, by = "ID") |> 
+#   relocate(grid_ID, .after = osm_ID)
+# 
+# 
+# # Clean up ----------------------------------------------------------------
+# 
 # # Save pre-geocoding output
 # qsave(building, file = "dev/data/building.qs",
 #       nthreads = future::availableCores())
 # 
-# rm(ms_building)
+# rm(building_grid, ms_building)
 
 building <- qread("dev/data/building.qs", nthreads = future::availableCores())
 

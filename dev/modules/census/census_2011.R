@@ -116,6 +116,9 @@ interpolate_census <- function(new_data, principal_data) {
     st_intersection(., new_data) %>% 
     mutate(area_prop = st_area(geometry) / area) %>% 
     mutate(across(all_of(agg_list), ~{.x * units::drop_units(area_prop)})) %>% 
+    group_by(ID) %>% 
+    filter(sum(units::drop_units(area_prop)) >= 0.5) %>% 
+    ungroup() %>% 
     select(-ID.1, -area, -area_prop) %>% 
     st_drop_geometry() %>% 
     group_by(ID) %>%
@@ -147,7 +150,8 @@ CSD_census <- interpolate_census(census_geos$CSD_census, borough)
 # Get area for DA geometry
 DA_census_n <-
   DA_census %>% 
-  left_join(select(DA, ID, CSDUID), ., by = "ID") %>% 
+  left_join(select(DA, ID, CSDUID), by = "ID") %>% 
+  st_as_sf() %>% 
   st_transform(32618) %>% 
   mutate(area = st_area(geometry)) %>% 
   st_set_agr("constant")
@@ -185,7 +189,6 @@ borough_census <-
   mutate(across(where(is.numeric), ~replace(., is.infinite(.), NA))) %>%
   mutate(across(all_of(agg_list), ~if_else(.x < 5, 0, .x))) %>%
   filter(str_starts(ID, "2466023"))
-
 
 # Interpolate grid geometries ---------------------------------------------
 
@@ -310,6 +313,8 @@ DA <- left_join(DA, DA_census, by = "ID")
 CT <- left_join(CT, CT_census, by = "ID")
 borough <- left_join(borough, borough_census, by = "ID")
 grid <- left_join(grid, grid_census, by = "ID")
+building <- left_join(building, DA_census, by = c("DAUID" = "ID"))
+street <- left_join(street, DA_census, by = c("DAUID" = "ID"))
 
 
 # Cleanup -----------------------------------------------------------------
