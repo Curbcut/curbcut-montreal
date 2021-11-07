@@ -6,7 +6,7 @@ explore_graph_UI <- function(id) {
 
 explore_graph_server <- function(id, x, var_type, var_left, var_right, select, 
                                  zoom, var_left_title, var_left_label = NULL, 
-                                 var_right_label = NULL, building_as_DA = TRUE,
+                                 var_right_label = NULL, build_str_as_DA = TRUE,
                                  plot_type = "auto") {
   
   # Check arguments
@@ -25,9 +25,9 @@ explore_graph_server <- function(id, x, var_type, var_left, var_right, select,
       
       # Set convenience variables, and deal with building_as_DA ----------------
       
-      if (zoom() != "building") building_as_DA <- FALSE
+      if (!zoom() %in% c("building", "street")) build_str_as_DA <- FALSE
       
-      if (building_as_DA) {
+      if (build_str_as_DA) {
         tb <- data_server(id = "explore_graph",
                           var_left = var_left,
                           var_right = var_right,

@@ -20,8 +20,8 @@
 #' @param var_left_label,var_right_label A reactive which resolves to a named
 #' character vector giving labels for the variable values of var_left or
 #' var_right.
-#' @param building_as_DA A logical scalar. Should the "building" zoom level show
-#' graphs for the DA zoom level instead?
+#' @param build_str_as_DA A logical scalar. Should the "building" zoom level 
+#' show graphs and text for the DA zoom level instead?
 
 explore_UI <- function(id) {
   
@@ -46,7 +46,7 @@ explore_UI <- function(id) {
 explore_server <- function(id, x, var_left, var_right, select, zoom, 
                            var_left_title, var_right_title = NULL,
                            var_left_label = NULL, var_right_label = NULL,
-                           building_as_DA = TRUE) {
+                           build_str_as_DA = TRUE) {
   
   stopifnot(is.reactive(x))
   stopifnot(is.reactive(var_left))
@@ -61,7 +61,10 @@ explore_server <- function(id, x, var_left, var_right, select, zoom,
     var_type <- explore_var_type(id, x, var_left, var_right, select,
                                  var_left_label, var_right_label)
 
-    observeEvent(var_type(), print(var_type()))
+    observeEvent(var_type(), {
+      print("VAR_TYPE")
+      print(var_type())
+      })
     
     # Render info table
     info_table_server(id = "explore", 
@@ -74,7 +77,8 @@ explore_server <- function(id, x, var_left, var_right, select, zoom,
                       var_left_title = var_left_title, 
                       var_right_title = var_right_title,
                       var_left_label = var_left_label, 
-                      var_right_label = var_right_label)
+                      var_right_label = var_right_label,
+                      build_str_as_DA = build_str_as_DA)
     
     # Render the graph
     explore_graph_server(id = "explore", 
@@ -87,7 +91,7 @@ explore_server <- function(id, x, var_left, var_right, select, zoom,
                          var_left_title = var_left_title, 
                          var_left_label = var_left_label,
                          var_right_label = var_right_label,
-                         building_as_DA = building_as_DA)
+                         build_str_as_DA = build_str_as_DA)
     
     # Hide explore status
     output$hide_status <- reactive(input$hide %% 2 == 0)

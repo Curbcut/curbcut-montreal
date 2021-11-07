@@ -3,17 +3,36 @@
 
 make_info_table_data <- function(id, x, var_type, var_left, var_right, select, 
                                  zoom, var_left_title, var_right_title,
-                                 var_left_label, var_right_label) {
+                                 var_left_label, var_right_label, 
+                                 build_str_as_DA) {
+  
+  ## Get modified df for building/street ---------------------------------------
+  
+  if (!zoom() %in% c("building", "street")) build_str_as_DA <- FALSE
+  
+  if (build_str_as_DA) {
+    tb <- data_server(id = "info_table",
+                      var_left = var_left,
+                      var_right = var_right,
+                      df = reactive("DA"))
+    dat <- tb()
+    select_id <- (filter(building, ID == select()))$DAUID
+    if (length(select_id) == 0) select_id <- NA
+    
+  } else {
+    dat <- x()
+    select_id <- select()
+  }
+  
+  ## Titles and explanations ---------------------------------------------------
   
   var_left <- str_remove(var_left(), "_\\d{4}$")
   var_right <- str_remove(var_right(), "_\\d{4}$")
   
-  ## Titles and explanations ---------------------------------------------------
-  
   title_left <-   sus_translate(var_exp[var_exp$var_code == var_left,]$var_name)
-  
   title_right <- " "
   if (!is.null(var_right_title)) title_right <- sus_translate(var_right_title())
+  
   exp_left <- sus_translate(var_exp[var_exp$var_code == var_left,]$explanation)
   exp_right <- sus_translate(var_exp[var_exp$var_code == var_right,]$explanation)
   if (length(exp_left) == 0) warning("No var_exp: ", var_left, call. = FALSE)
@@ -23,7 +42,8 @@ make_info_table_data <- function(id, x, var_type, var_left, var_right, select,
   
   ## Selections ----------------------------------------------------------------
   
-  selection <- x() %>% filter(ID == select())
+  selection_name <- filter(x(), ID == select())
+  selection <- filter(dat, ID == select_id)
   active_left <- nrow(filter(selection, !is.na(left_var_q3)))
   active_right <- active_left
   if (var_right != " ") active_right <- 
@@ -32,14 +52,15 @@ make_info_table_data <- function(id, x, var_type, var_left, var_right, select,
   cat("active_right:", active_right, "\n")
   cat("selection$ID: ", selection$ID, "\n")
   cat("selection$ID length: ", length(selection$ID), "\n")
-  
+
   
   ## Special case for Kahnawake and Kanesatake ---------------------------------
   
-  if (selection$ID %in% c("2467802", "4620832.00", 24670285) && 
+  if (nrow(selection) > 0 && selection$ID %in% 
+      c("2467802", "4620832.00", 24670285) && 
       active_left == 0 && active_right == 0) var_type <- reactive("kah_na")
   
-  if (selection$ID %in% c(
+  if (nrow(selection) > 0 && selection$ID %in% c(
     "2472802", "4620732.03", "24720184", "24720186", "24720187", "24720188", 
     "24720190", "24720191", "24720192", "24720193", "24720194", "24720195", 
     "24720196", "24720200", "24720201") && active_left == 0 && 
@@ -52,7 +73,13 @@ make_info_table_data <- function(id, x, var_type, var_left, var_right, select,
                            "borough" = sus_translate("borough/city"),
                            "CT" = sus_translate("census tract"),
                            "DA" = sus_translate("dissemination area"),
-                           "grid" = "250-m")
+                           "grid" = "250-m",
+                           "building" = if (build_str_as_DA) 
+                             sus_translate("dissemination area") else
+                               sus_translation("building"),
+                           "street" = if (build_str_as_DA) 
+                             sus_translate("dissemination area") else
+                               sus_translation("street"))
   
   scale_plural <- case_when(
     scale_singular == sus_translate("borough/city") ~ 
@@ -61,37 +88,49 @@ make_info_table_data <- function(id, x, var_type, var_left, var_right, select,
       sus_translate("census tracts"),
     scale_singular == sus_translate("dissemination area") ~ 
       sus_translate("dissemination areas"),
-    scale_singular == sus_translate("250-m") ~ sus_translate("areas"))
+    scale_singular == sus_translate("250-m") ~ sus_translate("areas"),
+    scale_singular == sus_translate("building") ~ sus_translate("buildings"),
+    scale_singular == sus_translate("street") ~ sus_translate("streets"))
 
   
   ## Place names ---------------------------------------------------------------
   
   place_name <- case_when(
+    zoom() %in% c("building", "street") & build_str_as_DA ~
+      glue(sus_translate(paste0(
+        "The dissemination area around {selection_name$name}"))),
+    scale_singular == sus_translate("building") ~
+      glue("{selection_name$name}"),
+    scale_singular == sus_translate("street") ~
+      glue("{selection_name$name}"),
     scale_singular == sus_translate("borough/city") ~
-      glue("{selection$name}"),
+      glue("{selection_name$name}"),
     scale_singular == sus_translate("census tract") ~
-      glue(sus_translate(paste0("Census tract {selection$name}"))),
+      glue(sus_translate(paste0("Census tract {selection_name$name}"))),
     scale_singular == sus_translate("dissemination area") ~
-      glue(sus_translate(paste0("Dissemination area {selection$name}"))),
+      glue(sus_translate(paste0("Dissemination area {selection_name$name}"))),
     scale_singular == sus_translate("250-m") ~
-      glue(sus_translate(paste0("The area around {selection$name}"))))
+      glue(sus_translate(paste0("The area around {selection_name$name}"))))
   
   if (grepl("select", var_type())) {
-    if (zoom() == "borough") selection$name_2 <- 
-        sus_translate(glue("{selection$name_2}"))
+    if (zoom() == "borough") selection_name$name_2 <- 
+        sus_translate(glue("{selection_name$name_2}"))
     
     place_heading <- case_when(
+      zoom() %in% c("building", "street") & build_str_as_DA ~
+        glue(sus_translate(selection_name$name)),
       scale_singular == sus_translate("borough/city") ~
-        glue(sus_translate(paste0("{selection$name_2} of {place_name}"))), 
-      scale_singular == sus_translate("250-m") ~ sus_translate(selection$name),
-      TRUE ~ glue("{place_name} ({selection$name_2})"))
+        glue(sus_translate(paste0("{selection_name$name_2} of {place_name}"))), 
+      scale_singular == sus_translate("250-m") ~ 
+        sus_translate(selection_name$name),
+      TRUE ~ glue("{place_name} ({selection_name$name_2})"))
   }
   
   
-  ## Descriptive statistics for left_var_q3 ---------------------------------------
+  ## Descriptive statistics for left_var_q3 ------------------------------------
   
   vec_left <-
-    x() %>%
+    dat %>%
     filter(!is.na(left_var_q3), !is.na(left_var)) %>%
     pull(left_var) %>% 
     na.omit()

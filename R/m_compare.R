@@ -25,8 +25,9 @@ compare_server <- function(id, var_list, df, zoom = df, disabled_choices = NULL)
   moduleServer(id, function(input, output, session) {
     
     # Select variable    
-    if (!is.null(disabled_choices)){
-      var_right <- select_var_server("compare", reactive(var_list), disabled = reactive(disabled_choices()))
+    if (!is.null(disabled_choices)) {
+      var_right <- select_var_server("compare", reactive(var_list), 
+                                     disabled = reactive(disabled_choices()))
     } else {
       var_right <- select_var_server("compare", reactive(var_list))
       

@@ -64,7 +64,7 @@ canale_server <- function(id) {
                    select = reactive(rv_canale$poly_selected),
                    zoom = reactive(rv_canale$zoom), 
                    var_left_title = reactive("CanALE index"),
-                   building_as_DA = TRUE)
+                   build_str_as_DA = TRUE)
 
     # Did-you-know panel
     dyk_server("dyk", reactive(canale_ind), var_right_canale)

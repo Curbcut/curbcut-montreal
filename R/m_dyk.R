@@ -16,7 +16,8 @@ dyk_server <- function(id, var_left, var_right) {
     
     dyk_output <- reactive({
       
-      vars <- c(str_remove(var_left(), "_\\d{4}$"), str_remove(var_right(), "_\\d{4}$"))
+      vars <- c(str_remove(var_left(), "_\\d{4}$"), 
+                str_remove(var_right(), "_\\d{4}$"))
       vars <- vars[vars != " "]
       categories <- 
         tibble(variable = vars) %>% 
@@ -101,10 +102,10 @@ dyk_server <- function(id, var_left, var_right) {
       if (!is.null(dyk_output())) {
         tagList(
           hr(),
-          fluidRow(column(width = 7, h4(i18n$t("Did you know?"))),
+          fluidRow(column(width = 7, h4(sus_translate("Did you know?"))),
                    column(width = 5, align = "right",
                           actionLink(inputId = session$ns("hide"), 
-                                     label = i18n$t("Hide"))))
+                                     label = sus_translate("Hide"))))
         )
       }  
     })

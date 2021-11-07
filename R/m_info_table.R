@@ -15,7 +15,9 @@ info_table_UI <- function(id) {
 
 info_table_server <- function(id, x, var_type, var_left, var_right, select, 
                               zoom, var_left_title, var_right_title,
-                              var_left_label, var_right_label) {
+                              var_left_label, var_right_label, 
+                              build_str_as_DA) {
+  
   stopifnot(is.reactive(x))
   stopifnot(is.reactive(var_type))
   stopifnot(is.reactive(var_left))
@@ -31,7 +33,11 @@ info_table_server <- function(id, x, var_type, var_left, var_right, select,
       # Get data list
       z <- make_info_table_data(id, x, var_type, var_left, var_right, select, 
                                 zoom, var_left_title, var_right_title,
-                                var_left_label, var_right_label)
+                                var_left_label, var_right_label, 
+                                build_str_as_DA)
+      
+      print("INFO_TABLE_DATA")
+      print(z)
       
       # Special case for Kahnawake
       if (z$var_type == "kah_na") {
