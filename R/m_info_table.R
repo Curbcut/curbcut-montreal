@@ -135,7 +135,8 @@ info_table_server <- function(id, x, var_type, var_left, var_right, select,
             "there is no relationship between the two variables."))))
           } else {
             out <- HTML(glue(sus_translate(paste0(
-              if (z$strong_weak == "strong") "<p><b>STRONG CORRELATION</b></p>",
+              if (z$strong_weak == sus_translate("strong")) 
+                "<p><b>STRONG CORRELATION</b></p>",
               "<p>'{z$title_right}' is {z$exp_right}.",
               "<p>The {z$title_left} has a {z$strong_weak} {z$pos_neg} ",
               "correlation ({z$correlation}) with {z$exp_right} at ",
@@ -176,7 +177,8 @@ info_table_server <- function(id, x, var_type, var_left, var_right, select,
             "there is no relationship between the two variables."))))
         } else {
           out <- HTML(glue(sus_translate(paste0(
-            if (z$strong_weak == "strong") "<p><b>STRONG CORRELATION</b></p>",
+            if (z$strong_weak == sus_translate("strong")) 
+              "<p><b>STRONG CORRELATION</b></p>",
             "<p>'{z$title_right}' is {z$exp_right}.",
             "<p>The {z$title_left} has a {z$strong_weak} {z$pos_neg} ",
             "correlation (Spearman's rho: {z$correlation}) with {z$exp_right} ", 
