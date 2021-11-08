@@ -94,10 +94,12 @@ climate_risk_server <- function(id) {
 
         width <- switch(rv_climate_risk$zoom, "borough" = 100, "CT" = 10, 2)
         if (input$grid) width <- 0
-
-        map_change(id = NS(id,"map"), 
-                   x = data_climate_risk, 
-                   zoom = reactive(rv_climate_risk$zoom))
+        
+        mapdeck_update(map_id = NS(id, "map")) %>%
+          add_polygon(data = data_climate_risk(), stroke_width = width,
+                      stroke_colour = "#FFFFFF", fill_colour = "fill",
+                      update_view = FALSE, id = "ID", auto_highlight = TRUE,
+                      highlight_colour = "#FFFFFF90")
         }
     )
     
