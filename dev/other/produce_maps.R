@@ -53,7 +53,7 @@ legend_left <- png::readPNG("www/univariate_left.png", native = TRUE)
 shadow_right <- png::readPNG("www/dropshadow_right.png", native = TRUE)
 legend_right <- png::readPNG("www/univariate_right.png", native = TRUE)
 
-walk(c("borough", "CT", "DA", "grid"), function(scale) {
+walk(c("borough", "CT", "DA", "grid", "building", "street"), function(scale) {
   
   data <- get(scale)
   
@@ -80,16 +80,54 @@ walk(c("borough", "CT", "DA", "grid"), function(scale) {
       
     } else {
       
-      p <-
-        data %>% 
-        select(var = all_of(.x)) %>% 
-        ggplot() +
-        {if (scale == "grid") geom_sf(data = circle_borough, fill = "grey70", 
-                                      color = "white", size = 0.01)} +
-        geom_sf(aes(fill = as.factor(var)), color = "white", size = 0.01) +
-        scale_fill_manual(values = colour_scale[1:3], na.value = "grey70") +
-        theme_map() +
-        theme(legend.position = "none")
+      if (scale == "grid") {
+        p <-
+          data %>% 
+          select(var = all_of(.x)) %>% 
+          ggplot() +
+          geom_sf(data = circle_borough, fill = "grey70", color = "white", 
+                  size = 0.01) +
+          geom_sf(aes(fill = as.factor(var)), color = "white", size = 0.01) +
+          scale_fill_manual(values = colour_scale[1:3], na.value = "grey70") +
+          theme_map() +
+          theme(legend.position = "none")
+        
+      } else if (scale == "building") {
+        p <-
+          data %>% 
+          select(var = all_of(.x)) %>% 
+          ggplot() +
+          geom_sf(data = circle_borough, fill = "grey70", color = "white", 
+                  size = 0.01) +
+          geom_sf(aes(fill = as.factor(var)), color = "transparent", 
+                  size = 0) +
+          scale_fill_manual(values = colour_scale[1:3], na.value = "grey70") +
+          theme_map() +
+          theme(legend.position = "none")
+        
+      } else if (scale == "street") {
+        p <-
+          data %>% 
+          select(var = all_of(.x)) %>% 
+          ggplot() +
+          geom_sf(data = circle_borough, fill = "grey70", color = "white", 
+                  size = 0.01) +
+          geom_sf(aes(colour = as.factor(var)), size = 0.01) +
+          scale_colour_manual(values = colour_scale[1:3], na.value = "grey70") +
+          theme_map() +
+          theme(legend.position = "none")
+        
+      } else {
+        p <-
+          data %>% 
+          select(var = all_of(.x)) %>% 
+          ggplot() +
+          geom_sf(aes(fill = as.factor(var)), color = "white", size = 0.01) +
+          scale_fill_manual(values = colour_scale[1:3], na.value = "grey70") +
+          theme_map() +
+          theme(legend.position = "none")
+        
+      }
       
       {wrap_elements(shadow_left) + 
           inset_element(p, 0.18, 0.148, 0.83, 0.85, align_to = "full") +
