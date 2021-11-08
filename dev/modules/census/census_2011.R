@@ -116,6 +116,9 @@ interpolate_census <- function(new_data, principal_data) {
     st_intersection(., new_data) %>% 
     mutate(area_prop = st_area(geometry) / area) %>% 
     mutate(across(all_of(agg_list), ~{.x * units::drop_units(area_prop)})) %>% 
+    group_by(ID.1) %>% 
+    filter(sum(units::drop_units(area_prop)) >= 0.5) %>% 
+    ungroup() %>% 
     select(-ID.1, -area, -area_prop) %>% 
     st_drop_geometry() %>% 
     group_by(ID) %>%
@@ -126,8 +129,8 @@ interpolate_census <- function(new_data, principal_data) {
       housing_stress_renter_prop = weighted.mean(housing_stress_renter_prop, rent_avg_total, na.rm = TRUE),
       housing_stress_owner_prop = weighted.mean(housing_stress_owner_prop, value_avg_total, na.rm = TRUE),
       inc_low_income_prop = weighted.mean(inc_low_income_prop, inc_low_income_total, na.rm = TRUE),
-      across(all_of(agg_list), sum, na.rm = TRUE)) %>%
-    mutate(across(where(is.numeric), ~replace(., is.nan(.), 0))) %>%
+      across(all_of(agg_list), sum_na)) %>%
+    mutate(across(where(is.numeric), ~replace(., is.nan(.), NA))) %>%
     mutate(across(where(is.numeric), ~replace(., is.infinite(.), NA))) %>%
     mutate(across(all_of(agg_list), ~if_else(.x < 5, 0, .x)))
   
@@ -147,7 +150,8 @@ CSD_census <- interpolate_census(census_geos$CSD_census, borough)
 # Get area for DA geometry
 DA_census_n <-
   DA_census %>% 
-  left_join(select(DA, ID, CSDUID), ., by = "ID") %>% 
+  left_join(select(DA, ID, CSDUID), by = "ID") %>% 
+  st_as_sf() %>% 
   st_transform(32618) %>% 
   mutate(area = st_area(geometry)) %>% 
   st_set_agr("constant")
@@ -180,12 +184,11 @@ borough_census <-
     housing_stress_renter_prop = weighted.mean(housing_stress_renter_prop, rent_avg_total, na.rm = TRUE),
     housing_stress_owner_prop = weighted.mean(housing_stress_owner_prop, value_avg_total, na.rm = TRUE),
     inc_low_income_prop = weighted.mean(inc_low_income_prop, inc_low_income_total, na.rm = TRUE),
-    across(all_of(agg_list), sum, na.rm = TRUE)) %>%
-  mutate(across(where(is.numeric), ~replace(., is.nan(.), 0))) %>%
+    across(all_of(agg_list), sum_na)) %>%
+  mutate(across(where(is.numeric), ~replace(., is.nan(.), NA))) %>%
   mutate(across(where(is.numeric), ~replace(., is.infinite(.), NA))) %>%
   mutate(across(all_of(agg_list), ~if_else(.x < 5, 0, .x))) %>%
   filter(str_starts(ID, "2466023"))
-
 
 # Interpolate grid geometries ---------------------------------------------
 
@@ -304,12 +307,44 @@ grid_census <-
   process_census_data()
 
 
+# Drop a variable if it's NAs at all scales -------------------------------
+
+var_to_drop <- 
+  c(DA_census %>% 
+      select_if(~all(is.na(.))) %>% 
+      names(),
+    CT_census %>% 
+      select_if(~all(is.na(.))) %>% 
+      names(),
+    borough_census %>% 
+      select_if(~all(is.na(.))) %>% 
+      names()) %>% tibble(var = .) %>% 
+  mutate(var = str_remove(var, "_\\d{4}$")) %>% 
+  count(var) %>% 
+  filter(n == 3) %>% 
+  pull(var)
+
+DA_census <- 
+  DA_census %>% select(!starts_with(var_to_drop))
+
+CT_census <- 
+  CT_census %>% select(!starts_with(var_to_drop))
+
+borough_census <- 
+  borough_census %>% select(!starts_with(var_to_drop))
+
+grid_census <- 
+  grid_census %>% select(!starts_with(var_to_drop))
+
+
 # Assign new variables to principal dfs -----------------------------------
 
 DA <- left_join(DA, DA_census, by = "ID")
 CT <- left_join(CT, CT_census, by = "ID")
 borough <- left_join(borough, borough_census, by = "ID")
 grid <- left_join(grid, grid_census, by = "ID")
+building <- left_join(building, DA_census, by = c("DAUID" = "ID"))
+street <- left_join(street, DA_census, by = c("DAUID" = "ID"))
 
 
 # Cleanup -----------------------------------------------------------------

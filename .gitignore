@@ -55,6 +55,9 @@ vignettes/*.pdf
 /data/grid.qs
 /data/street.qs
 
+# Small maps
+/www/maps
+
 # Other
 *DS_Store
 *.Rproj

@@ -2,9 +2,32 @@
 
 # This script relies on objects created in dev/build_geometries.R
 
-# Global needed variables -------------------------------------------------
+
+# Global needed variables and functions -----------------------------------
 
 newest_census_year <- "2016"
+
+# If all rows are NAs, return NA. If not, use sum na.rm = T
+sum_na <- function(x) {
+  if(all(is.na(x))){
+    out <- NA
+  } else {
+    out <- sum(x, na.rm = T)
+  }
+  return(as.numeric(out))
+}
+
+# Add census data by topic ------------------------------------------------
+
+# source("dev/modules/census/census_housing.R")
+# source("dev/modules/census/census_income.R")
+# source("dev/modules/census/census_identity.R")
+# source("dev/modules/census/census_transport.R")
+# source("dev/modules/census/census_employment.R")
+# source("dev/modules/census/census_family.R")
+# source("dev/modules/census/census_language.R")
+# source("dev/modules/census/census_age.R")
+# source("dev/modules/census/census_education.R")
 
 
 # Add every census data to our 4 geometry dfs -----------------------------

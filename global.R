@@ -30,18 +30,23 @@ options(shiny.trace = FALSE) # Set TRUE for debugging
 
 # Data --------------------------------------------------------------------
 
+var_exp <- qread("data/var_exp.qs")
+title_text <- qread("data/title_text.qs")
+qload("data/colours.qsm")
+
 qload("data/census.qsm")
-qload("data/covid.qsm")
 grid <- qread("data/grid.qs")
+street <- qread("data/street.qs")
+building <- qread("data/building.qs")
+
+qload("data/covid.qsm")
 green_space <- qread("data/green_space.qs")
 qload("data/alleys.qsm")
 crash <- qread("data/crash.qs")
-qload("data/colours.qsm")
-title_text <- qread("data/title_text.qs")
-var_exp <- qread("data/var_exp.qs")
 
 min_census_year <- "1996"
 current_census <- "2016"
+
 
 # Translation -------------------------------------------------------------
 

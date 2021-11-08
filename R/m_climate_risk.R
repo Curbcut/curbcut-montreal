@@ -43,10 +43,10 @@ climate_risk_server <- function(id) {
 
     # Zoom level
     observeEvent(input$map_view_change$zoom, {
-      rv_climate_risk$zoom <- case_when(
-        input$map_view_change$zoom >= 12 ~ "DA",
-        input$map_view_change$zoom >= 10.5 ~ "CT",
-        TRUE ~ "borough")
+      rv_canale$zoom <- case_when(input$map_view_change$zoom >= 14 ~ "building",
+                                  input$map_view_change$zoom >= 12 ~ "DA",
+                                  input$map_view_change$zoom >= 10.5 ~ "CT",
+                                  TRUE ~ "borough")
       })
     
     # Left variable server
@@ -72,10 +72,6 @@ climate_risk_server <- function(id) {
                    var_right = var_right_climate_risk, 
                    select = reactive(rv_climate_risk$poly_selected),
                    zoom = df, 
-                   var_left_title = reactive(
-                     names(var_list_climate_risk[which(sapply(
-                       var_list_climate_risk, function(x) x == 
-                         var_left_climate_risk()))])),
                    var_left_label = sus_translate(climate_legend))
 
     # Did-you-know panel
@@ -99,11 +95,9 @@ climate_risk_server <- function(id) {
         width <- switch(rv_climate_risk$zoom, "borough" = 100, "CT" = 10, 2)
         if (input$grid) width <- 0
 
-        mapdeck_update(map_id = NS(id, "map")) %>%
-          add_polygon(data = data_climate_risk(), stroke_width = width,
-                      stroke_colour = "#FFFFFF", fill_colour = "fill",
-                      update_view = FALSE, id = "ID", auto_highlight = TRUE,
-                      highlight_colour = "#FFFFFF90")
+        map_change(id = NS(id,"map"), 
+                   x = data_climate_risk, 
+                   zoom = reactive(rv_climate_risk$zoom))
         }
     )
     

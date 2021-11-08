@@ -34,9 +34,7 @@ ui <- dashboardPage(
         conditionalPanel(
           condition = "input.tabs == 'climate_risk'",
           # The ID needs to be duplicated for complicated namespacing reasons!
-          small_map_UI("climate_risk-left")),
-
-        startExpanded = TRUE),
+          small_map_UI("climate_risk-left"))),
       
       # Covid ----
       menuItem(
@@ -51,9 +49,7 @@ ui <- dashboardPage(
         # Pedestrian realm
         menuSubItem(
           i18n$t("Pedestrian realm"),
-          tabName = "ped"),
-
-        startExpanded = TRUE),
+          tabName = "ped")),
 
       # Ecology ----
       menuItem(
@@ -63,9 +59,7 @@ ui <- dashboardPage(
         # Biodiversity
         menuSubItem(
           i18n$t("Biodiversity"),
-          tabName = "biodiversity"),
-
-        startExpanded = TRUE),
+          tabName = "biodiversity")),
       
       # Health
       menuItem(
@@ -74,9 +68,8 @@ ui <- dashboardPage(
         
         # DMTI
         menuSubItem(
-          i18n$t("Healthy Urban Features"),
-          tabName = "dmti"),
-        startExpanded = TRUE),
+          i18n$t("Healthy urban features"),
+          tabName = "dmti")),
       
       # Housing realm ----
       menuItem(
@@ -91,9 +84,7 @@ ui <- dashboardPage(
           condition = "input.tabs == 'housing'",
           # The ID needs to be duplicated for complicated namespacing reasons!
           # small_map_UI("housing-left")
-        ),
-        
-        startExpanded = TRUE),
+        )),
       
       # Policy ----
       menuItem(
@@ -103,9 +94,7 @@ ui <- dashboardPage(
         # MCP
         menuSubItem(
           i18n$t("Montréal climate plans"),
-          tabName = "mcp"),
-        
-        startExpanded = TRUE),
+          tabName = "mcp")),
       
       # Transport ----
       menuItem(
@@ -130,10 +119,7 @@ ui <- dashboardPage(
         # Safety
         menuSubItem(
           i18n$t("Safety analysis"),
-          tabName = "crash_analysis"),
-        
-
-        startExpanded = TRUE),
+          tabName = "crash_analysis")),
       
       # Urban life
       menuItem(
@@ -157,9 +143,7 @@ ui <- dashboardPage(
           condition = "input.tabs == 'alley'",
           # The ID needs to be duplicated for complicated namespacing reasons!
           small_map_UI("alley-left")
-          ),
-
-        startExpanded = TRUE),
+          )),
       
       hr(),
       menuItem(i18n$t("Place explorer"), tabName = "place_explorer"),

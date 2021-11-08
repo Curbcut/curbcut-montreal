@@ -81,7 +81,8 @@ census_geos <- census_retrieval("CA1996")
 rm(census_housing, census_identity, census_income, census_transport,
    census_employment, census_education, vars_to_remove, census_retrieval)
 
-# Interpolate census geometries -------------------------------------------
+
+# Interpolate DA/CT/CSD geometries ----------------------------------------
 
 interpolate_census <- function(new_data, principal_data) {
   
@@ -110,17 +111,24 @@ interpolate_census <- function(new_data, principal_data) {
     st_intersection(., new_data) %>% 
     mutate(area_prop = st_area(geometry) / area) %>% 
     mutate(across(all_of(agg_list), ~{.x * units::drop_units(area_prop)})) %>% 
+    group_by(ID.1) %>% 
+    filter(sum(units::drop_units(area_prop)) >= 0.5) %>% 
+    ungroup() %>% 
     select(-ID.1, -area, -area_prop) %>% 
     st_drop_geometry() %>% 
     group_by(ID) %>%
     summarize(
-      housing_rent_avg_dollar = weighted.mean(housing_rent_avg_dollar, rent_avg_total, na.rm = TRUE),
-      housing_value_avg_dollar = weighted.mean(housing_value_avg_dollar, value_avg_total, na.rm = TRUE),
-      inc_median_dollar = weighted.mean(inc_median_dollar, inc_median_total, na.rm = TRUE),
-      inc_low_income_prop = weighted.mean(inc_low_income_prop, inc_low_income_total, na.rm = TRUE),
-      across(all_of(agg_list), sum, na.rm = TRUE)) %>% 
-    mutate(across(where(is.numeric), ~replace(., is.nan(.), 0))) %>% 
-    mutate(across(where(is.numeric), ~replace(., is.infinite(.), NA))) %>% 
+      housing_rent_avg_dollar = weighted.mean(housing_rent_avg_dollar, 
+                                              rent_avg_total, na.rm = TRUE),
+      housing_value_avg_dollar = weighted.mean(housing_value_avg_dollar, 
+                                               value_avg_total, na.rm = TRUE),
+      inc_median_dollar = weighted.mean(inc_median_dollar, inc_median_total, 
+                                        na.rm = TRUE),
+      inc_low_income_prop = weighted.mean(inc_low_income_prop, 
+                                          inc_low_income_total, na.rm = TRUE),
+      across(all_of(agg_list), sum_na)) %>% 
+    mutate(across(where(is.numeric), ~replace(., is.nan(.), NA))) %>%
+    mutate(across(where(is.numeric), ~replace(., is.infinite(.), NA))) %>%
     mutate(across(all_of(agg_list), ~if_else(.x < 5, 0, .x)))
   
   new_data
@@ -139,7 +147,8 @@ CSD_census <- interpolate_census(census_geos$CSD_census, borough)
 # Get area for DA geometry
 DA_census_n <-
   DA_census %>% 
-  left_join(select(DA, ID, CSDUID), ., by = "ID") %>% 
+  left_join(select(DA, ID, CSDUID), by = "ID") %>% 
+  st_as_sf() %>% 
   st_transform(32618) %>% 
   mutate(area = st_area(geometry)) %>% 
   st_set_agr("constant")
@@ -166,13 +175,17 @@ borough_census <-
   st_drop_geometry() %>% 
   group_by(ID = CSDUID) %>%
   summarize(
-    housing_rent_avg_dollar = weighted.mean(housing_rent_avg_dollar, rent_avg_total, na.rm = TRUE),
-    housing_value_avg_dollar = weighted.mean(housing_value_avg_dollar, value_avg_total, na.rm = TRUE),
-    inc_median_dollar = weighted.mean(inc_median_dollar, inc_median_total, na.rm = TRUE),
-    inc_low_income_prop = weighted.mean(inc_low_income_prop, inc_low_income_total, na.rm = TRUE),
-    across(all_of(agg_list), sum, na.rm = TRUE)) %>% 
-  mutate(across(where(is.numeric), ~replace(., is.nan(.), 0))) %>% 
-  mutate(across(where(is.numeric), ~replace(., is.infinite(.), NA))) %>% 
+    housing_rent_avg_dollar = weighted.mean(housing_rent_avg_dollar, 
+                                            rent_avg_total, na.rm = TRUE),
+    housing_value_avg_dollar = weighted.mean(housing_value_avg_dollar, 
+                                             value_avg_total, na.rm = TRUE),
+    inc_median_dollar = weighted.mean(inc_median_dollar, inc_median_total, 
+                                      na.rm = TRUE),
+    inc_low_income_prop = weighted.mean(inc_low_income_prop, 
+                                        inc_low_income_total, na.rm = TRUE),
+    across(all_of(agg_list), sum_na)) %>% 
+  mutate(across(where(is.numeric), ~replace(., is.nan(.), NA))) %>%
+  mutate(across(where(is.numeric), ~replace(., is.infinite(.), NA))) %>%
   mutate(across(all_of(agg_list), ~if_else(.x < 5, 0, .x))) %>%
   filter(str_starts(ID, "2466023"))
 
@@ -205,7 +218,8 @@ process_census_data <- function(data) {
   var_list <- c(var_list, "inc_median_dollar", "inc_50_prop", "inc_100_prop", 
                 "inc_high_prop", "inc_low_income_prop")
   # Process identity
-  var_list <- c(var_list, "iden_imm_prop", "iden_imm_new_prop", "iden_vm_prop", "iden_aboriginal_prop")
+  var_list <- c(var_list, "iden_imm_prop", "iden_imm_new_prop", "iden_vm_prop", 
+                "iden_aboriginal_prop")
   # Process transport
   var_list <- c(var_list, "trans_car_prop", "trans_walk_or_bike_prop", 
                 "trans_transit_prop")
@@ -220,11 +234,14 @@ process_census_data <- function(data) {
            housing_repairs_prop = major_repairs / tenure_households,
            housing_stress_renter_prop = housing_stress_renter / rent_avg_total,
            housing_stress_owner_prop = housing_stress_owner / value_avg_total,
-           housing_mobility_one_prop = housing_mobility_one / housing_mobility_one_total,
-           housing_mobility_five_prop = housing_mobility_five / housing_mobility_five_total) %>% 
+           housing_mobility_one_prop = housing_mobility_one / 
+             housing_mobility_one_total,
+           housing_mobility_five_prop = housing_mobility_five / 
+             housing_mobility_five_total) %>% 
     select(-c(rent_avg_total, tenure_households, value_avg_total, major_repairs, 
               housing_stress_renter, housing_stress_owner, housing_mobility_one,
-              housing_mobility_one_total, housing_mobility_five, housing_mobility_five_total)) %>% 
+              housing_mobility_one_total, housing_mobility_five, 
+              housing_mobility_five_total)) %>% 
     # income
     mutate(inc_50_prop = (inc_10 + inc_20 + inc_30 +
                             inc_40 + inc_50) / inc_median_total,
@@ -243,11 +260,18 @@ process_census_data <- function(data) {
     select(-c(imm, imm_new, imm_total, iden_vm, iden_vm_total,
               iden_aboriginal, iden_aboriginal_total)) %>% 
     # transport
-    mutate(trans_car_prop = (trans_male_driver + trans_male_passenger + trans_female_driver + trans_female_passenger) / trans_total,
-           trans_walk_or_bike_prop = (trans_male_walk + trans_male_bike + trans_female_walk + trans_female_bike) / trans_total,
-           trans_transit_prop = (trans_male_transit + trans_female_transit) / trans_total) %>% 
-    select(-c(trans_total, trans_male_driver, trans_male_passenger, trans_male_transit, 
-              trans_male_walk, trans_male_bike, trans_female_driver, trans_female_passenger,
+    mutate(trans_car_prop = (trans_male_driver + trans_male_passenger + 
+                               trans_female_driver + trans_female_passenger) / 
+             trans_total,
+           trans_walk_or_bike_prop = (trans_male_walk + trans_male_bike + 
+                                        trans_female_walk + trans_female_bike) / 
+             trans_total,
+           trans_transit_prop = (trans_male_transit + trans_female_transit) / 
+             trans_total) %>% 
+    select(-c(trans_total, trans_male_driver, trans_male_passenger, 
+              trans_male_transit, 
+              trans_male_walk, trans_male_bike, trans_female_driver, 
+              trans_female_passenger,
               trans_female_transit, trans_female_walk, trans_female_bike)) %>% 
     # education
     mutate(edu_bachelor_above_prop = edu_bachelor_above / edu_total,
@@ -257,7 +281,8 @@ process_census_data <- function(data) {
     mutate(across(where(is.numeric), ~replace(., is.nan(.), NA))) %>% 
     mutate(across(where(is.numeric), ~replace(., is.infinite(.), NA))) %>% 
     mutate(across(all_of(var_list), ntile, 3, .names = "{.col}_q3")) %>% 
-    rename_with(~paste0(.x, "_", year_census), all_of(c(var_list, paste0(var_list, "_q3"))))
+    rename_with(~paste0(.x, "_", year_census), 
+                all_of(c(var_list, paste0(var_list, "_q3"))))
   
   data
   
@@ -282,12 +307,44 @@ grid_census <-
   process_census_data()
 
 
+# Drop a variable if it's NAs at all scales -------------------------------
+
+var_to_drop <- 
+  c(DA_census %>% 
+      select_if(~all(is.na(.))) %>% 
+      names(),
+    CT_census %>% 
+      select_if(~all(is.na(.))) %>% 
+      names(),
+    borough_census %>% 
+      select_if(~all(is.na(.))) %>% 
+      names()) %>% tibble(var = .) %>% 
+  mutate(var = str_remove(var, "_\\d{4}$")) %>% 
+  count(var) %>% 
+  filter(n == 3) %>% 
+  pull(var)
+
+DA_census <- 
+  DA_census %>% select(!starts_with(var_to_drop))
+
+CT_census <- 
+  CT_census %>% select(!starts_with(var_to_drop))
+
+borough_census <- 
+  borough_census %>% select(!starts_with(var_to_drop))
+
+grid_census <- 
+  grid_census %>% select(!starts_with(var_to_drop))
+
+
 # Assign new variables to principal dfs -----------------------------------
 
 DA <- left_join(DA, DA_census, by = "ID")
 CT <- left_join(CT, CT_census, by = "ID")
 borough <- left_join(borough, borough_census, by = "ID")
 grid <- left_join(grid, grid_census, by = "ID")
+building <- left_join(building, DA_census, by = c("DAUID" = "ID"))
+street <- left_join(street, DA_census, by = c("DAUID" = "ID"))
 
 
 # Cleanup -----------------------------------------------------------------

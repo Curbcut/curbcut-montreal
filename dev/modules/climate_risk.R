@@ -19,9 +19,14 @@ climate_risk <-
         transmute(
           ID = seq_along(geometry),
           vulnerability = case_when(
-            VULN_CAT == "Non-significative" ~ 0, VULN_CAT == "Mineure" ~ 1, 
-            VULN_CAT == "Modérée" ~ 2, VULN_CAT == "Élevée" ~ 3, 
-            VULN_CAT == "Majeure" ~ 4)) %>% 
+            VULN_CAT == "Insignificant" ~ 0, VULN_CAT == "Minor" ~ 1, 
+            VULN_CAT == "Moderate" ~ 2, VULN_CAT == "Elevated" ~ 3, 
+            VULN_CAT == "Major" ~ 4)) %>% 
+        
+        # Should this be EN or FR?
+            # VULN_CAT == "Non-significative" ~ 0, VULN_CAT == "Mineure" ~ 1, 
+            # VULN_CAT == "Modérée" ~ 2, VULN_CAT == "Élevée" ~ 3, 
+            # VULN_CAT == "Majeure" ~ 4)) %>% 
         set_names(c("ID", .y, "geometry"))
     })
 
@@ -78,7 +83,9 @@ climate_census_fun <- function(x) {
     st_drop_geometry() %>% 
     group_by(ID) %>% 
     summarize(across(drought_ind:heat_wave_ind, ~{
-      if (sum(!is.na(.x)) > 0) weighted.mean(.x, area_int, na.rm = TRUE) else NA_real_}), 
+      if (sum(!is.na(.x)) > 0) {
+        weighted.mean(.x, area_int, na.rm = TRUE) 
+        } else NA_real_}), 
       .groups = "drop") %>% 
     left_join(x, ., by = "ID") %>% 
     mutate(across(c(destructive_storms_ind, drought_ind, heat_wave_ind, 
@@ -93,6 +100,21 @@ CT <- climate_census_fun(CT)
 DA <- climate_census_fun(DA)
 
 rm(climate_risk, climate_census_fun)
+
+
+# Add climate data risk to building and street ----------------------------
+
+building <- 
+  building |> 
+  left_join(select(st_drop_geometry(grid), grid_ID = ID, 
+                   drought_ind:heat_wave_ind_q3), by = "grid_ID") |> 
+  relocate(geometry, .after = last_col())
+
+street <- 
+  street |> 
+  left_join(select(st_drop_geometry(grid), grid_ID = ID, 
+                   drought_ind:heat_wave_ind_q3), by = "grid_ID") |> 
+  relocate(geometry, .after = last_col())
 
 
 # Add variable explanations -----------------------------------------------
@@ -125,4 +147,4 @@ var_exp <-
     explanation = paste0("the vulnerability to climate-change related ",
                          "heat wave events"))
   
-# To save output, run dev/build_geometries.R, which calls this script
+# To save output, run dev/build_data.R, which calls this script
