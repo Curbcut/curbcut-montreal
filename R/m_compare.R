@@ -14,8 +14,11 @@ compare_UI <- function(id, var_list) {
     conditionalPanel(
       condition = "output.hide_status == 1", ns = NS(id),
       select_var_UI(NS(id, "compare"), var_list),
-      small_map_UI(NS(id, "right")))
+      small_map_UI(NS(id, "right"))),
     
+    conditionalPanel(
+      condition = "output.show_panel == true", ns = NS(id),
+      hr())
   )
 }
 

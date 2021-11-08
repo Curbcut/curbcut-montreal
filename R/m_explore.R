@@ -19,7 +19,6 @@
 explore_UI <- function(id) {
   
   tagList(
-    hr(),
     fluidRow(column(width = 7, h4(i18n$t("Explore"))),
              column(width = 5, align = "right", 
                     actionLink(inputId = NS(id, "hide"), 
