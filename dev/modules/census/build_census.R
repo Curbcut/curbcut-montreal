@@ -2,11 +2,20 @@
 
 # This script relies on objects created in dev/build_geometries.R
 
-# Global needed variables -------------------------------------------------
+
+# Global needed variables and functions -----------------------------------
 
 newest_census_year <- "2016"
 
-
+# If all rows are NAs, return NA. If not, use sum na.rm = T
+sum_na <- function(x) {
+  if(all(is.na(x))){
+    out <- NA
+  } else {
+    out <- sum(x, na.rm = T)
+  }
+  return(as.numeric(out))
+}
 
 # Add census data by topic ------------------------------------------------
 

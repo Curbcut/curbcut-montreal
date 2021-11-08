@@ -284,7 +284,7 @@ process_census_data <- function(data) {
                 all_of(c(var_list, paste0(var_list, "_q3"))))
   
   data <- st_set_agr(data, "constant") %>%
-    mutate(across(where(is.numeric), ~replace(., is.nan(.), 0))) %>%
+    mutate(across(where(is.numeric), ~replace(., is.nan(.), NA))) %>%
     mutate(across(where(is.numeric), ~replace(., is.infinite(.), NA)))
   
   data
@@ -341,7 +341,7 @@ borough <-
       weighted.mean(housing_stress_owner_prop, value_=avg_total, na.rm = TRUE),
     inc_limat_prop = weighted.mean(inc_limat_prop, inc_limat_total, 
                                         na.rm = TRUE),
-    across(all_of(agg_list), sum, na.rm = TRUE), 
+    across(all_of(agg_list), sum_na), 
     .groups = "drop") %>% 
   inner_join(borough, ., by = "ID") %>% 
   relocate(geometry, .after = last_col())
@@ -399,7 +399,7 @@ grid_census <-
       weighted.mean(housing_stress_owner_prop, value_avg_total, na.rm = TRUE),
     inc_limat_prop = 
       weighted.mean(inc_limat_prop, inc_limat_total, na.rm = TRUE),
-    across(all_of(agg_list), sum, na.rm = TRUE)) %>% 
+    across(all_of(agg_list), sum_na)) %>% 
   mutate(across(where(is.numeric), ~replace(., is.nan(.), NA)))
 
 grid <- 
