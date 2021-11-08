@@ -16,15 +16,15 @@ crash_slider <- list(
 
 # Dropdown menu
 var_list_left_crash_1 <- 
+  list("Count" = " ",
+       "Per sq km" = "prop_area",
+       "Per 1000 residents" = "prop_pop")
+
+var_list_left_crash_2 <- 
   list("Total" = "total",
        "Pedestrian" = "ped",
        "Cyclist" = "cyc",
        "Other" = "other")
-
-var_list_left_crash_2 <- 
-  list("Count" = " ",
-       "Per sq km" = "prop_area",
-       "Per 1000 residents" = "prop_pop")
 
 var_list_right_crash <- 
   list("----" = " ", 
@@ -49,3 +49,14 @@ var_list_right_crash <-
          "15 minutes to work (%)" = "trans_t_15_prop",
          "15-45 minutes to work (%)" = "trans_t_45_prop",
          "More than 45 minutes to work (%)" = "trans_t_45_plus_prop"))
+
+# Mapdeck pointcloud legend
+crash_legend <- 
+  mapdeck_legend(
+    legend_element(
+      variables = c("Pedestrian", "Cyclist", "Other", "Unknown"),
+      colours = c("#91BD9AEE","#6C83B5EE", "#F39D60EE", "#E8E8E8EE"),
+      colour_type = "fill",
+      variable_type = "category",
+      title = "Crash type")
+  )

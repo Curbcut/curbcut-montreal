@@ -8,19 +8,22 @@ crash_UI <- function(id) {
           title_UI(NS(id, "title"),
                    actionLink(NS(id, "crash_rmd"), label = "Analysis"),
                    hr(),
-                   select_var_UI(NS(id, "left_1"), var_list_left_crash_1),
-                   select_var_UI(NS(id, "left_2"), var_list_left_crash_2),
+                   column(6, select_var_UI(NS(id, "left_1"), var_list_left_crash_1,
+                                           label = i18n$t("Density preferred: "))),
+                   column(6, select_var_UI(NS(id, "left_2"), var_list_left_crash_2,
+                                 label = i18n$t("Type of crash: "))),
                    slider_UI(NS(id, "left"), 
                              slider_min = crash_slider$min, 
                              slider_max = crash_slider$max, 
                              slider_interval = crash_slider$interval, 
                              slider_init = crash_slider$init),
-                   htmlOutput(NS(id, "year_displayed_right"))
+                   htmlOutput(NS(id, "year_displayed_right")),
+                   htmlOutput(NS(id, "eso"))
                    ),
           right_panel(id, 
                       compare_UI(NS(id, "crash"), var_list_right_crash),
-                      # explore_UI(NS(id, "explore")),
-                      # dyk_UI(NS(id, "dyk"))
+                      explore_UI(NS(id, "explore")),
+                      dyk_UI(NS(id, "dyk"))
                       ),
           legend_bivar_UI(NS(id, "crash")))
 }
@@ -33,6 +36,14 @@ crash_server <- function(id) {
     
     # Title bar
     title_server("title", "crash")
+    
+    output$eso <- renderText({
+      str_glue("{var_left_crash()} et {input$geography} {choropleth()}")
+    })
+    
+    # If COUNT is selected, out_geom is point data. If not, choropleth 
+    choropleth <- reactive(if (var_left_crash_1() != " ") TRUE else FALSE)
+    
     
     # Year displayed disclaimer
     output$year_displayed_right <- renderText({
@@ -52,46 +63,53 @@ crash_server <- function(id) {
       mapdeck(
         style = map_style, token = token_crash,
         zoom = map_zoom, location = map_location) %>%
-        add_polygon(data = borough %>%
-                      mutate(group = paste(crash_ped_prop_area_q3_2019, "- 1")) %>%
-                      left_join(colour_borough, by = "group"),
-                    stroke_width = 100, stroke_colour = "#FFFFFF", fill_colour = "fill", 
-                    update_view = FALSE, id = "ID", auto_highlight = TRUE,
-                    highlight_colour = "#FFFFFF90") #%>%
-        # add_heatmap(data = crash, update_view = FALSE)
+        add_heatmap(data = crash, update_view = FALSE,
+                    colour_range = c("#AECBB4", "#91BD9A", "#73AE80",
+                                     "#70999B", "#6E8EA8", "#6C83B5"),
+                    intensity = 2)
     })
     
     # Zoom level
-    observeEvent(input$map_view_change$zoom, {
-      rv_crash$zoom <- case_when(#input$map_view_change$zoom >= 14 ~ "DA_2",
-                                 input$map_view_change$zoom >= 12 ~ "DA",
-                                 input$map_view_change$zoom >= 10.5 ~ "CT",
-                                 TRUE ~ "borough")
-    })
+    observeEvent({
+      input$geography
+      input$map_view_change$zoom}, {
+          rv_crash$zoom <- case_when(
+            input$map_view_change$zoom >= 14 ~ "DA",
+            input$map_view_change$zoom >= 12 ~ "DA",
+            input$map_view_change$zoom >= 10.5 ~ "CT",
+            TRUE ~ "borough")
+  })
     
+    show_panel <- reactive(if (choropleth()) TRUE else FALSE)
     
     # Compare panel
     var_right_crash_1 <- compare_server("crash", var_list_right_crash,
-                                      reactive(rv_crash$zoom))
+                                        reactive(rv_crash$zoom), 
+                                        show_panel = show_panel
+                                        )
     
     var_right_crash <- reactive({
-      if (var_right_crash_1() != " ") {
+      
+      # if (show_panel == T) {
         
-        var <- paste(var_right_crash_1(), time(), sep = "_")
-        
-        if (!var %in% names(borough)) {
-          x <- borough %>% 
-            select(contains(str_remove(var, "_\\d{4}$"))) %>% 
-            names() %>% 
-            str_extract(., "\\d{4}$") %>% 
-            as.numeric() %>% na.omit()
-          closest_year <-  x[which.min(abs(x - time()))]
-          var <- paste0(str_remove(var, "_\\d{4}$"), "_", closest_year)
-        }
-        
-        var
-        
-      } else var_right_crash_1()
+        if (var_right_crash_1() != " ") {
+          
+          var <- paste(var_right_crash_1(), time(), sep = "_")
+          
+          if (!var %in% names(borough)) {
+            x <- borough %>% 
+              select(contains(str_remove(var, "_\\d{4}$"))) %>% 
+              names() %>% 
+              str_extract(., "\\d{4}$") %>% 
+              as.numeric() %>% na.omit()
+            closest_year <-  x[which.min(abs(x - time()))]
+            var <- paste0(str_remove(var, "_\\d{4}$"), "_", closest_year)
+          }
+          
+          var
+          
+        } else var_right_crash_1()
+      # } else " "
     })
     
     # Left variable servers
@@ -107,27 +125,43 @@ crash_server <- function(id) {
     var_left_crash <- reactive(
       stringr::str_remove(paste(
         "crash", 
-        var_left_crash_1(), 
         var_left_crash_2(), 
+        var_left_crash_1(), 
         time(), 
         sep = "_"), "_ ")
     )
     
     # Data 
-    data_crash <- data_server("crash", var_left_crash, var_right_crash, 
+    data_crash_1 <- data_server("crash", var_left_crash, var_right_crash,
                               reactive(rv_crash$zoom))
+    
+      
+    data_crash <- reactive({
+      if (choropleth()) {
+        data_crash_1()
+      } else {
+        (crash %>%
+           { if (var_left_crash_2() %in% unique(crash$type))
+             filter(., type == var_left_crash_2()) else .} %>%
+           filter(lubridate::year(date) == time())) %>%
+          mutate(fill = case_when(type == "ped" ~ "#91BD9AEE",
+                                  type == "cyc" ~ "#6C83B5EE",
+                                  type == "other" ~ "#F39D60EE",
+                                  TRUE ~ "#E8E8E8EE"))
+      }
+    })
+    
+    # Explore panel
+    explore_server("explore", data_crash_1, var_left_crash,
+                   var_right_crash, reactive(rv_crash$poly_selected),
+                   reactive(rv_crash$zoom), reactive("Crash"))
 
-    # # Explore panel
-    # explore_server("explore", data_canale, reactive("canale_ind"),
-    #                var_right_canale, reactive(rv_canale$poly_selected),
-    #                reactive(rv_canale$zoom), reactive("CanALE index"))
-    
     # Did-you-know panel
-    # dyk_server("dyk", reactive("alley_ind"), var_right_alley)
-    
-    # # Left map
+    dyk_server("dyk", var_left_crash, var_right_crash)
+
+    # Left map
     # small_map_server("left", reactive(paste0(
-    #   "left_", sub("_2", "", rv_canale$zoom), "_canale_ind")))
+    #   "left_", sub("_2", "", rv_canale$zoom), "_crash")))
     
     # Bivariate legend
     legend_bivar_server("crash", var_right_crash)
@@ -137,15 +171,14 @@ crash_server <- function(id) {
       var_left_crash()
       var_right_crash()
       rv_crash$zoom}, {
-        width <- switch(rv_crash$zoom, "borough" = 100, "CT" = 10, 2)
-        mapdeck_update(map_id = NS(id, "map")) %>%
-          add_polygon(
-            data = data_crash(), stroke_width = width,
-            stroke_colour = "#FFFFFF", fill_colour = "fill",
-            update_view = FALSE, id = "ID", auto_highlight = TRUE,
-            highlight_colour = "#FFFFFF90")
+        
+        map_change(NS(id, "map"),
+                   df = data_crash(),
+                   zoom = reactive(rv_crash$zoom),
+                   legend = crash_legend)
+        
       })
-    
+
     # Update poly_selected on click
     observeEvent(input$map_polygon_click, {
       lst <- jsonlite::fromJSON(input$map_polygon_click)

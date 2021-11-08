@@ -1627,7 +1627,7 @@ translation_fr <-
   add_row(en = "Other",
           fr = "Autre") %>% 
   add_row(en = "Count",
-          fr = "Comte") %>% 
+          fr = "Compte") %>% 
   add_row(en = "Per sq km",
           fr = "Par kilomètre carré") %>% 
   add_row(en = "Per 1000 residents",

@@ -1,7 +1,7 @@
 #### SELECT VARIABLE MODULE ####################################################
 
-select_var_UI <- function(id, var_list) {
-  pickerInput(NS(id, "var"), label = NULL, choices = var_list)
+select_var_UI <- function(id, var_list, label = NULL) {
+  pickerInput(NS(id, "var"), label = label, choices = var_list)
 }
 
 select_var_server <- function(id, var_list, disabled_choices = NULL) {

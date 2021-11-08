@@ -78,9 +78,13 @@ canale_server <- function(id) {
     # Update map in response to variable changes or zooming
     observeEvent({
       var_right_canale()
-      rv_canale$zoom}, map_change(id = NS(id,"map"), 
-                                  x = data_canale, 
-                                  zoom = reactive(rv_canale$zoom)))
+      rv_canale$zoom}, {
+        
+        map_change(NS(id, "map"), 
+                   df = data_canale(), 
+                   zoom = reactive(rv_canale$zoom))
+
+        })
 
     # Update poly_selected on click
     observeEvent(input$map_polygon_click, {
