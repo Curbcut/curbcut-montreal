@@ -88,7 +88,7 @@ qsave(crash, file = "data/crash.qs")
 # Produce left and right maps ---------------------------------------------
 
 library(patchwork)
-source("dev/geometries/colours.R")
+source("dev/other/colours.R")
 
 # Dependent script: needs 'borough' object
-source("dev/geometries/produce_maps.R")
+source("dev/other/produce_maps.R")
