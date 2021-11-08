@@ -63,7 +63,6 @@ canale_server <- function(id) {
                    var_right = var_right_canale, 
                    select = reactive(rv_canale$poly_selected),
                    zoom = reactive(rv_canale$zoom), 
-                   var_left_title = reactive("CanALE index"),
                    build_str_as_DA = TRUE)
 
     # Did-you-know panel
@@ -71,7 +70,7 @@ canale_server <- function(id) {
 
     # Left map
     small_map_server("left", reactive(paste0(
-      "left_", sub("_2", "", rv_canale$zoom), "_canale_ind")))
+      "left_", rv_canale$zoom, "_", canale_ind)))
     
     # Bivariate legend
     legend_bivar_server("canale", var_right_canale)

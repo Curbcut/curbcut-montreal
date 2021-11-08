@@ -19,9 +19,14 @@ climate_risk <-
         transmute(
           ID = seq_along(geometry),
           vulnerability = case_when(
-            VULN_CAT == "Non-significative" ~ 0, VULN_CAT == "Mineure" ~ 1, 
-            VULN_CAT == "Modérée" ~ 2, VULN_CAT == "Élevée" ~ 3, 
-            VULN_CAT == "Majeure" ~ 4)) %>% 
+            VULN_CAT == "Insignificant" ~ 0, VULN_CAT == "Minor" ~ 1, 
+            VULN_CAT == "Moderate" ~ 2, VULN_CAT == "Elevated" ~ 3, 
+            VULN_CAT == "Major" ~ 4)) %>% 
+        
+        # Should this be EN or FR?
+            # VULN_CAT == "Non-significative" ~ 0, VULN_CAT == "Mineure" ~ 1, 
+            # VULN_CAT == "Modérée" ~ 2, VULN_CAT == "Élevée" ~ 3, 
+            # VULN_CAT == "Majeure" ~ 4)) %>% 
         set_names(c("ID", .y, "geometry"))
     })
 

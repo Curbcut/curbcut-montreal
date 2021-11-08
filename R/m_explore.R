@@ -10,18 +10,11 @@
 #' of a row in the input data frame (`x`) which has been selected.
 #' @param zoom A reactive which resolves to a character string giving the
 #' current zoom scale. Meaningful values are "borough", "CT", "DA" and "grid".
-#' @param title A non-reactive character string used for the x-axis label
-#' in the graph and the name of var_left in the info table. Needs to be replaced
-#' with var_left_title and var_right_title as reactives.
-#' @param var_left_title,var_right_title A reactive which resolves to a 
-#' character string representing the plain-language description of the left and 
-#' right variables to be analyzed. These will be used for axis labels in the
-#' explore graph, and for textual description in the info table.
 #' @param var_left_label,var_right_label A reactive which resolves to a named
 #' character vector giving labels for the variable values of var_left or
 #' var_right.
-#' @param build_str_as_DA A logical scalar. Should the "building" zoom level 
-#' show graphs and text for the DA zoom level instead?
+#' @param build_str_as_DA A logical scalar. Should the "building" and "street"
+#' zoom levels show graphs and text for the DA zoom level instead?
 
 explore_UI <- function(id) {
   
@@ -44,7 +37,6 @@ explore_UI <- function(id) {
 }
 
 explore_server <- function(id, x, var_left, var_right, select, zoom, 
-                           var_left_title, var_right_title = NULL,
                            var_left_label = NULL, var_right_label = NULL,
                            build_str_as_DA = TRUE) {
   
@@ -53,8 +45,7 @@ explore_server <- function(id, x, var_left, var_right, select, zoom,
   stopifnot(is.reactive(var_right))
   stopifnot(is.reactive(select))
   stopifnot(is.reactive(zoom))
-  stopifnot(is.reactive(var_left_title))
-  
+
   moduleServer(id, function(input, output, session) {
     
     # Get var_type
@@ -74,8 +65,6 @@ explore_server <- function(id, x, var_left, var_right, select, zoom,
                       var_right = var_right, 
                       select = select, 
                       zoom = zoom, 
-                      var_left_title = var_left_title, 
-                      var_right_title = var_right_title,
                       var_left_label = var_left_label, 
                       var_right_label = var_right_label,
                       build_str_as_DA = build_str_as_DA)
@@ -88,7 +77,6 @@ explore_server <- function(id, x, var_left, var_right, select, zoom,
                          var_right = var_right, 
                          select = select, 
                          zoom = zoom, 
-                         var_left_title = var_left_title, 
                          var_left_label = var_left_label,
                          var_right_label = var_right_label,
                          build_str_as_DA = build_str_as_DA)

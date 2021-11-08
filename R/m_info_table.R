@@ -14,8 +14,7 @@ info_table_UI <- function(id) {
   }
 
 info_table_server <- function(id, x, var_type, var_left, var_right, select, 
-                              zoom, var_left_title, var_right_title,
-                              var_left_label, var_right_label, 
+                              zoom, var_left_label, var_right_label, 
                               build_str_as_DA) {
   
   stopifnot(is.reactive(x))
@@ -24,20 +23,22 @@ info_table_server <- function(id, x, var_type, var_left, var_right, select,
   stopifnot(is.reactive(var_right))
   stopifnot(is.reactive(select))
   stopifnot(is.reactive(zoom))
-  stopifnot(is.reactive(var_left_title))
-  
+
   moduleServer(id, function(input, output, session) {
     
     output$info_table <- renderUI({
       
-      # Get data list
-      z <- make_info_table_data(id, x, var_type, var_left, var_right, select, 
-                                zoom, var_left_title, var_right_title,
-                                var_left_label, var_right_label, 
-                                build_str_as_DA)
+      ## Get data list ---------------------------------------------------------
       
-      print("INFO_TABLE_DATA")
-      print(z)
+      z <- make_info_table_data(id, x, var_type, var_left, var_right, select, 
+                                zoom, var_left_label, var_right_label, 
+                                build_str_as_DA)
+
+      # print("DATA_LIST")
+      # print(z)
+      
+      
+      ## Handle NAs ------------------------------------------------------------
       
       # Special case for Kahnawake
       if (z$var_type == "kah_na") {
@@ -63,7 +64,17 @@ info_table_server <- function(id, x, var_type, var_left, var_right, select,
       if (z$var_type == "uni_na") {
         out <- HTML(glue(sus_translate(paste0(
           "{z$place_name} has no data available on {z$exp_left}."))))
-        }
+      }
+      
+      # Bivariate, NA selection
+      if (z$var_type == "bi_na") {
+        out <- HTML(glue(sus_translate(paste0(
+          "{z$place_name} has no data available on {z$exp_left} and ",
+          "{z$exp_right}."))))
+      }
+      
+      
+      ## Univariate cases ------------------------------------------------------
       
       # Univariate, quantitative, no selection
       if (z$var_type == "uni_quant_all") {
@@ -102,171 +113,85 @@ info_table_server <- function(id, x, var_type, var_left, var_right, select,
         out <- HTML(glue(sus_translate(paste0(
           "<strong>{z$place_heading}</strong>",
           "<p>{z$place_name} has a population of ",
-          "{prettyNum(round(z$selection$population), ',')} and a {z$title_left} ",
-          "score of {round(z$poly_value, 2)}, which is {z$larger_smaller} ",
-          "the region-wide median of {z$median_val}.",
-          "<p>{z$place_name} has {z$poor_strong} potential for active ",
-          "living, with a {z$title_left} score higher than {z$percentile}% ",
-          "of {z$scale_plural} in the Montreal region."))))
+          "{prettyNum(round(z$selection$population), ',')} and a ",
+          "'{z$title_left}' value of '{z$poly_value}', which is shared by ",
+          "{z$other_with_value}% of {z$scale_plural} in the Montreal region.")
+          )))
       }
+      
+      
+      ## Bivariate cases -------------------------------------------------------
       
       # Bivariate, quantitative, no selection
       if (z$var_type == "bi_quantxy_all") {
         # If correlation is close to zero
         if (z$correlation < 0.05 && z$correlation > -0.05) {
           out <- HTML(glue(sus_translate(paste0(
-            "<p>'{z$var_name}' is {z$exp_right}.",
-            "<p>The {z$title} has effectively no correlation ",
+            "<p>'{z$title_right}' is {z$exp_right}.",
+            "<p>The {z$title_left} has effectively no correlation ",
             "({z$correlation}) with {z$exp_right} at the ",
             "{z$scale_singular} scale.",
             "<p>This means that, at the {z$scale_singular} scale, ",
             "there is no relationship between the two variables."))))
           } else {
             out <- HTML(glue(sus_translate(paste0(
-              "<p>'{z$var_name}' is {z$exp_right}.",
-              "<p>The {z$title} has a {z$strong_weak} {z$pos_neg} ",
+              if (z$strong_weak == "strong") "<p><b>STRONG CORRELATION</b></p>",
+              "<p>'{z$title_right}' is {z$exp_right}.",
+              "<p>The {z$title_left} has a {z$strong_weak} {z$pos_neg} ",
               "correlation ({z$correlation}) with {z$exp_right} at ",
               "the {z$scale_singular} scale.",
               "<p>This means that, in general, {z$scale_plural} with higher ",
-              "potential for active living tend to have {z$higher_lower} ",
-              "values for '{z$tolower(var_name)}', {z$high_low_disclaimer}."))))
+              "values for '{z$title_left}' tend to have {z$higher_lower} ",
+              "values for '{z$title_right}', {z$high_low_disclaimer}."))))
             }
-
-        return(out)
       }
-
-      # var_name <- sus_translate(variable_explanations %>% 
-      #                               filter(var_code == var_right()) %>%
-      #                               pull(var_name))
-      #   
-      #   correlation <- 
-      #     cor(x()$left_var_full, x()$right_var_full, use = "complete.obs") %>% 
-      #     round(2)
-      #   
-      #   pos_neg <- if_else(correlation > 0, sus_translate("positive"), 
-      #                      sus_translate("negative"))
-      #   
-      #   strong_weak <- case_when(
-      #     abs(correlation) > 0.6 ~ sus_translate("strong"),
-      #     abs(correlation) > 0.3 ~ sus_translate("moderate"),
-      #     TRUE ~ "weak")
-      #   
-      #   higher_lower <- if_else(pos_neg == sus_translate("positive"),
-      #                           sus_translate("higher"),
-      #                           sus_translate("lower"))
-      #   
-      #   high_low_disclaimer <- case_when(
-      #     strong_weak == sus_translate("strong") ~ 
-      #       sus_translate("with only a few exceptions"),
-      #     strong_weak == sus_translate("moderate") ~ 
-      #       sus_translate("although with some exceptions"),
-      #     strong_weak == sus_translate("weak") ~ 
-      #       sus_translate("although with many exceptions"))
-      #   
-      #   # Case for no poly selected
-      #   if (is.na(select())) {
-      #     # If correlation is close to zero
-      #     if (correlation < 0.05 && correlation > -0.05) {
-      #       HTML(
-      #         glue(sus_translate(paste0(
-      #           "<p>'{var_name}' is {z$exp_right}.",
-      #           "<p>The {z$title} has effectively no correlation ",
-      #           "({correlation}) with {z$exp_right} at the ",
-      #           "{z$scale_singular} scale.",
-      #           "<p>This means that, at the {z$scale_singular} scale, ",
-      #           "there is no relationship between the two variables."
-      #         )))
-      #       )
-      #     } else {
-      #       HTML(glue(sus_translate(paste0(
-      #         "<p>'{var_name}' is {z$exp_right}.",
-      #         "<p>The {z$title} has a {strong_weak} {pos_neg} ",
-      #         "correlation ({correlation}) with {z$exp_right} at ", 
-      #         "the {z$scale_singular} scale.",
-      #         "<p>This means that, in general, {z$scale_plural} with higher ",
-      #         "potential for active living tend to have {higher_lower} ",
-      #         "values for '{tolower(var_name)}', {high_low_disclaimer}.")))
-      #         )
-      #       }
-      #     
-      #     # Case for poly selected
-      #   } else {
-      #     dat <- x() %>% filter(ID == select())
-      #     
-      #     vec_2 <-
-      #       x() %>%
-      #       filter(!is.na(right_var), !is.na(right_var_full)) %>%
-      #       pull(right_var_full)
-      #     
-      #     poly_value_1 <- dat$left_var_full
-      #     poly_value_2 <- dat$right_var_full
-      #     
-      #     # print("polyselect")
-      #     place_name <- case_when(
-      #       z$scale_singular == sus_translate("borough/city") ~ 
-      #         glue("{dat$name}"),
-      #       z$scale_singular == sus_translate("census tract") ~
-      #         glue(sus_translate(paste0("Census tract {dat$name}"))),
-      #       z$scale_singular == sus_translate("dissemination area") ~
-      #         glue(sus_translate(paste0("Dissemination area {dat$name}")))
-      #     )
-      #     
-      #     if (dat$name_2 == "Borough" | dat$name_2 == "City") {
-      #       dat$name_2 <- sus_translate(glue("{dat$name_2}"))
-      #     }
-      #     
-      #     place_heading <-
-      #       if_else(z$scale_singular == sus_translate("borough/city"),
-      #               glue(sus_translate(paste0("{dat$name_2} of {z$place_name}"))),
-      #               glue("{z$place_name} ({dat$name_2})"))
-      #     
-      #     percentile_left <- 
-      #       round(length(vec[vec <= dat$left_var_full]) / length(vec) * 100)
-      #     
-      #     percentile_right <- round(length(vec_2[vec_2 <= dat$right_var_full]) / 
-      #                                 length(vec_2) * 100)
-      #     
-      #     relative_position <- case_when(
-      #       abs(percentile_left - percentile_right) > 50 ~ 
-      #         sus_translate("dramatically different"),
-      #       abs(percentile_left - percentile_right) > 30 ~ 
-      #         sus_translate("substantially different"),
-      #       abs(percentile_left - percentile_right) > 10 ~ 
-      #         sus_translate("considerably different"),
-      #       TRUE ~ sus_translate("similar")
-      #     )
-      #     
-      #     # Special case for Kahnawake
-      #     if (dat$ID %in% c(56, "4620832.00", 24670285)) {
-      #       HTML(
-      #         glue(sus_translate(paste0(
-      #           "<strong>Kahnawake Mohawk Territory</strong>",
-      #           "<p>Statistics Canada does not gather the same ",
-      #           "data for indigenous reserves in the Census as it does ",
-      #           "for other jurisdictions, so we cannot display findings ",
-      #           "here."
-      #         )))
-      #       )
-      #     } else {
-      #       HTML(
-      #         glue(sus_translate(paste0(
-      #           "<strong>{place_heading}</strong>",
-      #           
-      #           "<p>{z$place_name} has a population of ",
-      #           "{prettyNum(dat$population, ',')}, a {z$title} score ",
-      #           "of {round(poly_value_1, 2)}, and a '{tolower(var_name)}' ",
-      #           "value of {round(poly_value_2, 2)}. ",
-      #           
-      #           "<p>These two scores are {relative_position}, in relative ",
-      #           "terms. {z$place_name} has a {z$title} score higher ",
-      #           "than {percentile_left}% of {z$scale_plural} and ",
-      #           "a '{tolower(var_name)}' score higher than ",
-      #           "{percentile_right}% of {z$scale_plural} in the ",
-      #           "Montreal region.")))
-      #       )
-      #     }
       
-      return(out)  
+      # Bivariate, quantitative, valid selection
+      if (z$var_type == "bi_quantxy_select") {
+       
+        out <- HTML(glue(sus_translate(paste0(
+          "<strong>{z$place_heading}</strong>",
+          "<p>{z$place_name} has a population of ",
+          "{prettyNum(z$selection$population, ',')}, a '{z$title_left}' value ",
+          "of {round(z$selection$left_var, 2)}, and a '{z$title_right}' ",
+          "value of {round(z$selection$right_var, 2)}. ",
+          "<p>These two scores are {z$relative_position}, in relative ",
+          "terms. {z$place_name} has a '{z$title_left}' score higher ",
+          "than {z$percentile_left}% of {z$scale_plural} and ",
+          "a '{z$title_right}' score higher than ",
+          "{z$percentile_right}% of {z$scale_plural} in the ",
+          "Montreal region."))))
+      }
+      
+      # Bivariate, qualitative x, quantitative y, no selection
+      if (z$var_type == "bi_quanty_all") {
+        # If correlation is close to zero
+        if (z$correlation < 0.05 && z$correlation > -0.05) {
+          out <- HTML(glue(sus_translate(paste0(
+            "<p>'{z$title_right}' is {z$exp_right}.",
+            "<p>The {z$title_left} has effectively no correlation ",
+            "(Spearman's rho: {z$correlation}) with {z$exp_right} at the ",
+            "{z$scale_singular} scale.",
+            "<p>This means that, at the {z$scale_singular} scale, ",
+            "there is no relationship between the two variables."))))
+        } else {
+          out <- HTML(glue(sus_translate(paste0(
+            if (z$strong_weak == "strong") "<p><b>STRONG CORRELATION</b></p>",
+            "<p>'{z$title_right}' is {z$exp_right}.",
+            "<p>The {z$title_left} has a {z$strong_weak} {z$pos_neg} ",
+            "correlation (Spearman's rho: {z$correlation}) with {z$exp_right} ", 
+            "at the {z$scale_singular} scale.",
+            "<p>This means that, in general, {z$scale_plural} with higher ",
+            "values for '{z$title_left}' tend to have {z$higher_lower} ",
+            "values for '{z$title_right}', {z$high_low_disclaimer}."))))
+        }
+      }
+      
+      
+      ## Return output ---------------------------------------------------------
+      
+      return(out)
+      
       })
   })
 }

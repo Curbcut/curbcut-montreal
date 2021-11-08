@@ -5,7 +5,7 @@ explore_graph_UI <- function(id) {
 }
 
 explore_graph_server <- function(id, x, var_type, var_left, var_right, select, 
-                                 zoom, var_left_title, var_left_label = NULL, 
+                                 zoom, var_left_label = NULL, 
                                  var_right_label = NULL, build_str_as_DA = TRUE,
                                  plot_type = "auto") {
   
@@ -16,14 +16,13 @@ explore_graph_server <- function(id, x, var_type, var_left, var_right, select,
   stopifnot(is.reactive(var_right))
   stopifnot(is.reactive(select))
   stopifnot(is.reactive(zoom))
-  stopifnot(is.reactive(var_left_title))
-  
+
   # Server function
   moduleServer(id, function(input, output, session) {
     
     output$explore_graph <- renderPlot({
       
-      # Set convenience variables, and deal with building_as_DA ----------------
+      # Set convenience variables, and deal with build_str_as_DA ---------------
       
       if (!zoom() %in% c("building", "street")) build_str_as_DA <- FALSE
       
@@ -43,9 +42,12 @@ explore_graph_server <- function(id, x, var_type, var_left, var_right, select,
       
       left_var_num <- length(unique(dat$left_var))
       bin_number <- min(25, left_var_num)
-      var_name <- sus_translate(var_exp %>%
-                                  filter(var_code == var_right()) %>%
-                                  pull(var_name))
+      var_left_title <- sus_translate(var_exp %>%
+          filter(var_code == sub("_\\d{4}$", "", var_left())) %>%
+          pull(var_name))
+      var_right_title <- sus_translate(var_exp %>%
+          filter(var_code == sub("_\\d{4}$", "", var_right())) %>%
+          pull(var_name))
       na_select <- nrow(filter(dat, ID == select_id, !is.na(left_var_q3)))
       
       
@@ -103,9 +105,9 @@ explore_graph_server <- function(id, x, var_type, var_left, var_right, select,
         )
       
       # Prepare axis labels
-      labs_x <- list(labs(x = sus_translate(var_left_title()), y = NULL))
-      labs_xy <- list(labs(x = sus_translate(var_left_title()), 
-                           y = sus_translate(var_name)))
+      v_left_title <- 
+      labs_x <- list(labs(x = var_left_title, y = NULL))
+      labs_xy <- list(labs(x = var_left_title, y = var_right_title))
       
       # Prepare default theme
       theme_default <- list(

@@ -2,8 +2,7 @@
 #' info_table module.
 
 make_info_table_data <- function(id, x, var_type, var_left, var_right, select, 
-                                 zoom, var_left_title, var_right_title,
-                                 var_left_label, var_right_label, 
+                                 zoom, var_left_label, var_right_label, 
                                  build_str_as_DA) {
   
   ## Get modified df for building/street ---------------------------------------
@@ -29,12 +28,13 @@ make_info_table_data <- function(id, x, var_type, var_left, var_right, select,
   var_left <- str_remove(var_left(), "_\\d{4}$")
   var_right <- str_remove(var_right(), "_\\d{4}$")
   
-  title_left <-   sus_translate(var_exp[var_exp$var_code == var_left,]$var_name)
-  title_right <- " "
-  if (!is.null(var_right_title)) title_right <- sus_translate(var_right_title())
+  title_left <- sus_translate(var_exp[var_exp$var_code == var_left,]$var_name)
+  if (var_right != " ") title_right <- 
+    sus_translate(var_exp[var_exp$var_code == var_right,]$var_name)
   
   exp_left <- sus_translate(var_exp[var_exp$var_code == var_left,]$explanation)
-  exp_right <- sus_translate(var_exp[var_exp$var_code == var_right,]$explanation)
+  exp_right <- 
+    sus_translate(var_exp[var_exp$var_code == var_right,]$explanation)
   if (length(exp_left) == 0) warning("No var_exp: ", var_left, call. = FALSE)
   if (var_right != " " && length(exp_right) == 0) warning(
     "No var_exp: ", var_right, call. = FALSE)
@@ -48,10 +48,6 @@ make_info_table_data <- function(id, x, var_type, var_left, var_right, select,
   active_right <- active_left
   if (var_right != " ") active_right <- 
     nrow(filter(selection, !is.na(left_var_q3), !is.na(right_var)))
-  cat("active_left:", active_left, "\n")
-  cat("active_right:", active_right, "\n")
-  cat("selection$ID: ", selection$ID, "\n")
-  cat("selection$ID length: ", length(selection$ID), "\n")
 
   
   ## Special case for Kahnawake and Kanesatake ---------------------------------
@@ -177,30 +173,120 @@ make_info_table_data <- function(id, x, var_type, var_left, var_right, select,
   
   if (grepl("qual_", var_type())) {
     
-    min_val <- as.character(unique(min(vec_left, na.rm = TRUE)))
+    min_val <- as.character(unique(round(min(vec_left, na.rm = TRUE))))
     min_val <- tolower(var_left_label[names(var_left_label) == min_val])
-    max_val <- as.character(unique(max(vec_left, na.rm = TRUE)))
+    max_val <- as.character(unique(round(max(vec_left, na.rm = TRUE))))
     max_val <- tolower(var_left_label[names(var_left_label) == max_val])
-    mode_val <- table(vec_left) %>%
+    mode_val <- table(round(vec_left)) %>%
       sort(decreasing = TRUE) %>%
       `[`(1) %>%
       {var_left_label[names(var_left_label) == names(.)]} %>%
       tolower()
-    mode_val_2 <- table(vec_left) %>%
+    mode_val_2 <- table(round(vec_left)) %>%
       sort(decreasing = TRUE) %>%
       `[`(2) %>%
       {var_left_label[names(var_left_label) == names(.)]} %>%
       tolower()
-    mode_prop <- table(vec_left) %>%
+    mode_prop <- table(round(vec_left)) %>%
       sort(decreasing = TRUE) %>%
       {.[1] / sum(.)} %>%
       scales::percent(0.1)
-    mode_prop_2 <- table(vec_left) %>%
+    mode_prop_2 <- table(round(vec_left)) %>%
       sort(decreasing = TRUE) %>%
       {.[2] / sum(.)} %>%
       scales::percent(0.1)
     
   }
+  
+  
+  ## Descriptive statistics for univariate qual selection ----------------------
+  
+  if (var_type() == "uni_qual_select") {
+    poly_value <- tolower(var_left_label[names(var_left_label) == 
+                                           round(selection$left_var)])
+    other_with_value <- 
+      round(mean(dat$left_var == selection$left_var, na.rm = TRUE) * 100, 1)
+    
+  }
+  
+  ## Descriptive statistics for bivariate quantxy ------------------------------
+  
+  if (grepl("bi_quantxy", var_type())) {
+    
+      correlation <- 
+        round(cor(dat$left_var, dat$right_var, use = "complete.obs"), 2)
+      pos_neg <- if_else(correlation > 0, sus_translate("positive"), 
+                         sus_translate("negative"))
+      strong_weak <- case_when(
+        abs(correlation) > 0.6 ~ sus_translate("strong"),
+        abs(correlation) > 0.3 ~ sus_translate("moderate"),
+        TRUE ~ "weak")
+      higher_lower <- if_else(pos_neg == sus_translate("positive"),
+                              sus_translate("higher"),
+                              sus_translate("lower"))
+      high_low_disclaimer <- case_when(
+        strong_weak == sus_translate("strong") ~
+          sus_translate("with only a few exceptions"),
+        strong_weak == sus_translate("moderate") ~
+          sus_translate("although with some exceptions"),
+        strong_weak == sus_translate("weak") ~
+          sus_translate("although with many exceptions"))
+    
+  }
+  
+  
+  ## Descriptive statistics for bivariate quant selection ----------------------
+  
+  if (var_type() == "bi_quantxy_select") {
+   
+    vec_1 <- dat$left_var
+    vec_2 <- dat$right_var
+    
+    percentile_left <- round(length(vec_1[vec_1 <= selection$left_var]) / 
+                               length(vec_1) * 100)
+    percentile_right <- round(length(vec_2[vec_2 <= selection$right_var]) /
+                                length(vec_2) * 100)
+    
+    relative_position <- case_when(
+      abs(percentile_left - percentile_right) > 50 ~
+        sus_translate("dramatically different"),
+      abs(percentile_left - percentile_right) > 30 ~
+        sus_translate("substantially different"),
+      abs(percentile_left - percentile_right) > 10 ~
+        sus_translate("considerably different"),
+      TRUE ~ sus_translate("similar")
+    )
+    
+  }
+  
+  ## Descriptive statistics for quant/qual comparison --------------------------
+  
+  if (grepl("bi_quanty_|bi_quantx_", var_type())) {
+    
+    correlation <- 
+      round(cor(dat$left_var, dat$right_var, use = "complete.obs",
+                method = "spearman"), 2)
+    pos_neg <- if_else(correlation > 0, sus_translate("positive"), 
+                       sus_translate("negative"))
+    strong_weak <- case_when(
+      abs(correlation) > 0.6 ~ sus_translate("strong"),
+      abs(correlation) > 0.3 ~ sus_translate("moderate"),
+      TRUE ~ "weak")
+    higher_lower <- if_else(pos_neg == sus_translate("positive"),
+                            sus_translate("higher"),
+                            sus_translate("lower"))
+    high_low_disclaimer <- case_when(
+      strong_weak == sus_translate("strong") ~
+        sus_translate("with only a few exceptions"),
+      strong_weak == sus_translate("moderate") ~
+        sus_translate("although with some exceptions"),
+      strong_weak == sus_translate("weak") ~
+        sus_translate("although with many exceptions"))
+    
+  }
+  
+  
+  ## Return output -------------------------------------------------------------
   
   out <- list(
     title_left = if (exists("title_left")) title_left else NULL,
@@ -221,6 +307,8 @@ make_info_table_data <- function(id, x, var_type, var_left, var_right, select,
     quant_low = if (exists("quant_low")) quant_low else NULL,
     quant_high = if (exists("quant_high")) quant_high else NULL,
     poly_value = if (exists("poly_value")) poly_value else NULL,
+    other_with_value = if (exists("other_with_value")) 
+      other_with_value else NULL,
     quintile = if (exists("quintile")) quintile else NULL,
     larger_smaller = if (exists("larger_smaller")) larger_smaller else NULL,
     poor_strong = if (exists("poor_strong")) poor_strong else NULL,
@@ -228,7 +316,18 @@ make_info_table_data <- function(id, x, var_type, var_left, var_right, select,
     mode_val = if (exists("mode_val")) mode_val else NULL,
     mode_val_2 = if (exists("mode_val_2")) mode_val_2 else NULL,
     mode_prop = if (exists("mode_prop")) mode_prop else NULL,
-    mode_prop_2 = if (exists("mode_prop_2")) mode_prop_2 else NULL
+    mode_prop_2 = if (exists("mode_prop_2")) mode_prop_2 else NULL,
+    correlation = if (exists("correlation")) correlation else NULL,
+    pos_neg = if (exists("pos_neg")) pos_neg else NULL,
+    strong_weak = if (exists("strong_weak")) strong_weak else NULL,
+    higher_lower = if (exists("higher_lower")) higher_lower else NULL,
+    high_low_disclaimer = if (exists("high_low_disclaimer")) 
+      high_low_disclaimer else NULL,
+    percentile_left = if (exists("percentile_left")) percentile_left else NULL,
+    percentile_right = if (exists("percentile_right")) 
+      percentile_right else NULL,
+    relative_position = if (exists("relative_position")) 
+      relative_position else NULL
     )
   
   out
