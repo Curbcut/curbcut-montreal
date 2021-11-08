@@ -1,7 +1,7 @@
 #' function to change map between polygons (borough, CT, DA, ...), 
 #' lines (street) and points (crash)
 
-map_change <- function(id_map, df, zoom) {
+map_change <- function(id_map, df, zoom, legend = NULL) {
   
   
   geom_type <-  switch(as.character(unique(st_geometry_type(df))),
@@ -42,7 +42,7 @@ map_change <- function(id_map, df, zoom) {
 
   } else if (geom_type == "point") {
 
-    if (zoom() == "map_heatmap") {
+    if (zoom() != "DA") {
       mapdeck_update(map_id = id_map) %>%
         add_heatmap(data = df, update_view = FALSE,
                     colour_range = c("#AECBB4", "#91BD9A", "#73AE80",
@@ -51,14 +51,16 @@ map_change <- function(id_map, df, zoom) {
         clear_polygon() %>%
         clear_pointcloud()
 
-    } else if (zoom() == "map_point") {
-
+    } else {
+      
       mapdeck_update(map_id = id_map) %>%
         add_pointcloud(data = df, update_view = F,
                        id = "ID",
                        auto_highlight = TRUE,
                        highlight_colour = "#FFFFFF90",
                        fill_colour = "fill",
+                       fill_opacity = 200,
+                       legend = legend,
                        # tooltip = "label",
                        radius = 10) %>%
         clear_polygon() %>%
