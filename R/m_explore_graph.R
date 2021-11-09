@@ -173,23 +173,38 @@ explore_graph_server <- function(id, x, var_type, var_left, var_right, select,
       
       # Scatterplot, no selection
       if (plot_type == "scatter_all") {
+        
+        opac <- abs(cor(dat$left_var, dat$right_var, use = "complete.obs"))
+        
         out <- ggplot(dat, aes(left_var, right_var)) +
           geom_point(aes(colour = group)) +
+          stat_smooth(geom = "line", se = FALSE, method = "loess", span = 1,
+                      formula = y ~ x, alpha = opac) +
           scale_colour_manual(values = tibble::deframe(colour_bivar)) +
           x_scale + y_scale + labs_xy + theme_default
         }
       
       # Scatterplot, NA selection
       if (plot_type == "scatter_na") {
+        
+        opac <- abs(cor(dat$left_var, dat$right_var, use = "complete.obs"))
+        
         out <- ggplot(dat, aes(left_var, right_var)) +
           geom_point(colour = colour_bivar$fill[9]) +
+          stat_smooth(geom = "line", se = FALSE, method = "loess", span = 1,
+                      formula = y ~ x, alpha = opac) +
           x_scale + y_scale + labs_xy + theme_default
         }
       
       # Scatterplot, active selection
       if (plot_type == "scatter_select") {
+        
+        opac <- abs(cor(dat$left_var, dat$right_var, use = "complete.obs"))
+        
         out <- ggplot(dat, aes(left_var, right_var)) +
           geom_point(colour = colour_bivar$fill[9]) +
+          stat_smooth(geom = "line", se = FALSE, method = "loess", span = 1,
+                      formula = y ~ x, alpha = opac) +
           geom_point(data = filter(dat, ID == select_id),
                      colour = colour_bivar$fill[1], size = 3) +
           x_scale + y_scale + labs_xy + theme_default

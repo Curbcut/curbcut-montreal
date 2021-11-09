@@ -25,8 +25,8 @@ var_list_canale <-
          "Income between $50k-$100k (%)" = "inc_100_prop",
          "Income above $100k (%)" = "inc_high_prop"),
        "Immigration" = list(
-         "Immigrants (%)" =  "imm_prop",
-         "New immigrants (%)" = "imm_new_prop"),
+         "Immigrants (%)" =  "iden_imm_prop",
+         "New immigrants (%)" = "iden_imm_new_prop"),
        "Transportation" = list(
          "Drive to work (%)" = "trans_car_prop",
          "Walk or cycle to work (%)" = "trans_walk_or_bike_prop",
