@@ -3,7 +3,6 @@
 
 map_change <- function(id_map, df, zoom, legend = NULL) {
   
-  
   geom_type <-  switch(as.character(unique(st_geometry_type(df))),
                        "POLYGON" = "polygon",
                        "MULTIPOLYGON" = "polygon",
@@ -18,10 +17,10 @@ map_change <- function(id_map, df, zoom, legend = NULL) {
   
   # Buildings should be extruded
   if (zoom() == "building") {
-    mapdeck_update(map_id = id)  %>%
+    mapdeck_update(map_id = id_map)  %>%
       clear_polygon() %>%
       clear_path() %>%
-      add_sf(data = x(),
+      add_polygon(data = df,
              update_view = FALSE, id = "ID", elevation = 5, 
              fill_colour = "fill", auto_highlight = TRUE, 
              highlight_colour = "#FFFFFF90")
@@ -54,7 +53,7 @@ map_change <- function(id_map, df, zoom, legend = NULL) {
     } else {
       
       mapdeck_update(map_id = id_map) %>%
-        add_pointcloud(data = df, update_view = F,
+        add_pointcloud(data = df, update_view = FALSE,
                        id = "ID",
                        auto_highlight = TRUE,
                        highlight_colour = "#FFFFFF90",
@@ -67,6 +66,4 @@ map_change <- function(id_map, df, zoom, legend = NULL) {
         clear_heatmap()
     }
   }
-  
-  
 }
