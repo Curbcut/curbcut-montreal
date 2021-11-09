@@ -66,7 +66,7 @@ climate_risk_server <- function(id) {
                    var_right = var_right, 
                    select = reactive(rv_climate_risk$poly_selected),
                    zoom = df, 
-                   var_left_label = sus_translate(climate_legend))
+                   var_left_label = climate_legend)
     
     # Did-you-know panel
     dyk_server("dyk", var_left, var_right)

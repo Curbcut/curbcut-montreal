@@ -27,6 +27,7 @@ make_info_table_data <- function(id, x, var_type, var_left, var_right, select,
   
   var_left <- str_remove(var_left(), "_\\d{4}$")
   var_right <- str_remove(var_right(), "_\\d{4}$")
+  var_left_label <- sus_translate(var_left_label)
   
   title_left <- sus_translate(var_exp[var_exp$var_code == var_left,]$var_name)
   if (var_right != " ") title_right <- 
