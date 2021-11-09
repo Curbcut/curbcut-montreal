@@ -173,7 +173,7 @@ crash_server <- function(id) {
       rv_crash$zoom}, {
         
         map_change(NS(id, "map"),
-                   df = data_crash(),
+                   df = data_crash,
                    zoom = reactive(rv_crash$zoom),
                    legend = crash_legend)
         

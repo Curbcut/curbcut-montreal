@@ -3,7 +3,12 @@
 
 map_change <- function(id_map, df, zoom, legend = NULL) {
   
-  geom_type <-  switch(as.character(unique(st_geometry_type(df))),
+  stopifnot(
+    is.reactive(df),
+    is.reactive(zoom)
+  )
+  
+  geom_type <-  switch(as.character(unique(st_geometry_type(df()))),
                        "POLYGON" = "polygon",
                        "MULTIPOLYGON" = "polygon",
                        "LINESTRING" = "line",
@@ -20,7 +25,7 @@ map_change <- function(id_map, df, zoom, legend = NULL) {
     mapdeck_update(map_id = id_map)  %>%
       clear_polygon() %>%
       clear_path() %>%
-      add_polygon(data = df,
+      add_polygon(data = df(),
              update_view = FALSE, id = "ID", elevation = 5, 
              fill_colour = "fill", auto_highlight = TRUE, 
              highlight_colour = "#FFFFFF90")
@@ -31,7 +36,7 @@ map_change <- function(id_map, df, zoom, legend = NULL) {
     
     mapdeck_update(map_id = id_map) %>%
       add_polygon(
-        data = df, stroke_width = width,
+        data = df(), stroke_width = width,
         stroke_colour = "#FFFFFF", fill_colour = "fill",
         update_view = FALSE, id = "ID", auto_highlight = TRUE,
         highlight_colour = "#FFFFFF90") %>% 
@@ -43,7 +48,7 @@ map_change <- function(id_map, df, zoom, legend = NULL) {
 
     if (zoom() != "DA") {
       mapdeck_update(map_id = id_map) %>%
-        add_heatmap(data = df, update_view = FALSE,
+        add_heatmap(data = df(), update_view = FALSE,
                     colour_range = c("#AECBB4", "#91BD9A", "#73AE80",
                                      "#70999B", "#6E8EA8", "#6C83B5"),
                     intensity = 2) %>%
@@ -53,7 +58,7 @@ map_change <- function(id_map, df, zoom, legend = NULL) {
     } else {
       
       mapdeck_update(map_id = id_map) %>%
-        add_pointcloud(data = df, update_view = FALSE,
+        add_pointcloud(data = df(), update_view = FALSE,
                        id = "ID",
                        auto_highlight = TRUE,
                        highlight_colour = "#FFFFFF90",

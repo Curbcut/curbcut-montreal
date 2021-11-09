@@ -81,7 +81,7 @@ canale_server <- function(id) {
       rv_canale$zoom}, {
         
         map_change(NS(id, "map"), 
-                   df = data_canale(), 
+                   df = data_canale, 
                    zoom = reactive(rv_canale$zoom))
 
         })
