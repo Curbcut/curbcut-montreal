@@ -15,7 +15,7 @@ small_map_server <- function(id, string) {
       paste(string())
       
       list(src = paste0("www/maps/", string(), ".png"), filetype = "image/png", 
-           height = 215, width = 215)
+           height = 175, width = 175)
       }, deleteFile = FALSE)
   })
 }

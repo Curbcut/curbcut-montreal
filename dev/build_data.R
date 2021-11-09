@@ -92,3 +92,21 @@ source("dev/other/colours.R")
 
 # Dependent script: needs 'borough' object
 source("dev/other/produce_maps.R")
+
+
+# Copy large data files to Dropbox ----------------------------------------
+
+unlink("~/Dropbox/sus_sync/dev_data", recursive = TRUE)
+unlink("~/Dropbox/sus_sync/data", recursive = TRUE)
+unlink("~/Dropbox/sus_sync/www_maps", recursive = TRUE)
+
+dir.create("~/Dropbox/sus_sync/dev_data")
+dir.create("~/Dropbox/sus_sync/data")
+dir.create("~/Dropbox/sus_sync/www_maps")
+
+invisible(file.copy(list.files("dev/data", full.names = TRUE), 
+                    "~/Dropbox/sus_sync/dev_data", recursive = TRUE))
+invisible(file.copy(list.files("data", full.names = TRUE), 
+                    "~/Dropbox/sus_sync/data"))
+invisible(file.copy(list.files("www/maps", full.names = TRUE), 
+                    "~/Dropbox/sus_sync/www_maps"))

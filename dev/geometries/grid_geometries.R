@@ -2,7 +2,7 @@
 # Independent script 
 
 grid <-
-  read_sf("dev/data/climate_shp/VulnerabilitÇ_secheresses_2016.shp") %>% 
+  read_sf("dev/data/climate_shp/Vulnerabilite_secheresses_2016.shp") %>% 
   st_zm() %>% 
   st_make_valid() %>% 
   st_transform(32618) %>% 
