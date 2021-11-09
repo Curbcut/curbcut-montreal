@@ -38,8 +38,8 @@ map_change <- function(id_map, df, zoom, legend = NULL) {
                   highlight_colour = "#FFFFFF90")
     
   } else if (geom_type == "polygon") {
-    
-    width <- switch(zoom(), "borough" = 100, "CT" = 10, 2)
+
+    width <- switch(zoom(), "borough" = 100, "CT" = 10, "DA" = 2, "grid" = 0, 2)
     
     update_and_clean() %>% 
       add_polygon(
