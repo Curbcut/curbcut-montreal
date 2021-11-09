@@ -6,13 +6,9 @@ canale_UI <- function(id) {
   tabItem(tabName = "canale",
           mapdeckOutput(NS(id, "map"), height = "92vh"),
           title_UI(NS(id, "title")),
-          right_panel(id,
-                      compare_UI(NS(id, "canale"), var_list_canale),
-                      explore_UI(NS(id, "explore")),
-                      dyk_UI(NS(id, "dyk"))
-                      ),
-          legend_bivar_UI(NS(id, "canale"))
-          )
+          right_panel(id, compare_UI(NS(id, "canale"), var_list_canale),
+                      explore_UI(NS(id, "explore")), dyk_UI(NS(id, "dyk"))),
+          legend_bivar_UI(NS(id, "canale")))
   }
 
 
@@ -44,47 +40,43 @@ canale_server <- function(id) {
                                   input$map_view_change$zoom >= 12 ~ "DA",
                                   input$map_view_change$zoom >= 10.5 ~ "CT",
                                   TRUE ~ "borough")})
+        
+    # Left variable
+    var_left <- reactive(canale_ind)
     
     # Compare panel
-    var_right_canale <- compare_server(id = "canale", 
-                                       var_list = var_list_canale,
-                                       df = reactive(rv_canale$zoom))
+    var_right <- compare_server(id = "canale", var_list = var_list_canale,
+                                df = reactive(rv_canale$zoom))
 
     # Data
-    data_canale <- data_server(id = "canale",
-                               var_left = reactive(canale_ind),
-                               var_right = var_right_canale,
-                               df = reactive(rv_canale$zoom))
+    data <- data_server(id = "canale", var_left = var_left,
+                        var_right = var_right, df = reactive(rv_canale$zoom))
     
     # Explore panel
     explore_server(id = "explore", 
-                   x = data_canale, 
-                   var_left = reactive(canale_ind),
-                   var_right = var_right_canale, 
+                   x = data, 
+                   var_left = var_left,
+                   var_right = var_right, 
                    select = reactive(rv_canale$poly_selected),
                    zoom = reactive(rv_canale$zoom), 
                    build_str_as_DA = TRUE)
 
     # Did-you-know panel
-    dyk_server("dyk", reactive(canale_ind), var_right_canale)
+    dyk_server("dyk", var_left, var_right)
 
     # Left map
     small_map_server("left", reactive(paste0(
       "left_", rv_canale$zoom, "_", canale_ind)))
     
     # Bivariate legend
-    legend_bivar_server("canale", var_right_canale)
+    legend_bivar_server("canale", var_right)
     
     # Update map in response to variable changes or zooming
     observeEvent({
-      var_right_canale()
-      rv_canale$zoom}, {
-        
-        map_change(NS(id, "map"), 
-                   df = data_canale, 
-                   zoom = reactive(rv_canale$zoom))
-
-        })
+      var_right()
+      rv_canale$zoom}, map_change(NS(id, "map"), 
+                                  df = data, 
+                                  zoom = reactive(rv_canale$zoom)))
 
     # Update poly_selected on click
     observeEvent(input$map_polygon_click, {
@@ -103,7 +95,7 @@ canale_server <- function(id) {
       if (!is.na(rv_canale$poly_selected)) {
         width <- switch(rv_canale$zoom, "borough" = 100, "CT" = 10, 2)
         data_to_add <-
-          data_canale() %>%
+          data() %>%
           filter(ID == rv_canale$poly_selected) %>%
           mutate(fill = substr(fill, 1, 7))
 
