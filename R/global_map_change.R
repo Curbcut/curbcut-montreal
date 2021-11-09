@@ -32,7 +32,7 @@ map_change <- function(id_map, df, zoom, legend = NULL) {
 
   } else if (geom_type == "polygon") {
 
-    width <- switch(zoom(), "borough" = 100, "CT" = 10, 2)
+    width <- switch(zoom(), "borough" = 100, "CT" = 10, "DA" = 2, "grid" = 0, 2)
     
     mapdeck_update(map_id = id_map) %>%
       add_polygon(
