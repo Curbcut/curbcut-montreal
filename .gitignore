@@ -39,21 +39,10 @@ vignettes/*.pdf
 .Renviron
 
 # Dev data
-/dev/data/2016*
-/dev/data/Quebec*
-/dev/data/collision*
-/dev/data/dmti*
-/dev/data/building.qs
-/dev/data/building_geocode.qs
-/dev/data/building_osm.qs
-/dev/data/street.qs
-/dev/data/street_geocode.qs
+/dev/data*
 
 # Main data
-/data/building.qs
-/data/census.qsm
-/data/grid.qs
-/data/street.qs
+/data*
 
 # Small maps
 /www/maps
