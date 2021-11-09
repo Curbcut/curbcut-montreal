@@ -51,7 +51,7 @@ var_list_right_crash <-
          "More than 45 minutes to work (%)" = "trans_t_45_plus_prop"))
 
 # Mapdeck pointcloud legend
-crash_legend <- 
+crash_legend_en <- 
   mapdeck_legend(
     legend_element(
       variables = c("Pedestrian", "Cyclist", "Other", "Unknown"),
@@ -59,4 +59,14 @@ crash_legend <-
       colour_type = "fill",
       variable_type = "category",
       title = "Crash type")
+  )
+
+crash_legend_fr <- 
+  mapdeck_legend(
+    legend_element(
+      variables = c("Piéton", "Cycliste", "Autre", "Inconnu"),
+      colours = c("#91BD9AEE","#6C83B5EE", "#F39D60EE", "#E8E8E8EE"),
+      colour_type = "fill",
+      variable_type = "category",
+      title = "Type d'accident")
   )

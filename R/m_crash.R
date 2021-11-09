@@ -38,7 +38,7 @@ crash_server <- function(id) {
       str_glue("{var_left()} et {input$geography} {choropleth()}")
     })
     
-    # If COUNT is selected, out_geom is point data. If not, choropleth 
+    # If COUNT isn't selected, choropleth is TRUE 
     choropleth <- reactive(if (var_left_1() != " ") TRUE else FALSE)
     
     # Year displayed disclaimer
@@ -165,7 +165,8 @@ crash_server <- function(id) {
         map_change(NS(id, "map"),
                    df = data,
                    zoom = reactive(rv_crash$zoom),
-                   legend = crash_legend)
+                   # TKTK will eventually need to be translated
+                   legend = crash_legend_en)
         
       })
 
