@@ -245,13 +245,6 @@ styler <- '
       
       }
       
-      /* active selected tab in the sidebarmenu */
-      .skin-black .main-sidebar .sidebar .sidebar-menu .active a{
-      background-color: #0096C9;
-      color: #FFFFFF;
-      
-      }
-      
       /* other links in the sidebarmenu */
       .skin-black .main-sidebar .sidebar .sidebar-menu a{
       background-color: #FFFFFF50;
@@ -278,6 +271,13 @@ styler <- '
       .skin-black .sidebar-menu > li > .treeview-menu {
       margin: 0 1px;
       background: #FFFFFF;
+      }
+      
+      /* expanded menus */
+      .skin-black .sidebar-menu > li > .treeview-menu .active a{
+      margin: 0 1px;
+      background-color: #0096C9;
+      color: #FFFFFF;
       }
 
 
