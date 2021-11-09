@@ -43,7 +43,7 @@ climate_risk_server <- function(id) {
 
     # Zoom level
     observeEvent(input$map_view_change$zoom, {
-      rv_canale$zoom <- case_when(input$map_view_change$zoom >= 14 ~ "building",
+      rv_climate_risk$zoom <- case_when(input$map_view_change$zoom >= 14 ~ "building",
                                   input$map_view_change$zoom >= 12 ~ "DA",
                                   input$map_view_change$zoom >= 10.5 ~ "CT",
                                   TRUE ~ "borough")
