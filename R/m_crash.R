@@ -12,21 +12,23 @@ crash_UI <- function(id) {
                                            label = i18n$t("Density preferred: "))),
                    column(6, select_var_UI(NS(id, "left_2"), var_list_left_crash_2,
                                  label = i18n$t("Type of crash: "))),
-                   sliderInput(NS(id, "left"), "Select a year",
+                   sliderInput(NS(id, "left"), i18n$t("Select a year"),
                                min = crash_slider$min,
                                max = crash_slider$max,
                                step = crash_slider$interval, sep = "",
                                value = crash_slider$init),
-                   htmlOutput(NS(id, "bi_census_slider_label")),
-                   sliderInput(NS(id, "left_bi_census"), label = NULL, 
+                   htmlOutput(NS(id, "bi_time_slider_label")),
+                   sliderInput(NS(id, "left_bi_time"), label = NULL, 
                                min = crash_slider$min,
                                max = crash_slider$max, 
                                step = crash_slider$interval, sep = "", 
                                value = c("2012", "2019")),
-                   materialSwitch(inputId = NS(id, "bi_census"),
-                                  label = "Two census comparison", right = TRUE),
+                   materialSwitch(inputId = NS(id, "bi_time"),
+                                  label = i18n$t("Two time periods"), 
+                                  right = TRUE),
                    htmlOutput(NS(id, "year_displayed_right")),
-                   htmlOutput(NS(id, "eso"))
+                   htmlOutput(NS(id, "how_to_read_map")),
+                   shinyjs::useShinyjs()
                    ),
           right_panel(id, compare_UI(NS(id, "crash"), var_list_right_crash),
                       explore_UI(NS(id, "explore")), dyk_UI(NS(id, "dyk"))),
@@ -42,16 +44,12 @@ crash_server <- function(id) {
     # Title bar
     title_server("title", "crash")
     
-    output$eso <- renderText({
-      str_glue("HELLO {var_right()} ")
-    })
-    
     # If COUNT isn't selected, choropleth is TRUE 
     choropleth <- reactive(if (var_left_1() != " ") TRUE else FALSE)
     
     # Year displayed disclaimer
     output$year_displayed_right <- renderText({
-      if (!input$bi_census) {
+      if (!input$bi_time && choropleth()) {
         year_shown <- str_extract(var_right(), "\\d{4}$")
         var <- str_remove(var_right(), "_\\d{4}$")
         var <- sus_translate(var_exp[var_exp$var_code == var,]$var_name)
@@ -61,22 +59,39 @@ crash_server <- function(id) {
             "<p>Displayed data for <b>{var}</b> is for the ",
             "closest available year <b>({year_shown})</b>.</p>")))
         }
-      } else if (!input$bi_census && choropleth()){
-        var <- str_remove(var_right(), "_\\d{4}$")
-        var <- sus_translate(var_exp[var_exp$var_code == var,]$var_name)
-        
-        unique(str_glue(sus_translate(paste0(
-          "<p>Displayed data for <b>{var}</b> is for census year 2016.</p>"))))
       }
       
     })
     
     # Bi census slider label explained
-    output$bi_census_slider_label <- renderText({
-      if (input$bi_census && !choropleth()) {
-        paste("<b>Choose a range:</b>")
-      } else if (input$bi_census && choropleth()) {
-        paste("<b>Compare between two years:</b>")
+    output$bi_time_slider_label <- renderText({
+      if (input$bi_time && !choropleth()) {
+        paste(sus_translate("<b>Choose date range:</b>"))
+      } else if (input$bi_time && choropleth()) {
+        paste(sus_translate("<b>Compare two time periods:</b>"))
+      }
+    })
+    
+    output$how_to_read_map <- renderText({
+      # No explanation needed for the heatmap. The label of slider updates
+      # and it's written it's a range of dates. No explanation needed for the
+      # choropleth with unique date. 
+      if (choropleth() && input$bi_time) {
+        if(var_right() == " "){
+          type_crash <- case_when(var_left_2() == "total" ~ sus_translate("total"),
+                                  var_left_2() == "ped" ~ sus_translate("pedestrian"),
+                                  var_left_2() == "cyc" ~ sus_translate("cyclist"), 
+                                  var_left_2() == "other" ~ sus_translate("other"))
+          str_glue(
+            sus_translate(
+              paste0("<b>How to read the map</b><br>",
+                     "The map displays the variation percentage in number of ",
+                     "{type_crash} crash between {time()[1]} and {time()[2]}. ",
+                     "A darker green means a relative increase in {type_crash} ",
+                     "crash number between {time()[1]} and {time()[2]}.")))
+        }
+      } else {
+        
       }
     })
     
@@ -100,19 +115,19 @@ crash_server <- function(id) {
           })
     
     # Enable or disable first and second slider.
-    observeEvent(input$bi_census, {
-      if (!input$bi_census) {
-        shinyjs::hide("left_bi_census") 
+    observeEvent(input$bi_time, {
+      if (!input$bi_time) {
+        shinyjs::hide("left_bi_time") 
         shinyjs::show("left")
       } else {
         shinyjs::hide("left")
-        shinyjs::show("left_bi_census")
+        shinyjs::show("left_bi_time")
       }
     })
     
     # Time variable depending on which slider
     time <- reactive({
-      if (!input$bi_census) input$left else input$left_bi_census
+      if (!input$bi_time) input$left else input$left_bi_time
     })
 
     # Left variable servers
