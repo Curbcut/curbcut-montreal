@@ -12,11 +12,19 @@ crash_UI <- function(id) {
                                            label = i18n$t("Density preferred: "))),
                    column(6, select_var_UI(NS(id, "left_2"), var_list_left_crash_2,
                                  label = i18n$t("Type of crash: "))),
-                   slider_UI(NS(id, "left"), 
-                             slider_min = crash_slider$min, 
-                             slider_max = crash_slider$max, 
-                             slider_interval = crash_slider$interval, 
-                             slider_init = crash_slider$init),
+                   sliderInput(NS(id, "left"), "Select a year",
+                               min = crash_slider$min,
+                               max = crash_slider$max,
+                               step = crash_slider$interval, sep = "",
+                               value = crash_slider$init),
+                   htmlOutput(NS(id, "bi_census_slider_label")),
+                   sliderInput(NS(id, "left_bi_census"), label = NULL, 
+                               min = crash_slider$min,
+                               max = crash_slider$max, 
+                               step = crash_slider$interval, sep = "", 
+                               value = c("2012", "2019")),
+                   materialSwitch(inputId = NS(id, "bi_census"),
+                                  label = "Two census comparison", right = TRUE),
                    htmlOutput(NS(id, "year_displayed_right")),
                    htmlOutput(NS(id, "eso"))
                    ),
@@ -35,7 +43,7 @@ crash_server <- function(id) {
     title_server("title", "crash")
     
     output$eso <- renderText({
-      str_glue("{var_left()} et {input$geography} {choropleth()}")
+      str_glue("HELLO {var_right()} ")
     })
     
     # If COUNT isn't selected, choropleth is TRUE 
@@ -43,17 +51,35 @@ crash_server <- function(id) {
     
     # Year displayed disclaimer
     output$year_displayed_right <- renderText({
-      year_shown <- str_extract(var_right(), "\\d{4}$")
-      var <- str_remove(var_right(), "_\\d{4}$")
-      var <- sus_translate(var_exp[var_exp$var_code == var,]$var_name)
+      if (!input$bi_census) {
+        year_shown <- str_extract(var_right(), "\\d{4}$")
+        var <- str_remove(var_right(), "_\\d{4}$")
+        var <- sus_translate(var_exp[var_exp$var_code == var,]$var_name)
+        
+        if (year_shown != time() && var_right() != " ") {
+          str_glue(sus_translate(paste0(
+            "<p>Displayed data for <b>{var}</b> is for the ",
+            "closest available year <b>({year_shown})</b>.</p>")))
+        }
+      } else if (!input$bi_census && choropleth()){
+        var <- str_remove(var_right(), "_\\d{4}$")
+        var <- sus_translate(var_exp[var_exp$var_code == var,]$var_name)
+        
+        unique(str_glue(sus_translate(paste0(
+          "<p>Displayed data for <b>{var}</b> is for census year 2016.</p>"))))
+      }
       
-      if (year_shown != time() && var_right() != " ") {
-        str_glue(sus_translate(paste0(
-          "<p>Displayed data for <b>{var}</b> is for the ",
-          "closest available year <b>({year_shown})</b>.</p>")))
+    })
+    
+    # Bi census slider label explained
+    output$bi_census_slider_label <- renderText({
+      if (input$bi_census && !choropleth()) {
+        paste("<b>Choose a range:</b>")
+      } else if (input$bi_census && choropleth()) {
+        paste("<b>Compare between two years:</b>")
       }
     })
-
+    
     # Map
     output$map <- renderMapdeck({
       mapdeck(style = map_style, token = token_crash, zoom = map_zoom, 
@@ -73,42 +99,26 @@ crash_server <- function(id) {
                                      TRUE ~ "borough")
           })
     
-    show_panel <- reactive(if (choropleth()) TRUE else FALSE)
-    
-    # Compare panel
-    var_right_1 <- compare_server("crash", var_list_right_crash, 
-                                  reactive(rv_crash$zoom), 
-                                  show_panel = show_panel)
-    
-    var_right <- reactive({
-      
-      if (var_right_1() != " ") {
-        
-        var <- paste(var_right_1(), time(), sep = "_")
-          
-          if (!var %in% names(borough)) {
-            x <- borough %>% 
-              select(contains(str_remove(var, "_\\d{4}$"))) %>% 
-              names() %>% 
-              str_extract("\\d{4}$") %>% 
-              as.numeric() %>% 
-              na.omit()
-            closest_year <- x[which.min(abs(x - time()))]
-            var <- paste0(str_remove(var, "_\\d{4}$"), "_", closest_year)
-          }
-          
-          var
-          
-        } else var_right_1()
+    # Enable or disable first and second slider.
+    observeEvent(input$bi_census, {
+      if (!input$bi_census) {
+        shinyjs::hide("left_bi_census") 
+        shinyjs::show("left")
+      } else {
+        shinyjs::hide("left")
+        shinyjs::show("left_bi_census")
+      }
     })
     
+    # Time variable depending on which slider
+    time <- reactive({
+      if (!input$bi_census) input$left else input$left_bi_census
+    })
+
     # Left variable servers
     var_left_1 <- select_var_server("left_1", reactive(var_list_left_crash_1))
     var_left_2 <- select_var_server("left_2", reactive(var_list_left_crash_2))
     
-    # Get time from slider
-    time <- slider_server("left")
-
     # Construct left variable string
     var_left <- reactive(
       stringr::str_remove(paste(
@@ -119,6 +129,39 @@ crash_server <- function(id) {
         sep = "_"), "_ ")
     )
     
+    # To hide compare panel when map displayed isn't choropleth
+    show_panel <- reactive(if (choropleth()) TRUE else FALSE)
+    # Compare panel
+    var_right_1 <- compare_server("crash", var_list_right_crash, 
+                                  reactive(rv_crash$zoom), 
+                                  show_panel = show_panel)
+    
+    var_right <- reactive({
+      if (var_right_1()[1] != " ") {
+        
+        var <- paste(var_right_1(), time(), sep = "_")
+        
+        return_closest_year <- function(var) {
+          if (!var %in% names(borough)) {
+          time <- as.numeric(str_extract(var, "\\d{4}"))
+          x <- borough %>% 
+            select(contains(str_remove(var, "_\\d{4}$"))) %>% 
+            names() %>% 
+            str_extract("\\d{4}$") %>% 
+            as.numeric() %>% 
+            na.omit()
+          closest_year <- x[which.min(abs(x - time))]
+          var <- paste0(str_remove(var, "_\\d{4}$"), "_", closest_year)
+          }
+          var
+        }
+        
+        purrr::map_chr(var, return_closest_year)
+
+      } else var_right_1()
+    })
+    
+    
     # Data 
     data_1 <- data_server("crash", var_left, var_right, reactive(rv_crash$zoom))
     
@@ -126,15 +169,20 @@ crash_server <- function(id) {
       if (choropleth()) {
         data_1()
       } else {
-        (crash %>%
-           { if (var_left_2() %in% unique(crash$type))
-             filter(., type == var_left_2()) else .} %>%
-           filter(lubridate::year(date) == time())) %>%
-          mutate(fill = case_when(type == "ped" ~ "#91BD9AEE",
-                                  type == "cyc" ~ "#6C83B5EE",
-                                  type == "other" ~ "#F39D60EE",
-                                  TRUE ~ "#E8E8E8EE"))
-      }
+          (crash %>%
+             { if (var_left_2() %in% unique(crash$type))
+               filter(., type == var_left_2()) else .} %>%
+             { if (length(time()) == 2) {
+               filter(., lubridate::year(date) >= time()[1],
+                      lubridate::year(date) <= time()[2])
+             } else {
+               filter(., lubridate::year(date) == time())
+             }} %>%
+            mutate(fill = case_when(type == "ped" ~ "#91BD9AEE",
+                                    type == "cyc" ~ "#6C83B5EE",
+                                    type == "other" ~ "#F39D60EE",
+                                    TRUE ~ "#E8E8E8EE")))
+        }
     })
     
     # Explore panel

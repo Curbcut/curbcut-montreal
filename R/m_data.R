@@ -89,7 +89,28 @@ data_server <- function(id, var_left, var_right, df, zoom = df) {
                         across(where(is.numeric), ~replace(., is.nan(.), NA)),
                         across(where(is.numeric), ~replace(., is.infinite(.), NA))) %>% 
                    select(., ID, name, name_2, population, 
-                          left_var, left_var_q3, right_var, right_var_q3) else .} %>% 
+                          left_var, left_var_q3, right_var, right_var_q3) else .} %>%
+               # Not always census variables: sometimes we will have data for
+               # one variable in different year than the other, like crash data vs borough.
+               # We might have to show different crash years vs same census year.
+               { if (length(var_left) == 2 && length(var_right) == 1) 
+                 mutate(., left_var = (left_var2 - left_var1) / left_var1 * 100,
+                        left_var_q3 = ntile(left_var, 3),
+                        # right_var = (right_var2 - right_var1) / right_var1 * 100,
+                        # right_var_q3 = ntile(right_var, 3),
+                        across(where(is.numeric), ~replace(., is.nan(.), NA)),
+                        across(where(is.numeric), ~replace(., is.infinite(.), NA))) %>% 
+                   select(., ID, name, name_2, population, 
+                          left_var, left_var_q3, right_var, right_var_q3) else .} %>%
+               { if (length(var_left) == 1 && length(var_right) == 2)
+                 mutate(., #left_var = (left_var2 - left_var1) / left_var1 * 100,
+                        # left_var_q3 = ntile(left_var, 3),
+                        right_var = (right_var2 - right_var1) / right_var1 * 100,
+                        right_var_q3 = ntile(right_var, 3),
+                        across(where(is.numeric), ~replace(., is.nan(.), NA)),
+                        across(where(is.numeric), ~replace(., is.infinite(.), NA))) %>%
+                   select(., ID, name, name_2, population,
+                          left_var, left_var_q3, right_var, right_var_q3) else .} %>%
                mutate(group = paste(left_var_q3, "-", right_var_q3)) %>% 
                left_join(colour, by = "group"))
           }
