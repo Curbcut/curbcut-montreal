@@ -11,11 +11,11 @@ knitr::opts_chunk$set(echo = TRUE)
 
 #### Circular economy
 
-Draw up a portrait of the development of the circular economy in Montreal. Favour dealing with businesses integrated in the circular economy. 
+Draw up a portrait of the development of the circular economy in Montreal. Encourage partner organizations to adopt circular economy practices, and deal with other organizations involved in the social and solidarity economy. 
 
 #### Other economic policies
 
-Adopt initiative TM21 to build towards an ecological transition [initiative TM21 was either renamed or was never passed, as there is little evidence of it outside of this document]. Study potential industrial synergies in the east of the island. Adopt socially-responsible criteria for purchasing. Encourage businesses to divest from fossil fuels. Draw up an inventory of Montreal’s investments in fossil fuels and examine opportunities for divestment while coordinating with stakeholders. Use major projects (U de M campus) to spur economic activity in surrounding areas. 
+Adopt initiative TM21 to build towards an ecological transition of the economy (initiative TM21 was either renamed or was never passed, as there is little evidence of it outside of this document). Study potential industrial synergies in the east of the island. Adopt socially-responsible criteria for purchasing. Encourage businesses to divest from fossil fuels. Draw up an inventory of Montreal’s investments in fossil fuels and examine opportunities for divestment while coordinating with stakeholders. Use major projects (U de M campus) to spur economic activity in surrounding areas. 
 
 ## Plan climat (Plante administration): 
 

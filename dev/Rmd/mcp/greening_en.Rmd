@@ -9,7 +9,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## PMD (Coderre administration): 
 
-Plant 300,000 trees by 2050. Add 1000 hectares of protected space. Double the number of green roofs on municipal buildings. “Greening” municipal regulations (???). Begin a phytoremediation research project covering four hectares, negotiating with other levels of government for funding. Encourage partner organizations to contribute to greening projects. Encourage partner organizations to combat invasive species and prevent their introduction.  Add four hectares of parks and other public spaces to the Université de Montréal campus project.
+Plant 300,000 trees by 2050. Add 1000 hectares of protected space. Double the number of green roofs on municipal buildings. “Greening” municipal regulations. Begin a phytoremediation research project covering four hectares in order to reduce soil toxicity, negotiating with other levels of government for funding. Encourage partner organizations to contribute to greening projects. Encourage partner organizations to combat invasive species and prevent their introduction. Add four hectares of parks and other public spaces to the Université de Montréal campus project.
 
 ## Plan climat (Plante administration): 
 

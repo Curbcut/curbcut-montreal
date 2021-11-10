@@ -16,8 +16,17 @@ mcp_server <- function(id) {
     
     left_var_mcp <- select_var_server("left", reactive(var_list_left_mcp))
     
-    output$mcp_output <- renderUI(includeHTML(paste0(
-      "www/mcp/", left_var_mcp(), ".html")))
+    
+    output$mcp_output <- renderUI(
+      
+      if (sus_reactive_variables$active_language() == "en") {
+        includeHTML(paste0("www/mcp/", left_var_mcp(), "_en.html"))
+        
+      } else if (sus_reactive_variables$active_language() == "fr") {
+        includeHTML(paste0("www/mcp/", left_var_mcp(), "_fr.html"))
+      }
+      
+      )
     
   })
   }
