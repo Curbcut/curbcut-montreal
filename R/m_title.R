@@ -35,13 +35,16 @@ title_server <- function(id, x) {
       updateActionButton(session, "more_info", label = txt)
       })
     
-    output$title <- 
-      renderUI(h2(sus_translate(filter(title, type == "title") %>% pull(text))))
+    output$title <- renderUI(h2(sus_translate(
+      if (nrow(title) == 0) "MISSING" else 
+        (filter(title, type == "title"))$text)))
     
-    output$title_main <- 
-      renderUI(p(sus_translate(filter(title, type == "main") %>% pull(text))))
+    output$title_main <- renderUI(p(sus_translate(
+      if (nrow(title) == 0) "MISSING" else 
+        (filter(title, type == "main"))$text)))
     
-    output$title_extra <-
-      renderUI(HTML(sus_translate(filter(title, type == "extra") %>% pull(text))))
+    output$title_extra <- renderUI(HTML(sus_translate(
+      if (nrow(title) == 0) "MISSING" else 
+        (filter(title, type == "extra"))$text)))
   })
 }

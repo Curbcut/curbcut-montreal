@@ -1,0 +1,32 @@
+---
+title: "Economy"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## PMD (Coderre administration): 
+
+#### Circular economy
+
+Draw up a portrait of the development of the circular economy in Montreal. Encourage partner organizations to adopt circular economy practices, and deal with other organizations involved in the social and solidarity economy. 
+
+#### Other economic policies
+
+Adopt initiative TM21 to build towards an ecological transition of the economy (initiative TM21 was either renamed or was never passed, as there is little evidence of it outside of this document). Study potential industrial synergies in the east of the island. Adopt socially-responsible criteria for purchasing. Encourage businesses to divest from fossil fuels. Draw up an inventory of Montreal’s investments in fossil fuels and examine opportunities for divestment while coordinating with stakeholders. Use major projects (U de M campus) to spur economic activity in surrounding areas. 
+
+## Plan climat (Plante administration): 
+
+####Circular economy
+
+Incentivize companies towards buying into the circular economy. Create a circular economy network to allow cooperation in the transition toward this new economic model.
+
+#### Other economic policies
+
+Change municipal budgeting, capital allocation and make markets more transparent for citizens, investors, insurers and other stakeholders.
+
+## Discussion
+
+Both plans focus on the transition towards a circular economy (previous plans focused on the “green economy” and the “social economy”). The PMD does not provide a definition of the term or any working examples. The Plan climat offers a short definition, focusing on the circular economy as ‘a system of production, exchange and consumption which aims to optimize the use of resources at every stage of the cycle of a good or service, by a circular logic.’ The lack of working examples and specific policies proposed, as well as the status of the term ‘circular economy’ as a buzzword make it difficult to know exactly what both plans have in mind with regards to the economy. It is also challenging to track any changes in the Montreal’s economic model, or its progress towards the widespread integration of businesses into the circular economy. This transition has been ongoing since at least 2016, so it is surprising that there are no successful case studies to highlight or data to track the implementation of desired business practices. Along with this focus on a change in economic model, it is notable that neither plan addresses employment directly. Many climate plans include sections on job creation and retention, retraining or greening of employment, but this discussion is largely absent from Montreal’s climate plans. To the extent that the Plan climat discusses employment, it is unspecific and presented as a by-product of projects or a shift in economic model.

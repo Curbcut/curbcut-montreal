@@ -11,6 +11,7 @@ suppressPackageStartupMessages({
   
   library(dplyr)
   library(ggplot2)
+  library(stringr)
   
   library(sf)
   library(mapdeck) 
@@ -27,16 +28,24 @@ suppressPackageStartupMessages({
 shinyOptions(cache = cachem::cache_disk("./app-cache"))
 options(shiny.trace = FALSE) # Set TRUE for debugging
 
-
 # Data --------------------------------------------------------------------
+
+var_exp <- qread("data/var_exp.qs")
+title_text <- qread("data/title_text.qs")
+qload("data/colours.qsm")
 
 qload("data/census.qsm")
 grid <- qread("data/grid.qs")
+street <- qread("data/street.qs")
+building <- qread("data/building.qs")
+
+qload("data/covid.qsm")
 green_space <- qread("data/green_space.qs")
+qload("data/alleys.qsm")
 crash <- qread("data/crash.qs")
-qload("data/colours.qsm")
-title_text <- qread("data/title_text.qs")
-var_exp <- qread("data/var_exp.qs")
+
+min_census_year <- "1996"
+current_census <- "2016"
 
 
 # Translation -------------------------------------------------------------
@@ -56,6 +65,24 @@ map_location <- c(-73.58, 45.53)
 
 
 # Functions ---------------------------------------------------------------
+
+convert_unit <- function(x, var_name = NULL) {
+  
+  if (length(x) == 0) return(x)
+  if (is.na(x)) return(x)
+  
+  if (!missing(var_name) && grepl("_prop", var_name)) {
+    x <- paste0(round(x * 100, 1), "%")
+  } else if (!missing(var_name) && grepl("_dollar", var_name)) {
+    x <- scales::dollar(x, 1)
+  } else if (abs(x) >= 100) {
+    x <- scales::comma(x, 1)
+  } else if (abs(x) >= 10) {
+    x <- as.character(round(x, 1))
+  } else x <- as.character(round(x, 2))
+  
+  x
+}
 
 right_panel <- function(id, ...) {
   
@@ -214,6 +241,18 @@ $(document).ready(function(){
 });
 "
 
+# So we can switch between tabs without namespacing issues. Examples in `m_crash.R`
+# a("NAME OF LINK", onclick = "openTab('NAME OF TAB')", href="#")
+js_links_between_modules <- "
+        var openTab = function(tabName){
+          $('a', $('.sidebar')).each(function() {
+            if(this.getAttribute('data-value') == tabName) {
+              this.click()
+            };
+          });
+        }
+      "
+
 styler <- '
       /* logo */
       .skin-black .main-header .logo {
@@ -233,13 +272,6 @@ styler <- '
       /* main sidebar */
       .skin-black .main-sidebar {
       background-color: #FFFFFF;
-      
-      }
-      
-      /* active selected tab in the sidebarmenu */
-      .skin-black .main-sidebar .sidebar .sidebar-menu .active a{
-      background-color: #0096C9;
-      color: #FFFFFF;
       
       }
       
@@ -269,6 +301,13 @@ styler <- '
       .skin-black .sidebar-menu > li > .treeview-menu {
       margin: 0 1px;
       background: #FFFFFF;
+      }
+      
+      /* expanded menus */
+      .skin-black .sidebar-menu > li > .treeview-menu .active a{
+      margin: 0 1px;
+      background-color: #0096C9;
+      color: #FFFFFF;
       }
 
 

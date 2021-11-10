@@ -1,0 +1,145 @@
+<Layout name="heat_island" worldFileMap="{280cdd71-623a-4506-b1b4-a4b423cf5f12}" units="mm" printResolution="300">
+ <Snapper snapToGuides="1" tolerance="5" snapToItems="1" snapToGrid="0"/>
+ <Grid resolution="10" resUnits="mm" offsetX="0" offsetY="0" offsetUnits="mm"/>
+ <PageCollection>
+  <symbol alpha="1" clip_to_extent="1" name="" force_rhr="0" type="fill">
+   <layer enabled="1" pass="0" locked="0" class="SimpleFill">
+    <prop k="border_width_map_unit_scale" v="3x:0,0,0,0,0,0"/>
+    <prop k="color" v="255,255,255,255"/>
+    <prop k="joinstyle" v="miter"/>
+    <prop k="offset" v="0,0"/>
+    <prop k="offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
+    <prop k="offset_unit" v="MM"/>
+    <prop k="outline_color" v="35,35,35,255"/>
+    <prop k="outline_style" v="no"/>
+    <prop k="outline_width" v="0.26"/>
+    <prop k="outline_width_unit" v="MM"/>
+    <prop k="style" v="solid"/>
+    <data_defined_properties>
+     <Option type="Map">
+      <Option name="name" type="QString" value=""/>
+      <Option name="properties"/>
+      <Option name="type" type="QString" value="collection"/>
+     </Option>
+    </data_defined_properties>
+   </layer>
+  </symbol>
+  <LayoutItem outlineWidthM="0.3,mm" excludeFromExports="0" size="297,210,mm" groupUuid="" type="65638" opacity="1" frameJoinStyle="miter" referencePoint="0" zValue="0" itemRotation="0" positionOnPage="0,0,mm" visibility="1" blendMode="0" uuid="{eb996872-2e0d-4325-954b-9aa5088ddce9}" id="" position="0,0,mm" background="true" positionLock="false" templateUuid="{eb996872-2e0d-4325-954b-9aa5088ddce9}" frame="false">
+   <FrameColor alpha="255" green="0" blue="0" red="0"/>
+   <BackgroundColor alpha="255" green="255" blue="255" red="255"/>
+   <LayoutObject>
+    <dataDefinedProperties>
+     <Option type="Map">
+      <Option name="name" type="QString" value=""/>
+      <Option name="properties"/>
+      <Option name="type" type="QString" value="collection"/>
+     </Option>
+    </dataDefinedProperties>
+    <customproperties/>
+   </LayoutObject>
+   <symbol alpha="1" clip_to_extent="1" name="" force_rhr="0" type="fill">
+    <layer enabled="1" pass="0" locked="0" class="SimpleFill">
+     <prop k="border_width_map_unit_scale" v="3x:0,0,0,0,0,0"/>
+     <prop k="color" v="255,255,255,255"/>
+     <prop k="joinstyle" v="miter"/>
+     <prop k="offset" v="0,0"/>
+     <prop k="offset_map_unit_scale" v="3x:0,0,0,0,0,0"/>
+     <prop k="offset_unit" v="MM"/>
+     <prop k="outline_color" v="35,35,35,255"/>
+     <prop k="outline_style" v="no"/>
+     <prop k="outline_width" v="0.26"/>
+     <prop k="outline_width_unit" v="MM"/>
+     <prop k="style" v="solid"/>
+     <data_defined_properties>
+      <Option type="Map">
+       <Option name="name" type="QString" value=""/>
+       <Option name="properties"/>
+       <Option name="type" type="QString" value="collection"/>
+      </Option>
+     </data_defined_properties>
+    </layer>
+   </symbol>
+  </LayoutItem>
+  <GuideCollection visible="1"/>
+ </PageCollection>
+ <LayoutItem blendMode="0" uuid="{83186813-cfe9-4385-a723-1146161ce021}" positionOnPage="20.7061,159.683,mm" symbolHeight="4" positionLock="false" resizeToContents="1" lineSpacing="1" equalColumnWidth="0" rasterBorder="1" columnSpace="2" background="true" columnCount="1" frame="false" titleAlignment="1" outlineWidthM="0.3,mm" templateUuid="{83186813-cfe9-4385-a723-1146161ce021}" opacity="1" wrapChar="" symbolAlignment="1" groupUuid="" title="" zValue="3" rasterBorderWidth="0" frameJoinStyle="miter" referencePoint="0" wmsLegendWidth="50" size="74.3,11.5,mm" splitLayer="0" fontColor="#000000" type="65642" map_uuid="{280cdd71-623a-4506-b1b4-a4b423cf5f12}" rasterBorderColor="0,0,0,255" excludeFromExports="0" visibility="1" symbolWidth="7" itemRotation="0" position="20.7061,159.683,mm" wmsLegendHeight="25" boxSpace="2" legendFilterByAtlas="0" id="">
+  <FrameColor alpha="255" green="0" blue="0" red="0"/>
+  <BackgroundColor alpha="123" green="255" blue="255" red="255"/>
+  <LayoutObject>
+   <dataDefinedProperties>
+    <Option type="Map">
+     <Option name="name" type="QString" value=""/>
+     <Option name="properties"/>
+     <Option name="type" type="QString" value="collection"/>
+    </Option>
+   </dataDefinedProperties>
+   <customproperties/>
+  </LayoutObject>
+  <styles>
+   <style name="title" marginBottom="3.5" alignment="1">
+    <styleFont description="MS Shell Dlg 2,16,-1,5,50,0,0,0,0,0" style=""/>
+   </style>
+   <style name="group" alignment="1" marginTop="3">
+    <styleFont description="MS Shell Dlg 2,14,-1,5,50,0,0,0,0,0" style=""/>
+   </style>
+   <style name="subgroup" alignment="1" marginTop="3">
+    <styleFont description="MS Shell Dlg 2,12,-1,5,50,0,0,0,0,0" style=""/>
+   </style>
+   <style name="symbol" alignment="1" marginTop="2.5">
+    <styleFont description="MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0" style=""/>
+   </style>
+   <style marginLeft="2" name="symbolLabel" alignment="1" marginTop="2">
+    <styleFont description="Arial,12,-1,5,50,0,0,0,0,0,Regular" style="Regular"/>
+   </style>
+  </styles>
+  <layer-tree-group>
+   <customproperties/>
+   <layer-tree-layer id="Vulnerabilite_vagues_chaleur_2016_1c51bde8_c1cb_45b8_902e_dcc5a888323c" checked="Qt::Checked" name="Vulnerabilite_vagues_chaleur_2016" source="C:/Users/connor/Desktop/SUS_visuals/Vulnerabilite_vagues_chaleur_2016.shp" expanded="1" legend_exp="" providerKey="ogr">
+    <customproperties>
+     <property key="legend/title-label" value="Îlots de chaleur/heat island areas"/>
+    </customproperties>
+   </layer-tree-layer>
+   <custom-order enabled="0">
+    <item>Vulnerabilite_vagues_chaleur_2016_1c51bde8_c1cb_45b8_902e_dcc5a888323c</item>
+   </custom-order>
+  </layer-tree-group>
+ </LayoutItem>
+ <LayoutItem outlineWidthM="0.3,mm" excludeFromExports="0" size="155.472,34.3933,mm" groupUuid="" type="65641" labelText="Montréal: Zones vulnérables aux îlots de chaleur/areas vulnerable to heat island effects" opacity="1" frameJoinStyle="miter" marginY="0" referencePoint="0" halign="4" marginX="0" zValue="2" itemRotation="0" positionOnPage="10.5286,24.9176,mm" valign="128" visibility="1" blendMode="0" htmlState="0" uuid="{c2b3e604-4d8a-4b55-b643-9095f51c293e}" id="" position="10.5286,24.9176,mm" background="true" positionLock="false" templateUuid="{c2b3e604-4d8a-4b55-b643-9095f51c293e}" frame="false">
+  <FrameColor alpha="255" green="0" blue="0" red="0"/>
+  <BackgroundColor alpha="97" green="255" blue="255" red="255"/>
+  <LayoutObject>
+   <dataDefinedProperties>
+    <Option type="Map">
+     <Option name="name" type="QString" value=""/>
+     <Option name="properties"/>
+     <Option name="type" type="QString" value="collection"/>
+    </Option>
+   </dataDefinedProperties>
+   <customproperties/>
+  </LayoutObject>
+  <LabelFont description="Arial,28,-1,5,50,0,0,0,0,0,Regular" style="Regular"/>
+  <FontColor alpha="255" green="0" blue="0" red="0"/>
+ </LayoutItem>
+ <LayoutItem outlineWidthM="0.3,mm" excludeFromExports="0" size="297,210,mm" groupUuid="" type="65639" opacity="1" drawCanvasItems="true" mapFlags="0" frameJoinStyle="miter" followPreset="false" followPresetName="" referencePoint="0" zValue="1" itemRotation="0" positionOnPage="0,-2.10571,mm" visibility="1" keepLayerSet="false" blendMode="0" uuid="{280cdd71-623a-4506-b1b4-a4b423cf5f12}" id="" position="0,-2.10571,mm" background="true" positionLock="false" templateUuid="{280cdd71-623a-4506-b1b4-a4b423cf5f12}" mapRotation="23" labelMargin="0,mm" frame="false">
+  <FrameColor alpha="255" green="0" blue="0" red="0"/>
+  <BackgroundColor alpha="255" green="255" blue="255" red="255"/>
+  <LayoutObject>
+   <dataDefinedProperties>
+    <Option type="Map">
+     <Option name="name" type="QString" value=""/>
+     <Option name="properties"/>
+     <Option name="type" type="QString" value="collection"/>
+    </Option>
+   </dataDefinedProperties>
+   <customproperties/>
+  </LayoutObject>
+  <Extent xmax="317779.78333260567160323" xmin="264319.78327807650202885" ymin="5027026.27693862468004227" ymax="5064826.27697718050330877"/>
+  <LayerSet/>
+  <AtlasMap margin="0.10000000000000001" scalingMode="2" atlasDriven="0"/>
+  <labelBlockingItems/>
+ </LayoutItem>
+ <customproperties>
+  <property key="atlasRasterFormat" value="png"/>
+ </customproperties>
+ <Atlas enabled="0" coverageLayer="" filenamePattern="'output_'||@atlas_featurenumber" sortFeatures="0" hideCoverage="0" filterFeatures="0" pageNameExpression=""/>
+</Layout>

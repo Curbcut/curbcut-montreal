@@ -4,29 +4,54 @@ explore_graph_UI <- function(id) {
   plotOutput(NS(id, "explore_graph"), height = 150)
 }
 
-explore_graph_server <- function(id, x, var_left, var_right, select, 
-                                 var_left_title, var_left_label = NULL, 
-                                 var_right_label = NULL, plot_type = "auto") {
+explore_graph_server <- function(id, x, var_type, var_left, var_right, select, 
+                                 zoom, var_left_label = NULL, 
+                                 var_right_label = NULL, build_str_as_DA = TRUE,
+                                 plot_type = "auto") {
+  
+  # Check arguments
   stopifnot(is.reactive(x))
+  stopifnot(is.reactive(var_type))
   stopifnot(is.reactive(var_left))
   stopifnot(is.reactive(var_right))
   stopifnot(is.reactive(select))
-  stopifnot(is.reactive(var_left_title))
-  
+  stopifnot(is.reactive(zoom))
+
+  # Server function
   moduleServer(id, function(input, output, session) {
     
     output$explore_graph <- renderPlot({
       
-      dat <- tidyr::drop_na(x())
+      # Set convenience variables, and deal with build_str_as_DA ---------------
       
-      # Set convenience variables
-      left_var_num <- length(unique(dat$left_var_full))
+      if (!zoom() %in% c("building", "street")) build_str_as_DA <- FALSE
+      
+      if (build_str_as_DA) {
+        tb <- data_server(id = "explore_graph",
+                          var_left = var_left,
+                          var_right = var_right,
+                          df = reactive("DA"))
+        dat <- tidyr::drop_na(tb())
+        select_id <- (filter(building, ID == select()))$DAUID
+        if (length(select_id) == 0) select_id <- NA
+          
+      } else {
+        dat <- tidyr::drop_na(x())
+        select_id <- select()
+      }
+      
+      left_var_num <- length(unique(dat$left_var))
       bin_number <- min(25, left_var_num)
-      var_name <- sus_translate(var_exp %>%
-                                  filter(var_code == var_right()) %>%
-                                  pull(var_name))
-      active_select <- nrow(filter(dat, ID == select()))
-      na_select <- nrow(filter(dat, ID == select(), !is.na(left_var)))
+      var_left_title <- sus_translate(var_exp %>%
+          filter(var_code == sub("_\\d{4}$", "", var_left())) %>%
+          pull(var_name))
+      var_right_title <- sus_translate(var_exp %>%
+          filter(var_code == sub("_\\d{4}$", "", var_right())) %>%
+          pull(var_name))
+      na_select <- nrow(filter(dat, ID == select_id, !is.na(left_var_q3)))
+      
+      
+      # Set up plotting variables ----------------------------------------------
       
       # Decide on plot type
       if (plot_type == "auto") {
@@ -36,7 +61,8 @@ explore_graph_server <- function(id, x, var_left, var_right, select,
           var_right() != " " & left_var_num > 6 ~ "scatter",
           var_right() != " " & left_var_num <= 6 ~ "box")
         
-        select_type <- case_when(is.na(select()) ~ "all", na_select == 0 ~ "na",
+        select_type <- case_when(is.na(select_id) ~ "all", 
+                                 na_select == 0 ~ "na",
                                  TRUE ~ "select")
         plot_type <- paste(graph_type, select_type, sep = "_")
         }
@@ -79,9 +105,9 @@ explore_graph_server <- function(id, x, var_left, var_right, select,
         )
       
       # Prepare axis labels
-      labs_x <- list(labs(x = sus_translate(var_left_title()), y = NULL))
-      labs_xy <- list(labs(x = sus_translate(var_left_title()), 
-                           y = sus_translate(var_name)))
+      v_left_title <- 
+      labs_x <- list(labs(x = var_left_title, y = NULL))
+      labs_xy <- list(labs(x = var_left_title, y = var_right_title))
       
       # Prepare default theme
       theme_default <- list(
@@ -90,9 +116,12 @@ explore_graph_server <- function(id, x, var_left, var_right, select,
               panel.grid.major.x = element_blank(),
               panel.grid.minor.y = element_blank()))
       
+      
+      # Render plot ------------------------------------------------------------
+      
       # Histogram, no selection
       if (plot_type == "hist_all") {
-        out <- ggplot(dat, aes(left_var_full)) +
+        out <- ggplot(dat, aes(left_var)) +
           geom_histogram(aes(fill = fill), bins = bin_number) +
           scale_fill_manual(values = colour_scale[3:1], na.translate = FALSE) +
           x_scale + y_scale + labs_x + theme_default
@@ -100,16 +129,16 @@ explore_graph_server <- function(id, x, var_left, var_right, select,
       
       # Histogram, NA selection
       if (plot_type == "hist_na") {
-        out <- ggplot(dat, aes(left_var_full)) +
+        out <- ggplot(dat, aes(left_var)) +
           geom_histogram(bins = bin_number, fill = colour_scale[1]) +
           x_scale + y_scale + labs_x + theme_default
         }
       
       # Histogram, active selection
       if (plot_type == "hist_select") {
-        out <- ggplot(dat, aes(left_var_full)) +
-          geom_histogram(aes(fill = round(left_var_full) ==
-                               round(left_var_full[ID == select()])),
+        out <- ggplot(dat, aes(left_var)) +
+          geom_histogram(aes(fill = round(left_var) == 
+                               round(left_var[ID == select_id])),
                          bins = bin_number) +
           scale_fill_manual(values = colour_scale[c(1, 3)], 
                             na.translate = FALSE) +
@@ -118,7 +147,7 @@ explore_graph_server <- function(id, x, var_left, var_right, select,
       
       # Bar, no selection
       if (plot_type == "bar_all") {
-        out <- ggplot(dat, aes(as.factor(left_var_full))) +
+        out <- ggplot(dat, aes(as.factor(left_var))) +
           geom_bar(aes(fill = fill), width = 1) +
           scale_fill_manual(values = colour_scale[3:1], na.translate = FALSE) +
           x_scale + y_scale + labs_x + theme_default
@@ -126,16 +155,16 @@ explore_graph_server <- function(id, x, var_left, var_right, select,
       
       # Bar, NA selection
       if (plot_type == "bar_na") {
-        out <- ggplot(dat, aes(as.factor(left_var_full))) +
+        out <- ggplot(dat, aes(as.factor(left_var))) +
           geom_bar(fill = colour_scale[1], width = 1) +
           x_scale + y_scale + labs_x + theme_default
         }
       
       # Bar, active selection
       if (plot_type == "bar_select") {
-        out <- ggplot(dat, aes(as.factor(left_var_full))) +
-          geom_bar(aes(fill = round(left_var_full) == 
-                               round(left_var_full[ID == select()])), 
+        out <- ggplot(dat, aes(as.factor(left_var))) +
+          geom_bar(aes(fill = round(left_var) == 
+                               round(left_var[ID == select_id])), 
                          width = 1) +
           scale_fill_manual(values = colour_scale[c(1, 3)], 
                             na.translate = FALSE) +
@@ -144,24 +173,39 @@ explore_graph_server <- function(id, x, var_left, var_right, select,
       
       # Scatterplot, no selection
       if (plot_type == "scatter_all") {
-        out <- ggplot(dat, aes(left_var_full, right_var_full)) +
+        
+        opac <- abs(cor(dat$left_var, dat$right_var, use = "complete.obs"))
+        
+        out <- ggplot(dat, aes(left_var, right_var)) +
           geom_point(aes(colour = group)) +
+          stat_smooth(geom = "line", se = FALSE, method = "loess", span = 1,
+                      formula = y ~ x, alpha = opac) +
           scale_colour_manual(values = tibble::deframe(colour_bivar)) +
           x_scale + y_scale + labs_xy + theme_default
         }
       
       # Scatterplot, NA selection
       if (plot_type == "scatter_na") {
-        out <- ggplot(dat, aes(left_var_full, right_var_full)) +
+        
+        opac <- abs(cor(dat$left_var, dat$right_var, use = "complete.obs"))
+        
+        out <- ggplot(dat, aes(left_var, right_var)) +
           geom_point(colour = colour_bivar$fill[9]) +
+          stat_smooth(geom = "line", se = FALSE, method = "loess", span = 1,
+                      formula = y ~ x, alpha = opac) +
           x_scale + y_scale + labs_xy + theme_default
         }
       
       # Scatterplot, active selection
       if (plot_type == "scatter_select") {
-        out <- ggplot(dat, aes(left_var_full, right_var_full)) +
+        
+        opac <- abs(cor(dat$left_var, dat$right_var, use = "complete.obs"))
+        
+        out <- ggplot(dat, aes(left_var, right_var)) +
           geom_point(colour = colour_bivar$fill[9]) +
-          geom_point(data = filter(dat, ID == select()),
+          stat_smooth(geom = "line", se = FALSE, method = "loess", span = 1,
+                      formula = y ~ x, alpha = opac) +
+          geom_point(data = filter(dat, ID == select_id),
                      colour = colour_bivar$fill[1], size = 3) +
           x_scale + y_scale + labs_xy + theme_default
         }
@@ -170,10 +214,10 @@ explore_graph_server <- function(id, x, var_left, var_right, select,
       if (plot_type == "box_all") {
         
         colours <- c(colour_scale[1:2], rep(colour_scale[3], left_var_num - 2))
-        names(colours) <- as.factor(unique(sort(dat$left_var_full)))
+        names(colours) <- as.factor(unique(sort(dat$left_var)))
         
-        out <- ggplot(dat, aes(as.factor(left_var_full), right_var_full)) +
-          geom_boxplot(aes(fill = as.factor(left_var_full))) +
+        out <- ggplot(dat, aes(as.factor(left_var), right_var)) +
+          geom_boxplot(aes(fill = as.factor(left_var))) +
           scale_fill_manual(values = colours) +
           x_scale + y_scale + labs_xy + theme_default
         }
@@ -182,9 +226,9 @@ explore_graph_server <- function(id, x, var_left, var_right, select,
       if (plot_type == "box_na") {
         
         colours <- c(colour_scale[1:2], rep(colour_scale[3], left_var_num - 2))
-        names(colours) <- as.factor(unique(sort(dat$left_var_full)))
+        names(colours) <- as.factor(unique(sort(dat$left_var)))
         
-        out <- ggplot(dat, aes(as.factor(left_var_full), right_var_full)) +
+        out <- ggplot(dat, aes(as.factor(left_var), right_var)) +
           geom_boxplot(fill = colour_scale[1], colour = "grey50") +
           scale_fill_manual(values = colours) +
           x_scale + y_scale + labs_xy + theme_default
@@ -194,17 +238,21 @@ explore_graph_server <- function(id, x, var_left, var_right, select,
       if (plot_type == "box_select") {
         
         colours <- c(colour_scale[1:2], rep(colour_scale[3], left_var_num - 2))
-        names(colours) <- as.factor(unique(sort(dat$left_var_full)))
+        names(colours) <- as.factor(unique(sort(dat$left_var)))
         
-        out <- ggplot(dat, aes(as.factor(left_var_full), right_var_full)) +
+        out <- ggplot(dat, aes(as.factor(left_var), right_var)) +
           geom_boxplot(fill = colour_scale[1], colour = "grey50") +
-          geom_point(data = filter(dat, ID == select()),
+          geom_point(data = filter(dat, ID == select_id),
                      colour = colour_bivar$fill[1], size = 4) +
           scale_fill_manual(values = colours) +
           x_scale + y_scale + labs_xy + theme_default
         }
       
-      out
+      
+      # Return output ----------------------------------------------------------
+      
+      return(out)
+      
     }, bg = "white")
   })
 }

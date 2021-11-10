@@ -5,31 +5,71 @@
 # Create raw borough/CT/DA/grid tables ------------------------------------
 
 # Import DA, CT and borough geometries (independent script)
-source("dev/callee_scripts/borough_geometries.R")
+source("dev/geometries/census_geometries.R")
 
 # Add centroids and buffers to DA (dependent script: needs 'DA')
-source("dev/callee_scripts/DA_centroids.R")
+source("dev/geometries/DA_centroids.R")
 
 # Import grid geometries (independent script)
-source("dev/callee_scripts/grid_geometries.R")
+source("dev/geometries/grid_geometries.R")
 
 # Geocode grid centroids (dependent script: needs 'borough')
-source("dev/callee_scripts/grid_geocode.R")
+source("dev/geometries/grid_geocode.R")
 
 # Add metadata to grid (dependent: needs 'borough', 'CT', 'DA' and 'grid')
-source("dev/callee_scripts/grid_process.R")
+source("dev/geometries/grid_process.R")
+
+# Import building (dependent: needs 'DA')
+source("dev/geometries/building.R")
+
+# Geocode building centroids (dependent: needs 'building')
+source("dev/geometries/building_geocode.R")
+
+# Import street edges (dependent: needs 'borough' and 'DA')
+source("dev/geometries/street.R")
+
+# Geocode street edges centroids (dependent script: needs 'street')
+source("dev/geometries/street_geocode.R")
+
+
+# Error checking ----------------------------------------------------------
+
+# Eventually there should be some proper error checking here, but for now....
+stopifnot(
+  names(borough) == c("ID", "name", "name_2", "population", "households", 
+                      "geometry"),
+  names(building) == c("ID", "name", "name_2", "DAUID", "CTUID", "CSDUID", 
+                       "osm_ID", "grid_ID", "population", "households", 
+                       "geometry"),
+  names(CT) == c("ID", "name", "name_2", "CSDUID", "population", "households", 
+                 "geometry"),
+  names(DA) == c("ID", "name", "name_2", "CTUID", "CSDUID", "population", 
+                 "households", "centroid", "buffer", "geometry"),
+  names(grid) == c("ID", "name", "name_2", "CSDUID", "population", "households", 
+                   "geometry"),
+  names(street) == c("ID", "name", "name_2", "street_type", "DAUID", "CTUID", 
+                     "CSDUID", "osm_ID", "grid_ID", "population", "households",
+                     "geometry"),
+  nrow(borough) == 111,
+  nrow(building) == 56614,
+  nrow(CT) == 970,
+  nrow(DA) == 6469,
+  nrow(grid) == 9923,
+  nrow(street) == 68938
+)
 
 
 # Add topic variables (modules) -------------------------------------------
 
 var_exp <- tibble(var_code = character(), var_name = character(),
         explanation = character())
-source("dev/modules/census.R")
+
+source("dev/modules/census/build_census.R")
 source("dev/modules/canale.R")
 source("dev/modules/climate_risk.R")
-# source("dev/modules/dmti.R")
-source("dev/modules/alley.R")
 source("dev/modules/crash.R")
+# source("dev/modules/dmti.R")
+# source("dev/modules/alley.R")
 # source("dev/modules/ped.R")
 
 
@@ -38,15 +78,35 @@ source("dev/modules/crash.R")
 qsave(var_exp, file = "data/var_exp.qs")
 qsavem(borough, CT, DA, file = "data/census.qsm")
 qsave(grid, file = "data/grid.qs")
-qsave(green_space, file = "data/green_space.qs")
-# qsavem(green_space, ..., file = "data/alley.qsm")
-# qsave(crash, file = "data/crash.qs")
+qsave(building, file = "data/building.qs")
+qsave(street, file = "data/street.qs")
+qsave(crash, file = "data/crash.qs")
+# qsave(green_space, file = "data/green_space.qs")
+# qsavem(alleys, alley_text, file = "data/alleys.qsm")
 
 
 # Produce left and right maps ---------------------------------------------
 
 library(patchwork)
-source("dev/callee_scripts/colours.R")
+source("dev/other/colours.R")
 
 # Dependent script: needs 'borough' object
-source("dev/callee_scripts/produce_maps.R")
+source("dev/other/produce_maps.R")
+
+
+# Copy large data files to Dropbox ----------------------------------------
+
+unlink("~/Dropbox/sus_sync/dev_data", recursive = TRUE)
+unlink("~/Dropbox/sus_sync/data", recursive = TRUE)
+unlink("~/Dropbox/sus_sync/www_maps", recursive = TRUE)
+
+dir.create("~/Dropbox/sus_sync/dev_data")
+dir.create("~/Dropbox/sus_sync/data")
+dir.create("~/Dropbox/sus_sync/www_maps")
+
+invisible(file.copy(list.files("dev/data", full.names = TRUE), 
+                    "~/Dropbox/sus_sync/dev_data", recursive = TRUE))
+invisible(file.copy(list.files("data", full.names = TRUE), 
+                    "~/Dropbox/sus_sync/data"))
+invisible(file.copy(list.files("www/maps", full.names = TRUE), 
+                    "~/Dropbox/sus_sync/www_maps"))

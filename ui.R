@@ -34,21 +34,22 @@ ui <- dashboardPage(
         conditionalPanel(
           condition = "input.tabs == 'climate_risk'",
           # The ID needs to be duplicated for complicated namespacing reasons!
-          small_map_UI("climate_risk-left")),
-
-        startExpanded = TRUE),
+          small_map_UI("climate_risk-left"))),
       
       # Covid ----
       menuItem(
         i18n$t("Covid-19"),
-        tabName = "covid",
-
+        tabName = "covid_main",
+        
+        # Covid interventions
+         menuSubItem(
+           i18n$t("Covid interventions"),
+           tabName = "covid"),
+      
         # Pedestrian realm
         menuSubItem(
           i18n$t("Pedestrian realm"),
-          tabName = "ped"),
-
-        startExpanded = TRUE),
+          tabName = "ped")),
 
       # Ecology ----
       menuItem(
@@ -58,11 +59,19 @@ ui <- dashboardPage(
         # Biodiversity
         menuSubItem(
           i18n$t("Biodiversity"),
-          tabName = "biodiversity"),
-
-        startExpanded = TRUE),
+          tabName = "biodiversity")),
       
-      # Housing realm
+      # Health
+      menuItem(
+        i18n$t("Health"),
+        tabName = "health",
+        
+        # DMTI
+        menuSubItem(
+          i18n$t("Healthy urban features"),
+          tabName = "dmti")),
+      
+      # Housing realm ----
       menuItem(
         i18n$t("Housing realm"),
         tabName = "housing_realm",
@@ -75,9 +84,17 @@ ui <- dashboardPage(
           condition = "input.tabs == 'housing'",
           # The ID needs to be duplicated for complicated namespacing reasons!
           # small_map_UI("housing-left")
-        ),
+        )),
+      
+      # Policy ----
+      menuItem(
+        i18n$t("Policy"),
+        tabName = "policy",
         
-        startExpanded = TRUE),
+        # MCP
+        menuSubItem(
+          i18n$t("Montréal climate plans"),
+          tabName = "mcp")),
       
       # Transport ----
       menuItem(
@@ -98,8 +115,11 @@ ui <- dashboardPage(
         menuSubItem(
           i18n$t("Safety"),
           tabName = "crash"),
-
-        startExpanded = TRUE),
+        
+        # Safety
+        menuSubItem(
+          i18n$t("Safety analysis"),
+          tabName = "crash_analysis")),
       
       # Urban life
       menuItem(
@@ -123,9 +143,7 @@ ui <- dashboardPage(
           condition = "input.tabs == 'alley'",
           # The ID needs to be duplicated for complicated namespacing reasons!
           small_map_UI("alley-left")
-          ),
-
-        startExpanded = TRUE),
+          )),
       
       hr(),
       menuItem(i18n$t("Place explorer"), tabName = "place_explorer"),
@@ -145,6 +163,8 @@ ui <- dashboardPage(
     tags$head(tags$script(HTML(js))),
     tags$head(tags$script(HTML(js2))),
     tags$head(tags$script(HTML(js3))),
+    tags$head(tags$script(HTML(js3))),
+    tags$script(HTML(js_links_between_modules)),
     tags$head(tags$style(HTML(styler))),
     
     waiter::use_waiter(),
@@ -184,16 +204,16 @@ ui <- dashboardPage(
       )), 
       
       # Modules
-      # tabItem(tabName = "accessibility", Accessibility_module_UI("accessibility_module", i18n = i18n)),
       tabItem(tabName = "alley", alley_UI("alley")),
-      # tabItem(tabName = "biodiversity", Biodiversity_module_UI("biodiversity_module", i18n = i18n)),
       tabItem(tabName = "canale", canale_UI("canale")),
       tabItem(tabName = "climate_risk", climate_risk_UI("climate_risk")),
+      tabItem(tabName = "covid", covid_UI("covid")),
       tabItem(tabName = "crash", crash_UI("crash")),
+      tabItem(tabName = "crash_analysis", crash_analysis_UI("crash_analysis")),
+      # tabItem(tabName = "dmti", dmti_UI("dmti")),
       tabItem(tabName = "housing", housing_UI("housing")),
+      tabItem(tabName = "mcp", mcp_UI("mcp")),
       tabItem(tabName = "meet_the_team", meet_the_team_UI("meet_the_team")),
-      # tabItem(tabName = "mode", Mode_switch_module_UI("Mode_switch_module")),
-      # tabItem(tabName = "ped", ped_UI("ped")),
       tabItem(tabName = "why_dash", why_dash_UI("why_dash"))
       
     )

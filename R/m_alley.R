@@ -8,7 +8,19 @@ alley_UI <- function(id) {
           title_UI(NS(id, "title")),
           right_panel(id, 
                       compare_UI(NS(id, "alley"), var_list_alley),
-                      # explore_UI(NS(id, "explore")),
+                      hr(),
+                      fluidRow(column(width = 7, h4(i18n$t("Explore"))),
+                               column(width = 5, align = "right", 
+                                      actionLink(inputId = NS(id, "hide"), 
+                                                 label = i18n$t("Hide")))),
+                      # conditionalPanel(
+                      #   condition = "output.hide_status == 1", ns = NS(id),
+                        uiOutput(NS(id, "alley_explore")),
+                        # conditionalPanel(
+                        #   condition = "output.poly_selected == 1", ns = NS(id),
+                        #   actionLink(inputId = NS(id, "clear_selection"),
+                        #              label = "Clear selection")))
+                      # ,
                       dyk_UI(NS(id, "dyk"))),
           legend_bivar_UI(NS(id, "alley")))
 }
@@ -27,21 +39,25 @@ alley_server <- function(id) {
       mapdeck(
         style = map_style, token = token_alley,
         zoom = map_zoom, location = map_location) %>%
-        add_polygon(data = green_space,
-                    stroke_width = 10, stroke_colour = "#FFFFFF", 
-                    fill_colour = "#00FF00", 
+        add_polygon(data = borough, stroke_width = 5, stroke_colour = "#000000",
+                    fill_colour = "#FFFFFF10", update_view = FALSE, id = "ID",
+                    layer_id = "borough", auto_highlight = TRUE,
+                    highlight_colour = "#FFFFFF90") %>%
+        add_polygon(data = alleys,
+                    stroke_width = 15, stroke_colour = "#007700", 
+                    fill_colour = "#00FF00", layer_id = "alleys",
                     update_view = FALSE, id = "ID", auto_highlight = TRUE,
                     highlight_colour = "#FFFFFF90")
     })
     
-    # Zoom level
-    observeEvent(input$map_view_change$zoom, {
-      rv_alley$zoom <- case_when(input$map_view_change$zoom >= 14 ~ "DA_2",
-                                 input$map_view_change$zoom >= 12 ~ "DA",
-                                 input$map_view_change$zoom >= 10.5 ~ "CT",
-                                 TRUE ~ "borough")
-    })
-    
+    # # Zoom level
+    # observeEvent(input$map_view_change$zoom, {
+    #   rv_alley$zoom <- case_when(input$map_view_change$zoom >= 14 ~ "DA_2",
+    #                              input$map_view_change$zoom >= 12 ~ "DA",
+    #                              input$map_view_change$zoom >= 10.5 ~ "CT",
+    #                              TRUE ~ "borough")
+    # })
+    # 
     # Compare panel
     var_right_alley <- compare_server("alley", var_list_alley,
                                        reactive(rv_alley$zoom))
@@ -49,12 +65,25 @@ alley_server <- function(id) {
     # Data 
     # data_alley <- data_server("alley", reactive("canale_ind"), 
     #                            var_right_alley, reactive(rv_alley$zoom))
-    data_alley <- reactive(green_space)
+    # data_alley <- reactive(green_space)
     
-    # # Explore panel
-    # explore_server("explore", data_canale, reactive("canale_ind"),
-    #                var_right_canale, reactive(rv_canale$poly_selected),
-    #                reactive(rv_canale$zoom), reactive("CanALE index"))
+    # Explore panel
+    output$alley_explore <- renderUI({
+      
+      # print("POLY_SELECT")
+      # print(rv_alley$poly_selected)
+      
+      text_to_display <- 
+        alley_text %>%
+        filter(ID == rv_alley$poly_selected)
+      
+      # print(text_to_display)
+      
+      if (nrow(text_to_display) == 1) {
+        HTML(text_to_display$description)
+      }
+    })
+    outputOptions(output, "alley_explore", suspendWhenHidden = FALSE)
     
     # Did-you-know panel
     dyk_server("dyk", reactive("alley_ind"), var_right_alley)
@@ -96,13 +125,13 @@ alley_server <- function(id) {
       if (!is.na(rv_alley$poly_selected)) {
         # width <- switch(rv_canale$zoom, "borough" = 100, "CT" = 10, 2)
         data_to_add <-
-          data_alley() %>%
+          borough %>%
           filter(ID == rv_alley$poly_selected)
         
         mapdeck_update(map_id = NS(id, "map")) %>%
           add_polygon(
             data = data_to_add, stroke_width = 10, stroke_colour = "#000000",
-            fill_colour = "#000000", update_view = FALSE,
+            fill_colour = "#00770030", update_view = FALSE,
             layer_id = "poly_highlight", auto_highlight = TRUE,
             highlight_colour = "#FFFFFF90")
       } else {

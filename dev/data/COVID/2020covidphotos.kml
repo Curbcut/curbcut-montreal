@@ -1,0 +1,812 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:kml="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom">
+<Document id="1uUs5Ej2-bhZ1SEn6Msfqp0GvW5dn8Tsz">
+	<name>Copy of Safe Active Transportation Circuits</name>
+	<gx:CascadingStyle kml:id="__managed_style_0F58EABF651BFFAC26AD">
+		<styleUrl>https://earth.google.com/balloon_components/base/1.0.24.0/card_template.kml#main</styleUrl>
+		<Style>
+			<IconStyle>
+				<scale>1.2</scale>
+				<Icon>
+					<href>https://earth.google.com/earth/rpc/cc/icon?color=ffee58&amp;id=2000&amp;scale=4</href>
+				</Icon>
+				<hotSpot x="64" y="128" xunits="pixels" yunits="insetPixels"/>
+			</IconStyle>
+			<LabelStyle>
+			</LabelStyle>
+			<LineStyle>
+				<color>ff2dc0fb</color>
+				<width>3</width>
+			</LineStyle>
+			<PolyStyle>
+				<color>40ffffff</color>
+			</PolyStyle>
+			<BalloonStyle>
+			</BalloonStyle>
+		</Style>
+	</gx:CascadingStyle>
+	<gx:CascadingStyle kml:id="__managed_style_1DF40F86E01BFFAC26A9">
+		<styleUrl>https://earth.google.com/balloon_components/base/1.0.24.0/card_template.kml#main</styleUrl>
+		<Style>
+			<IconStyle>
+				<Icon>
+					<href>https://earth.google.com/earth/rpc/cc/icon?color=ffee58&amp;id=2000&amp;scale=4</href>
+				</Icon>
+				<hotSpot x="64" y="128" xunits="pixels" yunits="insetPixels"/>
+			</IconStyle>
+			<LabelStyle>
+			</LabelStyle>
+			<LineStyle>
+				<color>ff2dc0fb</color>
+				<width>2</width>
+			</LineStyle>
+			<PolyStyle>
+				<color>40ffffff</color>
+			</PolyStyle>
+			<BalloonStyle>
+			</BalloonStyle>
+		</Style>
+	</gx:CascadingStyle>
+	<StyleMap id="__managed_style_046DB8DE701BFFAC26A9">
+		<Pair>
+			<key>normal</key>
+			<styleUrl>#__managed_style_1DF40F86E01BFFAC26A9</styleUrl>
+		</Pair>
+		<Pair>
+			<key>highlight</key>
+			<styleUrl>#__managed_style_0F58EABF651BFFAC26AD</styleUrl>
+		</Pair>
+	</StyleMap>
+	<Placemark id="053613D7D91445586606">
+		<name>Saint Denis</name>
+		<description><![CDATA[<div>circuit<br></div>]]></description>
+		<LookAt>
+			<longitude>-73.57365613258771</longitude>
+			<latitude>45.51988749162125</latitude>
+			<altitude>51.90913354219822</altitude>
+			<heading>0</heading>
+			<tilt>0</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>861.5099775466661</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_046DB8DE701BFFAC26A9</styleUrl>
+		<gx:Carousel>
+			<gx:Image kml:id="hosted_image_QU9sekY1WTY5bndNa3NMZHZ5YWljOWxjSjhCUGF3bWpabVJ1VVZzSG92OVptR1d2enZVd3NleTJPdTloREJKTTlkMXdBYUszWnpqcHJSSy9qQkhlTWhpQ1A4ZFZjc2Y3WUJJRlBMOEdIUjJFdGQwem1WMExraXBDVkVUYkNqdkh2RlI3b2ZOVlBaTE1pNUpIbVVVMTlVMUNSenJ5QmZzYVpUZXFPaGVsMTRUMEFCNmRCcVY3NHpYVS9XdVpxN0dOTFp0djhjZytGaWV0WU9kc2NLY2orYmxqNEppTnNUS0l6UXkvMEZtMjJuMlM5NGp3N2ZWKzM4VT0">
+				<gx:ImageUrl>https://doc-08-c8-mymaps.googleusercontent.com/untrusted/hostedimage/g9f3l7s8hamaf0drb83porv87o/lspvrdtii6v63210ntmloor3fc/1626891067750/_ZW3kOyha-XOfEh00f6Nj983MUS2Cmf6/17132235312417974180/5AOlzF5aWMjHynoP11DyEH9JpeMQ4G74UBdqguqUE3m7TSmZ0V004is4BfDQpOU1ZBjAktCqhEtbycEIpbby0y-hQHlQdW4FbzzLC-pe1TpHwOWF6N4SlfV-OuM7w_untekriifZjfP98-F8XQ9K17wn6BpKZnFV8-6srN2eHFpzlTyhJvpNFy2Vz8fYvFu0ff5IWP0l6?session=0&amp;fife=s{size}</gx:ImageUrl>
+			</gx:Image>
+		</gx:Carousel>
+		<Point>
+			<coordinates>-73.57462922631339,45.52012830909567,43.20992392726424</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark id="0F8BE3146D144560B65A">
+		<name>Saint Denis</name>
+		<description><![CDATA[<div>circuit</div>]]></description>
+		<LookAt>
+			<longitude>-73.57043648360066</longitude>
+			<latitude>45.51877372043739</latitude>
+			<altitude>43.61904902067693</altitude>
+			<heading>0</heading>
+			<tilt>0</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>1420.621723536024</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_046DB8DE701BFFAC26A9</styleUrl>
+		<gx:Carousel>
+			<gx:Image kml:id="hosted_image_QU9sekY1Wk5uV0ZRN3JUUGlOTmkzeHErUzhERHkxTUhqOHBNaHFwN0h6K2k2clZlRVNIZzZRVVFzd0V5Nms0WW82YjdwM3k4eXNoZFdITmJaT0pTMGJHM3l6NWZvOElMVnU3emZnVnlQbTJDTFVqUnZzMlQrMGMyd0E4UUFNS0lvMXdPaGdNWWVpSU5aRnZzY3diY0VkVUp0RWlCQTJNTXRDeGxjN2o2SDRIb2h6K0s1Kys0eUpDcGVHRWN1ZzNLU3NYbVhxZWRrMVdBUWtnQVp0OG5ySzRxdjNoYWpjRWNLaG0wTENlVTVtWG4yNEVMK0d4cVc1Yz0">
+				<gx:ImageUrl>https://doc-0k-c8-mymaps.googleusercontent.com/untrusted/hostedimage/g9f3l7s8hamaf0drb83porv87o/pfmfqiluv13rdk24lr4n6ojp40/1626891067750/_ZW3kOyha-XOfEh00f6Nj983MUS2Cmf6/17132235312417974180/5AOlzF5beWRmhGsEXRH31jbdMdkYD1wusv2WTlcs9fBDTvWgLZuSsbj-Kij_z6s81JOh5LaCgXnhDPwJ2TWpuGT00v1b5PfvNuhmZlQc6n3WHSsz-wLjwmD1LhPalVJ4r_XSH-AYoMCkHcWgUuzb67Xjo7v58D222jQVIhx432HZSdANkGYbWJISzW1k4JwLPIUdofSFk?session=0&amp;fife=s{size}</gx:ImageUrl>
+			</gx:Image>
+		</gx:Carousel>
+		<Point>
+			<coordinates>-73.57008630860832,45.51806319154758,41.92797058276569</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark id="0A5DE48E831445637553">
+		<name>Rachel</name>
+		<description><![CDATA[<div>circuit<br></div><div><br></div>]]></description>
+		<LookAt>
+			<longitude>-73.57901594033157</longitude>
+			<latitude>45.52070970315818</latitude>
+			<altitude>48.92932706380008</altitude>
+			<heading>0</heading>
+			<tilt>0</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>154.6828712056231</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_046DB8DE701BFFAC26A9</styleUrl>
+		<gx:Carousel>
+			<gx:Image kml:id="hosted_image_QU9sekY1YTRBUnJGaHlnc1cvNzNXdERKK3pwTDB6NmZTUEdwalhQdmVjUVF4clFsOUpGUk40UHdhdjhZUDhWSDg2ekZEWDNETEtOOUs4SWxGMGQxU0lxK3NUNFhGK09hRUJBMklLSDRnbmJKeHdnRUpRTE1kZ0FyUEVERkNocndQc3JQcU9XUUQyaTU5bmRkSklGaDAyWFRuNjVyRFMxOHhYaGk4dUZ1aUJnazNZSzRQM1AvSGljeitWTGdtVzNpNVV6d3hyZW1rK2FjU0N5QzBxNndqRnlWWGh3MHA1MHNINjZBRDVmTVVIelI3TWNmNmxvWHdIZz0">
+				<gx:ImageUrl>https://doc-0o-c8-mymaps.googleusercontent.com/untrusted/hostedimage/g9f3l7s8hamaf0drb83porv87o/h072nhe1neatjuhmvot623an4s/1626891067750/_ZW3kOyha-XOfEh00f6Nj983MUS2Cmf6/17132235312417974180/5AOlzF5Z7cinmEEGNMBrl7C_ZclAWIaLQQ6zDxWYJJd0Y-bhRGtcEcUIO_ySKerVXFTw98B-oOBv-G8n24wUkDrELaGZkIo2YVh_aJwyu1yES8ucc3LzS3YwrnigyvSp3HD73Iemo2No6ASUOk3pJlrfd2iD21wwF1kY_6-zfXD6H6MpgTRCYM-H-voAmEZJOeaclXOpx?session=0&amp;fife=s{size}</gx:ImageUrl>
+			</gx:Image>
+		</gx:Carousel>
+		<Point>
+			<coordinates>-73.57914977706822,45.52089814203283,51.11906391797751</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark id="0D50A45159144565FE20">
+		<name>Rachel</name>
+		<description><![CDATA[<div>circuit<br></div>]]></description>
+		<LookAt>
+			<longitude>-73.5789620670471</longitude>
+			<latitude>45.52077010784751</latitude>
+			<altitude>48.07164194463336</altitude>
+			<heading>0</heading>
+			<tilt>0</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>118.7354460017923</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_046DB8DE701BFFAC26A9</styleUrl>
+		<gx:Carousel>
+			<gx:Image kml:id="hosted_image_QU9sekY1WjdtMXV3ZGF1MFhDVzdzbzcxeUhEVytYUkhETzh3cEs1N3IwQXZ0NDdlWG1YSDM1RENNNDN2WDY1UjhzU1kxOVRnWThTUjJzeUtYQTZCSkxncTNsWnkxeTh6N3JrS1BFZVNpK0ExY2dHVTRnYWtIb21PNzhZalJiSmVObDNGQ2hTVjFOUHdoUHRWQ2ZaUUdUS0VWMk5wdnlIS2dXbVRwZWZlbkR2eTNoRU13cVFBZDkxUk1WbkE2a0E0c1hqQlhTYlN3RXJKUEZvWVZraTEzOWRYZWVVQTRhbnVNQ244WURPQWxaQmU2NmgzdERHWm5HMD0">
+				<gx:ImageUrl>https://doc-0c-c8-mymaps.googleusercontent.com/untrusted/hostedimage/g9f3l7s8hamaf0drb83porv87o/9c20c3s681ehlpihfno3vqtal8/1626891067750/_ZW3kOyha-XOfEh00f6Nj983MUS2Cmf6/17132235312417974180/5AOlzF5ara522a_sRliUn26_FH8b1XSdp9rIhWoEBUTsSoSV4SrquMYeO4BnBGkfyTqH_PW8L-d3XXV46GdFJY9XM9SD7LMS0imabldgNDPIylDqkDez8dbbJAdP0q7PhVhaezqwV_8lwNoVTIIXfsE9kkhTKy2HvIUHAE0GcWfMk0akoEFqPDLt5ICT0dCrM6EU-99yY?session=0&amp;fife=s{size}</gx:ImageUrl>
+			</gx:Image>
+		</gx:Carousel>
+		<Point>
+			<coordinates>-73.57924942452843,45.52076291689243,61.56898280198484</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark id="01082AE97D144568F678">
+		<name>Saint Laurent</name>
+		<description><![CDATA[<div>circuit</div>]]></description>
+		<LookAt>
+			<longitude>-73.58072987650523</longitude>
+			<latitude>45.51760709999577</latitude>
+			<altitude>55.66121335902571</altitude>
+			<heading>0</heading>
+			<tilt>0</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>182.3844250628281</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_046DB8DE701BFFAC26A9</styleUrl>
+		<gx:Carousel>
+			<gx:Image kml:id="hosted_image_QU9sekY1Wm1jS3ZpZEE3Q2xITmJ4TVpPMStRQlRuc2ZhRGszQXIvempMci9jdkRSWTJ4S05iR1c3VEVrNk4wa2x6cyticGFpTkI4TmFFMk9FcmJEUSszOVFOeTEyQnhOQjRqN3l1aW5wdDQzdGJpbVZSOWpTWTdUK0prZ0EvWmVGQmxES2xQWkdSb0tDMVc5ZHNJVTZvbk1RWEd4enN0ajlpWHoyWnNRb1RoUXRYWVJSQ3hZTm8renJLWUlCME1ITzVPbzNmQkhIQis3K3RwOFFWUUJqU3RoNGxuWW1SVTFNazlGY0JvcVdzTHFmVDdpQzZScWljST0">
+				<gx:ImageUrl>https://doc-0g-c8-mymaps.googleusercontent.com/untrusted/hostedimage/g9f3l7s8hamaf0drb83porv87o/1l20tfmnh3p440vnvqmavep8bo/1626891067750/_ZW3kOyha-XOfEh00f6Nj983MUS2Cmf6/17132235312417974180/5AOlzF5YMSQsmeHrcz1bdwBNN8qOcLnjPk7eRoszBI8ghaP5MeXNG9T82KVrqD2FmyTzpZ2LfTSpEF9BbkXvIkoQChXNjpLv9yL15xetMeLlpiEuiO6VfDW5ki38KHI9VSwQF1UGokKO7G7ppIwKlqQA_ZIUmuwiEzei2CBrib3b37kxTwRBlgfps2s9qCHSiQvD6nB2G?session=0&amp;fife=s{size}</gx:ImageUrl>
+			</gx:Image>
+		</gx:Carousel>
+		<Point>
+			<coordinates>-73.58070474405966,45.51764043328182,63.11250622051232</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark id="0AD668880E14456B7927">
+		<name>Saint Laurent</name>
+		<description><![CDATA[<div>circuit</div>]]></description>
+		<LookAt>
+			<longitude>-73.58016402842365</longitude>
+			<latitude>45.51756117514817</latitude>
+			<altitude>65.22768462749663</altitude>
+			<heading>0</heading>
+			<tilt>0</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>222.0555633797995</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_046DB8DE701BFFAC26A9</styleUrl>
+		<gx:Carousel>
+			<gx:Image kml:id="hosted_image_QU9sekY1Ym5nY0hyUTFEU1o2YWo3MFhSTlpmUTdUS2pTd0hkbC83cCtZSXd6bFpuMjQzOFd0WFQwY0E3WkpFbGFRdENUbHRGU2RVNW1rNUpmc3ZaSGJZeFhodmt3K0t6VVovZ3JIbHk1cDIyckp4VjltSEVTL1VGblJHbWx5K2duMkNsalRKaENiUHh2SjlZZ0RERnE0eXBZTTNxVFQzRmNRS2NvVGNtTzVWSVJSektGMENUOC9OWWNiWjhscGVPM0N1ZHpjakNIYkQrcnZCWXlVVHlYdnpXaHpEWHAvVlpyT3lHaE9zTWlJNnRIZGJXSG1HUnZJWT0">
+				<gx:ImageUrl>https://doc-00-c8-mymaps.googleusercontent.com/untrusted/hostedimage/g9f3l7s8hamaf0drb83porv87o/osbqe870aoboctb4f1al9ipc6k/1626891067750/_ZW3kOyha-XOfEh00f6Nj983MUS2Cmf6/17132235312417974180/5AOlzF5YDA6RJo9kBjRdrF5_4U1gP3o-zlGfzGRiVcLkhg-qKvbQCOAr2eblx66w7EaHqNQ4alz5aG6O5PGc6dLEpdTReIcIbd9b7XuGGDor7KSO00fqmaUNB2J0J1gbkqUnpvI55phUgFB4C36YZAcvGURjkw-HT20u_fuXyrM6zJvuIeeBONKXAzz3XGuMQR-zfbUOA?session=0&amp;fife=s{size}</gx:ImageUrl>
+			</gx:Image>
+		</gx:Carousel>
+		<Point>
+			<coordinates>-73.5799099631779,45.51727314866896,53.6847065364344</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark id="096E5626CD146A215BEC">
+		<name>Duluth</name>
+		<description><![CDATA[<div>circuit</div>]]></description>
+		<LookAt>
+			<longitude>-73.58629890861995</longitude>
+			<latitude>45.52006350290227</latitude>
+			<altitude>61.57305710246649</altitude>
+			<heading>0</heading>
+			<tilt>0</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>91.88943528095479</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_046DB8DE701BFFAC26A9</styleUrl>
+		<gx:Carousel>
+			<gx:Image kml:id="hosted_image_QU9sekY1WldYdTRtUlNreDBxcEJGWlkyTnRTVE1mWVRSSUxxZDFKVG04UkFhbFVnb0t3bXJJK1B0OE55azY4bjJPbW1SU1VPdW43R2tHdUFRMEcra25Ed1Y0dUNjU0FaWGhlSU85U2Z6VmcvK0hHclBnRW51bnVYQWN5d095ckpYb1RudFpGTHpzUytqV0I2VGVpTUttSnVud1p0N0lSYUxrUjNVa0xMU3dJdVQySTRSd0VYMHFVekltby9jQTduMVJwekxDVHhQTm9nZ3RLQzVPVmJwTFBSNGVYa0dJYS95M3FYSnMxakZMUFRYUUdsQi93YTR6TT0_0">
+				<gx:ImageUrl>https://doc-0c-c8-mymaps.googleusercontent.com/untrusted/hostedimage/g9f3l7s8hamaf0drb83porv87o/q3497mehddr43h5vfsvbttnu28/1626891067750/_ZW3kOyha-XOfEh00f6Nj983MUS2Cmf6/17132235312417974180/5AOlzF5Y3KWI0qbLl1WE3eZLgkyCDh-G1fiPJzC2mPiAiRiaPyVPxNelcCl9fqmyaeGNsfCzHWHzHYgyt12zscvaPwEjihJbA36o9B0P9E-8hUfM0HgE1BlaOh6jAAlW5EC9Z6zF69EnMY_lgsvhSDIc06W2gAMzcxY0uTalTgB8NGi7AfbMgcWhh69utE56D3cG4KcUV?session=0&amp;fife=s{size}</gx:ImageUrl>
+			</gx:Image>
+			<gx:Image kml:id="hosted_image_QU9sekY1YnpaZENMYjdMT1FCMDVEYndxYWtnNmJrVnNjZ2ZIaEZtby9FQU1HYStSTW5pdUxXYTBBNm1Cd245OExZTk5vdjdwM1J4eXFNSUpkcDhKOWh3cU5qUVdWOEpBb3VDTHhOZ0sveHp3OUdRSkY1RWZYbU1VbDNOOWlqZEQ2bUtLYVZqYlFCbjZhSjBUOGRISlFKYXhFVFRNMDZVQXN1aHdibnpTeDZYeEphZHJ1d0JSRE1za0RuMjBUOVp5aHFQNWdCeE5UMUc4cGZwR0p0UGtRbTc2bFZSUXB6SWp2VTdHbTBVR2w0dU00UU1OdGR0MnVvVT0">
+				<gx:ImageUrl>https://doc-14-c8-mymaps.googleusercontent.com/untrusted/hostedimage/g9f3l7s8hamaf0drb83porv87o/ov5s9liru87h7j1qi54bidvjrs/1626891067750/_ZW3kOyha-XOfEh00f6Nj983MUS2Cmf6/17132235312417974180/5AOlzF5asFee9_JitNbY8edIM3h7kvx36kNmseJI-PcoKQYC_STq8mFvcjDr8MyWtoNlzIHjim7_QqYO7_VLcp29Y08ycIBwatfKPXppJAVeqit4ig4oz_kCC5-D32-1lLz7sTzPTAX2UQ3rG_op3kfIodBE5rwKGfAPZknRuwokRg6aGU6y0s3dFmwFqum-w0iMlR8WW?session=0&amp;fife=s{size}</gx:ImageUrl>
+			</gx:Image>
+		</gx:Carousel>
+		<Point>
+			<coordinates>-73.57929086514507,45.51696900674196,61.64194237891221</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark id="0D3BC7DB79146F3EE9E1">
+		<name>Mont Royal</name>
+		<description><![CDATA[<div>circuit</div>]]></description>
+		<LookAt>
+			<longitude>-73.58498064440079</longitude>
+			<latitude>45.5206396182873</latitude>
+			<altitude>67.00786321358051</altitude>
+			<heading>0</heading>
+			<tilt>0</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>773.1692065596872</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_046DB8DE701BFFAC26A9</styleUrl>
+		<gx:Carousel>
+			<gx:Image kml:id="hosted_image_QU9sekY1YjdkcFBWNVRrNVFVQW52SVlIa1NmVlJ1bkd5QVlPVjd0cUF6SFZyZWVaT3JmQ01PeklJbFFpcXMraDJKMFQ5akxDMllDOUNPM2N0Zmgzd3NIdWV4RHZyWjg4S1Jna3p3c1hBcGc4UWR2bVc3YXorc2hQSlgyTU1oVndRWUV3YVU1MUpZOFdPMUoydUZwUUhTNnVORU51T3ExM3NCZ3dsRTUrb05Sc2FWUkh2T3dHeVU0WGFFeW55WW5BQlhHcnE2RndVY3NoTUpHMFdFcDFIS0kveVliL0ErbGxaaDZ4eS80TWF1cVRId2ovdDNUa0RYYz0">
+				<gx:ImageUrl>https://doc-00-c8-mymaps.googleusercontent.com/untrusted/hostedimage/g9f3l7s8hamaf0drb83porv87o/osk9bbc26l1qogqe647e1j0458/1626891067750/_ZW3kOyha-XOfEh00f6Nj983MUS2Cmf6/17132235312417974180/5AOlzF5aZhB9yu39CjgwWGy5fCwR1NnEGiplL5AnRcnaD55X6cHCEREtM01vw7bwZEj_XCsZTmWqS4bfL-7z68o0Q6uYj7cAs0aFWMYKCr8ZLl-YfYSiSZxcywZRGwBmoczlqd9BV9JvxvFmBmLMkjzw0AjPAqb6zgsM6DkrFsGVdReDHfjdXx_x9cMjsYBDTTcbE4NMB?session=0&amp;fife=s{size}</gx:ImageUrl>
+			</gx:Image>
+		</gx:Carousel>
+		<Point>
+			<coordinates>-73.58596395830671,45.52062561082475,60.94644043423316</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark id="0FC408397814AC6002CF">
+		<name>Saint Denis</name>
+		<description><![CDATA[<div>circuit</div>]]></description>
+		<LookAt>
+			<longitude>-73.5672694512882</longitude>
+			<latitude>45.51743212867968</latitude>
+			<altitude>38.6492593365364</altitude>
+			<heading>0</heading>
+			<tilt>0</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>796.0608870537544</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_046DB8DE701BFFAC26A9</styleUrl>
+		<gx:Carousel>
+			<gx:Image kml:id="hosted_image_QU9sekY1YkpFU1c0eStqVjQ4WFRWRTFOL1lxWE9sbmE1SXF2Y2FQS1lybzlvSUFiY1VZNTA5V2JCN0RMaXNNWXpEQkk1UGlrUC9zVHNnTnlCcVE4VTdQRkI3ZXVEd0d5THB1NmRKSFhFN25aRHpNcW9LTWFTeGdVYU9VVnJNNTY2OHZhRE41TUFwQmx5RWFwV0ZQSi85VHFKNGh4TXc1Vk1MK3g0RXBvQTEza01WRGN4eU5oZVV1ajhlZGttRzB0VG0yK3VmdGFWV1p0VldtWm8vT20xbFRVTWVFUitDZy9kbnE0Sk42NXhaV0R1NkI2am9WT1ovQT0_0">
+				<gx:ImageUrl>https://doc-14-c8-mymaps.googleusercontent.com/untrusted/hostedimage/g9f3l7s8hamaf0drb83porv87o/dcvd0j5jhbsnh3fga0a1evg0e4/1626891067750/_ZW3kOyha-XOfEh00f6Nj983MUS2Cmf6/17132235312417974180/5AOlzF5a28oIyTi6qB5zJVLtaw6eK5QEFqPzQYr1uW2vqHLPQF9WYllznQa8dOOoXTmSUUEZBznP0yj71JfSOnPx8nDuk7pOwCIwjQPLxQL19cvPQPDylUAp2TFkOb6lHgejNF2Qx-RleGjLZZ-VQBYpvWmEjNbxZ1Cu1B2SyDWT7VubYrwXRKbsgsWJ9mOLtJi7p6XzW?session=0&amp;fife=s{size}</gx:ImageUrl>
+			</gx:Image>
+			<gx:Image kml:id="hosted_image_QU9sekY1WW5zaDRZUkFLaGRrNmo0T2tRS0lSM1dmS042WWhIS2p3VG03NE1XczYzTERtNm9qY2J0YTNOTnZVWW90NlBtUnNhcCswSCsraUtsMlZXZTFrd0UvdmJ2WDBiL0g1cG5jWTR2bnRuSENMQ0FDMVpoMkQ0RS94OGl6N1dBRFhDOXhyeS9uRXI2Ry9YRWtnRUo3R1hrUW0xdDhoZTZqUUFFMEVqb241S3crV24wOEJqV2xsaFdBM2wxU25WZWNCVlNWS0FVV1lldUNCYlpSODVpbnVKeExBUTZVUVBmUmxNOW5kTTFWMzhsM2IrVy84WTJZZz0">
+				<gx:ImageUrl>https://doc-10-c8-mymaps.googleusercontent.com/untrusted/hostedimage/g9f3l7s8hamaf0drb83porv87o/8bm8nr4oc9u900gki0gclsraa8/1626891067750/_ZW3kOyha-XOfEh00f6Nj983MUS2Cmf6/17132235312417974180/5AOlzF5aUk0cxIwN4MIOW8lXYF-hW2dYqYgU0up2_JvvEYo4tJoNghFX1UbP1MFhvKZ_MzZ9E4j3tNEofKTi7e59HvOfiXi_gtz6YNHT-FpczIeZ45qB4yWFdqkCnOgKehNs6o-fQD0ehw4kIBvZWaH_9aCJ-W84YZXTV4S0ScmHDLB4U2Oc02DbjwnhR_7NO5uF3Nf_b?session=0&amp;fife=s{size}</gx:ImageUrl>
+			</gx:Image>
+		</gx:Carousel>
+		<Point>
+			<coordinates>-73.5678105047628,45.51699359880391,47.5189621808448</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark id="0E6155482814AC66D20C">
+		<name>Pie-IX</name>
+		<description><![CDATA[<div>ped_corri</div>]]></description>
+		<LookAt>
+			<longitude>-73.54179235582789</longitude>
+			<latitude>45.55026008434579</latitude>
+			<altitude>19.58071027482383</altitude>
+			<heading>0</heading>
+			<tilt>0</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>412.465730539334</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_046DB8DE701BFFAC26A9</styleUrl>
+		<gx:Carousel>
+			<gx:Image kml:id="hosted_image_QU9sekY1YWxzYXgwWFd6SHMrWWM0WUJPVnREcXVQUGNjR0JsRnlMbGh6OW5ySmgyNjBBZE81LzFQZXQwb2UweWJsSTdFSXhzV09UaUVaUXdLK1g5L2hVRFBKQUhLbTlyODM3a1h5ZFlLSEdXQmkreDZodmtLeFVJalA5MVF2UTMwOTRZTG9xejRXTXZ5Qk1VVzE0K1p2SzR2UFRIRi9XYW03MmIzSnpmNVB5clgzME9UZUpPaTN0K0kyRzRoZ2k2STFuRTlkak0yZVpxWnF2SmgrUDNOL0szWmFNNjlVeEovSHBPNUNTejE5dktpU1BSTDRpNDdhaz0_0">
+				<gx:ImageUrl>https://doc-0o-c8-mymaps.googleusercontent.com/untrusted/hostedimage/g9f3l7s8hamaf0drb83porv87o/dcod1epj4ulq6jbvr8bsokhlsc/1626891067750/_ZW3kOyha-XOfEh00f6Nj983MUS2Cmf6/17132235312417974180/5AOlzF5YZSrflUsx8kGghexi-zRlEii7pETK-1xJyJ2uJb0D7LMp7E5hr0_QS9WEyxxp94Mw7uby6my5hX1q8l3USmmtl48LL3N5Z7-pImSy8NaRikvbUT5HNMzgj9TgQZ2ncWZKaSgf1FuTFZ0eTx6ZnnB2rBRF9np4XaK1W196GHDuQrmIwdB45Aw12tbDaoOCRhqcD?session=0&amp;fife=s{size}</gx:ImageUrl>
+			</gx:Image>
+			<gx:Image kml:id="hosted_image_QU9sekY1WjRFaWUxMkdzRlhaWGFqSVdMTFhTK3JQQld3Wm1PMGh4OW1ZSGExbTc5NjlWOUdTTHN5UFVMcTRnUldna2hYZGxpNWx5ajQvUm9md0Q4NkxLVG9Pb012d3QvVERmSk5ONHRaNnlrTkZ2ZTVQelJYbzFCcXczTmNuTEZxODNBVkY3T2J6STk2bHlGcUxPSFFDeUZRV3RpVyttTTdVbGErQ3B3cFh5bndYVEhnYWNRcUFPRDlRcHRLanBKdUV1bFowRzZrUGtiUVVkazFnTnRvOWVXNUV3b1Myczh5N2VQL3IwRHI5RTVOTGVoWC8rSXJVRT0">
+				<gx:ImageUrl>https://doc-0c-c8-mymaps.googleusercontent.com/untrusted/hostedimage/g9f3l7s8hamaf0drb83porv87o/51h96ufsdn5d1naivns1u2v840/1626891067750/_ZW3kOyha-XOfEh00f6Nj983MUS2Cmf6/17132235312417974180/5AOlzF5ZPDPc676RNcw5KUwH1LwYaVvaoNpgfLkC-N3BlmXidJ_2mlhIY_JTWn5qRcv_m6sGXYUaubijH_54w-sPxZGE8RG6XPiWVhW-pyBnNgpXVanq3mssNFPaAEc9t6lRg5uO4P35TT1f3fNr4peGMzwaAnTvp-h6bt2yDwsoyy_C1jcan2Lwi7jurVECYdoxbxU69?session=0&amp;fife=s{size}</gx:ImageUrl>
+			</gx:Image>
+		</gx:Carousel>
+		<Point>
+			<coordinates>-73.54122984097496,45.55029738602136,16.87716393672225</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark id="03A6FDAFF114AD9B2E5E">
+		<name>Ontario</name>
+		<description><![CDATA[<div>planned_corri</div>]]></description>
+		<LookAt>
+			<longitude>-73.5475788805439</longitude>
+			<latitude>45.54112529389254</latitude>
+			<altitude>19.48282509920191</altitude>
+			<heading>0</heading>
+			<tilt>0</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>658.975399563642</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_046DB8DE701BFFAC26A9</styleUrl>
+		<gx:Carousel>
+			<gx:Image kml:id="hosted_image_QU9sekY1YkQ2dG4zK1VOSUowRGlLS1dmVlFOSUgxeTc1cXNtZDR1SjRuL2hZcXRUN0dLN3dkRWhaQXVBRS9IZzZHRGFXc0pCK0F3V3lFZGljOVFJdVZtaWl5eHEyL2YvMWM4WHFCZXAvMmdmdWV6MFdhM01pM2dzQ1hmN2NkbWxzRmhNZExOSHdRR09WeVlsNTBuc2J1dGFjTHgvcVdWbkFSYVJyMGhISHQ3YjM4bk9RcVlNYWQ1aXRMeVlvcnZnK1dIRGx2VExMTUZ6QXQ4QTN0MHNkQzErS2F5dmlqN0Z2ZTZSOWJmQ2hiKzQxRDR6M01MaHFydz0">
+				<gx:ImageUrl>https://doc-0g-c8-mymaps.googleusercontent.com/untrusted/hostedimage/g9f3l7s8hamaf0drb83porv87o/5nnicqm3l10earmimnr798cv34/1626891067750/_ZW3kOyha-XOfEh00f6Nj983MUS2Cmf6/17132235312417974180/5AOlzF5YORHXyxPHtiB9l6kAhD1Ue9FNm6tivUKHhDm07oVPRMy2dmHV2Iswqfwp8xwzQDAMMaJhcYnNFvOHW7BvkBu29wdXsmWEMuvMsNGLcDrSxaH0_tATYYVGL7GSQgeEGrGLKd6QykPOP4bGSsM7vfIjd-uQgFXkfvLP54ANa6ddQfvfPHQCB_p9Q2YLXfG1JAvDM?session=0&amp;fife=s{size}</gx:ImageUrl>
+			</gx:Image>
+		</gx:Carousel>
+		<Point>
+			<coordinates>-73.5469833403847,45.54169644929844,19.03282862295504</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark id="09E6C7156B14AD9DE83D">
+		<name>Ontario</name>
+		<description><![CDATA[<div>planned_corri</div>]]></description>
+		<LookAt>
+			<longitude>-73.54649627632348</longitude>
+			<latitude>45.54213786228511</latitude>
+			<altitude>31.53783774538309</altitude>
+			<heading>0</heading>
+			<tilt>0</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>646.9209155574209</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_046DB8DE701BFFAC26A9</styleUrl>
+		<gx:Carousel>
+			<gx:Image kml:id="hosted_image_QU9sekY1YXpBci9pWWFRRXNmTmwrWE1aeGFGYm4wTkdtd3BFS0VwUEQ1VEJobU1yVFFTeHE0UGdBTUNlaDA0NW44VUQzVitLd0V1Z3ZqTkU0THI2czdSRkFweUtKQngxcmMvVXpFRGVjZnJZRytIOEFBM3BodXJEd2pKM3M2QlZuaXl0UTNWTVh0bFEySzhncWgxOFVnd3FFNVZIVncycHptVEd4YzM0M3VldStrVGtxa2pMbFpwU0hKNjByOHBVOFlXdWx2eUR3QWE5ZHc1TmsvdXlkREZmOGJNRU1Ia1JMTWE2aWxFY3FOZjNqSC9hTkQwVkNVVT0">
+				<gx:ImageUrl>https://doc-04-c8-mymaps.googleusercontent.com/untrusted/hostedimage/g9f3l7s8hamaf0drb83porv87o/ijuvej3voav9mcndmli2kfskms/1626891067750/_ZW3kOyha-XOfEh00f6Nj983MUS2Cmf6/17132235312417974180/5AOlzF5aCww3YqLLYRwGXVw-a6efSAQ_rN2v_Qb9gJts8UdPMOQJx0DrqV1crFKVlt-Ml3ck79QeqKHpAMEht0mAM3c-Ys2q-h8Ivo4OlkYkAIX8jC1WXIqvXQ8GIcKEAjIeoFRrtD39RErtdNNRlkEKQQ3DsazpfPNfZxdYf1jx5wpCT1jwOwSGR_HknqgoImpYzLrDt?session=0&amp;fife=s{size}</gx:ImageUrl>
+			</gx:Image>
+		</gx:Carousel>
+		<Point>
+			<coordinates>-73.54655043741172,45.54236783343772,18.78424030776975</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark id="0AF6784E7D14AD9F3525">
+		<name>Ontario</name>
+		<description><![CDATA[<div>planned_corri</div>]]></description>
+		<LookAt>
+			<longitude>-73.54539671308292</longitude>
+			<latitude>45.54421970046168</latitude>
+			<altitude>17.6871252879667</altitude>
+			<heading>0</heading>
+			<tilt>0</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>660.7716171588255</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_046DB8DE701BFFAC26A9</styleUrl>
+		<gx:Carousel>
+			<gx:Image kml:id="hosted_image_QU9sekY1WmNrU05waHpZTVdscVFiaWk1UXA1UzdBWDVaaGM3YUhLa21rQTc4dnlpaWI4UlZxSGs5a09vbnlJZDRlbnhrdm9CZTE4ZFJhUnNNUmJSUzA0RnR5WVRxYUdMVVJDZ0RGYUxwQmVONzMzWU55ZWtrcHkweEZ1YkJwMy94TlYyNTdZck1yT29wcXlFY0cwV1J1UVNGZXJrNUlwaHVpcjdLYUhQL1d6ZTVFYlpZQVZ5dmJzRlVZRUZSemt3aFlxMmRKMysyRm50bzRIMm9iTU1scDBLNlpHR3FFOStHRWFlRTNuT2kzZUQxU2pCT1k5cnlqTT0">
+				<gx:ImageUrl>https://doc-14-c8-mymaps.googleusercontent.com/untrusted/hostedimage/g9f3l7s8hamaf0drb83porv87o/7ns4e7rb9a7oa3umjb7f9c23uc/1626891067750/_ZW3kOyha-XOfEh00f6Nj983MUS2Cmf6/17132235312417974180/5AOlzF5Z0a52tPGnCcWSlyo9YY-L-7EScQ1Ipmm1MiY-Swt6-InIL1E9axXPrOM5zibgzoUtC4JlZ7ADc4EdeJcOBPmIAlct4HvaNsjI9vfQN43u_rUQrGXi4-jN1WNR6r8uG3AZE-IHdDIyreAdv_sFQIGgdabLl_VftqXnaiP5z2J_N8GZ7oAX56fY0LtfgPXwD75cN?session=0&amp;fife=s{size}</gx:ImageUrl>
+			</gx:Image>
+		</gx:Carousel>
+		<Point>
+			<coordinates>-73.54497601152059,45.54487788403144,17.31439735319516</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark id="074E77639B14B1C4FF68">
+		<name>Saint Joseph</name>
+		<description><![CDATA[<div>ped_corri</div>]]></description>
+		<LookAt>
+			<longitude>-73.67136662745793</longitude>
+			<latitude>45.43189804744678</latitude>
+			<altitude>29.56950756251896</altitude>
+			<heading>0</heading>
+			<tilt>0</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>669.32271431142</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_046DB8DE701BFFAC26A9</styleUrl>
+		<gx:Carousel>
+			<gx:Image kml:id="hosted_image_QU9sekY1WU1KMXljY1Y4TkYxUUNTekpwMDA5Y1VPazJGa24xeHhtTFExRExTTHhMSnljaEdBZ2ZRazRkRDlaYUx1VWw5TStIc2xtZGFTN1hCVWFXLzFWc1BYZTZqcmhZc2JkM0NqR0pBK2VqMmg3dkF6a1JvNWUwOTVjdm1uNHRrWGF0WnJqeUk0dW12d2gvckM5OUJ1V0M5c3ZmQ3IxYncxWWxtOWV4N0RTY3h5RTZlRlY2aFRKdFBOc0VCaDJoM3lUcjQzZGJvd2JadzJjS1U5TGt6WWhJWUx2VnNOYlVHb2wrYndkZjlkZUpCTERVLys0Q05RPT0">
+				<gx:ImageUrl>https://doc-0o-c8-mymaps.googleusercontent.com/untrusted/hostedimage/g9f3l7s8hamaf0drb83porv87o/t7u7m4oeqfao2f472insdhn4bc/1626891067750/_ZW3kOyha-XOfEh00f6Nj983MUS2Cmf6/17132235312417974180/5AOlzF5bBPgo-JP2ZjCepi9rxqNK5gxU-SmJMSdYMZozxyVrGTgQ7LIkSSztZ5g9ei5_jvq6RWanj6vCTxqmCjAVQxVwEoeQV4i2gMom-R7VB_7XX1HtP6nc-8Xdfvi4XxtFabtmuSIKyTdcYRfWUC5NdCWAovc89L2TqzgQZBluD-4v8OvhcqJTLAVsEQXrRCFpZ2gU?session=0&amp;fife=s{size}</gx:ImageUrl>
+			</gx:Image>
+		</gx:Carousel>
+		<Point>
+			<coordinates>-73.67069211826816,45.43150033827574,19.99680506475932</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark id="012739723414B1CC862F">
+		<name>Saint Joseph</name>
+		<description><![CDATA[<p>ped_corri</p><div><br></div>]]></description>
+		<LookAt>
+			<longitude>-73.67269063993771</longitude>
+			<latitude>45.43173320674718</latitude>
+			<altitude>21.27730953648534</altitude>
+			<heading>0</heading>
+			<tilt>0</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>677.6149176791661</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_046DB8DE701BFFAC26A9</styleUrl>
+		<gx:Carousel>
+			<gx:Image kml:id="hosted_image_QU9sekY1WmdJTHJ0YUY1SGVjNEJ5azZFcGtPYitDK245aXA0dTNWejloVlZIVGhCVTVCc3lZZzI4UlRscnc0MXdEZExIcFI1Y0M5WVExejRzZGRHZmNyeE1iR1NVSVQ2RWViSXd1MlFJNVFoVnUxVlRvL2swRDVwQ25rQ1AwZk5JQmRGeFRGNy9Bb1FKZTljQVJwSGRGS0pENHAySHlNY0tnT01sTFc3bkJRTDI4NHVpN3FVUmpsSnVCVnJGd0RRRkp5L3YxYS9tQmZLdDlzMVpSTVc4VDdneGFOV1NkdWVXazlwS2d3NkZ0eWJwZGIvNEZsSFFRPT0">
+				<gx:ImageUrl>https://doc-0o-c8-mymaps.googleusercontent.com/untrusted/hostedimage/g9f3l7s8hamaf0drb83porv87o/og0fdnuubphnbv7dtf06j0di98/1626891067750/_ZW3kOyha-XOfEh00f6Nj983MUS2Cmf6/17132235312417974180/5AOlzF5aGIdXC8PzKl1hQ5jIpy80sG527Rv-CMVUQp5XSZltxZr0ecu-kCWgqnlO1vjS3rtT3a0VBrb0cfkX_P6gVuOY0-9S4PuauWeOlLh4gwo23mt4NAut5QJR_BVNLe0H9vSS2KSm36VHMhkpPuDjMP0ez4DmhUdLsOfaH5-lPpXRgoUbsL4VZie434sqcLOAiKO8?session=0&amp;fife=s{size}</gx:ImageUrl>
+			</gx:Image>
+		</gx:Carousel>
+		<Point>
+			<coordinates>-73.67312089105732,45.43179894917444,21.38501968450707</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark id="0FEC3C33FB14B1CED845">
+		<name>Beatty</name>
+		<description><![CDATA[<p>family_active</p><div><br></div>]]></description>
+		<LookAt>
+			<longitude>-73.57346397293962</longitude>
+			<latitude>45.45132692072049</latitude>
+			<altitude>24.34600149730009</altitude>
+			<heading>0</heading>
+			<tilt>0</tilt>
+			<gx:fovy>34.99999650534212</gx:fovy>
+			<range>1070.200062367658</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_046DB8DE701BFFAC26A9</styleUrl>
+		<gx:Carousel>
+			<gx:Image kml:id="hosted_image_QU9sekY1YlAwZ0djbmZCdkVKd2t5YjlMbFlxY1h0bnBRVVBTWW1vOW9maHRPZk5mbzFibUV5eUppQ09MVEJwWkRrRk50SjdTVFVYTXI0VVdxNm1mVy9TUUxHaERENFRYVXc1bE9lQ1oyWERMZ3NHVFh4aE5CZmZRTmJUODNSWGFPRGtHWWI1OGRUY0pkdFRML2tEc2RiT3ZMSk1vYjdXZnBYMUZjZWV1RVZWSHJZWkxOSzF5TlV4eDlmV21za0xMWHpmMUZ1QmRyMXh1cmtGcUhIOVFIQWdiZWpHaU8wRnNqZ2tNK20yK0E4ZlVqZ0dXRkxBQWxBPT0">
+				<gx:ImageUrl>https://doc-08-c8-mymaps.googleusercontent.com/untrusted/hostedimage/g9f3l7s8hamaf0drb83porv87o/jl40b9rffcpd5uhv0slslnsglk/1626891067750/_ZW3kOyha-XOfEh00f6Nj983MUS2Cmf6/17132235312417974180/5AOlzF5bNIMv75NrkrW_lfIh9D8kxoso9k_H2zZ_nwbezsmtiWkrz1ljefsIjMxkZRtlY2X56Q2xtWtwMNuxPBDeK4sK0LkBPlnTzLtqDe5R643Ou6_KqVH5DQj77vxezfUFiRT_lz24424ubJjHAxXCtfNAARV9ifPmOuuqxwO-AbvsnBwUVMxtMHZfKawU-ZWQbEaQ?session=0&amp;fife=s{size}</gx:ImageUrl>
+			</gx:Image>
+		</gx:Carousel>
+		<Point>
+			<coordinates>-73.57247267604339,45.45075582047117,13.54314605220253</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark id="079B13082914B1D15DA3">
+		<name>Bannantyne</name>
+		<description><![CDATA[<p>family_active</p><div><br></div>]]></description>
+		<LookAt>
+			<longitude>-73.57791912859892</longitude>
+			<latitude>45.44767411791926</latitude>
+			<altitude>23.63248585454104</altitude>
+			<heading>0</heading>
+			<tilt>0</tilt>
+			<gx:fovy>34.99998531192055</gx:fovy>
+			<range>1070.954261450825</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_046DB8DE701BFFAC26A9</styleUrl>
+		<gx:Carousel>
+			<gx:Image kml:id="hosted_image_QU9sekY1YU5ZTEQxeE9jSHdZMndvaWVVSnZkZkdRSG91Q04xM0x5eFpZZnRkcmtIaDhYVzQwTHBKSlhmUk9HTmk1a2toRVozdldJTGp4cnVtNnE4MFpReDVnZ2dJQVZqcFpvTC91NjJrV09CL1JYNFFEdHlXWnN2cG5nMU5NdU9SMzlYSVBaN0JVWGxmdk5KaHNmbFJzNFpOM2lxQnB3Y3lWSVdPM050cFJZTWQ2STBSQTlINkNYQ1dzcU1oNnJEZTB0UFlSQnNCTlJZVjJBWVlhbzl0bHRUb1ZFRUFlTlNUb0Q3S3ZxSmdLZEdNVndEY1Rxc0xRPT0">
+				<gx:ImageUrl>https://doc-0s-c8-mymaps.googleusercontent.com/untrusted/hostedimage/g9f3l7s8hamaf0drb83porv87o/gts7h31a13emmputsavmir2e3s/1626891067750/_ZW3kOyha-XOfEh00f6Nj983MUS2Cmf6/17132235312417974180/5AOlzF5acCrXL0Kk5LZhoMf9iVMvGUrci4xHbaami1h2FRd7T8iIEytGF_v0yg_q8QoJ-TpA8K6NlSACfwcbBJZQSBU3BRaMDQPVKSxEyv1_0Lz2WnUgwB4_FOHzXXkOoi4ElWLjIYSNnT8a-9Jwh3vJXa62fQoKGrdQx7pdKSHQW4rjtKZoTIEH5LP0wnd4zM8ucvrM?session=0&amp;fife=s{size}</gx:ImageUrl>
+			</gx:Image>
+		</gx:Carousel>
+		<Point>
+			<coordinates>-73.57705139033067,45.44816655544322,15.67811921112331</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark id="0D61753EDB14B1D4133E">
+		<name>LaSalle</name>
+		<description><![CDATA[<p>reduction</p><div><br></div>]]></description>
+		<LookAt>
+			<longitude>-73.65536470745397</longitude>
+			<latitude>45.42329325624173</latitude>
+			<altitude>31.90228751937827</altitude>
+			<heading>0</heading>
+			<tilt>0</tilt>
+			<gx:fovy>34.99998531192056</gx:fovy>
+			<range>417.4039962141251</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_046DB8DE701BFFAC26A9</styleUrl>
+		<gx:Carousel>
+			<gx:Image kml:id="hosted_image_QU9sekY1YVZlbHJBTWpCeS91RmxFZUdhY2JrYmRUZjVaRmpJcllIeEhEVy93NmpQREMvenNhTEJYNXNjazhMTThpamN5b1BmOE9Wb3huSVFJaDZKaVExM2gzdUtDWEIrRUtXTitmZFFSMWJ3ZWJaR3g1ZlRuYW9rVjI0MTZEWTRhV3ltVXBwTmduUWhxZityRFF1em8rUUF6ZmVFVkQrZlp1MU1wdnE4dXozclVPK2p6Y25VNEVVcUVqU1VCVzRGK3BDUjRtVzRuSndOU2pjMGJ4SkdDSlV4c296UmZ6YWUrd3ZVWHBzcmQxQncrMW16TkNwYWtBPT0">
+				<gx:ImageUrl>https://doc-0s-c8-mymaps.googleusercontent.com/untrusted/hostedimage/g9f3l7s8hamaf0drb83porv87o/5ak753s67mtu4gu3s7ugja9cgk/1626891067750/_ZW3kOyha-XOfEh00f6Nj983MUS2Cmf6/17132235312417974180/5AOlzF5Z1SyXLcYN08cBZLdLG19xUlDTzKm6agQFt0847zQNUi7ilh-7psZT8nABLxxLYQ557XTtYOfhqd7tF2tSl-tYc5Hhq5xo5NjmsLM_QDMx9pWg0u8sm9B6EW97Scna5JeZ9_hZ-WPAMQIGTiSmRJ5kTL8McyJqRfoXHRI6--rZh3VpVsCeziVrHif6VwZ0hhBw?session=0&amp;fife=s{size}</gx:ImageUrl>
+			</gx:Image>
+		</gx:Carousel>
+		<Point>
+			<coordinates>-73.6554759678051,45.42296468859616,39.37001540306441</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark id="07094DF7FA150E76BB86">
+		<name>Esplanade</name>
+		<description><![CDATA[<div>shared</div>]]></description>
+		<LookAt>
+			<longitude>-73.60077160602737</longitude>
+			<latitude>45.5234891553931</latitude>
+			<altitude>81.8745199198854</altitude>
+			<heading>0</heading>
+			<tilt>0</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>585.0743193329981</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_046DB8DE701BFFAC26A9</styleUrl>
+		<gx:Carousel>
+			<gx:Image kml:id="hosted_image_QU9sekY1YkRFclF1aGxNcThnYjIzZ3NVSGJsSisxWDFjODVwYjVoU0ZsUmQ1cERIbnVDZGVGMnIyMVZVNGxLbnc3WmNyUTJwNVh4SjhOS2lOcFJVbUFPL1drMkpUcW90U3EzY1ZWUlFocWtWSVNDT3FuVFlnQktYZzlKaTdJVldhWnl2eU9VNVp5Ym81K25sWkUvbkVUSTFNZzBxVnA0OGdZMVBTRWZQMS9nY20zRExuSU83SjBraWVvT0Y5Z0kvUFlneVF1MFduenVZYzJhK09MMU42Tmt0UllKWm1JbzZycEdzZEZtallJcVFzOG81ZzZ6RDlZRT0">
+				<gx:ImageUrl>https://doc-08-c8-mymaps.googleusercontent.com/untrusted/hostedimage/g9f3l7s8hamaf0drb83porv87o/pq0kbu41ph0f0s8vufg1clkqmc/1626891067750/_ZW3kOyha-XOfEh00f6Nj983MUS2Cmf6/17132235312417974180/5AOlzF5an3qFxrU0KDeYAHMIYCmQPyKxUeKEEA9JGBoY-KkV8gwWlOuokJH52HLrTpOUCL9lpjDx6AGUROKLbqTAh7ZRArfIFVpdb5RW6qx0TnPpzp52gFkVDcTrEtTLjiP7tTO6Ifj4GUylQdlW91-DE6rHcVKO84Kgob4kbQAG7rqmvCTlqThmvy-9UNaWR_XAWPNXJ?session=0&amp;fife=s{size}</gx:ImageUrl>
+			</gx:Image>
+		</gx:Carousel>
+		<Point>
+			<coordinates>-73.60109592998275,45.52343985085268,70.54322954198548</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark id="0B331B8B6E150E7DFDAD">
+		<name>Laurier</name>
+		<description><![CDATA[<div>circuit</div>]]></description>
+		<LookAt>
+			<longitude>-73.58459649117107</longitude>
+			<latitude>45.53214616926155</latitude>
+			<altitude>67.68847752691909</altitude>
+			<heading>359.9999991404968</heading>
+			<tilt>0</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>302.4054629683088</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_046DB8DE701BFFAC26A9</styleUrl>
+		<gx:Carousel>
+			<gx:Image kml:id="hosted_image_QU9sekY1YlNqWTVYV3ZBellUVUdUSkZ3NWdWODVqQTJvZDlnRjRiSG9yYVA4VXc3VDl4Ny8zMWhpL2Q1RWVHdExIT2EzWk5LSlpjRm56SG5OUVh6YURqRTBqYkZsN1lsL2RtT1FvTlg0a1BnZHdMYVIybHRLVkhnQzltWHRrZm5ZaUlVM3lGdnY4NWlxS0FYRk1MRkJGM2wwK09TRDZ2eTdoK0V2SUYvZWQxcVZ1dTlEV2JnalV1bWhVcTJ1dmhwVExzQmx4YUhRSmkrUm53M0xVOGFrZWd2M1FNeUZHQ2dveTZlNEwwWjhKSU1BQjZGWm00eWZoUT0">
+				<gx:ImageUrl>https://doc-04-c8-mymaps.googleusercontent.com/untrusted/hostedimage/g9f3l7s8hamaf0drb83porv87o/p8fq07fs8mch3o7nqgfh2p3i7g/1626891067750/_ZW3kOyha-XOfEh00f6Nj983MUS2Cmf6/17132235312417974180/5AOlzF5Z-MWHxJvn-daOwsZ0-DnQSZ876zEXkMF-irAYOpsGl7rFXcuf5-4MDsxrVjGq93bkkyfDw3I6GN_CAPtTT1PeHuIalUv2tLt17r3GyGkzXxLqjDyEtnAefABwjTIijq_ylbQK5k5RCUUR65a4bFNhZSxMyGrqSezCH6llUj0HGVPg0WJW8FLTXr0ai34iiqrA9?session=0&amp;fife=s{size}</gx:ImageUrl>
+			</gx:Image>
+		</gx:Carousel>
+		<Point>
+			<coordinates>-73.58471488587229,45.53238461074403,49.6292898402075</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark id="0EAA248C45150E8165C8">
+		<name>Rachel</name>
+		<description><![CDATA[<div>circuit</div>]]></description>
+		<LookAt>
+			<longitude>-73.56191256587154</longitude>
+			<latitude>45.54121259779401</latitude>
+			<altitude>56.31737675929828</altitude>
+			<heading>0</heading>
+			<tilt>0</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>498.969537711455</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_046DB8DE701BFFAC26A9</styleUrl>
+		<gx:Carousel>
+			<gx:Image kml:id="hosted_image_QU9sekY1YkQ2UjFXT1l3ZU41STBqc3krbWxRdnA2SzN6eENOT1cydmZZWEVNQWx4TDZ5eTljei9uZGFXNnh3R0NDK1BPOVRhcXBSN0pDT28vdlo0eTd1SVhwY01oSmhabVNrTkhIZW1JUzFrWmJTUnFaaUJ1MDVUWkZWQllmcStMckh1aE45TmR6Z1pXVXk4NnZIejFHWmxkZVgxTkEwZjZLV2VzNEhWNElnNktYakR5SW9ZTUxCUlNOUUk5c3EyVGJMWGZ0WlhHR1BxYU95ZmxWNGx1WkR3WFFqS3AyQVpjRFE2bnF1RjMxL2RrTXJ6VkpsUXRUMD0">
+				<gx:ImageUrl>https://doc-0o-c8-mymaps.googleusercontent.com/untrusted/hostedimage/g9f3l7s8hamaf0drb83porv87o/64dsl2oebiachdmph0ih05iso4/1626891067750/_ZW3kOyha-XOfEh00f6Nj983MUS2Cmf6/17132235312417974180/5AOlzF5brGTNOL109V-yvJNLl9g6MnVYRTDuZzZqzBiHFMTKV5nF9hyPHk9NtIuBS8AQ4ccU35pLtVMnJYZGeIlDVIRnR6f1t-JKO8MiiNsBbP0E_OztWV1u74kWYlQ5KTyAK1j56fg118MNMVsxtO48fSxJPPdOmCKYoPMjYzKcXD9kC9k8bLYfcTadK_5ymj-L2j8RG?session=0&amp;fife=s{size}</gx:ImageUrl>
+			</gx:Image>
+		</gx:Carousel>
+		<Point>
+			<coordinates>-73.5616178935889,45.54144662491269,42.58381980675218</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark id="00FD462C7B150E85B2FB">
+		<name>Christophe-Colomb</name>
+		<description><![CDATA[<div>circuit</div>]]></description>
+		<LookAt>
+			<longitude>-73.64615013313296</longitude>
+			<latitude>45.55780499929994</latitude>
+			<altitude>35.76415761698691</altitude>
+			<heading>0</heading>
+			<tilt>0</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>479.1411014591722</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_046DB8DE701BFFAC26A9</styleUrl>
+		<gx:Carousel>
+			<gx:Image kml:id="hosted_image_QU9sekY1YVFYelRrc3o1SmpPa2JNRUhSdXNoaCt2elVGcXRLenErU2FEKytjaDZ2TmF0R3pmMTJQM1ErMUtvZ3hhaERORFdFdjQ0bU9DVXVVVjk3b2lNTjVFUzVIQVV2ODg2bHh5V2NFK0Vna2hBRGxBeWszczBwTlhGNVdpeU90RW1iSWFnWWk1TFlCVTNZdVFZZURPdHpWWkJUWGpDbnBMdnBlbWtYR3hwNXFnQ29LeC90N1hLN05aeEtoL2JwcFNkTFNnOHpSUExBVDQxVjRlUk1pdlRBWGNZajBsQ29jY1MrcVJHL0JIc2haK0l6ZTdTbEdZQT0">
+				<gx:ImageUrl>https://doc-0k-c8-mymaps.googleusercontent.com/untrusted/hostedimage/g9f3l7s8hamaf0drb83porv87o/7d6nlatb5f3aatmessenjudbbk/1626891067750/_ZW3kOyha-XOfEh00f6Nj983MUS2Cmf6/17132235312417974180/5AOlzF5a57UKK0LsJT9B9p8Hc7p4H9flbo7E7kc9ycMh_RyFuKH3VrC8RFyESbPHCxt0VPphtw1OVwcUvzEaluDcMdbRTirBaieePWU1icJeZu78_A7Ma516RD-LlfzK2fuNnDoTfbvPSxKxn08x6afiYXyJSZykZgF-KMZzozuK9TJFfHJT0eUK77VJYKJBjMzV-sc73?session=0&amp;fife=s{size}</gx:ImageUrl>
+			</gx:Image>
+		</gx:Carousel>
+		<Point>
+			<coordinates>-73.64650380282995,45.55792709650795,36.43426940157213</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark id="0A4774502F150E87AFF5">
+		<name>Berri</name>
+		<description><![CDATA[<div>circuit</div>]]></description>
+		<LookAt>
+			<longitude>-73.56309571211978</longitude>
+			<latitude>45.51633915698628</latitude>
+			<altitude>24.34916614781697</altitude>
+			<heading>0</heading>
+			<tilt>0</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>507.5202640224599</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_046DB8DE701BFFAC26A9</styleUrl>
+		<gx:Carousel>
+			<gx:Image kml:id="hosted_image_QU9sekY1WTV2VFVHaUhYSUZSTzlYYStLdE40TG45bTRkcVUwNFN3REVRRjFrSkp0UmNJQWdkRXl1S090UXNTVjRvRVdoR0xYTHBXWkdzV21jbGZ2Yld4YklFNXNORlRELzRTejMwdTVXUEszVXhxNnIxMjc1dU92RkRzWCt3TUF6T2tIK3gwRzFOZUxGTmovQ3JCZWNkWVlGVXNxMEt0dHh4UDJPYVBKNDYvdUp6b25IYmdZQmhuSkJZTnE1RzdEUDUwejMzZkhwVVFYQmVOL1FtSGF2QnordkRJZjZIM3hENmM4UWgvVHRVTndmOGx0QW52Umc2WT0">
+				<gx:ImageUrl>https://doc-0k-c8-mymaps.googleusercontent.com/untrusted/hostedimage/g9f3l7s8hamaf0drb83porv87o/2158girdb9nhu285ncgpmq3lks/1626891067750/_ZW3kOyha-XOfEh00f6Nj983MUS2Cmf6/17132235312417974180/5AOlzF5bbR4fwZZ2b7vHk9UwlGr56NL_Urq93ZGh9dm6qDkJTcn44mN-B3u9i9vmJ95ogr-QZ0t4zmfZNsCjWUsl5JUlQxxJof6AUUS9UkmXP3PkPThocRGDhDh-aTjnzVyJWmVpCoZsYBJbNXcWqpY4Jjr7BWHSm-vLeupNNXNYPG__eEOTaOlraNJhima3zWi3_6fW-?session=0&amp;fife=s{size}</gx:ImageUrl>
+			</gx:Image>
+		</gx:Carousel>
+		<Point>
+			<coordinates>-73.56302803409562,45.51621695266911,24.37626129470226</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark id="0B847EB72D150E8A63C3">
+		<name>La Fontaine</name>
+		<description><![CDATA[<div>circuit</div>]]></description>
+		<LookAt>
+			<longitude>-73.5717104376009</longitude>
+			<latitude>45.52417584869757</latitude>
+			<altitude>54.81875689167251</altitude>
+			<heading>0</heading>
+			<tilt>0</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>647.0160364251933</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_046DB8DE701BFFAC26A9</styleUrl>
+		<gx:Carousel>
+			<gx:Image kml:id="hosted_image_QU9sekY1Ym1NYWZFRnlkcjdBK2NoU0pBZm9yZDcvWVZMcDV3UUx6eGVvUGRwY0ZpWFczSk43WUNmOXNVbEMzWHovTGUzS3VGMWNEdXlpM2xjVHNWVlNBQTR6Ylh4QllwRW9oTDF3aWh5cFpCV1Q5VEF6SzYwNWlNQmg4SFhTWGNiQ1hVYVl1VTVCU0JyM3A4Z1lTV09tUjdRWDNaZHlyeks1OWlMUEJvV0RyOWZZS2V3YjR3aDU2cFVHZmYrVkF5ZlU5ODFlWEoyTzd0Ulk4SllZYWc1RHFWV1lnMVplbU5YRXFnQVdKeW1KSlAwZklHZk1hOVNEdz0">
+				<gx:ImageUrl>https://doc-0o-c8-mymaps.googleusercontent.com/untrusted/hostedimage/g9f3l7s8hamaf0drb83porv87o/sge0cn66qflitim7ijl4oqhd1c/1626891067750/_ZW3kOyha-XOfEh00f6Nj983MUS2Cmf6/17132235312417974180/5AOlzF5bCBrnQcJ93gTDb07yisSPs4orxAkYMBafoxQC06hfQHxLdJjpkpyi6ue3gFMPclvFgKXtyGbEjtXSUmcT_ZxAPDigiWcnfDae_8FRTX0pAS3RKVleBFXBaSbbnaxqAiNceHqFQqpcZwSwVpBwxD6FML07kKSRsB3zQ3La0tRYd4lUR0LIhKGV06wLreHNkkGo5?session=0&amp;fife=s{size}</gx:ImageUrl>
+			</gx:Image>
+		</gx:Carousel>
+		<Point>
+			<coordinates>-73.57239982458776,45.5245712329039,43.09119319487601</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark id="0179D8FE1F150E8C4BEE">
+		<name>Mont Royal</name>
+		<description><![CDATA[<div>circuit</div>]]></description>
+		<LookAt>
+			<longitude>-73.57972845917247</longitude>
+			<latitude>45.52522032520946</latitude>
+			<altitude>56.9093110820466</altitude>
+			<heading>0</heading>
+			<tilt>0</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>724.364599139808</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_046DB8DE701BFFAC26A9</styleUrl>
+		<gx:Carousel>
+			<gx:Image kml:id="hosted_image_QU9sekY1WWJETGtiRnpXcDdXL25MNm1VQTIrOE15MW5KdHBVbDcxTE5XOVZYSi9iS0JFTHVwOXptNXVrNFE1Z1FpWmRwbEFidHNPVmI3Ym1FbEFCVjBPbGx1dzZSQW5SUzZrUnA0alpjUyt2L3ZySDEzODhkOFJUY3B3ZWtJcEk5U2l5c1U5cnhMcE5LRkYxOVE2T1ZjcHdzcEg1YW1GdEVCUkRvK2N5cjAvZUZ6a294TGV5eUtjSmIrN3dmZ3RWelRLOU9ReWNrWThXK2hiWUxXa2VsekRpZTljMVVOaDBuWHVlR2xQRUpwSHpyYldaTm55VXNIRT0">
+				<gx:ImageUrl>https://doc-04-c8-mymaps.googleusercontent.com/untrusted/hostedimage/g9f3l7s8hamaf0drb83porv87o/0o0dl6gqnc85l2m5l7r0ubcdq8/1626891067750/_ZW3kOyha-XOfEh00f6Nj983MUS2Cmf6/17132235312417974180/5AOlzF5a27dB2cV0I5aR4bT2Uk-c_3lhmwxlAwmCi_LnKtTLtvgtb7UlKmbvfLv-nWsKQlWSnPjukx1hwI5bImYyqCpbNfC-sNTBxkobDuGRghx9dqAlAtHm4kLcu6-BAjtYVIFoR2kqunwTocI_M4BYC-VO_bwI3R-bpti_A5vJtqiOmkbavs3SYLhzh9qmNPBKbHh2A?session=0&amp;fife=s{size}</gx:ImageUrl>
+			</gx:Image>
+		</gx:Carousel>
+		<Point>
+			<coordinates>-73.58133541660543,45.5256775118979,45.96349945564103</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark id="03723D9B03150E90DF80">
+		<name>Rachel</name>
+		<description><![CDATA[<div>circuit</div>]]></description>
+		<LookAt>
+			<longitude>-73.55994564918626</longitude>
+			<latitude>45.54417298492375</latitude>
+			<altitude>51.15360724722111</altitude>
+			<heading>0</heading>
+			<tilt>0</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>620.2432205631339</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_046DB8DE701BFFAC26A9</styleUrl>
+		<gx:Carousel>
+			<gx:Image kml:id="hosted_image_QU9sekY1YTdkVTNVZ3JYRk84VFNsdjN1NnI5WnRFQ21uRXhabDNTUlRZSFQ1K1hvSFIza0xRd2RibDN4OVpzV20wRkxzcEtsVXAyaE9wRElBTXBHV2c1Q0w4ejB0OU9lNXYzcW9qNUdzKzMzMllDSzB3UGFaUisvejhKeTh2K0w5WmRFV3BKSG11bkE5eC9oeFJ0ZkI5U0dhMCtLN2Q2dmFLcW9iTVB5Y0RIOWNOY0pQdng0Z1p1T2pWK3AyRTlwUUVrb3Q3UTk2eTNlVjNiYnc2MXRLaFFHSWp5MmlHK2llc0ROOUp6S1lWcEh3RmZWU1ByTjV5Yz0">
+				<gx:ImageUrl>https://doc-04-c8-mymaps.googleusercontent.com/untrusted/hostedimage/g9f3l7s8hamaf0drb83porv87o/upgf9uh1smoebjn0fupto355ik/1626891067750/_ZW3kOyha-XOfEh00f6Nj983MUS2Cmf6/17132235312417974180/5AOlzF5YhOljINyia7MQoOmmFtlEbu4S7PhTpXGCiYGOemsQYDtr9Dis_p0344-_br6l3OTwdnySSeaJoecoE8v4graZa558xd0yxlBsTR65sWCjAagVhKezfyxaQN-CszNXvj2FBsB6iZSQH2NnGcWQQ1QJUMEymgX8WbW-IJAKNDu7HhUDaYG5p5BPPBWiX9POXerDT?session=0&amp;fife=s{size}</gx:ImageUrl>
+			</gx:Image>
+		</gx:Carousel>
+		<Point>
+			<coordinates>-73.56128422821317,45.54431044475773,44.38043790366397</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark id="059D8387CD150EA647DF">
+		<name>Pie IX</name>
+		<description><![CDATA[<div>circuit</div>]]></description>
+		<LookAt>
+			<longitude>-73.55100550140858</longitude>
+			<latitude>45.55344892672637</latitude>
+			<altitude>25.63651038496431</altitude>
+			<heading>0</heading>
+			<tilt>0</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>833.8840406073723</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_046DB8DE701BFFAC26A9</styleUrl>
+		<gx:Carousel>
+			<gx:Image kml:id="hosted_image_QU9sekY1YTRkVzdJdERRcTJUVlE4WGVKOGhNRC9JMHZVSkpnek1SVmNucmJnQ3pRSmMxbm9sTXZFeHN0L21QTUxlZjR3d2tIWG1qOHhuQVRuaHVDZkNzVlgvWDJXUXQ3SnZCcmE3aEZNU2Z4MFBSYWM2Zy9VVmo0Y2RSenJnNmlIc1VBMFJTREg0Vm9jdEUreWsvMWJ1VWZMTUo0U2RGc0JQS1hDVGNCcDlDMFR5Y0FsRzYxOFVqS0Z0ZXJBMWZpTjMxV3YzNXBxRkorUndvY0tmZ2hSeXpNTzRXMjB4bUd4NndOdE02YWpDdWd3N1A0TXBkNHJnZz0_0">
+				<gx:ImageUrl>https://doc-04-c8-mymaps.googleusercontent.com/untrusted/hostedimage/g9f3l7s8hamaf0drb83porv87o/d5dhnk5a4jkskp5krj4rldovvg/1626891067750/_ZW3kOyha-XOfEh00f6Nj983MUS2Cmf6/17132235312417974180/5AOlzF5b-tu90peY_CrAvDrZo_K-uBcitSbqL1bNhFLdp98ZCOlvjnvnAbRfYmp4xTTve7cI2ctxErA3BdP7aUXAHtivM7r6jUye1lDIapVvqWcaJRkJmDFHzIDf6nxn6htjM1ASdIhmg9lNiuGu6ck7PIA4xM4wiJ-wtPyhoW8XkTjBK8hu_ny3M4agh3nBEfmlE01k8?session=0&amp;fife=s{size}</gx:ImageUrl>
+			</gx:Image>
+			<gx:Image kml:id="hosted_image_QU9sekY1YWEzbVdUaFRDNUd2bW1JWjJoSE1ZME5YWW9XSVpsZEQ1ZkdOdWsxTWtVSFlhWElYTWxLaUF6M2NGL1ZiNEJlV1VNT2tLTlFiUFdzNFBZK08zNnpqN1VlbmpDcVViQ2hGVHU4bjE2RVNwdHdNRE80RUlPYTNFVUJKSnlma1QzbG5wRUFoSmpGWDFyMTViemMxZ0F2c0tYb0l6WDN3ZGJhU2FJWmlxZ2liOURBVGZqYWRXVmROek1ZVU5oTGxlVUlySElxUUw1V2U5MGpPaDU4U1ROZlZVOEhSRHJCa3NmYUhaSm82bkZoN3JaamNKaXQ0Zz0">
+				<gx:ImageUrl>https://doc-14-c8-mymaps.googleusercontent.com/untrusted/hostedimage/g9f3l7s8hamaf0drb83porv87o/3b5pm4lgufebuv4n8pshph0910/1626891067750/_ZW3kOyha-XOfEh00f6Nj983MUS2Cmf6/17132235312417974180/5AOlzF5b3wCn-kzU9CgBb08ybcPQUz80i3jH1PxuLJEZXxZiWLu3_ScjDCF5SrJBbteqSS9BsnVlAaW2Ul5un69pji4GA-GEkYYc-iZ71pVs5v0gxakuYNdA4pRE1nfkgpnrRe_CP5SY0TU1IHK0gDtapViEMxN1f2s2hBIyPAhqAsUHCN-dSeZBlxUuPbtw6bDnQMBx_?session=0&amp;fife=s{size}</gx:ImageUrl>
+			</gx:Image>
+		</gx:Carousel>
+		<Point>
+			<coordinates>-73.55171505475425,45.55368538100775,26.70125976823646</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark id="07091BC421150EAAFA08">
+		<name>Villeray</name>
+		<description><![CDATA[<div>circuit</div>]]></description>
+		<LookAt>
+			<longitude>-73.62216655614236</longitude>
+			<latitude>45.54130367382302</latitude>
+			<altitude>68.99222510737309</altitude>
+			<heading>0</heading>
+			<tilt>0</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>590.2414406238677</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_046DB8DE701BFFAC26A9</styleUrl>
+		<gx:Carousel>
+			<gx:Image kml:id="hosted_image_QU9sekY1YkZzWkVjRXRUUFF2WEUxZElzK2tnWkh0N3hLS0NjWlRGWmFuZlN5S2gybG5IcmZ5dGVEMHQzWUZiSzBidDNkNU1XanpualJoZ0p1eWJSMlpadEVwY05MMWJSQzVNV0NtSVREWVJlYi85TGhUTXZrTTFsODg2UDRWY1R1UHFoTk1OV2JrOFFKWnlLaXExWktTeXhscTFIak9sNGF3SXZwZUpoWG5qZVpLN0dnYUpsOVlNcWhkcnRNanJVekNQWUxHOHdQQSsyUDZwa3RxNXU5NGhvMTdITnNPRmliQWUvajU2aStPQVRKMURxL21DS09TOD0">
+				<gx:ImageUrl>https://doc-0g-c8-mymaps.googleusercontent.com/untrusted/hostedimage/g9f3l7s8hamaf0drb83porv87o/b9er9ppi1okf17qssq7de4hboo/1626891067750/_ZW3kOyha-XOfEh00f6Nj983MUS2Cmf6/17132235312417974180/5AOlzF5YqNP9kAk84PiV-FVfM0bBAP27lENWHKHFo6PtuwjAZ_6kHA4GgojAqV3Fn6y1bvU0GJ3Ztx_QylMQtv6whcdT_BxIQR02dNHPnBhQtbTCUfmzLiWaMZZdLZ2Z_aiiUzCoU41W-ihnQ3cSWDzPjx9eWK61TaQxNc15EN3tSJ-r3LYF6Y4MXL1lk8sjIB5TK2YTI?session=0&amp;fife=s{size}</gx:ImageUrl>
+			</gx:Image>
+		</gx:Carousel>
+		<Point>
+			<coordinates>-73.62263645585131,45.54142276036075,56.81017618969128</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark id="0AD5033E24150EAD041F">
+		<name>Mont Royal</name>
+		<description><![CDATA[<div>circuit</div>]]></description>
+		<LookAt>
+			<longitude>-73.5793263279064</longitude>
+			<latitude>45.52775969597286</latitude>
+			<altitude>45.42212993251801</altitude>
+			<heading>0</heading>
+			<tilt>0</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>606.2208656608709</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_046DB8DE701BFFAC26A9</styleUrl>
+		<gx:Carousel>
+			<gx:Image kml:id="hosted_image_QU9sekY1YTRBS2ZHLzMrRlVKNGVqc3ZkZi9lcjFoTERZd2U0S3c1cU9jZFpYMWVRK2I1WGFQTXorYlhQbWovejd0QXZxRm94VUtkZGFpeXROeERrc0t5bUhWNHFFalJWb1FuYTNLL3hEWGE3UWtxcldvZ2UxOHJPSE9SQSs0WEg1VG1rYWZFK3lpZWNMbHFOTnFIazZQdmd4Ui8wTm84cHFpYWpBMEpCOTBTNmJiSjNSaklEWSszendjTXlWYktCa3VGL1VjaVpJZVRzU29uTmNWNkxrYnRXMWhYTVF5RXRRSDk4dWtLS05zQmdTanMvZDk4ZnlMTT0">
+				<gx:ImageUrl>https://doc-04-c8-mymaps.googleusercontent.com/untrusted/hostedimage/g9f3l7s8hamaf0drb83porv87o/1vvhltp23a2tpptm6s5vcfekj0/1626891067750/_ZW3kOyha-XOfEh00f6Nj983MUS2Cmf6/17132235312417974180/5AOlzF5YErSJIzrqOJmSp4ti-UfrOEVlaDlCMrAusmxKEAIaV7-tftJ6FfK1ph2D_oiRVSXX9MftO58mjr6xW24b0kOm-rF7dGjEIdEQmtgK_Cclwde4fomWE98C8mJdjOeFWbXrsm2VFzCdNrT4vDv3cm5kI6kpM2LIFBDvPIRTWLuuMc6Ydcb0aYtoKMLpHMZ-4NiP4?session=0&amp;fife=s{size}</gx:ImageUrl>
+			</gx:Image>
+		</gx:Carousel>
+		<Point>
+			<coordinates>-73.57921439927544,45.52801453752985,45.61685214213631</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark id="05F24050EE150EAFA6CE">
+		<name>Christophe-Colomb</name>
+		<description><![CDATA[<div>circuit</div>]]></description>
+		<LookAt>
+			<longitude>-73.66518470647345</longitude>
+			<latitude>45.55775507614329</latitude>
+			<altitude>19.46241431444853</altitude>
+			<heading>0</heading>
+			<tilt>0</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>7379.948632292217</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_046DB8DE701BFFAC26A9</styleUrl>
+		<gx:Carousel>
+			<gx:Image kml:id="hosted_image_QU9sekY1YjJRbDZDK0RNTWYwVHE0cCtiQUMzS1BaTnkwRjQ0Zk9HUHFubE01cWRzV2hiMWFYSnJGYTQ4MWJZb2V0K2w1Y2J5U3dsaEVueTN1bEZ6U0U0WVpmQThBTlVSUDF2dmo1dndqME9yK1pMclJvdTZoNTJFS2xFcjFRQStUOVNLMHZLR2RGaDVjWlV1cTFMQit0ZmtxMktHdGliTEI0ZThuTjJacUNDZWEvN3p2VmNBYVVGKzZLVklYa3QzM0tqREpkMU9ESXNQMUQxY3dPVHorbXNtTmFNQVFvdHREdWNOK3VQOWpuRmpGV2RmUURxQUtHND0">
+				<gx:ImageUrl>https://doc-0k-c8-mymaps.googleusercontent.com/untrusted/hostedimage/g9f3l7s8hamaf0drb83porv87o/lpb2nt4e71luk9qbrijr0p61fc/1626891067750/_ZW3kOyha-XOfEh00f6Nj983MUS2Cmf6/17132235312417974180/5AOlzF5ZSzrRIfro3yrHa4tvjJlDejPWSyYD2ap4--qsWGRwaoPwCOV21pdIbAWgU5xaQk343aISWzowaFahVX8e5UOw52-1WMzAHo7uNyJ7MTyybaM65xunRpA6LPk7fzdaLcHYZJHnDzQoyM9ypj0xkBUaYC01ddieRo2EwvRQGdgxcAXG3y4QiNufZBEd4wbQZOWPp?session=0&amp;fife=s{size}</gx:ImageUrl>
+			</gx:Image>
+		</gx:Carousel>
+		<Point>
+			<coordinates>-73.65120903767824,45.55932853001701,31.14901780549359</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark id="0C0C120BBB150EB1EB22">
+		<name>Wellington</name>
+		<description><![CDATA[<div>closed</div>]]></description>
+		<LookAt>
+			<longitude>-73.56727908149344</longitude>
+			<latitude>45.46245162154465</latitude>
+			<altitude>59.0194318827181</altitude>
+			<heading>0</heading>
+			<tilt>0</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>404.4314474972634</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_046DB8DE701BFFAC26A9</styleUrl>
+		<gx:Carousel>
+			<gx:Image kml:id="hosted_image_QU9sekY1YWFyREQxKzYzSThwT3pneG95eVdhdXdjcHlhbDQzSS9HNG9TeEZwK3ZwcmZ2RFhRVUZ6MWs1YkpTV00zN254M3NsRkJFQm42NnJER1Yycjl3dDRwMU50S004a1JIeEZpdzhWYlVSZ2JidTlyVU80Sk5meUpOL3duV244WTFJMVN0UWhaVkUwUUo0SGlGOUJtZWErbjVMbmxvdUdqWWlNMGJYYTlNRThPVXdXd1RCWWR6U3M4WFhENmVhbWliY3JmcHpMNWRWb1lYTm1RdXh1NmJMR21aRVYyS2I2U2JqU3pkcjZBZDk4RFl2Tm8yWEFsaz0">
+				<gx:ImageUrl>https://doc-0s-c8-mymaps.googleusercontent.com/untrusted/hostedimage/g9f3l7s8hamaf0drb83porv87o/f068qcdm9glkkbire0ttg4f3oo/1626891067750/_ZW3kOyha-XOfEh00f6Nj983MUS2Cmf6/17132235312417974180/5AOlzF5bjmbNRz1l-GnuhFpWyaPrqkYSlkO-tQypchGMQ6zDwJFLHjIjRGSLCKBOrE_rOIWFeP6qq4qYyF9ShsEdkKBBxumS6jGs-hviocnbVUrtLSSVmptTTiw4jKgjzMOizmthWKhSaOOkrrSbiHnAOdOOSZwuCtwIfKQYwjUl5P9oS7WesnOaw7RxDo2M3SoHxCZJC?session=0&amp;fife=s{size}</gx:ImageUrl>
+			</gx:Image>
+		</gx:Carousel>
+		<Point>
+			<coordinates>-73.56700614720602,45.46279716595622,12.06003042796057</coordinates>
+		</Point>
+	</Placemark>
+	<Placemark id="033DC3916B150EB4A688">
+		<name>Wellington</name>
+		<description><![CDATA[<div>closed<br></div>]]></description>
+		<LookAt>
+			<longitude>-73.56685761169702</longitude>
+			<latitude>45.46203654304292</latitude>
+			<altitude>24.00076334880646</altitude>
+			<heading>0</heading>
+			<tilt>0</tilt>
+			<gx:fovy>35</gx:fovy>
+			<range>1164.193200865702</range>
+			<altitudeMode>absolute</altitudeMode>
+		</LookAt>
+		<styleUrl>#__managed_style_046DB8DE701BFFAC26A9</styleUrl>
+		<gx:Carousel>
+			<gx:Image kml:id="hosted_image_QU9sekY1WmkwU2toUFVoWE9DeHlYTGxVS2QxMEh4ZTA0Q1lidkpra2VTbjY3VU84ZFZEQU1SN3NacWNGZUVkS1Znbjh4TTRwUVlXMVRSNXhFSmVvQ1JseXJRNTB3c2RJeFVaeEhPVWxTMzkvWCtGYTllNWpWaytlRjJreWtoVVRIRDJpR0JwUldTb25IcU4wbzVscCtxOWVNRUJnWXVnRG9zTEVnb0ZFTDBlQkhBYU1rRWFDQkVmeFh2cG1idkdKYU5FM0ZLRUcvMHFCTmZoc0NPaWlBNzliYzNUODRQVXM3MkVtT0N3bk4vWW0wTnBUcnVGbFFOWT0_0">
+				<gx:ImageUrl>https://doc-10-c8-mymaps.googleusercontent.com/untrusted/hostedimage/g9f3l7s8hamaf0drb83porv87o/dt0qvvd3pf1n8b42g20erim2b8/1626891067750/_ZW3kOyha-XOfEh00f6Nj983MUS2Cmf6/17132235312417974180/5AOlzF5ZWX1uUGsrT0Rstb6i7UATlbqrukhoU1VMbbP-uxeKs1Sjh4GWpWBh7Tss1G5Uwbpj6hRSQmoz5efU-Nhc5RJM0iudT-Kleu-uKuDSLEoZUmklvNlQ1Ndux54UY1NGh7sSu85HqOw0JFAPuUsMIUmsoDMMyDae7pX1NCM8PXkv6imsDK4rgRRKwgnKb-pK0pdbZ?session=0&amp;fife=s{size}</gx:ImageUrl>
+			</gx:Image>
+			<gx:Image kml:id="hosted_image_QU9sekY1YkRkUVE0Uk8weFM4MWJlOWYwbUtJeVRaZ2swc001ZXNWVC9iY2FwZjFUYlpTVyszUkxGb0U2Qng0UEFTa1I4RDE2OFE0WGpLMzdhMmg2bGdaVDczdmlsL1V0Y0VNcm0vY3ZEM21WdEoyd2FTVzZ5TVRxMmppRE5vbmk5ejM3M1VsbnorS2ZuWDJyb0JibjVHR2psM2c5VnRnQ1NEVExDRjNPN0VWREhKL2pXVUFrVjN3RHRoTlcraDdHbi91Qms1ZVRCR2EwaUFaZUlKbjc4Qm5GWVVPdEFOWUh3NjdZczBoR09jaCt6V21NR1FVS0U3MD0">
+				<gx:ImageUrl>https://doc-04-c8-mymaps.googleusercontent.com/untrusted/hostedimage/g9f3l7s8hamaf0drb83porv87o/cihf5vmi3ono2pq1lhncef45ek/1626891067750/_ZW3kOyha-XOfEh00f6Nj983MUS2Cmf6/17132235312417974180/5AOlzF5aJbIYq3cEMqBhcgm-CoBtFEFcW5O47Ea6qf-T9cvqpsUE99JR1HHVZC_LMXRWcyXqJgFkkGGddLcCgJO9s3B5yWm9TnelRSXELUVeO2HQwc1vk8R0LQIScYXS097LcrdRz8qYsMIY8DoEddxf6Gie5AlgKgaEDxVHlKzec0wN3mjB3nIqJ3O6Ahh8x3R6dX4HA?session=0&amp;fife=s{size}</gx:ImageUrl>
+			</gx:Image>
+		</gx:Carousel>
+		<Point>
+			<coordinates>-73.56709864255083,45.46188016674949,12.20181121063979</coordinates>
+		</Point>
+	</Placemark>
+</Document>
+</kml>

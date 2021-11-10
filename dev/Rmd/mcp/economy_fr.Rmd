@@ -1,0 +1,32 @@
+---
+title: "Économie"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## PMD (Administration Coderre): 
+
+#### L'Économie circulaire
+
+Dresser un portrait du développement de l'économie circulaire à Montréal. Encourager les organisations partenaires à adopter les principes de l'économie circulaire et de faire affaire avec des compagnies intégrées à l'économie sociale et solidaire. 
+
+#### Autres politiques économiques
+
+Adopter l'initiative TM21 pour favoriser une transition écologique de l'économie (l'initiative TM21 a été renommée ou n'a jamais été adoptée, car il y a peu de traces d'elle en dehors de ce document). Étudier les synergies industrielles potentielles dans l'est de l'île. Adopter des critères d'achat socialement responsables. Encourager les entreprises à se départir des combustibles fossiles. Dresser un inventaire des investissements de Montréal dans les combustibles fossiles et examiner les possibilités de désinvestissement en coordination avec les parties prenantes. Utiliser les grands projets (campus de l'Université de Montréal) pour stimuler l'activité économique dans les zones environnantes.
+
+## Plan climat (Administration Plante): 
+
+#### L'économie circulaire
+
+Inciter les entreprises à adhérer à l'économie circulaire. Créer un réseau d'économie circulaire pour permettre la coopération dans la transition vers ce nouveau modèle économique.
+
+#### Autres politiques économiques
+
+Modifier la budgétisation municipale, l'allocation des capitaux et rendre les marchés plus transparents pour les citoyens, les investisseurs, les assureurs et les autres parties prenantes.
+
+## Discussion
+
+Les deux plans se concentrent sur la transition vers une économie circulaire (les plans précédents se concentraient sur l'«économie verte» et l'«économie sociale»). Le PMD ne fournit pas de définition du terme ni des exemples concrets d'une économie circulaire. Le Plan climat propose une brève définition, axée sur l'économie circulaire comme étant «un système de production, d'échange et de consommation qui vise à optimiser l'utilisation des ressources à chaque étape du cycle d'un bien ou d'un service, par une logique circulaire». Le manque d'exemples concrets et de politiques spécifiques proposées, ainsi que le statut du terme «économie circulaire» comme mot à la mode, font qu'il est difficile de savoir exactement ce que les deux plans prévoient pour l'économie. Il est également difficile de suivre l'évolution du modèle économique montréalais ou les progrès vers une intégration généralisée des entreprises dans l'économie circulaire. Cette transition est en cours depuis au moins 2016 - il est donc surprenant qu'il n'y ait pas d'exemples de réussites à souligner ou de données permettant de suivre la mise en œuvre des pratiques commerciales souhaitées. Parallèlement à cette focalisation sur un changement de modèle économique, il est notable qu'aucun des deux plans n'aborde directement l'emploi. De nombreux plans climatiques comprennent des sections sur la création et le maintien des emplois ou l'écologisation des emplois, mais cette discussion est largement absente des plans climats de Montréal. Dans la mesure où le Plan climat aborde l'emploi, la discussion est peu spécifique la croissance de l'emploi présenté comme un sous-produit des projets ou d'un changement de modèle économique.

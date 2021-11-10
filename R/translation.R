@@ -63,8 +63,16 @@ sus_translate <- function(x) {
           pull()
         
         if (length(out) == 0) {
-          warning("No translation text found for `", x, "`.", call. = FALSE)
-          out <- x[[i]]
+          
+          # enter auth_key by creating Deepl account
+          try(deepled <- deeplr::toFrench2(x, auth_key = "my_key"), silent = T)
+          
+          if (!exists("deepled")) deepled <- x
+          
+          warning("No translation text found for `", x, 
+                  "`. Automatic translation performed: `", deepled, "`,", 
+                  call. = FALSE)
+          out <- deepled[[i]]
         }
         
         translated[i] <- out

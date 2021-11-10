@@ -38,9 +38,16 @@ vignettes/*.pdf
 # R Environment Variables
 .Renviron
 
+# Dev data
+/dev/data*
+
+# Main data
+/data*
+
+# Small maps
+/www/maps
+
 # Other
 *DS_Store
-app-cache/*
-R/app-cache/*
 *.Rproj
 rsconnect/*

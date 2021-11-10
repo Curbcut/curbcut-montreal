@@ -16,22 +16,22 @@ crash_slider <- list(
 
 # Dropdown menu
 var_list_left_crash_1 <- 
+  list("Count" = " ",
+       "Per sq km" = "prop_area",
+       "Per 1000 residents" = "prop_pop")
+
+var_list_left_crash_2 <- 
   list("Total" = "total",
        "Pedestrian" = "ped",
        "Cyclist" = "cyc",
        "Other" = "other")
-
-var_list_left_crash_2 <- 
-  list("Count" = " ",
-       "Per sq km" = "prop_area",
-       "Per 1000 residents" = "prop_pop")
 
 var_list_right_crash <- 
   list("----" = " ", 
        "Housing" = list(
          "Tenant-occupied (%)" = "housing_tenant_prop",
          "Average rent ($)" = "housing_rent_avg_dollar",
-         "Average property value ($)" = "housing_prop_value_avg_dollar",
+         "Average property value ($)" = "housing_value_avg_dollar",
          "Unaffordable housing (%)" = "housing_unafford_prop",
          "Unsuitable housing (%)" = "housing_unsuit_prop"),
        "Income" = list(
@@ -49,3 +49,24 @@ var_list_right_crash <-
          "15 minutes to work (%)" = "trans_t_15_prop",
          "15-45 minutes to work (%)" = "trans_t_45_prop",
          "More than 45 minutes to work (%)" = "trans_t_45_plus_prop"))
+
+# Mapdeck pointcloud legend
+crash_legend_en <- 
+  mapdeck_legend(
+    legend_element(
+      variables = c("Pedestrian", "Cyclist", "Other", "Unknown"),
+      colours = c("#91BD9AEE","#6C83B5EE", "#F39D60EE", "#E8E8E8EE"),
+      colour_type = "fill",
+      variable_type = "category",
+      title = "Crash type")
+  )
+
+crash_legend_fr <- 
+  mapdeck_legend(
+    legend_element(
+      variables = c("Piéton", "Cycliste", "Autre", "Inconnu"),
+      colours = c("#91BD9AEE","#6C83B5EE", "#F39D60EE", "#E8E8E8EE"),
+      colour_type = "fill",
+      variable_type = "category",
+      title = "Type d'accident")
+  )

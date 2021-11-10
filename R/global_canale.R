@@ -7,6 +7,9 @@ token_canale <- paste0("pk.eyJ1IjoiZHdhY2hzbXV0aCIsImEiOiJja2g2Y2JpbDc",
 # Initialize reactive values
 rv_canale <- reactiveValues(poly_selected = NA, zoom = "borough")
 
+# canale ind for current census
+canale_ind <- paste0("canale_ind", "_", current_census)
+
 # Dropdown menu
 var_list_canale <- 
   list("----" = " ", 
@@ -22,8 +25,8 @@ var_list_canale <-
          "Income between $50k-$100k (%)" = "inc_100_prop",
          "Income above $100k (%)" = "inc_high_prop"),
        "Immigration" = list(
-         "Immigrants (%)" =  "imm_prop",
-         "New immigrants (%)" = "imm_new_prop"),
+         "Immigrants (%)" =  "iden_imm_prop",
+         "New immigrants (%)" = "iden_imm_new_prop"),
        "Transportation" = list(
          "Drive to work (%)" = "trans_car_prop",
          "Walk or cycle to work (%)" = "trans_walk_or_bike_prop",
@@ -31,3 +34,11 @@ var_list_canale <-
          "15 minutes to work (%)" = "trans_t_15_prop",
          "15-45 minutes to work (%)" = "trans_t_45_prop",
          "More than 45 minutes to work (%)" = "trans_t_45_plus_prop"))
+
+var_list_canale[-1] <-
+  var_list_canale[-1] %>%
+  purrr::modify_depth(2, ~paste0(., "_", current_census))
+
+
+# Width of strokes on the map ---------------------------------------------
+canale_stroke_width <- list("borough" = 100, "CT" = 10, "DA" = 2)

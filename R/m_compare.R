@@ -4,35 +4,51 @@ compare_UI <- function(id, var_list) {
   
   tagList(
     
-    fluidRow(column(width = 7, h4(i18n$t("Compare"))),
-             column(width = 5, align = "right", 
-                    actionLink(inputId = NS(id, "hide"), 
-                               label = i18n$t("Hide")))),
+    conditionalPanel(
+      condition = "output.show_panel == true", ns = NS(id),
+      fluidRow(column(width = 7, h4(i18n$t("Compare"))),
+               column(width = 5, align = "right", 
+                      actionLink(inputId = NS(id, "hide"), 
+                                 label = i18n$t("Hide"))))),
     
     conditionalPanel(
       condition = "output.hide_status == 1", ns = NS(id),
       select_var_UI(NS(id, "compare"), var_list),
-      small_map_UI(NS(id, "right")))
+      small_map_UI(NS(id, "right"))),
     
+    conditionalPanel(
+      condition = "output.show_panel == true", ns = NS(id),
+      hr())
   )
 }
 
-compare_server <- function(id, var_list, df, zoom = df) {
+compare_server <- function(id, var_list, df, zoom = df, disabled_choices = NULL,
+                           show_panel = reactive(TRUE)) {
   stopifnot(!is.reactive(var_list))
   stopifnot(is.reactive(df))
   stopifnot(is.reactive(zoom))
+  stopifnot(is.reactive(show_panel))
 
   moduleServer(id, function(input, output, session) {
     
-    # Select variable
-    var_right <- select_var_server("compare", var_list)
+    # Select variable    
+    if (!is.null(disabled_choices)) {
+      var_right <- select_var_server("compare", reactive(var_list), 
+                                     disabled = disabled_choices)
+    } else {
+      var_right <- select_var_server("compare", reactive(var_list))
+      
+    }
 
     # Right map
     small_map_server("right", reactive(paste0(
       "right_", sub("_2", "", df()), "_", var_right())))
 
     # Hide compare status
-    output$hide_status <- reactive(input$hide %% 2 == 0)
+    output$show_panel <- show_panel
+    outputOptions(output, "show_panel", suspendWhenHidden = FALSE)
+    
+    output$hide_status <- reactive(show_panel() && input$hide %% 2 == 0)
     outputOptions(output, "hide_status", suspendWhenHidden = FALSE)
     
     observeEvent(input$hide, {

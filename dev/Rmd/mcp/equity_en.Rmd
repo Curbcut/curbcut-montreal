@@ -1,0 +1,50 @@
+---
+title: "Equity"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## PMD (Coderre administration): 
+
+#### General
+
+Adopt a social development policy that considers sustainability. Encourage physical activity through policy. Support development of local culture. Between 2016 and 2020, provide 5000 internships and jobs to young people experiencing difficulty in the job market, providing opportunities for socio-professional integration [COULD CO IN AT-RISK CATEGORY]. Initiate the Quartier Intégré program inthree target zones: Hochelaga, Sainte-Marie and Montréal-Nord.  
+
+#### At-risk and marginalized groups
+
+Update the municipal action plan for the elderly. Adopt a childhood policy for ages 0-17. Engage with the homeless community to favour active citizenship and provide legal assistance and representation in municipal court.
+
+#### Accessibility
+
+Increase the universal accessibility budget from $5.25M to $10.5M. Improve access to services for vulnerable people.
+
+#### Housing
+
+Create a substandard housing risk index to better target preventive inspections. Construction of 1300 housing units, of which 30% will be social or affordable, as part of the Université de Montréal MIL campus project.
+ 
+## Plan climat (Plante administration): 
+
+#### General
+
+Improve mobility and access to transit in poorly-served and disadvantaged areas. Improvements to the vulnerability analyses carried out in 2015 as part of the PACCAM with the goal of locating areas of vulnerability and applying new bylaws to curb negative impacts and define priorities. Support social innovation projects aimed at increasing local social capital.
+
+#### At-risk and marginalized groups
+
+Adjust public transportation fees for children and the elderly.
+
+#### Accessibility
+
+-
+
+#### Housing
+
+Improve the rental housing stock through subsidies to owners with the city contributing 30-45% of the cost of improvements as an extension of the existing Réno logement abordable program. Provide affordable loans and technical advice to owners looking to implement renovations and retrofits. Enact measures to ensure that sustainable retrofits to housing do not impact renters’ ability to pay and will work to inform owners and tenants of the provincial legal framework. Commit to five-year housing plans with a section specifically dealing with the preservation of affordable housing.
+
+## Discussion
+
+Equity concerns have become an ever greater part of the practice of climate planning over time, and Montreal’s climate plans are not exceptions to this trend. Both plans are vocally committed to equity and solidarity, and both promise to make the city fairer and more inclusive. It could be expected that the Plan climat, drafted under the community-oriented Valérie Plante administration, would feature a stronger commitment to equitable development, and this generally holds true. Besides doubling the city’s contribution to universal accessibility (a laudable decision to be sure), the PMD has nothing material to deliver in terms of equity. It focuses on plans for the young, plans for the old, the efficiency of service provision, and social integration through outreach and employment. The Plan climat, in an odd twist, does better at building from the Coderre administration’s PACCAM than the Coderre administration did, using its vulnerability analyses to target its interventions and find areas of greatest need, though no specific interventions are proposed.
+
+While the Plan climat contains more equity policy proposals and is probably more well-rounded, both plans have blind spots. While the PMD does little to address housing, the Plan climat has absolutely nothing to say about addressing homelessness, with the homeless being arguably the single most vulnerable group to climate hazards.

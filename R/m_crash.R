@@ -6,16 +6,32 @@ crash_UI <- function(id) {
   tabItem(tabName = "crash",
           mapdeckOutput(NS(id, "map"), height = "92vh"),
           title_UI(NS(id, "title"),
-                   select_var_UI(NS(id, "left_1"), var_list_left_crash_1),
-                   select_var_UI(NS(id, "left_2"), var_list_left_crash_2),
-                   slider_UI(NS(id, "left"), crash_slider$min, crash_slider$max, 
-                             crash_slider$interval, crash_slider$init)
+                   htmlOutput(NS(id, "crash_rmd")),
+                   hr(),
+                   select_var_UI(NS(id, "left_1"), var_list_left_crash_1,
+                                           label = i18n$t("Grouping of crashes ")),
+                   select_var_UI(NS(id, "left_2"), var_list_left_crash_2,
+                                 label = i18n$t("Type of crash ")),
+                   sliderInput(NS(id, "left"), i18n$t("Select a year"),
+                               min = crash_slider$min,
+                               max = crash_slider$max,
+                               step = crash_slider$interval, sep = "",
+                               value = crash_slider$init),
+                   htmlOutput(NS(id, "bi_time_slider_label")),
+                   sliderInput(NS(id, "left_bi_time"), label = NULL, 
+                               min = crash_slider$min,
+                               max = crash_slider$max, 
+                               step = crash_slider$interval, sep = "", 
+                               value = c("2012", "2019")),
+                   materialSwitch(inputId = NS(id, "bi_time"),
+                                  label = i18n$t("Two time periods"), 
+                                  right = TRUE),
+                   htmlOutput(NS(id, "year_displayed_right")),
+                   htmlOutput(NS(id, "how_to_read_map")),
+                   shinyjs::useShinyjs()
                    ),
-          right_panel(id, 
-                      compare_UI(NS(id, "crash"), var_list_right_crash),
-                      # explore_UI(NS(id, "explore")),
-                      # dyk_UI(NS(id, "dyk"))
-                      ),
+          right_panel(id, compare_UI(NS(id, "crash"), var_list_right_crash),
+                      explore_UI(NS(id, "explore")), dyk_UI(NS(id, "dyk"))),
           legend_bivar_UI(NS(id, "crash")))
 }
 
@@ -26,83 +42,229 @@ crash_server <- function(id) {
   moduleServer(id, function(input, output, session) {
     
     # Title bar
-    title_server("title", "alley")
+    title_server("title", "crash")
+    
+    # If COUNT isn't selected, choropleth is TRUE 
+    choropleth <- reactive(if (var_left_1() != " ") TRUE else FALSE)
+    
+    # Year displayed disclaimer
+    output$year_displayed_right <- renderText({
+      if (!input$bi_time && choropleth()) {
+        year_shown <- str_extract(var_right(), "\\d{4}$")
+        var <- str_remove(var_right(), "_\\d{4}$")
+        var <- sus_translate(var_exp[var_exp$var_code == var,]$var_name)
+        
+        if (year_shown != time() && var_right() != " ") {
+          str_glue(sus_translate(paste0(
+            "<p>Displayed data for <b>{var}</b> is for the ",
+            "closest available year <b>({year_shown})</b>.</p>")))
+        }
+      }
+      
+    })
+    
+    # Bi census slider label explained
+    output$bi_time_slider_label <- renderText({
+      if (input$bi_time && !choropleth()) {
+        paste(sus_translate("<b>Choose date range:</b>"))
+      } else if (input$bi_time && choropleth()) {
+        paste(sus_translate("<b>Compare two time periods:</b>"))
+      }
+    })
+    
+    output$how_to_read_map <- renderText({
+      # No explanation needed for the heatmap and choropleth with unique date and
+      # no right variable. The label of slider updates, and makes sense of the map.
+      if (choropleth() && input$bi_time) {
+        type_crash <- switch(var_left_2(), 
+                             "total" = sus_translate("total"),
+                             "ped" = sus_translate("pedestrian"),
+                             "cyc" = sus_translate("cyclist"), 
+                             "other" = sus_translate("other"))
+        
+        if(var_right() == " "){
+          
+          str_glue(
+            sus_translate(
+              paste0("<b>How to read the map</b><br>",
+                     "The map displays the percent variation in number of ",
+                     "{type_crash} crashes between {time()[1]} and {time()[2]}. ",
+                     "A darker green means a relative increase in {type_crash} ",
+                     "crashes number.")))
+        } else {
+          var <- str_remove(var_right(), "_\\d{4}$")
+          census_years <- unique(str_extract(var_right(), "\\d{4}$"))
+          var <- str_to_lower(sus_translate(var_exp[var_exp$var_code == var,]$var_name))
+          
+          if(length(census_years) == 2) {
+            str_glue(
+              sus_translate(
+                paste0("<b>How to read the map</b><br>",
+                       "The map displays the comparison of two percent variations. ",
+                       "In green, the percent variation in number of ",
+                       "{type_crash} crashes between {time()[1]} and {time()[2]}. ",
+                       "A darker green means a relative increase in {type_crash} ",
+                       "crashes number. In blue, the percent variation of '{var}' between ",
+                       "{census_years[1]} and {census_years[2]}, the closest census years available. ",
+                       "A darker blue means a relative increase in '{var}'. ",
+                       "You can find the comparison legend at ",
+                       "the bottom left of the map.")))
+          } else {
+            str_glue(
+              sus_translate(
+                paste0("<b>How to read the map</b><br>",
+                       "The map displays the comparison of a percent variation ",
+                       "with a census variable. In green, the percent variation ",
+                       "in number of {type_crash} crashes between {time()[1]} and {time()[2]}. ",
+                       "A darker green means a relative increase in {type_crash} ",
+                       "crashes number. Displayed in blue is '{var}' numbers in {census_years}, ",
+                       "the closest census year available. ",
+                       "A darker blue means a relatively higher number of '{var}'. ",
+                       "You can find the comparison legend at the bottom left of the map.")))
+          }
+          
+        }
+      }
+    })
     
     # Map
     output$map <- renderMapdeck({
-      mapdeck(
-        style = map_style, token = token_crash,
-        zoom = map_zoom, location = map_location) %>%
-        add_polygon(data = borough %>%
-                      mutate(group = paste(crash_ped_2019_prop_area_q3, "- 1")) %>%
-                      left_join(colour_borough, by = "group"),
-                    stroke_width = 100, stroke_colour = "#FFFFFF", fill_colour = "fill", 
-                    update_view = FALSE, id = "ID", auto_highlight = TRUE,
-                    highlight_colour = "#FFFFFF90")
+      mapdeck(style = map_style, token = token_crash, zoom = map_zoom, 
+              location = map_location) %>%
+        add_heatmap(data = crash, update_view = FALSE, intensity = 2,
+                    colour_range = c("#AECBB4", "#91BD9A", "#73AE80",
+                                     "#70999B", "#6E8EA8", "#6C83B5"))
     })
     
     # Zoom level
-    observeEvent(input$map_view_change$zoom, {
-      rv_crash$zoom <- case_when(input$map_view_change$zoom >= 14 ~ "DA_2",
-                                 input$map_view_change$zoom >= 12 ~ "DA",
-                                 input$map_view_change$zoom >= 10.5 ~ "CT",
-                                 TRUE ~ "borough")
+    observeEvent({
+      input$geography
+      input$map_view_change$zoom}, {
+          rv_crash$zoom <- case_when(input$map_view_change$zoom >= 14 ~ "street",
+                                     input$map_view_change$zoom >= 12 ~ "DA",
+                                     input$map_view_change$zoom >= 10.5 ~ "CT",
+                                     TRUE ~ "borough")
+          })
+    
+    # Enable or disable first and second slider.
+    observeEvent(input$bi_time, {
+      if (!input$bi_time) {
+        shinyjs::hide("left_bi_time") 
+        shinyjs::show("left")
+      } else {
+        shinyjs::hide("left")
+        shinyjs::show("left_bi_time")
+      }
     })
     
-    # Compare panel
-    var_right_crash <- compare_server("crash", var_list_right_crash,
-                                      reactive(rv_crash$zoom))
-    
-    # Left variable servers
-    var_left_crash_1 <- select_var_server("left_1", var_list_left_crash_1)
-    var_left_crash_2 <- select_var_server("left_2", var_list_left_crash_2)
-    
-    # Get time from slider
-    time <- slider_server("left")
+    # Time variable depending on which slider
+    time <- reactive({
+      if (!input$bi_time) input$left else input$left_bi_time
+    })
 
+    # Left variable servers
+    var_left_1 <- select_var_server("left_1", reactive(var_list_left_crash_1))
+    var_left_2 <- select_var_server("left_2", reactive(var_list_left_crash_2))
+    
     # Construct left variable string
-    var_left_crash <- reactive(
+    var_left <- reactive(
       stringr::str_remove(paste(
         "crash", 
-        var_left_crash_1(), 
+        var_left_2(), 
+        var_left_1(), 
         time(), 
-        var_left_crash_2(), 
-        sep = "_"), "_ $")
+        sep = "_"), "_ ")
     )
     
-    # Data 
-    data_crash <- data_server("crash", var_left_crash, var_right_crash, 
-                              reactive(rv_crash$zoom))
+    # To hide compare panel when map displayed isn't choropleth
+    show_panel <- reactive(if (choropleth()) TRUE else FALSE)
+    # Compare panel
+    var_right_1 <- compare_server("crash", var_list_right_crash, 
+                                  reactive(rv_crash$zoom), 
+                                  show_panel = show_panel)
+    
+    var_right <- reactive({
+      if (var_right_1()[1] != " ") {
+        
+        var <- paste(var_right_1(), time(), sep = "_")
+        
+        return_closest_year <- function(var) {
+          if (!var %in% names(borough)) {
+          time <- as.numeric(str_extract(var, "\\d{4}"))
+          x <- borough %>% 
+            select(contains(str_remove(var, "_\\d{4}$"))) %>% 
+            names() %>% 
+            str_extract("\\d{4}$") %>% 
+            as.numeric() %>% 
+            na.omit()
+          closest_year <- x[which.min(abs(x - time))]
+          var <- paste0(str_remove(var, "_\\d{4}$"), "_", closest_year)
+          }
+          var
+        }
+        
+        purrr::map_chr(var, return_closest_year)
 
-    # # Explore panel
-    # explore_server("explore", data_canale, reactive("canale_ind"),
-    #                var_right_canale, reactive(rv_canale$poly_selected),
-    #                reactive(rv_canale$zoom), reactive("CanALE index"))
+      } else var_right_1()
+    })
     
+    
+    # Data 
+    data_1 <- data_server("crash", var_left, var_right, reactive(rv_crash$zoom))
+    
+    data <- reactive({
+      if (choropleth()) {
+        data_1()
+      } else {
+          (crash %>%
+             { if (var_left_2() %in% unique(crash$type))
+               filter(., type == var_left_2()) else .} %>%
+             { if (length(time()) == 2) {
+               filter(., lubridate::year(date) >= time()[1],
+                      lubridate::year(date) <= time()[2])
+             } else {
+               filter(., lubridate::year(date) == time())
+             }} %>%
+            mutate(fill = case_when(type == "ped" ~ "#91BD9AEE",
+                                    type == "cyc" ~ "#6C83B5EE",
+                                    type == "other" ~ "#F39D60EE",
+                                    TRUE ~ "#E8E8E8EE")))
+        }
+    })
+    
+    # Explore panel
+    explore_server(id = "explore", 
+                   x = data_1, 
+                   var_left = var_left,
+                   var_right = var_right, 
+                   select = reactive(rv_crash$poly_selected),
+                   zoom = reactive(rv_crash$zoom), 
+                   build_str_as_DA = TRUE)
+
     # Did-you-know panel
-    # dyk_server("dyk", reactive("alley_ind"), var_right_alley)
-    
-    # # Left map
-    # small_map_server("left", reactive(paste0(
-    #   "left_", sub("_2", "", rv_canale$zoom), "_canale_ind")))
+    dyk_server("dyk", var_left, var_right)
+
+    # Left map
+    small_map_server("left", reactive(paste0(
+      "left_", rv_crash$zoom, "_", canale_ind)))
     
     # Bivariate legend
-    legend_bivar_server("crash", var_right_crash)
+    legend_bivar_server("crash", var_right)
     
     # # Update map in response to variable changes or zooming
     observeEvent({
-      var_left_crash()
-      var_right_crash()
+      var_left()
+      var_right()
       rv_crash$zoom}, {
-        width <- switch(rv_crash$zoom, "borough" = 100, "CT" = 10, 2)
-        mapdeck_update(map_id = NS(id, "map")) %>%
-          add_polygon(
-            data = data_crash(), stroke_width = width,
-            stroke_colour = "#FFFFFF", fill_colour = "fill",
-            update_view = FALSE, id = "ID", auto_highlight = TRUE,
-            highlight_colour = "#FFFFFF90")
+        
+        map_change(NS(id, "map"),
+                   df = data,
+                   zoom = reactive(rv_crash$zoom),
+                   # TKTK will eventually need to be translated
+                   legend = crash_legend_en)
+        
       })
-    
+
     # Update poly_selected on click
     observeEvent(input$map_polygon_click, {
       lst <- jsonlite::fromJSON(input$map_polygon_click)
@@ -120,7 +282,7 @@ crash_server <- function(id) {
       if (!is.na(rv_crash$poly_selected)) {
         width <- switch(rv_crash$zoom, "borough" = 100, "CT" = 10, 2)
         data_to_add <-
-          data_crash() %>%
+          data() %>%
           filter(ID == rv_crash$poly_selected)
         
         mapdeck_update(map_id = NS(id, "map")) %>%
@@ -135,10 +297,10 @@ crash_server <- function(id) {
       }
     })
     
-    # # Clear click status if prompted
-    # # (Namespacing hardwired to explore module; could make it return a reactive)
-    # observeEvent(input$`explore-clear_selection`, {
-    #   rv_alley$poly_selected <- NA})
+    output$crash_rmd <- renderText({
+         paste(
+           a("Analysis", onclick = "openTab('crash_analysis')", href="#"))
+      })
     
   })
 }

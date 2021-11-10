@@ -22,35 +22,45 @@ The capacity for pedestrian social distancing is a capacity measurement that det
 "Compare the pedestrian capacity for social distancing metric across a variety of other variables, such as walkable access to amenities, income level, immigration, visible minorities, population density, etc. ","Comparez la mesure de la capacité des piétons à pratiquer la distance sociale en fonction de diverses autres variables, telles que l'accès à pied aux services de base, le revenu, l'immigration, les minorités visibles, la densité de population, etc."
 "The data shows us that the ability to safely navigate pedestrian space tends to be much lower in DAs with lower incomes as well as DAs with high proportions of visible minorities and immigrants compared to majority white regions of Montreal. While the City’s plans to increase walkable urban space made some improvements to these discrepancies, there is room for improvement. The interactive data within this platform has the potential to support policy-makers towards making strategic decisions with more equitable outcomes. Below is a policy analysis exemplar using two variables: capacity for pedestrian social distancing and walkable access to key amenities.","Les données nous montrent que la capacité à se déplacer en toute sécurité dans l'espace piétonnier tend à être beaucoup plus faible dans les AD à faible revenu ainsi que dans les AD ayant une forte proportion de minorités visibles et d'immigrants par rapport aux régions de Montréal où la majorité des habitants sont blancs. Bien que les plans de la Ville visant à augmenter l'espace urbain piétonnier aient permis d'améliorer ces écarts, il y a place à amélioration. Les données interactives de cette plateforme peuvent aider les décideurs politiques à prendre des décisions stratégiques avec des résultats plus équitables. Vous trouverez ci-dessous un exemple d'analyse de politique utilisant deux variables: la capacité de distanciation sociale des piétons et l'accès à pied aux services de base."
 "In order to calculate the width of sidewalks in Montreal, we used a spatial dataset published by Montréal Open Data Portal that includes polygons of all sidewalks within the Montreal agglomeration. Using the the object-oriented programming language R, we developed a function which first creates negative buffers inside each sidewalk segment, and then iteratively adjusts the distance of that buffer until the maximum distance is achieved which still produces valid buffer geometry (if the buffer boundaries overlap, the geometry becomes invalid). The outcome is the equivalent of a centreline inside each sidewalk polygon. The last step to determine sidewalk width is to sum the distances between the centreline and both edges of a given sidewalk polygon segment. This process is illustrated below.","Afin de calculer la largeur des trottoirs à Montréal, nous avons utilisé un ensemble de données spatiales publié par le Portail de données ouvertes de Montréal, qui comprend les polygones de tous les trottoirs de l'agglomération de Montréal. En utilisant le langage de programmation orienté objet R, nous avons développé une fonction qui crée d'abord des tampons négatifs à l'intérieur de chaque segment de trottoir, puis ajuste itérativement la distance de ce tampon jusqu'à ce que la distance maximale soit atteinte, ce qui produit encore une géométrie de tampon valide (si les limites du tampon se chevauchent, la géométrie devient invalide). Le résultat est l'équivalent d'une ligne centrale à l'intérieur de chaque polygone de trottoir. La dernière étape pour déterminer la largeur du trottoir consiste à additionner les distances entre la ligne centrale et les deux bords d'un segment donné de polygone de trottoir. Ce processus est illustré ci-dessous."
-Tenant-occupied (%),Locataire occupant (%)
-Tenant-occupied (%) is the percentage of private dwellings which are occupied by tenants.,Locataire occupant (%) est le pourcentage de logements privés qui sont occupés par des locataires
-Average rent,Frais de logement mensuels moyens
-Average property value,Valeur moyenne des logements
-Average property value is the average value of dwellings occupied by owner households.,Valeur foncière moyenne est la valeur moyenne des logements occupés par un ménage locataire.
-Unaffordable housing (%),Logement inabordable (%)
-Unaffordable housing (%) is the percentage of dwellings for which residents pay more than 30% of income on housing costs.,Logement inabordable (%) est le pourcentage de logements pour lesquels les résidents paient plus de 30 % de leur revenu sur les frais de logement.
-Unsuitable housing (%),Logement inadéquat (%)
-"Unsuitable housing (%) is the percentage of households living in unsuitable accommodations according to the National Occupancy Standard, whether the dwelling has enough bedrooms for the size and composition of the household.","Logement inadéquat (%) est le pourcentage de ménages vivant dans un logement inadéquat selon la Norme nationale d'occupation, si le logement a suffisamment de chambres à coucher pour la taille et la composition du ménage."
-Median household income,Revenu médian des ménages
-Median household income is the median  household income (before tax).,Le revenu médian des ménages est le revenu médian des ménages (avant impôt).
-Income under $50k (%),Revenu inférieur à 50 000 $ (%)
-"Income under $50k (%) is the percentage of households with an income less then $50,000.",Le revenu inférieur à 50 000 $ (%) est le pourcentage de ménages ayant un revenu inférieur à 50 000 $.
-Income between $50k-$100k (%),Revenu entre 50 000 et 100 000 $ (%)
-"Income between $50k-$100k (%) is the percentage of households with an income between $50,000 and $100,000.",Le revenu entre 50 000 et 100 000 $ (%) est le pourcentage de ménages ayant un revenu compris entre 50 000 et 100 000 $.
-Income above $100k (%),Revenu supérieur à 100 000 $ (%)
-"Income above $100k (%) is the percentage of households with an income more than $100,000.",Revenu supérieur à 100 000 $ (%) est le pourcentage de ménages ayant un revenu supérieur à 100 000 $.
-Immigrants (%),Immigrants (%)
-Immigrants (%) is the percentage of foreign-born residents.,Immigrants (%) est le pourcentage de résidents nés à l'étranger.
-New immigrants (%),Nouveaux immigrants (%)
-New immigrants (%) is the percentage of people who have immigrated in the last five years.,Nouveaux immigrants (%) est le pourcentage de personnes qui ont immigré au cours des cinq dernières années.
-Drive to work (%),Conducteur (%)
-Drive to work (%) is the percentage of people who drive a privately owned car or truck to work.,Conducteur (%) est le pourcentage de personnes qui conduisent une voiture ou un camion privé pour se rendre au travail.
-Walk or cycle to work (%) is the percentage of people who walk or cycle to work.,À pied ou à vélo (%) correspond au pourcentage de personnes qui marchent ou se rendent au travail à vélo.
-Public transit to work (%) is the percentage of people who use public transit to get to work.,Transport en commun (%) est le pourcentage de personnes qui utilisent le transport en commun pour se rendre au travail.
-15 minutes to work (%) is the percentage of people whose commute time is less than 15 minutes.,Trajet de 15 minutes (%) est le pourcentage de personnes dont le temps de trajet domicile-travail est inférieur à 15 minutes.
-15-30 minutes to work (%) is the percentage of people whose commute time is between 15 and 30 minutes.,Trajet de 15-30 minutes (%) est le pourcentage de personnes dont le temps de trajet domicile-travail se situe entre 15 et 30 minutes.
-30-45 minutes to work (%) is the percentage of people whose commute time is between 30 and 45 minutes.,Trajet de 30-45 minutes (%) est le pourcentage de personnes dont le temps de trajet domicile-travail se situe entre 30 et 45 minutes.
-45-60 minutes to work (%) is the percentage of people whose commute time is between 45 and 60 minutes.,Trajet de 45-60 minutes (%) est le pourcentage de personnes dont le temps de trajet domicile-travail se situe entre 45 et 60 minutes.
+the percentage of private dwellings occupied by tenants,le pourcentage de logements privés occupés par des locataires
+the average rent paid by tenants per month,le loyer moyen payé par les locataires par mois
+the average value of owner-occupied dwellings,la valeur moyenne des logements occupés par leur propriétaire
+the percentage of dwellings for which residents pay more than 30% of income on housing costs,le pourcentage de logements pour lesquels les résidents consacrent plus de 30 % de leurs revenus aux frais de logement
+the percentage of households living in accommodations without enough bedrooms according to the National Occupancy Standard,le pourcentage de ménages vivant dans des logements ne disposant pas d'un nombre suffisant de chambres à coucher selon la norme d'occupation nationale
+the percentage of households living in dwellings requiring major repairs,le pourcentage de ménages vivant dans des logements nécessitant des réparations importantes
+the percentage of owner households that spend more than 30% of their income on shelter costs,le pourcentage de ménages propriétaires qui consacrent plus de 30 % de leur revenu aux frais de logement
+the percentage of renter households that spend more than 30% of their income on shelter costs,le pourcentage de ménages locataires qui consacrent plus de 30 % de leur revenu aux frais de logement
+the percentage of households that have moved in the past year,le pourcentage de ménages qui ont déménagé au cours de l'année écoulée
+the percentage of households that have moved in the past five years,le pourcentage de ménages qui ont déménagé au cours des cinq dernières années
+median before-tax household income,revenu médian des ménages avant impôt
+"the percentage of households with an income less then $50,000",le pourcentage de ménages dont le revenu est inférieur à 50 000 $.
+"the percentage of households with an income between $50,000 and $100,000",le pourcentage de ménages dont le revenu est compris entre 50 000 et 100 000 dollars
+"the percentage of households with an income higher than $100,000",le pourcentage de ménages dont le revenu est supérieur à 100 000 dollars
+"the prevalence of low income in private households based on the Low income measure, after-tax(LIM-AT)","la prévalence du faible revenu dans les ménages privés, basée sur la mesure du faible revenu, après impôt (MFR-ApI)"
+the percentage of residents who are foreign-born,le pourcentage de résidents nés à l'étranger
+the percentage of people who have immigrated in the last five years,le pourcentage de personnes qui ont immigré au cours des cinq dernières années
+the percentage of people who identify as part of one or more visible minority groups,le pourcentage de personnes qui s'identifient comme faisant partie d'un ou plusieurs groupes de minorités visibles
+the percentage of people who are of aboriginal identity,le pourcentage de personnes qui ont une identité autochtone
+the percentage of people who drive a privately owned car or truck to work,le pourcentage de personnes qui conduisent une voiture ou un camion privé pour se rendre au travail
+the percentage of people who walk or cycle to work,le pourcentage de personnes qui se rendent au travail à pied ou à vélo
+the percentage of people who use public transit to get to work,le pourcentage de personnes qui utilisent les transports en commun pour se rendre au travail
+the percentage of people whose commute time is less than 15 minutes,le pourcentage de personnes dont le temps de trajet est inférieur à 15 minutes
+the percentage of people whose commute time is between 15 and 45 minutes,le pourcentage de personnes dont le temps de trajet est compris entre 15 et 45 minutes
+the percentage of people whose commute time is longer than 45 minutes,le pourcentage de personnes dont le temps de trajet est supérieur à 45 minutes
+"the percentage of the workforce in professional and managerial occupations, based on the North American Industry Classification System","le pourcentage de la main-d'œuvre dans les professions libérales et les postes de gestion, selon le Système de classification des industries de l'Amérique du Nord."
+"the percentage of the workforce in artistic and cultural occupations, based on the North American Industry Classification System","le pourcentage de la main-d'œuvre dans les professions artistiques et culturelles, selon le Système de classification des industries de l'Amérique du Nord."
+the percentage of census families with children out of total households,le pourcentage de familles de recensement avec enfants par rapport au total des ménages
+the percentage of one person households out of total households,le pourcentage de ménages d'une personne par rapport au total des ménages
+the percentage of individuals that only know French as an official language,le pourcentage d'individus qui ne connaissent que le français comme langue officielle
+the percentage of individuals that only know English as an official language,le pourcentage d'individus qui ne connaissent que l'anglais comme langue officielle
+the percentage of individuals that know both official languages (French and English),le pourcentage de personnes qui connaissent les deux langues officielles (français et anglais)
+the percentage of individuals that do not know either of the official languages (French or English),le pourcentage d'individus qui ne connaissent aucune des deux langues officielles (français ou anglais)
+the percentage of the population aged between 0 and 14 years old,le pourcentage de la population âgée de 0 à 14 ans
+the percentage of the population aged between 15 and 64 years old,le pourcentage de la population âgée de 15 à 64 ans
+the percentage of the population aged 65 and above,le pourcentage de la population âgée de 65 ans et plus
+the percentage of the population aged 15 and over holding a degree at bachelor level or above,le pourcentage de la population âgée de 15 ans et plus détenant un diplôme de niveau licence ou plus
+"the percentage of the population aged 15 and over with no certificate, diploma or degree","le pourcentage de la population âgée de 15 ans et plus ne possédant aucun certificat, diplôme ou grade"
+the potential for active living,le potentiel de la vie active
 "The whole of an ecosystem is more than the sum of its parts. The health and resilience of our urban green spaces are determined by the quantity, quality, and composition of the species with cohabitat with.","L'ensemble d'un écosystème est plus que la somme de ses parties. La santé et la résilience de nos espaces verts urbains sont déterminées par la quantité, la qualité et la composition des espèces avec lesquelles nous cohabitons."
 Montreal's biodiversity is the result of many competing factors...,La biodiversité de Montréal est le résultat de nombreux facteurs concurrents...
 Hello Shiny!,French
@@ -97,12 +107,24 @@ dissemination areas,aires de diffusion
 Census tract {dat$name},Secteur de recensement {dat$name}
 Dissemination area {dat$name},Aire de diffusion {dat$name}
 {dat$name_2} of {place_name},{dat$name_2} de {place_name}
+Tenant-occupied (%),Locataire occupant (%)
+Average rent,Frais de logement mensuels moyens
+Average property value,Value moyenne des logements
+Unaffordable housing (%),Logement inabordable (%)
+Unsuitable housing (%),Logement inadéquat (%)
 Housing requiring major repairs (%),Logement nécessitant des réparations majeures (%)
 Owner housing stress (%),Propriétaires dépensant plus de 30% du revenu sur le logement (%)
 Renter housing stress (%),Locataires dépensant plus de 30% du revenu sur le logement (%)
+Median household income,Revenu médian des ménages
+Income under $50k (%),Revenu inférieur à 50k (%)
+Income between $50k-$100k (%),Revenu entre 50k-100k (%)
+Income above $100k (%),Revenu supérieur à 100k (%)
 Prevalence of low income (after-tax) (%),Prévalence de faible revenu (après taxe) (%)
 Immigration and ethnicity,Immigration et ethnie
+Immigrants (%),Immigrants (%)
+New immigrants (%),Nouveaux immigrants (%)
 Visible minorities (%),Minorités visibles (%)
+Drive to work (%),Conducteur (%)
 Walk or cycle to work (%),À pied ou à vélo (%)
 Public transit to work (%),Transport en commun (%)
 15 minutes to work (%),Trajet de 15 minutes (%)
@@ -126,6 +148,8 @@ negative,négatif
 weak,faible
 higher,plus grandes
 lower,plus petites
+high,haut
+low,bas
 similar,similaires
 with only a few exceptions,à quelques exceptions près
 although with some exceptions,bien qu'avec des exceptions
@@ -134,7 +158,7 @@ dramatically different,radicalement différents
 substantially different,sensiblement différents
 considerably different,modérément différents
 "At the {scale_singular} scale, the {title} varies from {min_val} to {max_val}, with an average value of {mean_val} and a median value of {median_val}. Two thirds of {scale_plural} have a score between {quant_low} and {quant_high}.","À l'échelle {scale_singular}, {title} varie de {min_val} à {max_val}, avec une valeur moyenne de {mean_val} et une valeur médianne de {median_val}. Deux tiers {scale_plural} ont un score se situant entre {quant_low} et {quant_high}."
-"<strong>Kahnawake Mohawk Territory</strong><p>Statistics Canada does not gather the same data for indigenous reserves in the Census as it does for other jurisdictions, so we cannot display findings here.","<strong>Kahnawake (Réserve indienne)</strong><p>Dans le cadre du recensement, Statistique Canada ne recueille pas les mêmes données pour les réservesautochtones que dans les autres juridictions, nous ne pouvons donc pas afficher de résultats ici."
+"<strong>Kahnawake Mohawk Territory</strong><p>Statistics Canada does not gather the same data for indigenous reserves in the Census as it does for other jurisdictions, so we cannot display findings here.","<strong>Kahnawake (Réserve indienne)</strong><p>Dans le cadre du recensement, Statistique Canada ne recueille pas les mêmes données pour les réserves autochtones que dans les autres juridictions, nous ne pouvons donc pas afficher de résultats ici."
 CanALE index,Indice AVA-Can
 View in 3D,Voir en 3D
 Active living potential: the CanALE index,Potentiel de vie active: l'indice AVA-Can
@@ -384,3 +408,150 @@ the vulnerability to climate-change related destructive storm events,la vulnéra
 Heat wave vulnerability,Vulnérabilité aux vagues de chaleur
 the vulnerability to climate-change related heat wave events,la vulnérabilité aux vagues de chaleur liées aux changements climatiques
 "<p>The Climate Change Risk datasets are part of the start of the City of Montreal’s iterative process examining potential climate risks for the Montreal region. It includes cartographic representation of five areas: heat waves, flooding, heavy rain, drought, and destructive storms. These climate risks, along with increased temperatures, constitute the primary concerns for the Montreal agglomeration as determined in the 2015-2020 Urban Agglomeration Climate Change Adaptation Plan. The plan includes climate modeling and, projections, and potential impacts on buildings, on municipal operations, as well as environmental and socio-economic impacts. The adaptation plan incorporates several of the City’s other climate-related plans and strategies, and focuses on moving from theory to action, taking into consideration Montreal’s landscape and surroundings. The datasets visualised here are publicly available through the Montreal Open Data Portal. <ul> <li>Heat waves include a range of extreme heat events based on temperature and duration. Montreal has generally seen an upward trend in extreme heat events, most noticeably during the 2000s. Heat waves are especially of concern in Montreal due to more than one quarter (28%) of the island containing heat islands. <li>Flooding, specifically river flooding, refers to flow rate or river level exceeding the critical threshold. The Montreal agglomeration’s flooding concerns primarily locations along the Des Prairies River. <li>Heavy rain includes long term heavy rains, potentially causing rivers to overflow, and short-term heavy rain, often localised, can put strain on infrastructures, cause public health problems, and negatively impact certain natural environments. Episodes of heavy rain are on the upward trend in Quebec, with increased instances observed from 1934 to 2014. <li>Drought includes meteorological drought (amount of precipitation), agricultural drought (soil dryness), hydrological drought (surface and groundwaters), and socioeconomic drought (actions of humans on water resources). Montreal has seen a very slight upward trend in meteorological droughts. <li>Destructive storms include wind storms, hail storms, heavy snowstorms, and freezing rain. Events of freezing rain increased 26% from 1979 to 2008, and heavy snowstorms increased over the past 70 years. No assessment could so far be made in regards to the other storm types.</ul>","<p>Les données sur la vulnérabilité aux changements climatiques font partie des premières étapes du processus itératif de la Ville de Montréal examinant les risques climatiques potentiels pour la région de Montréal. La base de données comprend la représentation cartographique des aléas climatiques suivants: les vagues de chaleur, les crues, les pluies abondantes, la sécheresse et les tempêtes destructrices. Ces risques climatiques, ainsi que l'augmentation des températures, constituent les principales préoccupations de l'agglomération de Montréal, telles que déterminées dans le Plan d'adaptation aux changements climatiques de l'agglomération de Montréal 2015-2020. Le plan comprend des modélisations et des projections climatiques, ainsi que les impacts potentiels sur les bâtiments, sur les opérations municipales, ainsi que les impacts environnementaux et socio-économiques. Le plan d'adaptation intègre plusieurs autres plans et stratégies de la ville liés au climat et vise à passer de la théorie à l'action, en tenant compte du paysage et de l'environnement de Montréal. Les données visualisées ici sont accessibles au public par le biais du portail de données ouvertes de Montréal. <ul> <li>Les vagues de chaleur comprennent une gamme d'événements de chaleur extrême basés sur la température et la durée. Montréal a généralement connu une tendance à la hausse des événements de chaleur extrême, plus particulièrement au cours des années 2000. Les vagues de chaleur sont particulièrement préoccupantes à Montréal en raison du fait que plus du quart (28 %) de l'île contient des îlots de chaleur. <li>Les crues, ou les inondations fluviales, désignent un débit ou un niveau de rivière dépassant le seuil critique. Les inondations de l'agglomération de Montréal concernent principalement les lieux situés le long de la rivière des Prairies. <li>Les pluies abondantes comprennent les pluies abondantes à long terme, pouvant potentiellement faire déborder les rivières; et les pluies abondantes à court terme, souvent localisées, pouvant mettre à mal les infrastructures, causer des problèmes de santé publique et avoir un impact négatif sur certains milieux naturels. Les épisodes de fortes pluies ont tendance à augmenter au Québec, avec une augmentation des occurrences observées de 1934 à 2014. <li>La sécheresse comprend la sécheresse météorologique (quantité de précipitations), la sécheresse agricole (sécheresse des sols), la sécheresse hydrologique (eaux de surface et souterraines) et la sécheresse socio-économique (impact des actions des humains sur les ressources en eau). Montréal a connu une très légère tendance à la hausse des sécheresses météorologiques. <li>Les tempêtes destructrices comprennent les tempêtes de vent, les tempêtes de grêle, les fortes tempêtes de neige et la pluie verglaçante. Les événements de pluie verglaçante ont augmenté de 26% de 1979 à 2008, et les fortes tempêtes de neige ont augmenté au cours des 70 dernières années. Aucune évaluation n'a pu être faite jusqu'à présent en ce qui concerne les autres types de tempêtes.</ul>"
+<p>Displayed data for <b>{var}</b> is for the closest available year <b>({year_shown})</b>.</p>,<p>Les données représentées pour <b>{var}</b> sont celles de l'année disponible la plus proche <b>({year_shown})</b>.</p>
+Covid interventions,Interventions (COVID)
+Healthy Urban Features,Caractéristiques d'une ville saine
+Housing realm,Domaine du logement
+The housing realm,Le domaine du logement
+Montréal climate plans,Plans climat de Montréal
+Policy,Politiques
+Safety,Sécurité
+Safety analysis,Analyse de la sécurité
+Green alleys,Ruelles vertes
+Health,Santé
+"<strong>{z$place_heading}</strong><p>{z$place_name} has a population of {prettyNum(round(z$selection$population), ',')} and a {z$title_left} score ({z$exp_left}) of {round(z$poly_value, 2)}, which is {z$larger_smaller} the region-wide median of {z$median_val}.<p>{z$place_name} has a {z$poor_strong} relative score for this indicator, with {z$exp_left} higher than {z$percentile}% of {z$scale_plural} in the Montreal region.","<strong>{z$place_heading}</strong><p>{z$place_name} a une population de {prettyNum(round(z$selection$population), ',')} et un indice {z$title_left} ({z$exp_left}) de {round(z$poly_value, 2)}, ce qui est {z$larger_smaller} la médiane régionale de {z$median_val}.<p>{z$place_name} a un indice relativement {z$poor_strong} pour cet indicateur, avec {z$exp_left} supérieur à {z$percentile}% des {z$scale_plural} de la région de Montréal"
+Housing is important,Le logement est important
+May 2020,Mai 2020
+July 2020,Juillet 2020
+October 2020,Octobre 2020
+TK 2021,TK 2021
+Total,Total
+Pedestrian,Piéton
+Cyclist,Cycliste
+Other,Autre
+Count,Compte
+Per sq km,Par kilomètre carré
+Per 1000 residents,Pour 1000 résidents
+Introduction,Introduction
+Community and participation,Communauté et participation
+Greening,Verdir
+Food and agriculture,Alimentation et agriculture
+Land use,Utilisation des sols
+Mobility,Mobilité
+Equity,Equité
+Adaptation and resilience,Adaptation et résilience
+Economy,Économie
+Innovation,Innovation
+"Regionalism, internationalism and networks","Régionalisme, internationalisme et réseaux"
+Sustainability,Durabilité
+Lavaltrie,Lavaltrie
+Richelieu,Richelieu
+Saint-Mathias-sur-Richelieu,Saint-Mathias-sur-Richelieu
+Saint-Jean-sur-Richelieu,Saint-Jean-sur-Richelieu
+Chambly,Chambly
+Carignan,Carignan
+Saint-Basile-le-Grand,Saint-Basile-le-Grand
+McMasterville,McMasterville
+Otterburn Park,Otterburn Park
+Mont-Saint-Hilaire,Mont-Saint-Hilaire
+Beloeil,Beloeil
+Saint-Mathieu-de-Beloeil,Saint-Mathieu-de-Beloeil
+Brossard,Brossard
+Saint-Lambert,Saint-Lambert
+Boucherville,Boucherville
+Saint-Bruno-de-Montarville,Saint-Bruno-de-Montarville
+Longueuil,Longueuil
+Sainte-Julie,Sainte-Julie
+Saint-Amable,Saint-Amable
+Varennes,Varennes
+Verchères,Verchères
+Charlemagne,Charlemagne
+Repentigny,Repentigny
+Saint-Sulpice --parish municipality,Saint-Sulpice --parish municipality
+L'Assomption,L'Assomption
+L'Épiphanie,L'Épiphanie
+L'Épiphanie --parish municipality,L'Épiphanie --parish municipality
+Saint-Lin--Laurentides,Saint-Lin--Laurentides
+Terrebonne,Terrebonne
+Mascouche,Mascouche
+Laval,Laval
+Montréal-Est,Montréal-Est
+Outremont,Outremont
+Ahuntsic-Cartierville,Ahuntsic-Cartierville
+Saint-Léonard,Saint-Léonard
+Mercier-Hochelaga-Maisonneuve,Mercier-Hochelaga-Maisonneuve
+Côte-des-Neiges-Notre-Dame-de-Grâce,Côte-des-Neiges-Notre-Dame-de-Grâce
+Rosemont-La Petite-Patrie,Rosemont-La Petite-Patrie
+Saint-Laurent,Saint-Laurent
+Villeray-Saint-Michel-Parc-Extension,Villeray-Saint-Michel-Parc-Extension
+Anjou,Anjou
+Pierrefonds-Roxboro,Pierrefonds-Roxboro
+Verdun,Verdun
+LaSalle,LaSalle
+Ville-Marie,Ville-Marie
+Le Plateau-Mont-Royal,Le Plateau-Mont-Royal
+Le Sud-Ouest,Le Sud-Ouest
+Rivière-des-Prairies-Pointe-aux-Trembles,Rivière-des-Prairies-Pointe-aux-Trembles
+Lachine,Lachine
+Montréal-Nord,Montréal-Nord
+L'Île-Bizard-Sainte-Geneviève,L'Île-Bizard-Sainte-Geneviève
+Westmount,Westmount
+Montréal-Ouest,Montréal-Ouest
+Côte-Saint-Luc,Côte-Saint-Luc
+Hampstead,Hampstead
+Mont-Royal,Mont-Royal
+Dorval,Dorval
+L'Île-Dorval,L'Île-Dorval
+Pointe-Claire,Pointe-Claire
+Kirkland,Kirkland
+Beaconsfield,Beaconsfield
+Baie-d'Urfé,Baie-d'Urfé
+Sainte-Anne-de-Bellevue,Sainte-Anne-de-Bellevue
+Senneville,Senneville
+Dollard-des-Ormeaux,Dollard-des-Ormeaux
+Saint-Mathieu,Saint-Mathieu
+Saint-Philippe,Saint-Philippe
+La Prairie,La Prairie
+Candiac,Candiac
+Delson,Delson
+Sainte-Catherine,Sainte-Catherine
+Saint-Constant,Saint-Constant
+Saint-Isidore --parish municipality,Saint-Isidore --parish municipality
+Mercier,Mercier
+Châteauguay,Châteauguay
+Léry,Léry
+Kahnawake,Kahnawake
+Beauharnois,Beauharnois
+Saint-Zotique,Saint-Zotique
+Les Coteaux,Les Coteaux
+Coteau-du-Lac,Coteau-du-Lac
+Les Cèdres,Les Cèdres
+Pointe-des-Cascades,Pointe-des-Cascades
+L'Île-Perrot,L'Île-Perrot
+Notre-Dame-de-l'Île-Perrot,Notre-Dame-de-l'Île-Perrot
+Pincourt,Pincourt
+Terrasse-Vaudreuil,Terrasse-Vaudreuil
+Vaudreuil-Dorion,Vaudreuil-Dorion
+Vaudreuil-sur-le-Lac,Vaudreuil-sur-le-Lac
+L'Île-Cadieux,L'Île-Cadieux
+Hudson,Hudson
+Saint-Lazare,Saint-Lazare
+Saint-Eustache,Saint-Eustache
+Deux-Montagnes,Deux-Montagnes
+Sainte-Marthe-sur-le-Lac,Sainte-Marthe-sur-le-Lac
+Pointe-Calumet,Pointe-Calumet
+Saint-Joseph-du-Lac,Saint-Joseph-du-Lac
+Oka,Oka
+Saint-Placide,Saint-Placide
+Kanesatake,Kanesatake
+Boisbriand,Boisbriand
+Sainte-Thérèse,Sainte-Thérèse
+Blainville,Blainville
+Rosemère,Rosemère
+Lorraine,Lorraine
+Bois-des-Filion,Bois-des-Filion
+Sainte-Anne-des-Plaines,Sainte-Anne-des-Plaines
+Mirabel,Mirabel
+Saint-Colomban,Saint-Colomban
+Saint-Jérôme,Saint-Jérôme
+Gore,Gore

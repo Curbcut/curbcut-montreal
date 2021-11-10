@@ -1,0 +1,19 @@
+---
+title: "Innovation"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## PMD (Coderre administration): 
+
+While innovation plays a rhetorical role in the Plan Montréal durable, no specific policies are proposed to encourage innovation or deploy innovative technology.
+
+## Plan climat (Plante administration): 
+Creation of laboratory zones where city living will be “redefined”. Creation of a bio/agribusiness innovation cluster. Use markets to promote the local emergence and growth of innovative industries. Use the city as a catalyst for innovation, bringing together actors involved in the circular economy, and encouraging a greening of the construction industry. 
+
+## Discussion
+
+Mentions of innovation are present throughout the Plan climat. “Innov*” appears nearly three times more in this plan (31 instances) than in any other Montreal climate plan (though 'green technology' was occasionally used in the city’s earliest plans). The Plan climat also mentions a variety of pilot projects in sustainable mobility and green technology - key sectors of innovation that this plan aims to attract and build on. Contrasted with the presence of innovation rhetoric and lack of action on the subject in the PMD, the increasing importance of innovation in Montreal’s climate planning may point to a change in approach on the city’s part, in a global shift towards innovative technology to combat climate change. In five years Montreal has moved from innovation as rhetoric to designating specific zones for producing and deploying innovation. The city appears to be aiming to achieve this by making itself more attractive to innovative industries and allocating resources to build upon the innovative sectors already active in the city's economy. Interestingly, the Plan climat is the first municipal plan to cite a reliance on the emergence of new technologies to control emissions, in this case, carbon capture that would eliminate emissions from air travel and industry.
