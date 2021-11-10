@@ -8,10 +8,10 @@ crash_UI <- function(id) {
           title_UI(NS(id, "title"),
                    actionLink(NS(id, "crash_rmd"), label = "Analysis"),
                    hr(),
-                   column(6, select_var_UI(NS(id, "left_1"), var_list_left_crash_1,
-                                           label = i18n$t("Density preferred: "))),
-                   column(6, select_var_UI(NS(id, "left_2"), var_list_left_crash_2,
-                                 label = i18n$t("Type of crash: "))),
+                   select_var_UI(NS(id, "left_1"), var_list_left_crash_1,
+                                           label = i18n$t("Grouping of crashes ")),
+                   select_var_UI(NS(id, "left_2"), var_list_left_crash_2,
+                                 label = i18n$t("Type of crash ")),
                    sliderInput(NS(id, "left"), i18n$t("Select a year"),
                                min = crash_slider$min,
                                max = crash_slider$max,
@@ -73,25 +73,57 @@ crash_server <- function(id) {
     })
     
     output$how_to_read_map <- renderText({
-      # No explanation needed for the heatmap. The label of slider updates
-      # and it's written it's a range of dates. No explanation needed for the
-      # choropleth with unique date. 
+      # No explanation needed for the heatmap and choropleth with unique date and
+      # no right variable. The label of slider updates, and makes sense of the map.
       if (choropleth() && input$bi_time) {
+        type_crash <- switch(var_left_2(), 
+                             "total" = sus_translate("total"),
+                             "ped" = sus_translate("pedestrian"),
+                             "cyc" = sus_translate("cyclist"), 
+                             "other" = sus_translate("other"))
+        
         if(var_right() == " "){
-          type_crash <- case_when(var_left_2() == "total" ~ sus_translate("total"),
-                                  var_left_2() == "ped" ~ sus_translate("pedestrian"),
-                                  var_left_2() == "cyc" ~ sus_translate("cyclist"), 
-                                  var_left_2() == "other" ~ sus_translate("other"))
+          
           str_glue(
             sus_translate(
               paste0("<b>How to read the map</b><br>",
-                     "The map displays the variation percentage in number of ",
-                     "{type_crash} crash between {time()[1]} and {time()[2]}. ",
+                     "The map displays the percent variation in number of ",
+                     "{type_crash} crashes between {time()[1]} and {time()[2]}. ",
                      "A darker green means a relative increase in {type_crash} ",
-                     "crash number between {time()[1]} and {time()[2]}.")))
+                     "crashes number.")))
+        } else {
+          var <- str_remove(var_right(), "_\\d{4}$")
+          census_years <- unique(str_extract(var_right(), "\\d{4}$"))
+          var <- str_to_lower(sus_translate(var_exp[var_exp$var_code == var,]$var_name))
+          
+          if(length(census_years) == 2) {
+            str_glue(
+              sus_translate(
+                paste0("<b>How to read the map</b><br>",
+                       "The map displays the comparison of two percent variations. ",
+                       "In green, the percent variation in number of ",
+                       "{type_crash} crashes between {time()[1]} and {time()[2]}. ",
+                       "A darker green means a relative increase in {type_crash} ",
+                       "crashes number. In blue, the percent variation of '{var}' between ",
+                       "{census_years[1]} and {census_years[2]}, the closest census years available. ",
+                       "A darker blue means a relative increase in '{var}'. ",
+                       "You can find the comparison legend at ",
+                       "the bottom left of the map.")))
+          } else {
+            str_glue(
+              sus_translate(
+                paste0("<b>How to read the map</b><br>",
+                       "The map displays the comparison of a percent variation ",
+                       "with a census variable. In green, the percent variation ",
+                       "in number of {type_crash} crashes between {time()[1]} and {time()[2]}. ",
+                       "A darker green means a relative increase in {type_crash} ",
+                       "crashes number. Displayed in blue is '{var}' numbers in {census_years}, ",
+                       "the closest census year available. ",
+                       "A darker blue means a relatively higher number of '{var}'. ",
+                       "You can find the comparison legend at the bottom left of the map.")))
+          }
+          
         }
-      } else {
-        
       }
     })
     
@@ -269,7 +301,7 @@ crash_server <- function(id) {
     observeEvent(input$crash_rmd, {
       if (input$crash_rmd %% 2 != 0) {
         print("BUTTON")
-        shinydashboard::updateTabItems(session, "tabs", "crash_analysis")
+        shinydashboard::updateTabItems(session, "tabs", crash_analysis_server("crash_analysis"))
       }
     })
     
