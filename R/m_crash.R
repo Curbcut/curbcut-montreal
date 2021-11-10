@@ -6,7 +6,7 @@ crash_UI <- function(id) {
   tabItem(tabName = "crash",
           mapdeckOutput(NS(id, "map"), height = "92vh"),
           title_UI(NS(id, "title"),
-                   actionLink(NS(id, "crash_rmd"), label = "Analysis"),
+                   htmlOutput(NS(id, "crash_rmd")),
                    hr(),
                    select_var_UI(NS(id, "left_1"), var_list_left_crash_1,
                                            label = i18n$t("Grouping of crashes ")),
@@ -297,13 +297,10 @@ crash_server <- function(id) {
       }
     })
     
-    # Switch to analysis Rmd
-    observeEvent(input$crash_rmd, {
-      if (input$crash_rmd %% 2 != 0) {
-        print("BUTTON")
-        shinydashboard::updateTabItems(session, "tabs", crash_analysis_server("crash_analysis"))
-      }
-    })
+    output$crash_rmd <- renderText({
+         paste(
+           a("Analysis", onclick = "openTab('crash_analysis')", href="#"))
+      })
     
   })
 }

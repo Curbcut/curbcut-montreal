@@ -241,6 +241,18 @@ $(document).ready(function(){
 });
 "
 
+# So we can switch between tabs without namespacing issues. Examples in `m_crash.R`
+# a("NAME OF LINK", onclick = "openTab('NAME OF TAB')", href="#")
+js_links_between_modules <- "
+        var openTab = function(tabName){
+          $('a', $('.sidebar')).each(function() {
+            if(this.getAttribute('data-value') == tabName) {
+              this.click()
+            };
+          });
+        }
+      "
+
 styler <- '
       /* logo */
       .skin-black .main-header .logo {

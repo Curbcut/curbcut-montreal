@@ -163,6 +163,8 @@ ui <- dashboardPage(
     tags$head(tags$script(HTML(js))),
     tags$head(tags$script(HTML(js2))),
     tags$head(tags$script(HTML(js3))),
+    tags$head(tags$script(HTML(js3))),
+    tags$script(HTML(js_links_between_modules)),
     tags$head(tags$style(HTML(styler))),
     
     waiter::use_waiter(),
