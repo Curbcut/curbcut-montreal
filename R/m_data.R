@@ -60,7 +60,7 @@ data_server <- function(id, var_left, var_right, df, zoom = df) {
                                                                   "_\\d{4}$"), "_q3", 
                                                        na.omit(str_extract(var_left, "_\\d{4}$")))) %>%
              { if (length(var_left) == 2) 
-               mutate(., left_var = (left_var2 - left_var1) / left_var1 * 100,
+               mutate(., left_var = (left_var2 - left_var1) / left_var1,
                       left_var_q3 = ntile(left_var, 3),
                       across(where(is.numeric), ~replace(., is.nan(.), NA)),
                       across(where(is.numeric), ~replace(., is.infinite(.), NA))) %>% 
@@ -82,9 +82,9 @@ data_server <- function(id, var_left, var_right, df, zoom = df) {
                                                    "_q3", 
                                                    na.omit(str_extract(var_right, "_\\d{4}$")))) %>% 
                { if (length(var_left) == 2 && length(var_right) == 2) 
-                 mutate(., left_var = (left_var2 - left_var1) / left_var1 * 100,
+                 mutate(., left_var = (left_var2 - left_var1) / left_var1,
                         left_var_q3 = ntile(left_var, 3),
-                        right_var = (right_var2 - right_var1) / right_var1 * 100,
+                        right_var = (right_var2 - right_var1) / right_var1,
                         right_var_q3 = ntile(right_var, 3),
                         across(where(is.numeric), ~replace(., is.nan(.), NA)),
                         across(where(is.numeric), ~replace(., is.infinite(.), NA))) %>% 
@@ -94,18 +94,18 @@ data_server <- function(id, var_left, var_right, df, zoom = df) {
                # one variable in different year than the other, like crash data vs borough.
                # We might have to show different crash years vs same census year.
                { if (length(var_left) == 2 && length(var_right) == 1) 
-                 mutate(., left_var = (left_var2 - left_var1) / left_var1 * 100,
+                 mutate(., left_var = (left_var2 - left_var1) / left_var1,
                         left_var_q3 = ntile(left_var, 3),
-                        # right_var = (right_var2 - right_var1) / right_var1 * 100,
+                        # right_var = (right_var2 - right_var1) / right_var1,
                         # right_var_q3 = ntile(right_var, 3),
                         across(where(is.numeric), ~replace(., is.nan(.), NA)),
                         across(where(is.numeric), ~replace(., is.infinite(.), NA))) %>% 
                    select(., ID, name, name_2, population, 
                           left_var, left_var_q3, right_var, right_var_q3) else .} %>%
                { if (length(var_left) == 1 && length(var_right) == 2)
-                 mutate(., #left_var = (left_var2 - left_var1) / left_var1 * 100,
+                 mutate(., #left_var = (left_var2 - left_var1) / left_var1,
                         # left_var_q3 = ntile(left_var, 3),
-                        right_var = (right_var2 - right_var1) / right_var1 * 100,
+                        right_var = (right_var2 - right_var1) / right_var1,
                         right_var_q3 = ntile(right_var, 3),
                         across(where(is.numeric), ~replace(., is.nan(.), NA)),
                         across(where(is.numeric), ~replace(., is.infinite(.), NA))) %>%
