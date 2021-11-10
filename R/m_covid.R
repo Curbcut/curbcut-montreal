@@ -94,7 +94,7 @@ covid_server <- function(id) {
     # Update map in response to data_to_add change
     observeEvent(data_to_add(), {
 
-      print(data_to_add())
+      # print(data_to_add())
 
       # Draw path
       if (!is.na(rv_covid$path_selected)) {

@@ -51,11 +51,6 @@ explore_server <- function(id, x, var_left, var_right, select, zoom,
     var_type <- explore_var_type(id, x, var_left, var_right, select,
                                  var_left_label, var_right_label)
 
-    observeEvent(var_type(), {
-      print("VAR_TYPE")
-      print(var_type())
-      })
-    
     # Render info table
     info_table_server(id = "explore", 
                       x = x, 

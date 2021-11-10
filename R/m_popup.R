@@ -56,7 +56,7 @@ popup_server <- function(id, x, fields = NULL, plots = NULL, images = NULL,
     # Images
     output$popup_images <- renderImage({
       if (!is.null(images())) {
-        print(images())
+        # print(images())
         list(src = images(), width = 150)
         }}, deleteFile = FALSE)
     

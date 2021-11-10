@@ -66,6 +66,24 @@ map_location <- c(-73.58, 45.53)
 
 # Functions ---------------------------------------------------------------
 
+convert_unit <- function(x, var_name = NULL) {
+  
+  if (length(x) == 0) return(x)
+  if (is.na(x)) return(x)
+  
+  if (!missing(var_name) && grepl("_prop", var_name)) {
+    x <- paste0(round(x * 100, 1), "%")
+  } else if (!missing(var_name) && grepl("_dollar", var_name)) {
+    x <- scales::dollar(x, 1)
+  } else if (abs(x) >= 100) {
+    x <- scales::comma(x, 1)
+  } else if (abs(x) >= 10) {
+    x <- as.character(round(x, 1))
+  } else x <- as.character(round(x, 2))
+  
+  x
+}
+
 right_panel <- function(id, ...) {
   
   absolutePanel(

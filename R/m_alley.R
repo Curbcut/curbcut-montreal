@@ -70,14 +70,14 @@ alley_server <- function(id) {
     # Explore panel
     output$alley_explore <- renderUI({
       
-      print("POLY_SELECT")
-      print(rv_alley$poly_selected)
+      # print("POLY_SELECT")
+      # print(rv_alley$poly_selected)
       
       text_to_display <- 
         alley_text %>%
         filter(ID == rv_alley$poly_selected)
       
-      print(text_to_display)
+      # print(text_to_display)
       
       if (nrow(text_to_display) == 1) {
         HTML(text_to_display$description)

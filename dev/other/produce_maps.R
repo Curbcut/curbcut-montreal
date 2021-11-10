@@ -9,7 +9,7 @@ make_circle <- function(x) {
     {. + c(0, -3500)} %>% 
     st_set_crs(32618) %>% 
     st_buffer(26000) %>% 
-    st_intersection(st_transform(x, 32618), .) %>% 
+    st_intersection(st_transform(st_set_agr(x, "constant"), 32618), .) %>% 
     st_transform(4326)
 }
 
@@ -65,14 +65,45 @@ walk(c("borough", "CT", "DA", "grid", "building", "street"), function(scale) {
     # Left map
     if (.x == " ") {
       
-      p <-
-        data %>% 
-        ggplot() +
-        {if (scale == "grid") geom_sf(data = circle_borough, fill = "grey70", 
-                                      color = "white", size = 0.01)} +
-        geom_sf(fill = "#CABED0", color = "white", size = 0.01) +
-        theme_map() +
-        theme(legend.position = "none")
+      if (scale == "grid") {
+        p <-
+          data %>% 
+          ggplot() +
+          geom_sf(data = circle_borough, fill = "grey70", color = "white", 
+                  size = 0.01) +
+          geom_sf(fill = "#CABED0", color = "white", size = 0.01) +
+          theme_map() +
+          theme(legend.position = "none")
+        
+      } else if (scale == "building") {
+        p <-
+          data %>% 
+          ggplot() +
+          geom_sf(data = circle_borough, fill = "grey70", color = "white", 
+                  size = 0.01) +
+          geom_sf(fill = "#CABED0", color = "#CABED0", size = 0.05) +
+          theme_map() +
+          theme(legend.position = "none")
+        
+      } else if (scale == "street") {
+        p <-
+          data %>% 
+          ggplot() +
+          geom_sf(data = circle_borough, fill = "grey70", color = "white", 
+                  size = 0.01) +
+          geom_sf(colour = "#CABED0", size = 0.1) +
+          theme_map() +
+          theme(legend.position = "none")
+        
+      } else {
+        p <-
+          data %>% 
+          ggplot() +
+          geom_sf(fill = "#CABED0", color = "white", size = 0.01) +
+          theme_map() +
+          theme(legend.position = "none")
+        
+      }
       
       {wrap_elements(shadow_left) + 
           inset_element(p, 0.18, 0.148, 0.83, 0.85, align_to = "full")} %>% 
@@ -99,9 +130,10 @@ walk(c("borough", "CT", "DA", "grid", "building", "street"), function(scale) {
           ggplot() +
           geom_sf(data = circle_borough, fill = "grey70", color = "white", 
                   size = 0.01) +
-          geom_sf(aes(fill = as.factor(var)), color = "transparent", 
-                  size = 0) +
+          geom_sf(aes(fill = as.factor(var), colour = as.factor(var)), 
+                  size = 0.05) +
           scale_fill_manual(values = colour_scale[1:3], na.value = "grey70") +
+          scale_colour_manual(values = colour_scale[1:3], na.value = "grey70") +
           theme_map() +
           theme(legend.position = "none")
         
@@ -112,7 +144,7 @@ walk(c("borough", "CT", "DA", "grid", "building", "street"), function(scale) {
           ggplot() +
           geom_sf(data = circle_borough, fill = "grey70", color = "white", 
                   size = 0.01) +
-          geom_sf(aes(colour = as.factor(var)), size = 0.01) +
+          geom_sf(aes(colour = as.factor(var)), size = 0.1) +
           scale_colour_manual(values = colour_scale[1:3], na.value = "grey70") +
           theme_map() +
           theme(legend.position = "none")
@@ -149,14 +181,45 @@ walk(c("borough", "CT", "DA", "grid", "building", "street"), function(scale) {
     # Right map
     if (.x == " ") {
       
-      p <-
-        data %>% 
-        ggplot() +
-        {if (scale == "grid") geom_sf(data = circle_borough, fill = "grey70", 
-                                      color = "white", size = 0.01)} +
-        geom_sf(fill = "#CABED0", color = "white", size = 0.01) +
-        theme_map() +
-        theme(legend.position = "none")
+      if (scale == "grid") {
+        p <-
+          data %>% 
+          ggplot() +
+          geom_sf(data = circle_borough, fill = "grey70", color = "white", 
+                  size = 0.01) +
+          geom_sf(fill = "#CABED0", color = "white", size = 0.01) +
+          theme_map() +
+          theme(legend.position = "none")
+        
+      } else if (scale == "building") {
+        p <-
+          data %>% 
+          ggplot() +
+          geom_sf(data = circle_borough, fill = "grey70", color = "white", 
+                  size = 0.01) +
+          geom_sf(fill = "#CABED0", color = "#CABED0", size = 0.05) +
+          theme_map() +
+          theme(legend.position = "none")
+        
+      } else if (scale == "street") {
+        p <-
+          data %>% 
+          ggplot() +
+          geom_sf(data = circle_borough, fill = "grey70", color = "white", 
+                  size = 0.01) +
+          geom_sf(colour = "#CABED0", size = 0.1) +
+          theme_map() +
+          theme(legend.position = "none")
+        
+      } else {
+        p <-
+          data %>% 
+          ggplot() +
+          geom_sf(fill = "#CABED0", color = "white", size = 0.01) +
+          theme_map() +
+          theme(legend.position = "none")
+        
+      }
       
       {wrap_elements(shadow_right) + 
           inset_element(p, 0.17, 0.148 , 0.818, 0.844, align_to = "full")} %>% 
@@ -164,16 +227,55 @@ walk(c("borough", "CT", "DA", "grid", "building", "street"), function(scale) {
       
     } else {
       
-      p <-
-        data %>% 
-        select(var = all_of(.x)) %>% 
-        ggplot() +
-        {if (scale == "grid") geom_sf(data = circle_borough, fill = "grey70", 
-                                      color = "white", size = 0.01)} +
-        geom_sf(aes(fill = as.factor(var)), color = "white", size = 0.01) +
-        scale_fill_manual(values = colour_scale[4:6], na.value = "grey70") +
-        theme_map() +
-        theme(legend.position = "none")
+      if (scale == "grid") {
+        p <-
+          data %>% 
+          select(var = all_of(.x)) %>% 
+          ggplot() +
+          geom_sf(data = circle_borough, fill = "grey70", color = "white", 
+                  size = 0.01) +
+          geom_sf(aes(fill = as.factor(var)), color = "white", size = 0.01) +
+          scale_fill_manual(values = colour_scale[4:6], na.value = "grey70") +
+          theme_map() +
+          theme(legend.position = "none")
+        
+      } else if (scale == "building") {
+        p <-
+          data %>% 
+          select(var = all_of(.x)) %>% 
+          ggplot() +
+          geom_sf(data = circle_borough, fill = "grey70", color = "white", 
+                  size = 0.01) +
+          geom_sf(aes(fill = as.factor(var), colour = as.factor(var)), 
+                  size = 0.05) +
+          scale_fill_manual(values = colour_scale[4:6], na.value = "grey70") +
+          scale_colour_manual(values = colour_scale[4:6], na.value = "grey70") +
+          theme_map() +
+          theme(legend.position = "none")
+        
+      } else if (scale == "street") {
+        p <-
+          data %>% 
+          select(var = all_of(.x)) %>% 
+          ggplot() +
+          geom_sf(data = circle_borough, fill = "grey70", color = "white", 
+                  size = 0.01) +
+          geom_sf(aes(colour = as.factor(var)), size = 0.1) +
+          scale_colour_manual(values = colour_scale[4:6], na.value = "grey70") +
+          theme_map() +
+          theme(legend.position = "none")
+        
+      } else {
+        p <-
+          data %>% 
+          select(var = all_of(.x)) %>% 
+          ggplot() +
+          geom_sf(aes(fill = as.factor(var)), color = "white", size = 0.01) +
+          scale_fill_manual(values = colour_scale[4:6], na.value = "grey70") +
+          theme_map() +
+          theme(legend.position = "none")
+        
+      }
       
       {wrap_elements(shadow_right) + 
           inset_element(p, 0.17, 0.148 , 0.818, 0.844, align_to = "full") +
