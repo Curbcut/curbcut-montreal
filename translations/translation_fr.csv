@@ -158,7 +158,7 @@ dramatically different,radicalement différents
 substantially different,sensiblement différents
 considerably different,modérément différents
 "At the {scale_singular} scale, the {title} varies from {min_val} to {max_val}, with an average value of {mean_val} and a median value of {median_val}. Two thirds of {scale_plural} have a score between {quant_low} and {quant_high}.","À l'échelle {scale_singular}, {title} varie de {min_val} à {max_val}, avec une valeur moyenne de {mean_val} et une valeur médianne de {median_val}. Deux tiers {scale_plural} ont un score se situant entre {quant_low} et {quant_high}."
-"<strong>Kahnawake Mohawk Territory</strong><p>Statistics Canada does not gather the same data for indigenous reserves in the Census as it does for other jurisdictions, so we cannot display findings here.","<strong>Kahnawake (Réserve indienne)</strong><p>Dans le cadre du recensement, Statistique Canada ne recueille pas les mêmes données pour les réservesautochtones que dans les autres juridictions, nous ne pouvons donc pas afficher de résultats ici."
+"<strong>Kahnawake Mohawk Territory</strong><p>Statistics Canada does not gather the same data for indigenous reserves in the Census as it does for other jurisdictions, so we cannot display findings here.","<strong>Kahnawake (Réserve indienne)</strong><p>Dans le cadre du recensement, Statistique Canada ne recueille pas les mêmes données pour les réserves autochtones que dans les autres juridictions, nous ne pouvons donc pas afficher de résultats ici."
 CanALE index,Indice AVA-Can
 View in 3D,Voir en 3D
 Active living potential: the CanALE index,Potentiel de vie active: l'indice AVA-Can
@@ -476,8 +476,8 @@ Terrebonne,Terrebonne
 Mascouche,Mascouche
 Laval,Laval
 Montréal-Est,Montréal-Est
-Ahuntsic-Cartierville,Ahuntsic-Cartierville
 Outremont,Outremont
+Ahuntsic-Cartierville,Ahuntsic-Cartierville
 Saint-Léonard,Saint-Léonard
 Mercier-Hochelaga-Maisonneuve,Mercier-Hochelaga-Maisonneuve
 Côte-des-Neiges-Notre-Dame-de-Grâce,Côte-des-Neiges-Notre-Dame-de-Grâce

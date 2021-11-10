@@ -572,7 +572,7 @@ translation_fr <-
                       "here."),
           fr = paste0("<strong>Kahnawake (Réserve indienne)</strong>",
                       "<p>Dans le cadre du recensement, Statistique Canada ne ",
-                      "recueille pas les mêmes données pour les réserves",
+                      "recueille pas les mêmes données pour les réserves ",
                       "autochtones que dans les autres juridictions, nous ne ",
                       "pouvons donc pas afficher de résultats ici.")) %>%
   
