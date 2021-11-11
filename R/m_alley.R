@@ -39,7 +39,7 @@ alley_server <- function(id) {
       mapdeck(
         style = map_style, token = token_alley,
         zoom = map_zoom, location = map_location) %>%
-        add_polygon(data = borough, stroke_width = 5, stroke_colour = "#000000",
+        add_polygon(data = borough, stroke_width = 10, stroke_colour = "#000000",
                     fill_colour = "#FFFFFF10", update_view = FALSE, id = "ID",
                     layer_id = "borough", auto_highlight = TRUE,
                     highlight_colour = "#FFFFFF90") %>%
@@ -62,28 +62,65 @@ alley_server <- function(id) {
     var_right_alley <- compare_server("alley", var_list_alley,
                                        reactive(rv_alley$zoom))
     
-    # Data 
-    # data_alley <- data_server("alley", reactive("canale_ind"), 
-    #                            var_right_alley, reactive(rv_alley$zoom))
-    # data_alley <- reactive(green_space)
-    
     # Explore panel
     output$alley_explore <- renderUI({
       
-      # print("POLY_SELECT")
-      # print(rv_alley$poly_selected)
-      
       text_to_display <- 
         alley_text %>%
-        filter(ID == rv_alley$poly_selected)
+        filter(ID == rv_alley$poly_selected) %>% 
+        select(-ID) %>% 
+        select_if(~sum(!is.na(.)) > 0) %>% 
+        {if (nrow(.) >0) as.list(.) else NULL}
+    
+      original_list <- text_to_display
       
-      # print(text_to_display)
+      # In the meanwhile of finding a better way to do this:
+      # NAME
+      if (!is.null(text_to_display$name)) {
+        text_to_display$name = str_glue(paste0("<p><b>{original_list$name}</b></p>"))
+      } 
+      # FIRST INAUGURATION
+      if (!is.null(text_to_display$first_alley)) {
+        text_to_display$first_alley = 
+          str_glue(paste0("<p>The first green alley inauguration in ",
+                          "{original_list$name} was in {original_list$first_alley}.</p>"))
+      } 
+      # APPLICATION PROCESS
+      if (!is.null(text_to_display$app_process)) {
+        text_to_display$app_process = 
+          str_glue(paste0("<p>The application process for green alleys asks for ", 
+                          "a {str_replace(original_list$app_process, ',', ', and')}.</p>"))
+      } 
+      # MANAGEMENT
+      if (!is.null(text_to_display$management)) {
+        text_to_display$management = 
+          str_glue(paste0("<p>In terms of management, ",
+                          "{str_to_lower(original_list$management)}.</p>"))
+      } 
+      # BUDGET
+      if (!is.null(text_to_display$budget)) {
+        text_to_display$budget = 
+          str_glue(paste0("<p>Budget: {original_list$budget}</p>"))
+      } 
+      # GUIDE
+      if (!is.null(text_to_display$guide)) {
+        text_to_display$guide = 
+          str_glue(paste0("<p><a href = {original_list$guide}>",
+                          "The green alley guide of {original_list$name}</a></p>"))
+      } 
+      # CONTACT
+      if (!is.null(text_to_display$contact)) {
+        text_to_display$contact = 
+          str_glue(paste0("<p>Contact: {original_list$contact}</p>"))
+      } 
       
-      if (nrow(text_to_display) == 1) {
-        HTML(text_to_display$description)
+
+      if (!is.null(text_to_display)) {
+        HTML(unlist(text_to_display))
       }
     })
-    outputOptions(output, "alley_explore", suspendWhenHidden = FALSE)
+    
+    # outputOptions(output, "alley_explore", suspendWhenHidden = FALSE)
     
     # Did-you-know panel
     dyk_server("dyk", reactive("alley_ind"), var_right_alley)
