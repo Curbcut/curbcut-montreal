@@ -127,9 +127,32 @@ process_census_data <- function(data) {
                 "housing_unsuit_prop", "housing_repairs_prop",
                 "housing_stress_renter_prop", "housing_stress_owner_prop",
                 "housing_mobility_one_prop", "housing_mobility_five_prop")
+  # Process income
+  var_list <- c(var_list, "inc_median_dollar", "inc_50_prop", "inc_100_prop", 
+                "inc_high_prop", "inc_limat_prop")
+  # Process identity
+  var_list <- c(var_list, "iden_imm_prop", "iden_imm_new_prop", 
+                "iden_vm_prop", "iden_aboriginal_prop")
+  # Process transport
+  var_list <- c(var_list, "trans_car_prop", "trans_walk_or_bike_prop", 
+                "trans_transit_prop", "trans_t_15_prop", "trans_t_45_prop", 
+                "trans_t_45_plus_prop")
+  # Process employment
+  var_list <- c(var_list, "emp_professional_prop", "emp_creative_prop")
+  # Process family
+  var_list <- c(var_list, "family_children_prop", "family_one_person_prop")
+  # Process language 
+  var_list <- c(var_list, "lang_french_only_prop", "lang_eng_only_prop", 
+                "lang_french_eng_prop", "lang_no_official_prop")
+  # Process age
+  var_list <- c(var_list, "age_0_14_prop", "age_15_64_prop", "age_65_plus_prop")
+  # Process education 
+  var_list <- c(var_list, "edu_bachelor_above_prop", "edu_no_degree_prop")
+  
   
   data <- 
     data %>% 
+    # Process housing
     mutate(housing_tenant_prop = renter / tenure_households,
            housing_unafford_prop = housing_unafford / housing_unafford_total,
            housing_unsuit_prop = housing_unsuit / housing_unsuit_total,
@@ -146,56 +169,25 @@ process_census_data <- function(data) {
               housing_mobility_one, housing_mobility_one_total, 
               housing_mobility_five,
               housing_mobility_five_total)) %>% 
-    mutate(across(all_of(var_list), ntile, 3, .names = "{.col}_q3")) %>% 
-    relocate(all_of(var_list), paste0(var_list, "_q3"), .before = geometry) %>% 
-    rename_with(~paste0(.x, "_", year_census), 
-                all_of(c(var_list, paste0(var_list, "_q3"))))
-  
-  # Process income
-  var_list <- c("inc_median_dollar", "inc_50_prop", "inc_100_prop", 
-                "inc_high_prop", "inc_limat_prop")
-  
-  data <- 
-    data %>% 
+    # Process income
     mutate(inc_50_prop = (inc_5 + inc_10 + inc_15 + inc_20 +
-                                 inc_25 + inc_30 + inc_35 + inc_40 + 
-                                 inc_45 + inc_50) / inc_total,
+                            inc_25 + inc_30 + inc_35 + inc_40 + 
+                            inc_45 + inc_50) / inc_total,
            inc_100_prop = (inc_60 + inc_70 + inc_80 + inc_90 + 
-                                  inc_100) / inc_total,
+                             inc_100) / inc_total,
            inc_high_prop = inc_high / inc_total,
            inc_limat_prop = inc_limat_prop / 100) %>% 
     select(-c(inc_median_total, inc_5, inc_10, inc_15, inc_20, inc_25, inc_30, 
               inc_35, inc_40, inc_45, inc_50, inc_60, inc_70, inc_80, inc_90, 
               inc_100, inc_high, inc_total, inc_limat_total)) %>% 
-    mutate(across(all_of(var_list), ntile, 3, .names = "{.col}_q3")) %>% 
-    relocate(all_of(var_list), paste0(var_list, "_q3"), .before = geometry) %>% 
-    rename_with(~paste0(.x, "_", year_census), 
-                all_of(c(var_list, paste0(var_list, "_q3"))))
-  
-  # Process identity
-  var_list <- c("iden_imm_prop", "iden_imm_new_prop", 
-                "iden_vm_prop", "iden_aboriginal_prop")
-  
-  data <- 
-    data %>% 
+    # Process identity
     mutate(iden_imm_prop = imm / imm_total, 
            iden_imm_new_prop = imm_new / imm_total,
            iden_vm_prop = iden_vm / iden_vm_total,
            iden_aboriginal_prop = iden_aboriginal / iden_aboriginal_total) %>% 
     select(-c(imm, imm_new, imm_total, iden_vm, iden_vm_total, 
               iden_aboriginal, iden_aboriginal_total)) %>% 
-    mutate(across(all_of(var_list), ntile, 3, .names = "{.col}_q3")) %>% 
-    relocate(all_of(var_list), paste0(var_list, "_q3"), .before = geometry) %>% 
-    rename_with(~paste0(.x, "_", year_census), 
-                all_of(c(var_list, paste0(var_list, "_q3"))))
-  
-  # Process transport
-  var_list <- c("trans_car_prop", "trans_walk_or_bike_prop", 
-                "trans_transit_prop", "trans_t_15_prop", "trans_t_45_prop", 
-                "trans_t_45_plus_prop")
-  
-  data <- 
-    data %>% 
+    # Process transport
     mutate(trans_car_prop = (trans_driver + trans_passenger) / trans_total,
            trans_walk_or_bike_prop = (trans_walk + trans_bike) / trans_total,
            trans_transit_prop = trans_transit / trans_total,
@@ -206,75 +198,29 @@ process_census_data <- function(data) {
     select(-c(trans_total, trans_driver, trans_passenger, trans_transit, 
               trans_walk, trans_bike, trans_t_total, trans_t_15,
               trans_t_30, trans_t_45, trans_t_60, trans_t_60_plus)) %>% 
-    mutate(across(all_of(var_list), ntile, 3, .names = "{.col}_q3")) %>% 
-    relocate(all_of(var_list), paste0(var_list, "_q3"), .before = geometry) %>% 
-    rename_with(~paste0(.x, "_", year_census), 
-                all_of(c(var_list, paste0(var_list, "_q3"))))
-  
-  # Process employment
-  var_list <- c("emp_professional_prop", "emp_creative_prop")
-  
-  data <- 
-    data %>% 
+    # Process employment
     mutate(emp_professional_prop = (emp_professional + emp_management) / 
              emp_labour_total,
            emp_creative_prop = (emp_cultural + emp_arts) / emp_labour_total) %>% 
     select(-c(emp_professional, emp_management, emp_cultural, emp_labour_total,
               emp_arts)) %>% 
-    mutate(across(all_of(var_list), ntile, 3, .names = "{.col}_q3")) %>% 
-    relocate(all_of(var_list), paste0(var_list, "_q3"), .before = geometry) %>% 
-    rename_with(~paste0(.x, "_", year_census), 
-                all_of(c(var_list, paste0(var_list, "_q3"))))
-  
-  # Process family
-  var_list <- c("family_children_prop", "family_one_person_prop")
-  
-  data <- 
-    data %>% 
+    # Process family
     mutate(family_children_prop = family_children / family_total,
            family_one_person_prop = family_one_person / family_total) %>% 
     select(-c(family_children, family_one_person, family_total)) %>% 
-    mutate(across(all_of(var_list), ntile, 3, .names = "{.col}_q3")) %>% 
-    relocate(all_of(var_list), paste0(var_list, "_q3"), .before = geometry) %>% 
-    rename_with(~paste0(.x, "_", year_census), 
-                all_of(c(var_list, paste0(var_list, "_q3"))))
-  
-  # Process language 
-  var_list <- c("lang_french_only_prop", "lang_eng_only_prop", 
-                "lang_french_eng_prop", "lang_no_official_prop")
-  
-  data <- 
-    data %>% 
+    # Process language 
     mutate(lang_french_only_prop = lang_french_only / lang_total,
            lang_eng_only_prop = lang_eng_only / lang_total,
            lang_french_eng_prop = lang_eng_french / lang_total,
            lang_no_official_prop = lang_no_official / lang_total) %>% 
     select(-c(lang_french_only, lang_eng_only, lang_eng_french,
               lang_no_official, lang_total)) %>% 
-    mutate(across(all_of(var_list), ntile, 3, .names = "{.col}_q3")) %>% 
-    relocate(all_of(var_list), paste0(var_list, "_q3"), .before = geometry) %>% 
-    rename_with(~paste0(.x, "_", year_census), 
-                all_of(c(var_list, paste0(var_list, "_q3"))))
-  
-  # Process age
-  var_list <- c("age_0_14_prop", "age_15_64_prop", "age_65_plus_prop")
-  
-  data <- 
-    data %>% 
+    # Process age
     mutate(age_0_14_prop = age_0_14 / age_total,
            age_15_64_prop = age_15_64 / age_total,
            age_65_plus_prop = age_65_plus / age_total) %>% 
     select(-c(age_0_14, age_15_64, age_65_plus, age_total)) %>% 
-    mutate(across(all_of(var_list), ntile, 3, .names = "{.col}_q3")) %>% 
-    relocate(all_of(var_list), paste0(var_list, "_q3"), .before = geometry) %>% 
-    rename_with(~paste0(.x, "_", year_census), 
-                all_of(c(var_list, paste0(var_list, "_q3"))))
-  
-  # Process education 
-  var_list <- c("edu_bachelor_above_prop", "edu_no_degree_prop")
-  
-  data <- 
-    data %>% 
+    # Process education 
     mutate(edu_bachelor_above_prop = edu_bachelor_above / edu_total,
            edu_no_degree_prop = edu_no_degree / edu_total) %>% 
     select(-c(edu_bachelor_above, edu_no_degree, edu_total)) %>% 
