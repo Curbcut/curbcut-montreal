@@ -250,16 +250,12 @@ CT <-
   left_join(census_geos$CT_census, by = "ID") %>% 
   process_census_data()
 
-CSD <- 
-  borough %>% 
-  left_join(select(census_geos$CSD_census, -name), by = "ID") %>%
-  process_census_data()
-
 
 # Process boroughs --------------------------------------------------------
 
-avg_list <- str_subset(names(census_geos$DA_census), "avg|median|prop") %>% 
-  str_subset("total", negate = TRUE)
+avg_list <- str_subset(names(census_geos$DA_census), 
+                       "avg|median|prop") %>% 
+  str_subset("total|q3", negate = TRUE)
 
 # Identify variables to be aggregated
 agg_list <-
@@ -267,12 +263,12 @@ agg_list <-
           c("ID", "name", "CTUID", "CSDUID", "geometry", "area")) %>% 
   setdiff(avg_list)
 
-borough <-
+borough_raw <-
   DA %>% 
   st_drop_geometry() %>% 
-  select(ID, CSDUID) %>% 
+  select(ID, CSDUID) %>%
   filter(str_starts(CSDUID, "2466023")) %>% 
-  left_join(census_geos$DA_census, by = "ID") %>% 
+  left_join(census_geos$DA_census, by = "ID") %>%
   group_by(ID = CSDUID) %>% 
   summarize(
     housing_rent_avg_dollar = 
@@ -289,17 +285,21 @@ borough <-
                                         na.rm = TRUE),
     across(all_of(agg_list), sum_na), 
     .groups = "drop") %>% 
-  inner_join(borough, ., by = "ID") %>% 
+  inner_join(select(borough, -c(name_2, population, households)), ., by = "ID") %>% 
   relocate(geometry, .after = last_col())
 
-borough <- process_census_data(borough)
+# Bind boroughs and CSDs before process_census_data
+borough_CSD <- 
+bind_rows(filter(census_geos$CSD_census, !str_starts(ID, "2466023")), 
+          borough_raw)
 
-# Rbind CSD and borough_data
-borough <-
-  bind_rows(filter(CSD, !str_starts(ID, "2466023")), borough) %>%
+# Process data on both borough and CSD
+borough <- 
+borough %>% 
+  left_join(select(borough_CSD, -name, -geometry), by = "ID") %>%
+  process_census_data() %>% 
   arrange(ID) %>% 
   st_set_agr("constant")
-
 
 # Process grid ------------------------------------------------------------
 
