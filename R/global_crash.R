@@ -9,10 +9,10 @@ rv_crash <- reactiveValues(poly_selected = NA, zoom = "borough")
 
 # Time slider values
 crash_slider <- list(
-  min = 2012,
-  max = 2019,
+  min = lubridate::year(min(crash$date)),
+  max = lubridate::year(max(crash$date)),
   interval = 1,
-  init = 2019)
+  init = lubridate::year(max(crash$date)))
 
 # Dropdown menu
 var_list_left_crash_1 <- 
