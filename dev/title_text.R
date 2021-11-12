@@ -4,18 +4,24 @@ library(tidyverse)
 library(qs)
 
 title_text <- 
-  read_csv("dev/data/title_text.csv")
+  readr::read_csv("dev/data/title_text.csv")
 
 title_text <-
   title_text %>%
   add_row(tab = "ped", type = "title",
           text = "Pedestrian capacity for social distancing", .before = 6) %>% 
   add_row(tab = "housing", type = "title",
-          text = "The housing realm", .before = 6) %>% 
+          text = "The housing system", .before = 6) %>% 
   add_row(tab = "housing", type = "main",
-          text = "Housing is important", .before = 6) %>% 
+          text = paste0("Housing is one of the most important features of ",
+                        "individual and collective urban life, and it sits at ",
+                        "the heart of a variety of sustainability questions. "), 
+          .before = 6) %>% 
   add_row(tab = "housing", type = "extra",
-          text = "VERY important", .before = 6) %>% 
+          text = paste0("This module presents housing data from the Census, ",
+                        "and explores relationships with important ", 
+                        "demographic patterns, and how those patterns have ",
+                        "changed over time."), .before = 6) %>% 
   mutate(tab = if_else(tab == "pedestrian_ct", "ped", tab)) %>% 
   add_row(tab = "alley", type = "title",
           text = "Green alleys") %>% 
