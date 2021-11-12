@@ -188,20 +188,7 @@ ui <- dashboardPage(
     tabItems(
       
       # Home page
-      tabItem(tabName = "home", fluidPage(
-        id = 'home', tags$style('#home {background-color: #FFFFFF;}'),
-        fluidRow(
-          img(src = "SUSLOGO.png", style = "height:65vh; max-height:600px;"), 
-          align = "center"),
-        fluidRow(hr()),
-        fluidRow(
-          img(src = "mssi_logo.png", style = "height:10vh; max-height:70px"), 
-          align = "center"),
-        fluidRow(
-          HTML(paste0(
-            "<h5>An initiative of the <a href = 'https://www.mcgill.ca/mssi/'>McGill ",
-            "Sustainability Systems Initiative</a></h5>")), align = "center")
-      )), 
+      home_tab, 
       
       # Modules
       tabItem(tabName = "alley", alley_UI("alley")),
