@@ -122,18 +122,22 @@ housing_server <- function(id) {
     var_left <- reactive({
       var <- paste(var_left_1(), time(), sep = "_")
       
-      if (!var %in% names(borough)) {
-        x <- borough %>% 
-          select(contains(str_remove(var, "_\\d{4}$"))) %>% 
-          names() %>% 
-          str_extract("\\d{4}$") %>% 
-          as.numeric() %>% 
-          na.omit()
-        closest_year <- x[which.min(abs(x - time()))]
-        var <- paste0(str_remove(var, "_\\d{4}$"), "_", closest_year)
+      return_closest_year <- function(var) {
+        if (!var %in% names(borough)) {
+          time <- as.numeric(str_extract(var, "\\d{4}"))
+          x <- borough %>% 
+            select(contains(str_remove(var, "_\\d{4}$"))) %>% 
+            names() %>% 
+            str_extract("\\d{4}$") %>% 
+            as.numeric() %>% 
+            na.omit()
+          closest_year <- x[which.min(abs(x - time))]
+          var <- paste0(str_remove(var, "_\\d{4}$"), "_", closest_year)
         }
+        var
+      }
       
-      var
+      purrr::map_chr(var, return_closest_year)
 
     })
 
