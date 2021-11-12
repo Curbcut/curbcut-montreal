@@ -69,22 +69,11 @@ alleys_visited <-
          name = str_trim(name)) %>% 
   select(name)
 
-alleys_visited_text <- 
-  read_delim("dev/data/green_alleys/alleys_visited.csv", ";") %>%
-  mutate(Photo_id = str_remove(Photo_id, "\\\n.*$")) %>% 
-  set_names(c("name", "type", "created", "description", "photo_ID")) %>% 
-  mutate(description = str_replace_all(description, "<b>|</b>|<p>|\n", " ")) %>% 
-  mutate(circulation = str_remove_all(description, ".*(?<=Circulation:)"),
-         circulation = str_trim(circulation),
-         description = str_remove_all(description, "(?>Circulation:).*|.*Description:"),
-         description = str_trim(description)) %>%
-  mutate(type = str_to_lower(type)) %>% 
-  mutate(photo_ID = str_replace_all(photo_ID, "( : )|-|'|:| ", "_"),
-         photo_ID = str_replace_all(photo_ID, "É|é|Ã©", "e"),
-         photo_ID = str_to_lower(photo_ID)) %>%
+alleys_visited_text <-
+  read_csv2("dev/data/green_alleys/alleys_visited.csv") %>%
   mutate_all(list(~na_if(.,"")))
 
-# Which photo does not exist? Throw an error message
+# Which photo does not exist? Throw a warning message
 missing_photos <- 
   alleys_visited_text[!file.exists(paste0("www/alleys/",
                                           alleys_visited_text$photo_ID)),] %>% 

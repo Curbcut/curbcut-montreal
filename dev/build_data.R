@@ -69,7 +69,7 @@ source("dev/modules/canale.R")
 source("dev/modules/climate_risk.R")
 source("dev/modules/crash.R")
 # source("dev/modules/dmti.R")
-# source("dev/modules/alley.R")
+source("dev/modules/alley.R")
 # source("dev/modules/ped.R")
 
 
@@ -82,7 +82,7 @@ qsave(building, file = "data/building.qs")
 qsave(street, file = "data/street.qs")
 qsave(crash, file = "data/crash.qs")
 # qsave(green_space, file = "data/green_space.qs")
-# qsavem(alleys, alley_text, file = "data/alleys.qsm")
+qsavem(alleys, alley_text, file = "data/alleys.qsm")
 
 
 # Produce left and right maps ---------------------------------------------
