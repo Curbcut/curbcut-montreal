@@ -160,7 +160,7 @@ alley_server <- function(id) {
         if (!is.null(text_to_display$type)) {
           original_list$type
           type_explain <- switch(original_list$type, 
-                                 green = sus_translate('This green alley is very green.'),
+                                 green = sus_translate('This green alley is very green'),
                                  community = sus_translate('This green alley is not that green, but have a lot of community elements (generally children-oriented)'),
                                  mixed = sus_translate('This green alley has both green and community elements'),
                                  none = sus_translate('This green alley is neither green nor community-oriented (basically grey alley)'))
@@ -179,10 +179,14 @@ alley_server <- function(id) {
             str_glue(sus_translate(paste0("<p>To the circulation, it is {original_list$circulation}.</p>")))
         } 
         
-        # if (!is.null(text_to_display$photo_ID)) {
-        #   text_to_display$photo_ID = 
-        #     str_glue(sus_translate(paste0("<p><img src = '...', alt = '...', width = '...', height = '...'><</p>")))
-        # } 
+        if (!is.null(text_to_display$photo_ID)) {
+          text_to_display$photo_ID =
+              str_glue(
+                sus_translate(
+                  paste0('<p><img src = "alleys/{original_list$photo_ID}", ',
+                       'alt = "Photo of the selected green alley", ',
+                       'style = "max-width: 100%;"></p>')))
+        }
         
         if (!is.null(text_to_display)) {
           HTML(unlist(text_to_display))
@@ -190,7 +194,6 @@ alley_server <- function(id) {
         
       }
       
-
     })
     
     outputOptions(output, "alley_explore", suspendWhenHidden = FALSE)
@@ -207,26 +210,26 @@ alley_server <- function(id) {
     
     # Update map in response to user input
     observeEvent(input$focus_visited, {
-        if (input$focus_visited) {
-          mapdeck_update(map_id = NS(id, "map")) %>%
-            clear_polygon(layer_id = "borough") %>% 
-            # clear_polygon(layer_id = "alleys") %>% 
-            add_polygon(
-              data = alleys[!alleys$visited,],
-              stroke_width = 15, stroke_colour = "#CFCFCF",
-              fill_colour = "#CFCFCF", layer_id = "alleys_void",
-              update_view = FALSE, id = "ID", auto_highlight = FALSE) %>%
-            add_polygon(data = alleys[alleys$visited,],
-                        stroke_width = 15, stroke_colour = "fill",
-                        layer_id = "alleys_visited",
-                        update_view = FALSE, id = "ID", auto_highlight = TRUE,
-                        highlight_colour = "#FFFFFF90",
-                        legend = alley_legend_en)
+      if (input$focus_visited) {
+        mapdeck_update(map_id = NS(id, "map")) %>%
+          clear_polygon(layer_id = "borough") %>% 
+          # clear_polygon(layer_id = "alleys") %>% 
+          add_polygon(data = alleys[!alleys$visited,],
+                      stroke_width = 15, stroke_colour = "#CFCFCF",
+                      fill_colour = "#CFCFCF", layer_id = "alleys_void",
+                      update_view = FALSE, id = "ID", auto_highlight = FALSE) %>%
+          add_polygon(data = alleys[alleys$visited,],
+                      stroke_width = 15, stroke_colour = "fill",
+                      layer_id = "alleys_visited",
+                      update_view = FALSE, id = "ID", auto_highlight = TRUE,
+                      highlight_colour = "#FFFFFF90",
+                      legend = alley_legend_en)
         } else {
           # Exact same as the initial
           mapdeck_update(map_id = NS(id, "map")) %>%
             # For some reason, legend is sticky!
             clear_legend(layer_id = "alleys_visited") %>% 
+            clear_legend(layer_id = "alleys_void") %>% 
             add_polygon(data = borough[borough$ID %in% alley_text$ID,], 
                         stroke_width = 10, stroke_colour = "#000000",
                         fill_colour = "#FFFFFF10", update_view = FALSE, id = "ID",
