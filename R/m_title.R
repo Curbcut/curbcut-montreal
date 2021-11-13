@@ -9,6 +9,7 @@ title_UI <- function(id, ...) {
     uiOutput(NS(id, "title")),
     uiOutput(NS(id, "title_main")),
     ...,
+    div(),
     actionLink(NS(id, "more_info"), i18n$t("Learn more")),
     conditionalPanel(
       condition = "output.more_info_status == 1", ns = NS(id),

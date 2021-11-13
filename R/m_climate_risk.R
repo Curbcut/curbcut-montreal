@@ -6,10 +6,15 @@ climate_risk_UI <- function(id) {
   tabItem(tabName = "climate_risk",
           mapdeckOutput(NS(id, "map"), height = "92vh"),
           title_UI(NS(id, "title"),
-                   select_var_UI(NS(id, "left"), var_list_climate_risk), 
-                   shinyWidgets::materialSwitch(
-                     inputId = NS(id, "grid"), label = i18n$t("250-metre grid"), 
-                     status = "primary", value = TRUE)),
+                   div(style = "display: inline-block; padding: 5px;", 
+                       select_var_UI(NS(id, "left"), var_list_climate_risk, 
+                                     width = "200px")), 
+                   div(style = "display: inline-block; padding: 5px;", 
+                       shinyWidgets::materialSwitch(
+                         inputId = NS(id, "grid"), 
+                         label = i18n$t("250-metre grid"), 
+                         status = "primary", value = TRUE,
+                         width = "200px"))),
           right_panel(id, compare_UI(NS(id, "climate_risk"), var_list_canale),
                       explore_UI(NS(id, "explore")), dyk_UI(NS(id, "dyk"))),
           legend_bivar_UI(NS(id, "climate_risk")))
