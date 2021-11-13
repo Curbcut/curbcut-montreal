@@ -5,12 +5,23 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(here)
 ```
 
 # Montreal Climate Planning Under Two Administrations
 
 As the need to address climate change has grown more pressing, cities have released plans that attempt to organize efforts at mitigating emissions of greenhouse gases, adapting to the effects of warming, and making their institutions, businesses and populations more resilient. This module explores Montreal's last two climate plans: the Plan Montréal durable 2016 (PMD) of Denis Coderre's administration, and the Plan climat 2020-2030 (Plan climat) of Valérie Plante's administration. 
 
+```{r, echo=FALSE, fig.align = 'left', out.width="50%", out.extra='style="float:right; padding:10px"'}
+
+knitr::include_graphics(here("www","/mcp","/visuals","/intro","/pmd.png"))
+
+```
+```{r, echo=FALSE, fig.align = 'left', out.width="50%", out.extra='style="float:right; padding:10px"'}
+
+knitr::include_graphics(here("www","/mcp","/visuals","/intro","/pc.png"))
+
+```
 This module allows you to explore the climate policies included in these two plans classified according to categories that can be accessed below:
 
 • Community and participation: overview of the climate plans' policies to mobilize Montreal's citizens, organizations and various stakeholders.

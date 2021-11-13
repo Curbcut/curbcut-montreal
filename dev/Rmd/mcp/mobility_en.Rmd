@@ -5,11 +5,17 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(here)
 ```
 
 
 ## PMD (Coderre administration): 
 
+```{r, echo=FALSE, fig.align = 'left', out.width="50%", out.extra='style="float:right; padding:10px"'}
+
+knitr::include_graphics(here("www","/mcp","/visuals","/mobility","/bicycle_1.jpg"))
+
+```
 
 #### Public transportation
 
@@ -30,6 +36,11 @@ Convert 230 of the city’s vehicles to electric propulsion. Replace 100 of the 
 
 ## Plan climat (Plante administration): 
 
+```{r, echo=FALSE, fig.align = 'left', out.width="50%", out.extra='style="float:right; padding:10px"'}
+
+knitr::include_graphics(here("www","/mcp","/visuals","/mobility","/metro_1.jpg"))
+
+```
 
 #### Public transportation
 
@@ -53,3 +64,9 @@ Support the STM in converting its bus fleet to 100% electric by 2040. Optimize t
 The PMD’s mobility goals are modest, and build off of the objectives of previous city plans. They aim to improve pedestrian and cycling mobility, and make early investments into electric vehicles. The PMD does not discuss or propose any major public transportation projects. The Plan climat is marked by the ambitious public transportation infrastructure projects promised by the Plante administration, many of which have been completed, or are in progress. The plan also promises “universal sustainable mobility” throughout Montreal and lower prices for children and the elderly. It also favours building up electric vehicle infrastructure, such as a downtown zero-emissions zone adapted to electric mobility. The Plan climat says little about pedestrian mobility, instead focusing on electric vehicles and mass public transit. Though it could be inferred that if changes to land use deliver denser neighbourhoods, pedestrian mobility will improve.
 
 These mobility policies reflect significant politically-based difference between the climate plans. Transportation projects were a large part of Plante’s electoral platform, while Coderre has defined himself against these large projects and tends to align himself with more distant and automobile infrastructure-reliant boroughs. It is of interest, however, that Coderre's PMD promises a larger addition to cycling infrastructure than Plante's Plan climat, given that Coderre and his political base are lukewarm, at best, towards this kind of active mobility.
+
+```{r, echo=FALSE, fig.align = 'center', out.width="75%", fig.cap="The automobile remains the dominant mode of transportation in the metropolitan region."}
+
+knitr::include_graphics(here("www","/mcp","/visuals","/mobility","/mode_share.png"))
+
+```

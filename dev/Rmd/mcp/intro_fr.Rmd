@@ -5,11 +5,23 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(here)
 ```
 
 # Plans climats de Montréal sous deux administrations municipales
 
 La nécessité de faire face au changement climatique se faisant de plus en plus pressante, les villes ont publié des plans qui tentent d'organiser les efforts pour atténuer les émissions de gaz à effet de serre, s'adapter aux effets du réchauffement et rendre leurs institutions, leurs entreprises et leurs populations plus résilientes. Ce module explore les deux derniers plans climats de la ville de Montréal: le Plan Montréal durable 2016 (PMD) de l'administration de Denis Coderre, et le Plan climat 2020-2030 (Plan climat) de l'administration de Valérie Plante. 
+
+```{r, echo=FALSE, fig.align = 'left', out.width="50%", out.extra='style="float:right; padding:10px"'}
+
+knitr::include_graphics(here("www","/mcp","/visuals","/intro","/pmd.png"))
+
+```
+```{r, echo=FALSE, fig.align = 'left', out.width="50%", out.extra='style="float:right; padding:10px"'}
+
+knitr::include_graphics(here("www","/mcp","/visuals","/intro","/pc.png"))
+
+```
 
 Ce module permet d'explorer les politiques climatiques de ces deux plans classés selon des catégories pouvant être accédés ci-dessous :
 
@@ -33,4 +45,4 @@ Ce module permet d'explorer les politiques climatiques de ces deux plans classé
 
 • Régionalisme, internationalisme et réseaux : description des engagements de Montréal et de ses liens avec les réseaux et accords régionaux et internationaux au cours de ses deux derniers plans climatiques.
 
-• Développement durable: les politiques de développement durable en lien à la réglementation de la construction et des bâtiments, la fourniture de services et la gouvernance.
+• Développement durable: les politiques de développement durable en lien à la réglementation de la construction et des bâtiments, les services et la gouvernance.
