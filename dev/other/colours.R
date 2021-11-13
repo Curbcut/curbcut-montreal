@@ -36,10 +36,10 @@ colour_scale <-
 
 # For univariate percent change -------------------------------------------
 
-
-colour_delta <- tibble("1 - 1" = "#FD847D", "2 - 1" = "#E8E8E8", "3 - 1" = "#79C2D9",
-                       "NA - 1" = "#B3B3BB") %>%
-  tidyr::pivot_longer(everything(), "group",values_to = "fill") 
+colour_delta <- tibble("1 - 1" = "#CA0020", "2 - 1" = "#F4A582", 
+                       "3 - 1" = "#E8E8E8", "4 - 1" = "#92C5DE",
+                       "5 - 1" = "#0571B0", "NA - 1" = "#B3B3BB") %>%
+  tidyr::pivot_longer(everything(), "group", values_to = "fill") 
 
 colour_delta_borough <- 
   colour_delta %>% 
@@ -62,7 +62,6 @@ colour_delta_building <-
   mutate(fill = paste0(fill, "AA"))
 
 qsavem(colour_bivar, colour_borough, colour_CT, colour_DA, colour_street, 
-       colour_building, colour_scale, 
-       colour_delta, colour_delta_borough, colour_delta_CT, colour_delta_DA, colour_delta_street, 
-       colour_delta_building, 
-       file = "data/colours.qsm")
+       colour_building, colour_scale, colour_delta, colour_delta_borough, 
+       colour_delta_CT, colour_delta_DA, colour_delta_street, 
+       colour_delta_building, file = "data/colours.qsm")

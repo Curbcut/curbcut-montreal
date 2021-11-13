@@ -59,22 +59,35 @@ data_server <- function(id, var_left, var_right, df, zoom = df) {
       
       if (var_right[1] == " ") {
         data <-
-          (data %>% dplyr::select(ID, name, name_2, population, 
-                                  left_var = all_of(var_left),
-                                  left_var_q3 = paste0(str_remove(all_of(var_left),
-                                                                  "_\\d{4}$"), "_q3", 
-                                                       na.omit(str_extract(var_left, "_\\d{4}$")))) %>%
-             { if (length(var_left) == 2) 
-               mutate(., left_var = (left_var2 - left_var1) / left_var1,
-                      left_var_q3 = case_when(left_var < -0.02 ~ "1",
-                                              left_var > 0.02 ~ "3",
-                                              TRUE ~ "2"),
-                      across(where(is.numeric), ~replace(., is.nan(.), NA)),
-                      across(where(is.numeric), ~replace(., is.infinite(.), NA))) %>% 
-                 select(., ID, name, name_2, population, 
-                        left_var, left_var_q3) else .}  %>%
-             mutate(group = paste(left_var_q3, "- 1")) %>% 
-             left_join(colour, by = "group"))
+          data %>% 
+          dplyr::select(ID, name, name_2, population, 
+                        left_var = all_of(var_left),
+                        left_var_q3 = paste0(str_remove(
+                          all_of(var_left), "_\\d{4}$"), "_q3", 
+                          na.omit(str_extract(var_left, "_\\d{4}$"))))
+        
+        if (length(var_left) == 2) {
+          data <- 
+            data |> 
+            mutate(
+              left_var = (left_var2 - left_var1) / left_var1, 
+              left_var_q3 = case_when(
+                left_var < -1 * median(abs(left_var[abs(left_var) > 0.02]), 
+                                       na.rm = TRUE) ~ "1",
+                left_var < -0.02 ~ "2",
+                left_var < 0.02 ~ "3",
+                left_var < median(abs(left_var[abs(left_var) > 0.02]), 
+                                  na.rm = TRUE) ~ "4",
+                TRUE ~ "5"),
+              across(where(is.numeric), ~replace(., is.nan(.), NA)),
+              across(where(is.numeric), ~replace(., is.infinite(.), NA))) %>% 
+            select(., ID, name, name_2, population, left_var, left_var_q3) 
+        }
+        
+        data <- 
+          data |> 
+          mutate(group = paste(left_var_q3, "- 1")) %>% 
+          left_join(colour, by = "group")
         
         } else {
           data <-
