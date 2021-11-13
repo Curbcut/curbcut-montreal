@@ -18,14 +18,8 @@ mcp_server <- function(id) {
     
     
     output$mcp_output <- renderUI(
-      
-      if (sus_reactive_variables$active_language() == "en") {
-        includeHTML(paste0("www/mcp/", left_var_mcp(), "_en.html"))
-        
-      } else if (sus_reactive_variables$active_language() == "fr") {
-        includeHTML(paste0("www/mcp/", left_var_mcp(), "_fr.html"))
-      }
-      
+        includeHTML(paste0("www/mcp/", left_var_mcp(), "_",
+                           sus_reactive_variables$active_language(), ".html"))
       )
     
   })

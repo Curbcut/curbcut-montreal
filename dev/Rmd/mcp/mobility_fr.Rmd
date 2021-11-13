@@ -5,11 +5,17 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(here)
 ```
 
 
 ## PMD (Administration Coderre): 
 
+```{r, echo=FALSE, fig.align = 'left', out.width="50%", out.extra='style="float:right; padding:10px"'}
+
+knitr::include_graphics(here("www","/mcp","/visuals","/mobility","/bicycle_1.jpg"))
+
+```
 
 #### Transport en commun
 
@@ -30,6 +36,11 @@ Convertir 230 des véhicules de la ville à la propulsion électrique. Remplacer
 
 ## Plan climat (Administration Plante): 
 
+```{r, echo=FALSE, fig.align = 'left', out.width="50%", out.extra='style="float:right; padding:10px"'}
+
+knitr::include_graphics(here("www","/mcp","/visuals","/mobility","/metro_1.jpg"))
+
+```
 
 #### Transport en commun
 
@@ -53,3 +64,9 @@ Soutenir la STM dans la conversion de sa flotte d'autobus à 100% électrique d'
 Les objectifs de mobilité du PMD sont modestes. Ils visent à améliorer la mobilité des piétons et des cyclistes, et à investir rapidement dans les véhicules électriques. Le PMD n'aborde ni ne propose aucun grand projet de transport public. Le Plan climat est marqué par les ambitieux projets d'infrastructure de transport public promis par l'administration Plante, dont plusieurs ont été réalisés ou sont en cours. Le plan promet également une «mobilité durable universelle» dans tout Montréal et des tarifs de transport en commun plus abordables pour les enfants et les personnes âgées. Il favorise également la mise en place d'infrastructures pour les véhicules électriques, comme une zone zéro émission au centre-ville, adaptée à la mobilité électrique. Le Plan climat en dit peu sur la mobilité piétonne, se concentrant plutôt sur les véhicules électriques et le transport en commun. On peut toutefois en déduire que si les changements apportés à l'utilisation du sol dans le cadre du Plan climat permettent de densifier les quartiers, la mobilité piétonne s'améliorera.
 
 Ces politiques de mobilité reflètent une différence significative d'ordre politique entre les plans climatiques. Les projets de transport constituaient une importante partie de la plateforme électorale de Plante, tandis que Coderre s'est défini contre ces grands projets et a tendance à s'aligner avec les arrondissements plus éloignés et dépendants des infrastructures automobiles. Il est toutefois intéressant de noter que le PMD de Coderre promet un ajout plus important aux infrastructures cyclables que le Plan climat de Plante, étant donné que Coderre et sa base politique sont plutôt tièdes à l'égard de cette sorte de mobilité active.
+
+```{r, echo=FALSE, fig.align = 'center', out.width="75%", fig.cap="L'automobile domine encore fortement les déplacements dans la région métropolitaine."}
+
+knitr::include_graphics(here("www","/mcp","/visuals","/mobility","/mode_share.png"))
+
+```
