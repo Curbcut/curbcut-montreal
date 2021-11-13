@@ -29,7 +29,7 @@ process_rmd <- function(file, path) {
 # MCP ---------------------------------------------------------------------
 
 mcp_files <- list.files("dev/Rmd/mcp")
-walk(mcp_files, process_rmd, path = "mcp")
+purrr::walk(mcp_files, process_rmd, path = "mcp")
 
 
 # Crash -------------------------------------------------------------------

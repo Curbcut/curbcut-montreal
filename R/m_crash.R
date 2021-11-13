@@ -8,10 +8,11 @@ crash_UI <- function(id) {
           title_UI(NS(id, "title"),
                    htmlOutput(NS(id, "crash_rmd")),
                    hr(),
-                   select_var_UI(NS(id, "left_1"), var_list_left_crash_1,
-                                           label = i18n$t("Grouping of crashes ")),
-                   select_var_UI(NS(id, "left_2"), var_list_left_crash_2,
-                                 label = i18n$t("Type of crash ")),
+                   div(style="display: inline-block; margin-right:25px;", select_var_UI(NS(id, "left_1"), var_list_left_crash_1,
+                                           label = i18n$t("Grouping of crashes "))),
+                   div(style="display: inline-block; ",
+                       select_var_UI(NS(id, "left_2"), var_list_left_crash_2,
+                                 label = i18n$t("Type of crash "))),
                    sliderInput(NS(id, "left"), i18n$t("Select a year"),
                                min = crash_slider$min,
                                max = crash_slider$max,
@@ -31,7 +32,8 @@ crash_UI <- function(id) {
                    shinyjs::useShinyjs()
                    ),
           right_panel(id, compare_UI(NS(id, "crash"), var_list_right_crash),
-                      explore_UI(NS(id, "explore")), dyk_UI(NS(id, "dyk"))),
+                      # explore_UI(NS(id, "explore")), dyk_UI(NS(id, "dyk"))
+                      ),
           legend_bivar_UI(NS(id, "crash")))
 }
 
@@ -214,7 +216,12 @@ crash_server <- function(id) {
     
     data <- reactive({
       if (choropleth()) {
-        data_1()
+        data_1() #%>% 
+          # filter(name %in% c("Baie-d'Urfé", "Beaconsfield", "Côte-Saint-Luc",
+          #                    "Dollard-des-Ormeaux", "Dorval", "L'Île-Dorval",
+          #                    "Hampstead", "Kirkland", "Montréal-Est", "Montréal-Ouest",
+          #                    "Mount-Royal", "Pointe-Claire", "Sainte-Anne-de-Bellevue",
+          #                    "Senneville","Westmount") | str_detect(ID, "2466023"))
       } else {
           (crash %>%
              { if (var_left_2() %in% unique(crash$type))
@@ -233,16 +240,16 @@ crash_server <- function(id) {
     })
     
     # Explore panel
-    explore_server(id = "explore", 
-                   x = data_1, 
-                   var_left = var_left,
-                   var_right = var_right, 
-                   select = reactive(rv_crash$poly_selected),
-                   zoom = reactive(rv_crash$zoom), 
-                   build_str_as_DA = TRUE)
+    # explore_server(id = "explore", 
+    #                x = data_1, 
+    #                var_left = var_left,
+    #                var_right = var_right, 
+    #                select = reactive(rv_crash$poly_selected),
+    #                zoom = reactive(rv_crash$zoom), 
+    #                build_str_as_DA = TRUE)
 
     # Did-you-know panel
-    dyk_server("dyk", var_left, var_right)
+    # dyk_server("dyk", var_left, var_right)
 
     # Left map
     small_map_server("left", reactive(paste0(
