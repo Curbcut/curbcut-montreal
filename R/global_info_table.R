@@ -220,7 +220,7 @@ make_info_table_data <- function(id, x, var_type, var_left, var_right, select,
     mode_prop <- qual_tab[1] / sum(qual_tab)
     out$majority <- if (mode_prop > 0.5) "majority" else "plurality"
     out$mode_prop <- convert_unit(mode_prop, "_prop")
-    out$mode_prop_2 <- convert_unit(qual_tab[1] / sum(qual_tab), "_prop")
+    out$mode_prop_2 <- convert_unit(qual_tab[2] / sum(qual_tab), "_prop")
     
   }
   

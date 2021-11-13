@@ -8,7 +8,7 @@
 climate_risk <- 
   map2(
     list.files("dev/data/climate_shp", "*.shp$", full.names = TRUE), 
-    c("drought_ind", "flood_ind", "heavy_rain_ind", "destructive_storms_ind", 
+    c("flood_ind", "heavy_rain_ind", "drought_ind", "destructive_storms_ind", 
       "heat_wave_ind"),
     ~{
       .x %>% 
@@ -53,7 +53,7 @@ grid <-
   climate_risk %>% 
   reduce(left_join, by = "ID", .init = grid) %>% 
   relocate(geometry, .after = last_col()) %>% 
-  mutate(across(drought_ind:heat_wave_ind, ~if_else(.x > 2, 3, .x + 1), 
+  mutate(across(flood_ind:heat_wave_ind, ~if_else(.x > 2, 3, .x + 1), 
                 .names = "{.col}_q3")) %>% 
   relocate(geometry, .after = last_col()) %>% 
   st_set_agr("constant")
@@ -72,20 +72,19 @@ climate_census_fun <- function(x) {
     filter(area_int == max(area_int)) %>% 
     ungroup() %>% 
     select(grid_ID, ID) %>% 
-    inner_join(select(grid, grid_ID = ID, drought_ind:heat_wave_ind), ., 
+    inner_join(select(grid, grid_ID = ID, flood_ind:heat_wave_ind), ., 
                by = "grid_ID") %>% 
     mutate(area_int = units::drop_units(st_area(geometry))) %>% 
     st_drop_geometry() %>% 
     group_by(ID) %>% 
-    summarize(across(drought_ind:heat_wave_ind, ~{
+    summarize(across(flood_ind:heat_wave_ind, ~{
       if (sum(!is.na(.x)) > 0) {
         weighted.mean(.x, area_int, na.rm = TRUE) 
         } else NA_real_}), 
       .groups = "drop") %>% 
     left_join(x, ., by = "ID") %>% 
-    mutate(across(c(destructive_storms_ind, drought_ind, heat_wave_ind, 
-                    heavy_rain_ind, flood_ind), 
-                  ntile, 3, .names = "{.col}_q3")) %>% 
+    mutate(across(c(flood_ind:heat_wave_ind), ntile, 3, 
+                  .names = "{.col}_q3")) %>% 
     relocate(geometry, .after = last_col()) %>% 
     st_set_agr("constant")
 }
@@ -102,13 +101,13 @@ rm(climate_risk, climate_census_fun)
 building <- 
   building |> 
   left_join(select(st_drop_geometry(grid), grid_ID = ID, 
-                   drought_ind:heat_wave_ind_q3), by = "grid_ID") |> 
+                   flood_ind:heat_wave_ind_q3), by = "grid_ID") |> 
   relocate(geometry, .after = last_col())
 
 street <- 
   street |> 
   left_join(select(st_drop_geometry(grid), grid_ID = ID, 
-                   drought_ind:heat_wave_ind_q3), by = "grid_ID") |> 
+                   flood_ind:heat_wave_ind_q3), by = "grid_ID") |> 
   relocate(geometry, .after = last_col())
 
 

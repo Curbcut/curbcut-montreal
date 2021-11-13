@@ -68,6 +68,7 @@ source("dev/modules/census/build_census.R")
 source("dev/modules/canale.R")
 source("dev/modules/climate_risk.R")
 source("dev/modules/crash.R")
+# source("dev/modules/access.R")
 # source("dev/modules/dmti.R")
 source("dev/modules/alley.R")
 # source("dev/modules/ped.R")
@@ -96,13 +97,12 @@ source("dev/other/produce_maps.R")
 
 # Copy large data files to Dropbox ----------------------------------------
 
-unlink("~/Dropbox/sus_sync/dev_data", recursive = TRUE)
-unlink("~/Dropbox/sus_sync/data", recursive = TRUE)
-unlink("~/Dropbox/sus_sync/www_maps", recursive = TRUE)
-
-dir.create("~/Dropbox/sus_sync/dev_data")
-dir.create("~/Dropbox/sus_sync/data")
-dir.create("~/Dropbox/sus_sync/www_maps")
+unlink(list.files("~/Dropbox/sus_sync/dev_data", full.names = TRUE),
+       recursive = TRUE)
+unlink(list.files("~/Dropbox/sus_sync/data", full.names = TRUE),
+       recursive = TRUE)
+unlink(list.files("~/Dropbox/sus_sync/www_maps", full.names = TRUE),
+       recursive = TRUE)
 
 invisible(file.copy(list.files("dev/data", full.names = TRUE), 
                     "~/Dropbox/sus_sync/dev_data", recursive = TRUE))
