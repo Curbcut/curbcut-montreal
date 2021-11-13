@@ -41,10 +41,13 @@ data_server <- function(id, var_left, var_right, df, zoom = df) {
       # Get borough/CT/DA/grid/etc
       data <- get(df())
       
+      var_left <- unique(var_left())
+      var_right <- unique(var_right())
+      
       # Set the colour transparency based on zoom level and if it is a
       # percent change or not
       colour <- 
-        if (length(var_left()) == 2 && length(var_right()) == 1) {
+        if (length(var_left) == 2 && var_right == " ") {
           get(paste0("colour_delta_", zoom()))
         } else get(paste0("colour_", zoom()))
 
@@ -53,8 +56,6 @@ data_server <- function(id, var_left, var_right, df, zoom = df) {
       # if (var_right() != " ") var_right <- paste0(var_right(), 
       #                                             if (!missing(time)) "_", time)
       
-      var_left <- unique(var_left())
-      var_right <- unique(var_right())
       
       if (var_right[1] == " ") {
         data <-

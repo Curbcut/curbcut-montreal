@@ -89,8 +89,8 @@ crash_server <- function(id) {
               paste0("<b>How to read the map</b><br>",
                      "The map displays the percent variation in number of ",
                      "{type_crash} crashes between {time()[1]} and {time()[2]}. ",
-                     "A darker green means a relative increase in {type_crash} ",
-                     "crashes number.")))
+                     "Blue means an increase in {type_crash} crashes number, and red ",
+                     "means a decrease.")))
         } else {
           var <- str_remove(var_right(), "_\\d{4}$")
           census_years <- unique(str_extract(var_right(), "\\d{4}$"))
