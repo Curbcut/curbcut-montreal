@@ -56,7 +56,8 @@ explore_graph_server <- function(id, x, var_type, var_left, var_right, select,
       # Decide on plot type
       if (plot_type == "auto") {
         graph_type <- case_when(
-          var_right() == " " & grepl("_multi", var_type()) ~ "multi",
+          var_right() == " " & grepl("_multi", var_type()) ~ "multi_uni",
+          var_right() != " " & grepl("_multi", var_type()) ~ "multi_bi",
           var_right() == " " & left_var_num > 6 ~ "hist",
           var_right() == " " & left_var_num <= 6 ~ "bar",
           var_right() != " " & left_var_num > 6 ~ "scatter",
@@ -70,6 +71,15 @@ explore_graph_server <- function(id, x, var_type, var_left, var_right, select,
       
       # Prepare x scale
       x_scale <- case_when(
+        # Multi_uni, continuous scale, percent
+        graph_type == "multi_uni" & stringr::str_detect(var_left(), "prop") ~
+          list(scale_x_continuous(labels = scales::percent)),
+        # Multi_uni, continuous scale, dollar
+        graph_type == "multi_uni" & stringr::str_detect(var_left(), "dollar") ~
+          list(scale_x_continuous(labels = scales::dollar)),
+        # Multi_uni, continuous scale, comma
+        graph_type == "multi_uni" ~ 
+          list(scale_x_continuous(labels = scales::comma)),
         # Discrete scale
         !is.null(var_left_label) & graph_type %in% c("bar", "box") ~
           list(scale_x_discrete(labels = var_left_label)),
@@ -92,6 +102,15 @@ explore_graph_server <- function(id, x, var_type, var_left, var_right, select,
 
       # Prepare y scale
       y_scale <- case_when(
+        # Multi_uni, continuous scale, percent
+        graph_type == "multi_uni" & stringr::str_detect(var_left(), "prop") ~ 
+          list(scale_y_continuous(labels = scales::percent)),
+        # Continuous scale, dollar
+        graph_type == "multi_uni" & stringr::str_detect(var_left(), "dollar") ~ 
+          list(scale_y_continuous(labels = scales::dollar)),
+        # Continuous scale, comma
+        graph_type == "multi_uni" ~ 
+          list(scale_y_continuous(labels = scales::comma)),
         # Continuous scale, comma, no decimal
         graph_type %in% c("hist", "bar") ~ 
           list(scale_y_continuous(labels = scales::label_comma(accuracy = 1))),
@@ -109,13 +128,19 @@ explore_graph_server <- function(id, x, var_type, var_left, var_right, select,
       v_left_title <- 
         labs_x <- list(labs(x = var_left_title, y = NULL))
       labs_xy <- list(labs(x = var_left_title, y = var_right_title))
+      if (graph_type == "multi_uni") labs_xy <- list(labs(
+        x = paste0(var_left_title, " (", 
+                   str_extract(var_left(), "(?<=_)\\d{4}$")[1], ")"),
+        y = paste0(var_left_title, " (", 
+                   str_extract(var_left(), "(?<=_)\\d{4}$")[2], ")")))
       
       # Prepare default theme
       theme_default <- list(
         theme_minimal(),
         theme(legend.position = "none", panel.grid.minor.x = element_blank(),
               panel.grid.major.x = element_blank(),
-              panel.grid.minor.y = element_blank()))
+              panel.grid.minor.y = element_blank(),
+              axis.title = element_text(size = 8)))
       
       
       # Render plot ------------------------------------------------------------
@@ -249,20 +274,18 @@ explore_graph_server <- function(id, x, var_type, var_left, var_right, select,
           x_scale + y_scale + labs_xy + theme_default
       }
       
-      # Multi-date scatterplot, no selection
-      if (plot_type == "multi_all") {
+      # Multi-date univariate scatterplot, no selection
+      if (plot_type == "multi_uni_all") {
         
         colours <- colour_delta$fill[1:5]
         names(colours) <- colour_delta$group[1:5]
-        
-        
         
         out <- ggplot(dat, aes(left_var_1, left_var_2)) +
           geom_smooth(se = FALSE, method = "lm", formula = y ~ x, 
                       colour = "black", size = 0.5) +
           geom_point(aes(colour = group)) +
           scale_colour_manual(values = colours) +
-          theme_default
+          x_scale + y_scale + labs_xy + theme_default
       }
       
       

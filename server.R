@@ -20,7 +20,7 @@ shinyServer(function(input, output, session) {
   
   # Modules -----------------------------------------------------------------
 
-  # accessibility_server("accessibility")
+  # access_server("access")
   alley_server("alley")
   canale_server("canale")
   climate_risk_server("climate_risk")

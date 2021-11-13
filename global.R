@@ -95,6 +95,21 @@ right_panel <- function(id, ...) {
   )
 }
 
+return_closest_year <- function(var) {
+  if (!var %in% names(borough)) {
+    time <- as.numeric(str_extract(var, "\\d{4}"))
+    x <- borough %>% 
+      select(contains(str_remove(var, "_\\d{4}$"))) %>% 
+      names() %>% 
+      str_extract("\\d{4}$") %>% 
+      as.numeric() %>% 
+      na.omit()
+    closest_year <- x[which.min(abs(x - time))]
+    var <- paste0(str_remove(var, "_\\d{4}$"), "_", closest_year)
+  }
+  var
+}
+
 loadingLogo <- 
   function(href, src, loadingsrc) {
     tagList(

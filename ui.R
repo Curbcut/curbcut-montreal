@@ -73,17 +73,17 @@ ui <- dashboardPage(
       
       # Housing realm ----
       menuItem(
-        i18n$t("Housing realm"),
-        tabName = "housing_realm",
+        i18n$t("Housing"),
+        tabName = "housing_category",
         
-        # Housing
+        # Housing system
         menuSubItem(
-          i18n$t("Housing"),
+          i18n$t("Housing system"),
           tabName = "housing"),
         conditionalPanel(
           condition = "input.tabs == 'housing'",
           # The ID needs to be duplicated for complicated namespacing reasons!
-          # small_map_UI("housing-left")
+          small_map_UI("housing-left")
         )),
       
       # Policy ----
@@ -104,7 +104,12 @@ ui <- dashboardPage(
         # Accessibility
         menuSubItem(
           i18n$t("Accessibility to urban opportunities"),
-          tabName = "accessibility"),
+          tabName = "access"),
+        
+        conditionalPanel(
+          condition = "input.tabs == 'access'",
+          # The ID needs to be duplicated for complicated namespacing reasons!
+          small_map_UI("access-left")),
 
         # Mode switching
         menuSubItem(
@@ -148,7 +153,7 @@ ui <- dashboardPage(
       hr(),
       menuItem(i18n$t("Place explorer"), tabName = "place_explorer"),
       hr(),
-      menuItem(i18n$t("Why a dashboard?"), tabName = "why_dash"),
+      menuItem(i18n$t("The science behind SUS"), tabName = "why_dash"),
       menuItem(i18n$t("Meet the team"), tabName = "meet_the_team")
       
       ), 
@@ -191,6 +196,7 @@ ui <- dashboardPage(
       home_tab, 
       
       # Modules
+      # tabItem(tabName = "access", access_UI("access")),
       tabItem(tabName = "alley", alley_UI("alley")),
       tabItem(tabName = "canale", canale_UI("canale")),
       tabItem(tabName = "climate_risk", climate_risk_UI("climate_risk")),

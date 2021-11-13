@@ -145,7 +145,6 @@ info_table_server <- function(id, x, var_type, var_left, var_right, select,
         # If correlation is close to zero
         if (z$correlation < 0.05 && z$correlation > -0.05) {
           out <- paste0(
-            "<p>'{z$title_right}' is {z$exp_right}.",
             "<p>'{z$title_left}' has effectively no correlation ",
             "({z$corr_disp}) with '{z$title_right}' at the {z$scale_sing} ",
             "scale.",
@@ -155,7 +154,6 @@ info_table_server <- function(id, x, var_type, var_left, var_right, select,
             out <- paste0(
               if (z$strong == sus_translate("strong")) 
                 "<p><b>STRONG CORRELATION</b></p>",
-              "<p>'{z$title_right}' is {z$exp_right}.",
               "<p>'{z$title_left}' has a {z$strong} {z$pos} ",
               "correlation ({z$corr_disp}) with '{z$title_right}' at ",
               "the {z$scale_sing} scale.",
@@ -182,7 +180,6 @@ info_table_server <- function(id, x, var_type, var_left, var_right, select,
         # If correlation is close to zero
         if (z$correlation < 0.05 && z$correlation > -0.05) {
           out <- paste0(
-            "<p>'{z$title_right}' is {z$exp_right}.",
             "<p>'{z$title_left}' has effectively no correlation ",
             "(Spearman's rho: {z$corr_disp}) with '{z$title_right}' at the ", 
             "{z$scale_sing} scale.",
@@ -192,7 +189,6 @@ info_table_server <- function(id, x, var_type, var_left, var_right, select,
           out <- paste0(
             if (z$strong == sus_translate("strong")) 
               "<p><b>STRONG CORRELATION</b></p>",
-            "<p>'{z$title_right}' is {z$exp_right}.",
             "<p>'{z$title_left}' has a {z$strong} {z$pos} correlation ",
             "(Spearman's rho: {z$corr_disp}) with '{z$title_right}' ",
             "at the {z$scale_sing} scale.",
@@ -220,7 +216,8 @@ info_table_server <- function(id, x, var_type, var_left, var_right, select,
       date_right <- str_extract(var_right(), "(?<=_)_\\d{4}$")
       if (var_right() == " ") date_right <- date_left
       # TEMPORARILY EXCLUDE MULTIPLE DATES TKTK
-      if (length(date_left) > 1 || is.na(date_left) || is.na(date_right)) date_left <- "NA"
+      if (length(date_left) > 1 || is.na(date_left) || is.na(date_right)) 
+        date_left <- "NA"
       if (length(date_right) > 1) date_right <- "NA"
       
       if (date_left == date_right && nchar(date_left) == 4 &&

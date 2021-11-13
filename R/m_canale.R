@@ -100,12 +100,9 @@ canale_server <- function(id) {
 
         mapdeck_update(map_id = NS(id, "map")) %>%
           add_polygon(
-            # data = data_to_add, stroke_width = width, stroke_colour = "#000000",
-            data = data_to_add, #stroke_width = 0.5, stroke_colour = "#FFFFFF",
-            elevation = 5,
-            fill_colour = "fill", update_view = FALSE,
-            layer_id = "poly_highlight", auto_highlight = TRUE,
-            highlight_colour = "#FFFFFF90")
+            data = data_to_add, elevation = 5, fill_colour = "fill", 
+            update_view = FALSE, layer_id = "poly_highlight", 
+            auto_highlight = TRUE, highlight_colour = "#FFFFFF90")
         } else {
         mapdeck_update(map_id = NS(id, "map")) %>%
           clear_polygon(layer_id = "poly_highlight")
