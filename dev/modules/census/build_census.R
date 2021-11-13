@@ -7,12 +7,12 @@
 
 newest_census_year <- "2016"
 
-# If all rows are NAs, return NA. If not, use sum na.rm = T
+# If all rows are NAs, return NA. If not, use sum na.rm = TRUE
 sum_na <- function(x) {
-  if(all(is.na(x))){
+  if (all(is.na(x))) {
     out <- NA
   } else {
-    out <- sum(x, na.rm = T)
+    out <- sum(x, na.rm = TRUE)
   }
   return(as.numeric(out))
 }
@@ -34,12 +34,12 @@ sum_na <- function(x) {
 
 source("dev/modules/census/census_2016.R")
 
-# Less recent census year use left_join when combining to newer geography,
-# to not interfere with the most recent census and not
+# Less recent census years use left_join when combining to newer geographies
 source("dev/modules/census/census_2011.R")
 source("dev/modules/census/census_2006.R")
 source("dev/modules/census/census_2001.R")
 source("dev/modules/census/census_1996.R")
+
 
 # Add variable explanations -----------------------------------------------
 

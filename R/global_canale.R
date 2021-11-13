@@ -37,7 +37,7 @@ var_list_canale <-
 
 var_list_canale[-1] <-
   var_list_canale[-1] %>%
-  purrr::modify_depth(2, ~paste0(., "_", current_census))
+  purrr::modify_depth(2, paste0, "_", current_census)
 
 
 # Width of strokes on the map ---------------------------------------------

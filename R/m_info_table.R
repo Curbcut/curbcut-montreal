@@ -30,6 +30,9 @@ info_table_server <- function(id, x, var_type, var_left, var_right, select,
       
       ## Get data list ---------------------------------------------------------
       
+      print("VAR_LEFT")
+      print(var_left())
+      
       z <- make_info_table_data(id, x, var_type, var_left, var_right, select, 
                                 zoom, var_left_label, var_right_label, 
                                 build_str_as_DA)
@@ -64,7 +67,7 @@ info_table_server <- function(id, x, var_type, var_left, var_right, select,
         "{z$exp_right}.")
       
       
-      ## Univariate cases ------------------------------------------------------
+      ## Univariate single-date cases ------------------------------------------
       
       # Univariate, quantitative, no selection
       if (z$var_type == "uni_quant_all") out <- paste0(
@@ -93,6 +96,42 @@ info_table_server <- function(id, x, var_type, var_left, var_right, select,
       
       # Univariate, qualitative, valid selection
       if (z$var_type == "uni_qual_select") out <- paste0(
+        "<strong>{z$place_heading}</strong>",
+        "<p>{z$place_name} has a population of {z$pop} and a ",
+        "'{z$title_left}' value of '{z$val_left}', which is shared by ",
+        "{z$other_with_val} of {z$scale_plural} in the Montreal region.")
+
+      
+      ## Univariate mutli-date cases -------------------------------------------
+      
+      # Univariate, quantitative, no selection
+      if (z$var_type == "uni_quant_all_multi") out <- paste0(
+        "At the {z$scale_sing} scale, the change in {z$exp_left} ",
+        "between {z$start_date_left} and {z$end_date_left} varied from ",
+        "{z$min_val} to {z$max_val}, with an average change of {z$mean_val} ",
+        "and a median change of {z$median_val}. ",
+        "Two thirds of {z$scale_plural} saw a change between {z$quant_low} ",
+        "and {z$quant_high}.")
+      
+      # Univariate, quantitative, valid selection
+      if (z$var_type == "uni_quant_select_multi") out <- paste0(
+        "<strong>{z$place_heading}</strong>",
+        "<p>{z$place_name} has a population of {z$pop} and a ", 
+        "'{z$title_left}' score ({z$exp_left}) of {z$val_left}, which is ", 
+        "{z$larger} the region-wide median of {z$median_val}.",
+        "<p>{z$place_name} has a {z$high} relative score for this ", 
+        "indicator, with {sub('^the', 'a', z$exp_left)} higher than ", 
+        "{z$percentile} of {z$scale_plural} in the Montreal region.")
+      
+      # Univariate, qualitative, no selection
+      if (z$var_type == "uni_qual_all_multi") out <- paste0(
+        "At the {z$scale_sing} scale, {z$exp_left} varies from ",
+        "'{z$min_val}' to '{z$max_val}'. A {z$majority} of {z$scale_plural} ",
+        "({z$mode_prop}) have a value of '{z$mode_val}', while ",
+        "{z$mode_prop_2} have a value of '{z$mode_val_2}'.")
+      
+      # Univariate, qualitative, valid selection
+      if (z$var_type == "uni_qual_select_multi") out <- paste0(
         "<strong>{z$place_heading}</strong>",
         "<p>{z$place_name} has a population of {z$pop} and a ",
         "'{z$title_left}' value of '{z$val_left}', which is shared by ",
@@ -180,7 +219,9 @@ info_table_server <- function(id, x, var_type, var_left, var_right, select,
       date_left <- str_extract(var_left(), "(?<=_)\\d{4}$")
       date_right <- str_extract(var_right(), "(?<=_)_\\d{4}$")
       if (var_right() == " ") date_right <- date_left
-      if (is.na(date_left) || is.na(date_right)) date_left <- "NA"
+      # TEMPORARILY EXCLUDE MULTIPLE DATES TKTK
+      if (length(date_left) > 1 || is.na(date_left) || is.na(date_right)) date_left <- "NA"
+      if (length(date_right) > 1) date_right <- "NA"
       
       if (date_left == date_right && nchar(date_left) == 4 &&
           !grepl("_na", z$var_type)) {

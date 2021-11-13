@@ -81,7 +81,8 @@ data_server <- function(id, var_left, var_right, df, zoom = df) {
                 TRUE ~ "5"),
               across(where(is.numeric), ~replace(., is.nan(.), NA)),
               across(where(is.numeric), ~replace(., is.infinite(.), NA))) %>% 
-            select(., ID, name, name_2, population, left_var, left_var_q3) 
+            select(ID, name, name_2, population, left_var, left_var_q3,
+                   left_var_1 = left_var1, left_var_2 = left_var2) 
         }
         
         data <- 

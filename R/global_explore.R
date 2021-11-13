@@ -5,10 +5,14 @@ explore_var_type <- function(id, x, var_left, var_right, select,
   
   reactive({
     
+    ## Handle multiple dates then strip dates ----------------------------------
+    
+    multi <- length(var_left()) == 2 || length(var_right()) == 2
     var_left <- str_remove(var_left(), "_\\d{4}$")
     var_right <- str_remove(var_right(), "_\\d{4}$")
     
-    ## Titles and explanations ---------------------------------------------------
+    
+    ## Titles and explanations -------------------------------------------------
     
     exp_left <- var_exp[var_exp$var_code == var_left,]$explanation
     exp_right <- var_exp[var_exp$var_code == var_right,]$explanation
@@ -17,7 +21,7 @@ explore_var_type <- function(id, x, var_left, var_right, select,
       "No var_exp: ", var_right, call. = FALSE)
     
     
-    ## Selections ----------------------------------------------------------------
+    ## Selections --------------------------------------------------------------
     
     selection <- x() %>% filter(ID == select())
     active_left <- nrow(filter(selection, !is.na(left_var)))
@@ -26,7 +30,7 @@ explore_var_type <- function(id, x, var_left, var_right, select,
       nrow(filter(selection, !is.na(left_var), !is.na(right_var)))
     
     
-    ## Decide on table type ------------------------------------------------------
+    ## Decide on table type ----------------------------------------------------
     
     comp_type <- case_when(
       var_right() == " " ~ "uni",
@@ -49,6 +53,7 @@ explore_var_type <- function(id, x, var_left, var_right, select,
     
     table_type <- paste(comp_type, var_type, select_type, sep = "_")
     if (select_type == "na") table_type <- paste0(comp_type, "_na")
+    if (select_type != "na" && multi) table_type <- paste0(table_type, "_multi")
     
     table_type
   })

@@ -14,6 +14,7 @@ make_info_table_data <- function(id, x, var_type, var_left, var_right, select,
   
   if (!zoom() %in% c("building", "street")) build_str_as_DA <- FALSE
   
+  # TKTK THIS IS BROKEN FOR TWO DATES!
   if (build_str_as_DA) {
     tb <- data_server(id = "info_table",
                       var_left = var_left,
@@ -28,10 +29,24 @@ make_info_table_data <- function(id, x, var_type, var_left, var_right, select,
     select_id <- select()
   }
   
+  
+  ## Handle multiple dates -----------------------------------------------------
+  
+  if (length(var_left()) == 2) {
+    out$start_date_left <- str_extract(var_left(), "(?<=_)\\d{4}$")[1]
+    out$end_date_left <- str_extract(var_left(), "(?<=_)\\d{4}$")[2]
+  }
+  
+  if (length(var_right()) == 2) {
+    out$start_date_right <- str_extract(var_right(), "(?<=_)\\d{4}$")[1]
+    out$end_date_right <- str_extract(var_right(), "(?<=_)\\d{4}$")[2]
+  }
+  
+  
   ## Titles and explanations ---------------------------------------------------
   
-  var_left <- str_remove(var_left(), "_\\d{4}$")
-  var_right <- str_remove(var_right(), "_\\d{4}$")
+  var_left <- unique(str_remove(var_left(), "_\\d{4}$"))
+  var_right <- unique(str_remove(var_right(), "_\\d{4}$"))
   var_left_label <- sus_translate(var_left_label)
   var_right_label <- sus_translate(var_right_label)
   
@@ -149,13 +164,15 @@ make_info_table_data <- function(id, x, var_type, var_left, var_right, select,
     na.omit()
   
   if (grepl("quant_", var_type())) {
-    out$min_val <- convert_unit(min(vec_left))
-    out$max_val <- convert_unit(max(vec_left))
-    out$mean_val <- convert_unit(mean(vec_left))
-    out$median_val <- convert_unit(median(vec_left))
-    out$sd_val <- convert_unit(sd(vec_left))
-    out$quant_low <- convert_unit(quantile(vec_left, c(1 / 3, 2 / 3))[1])
-    out$quant_high <- convert_unit(quantile(vec_left, c(1 / 3, 2 / 3))[2])
+    out$min_val <- convert_unit(min(vec_left), var_left)
+    out$max_val <- convert_unit(max(vec_left), var_left)
+    out$mean_val <- convert_unit(mean(vec_left), var_left)
+    out$median_val <- convert_unit(median(vec_left), var_left)
+    out$sd_val <- convert_unit(sd(vec_left), var_left)
+    out$quant_low <- convert_unit(quantile(vec_left, c(1 / 3, 2 / 3))[1], 
+                                  var_left)
+    out$quant_high <- convert_unit(quantile(vec_left, c(1 / 3, 2 / 3))[2],
+                                   var_left)
   }
   
   

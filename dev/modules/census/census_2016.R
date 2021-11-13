@@ -290,7 +290,7 @@ borough_raw <-
 
 # Bind boroughs and CSDs before process_census_data
 borough_CSD <- 
-bind_rows(filter(census_geos$CSD_census, !str_starts(ID, "2466023")), 
+  bind_rows(filter(census_geos$CSD_census, !str_starts(ID, "2466023")), 
           borough_raw)
 
 # Process data on both borough and CSD
@@ -374,7 +374,7 @@ street <-
 
 # Clean up ----------------------------------------------------------------
 
-rm(census_geos, CSD, DA_data, grid_census, agg_list, avg_list, 
-   process_census_data, year_census)
+rm(borough_CSD, borough_raw, census_geos, DA_data, grid_census, agg_list, 
+   avg_list, process_census_data, year_census)
 
 

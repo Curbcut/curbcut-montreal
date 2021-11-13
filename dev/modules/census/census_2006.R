@@ -348,5 +348,5 @@ street <- left_join(street, DA_census, by = c("DAUID" = "ID"))
 # Cleanup -----------------------------------------------------------------
 
 rm(census_geos, CSD_census, CT_census, DA_census, year_census, grid_census,
-   DA_data, interpolate_census, process_census_data, borough_census, DA_census_n,
-   avg_list, agg_list)
+   DA_data, interpolate_census, process_census_data, borough_census, 
+   DA_census_n, avg_list, agg_list, var_to_drop)

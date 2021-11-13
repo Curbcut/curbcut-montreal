@@ -56,6 +56,7 @@ explore_graph_server <- function(id, x, var_type, var_left, var_right, select,
       # Decide on plot type
       if (plot_type == "auto") {
         graph_type <- case_when(
+          var_right() == " " & grepl("_multi", var_type()) ~ "multi",
           var_right() == " " & left_var_num > 6 ~ "hist",
           var_right() == " " & left_var_num <= 6 ~ "bar",
           var_right() != " " & left_var_num > 6 ~ "scatter",
@@ -106,7 +107,7 @@ explore_graph_server <- function(id, x, var_type, var_left, var_right, select,
       
       # Prepare axis labels
       v_left_title <- 
-      labs_x <- list(labs(x = var_left_title, y = NULL))
+        labs_x <- list(labs(x = var_left_title, y = NULL))
       labs_xy <- list(labs(x = var_left_title, y = var_right_title))
       
       # Prepare default theme
@@ -246,7 +247,23 @@ explore_graph_server <- function(id, x, var_type, var_left, var_right, select,
                      colour = colour_bivar$fill[1], size = 4) +
           scale_fill_manual(values = colours) +
           x_scale + y_scale + labs_xy + theme_default
-        }
+      }
+      
+      # Multi-date scatterplot, no selection
+      if (plot_type == "multi_all") {
+        
+        colours <- colour_delta$fill[1:5]
+        names(colours) <- colour_delta$group[1:5]
+        
+        
+        
+        out <- ggplot(dat, aes(left_var_1, left_var_2)) +
+          geom_smooth(se = FALSE, method = "lm", formula = y ~ x, 
+                      colour = "black", size = 0.5) +
+          geom_point(aes(colour = group)) +
+          scale_colour_manual(values = colours) +
+          theme_default
+      }
       
       
       # Return output ----------------------------------------------------------

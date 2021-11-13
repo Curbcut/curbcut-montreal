@@ -6,22 +6,22 @@ housing_UI <- function(id) {
   tabItem(tabName = "housing",
           mapdeckOutput(NS(id, "map"), height = "92vh"),
           title_UI(NS(id, "title"),
-                   select_var_UI(NS(id, "left"), var_list_housing_left), 
+                   div(style = "display:inline-block", select_var_UI(NS(id, "left"), var_list_housing_left)), 
                    #can't hide and show widgets when it isn't the original sliderInput function
-                   sliderInput(NS(id, "slider_housing"), "Select a year",
+                   div(style = "display:inline-block", sliderInput(NS(id, "slider_housing"), "Select a year",
                                min = housing_slider$min,
                                max = housing_slider$max,
                                step = housing_slider$interval, sep = "",
-                               value = housing_slider$init),
-                   sliderInput(NS(id, "slider_bi_census"), "Select two census year", 
+                               value = housing_slider$init)),
+                   div(style = "display:inline-block", sliderInput(NS(id, "slider_bi_census"), "Select two years", 
                                min = housing_slider$min,
                                max = housing_slider$max, 
                                step = housing_slider$interval, sep = "", 
-                               value = c("2006", "2016")),
+                               value = c("2006", "2016"))),
                    htmlOutput(NS(id, "year_displayed_left")),
                    htmlOutput(NS(id, "year_displayed_right")),
                    materialSwitch(inputId = NS(id, "bi_census"),
-                     label = "Two census comparison", right = TRUE),
+                     label = "Compare dates", right = TRUE),
                    shinyjs::useShinyjs() # needed if we continue to have 2 sliders
                    ),
           right_panel(id, compare_UI(NS(id, "housing"), var_list_housing_right),
@@ -194,8 +194,8 @@ housing_server <- function(id) {
     dyk_server("dyk", var_left, var_right)
 
     # Left map
-    small_map_server("left", reactive(paste0("left_", reactive(rv_housing$zoom), 
-                                             "_", var_left())))
+    small_map_server("left", reactive(paste0(
+      "left_", rv_housing$zoom, "_", var_left()[length(var_left())])))
 
     # Bivariate legend
     legend_bivar_server("housing", var_right)
