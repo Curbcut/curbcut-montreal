@@ -111,7 +111,7 @@ housing_server <- function(id) {
       }
     })
     
-    # Time variable depending on which slider
+    # Time variable depending on which slider is active
     time <- reactive({
       if (!input$slider_switch) input$slider_uni else input$slider_bi
     })
@@ -122,15 +122,10 @@ housing_server <- function(id) {
     })
     
     # Left variable server
-    var_left_1 <- select_var_server(
+    var_left <- select_var_server(
       "left", reactive(var_list_housing_left), 
-      disabled_choices = reactive(var_list_housing_left_disabled()))
-    
-    # Construct left variable string
-    var_left <- reactive({
-      var <- paste(var_left_1(), time(), sep = "_")
-      sapply(var, return_closest_year)
-    })
+      disabled_choices = reactive(var_list_housing_left_disabled()),
+      time = time, df = rv_housing$zoom)
 
     # Greyed out right list options, depending of the year chosen
     var_list_housing_right_disabled <- reactive({
@@ -138,16 +133,13 @@ housing_server <- function(id) {
     })
 
     # Right variable server
-    var_right_1 <- compare_server(
-      "housing", var_list_housing_right, reactive(rv_housing$zoom), 
-      disabled_choices = reactive(var_list_housing_right_disabled()))
+    var_right <- compare_server(
+      id = "housing", 
+      var_list = var_list_housing_right, 
+      df = reactive(rv_housing$zoom), 
+      disabled_choices = reactive(var_list_housing_right_disabled()),
+      time = time)
 
-    var_right <- reactive({
-      if (var_right_1()[1] != " ") {
-        var <- paste(var_right_1(), time(), sep = "_")
-        sapply(var, return_closest_year)
-      } else var_right_1()
-    })
 
     # Data
     data <- data_server("housing", var_left, var_right, 

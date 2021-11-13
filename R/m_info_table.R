@@ -30,15 +30,17 @@ info_table_server <- function(id, x, var_type, var_left, var_right, select,
       
       ## Get data list ---------------------------------------------------------
       
-      print("VAR_LEFT")
-      print(var_left())
+      # print("VAR_LEFT")
+      # print(var_left())
+      # print("VAR_RIGHT")
+      # print(var_right())
       
       z <- make_info_table_data(id, x, var_type, var_left, var_right, select, 
                                 zoom, var_left_label, var_right_label, 
                                 build_str_as_DA)
 
-      print("DATA_LIST")
-      print(z)
+      # print("DATA_LIST")
+      # print(z)
       
       
       ## Handle NAs ------------------------------------------------------------

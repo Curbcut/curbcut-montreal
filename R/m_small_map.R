@@ -12,8 +12,6 @@ small_map_server <- function(id, string) {
   moduleServer(id, function(input, output, session) {
     output$small_map <- renderImage({
       
-      paste(string())
-      
       list(src = paste0("www/maps/", string(), ".png"), filetype = "image/png", 
            height = 175, width = 175)
       }, deleteFile = FALSE)

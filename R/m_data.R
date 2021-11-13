@@ -44,20 +44,19 @@ data_server <- function(id, var_left, var_right, df, zoom = df) {
       var_left <- unique(var_left())
       var_right <- unique(var_right())
       
-      # Set the colour transparency based on zoom level and if it is a
-      # percent change or not
+      # Set colour transparency
       colour <- 
-        if (length(var_left) == 2 && var_right == " ") {
+        if (length(var_left) == 2 && length(var_right) == 1 && 
+            var_right == " ") {
           get(paste0("colour_delta_", zoom()))
         } else get(paste0("colour_", zoom()))
 
-      # # Create proper var_left/var_right strings based on time
-      # var_left <- paste0(var_left(), if (!missing(time)) "_", time)
-      # if (var_right() != " ") var_right <- paste0(var_right(), 
-      #                                             if (!missing(time)) "_", time)
       
+      ## Univariate data -------------------------------------------------------
       
       if (var_right[1] == " ") {
+        
+        # Get data
         data <-
           data %>% 
           dplyr::select(ID, name, name_2, population, 
@@ -66,6 +65,7 @@ data_server <- function(id, var_left, var_right, df, zoom = df) {
                           all_of(var_left), "_\\d{4}$"), "_q3", 
                           na.omit(str_extract(var_left, "_\\d{4}$"))))
         
+        # If there are two dates, make new left_var
         if (length(var_left) == 2) {
           data <- 
             data |> 
@@ -85,10 +85,14 @@ data_server <- function(id, var_left, var_right, df, zoom = df) {
                    left_var_1 = left_var1, left_var_2 = left_var2) 
         }
         
+        # Finish up
         data <- 
           data |> 
           mutate(group = paste(left_var_q3, "- 1")) %>% 
           left_join(colour, by = "group")
+        
+        
+        ## Bivariate data ------------------------------------------------------
         
         } else {
           data <-
