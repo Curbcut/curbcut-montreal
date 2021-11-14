@@ -59,7 +59,7 @@ data_server <- function(id, var_left, var_right, df, zoom = df) {
         # Get data
         data <-
           data %>% 
-          dplyr::select(ID, name, name_2, population, 
+          dplyr::select(ID, name, name_2, any_of("CSDUID"), population, 
                         left_var = all_of(var_left),
                         left_var_q3 = paste0(str_remove(
                           all_of(var_left), "_\\d{4}$"), "_q3", 
@@ -81,7 +81,7 @@ data_server <- function(id, var_left, var_right, df, zoom = df) {
                 TRUE ~ "5"),
               across(where(is.numeric), ~replace(., is.nan(.), NA)),
               across(where(is.numeric), ~replace(., is.infinite(.), NA))) %>% 
-            select(ID, name, name_2, population, left_var, left_var_q3,
+            select(ID, name, name_2, any_of("CSDUID"), population, left_var, left_var_q3,
                    left_var_1 = left_var1, left_var_2 = left_var2) 
         }
         
@@ -97,7 +97,7 @@ data_server <- function(id, var_left, var_right, df, zoom = df) {
         } else {
           data <-
             (data %>%
-               dplyr::select(ID, name, name_2, population, 
+               dplyr::select(ID, name, name_2, any_of("CSDUID"), population, 
                              left_var = all_of(var_left),
                              left_var_q3 = paste0(str_remove(var_left, "_\\d{4}$"), 
                                                   "_q3", 
@@ -113,7 +113,7 @@ data_server <- function(id, var_left, var_right, df, zoom = df) {
                         right_var_q3 = ntile(right_var, 3),
                         across(where(is.numeric), ~replace(., is.nan(.), NA)),
                         across(where(is.numeric), ~replace(., is.infinite(.), NA))) %>% 
-                   select(., ID, name, name_2, population, 
+                   select(., ID, name, name_2, any_of("CSDUID"), population, 
                           left_var, left_var_q3, right_var, right_var_q3) else .} %>%
                # Not always census variables: sometimes we will have data for
                # one variable in different year than the other, like crash data vs borough.
@@ -125,7 +125,7 @@ data_server <- function(id, var_left, var_right, df, zoom = df) {
                         # right_var_q3 = ntile(right_var, 3),
                         across(where(is.numeric), ~replace(., is.nan(.), NA)),
                         across(where(is.numeric), ~replace(., is.infinite(.), NA))) %>% 
-                   select(., ID, name, name_2, population, 
+                   select(., ID, name, name_2, any_of("CSDUID"), population, 
                           left_var, left_var_q3, right_var, right_var_q3) else .} %>%
                { if (length(var_left) == 1 && length(var_right) == 2)
                  mutate(., #left_var = (left_var2 - left_var1) / left_var1,
@@ -134,7 +134,7 @@ data_server <- function(id, var_left, var_right, df, zoom = df) {
                         right_var_q3 = ntile(right_var, 3),
                         across(where(is.numeric), ~replace(., is.nan(.), NA)),
                         across(where(is.numeric), ~replace(., is.infinite(.), NA))) %>%
-                   select(., ID, name, name_2, population,
+                   select(., ID, name, name_2, any_of("CSDUID"), population,
                           left_var, left_var_q3, right_var, right_var_q3) else .} %>%
                mutate(group = paste(left_var_q3, "-", right_var_q3)) %>% 
                left_join(colour, by = "group"))

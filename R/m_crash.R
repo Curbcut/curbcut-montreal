@@ -216,12 +216,10 @@ crash_server <- function(id) {
     
     data <- reactive({
       if (choropleth()) {
-        data_1() #%>% 
-          # filter(name %in% c("Baie-d'Urfé", "Beaconsfield", "Côte-Saint-Luc",
-          #                    "Dollard-des-Ormeaux", "Dorval", "L'Île-Dorval",
-          #                    "Hampstead", "Kirkland", "Montréal-Est", "Montréal-Ouest",
-          #                    "Mount-Royal", "Pointe-Claire", "Sainte-Anne-de-Bellevue",
-          #                    "Senneville","Westmount") | str_detect(ID, "2466023"))
+        data_1() %>% 
+          {if (nrow(.) == nrow(borough))
+            filter(., ID %in% island_csduid)
+           else filter(., CSDUID %in% island_csduid)}
       } else {
           (crash %>%
              { if (var_left_2() %in% unique(crash$type))
@@ -280,7 +278,7 @@ crash_server <- function(id) {
       } else rv_crash$poly_selected <- lst$object$properties$id
     })
     
-    # # Clear poly_selected on zoom
+    # Clear poly_selected on zoom
     observeEvent(rv_crash$zoom, {rv_crash$poly_selected <- NA},
                  ignoreInit = TRUE)
     
