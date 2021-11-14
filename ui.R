@@ -103,7 +103,7 @@ ui <- dashboardPage(
 
         # Accessibility
         menuSubItem(
-          i18n$t("Accessibility to urban opportunities"),
+          i18n$t("Accessibility to opportunities"),
           tabName = "access"),
         
         conditionalPanel(
@@ -196,7 +196,7 @@ ui <- dashboardPage(
       home_tab, 
       
       # Modules
-      # tabItem(tabName = "access", access_UI("access")),
+      tabItem(tabName = "access", access_UI("access")),
       tabItem(tabName = "alley", alley_UI("alley")),
       tabItem(tabName = "canale", canale_UI("canale")),
       tabItem(tabName = "climate_risk", climate_risk_UI("climate_risk")),

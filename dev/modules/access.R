@@ -97,7 +97,8 @@ var_exp <-
     var_code = "access_jobs_30k",
     var_name = "Low-income jobs",
     explanation = 
-      "the number of jobs paying $30,000 or less accessible within 30 minutes") %>%
+      "the number of jobs paying $30,000 or less accessible within 30 minutes"
+    ) %>%
   add_row(
     var_code = "access_schools",
     var_name = "Schools",

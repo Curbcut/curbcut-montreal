@@ -1,17 +1,31 @@
-### CANALE MODULE GLOBALS ######################################################
+### ACCESS MODULE GLOBALS ######################################################
 
 # Map token
-token_canale <- paste0("pk.eyJ1IjoiZHdhY2hzbXV0aCIsImEiOiJja2g2Y2JpbDc",
+token_access <- paste0("pk.eyJ1IjoiZHdhY2hzbXV0aCIsImEiOiJja2g2Y2JpbDc",
                        "wMDc5MnltbWpja2xpYTZhIn0.BXdU7bsQYWcSwmmBx8DNqQ")
 
 # Initialize reactive values
-rv_canale <- reactiveValues(poly_selected = NA, zoom = "borough")
-
-# canale ind for current census
-canale_ind <- paste0("canale_ind", "_", current_census)
+rv_access <- reactiveValues(poly_selected = NA)
 
 # Dropdown menu
-var_list_canale <- 
+var_list_left_access_1 <- 
+  list("All jobs" = "jobs_total",
+       "Low-skill jobs" = "jobs_low",
+       "High-skill jobs" = "jobs_high",
+       "Jobs < $30,000 annually" = "jobs_30k",
+       "Schools" = "schools",
+       "Healthcare facilities" = "healthcare")
+
+var_list_left_access_2 <- 
+  list("Weekday peak" = "pwd",
+       "Weekday off-peak" = "opwd",
+       "Weekday night" = "nwd",
+       "Weekend peak" = "pwe",
+       "Weekend off-peak" = "opwe",
+       "Weekend night" = "nwe")
+
+# Dropdown menu
+var_list_right_access <- 
   list("----" = " ", 
        "Housing" = list(
          "Tenant-occupied (%)" = "housing_tenant_prop",
@@ -36,10 +50,6 @@ var_list_canale <-
          "15-45 minutes to work (%)" = "trans_t_45_prop",
          "More than 45 minutes to work (%)" = "trans_t_45_plus_prop"))
 
-var_list_canale[-1] <-
-  var_list_canale[-1] %>%
+var_list_right_access[-1] <-
+  var_list_right_access[-1] %>%
   purrr::modify_depth(2, paste0, "_", current_census)
-
-
-# Width of strokes on the map ---------------------------------------------
-canale_stroke_width <- list("borough" = 100, "CT" = 10, "DA" = 2)

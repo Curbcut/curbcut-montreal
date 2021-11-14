@@ -4,25 +4,28 @@
 
 # Get updated data from open data portal ----------------------------------
 
-dl_unzip <- function(shp_url, name) {
-  download.file(shp_url, destfile = paste0("dev/data/green_alleys/", "temp", 
-                                           ".zip"))
-  
-  unzip(paste0("dev/data/green_alleys/", "temp", ".zip"),
-        exdir = "dev/data/green_alleys")
-  
-  unlink(paste0("dev/data/green_alleys/", "temp", ".zip"), recursive = TRUE)
-}
+# dl_unzip <- function(shp_url, name) {
+#   download.file(shp_url, destfile = paste0("dev/data/green_alleys/", "temp", 
+#                                            ".zip"))
+#   
+#   unzip(paste0("dev/data/green_alleys/", "temp", ".zip"),
+#         exdir = "dev/data/green_alleys")
+#   
+#   unlink(paste0("dev/data/green_alleys/", "temp", ".zip"), recursive = TRUE)
+# }
+# 
+# # DL Espace_Vert.shp
+# dl_unzip(paste0("https://data.montreal.ca/dataset/2e9e4d2f-173a-4c3d-a5e3-",
+#                 "565d79baa27d/resource/c57baaf4-0fa8-4aa4-9358-61eb7457b650/",
+#                 "download/shapefile.zip"))
+# 
+# # DL ruelles-vertes.shp
+# dl_unzip(paste0("https://data.montreal.ca/dataset/ab3ce7bb-09a7-49d7-8f76-",
+#                 "461ed4c39937/resource/e1440534-f438-43d3-ab7b-bcd09d72d3cd/",
+#                 "download/ruelles-vertes.zip"))
+# 
+# rm(dl_unzip)
 
-# DL Espace_Vert.shp
-dl_unzip(paste0("https://data.montreal.ca/dataset/2e9e4d2f-173a-4c3d-a5e3-",
-                "565d79baa27d/resource/c57baaf4-0fa8-4aa4-9358-61eb7457b650/",
-                "download/shapefile.zip"))
-
-# DL ruelles-vertes.shp
-dl_unzip(paste0("https://data.montreal.ca/dataset/ab3ce7bb-09a7-49d7-8f76-",
-                "461ed4c39937/resource/e1440534-f438-43d3-ab7b-bcd09d72d3cd/",
-                "download/ruelles-vertes.zip"))
 
 # Tidy and transform data -------------------------------------------------
 
@@ -166,4 +169,4 @@ alley_text <-
 # Clean up ----------------------------------------------------------------
 
 rm(alleys_mtl, alleys_google, alleys_mn, alleys_visited, alleys_to_filter, 
-   alleys_visited_text, missing_photos, dl_unzip)
+   alleys_visited_text, missing_photos)

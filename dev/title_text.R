@@ -3,8 +3,7 @@
 library(tidyverse)
 library(qs)
 
-title_text <- 
-  readr::read_csv("dev/data/title_text.csv")
+title_text <- readr::read_csv("dev/data/title_text.csv")
 
 title_text <-
   title_text %>%
@@ -157,6 +156,28 @@ title_text <-
                         "spaces for comfortable shopping. The implementation of pedestrian-only zones ",
                         "on streets with high concentrations of restaurants, bars, and other retail ",
                         "shops creates appealing destinations for Montréal residents and promotes ",
-                        "recovery for the businesses which have been affected by COVID-19."))
+                        "recovery for the businesses which have been affected by COVID-19.")) |> 
+  add_row(tab = "access", type = "title", text = "Accessibility to opportunities") |> 
+  add_row(tab = "access", type = "main", text = paste0(
+    "Accessibility (the ease of reaching desired destinations) is the most ",
+    "important element of a transport network. This module displays what is ",
+    "accessible within 30 minutes’ “door-to-door” travel time. ",
+    "Clicking on individual census tracts shows which other census tracts are ",
+    "reachable within a given travel time and at a chosen period of the day ",
+    "(peak, off-peak, and night).")) |> 
+  add_row(tab = "access", type = "extra", text = paste0(
+    "<p>This module focuses on accessibility to a set of key destinations: ", 
+    "all jobs, ‘low-skill’ jobs (those not requiring university education), ", 
+    "‘high-skill’ jobs (those usually requiring university education), jobs ",
+    "with an annual salary of <$30,000, and schools and healthcare facilities.",
+    "<p> This analysis allows for the identification of areas of the city or ",
+    "population groups that are in need of improved service, it also allows ", 
+    "for the analysis of change throughout the day and week. It is based on ",
+    "'Cumulative Opportunities' accessibility, meaning it displays the total ",
+    "number of destinations available within 30 minutes ‘door-to-door’ travel ",
+    "time (including walking to reach station, waiting time, in-vehicle ",
+    "time). For more info on how accessibility metrics are calculated see ",
+    "<a href = 'https://conservancy.umn.edu/bitstream/handle/11299/199892/",
+    "CTS13-20_Access-Across-America.pdf'>'Access Across America'</a>."))
   
 qsave(title_text, "data/title_text.qs")
