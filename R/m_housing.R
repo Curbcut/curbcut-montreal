@@ -6,7 +6,7 @@ housing_UI <- function(id) {
   tabItem(tabName = "housing",
           mapdeckOutput(NS(id, "map"), height = "92vh"),
           title_UI(NS(id, "title"),
-                   div(style = "display: inline-block; padding: 5px; vertical-align: top;", 
+                   div(style = "display: inline-block; padding: 5px;", 
                        select_var_UI(NS(id, "left"), var_list_housing_left,
                                      width = "200px")), 
                    div(style = "display: inline-block; padding: 5px; vertical-align: top;", 
