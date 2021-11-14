@@ -6,10 +6,10 @@ climate_risk_UI <- function(id) {
   tabItem(tabName = "climate_risk",
           mapdeckOutput(NS(id, "map"), height = "92vh"),
           title_UI(NS(id, "title"),
-                   div(style = "display: inline-block; padding: 5px;", 
+                   div(style = "display: inline-block; padding: 5px; vertical-align: top;", 
                        select_var_UI(NS(id, "left"), var_list_climate_risk, 
                                      width = "200px")), 
-                   div(style = "display: inline-block; padding: 5px;", 
+                   div(style = "display: inline-block; padding: 5px; vertical-align: top;", 
                        shinyWidgets::materialSwitch(
                          inputId = NS(id, "grid"), 
                          label = i18n$t("250-metre grid"), 
