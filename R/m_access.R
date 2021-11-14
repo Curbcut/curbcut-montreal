@@ -7,13 +7,18 @@ access_UI <- function(id) {
           mapdeckOutput(NS(id, "map"), height = "92vh"),
           title_UI(NS(id, "title"),
                    div(style = "display: inline-block; padding: 5px;", 
+                       select_var_UI(NS(id, "left_2"), var_list_left_access_2,
+                                     label = i18n$t("Timing"),
+                                     width = "200px")),
+                   div(style = "display: inline-block; padding: 5px;", 
                        select_var_UI(NS(id, "left_1"), var_list_left_access_1,
                         label = i18n$t("Destination type"), 
                         width = "200px")),
                    div(style = "display: inline-block; padding: 5px;", 
-                       select_var_UI(NS(id, "left_2"), var_list_left_access_2,
-                        label = i18n$t("Timing"),
-                        width = "200px"))),
+                       sliderInput(NS(id, "slider"), i18n$t("Time threshold"),
+                                   min = 10, max = 60, step = 1, value = 30,
+                                   width = "200px")),
+                   shinyjs::useShinyjs()),
           right_panel(id, compare_UI(NS(id, "access"), var_list_right_access),
                       explore_UI(NS(id, "explore")), dyk_UI(NS(id, "dyk"))),
           legend_bivar_UI(NS(id, "access")))
@@ -39,8 +44,21 @@ access_server <- function(id) {
                  left_join(colour_CT, by = "group"),
                stroke_width = 10, stroke_colour = "#FFFFFF", 
                fill_colour = "fill", update_view = FALSE, id = "ID", 
-               auto_highlight = TRUE, highlight_colour = "#FFFFFF90")
+               auto_highlight = TRUE, highlight_colour = "#FFFFFF90"#,
+               # palette = access_colour(c(0, 0.2, 0.4, 0.6, 0.8, 1))
+               )
       })
+    
+    # Enable or disable inputs
+    observeEvent(rv_access$poly_selected, {
+      if (is.na(rv_access$poly_selected)) {
+        shinyjs::show("left_1-var") 
+        shinyjs::hide("slider")
+      } else {
+        shinyjs::show("slider")
+        shinyjs::hide("left_1-var")
+      }
+    })
     
     # Left variable servers
     var_left_1 <- select_var_server("left_1", reactive(var_list_left_access_1))
@@ -88,46 +106,62 @@ access_server <- function(id) {
       if (is.null(lst$object$properties$id)) {
         rv_access$poly_selected <- NA
       } else rv_access$poly_selected <- lst$object$properties$id
+      print("POLY_SELECTED")
+      print(rv_access$poly_selected)
     })
     
     # Update map in response to poly_selected change
-    observeEvent(rv_access$poly_selected, {
+    observeEvent({
+      rv_access$poly_selected
+      var_left_2()
+      input$slider}, {
       if (!is.na(rv_access$poly_selected)) {
         
-        width <- 10
-        tt_threshold <- 1800
+        tt_threshold <- input$slider * 60
         
         CTs_to_map <- 
-          tt_12_weekend |> 
-          filter(origin == rv_access$poly_selected, travel_time <= tt_threshold) |> 
-          mutate(tt_q3 = ntile(travel_time, 3)) |> 
+          tt_matrix |> 
+          filter(origin == rv_access$poly_selected, travel_time <= tt_threshold,
+                 timing == var_left_2()) |> 
+          mutate(tt_q3 = ntile(travel_time, 3),
+                 tt_q3 = 4 - tt_q3) |> 
           select(destination, tt_q3) |> 
           mutate(destination = as.character(destination)) |> 
           mutate(group = paste0(tt_q3, " - 1")) |> 
-          left_join(colour_CT, by = "group")
-        
-        print("CTs_to_map")
-        print(CTs_to_map)
-        print("data")
-        print(data())
-        
+          left_join(colour_DA, by = "group")
         
         data_to_add <-
           data() %>%
           select(ID) |> 
-          inner_join(CTs_to_map, by = c("ID" = "destination")) |> 
-          mutate(fill = substr(fill, 1, 7))
-
+          inner_join(CTs_to_map, by = c("ID" = "destination"))
+        
+        poly_to_add <-
+          data() %>%
+          filter(ID == rv_access$poly_selected) %>%
+          mutate(fill = "#FFFFFF33")
+        
         mapdeck_update(map_id = NS(id, "map")) %>%
           clear_polygon() %>%
           add_polygon(
-            data = data_to_add, stroke_width = 0.5, stroke_colour = "#FFFFFF",
+            data = CT, stroke_width = 10, stroke_colour = "#FFFFFF",
+            fill_colour = "#FFFFFF10", update_view = FALSE,
+            layer_id = "poly_bg", auto_highlight = TRUE,
+            highlight_colour = "#FFFFFF90") %>%
+          add_polygon(
+            data = data_to_add, stroke_width = 10, stroke_colour = "#FFFFFF",
             fill_colour = "fill", update_view = FALSE,
-            layer_id = "poly_highlight", auto_highlight = TRUE,
+            layer_id = "poly_iso", auto_highlight = TRUE,
+            highlight_colour = "#FFFFFF90") %>%
+          add_polygon(
+            data = poly_to_add, fill_colour = "fill", stroke_width = 20,
+            stroke_colour = "#000000", update_view = FALSE, 
+            layer_id = "poly_highlight", auto_highlight = TRUE, 
             highlight_colour = "#FFFFFF90")
         } else {
-        mapdeck_update(map_id = NS(id, "map")) %>%
-          clear_polygon(layer_id = "poly_highlight")
+          mapdeck_update(map_id = NS(id, "map")) %>%
+            clear_polygon(layer_id = "poly_bg") %>%
+            clear_polygon(layer_id = "poly_iso") %>%
+            clear_polygon(layer_id = "poly_highlight")
         }
       })
 

@@ -25,8 +25,8 @@ suppressPackageStartupMessages({
 
 # Shiny options -----------------------------------------------------------
 
-shinyOptions(cache = cachem::cache_disk("./app-cache"))
 options(shiny.trace = FALSE) # Set TRUE for debugging
+
 
 # Data --------------------------------------------------------------------
 
@@ -43,6 +43,7 @@ qload("data/covid.qsm")
 green_space <- qread("data/green_space.qs")
 qload("data/alleys.qsm")
 crash <- qread("data/crash.qs")
+tt_matrix <- qread("data/tt_matrix.qs")
 
 min_census_year <- "1996"
 current_census <- "2016"
