@@ -16,16 +16,16 @@ alley_UI <- function(id) {
                                column(width = 5, align = "right", 
                                       actionLink(inputId = NS(id, "hide"), 
                                                  label = i18n$t("Hide")))),
+                      shinyjs::useShinyjs(), # Needed to hide panels
+                      uiOutput(NS(id, "alley_explore")),
                       # conditionalPanel(
-                      #   condition = "output.hide_status == 1", ns = NS(id),
-                        uiOutput(NS(id, "alley_explore")),
-                        # conditionalPanel(
-                        #   condition = "output.poly_selected == 1", ns = NS(id),
-                        #   actionLink(inputId = NS(id, "clear_selection"),
-                        #              label = "Clear selection")))
-                      # ,
-                      dyk_UI(NS(id, "dyk"))),
-          legend_bivar_UI(NS(id, "alley")))
+                      #   condition = "output.poly_selected == 1", ns = NS(id),
+                      #   actionLink(inputId = NS(id, "clear_selection"),
+                      #              label = "Clear selection"))),
+                      # dyk_UI(NS(id, "dyk"))),
+          )
+          # legend_bivar_UI(NS(id, "alley"))
+  )
 }
 
 
@@ -65,16 +65,12 @@ alley_server <- function(id) {
                                  input$map_view_change$zoom >= 11.5 ~ 50,
                                  TRUE ~ width_alley_higher_zoom)
     })
-    # 
-    # Compare panel
-    # var_right <- compare_server("alley", var_list_alley,
-    #                                    reactive(rv_alley$zoom))
-    
+
     # Explore panel
     output$alley_explore <- renderUI({
       
       if (rv_alley$poly_selected %in% alley_text$ID) {
-      
+        
         text_to_display <- 
           alley_text %>%
           filter(ID == rv_alley$poly_selected) %>% 
@@ -137,7 +133,7 @@ alley_server <- function(id) {
           st_drop_geometry() %>% 
           filter(ID == rv_alley$poly_selected) %>% 
           mutate(name = str_glue(sus_translate(paste0("<p><b>{str_to_title(name)} in ",
-                                 "{name_2}</b></p>")))) %>% 
+                                                      "{name_2}</b></p>")))) %>% 
           select(-ID, -CSDUID, -visited, -name_2, -fill) %>% 
           select_if(~sum(!is.na(.)) > 0) %>% 
           {if (nrow(.) >0) as.list(.) else NULL}
@@ -181,9 +177,9 @@ alley_server <- function(id) {
         
         if (!is.null(text_to_display$photo_ID)) {
           text_to_display$photo_ID =
-              str_glue(
-                sus_translate(
-                  paste0('<p><img src = "alleys/{original_list$photo_ID}", ',
+            str_glue(
+              sus_translate(
+                paste0('<p><img src = "alleys/{original_list$photo_ID}", ',
                        'alt = "Photo of the selected green alley", ',
                        'style = "max-width: 100%;"></p>')))
         }
@@ -196,35 +192,24 @@ alley_server <- function(id) {
       
     })
     
-    # outputOptions(output, "alley_explore", suspendWhenHidden = FALSE)
-    
-    # Did-you-know panel
-    # dyk_server("dyk", reactive("alley_ind"), var_right)
-    
-    # # Left map
-    # small_map_server("left", reactive(paste0(
-    #   "left_", sub("_2", "", rv_canale$zoom), "_canale_ind")))
-    
-    # Bivariate legend
-    # legend_bivar_server("alley", var_right)
-    
     # Update map in response to user input
     observeEvent({input$focus_visited
-                 rv_alley$zoom},{
-      if (input$focus_visited) {
-        mapdeck_update(map_id = NS(id, "map")) %>%
-          clear_polygon(layer_id = "borough") %>% 
-          # clear_polygon(layer_id = "alleys") %>% 
-          add_polygon(data = alleys[!alleys$visited,],
-                      stroke_width = 15, stroke_colour = "#CFCFCF",
-                      fill_colour = "#CFCFCF", layer_id = "alleys_void",
-                      update_view = FALSE, id = "ID", auto_highlight = FALSE) %>%
-          add_polygon(data = alleys[alleys$visited,],
-                      stroke_width = rv_alley$zoom, stroke_colour = "fill",
-                      layer_id = "alleys_visited",
-                      update_view = FALSE, id = "ID", auto_highlight = TRUE,
-                      highlight_colour = "#FFFFFF90",
-                      legend = alley_legend_en)
+      rv_alley$zoom},{
+        if (input$focus_visited) {
+          mapdeck_update(map_id = NS(id, "map")) %>%
+            clear_polygon(layer_id = "borough") %>%
+            clear_polygon(layer_id = "poly_highlight") %>% 
+            # clear_polygon(layer_id = "alleys") %>% 
+            add_polygon(data = alleys[!alleys$visited,],
+                        stroke_width = 15, stroke_colour = "#CFCFCF",
+                        fill_colour = "#CFCFCF", layer_id = "alleys_void",
+                        update_view = FALSE, id = "ID", auto_highlight = FALSE) %>%
+            add_polygon(data = alleys[alleys$visited,],
+                        stroke_width = rv_alley$zoom, stroke_colour = "fill",
+                        layer_id = "alleys_visited",
+                        update_view = FALSE, id = "ID", auto_highlight = TRUE,
+                        highlight_colour = "#FFFFFF90",
+                        legend = alley_legend_en)
         } else {
           # Exact same as the initial
           mapdeck_update(map_id = NS(id, "map")) %>%
@@ -247,7 +232,7 @@ alley_server <- function(id) {
                         highlight_colour = "#FFFFFF90")
           
         }
-
+        
       })
     
     # Update poly_selected on click
@@ -258,40 +243,57 @@ alley_server <- function(id) {
       } else rv_alley$poly_selected <- lst$object$properties$id
     })
     
-    # # Clear poly_selected on zoom
+    # # Clear poly_selected when input$focus_visited is clicked
     observeEvent(input$focus_visited, {rv_alley$poly_selected <- NA},
                  ignoreInit = TRUE)
     
     # Update map in response to poly_selected change
     observeEvent(rv_alley$poly_selected, {
+        
+        #If not lags when an alley is selected
+        if (rv_alley$poly_selected %in% alley_text$ID || 
+            is.na(rv_alley$poly_selected)) {
+          
+          if (!is.na(rv_alley$poly_selected)) {
+            # width <- switch(rv_canale$zoom, "borough" = 100, "CT" = 10, 2)
+            data_to_add <-
+              borough %>%
+              filter(ID == rv_alley$poly_selected)
+            
+            mapdeck_update(map_id = NS(id, "map")) %>%
+              add_polygon(
+                data = data_to_add, stroke_width = 10, stroke_colour = "#000000",
+                fill_colour = "#00770030", update_view = FALSE,
+                layer_id = "poly_highlight", auto_highlight = TRUE,
+                highlight_colour = "#FFFFFF02")
+          } else {
+            mapdeck_update(map_id = NS(id, "map")) %>%
+              clear_polygon(layer_id = "poly_highlight")
+          }
+          
+        }
+      })
+    
+    # Hide explore panel
+    observeEvent(input$hide, {
       
-      #If not lags when an alley is selected
-      if (rv_alley$poly_selected %in% alley_text$ID) {
-        
-      if (!is.na(rv_alley$poly_selected)) {
-        # width <- switch(rv_canale$zoom, "borough" = 100, "CT" = 10, 2)
-        data_to_add <-
-          borough %>%
-          filter(ID == rv_alley$poly_selected)
-        
-        mapdeck_update(map_id = NS(id, "map")) %>%
-          add_polygon(
-            data = data_to_add, stroke_width = 10, stroke_colour = "#000000",
-            fill_colour = "#00770030", update_view = FALSE,
-            layer_id = "poly_highlight", auto_highlight = TRUE,
-            highlight_colour = "#FFFFFF02")
-      } else {
-        mapdeck_update(map_id = NS(id, "map")) %>%
-          clear_polygon(layer_id = "poly_highlight")
+      if(input$hide %% 2 == 0){
+        shinyjs::show(id = "alley_explore")
+        txt <- sus_translate("Hide")
+      }else{
+        shinyjs::hide(id = "alley_explore")
+        txt <- sus_translate("Show")
       }
-        
-      }
+      updateActionButton(session, "hide", label = txt)
+      
     })
+    
     
     # # Clear click status if prompted
     # # (Namespacing hardwired to explore module; could make it return a reactive)
     # observeEvent(input$`explore-clear_selection`, {
     #   rv_alley$poly_selected <- NA})
+    
     
   })
 }
