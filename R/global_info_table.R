@@ -79,6 +79,8 @@ make_info_table_data <- function(id, x, var_type, var_left, var_right, select,
   if (var_right != " ") {
     val_right <- selection$right_var
     out$val_right <- convert_unit(val_right, var_right)
+    if (grepl("_multi", var_type())) out$val_right <- 
+      convert_unit(val_right, "_prop")
   }
   
   
@@ -178,7 +180,7 @@ make_info_table_data <- function(id, x, var_type, var_left, var_right, select,
   
   ## Descriptive statistics for univariate quant selection ---------------------
   
-  if (var_type() %in% c("uni_quant_select", "uni_quant_select_multi")) {
+  if (grepl("uni_quant_select", var_type())) {
     
     quintile <- quantile(vec_left, c(0.2, 0.4, 0.6, 0.8))
 
@@ -230,7 +232,7 @@ make_info_table_data <- function(id, x, var_type, var_left, var_right, select,
   
   ## Descriptive statistics for univariate qual selection ----------------------
   
-  if (var_type() == "uni_qual_select") {
+  if (grepl("uni_qual_select", var_type())) {
     out$val_left <- 
       tolower(var_left_label[names(var_left_label) == round(val_left)])
     out$other_with_val <- 
@@ -268,7 +270,7 @@ make_info_table_data <- function(id, x, var_type, var_left, var_right, select,
   
   ## Descriptive statistics for bivariate quantxy selection --------------------
   
-  if (var_type() == "bi_quantxy_select") {
+  if (grepl("bi_quantxy_select", var_type())) {
    
     vec_1 <- dat$left_var
     vec_2 <- dat$right_var

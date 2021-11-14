@@ -55,8 +55,8 @@ explore_var_type <- function(id, x, var_left, var_right, select,
     table_type <- paste(comp_type, var_type, select_type, sep = "_")
     if (select_type == "na") table_type <- paste0(comp_type, "_na")
     if (multi) table_type <- paste0(table_type, "_multi")
-    
-    table_type
+    table_type <- unique(table_type)
+    return(table_type)
   })
 
 }

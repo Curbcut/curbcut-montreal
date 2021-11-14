@@ -30,18 +30,10 @@ info_table_server <- function(id, x, var_type, var_left, var_right, select,
       
       ## Get data list ---------------------------------------------------------
       
-      print("VAR_LEFT")
-      print(var_left())
-      print("VAR_RIGHT")
-      print(var_right())
-      
       z <- make_info_table_data(id, x, var_type, var_left, var_right, select, 
                                 zoom, var_left_label, var_right_label, 
                                 build_str_as_DA)
 
-      print("DATA_LIST")
-      print(z)
-      
       
       ## Handle NAs ------------------------------------------------------------
       
@@ -128,7 +120,7 @@ info_table_server <- function(id, x, var_type, var_left, var_right, select,
       
       # Univariate, qualitative, no selection
       if (z$var_type == "uni_qual_all_multi") out <- paste0(
-        "At the {z$scale_sing} scale, {z$exp_left} varies from ",
+        "TKTK At the {z$scale_sing} scale, {z$exp_left} varies from ",
         "'{z$min_val}' to '{z$max_val}'. A {z$majority} of {z$scale_plural} ",
         "({z$mode_prop}) have a value of '{z$mode_val}', while ",
         "{z$mode_prop_2} have a value of '{z$mode_val_2}'.")
@@ -136,7 +128,7 @@ info_table_server <- function(id, x, var_type, var_left, var_right, select,
       # Univariate, qualitative, valid selection
       if (z$var_type == "uni_qual_select_multi") out <- paste0(
         "<strong>{z$place_heading}</strong>",
-        "<p>{z$place_name} has a population of {z$pop} and a ",
+        "<p>TKTK {z$place_name} has a population of {z$pop} and a ",
         "'{z$title_left}' value of '{z$val_left}', which is shared by ",
         "{z$other_with_val} of {z$scale_plural} in the Montreal region.")
       
@@ -211,13 +203,88 @@ info_table_server <- function(id, x, var_type, var_left, var_right, select,
         "higher than {z$perc} of other {z$scale_plural} with ",
         "{sub('^the', 'a', z$exp_left)} of '{z$val_left}' in the ",
         "Montreal region.")
+
+            
+      ## Bivariate multi-date cases --------------------------------------------
+      
+      # Bivariate, quantitative, no selection
+      if (z$var_type == "bi_quantxy_all_multi") {
+        # If correlation is close to zero
+        if (z$correlation < 0.05 && z$correlation > -0.05) {
+          out <- paste0(
+            "<p>From {z$start_date_left} to {z$end_date_left}, the change in ", 
+            "'{z$title_left}' had effectively no correlation ({z$corr_disp}) ", 
+            "with the change in '{z$title_right}' at the {z$scale_sing} scale.",
+            "<p>This means that, at the {z$scale_sing} scale, there was no ",
+            "relationship between the change in the two variables.")
+        } else {
+          out <- paste0(
+            if (z$strong == sus_translate("strong")) 
+              "<p><b>STRONG CORRELATION</b></p>",
+            "<p>From {z$start_date_left} to {z$end_date_left}, the change in ", 
+            "'{z$title_left}' had a {z$strong} {z$pos} ",
+            "correlation ({z$corr_disp}) with the change in '{z$title_right}' ", 
+            "at the {z$scale_sing} scale.",
+            "<p>This means that, in general, {z$scale_plural} with a higher ",
+            "change in {z$exp_left} tended to have a {z$higher} change in ",
+            "{z$exp_right}, {z$high_low_disclaimer}.")
+        }
+      }
+      
+      # Bivariate, quantitative, valid selection
+      if (z$var_type == "bi_quantxy_select_multi") out <- paste0(
+        "<strong>{z$place_heading}</strong>",
+        "<p>From {z$start_date_left} to {z$end_date_left}, {z$place_name} had",
+        "a change in its '{z$title_left}' value of {z$val_left}, ",
+        "and a change in its '{z$title_right}' value of {z$val_right}. ",
+        "<p>These two scores are {z$relative_position}, in relative ",
+        "terms. {z$place_name} had a change in {z$exp_left} higher ",
+        "than {z$perc_left} of {z$scale_plural} and ",
+        "a change in {z$exp_right} higher than {z$perc_right} ",
+        "of {z$scale_plural} in the Montreal region.")
+      
+      # Bivariate, qualitative x, quantitative y, no selection
+      if (z$var_type == "bi_quanty_all_multi") {
+        # If correlation is close to zero
+        if (z$correlation < 0.05 && z$correlation > -0.05) {
+          out <- paste0(
+            "<p>From {z$start_date_left} to {z$end_date_left}, the change in ", 
+            "'{z$title_left}' had effectively no correlation ", 
+            "(Spearman's rho: {z$corr_disp}) ", 
+            "with the change in '{z$title_right}' at the {z$scale_sing} scale.",
+            "<p>This means that, at the {z$scale_sing} scale, there was no ",
+            "relationship between the change in the two variables.")
+        } else {
+          out <- paste0(
+            if (z$strong == sus_translate("strong")) 
+              "<p><b>STRONG CORRELATION</b></p>",
+            "<p>From {z$start_date_left} to {z$end_date_left}, the change in ", 
+            "'{z$title_left}' had a {z$strong} {z$pos} ",
+            "correlation (Spearman's rho: {z$corr_disp}) with the change in ", 
+            "'{z$title_right}' at the {z$scale_sing} scale.",
+            "<p>This means that, in general, {z$scale_plural} with a higher ",
+            "change in {z$exp_left} tended to have a {z$higher} change in ",
+            "{z$exp_right}, {z$high_low_disclaimer}.")
+        }
+      }
+      
+      # Bivariate, qualitative x, quantitative y, valid selection
+      if (z$var_type == "bi_quanty_select_multi") out <- paste0(
+        "<strong>{z$place_heading}</strong>",
+        "<p>TKTK {z$place_name} has a population of {z$pop}, ",
+        "a '{z$title_left}' value of '{z$val_left}', and a ",
+        "'{z$title_right}' value of {z$val_right}. ",
+        "<p>{z$place_name} has {sub('^the', 'a', z$exp_right)} ",
+        "higher than {z$perc} of other {z$scale_plural} with ",
+        "{sub('^the', 'a', z$exp_left)} of '{z$val_left}' in the ",
+        "Montreal region.")
       
       
       ## Append date information -----------------------------------------------
       
       date_left <- str_extract(var_left(), "(?<=_)\\d{4}$")
       date_right <- str_extract(var_right(), "(?<=_)_\\d{4}$")
-      if (var_right() == " ") date_right <- date_left
+      if (length(var_right()) == 1 && var_right() == " ") date_right <- date_left
       # TEMPORARILY EXCLUDE MULTIPLE DATES TKTK
       if (length(date_left) > 1 || is.na(date_left) || is.na(date_right)) 
         date_left <- "NA"
