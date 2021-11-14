@@ -165,6 +165,16 @@ alley_text <-
   mutate(first_alley = as.numeric(first_alley)) %>% 
   select(-description)
 
+# Add total lengths of green alleys to boroughs
+alley_text <- 
+  alley_text %>% 
+  inner_join(st_drop_geometry(alleys %>% 
+                                st_cast("MULTILINESTRING") %>% 
+                                mutate(length = st_length(geometry)/2) %>% 
+                                group_by(CSDUID) %>%
+                                summarize(ga_length = round(units::drop_units(sum(length))))),
+             by = c("ID" = "CSDUID")) %>% 
+  relocate(ga_length, .before = first_alley)
 
 # Clean up ----------------------------------------------------------------
 

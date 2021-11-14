@@ -86,11 +86,17 @@ alley_server <- function(id) {
           text_to_display$name = 
             str_glue(sus_translate(paste0("<p><b>{original_list$name}</b></p>")))
         } 
+        # GREEN ALLEY LENGTH
+        if (!is.null(text_to_display$ga_length)) {
+          text_to_display$ga_length = 
+            str_glue(sus_translate(paste0("<p>There are {prettyNum(original_list$ga_length, ',')} meters of green alleys in ",
+                                          "{original_list$name}.</p>")))
+        } 
         # FIRST INAUGURATION
         if (!is.null(text_to_display$first_alley)) {
           text_to_display$first_alley = 
-            str_glue(sus_translate(paste0("<p>The first green alley inauguration in ",
-                                          "{original_list$name} was in {original_list$first_alley}.</p>")))
+            str_glue(sus_translate(paste0("<p>The first green alley inauguration ",
+                                          "in this borough was in {original_list$first_alley}.</p>")))
         } 
         # APPLICATION PROCESS
         if (!is.null(text_to_display$app_process)) {
@@ -215,7 +221,7 @@ alley_server <- function(id) {
           mapdeck_update(map_id = NS(id, "map")) %>%
             # For some reason, legend is sticky!
             clear_legend(layer_id = "alleys_visited") %>% 
-            clear_legend(layer_id = "alleys_void") %>% 
+            clear_polygon(layer_id = "alleys_visited") %>% 
             add_polygon(data = borough[borough$ID %in% alley_text$ID,], 
                         stroke_width = 10, stroke_colour = "#000000",
                         fill_colour = "#FFFFFF10", update_view = FALSE, id = "ID",
