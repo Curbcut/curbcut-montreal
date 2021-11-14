@@ -178,7 +178,7 @@ make_info_table_data <- function(id, x, var_type, var_left, var_right, select,
   
   ## Descriptive statistics for univariate quant selection ---------------------
   
-  if (var_type() == "uni_quant_select") {
+  if (var_type() %in% c("uni_quant_select", "uni_quant_select_multi")) {
     
     quintile <- quantile(vec_left, c(0.2, 0.4, 0.6, 0.8))
 
@@ -198,6 +198,9 @@ make_info_table_data <- function(id, x, var_type, var_left, var_right, select,
 
     out$percentile <- convert_unit(length(vec_left[vec_left <= val_left]) / 
                                      length(vec_left), "_prop")
+    
+    out$increase <- if (val_left >= 0) sus_translate("increased") else
+      sus_translate("decreased")
     
     }
   

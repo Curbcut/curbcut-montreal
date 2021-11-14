@@ -30,17 +30,17 @@ info_table_server <- function(id, x, var_type, var_left, var_right, select,
       
       ## Get data list ---------------------------------------------------------
       
-      # print("VAR_LEFT")
-      # print(var_left())
-      # print("VAR_RIGHT")
-      # print(var_right())
+      print("VAR_LEFT")
+      print(var_left())
+      print("VAR_RIGHT")
+      print(var_right())
       
       z <- make_info_table_data(id, x, var_type, var_left, var_right, select, 
                                 zoom, var_left_label, var_right_label, 
                                 build_str_as_DA)
 
-      # print("DATA_LIST")
-      # print(z)
+      print("DATA_LIST")
+      print(z)
       
       
       ## Handle NAs ------------------------------------------------------------
@@ -104,7 +104,7 @@ info_table_server <- function(id, x, var_type, var_left, var_right, select,
         "{z$other_with_val} of {z$scale_plural} in the Montreal region.")
 
       
-      ## Univariate mutli-date cases -------------------------------------------
+      ## Univariate multi-date cases -------------------------------------------
       
       # Univariate, quantitative, no selection
       if (z$var_type == "uni_quant_all_multi") out <- paste0(
@@ -118,11 +118,12 @@ info_table_server <- function(id, x, var_type, var_left, var_right, select,
       # Univariate, quantitative, valid selection
       if (z$var_type == "uni_quant_select_multi") out <- paste0(
         "<strong>{z$place_heading}</strong>",
-        "<p>{z$place_name} has a population of {z$pop} and a ", 
-        "'{z$title_left}' score ({z$exp_left}) of {z$val_left}, which is ", 
-        "{z$larger} the region-wide median of {z$median_val}.",
-        "<p>{z$place_name} has a {z$high} relative score for this ", 
-        "indicator, with {sub('^the', 'a', z$exp_left)} higher than ", 
+        "<p>{sub('^t', 'T', z$exp_left)} in {z$place_name} ",
+        "{z$increase} by {sub('-', '', z$val_left)} between ",
+        "{z$start_date_left} and {z$end_date_left}, which is {z$larger} ",
+        "the region-wide median change of {z$median_val}.",
+        "<p>{z$place_name} had a {z$high} relative change for this ",
+        "indicator, with a change in {z$exp_left} larger than ",
         "{z$percentile} of {z$scale_plural} in the Montreal region.")
       
       # Univariate, qualitative, no selection
