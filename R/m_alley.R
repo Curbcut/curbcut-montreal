@@ -10,8 +10,8 @@ alley_UI <- function(id) {
                                   label = i18n$t("Focus on green alleys visited by our team"), 
                                   right = TRUE)),
           right_panel(id, 
-                      compare_UI(NS(id, "alley"), var_list_alley),
-                      hr(),
+                      # compare_UI(NS(id, "alley"), var_list_alley),
+                      # hr(),
                       fluidRow(column(width = 7, h4(i18n$t("Explore"))),
                                column(width = 5, align = "right", 
                                       actionLink(inputId = NS(id, "hide"), 
@@ -58,6 +58,7 @@ alley_server <- function(id) {
                     highlight_colour = "#FFFFFF90")
     })
     
+    # MAYBE UPDATE SIZE OF VISITED ALLEYS DEPENDING ON ZOOM
     # # Zoom level
     # observeEvent(input$map_view_change$zoom, {
     #   rv_alley$zoom <- case_when(input$map_view_change$zoom >= 14 ~ "DA_2",
@@ -67,8 +68,8 @@ alley_server <- function(id) {
     # })
     # 
     # Compare panel
-    var_right <- compare_server("alley", var_list_alley,
-                                       reactive(rv_alley$zoom))
+    # var_right <- compare_server("alley", var_list_alley,
+    #                                    reactive(rv_alley$zoom))
     
     # Explore panel
     output$alley_explore <- renderUI({
@@ -196,17 +197,17 @@ alley_server <- function(id) {
       
     })
     
-    outputOptions(output, "alley_explore", suspendWhenHidden = FALSE)
+    # outputOptions(output, "alley_explore", suspendWhenHidden = FALSE)
     
     # Did-you-know panel
-    dyk_server("dyk", reactive("alley_ind"), var_right)
+    # dyk_server("dyk", reactive("alley_ind"), var_right)
     
     # # Left map
     # small_map_server("left", reactive(paste0(
     #   "left_", sub("_2", "", rv_canale$zoom), "_canale_ind")))
     
     # Bivariate legend
-    legend_bivar_server("alley", var_right)
+    # legend_bivar_server("alley", var_right)
     
     # Update map in response to user input
     observeEvent(input$focus_visited, {
@@ -258,8 +259,8 @@ alley_server <- function(id) {
     })
     
     # # Clear poly_selected on zoom
-    # observeEvent(rv_alley$zoom, {rv_alley$poly_selected <- NA},
-    #              ignoreInit = TRUE)
+    observeEvent(input$focus_visited, {rv_alley$poly_selected <- NA},
+                 ignoreInit = TRUE)
     
     # Update map in response to poly_selected change
     observeEvent(rv_alley$poly_selected, {
