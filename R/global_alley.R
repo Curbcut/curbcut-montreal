@@ -5,7 +5,8 @@ token_alley <- paste0("pk.eyJ1IjoiZHdhY2hzbXV0aCIsImEiOiJja2g2Y2JpbDc",
                       "wMDc5MnltbWpja2xpYTZhIn0.BXdU7bsQYWcSwmmBx8DNqQ")
 
 # Initialize reactive values
-rv_alley <- reactiveValues(poly_selected = NA, zoom = "borough")
+width_alley_higher_zoom <- 75
+rv_alley <- reactiveValues(poly_selected = NA, zoom = width_alley_higher_zoom)
 
 # Dropdown menu
 var_list_alley <- 

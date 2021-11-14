@@ -41,7 +41,7 @@ alley_server <- function(id) {
     output$map <- renderMapdeck({
       mapdeck(
         style = map_style, token = token_alley,
-        zoom = map_zoom, location = map_location) %>%
+        zoom = 11, location = map_location) %>%
         add_polygon(data = borough[borough$ID %in% alley_text$ID,], 
                     stroke_width = 10, stroke_colour = "#000000",
                     fill_colour = "#FFFFFF10", update_view = FALSE, id = "ID",
@@ -58,14 +58,13 @@ alley_server <- function(id) {
                     highlight_colour = "#FFFFFF90")
     })
     
-    # MAYBE UPDATE SIZE OF VISITED ALLEYS DEPENDING ON ZOOM
-    # # Zoom level
-    # observeEvent(input$map_view_change$zoom, {
-    #   rv_alley$zoom <- case_when(input$map_view_change$zoom >= 14 ~ "DA_2",
-    #                              input$map_view_change$zoom >= 12 ~ "DA",
-    #                              input$map_view_change$zoom >= 10.5 ~ "CT",
-    #                              TRUE ~ "borough")
-    # })
+    # Zoom level
+    observeEvent(input$map_view_change$zoom, {
+      rv_alley$zoom <- case_when(input$map_view_change$zoom >= 13 ~ 15,
+                                 input$map_view_change$zoom >= 12 ~ 30,
+                                 input$map_view_change$zoom >= 11.5 ~ 50,
+                                 TRUE ~ width_alley_higher_zoom)
+    })
     # 
     # Compare panel
     # var_right <- compare_server("alley", var_list_alley,
@@ -210,7 +209,8 @@ alley_server <- function(id) {
     # legend_bivar_server("alley", var_right)
     
     # Update map in response to user input
-    observeEvent(input$focus_visited, {
+    observeEvent({input$focus_visited
+                 rv_alley$zoom},{
       if (input$focus_visited) {
         mapdeck_update(map_id = NS(id, "map")) %>%
           clear_polygon(layer_id = "borough") %>% 
@@ -220,7 +220,7 @@ alley_server <- function(id) {
                       fill_colour = "#CFCFCF", layer_id = "alleys_void",
                       update_view = FALSE, id = "ID", auto_highlight = FALSE) %>%
           add_polygon(data = alleys[alleys$visited,],
-                      stroke_width = 15, stroke_colour = "fill",
+                      stroke_width = rv_alley$zoom, stroke_colour = "fill",
                       layer_id = "alleys_visited",
                       update_view = FALSE, id = "ID", auto_highlight = TRUE,
                       highlight_colour = "#FFFFFF90",
