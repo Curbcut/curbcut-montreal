@@ -111,6 +111,7 @@ interpolate_census <- function(new_data, principal_data) {
     st_intersection(., new_data) %>% 
     mutate(area_prop = st_area(geometry) / area) %>% 
     mutate(across(all_of(agg_list), ~{.x * units::drop_units(area_prop)})) %>% 
+    filter(units::drop_units(area_prop) > 0.02) %>% 
     group_by(ID.1) %>% 
     filter(sum(units::drop_units(area_prop)) >= 0.5) %>% 
     ungroup() %>% 
@@ -171,6 +172,7 @@ borough_census <-
   st_filter(DA_census_n, .) %>% 
   mutate(area_prop = st_area(geometry) / area) %>% 
   mutate(across(all_of(agg_list), ~{.x * units::drop_units(area_prop)})) %>% 
+  filter(units::drop_units(area_prop) > 0.02) %>% 
   select(-ID, -area, -area_prop) %>% 
   st_drop_geometry() %>% 
   group_by(ID = CSDUID) %>%

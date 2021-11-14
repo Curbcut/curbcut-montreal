@@ -375,6 +375,6 @@ street <-
 # Clean up ----------------------------------------------------------------
 
 rm(borough_CSD, borough_raw, census_geos, DA_data, grid_census, agg_list, 
-   avg_list, process_census_data, year_census)
+   avg_list, process_census_data, year_census, borough_raw)
 
 
