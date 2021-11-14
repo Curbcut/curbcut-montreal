@@ -79,36 +79,186 @@ tt_matrix <-
 var_exp <- 
   var_exp %>% 
   add_row(
-    var_code = "access_jobs_total",
-    var_name = "Total jobs",
+    var_code = "access_jobs_total_pwd",
+    var_name = "Total jobs (weekday peak)",
     explanation = 
-      "the total number of jobs accessible within 30 minutes") %>%
+      "the total number of jobs accessible within 30 minutes at weekday peak service") %>%
   add_row(
-    var_code = "access_jobs_low",
-    var_name = "Low-skill jobs",
+    var_code = "access_jobs_total_opwd",
+    var_name = "Total jobs (weekday off-peak)",
     explanation = 
-      "the number of low-skill jobs accessible within 30 minutes") %>%
+      "the total number of jobs accessible within 30 minutes at weekday off-peak service") %>%
   add_row(
-    var_code = "access_jobs_high",
-    var_name = "High-skill jobs",
+    var_code = "access_jobs_total_nwd",
+    var_name = "Total jobs (weekday night)",
     explanation = 
-      "the number of high-skill jobs accessible within 30 minutes") %>%
+      "the total number of jobs accessible within 30 minutes at weekday night service") %>%
   add_row(
-    var_code = "access_jobs_30k",
-    var_name = "Low-income jobs",
+    var_code = "access_jobs_total_pwe",
+    var_name = "Total jobs (weekend peak)",
     explanation = 
-      "the number of jobs paying $30,000 or less accessible within 30 minutes"
-    ) %>%
+      "the total number of jobs accessible within 30 minutes at weekend peak service") %>%
   add_row(
-    var_code = "access_schools",
-    var_name = "Schools",
-    explanation = "the number of schools accessible within 30 minutes") %>%
-  add_row(
-    var_code = "access_healthcare",
-    var_name = "Healthcare facilities",
+    var_code = "access_jobs_total_opwe",
+    var_name = "Total jobs (weekend off-peak)",
     explanation = 
-      "the number of healthcare facilities accessible within 30 minutes")
-
+      "the total number of jobs accessible within 30 minutes at weekend off-peak service") %>%
+  add_row(
+    var_code = "access_jobs_total_nwe",
+    var_name = "Total jobs (weekend night)",
+    explanation = 
+      "the total number of jobs accessible within 30 minutes at weekend night service") %>%
+  add_row(
+    var_code = "access_jobs_low_pwd",
+    var_name = "Low-skill jobs (weekday peak)",
+    explanation = 
+      "the number of low-skill jobs accessible within 30 minutes at weekday peak service") %>%
+  add_row(
+    var_code = "access_jobs_low_opwd",
+    var_name = "Low-skill jobs (weekday off-peak)",
+    explanation = 
+      "the number of low-skill jobs accessible within 30 minutes at weekday off-peak service") %>%
+  add_row(
+    var_code = "access_jobs_low_nwd",
+    var_name = "Low-skill jobs (weekday night)",
+    explanation = 
+      "the number of low-skill jobs accessible within 30 minutes at weekday night service") %>%
+  add_row(
+    var_code = "access_jobs_low_pwe",
+    var_name = "Low-skill jobs (weekend peak)",
+    explanation = 
+      "the number of low-skill jobs accessible within 30 minutes at weekend peak service") %>%
+  add_row(
+    var_code = "access_jobs_low_opwe",
+    var_name = "Low-skill jobs (weekend off-peak)",
+    explanation = 
+      "the number of low-skill jobs accessible within 30 minutes at weekend off-peak service") %>%
+  add_row(
+    var_code = "access_jobs_low_nwe",
+    var_name = "Low-skill jobs (weekend night)",
+    explanation = 
+      "the number of low-skill jobs accessible within 30 minutes at weekend night service") %>%
+  add_row(
+    var_code = "access_jobs_high_pwd",
+    var_name = "High-skill jobs (weekday peak)",
+    explanation = 
+      "the number of high-skill jobs accessible within 30 minutes at weekday peak service") %>%
+  add_row(
+    var_code = "access_jobs_high_opwd",
+    var_name = "High-skill jobs (weekday off-peak)",
+    explanation = 
+      "the number of high-skill jobs accessible within 30 minutes at weekday off-peak service") %>%
+  add_row(
+    var_code = "access_jobs_high_nwd",
+    var_name = "High-skill jobs (weekday night)",
+    explanation = 
+      "the number of high-skill jobs accessible within 30 minutes at weekday night service") %>%
+  add_row(
+    var_code = "access_jobs_high_pwe",
+    var_name = "High-skill jobs (weekend peak)",
+    explanation = 
+      "the number of high-skill jobs accessible within 30 minutes at weekend peak service") %>%
+  add_row(
+    var_code = "access_jobs_high_opwe",
+    var_name = "High-skill jobs (weekend off-peak)",
+    explanation = 
+      "the number of high-skill jobs accessible within 30 minutes at weekend off-peak service") %>%
+  add_row(
+    var_code = "access_jobs_high_nwe",
+    var_name = "High-skill jobs (weekend night)",
+    explanation = 
+      "the number of high-skill jobs accessible within 30 minutes at weekend night service") %>%
+  add_row(
+    var_code = "access_jobs_30k_pwd",
+    var_name = "Low-income jobs (weekday peak)",
+    explanation = 
+      "the number of jobs paying less than $30,000 accessible within 30 minutes at weekday peak service") %>%
+  add_row(
+    var_code = "access_jobs_30k_opwd",
+    var_name = "Low-income jobs (weekday off-peak)",
+    explanation = 
+      "the number of jobs paying less than $30,000 accessible within 30 minutes at weekday off-peak service") %>%
+  add_row(
+    var_code = "access_jobs_30k_nwd",
+    var_name = "Low-income jobs (weekday night)",
+    explanation = 
+      "the number of jobs paying less than $30,000 accessible within 30 minutes at weekday night service") %>%
+  add_row(
+    var_code = "access_jobs_30k_pwe",
+    var_name = "Low-income jobs (weekend peak)",
+    explanation = 
+      "the number of jobs paying less than $30,000 accessible within 30 minutes at weekend peak service") %>%
+  add_row(
+    var_code = "access_jobs_30k_opwe",
+    var_name = "Low-income jobs (weekend off-peak)",
+    explanation = 
+      "the number of jobs paying less than $30,000 accessible within 30 minutes at weekend off-peak service") %>%
+  add_row(
+    var_code = "access_jobs_30k_nwe",
+    var_name = "Low-income jobs (weekend night)",
+    explanation = 
+      "the number of jobs paying less than $30,000 accessible within 30 minutes at weekend night service") %>%
+  add_row(
+    var_code = "access_schools_pwd",
+    var_name = "Schools (weekday peak)",
+    explanation = 
+      "the number of schools accessible within 30 minutes at weekday peak service") %>%
+  add_row(
+    var_code = "access_schools_opwd",
+    var_name = "Schools (weekday off-peak)",
+    explanation = 
+      "the number of schools accessible within 30 minutes at weekday off-peak service") %>%
+  add_row(
+    var_code = "access_schools_nwd",
+    var_name = "Schools (weekday night)",
+    explanation = 
+      "the number of schools accessible within 30 minutes at weekday night service") %>%
+  add_row(
+    var_code = "access_schools_pwe",
+    var_name = "Schools (weekend peak)",
+    explanation = 
+      "the number of schools accessible within 30 minutes at weekend peak service") %>%
+  add_row(
+    var_code = "access_schools_opwe",
+    var_name = "Schools (weekend off-peak)",
+    explanation = 
+      "the number of schools accessible within 30 minutes at weekend off-peak service") %>%
+  add_row(
+    var_code = "access_schools_nwe",
+    var_name = "Schools (weekend night)",
+    explanation = 
+      "the number of schools accessible within 30 minutes at weekend night service") %>%
+  add_row(
+    var_code = "access_healthcare_pwd",
+    var_name = "Healthcare (weekday peak)",
+    explanation = 
+      "the number of healthcare facilities accessible within 30 minutes at weekday peak service") %>%
+  add_row(
+    var_code = "access_healthcare_opwd",
+    var_name = "Healthcare (weekday off-peak)",
+    explanation = 
+      "the number of healthcare facilities accessible within 30 minutes at weekday off-peak service") %>%
+  add_row(
+    var_code = "access_healthcare_nwd",
+    var_name = "Healthcare (weekday night)",
+    explanation = 
+      "the number of healthcare facilities within 30 minutes at weekday night service") %>%
+  add_row(
+    var_code = "access_healthcare_pwe",
+    var_name = "Healthcare (weekend peak)",
+    explanation = 
+      "the number of healthcare facilities accessible within 30 minutes at weekend peak service") %>%
+  add_row(
+    var_code = "access_healthcare_opwe",
+    var_name = "Healthcare (weekend off-peak)",
+    explanation = 
+      "the number of healthcare facilities accessible within 30 minutes at weekend off-peak service") %>%
+  add_row(
+    var_code = "access_healthcare_nwe",
+    var_name = "Healthcare (weekend night)",
+    explanation = 
+      "the number of healthcare facilities accessible within 30 minutes at weekend night service")
+  
 
 # Clean up ----------------------------------------------------------------
 

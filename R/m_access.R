@@ -47,7 +47,7 @@ access_server <- function(id) {
     var_left_2 <- select_var_server("left_2", reactive(var_list_left_access_2))
     
     # Construct left variable string
-    var_left <- reactive(paste0("access_", var_left_1(), "_", var_left_2()))
+    var_left <- reactive(paste0(var_left_1(), "_", var_left_2()))
     
     # Compare panel
     var_right <- compare_server(id = "access", var_list = var_list_right_access,
@@ -60,7 +60,7 @@ access_server <- function(id) {
     # Explore panel
     explore_server(id = "explore", 
                    x = data, 
-                   var_left = var_left_1,
+                   var_left = var_left,
                    var_right = var_right, 
                    select = reactive(rv_access$poly_selected),
                    zoom = reactive("CT"), 
@@ -70,8 +70,7 @@ access_server <- function(id) {
     dyk_server("dyk", var_left, var_right)
 
     # Left map
-    small_map_server("left", reactive(paste0(
-      "left_CT_", var_left())))
+    small_map_server("left", reactive(paste0("left_CT_", var_left())))
     
     # Bivariate legend
     legend_bivar_server("access", var_right)
