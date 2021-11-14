@@ -22,7 +22,7 @@ explore_graph_server <- function(id, x, var_type, var_left, var_right, select,
     
     output$explore_graph <- renderPlot({
       
-      # Set convenience variables, and deal with build_str_as_DA ---------------
+      ## Deal with build_str_as_DA ---------------------------------------------
       
       if (!zoom() %in% c("building", "street")) build_str_as_DA <- FALSE
       
@@ -40,6 +40,9 @@ explore_graph_server <- function(id, x, var_type, var_left, var_right, select,
         select_id <- select()
       }
       
+      
+      ## Set convenience variables ---------------------------------------------
+      
       left_var_num <- length(unique(dat$left_var))
       bin_number <- min(25, left_var_num)
       var_left_title <- sus_translate(var_exp %>%
@@ -55,22 +58,26 @@ explore_graph_server <- function(id, x, var_type, var_left, var_right, select,
       
       # Decide on plot type
       if (plot_type == "auto") {
-        graph_type <- case_when(
-          var_right() == " " & grepl("_multi", var_type()) ~ "multi_uni",
-          var_right() != " " & grepl("_multi", var_type()) ~ "multi_bi",
-          var_right() == " " & left_var_num > 6 ~ "hist",
-          var_right() == " " & left_var_num <= 6 ~ "bar",
-          var_right() != " " & left_var_num > 6 ~ "scatter",
-          var_right() != " " & left_var_num <= 6 ~ "box")
+        graph_type <- unique(case_when(
+          var_right()[1] == " " & grepl("_multi", var_type()) ~ "multi_uni",
+          var_right()[1] != " " & grepl("_multi", var_type()) ~ "multi_bi",
+          var_right()[1] == " " & left_var_num > 6 ~ "hist",
+          var_right()[1] == " " & left_var_num <= 6 ~ "bar",
+          var_right()[1] != " " & left_var_num > 6 ~ "scatter",
+          var_right()[1] != " " & left_var_num <= 6 ~ "box"))
         
-        select_type <- case_when(is.na(select_id) ~ "all", 
-                                 na_select == 0 ~ "na",
-                                 TRUE ~ "select")
+        select_type <- unique(case_when(is.na(select_id) ~ "all", 
+                                        na_select == 0 ~ "na",
+                                        TRUE ~ "select"))
+        
         plot_type <- paste(graph_type, select_type, sep = "_")
         }
       
       # Prepare x scale
       x_scale <- case_when(
+        # Multi_bi
+        graph_type == "multi_bi" ~ 
+          list(scale_x_continuous(labels = scales::percent)),
         # Multi_uni, continuous scale, percent
         graph_type == "multi_uni" & stringr::str_detect(var_left(), "prop") ~
           list(scale_x_continuous(labels = scales::percent)),
@@ -99,9 +106,13 @@ explore_graph_server <- function(id, x, var_type, var_left, var_right, select,
         # Continuous scale, comma
         TRUE ~ list(scale_x_continuous(labels = scales::comma))
         )
+      x_scale <- unique(x_scale)
 
       # Prepare y scale
       y_scale <- case_when(
+        # Multi_bi
+        graph_type == "multi_bi" ~ 
+          list(scale_y_continuous(labels = scales::percent)),
         # Multi_uni, continuous scale, percent
         graph_type == "multi_uni" & stringr::str_detect(var_left(), "prop") ~ 
           list(scale_y_continuous(labels = scales::percent)),
@@ -123,6 +134,7 @@ explore_graph_server <- function(id, x, var_type, var_left, var_right, select,
         # Continuous scale, comma
         TRUE ~ list(scale_y_continuous(labels = scales::comma))
         )
+      y_scale <- unique(y_scale)
       
       # Prepare axis labels
       v_left_title <- 
@@ -133,6 +145,13 @@ explore_graph_server <- function(id, x, var_type, var_left, var_right, select,
                    str_extract(var_left(), "(?<=_)\\d{4}$")[1], ")"),
         y = paste0(var_left_title, " (", 
                    str_extract(var_left(), "(?<=_)\\d{4}$")[2], ")")))
+      if (graph_type == "multi_bi") labs_xy <- list(labs(
+        x = paste0(var_left_title, " (change ", 
+                   str_extract(var_left(), "(?<=_)\\d{4}$")[1], "-",
+                   str_extract(var_left(), "(?<=_)\\d{4}$")[2], ")"),
+        y = paste0(var_right_title, " (change ", 
+                   str_extract(var_right(), "(?<=_)\\d{4}$")[1], "-",
+                   str_extract(var_right(), "(?<=_)\\d{4}$")[2], ")")))
       
       # Prepare default theme
       theme_default <- list(
@@ -285,6 +304,67 @@ explore_graph_server <- function(id, x, var_type, var_left, var_right, select,
                       colour = "black", size = 0.5) +
           geom_point(aes(colour = group)) +
           scale_colour_manual(values = colours) +
+          x_scale + y_scale + labs_xy + theme_default
+      }
+      
+      # Multi-date univariate scatterplot, NA selection
+      if (plot_type == "multi_uni_na") {
+        
+        out <- ggplot(dat, aes(left_var_1, left_var_2)) +
+          geom_smooth(se = FALSE, method = "lm", formula = y ~ x, 
+                      colour = "black", size = 0.5) +
+          geom_point(colour = colour_bivar$fill[9]) +
+          x_scale + y_scale + labs_xy + theme_default
+      }
+      
+      # Multi-date univariate scatterplot, active selection
+      if (plot_type == "multi_uni_select") {
+        
+        out <- ggplot(dat, aes(left_var_1, left_var_2)) +
+          geom_point(colour = colour_bivar$fill[9]) +
+          geom_smooth(se = FALSE, method = "lm", formula = y ~ x, 
+                      colour = "black", size = 0.5) +
+          geom_point(data = filter(dat, ID == select_id),
+                     colour = colour_bivar$fill[1], size = 3) +
+          x_scale + y_scale + labs_xy + theme_default
+      }
+      
+      # Multi-date bivariate scatterplot, no selection
+      if (plot_type == "multi_bi_all") {
+        
+        opac <- abs(cor(dat$left_var, dat$right_var, use = "complete.obs"))
+        
+        out <- ggplot(dat, aes(left_var, right_var)) +
+          geom_point(aes(colour = group)) +
+          stat_smooth(geom = "line", se = FALSE, method = "loess", span = 1,
+                      formula = y ~ x, alpha = opac) +
+          scale_colour_manual(values = tibble::deframe(colour_bivar)) +
+          x_scale + y_scale + labs_xy + theme_default
+      }
+      
+      # Multi-date bivariate scatterplot, NA selection
+      if (plot_type == "multi_bi_na") {
+        
+        opac <- abs(cor(dat$left_var, dat$right_var, use = "complete.obs"))
+        
+        out <- ggplot(dat, aes(left_var, right_var)) +
+          geom_point(colour = colour_bivar$fill[9]) +
+          stat_smooth(geom = "line", se = FALSE, method = "loess", span = 1,
+                      formula = y ~ x, alpha = opac) +
+          x_scale + y_scale + labs_xy + theme_default
+      }
+      
+      # Multi-date bivariate scatterplot, active selection
+      if (plot_type == "multi_bi_select") {
+        
+        opac <- abs(cor(dat$left_var, dat$right_var, use = "complete.obs"))
+        
+        out <- ggplot(dat, aes(left_var, right_var)) +
+          geom_point(colour = colour_bivar$fill[9]) +
+          stat_smooth(geom = "line", se = FALSE, method = "loess", span = 1,
+                      formula = y ~ x, alpha = opac) +
+          geom_point(data = filter(dat, ID == select_id),
+                     colour = colour_bivar$fill[1], size = 3) +
           x_scale + y_scale + labs_xy + theme_default
       }
       
