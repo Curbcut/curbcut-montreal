@@ -11,15 +11,13 @@ points <-
   select(GeoUID, CT) |> 
   mutate(CT = if_else(nchar(CT) == 7, paste0(CT, ".00"), CT))
 
-feeds <- list.files("dev/data/tt_matrices")
-
+# feeds <- list.files("dev/data/tt_matrices")
+# 
 # tt_matrix <-
 #   map2_dfr(list(1:7, 8:14, 15:21, c(22, 24, 26, 28, 30, 32, 34),
 #                 c(23, 25, 27, 29, 31, 33, 35), 36:42),
-#            c("Weekend peak 12h00", "Weekday off-peak 14h00",
-#              "Weekend off-peak 18h00", "Weekday night 22h00",
-#              "Weekend night 22h00", "Weekday peak 8h00"), ~{
-#     read_csv(paste0("dev/data/tt_matrices/", feeds[.x]), 
+#            c("pwe", "opwd", "opwe", "nwd", "nwe", "pwd"), ~{
+#     read_csv(paste0("dev/data/tt_matrices/", feeds[.x]),
 #              show_col_types = FALSE) |>
 #       mutate(timing = .y)}) |>
 #   group_by(timing, origin, destination) |>
@@ -29,6 +27,8 @@ feeds <- list.files("dev/data/tt_matrices")
 #   select(timing, origin, destination, travel_time)
 # 
 # qsave(tt_matrix, file = "dev/data/tt_matrix.qs")
+# 
+# rm(feeds)
 
 tt_matrix <- qread("dev/data/tt_matrix.qs")
 
@@ -69,9 +69,9 @@ CT <-
 tt_matrix <- 
   tt_matrix |> 
   left_join(points, by = c("origin" = "GeoUID")) |> 
-  select(origin = CT, destination, travel_time) |> 
+  select(timing, origin = CT, destination, travel_time) |> 
   left_join(points, by = c("destination" = "GeoUID")) |> 
-  select(origin, destination = CT, travel_time)
+  select(timing, origin, destination = CT, travel_time)
 
 
 # Add variable explanations -----------------------------------------------
@@ -262,6 +262,6 @@ var_exp <-
 
 # Clean up ----------------------------------------------------------------
 
-rm(access, data_long, feeds, points)
+rm(access, data_long, points)
 
 # To save output, run dev/build_data.R, which calls this script

@@ -53,3 +53,6 @@ var_list_right_access <-
 var_list_right_access[-1] <-
   var_list_right_access[-1] %>%
   purrr::modify_depth(2, paste0, "_", current_census)
+
+access_colour <- colorRamp(colour_scale[1:3])
+
