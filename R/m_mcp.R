@@ -4,8 +4,18 @@
 
 mcp_UI <- function(id) {
   tabItem(tabName = "mcp", 
+          #Only change the size of photos in this module
+          tags$head(tags$style(
+            HTML('
+      .mcp_module img {
+                  margin:10px;
+                  margin-top:0px
+      }
+    ')
+          )),
           select_var_UI(NS(id, "left"), var_list_left_mcp),
-          htmlOutput(NS(id, "mcp_output")))
+          htmlOutput(NS(id, "mcp_output"),
+                     style = "max-width: 1000px;"))
 }
 
 
@@ -18,9 +28,12 @@ mcp_server <- function(id) {
     
     
     output$mcp_output <- renderUI(
-        includeHTML(paste0("www/mcp/", left_var_mcp(), "_",
-                           sus_reactive_variables$active_language(), ".html"))
-      )
+      HTML('<div class="mcp_module">',
+           includeHTML(paste0("www/mcp/", left_var_mcp(), "_",
+                              sus_reactive_variables$active_language(), 
+                              ".html")),
+           '</div>')
+    )
     
   })
-  }
+}
