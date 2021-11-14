@@ -9,12 +9,12 @@ rv_access <- reactiveValues(poly_selected = NA)
 
 # Dropdown menu
 var_list_left_access_1 <- 
-  list("All jobs" = "jobs_total",
-       "Low-skill jobs" = "jobs_low",
-       "High-skill jobs" = "jobs_high",
-       "Jobs < $30,000 annually" = "jobs_30k",
-       "Schools" = "schools",
-       "Healthcare facilities" = "healthcare")
+  list("All jobs" = "access_jobs_total",
+       "Low-skill jobs" = "access_jobs_low",
+       "High-skill jobs" = "access_jobs_high",
+       "Jobs < $30,000 annually" = "access_jobs_30k",
+       "Schools" = "access_schools",
+       "Healthcare facilities" = "access_healthcare")
 
 var_list_left_access_2 <- 
   list("Weekday peak" = "pwd",
