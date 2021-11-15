@@ -1,10 +1,7 @@
 ---
-title: "Montréal Crashes since 2012"
+title: "Montréal car crashes since 2012"
 author: "Linnea Soli"
-output: 
-  html_document:
-  toc: true
-  toc_float: true
+output: html_document
 ---
 
 ```{r setup, include=FALSE}
@@ -12,80 +9,44 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 
 library(tidyverse)
-library(ggplot2)
 library(sf)
 library(lubridate)
-library(qs)
 
-c <- read_sf(here::here("dev", "data", "collisions_routieres", 
-                        "collisions_routieres.shp")) %>%
-  mutate(injury_total = (NB_BLESSES + NB_BLESS_1)) %>%
-  select(date = DT_ACCDN, street = RUE_ACCDN, type = CD_GENRE_A, seriousness = GRAVITE,
-         death_total = NB_MORTS, death_ped = NB_DECES_P, death_cyc = NB_DECES_V,
-         injury_total, inj_ped = NB_BLESS_2, inj_cyc = NB_BLESS_4, day = JR_SEMN_AC,
-         hour = HEURE_ACCD)
-
-qload(here::here("data", "census.qsm"))
-
-rm(DA, borough)
+crash <- qs::qread(here::here("data", "crash.qs"))
+qs::qload(here::here("data", "census.qsm"))
 
 ```
 
 ## Collisions over time
 
-**Since 2012, total collisions in Montreal have been steadily decreasing in frequency.** Collisions in Montreal are defined as any accident from multi-party crashes to single party crashes (such as a collision with a tree) to accidents which don't involve a crash at all, for example an incident in which a vehicle's engine explodes.
+**Since 2012, total collisions in Montreal have been steadily decreasing in frequency.** Collisions in Montreal are defined as any accident from multi-party crashes to single-party crashes (such as a collision with a tree) to accidents which don't involve a crash at all, for example an incident in which a vehicle's engine explodes.
 
-Total collisions
-
-2012: **31,652**
-
-2013:	**31,607**
-
-2014:	**21,402**
-
-2015:	**21,574**
-
-2016:	**21,668**
-
-2017:	**21,974**
-
-2018:	**21,379**
-
-2019: **19,296**
-
-
-```{r total_crashes, echo=F, warning = F, message = F}
+```{r total_crashes, echo = FALSE, warning = FALSE, message = FALSE}
 
 # counting total crashes per day
-total_c <- c %>% 
+total_c <- 
+  crash %>% 
   st_drop_geometry() %>%
-  group_by(date) %>% 
-  summarize(count = n())
+  count(date)
 
 # plotting total crashes since 2012
-ggplot(total_c,
-       aes(x = date,
-           y = count)) +
+ggplot(total_c, aes(x = date, y = n)) +
   geom_line(color = "#81a88d") +
-  geom_smooth(method = "lm", se=FALSE, color = "#0a6c9a") +
-  labs(x = "Time", 
-       y = "Collisions",
-       title = "Montreal Collisions")
-
-rm(total_c)
+  geom_smooth(method = "lm", se = FALSE, color = "#0a6c9a") +
+  labs(x = NULL, y = "Collisions")
 
 ```
 
 ## When are collisions most likely? {.tabset}
 
-**Collisions are most likely to occur around "rush hours" and during weekdays.** Peak travel times, when more commuters are on the roads, increase the likelihood of a collision occurring. In Montreal, **collisions occur most often during the month of January** however **serious or fatal collisions have proved more common during the warmer months, with most occuring during September**. We can also observe more collisions with cyclists in these warm months, when the weather permits more folks to comfortably be out on their bikes. 
+**Collisions are most likely to occur around "rush hours" and during weekdays.** Peak travel times, when more commuters are on the roads, increase the likelihood of a collision occurring. In Montreal, **collisions occur most often during the month of January** however **serious or fatal collisions are more common during the warmer months, with most occuring during September**. We can also observe more collisions with cyclists in these warm months, when the weather permits more folks to comfortably be out on their bikes. 
 
 ### By time of day
 
 ```{r time_of_day, echo=FALSE, warning = F, message = F}
 
 # counting total crashes with another car, with a pedestrian, or with a cyclist by hour of day
-time <- c %>% 
+time <- crash %>% 
   st_drop_geometry() %>%
   group_by(hour, type) %>% 
   summarize(n()) %>% 
@@ -131,7 +92,7 @@ rm(time)
 
 ```{r day_of_week, echo=FALSE, warning = F, message = F}
 
-day <- c %>% 
+day <- crash %>% 
   st_drop_geometry() %>%
   group_by(day, type) %>% 
   summarize(n()) %>% 
@@ -170,7 +131,7 @@ rm(day)
 ```{r type_by_month, echo = F, warning = F, message = F}
 
 # crashes with car/ped/cyclist by month
-type_month <- c %>% 
+type_month <- crash %>% 
   st_drop_geometry() %>%
   dplyr::mutate(year = lubridate::year(date), 
           month = lubridate::month(date), 
@@ -216,7 +177,7 @@ Over 75% of all collisions between vehicles since 2012 have resulted in material
 
 ```{r severity_by_type, echo = F, warning = F, message = F}
 
-sev_type <- c %>%
+sev_type <- crash %>%
   st_drop_geometry() %>%
   transform(type = as.character(type)) %>% 
   filter(type == c("31", "32", "33")) %>% 
@@ -268,31 +229,31 @@ Socioeconomic factors
 
 ```{r socio_2019, echo = F, warning = F, message = F}
 
-ggplot(CT, aes(x = inc_median_dollar, y = crash_total_2019)) +
+ggplot(CT, aes(x = inc_median_dollar_2016, y = crash_total_2019)) +
   geom_point(colour = "#5bbbd6") +
   theme_minimal() +
   labs(x = "Median Income (CAD)",
        y = "Total Collisions 2019")
 
-ggplot(CT, aes(x = imm_prop, y = crash_total_2019)) +
+ggplot(CT, aes(x = iden_imm_prop_2016, y = crash_total_2019)) +
   geom_point(colour = "#5bbbd6") +
   theme_minimal() +
   labs(x = "Proportion of Immigrants",
        y = "Total Collisions 2019")
 
-ggplot(CT, aes(x = housing_rent_avg_dollar, y = crash_total_2019)) +
+ggplot(CT, aes(x = housing_rent_avg_dollar_2016, y = crash_total_2019)) +
   geom_point(colour = "#5bbbd6") +
   theme_minimal() +
   labs(x = "Average Rent (CAD)",
        y = "Total Collisions 2019")
 
-ggplot(CT, aes(x = trans_car_prop, y = crash_total_2019)) +
+ggplot(CT, aes(x = trans_car_prop_2016, y = crash_total_2019)) +
   geom_point(colour = "#5bbbd6") +
   theme_minimal() +
   labs(x = "Proportion of Car Commuters",
        y = "Total Collisions 2019")
 
-ggplot(CT, aes(x = trans_walk_or_bike_prop, y = crash_total_2019)) +
+ggplot(CT, aes(x = trans_walk_or_bike_prop_2016, y = crash_total_2019)) +
   geom_point(colour = "#5bbbd6") +
   theme_minimal() +
   labs(x = "Proportion of Walking/Biking Commuters",
@@ -305,31 +266,31 @@ ggplot(CT, aes(x = trans_walk_or_bike_prop, y = crash_total_2019)) +
 
 ```{r socio_2018, echo = F, warning = F, message = F}
 
-ggplot(CT, aes(x = inc_median_dollar, y = crash_total_2018)) +
+ggplot(CT, aes(x = inc_median_dollar_2016, y = crash_total_2018)) +
   geom_point(colour = "#11a08a") +
   theme_minimal() +
   labs(x = "Median Income (CAD)",
        y = "Total Collisions 2018")
 
-ggplot(CT, aes(x = imm_prop, y = crash_total_2018)) +
+ggplot(CT, aes(x = iden_imm_prop_2016, y = crash_total_2018)) +
   geom_point(colour = "#11a08a") +
   theme_minimal() +
   labs(x = "Proportion of Immigrants",
        y = "Total Collisions 2018")
 
-ggplot(CT, aes(x = housing_rent_avg_dollar, y = crash_total_2018)) +
+ggplot(CT, aes(x = housing_rent_avg_dollar_2016, y = crash_total_2018)) +
   geom_point(colour = "#11a08a") +
   theme_minimal() +
   labs(x = "Average Rent (CAD)",
        y = "Total Collisions 2018")
 
-ggplot(CT, aes(x = trans_car_prop, y = crash_total_2018)) +
+ggplot(CT, aes(x = trans_car_prop_2016, y = crash_total_2018)) +
   geom_point(colour = "#11a08a") +
   theme_minimal() +
   labs(x = "Proportion of Car Commuters",
        y = "Total Collisions 2018")
 
-ggplot(CT, aes(x = trans_walk_or_bike_prop, y = crash_total_2018)) +
+ggplot(CT, aes(x = trans_walk_or_bike_prop_2016, y = crash_total_2018)) +
   geom_point(colour = "#11a08a") +
   theme_minimal() +
   labs(x = "Proportion of Walking/Biking Commuters",
@@ -342,31 +303,31 @@ ggplot(CT, aes(x = trans_walk_or_bike_prop, y = crash_total_2018)) +
 
 ```{r socio_2017, echo = F, warning = F, message = F}
 
-ggplot(CT, aes(x = inc_median_dollar, y = crash_total_2017)) +
+ggplot(CT, aes(x = inc_median_dollar_2016, y = crash_total_2017)) +
   geom_point(colour = "#fdd262") +
   theme_minimal() +
   labs(x = "Median Income (CAD)",
        y = "Total Collisions 2017")
 
-ggplot(CT, aes(x = imm_prop, y = crash_total_2017)) +
+ggplot(CT, aes(x = iden_imm_prop_2016, y = crash_total_2017)) +
   geom_point(colour = "#fdd262") +
   theme_minimal() +
   labs(x = "Proportion of Immigrants",
        y = "Total Collisions 2017")
 
-ggplot(CT, aes(x = housing_rent_avg_dollar, y = crash_total_2017)) +
+ggplot(CT, aes(x = housing_rent_avg_dollar_2016, y = crash_total_2017)) +
   geom_point(colour = "#fdd262") +
   theme_minimal() +
   labs(x = "Average Rent (CAD)",
        y = "Total Collisions 2017")
 
-ggplot(CT, aes(x = trans_car_prop, y = crash_total_2017)) +
+ggplot(CT, aes(x = trans_car_prop_2016, y = crash_total_2017)) +
   geom_point(colour = "#fdd262") +
   theme_minimal() +
   labs(x = "Proportion of Car Commuters",
        y = "Total Collisions 2017")
 
-ggplot(CT, aes(x = trans_walk_or_bike_prop, y = crash_total_2017)) +
+ggplot(CT, aes(x = trans_walk_or_bike_prop_2016, y = crash_total_2017)) +
   geom_point(colour = "#fdd262") +
   theme_minimal() +
   labs(x = "Proportion of Walking/Biking Commuters",
@@ -379,31 +340,31 @@ ggplot(CT, aes(x = trans_walk_or_bike_prop, y = crash_total_2017)) +
 
 ```{r socio_2016, echo = F, warning = F, message = F}
 
-ggplot(CT, aes(x = inc_median_dollar, y = crash_total_2016)) +
+ggplot(CT, aes(x = inc_median_dollar_2016, y = crash_total_2016)) +
   geom_point(colour = "#e58601") +
   theme_minimal() +
   labs(x = "Median Income (CAD)",
        y = "Total Collisions 2016")
 
-ggplot(CT, aes(x = imm_prop, y = crash_total_2016)) +
+ggplot(CT, aes(x = iden_imm_prop_2016, y = crash_total_2016)) +
   geom_point(colour = "#e58601") +
   theme_minimal() +
   labs(x = "Proportion of Immigrants",
        y = "Total Collisions 2016")
 
-ggplot(CT, aes(x = housing_rent_avg_dollar, y = crash_total_2016)) +
+ggplot(CT, aes(x = housing_rent_avg_dollar_2016, y = crash_total_2016)) +
   geom_point(colour = "#e58601") +
   theme_minimal() +
   labs(x = "Average Rent (CAD)",
        y = "Total Collisions 2016")
 
-ggplot(CT, aes(x = trans_car_prop, y = crash_total_2016)) +
+ggplot(CT, aes(x = trans_car_prop_2016, y = crash_total_2016)) +
   geom_point(colour = "#e58601") +
   theme_minimal() +
   labs(x = "Proportion of Car Commuters",
        y = "Total Collisions 2016")
 
-ggplot(CT, aes(x = trans_walk_or_bike_prop, y = crash_total_2016)) +
+ggplot(CT, aes(x = trans_walk_or_bike_prop_2016, y = crash_total_2016)) +
   geom_point(colour = "#e58601") +
   theme_minimal() +
   labs(x = "Proportion of Walking/Biking Commuters",
@@ -416,31 +377,31 @@ ggplot(CT, aes(x = trans_walk_or_bike_prop, y = crash_total_2016)) +
 
 ```{r socio_2015, echo = F, warning = F, message = F}
 
-ggplot(CT, aes(x = inc_median_dollar, y = crash_total_2015)) +
+ggplot(CT, aes(x = inc_median_dollar_2016, y = crash_total_2015)) +
   geom_point(colour = "#972d15") +
   theme_minimal() +
   labs(x = "Median Income (CAD)",
        y = "Total Collisions 2015")
 
-ggplot(CT, aes(x = imm_prop, y = crash_total_2015)) +
+ggplot(CT, aes(x = iden_imm_prop_2016, y = crash_total_2015)) +
   geom_point(colour = "#972d15") +
   theme_minimal() +
   labs(x = "Proportion of Immigrants",
        y = "Total Collisions 2015")
 
-ggplot(CT, aes(x = housing_rent_avg_dollar, y = crash_total_2015)) +
+ggplot(CT, aes(x = housing_rent_avg_dollar_2016, y = crash_total_2015)) +
   geom_point(colour = "#972d15") +
   theme_minimal() +
   labs(x = "Average Rent (CAD)",
        y = "Total Collisions 2015")
 
-ggplot(CT, aes(x = trans_car_prop, y = crash_total_2015)) +
+ggplot(CT, aes(x = trans_car_prop_2016, y = crash_total_2015)) +
   geom_point(colour = "#972d15") +
   theme_minimal() +
   labs(x = "Proportion of Car Commuters",
        y = "Total Collisions 2015")
 
-ggplot(CT, aes(x = trans_walk_or_bike_prop, y = crash_total_2015)) +
+ggplot(CT, aes(x = trans_walk_or_bike_prop_2016, y = crash_total_2015)) +
   geom_point(colour = "#972d15") +
   theme_minimal() +
   labs(x = "Proportion of Walking/Biking Commuters",
@@ -453,31 +414,31 @@ ggplot(CT, aes(x = trans_walk_or_bike_prop, y = crash_total_2015)) +
 
 ```{r socio_2014, echo = F, warning = F, message = F}
 
-ggplot(CT, aes(x = inc_median_dollar, y = crash_total_2014)) +
+ggplot(CT, aes(x = inc_median_dollar_2016, y = crash_total_2014)) +
   geom_point(colour = "#ED3A1D") +
   theme_minimal() +
   labs(x = "Median Income (CAD)",
        y = "Total Collisions 2014")
 
-ggplot(CT, aes(x = imm_prop, y = crash_total_2014)) +
+ggplot(CT, aes(x = iden_imm_prop_2016, y = crash_total_2014)) +
   geom_point(colour = "#ED3A1D") +
   theme_minimal() +
   labs(x = "Proportion of Immigrants",
        y = "Total Collisions 2014")
 
-ggplot(CT, aes(x = housing_rent_avg_dollar, y = crash_total_2014)) +
+ggplot(CT, aes(x = housing_rent_avg_dollar_2016, y = crash_total_2014)) +
   geom_point(colour = "#ED3A1D") +
   theme_minimal() +
   labs(x = "Average Rent (CAD)",
        y = "Total Collisions 2014")
 
-ggplot(CT, aes(x = trans_car_prop, y = crash_total_2014)) +
+ggplot(CT, aes(x = trans_car_prop_2016, y = crash_total_2014)) +
   geom_point(colour = "#ED3A1D") +
   theme_minimal() +
   labs(x = "Proportion of Car Commuters",
        y = "Total Collisions 2014")
 
-ggplot(CT, aes(x = trans_walk_or_bike_prop, y = crash_total_2014)) +
+ggplot(CT, aes(x = trans_walk_or_bike_prop_2016, y = crash_total_2014)) +
   geom_point(colour = "#ED3A1D") +
   theme_minimal() +
   labs(x = "Proportion of Walking/Biking Commuters",
@@ -490,31 +451,31 @@ ggplot(CT, aes(x = trans_walk_or_bike_prop, y = crash_total_2014)) +
 
 ```{r socio_2013, echo = F, warning = F, message = F}
 
-ggplot(CT, aes(x = inc_median_dollar, y = crash_total_2013)) +
+ggplot(CT, aes(x = inc_median_dollar_2016, y = crash_total_2013)) +
   geom_point(colour = "#81a88d") +
   theme_minimal() +
   labs(x = "Median Income (CAD)",
        y = "Total Collisions 2013")
 
-ggplot(CT, aes(x = imm_prop, y = crash_total_2013)) +
+ggplot(CT, aes(x = iden_imm_prop_2016, y = crash_total_2013)) +
   geom_point(colour = "#81a88d") +
   theme_minimal() +
   labs(x = "Proportion of Immigrants",
        y = "Total Collisions 2013")
 
-ggplot(CT, aes(x = housing_rent_avg_dollar, y = crash_total_2013)) +
+ggplot(CT, aes(x = housing_rent_avg_dollar_2016, y = crash_total_2013)) +
   geom_point(colour = "#81a88d") +
   theme_minimal() +
   labs(x = "Average Rent (CAD)",
        y = "Total Collisions 2013")
 
-ggplot(CT, aes(x = trans_car_prop, y = crash_total_2013)) +
+ggplot(CT, aes(x = trans_car_prop_2016, y = crash_total_2013)) +
   geom_point(colour = "#81a88d") +
   theme_minimal() +
   labs(x = "Proportion of Car Commuters",
        y = "Total Collisions 2013")
 
-ggplot(CT, aes(x = trans_walk_or_bike_prop, y = crash_total_2013)) +
+ggplot(CT, aes(x = trans_walk_or_bike_prop_2016, y = crash_total_2013)) +
   geom_point(colour = "#81a88d") +
   theme_minimal() +
   labs(x = "Proportion of Walking/Biking Commuters",
@@ -527,31 +488,31 @@ ggplot(CT, aes(x = trans_walk_or_bike_prop, y = crash_total_2013)) +
 
 ```{r socio_2012, echo = F, warning = F, message = F}
 
-ggplot(CT, aes(x = inc_median_dollar, y = crash_total_2012)) +
+ggplot(CT, aes(x = inc_median_dollar_2016, y = crash_total_2012)) +
   geom_point(colour = "#0a6c9a") +
   theme_minimal() +
   labs(x = "Median Income (CAD)",
        y = "Total Collisions 2012")
 
-ggplot(CT, aes(x = imm_prop, y = crash_total_2012)) +
+ggplot(CT, aes(x = iden_imm_prop_2016, y = crash_total_2012)) +
   geom_point(colour = "#0a6c9a") +
   theme_minimal() +
   labs(x = "Proportion of Immigrants",
        y = "Total Collisions 2012")
 
-ggplot(CT, aes(x = housing_rent_avg_dollar, y = crash_total_2012)) +
+ggplot(CT, aes(x = housing_rent_avg_dollar_2016, y = crash_total_2012)) +
   geom_point(colour = "#0a6c9a") +
   theme_minimal() +
   labs(x = "Average Rent (CAD)",
        y = "Total Collisions 2012")
 
-ggplot(CT, aes(x = trans_car_prop, y = crash_total_2012)) +
+ggplot(CT, aes(x = trans_car_prop_2016, y = crash_total_2012)) +
   geom_point(colour = "#0a6c9a") +
   theme_minimal() +
   labs(x = "Proportion of Car Commuters",
        y = "Total Collisions 2012")
 
-ggplot(CT, aes(x = trans_walk_or_bike_prop, y = crash_total_2012)) +
+ggplot(CT, aes(x = trans_walk_or_bike_prop_2016, y = crash_total_2012)) +
   geom_point(colour = "#0a6c9a") +
   theme_minimal() +
   labs(x = "Proportion of Walking/Biking Commuters",

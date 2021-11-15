@@ -14,10 +14,11 @@ crash <-
   mutate(type = case_when(CD_GENRE_A == 32 ~ "ped",
                           CD_GENRE_A == 31 ~ "cyc",
                           CD_GENRE_A != c(32, 31) ~ "other")) %>%
+  mutate(injury_total = (NB_BLESSES + NB_BLESS_1)) %>%
   select(date = DT_ACCDN, street = RUE_ACCDN, type, seriousness = GRAVITE, 
          death_total = NB_MORTS, death_ped = NB_DECES_P, death_cyc = NB_DECES_V, 
-         injury_total = NB_BLESSES, inj_ped = NB_BLESS_2, inj_cyc = NB_BLESS_4,
-         geometry)
+         injury_total, inj_ped = NB_BLESS_2, inj_cyc = NB_BLESS_4,
+         day = JR_SEMN_AC, hour = HEURE_ACCD, geometry)
 
 
 # Aggregate data to census tables -----------------------------------------
