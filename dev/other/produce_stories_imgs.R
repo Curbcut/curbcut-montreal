@@ -6,6 +6,8 @@ library(magick)
 
 # IMAGES MUST BE TRANSFORMED TO PNG FIRST
 
+img_name <- "little_burgundy.png"
+
 round_img_shadow <- function(img_name) {
 
   path <- paste0("www/stories/raw_img/", img_name)
@@ -13,16 +15,22 @@ round_img_shadow <- function(img_name) {
   shadow_right <- magick::image_read("www/dropshadow_right.png")
   
   # get height, width and crop longer side to match shorter side
-  img_width <- magick::image_info(img)$width
-  img1 <- magick::image_crop(img, geometry=paste0(img_width, "x", img_width, "+0+0"), repage=TRUE)
+  img_info <- magick::image_info(img)
+  smaller_side <- min(img_info$height, img_info$width)
+  img1 <- magick::image_crop(img, 
+                     geometry = paste0(smaller_side, "x", 
+                                       smaller_side, "!"))
   
   # resize shadow_right to fit with image size
   shadow_info <- magick::image_info(shadow_right)
   
+  shadow_right <-
+    image_crop(shadow_right, paste0({shadow_info$width-334}, "x", 
+                                           shadow_info$height, "+167"))
   shadow_right <- 
     image_resize(shadow_right, 
-                 paste0(img_width*1.2, "x", 
-                        img_width/shadow_info$width*shadow_info$height*1.2,"!"))
+                 paste0(smaller_side, "x", 
+                        smaller_side,"!"))
   
   
   # create an image composite using both images
@@ -35,3 +43,8 @@ round_img_shadow <- function(img_name) {
 
 stories_img <- list.files("www/stories/raw_img")
 purrr::walk(stories_img, round_img_shadow)
+
+# CUT 167px from both size of shadow
+
+# image_crop(image, "100x150+50"): crop out width:100px
+# and height:150px starting +50px from the left
