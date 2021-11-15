@@ -113,7 +113,8 @@ alley_borough_text <- function(text_to_display) {
   # CONTACT
   if (!is.null(text_to_display$contact)) {
     text_to_display$contact = 
-      str_glue(sus_translate(paste0("<p>Contact: {original_list$contact}</p>")))
+      str_glue(sus_translate(paste0("<p>Contact: <a href = 'mailto:{original_list$contact}'> ",
+                                    "{original_list$contact}</a></p>")))
   } 
   
   text_to_display
