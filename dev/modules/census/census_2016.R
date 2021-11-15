@@ -295,11 +295,12 @@ borough_CSD <-
 
 # Process data on both borough and CSD
 borough <- 
-borough %>% 
+  borough %>% 
   left_join(select(borough_CSD, -name, -geometry), by = "ID") %>%
   process_census_data() %>% 
   arrange(ID) %>% 
   st_set_agr("constant")
+
 
 # Process grid ------------------------------------------------------------
 
@@ -375,6 +376,6 @@ street <-
 # Clean up ----------------------------------------------------------------
 
 rm(borough_CSD, borough_raw, census_geos, DA_data, grid_census, agg_list, 
-   avg_list, process_census_data, year_census, borough_raw)
+   avg_list, process_census_data, year_census)
 
 

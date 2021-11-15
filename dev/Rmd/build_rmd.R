@@ -15,11 +15,11 @@ process_rmd <- function(file, path) {
                     output_dir = paste0("www/", path),
                     quiet = TRUE)
   
-  # Remove <head> tag
+  # Remove long script tag
   x <- readLines(out)
-  head_1 <- str_which(x, "<head>")
-  head_2 <- str_which(x, "</head>")
-  x <- x[-c(head_1:head_2)]
+  long_script <- str_which(x, "<script")
+  long_script <- long_script[nchar(x[long_script]) > 100000]
+  x <- x[-long_script]
   
   # Write ouput
   writeLines(x, out)
