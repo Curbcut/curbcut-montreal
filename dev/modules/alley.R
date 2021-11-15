@@ -174,7 +174,7 @@ alley_text <-
                                 group_by(CSDUID) %>%
                                 summarize(ga_length = round(units::drop_units(sum(length))))),
              by = c("ID" = "CSDUID")) %>% 
-  relocate(ga_length, .before = first_alley)
+  relocate(ga_length, .after = first_alley)
 
 # Clean up ----------------------------------------------------------------
 

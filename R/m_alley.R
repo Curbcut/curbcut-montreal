@@ -78,59 +78,7 @@ alley_server <- function(id) {
           select_if(~sum(!is.na(.)) > 0) %>% 
           {if (nrow(.) >0) as.list(.) else NULL}
         
-        original_list <- text_to_display
-        
-        # In the meanwhile of finding a better way to do this:
-        # NAME
-        if (!is.null(text_to_display$name)) {
-          text_to_display$name = 
-            str_glue(sus_translate(paste0("<p><b>{original_list$name}</b></p>")))
-        } 
-        # GREEN ALLEY LENGTH
-        if (!is.null(text_to_display$ga_length)) {
-          text_to_display$ga_length = 
-            str_glue(sus_translate(paste0("<p>There are {prettyNum(original_list$ga_length, ',')} meters of green alleys in ",
-                                          "{original_list$name}.</p>")))
-        } 
-        # FIRST INAUGURATION
-        if (!is.null(text_to_display$first_alley)) {
-          text_to_display$first_alley = 
-            str_glue(sus_translate(paste0("<p>The first green alley inauguration ",
-                                          "in this borough was in {original_list$first_alley}.</p>")))
-        } 
-        # APPLICATION PROCESS
-        if (!is.null(text_to_display$app_process)) {
-          text_to_display$app_process = 
-            str_glue(sus_translate(paste0("<p>The application process for green alleys asks for ", 
-                                          "a {str_replace(original_list$app_process, ',', ', and')}.</p>")))
-        } 
-        # MANAGEMENT
-        if (!is.null(text_to_display$management)) {
-          text_to_display$management = 
-            str_glue(sus_translate(paste0("<p>In terms of management, ",
-                                          "{str_to_lower(original_list$management)}.</p>")))
-        } 
-        # BUDGET
-        if (!is.null(text_to_display$budget)) {
-          text_to_display$budget = 
-            str_glue(sus_translate(paste0("<p>Budget: {original_list$budget}</p>")))
-        } 
-        # GUIDE
-        if (!is.null(text_to_display$guide)) {
-          text_to_display$guide = 
-            str_glue(sus_translate(paste0("<p><a href = {original_list$guide}>",
-                                          "The green alley guide of {original_list$name}</a></p>")))
-        } 
-        # CONTACT
-        if (!is.null(text_to_display$contact)) {
-          text_to_display$contact = 
-            str_glue(sus_translate(paste0("<p>Contact: {original_list$contact}</p>")))
-        } 
-        
-        
-        if (!is.null(text_to_display)) {
-          HTML(unlist(text_to_display))
-        }
+        text_to_display <- alley_borough_text(text_to_display)
         
       } else if (rv_alley$poly_selected %in% alleys[alleys$visited,]$ID) {
         
@@ -144,56 +92,12 @@ alley_server <- function(id) {
           select_if(~sum(!is.na(.)) > 0) %>% 
           {if (nrow(.) >0) as.list(.) else NULL}
         
-        original_list <- text_to_display
+        text_to_display <- alley_alleys_text(text_to_display)
         
-        # In the meanwhile of finding a better way to do this:
-        # NAME
-        if (!is.null(text_to_display$name)) {
-          text_to_display$name = 
-            str_glue(sus_translate(paste0("<p><b>{original_list$name}</b></p>")))
-        } 
-        # INAUGURATION
-        if (!is.null(text_to_display$created)) {
-          text_to_display$created = 
-            str_glue(sus_translate(paste0("<p>It has been inaugurated in ",
-                                          "{original_list$created}.</p>")))
-        } 
-        # ALLEY TYPE
-        if (!is.null(text_to_display$type)) {
-          original_list$type
-          type_explain <- switch(original_list$type, 
-                                 green = sus_translate('This green alley is very green'),
-                                 community = sus_translate('This green alley is not that green, but have a lot of community elements (generally children-oriented)'),
-                                 mixed = sus_translate('This green alley has both green and community elements'),
-                                 none = sus_translate('This green alley is neither green nor community-oriented (basically grey alley)'))
-          text_to_display$type = 
-            str_glue(paste0("<p>{type_explain}.</p>"))
-        } 
-        # MANAGEMENT
-        if (!is.null(text_to_display$description)) {
-          text_to_display$description = 
-            str_glue(sus_translate(paste0("<p>Description: ",
-                                          "{str_to_sentence(original_list$description)}</p>")))
-        } 
-        # BUDGET
-        if (!is.null(text_to_display$circulation)) {
-          text_to_display$circulation = 
-            str_glue(sus_translate(paste0("<p>To the circulation, it is {original_list$circulation}.</p>")))
-        } 
-        
-        if (!is.null(text_to_display$photo_ID)) {
-          text_to_display$photo_ID =
-            str_glue(
-              sus_translate(
-                paste0('<p><img src = "alleys/{original_list$photo_ID}", ',
-                       'alt = "Photo of the selected green alley", ',
-                       'style = "max-width: 100%;"></p>')))
-        }
-        
-        if (!is.null(text_to_display)) {
-          HTML(unlist(text_to_display))
-        }
-        
+      }
+      
+      if (exists("text_to_display") && !is.null(text_to_display)) {
+        HTML(unlist(text_to_display))
       }
       
     })
