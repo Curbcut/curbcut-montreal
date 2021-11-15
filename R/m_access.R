@@ -88,17 +88,19 @@ access_server <- function(id) {
     observeEvent({
       var_left()
       var_right()
-      }, map_change(NS(id, "map"), df = data, 
-                                  zoom = reactive("CT")))
+      }, map_change(NS(id, "map"), df = data, zoom = reactive("CT")))
 
     # Update poly_selected on click
     observeEvent(input$map_polygon_click, {
-      lst <- jsonlite::fromJSON(input$map_polygon_click)
-      if (is.null(lst$object$properties$id)) {
-        rv_access$poly_selected <- NA
-      } else rv_access$poly_selected <- lst$object$properties$id
-      print("POLY_SELECTED")
+      click <- jsonlite::fromJSON(input$map_polygon_click)$object$properties$id
+      print(click)
       print(rv_access$poly_selected)
+      if (is.null(click)) {
+        rv_access$poly_selected <- NA
+      } else if (!is.na(rv_access$poly_selected) && 
+                 click == rv_access$poly_selected) {
+        rv_access$poly_selected <- NA
+      } else rv_access$poly_selected <- click
     })
     
     # Update map in response to poly_selected change
@@ -131,18 +133,18 @@ access_server <- function(id) {
         mapdeck_update(map_id = NS(id, "map")) %>%
           clear_polygon() %>%
           add_polygon(
-            data = CT, stroke_width = 10, stroke_colour = "#FFFFFF",
+            data = CT, stroke_width = 10, stroke_colour = "#FFFFFF", id = "ID",
             fill_colour = "#FFFFFF10", update_view = FALSE,
             layer_id = "poly_bg", auto_highlight = TRUE,
             highlight_colour = "#FFFFFF90") %>%
           add_polygon(
             data = data_to_add, stroke_width = 10, stroke_colour = "#FFFFFF",
-            fill_colour = "fill", update_view = FALSE,
+            fill_colour = "fill", update_view = FALSE, id = "ID",
             layer_id = "poly_iso", auto_highlight = TRUE,
             highlight_colour = "#FFFFFF90") %>%
           add_polygon(
             data = poly_to_add, fill_colour = "fill", stroke_width = 20,
-            stroke_colour = "#000000", update_view = FALSE, 
+            stroke_colour = "#000000", update_view = FALSE, id = "ID",
             layer_id = "poly_highlight", auto_highlight = TRUE, 
             highlight_colour = "#FFFFFF90")
         } else {

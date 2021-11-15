@@ -161,12 +161,13 @@ title_text <-
   add_row(tab = "access", type = "main", text = paste0(
     "Accessibility (the ease of reaching desired destinations) is the most ",
     "important element of a transport network. This module displays what is ",
-    "accessible within 30 minutes’ “door-to-door” travel time. ",
+    "accessible on public transit within 30 minutes’ “door-to-door” travel time. ",
     "Clicking on individual census tracts shows which other census tracts are ",
     "reachable within a given travel time and at a chosen period of the day ",
     "(peak, off-peak, and night).")) |> 
   add_row(tab = "access", type = "extra", text = paste0(
-    "<p>This module focuses on accessibility to a set of key destinations: ", 
+    "<p>This module focuses on public transit accessibility to a set of key ",
+    "destinations: ", 
     "all jobs, ‘low-skill’ jobs (those not requiring university education), ", 
     "‘high-skill’ jobs (those usually requiring university education), jobs ",
     "with an annual salary of <$30,000, and schools and healthcare facilities.",
