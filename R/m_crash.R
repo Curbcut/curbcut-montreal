@@ -4,9 +4,21 @@
 
 crash_UI <- function(id) {
   tabItem(tabName = "crash",
+          tags$head(tags$style(
+            HTML('
+      #main_panel_crash_analysis {
+                  max-height: 83vh;
+                  overflow: auto;
+                  background-color: #fff;
+                  border: 1px solid transparent;
+                  border-radius: 4px;
+                  box-shadow: 0 50px 50px rgba(0,0,0,.6);
+      }
+    '))),
           shinyjs::useShinyjs(),
           shinyjs::hidden(htmlOutput(NS(id, "crash_analysis"),
-                     style = "max-width: 1000px;")),
+                     style = "position:absolute; margin: 40px;
+                     max-width: 1000px; z-index:499")),
           mapdeckOutput(NS(id, "map"), height = "92vh"),
           title_UI(NS(id, "title"),
                    actionLink(NS(id, "analysis"), "Road safety analysis"),
@@ -309,7 +321,14 @@ crash_server <- function(id) {
       }
     })
     
-    output$crash_analysis <- renderUI(includeHTML("www/crash/crash.html"))
+    output$crash_analysis <- renderUI(
+      
+      HTML('<div id = "main_panel_crash_analysis">',
+           includeHTML("www/crash/crash.html"),
+           '</div>')
+
+      
+      )
     observeEvent(input$analysis, {
       
       if (input$analysis %% 2 == 1) {
