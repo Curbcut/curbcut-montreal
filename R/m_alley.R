@@ -7,7 +7,8 @@ alley_UI <- function(id) {
           mapdeckOutput(NS(id, "map"), height = "92vh"),
           title_UI(NS(id, "title"),
                    materialSwitch(inputId = NS(id, "focus_visited"),
-                                  label = i18n$t("Focus on green alleys visited by our team"), 
+                                  label = i18n$t(
+                                    "Focus on green alleys visited by our team"), 
                                   right = TRUE)),
           right_panel(id, 
                       # compare_UI(NS(id, "alley"), var_list_alley),
@@ -18,13 +19,12 @@ alley_UI <- function(id) {
                                                  label = i18n$t("Hide")))),
                       shinyjs::useShinyjs(), # Needed to hide panels
                       uiOutput(NS(id, "alley_explore")),
-                      # conditionalPanel(
-                      #   condition = "output.poly_selected == 1", ns = NS(id),
-                      #   actionLink(inputId = NS(id, "clear_selection"),
-                      #              label = "Clear selection"))),
-                      # dyk_UI(NS(id, "dyk"))),
-          )
-          # legend_bivar_UI(NS(id, "alley"))
+                      conditionalPanel(
+                        condition = "output.poly_selected == 1", ns = NS(id),
+                        actionLink(inputId = NS(id, "clear_selection"),
+                                   label = "Clear selection"))),
+                      dyk_UI(NS(id, "dyk")),
+          legend_bivar_UI(NS(id, "alley"))
   )
 }
 
@@ -76,7 +76,7 @@ alley_server <- function(id) {
           filter(ID == rv_alley$poly_selected) %>% 
           select(-ID) %>% 
           select_if(~sum(!is.na(.)) > 0) %>% 
-          {if (nrow(.) >0) as.list(.) else NULL}
+          {if (nrow(.) > 0) as.list(.) else NULL}
         
         text_to_display <- alley_borough_text(text_to_display)
         
@@ -86,11 +86,12 @@ alley_server <- function(id) {
           alleys %>%
           st_drop_geometry() %>% 
           filter(ID == rv_alley$poly_selected) %>% 
-          mutate(name = str_glue(sus_translate(paste0("<p><b>{str_to_title(name)} in ",
-                                                      "{name_2}</b></p>")))) %>% 
+          mutate(name = str_glue(sus_translate(paste0(
+            "<p><b>{str_to_title(name)} in ",
+            "{name_2}</b></p>")))) %>% 
           select(-ID, -CSDUID, -visited, -name_2, -fill) %>% 
           select_if(~sum(!is.na(.)) > 0) %>% 
-          {if (nrow(.) >0) as.list(.) else NULL}
+          {if (nrow(.) > 0) as.list(.) else NULL}
         
         text_to_display <- alley_alleys_text(text_to_display)
         
@@ -198,11 +199,12 @@ alley_server <- function(id) {
       
     })
     
+    # Hook up "Clear selection" button
+    output$poly_selected <- reactive(!is.na(rv_alley$poly_selected))
+    outputOptions(output, "poly_selected", suspendWhenHidden = FALSE)
     
-    # # Clear click status if prompted
-    # # (Namespacing hardwired to explore module; could make it return a reactive)
-    # observeEvent(input$`explore-clear_selection`, {
-    #   rv_alley$poly_selected <- NA})
+    # Clear click status if prompted
+    observeEvent(input$`clear_selection`, {rv_alley$poly_selected <- NA})
     
     
   })
