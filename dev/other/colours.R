@@ -61,7 +61,10 @@ colour_delta_building <-
   colour_delta %>%
   mutate(fill = paste0(fill, "AA"))
 
+colour_isopleth <- 
+  tibble(group = 1:3, fill = c("#D0DFD3", colour_scale[2:3]))
+
 qsavem(colour_bivar, colour_borough, colour_CT, colour_DA, colour_street, 
        colour_building, colour_scale, colour_delta, colour_delta_borough, 
        colour_delta_CT, colour_delta_DA, colour_delta_street, 
-       colour_delta_building, file = "data/colours.qsm")
+       colour_delta_building, colour_isopleth, file = "data/colours.qsm")

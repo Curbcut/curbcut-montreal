@@ -108,18 +108,15 @@ access_server <- function(id) {
       input$slider}, {
       if (!is.na(rv_access$poly_selected)) {
         
-        tt_threshold <- input$slider * 60
+        tt_thresh <- input$slider * 60
         
         CTs_to_map <- 
           tt_matrix |> 
-          filter(origin == rv_access$poly_selected, travel_time <= tt_threshold,
+          filter(origin == rv_access$poly_selected, travel_time <= tt_thresh,
                  timing == var_left_2()) |> 
-          mutate(tt_q3 = pmax(1, ceiling(travel_time / tt_threshold * 3)),
-                 tt_q3 = 4 - tt_q3) |> 
-          select(destination, tt_q3) |> 
-          mutate(destination = as.character(destination)) |> 
-          mutate(group = paste0(tt_q3, " - 1")) |> 
-          left_join(colour_CT, by = "group")
+          mutate(group = 4 - pmax(1, ceiling(travel_time / tt_thresh * 3))) |> 
+          select(destination, group) |> 
+          left_join(colour_isopleth, by = "group")
         
         data_to_add <-
           data() %>%
@@ -129,7 +126,7 @@ access_server <- function(id) {
         poly_to_add <-
           data() %>%
           filter(ID == rv_access$poly_selected) %>%
-          mutate(fill = "#FFFFFF33")
+          mutate(fill = "#00000033")
         
         mapdeck_update(map_id = NS(id, "map")) %>%
           clear_polygon() %>%
