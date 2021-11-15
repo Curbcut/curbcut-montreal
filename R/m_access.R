@@ -6,15 +6,11 @@ access_UI <- function(id) {
   tabItem(tabName = "access",
           mapdeckOutput(NS(id, "map"), height = "92vh"),
           title_UI(NS(id, "title"),
-                   div(style = "display: inline-block; padding: 5px;", 
-                       select_var_UI(NS(id, "left_2"), var_list_left_access_2,
-                                     label = i18n$t("Timing"),
-                                     width = "200px")),
-                   div(style = "display: inline-block; padding: 5px;", 
-                       select_var_UI(NS(id, "left_1"), var_list_left_access_1,
-                        label = i18n$t("Destination type"), 
-                        width = "200px")),
-                   div(style = "display: inline-block; padding: 5px;", 
+                   select_var_UI(NS(id, "left_2"), var_list_left_access_2,
+                                 label = i18n$t("Timing"), width = "200px"),
+                   select_var_UI(NS(id, "left_1"), var_list_left_access_1,
+                        label = i18n$t("Destination type"), width = "200px"),
+                   div(style = widget_style, 
                        sliderInput(NS(id, "slider"), i18n$t("Time threshold"),
                                    min = 10, max = 60, step = 1, value = 30,
                                    width = "200px")),
@@ -51,13 +47,8 @@ access_server <- function(id) {
     
     # Enable or disable inputs
     observeEvent(rv_access$poly_selected, {
-      if (is.na(rv_access$poly_selected)) {
-        shinyjs::show("left_1-var") 
-        shinyjs::hide("slider")
-      } else {
-        shinyjs::show("slider")
-        shinyjs::hide("left_1-var")
-      }
+      shinyjs::toggle("left_1-var", condition = is.na(rv_access$poly_selected))
+      shinyjs::toggle("slider", condition = !is.na(rv_access$poly_selected))
     })
     
     # Left variable servers
@@ -123,12 +114,12 @@ access_server <- function(id) {
           tt_matrix |> 
           filter(origin == rv_access$poly_selected, travel_time <= tt_threshold,
                  timing == var_left_2()) |> 
-          mutate(tt_q3 = ntile(travel_time, 3),
+          mutate(tt_q3 = pmax(1, ceiling(travel_time / tt_threshold * 3)),
                  tt_q3 = 4 - tt_q3) |> 
           select(destination, tt_q3) |> 
           mutate(destination = as.character(destination)) |> 
           mutate(group = paste0(tt_q3, " - 1")) |> 
-          left_join(colour_DA, by = "group")
+          left_join(colour_CT, by = "group")
         
         data_to_add <-
           data() %>%

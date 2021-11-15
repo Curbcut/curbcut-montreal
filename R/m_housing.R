@@ -6,10 +6,9 @@ housing_UI <- function(id) {
   tabItem(tabName = "housing",
           mapdeckOutput(NS(id, "map"), height = "92vh"),
           title_UI(NS(id, "title"),
-                   div(style = "display: inline-block; padding: 5px;", 
-                       select_var_UI(NS(id, "left"), var_list_housing_left,
-                                     width = "200px")), 
-                   div(style = "display: inline-block; padding: 5px; vertical-align: top;", 
+                   select_var_UI(NS(id, "left"), var_list_housing_left, 
+                                 width = "200px"), 
+                   div(style = widget_style, 
                        sliderInput(
                          NS(id, "slider_uni"), 
                          "Select a year",
@@ -18,7 +17,7 @@ housing_UI <- function(id) {
                          step = housing_slider$interval, sep = "",
                          value = housing_slider$init,
                          width = "200px")),
-                   div(style = "display: inline-block; padding: 5px; vertical-align: top;", 
+                   div(style = widget_style, 
                        sliderInput(
                          NS(id, "slider_bi"), 
                          "Select two years", 

@@ -66,11 +66,12 @@ translation_fr <- qread("data/translation_fr.qs")
 sus_reactive_variables <- reactiveValues()
 
 
-# Map style ---------------------------------------------------------------
+# Object style ------------------------------------------------------------
 
 map_style <- "mapbox://styles/dwachsmuth/ckh6cg4wg05nw19p5yrs9tib7"
 map_zoom <- 10.1
 map_location <- c(-73.58, 45.53)
+widget_style <- "display: inline-block; padding: 5px; vertical-align: top;"
 
 
 # Functions ---------------------------------------------------------------
