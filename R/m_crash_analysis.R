@@ -4,7 +4,7 @@
 
 crash_analysis_UI <- function(id) {
   tabItem(tabName = "crash_analysis", 
-          actionLink(NS(id, "crash_map"), label = "Map"),
+          actionLink(NS(id, "crash_map"), label = "Crash safety map"),
           htmlOutput(NS(id, "crash_analysis_output"),
                      style = "max-width: 1000px;"))
 }

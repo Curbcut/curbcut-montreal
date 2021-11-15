@@ -118,12 +118,12 @@ ui <- dashboardPage(
         
         # Safety
         menuSubItem(
-          i18n$t("Safety"),
+          i18n$t("Road safety"),
           tabName = "crash"),
         
         # Safety
         menuSubItem(
-          i18n$t("Safety analysis"),
+          i18n$t("Road safety analysis"),
           tabName = "crash_analysis")),
       
       # Urban life

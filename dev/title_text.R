@@ -22,25 +22,24 @@ title_text <-
                         "demographic patterns, and how those patterns have ",
                         "changed over time."), .before = 6) %>% 
   add_row(tab = "crash", type = "title",
-          text = "Road Collisions", .before = 6) %>% 
+          text = "Road safety", .before = 6) %>% 
   add_row(tab = "crash", type = "main",
           text = paste0("Road safety is an important consideration for wellbeing ",
-                        "and safety in cities. The province of Quebec established ",
-                        "the Vision Zero approach (2021), aiming to totally ",
-                        "eradicate collision-related casualties. This module ",
+                        "and safety in cities. This module ",
                         "provides an overview and analysis of road collisions ",
-                        "in the City of Montreal, ranging from 2012 to today. ",
-                        "The data is collected by the Service de Police de la ","
+                        "in the City of Montreal, ranging from 2012 to today."), 
+          .before = 6) %>% 
+  add_row(tab = "crash", type = "extra",
+          text = paste0("<p>Data is collected by the Service de Police de la ","
                         Ville de Montréal (SPVM) and compiled by the Société ",
                         "d’Assurance Automobile du Québec (SAAQ), and contains ",
                         "information related to every road collision, including the date, ",
                         "location and type of parties involved (i.e. cars, bicycles ",
-                        "or pedestrians) and injury severity. The user can decide ",
-                        "to display the data in counts, population density or areal density. "), 
-          .before = 6) %>% 
-  add_row(tab = "crash", type = "extra",
-          text = paste0("<p>For more information on road collisions and a temporal ",
-                        "analysis of the data, please consult the Crash Analysis tab</p>",
+                        "or pedestrians) and injury severity. ",
+                        "<p>For more information on road collisions and a temporal ",
+                        "analysis of the data, please consult the ", 
+                        "<a onclick=\'openTab(&#39;crash_analysis&#39;)\' ",
+                        "href=\'#\'>Road safety analysis</a>.</p>",
                         "<p>References:</p><ul><li><a href = https://www.pietons.quebec/",
                         "sites/default/files/documents/pietonsqc_vf_fiche_decouvrirapproche",
                         "visionzerosecuriteroutiere.pdf> Piétons Québec. (2021). Découvrir ",

@@ -10,25 +10,27 @@ crash_UI <- function(id) {
                    hr(),
                    select_var_UI(NS(id, "left_1"), var_list_left_crash_1,
                                  label = i18n$t("Grouping of crashes"),
-                                 width = "200px", 
-                                 more_style = "margin-right: 25px;"),
+                                 width = "200px"),
                    select_var_UI(NS(id, "left_2"), var_list_left_crash_2,
                                  label = i18n$t("Type of crash"), 
                                  width = "200px"),
-                   sliderInput(NS(id, "left"), i18n$t("Select a year"),
+                   div(style = widget_style, 
+                       sliderInput(NS(id, "left"), i18n$t("Select a year"),
                                min = crash_slider$min,
                                max = crash_slider$max,
                                step = crash_slider$interval, sep = "",
-                               value = crash_slider$init),
-                   htmlOutput(NS(id, "bi_time_slider_label")),
-                   sliderInput(NS(id, "left_bi_time"), label = NULL, 
+                               value = crash_slider$init, width = "200px")),
+                   div(style = widget_style,
+                       sliderInput(NS(id, "left_bi_time"), label = NULL, 
                                min = crash_slider$min,
                                max = crash_slider$max, 
                                step = crash_slider$interval, sep = "", 
-                               value = c("2012", "2019")),
-                   materialSwitch(inputId = NS(id, "bi_time"),
-                                  label = i18n$t("Two time periods"), 
-                                  right = TRUE),
+                               value = c("2012", "2019"), width = "200px")),
+                   div(style = widget_style,
+                       materialSwitch(inputId = NS(id, "bi_time"),
+                                  label = i18n$t("Compare dates"), 
+                                  right = TRUE, width = "200px")),
+                   htmlOutput(NS(id, "bi_time_slider_label")),
                    htmlOutput(NS(id, "year_displayed_right")),
                    htmlOutput(NS(id, "how_to_read_map")),
                    shinyjs::useShinyjs()
@@ -305,9 +307,9 @@ crash_server <- function(id) {
     })
     
     output$crash_rmd <- renderText({
-         paste(
-           a("Analysis", onclick = "openTab('crash_analysis')", href="#"))
-      })
+         paste(a("Road safety analysis", onclick = "openTab('crash_analysis')", 
+                 href = "#"))
+    })
     
   })
 }
