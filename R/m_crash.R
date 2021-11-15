@@ -93,7 +93,7 @@ crash_server <- function(id) {
                              "cyc" = sus_translate("cyclist"), 
                              "other" = sus_translate("other"))
         
-        if(var_right() == " "){
+        if(var_right()[1] == " "){
           
           str_glue(
             sus_translate(
