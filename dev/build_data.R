@@ -71,6 +71,7 @@ source("dev/modules/crash.R")
 source("dev/modules/access.R")
 source("dev/modules/alley.R")
 # source("dev/modules/dmti.R")
+source("dev/modules/stories.R")
 
 
 # Save data files ---------------------------------------------------------
@@ -84,6 +85,7 @@ qsave(crash, file = "data/crash.qs")
 qsave(tt_matrix, file = "data/tt_matrix.qs")
 qsavem(alleys, alley_text, file = "data/alleys.qsm")
 qsave(green_space, file = "data/green_space.qs")
+qsave(stories, file = "data/stories.qs")
 
 
 # Produce left and right maps ---------------------------------------------

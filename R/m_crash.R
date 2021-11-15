@@ -4,17 +4,6 @@
 
 crash_UI <- function(id) {
   tabItem(tabName = "crash",
-          tags$head(tags$style(
-            HTML('
-      #main_panel_crash_analysis {
-                  max-height: 83vh;
-                  overflow: auto;
-                  background-color: #fff;
-                  border: 1px solid transparent;
-                  border-radius: 4px;
-                  box-shadow: 0 50px 50px rgba(0,0,0,.6);
-      }
-    '))),
           shinyjs::useShinyjs(),
           shinyjs::hidden(htmlOutput(NS(id, "crash_analysis"),
                      style = "position:absolute; margin: 40px;
@@ -323,7 +312,7 @@ crash_server <- function(id) {
     
     output$crash_analysis <- renderUI(
       
-      HTML('<div id = "main_panel_crash_analysis">',
+      HTML('<div id = "main_panel_text_popup">',
            includeHTML("www/crash/crash.html"),
            '</div>')
 

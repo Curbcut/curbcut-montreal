@@ -35,3 +35,9 @@ purrr::walk(mcp_files, process_rmd, path = "mcp")
 # Crash -------------------------------------------------------------------
 
 process_rmd("crash.Rmd", "crash")
+
+
+# Montreal stories --------------------------------------------------------
+
+stories_files <- list.files("dev/Rmd/stories")
+purrr::walk(stories_files, process_rmd, path = "stories")

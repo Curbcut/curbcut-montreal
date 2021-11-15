@@ -1,0 +1,13 @@
+### STORIES MODULE GLOBALS ######################################################
+
+# Map token
+# Stolen from canale
+token_stories <- paste0("pk.eyJ1IjoiZHdhY2hzbXV0aCIsImEiOiJja2g2Y2JpbDc",
+                       "wMDc5MnltbWpja2xpYTZhIn0.BXdU7bsQYWcSwmmBx8DNqQ")
+
+# Initialize reactive values
+rv_stories <- reactiveValues(poly_selected = NA, zoom = 1500)
+
+# Link to images
+
+stories_img_path <- "stories/round_img/"

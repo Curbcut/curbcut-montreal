@@ -178,6 +178,11 @@ title_text <-
     "time (including walking to reach station, waiting time, in-vehicle ",
     "time). For more info on how accessibility metrics are calculated see ",
     "<a href = 'https://conservancy.umn.edu/bitstream/handle/11299/199892/",
-    "CTS13-20_Access-Across-America.pdf'>'Access Across America'</a>."))
+    "CTS13-20_Access-Across-America.pdf'>'Access Across America'</a>.")) |> 
+  add_row(tab = "stories", type = "title", text = "Montreal stories") |> 
+  add_row(tab = "stories", type = "main", text = paste0(
+    "Various stories on Montreal's neighborhoods.")) |> 
+  add_row(tab = "stories", type = "extra", text = paste0(
+    "No extra information at this time."))
   
 qsave(title_text, "data/title_text.qs")

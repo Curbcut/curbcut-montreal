@@ -44,6 +44,7 @@ green_space <- qread("data/green_space.qs")
 qload("data/alleys.qsm")
 crash <- qread("data/crash.qs")
 tt_matrix <- qread("data/tt_matrix.qs")
+stories <- qread("data/stories.qs")
 
 min_census_year <- "1996"
 current_census <- "2016"
@@ -336,6 +337,16 @@ styler <- '
       margin: 0 1px;
       background-color: #0096C9;
       color: #FFFFFF;
+      }
+      
+      /* the big panel popup when we show an RMD in a map module */
+      #main_panel_text_popup {
+      max-height: 83vh;
+      overflow: auto;
+      background-color: #fff;
+      border: 1px solid transparent;
+      border-radius: 4px;
+      box-shadow: 0 50px 50px rgba(0,0,0,.6);
       }
 
 

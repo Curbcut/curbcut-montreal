@@ -125,7 +125,7 @@ ui <- dashboardPage(
       menuItem(
         i18n$t("Urban life"),
         tabName = "urban_life",
-
+        
         # CanALE
         menuSubItem(
           i18n$t("Active living potential"),
@@ -134,7 +134,7 @@ ui <- dashboardPage(
           condition = "input.tabs == 'canale'",
           # The ID needs to be duplicated for complicated namespacing reasons!
           small_map_UI("canale-left")),
-
+        
         # Green alleys
         menuSubItem(
           i18n$t("Green alleys"),
@@ -142,8 +142,17 @@ ui <- dashboardPage(
         conditionalPanel(
           condition = "input.tabs == 'alley'",
           # The ID needs to be duplicated for complicated namespacing reasons!
-          small_map_UI("alley-left")
-          )),
+          small_map_UI("alley-left")),
+        
+        # Montreal stories
+        menuSubItem(
+          i18n$t("Montreal stories"),
+          tabName = "stories"),
+        conditionalPanel(
+          condition = "input.tabs == 'stories'",
+          # The ID needs to be duplicated for complicated namespacing reasons!
+          small_map_UI("stories-left"))
+      ),
       
       hr(),
       menuItem(i18n$t("Place explorer"), tabName = "place_explorer"),
@@ -201,6 +210,7 @@ ui <- dashboardPage(
       tabItem(tabName = "housing", housing_UI("housing")),
       tabItem(tabName = "mcp", mcp_UI("mcp")),
       tabItem(tabName = "meet_the_team", meet_the_team_UI("meet_the_team")),
+      tabItem(tabName = "stories", stories_UI("stories")),
       tabItem(tabName = "why_dash", why_dash_UI("why_dash"))
       
     )

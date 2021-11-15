@@ -32,6 +32,7 @@ shinyServer(function(input, output, session) {
   meet_the_team_server("meet_the_team")
   # mode_switch_server("mode_switch")
   # ped_server("ped")
+  stories_server("stories")
   why_dash_server("why_dash")
 
     
