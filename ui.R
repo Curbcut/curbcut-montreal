@@ -119,13 +119,8 @@ ui <- dashboardPage(
         # Safety
         menuSubItem(
           i18n$t("Road safety"),
-          tabName = "crash"),
+          tabName = "crash")),
         
-        # Safety
-        menuSubItem(
-          i18n$t("Road safety analysis"),
-          tabName = "crash_analysis")),
-      
       # Urban life
       menuItem(
         i18n$t("Urban life"),
@@ -202,7 +197,6 @@ ui <- dashboardPage(
       tabItem(tabName = "climate_risk", climate_risk_UI("climate_risk")),
       tabItem(tabName = "covid", covid_UI("covid")),
       tabItem(tabName = "crash", crash_UI("crash")),
-      tabItem(tabName = "crash_analysis", crash_analysis_UI("crash_analysis")),
       # tabItem(tabName = "dmti", dmti_UI("dmti")),
       tabItem(tabName = "housing", housing_UI("housing")),
       tabItem(tabName = "mcp", mcp_UI("mcp")),

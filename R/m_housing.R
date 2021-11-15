@@ -11,7 +11,7 @@ housing_UI <- function(id) {
                    div(style = widget_style, 
                        sliderInput(
                          NS(id, "slider_uni"), 
-                         "Select a year",
+                         i18n$t("Select a year"),
                          min = housing_slider$min,
                          max = housing_slider$max,
                          step = housing_slider$interval, sep = "",
@@ -20,7 +20,7 @@ housing_UI <- function(id) {
                    div(style = widget_style, 
                        sliderInput(
                          NS(id, "slider_bi"), 
-                         "Select two years", 
+                         i18n$t("Select two years"), 
                          min = housing_slider$min,
                          max = housing_slider$max, 
                          step = housing_slider$interval, sep = "", 

@@ -26,7 +26,6 @@ shinyServer(function(input, output, session) {
   climate_risk_server("climate_risk")
   covid_server("covid")
   crash_server("crash")
-  crash_analysis_server("crash_analysis")
   # dmti_server("dmti")
   housing_server("housing")
   mcp_server("mcp")

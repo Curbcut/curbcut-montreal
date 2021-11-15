@@ -4,40 +4,43 @@
 
 crash_UI <- function(id) {
   tabItem(tabName = "crash",
+          shinyjs::useShinyjs(),
+          shinyjs::hidden(htmlOutput(NS(id, "crash_analysis"),
+                     style = "max-width: 1000px;")),
           mapdeckOutput(NS(id, "map"), height = "92vh"),
           title_UI(NS(id, "title"),
-                   htmlOutput(NS(id, "crash_rmd")),
-                   hr(),
+                   actionLink(NS(id, "analysis"), "Road safety analysis"),
+                   hr(id = NS(id, "hr")),
                    select_var_UI(NS(id, "left_1"), var_list_left_crash_1,
                                  label = i18n$t("Grouping of crashes"),
                                  width = "200px"),
                    select_var_UI(NS(id, "left_2"), var_list_left_crash_2,
                                  label = i18n$t("Type of crash"), 
                                  width = "200px"),
-                   div(style = widget_style, 
-                       sliderInput(NS(id, "left"), i18n$t("Select a year"),
-                               min = crash_slider$min,
-                               max = crash_slider$max,
-                               step = crash_slider$interval, sep = "",
-                               value = crash_slider$init, width = "200px")),
-                   div(style = widget_style,
-                       sliderInput(NS(id, "left_bi_time"), label = NULL, 
-                               min = crash_slider$min,
-                               max = crash_slider$max, 
-                               step = crash_slider$interval, sep = "", 
-                               value = c("2012", "2019"), width = "200px")),
-                   div(style = widget_style,
+                   div(id = NS(id, "slider"), style = widget_style, 
+                       sliderInput(NS(id, "left"), 
+                                   i18n$t("Select a year"),
+                                   min = crash_slider$min,
+                                   max = crash_slider$max,
+                                   step = crash_slider$interval, sep = "",
+                                   value = crash_slider$init, width = "200px"),
+                       sliderInput(NS(id, "left_bi_time"), 
+                                   i18n$t("Select two years"), 
+                                   min = crash_slider$min,
+                                   max = crash_slider$max, 
+                                   step = crash_slider$interval, sep = "", 
+                                   value = c("2012", "2019"), width = "200px")),
+                   div(id = NS(id, "slider_switch"), style = widget_style,
                        materialSwitch(inputId = NS(id, "bi_time"),
                                   label = i18n$t("Compare dates"), 
                                   right = TRUE, width = "200px")),
                    htmlOutput(NS(id, "bi_time_slider_label")),
                    htmlOutput(NS(id, "year_displayed_right")),
-                   htmlOutput(NS(id, "how_to_read_map")),
-                   shinyjs::useShinyjs()
+                   htmlOutput(NS(id, "how_to_read_map"))
                    ),
           right_panel(id, compare_UI(NS(id, "crash"), var_list_right_crash),
-                      # explore_UI(NS(id, "explore")), dyk_UI(NS(id, "dyk"))
-                      ),
+                      # explore_UI(NS(id, "explore")), 
+                      dyk_UI(NS(id, "dyk"))),
           legend_bivar_UI(NS(id, "crash")))
 }
 
@@ -306,10 +309,32 @@ crash_server <- function(id) {
       }
     })
     
-    output$crash_rmd <- renderText({
-         paste(a("Road safety analysis", onclick = "openTab('crash_analysis')", 
-                 href = "#"))
+    output$crash_analysis <- renderUI(includeHTML("www/crash/crash.html"))
+    observeEvent(input$analysis, {
+      
+      if (input$analysis %% 2 == 1) {
+        txt <- sus_translate("Road safety map") 
+        } else txt <- sus_translate("Road safety analysis")
+      
+      updateActionLink(session, "analysis", label = txt)
+      
+      print(input$analysis)
+      print(input$analysis %% 2)
+      
+      shinyjs::toggle("hr", condition = !input$analysis %% 2)
+      shinyjs::toggle("left_1-var", condition = !input$analysis %% 2)
+      shinyjs::toggle("left_2-var", condition = !input$analysis %% 2)
+      shinyjs::toggle("slider", condition = !input$analysis %% 2)
+      shinyjs::toggle("slider_switch", condition = !input$analysis %% 2)
+      shinyjs::toggle("title-title", condition = !input$analysis %% 2)
+      shinyjs::toggle("title-title_extra", condition = !input$analysis %% 2)
+      shinyjs::toggle("title-title_main", condition = !input$analysis %% 2)
+      shinyjs::toggle("title-more_info", condition = !input$analysis %% 2)
+      shinyjs::toggle("title-more_info", condition = !input$analysis %% 2)
+      shinyjs::toggle("crash_analysis", condition = input$analysis %% 2)
+      
     })
+    
     
   })
 }

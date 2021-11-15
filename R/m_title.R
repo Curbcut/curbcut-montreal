@@ -11,7 +11,7 @@ title_UI <- function(id, ...) {
     ...,
     div(),
     actionLink(NS(id, "more_info"), i18n$t("Learn more")),
-    conditionalPanel(
+    conditionalPanel(id = NS(id, "cond"),
       condition = "output.more_info_status == 1", ns = NS(id),
       uiOutput(NS(id, "title_extra"))
     )
@@ -33,7 +33,7 @@ title_server <- function(id, x) {
       if (input$more_info %% 2 == 1) {
         txt <- sus_translate("Hide")
       } else txt <- sus_translate("Learn more")
-      updateActionButton(session, "more_info", label = txt)
+      updateActionLink(session, "more_info", label = txt)
       })
     
     output$title <- renderUI(h2(sus_translate(
