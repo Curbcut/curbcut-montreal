@@ -44,7 +44,7 @@ access_server <- function(id) {
                # palette = access_colour(c(0, 0.2, 0.4, 0.6, 0.8, 1))
                ) %>% 
         add_path(data = metro_lines, stroke_colour = "fill",
-                 stroke_width = 50)
+                 stroke_width = 50, update_view = FALSE)
       })
     
     # Enable or disable inputs
@@ -94,7 +94,7 @@ access_server <- function(id) {
       
         map_change(NS(id, "map"), df = data, zoom = reactive("CT")) %>% 
         add_path(data = metro_lines, stroke_colour = "fill",
-                 stroke_width = 50))
+                 stroke_width = 50, update_view = FALSE))
 
     # Update poly_selected on click
     observeEvent(input$map_polygon_click, {
@@ -153,7 +153,7 @@ access_server <- function(id) {
             layer_id = "poly_highlight", auto_highlight = TRUE, 
             highlight_colour = "#FFFFFF90") %>% 
           add_path(data = metro_lines, stroke_colour = "fill",
-                   stroke_width = 50)
+                   stroke_width = 50, update_view = FALSE)
         } else {
           mapdeck_update(map_id = NS(id, "map")) %>%
             clear_path() %>% 
@@ -167,7 +167,7 @@ access_server <- function(id) {
                    # palette = access_colour(c(0, 0.2, 0.4, 0.6, 0.8, 1))
             ) %>% 
             add_path(data = metro_lines, stroke_colour = "fill",
-                     stroke_width = 50)
+                     stroke_width = 50, update_view = FALSE)
           
         }
       })
