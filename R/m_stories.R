@@ -31,20 +31,26 @@ stories_server <- function(id) {
               location = map_location) %>% 
         add_polygon(stories,
                     id = "ID", fill_opacity = 0, layer_id = "clickable",
-                    stroke_opacity = 0
-        ) %>% 
-        add_bitmap(paste0(stories_img_path, stories$img),
-                   bounds = as.vector(st_bbox(stories$buffer)),
-                   layer_id = "images")
+                    stroke_opacity = 0) %>% 
+        add_bitmap(paste0(stories_img_path, stories$img[1]),
+                   bounds = as.vector(st_bbox(stories$buffer[1])),
+                   layer_id = "image1") %>% 
+        add_bitmap(paste0(stories_img_path, stories$img[2]),
+                   bounds = as.vector(st_bbox(stories$buffer[2])),
+                   layer_id = "image2") %>% 
+        add_bitmap(paste0(stories_img_path, stories$img[3]),
+                   bounds = as.vector(st_bbox(stories$buffer[3])),
+                   layer_id = "image3") %>% 
+        add_bitmap(paste0(stories_img_path, stories$img[4]),
+                   bounds = as.vector(st_bbox(stories$buffer[4])),
+                   layer_id = "image4")
     })
     
     # Zoom level
     observeEvent(input$map_view_change$zoom, {
-      rv_stories$zoom <- case_when(input$map_view_change$zoom >= 13 ~ 500,
-                                 input$map_view_change$zoom >= 12 ~ 1000,
-                                 input$map_view_change$zoom >= 11 ~ 1500,
-                                 TRUE ~ 2000)
+      rv_stories$zoom <- input$map_view_change$zoom*-550+8000
     })
+    
     
     # Update buffer to change the map when zoom is different
     data <- reactive({
@@ -58,14 +64,21 @@ stories_server <- function(id) {
       data()
       rv_canale$zoom}, {
       mapdeck_update(map_id = NS(id, "map")) %>%
-        add_polygon(data = data(),
-                    id = "ID", fill_opacity = 0,
-                    stroke_opacity = 0,
-                    layer_id = "clickable"
-         ) %>% 
-          add_bitmap(paste0(stories_img_path, data()$img),
+          add_polygon(data(),
+                      id = "ID", fill_opacity = 0, layer_id = "clickable",
+                      stroke_opacity = 0) %>% 
+          add_bitmap(paste0(stories_img_path, data()$img[1]),
                      bounds = as.vector(st_bbox(data()$buffer[1])),
-                     layer_id = "images")
+                     layer_id = "image1") %>% 
+          add_bitmap(paste0(stories_img_path, data()$img[2]),
+                     bounds = as.vector(st_bbox(data()$buffer[2])),
+                     layer_id = "image2") %>% 
+          add_bitmap(paste0(stories_img_path, data()$img[3]),
+                     bounds = as.vector(st_bbox(data()$buffer[3])),
+                     layer_id = "image3") %>% 
+          add_bitmap(paste0(stories_img_path, data()$img[4]),
+                     bounds = as.vector(st_bbox(data()$buffer[4])),
+                     layer_id = "image4")
         
   })
     
@@ -85,7 +98,7 @@ stories_server <- function(id) {
       
       if(!is.na(rv_stories$poly_selected)) {
         
-      rmd_name <- stories[stories$ID == rv_stories$poly_selected]$rmd
+      rmd_name <- stories[stories$ID == rv_stories$poly_selected,]$rmd
       
       HTML('<div id = "main_panel_text_popup">',
            includeHTML(paste0("www/stories/", rmd_name, "_en.html")),

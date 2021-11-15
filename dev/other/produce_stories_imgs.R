@@ -6,7 +6,7 @@ library(magick)
 
 # IMAGES MUST BE TRANSFORMED TO PNG FIRST
 
-img_name <- "little_burgundy.png"
+img_name <- "old_quarry.png"
 
 round_img_shadow <- function(img_name) {
 
@@ -41,5 +41,17 @@ round_img_shadow <- function(img_name) {
   
 }
 
-stories_img <- list.files("www/stories/raw_img")
+stories_img <- str_subset(list.files("www/stories/raw_img"), ".png$")
+
+if (length(stories_img) != length(list.files("www/stories/raw_img"))){
+  not_pngs <- 
+  list.files("www/stories/raw_img")[!list.files("www/stories/raw_img") %in% 
+                                      stories_img]
+  
+  warning(paste0("Raw images must be PNGs. It is not the case for ", 
+                 not_pngs, "\n"))
+  
+  # Later we will transform them in codes here rather then send a message
+}
+
 purrr::walk(stories_img, round_img_shadow)
