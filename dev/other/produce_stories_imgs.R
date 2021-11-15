@@ -43,8 +43,3 @@ round_img_shadow <- function(img_name) {
 
 stories_img <- list.files("www/stories/raw_img")
 purrr::walk(stories_img, round_img_shadow)
-
-# CUT 167px from both size of shadow
-
-# image_crop(image, "100x150+50"): crop out width:100px
-# and height:150px starting +50px from the left

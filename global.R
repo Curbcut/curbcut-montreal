@@ -44,6 +44,7 @@ green_space <- qread("data/green_space.qs")
 qload("data/alleys.qsm")
 crash <- qread("data/crash.qs")
 tt_matrix <- qread("data/tt_matrix.qs")
+metro_lines <- qread("data/metro_lines.qs")
 stories <- qread("data/stories.qs")
 
 min_census_year <- "1996"

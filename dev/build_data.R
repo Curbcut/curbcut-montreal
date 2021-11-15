@@ -86,6 +86,7 @@ qsave(tt_matrix, file = "data/tt_matrix.qs")
 qsavem(alleys, alley_text, file = "data/alleys.qsm")
 qsave(green_space, file = "data/green_space.qs")
 qsave(stories, file = "data/stories.qs")
+qsave(metro_lines, file = "data/metro_lines.qs")
 
 
 # Produce left and right maps ---------------------------------------------

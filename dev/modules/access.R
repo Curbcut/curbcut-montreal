@@ -32,6 +32,20 @@ points <-
 
 tt_matrix <- qread("dev/data/tt_matrix.qs")
 
+metro_lines <- 
+  read_sf("dev/data/transit_shp/mtl_metroline.shp") %>% 
+  distinct(LIGNE, .keep_all = T) %>% 
+  mutate(LIGNE = as.character(LIGNE),
+         line = case_when(LIGNE == 1 ~ "green",
+                          LIGNE == 2 ~ "orange",
+                          LIGNE == 4 ~ "yellow",
+                          LIGNE == 5 ~ "blue"),
+         fill = case_when(LIGNE == 1 ~ "#069037",
+                          LIGNE == 2 ~ "#f07d05",
+                          LIGNE == 4 ~ "#fad706",
+                          LIGNE == 5 ~ "#057bc4")) %>% 
+  select(line, fill, geometry) %>% 
+  st_transform(4326)
 
 # Process access table ----------------------------------------------------
 

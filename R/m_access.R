@@ -42,7 +42,9 @@ access_server <- function(id) {
                fill_colour = "fill", update_view = FALSE, id = "ID", 
                auto_highlight = TRUE, highlight_colour = "#FFFFFF90"#,
                # palette = access_colour(c(0, 0.2, 0.4, 0.6, 0.8, 1))
-               )
+               ) %>% 
+        add_path(data = metro_lines, stroke_colour = "fill",
+                 stroke_width = 50)
       })
     
     # Enable or disable inputs
@@ -88,7 +90,11 @@ access_server <- function(id) {
     observeEvent({
       var_left()
       var_right()
-      }, map_change(NS(id, "map"), df = data, zoom = reactive("CT")))
+      }, 
+      
+        map_change(NS(id, "map"), df = data, zoom = reactive("CT")) %>% 
+        add_path(data = metro_lines, stroke_colour = "fill",
+                 stroke_width = 50))
 
     # Update poly_selected on click
     observeEvent(input$map_polygon_click, {
@@ -129,6 +135,7 @@ access_server <- function(id) {
           mutate(fill = "#00000033")
         
         mapdeck_update(map_id = NS(id, "map")) %>%
+          clear_path() %>% 
           clear_polygon() %>%
           add_polygon(
             data = CT, stroke_width = 10, stroke_colour = "#FFFFFF", id = "ID",
@@ -144,9 +151,12 @@ access_server <- function(id) {
             data = poly_to_add, fill_colour = "fill", stroke_width = 20,
             stroke_colour = "#000000", update_view = FALSE, id = "ID",
             layer_id = "poly_highlight", auto_highlight = TRUE, 
-            highlight_colour = "#FFFFFF90")
+            highlight_colour = "#FFFFFF90") %>% 
+          add_path(data = metro_lines, stroke_colour = "fill",
+                   stroke_width = 50)
         } else {
           mapdeck_update(map_id = NS(id, "map")) %>%
+            clear_path() %>% 
             clear_polygon(layer_id = "poly_bg") %>%
             clear_polygon(layer_id = "poly_iso") %>%
             clear_polygon(layer_id = "poly_highlight") %>%
@@ -155,7 +165,9 @@ access_server <- function(id) {
                    fill_colour = "fill", update_view = FALSE, id = "ID", 
                    auto_highlight = TRUE, highlight_colour = "#FFFFFF90"#,
                    # palette = access_colour(c(0, 0.2, 0.4, 0.6, 0.8, 1))
-            )
+            ) %>% 
+            add_path(data = metro_lines, stroke_colour = "fill",
+                     stroke_width = 50)
           
         }
       })
