@@ -93,8 +93,6 @@ access_server <- function(id) {
     # Update poly_selected on click
     observeEvent(input$map_polygon_click, {
       click <- jsonlite::fromJSON(input$map_polygon_click)$object$properties$id
-      print(click)
-      print(rv_access$poly_selected)
       if (is.null(click)) {
         rv_access$poly_selected <- NA
       } else if (!is.na(rv_access$poly_selected) && 
@@ -151,7 +149,14 @@ access_server <- function(id) {
           mapdeck_update(map_id = NS(id, "map")) %>%
             clear_polygon(layer_id = "poly_bg") %>%
             clear_polygon(layer_id = "poly_iso") %>%
-            clear_polygon(layer_id = "poly_highlight")
+            clear_polygon(layer_id = "poly_highlight") %>%
+            add_sf(data = data(),
+                   stroke_width = 10, stroke_colour = "#FFFFFF", 
+                   fill_colour = "fill", update_view = FALSE, id = "ID", 
+                   auto_highlight = TRUE, highlight_colour = "#FFFFFF90"#,
+                   # palette = access_colour(c(0, 0.2, 0.4, 0.6, 0.8, 1))
+            )
+          
         }
       })
 
