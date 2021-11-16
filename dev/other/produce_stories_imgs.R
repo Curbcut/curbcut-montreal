@@ -6,8 +6,6 @@ library(magick)
 
 # IMAGES MUST BE TRANSFORMED TO PNG FIRST
 
-img_name <- "old_quarry.png"
-
 round_img_shadow <- function(img_name) {
 
   path <- paste0("www/stories/raw_img/", img_name)
@@ -20,6 +18,14 @@ round_img_shadow <- function(img_name) {
   img1 <- magick::image_crop(img, 
                      geometry = paste0(smaller_side, "x", 
                                        smaller_side, "!"))
+  
+  # Bandeau
+  bandeau <- image_resize(img, 
+                          paste0(1000, "x", 
+                                 1000/img_info$width*img_info$height,"!"))
+  
+  bandeau <- image_crop(img, paste0(1000, "x",
+                                    200, "+0+100"))
   
   # resize shadow_right to fit with image size
   shadow_info <- magick::image_info(shadow_right)
@@ -38,6 +44,7 @@ round_img_shadow <- function(img_name) {
     magick::image_composite(img1, shadow_right, operator='copyopacity')
   
   image_write(round_img_shadow, paste0("www/stories/round_img/", img_name))
+  image_write(bandeau, paste0("www/stories/bandeau_img/", img_name))
   
 }
 

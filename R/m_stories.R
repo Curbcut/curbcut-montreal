@@ -23,7 +23,7 @@ stories_server <- function(id) {
     # Title bar
     title_server("title", "stories")
     
-    output$eso <- renderText(paste0(rv_stories$poly_selected))
+    output$eso <- renderText(jsonlite::fromJSON(input$map_polygon_click))
     
     # Map
     output$map <- renderMapdeck({
@@ -99,9 +99,14 @@ stories_server <- function(id) {
       if(!is.na(rv_stories$poly_selected)) {
         
       rmd_name <- stories[stories$ID == rv_stories$poly_selected,]$rmd
+      bandeau_name <- stories[stories$ID == rv_stories$poly_selected,]$img
       
       HTML('<div id = "main_panel_text_popup">',
-           includeHTML(paste0("www/stories/", rmd_name, "_en.html")),
+           # Adding bandeau img after the first div (title)
+           str_replace(includeHTML(paste0("www/stories/", rmd_name, "_en.html")),
+                       "</div>", paste0("</div><img src =", "stories/bandeau_img/",
+                       bandeau_name,"><br>"))
+           ,
            '</div>')
       }
       
