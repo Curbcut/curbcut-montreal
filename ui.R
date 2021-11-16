@@ -120,7 +120,11 @@ ui <- dashboardPage(
         # Safety
         menuSubItem(
           i18n$t("Road safety"),
-          tabName = "crash")),
+          tabName = "crash"),
+        conditionalPanel(
+          condition = "input.tabs == 'crash'",
+          # The ID needs to be duplicated for complicated namespacing reasons!
+          small_map_UI("crash-left"))),
         
       # Urban life
       menuItem(
