@@ -7,13 +7,13 @@ access_UI <- function(id) {
           mapdeckOutput(NS(id, "map"), height = "92vh"),
           title_UI(NS(id, "title"),
                    select_var_UI(NS(id, "left_2"), var_list_left_access_2,
-                                 label = i18n$t("Timing"), width = "200px"),
+                                 label = i18n$t("Timing"), width = "170px"),
                    select_var_UI(NS(id, "left_1"), var_list_left_access_1,
-                        label = i18n$t("Destination type"), width = "200px"),
+                        label = i18n$t("Destination type"), width = "170px"),
                    div(style = widget_style, 
                        sliderInput(NS(id, "slider"), i18n$t("Time threshold"),
                                    min = 10, max = 60, step = 1, value = 30,
-                                   width = "200px")),
+                                   width = "170px")),
                    shinyjs::useShinyjs()),
           right_panel(id, compare_UI(NS(id, "access"), var_list_right_access),
                       explore_UI(NS(id, "explore")), dyk_UI(NS(id, "dyk"))),
@@ -47,9 +47,8 @@ access_server <- function(id) {
                  stroke_width = 50, update_view = FALSE)
       })
     
-    # Enable or disable inputs
+    # Enable or disable slider
     observeEvent(rv_access$poly_selected, {
-      shinyjs::toggle("left_1-var", condition = is.na(rv_access$poly_selected))
       shinyjs::toggle("slider", condition = !is.na(rv_access$poly_selected))
     })
     
@@ -110,7 +109,7 @@ access_server <- function(id) {
     # Update map in response to poly_selected change
     observeEvent({
       rv_access$poly_selected
-      var_left_2()
+      var_left()
       input$slider}, {
       if (!is.na(rv_access$poly_selected)) {
         

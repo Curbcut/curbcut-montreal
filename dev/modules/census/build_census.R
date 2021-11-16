@@ -151,7 +151,7 @@ var_exp <-
     var_name = "Walk or cycle to work (%)",
     explanation = "the percentage of people who walk or cycle to work") %>%
   add_row(
-    var_code = "trans_walk_or_bike_prop",
+    var_code = "trans_transit_prop",
     var_name = "Public transit to work (%)",
     explanation = paste0("the percentage of people who use public transit to ",
                          "get to work")) %>%
