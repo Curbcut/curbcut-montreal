@@ -286,9 +286,7 @@ process_census_data <- function(data) {
     relocate(all_of(var_list), paste0(var_list, "_q3"), .before = geometry) %>% 
     rename_with(~paste0(.x, "_", year_census), all_of(c(var_list, paste0(var_list, "_q3"))))
   
-  data <- st_set_agr(data, "constant") %>%
-    mutate(across(where(is.numeric), ~replace(., is.nan(.), 0))) %>%
-    mutate(across(where(is.numeric), ~replace(., is.infinite(.), NA)))
+  data <- st_set_agr(data, "constant")
   
   data
   
@@ -402,8 +400,7 @@ grid_census <-
                                               na.rm = TRUE),
     inc_limat_prop = weighted.mean(inc_limat_prop, inc_limat_total, 
                                    na.rm = TRUE),
-    across(all_of(agg_list), sum, na.rm = TRUE)) %>% 
-  mutate(across(where(is.numeric), ~replace(., is.nan(.), NA)))
+    across(all_of(agg_list), sum, na.rm = TRUE))
 
 grid <- 
   grid %>% 

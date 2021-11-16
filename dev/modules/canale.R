@@ -68,8 +68,7 @@ grid_data <-
   st_drop_geometry() %>% 
   group_by(ID) %>% 
   summarize(canale_ind_2016 = weighted.mean(canale_ind_2016, 
-                                       households, na.rm = TRUE)) %>% 
-  mutate(across(where(is.numeric), ~replace(., is.nan(.), 0)))
+                                       households, na.rm = TRUE))
 
 grid <- 
   grid %>% 

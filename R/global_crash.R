@@ -17,8 +17,8 @@ crash_slider <- list(
 # Dropdown menu
 var_list_left_crash_1 <- 
   list("Count" = " ",
-       "Per sq km" = "prop_area",
-       "Per 1000 residents" = "prop_pop")
+       "Per sq km" = "sqkm",
+       "Per 1,000 residents" = "per1k")
 
 var_list_left_crash_2 <- 
   list("Total" = "total",
@@ -50,7 +50,7 @@ var_list_right_crash <-
          "15-45 minutes to work (%)" = "trans_t_45_prop",
          "More than 45 minutes to work (%)" = "trans_t_45_plus_prop"))
 
-# Mapdeck pointcloud legend
+# Mapdeck point cloud legend
 crash_legend_en <- 
   mapdeck_legend(
     legend_element(

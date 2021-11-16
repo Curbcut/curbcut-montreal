@@ -136,8 +136,6 @@ interpolate_census <- function(new_data, principal_data) {
       inc_low_income_prop = weighted.mean(inc_low_income_prop, 
                                           inc_low_income_total, na.rm = TRUE),
       across(all_of(agg_list), sum_na)) %>% 
-    mutate(across(where(is.numeric), ~replace(., is.nan(.), NA))) %>%
-    mutate(across(where(is.numeric), ~replace(., is.infinite(.), NA))) %>%
     mutate(across(all_of(agg_list), ~if_else(.x < 5, 0, .x)))
   
   new_data
@@ -193,8 +191,6 @@ borough_census <-
     inc_low_income_prop = weighted.mean(inc_low_income_prop, 
                                         inc_low_income_total, na.rm = TRUE),
     across(all_of(agg_list), sum_na)) %>% 
-  mutate(across(where(is.numeric), ~replace(., is.nan(.), NA))) %>%
-  mutate(across(where(is.numeric), ~replace(., is.infinite(.), NA))) %>%
   mutate(across(all_of(agg_list), ~if_else(.x < 5, 0, .x))) %>%
   filter(str_starts(ID, "2466023"))
 
@@ -300,8 +296,6 @@ process_census_data <- function(data) {
               edu_15_19_female)) %>% 
     # other processing
     mutate(across(contains("dollar"), ~ .x * 1.3063)) %>% 
-    mutate(across(where(is.numeric), ~replace(., is.nan(.), NA))) %>% 
-    mutate(across(where(is.numeric), ~replace(., is.infinite(.), NA))) %>% 
     mutate(across(all_of(var_list), ntile, 3, .names = "{.col}_q3")) %>% 
     rename_with(~paste0(.x, "_", year_census), 
                 all_of(c(var_list, paste0(var_list, "_q3"))))

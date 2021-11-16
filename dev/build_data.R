@@ -74,6 +74,11 @@ source("dev/modules/alley.R")
 source("dev/modules/stories.R")
 
 
+# Run tests and post-processing -------------------------------------------
+
+source("dev/other/post_processing.R")
+
+
 # Save data files ---------------------------------------------------------
 
 qsave(var_exp, file = "data/var_exp.qs")
