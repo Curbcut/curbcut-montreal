@@ -22,34 +22,42 @@ stories_server <- function(id) {
     
     # Title bar
     title_server("title", "stories")
-    
-    output$eso <- renderText(jsonlite::fromJSON(input$map_polygon_click))
-    
+
     # Map
     output$map <- renderMapdeck({
-      mapdeck(style = map_style, token = token_stories, zoom = 11, 
-              location = map_location) %>% 
-        add_polygon(stories,
-                    id = "ID", fill_opacity = 0, layer_id = "clickable",
-                    stroke_opacity = 0) %>% 
-        add_bitmap(paste0(stories_img_path, stories$img[1]),
-                   bounds = as.vector(st_bbox(stories$buffer[1])),
-                   layer_id = "image1") %>% 
-        add_bitmap(paste0(stories_img_path, stories$img[2]),
-                   bounds = as.vector(st_bbox(stories$buffer[2])),
-                   layer_id = "image2") %>% 
-        add_bitmap(paste0(stories_img_path, stories$img[3]),
-                   bounds = as.vector(st_bbox(stories$buffer[3])),
-                   layer_id = "image3") %>% 
-        add_bitmap(paste0(stories_img_path, stories$img[4]),
-                   bounds = as.vector(st_bbox(stories$buffer[4])),
-                   layer_id = "image4")
+      # 
+      # v1 <- 1:nrow(stories)
+      # v2 <- paste0("stories/round_img/", stories$img[v1])
+      # v3 <- paste0(
+      #   purrr::map(stories$buffer, st_bbox) %>% purrr::map(., as.vector))
+      # v4 <- paste0("image", v1)
+      # 
+      # all_add_bitmap <- paste0('add_bitmap("', v2, '", bounds = ', v3, ', ',
+      #                          'layer_id ="',v4 ,'") %>% ')
+      # 
+      # all_add_bitmap[length(all_add_bitmap)] <-
+      #   str_remove_all(all_add_bitmap[length(all_add_bitmap)], "%>%")
+      # 
+      # initial_map <-
+      # paste0('mapdeck(style = map_style, token = token_stories, zoom = 11, ',
+      #         'location = map_location) %>% ',
+      #   'add_polygon(stories,',
+      #               'id = "ID", fill_opacity = 0, layer_id = "clickable",',
+      #               'stroke_opacity = 0) %>% ',
+      #   parse(text = all_add_bitmap))
+      # 
+      # eval(parse(text = initial_map))
+      
+
+        mapdeck(style = map_style, token = token_stories, zoom = 10.5,
+               location = map_location)
     })
     
     # Zoom level
     observeEvent(input$map_view_change$zoom, {
-      rv_stories$zoom <- input$map_view_change$zoom*-550+8000
-    })
+        rv_stories$zoom <- case_when(input$map_view_change$zoom > 13 ~ 600,
+                                     TRUE ~ input$map_view_change$zoom*-550+8000)
+      })
     
     
     # Update buffer to change the map when zoom is different
@@ -59,26 +67,30 @@ stories_server <- function(id) {
         st_set_geometry("buffer")
     })
     
-    # Update map when data changes due to the zoom
     observeEvent({
       data()
-      rv_canale$zoom}, {
-      mapdeck_update(map_id = NS(id, "map")) %>%
-          add_polygon(data(),
-                      id = "ID", fill_opacity = 0, layer_id = "clickable",
-                      stroke_opacity = 0) %>% 
-          add_bitmap(paste0(stories_img_path, data()$img[1]),
-                     bounds = as.vector(st_bbox(data()$buffer[1])),
-                     layer_id = "image1") %>% 
-          add_bitmap(paste0(stories_img_path, data()$img[2]),
-                     bounds = as.vector(st_bbox(data()$buffer[2])),
-                     layer_id = "image2") %>% 
-          add_bitmap(paste0(stories_img_path, data()$img[3]),
-                     bounds = as.vector(st_bbox(data()$buffer[3])),
-                     layer_id = "image3") %>% 
-          add_bitmap(paste0(stories_img_path, data()$img[4]),
-                     bounds = as.vector(st_bbox(data()$buffer[4])),
-                     layer_id = "image4")
+      rv_stories$zoom}, {
+
+        v1 <- 1:nrow(data())
+        v2 <- paste0("stories/round_img/", data()$img[v1])
+        v3 <- paste0(
+          purrr::map(data()$buffer, st_bbox) %>% purrr::map(., as.vector))
+        v4 <- paste0("image", v1)
+        
+        all_add_bitmap <- paste0('add_bitmap("', v2, '", bounds = ', v3, ', ',
+                                 'layer_id ="',v4 ,'", update_view = FALSE) %>% ')
+        
+        all_add_bitmap[length(all_add_bitmap)] <-
+          str_remove_all(all_add_bitmap[length(all_add_bitmap)], "%>%")
+        
+        updated_map <-
+          paste0('mapdeck_update(map_id = NS(id, "map")) %>%',
+                 'add_polygon(data(),',
+                      'id = "ID", fill_opacity = 0, layer_id = "clickable",',
+                      'stroke_opacity = 0, update_view = FALSE) %>% ',
+                 parse(text = all_add_bitmap))
+        
+        eval(parse(text = updated_map))
         
   })
     
@@ -105,7 +117,7 @@ stories_server <- function(id) {
            # Adding bandeau img after the first div (title)
            str_replace(includeHTML(paste0("www/stories/", rmd_name, "_en.html")),
                        "</div>", paste0("</div><img src =", "stories/bandeau_img/",
-                       bandeau_name,"><br>"))
+                       bandeau_name,"><br><br>"))
            ,
            '</div>')
       }
