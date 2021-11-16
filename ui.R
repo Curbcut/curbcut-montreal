@@ -21,6 +21,7 @@ ui <- dashboardPage(
       id = "tabs", shiny.i18n::usei18n(i18n),
       
       menuItem(i18n$t("Home"), tabName = "home"),
+      hr(),
       
       # Climate ----
       menuItem(
@@ -142,18 +143,11 @@ ui <- dashboardPage(
         conditionalPanel(
           condition = "input.tabs == 'alley'",
           # The ID needs to be duplicated for complicated namespacing reasons!
-          small_map_UI("alley-left")),
-        
-        # Montreal stories
-        menuSubItem(
-          i18n$t("Montreal stories"),
-          tabName = "stories"),
-        conditionalPanel(
-          condition = "input.tabs == 'stories'",
-          # The ID needs to be duplicated for complicated namespacing reasons!
-          small_map_UI("stories-left"))
+          small_map_UI("alley-left"))
       ),
       
+      hr(),
+      menuItem(i18n$t("Montreal stories"), tabName = "stories"),
       hr(),
       menuItem(i18n$t("Place explorer"), tabName = "place_explorer"),
       hr(),

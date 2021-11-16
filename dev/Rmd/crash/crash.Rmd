@@ -12,7 +12,14 @@ library(tidyverse)
 library(sf)
 library(lubridate)
 
-crash <- qs::qread(here::here("data", "crash.qs"))
+crash <- read_sf(here::here("dev", "data", "collisions_routieres", 
+                            "collisions_routieres.shp")) %>%
+  mutate(injury_total = (NB_BLESSES + NB_BLESS_1)) %>%
+  select(date = DT_ACCDN, street = RUE_ACCDN, type = CD_GENRE_A, 
+         seriousness = GRAVITE, death_total = NB_MORTS, death_ped = NB_DECES_P, 
+         death_cyc = NB_DECES_V, injury_total, inj_ped = NB_BLESS_2, 
+         inj_cyc = NB_BLESS_4, day = JR_SEMN_AC, hour = HEURE_ACCD)
+
 qs::qload(here::here("data", "census.qsm"))
 
 ```
@@ -33,7 +40,8 @@ total_c <-
 ggplot(total_c, aes(x = date, y = n)) +
   geom_line(color = "#81a88d") +
   geom_smooth(method = "lm", se = FALSE, color = "#0a6c9a") +
-  labs(x = NULL, y = "Collisions")
+  labs(x = NULL, y = "Collisions") +
+  theme_minimal()
 
 ```
 
@@ -46,45 +54,36 @@ ggplot(total_c, aes(x = date, y = n)) +
 ```{r time_of_day, echo=FALSE, warning = F, message = F}
 
 # counting total crashes with another car, with a pedestrian, or with a cyclist by hour of day
-time <- crash %>% 
+crash %>% 
   st_drop_geometry() %>%
-  group_by(hour, type) %>% 
-  summarize(n()) %>% 
-  filter(type == 31 |
-         type == 32 |
-         type == 33) %>% 
-  rename(count = "n()") %>% 
-  transform(type = as.character(type))
-
-ggplot(time, 
-       aes(fill = factor(type,
-                         levels = c("31", "32", "33"),
-                         labels = c("Another Car(s)", "Pedestrian", "Cyclist")),
-           y = count,
-           x = hour)) +
+  filter(type %in% 31:33, hour != "Non précisé") %>%
+  count(hour, type) %>%
+  mutate(type = factor(
+    type, levels = c("31", "32", "33"), 
+    labels = c("Another Car(s)", "Pedestrian", "Cyclist"))) %>%
+  ggplot(aes(hour, n, fill = type)) +
   geom_bar(position = "stack",
            stat = "identity") +
-  labs(x = "Time of Day",
-       y = "Number of Collisions",
-       title = "Collisions by Time of Day since 2012",
+  labs(y = "Collisions",
+       title = "Collisions by time of day since 2012",
        fill = "Car collision with") +
   theme(axis.text.x = element_text(angle = 90)) +
-  scale_x_discrete(limit = c("00:00:00-00:59:00", "01:00:00-01:59:00", "02:00:00-02:59:00",
+  scale_y_continuous(labels = scales::comma) +
+  scale_x_discrete(name = NULL,
+                   limit = c("00:00:00-00:59:00", "01:00:00-01:59:00", "02:00:00-02:59:00",
                              "03:00:00-03:59:00", "04:00:00-04:59:00", "05:00:00-05:59:00",
                              "06:00:00-06:59:00", "07:00:00-07:59:00", "08:00:00-08:59:00",
                              "09:00:00-09:59:00", "10:00:00-10:59:00", "11:00:00-11:59:00",
                              "12:00:00-12:59:00", "13:00:00-13:59:00", "14:00:00-14:59:00",
                              "15:00:00-15:59:00", "16:00:00-16:59:00", "17:00:00-17:59:00",
                              "18:00:00-18:59:00", "19:00:00-19:59:00", "20:00:00-20:59:00",
-                             "21:00:00-21:59:00", "22:00:00-22:59:00", "23:00:00-23:59:00",
-                             "Non précisé"), 
-                   labels = c("Midnight","","","", "", "", "6 AM", "", "", "", "", "", "Noon",
-                              "", "", "", "", "", "6 PM", "", "", "", "", "", "Unspecified")) +
+                             "21:00:00-21:59:00", "22:00:00-22:59:00", "23:00:00-23:59:00"), 
+                   labels = c("0h00","","","", "", "", "6h00", "", "", "", "", "", "12h00",
+                              "", "", "", "", "", "18h00", "", "", "", "", "")) +
   theme_minimal() +
   scale_fill_manual("Car collision with", values = c("Another Car(s)" = "darkcyan", 
-                                         "Pedestrian" = "darkgoldenrod2", 
-                                         "Cyclist" = "chartreuse4"))
-rm(time)
+                                                     "Pedestrian" = "darkgoldenrod2", 
+                                                     "Cyclist" = "chartreuse4"))
 
 ```
 
@@ -92,84 +91,66 @@ rm(time)
 
 ```{r day_of_week, echo=FALSE, warning = F, message = F}
 
-day <- crash %>% 
+crash %>% 
   st_drop_geometry() %>%
-  group_by(day, type) %>% 
-  summarize(n()) %>% 
-  filter(type == 31 |
-         type == 32 |
-         type == 33) %>% 
-  rename(count = "n()") %>% 
-  transform(type = as.character(type))
-
-ggplot(day,
-       aes(x = day,
-           y = count,
-           fill = factor(type,
-                         levels = c("31", "32", "33"),
-                         labels = c("Another Car(s)", "Pedestrian", "Cyclist")))) +
+  filter(type %in% 31:33, hour != "Non précisé") %>%
+  count(day, type) %>%
+  mutate(type = factor(
+    type, levels = c("31", "32", "33"), 
+    labels = c("Another Car(s)", "Pedestrian", "Cyclist"))) %>%
+  ggplot(aes(day, n, fill = type)) +
   geom_bar(position = "stack",
            stat = "identity") +
-  labs(x = "Day of the Week",
-       y = "Number of Collisions",
-       title = "Collisions by Day since 2012",
+  labs(y = "Number of collisions",
+       title = "Collisions by day since 2012",
        fill = "Car collision with") +
-  scale_x_discrete(limit = c("LU", "MA", "ME", "JE", "VE", "SA", "DI"),
-                   labels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday",
-                              "Saturday", "Sunday")) +
+  scale_y_continuous(labels = scales::comma) +
+  scale_x_discrete(name = NULL, 
+                   limit = c("LU", "MA", "ME", "JE", "VE", "SA", "DI"),
+                   labels = c("Monday", "Tuesday", "Wednesday", "Thursday", 
+                              "Friday", "Saturday", "Sunday")) +
   theme_minimal() +
-  scale_fill_manual("Car collision with", values = c("Another Car(s)" = "darkcyan", 
-                                         "Pedestrian" = "darkgoldenrod2", 
-                                         "Cyclist" = "chartreuse4"))
-
-rm(day)
+  scale_fill_manual("Car collision with", 
+                    values = c("Another Car(s)" = "darkcyan", 
+                               "Pedestrian" = "darkgoldenrod2", 
+                               "Cyclist" = "chartreuse4"))
 
 ```
+
 
 ### By month
 
 ```{r type_by_month, echo = F, warning = F, message = F}
 
 # crashes with car/ped/cyclist by month
-type_month <- crash %>% 
+crash %>% 
   st_drop_geometry() %>%
-  dplyr::mutate(year = lubridate::year(date), 
-          month = lubridate::month(date), 
-          day = lubridate::day(date)) %>% 
-  group_by(month, type) %>% 
-  summarize(count = n()) %>% 
-  filter(type == 31 |
-         type == 32 |
-         type == 33) 
-
-ggplot(type_month,
-       aes(x = month,
-           y = count,
-           fill = factor(type,
-                         levels = c("31", "32", "33"),
-                         labels = c("Another Car(s)", "Pedestrian", "Cyclist")))) +
-  geom_bar(position = "stack",
-           stat = "identity") +
-  labs(x = "Month",
-       y = "Number of Collisions",
-       title = "Type of Collisions by Month since 2012",
+  filter(type %in% 31:33, hour != "Non précisé") %>%
+  mutate(month = lubridate::month(date)) |> 
+  count(month, type) %>%
+  mutate(type = factor(
+    type, levels = c("31", "32", "33"), 
+    labels = c("Another Car(s)", "Pedestrian", "Cyclist"))) %>%
+  ggplot(aes(month, n, fill = type)) +
+  geom_bar(position = "stack", stat = "identity") +
+  labs(y = "Number of collisions",
+       title = "Type of collisions by month since 2012",
        fill = "Car collision with") +
-  scale_x_discrete(limit = c("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"),
+  scale_y_continuous(labels = scales::comma) +
+  scale_x_discrete(name = NULL,
+                   limit = c("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"),
                    labels = c("Jan", "Feb", "Mar", "Apr", "May",
-                              "Jun", "Jul", "Augu", "Sep", "Oct", 
+                              "Jun", "Jul", "Aug", "Sep", "Oct", 
                               "Nov", "Dec")) +
   theme_minimal() +
-  scale_fill_manual("Car collision with", values = c("Another Car(s)" = "darkcyan", 
-                                         "Pedestrian" = "darkgoldenrod2", 
-                                         "Cyclist" = "chartreuse4"))
-  
-rm(type_month)
+  scale_fill_manual("Car collision with", 
+                    values = c("Another Car(s)" = "darkcyan", 
+                               "Pedestrian" = "darkgoldenrod2", 
+                               "Cyclist" = "chartreuse4"))
 
 ```
 
 ## Who is affected by collisions? {.tabset}
-
-Need some intro/description here
 
 ### Collision type
 
@@ -222,8 +203,6 @@ rm(sev_type)
 ```
 
 ## Who is affected by collisions? {.tabset}
-
-Socioeconomic factors
 
 ### 2019
 
