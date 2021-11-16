@@ -12,23 +12,39 @@ title_text <-
   add_row(tab = "housing", type = "title",
           text = "The housing system", .before = 6) %>% 
   add_row(tab = "housing", type = "main",
-          text = paste0("Housing is one of the most important features of ",
-                        "individual and collective urban life, and it sits at ",
-                        "the heart of a variety of sustainability questions. "), 
+          text = paste0("Housing is at the centre of our lives. In recent years, ",
+                        "there have been increasing conversations surrounding ",
+                        "housing affordability and accessibility in cities ",
+                        "(Madden & Marcuse, 2016). Access to affordable and ",
+                        "adequate housing is a core element for social equity ",
+                        "in cities. In Canada, the National Housing Strategy aims ",
+                        "at addressing housing needs and houselessness through ",
+                        "modernization, new construction and innovation and research. ",
+                        "The City of Montreal currently has many housing-related ",
+                        "objectives and initiatives, such as the Diverse Metropolis ",
+                        "by-law and the 12,000 housing unit strategy. This module ",
+                        "offers a temporal outlook on housing in Montreal’s census ",
+                        "metropolitan area through census variables that relate to ",
+                        "housing, socio-demographics and more."), 
           .before = 6) %>% 
   add_row(tab = "housing", type = "extra",
           text = paste0("This module presents housing data from the Census, ",
                         "and explores relationships with important ", 
                         "demographic patterns, and how those patterns have ",
-                        "changed over time."), .before = 6) %>% 
+                        "changed over time.",
+                        "<br><p><i>For further reading:</i></p>",
+                        "<ul><li><a href = 'https://www.cmhc-schl.gc.ca/en/nhs/'>",
+                        "CMHC. (n.d.). National Housing Strategy.</a><li><a href =",
+                        "'https://montreal.ca/articles/metropole-mixte-les-grandes-lignes-du-reglement-7816'>",
+                        "Ville de Montréal. (4 octobre 2021). Métropole Mixte: Les grandes lignes du règlement.</a>",
+                        "<li>Madden, D., & Marcuse, P. (2016). In Defense of Housing: The Politics of Crisis. New York and London: Verso Books.</ul>"), .before = 6) %>% 
   add_row(tab = "crash", type = "title",
           text = "Road safety", .before = 6) %>% 
   add_row(tab = "crash", type = "main",
-          text = paste0("Road safety is an important consideration for wellbeing ",
+          text = paste0("<p>Road safety is an important consideration for wellbeing ",
                         "and safety in cities. This module ",
                         "provides an overview and analysis of road collisions ",
-                        "in the City of Montreal, ranging from 2012 to today."), 
-          .before = 6) %>% 
+                        "in the City of Montreal, ranging from 2012 to today.</p>"), .before = 6) %>% 
   add_row(tab = "crash", type = "extra",
           text = paste0("<p>Data is collected by the Service de Police de la ","
                         Ville de Montréal (SPVM) and compiled by the Société ",

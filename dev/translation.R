@@ -529,18 +529,18 @@ translation_fr <-
   add_row(en = "much smaller than" , fr = "beaucoup plus petit que") %>%
   add_row(en = "larger" , fr = "plus grand") %>%
   add_row(en = "smaller" , fr = "plus petit") %>%
-  add_row(en = "strong" , fr = "fort") %>%
+  add_row(en = "strong" , fr = "forte") %>%
   add_row(en = "poor" , fr = "faible") %>%
-  add_row(en = "moderate" , fr = "modéré") %>%
+  add_row(en = "moderate" , fr = "modérée") %>%
   
   # Correlation
-  add_row(en = "positive" , fr = "positif") %>%
-  add_row(en = "negative" , fr = "négatif") %>%
+  add_row(en = "positive" , fr = "positive") %>%
+  add_row(en = "negative" , fr = "négative") %>%
   add_row(en = "weak" , fr = "faible") %>%
-  add_row(en = "higher" , fr = "plus grandes") %>%
-  add_row(en = "lower" , fr = "plus petites") %>%
-  add_row(en = "high" , fr = "haut") %>%
-  add_row(en = "low" , fr = "bas") %>%
+  add_row(en = "higher" , fr = "plus grand") %>%
+  add_row(en = "lower" , fr = "plus petit") %>%
+  add_row(en = "high" , fr = "haute") %>%
+  add_row(en = "low" , fr = "basse") %>%
   add_row(en = "similar" , fr = "similaires") %>%
   add_row(en = "with only a few exceptions" , fr = "à quelques exceptions près") %>%
   add_row(en = "although with some exceptions" , fr = "bien qu'avec des exceptions") %>%
@@ -1656,6 +1656,609 @@ translation_fr <-
           fr = "Régionalisme, internationalisme et réseaux") %>% 
   add_row(en = "Sustainability",
           fr = "Durabilité") %>% 
+  # Green alleys typology
+  add_row(en = "green",
+          fr = "verte") %>% 
+  add_row (en = "mixed",
+           fr = "mixte") %>% 
+  add_row(en = "community",
+          fr = "communautaire") %>% 
+  add_row(en = "none",
+          fr = "ni verte ni communautaire") %>% 
+  # Green alleys visited description
+  add_row(en = "mainly covered with grass, very well maintained with several signs demonstrating the wish to build a sense of community (name of the alley, small community garden, play areas).",
+          fr = "principalement couverte d'herbe, très bien maintenue: plusieurs signes démontrent une volonté de développer un sentiment de communauté (nom de la ruelle, petit jardin communautaire, espaces de jeux).") %>% 
+  add_row(en = 'it is a "ruelle champêtre". Most of the alley is permeable, with a green strip in the middle and lateral greenery on both sides. Well maintained alley, with many plants and flowers, trees and green walls.',
+          fr = "il s'agit d'une ruelle champêtre. La plupart de la ruelle est perméable, avec une bande d'herbe au milieu et de la végétation latérale des deux côtés.") %>% 
+  add_row(en = "large green strip in the middle of the alley and multiple green elements on the sides. There is also a play area for children.",
+          fr = "large bande d'herbe au milieu de la ruelle et beaucoup de végétation sur les côtés. Il y a également un espace de jeux pour enfants.") %>%
+  add_row(en = "one of the most famous green alleys in Montreal. Most of its surface is permeable, with a lot of greenery.",
+          fr = "une des ruelles vertes les plus connues à Montréal. La plupart de la surface de la ruelle est perméable, avec beaucoup de végétation.") %>% 
+  add_row(en = "'family and active street' with green elements, a community garden, spaces where children can play, murals.",
+          fr = "'rue active et familiale' avec de la végétation, un jardin communautaire, des espaces où les enfants peuvent jouer, des murales.") %>% 
+  add_row(en = "It is very green and safe for children.",
+          fr = "La ruelle est très verte et sécuritaire pour les enfants.") %>% 
+  add_row(en = "trees, plants and flowers on the sides. Excavation works undertaken in 2012 to create permeable surface. Benches, toys and a drawing exhibition add a sense of community.",
+          fr = "arbres, plantes et fleurs sur les côtés. Des travaux d'excavation ont été entrepris en 2012 pour créer une surface perméable. Des bancs, des jeux et une exposition de dessins ajoutent un sentiment de  communauté.") %>% 
+  add_row(en = "diverse alley that has very green sections with permeable covering, as well as one larger section open to circulation but withpaintings, murals, handmade colourful signs that add a sense of community.",
+          fr = "ruelle diverse qui a des sections très végétalisées avec une surface perméable, ainsi qu'une large section ouverte à la circulation mais qui a des peintures, des murales, des panneaux colorés faits à la main qui ajoutent un sentiment de communauté.") %>% 
+  add_row(en = "three very green sections with green walls, flower pots, green strips. The main section is very wide and permeable.",
+          fr = "trois sections très vertes avec des murs végétalisés, des pots à fleurs et des bandes d'herbe. La section principale est très large et perméable.") %>% 
+  add_row(en = "permeable strip in the middle of the alley. An important part of the green elements come from private gardens. Murals and games for children add a sense of community.",
+          fr = "bande perméable au milieu de la ruelle. Une partie importante de la végétation  vient de jardins privés. Des murales et des jeux pour enfants ajoutent un sentiment de communauté.") %>% 
+  add_row(en = "large community garden. It has arts and craft, as well as explanatory boards that provide environment-oriented information.",
+          fr = "large jardin communautaire. Il y a de l'artisanat ainsi que des panneaux explicatifs qui fournissent des informations en lien avec l'environnement.") %>% 
+  add_row(en = "multiple elements that create a sense of community: play areas for kids, colourful signs, crafts and floor games. Activities with the residents seem to be frequently organised.",
+          fr = "de nombreux éléments qui créent un sentiment de communauté: des espaces de jeux pour enfants, des signes colorés, de l'artisanat et des jeux au sol. Des activités entre résidents semblent être fréquemment organisées.") %>% 
+  add_row(en = "lateral greenery on both sides, games for children such as hockey sticks.",
+          fr = "végétation latérale des deux côtés, jouets pour enfants comme des crosses de hockey.") %>% 
+  add_row(en = "very grey alley with a few green elements coming from private gardens.",
+          fr = "ruelle très grise avec un peu de végétation venant de jardins privés.") %>% 
+  add_row(en = "lateral greenery (mainly green walls), small basketball baskets for kids, and murals.",
+          fr = "végétation latérale (principalement des murs végétalisés), des petits paniers de basketball pour enfants, et murales.") %>% 
+  add_row(en = "narrow alley mainly covered with grass.",
+          fr = "ruelle étroite principalement couverte d'herbe.") %>% 
+  add_row(en = "located next to René-Lévesque Boulevard. Most of it is covered with permeable material and seems well maintained. It has a lot of greenery: flower, plants, trees and green walls.",
+          fr = "située près du boulevard René-Lévesque. La majorité de la surface de la ruelle est  perméable et a l'air bien entretenue. La ruelle a beaucoup de végétation: fleurs, plantes, arbres et murs végétalisés.") %>% 
+  add_row(en = "very green alley, with stairs: it has gardens on both sides, with big trees providing shade.",
+          fr = "ruelle très verte, avec des marches: il y a des jardins des deux côtés avec des grands arbres qui apportent de l'ombre.") %>% 
+  add_row(en = "very small green alley situated next to a parking lot. It is a curving path bordered by greenery.",
+          fr = "ruelle verte très petite située près d'un espace de parking. C'est un chemin en courbe bordé de végétation.") %>% 
+  add_row(en = "Bordered by four hotels, this alley is very grey: there are a few green elements but that do not seem to be maintained.",
+          fr = "bordé par quatre hôtels, cette ruelle est très grise: il y un peu de végétation, mais elle ne semble pas être entretenue.") %>% 
+  add_row(en = "lateral greenery (mainly green walls), few benches and children use the alley to play.",
+          fr = "végétation latérale (principalement des murs végétalisés), quelques bancs, et des enfants utilisent la ruelle pour jouer.") %>% 
+  add_row(en = "lateral greenery, trees and an excavated permeable section. There are many elements that foster community life: a shared library, play areas for children, chairs.",
+          fr = "végétation latérale, des arbres et une section perméable excavée. Il y a de nombreux éléments qui favorisent une vie de communauté: une bibliothèque partagée, des espaces de jeux pour enfants, des chaises.") %>% 
+  add_row (en = "The green elements mainly come from private gardens. The alley has some benches.",
+           fr = "La végétation vient principalement de jardins privés. Il y a quelques bancs dans la ruelle.") %>% 
+  add_row(en = "The green alements mainly come from private gardens. The alley has some benches and chairs.",
+          fr = "La végétation vient principalement de jardins privés. Il y a quelques bancs et chaises dans la ruelle.") %>% 
+  add_row(en = "It only has a few green elements and a table.",
+          fr = "Il y a un peu de végétation et une table dans la ruelle.") %>% 
+  add_row(en = "It is somehow divided into two parts: while the first half is very grey, with a lot of parking spots and very few vegetation, the second half is more children oriented with toys, bikes, and is greener.",
+          fr = "La ruelle est en quelque sorte divisée en deux parties: alors que la première partie est très grise, avec de nombreux espaces de stationnement et très peu de végétation, la seconde partie est davantage orientée vers les enfants avec des jouets, des vélos, et a plus de végétation.") %>% 
+  add_row(en = "recent green alley. It does not have a lot of green elements, but it has some benches and toys for kids.",
+          fr = "ruelle verte récente. Il n'y a pas beaucoup de végétation, mais il y a quelques bancs et des jouets pour enfants.") %>% 
+  add_row(en = "It has green elements and is very community oriented. Colourful alley with activities for children of different ages. There are basketball baskets, a ping-pong table as well as swings and signs made by the residents.",
+          fr = "Il s'agit d'une ruelle verte et communautaire. Ruelle colorée avec des activités pour des enfants d'âges divers. Il y a des paniers de basketball, une table de ping-pong ainsi que des balançoires et des panneaux faits par les résidents.") %>% 
+  add_row(en = "not a lot of greenery, but several elements fostering a sense of community, such as benches and a basketball basket.",
+          fr = "peu de végétation, mais plusieurs éléments favorisant un sentiment de communauté, tels que des bancs et un panier de basketball.") %>% 
+  add_row(en = "lateral greenery (flowers, trees), as well as benches, chairs and a shared library.",
+          fr = "végétation latérale (fleurs, arbres), ainsi que des bancs, des chaises et une bibliothèque partagée.") %>% 
+  add_row(en = "lateral greenery, a space with a basketball basket where kids can play.",
+          fr = "végétation latérale, un espace avec un panier de basketball où les enfants peuvent jouer.") %>% 
+  add_row(en = "short alley with very few greenery, but with benches, games for children and a shared library.",
+          fr = "courte ruelle avec très peu de végétation, mais avec des bancs, des jeux pour enfants et une bibliothèque partagée.") %>% 
+  add_row(en = "lateral greenery, shared library and chairs.",
+          fr = "végétation latérale, bibliothèque partagée et chaises.") %>% 
+  add_row(en = "two different sections with permeable surface and lateral greenery. Benches and spaces for children reinforce the community dimension.",
+          fr = "deux sections distinctes avec une surface perméable et de la végétation latérale. La présence de bancs et d'espaces pour enfants renforce la dimension communautaire.") %>% 
+  add_row(en = "lateral greenery (plants and trees).",
+          fr = "végétation latérale (plantes et arbres).") %>% 
+  add_row(en = "very green, with lateral greenery on each side and a grass strip in the middle.",
+          fr = "très verte, avec de la végétation latérale des deux côtés et une bande d'herbe au milieu.") %>% 
+  add_row(en = "very grey alley",
+          fr = "ruelle très grise") %>% 
+  add_row(en = "curving path bordered by plants. It also has a shared library.",
+          fr = "chemin en courbe bordé par des plantes. La ruelle a aussi une bibliothèque partagée.") %>% 
+  add_row(en = "curving path bordered by plants. It also has a shared library.",
+          fr = "chemin en courbe bordé par des plantes. La ruelle a aussi une bibliothèque partagée.") %>% 
+  add_row(en = "very grey, with only a few elevated pots with plants.",
+          fr = "très grise, avec seulement quelques pots de plantes surélevés.") %>% 
+  add_row(en = "The surface is permeable and the alley has lateral greenery on both sides.",
+          fr = "La surface est perméable et la ruelle a de la végétation latérale des deux côtés.") %>% 
+  add_row(en = "very grey alley with very few greenery and a lot of parking spots.",
+          fr = "ruelle très grise avec très peu de végétation et beaucoup de places de stationnement.") %>% 
+  add_row(en = "located next to the Ville-Marie Expressway. It has many trees, plants and flowers. It is well maintained and also has spaces where people can gather.",
+          fr = "située près de l'autoroute Ville-Marie. Il y a de nombreux arbres, plantes et fleurs dans la ruelle. Elle est bien maintenue et a également des espaces où les gens peuvent se rassembler.") %>% 
+  add_row(en = "trees and plants as well as grass strips in the middle.",
+          fr = "arbres et plantes, ainsi que bandes d'herbe au milieu.") %>% 
+  add_row(en = "lateral greenery on each side and a strip of permeable surface. One smaller section is closed to circulation and has flower pots.",
+          fr = "végétation latérale de chaque côté, et bande de surface perméable. Une plus petite section est fermée à la circulation et a des pots à fleurs.") %>% 
+  add_row(en = "some green elements and permeable sections. It is located next to a playground.",
+          fr = "un peu de végétation et des sections perméables. La ruelle est située près d'un terrain de jeux.") %>% 
+  add_row(en = "very grey alley, except for the small green strip at one entrance.",
+          fr = "ruelle très grise, à l'exception de la bande d'herbe à une des entrées.") %>% 
+  add_row(en = "lateral greenery in pots, grass strips in the middle, and a small park with permeable covering.",
+          fr = "végétation latérale dans des pots de fleurs, bandes d'herbe au milieu, et un petit parc avec un revêtement perméable.") %>% 
+  add_row(en = "lateral greenery (plants, trees and flowers), and a mural.",
+          fr = "végétation latérale (plantes, arbres et fleurs), et une murale.") %>% 
+  add_row(en = "trees, plants, flowers, and a large community garden. It is also community-oriented as there are tables and chairs, and a play area for kids.",
+          fr = "arbres, plantes, fleurs, et un large jardin communautaire. La ruelle est aussi communautaire étant donné qu'il y a des tables et des chaises, ainsi qu'un espace de jeux pour enfants.") %>% 
+  add_row(en = "lateral greenery (trees, and plants and flowers in pots), as well as a permeable section.",
+          fr = "végétation latérale (arbres, et plantes et fleurs en pots), ainsi qu'une section perméable.") %>% 
+  add_row(en = "wide paved alley with lateral greenery and big trees.",
+          fr = "large ruelle pavée avec de la végétation latérale et des grands arbres.") %>% 
+  add_row(en = "wild green alley covered with grass, with many plants and trees.",
+          fr = "ruelle verte sauvage couverte d'herbe, avec de nombreux arbres et plantes.") %>% 
+  add_row(en = "some lateral greenery, mainly coming from private garden, and a permable section in the middle.",
+          fr = "un peu de végétation latérale, venant principalement de jardins privés, et une section perméable au milieu.") %>% 
+  add_row(en = "a lot of lateral greenery, both in the alley and coming from private gardens. There are also murals and colourful signs.",
+          fr = "beaucoup de végétation latérale, à la fois dans la ruelle et venant de jardins privés. Il y a aussi des murales et des panneaux colorés.") %>% 
+  add_row(en = "wide paved alley, with lateral greenery and a space where children can play",
+          fr = "large ruelle pavée, avec de la végétation latérale et un espace où les enfants peuvent jouer.") %>% 
+  add_row(en = "this alley is located next to Decarie highway. To a certain extent, the lateral greenery blocks the view and the noise of the highway.",
+          fr = "cette ruelle est située près de l'autoroute Décarie. Dans une certaine mesure, la végétation latérale bloque la vue sur l'autoroute et le bruit.") %>% 
+  add_row(en = "the first half of the alley is very grey and for cars, but the second half has lateral greenery coming from private gardens and many trees that bring shade.",
+          fr = "la première moitié de la ruelle est très grise et dédiée aux voitures, mais la seconde moitié a de la végétation latérale venant de jardins privés, et de nombreux arbres qui apportent de l'ombre.") %>% 
+  add_row(en = "lateral greenery in pots and in excavated sections, trees, and grass strips in the middle.",
+          fr = "végétation latérale dans des pots et dans des sections excavées, des arbres, et des bandes d'herbe au milieu.") %>% 
+  add_row(en = "lateral greenery, trees, community garden, and murals",
+          fr = "végétation latérale, arbres, jardin communautaire et murales") %>% 
+  add_row(en = "lateral greenery in excavated sections, trees and grass strips in the middle.",
+          fr = "végétation latérale dans des sections excavées, arbres et bandes d'herbe au milieu.") %>% 
+  add_row(en = "lateral greenery, strips of permeable surface, trees and flower pots. Murals, benches and spaces for children",
+          fr = "végétation latérale, bandes perméables, arbres et pots de fleurs. Murales, bancs et espaces pour enfants") %>% 
+  add_row(en = "lateral green surfaces with plants and trees, benches, and murals",
+          fr = "surfaces vertes latérales avec des plantes et des arbres, bancs et murales") %>% 
+  add_row(en = "lateral excavations with greenery, permeable pavement and green walls",
+          fr = "excavations latérales avec végétation, trottoir perméable et murs végétalisés") %>% 
+  add_row(en = "lateral section with greenery and excavated segment",
+          fr = "section latérale avec végétation et segment excavé") %>% 
+  add_row(en = "plant pots, benches, and floor games",
+          fr = "pots de plantes, bancs, et jeux au sol") %>% 
+  add_row(en = "plant pots, lateral greenery, trees, and mural",
+          fr = "pots de plantes, végétation latérale, arbres, et murales") %>% 
+  
+  
+  # Green alleys circulation 
+  add_row(en = "closed",
+          fr = "fermée") %>% 
+  add_row(en = "open, with some parking spots",
+          fr = "ouverte, avec quelques places de stationnement") %>% 
+  add_row(en = "partially closed",
+          fr = "partiellement fermée") %>% 
+  add_row(en = "open",
+          fr = "ouverte") %>% 
+  add_row(en = "open, with a speed limit of 10 km/h",
+          fr = "ouverte, avec une limitation de vitesse à 10 km/h") %>% 
+  add_row(en = "open, with traffic calming infrastructures at both entrances",
+          fr = "ouverte, avec des infrastructures de modération du trafic à chaque entrée") %>% 
+  add_row(en = "open, with many parking spots",
+          fr = "ouverte, avec de nombreuses places de stationnement") %>% 
+  add_row(en = "closed, with fences at both entrances",
+          fr = "fermée, avec des barrières à chaque entrée") %>% 
+  add_row(en = "open, with several parking spots",
+          fr = "ouverte, avec plusieurs places de stationnement") %>% 
+  add_row(en = "open, with traffic calming infrastructure",
+          fr = "ouverte, avec des infrastructures de modération du trafic") %>% 
+  add_row(en = "open, with a speed limit of 15 km/h",
+          fr = "ouverte, avec une limitation de vitesse à 15 km/h") %>% 
+  add_row(en = "open, with many parking spots.",
+          fr = "ouverte, avec de nombreuses places de stationnement.") %>% 
+  add_row(en = "partially closed to circulation as there is one garage at the end of the alley.",
+          fr = "partiellement fermée à la circulation puisqu'il y a un garage à chaque entrée de la ruelle.") %>% 
+  add_row(en = "open, with several garages",
+          fr = "ouverte, avec plusieurs garages") %>% 
+  
+  
+  # Green alleys info by borough
+  add_row(en = "citizen committee of at least 3 residents, 55% of the residents must approve the project",
+          fr = "comité citoyen d'au moins 3 résidents, 55% des résidents doivent être en faveur du projet") %>% 
+  add_row(en = "citizen committee of at least 3 residents, 51% of the residents must approve the project",
+          fr = "comité citoyen d'au moins 3 résidents, 51% des résidents doivent être en faveur du projet") %>% 
+  add_row(en = "citizen committee of at least 3 residents, 75% of the residents must approve the project",
+          fr = "comité citoyen d'au moins 3 résidents, 75% des résidents doivent être en faveur du projet") %>% 
+  add_row(en = "citizen committee of at least 5 residents, 51% of the residents must approve the project",
+          fr = "comité citoyen d'au moins 5 résidents, 51% des résidents doivent être en faveur du projet") %>% 
+  add_row(en = "citizen committee of at least 5 residents, 60% of the housing units must have responded to the survey, 50% + 1 of all dwellings must approve the project",
+          fr = "comité citoyen d'au moins 5 résidents, 60% des logements doivent avoir répondu au sondage, 50% + 1 de tous les logements doivent être en faveur du projet") %>% 
+  add_row(en = "citizen committee of 3 to 5 residents, 20% of the residents must approve the project (it used to be 50% until 2019)",
+          fr = "comité citoyen de 3 à 5 résidents, 20% des résidents doivent être en faveur du projet (50% avant 2019)") %>% 
+  add_row(en = "citizen committee of at least 3 residents, 70% of the residents must respond to the survey and at least 50% must approve the project",
+          fr = "comité citoyen d'au moins 3 résidents, 70% des résidents doivent répondre au sondage et au moins 50% doivent être en faveur du projet") %>% 
+  add_row(en = "citizen committe of at least 5 residents, 25% of the residents must approve the project, or 50% must be against the project for it not to happen",
+          fr = "comité citoyen d'au moins 5 résidents, 25% des résidents doivent être en faveur du projet, ou 50% doivent être contre pour que la ruelle ne soit pas créée") %>% 
+  add_row(en = "citizen committee of at least 3 residents, 51% of the residents need to approve the project. For an access closure application, 75% of the residents must respond to the survey and 51% must approve",
+          fr = "comité citoyen d'au moins 3 résidents, 51% des résidents doivent être en faveur du projet. Pour une demande de fermeture d'accès, 75% des résidents doivent répondre au sondage et 51% doivent être en faveur") %>% 
+  add_row(en = "management",
+          fr = "gestion") %>% 
+  add_row(en = "Each project must be supported by a Non-Profit Organisation",
+          fr = "Chaque projet doit être soutenu par une organisation non-lucrative") %>% 
+  add_row(en = "the Program provides a maximum amount of 5,000$ for professional support, and a maximum amount of 20,000$ will be granted to the support organisation to develop the green alley",
+          fr = "le Programme fournit un montant maximum de 5,000$ pour du soutien professionnel, et un maximum de 20,000$ sera attribué à l'organisme qui soutient le projet pour développer la ruelle verte") %>% 
+  add_row(en = "300 000$ between 2017 and 2019",
+          fr = "300 000$ entre 2017 et 2019") %>% 
+  add_row(en = "In 2021, 25 000$ for green alleys and street gardens",
+          fr = "En 2021, 25 000$ pour les ruelles vertes et les jardins de rue") %>% 
+  
+  # Description of green alley module 
+  add_row(en = paste0("Green alleys consist in the transformation of back ",
+                      "alleys into spaces that improve people’s living ",
+                      "environments, on an environmental and social level. ",
+                      "They are presented as safer and healthier spaces. ",
+                      "When adequately designed, these public spaces can ", 
+                      "help reduce heat island effects, noise and air ",
+                      "pollution, and improve water management. They can ",
+                      "also enhance social interactions and become ",
+                      "recreational spaces for children where car ",
+                      "circulation is reduced."),
+          fr = paste0("Les ruelles vertes consistent en la transformation de ruelles ",
+                      "en espaces qui améliorent le cadre de vie des individus, ",
+                      "d’un point de vue environnemental et social. ",
+                      "Elles sont présentées comme des espaces plus sécuritaires et sains. ",
+                      "Quand elles sont aménagées de façon adéquate, ",
+                      "ces espaces publics peuvent aider à réduire les îlots de chaleur, ",
+                      "la pollution sonore et atmosphérique, et optimiser la gestion des eaux. ",
+                      "Elles peuvent aussi favoriser les interactions sociales ",
+                      "et devenir des espaces récréatifs pour les enfants, ",
+                      "dans lesquels la circulation automobile est réduite.")) %>% 
+  
+  add_row(en = paste0("<p>The Green Alley Program currently in place in ", 
+                      "Montreal was implemented in 1995. In August 2020, ",
+                      "there were a total of 454 green alleys in the city, ",
+                      "and others will be created in 2021. First put in place ",
+                      "in Plateau-Mont-Royal and Rosemont-La-Petite-Patrie, the ",
+                      "program was then extended to most of Montreal’s boroughs. ",
+                      "The program promotes public participation and citizen ",
+                      "governance: the initiative to create a green alley ",
+                      "comes from the residents themselves. The Ecoquartiers ",
+                      "(most boroughs have at least one of them) are key actors ",
+                      "in green alley development: they receive, select the ",
+                      "applications, and follow the evolution of the projects. ",
+                      "<p>The Green Alley dataset is a mix of data from the City ",
+                      "of Montreal Open Data Portal, from boroughs’ Eco-quartiers, ",
+                      "newspaper articles and personal observations (56 alleys were ",
+                      "visited and classified). No complete list of green ",
+                      "alleys in Montreal exists. <p>Green alleys are diverse ",
+                      "in activities, design, dimension, and dwellings density ",
+                      "in the surrounding area. Within that diversity, we classify ",
+                      "four types of alleys: <ul> <li>Green alleys: most of the ",
+                      "area includes greenery such as permeable surfaces, gardens, ",
+                      "and green walls that provide environmental benefits like ",
+                      "cooling the street temperature, filtrating rainwater, and ",
+                      "contributing to enriching the biodiversity of the alleys. ",
+                      "They are generally closed to transit. <li>Community-oriented ",
+                      "alleys: their main characteristic is the existence of ",
+                      "gathering spaces that propel community life. This alley type ",
+                      "presents activities organized by the residents, the appropriation ",
+                      "of the alley with furniture and art, and play areas for children. ",
+                      "<li>Mixed alleys: they include green elements and are also spaces ",
+                      "that allow diverse community activities, especially interventions ",
+                      "that create safe areas for children, such as measures that ",
+                      "reduce car traffic and, in some cases, parking. <li>Neither ",
+                      "green nor community-oriented alleys: they are abandoned or ",
+                      "used as parking spaces or as ways to access private garages, ",
+                      "without any environmental or social-community benefit."),
+          fr = paste0("<p>Le Programme des ruelles vertes actuellement en place à Montréal ",
+                      "a été créé en 1995. En août 2020, il y avait un total de 454 ruelles vertes ",
+                      "dans la ville, et d’autres vont être créées en 2021. ",
+                      "D’abord mis en place dans le Plateau-Mont-Royal et Rosemont-La-Petite-Patrie, ",
+                      "le programme a ensuite été étendu à la plupart des arrondissements de Montréal. ",
+                      "Le programme encourage la participation publique et la gouvernance citoyenne: ",
+                      "la création d’une ruelle verte est une initiative citoyenne. ",
+                      "Les Eco-quartiers (la plupart des arrondissements en ont au moins un) ",
+                      "sont des acteurs majeurs dans le développement des ruelles vertes: ",
+                      "ils reçoivent, sélectionnent les demandes, et suivent l’évolution des projets. ",
+                      "<p>Les données sur les ruelles vertes sont un mélange de données issues du Portail ",
+                      "des Données Ouvertes de la Ville de Montréal, ",
+                      "de données fournies par des Eco-quartiers des arrondissements, ",
+                      "des articles de journaux et des observations personnelles ",
+                      "(56 ruelles vertes ont été visitées et classifiées). ",
+                      "Aucune liste complète des ruelles vertes à Montréal n’existe. ",
+                      "<p>Les ruelles vertes sont diverses en termes d’activités, ",
+                      "d’aménagement, de dimensions, et de densité de logement dans les environs. ",
+                      "Au sein de cette diversité, nous avons identifié quatre types de ruelles: ",
+                      "<ul> <li>Les ruelles vertes: la plupart de la ruelle inclue de la végétation telle ",
+                      "que des surfaces perméables, des jardins, des murs végétalisés, ",
+                      "qui ont des bénéfices environnementaux comme l’abaissement de la température extérieure, ",
+                      "la filtration de l’eau de pluie, et l’enrichissement de la biodiversité dans les ruelles. ",
+                      "Ces ruelles sont généralement fermées à la circulation automobile. ",
+                      "<li>Les ruelles communautaires: ",
+                      "leur caractéristique principale est l’existence d’espaces de rassemblement ",
+                      "qui encouragent la vie de communauté. Ce type de ruelle comprend ",
+                      "l’organisation d’activités par les résidents, l’appropriation de la ruelle ",
+                      "via l’installation de mobilier et d’art, et des espaces de jeux pour enfants. ",
+                      "<li>Les ruelles mixtes: elles incluent de la végétation et ",
+                      "sont souvent des espaces qui permettent diverses activités communautaires, ",
+                      "notamment grâce à des aménagement qui permettent de créee des espaces sécuritaires ",
+                      "pour les enfants, comme par exemple des mesures visant à réduire le trafic et, ",
+                      "dans certains cas, le stationnement des voitures. ",
+                      "<li>Les ruelles qui ne sont ni vertes ni communautaires : ",
+                      "elles sont abandonnées ou utilisées comme espaces de parking ",
+                      "ou voies pour accéder à des garages privés, ",
+                      "sans aucun bénéfice environnemental ou social. ")) %>% 
+  add_row(en = "Total between two dates",
+          fr = "Total entre deux dates") %>% 
+  add_row(en = "Montreal stories",
+          fr = "Histoires de Montréal") %>% 
+  add_row(en = "Various stories on Montreal's neighborhoods.",
+          fr = "Diverses histoires sur les quartiers de Montréal.") %>% 
+  add_row(en = "No extra information at this time.",
+          fr = "Aucune information supplémentaire pour le moment.") %>% 
+  add_row(en = "Accessibility to opportunities",
+          fr = "Accessibilité aux opportunités") %>% 
+  add_row(en = "Accessibility (the ease of reaching desired destinations) is the most important element of a transport network. This module displays what is accessible on public transit within 30 minutes’ “door-to-door” travel time. Clicking on individual census tracts shows which other census tracts are reachable within a given travel time and at a chosen period of the day (peak, off-peak, and night).",
+          fr = "L'accessibilité (la facilité d'atteindre les destinations souhaitées) est l'élément le plus important d'un réseau de transport. Ce module affiche ce qui est accessible en transport public dans un délai de 30 minutes de trajet “porte à porte”. En cliquant sur des secteurs de recensement individuels, on peut voir quels autres secteurs de recensement sont accessibles dans un temps de trajet donné et à une période choisie de la journée (heures de pointe, heures creuses et nuit).") %>% 
+  add_row(en = "Total jobs (weekday peak)",
+          fr = "Emplois totaux (pic en semaine)") %>% 
+  add_row(en = "the total number of jobs accessible within 30 minutes at weekday peak service",
+          fr = "le nombre total d'emplois accessibles en 30 minutes aux heures de pointe en semaine") %>% 
+  add_row(en = "building",
+          fr = "bâtiment") %>% 
+  add_row(en = "buildings",
+          fr = "bâtiment") %>% 
+  add_row(en = "street",
+          fr = "rue") %>% 
+  add_row(en = "streets",
+          fr = "rues") %>% 
+  add_row(en = "The dissemination area around {select_name$name}",
+          fr = "L'aire de diffusion autour de {select_name$name} ") %>% 
+  add_row(en = "street",
+          fr = "rue") %>% 
+  add_row(en = "Census tract {select_name$name}",
+          fr = "Secteur de recensement {select_name$name} ") %>% 
+  add_row(en = "Dissemination area {select_name$name}",
+          fr = "Zone de diffusion {select_name$name} ") %>% 
+  add_row(en = "The area around {select_name$name}",
+          fr = "La zone autour de {select_name$name} ") %>% 
+  add_row(en = "At the {z$scale_sing} scale, {z$exp_left} varies from {z$min_val} to {z$max_val}, with an average value of {z$mean_val} and a median value of {z$median_val}. Two thirds of {z$scale_plural} have a score between {z$quant_low} and {z$quant_high}.",
+          fr = "À l'échelle {z$scale_sing}, {z$exp_left} varie de {z$min_val} à {z$max_val} avec une valeur moyenne de {z$mean_val} et une valeur médiane de {z$median_val} . Les deux tiers {z$scale_plural} ont un score compris entre {z$quant_low} et {z$quant_high} .") %>% 
+  add_row(en = "Total jobs (weekday peak)",
+          fr = "Emplois totaux (pic en semaine)") %>% 
+  add_row(en = "<p>This module focuses on public transit accessibility to a set of key destinations: all jobs, ‘low-skill’ jobs (those not requiring university education), ‘high-skill’ jobs (those usually requiring university education), jobs with an annual salary of <$30,000, and schools and healthcare facilities.<p> This analysis allows for the identification of areas of the city or population groups that are in need of improved service, it also allows for the analysis of change throughout the day and week. It is based on 'Cumulative Opportunities' accessibility, meaning it displays the total number of destinations available within 30 minutes ‘door-to-door’ travel time (including walking to reach station, waiting time, in-vehicle time). For more info on how accessibility metrics are calculated see <a href = 'https://conservancy.umn.edu/bitstream/handle/11299/199892/CTS13-20_Access-Across-America.pdf'>'Access Across America'</a>.",
+          fr = "<p>Ce module se concentre sur l'accessibilité des transports en commun à un ensemble de destinations clés : tous les emplois, les emplois \' peu qualifiés \' (ceux qui ne nécessitent pas d'études universitaires), les emplois \' hautement qualifiés \' (ceux qui nécessitent généralement des études universitaires), les emplois dont le salaire annuel est <30 000 $, ainsi que les écoles et les établissements de santé.<p>Cette analyse permet d'identifier les zones de la ville ou les groupes de population qui ont besoin d'une amélioration du service, et elle permet également d'analyser les changements tout au long de la journée et de la semaine. Elle est basée sur l'accessibilité \' Opportunités cumulées \', ce qui signifie qu'elle affiche le nombre total de destinations disponibles dans un délai de 30 minutes de trajet \' porte à porte \' (y compris la marche pour atteindre la station, le temps d'attente, le temps dans le véhicule). Pour plus d'informations sur la façon dont les mesures d'accessibilité sont calculées, voir <a href = 'https://conservancy.umn.edu/bitstream/handle/11299/199892/CTS13-20_Access-Across-America.pdf'>'Access Across America'</a>.") %>% 
+  add_row(en = "<p>'{z$title_left}' has a {z$strong} {z$pos} correlation ({z$corr_disp}) with '{z$title_right}' at the {z$scale_sing} scale.<p>This means that, in general, {z$scale_plural} with a higher {sub('^the', '', z$exp_left)} tend to have a {z$higher} {sub('^the', '', z$exp_right)}, {z$high_low_disclaimer}.",
+          fr = "<p>'{z$title_left}' a une corrélation {z$strong} {z$pos} ( {z$corr_disp} ) avec '{z$title_right}' à l'échelle {z$scale_sing}. <p>Cela signifie que, en général, les {z$scale_plural} avec un plus grand {sub('^le', '', z$exp_left)} ont tendance à avoir un {z$higher}  {sub('^le', '', z$exp_right)} , {z$high_low_disclaimer} .") %>% 
+  add_row(en = "Healthy urban features",
+          fr = "Caractéristiques d'une ville saine") %>% 
+  add_row(en = "Housing system",
+          fr = "Logement") %>% 
+  add_row(en = "Road safety",
+          fr = "Sécurité routière") %>% 
+  add_row(en = "The science behind SUS",
+          fr = "La science derrière SUS") %>% 
+  add_row(en = "Timing",
+          fr = "Timing") %>% 
+  add_row(en = "Destination type",
+          fr = "Type de destination") %>% 
+  add_row(en = "Time threshold",
+          fr = "Seuil de temps") %>% 
+  add_row(en = "Focus on green alleys visited by our team",
+          fr = "Focus sur les allées vertes visitées par notre équipe") %>% 
+  add_row(en = "Grouping of crashes",
+          fr = "Regroupement des accidents") %>% 
+  add_row(en = "Type of crash",
+          fr = "Type d'accident") %>% 
+  add_row(en = "Select a year",
+          fr = "Sélectionnez une année") %>% 
+  add_row(en = "Select two years",
+          fr = "Sélectionnez deux années") %>% 
+  add_row(en = "Select two time periods",
+          fr = "Sélectionnez deux périodes de temps") %>% 
+  add_row(en = "All jobs",
+          fr = "Tous les emplois") %>% 
+  add_row(en = "Low-skill jobs",
+          fr = "Emplois peu qualifiés") %>% 
+  add_row(en = "High-skill jobs",
+          fr = "Emplois hautement qualifiés") %>% 
+  add_row(en = "Jobs < $30,000 annually",
+          fr = "Emplois < 30 000 $ par an") %>% 
+  add_row(en = "Schools",
+          fr = "Écoles") %>% 
+  add_row(en = "Healthcare facilities",
+          fr = "Établissements de soins de santé") %>% 
+  add_row(en = "Weekday peak",
+          fr = "Pic en semaine") %>% 
+  add_row(en = "Weekday off-peak",
+          fr = "Heures creuses en semaine") %>% 
+  add_row(en = "Weekday night",
+          fr = "Nuit de semaine") %>% 
+  add_row(en = "Weekend peak",
+          fr = "Pic du week-end") %>% 
+  add_row(en = "Weekend off-peak",
+          fr = "Heures creuses en week-end") %>% 
+  add_row(en = "Weekend night",
+          fr = "Nuit du week-end") %>% 
+  add_row(en = "{select_name$name_2} of {out$place_name}",
+          fr = "{select_name$name_2} de {out$place_name}") %>% 
+  add_row(en = "increased",
+          fr = "augmentation de") %>% 
+  add_row(en = "<strong>{z$place_heading}</strong><p>{z$place_name} has a population of {z$pop} and a '{z$title_left}' score ({z$exp_left}) of {z$val_left}, which is {z$larger} the region-wide median of {z$median_val}.<p>{z$place_name} has a {z$high} relative score for this indicator, with {sub('^the', 'a', z$exp_left)} higher than {z$percentile} of {z$scale_plural} in the Montreal region.",
+          fr = "<strong>{z$place_heading}</strong><p> {z$place_name} a une population de {z$pop} et un '{z$title_left}' score ({z$exp_left}) de {z$val_left}, ce qui est {z$larger} la médiane régionale de {z$median_val}.<p>{z$place_name} a une indice relativement {z$high} pour cet indicateur, avec {sub('^the', 'a', z$exp_left)} plus élevé que {z$percentile} de {z$scale_plural} dans la région de Montréal.") %>% 
+  add_row(en = "<strong>{z$place_heading}</strong><p>{z$place_name} has a population of {z$pop}, a '{z$title_left}' value of {z$val_left}, and a '{z$title_right}' value of {z$val_right}. <p>These two scores are {z$relative_position}, in relative terms. {z$place_name} has {sub('^the', 'a', z$exp_left)} higher than {z$perc_left} of {z$scale_plural} and {sub('^the', 'a', z$exp_right)} higher than {z$perc_right} of {z$scale_plural} in the Montreal region.",
+          fr = "<strong>{z$place_heading}</strong><p> {z$place_name} a une population de {z$pop}. Ce dernier a une valeur de '{z$title_left}' de {z$val_left} et une valeur de '{z$title_right}' de {z$val_right}. <p>Ces deux scores sont {z$relative_position} en termes relatifs. {z$place_name} a {sub('^le', 'a', z$exp_left)} plus élevé que {z$perc_left} des {z$scale_plural} et {sub('^le', 'a un', z$exp_right)} plus élevé que {z$perc_right} des {z$scale_plural} dans la région de Montréal.") %>% 
+  add_row(en = "Total jobs (weekday off-peak)",
+          fr = "Emplois totaux (jours de semaine en dehors des heures de pointe)") %>% 
+  add_row(en = "the total number of jobs accessible within 30 minutes at weekday off-peak service",
+          fr = "le nombre total d'emplois accessibles dans un délai de 30 minutes en service de semaine en heures creuses") %>% 
+  add_row(en = "Total jobs (weekday night)",
+          fr = "Total des emplois (nuit en semaine)") %>% 
+  add_row(en = "the total number of jobs accessible within 30 minutes at weekday night service",
+          fr = "le nombre total d'emplois accessibles en 30 minutes en service de nuit en semaine") %>% 
+  add_row(en = "Total jobs (weekday peak)",
+          fr = "Emplois totaux (pic en semaine)") %>% 
+  add_row(en = "Total jobs (weekday off-peak)",
+          fr = "Emplois totaux (jours de semaine en dehors des heures de pointe)") %>% 
+  add_row(en = "Total jobs (weekday night)",
+          fr = "Total des emplois (nuit en semaine)") %>% 
+  add_row(en = "Total jobs (weekend peak)",
+          fr = "Total des emplois (pic du week-end)") %>% 
+  add_row(en = "Total jobs (weekend off-peak)",
+          fr = "Total des emplois (week-end hors heures de pointe)") %>% 
+  add_row(en = "Total jobs (weekend night)",
+          fr = "Total des emplois (week-end nuit)") %>% 
+  add_row(en = "Low-skill jobs (weekday peak)",
+          fr = "Emplois peu qualifiés (pic en semaine)") %>% 
+  add_row(en = "Low-skill jobs (weekday off-peak)",
+          fr = "Emplois peu qualifiés (en dehors des heures de pointe en semaine)") %>% 
+  add_row(en = "Low-skill jobs (weekday night)",
+          fr = "Emplois peu qualifiés (nuit en semaine)") %>% 
+  add_row(en = "Low-skill jobs (weekend peak)",
+          fr = "Emplois peu qualifiés (pic du week-end)") %>% 
+  add_row(en = "Low-skill jobs (weekend off-peak)",
+          fr = "Emplois peu qualifiés (week-end en heures creuses)") %>% 
+  add_row(en = "Low-skill jobs (weekend night)",
+          fr = "Emplois peu qualifiés (week-end et nuit)") %>% 
+  add_row(en = "High-skill jobs (weekday peak)",
+          fr = "Emplois hautement qualifiés (pic en semaine)") %>% 
+  add_row(en = "High-skill jobs (weekday off-peak)",
+          fr = "Emplois hautement qualifiés (en semaine en dehors des heures de pointe)") %>% 
+  add_row(en = "High-skill jobs (weekday night)",
+          fr = "Emplois hautement qualifiés (nuit en semaine)") %>% 
+  add_row(en = "High-skill jobs (weekend peak)",
+          fr = "Emplois hautement qualifiés (pic du week-end)") %>% 
+  add_row(en = "High-skill jobs (weekend off-peak)",
+          fr = "Emplois hautement qualifiés (week-end en heures creuses)") %>% 
+  add_row(en = "High-skill jobs (weekend night)",
+          fr = "Emplois hautement qualifiés (week-end et nuit)") %>% 
+  add_row(en = "Low-income jobs (weekday peak)",
+          fr = "Emplois à faibles revenus (pic en semaine)") %>% 
+  add_row(en = "Low-income jobs (weekday off-peak)",
+          fr = "Emplois à faible revenu (en semaine en dehors des heures de pointe)") %>% 
+  add_row(en = "Low-income jobs (weekday night)",
+          fr = "Emplois à faible revenu (nuit en semaine)") %>% 
+  add_row(en = "Low-income jobs (weekend peak)",
+          fr = "Emplois à faible revenu (pic du week-end)") %>% 
+  add_row(en = "Low-income jobs (weekend off-peak)",
+          fr = "Emplois à faible revenu (week-end en heures creuses)") %>% 
+  add_row(en = "Low-income jobs (weekend night)",
+          fr = "Emplois à faible revenu (week-end nuit)") %>% 
+  add_row(en = "Schools (weekday peak)",
+          fr = "Écoles (pic en semaine)") %>% 
+  add_row(en = "Schools (weekday off-peak)",
+          fr = "Écoles (jours de semaine en dehors des heures de pointe)") %>% 
+  add_row(en = "Schools (weekday night)",
+          fr = "Écoles (nuit en semaine)") %>% 
+  add_row(en = "Schools (weekend peak)",
+          fr = "Écoles (pic du week-end)") %>% 
+  add_row(en = "Schools (weekend off-peak)",
+          fr = "Écoles (week-end en heures creuses)") %>% 
+  add_row(en = "Schools (weekend night)",
+          fr = "Écoles (nuit du week-end)") %>% 
+  add_row(en = "Healthcare (weekday peak)",
+          fr = "Santé (pic en semaine)") %>% 
+  add_row(en = "Healthcare (weekday off-peak)",
+          fr = "Soins de santé (jours de semaine en dehors des heures de pointe)") %>% 
+  add_row(en = "Healthcare (weekday night)",
+          fr = "Soins de santé (nuit en semaine)") %>% 
+  add_row(en = "Healthcare (weekend peak)",
+          fr = "Soins de santé (pic de week-end)") %>% 
+  add_row(en = "Healthcare (weekend off-peak)",
+          fr = "Soins de santé (week-end en heures creuses)") %>% 
+  add_row(en = "Healthcare (weekend night)",
+          fr = "Soins de santé (week-end nuit)") %>% 
+  add_row(en = "the total number of jobs accessible within 30 minutes at weekday peak service",
+          fr = "le nombre total d'emplois accessibles en 30 minutes aux heures de pointe en semaine") %>% 
+  add_row(en = "the total number of jobs accessible within 30 minutes at weekday off-peak service",
+          fr = "le nombre total d'emplois accessibles dans un délai de 30 minutes en service de semaine en heures creuses") %>% 
+  add_row(en = "the total number of jobs accessible within 30 minutes at weekday night service",
+          fr = "le nombre total d'emplois accessibles en 30 minutes en service de nuit en semaine") %>% 
+  add_row(en = "the total number of jobs accessible within 30 minutes at weekend peak service",
+          fr = "le nombre total d'emplois accessibles dans un délai de 30 minutes aux heures de pointe du week-end") %>% 
+  add_row(en = "the total number of jobs accessible within 30 minutes at weekend off-peak service",
+          fr = "le nombre total d'emplois accessibles dans un délai de 30 minutes en service hors-pointe le week-end") %>% 
+  add_row(en = "the total number of jobs accessible within 30 minutes at weekend night service",
+          fr = "le nombre total d'emplois accessibles dans un délai de 30 minutes en service de nuit le week-end") %>% 
+  add_row(en = "the number of low-skill jobs accessible within 30 minutes at weekday peak service",
+          fr = "le nombre d'emplois peu qualifiés accessibles en 30 minutes aux heures de pointe en semaine") %>% 
+  add_row(en = "the number of low-skill jobs accessible within 30 minutes at weekday off-peak service",
+          fr = "le nombre d'emplois peu qualifiés accessibles dans un délai de 30 minutes en semaine en heures creuses") %>% 
+  add_row(en = "the number of low-skill jobs accessible within 30 minutes at weekday night service",
+          fr = "le nombre d'emplois peu qualifiés accessibles en 30 minutes en service de nuit en semaine") %>% 
+  add_row(en = "the number of low-skill jobs accessible within 30 minutes at weekend peak service",
+          fr = "le nombre d'emplois peu qualifiés accessibles en moins de 30 minutes aux heures de pointe du week-end") %>% 
+  add_row(en = "the number of low-skill jobs accessible within 30 minutes at weekend off-peak service",
+          fr = "le nombre d'emplois peu qualifiés accessibles dans un délai de 30 minutes en service de week-end hors pointe") %>% 
+  add_row(en = "the number of low-skill jobs accessible within 30 minutes at weekend night service",
+          fr = "le nombre d'emplois peu qualifiés accessibles à moins de 30 minutes en service de nuit le week-end") %>% 
+  add_row(en = "the number of high-skill jobs accessible within 30 minutes at weekday peak service",
+          fr = "le nombre d'emplois hautement qualifiés accessibles en 30 minutes aux heures de pointe en semaine") %>% 
+  add_row(en = "the number of high-skill jobs accessible within 30 minutes at weekday off-peak service",
+          fr = "le nombre d'emplois hautement qualifiés accessibles dans un délai de 30 minutes en semaine en heures creuses") %>% 
+  add_row(en = "the number of high-skill jobs accessible within 30 minutes at weekday night service",
+          fr = "le nombre d'emplois hautement qualifiés accessibles dans un délai de 30 minutes en service de nuit en semaine") %>% 
+  add_row(en = "the number of high-skill jobs accessible within 30 minutes at weekend peak service",
+          fr = "le nombre d'emplois hautement qualifiés accessibles en moins de 30 minutes aux heures de pointe du week-end") %>% 
+  add_row(en = "the number of high-skill jobs accessible within 30 minutes at weekend off-peak service",
+          fr = "le nombre d'emplois hautement qualifiés accessibles dans un délai de 30 minutes en service hors-pointe le week-end") %>% 
+  add_row(en = "the number of high-skill jobs accessible within 30 minutes at weekend night service",
+          fr = "le nombre d'emplois hautement qualifiés accessibles dans un délai de 30 minutes en service de nuit le week-end") %>% 
+  add_row(en = "the number of jobs paying less than $30,000 accessible within 30 minutes at weekday peak service",
+          fr = "le nombre d'emplois rémunérés à moins de 30 000 dollars accessibles en 30 minutes aux heures de pointe en semaine") %>% 
+  add_row(en = "the number of jobs paying less than $30,000 accessible within 30 minutes at weekday off-peak service",
+          fr = "le nombre d'emplois rémunérés à moins de 30 000 dollars accessibles dans un délai de 30 minutes en semaine en heures creuses") %>% 
+  add_row(en = "the number of jobs paying less than $30,000 accessible within 30 minutes at weekday night service",
+          fr = "le nombre d'emplois rémunérés à moins de 30 000 dollars accessibles dans un délai de 30 minutes en service de nuit en semaine") %>% 
+  add_row(en = "the number of jobs paying less than $30,000 accessible within 30 minutes at weekend peak service",
+          fr = "le nombre d'emplois rémunérés à moins de 30 000 dollars accessibles en 30 minutes aux heures de pointe du week-end") %>% 
+  add_row(en = "the number of jobs paying less than $30,000 accessible within 30 minutes at weekend off-peak service",
+          fr = "le nombre d'emplois rémunérés à moins de 30 000 dollars accessibles dans un délai de 30 minutes en service hors-pointe le week-end") %>% 
+  add_row(en = "the number of jobs paying less than $30,000 accessible within 30 minutes at weekend night service",
+          fr = "le nombre d'emplois rémunérés à moins de 30 000 dollars accessibles dans un délai de 30 minutes en service de nuit le week-end") %>% 
+  add_row(en = "the number of schools accessible within 30 minutes at weekday peak service",
+          fr = "le nombre d'écoles accessibles en 30 minutes aux heures de pointe en semaine") %>% 
+  add_row(en = "the number of schools accessible within 30 minutes at weekday off-peak service",
+          fr = "le nombre d'écoles accessibles en moins de 30 minutes aux heures creuses des jours de semaine") %>% 
+  add_row(en = "the number of schools accessible within 30 minutes at weekday night service",
+          fr = "le nombre d'écoles accessibles en moins de 30 minutes en service de nuit en semaine") %>% 
+  add_row(en = "the number of schools accessible within 30 minutes at weekend peak service",
+          fr = "le nombre d'écoles accessibles en moins de 30 minutes aux heures de pointe du week-end") %>% 
+  add_row(en = "the number of schools accessible within 30 minutes at weekend off-peak service",
+          fr = "le nombre d'écoles accessibles dans un délai de 30 minutes en service de week-end en heures creuses") %>% 
+  add_row(en = "the number of schools accessible within 30 minutes at weekend night service",
+          fr = "le nombre d'écoles accessibles en moins de 30 minutes en service de nuit le week-end") %>% 
+  add_row(en = "the number of healthcare facilities accessible within 30 minutes at weekday peak service",
+          fr = "le nombre d'établissements de soins de santé accessibles en 30 minutes aux heures de pointe en semaine") %>% 
+  add_row(en = "the number of healthcare facilities accessible within 30 minutes at weekday off-peak service",
+          fr = "le nombre d'établissements de soins de santé accessibles dans un délai de 30 minutes en semaine en heures creuses") %>% 
+  add_row(en = "the number of healthcare facilities within 30 minutes at weekday night service",
+          fr = "le nombre d'établissements de soins de santé situés à moins de 30 minutes en service de nuit en semaine") %>% 
+  add_row(en = "the number of healthcare facilities accessible within 30 minutes at weekend peak service",
+          fr = "le nombre d'établissements de soins de santé accessibles en moins de 30 minutes aux heures de pointe du week-end") %>% 
+  add_row(en = "the number of healthcare facilities accessible within 30 minutes at weekend off-peak service",
+          fr = "le nombre d'établissements de soins de santé accessibles dans un délai de 30 minutes en service de week-end en heures creuses") %>% 
+  add_row(en = "the number of healthcare facilities accessible within 30 minutes at weekend night service",
+          fr = "le nombre d'établissements de soins de santé accessibles en moins de 30 minutes en service de nuit le week-end") %>% 
+  add_row(en = "<h1><b><center>SUS</center></b></h1>",
+          fr = "<h1><b><center>SUS</center></b></h1>.") %>% 
+  add_row(en = "<h2><b><center>Towards a sustainable city</center></b></h2>",
+          fr = "<h2><b><center>Vers une ville durable</center></b></h2>") %>% 
+  add_row(en = "<h3><b><center>SUS is a platform for integrating, exploring, and analyzing a wide range of urban sustainability data sources for the Montreal region across multiple spatial and temporal scales. SUS offers a robust set of tools for scenario modelling and analysis which will be useful for researchers, policymakers, communities, and individuals.</center></b></h3>",
+          fr = "<h3><b><center>SUS est une plateforme d'intégration, d'exploration et d'analyse d'un large éventail de sources de données sur la durabilité urbaine pour la région de Montréal à travers plusieurs échelles spatiales et temporelles. SUS offre un ensemble robuste d'outils pour la modélisation et l'analyse de scénarios qui seront utiles aux chercheurs, aux décideurs politiques, aux communautés et aux individus.</center></b></h3>.") %>% 
+  add_row(en = "<h3>SUS embraces an inclusive vision of urban sustainability, allowing users to contextualize questions into larger frameworks of equity and accessibility. It serves as both a data-exploration tool and a knowledge and information-sharing resource, designed to encourage greater reflection on different urban sustainability issues, and on the communities which are most impacted by them.</h3>",
+          fr = "<h3>SUS adopte une vision inclusive de la durabilité urbaine, permettant aux utilisateurs de contextualiser les questions dans des cadres plus larges d'équité et d'accessibilité. Il sert à la fois d'outil d'exploration des données et de ressource de partage des connaissances et des informations, conçu pour encourager une plus grande réflexion sur les différentes questions de durabilité urbaine, et sur les communautés qui sont les plus touchées par celles-ci.</h3>") %>% 
+  add_row(en = "<h3>The majority of the data used are publicly available and aggregated into thematic and place-based modules to allow a range of stakeholders greater accessibility to answering sustainability questions. SUS further mobilizes both qualitative and quantitative research to bring questions without clear datasets into the discussion.</h3>",
+          fr = "<h3>La majorité des données utilisées sont disponibles publiquement et agrégées en modules thématiques et par lieu pour permettre à un éventail de parties prenantes une plus grande accessibilité pour répondre aux questions de durabilité. Le SUS mobilise en outre des recherches qualitatives et quantitatives afin d'introduire dans la discussion des questions ne disposant pas d'ensembles de données clairs.</h3>") %>% 
+  add_row(en = "<h3>SUS aims to engage Montrealers to harness the momentum surrounding technologically-based approaches to sustainability for public good with a vision towards making the City more socially inclusive and less environmentally impactful.</h3>",
+          fr = "<h3>SUS vise à engager les Montréalais à exploiter l'élan entourant les approches technologiques de la durabilité pour le bien public avec une vision visant à rendre la ville plus inclusive socialement et moins impactante sur l'environnement.</h3>") %>% 
+  add_row(en = "<h5>An initiative of the <a href = 'https://www.mcgill.ca/mssi/'>McGill Sustainability Systems Initiative</a></h5>",
+          fr = "<h5>Une initiative du <a href = 'https://www.mcgill.ca/mssi/'>McGill Sustainability Systems Initiative</a></h5>.") %>% 
+  add_row(en = paste0("Housing is at the centre of our lives. In recent years, ",
+                      "there have been increasing conversations surrounding ",
+                      "housing affordability and accessibility in cities ",
+                      "(Madden & Marcuse, 2016). Access to affordable and ",
+                      "adequate housing is a core element for social equity ",
+                      "in cities. In Canada, the National Housing Strategy aims ",
+                      "at addressing housing needs and houselessness through ",
+                      "modernization, new construction and innovation and research. ",
+                      "The City of Montreal currently has many housing-related ",
+                      "objectives and initiatives, such as the Diverse Metropolis ",
+                      "by-law and the 12,000 housing unit strategy. This module ",
+                      "offers a temporal outlook on housing in Montreal’s census ",
+                      "metropolitan area through census variables that relate to ",
+                      "housing, socio-demographics and more."),
+          fr = "Le logement est au centre de nos vies. Ces dernières années, les conversations autour de l'abordabilité et de l'accessibilité des logements dans les villes se sont multipliées (Madden & Marcuse, 2016). L'accès à un logement abordable et adéquat est un élément central de l'équité sociale dans les villes. Au Canada, la Stratégie nationale sur le logement vise à répondre aux besoins de logement et à l'itinérance par la modernisation, la construction de nouveaux logements et l'innovation et la recherche. La Ville de Montréal a actuellement de nombreux objectifs et initiatives liés au logement, tels que le règlement Métropole mixte et la stratégie des 12 000 logements. Ce module offre une perspective temporelle sur le logement dans la région métropolitaine de recensement de Montréal à travers les variables du recensement qui se rapportent au logement, à la sociodémographie et plus encore.") %>% 
+  add_row(en = paste0("This module presents housing data from the Census, ",
+                      "and explores relationships with important ", 
+                      "demographic patterns, and how those patterns have ",
+                      "changed over time.",
+                      "<br><p><i>For further reading:</i></p>",
+                      "<ul><li><a href = 'https://www.cmhc-schl.gc.ca/en/nhs/'>",
+                      "CMHC. (n.d.). National Housing Strategy.</a><li><a href =",
+                      "'https://montreal.ca/articles/metropole-mixte-les-grandes-lignes-du-reglement-7816'>",
+                      "Ville de Montréal. (4 octobre 2021). Métropole Mixte: Les grandes lignes du règlement.</a>",
+                      "<li>Madden, D., & Marcuse, P. (2016). In Defense of Housing: The Politics of Crisis. New York and London: Verso Books.</ul>"),
+          fr = "Ce module présente des données sur le logement tirées du recensement et explore les relations avec d'importants profils démographiques, ainsi que la façon dont ces profils ont évolué au fil du temps.<br><p><i>Pour en savoir plus :</i></p><ul><li><a href = 'https://www.cmhc-schl.gc.ca/en/nhs/ >CMHC. (s.d.). Stratégie nationale sur le logement.</a><li><a href = 'https://montreal.ca/articles/metropole-mixte-les-grandes-lignes-du-reglement-7816'>Ville de Montréal. (4 octobre 2021). Métropole Mixte : Les grandes lignes du règlement.</a><li>Madden, D., & Marcuse, P. (2016). En défense du logement : La politique de la crise. New York et Londres : Verso Books.</ul>") %>% 
+  add_row(en = "At the {z$scale_sing} scale, {z$exp_left} varies from '{z$min_val}' to '{z$max_val}'. A {z$majority} of {z$scale_plural} ({z$mode_prop}) have a value of '{z$mode_val}', while {z$mode_prop_2} have a value of '{z$mode_val_2}'.",
+          fr = "À l'échelle {z$scale_sing}, {z$exp_left} varie de {z$min_val} à {z$max_val}. Une {z$majority} des {z$scale_plural} ({z$mode_prop}) ont une valeur de '{z$mode_val}', tandis que {z$mode_prop_2} ont une valeur de '{z$mode_val_2}'.") %>% 
+  add_row(en = "<strong>{z$place_heading}</strong><p>{z$place_name} has a population of {z$pop} and a '{z$title_left}' value of '{z$val_left}', which is shared by {z$other_with_val} of {z$scale_plural} in the Montreal region.",
+          fr = "<strong>{z$place_heading}</strong><p> {z$place_name} a une population de {z$pop} et une valeur de '{z$title_left}' de ' {z$val_left}, ce qui est partagé par {z$other_with_val} des {z$scale_plural} dans la région de Montréal.") %>% 
+  add_row(en = "<strong>{z$place_heading}</strong><p>{z$place_name} has a population of {z$pop}, a '{z$title_left}' value of '{z$val_left}', and a '{z$title_right}' value of {z$val_right}. <p>{z$place_name} has {sub('^the', 'a', z$exp_right)} higher than {z$perc} of other {z$scale_plural} with {sub('^the', 'a', z$exp_left)} of '{z$val_left}' in the Montreal region.",
+          fr = "<strong>{z$place_heading}</strong><p> {z$place_name} a une population de {z$pop}, a une valeur de '{z$title_left}'  de {z$val_left} et une valeur de '{z$title_right}' de {z$val_right}. <p> {z$place_name} a {sub('^le', 'un', z$exp_right)} plus élevé que {z$perc} des autres {z$scale_plural} avec {sub('^the', 'un', z$exp_left)} de {z$val_left} dans la région de Montréal.") %>% 
+  add_row(en = "{z$place_name} has no data available on {z$exp_left} and {z$exp_right}.",
+          fr = "{z$place_name} n'a pas de données disponibles sur {z$exp_left} et {z$exp_right} .") %>% 
   distinct(en, .keep_all = TRUE)
 
 
@@ -1678,35 +2281,81 @@ write_csv(translation_fr, "translations/translation_fr.csv")
 
 rm(translation_fr)
 
+# to_translate <-
+# str_extract_all("Warning in private$raw_translate(keyword) :
+#   '<h1><b><center>SUS</center></b></h1>' translation does not exist.
+# Warning in private$raw_translate(keyword) :
+#   '<h2><b><center>Towards a sustainable city</center></b></h2>' translation does not exist.
+# Warning in private$raw_translate(keyword) :
+#   '<h3><b><center>SUS is a platform for integrating, exploring, and analyzing a wide range of urban sustainability data sources for the Montreal region across multiple spatial and temporal scales. SUS offers a robust set of tools for scenario modelling and analysis which will be useful for researchers, policymakers, communities, and individuals.</center></b></h3>' translation does not exist.
+# Warning in private$raw_translate(keyword) :
+#   '<h3>SUS embraces an inclusive vision of urban sustainability, allowing users to contextualize questions into larger frameworks of equity and accessibility. It serves as both a data-exploration tool and a knowledge and information-sharing resource, designed to encourage greater reflection on different urban sustainability issues, and on the communities which are most impacted by them.</h3>' translation does not exist.
+# Warning in private$raw_translate(keyword) :
+#   '<h3>The majority of the data used are publicly available and aggregated into thematic and place-based modules to allow a range of stakeholders greater accessibility to answering sustainability questions. SUS further mobilizes both qualitative and quantitative research to bring questions without clear datasets into the discussion.</h3>' translation does not exist.
+# Warning in private$raw_translate(keyword) :
+#   '<h3>SUS aims to engage Montrealers to harness the momentum surrounding technologically-based approaches to sustainability for public good with a vision towards making the City more socially inclusive and less environmentally impactful.</h3>' translation does not exist.
+# Warning in private$raw_translate(keyword) :
+#   '<h5>An initiative of the <a href = 'https://www.mcgill.ca/mssi/'>McGill Sustainability Systems Initiative</a></h5>' translation does not exist.",
+#                 "(?<=\\').*(?=\\')") %>%
+#   unlist()
+
 # Deepl helper
 # to_translate <-
-#   str_extract_all("Warning: No translation text found for `May 2020`.
-# Warning: No translation text found for `July 2020`.
-# Warning: No translation text found for `October 2020`.
-# Warning: No translation text found for `TK 2021`.
-# Warning: No translation text found for `Total`.
-# Warning: No translation text found for `Pedestrian`.
-# Warning: No translation text found for `Cyclist`.
-# Warning: No translation text found for `Other`.
-# Warning: No translation text found for `Count`.
-# Warning: No translation text found for `Per sq km`.
-# Warning: No translation text found for `Per 1000 residents`.
-# Warning: No translation text found for `Introduction`.
-# Warning: No translation text found for `Community and participation`.
-# Warning: No translation text found for `Greening`.
-# Warning: No translation text found for `Food and agriculture`.
-# Warning: No translation text found for `Land use`.
-# Warning: No translation text found for `Mobility`.
-# Warning: No translation text found for `Equity`.
-# Warning: No translation text found for `Adaptation and resilience`.
-# Warning: No translation text found for `Economy`.
-# Warning: No translation text found for `Innovation`.
-# Warning: No translation text found for `Regionalism, internationalism and networks`.
-# Warning: No translation text found for `Sustainability`.", "`.*`") %>%
+#   str_extract_all("Warning: No translation text found for `All jobs`.
+# Warning: No translation text found for `Low-skill jobs`.
+# Warning: No translation text found for `High-skill jobs`.
+# Warning: No translation text found for `Jobs < $30,000 annually`.
+# Warning: No translation text found for `Schools`.
+# Warning: No translation text found for `Healthcare facilities`.
+# Warning: No translation text found for `Weekday peak`.
+# Warning: No translation text found for `Weekday off-peak`.
+# Warning: No translation text found for `Weekday night`.
+# Warning: No translation text found for `Weekend peak`.
+# Warning: No translation text found for `Weekend off-peak`.
+# Warning: No translation text found for `Weekend night`.", "`.*`") %>%
 #   unlist() %>%
 #   str_remove_all(., '`')
+
+# to_translate <- var_exp$explanation[45:nrow(var_exp)]
 # 
 # glue('add_row(en = "{to_translate}",
 #               fr = "{deeplr::toFrench2(to_translate, auth_key = "my_key")}") %>% ')
+
 # 
-#   
+# translated_strings <-
+#   "
+# Warning: No translation text found for DDESSDDEAt the {z$scale_sing} scale, {z$exp_left} varies from '{z$min_val}' to '{z$max_val}'. A {z$majority} of {z$scale_plural} ({z$mode_prop}) have a value of '{z$mode_val}', while {z$mode_prop_2} have a value of '{z$mode_val_2}'.FFINNALL1. Automatic translation performed: HASSTTAAu {z$scale_sing} escaliers, {z$exp_left} varie de ' {z$min_val} à {z$max_val} '. A {z$majority} de {z$scale_plural} ( {z$mode_prop} ) ont une valeur de ' {z$mode_val} ', tandis que {z$mode_prop_2} ont une valeur de ' {z$mode_val_2} '.FFINNALL2,
+# Warning: No translation text found for DDESSDDE1582 Avenue LajoieFFINNALL1. Automatic translation performed: HASSTTA1582 Avenue LajoieFFINNALL2,
+# Warning: No translation text found for DDESSDDE1582 Avenue LajoieFFINNALL1. Automatic translation performed: HASSTTA1582 Avenue LajoieFFINNALL2,
+# Warning: No translation text found for DDESSDDE<strong>{z$place_heading}</strong><p>{z$place_name} has a population of {z$pop} and a '{z$title_left}' value of '{z$val_left}', which is shared by {z$other_with_val} of {z$scale_plural} in the Montreal region.FFINNALL1. Automatic translation performed: HASSTTA<strong> {z$place_heading} </strong><p> {z$place_name} a une population de {z$pop} et un ' {z$title_left} ' valeur de ' {z$val_left} qui est partagé par {z$other_with_val} de {z$scale_plural} dans la région de Montréal.FFINNALL2,
+# Warning: No translation text found for DDESSDDE1582 Avenue LajoieFFINNALL1. Automatic translation performed: HASSTTA1582 Avenue LajoieFFINNALL2,
+# Warning: No translation text found for DDESSDDE1582 Avenue LajoieFFINNALL1. Automatic translation performed: HASSTTA1582 Avenue LajoieFFINNALL2,
+# Warning: No translation text found for DDESSDDE<strong>{z$place_heading}</strong><p>{z$place_name} has a population of {z$pop}, a '{z$title_left}' value of '{z$val_left}', and a '{z$title_right}' value of {z$val_right}. <p>{z$place_name} has {sub('^the', 'a', z$exp_right)} higher than {z$perc} of other {z$scale_plural} with {sub('^the', 'a', z$exp_left)} of '{z$val_left}' in the Montreal region.FFINNALL1. Automatic translation performed: HASSTTA<strong> {z$place_heading} </strong><p> {z$place_name} a une population de {z$pop} , a ' {z$title_left} ' valeur de ' {z$val_left} et un {z$title_right} La valeur de {z$val_right} . <p> {z$place_name} a {sub('^the', 'a', z$exp_right)} plus élevé que {z$perc} d'autres {z$scale_plural} avec {sub('^the', 'a', z$exp_left)} de {z$val_left} dans la région de Montréal.FFINNALL2,
+# Warning: No DYK category matches for variable(s): destructive_storms_ind
+# Warning: No translation text found for DDESSDDE1582 Avenue LajoieFFINNALL1. Automatic translation performed: HASSTTA1582 Avenue LajoieFFINNALL2,
+# Warning: No translation text found for DDESSDDE1582 Avenue LajoieFFINNALL1. Automatic translation performed: HASSTTA1582 Avenue LajoieFFINNALL2,
+# Warning: No translation text found for DDESSDDE<strong>{z$place_heading}</strong><p>{z$place_name} has a population of {z$pop}, a '{z$title_left}' value of '{z$val_left}', and a '{z$title_right}' value of {z$val_right}. <p>{z$place_name} has {sub('^the', 'a', z$exp_right)} higher than {z$perc} of other {z$scale_plural} with {sub('^the', 'a', z$exp_left)} of '{z$val_left}' in the Montreal region.FFINNALL1. Automatic translation performed: HASSTTA<strong> {z$place_heading} </strong><p> {z$place_name} a une population de {z$pop} , a ' {z$title_left} ' valeur de ' {z$val_left} et un {z$title_right} La valeur de {z$val_right} . <p> {z$place_name} a {sub('^the', 'a', z$exp_right)} plus élevé que {z$perc} d'autres {z$scale_plural} avec {sub('^the', 'a', z$exp_left)} de {z$val_left} dans la région de Montréal.FFINNALL2,
+# Warning: No translation text found for DDESSDDE1582 Avenue LajoieFFINNALL1. Automatic translation performed: HASSTTA1582 Avenue LajoieFFINNALL2,
+# Warning: No translation text found for DDESSDDE1582 Avenue LajoieFFINNALL1. Automatic translation performed: HASSTTA1582 Avenue LajoieFFINNALL2,
+# Warning: No translation text found for DDESSDDE<strong>{z$place_heading}</strong><p>{z$place_name} has a population of {z$pop}, a '{z$title_left}' value of '{z$val_left}', and a '{z$title_right}' value of {z$val_right}. <p>{z$place_name} has {sub('^the', 'a', z$exp_right)} higher than {z$perc} of other {z$scale_plural} with {sub('^the', 'a', z$exp_left)} of '{z$val_left}' in the Montreal region.FFINNALL1. Automatic translation performed: HASSTTA<strong> {z$place_heading} </strong><p> {z$place_name} a une population de {z$pop} , a ' {z$title_left} ' valeur de ' {z$val_left} et un {z$title_right} La valeur de {z$val_right} . <p> {z$place_name} a {sub('^the', 'a', z$exp_right)} plus élevé que {z$perc} d'autres {z$scale_plural} avec {sub('^the', 'a', z$exp_left)} de {z$val_left} dans la région de Montréal.FFINNALL2,
+# Warning: No translation text found for DDESSDDE1582 Avenue LajoieFFINNALL1. Automatic translation performed: HASSTTA1582 Avenue LajoieFFINNALL2,
+# Warning: No translation text found for DDESSDDE1582 Avenue LajoieFFINNALL1. Automatic translation performed: HASSTTA1582 Avenue LajoieFFINNALL2,
+# Warning: No translation text found for DDESSDDE<strong>{z$place_heading}</strong><p>{z$place_name} has a population of {z$pop}, a '{z$title_left}' value of '{z$val_left}', and a '{z$title_right}' value of {z$val_right}. <p>{z$place_name} has {sub('^the', 'a', z$exp_right)} higher than {z$perc} of other {z$scale_plural} with {sub('^the', 'a', z$exp_left)} of '{z$val_left}' in the Montreal region.FFINNALL1. Automatic translation performed: HASSTTA<strong> {z$place_heading} </strong><p> {z$place_name} a une population de {z$pop} , a ' {z$title_left} ' valeur de ' {z$val_left} et un {z$title_right} La valeur de {z$val_right} . <p> {z$place_name} a {sub('^the', 'a', z$exp_right)} plus élevé que {z$perc} d'autres {z$scale_plural} avec {sub('^the', 'a', z$exp_left)} de {z$val_left} dans la région de Montréal.FFINNALL2,
+# Warning: No translation text found for DDESSDDE1582 Avenue LajoieFFINNALL1. Automatic translation performed: HASSTTA1582 Avenue LajoieFFINNALL2,
+# Warning: No translation text found for DDESSDDE1582 Avenue LajoieFFINNALL1. Automatic translation performed: HASSTTA1582 Avenue LajoieFFINNALL2,
+# Warning: No translation text found for DDESSDDE<strong>{z$place_heading}</strong><p>{z$place_name} has a population of {z$pop}, a '{z$title_left}' value of '{z$val_left}', and a '{z$title_right}' value of {z$val_right}. <p>{z$place_name} has {sub('^the', 'a', z$exp_right)} higher than {z$perc} of other {z$scale_plural} with {sub('^the', 'a', z$exp_left)} of '{z$val_left}' in the Montreal region.FFINNALL1. Automatic translation performed: HASSTTA<strong> {z$place_heading} </strong><p> {z$place_name} a une population de {z$pop} , a ' {z$title_left} ' valeur de ' {z$val_left} et un {z$title_right} La valeur de {z$val_right} . <p> {z$place_name} a {sub('^the', 'a', z$exp_right)} plus élevé que {z$perc} d'autres {z$scale_plural} avec {sub('^the', 'a', z$exp_left)} de {z$val_left} dans la région de Montréal.FFINNALL2,
+# Warning: No translation text found for DDESSDDE{z$place_name} has no data available on {z$exp_left} and {z$exp_right}.FFINNALL1. Automatic translation performed: HASSTTA {z$place_name} n'a pas de données disponibles sur {z$exp_left} et {z$exp_right} .FFINNALL2,
+# Warning: No translation text found for DDESSDDE<strong>{z$place_heading}</strong><p>{z$place_name} has a population of {z$pop}, a '{z$title_left}' value of '{z$val_left}', and a '{z$title_right}' value of {z$val_right}. <p>{z$place_name} has {sub('^the', 'a', z$exp_right)} higher than {z$perc} of other {z$scale_plural} with {sub('^the', 'a', z$exp_left)} of '{z$val_left}' in the Montreal region.FFINNALL1. Automatic translation performed: HASSTTA<strong> {z$place_heading} </strong><p> {z$place_name} a une population de {z$pop} , a ' {z$title_left} ' valeur de ' {z$val_left} et un {z$title_right} La valeur de {z$val_right} . <p> {z$place_name} a {sub('^the', 'a', z$exp_right)} plus élevé que {z$perc} d'autres {z$scale_plural} avec {sub('^the', 'a', z$exp_left)} de {z$val_left} dans la région de Montréal.FFINNALL2,
+# Warning: No DYK category matches for variable(s): drought_ind
+# Warning: No translation text found for DDESSDDE<strong>{z$place_heading}</strong><p>{z$place_name} has a population of {z$pop}, a '{z$title_left}' value of '{z$val_left}', and a '{z$title_right}' value of {z$val_right}. <p>{z$place_name} has {sub('^the', 'a', z$exp_right)} higher than {z$perc} of other {z$scale_plural} with {sub('^the', 'a', z$exp_left)} of '{z$val_left}' in the Montreal region.FFINNALL1. Automatic translation performed: HASSTTA<strong> {z$place_heading} </strong><p> {z$place_name} a une population de {z$pop} , a ' {z$title_left} ' valeur de ' {z$val_left} et un {z$title_right} La valeur de {z$val_right} . <p> {z$place_name} a {sub('^the', 'a', z$exp_right)} plus élevé que {z$perc} d'autres {z$scale_plural} avec {sub('^the', 'a', z$exp_left)} de {z$val_left} dans la région de Montréal.FFINNALL2,
+# Warning: No translation text found for DDESSDDE<strong>{z$place_heading}</strong><p>{z$place_name} has a population of {z$pop}, a '{z$title_left}' value of '{z$val_left}', and a '{z$title_right}' value of {z$val_right}. <p>{z$place_name} has {sub('^the', 'a', z$exp_right)} higher than {z$perc} of other {z$scale_plural} with {sub('^the', 'a', z$exp_left)} of '{z$val_left}' in the Montreal region.FFINNALL1. Automatic translation performed: HASSTTA<strong> {z$place_heading} </strong><p> {z$place_name} a une population de {z$pop} , a ' {z$title_left} ' valeur de ' {z$val_left} et un {z$title_right} La valeur de {z$val_right} . <p> {z$place_name} a {sub('^the', 'a', z$exp_right)} plus élevé que {z$perc} d'autres {z$scale_plural} avec {sub('^the', 'a', z$exp_left)} de {z$val_left} dans la région de Montréal.FFINNALL2,"
+# list_translated <-
+#   str_extract_all(translated_strings,
+#                   "(?<=DDESSDDE).*(?=FFINNALL1)|(?<=HASSTTA).*(?=FFINNALL2)") %>%
+#   unlist()
+# 
+# en_placement <- which(1:(length(unlist(list_translated))) %% 2  == 1)
+# fr_placement <- which(1:(length(unlist(list_translated))) %% 2  == 0)
+# 
+# glue('add_row(en = "{list_translated[en_placement]}",
+#               fr = "{list_translated[fr_placement]}") %>% ')
