@@ -158,27 +158,25 @@ Over 75% of all collisions between vehicles since 2012 have resulted in material
 
 ```{r severity_by_type, echo = F, warning = F, message = F}
 
-sev_type <- crash %>%
+crash %>%
   st_drop_geometry() %>%
-  transform(type = as.character(type)) %>% 
-  filter(type == c("31", "32", "33")) %>% 
-  select(type, seriousness)
- 
-ggplot(sev_type, 
-       aes(x = type,
-           fill = factor(seriousness,
-                         levels = c("Dommages matériels inférieurs au seuil de rapportage",
-                                    "Dommages matériels seulement", "Léger", "Grave",
-                                    "Mortel"),
-                         labels = c("Material damage below the reporting threshold",
-                                    "Material damage only", "Light", "Serious", "Fatal")))) +
-         geom_bar(position = "fill") +
+  filter(type %in% 31:33) %>% 
+  select(type, seriousness) |> 
+  mutate(type = as.character(type),
+         seriousness = factor(seriousness, levels = c(
+    "Dommages matériels inférieurs au seuil de rapportage",
+    "Dommages matériels seulement", "Léger", "Grave", "Mortel"),
+    labels = c("Material damage below the reporting threshold",
+               "Material damage only", "Light", "Serious", "Fatal"))) |> 
+  ggplot(aes(type, fill = seriousness)) +
+  geom_bar(position = "fill") +
   guides(fill=guide_legend(title="Collision Severity")) +
   labs(x = "Vehicle collision with", 
        y = "Proportion of total since 2012",
        title = "Collision Severity by Type") + 
+  scale_y_continuous(labels = scales::percent) +
   scale_x_discrete(limit = c("31", "32", "33"),
-                    labels = c("Another vehicle(s)", "Pedestrian(s)", "Cyclist(s)")) +
+                   labels = c("Another vehicle(s)", "Pedestrian(s)", "Cyclist(s)")) +
   scale_fill_manual(values = c("#11a08a", "#5bbbd6", "#fdd262", "#e58601", "#ED3A1D")) +
   theme_minimal()
 
@@ -188,11 +186,14 @@ rm(sev_type)
 
 ### Injury rate
 
+Coming soon!
 ```{r}
 
 
 
 ```
+
+Coming soon!
 
 ### Fatality
 
@@ -202,7 +203,7 @@ rm(sev_type)
 
 ```
 
-## Who is affected by collisions? {.tabset}
+## The demographics of collisions {.tabset}
 
 ### 2019
 
