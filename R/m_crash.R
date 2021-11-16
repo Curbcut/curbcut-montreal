@@ -313,12 +313,15 @@ crash_server <- function(id) {
     
     output$crash_analysis <- renderUI(
       
-      HTML('<div id = "main_panel_text_popup">',
-           includeHTML("www/crash/crash.html"),
-           '</div>')
-
       
+      
+           tags$iframe(src = "crash/crash.html", width = "1000px", height = "800px",
+           style = "max-height: 83vh; overflow: auto; background-color: #fff;
+                    border: 1px solid transparent; border-radius: 4px;
+                    box-shadow: 0 50px 50px rgba(0,0,0,.6);")
+
       )
+    
     observeEvent(input$analysis, {
       
       if (input$analysis %% 2 == 1) {

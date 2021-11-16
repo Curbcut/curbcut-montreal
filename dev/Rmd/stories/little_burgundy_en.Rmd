@@ -3,6 +3,7 @@ title: "Environmental Racism and Green Gentrification in Montreal’s Little Bur
 subtitle: "A look at a neighbourhood in transformation"  
 output: html_document
 author: "Sara Hashemi"
+runtime: shiny_prerendered
 ---
 
 ```{r setup, include=FALSE}

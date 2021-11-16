@@ -1,6 +1,7 @@
 ---
 title: "Flooding in Pierrefonds"
 output: html_document
+runtime: shiny_prerendered
 ---
 
 ```{r setup, include=FALSE}

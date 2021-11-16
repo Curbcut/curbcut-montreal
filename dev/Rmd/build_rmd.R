@@ -16,13 +16,13 @@ process_rmd <- function(file, path) {
                     quiet = TRUE)
   
   # Remove long script tag
-  x <- readLines(out)
-  long_script <- str_which(x, "<script")
-  long_script <- long_script[nchar(x[long_script]) > 100000]
-  x <- x[-long_script]
+  # x <- readLines(out)
+  # long_script <- str_which(x, "<script")
+  # long_script <- long_script[nchar(x[long_script]) > 100000]
+  # x <- x[-long_script]
   
   # Write ouput
-  writeLines(x, out)
+  # writeLines(x, out)
 }
 
 
