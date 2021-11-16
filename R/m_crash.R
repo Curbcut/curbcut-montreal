@@ -32,9 +32,9 @@ crash_UI <- function(id) {
                                    step = crash_slider$interval, sep = "", 
                                    value = c("2012", "2019"), width = "200px")),
                    div(id = NS(id, "slider_switch"), style = widget_style,
-                       switchInput(inputId = NS(id, "bi_time"),
-                                  label = i18n$t("Compare dates"),
-                                  labelWidth = "250px")),
+                       materialSwitch(inputId = NS(id, "bi_time"),
+                                  label = i18n$t("Select two time periods"),
+                                  width = "200px", right = TRUE)),
                    htmlOutput(NS(id, "year_displayed_right")),
                    htmlOutput(NS(id, "how_to_read_map"))
                    ),
@@ -75,11 +75,11 @@ crash_server <- function(id) {
     # Bi census slider label explained
     observe({
       if (!choropleth()) {
-        updateSwitchInput(session,
-                           inputId = "bi_time", label = "Aggregate time period")
+        updateSliderInput(session, inputId = "left_bi_time", 
+                          label = sus_translate("Total between two dates"))
       } else if (choropleth()) {
-        updateSwitchInput(session,
-                           inputId = "bi_time", label = "Compare dates")
+        updateSliderInput(session, inputId = "left_bi_time", 
+                          label = sus_translate("Compare two time periods"))
       }
     })
     
