@@ -164,36 +164,36 @@ crash_server <- function(id) {
       })
     
     # Update poly_selected on click
-    observeEvent(input$map_polygon_click, {
-      lst <- jsonlite::fromJSON(input$map_polygon_click)
-      if (is.null(lst$object$properties$id)) {
-        rv_crash$poly_selected <- NA
-      } else rv_crash$poly_selected <- lst$object$properties$id
-    })
+    # observeEvent(input$map_polygon_click, {
+    #   lst <- jsonlite::fromJSON(input$map_polygon_click)
+    #   if (is.null(lst$object$properties$id)) {
+    #     rv_crash$poly_selected <- NA
+    #   } else rv_crash$poly_selected <- lst$object$properties$id
+    # })
     
     # Clear poly_selected on zoom
-    observeEvent(rv_crash$zoom, {rv_crash$poly_selected <- NA},
-                 ignoreInit = TRUE)
+    # observeEvent(rv_crash$zoom, {rv_crash$poly_selected <- NA},
+    #              ignoreInit = TRUE)
     
     # Update map in response to poly_selected change
-    observeEvent(rv_crash$poly_selected, {
-      if (!is.na(rv_crash$poly_selected)) {
-        width <- switch(rv_crash$zoom, "borough" = 100, "CT" = 10, 2)
-        data_to_add <-
-          data() %>%
-          filter(ID == rv_crash$poly_selected)
-        
-        mapdeck_update(map_id = NS(id, "map")) %>%
-          add_polygon(
-            data = data_to_add, stroke_width = width, stroke_colour = "#000000",
-            fill_colour = "fill", update_view = FALSE,
-            layer_id = "poly_highlight", auto_highlight = TRUE,
-            highlight_colour = "#FFFFFF90")
-      } else {
-        mapdeck_update(map_id = NS(id, "map")) %>%
-          clear_polygon(layer_id = "poly_highlight")
-      }
-    })
+    # observeEvent(rv_crash$poly_selected, {
+    #   if (!is.na(rv_crash$poly_selected)) {
+    #     width <- switch(rv_crash$zoom, "borough" = 100, "CT" = 10, 2)
+    #     data_to_add <-
+    #       data() %>%
+    #       filter(ID == rv_crash$poly_selected)
+    #     
+    #     mapdeck_update(map_id = NS(id, "map")) %>%
+    #       add_polygon(
+    #         data = data_to_add, stroke_width = width, stroke_colour = "#000000",
+    #         fill_colour = "fill", update_view = FALSE,
+    #         layer_id = "poly_highlight", auto_highlight = TRUE,
+    #         highlight_colour = "#FFFFFF90")
+    #   } else {
+    #     mapdeck_update(map_id = NS(id, "map")) %>%
+    #       clear_polygon(layer_id = "poly_highlight")
+    #   }
+    # })
     
     
     # Year displayed disclaimer

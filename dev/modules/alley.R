@@ -139,31 +139,7 @@ alleys <-
 # Get borough text --------------------------------------------------------
 
 alley_text <-
-  suppressMessages(read_csv2("dev/data/green_alleys/info_borough.csv")) %>%
-  drop_na() %>%
-  set_names(c("name", "description")) %>%
-  mutate(name = case_when(
-    name == "Côte des Neiges - Notre Dame de Grâce" ~ 
-      "Côte-des-Neiges-Notre-Dame-de-Grâce",
-    name == "Plateau-Mont-Royal" ~ "Le Plateau-Mont-Royal",
-    name == "Sud-Ouest" ~ "Le Sud-Ouest",
-    name == "Rosemont-La Petite Patrie" ~ "Rosemont-La Petite-Patrie",
-    TRUE ~ name)) %>%
-  left_join(st_drop_geometry(select(borough, name, ID)), by = "name")
-
-alley_text <- 
-  alley_text %>% 
-  mutate(first_alley = str_extract(
-    description, "(?<=(created in:</b>)|(created:</b>))\\s*\\d*"),
-         app_process = str_extract(
-           description, "(?<=(Application process:</b>)|(Applicatin process:</b>)).*(?=<p>)"),
-         management = str_extract(description, "(?<=Management:</b>).*(?=<p>)"),
-         budget = str_extract(description, "(?<=Budget:</b>).*(?=<p>)"),
-         contact = str_extract(description, "(?<=Contact:</b>).*"),
-         guide = str_extract(description, "(?<=guide\">).*(?=</a>)")) %>%
-  mutate_all(list(~str_trim(.))) %>% 
-  mutate(first_alley = as.numeric(first_alley)) %>% 
-  select(-description)
+  suppressMessages(read_csv2("dev/data/green_alleys/info_borough.csv"))
 
 # Add total lengths of green alleys to boroughs
 alley_text <- 
