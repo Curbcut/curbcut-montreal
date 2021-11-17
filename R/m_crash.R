@@ -4,13 +4,13 @@
 
 crash_UI <- function(id) {
   tabItem(tabName = "crash",
-          shinyjs::useShinyjs(),
           shinyjs::hidden(htmlOutput(NS(id, "crash_analysis"),
                      style = "position:absolute; margin: 40px;
                      max-width: 1000px; z-index:499")),
           mapdeckOutput(NS(id, "map"), height = "92vh"),
           title_UI(NS(id, "title"),
-                   actionLink(NS(id, "analysis"), i18n$t("Road safety analysis")),
+                   actionLink(NS(id, "analysis"), 
+                              i18n$t("Road safety analysis")),
                    hr(id = NS(id, "hr")),
                    select_var_UI(NS(id, "left_1"), var_list_left_crash_1,
                                  label = i18n$t("Grouping"),
@@ -36,8 +36,7 @@ crash_UI <- function(id) {
                                       label = i18n$t("Select two dates"),
                                       width = "170px", right = TRUE)),
                    htmlOutput(NS(id, "year_displayed_right")),
-                   htmlOutput(NS(id, "how_to_read_map"))
-          ),
+                   htmlOutput(NS(id, "how_to_read_map"))),
           right_panel(id, compare_UI(NS(id, "crash"), var_list_right_crash),
                       explore_UI(NS(id, "explore")), dyk_UI(NS(id, "dyk"))),
           legend_bivar_UI(NS(id, "crash")))
@@ -284,7 +283,5 @@ crash_server <- function(id) {
       shinyjs::toggle("crash_analysis", condition = input$analysis %% 2)
       
     })
-    
-    
   })
 }

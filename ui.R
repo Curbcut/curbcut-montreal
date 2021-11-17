@@ -1,7 +1,7 @@
 ##### SUS UI SCRIPT ############################################################
 
 ui <- dashboardPage(
-
+  
   dashboardHeader(tags$li(
     class = "dropdown", 
     tags$style(".main-header {max-height: 50px}"),
@@ -174,6 +174,7 @@ ui <- dashboardPage(
     tags$script(HTML(js_links_between_modules)),
     tags$head(tags$style(HTML(styler))),
     
+    shinyjs::useShinyjs(),
     waiter::use_waiter(),
     waiter::waiter_show_on_load(
       html = shiny::tagList(img(src = "Sus_logo_LoadPage.png", 

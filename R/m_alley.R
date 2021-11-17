@@ -17,7 +17,6 @@ alley_UI <- function(id) {
                                column(width = 5, align = "right", 
                                       actionLink(inputId = NS(id, "hide"), 
                                                  label = i18n$t("Hide")))),
-                      shinyjs::useShinyjs(), # Needed to hide panels
                       uiOutput(NS(id, "alley_explore")),
                       conditionalPanel(
                         condition = "output.poly_selected == 1", ns = NS(id),

@@ -13,8 +13,7 @@ access_UI <- function(id) {
                    div(style = widget_style, 
                        sliderInput(NS(id, "slider"), i18n$t("Time threshold"),
                                    min = 10, max = 60, step = 1, value = 30,
-                                   width = "170px")),
-                   shinyjs::useShinyjs()),
+                                   width = "170px"))),
           right_panel(id, compare_UI(NS(id, "access"), var_list_right_access),
                       explore_UI(NS(id, "explore")), dyk_UI(NS(id, "dyk"))),
           legend_bivar_UI(NS(id, "access")))

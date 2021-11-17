@@ -4,7 +4,6 @@
 
 stories_UI <- function(id) {
   tabItem(tabName = "stories",
-          shinyjs::useShinyjs(),
           shinyjs::hidden(htmlOutput(NS(id, "stories"),
                                      style = "position:absolute; margin: 40px;
                      max-width: 1000px; z-index:499")),

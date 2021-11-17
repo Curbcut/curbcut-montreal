@@ -29,9 +29,7 @@ housing_UI <- function(id) {
                    htmlOutput(NS(id, "year_displayed_left")),
                    htmlOutput(NS(id, "year_displayed_right")),
                    materialSwitch(inputId = NS(id, "slider_switch"),
-                     label = "Compare dates", right = TRUE),
-                   shinyjs::useShinyjs() # Needed if we have 2 sliders
-                   ),
+                     label = "Compare dates", right = TRUE)),
           right_panel(id, compare_UI(NS(id, "housing"), var_list_housing_right),
                       explore_UI(NS(id, "explore")), dyk_UI(NS(id, "dyk"))),
           legend_bivar_UI(NS(id, "housing")))
