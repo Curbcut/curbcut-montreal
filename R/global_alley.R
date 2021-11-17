@@ -157,8 +157,25 @@ alley_alleys_text <- function(text_to_display) {
   } 
   # BUDGET
   if (!is.null(text_to_display$circulation)) {
-    text_to_display$circulation = 
-      str_glue(sus_translate(paste0("<p>To the circulation, it is {original_list$circulation}.</p>")))
+    
+    original_list$circulation <- str_remove(original_list$circulation, "\\.")
+    
+    open_close <- str_extract(original_list$circulation, '.*(?=,)|.*$')
+    more_info <- str_extract(original_list$circulation, "(?<=,).*")
+    
+    if (str_length(open_close) > 50) {
+      text_to_display$circulation = 
+        str_glue(sus_translate(paste0("<p>It is {open_close}</p>")))
+      
+    } else if (!is.na(more_info)) {
+          text_to_display$circulation = 
+      str_glue(sus_translate(paste0("<p>It is {open_close} to circulation, {more_info}.</p>")))
+    } else {
+      text_to_display$circulation = 
+        str_glue(sus_translate(paste0("<p>It is {open_close} to circulation.</p>")))
+      
+    }
+      
   } 
   
   if (!is.null(text_to_display$photo_ID)) {

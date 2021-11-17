@@ -60,9 +60,7 @@ alley_server <- function(id) {
     # Zoom level
     observeEvent(input$map_view_change$zoom, {
       rv_alley$zoom <- case_when(input$map_view_change$zoom >= 13 ~ 15,
-                                 input$map_view_change$zoom >= 12 ~ 30,
-                                 input$map_view_change$zoom >= 11.5 ~ 50,
-                                 TRUE ~ width_alley_higher_zoom)
+                                 TRUE ~ input$map_view_change$zoom*-15+220)
     })
 
     # Explore panel
