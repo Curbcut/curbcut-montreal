@@ -270,9 +270,6 @@ crash_server <- function(id) {
       
       updateActionLink(session, "analysis", label = txt)
       
-      print(input$analysis)
-      print(input$analysis %% 2)
-      
       shinyjs::toggle("hr", condition = !input$analysis %% 2)
       shinyjs::toggle("left_1-var", condition = !input$analysis %% 2)
       shinyjs::toggle("left_2-var", condition = !input$analysis %% 2)
