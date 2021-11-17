@@ -355,6 +355,8 @@ make_info_table_data <- function(id, x, var_type, var_left, var_right, select,
   
   if (grepl("date_", out$var_type)) {
     
+    print(out)
+    
     coef <- 
       dat %>%
       mutate(right_var = as.numeric(right_var)) %>%
@@ -370,7 +372,7 @@ make_info_table_data <- function(id, x, var_type, var_left, var_right, select,
     
     if (length(max_date) %in% 2:3) max_date <- paste(
       paste(max_date[seq_len(length(max_date) - 1)], collapse = ", "),
-      max_date[length(max(date))], sep = "and ")
+      max_date[length(max_date)], sep = " and ")
     if (length(max_date) > 3) out$max_date <- "several different dates"
     out$max_date <- max_date
     
@@ -381,16 +383,13 @@ make_info_table_data <- function(id, x, var_type, var_left, var_right, select,
     
     if (length(min_date) %in% 2:3) min_date <- paste(
       paste(min_date[seq_len(length(min_date) - 1)], collapse = ", "),
-      min_date[length(min(date))], sep = "and ")
-    if (length(min_date) > 3) out$min_date <- "several different dates"
+      max_date[length(min_date)], sep = " and ")
+    if (length(min_date) > 3) min_date <- "several different dates"
     out$min_date <- min_date
     
     out$coef <- abs(coef)
     out$coef_increasing <- if (coef >= 0) "increasing" else "decreasing"
-    
-    print(date_left)
     out$date_left <- paste(date_left, collapse = '-')
-    print(out$date_left)
   }
   
   
