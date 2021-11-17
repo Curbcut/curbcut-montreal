@@ -19,10 +19,13 @@
 explore_UI <- function(id) {
   
   tagList(
-    fluidRow(column(width = 7, h4(i18n$t("Explore"))),
-             column(width = 5, align = "right", 
-                    actionLink(inputId = NS(id, "hide"), 
-                               label = i18n$t("Hide")))),
+    
+    conditionalPanel(
+      condition = "output.show_panel == true", ns = NS(id),
+      fluidRow(column(width = 7, h4(i18n$t("Explore"))),
+               column(width = 5, align = "right", 
+                      actionLink(inputId = NS(id, "hide"), 
+                                 label = i18n$t("Hide"))))),
     
     conditionalPanel(
       condition = "output.hide_status == 1", ns = NS(id),
@@ -75,8 +78,13 @@ explore_server <- function(id, x, var_left, var_right, select, zoom,
                          var_right_label = var_right_label,
                          build_str_as_DA = build_str_as_DA)
     
+    # Only show panel if there's something to show
+    show_panel <- reactive(TRUE)
+    output$show_panel <- show_panel
+    outputOptions(output, "show_panel", suspendWhenHidden = FALSE)
+    
     # Hide explore status
-    output$hide_status <- reactive(input$hide %% 2 == 0)
+    output$hide_status <- reactive(show_panel() && input$hide %% 2 == 0)
     outputOptions(output, "hide_status", suspendWhenHidden = FALSE)
     
     observeEvent(input$hide, {

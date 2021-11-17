@@ -30,17 +30,19 @@ info_table_server <- function(id, x, var_type, var_left, var_right, select,
       
       ## Get data list ---------------------------------------------------------
       
-      # print("VAR LEFT")
-      # print(var_left())
-      # print("VAR RIGHT")
-      # print(var_right())
+      print("VAR LEFT")
+      print(var_left())
+      print("VAR RIGHT")
+      print(var_right())
       
-      z <- make_info_table_data(id, x, var_type, var_left, var_right, select, 
-                                zoom, var_left_label, var_right_label, 
-                                build_str_as_DA)
-
-      # print("INFO TABLE")
-      # print(z)
+      z <- tryCatch(make_info_table_data(
+        id, x, var_type, var_left, var_right, select, zoom, var_left_label, 
+        var_right_label, build_str_as_DA), error = function(e) NULL)
+      
+      if (is.null(z)) return(z)
+      
+      print("INFO TABLE")
+      print(z)
       
       
       ## Handle NAs ------------------------------------------------------------

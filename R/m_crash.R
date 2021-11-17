@@ -14,30 +14,30 @@ crash_UI <- function(id) {
                    hr(id = NS(id, "hr")),
                    select_var_UI(NS(id, "left_1"), var_list_left_crash_1,
                                  label = i18n$t("Grouping"),
-                                 width = "200px"),
+                                 width = "170px"),
                    select_var_UI(NS(id, "left_2"), var_list_left_crash_2,
                                  label = i18n$t("Type of crash"), 
-                                 width = "200px"),
+                                 width = "170px"),
                    div(id = NS(id, "slider"), style = widget_style, 
                        sliderInput(NS(id, "left"), 
                                    i18n$t("Select a year"),
                                    min = crash_slider$min,
                                    max = crash_slider$max,
                                    step = crash_slider$interval, sep = "",
-                                   value = crash_slider$init, width = "200px"),
+                                   value = crash_slider$init, width = "170px"),
                        sliderInput(NS(id, "left_bi_time"), 
                                    i18n$t("Select two dates"), 
                                    min = crash_slider$min,
                                    max = crash_slider$max, 
                                    step = crash_slider$interval, sep = "", 
-                                   value = c("2012", "2019"), width = "200px")),
+                                   value = c("2012", "2019"), width = "170px")),
                    div(id = NS(id, "slider_switch"), style = widget_style,
                        materialSwitch(inputId = NS(id, "bi_time"),
-                                  label = i18n$t("Select two dates"),
-                                  width = "200px", right = TRUE)),
+                                      label = i18n$t("Select two dates"),
+                                      width = "170px", right = TRUE)),
                    htmlOutput(NS(id, "year_displayed_right")),
                    htmlOutput(NS(id, "how_to_read_map"))
-                   ),
+          ),
           right_panel(id, compare_UI(NS(id, "crash"), var_list_right_crash),
                       explore_UI(NS(id, "explore")), dyk_UI(NS(id, "dyk"))),
           legend_bivar_UI(NS(id, "crash")))
@@ -78,7 +78,7 @@ crash_server <- function(id) {
     
     # Time variable depending on which slider
     time <- reactive({if (!input$bi_time) input$left else input$left_bi_time})
-
+    
     # Left variable servers
     var_left_1 <- select_var_server("left_1", reactive(var_list_left_crash_1))
     var_left_2 <- select_var_server("left_2", reactive(var_list_left_crash_2))
@@ -93,21 +93,13 @@ crash_server <- function(id) {
         sep = "_"), "_ ")
     )
     
-    # To hide compare panel when map displayed isn't choropleth
-    show_panel <- reactive(if (choropleth()) TRUE else FALSE)
     # Compare panel
-    var_right_1 <- compare_server(
+    var_right <- compare_server(
       id = "crash", 
       var_list = var_list_right_crash, 
       df = reactive(rv_crash$zoom), 
-      show_panel = show_panel,
+      show_panel = choropleth,
       time = time)
-    
-    var_right <- reactive({
-      if (var_right_1()[1] != " ") {
-        purrr::map_chr(var_right_1(), return_closest_year)
-      } else var_right_1()
-    })
     
     # Data 
     data_1 <- data_server("crash", var_left, var_right, reactive(rv_crash$zoom))
@@ -117,22 +109,22 @@ crash_server <- function(id) {
         data_1() %>% 
           {if (nrow(.) == nrow(borough))
             filter(., ID %in% island_csduid)
-           else filter(., CSDUID %in% island_csduid)}
+            else filter(., CSDUID %in% island_csduid)}
       } else {
-          (crash %>%
-             { if (var_left_2() %in% unique(crash$type))
-               filter(., type == var_left_2()) else .} %>%
-             { if (length(time()) == 2) {
-               filter(., lubridate::year(date) >= time()[1],
-                      lubridate::year(date) <= time()[2])
-             } else {
-               filter(., lubridate::year(date) == time())
-             }} %>%
-            mutate(fill = case_when(type == "ped" ~ "#91BD9AEE",
-                                    type == "cyc" ~ "#6C83B5EE",
-                                    type == "other" ~ "#F39D60EE",
-                                    TRUE ~ "#E8E8E8EE")))
-        }
+        (crash %>%
+           { if (var_left_2() %in% unique(crash$type))
+             filter(., type == var_left_2()) else .} %>%
+           { if (length(time()) == 2) {
+             filter(., lubridate::year(date) >= time()[1],
+                    lubridate::year(date) <= time()[2])
+           } else {
+             filter(., lubridate::year(date) == time())
+           }} %>%
+           mutate(fill = case_when(type == "ped" ~ "#91BD9AEE",
+                                   type == "cyc" ~ "#6C83B5EE",
+                                   type == "other" ~ "#F39D60EE",
+                                   TRUE ~ "#E8E8E8EE")))
+      }
     })
     
     # Explore panel
@@ -146,7 +138,7 @@ crash_server <- function(id) {
     
     # Did-you-know panel
     # dyk_server("dyk", var_left, var_right)
-
+    
     # Left map
     small_map_server("left", reactive(paste0(
       "left_", rv_crash$zoom, "_", var_left()[length(var_left())])))
@@ -167,7 +159,7 @@ crash_server <- function(id) {
                    legend = crash_legend_en)
         
       })
-
+    
     # Update poly_selected on click
     observeEvent(input$map_polygon_click, {
       lst <- jsonlite::fromJSON(input$map_polygon_click)
@@ -260,18 +252,18 @@ crash_server <- function(id) {
       
       
       
-           tags$iframe(src = "crash/crash.html", width = "1000px", height = "800px",
-           style = "max-height: 83vh; overflow: auto; background-color: #fff;
+      tags$iframe(src = "crash/crash.html", width = "1000px", height = "800px",
+                  style = "max-height: 83vh; overflow: auto; background-color: #fff;
                     border: 1px solid transparent; border-radius: 4px;
                     box-shadow: 0 50px 50px rgba(0,0,0,.6);")
-
-      )
+      
+    )
     
     observeEvent(input$analysis, {
       
       if (input$analysis %% 2 == 1) {
         txt <- sus_translate("Road safety map") 
-        } else txt <- sus_translate("Road safety analysis")
+      } else txt <- sus_translate("Road safety analysis")
       
       updateActionLink(session, "analysis", label = txt)
       
@@ -288,6 +280,7 @@ crash_server <- function(id) {
       shinyjs::toggle("title-title_extra", condition = !input$analysis %% 2)
       shinyjs::toggle("title-title_main", condition = !input$analysis %% 2)
       shinyjs::toggle("title-more_info", condition = !input$analysis %% 2)
+      shinyjs::toggle("how_to_read_map", condition = !input$analysis %% 2)
       shinyjs::toggle("crash_analysis", condition = input$analysis %% 2)
       
     })

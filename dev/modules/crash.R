@@ -29,8 +29,7 @@ process_crash <- function(x) {
     st_transform(32618) |> 
     st_join(st_transform(x, 32618)) |> 
     st_drop_geometry() |> 
-    group_by(ID, year = year(date), type) |> 
-    summarize(n = n(), .groups = "drop") |> 
+    count(ID, year = year(date), type) |> 
     group_by(ID, year) |> 
     summarize(type = c(type, "total"), n = c(n, sum(n, na.rm = TRUE)),
               .groups = "drop") |> 
@@ -79,6 +78,12 @@ street <-
 rm(crash_results, process_crash)
 
 
+
+# Add ID to crash ---------------------------------------------------------
+
+crash <- 
+  crash |> 
+  mutate(ID = seq_along(date), .before = date)
 
 # Add variable explanations -----------------------------------------------
 

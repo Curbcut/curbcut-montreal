@@ -115,10 +115,8 @@ dyk_server <- function(id, var_left, var_right) {
     
     # Hide and reveal DYK status
     observeEvent(dyk_hide_status(), {
-      
       if (dyk_hide_status()) txt <- sus_translate("Hide") else 
         txt <- sus_translate("Show")
-      
       updateActionButton(session, "hide", label = txt)
     }, ignoreInit = TRUE)
     
