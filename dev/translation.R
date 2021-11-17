@@ -2301,6 +2301,46 @@ translation_fr <-
           fr = "Analyse de la sécurité routière") %>% 
   add_row(en = "Per 1,000 residents",
           fr = "Pour 1,000 résidents") %>% 
+  add_row(en = "Employment",
+          fr = "Emploi") %>% 
+  add_row(en = "Family",
+          fr = "Famille") %>% 
+  add_row(en = "Language",
+          fr = "Langue") %>% 
+  add_row(en = "Age",
+          fr = "Âge") %>% 
+  add_row(en = "Education",
+          fr = "Éducation") %>% 
+  add_row(en = "Managerial and professional occupations (%)",
+          fr = "Cadres et professions libérales (%)") %>% 
+  add_row(en = "Creative occupations (%)",
+          fr = "Professions des arts et de la culture (%)") %>% 
+  add_row(en = "Families with children (%)",
+          fr = "Familles avec enfants (%)") %>% 
+  add_row(en = "One person households (%)",
+          fr = "Ménages d'une personne (%)") %>% 
+  add_row(en = "Families with children (%)",
+          fr = "Familles avec enfants (%)") %>% 
+  add_row(en = "One person households (%)",
+          fr = "Ménages d'une personne (%)") %>% 
+  add_row(en = "French only (%)",
+          fr = "Français seulement (%)") %>% 
+  add_row(en = "English only (%)",
+          fr = "Anglais seulement (%)") %>% 
+  add_row(en = "French and English (%)",
+          fr = "Français et anglais (%)") %>% 
+  add_row(en = "Neither French nor English (%)",
+          fr = "Ni français ni anglais (%)") %>% 
+  add_row(en = "Aged between 0 and 14 (%)",
+          fr = "Âgés de 0 à 14 ans (%)") %>% 
+  add_row(en = "Aged between 15 and 64 (%)",
+          fr = "Âgés entre 15 et 64 ans (%)") %>% 
+  add_row(en = "Aged 65 and above (%)",
+          fr = "Agés de 65 ans et plus (%)") %>% 
+  add_row(en = "Bachelor and above (%)",
+          fr = "Baccalauréat et plus (%)") %>% 
+  add_row(en = "No certificate, diploma or degree (%)",
+          fr = "Aucun certificat, diplôme ou grade (%)") %>% 
   distinct(en, .keep_all = TRUE)
 
 
@@ -2345,18 +2385,26 @@ rm(translation_fr)
 
 # Deepl helper
 # to_translate <-
-#   str_extract_all("Warning: No translation text found for `All jobs`.
-# Warning: No translation text found for `Low-skill jobs`.
-# Warning: No translation text found for `High-skill jobs`.
-# Warning: No translation text found for `Jobs < $30,000 annually`.
-# Warning: No translation text found for `Schools`.
-# Warning: No translation text found for `Healthcare facilities`.
-# Warning: No translation text found for `Weekday peak`.
-# Warning: No translation text found for `Weekday off-peak`.
-# Warning: No translation text found for `Weekday night`.
-# Warning: No translation text found for `Weekend peak`.
-# Warning: No translation text found for `Weekend off-peak`.
-# Warning: No translation text found for `Weekend night`.", "`.*`") %>%
+#   str_extract_all("Warning: No translation text found for `Employment`.
+# Warning: No translation text found for `Family`.
+# Warning: No translation text found for `Language`.
+# Warning: No translation text found for `Age`.
+# Warning: No translation text found for `Education`.
+# Warning: No translation text found for `Managerial and professional occupations (%)`.
+# Warning: No translation text found for `Creative occupations (%)`.
+# Warning: No translation text found for `Families with children (%)`.
+# Warning: No translation text found for `One person households (%)`.
+# Warning: No translation text found for `Families with children (%)`.
+# Warning: No translation text found for `One person households (%)`.
+# Warning: No translation text found for `French only (%)`.
+# Warning: No translation text found for `English only (%)`.
+# Warning: No translation text found for `French and English (%)`.
+# Warning: No translation text found for `Neither French nor English (%)`.
+# Warning: No translation text found for `Aged between 0 and 14 (%)`.
+# Warning: No translation text found for `Aged between 15 and 64 (%)`.
+# Warning: No translation text found for `Aged 65 and above (%)`.
+# Warning: No translation text found for `Bachelor and above (%)`.
+# Warning: No translation text found for `No certificate, diploma or degree (%)`.", "`.*`") %>%
 #   unlist() %>%
 #   str_remove_all(., '`')
 

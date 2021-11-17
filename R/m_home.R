@@ -7,7 +7,7 @@ home_UI <- function(id) {
             # tags$style('#home {background-color: #FFFFFF;}'),
             fluidRow(
               column(width = 4, img(src = "logo_large.png", 
-                                    style = "height:35vh; max-height:600px;"), 
+                                    style = "height:30vh; max-height:600px; vertical-align:middle;"), 
                      align = "center"),
               column(width = 8, 
                      htmlOutput(NS(id, "first")))),

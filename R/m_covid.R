@@ -15,6 +15,7 @@ covid_UI <- function(id) {
 covid_server <- function(id) {
   moduleServer(id, function(input, output, session) {
     
+    
     # Title bar
     title_server("title", "covid")
     
@@ -23,13 +24,13 @@ covid_server <- function(id) {
       mapdeck(
         style = map_style, token = token_covid, zoom = map_zoom_covid, 
         location = map_location) %>%
-        add_path(data = covid_may_2020, update_view = FALSE, id = "ID", 
-                 stroke_colour = "type",
+        add_path(data = covid_may_2020, update_view = FALSE, #id = "ID", 
+                 stroke_colour = "Type",
                  # stroke_colour = "#5F940E", 
                  stroke_width = 10, width_min_pixels = 2, width_max_pixels = 5,
                  auto_highlight = TRUE, highlight_colour = "#FFFFFF90",
                  legend = TRUE) %>%
-        add_scatterplot(data = covid_pics, update_view = FALSE, id = "ID",
+        add_scatterplot(data = covid_pics, update_view = FALSE, #id = "ID",
                         fill_colour = "#FF0000", radius = 30,
                         radius_min_pixels = 2, radius_max_pixels = 7,
                         auto_highlight = TRUE, highlight_colour = "#FFFFFF90")
@@ -60,7 +61,7 @@ covid_server <- function(id) {
     observeEvent(data_covid(), {
         mapdeck_update(map_id = NS(id, "map")) %>%
           add_path(
-            data = data_covid(), update_view = FALSE, id = "ID",
+            data = data_covid(), update_view = FALSE, # id = "ID",
             stroke_width = 10, width_min_pixels = 2, width_max_pixels = 5,
             stroke_colour = "type",
             # stroke_colour = "#5F940E", 
@@ -132,10 +133,10 @@ covid_server <- function(id) {
     #   rv_covid$path_selected <- NA})
     
     # Popup server
-    popup_server("popup", data_to_add, 
-                 fields = c("Street" = "street", "Type" = "type"),
-                 images = reactive(paste0("www/covid_pics/", data_to_add()$ID,
-                                          ".png")))
-    
+    # popup_server("popup", data_to_add, 
+    #              fields = c("Street" = "street", "Type" = "type"),
+    #              images = reactive(paste0("www/covid_pics/", data_to_add()$ID,
+    #                                       ".png")))
+    # 
   })
 }
