@@ -57,9 +57,11 @@ climate_risk_server <- function(id) {
     # Compare panel
     var_right <- compare_server("climate_risk", var_list_canale, df)
     
+    choropleth_zoom <- reactive(if (input$grid) "borough" else rv_climate_risk$zoom)
+    
     # Data
     data <- data_server("climate_risk", var_left, var_right, df, 
-                        reactive(rv_climate_risk$zoom))
+                        reactive(choropleth_zoom()))
     
     # # Explore panel
     explore_server(id = "explore", 
