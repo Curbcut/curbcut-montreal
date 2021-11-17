@@ -8,11 +8,6 @@
 #' @param select A reactive which resolves to a character string giving the ID
 #' of a row in the input data frame (`x`) which has been selected.
 
-
-info_table_UI <- function(id) {
-  htmlOutput(NS(id, "info_table"))
-  }
-
 info_table_server <- function(id, x, var_type, var_left, var_right, select, 
                               zoom, var_left_label, var_right_label, 
                               build_str_as_DA) {
@@ -26,7 +21,7 @@ info_table_server <- function(id, x, var_type, var_left, var_right, select,
 
   moduleServer(id, function(input, output, session) {
     
-    output$info_table <- renderUI({
+    reactive({
       
       ## Get data list ---------------------------------------------------------
       

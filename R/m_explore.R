@@ -29,8 +29,8 @@ explore_UI <- function(id) {
     
     conditionalPanel(
       condition = "output.hide_status == 1", ns = NS(id),
-      info_table_UI(NS(id, "explore")),
-      explore_graph_UI(NS(id, "explore")),
+      htmlOutput(NS(id, "info_table")),
+      plotOutput(NS(id, "explore_graph"), height = 150),
       conditionalPanel(
         condition = "output.poly_selected == 1", ns = NS(id),
         actionLink(inputId = NS(id, "clear_selection"),
@@ -55,7 +55,7 @@ explore_server <- function(id, x, var_left, var_right, select, zoom,
                                  var_left_label, var_right_label)
 
     # Render info table
-    info_table_server(id = "explore", 
+    info_table <- info_table_server(id = "explore", 
                       x = x, 
                       var_type = var_type, 
                       var_left = var_left, 
@@ -66,8 +66,13 @@ explore_server <- function(id, x, var_left, var_right, select, zoom,
                       var_right_label = var_right_label,
                       build_str_as_DA = build_str_as_DA)
     
+    # Display info_table if it isn't NULL
+    output$info_table <- renderUI({
+      if (!is.null(info_table())) info_table()
+    })
+    
     # Render the graph
-    explore_graph_server(id = "explore", 
+    explore_graph <- tryCatch(explore_graph_server(id = "explore", 
                          x = x, 
                          var_type = var_type, 
                          var_left = var_left, 
@@ -76,10 +81,16 @@ explore_server <- function(id, x, var_left, var_right, select, zoom,
                          zoom = zoom, 
                          var_left_label = var_left_label,
                          var_right_label = var_right_label,
-                         build_str_as_DA = build_str_as_DA)
+                         build_str_as_DA = build_str_as_DA),
+                         error = function(e) reactive(NULL))
+    
+    # Display graph if it isn't NULL
+    output$explore_graph <- renderPlot({
+      if (!is.null(explore_graph())) explore_graph()
+    })
     
     # Only show panel if there's something to show
-    show_panel <- reactive(TRUE)
+    show_panel <- reactive(!is.null(info_table()) || !is.null(explore_graph()))
     output$show_panel <- show_panel
     outputOptions(output, "show_panel", suspendWhenHidden = FALSE)
     

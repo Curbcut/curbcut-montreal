@@ -1,9 +1,5 @@
 #### EXPLORE GRAPH MODULE ######################################################
 
-explore_graph_UI <- function(id) {
-  plotOutput(NS(id, "explore_graph"), height = 150)
-}
-
 explore_graph_server <- function(id, x, var_type, var_left, var_right, select, 
                                  zoom, var_left_label = NULL, 
                                  var_right_label = NULL, build_str_as_DA = TRUE,
@@ -20,7 +16,7 @@ explore_graph_server <- function(id, x, var_type, var_left, var_right, select,
   # Server function
   moduleServer(id, function(input, output, session) {
     
-    output$explore_graph <- renderPlot({
+    tryCatch(reactive({
       
       ## Deal with build_str_as_DA ---------------------------------------------
       
@@ -373,6 +369,6 @@ explore_graph_server <- function(id, x, var_type, var_left, var_right, select,
       
       return(out)
       
-    }, bg = "white")
+    }), error = function(e) NULL, silent = TRUE)
   })
 }
