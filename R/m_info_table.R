@@ -35,9 +35,11 @@ info_table_server <- function(id, x, var_type, var_left, var_right, select,
       print("VAR RIGHT")
       print(var_right())
       
-      z <- tryCatch(make_info_table_data(
-        id, x, var_type, var_left, var_right, select, zoom, var_left_label, 
-        var_right_label, build_str_as_DA), error = function(e) NULL)
+      z <- tryCatch(
+        make_info_table_data(id, x, var_type, var_left, var_right, select, 
+                             zoom, var_left_label, var_right_label, 
+                             build_str_as_DA), 
+        error = function(e) NULL)
       
       if (is.null(z)) return(z)
       
