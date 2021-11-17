@@ -82,7 +82,8 @@ explore_server <- function(id, x, var_left, var_right, select, zoom,
                          var_left_label = var_left_label,
                          var_right_label = var_right_label,
                          build_str_as_DA = build_str_as_DA),
-                         error = function(e) reactive(NULL))
+                         error = function(e) reactive(NULL),
+                         silent = TRUE)
     
     # Display graph if it isn't NULL
     output$explore_graph <- renderPlot({

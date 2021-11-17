@@ -8,7 +8,7 @@ make_info_table_data <- function(id, x, var_type, var_left, var_right, select,
   ## Initialize output list ----------------------------------------------------
   
   out <- list(var_type = var_type())
-  
+
   
   ## Get modified df for building/street ---------------------------------------
   
@@ -30,11 +30,13 @@ make_info_table_data <- function(id, x, var_type, var_left, var_right, select,
   }
   
   
-  ## Handle multiple dates -----------------------------------------------------
+  ## Handle dates --------------------------------------------------------------
+  
+  date_left <- str_extract(var_left(), "(?<=_)\\d{4}$")
   
   if (length(var_left()) == 2) {
-    out$start_date_left <- str_extract(var_left(), "(?<=_)\\d{4}$")[1]
-    out$end_date_left <- str_extract(var_left(), "(?<=_)\\d{4}$")[2]
+    out$start_date_left <- date_left[1]
+    out$end_date_left <- date_left[2]
   }
   
   if (length(var_right()) == 2) {
@@ -42,6 +44,15 @@ make_info_table_data <- function(id, x, var_type, var_left, var_right, select,
     out$end_date_right <- str_extract(var_right(), "(?<=_)\\d{4}$")[2]
   }
   
+  
+  ## Special case for date-type data -------------------------------------------
+  
+  if (zoom() == "date") {
+    out$var_type <- "date_all"
+    dat <- 
+      dat |> 
+      mutate(name = NA_character_, population = NA_real_)
+  }
   
   ## Titles and explanations ---------------------------------------------------
   
@@ -79,7 +90,7 @@ make_info_table_data <- function(id, x, var_type, var_left, var_right, select,
   if (var_right != " ") {
     val_right <- selection$right_var
     out$val_right <- convert_unit(val_right, var_right)
-    if (grepl("_multi", var_type())) out$val_right <- 
+    if (grepl("_multi", out$var_type)) out$val_right <- 
       convert_unit(val_right, "_prop")
   }
   
@@ -101,6 +112,7 @@ make_info_table_data <- function(id, x, var_type, var_left, var_right, select,
   
   scale_sing <- switch(
     zoom(),  
+    "date" = NA_character_,
     "borough" = sus_translate("borough/city"),
     "CT" = sus_translate("census tract"),
     "DA" = sus_translate("dissemination area"),
@@ -120,7 +132,8 @@ make_info_table_data <- function(id, x, var_type, var_left, var_right, select,
       sus_translate("dissemination areas"),
     scale_sing == sus_translate("250-m") ~ sus_translate("areas"),
     scale_sing == sus_translate("building") ~ sus_translate("buildings"),
-    scale_sing == sus_translate("street") ~ sus_translate("streets"))
+    scale_sing == sus_translate("street") ~ sus_translate("streets"),
+    TRUE ~ NA_character_)
   
   
   ## Place names ---------------------------------------------------------------
@@ -140,9 +153,10 @@ make_info_table_data <- function(id, x, var_type, var_left, var_right, select,
     scale_sing == sus_translate("dissemination area") ~
       glue(sus_translate(paste0("Dissemination area {select_name$name}"))),
     scale_sing == sus_translate("250-m") ~
-      glue(sus_translate(paste0("The area around {select_name$name}"))))
+      glue(sus_translate(paste0("The area around {select_name$name}"))),
+    TRUE ~ NA_character_)
   
-  if (grepl("select", var_type())) {
+  if (grepl("select", out$var_type)) {
     if (zoom() == "borough") select_name$name_2 <- 
         sus_translate(glue("{select_name$name_2}"))
     
@@ -165,7 +179,7 @@ make_info_table_data <- function(id, x, var_type, var_left, var_right, select,
     pull(left_var) %>% 
     na.omit()
   
-  if (grepl("quant_", var_type())) {
+  if (grepl("quant_|date", out$var_type)) {
     out$min_val <- convert_unit(min(vec_left), var_left)
     out$max_val <- convert_unit(max(vec_left), var_left)
     out$mean_val <- convert_unit(mean(vec_left), var_left)
@@ -177,10 +191,10 @@ make_info_table_data <- function(id, x, var_type, var_left, var_right, select,
                                    var_left)
   }
   
-  
+
   ## Descriptive statistics for univariate quant selection ---------------------
   
-  if (grepl("uni_quant_select", var_type())) {
+  if (grepl("uni_quant_select", out$var_type)) {
     
     quintile <- quantile(vec_left, c(0.2, 0.4, 0.6, 0.8))
 
@@ -209,7 +223,7 @@ make_info_table_data <- function(id, x, var_type, var_left, var_right, select,
   
   ## Descriptive statistics for univariate qual --------------------------------
   
-  if (grepl("qual_", var_type())) {
+  if (grepl("qual_", out$var_type)) {
     
     qual_tab <- sort(table(round(vec_left)), decreasing = TRUE)
     min_val <- as.character(unique(round(min(vec_left, na.rm = TRUE))))
@@ -232,7 +246,7 @@ make_info_table_data <- function(id, x, var_type, var_left, var_right, select,
   
   ## Descriptive statistics for univariate qual selection ----------------------
   
-  if (grepl("uni_qual_select", var_type())) {
+  if (grepl("uni_qual_select", out$var_type)) {
     out$val_left <- 
       tolower(var_left_label[names(var_left_label) == round(val_left)])
     out$other_with_val <- 
@@ -243,9 +257,9 @@ make_info_table_data <- function(id, x, var_type, var_left, var_right, select,
   
   ## Descriptive statistics for bivariate quantxy ------------------------------
   
-  if (grepl("bi_quantxy", var_type())) {
+  if (grepl("bi_quantxy|date", out$var_type)) {
     
-      corr <- cor(dat$left_var, dat$right_var, use = "complete.obs")
+      corr <- cor(dat$left_var, as.numeric(dat$right_var), use = "complete.obs")
       out$correlation <- corr
       out$corr_disp <- convert_unit(corr)
       out$pos <- if (corr > 0) sus_translate("positive") else 
@@ -270,7 +284,7 @@ make_info_table_data <- function(id, x, var_type, var_left, var_right, select,
   
   ## Descriptive statistics for bivariate quantxy selection --------------------
   
-  if (grepl("bi_quantxy_select", var_type())) {
+  if (grepl("bi_quantxy_select", out$var_type)) {
    
     vec_1 <- dat$left_var
     vec_2 <- dat$right_var
@@ -291,7 +305,7 @@ make_info_table_data <- function(id, x, var_type, var_left, var_right, select,
   
   ## Descriptive statistics for quant/qual comparison --------------------------
   
-  if (grepl("bi_quanty_|bi_quantx_", var_type())) {
+  if (grepl("bi_quanty_|bi_quantx_", out$var_type)) {
     
     vec_1 <- dat$left_var
     vec_2 <- dat$right_var
@@ -318,7 +332,7 @@ make_info_table_data <- function(id, x, var_type, var_left, var_right, select,
 
   }
   
-  if (grepl("bi_quanty_", var_type())) {
+  if (grepl("bi_quanty_", out$var_type)) {
     
     out$val_left <- 
       tolower(var_left_label[names(var_left_label) == round(val_left)])
@@ -330,12 +344,54 @@ make_info_table_data <- function(id, x, var_type, var_left, var_right, select,
     
   }
   
-  if (grepl("bi_quantx_", var_type())) {
+  if (grepl("bi_quantx_", out$var_type)) {
     
     out$val_right <- 
       tolower(var_right_label[names(var_right_label) == round(val_right)])
   }
   
+  
+  ## Descriptive statistics for date type --------------------------------------
+  
+  if (grepl("date_", out$var_type)) {
+    
+    coef <- 
+      dat %>%
+      mutate(right_var = as.numeric(right_var)) %>%
+      lm(left_var ~ right_var, data = .) %>%
+      `$`("coefficients") %>%
+      `[`("right_var") %>%
+      signif(3)
+    
+    max_date <- 
+      dat |> 
+      filter(left_var == max(left_var)) |> 
+      pull(right_var)
+    
+    if (length(max_date) %in% 2:3) max_date <- paste(
+      paste(max_date[seq_len(length(max_date) - 1)], collapse = ", "),
+      max_date[length(max(date))], sep = "and ")
+    if (length(max_date) > 3) out$max_date <- "several different dates"
+    out$max_date <- max_date
+    
+    min_date <- 
+      dat |> 
+      filter(left_var == min(left_var)) |> 
+      pull(right_var)
+    
+    if (length(min_date) %in% 2:3) min_date <- paste(
+      paste(min_date[seq_len(length(min_date) - 1)], collapse = ", "),
+      min_date[length(min(date))], sep = "and ")
+    if (length(min_date) > 3) out$min_date <- "several different dates"
+    out$min_date <- min_date
+    
+    out$coef <- abs(coef)
+    out$coef_increasing <- if (coef >= 0) "increasing" else "decreasing"
+    
+    print(date_left)
+    out$date_left <- paste(date_left, collapse = '-')
+    print(out$date_left)
+  }
   
   
   ## Return output -------------------------------------------------------------

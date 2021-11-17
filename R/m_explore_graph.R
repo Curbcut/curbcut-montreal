@@ -55,6 +55,7 @@ explore_graph_server <- function(id, x, var_type, var_left, var_right, select,
       # Decide on plot type
       if (plot_type == "auto") {
         graph_type <- unique(case_when(
+          zoom() == "date" ~ "date",
           var_right()[1] == " " & grepl("_multi", var_type()) ~ "multi_uni",
           var_right()[1] != " " & grepl("_multi", var_type()) ~ "multi_bi",
           var_right()[1] == " " & left_var_num > 6 ~ "hist",
@@ -71,6 +72,8 @@ explore_graph_server <- function(id, x, var_type, var_left, var_right, select,
       
       # Prepare x scale
       x_scale <- case_when(
+        # Date
+        graph_type == "date" ~ list(scale_x_date()),
         # Multi_bi
         graph_type == "multi_bi" ~ 
           list(scale_x_continuous(labels = scales::percent)),
@@ -106,6 +109,8 @@ explore_graph_server <- function(id, x, var_type, var_left, var_right, select,
 
       # Prepare y scale
       y_scale <- case_when(
+        graph_type == "date" ~ 
+          list(scale_y_continuous(labels = scales::comma)),
         # Multi_bi
         graph_type == "multi_bi" ~ 
           list(scale_y_continuous(labels = scales::percent)),
@@ -148,6 +153,10 @@ explore_graph_server <- function(id, x, var_type, var_left, var_right, select,
         y = paste0(var_right_title, " (change ", 
                    str_extract(var_right(), "(?<=_)\\d{4}$")[1], "-",
                    str_extract(var_right(), "(?<=_)\\d{4}$")[2], ")")))
+      if (graph_type == "date") labs_xy <- list(labs(
+        x = NULL, y = paste0(var_left_title, " (", paste(
+          str_extract(var_left(), "(?<=_)\\d{4}$"), collapse = "-"), ")")
+      ))
       
       # Prepare default theme
       theme_default <- list(
@@ -361,6 +370,15 @@ explore_graph_server <- function(id, x, var_type, var_left, var_right, select,
                       formula = y ~ x, alpha = opac) +
           geom_point(data = filter(dat, ID == select_id),
                      colour = colour_bivar$fill[1], size = 3) +
+          x_scale + y_scale + labs_xy + theme_default
+      }
+      
+      # Date line graph
+      if (plot_type == "date_all") {
+        out <- ggplot(dat, aes(right_var, left_var)) +
+          geom_line(colour = colour_bivar$fill[5]) +
+          stat_smooth(geom = "line", se = FALSE, method = "loess", span = 1,
+                      formula = y ~ x, colour = colour_bivar$fill[1]) +
           x_scale + y_scale + labs_xy + theme_default
       }
       

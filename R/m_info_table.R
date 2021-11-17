@@ -217,7 +217,7 @@ info_table_server <- function(id, x, var_type, var_left, var_right, select,
       # Bivariate, quantitative, no selection
       if (z$var_type == "bi_quantxy_all_multi") {
         # If correlation is close to zero
-        if (z$correlation < 0.05 && z$correlation > -0.05) {
+        if (abs(z$correlation) < 0.05) {
           out <- paste0(
             "<p>From {z$start_date_left} to {z$end_date_left}, the change in ", 
             "'{z$title_left}' had effectively no correlation ({z$corr_disp}) ", 
@@ -253,7 +253,7 @@ info_table_server <- function(id, x, var_type, var_left, var_right, select,
       # Bivariate, qualitative x, quantitative y, no selection
       if (z$var_type == "bi_quanty_all_multi") {
         # If correlation is close to zero
-        if (z$correlation < 0.05 && z$correlation > -0.05) {
+        if (abs(z$correlation) < 0.05) {
           out <- paste0(
             "<p>From {z$start_date_left} to {z$end_date_left}, the change in ", 
             "'{z$title_left}' had effectively no correlation ", 
@@ -285,6 +285,31 @@ info_table_server <- function(id, x, var_type, var_left, var_right, select,
         "higher than {z$perc} of other {z$scale_plural} with ",
         "{sub('^the', 'a', z$exp_left)} of '{z$val_left}' in the ",
         "Montreal region.")
+      
+      
+      ## Special cases ---------------------------------------------------------
+      
+      if (z$var_type == "date_all") {
+        
+        # If correlation is close to zero
+        if (abs(z$correlation) < 0.05) {
+          out <- paste0(
+            "<p>During {z$date_left}, {z$exp_left} ",
+            "averaged {z$mean_val} per day. ",
+            "The maximum value was {z$max_val} on {z$max_date}, and the ",
+            "minimum value was {z$min_val} on {z$min_date}. ",
+            "There was no growth trend during this time period.")
+        } else {
+          out <- paste0(
+            "<p>During {z$date_left}, {z$exp_left} ",
+            "averaged {z$mean_val} per day. ",
+            "The maximum value was {z$max_val} on {z$max_date}, and the ",
+            "minimum value was {z$min_val} on {z$min_date}. ",
+            "There was a {z$strong} {z$pos} growth trend during this time ",
+            "period, with {z$exp_left} {z$coef_increasing} an average of ",
+            "{z$coef} each day.")
+        }
+      }
       
       
       ## Append date information -----------------------------------------------

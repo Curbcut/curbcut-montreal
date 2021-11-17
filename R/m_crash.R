@@ -83,14 +83,8 @@ crash_server <- function(id) {
     var_left_2 <- select_var_server("left_2", reactive(var_list_left_crash_2))
     
     # Construct left variable string
-    var_left <- reactive(
-      stringr::str_remove(paste(
-        "crash", 
-        var_left_2(), 
-        var_left_1(), 
-        time(), 
-        sep = "_"), "_ ")
-    )
+    var_left <- reactive(str_remove(paste("crash", var_left_2(), var_left_1(), 
+                                          time(), sep = "_"), "_ "))
     
     # Compare panel
     var_right <- compare_server(
@@ -104,35 +98,45 @@ crash_server <- function(id) {
     data_1 <- data_server("crash", var_left, var_right, reactive(rv_crash$zoom))
     
     data <- reactive({
+
       if (choropleth()) {
         data_1() %>% 
           {if (nrow(.) == nrow(borough))
             filter(., ID %in% island_csduid)
             else filter(., CSDUID %in% island_csduid)}
       } else {
-        (crash %>%
+        crash %>%
            { if (var_left_2() %in% unique(crash$type))
              filter(., type == var_left_2()) else .} %>%
            { if (length(time()) == 2) {
-             filter(., lubridate::year(date) >= time()[1],
-                    lubridate::year(date) <= time()[2])
+             filter(., year %in% time()[1]:time()[2])
            } else {
-             filter(., lubridate::year(date) == time())
-           }} %>%
-           mutate(fill = case_when(type == "ped" ~ "#91BD9AEE",
-                                   type == "cyc" ~ "#6C83B5EE",
-                                   type == "other" ~ "#F39D60EE",
-                                   TRUE ~ "#E8E8E8EE")))
+             filter(., year == time())
+           }}     
+  }
+    })
+    
+    data_for_explore <- reactive({
+      if (choropleth()) data() else {
+        data() |> 
+          st_drop_geometry() |> 
+          count(date) |> 
+          rename(left_var = n, right_var = date) |> 
+          mutate(ID = seq_along(left_var), .before = left_var) |> 
+          mutate(left_var_q3 = left_var)
       }
     })
     
+    zoom_for_explore <- reactive({if (choropleth()) rv_crash$zoom else "date"})
+    right_var_for_exp <- reactive({if (choropleth()) right_var() else "date"})
+    
     # Explore panel
     explore_server(id = "explore", 
-                   x = data, 
+                   x = data_for_explore, 
                    var_left = var_left,
-                   var_right = var_right, 
+                   var_right = right_var_for_exp, 
                    select = reactive(rv_crash$poly_selected),
-                   zoom = reactive(rv_crash$zoom), 
+                   zoom = zoom_for_explore, 
                    build_str_as_DA = TRUE)
     
     # Did-you-know panel

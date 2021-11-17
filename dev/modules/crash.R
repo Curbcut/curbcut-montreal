@@ -78,12 +78,18 @@ street <-
 rm(crash_results, process_crash)
 
 
-
-# Add ID to crash ---------------------------------------------------------
+# Add additional fields to crash ------------------------------------------
 
 crash <- 
   crash |> 
-  mutate(ID = seq_along(date), .before = date)
+  arrange(date) |> 
+  mutate(ID = seq_along(date), .before = date) |> 
+  mutate(year = year(date), .after = date) |> 
+  mutate(fill = case_when(type == "ped" ~ "#91BD9AEE",
+                          type == "cyc" ~ "#6C83B5EE",
+                          type == "other" ~ "#F39D60EE",
+                          TRUE ~ "#E8E8E8EE"), .before = geometry)
+
 
 # Add variable explanations -----------------------------------------------
 
@@ -91,61 +97,61 @@ var_exp <-
   var_exp %>% 
   add_row(
     var_code = "crash_cyc",
-    var_name = "Total collisions (cyclists)",
+    var_name = "Collisions (cyclists)",
     explanation = 
       "the total number of car collisions involving cyclists") %>%
   add_row(
     var_code = "crash_other",
-    var_name = "Total collisions (other)",
+    var_name = "Collisions (other)",
     explanation = 
       "the total number of car collisions involving neither pedestrians or cyclists") %>%
   add_row(
     var_code = "crash_ped",
-    var_name = "Total collisions (pedestrians)",
+    var_name = "Collisions (pedestrians)",
     explanation = 
       "the total number of car collisions involving pedestrians") %>%
   add_row(
     var_code = "crash_total",
-    var_name = "Total collisions",
+    var_name = "Collisions",
     explanation = 
       "the total number of car collisions") %>%
   add_row(
     var_code = "crash_cyc_per1k",
-    var_name = "Total collisions per 1,000 (cyclists)",
+    var_name = "Collisions per 1,000 (cyclists)",
     explanation = 
       "the total number of car collisions involving cyclists per 1,000 residents") %>%
   add_row(
     var_code = "crash_other_per1k",
-    var_name = "Total collisions per 1,000 (other)",
+    var_name = "Collisions per 1,000 (other)",
     explanation = 
       "the total number of car collisions involving neither pedestrians or cyclists per 1,000 residents") %>%
   add_row(
     var_code = "crash_ped_per1k",
-    var_name = "Total collisions per 1,000 (pedestrians)",
+    var_name = "Collisions per 1,000 (pedestrians)",
     explanation = 
       "the total number of car collisions involving pedestrians per 1,000 residents") %>%
   add_row(
     var_code = "crash_total_per1k",
-    var_name = "Total collisions per 1,000",
+    var_name = "Collisions per 1,000",
     explanation = 
       "the total number of car collisions per 1,000 residents") %>%
   add_row(
     var_code = "crash_cyc_sqkm",
-    var_name = "Total collisions per sq km (cyclists)",
+    var_name = "Collisions per sq km (cyclists)",
     explanation = 
       "the total number of car collisions involving cyclists per square kilometre") %>%
   add_row(
     var_code = "crash_other_sqkm",
-    var_name = "Total collisions per sq km (other)",
+    var_name = "Collisions per sq km (other)",
     explanation = 
       "the total number of car collisions involving neither pedestrians or cyclists per square kilometre") %>%
   add_row(
     var_code = "crash_ped_sqkm",
-    var_name = "Total collisions per sq km (pedestrians)",
+    var_name = "Collisions per sq km (pedestrians)",
     explanation = 
       "the total number of car collisions involving pedestrians per square kilometre") %>%
   add_row(
     var_code = "crash_total_sqkm",
-    var_name = "Total collisions per sq km",
+    var_name = "Collisions per sq km",
     explanation = 
       "the total number of car collisions per square kilometre")
