@@ -33,9 +33,6 @@ info_table_server <- function(id, x, var_type, var_left, var_right, select,
       
       if (is.null(z)) return(z)
       
-      print("INFO TABLE")
-      print(z)
-      
       
       ## Handle NAs ------------------------------------------------------------
       

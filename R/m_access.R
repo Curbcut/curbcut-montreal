@@ -30,13 +30,34 @@ access_server <- function(id) {
     
     # Map
     output$map <- renderMapdeck({
+      
+      print("DATA")
+      print( CT |> 
+               select(ID, left_var = access_jobs_total_nwe) |> 
+               rowwise() |> 
+               mutate(fill_val = list(which.max((
+                 filter(colour_access, category == "access_jobs_total"))$value >= left_var))) |> 
+               mutate(fill_val = if (length(fill_val) == 0) NA_integer_ else fill_val) |> 
+               ungroup() |> 
+               left_join(colour_absolute, by = "fill_val"))
+      
       mapdeck(style = map_style, token = token_access, zoom = map_zoom, 
               location = map_location) %>%
         add_sf(data = 
-                 CT %>%
-                 mutate(group = paste0(eval(as.name(
-                   "access_jobs_total_pwd_q3")), " - 1")) %>%
-                 left_join(colour_CT, by = "group"),
+                 CT |> 
+                 select(ID, left_var = access_jobs_total_nwe) |> 
+                 rowwise() |> 
+                 mutate(fill_val = list(which.max((
+                   filter(colour_access, category == "access_jobs_total"))$value >= left_var))) |> 
+                 mutate(fill_val = if (length(fill_val) == 0) NA_integer_ else fill_val) |> 
+                 ungroup() |> 
+                 left_join(colour_absolute, by = "fill_val") |> 
+                 mutate(fill = if_else(is.na(fill), "#B3B3BBCC", fill)),
+               
+                 # CT %>%
+                 # mutate(group = paste0(eval(as.name(
+                 #   "access_jobs_total_pwd_q3")), " - 1")) %>%
+                 # left_join(colour_CT, by = "group"),
                stroke_width = 10, stroke_colour = "#FFFFFF", 
                fill_colour = "fill", update_view = FALSE, id = "ID", 
                auto_highlight = TRUE, highlight_colour = "#FFFFFF90"#,
@@ -88,11 +109,32 @@ access_server <- function(id) {
     observeEvent({
       var_left()
       var_right()
-      }, 
-      
-        map_change(NS(id, "map"), df = data, zoom = reactive("CT")) %>% 
-        add_path(data = metro_lines, stroke_colour = "fill",
-                 stroke_width = 50, update_view = FALSE))
+      }, {
+        
+        if (var_right() == " ") {
+          mapdeck_update(map_id = NS(id, "map"))  %>%
+            clear_polygon() %>%
+            add_sf(data = 
+                     {data() |> 
+                         rowwise() |> 
+                         mutate(fill_val = list(which.max((
+                           filter(colour_access, category == var_left_1()))$value >= left_var))) |> 
+                         mutate(fill_val = if (length(fill_val) == 0) NA_integer_ else fill_val) |> 
+                         ungroup() |> 
+                         select(-fill) |> 
+                         left_join(colour_absolute, by = "fill_val") |> 
+                         mutate(fill = if_else(is.na(fill), "#B3B3BBCC", fill))},
+                   stroke_width = 10, stroke_colour = "#FFFFFF", 
+                   fill_colour = "fill", update_view = FALSE, id = "ID", 
+                   auto_highlight = TRUE, highlight_colour = "#FFFFFF90") %>% 
+            add_path(data = metro_lines, stroke_colour = "fill",
+                     stroke_width = 50, update_view = FALSE)
+          
+        } else map_change(NS(id, "map"), df = data, zoom = reactive("CT")) %>% 
+          add_path(data = metro_lines, stroke_colour = "fill", 
+                   stroke_width = 50, update_view = FALSE)
+    
+      })
 
     # Update poly_selected on click
     observeEvent(input$map_polygon_click, {
@@ -155,15 +197,24 @@ access_server <- function(id) {
         } else {
           mapdeck_update(map_id = NS(id, "map")) %>%
             clear_path() %>% 
+            clear_polygon() %>%
+            clear_polygon(layer_id = "main") %>%
             clear_polygon(layer_id = "poly_bg") %>%
             clear_polygon(layer_id = "poly_iso") %>%
             clear_polygon(layer_id = "poly_highlight") %>%
-            add_sf(data = data(),
-                   stroke_width = 10, stroke_colour = "#FFFFFF", 
+            add_sf(data = 
+                     {data() |> 
+                         rowwise() |> 
+                         mutate(fill_val = list(which.max((
+                           filter(colour_access, category == var_left_1()))$value >= left_var))) |> 
+                         mutate(fill_val = if (length(fill_val) == 0) NA_integer_ else fill_val) |> 
+                         ungroup() |> 
+                         select(-fill) |> 
+                         left_join(colour_absolute, by = "fill_val") |> 
+                         mutate(fill = if_else(is.na(fill), "#B3B3BBCC", fill))},
+                   stroke_width = 10, stroke_colour = "#FFFFFF", layer_id = "main",
                    fill_colour = "fill", update_view = FALSE, id = "ID", 
-                   auto_highlight = TRUE, highlight_colour = "#FFFFFF90"#,
-                   # palette = access_colour(c(0, 0.2, 0.4, 0.6, 0.8, 1))
-            ) %>% 
+                   auto_highlight = TRUE, highlight_colour = "#FFFFFF90") %>% 
             add_path(data = metro_lines, stroke_colour = "fill",
                      stroke_width = 50, update_view = FALSE)
           

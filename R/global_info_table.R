@@ -355,8 +355,6 @@ make_info_table_data <- function(id, x, var_type, var_left, var_right, select,
   
   if (grepl("date_", out$var_type)) {
     
-    print(out)
-    
     coef <- 
       dat %>%
       mutate(right_var = as.numeric(right_var)) %>%
