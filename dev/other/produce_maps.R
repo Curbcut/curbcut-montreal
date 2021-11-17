@@ -1,6 +1,13 @@
 # Produce left and right maps ---------------------------------------------
 # Dependent script: needs 'borough' object
 
+
+# Setup -------------------------------------------------------------------
+
+library(progressr)
+handlers(global = TRUE)
+
+
 make_circle <- function(x) {
   borough %>% 
     st_transform(32618) %>% 
@@ -53,6 +60,9 @@ legend_left <- png::readPNG("www/univariate_left.png", native = TRUE)
 shadow_right <- png::readPNG("www/dropshadow_right.png", native = TRUE)
 legend_right <- png::readPNG("www/univariate_right.png", native = TRUE)
 
+
+# Make maps ---------------------------------------------------------------
+
 walk(c("borough", "CT", "DA", "grid", "building", "street"), function(scale) {
   
   data <- get(scale)
@@ -60,9 +70,15 @@ walk(c("borough", "CT", "DA", "grid", "building", "street"), function(scale) {
   data <- make_circle(data)
   var_list <- c(" ", str_subset(names(data), "q3"))
   
+  handlers(handler_progress(format = pillar::style_subtle(paste0(
+    "Making ", scale, " map :current of :total (:tick_rate/s) [:bar] ",
+    ":percent, ETA: :eta")), show_after = 0))
+  pb <- progressor(steps = length(var_list) * 2)
+  
   walk(var_list, ~{
     
     # Left map
+    pb()
     if (.x == " ") {
       
       if (scale == "grid") {
@@ -179,6 +195,7 @@ walk(c("borough", "CT", "DA", "grid", "building", "street"), function(scale) {
     
     
     # Right map
+    pb()
     if (.x == " ") {
       
       if (scale == "grid") {
@@ -297,5 +314,9 @@ walk(c("borough", "CT", "DA", "grid", "building", "street"), function(scale) {
   
 })
 
+
+# Clean up ----------------------------------------------------------------
+
 unlink("out.png")
-rm(circle_borough, make_circle, theme_map)
+rm(circle_borough, legend_left, legend_right, shadow_left, shadow_right, 
+   make_circle, theme_map)

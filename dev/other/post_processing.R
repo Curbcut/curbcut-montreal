@@ -21,3 +21,8 @@ CT <- post_process(CT)
 DA <- post_process(DA)
 grid <- post_process(grid)
 street <- post_process(street)
+
+
+# Clean up ----------------------------------------------------------------
+
+rm(post_process)
