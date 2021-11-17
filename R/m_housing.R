@@ -31,7 +31,8 @@ housing_UI <- function(id) {
                                      label = i18n$t("Compare dates"), 
                                      width = "170px")),
                    htmlOutput(NS(id, "year_displayed_left")),
-                   htmlOutput(NS(id, "year_displayed_right"))),
+                   htmlOutput(NS(id, "year_displayed_right")),
+                   htmlOutput(NS(id, "how_to_read_map"))),
           right_panel(id, compare_UI(NS(id, "housing"), var_list_housing_right),
                       explore_UI(NS(id, "explore")), dyk_UI(NS(id, "dyk"))),
           legend_bivar_UI(NS(id, "housing")))
@@ -206,6 +207,25 @@ housing_server <- function(id) {
     # (Namespacing hardwired to explore module; could make it return a reactive)
     observeEvent(input$`explore-clear_selection`, {
       rv_housing$poly_selected <- NA})
+    
+    output$how_to_read_map <- renderText({
+      # No explanation needed for heatmap and choropleth with unique date and
+      # no right variable. The slider label updates, and makes sense of the map.
+      if (input$slider_switch) {
+        var_left_title <- var_exp[var_exp$var_code == str_remove(var_left(), "_\\d{4}$"),]$var_name
+        var_left_title <- sus_translate(var_left_title)
+        
+        if (var_right()[1] == " ") {
+          str_glue(sus_translate(housing_read_uni))
+          
+        } else {
+          var_right_title <- var_exp[var_exp$var_code == str_remove(var_right(), "_\\d{4}$"),]$var_name
+          var_right_title <- sus_translate(var_right_title)
+
+          str_glue(sus_translate(housing_read_bi))
+        }
+      }
+    })
 
   })
 }

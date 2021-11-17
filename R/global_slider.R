@@ -1,5 +1,7 @@
 ### TIME SLIDER GLOBALS ########################################################
 
+# Crash HTR ---------------------------------------------------------------
+
 crash_read_uni <- paste0(
   "<b>How to read the map</b><br>",
   "The map displays the percent variation in number of ",
@@ -30,3 +32,24 @@ crash_read_bi_1 <- paste0(
   "the closest census year available. ",
   "A darker blue means a relatively higher number of '{var}'. ",
   "You can find the comparison legend at the bottom left of the map.")
+
+
+# Housing HTR -------------------------------------------------------------
+housing_read_uni <- paste0(
+  "<b>How to read the map</b><br>",
+  "The map displays the percent variation in ",
+  "'{var_left_title}' between {time()[1]} and {time()[2]}. ",
+  "Blue means an increase in '{var_left_title}', and red ",
+  "means a decrease.")
+
+housing_read_bi <- paste0(
+  "<b>How to read the map</b><br>",
+  "The map displays the comparison of two percent variations. ",
+  "In green, the percent variation in '{var_left_title}' ",
+  "between {time()[1]} and {time()[2]}. ",
+  "A darker green means a relative increase in '{var_left_title}'. ",
+  "In blue, the percent variation of '{var_right_title}' between ",
+  "{time()[1]} and {time()[2]}. ",
+  "A darker blue means a relative increase in '{var_right_title}'. ",
+  "You can find the comparison legend at ",
+  "the bottom left of the map.")
