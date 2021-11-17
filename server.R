@@ -34,6 +34,7 @@ shinyServer(function(input, output, session) {
   # ped_server("ped")
   stories_server("stories")
   why_dash_server("why_dash")
+  home_server("home")
 
     
   # Waiter ------------------------------------------------------------------

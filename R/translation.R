@@ -1,5 +1,13 @@
 #### Translation functions #####################################################
 
+
+# Automatic translation function ------------------------------------------
+
+translate_fun <- function(x){
+  deeplr::toFrench2(x,
+                    auth_key = .deepl_key)
+}
+
 # Basic list French translation -------------------------------------------
 
 sus_translate_list <- function(x) {
@@ -64,48 +72,27 @@ sus_translate <- function(x) {
         
         if (length(out) == 0) {
           
-          # enter auth_key by creating Deepl account
+          # NO AUTOMATIC TRANSLATION
           
-          if (!str_detect(x, "\\{")){
-            try(deepled <- 
-                  deeplr::toFrench2(x, 
-                                    auth_key = "my_key"), 
-                silent = T)
-            
-            if (!exists("deepled")) deepled <- x
-            
-            warning("No translation text found for DDESSDDE", x,
-                    "FFINNALL1. Automatic translation performed: HASSTTA", deepled, "FFINNALL2,",
-                    call. = FALSE)
-            out <- deepled[[i]]
-          } else {
-            
-            try({y <- unlist(str_split(x, "(?=\\{)"))
-                splited_text <- unlist(str_split(y, "(?<=\\})"))
-                
-                which_to_translate <- !unlist(lapply(as.list(splited_text), str_detect, "\\{.*\\}"))
-                
-                translate_fun <- function(x){
-                  deeplr::toFrench2(x, 
-                                    auth_key = "my_key")
-                }
-                
-                to_unsplit <- modify_if(as.list(splited_text), .p = which_to_translate,
-                                        .f = translate_fun)
-                
-                deepled <- str_c(str_trim(to_unsplit), collapse = " ")}, 
-                silent = T)
-            
-            if (!exists("deepled")) deepled <- x
-            
-            warning("No translation text found for DDESSDDE", x,
-                    "FFINNALL1. Automatic translation performed: HASSTTA", deepled, "FFINNALL2,",
-                    call. = FALSE)
-            out <- deepled[[i]]
-            
-          }
-          
-          
+            # try({y <- unlist(str_split(x, "(?=\\{)"))
+            #     splited_text <- unlist(str_split(y, "(?<=\\})"))
+            # 
+            #     which_to_translate <- !unlist(lapply(as.list(splited_text), str_detect, "\\{.*\\}"))
+            # 
+            #     to_unsplit <- modify_if(as.list(splited_text), .p = which_to_translate,
+            #                             .f = translate_fun)
+            # 
+            #     deepled <- str_c(str_trim(to_unsplit), collapse = " ")},
+            #     silent = T)
+            # 
+            # if (!exists("deepled")) deepled <- x
+            # 
+            # warning("No translation text found for DDESSDDE", x,
+            #         "FFINNALL1. Automatic translation performed: HASSTTA", deepled, "FFINNALL2,",
+            #         call. = FALSE)
+            # out <- deepled[[i]]
+
+          out <- x
         }
         
         translated[i] <- out
@@ -118,23 +105,3 @@ sus_translate <- function(x) {
     }
   }
 }
-
-
-x <- "At the {z$scale_sing} scale, {z$exp_left} varies from {z$min_val} to {z$max_val}, with an average value of {z$mean_val} and a median value of {z$median_val}. Two thirds of {z$scale_plural} have a score between {z$quant_low} and {z$quant_high}."
-# 
-# x <- "This is {yet for now} just another test {to see if it works}. It works?"
-# 
-# y <- unlist(str_split(x, "(?=\\{)"))
-# splited_text <- unlist(str_split(y, "(?<=\\})"))
-# 
-# which_to_translate <- !unlist(lapply(as.list(splited_text), str_detect, "\\{.*\\}"))
-# 
-# translate_fun <- function(x){
-#   deeplr::toFrench2(x, 
-#                     auth_key = "42c0646a-5ebd-ada0-07a0-d27c8eb37613:fx")
-# }
-# 
-# to_unsplit <- modify_if(as.list(splited_text), .p = which_to_translate,
-#           .f = translate_fun)
-# 
-# str_c(str_trim(to_unsplit), collapse = " ")

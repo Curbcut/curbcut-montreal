@@ -195,7 +195,7 @@ ui <- dashboardPage(
     tabItems(
       
       # Home page
-      home_tab, 
+      tabItem(tabName = "home", home_UI("home")), 
       
       # Modules
       tabItem(tabName = "access", access_UI("access")),

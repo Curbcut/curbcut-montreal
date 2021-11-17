@@ -10,7 +10,7 @@ crash_UI <- function(id) {
                      max-width: 1000px; z-index:499")),
           mapdeckOutput(NS(id, "map"), height = "92vh"),
           title_UI(NS(id, "title"),
-                   actionLink(NS(id, "analysis"), "Road safety analysis"),
+                   actionLink(NS(id, "analysis"), i18n$t("Road safety analysis")),
                    hr(id = NS(id, "hr")),
                    select_var_UI(NS(id, "left_1"), var_list_left_crash_1,
                                  label = i18n$t("Grouping"),
