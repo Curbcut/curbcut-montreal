@@ -6,10 +6,10 @@ alley_UI <- function(id) {
   tabItem(tabName = "alley",
           mapdeckOutput(NS(id, "map"), height = "92vh"),
           title_UI(NS(id, "title"),
-                   materialSwitch(inputId = NS(id, "focus_visited"),
+                   checkboxInput(inputId = NS(id, "focus_visited"),
                                   label = i18n$t(
-                                    "Focus on green alleys visited by our team"), 
-                                  right = TRUE)),
+                                    "Focus on green alleys visited by our team"
+                                    ))),
           right_panel(id, 
                       # compare_UI(NS(id, "alley"), var_list_alley),
                       # hr(),

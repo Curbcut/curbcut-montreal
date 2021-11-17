@@ -9,11 +9,9 @@ climate_risk_UI <- function(id) {
                    select_var_UI(NS(id, "left"), var_list_climate_risk, 
                                  width = "170px"), 
                    div(style = widget_style, 
-                       materialSwitch(
-                         inputId = NS(id, "grid"), 
-                         label = i18n$t("250-metre grid"), 
-                         status = "primary", value = TRUE,
-                         width = "170px"))),
+                       checkboxInput(
+                         inputId = NS(id, "grid"), value = TRUE,
+                         label = i18n$t("250-metre grid"), width = "170px"))),
           right_panel(id, compare_UI(NS(id, "climate_risk"), var_list_canale),
                       explore_UI(NS(id, "explore")), dyk_UI(NS(id, "dyk"))),
           legend_bivar_UI(NS(id, "climate_risk")))
