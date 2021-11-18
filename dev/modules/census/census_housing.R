@@ -14,9 +14,14 @@ census_housing <- tibble(
   vec_2016 = character(),
   vec_2011 = character(),
   vec_2006 = character(),
+  vec_2001 = character(),
   vec_1996 = character(),
-  var_name = character(),
-  explanation = character())
+  include = logical(),
+  var_title = character(),
+  explanation = character(),
+  interpolation = character(),
+  denominator = character()
+  )
     
 census_housing |> 
   add_row(
@@ -24,11 +29,38 @@ census_housing |>
     vec_2016 = "v_CA16_4836",
     vec_2011 = "v_CA11N_2252",
     vec_2006 = "v_CA06_101",
-    vec_2001 = "v_CA01_96", # also repairs_total
-    vec_1996 = "v_CA1996_1678", # also repairs_total,
-    explanation = 
+    vec_2001 = "v_CA01_96",
+    vec_1996 = "v_CA1996_1678",
+    include = FALSE) |> 
+  add_row(
+    var_code = "housing_tenant_prop",
+    vec_2016 = "v_CA16_4838",
+    vec_2011 = "v_CA11N_2254",
+    vec_2006 = "v_CA06_103",
+    vec_2001 = "v_CA01_100",
+    vec_1996 = "v_CA1996_1683",
+    include = TRUE,
+    var_title = "Tenant-occupied (%)",
+    denominator = "tenure_households") |> 
+  add_row(
+    var_code = "tenant_households",
+    vec_2016 = "v_CA16_4897",
+    vec_2011 = "v_CA11N_2288",
+    vec_2006 = ,
+    vec_2001 = ,
+    vec_1996 = ,
+    include = FALSE,
   )
+  
     
+
+
+
+list_census_vectors("CA16") |> view()
+  filter(vector == "v_CA16_4897") |> 
+  pull(label)
+
+
 # 2016
 census_housing <- c(
   renter = "v_CA16_4838",
@@ -115,6 +147,7 @@ census_housing <- c(
   housing_mobility_five_total = "v_CA1996_1394")
 
 
+cancensus::explore_census_vectors("CA1996")
 
 
 
