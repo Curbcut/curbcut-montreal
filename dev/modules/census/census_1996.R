@@ -74,8 +74,6 @@ census_employment <- NULL
 
 # Download data -----------------------------------------------------------
 
-source("dev/modules/census/census_retrieval_functions.R")
-
 census_geos <- census_retrieval("CA1996")
 
 rm(census_housing, census_identity, census_income, census_transport,

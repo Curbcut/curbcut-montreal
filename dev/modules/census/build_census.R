@@ -5,17 +5,9 @@
 
 # Global needed variables and functions -----------------------------------
 
+source("dev/modules/census/census_functions.R")
 newest_census_year <- "2016"
 
-# If all rows are NAs, return NA. If not, use sum na.rm = TRUE
-sum_na <- function(x) {
-  if (all(is.na(x))) {
-    out <- NA
-  } else {
-    out <- sum(x, na.rm = TRUE)
-  }
-  return(as.numeric(out))
-}
 
 # Add census data by topic ------------------------------------------------
 

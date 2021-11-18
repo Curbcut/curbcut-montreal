@@ -79,8 +79,6 @@ census_education <- c(
 
 # Download data -----------------------------------------------------------
 
-source("dev/modules/census/census_retrieval_functions.R")
-
 census_geos <- census_retrieval("CA11")
 
 rm(census_housing, census_identity, census_income, census_transport,

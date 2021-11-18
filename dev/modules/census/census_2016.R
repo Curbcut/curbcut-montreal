@@ -107,8 +107,6 @@ census_education <- c(
 
 # Download data -----------------------------------------------------------
 
-source("dev/modules/census/census_retrieval_functions.R")
-
 census_geos <- census_retrieval("CA16", added_var_group = 
                                   c(census_age, census_family, census_language))
 
