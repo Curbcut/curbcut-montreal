@@ -28,8 +28,7 @@ ui <- tagList(
     color = "#D8F5FF"),
   
   # Navigation bar
-  navbarPage(id = "sus_page", 
-             windowTitle = "Sus - towards a sustainable city",
+  navbarPage(id = "sus_page", windowTitle = "SUS",
              title = actionLink("title", "SUS"),
              
              tabPanel("Home", home_UI("home")),
@@ -71,5 +70,5 @@ ui <- tagList(
              
              # tabPanel("Change language")
              
-  , collapsible = TRUE, windowTitle = "SUS")
+  , collapsible = TRUE)
 )
