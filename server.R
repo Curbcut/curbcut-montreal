@@ -2,6 +2,10 @@
 
 shinyServer(function(input, output, session) {
   
+    observeEvent(input$title, {
+      updateNavbarPage(session, "sus_page", "Home")
+    })
+  
   # Language button ---------------------------------------------------------
   
   sus_reactive_variables$active_language <- 

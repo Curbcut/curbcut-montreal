@@ -200,11 +200,15 @@ styler <- '
     box-shadow: 0 50px 50px rgba(0,0,0,.6);
   }
   
-  span.navbar-brand {
-    display: none;
-  }
+  #sus_page > li:first-child { 
+    display:none;
+    }
 
 '
+
+# span.navbar-brand {
+#   display: none;
+# }
 
 navbar_js <- "@media (max-width: 1050px) {
     .navbar-header {

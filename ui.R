@@ -28,8 +28,10 @@ ui <- tagList(
     color = "#D8F5FF"),
   
   # Navigation bar
-  navbarPage(title = "",
-             tabPanel("Sus", home_UI("home")),
+  navbarPage(id = "sus_page",
+             title = actionLink("title", "Sus"),
+             
+             tabPanel("Home", home_UI("home")),
              
              navbarMenu("Climate",
                         tabPanel("Climate change risk", climate_risk_UI("climate_risk"))),
