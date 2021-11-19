@@ -27,6 +27,7 @@ shinyServer(function(input, output, session) {
   covid_server("covid")
   crash_server("crash")
   # dmti_server("dmti")
+  home_server("home")
   housing_server("housing")
   mcp_server("mcp")
   meet_the_team_server("meet_the_team")
@@ -34,7 +35,6 @@ shinyServer(function(input, output, session) {
   # ped_server("ped")
   stories_server("stories")
   why_dash_server("why_dash")
-  home_server("home")
 
     
   # Waiter ------------------------------------------------------------------
