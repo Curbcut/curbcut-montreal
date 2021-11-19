@@ -3,11 +3,12 @@
 # UI ----------------------------------------------------------------------
 
 crash_UI <- function(id) {
-  tagList(
+  fillPage(
           shinyjs::hidden(htmlOutput(NS(id, "crash_analysis"),
                      style = "position:absolute; margin: 40px;
                      max-width: 1000px; z-index:499")),
-          mapdeckOutput(NS(id, "map"), height = "92vh"),
+          div(class = "mapdeck_div", 
+                       mapdeckOutput(NS(id, "map"), height = "100%")),
           title_UI(NS(id, "title"),
                    actionLink(NS(id, "analysis"), 
                               i18n$t("Road safety analysis")),

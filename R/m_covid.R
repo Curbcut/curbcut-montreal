@@ -3,8 +3,8 @@
 # UI ----------------------------------------------------------------------
 
 covid_UI <- function(id) {
-  tagList(
-          mapdeckOutput(NS(id, "map"), height = "92vh"),
+  fillPage(div(class = "mapdeck_div", 
+               mapdeckOutput(NS(id, "map"), height = "100%")),
           title_UI(NS(id, "title"), 
                    select_var_UI(NS(id, "left"), var_list_covid)),
           right_panel(id, popup_UI(NS(id, "popup"))))

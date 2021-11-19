@@ -3,20 +3,21 @@
 # UI ----------------------------------------------------------------------
 
 access_UI <- function(id) {
-  tagList(
-          mapdeckOutput(NS(id, "map"), height = "92vh"),
+  fillPage(div(class = "mapdeck_div", 
+          mapdeckOutput(NS(id, "map"), height = "100%")),
           title_UI(NS(id, "title"),
                    select_var_UI(NS(id, "left_2"), var_list_left_access_2,
                                  label = i18n$t("Timing"), width = "170px"),
                    select_var_UI(NS(id, "left_1"), var_list_left_access_1,
                         label = i18n$t("Destination type"), width = "170px"),
-                   div(style = widget_style, 
+                   div(style = widget_style,
                        sliderInput(NS(id, "slider"), i18n$t("Time threshold"),
                                    min = 10, max = 60, step = 1, value = 30,
                                    width = "170px"))),
           right_panel(id, compare_UI(NS(id, "access"), var_list_right_access),
                       explore_UI(NS(id, "explore")), dyk_UI(NS(id, "dyk"))),
-          legend_bivar_UI(NS(id, "access")))
+          legend_bivar_UI(NS(id, "access"))
+          )
   }
 
 

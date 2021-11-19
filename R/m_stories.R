@@ -3,11 +3,12 @@
 # UI ----------------------------------------------------------------------
 
 stories_UI <- function(id) {
-  tagList( 
+  fillPage(
           shinyjs::hidden(htmlOutput(NS(id, "stories"),
                                      style = "position:absolute; margin: 40px;
                      max-width: 1000px; z-index:499")),
-          mapdeckOutput(NS(id, "map"), height = "92vh"),
+          div(class = "mapdeck_div", 
+                       mapdeckOutput(NS(id, "map"), height = "100%")),
           title_UI(NS(id, "title"),
                    actionLink(NS(id, "back"), i18n$t("Back to the map"))
           ))

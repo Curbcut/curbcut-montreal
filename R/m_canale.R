@@ -3,8 +3,8 @@
 # UI ----------------------------------------------------------------------
 
 canale_UI <- function(id) {
-  tagList(
-          mapdeckOutput(NS(id, "map"), height = "92vh"),
+  fillPage(div(class = "mapdeck_div", 
+               mapdeckOutput(NS(id, "map"), height = "100%")),
           title_UI(NS(id, "title")),
           right_panel(id, compare_UI(NS(id, "canale"), var_list_canale),
                       explore_UI(NS(id, "explore")), dyk_UI(NS(id, "dyk"))),

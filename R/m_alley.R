@@ -3,8 +3,8 @@
 # UI ----------------------------------------------------------------------
 
 alley_UI <- function(id) {
-  tagList(
-          mapdeckOutput(NS(id, "map"), height = "92vh"),
+  fillPage(div(class = "mapdeck_div", 
+               mapdeckOutput(NS(id, "map"), height = "100%")),
           title_UI(NS(id, "title"),
                    checkboxInput(inputId = NS(id, "focus_visited"),
                                   label = i18n$t(
