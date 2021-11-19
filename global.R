@@ -187,3 +187,58 @@ loadingLogo <-
 #           });
 #         }
 #       "
+
+
+styler <- '
+/* the big panel popup when we show an RMD in a map module */
+  .main_panel_text_popup {
+    max-height: 83vh;
+    overflow: auto;
+    background-color: #fff;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    box-shadow: 0 50px 50px rgba(0,0,0,.6);
+  }
+  
+  span.navbar-brand {
+    display: none;
+  }
+
+'
+
+navbar_js <- "@media (max-width: 1050px) {
+    .navbar-header {
+        float: none;
+    }
+    .navbar-left,.navbar-right {
+        float: none !important;
+    }
+    .navbar-toggle {
+        display: block;
+    }
+    .navbar-collapse {
+        border-top: 1px solid transparent;
+        box-shadow: inset 0 1px 0 rgba(255,255,255,0.1);
+    }
+    .navbar-fixed-top {
+        top: 0;
+        border-width: 0 0 1px;
+    }
+    .navbar-collapse.collapse {
+        display: none!important;
+    }
+    .navbar-nav {
+        float: none!important;
+        margin-top: 7.5px;
+    }
+    .navbar-nav>li {
+        float: none;
+    }
+    .navbar-nav>li>a {
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+    .collapse.in{
+        display:block !important;
+    }
+}"

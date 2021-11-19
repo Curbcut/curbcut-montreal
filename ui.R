@@ -4,19 +4,14 @@ ui <- tagList(
   # Styling objects
   
   shinyjs::useShinyjs(),
-  tags$head(tags$link(rel = "icon", type = "image/png", href = "logo.png")),
-  tags$head(tags$script(HTML(js))),
-  tags$head(tags$script(HTML(js2))),
-  tags$head(tags$script(HTML(js3))),
-  tags$head(tags$script(HTML(js3))),
-  tags$script(HTML(js_links_between_modules)),
   tags$head(tags$style(HTML(styler))),
+  tags$head(tags$style(HTML(navbar_js))),
   
   # Language button
-  absolutePanel(
+  fixedPanel(
     id = "language_button",
     style = "z-index: 9998; border-color: #FFFFFF00; background-color: #FFFFFF00;",
-    class = "panel panel-default", top = 6, right = 60, width = 0,
+    top = 7, right = 150, width = 0,
     tagList(usei18n(i18n), actionButton(
       "language_button", label = "EN/FR",
       style = "color: #3C3C3B; background-color: #0096C940;
@@ -69,6 +64,9 @@ ui <- tagList(
              
              # tabPanel("Places explorer", "More to come!"),
              
-             tabPanel("Why a dashboard", why_dash_UI("why_dash"))
-  )
+             tabPanel("Why a dashboard", why_dash_UI("why_dash"))#,
+             
+             # tabPanel("Change language")
+             
+  , collapsible = T)
 )
