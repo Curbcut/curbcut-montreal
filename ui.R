@@ -70,5 +70,5 @@ ui <- tagList(
              
              # tabPanel("Change language")
              
-  , collapsible = TRUE)
+  , collapsible = TRUE, windowTitle = "SUS")
 )
