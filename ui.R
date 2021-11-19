@@ -29,12 +29,12 @@ ui <- tagList(
   
   # Navigation bar
   navbarPage(id = "sus_page",
-             title = actionLink("title", "Sus"),
+             title = actionLink("title", "SUS"),
              
              tabPanel("Home", home_UI("home")),
              
              navbarMenu("Climate",
-                        tabPanel("Climate change risk", climate_risk_UI("climate_risk"))),
+                        tabPanel("Climate risk", climate_risk_UI("climate_risk"))),
              
              navbarMenu("Covid",
                         tabPanel("Covid interventions", covid_UI("covid"))),
@@ -62,13 +62,13 @@ ui <- tagList(
                         tabPanel("Active living potential", canale_UI("canale")),
                         tabPanel("Green alleys", alley_UI("alley"))),
              
-             tabPanel("Montreal stories", stories_UI("stories")),
+             tabPanel("Montréal stories", stories_UI("stories")),
              
              # tabPanel("Places explorer", "More to come!"),
              
-             tabPanel("Why a dashboard", why_dash_UI("why_dash"))#,
+             tabPanel("About", why_dash_UI("why_dash"))#,
              
              # tabPanel("Change language")
              
-  , collapsible = T)
+  , collapsible = TRUE)
 )
