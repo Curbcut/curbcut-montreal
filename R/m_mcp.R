@@ -3,7 +3,7 @@
 # UI ----------------------------------------------------------------------
 
 mcp_UI <- function(id) {
-  tabItem(tabName = "mcp", 
+  tagList( 
           #Only change the size of photos in this module
           tags$head(tags$style(
             HTML('

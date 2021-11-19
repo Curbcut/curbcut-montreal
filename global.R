@@ -4,7 +4,6 @@
 
 suppressPackageStartupMessages({
   library(shiny)
-  library(shinydashboard)
   library(shinyWidgets)
   library(shiny.i18n)
   library(waiter)
@@ -183,10 +182,10 @@ uni_legend_right <- normalizePath(file.path("www/univariate_right.png"))
 # Other prep --------------------------------------------------------------
 
 # This doesn't work with module namespacing TKTK
-module_style <- 
+module_style <-
   tags$head(tags$style(HTML("
           #title_bar {border-width: 10px; border-color: rgb(255, 255, 255);}
-          #input_control_overlay {border-width: 10px; 
+          #input_control_overlay {border-width: 10px;
           border-color: rgba(255,255,255,1);}
           #input_control_left {background-color: rgba(0,0,255,0.0);
           border-width: 0px;}
@@ -288,60 +287,60 @@ styler <- '
       .skin-black .main-header .logo {
       background-color: #FFFFFF;
       }
-      
+
       /* logo when hovered */
       .skin-black .main-header .logo:hover {
       background-color: #FFFFFF;
       }
-      
+
       /* navbar (rest of the header) */
       .skin-black .main-header .navbar {
       background-color: #FFFFFF;
       }
-      
+
       /* main sidebar */
       .skin-black .main-sidebar {
       background-color: #FFFFFF;
-      
+
       }
-      
+
       /* other links in the sidebarmenu */
       .skin-black .main-sidebar .sidebar .sidebar-menu a{
       background-color: #FFFFFF50;
       color: #3C3C3B;
       height: 40px;
       }
-      
+
       /* other links in the sidebarmenu when hovered */
       .skin-black .main-sidebar .sidebar .sidebar-menu a:hover{
       background-color: #0096C910;
       }
-      
+
       /* toggle button when hovered  */
       .skin-black .main-header .navbar .sidebar-toggle:hover{
       background-color: #FFFFFF;
       }
-      
+
       /* body */
       .content-wrapper, .right-side {
       background-color: #FFFFFF;
       }
-      
+
       /* expanded menus */
       .skin-black .sidebar-menu > li > .treeview-menu {
       margin: 0 1px;
       background: #FFFFFF;
       }
-      
+
       /* expanded menus */
       .skin-black .sidebar-menu > li > .treeview-menu .active a{
       margin: 0 1px;
       background-color: #0096C9;
       color: #FFFFFF;
       }
-      
+
       /* the big panel popup when we show an RMD in a map module */
-      #main_panel_text_popup {
+      .main_panel_text_popup {
       max-height: 83vh;
       overflow: auto;
       background-color: #fff;

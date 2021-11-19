@@ -3,7 +3,7 @@
 # UI ----------------------------------------------------------------------
 
 home_UI <- function(id) {
-  tabItem(tabName = "home", 
+  tagList( 
             # tags$style('#home {background-color: #FFFFFF;}'),
             fluidRow(
               column(width = 4, img(src = "logo_large.png", 

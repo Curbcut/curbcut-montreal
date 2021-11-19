@@ -3,7 +3,7 @@
 # UI ----------------------------------------------------------------------
 
 access_UI <- function(id) {
-  tabItem(tabName = "access",
+  tagList(
           mapdeckOutput(NS(id, "map"), height = "92vh"),
           title_UI(NS(id, "title"),
                    select_var_UI(NS(id, "left_2"), var_list_left_access_2,

@@ -3,7 +3,7 @@
 # UI ----------------------------------------------------------------------
 
 ped_UI <- function(id) {
-  tabItem(tabName = "ped",
+  tagList( 
           mapdeckOutput(NS(id, "map"), height = "92vh"),
           title_UI(NS(id, "title")),
           right_panel(id,

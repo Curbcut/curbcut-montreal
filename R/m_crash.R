@@ -3,7 +3,7 @@
 # UI ----------------------------------------------------------------------
 
 crash_UI <- function(id) {
-  tabItem(tabName = "crash",
+  tagList(
           shinyjs::hidden(htmlOutput(NS(id, "crash_analysis"),
                      style = "position:absolute; margin: 40px;
                      max-width: 1000px; z-index:499")),
@@ -252,8 +252,6 @@ crash_server <- function(id) {
     
     
     output$crash_analysis <- renderUI(
-      
-      
       
       tags$iframe(src = "crash/crash.html", width = "1000px", height = "800px",
                   style = "max-height: 83vh; overflow: auto; background-color: #fff;

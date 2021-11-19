@@ -3,7 +3,7 @@
 # UI ----------------------------------------------------------------------
 
 alley_UI <- function(id) {
-  tabItem(tabName = "alley",
+  tagList(
           mapdeckOutput(NS(id, "map"), height = "92vh"),
           title_UI(NS(id, "title"),
                    checkboxInput(inputId = NS(id, "focus_visited"),

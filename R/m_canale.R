@@ -3,7 +3,7 @@
 # UI ----------------------------------------------------------------------
 
 canale_UI <- function(id) {
-  tabItem(tabName = "canale",
+  tagList(
           mapdeckOutput(NS(id, "map"), height = "92vh"),
           title_UI(NS(id, "title")),
           right_panel(id, compare_UI(NS(id, "canale"), var_list_canale),
