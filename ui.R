@@ -28,7 +28,8 @@ ui <- tagList(
     color = "#D8F5FF"),
   
   # Navigation bar
-  navbarPage(id = "sus_page",
+  navbarPage(id = "sus_page", 
+             windowTitle = "Sus - towards a sustainable city",
              title = actionLink("title", "SUS"),
              
              tabPanel("Home", home_UI("home")),
