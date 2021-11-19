@@ -3,8 +3,8 @@
 # UI ----------------------------------------------------------------------
 
 dmti_UI <- function(id) {
-  tagList(
-          mapdeckOutput(NS(id, "map"), height = "92vh"),
+  fillPage(div(class = "mapdeck_div", 
+               mapdeckOutput(NS(id, "map"), height = "100%")),
           title_UI(NS(id, "title"),
                    select_var_UI(NS(id, "left_1"), var_list_left_dmti_1), 
                    select_var_UI(NS(id, "left_2"), var_list_left_dmti_2), 

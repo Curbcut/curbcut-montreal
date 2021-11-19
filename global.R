@@ -202,13 +202,13 @@ styler <- '
   
   #sus_page > li:first-child { 
     display:none;
-    }
+  }
+    
+  .mapdeck_div {
+  height: calc(100vh - 85px);
+  }
 
 '
-
-# span.navbar-brand {
-#   display: none;
-# }
 
 navbar_js <- "@media (max-width: 1050px) {
     .navbar-header {
