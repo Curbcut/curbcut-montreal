@@ -40,15 +40,15 @@ ui <- tagList(
                         tabPanel("Climate change risk", climate_risk_UI("climate_risk"))),
              
              navbarMenu("Covid",
-                        tabPanel("Covid-19", covid_UI("covid")),
-                        tabPanel("Pedestrian realms", "More to come!")),
+                        tabPanel("Covid interventions", covid_UI("covid"))),
+                        # tabPanel("Pedestrian realms", "More to come!")),
              
-             navbarMenu("Ecology",
-                        tabPanel("Biodiversity", "More to come!")),
+             # navbarMenu("Ecology",
+                        # tabPanel("Biodiversity", "More to come!")),
              
-             navbarMenu("Health",
-                        tabPanel("Health", "More to come"),
-                        tabPanel("Healthy urban features", "More to come!")),
+             # navbarMenu("Health",
+             #            tabPanel("Health", "More to come")),
+                        # tabPanel("Healthy urban features", "More to come!")),
              
              navbarMenu("Housing",
                         tabPanel("Housing system", housing_UI("housing"))),
@@ -58,7 +58,7 @@ ui <- tagList(
              
              navbarMenu("Transport",
                         tabPanel("Accessibility", access_UI("access")),
-                        tabPanel("Commuter mode switching", "More to come!"),
+                        # tabPanel("Commuter mode switching", "More to come!"),
                         tabPanel("Road safety", crash_UI("crash"))),
              
              navbarMenu("Urban life",
@@ -67,8 +67,8 @@ ui <- tagList(
              
              tabPanel("Montreal stories", stories_UI("stories")),
              
-             tabPanel("Places explorer", "More to come!"),
+             # tabPanel("Places explorer", "More to come!"),
              
-             tabPanel("Why a dashboard", why_dash_UI("why_dash")),
+             tabPanel("Why a dashboard", why_dash_UI("why_dash"))
   )
 )
