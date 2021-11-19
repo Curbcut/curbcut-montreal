@@ -2,9 +2,7 @@
 
 why_dash_UI <- function(id) {
 
-  tabItem(
-    
-    tabName = "why_dash",
+  tagList(
 
     tags$head(tags$style(HTML(
       '#why_title_bar {border-width: 10px; border-color: rgb(255, 255, 255);}'))

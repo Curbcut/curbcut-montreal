@@ -1,219 +1,74 @@
 ##### SUS UI SCRIPT ############################################################
 
-ui <- dashboardPage(
+ui <- tagList(
+  # Styling objects
   
-  dashboardHeader(tags$li(
-    class = "dropdown", 
-    tags$style(".main-header {max-height: 50px}"),
-    tags$style(".main-header .logo {height: 50px}")),
-    title = fluidRow(
-      column(width = 3, loadingLogo("https://mssi.shinyapps.io/sus-mssi/", 
-                                    "logo.png", "spinning_logo.gif")), 
-      column(width = 9, p("SUS"), style = "text-align: left;")), 
-    titleWidth = 250),
+  shinyjs::useShinyjs(),
+  tags$head(tags$link(rel = "icon", type = "image/png", href = "logo.png")),
+  tags$head(tags$script(HTML(js))),
+  tags$head(tags$script(HTML(js2))),
+  tags$head(tags$script(HTML(js3))),
+  tags$head(tags$script(HTML(js3))),
+  tags$script(HTML(js_links_between_modules)),
+  tags$head(tags$style(HTML(styler))),
   
+  # Language button
+  absolutePanel(
+    id = "language_button",
+    style = "z-index: 9998; border-color: #FFFFFF00; background-color: #FFFFFF00;",
+    class = "panel panel-default", top = 6, right = 60, width = 0,
+    tagList(usei18n(i18n), actionButton(
+      "language_button", label = "EN/FR",
+      style = "color: #3C3C3B; background-color: #0096C940;
+        border-color: #FFFFFF;border-radius: 50px;
+        border-width: 1px;  padding:7px; font-size:100%"))),
   
-  ## Left sidebar ------------------------------------------------------------
+  # Others
+  shinyjs::useShinyjs(),
+  waiter::use_waiter(),
+  waiter::waiter_show_on_load(
+    html = shiny::tagList(img(src = "Sus_logo_LoadPage.png", 
+                              style = "height:50vh; max-height:600px;"), 
+                          spin_folding_cube()), 
+    color = "#D8F5FF"),
   
-  dashboardSidebar(
-    width = 250,
-    sidebarMenu(
-      id = "tabs", shiny.i18n::usei18n(i18n),
-      
-      menuItem(i18n$t("Home"), tabName = "home"),
-      hr(),
-      
-      # Climate ----
-      menuItem(
-        i18n$t("Climate change"),
-        tabName = "climate",
-
-        # Climate change risk
-        menuSubItem(
-          i18n$t("Climate change risk"),
-          tabName = "climate_risk"),
-        conditionalPanel(
-          condition = "input.tabs == 'climate_risk'",
-          # The ID needs to be duplicated for complicated namespacing reasons!
-          small_map_UI("climate_risk-left"))),
-      
-      # Covid ----
-      menuItem(
-        i18n$t("Covid-19"),
-        tabName = "covid_main",
-        
-        # Covid interventions
-         menuSubItem(
-           i18n$t("Covid interventions"),
-           tabName = "covid"),
-      
-        # Pedestrian realm
-        menuSubItem(
-          i18n$t("Pedestrian realm"),
-          tabName = "ped")),
-
-      # Ecology ----
-      menuItem(
-        i18n$t("Ecology"),
-        tabName = "ecology",
-
-        # Biodiversity
-        menuSubItem(
-          i18n$t("Biodiversity"),
-          tabName = "biodiversity")),
-      
-      # Health
-      menuItem(
-        i18n$t("Health"),
-        tabName = "health",
-        
-        # DMTI
-        menuSubItem(
-          i18n$t("Healthy urban features"),
-          tabName = "dmti")),
-      
-      # Housing realm ----
-      menuItem(
-        i18n$t("Housing"),
-        tabName = "housing_category",
-        
-        # Housing system
-        menuSubItem(
-          i18n$t("Housing system"),
-          tabName = "housing"),
-        conditionalPanel(
-          condition = "input.tabs == 'housing'",
-          # The ID needs to be duplicated for complicated namespacing reasons!
-          small_map_UI("housing-left")
-        )),
-      
-      # Policy ----
-      menuItem(
-        i18n$t("Policy"),
-        tabName = "policy",
-        
-        # MCP
-        menuSubItem(
-          i18n$t("Montréal climate plans"),
-          tabName = "mcp")),
-      
-      # Transport ----
-      menuItem(
-        i18n$t("Transport"),
-        tabName = "transport",
-
-        # Accessibility
-        menuSubItem(
-          i18n$t("Accessibility to opportunities"),
-          tabName = "access"),
-        
-        conditionalPanel(
-          condition = "input.tabs == 'access'",
-          # The ID needs to be duplicated for complicated namespacing reasons!
-          small_map_UI("access-left")),
-
-        # Mode switching
-        menuSubItem(
-          i18n$t("Commuter mode switching"),
-          tabName = "mode"),
-        
-        # Safety
-        menuSubItem(
-          i18n$t("Road safety"),
-          tabName = "crash"),
-        conditionalPanel(
-          condition = "input.tabs == 'crash'",
-          # The ID needs to be duplicated for complicated namespacing reasons!
-          small_map_UI("crash-left"))),
-        
-      # Urban life
-      menuItem(
-        i18n$t("Urban life"),
-        tabName = "urban_life",
-        
-        # CanALE
-        menuSubItem(
-          i18n$t("Active living potential"),
-          tabName = "canale"),
-        conditionalPanel(
-          condition = "input.tabs == 'canale'",
-          # The ID needs to be duplicated for complicated namespacing reasons!
-          small_map_UI("canale-left")),
-        
-        # Green alleys
-        menuSubItem(
-          i18n$t("Green alleys"),
-          tabName = "alley"),
-        conditionalPanel(
-          condition = "input.tabs == 'alley'",
-          # The ID needs to be duplicated for complicated namespacing reasons!
-          small_map_UI("alley-left"))
-      ),
-      
-      hr(),
-      menuItem(i18n$t("Montreal stories"), tabName = "stories"),
-      hr(),
-      menuItem(i18n$t("Place explorer"), tabName = "place_explorer"),
-      hr(),
-      menuItem(i18n$t("The science behind SUS"), tabName = "why_dash"),
-      menuItem(i18n$t("Meet the team"), tabName = "meet_the_team")
-      
-      ), 
-    collapsed = FALSE),
-  
-  
-  ## Body --------------------------------------------------------------------
-  
-  dashboardBody(
-    
-    tags$head(tags$link(rel = "icon", type = "image/png", href = "logo.png")),
-    tags$head(tags$script(HTML(js))),
-    tags$head(tags$script(HTML(js2))),
-    tags$head(tags$script(HTML(js3))),
-    tags$head(tags$script(HTML(js3))),
-    tags$script(HTML(js_links_between_modules)),
-    tags$head(tags$style(HTML(styler))),
-    
-    shinyjs::useShinyjs(),
-    waiter::use_waiter(),
-    waiter::waiter_show_on_load(
-      html = shiny::tagList(img(src = "Sus_logo_LoadPage.png", 
-                                style = "height:50vh; max-height:600px;"), 
-                            spin_folding_cube()), 
-      color = "#D8F5FF"),
-    
-    absolutePanel(
-      id = "language_button", 
-      style = "z-index: 9998; border-color: #FFFFFF00; background-color: #FFFFFF00;", 
-      class = "panel panel-default", top = 10, right = 60, width = 0,
-      tagList(usei18n(i18n), actionButton(
-        "language_button", label = "EN/FR", 
-        style = "color: #3C3C3B; background-color: #0096C940; 
-        border-color: #FFFFFF;border-radius: 50px; 
-        border-width: 1px;  padding:7px; font-size:100%"))
-    ),
-    
-    tabItems(
-      
-      # Home page
-      tabItem(tabName = "home", home_UI("home")), 
-      
-      # Modules
-      tabItem(tabName = "access", access_UI("access")),
-      tabItem(tabName = "alley", alley_UI("alley")),
-      tabItem(tabName = "canale", canale_UI("canale")),
-      tabItem(tabName = "climate_risk", climate_risk_UI("climate_risk")),
-      tabItem(tabName = "covid", covid_UI("covid")),
-      tabItem(tabName = "crash", crash_UI("crash")),
-      # tabItem(tabName = "dmti", dmti_UI("dmti")),
-      tabItem(tabName = "housing", housing_UI("housing")),
-      tabItem(tabName = "mcp", mcp_UI("mcp")),
-      tabItem(tabName = "meet_the_team", meet_the_team_UI("meet_the_team")),
-      tabItem(tabName = "stories", stories_UI("stories")),
-      tabItem(tabName = "why_dash", why_dash_UI("why_dash"))
-      
-    )
-  ),
-  
-  skin = "black", title = "Sus - towards a sustainable city"
+  # Navigation bar
+  navbarPage(title = "",
+             tabPanel("Sus", home_UI("home")),
+             
+             navbarMenu("Climate",
+                        tabPanel("Climate change risk", climate_risk_UI("climate_risk"))),
+             
+             navbarMenu("Covid",
+                        tabPanel("Covid-19", covid_UI("covid")),
+                        tabPanel("Pedestrian realms", "More to come!")),
+             
+             navbarMenu("Ecology",
+                        tabPanel("Biodiversity", "More to come!")),
+             
+             navbarMenu("Health",
+                        tabPanel("Health", "More to come"),
+                        tabPanel("Healthy urban features", "More to come!")),
+             
+             navbarMenu("Housing",
+                        tabPanel("Housing system", housing_UI("housing"))),
+             
+             navbarMenu("Policy",
+                        tabPanel("Montréal climate plans", mcp_UI("mcp"))),
+             
+             navbarMenu("Transport",
+                        tabPanel("Accessibility", access_UI("access")),
+                        tabPanel("Commuter mode switching", "More to come!"),
+                        tabPanel("Road safety", crash_UI("crash"))),
+             
+             navbarMenu("Urban life",
+                        tabPanel("Active living potential", canale_UI("canale")),
+                        tabPanel("Green alleys", alley_UI("alley"))),
+             
+             tabPanel("Montreal stories", stories_UI("stories")),
+             
+             tabPanel("Places explorer", "More to come!"),
+             
+             tabPanel("Why a dashboard", why_dash_UI("why_dash")),
+  )
 )

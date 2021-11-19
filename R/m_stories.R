@@ -3,7 +3,7 @@
 # UI ----------------------------------------------------------------------
 
 stories_UI <- function(id) {
-  tabItem(tabName = "stories",
+  tagList( 
           shinyjs::hidden(htmlOutput(NS(id, "stories"),
                                      style = "position:absolute; margin: 40px;
                      max-width: 1000px; z-index:499")),
@@ -112,7 +112,7 @@ stories_server <- function(id) {
       rmd_name <- stories[stories$ID == rv_stories$poly_selected,]$rmd
       bandeau_name <- stories[stories$ID == rv_stories$poly_selected,]$img
       
-      HTML('<div id = "main_panel_text_popup">',
+      HTML('<div class = "main_panel_text_popup">',
            # Adding bandeau img after the first div (title)
            str_replace(includeHTML(paste0("www/stories/", rmd_name, "_en.html")),
                        "</div>", paste0("</div><img src =", "stories/bandeau_img/",
