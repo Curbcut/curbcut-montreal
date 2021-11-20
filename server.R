@@ -3,7 +3,7 @@
 shinyServer(function(input, output, session) {
   
     observeEvent(input$title, {
-      updateNavbarPage(session, "sus_page", "Home")
+      updateNavbarPage(session, "sus_page", "home")
     })
   
   # Language button ---------------------------------------------------------
@@ -24,22 +24,32 @@ shinyServer(function(input, output, session) {
   
   # Modules -----------------------------------------------------------------
 
-  access_server("access")
-  alley_server("alley")
-  canale_server("canale")
-  climate_risk_server("climate_risk")
-  covid_server("covid")
-  crash_server("crash")
-  # dmti_server("dmti")
   home_server("home")
-  housing_server("housing")
-  mcp_server("mcp")
-  meet_the_team_server("meet_the_team")
-  # mode_switch_server("mode_switch")
-  # ped_server("ped")
-  stories_server("stories")
-  why_dash_server("why_dash")
-
+  
+  observeEvent(input$sus_page, {
+    if (input$sus_page == "access") {
+      access_server("access")
+    } else if (input$sus_page == "alley") {
+      alley_server("alley")    
+    } else if (input$sus_page == "canale") {
+      canale_server("canale")
+    } else if (input$sus_page == "climate_risk") {
+      climate_risk_server("climate_risk")
+    } else if (input$sus_page == "covid") {
+      covid_server("covid")
+    } else if (input$sus_page == "crash") {
+      crash_server("crash")
+    } else if (input$sus_page == "housing") {
+      housing_server("housing")
+    } else if (input$sus_page == "mcp") {
+      mcp_server("mcp")
+    } else if (input$sus_page == "stories") {
+      stories_server("stories")
+    } else if (input$sus_page == "about") {
+      why_dash_server("why_dash")
+    }
+  }, ignoreInit = TRUE)
+  
     
   # Waiter ------------------------------------------------------------------
   

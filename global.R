@@ -4,6 +4,7 @@
 
 suppressPackageStartupMessages({
   library(shiny)
+  library(shinyjs)
   library(shinyWidgets)
   library(shiny.i18n)
   library(waiter)
@@ -99,9 +100,9 @@ right_panel <- function(id, ...) {
   
   absolutePanel(
     id = NS(id, "right_panel"), 
-    style = paste0("z-index:500; max-height: 91vh; overflow-y: auto; ",
+    style = paste0("z-index:500; max-height: 95vh; overflow-y: auto; ",
                    "overflow-x:hidden; padding: 5px; border-width: 0px;"),
-    class = "panel panel-default", top = 70, right = 20, width = 300,
+    class = "panel panel-default", top = 10, right = 10, width = 300,
     ...
   )
 }
@@ -206,6 +207,14 @@ styler <- '
     
   .mapdeck_div {
   height: calc(100vh - 85px);
+  }
+  
+  .sus_sidebar {
+    font-size: 11px;
+  }
+  
+  div.sidebar_extra {
+    overflow = scroll;
   }
 
 '

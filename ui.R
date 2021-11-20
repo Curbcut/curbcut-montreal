@@ -31,44 +31,45 @@ ui <- tagList(
   navbarPage(id = "sus_page", windowTitle = "SUS",
              title = actionLink("title", "SUS"),
              
-             tabPanel("Home", home_UI("home")),
+             tabPanel("Home", home_UI("home"), value = "home"),
              
-             navbarMenu("Climate",
-                        tabPanel("Climate risk", climate_risk_UI("climate_risk"))),
+             navbarMenu(
+               "Climate",
+               tabPanel("Climate risk", climate_risk_UI("climate_risk"),
+                        value = "climate_risk")),
+
+             navbarMenu(
+               "Covid",
+               tabPanel("Covid interventions", covid_UI("covid"),
+                        value = "covid")),
              
-             navbarMenu("Covid",
-                        tabPanel("Covid interventions", covid_UI("covid"))),
-                        # tabPanel("Pedestrian realms", "More to come!")),
+             navbarMenu(
+               "Housing",
+               tabPanel("Housing system", housing_UI("housing"), 
+                        value = "housing")),
+
+             navbarMenu(
+               "Policy",
+               tabPanel("Montréal climate plans", mcp_UI("mcp"),
+                        value = "mcp")),
+
+             navbarMenu(
+               "Transport",
+               tabPanel("Accessibility", access_UI("access"), value = "access"),
+               tabPanel("Road safety", crash_UI("crash"), value = "crash")),
              
-             # navbarMenu("Ecology",
-                        # tabPanel("Biodiversity", "More to come!")),
+             navbarMenu(
+               "Urban life",
+               tabPanel("Active living potential", canale_UI("canale"),
+                        value = "canale"),
+               tabPanel("Green alleys", alley_UI("alley"), value = "alley")),
              
-             # navbarMenu("Health",
-             #            tabPanel("Health", "More to come")),
-                        # tabPanel("Healthy urban features", "More to come!")),
+             tabPanel("Montréal stories", stories_UI("stories"),
+                      value = "stories"),
              
-             navbarMenu("Housing",
-                        tabPanel("Housing system", housing_UI("housing"))),
+             # tabPanel("Place explorer", "More to come!"),
              
-             navbarMenu("Policy",
-                        tabPanel("Montréal climate plans", mcp_UI("mcp"))),
-             
-             navbarMenu("Transport",
-                        tabPanel("Accessibility", access_UI("access")),
-                        # tabPanel("Commuter mode switching", "More to come!"),
-                        tabPanel("Road safety", crash_UI("crash"))),
-             
-             navbarMenu("Urban life",
-                        tabPanel("Active living potential", canale_UI("canale")),
-                        tabPanel("Green alleys", alley_UI("alley"))),
-             
-             tabPanel("Montréal stories", stories_UI("stories")),
-             
-             # tabPanel("Places explorer", "More to come!"),
-             
-             tabPanel("About", why_dash_UI("why_dash"))#,
-             
-             # tabPanel("Change language")
+             tabPanel("About", why_dash_UI("why_dash"), value = "why_dash")
              
   , collapsible = TRUE)
 )

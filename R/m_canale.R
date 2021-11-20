@@ -3,12 +3,23 @@
 # UI ----------------------------------------------------------------------
 
 canale_UI <- function(id) {
-  fillPage(div(class = "mapdeck_div", 
-               mapdeckOutput(NS(id, "map"), height = "100%")),
-          title_UI(NS(id, "title")),
-          right_panel(id, compare_UI(NS(id, "canale"), var_list_canale),
-                      explore_UI(NS(id, "explore")), dyk_UI(NS(id, "dyk"))),
-          legend_bivar_UI(NS(id, "canale")))
+  fillPage(
+    fillRow(
+      fillCol(div(sidebar_UI(NS(id, "sidebar")),
+              hr(),
+              HTML("legend here"),
+              legend_UI(NS(id, "legend")),
+              hr(),
+              HTML("zoom here"))),
+      fillCol(
+        div(class = "mapdeck_div", 
+            mapdeckOutput(NS(id, "map"), height = "100%")),
+        right_panel(id, compare_UI(NS(id, "canale"), var_list_canale),
+                    explore_UI(NS(id, "explore")), dyk_UI(NS(id, "dyk"))),
+        legend_bivar_UI(NS(id, "canale"))),
+      flex = c(1, 5)
+      )
+    )
   }
 
 
@@ -17,8 +28,11 @@ canale_UI <- function(id) {
 canale_server <- function(id) {
   moduleServer(id, function(input, output, session) {
     
-    # Title bar
-    title_server("title", "canale")
+    # Sidebar
+    sidebar_server("sidebar", "canale")
+    
+    # Legend
+    legend_server("legend")
     
     # Map
     output$map <- renderMapdeck({
