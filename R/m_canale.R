@@ -3,12 +3,20 @@
 # UI ----------------------------------------------------------------------
 
 canale_UI <- function(id) {
-  fillPage(div(class = "mapdeck_div", 
-               mapdeckOutput(NS(id, "map"), height = "100%")),
-          title_UI(NS(id, "title")),
-          right_panel(id, compare_UI(NS(id, "canale"), var_list_canale),
-                      explore_UI(NS(id, "explore")), dyk_UI(NS(id, "dyk"))),
-          legend_bivar_UI(NS(id, "canale")))
+  fillPage(
+    fillRow(
+      fillCol(div(sidebar_UI(NS(id, "sidebar")),
+              div(legend_UI(NS(id, "legend"))),
+              zoom_UI(NS(id, "zoom"), canale_zoom)
+              )),
+      fillCol(
+        div(class = "mapdeck_div", 
+            mapdeckOutput(NS(id, "map"), height = "100%")),
+        right_panel(id, compare_UI(NS(id, "canale"), var_list_canale),
+                    explore_UI(NS(id, "explore")), dyk_UI(NS(id, "dyk")))),
+      flex = c(1, 5)
+      )
+    )
   }
 
 
@@ -17,9 +25,13 @@ canale_UI <- function(id) {
 canale_server <- function(id) {
   moduleServer(id, function(input, output, session) {
     
-    # Title bar
-    title_server("title", "canale")
+    # Sidebar
+    sidebar_server("sidebar", "canale", 
+                   reactive(paste0("left_", zoom(), "_", canale_ind)))
     
+    # Legend
+    legend_server("legend")
+
     # Map
     output$map <- renderMapdeck({
       mapdeck(style = map_style, token = token_canale, zoom = map_zoom, 
@@ -33,24 +45,26 @@ canale_server <- function(id) {
                fill_colour = "fill", update_view = FALSE, id = "ID", 
                auto_highlight = TRUE, highlight_colour = "#FFFFFF90")
       })
-    
+
+    zoom_val <- reactiveVal(get_zoom(map_zoom, canale_zoom))
+
     # Zoom level
     observeEvent(input$map_view_change$zoom, {
-      rv_canale$zoom <- case_when(input$map_view_change$zoom >= 14 ~ "building",
-                                  input$map_view_change$zoom >= 12 ~ "DA",
-                                  input$map_view_change$zoom >= 10.5 ~ "CT",
-                                  TRUE ~ "borough")})
-        
+      zoom_val(get_zoom(input$map_view_change$zoom, canale_zoom))
+    })
+    
+    zoom <- zoom_server("zoom", zoom = zoom_val, zoom_levels = canale_zoom)
+    
     # Left variable
     var_left <- reactive(canale_ind)
     
     # Compare panel
     var_right <- compare_server(id = "canale", var_list = var_list_canale,
-                                df = reactive(rv_canale$zoom))
+                                df = zoom)
 
     # Data
     data <- data_server(id = "canale", var_left = var_left,
-                        var_right = var_right, df = reactive(rv_canale$zoom))
+                        var_right = var_right, df = zoom)
     
     # Explore panel
     explore_server(id = "explore", 
@@ -58,24 +72,16 @@ canale_server <- function(id) {
                    var_left = var_left,
                    var_right = var_right, 
                    select = reactive(rv_canale$poly_selected),
-                   zoom = reactive(rv_canale$zoom), 
+                   zoom = zoom, 
                    build_str_as_DA = TRUE)
 
     # Did-you-know panel
     dyk_server("dyk", var_left, var_right)
 
-    # Left map
-    small_map_server("left", reactive(paste0(
-      "left_", rv_canale$zoom, "_", canale_ind)))
-    
-    # Bivariate legend
-    legend_bivar_server("canale", var_right)
-    
     # Update map in response to variable changes or zooming
     observeEvent({
       var_right()
-      rv_canale$zoom}, map_change(NS(id, "map"), df = data, 
-                                  zoom = reactive(rv_canale$zoom)))
+      zoom()}, map_change(NS(id, "map"), df = data, zoom = zoom))
 
     # Update poly_selected on click
     observeEvent(input$map_polygon_click, {
@@ -86,13 +92,13 @@ canale_server <- function(id) {
     })
     
     # Clear poly_selected on zoom
-    observeEvent(rv_canale$zoom, {rv_canale$poly_selected <- NA},
+    observeEvent(zoom(), {rv_canale$poly_selected <- NA},
                  ignoreInit = TRUE)
 
     # Update map in response to poly_selected change
     observeEvent(rv_canale$poly_selected, {
       if (!is.na(rv_canale$poly_selected)) {
-        width <- switch(rv_canale$zoom, "borough" = 100, "CT" = 10, 2)
+        width <- switch(zoom(), "borough" = 100, "CT" = 10, 2)
         data_to_add <-
           data() %>%
           filter(ID == rv_canale$poly_selected) %>%

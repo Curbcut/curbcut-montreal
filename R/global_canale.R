@@ -4,6 +4,9 @@
 token_canale <- paste0("pk.eyJ1IjoiZHdhY2hzbXV0aCIsImEiOiJja2g2Y2JpbDc",
                        "wMDc5MnltbWpja2xpYTZhIn0.BXdU7bsQYWcSwmmBx8DNqQ")
 
+# Zoom levels
+canale_zoom <- c("borough" = 0, "CT" = 10.5, "DA" = 12, "building" = 14)
+
 # Initialize reactive values
 rv_canale <- reactiveValues(poly_selected = NA, zoom = "borough")
 
