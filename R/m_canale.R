@@ -6,18 +6,19 @@ canale_UI <- function(id) {
   fillPage(
     fillRow(
       fillCol(sidebar_UI(NS(id, "sidebar"),
-              legend_UI(NS(id, "legend")),
-              zoom_UI(NS(id, "zoom"), canale_zoom)
-              )),
+                         div(class = "bottom_sidebar",
+                             tagList(legend_UI(NS(id, "legend")),
+                                     zoom_UI(NS(id, "zoom"), canale_zoom)))
+      )),
       fillCol(
         div(class = "mapdeck_div", 
             mapdeckOutput(NS(id, "map"), height = "100%")),
         right_panel(id, compare_UI(NS(id, "canale"), var_list_canale),
                     explore_UI(NS(id, "explore")), dyk_UI(NS(id, "dyk")))),
       flex = c(1, 5)
-      )
     )
-  }
+  )
+}
 
 
 # Server ------------------------------------------------------------------

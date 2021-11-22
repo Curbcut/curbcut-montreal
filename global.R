@@ -218,12 +218,19 @@ styler <- '
     border-width: 0px;
     height: calc(100vh - 85px);
     display: block;
+    position: relative;
   }
   
   .sidebar_extra {
     overflow-x: hidden;
     overflow-y: auto;
     max-height: 25%;
+  }
+  
+  .bottom_sidebar {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
   }
 
 '
