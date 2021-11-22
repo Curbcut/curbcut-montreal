@@ -8,12 +8,14 @@
 
 zoom_UI <- function(id, zoom_levels) {
   div(style = "font-size: 11px; vertical-align: bottom;",
-      # h5("Zoom", style = "font-size: 11px;"),
-      div(checkboxInput(NS(id, "zoom_auto"), "Auto-zoom", value = TRUE,
-                        width = "50px"),
-          style = "display: inline-block; padding: 5px; vertical-align: bottom;"),
+      div(checkboxInput(
+        inputId = NS(id, "auto"), 
+        label = "Auto-zoom", 
+        value = TRUE, 
+        width = "50px"),
+        style = "display: inline-block; padding: 5px; vertical-align: bottom;"),
       div(sliderTextInput(
-        inputId = NS(id, "zoom_slider"), 
+        inputId = NS(id, "slider"), 
         label = NULL, 
         choices = get_zoom_label(zoom_levels), 
         hide_min_max = TRUE, 
@@ -23,22 +25,20 @@ zoom_UI <- function(id, zoom_levels) {
   )
 }
 
-zoom_server <- function(id, zoom, zoom_levels, ...) {
-  stopifnot(is.reactive(zoom),
-            !is.reactive(zoom_levels))
+zoom_server <- function(id, zoom, zoom_levels) {
+  
+  stopifnot(is.reactive(zoom))
+  stopifnot(!is.reactive(zoom_levels))
   
   moduleServer(id, function(input, output, session) {
 
     observeEvent(zoom(), {
-      print("ZOOM NAME")
-      print(get_zoom_name(zoom()))
-      updateSliderTextInput(session, "zoom_slider", selected = "Census tract")
-      # updateSliderTextInput(session, "zoom", selected = get_zoom_name(zoom()))
-    })
+      if (input$auto) {
+        updateSliderTextInput(session, "slider", 
+                              selected = get_zoom_name(zoom()))
+      }
+    }, ignoreInit = TRUE)
     
-      # print("ZOOM TEST")
-      # print(zoom_test)
-      # zoom_test
     zoom
   })
 }

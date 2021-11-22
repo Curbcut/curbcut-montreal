@@ -57,7 +57,7 @@ canale_server <- function(id) {
       zoom_val(get_zoom(input$map_view_change$zoom, canale_zoom))
     })
     
-    zoom <- zoom_server("canale", zoom = zoom_val, zoom_levels = canale_zoom)
+    zoom <- zoom_server("zoom", zoom = zoom_val, zoom_levels = canale_zoom)
     
     # Left variable
     var_left <- reactive(canale_ind)
