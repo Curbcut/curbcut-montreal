@@ -46,28 +46,29 @@ canale_server <- function(id) {
       })
     
     zoom_val <- reactive({
-      if (req(input$map_view_change$zoom)) 
-        input$map_view_change$zoom else map_zoom})
+      zm <- if (req(input$map_view_change$zoom)) 
+        input$map_view_change$zoom else map_zoom
+      get_zoom(zm, canale_zoom)
+      })
     
     # Zoom level
     observeEvent(zoom_val(), {
-      print("IN OBSERVE")
       print(zoom_val())
-      rv_canale$zoom <- get_zoom(zoom_val(), canale_zoom)
+      rv_canale$zoom <- zoom_val()
     })
     
-    # zoom <- zoom_server("canale", zoom = zoom_val, zoom_levels = canale_zoom)
+    zoom <- zoom_server("canale", zoom = zoom_val, zoom_levels = canale_zoom)
     
     # Left variable
     var_left <- reactive(canale_ind)
     
     # Compare panel
     var_right <- compare_server(id = "canale", var_list = var_list_canale,
-                                df = reactive(rv_canale$zoom))
+                                df = zoom)
 
     # Data
     data <- data_server(id = "canale", var_left = var_left,
-                        var_right = var_right, df = reactive(rv_canale$zoom))
+                        var_right = var_right, df = zoom)
     
     # Explore panel
     explore_server(id = "explore", 
@@ -75,7 +76,7 @@ canale_server <- function(id) {
                    var_left = var_left,
                    var_right = var_right, 
                    select = reactive(rv_canale$poly_selected),
-                   zoom = reactive(rv_canale$zoom), 
+                   zoom = zoom, 
                    build_str_as_DA = TRUE)
 
     # Did-you-know panel

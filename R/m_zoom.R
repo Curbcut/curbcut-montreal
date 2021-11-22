@@ -24,17 +24,16 @@ zoom_server <- function(id, zoom, zoom_levels, ...) {
             !is.reactive(zoom_levels))
   
   moduleServer(id, function(input, output, session) {
-    zm <- reactive(get_zoom(zoom(), zoom_levels))
 
-    observeEvent(zm(), {
-      print("ZOOM NAME")
-      print(zm())
-      updateSliderTextInput(session, "zoom", selected = get_zoom_name(zm()))
-    })
+    # observeEvent(zm(), {
+    #   print("ZOOM NAME")
+    #   print(zm())
+    #   updateSliderTextInput(session, "zoom", selected = get_zoom_name(zm()))
+    # })
     
       # print("ZOOM TEST")
       # print(zoom_test)
       # zoom_test
-    reactive()
+    zoom
   })
 }
