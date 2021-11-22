@@ -38,21 +38,20 @@ canale_server <- function(id) {
               location = map_location) %>%
         add_sf(data = 
                  borough %>%
-                 mutate(group = paste(eval(as.name(paste0(
-                   "canale_ind_q3", "_", current_census))), "- 1")) %>%
+                 mutate(group = paste(eval(as.name("canale_ind_q3_2016")), 
+                                      "- 1")) %>%
                  left_join(colour_borough, by = "group"),
                stroke_width = 100, stroke_colour = "#FFFFFF", 
                fill_colour = "fill", update_view = FALSE, id = "ID", 
                auto_highlight = TRUE, highlight_colour = "#FFFFFF90")
       })
 
-    zoom_val <- reactiveVal(get_zoom(map_zoom, canale_zoom))
 
-    # Zoom level
+    # Zoom
+    zoom_val <- reactiveVal(get_zoom(map_zoom, canale_zoom))
     observeEvent(input$map_view_change$zoom, {
       zoom_val(get_zoom(input$map_view_change$zoom, canale_zoom))
     })
-    
     zoom <- zoom_server("zoom", zoom = zoom_val, zoom_levels = canale_zoom)
     
     # Left variable
