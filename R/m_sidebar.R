@@ -4,8 +4,8 @@ sidebar_UI <- function(id, ...) {
 
   div(
     id = "title_bar", class = "sus_sidebar", 
-    style = "padding: 0px 5px 0px 0px; margin: 0px 5px 0px 0px; border-width: 0px;",
     uiOutput(NS(id, "title")),
+    small_map_UI(NS(id, "left")),
     div(uiOutput(NS(id, "title_main")),
         actionLink(NS(id, "more_info"), i18n$t("Learn more")),
         style = "display: inline;"),
@@ -14,11 +14,12 @@ sidebar_UI <- function(id, ...) {
   )
 }
 
-sidebar_server <- function(id, x) {
+sidebar_server <- function(id, x, var_map) {
   stopifnot(!is.reactive(x))
   
   moduleServer(id, function(input, output, session) {
     
+    # Prepare text
     title <- filter(title_text, tab == x)
     title_title <- if (nrow(title) == 0) "MISSING" else 
       (filter(title, type == "title"))$text
@@ -26,6 +27,9 @@ sidebar_server <- function(id, x) {
       (filter(title, type == "main"))$text
     title_extra <- if (nrow(title) == 0) "MISSING" else 
       (filter(title, type == "extra"))$text
+    
+    # Small map
+    small_map_server("left", var_map)
     
     # More info
     observeEvent(input$more_info, {

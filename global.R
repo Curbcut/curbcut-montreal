@@ -211,6 +211,9 @@ styler <- '
   
   .sus_sidebar {
     font-size: 11px;
+    padding: 0px 5px 0px 0px;
+    margin: 0px 5px 0px 0px;
+    border-width: 0px;
   }
   
   div.sidebar_extra {

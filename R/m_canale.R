@@ -26,7 +26,8 @@ canale_server <- function(id) {
   moduleServer(id, function(input, output, session) {
     
     # Sidebar
-    sidebar_server("sidebar", "canale")
+    sidebar_server("sidebar", "canale", 
+                   reactive(paste0("left_", zoom(), "_", canale_ind)))
     
     # Legend
     legend_server("legend")
@@ -46,12 +47,7 @@ canale_server <- function(id) {
       })
 
     zoom_val <- reactiveVal(get_zoom(map_zoom, canale_zoom))
-    # zoom_val <- reactive({
-    #   zm <- if (req(input$map_view_change$zoom)) 
-    #     input$map_view_change$zoom else map_zoom
-    #   get_zoom(zm, canale_zoom)
-    #   })
-    
+
     # Zoom level
     observeEvent(input$map_view_change$zoom, {
       zoom_val(get_zoom(input$map_view_change$zoom, canale_zoom))
@@ -82,10 +78,6 @@ canale_server <- function(id) {
     # Did-you-know panel
     dyk_server("dyk", var_left, var_right)
 
-    # Left map
-    small_map_server("left", reactive(paste0(
-      "left_", zoom(), "_", canale_ind)))
-    
     # Update map in response to variable changes or zooming
     observeEvent({
       var_right()
