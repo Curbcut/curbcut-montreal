@@ -70,6 +70,8 @@ sus_reactive_variables <- reactiveValues()
 
 # Object style ------------------------------------------------------------
 
+map_token <- paste0("pk.eyJ1IjoiZHdhY2hzbXV0aCIsImEiOiJja2g2Y2JpbDc",
+                    "wMDc5MnltbWpja2xpYTZhIn0.BXdU7bsQYWcSwmmBx8DNqQ")
 map_style <- "mapbox://styles/dwachsmuth/ckh6cg4wg05nw19p5yrs9tib7"
 map_zoom <- 10.1
 map_location <- c(-73.58, 45.53)

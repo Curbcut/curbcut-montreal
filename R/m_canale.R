@@ -34,7 +34,7 @@ canale_server <- function(id) {
 
     # Map
     output$map <- renderMapdeck({
-      mapdeck(style = map_style, token = token_canale, zoom = map_zoom, 
+      mapdeck(style = map_style, token = map_token, zoom = map_zoom, 
               location = map_location) %>%
         add_sf(data = 
                  borough %>%
