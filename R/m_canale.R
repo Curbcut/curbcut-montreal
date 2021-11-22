@@ -44,17 +44,17 @@ canale_server <- function(id) {
                fill_colour = "fill", update_view = FALSE, id = "ID", 
                auto_highlight = TRUE, highlight_colour = "#FFFFFF90")
       })
-    
-    zoom_val <- reactive({
-      zm <- if (req(input$map_view_change$zoom)) 
-        input$map_view_change$zoom else map_zoom
-      get_zoom(zm, canale_zoom)
-      })
+
+    zoom_val <- reactiveVal(get_zoom(map_zoom, canale_zoom))
+    # zoom_val <- reactive({
+    #   zm <- if (req(input$map_view_change$zoom)) 
+    #     input$map_view_change$zoom else map_zoom
+    #   get_zoom(zm, canale_zoom)
+    #   })
     
     # Zoom level
-    observeEvent(zoom_val(), {
-      print(zoom_val())
-      rv_canale$zoom <- zoom_val()
+    observeEvent(input$map_view_change$zoom, {
+      zoom_val(get_zoom(input$map_view_change$zoom, canale_zoom))
     })
     
     zoom <- zoom_server("canale", zoom = zoom_val, zoom_levels = canale_zoom)
@@ -84,13 +84,12 @@ canale_server <- function(id) {
 
     # Left map
     small_map_server("left", reactive(paste0(
-      "left_", rv_canale$zoom, "_", canale_ind)))
+      "left_", zoom(), "_", canale_ind)))
     
     # Update map in response to variable changes or zooming
     observeEvent({
       var_right()
-      rv_canale$zoom}, map_change(NS(id, "map"), df = data, 
-                                  zoom = reactive(rv_canale$zoom)))
+      zoom()}, map_change(NS(id, "map"), df = data, zoom = zoom))
 
     # Update poly_selected on click
     observeEvent(input$map_polygon_click, {
@@ -101,13 +100,13 @@ canale_server <- function(id) {
     })
     
     # Clear poly_selected on zoom
-    observeEvent(rv_canale$zoom, {rv_canale$poly_selected <- NA},
+    observeEvent(zoom(), {rv_canale$poly_selected <- NA},
                  ignoreInit = TRUE)
 
     # Update map in response to poly_selected change
     observeEvent(rv_canale$poly_selected, {
       if (!is.na(rv_canale$poly_selected)) {
-        width <- switch(rv_canale$zoom, "borough" = 100, "CT" = 10, 2)
+        width <- switch(zoom(), "borough" = 100, "CT" = 10, 2)
         data_to_add <-
           data() %>%
           filter(ID == rv_canale$poly_selected) %>%
