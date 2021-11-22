@@ -212,7 +212,7 @@ styler <- '
   }
   
   .sus_sidebar {
-    font-size: 11px;
+    font-size: 13px;
     padding: 0px 5px 0px 0px;
     margin: 0px 5px 0px 0px;
     border-width: 0px;
@@ -222,10 +222,9 @@ styler <- '
   }
   
   .sidebar_extra {
-  
     overflow-x: hidden;
     overflow-y: auto;
-    max-height: 25%;
+    max-height: 20%;
   }
   
   .bottom_sidebar {

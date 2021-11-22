@@ -1,8 +1,10 @@
 #### LEGEND MODULE #############################################################
 
 legend_UI <- function(id) {
-  div(h5("Legend", style = "font-size: 11px;"),
-      plotOutput(NS(id, "legend")), style = "height: 160px")
+  tagList(
+    h5("Legend"),
+    plotOutput(NS(id, "legend"), height = "180px")
+  )
 }
 
 legend_server <- function(id) {
@@ -26,13 +28,13 @@ legend_server <- function(id) {
         ggplot(aes(x, y, fill = fill)) +
         geom_tile() +
         geom_text(aes(x, y, label = label, colour = label_colour), 
-                  inherit.aes = FALSE, size = 3) +
+                  inherit.aes = FALSE, size = 4.5) +
         scale_fill_manual(values = setNames(colour_borough$fill[1:9],
                                             colour_borough$fill[1:9])) +
         scale_colour_manual(values = c("black" = "black", "white" = "white")) +
         labs(x = "Canale (low to high)", y = "Housing (low to high)") +
         theme_void() +
         theme(legend.position = "none")
-    }, height = 120) 
+    }, height = 180) 
   })
 }

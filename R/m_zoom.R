@@ -8,7 +8,7 @@
 
 zoom_UI <- function(id, zoom_levels) {
   
-  div(style = "font-size: 11px;",
+  tagList(
       div(checkboxInput(
         inputId = NS(id, "auto"), 
         label = "Auto-zoom", 
