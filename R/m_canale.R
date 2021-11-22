@@ -6,17 +6,14 @@ canale_UI <- function(id) {
   fillPage(
     fillRow(
       fillCol(div(sidebar_UI(NS(id, "sidebar")),
-              hr(),
-              HTML("legend here"),
-              legend_UI(NS(id, "legend")),
-              hr(),
-              HTML("zoom here"))),
+              div(legend_UI(NS(id, "legend"))),
+              zoom_UI(NS(id, "zoom"), canale_zoom)
+              )),
       fillCol(
         div(class = "mapdeck_div", 
             mapdeckOutput(NS(id, "map"), height = "100%")),
         right_panel(id, compare_UI(NS(id, "canale"), var_list_canale),
-                    explore_UI(NS(id, "explore")), dyk_UI(NS(id, "dyk"))),
-        legend_bivar_UI(NS(id, "canale"))),
+                    explore_UI(NS(id, "explore")), dyk_UI(NS(id, "dyk")))),
       flex = c(1, 5)
       )
     )
@@ -33,7 +30,7 @@ canale_server <- function(id) {
     
     # Legend
     legend_server("legend")
-    
+
     # Map
     output$map <- renderMapdeck({
       mapdeck(style = map_style, token = token_canale, zoom = map_zoom, 
@@ -48,13 +45,19 @@ canale_server <- function(id) {
                auto_highlight = TRUE, highlight_colour = "#FFFFFF90")
       })
     
+    zoom_val <- reactive({
+      if (req(input$map_view_change$zoom)) 
+        input$map_view_change$zoom else map_zoom})
+    
     # Zoom level
-    observeEvent(input$map_view_change$zoom, {
-      rv_canale$zoom <- case_when(input$map_view_change$zoom >= 14 ~ "building",
-                                  input$map_view_change$zoom >= 12 ~ "DA",
-                                  input$map_view_change$zoom >= 10.5 ~ "CT",
-                                  TRUE ~ "borough")})
-        
+    observeEvent(zoom_val(), {
+      print("IN OBSERVE")
+      print(zoom_val())
+      rv_canale$zoom <- get_zoom(zoom_val(), canale_zoom)
+    })
+    
+    # zoom <- zoom_server("canale", zoom = zoom_val, zoom_levels = canale_zoom)
+    
     # Left variable
     var_left <- reactive(canale_ind)
     
@@ -81,9 +84,6 @@ canale_server <- function(id) {
     # Left map
     small_map_server("left", reactive(paste0(
       "left_", rv_canale$zoom, "_", canale_ind)))
-    
-    # Bivariate legend
-    legend_bivar_server("canale", var_right)
     
     # Update map in response to variable changes or zooming
     observeEvent({

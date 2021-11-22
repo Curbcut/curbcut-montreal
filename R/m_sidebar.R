@@ -4,7 +4,7 @@ sidebar_UI <- function(id, ...) {
 
   div(
     id = "title_bar", class = "sus_sidebar", 
-    style = "padding: 0px 5px; margin: 0px 5px; border-width: 1px; z-index: 500",
+    style = "padding: 0px 5px 0px 0px; margin: 0px 5px 0px 0px; border-width: 0px;",
     uiOutput(NS(id, "title")),
     div(uiOutput(NS(id, "title_main")),
         actionLink(NS(id, "more_info"), i18n$t("Learn more")),
