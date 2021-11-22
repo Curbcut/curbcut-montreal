@@ -3,7 +3,7 @@
 legend_UI <- function(id) {
   tagList(
     h5("Legend"),
-    plotOutput(NS(id, "legend"), height = "180px")
+    plotOutput(NS(id, "legend"), height = "170px")
   )
 }
 
@@ -35,6 +35,6 @@ legend_server <- function(id) {
         labs(x = "Canale (low to high)", y = "Housing (low to high)") +
         theme_void() +
         theme(legend.position = "none")
-    }, height = 180) 
+    }, height = 170) 
   })
 }
