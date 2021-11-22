@@ -1,15 +1,15 @@
 #### SIDEBAR MODULE ############################################################
 
 sidebar_UI <- function(id, ...) {
-
+  
   div(
     id = "title_bar", class = "sus_sidebar", 
     uiOutput(NS(id, "title")),
     small_map_UI(NS(id, "left")),
-    div(uiOutput(NS(id, "title_main")),
-        actionLink(NS(id, "more_info"), i18n$t("Learn more")),
-        style = "display: inline;"),
-    hidden(uiOutput(outputId = NS(id, "title_extra"))),
+    div(class = "sidebar_extra",
+        tagList(uiOutput(NS(id, "title_main")),
+                actionLink(NS(id, "more_info"), i18n$t("Learn more")),
+                hidden(uiOutput(outputId = NS(id, "title_extra"))))),
     ...
   )
 }

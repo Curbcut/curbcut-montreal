@@ -5,8 +5,8 @@
 canale_UI <- function(id) {
   fillPage(
     fillRow(
-      fillCol(div(sidebar_UI(NS(id, "sidebar")),
-              div(legend_UI(NS(id, "legend"))),
+      fillCol(sidebar_UI(NS(id, "sidebar"),
+              legend_UI(NS(id, "legend")),
               zoom_UI(NS(id, "zoom"), canale_zoom)
               )),
       fillCol(

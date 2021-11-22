@@ -216,10 +216,14 @@ styler <- '
     padding: 0px 5px 0px 0px;
     margin: 0px 5px 0px 0px;
     border-width: 0px;
+    height: calc(100vh - 85px);
+    display: block;
   }
   
-  div.sidebar_extra {
-    overflow = scroll;
+  .sidebar_extra {
+    overflow-x: hidden;
+    overflow-y: auto;
+    max-height: 25%;
   }
 
 '
