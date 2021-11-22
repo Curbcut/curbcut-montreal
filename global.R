@@ -237,7 +237,6 @@ styler <- '
   .small_map img {
     max-width: 100%;
     height: auto;
-    text-align: center;
   }
 
 '
