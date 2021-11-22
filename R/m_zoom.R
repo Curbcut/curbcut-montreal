@@ -7,22 +7,24 @@
 #' @return A reactive expression containing a length-one character string.
 
 zoom_UI <- function(id, zoom_levels) {
-  div(style = "font-size: 11px; vertical-align: bottom;",
+  
+  div(style = "font-size: 11px;",
       div(checkboxInput(
         inputId = NS(id, "auto"), 
         label = "Auto-zoom", 
         value = TRUE, 
         width = "50px"),
-        style = "display: inline-block; padding: 5px; vertical-align: bottom;"),
+        style = widget_style),
       div(sliderTextInput(
         inputId = NS(id, "slider"), 
         label = NULL, 
         choices = get_zoom_label(zoom_levels), 
         hide_min_max = TRUE, 
         force_edges = TRUE, 
-        width = "150px"), 
-        style = "display: inline-block; padding: 5px; vertical-align: bottom;")
+        width = "100%"), 
+        style = paste(widget_style, "width: calc(100% - 70px)")) # 50px the checkbox + margins
   )
+  
 }
 
 zoom_server <- function(id, zoom, zoom_levels) {

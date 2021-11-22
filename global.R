@@ -222,6 +222,7 @@ styler <- '
   }
   
   .sidebar_extra {
+  
     overflow-x: hidden;
     overflow-y: auto;
     max-height: 25%;
@@ -231,7 +232,7 @@ styler <- '
     position: absolute;
     bottom: 0;
     width: 100%;
-        display: block;
+    display: block;
   }
   
   .small_map img {
