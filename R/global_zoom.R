@@ -8,17 +8,25 @@ get_zoom <- function(zoom, zoom_levels) {
 }
 
 get_zoom_name <- function(x) {
-  x <- case_when(
+  case_when(
     x == "borough" ~ "Borough/city",
     x == "CT" ~ "Census tract",
     x == "DA" ~ "Dissemination area",
     x == "building" ~ "Building",
     x == "street" ~ "Street")
-  return(x)
 }
 
 get_zoom_label <- function(zoom_levels) {
   zl <- names(sort(zoom_levels))
   zl <- get_zoom_name(zl)
   return(zl)
+}
+
+get_zoom_code <- function(x) {
+  case_when(
+    x == "Borough/city" ~ "borough",
+    x == "Census tract" ~ "CT",
+    x == "Dissemination area" ~ "DA",
+    x == "Building" ~ "building",
+    x == "Street" ~ "street")
 }

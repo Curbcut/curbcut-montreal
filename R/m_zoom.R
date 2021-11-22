@@ -32,13 +32,22 @@ zoom_server <- function(id, zoom, zoom_levels) {
   
   moduleServer(id, function(input, output, session) {
 
-    observeEvent(zoom(), {
-      if (input$auto) {
-        updateSliderTextInput(session, "slider", 
-                              selected = get_zoom_name(zoom()))
-      }
-    }, ignoreInit = TRUE)
+    # Disable the slider if in auto mode
+    observeEvent(input$auto, {
+      toggleState(id = "slider", condition = !input$auto)
+    })
     
-    zoom
+    # Update the slider if in auto mode
+    observeEvent(zoom(), {
+      if (input$auto) updateSliderTextInput(session, "slider", 
+                                            selected = get_zoom_name(zoom()))
+    })
+    
+    # Get slider value
+    zoom_out <- reactive({
+      if (input$auto) zoom() else get_zoom_code(input$slider)
+      })
+    
+    zoom_out
   })
 }
