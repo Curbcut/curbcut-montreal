@@ -1,8 +1,8 @@
 #### SMALL MAP MODULE ##########################################################
 
 small_map_UI <- function(id) {
-  div(imageOutput(NS(id, "small_map"), inline = TRUE), 
-      style = "text-align: center")
+  div(class = "small_map", style = "text-align: center;",
+      imageOutput(NS(id, "small_map"), inline = TRUE))
 }
 
 # `string` should be, e.g. "left_borough_ale_index"

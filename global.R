@@ -231,6 +231,13 @@ styler <- '
     position: absolute;
     bottom: 0;
     width: 100%;
+        display: block;
+  }
+  
+  .small_map img {
+    max-width: 100%;
+    height: auto;
+    text-align: center;
   }
 
 '
