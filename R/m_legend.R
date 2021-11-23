@@ -31,22 +31,38 @@ legend_server <- function(id, var_left, var_right, zoom_val) {
           theme(legend.position = "none")
         
       } else {
-        col_bivar |>
+
+        var_left <- str_remove(var_left(), "_\\d{4}$")
+        var_right <- str_remove(var_right(), "_\\d{4}$")
+        var_left_title <- 
+          var_exp |> 
+          filter(var_code == var_left) |> 
+          pull(var_name)
+        
+        var_right_title <- 
+          var_exp |> 
+          filter(var_code == var_right) |> 
+          pull(var_name)
+        
+        legend_bivar |>
           mutate(label = case_when(
             x == "3" & y == "3" ~ "Both high",
             x == "1" & y == "1" ~ "Both low",
-            x == "3" & y == "1" ~ "Canale\nhigh only",
-            x == "1" & y == "3" ~ "Housing\nhigh only",
+            x == "3" & y == "1" ~ paste0(var_left_title, "\nhigh only"),
+            x == "1" & y == "3" ~ paste0(var_right_title, "\nhigh only"),
             TRUE ~ NA_character_)) |> 
           mutate(label_colour = if_else(label == "Both high", "white", "black")) |> 
-          ggplot(aes(x, y, fill = fill)) +
+          ggplot(aes(y, x, fill = fill)) +
           geom_tile() +
-          geom_text(aes(x, y, label = label, colour = label_colour), 
+          geom_text(aes(y, x, label = label, colour = label_colour), 
                     inherit.aes = FALSE, size = 3) +
-          scale_fill_manual(values = setNames(colour_bivar_borough$fill[1:9],
-                                              colour_bivar_borough$fill[1:9])) +
+          scale_fill_manual(values = setNames(
+            paste0(legend_bivar$fill, 
+                   filter(colour_alpha, zoom == zoom_val())$alpha),
+            legend_bivar$fill)) +
           scale_colour_manual(values = c("black" = "black", "white" = "white")) +
-          labs(x = "Canale (low to high)", y = "Housing (low to high)") +
+          labs(x = paste0(var_right_title, " (low to high)"), 
+               y = paste0(var_left_title, "Housing (low to high)")) +
           theme_void() +
           theme(legend.position = "none")
         
