@@ -83,7 +83,7 @@ census_education <- c(
 census_geos <- census_retrieval("CA01")
 
 rm(census_housing, census_identity, census_income, census_transport,
-   census_employment, census_education, vars_to_remove, census_retrieval)
+   census_employment, census_education)
 
 
 # Interpolate DA/CT/CSD geometries ----------------------------------------
@@ -148,6 +148,10 @@ CSD_census <- interpolate_census(census_geos$CSD_census, borough)
 
 # Once DA interpolation has been done, I can look at boroughs using their geos
 
+nas_da_level <- 
+  census_geos$DA %>% 
+  select_if(~all(is.na(.))) %>% names()
+
 # Get area for DA geometry
 DA_census_n <-
   DA_census %>% 
@@ -158,15 +162,17 @@ DA_census_n <-
   st_set_agr("constant")
 
 avg_list <- str_subset(names(DA_census_n), "avg|median|prop") %>% 
-  str_subset("total", negate = TRUE)
+  str_subset("total", negate = TRUE) %>% 
+  str_subset(paste(nas_da_level, collapse = "|"), negate = TRUE)
 
 # Identify variables to be aggregated
 agg_list <-
   setdiff(names(DA_census_n), c("ID", "name", "CTUID", "CSDUID", "geometry", 
                                 "area")) %>% 
-  setdiff(avg_list)
+  setdiff(avg_list) %>% 
+  str_subset(paste(nas_da_level, collapse = "|"), negate = TRUE)
 
-borough_census <- 
+borough_census_no_inc <- 
   borough %>% 
   select(ID) %>% 
   filter(str_starts(ID, "2466023")) %>% 
@@ -180,10 +186,57 @@ borough_census <-
   st_drop_geometry() %>% 
   group_by(ID = CSDUID) %>%
   summarize(
+    # RECHECK which are possible to weigth mean, depending on census DA's 
+    # vector availability
     housing_rent_avg_dollar = weighted.mean(housing_rent_avg_dollar, 
                                             rent_avg_total, na.rm = TRUE),
     housing_value_avg_dollar = weighted.mean(housing_value_avg_dollar, 
                                              value_avg_total, na.rm = TRUE),
+    across(all_of(agg_list), sum_na)) %>% 
+  mutate(across(all_of(agg_list), ~if_else(.x < 5, 0, .x))) %>%
+  filter(str_starts(ID, "2466023"))
+
+
+# Interpolate borough geometries (income) ---------------------------------
+
+# Income was not available at the DA level in 1996 census
+
+# Get area for DA geometry
+CT_census_n <-
+  CT_census %>% 
+  left_join(select(CT, ID, CSDUID), by = "ID") %>% 
+  st_as_sf() %>% 
+  st_transform(32618) %>% 
+  mutate(area = st_area(geometry)) %>% 
+  st_set_agr("constant")
+
+avg_list <- str_subset(names(CT_census), "avg|median|prop") %>% 
+  str_subset("total", negate = TRUE) %>% 
+  str_subset(paste(nas_da_level, collapse = "|"))
+
+# Identify variables to be aggregated
+agg_list <-
+  setdiff(names(CT_census), c("ID", "name", "CTUID", "CSDUID", "geometry", 
+                              "area")) %>% 
+  setdiff(avg_list) %>% 
+  str_subset(paste(nas_da_level, collapse = "|"))
+
+borough_census_inc <- 
+  borough %>% 
+  select(ID) %>% 
+  filter(str_starts(ID, "2466023")) %>% 
+  st_transform(32618) %>% 
+  st_set_agr("constant") %>% 
+  st_filter(CT_census_n, .) %>% 
+  mutate(area_prop = st_area(geometry) / area) %>% 
+  mutate(across(all_of(agg_list), ~{.x * units::drop_units(area_prop)})) %>% 
+  filter(units::drop_units(area_prop) > 0.02) %>% 
+  select(-ID, -area, -area_prop) %>% 
+  st_drop_geometry() %>% 
+  group_by(ID = CSDUID) %>%
+  summarize(
+    # RECHECK which are possible to weigth mean, depending on census DA's 
+    # vector availability
     inc_median_dollar = weighted.mean(inc_median_dollar, inc_median_total, 
                                       na.rm = TRUE),
     inc_low_income_prop = weighted.mean(inc_low_income_prop, 
@@ -191,6 +244,11 @@ borough_census <-
     across(all_of(agg_list), sum_na)) %>% 
   mutate(across(all_of(agg_list), ~if_else(.x < 5, 0, .x))) %>%
   filter(str_starts(ID, "2466023"))
+
+
+# Bind interpolated borough geometries ------------------------------------
+borough_census <- 
+  left_join(borough_census_no_inc, borough_census_inc, by = "ID")
 
 
 # Interpolate grid geometries ---------------------------------------------

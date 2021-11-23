@@ -235,7 +235,7 @@ var_exp <-
 
 # Cleanup -----------------------------------------------------------------
 
-rm(newest_census_year)
+rm(newest_census_year, vars_to_remove, census_retrieval)
 
 
 # To save output, run dev/build_geometries.R, which calls this script

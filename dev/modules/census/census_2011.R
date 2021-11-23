@@ -82,7 +82,7 @@ census_education <- c(
 census_geos <- census_retrieval("CA11")
 
 rm(census_housing, census_identity, census_income, census_transport,
-   census_employment, census_education, vars_to_remove, census_retrieval)
+   census_employment, census_education)
 
 
 # Interpolate DA/CT/CSD geometries ----------------------------------------

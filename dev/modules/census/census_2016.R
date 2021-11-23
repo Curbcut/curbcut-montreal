@@ -112,7 +112,7 @@ census_geos <- census_retrieval("CA16", added_var_group =
 
 rm(census_housing, census_identity, census_income, census_transport,
    census_age, census_education, census_employment, census_family,
-   census_language, vars_to_remove, census_retrieval)
+   census_language)
 
 
 # Helper function for processing data -------------------------------------
