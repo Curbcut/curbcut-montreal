@@ -59,6 +59,9 @@ legend_server <- function(id, var_left, var_right, zoom_val) {
           
         } else {
           
+          var_left <- str_remove(var_left(), "_\\d{4}$")
+          var_right <- str_remove(var_right(), "_\\d{4}$")
+          
           var_left_title <- 
             var_exp |> 
             filter(var_code == var_left) |> 
