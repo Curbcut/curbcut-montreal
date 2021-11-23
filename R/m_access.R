@@ -114,6 +114,7 @@ access_server <- function(id) {
         
         if (var_right() == " ") {
           mapdeck_update(map_id = NS(id, "map"))  %>%
+            clear_path() %>% 
             clear_polygon() %>%
             add_sf(data = 
                      {data() |> 
