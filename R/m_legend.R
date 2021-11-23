@@ -16,14 +16,14 @@ legend_server <- function(id, var_left, var_right, zoom_val) {
   moduleServer(id, function(input, output, session) {
     
     plot_height <- function() {
-      if (var_right() == " ") 80 else 120
+      if (length(var_left()) == 1 && var_right()[1] == " ") 60 else 120
     }
 
     output$legend_render <- renderUI({
       
       output$legend <- renderPlot({
         
-        if (var_right() == " ") {
+        if (length(var_left()) == 1 && var_right()[1] == " ") {
           
           # Temporarily use legend_left_3, and sub in legend_left_5 once
           # absolute values are showing
@@ -38,10 +38,27 @@ legend_server <- function(id, var_left, var_right, zoom_val) {
             theme_void() +
             theme(legend.position = "none")
           
+        } else if (length(var_left()) == 2 && var_right()[1] == " ") {
+          
+          legend_delta_5 |> 
+            ggplot(aes(x, y, fill = fill)) +
+            geom_tile() +
+            scale_x_continuous(name = "var_name (change DATE_1 - DATE_2)",
+                               breaks = c(1.5, 2.5, 3.5, 4.5),
+                               labels = c("-10%", "-2%", "+2%", "+10%")) +
+            scale_y_continuous(name = NULL) +
+            scale_fill_manual(values = setNames(
+              paste0(legend_delta_5$fill, 
+                     filter(colour_alpha, zoom == "borough")$alpha),
+              legend_delta_5$fill)) +
+            theme_minimal() +
+            theme(legend.position = "none",
+                  axis.ticks = element_blank(),
+                  axis.text.y = element_blank(),
+                  panel.grid = element_blank())
+          
         } else {
           
-          var_left <- str_remove(var_left(), "_\\d{4}$")
-          var_right <- str_remove(var_right(), "_\\d{4}$")
           var_left_title <- 
             var_exp |> 
             filter(var_code == var_left) |> 
