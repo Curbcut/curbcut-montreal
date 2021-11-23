@@ -35,7 +35,7 @@ climate_risk_server <- function(id) {
                           left_var_full = destructive_storms_ind,
                           left_var = destructive_storms_ind_q3) %>% 
             mutate(group = paste(left_var, "- 1")) %>% 
-            left_join(colour_borough, by = "group")}, stroke_width = 0, 
+            left_join(colour_bivar_borough, by = "group")}, stroke_width = 0, 
             stroke_colour = "#FFFFFF", fill_colour = "fill", update_view = FALSE,
             id = "ID", auto_highlight = TRUE, highlight_colour = "#FFFFFF90")
     })

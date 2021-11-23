@@ -135,7 +135,7 @@ walk(c("borough", "CT", "DA", "grid", "building", "street"), function(scale) {
           geom_sf(data = circle_borough, fill = "grey70", color = "white", 
                   size = 0.01) +
           geom_sf(aes(fill = as.factor(var)), color = "white", size = 0.01) +
-          scale_fill_manual(values = colour_scale[1:3], na.value = "grey70") +
+          scale_fill_manual(values = col_left_3, na.value = "grey70") +
           theme_map() +
           theme(legend.position = "none")
         
@@ -148,8 +148,8 @@ walk(c("borough", "CT", "DA", "grid", "building", "street"), function(scale) {
                   size = 0.01) +
           geom_sf(aes(fill = as.factor(var), colour = as.factor(var)), 
                   size = 0.05) +
-          scale_fill_manual(values = colour_scale[1:3], na.value = "grey70") +
-          scale_colour_manual(values = colour_scale[1:3], na.value = "grey70") +
+          scale_fill_manual(values = col_left_3, na.value = "grey70") +
+          scale_colour_manual(values = col_left_3, na.value = "grey70") +
           theme_map() +
           theme(legend.position = "none")
         
@@ -161,7 +161,7 @@ walk(c("borough", "CT", "DA", "grid", "building", "street"), function(scale) {
           geom_sf(data = circle_borough, fill = "grey70", color = "white", 
                   size = 0.01) +
           geom_sf(aes(colour = as.factor(var)), size = 0.1) +
-          scale_colour_manual(values = colour_scale[1:3], na.value = "grey70") +
+          scale_colour_manual(values = col_left_3, na.value = "grey70") +
           theme_map() +
           theme(legend.position = "none")
         
@@ -171,7 +171,7 @@ walk(c("borough", "CT", "DA", "grid", "building", "street"), function(scale) {
           select(var = all_of(.x)) %>% 
           ggplot() +
           geom_sf(aes(fill = as.factor(var)), color = "white", size = 0.01) +
-          scale_fill_manual(values = colour_scale[1:3], na.value = "grey70") +
+          scale_fill_manual(values = col_left_3, na.value = "grey70") +
           theme_map() +
           theme(legend.position = "none")
         
@@ -252,7 +252,7 @@ walk(c("borough", "CT", "DA", "grid", "building", "street"), function(scale) {
           geom_sf(data = circle_borough, fill = "grey70", color = "white", 
                   size = 0.01) +
           geom_sf(aes(fill = as.factor(var)), color = "white", size = 0.01) +
-          scale_fill_manual(values = colour_scale[4:6], na.value = "grey70") +
+          scale_fill_manual(values = col_right_3, na.value = "grey70") +
           theme_map() +
           theme(legend.position = "none")
         
@@ -265,8 +265,8 @@ walk(c("borough", "CT", "DA", "grid", "building", "street"), function(scale) {
                   size = 0.01) +
           geom_sf(aes(fill = as.factor(var), colour = as.factor(var)), 
                   size = 0.05) +
-          scale_fill_manual(values = colour_scale[4:6], na.value = "grey70") +
-          scale_colour_manual(values = colour_scale[4:6], na.value = "grey70") +
+          scale_fill_manual(values = col_right_3, na.value = "grey70") +
+          scale_colour_manual(values = col_right_3, na.value = "grey70") +
           theme_map() +
           theme(legend.position = "none")
         
@@ -278,7 +278,7 @@ walk(c("borough", "CT", "DA", "grid", "building", "street"), function(scale) {
           geom_sf(data = circle_borough, fill = "grey70", color = "white", 
                   size = 0.01) +
           geom_sf(aes(colour = as.factor(var)), size = 0.1) +
-          scale_colour_manual(values = colour_scale[4:6], na.value = "grey70") +
+          scale_colour_manual(values = col_right_3, na.value = "grey70") +
           theme_map() +
           theme(legend.position = "none")
         
@@ -288,7 +288,7 @@ walk(c("borough", "CT", "DA", "grid", "building", "street"), function(scale) {
           select(var = all_of(.x)) %>% 
           ggplot() +
           geom_sf(aes(fill = as.factor(var)), color = "white", size = 0.01) +
-          scale_fill_manual(values = colour_scale[4:6], na.value = "grey70") +
+          scale_fill_manual(values = col_right_3, na.value = "grey70") +
           theme_map() +
           theme(legend.position = "none")
         

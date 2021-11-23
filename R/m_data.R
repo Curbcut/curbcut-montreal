@@ -12,8 +12,9 @@
 #' separately specify the `zoom` argument.
 #' @param zoom A reactive which resolves to a character string representing the
 #' amount of transparency to be applied to the fill aesthetic in maps made from
-#' the data. Currently available options are `c("borough", "CT", "DA", "DA_2")`
-#' and by default this argument takes its value from the `df` parameter.
+#' the data. Currently available options are 
+#' `c("borough", "building", "CT", "DA", "street")` and by default this argument 
+#' takes its value from the `df` parameter.
 #' @return A reactive expression containing a data frame with the following
 #' fields (If the `var_right` input is " ", the right_var_full and right_var 
 #' fields will be omitted.):
@@ -49,7 +50,7 @@ data_server <- function(id, var_left, var_right, df, zoom = df) {
         if (length(var_left) == 2 && length(var_right) == 1 && 
             var_right == " ") {
           get(paste0("colour_delta_", zoom()))
-        } else get(paste0("colour_", zoom()))
+        } else get(paste0("colour_bivar_", zoom()))
 
       
       ## Univariate data -------------------------------------------------------

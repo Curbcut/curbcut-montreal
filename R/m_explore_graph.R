@@ -173,14 +173,14 @@ explore_graph_server <- function(id, x, var_type, var_left, var_right, select,
       if (plot_type == "hist_all") {
         out <- ggplot(dat, aes(left_var)) +
           geom_histogram(aes(fill = fill), bins = bin_number) +
-          scale_fill_manual(values = colour_scale[3:1], na.translate = FALSE) +
+          scale_fill_manual(values = rev(col_left_3), na.translate = FALSE) +
           x_scale + y_scale + labs_x + theme_default
         }
       
       # Histogram, NA selection
       if (plot_type == "hist_na") {
         out <- ggplot(dat, aes(left_var)) +
-          geom_histogram(bins = bin_number, fill = colour_scale[1]) +
+          geom_histogram(bins = bin_number, fill = col_left_3[1]) +
           x_scale + y_scale + labs_x + theme_default
         }
       
@@ -190,7 +190,7 @@ explore_graph_server <- function(id, x, var_type, var_left, var_right, select,
           geom_histogram(aes(fill = round(left_var) == 
                                round(left_var[ID == select_id])),
                          bins = bin_number) +
-          scale_fill_manual(values = colour_scale[c(1, 3)], 
+          scale_fill_manual(values = col_left_3[c(1, 3)], 
                             na.translate = FALSE) +
           x_scale + y_scale + labs_x + theme_default
         }
@@ -199,14 +199,14 @@ explore_graph_server <- function(id, x, var_type, var_left, var_right, select,
       if (plot_type == "bar_all") {
         out <- ggplot(dat, aes(as.factor(left_var))) +
           geom_bar(aes(fill = fill), width = 1) +
-          scale_fill_manual(values = colour_scale[3:1], na.translate = FALSE) +
+          scale_fill_manual(values = rev(col_left_3), na.translate = FALSE) +
           x_scale + y_scale + labs_x + theme_default
         }
       
       # Bar, NA selection
       if (plot_type == "bar_na") {
         out <- ggplot(dat, aes(as.factor(left_var))) +
-          geom_bar(fill = colour_scale[1], width = 1) +
+          geom_bar(fill = col_left_3[1], width = 1) +
           x_scale + y_scale + labs_x + theme_default
         }
       
@@ -216,7 +216,7 @@ explore_graph_server <- function(id, x, var_type, var_left, var_right, select,
           geom_bar(aes(fill = round(left_var) == 
                                round(left_var[ID == select_id])), 
                          width = 1) +
-          scale_fill_manual(values = colour_scale[c(1, 3)], 
+          scale_fill_manual(values = col_left_3[c(1, 3)], 
                             na.translate = FALSE) +
           x_scale + y_scale + labs_x + theme_default
         }
@@ -240,7 +240,7 @@ explore_graph_server <- function(id, x, var_type, var_left, var_right, select,
         opac <- abs(cor(dat$left_var, dat$right_var, use = "complete.obs"))
         
         out <- ggplot(dat, aes(left_var, right_var)) +
-          geom_point(colour = colour_bivar$fill[9]) +
+          geom_point(colour = col_left_3[1]) +
           stat_smooth(geom = "line", se = FALSE, method = "loess", span = 1,
                       formula = y ~ x, alpha = opac) +
           x_scale + y_scale + labs_xy + theme_default
@@ -252,18 +252,18 @@ explore_graph_server <- function(id, x, var_type, var_left, var_right, select,
         opac <- abs(cor(dat$left_var, dat$right_var, use = "complete.obs"))
         
         out <- ggplot(dat, aes(left_var, right_var)) +
-          geom_point(colour = colour_bivar$fill[9]) +
+          geom_point(colour = col_left_3[1]) +
           stat_smooth(geom = "line", se = FALSE, method = "loess", span = 1,
                       formula = y ~ x, alpha = opac) +
           geom_point(data = filter(dat, ID == select_id),
-                     colour = colour_bivar$fill[1], size = 3) +
+                     colour = col_bivar[9], size = 3) +
           x_scale + y_scale + labs_xy + theme_default
         }
       
       # Boxplot, no selection
       if (plot_type == "box_all") {
         
-        colours <- c(colour_scale[1:2], rep(colour_scale[3], left_var_num - 2))
+        colours <- c(col_left_3[1:2], rep(col_left_3[3], left_var_num - 2))
         names(colours) <- as.factor(unique(sort(dat$left_var)))
         
         out <- ggplot(dat, aes(as.factor(left_var), right_var)) +
@@ -275,11 +275,11 @@ explore_graph_server <- function(id, x, var_type, var_left, var_right, select,
       # Boxplot, NA selection
       if (plot_type == "box_na") {
         
-        colours <- c(colour_scale[1:2], rep(colour_scale[3], left_var_num - 2))
+        colours <- c(col_left_3[1:2], rep(col_left_3[3], left_var_num - 2))
         names(colours) <- as.factor(unique(sort(dat$left_var)))
         
         out <- ggplot(dat, aes(as.factor(left_var), right_var)) +
-          geom_boxplot(fill = colour_scale[1], colour = "grey50") +
+          geom_boxplot(fill = col_left_3[1], colour = "grey50") +
           scale_fill_manual(values = colours) +
           x_scale + y_scale + labs_xy + theme_default
         }
@@ -287,13 +287,13 @@ explore_graph_server <- function(id, x, var_type, var_left, var_right, select,
       # Boxplot, active selection
       if (plot_type == "box_select") {
         
-        colours <- c(colour_scale[1:2], rep(colour_scale[3], left_var_num - 2))
+        colours <- c(col_left_3[1:2], rep(col_left_3[3], left_var_num - 2))
         names(colours) <- as.factor(unique(sort(dat$left_var)))
         
         out <- ggplot(dat, aes(as.factor(left_var), right_var)) +
-          geom_boxplot(fill = colour_scale[1], colour = "grey50") +
+          geom_boxplot(fill = col_left_3[1], colour = "grey50") +
           geom_point(data = filter(dat, ID == select_id),
-                     colour = colour_bivar$fill[1], size = 4) +
+                     colour = col_bivar[9], size = 4) +
           scale_fill_manual(values = colours) +
           x_scale + y_scale + labs_xy + theme_default
       }
@@ -318,7 +318,7 @@ explore_graph_server <- function(id, x, var_type, var_left, var_right, select,
         out <- ggplot(dat, aes(left_var_1, left_var_2)) +
           geom_smooth(se = FALSE, method = "lm", formula = y ~ x, 
                       colour = "black", size = 0.5) +
-          geom_point(colour = colour_bivar$fill[9]) +
+          geom_point(colour = col_left_3[1]) +
           x_scale + y_scale + labs_xy + theme_default
       }
       
@@ -326,11 +326,11 @@ explore_graph_server <- function(id, x, var_type, var_left, var_right, select,
       if (plot_type == "multi_uni_select") {
         
         out <- ggplot(dat, aes(left_var_1, left_var_2)) +
-          geom_point(colour = colour_bivar$fill[9]) +
+          geom_point(colour = col_left_3[1]) +
           geom_smooth(se = FALSE, method = "lm", formula = y ~ x, 
                       colour = "black", size = 0.5) +
           geom_point(data = filter(dat, ID == select_id),
-                     colour = colour_bivar$fill[1], size = 3) +
+                     colour = col_bivar[9], size = 3) +
           x_scale + y_scale + labs_xy + theme_default
       }
       
@@ -353,7 +353,7 @@ explore_graph_server <- function(id, x, var_type, var_left, var_right, select,
         opac <- abs(cor(dat$left_var, dat$right_var, use = "complete.obs"))
         
         out <- ggplot(dat, aes(left_var, right_var)) +
-          geom_point(colour = colour_bivar$fill[9]) +
+          geom_point(colour = col_left_3[1]) +
           stat_smooth(geom = "line", se = FALSE, method = "loess", span = 1,
                       formula = y ~ x, alpha = opac) +
           x_scale + y_scale + labs_xy + theme_default
@@ -365,20 +365,20 @@ explore_graph_server <- function(id, x, var_type, var_left, var_right, select,
         opac <- abs(cor(dat$left_var, dat$right_var, use = "complete.obs"))
         
         out <- ggplot(dat, aes(left_var, right_var)) +
-          geom_point(colour = colour_bivar$fill[9]) +
+          geom_point(colour = col_left_3[1]) +
           stat_smooth(geom = "line", se = FALSE, method = "loess", span = 1,
                       formula = y ~ x, alpha = opac) +
           geom_point(data = filter(dat, ID == select_id),
-                     colour = colour_bivar$fill[1], size = 3) +
+                     colour = col_bivar[9], size = 3) +
           x_scale + y_scale + labs_xy + theme_default
       }
       
       # Date line graph
       if (plot_type == "date_all") {
         out <- ggplot(dat, aes(right_var, left_var)) +
-          geom_line(colour = colour_bivar$fill[5]) +
+          geom_line(colour = col_bivar[5]) +
           stat_smooth(geom = "line", se = FALSE, method = "loess", span = 1,
-                      formula = y ~ x, colour = colour_bivar$fill[1]) +
+                      formula = y ~ x, colour = col_bivar[9]) +
           x_scale + y_scale + labs_xy + theme_default
       }
       

@@ -30,9 +30,6 @@ canale_server <- function(id) {
     sidebar_server("sidebar", "canale", 
                    reactive(paste0("left_", zoom(), "_", canale_ind)))
     
-    # Legend
-    legend_server("legend")
-
     # Map
     output$map <- renderMapdeck({
       mapdeck(style = map_style, token = map_token, zoom = map_zoom, 
@@ -41,7 +38,7 @@ canale_server <- function(id) {
                  borough %>%
                  mutate(group = paste(eval(as.name("canale_ind_q3_2016")), 
                                       "- 1")) %>%
-                 left_join(colour_borough, by = "group"),
+                 left_join(colour_bivar_borough, by = "group"),
                stroke_width = 100, stroke_colour = "#FFFFFF", 
                fill_colour = "fill", update_view = FALSE, id = "ID", 
                auto_highlight = TRUE, highlight_colour = "#FFFFFF90")
@@ -75,6 +72,9 @@ canale_server <- function(id) {
                    zoom = zoom, 
                    build_str_as_DA = TRUE)
 
+    # Legend
+    legend_server("legend", var_left, var_right, zoom_val)
+    
     # Did-you-know panel
     dyk_server("dyk", var_left, var_right)
 

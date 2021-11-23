@@ -58,7 +58,7 @@ access_server <- function(id) {
                  # CT %>%
                  # mutate(group = paste0(eval(as.name(
                  #   "access_jobs_total_pwd_q3")), " - 1")) %>%
-                 # left_join(colour_CT, by = "group"),
+                 # left_join(colour_bivar_CT, by = "group"),
                stroke_width = 10, stroke_colour = "#FFFFFF", 
                fill_colour = "fill", update_view = FALSE, id = "ID", 
                auto_highlight = TRUE, highlight_colour = "#FFFFFF90"#,

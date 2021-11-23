@@ -36,7 +36,7 @@ dmti_server <- function(id) {
         zoom = map_zoom, location = map_location) %>%
         add_polygon(data = borough %>%
                       mutate(group = paste(dmti_food_healthy_2016_q3, "- 1")) %>%
-                      left_join(colour_borough, by = "group"),
+                      left_join(colour_bivar_borough, by = "group"),
                     stroke_width = 100, stroke_colour = "#FFFFFF", fill_colour = "fill", 
                     update_view = FALSE, id = "ID", auto_highlight = TRUE,
                     highlight_colour = "#FFFFFF90")

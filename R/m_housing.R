@@ -87,7 +87,7 @@ housing_server <- function(id) {
                       mutate(group = paste(eval(as.name(paste0(
                         "housing_tenant_prop_q3", "_", current_census))), 
                         "- 1")) %>%
-                      left_join(colour_borough, by = "group"),
+                      left_join(colour_bivar_borough, by = "group"),
                     stroke_width = 100, stroke_colour = "#FFFFFF", 
                     fill_colour = "fill", update_view = FALSE, id = "ID", 
                     auto_highlight = TRUE, highlight_colour = "#FFFFFF90")
