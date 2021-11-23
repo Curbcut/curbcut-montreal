@@ -102,8 +102,9 @@ right_panel <- function(id, ...) {
   
   absolutePanel(
     id = NS(id, "right_panel"), 
-    style = paste0("z-index:500; height: calc(100vh - 120px); overflow-y: auto; ",
-                   "overflow-x:hidden; padding: 5px; border-width: 0px; width: 20vw;"),
+    style = paste0("z-index:500; height: calc(100vh - 120px) ;", #overflow-y: auto; ",
+                   "padding: 5px; border-width: 0px; width: 20vw; ",
+                   "font-size: 11px;"),
     class = "panel panel-default", top = 15, right = 15, # width = 300,
     ...
   )
@@ -206,13 +207,17 @@ styler <- '
   #sus_page > li:first-child { 
     display:none;
   }
+  
+  h4 {
+  font-size: 13px;
+  }
     
   .mapdeck_div {
   height: calc(100vh - 85px);
   }
   
   .sus_sidebar {
-    font-size: 13px;
+    font-size: 11px;
     padding: 0px 5px 0px 0px;
     margin: 0px 5px 0px 0px;
     border-width: 0px;
@@ -237,6 +242,17 @@ styler <- '
   .small_map img {
     max-width: 100%;
     height: auto;
+  }
+  
+  .compare_dropdown .open> .dropdown-menu {
+  max-height: 250px;
+  font-size: 13px;
+  left: auto;
+  right: 0;
+  }
+  
+  .form-group {
+  margin: auto;
   }
 
 '

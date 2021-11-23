@@ -2,7 +2,7 @@
 
 legend_UI <- function(id) {
   tagList(
-      h5("Legend", style = "font-size: 11px;"),
+      h5("Legend", style = "font-size: 12px;"),
       uiOutput(NS(id, "legend_render"))
   )
 }

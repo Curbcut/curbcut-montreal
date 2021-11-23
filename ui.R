@@ -10,7 +10,7 @@ ui <- tagList(
   # Language button
   fixedPanel(
     id = "language_button",
-    style = "z-index: 9998; border-color: #FFFFFF00; background-color: #FFFFFF00;",
+    style = "z-index: 1001; border-color: #FFFFFF00; background-color: #FFFFFF00;",
     top = 7, right = 150, width = 0,
     tagList(usei18n(i18n), actionButton(
       "language_button", label = "EN/FR",

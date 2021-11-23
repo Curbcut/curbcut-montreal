@@ -13,8 +13,9 @@ compare_UI <- function(id, var_list) {
     
     conditionalPanel(
       condition = "output.hide_status == 1", ns = NS(id),
-      select_var_UI(NS(id, "compare"), var_list, inline = FALSE,
-                    more_style = "margin:auto; width:95%;"),
+      div(class = "compare_dropdown",
+          select_var_UI(NS(id, "compare"), var_list, inline = FALSE,
+                    more_style = "margin:auto; width:95%;")),
       small_map_UI(NS(id, "right"))),
     
     conditionalPanel(
