@@ -22,7 +22,7 @@ colour_alpha <- tibble(
 # Univariate 5-level colour tables ----------------------------------------
 
 colour_left_5 <-
-  tibble(group = c("1", "2", "3", "4", "5", "NA"),
+  tibble(group = c(1:5, "NA"),
          fill = c(col_left_5, col_NA))
 
 colour_left_5_borough <- 
@@ -49,7 +49,7 @@ colour_left_5_street <-
 # Univariate 3-level colour tables ----------------------------------------
 
 colour_left_3 <-
-  tibble(group = c("1", "2", "3", "NA"),
+  tibble(group = c(1:3, "NA"),
          fill = c(col_left_3, col_NA))
 
 colour_left_3_borough <- 

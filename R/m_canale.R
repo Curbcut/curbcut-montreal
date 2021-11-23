@@ -33,12 +33,12 @@ canale_server <- function(id) {
     # Map
     output$map <- renderMapdeck({
       mapdeck(style = map_style, token = map_token, zoom = map_zoom, 
-              location = map_location) %>%
+              location = map_location) |>
         add_sf(data = 
-                 borough %>%
-                 mutate(group = paste(eval(as.name("canale_ind_q3_2016")), 
-                                      "- 1")) %>%
-                 left_join(colour_bivar_borough, by = "group"),
+                 borough |> 
+                 mutate(group = as.character(canale_ind_q3_2016),
+                        group = if_else(is.na(group), "NA", group)) |> 
+                 left_join(colour_left_3_borough, by = "group"),
                stroke_width = 100, stroke_colour = "#FFFFFF", 
                fill_colour = "fill", update_view = FALSE, id = "ID", 
                auto_highlight = TRUE, highlight_colour = "#FFFFFF90")
@@ -61,7 +61,7 @@ canale_server <- function(id) {
 
     # Data
     data <- data_server(id = "canale", var_left = var_left,
-                        var_right = var_right, df = zoom)
+                        var_right = var_right, df = zoom, zoom = zoom_val)
     
     # Explore panel
     explore_server(id = "explore", 

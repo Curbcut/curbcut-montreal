@@ -2,7 +2,7 @@
 
 legend_UI <- function(id) {
   div(h5("Legend", style = "font-size: 11px;"),
-      plotOutput(NS(id, "legend")), style = "height: 160px")
+      plotOutput(NS(id, "legend"), inline = TRUE))
 }
 
 legend_server <- function(id, var_left, var_right, zoom_val) {
@@ -51,6 +51,6 @@ legend_server <- function(id, var_left, var_right, zoom_val) {
           theme(legend.position = "none")
         
       }
-    }, height = 100) 
+    }, height = {\() if (var_right() == " ") 80 else 120}())
   })
 }

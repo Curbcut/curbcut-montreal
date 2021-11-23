@@ -47,9 +47,14 @@ data_server <- function(id, var_left, var_right, df, zoom = df) {
       
       # Set colour transparency
       colour <- 
-        if (length(var_left) == 2 && length(var_right) == 1 && 
-            var_right == " ") {
+        if (length(var_left) == 2 && var_right[1] == " ") {
           get(paste0("colour_delta_", zoom()))
+        } else if (length(var_left) == 1 && var_right[1] == " "
+                   && df() %in% c("borough", "CT", "DA")) {
+          get(paste0("colour_left_3_", zoom()))
+        } else if (length(var_left) == 1 && var_right[1] == " "
+                   && df() %in% c("building", "street")) {
+          get("colour_left_3_DA")
         } else get(paste0("colour_bivar_", zoom()))
 
       
@@ -82,14 +87,15 @@ data_server <- function(id, var_left, var_right, df, zoom = df) {
                 TRUE ~ "5"),
               across(where(is.numeric), ~replace(., is.nan(.), NA)),
               across(where(is.numeric), ~replace(., is.infinite(.), NA))) %>% 
-            select(ID, name, name_2, any_of("CSDUID"), population, left_var, left_var_q3,
-                   left_var_1 = left_var1, left_var_2 = left_var2) 
+            select(ID, name, name_2, any_of("CSDUID"), population, left_var, 
+                   left_var_q3, left_var_1 = left_var1, left_var_2 = left_var2) 
         }
         
         # Finish up
         data <- 
           data |> 
-          mutate(group = paste(left_var_q3, "- 1")) %>% 
+          mutate(group = as.character(left_var_q3),
+                 group = if_else(is.na(group), "NA", group)) |> 
           left_join(colour, by = "group")
         
         
