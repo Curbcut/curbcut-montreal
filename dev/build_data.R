@@ -59,10 +59,26 @@ stopifnot(
 )
 
 
-# Add topic variables (modules) -------------------------------------------
+# Build variable table ----------------------------------------------------
 
+# # Eventually...
+# variables <- 
+#   tibble(
+#     var_code = character(),
+#     var_title = character(),
+#     var_short = character(),
+#     var_exp = character(),
+#     category = character(),
+#     dates = list(),
+#     scales = list()
+#   )
+
+# But for now:
 var_exp <- tibble(var_code = character(), var_name = character(),
-        explanation = character())
+                  explanation = character())
+
+
+# Add topic variables (modules) -------------------------------------------
 
 source("dev/modules/census/build_census.R")
 source("dev/modules/canale.R")
