@@ -59,7 +59,8 @@ legend_server <- function(id, var_left, var_right, zoom_val) {
               x == "3" & y == "1" ~ paste0(var_left_title, "\nhigh only"),
               x == "1" & y == "3" ~ paste0(var_right_title, "\nhigh only"),
               TRUE ~ NA_character_)) |> 
-            mutate(label_colour = if_else(label == "Both high", "white", "black")) |> 
+            mutate(label_colour = if_else(
+              label == "Both high", "white", "black")) |> 
             ggplot(aes(y, x, fill = fill)) +
             geom_tile() +
             geom_text(aes(y, x, label = label, colour = label_colour), 
@@ -68,7 +69,8 @@ legend_server <- function(id, var_left, var_right, zoom_val) {
               paste0(legend_bivar$fill, 
                      filter(colour_alpha, zoom == zoom_val())$alpha),
               legend_bivar$fill)) +
-            scale_colour_manual(values = c("black" = "black", "white" = "white")) +
+            scale_colour_manual(values = c(
+              "black" = "black", "white" = "white")) +
             labs(x = paste0(var_right_title, " (low to high)"), 
                  y = paste0(var_left_title, "Housing (low to high)")) +
             theme_void() +
@@ -77,7 +79,8 @@ legend_server <- function(id, var_left, var_right, zoom_val) {
         }
       })
       
-      plotOutput("canale-legend-legend", height = plot_height(), width = "100%")
+      # Weird hack to get legend plot to inherit full namespace
+      plotOutput(session$ns("legend"), height = plot_height(), width = "100%")
       
     })
   
