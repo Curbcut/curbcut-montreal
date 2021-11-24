@@ -95,6 +95,7 @@ data_server <- function(id, var_left, var_right, df, zoom = df) {
             mutate(
               left_var = (left_var2 - left_var1) / left_var1, 
               left_var_q3 = case_when(
+                is.na(left_var) ~ NA_character_,
                 left_var < -1 * median(abs(left_var[abs(left_var) > 0.02]), 
                                        na.rm = TRUE) ~ "1",
                 left_var < -0.02 ~ "2",
