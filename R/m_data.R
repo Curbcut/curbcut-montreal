@@ -45,6 +45,23 @@ data_server <- function(id, var_left, var_right, df, zoom = df) {
       var_left <- unique(var_left())
       var_right <- unique(var_right())
       
+      # Get time format
+      time_format_var_left <- if (str_detect(var_left[1], "_\\d{4}_\\d{4}$")) {
+        # Already a comparison between two years pre-computed
+        "_\\d{4}_\\d{4}$"
+      } else if (str_detect(var_left[1], "_\\d{4}$")) {
+        # Yearly data
+        "_\\d{4}$"
+      }
+      
+      time_format_var_right <- if (str_detect(var_right[1], "_\\d{4}_\\d{4}$")) {
+        # Already a comparison between two years pre-computed
+        "_\\d{4}_\\d{4}$"
+      } else if (str_detect(var_right[1], "_\\d{4}$")) {
+        # Yearly data
+        "_\\d{4}$"
+      }
+      
       # Set colour transparency
       colour <- 
         if (length(var_left) == 2 && var_right[1] == " ") {
@@ -68,8 +85,8 @@ data_server <- function(id, var_left, var_right, df, zoom = df) {
           dplyr::select(ID, name, name_2, any_of("CSDUID"), population, 
                         left_var = all_of(var_left),
                         left_var_q3 = paste0(str_remove(
-                          all_of(var_left), "_\\d{4}$"), "_q3", 
-                          na.omit(str_extract(var_left, "_\\d{4}$"))))
+                          all_of(var_left), time_format_var_left), "_q3", 
+                          na.omit(str_extract(var_left, time_format_var_left))))
         
         # If there are two dates, make new left_var
         if (length(var_left) == 2) {
@@ -89,14 +106,23 @@ data_server <- function(id, var_left, var_right, df, zoom = df) {
               across(where(is.numeric), ~replace(., is.infinite(.), NA))) %>% 
             select(ID, name, name_2, any_of("CSDUID"), population, left_var, 
                    left_var_q3, left_var_1 = left_var1, left_var_2 = left_var2) 
+          
+          # Finish up
+          data <- 
+            data |> 
+            mutate(group = as.character(left_var_q3),
+                   group = if_else(is.na(group), "NA", group),
+                   group = paste(group, "- 1")) |> 
+            left_join(colour, by = "group")
+          
+        } else {
+          # Finish up
+          data <- 
+            data |> 
+            mutate(group = as.character(left_var_q3),
+                   group = if_else(is.na(group), "NA", group)) |> 
+            left_join(colour, by = "group")
         }
-        
-        # Finish up
-        data <- 
-          data |> 
-          mutate(group = as.character(left_var_q3),
-                 group = if_else(is.na(group), "NA", group)) |> 
-          left_join(colour, by = "group")
         
         
         ## Bivariate data ------------------------------------------------------
@@ -106,13 +132,13 @@ data_server <- function(id, var_left, var_right, df, zoom = df) {
             (data %>%
                dplyr::select(ID, name, name_2, any_of("CSDUID"), population, 
                              left_var = all_of(var_left),
-                             left_var_q3 = paste0(str_remove(var_left, "_\\d{4}$"), 
+                             left_var_q3 = paste0(str_remove(var_left, time_format_var_left), 
                                                   "_q3", 
-                                                  na.omit(str_extract(var_left, "_\\d{4}$"))),
+                                                  na.omit(str_extract(var_left, time_format_var_left))),
                              right_var = all_of(var_right), 
-                             right_var_q3 = paste0(str_remove(var_right, "_\\d{4}$"), 
+                             right_var_q3 = paste0(str_remove(var_right, time_format_var_right), 
                                                    "_q3", 
-                                                   na.omit(str_extract(var_right, "_\\d{4}$")))) %>% 
+                                                   na.omit(str_extract(var_right, time_format_var_right)))) %>% 
                { if (length(var_left) == 2 && length(var_right) == 2) 
                  mutate(., left_var = (left_var2 - left_var1) / left_var1,
                         left_var_q3 = ntile(left_var, 3),
