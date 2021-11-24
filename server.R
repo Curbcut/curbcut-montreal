@@ -39,6 +39,8 @@ shinyServer(function(input, output, session) {
       covid_server("covid")
     } else if (input$sus_page == "crash") {
       crash_server("crash")
+    } else if (input$sus_page == "gentrification") {
+      gentrification_server("gentrification")
     } else if (input$sus_page == "housing") {
       housing_server("housing")
     } else if (input$sus_page == "mcp") {
