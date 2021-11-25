@@ -39,9 +39,9 @@ var_list_right_gentrification <-
          "Income above $100k (%)" = "inc_high_prop"),
          # "Prevalence of low income (after-tax) (%)" = "inc_limat_prop"),
        "Education and occupation" = list(
-         "Bacholar degree and above (%)" = "edu_bachelor_above_prop",
-         "Professional occupation (%)" = "emp_professional_prop",
-         "Creative occupation (%)" = "emp_creative_prop"),
+         "Bacholar degree and above (%)" = "edu_bachelor_above_prop"),
+         # "Professional occupation (%)" = "emp_professional_prop",
+         # "Creative occupation (%)" = "emp_creative_prop"),
        # "Family structure" = list(
        #   "Family with child (%)" = "family_children_prop",
        #   "Single person family (%)" = "family_one_person_prop"),       
@@ -62,7 +62,7 @@ var_list_right_gentrification <-
          "Average rent ($)" = "housing_rent_avg_dollar",
          # "Average property value ($)" = "housing_prop_value_avg_dollar",
          # "Unaffordable housing (%)" = "housing_unafford_prop",
-         "Unsuitable housing (%)" = "housing_unsuit_prop",
+         # "Unsuitable housing (%)" = "housing_unsuit_prop",
          "Moved within 1 years(%)" = "housing_mobility_one_prop",
          "Moved within 5 years(%)" = "housing_mobility_five_prop"),
        "Transportation" = list(
@@ -72,20 +72,3 @@ var_list_right_gentrification <-
          # "15 minutes to work (%)" = "trans_t_15_prop",
          # "15-45 minutes to work (%)" = "trans_t_45_prop",
          # "More than 45 minutes to work (%)" = "trans_t_45_plus_prop"))
-
-
-# var_right_gentrification_shared <- 
-#   borough %>% 
-#   st_drop_geometry() %>% 
-#   select(contains(all_of(as.character(unlist(var_list_right_gentrification)))),
-#          -contains("_q3")) %>% 
-#   names() %>% 
-#   str_remove(., "_\\d{4}$") %>% 
-#   as_tibble() %>% 
-#   count(value) %>% 
-#   filter(n == max(n)) %>% 
-#   pull(value)
-# 
-# disabled_var_list_gentrification_right <- 
-#   (!unlist(var_list_right_gentrification) %in% var_right_gentrification_shared) %>% 
-#   replace(1, FALSE)

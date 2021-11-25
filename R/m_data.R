@@ -46,18 +46,12 @@ data_server <- function(id, var_left, var_right, df, zoom = df) {
       var_right <- unique(var_right())
       
       # Get time format
-      time_format_var_left <- if (str_detect(var_left[1], "_\\d{4}_\\d{4}$")) {
-        # Already a comparison between two years pre-computed
-        "_\\d{4}_\\d{4}$"
-      } else if (str_detect(var_left[1], "_\\d{4}$")) {
+      time_format_var_left <- if (str_detect(var_left[1], "_\\d{4}$")) {
         # Yearly data
         "_\\d{4}$"
       }
       
-      time_format_var_right <- if (str_detect(var_right[1], "_\\d{4}_\\d{4}$")) {
-        # Already a comparison between two years pre-computed
-        "_\\d{4}_\\d{4}$"
-      } else if (str_detect(var_right[1], "_\\d{4}$")) {
+      time_format_var_right <- if (str_detect(var_right[1], "_\\d{4}$")) {
         # Yearly data
         "_\\d{4}$"
       }

@@ -26,7 +26,7 @@ gentrification_UI <- function(id) {
       fillCol(
         div(class = "mapdeck_div", 
             mapdeckOutput(NS(id, "map"), height = "100%")),
-        right_panel(id, compare_UI(NS(id, "gentrification"), var_list_canale),
+        right_panel(id, compare_UI(NS(id, "gentrification"), var_list_right_gentrification),
                     div(style = "max-height: calc(100% - 310px); overflow-y:auto; overflow-x:hidden;",
                         explore_UI(NS(id, "explore")), dyk_UI(NS(id, "dyk"))))),
       flex = c(1, 5)
@@ -50,10 +50,9 @@ gentrification_server <- function(id) {
       mapdeck(
         style = map_style, token = token_gentrification,
         zoom = map_zoom, location = map_location) %>%
-        add_polygon(data = borough %>%
-                      mutate(group = paste(gentrification_ind_q3_2001_2006, "- 1")) %>%
-                      left_join(colour_bivar_borough, by = "group"),
-          stroke_width = 100, stroke_colour = "#FFFFFF", fill_colour = "fill", 
+        add_polygon(
+          data = data(), stroke_width = 100,
+          stroke_colour = "#FFFFFF", fill_colour = "fill",
           update_view = FALSE, id = "ID", auto_highlight = TRUE,
           highlight_colour = "#FFFFFF90")
       })
@@ -68,32 +67,10 @@ gentrification_server <- function(id) {
     # Get time from slider
     time <- reactive({input$slider_time})
     
-    # Which variable to disable on the right list? Depends on time
-    disabled_var_list_gentrification_right <- reactive({
-      
-      var_right_gentrification_shared <- 
-        borough %>% 
-        st_drop_geometry() %>% 
-        select(ends_with(as.character(time()[1]))|ends_with(as.character(time()[2]))) %>% 
-        select(contains(all_of(as.character(unlist(var_list_right_gentrification)))),
-               -contains("_q3")) %>% 
-        names() %>% 
-        str_remove(., "_\\d{4}$") %>% 
-        as_tibble() %>% 
-        count(value) %>% 
-        filter(n == 2) %>% 
-        pull(value)
-      
-      (!unlist(var_list_right_gentrification) %in% var_right_gentrification_shared) %>% 
-        replace(1, FALSE)
-      
-    })
-    
     # Compare panel
     var_right <- compare_server(id = "gentrification", 
                                 var_list = var_list_right_gentrification,
                                 df = zoom,
-                                disabled_choices = reactive(disabled_var_list_gentrification_right()),
                                 time = time)
     
     # Get single_var value to use if check_single_var is clicked
@@ -111,7 +88,7 @@ gentrification_server <- function(id) {
       if (!input$check_single_var) {
       stringr::str_remove(paste(
         "gentrification_ind",
-        time()[1], time()[2],
+        time(),
         sep = "_"), "_ $")
       } else {
           single_var()
