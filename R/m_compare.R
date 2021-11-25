@@ -39,7 +39,7 @@ compare_server <- function(id, var_list, df, zoom = df, disabled_choices = NULL,
 
     # Right map
     small_map_server("right", reactive(paste0(
-      "right_", df(), "_", var_right()[length(var_right())])))
+      "right_", df(), "_", var_right())))
 
     # Hide compare status
     output$show_panel <- show_panel

@@ -200,6 +200,34 @@ title_text <-
   add_row(tab = "stories", type = "main", text = paste0(
     "Various stories on Montreal's neighborhoods.")) |> 
   add_row(tab = "stories", type = "extra", text = paste0(
-    "No extra information at this time."))
+    "No extra information at this time.")) |> 
+  add_row(tab = "gentrification", type = "title", 
+          text = "Neighbourhood change pattern: Gentrification index") |> 
+  add_row(tab = "gentrification", type = "main", text = paste0(
+    "This gentrification index shows neighbourhood change patterns over time based ",
+    "on census data. Seven key indicators are chosen to capture changes in ",
+    "resident and housing characteristics: median household income, educational ",
+    "attainment, occupation, visible minority proportion, tenant proportion, ",
+    "average property values, and average rent.")) |> 
+  add_row(tab = "gentrification", type = "extra", text = paste0(
+    "<p>Gentrification is a process of neighbourhood upgrading, but the benefits ",
+    "of improvements are experienced differently by different classes of ",
+    "residents. While the middle-upper class residents benefit from the ",
+    "better living quality, lower-income and marginalized groups could face ","
+    the pressure of unaffordable housing and displacement and be forced to ",
+    "move out.</p>",
+    "<p>Tracing the pattern of gentrification in a continually gentrifying ",
+    "city helps to identify the force that drives people's mobility and dig ",
+    "into the inequality caused by the redevelopment. Additionally, with the ",
+    "comparison of categorized indicators, the analysis helps to answer what ",
+    "roles those factors play in the procedure of gentrification.</p>",
+    "<p>Further resources:</p><ul><li>Firth, Caislin L., Benoit Thierry, ",
+    "Daniel Fuller, Meghan Winters, and Yan Kestens. 'Gentrification, Urban ",
+    "Interventions and Equity (GENUINE): A map-based gentrification tool ",
+    "for Canadian metropolitan areas.' Health reports 32.5 (2021): 15-28.",
+    "<li>Walks, Alan R., and Richard Maaranen. The timing, patterning, & forms ",
+    "of gentrification & neighbourhood upgrading in Montreal, Toronto, & ",
+    "Vancouver, 1961 to 2001. Toronto, ON: Centre for Urban and Community ",
+    "Studies, Cities Centre, University of Toronto, 2008.</ul>"))
   
 qsave(title_text, "data/title_text.qs")

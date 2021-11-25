@@ -46,7 +46,9 @@ ui <- tagList(
              navbarMenu(
                "Housing",
                tabPanel("Housing system", housing_UI("housing"), 
-                        value = "housing")),
+                        value = "housing"),
+               tabPanel("Gentrification", gentrification_UI("gentrification"),
+                        value = "gentrification")),
 
              navbarMenu(
                "Policy",
