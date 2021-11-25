@@ -125,10 +125,11 @@ data_server <- function(id, var_left, var_right, df, zoom = df) {
         
         ## Bivariate data ------------------------------------------------------
         
-        } else {
-          data <-
-            (data %>%
-               dplyr::select(ID, name, name_2, any_of("CSDUID"), population, 
+      } else {
+        data <-
+          (data %>%
+             { if (length(var_left) == 1 && length(var_right) == 1) 
+               dplyr::select(., ID, name, name_2, any_of("CSDUID"), population, 
                              left_var = all_of(var_left),
                              left_var_q3 = paste0(str_remove(var_left, time_format_var_left), 
                                                   "_q3", 
@@ -136,43 +137,46 @@ data_server <- function(id, var_left, var_right, df, zoom = df) {
                              right_var = all_of(var_right), 
                              right_var_q3 = paste0(str_remove(var_right, time_format_var_right), 
                                                    "_q3", 
-                                                   na.omit(str_extract(var_right, time_format_var_right)))) %>% 
-               { if (length(var_left) == 2 && length(var_right) == 2) 
-                 mutate(., left_var = (left_var2 - left_var1) / left_var1,
-                        left_var_q3 = ntile(left_var, 3),
-                        right_var = (right_var2 - right_var1) / right_var1,
-                        right_var_q3 = ntile(right_var, 3),
-                        across(where(is.numeric), ~replace(., is.nan(.), NA)),
-                        across(where(is.numeric), ~replace(., is.infinite(.), NA))) %>% 
-                   select(., ID, name, name_2, any_of("CSDUID"), population, 
-                          left_var, left_var_q3, right_var, right_var_q3) else .} %>%
-               # Not always census variables: sometimes we will have data for
-               # one variable in different year than the other, like crash data vs borough.
-               # We might have to show different crash years vs same census year.
-               { if (length(var_left) == 2 && length(var_right) == 1) 
-                 mutate(., left_var = (left_var2 - left_var1) / left_var1,
-                        left_var_q3 = ntile(left_var, 3),
-                        # right_var = (right_var2 - right_var1) / right_var1,
-                        # right_var_q3 = ntile(right_var, 3),
-                        across(where(is.numeric), ~replace(., is.nan(.), NA)),
-                        across(where(is.numeric), ~replace(., is.infinite(.), NA))) %>% 
-                   select(., ID, name, name_2, any_of("CSDUID"), population, 
-                          left_var, left_var_q3, right_var, right_var_q3) else .} %>%
-               { if (length(var_left) == 1 && length(var_right) == 2)
-                 mutate(., #left_var = (left_var2 - left_var1) / left_var1,
-                        # left_var_q3 = ntile(left_var, 3),
-                        right_var = (right_var2 - right_var1) / right_var1,
-                        right_var_q3 = ntile(right_var, 3),
-                        across(where(is.numeric), ~replace(., is.nan(.), NA)),
-                        across(where(is.numeric), ~replace(., is.infinite(.), NA))) %>%
-                   select(., ID, name, name_2, any_of("CSDUID"), population,
-                          left_var, left_var_q3, right_var, right_var_q3) else .} %>%
-               mutate(group = paste(left_var_q3, "-", right_var_q3)) %>% 
-               left_join(colour, by = "group"))
-          }
+                                                   na.omit(str_extract(var_right, time_format_var_right))))
+               else dplyr::select(., ID, name, name_2, any_of("CSDUID"), population, 
+                                  left_var = all_of(var_left),
+                                  right_var = all_of(var_right))} %>% 
+             { if (length(var_left) == 2 && length(var_right) == 2) 
+               mutate(., left_var = (left_var2 - left_var1) / left_var1,
+                      left_var_q3 = ntile(left_var, 3),
+                      right_var = (right_var2 - right_var1) / right_var1,
+                      right_var_q3 = ntile(right_var, 3),
+                      across(where(is.numeric), ~replace(., is.nan(.), NA)),
+                      across(where(is.numeric), ~replace(., is.infinite(.), NA))) %>% 
+                 select(., ID, name, name_2, any_of("CSDUID"), population, 
+                        left_var, left_var_q3, right_var, right_var_q3) else .} %>%
+             # Not always census variables: sometimes we will have data for
+             # one variable in different year than the other, like crash data vs borough.
+             # We might have to show different crash years vs same census year.
+             { if (length(var_left) == 2 && length(var_right) == 1) 
+               mutate(., left_var = (left_var2 - left_var1) / left_var1,
+                      left_var_q3 = ntile(left_var, 3),
+                      # right_var = (right_var2 - right_var1) / right_var1,
+                      # right_var_q3 = ntile(right_var, 3),
+                      across(where(is.numeric), ~replace(., is.nan(.), NA)),
+                      across(where(is.numeric), ~replace(., is.infinite(.), NA))) %>% 
+                 select(., ID, name, name_2, any_of("CSDUID"), population, 
+                        left_var, left_var_q3, right_var, right_var_q3) else .} %>%
+             { if (length(var_left) == 1 && length(var_right) == 2)
+               mutate(., #left_var = (left_var2 - left_var1) / left_var1,
+                      # left_var_q3 = ntile(left_var, 3),
+                      right_var = (right_var2 - right_var1) / right_var1,
+                      right_var_q3 = ntile(right_var, 3),
+                      across(where(is.numeric), ~replace(., is.nan(.), NA)),
+                      across(where(is.numeric), ~replace(., is.infinite(.), NA))) %>%
+                 select(., ID, name, name_2, any_of("CSDUID"), population,
+                        left_var, left_var_q3, right_var, right_var_q3) else .} %>%
+             mutate(group = paste(left_var_q3, "-", right_var_q3)) %>% 
+             left_join(colour, by = "group"))
+      }
       
       st_crs(data) <- 4326
       data
-      })
     })
+  })
 }
