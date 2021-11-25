@@ -69,15 +69,15 @@ map_change <- function(id_map, df, zoom, legend = NULL) {
     } else {
       
       update_and_clean() %>%
-        add_pointcloud(data = df(), update_view = FALSE,
-                       id = "ID",
-                       auto_highlight = TRUE,
-                       highlight_colour = "#FFFFFF90",
-                       fill_colour = "fill",
-                       fill_opacity = 200,
-                       legend = legend,
-                       # tooltip = "label",
-                       radius = 10)
+        add_scatterplot(data = df(), update_view = FALSE,
+                        id = "ID",
+                        auto_highlight = TRUE,
+                        highlight_colour = "#FFFFFF90",
+                        fill_colour = "fill",
+                        fill_opacity = 200,
+                        legend = legend,
+                        # tooltip = "label",
+                        radius = 5)
     }
   }
 }
