@@ -49,12 +49,16 @@ data_server <- function(id, var_left, var_right, df, zoom = df) {
       time_format_var_left <- if (str_detect(var_left[1], "_\\d{4}$")) {
         # Yearly data
         "_\\d{4}$"
-      }
+        # Will have to find a fix to allow for NO DATE (Or the last statement is
+        # an open else for the yearly version, fixing the issue of no date)
+      } else "_\\d{4}$"
       
       time_format_var_right <- if (str_detect(var_right[1], "_\\d{4}$")) {
         # Yearly data
         "_\\d{4}$"
-      }
+        # Will have to find a fix to allow for NO DATE (Or the last statement is
+        # an open else for the yearly version, fixing the issue of no date)
+      } else "_\\d{4}$"
       
       # Set colour transparency
       colour <- 

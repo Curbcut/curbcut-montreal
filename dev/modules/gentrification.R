@@ -49,7 +49,7 @@ index_fun <- function(df){
       })
     
     reduced <- 
-      reduce(ranked_per_year, left_join)
+      purrr::reduce(ranked_per_year, left_join)
     
     # Create the indice for that year
     id_index <- 
@@ -64,7 +64,7 @@ index_fun <- function(df){
     
   }
   
-  left_join(df, reduce(map(dates_list, ~{pre_index_fun(df, .x)}), left_join))
+  left_join(df, purrr::reduce(purrr::map(dates_list, ~{pre_index_fun(df, .x)}), left_join))
   
 }
 
