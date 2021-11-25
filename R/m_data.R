@@ -78,20 +78,13 @@ data_server <- function(id, var_left, var_right, df, zoom = df) {
       ## Univariate data -------------------------------------------------------
       
       if (var_right[1] == " ") {
-        
-        # Get data
-        data <-
-          data %>% 
-          dplyr::select(ID, name, name_2, any_of("CSDUID"), population, 
-                        left_var = all_of(var_left),
-                        left_var_q3 = paste0(str_remove(
-                          all_of(var_left), time_format_var_left), "_q3", 
-                          na.omit(str_extract(var_left, time_format_var_left))))
-        
+
         # If there are two dates, make new left_var
         if (length(var_left) == 2) {
           data <- 
             data |> 
+            dplyr::select(ID, name, name_2, any_of("CSDUID"), population, 
+                          left_var = all_of(var_left)) |>
             mutate(
               left_var = (left_var2 - left_var1) / left_var1, 
               left_var_q3 = case_when(
@@ -117,9 +110,13 @@ data_server <- function(id, var_left, var_right, df, zoom = df) {
             left_join(colour, by = "group")
           
         } else {
-          # Finish up
           data <- 
-            data |> 
+            data %>% 
+            dplyr::select(ID, name, name_2, any_of("CSDUID"), population, 
+                          left_var = all_of(var_left),
+                          left_var_q3 = paste0(str_remove(
+                            all_of(var_left), time_format_var_left), "_q3", 
+                            na.omit(str_extract(var_left, time_format_var_left)))) |>
             mutate(group = as.character(left_var_q3),
                    group = if_else(is.na(group), "NA", group)) |> 
             left_join(colour, by = "group")
