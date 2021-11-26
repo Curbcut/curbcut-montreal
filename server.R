@@ -52,6 +52,35 @@ shinyServer(function(input, output, session) {
     }
   }, ignoreInit = TRUE)
   
+
+  # Restore the active tab when a session is restored with the bookmark -----
+  
+  onRestore(function(state) {
+    if (input$sus_page == "access") {
+      access_server("access")
+    } else if (input$sus_page == "alley") {
+      alley_server("alley")    
+    } else if (input$sus_page == "canale") {
+      canale_server("canale")
+    } else if (input$sus_page == "climate_risk") {
+      climate_risk_server("climate_risk")
+    } else if (input$sus_page == "covid") {
+      covid_server("covid")
+    } else if (input$sus_page == "crash") {
+      crash_server("crash")
+    } else if (input$sus_page == "gentrification") {
+      gentrification_server("gentrification")
+    } else if (input$sus_page == "housing") {
+      housing_server("housing")
+    } else if (input$sus_page == "mcp") {
+      mcp_server("mcp")
+    } else if (input$sus_page == "stories") {
+      stories_server("stories")
+    } else if (input$sus_page == "about") {
+      why_dash_server("why_dash")
+    }
+  })
+  
     
   # Waiter ------------------------------------------------------------------
   
