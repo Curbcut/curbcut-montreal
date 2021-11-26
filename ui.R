@@ -1,8 +1,10 @@
 ##### SUS UI SCRIPT ############################################################
 
-ui <- tagList(
+ui <- function(request) {
+  tagList(
   # Styling objects
   
+  bookmarkButton(),
   shinyjs::useShinyjs(),
   tags$head(tags$style(HTML(styler))),
   tags$head(tags$style(HTML(navbar_js))),
@@ -75,3 +77,4 @@ ui <- tagList(
              
   , collapsible = TRUE)
 )
+}
