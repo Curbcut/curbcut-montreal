@@ -18,12 +18,12 @@ alley_UI <- function(id) {
                                       actionLink(inputId = NS(id, "hide"), 
                                                  label = i18n$t("Hide")))),
                       uiOutput(NS(id, "alley_explore")),
-                      conditionalPanel(
+                      div(class = "bottom_sidebar", conditionalPanel(
                         condition = "output.poly_selected == 1", ns = NS(id),
                         actionLink(inputId = NS(id, "clear_selection"),
-                                   label = "Clear selection"))),
-                      dyk_UI(NS(id, "dyk")),
-          legend_bivar_UI(NS(id, "alley"))
+                                   label = "Clear selection"))))
+          #             dyk_UI(NS(id, "dyk")),
+          # legend_bivar_UI(NS(id, "alley"))
   )
 }
 
@@ -92,13 +92,35 @@ alley_server <- function(id) {
         
         text_to_display <- alley_alleys_text(text_to_display)
         
+        output$alley_img <- renderImage({list(src = paste0("www/", text_to_display$photo_ID),
+                                              alt = "Photo of the selected green alley",
+                                              width = "100%")},
+                                        deleteFile=FALSE)
+        
+        alley_photo_id <<- text_to_display$photo_ID
+        
+        alley_name <<- text_to_display$name
+        
       }
       
       if (exists("text_to_display") && !is.null(text_to_display)) {
-        HTML(unlist(text_to_display))
+        list(HTML(unlist(text_to_display[1:(length(text_to_display)-1)])),
+        imageOutput(session$ns("alley_img")))
       }
       
     })
+    
+    onclick(
+      "alley_img", 
+      { print(alley_photo_id)
+        showModal(modalDialog(
+          title = HTML(alley_name),
+          HTML(paste0('<img src="', alley_photo_id, '", width = 100%>')),
+          easyClose = TRUE,
+          size = "l",
+          footer = NULL
+        ))
+        })
     
     # Update map in response to user input
     observeEvent({input$focus_visited

@@ -182,9 +182,10 @@ alley_alleys_text <- function(text_to_display) {
     text_to_display$photo_ID =
       str_glue(
         sus_translate(
-          paste0('<p><img src = "alleys/{original_list$photo_ID}", ',
-                 'alt = "Photo of the selected green alley", ',
-                 'style = "max-width: 100%;"></p>')))
+          paste0('alleys/{original_list$photo_ID}')))
+          # paste0('<p><img id = "alley_img", src = "alleys/{original_list$photo_ID}", ',
+          #        'alt = "Photo of the selected green alley", ',
+          #        'style = "max-width: 100%;"></p>')))
   }
   
   text_to_display
