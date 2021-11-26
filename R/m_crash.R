@@ -281,6 +281,7 @@ crash_server <- function(id) {
       shinyjs::toggle("title-more_info", condition = !input$analysis %% 2)
       shinyjs::toggle("right_panel", condition = !input$analysis %% 2)
       shinyjs::toggle("how_to_read_map", condition = !input$analysis %% 2)
+      shinyjs::toggle("year_displayed_right", condition = !input$analysis %% 2)
       shinyjs::toggle("crash_analysis", condition = input$analysis %% 2)
       
     })
