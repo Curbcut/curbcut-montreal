@@ -7,13 +7,13 @@ gentrification_UI <- function(id) {
     fillRow(
       fillCol(sidebar_UI(NS(id, "sidebar"),
                          sliderInput(
-                               NS(id, "slider_time"), 
-                               i18n$t("Select two years"),
-                               min = gentrification_slider$min,
-                               max = gentrification_slider$max,
-                               step = gentrification_slider$interval, sep = "",
-                               value = gentrification_slider$init,
-                               width = "100%"),
+                           NS(id, "slider_time"), 
+                           i18n$t("Select two years"),
+                           min = gentrification_slider$min,
+                           max = gentrification_slider$max,
+                           step = gentrification_slider$interval, sep = "",
+                           value = gentrification_slider$init,
+                           width = "100%"),
                          checkboxInput(NS(id, "check_single_var"),
                                        label = i18n$t(paste0("Review a single variable ",
                                                              "part of the index"))),
@@ -33,7 +33,7 @@ gentrification_UI <- function(id) {
     )
   )
   
-  }
+}
 
 
 # Server ------------------------------------------------------------------
@@ -55,7 +55,7 @@ gentrification_server <- function(id) {
           stroke_colour = "#FFFFFF", fill_colour = "fill",
           update_view = FALSE, id = "ID", auto_highlight = TRUE,
           highlight_colour = "#FFFFFF90")
-      })
+    })
     
     # Zoom
     zoom_val <- reactiveVal(get_zoom(map_zoom, gentrification_zoom))
@@ -86,19 +86,19 @@ gentrification_server <- function(id) {
     # Construct left variable string
     var_left <- reactive({
       if (!input$check_single_var) {
-      stringr::str_remove(paste(
-        "gentrification_ind",
-        time(),
-        sep = "_"), "_ $")
+        stringr::str_remove(paste(
+          "gentrification_ind",
+          time(),
+          sep = "_"), "_ $")
       } else {
-          single_var()
+        single_var()
       }
     })
-
+    
     # Data
     data <- data_server(id = "gentrification", var_left = var_left,
                         var_right = var_right, df = zoom, zoom = zoom_val)
-
+    
     # Explore panel
     explore_server(id = "explore",
                    x = data,
@@ -107,58 +107,105 @@ gentrification_server <- function(id) {
                    select = reactive(rv_gentrification$poly_selected),
                    zoom = zoom,
                    build_str_as_DA = TRUE)
-
+    
     # Legend
     legend_server("legend", var_left, var_right, zoom_val)
-
+    
     # Did-you-know panel
     dyk_server("dyk", var_left, var_right)
-
+    
     # Bivariate legend
     legend_bivar_server("gentrification", var_right)
-
+    
     # Update map in response to variable changes or zooming
     observeEvent({
       var_left()
       var_right()
       zoom()}, map_change(NS(id, "map"), df = data, zoom = zoom))
-
+    
     # Update poly_selected on click
     observeEvent(input$map_polygon_click, {
       lst <- jsonlite::fromJSON(input$map_polygon_click)
       if (is.null(lst$object$properties$id)) {
         rv_gentrification$poly_selected <- NA
       } else rv_gentrification$poly_selected <- lst$object$properties$id
-      })
-
-    # Clear poly_selected on zoom
-    observeEvent(zoom(), {rv_gentrification$poly_selected <- NA},
-                 ignoreInit = TRUE)
-
+    })
+    
     # Update map in response to poly_selected change
-    observeEvent(rv_gentrification$poly_selected, {
+    observe({
       if (!is.na(rv_gentrification$poly_selected)) {
-        width <- switch(zoom(), "borough" = 100, "CT" = 10, 2)
-        data_to_add <-
-          data() %>%
-          filter(ID == rv_gentrification$poly_selected) %>%
-          mutate(fill = substr(fill, 1, 7))
-
-        mapdeck_update(map_id = NS(id, "map")) %>%
-          add_polygon(
-            data = data_to_add, elevation = 5, fill_colour = "fill",
-            update_view = FALSE, layer_id = "poly_highlight",
-            auto_highlight = TRUE, highlight_colour = "#FFFFFF90")
+        
+        if (rv_gentrification$poly_selected %in% data()$ID) {
+          
+          width <- switch(zoom(), "borough" = 100, "CT" = 10, 2)
+          
+          data_to_add <-
+            data() %>%
+            filter(ID == rv_gentrification$poly_selected) %>%
+            mutate(fill = substr(fill, 1, 7))
+          
+          mapdeck_update(map_id = NS(id, "map")) %>%
+            add_polygon(
+              data = data_to_add, elevation = 5, fill_colour = "fill",
+              update_view = FALSE, layer_id = "poly_highlight",
+              auto_highlight = TRUE, highlight_colour = "#FFFFFF90")
+          
+        } else {rv_gentrification$poly_selected <- NA}
+        
       } else {
         mapdeck_update(map_id = NS(id, "map")) %>%
           clear_polygon(layer_id = "poly_highlight")
       }
     })
-
+    
     # Clear click status if prompted
     # (Namespacing hardwired to explore module; could make it return a reactive)
     observeEvent(input$`explore-clear_selection`, {
       rv_gentrification$poly_selected <- NA})
-
+    
+    
+    # Bookmarking 
+    onBookmark(function(state) {
+      state$values$zoom <- zoom()
+      state$values$zoom_val <- zoom_val()
+      state$values$data <- data()
+      state$values$numeric_zoom <- input$map_view_change$zoom
+      state$values$location <- c(input$map_view_change$longitude, 
+                                 input$map_view_change$latitude)
+      state$values$poly_selected <- rv_gentrification$poly_selected
+      state$values$var_right <- var_right()
+      
+      print(state$values$var_right)
+    })
+    
+    onRestored(function(state) {
+      restored_zoom <- reactive({state$values$zoom})
+      restored_data <- reactive({state$values$data})
+      restored_numeric_zoom <- state$values$numeric_zoom
+      restored_map_location <- state$values$location
+      zoom_val(state$values$zoom_val)
+      
+      width <- switch(restored_zoom(), "borough" = 100, "CT" = 10, "DA" = 2, "grid" = 0, 2)
+      output$map <- renderMapdeck({
+        mapdeck(
+          style = map_style, token = token_gentrification,
+          zoom = restored_numeric_zoom, location = restored_map_location) %>%
+          add_polygon(
+            data = restored_data(), stroke_width = width,
+            stroke_colour = "#FFFFFF", fill_colour = "fill",
+            update_view = FALSE, id = "ID", auto_highlight = TRUE,
+            highlight_colour = "#FFFFFF90")
+      })
+      
+      updatePickerInput(
+        session = session,
+        inputId = NS(id, "compare-var"),
+        choices = sus_translate(var_list_right_gentrification),
+        selected = unique(str_remove(state$value$var_right, "_\\d{4}"))
+      )
+      
+      rv_gentrification$poly_selected <- state$values$poly_selected
+    })
+    
   })
 }

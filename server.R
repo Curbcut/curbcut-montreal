@@ -2,16 +2,16 @@
 
 shinyServer(function(input, output, session) {
   
-    observeEvent(input$title, {
-      updateNavbarPage(session, "sus_page", "home")
-    })
+  observeEvent(input$title, {
+    updateNavbarPage(session, "sus_page", "home")
+  })
   
   # Language button ---------------------------------------------------------
   
   sus_reactive_variables$active_language <- 
     eventReactive(input$language_button, {
       if (input$language_button[1] %% 2 != 0) "en" else "fr"
-      }, ignoreNULL = FALSE)
+    }, ignoreNULL = FALSE)
   
   observeEvent(input$language_button,{
     if (input$language_button[1] %% 2 != 0) {
@@ -23,67 +23,46 @@ shinyServer(function(input, output, session) {
   
   
   # Modules -----------------------------------------------------------------
-
+  
   home_server("home")
   
-  observeEvent(input$sus_page, {
-    if (input$sus_page == "access") {
+  active_mod_server <- function(active_tab = input$sus_page) {
+    if (active_tab == "access") {
       access_server("access")
-    } else if (input$sus_page == "alley") {
+    } else if (active_tab == "alley") {
       alley_server("alley")    
-    } else if (input$sus_page == "canale") {
+    } else if (active_tab == "canale") {
       canale_server("canale")
-    } else if (input$sus_page == "climate_risk") {
+    } else if (active_tab == "climate_risk") {
       climate_risk_server("climate_risk")
-    } else if (input$sus_page == "covid") {
+    } else if (active_tab == "covid") {
       covid_server("covid")
-    } else if (input$sus_page == "crash") {
+    } else if (active_tab == "crash") {
       crash_server("crash")
-    } else if (input$sus_page == "gentrification") {
+    } else if (active_tab == "gentrification") {
       gentrification_server("gentrification")
-    } else if (input$sus_page == "housing") {
+    } else if (active_tab == "housing") {
       housing_server("housing")
-    } else if (input$sus_page == "mcp") {
+    } else if (active_tab == "mcp") {
       mcp_server("mcp")
-    } else if (input$sus_page == "stories") {
+    } else if (active_tab == "stories") {
       stories_server("stories")
-    } else if (input$sus_page == "about") {
+    } else if (active_tab == "about") {
       why_dash_server("why_dash")
     }
+  }
+  
+  observeEvent(input$sus_page, {
+    active_mod_server()
   }, ignoreInit = TRUE)
   
-
-  # Restore the active tab when a session is restored with the bookmark -----
-  
   onRestore(function(state) {
-    if (input$sus_page == "access") {
-      access_server("access")
-    } else if (input$sus_page == "alley") {
-      alley_server("alley")    
-    } else if (input$sus_page == "canale") {
-      canale_server("canale")
-    } else if (input$sus_page == "climate_risk") {
-      climate_risk_server("climate_risk")
-    } else if (input$sus_page == "covid") {
-      covid_server("covid")
-    } else if (input$sus_page == "crash") {
-      crash_server("crash")
-    } else if (input$sus_page == "gentrification") {
-      gentrification_server("gentrification")
-    } else if (input$sus_page == "housing") {
-      housing_server("housing")
-    } else if (input$sus_page == "mcp") {
-      mcp_server("mcp")
-    } else if (input$sus_page == "stories") {
-      stories_server("stories")
-    } else if (input$sus_page == "about") {
-      why_dash_server("why_dash")
-    }
+    active_mod_server()
   })
   
-    
+  
   # Waiter ------------------------------------------------------------------
   
   waiter_hide()
-
+  
 })
