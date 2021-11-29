@@ -252,6 +252,13 @@ styler <- '
   right: 0;
   }
   
+  #dropdown-menu-settings {
+  max-height: 250px;
+  font-size: 13px;
+  left: auto;
+  right: -40px;
+  }
+  
   .form-group {
   margin: auto;
   }

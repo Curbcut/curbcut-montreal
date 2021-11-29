@@ -4,21 +4,21 @@ ui <- function(request) {
   tagList(
   # Styling objects
   
-  bookmarkButton(),
   shinyjs::useShinyjs(),
   tags$head(tags$style(HTML(styler))),
   tags$head(tags$style(HTML(navbar_js))),
+  usei18n(i18n),
   
-  # Language button
+  # Settings button
   fixedPanel(
-    id = "language_button",
+    id = "settings_button",
     style = "z-index: 1001; border-color: #FFFFFF00; background-color: #FFFFFF00;",
     top = 7, right = 150, width = 0,
-    tagList(usei18n(i18n), actionButton(
-      "language_button", label = "EN/FR",
-      style = "color: #3C3C3B; background-color: #0096C940;
-        border-color: #FFFFFF;border-radius: 50px;
-        border-width: 1px;  padding:7px; font-size:100%"))),
+      dropdownButton(inputId = "settings", icon = icon("tools"), circle = T, size = "sm",
+        actionLink(inputId = "language_button", label = "EN/FR", icon = icon("globe")),
+        actionLink(inputId = "._bookmark_", label = "Bookmark", icon = icon("link")),
+        actionLink(inputId = "export_data", label = "Download this data", icon("file-download"))
+      )),
   
   # Others
   shinyjs::useShinyjs(),
