@@ -19,7 +19,9 @@ var_list_scale <-
        "Dissemination areas" = "DA")
 
 # Initialize reactive values
-rv_climate_risk <- reactiveValues(zoom = "borough", poly_selected = NA)
+climate_risk_zoom <- c("borough" = 0, "CT" = 10.5, "DA" = 12, "building" = 14)
+
+rv_climate_risk <- reactiveValues(poly_selected = NA)
 
 # Labels for boxplots
 climate_legend <- c("0" = "Insignificant", "1" = "Minor", "2" = "Moderate", 

@@ -4,17 +4,18 @@ sidebar_UI <- function(id, ...) {
   
   div(
     id = "title_bar", class = "sus_sidebar", 
-    uiOutput(NS(id, "title")),
-    small_map_UI(NS(id, "left")),
-    uiOutput(NS(id, "title_main")),
-    actionLink(NS(id, "more_info"), i18n$t("Learn more")),
-    div(class = "sidebar_extra",
-        tagList(hidden(uiOutput(outputId = NS(id, "title_extra"))))),
+    div(class = "sidebar_content",
+        tagList(
+          uiOutput(NS(id, "title")),
+          small_map_UI(NS(id, "left")),
+          uiOutput(NS(id, "title_main")),
+          actionLink(NS(id, "more_info"), i18n$t("Learn more")),
+          hidden(uiOutput(outputId = NS(id, "title_extra")))),
     ...
-  )
+  ))
 }
 
-sidebar_server <- function(id, x, var_map) {
+sidebar_server <- function(id, x, var_map = NULL) {
   stopifnot(!is.reactive(x))
   
   moduleServer(id, function(input, output, session) {
@@ -29,7 +30,7 @@ sidebar_server <- function(id, x, var_map) {
       (filter(title, type == "extra"))$text
     
     # Small map
-    small_map_server("left", var_map)
+    if (!is.null(var_map)) small_map_server("left", var_map)
     
     # More info
     observeEvent(input$more_info, {

@@ -66,7 +66,7 @@ suppressWarnings({
   i18n <- Translator$new(translation_csvs_path = "translations/")})
 i18n$set_translation_language("fr")
 translation_fr <- qread("data/translation_fr.qs")
-sus_reactive_variables <- reactiveValues()
+sus_rv <- reactiveValues(lang = "fr")
 
 
 # Object style ------------------------------------------------------------
@@ -103,9 +103,9 @@ right_panel <- function(id, ...) {
   
   absolutePanel(
     id = NS(id, "right_panel"), 
-    style = paste0("z-index:500; height: calc(100vh - 120px) ;", #overflow-y: auto; ",
-                   "padding: 5px; border-width: 0px; width: 20vw; ",
-                   "font-size: 11px;"),
+    style = paste0("z-index:500; max-height: calc(100vh - 120px) ;", #overflow-y: auto; ",
+                   "padding: 5px; border-width: 0px; width: 15vw; ",
+                   "font-size: 11px; max-width: 300px"),
     class = "panel panel-default", top = 15, right = 15, # width = 300,
     ...
   )
@@ -227,10 +227,20 @@ styler <- '
     position: relative;
   }
   
-  .sidebar_extra {
+  .sidebar_content {
     overflow-x: hidden;
     overflow-y: auto;
-    max-height: 20%;
+    max-height: calc(100% - 225px);
+  }
+  
+  .sus_sidebar .open> .dropdown-menu {
+  top: auto;
+  bottom: 0;
+  }
+  
+  .sus_sidebar .shiny-input-container {
+    margin-bottom: 10px;
+    margin-top: 10px;
   }
   
   .bottom_sidebar {
@@ -262,6 +272,13 @@ styler <- '
   .form-group {
   margin: auto;
   }
+  
+  .explore_dyk {
+  max-height: calc(100vh - 420px); 
+  overflow-y: auto; 
+  overflow-x: hidden;  
+  }
+
 
 '
 
@@ -299,5 +316,11 @@ navbar_js <- "@media (max-width: 1050px) {
     }
     .collapse.in{
         display:block !important;
+    }
+}
+
+    @media (max-height: 900px) {
+    .sus_sidebar .small_map img {
+        display: none !important;
     }
 }"

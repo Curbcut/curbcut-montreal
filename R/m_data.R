@@ -65,7 +65,7 @@ data_server <- function(id, var_left, var_right, df, zoom = df) {
         if (length(var_left) == 2 && var_right[1] == " ") {
           get(paste0("colour_delta_", zoom()))
         } else if (length(var_left) == 1 && var_right[1] == " "
-                   && df() %in% c("borough", "CT", "DA")) {
+                   && df() %in% c("borough", "CT", "DA", "grid")) {
           get(paste0("colour_left_3_", zoom()))
         } else if (length(var_left) == 1 && var_right[1] == " "
                    && df() %in% c("building", "street")) {
@@ -84,7 +84,7 @@ data_server <- function(id, var_left, var_right, df, zoom = df) {
             dplyr::select(ID, name, name_2, any_of("CSDUID"), population, 
                           left_var = all_of(var_left)) |>
             mutate(
-              left_var = (left_var2 - left_var1) / left_var1, 
+              left_var = (left_var2 - left_var1) / abs(left_var1), 
               left_var_q3 = case_when(
                 is.na(left_var) ~ NA_character_,
                 left_var < -1 * median(abs(left_var[abs(left_var) > 0.02]), 
@@ -136,13 +136,13 @@ data_server <- function(id, var_left, var_right, df, zoom = df) {
                              right_var_q3 = paste0(str_remove(var_right, time_format_var_right), 
                                                    "_q3", 
                                                    na.omit(str_extract(var_right, time_format_var_right))))
-               else dplyr::select(., ID, name, name_2, any_of("CSDUID"), population, 
+               else dplyr::select(., everything(),
                                   left_var = all_of(var_left),
                                   right_var = all_of(var_right))} %>% 
              { if (length(var_left) == 2 && length(var_right) == 2) 
-               mutate(., left_var = (left_var2 - left_var1) / left_var1,
+               mutate(., left_var = (left_var2 - left_var1) / abs(left_var1),
                       left_var_q3 = ntile(left_var, 3),
-                      right_var = (right_var2 - right_var1) / right_var1,
+                      right_var = (right_var2 - right_var1) / abs(right_var1),
                       right_var_q3 = ntile(right_var, 3),
                       across(where(is.numeric), ~replace(., is.nan(.), NA)),
                       across(where(is.numeric), ~replace(., is.infinite(.), NA))) %>% 
@@ -152,18 +152,22 @@ data_server <- function(id, var_left, var_right, df, zoom = df) {
              # one variable in different year than the other, like crash data vs borough.
              # We might have to show different crash years vs same census year.
              { if (length(var_left) == 2 && length(var_right) == 1) 
-               mutate(., left_var = (left_var2 - left_var1) / left_var1,
+               mutate(., left_var = (left_var2 - left_var1) / abs(left_var1),
                       left_var_q3 = ntile(left_var, 3),
-                      # right_var = (right_var2 - right_var1) / right_var1,
-                      # right_var_q3 = ntile(right_var, 3),
+                      right_var = var_right, 
+                      right_var_q3 = eval(as.name(paste0(str_remove(var_right, time_format_var_right), 
+                                            "_q3", 
+                                            na.omit(str_extract(var_right, time_format_var_right))))),
                       across(where(is.numeric), ~replace(., is.nan(.), NA)),
                       across(where(is.numeric), ~replace(., is.infinite(.), NA))) %>% 
                  select(., ID, name, name_2, any_of("CSDUID"), population, 
                         left_var, left_var_q3, right_var, right_var_q3) else .} %>%
              { if (length(var_left) == 1 && length(var_right) == 2)
-               mutate(., #left_var = (left_var2 - left_var1) / left_var1,
-                      # left_var_q3 = ntile(left_var, 3),
-                      right_var = (right_var2 - right_var1) / right_var1,
+               mutate(., left_var = var_left,
+                      left_var_q3 = eval(as.name(paste0(str_remove(var_left, time_format_var_left), 
+                                           "_q3", 
+                                           na.omit(str_extract(var_left, time_format_var_left))))),
+                      right_var = (right_var2 - right_var1) / abs(right_var1),
                       right_var_q3 = ntile(right_var, 3),
                       across(where(is.numeric), ~replace(., is.nan(.), NA)),
                       across(where(is.numeric), ~replace(., is.infinite(.), NA))) %>%

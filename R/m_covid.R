@@ -3,11 +3,17 @@
 # UI ----------------------------------------------------------------------
 
 covid_UI <- function(id) {
-  fillPage(div(class = "mapdeck_div", 
-               mapdeckOutput(NS(id, "map"), height = "100%")),
-          title_UI(NS(id, "title"), 
-                   select_var_UI(NS(id, "left"), var_list_covid)),
-          right_panel(id, popup_UI(NS(id, "popup"))))
+  fillPage(
+    fillRow(
+      fillCol(sidebar_UI(NS(id, "sidebar"),
+                         select_var_UI(NS(id, "left"), var_list_covid))
+      ),
+      fillCol(
+        div(class = "mapdeck_div", 
+            mapdeckOutput(NS(id, "map"), height = "100%"))),
+      flex = c(1, 5)
+    )
+  )
   }
 
 # Server ------------------------------------------------------------------
@@ -15,9 +21,8 @@ covid_UI <- function(id) {
 covid_server <- function(id) {
   moduleServer(id, function(input, output, session) {
     
-    
-    # Title bar
-    title_server("title", "covid")
+    # Sidebar
+    sidebar_server("sidebar", "covid")
     
     # Map
     output$map <- renderMapdeck({

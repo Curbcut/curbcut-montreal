@@ -43,11 +43,11 @@ sus_translate_list <- function(x) {
 
 sus_translate <- function(x) {
   # English
-  if (sus_reactive_variables$active_language() == "en") {
+  if (sus_rv$lang() == "en") {
     x
     
     # French
-  } else if (sus_reactive_variables$active_language() == "fr") {
+  } else if (sus_rv$lang() == "fr") {
     
     # List
     if (is.list(x)) {

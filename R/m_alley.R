@@ -3,27 +3,29 @@
 # UI ----------------------------------------------------------------------
 
 alley_UI <- function(id) {
-  fillPage(div(class = "mapdeck_div", 
-               mapdeckOutput(NS(id, "map"), height = "100%")),
-          title_UI(NS(id, "title"),
-                   checkboxInput(inputId = NS(id, "focus_visited"),
-                                  label = i18n$t(
-                                    "Focus on green alleys visited by our team"
-                                    ))),
-          right_panel(id, 
-                      # compare_UI(NS(id, "alley"), var_list_alley),
-                      # hr(),
-                      fluidRow(column(width = 7, h4(i18n$t("Explore"))),
-                               column(width = 5, align = "right", 
-                                      actionLink(inputId = NS(id, "hide"), 
-                                                 label = i18n$t("Hide")))),
-                      uiOutput(NS(id, "alley_explore")),
-                      div(class = "bottom_sidebar", conditionalPanel(
-                        condition = "output.poly_selected == 1", ns = NS(id),
-                        actionLink(inputId = NS(id, "clear_selection"),
-                                   label = "Clear selection"))))
-          #             dyk_UI(NS(id, "dyk")),
-          # legend_bivar_UI(NS(id, "alley"))
+  fillPage(
+    fillRow(
+      fillCol(sidebar_UI(NS(id, "sidebar"),
+                         checkboxInput(inputId = NS(id, "focus_visited"),
+                                       label = i18n$t(
+                                         "Focus on green alleys visited by our team"
+                                       )))
+      ),
+      fillCol(
+        div(class = "mapdeck_div", 
+            mapdeckOutput(NS(id, "map"), height = "100%")),
+        right_panel(id, #compare_UI(NS(id, "access"), var_list_right_access),
+                    fluidRow(column(width = 7, h4(i18n$t("Explore"))),
+                             column(width = 5, align = "right", 
+                                    actionLink(inputId = NS(id, "hide"), 
+                                               label = i18n$t("Hide")))),
+                    uiOutput(NS(id, "alley_explore")),
+                    div(class = "bottom_sidebar", conditionalPanel(
+                      condition = "output.poly_selected == 1", ns = NS(id),
+                      actionLink(inputId = NS(id, "clear_selection"),
+                                 label = "Clear selection"))))),
+      flex = c(1, 5)
+    )
   )
 }
 
@@ -33,8 +35,8 @@ alley_UI <- function(id) {
 alley_server <- function(id) {
   moduleServer(id, function(input, output, session) {
     
-    # Title bar
-    title_server("title", "alley")
+    # Sidebar
+    sidebar_server("sidebar", "alley")
     
     # Map
     output$map <- renderMapdeck({
@@ -112,8 +114,7 @@ alley_server <- function(id) {
     
     onclick(
       "alley_img", 
-      { print(alley_photo_id)
-        showModal(modalDialog(
+      { showModal(modalDialog(
           title = HTML(alley_name),
           HTML(paste0('<img src="', alley_photo_id, '", width = 100%>')),
           easyClose = TRUE,

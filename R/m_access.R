@@ -3,21 +3,27 @@
 # UI ----------------------------------------------------------------------
 
 access_UI <- function(id) {
-  fillPage(div(class = "mapdeck_div", 
-          mapdeckOutput(NS(id, "map"), height = "100%")),
-          title_UI(NS(id, "title"),
-                   select_var_UI(NS(id, "left_2"), var_list_left_access_2,
-                                 label = i18n$t("Timing"), width = "170px"),
-                   select_var_UI(NS(id, "left_1"), var_list_left_access_1,
-                        label = i18n$t("Destination type"), width = "170px"),
-                   div(style = widget_style,
-                       sliderInput(NS(id, "slider"), i18n$t("Time threshold"),
-                                   min = 10, max = 60, step = 1, value = 30,
-                                   width = "170px"))),
-          right_panel(id, compare_UI(NS(id, "access"), var_list_right_access),
-                      explore_UI(NS(id, "explore")), dyk_UI(NS(id, "dyk"))),
-          legend_bivar_UI(NS(id, "access"))
-          )
+  fillPage(
+    fillRow(
+      fillCol(sidebar_UI(NS(id, "sidebar"),
+                         select_var_UI(NS(id, "left_2"), var_list_left_access_2,
+                                       label = i18n$t("Timing")),
+                         select_var_UI(NS(id, "left_1"), var_list_left_access_1,
+                                       label = i18n$t("Destination type")),
+                         sliderInput(NS(id, "slider"), i18n$t("Time threshold"),
+                                         min = 10, max = 60, step = 1, value = 30),
+                         div(class = "bottom_sidebar",
+                             tagList(legend_UI(NS(id, "legend"))))
+      )),
+      fillCol(
+        div(class = "mapdeck_div", 
+            mapdeckOutput(NS(id, "map"), height = "100%")),
+        right_panel(id, compare_UI(NS(id, "access"), var_list_right_access),
+                    div(class = "explore_dyk",
+                        explore_UI(NS(id, "explore")), dyk_UI(NS(id, "dyk"))))),
+      flex = c(1, 5)
+    )
+  )
   }
 
 
@@ -26,8 +32,10 @@ access_UI <- function(id) {
 access_server <- function(id) {
   moduleServer(id, function(input, output, session) {
     
-    # Title bar
-    title_server("title", "access")
+    # Sidebar
+    sidebar_server("sidebar", "access", 
+                   reactive(paste0("left_", "CT",#zoom(), 
+                                    "_", var_left())))
     
     # Map
     output$map <- renderMapdeck({
@@ -103,8 +111,8 @@ access_server <- function(id) {
     # Left map
     small_map_server("left", reactive(paste0("left_CT_", var_left())))
     
-    # Bivariate legend
-    legend_bivar_server("access", var_right)
+    # Legend
+    legend_server("legend", var_left, var_right, reactive("CT"))
     
     # Update map in response to variable changes
     observeEvent({
@@ -162,9 +170,9 @@ access_server <- function(id) {
           tt_matrix |> 
           filter(origin == rv_access$poly_selected, travel_time <= tt_thresh,
                  timing == var_left_2()) |> 
-          mutate(group = 4 - pmax(1, ceiling(travel_time / tt_thresh * 3))) |> 
+          mutate(group = as.character(4 - pmax(1, ceiling(travel_time / tt_thresh * 3)))) |> 
           select(destination, group) |> 
-          left_join(colour_isopleth, by = "group")
+          left_join(colour_iso, by = "group")
         
         data_to_add <-
           data() %>%

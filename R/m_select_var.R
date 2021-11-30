@@ -1,14 +1,14 @@
 #### SELECT VARIABLE MODULE ####################################################
 
-select_var_UI <- function(id, var_list, label = NULL, width = "100%", 
+select_var_UI <- function(id, var_list, label = NULL, width = "95%", 
                           inline = FALSE, more_style = NULL) {
-  style <- "padding: 5px; vertical-align: top;"
-  if (inline) style <- paste("display: inline-block;", style)
-  if (!is.null(more_style)) style <- paste(style, more_style)
+  # style <- "padding: 5px; vertical-align: top;"
+  # if (inline) style <- paste("display: inline-block;", style)
+  # if (!is.null(more_style)) style <- paste(style, more_style)
   
-  div(style = style,
+  # div(style = style,
       pickerInput(NS(id, "var"), label = label, choices = var_list, 
-                  width = width))
+                  width = width)#)
 }
 
 select_var_server <- function(id, var_list, disabled_choices = NULL, 

@@ -17,8 +17,9 @@ ui <- function(request) {
       dropdownButton(inputId = "settings", icon = icon("tools"), circle = T, size = "sm",
         actionLink(inputId = "language_button", label = "EN/FR", icon = icon("globe")),
         actionLink(inputId = "._bookmark_", label = "Bookmark", icon = icon("link")),
-        actionLink(inputId = "export_data", label = "Download this data", icon("file-download"))
-      )),
+        downloadLink("download_data", label = div(icon("download"), "Download data")),
+        actionLink(inputId = "create_report", label = "Create a report", icon("file-pdf"))
+        )),
   
   # Others
   shinyjs::useShinyjs(),

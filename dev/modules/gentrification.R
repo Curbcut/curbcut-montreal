@@ -27,14 +27,15 @@ index_fun <- function(df){
       })
     
     # Bind the previous dfs together, to bring all values of all years in one big df
-    binded_dfs <- reduce(list_dfs, rbind)
+    binded_dfs <- purrr::reduce(list_dfs, rbind)
     
     # Give a position to all values, to enable to possibility of creating an indice
     vars_ranked <- 
       binded_dfs %>% 
-      mutate(across(everything(), percent_rank, .names = "{.col}_rank")) %>% 
+      mutate(across(everything(), ~ (.- mean(., na.rm = T))/sd(., na.rm = T), .names = "{.col}_zscore")) #%>% 
+      # mutate(across(everything(), percent_rank, .names = "{.col}_rank")) %>% 
       # Invert the rank for the 2 variables that have negative impact
-      mutate(across(paste0(neg_vars, "_rank"), ~ 1 - .))
+      # mutate(across(paste0(neg_vars, "_rank"), ~ 1 - .))
     
     # Apply these ranks for a given year to the right df ID
     ranked_per_year <- 
@@ -68,11 +69,12 @@ index_fun <- function(df){
   
 }
 
-# index_fun(CT) %>% 
-#   mutate(change = (gentrification_ind_2016-gentrification_ind_1996)/gentrification_ind_1996) %>% 
-#   ggplot()+
-#   geom_sf(aes(fill = change), color = "transparent") +
-#   scale_fill_continuous(limits = c(-1,2), type = "viridis")
+index_fun(DA) %>%
+  mutate(change = (gentrification_ind_2016-gentrification_ind_2006)/gentrification_ind_2006) %>%
+  ggplot()+
+  geom_sf(aes(fill = change), color = "transparent") +
+  scale_fill_continuous(#limits = c(-1,2), 
+    type = "viridis")
 
 
 # Apply function ----------------------------------------------------------

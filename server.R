@@ -8,7 +8,7 @@ shinyServer(function(input, output, session) {
   
   # Language button ---------------------------------------------------------
   
-  sus_reactive_variables$active_language <- 
+  sus_rv$lang <- 
     eventReactive(input$language_button, {
       if (input$language_button[1] %% 2 != 0) "en" else "fr"
     }, ignoreNULL = FALSE)
@@ -59,6 +59,13 @@ shinyServer(function(input, output, session) {
   onRestore(function(state) {
     active_mod_server()
   })
+  
+
+  # Data download -----------------------------------------------------------
+  
+  # output$download_data <- 
+  #   file_to_download()
+    #DOWNLOAD HANDLER WITH A REACTIVE THAT'S CHANGING DEPENDING ON MODULE
   
   
   # Waiter ------------------------------------------------------------------

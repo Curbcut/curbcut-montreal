@@ -6,8 +6,6 @@ gentrification_UI <- function(id) {
   fillPage(
     fillRow(
       fillCol(sidebar_UI(NS(id, "sidebar"),
-                         # downloadLink(NS(id, "download_data"), label = div(icon("download"), "Download data")),
-                         
                          sliderInput(
                            NS(id, "slider_time"), 
                            i18n$t("Select two years"),
@@ -29,7 +27,7 @@ gentrification_UI <- function(id) {
         div(class = "mapdeck_div", 
             mapdeckOutput(NS(id, "map"), height = "100%")),
         right_panel(id, compare_UI(NS(id, "gentrification"), var_list_right_gentrification),
-                    div(style = "max-height: calc(100% - 310px); overflow-y:auto; overflow-x:hidden;",
+                    div(class = "explore_dyk",
                         explore_UI(NS(id, "explore")), dyk_UI(NS(id, "dyk"))))),
       flex = c(1, 5)
     )
@@ -116,9 +114,6 @@ gentrification_server <- function(id) {
     # Did-you-know panel
     dyk_server("dyk", var_left, var_right)
     
-    # Bivariate legend
-    legend_bivar_server("gentrification", var_right)
-    
     # Update map in response to variable changes or zooming
     observeEvent({
       var_left()
@@ -174,8 +169,6 @@ gentrification_server <- function(id) {
                                  input$map_view_change$latitude)
       state$values$poly_selected <- rv_gentrification$poly_selected
       state$values$var_right <- var_right()
-      
-      print(state$values$var_right)
     })
     
     onRestored(function(state) {
@@ -193,7 +186,7 @@ gentrification_server <- function(id) {
         session = session,
         inputId = NS(id, "compare-var"),
         choices = sus_translate(var_list_right_gentrification),
-        selected = unique(str_remove(state$value$var_right, "_\\d{4}"))
+        selected = unique(str_remove(state$values$var_right, "_\\d{4}"))
       )
       
       rv_gentrification$poly_selected <- state$values$poly_selected
