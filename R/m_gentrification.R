@@ -6,6 +6,8 @@ gentrification_UI <- function(id) {
   fillPage(
     fillRow(
       fillCol(sidebar_UI(NS(id, "sidebar"),
+                         # downloadLink(NS(id, "download_data"), label = div(icon("download"), "Download data")),
+                         
                          sliderInput(
                            NS(id, "slider_time"), 
                            i18n$t("Select two years"),
@@ -13,7 +15,7 @@ gentrification_UI <- function(id) {
                            max = gentrification_slider$max,
                            step = gentrification_slider$interval, sep = "",
                            value = gentrification_slider$init,
-                           width = "100%"),
+                           width = "95%"),
                          checkboxInput(NS(id, "check_single_var"),
                                        label = i18n$t(paste0("Review a single variable ",
                                                              "part of the index"))),
@@ -166,9 +168,7 @@ gentrification_server <- function(id) {
     
     # Bookmarking 
     onBookmark(function(state) {
-      state$values$zoom <- zoom()
       state$values$zoom_val <- zoom_val()
-      state$values$data <- data()
       state$values$numeric_zoom <- input$map_view_change$zoom
       state$values$location <- c(input$map_view_change$longitude, 
                                  input$map_view_change$latitude)
@@ -179,22 +179,14 @@ gentrification_server <- function(id) {
     })
     
     onRestored(function(state) {
-      restored_zoom <- reactive({state$values$zoom})
-      restored_data <- reactive({state$values$data})
       restored_numeric_zoom <- state$values$numeric_zoom
       restored_map_location <- state$values$location
       zoom_val(state$values$zoom_val)
       
-      width <- switch(restored_zoom(), "borough" = 100, "CT" = 10, "DA" = 2, "grid" = 0, 2)
       output$map <- renderMapdeck({
         mapdeck(
           style = map_style, token = token_gentrification,
-          zoom = restored_numeric_zoom, location = restored_map_location) %>%
-          add_polygon(
-            data = restored_data(), stroke_width = width,
-            stroke_colour = "#FFFFFF", fill_colour = "fill",
-            update_view = FALSE, id = "ID", auto_highlight = TRUE,
-            highlight_colour = "#FFFFFF90")
+          zoom = restored_numeric_zoom, location = restored_map_location)
       })
       
       updatePickerInput(
@@ -206,6 +198,17 @@ gentrification_server <- function(id) {
       
       rv_gentrification$poly_selected <- state$values$poly_selected
     })
+    
+    # output$download_data <- 
+    #   downloadHandler(filename = "gentrification_data.csv",
+    #                   content = function(file) {
+    #                     data <- data() %>%
+    #                       select(-any_of(contains("q3"), fill, group))
+    # 
+    #                     write.csv2(data, file)
+    #                   },
+    #                   contentType = "text/csv")
+    
     
   })
 }
