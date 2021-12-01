@@ -79,6 +79,10 @@ alley_server <- function(id) {
         
         text_to_display <- alley_borough_text(text_to_display)
         
+        if (exists("text_to_display") && !is.null(text_to_display)) {
+          HTML(unlist(text_to_display[1:(length(text_to_display)-1)]))
+        }
+        
       } else if (rv_alley$poly_selected %in% alleys[alleys$visited,]$ID) {
         
         text_to_display <- 
@@ -103,11 +107,11 @@ alley_server <- function(id) {
         
         alley_name <<- text_to_display$name
         
-      }
-      
-      if (exists("text_to_display") && !is.null(text_to_display)) {
-        list(HTML(unlist(text_to_display[1:(length(text_to_display)-1)])),
-        imageOutput(session$ns("alley_img")))
+        if (exists("text_to_display") && !is.null(text_to_display)) {
+          list(HTML(unlist(text_to_display[1:(length(text_to_display)-1)])),
+               div(style = "margin-bottom:20px;", imageOutput(session$ns("alley_img"), height = "100%")))
+        }
+        
       }
       
     })

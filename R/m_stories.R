@@ -99,8 +99,7 @@ stories_server <- function(id) {
            # Adding bandeau img after the first div (title)
            str_replace(includeHTML(paste0("www/stories/", rmd_name, "_en.html")),
                        "</div>", paste0("</div><img src =", "stories/bandeau_img/",
-                       bandeau_name,"><br><br>"))
-           ,
+                       bandeau_name,"><br><br>")),
            '</div>')
       }
       
@@ -112,13 +111,17 @@ stories_server <- function(id) {
       rv_stories$poly_selected <- NA
     })
     
-    
-    observe({
-
+    observeEvent(rv_stories$poly_selected, {
       shinyjs::toggle("hr", condition = !is.na(rv_stories$poly_selected))
       shinyjs::toggle("back", condition = !is.na(rv_stories$poly_selected))
       shinyjs::toggle("stories", condition = !is.na(rv_stories$poly_selected))
-      
+    })
+  
+    # If there's an action with the map, the rmd goes away (Ultimately, any click on the map
+    # should trigger these)
+    observeEvent(input$map_view_change, {
+      shinyjs::hide(id = "stories")
+      rv_stories$poly_selected <- NA
     })
     
   })
