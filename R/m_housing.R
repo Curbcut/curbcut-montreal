@@ -3,39 +3,45 @@
 # UI ----------------------------------------------------------------------
 
 housing_UI <- function(id) {
-  fillPage(div(class = "mapdeck_div", 
-               mapdeckOutput(NS(id, "map"), height = "100%")),
-          title_UI(NS(id, "title"),
-                   select_var_UI(NS(id, "left"), var_list_housing_left, 
-                                 width = "170px"), 
-                   div(style = widget_style, 
-                       sliderInput(
-                         NS(id, "slider_uni"), 
-                         i18n$t("Select a year"),
-                         min = housing_slider$min,
-                         max = housing_slider$max,
-                         step = housing_slider$interval, sep = "",
-                         value = housing_slider$init,
-                         width = "170px")),
-                   div(style = widget_style, 
-                       sliderInput(
-                         NS(id, "slider_bi"), 
-                         i18n$t("Select two years"), 
-                         min = housing_slider$min,
-                         max = housing_slider$max, 
-                         step = housing_slider$interval, sep = "", 
-                         value = c("2006", "2016"),
-                         width = "170px")),
-                   div(style = widget_style,
-                       checkboxInput(inputId = NS(id, "slider_switch"),
-                                     label = i18n$t("Compare dates"), 
-                                     width = "170px")),
-                   htmlOutput(NS(id, "year_displayed_left")),
-                   htmlOutput(NS(id, "year_displayed_right")),
-                   htmlOutput(NS(id, "how_to_read_map"))),
-          right_panel(id, compare_UI(NS(id, "housing"), var_list_housing_right),
-                      explore_UI(NS(id, "explore")), dyk_UI(NS(id, "dyk"))),
-          legend_bivar_UI(NS(id, "housing")))
+  fillPage(
+    fillRow(
+      fillCol(sidebar_UI(NS(id, "sidebar"),
+                         select_var_UI(NS(id, "left"), var_list_housing_left), 
+                         sliderInput(
+                           NS(id, "slider_uni"), 
+                           i18n$t("Select a year"),
+                           min = housing_slider$min,
+                           max = housing_slider$max,
+                           step = housing_slider$interval, sep = "",
+                           value = housing_slider$init,
+                           width = "95%"),
+                         sliderInput(
+                           NS(id, "slider_bi"), 
+                           i18n$t("Select two years"), 
+                           min = housing_slider$min,
+                           max = housing_slider$max, 
+                           step = housing_slider$interval, sep = "", 
+                           value = c("2006", "2016"),
+                           width = "95%"),
+                         checkboxInput(inputId = NS(id, "slider_switch"),
+                                       label = i18n$t("Compare dates"), 
+                                       width = "95%"),
+                         htmlOutput(NS(id, "year_displayed_left")),
+                         htmlOutput(NS(id, "year_displayed_right")),
+                         htmlOutput(NS(id, "how_to_read_map")),
+                         div(class = "bottom_sidebar",
+                             tagList(legend_UI(NS(id, "legend")),
+                                     zoom_UI(NS(id, "zoom"), crash_zoom)))
+      )),
+      fillCol(
+        div(class = "mapdeck_div", 
+            mapdeckOutput(NS(id, "map"), height = "100%")),
+        right_panel(id, compare_UI(NS(id, "housing"), var_list_housing_right),
+                    div(class = "explore_dyk",
+                        explore_UI(NS(id, "explore")), dyk_UI(NS(id, "dyk"))))),
+      flex = c(1, 5)
+    )
+  )
 }
 
 
@@ -44,8 +50,9 @@ housing_UI <- function(id) {
 housing_server <- function(id) {
   moduleServer(id, function(input, output, session) {
     
-    # Title bar
-    title_server("title", "housing")
+    # Sidebar
+    sidebar_server("sidebar", "housing", 
+                   reactive(paste0("left_", zoom(), "_", var_left())))
     
     # Nearest year of data disclaimer
     output$year_displayed_left <- renderText({
@@ -93,12 +100,12 @@ housing_server <- function(id) {
                     auto_highlight = TRUE, highlight_colour = "#FFFFFF90")
     })
     
-    # Zoom level
+    # Zoom
+    zoom_val <- reactiveVal(get_zoom(map_zoom, housing_zoom))
     observeEvent(input$map_view_change$zoom, {
-      rv_housing$zoom <- case_when(input$map_view_change$zoom >= 14 ~ "building",
-                                   input$map_view_change$zoom >= 12 ~ "DA",
-                                   input$map_view_change$zoom >= 10.5 ~ "CT",
-                                   TRUE ~ "borough")})
+      zoom_val(get_zoom(input$map_view_change$zoom, housing_zoom))
+    })
+    zoom <- zoom_server("zoom", zoom = zoom_val, zoom_levels = housing_zoom)
     
     # Enable or disable first and second slider.
     observeEvent(input$slider_switch, {
@@ -125,7 +132,7 @@ housing_server <- function(id) {
     var_left <- select_var_server(
       "left", reactive(var_list_housing_left), 
       disabled_choices = reactive(var_list_housing_left_disabled()),
-      time = time, df = rv_housing$zoom)
+      time = time, df = zoom())
 
     # Greyed out right list options, depending of the year chosen
     var_list_housing_right_disabled <- reactive({
@@ -136,14 +143,14 @@ housing_server <- function(id) {
     var_right <- compare_server(
       id = "housing", 
       var_list = var_list_housing_right, 
-      df = reactive(rv_housing$zoom), 
+      df = zoom, 
       disabled_choices = reactive(var_list_housing_right_disabled()),
       time = time)
 
 
     # Data
     data <- data_server("housing", var_left, var_right, 
-                        reactive(rv_housing$zoom))
+                        df = zoom, zoom = zoom_val)
 
     # Explore panel
     explore_server(id = "explore", 
@@ -151,25 +158,21 @@ housing_server <- function(id) {
                    var_left = var_left,
                    var_right = var_right, 
                    select = reactive(rv_housing$poly_selected),
-                   zoom = reactive(rv_housing$zoom), 
+                   zoom = zoom, 
                    build_str_as_DA = TRUE)
 
     # Did-you-know panel
     dyk_server("dyk", var_left, var_right)
 
-    # Left map
-    small_map_server("left", reactive(paste0(
-      "left_", rv_housing$zoom, "_", var_left()[length(var_left())])))
-
-    # Bivariate legend
-    legend_bivar_server("housing", var_right)
+    # Legend
+    legend_server("legend", var_left, var_right, zoom_val)
 
     # Update map in response to variable changes or zooming
     observeEvent({
       var_left()
       var_right()
-      rv_housing$zoom}, map_change(NS(id, "map"), df = data, 
-                                   zoom = reactive(rv_housing$zoom)))
+      zoom()}, map_change(NS(id, "map"), df = data, 
+                                   zoom = zoom))
 
     # Update poly_selected on click
     observeEvent(input$map_polygon_click, {
@@ -180,13 +183,13 @@ housing_server <- function(id) {
     })
 
     # Clear poly_selected on zoom
-    observeEvent(rv_housing$zoom, {rv_housing$poly_selected <- NA},
+    observeEvent(zoom(), {rv_housing$poly_selected <- NA},
                  ignoreInit = TRUE)
 
     # Update map in response to poly_selected change
     observeEvent(rv_housing$poly_selected, {
       if (!is.na(rv_housing$poly_selected)) {
-        width <- switch(rv_housing$zoom, "borough" = 100, "CT" = 10, 2)
+        width <- switch(zoom(), "borough" = 100, "CT" = 10, 2)
         data_to_add <-
           data() %>%
           filter(ID == rv_housing$poly_selected) %>%

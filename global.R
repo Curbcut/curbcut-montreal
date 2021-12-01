@@ -58,7 +58,7 @@ island_csduid <- c("2466007", "2466023_1",  "2466023_10", "2466023_11",
                    "2466023_6", "2466023_7", "2466023_8", "2466023_9",
                    "2466032", "2466047", "2466058", "2466062", "2466087", 
                    "2466092", "2466097", "2466102", "2466107", "2466112",
-                   "2466117", "2466127", "2466142", "2466072")
+                   "2466117", "2466127", "2466142", "2466072", "2466023")
 
 # Translation -------------------------------------------------------------
 
@@ -197,7 +197,7 @@ loadingLogo <-
 styler <- '
 /* the big panel popup when we show an RMD in a map module */
   .main_panel_text_popup {
-    max-height: 83vh;
+    max-height: calc(100vh - 165px);
     overflow: auto;
     background-color: #fff;
     border: 1px solid transparent;

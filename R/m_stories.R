@@ -4,14 +4,20 @@
 
 stories_UI <- function(id) {
   fillPage(
-          shinyjs::hidden(htmlOutput(NS(id, "stories"),
-                                     style = "position:absolute; margin: 40px;
-                     max-width: 1000px; z-index:499")),
-          div(class = "mapdeck_div", 
-                       mapdeckOutput(NS(id, "map"), height = "100%")),
-          title_UI(NS(id, "title"),
-                   actionLink(NS(id, "back"), i18n$t("Back to the map"))
-          ))
+    fillRow(
+      fillCol(sidebar_UI(NS(id, "sidebar"),
+                         hr(id = NS(id, "hr")),
+                         actionLink(NS(id, "back"), i18n$t("Back to the map"))
+      )),
+      fillCol(
+        div(class = "mapdeck_div", 
+            mapdeckOutput(NS(id, "map"), height = "100%")),
+        shinyjs::hidden(htmlOutput(NS(id, "stories"),
+                                   style = "position:absolute; margin: 40px;
+                     max-width: 1000px; z-index:499"))),
+      flex = c(1, 5)
+    )
+  )
 }
 
 
@@ -20,35 +26,11 @@ stories_UI <- function(id) {
 stories_server <- function(id) {
   moduleServer(id, function(input, output, session) {
     
-    # Title bar
-    title_server("title", "stories")
+    # Sidebar
+    sidebar_server("sidebar", "stories")
 
     # Map
     output$map <- renderMapdeck({
-      # 
-      # v1 <- 1:nrow(stories)
-      # v2 <- paste0("stories/round_img/", stories$img[v1])
-      # v3 <- paste0(
-      #   purrr::map(stories$buffer, st_bbox) %>% purrr::map(., as.vector))
-      # v4 <- paste0("image", v1)
-      # 
-      # all_add_bitmap <- paste0('add_bitmap("', v2, '", bounds = ', v3, ', ',
-      #                          'layer_id ="',v4 ,'") %>% ')
-      # 
-      # all_add_bitmap[length(all_add_bitmap)] <-
-      #   str_remove_all(all_add_bitmap[length(all_add_bitmap)], "%>%")
-      # 
-      # initial_map <-
-      # paste0('mapdeck(style = map_style, token = token_stories, zoom = 11, ',
-      #         'location = map_location) %>% ',
-      #   'add_polygon(stories,',
-      #               'id = "ID", fill_opacity = 0, layer_id = "clickable",',
-      #               'stroke_opacity = 0) %>% ',
-      #   parse(text = all_add_bitmap))
-      # 
-      # eval(parse(text = initial_map))
-      
-
         mapdeck(style = map_style, token = token_stories, zoom = 10.5,
                location = map_location)
     })
@@ -133,11 +115,7 @@ stories_server <- function(id) {
     
     observe({
 
-      shinyjs::toggle("title-title", condition = is.na(rv_stories$poly_selected))
-      shinyjs::toggle("title-title_extra", condition = is.na(rv_stories$poly_selected))
-      shinyjs::toggle("title-title_main", condition = is.na(rv_stories$poly_selected))
-      shinyjs::toggle("title-more_info", condition = is.na(rv_stories$poly_selected))
-      shinyjs::toggle("title-more_info", condition = is.na(rv_stories$poly_selected))
+      shinyjs::toggle("hr", condition = !is.na(rv_stories$poly_selected))
       shinyjs::toggle("back", condition = !is.na(rv_stories$poly_selected))
       shinyjs::toggle("stories", condition = !is.na(rv_stories$poly_selected))
       

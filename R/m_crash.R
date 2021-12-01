@@ -85,6 +85,13 @@ crash_server <- function(id) {
       shinyjs::toggle("left_bi_time", condition = input$bi_time)
       shinyjs::toggle("left", condition = !input$bi_time)})
     
+    # If we aren't in choropleth, toggle off the legend/zoom
+    observeEvent(choropleth(), {
+      shinyjs::toggle("zoom-auto", condition = choropleth())
+      shinyjs::toggle("zoom-slider", condition = choropleth())
+      shinyjs::toggle("legend-legend_render", condition = choropleth())
+    })
+    
     # Time variable depending on which slider
     time <- reactive({if (!input$bi_time) input$left else input$left_bi_time})
     
@@ -282,6 +289,9 @@ crash_server <- function(id) {
       shinyjs::toggle("right_panel", condition = !input$analysis %% 2)
       shinyjs::toggle("how_to_read_map", condition = !input$analysis %% 2)
       shinyjs::toggle("year_displayed_right", condition = !input$analysis %% 2)
+      shinyjs::toggle("legend-legend_render", condition = !input$analysis %% 2)
+      shinyjs::toggle("zoom-auto", condition = !input$analysis %% 2)
+      shinyjs::toggle("zoom-slider", condition = !input$analysis %% 2)
       shinyjs::toggle("crash_analysis", condition = input$analysis %% 2)
       
     })

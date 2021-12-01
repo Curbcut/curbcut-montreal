@@ -9,9 +9,6 @@ crash_zoom <- c("borough" = 0, "CT" = 10.5, "DA" = 12, "street" = 14)
 
 rv_crash <- reactiveValues(poly_selected = NA)
 
-# Initialize reactive values
-rv_crash <- reactiveValues(poly_selected = NA, zoom = "borough")
-
 # Time slider values
 crash_slider <- list(
   min = lubridate::year(min(crash$date)),

@@ -13,7 +13,8 @@ mcp_UI <- function(id) {
       }
     ')
           )),
-          select_var_UI(NS(id, "left"), var_list_left_mcp),
+          select_var_UI(NS(id, "left"), var_list_left_mcp, width = "300px",
+                        inline = T),
           htmlOutput(NS(id, "mcp_output"),
                      style = "max-width: 1000px;"))
 }

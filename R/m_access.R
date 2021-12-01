@@ -11,7 +11,8 @@ access_UI <- function(id) {
                          select_var_UI(NS(id, "left_1"), var_list_left_access_1,
                                        label = i18n$t("Destination type")),
                          sliderInput(NS(id, "slider"), i18n$t("Time threshold"),
-                                         min = 10, max = 60, step = 1, value = 30),
+                                     min = 10, max = 60, step = 1, value = 30,
+                                     width = "95%"),
                          div(class = "bottom_sidebar",
                              tagList(legend_UI(NS(id, "legend"))))
       )),

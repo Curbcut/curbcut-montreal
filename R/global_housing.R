@@ -5,7 +5,9 @@ token_housing <- paste0("pk.eyJ1IjoiZHdhY2hzbXV0aCIsImEiOiJja2g2Y2JpbDc",
                        "wMDc5MnltbWpja2xpYTZhIn0.BXdU7bsQYWcSwmmBx8DNqQ")
 
 # Initialize reactive values
-rv_housing <- reactiveValues(poly_selected = NA, zoom = "borough")
+housing_zoom <- c("borough" = 0, "CT" = 10.5, "DA" = 12, "building" = 14)
+
+rv_housing <- reactiveValues(poly_selected = NA)
 
 # Time slider values
 housing_slider <- list(
