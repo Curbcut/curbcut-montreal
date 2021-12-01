@@ -14,7 +14,7 @@ canale_UI <- function(id) {
         div(class = "mapdeck_div", 
             mapdeckOutput(NS(id, "map"), height = "100%")),
         right_panel(id, compare_UI(NS(id, "canale"), var_list_canale),
-                    div(style = "max-height: calc(100% - 310px); overflow-y:auto; overflow-x:hidden;",
+                    div(class = "explore_dyk",
                         explore_UI(NS(id, "explore")), dyk_UI(NS(id, "dyk"))))),
       flex = c(1, 5)
     )

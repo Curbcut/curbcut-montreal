@@ -5,6 +5,7 @@ ui <- function(request) {
   # Styling objects
   
   shinyjs::useShinyjs(),
+  tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "bootstrap.min.css")),
   tags$head(tags$style(HTML(styler))),
   tags$head(tags$style(HTML(navbar_js))),
   usei18n(i18n),
@@ -31,7 +32,7 @@ ui <- function(request) {
     color = "#D8F5FF"),
   
   # Navigation bar
-  navbarPage(id = "sus_page", windowTitle = "SUS",
+  navbarPage(id = "sus_page", windowTitle = "SUS", 
              title = actionLink("title", "SUS"),
              
              tabPanel("Home", home_UI("home"), value = "home"),

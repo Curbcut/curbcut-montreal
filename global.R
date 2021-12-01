@@ -8,7 +8,7 @@ suppressPackageStartupMessages({
   library(shinyWidgets)
   library(shiny.i18n)
   library(waiter)
-  
+
   library(dplyr)
   library(ggplot2)
   library(stringr)
@@ -193,7 +193,6 @@ loadingLogo <-
 #         }
 #       "
 
-
 styler <- '
 /* the big panel popup when we show an RMD in a map module */
   .main_panel_text_popup {
@@ -207,6 +206,10 @@ styler <- '
   
   #sus_page > li:first-child { 
     display:none;
+  }
+  
+  .navbar-header #title { 
+    color: white;
   }
   
   h4 {
