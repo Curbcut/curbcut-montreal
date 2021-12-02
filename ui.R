@@ -19,7 +19,8 @@ ui <- function(request) {
         actionLink(inputId = "language_button", label = "EN/FR", icon = icon("globe")),
         actionLink(inputId = "._bookmark_", label = "Bookmark", icon = icon("link")),
         downloadLink("download_data", label = div(icon("download"), "Download data")),
-        actionLink(inputId = "create_report", label = "Create a report", icon("file-pdf"))
+        actionLink(inputId = "create_report", label = "Create a report", icon("file-pdf")),
+        actionLink(inputId = "contact", label = "Contact/feedback", icon("comment"))
         )),
   
   # Others

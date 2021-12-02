@@ -34,7 +34,7 @@ compare_server <- function(id, var_list, df, zoom = df, disabled_choices = NULL,
   moduleServer(id, function(input, output, session) {
     
     var_right <- select_var_server("compare", reactive(var_list), 
-                                   disabled = disabled_choices, time = time,
+                                   disabled_choices = disabled_choices, time = time,
                                    df = df())
 
     # Right map

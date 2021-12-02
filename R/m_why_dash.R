@@ -8,7 +8,7 @@ why_dash_UI <- function(id) {
       '#why_title_bar {border-width: 10px; border-color: rgb(255, 255, 255);}'))
       ),
 
-    absolutePanel(
+    fixedPage(
       id = "why_title_bar", class = "panel panel-default", draggable = FALSE,
       top = 70, left = 270, width = "50%",
       h2(i18n$t("Why a dashboard? The science behind Sus")),

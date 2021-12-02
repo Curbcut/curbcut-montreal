@@ -3,7 +3,7 @@
 # UI ----------------------------------------------------------------------
 
 mcp_UI <- function(id) {
-  fillPage( 
+  fixedPage( 
           #Only change the size of photos in this module
           tags$head(tags$style(
             HTML('
@@ -11,6 +11,8 @@ mcp_UI <- function(id) {
                   margin:10px;
                   margin-top:0px
       }
+      
+
     ')
           )),
           select_var_UI(NS(id, "left"), var_list_left_mcp, width = "300px",

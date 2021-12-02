@@ -281,6 +281,11 @@ styler <- '
   overflow-y: auto; 
   overflow-x: hidden;  
   }
+  
+  .container {
+  height: calc(100vh - 85px);
+  overflow-y: auto;
+  }
 
 
 '
