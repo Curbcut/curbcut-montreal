@@ -100,16 +100,16 @@ gentrification_server <- function(id) {
                         var_right = var_right, df = zoom, zoom = zoom_val)
     
     # Explore panel
-    explore_server(id = "explore",
-                   x = data,
-                   var_left = var_left,
-                   var_right = var_right,
-                   select = reactive(rv_gentrification$poly_selected),
-                   zoom = zoom,
-                   build_str_as_DA = TRUE)
+    explore_content <- explore_server(id = "explore",
+                                   x = data,
+                                   var_left = var_left,
+                                   var_right = var_right,
+                                   select = reactive(rv_gentrification$poly_selected),
+                                   zoom = zoom,
+                                   build_str_as_DA = TRUE)
     
     # Legend
-    legend_server("legend", var_left, var_right, zoom_val)
+    legend_graph <- legend_server("legend", var_left, var_right, zoom_val)
     
     # Did-you-know panel
     dyk_server("dyk", var_left, var_right)
@@ -192,16 +192,19 @@ gentrification_server <- function(id) {
       rv_gentrification$poly_selected <- state$values$poly_selected
     })
     
-    # output$download_data <- 
-    #   downloadHandler(filename = "gentrification_data.csv",
-    #                   content = function(file) {
-    #                     data <- data() %>%
-    #                       select(-any_of(contains("q3"), fill, group))
-    # 
-    #                     write.csv2(data, file)
-    #                   },
-    #                   contentType = "text/csv")
-    
+    # OUT
+    reactive({list(module_short_title = "gentrification",
+                   module_id = "gentrification",
+                   time = time(),
+                   data = data(),
+                   token = token_gentrification,
+                   map_zoom = input$map_view_change$zoom,
+                   map_location = c(input$map_view_change$longitude, 
+                                    input$map_view_change$latitude),
+                   zoom = zoom(),
+                   explore_content = explore_content(),
+                   poly_selected = rv_gentrification$poly_selected,
+                   legend_graph = legend_graph())})
     
   })
 }

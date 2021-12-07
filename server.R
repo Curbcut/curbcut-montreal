@@ -16,8 +16,11 @@ shinyServer(function(input, output, session) {
   observeEvent(input$language_button,{
     if (input$language_button[1] %% 2 != 0) {
       update_lang(session, "en")
+      updateActionLink(inputId = "language_button", label = "Français")
     } else {
       update_lang(session, "fr")
+      updateActionLink(inputId = "language_button", label = "English")
+      
     }
   })
   
@@ -32,7 +35,7 @@ shinyServer(function(input, output, session) {
     } else if (active_tab == "alley") {
       alley_server("alley")    
     } else if (active_tab == "canale") {
-      canale_server("canale")
+      active_mod <<- canale_server("canale")
     } else if (active_tab == "climate_risk") {
       climate_risk_server("climate_risk")
     } else if (active_tab == "covid") {
@@ -40,7 +43,7 @@ shinyServer(function(input, output, session) {
     } else if (active_tab == "crash") {
       crash_server("crash")
     } else if (active_tab == "gentrification") {
-      gentrification_server("gentrification")
+      active_mod <<- gentrification_server("gentrification")
     } else if (active_tab == "housing") {
       housing_server("housing")
     } else if (active_tab == "mcp") {
@@ -63,10 +66,108 @@ shinyServer(function(input, output, session) {
 
   # Data download -----------------------------------------------------------
   
-  # output$download_data <- 
-  #   file_to_download()
-    #DOWNLOAD HANDLER WITH A REACTIVE THAT'S CHANGING DEPENDING ON MODULE
+  output$download_data <-
+    downloadHandler(filename = paste0(active_mod()$module_id, "_data.csv"),
+                    content = function(file) {
+                      
+                      vars <- c(str_subset(names(active_mod()$data), "q3"), "fill", "group")
+                      
+                      data <- active_mod()$data %>%
+                        select(-any_of(vars))
+                      
+                      write.csv2(data, file)
+                      
+                    },
+                    contentType = "text/csv")
   
+
+  # Contact form ------------------------------------------------------------
+  
+  dataModal <- function() {
+    modalDialog(
+      selectInput("contact_type", "Reason of contact",
+                  choices = c("Contact" = "CONTACT",
+                              "Report a bug" = "BUG",
+                              "Feedback" = "FEEDBACK",
+                              "Other" = "OTHER"), width = "75%"),
+      textInput("contact_from_name", "Your name and organization", width = "75%"),
+      textInput("contact_from", "Your email adress", "@", width = "75%"),
+      textInput("contact_subject", "Subject", width = "75%"),
+      textAreaInput("contact_body", "Content", width = "75%", height = "300px"),
+      
+      footer = tagList(
+        modalButton("Cancel"),
+        actionButton("send_feedback", "Send")
+      ),
+      title = "Contact form"
+    )
+  }
+
+  onclick("contact", {
+     showModal(
+       dataModal()
+    )
+    })
+  
+  observeEvent(input$send_feedback, {
+    # sendmailR::sendmail(from = paste0("<", input$contact_from, ">"),
+    #                     to = "<maximebdeblois@gmail.com>",
+    #                     subject = paste0(input$contact_type, " - ", 
+    #                                     input$contact_subject),
+    #                     body = input$contact_body,
+    #                     # This is the part not working atm:
+    #                     control = list(smtpServer="smtp.gmail.com"))
+    
+    # Other possibility:
+    contact_form <- c(name = input$contact_from_name,
+                      email = input$contact_from,
+                      subject = paste(input$contact_type, " - ", 
+                                      input$contact_subject),
+                      body = input$contact_body)
+    
+    time_stamp <- str_replace_all(Sys.time(), c(" |:"), "-")
+    
+    file_name <- paste0("contacts/",input$contact_type, "-", time_stamp, ".csv")
+    
+    write.csv2(contact_form, file = file_name)
+    
+  })
+
+
+  # Generating report -------------------------------------------------------
+  
+  output$create_report <-
+    downloadHandler(filename = "report.html",
+                    content = function(file) {
+                      shiny::withProgress(
+                        message = sus_translate(paste0("Generating report on ",
+                                                       active_mod()$module_short_title)),
+                        value = 0,
+                        {
+                          shiny::incProgress(1/10)
+                          tempReport <- file.path(tempdir(), "report.Rmd")
+                          file.copy("www/report.Rmd", tempReport, overwrite = TRUE)
+                          params <- list(module_short_title = active_mod()$module_short_title,
+                                         module = active_mod()$module_id,
+                                         map_title = (filter(filter(title_text,
+                                                                    tab == active_mod()$module_id),
+                                                             type == "title"))$text,
+                                         time = active_mod()$time,
+                                         data = active_mod()$data,
+                                         token = active_mod()$token,
+                                         map_zoom = active_mod()$map_zoom,
+                                         map_location = active_mod()$map_location,
+                                         zoom = active_mod()$zoom,
+                                         explore_content = active_mod()$explore_content,
+                                         poly_selected = active_mod()$poly_selected,
+                                         legend_graph = active_mod()$legend_graph)
+                          shiny::incProgress(8/10)
+                          rmarkdown::render(tempReport, output_file = file,
+                                            params = params,
+                                            envir = new.env(parent = globalenv()))
+                        })
+                    }
+    )
   
   # Waiter ------------------------------------------------------------------
   

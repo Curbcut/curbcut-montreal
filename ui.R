@@ -16,10 +16,10 @@ ui <- function(request) {
     style = "z-index: 1001; border-color: #FFFFFF00; background-color: #FFFFFF00;",
     top = 7, right = 150, width = 0,
       dropdownButton(inputId = "settings", icon = icon("tools"), circle = T, size = "sm",
-        actionLink(inputId = "language_button", label = "EN/FR", icon = icon("globe")),
+        actionLink(inputId = "language_button", label = "English", icon = icon("globe")),
         actionLink(inputId = "._bookmark_", label = "Bookmark", icon = icon("link")),
         downloadLink("download_data", label = div(icon("download"), "Download data")),
-        actionLink(inputId = "create_report", label = "Create a report", icon("file-pdf")),
+        downloadLink("create_report", label = div(icon("file-pdf"), "Generate a report")),
         actionLink(inputId = "contact", label = "Contact/feedback", icon("comment"))
         )),
   

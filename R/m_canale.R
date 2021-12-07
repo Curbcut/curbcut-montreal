@@ -65,13 +65,13 @@ canale_server <- function(id) {
                         var_right = var_right, df = zoom, zoom = zoom_val)
     
     # Explore panel
-    explore_server(id = "explore", 
-                   x = data, 
-                   var_left = var_left,
-                   var_right = var_right, 
-                   select = reactive(rv_canale$poly_selected),
-                   zoom = zoom, 
-                   build_str_as_DA = TRUE)
+    explore_content <- explore_server(id = "explore", 
+                                   x = data, 
+                                   var_left = var_left,
+                                   var_right = var_right, 
+                                   select = reactive(rv_canale$poly_selected),
+                                   zoom = zoom, 
+                                   build_str_as_DA = TRUE)
 
     # Legend
     legend_server("legend", var_left, var_right, zoom_val)
@@ -120,6 +120,19 @@ canale_server <- function(id) {
     # (Namespacing hardwired to explore module; could make it return a reactive)
     observeEvent(input$`explore-clear_selection`, {
       rv_canale$poly_selected <- NA})
+    
+    # OUT
+    reactive({list(module_short_title = "the CanALE index",
+                   module_id = "canale",
+                   time = "2016",
+                   data = data(),
+                   token = map_token,
+                   map_zoom = input$map_view_change$zoom,
+                   map_location = c(input$map_view_change$longitude, 
+                                    input$map_view_change$latitude),
+                   zoom = zoom(),
+                   explore_content = explore_content(),
+                   poly_selected = rv_canale$poly_selected)})
     
   })
 }

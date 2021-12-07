@@ -109,5 +109,8 @@ explore_server <- function(id, x, var_left, var_right, select, zoom,
     # Hook up "Clear selection" button
     output$poly_selected <- reactive({if (!is.na(select())) TRUE else FALSE})
     outputOptions(output, "poly_selected", suspendWhenHidden = FALSE)
+    
+    # Return info_table text and graph to export it in report afterwards
+    reactive({list(info = info_table(), graph = explore_graph())})
   })
 }
