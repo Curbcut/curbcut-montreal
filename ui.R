@@ -18,7 +18,7 @@ ui <- function(request) {
       dropdownButton(inputId = "settings", icon = icon("tools"), circle = T, size = "sm",
         actionLink(inputId = "language_button", label = "English", icon = icon("globe")),
         actionLink(inputId = "._bookmark_", label = "Bookmark", icon = icon("link")),
-        downloadLink("download_data", label = div(icon("download"), "Download data")),
+        actionLink(inputId = "download_data", label = "Data explanation and export", icon("download")),
         downloadLink("create_report", label = div(icon("file-pdf"), "Generate a report")),
         actionLink(inputId = "contact", label = "Contact/feedback", icon("comment"))
         )),

@@ -66,21 +66,65 @@ shinyServer(function(input, output, session) {
 
   # Data download -----------------------------------------------------------
   
-  output$download_data <-
+  dataModal <- function() {
+    modalDialog(
+      "PLACEHOLDER",
+      
+      footer = tagList(
+        modalButton("Cancel"),
+        downloadButton("download_csv", "Download csv"),
+        downloadButton("download_shp", "Download shp")
+      ),
+      title = "Data exaplnation and export"
+    )
+  }
+  
+  onclick("download_data", {
+    showModal(
+      dataModal()
+      
+    )
+  })
+  
+  output$download_csv <-
     downloadHandler(filename = paste0(active_mod()$module_id, "_data.csv"),
                     content = function(file) {
-                      
-                      # Not fully working at the moment (geometry column gets 
-                      # split in multiple rows)
+                      data <- st_drop_geometry(active_mod()$data)
                       write.csv2(data, file)
-                      
                     },
                     contentType = "text/csv")
+  
+  output$download_shp <-
+    downloadHandler(filename = paste0(active_mod()$module_id, "_shp.zip"),
+                    content = function(file) {
+                      withProgress(message = "Exporting Data", {
+                        
+                        incProgress(0.5)
+                        tmp.path <- dirname(file)
+                        
+                        name.base <- file.path(tmp.path, paste0(active_mod()$module_id, "_data"))
+                        name.glob <- paste0(name.base, ".*")
+                        name.shp  <- paste0(name.base, ".shp")
+                        name.zip  <- paste0(name.base, ".zip")
+                        
+                        if (length(Sys.glob(name.glob)) > 0) file.remove(Sys.glob(name.glob))
+                        sf::st_write(active_mod()$data, dsn = name.shp, 
+                                     driver = "ESRI Shapefile", quiet = TRUE)
+                        
+                        zip::zipr(zipfile = name.zip, files = Sys.glob(name.glob))
+                        req(file.copy(name.zip, file))
+                        
+                        if (length(Sys.glob(name.glob)) > 0) file.remove(Sys.glob(name.glob))
+                        
+                        incProgress(0.5)
+                    
+                    })
+                    })
   
 
   # Contact form ------------------------------------------------------------
   
-  dataModal <- function() {
+  contactModal <- function() {
     modalDialog(
       selectInput("contact_type", "Reason of contact",
                   choices = c("Contact" = "CONTACT",
@@ -102,7 +146,7 @@ shinyServer(function(input, output, session) {
 
   onclick("contact", {
      showModal(
-       dataModal()
+       contactModal()
     )
     })
   
