@@ -79,12 +79,13 @@ data_server <- function(id, var_left, var_right, df, zoom = df) {
                                   "_q3", na.omit(str_extract(var_right, time_format_var_right)))
       
       # Add NA column if q3 doesn't exist
-      if (!name_left_q3_col[1] %in% names(data)) {
+      if (length(name_left_q3_col) == 1 && 
+          !name_left_q3_col %in% names(data)) {
         data <- 
           data %>% 
           mutate(new_col = NA)
         
-        names(data)[names(data) == "new_col"] <- name_left_q3_col[1]
+        names(data)[names(data) == "new_col"] <- name_left_q3_col
       }
 
 
@@ -124,7 +125,6 @@ data_server <- function(id, var_left, var_right, df, zoom = df) {
             left_join(colour, by = "group")
           
         } else {
-          
             data <- 
               data %>% 
               dplyr::select(ID, name, name_2, any_of("CSDUID"), population, 
