@@ -72,7 +72,8 @@ building <-
   building |> 
   st_transform(32618) |> 
   st_filter(st_transform(downtown, 32618)) |> 
-  st_transform(4326)
+  st_transform(4326) |> 
+  st_set_agr("constant")
 
 rm(downtown)
 

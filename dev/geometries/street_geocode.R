@@ -75,6 +75,7 @@ street <-
   street |> 
   mutate(name = str_remove(name, ", QC.*$")) |>
   mutate(name = if_else(str_detect(name, ", .*,"), str_remove(name, "^[^,]*, "),
-                        name))
+                        name)) |> 
+  st_set_agr("constant")
   
-# To save output, run dev/build_geometries.R, which calls this script
+# To save output, run dev/build_data.R, which calls this script

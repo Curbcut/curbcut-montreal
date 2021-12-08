@@ -18,6 +18,7 @@ centroids <-
 DA <- 
   DA %>%
   left_join(centroids, by = "ID") %>%
-  relocate(centroid, buffer, .before = geometry)
+  relocate(centroid, buffer, .before = geometry) |> 
+  st_set_agr("constant")
 
 rm(centroids)

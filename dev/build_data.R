@@ -36,6 +36,7 @@ source("dev/geometries/street_geocode.R")
 
 # Eventually there should be some proper error checking here, but for now....
 stopifnot(
+  # Check field names
   names(borough) == c("ID", "name", "name_2", "population", "households", 
                       "geometry"),
   names(building) == c("ID", "name", "name_2", "DAUID", "CTUID", "CSDUID", 
@@ -50,12 +51,20 @@ stopifnot(
   names(street) == c("ID", "name", "name_2", "street_type", "DAUID", "CTUID", 
                      "CSDUID", "osm_ID", "grid_ID", "population", "households",
                      "geometry"),
+  # Check row numbers
   nrow(borough) == 111,
   nrow(building) == 56614,
   nrow(CT) == 970,
   nrow(DA) == 6469,
   nrow(grid) == 9923,
-  nrow(street) == 68938
+  nrow(street) == 68938,
+  # Check geometry relations 
+  sum(st_agr(borough) != "constant") == 0,
+  sum(st_agr(building) != "constant") == 0,
+  sum(st_agr(CT) != "constant") == 0,
+  sum(st_agr(DA) != "constant") == 0,
+  sum(st_agr(grid) != "constant") == 0,
+  sum(st_agr(street) != "constant") == 0
 )
 
 
@@ -67,8 +76,9 @@ stopifnot(
 #     var_code = character(),
 #     var_title = character(),
 #     var_short = character(),
-#     var_exp = character(),
+#     explanation = character(),
 #     category = character(),
+#     private = logical(),
 #     dates = list(),
 #     scales = list()
 #   )

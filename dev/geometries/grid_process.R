@@ -44,6 +44,7 @@ grid <-
   grid %>% 
   left_join(select(st_drop_geometry(borough), CSDUID = ID, name_2 = name), 
             by = "CSDUID") %>% 
-  relocate(name_2, .after = name)
+  relocate(name_2, .after = name) |> 
+  st_set_agr("constant")
 
 rm(borough_index, DA_data, grid_census)
