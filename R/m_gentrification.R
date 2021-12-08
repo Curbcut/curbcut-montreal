@@ -81,8 +81,11 @@ gentrification_server <- function(id) {
     })
     observe({
       if (length(unique(time())) == 1) {
-        shinyalert::shinyalert("Oops!", text = paste0("Gentrification is a process that can only be quantified over time. ",
-                                                      " Please, select two different years."), type = "error")
+        shinyalert::shinyalert("Oops!", 
+                               text = paste0("Gentrification is a process that ",
+                                             "can only be quantified over time. ",
+                                             " Please, select two different years."), 
+                               type = "error")
       }
     })
     
