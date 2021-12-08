@@ -63,7 +63,6 @@ shinyServer(function(input, output, session) {
     active_mod_server()
   })
   
-
   # Data download -----------------------------------------------------------
   
   dataModal <- function() {
@@ -75,14 +74,13 @@ shinyServer(function(input, output, session) {
         downloadButton("download_csv", "Download csv"),
         downloadButton("download_shp", "Download shp")
       ),
-      title = "Data exaplnation and export"
+      title = "Data explanation and export"
     )
   }
   
   onclick("download_data", {
     showModal(
       dataModal()
-      
     )
   })
   
@@ -117,11 +115,11 @@ shinyServer(function(input, output, session) {
                         if (length(Sys.glob(name.glob)) > 0) file.remove(Sys.glob(name.glob))
                         
                         incProgress(0.5)
-                    
-                    })
+                        
+                      })
                     })
   
-
+  
   # Contact form ------------------------------------------------------------
   
   contactModal <- function() {
@@ -143,12 +141,12 @@ shinyServer(function(input, output, session) {
       title = "Contact form"
     )
   }
-
+  
   onclick("contact", {
-     showModal(
-       contactModal()
+    showModal(
+      contactModal()
     )
-    })
+  })
   
   observeEvent(input$send_feedback, {
     # sendmailR::sendmail(from = paste0("<", input$contact_from, ">"),
@@ -165,16 +163,14 @@ shinyServer(function(input, output, session) {
                       subject = paste(input$contact_type, " - ", 
                                       input$contact_subject),
                       body = input$contact_body)
-    
     time_stamp <- str_replace_all(Sys.time(), c(" |:"), "-")
-    
     file_name <- paste0("contacts/",input$contact_type, "-", time_stamp, ".csv")
-    
     write.csv2(contact_form, file = file_name)
-    
+    removeModal()
+    showNotification(sus_translate("Sent and received. Thank you!"), duration = 1.5)
   })
-
-
+  
+  
   # Generating report -------------------------------------------------------
   
   output$create_report <-
@@ -183,9 +179,8 @@ shinyServer(function(input, output, session) {
                       shiny::withProgress(
                         message = sus_translate(paste0("Generating report on ",
                                                        active_mod()$module_short_title)),
-                        value = 0,
                         {
-                          shiny::incProgress(1/10)
+                          shiny::incProgress(0.35)
                           tempReport <- file.path(tempdir(), "report.Rmd")
                           file.copy("www/report.Rmd", tempReport, overwrite = TRUE)
                           params <- list(module_short_title = active_mod()$module_short_title,
@@ -202,10 +197,11 @@ shinyServer(function(input, output, session) {
                                          explore_content = active_mod()$explore_content,
                                          poly_selected = active_mod()$poly_selected,
                                          legend_graph = active_mod()$legend_graph)
-                          shiny::incProgress(8/10)
+                          shiny::incProgress(0.35)
                           rmarkdown::render(tempReport, output_file = file,
                                             params = params,
                                             envir = new.env(parent = globalenv()))
+                          shiny::incProgress(0.3)
                         })
                     }
     )
