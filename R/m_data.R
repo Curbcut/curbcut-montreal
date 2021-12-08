@@ -71,6 +71,22 @@ data_server <- function(id, var_left, var_right, df, zoom = df) {
                    && df() %in% c("building", "street")) {
           get("colour_left_3_DA")
         } else get(paste0("colour_bivar_", zoom()))
+      
+      # Facilitate code legibility by pre-createing q3 column names
+      name_left_q3_col <- paste0(str_remove(all_of(var_left), time_format_var_left), 
+                                 "_q3", na.omit(str_extract(var_left, time_format_var_left)))
+      name_right_q3_col <- paste0(str_remove(var_right, time_format_var_right), 
+                                  "_q3", na.omit(str_extract(var_right, time_format_var_right)))
+      
+      # Add NA column if q3 doesn't exist
+      if (!name_left_q3_col[1] %in% names(data)) {
+        data <- 
+          data %>% 
+          mutate(new_col = NA)
+        
+        names(data)[names(data) == "new_col"] <- name_left_q3_col[1]
+      }
+
 
       
       ## Univariate data -------------------------------------------------------
@@ -108,16 +124,16 @@ data_server <- function(id, var_left, var_right, df, zoom = df) {
             left_join(colour, by = "group")
           
         } else {
-          data <- 
-            data %>% 
-            dplyr::select(ID, name, name_2, any_of("CSDUID"), population, 
-                          left_var = all_of(var_left),
-                          left_var_q3 = paste0(str_remove(
-                            all_of(var_left), time_format_var_left), "_q3", 
-                            na.omit(str_extract(var_left, time_format_var_left)))) |>
-            mutate(group = as.character(left_var_q3),
-                   group = if_else(is.na(group), "NA", group)) |> 
-            left_join(colour, by = "group")
+          
+            data <- 
+              data %>% 
+              dplyr::select(ID, name, name_2, any_of("CSDUID"), population, 
+                            left_var = all_of(var_left),
+                            left_var_q3 = name_left_q3_col) |>
+              mutate(group = as.character(left_var_q3),
+                     group = if_else(is.na(group), "NA", group)) |> 
+              left_join(colour, by = "group")
+          
         }
         
         
@@ -129,13 +145,9 @@ data_server <- function(id, var_left, var_right, df, zoom = df) {
              { if (length(var_left) == 1 && length(var_right) == 1) 
                dplyr::select(., ID, name, name_2, any_of("CSDUID"), population, 
                              left_var = all_of(var_left),
-                             left_var_q3 = paste0(str_remove(var_left, time_format_var_left), 
-                                                  "_q3", 
-                                                  na.omit(str_extract(var_left, time_format_var_left))),
+                             left_var_q3 = all_of(name_left_q3_col),
                              right_var = all_of(var_right), 
-                             right_var_q3 = paste0(str_remove(var_right, time_format_var_right), 
-                                                   "_q3", 
-                                                   na.omit(str_extract(var_right, time_format_var_right))))
+                             right_var_q3 = all_of(name_right_q3_col))
                else dplyr::select(., everything(),
                                   left_var = all_of(var_left),
                                   right_var = all_of(var_right))} %>% 
@@ -156,9 +168,7 @@ data_server <- function(id, var_left, var_right, df, zoom = df) {
                mutate(., left_var = (left_var2 - left_var1) / abs(left_var1),
                       left_var_q3 = ntile(left_var, 3),
                       right_var = var_right, 
-                      right_var_q3 = eval(as.name(paste0(str_remove(var_right, time_format_var_right), 
-                                            "_q3", 
-                                            na.omit(str_extract(var_right, time_format_var_right))))),
+                      right_var_q3 = eval(as.name(name_right_q3_col)),
                       across(where(is.numeric), ~replace(., is.nan(.), NA)),
                       across(where(is.numeric), ~replace(., is.infinite(.), NA))) %>% 
                  select(., ID, name, name_2, any_of("CSDUID"), population, 
@@ -166,9 +176,7 @@ data_server <- function(id, var_left, var_right, df, zoom = df) {
                         any_of(c("left_var1", "left_var2", "right_var1", "right_var2"))) else .} %>%
              { if (length(var_left) == 1 && length(var_right) == 2)
                mutate(., left_var = var_left,
-                      left_var_q3 = eval(as.name(paste0(str_remove(var_left, time_format_var_left), 
-                                           "_q3", 
-                                           na.omit(str_extract(var_left, time_format_var_left))))),
+                      left_var_q3 = eval(as.name(name_left_q3_col)),
                       right_var = (right_var2 - right_var1) / abs(right_var1),
                       right_var_q3 = ntile(right_var, 3),
                       across(where(is.numeric), ~replace(., is.nan(.), NA)),

@@ -4,6 +4,7 @@
 
 gentrification_UI <- function(id) {
   fillPage(
+    shinyalert::useShinyalert(),
     fillRow(
       fillCol(sidebar_UI(NS(id, "sidebar"),
                          sliderInput(
@@ -19,6 +20,8 @@ gentrification_UI <- function(id) {
                                                              "part of the index"))),
                          select_var_UI(NS(id, "left"), 
                                        var_list_left_gentrification),
+                         htmlOutput(NS(id, "year_displayed_right")),
+                         htmlOutput(NS(id, "same_time_disclaimer")),
                          div(class = "bottom_sidebar",
                              tagList(legend_UI(NS(id, "legend")),
                                      zoom_UI(NS(id, "zoom"), gentrification_zoom)))
@@ -67,11 +70,41 @@ gentrification_server <- function(id) {
     # Get time from slider
     time <- reactive({input$slider_time})
     
+    # If the same time is selected twice, send a notification
+    output$same_time_disclaimer <- renderText({
+      if (length(unique(time())) == 1) {
+        str_glue(sus_translate(paste0(
+          "<p style='font-size:11px;'>",
+          "Gentrification is a process that can only be quantified over time. ",
+          "Please, select two different years.</i></p>")))
+      }
+    })
+    observe({
+      if (length(unique(time())) == 1) {
+        shinyalert::shinyalert("Oops!", text = paste0("Gentrification is a process that can only be quantified over time. ",
+                                                      " Please, select two different years."), type = "error")
+      }
+    })
+    
     # Compare panel
     var_right <- compare_server(id = "gentrification", 
                                 var_list = var_list_right_gentrification,
                                 df = zoom,
                                 time = time)
+    
+    # Year displayed disclaimer
+    output$year_displayed_right <- renderText({
+        year_shown <- str_extract(var_right(), "\\d{4}$")
+        var <- str_remove(var_right(), "_\\d{4}$")
+        var <- sus_translate(var_exp[var_exp$var_code == var,]$var_name)
+        
+        if (year_shown != time() && var_right() != " ") {
+          str_glue(sus_translate(paste0(
+            "<p style='font-size:11px;'>",
+            "<i>Displayed data for <b>{var}</b> is for the ",
+            "closest available year <b>({year_shown})</b>.</i></p>")))
+        }
+    })
     
     # Get single_var value to use if check_single_var is clicked
     single_var <- select_var_server(

@@ -44,7 +44,7 @@ var_list_right_gentrification <-
          # "Creative occupation (%)" = "emp_creative_prop"),
        # "Family structure" = list(
        #   "Family with child (%)" = "family_children_prop",
-       #   "Single person family (%)" = "family_one_person_prop"),       
+       #   "Single person family (%)" = "family_one_person_prop"),
        "Immigration and ethnicity" = list(
          "Immigrants (%)" =  "iden_imm_prop",
          "New immigrants (%)" = "iden_imm_new_prop",
