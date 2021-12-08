@@ -192,11 +192,16 @@ gentrification_server <- function(id) {
       rv_gentrification$poly_selected <- state$values$poly_selected
     })
     
+    # data naming for data_export
+    data_export <- data_export_server(id = "gentrification",
+                                      df = data, var_left = var_left, 
+                                      var_right = var_right)
+    
     # OUT
     reactive({list(module_short_title = "gentrification",
                    module_id = "gentrification",
                    time = time(),
-                   data = data(),
+                   data = data_export(),
                    token = token_gentrification,
                    map_zoom = input$map_view_change$zoom,
                    map_location = c(input$map_view_change$longitude, 

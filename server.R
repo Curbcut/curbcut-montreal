@@ -70,11 +70,8 @@ shinyServer(function(input, output, session) {
     downloadHandler(filename = paste0(active_mod()$module_id, "_data.csv"),
                     content = function(file) {
                       
-                      vars <- c(str_subset(names(active_mod()$data), "q3"), "fill", "group")
-                      
-                      data <- active_mod()$data %>%
-                        select(-any_of(vars))
-                      
+                      # Not fully working at the moment (geometry column gets 
+                      # split in multiple rows)
                       write.csv2(data, file)
                       
                     },

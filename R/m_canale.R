@@ -121,11 +121,16 @@ canale_server <- function(id) {
     observeEvent(input$`explore-clear_selection`, {
       rv_canale$poly_selected <- NA})
     
+    # data naming for data_export
+    data_export <- data_export_server(id = "canale",
+                                      df = data, var_left = var_left, 
+                                      var_right = var_right)
+    
     # OUT
     reactive({list(module_short_title = "the CanALE index",
                    module_id = "canale",
                    time = "2016",
-                   data = data(),
+                   data = data_export(),
                    token = map_token,
                    map_zoom = input$map_view_change$zoom,
                    map_location = c(input$map_view_change$longitude, 

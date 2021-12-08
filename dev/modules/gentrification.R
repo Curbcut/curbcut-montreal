@@ -7,6 +7,8 @@
 vars <- c("edu_bachelor_above_prop", "inc_median_dollar", "housing_value_avg_dollar",
           "housing_rent_avg_dollar", "housing_tenant_prop", "iden_vm_prop")
 
+weight <- c(0.143, 0.054, 0.054, 0.054, 0.347, 0.347)
+
 neg_vars <- c("housing_tenant_prop", "iden_vm_prop")
 
 dates_list <- c(1996,2001,2006,2011,2016)
@@ -32,10 +34,10 @@ index_fun <- function(df){
     # Give a position to all values, to enable to possibility of creating an indice
     vars_ranked <- 
       binded_dfs %>% 
-      mutate(across(everything(), ~ (.- mean(., na.rm = T))/sd(., na.rm = T), .names = "{.col}_zscore")) #%>% 
+      mutate(across(everything(), ~ (.- mean(., na.rm = T))/sd(., na.rm = T), .names = "{.col}_zscore")) %>% 
       # mutate(across(everything(), percent_rank, .names = "{.col}_rank")) %>% 
-      # Invert the rank for the 2 variables that have negative impact
-      # mutate(across(paste0(neg_vars, "_rank"), ~ 1 - .))
+      # Invert the zscore for the 2 variables that have reverse impact
+      mutate(across(paste0(neg_vars, "_zscore"), ~ .*-1))
     
     # Apply these ranks for a given year to the right df ID
     ranked_per_year <- 
@@ -56,10 +58,12 @@ index_fun <- function(df){
     id_index <- 
       reduced %>% 
       select(-ID) %>% 
-      summarize(gentrification_ind = rowMeans(.)) %>% 
+      as.matrix() %>% 
+      rowMeans(.) %>% 
+      # matrixStats::rowWeightedMeans(., w = weight) %>% 
       cbind(select(reduced, ID), .) %>% 
       as_tibble() %>% 
-      rename_with(~paste0(.x, "_", year), gentrification_ind)
+      rename_with(~paste0("gentrification_ind", "_", year), 2)
     
     id_index
     
@@ -69,12 +73,12 @@ index_fun <- function(df){
   
 }
 
-index_fun(DA) %>%
-  mutate(change = (gentrification_ind_2016-gentrification_ind_2006)/gentrification_ind_2006) %>%
-  ggplot()+
-  geom_sf(aes(fill = change), color = "transparent") +
-  scale_fill_continuous(#limits = c(-1,2), 
-    type = "viridis")
+# index_fun(DA) %>% 
+#   mutate(change = (gentrification_ind_2016-gentrification_ind_2006)/gentrification_ind_2006) %>%
+#   ggplot()+
+#   geom_sf(aes(fill = change), color = "transparent") +
+#   scale_fill_continuous(#limits = c(-2,3), 
+#     type = "viridis")
 
 
 # Apply function ----------------------------------------------------------
