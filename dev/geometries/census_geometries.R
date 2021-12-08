@@ -173,17 +173,20 @@ rm(borough_join, CSD, leftovers)
 
 borough <- 
   borough %>% 
-  rename(name_2 = type)
+  rename(name_2 = type) |> 
+  st_set_agr("constant")
 
 CT <- 
   CT %>% 
   left_join(select(st_drop_geometry(borough), CSDUID = ID, name_2 = name), 
             by = "CSDUID") %>% 
-  relocate(name_2, .after = name)
+  relocate(name_2, .after = name) |> 
+  st_set_agr("constant")
 
 DA <- 
   DA %>% 
   left_join(select(st_drop_geometry(borough), CSDUID = ID, name_2 = name), 
             by = "CSDUID") %>% 
-  relocate(name_2, .after = name)
+  relocate(name_2, .after = name) |> 
+  st_set_agr("constant")
 
