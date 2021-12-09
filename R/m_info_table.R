@@ -307,7 +307,7 @@ info_table_server <- function(id, x, var_type, var_left, var_right, select,
       ## Append date information -----------------------------------------------
       
       date_left <- str_extract(var_left(), "(?<=_)\\d{4}$")
-      date_right <- str_extract(var_right(), "(?<=_)_\\d{4}$")
+      date_right <- str_extract(var_right(), "(?<=_)\\d{4}$")
       if (length(var_right()) == 1 && var_right() == " ") date_right <- date_left
       # TEMPORARILY EXCLUDE MULTIPLE DATES TKTK
       if (length(date_left) > 1 || is.na(date_left) || is.na(date_right)) 
