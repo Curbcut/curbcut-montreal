@@ -36,6 +36,7 @@ source("dev/geometries/street_geocode.R")
 
 # Eventually there should be some proper error checking here, but for now....
 stopifnot(
+  
   # Check field names
   names(borough) == c("ID", "name", "name_2", "population", "households", 
                       "geometry"),
@@ -51,6 +52,7 @@ stopifnot(
   names(street) == c("ID", "name", "name_2", "street_type", "DAUID", "CTUID", 
                      "CSDUID", "osm_ID", "grid_ID", "population", "households",
                      "geometry"),
+  
   # Check row numbers
   nrow(borough) == 111,
   nrow(building) == 56614,
@@ -58,6 +60,7 @@ stopifnot(
   nrow(DA) == 6469,
   nrow(grid) == 9923,
   nrow(street) == 68938,
+  
   # Check geometry relations 
   sum(st_agr(borough) != "constant") == 0,
   sum(st_agr(building) != "constant") == 0,
@@ -70,18 +73,20 @@ stopifnot(
 
 # Build variable table ----------------------------------------------------
 
-# # Eventually...
-# variables <- 
-#   tibble(
-#     var_code = character(),
-#     var_title = character(),
-#     var_short = character(),
-#     explanation = character(),
-#     category = character(),
-#     private = logical(),
-#     dates = list(),
-#     scales = list()
-#   )
+# Eventually...
+variables <-
+  tibble(
+    var_code = character(),
+    var_title = character(),
+    var_short = character(),
+    explanation = character(),
+    category = character(),
+    private = logical(),
+    dates = list(),
+    scales = list(),
+    breaks_q3 = list(),
+    breaks_q5 = list()
+  )
 
 # But for now:
 var_exp <- tibble(var_code = character(), var_name = character(),
