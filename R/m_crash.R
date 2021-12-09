@@ -32,8 +32,7 @@ crash_UI <- function(id) {
                          div(id = NS(id, "slider_switch"),
                              checkboxInput(inputId = NS(id, "bi_time"),
                                            label = i18n$t("Compare dates"))),
-                         htmlOutput(NS(id, "year_displayed_right")),
-                         htmlOutput(NS(id, "how_to_read_map")),
+                         year_disclaimer_UI(NS(id, "disclaimers")),
                          div(class = "bottom_sidebar",
                              tagList(legend_UI(NS(id, "legend")),
                                      zoom_UI(NS(id, "zoom"), crash_zoom))))
@@ -110,6 +109,13 @@ crash_server <- function(id) {
       df = zoom, 
       show_panel = choropleth,
       time = time)
+    
+    # Disclaimers and how to read the map
+    year_disclaimer_server("disclaimers", 
+                           var_left = var_left,
+                           var_right = var_right,
+                           time = time,
+                           pct_variation = choropleth)
     
     # Data 
     data_1 <- data_server("crash", var_left, var_right, df = zoom, zoom = zoom_val)
@@ -208,23 +214,6 @@ crash_server <- function(id) {
     #   }
     # })
     
-    
-    # Year displayed disclaimer
-    output$year_displayed_right <- renderText({
-      if (!input$bi_time && choropleth()) {
-        year_shown <- str_extract(var_right(), "\\d{4}$")
-        var <- str_remove(var_right(), "_\\d{4}$")
-        var <- sus_translate(var_exp[var_exp$var_code == var,]$var_name)
-        
-        if (year_shown != time() && var_right() != " ") {
-          str_glue(sus_translate(paste0(
-            "<p style='font-size:11px;'>",
-            "<i>Displayed data for <b>{var}</b> is for the ",
-            "closest available year <b>({year_shown})</b>.</i></p>")))
-        }
-      }
-    })
-    
     # Bi slider label explained
     observe({
       if (!choropleth()) {
@@ -235,34 +224,6 @@ crash_server <- function(id) {
                           label = sus_translate("Compare two dates"))
       }
     })
-    
-    output$how_to_read_map <- renderText({
-      # No explanation needed for heatmap and choropleth with unique date and
-      # no right variable. The slider label updates, and makes sense of the map.
-      if (choropleth() && input$bi_time) {
-        type_crash <- switch(var_left_2(), 
-                             "total" = sus_translate("total"),
-                             "ped" = sus_translate("pedestrian"),
-                             "cyc" = sus_translate("cyclist"), 
-                             "other" = sus_translate("other"))
-        
-        if (var_right()[1] == " ") {
-          str_glue(sus_translate(crash_read_uni))
-          
-        } else {
-          var <- str_remove(var_right(), "_\\d{4}$")
-          census_years <- unique(str_extract(var_right(), "\\d{4}$"))
-          var <- str_to_lower(sus_translate(
-            var_exp[var_exp$var_code == var,]$var_name))
-          
-          if (length(census_years) == 2) {
-            str_glue(sus_translate(crash_read_bi_2))
-          } else str_glue(sus_translate(crash_read_bi_1))
-        }
-      }
-    })
-    
-    
     
     output$crash_analysis <- renderUI(
       

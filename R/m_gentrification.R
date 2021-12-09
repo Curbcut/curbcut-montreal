@@ -20,7 +20,7 @@ gentrification_UI <- function(id) {
                                                              "part of the index"))),
                          select_var_UI(NS(id, "left"), 
                                        var_list_left_gentrification),
-                         htmlOutput(NS(id, "year_displayed_right")),
+                         year_disclaimer_UI(NS(id, "disclaimers")),
                          div(class = "bottom_sidebar",
                              tagList(legend_UI(NS(id, "legend")),
                                      zoom_UI(NS(id, "zoom"), gentrification_zoom)))
@@ -69,15 +69,15 @@ gentrification_server <- function(id) {
     # Get time from slider
     time <- reactive({input$slider_time})
     
-    # If the same time is selected twice, send a notification
-    output$same_time_disclaimer <- renderText({
-      if (length(unique(time())) == 1) {
-        str_glue(sus_translate(paste0(
-          "<p style='font-size:11px;'>",
-          "Gentrification is a process that can only be quantified over time. ",
-          "Please, select two different years.</i></p>")))
-      }
-    })
+    # # If the same time is selected twice, send a notification
+    # output$same_time_disclaimer <- renderText({
+    #   if (length(unique(time())) == 1) {
+    #     str_glue(sus_translate(paste0(
+    #       "<p style='font-size:11px;'>",
+    #       "Gentrification is a process that can only be quantified over time. ",
+    #       "Please, select two different years.</i></p>")))
+    #   }
+    # })
     observe({
       if (length(unique(time())) == 1) {
         shinyalert::shinyalert(text = paste0("Gentrification is a process that ",
@@ -114,6 +114,18 @@ gentrification_server <- function(id) {
         single_var()
       }
     })
+    
+    # Disclaimers and how to read the map
+    year_disclaimer_server("disclaimers", 
+                           var_left = var_left,
+                           var_right = var_right,
+                           time = time,
+                           # If the same time is selected twice, other disclaimer
+                           more_condition = reactive(length(unique(time())) == 1),
+                           more_text = str_glue(sus_translate(paste0(
+                             "<p style='font-size:11px;'>",
+                             "Gentrification is a process that can only be quantified over time. ",
+                             "Please, select two different years.</i></p>"))))
     
     # Data
     data <- data_server(id = "gentrification", var_left = var_left,

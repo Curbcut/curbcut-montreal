@@ -26,9 +26,7 @@ housing_UI <- function(id) {
                          checkboxInput(inputId = NS(id, "slider_switch"),
                                        label = i18n$t("Compare dates"), 
                                        width = "95%"),
-                         htmlOutput(NS(id, "year_displayed_left")),
-                         htmlOutput(NS(id, "year_displayed_right")),
-                         htmlOutput(NS(id, "how_to_read_map")),
+                         year_disclaimer_UI(NS(id, "disclaimers")),
                          div(class = "bottom_sidebar",
                              tagList(legend_UI(NS(id, "legend")),
                                      zoom_UI(NS(id, "zoom"), crash_zoom)))
@@ -53,38 +51,6 @@ housing_server <- function(id) {
     # Sidebar
     sidebar_server("sidebar", "housing", 
                    reactive(paste0("left_", zoom(), "_", var_left())))
-    
-    # Nearest year of data disclaimer
-    output$year_displayed_left <- renderText({
-      
-      if (!input$slider_switch) {
-        year_shown <- str_extract(var_left(), "\\d{4}$")
-        var <- str_remove(var_left(), "_\\d{4}$")
-        var <- sus_translate(var_exp[var_exp$var_code == var,]$var_name)
-        
-        if (year_shown != time()) {
-          str_glue(sus_translate(paste0(
-            "<p>Displayed data for <b>{var}</b> is for the ",
-            "closest available year <b>({year_shown})</b>.</p>")))
-        }
-      }
-    })
-    
-    output$year_displayed_right <- renderText({
-      
-      if (!input$slider_switch) {
-        
-        year_shown <- str_extract(var_right(), "\\d{4}$")
-        var <- str_remove(var_right(), "_\\d{4}$")
-        var <- sus_translate(var_exp[var_exp$var_code == var,]$var_name)
-        
-        if (year_shown != time() && var_right() != " ") {
-          str_glue(sus_translate(paste0(
-            "<p>Displayed data for <b>{var}</b> is for the ",
-            "closest available year <b>({year_shown})</b>.</p>")))
-        }
-      }
-    })
     
     # Map
     output$map <- renderMapdeck({
@@ -146,7 +112,12 @@ housing_server <- function(id) {
       df = zoom, 
       disabled_choices = reactive(var_list_housing_right_disabled()),
       time = time)
-
+    
+    # Disclaimers and how to read the map
+    year_disclaimer_server("disclaimers", 
+                           var_left = var_left,
+                           var_right = var_right,
+                           time = time)
 
     # Data
     data <- data_server("housing", var_left, var_right, 
@@ -210,25 +181,6 @@ housing_server <- function(id) {
     # (Namespacing hardwired to explore module; could make it return a reactive)
     observeEvent(input$`explore-clear_selection`, {
       rv_housing$poly_selected <- NA})
-    
-    output$how_to_read_map <- renderText({
-      # No explanation needed for heatmap and choropleth with unique date and
-      # no right variable. The slider label updates, and makes sense of the map.
-      if (input$slider_switch) {
-        var_left_title <- var_exp[var_exp$var_code == str_remove(var_left(), "_\\d{4}$"),]$var_name
-        var_left_title <- sus_translate(var_left_title)
-        
-        if (var_right()[1] == " ") {
-          str_glue(sus_translate(housing_read_uni))
-          
-        } else {
-          var_right_title <- var_exp[var_exp$var_code == str_remove(var_right(), "_\\d{4}$"),]$var_name
-          var_right_title <- sus_translate(var_right_title)
-
-          str_glue(sus_translate(housing_read_bi))
-        }
-      }
-    })
 
   })
 }
