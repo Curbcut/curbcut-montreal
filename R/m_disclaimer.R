@@ -46,7 +46,7 @@ year_disclaimer_server <- function(id, var_left, var_right, time, pct_variation 
       out <- list()
       
       # If comparison mode, but same year selected.
-      if (length(var_left()) != length(var_left)) {
+      if (length(time()) != length(var_left)) {
         out <- c(out, list(str_glue(sus_translate(paste0(
           "<p>No comparison shown, but static data from {left_year}.</p>")))
         ))
