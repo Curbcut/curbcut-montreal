@@ -5,6 +5,12 @@
 
 # Global needed variables and functions -----------------------------------
 
+# Lists of scales and years -----------------------------------------------
+
+scales <- c("CSD", "CT", "DA")
+years <- c(1996, 2001, 2006, 2011, 2016)
+source("dev/modules/census/census_functions_new.R")
+
 source("dev/modules/census/census_functions.R")
 newest_census_year <- "2016"
 
