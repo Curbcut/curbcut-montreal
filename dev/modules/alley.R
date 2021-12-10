@@ -137,22 +137,77 @@ alleys <-
 
 
 # Get borough text --------------------------------------------------------
+mtl_ids <- 
+borough %>% 
+  st_drop_geometry() %>% 
+  select(ID, name) %>% 
+  filter(str_starts(ID, "2466023"))
 
 alley_text <-
-  suppressMessages(read_csv2("dev/data/green_alleys/info_borough.csv"))
+  suppressMessages(read_csv2("dev/data/green_alleys/info_borough.csv")) %>% 
+  # Attaching the right IDs
+  select(-ID) %>% 
+  left_join(mtl_ids, by = "name") %>% 
+  relocate(ID, .before = name)
 
 # Add total lengths of green alleys to boroughs
+alleys_length <- 
+alleys %>% 
+  mutate(green_alley_sqm = st_area(geometry)/2)
+
 alley_text <- 
   alley_text %>% 
-  inner_join(st_drop_geometry(alleys %>% 
-                                st_cast("MULTILINESTRING") %>% 
-                                mutate(length = st_length(geometry)/2) %>% 
-                                group_by(CSDUID) %>%
-                                summarize(ga_length = round(units::drop_units(sum(length))))),
+  left_join(alleys_length %>% 
+               st_drop_geometry() %>% 
+               group_by(CSDUID) %>%
+               summarize(green_alley_sqm = round(units::drop_units(sum(green_alley_sqm, na.rm = T)))),
              by = c("ID" = "CSDUID")) %>% 
-  relocate(ga_length, .after = first_alley)
+  relocate(green_alley_sqm, .after = first_alley)
+
+
+# Add green alleys sqm to census geographies -----------------------------
+
+lengths_alleys_fun <- function(data) {
+  
+  sqm_per_id <- 
+  alleys_length %>% 
+    rename(alley_ID = ID) %>% 
+    st_join(select(data, ID)) %>% 
+    st_drop_geometry() %>% 
+    group_by(ID) %>% 
+    summarize(green_alley_sqm = round(units::drop_units(sum(green_alley_sqm, na.rm = T))))
+  
+  data %>% 
+    left_join(sqm_per_id) %>% 
+    mutate(green_alley_sqkm = 1000 * green_alley_sqm / units::drop_units(st_area(geometry)),
+           green_alley_per1k =  1000 * green_alley_sqm / population) %>% 
+    select(-green_alley_sqm) %>% 
+    mutate(across(starts_with("green_alley"), ntile, n = 3, .names = "{.col}_q3"), 
+           .before = geometry)
+
+}
+
+borough <- lengths_alleys_fun(borough)
+CT <- lengths_alleys_fun(CT)
+DA <- lengths_alleys_fun(DA)
 
 # Clean up ----------------------------------------------------------------
 
 rm(alleys_mtl, alleys_google, alleys_mn, alleys_visited, alleys_to_filter, 
    alleys_visited_text, missing_photos)
+
+
+# Variable explanations ---------------------------------------------------
+
+var_exp <- 
+  var_exp %>% 
+  add_row(
+    var_code = "green_alley_sqkm",
+    var_name = "Green alleys per sq km",
+    explanation = 
+      "the number of square meters of green alley per square kilometers") %>%
+  add_row(
+    var_code = "green_alley_per1k",
+    var_name = "Green alleys per 1,000",
+    explanation = 
+      "the number of square meters of green alley per 1,000 residents")

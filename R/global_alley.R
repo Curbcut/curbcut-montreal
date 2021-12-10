@@ -9,12 +9,22 @@ width_alley_higher_zoom <- 75
 rv_alley <- reactiveValues(poly_selected = NA, zoom = width_alley_higher_zoom)
 
 # Dropdown menu
-var_list_alley <- 
+var_list_left_alley <- 
+  list("Individual alleys" = " ",
+       "Per sq km" = "green_alley_sqkm",
+       "Per 1,000 residents" = "green_alley_per1k")
+
+# Alley zoom
+alley_zoom <- c("borough" = 0, "CT" = 10.5, "DA" = 12)
+
+
+# Dropdown menu
+var_list_right_alley <- 
   list("----" = " ", 
        "Housing" = list(
          "Tenant-occupied (%)" = "housing_tenant_prop",
          "Average rent ($)" = "housing_rent_avg_dollar",
-         "Average property value ($)" = "housing_prop_value_avg_dollar",
+         "Average property value ($)" = "housing_value_avg_dollar",
          "Unaffordable housing (%)" = "housing_unafford_prop",
          "Unsuitable housing (%)" = "housing_unsuit_prop"),
        "Income" = list(
@@ -22,16 +32,35 @@ var_list_alley <-
          "Income under $50k (%)" = "inc_50_prop",
          "Income between $50k-$100k (%)" = "inc_100_prop",
          "Income above $100k (%)" = "inc_high_prop"),
-       "Immigration" = list(
-         "Immigrants (%)" =  "imm_prop",
-         "New immigrants (%)" = "imm_new_prop"),
+       "Immigration and ethnicity" = list(
+         "Immigrants (%)" =  "iden_imm_prop",
+         "New immigrants (%)" = "iden_imm_new_prop",
+         "Visible minorities (%)" = "iden_vm_prop"),
        "Transportation" = list(
          "Drive to work (%)" = "trans_car_prop",
          "Walk or cycle to work (%)" = "trans_walk_or_bike_prop",
          "Public transit to work (%)" = "trans_transit_prop",
          "15 minutes to work (%)" = "trans_t_15_prop",
          "15-45 minutes to work (%)" = "trans_t_45_prop",
-         "More than 45 minutes to work (%)" = "trans_t_45_plus_prop"))
+         "More than 45 minutes to work (%)" = "trans_t_45_plus_prop"),
+       "Employment" = list(
+         "Managerial and professional occupations (%)" = "emp_professional_prop",
+         "Creative occupations (%)" = "emp_professional_prop"),
+       "Family" = list(
+         "Families with children (%)" = "family_children_prop",
+         "One person households (%)" = "family_one_person_prop"),
+       "Language" = list(
+         "French only (%)" = "lang_french_only_prop",
+         "English only (%)" = "lang_eng_only_prop",
+         "French and English (%)" = "lang_french_eng_prop",
+         "Neither French nor English (%)" = "lang_no_official_prop"),
+       "Age" = list(
+         "Aged between 0 and 14 (%)" = "age_0_14_prop",
+         "Aged between 15 and 64 (%)" = "age_15_64_prop",
+         "Aged 65 and above (%)" = "age_65_plus_prop"),
+       "Education" = list(
+         "Bachelor and above (%)" = "edu_bachelor_above_prop",
+         "No certificate, diploma or degree (%)" = "edu_no_degree_prop"))
 
 
 # Fill color --------------------------------------------------------------
@@ -69,21 +98,21 @@ alley_borough_text <- function(text_to_display) {
       str_glue(sus_translate(paste0("<p><b>{original_list$name}</b></p>")))
   } 
   
-  if (!is.null(text_to_display$ga_length) && !is.null(text_to_display$first_alley)) {
+  if (!is.null(text_to_display$green_alley_sqm) && !is.null(text_to_display$first_alley)) {
     # FIRST INAUGURATION
     text_to_display$first_alley = 
       str_glue(sus_translate(paste0("<p>The first green alley inauguration in ",
                                     "{original_list$name} was in {original_list$first_alley}, and ")))
     # GREEN ALLEY LENGTH
-    text_to_display$ga_length = 
-      str_glue(sus_translate(paste0("there are {prettyNum(original_list$ga_length, ',')} meters of ",
+    text_to_display$green_alley_sqm = 
+      str_glue(sus_translate(paste0("there are {prettyNum(original_list$green_alley_sqm, ',')} meters of ",
                                     "them in that borough.</p>")))
   }
   
   # GREEN ALLEY LENGTH
-  if (!is.null(text_to_display$ga_length) && is.null(text_to_display$first_alley)) {
-    text_to_display$ga_length = 
-      str_glue(sus_translate(paste0("<p>There are {prettyNum(original_list$ga_length, ',')} meters of green alleys in ",
+  if (!is.null(text_to_display$green_alley_sqm) && is.null(text_to_display$first_alley)) {
+    text_to_display$green_alley_sqm = 
+      str_glue(sus_translate(paste0("<p>There are {prettyNum(original_list$green_alley_sqm, ',')} meters of green alleys in ",
                                     "{original_list$name}.</p>")))
   } 
 

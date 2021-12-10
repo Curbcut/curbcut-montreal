@@ -1,7 +1,7 @@
 #' function to change map between polygons (borough, CT, DA, ...), 
 #' lines (street) and points (crash)
 
-map_change <- function(id_map, df, zoom, legend = NULL) {
+map_change <- function(id_map, df, zoom, legend = NULL, polygons_to_clear = NULL) {
   
   stopifnot(
     is.reactive(df),
@@ -18,13 +18,16 @@ map_change <- function(id_map, df, zoom, legend = NULL) {
                        "error")
   
   # Used at all geometries:
-  update_and_clean <- function(){
+  update_and_clean <- function() {
     mapdeck_update(map_id = id_map)  %>%
       clear_polygon() %>%
       clear_heatmap() %>% 
       clear_pointcloud() %>% 
       clear_path()
   }
+  
+  # Clear layer_ids fed with polygons_to_clear
+  walk(polygons_to_clear, ~mapdeck_update(map_id = id_map) %>% clear_polygon(.x))
   
   # Error handling
   if (geom_type == "error") stop("`geom_type` is invalid in `map_change`.")
