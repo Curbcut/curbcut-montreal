@@ -122,10 +122,10 @@ interpolate <- function(df_list, scales, years) {
         mutate(int_area = units::drop_units(st_area(geometry)),
                area_prop = int_area / units::drop_units(area), 
                .before = geometry) |>
-        mutate(across(all_of(var_count), ~{.x * area_prop})) |> 
+        mutate(across(any_of(var_count), ~{.x * area_prop})) |> 
         st_drop_geometry() |> 
         group_by(ID) |> 
-        summarize(across(all_of(var_count), ~{
+        summarize(across(any_of(var_count), ~{
           out <- sum(.x * area_prop, na.rm = TRUE)
           # Round to the nearest 5 to match non-interpolated census values
           out <- round(out / 5) * 5
