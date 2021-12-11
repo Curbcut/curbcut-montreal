@@ -59,7 +59,15 @@ get_census_vectors <- function(census_vec, geoms, scales, years, parent_vectors 
       
       # Retrieve the values of all parent vectors
       parent_vector_values <- map(names(parent_vecs), ~{
-        vec <- set_names(parent_vecs[.x], .x)
+        # In cases of errors in cancensus, we can use the parent_vectors argument to
+        # add parent vectors.
+        if (.x %in% paste0(names(parent_vectors), "_parent")) {
+          names(parent_vectors) <- paste0(names(parent_vectors), "_parent")
+          vec <-  parent_vectors[names(parent_vectors) == .x[.x == names(parent_vectors)]]
+        } else {
+          vec <- set_names(parent_vecs[.x], .x)
+        }
+
         retrieved_parent <- 
         cancensus::get_census(
           dataset = census_dataset,
@@ -69,23 +77,6 @@ get_census_vectors <- function(census_vec, geoms, scales, years, parent_vectors 
           geo_format = NA,
           quiet = TRUE) %>% 
           select(GeoUID, any_of(.x))
-        
-        # In cases of errors in cancensus, we can use the parent_vectors argument to
-        # add parent vectors.
-        if (.x %in% paste0(names(parent_vectors), "_parent")) {
-          names(parent_vectors) <- paste0(names(parent_vectors), "_parent")
-          vec <-  parent_vectors[names(parent_vectors) == .x[.x == names(parent_vectors)]]
-
-          retrieved_parent <-
-            cancensus::get_census(
-              dataset = census_dataset,
-              regions = list(CMA = "24462"),
-              level = scale,
-              vectors = vec[!is.na(vec)],
-              geo_format = NA,
-              quiet = TRUE) %>%
-            select(GeoUID, any_of(.x))
-        }
           
         # If there's missing parent vectors, it gives an error and tells us where
         if(ncol(retrieved_parent) != 2) {
