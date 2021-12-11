@@ -57,6 +57,18 @@ get_census_vectors <- function(census_vec, geoms, scales, years, parent_vectors 
         pull(parent_vector) %>% 
         set_names(paste0(names(original_vectors_named), "_parent"))
       
+      # Check for non-additive parent vectors
+      non_additive_parent_vecs <- 
+        cancensus::list_census_vectors(census_dataset) %>% 
+        filter(vector %in% parent_vecs) %>% 
+        filter(aggregation != "Additive")
+      
+      if (nrow(non_additive_parent_vecs) > 0) {
+        warning(paste0("Non-additive parent vector: ",
+                parent_vecs[parent_vecs %in% non_additive_parent_vecs]))
+      }
+        
+      
       # Retrieve the values of all parent vectors
       parent_vector_values <- map(names(parent_vecs), ~{
         # In cases of errors in cancensus, we can use the parent_vectors argument to
