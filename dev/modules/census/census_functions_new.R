@@ -164,12 +164,6 @@ get_aggregation_type <- function(census_vec, scales, years) {
 
 # Interpolate -------------------------------------------------------------
 
-# Interpolate is not working as of now, due to the addition of the last summarize
-# bit. the variables to average are not the same length as the weight one. Maybe
-# it is because there is an avg parent that has an NA at the group 1 ID = "2452007".
-# Or probably the na.rm should be taking care of it, so what is happening?
-# Maybe not the right way of calling the parent column ~paste0(.x, "_parent")
-
 interpolate <- function(df_list, scales, years) {
   map2(df_list, scales, function(df_l, scale) {
     map2(df_l, years, function(df, year) {
@@ -182,8 +176,9 @@ interpolate <- function(df_list, scales, years) {
           rename(ID = GeoUID)
       })
       
-      # Otherwise interpolate!
-      df_l[[length(df_l)]] |> 
+      # Otherwise interpolate! --------
+      interpolated_ids <- 
+        df_l[[length(df_l)]] |> 
         select(ID = GeoUID, geometry) |> 
         st_intersection(df) |> 
         filter(st_is(geometry, "POLYGON") | st_is(geometry, "MULTIPOLYGON")) |> 
@@ -192,22 +187,29 @@ interpolate <- function(df_list, scales, years) {
                .before = geometry) |>
         mutate(across(any_of(var_count) | ends_with("_parent"), ~{.x * area_prop})) |> 
         st_drop_geometry() |> 
-        group_by(ID) |> 
-        summarize(across(any_of(var_count) | ends_with("_parent"), ~{
-          out <- sum(.x * area_prop, na.rm = TRUE)
-          # Round to the nearest 5 to match non-interpolated census values
-          out <- round(out / 5) * 5
-          # Only keep output polygons with a majority non-NA inputs
-          na_pct <- sum(is.na(.x) * int_area)
-          if (na_pct >= 0.5 * sum(int_area)) out <- NA_real_
-          out}),
-          across(any_of(var_avg), ~{
-            out <- weighted.mean(.x, ~paste0(.x, "_parent"), na.rm = TRUE)
+        group_by(ID) 
+      
+      left_join(
+        # For averaging variables
+        interpolated_ids |> 
+          summarize(across(any_of(var_avg), ~{
+            out <- weighted.mean(.x, eval(as.name(paste0(cur_column(), "_parent"))), na.rm = TRUE)
             # Only keep output polygons with a majority non-NA inputs
             na_pct <- sum(is.na(.x) * int_area)
             if (na_pct >= 0.5 * sum(int_area)) out <- NA_real_
             out
-          }), .groups = "drop")
+          }), .groups = "drop"),
+        # For additive variables
+        interpolated_ids |> 
+          summarize(across(any_of(var_count) | ends_with("_parent"), ~{
+            out <- sum(.x * area_prop, na.rm = TRUE)
+            # Round to the nearest 5 to match non-interpolated census values
+            out <- round(out / 5) * 5
+            # Only keep output polygons with a majority non-NA inputs
+            na_pct <- sum(is.na(.x) * int_area)
+            if (na_pct >= 0.5 * sum(int_area)) out <- NA_real_
+            out}), .groups = "drop"),
+        by = "ID")
       
     })
   })
