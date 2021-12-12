@@ -361,18 +361,20 @@ get_breaks_q3 <- function(df_list, census_vec) {
   map(df_list, function(df_l) {
     map(df_l, function(df) {
       map_dfc(var_q3, ~{
-        df |> 
-          select(any_of(.x), any_of(paste0(.x, "_q3"))) |> 
-          set_names(c("v", "q3")) |> 
-          summarize(
-            ranks = c(
-              min(v, na.rm = TRUE),
-              min(v[q3 == 2], na.rm = TRUE),
-              min(v[q3 == 3], na.rm = TRUE),
-              max(v, na.rm = TRUE)
-            )
-          ) |> 
-          set_names(.x)
+        if (.x %in% names(df)) {
+          df |> 
+            select(any_of(.x), any_of(paste0(.x, "_q3"))) |>
+            set_names(c("v", "q3")) |>
+            summarize(
+              ranks = c(
+                min(v, na.rm = TRUE),
+                min(v[q3 == 2], na.rm = TRUE),
+                min(v[q3 == 3], na.rm = TRUE),
+                max(v, na.rm = TRUE)
+              )
+            ) |>
+            set_names(.x)
+        }
       })
     })
   })
