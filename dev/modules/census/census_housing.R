@@ -143,17 +143,27 @@ data_raw <- get_census_vectors(census_housing, geoms, scales, years,
                                parent_vectors = c("housing_value_avg_dollar" = "v_CA01_1670"))
 
 
+# Get aggregation type ----------------------------------------------------
+
+data_aggregation <- get_aggregation_type(census_housing, scales, years)
+
+
 # Interpolate -------------------------------------------------------------
 
-var_avg <- 
-  census_housing |> 
-  filter(str_detect(var_code, "pct|avg")) |> 
+var_count <- 
+  data_aggregation |>
+  filter(aggregation == "Additive") %>% 
   pull(var_code)
 
-var_count <- 
-  census_housing |> 
-  filter(!var_code %in% var_avg) |> 
+var_avg <- 
+  data_aggregation |>
+  filter(aggregation == "Average") %>% 
   pull(var_code)
+
+if (length(c(var_count, var_avg)) != length(census_housing$var_code)) {
+  stop("The number of var_count and var_avg isn't the same as the number of ",
+       "variables.")
+}
 
 data_inter <- interpolate(data_raw, scales, years)
 

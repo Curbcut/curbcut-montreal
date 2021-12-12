@@ -112,7 +112,63 @@ get_census_vectors <- function(census_vec, geoms, scales, years, parent_vectors 
 }
 
 
+
+# Retrieve aggregation type -----------------------------------------------
+get_aggregation_type <- function(census_vec, scales, years) {
+  
+  for_years <- map(rev(years)[!rev(years) == 2001], function(year) {
+    
+    census_dataset <- paste0("CA", sub("20", "", year))
+    original_vectors_named <- set_names(pull(census_vec, all_of(paste0("vec_", year))), 
+                                        census_vec$var_code)
+    original_vectors_named <- original_vectors_named[!is.na(original_vectors_named)]
+    
+    cancensus::list_census_vectors(census_dataset) %>% 
+      filter(vector %in% original_vectors_named) %>% 
+      arrange(match(vector, original_vectors_named)) %>% 
+      mutate(aggregation = str_extract(aggregation, ".[^ ]*")) %>% 
+      mutate(var_code = names(original_vectors_named)) %>% 
+      select(var_code, aggregation)
+    
+  })
+  vars_aggregation <- 
+    reduce(for_years, left_join, by = "var_code") %>% 
+    pivot_longer(!var_code) %>% 
+    filter(!is.na(value)) %>% 
+    group_by(var_code) %>% 
+    summarize(aggregation = list(value)) %>% 
+    rowwise() %>% 
+    mutate(aggregation = list(unique(aggregation)))
+  
+  if (all(lengths(pull(vars_aggregation)) == 1)) {
+    vars_aggregation <- 
+    vars_aggregation %>% 
+      unnest(aggregation)
+  } else {
+    non_unique_aggregation_type <- 
+    vars_aggregation[(lengths(pull(vars_aggregation)) > 1),] %>% 
+      pull(var_code)
+    stop("Different aggregation types detected for ", non_unique_aggregation_type)
+  }
+  
+  vars_aggregation
+}
+
+# 2001 census have been taken out of the previous function, here is why:
+# cancensus::list_census_vectors("CA01") %>% 
+#   filter(vector == "v_CA01_1667") %>% 
+#   select(label, aggregation)
+# It is labelled as an average, like this variable in every census years. However,
+# it is aggregated as an additive. In the 5 other census, it is aggregated as
+# an average. This problem happened twice with housing variables.
+
 # Interpolate -------------------------------------------------------------
+
+# Interpolate is not working as of now, due to the addition of the last summarize
+# bit. the variables to average are not the same length as the weight one. Maybe
+# it is because there is an avg parent that has an NA at the group 1 ID = "2452007".
+# Or probably the na.rm should be taking care of it, so what is happening?
+# Maybe not the right way of calling the parent column ~paste0(.x, "_parent")
 
 interpolate <- function(df_list, scales, years) {
   map2(df_list, scales, function(df_l, scale) {
@@ -134,17 +190,24 @@ interpolate <- function(df_list, scales, years) {
         mutate(int_area = units::drop_units(st_area(geometry)),
                area_prop = int_area / units::drop_units(area), 
                .before = geometry) |>
-        mutate(across(any_of(var_count), ~{.x * area_prop})) |> 
+        mutate(across(any_of(var_count) | ends_with("_parent"), ~{.x * area_prop})) |> 
         st_drop_geometry() |> 
         group_by(ID) |> 
-        summarize(across(any_of(var_count), ~{
+        summarize(across(any_of(var_count) | ends_with("_parent"), ~{
           out <- sum(.x * area_prop, na.rm = TRUE)
           # Round to the nearest 5 to match non-interpolated census values
           out <- round(out / 5) * 5
           # Only keep output polygons with a majority non-NA inputs
           na_pct <- sum(is.na(.x) * int_area)
           if (na_pct >= 0.5 * sum(int_area)) out <- NA_real_
-          out}), .groups = "drop")
+          out}),
+          across(any_of(var_avg), ~{
+            out <- weighted.mean(.x, ~paste0(.x, "_parent"), na.rm = TRUE)
+            # Only keep output polygons with a majority non-NA inputs
+            na_pct <- sum(is.na(.x) * int_area)
+            if (na_pct >= 0.5 * sum(int_area)) out <- NA_real_
+            out
+          }), .groups = "drop")
       
     })
   })
