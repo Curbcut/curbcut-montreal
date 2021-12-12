@@ -177,6 +177,10 @@ data_inter <- interpolate(data_raw, scales, years)
 
 # TKTK THIS SHOULD HAPPEN NOW AS WELL, SO THAT NORMALIZATION IS MORE PRECISE
 
+# Get units type ----------------------------------------------------------
+
+data_unit <- get_unit_type(census_housing, scales, years)
+
 
 # Normalize pct variables -------------------------------------------------
 

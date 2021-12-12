@@ -148,7 +148,8 @@ get_aggregation_type <- function(census_vec, scales, years) {
     non_unique_aggregation_type <- 
     vars_aggregation[(lengths(pull(vars_aggregation)) > 1),] %>% 
       pull(var_code)
-    stop("Different aggregation types detected for ", non_unique_aggregation_type)
+    stop(paste0("Different `aggregation` types detected for `", 
+                non_unique_aggregation_type, "`.\n"))
   }
   
   vars_aggregation
@@ -193,7 +194,7 @@ interpolate <- function(df_list, scales, years) {
         # For averaging variables
         interpolated_ids |> 
           summarize(across(any_of(var_avg), ~{
-            out <- weighted.mean(.x, eval(as.name(paste0(cur_column(), "_parent"))), na.rm = TRUE)
+            out <- weighted.mean(.x, get(paste0(cur_column(), "_parent")), na.rm = TRUE)
             # Only keep output polygons with a majority non-NA inputs
             na_pct <- sum(is.na(.x) * int_area)
             if (na_pct >= 0.5 * sum(int_area)) out <- NA_real_
@@ -217,28 +218,109 @@ interpolate <- function(df_list, scales, years) {
 }
 
 
+# Retrieve units type -----------------------------------------------------
+
+get_unit_type <- function(census_vec, scales, years) {
+  
+  for_years <- map(rev(years)[!rev(years) == 2001], function(year) {
+    
+    census_dataset <- paste0("CA", sub("20", "", year))
+    original_vectors_named <- set_names(pull(census_vec, all_of(paste0("vec_", year))), 
+                                        census_vec$var_code)
+    original_vectors_named <- original_vectors_named[!is.na(original_vectors_named)]
+    
+    cancensus::list_census_vectors(census_dataset) %>% 
+      filter(vector %in% original_vectors_named) %>% 
+      arrange(match(vector, original_vectors_named)) %>% 
+      mutate(units = str_extract(units, ".[^ ]*")) %>% 
+      mutate(var_code = names(original_vectors_named)) %>% 
+      select(var_code, units)
+    
+  })
+  vars_units <- 
+    reduce(for_years, left_join, by = "var_code") %>% 
+    pivot_longer(!var_code) %>% 
+    filter(!is.na(value)) %>% 
+    group_by(var_code) %>% 
+    summarize(units = list(value)) %>% 
+    rowwise() %>% 
+    mutate(units = list(unique(units)))
+  
+  if (all(lengths(pull(vars_units)) == 1)) {
+    vars_units <- 
+      vars_units %>% 
+      unnest(units)
+  } else {
+    non_unique_units_type <- 
+      vars_units[(lengths(pull(vars_units)) > 1),] %>% 
+      pull(var_code)
+    stop(paste0("Different `units` types detected for `", 
+                non_unique_units_type, "`.\n"))
+  }
+  
+  vars_units
+}
+
+# 2001 census have been taken out of the previous function, here is why:
+# cancensus::list_census_vectors("CA01") %>%
+#   filter(vector == "v_CA01_1674") %>%
+#   select(label, units)
+# It is labelled as "value ... %", like this variable in every census years. However,
+# it is noted as an "Number" units In the 5 other census, it is aggregated as
+# "Currency". This problem happened twice with housing variables.
+
 # Normalize percentage variables ------------------------------------------
 
 normalize <- function(df_list, census_vec) {
- map(df_list, function(df_l) {
-   map(df_l, function(df) {
-     map_dfc(names(df), ~{
-       
-       denom <- 
-         census_vec |> 
-         filter(var_code == .x) |> 
-         pull(denominator)
-       
-       if (length(denom) > 0 && !is.na(denom)) {
-         df |> 
-           # Cap values at 1, under assumption they are all percentages
-           mutate(across(all_of(.x), ~{pmin(1, . / get(denom))})) |> 
-           select(all_of(.x))
-         
-       } else select(df, all_of(.x))
-     })
-   })
- }) 
+  map(df_list, function(df_l) {
+    map(df_l, function(df) {
+      map_dfc(names(df), ~{
+        
+        if (!exists("data_unit")) {
+          stop(paste0("Dataframe `data_unit`, the output of  the `get_unit_type` function ",
+                      "doesn't exist. It is necessary to evaluate if variables are ",
+                      "already treated as percentages by the census."))
+        }
+        
+        nominator <- 
+          census_vec |>
+          filter(var_code == .x,
+                 str_detect(var_code, "_pct")) |>
+          pull(var_code)
+        
+        nominator <-
+          data_unit %>%
+          filter(var_code %in% nominator) %>%
+          mutate(out = set_names(var_code, units)) %>% 
+          pull(out)
+        
+        if (length(nominator) > 0 && !names(nominator) %in% c("Number", "Percentage")){
+          stop(paste0("Nominator ", nominator, " isn't classified as 'Number' or ",
+                      " as 'Percentage' by the census, but as '", names(nominator), 
+                      "'. Should it really have the `_pct` suffix?"))
+        }
+        
+        if (length(nominator) > 0 && !is.na(nominator)) {
+          if (names(nominator) == "Percentage") {
+            # Some census variables are already percentages.
+            df |>
+              mutate(across(all_of(.x), ~{pmin(1, . / 100)})) |>
+              select(all_of(.x))
+          } else {
+            # If the variable is classified as Number and has _pct suffix,
+            # it must be normalized with its parent variable.
+            denom <- paste0(nominator, "_parent")
+            
+            df |> 
+              # Cap values at 1, under assumption they are all percentages
+              mutate(across(all_of(.x), ~{pmin(1, . / get(denom))})) |> 
+              select(all_of(.x))
+          }
+          
+        } else select(df, all_of(.x))
+      })
+    })
+  }) 
 }
 
 
@@ -248,14 +330,13 @@ drop_vars <- function(df_list, census_vec) {
   
   map(df_list, function(df_l) {
     map(df_l, function(df) {
-      # Keep "ID" and any variable with include == TRUE
+      # Keep "ID" and any variable present in census_vec
       to_keep <- 
         census_vec |> 
-        filter(include) |> 
         pull(var_code) |> 
         (\(x) c("ID", x))()
       
-      select(df, all_of(to_keep))
+      select(df, any_of(to_keep))
     })
   })
 }
@@ -275,14 +356,13 @@ get_breaks_q3 <- function(df_list, census_vec) {
   
   var_q3 <- 
     census_vec |> 
-    filter(include) |> 
     pull(var_code)
   
   map(df_list, function(df_l) {
     map(df_l, function(df) {
       map_dfc(var_q3, ~{
         df |> 
-          select(all_of(.x), all_of(paste0(.x, "_q3"))) |> 
+          select(any_of(.x), any_of(paste0(.x, "_q3"))) |> 
           set_names(c("v", "q3")) |> 
           summarize(
             ranks = c(
