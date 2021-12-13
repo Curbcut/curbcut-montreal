@@ -1,5 +1,18 @@
 #### CENSUS DOWNLOAD AND PROCESSING FUNCTIONS ##################################
 
+
+# Global ------------------------------------------------------------------
+# For interpolation: weighted.mean na.rm = T does not handle NA weights, but just
+# NA x values. This new function fixes it.
+weighted_mean = function(x, w, ..., na.rm=F){
+  if(na.rm){
+    x1 = x[!is.na(x)&!is.na(w)]
+    w = w[!is.na(x)&!is.na(w)]
+    x = x1
+  }
+  weighted.mean(x, w, ..., na.rm=F)
+}
+
 # Get empty geometries ----------------------------------------------------
 
 get_empty_geometries <- function(scales, years) {
@@ -22,8 +35,8 @@ get_empty_geometries <- function(scales, years) {
 # Download variables ------------------------------------------------------
 
 get_census_vectors <- function(census_vec, geoms, scales, years, parent_vectors = NULL) {
-  map2(scales, geoms, function(scale, g) {
-    map2(years, g, function(year, df_g) {
+  map2(set_names(scales), geoms, function(scale, g) {
+    map2(set_names(years), g, function(year, df_g) {
       
       census_dataset <- paste0("CA", sub("20", "", year))
       
@@ -194,7 +207,7 @@ interpolate <- function(df_list, scales, years) {
         # For averaging variables
         interpolated_ids |> 
           summarize(across(any_of(var_avg), ~{
-            out <- weighted.mean(.x, get(paste0(cur_column(), "_parent")), na.rm = TRUE)
+            out <- weighted_mean(.x, get(paste0(cur_column(), "_parent")), na.rm = TRUE)
             # Only keep output polygons with a majority non-NA inputs
             na_pct <- sum(is.na(.x) * int_area)
             if (na_pct >= 0.5 * sum(int_area)) out <- NA_real_
@@ -216,6 +229,91 @@ interpolate <- function(df_list, scales, years) {
   })
 
 }
+
+
+# Swap CSD to borough -----------------------------------------------------
+
+swap_csd_to_borough <- function(df_list, years) {
+  
+  if (!exists("borough")) {
+    stop(paste0("Dataframe `borough`, coming from `dev/build_data.R`, must be ",
+                "in the global environment."))
+  }
+  
+   borough_data <-  map(set_names(years), function(year) {
+      # Get geometry and areas of already-interpolated DAs. 
+      DA_n <- 
+        eval(parse(text = (paste0("df_list$DA$`", year, "`")))) %>% 
+        left_join(select(DA, ID), by = "ID") %>%
+        st_as_sf() %>%
+        st_transform(32618) %>%
+        mutate(area = st_area(geometry)) %>%
+        st_set_agr("constant") %>% 
+        select(-ID)
+      
+      interpolated_ids <- 
+        borough %>%
+        select(ID) %>%
+        filter(str_starts(ID, "2466023")) %>%
+        st_transform(32618) %>%
+        st_set_agr("constant") %>%
+        st_intersection(DA_n, .) %>% 
+        mutate(int_area = units::drop_units(st_area(geometry)),
+               area_prop = int_area / units::drop_units(area),
+               .before = geometry) |>
+        mutate(across(any_of(var_count) | ends_with("_parent"), ~{.x * area_prop})) |>
+        st_drop_geometry() |>
+        group_by(ID)
+
+      left_join(
+        # For averaging variables
+        interpolated_ids |>
+          summarize(across(any_of(var_avg), ~{
+            out <- weighted_mean(.x, get(paste0(cur_column(), "_parent")), na.rm = T)
+            # Only keep output polygons with a majority non-NA inputs
+            na_pct <- sum(is.na(.x) * int_area)
+            if (na_pct >= 0.5 * sum(int_area)) out <- NA_real_
+            out
+          }), .groups = "drop"),
+        # For additive variables
+        interpolated_ids |>
+          summarize(across(any_of(var_count) | ends_with("_parent"), ~{
+            out <- sum(.x * area_prop, na.rm = TRUE)
+            # Round to the nearest 5 to match non-interpolated census values
+            out <- round(out / 5) * 5
+            # Only keep output polygons with a majority non-NA inputs
+            na_pct <- sum(is.na(.x) * int_area)
+            if (na_pct >= 0.5 * sum(int_area)) out <- NA_real_
+            out}), .groups = "drop"),
+        by = "ID") %>%
+        filter(str_starts(ID, "2466023"))
+      
+    })
+    
+   borough_data <-  map(set_names(years), function(year) {
+     # Get geometry and areas of interpolated DAs. 
+     CSD_n <- 
+       eval(parse(text = (paste0("df_list$CSD$`", year, "`"))))
+     
+     borough_n <- 
+       eval(parse(text = (paste0("borough_data$`", year, "`"))))
+     
+     bind_rows(filter(CSD_n, !str_starts(ID, "2466023")), 
+               borough_n)
+     
+   })
+   
+   df_list$CSD <- borough_data
+   
+   # switch name of the first df_list from CSD to borough
+   scales[scales == "CSD"] <- "borough"
+   names(df_list) <- scales
+   df_list
+}
+ 
+
+# Interpolate to building, grid & street ----------------------------------
+
 
 
 # Retrieve units type -----------------------------------------------------

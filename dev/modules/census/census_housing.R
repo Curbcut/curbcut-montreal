@@ -170,7 +170,10 @@ data_inter <- interpolate(data_raw, scales, years)
 
 # Swap CSD to borough -----------------------------------------------------
 
-# TKTK THIS NEEDS TO HAPPEN HERE, BEFORE NORMALIZATION!
+data_swaped <- swap_csd_to_borough(data_inter, years)
+
+# From here, no CSD, but borough
+scales[scales == "CSD"] <- "borough"
 
 
 # Interpolate to building, grid & street ----------------------------------
@@ -184,7 +187,7 @@ data_unit <- get_unit_type(census_housing, scales, years)
 
 # Normalize pct variables -------------------------------------------------
 
-data_norm <- normalize(data_inter, census_housing)
+data_norm <- normalize(data_swaped, census_housing)
 
 
 # Drop variables which aren't included in final tables --------------------
