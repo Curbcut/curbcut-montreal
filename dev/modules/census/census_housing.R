@@ -131,95 +131,14 @@ census_housing <-
     explanation = "the percentage of households that have moved in the past five years",
     private = FALSE)
   
-  
-# Get empty geometries ----------------------------------------------------
 
-geoms <- get_empty_geometries(scales, years)
+# Gather data -------------------------------------------------------------
 
-
-# Download data -----------------------------------------------------------
-
-data_raw <- get_census_vectors(census_housing, geoms, scales, years,
-                               parent_vectors = c("housing_value_avg_dollar" = "v_CA01_1670"))
+data_to_add <- census_data_gather(census_housing, scales, years,
+                                  parent_vectors = c("housing_value_avg_dollar" = "v_CA01_1670"))
 
 
-# Get aggregation type ----------------------------------------------------
-
-data_aggregation <- get_aggregation_type(census_housing, scales, years)
-
-
-# Interpolate -------------------------------------------------------------
-
-var_count <- 
-  data_aggregation |>
-  filter(aggregation == "Additive") %>% 
-  pull(var_code)
-
-var_avg <- 
-  data_aggregation |>
-  filter(aggregation == "Average") %>% 
-  pull(var_code)
-
-if (length(c(var_count, var_avg)) != length(census_housing$var_code)) {
-  stop("The number of var_count and var_avg isn't the same as the number of ",
-       "variables.")
-}
-
-data_inter <- interpolate(data_raw, scales, years)
-
-
-# Swap CSD to borough -----------------------------------------------------
-
-data_swaped <- swap_csd_to_borough(data_inter, years)
-
-# From here, no CSD, but borough
-scales[scales == "CSD"] <- "borough"
-
-
-# Interpolate to building, grid & street ----------------------------------
-
-data_other_inter <- interpolate_other_geoms(c("building", "grid", "street"), 
-                                            data_swaped, years)
-
-
-# Get units type ----------------------------------------------------------
-
-data_unit <- get_unit_type(census_housing, scales, years)
-
-
-# Normalize pct variables -------------------------------------------------
-
-data_norm <- normalize(data_other_inter, census_housing)
-
-
-# Drop variables which aren't included in final tables --------------------
-
-data_final <- drop_vars(data_norm, census_housing)
-
-
-# Add q3 and q5 versions --------------------------------------------------
-
-cat_q5 <- get_categories_q5(data_final, census_housing)
-data_q3 <- add_q3(data_final)
-breaks_q3 <- get_breaks_q3(data_q3, census_housing)
-breaks_q5 <- get_breaks_q5(data_final, cat_q5)
-data_q5 <- add_q5(data_final, breaks_q5)
-data_breaks <- merge_breaks(data_final, data_q3, data_q5)
-
-
-# Add years ---------------------------------------------------------------
-
-data_years <- add_years(data_breaks, years)
-
-
-# Finalize output ---------------------------------------------------------
-
-data_to_add <- reduce_years(data_years)
-
-building <-
-  building |>
-  left_join(data_to_add$building, by = "ID") |>
-  relocate(geometry, .after = last_col())
+# Assign data -------------------------------------------------------------
 
 borough <- 
   borough |> 
@@ -239,11 +158,6 @@ DA <-
 grid <-
   grid |>
   left_join(data_to_add$grid, by = "ID") |>
-  relocate(geometry, .after = last_col())
-
-street <-
-  street |>
-  left_join(data_to_add$street, by = "ID") |>
   relocate(geometry, .after = last_col())
 
 

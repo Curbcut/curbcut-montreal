@@ -77,8 +77,8 @@ get_census_vectors <- function(census_vec, geoms, scales, years, parent_vectors 
         filter(aggregation != "Additive")
       
       if (nrow(non_additive_parent_vecs) > 0) {
-        warning(paste0("Non-additive parent vector: ",
-                parent_vecs[parent_vecs %in% non_additive_parent_vecs]))
+        stop(paste0("Non-additive parent vector: ",
+                    parent_vecs[parent_vecs %in% non_additive_parent_vecs]))
       }
         
       
@@ -169,8 +169,8 @@ get_aggregation_type <- function(census_vec, scales, years) {
 }
 
 # 2001 census have been taken out of the previous function, here is why:
-# cancensus::list_census_vectors("CA01") %>% 
-#   filter(vector == "v_CA01_1667") %>% 
+# cancensus::list_census_vectors("CA01") %>%
+#   filter(vector == "v_CA01_1667") %>%
 #   select(label, aggregation)
 # It is labelled as an average, like this variable in every census years. However,
 # it is aggregated as an additive. In the 5 other census, it is aggregated as
@@ -178,7 +178,22 @@ get_aggregation_type <- function(census_vec, scales, years) {
 
 # Interpolate -------------------------------------------------------------
 
-interpolate <- function(df_list, scales, years) {
+interpolate <- function(df_list, scales, years, var_count, var_avg, data_aggregation,
+                        census_vec) {
+  
+  var_count <-
+    data_aggregation %>% 
+    filter(aggregation == "Additive") %>%
+    pull(var_code)
+  var_avg <-
+    data_aggregation %>% 
+    filter(aggregation == "Average") %>%
+    pull(var_code)
+  if (length(c(var_count, var_avg)) != length(census_vec$var_code)) {
+    stop("The number of var_count and var_avg isn't the same as the number of ",
+         "variables.")
+  }
+  
   map2(df_list, scales, function(df_l, scale) {
     map2(df_l, years, function(df, year) {
       
@@ -233,7 +248,7 @@ interpolate <- function(df_list, scales, years) {
 
 # Swap CSD to borough -----------------------------------------------------
 
-swap_csd_to_borough <- function(df_list, years) {
+swap_csd_to_borough <- function(df_list, years, var_count, var_avg) {
   
   if (!exists("borough")) {
     stop(paste0("Dataframe `borough`, coming from `dev/build_data.R`, must be ",
@@ -314,7 +329,7 @@ swap_csd_to_borough <- function(df_list, years) {
 
 # Interpolate to building, grid & street ----------------------------------
 
-interpolate_other_geoms <- function(to_interpolate, df_list, years) {
+interpolate_other_geoms <- function(to_interpolate, df_list, years, var_count, var_avg) {
   new_geos <- 
     map(set_names(to_interpolate), function(geo) {
       map(set_names(years), function(year) {
@@ -372,8 +387,6 @@ interpolate_other_geoms <- function(to_interpolate, df_list, years) {
           interpolated_ids |>
             summarize(across(any_of(var_count) | ends_with("_parent"), ~{
               out <- sum(.x * area_prop, na.rm = TRUE)
-              # Round to the nearest 5 to match non-interpolated census values
-              out <- round(out / 5) * 5
               # Only keep output polygons with a majority non-NA inputs
               na_pct <- sum(is.na(.x) * int_area)
               if (na_pct >= 0.5 * sum(int_area)) out <- NA_real_
@@ -440,7 +453,7 @@ get_unit_type <- function(census_vec, scales, years) {
 
 # Normalize percentage variables ------------------------------------------
 
-normalize <- function(df_list, census_vec) {
+normalize <- function(df_list, census_vec, data_unit) {
   if (!exists("data_unit")) {
     stop(paste0("Dataframe `data_unit`, the output of the `get_unit_type` function ",
                 "doesn't exist. It is necessary to evaluate if variables are ",
@@ -727,10 +740,57 @@ add_vars <- function(data_to_add, census_vec, breaks_q3, breaks_q5) {
       breaks_q5 = list(breaks_q5_active))
   })
   
-  
-  
-  
-  
-  
 }
 
+
+# Full census data gather function ----------------------------------------
+
+# Full census data gather function ----------------------------------------
+
+census_data_gather <- function(census_vec, scales, years, parent_vectors = NULL) {
+  message("Data census startup")
+  ## Get empty geometries
+  message("Getting empty geometries ...", appendLF = TRUE)
+  geoms <- get_empty_geometries(scales, years)
+  ## Download data
+  message("Downloading census data ...", appendLF = TRUE)
+  data_raw <- get_census_vectors(census_vec, geoms, scales, years,
+                                 parent_vectors)
+  # Get aggregation type
+  message("Interpolating ...", appendLF = TRUE)
+  data_aggregation <- get_aggregation_type(census_vec, scales, years)
+  ## Interpolate
+  data_inter <- interpolate(data_raw, scales, years, data_aggregation = data_aggregation,
+                            census_vec = census_vec)
+  ## Swap CSD to borough
+  message("Swapping CSD to borough ...", appendLF = TRUE)
+  data_swaped <- swap_csd_to_borough(data_inter, years, var_count, var_avg)
+  # From here, no CSD, but borough
+  scales[scales == "CSD"] <- "borough"
+  ## Interpolate to building, grid & street
+  message("Interpolating other geometries (grid, ... ) ...", 
+                        appendLF = TRUE)
+  data_other_inter <- interpolate_other_geoms(c("grid"),
+                                              data_swaped, years,
+                                              var_count, var_avg)
+  ## Get units type
+  message("Normalizing all data ...", appendLF = TRUE)
+  data_unit <- get_unit_type(census_vec, scales, years)
+  ## Normalize pct variables
+  data_norm <- normalize(data_other_inter, census_vec, data_unit)
+  ## Drop variables which aren't included in final tables
+  message("Other manipulations (dropping variables, q3, q5, ...) ...", appendLF = TRUE)
+  data_final <- drop_vars(data_norm, census_vec)
+  ## Add q3 and q5 versions
+  cat_q5 <- get_categories_q5(data_final, census_vec)
+  data_q3 <- add_q3(data_final)
+  breaks_q3 <- get_breaks_q3(data_q3, census_vec)
+  breaks_q5 <- get_breaks_q5(data_final, cat_q5)
+  data_q5 <- add_q5(data_final, breaks_q5)
+  data_breaks <- merge_breaks(data_final, data_q3, data_q5)
+  ## Add years
+  data_years <- add_years(data_breaks, years)
+  ## Finalize output
+  message("Reducing ...", appendLF = TRUE)
+  reduce_years(data_years)
+}
