@@ -314,6 +314,77 @@ swap_csd_to_borough <- function(df_list, years) {
 
 # Interpolate to building, grid & street ----------------------------------
 
+interpolate_other_geoms <- function(to_interpolate, df_list, years) {
+  new_geos <- 
+    map(set_names(to_interpolate), function(geo) {
+      map(set_names(years), function(year) {
+        
+        # Get geometry and areas of already-interpolated DAs.
+        DA_n <-
+          eval(parse(text = (paste0("df_list$DA$`", year, "`")))) %>%
+          left_join(select(DA, ID), by = "ID") %>%
+          st_as_sf() %>%
+          st_transform(32618) %>%
+          mutate(area = st_area(geometry)) %>%
+          st_set_agr("constant") %>%
+          select(-ID)
+        
+        geom_type <-  switch(as.character(unique(st_geometry_type(get(geo)))),
+                             "POLYGON" = "polygon",
+                             "MULTIPOLYGON" = "polygon",
+                             "LINESTRING" = "line",
+                             "MULTILINESTRING" = "line",
+                             "error")
+        
+        if (geom_type == "error") {
+          stop(paste0("Geometry type for ", geo, " is not either polygon or line. ",
+                      "It cannot be interpolated with area or length."))
+        }
+        
+        interpolated_ids <-
+          get(geo) %>%
+          select(ID) %>%
+          st_transform(32618) %>%
+          st_set_agr("constant") %>%
+          st_intersection(DA_n, .) %>%
+          {if (geom_type == "polygon")
+                 mutate(., int_area = units::drop_units(st_area(geometry)),
+                 area_prop = int_area / units::drop_units(area),
+                 .before = geometry) 
+            else mutate(., int_area = units::drop_units(st_length(geometry)),
+                        area_prop = int_area / units::drop_units(area),
+                        .before = geometry)} |>
+          mutate(across(any_of(var_count) | ends_with("_parent"), ~{.x * area_prop})) |>
+          st_drop_geometry() |>
+          group_by(ID)
+        
+        left_join(
+          # For averaging variables
+          interpolated_ids |>
+            summarize(across(any_of(var_avg), ~{
+              out <- weighted_mean(.x, get(paste0(cur_column(), "_parent")), na.rm = T)
+              # Only keep output polygons with a majority non-NA inputs
+              na_pct <- sum(is.na(.x) * int_area)
+              if (na_pct >= 0.5 * sum(int_area)) out <- NA_real_
+              out
+            }), .groups = "drop"),
+          # For additive variables
+          interpolated_ids |>
+            summarize(across(any_of(var_count) | ends_with("_parent"), ~{
+              out <- sum(.x * area_prop, na.rm = TRUE)
+              # Round to the nearest 5 to match non-interpolated census values
+              out <- round(out / 5) * 5
+              # Only keep output polygons with a majority non-NA inputs
+              na_pct <- sum(is.na(.x) * int_area)
+              if (na_pct >= 0.5 * sum(int_area)) out <- NA_real_
+              out}), .groups = "drop"),
+          by = "ID")
+        
+      })
+    })
+  
+  c(df_list, new_geos)
+}
 
 
 # Retrieve units type -----------------------------------------------------

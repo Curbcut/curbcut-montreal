@@ -178,7 +178,9 @@ scales[scales == "CSD"] <- "borough"
 
 # Interpolate to building, grid & street ----------------------------------
 
-# TKTK THIS SHOULD HAPPEN NOW AS WELL, SO THAT NORMALIZATION IS MORE PRECISE
+data_other_inter <- interpolate_other_geoms(c("building", "grid", "street"), 
+                                            data_swaped, years)
+
 
 # Get units type ----------------------------------------------------------
 
@@ -187,7 +189,7 @@ data_unit <- get_unit_type(census_housing, scales, years)
 
 # Normalize pct variables -------------------------------------------------
 
-data_norm <- normalize(data_swaped, census_housing)
+data_norm <- normalize(data_other_inter, census_housing)
 
 
 # Drop variables which aren't included in final tables --------------------
@@ -214,36 +216,35 @@ data_years <- add_years(data_breaks, years)
 
 data_to_add <- reduce_years(data_years)
 
-# building <- 
-#   building |> 
-#   left_join(data_to_add[[1]], by = "ID") |> 
-#   relocate(geometry, .after = last_col())
+building <-
+  building |>
+  left_join(data_to_add$building, by = "ID") |>
+  relocate(geometry, .after = last_col())
 
-## TKTK DOESN'T WORK UNTIL CSD IS SWITCHED TO BOROUGH!
 borough <- 
   borough |> 
-  left_join(data_to_add[[1]], by = "ID") |> 
+  left_join(data_to_add$borough, by = "ID") |> 
   relocate(geometry, .after = last_col())
 
 CT <- 
   CT |> 
-  left_join(data_to_add[[2]], by = "ID") |> 
+  left_join(data_to_add$CT, by = "ID") |> 
   relocate(geometry, .after = last_col())
 
 DA <- 
   DA |> 
-  left_join(data_to_add[[3]], by = "ID") |> 
+  left_join(data_to_add$DA, by = "ID") |> 
   relocate(centroid, buffer, geometry, .after = last_col())
 
-# grid <- 
-#   grid |> 
-#   left_join(data_to_add[[1]], by = "ID") |> 
-#   relocate(geometry, .after = last_col())
+grid <-
+  grid |>
+  left_join(data_to_add$grid, by = "ID") |>
+  relocate(geometry, .after = last_col())
 
-# street <- 
-#   street |> 
-#   left_join(data_to_add[[1]], by = "ID") |> 
-#   relocate(geometry, .after = last_col())
+street <-
+  street |>
+  left_join(data_to_add$street, by = "ID") |>
+  relocate(geometry, .after = last_col())
 
 
 # Add to variables table --------------------------------------------------
