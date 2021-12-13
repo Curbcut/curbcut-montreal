@@ -27,7 +27,7 @@ map_change <- function(id_map, df, zoom, legend = NULL, polygons_to_clear = NULL
   }
   
   # Clear layer_ids fed with polygons_to_clear
-  walk(polygons_to_clear, ~mapdeck_update(map_id = id_map) %>% clear_polygon(.x))
+  purrr::walk(polygons_to_clear, ~mapdeck_update(map_id = id_map) %>% clear_polygon(.x))
   
   # Error handling
   if (geom_type == "error") stop("`geom_type` is invalid in `map_change`.")
