@@ -272,15 +272,14 @@ get_unit_type <- function(census_vec, scales, years) {
 # Normalize percentage variables ------------------------------------------
 
 normalize <- function(df_list, census_vec) {
+  if (!exists("data_unit")) {
+    stop(paste0("Dataframe `data_unit`, the output of the `get_unit_type` function ",
+                "doesn't exist. It is necessary to evaluate if variables are ",
+                "already treated as percentages by the census."))
+  }
   map(df_list, function(df_l) {
     map(df_l, function(df) {
       map_dfc(names(df), ~{
-        
-        if (!exists("data_unit")) {
-          stop(paste0("Dataframe `data_unit`, the output of  the `get_unit_type` function ",
-                      "doesn't exist. It is necessary to evaluate if variables are ",
-                      "already treated as percentages by the census."))
-        }
         
         nominator <- 
           census_vec |>
