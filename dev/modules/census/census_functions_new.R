@@ -41,7 +41,7 @@ get_census_vectors <- function(census_vec, geoms, scales, years, parent_vectors 
       census_dataset <- paste0("CA", sub("20", "", year))
       
       original_vectors_named <- set_names(pull(census_vec, all_of(paste0("vec_", year))), 
-                                          census_vec$var_code)
+                                          census_vec$var_code) %>% unlist()
       
       original_vectors_named <- original_vectors_named[!is.na(original_vectors_named)]
       
@@ -54,7 +54,13 @@ get_census_vectors <- function(census_vec, geoms, scales, years, parent_vectors 
         vectors = original_vectors_named,
         geo_format = NA,
         quiet = TRUE) |> 
-        select(GeoUID, any_of(census_vec$var_code))
+        select(GeoUID, starts_with(census_vec$var_code))
+      
+      # ///////////iiiiiiiiiiiiii\\\\\\\\\\\\\\\\\\
+      # HERE WE CAN ADD-UP ALL VECTORS THAT WERE RETRIEVED THROUGH THE SAME 
+      # VAR_CODE (AS IN INCOME AND TRANSPORTATION, IT'S THE ONLY OPERATION WITH
+      # SUCH NOMINATOR). ERRORS IF IT HAPPENS THEY AREN'T ADDITIVE.
+      # ///////////iiiiiiiiiiiiii\\\\\\\\\\\\\\\\\\
       
       # Parent vectors must be "mapped", as they might not be unique census vectors.
       # Some vectors share the same denominators, yet we want them all to have their
