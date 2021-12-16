@@ -2,8 +2,8 @@
 
 
 # Global ------------------------------------------------------------------
-# For interpolation: weighted.mean na.rm = T does not handle NA weights, but just
-# NA x values. This new function fixes it.
+
+# For interpolation: weighted.mean na.rm = TRUE does not handle NA weights
 weighted_mean <- function(x, w, ..., na.rm = FALSE) {
   if (na.rm) {
     x_1 <- x[!is.na(x) & !is.na(w)]
@@ -13,21 +13,23 @@ weighted_mean <- function(x, w, ..., na.rm = FALSE) {
   weighted.mean(x, w, ..., na.rm = FALSE)
 }
 
+
 # Get empty geometries ----------------------------------------------------
 
-get_empty_geometries <- function(scales, years) {
+get_empty_geometries <- function(scales, years, CMA = "24462", crs = 32618) {
   map(scales, function(scale) {
     map(years, function(year) {
+      
       cancensus::get_census(
         dataset = paste0("CA", sub("20", "", year)),
-        regions = list(CMA = "24462"),
+        regions = list(CMA = CMA),
         level = scale,
         geo_format = "sf",
-        quiet = TRUE
-      ) |>
-        select(GeoUID, geometry) |>
-        st_transform(32618) |>
+        quiet = TRUE) |> 
+        select(GeoUID, geometry) |> 
+        st_transform(crs) |> 
         mutate(area = st_area(geometry), .before = geometry)
+      
     })
   })
 }
