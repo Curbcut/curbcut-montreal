@@ -37,9 +37,11 @@ get_empty_geometries <- function(scales, years, CMA = "24462", crs = 32618) {
 
 # Download variables ------------------------------------------------------
 
-get_census_vectors <- function(census_vec, geoms, scales, years, parent_vectors = NULL) {
-  map2(set_names(scales), geoms, function(scale, g) {
-    map2(set_names(years), g, function(year, df_g) {
+get_census_vectors <- function(census_vec, geoms, scales, years, 
+                               parent_vectors = NULL, CMA = "24462") {
+  map2(set_names(scales), geoms, function(scale, geom) {
+    map2(set_names(years), geom, function(year, df) {
+      
       census_dataset <- paste0("CA", sub("20", "", year))
 
       original_vectors_named <- set_names(
