@@ -72,7 +72,6 @@ census_income <-
     vec_2006 = paste0("v_CA06_19", 94:98),
     vec_2001 = paste0("v_CA01_16", 27:31),
     vec_1996 = paste0("v_CA1996_16", 20:24),
-    include = TRUE,
     var_title = "Income beetween $50k-$100k (%)",
     var_short = "TKTK",
     explanation = "the percentage of households with an income between $50,000 and $100,000",
@@ -92,6 +91,10 @@ census_income <-
   add_row_inc(
     var_code = "inc_limat_prop",
     vec_2016 = "v_CA16_2540",
+    vec_2011 = NA,
+    vec_2006 = NA,
+    vec_2001 = NA,
+    vec_1996 = NA,
     var_title = "Prevalence of low income (after-tax) (%)",
     var_short = "TKTK",
     explanation = "the prevalence of low income in private households based on the Low income measure, after-tax(LIM-AT)",
