@@ -13,8 +13,10 @@ scales <- c("CSD", "CT", "DA")
 years <- c(1996, 2001, 2006, 2011, 2016)
 
 # Load functions
-list.files("dev/modules/census/census_functions") |> 
-  walk(~source(paste0("dev/modules/census/census_functions/", .x)))
+source("dev/modules/census/01_download_prep.R")
+source("dev/modules/census/02_interpolate.R")
+source("dev/modules/census/03_process_and_breaks.R")
+source("dev/modules/census/04_add_census_data.R")
 
 
 # Add census data by topic ------------------------------------------------
@@ -33,57 +35,6 @@ source("dev/modules/census/census_income.R")
 # Add variable explanations -----------------------------------------------
 
 # var_exp <-
-#   var_exp %>%
-#   add_row(
-#     var_code = "housing_tenant_prop",
-#     var_name = "Tenant-occupied (%)",
-#     explanation = "the percentage of private dwellings occupied by tenants") %>%
-#   add_row(
-#     var_code = "housing_rent_avg_dollar",
-#     var_name = "Average rent ($)",
-#     explanation = "the average rent paid by tenants per month") %>%
-#   add_row(
-#     var_code = "housing_value_avg_dollar",
-#     var_name = "Average property value ($)",
-#     explanation = "the average value of owner-occupied dwellings") %>%
-#   add_row(
-#     var_code = "housing_unafford_prop",
-#     var_name = "Unaffordable housing (%)",
-#     explanation = paste0("the percentage of dwellings for which residents pay ",
-#                          "more than 30% of income on housing costs")) %>%
-#   add_row(
-#     var_code = "housing_unsuit_prop",
-#     var_name = "Unsuitable housing (%)",
-#     explanation = paste0("the percentage of households living in ",
-#                          "accommodations without enough bedrooms according to ",
-#                          "the National Occupancy Standard")) %>%
-#   add_row(
-#     var_code = "housing_repairs_prop",
-#     var_name = "Housing requiring major repairs (%)",
-#     explanation = paste0("the percentage of households living in ",
-#                          "dwellings requiring major repairs")) %>%
-#   add_row(
-#     var_code = "housing_stress_owner_prop",
-#     var_name = "Owner housing stress (%)",
-#     explanation = paste0("the percentage of owner households that ",
-#                          "spend more than 30% of their income on ",
-#                          "shelter costs")) %>%
-#   add_row(
-#     var_code = "housing_stress_renter_prop",
-#     var_name = "Renter housing stress (%)",
-#     explanation = paste0("the percentage of renter households that ",
-#                          "spend more than 30% of their income on ",
-#                          "shelter costs")) %>%
-#   add_row(
-#     var_code = "housing_mobility_one_prop",
-#     var_name = "One-year housing mobility (%)",
-#     explanation = paste0("the percentage of households that have ",
-#                          "moved in the past year")) %>%
-#   add_row(
-#     var_code = "housing_mobility_five_prop",
-#     var_name = "Five-year housing mobility (%)",
-#     explanation = paste0("the percentage of households that have ",
-#                          "moved in the past five years")) %>%
 #   add_row(
 #     var_code = "inc_median_dollar",
 #     var_name = "Median household income ($)",
