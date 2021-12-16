@@ -71,7 +71,8 @@ get_census_vectors <- function(census_vec, geoms, scales, years,
         table()
       
       vec_to_sum <- names(vec_to_sum[vec_to_sum > 1])
-      vec_to_sum <- vec_named[str_detect(names(vec_named), vec_to_sum)]
+      vec_to_sum <- vec_named[str_detect(names(vec_named), 
+                                         paste0(vec_to_sum, collapse = "|"))]
       
       agg_vec_to_sum <-
         (cancensus::list_census_vectors(census_dataset) |>
