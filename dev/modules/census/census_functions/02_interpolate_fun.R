@@ -1,7 +1,7 @@
 #### CENSUS INTERPOLATE FUNCTIONS #########################################
 
 
-# Global ------------------------------------------------------------------
+# Helper functions --------------------------------------------------------
 
 # For interpolation: weighted.mean na.rm = TRUE does not handle NA weights
 weighted_mean <- function(x, w, ..., na.rm = FALSE) {
@@ -12,6 +12,27 @@ weighted_mean <- function(x, w, ..., na.rm = FALSE) {
   }
   weighted.mean(x, w, ..., na.rm = FALSE)
 }
+
+# Interpolate additive variables
+agg_add <- function(x, area_prop, int_area) {
+  out <- sum(x * {{ area_prop }}, na.rm = TRUE)
+  # Round to the nearest 5 to match non-interpolated census values
+  out <- round(out / 5) * 5
+  # Only keep output polygons with a majority non-NA inputs
+  na_pct <- sum(is.na(x) * {{ int_area }})
+  if (na_pct >= 0.5 * sum({{ int_area }})) out <- NA_real_
+  out
+}
+
+# Interpolate average variables
+agg_avg <- function(x, parent, int_area) {
+  out <- weighted_mean(x, {{ parent }}, na.rm = TRUE)
+  # Only keep output polygons with a majority non-NA inputs
+  na_pct <- sum(is.na(x) * {{ int_area }})
+  if (na_pct >= 0.5 * sum({{ int_area }})) out <- NA_real_
+  out
+}
+
 
 # Retrieve aggregation type -----------------------------------------------
 
@@ -78,7 +99,12 @@ interpolate <- function(df_list, scales, years, data_agg, census_vec) {
   var_add <-
     data_agg |>
     filter(aggregation == "Additive") |>
-    pull(var_code)
+    pull(var_code) |> 
+    c(df_list |> 
+        sapply(sapply, names) |> 
+        unlist() |> 
+        unique() |> 
+        str_subset("_parent"))
 
   # Get variables to be averaged
   var_avg <-
@@ -86,17 +112,14 @@ interpolate <- function(df_list, scales, years, data_agg, census_vec) {
     filter(aggregation %in% c("Average", "Median")) |>
     pull(var_code)
 
-  # Error checking
-  if (length(c(var_add, var_avg)) != length(census_vec$var_code)) {
-    stop(
-      "The length of var_add and var_avg isn't the same as the number of ",
-      "variables."
-    )
-  }
-
+  # Get progress bar
+  pb <- progressr::progressor(steps = sum(sapply(df_list, sapply, nrow)))
+  
   # Main interpolation function
   map2(df_list, scales, function(df_l, scale) {
     map2(df_l, years, function(df, year) {
+      
+      pb(amount = nrow(df))
 
       # Don't interpolate the current year
       if (year == max(years)) {
@@ -128,38 +151,13 @@ interpolate <- function(df_list, scales, years, data_agg, census_vec) {
         st_drop_geometry() |>
         group_by(ID)
 
-      # Interpolate additive variables
-      agg_add <- function(x, area_prop, int_area) {
-        out <- sum(x * {{ area_prop }}, na.rm = TRUE)
-        # Round to the nearest 5 to match non-interpolated census values
-        out <- round(out / 5) * 5
-        # Only keep output polygons with a majority non-NA inputs
-        na_pct <- sum(is.na(x) * {{ int_area }})
-        if (na_pct >= 0.5 * sum({{ int_area }})) out <- NA_real_
-        out
-      }
-
-      # Interpolate average variables
-      agg_avg <- function(x, parent, int_area) {
-        out <- weighted_mean(x, {{ parent }}, na.rm = TRUE)
-        # Only keep output polygons with a majority non-NA inputs
-        na_pct <- sum(is.na(x) * {{ int_area }})
-        if (na_pct >= 0.5 * sum({{ int_area }})) out <- NA_real_
-        out
-      }
-
       interpolated_ids |>
-        summarize(across(
-          any_of(var_add) | ends_with("_parent"),
-          agg_add, area_prop, int_area
-        ),
-        across(
-          any_of(var_avg), agg_avg,
-          as.name(paste0(cur_column(), "_parent")), int_area
-        ),
-        .groups = "drop"
-        ) |>
-        glimpse()
+        # agg_avg has to be calculated first, so parent vectors are untouched!
+        summarize(across(any_of(var_avg), agg_avg,
+                         eval(parse(text = paste0(cur_column(), "_parent"))), 
+                         int_area), 
+                  across(any_of(var_add), agg_add, area_prop, int_area), 
+                  .groups = "drop")
     })
   })
 }

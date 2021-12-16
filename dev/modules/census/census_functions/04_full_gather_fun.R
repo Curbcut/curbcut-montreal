@@ -6,16 +6,13 @@ add_census_data <- function(census_vec, scales, years, parent_vectors = NULL,
                             CMA = "24462", crs = 32618) {
   
   # Get empty geometries
-  message("Getting empty geometries...")
   geoms <- get_empty_geometries(scales, years, CMA, crs)
   
   # Download data
-  message("Downloading census data...")
   data_raw <- get_census_vectors(census_vec, geoms, scales, years,
                                  parent_vectors, CMA)
   
   # Get aggregation type
-  message("Interpolating...")
   data_agg <- get_agg_type(census_vec, scales, years)
   
   # Interpolate

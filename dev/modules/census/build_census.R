@@ -5,13 +5,17 @@
 
 # Global needed variables and functions -----------------------------------
 
-# Lists of scales and years -----------------------------------------------
+# Turn on progress bars
+progressr::handles(global = TRUE)
 
+# Lists of scales and years
 scales <- c("CSD", "CT", "DA")
 years <- c(1996, 2001, 2006, 2011, 2016)
+
 # Load functions
 list.files("dev/modules/census/census_functions") |> 
   walk(~source(paste0("dev/modules/census/census_functions/", .x)))
+
 
 # Add census data by topic ------------------------------------------------
 
