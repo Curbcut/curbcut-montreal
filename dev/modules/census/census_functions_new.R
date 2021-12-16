@@ -52,15 +52,13 @@ get_census_vectors <- function(census_vec, geoms, scales, years,
         na.omit()
       
       # Get original vectors
-      original_vectors_retrieved <-
-        cancensus::get_census(
-          dataset = census_dataset,
-          regions = list(CMA = "24462"),
-          level = scale,
-          vectors = original_vectors_named,
-          geo_format = NA,
-          quiet = TRUE
-        ) |>
+      orig_vec_retrieved <- cancensus::get_census(
+        dataset = census_dataset,
+        regions = list(CMA = CMA),
+        level = scale,
+        vectors = orig_vec_named,
+        geo_format = NA,
+        quiet = TRUE) |> 
         select(GeoUID, starts_with(census_vec$var_code))
 
       # Add up vectors that were retrieved through the same var_code.
