@@ -43,14 +43,14 @@ get_census_vectors <- function(census_vec, geoms, scales, years,
     map2(set_names(years), geom, function(year, df) {
       
       census_dataset <- paste0("CA", sub("20", "", year))
-
-      original_vectors_named <- set_names(
-        pull(census_vec, all_of(paste0("vec_", year))),
-        census_vec$var_code
-      ) |> unlist()
-
-      original_vectors_named <- original_vectors_named[!is.na(original_vectors_named)]
-
+      
+      orig_vec_named <- 
+        census_vec |> 
+        pull(all_of(paste0("vec_", year))) |> 
+        set_names(census_vec$var_code) |> 
+        unlist() |> 
+        na.omit()
+      
       # Get original vectors
       original_vectors_retrieved <-
         cancensus::get_census(
