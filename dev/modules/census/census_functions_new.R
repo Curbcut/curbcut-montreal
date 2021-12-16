@@ -493,7 +493,7 @@ get_unit_type <- function(census_vec, scales, years) {
     original_vectors_named <- set_names(
       pull(census_vec, all_of(paste0("vec_", year))),
       census_vec$var_code
-    )
+    ) |> unlist()
     original_vectors_named <- original_vectors_named[!is.na(original_vectors_named)]
 
     cancensus::list_census_vectors(census_dataset) |>
@@ -501,7 +501,10 @@ get_unit_type <- function(census_vec, scales, years) {
       arrange(match(vector, original_vectors_named)) |>
       mutate(units = str_extract(units, ".[^ ]*")) |>
       mutate(var_code = names(original_vectors_named)) |>
-      select(var_code, units)
+      select(var_code, units) |> 
+      mutate(var_code = ifelse(str_detect(var_code, "\\d$"), 
+                               str_remove(var_code, "\\d*$"), var_code)) |> 
+      distinct()
   })
   vars_units <-
     reduce(for_years, left_join, by = "var_code") |>
