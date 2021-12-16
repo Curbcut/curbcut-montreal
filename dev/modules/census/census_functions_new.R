@@ -95,36 +95,32 @@ get_census_vectors <- function(census_vec, geoms, scales, years,
         pivot_wider(GeoUID) |>
         ungroup()
 
-      # Parent vectors must be "mapped", as they might not be unique census vectors.
-      # Some vectors share the same denominators, yet we want them all to have their
-      # _parent suffix.
-      parent_vecs <-
+      # Some vectors share denominators, so use map to get them multiple times
+      parent_vec <-
         cancensus::list_census_vectors(census_dataset) |>
-        filter(vector %in% original_vectors_named) |>
-        arrange(match(vector, original_vectors_named)) |>
-        # In cases of pct, there is no parent_vector. Yet, they tell what's the
-        # vector that will be used to weight the averages in the aggregation column.
-        mutate(parent_vector = ifelse(is.na(parent_vector), str_extract(aggregation, "v_.*$"),
-          parent_vector
-        )) |>
-        pull(parent_vector) |>
-        set_names(paste0(str_remove(names(original_vectors_named), "\\d*$"), "_parent"))
-
-      # If parent retrieved for the same var_code, they must be unique through-out
-      # and should be retrieved only once.
-      parent_vecs <-
-        map(unique(names(parent_vecs)), function(unique_name) {
-          value <- parent_vecs[names(parent_vecs) == unique_name] |> unique()
-          name <- names(parent_vecs)[names(parent_vecs) == unique_name] |> unique()
-          if (length(value) > 1) {
-            stop(
-              "Parent vectors of `", name, "` aren't unique. A var_code sharing ",
-              "multiple nominators should have a unique parent/denominator."
-            )
-          }
-          set_names(value, name)
-        }) |> unlist()
-
+        filter(vector %in% vec_named) |> 
+        arrange(match(vector, vec_named)) |> 
+        # For pct, use parent_vector to weight aggregation averages
+        mutate(parent_vector = if_else(is.na(parent_vector), 
+                                       str_extract(aggregation, "v_.*$"),
+                                       parent_vector)) |>
+        pull(parent_vector) |> 
+        set_names(paste0(str_remove(names(vec_named), "\\d*$"), "_parent"))
+      
+      # Parents should be retrieved only once
+      parent_vec <-
+        parent_vec |> 
+        names() |> 
+        unique() |> 
+        map(~{
+          value <- unique(parent_vec[names(parent_vec) == .x])
+          name <- unique(names(parent_vec)[names(parent_vec) == .x])
+          if (length(value) > 1) stop(
+              "Parent vectors of `", name, "` aren't unique. A var_code ", 
+              "sharing multiple numerators should have a unique parent.")
+          set_names(value, name)}) |> 
+        unlist()
+      
       # Check for non-additive parent vectors
       non_additive_parent_vecs <-
         cancensus::list_census_vectors(census_dataset) |>
