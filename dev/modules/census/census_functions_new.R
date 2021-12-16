@@ -41,7 +41,7 @@ get_census_vectors <- function(census_vec, geoms, scales, years, parent_vectors 
       census_dataset <- paste0("CA", sub("20", "", year))
       
       original_vectors_named <- set_names(pull(census_vec, all_of(paste0("vec_", year))), 
-                                          census_vec$var_code) %>% unlist()
+                                          census_vec$var_code) |> unlist()
       
       original_vectors_named <- original_vectors_named[!is.na(original_vectors_named)]
       
@@ -58,12 +58,12 @@ get_census_vectors <- function(census_vec, geoms, scales, years, parent_vectors 
       
       # Add up vectors that were retrieved through the same var_code.
       # First, error if they aren't additive:
-      vectors_to_sum <- str_remove(names(original_vectors_named), "\\d*$") %>% table()
+      vectors_to_sum <- str_remove(names(original_vectors_named), "\\d*$") |> table()
       vectors_to_sum <- names(vector_to_sum[vector_to_sum > 1])
       vectors_to_sum <- original_vectors_named[str_detect(names(original_vectors_named), vector_to_sum)]
       
       aggregation_vectors_to_sum <- 
-      (cancensus::list_census_vectors(census_dataset) %>% 
+      (cancensus::list_census_vectors(census_dataset) |> 
         filter(vector %in% vectors_to_sum,
                aggregation != "Additive"))$vector
       
@@ -75,12 +75,12 @@ get_census_vectors <- function(census_vec, geoms, scales, years, parent_vectors 
       }
       # Second, sum them up.
       original_vectors_retrieved <- 
-      original_vectors_retrieved %>% 
-        pivot_longer(-GeoUID) %>% 
-        mutate(name = ifelse(str_detect(name, "\\d$"), str_remove(name, "\\d*$"), name)) %>% 
-        group_by(GeoUID, name) %>% 
-        summarize(value = sum(value)) %>% 
-        pivot_wider(GeoUID) %>% 
+      original_vectors_retrieved |> 
+        pivot_longer(-GeoUID) |> 
+        mutate(name = ifelse(str_detect(name, "\\d$"), str_remove(name, "\\d*$"), name)) |> 
+        group_by(GeoUID, name) |> 
+        summarize(value = sum(value)) |> 
+        pivot_wider(GeoUID) |> 
         ungroup()
       
       
@@ -88,33 +88,33 @@ get_census_vectors <- function(census_vec, geoms, scales, years, parent_vectors 
       # Some vectors share the same denominators, yet we want them all to have their
       # _parent suffix.
       parent_vecs <- 
-        cancensus::list_census_vectors(census_dataset) %>% 
-        filter(vector %in% original_vectors_named) %>% 
-        arrange(match(vector, original_vectors_named)) %>% 
+        cancensus::list_census_vectors(census_dataset) |> 
+        filter(vector %in% original_vectors_named) |> 
+        arrange(match(vector, original_vectors_named)) |> 
         # In cases of pct, there is no parent_vector. Yet, they tell what's the
         # vector that will be used to weight the averages in the aggregation column.
         mutate(parent_vector = ifelse(is.na(parent_vector), str_extract(aggregation, "v_.*$"),
-                                      parent_vector)) %>% 
-        pull(parent_vector) %>% 
+                                      parent_vector)) |> 
+        pull(parent_vector) |> 
         set_names(paste0(str_remove(names(original_vectors_named), "\\d*$"), "_parent"))
       
       # If parent retrieved for the same var_code, they must be unique through-out
       # and should be retrieved only once.
       parent_vecs <- 
       map(unique(names(parent_vecs)), function(unique_name) {
-        value <- parent_vecs[names(parent_vecs) == unique_name] %>% unique()
-        name <- names(parent_vecs)[names(parent_vecs) == unique_name] %>% unique()
+        value <- parent_vecs[names(parent_vecs) == unique_name] |> unique()
+        name <- names(parent_vecs)[names(parent_vecs) == unique_name] |> unique()
         if (length(value) > 1) {
           stop("Parent vectors of `", name, "` aren't unique. A var_code sharing ",
                "multiple nominators should have a unique parent/denominator.")
         }
         set_names(value, name)
-      }) %>% unlist()
+      }) |> unlist()
       
       # Check for non-additive parent vectors
       non_additive_parent_vecs <- 
-        cancensus::list_census_vectors(census_dataset) %>% 
-        filter(vector %in% parent_vecs) %>% 
+        cancensus::list_census_vectors(census_dataset) |> 
+        filter(vector %in% parent_vecs) |> 
         filter(aggregation != "Additive")
       
       if (nrow(non_additive_parent_vecs) > 0) {
@@ -141,7 +141,7 @@ get_census_vectors <- function(census_vec, geoms, scales, years, parent_vectors 
           level = scale,
           vectors = vec[!is.na(vec)],
           geo_format = NA,
-          quiet = TRUE) %>% 
+          quiet = TRUE) |> 
           select(GeoUID, any_of(.x))
           
         # If there's missing parent vectors, it gives an error and tells us where
@@ -177,30 +177,30 @@ get_aggregation_type <- function(census_vec, scales, years) {
                                         census_vec$var_code)
     original_vectors_named <- original_vectors_named[!is.na(original_vectors_named)]
     
-    cancensus::list_census_vectors(census_dataset) %>% 
-      filter(vector %in% original_vectors_named) %>% 
-      arrange(match(vector, original_vectors_named)) %>% 
-      mutate(aggregation = str_extract(aggregation, ".[^ ]*")) %>% 
-      mutate(var_code = names(original_vectors_named)) %>% 
+    cancensus::list_census_vectors(census_dataset) |> 
+      filter(vector %in% original_vectors_named) |> 
+      arrange(match(vector, original_vectors_named)) |> 
+      mutate(aggregation = str_extract(aggregation, ".[^ ]*")) |> 
+      mutate(var_code = names(original_vectors_named)) |> 
       select(var_code, aggregation)
     
   })
   vars_aggregation <- 
-    reduce(for_years, left_join, by = "var_code") %>% 
-    pivot_longer(!var_code) %>% 
-    filter(!is.na(value)) %>% 
-    group_by(var_code) %>% 
-    summarize(aggregation = list(value)) %>% 
-    rowwise() %>% 
+    reduce(for_years, left_join, by = "var_code") |> 
+    pivot_longer(!var_code) |> 
+    filter(!is.na(value)) |> 
+    group_by(var_code) |> 
+    summarize(aggregation = list(value)) |> 
+    rowwise() |> 
     mutate(aggregation = list(unique(aggregation)))
   
   if (all(lengths(pull(vars_aggregation)) == 1)) {
     vars_aggregation <- 
-    vars_aggregation %>% 
+    vars_aggregation |> 
       unnest(aggregation)
   } else {
     non_unique_aggregation_type <- 
-    vars_aggregation[(lengths(pull(vars_aggregation)) > 1),] %>% 
+    vars_aggregation[(lengths(pull(vars_aggregation)) > 1),] |> 
       pull(var_code)
     stop(paste0("Different `aggregation` types detected for `", 
                 non_unique_aggregation_type, "`.\n"))
@@ -210,8 +210,8 @@ get_aggregation_type <- function(census_vec, scales, years) {
 }
 
 # 2001 census have been taken out of the previous function, here is why:
-# cancensus::list_census_vectors("CA01") %>%
-#   filter(vector == "v_CA01_1667") %>%
+# cancensus::list_census_vectors("CA01") |>
+#   filter(vector == "v_CA01_1667") |>
 #   select(label, aggregation)
 # It is labelled as an average, like this variable in every census years. However,
 # it is aggregated as an additive. In the 5 other census, it is aggregated as
@@ -222,12 +222,12 @@ get_aggregation_type <- function(census_vec, scales, years) {
 interpolate <- function(df_list, scales, years, data_aggregation, census_vec) {
   
   var_count <-
-    data_aggregation %>% 
-    filter(aggregation == "Additive") %>%
+    data_aggregation |> 
+    filter(aggregation == "Additive") |>
     pull(var_code)
   var_avg <-
-    data_aggregation %>% 
-    filter(aggregation == "Average") %>%
+    data_aggregation |> 
+    filter(aggregation == "Average") |>
     pull(var_code)
   if (length(c(var_count, var_avg)) != length(census_vec$var_code)) {
     stop("The number of var_count and var_avg isn't the same as the number of ",
@@ -298,21 +298,21 @@ swap_csd_to_borough <- function(df_list, years, var_count, var_avg) {
    borough_data <-  map(set_names(years), function(year) {
       # Get geometry and areas of already-interpolated DAs. 
       DA_n <- 
-        eval(parse(text = (paste0("df_list$DA$`", year, "`")))) %>% 
-        left_join(select(DA, ID), by = "ID") %>%
-        st_as_sf() %>%
-        st_transform(32618) %>%
-        mutate(area = st_area(geometry)) %>%
-        st_set_agr("constant") %>% 
+        eval(parse(text = (paste0("df_list$DA$`", year, "`")))) |> 
+        left_join(select(DA, ID), by = "ID") |>
+        st_as_sf() |>
+        st_transform(32618) |>
+        mutate(area = st_area(geometry)) |>
+        st_set_agr("constant") |> 
         select(-ID)
       
       interpolated_ids <- 
-        borough %>%
-        select(ID) %>%
-        filter(str_starts(ID, "2466023")) %>%
-        st_transform(32618) %>%
-        st_set_agr("constant") %>%
-        st_intersection(DA_n, .) %>% 
+        borough |>
+        select(ID) |>
+        filter(str_starts(ID, "2466023")) |>
+        st_transform(32618) |>
+        st_set_agr("constant") |>
+        st_intersection(DA_n, .) |> 
         mutate(int_area = units::drop_units(st_area(geometry)),
                area_prop = int_area / units::drop_units(area),
                .before = geometry) |>
@@ -340,7 +340,7 @@ swap_csd_to_borough <- function(df_list, years, var_count, var_avg) {
             na_pct <- sum(is.na(.x) * int_area)
             if (na_pct >= 0.5 * sum(int_area)) out <- NA_real_
             out}), .groups = "drop"),
-        by = "ID") %>%
+        by = "ID") |>
         filter(str_starts(ID, "2466023"))
       
     })
@@ -376,12 +376,12 @@ interpolate_other_geoms <- function(to_interpolate, df_list, years, var_count, v
         
         # Get geometry and areas of already-interpolated DAs.
         DA_n <-
-          eval(parse(text = (paste0("df_list$DA$`", year, "`")))) %>%
-          left_join(select(DA, ID), by = "ID") %>%
-          st_as_sf() %>%
-          st_transform(32618) %>%
-          mutate(area = st_area(geometry)) %>%
-          st_set_agr("constant") %>%
+          eval(parse(text = (paste0("df_list$DA$`", year, "`")))) |>
+          left_join(select(DA, ID), by = "ID") |>
+          st_as_sf() |>
+          st_transform(32618) |>
+          mutate(area = st_area(geometry)) |>
+          st_set_agr("constant") |>
           select(-ID)
         
         geom_type <-  switch(as.character(unique(st_geometry_type(get(geo)))),
@@ -397,10 +397,10 @@ interpolate_other_geoms <- function(to_interpolate, df_list, years, var_count, v
         }
         
         interpolated_ids <-
-          get(geo) %>%
-          select(ID) %>%
-          st_transform(32618) %>%
-          st_set_agr("constant") %>%
+          get(geo) |>
+          select(ID) |>
+          st_transform(32618) |>
+          st_set_agr("constant") |>
           st_intersection(DA_n, .) %>%
           {if (geom_type == "polygon")
                  mutate(., int_area = units::drop_units(st_area(geometry)),
@@ -451,30 +451,30 @@ get_unit_type <- function(census_vec, scales, years) {
                                         census_vec$var_code)
     original_vectors_named <- original_vectors_named[!is.na(original_vectors_named)]
     
-    cancensus::list_census_vectors(census_dataset) %>% 
-      filter(vector %in% original_vectors_named) %>% 
-      arrange(match(vector, original_vectors_named)) %>% 
-      mutate(units = str_extract(units, ".[^ ]*")) %>% 
-      mutate(var_code = names(original_vectors_named)) %>% 
+    cancensus::list_census_vectors(census_dataset) |> 
+      filter(vector %in% original_vectors_named) |> 
+      arrange(match(vector, original_vectors_named)) |> 
+      mutate(units = str_extract(units, ".[^ ]*")) |> 
+      mutate(var_code = names(original_vectors_named)) |> 
       select(var_code, units)
     
   })
   vars_units <- 
-    reduce(for_years, left_join, by = "var_code") %>% 
-    pivot_longer(!var_code) %>% 
-    filter(!is.na(value)) %>% 
-    group_by(var_code) %>% 
-    summarize(units = list(value)) %>% 
-    rowwise() %>% 
+    reduce(for_years, left_join, by = "var_code") |> 
+    pivot_longer(!var_code) |> 
+    filter(!is.na(value)) |> 
+    group_by(var_code) |> 
+    summarize(units = list(value)) |> 
+    rowwise() |> 
     mutate(units = list(unique(units)))
   
   if (all(lengths(pull(vars_units)) == 1)) {
     vars_units <- 
-      vars_units %>% 
+      vars_units |> 
       unnest(units)
   } else {
     non_unique_units_type <- 
-      vars_units[(lengths(pull(vars_units)) > 1),] %>% 
+      vars_units[(lengths(pull(vars_units)) > 1),] |> 
       pull(var_code)
     stop(paste0("Different `units` types detected for `", 
                 non_unique_units_type, "`.\n"))
@@ -484,8 +484,8 @@ get_unit_type <- function(census_vec, scales, years) {
 }
 
 # 2001 census have been taken out of the previous function, here is why:
-# cancensus::list_census_vectors("CA01") %>%
-#   filter(vector == "v_CA01_1674") %>%
+# cancensus::list_census_vectors("CA01") |>
+#   filter(vector == "v_CA01_1674") |>
 #   select(label, units)
 # It is labelled as "value ... %", like this variable in every census years. However,
 # it is noted as an "Number" units In the 5 other census, it is aggregated as
@@ -510,9 +510,9 @@ normalize <- function(df_list, census_vec, data_unit) {
           pull(var_code)
         
         nominator <-
-          data_unit %>%
-          filter(var_code %in% nominator) %>%
-          mutate(out = set_names(var_code, units)) %>% 
+          data_unit |>
+          filter(var_code %in% nominator) |>
+          mutate(out = set_names(var_code, units)) |> 
           pull(out)
         
         if (length(nominator) > 0 && !names(nominator) %in% c("Number", "Percentage")){

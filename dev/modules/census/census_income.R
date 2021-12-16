@@ -20,8 +20,8 @@ census_income <- tibble(
   private = logical()
   )
 
-add_row_inc <- function(data, var_code, vec_2016, vec_2011, vec_2006, vec_2001, vec_1996, 
-                        var_title, var_short, explanation, private) {
+add_row_inc <- function(data, var_code, vec_2016, vec_2011, vec_2006, vec_2001,
+                        vec_1996, var_title, var_short, explanation, private) {
   add_row(data,
     var_code = var_code,
     vec_2016 = list(vec_2016),
@@ -32,11 +32,11 @@ add_row_inc <- function(data, var_code, vec_2016, vec_2011, vec_2006, vec_2001, 
     var_title = var_title,
     var_short = var_short,
     explanation = explanation,
-    private = private) 
+    private = private)
 }
     
 census_income <-
-  census_income |> 
+  census_income |>
     add_row_inc(
     var_code = "inc_median_dollar",
     vec_2016 = "v_CA16_2397",
@@ -47,10 +47,11 @@ census_income <-
     var_title = "Median household income ($)",
     var_short = "TKTK",
     explanation = "median before-tax household income",
-    private = FALSE) |> 
+    private = FALSE) |>
     add_row_inc(
     var_code = "inc_50_pct",
-    vec_2016 = paste0("v_CA16_24", 06:15),
+    vec_2016 = c("v_CA16_2406", "v_CA16_2407", "v_CA16_2408", "v_CA16_2409",
+                 paste0("v_CA16_24", 10:15)),
     vec_2011 = paste0("v_CA11N_25", 34:40),
     vec_2006 = paste0("v_CA06_19", 89:93),
     vec_2001 = paste0("v_CA01_16", 22:26),
@@ -100,11 +101,7 @@ census_income <-
 
 # Gather data -------------------------------------------------------------
 
-data_to_add <- census_data_gather(census_income, scales, years,
-                                  # For income, the sum of all variables in inc_50_pct must
-                                  # have income total as parent.
-                                  parent_vectors = c("inc_50_pct" = "v_CA16_2405",
-                                                     "inc_50_pct" = "v_CA11N_2533"))
+data_to_add <- census_data_gather(census_income, scales, years)
 
 
 # Assign data -------------------------------------------------------------
