@@ -174,24 +174,31 @@ get_census_vectors <- function(census_vec, geoms, scales, years,
 
 
 # Retrieve aggregation type -----------------------------------------------
-get_aggregation_type <- function(census_vec, scales, years) {
-  for_years <- map(rev(years)[!rev(years) == 2001], function(year) {
-    census_dataset <- paste0("CA", sub("20", "", year))
-    original_vectors_named <- set_names(
-      pull(census_vec, all_of(paste0("vec_", year))),
-      census_vec$var_code
-    ) |> unlist()
-    original_vectors_named <- original_vectors_named[!is.na(original_vectors_named)]
 
-    cancensus::list_census_vectors(census_dataset) |>
-      filter(vector %in% original_vectors_named) |>
-      arrange(match(vector, original_vectors_named)) |>
-      mutate(aggregation = str_extract(aggregation, ".[^ ]*")) |>
-      mutate(var_code = names(original_vectors_named)) |>
+get_agg_type <- function(census_vec, scales, years) {
+  
+  for_years <- map(rev(years)[!rev(years) == 2001], function(year) {
+    
+    census_dataset <- paste0("CA", sub("20", "", year))
+    
+    # Get named versions of vectors
+    vec_named <- 
+      census_vec |> 
+      pull(all_of(paste0("vec_", year))) |> 
+      set_names(census_vec$var_code) |> 
+      na.omit()
+
+    cancensus::list_census_vectors(census_dataset) |> 
+      filter(vector %in% vec_named) |> 
+      arrange(match(vector, vec_named)) |> 
+      mutate(aggregation = str_extract(aggregation, ".[^ ]*")) |> 
+      mutate(var_code = names(vec_named)) |> 
       select(var_code, aggregation) |> 
       mutate(var_code = ifelse(str_detect(var_code, "\\d$"), 
-                           str_remove(var_code, "\\d*$"), var_code)) |> 
+                               str_remove(var_code, "\\d*$"), var_code)) |> 
       distinct()
+    
+    
   })
   vars_aggregation <-
     reduce(for_years, left_join, by = "var_code") |>
