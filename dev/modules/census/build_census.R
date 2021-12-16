@@ -6,7 +6,7 @@
 # Global needed variables and functions -----------------------------------
 
 # Turn on progress bars
-progressr::handles(global = TRUE)
+progressr::handlers(global = TRUE)
 
 # Lists of scales and years
 scales <- c("CSD", "CT", "DA")

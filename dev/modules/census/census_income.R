@@ -89,7 +89,7 @@ census_income <-
     private = FALSE
   ) |>
   add_row_inc(
-    var_code = "inc_limat_prop",
+    var_code = "inc_limat_pct",
     vec_2016 = "v_CA16_2540",
     vec_2011 = NA,
     vec_2006 = NA,
