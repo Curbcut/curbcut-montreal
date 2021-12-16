@@ -103,7 +103,7 @@ census_income <-
 
 # Gather data -------------------------------------------------------------
 
-data_to_add <- census_data_gather(census_income, scales, years)
+data_to_add <- add_census_data(census_income, scales, years)
 
 
 # Assign data -------------------------------------------------------------
