@@ -18,7 +18,7 @@ census_income <- tibble(
   explanation = character(),
   category = character(),
   private = logical()
-  )
+)
 
 add_row_inc <- function(data, var_code, vec_2016, vec_2011, vec_2006, vec_2001,
                         vec_1996, var_title, var_short, explanation, private) {
@@ -32,12 +32,13 @@ add_row_inc <- function(data, var_code, vec_2016, vec_2011, vec_2006, vec_2001,
     var_title = var_title,
     var_short = var_short,
     explanation = explanation,
-    private = private)
+    private = private
+  )
 }
-    
+
 census_income <-
   census_income |>
-    add_row_inc(
+  add_row_inc(
     var_code = "inc_median_dollar",
     vec_2016 = "v_CA16_2397",
     vec_2011 = "v_CA11N_2562",
@@ -47,11 +48,14 @@ census_income <-
     var_title = "Median household income ($)",
     var_short = "TKTK",
     explanation = "median before-tax household income",
-    private = FALSE) |>
-    add_row_inc(
+    private = FALSE
+  ) |>
+  add_row_inc(
     var_code = "inc_50_pct",
-    vec_2016 = c("v_CA16_2406", "v_CA16_2407", "v_CA16_2408", "v_CA16_2409",
-                 paste0("v_CA16_24", 10:15)),
+    vec_2016 = c(
+      "v_CA16_2406", "v_CA16_2407", "v_CA16_2408", "v_CA16_2409",
+      paste0("v_CA16_24", 10:15)
+    ),
     vec_2011 = paste0("v_CA11N_25", 34:40),
     vec_2006 = paste0("v_CA06_19", 89:93),
     vec_2001 = paste0("v_CA01_16", 22:26),
@@ -59,7 +63,8 @@ census_income <-
     var_title = "Income under $50k (%)",
     var_short = "TKTK",
     explanation = "the percentage of households with an income less then $50,000",
-    private = FALSE) |>
+    private = FALSE
+  ) |>
   # add_row(
   #   var_code = "inc_100_pct",
   #   vec_2016 = "v_CA16_4901",
@@ -82,22 +87,23 @@ census_income <-
     var_title = "Income above $100k (%)",
     var_short = "TKTK",
     explanation = "the percentage of households with an income higher than $100,000",
-    private = FALSE)
+    private = FALSE
+  )
 
 # |>
-  # add_row_inc(
-  #   var_code = "inc_limat_prop",
-  #   vec_2016 = "v_CA16_4896",
-  #   vec_2011 = "v_CA11N_2287",
-  #   vec_2006 = "v_CA06_2054",
-  #   vec_2001 = "v_CA01_1674",
-  #   vec_1996 = "v_CA1996_1681",
-  #   include = TRUE,
-  #   var_title = "Prevalence of low income (after-tax) (%)",
-  #   var_short = "TKTK",
-  #   explanation = "the prevalence of low income in private households based on the Low income measure, after-tax(LIM-AT)",
-  #   private = FALSE)
-  
+# add_row_inc(
+#   var_code = "inc_limat_prop",
+#   vec_2016 = "v_CA16_4896",
+#   vec_2011 = "v_CA11N_2287",
+#   vec_2006 = "v_CA06_2054",
+#   vec_2001 = "v_CA01_1674",
+#   vec_1996 = "v_CA1996_1681",
+#   include = TRUE,
+#   var_title = "Prevalence of low income (after-tax) (%)",
+#   var_short = "TKTK",
+#   explanation = "the prevalence of low income in private households based on the Low income measure, after-tax(LIM-AT)",
+#   private = FALSE)
+
 
 # Gather data -------------------------------------------------------------
 
@@ -106,19 +112,19 @@ data_to_add <- census_data_gather(census_income, scales, years)
 
 # Assign data -------------------------------------------------------------
 
-borough <- 
-  borough |> 
-  left_join(data_to_add$borough, by = "ID") |> 
+borough <-
+  borough |>
+  left_join(data_to_add$borough, by = "ID") |>
   relocate(geometry, .after = last_col())
 
-CT <- 
-  CT |> 
-  left_join(data_to_add$CT, by = "ID") |> 
+CT <-
+  CT |>
+  left_join(data_to_add$CT, by = "ID") |>
   relocate(geometry, .after = last_col())
 
-DA <- 
-  DA |> 
-  left_join(data_to_add$DA, by = "ID") |> 
+DA <-
+  DA |>
+  left_join(data_to_add$DA, by = "ID") |>
   relocate(centroid, buffer, geometry, .after = last_col())
 
 grid <-
