@@ -177,6 +177,10 @@ get_census_vectors <- function(census_vec, geoms, scales, years,
 
 get_agg_type <- function(census_vec, scales, years) {
   
+  # Skip 2001 Census; vectors are labelled average but aggregated as additive
+  # cancensus::list_census_vectors("CA01") |> 
+  #   filter(vector == "v_CA01_1667") |> 
+  #   select(label, aggregation)
   for_years <- map(rev(years)[!rev(years) == 2001], function(year) {
     
     census_dataset <- paste0("CA", sub("20", "", year))
@@ -194,45 +198,37 @@ get_agg_type <- function(census_vec, scales, years) {
       mutate(aggregation = str_extract(aggregation, ".[^ ]*")) |> 
       mutate(var_code = names(vec_named)) |> 
       select(var_code, aggregation) |> 
-      mutate(var_code = ifelse(str_detect(var_code, "\\d$"), 
-                               str_remove(var_code, "\\d*$"), var_code)) |> 
+      mutate(var_code = if_else(str_detect(var_code, "\\d$"), 
+                                str_remove(var_code, "\\d*$"), var_code)) |> 
       distinct()
-    
-    
+
   })
-  vars_aggregation <-
-    reduce(for_years, left_join, by = "var_code") |>
-    pivot_longer(!var_code) |>
-    filter(!is.na(value)) |>
-    group_by(var_code) |>
-    summarize(aggregation = list(value)) |>
-    rowwise() |>
-    mutate(aggregation = list(unique(aggregation)))
-
-  if (all(lengths(pull(vars_aggregation)) == 1)) {
-    vars_aggregation <-
-      vars_aggregation |>
-      unnest(aggregation)
+  
+  vars_agg <- 
+    for_years |> 
+    reduce(left_join, by = "var_code") |> 
+    pivot_longer(!var_code) |> 
+    filter(!is.na(value)) |> 
+    group_by(var_code) |> 
+    summarize(aggregation = list(value)) |> 
+    rowwise() |> 
+    mutate(aggregation = list(unique(aggregation))) |> 
+    ungroup()
+  
+  # Check to make sure there aren't conflicting aggregation types
+  if (all(lengths(pull(vars_agg)) == 1)) {
+    vars_agg <- unnest(vars_agg, aggregation)
   } else {
-    non_unique_aggregation_type <-
-      vars_aggregation[(lengths(pull(vars_aggregation)) > 1), ] |>
-      pull(var_code)
-    stop(paste0(
-      "Different `aggregation` types detected for `",
-      non_unique_aggregation_type, "`.\n"
-    ))
+    vars_agg[(lengths(pull(vars_agg)) > 1),] |> 
+      pull(var_code) |> 
+      paste(collapse = ", ") |> 
+      (\(x) paste("Different `aggregation` types detected for", x))() |> 
+      stop()
   }
-
-  vars_aggregation
+  
+  vars_agg
 }
 
-# 2001 census have been taken out of the previous function, here is why:
-# cancensus::list_census_vectors("CA01") |>
-#   filter(vector == "v_CA01_1667") |>
-#   select(label, aggregation)
-# It is labelled as an average, like this variable in every census years. However,
-# it is aggregated as an additive. In the 5 other census, it is aggregated as
-# an average. This problem happened twice with housing variables.
 
 # Interpolate -------------------------------------------------------------
 
