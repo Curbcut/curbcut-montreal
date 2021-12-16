@@ -838,19 +838,18 @@ add_vars <- function(data_to_add, census_vec, breaks_q3, breaks_q5) {
 
 # Full census data gather function ----------------------------------------
 
-# Full census data gather function ----------------------------------------
-
-census_data_gather <- function(census_vec, scales, years, parent_vectors = NULL) {
-  message("Data census startup")
-  ## Get empty geometries
-  message("Getting empty geometries ...", appendLF = TRUE)
-  geoms <- get_empty_geometries(scales, years)
-  ## Download data
-  message("Downloading census data ...", appendLF = TRUE)
-  data_raw <- get_census_vectors(
-    census_vec, geoms, scales, years,
-    parent_vectors
-  )
+add_census_data <- function(census_vec, scales, years, parent_vectors = NULL,
+                            CMA = "24462", crs = 32618) {
+  
+  # Get empty geometries
+  message("Getting empty geometries ...")
+  geoms <- get_empty_geometries(scales, years, CMA, CRS)
+  
+  # Download data
+  message("Downloading census data ...")
+  data_raw <- get_census_vectors(census_vec, geoms, scales, years,
+                                 parent_vectors, CMA)
+  
   # Get aggregation type
   message("Interpolating ...", appendLF = TRUE)
   data_aggregation <- get_aggregation_type(census_vec, scales, years)

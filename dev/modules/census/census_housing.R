@@ -30,7 +30,7 @@ census_housing <-
     vec_2001 = "v_CA01_100",
     vec_1996 = "v_CA1996_1683",
     var_title = "Tenant-occupied (%)",
-    var_short = "Tenant (%)",
+    var_short = "Tenant",
     explanation = "the percentage of private dwellings occupied by tenants",
     private = FALSE) |> 
   add_row(
@@ -41,7 +41,7 @@ census_housing <-
     vec_2001 = "v_CA01_1667",
     vec_1996 = "v_CA1996_1701",
     var_title = "Average rent ($)",
-    var_short = "TKTK",
+    var_short = "Avg. rent",
     explanation = "the average rent paid by tenants per month",
     private = FALSE) |>
   add_row(
@@ -52,8 +52,9 @@ census_housing <-
     vec_2001 = "v_CA01_104",
     vec_1996 = "v_CA1996_1687",
     var_title = "Housing requiring major repairs (%)",
-    var_short = "TKTK",
-    explanation = "the percentage of households living in dwellings requiring major repairs",
+    var_short = "Repairs",
+    explanation = paste0("the percentage of households living in dwellings ",
+                         "requiring major repairs"),
     private = FALSE) |>
   add_row(
     var_code = "housing_value_avg_dollar",
@@ -63,39 +64,43 @@ census_housing <-
     vec_2001 = "v_CA01_1674",
     vec_1996 = "v_CA1996_1681",
     var_title = "Average property value ($)",
-    var_short = "TKTK",
+    var_short = "Avg. value",
     explanation = "the average value of owner-occupied dwellings",
     private = FALSE) |>
   add_row(
     var_code = "housing_unafford_pct",
     vec_2016 = "v_CA16_4888",
     var_title = "Unaffordable housing (%)",
-    var_short = "TKTK",
-    explanation = "the percentage of dwellings for which residents pay more than 30% of income on housing costs",
+    var_short = "Unaffordable",
+    explanation = paste0("the percentage of dwellings for which residents pay ",
+                         "more than 30% of income on housing costs"),
     private = FALSE) |>
   add_row(
     var_code = "housing_unsuit_pct",
     vec_2016 = "v_CA16_4861",
     vec_2011 = "v_CA11N_2276",
     var_title = "Unsuitable housing (%)",
-    var_short = "TKTK",
-    explanation = "the percentage of households living in accommodations without enough bedrooms according to the National Occupancy Standard",
+    var_short = "Unsuitable",
+    explanation = paste0("the percentage of households living in ",
+                         "accommodations without enough bedrooms"),
     private = FALSE) |>
   add_row(
     var_code = "housing_stress_renter_pct",
     vec_2016 = "v_CA16_4899",
     vec_2011 = "v_CA11N_2290",
     var_title = "Renter housing stress (%)",
-    var_short = "TKTK",
-    explanation = "the percentage of renter households that spend more than 30% of their income on shelter costs",
+    var_short = "Renter stress",
+    explanation = paste0("the percentage of renter households that spend ",
+                         "more than 30% of their income on shelter costs"),
     private = FALSE) |>
   add_row(
     var_code = "housing_stress_owner_pct",
     vec_2016 = "v_CA16_4892",
     vec_2011 = "v_CA11N_2283",
     var_title = "Owner housing stress (%)",
-    var_short = "TKTK",
-    explanation = "the percentage of owner households that spend more than 30% of their income on shelter costs",
+    var_short = "Owner stress",
+    explanation = paste0("the percentage of owner households that spend more ",
+                         "than 30% of their income on shelter costs"),
     private = FALSE) |>
   add_row(
     var_code = "housing_mobility_one_pct",
@@ -105,8 +110,9 @@ census_housing <-
     vec_2001 = "v_CA01_383",
     vec_1996 = "v_CA1996_1387",
     var_title = "One-year housing mobility (%)",
-    var_short = "TKTK",
-    explanation = "the percentage of households that have moved in the past year",
+    var_short = "1-year mob.",
+    explanation = paste0("the percentage of households that have moved in ",
+                         "the past year"),
     private = FALSE) |>
   add_row(
     var_code = "housing_mobility_five_pct",
@@ -116,15 +122,17 @@ census_housing <-
     vec_2001 = "v_CA01_392",
     vec_1996 = "v_CA1996_1396",
     var_title = "Five-year housing mobility (%)",
-    var_short = "TKTK",
-    explanation = "the percentage of households that have moved in the past five years",
+    var_short = "5-year mob.",
+    explanation = paste0("the percentage of households that have moved in the ",
+                         "past five years"),
     private = FALSE)
   
 
 # Gather data -------------------------------------------------------------
 
-data_to_add <- census_data_gather(census_housing, scales, years,
-                                  parent_vectors = c("housing_value_avg_dollar" = "v_CA01_1670"))
+data_to_add <- 
+  add_census_data(census_housing, scales, years, parent_vectors = c(
+    "housing_value_avg_dollar" = "v_CA01_1670"))
 
 
 # Assign data -------------------------------------------------------------
