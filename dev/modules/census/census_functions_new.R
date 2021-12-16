@@ -122,61 +122,55 @@ get_census_vectors <- function(census_vec, geoms, scales, years,
         unlist()
       
       # Check for non-additive parent vectors
-      non_additive_parent_vecs <-
+      non_add_parent_vec <- 
         cancensus::list_census_vectors(census_dataset) |>
-        filter(vector %in% parent_vecs) |>
+        filter(vector %in% parent_vec) |> 
         filter(aggregation != "Additive")
-
-      if (nrow(non_additive_parent_vecs) > 0) {
-        stop(paste0(
-          "Non-additive parent vector: ",
-          parent_vecs[parent_vecs %in% non_additive_parent_vecs]
-        ))
+      
+      if (nrow(non_add_parent_vec) > 0) {
+        stop(paste0("Non-additive parent vector: ",
+                    parent_vec[parent_vec %in% non_add_parent_vec]))
       }
-
-
+      
       # Retrieve the values of all parent vectors
-      parent_vector_values <- map(names(parent_vecs), ~ {
-        # In cases of errors in cancensus, we can use the parent_vectors argument to
-        # add parent vectors.
+      parent_vec_values <- map(names(parent_vec), ~{
+        
+        # In cases of errors in cancensus, use parent_vectors
         if (.x %in% paste0(names(parent_vectors), "_parent")) {
           names(parent_vectors) <- paste0(names(parent_vectors), "_parent")
-          vec <- parent_vectors[names(parent_vectors) == .x[.x == names(parent_vectors)]]
-        } else {
-          vec <- set_names(parent_vecs[.x], .x)
-        }
-
-        retrieved_parent <-
-          cancensus::get_census(
-            dataset = census_dataset,
-            regions = list(CMA = "24462"),
-            level = scale,
-            vectors = vec[!is.na(vec)],
-            geo_format = NA,
-            quiet = TRUE
-          ) |>
+          vec <- parent_vectors[names(parent_vectors) == 
+                                  .x[.x == names(parent_vectors)]]
+        } else vec <- set_names(parent_vec[.x], .x)
+        
+        retrieved_parent <- cancensus::get_census(
+          dataset = census_dataset,
+          regions = list(CMA = CMA),
+          level = scale,
+          vectors = vec[!is.na(vec)],
+          geo_format = NA,
+          quiet = TRUE) |> 
           select(GeoUID, any_of(.x))
-
-        # If there's missing parent vectors, it gives an error and tells us where
+        
+        # Throw error for missing parent vectors
         if (ncol(retrieved_parent) != 2) {
           stop(paste0(year, ", ", scale, ", no parent vector for ", .x))
         }
-
+        
         retrieved_parent
       })
-
+      
       # Join the dfs
-      left_join(original_vectors_retrieved,
-        reduce(parent_vector_values, left_join, by = "GeoUID"),
-        by = "GeoUID"
-      ) |>
-        right_join(df_g, by = "GeoUID") |>
+      orig_vec_retrieved |> 
+        left_join(reduce(parent_vec_values, left_join, by = "GeoUID"),
+                  by = "GeoUID") |>
+        right_join(df, by = "GeoUID") |>
         st_as_sf() |>
         st_set_agr("constant")
+      
     })
   })
+  
 }
-
 
 
 # Retrieve aggregation type -----------------------------------------------
