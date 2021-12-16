@@ -62,8 +62,8 @@ get_census_vectors <- function(census_vec, geoms, scales, years, parent_vectors 
       # Add up vectors that were retrieved through the same var_code.
       # First, error if they aren't additive:
       vectors_to_sum <- str_remove(names(original_vectors_named), "\\d*$") |> table()
-      vectors_to_sum <- names(vector_to_sum[vector_to_sum > 1])
-      vectors_to_sum <- original_vectors_named[str_detect(names(original_vectors_named), vector_to_sum)]
+      vectors_to_sum <- names(vectors_to_sum[vectors_to_sum > 1])
+      vectors_to_sum <- original_vectors_named[str_detect(names(original_vectors_named), vectors_to_sum)]
 
       aggregation_vectors_to_sum <-
         (cancensus::list_census_vectors(census_dataset) |>
@@ -80,6 +80,7 @@ get_census_vectors <- function(census_vec, geoms, scales, years, parent_vectors 
           "with the same var_code at the same year, they are sumed up."
         ))
       }
+      options(dplyr.summarise.inform = FALSE)
       # Second, sum them up.
       original_vectors_retrieved <-
         original_vectors_retrieved |>
@@ -89,7 +90,7 @@ get_census_vectors <- function(census_vec, geoms, scales, years, parent_vectors 
         summarize(value = sum(value)) |>
         pivot_wider(GeoUID) |>
         ungroup()
-
+      options(dplyr.summarise.inform = TRUE)
 
       # Parent vectors must be "mapped", as they might not be unique census vectors.
       # Some vectors share the same denominators, yet we want them all to have their
@@ -186,7 +187,7 @@ get_aggregation_type <- function(census_vec, scales, years) {
     original_vectors_named <- set_names(
       pull(census_vec, all_of(paste0("vec_", year))),
       census_vec$var_code
-    )
+    ) |> unlist()
     original_vectors_named <- original_vectors_named[!is.na(original_vectors_named)]
 
     cancensus::list_census_vectors(census_dataset) |>
@@ -194,7 +195,10 @@ get_aggregation_type <- function(census_vec, scales, years) {
       arrange(match(vector, original_vectors_named)) |>
       mutate(aggregation = str_extract(aggregation, ".[^ ]*")) |>
       mutate(var_code = names(original_vectors_named)) |>
-      select(var_code, aggregation)
+      select(var_code, aggregation) |> 
+      mutate(var_code = ifelse(str_detect(var_code, "\\d$"), 
+                           str_remove(var_code, "\\d*$"), var_code)) |> 
+      distinct()
   })
   vars_aggregation <-
     reduce(for_years, left_join, by = "var_code") |>
@@ -239,11 +243,11 @@ interpolate <- function(df_list, scales, years, data_aggregation, census_vec) {
     pull(var_code)
   var_avg <-
     data_aggregation |>
-    filter(aggregation == "Average") |>
+    filter(aggregation %in% c("Average", "Median")) |>
     pull(var_code)
   if (length(c(var_count, var_avg)) != length(census_vec$var_code)) {
     stop(
-      "The number of var_count and var_avg isn't the same as the number of ",
+      "The length of var_count and var_avg isn't the same as the number of ",
       "variables."
     )
   }
