@@ -4,13 +4,13 @@
 # Global ------------------------------------------------------------------
 # For interpolation: weighted.mean na.rm = T does not handle NA weights, but just
 # NA x values. This new function fixes it.
-weighted_mean = function(x, w, ..., na.rm=F){
-  if(na.rm){
-    x1 = x[!is.na(x)&!is.na(w)]
-    w = w[!is.na(x)&!is.na(w)]
+weighted_mean = function(x, w, ..., na.rm = FALSE){
+  if (na.rm) {
+    x1 = x[!is.na(x) & !is.na(w)]
+    w = w[!is.na(x) & !is.na(w)]
     x = x1
   }
-  weighted.mean(x, w, ..., na.rm=F)
+  weighted.mean(x, w, ..., na.rm = FALSE)
 }
 
 # Get empty geometries ----------------------------------------------------
@@ -56,11 +56,33 @@ get_census_vectors <- function(census_vec, geoms, scales, years, parent_vectors 
         quiet = TRUE) |> 
         select(GeoUID, starts_with(census_vec$var_code))
       
-      # ///////////iiiiiiiiiiiiii\\\\\\\\\\\\\\\\\\
-      # HERE WE CAN ADD-UP ALL VECTORS THAT WERE RETRIEVED THROUGH THE SAME 
-      # VAR_CODE (AS IN INCOME AND TRANSPORTATION, IT'S THE ONLY OPERATION WITH
-      # SUCH NOMINATOR). ERRORS IF IT HAPPENS THEY AREN'T ADDITIVE.
-      # ///////////iiiiiiiiiiiiii\\\\\\\\\\\\\\\\\\
+      # Add up vectors that were retrieved through the same var_code.
+      # First, error if they aren't additive:
+      vectors_to_sum <- str_remove(names(original_vectors_named), "\\d*$") %>% table()
+      vectors_to_sum <- names(vector_to_sum[vector_to_sum > 1])
+      vectors_to_sum <- original_vectors_named[str_detect(names(original_vectors_named), vector_to_sum)]
+      
+      aggregation_vectors_to_sum <- 
+      (cancensus::list_census_vectors(census_dataset) %>% 
+        filter(vector %in% vectors_to_sum,
+               aggregation != "Additive"))$vector
+      
+      if (length(aggregation_vectors_to_sum) != 0) {
+        stop(paste0("Vector `", aggregation_vectors_to_sum, "` isn't registered as ",
+        "Additive in cancensus. It shouldn't be registered in a list, at least with the ",
+        "way this function is designed at the moment. If multiple vectors are retrieved ", 
+        "with the same var_code at the same year, they are sumed up."))
+      }
+      # Second, sum them up.
+      original_vectors_retrieved <- 
+      original_vectors_retrieved %>% 
+        pivot_longer(-GeoUID) %>% 
+        mutate(name = ifelse(str_detect(name, "\\d$"), str_remove(name, "\\d*$"), name)) %>% 
+        group_by(GeoUID, name) %>% 
+        summarize(value = sum(value)) %>% 
+        pivot_wider(GeoUID) %>% 
+        ungroup()
+      
       
       # Parent vectors must be "mapped", as they might not be unique census vectors.
       # Some vectors share the same denominators, yet we want them all to have their
@@ -74,7 +96,20 @@ get_census_vectors <- function(census_vec, geoms, scales, years, parent_vectors 
         mutate(parent_vector = ifelse(is.na(parent_vector), str_extract(aggregation, "v_.*$"),
                                       parent_vector)) %>% 
         pull(parent_vector) %>% 
-        set_names(paste0(names(original_vectors_named), "_parent"))
+        set_names(paste0(str_remove(names(original_vectors_named), "\\d*$"), "_parent"))
+      
+      # If parent retrieved for the same var_code, they must be unique through-out
+      # and should be retrieved only once.
+      parent_vecs <- 
+      map(unique(names(parent_vecs)), function(unique_name) {
+        value <- parent_vecs[names(parent_vecs) == unique_name] %>% unique()
+        name <- names(parent_vecs)[names(parent_vecs) == unique_name] %>% unique()
+        if (length(value) > 1) {
+          stop("Parent vectors of `", name, "` aren't unique. A var_code sharing ",
+               "multiple nominators should have a unique parent/denominator.")
+        }
+        set_names(value, name)
+      }) %>% unlist()
       
       # Check for non-additive parent vectors
       non_additive_parent_vecs <- 
@@ -184,8 +219,7 @@ get_aggregation_type <- function(census_vec, scales, years) {
 
 # Interpolate -------------------------------------------------------------
 
-interpolate <- function(df_list, scales, years, var_count, var_avg, data_aggregation,
-                        census_vec) {
+interpolate <- function(df_list, scales, years, data_aggregation, census_vec) {
   
   var_count <-
     data_aggregation %>% 
@@ -766,8 +800,7 @@ census_data_gather <- function(census_vec, scales, years, parent_vectors = NULL)
   message("Interpolating ...", appendLF = TRUE)
   data_aggregation <- get_aggregation_type(census_vec, scales, years)
   ## Interpolate
-  data_inter <- interpolate(data_raw, scales, years, data_aggregation = data_aggregation,
-                            census_vec = census_vec)
+  data_inter <- interpolate(data_raw, scales, years, data_aggregation, census_vec)
   ## Swap CSD to borough
   message("Swapping CSD to borough ...", appendLF = TRUE)
   data_swaped <- swap_csd_to_borough(data_inter, years, var_count, var_avg)
