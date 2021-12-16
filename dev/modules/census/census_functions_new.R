@@ -190,6 +190,7 @@ get_agg_type <- function(census_vec, scales, years) {
       census_vec |> 
       pull(all_of(paste0("vec_", year))) |> 
       set_names(census_vec$var_code) |> 
+      unlist() |> 
       na.omit()
 
     cancensus::list_census_vectors(census_dataset) |> 
@@ -232,75 +233,78 @@ get_agg_type <- function(census_vec, scales, years) {
 
 # Interpolate -------------------------------------------------------------
 
-interpolate <- function(df_list, scales, years, data_aggregation, census_vec) {
-  var_count <-
-    data_aggregation |>
+interpolate <- function(df_list, scales, years, data_agg, census_vec) {
+  
+  # Get variables to be added
+  var_add <-
+    data_agg |>
     filter(aggregation == "Additive") |>
     pull(var_code)
+  
+  # Get variables to be averaged
   var_avg <-
-    data_aggregation |>
+    data_agg |>
     filter(aggregation %in% c("Average", "Median")) |>
     pull(var_code)
-  if (length(c(var_count, var_avg)) != length(census_vec$var_code)) {
-    stop(
-      "The length of var_count and var_avg isn't the same as the number of ",
-      "variables."
-    )
-  }
+  
+  # Error checking
+  if (length(c(var_add, var_avg)) != length(census_vec$var_code)) stop(
+    "The length of var_add and var_avg isn't the same as the number of ",
+    "variables.")
 
+  # Main interpolation function
   map2(df_list, scales, function(df_l, scale) {
     map2(df_l, years, function(df, year) {
 
       # Don't interpolate the current year
-      if (year == max(years)) {
-        return({
-          df |>
-            st_drop_geometry() |>
-            select(-area) |>
-            rename(ID = GeoUID)
+      if (year == max(years)) return({
+        df |>
+          st_drop_geometry() |>
+          select(-area) |>
+          rename(ID = GeoUID)
         })
-      }
 
-      # Otherwise interpolate! --------
+      # Otherwise interpolate!
       interpolated_ids <-
         df_l[[length(df_l)]] |>
         select(ID = GeoUID, geometry) |>
         st_intersection(df) |>
         filter(st_is(geometry, "POLYGON") | st_is(geometry, "MULTIPOLYGON")) |>
-        mutate(
-          int_area = units::drop_units(st_area(geometry)),
-          area_prop = int_area / units::drop_units(area),
-          .before = geometry
-        ) |>
-        mutate(across(any_of(var_count) | ends_with("_parent"), ~ {
-          .x * area_prop
-        })) |>
+        mutate(int_area = units::drop_units(st_area(geometry)),
+               area_prop = int_area / units::drop_units(area),
+               .before = geometry) |>
+        mutate(across(any_of(var_add) | ends_with("_parent"), 
+                      ~{.x * area_prop})) |>
         st_drop_geometry() |>
         group_by(ID)
 
-      left_join(
-        # For averaging variables
-        interpolated_ids |>
-          summarize(across(any_of(var_avg), ~ {
-            out <- weighted_mean(.x, get(paste0(cur_column(), "_parent")), na.rm = TRUE)
-            # Only keep output polygons with a majority non-NA inputs
-            na_pct <- sum(is.na(.x) * int_area)
-            if (na_pct >= 0.5 * sum(int_area)) out <- NA_real_
-            out
-          }), .groups = "drop"),
-        # For additive variables
-        interpolated_ids |>
-          summarize(across(any_of(var_count) | ends_with("_parent"), ~ {
-            out <- sum(.x * area_prop, na.rm = TRUE)
-            # Round to the nearest 5 to match non-interpolated census values
-            out <- round(out / 5) * 5
-            # Only keep output polygons with a majority non-NA inputs
-            na_pct <- sum(is.na(.x) * int_area)
-            if (na_pct >= 0.5 * sum(int_area)) out <- NA_real_
-            out
-          }), .groups = "drop"),
-        by = "ID"
-      )
+      # Interpolate additive variables
+      agg_add <- function(x, area_prop, int_area) {
+        out <- sum(x * {{ area_prop }}, na.rm = TRUE)
+        # Round to the nearest 5 to match non-interpolated census values
+        out <- round(out / 5) * 5
+        # Only keep output polygons with a majority non-NA inputs
+        na_pct <- sum(is.na(x) * {{ int_area }})
+        if (na_pct >= 0.5 * sum({{ int_area }})) out <- NA_real_
+        out
+      }
+      
+      # Interpolate average variables
+      agg_avg <- function(x, parent, int_area) {
+        out <- weighted_mean(x, {{ parent }}, na.rm = TRUE)
+        # Only keep output polygons with a majority non-NA inputs
+        na_pct <- sum(is.na(x) * {{ int_area }})
+        if (na_pct >= 0.5 * sum({{ int_area }})) out <- NA_real_
+        out
+      }
+      
+      interpolated_ids |>
+        summarize(across(any_of(var_add) | ends_with("_parent"), 
+                         agg_add, area_prop, int_area),
+                  across(any_of(var_avg), agg_avg, 
+                         as.name(paste0(cur_column(), "_parent")), int_area), 
+                  .groups = "drop") |> 
+        glimpse()
     })
   })
 }
@@ -308,7 +312,7 @@ interpolate <- function(df_list, scales, years, data_aggregation, census_vec) {
 
 # Swap CSD to borough -----------------------------------------------------
 
-swap_csd_to_borough <- function(df_list, years, var_count, var_avg) {
+swap_csd_to_borough <- function(df_list, years, var_add, var_avg) {
   if (!exists("borough")) {
     stop(paste0(
       "Dataframe `borough`, coming from `dev/build_data.R`, must be ",
@@ -339,7 +343,7 @@ swap_csd_to_borough <- function(df_list, years, var_count, var_avg) {
         area_prop = int_area / units::drop_units(area),
         .before = geometry
       ) |>
-      mutate(across(any_of(var_count) | ends_with("_parent"), ~ {
+      mutate(across(any_of(var_add) | ends_with("_parent"), ~ {
         .x * area_prop
       })) |>
       st_drop_geometry() |>
@@ -357,7 +361,7 @@ swap_csd_to_borough <- function(df_list, years, var_count, var_avg) {
         }), .groups = "drop"),
       # For additive variables
       interpolated_ids |>
-        summarize(across(any_of(var_count) | ends_with("_parent"), ~ {
+        summarize(across(any_of(var_add) | ends_with("_parent"), ~ {
           out <- sum(.x * area_prop, na.rm = TRUE)
           # Round to the nearest 5 to match non-interpolated census values
           out <- round(out / 5) * 5
@@ -396,7 +400,7 @@ swap_csd_to_borough <- function(df_list, years, var_count, var_avg) {
 
 # Interpolate to building, grid & street ----------------------------------
 
-interpolate_other_geoms <- function(to_interpolate, df_list, years, var_count, var_avg) {
+interpolate_other_geoms <- function(to_interpolate, df_list, years, var_add, var_avg) {
   new_geos <-
     map(set_names(to_interpolate), function(geo) {
       map(set_names(years), function(year) {
@@ -447,7 +451,7 @@ interpolate_other_geoms <- function(to_interpolate, df_list, years, var_count, v
               )
             }
           } |>
-          mutate(across(any_of(var_count) | ends_with("_parent"), ~ {
+          mutate(across(any_of(var_add) | ends_with("_parent"), ~ {
             .x * area_prop
           })) |>
           st_drop_geometry() |>
@@ -465,7 +469,7 @@ interpolate_other_geoms <- function(to_interpolate, df_list, years, var_count, v
             }), .groups = "drop"),
           # For additive variables
           interpolated_ids |>
-            summarize(across(any_of(var_count) | ends_with("_parent"), ~ {
+            summarize(across(any_of(var_add) | ends_with("_parent"), ~ {
               out <- sum(.x * area_prop, na.rm = TRUE)
               # Only keep output polygons with a majority non-NA inputs
               na_pct <- sum(is.na(.x) * int_area)
@@ -855,19 +859,18 @@ add_census_data <- function(census_vec, scales, years, parent_vectors = NULL,
   data_agg <- get_agg_type(census_vec, scales, years)
   
   # Interpolate
-  data_inter <- interpolate(data_raw, scales, years, 
-                            data_aggregation = data_agg,
+  data_inter <- interpolate(data_raw, scales, years, data_agg = data_agg,
                             census_vec = census_vec)
   ## Swap CSD to borough
   message("Swapping CSD to borough...")
-  data_swaped <- swap_csd_to_borough(data_inter, years, var_count, var_avg)
+  data_swaped <- swap_csd_to_borough(data_inter, years, var_add, var_avg)
   # From here, no CSD, but borough
   scales[scales == "CSD"] <- "borough"
   ## Interpolate to building, grid & street
   message("Interpolating other geometries (grid, ... ) ...")
   data_other_inter <- interpolate_other_geoms(c("grid"),
                                               data_swaped, years,
-                                              var_count, var_avg)
+                                              var_add, var_avg)
   ## Get units type
   message("Normalizing all data ...")
   data_unit <- get_unit_type(census_vec, scales, years)
