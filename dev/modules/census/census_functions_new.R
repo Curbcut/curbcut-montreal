@@ -44,7 +44,8 @@ get_census_vectors <- function(census_vec, geoms, scales, years,
       
       census_dataset <- paste0("CA", sub("20", "", year))
       
-      orig_vec_named <- 
+      # Get named versions of vectors
+      vec_named <- 
         census_vec |> 
         pull(all_of(paste0("vec_", year))) |> 
         set_names(census_vec$var_code) |> 
@@ -52,47 +53,47 @@ get_census_vectors <- function(census_vec, geoms, scales, years,
         na.omit()
       
       # Get original vectors
-      orig_vec_retrieved <- cancensus::get_census(
+      vec_retrieved <- cancensus::get_census(
         dataset = census_dataset,
         regions = list(CMA = CMA),
         level = scale,
-        vectors = orig_vec_named,
+        vectors = vec_named,
         geo_format = NA,
         quiet = TRUE) |> 
         select(GeoUID, starts_with(census_vec$var_code))
 
-      # Add up vectors that were retrieved through the same var_code.
-      # First, error if they aren't additive:
-      vectors_to_sum <- str_remove(names(original_vectors_named), "\\d*$") |> table()
-      vectors_to_sum <- names(vectors_to_sum[vectors_to_sum > 1])
-      vectors_to_sum <- original_vectors_named[str_detect(names(original_vectors_named), vectors_to_sum)]
-
-      aggregation_vectors_to_sum <-
+      
+      # Add up vectors that were retrieved through the same var_code
+      vec_to_sum <- 
+        vec_named |> 
+        names() |> 
+        str_remove("\\d*$") |> 
+        table()
+      
+      vec_to_sum <- names(vec_to_sum[vec_to_sum > 1])
+      vec_to_sum <- vec_named[str_detect(names(vec_named), vec_to_sum)]
+      
+      agg_vec_to_sum <-
         (cancensus::list_census_vectors(census_dataset) |>
-          filter(
-            vector %in% vectors_to_sum,
-            aggregation != "Additive"
-          ))$vector
+          filter(vector %in% vec_to_sum, aggregation != "Additive"))$vector
 
-      if (length(aggregation_vectors_to_sum) != 0) {
+      # Throw error if they aren't additive
+      if (length(agg_vec_to_sum) != 0) {
         stop(paste0(
-          "Vector `", aggregation_vectors_to_sum, "` isn't registered as ",
-          "Additive in cancensus. It shouldn't be registered in a list, at least with the ",
-          "way this function is designed at the moment. If multiple vectors are retrieved ",
-          "with the same var_code at the same year, they are sumed up."
-        ))
+          "Vector `", agg_vec_to_sum, "` contains multiple variables, but it ", 
+          "isn't registered as `additive` in cancensus."))
       }
-      options(dplyr.summarise.inform = FALSE)
-      # Second, sum them up.
-      original_vectors_retrieved <-
-        original_vectors_retrieved |>
+      
+      # Sum them up
+      vec_retrieved <-
+        vec_retrieved |>
         pivot_longer(-GeoUID) |>
-        mutate(name = ifelse(str_detect(name, "\\d$"), str_remove(name, "\\d*$"), name)) |>
+        mutate(name = ifelse(str_detect(name, "\\d$"), 
+                             str_remove(name, "\\d*$"), name)) |>
         group_by(GeoUID, name) |>
-        summarize(value = sum(value)) |>
+        summarize(value = sum(value), .groups = "drop") |>
         pivot_wider(GeoUID) |>
         ungroup()
-      options(dplyr.summarise.inform = TRUE)
 
       # Parent vectors must be "mapped", as they might not be unique census vectors.
       # Some vectors share the same denominators, yet we want them all to have their
