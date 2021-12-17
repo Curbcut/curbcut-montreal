@@ -60,40 +60,35 @@ get_unit_type <- function(census_vec, scales, years) {
 # Normalize percentage variables ------------------------------------------
 
 normalize <- function(df_list, census_vec, data_unit) {
-  if (!exists("data_unit")) {
-    stop(paste0(
-      "Dataframe `data_unit`, the output of the `get_unit_type` function ",
-      "doesn't exist. It is necessary to evaluate if variables are ",
-      "already treated as percentages by the census."
-    ))
-  }
+  
+  stopifnot(exists("data_unit"))
+  
   map(df_list, function(df_l) {
     map(df_l, function(df) {
-      map_dfc(names(df), ~ {
-        nominator <-
+      map_dfc(names(df), ~{
+        
+        numerator <-
           census_vec |>
-          filter(
-            var_code == .x,
-            str_detect(var_code, "_pct")
-          ) |>
+          filter(var_code == .x, str_detect(var_code, "_pct")) |>
           pull(var_code)
 
-        nominator <-
+        numerator <-
           data_unit |>
-          filter(var_code %in% nominator) |>
+          filter(var_code %in% numerator) |>
           mutate(out = set_names(var_code, units)) |>
           pull(out)
 
-        if (length(nominator) > 0 && !names(nominator) %in% c("Number", "Percentage")) {
+        if (length(numerator) > 0 && !names(numerator) %in% 
+            c("Number", "Percentage")) {
           stop(paste0(
-            "Nominator ", nominator, " isn't classified as 'Number' or ",
-            " as 'Percentage' by the census, but as '", names(nominator),
+            "numerator ", numerator, " isn't classified as 'Number' or ",
+            " as 'Percentage' by the census, but as '", names(numerator),
             "'. Should it really have the `_pct` suffix?"
           ))
         }
 
-        if (length(nominator) > 0 && !is.na(nominator)) {
-          if (names(nominator) == "Percentage") {
+        if (length(numerator) > 0 && !is.na(numerator)) {
+          if (names(numerator) == "Percentage") {
             # Some census variables are already percentages.
             df |>
               mutate(across(all_of(.x), ~ {
@@ -103,7 +98,7 @@ normalize <- function(df_list, census_vec, data_unit) {
           } else {
             # If the variable is classified as Number and has _pct suffix,
             # it must be normalized with its parent variable.
-            denom <- paste0(nominator, "_parent")
+            denom <- paste0(numerator, "_parent")
 
             df |>
               # Cap values at 1, under assumption they are all percentages
