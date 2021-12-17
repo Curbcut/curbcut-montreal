@@ -3,57 +3,59 @@
 # Retrieve units type -----------------------------------------------------
 
 get_unit_type <- function(census_vec, scales, years) {
+  
+  # Skip 2001 Census; some vectors have `number` units instead of `currency`
+  # cancensus::list_census_vectors("CA01") |>
+  #   filter(vector == "v_CA01_1674") |>
+  #   select(label, units)
   for_years <- map(rev(years)[!rev(years) == 2001], function(year) {
+    
     census_dataset <- paste0("CA", sub("20", "", year))
-    original_vectors_named <- set_names(
-      pull(census_vec, all_of(paste0("vec_", year))),
-      census_vec$var_code
-    ) |> unlist()
-    original_vectors_named <- original_vectors_named[!is.na(original_vectors_named)]
+    
+    # Get named versions of vectors
+    vec_named <- 
+      census_vec |> 
+      pull(all_of(paste0("vec_", year))) |> 
+      set_names(census_vec$var_code) |> 
+      unlist() |> 
+      na.omit()
 
     cancensus::list_census_vectors(census_dataset) |>
-      filter(vector %in% original_vectors_named) |>
-      arrange(match(vector, original_vectors_named)) |>
+      filter(vector %in% vec_named) |>
+      arrange(match(vector, vec_named)) |>
       mutate(units = str_extract(units, ".[^ ]*")) |>
-      mutate(var_code = names(original_vectors_named)) |>
+      mutate(var_code = names(vec_named)) |>
       select(var_code, units) |> 
       mutate(var_code = ifelse(str_detect(var_code, "\\d$"), 
                                str_remove(var_code, "\\d*$"), var_code)) |> 
       distinct()
   })
-  vars_units <-
-    reduce(for_years, left_join, by = "var_code") |>
+  
+  var_units <-
+    for_years |> 
+    reduce(left_join, by = "var_code") |>
     pivot_longer(!var_code) |>
     filter(!is.na(value)) |>
     group_by(var_code) |>
     summarize(units = list(value)) |>
     rowwise() |>
-    mutate(units = list(unique(units)))
+    mutate(units = list(unique(units))) |> 
+    ungroup()
 
-  if (all(lengths(pull(vars_units)) == 1)) {
-    vars_units <-
-      vars_units |>
+  if (all(lengths(pull(var_units)) == 1)) {
+    var_units <-
+      var_units |>
       unnest(units)
   } else {
-    non_unique_units_type <-
-      vars_units[(lengths(pull(vars_units)) > 1), ] |>
+    non_unique <-
+      var_units[(lengths(pull(var_units)) > 1), ] |>
       pull(var_code)
-    stop(paste0(
-      "Different `units` types detected for `",
-      non_unique_units_type, "`.\n"
-    ))
+    stop(paste0("Different `units` types detected for `", non_unique, "`.\n"))
   }
 
-  vars_units
+  var_units
 }
 
-# 2001 census have been taken out of the previous function, here is why:
-# cancensus::list_census_vectors("CA01") |>
-#   filter(vector == "v_CA01_1674") |>
-#   select(label, units)
-# It is labelled as "value ... %", like this variable in every census years. However,
-# it is noted as an "Number" units In the 5 other census, it is aggregated as
-# "Currency". This problem happened twice with housing variables.
 
 # Normalize percentage variables ------------------------------------------
 

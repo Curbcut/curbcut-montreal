@@ -60,9 +60,8 @@ get_agg_type <- function(df_list, census_vec, scales, years) {
       mutate(aggregation = str_extract(aggregation, ".[^ ]*")) |>
       mutate(var_code = names(vec_named)) |>
       select(var_code, aggregation) |>
-      mutate(var_code = if_else(str_detect(var_code, "\\d$"),
-        str_remove(var_code, "\\d*$"), var_code
-      )) |>
+      mutate(var_code = if_else(str_detect(var_code, "\\d$"), 
+                                str_remove(var_code, "\\d*$"), var_code)) |>
       distinct()
   })
 
