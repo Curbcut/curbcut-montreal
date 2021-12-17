@@ -25,7 +25,8 @@ add_census_data <- function(census_vec, scales, years, parent_vectors = NULL,
   }
   
   # Interpolate to building, grid & street
-  data_other_inter <- interpolate_other(data_inter, "grid", years, data_agg)
+  data_other_inter <- interpolate_other(data_inter, "grid", years, crs, 
+                                        data_agg)
   
   # Get units type
   message("Normalizing all data ...")

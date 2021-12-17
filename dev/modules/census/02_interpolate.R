@@ -303,7 +303,7 @@ swap_csd_to_borough <- function(df_list, years, crs = 32618, data_agg) {
 
 # Interpolate to grid -----------------------------------------------------
 
-interpolate_other <- function(df_list, targets, years, data_agg) {
+interpolate_other <- function(df_list, targets, years, crs = 32618, data_agg) {
   
   # Check if targets exist
   stopifnot(exists(targets))
@@ -322,7 +322,7 @@ interpolate_other <- function(df_list, targets, years, data_agg) {
           DA_n |>
           left_join(select(DA, ID), by = "ID") |>
           st_as_sf() |>
-          st_transform(32618) |>
+          st_transform(crs) |>
           mutate(area = st_area(geometry)) |>
           st_set_agr("constant") |>
           select(-ID)
@@ -345,42 +345,38 @@ interpolate_other <- function(df_list, targets, years, data_agg) {
         interpolated_ids <-
           get(geo) |>
           select(ID) |>
-          st_transform(32618) |>
+          st_transform(crs) |>
           st_set_agr("constant") |>
-          st_intersection(DA_n, .) %>%
-          {
-            if (geom_type == "polygon") {
-              mutate(.,
-                int_area = units::drop_units(st_area(geometry)),
-                area_prop = int_area / units::drop_units(area),
-                .before = geometry
-              )
-            } else {
-              mutate(.,
-                int_area = units::drop_units(st_length(geometry)),
-                area_prop = int_area / units::drop_units(area),
-                .before = geometry
-              )
-            }
-          } |>
-          mutate(across(any_of(data_agg$var_add) | ends_with("_parent"), ~ {
-            .x * area_prop
-          })) |>
+          st_intersection(DA_n)
+        
+        if (geom_type == "polygon") {
+          interpolated_ids <- 
+            interpolated_ids |> 
+              mutate(int_area = units::drop_units(st_area(geometry)),
+                     area_prop = int_area / units::drop_units(area),
+                     .before = geometry)
+        } else {
+          interpolated_ids <- 
+            interpolated_ids |> 
+            mutate(int_area = units::drop_units(st_length(geometry)),
+                   area_prop = int_area / units::drop_units(area),
+                   .before = geometry)
+        }
+        
+        interpolated_ids <- 
+          interpolated_ids |>
+          mutate(across(any_of(data_agg$var_add) | ends_with("_parent"), 
+                        ~{.x * area_prop})) |>
           st_drop_geometry() |>
           group_by(ID)
 
         interpolated_ids |>
           # agg_avg has to be calculated first, so parent vectors are untouched!
-          summarize(across(
-            any_of(data_agg$var_avg), agg_avg,
-            eval(parse(text = paste0(cur_column(), "_parent"))),
-            int_area
-          ),
-          across(any_of(data_agg$var_add), agg_add, area_prop, int_area,
-            other_geom = TRUE
-          ),
-          .groups = "drop"
-          )
+          summarize(across(any_of(data_agg$var_avg), agg_avg,
+                           eval(parse(text = paste0(cur_column(), "_parent"))),
+                           int_area),
+                    across(any_of(data_agg$var_add), agg_add, area_prop, 
+                           int_area, other_geom = TRUE), .groups = "drop")
       })
     })
 
