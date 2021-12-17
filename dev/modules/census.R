@@ -3,7 +3,7 @@
 # This script relies on objects created in dev/build_data.R
 
 
-# Global needed variables and functions -----------------------------------
+# Global variables and functions ------------------------------------------
 
 # Turn on progress bars
 progressr::handlers(global = TRUE)
@@ -35,6 +35,24 @@ source("dev/modules/census/census_employment.R")
 # source("dev/modules/census/census_language.R")
 # source("dev/modules/census/census_age.R")
 # source("dev/modules/census/census_education.R")
+
+
+# Clean up ----------------------------------------------------------------
+
+rm(scales, years, add_census_data, add_q3, add_q5, add_vars, add_years, agg_add,
+   agg_avg, drop_vars, find_breaks_q5, get_agg_type, get_breaks_q3, 
+   get_breaks_q5, get_categories_q5, get_census_vectors, get_empty_geometries,
+   get_unit_type, interpolate, interpolate_other, merge_breakas, normalize,
+   reduce_years, swap_csd_to_borough, weighted_mean)
+
+
+
+
+
+
+
+
+
 
 
 # Add variable explanations -----------------------------------------------

@@ -2,7 +2,8 @@
 
 # Add to variable table ---------------------------------------------------
 
-add_vars <- function(data_to_add, census_vec, breaks_q3, breaks_q5) {
+add_vars <- function(data_to_add, census_vec, breaks_q3, breaks_q5, scales,
+                     years) {
   
   # Get all variables at all scales
   all_vars <- unique(unlist(sapply(data_to_add, names)))
@@ -13,7 +14,7 @@ add_vars <- function(data_to_add, census_vec, breaks_q3, breaks_q5) {
   add_vars <- str_remove(add_vars, "_\\d{4}$")
   add_vars <- unique(add_vars)
   
-  map_dfr(add_vars, ~ {
+  map_dfr(add_vars, ~{
     
     # Get starting var table subset
     dat <- filter(census_vec, var_code == .x)
@@ -26,29 +27,25 @@ add_vars <- function(data_to_add, census_vec, breaks_q3, breaks_q5) {
     # Get scales
     scales_active <- c("borough", "building", "CT", "DA", "grid", "street")
     scales_active <- scales_active[map_lgl(scales_active, function(df) {
-      get(df) |>
-        st_drop_geometry() |>
-        select(starts_with(.x)) |>
-        length() |>
-        (\(x) x > 0)()
-    })]
+      if (!is.null(data_to_add[[df]])) {
+        data_to_add[[df]] |>
+          select(starts_with(.x)) |>
+          length() |>
+          (\(x) x > 0)()
+      } else FALSE})]
     
     # Get breaks_q3
     breaks_q3_active <- map2_dfr(breaks_q3, scales, function(x, scale) {
-      map2_dfr(x, dates, function(y, date) {
-        y |> mutate(rank = 0:3, date = date)
-      }) |>
-        mutate(scale = scale)
-    }) |>
+      map2_dfr(x, years, function(y, date) {
+        y |> mutate(rank = 0:3, date = date)}) |>
+        mutate(scale = scale)}) |>
       select(scale, date, rank, everything())
     
     # Get breaks_q5
     breaks_q5_active <- map2_dfr(breaks_q5, scales, function(x, scale) {
-      map2_dfr(x, dates, function(y, date) {
-        y |> mutate(rank = 0:5, date = date)
-      }) |>
-        mutate(scale = scale)
-    }) |>
+      map2_dfr(x, years, function(y, date) {
+        y |> mutate(rank = 0:5, date = date)}) |>
+        mutate(scale = scale)}) |>
       select(scale, date, rank, everything())
     
     tibble(

@@ -27,6 +27,7 @@ add_census_data <- function(census_vec, scales, years, parent_vectors = NULL,
   # Interpolate to building, grid & street
   data_other_inter <- interpolate_other(data_inter, "grid", years, crs, 
                                         data_agg)
+  scales <- c(scales, "grid")
   
   # Get units type
   data_unit <- get_unit_type(census_vec, scales, years)
@@ -52,7 +53,8 @@ add_census_data <- function(census_vec, scales, years, parent_vectors = NULL,
   data_out <- reduce_years(data_years)
   
   # Add to variable table
-  new_vars <- add_vars(data_out, census_vec, breaks_q3, breaks_q5)
+  new_vars <- add_vars(data_out, census_vec, breaks_q3, breaks_q5, scales,
+                       years)
   
   # Return output
   return(list(data_out, new_vars))
