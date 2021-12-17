@@ -20,7 +20,8 @@ years <- c(1996, 2001, 2006, 2011, 2016)
 source("dev/modules/census/01_download_prep.R")
 source("dev/modules/census/02_interpolate.R")
 source("dev/modules/census/03_process_and_breaks.R")
-source("dev/modules/census/04_add_census_data.R")
+source("dev/modules/census/04_add_variables.R")
+source("dev/modules/census/05_add_census_data.R")
 
 
 # Add census data by topic ------------------------------------------------

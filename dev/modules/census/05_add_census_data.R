@@ -49,5 +49,11 @@ add_census_data <- function(census_vec, scales, years, parent_vectors = NULL,
   data_years <- add_years(data_breaks, years)
   
   # Finalize output
-  reduce_years(data_years)
+  data_out <- reduce_years(data_years)
+  
+  # Add to variable table
+  new_vars <- add_vars(data_out, census_vec, breaks_q3, breaks_q5)
+  
+  # Return output
+  return(list(data_out, new_vars))
 }
