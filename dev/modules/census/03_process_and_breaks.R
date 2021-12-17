@@ -275,15 +275,13 @@ merge_breaks <- function(df_list, df_list_q3, df_list_q5) {
 add_years <- function(df_list, years) {
   map(df_list, function(df_l) {
     map2(df_l, years, function(df, year) {
-      rename_with(df, .fn = ~ paste0(.x, "_", year), .cols = -ID)
+      rename_with(df, .fn = ~paste0(.x, "_", year), .cols = -ID)
     })
   })
 }
 
 reduce_years <- function(df_list) {
-  map(df_list, function(df_l) {
-    reduce(df_l, full_join, by = "ID")
-  })
+  map(df_list, reduce, full_join, by = "ID")
 }
 
 
