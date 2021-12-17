@@ -19,11 +19,13 @@ add_census_data <- function(census_vec, scales, years, parent_vectors = NULL,
   data_inter <- interpolate(data_raw, scales, years, data_agg)
   
   # Swap CSD to borough
-  data_swapped <- swap_csd_to_borough(data_inter, years, crs, data_agg)
+  if (CMA == "24462") {
+  data_inter <- swap_csd_to_borough(data_inter, years, crs, data_agg)
   scales[scales == "CSD"] <- "borough"
+  }
   
   # Interpolate to building, grid & street
-  data_other_inter <- interpolate_other_geoms("grid", data_swapped, years, 
+  data_other_inter <- interpolate_other_geoms("grid", data_inter, years, 
                                               data_agg)
   
   # Get units type
