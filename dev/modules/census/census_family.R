@@ -8,38 +8,54 @@
 
 census_family <- tibble(
   var_code = character(),
-  vec_2016 = character(),
-  vec_2011 = character(),
-  vec_2006 = character(),
-  vec_2001 = character(),
-  vec_1996 = character(),
+  vec_2016 = list(),
+  vec_2011 = list(),
+  vec_2006 = list(),
+  vec_2001 = list(),
+  vec_1996 = list(),
   var_title = character(),
   var_short = character(),
   explanation = character(),
   category = character(),
   private = logical()
+)
+
+add_row_fam <- function(data, var_code, vec_2016, vec_2011, vec_2006, vec_2001,
+                        vec_1996, var_title, var_short, explanation, private) {
+  add_row(data,
+          var_code = var_code,
+          vec_2016 = list(vec_2016),
+          vec_2011 = list(vec_2011),
+          vec_2006 = list(vec_2006),
+          vec_2001 = list(vec_2001),
+          vec_1996 = list(vec_1996),
+          var_title = var_title,
+          var_short = var_short,
+          explanation = explanation,
+          private = private
   )
+}
     
 census_family <- 
   census_family |> 
-  add_row(
+  add_row_fam(
     var_code = "family_children_pct",
     vec_2016 = "v_CA16_507",
-    vec_2011 = NA,
-    vec_2006 = NA,
-    vec_2001 = NA,
+    vec_2011 = c("v_CA11F_129", "v_CA11F_119", "v_CA11F_125"),
+    vec_2006 = c("v_CA06_65", "v_CA06_59", "v_CA06_69"),
+    vec_2001 = c("v_CA01_63", "v_CA01_57", "v_CA01_67"),
     vec_1996 = NA,
     var_title = "Families with children (%)",
     var_short = "TKTK",
     explanation = "the percentage of census families with children out of total households",
     private = FALSE) |> 
-  add_row(
+  add_row_fam(
     var_code = "family_one_person_pct",
     vec_2016 = "v_CA16_510",
-    vec_2011 = NA,
-    vec_2006 = NA,
-    vec_2001 = NA,
-    vec_1996 = NA,
+    vec_2011 = "v_CA11F_157",
+    vec_2006 = "v_CA06_89",
+    vec_2001 = "v_CA01_87",
+    vec_1996 = "v_CA1996_98",
     var_title = "One person households (%)",
     var_short = "TKTK",
     explanation = "the percentage of one person households out of total households",
@@ -49,7 +65,10 @@ census_family <-
 # Gather data -------------------------------------------------------------
 
 data_to_add <- 
-  add_census_data(census_family, scales, years)
+  add_census_data(census_family, scales, years, parent_vectors = 
+                    c("family_children_pct" = "v_CA11F_115",
+                      "family_children_pct" = "v_CA06_55",
+                      "family_children_pct" = "v_CA01_53"))
 
 
 # Assign data -------------------------------------------------------------
