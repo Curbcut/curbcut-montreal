@@ -29,14 +29,12 @@ add_census_data <- function(census_vec, scales, years, parent_vectors = NULL,
                                         data_agg)
   
   # Get units type
-  message("Normalizing all data ...")
   data_unit <- get_unit_type(census_vec, scales, years)
   
   # Normalize pct variables
   data_norm <- normalize(data_other_inter, census_vec, data_unit)
   
   # Drop variables which aren't included in final tables
-  message("Other manipulations (dropping variables, q3, q5, ...) ...")
   data_final <- drop_vars(data_norm, census_vec)
   
   # Add q3 and q5 versions
@@ -51,6 +49,5 @@ add_census_data <- function(census_vec, scales, years, parent_vectors = NULL,
   data_years <- add_years(data_breaks, years)
   
   # Finalize output
-  message("Reducing ...")
   reduce_years(data_years)
 }
