@@ -36,11 +36,6 @@ add_row_trans <- function(data, var_code, vec_2016, vec_2011, vec_2006, vec_2001
   )
 }
 
-cancensus::list_census_vectors("CA16") |>
-# filter(str_detect(label, "Walk|Bike"))
-  filter(vector %in% c("v_CA16_5813"))
-  # filter(parent_vector == "v_CA1996_1324")
-
 census_transport <-
   census_transport |>
   add_row_trans(

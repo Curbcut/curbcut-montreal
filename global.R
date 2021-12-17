@@ -185,13 +185,13 @@ make_dropdown <-
     }
     
     c("----" = " ",
-      map(set_names(unique(census_var$category)), function(cat) {
+      purrr::map(set_names(unique(census_var$category)), function(cat) {
         category_vectors <- 
           census_var |> 
           filter(category == cat) |> 
           select(var_code, var_name)
         
-        map(category_vectors$var_name, function(name) {
+        purrr::map(category_vectors$var_name, function(name) {
           category_vectors[category_vectors$var_name == name, ]$var_code
         }) |> set_names(category_vectors$var_name)
       })
