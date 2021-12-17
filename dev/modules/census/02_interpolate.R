@@ -287,16 +287,9 @@ swap_csd_to_borough <- function(df_list, years, crs = 32618, data_agg) {
 
   borough_data <- map(set_names(years), function(year) {
     # Get geometry and areas of interpolated DAs.
-    CSD_n <-
-      df_list$CSD[[as.character(year)]]
-
-    borough_n <-
-      borough_data[[as.character(year)]]
-
-    bind_rows(
-      filter(CSD_n, !str_starts(ID, "2466023")),
-      borough_n
-    )
+    CSD_n <- df_list$CSD[[as.character(year)]]
+    borough_n <- borough_data[[as.character(year)]]
+    bind_rows(filter(CSD_n, !str_starts(ID, "2466023")), borough_n)
   })
 
   df_list$CSD <- borough_data
@@ -310,17 +303,16 @@ swap_csd_to_borough <- function(df_list, years, crs = 32618, data_agg) {
 
 # Interpolate to grid -----------------------------------------------------
 
-interpolate_other_geoms <- function(to_interpolate, df_list, years, data_agg) {
-  if (!exists(to_interpolate)) {
-    stop(paste0(
-      "`", to_interpolate, "` must be in the global environment."
-    ))
-  }
+interpolate_other <- function(df_list, targets, years, data_agg) {
+  
+  # Check if targets exist
+  stopifnot(exists(targets))
 
-  pb <- progressr::progressor(steps = sum(sapply(df_list$DA, nrow)) * length(to_interpolate))
+  pb <- progressr::progressor(steps = sum(sapply(df_list$DA, nrow)) * 
+                                length(targets))
 
   new_geos <-
-    map(set_names(to_interpolate), function(geo) {
+    map(set_names(targets), function(geo) {
       map(set_names(years), function(year) {
         DA_n <- df_list$DA[[as.character(year)]]
         pb(amount = nrow(DA_n))

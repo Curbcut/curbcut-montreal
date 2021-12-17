@@ -20,13 +20,12 @@ add_census_data <- function(census_vec, scales, years, parent_vectors = NULL,
   
   # Swap CSD to borough
   if (CMA == "24462") {
-  data_inter <- swap_csd_to_borough(data_inter, years, crs, data_agg)
-  scales[scales == "CSD"] <- "borough"
+    data_inter <- swap_csd_to_borough(data_inter, years, crs, data_agg)
+    scales[scales == "CSD"] <- "borough"
   }
   
   # Interpolate to building, grid & street
-  data_other_inter <- interpolate_other_geoms("grid", data_inter, years, 
-                                              data_agg)
+  data_other_inter <- interpolate_other(data_inter, "grid", years, data_agg)
   
   # Get units type
   message("Normalizing all data ...")
