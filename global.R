@@ -176,7 +176,8 @@ make_dropdown <-
                                   category == "lang" ~ "Language",
                                   category == "age" ~ "Age",
                                   category == "edu" ~ "Education"
-      ))
+      )) |> 
+      filter(category != "Employment")
     
     if (!is.null(exclude)) {
       census_var <- 
