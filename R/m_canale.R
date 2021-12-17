@@ -27,6 +27,7 @@ canale_UI <- function(id) {
 canale_server <- function(id) {
   moduleServer(id, function(input, output, session) {
     
+    
     # Sidebar
     sidebar_server("sidebar", "canale", 
                    reactive(paste0("left_", zoom(), "_", canale_ind)))
@@ -53,12 +54,15 @@ canale_server <- function(id) {
     })
     zoom <- zoom_server("zoom", zoom = zoom_val, zoom_levels = canale_zoom)
     
+    # Time
+    time <- reactive({"2016"})
+    
     # Left variable
     var_left <- reactive(canale_ind)
     
     # Compare panel
     var_right <- compare_server(id = "canale", var_list = make_dropdown(),
-                                df = zoom)
+                                df = zoom, time = time)
 
     # Data
     data <- data_server(id = "canale", var_left = var_left,
