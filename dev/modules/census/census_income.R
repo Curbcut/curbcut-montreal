@@ -110,26 +110,26 @@ data_to_add <- add_census_data(census_income, scales, years)
 
 borough <-
   borough |>
-  left_join(data_to_add$borough, by = "ID") |>
+  left_join(data_to_add[[1]]$borough, by = "ID") |>
   relocate(geometry, .after = last_col())
 
 CT <-
   CT |>
-  left_join(data_to_add$CT, by = "ID") |>
+  left_join(data_to_add[[1]]$CT, by = "ID") |>
   relocate(geometry, .after = last_col())
 
 DA <-
   DA |>
-  left_join(data_to_add$DA, by = "ID") |>
+  left_join(data_to_add[[1]]$DA, by = "ID") |>
   relocate(centroid, buffer, geometry, .after = last_col())
 
 grid <-
   grid |>
-  left_join(data_to_add$grid, by = "ID") |>
+  left_join(data_to_add[[1]]$grid, by = "ID") |>
   relocate(geometry, .after = last_col())
 
 
 # Add to variables table --------------------------------------------------
 
-new_vars <- add_vars(data_to_add, census_income, breaks_q3, breaks_q5)
-variables <- bind_rows(variables, new_vars)
+variables <- bind_rows(variables, data_to_add[[2]])
+rm(census_income)
