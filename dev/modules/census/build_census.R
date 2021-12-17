@@ -8,6 +8,10 @@
 # Turn on progress bars
 progressr::handlers(global = TRUE)
 
+# Turn on parallel processing
+library(future)
+plan(multisession)
+
 # Lists of scales and years
 scales <- c("CSD", "CT", "DA")
 years <- c(1996, 2001, 2006, 2011, 2016)
