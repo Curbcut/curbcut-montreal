@@ -99,7 +99,8 @@ get_census_vectors <- function(census_vec, geoms, scales, years,
       
       # Replace here the parent_vec with the parent_vectors
       parent_vec <- map(names(parent_vec), ~{
-        parent_vectors <- str_subset(parent_vectors, census_dataset)
+        parent_vectors_which <- str_which(parent_vectors, census_dataset)
+        parent_vectors <- parent_vectors[parent_vectors_which]
         if (.x %in% paste0(names(parent_vectors), "_parent")) {
           names(parent_vectors) <- paste0(names(parent_vectors), "_parent")
           parent_vectors[names(parent_vectors) == 
