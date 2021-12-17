@@ -75,15 +75,17 @@ get_census_vectors <- function(census_vec, geoms, scales, years,
       }
       
       # Sum them up
-      vec_retrieved <-
-        vec_retrieved |>
-        pivot_longer(-GeoUID) |>
-        mutate(name = ifelse(str_detect(name, "\\d$"), 
-                             str_remove(name, "\\d*$"), name)) |>
-        group_by(GeoUID, name) |>
-        summarize(value = sum(value), .groups = "drop") |>
-        pivot_wider(GeoUID) |>
-        ungroup()
+      if (ncol(vec_retrieved) > 1) {
+        vec_retrieved <-
+          vec_retrieved |>
+          pivot_longer(-GeoUID) |>
+          mutate(name = ifelse(str_detect(name, "\\d$"), 
+                               str_remove(name, "\\d*$"), name)) |>
+          group_by(GeoUID, name) |>
+          summarize(value = sum(value), .groups = "drop") |>
+          pivot_wider(GeoUID) |>
+          ungroup()
+      }
 
       # Some vectors share denominators, so use map to get them multiple times
       parent_vec <-
@@ -94,9 +96,14 @@ get_census_vectors <- function(census_vec, geoms, scales, years,
         mutate(parent_vector = if_else(is.na(parent_vector), 
                                        str_extract(aggregation, "v_.*$"),
                                        parent_vector)) |>
-        pull(parent_vector) |> 
-        set_names(paste0(str_remove(names(vec_named), "\\d*$"), "_parent"))
+        pull(parent_vector)
       
+      if (length(parent_vec) > 0) {
+        parent_vec <- 
+          parent_vec |> 
+          set_names(paste0(str_remove(names(vec_named), "\\d*$"), "_parent"))
+      }
+
       # Replace here the parent_vec with the parent_vectors
       parent_vec <- map(names(parent_vec), ~{
         parent_vectors_which <- str_which(parent_vectors, census_dataset)
@@ -155,9 +162,14 @@ get_census_vectors <- function(census_vec, geoms, scales, years,
       })
       
       # Join the dfs
+      if (length(parent_vec_values) > 0) {
+        vec_retrieved <- 
+          vec_retrieved |> 
+          left_join(reduce(parent_vec_values, left_join, by = "GeoUID"),
+                    by = "GeoUID")
+      }
+      
       vec_retrieved |> 
-        left_join(reduce(parent_vec_values, left_join, by = "GeoUID"),
-                  by = "GeoUID") |>
         right_join(df, by = "GeoUID") |>
         st_as_sf() |>
         st_set_agr("constant")

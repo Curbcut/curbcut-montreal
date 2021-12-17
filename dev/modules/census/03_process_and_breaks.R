@@ -28,6 +28,7 @@ get_unit_type <- function(census_vec, scales, years) {
       select(var_code, units) |> 
       mutate(var_code = ifelse(str_detect(var_code, "\\d$"), 
                                str_remove(var_code, "\\d*$"), var_code)) |> 
+      mutate(across(everything(), as.character)) |> 
       distinct()
   })
   
