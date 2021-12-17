@@ -101,10 +101,9 @@ get_census_vectors <- function(census_vec, geoms, scales, years,
       parent_vec <- map(names(parent_vec), ~{
         parent_vectors_which <- str_which(parent_vectors, census_dataset)
         parent_vectors <- parent_vectors[parent_vectors_which]
-        if (.x %in% paste0(names(parent_vectors), "_parent")) {
+        if ("trans_walk_or_bike_pct_parent" %in% paste0(names(parent_vectors), "_parent")) {
           names(parent_vectors) <- paste0(names(parent_vectors), "_parent")
-          parent_vectors[names(parent_vectors) == 
-                                  .x[.x == names(parent_vectors)]]
+          parent_vectors[.x == names(parent_vectors)]
         } else set_names(parent_vec[.x], .x)
       }) |> unlist()
       
