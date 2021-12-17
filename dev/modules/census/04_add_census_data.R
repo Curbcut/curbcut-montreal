@@ -16,16 +16,15 @@ add_census_data <- function(census_vec, scales, years, parent_vectors = NULL,
   data_agg <- get_agg_type(census_vec, scales, years)
   
   # Interpolate
-  data_inter <- interpolate(data_raw, scales, years, data_agg = data_agg,
-                            census_vec = census_vec)
+  data_inter <- interpolate(data_raw, scales, years, data_agg)
   
   # Swap CSD to borough
-  data_swapped <- swap_csd_to_borough(data_inter, years, crs)
+  data_swapped <- swap_csd_to_borough(data_inter, years, crs, data_agg)
   scales[scales == "CSD"] <- "borough"
   
   # Interpolate to building, grid & street
   data_other_inter <- interpolate_other_geoms("grid", data_swapped, years, 
-                                              var_add, var_avg)
+                                              data_agg)
   
   # Get units type
   message("Normalizing all data ...")

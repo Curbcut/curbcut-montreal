@@ -14,10 +14,11 @@ weighted_mean <- function(x, w, ..., na.rm = FALSE) {
 }
 
 # Interpolate additive variables
-agg_add <- function(x, area_prop, int_area) {
+agg_add <- function(x, area_prop, int_area, other_geom = FALSE) {
   out <- sum(x * {{ area_prop }}, na.rm = TRUE)
-  # Round to the nearest 5 to match non-interpolated census values
-  out <- round(out / 5) * 5
+  # Round to the nearest 5 to match non-interpolated census values, except
+  # for geoms out of CSD/borough, CT and DA
+  out <- if (!other_geom) round(out / 5) * 5 else out
   # Only keep output polygons with a majority non-NA inputs
   na_pct <- sum(is.na(x) * {{ int_area }})
   if (na_pct >= 0.5 * sum({{ int_area }})) out <- NA_real_
@@ -87,17 +88,9 @@ get_agg_type <- function(census_vec, scales, years) {
       stop()
   }
 
-  vars_agg
-}
-
-
-# Interpolate -------------------------------------------------------------
-
-interpolate <- function(df_list, scales, years, data_agg, census_vec) {
-
   # Get variables to be added
   var_add <-
-    data_agg |>
+    vars_agg |>
     filter(aggregation == "Additive") |>
     pull(var_code) |>
     c(df_list |>
@@ -108,9 +101,17 @@ interpolate <- function(df_list, scales, years, data_agg, census_vec) {
 
   # Get variables to be averaged
   var_avg <-
-    data_agg |>
+    vars_agg |>
     filter(aggregation %in% c("Average", "Median")) |>
     pull(var_code)
+
+  list(var_add = var_add, var_avg = var_avg)
+}
+
+
+# Interpolate -------------------------------------------------------------
+
+interpolate <- function(df_list, scales, years, data_agg) {
 
   # Get progress bar
   pb <- progressr::progressor(steps = sum(sapply(df_list, sapply, nrow)))
@@ -142,7 +143,7 @@ interpolate <- function(df_list, scales, years, data_agg, census_vec) {
           .before = geometry
         ) |>
         mutate(across(
-          any_of(var_add) | ends_with("_parent"),
+          any_of(data_agg$var_add) | ends_with("_parent"),
           ~ {
             .x * area_prop
           }
@@ -153,11 +154,11 @@ interpolate <- function(df_list, scales, years, data_agg, census_vec) {
       interpolated_ids |>
         # agg_avg has to be calculated first, so parent vectors are untouched!
         summarize(across(
-          any_of(var_avg), agg_avg,
+          any_of(data_agg$var_avg), agg_avg,
           eval(parse(text = paste0(cur_column(), "_parent"))),
           int_area
         ),
-        across(any_of(var_add), agg_add, area_prop, int_area),
+        across(any_of(data_agg$var_add), agg_add, area_prop, int_area),
         .groups = "drop"
         )
     }, .options = furrr::furrr_options(seed = TRUE))
@@ -167,36 +168,18 @@ interpolate <- function(df_list, scales, years, data_agg, census_vec) {
 
 # Swap CSD to borough -----------------------------------------------------
 
-swap_csd_to_borough <- function(df_list, years, crs = 32618) {
-  
+swap_csd_to_borough <- function(df_list, years, crs = 32618, data_agg) {
+
   # Only proceed if `borough` exists
   if (!exists("borough")) stop("`borough` must be in the global environment.")
-  
-  # Get variables to be added
-  var_add <-
-    data_agg |>
-    filter(aggregation == "Additive") |>
-    pull(var_code) |>
-    c(df_list |>
-        sapply(sapply, names) |>
-        unlist() |>
-        unique() |>
-        str_subset("_parent"))
-  
-  # Get variables to be averaged
-  var_avg <-
-    data_agg |>
-    filter(aggregation %in% c("Average", "Median")) |>
-    pull(var_code)
-  
+
   # Initialize progress bar
   pb <- progressr::progressor(steps = sum(sapply(df_list$DA, nrow)))
 
   borough_data <- map(set_names(years), function(year) {
-    
     DA_n <- df_list$DA[[as.character(year)]]
     pb(amount = nrow(DA_n))
-    
+
     # Get geometry and areas of already-interpolated DAs.
     DA_n <-
       DA_n |>
@@ -210,7 +193,7 @@ swap_csd_to_borough <- function(df_list, years, crs = 32618) {
     DA_na_columns <-
       DA_n |>
       st_drop_geometry() |>
-      select(where(~all(is.na(.)))) |> 
+      select(where(~ all(is.na(.)))) |>
       colnames()
 
     DA_na_columns <- if (length(DA_na_columns) != 0) {
@@ -229,21 +212,28 @@ swap_csd_to_borough <- function(df_list, years, crs = 32618) {
       st_set_agr("constant") |>
       st_intersection(DA_n, .) |>
       filter(st_is(geometry, "POLYGON") | st_is(geometry, "MULTIPOLYGON")) |>
-      mutate(int_area = units::drop_units(st_area(geometry)),
-             area_prop = int_area / units::drop_units(area),
-             .before = geometry) |>
-      mutate(across(any_of(var_add), ~{.x * area_prop})) |>
+      mutate(
+        int_area = units::drop_units(st_area(geometry)),
+        area_prop = int_area / units::drop_units(area),
+        .before = geometry
+      ) |>
+      mutate(across(any_of(data_agg$var_add), ~ {
+        .x * area_prop
+      })) |>
       st_drop_geometry() |>
       group_by(ID)
 
     DA_out <-
       interpolated_ids |>
       # agg_avg has to be calculated first, so parent vectors are untouched!
-      summarize(across(any_of(var_avg), agg_avg,
-                       eval(parse(text = paste0(cur_column(), "_parent"))),
-                       int_area),
-                across(any_of(var_add), agg_add, area_prop, int_area),
-                .groups = "drop") |>
+      summarize(across(
+        any_of(data_agg$var_avg), agg_avg,
+        eval(parse(text = paste0(cur_column(), "_parent"))),
+        int_area
+      ),
+      across(any_of(data_agg$var_add), agg_add, area_prop, int_area),
+      .groups = "drop"
+      ) |>
       filter(str_starts(ID, "2466023"))
 
     if (length(DA_na_columns) > 0) {
@@ -265,35 +255,43 @@ swap_csd_to_borough <- function(df_list, years, crs = 32618) {
         st_set_agr("constant") |>
         st_intersection(CT_n, .) |>
         filter(st_is(geometry, "POLYGON") | st_is(geometry, "MULTIPOLYGON")) |>
-        mutate(int_area = units::drop_units(st_area(geometry)),
-               area_prop = int_area / units::drop_units(area),
-               .before = geometry) |>
-        mutate(across(any_of(var_add), ~{.x * area_prop})) |>
+        mutate(
+          int_area = units::drop_units(st_area(geometry)),
+          area_prop = int_area / units::drop_units(area),
+          .before = geometry
+        ) |>
+        mutate(across(any_of(data_agg$var_add), ~ {
+          .x * area_prop
+        })) |>
         st_drop_geometry() |>
         group_by(ID)
 
       CT_out <-
         interpolated_ids |>
         # agg_avg has to be calculated first, so parent vectors are untouched!
-        summarize(across(any_of(var_avg), agg_avg,
-                         eval(parse(text = paste0(cur_column(), "_parent"))),
-                         int_area),
-                  across(any_of(var_add), agg_add, area_prop, int_area),
-                  .groups = "drop") |>
+        summarize(across(
+          any_of(data_agg$var_avg), agg_avg,
+          eval(parse(text = paste0(cur_column(), "_parent"))),
+          int_area
+        ),
+        across(any_of(data_agg$var_add), agg_add, area_prop, int_area),
+        .groups = "drop"
+        ) |>
         filter(str_starts(ID, "2466023"))
 
       left_join(DA_out, CT_out, by = "ID")
-      
-    } else DA_out
+    } else {
+      DA_out
+    }
   })
 
   borough_data <- map(set_names(years), function(year) {
     # Get geometry and areas of interpolated DAs.
     CSD_n <-
-      eval(parse(text = (paste0("df_list$CSD$`", year, "`"))))
+      df_list$CSD[[as.character(year)]]
 
     borough_n <-
-      eval(parse(text = (paste0("borough_data$`", year, "`"))))
+      borough_data[[as.character(year)]]
 
     bind_rows(
       filter(CSD_n, !str_starts(ID, "2466023")),
@@ -312,14 +310,24 @@ swap_csd_to_borough <- function(df_list, years, crs = 32618) {
 
 # Interpolate to grid -----------------------------------------------------
 
-interpolate_other_geoms <- function(to_interpolate, df_list, years, var_add, var_avg) {
+interpolate_other_geoms <- function(to_interpolate, df_list, years, data_agg) {
+  if (!exists(to_interpolate)) {
+    stop(paste0(
+      "`", to_interpolate, "` must be in the global environment."
+    ))
+  }
+
+  pb <- progressr::progressor(steps = sum(sapply(df_list$DA, nrow)) * length(to_interpolate))
+
   new_geos <-
     map(set_names(to_interpolate), function(geo) {
       map(set_names(years), function(year) {
+        DA_n <- df_list$DA[[as.character(year)]]
+        pb(amount = nrow(DA_n))
 
         # Get geometry and areas of already-interpolated DAs.
         DA_n <-
-          eval(parse(text = (paste0("df_list$DA$`", year, "`")))) |>
+          DA_n |>
           left_join(select(DA, ID), by = "ID") |>
           st_as_sf() |>
           st_transform(32618) |>
@@ -363,33 +371,24 @@ interpolate_other_geoms <- function(to_interpolate, df_list, years, var_add, var
               )
             }
           } |>
-          mutate(across(any_of(var_add) | ends_with("_parent"), ~ {
+          mutate(across(any_of(data_agg$var_add) | ends_with("_parent"), ~ {
             .x * area_prop
           })) |>
           st_drop_geometry() |>
           group_by(ID)
 
-        left_join(
-          # For averaging variables
-          interpolated_ids |>
-            summarize(across(any_of(var_avg), ~ {
-              out <- weighted_mean(.x, get(paste0(cur_column(), "_parent")), na.rm = T)
-              # Only keep output polygons with a majority non-NA inputs
-              na_pct <- sum(is.na(.x) * int_area)
-              if (na_pct >= 0.5 * sum(int_area)) out <- NA_real_
-              out
-            }), .groups = "drop"),
-          # For additive variables
-          interpolated_ids |>
-            summarize(across(any_of(var_add) | ends_with("_parent"), ~ {
-              out <- sum(.x * area_prop, na.rm = TRUE)
-              # Only keep output polygons with a majority non-NA inputs
-              na_pct <- sum(is.na(.x) * int_area)
-              if (na_pct >= 0.5 * sum(int_area)) out <- NA_real_
-              out
-            }), .groups = "drop"),
-          by = "ID"
-        )
+        interpolated_ids |>
+          # agg_avg has to be calculated first, so parent vectors are untouched!
+          summarize(across(
+            any_of(data_agg$var_avg), agg_avg,
+            eval(parse(text = paste0(cur_column(), "_parent"))),
+            int_area
+          ),
+          across(any_of(data_agg$var_add), agg_add, area_prop, int_area,
+            other_geom = TRUE
+          ),
+          .groups = "drop"
+          )
       })
     })
 
