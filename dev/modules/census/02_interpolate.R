@@ -37,7 +37,7 @@ agg_avg <- function(x, parent, int_area) {
 
 # Retrieve aggregation type -----------------------------------------------
 
-get_agg_type <- function(census_vec, scales, years) {
+get_agg_type <- function(df_list, census_vec, scales, years) {
 
   # Skip 2001 Census; vectors are labelled average but aggregated as additive
   # cancensus::list_census_vectors("CA01") |>

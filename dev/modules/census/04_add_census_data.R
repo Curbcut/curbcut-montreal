@@ -13,7 +13,7 @@ add_census_data <- function(census_vec, scales, years, parent_vectors = NULL,
                                  parent_vectors, CMA)
   
   # Get aggregation type
-  data_agg <- get_agg_type(census_vec, scales, years)
+  data_agg <- get_agg_type(data_raw, census_vec, scales, years)
   
   # Interpolate
   data_inter <- interpolate(data_raw, scales, years, data_agg)
