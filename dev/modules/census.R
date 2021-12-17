@@ -1,6 +1,6 @@
 #### Census data setup #########################################################
 
-# This script relies on objects created in dev/build_geometries.R
+# This script relies on objects created in dev/build_data.R
 
 
 # Global needed variables and functions -----------------------------------
