@@ -97,6 +97,16 @@ get_census_vectors <- function(census_vec, geoms, scales, years,
         pull(parent_vector) |> 
         set_names(paste0(str_remove(names(vec_named), "\\d*$"), "_parent"))
       
+      # Replace here the parent_vec with the parent_vectors
+      parent_vec <- map(names(parent_vec), ~{
+        parent_vectors <- str_subset(parent_vectors, census_dataset)
+        if (.x %in% paste0(names(parent_vectors), "_parent")) {
+          names(parent_vectors) <- paste0(names(parent_vectors), "_parent")
+          parent_vectors[names(parent_vectors) == 
+                                  .x[.x == names(parent_vectors)]]
+        } else set_names(parent_vec[.x], .x)
+      }) |> unlist()
+      
       # Parents should be retrieved only once
       parent_vec <-
         parent_vec |> 
@@ -125,12 +135,7 @@ get_census_vectors <- function(census_vec, geoms, scales, years,
       # Retrieve the values of all parent vectors
       parent_vec_values <- map(names(parent_vec), ~{
         
-        # In cases of errors in cancensus, use parent_vectors
-        if (.x %in% paste0(names(parent_vectors), "_parent")) {
-          names(parent_vectors) <- paste0(names(parent_vectors), "_parent")
-          vec <- parent_vectors[names(parent_vectors) == 
-                                  .x[.x == names(parent_vectors)]]
-        } else vec <- set_names(parent_vec[.x], .x)
+        vec <- set_names(parent_vec[.x], .x)
         
         retrieved_parent <- cancensus::get_census(
           dataset = census_dataset,
