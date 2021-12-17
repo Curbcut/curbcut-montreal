@@ -261,8 +261,9 @@ add_q5 <- function(df_list, breaks_list) {
 merge_breaks <- function(df_list, df_list_q3, df_list_q5) {
   pmap(list(df_list, df_list_q3, df_list_q5), function(df_l, df_l_q3, df_l_q5) {
     pmap(list(df_l, df_l_q3, df_l_q5), function(df, df_q3, df_q5) {
-      full_join(df, df_q3, by = names(df)) |>
-        bind_cols(df_q5)
+      out <- full_join(df, df_q3, by = names(df))
+      if (nrow(df_q5) > 0) out <- bind_cols(out, df_q5)
+      out
     })
   })
 }
