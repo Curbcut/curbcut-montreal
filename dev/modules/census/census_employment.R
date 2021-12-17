@@ -32,8 +32,7 @@ add_row_emp <- function(data, var_code, vec_2016, vec_2011, vec_2006, vec_2001,
           var_title = var_title,
           var_short = var_short,
           explanation = explanation,
-          private = private
-  )
+          private = private)
 }
 
 census_employment <-
@@ -46,7 +45,7 @@ census_employment <-
     vec_2001 = c("v_CA01_1181", "v_CA01_1182"),
     vec_1996 = NA,
     var_title = "Managerial and professional occupations (%)",
-    var_short = "TKTK",
+    var_short = "Professional",
     explanation = paste0("the percentage of the workforce in professional and ",
                          "managerial occupations, based on the North American ",
                          "Industry Classification System"),
@@ -60,10 +59,10 @@ census_employment <-
     vec_2001 = c("v_CA01_1178", "v_CA01_1186"),
     vec_1996 = NA,
     var_title = "Creative occupations (%)",
-    var_short = "TKTK",
-    explanation = paste0("the percentage of the workforce in artistic and cultural ",
-                         "occupations, based on the North American Industry ",
-                         "Classification System"),
+    var_short = "Creative",
+    explanation = paste0("the percentage of the workforce in artistic and ",
+                         "cultural occupations, based on the North American ",
+                         "Industry Classification System"),
     private = FALSE)
 
 
@@ -76,26 +75,26 @@ data_to_add <- add_census_data(census_employment, scales, years)
 
 borough <-
   borough |>
-  left_join(data_to_add$borough, by = "ID") |>
+  left_join(data_to_add[[1]]$borough, by = "ID") |>
   relocate(geometry, .after = last_col())
 
 CT <-
   CT |>
-  left_join(data_to_add$CT, by = "ID") |>
+  left_join(data_to_add[[1]]$CT, by = "ID") |>
   relocate(geometry, .after = last_col())
 
 DA <-
   DA |>
-  left_join(data_to_add$DA, by = "ID") |>
+  left_join(data_to_add[[1]]$DA, by = "ID") |>
   relocate(centroid, buffer, geometry, .after = last_col())
 
 grid <-
   grid |>
-  left_join(data_to_add$grid, by = "ID") |>
+  left_join(data_to_add[[1]]$grid, by = "ID") |>
   relocate(geometry, .after = last_col())
 
 
 # Add to variables table --------------------------------------------------
 
-new_vars <- add_vars(data_to_add, census_employment, breaks_q3, breaks_q5)
-variables <- bind_rows(variables, new_vars)
+variables <- bind_rows(variables, data_to_add[[2]])
+rm(census_employment)

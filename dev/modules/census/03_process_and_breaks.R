@@ -161,9 +161,7 @@ get_breaks_q3 <- function(df_list, census_vec) {
                 min(v, na.rm = TRUE),
                 min(v[q3 == 2], na.rm = TRUE),
                 min(v[q3 == 3], na.rm = TRUE),
-                max(v, na.rm = TRUE)
-              )
-            ) |>
+                max(v, na.rm = TRUE))) |>
             set_names(.x)
         }
       })

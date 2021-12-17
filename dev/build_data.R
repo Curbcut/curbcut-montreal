@@ -72,7 +72,6 @@ stopifnot(
 
 # Build variable table ----------------------------------------------------
 
-# Eventually...
 variables <-
   tibble(
     var_code = character(),
@@ -87,14 +86,10 @@ variables <-
     breaks_q5 = list()
   )
 
-# But for now:
-var_exp <- tibble(var_code = character(), var_name = character(),
-                  explanation = character())
-
 
 # Add topic variables (modules) -------------------------------------------
 
-source("dev/modules/census/build_census.R")
+source("dev/modules/census.R")
 source("dev/modules/canale.R")
 source("dev/modules/climate_risk.R")
 source("dev/modules/crash.R")
@@ -112,7 +107,7 @@ source("dev/other/post_processing.R")
 
 # Save data files ---------------------------------------------------------
 
-qsave(var_exp, file = "data/var_exp.qs")
+qsave(variables, file = "data/variables.qs")
 qsavem(borough, CT, DA, file = "data/census.qsm")
 qsave(grid, file = "data/grid.qs")
 qsave(building, file = "data/building.qs")

@@ -30,7 +30,7 @@ census_identity <-
     vec_2001 = "v_CA01_406",
     vec_1996 = "v_CA1996_128",
     var_title = "Immigrants (%)",
-    var_short = "TKTK",
+    var_short = "Immigrants",
     explanation = "the percentage of residents who are foreign-born",
     private = FALSE) |> 
   add_row(
@@ -41,7 +41,7 @@ census_identity <-
     vec_2001 = "v_CA01_507",
     vec_1996 = "v_CA1996_228",
     var_title = "New immigrants (%)",
-    var_short = "TKTK",
+    var_short = "New immigrants",
     explanation = paste0("the percentage of people who have immigrated in ",
                          "the last five years"),
     private = FALSE) |>
@@ -53,7 +53,7 @@ census_identity <-
     vec_2001 = "v_CA01_703",
     vec_1996 = "v_CA1996_784",
     var_title = "Visible minorities (%)",
-    var_short = "TKTK",
+    var_short = "Vis. minorities",
     explanation = paste0("the percentage of people who identify as part of ",
                          "one or more visible minority groups"),
     private = FALSE) |>
@@ -65,7 +65,7 @@ census_identity <-
     vec_2001 = "v_CA01_718",
     vec_1996 = "v_CA1996_473",
     var_title = "Aboriginal (%)",
-    var_short = "TKTK",
+    var_short = "Aboriginal",
     explanation = "the percentage of people who are of aboriginal identity",
     private = FALSE)
   
@@ -80,26 +80,26 @@ data_to_add <-
 
 borough <- 
   borough |> 
-  left_join(data_to_add$borough, by = "ID") |> 
+  left_join(data_to_add[[1]]$borough, by = "ID") |> 
   relocate(geometry, .after = last_col())
 
 CT <- 
   CT |> 
-  left_join(data_to_add$CT, by = "ID") |> 
+  left_join(data_to_add[[1]]$CT, by = "ID") |> 
   relocate(geometry, .after = last_col())
 
 DA <- 
   DA |> 
-  left_join(data_to_add$DA, by = "ID") |> 
+  left_join(data_to_add[[1]]$DA, by = "ID") |> 
   relocate(centroid, buffer, geometry, .after = last_col())
 
 grid <-
   grid |>
-  left_join(data_to_add$grid, by = "ID") |>
+  left_join(data_to_add[[1]]$grid, by = "ID") |>
   relocate(geometry, .after = last_col())
 
 
 # Add to variables table --------------------------------------------------
 
-new_vars <- add_vars(data_to_add, census_identity, breaks_q3, breaks_q5)
-variables <- bind_rows(variables, new_vars)
+variables <- bind_rows(variables, data_to_add[[2]])
+rm(census_identity)
