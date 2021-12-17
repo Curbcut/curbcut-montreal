@@ -153,6 +153,51 @@ loadingLogo <-
     )
   }
 
+make_dropdown <- 
+  function(exclude = NULL, multi_year = F) {
+    
+    # Retrieving this way prior to using the new variable table and a "source"
+    # column? Moreover, with the new variable table, we will be able to filter
+    # very easily the variables that are available at all years (the purpose
+    # of the multi_year argument)
+    census_var <- 
+      var_exp |> 
+      filter(str_starts(var_code, 
+                        paste0(c("housing", "inc", "iden", "trans", "emp", 
+                                 "family", "lang", "age", "edu"), 
+                               collapse = "|"))) |> 
+      mutate(category = sub("_.*", "", var_code)) |> 
+      mutate(category = case_when(category == "housing" ~ "Housing",
+                                  category == "inc" ~ "Income",
+                                  category == "iden" ~ "Immigration and ethnicity",
+                                  category == "trans" ~ "Transportation",
+                                  category == "emp" ~ "Employment",
+                                  category == "family" ~ "Family",
+                                  category == "lang" ~ "Language",
+                                  category == "age" ~ "Age",
+                                  category == "edu" ~ "Education"
+      ))
+    
+    if (!is.null(exclude)) {
+      census_var <- 
+        census_var |> 
+        filter(!category %in% exclude)
+    }
+    
+    c("----" = " ",
+      map(set_names(unique(census_var$category)), function(cat) {
+        category_vectors <- 
+          census_var |> 
+          filter(category == cat) |> 
+          select(var_code, var_name)
+        
+        map(category_vectors$var_name, function(name) {
+          category_vectors[category_vectors$var_name == name, ]$var_code
+        }) |> set_names(category_vectors$var_name)
+      })
+    )
+  }
+
 
 # Load data ---------------------------------------------------------------
 ## THESE ALL NEED TO BE TURNED INTO QS BINARIES

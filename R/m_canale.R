@@ -13,7 +13,7 @@ canale_UI <- function(id) {
       fillCol(
         div(class = "mapdeck_div", 
             mapdeckOutput(NS(id, "map"), height = "100%")),
-        right_panel(id, compare_UI(NS(id, "canale"), var_list_canale),
+        right_panel(id, compare_UI(NS(id, "canale"), make_dropdown()),
                     div(class = "explore_dyk",
                         explore_UI(NS(id, "explore")), dyk_UI(NS(id, "dyk"))))),
       flex = c(1, 5)
@@ -57,7 +57,7 @@ canale_server <- function(id) {
     var_left <- reactive(canale_ind)
     
     # Compare panel
-    var_right <- compare_server(id = "canale", var_list = var_list_canale,
+    var_right <- compare_server(id = "canale", var_list = make_dropdown(),
                                 df = zoom)
 
     # Data

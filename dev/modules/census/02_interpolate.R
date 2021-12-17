@@ -18,7 +18,7 @@ agg_add <- function(x, area_prop, int_area, other_geom = FALSE) {
   out <- sum(x * {{ area_prop }}, na.rm = TRUE)
   # Round to the nearest 5 to match non-interpolated census values, except
   # for geoms out of CSD/borough, CT and DA
-  out <- if (!other_geom) round(out / 5) * 5 else out
+  if (!other_geom) out <- round(out / 5) * 5
   # Only keep output polygons with a majority non-NA inputs
   na_pct <- sum(is.na(x) * {{ int_area }})
   if (na_pct >= 0.5 * sum({{ int_area }})) out <- NA_real_

@@ -46,8 +46,6 @@ alley_server <- function(id) {
     # If COUNT isn't selected, choropleth is TRUE 
     choropleth <- reactive(!(var_left() == " " || input$focus_visited))
     
-    observe({print(choropleth())})
-    
     # Map
     output$map <- renderMapdeck({
       mapdeck(
