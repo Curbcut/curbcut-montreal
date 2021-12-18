@@ -122,6 +122,7 @@ normalize <- function(df_list, census_vec, data_unit) {
 drop_vars <- function(df_list, census_vec) {
   map(df_list, function(df_l) {
     map(df_l, function(df) {
+      
       # Keep "ID" and any variable present in census_vec
       to_keep <-
         census_vec |>
@@ -153,16 +154,17 @@ get_breaks_q3 <- function(df_list, census_vec) {
     map(df_l, function(df) {
       map_dfc(var_q3, ~ {
         if (.x %in% names(df)) {
-          df |>
-            select(any_of(.x), any_of(paste0(.x, "_q3"))) |>
-            set_names(c("v", "q3")) |>
-            summarize(
-              ranks = c(
-                min(v, na.rm = TRUE),
-                min(v[q3 == 2], na.rm = TRUE),
-                min(v[q3 == 3], na.rm = TRUE),
-                max(v, na.rm = TRUE))) |>
-            set_names(.x)
+          suppressWarnings(
+            df |>
+              select(any_of(.x), any_of(paste0(.x, "_q3"))) |>
+              set_names(c("v", "q3")) |>
+              summarize(
+                ranks = c(min(v, na.rm = TRUE),
+                          min(v[q3 == 2], na.rm = TRUE),
+                          min(v[q3 == 3], na.rm = TRUE),
+                          max(v, na.rm = TRUE))) |>
+              mutate(ranks = if_else(is.infinite(ranks), NA_real_, ranks)) |> 
+              set_names(.x))
         }
       })
     })
@@ -218,21 +220,21 @@ find_breaks_q5 <- function(min_val, max_val) {
 get_breaks_q5 <- function(df_list, categories) {
   map2(df_list, categories, function(df_l, cat_l) {
     map2(df_l, cat_l, function(df, cats) {
-      cat_min <-
-        map(cats, ~ {
+      cat_min <- suppressWarnings(
+        map(cats, ~{
           df |>
             select(all_of(.x)) |>
             as.matrix() |>
             min(na.rm = TRUE)
-        })
+        }))
 
-      cat_max <-
-        map(cats, ~ {
+      cat_max <- suppressWarnings(
+        map(cats, ~{
           df |>
             select(all_of(.x)) |>
             as.matrix() |>
             max(na.rm = TRUE)
-        })
+        }))
 
       pmap_dfc(list(cat_min, cat_max, cats), function(x, y, z) {
         breaks <- find_breaks_q5(x, y)
