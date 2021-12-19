@@ -325,6 +325,20 @@ interpolate_other <- function(df_list, targets, years, crs = 32618, data_agg) {
           mutate(area = st_area(geometry)) |>
           st_set_agr("constant") |>
           select(-ID)
+        
+        DA_na_columns <-
+          DA_n |>
+          st_drop_geometry() |>
+          select(where(~ all(is.na(.)))) |>
+          colnames()
+        
+        DA_na_columns <- if (length(DA_na_columns) != 0) {
+          c(DA_na_columns, paste0(DA_na_columns, "_parent"))
+        }
+        
+        DA_n <-
+          DA_n |>
+          select(-all_of(DA_na_columns))
 
         geom_type <- switch(as.character(unique(st_geometry_type(get(geo)))),
           "POLYGON" = "polygon",
@@ -369,14 +383,58 @@ interpolate_other <- function(df_list, targets, years, crs = 32618, data_agg) {
           st_drop_geometry() |>
           group_by(ID)
 
-        interpolated_ids |>
+        DA_out <- interpolated_ids |>
           # agg_avg has to be calculated first, so parent vectors are untouched!
           summarize(across(any_of(data_agg$var_avg), agg_avg,
                            eval(parse(text = paste0(cur_column(), "_parent"))),
                            int_area),
                     across(any_of(data_agg$var_add), agg_add, area_prop, 
                            int_area, other_geom = TRUE), .groups = "drop")
-      })
+      
+        if (length(DA_na_columns) > 0) {
+          # Get geometry and areas of already-interpolated DAs.
+          CT_n <-
+            df_list$CT[[as.character(year)]] |>
+            left_join(select(CT, ID), by = "ID") |>
+            st_as_sf() |>
+            st_transform(crs) |>
+            mutate(area = st_area(geometry)) |>
+            st_set_agr("constant") |>
+            select(all_of(DA_na_columns), area)
+          
+          interpolated_ids <-
+            get(geo) |>
+            select(ID) |>
+            st_transform(crs) |>
+            st_set_agr("constant") |>
+            st_intersection(CT_n)
+          
+          if (geom_type == "polygon") {
+            interpolated_ids <- 
+              interpolated_ids |> 
+              mutate(int_area = units::drop_units(st_area(geometry)),
+                     area_prop = int_area / units::drop_units(area),
+                     .before = geometry)
+          } else {
+            interpolated_ids <- 
+              interpolated_ids |> 
+              mutate(int_area = units::drop_units(st_length(geometry)),
+                     area_prop = int_area / units::drop_units(area),
+                     .before = geometry)
+          }
+          
+          CT_out <- interpolated_ids <- 
+            interpolated_ids |>
+            mutate(across(any_of(data_agg$var_add) | ends_with("_parent"), 
+                          ~{.x * area_prop})) |>
+            st_drop_geometry() |>
+            group_by(ID)
+          
+          left_join(DA_out, CT_out, by = "ID")
+        } else {
+          DA_out
+        }
+        })
     })
 
   c(df_list, new_geos)
