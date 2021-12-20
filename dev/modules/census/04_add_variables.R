@@ -58,7 +58,8 @@ add_vars <- function(data_to_add, census_vec, breaks_q3, breaks_q5, scales,
       dates = list(dates_active),
       scales = list(scales_active),
       breaks_q3 = list(breaks_q3_active),
-      breaks_q5 = list(breaks_q5_active)
+      breaks_q5 = list(breaks_q5_active),
+      source = dat$source
     )
   })
 }

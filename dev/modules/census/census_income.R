@@ -1,4 +1,4 @@
-#### Census housing data #######################################################
+#### Census income data #######################################################
 
 # This script relies on objects created in dev/build_data.R and
 # dev/modules/census/build_census.R
@@ -6,38 +6,9 @@
 
 # Topic vectors -----------------------------------------------------------
 
-census_income <- tibble(
-  var_code = character(),
-  vec_2016 = list(),
-  vec_2011 = list(),
-  vec_2006 = list(),
-  vec_2001 = list(),
-  vec_1996 = list(),
-  var_title = character(),
-  var_short = character(),
-  explanation = character(),
-  category = character(),
-  private = logical()
-)
-
-add_row_inc <- function(data, var_code, vec_2016, vec_2011, vec_2006, vec_2001,
-                        vec_1996, var_title, var_short, explanation, private) {
-  add_row(data,
-          var_code = var_code,
-          vec_2016 = list(vec_2016),
-          vec_2011 = list(vec_2011),
-          vec_2006 = list(vec_2006),
-          vec_2001 = list(vec_2001),
-          vec_1996 = list(vec_1996),
-          var_title = var_title,
-          var_short = var_short,
-          explanation = explanation,
-          private = private)
-}
-
-census_income <-
-  census_income |>
-  add_row_inc(
+census_vec <-
+  census_vec |>
+  add_row_census_vec(
     var_code = "inc_median_dollar",
     vec_2016 = "v_CA16_2397",
     vec_2011 = "v_CA11N_2562",
@@ -48,7 +19,7 @@ census_income <-
     var_short = "Med. income",
     explanation = "median before-tax household income",
     private = FALSE) |>
-  add_row_inc(
+  add_row_census_vec(
     var_code = "inc_50_pct",
     vec_2016 = c("v_CA16_2406", "v_CA16_2407", "v_CA16_2408", "v_CA16_2409",
                  paste0("v_CA16_24", 10:15)),
@@ -61,7 +32,7 @@ census_income <-
     explanation = paste0("the percentage of households with an income less ",
                          "then $50,000"),
     private = FALSE) |>
-  add_row_inc(
+  add_row_census_vec(
     var_code = "inc_100_pct",
     vec_2016 = paste0("v_CA16_24", 16:20),
     vec_2011 = paste0("v_CA11N_25", 41:43),
@@ -73,7 +44,7 @@ census_income <-
     explanation = paste0("the percentage of households with an income between", 
                          "$50,000 and $100,000"),
     private = FALSE) |>
-  add_row_inc(
+  add_row_census_vec(
     var_code = "inc_high_pct",
     vec_2016 = "v_CA16_2421",
     vec_2011 = "v_CA11N_2546",
@@ -85,7 +56,7 @@ census_income <-
     explanation = paste0("the percentage of households with an income higher ",
                          "than $100,000"),
     private = FALSE) |>
-  add_row_inc(
+  add_row_census_vec(
     var_code = "inc_limat_pct",
     vec_2016 = "v_CA16_2540",
     vec_2011 = NA,
@@ -98,36 +69,3 @@ census_income <-
                          "based on the Low-income measure, after-tax (LIM-AT)"),
     private = FALSE)
 
-
-# Gather data -------------------------------------------------------------
-
-data_to_add <- add_census_data(census_income, scales, years)
-
-
-# Assign data -------------------------------------------------------------
-
-borough <-
-  borough |>
-  left_join(data_to_add[[1]]$borough, by = "ID") |>
-  relocate(geometry, .after = last_col())
-
-CT <-
-  CT |>
-  left_join(data_to_add[[1]]$CT, by = "ID") |>
-  relocate(geometry, .after = last_col())
-
-DA <-
-  DA |>
-  left_join(data_to_add[[1]]$DA, by = "ID") |>
-  relocate(centroid, buffer, geometry, .after = last_col())
-
-grid <-
-  grid |>
-  left_join(data_to_add[[1]]$grid, by = "ID") |>
-  relocate(geometry, .after = last_col())
-
-
-# Add to variables table --------------------------------------------------
-
-variables <- bind_rows(variables, data_to_add[[2]])
-rm(census_income)

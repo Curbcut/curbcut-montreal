@@ -83,7 +83,8 @@ variables <-
     dates = list(),
     scales = list(),
     breaks_q3 = list(),
-    breaks_q5 = list()
+    breaks_q5 = list(),
+    source = character()
   )
 
 

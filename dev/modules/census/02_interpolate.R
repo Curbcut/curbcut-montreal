@@ -423,12 +423,20 @@ interpolate_other <- function(df_list, targets, years, crs = 32618, data_agg) {
                      .before = geometry)
           }
           
-          CT_out <- interpolated_ids <- 
+          interpolated_ids <- 
             interpolated_ids |>
             mutate(across(any_of(data_agg$var_add) | ends_with("_parent"), 
                           ~{.x * area_prop})) |>
             st_drop_geometry() |>
             group_by(ID)
+          
+          CT_out <- interpolated_ids |>
+            # agg_avg has to be calculated first, so parent vectors are untouched!
+            summarize(across(any_of(data_agg$var_avg), agg_avg,
+                             eval(parse(text = paste0(cur_column(), "_parent"))),
+                             int_area),
+                      across(any_of(data_agg$var_add), agg_add, area_prop, 
+                             int_area, other_geom = TRUE), .groups = "drop")
           
           left_join(DA_out, CT_out, by = "ID")
         } else {

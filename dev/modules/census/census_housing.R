@@ -6,23 +6,9 @@
 
 # Topic vectors -----------------------------------------------------------
 
-census_housing <- tibble(
-  var_code = character(),
-  vec_2016 = character(),
-  vec_2011 = character(),
-  vec_2006 = character(),
-  vec_2001 = character(),
-  vec_1996 = character(),
-  var_title = character(),
-  var_short = character(),
-  explanation = character(),
-  category = character(),
-  private = logical()
-  )
-    
-census_housing <- 
-  census_housing |> 
-  add_row(
+census_vec <- 
+  census_vec |> 
+  add_row_census_vec(
     var_code = "housing_tenant_pct",
     vec_2016 = "v_CA16_4838",
     vec_2011 = "v_CA11N_2254",
@@ -33,7 +19,7 @@ census_housing <-
     var_short = "Tenant",
     explanation = "the percentage of private dwellings occupied by tenants",
     private = FALSE) |> 
-  add_row(
+  add_row_census_vec(
     var_code = "housing_rent_avg_dollar",
     vec_2016 = "v_CA16_4901",
     vec_2011 = "v_CA11N_2292",
@@ -44,7 +30,7 @@ census_housing <-
     var_short = "Avg. rent",
     explanation = "the average rent paid by tenants per month",
     private = FALSE) |>
-  add_row(
+  add_row_census_vec(
     var_code = "housing_repairs_pct",
     vec_2016 = "v_CA16_4872",
     vec_2011 = "v_CA11N_2232",
@@ -56,7 +42,7 @@ census_housing <-
     explanation = paste0("the percentage of households living in dwellings ",
                          "requiring major repairs"),
     private = FALSE) |>
-  add_row(
+  add_row_census_vec(
     var_code = "housing_value_avg_dollar",
     vec_2016 = "v_CA16_4896",
     vec_2011 = "v_CA11N_2287",
@@ -67,42 +53,55 @@ census_housing <-
     var_short = "Avg. value",
     explanation = "the average value of owner-occupied dwellings",
     private = FALSE) |>
-  add_row(
+  add_row_census_vec(
     var_code = "housing_unafford_pct",
     vec_2016 = "v_CA16_4888",
+    vec_2011 = NA,
+    vec_2006 = NA,
+    vec_2001 = NA,
+    vec_1996 = NA,
     var_title = "Unaffordable housing (%)",
     var_short = "Unaffordable",
     explanation = paste0("the percentage of dwellings for which residents pay ",
                          "more than 30% of income on housing costs"),
     private = FALSE) |>
-  add_row(
+  add_row_census_vec(
     var_code = "housing_unsuit_pct",
     vec_2016 = "v_CA16_4861",
     vec_2011 = "v_CA11N_2276",
+    vec_2006 = NA,
+    vec_2001 = NA,
+    vec_1996 = NA,
     var_title = "Unsuitable housing (%)",
     var_short = "Unsuitable",
     explanation = paste0("the percentage of households living in ",
                          "accommodations without enough bedrooms"),
     private = FALSE) |>
-  add_row(
+  add_row_census_vec(
     var_code = "housing_stress_renter_pct",
     vec_2016 = "v_CA16_4899",
     vec_2011 = "v_CA11N_2290",
+    vec_2006 = NA,
+    vec_2001 = NA,
+    vec_1996 = NA,
     var_title = "Renter housing stress (%)",
     var_short = "Renter stress",
     explanation = paste0("the percentage of renter households that spend ",
                          "more than 30% of their income on shelter costs"),
     private = FALSE) |>
-  add_row(
+  add_row_census_vec(
     var_code = "housing_stress_owner_pct",
     vec_2016 = "v_CA16_4892",
     vec_2011 = "v_CA11N_2283",
+    vec_2006 = NA,
+    vec_2001 = NA,
+    vec_1996 = NA,
     var_title = "Owner housing stress (%)",
     var_short = "Owner stress",
     explanation = paste0("the percentage of owner households that spend more ",
                          "than 30% of their income on shelter costs"),
     private = FALSE) |>
-  add_row(
+  add_row_census_vec(
     var_code = "housing_mobility_one_pct",
     vec_2016 = "v_CA16_6698",
     vec_2011 = "v_CA11N_1723",
@@ -114,7 +113,7 @@ census_housing <-
     explanation = paste0("the percentage of households that have moved in ",
                          "the past year"),
     private = FALSE) |>
-  add_row(
+  add_row_census_vec(
     var_code = "housing_mobility_five_pct",
     vec_2016 = "v_CA16_6725",
     vec_2011 = "v_CA11N_1750",
@@ -128,37 +127,7 @@ census_housing <-
     private = FALSE)
   
 
-# Gather data -------------------------------------------------------------
+# Parent vector -----------------------------------------------------------
 
-data_to_add <- 
-  add_census_data(census_housing, scales, years, parent_vectors = c(
-    "housing_value_avg_dollar" = "v_CA01_1670"))
-
-
-# Assign data -------------------------------------------------------------
-
-borough <- 
-  borough |> 
-  left_join(data_to_add[[1]]$borough, by = "ID") |> 
-  relocate(geometry, .after = last_col())
-
-CT <- 
-  CT |> 
-  left_join(data_to_add[[1]]$CT, by = "ID") |> 
-  relocate(geometry, .after = last_col())
-
-DA <- 
-  DA |> 
-  left_join(data_to_add[[1]]$DA, by = "ID") |> 
-  relocate(centroid, buffer, geometry, .after = last_col())
-
-grid <-
-  grid |>
-  left_join(data_to_add[[1]]$grid, by = "ID") |>
-  relocate(geometry, .after = last_col())
-
-
-# Add to variables table --------------------------------------------------
-
-variables <- bind_rows(variables, data_to_add[[2]])
-rm(census_housing)
+parent_vectors <- c(parent_vectors, 
+                    c("housing_value_avg_dollar" = "v_CA01_1670"))
