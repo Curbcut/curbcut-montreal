@@ -17,7 +17,7 @@ climate_risk_UI <- function(id) {
       fillCol(
         div(class = "mapdeck_div", 
             mapdeckOutput(NS(id, "map"), height = "100%")),
-        right_panel(id, compare_UI(NS(id, "climate_risk"), var_list_canale),
+        right_panel(id, compare_UI(NS(id, "climate_risk"), make_dropdown()),
                     div(class = "explore_dyk",
                         explore_UI(NS(id, "explore")), dyk_UI(NS(id, "dyk"))))),
       flex = c(1, 5)
@@ -69,7 +69,7 @@ climate_risk_server <- function(id) {
     df <- reactive(if (input$grid) "grid" else zoom())
     
     # Compare panel
-    var_right <- compare_server("climate_risk", var_list_canale, df)
+    var_right <- compare_server("climate_risk", make_dropdown(), df)
     
     choropleth_zoom <- reactive(if (input$grid) "borough" else zoom_val())
     
@@ -193,7 +193,7 @@ climate_risk_server <- function(id) {
     updatePickerInput(
       session = session,
       inputId = NS(id, "compare-var"),
-      choices = sus_translate(var_list_canale),
+      choices = sus_translate(make_dropdown()),
       selected = state$values$var_right
     )
     

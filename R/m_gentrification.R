@@ -28,7 +28,7 @@ gentrification_UI <- function(id) {
       fillCol(
         div(class = "mapdeck_div", 
             mapdeckOutput(NS(id, "map"), height = "100%")),
-        right_panel(id, compare_UI(NS(id, "gentrification"), var_list_right_gentrification),
+        right_panel(id, compare_UI(NS(id, "gentrification"), make_dropdown(multi_year = T)),
                     div(class = "explore_dyk",
                         explore_UI(NS(id, "explore")), dyk_UI(NS(id, "dyk"))))),
       flex = c(1, 5)
@@ -89,7 +89,7 @@ gentrification_server <- function(id) {
     
     # Compare panel
     var_right <- compare_server(id = "gentrification", 
-                                var_list = var_list_right_gentrification,
+                                var_list = make_dropdown(multi_year = T),
                                 df = zoom,
                                 time = time)
     
@@ -217,7 +217,7 @@ gentrification_server <- function(id) {
       updatePickerInput(
         session = session,
         inputId = NS(id, "compare-var"),
-        choices = sus_translate(var_list_right_gentrification),
+        choices = sus_translate(make_dropdown(multi_year = T)),
         selected = unique(str_remove(state$values$var_right, "_\\d{4}"))
       )
       

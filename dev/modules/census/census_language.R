@@ -31,7 +31,7 @@ census_vec <-
     explanation = "the percentage of individuals that only know English as an official language",
     private = FALSE) |> 
   add_row_census_vec(
-    var_code = "ang_french_eng_pct",
+    var_code = "lang_french_eng_pct",
     vec_2016 = "v_CA16_521",
     vec_2011 = "v_CA11F_560",
     vec_2006 = "v_CA06_246",
