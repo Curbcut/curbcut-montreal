@@ -31,10 +31,10 @@ source("dev/modules/census/census_income.R")
 source("dev/modules/census/census_identity.R")
 source("dev/modules/census/census_transport.R")
 source("dev/modules/census/census_employment.R")
-# source("dev/modules/census/census_family.R")
-# source("dev/modules/census/census_language.R")
-# source("dev/modules/census/census_age.R")
-# source("dev/modules/census/census_education.R")
+source("dev/modules/census/census_family.R")
+source("dev/modules/census/census_language.R")
+source("dev/modules/census/census_age.R")
+source("dev/modules/census/census_education.R")
 
 
 # Clean up ----------------------------------------------------------------

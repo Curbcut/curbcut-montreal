@@ -129,7 +129,7 @@ get_census_vectors <- function(census_vec, geoms, scales, years,
           name <- unique(names(parent_vec)[names(parent_vec) == .x])
           if (length(value) > 1) {
               stop(paste0(
-                "Parent vectors of `", name, "` aren't unique. A var_code ",
+                "Parent vectors of `", name, "` in ", year, " aren't unique. A var_code ",
                 "sharing multiple numerators should have a unique parent."))}
             set_names(value, name)}) |> 
       unlist()
