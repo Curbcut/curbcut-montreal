@@ -27,7 +27,7 @@ get_census_vectors <- function(census_vec, geoms, scales, years,
                                parent_vectors = NULL, CMA = "24462") {
   map2(set_names(scales), geoms, function(scale, geom) {
     map2(set_names(years), geom, function(year, df) {
-      
+  
       census_dataset <- paste0("CA", sub("20", "", year))
       
       # Get named versions of vectors
@@ -59,32 +59,32 @@ get_census_vectors <- function(census_vec, geoms, scales, years,
       vec_to_sum <- names(vec_to_sum[vec_to_sum > 1])
       
       if (length(vec_to_sum > 0)) {
-      vec_to_sum <- vec_named[str_detect(names(vec_named), 
-                                         paste0(vec_to_sum, collapse = "|"))]
-      }
-      
-      agg_vec_to_sum <-
-        (cancensus::list_census_vectors(census_dataset) |>
-          filter(vector %in% vec_to_sum, aggregation != "Additive"))$vector
-
-      # Throw error if they aren't additive
-      if (length(agg_vec_to_sum) != 0) {
-        stop(paste0(
-          "Vector `", agg_vec_to_sum, "` contains multiple variables, but it ", 
-          "isn't registered as `additive` in cancensus."))
-      }
-      
-      # Sum them up
-      if (ncol(vec_retrieved) > 1) {
-        vec_retrieved <-
-          vec_retrieved |>
-          pivot_longer(-GeoUID) |>
-          mutate(name = ifelse(str_detect(name, "\\d$"), 
-                               str_remove(name, "\\d*$"), name)) |>
-          group_by(GeoUID, name) |>
-          summarize(value = sum(value), .groups = "drop") |>
-          pivot_wider(GeoUID) |>
-          ungroup()
+        vec_to_sum <- vec_named[str_detect(names(vec_named), 
+                                           paste0(vec_to_sum, collapse = "|"))]
+        
+        agg_vec_to_sum <-
+          (cancensus::list_census_vectors(census_dataset) |>
+             filter(vector %in% vec_to_sum, aggregation != "Additive"))$vector
+        
+        # Throw error if they aren't additive
+        if (length(agg_vec_to_sum) != 0) {
+          stop(paste0(
+            "Vector `", agg_vec_to_sum, "` contains multiple variables, but it ", 
+            "isn't registered as `additive` in cancensus."))
+        }
+        
+        # Sum them up
+        if (ncol(vec_retrieved) > 1) {
+          vec_retrieved <-
+            vec_retrieved |>
+            pivot_longer(-GeoUID) |>
+            mutate(name = ifelse(str_detect(name, "\\d$"), 
+                                 str_remove(name, "\\d*$"), name)) |>
+            group_by(GeoUID, name) |>
+            summarize(value = sum(value), .groups = "drop") |>
+            pivot_wider(GeoUID) |>
+            ungroup()
+        }
       }
 
       # Some vectors share denominators, so use map to get them multiple times
@@ -105,28 +105,34 @@ get_census_vectors <- function(census_vec, geoms, scales, years,
       }
 
       # Replace here the parent_vec with the parent_vectors
-      parent_vec <- map(names(parent_vec), ~{
+      if (!is.null(parent_vectors)) {
         parent_vectors_which <- str_which(parent_vectors, census_dataset)
         parent_vectors <- parent_vectors[parent_vectors_which]
-        if (.x %in% paste0(names(parent_vectors), "_parent")) {
-          names(parent_vectors) <- paste0(names(parent_vectors), "_parent")
-          parent_vectors[.x == names(parent_vectors)]
-        } else set_names(parent_vec[.x], .x)
-      }) |> unlist()
+        if (length(parent_vectors) > 0) {
+        # renaming fed parent_vectors with _parent
+        names(parent_vectors) <- paste0(str_remove(names(parent_vectors), "\\d*$"), "_parent")
+          parent_vec <- map(names(parent_vec), ~{
+            if (.x %in% names(parent_vectors)) {
+              parent_vectors[.x == names(parent_vectors)]
+            } else set_names(parent_vec[.x], .x)
+          }) |> unique() |> unlist()
+        parent_vec <- with(stack(parent_vec), split(values, ind)) |> unlist()
+        }}
       
       # Parents should be retrieved only once
       parent_vec <-
-        parent_vec |> 
+      parent_vec |> 
         names() |> 
         unique() |> 
         map(~{
           value <- unique(parent_vec[names(parent_vec) == .x])
           name <- unique(names(parent_vec)[names(parent_vec) == .x])
-          if (length(value) > 1) stop(
-              "Parent vectors of `", name, "` aren't unique. A var_code ", 
-              "sharing multiple numerators should have a unique parent.")
-          set_names(value, name)}) |> 
-        unlist()
+          if (length(value) > 1) {
+              stop(paste0(
+                "Parent vectors of `", name, "` aren't unique. A var_code ",
+                "sharing multiple numerators should have a unique parent."))}
+            set_names(value, name)}) |> 
+      unlist()
       
       # Check for non-additive parent vectors
       non_add_parent_vec <- 
@@ -168,6 +174,46 @@ get_census_vectors <- function(census_vec, geoms, scales, years,
           left_join(reduce(parent_vec_values, left_join, by = "GeoUID"),
                     by = "GeoUID")
       }
+      
+      # Sum parent vectors if need be:
+      # Add up vectors that were retrieved through the same var_code
+      vec_to_sum <- 
+        vec_retrieved |> 
+        names() |> 
+        str_remove("\\d*$") |> 
+        table()
+      
+      vec_to_sum <- names(vec_to_sum[vec_to_sum > 1])
+      
+      if (length(vec_to_sum > 0)) {
+        vec_to_sum <- vec_named[str_detect(names(vec_named), 
+                                           paste0(vec_to_sum, collapse = "|"))]
+        
+        agg_vec_to_sum <-
+          (cancensus::list_census_vectors(census_dataset) |>
+             filter(vector %in% vec_to_sum, aggregation != "Additive"))$vector
+        
+        # Throw error if they aren't additive
+        if (length(agg_vec_to_sum) != 0) {
+          stop(paste0(
+            "Vector `", agg_vec_to_sum, "` contains multiple variables, but it ", 
+            "isn't registered as `additive` in cancensus."))
+        }
+        
+        # Sum them up
+        if (ncol(vec_retrieved) > 1) {
+          vec_retrieved <-
+            vec_retrieved |>
+            pivot_longer(-GeoUID) |>
+            mutate(name = ifelse(str_detect(name, "\\d$"), 
+                                 str_remove(name, "\\d*$"), name)) |>
+            group_by(GeoUID, name) |>
+            summarize(value = sum(value), .groups = "drop") |>
+            pivot_wider(GeoUID) |>
+            ungroup()
+        }
+      }
+      
       
       vec_retrieved |> 
         right_join(df, by = "GeoUID") |>

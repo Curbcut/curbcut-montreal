@@ -75,7 +75,16 @@ census_age <-
 # Gather data -------------------------------------------------------------
 
 data_to_add <- 
-  add_census_data(census_age, scales, years)
+  add_census_data(census_age, scales, years,
+                  parent_vectors = c("age_0_14_pct" = c("v_CA06_3", "v_CA06_22"), 
+                                     "age_15_64_pct" = c("v_CA06_3", "v_CA06_22"), 
+                                     "age_65_plus_pct" = c("v_CA06_3", "v_CA06_22"),
+                                     "age_0_14_pct" = c("v_CA01_6", "v_CA01_25"),
+                                     "age_15_64_pct" = c("v_CA01_6", "v_CA01_25"),
+                                     "age_65_plus_pct" = c("v_CA01_6", "v_CA01_25"),
+                                     "age_0_14_pct" = c("v_CA1996_6", "v_CA1996_30"),
+                                     "age_15_64_pct" = c("v_CA1996_6", "v_CA1996_30"),
+                                     "age_65_plus_pct" = c("v_CA1996_6", "v_CA1996_30")))
 
 
 # Assign data -------------------------------------------------------------
