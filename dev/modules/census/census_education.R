@@ -35,9 +35,6 @@ add_row_edu <- function(data, var_code, vec_2016, vec_2011, vec_2006, vec_2001,
           private = private)
 }
 
-cancensus::list_census_vectors("CA06") |> 
-  filter(vector %in% c("v_CA06_1240", "v_CA06_1254", "v_CA06_1268"))
-
 census_edu <- 
   census_edu |> 
   add_row_edu(
