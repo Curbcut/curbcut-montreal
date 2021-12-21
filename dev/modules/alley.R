@@ -215,7 +215,7 @@ variables <-
     scales = c("borough", "CT", "DA"),
     breaks_q3 = NA,
     breaks_q5 = NA,
-    source = "mtl_data") |> 
+    source = "VdM") |> 
   add_variables(
     var_code = "green_alley_per1k",
     var_title = "Green alleys per 1,000",
@@ -228,4 +228,4 @@ variables <-
     scales = c("borough", "CT", "DA"),
     breaks_q3 = NA,
     breaks_q5 = NA,
-    source = "mtl_data")
+    source = "VdM")

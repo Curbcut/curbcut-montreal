@@ -126,7 +126,7 @@ variables |>
     scales = c("borough", "building", "CT", "DA", "grid", "street"),
     breaks_q3 = NA,
     breaks_q5 = NA,
-    source = "TKTK") |> 
+    source = "VdM") |> 
   add_variables(
     var_code = "flood_ind",
     var_title = "Flood vulnerability",
@@ -138,7 +138,7 @@ variables |>
     scales = c("borough", "building", "CT", "DA", "grid", "street"),
     breaks_q3 = NA,
     breaks_q5 = NA,
-    source = "TKTK") |> 
+    source = "VdM") |> 
   add_variables(
     var_code = "heavy_rain_ind",
     var_title = "Heavy rain vulnerability",
@@ -150,7 +150,7 @@ variables |>
     scales = c("borough", "building", "CT", "DA", "grid", "street"),
     breaks_q3 = NA,
     breaks_q5 = NA,
-    source = "TKTK") |> 
+    source = "VdM") |> 
   add_variables(
     var_code = "destructive_storms_ind",
     var_title = "Destructive storm vulnerability",
@@ -162,7 +162,7 @@ variables |>
     scales = c("borough", "building", "CT", "DA", "grid", "street"),
     breaks_q3 = NA,
     breaks_q5 = NA,
-    source = "TKTK") |> 
+    source = "VdM") |> 
   add_variables(
     var_code = "heat_wave_ind",
     var_title = "Heat wave vulnerability",
@@ -174,6 +174,6 @@ variables |>
     scales = c("borough", "building", "CT", "DA", "grid", "street"),
     breaks_q3 = NA,
     breaks_q5 = NA,
-    source = "TKTK")
+    source = "VdM")
 
 # To save output, run dev/build_data.R, which calls this script

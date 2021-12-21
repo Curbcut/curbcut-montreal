@@ -121,6 +121,7 @@ building <-
 # Adding building and street scales
 data_to_add[[2]]$scales <- map(map(data_to_add[[2]]$scales, c, "building", "street"), str_sort)
 
+
 # Add to variables table --------------------------------------------------
 
 variables <- bind_rows(variables, data_to_add[[2]])
