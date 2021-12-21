@@ -118,10 +118,11 @@ building <-
   left_join(DA_census, by = c("DAUID" = "ID")) |> 
   relocate(geometry, .after = last_col())
 
+# Adding building and street scales
+data_to_add[[2]]$scales <- map(map(data_to_add[[2]]$scales, c, "building", "street"), str_sort)
 
 # Add to variables table --------------------------------------------------
 
-##### //i\\ add street and building to data_to_add[[2]] scales! //i\\ #####
 variables <- bind_rows(variables, data_to_add[[2]])
 
 
@@ -132,6 +133,6 @@ rm(scales, years, add_census_data, add_q3, add_q5, add_vars, add_years, agg_add,
    get_breaks_q5, get_categories_q5, get_census_vectors, get_empty_geometries,
    get_unit_type, interpolate, interpolate_other, merge_breaks, normalize,
    reduce_years, swap_csd_to_borough, weighted_mean, census_vec, parent_vectors,
-   DA_census)
+   DA_census, add_row_census_vec, data_to_add)
 
 # To save output, run dev/build_geometries.R, which calls this script
