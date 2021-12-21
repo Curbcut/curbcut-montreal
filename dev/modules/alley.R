@@ -172,7 +172,7 @@ lengths_alleys_fun <- function(data) {
   sqm_per_id <- 
   alleys_length %>% 
     rename(alley_ID = ID) %>% 
-    st_join(select(data, ID), by = "ID") %>% 
+    st_join(select(data, ID)) %>% 
     st_drop_geometry() %>% 
     group_by(ID) %>% 
     summarize(green_alley_sqm = round(units::drop_units(sum(green_alley_sqm, na.rm = T))))
@@ -183,7 +183,8 @@ lengths_alleys_fun <- function(data) {
            green_alley_per1k =  1000 * green_alley_sqm / population) %>% 
     select(-green_alley_sqm) %>% 
     mutate(across(starts_with("green_alley"), ntile, n = 3, .names = "{.col}_q3"), 
-           .before = geometry)
+           .before = geometry) |> 
+    relocate(geometry, .after = last_col())
 
 }
 
@@ -194,7 +195,8 @@ DA <- lengths_alleys_fun(DA)
 # Clean up ----------------------------------------------------------------
 
 rm(alleys_mtl, alleys_google, alleys_mn, alleys_visited, alleys_to_filter, 
-   alleys_visited_text, missing_photos)
+   alleys_visited_text, missing_photos, alley_text, alleys_length,
+   mtl_ids, lengths_alleys_fun)
 
 
 # Variable explanations ---------------------------------------------------
@@ -226,4 +228,4 @@ variables <-
     scales = c("borough", "CT", "DA"),
     breaks_q3 = NA,
     breaks_q5 = NA,
-    source = "mtl_data") |> View()
+    source = "mtl_data")
