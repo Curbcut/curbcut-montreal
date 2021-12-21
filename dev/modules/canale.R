@@ -109,7 +109,5 @@ variables |>
     breaks_q3 = "TKTK",
     breaks_q5 = "TKTK",
     source = "mcgill_geosdh_research_group")
-warning(paste0("q3 and q5 not fully integrated for canale_ind in the ",
-               "variables table. Warning coming from `dev/modules/canale.R`"))
-  
+
 # To save output, run dev/build_data.R, which calls this script
