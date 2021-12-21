@@ -90,189 +90,477 @@ tt_matrix <-
 
 # Add variable explanations -----------------------------------------------
 
-var_exp <- 
-  var_exp %>% 
-  add_row(
+variables <- 
+variables |>
+  add_variables(
     var_code = "access_jobs_total_pwd",
-    var_name = "Total jobs (weekday peak)",
-    explanation = 
-      "the total number of jobs accessible within 30 minutes at weekday peak service") %>%
-  add_row(
+    var_title = "Total jobs (weekday peak)",
+    var_short = "Total WKP",
+    explanation = "the total number of jobs accessible within 30 minutes at weekday peak service",
+    category = NA,
+    private = FALSE,
+    dates = NA,
+    scales = "CT",
+    breaks_q3 = NA,
+    breaks_q5 = NA,
+    source = "TKTK"
+  ) |>
+  add_variables(
     var_code = "access_jobs_total_opwd",
-    var_name = "Total jobs (weekday off-peak)",
-    explanation = 
-      "the total number of jobs accessible within 30 minutes at weekday off-peak service") %>%
-  add_row(
+    var_title = "Total jobs (weekday off-peak)",
+    var_short = "Total WKOP",
+    explanation = "the total number of jobs accessible within 30 minutes at weekday off-peak service",
+    category = NA,
+    private = FALSE,
+    dates = NA,
+    scales = "CT",
+    breaks_q3 = NA,
+    breaks_q5 = NA,
+    source = "TKTK"
+  ) |>
+  add_variables(
     var_code = "access_jobs_total_nwd",
-    var_name = "Total jobs (weekday night)",
-    explanation = 
-      "the total number of jobs accessible within 30 minutes at weekday night service") %>%
-  add_row(
+    var_title = "Total jobs (weekday night)",
+    var_short = "Total WKN",
+    explanation = "the total number of jobs accessible within 30 minutes at weekday night service",
+    category = NA,
+    private = FALSE,
+    dates = NA,
+    scales = "CT",
+    breaks_q3 = NA,
+    breaks_q5 = NA,
+    source = "TKTK"
+  ) |>
+  add_variables(
     var_code = "access_jobs_total_pwe",
-    var_name = "Total jobs (weekend peak)",
-    explanation = 
-      "the total number of jobs accessible within 30 minutes at weekend peak service") %>%
-  add_row(
+    var_title = "Total jobs (weekend peak)",
+    var_short = "Total WEP",
+    explanation = "the total number of jobs accessible within 30 minutes at weekend peak service",
+    category = NA,
+    private = FALSE,
+    dates = NA,
+    scales = "CT",
+    breaks_q3 = NA,
+    breaks_q5 = NA,
+    source = "TKTK"
+  ) |>
+  add_variables(
     var_code = "access_jobs_total_opwe",
-    var_name = "Total jobs (weekend off-peak)",
-    explanation = 
-      "the total number of jobs accessible within 30 minutes at weekend off-peak service") %>%
-  add_row(
+    var_title = "Total jobs (weekend off-peak)",
+    var_short = "Total WEOP",
+    explanation = "the total number of jobs accessible within 30 minutes at weekend off-peak service",
+    category = NA,
+    private = FALSE,
+    dates = NA,
+    scales = "CT",
+    breaks_q3 = NA,
+    breaks_q5 = NA,
+    source = "TKTK"
+  ) |>
+  add_variables(
     var_code = "access_jobs_total_nwe",
-    var_name = "Total jobs (weekend night)",
-    explanation = 
-      "the total number of jobs accessible within 30 minutes at weekend night service") %>%
-  add_row(
+    var_title = "Total jobs (weekend night)",
+    var_short = "Total WEN",
+    explanation = "the total number of jobs accessible within 30 minutes at weekend night service",
+    category = NA,
+    private = FALSE,
+    dates = NA,
+    scales = "CT",
+    breaks_q3 = NA,
+    breaks_q5 = NA,
+    source = "TKTK"
+  ) |>
+  add_variables(
     var_code = "access_jobs_low_pwd",
-    var_name = "Low-skill jobs (weekday peak)",
-    explanation = 
-      "the number of low-skill jobs accessible within 30 minutes at weekday peak service") %>%
-  add_row(
+    var_title = "Low-skill jobs (weekday peak)",
+    var_short = "Low-skill WKP",
+    explanation = "the number of low-skill jobs accessible within 30 minutes at weekday peak service",
+    category = NA,
+    private = FALSE,
+    dates = NA,
+    scales = "CT",
+    breaks_q3 = NA,
+    breaks_q5 = NA,
+    source = "TKTK"
+  ) |>
+  add_variables(
     var_code = "access_jobs_low_opwd",
-    var_name = "Low-skill jobs (weekday off-peak)",
-    explanation = 
-      "the number of low-skill jobs accessible within 30 minutes at weekday off-peak service") %>%
-  add_row(
+    var_title = "Low-skill jobs (weekday off-peak)",
+    var_short = "Low-skill WKOP",
+    explanation = "the number of low-skill jobs accessible within 30 minutes at weekday off-peak service",
+    category = NA,
+    private = FALSE,
+    dates = NA,
+    scales = "CT",
+    breaks_q3 = NA,
+    breaks_q5 = NA,
+    source = "TKTK"
+  ) |>
+  add_variables(
     var_code = "access_jobs_low_nwd",
-    var_name = "Low-skill jobs (weekday night)",
-    explanation = 
-      "the number of low-skill jobs accessible within 30 minutes at weekday night service") %>%
-  add_row(
+    var_title = "Low-skill jobs (weekday night)",
+    var_short = "Low-skill WKN",
+    explanation = "the number of low-skill jobs accessible within 30 minutes at weekday night service",
+    category = NA,
+    private = FALSE,
+    dates = NA,
+    scales = "CT",
+    breaks_q3 = NA,
+    breaks_q5 = NA,
+    source = "TKTK"
+  ) |>
+  add_variables(
     var_code = "access_jobs_low_pwe",
-    var_name = "Low-skill jobs (weekend peak)",
-    explanation = 
-      "the number of low-skill jobs accessible within 30 minutes at weekend peak service") %>%
-  add_row(
+    var_title = "Low-skill jobs (weekend peak)",
+    var_short = "Low-skill WEP",
+    explanation = "the number of low-skill jobs accessible within 30 minutes at weekend peak service",
+    category = NA,
+    private = FALSE,
+    dates = NA,
+    scales = "CT",
+    breaks_q3 = NA,
+    breaks_q5 = NA,
+    source = "TKTK"
+  ) |>
+  add_variables(
     var_code = "access_jobs_low_opwe",
-    var_name = "Low-skill jobs (weekend off-peak)",
-    explanation = 
-      "the number of low-skill jobs accessible within 30 minutes at weekend off-peak service") %>%
-  add_row(
+    var_title = "Low-skill jobs (weekend off-peak)",
+    var_short = "Low-skill WEOP",
+    explanation = "the number of low-skill jobs accessible within 30 minutes at weekend off-peak service",
+    category = NA,
+    private = FALSE,
+    dates = NA,
+    scales = "CT",
+    breaks_q3 = NA,
+    breaks_q5 = NA,
+    source = "TKTK"
+  ) |>
+  add_variables(
     var_code = "access_jobs_low_nwe",
-    var_name = "Low-skill jobs (weekend night)",
-    explanation = 
-      "the number of low-skill jobs accessible within 30 minutes at weekend night service") %>%
-  add_row(
+    var_title = "Low-skill jobs (weekend night)",
+    var_short = "Low-skill WEN",
+    explanation = "the number of low-skill jobs accessible within 30 minutes at weekend night service",
+    category = NA,
+    private = FALSE,
+    dates = NA,
+    scales = "CT",
+    breaks_q3 = NA,
+    breaks_q5 = NA,
+    source = "TKTK"
+  ) |>
+  add_variables(
     var_code = "access_jobs_high_pwd",
-    var_name = "High-skill jobs (weekday peak)",
-    explanation = 
-      "the number of high-skill jobs accessible within 30 minutes at weekday peak service") %>%
-  add_row(
+    var_title = "High-skill jobs (weekday peak)",
+    var_short = "Hi-skill WKP",
+    explanation = "the number of high-skill jobs accessible within 30 minutes at weekday peak service",
+    category = NA,
+    private = FALSE,
+    dates = NA,
+    scales = "CT",
+    breaks_q3 = NA,
+    breaks_q5 = NA,
+    source = "TKTK"
+  ) |>
+  add_variables(
     var_code = "access_jobs_high_opwd",
-    var_name = "High-skill jobs (weekday off-peak)",
-    explanation = 
-      "the number of high-skill jobs accessible within 30 minutes at weekday off-peak service") %>%
-  add_row(
+    var_title = "High-skill jobs (weekday off-peak)",
+    var_short = "Hi-skill WKOP",
+    explanation = "the number of high-skill jobs accessible within 30 minutes at weekday off-peak service",
+    category = NA,
+    private = FALSE,
+    dates = NA,
+    scales = "CT",
+    breaks_q3 = NA,
+    breaks_q5 = NA,
+    source = "TKTK"
+  ) |>
+  add_variables(
     var_code = "access_jobs_high_nwd",
-    var_name = "High-skill jobs (weekday night)",
-    explanation = 
-      "the number of high-skill jobs accessible within 30 minutes at weekday night service") %>%
-  add_row(
+    var_title = "High-skill jobs (weekday night)",
+    var_short = "Hi-skill WKN",
+    explanation = "the number of high-skill jobs accessible within 30 minutes at weekday night service",
+    category = NA,
+    private = FALSE,
+    dates = NA,
+    scales = "CT",
+    breaks_q3 = NA,
+    breaks_q5 = NA,
+    source = "TKTK"
+  ) |>
+  add_variables(
     var_code = "access_jobs_high_pwe",
-    var_name = "High-skill jobs (weekend peak)",
-    explanation = 
-      "the number of high-skill jobs accessible within 30 minutes at weekend peak service") %>%
-  add_row(
+    var_title = "High-skill jobs (weekend peak)",
+    var_short = "Hi-skill WEP",
+    explanation = "the number of high-skill jobs accessible within 30 minutes at weekend peak service",
+    category = NA,
+    private = FALSE,
+    dates = NA,
+    scales = "CT",
+    breaks_q3 = NA,
+    breaks_q5 = NA,
+    source = "TKTK"
+  ) |>
+  add_variables(
     var_code = "access_jobs_high_opwe",
-    var_name = "High-skill jobs (weekend off-peak)",
-    explanation = 
-      "the number of high-skill jobs accessible within 30 minutes at weekend off-peak service") %>%
-  add_row(
+    var_title = "High-skill jobs (weekend off-peak)",
+    var_short = "Hi-skill WEOP",
+    explanation = "the number of high-skill jobs accessible within 30 minutes at weekend off-peak service",
+    category = NA,
+    private = FALSE,
+    dates = NA,
+    scales = "CT",
+    breaks_q3 = NA,
+    breaks_q5 = NA,
+    source = "TKTK"
+  ) |>
+  add_variables(
     var_code = "access_jobs_high_nwe",
-    var_name = "High-skill jobs (weekend night)",
-    explanation = 
-      "the number of high-skill jobs accessible within 30 minutes at weekend night service") %>%
-  add_row(
+    var_title = "High-skill jobs (weekend night)",
+    var_short = "Hi-skill WEN",
+    explanation = "the number of high-skill jobs accessible within 30 minutes at weekend night service",
+    category = NA,
+    private = FALSE,
+    dates = NA,
+    scales = "CT",
+    breaks_q3 = NA,
+    breaks_q5 = NA,
+    source = "TKTK"
+  ) |>
+  add_variables(
     var_code = "access_jobs_30k_pwd",
-    var_name = "Low-income jobs (weekday peak)",
-    explanation = 
-      "the number of jobs paying less than $30,000 accessible within 30 minutes at weekday peak service") %>%
-  add_row(
+    var_title = "Low-income jobs (weekday peak)",
+    var_short = "Low-inc WKP",
+    explanation = "the number of jobs paying less than $30,000 accessible within 30 minutes at weekday peak service",
+    category = NA,
+    private = FALSE,
+    dates = NA,
+    scales = "CT",
+    breaks_q3 = NA,
+    breaks_q5 = NA,
+    source = "TKTK"
+  ) |>
+  add_variables(
     var_code = "access_jobs_30k_opwd",
-    var_name = "Low-income jobs (weekday off-peak)",
-    explanation = 
-      "the number of jobs paying less than $30,000 accessible within 30 minutes at weekday off-peak service") %>%
-  add_row(
+    var_title = "Low-income jobs (weekday off-peak)",
+    var_short = "Low-inc WKOP",
+    explanation = "the number of jobs paying less than $30,000 accessible within 30 minutes at weekday off-peak service",
+    category = NA,
+    private = FALSE,
+    dates = NA,
+    scales = "CT",
+    breaks_q3 = NA,
+    breaks_q5 = NA,
+    source = "TKTK"
+  ) |>
+  add_variables(
     var_code = "access_jobs_30k_nwd",
-    var_name = "Low-income jobs (weekday night)",
-    explanation = 
-      "the number of jobs paying less than $30,000 accessible within 30 minutes at weekday night service") %>%
-  add_row(
+    var_title = "Low-income jobs (weekday night)",
+    var_short = "Low-inc WKN",
+    explanation = "the number of jobs paying less than $30,000 accessible within 30 minutes at weekday night service",
+    category = NA,
+    private = FALSE,
+    dates = NA,
+    scales = "CT",
+    breaks_q3 = NA,
+    breaks_q5 = NA,
+    source = "TKTK"
+  ) |>
+  add_variables(
     var_code = "access_jobs_30k_pwe",
-    var_name = "Low-income jobs (weekend peak)",
-    explanation = 
-      "the number of jobs paying less than $30,000 accessible within 30 minutes at weekend peak service") %>%
-  add_row(
+    var_title = "Low-income jobs (weekend peak)",
+    var_short = "Low-inc WEP",
+    explanation = "the number of jobs paying less than $30,000 accessible within 30 minutes at weekend peak service",
+    category = NA,
+    private = FALSE,
+    dates = NA,
+    scales = "CT",
+    breaks_q3 = NA,
+    breaks_q5 = NA,
+    source = "TKTK"
+  ) |>
+  add_variables(
     var_code = "access_jobs_30k_opwe",
-    var_name = "Low-income jobs (weekend off-peak)",
-    explanation = 
-      "the number of jobs paying less than $30,000 accessible within 30 minutes at weekend off-peak service") %>%
-  add_row(
+    var_title = "Low-income jobs (weekend off-peak)",
+    var_short = "Low-inc WEOP",
+    explanation = "the number of jobs paying less than $30,000 accessible within 30 minutes at weekend off-peak service",
+    category = NA,
+    private = FALSE,
+    dates = NA,
+    scales = "CT",
+    breaks_q3 = NA,
+    breaks_q5 = NA,
+    source = "TKTK"
+  ) |>
+  add_variables(
     var_code = "access_jobs_30k_nwe",
-    var_name = "Low-income jobs (weekend night)",
-    explanation = 
-      "the number of jobs paying less than $30,000 accessible within 30 minutes at weekend night service") %>%
-  add_row(
+    var_title = "Low-income jobs (weekend night)",
+    var_short = "Low-inc WEN",
+    explanation = "the number of jobs paying less than $30,000 accessible within 30 minutes at weekend night service",
+    category = NA,
+    private = FALSE,
+    dates = NA,
+    scales = "CT",
+    breaks_q3 = NA,
+    breaks_q5 = NA,
+    source = "TKTK"
+  ) |>
+  add_variables(
     var_code = "access_schools_pwd",
-    var_name = "Schools (weekday peak)",
-    explanation = 
-      "the number of schools accessible within 30 minutes at weekday peak service") %>%
-  add_row(
+    var_title = "Schools (weekday peak)",
+    var_short = "Schools WKP",
+    explanation = "the number of schools accessible within 30 minutes at weekday peak service",
+    category = NA,
+    private = FALSE,
+    dates = NA,
+    scales = "CT",
+    breaks_q3 = NA,
+    breaks_q5 = NA,
+    source = "TKTK"
+  ) |>
+  add_variables(
     var_code = "access_schools_opwd",
-    var_name = "Schools (weekday off-peak)",
-    explanation = 
-      "the number of schools accessible within 30 minutes at weekday off-peak service") %>%
-  add_row(
+    var_title = "Schools (weekday off-peak)",
+    var_short = "Schools WKOP",
+    explanation = "the number of schools accessible within 30 minutes at weekday off-peak service",
+    category = NA,
+    private = FALSE,
+    dates = NA,
+    scales = "CT",
+    breaks_q3 = NA,
+    breaks_q5 = NA,
+    source = "TKTK"
+  ) |>
+  add_variables(
     var_code = "access_schools_nwd",
-    var_name = "Schools (weekday night)",
-    explanation = 
-      "the number of schools accessible within 30 minutes at weekday night service") %>%
-  add_row(
+    var_title = "Schools (weekday night)",
+    var_short = "Schools WKN",
+    explanation = "the number of schools accessible within 30 minutes at weekday night service",
+    category = NA,
+    private = FALSE,
+    dates = NA,
+    scales = "CT",
+    breaks_q3 = NA,
+    breaks_q5 = NA,
+    source = "TKTK"
+  ) |>
+  add_variables(
     var_code = "access_schools_pwe",
-    var_name = "Schools (weekend peak)",
-    explanation = 
-      "the number of schools accessible within 30 minutes at weekend peak service") %>%
-  add_row(
+    var_title = "Schools (weekend peak)",
+    var_short = "Schools WEP",
+    explanation = "the number of schools accessible within 30 minutes at weekend peak service",
+    category = NA,
+    private = FALSE,
+    dates = NA,
+    scales = "CT",
+    breaks_q3 = NA,
+    breaks_q5 = NA,
+    source = "TKTK"
+  ) |>
+  add_variables(
     var_code = "access_schools_opwe",
-    var_name = "Schools (weekend off-peak)",
-    explanation = 
-      "the number of schools accessible within 30 minutes at weekend off-peak service") %>%
-  add_row(
+    var_title = "Schools (weekend off-peak)",
+    var_short = "Schools WEOP",
+    explanation = "the number of schools accessible within 30 minutes at weekend off-peak service",
+    category = NA,
+    private = FALSE,
+    dates = NA,
+    scales = "CT",
+    breaks_q3 = NA,
+    breaks_q5 = NA,
+    source = "TKTK"
+  ) |>
+  add_variables(
     var_code = "access_schools_nwe",
-    var_name = "Schools (weekend night)",
-    explanation = 
-      "the number of schools accessible within 30 minutes at weekend night service") %>%
-  add_row(
+    var_title = "Schools (weekend night)",
+    var_short = "Schools WEN",
+    explanation = "the number of schools accessible within 30 minutes at weekend night service",
+    category = NA,
+    private = FALSE,
+    dates = NA,
+    scales = "CT",
+    breaks_q3 = NA,
+    breaks_q5 = NA,
+    source = "TKTK"
+  ) |>
+  add_variables(
     var_code = "access_healthcare_pwd",
-    var_name = "Healthcare (weekday peak)",
-    explanation = 
-      "the number of healthcare facilities accessible within 30 minutes at weekday peak service") %>%
-  add_row(
+    var_title = "Healthcare (weekday peak)",
+    var_short = "Healthcare WKP",
+    explanation = "the number of healthcare facilities accessible within 30 minutes at weekday peak service",
+    category = NA,
+    private = FALSE,
+    dates = NA,
+    scales = "CT",
+    breaks_q3 = NA,
+    breaks_q5 = NA,
+    source = "TKTK"
+  ) |>
+  add_variables(
     var_code = "access_healthcare_opwd",
-    var_name = "Healthcare (weekday off-peak)",
-    explanation = 
-      "the number of healthcare facilities accessible within 30 minutes at weekday off-peak service") %>%
-  add_row(
+    var_title = "Healthcare (weekday off-peak)",
+    var_short = "Healthcare WKOP",
+    explanation = "the number of healthcare facilities accessible within 30 minutes at weekday off-peak service",
+    category = NA,
+    private = FALSE,
+    dates = NA,
+    scales = "CT",
+    breaks_q3 = NA,
+    breaks_q5 = NA,
+    source = "TKTK"
+  ) |>
+  add_variables(
     var_code = "access_healthcare_nwd",
-    var_name = "Healthcare (weekday night)",
-    explanation = 
-      "the number of healthcare facilities within 30 minutes at weekday night service") %>%
-  add_row(
+    var_title = "Healthcare (weekday night)",
+    var_short = "Healthcare WKN",
+    explanation = "the number of healthcare facilities within 30 minutes at weekday night service",
+    category = NA,
+    private = FALSE,
+    dates = NA,
+    scales = "CT",
+    breaks_q3 = NA,
+    breaks_q5 = NA,
+    source = "TKTK"
+  ) |>
+  add_variables(
     var_code = "access_healthcare_pwe",
-    var_name = "Healthcare (weekend peak)",
-    explanation = 
-      "the number of healthcare facilities accessible within 30 minutes at weekend peak service") %>%
-  add_row(
+    var_title = "Healthcare (weekend peak)",
+    var_short = "Healthcare WEP",
+    explanation = "the number of healthcare facilities accessible within 30 minutes at weekend peak service",
+    category = NA,
+    private = FALSE,
+    dates = NA,
+    scales = "CT",
+    breaks_q3 = NA,
+    breaks_q5 = NA,
+    source = "TKTK"
+  ) |>
+  add_variables(
     var_code = "access_healthcare_opwe",
-    var_name = "Healthcare (weekend off-peak)",
-    explanation = 
-      "the number of healthcare facilities accessible within 30 minutes at weekend off-peak service") %>%
-  add_row(
+    var_title = "Healthcare (weekend off-peak)",
+    var_short = "Healthcare WEOP",
+    explanation = "the number of healthcare facilities accessible within 30 minutes at weekend off-peak service",
+    category = NA,
+    private = FALSE,
+    dates = NA,
+    scales = "CT",
+    breaks_q3 = NA,
+    breaks_q5 = NA,
+    source = "TKTK"
+  ) |>
+  add_variables(
     var_code = "access_healthcare_nwe",
-    var_name = "Healthcare (weekend night)",
-    explanation = 
-      "the number of healthcare facilities accessible within 30 minutes at weekend night service")
-  
+    var_title = "Healthcare (weekend night)",
+    var_short = "Healthcare WEN",
+    explanation = "the number of healthcare facilities accessible within 30 minutes at weekend night service",
+    category = NA,
+    private = FALSE,
+    dates = NA,
+    scales = "CT",
+    breaks_q3 = NA,
+    breaks_q5 = NA,
+    source = "TKTK"
+  )
+
 
 # Clean up ----------------------------------------------------------------
 

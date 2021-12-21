@@ -93,65 +93,149 @@ crash <-
 
 # Add variable explanations -----------------------------------------------
 
-var_exp <- 
-  var_exp %>% 
-  add_row(
+variables <- 
+  variables |>
+  add_variables(
     var_code = "crash_cyc",
-    var_name = "Collisions (cyclists)",
-    explanation = 
-      "the total number of car collisions involving cyclists") %>%
-  add_row(
+    var_title = "Collisions (cyclists)",
+    var_short = "Cyclists",
+    explanation = "the total number of car collisions involving cyclists",
+    category = NA,
+    private = FALSE,
+    dates = as.character(2012:2019),
+    scales = c("borough", "building", "CT", "DA", "grid", "street"),
+    breaks_q3 = NA,
+    breaks_q5 = NA,
+    source = "spvm_saaq") |>
+  add_variables(
     var_code = "crash_other",
-    var_name = "Collisions (other)",
-    explanation = 
-      "the total number of car collisions involving neither pedestrians or cyclists") %>%
-  add_row(
+    var_title = "Collisions (other)",
+    var_short = "Other",
+    explanation = "the total number of car collisions involving neither pedestrians or cyclists",
+    category = NA,
+    private = FALSE,
+    dates = as.character(2012:2019),
+    scales = c("borough", "building", "CT", "DA", "grid", "street"),
+    breaks_q3 = NA,
+    breaks_q5 = NA,
+    source = "spvm_saaq") |>
+  add_variables(
     var_code = "crash_ped",
-    var_name = "Collisions (pedestrians)",
-    explanation = 
-      "the total number of car collisions involving pedestrians") %>%
-  add_row(
+    var_title = "Collisions (pedestrians)",
+    var_short = "Pedestrian",
+    explanation = "the total number of car collisions involving pedestrians",
+    category = NA,
+    private = FALSE,
+    dates = as.character(2012:2019),
+    scales = c("borough", "building", "CT", "DA", "grid", "street"),
+    breaks_q3 = NA,
+    breaks_q5 = NA,
+    source = "spvm_saaq") |>
+  add_variables(
     var_code = "crash_total",
-    var_name = "Collisions",
-    explanation = 
-      "the total number of car collisions") %>%
-  add_row(
+    var_title = "Collisions",
+    var_short = "Total",
+    explanation = "the total number of car collisions",
+    category = NA,
+    private = FALSE,
+    dates = as.character(2012:2019),
+    scales = c("borough", "building", "CT", "DA", "grid", "street"),
+    breaks_q3 = NA,
+    breaks_q5 = NA,
+    source = "spvm_saaq") |>
+  add_variables(
     var_code = "crash_cyc_per1k",
-    var_name = "Collisions per 1,000 (cyclists)",
-    explanation = 
-      "the total number of car collisions involving cyclists per 1,000 residents") %>%
-  add_row(
+    var_title = "Collisions per 1,000 (cyclists)",
+    var_short = "per 1k cyc.",
+    explanation = "the total number of car collisions involving cyclists per 1,000 residents",
+    category = NA,
+    private = FALSE,
+    dates = as.character(2012:2019),
+    scales = c("borough", "building", "CT", "DA", "grid", "street"),
+    breaks_q3 = NA,
+    breaks_q5 = NA,
+    source = "spvm_saaq") |>
+  add_variables(
     var_code = "crash_other_per1k",
-    var_name = "Collisions per 1,000 (other)",
-    explanation = 
-      "the total number of car collisions involving neither pedestrians or cyclists per 1,000 residents") %>%
-  add_row(
+    var_title = "Collisions per 1,000 (other)",
+    var_short = "per 1k other",
+    explanation = "the total number of car collisions involving neither pedestrians or cyclists per 1,000 residents",
+    category = NA,
+    private = FALSE,
+    dates = as.character(2012:2019),
+    scales = c("borough", "building", "CT", "DA", "grid", "street"),
+    breaks_q3 = NA,
+    breaks_q5 = NA,
+    source = "spvm_saaq") |>
+  add_variables(
     var_code = "crash_ped_per1k",
-    var_name = "Collisions per 1,000 (pedestrians)",
-    explanation = 
-      "the total number of car collisions involving pedestrians per 1,000 residents") %>%
-  add_row(
+    var_title = "Collisions per 1,000 (pedestrians)",
+    var_short = "per 1k ped.",
+    explanation = "the total number of car collisions involving pedestrians per 1,000 residents",
+    category = NA,
+    private = FALSE,
+    dates = as.character(2012:2019),
+    scales = c("borough", "building", "CT", "DA", "grid", "street"),
+    breaks_q3 = NA,
+    breaks_q5 = NA,
+    source = "spvm_saaq") |>
+  add_variables(
     var_code = "crash_total_per1k",
-    var_name = "Collisions per 1,000",
-    explanation = 
-      "the total number of car collisions per 1,000 residents") %>%
-  add_row(
+    var_title = "Collisions per 1,000",
+    var_short = "per 1k total",
+    explanation = "the total number of car collisions per 1,000 residents",
+    category = NA,
+    private = FALSE,
+    dates = as.character(2012:2019),
+    scales = c("borough", "building", "CT", "DA", "grid", "street"),
+    breaks_q3 = NA,
+    breaks_q5 = NA,
+    source = "spvm_saaq") |>
+  add_variables(
     var_code = "crash_cyc_sqkm",
-    var_name = "Collisions per sq km (cyclists)",
-    explanation = 
-      "the total number of car collisions involving cyclists per square kilometre") %>%
-  add_row(
+    var_title = "Collisions per sq km (cyclists)",
+    var_short = "per sqkm cyc",
+    explanation = "the total number of car collisions involving cyclists per square kilometre",
+    category = NA,
+    private = FALSE,
+    dates = as.character(2012:2019),
+    scales = c("borough", "building", "CT", "DA", "grid", "street"),
+    breaks_q3 = NA,
+    breaks_q5 = NA,
+    source = "spvm_saaq") |>
+  add_variables(
     var_code = "crash_other_sqkm",
-    var_name = "Collisions per sq km (other)",
-    explanation = 
-      "the total number of car collisions involving neither pedestrians or cyclists per square kilometre") %>%
-  add_row(
+    var_title = "Collisions per sq km (other)",
+    var_short = "per sqkm oth",
+    explanation = "the total number of car collisions involving neither pedestrians or cyclists per square kilometre",
+    category = NA,
+    private = FALSE,
+    dates = as.character(2012:2019),
+    scales = c("borough", "building", "CT", "DA", "grid", "street"),
+    breaks_q3 = NA,
+    breaks_q5 = NA,
+    source = "spvm_saaq") |>
+  add_variables(
     var_code = "crash_ped_sqkm",
-    var_name = "Collisions per sq km (pedestrians)",
-    explanation = 
-      "the total number of car collisions involving pedestrians per square kilometre") %>%
-  add_row(
+    var_title = "Collisions per sq km (pedestrians)",
+    var_short = "per sqkm ped",
+    explanation = "the total number of car collisions involving pedestrians per square kilometre",
+    category = NA,
+    private = FALSE,
+    dates = as.character(2012:2019),
+    scales = c("borough", "building", "CT", "DA", "grid", "street"),
+    breaks_q3 = NA,
+    breaks_q5 = NA,
+    source = "spvm_saaq") |>
+  add_variables(
     var_code = "crash_total_sqkm",
-    var_name = "Collisions per sq km",
-    explanation = 
-      "the total number of car collisions per square kilometre")
+    var_title = "Collisions per sq km",
+    var_short = "per sqkm tot",
+    explanation = "the total number of car collisions per square kilometre",
+    category = NA,
+    private = FALSE,
+    dates = as.character(2012:2019),
+    scales = c("borough", "building", "CT", "DA", "grid", "street"),
+    breaks_q3 = NA,
+    breaks_q5 = NA,
+    source = "spvm_saaq")

@@ -113,32 +113,67 @@ street <-
 
 # Add variable explanations -----------------------------------------------
 
-var_exp <- 
-  var_exp %>% 
-  add_row(
+variables <- 
+variables |>
+  add_variables(
     var_code = "drought_ind",
-    var_name = "Drought vulnerability",
-    explanation = paste0("the vulnerability to climate-change related ",
-                         "drought events")) %>% 
-  add_row(
+    var_title = "Drought vulnerability",
+    var_short = "Drought",
+    explanation = "the vulnerability to climate-change related drought events",
+    category = NA,
+    private = FALSE,
+    dates = "2016",
+    scales = c("borough", "building", "CT", "DA", "grid", "street"),
+    breaks_q3 = NA,
+    breaks_q5 = NA,
+    source = "TKTK") |> 
+  add_variables(
     var_code = "flood_ind",
-    var_name = "Flood vulnerability",
-    explanation = paste0("the vulnerability to climate-change related ",
-                         "flooding events")) %>% 
-  add_row(
+    var_title = "Flood vulnerability",
+    var_short = "Flood",
+    explanation = "the vulnerability to climate-change related flooding events",
+    category = NA,
+    private = FALSE,
+    dates = "2016",
+    scales = c("borough", "building", "CT", "DA", "grid", "street"),
+    breaks_q3 = NA,
+    breaks_q5 = NA,
+    source = "TKTK") |> 
+  add_variables(
     var_code = "heavy_rain_ind",
-    var_name = "Heavy rain vulnerability",
-    explanation = paste0("the vulnerability to climate-change related ",
-                         "heavy rain events")) %>% 
-  add_row(
+    var_title = "Heavy rain vulnerability",
+    var_short = "Heavy rain",
+    explanation = "the vulnerability to climate-change related heavy rain events",
+    category = NA,
+    private = FALSE,
+    dates = "2016",
+    scales = c("borough", "building", "CT", "DA", "grid", "street"),
+    breaks_q3 = NA,
+    breaks_q5 = NA,
+    source = "TKTK") |> 
+  add_variables(
     var_code = "destructive_storms_ind",
-    var_name = "Destructive storm vulnerability",
-    explanation = paste0("the vulnerability to climate-change related ",
-                         "destructive storm events")) %>% 
-  add_row(
+    var_title = "Destructive storm vulnerability",
+    var_short = "Destr. storm",
+    explanation = "the vulnerability to climate-change related destructive storm events",
+    category = NA,
+    private = FALSE,
+    dates = "2016",
+    scales = c("borough", "building", "CT", "DA", "grid", "street"),
+    breaks_q3 = NA,
+    breaks_q5 = NA,
+    source = "TKTK") |> 
+  add_variables(
     var_code = "heat_wave_ind",
-    var_name = "Heat wave vulnerability",
-    explanation = paste0("the vulnerability to climate-change related ",
-                         "heat wave events"))
-  
+    var_title = "Heat wave vulnerability",
+    var_short = "Heat wave",
+    explanation = "the vulnerability to climate-change related heat wave events",
+    category = NA,
+    private = FALSE,
+    dates = "2016",
+    scales = c("borough", "building", "CT", "DA", "grid", "street"),
+    breaks_q3 = NA,
+    breaks_q5 = NA,
+    source = "TKTK")
+
 # To save output, run dev/build_data.R, which calls this script
