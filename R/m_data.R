@@ -7,9 +7,7 @@
 #' "_q3".
 #' @param df A reactive which resolves to a character string representing the
 #' underlying data set to be loaded. Currently available options are 
-#' `c("borough", "CT", "DA", "DA_2" and "grid")`, although "DA_2" is silently 
-#' converted to "DA" and is present as a convenience feature to avoid having to
-#' separately specify the `zoom` argument.
+#' `c("borough", "building", "CT", "DA", "grid", "street)`.
 #' @param zoom A reactive which resolves to a character string representing the
 #' amount of transparency to be applied to the fill aesthetic in maps made from
 #' the data. Currently available options are 
@@ -42,6 +40,9 @@ data_server <- function(id, var_left, var_right, df, zoom = df) {
       # Get borough/CT/DA/grid/etc
       data <- get(df())
       
+      # Get data type
+      data_type <- get_data_type(data, var_keft, var_right)
+      
       var_left <- unique(var_left())
       var_right <- unique(var_right())
       
@@ -72,11 +73,13 @@ data_server <- function(id, var_left, var_right, df, zoom = df) {
           get("colour_left_3_DA")
         } else get(paste0("colour_bivar_", zoom()))
       
-      # Facilitate code legibility by pre-createing q3 column names
-      name_left_q3_col <- paste0(str_remove(all_of(var_left), time_format_var_left), 
-                                 "_q3", na.omit(str_extract(var_left, time_format_var_left)))
-      name_right_q3_col <- paste0(str_remove(var_right, time_format_var_right), 
-                                  "_q3", na.omit(str_extract(var_right, time_format_var_right)))
+      # Facilitate code legibility by pre-creating q3 column names
+      name_left_q3_col <- 
+        paste0(str_remove(all_of(var_left), time_format_var_left), "_q3", 
+               na.omit(str_extract(var_left, time_format_var_left)))
+      name_right_q3_col <- 
+        paste0(str_remove(var_right, time_format_var_right), "_q3", 
+               na.omit(str_extract(var_right, time_format_var_right)))
       
       # Add NA column if q3 doesn't exist
       if (length(name_left_q3_col) == 1 && 
@@ -157,12 +160,14 @@ data_server <- function(id, var_left, var_right, df, zoom = df) {
                       right_var = (right_var2 - right_var1) / abs(right_var1),
                       right_var_q3 = ntile(right_var, 3),
                       across(where(is.numeric), ~replace(., is.nan(.), NA)),
-                      across(where(is.numeric), ~replace(., is.infinite(.), NA))) %>% 
+                      across(where(is.numeric), ~replace(., is.infinite(.), 
+                                                         NA))) %>% 
                  select(., ID, name, name_2, any_of("CSDUID"), population, 
                         left_var, left_var_q3, right_var, right_var_q3,
-                        any_of(c("left_var1", "left_var2", "right_var1", "right_var2"))) else .} %>%
+                        any_of(c("left_var1", "left_var2", "right_var1", 
+                                 "right_var2"))) else .} %>%
              # Not always census variables: sometimes we will have data for
-             # one variable in different year than the other, like crash data vs borough.
+             # one variable in different year than the other, e.g. crash vs borough.
              # We might have to show different crash years vs same census year.
              { if (length(var_left) == 2 && length(var_right) == 1) 
                mutate(., left_var = (left_var2 - left_var1) / abs(left_var1),
@@ -170,20 +175,24 @@ data_server <- function(id, var_left, var_right, df, zoom = df) {
                       right_var = var_right, 
                       right_var_q3 = eval(as.name(name_right_q3_col)),
                       across(where(is.numeric), ~replace(., is.nan(.), NA)),
-                      across(where(is.numeric), ~replace(., is.infinite(.), NA))) %>% 
+                      across(where(is.numeric), ~replace(., is.infinite(.), 
+                                                         NA))) %>% 
                  select(., ID, name, name_2, any_of("CSDUID"), population, 
                         left_var, left_var_q3, right_var, right_var_q3,
-                        any_of(c("left_var1", "left_var2", "right_var1", "right_var2"))) else .} %>%
+                        any_of(c("left_var1", "left_var2", "right_var1", 
+                                 "right_var2"))) else .} %>%
              { if (length(var_left) == 1 && length(var_right) == 2)
                mutate(., left_var = var_left,
                       left_var_q3 = eval(as.name(name_left_q3_col)),
                       right_var = (right_var2 - right_var1) / abs(right_var1),
                       right_var_q3 = ntile(right_var, 3),
                       across(where(is.numeric), ~replace(., is.nan(.), NA)),
-                      across(where(is.numeric), ~replace(., is.infinite(.), NA))) %>%
+                      across(where(is.numeric), ~replace(., is.infinite(.), 
+                                                         NA))) %>%
                  select(., ID, name, name_2, any_of("CSDUID"), population,
                         left_var, left_var_q3, right_var, right_var_q3,
-                        any_of(c("left_var1", "left_var2", "right_var1", "right_var2"))) else .} %>%
+                        any_of(c("left_var1", "left_var2", "right_var1", 
+                                 "right_var2"))) else .} %>%
              mutate(group = paste(left_var_q3, "-", right_var_q3)) %>% 
              left_join(colour, by = "group"))
       }
