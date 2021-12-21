@@ -16,6 +16,6 @@ add_variables <- function(data, var_code, var_title, var_short, explanation,
           scales = list(scales),
           breaks_q3 = list(breaks_q3),
           breaks_q5 = list(breaks_q5),
-          source = source
-  )
+          source = source)
+  
 }

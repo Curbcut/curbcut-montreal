@@ -96,11 +96,20 @@ rm(canale, DA_data, grid_data)
 
 # Add variable explanations -----------------------------------------------
 
-var_exp <- 
-  var_exp %>% 
-  add_row(
+variables |>
+  add_variables(
     var_code = "canale_ind",
-    var_name = "CanALE index",
-    explanation = "the potential for active living")
+    var_title = "CanALE index",
+    var_short = "CanALE",
+    explanation = "the potential for active living",
+    category = NA,
+    private = FALSE,
+    dates = c("2016"),
+    scales = c("borough", "building", "CT", "DA", "grid", "street"),
+    breaks_q3 = "TKTK",
+    breaks_q5 = "TKTK",
+    source = "mcgill_geosdh_research_group")
+warning(paste0("q3 and q5 not fully integrated for canale_ind in the ",
+               "variables table. Warning coming from `dev/modules/canale.R`"))
   
 # To save output, run dev/build_data.R, which calls this script
