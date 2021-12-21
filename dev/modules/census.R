@@ -121,6 +121,7 @@ building <-
 
 # Add to variables table --------------------------------------------------
 
+##### //i\\ add street and building to data_to_add[[2]] scales! //i\\ #####
 variables <- bind_rows(variables, data_to_add[[2]])
 
 

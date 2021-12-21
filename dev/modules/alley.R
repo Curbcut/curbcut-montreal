@@ -199,15 +199,31 @@ rm(alleys_mtl, alleys_google, alleys_mn, alleys_visited, alleys_to_filter,
 
 # Variable explanations ---------------------------------------------------
 
-var_exp <- 
-  var_exp %>% 
-  add_row(
+variables <-
+  variables |>
+  add_variables(
     var_code = "green_alley_sqkm",
-    var_name = "Green alleys per sq km",
-    explanation = 
-      "the number of square meters of green alley per square kilometers") %>%
-  add_row(
+    var_title = "Green alleys per sq km",
+    var_short = "Alleys sqkm",
+    explanation = paste0("the number of square meters of green alley per ",
+                         "square kilometers"),
+    category = NA,
+    private = FALSE,
+    dates = NA,
+    scales = c("borough", "CT", "DA"),
+    breaks_q3 = NA,
+    breaks_q5 = NA,
+    source = "mtl_data") |> 
+  add_variables(
     var_code = "green_alley_per1k",
-    var_name = "Green alleys per 1,000",
-    explanation = 
-      "the number of square meters of green alley per 1,000 residents")
+    var_title = "Green alleys per 1,000",
+    var_short = "Alleys 1,000",
+    explanation = paste0("the number of square meters of green alley per ",
+                         "1,000 residents"),
+    category = NA,
+    private = FALSE,
+    dates = NA,
+    scales = c("borough", "CT", "DA"),
+    breaks_q3 = NA,
+    breaks_q5 = NA,
+    source = "mtl_data") |> View()
