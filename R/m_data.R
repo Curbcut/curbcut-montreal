@@ -40,6 +40,9 @@ data_server <- function(id, var_left, var_right, df, zoom = df) {
       # Get borough/CT/DA/grid/etc
       data <- get(df())
       
+      # Get data type
+      data_type <- get_data_type(data, var_keft, var_right)
+      
       var_left <- unique(var_left())
       var_right <- unique(var_right())
       
