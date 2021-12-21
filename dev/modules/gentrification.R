@@ -13,46 +13,52 @@ neg_vars <- c("housing_tenant_pct", "iden_vm_pct")
 
 dates_list <- c(1996,2001,2006,2011,2016)
 
-index_fun <- function(df){
+index_fun <- function(df) {
   
-  pre_index_fun <- function(df, year) {
-    
-    # Get dfs of all the vars across census
-    list_dfs <- 
-      purrr::map(dates_list, ~{
-        df %>% 
-          st_drop_geometry() %>% 
-          select(starts_with(vars)) %>%
-          select(ends_with(as.character(.x))) %>% 
-          select(!contains("q3")) %>% 
-          rename_with(~paste0(str_remove(.x, "_\\d{4}$")), everything())
-      })
-    
-    # Bind the previous dfs together, to bring all values of all years in one big df
-    binded_dfs <- purrr::reduce(list_dfs, rbind)
-    
-    # Give a position to all values, to enable to possibility of creating an indice
-    vars_ranked <- 
-      binded_dfs %>% 
-      mutate(across(everything(), ~ (.- mean(., na.rm = T))/sd(., na.rm = T), .names = "{.col}_zscore")) %>% 
-      # mutate(across(everything(), percent_rank, .names = "{.col}_rank")) %>% 
-      # Invert the zscore for the 2 variables that have reverse impact
-      mutate(across(paste0(neg_vars, "_zscore"), ~ .*-1))
+  # Get dfs of all the vars across census
+  list_dfs <- 
+    purrr::map(dates_list, ~{
+      df %>% 
+        st_drop_geometry() %>% 
+        select(starts_with(vars)) %>%
+        select(ends_with(as.character(.x))) %>% 
+        select(!contains(c("q3","q5"))) %>% 
+        rename_with(~paste0(str_remove(.x, "_\\d{4}$")), everything())
+    })
+  
+  # Bind the previous dfs together, to bring all values of all years in one big df
+  binded_dfs <- purrr::reduce(list_dfs, rbind)
+  
+  # Give a position to all values, to enable to possibility of creating an indice
+  vars_ranked <- 
+    binded_dfs %>% 
+    mutate(across(everything(), ~ (.- mean(., na.rm = T))/sd(., na.rm = T), .names = "{.col}_zscore")) %>% 
+    # mutate(across(everything(), percent_rank, .names = "{.col}_rank")) %>% 
+    # Invert the zscore for the 2 variables that have reverse impact
+    mutate(across(paste0(neg_vars, "_zscore"), ~ .*-1)) |> 
+    distinct()
+  
+  pre_index_fun <- purrr::map(dates_list, function(year) {
     
     # Apply these ranks for a given year to the right df ID
     ranked_per_year <- 
-      purrr::map(paste0(vars, "_", year), ~{df %>% 
-          st_drop_geometry() %>% 
+      purrr::map(paste0(vars, "_", year), ~{
+        
+        rank <-
+        vars_ranked |>
+          select(starts_with(str_remove(.x, "_\\d{4}$"))) |> 
+          rename_with(~paste0(.x, "_", year), everything())
+
+        df %>%
+          st_drop_geometry() %>%
           select(ID, .x) %>%
-          inner_join((vars_ranked %>% 
-                        rename_with(~paste0(.x, "_", year), everything()) %>% 
-                        select(contains(str_remove(.x, "_\\d{4}$"))) %>% 
-                        distinct())) %>%
-          select(-.x)
+          left_join(rank, by = all_of(.x)) %>%
+          select(-.x) |> 
+          distinct()
       })
     
     reduced <- 
-      purrr::reduce(ranked_per_year, left_join)
+      purrr::reduce(ranked_per_year, left_join, by = "ID")
     
     # Create the indice for that year
     id_index <- 
@@ -67,9 +73,11 @@ index_fun <- function(df){
     
     id_index
     
-  }
+  })
   
-  left_join(df, purrr::reduce(purrr::map(dates_list, ~{pre_index_fun(df, .x)}), left_join))
+     
+  reduced <- purrr::reduce(pre_index_fun, left_join, by = "ID")
+  left_join(df, reduced, by = "ID")
   
 }
 
