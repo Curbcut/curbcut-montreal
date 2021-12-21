@@ -9,7 +9,7 @@
 progressr::handlers(global = TRUE)
 
 # Turn on parallel processing
-library(future)
+suppressPackageStartupMessages(library(future))
 plan(multisession)
 
 # Lists of scales and years
@@ -129,7 +129,7 @@ variables <- bind_rows(variables, data_to_add[[2]])
 rm(scales, years, add_census_data, add_q3, add_q5, add_vars, add_years, agg_add,
    agg_avg, drop_vars, find_breaks_q5, get_agg_type, get_breaks_q3, 
    get_breaks_q5, get_categories_q5, get_census_vectors, get_empty_geometries,
-   get_unit_type, interpolate, interpolate_other, merge_breakas, normalize,
+   get_unit_type, interpolate, interpolate_other, merge_breaks, normalize,
    reduce_years, swap_csd_to_borough, weighted_mean, census_vec, parent_vectors,
    DA_census)
 

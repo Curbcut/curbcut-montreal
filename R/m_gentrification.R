@@ -69,15 +69,6 @@ gentrification_server <- function(id) {
     # Get time from slider
     time <- reactive({input$slider_time})
     
-    # # If the same time is selected twice, send a notification
-    # output$same_time_disclaimer <- renderText({
-    #   if (length(unique(time())) == 1) {
-    #     str_glue(sus_translate(paste0(
-    #       "<p style='font-size:11px;'>",
-    #       "Gentrification is a process that can only be quantified over time. ",
-    #       "Please, select two different years.</i></p>")))
-    #   }
-    # })
     observe({
       if (length(unique(time())) == 1) {
         shinyalert::shinyalert(text = paste0("Gentrification is a process that ",

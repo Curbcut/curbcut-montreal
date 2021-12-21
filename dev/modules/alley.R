@@ -172,13 +172,13 @@ lengths_alleys_fun <- function(data) {
   sqm_per_id <- 
   alleys_length %>% 
     rename(alley_ID = ID) %>% 
-    st_join(select(data, ID)) %>% 
+    st_join(select(data, ID), by = "ID") %>% 
     st_drop_geometry() %>% 
     group_by(ID) %>% 
     summarize(green_alley_sqm = round(units::drop_units(sum(green_alley_sqm, na.rm = T))))
   
   data %>% 
-    left_join(sqm_per_id) %>% 
+    left_join(sqm_per_id, by = "ID") %>% 
     mutate(green_alley_sqkm = 1000 * green_alley_sqm / units::drop_units(st_area(geometry)),
            green_alley_per1k =  1000 * green_alley_sqm / population) %>% 
     select(-green_alley_sqm) %>% 

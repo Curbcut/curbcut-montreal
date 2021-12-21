@@ -48,7 +48,7 @@ make_dropdown <-
     }
     
     c("----" = " ",
-      purrr::map(set_names(unique(census_var$dropdown_category)), function(cat) {
+      purrr::map(purrr::set_names(unique(census_var$dropdown_category)), function(cat) {
         category_vectors <- 
           census_var |> 
           filter(dropdown_category == cat) |> 
@@ -56,7 +56,7 @@ make_dropdown <-
         
         purrr::map(category_vectors$var_title, function(name) {
           category_vectors[category_vectors$var_title == name, ]$var_code
-        }) |> set_names(category_vectors$var_title)
+        }) |> purrr::set_names(category_vectors$var_title)
       })
     )
   }

@@ -4,12 +4,12 @@
 
 # Index function ----------------------------------------------------------
 
-vars <- c("edu_bachelor_above_prop", "inc_median_dollar", "housing_value_avg_dollar",
-          "housing_rent_avg_dollar", "housing_tenant_prop", "iden_vm_prop")
+vars <- c("edu_bachelor_above_pct", "inc_median_dollar", "housing_value_avg_dollar",
+          "housing_rent_avg_dollar", "housing_tenant_pct", "iden_vm_pct")
 
 weight <- c(0.143, 0.054, 0.054, 0.054, 0.347, 0.347)
 
-neg_vars <- c("housing_tenant_prop", "iden_vm_prop")
+neg_vars <- c("housing_tenant_pct", "iden_vm_pct")
 
 dates_list <- c(1996,2001,2006,2011,2016)
 
