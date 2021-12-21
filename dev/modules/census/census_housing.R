@@ -130,4 +130,5 @@ census_vec <-
 # Parent vector -----------------------------------------------------------
 
 parent_vectors <- c(parent_vectors, 
-                    c("housing_value_avg_dollar" = "v_CA01_1670"))
+                    c("housing_value_avg_dollar" = "v_CA01_1670",
+                      "housing_mobility_five_pct" = "v_CA1996_1394"))

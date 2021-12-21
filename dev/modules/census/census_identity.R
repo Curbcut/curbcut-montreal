@@ -55,3 +55,9 @@ census_vec <-
     explanation = "the percentage of people who are of aboriginal identity",
     private = FALSE)
   
+parent_vectors <- c(parent_vectors, 
+                    c("iden_imm_new_pct" = "v_CA1996_125", 
+                      "iden_imm_new_pct" = "v_CA01_402",
+                      "iden_imm_new_pct" = "v_CA06_474",
+                      "iden_imm_new_pct" = "v_CA11N_16",
+                      "iden_imm_new_pct" = "v_CA16_3405"))

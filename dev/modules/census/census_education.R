@@ -38,4 +38,12 @@ census_vec <-
 
 parent_vectors  <- c(parent_vectors,
                      c("edu_no_degree_pct" = c("v_CA06_1234", "v_CA06_1248", "v_CA06_1262"),
-                       "edu_bachelor_above_pct" = c("v_CA06_1234", "v_CA06_1248", "v_CA06_1262")))
+                       "edu_bachelor_above_pct" = c("v_CA06_1234", "v_CA06_1248", "v_CA06_1262"),
+                       "edu_no_degree_pct" = "v_CA1996_1347",
+                       "edu_bachelor_above_pct" = "v_CA1996_1347",
+                       "edu_no_degree_pct" = "v_CA01_1384",
+                       "edu_bachelor_above_pct" = "v_CA01_1384",
+                       "edu_no_degree_pct" = "v_CA11N_1771",
+                       "edu_bachelor_above_pct" = "v_CA11N_1771",
+                       "edu_no_degree_pct" = "v_CA16_5051",
+                       "edu_bachelor_above_pct" = "v_CA16_5051"))

@@ -37,4 +37,6 @@ census_vec <-
 parent_vectors <- c(parent_vectors,
                     c("family_children_pct" = "v_CA11F_115",
                       "family_children_pct" = "v_CA06_55",
-                      "family_children_pct" = "v_CA01_53"))
+                      "family_children_pct" = "v_CA01_53",
+                      "family_children_pct" = "v_CA16_504",
+                      "family_one_person_pct" = "v_CA16_504"))
