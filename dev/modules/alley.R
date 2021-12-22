@@ -219,7 +219,7 @@ meta_testing()
 # Clean up ----------------------------------------------------------------
 
 rm(alleys_mtl, alleys_google, alleys_mn, alleys_visited, alleys_to_filter, 
-   alleys_visited_text, missing_photos, alley_text, alleys_length,
+   alleys_visited_text, missing_photos, alleys_length,
    mtl_ids, lengths_alleys_fun, join_alleys)
 
 
