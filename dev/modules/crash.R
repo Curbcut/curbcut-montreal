@@ -40,12 +40,13 @@ process_crash <- function(x) {
     select(-contains("NA")) |> 
     left_join(select(x, ID, population), ., by = "ID") |> 
     st_as_sf() |> 
+    rename_with(~paste0(., "_count"), starts_with("crash")) |> 
     mutate(across(starts_with("crash"), 
                   .fns = list(
                     sqkm = ~{1000000 * .x / 
                         units::drop_units(st_area(geometry))},
                     per1k = ~{1000 * .x / population}),
-                  .names = "{.col}_{.fn}"), .before = geometry) |> 
+                  .names = "{str_remove(.col, '_count')}_{.fn}"), .before = geometry) |> 
     mutate(across(starts_with("crash"), ~replace(., is.na(.), 0))) |> 
     mutate(across(starts_with("crash"), ~replace(., is.infinite(.), 0))) |> 
     mutate(across(starts_with("crash"), ntile, n = 3, .names = "{.col}_q3"), 
