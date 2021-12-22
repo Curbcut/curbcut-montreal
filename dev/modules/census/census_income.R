@@ -47,7 +47,7 @@ census_vec <-
   add_row_census_vec(
     var_code = "inc_high_pct",
     vec_2016 = "v_CA16_2421",
-    vec_2011 = "v_CA11N_2546",
+    vec_2011 = c("v_CA11N_2544", "v_CA11N_2545", "v_CA11N_2546"),
     vec_2006 = "v_CA06_1999",
     vec_2001 = "v_CA01_1632",
     vec_1996 = "v_CA1996_1625",
