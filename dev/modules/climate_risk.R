@@ -111,6 +111,11 @@ street <-
   relocate(geometry, .after = last_col())
 
 
+# Meta testing ------------------------------------------------------------
+
+meta_testing()
+
+
 # Add variable explanations -----------------------------------------------
 
 variables <- 

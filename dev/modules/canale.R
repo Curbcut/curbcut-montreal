@@ -13,6 +13,10 @@ canale <-
   select(DAUID, CTUID, canale_ind_2016 = ale_index)
 
 
+# Data testing ------------------------------------------------------------
+
+data_testing(data = list("canale" = canale))
+
 # Add to existing geographies ---------------------------------------------
 
 DA <- 
@@ -92,6 +96,11 @@ street <-
   st_set_agr("constant")
 
 rm(canale, DA_data, grid_data)
+
+
+# Meta testing ------------------------------------------------------------
+
+meta_testing()
 
 
 # Add variable explanations -----------------------------------------------

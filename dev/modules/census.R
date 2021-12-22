@@ -78,6 +78,24 @@ census_vec <-
 data_to_add <- 
   add_census_data(census_vec, scales, years, parent_vectors)
 
+# Take a few DA/grid columns out. Errors most likely due to anomalies in that
+# year's NHS survey.
+data_to_add[[1]]$DA <- 
+  data_to_add[[1]]$DA |>
+  select(!(starts_with("iden_aboriginal_pct") & ends_with("_2011"))) |>
+  select(!(starts_with("emp_creative_pct") & ends_with("_2011")))
+
+data_to_add[[1]]$grid <- 
+  data_to_add[[1]]$grid |>
+  select(!(starts_with("iden_aboriginal_pct") & ends_with("_2011"))) |>
+  select(!(starts_with("emp_creative_pct") & ends_with("_2011")))
+
+
+# Data testing ------------------------------------------------------------
+
+data_testing(data_to_add[[1]])
+
+
 # Assign data -------------------------------------------------------------
 
 borough <- 
@@ -120,6 +138,11 @@ building <-
 
 # Adding building and street scales
 data_to_add[[2]]$scales <- map(map(data_to_add[[2]]$scales, c, "building", "street"), str_sort)
+
+
+# Meta data testing -------------------------------------------------------
+
+meta_testing()
 
 
 # Add to variables table --------------------------------------------------

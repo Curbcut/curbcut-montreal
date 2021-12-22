@@ -67,6 +67,12 @@ access <-
   rename_with(~paste0("access_", .x), jobs_total_pwe:healthcare_pwd)
 
 
+
+# Data testing ------------------------------------------------------------
+
+data_testing(list("access" = access))
+
+
 # Add to existing geographies ---------------------------------------------
 
 CT <-
@@ -86,6 +92,12 @@ tt_matrix <-
   select(timing, origin = CT, destination, travel_time) |> 
   left_join(points, by = c("destination" = "GeoUID")) |> 
   select(timing, origin, destination = CT, travel_time)
+
+
+
+# Meta testing ------------------------------------------------------------
+
+meta_testing()
 
 
 # Add variable explanations -----------------------------------------------

@@ -69,6 +69,9 @@ stopifnot(
   sum(st_agr(street) != "constant") == 0
 )
 
+source("dev/other/data_testing.R")
+source("dev/other/meta_testing.R")
+
 
 # Build variable table ----------------------------------------------------
 
@@ -147,3 +150,9 @@ invisible(file.copy(list.files("data", full.names = TRUE),
                     "~/Dropbox/sus_sync/data"))
 invisible(file.copy(list.files("www/maps", full.names = TRUE), 
                     "~/Dropbox/sus_sync/www_maps"))
+
+
+# Cleanup -----------------------------------------------------------------
+
+rm(add_variables, data_testing, meta_testing)
+

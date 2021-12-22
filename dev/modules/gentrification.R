@@ -74,20 +74,46 @@ index_fun <- function(df) {
     id_index
   })
 
-
-  reduced <- purrr::reduce(pre_index_fun, left_join, by = "ID")
-  left_join(df, reduced, by = "ID")
+  purrr::reduce(pre_index_fun, left_join, by = "ID")
 }
+
+gen_to_join <- 
+  map(list("borough" = borough, "CT" = CT, "DA" = DA, 
+           "grid" = grid, "street" = street, 
+           "building" = building), index_fun)
+
+
+# Data testing ------------------------------------------------------------
+
+# data_testing(gen_to_join)
+# Wranings on absolute average difference between years. In the case of
+# gentrification ind., these warnings should be taken lightly.
 
 
 # Apply function ----------------------------------------------------------
 
-borough <- index_fun(borough)
-CT <- index_fun(CT)
-DA <- index_fun(DA)
-grid <- index_fun(grid)
-street <- index_fun(street)
-building <- index_fun(building)
+borough <- left_join(borough, gen_to_join$borough, by = "ID") |> 
+  relocate(geometry, .after = last_col())
+
+CT <- left_join(CT, gen_to_join$CT, by = "ID") |> 
+  relocate(geometry, .after = last_col())
+
+DA <- left_join(DA, gen_to_join$DA, by = "ID") |> 
+  relocate(geometry, .after = last_col())
+
+grid <- left_join(grid, gen_to_join$grid, by = "ID") |> 
+  relocate(geometry, .after = last_col())
+
+street <- left_join(street, gen_to_join$street, by = "ID") |> 
+  relocate(geometry, .after = last_col())
+
+building <- left_join(building, gen_to_join$building, by = "ID") |> 
+  relocate(geometry, .after = last_col())
+
+
+# Meta testing ------------------------------------------------------------
+
+meta_testing()
 
 
 # Add variable explanations -----------------------------------------------
@@ -110,4 +136,4 @@ variables <-
 
 # Clean-up ----------------------------------------------------------------
 
-rm(vars, neg_vars, dates_list, index_fun)
+rm(vars, neg_vars, dates_list, index_fun, weight, gen_to_join)

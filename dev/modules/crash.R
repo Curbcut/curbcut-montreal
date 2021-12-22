@@ -21,10 +21,9 @@ crash <-
          day = JR_SEMN_AC, hour = HEURE_ACCD, geometry)
 
 
-# Aggregate data to census tables -----------------------------------------
+# Aggregate data to geometries --------------------------------------------
 
 process_crash <- function(x) {
-  join_results <- 
     crash |> 
     st_transform(32618) |> 
     st_join(st_transform(x, 32618)) |> 
@@ -38,30 +37,50 @@ process_crash <- function(x) {
                 names_prefix = "crash_",
                 names_sep = "_",
                 values_from = n) |> 
-    select(-contains("NA"))
-  
-  x |> 
-    left_join(join_results, by = "ID") |> 
-    relocate(starts_with("crash"), .before = geometry) |> 
+    select(-contains("NA")) |> 
+    left_join(select(x, ID, population), ., by = "ID") |> 
+    st_as_sf() |> 
     mutate(across(starts_with("crash"), 
                   .fns = list(
                     sqkm = ~{1000000 * .x / 
                         units::drop_units(st_area(geometry))},
                     per1k = ~{1000 * .x / population}),
                   .names = "{.col}_{.fn}"), .before = geometry) |> 
+    mutate(across(starts_with("crash"), ~replace(., is.na(.), 0))) |> 
+    mutate(across(starts_with("crash"), ~replace(., is.infinite(.), 0))) |> 
     mutate(across(starts_with("crash"), ntile, n = 3, .names = "{.col}_q3"), 
            .before = geometry) |> 
     rename_with(~paste0(str_remove(., "_\\d{4}"), 
                         str_extract(., "_\\d{4}")), starts_with("crash")) |> 
+    select(-population) |> 
+    st_drop_geometry()
+}
+
+crash_results <- map(list("borough" = borough, 
+                          "CT" = CT, "DA" = DA, "grid" = grid), process_crash)
+
+
+# Data testing ------------------------------------------------------------
+
+data_testing(crash_results)
+
+
+# Join to geometries ------------------------------------------------------
+
+join_crash <- function(x, join_results) {
+  x |> 
+    left_join(join_results, by = "ID") |> 
+    relocate(starts_with("crash"), .before = geometry) |> 
     st_set_agr("constant")
 }
 
-crash_results <- map(list(borough, CT, DA, grid), process_crash)
+walk()
 
-borough <- crash_results[[1]]
-CT <- crash_results[[2]]
-DA <- crash_results[[3]]
-grid <- crash_results[[4]]
+
+borough <- join_crash(borough, crash_results$borough)
+CT <- join_crash(CT, crash_results$CT)
+DA <- join_crash(DA, crash_results$DA)
+grid <- join_crash(grid, crash_results$grid)
 
 building <- 
   building |> 
@@ -75,8 +94,6 @@ street <-
             by = c("DAUID" = "ID")) |>
   relocate(geometry, .after = last_col())
 
-rm(crash_results, process_crash)
-
 
 # Add additional fields to crash ------------------------------------------
 
@@ -89,6 +106,11 @@ crash <-
                           type == "cyc" ~ "#6C83B5EE",
                           type == "other" ~ "#F39D60EE",
                           TRUE ~ "#E8E8E8EE"), .before = geometry)
+
+
+# Meta testing ------------------------------------------------------------
+
+meta_testing()
 
 
 # Add variable explanations -----------------------------------------------
@@ -239,3 +261,9 @@ variables <-
     breaks_q3 = NA,
     breaks_q5 = NA,
     source = "spvm_saaq")
+
+
+# Clean-up ----------------------------------------------------------------
+
+rm(crash_results, process_crash, join_crash)
+

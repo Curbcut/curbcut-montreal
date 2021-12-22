@@ -31,7 +31,7 @@ round_img_shadow <- function(img_name) {
   shadow_info <- magick::image_info(shadow_right)
   
   shadow_right <-
-    image_crop(shadow_right, paste0({shadow_info$width-334}, "x", 
+    image_crop(shadow_right, paste0({shadow_info$width - 334}, "x", 
                                            shadow_info$height, "+167"))
   shadow_right <- 
     image_resize(shadow_right, 
@@ -41,7 +41,7 @@ round_img_shadow <- function(img_name) {
   
   # create an image composite using both images
   round_img_shadow <- 
-    magick::image_composite(img1, shadow_right, operator='copyopacity')
+    magick::image_composite(img1, shadow_right, operator = 'copyopacity')
   
   image_write(round_img_shadow, paste0("www/stories/round_img/", img_name))
   image_write(bandeau, paste0("www/stories/bandeau_img/", img_name))
@@ -50,7 +50,7 @@ round_img_shadow <- function(img_name) {
 
 stories_img <- str_subset(list.files("www/stories/raw_img"), ".png$")
 
-if (length(stories_img) != length(list.files("www/stories/raw_img"))){
+if (length(stories_img) != length(list.files("www/stories/raw_img"))) {
   not_pngs <- 
   list.files("www/stories/raw_img")[!list.files("www/stories/raw_img") %in% 
                                       stories_img]
