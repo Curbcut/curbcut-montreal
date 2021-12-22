@@ -75,9 +75,6 @@ join_crash <- function(x, join_results) {
     st_set_agr("constant")
 }
 
-walk()
-
-
 borough <- join_crash(borough, crash_results$borough)
 CT <- join_crash(CT, crash_results$CT)
 DA <- join_crash(DA, crash_results$DA)
