@@ -96,7 +96,8 @@ rm(canale, DA_data, grid_data)
 
 # Add variable explanations -----------------------------------------------
 
-variables |>
+variables <- 
+  variables |>
   add_variables(
     var_code = "canale_ind",
     var_title = "CanALE index",

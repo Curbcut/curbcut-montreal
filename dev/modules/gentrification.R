@@ -19,22 +19,22 @@ index_fun <- function(df) {
   # Get dfs of all the vars across census
   list_dfs <-
     purrr::map(dates_list, ~ {
-      df %>%
-        st_drop_geometry() %>%
-        select(starts_with(vars)) %>%
-        select(ends_with(as.character(.x))) %>%
-        select(!contains(c("q3", "q5"))) %>%
-        rename_with(~ paste0(str_remove(.x, "_\\d{4}$")), everything())
+      df |> 
+        st_drop_geometry() |> 
+        select(starts_with(vars)) |> 
+        select(ends_with(as.character(.x))) |> 
+        select(!contains(c("q3", "q5"))) |> 
+        rename_with(~paste0(str_remove(.x, "_\\d{4}$")), everything())
     })
 
-  # Bind the previous dfs together, to bring all values of all years in one big df
+  # Bind the previous dfs together, to bring all values and years in one big df
   binded_dfs <- purrr::reduce(list_dfs, rbind)
 
-  # Give a position to all values, to enable to possibility of creating an indice
+  # Give a position to all values, to enable possibility of creating an index
   vars_ranked <-
-    binded_dfs %>%
-    mutate(across(everything(), ~ (. - mean(., na.rm = T)) / sd(., na.rm = T), 
-                  .names = "{.col}_zscore")) %>%
+    binded_dfs |>
+    mutate(across(everything(), ~(. - mean(., na.rm = TRUE)) / 
+                    sd(., na.rm = TRUE), .names = "{.col}_zscore")) |>
     # mutate(across(everything(), percent_rank, .names = "{.col}_rank")) %>%
     # Invert the zscore for the 2 variables that have reverse impact
     mutate(across(paste0(neg_vars, "_zscore"), ~ . * -1)) |>
@@ -44,29 +44,28 @@ index_fun <- function(df) {
 
     # Apply these ranks for a given year to the right df ID
     ranked_per_year <-
-      purrr::map(paste0(vars, "_", year), ~ {
+      purrr::map(paste0(vars, "_", year), ~{
         rank <-
           vars_ranked |>
           select(starts_with(str_remove(.x, "_\\d{4}$"))) |>
-          rename_with(~ paste0(.x, "_", year), everything())
+          rename_with(~paste0(.x, "_", year), everything())
 
-        df %>%
-          st_drop_geometry() %>%
-          select(ID, .x) %>%
-          left_join(rank, by = all_of(.x)) %>%
-          select(-.x) |>
+        df |>
+          st_drop_geometry() |> 
+          select(ID, all_of(.x)) |> 
+          left_join(rank, by = all_of(.x)) |>
+          select(-all_of(.x)) |>
           distinct()
       })
 
-    reduced <-
-      purrr::reduce(ranked_per_year, left_join, by = "ID")
+    reduced <- purrr::reduce(ranked_per_year, left_join, by = "ID")
 
-    # Create the indice for that year
+    # Create the index for that year
     id_index <-
       reduced %>%
       select(-ID) %>%
       as.matrix() %>%
-      rowMeans(.) %>%
+      rowMeans() %>%
       # matrixStats::rowWeightedMeans(., w = weight) %>%
       cbind(select(reduced, ID), .) %>%
       as_tibble() %>%
@@ -87,7 +86,6 @@ borough <- index_fun(borough)
 CT <- index_fun(CT)
 DA <- index_fun(DA)
 grid <- index_fun(grid)
-
 street <- index_fun(street)
 building <- index_fun(building)
 
@@ -99,8 +97,8 @@ variables <-
   add_variables(
     var_code = "gentrification_ind",
     var_title = "Gentrification index",
-    var_short = "Gentrific.",
-    explanation = "the experienced gentrification pressure",
+    var_short = "Gentrification",
+    explanation = "the gentrification pressure an area is experiencing",
     category = NA,
     private = FALSE,
     dates = c("1996", "2001", "2006", "2011", "2016"),
@@ -108,6 +106,7 @@ variables <-
     breaks_q3 = NA,
     breaks_q5 = NA,
     source = "census")
+
 
 # Clean-up ----------------------------------------------------------------
 

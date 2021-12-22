@@ -98,9 +98,9 @@ source("dev/modules/climate_risk.R")
 source("dev/modules/crash.R")
 source("dev/modules/access.R")
 source("dev/modules/alley.R")
+source("dev/modules/gentrification.R")
 # source("dev/modules/dmti.R")
 source("dev/modules/stories.R")
-source("dev/modules/gentrification.R")
 
 
 # Run tests and post-processing -------------------------------------------
