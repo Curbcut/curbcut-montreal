@@ -64,7 +64,9 @@ access <-
     job_type == "Healthcare" ~ "healthcare"
   )) |> 
   pivot_wider(names_from = c(job_type, time), values_from = value) |> 
-  rename_with(~paste0("access_", .x), jobs_total_pwe:healthcare_pwd)
+  rename_with(~paste0("access_", .x), jobs_total_pwe:healthcare_pwd) |> 
+  rename_with(~paste0(.x, "_count"), 
+              access_jobs_total_pwe:access_healthcare_pwd)
 
 
 

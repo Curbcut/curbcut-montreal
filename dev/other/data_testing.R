@@ -2,19 +2,6 @@
 #' @data is a named list of all the dataframes to evaluate. They must be the df
 #' version prior to the joining by IDs to the usual scales.
 
-#### For testing purposes
-# qload("data/census.qsm")
-# street <- qread("data/street.qs")
-# building <- qread("data/building.qs")
-# grid <- qread("data/grid.qs")
-# 
-# data <- list("borough" = borough, "CT" = CT, "DA" = DA, "street" = street, "building" = building, "grid" = grid)
-# 
-# data <- map(set_names(names(data)), ~{
-#   assign(.x,
-#          get(.x)[, str_detect(names(get(.x)), paste0(c("ID", variables |> filter(source == "census") |> pull(var_code)), collapse = "|"))])
-# })
-
 data_testing <- function(data) {
   
   # List to store all the possible warnings
@@ -32,7 +19,7 @@ data_testing <- function(data) {
   vars <- map(data, names) |> unlist() |> unique()
   dates <- str_extract(vars, "\\d{4}$") |> unique()
   vars_no_date <- str_remove(vars, "_\\d{4}$") |> unique()
-  known_suffix <- c("pct", "avg", "median", "per1k", "sqkm", "ind")
+  known_suffix <- c("pct", "avg", "median", "per1k", "sqkm", "ind", "count")
   
   # If no known suffix are detected
   if (!all(str_detect(vars, paste0(known_suffix, collapse = "|")))) {

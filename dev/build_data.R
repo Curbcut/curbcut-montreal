@@ -54,7 +54,7 @@ stopifnot(
   
   # Check row numbers
   nrow(borough) == 111,
-  nrow(building) == 56614,
+  nrow(building) %in% c(56614, 66884),
   nrow(CT) == 970,
   nrow(DA) == 6469,
   nrow(grid) == 9923,
