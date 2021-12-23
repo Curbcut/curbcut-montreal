@@ -39,11 +39,11 @@ add_census_data <- function(census_vec, scales, years, parent_vectors = NULL,
   data_final <- drop_vars(data_norm, census_vec)
   
   # Add q3 and q5 versions
-  cat_q5 <- get_categories_q5(data_final, census_vec)
-  data_q3 <- add_q3(data_final)
-  breaks_q3 <- get_breaks_q3(data_q3, census_vec)
-  breaks_q5 <- get_breaks_q5(data_final, cat_q5)
-  data_q5 <- add_q5(data_final, breaks_q5)
+  cat_q5 <- get_categories_q5_list(data_final, census_vec)
+  data_q3 <- add_q3_list(data_final)
+  breaks_q3 <- get_breaks_q3_list(data_q3, census_vec)
+  breaks_q5 <- get_breaks_q5_list(data_final, cat_q5)
+  data_q5 <- add_q5_list(data_final, breaks_q5)
   data_breaks <- merge_breaks(data_final, data_q3, data_q5)
   
   # Add years
