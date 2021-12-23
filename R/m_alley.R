@@ -146,14 +146,14 @@ alley_server <- function(id) {
           output$alley_img <- renderImage({list(src = paste0("www/", text_to_display$photo_ID),
                                                 alt = "Photo of the selected green alley",
                                                 width = "100%")},
-                                          deleteFile=FALSE)
+                                          deleteFile = FALSE)
           
           alley_photo_id <<- text_to_display$photo_ID
           
           alley_name <<- text_to_display$name
           
           if (exists("text_to_display") && !is.null(text_to_display)) {
-            list(HTML(unlist(text_to_display[1:(length(text_to_display)-1)])),
+            list(HTML(unlist(text_to_display[1:(length(text_to_display) - 1)])),
                  div(style = "margin-bottom:20px;", imageOutput(session$ns("alley_img"), height = "100%")))
           }
           

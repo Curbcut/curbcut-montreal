@@ -4,39 +4,45 @@
 
 # 2020 shapefiles
 covid_may_2020 <- 
-  read_sf("dev/data/COVID/corridors_sanitaires-may/corridors_sanitaires.shp") %>% 
-  select(ID = objectid, street = Rue, type = Type_corri, geometry) %>% 
-  st_transform(4326) %>% 
+  read_sf("dev/data/COVID/corridors_sanitaires-may/corridors_sanitaires.shp") |> 
+  select(ID = objectid, street = Rue, type = Type_corri, geometry) |> 
+  mutate(timeframe = "may_2020", .before = geometry) |> 
+  st_transform(4326) |> 
   st_set_agr("constant")
 
 covid_july_2020 <- 
-  read_sf("dev/data/COVID/corridors_sanitaires-july/corridors_sanitaires.shp") %>% 
-  select(ID = objectid, street = Rue, type = Type_corri, geometry) %>% 
-  st_transform(4326) %>% 
+  read_sf("dev/data/COVID/corridors_sanitaires-july/corridors_sanitaires.shp") |> 
+  select(ID = objectid, street = Rue, type = Type_corri, geometry) |> 
+  mutate(timeframe = "july_2020", .before = geometry) |> 
+  st_transform(4326) |> 
   st_set_agr("constant")
 
 covid_oct_2020 <- 
-  read_sf("dev/data/COVID/corridors_sanitaires-october/corridors_sanitaires.shp") %>% 
-  select(ID = objectid, street = Rue, type = Type_corri, geometry) %>% 
-  st_transform(4326) %>% 
+  read_sf("dev/data/COVID/corridors_sanitaires-october/corridors_sanitaires.shp") |> 
+  select(ID = objectid, street = Rue, type = Type_corri, geometry) |> 
+  mutate(timeframe = "oct_2020", .before = geometry) |> 
+  st_transform(4326) |> 
   st_set_agr("constant")
 
+covid <- 
+  rbind(covid_may_2020, covid_july_2020, covid_oct_2020)
+
 # 2021 shapefile
-covid_2021 <- 
-  read_sf("dev/data/COVID/2021_covid_pedestrian/2021_pedestrian_streets.shp") %>% 
-  select(ID = UNIQUEID, street = STREETNAME, geometry) %>% 
-  mutate(type = "Corridor piéton élargi", .before = geometry) %>%
-  st_transform(4326) %>% 
-  st_set_agr("constant")
+# covid_2021 <- 
+#   read_sf("dev/data/COVID/2021_covid_pedestrian/2021_pedestrian_streets.shp") |> 
+#   select(ID = UNIQUEID, street = STREETNAME, geometry) |> 
+#   mutate(type = "Corridor piéton élargi", .before = geometry) |>
+#   st_transform(4326) |> 
+#   st_set_agr("constant")
 
 # Photos from 2020
 covid_pics <- 
-  read_sf("dev/data/COVID/2020covidphotos.kml") %>%
-  st_zm() %>%
-  mutate(ID = row_number(), .before = Name) %>% 
-  rename(street = Name, type = Description) %>%
+  read_sf("dev/data/COVID/2020covidphotos.kml") |>
+  st_zm() |>
+  mutate(ID = row_number(), .before = Name) |> 
+  rename(street = Name, type = Description) |>
   mutate(type = as.character(type),
-         type = str_remove_all(type, "<.*?>")) %>% 
+         type = str_remove_all(type, "<.*?>")) |> 
   mutate(feature_ID = case_when(
            ID == 1 ~ list(45),
            ID %in% c(2, 9) ~ list(50),
@@ -82,25 +88,18 @@ covid_colours <- tibble(
   covid_colour = c("#FF5733FF", "#FFD733FF", "#5F940EFF", "#10A9A7FF",
                    "#2D80CAFF", "#FF7C2DFF", "#6F2094FF", "#75BB79FF"))
 
-out <- 
-  map(list(covid_may_2020, covid_july_2020, covid_oct_2020, covid_2021), ~{
-  .x %>% 
-    left_join(photo_join, by = c("ID" = "feature_ID")) %>%
-    left_join(covid_colours, by = "type") %>%
-    relocate(photo_ID, covid_colour, .before = geometry)
-  })
 
-covid_may_2020 <- out[[1]]
-covid_july_2020 <- out[[2]]
-covid_oct_2020 <- out[[3]]
-covid_2021 <- out[[4]]
+covid <- 
+  covid |> 
+  left_join(photo_join, by = c("ID" = "feature_ID")) |>
+  left_join(covid_colours, by = "type") |>
+  relocate(photo_ID, covid_colour, .before = geometry)
 
-# Clean up
-rm(photo_join, out, covid_colours)
 
-# save output
-qsavem(covid_may_2020, covid_july_2020, covid_oct_2020, covid_2021, covid_pics,
-       file = "data/covid.qsm")
+# Clean up ----------------------------------------------------------------
+
+rm(photo_join, out, covid_colours, covid_may_2020, covid_july_2020, 
+   covid_oct_2020)
 
 ### actual 2020 .png files are located in Sus/www/COVIDpics
 

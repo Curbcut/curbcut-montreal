@@ -105,8 +105,8 @@ map_fun <- function(df, zoom, legend = NULL) {
 
           data_to_add <-
             df %>%
-            filter(ID == params$poly_selected) %>%
-            mutate(fill = substr(fill, 1, 7))
+            filter(ID == params$poly_selected) #%>%
+            # mutate(fill = substr(fill, 1, 7))
 
           draw_layer() %>% 
             add_polygon(
