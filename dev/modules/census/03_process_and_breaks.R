@@ -137,70 +137,65 @@ drop_vars <- function(df_list, census_vec) {
 
 # q3 breaks ---------------------------------------------------------------
 
-add_q3 <- function(df_list) {
-  map(df_list, function(df_l) {
-    map(df_l, function(df) {
-      mutate(df, across(c(-ID), ntile, 3, .names = "{.col}_q3"))
-    })
+add_q3 <- function(df) {
+  mutate(df, across(c(-ID), ntile, 3, .names = "{.col}_q3"))
+}
+  
+get_breaks_q3 <- function(df, var_list) {
+  map_dfc(var_list, ~{
+    if (.x %in% names(df)) {
+      suppressWarnings(
+        df |>
+          select(any_of(.x), any_of(paste0(.x, "_q3"))) |>
+          set_names(c("v", "q3")) |>
+          summarize(
+            ranks = c(min(v, na.rm = TRUE),
+                      min(v[q3 == 2], na.rm = TRUE),
+                      min(v[q3 == 3], na.rm = TRUE),
+                      max(v, na.rm = TRUE))) |>
+          mutate(ranks = if_else(is.infinite(ranks), NA_real_, ranks)) |> 
+          set_names(.x))
+    }
   })
 }
 
-get_breaks_q3 <- function(df_list, census_vec) {
-  var_q3 <-
-    census_vec |>
-    pull(var_code)
+add_q3_list <- function(df_list) map(df_list, map, add_q3)
 
-  map(df_list, function(df_l) {
-    map(df_l, function(df) {
-      map_dfc(var_q3, ~ {
-        if (.x %in% names(df)) {
-          suppressWarnings(
-            df |>
-              select(any_of(.x), any_of(paste0(.x, "_q3"))) |>
-              set_names(c("v", "q3")) |>
-              summarize(
-                ranks = c(min(v, na.rm = TRUE),
-                          min(v[q3 == 2], na.rm = TRUE),
-                          min(v[q3 == 3], na.rm = TRUE),
-                          max(v, na.rm = TRUE))) |>
-              mutate(ranks = if_else(is.infinite(ranks), NA_real_, ranks)) |> 
-              set_names(.x))
-        }
-      })
-    })
-  })
+get_breaks_q3_list <- function(df_list, census_vec) {
+  var_q3 <- pull(census_vec, var_code)
+  map(df_list, map, get_breaks_q3, var_q3)
 }
 
 
 # q5 breaks ---------------------------------------------------------------
 
-get_categories_q5 <- function(df_list, census_vec) {
+get_categories_q5 <- function(df, categories) {
+  
+  if (length(categories) > 0) {
+    categories <- map(categories, ~ {
+      census_vec |>
+        filter(category == .x) |>
+        pull(var_code)
+    })
+    
+    var_categories <-
+      names(df) |>
+      setdiff("ID") |>
+      setdiff(unique(unlist(categories))) |>
+      as.list()
+    
+    c(var_categories, categories)
+  } else {
+    names(df) |>
+      setdiff("ID") |>
+      as.list()
+  }
+}
+
+get_categories_q5_list <- function(df_list, census_vec) {
   categories <- unique(census_vec$category)
   categories <- categories[!is.na(categories)]
-
-  map(df_list, function(df_l) {
-    map(df_l, function(df) {
-      if (length(categories) > 0) {
-        categories <- map(categories, ~ {
-          census_vec |>
-            filter(category == .x) |>
-            pull(var_code)
-        })
-
-        var_categories <-
-          names(df) |>
-          setdiff("ID") |>
-          setdiff(unique(unlist(categories))) |>
-          as.list()
-
-        c(var_categories, categories)
-      } else {
-        names(df) |>
-          setdiff("ID") |>
-          as.list()
-      }
-    })
-  })
+  map(df_list, map, get_categories_q5, categories)
 }
 
 find_breaks_q5 <- function(min_val, max_val) {
@@ -217,46 +212,47 @@ find_breaks_q5 <- function(min_val, max_val) {
   return(c(new_min + 0:5 * break_val))
 }
 
-get_breaks_q5 <- function(df_list, categories) {
-  map2(df_list, categories, function(df_l, cat_l) {
-    map2(df_l, cat_l, function(df, cats) {
-      cat_min <- suppressWarnings(
-        map(cats, ~{
-          df |>
-            select(all_of(.x)) |>
-            as.matrix() |>
-            min(na.rm = TRUE)
-        }))
+get_breaks_q5 <- function(df, categories) {
+  
+  cat_min <- suppressWarnings(
+    map(categories, ~{
+      df |>
+        select(all_of(.x)) |>
+        as.matrix() |>
+        min(na.rm = TRUE)
+    }))
+  
+  cat_max <- suppressWarnings(
+    map(categories, ~{
+      df |>
+        select(all_of(.x)) |>
+        as.matrix() |>
+        max(na.rm = TRUE)
+    }))
+  
+  pmap_dfc(list(cat_min, cat_max, categories), function(x, y, z) {
+    breaks <- find_breaks_q5(x, y)
+    tibble(v = breaks) |>
+      set_names(z)
+  })
+  
+}
 
-      cat_max <- suppressWarnings(
-        map(cats, ~{
-          df |>
-            select(all_of(.x)) |>
-            as.matrix() |>
-            max(na.rm = TRUE)
-        }))
+get_breaks_q5_list <- function(df_list, categories) {
+  map2(df_list, categories, map2, get_breaks_q5)
+}
 
-      pmap_dfc(list(cat_min, cat_max, cats), function(x, y, z) {
-        breaks <- find_breaks_q5(x, y)
-        tibble(v = breaks) |>
-          set_names(z)
-      })
-    })
+add_q5 <- function(df, breaks) {
+  map2_dfc(names(breaks), breaks, function(x, y) {
+    df |>
+      transmute(across(all_of(x),
+                       ~ as.numeric(cut(.x, y, include.lowest = TRUE)),
+                       .names = "{.col}_q5"))
   })
 }
 
-add_q5 <- function(df_list, breaks_list) {
-  map2(df_list, breaks_list, function(df_l, breaks_l) {
-    map2(df_l, breaks_l, function(df, breaks) {
-      map2_dfc(names(breaks), breaks, function(x, y) {
-        df |>
-          transmute(across(all_of(x),
-            ~ as.numeric(cut(.x, y, include.lowest = TRUE)),
-            .names = "{.col}_q5"
-          ))
-      })
-    })
-  })
+add_q5_list <- function(df_list, breaks_list) {
+  map2(df_list, breaks_list, map2, add_q5)
 }
 
 merge_breaks <- function(df_list, df_list_q3, df_list_q5) {
