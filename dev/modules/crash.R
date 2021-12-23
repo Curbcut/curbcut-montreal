@@ -7,6 +7,8 @@ suppressPackageStartupMessages(library(lubridate))
 
 # Get data ----------------------------------------------------------------
 
+# Crash dataframe
+
 crash <- 
   read_sf("dev/data/collisions_routieres/collisions_routieres.shp") %>%
   st_transform(4326) %>%
@@ -20,6 +22,115 @@ crash <-
          injury_total, inj_ped = NB_BLESS_2, inj_cyc = NB_BLESS_4,
          day = JR_SEMN_AC, hour = HEURE_ACCD, geometry)
 
+# Traffic activity
+# 
+# traffic_files <- 
+#   list.files("dev/data/traffic_activity") |> 
+#   (\(x) paste0("dev/data/traffic_activity/", x))()
+# 
+# traffic_files_names <- 
+#   list.files("dev/data/traffic_activity") |> 
+#   str_replace("comptages", "traffic") |> 
+#   str_remove_all("_vehicules_cyclistes_pietons|.csv")
+# 
+# traffic <- 
+#   map2(set_names(traffic_files_names), traffic_files, ~{
+#     .x <- 
+#       read_csv(.y) |> 
+#       select(-(Approche_Nord:Localisation_Y), -Code_Banque)
+#   }) |> 
+#   reduce(rbind) |> 
+#   # Sometimes . somtimes , for these ID. They normally use ,
+#   mutate(Nom_Intersection = case_when(Nom_Intersection == "Décarie / Van Horne inter. Est" ~ "Décarie / Van Horne inter, Est",
+#                                       Nom_Intersection == "Décarie / Van Horne inter. Ouest" ~ "Décarie / Van Horne inter, Ouest",
+#                                       Nom_Intersection == "Crémazie / Saint-Michel inter. Nord-Ouest" ~ "Crémazie / Saint-Michel inter, Nord-Ouest",
+#                                       Nom_Intersection == "Rita-Levi-Montalcini" ~ "Rita-Levi-Montalcini / Maurice-Duplessis",
+#                                       TRUE ~ Nom_Intersection)) |> 
+#   # Id_Intersection doubled for different intersection.
+#   mutate(Id_Intersection = case_when(Nom_Intersection == "rue Dobrin / boulevard Thimens int. Ouest" ~ 99999,
+#                                      TRUE ~ Id_Intersection)) |> 
+#   # Transportation type
+#   filter(!Description_Code_Banque %in% c("Non Utilise", "Illegaux")) |> 
+#   mutate(type = case_when(Description_Code_Banque %in% c("Autos", "Bus", "Camions", "Camions articules", "Camions legers", "Camions Lourds",
+#                                                          "Camions porteurs", "Ecoliers", "Motos") ~ "motor",
+#                           Description_Code_Banque == "Pietons" ~ "ped",
+#                           Description_Code_Banque == "Velos" ~ "cyc",
+#                           TRUE ~ "other"))  |> 
+#   filter(type == "motor") |> 
+#   select(-Description_Code_Banque, -type)
+# 
+# # Count
+# traffic_count <- 
+# traffic |> 
+#   mutate(ID = row_number()) |> 
+#   select(ID, NBLT:WBRT) |> 
+#   pivot_longer(-ID) |> 
+#   group_by(ID) |> 
+#   summarize(count_motorized = sum(value)) |> 
+#   pull(count_motorized)
+# 
+# traffic <- 
+# traffic |> 
+#   mutate(count_motorized = traffic_count) |>
+#   select(-(NBLT:WBRT)) |> 
+#   group_by(Id_Reference, Id_Intersection, Nom_Intersection, Date, Periode,
+#            Heure, Minute, Seconde, Longitude, Latitude) |> 
+#   summarize(count_motorized = sum(count_motorized)) |> 
+#   ungroup()
+# 
+# # Compute yearly average / intersection
+# traffic <-
+#   traffic |> 
+#   # Every row is a period of 15 minutes
+#   group_by(intersection = Nom_Intersection, date = Date,
+#            Longitude, Latitude) |>
+#   # Get a 15m average on a particular intersection and day
+#   summarize(count_motorized = sum(count_motorized)/n()) |> 
+#   ungroup() |> 
+#   # Multiply by 4*24, for a daily number
+#   mutate(count_motorized = count_motorized * 4 * 24 * 365) |> 
+#   group_by(intersection, year = year(date), Longitude, Latitude) |> 
+#   summarize(daily_avg_motorized_count = mean(count_motorized)) |> 
+#   ungroup()
+# 
+# # Get geometry and create a buffer for crashes
+# # Geometry operations on a smaller part of the df, saves time
+# intersection_geoms <- 
+# traffic |> 
+#   distinct(intersection, Longitude, Latitude) |> 
+#   st_as_sf(coords = c("Longitude", "Latitude"), crs = 4326) |> 
+#   mutate(buffer_50m = st_buffer(geometry, 50))
+# 
+# traffic <- 
+# traffic |> 
+#   left_join(intersection_geoms, ., by = "intersection") |> 
+#   select(-Longitude, -Latitude) |> 
+#   st_as_sf()
+# 
+# intersection_buffer <- 
+#   intersection_geoms |> 
+#   st_drop_geometry() |> st_as_sf()
+# 
+# crashes_in_count_buffer <-
+#   st_join(crash, intersection_buffer)
+#   
+# crashes_in_count_buffer <- 
+#   crashes_in_count_buffer |> 
+#   st_drop_geometry() |> 
+#   filter(!is.na(intersection)) |> 
+#   group_by(year = year(date), type, intersection) |> 
+#   count(name = "crash_count") |> 
+#   ungroup()
+# 
+# traffic <- 
+# traffic |> 
+#   select(-buffer_50m) |> 
+#   left_join(crashes_in_count_buffer, by = c("intersection", "year")) |> 
+#   filter(!is.na(crash_count)) |> 
+#   group_by(intersection, year, type) |> 
+#   mutate(crash_100k = 100000 * crash_count / daily_avg_motorized_count)
+#   
+  
 
 # Aggregate data to geometries --------------------------------------------
 
@@ -116,7 +227,7 @@ meta_testing()
 variables <- 
   variables |>
   add_variables(
-    var_code = "crash_cyc",
+    var_code = "crash_cyc_count",
     var_title = "Collisions (cyclists)",
     var_short = "Cyclists",
     explanation = "the total number of car collisions involving cyclists",
@@ -128,7 +239,7 @@ variables <-
     breaks_q5 = NA,
     source = "spvm_saaq") |>
   add_variables(
-    var_code = "crash_other",
+    var_code = "crash_other_count",
     var_title = "Collisions (other)",
     var_short = "Other",
     explanation = "the total number of car collisions involving neither pedestrians or cyclists",
@@ -140,7 +251,7 @@ variables <-
     breaks_q5 = NA,
     source = "spvm_saaq") |>
   add_variables(
-    var_code = "crash_ped",
+    var_code = "crash_ped_count",
     var_title = "Collisions (pedestrians)",
     var_short = "Pedestrian",
     explanation = "the total number of car collisions involving pedestrians",
@@ -152,7 +263,7 @@ variables <-
     breaks_q5 = NA,
     source = "spvm_saaq") |>
   add_variables(
-    var_code = "crash_total",
+    var_code = "crash_total_count",
     var_title = "Collisions",
     var_short = "Total",
     explanation = "the total number of car collisions",
@@ -263,5 +374,6 @@ variables <-
 
 # Clean-up ----------------------------------------------------------------
 
-rm(crash_results, process_crash, join_crash)
+rm(crash_results, process_crash, join_crash, traffic_count, traffic_files,
+   traffic_files_names)
 
