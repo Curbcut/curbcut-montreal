@@ -137,7 +137,8 @@ building <-
   relocate(geometry, .after = last_col())
 
 # Adding building and street scales
-data_to_add[[2]]$scales <- map(map(data_to_add[[2]]$scales, c, "building", "street"), str_sort)
+data_to_add[[2]]$scales <- 
+  map(map(data_to_add[[2]]$scales, c, "building", "street"), str_sort)
 
 
 # Meta data testing -------------------------------------------------------
