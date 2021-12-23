@@ -29,7 +29,7 @@ covid_server <- function(id) {
       mapdeck(
         style = map_style, token = token_covid, zoom = map_zoom_covid, 
         location = map_location) %>%
-        add_path(data = covid_may_2020, update_view = FALSE, #id = "ID", 
+        add_path(data = filter(covid, timeframe == "may_2020"), update_view = FALSE, #id = "ID", 
                  stroke_colour = "Type",
                  # stroke_colour = "#5F940E", 
                  stroke_width = 10, width_min_pixels = 2, width_max_pixels = 5,
@@ -42,15 +42,19 @@ covid_server <- function(id) {
       })
     
     # Left variable server
-    var_left_covid <- select_var_server("left", reactive(var_list_covid))
+    var_left <- select_var_server("left", reactive(var_list_covid))
     
     # Data 
-    data_covid <- reactive(get(var_left_covid()))
+    data <- reactive({
+      covid |> 
+        filter(timeframe == var_left()) |> 
+        select(-timeframe)
+    })
 
     # Selection data
     data_to_add <- reactive({
       if (!is.na(rv_covid$path_selected)) {
-        data_to_add <- data_covid() %>% filter(ID == rv_covid$path_selected) 
+        data_to_add <- data() %>% filter(ID == rv_covid$path_selected) 
         } else if (!is.na(rv_covid$point_selected)) {
           data_to_add <- covid_pics %>% filter(ID == rv_covid$point_selected) 
         } else data_to_add <- tibble()
@@ -58,15 +62,11 @@ covid_server <- function(id) {
       data_to_add
       })
     
-    # # Left map
-    # small_map_server("left", reactive(paste0(
-    #   "left_", sub("_2", "", rv_canale$zoom), "_canale_ind")))
-    
     # Update map in response to variable change
-    observeEvent(data_covid(), {
+    observeEvent(data(), {
         mapdeck_update(map_id = NS(id, "map")) %>%
           add_path(
-            data = data_covid(), update_view = FALSE, # id = "ID",
+            data = data(), update_view = FALSE, # id = "ID",
             stroke_width = 10, width_min_pixels = 2, width_max_pixels = 5,
             stroke_colour = "type",
             # stroke_colour = "#5F940E", 
@@ -136,6 +136,28 @@ covid_server <- function(id) {
     # (Namespacing hardwired to explore module; could make it return a reactive)
     # observeEvent(input$`explore-clear_selection`, {
     #   rv_covid$path_selected <- NA})
+    
+    # Popup
+    observeEvent(rv_covid$point_selected, {
+      if (!is.na(rv_covid$point_selected)) {
+        
+        street <- 
+        covid_pics[covid_pics$ID == rv_covid$point_selected, ]$street
+        
+        photo_id <- 
+        str_glue("covid_pics/{rv_covid$point_selected}.png")
+        
+        print(photo_id)
+    
+        showModal(modalDialog(
+          title = HTML(street),
+          HTML(paste0('<img src="', photo_id, '", width = 100%>')),
+          easyClose = TRUE,
+          size = "l",
+          footer = NULL
+        ))
+      }
+    })
     
     # Popup server
     # popup_server("popup", data_to_add, 

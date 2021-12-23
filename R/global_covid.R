@@ -13,10 +13,9 @@ rv_covid <- reactiveValues(path_selected = NA, point_selected = NA,
 
 # Dropdown menu
 var_list_covid <- 
-  list("May 2020" = "covid_may_2020",
-       "July 2020" = "covid_july_2020",
-       "October 2020" = "covid_oct_2020",
-       "TK 2021" = "covid_2021")
+  list("May 2020" = "may_2020",
+       "July 2020" = "july_2020",
+       "October 2020" = "oct_2020")
 
 legend_covid <- 
   list("Circuit des voies actives et sécuritaires" = "#FF5733FF",

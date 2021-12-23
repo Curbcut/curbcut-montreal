@@ -98,6 +98,7 @@ source("dev/other/add_variables.R")
 source("dev/modules/census.R")
 source("dev/modules/canale.R")
 source("dev/modules/climate_risk.R")
+source("dev/modules/covid.R")
 source("dev/modules/crash.R")
 source("dev/modules/access.R")
 source("dev/modules/alley.R")
@@ -124,6 +125,7 @@ qsavem(alleys, alley_text, file = "data/alleys.qsm")
 qsave(green_space, file = "data/green_space.qs")
 qsave(stories, file = "data/stories.qs")
 qsave(metro_lines, file = "data/metro_lines.qs")
+qsavem(covid, covid_pics, file = "data/covid.qsm")
 
 
 # Produce left and right maps ---------------------------------------------
