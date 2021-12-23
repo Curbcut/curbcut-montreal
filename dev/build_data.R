@@ -1,39 +1,37 @@
 #### BUILD ALL SUS DATA ########################################################
 
-
 # Create raw borough/CT/DA/grid tables ------------------------------------
 
-# Import DA, CT and borough geometries (independent script)
+# Import DA, CT and borough geometries
 source("dev/geometries/census_geometries.R")
 
-# Add centroids and buffers to DA (dependent script: needs 'DA')
+# Add centroids and buffers to DA
 source("dev/geometries/DA_centroids.R")
 
-# Import grid geometries (independent script)
+# Import grid geometries
 source("dev/geometries/grid_geometries.R")
 
-# Geocode grid centroids (dependent script: needs 'borough')
+# Geocode grid centroids
 source("dev/geometries/grid_geocode.R")
 
-# Add metadata to grid (dependent: needs 'borough', 'CT', 'DA' and 'grid')
+# Add metadata to grid
 source("dev/geometries/grid_process.R")
 
-# Import building (dependent: needs 'DA')
+# Import building
 source("dev/geometries/building.R")
 
-# Geocode building centroids (dependent: needs 'building')
+# Geocode building centroids
 source("dev/geometries/building_geocode.R")
 
-# Import street edges (dependent: needs 'borough' and 'DA')
+# Import street edges
 source("dev/geometries/street.R")
 
-# Geocode street edges centroids (dependent script: needs 'street')
+# Geocode street edges centroids
 source("dev/geometries/street_geocode.R")
 
 
 # Error checking ----------------------------------------------------------
 
-# Eventually there should be some proper error checking here, but for now....
 stopifnot(
   
   # Check field names

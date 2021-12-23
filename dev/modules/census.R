@@ -153,11 +153,13 @@ variables <- bind_rows(variables, data_to_add[[2]])
 
 # Clean up ----------------------------------------------------------------
 
-rm(scales, years, add_census_data, add_q3, add_q5, add_vars, add_years, agg_add,
-   agg_avg, drop_vars, find_breaks_q5, get_agg_type, get_breaks_q3, 
-   get_breaks_q5, get_categories_q5, get_census_vectors, get_empty_geometries,
-   get_unit_type, interpolate, interpolate_other, merge_breaks, normalize,
-   reduce_years, swap_csd_to_borough, weighted_mean, census_vec, parent_vectors,
-   DA_census, add_row_census_vec, data_to_add)
+rm(scales, years, add_census_data, add_q3, add_q3_list, add_q5, add_q5_list, 
+   add_vars, add_years, agg_add, agg_avg, drop_vars, find_breaks_q5, 
+   get_agg_type, get_breaks_q3, get_breaks_q3_list, get_breaks_q5, 
+   get_breaks_q5_list, get_categories_q5, get_categories_q5_list, 
+   get_census_vectors, get_empty_geometries, get_unit_type, interpolate, 
+   interpolate_other, merge_breaks, normalize, reduce_years, 
+   swap_csd_to_borough, weighted_mean, census_vec, parent_vectors, DA_census, 
+   add_row_census_vec, data_to_add)
 
 # To save output, run dev/build_geometries.R, which calls this script
