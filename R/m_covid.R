@@ -6,7 +6,12 @@ covid_UI <- function(id) {
   fillPage(
     fillRow(
       fillCol(sidebar_UI(NS(id, "sidebar"),
-                         select_var_UI(NS(id, "left"), var_list_covid))
+                         select_var_UI(NS(id, "left"), var_list_covid),
+                         div(class = "bottom_sidebar",
+                             tagList(  tagList(
+                               h5("Legend", style = "font-size: 12px;"),
+                               uiOutput(NS(id, "legend_render"))
+                             ))))
       ),
       fillCol(
         div(class = "mapdeck_div", 
@@ -24,17 +29,25 @@ covid_server <- function(id) {
     # Sidebar
     sidebar_server("sidebar", "covid")
     
+    # Legend
+    output$legend_render <- renderUI({
+      output$legend <- renderPlot({
+        cowplot::plot_grid(covid_legend)
+      })
+      plotOutput(NS(id, "legend"), height = 160, width = "100%")
+    })
+      
+      renderPlot({cowplot::plot_grid(covid_legend)})
+    
     # Map
     output$map <- renderMapdeck({
       mapdeck(
         style = map_style, token = token_covid, zoom = map_zoom_covid, 
         location = map_location) %>%
         add_path(data = filter(covid, timeframe == "may_2020"), update_view = FALSE, #id = "ID", 
-                 stroke_colour = "Type",
-                 # stroke_colour = "#5F940E", 
+                 stroke_colour = "fill", tooltip = "type",
                  stroke_width = 10, width_min_pixels = 2, width_max_pixels = 5,
-                 auto_highlight = TRUE, highlight_colour = "#FFFFFF90",
-                 legend = TRUE) %>%
+                 auto_highlight = TRUE, highlight_colour = "#FFFFFF90") %>%
         add_scatterplot(data = covid_pics, update_view = FALSE, #id = "ID",
                         fill_colour = "#FF0000", radius = 30,
                         radius_min_pixels = 2, radius_max_pixels = 7,
@@ -47,8 +60,7 @@ covid_server <- function(id) {
     # Data 
     data <- reactive({
       covid |> 
-        filter(timeframe == var_left()) |> 
-        select(-timeframe)
+        filter(timeframe == var_left())
     })
 
     # Selection data
@@ -68,10 +80,8 @@ covid_server <- function(id) {
           add_path(
             data = data(), update_view = FALSE, # id = "ID",
             stroke_width = 10, width_min_pixels = 2, width_max_pixels = 5,
-            stroke_colour = "type",
-            # stroke_colour = "#5F940E", 
-            auto_highlight = TRUE, highlight_colour = "#FFFFFF90",
-            legend = TRUE)
+            stroke_colour = "fill", tooltip = "type",
+            auto_highlight = TRUE, highlight_colour = "#FFFFFF90")
       })
     
     # Update path_selected on click
@@ -108,7 +118,7 @@ covid_server <- function(id) {
           clear_path(layer_id = "point_highlight") %>%
           add_path(
             data = data_to_add(), stroke_width = 10, stroke_colour = "#000000",
-            width_min_pixels = 3, width_max_pixels = 6,
+            width_min_pixels = 3, width_max_pixels = 6, tooltip = "type",
             update_view = FALSE, layer_id = "path_highlight",
             auto_highlight = TRUE, highlight_colour = "#FFFFFF90")
 
@@ -147,8 +157,6 @@ covid_server <- function(id) {
         photo_id <- 
         str_glue("covid_pics/{rv_covid$point_selected}.png")
         
-        print(photo_id)
-    
         showModal(modalDialog(
           title = HTML(street),
           HTML(paste0('<img src="', photo_id, '", width = 100%>')),

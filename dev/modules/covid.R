@@ -92,13 +92,21 @@ covid_colours <- tibble(
 covid <- 
   covid |> 
   left_join(photo_join, by = c("ID" = "feature_ID")) |>
-  left_join(covid_colours, by = "type") |>
-  relocate(photo_ID, covid_colour, .before = geometry)
+  mutate(fill = case_when(type == "Circuit des voies actives et sécuritaires" ~ "#FF5733FF",
+                          type == "Circulation locale" ~ "#FFD733FF",
+                          type == "Corridor piéton élargi" ~ "#5F940EFF",
+                          type == "Corridor projeté" ~ "#10A9A7FF",
+                          type == "File d'attente encadrée" ~ "#2D80CAFF",
+                          type == "Rue familiale et active" ~ "#FF7C2DFF",
+                          type == "Rue fermée" ~ "#6F2094FF",
+                          type == "Rue partiellement fermée" ~ "#75BB79FF",
+                          type == "Rue partagée" ~ "#75A7BAFF")) |> 
+  relocate(photo_ID, fill, .before = geometry)
 
 
 # Clean up ----------------------------------------------------------------
 
-rm(photo_join, out, covid_colours, covid_may_2020, covid_july_2020, 
+rm(photo_join, covid_colours, covid_may_2020, covid_july_2020, 
    covid_oct_2020)
 
 ### actual 2020 .png files are located in Sus/www/COVIDpics
