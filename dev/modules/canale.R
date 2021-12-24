@@ -149,7 +149,7 @@ street <-
 meta_testing()
 
 
-# Add variable explanations -----------------------------------------------
+# Add to variables table --------------------------------------------------
 
 # Get breaks_q3
 breaks_q3_active <-
@@ -177,5 +177,14 @@ variables <-
     breaks_q3 = breaks_q3_active,
     breaks_q5 = breaks_q5_active,
     source = "mcgill_geosdh_research_group")
+
+
+# Clean up ----------------------------------------------------------------
+
+rm(borough_canale, breaks_q3_active, breaks_q5_active, canale, canale_q3,
+   canale_q5, CT_canale, DA_canale, grid_canale, add_q3, add_q3_list,
+   add_q5, add_q5_list, add_years, drop_vars, find_breaks_q5, get_breaks_q3,
+   get_breaks_q3_list, get_breaks_q5, get_breaks_q5_list, get_categories_q5,
+   get_categories_q5_list, get_unit_type, merge_breaks, normalize, reduce_years)
 
 # To save output, run dev/build_data.R, which calls this script

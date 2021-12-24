@@ -35,15 +35,16 @@ data_testing <- function(data) {
   
   # Percentages need no to be under 0s, or above 1
   if (length(vars_pct) > 0 ) {
-    warm_vec <- 
+    warn_vec <- 
       c(warn_vec, 
         map(set_names(vars_pct), function(var) {
           out <- map(data, function(dat) {
             if (var %in% names(dat)) {
               out <- 
                 dat |>
-                select(new_var = any_of(var)) |> 
-                filter(new_var < 0 || new_var > 1)
+                select(any_of(var)) |> 
+                set_names("new_var") |> 
+                filter(new_var < 0 | new_var > 1)
               
               out <- if (nrow(out) > 0) paste0(var) else NULL
             } else NULL
