@@ -207,7 +207,7 @@ find_breaks_q5 <- function(min_val, max_val) {
   break_val <- range / 5
   break_val <- breaks[as.numeric(cut(break_val, breaks)) + 1]
   break_digits <- floor(log10(break_val))
-  new_min <- floor(min_val / (10^break_digits)) * 10^break_digits
+  new_min <- floor(min_val / (10 ^ break_digits)) * 10 ^ break_digits
 
   return(c(new_min + 0:5 * break_val))
 }

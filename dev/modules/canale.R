@@ -88,19 +88,19 @@ DA_canale <-
 
 CT_canale <-
   CT_canale |> 
-  add_q5(canale_q5[[1]]) |> 
+  add_q5(canale_q5[[2]]) |> 
   bind_cols(CT_canale) |> 
   relocate(canale_ind_2016_q5, .after = last_col())
 
 borough_canale <-
   borough_canale |> 
-  add_q5(canale_q5[[1]]) |> 
+  add_q5(canale_q5[[3]]) |> 
   bind_cols(borough_canale) |> 
   relocate(canale_ind_2016_q5, .after = last_col())
 
 grid_canale <-
   grid_canale |> 
-  add_q5(canale_q5[[1]]) |> 
+  add_q5(canale_q5[[4]]) |> 
   bind_cols(grid_canale) |> 
   relocate(canale_ind_2016_q5, .after = last_col())
 
