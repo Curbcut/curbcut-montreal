@@ -94,8 +94,6 @@ make_info_table_data <- function(id, x, var_type, var_left, var_right, select,
       convert_unit(val_right, "_prop")
   }
   
-  print(out)
-  
   
   ## Special case for Kahnawake and Kanesatake ---------------------------------
   
@@ -394,7 +392,7 @@ make_info_table_data <- function(id, x, var_type, var_left, var_right, select,
   
   
   ## Return output -------------------------------------------------------------
-  print(out)
+
   return(out)
   
 }
