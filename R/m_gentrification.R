@@ -4,7 +4,6 @@
 
 gentrification_UI <- function(id) {
   fillPage(
-    shinyalert::useShinyalert(),
     fillRow(
       fillCol(sidebar_UI(NS(id, "sidebar"),
                          sliderInput(

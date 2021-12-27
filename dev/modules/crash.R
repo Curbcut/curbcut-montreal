@@ -374,6 +374,7 @@ variables <-
 
 # Clean-up ----------------------------------------------------------------
 
-rm(crash_results, process_crash, join_crash, traffic_count, traffic_files,
-   traffic_files_names)
+rm(crash_results, process_crash, join_crash, 
+   # traffic_count, traffic_files, traffic_files_names
+   )
 
