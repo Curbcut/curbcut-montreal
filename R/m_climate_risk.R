@@ -41,8 +41,8 @@ climate_risk_server <- function(id) {
               location = map_location) %>%
         add_polygon(data = {grid %>% 
             dplyr::select(ID, name, name_2, population, 
-                          left_var_full = destructive_storms_ind,
-                          left_var = destructive_storms_ind_q3) %>% 
+                          left_var_full = climate_destructive_storms_ind,
+                          left_var = climate_destructive_storms_ind_q5) %>% 
             mutate(group = paste(left_var, "- 1")) %>% 
             left_join(colour_bivar_borough, by = "group")}, stroke_width = 0, 
             stroke_colour = "#FFFFFF", fill_colour = "fill", update_view = FALSE,

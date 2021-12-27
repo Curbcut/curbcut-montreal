@@ -73,12 +73,18 @@ data_server <- function(id, var_left, var_right, df, zoom = df) {
           get("colour_left_3_DA")
         } else get(paste0("colour_bivar_", zoom()))
       
-      # Facilitate code legibility by pre-creating q3 column names
+      # Facilitate code legibility by pre-creating q3/q5 column names
       name_left_q3_col <- 
         paste0(str_remove(all_of(var_left), time_format_var_left), "_q3", 
                na.omit(str_extract(var_left, time_format_var_left)))
       name_right_q3_col <- 
         paste0(str_remove(var_right, time_format_var_right), "_q3", 
+               na.omit(str_extract(var_right, time_format_var_right)))
+      name_left_q5_col <- 
+        paste0(str_remove(all_of(var_left), time_format_var_left), "_q5", 
+               na.omit(str_extract(var_left, time_format_var_left)))
+      name_right_q5_col <- 
+        paste0(str_remove(var_right, time_format_var_right), "_q5", 
                na.omit(str_extract(var_right, time_format_var_right)))
       
       # Add NA column if q3 doesn't exist
@@ -92,6 +98,28 @@ data_server <- function(id, var_left, var_right, df, zoom = df) {
       }
 
 
+      if (data_type == "uni_q5") {
+        
+        # Set colour transparency
+        colour <- get(paste0("colour_left_5_", zoom()))
+        
+        # Get data
+        data <- 
+          data %>% 
+          dplyr::select(ID, name, name_2, any_of("CSDUID"), population, 
+                        left_var = all_of(var_left),
+                        left_var_q5 = all_of(name_left_q5_col)) |>
+          mutate(group = as.character(left_var_q5),
+                 group = if_else(is.na(group), "NA", group)) |> 
+          left_join(colour, by = "group")
+        
+        st_crs(data) <- 4326
+        return(data)
+        
+        
+      }
+      
+      
       
       ## Univariate data -------------------------------------------------------
       
@@ -132,7 +160,7 @@ data_server <- function(id, var_left, var_right, df, zoom = df) {
               data %>% 
               dplyr::select(ID, name, name_2, any_of("CSDUID"), population, 
                             left_var = all_of(var_left),
-                            left_var_q3 = name_left_q3_col) |>
+                            left_var_q3 = all_of(name_left_q3_col)) |>
               mutate(group = as.character(left_var_q3),
                      group = if_else(is.na(group), "NA", group)) |> 
               left_join(colour, by = "group")

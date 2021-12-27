@@ -6,11 +6,11 @@ token_climate_risk <- paste0("pk.eyJ1IjoiZHdhY2hzbXV0aCIsImEiOiJja2g2Y2JpbDc",
 
 # Dropdown menus
 var_list_climate_risk <- 
-  list("Destructive storms" = "destructive_storms_ind",
-       "Drought" = "drought_ind",
-       "Flood" = "flood_ind",
-       "Heat wave" = "heat_wave_ind",
-       "Heavy rain" = "heavy_rain_ind")
+  list("Destructive storms" = "climate_destructive_storms_ind",
+       "Drought" = "climate_drought_ind",
+       "Flood" = "climate_flood_ind",
+       "Heat wave" = "climate_heat_wave_ind",
+       "Heavy rain" = "climate_heavy_rain_ind")
 
 var_list_scale <- 
   list("250-m grid" = "grid",
