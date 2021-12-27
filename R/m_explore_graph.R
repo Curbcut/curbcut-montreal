@@ -47,7 +47,7 @@ explore_graph_server <- function(id, x, var_type, var_left, var_right, select,
       var_right_title <- sus_translate(var_exp %>%
           filter(var_code == sub("_\\d{4}$", "", var_right())) %>%
           pull(var_name))
-      na_select <- nrow(filter(dat, ID == select_id, !is.na(left_var_q3)))
+      na_select <- nrow(filter(dat, ID == select_id, !is.na(left_var_q5)))
       
       
       # Set up plotting variables ----------------------------------------------
@@ -173,14 +173,14 @@ explore_graph_server <- function(id, x, var_type, var_left, var_right, select,
       if (plot_type == "hist_all") {
         out <- ggplot(dat, aes(left_var)) +
           geom_histogram(aes(fill = fill), bins = bin_number) +
-          scale_fill_manual(values = rev(col_left_3), na.translate = FALSE) +
+          scale_fill_manual(values = rev(col_left_5), na.translate = FALSE) +
           x_scale + y_scale + labs_x + theme_default
         }
       
       # Histogram, NA selection
       if (plot_type == "hist_na") {
         out <- ggplot(dat, aes(left_var)) +
-          geom_histogram(bins = bin_number, fill = col_left_3[1]) +
+          geom_histogram(bins = bin_number, fill = col_left_5[1]) +
           x_scale + y_scale + labs_x + theme_default
         }
       
@@ -190,7 +190,7 @@ explore_graph_server <- function(id, x, var_type, var_left, var_right, select,
           geom_histogram(aes(fill = round(left_var) == 
                                round(left_var[ID == select_id])),
                          bins = bin_number) +
-          scale_fill_manual(values = col_left_3[c(1, 3)], 
+          scale_fill_manual(values = col_left_5[c(1, 5)], 
                             na.translate = FALSE) +
           x_scale + y_scale + labs_x + theme_default
         }
@@ -199,14 +199,14 @@ explore_graph_server <- function(id, x, var_type, var_left, var_right, select,
       if (plot_type == "bar_all") {
         out <- ggplot(dat, aes(as.factor(left_var))) +
           geom_bar(aes(fill = fill), width = 1) +
-          scale_fill_manual(values = rev(col_left_3), na.translate = FALSE) +
+          scale_fill_manual(values = rev(col_left_5), na.translate = FALSE) +
           x_scale + y_scale + labs_x + theme_default
         }
       
       # Bar, NA selection
       if (plot_type == "bar_na") {
         out <- ggplot(dat, aes(as.factor(left_var))) +
-          geom_bar(fill = col_left_3[1], width = 1) +
+          geom_bar(fill = col_left_5[1], width = 1) +
           x_scale + y_scale + labs_x + theme_default
         }
       
@@ -216,7 +216,7 @@ explore_graph_server <- function(id, x, var_type, var_left, var_right, select,
           geom_bar(aes(fill = round(left_var) == 
                                round(left_var[ID == select_id])), 
                          width = 1) +
-          scale_fill_manual(values = col_left_3[c(1, 3)], 
+          scale_fill_manual(values = col_left_5[c(1, 5)], 
                             na.translate = FALSE) +
           x_scale + y_scale + labs_x + theme_default
         }

@@ -3,8 +3,8 @@
 #' @param id A character string representing the module id. Not otherwise used.
 #' @param var_left,var_right A reactive which resolves to a character string
 #' representing the left and right variables to be analyzed. Each 
-#' should have both a "raw" version and a quantile version with the suffix 
-#' "_q3".
+#' should have a "raw" version and quantile versions with the suffixes "_q3"
+#' and "_q5".
 #' @param select A reactive which resolves to a character string giving the ID
 #' of a row in the input data frame (`x`) which has been selected.
 

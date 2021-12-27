@@ -24,5 +24,5 @@ climate_risk_zoom <- c("borough" = 0, "CT" = 10.5, "DA" = 12, "building" = 14)
 rv_climate_risk <- reactiveValues(poly_selected = NA)
 
 # Labels for boxplots
-climate_legend <- c("0" = "Insignificant", "1" = "Minor", "2" = "Moderate", 
-                    "3" = "Elevated", "4" = "Major")
+climate_legend <- c("1" = "Insignificant", "2" = "Minor", "3" = "Moderate", 
+                    "4" = "Elevated", "5" = "Major")
