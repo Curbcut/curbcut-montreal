@@ -41,12 +41,12 @@ explore_graph_server <- function(id, x, var_type, var_left, var_right, select,
       
       left_var_num <- length(unique(dat$left_var))
       bin_number <- min(25, left_var_num)
-      var_left_title <- sus_translate(var_exp %>%
-          filter(var_code == sub("_\\d{4}$", "", var_left())) %>%
-          pull(var_name))
-      var_right_title <- sus_translate(var_exp %>%
-          filter(var_code == sub("_\\d{4}$", "", var_right())) %>%
-          pull(var_name))
+      var_left_title <- sus_translate(variables |> 
+          filter(var_code == sub("_\\d{4}$", "", var_left())) |> 
+          pull(var_title))
+      var_right_title <- sus_translate(variables %>%
+          filter(var_code == sub("_\\d{4}$", "", var_right())) |> 
+          pull(var_title))
       na_select <- nrow(filter(dat, ID == select_id, !is.na(left_var_q5)))
       
       
