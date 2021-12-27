@@ -108,6 +108,7 @@ data_server <- function(id, var_left, var_right, df, zoom = df) {
           data %>% 
           dplyr::select(ID, name, name_2, any_of("CSDUID"), population, 
                         left_var = all_of(var_left),
+                        left_var_q3 = all_of(name_left_q3_col),
                         left_var_q5 = all_of(name_left_q5_col)) |>
           mutate(group = as.character(left_var_q5),
                  group = if_else(is.na(group), "NA", group)) |> 

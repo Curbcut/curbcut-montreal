@@ -62,14 +62,14 @@ make_info_table_data <- function(id, x, var_type, var_left, var_right, select,
   var_right_label <- sus_translate(var_right_label)
   
   out$title_left <- 
-    sus_translate(var_exp[var_exp$var_code == var_left,]$var_name)
+    sus_translate(variables[variables$var_code == var_left,]$var_title)
   if (var_right != " ") out$title_right <- 
-    sus_translate(var_exp[var_exp$var_code == var_right,]$var_name)
+    sus_translate(variables[variables$var_code == var_right,]$var_title)
   
   out$exp_left <- 
-    sus_translate(var_exp[var_exp$var_code == var_left,]$explanation)
+    sus_translate(variables[variables$var_code == var_left,]$explanation)
   out$exp_right <- 
-    sus_translate(var_exp[var_exp$var_code == var_right,]$explanation)
+    sus_translate(variables[variables$var_code == var_right,]$explanation)
   if (length(out$exp_left) == 0) warning("No exp: ", var_left, call. = FALSE)
   if (var_right != " " && length(out$exp_right) == 0) warning(
     "No exp: ", var_right, call. = FALSE)
@@ -80,7 +80,7 @@ make_info_table_data <- function(id, x, var_type, var_left, var_right, select,
   select_name <- filter(x(), ID == select())
   selection <- filter(dat, ID == select_id)
   out$selection <- selection
-  active_left <- nrow(filter(selection, !is.na(left_var_q3)))
+  active_left <- nrow(filter(selection, !is.na(left_var_q5)))
   active_right <- active_left
   if (var_right != " ") active_right <- 
     nrow(filter(selection, !is.na(left_var_q3), !is.na(right_var)))
@@ -93,6 +93,8 @@ make_info_table_data <- function(id, x, var_type, var_left, var_right, select,
     if (grepl("_multi", out$var_type)) out$val_right <- 
       convert_unit(val_right, "_prop")
   }
+  
+  print(out)
   
   
   ## Special case for Kahnawake and Kanesatake ---------------------------------
@@ -175,7 +177,7 @@ make_info_table_data <- function(id, x, var_type, var_left, var_right, select,
   
   vec_left <-
     dat %>%
-    filter(!is.na(left_var_q3), !is.na(left_var)) %>%
+    filter(!is.na(left_var_q5), !is.na(left_var)) %>%
     pull(left_var) %>% 
     na.omit()
   
@@ -392,7 +394,7 @@ make_info_table_data <- function(id, x, var_type, var_left, var_right, select,
   
   
   ## Return output -------------------------------------------------------------
-  
+  print(out)
   return(out)
   
 }
