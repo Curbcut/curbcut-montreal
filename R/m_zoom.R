@@ -1,9 +1,10 @@
 #### ZOOM MODULE ###############################################################
 
 #' @param id A character string representing the module id. Not otherwise used.
-#' @param ... Name-value pairs whose names are the name of the zoom level and
-#' whose values are the minimum zoom value at which the zoom level should be
-#' activated.
+#' @param zoom A reactive value which resolves to a length-one character vector
+#' @param zoom_levels A named numeric vector whose names are the name of the 
+#' zoom level and whose values are the minimum zoom value at which the zoom 
+#' level should be activated.
 #' @return A reactive expression containing a length-one character string.
 
 zoom_UI <- function(id, zoom_levels) {
@@ -22,7 +23,8 @@ zoom_UI <- function(id, zoom_levels) {
         hide_min_max = TRUE, 
         force_edges = TRUE, 
         width = "100%"), 
-        style = paste(widget_style, "width: calc(100% - 70px)")) # 50px the checkbox + margins
+        # 50px the checkbox + margins
+        style = paste(widget_style, "width: calc(100% - 70px)"))
   )
   
 }

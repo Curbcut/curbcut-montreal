@@ -8,7 +8,7 @@ canale_UI <- function(id) {
       fillCol(sidebar_UI(NS(id, "sidebar"),
                          div(class = "bottom_sidebar",
                              tagList(legend_UI(NS(id, "legend")),
-                                     zoom_UI(NS(id, "zoom"), canale_zoom)))
+                                     zoom_UI(NS(id, "zoom"), map_zoom_levels)))
       )),
       fillCol(
         div(class = "mapdeck_div", 
@@ -27,58 +27,60 @@ canale_UI <- function(id) {
 canale_server <- function(id) {
   moduleServer(id, function(input, output, session) {
     
-    
     # Sidebar
-    sidebar_server("sidebar", "canale", 
-                   reactive(paste0("left_", zoom(), "_", canale_ind)))
+    sidebar_server(
+      id = "sidebar", 
+      x = "canale", 
+      var_map = reactive(paste0("left_", df(), "_", "canale_ind_2016")))
     
     # Map
     output$map <- renderMapdeck({
       mapdeck(style = map_style, token = map_token, zoom = map_zoom, 
-              location = map_location) |>
-        add_sf(data = 
-                 borough |> 
-                 mutate(group = as.character(canale_ind_q3_2016),
-                        group = if_else(is.na(group), "NA", group)) |> 
-                 left_join(colour_left_3_borough, by = "group"),
-               stroke_width = 100, stroke_colour = "#FFFFFF", 
-               fill_colour = "fill", update_view = FALSE, id = "ID", 
-               auto_highlight = TRUE, highlight_colour = "#FFFFFF90")
-      })
-
-
+              location = map_location)})
+    
     # Zoom
-    zoom_val <- reactiveVal(get_zoom(map_zoom, canale_zoom))
+    zoom <- reactiveVal(get_zoom(map_zoom, map_zoom_levels))
     observeEvent(input$map_view_change$zoom, {
-      zoom_val(get_zoom(input$map_view_change$zoom, canale_zoom))
-    })
-    zoom <- zoom_server("zoom", zoom = zoom_val, zoom_levels = canale_zoom)
+      zoom(get_zoom(input$map_view_change$zoom, map_zoom_levels))})
+    df <- zoom_server("zoom", zoom = zoom, zoom_levels = map_zoom_levels)
     
     # Time
-    time <- reactive({"2016"})
+    time <- reactive("2016")
     
     # Left variable
-    var_left <- reactive(canale_ind)
+    var_left <- reactive("canale_ind_2016")
     
     # Compare panel
-    var_right <- compare_server(id = "canale", var_list = make_dropdown(),
-                                df = zoom, time = time)
+    var_right <- compare_server(
+      id = "canale", 
+      var_list = make_dropdown(),
+      df = df, 
+      time = time)
 
     # Data
-    data <- data_server(id = "canale", var_left = var_left,
-                        var_right = var_right, df = zoom, zoom = zoom_val)
+    data <- data_server(
+      id = "canale", 
+      var_left = var_left,
+      var_right = var_right, 
+      df = df, 
+      zoom = zoom)
     
     # Explore panel
-    explore_content <- explore_server(id = "explore", 
-                                   x = data, 
-                                   var_left = var_left,
-                                   var_right = var_right, 
-                                   select = reactive(rv_canale$poly_selected),
-                                   zoom = zoom, 
-                                   build_str_as_DA = TRUE)
+    explore_content <- explore_server(
+      id = "explore", 
+      x = data, 
+      var_left = var_left,
+      var_right = var_right, 
+      select = reactive(rv_canale$poly_selected),
+      zoom = df, 
+      build_str_as_DA = TRUE)
 
     # Legend
-    legend_server("legend", var_left, var_right, zoom_val)
+    legend_server(
+      id = "legend", 
+      var_left = var_left, 
+      var_right = var_right, 
+      zoom_val = df)
     
     # Did-you-know panel
     dyk_server("dyk", var_left, var_right)
@@ -86,7 +88,7 @@ canale_server <- function(id) {
     # Update map in response to variable changes or zooming
     observeEvent({
       var_right()
-      zoom()}, map_change(NS(id, "map"), df = data, zoom = zoom))
+      df()}, map_change(NS(id, "map"), df = data, zoom = df))
 
     # Update poly_selected on click
     observeEvent(input$map_polygon_click, {
@@ -97,13 +99,13 @@ canale_server <- function(id) {
     })
     
     # Clear poly_selected on zoom
-    observeEvent(zoom(), {rv_canale$poly_selected <- NA},
+    observeEvent(df(), {rv_canale$poly_selected <- NA},
                  ignoreInit = TRUE)
 
     # Update map in response to poly_selected change
     observeEvent(rv_canale$poly_selected, {
       if (!is.na(rv_canale$poly_selected)) {
-        width <- switch(zoom(), "borough" = 100, "CT" = 10, 2)
+        width <- switch(df(), "borough" = 100, "CT" = 10, 2)
         data_to_add <-
           data() %>%
           filter(ID == rv_canale$poly_selected) %>%
@@ -139,7 +141,7 @@ canale_server <- function(id) {
                    map_zoom = input$map_view_change$zoom,
                    map_location = c(input$map_view_change$longitude, 
                                     input$map_view_change$latitude),
-                   zoom = zoom(),
+                   zoom = df(),
                    explore_content = explore_content(),
                    poly_selected = rv_canale$poly_selected)})
     

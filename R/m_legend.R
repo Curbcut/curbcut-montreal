@@ -19,21 +19,50 @@ legend_server <- function(id, var_left, var_right, zoom_val) {
       if (length(var_left()) == 1 && var_right()[1] == " ") 60 else 120
     }
     
-    render_plot_fun <- function() { 
+    render_plot_fun <- function() {
       if (length(var_left()) == 1 && var_right()[1] == " ") {
         
-        # Temporarily use legend_left_3, and sub in legend_left_5 once
-        # absolute values are showing
-        legend_left_3 |> 
-          ggplot(aes(x, y, fill = fill, label = label)) +
-          geom_tile() +
-          geom_text(aes(x, y, label = label), inherit.aes = FALSE, size = 3) +
+        date_left <- str_extract(var_left(), "(?<=_)\\d{4}$")
+        
+        axis_title <- sus_translate(
+          variables |> 
+            filter(var_code == sub("_\\d{4}$", "", var_left())) |> 
+            pull(var_short))
+        
+        break_labels <- 
+          variables |> 
+          filter(var_code == sub("_\\d{4}$", "", var_left())) |> 
+          pull(breaks_q5) |> 
+          purrr::pluck(1) |> 
+          filter(date == date_left)
+        
+        if (zoom_val() %in% c("building", "street") &&
+            nrow(filter(break_labels, scale == zoom_val())) == 0) {
+          break_labels <- 
+            break_labels |> 
+            filter(scale == "DA") |> 
+            pull(all_of(sub("_\\d{4}$", "", var_left())))
+        } else {
+          break_labels <- 
+            break_labels |> 
+            filter(scale == zoom_val()) |> 
+            pull(all_of(sub("_\\d{4}$", "", var_left())))
+        }
+        
+        legend_left_5 |> 
+          ggplot(aes(xmin = x - 1, xmax = x, ymin = y - 1, ymax = y, 
+                     fill = fill)) +
+          geom_rect() + 
+          scale_x_continuous(name = axis_title, breaks = 0:5,
+                             labels = as.character(break_labels)) +
+          scale_y_continuous(name = NULL, labels = NULL) +
           scale_fill_manual(values = setNames(
-            paste0(legend_left_3$fill, 
+            paste0(legend_left_5$fill, 
                    filter(colour_alpha, zoom == zoom_val())$alpha),
-            legend_left_3$fill)) +
-          theme_void() +
-          theme(legend.position = "none")
+            legend_left_5$fill)) +
+          theme_minimal() +
+          theme(legend.position = "none",
+                panel.grid = element_blank())
         
       } else if (length(var_left()) == 2 && var_right()[1] == " ") {
         
@@ -97,7 +126,6 @@ legend_server <- function(id, var_left, var_right, zoom_val) {
       }
 
     output$legend_render <- renderUI({
-      
       output$legend <- renderPlot({
         render_plot_fun()
       })
@@ -107,7 +135,7 @@ legend_server <- function(id, var_left, var_right, zoom_val) {
       
     })
     
-    reactive({render_plot_fun()})
+    reactive(render_plot_fun())
   
   })
 }
