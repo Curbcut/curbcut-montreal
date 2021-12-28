@@ -69,7 +69,9 @@ ui <- function(request) {
                "Urban life",
                tabPanel("Active living potential", canale_UI("canale"),
                         value = "canale"),
-               tabPanel("Green alleys", alley_UI("alley"), value = "alley")),
+               tabPanel("Green alleys", alley_UI("alley"), value = "alley"),
+               tabPanel("Green space", green_space_UI("green_space"), 
+                        value = "green_space")),
              
              tabPanel("Montréal stories", stories_UI("stories"),
                       value = "stories"),

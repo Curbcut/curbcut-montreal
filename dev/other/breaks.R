@@ -35,6 +35,9 @@ get_breaks_q3 <- function(df, var_list = NULL) {
 
 add_q5 <- function(df, breaks) {
   map2_dfc(names(breaks), breaks, function(x, y) {
+    y[1] <- -Inf
+    y[length(y)] <- Inf
+    
     df |>
       transmute(across(all_of(x),
                        ~ as.numeric(cut(.x, y, include.lowest = TRUE)),
@@ -70,7 +73,7 @@ get_breaks_q5 <- function(df, var_list = NULL) {
         as.matrix() |>
         min(na.rm = TRUE)
     }))
-  
+
   cat_max <- suppressWarnings(
     map(var_list, ~{
       df |>
@@ -79,8 +82,30 @@ get_breaks_q5 <- function(df, var_list = NULL) {
         max(na.rm = TRUE)
     }))
   
-  pmap_dfc(list(cat_min, cat_max, var_list), function(x, y, z) {
-    breaks <- find_breaks_q5(x, y)
+  var_mean <- suppressWarnings(
+    map(var_list, ~{
+      df |>
+        select(all_of(.x)) |>
+        filter_all(all_vars(between(., quantile(., .01, na.rm = T), 
+                                    quantile(., .99, na.rm = T)))) |> 
+        as.matrix() |>
+        mean(na.rm = TRUE)
+    }))
+
+  standard_d <- suppressWarnings(
+    map(var_list, ~{
+      df |>
+        select(all_of(.x)) |>
+        filter_all(all_vars(between(., quantile(., .01, na.rm = T), 
+                                    quantile(., .99, na.rm = T)))) |> 
+        as.matrix() |>
+        sd(na.rm = TRUE)
+    }))
+  
+  pmap_dfc(list(cat_min, cat_max, var_list,
+                var_mean, standard_d), function(x, y, z, a, b) {
+    breaks <- find_breaks_q5(max(a - (4 * b), x), 
+                             min(a + (4 * b), y))
     tibble(v = breaks) |>
       set_names(z)
   })

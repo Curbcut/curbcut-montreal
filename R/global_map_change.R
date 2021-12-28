@@ -1,7 +1,8 @@
 #' function to change map between polygons (borough, CT, DA, ...), 
 #' lines (street) and points (crash)
 
-map_change <- function(id_map, df, zoom, legend = NULL, polygons_to_clear = NULL) {
+map_change <- function(id_map, df, zoom, legend = NULL, polygons_to_clear = NULL,
+                       overthrow_width = FALSE) {
   
   stopifnot(
     is.reactive(df),
@@ -43,6 +44,7 @@ map_change <- function(id_map, df, zoom, legend = NULL, polygons_to_clear = NULL
   } else if (geom_type == "polygon") {
 
     width <- switch(zoom(), "borough" = 100, "CT" = 10, "DA" = 2, "grid" = 0, 2)
+    if (overthrow_width) width <- 0
     
     update_and_clean() %>% 
       add_polygon(

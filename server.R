@@ -44,6 +44,8 @@ shinyServer(function(input, output, session) {
       crash_server("crash")
     } else if (active_tab == "gentrification") {
       active_mod <<- gentrification_server("gentrification")
+    } else if (active_tab == "green_space") {
+      green_space_server("green_space")
     } else if (active_tab == "housing") {
       housing_server("housing")
     } else if (active_tab == "mcp") {

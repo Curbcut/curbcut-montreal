@@ -93,7 +93,7 @@ process_gs <- function(df) {
 }
 
 gs_results <- map(list("borough" = borough, 
-                       "CT" = CT, "DA" = DA, "grid" = grid), process_gs)
+                       "CT" = CT, "DA" = DA), process_gs)
 
 
 # Add breaks --------------------------------------------------------------
@@ -104,7 +104,6 @@ gs_q3 <- map(gs_results, get_breaks_q3)
 gs_q5 <- map(gs_results, get_breaks_q5)
 
 gs_results <- map2(gs_results, gs_q5, ~bind_cols(.x, add_q5(.x, .y)))
-
 
 # Data testing ------------------------------------------------------------
 
@@ -118,6 +117,12 @@ walk(names(gs_results), ~{
            relocate(geometry, .after = last_col()), 
          envir = globalenv())
 })
+
+building <- 
+  building |> 
+  left_join(gs_results$DA, by = c("DAUID" = "ID")) |> 
+  relocate(geometry, .after = last_col()) |> 
+  st_set_agr("constant")
 
 
 # Check meta data ---------------------------------------------------------
@@ -160,13 +165,17 @@ green_space_table <-
                       str_detect(.x, "road_space") ~ "Road space",
     )
     
+    # sqm_sqkm <- 
+    #   if (!str_detect(.x, "sqkm")) "square kilometers" else "square meters"
+    
     group <- if (str_detect(.x, "sqkm")) "per sq km" else "per 1,000"
     
     tibble(var_code = .x,
            var_title = paste(type, group),
            var_short = str_remove_all(paste(type, group), "per |green space ") |> 
              str_replace("sq km", "sqkm"),
-           explanation = paste("the number of square meters of", 
+           # explanation = paste("the number of", sqm_sqkm, "of", 
+           explanation = paste("the number of square meters of",
                                str_to_lower(type) |> 
                                  str_replace("under validation", 
                                              "green space under validation"), 
@@ -175,7 +184,7 @@ green_space_table <-
            category = NA,
            private = FALSE,
            dates = "2021",
-           scales = list(c("borough", "CT", "DA", "grid")),
+           scales = list(c("borough", "CT", "DA", "building")),
            breaks_q3 = list(breaks_q3_active[[.x]]),
            breaks_q5 = list(breaks_q5_active[[.x]]),
            source = "VdM")
