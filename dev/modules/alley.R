@@ -5,19 +5,14 @@
 # Get updated data from open data portal ----------------------------------
 
 # dl_unzip <- function(shp_url, name) {
-#   download.file(shp_url, destfile = paste0("dev/data/green_alleys/", "temp", 
+#   download.file(shp_url, destfile = paste0("dev/data/green_alleys/", "temp",
 #                                            ".zip"))
-#   
+# 
 #   unzip(paste0("dev/data/green_alleys/", "temp", ".zip"),
 #         exdir = "dev/data/green_alleys")
-#   
+# 
 #   unlink(paste0("dev/data/green_alleys/", "temp", ".zip"), recursive = TRUE)
 # }
-# 
-# # DL Espace_Vert.shp
-# dl_unzip(paste0("https://data.montreal.ca/dataset/2e9e4d2f-173a-4c3d-a5e3-",
-#                 "565d79baa27d/resource/c57baaf4-0fa8-4aa4-9358-61eb7457b650/",
-#                 "download/shapefile.zip"))
 # 
 # # DL ruelles-vertes.shp
 # dl_unzip(paste0("https://data.montreal.ca/dataset/ab3ce7bb-09a7-49d7-8f76-",
@@ -28,14 +23,6 @@
 
 
 # Tidy and transform data -------------------------------------------------
-
-green_space <- 
-  read_sf("dev/data/green_alleys/Espace_Vert.shp") |>
-  select(ID = OBJECTID, name = Nom, type_1 = TYPO1, type_2 = TYPO2, geometry) |>
-  st_transform(4326) |> 
-  st_set_agr("constant") |>
-  st_cast("POLYGON") |> 
-  mutate(visited = FALSE, .after = type_2)
 
 alleys_mtl <-
   read_sf("dev/data/green_alleys/ruelles-vertes.shp") |>

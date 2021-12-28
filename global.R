@@ -31,9 +31,8 @@ enableBookmarking("server")
 
 # Data --------------------------------------------------------------------
 
-var_exp <- qread("data/var_exp.qs")
 variables <- qread("data/variables.qs")
-title_text <- qread("data/title_text.qs")
+# title_text <- qread("data/title_text.qs")
 qload("data/colours.qsm")
 
 qload("data/census.qsm")
@@ -42,7 +41,7 @@ street <- qread("data/street.qs")
 building <- qread("data/building.qs")
 
 qload("data/covid.qsm")
-green_space <- qread("data/green_space.qs")
+# green_space <- qread("data/green_space.qs")
 qload("data/alleys.qsm")
 crash <- qread("data/crash.qs")
 tt_matrix <- qread("data/tt_matrix.qs")

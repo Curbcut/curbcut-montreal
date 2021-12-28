@@ -1,36 +1,25 @@
-#### Green alley data setup #################################################### 
+#### Green space data setup #################################################### 
 
-# This script relies on objects created in dev/census.R
-
-
-# Load packages -----------------------------------------------------------
-suppressPackageStartupMessages({
-  library(future)
-  library(foreach)
-  library(progressr)
-  library(doFuture)
-  registerDoFuture()
-  plan(multisession)
-})
+# This script relies on objects created in dev/build_data.R
 
 # Get updated data from open data portal ----------------------------------
 
-dl_unzip <- function(shp_url, name) {
-  download.file(shp_url, destfile = paste0("dev/data/", "temp",
-                                           ".zip"))
-  
-  unzip(paste0("dev/data/", "temp", ".zip"),
-        exdir = "dev/data")
-  
-  unlink(paste0("dev/data/", "temp", ".zip"), recursive = TRUE)
-}
-
-# DL Espace_Vert.shp
-dl_unzip(paste0("https://data.montreal.ca/dataset/2e9e4d2f-173a-4c3d-a5e3-",
-                "565d79baa27d/resource/c57baaf4-0fa8-4aa4-9358-61eb7457b650/",
-                "download/shapefile.zip"))
-
-rm(dl_unzip)
+# dl_unzip <- function(shp_url, name) {
+#   download.file(shp_url, destfile = paste0("dev/data/", "temp",
+#                                            ".zip"))
+#   
+#   unzip(paste0("dev/data/", "temp", ".zip"),
+#         exdir = "dev/data")
+#   
+#   unlink(paste0("dev/data/", "temp", ".zip"), recursive = TRUE)
+# }
+# 
+# # DL Espace_Vert.shp
+# dl_unzip(paste0("https://data.montreal.ca/dataset/2e9e4d2f-173a-4c3d-a5e3-",
+#                 "565d79baa27d/resource/c57baaf4-0fa8-4aa4-9358-61eb7457b650/",
+#                 "download/shapefile.zip"))
+# 
+# rm(dl_unzip)
 
 # Tidy and transform data -------------------------------------------------
 
@@ -51,47 +40,24 @@ green_space |>
                             type_1 == "Parc d'arrondissement" ~ "borough_park"))
     
 
-
 # Process green space data ------------------------------------------------
 
 process_gs <- function(df) {
-
-  x <- nrow(green_space)
-  batch_size <- 200
   
-  with_progress({
-    pb <- progressor(x)
-    handlers(list(
-      handler_progress(
-        format   = ":spin :current/:total [:bar] :percent in :elapsed ETA: :eta",
-        width    = 60,
-        complete = "="
-      )
-    ))
-    
-    total_iterations <- ceiling(x / batch_size)
-    iteration <- 1
-    results <- vector("list", total_iterations)
-    
-    while (iteration <= total_iterations) {
-      results[[iteration]] <- 
-        foreach(i = ((iteration - 1) * batch_size + 1):min(iteration * batch_size, x), .combine = c) %dopar% {
-          pb()
-          st_intersection(select(df, ID), select(green_space[i, ], type_1))
-        }  
-      iteration <- iteration + 1
-    }
-  })
+  st_agr(df) <-  "constant"
+  st_agr(green_space) <-  "constant"
   
-  intersected <- 
-    map_dfr(results, ~{
-      tibble(ID = .x[names(.x) == "ID"],
-             type_1 = .x[names(.x) == "type_1"],
-             geometry = .x[names(.x) == "geometry"])
-    }) |> unnest(c(ID, type_1, geometry)) |> 
-    st_as_sf()
-
-  intersected |> 
+  # Only keep Ville de Montreal
+  df <- if (nrow(df) == 111) {
+    filter(df, str_starts(ID, "2466023")) 
+  } else {
+    filter(df, str_starts(CSDUID, "2466023")) 
+  }
+  
+  df |> 
+    st_transform(32618) |> 
+    select(ID) |> 
+    st_intersection(st_transform(green_space, 32618)) |> 
     filter(st_is(geometry, "POLYGON") | st_is(geometry, "MULTIPOLYGON")) |>
     mutate(
       area = units::drop_units(st_area(geometry)),
@@ -120,11 +86,9 @@ process_gs <- function(df) {
     select(-c("green_space_other", "green_space_road_space",
               "green_space_borough_park", "green_space_under_validation",
               "green_space_large_park", "green_space_total"),
-           -population, everything()) |>
+           -population) |>
     mutate(across(starts_with("green_space"), ~replace(., is.na(.), 0))) |> 
     mutate(across(starts_with("green_space"), ~replace(., is.infinite(.), 0))) |> 
-    mutate(across(starts_with("green_space"), ntile, n = 3, .names = "{.col}_q3"), 
-           .before = geometry) |> 
     st_drop_geometry()
 }
 
@@ -132,38 +96,98 @@ gs_results <- map(list("borough" = borough,
                        "CT" = CT, "DA" = DA, "grid" = grid), process_gs)
 
 
+# Add breaks --------------------------------------------------------------
+
+gs_results <- map(gs_results, ~add_q3(.x))
+
+gs_q3 <- map(gs_results, get_breaks_q3)
+gs_q5 <- map(gs_results, get_breaks_q5)
+
+gs_results <- map2(gs_results, gs_q5, ~bind_cols(.x, add_q5(.x, .y)))
+
+
 # Data testing ------------------------------------------------------------
 
 data_testing(gs_results)
 
 
-# Variable explanations ---------------------------------------------------
+# Join data ---------------------------------------------------------------
 
+walk(names(gs_results), ~{
+  assign(.x, left_join(get(.x), gs_results[[.x]], by = "ID") |> 
+           relocate(geometry, .after = last_col()), 
+         envir = globalenv())
+})
+
+
+# Check meta data ---------------------------------------------------------
+
+meta_testing()
+
+
+# Add to variables table --------------------------------------------------
+
+var_list <- map(gs_results, ~{
+  names(select(.x, -ID, -contains(c("q3", "q5"))))
+}) |> unlist() |> unique()
+
+# Get breaks_q3
+breaks_q3_active <-
+  map(set_names(var_list), ~{
+    map2_dfr(gs_q3, names(gs_results), function(x, scale) {
+      if (nrow(x) > 0) x |> mutate(scale = scale, date = 2021, rank = 0:3,
+                                   .before = everything())}) |> 
+      select(scale, date, rank, var = all_of(.x))
+  })
+
+# Get breaks_q5
+breaks_q5_active <- 
+  map(set_names(var_list), ~{
+    map2_dfr(gs_q5, names(gs_results), function(x, scale) {
+      if (nrow(x) > 0) x |> mutate(scale = scale, date = 2021, rank = 0:5,
+                                   .before = everything())}) |> 
+      select(scale, date, rank, var = all_of(.x))
+  })
+
+# construct green space variables table
+green_space_table <- 
+  map_dfr(var_list, ~{
+    type <- case_when(str_detect(.x, "borough_park") ~ "Borough park",
+                      str_detect(.x, "large_park") ~ "Large park",
+                      str_detect(.x, "other") ~ "Other park",
+                      str_detect(.x, "under_validation") ~ "Under validation",
+                      str_detect(.x, "total") ~ "Total green space",
+                      str_detect(.x, "road_space") ~ "Road space",
+    )
+    
+    group <- if (str_detect(.x, "sqkm")) "per sq km" else "per 1,000"
+    
+    tibble(var_code = .x,
+           var_title = paste(type, group),
+           var_short = str_remove_all(paste(type, group), "per |green space ") |> 
+             str_replace("sq km", "sqkm"),
+           explanation = paste("the number of square meters of", 
+                               str_to_lower(type) |> 
+                                 str_replace("under validation", 
+                                             "green space under validation"), 
+                               str_replace(group, "sq km", "square kilometers") |> 
+                                 str_replace("1,000", "1,000 residents")),
+           category = NA,
+           private = FALSE,
+           dates = "2021",
+           scales = list(c("borough", "CT", "DA", "grid")),
+           breaks_q3 = list(breaks_q3_active[[.x]]),
+           breaks_q5 = list(breaks_q5_active[[.x]]),
+           source = "VdM")
+  })
+
+# Join green space variable table to variables table
 variables <-
   variables |>
-  add_variables(
-    var_code = "green_alley_sqkm",
-    var_title = "Green alleys per sq km",
-    var_short = "Alleys sqkm",
-    explanation = paste0("the number of square meters of green alley per ",
-                         "square kilometers"),
-    category = NA,
-    private = FALSE,
-    dates = "2021",
-    scales = c("borough", "CT", "DA"),
-    breaks_q3 = NA,
-    breaks_q5 = NA,
-    source = "VdM") |> 
-  add_variables(
-    var_code = "green_alley_per1k",
-    var_title = "Green alleys per 1,000",
-    var_short = "Alleys 1,000",
-    explanation = paste0("the number of square meters of green alley per ",
-                         "1,000 residents"),
-    category = NA,
-    private = FALSE,
-    dates = "2021",
-    scales = c("borough", "CT", "DA"),
-    breaks_q3 = NA,
-    breaks_q5 = NA,
-    source = "VdM")
+  rbind(green_space_table)
+
+
+# Clean up ----------------------------------------------------------------
+
+rm(breaks_q3_active, breaks_q5_active, green_space_table, gs_q3, gs_q5, 
+   gs_results, process_gs, var_list)

@@ -214,8 +214,8 @@ variables <-
     private = FALSE,
     dates = "2016",
     scales = c("borough", "building", "CT", "DA", "grid", "street"),
-    breaks_q3 = select(breaks_q3_active, scale:rank, climate_drought_ind),
-    breaks_q5 = select(breaks_q5_active, scale:rank, climate_drought_ind),
+    breaks_q3 = select(breaks_q3_active, scale:rank, var = climate_drought_ind),
+    breaks_q5 = select(breaks_q5_active, scale:rank, var = climate_drought_ind),
     source = "VdM") |> 
   add_variables(
     var_code = "climate_flood_ind",
@@ -226,8 +226,8 @@ variables <-
     private = FALSE,
     dates = "2016",
     scales = c("borough", "building", "CT", "DA", "grid", "street"),
-    breaks_q3 = select(breaks_q3_active, scale:rank, climate_flood_ind),
-    breaks_q5 = select(breaks_q5_active, scale:rank, climate_flood_ind),
+    breaks_q3 = select(breaks_q3_active, scale:rank, var = climate_flood_ind),
+    breaks_q5 = select(breaks_q5_active, scale:rank, var = climate_flood_ind),
     source = "VdM") |> 
   add_variables(
     var_code = "climate_heavy_rain_ind",
@@ -238,8 +238,10 @@ variables <-
     private = FALSE,
     dates = "2016",
     scales = c("borough", "building", "CT", "DA", "grid", "street"),
-    breaks_q3 = select(breaks_q3_active, scale:rank, climate_heavy_rain_ind),
-    breaks_q5 = select(breaks_q5_active, scale:rank, climate_heavy_rain_ind),
+    breaks_q3 = select(breaks_q3_active, scale:rank, 
+                       var = climate_heavy_rain_ind),
+    breaks_q5 = select(breaks_q5_active, scale:rank, 
+                       var = climate_heavy_rain_ind),
     source = "VdM") |> 
   add_variables(
     var_code = "climate_destructive_storms_ind",
@@ -252,9 +254,9 @@ variables <-
     dates = "2016",
     scales = c("borough", "building", "CT", "DA", "grid", "street"),
     breaks_q3 = select(breaks_q3_active, scale:rank, 
-                       climate_destructive_storms_ind),
+                       var = climate_destructive_storms_ind),
     breaks_q5 = select(breaks_q5_active, scale:rank, 
-                       climate_destructive_storms_ind),
+                       var = climate_destructive_storms_ind),
     source = "VdM") |> 
   add_variables(
     var_code = "climate_heat_wave_ind",
@@ -265,8 +267,10 @@ variables <-
     private = FALSE,
     dates = "2016",
     scales = c("borough", "building", "CT", "DA", "grid", "street"),
-    breaks_q3 = select(breaks_q3_active, scale:rank, climate_heat_wave_ind),
-    breaks_q5 = select(breaks_q5_active, scale:rank, climate_heat_wave_ind),
+    breaks_q3 = select(breaks_q3_active, scale:rank, 
+                       var = climate_heat_wave_ind),
+    breaks_q5 = select(breaks_q5_active, scale:rank, 
+                       var = climate_heat_wave_ind),
     source = "VdM")
 
 
