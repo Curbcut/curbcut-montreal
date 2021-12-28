@@ -1,7 +1,5 @@
 #### Climate risk data setup ###################################################
 
-source("dev/modules/census/03_process_and_breaks.R")
-
 # Add climate risk data to grid -------------------------------------------
 
 climate_risk <- 
@@ -277,9 +275,6 @@ variables <-
 # Clean up ----------------------------------------------------------------
 
 rm(breaks_q3_active, breaks_q5_active, climate_risk_q3, climate_risk_q5,
-   grid_q5, add_q3, add_q3_list, add_q5, add_q5_list, add_years, drop_vars, 
-   find_breaks_q5, get_breaks_q3, get_breaks_q3_list, get_breaks_q5, 
-   get_breaks_q5_list, get_categories_q5, get_categories_q5_list, get_unit_type, 
-   merge_breaks, normalize, reduce_years)
+   grid_q5)
 
 # To save output, run dev/build_data.R, which calls this script
