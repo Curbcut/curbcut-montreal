@@ -39,14 +39,14 @@ add_vars <- function(data_to_add, census_vec, breaks_q3, breaks_q5, scales,
       map2_dfr(x, years, function(y, date) {
         if (nrow(y) > 0) y |> mutate(rank = 0:3, date = date)}) |>
         mutate(scale = scale)}) |>
-      select(scale, date, rank, everything())
+      select(scale, date, rank, var = all_of(.x))
     
     # Get breaks_q5
     breaks_q5_active <- map2_dfr(breaks_q5, scales, function(x, scale) {
       map2_dfr(x, years, function(y, date) {
         if (nrow(y) > 0) y |> mutate(rank = 0:5, date = date)}) |>
         mutate(scale = scale)}) |>
-      select(scale, date, rank, everything())
+      select(scale, date, rank, var = all_of(.x))
     
     tibble(
       var_code = .x,

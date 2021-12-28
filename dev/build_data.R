@@ -69,6 +69,7 @@ stopifnot(
 
 source("dev/other/data_testing.R")
 source("dev/other/meta_testing.R", encoding = "utf-8")
+source("dev/other/breaks.R")
 
 
 # Build variable table ----------------------------------------------------
