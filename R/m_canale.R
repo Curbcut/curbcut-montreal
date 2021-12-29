@@ -3,22 +3,19 @@
 # UI ----------------------------------------------------------------------
 
 canale_UI <- function(id) {
-  fillPage(
-    fillRow(
-      fillCol(sidebar_UI(NS(id, "sidebar"),
-                         div(class = "bottom_sidebar",
-                             tagList(legend_UI(NS(id, "legend")),
-                                     zoom_UI(NS(id, "zoom"), map_zoom_levels)))
-      )),
-      fillCol(
-        div(class = "mapdeck_div", 
-            mapdeckOutput(NS(id, "map"), height = "100%")),
-        right_panel(id, compare_UI(NS(id, "canale"), make_dropdown()),
-                    div(class = "explore_dyk",
-                        explore_UI(NS(id, "explore")), dyk_UI(NS(id, "dyk"))))),
-      flex = c(1, 5)
-    )
-  )
+  fillPage(fillRow(
+    # Sidebar
+    fillCol(sidebar_UI(NS(id, "sidebar"), 
+                       div(class = "bottom_sidebar", 
+                           tagList(legend_UI(NS(id, "legend")),
+                                   zoom_UI(NS(id, "zoom"), map_zoom_levels))))),
+    # Map
+    fillCol(
+      div(class = "mapdeck_div", mapdeckOutput(NS(id, "map"), height = "100%")),
+      right_panel(id, compare_UI(NS(id, "canale"), make_dropdown()),
+                  div(class = "explore_dyk", explore_UI(NS(id, "explore")), 
+                      dyk_UI(NS(id, "dyk"))))),
+    flex = c(1, 5)))
 }
 
 
@@ -123,27 +120,28 @@ canale_server <- function(id) {
       })
 
     # Clear click status if prompted
-    # (Namespacing hardwired to explore module; could make it return a reactive)
-    observeEvent(input$`explore-clear_selection`, {
-      rv_canale$poly_selected <- NA})
+    observeEvent(input$`explore-clear_selection`, {rv_canale$poly_selected <- NA})
     
     # data naming for data_export
-    data_export <- data_export_server(id = "canale",
-                                      df = data, var_left = var_left, 
-                                      var_right = var_right)
+    data_export <- data_export_server(
+      id = "canale",
+      df = data, 
+      var_left = var_left, 
+      var_right = var_right)
     
     # OUT
-    reactive({list(module_short_title = "the CanALE index",
-                   module_id = "canale",
-                   time = "2016",
-                   data = data_export(),
-                   token = map_token,
-                   map_zoom = input$map_view_change$zoom,
-                   map_location = c(input$map_view_change$longitude, 
-                                    input$map_view_change$latitude),
-                   zoom = df(),
-                   explore_content = explore_content(),
-                   poly_selected = rv_canale$poly_selected)})
+    reactive({list(
+      module_short_title = "the CanALE index",
+      module_id = "canale",
+      time = "2016",
+      data = data_export(),
+      token = map_token,
+      map_zoom = input$map_view_change$zoom,
+      map_location = c(input$map_view_change$longitude, 
+                       input$map_view_change$latitude),
+      zoom = df(),
+      explore_content = explore_content(),
+      poly_selected = rv_canale$poly_selected)})
     
   })
 }
