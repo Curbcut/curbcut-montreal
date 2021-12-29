@@ -74,8 +74,15 @@ climate_risk_server <- function(id) {
     choropleth_zoom <- reactive(if (input$grid) "borough" else zoom_val())
     
     # Data
-    data <- data_server("climate_risk", var_left, var_right, df, 
+    data_1 <- data_server("climate_risk", var_left, var_right, df, 
                         reactive(choropleth_zoom()))
+    
+    data <- reactive({
+        data_1() %>% 
+          {if (nrow(.) == nrow(borough))
+            filter(., ID %in% island_csduid)
+            else filter(., CSDUID %in% island_csduid)}
+    })
     
     # # Explore panel
     explore_server(id = "explore", 

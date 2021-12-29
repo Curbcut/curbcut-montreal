@@ -11,7 +11,8 @@ legend_UI <- function(id) {
   )
 }
 
-legend_server <- function(id, var_left, var_right, zoom_val, show_panel = reactive(TRUE)) {
+legend_server <- function(id, var_left, var_right, zoom_val, 
+                          show_panel = reactive(TRUE)) {
   
   stopifnot(is.reactive(var_left))
   stopifnot(is.reactive(var_right))
@@ -42,7 +43,7 @@ legend_server <- function(id, var_left, var_right, zoom_val, show_panel = reacti
           filter(var_code == sub("_\\d{4}$", "", var_left())) |> 
           pull(breaks_q5) |> 
           purrr::pluck(1) |> 
-          filter(date == date_left || is.na(date))
+          filter(date == date_left | is.na(date))
         
         if (zoom_val() %in% c("building", "street") &&
             nrow(filter(break_labels, scale == zoom_val())) == 0) {

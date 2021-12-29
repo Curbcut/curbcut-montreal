@@ -36,22 +36,26 @@ climate_risk <-
       st_transform(32618) |> 
       st_set_agr("constant") |> 
       st_intersection(df) |> 
+      full_join(st_drop_geometry(select(grid, ID)), by = "ID") |> 
       mutate(area_int = units::drop_units(st_area(geometry))) |> 
       st_drop_geometry() |> 
       group_by(grid_ID) |> 
       filter(area_int == max(area_int)) |> 
       ungroup() |>
-      select(-grid_ID, -area_int)
+      select(-grid_ID, -area_int) |> 
+      mutate(across(starts_with("climate"), ~replace(., is.na(.), 0)))
     })
 
 grid <-
   climate_risk |>  
   reduce(left_join, by = "ID", .init = grid) |> 
-  relocate(geometry, .after = last_col()) |> 
+  relocate(geometry, .after = last_col()) |>
   mutate(across(climate_flood_ind:climate_heat_wave_ind, 
-                ~pmin(.x, 3), .names = "{.col}_q3"),
+                ~pmin(.x, 2), .names = "{.col}_q3"),
          across(climate_flood_ind:climate_heat_wave_ind,
                 ~.x, .names = "{.col}_q5")) |> 
+  mutate(across(ends_with(c("q3", "q5")), ~ .x + 1)) |> 
+  mutate(across(ends_with(c("q3", "q5")), ~replace(., . >= 5, 5))) |> 
   relocate(geometry, .after = last_col()) |> 
   st_set_agr("constant")
 
@@ -147,9 +151,8 @@ grid_q5 <-
   st_drop_geometry() |> 
   select(climate_flood_ind:climate_heat_wave_ind) |> 
   slice(1:5) |> 
-  mutate(across(everything(), ~c("Insignificant" = 0, "Minor" = 1,
-                                 "Moderate" = 2, "Elevated" = 3, 
-                                 "Major" = 4))) |> 
+  mutate(across(everything(), ~c("No risk" = 0, "Insignificant" = 1, 
+                                 "Minor" = 2, "Moderate" = 3, "Major" = 4))) |> 
   list()
 
 climate_risk_q5 <- c(climate_risk_q5, grid_q5)

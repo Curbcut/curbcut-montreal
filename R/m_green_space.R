@@ -71,7 +71,8 @@ green_space_server <- function(id) {
       id = "green_space", 
       var_list = make_dropdown(),
       df = df,
-      time = reactive("2016"))
+      time = reactive("2016"),
+      show_panel = choropleth)
     
     # Data
     data_choropleth <- data_server(
