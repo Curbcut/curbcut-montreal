@@ -6,10 +6,10 @@ library(qs)
 title_text <- readr::read_csv("dev/data/title_text.csv")
 
 title_text <-
-  title_text %>%
+  title_text |>
   add_row(tab = "ped", type = "title",
-          text = "Pedestrian capacity for social distancing") %>% 
-  add_row(tab = "housing", type = "title", text = "The housing system") %>% 
+          text = "Pedestrian capacity for social distancing") |> 
+  add_row(tab = "housing", type = "title", text = "The housing system") |> 
   add_row(tab = "housing", type = "main",
           text = paste0("Housing is at the centre of our lives. In recent years, ",
                         "there have been increasing conversations surrounding ",
@@ -17,7 +17,7 @@ title_text <-
                         "(Madden & Marcuse, 2016). This module ",
                         "offers a temporal outlook on housing in Montreal’s census ",
                         "metropolitan area through census variables that relate to ",
-                        "housing, socio-demographics and more.")) %>% 
+                        "housing, socio-demographics and more.")) |> 
   add_row(tab = "housing", type = "extra",
           text = paste0("<p>Access to affordable and ",
                         "adequate housing is a core element for social equity ",
@@ -40,13 +40,13 @@ title_text <-
                         "Mixte: Les grandes lignes du règlement.</a>",
                         "<li>Madden, D., & Marcuse, P. (2016). In Defense of ",
                         "Housing: The Politics of Crisis. New York and ",
-                        "London: Verso Books.</ul>")) %>% 
-  add_row(tab = "crash", type = "title", text = "Road safety") %>% 
+                        "London: Verso Books.</ul>")) |> 
+  add_row(tab = "crash", type = "title", text = "Road safety") |> 
   add_row(tab = "crash", type = "main",
           text = paste0("Road safety is an important consideration for wellbeing ",
                         "and safety in cities. This module ",
                         "provides an overview and analysis of road collisions ",
-                        "in the City of Montreal, ranging from 2012 to today.")) %>% 
+                        "in the City of Montreal, ranging from 2012 to today.")) |> 
   add_row(tab = "crash", type = "extra",
           text = paste0("<p>Data is collected by the Service de Police de la ","
                         Ville de Montréal (SPVM) and compiled by the Société ",
@@ -63,10 +63,10 @@ title_text <-
                         "l’approche vision zéro en sécurité routière. Piétons Québec. Online:</a>",
                         "<li><a href =https://donnees.montreal.ca/ville-de-montreal/collisions-routieres>",
                         "Ville de Montréal. (2021). Collisions routières. ",
-                        "Données Ouvertes Montréal. Online:</a></ul>")) %>% 
-  mutate(tab = if_else(tab == "pedestrian_ct", "ped", tab)) %>% 
+                        "Données Ouvertes Montréal. Online:</a></ul>")) |> 
+  mutate(tab = if_else(tab == "pedestrian_ct", "ped", tab)) |> 
   add_row(tab = "alley", type = "title",
-          text = "Green alleys") %>% 
+          text = "Green alleys") |> 
   add_row(tab = "alley", type = "main",
           text = paste0("Green alleys consist in the transformation of back ",
                         "alleys into spaces that improve people’s living ",
@@ -77,7 +77,7 @@ title_text <-
                         "pollution, and improve water management. They can ",
                         "also enhance social interactions and become ",
                         "recreational spaces for children where car ",
-                        "circulation is reduced.")) %>% 
+                        "circulation is reduced.")) |> 
   add_row(tab = "alley", type = "extra",
           text = paste0("<p>The Green Alley Program currently in place in ", 
                         "Montreal was implemented in 1995. In August 2020, ",
@@ -114,9 +114,9 @@ title_text <-
                         "reduce car traffic and, in some cases, parking. <li>Neither ",
                         "green nor community-oriented alleys: they are abandoned or ",
                         "used as parking spaces or as ways to access private garages, ",
-                        "without any environmental or social-community benefit.")) %>% 
+                        "without any environmental or social-community benefit.")) |> 
   add_row(tab = "covid", type = "title",
-          text = "2020 and 2021 Covid interventions") %>% 
+          text = "2020 and 2021 Covid interventions") |> 
   add_row(tab = "covid", type = "main",
           text = paste0("The onset of the COVID-19 pandemic prompted municipalities ",
                         "across the world to restrict public transit systems and advise citizens ",
@@ -128,7 +128,7 @@ title_text <-
                         "new bike lanes, creating temporary infrastructure, and shutting down streets ",
                         "to motor vehicle traffic. These changes served to minimize viral transmission ",
                         "during travel and to more safely connect people to essential services, health ",
-                        "care, and greenspace.")) %>% 
+                        "care, and greenspace.")) |> 
   add_row(tab = "covid", type = "extra",
           text = paste0("In May 2020, the City of Montréal announced plans to establish ",
                         "over 300 kilometers of active transport infrastructure by the ",
@@ -228,6 +228,19 @@ title_text <-
     "<li>Walks, Alan R., and Richard Maaranen. The timing, patterning, & forms ",
     "of gentrification & neighbourhood upgrading in Montreal, Toronto, & ",
     "Vancouver, 1961 to 2001. Toronto, ON: Centre for Urban and Community ",
-    "Studies, Cities Centre, University of Toronto, 2008.</ul>"))
+    "Studies, Cities Centre, University of Toronto, 2008.</ul>")) |> 
+  add_row(tab = "green_space", type = "title", text = "Green spaces") |> 
+  add_row(tab = "green_space", type = "main",
+          text = paste0("There are around 1500 parks in the City of Montreal, ",
+                        "which combined represent a surface of over 45 km^2. ",
+                        "It is widely acknowledged that accessibility to such ",
+                        "green spaces can contribute to physical health, ",
+                        "mental health, and social well-being. However, these ",
+                        "areas may not be equally accessible to all. This ",
+                        "module offers an outlook on parks and other public ",
+                        "spaces with possible comparison to housing, ",
+                        "socio-demographic, and other census variables.")) |> 
+  add_row(tab = "green_space", type = "extra",
+          text = paste0("TKTK")) 
   
 qsave(title_text, "data/title_text.qs")

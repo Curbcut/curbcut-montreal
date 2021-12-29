@@ -25,7 +25,8 @@
 
 green_space <- 
   read_sf("dev/data/Espace_Vert.shp") |>
-  select(ID = OBJECTID, name = Nom, type_1 = TYPO1, type_2 = TYPO2, geometry) |>
+  select(ID = OBJECTID, name = Nom, type_1 = TYPO1, type_2 = TYPO2, 
+         property = PROPRIETE, management = GESTION, geometry) |>
   st_transform(4326) |> 
   st_set_agr("constant") |>
   st_cast("POLYGON")

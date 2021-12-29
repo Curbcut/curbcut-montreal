@@ -15,7 +15,8 @@ covid_UI <- function(id) {
       ),
       fillCol(
         div(class = "mapdeck_div", 
-            mapdeckOutput(NS(id, "map"), height = "100%"))),
+            mapdeckOutput(NS(id, "map"), height = "100%")),
+      right_panel(id, dyk_UI(NS(id, "dyk")))),
       flex = c(1, 5)
     )
   )
@@ -58,10 +59,7 @@ covid_server <- function(id) {
     var_left <- select_var_server("left", reactive(var_list_covid))
     
     # Data 
-    data <- reactive({
-      covid |> 
-        filter(timeframe == var_left())
-    })
+    data <- reactive(filter(covid, timeframe == var_left()))
 
     # Selection data
     data_to_add <- reactive({
@@ -73,6 +71,10 @@ covid_server <- function(id) {
       
       data_to_add
       })
+    
+    # Did-you-know panel
+    dyk_server("dyk", reactive(paste0("covid_", var_left(), "_2020")),
+               reactive(" "))
     
     # Update map in response to variable change
     observeEvent(data(), {

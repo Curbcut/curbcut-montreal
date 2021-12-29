@@ -50,7 +50,7 @@ sus_translate <- function(x) {
   } else if (sus_rv$lang() == "fr") {
     
     # List
-    if (is.list(x)) {
+    if (length(x) > 1) {
       sus_translate_list(x)
       
       # png

@@ -46,16 +46,7 @@ green_space_server <- function(id) {
     # Map
     output$map <- renderMapdeck({
       mapdeck(style = map_style, token = map_token, zoom = map_zoom, 
-              location = map_location) #|> 
-        # add_path(data = {borough |> 
-        #     select(ID) |> 
-        #     filter(str_starts(ID, "2466023")) |> 
-        #     st_union() |> 
-        #     st_boundary() |> 
-        #     st_cast("LINESTRING") |> 
-        #     as_tibble() |> 
-        #     st_as_sf()}, stroke_colour = "#000000", layer_id = "contour",
-        #     update_view = FALSE)
+              location = map_location)
     })
     
     # Zoom
@@ -94,8 +85,8 @@ green_space_server <- function(id) {
       if (choropleth()) {
         data_choropleth() %>% 
           {if (nrow(.) == nrow(borough))
-            filter(., str_starts(ID, "2466023"))
-            else filter(., str_starts(CSDUID, "2466023"))}
+            filter(., ID %in% island_csduid)
+            else filter(., CSDUID %in% island_csduid)}
       } else {
         green_space %>%
           {if (var_left_type() != "total")
@@ -121,7 +112,7 @@ green_space_server <- function(id) {
       zoom_val = df)
     
     # Did-you-know panel
-    # dyk_server("dyk", var_left, var_right)
+    dyk_server("dyk", var_left, var_right)
     
     # Update map in response to variable changes or zooming
     observeEvent(data(),
