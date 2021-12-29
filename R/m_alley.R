@@ -105,7 +105,8 @@ alley_server <- function(id) {
     })
     
     # Legend
-    legend_server("legend", var_left, var_right, zoom_val)
+    legend_server("legend", var_left, var_right, zoom_val,
+                  show_panel = choropleth)
     
 
     # Explore panel

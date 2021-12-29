@@ -2,18 +2,26 @@
 
 legend_UI <- function(id) {
   tagList(
+    conditionalPanel(
+      condition = "output.show_panel == true", ns = NS(id),
+      
       h5("Legend", style = "font-size: 12px;"),
       uiOutput(NS(id, "legend_render"))
+    )
   )
 }
 
-legend_server <- function(id, var_left, var_right, zoom_val) {
+legend_server <- function(id, var_left, var_right, zoom_val, show_panel = reactive(TRUE)) {
   
   stopifnot(is.reactive(var_left))
   stopifnot(is.reactive(var_right))
   stopifnot(is.reactive(zoom_val))
   
   moduleServer(id, function(input, output, session) {
+    
+    # Hide legend
+    output$show_panel <- show_panel
+    outputOptions(output, "show_panel", suspendWhenHidden = FALSE)
     
     plot_height <- function() {
       if (length(var_left()) == 1 && var_right()[1] == " ") 60 else 120

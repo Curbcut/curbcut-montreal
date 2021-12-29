@@ -109,7 +109,8 @@ green_space_server <- function(id) {
       id = "legend",
       var_left = var_left,
       var_right = var_right,
-      zoom_val = df)
+      zoom_val = df,
+      show_panel = choropleth)
     
     # Did-you-know panel
     dyk_server("dyk", var_left, var_right)
