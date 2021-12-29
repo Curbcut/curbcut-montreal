@@ -22,7 +22,7 @@ map_change <- function(id_map, df, zoom, legend = NULL, polygons_to_clear = NULL
   update_and_clean <- function() {
     mapdeck_update(map_id = id_map)  %>%
       clear_polygon() %>%
-      clear_heatmap() %>% 
+      clear_scatterplot() %>% 
       clear_pointcloud() %>% 
       clear_path()
   }
@@ -82,7 +82,8 @@ map_change <- function(id_map, df, zoom, legend = NULL, polygons_to_clear = NULL
                         fill_opacity = 200,
                         legend = legend,
                         # tooltip = "label",
-                        radius = 5)
+                        radius = 10,
+                        radius_min_pixels = 8)
     }
   }
 }

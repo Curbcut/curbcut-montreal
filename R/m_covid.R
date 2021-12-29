@@ -50,8 +50,8 @@ covid_server <- function(id) {
                  stroke_width = 10, width_min_pixels = 2, width_max_pixels = 5,
                  auto_highlight = TRUE, highlight_colour = "#FFFFFF90") %>%
         add_scatterplot(data = covid_pics, update_view = FALSE, #id = "ID",
-                        fill_colour = "#FF0000", radius = 30,
-                        radius_min_pixels = 2, radius_max_pixels = 7,
+                        fill_colour = "#006D2CAA", radius = 25,
+                        radius_min_pixels = 8,
                         auto_highlight = TRUE, highlight_colour = "#FFFFFF90")
       })
     
@@ -124,23 +124,10 @@ covid_server <- function(id) {
             update_view = FALSE, layer_id = "path_highlight",
             auto_highlight = TRUE, highlight_colour = "#FFFFFF90")
 
-      # Draw point
-      } else if (!is.na(rv_covid$point_selected)) {
-        mapdeck_update(map_id = NS(id, "map")) %>%
-          clear_path(layer_id = "path_highlight") %>%
-          add_scatterplot(
-            data = data_to_add(), 
-            stroke_colour = "#FFFFFF", fill_colour = "#000000",
-            radius = 40, radius_min_pixels = 3, radius_max_pixels = 8,
-            update_view = FALSE, layer_id = "point_highlight",
-            auto_highlight = TRUE, highlight_colour = "#FFFFFF90")
-
-      # Clear both
+      # Clear
       } else {
         mapdeck_update(map_id = NS(id, "map")) %>%
-          clear_path(layer_id = "path_highlight") %>%
-          clear_path(layer_id = "point_highlight")
-
+          clear_path(layer_id = "path_highlight")
       }
     })
     

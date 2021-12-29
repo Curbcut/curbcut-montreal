@@ -75,20 +75,6 @@ photo_join <-
   group_by(feature_ID) |> 
   summarize(photo_ID = list(ID))
 
-# Create colour table
-covid_colours <- tibble(
-  type = c("Circuit des voies actives et sécuritaires", 
-           "Circulation locale", 
-           "Corridor piéton élargi", 
-           "Corridor projecté", 
-           "File d'attente encadrée", 
-           "Rue familiale et active", 
-           "Rue fermée", 
-           "Rue partiellement fermée"), 
-  covid_colour = c("#FF5733FF", "#FFD733FF", "#5F940EFF", "#10A9A7FF",
-                   "#2D80CAFF", "#FF7C2DFF", "#6F2094FF", "#75BB79FF"))
-
-
 covid <- 
   covid |> 
   left_join(photo_join, by = c("ID" = "feature_ID")) |>
@@ -106,7 +92,7 @@ covid <-
 
 # Clean up ----------------------------------------------------------------
 
-rm(photo_join, covid_colours, covid_may_2020, covid_july_2020, 
+rm(photo_join, covid_may_2020, covid_july_2020, 
    covid_oct_2020)
 
 ### actual 2020 .png files are located in Sus/www/COVIDpics
