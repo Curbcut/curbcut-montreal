@@ -34,19 +34,19 @@ legend_server <- function(id, var_left, var_right, zoom_val) {
           filter(var_code == sub("_\\d{4}$", "", var_left())) |> 
           pull(breaks_q5) |> 
           purrr::pluck(1) |> 
-          filter(date == date_left)
+          filter(date == date_left || is.na(date))
         
         if (zoom_val() %in% c("building", "street") &&
             nrow(filter(break_labels, scale == zoom_val())) == 0) {
           break_labels <- 
             break_labels |> 
             filter(scale == "DA") |> 
-            pull(all_of(sub("_\\d{4}$", "", var_left())))
+            pull(all_of(var))
         } else {
           break_labels <- 
             break_labels |> 
             filter(scale == zoom_val()) |> 
-            pull(all_of(sub("_\\d{4}$", "", var_left())))
+            pull(all_of(var))
         }
         
         legend_left_5 |> 

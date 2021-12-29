@@ -12,7 +12,7 @@ green_space_UI <- function(id) {
                          select_var_UI(NS(id, "left_type"), green_space_type,
                                        label = i18n$t("Type of green space")),
                          div(class = "bottom_sidebar",
-                             tagList(#legend_UI(NS(id, "legend")),
+                             tagList(legend_UI(NS(id, "legend")),
                                      zoom_UI(NS(id, "zoom"), map_zoom_levels)))
       )),
       fillCol(

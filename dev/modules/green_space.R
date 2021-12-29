@@ -142,7 +142,7 @@ var_list <- map(gs_results, ~{
 breaks_q3_active <-
   map(set_names(var_list), ~{
     map2_dfr(gs_q3, names(gs_results), function(x, scale) {
-      if (nrow(x) > 0) x |> mutate(scale = scale, date = 2021, rank = 0:3,
+      if (nrow(x) > 0) x |> mutate(scale = scale, date = NA, rank = 0:3,
                                    .before = everything())}) |> 
       select(scale, date, rank, var = all_of(.x))
   })
@@ -151,7 +151,7 @@ breaks_q3_active <-
 breaks_q5_active <- 
   map(set_names(var_list), ~{
     map2_dfr(gs_q5, names(gs_results), function(x, scale) {
-      if (nrow(x) > 0) x |> mutate(scale = scale, date = 2021, rank = 0:5,
+      if (nrow(x) > 0) x |> mutate(scale = scale, date = NA, rank = 0:5,
                                    .before = everything())}) |> 
       select(scale, date, rank, var = all_of(.x))
   })
@@ -185,7 +185,7 @@ green_space_table <-
                                  str_replace("1,000", "1,000 residents")),
            category = NA,
            private = FALSE,
-           dates = "2021",
+           dates = NA,
            scales = list(c("borough", "CT", "DA", "building")),
            breaks_q3 = list(breaks_q3_active[[.x]]),
            breaks_q5 = list(breaks_q5_active[[.x]]),

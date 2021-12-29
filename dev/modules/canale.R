@@ -2,9 +2,6 @@
 
 # This script relies on objects created in dev/census.R
 
-source("dev/modules/census/03_process_and_breaks.R")
-
-
 # Get data ----------------------------------------------------------------
 
 canale <- 
@@ -164,13 +161,15 @@ meta_testing()
 breaks_q3_active <-
   map2_dfr(canale_q3, c("DA", "CT", "borough", "grid"), function(x, scale) {
    if (nrow(x) > 0) x |> mutate(scale = scale, date = 2016, rank = 0:3,
-                                .before = canale_ind)})
+                                .before = canale_ind)}) |> 
+  rename(var = canale_ind)
 
 # Get breaks_q5
 breaks_q5_active <- 
   map2_dfr(canale_q5, c("DA", "CT", "borough", "grid"), function(x, scale) {
     if (nrow(x) > 0) x |> mutate(scale = scale, date = 2016, rank = 0:5,
-                                 .before = canale_ind)})
+                                 .before = canale_ind)}) |> 
+  rename(var = canale_ind)
 
 variables <- 
   variables |>
