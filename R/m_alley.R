@@ -99,8 +99,8 @@ alley_server <- function(id) {
       if (choropleth()) {
         data_1() %>% 
           {if (nrow(.) == nrow(borough))
-            filter(., ID %in% island_csduid)
-            else filter(., CSDUID %in% island_csduid)}
+            filter(., str_starts(ID, "2466023"))
+            else filter(., str_starts(CSDUID, "2466023"))}
       }
     })
     

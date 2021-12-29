@@ -156,6 +156,12 @@ alley_text <-
 
 lengths_alleys_fun <- function(data) {
   
+  data <- if (nrow(data) == nrow(borough)) {
+    filter(data, str_starts(ID, "2466023")) 
+  } else {
+    filter(data, str_starts(CSDUID, "2466023")) 
+  }
+  
   sqm_per_id <- 
   alleys_length |> 
     rename(alley_ID = ID) |> 
@@ -165,13 +171,13 @@ lengths_alleys_fun <- function(data) {
     summarize(green_alley_sqm = round(units::drop_units(sum(green_alley_sqm, na.rm = T))))
   
   sqm_per_id |> 
-    left_join(select(data, ID, population), ., by = "ID") |> 
+    full_join(select(data, ID, population), by = "ID") |> 
     st_as_sf() |> 
     mutate(green_alley_sqkm = 1000 * green_alley_sqm / units::drop_units(st_area(geometry)),
            green_alley_per1k =  1000 * green_alley_sqm / population) |> 
     select(-green_alley_sqm) |> 
-    mutate(across(starts_with("green_alley"), ntile, n = 3, .names = "{.col}_q3"), 
-           .before = geometry) |> 
+    mutate(across(starts_with("green_alley"), ~replace(., is.na(.), 0))) |> 
+    mutate(across(starts_with("green_alley"), ~replace(., is.infinite(.), 0))) |> 
     select(-population) |> 
     st_drop_geometry()
 
@@ -179,6 +185,15 @@ lengths_alleys_fun <- function(data) {
 
 join_alleys <- 
   map(list("borough" = borough, "CT" = CT, "DA" = DA), lengths_alleys_fun)
+
+# Add breaks --------------------------------------------------------------
+
+join_alleys <- map(join_alleys, ~add_q3(.x))
+
+gs_q3 <- map(join_alleys, get_breaks_q3)
+gs_q5 <- map(join_alleys, get_breaks_q5)
+
+join_alleys <- map2(join_alleys, gs_q5, ~bind_cols(.x, add_q5(.x, .y)))
 
 
 # Data testing ------------------------------------------------------------

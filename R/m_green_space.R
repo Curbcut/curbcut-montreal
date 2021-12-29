@@ -12,7 +12,7 @@ green_space_UI <- function(id) {
                          select_var_UI(NS(id, "left_type"), green_space_type,
                                        label = i18n$t("Type of green space")),
                          div(class = "bottom_sidebar",
-                             tagList(legend_UI(NS(id, "legend")),
+                             tagList(#legend_UI(NS(id, "legend")),
                                      zoom_UI(NS(id, "zoom"), map_zoom_levels)))
       )),
       fillCol(
@@ -46,7 +46,17 @@ green_space_server <- function(id) {
     # Map
     output$map <- renderMapdeck({
       mapdeck(style = map_style, token = map_token, zoom = map_zoom, 
-              location = map_location)})
+              location = map_location) #|> 
+        # add_path(data = {borough |> 
+        #     select(ID) |> 
+        #     filter(str_starts(ID, "2466023")) |> 
+        #     st_union() |> 
+        #     st_boundary() |> 
+        #     st_cast("LINESTRING") |> 
+        #     as_tibble() |> 
+        #     st_as_sf()}, stroke_colour = "#000000", layer_id = "contour",
+        #     update_view = FALSE)
+    })
     
     # Zoom
     zoom <- reactiveVal(get_zoom(map_zoom, map_zoom_levels))
@@ -69,7 +79,8 @@ green_space_server <- function(id) {
     var_right <- compare_server(
       id = "green_space", 
       var_list = make_dropdown(),
-      df = df)
+      df = df,
+      time = reactive("2016"))
     
     # Data
     data_choropleth <- data_server(
@@ -94,28 +105,28 @@ green_space_server <- function(id) {
     
     # Explore panel
     explore_content <- explore_server(
-      id = "explore", 
-      x = data, 
+      id = "explore",
+      x = data,
       var_left = var_left,
-      var_right = var_right, 
+      var_right = var_right,
       select = reactive(rv_green_space$poly_selected),
-      zoom = df, 
+      zoom = df,
       build_str_as_DA = TRUE)
     
     # Legend
     legend_server(
-      id = "legend", 
-      var_left = var_left, 
-      var_right = var_right, 
+      id = "legend",
+      var_left = var_left,
+      var_right = var_right,
       zoom_val = df)
     
     # Did-you-know panel
-    dyk_server("dyk", var_left, var_right)
+    # dyk_server("dyk", var_left, var_right)
     
     # Update map in response to variable changes or zooming
-    observeEvent(data(), 
+    observeEvent(data(),
                  map_change(NS(id, "map"), df = data, zoom = df,
-                        overthrow_width = !choropleth()))
+                            overthrow_width = !choropleth()))
     
     # Update poly_selected on click
     observeEvent(input$map_polygon_click, {

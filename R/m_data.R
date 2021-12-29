@@ -45,6 +45,13 @@ data_server <- function(id, var_left, var_right, df, zoom = df) {
       
       var_left <- unique(var_left())
       var_right <- unique(var_right())
+
+      # Are var_left & var_right in df?
+      map(c(var_left, var_right), ~{
+        if (!.x %in% names(data) && .x != " ") {
+          warning(paste0(.x, " is not in the provided dataframe `", df(), "`."))
+        }
+      })
       
       # Get time format
       time_format_var_left <- if (str_detect(var_left[1], "_\\d{4}$")) {

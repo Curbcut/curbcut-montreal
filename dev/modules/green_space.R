@@ -37,7 +37,8 @@ green_space |>
                             type_1 == "En cours de validation" ~ "under_validation",
                             type_1 == "Espace voirie" ~ "road_space",
                             type_1 == "Grand parc" ~ "large_park",
-                            type_1 == "Parc d'arrondissement" ~ "borough_park"))
+                            type_1 == "Parc d'arrondissement" ~ "borough_park")) |> 
+  mutate(fill = "#31A354AA", .before = geometry)
     
 
 # Process green space data ------------------------------------------------
@@ -48,7 +49,7 @@ process_gs <- function(df) {
   st_agr(green_space) <-  "constant"
   
   # Only keep Ville de Montreal
-  df <- if (nrow(df) == 111) {
+  df <- if (nrow(df) == nrow(borough)) {
     filter(df, str_starts(ID, "2466023")) 
   } else {
     filter(df, str_starts(CSDUID, "2466023")) 
@@ -75,7 +76,7 @@ process_gs <- function(df) {
                 names_prefix = "green_space_",
                 names_sep = "_",
                 values_from = area) |> 
-    left_join(select(df, ID, population), ., by = "ID") |> 
+    full_join(select(df, ID, population), by = "ID") |> 
     st_as_sf() |> 
     mutate(across(starts_with("green_space"), 
                   .fns = list(
