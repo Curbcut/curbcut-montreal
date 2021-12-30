@@ -1,8 +1,8 @@
 #' @return A named list with all the data components necessary to power the
 #' info_table module.
 
-make_info_table_data <- function(id, x, var_type, var_left, var_right, select, 
-                                 zoom, var_left_label, var_right_label, 
+make_info_table_data <- function(id, x, var_type, var_left, var_right, 
+                                 selection, df, var_left_label, var_right_label, 
                                  build_str_as_DA) {
   
   ## Initialize output list ----------------------------------------------------
@@ -12,7 +12,7 @@ make_info_table_data <- function(id, x, var_type, var_left, var_right, select,
   
   ## Get modified df for building/street ---------------------------------------
   
-  if (!zoom() %in% c("building", "street")) build_str_as_DA <- FALSE
+  if (!df() %in% c("building", "street")) build_str_as_DA <- FALSE
   
   # TKTK THIS IS BROKEN FOR TWO DATES!
   if (build_str_as_DA) {
@@ -21,12 +21,12 @@ make_info_table_data <- function(id, x, var_type, var_left, var_right, select,
                       var_right = var_right,
                       df = reactive("DA"))
     dat <- tb()
-    select_id <- (filter(building, ID == select()))$DAUID
+    select_id <- (filter(building, ID == selection()))$DAUID
     if (length(select_id) == 0) select_id <- NA
     
   } else {
     dat <- x()
-    select_id <- select()
+    select_id <- selection()
   }
   
   
@@ -47,7 +47,7 @@ make_info_table_data <- function(id, x, var_type, var_left, var_right, select,
   
   ## Special case for date-type data -------------------------------------------
   
-  if (zoom() == "date") {
+  if (df() == "date") {
     out$var_type <- "date_all"
     dat <- 
       dat |> 
@@ -77,7 +77,7 @@ make_info_table_data <- function(id, x, var_type, var_left, var_right, select,
   
   ## Selections ----------------------------------------------------------------
   
-  select_name <- filter(x(), ID == select())
+  select_name <- filter(x(), ID == selection())
   selection <- filter(dat, ID == select_id)
   out$selection <- selection
   active_left <- nrow(filter(selection, !is.na(left_var_q5)))
@@ -111,7 +111,7 @@ make_info_table_data <- function(id, x, var_type, var_left, var_right, select,
   ## Scale ---------------------------------------------------------------------
   
   scale_sing <- switch(
-    zoom(),  
+    df(),  
     "date" = NA_character_,
     "borough" = sus_translate("borough/city"),
     "CT" = sus_translate("census tract"),
@@ -139,7 +139,7 @@ make_info_table_data <- function(id, x, var_type, var_left, var_right, select,
   ## Place names ---------------------------------------------------------------
   
   out$place_name <- case_when(
-    zoom() %in% c("building", "street") & build_str_as_DA ~
+    df() %in% c("building", "street") & build_str_as_DA ~
       glue(sus_translate(paste0(
         "The dissemination area around {select_name$name}"))),
     scale_sing == sus_translate("building") ~
@@ -157,11 +157,11 @@ make_info_table_data <- function(id, x, var_type, var_left, var_right, select,
     TRUE ~ NA_character_)
   
   if (grepl("select", out$var_type)) {
-    if (zoom() == "borough") select_name$name_2 <- 
+    if (df() == "borough") select_name$name_2 <- 
         sus_translate(glue("{select_name$name_2}"))
     
     out$place_heading <- case_when(
-      zoom() %in% c("building", "street") & build_str_as_DA ~
+      df() %in% c("building", "street") & build_str_as_DA ~
         glue(sus_translate(select_name$name)),
       scale_sing == sus_translate("borough/city") ~
         glue(sus_translate(paste0("{select_name$name_2} of {out$place_name}"))), 

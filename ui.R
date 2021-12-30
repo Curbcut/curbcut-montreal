@@ -3,7 +3,6 @@
 ui <- function(request) {
   tagList(
   # Styling objects
-  
   shinyjs::useShinyjs(),
   tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "bootstrap.min.css")),
   tags$head(tags$style(HTML(styler))),
@@ -22,15 +21,6 @@ ui <- function(request) {
         downloadLink("create_report", label = div(icon("file-pdf"), "Generate a report")),
         actionLink(inputId = "contact", label = "Contact/feedback", icon("comment"))
         )),
-  
-  # Others
-  shinyjs::useShinyjs(),
-  waiter::use_waiter(),
-  waiter::waiter_show_on_load(
-    html = shiny::tagList(img(src = "Sus_logo_LoadPage.png", 
-                              style = "height:50vh; max-height:600px;"), 
-                          spin_folding_cube()), 
-    color = "#D8F5FF"),
   
   # Navigation bar
   navbarPage(id = "sus_page", windowTitle = "SUS", 

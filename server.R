@@ -195,7 +195,7 @@ shinyServer(function(input, output, session) {
                                          token = active_mod()$token,
                                          map_zoom = active_mod()$map_zoom,
                                          map_location = active_mod()$map_location,
-                                         zoom = active_mod()$zoom,
+                                         df = active_mod()$df,
                                          explore_content = active_mod()$explore_content,
                                          poly_selected = active_mod()$poly_selected,
                                          legend_graph = active_mod()$legend_graph)
@@ -207,9 +207,5 @@ shinyServer(function(input, output, session) {
                         })
                     }
     )
-  
-  # Waiter ------------------------------------------------------------------
-  
-  waiter_hide()
   
 })

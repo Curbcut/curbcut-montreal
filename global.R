@@ -7,12 +7,12 @@ suppressPackageStartupMessages({
   library(shinyjs)
   library(shinyWidgets)
   library(shiny.i18n)
-  library(waiter)
 
   library(dplyr)
   library(ggplot2)
   library(stringr)
   library(purrr)
+  library(cowplot)
   
   library(sf)
   library(mapdeck) 

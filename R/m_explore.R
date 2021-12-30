@@ -6,8 +6,8 @@
 #' representing the left and right variables to be analyzed. Each 
 #' should have a "raw" version and quantile versions with the suffixes "_q3"
 #' and "_q5".
-#' @param select A reactive which resolves to a character string giving the ID
-#' of a row in the input data frame (`x`) which has been selected.
+#' @param selection A reactive which resolves to a character string giving the 
+#' ID of a row in the input data frame (`x`) which has been selected.
 #' @param zoom A reactive which resolves to a character string giving the
 #' current zoom scale. Meaningful values are "borough", "CT", "DA" and "grid".
 #' @param var_left_label,var_right_label A reactive which resolves to a named
@@ -38,20 +38,20 @@ explore_UI <- function(id) {
     )
 }
 
-explore_server <- function(id, x, var_left, var_right, select, zoom, 
+explore_server <- function(id, x, var_left, var_right, selection, df, 
                            var_left_label = NULL, var_right_label = NULL,
                            build_str_as_DA = TRUE) {
   
   stopifnot(is.reactive(x))
   stopifnot(is.reactive(var_left))
   stopifnot(is.reactive(var_right))
-  stopifnot(is.reactive(select))
-  stopifnot(is.reactive(zoom))
+  stopifnot(is.reactive(selection))
+  stopifnot(is.reactive(df))
 
   moduleServer(id, function(input, output, session) {
     
     # Get var_type
-    var_type <- explore_var_type(id, x, var_left, var_right, select,
+    var_type <- explore_var_type(id, x, var_left, var_right, selection,
                                  var_left_label, var_right_label)
 
     # Render info table
@@ -60,8 +60,8 @@ explore_server <- function(id, x, var_left, var_right, select, zoom,
                       var_type = var_type, 
                       var_left = var_left, 
                       var_right = var_right, 
-                      select = select, 
-                      zoom = zoom, 
+                      selection = selection, 
+                      df = df, 
                       var_left_label = var_left_label, 
                       var_right_label = var_right_label,
                       build_str_as_DA = build_str_as_DA)
@@ -77,8 +77,8 @@ explore_server <- function(id, x, var_left, var_right, select, zoom,
                          var_type = var_type, 
                          var_left = var_left, 
                          var_right = var_right, 
-                         select = select, 
-                         zoom = zoom, 
+                         selection = selection, 
+                         df = df, 
                          var_left_label = var_left_label,
                          var_right_label = var_right_label,
                          build_str_as_DA = build_str_as_DA),
@@ -107,7 +107,7 @@ explore_server <- function(id, x, var_left, var_right, select, zoom,
     })
     
     # Hook up "Clear selection" button
-    output$poly_selected <- reactive({if (!is.na(select())) TRUE else FALSE})
+    output$poly_selected <- reactive({if (!is.na(selection())) TRUE else FALSE})
     outputOptions(output, "poly_selected", suspendWhenHidden = FALSE)
     
     # Return info_table text and graph to export it in report afterwards

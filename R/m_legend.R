@@ -11,12 +11,12 @@ legend_UI <- function(id) {
   )
 }
 
-legend_server <- function(id, var_left, var_right, zoom_val, 
+legend_server <- function(id, var_left, var_right, df, 
                           show_panel = reactive(TRUE)) {
   
   stopifnot(is.reactive(var_left))
   stopifnot(is.reactive(var_right))
-  stopifnot(is.reactive(zoom_val))
+  stopifnot(is.reactive(df))
   
   moduleServer(id, function(input, output, session) {
     
@@ -29,6 +29,9 @@ legend_server <- function(id, var_left, var_right, zoom_val,
     }
     
     render_plot_fun <- function() {
+      
+      ## One variable, one date, q5 --------------------------------------------
+      
       if (length(var_left()) == 1 && var_right()[1] == " ") {
         
         date_left <- str_extract(var_left(), "(?<=_)\\d{4}$")
@@ -45,17 +48,17 @@ legend_server <- function(id, var_left, var_right, zoom_val,
           purrr::pluck(1) |> 
           filter(date == date_left | is.na(date))
         
-        if (zoom_val() %in% c("building", "street") &&
-            nrow(filter(break_labels, scale == zoom_val())) == 0) {
+        if (df() %in% c("building", "street") &&
+            nrow(filter(break_labels, scale == df())) == 0) {
           break_labels <- 
             break_labels |> 
             filter(scale == "DA") |> 
-            pull(all_of(var))
+            pull(var)
         } else {
           break_labels <- 
             break_labels |> 
-            filter(scale == zoom_val()) |> 
-            pull(all_of(var))
+            filter(scale == df()) |> 
+            pull(var)
         }
         
         legend_left_5 |> 
@@ -67,7 +70,7 @@ legend_server <- function(id, var_left, var_right, zoom_val,
           scale_y_continuous(name = NULL, labels = NULL) +
           scale_fill_manual(values = setNames(
             paste0(legend_left_5$fill, 
-                   filter(colour_alpha, zoom == zoom_val())$alpha),
+                   filter(colour_alpha, zoom == df())$alpha),
             legend_left_5$fill)) +
           theme_minimal() +
           theme(legend.position = "none",
@@ -122,7 +125,7 @@ legend_server <- function(id, var_left, var_right, zoom_val,
                     inherit.aes = FALSE, size = 3) +
           scale_fill_manual(values = setNames(
             paste0(legend_bivar$fill, 
-                   filter(colour_alpha, zoom == zoom_val())$alpha),
+                   filter(colour_alpha, zoom == df())$alpha),
             legend_bivar$fill)) +
           scale_colour_manual(values = c(
             "black" = "black", "white" = "white")) +
@@ -132,8 +135,8 @@ legend_server <- function(id, var_left, var_right, zoom_val,
           theme(legend.position = "none")
         
       }
-      }
-
+    }
+    
     output$legend_render <- renderUI({
       output$legend <- renderPlot({
         render_plot_fun()
@@ -145,6 +148,6 @@ legend_server <- function(id, var_left, var_right, zoom_val,
     })
     
     reactive(render_plot_fun())
-  
+    
   })
 }

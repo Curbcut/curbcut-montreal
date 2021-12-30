@@ -1,7 +1,7 @@
 #### EXPLORE GRAPH MODULE ######################################################
 
-explore_graph_server <- function(id, x, var_type, var_left, var_right, select, 
-                                 zoom, var_left_label = NULL, 
+explore_graph_server <- function(id, x, var_type, var_left, var_right, 
+                                 selection, df, var_left_label = NULL, 
                                  var_right_label = NULL, build_str_as_DA = TRUE,
                                  plot_type = "auto") {
   
@@ -10,8 +10,8 @@ explore_graph_server <- function(id, x, var_type, var_left, var_right, select,
   stopifnot(is.reactive(var_type))
   stopifnot(is.reactive(var_left))
   stopifnot(is.reactive(var_right))
-  stopifnot(is.reactive(select))
-  stopifnot(is.reactive(zoom))
+  stopifnot(is.reactive(selection))
+  stopifnot(is.reactive(df))
 
   # Server function
   moduleServer(id, function(input, output, session) {
@@ -20,7 +20,7 @@ explore_graph_server <- function(id, x, var_type, var_left, var_right, select,
       
       ## Deal with build_str_as_DA ---------------------------------------------
       
-      if (!zoom() %in% c("building", "street")) build_str_as_DA <- FALSE
+      if (!df() %in% c("building", "street")) build_str_as_DA <- FALSE
       
       if (build_str_as_DA) {
         tb <- data_server(id = "explore_graph",
@@ -28,12 +28,12 @@ explore_graph_server <- function(id, x, var_type, var_left, var_right, select,
                           var_right = var_right,
                           df = reactive("DA"))
         dat <- tidyr::drop_na(tb())
-        select_id <- (filter(building, ID == select()))$DAUID
+        select_id <- (filter(building, ID == selection()))$DAUID
         if (length(select_id) == 0) select_id <- NA
           
       } else {
         dat <- tidyr::drop_na(x())
-        select_id <- select()
+        select_id <- selection()
       }
       
       
@@ -55,7 +55,7 @@ explore_graph_server <- function(id, x, var_type, var_left, var_right, select,
       # Decide on plot type
       if (plot_type == "auto") {
         graph_type <- unique(case_when(
-          zoom() == "date" ~ "date",
+          df() == "date" ~ "date",
           var_right()[1] == " " & grepl("_multi", var_type()) ~ "multi_uni",
           var_right()[1] != " " & grepl("_multi", var_type()) ~ "multi_bi",
           var_right()[1] == " " & left_var_num > 6 ~ "hist",
