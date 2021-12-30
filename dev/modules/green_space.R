@@ -29,18 +29,44 @@ green_space <-
          property = PROPRIETE, management = GESTION, geometry) |>
   st_transform(4326) |> 
   st_set_agr("constant") |>
-  st_cast("POLYGON")
+  st_cast("POLYGON") |> 
+  group_by(ID, name, type_1, type_2, property, management) |> 
+  summarize(geometry = st_combine(geometry), .groups = "drop") |> 
+  ungroup()
 
 green_space <- 
-green_space |> 
+  green_space |> 
+  mutate(type = if_else(is.na(type_1), "Autre espace vert", type_1), 
+         fill = "#31A354AA",
+         area = round(units::drop_units(st_area(geometry))), .before = geometry) |> 
   mutate(type_1 = case_when(type_1 == "Autre espace vert" ~ "other",
                             is.na(type_1) ~ "other",
                             type_1 == "En cours de validation" ~ "under_validation",
                             type_1 == "Espace voirie" ~ "road_space",
                             type_1 == "Grand parc" ~ "large_park",
-                            type_1 == "Parc d'arrondissement" ~ "borough_park")) |> 
-  mutate(fill = "#31A354AA", .before = geometry)
-    
+                            type_1 == "Parc d'arrondissement" ~ "borough_park"))
+
+# Attach a CSDUID
+linked_borough <- 
+  green_space |> 
+  st_transform(32618) |> 
+  st_set_agr("constant") |>
+  st_intersection(st_transform(transmute(borough, CSDUID = ID) |> 
+                                 st_set_agr("constant"), 32618)) |> 
+  mutate(area_after = st_area(geometry)) |> 
+  st_drop_geometry() |> 
+  select(ID, CSDUID, area, area_after) |> 
+  mutate(area_prop = area_after/area) |> 
+  arrange(-area_prop) |> 
+  group_by(ID) |> 
+  slice(1) |> 
+  select(ID, CSDUID)
+
+green_space <- 
+green_space |> 
+  left_join(linked_borough, by = "ID") |> 
+  relocate(geometry, .after = last_col()) 
+
 
 # Process green space data ------------------------------------------------
 
@@ -201,4 +227,4 @@ variables <-
 # Clean up ----------------------------------------------------------------
 
 rm(breaks_q3_active, breaks_q5_active, green_space_table, gs_q3, gs_q5, 
-   gs_results, process_gs, var_list)
+   gs_results, process_gs, var_list, linked_borough)

@@ -1,8 +1,5 @@
 ### GREEN SPACE GLOBALS #######################################################
 
-# Initialize reactive values
-rv_green_space <- reactiveValues(poly_selected = NA)
-
 # Dropdown menu
 green_space_groupings <- 
   list("Green space" = " ",

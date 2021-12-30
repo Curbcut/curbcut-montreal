@@ -3,27 +3,32 @@
 # UI ----------------------------------------------------------------------
 
 green_space_UI <- function(id) {
-  fillPage(
-    fillRow(
-      fillCol(sidebar_UI(NS(id, "sidebar"),
-                         select_var_UI(NS(id, "left_groupings"), 
-                                       green_space_groupings,
-                                       label = i18n$t("Grouping")),
-                         select_var_UI(NS(id, "left_type"), green_space_type,
-                                       label = i18n$t("Type of green space")),
-                         div(class = "bottom_sidebar",
-                             tagList(legend_UI(NS(id, "legend")),
-                                     zoom_UI(NS(id, "zoom"), map_zoom_levels)))
-      )),
-      fillCol(
-        div(class = "mapdeck_div", 
-            mapdeckOutput(NS(id, "map"), height = "100%")),
-        right_panel(id, compare_UI(NS(id, "green_space"), make_dropdown()),
-                    div(class = "explore_dyk",
-                        explore_UI(NS(id, "explore")), dyk_UI(NS(id, "dyk"))))),
-      flex = c(1, 5)
-    )
-  )
+  fillPage(fillRow(
+    fillCol(
+      
+      # Side bar
+      sidebar_UI(NS(id, "sidebar"),
+                 select_var_UI(NS(id, "left_groupings"), 
+                               green_space_groupings,
+                               label = i18n$t("Grouping")),
+                 select_var_UI(NS(id, "left_type"), green_space_type,
+                               label = i18n$t("Type of green space")),
+                 div(class = "bottom_sidebar",
+                     tagList(legend_UI(NS(id, "legend")),
+                             zoom_UI(NS(id, "zoom"), map_zoom_levels))))),
+    fillCol(
+      
+      # Map
+      div(class = "mapdeck_div", 
+          mapdeckOutput(NS(id, "map"), height = "100%")),
+      
+      # Right panel
+      right_panel(id, compare_UI(NS(id, "green_space"), make_dropdown()),
+                  div(class = "explore_dyk",
+                      green_space_explore_UI(NS(id, "explore")), 
+                      dyk_UI(NS(id, "dyk"))))),
+    
+    flex = c(1, 5)))
 }
 
 
@@ -31,6 +36,10 @@ green_space_UI <- function(id) {
 
 green_space_server <- function(id) {
   moduleServer(id, function(input, output, session) {
+    
+    # Initial reactives
+    zoom <- reactiveVal(get_zoom(map_zoom, map_zoom_levels))
+    selection <- reactiveVal(NA)
     
     # Sidebar
     sidebar_server(
@@ -44,16 +53,21 @@ green_space_server <- function(id) {
     choropleth <- reactive(var_left_groupings() != " ")
     
     # Map
-    output$map <- renderMapdeck({
-      mapdeck(style = map_style, token = map_token, zoom = map_zoom, 
-              location = map_location)
-    })
+    output$map <- renderMapdeck({mapdeck(
+      style = map_style, 
+      token = map_token, 
+      zoom = map_zoom, 
+      location = map_location)})
     
-    # Zoom
-    zoom <- reactiveVal(get_zoom(map_zoom, map_zoom_levels))
+    # Zoom reactive
     observeEvent(input$map_view_change$zoom, {
       zoom(get_zoom(input$map_view_change$zoom, map_zoom_levels))})
-    df <- zoom_server("zoom", zoom = zoom, zoom_levels = map_zoom_levels)
+    
+    # Zoom level for data
+    df <- zoom_server(
+      id = "zoom", 
+      zoom = zoom, 
+      zoom_levels = map_zoom_levels)
     
     # Left variable servers
     var_left_groupings <- select_var_server("left_groupings", 
@@ -96,69 +110,65 @@ green_space_server <- function(id) {
     })
     
     # Explore panel
-    explore_content <- explore_server(
+    explore_content <- green_space_explore_server(
       id = "explore",
       x = data,
       var_left = var_left,
       var_right = var_right,
-      select = reactive(rv_green_space$poly_selected),
-      zoom = df,
-      build_str_as_DA = TRUE)
+      select = selection,
+      df = df,
+      standard_info = choropleth)
     
     # Legend
     legend_server(
       id = "legend",
       var_left = var_left,
       var_right = var_right,
-      zoom_val = df,
+      df = df,
       show_panel = choropleth)
     
     # Did-you-know panel
-    dyk_server("dyk", var_left, var_right)
+    dyk_server(
+      id = "dyk", 
+      var_left = var_left,
+      var_right = var_right)
     
     # Update map in response to variable changes or zooming
     observeEvent(data(),
                  map_change(NS(id, "map"), df = data, zoom = df,
                             overthrow_width = !choropleth()))
     
-    # Update poly_selected on click
+    # Update poly on click
     observeEvent(input$map_polygon_click, {
-      lst <- jsonlite::fromJSON(input$map_polygon_click)
-      if (is.null(lst$object$properties$id)) {
-        rv_green_space$poly_selected <- NA
-      } else rv_green_space$poly_selected <- lst$object$properties$id
+      lst <- (jsonlite::fromJSON(input$map_polygon_click))$object$properties$id
+      if (is.null(lst)) selection(NA) else selection(lst)
     })
     
-    # Clear poly_selected on zoom
-    observeEvent({df()
-      var_left()}, {rv_green_space$poly_selected <- NA},
-      ignoreInit = TRUE)
+    # Clear poly_selected on data change
+    observeEvent(data(), selection(NA), ignoreInit = TRUE)
     
-    # Update map in response to poly_selected change
-    observeEvent(rv_green_space$poly_selected, {
-      if (!is.na(rv_green_space$poly_selected)) {
+    # Update map in response to poly change
+    observeEvent(selection(), {
+      if (!is.na(selection())) {
         width <- switch(df(), "borough" = 100, "CT" = 10, 2)
         data_to_add <-
-          data() %>%
-          filter(ID == rv_green_space$poly_selected) %>%
+          data() |> 
+          filter(ID == selection()) |> 
           mutate(fill = substr(fill, 1, 7))
         
-        mapdeck_update(map_id = NS(id, "map")) %>%
+        mapdeck_update(map_id = NS(id, "map")) |> 
           add_polygon(
             data = data_to_add, elevation = 5, fill_colour = "fill", 
             update_view = FALSE, layer_id = "poly_highlight", 
             auto_highlight = TRUE, highlight_colour = "#FFFFFF90")
       } else {
-        mapdeck_update(map_id = NS(id, "map")) %>%
+        mapdeck_update(map_id = NS(id, "map")) |> 
           clear_polygon(layer_id = "poly_highlight")
       }
     })
     
     # Clear click status if prompted
-    # (Namespacing hardwired to explore module; could make it return a reactive)
-    observeEvent(input$`explore-clear_selection`, {
-      rv_green_space$poly_selected <- NA})
-
+    observeEvent(input$`explore-clear_selection`, selection(NA))
     
   })
 }
