@@ -122,6 +122,17 @@ alleys <-
   st_join(rename(select(borough, ID, name), CSDUID = ID, name_2 = name)) |>
   relocate(CSDUID, name_2, .after = name)
 
+# Add fill color
+alleys <- 
+  alleys %>% 
+  mutate(fill = case_when(type == "green" ~ "#008100EE",
+                          visited == TRUE & is.na(type) ~ "#008100EE",
+                          type == "community" ~ "#F6BE00EE",
+                          type == "mixed" ~ "#B37400EE",
+                          type == "none" ~ "#262626EE",
+                          TRUE ~ NA_character_)) |> 
+  relocate(geometry, .after = last_col())
+
 
 # Get borough text --------------------------------------------------------
 mtl_ids <- 

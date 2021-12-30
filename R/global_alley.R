@@ -63,16 +63,6 @@ var_list_right_alley <-
          "No certificate, diploma or degree (%)" = "edu_no_degree_prop"))
 
 
-# Fill color --------------------------------------------------------------
-
-alleys <- 
-alleys %>% 
-  mutate(fill = case_when(type == "green" ~ "#008100EE",
-                         type == "community" ~ "#F6BE00EE",
-                         type == "mixed" ~ "#B37400EE",
-                         type == "none" ~ "#262626EE",
-                         TRUE ~ NA_character_))
-
 # Legend ------------------------------------------------------------------
 
 alley_legend_en <- 

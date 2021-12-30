@@ -50,21 +50,7 @@ alley_server <- function(id) {
     output$map <- renderMapdeck({
       mapdeck(
         style = map_style, token = token_alley,
-        zoom = 11, location = map_location) %>%
-        add_polygon(data = borough[borough$ID %in% alley_text$ID,], 
-                    stroke_width = 10, stroke_colour = "#000000",
-                    fill_colour = "#FFFFFF10", update_view = FALSE, id = "ID",
-                    layer_id = "borough_info", auto_highlight = TRUE,
-                    highlight_colour = "#FFFFFF90") %>%
-        add_polygon(data = alleys[!alleys$visited,],
-                    stroke_width = 15, stroke_colour = "#007700", 
-                    fill_colour = "#00FF00", layer_id = "alleys_void",
-                    update_view = FALSE, id = "ID", auto_highlight = FALSE) %>% 
-        add_polygon(data = alleys[alleys$visited,],
-                    stroke_width = 15, stroke_colour = "#007700", 
-                    fill_colour = "#00FF00", layer_id = "alleys_visited",
-                    update_view = FALSE, id = "ID", auto_highlight = TRUE,
-                    highlight_colour = "#FFFFFF90")
+        zoom = 11, location = map_location)
     })
     
     # Zoom
@@ -112,7 +98,7 @@ alley_server <- function(id) {
     # Explore panel
     output$alley_explore <- renderUI({
       
-      if(!choropleth()) {
+      if (!choropleth()) {
         
         if (rv_alley$poly_selected %in% alley_text$ID) {
           
@@ -126,7 +112,7 @@ alley_server <- function(id) {
           text_to_display <- alley_borough_text(text_to_display)
           
           if (exists("text_to_display") && !is.null(text_to_display)) {
-            HTML(unlist(text_to_display[1:(length(text_to_display)-1)]))
+            HTML(unlist(text_to_display[1:(length(text_to_display) - 1)]))
           }
           
         } else if (rv_alley$poly_selected %in% alleys[alleys$visited,]$ID) {
@@ -155,7 +141,11 @@ alley_server <- function(id) {
           
           if (exists("text_to_display") && !is.null(text_to_display)) {
             list(HTML(unlist(text_to_display[1:(length(text_to_display) - 1)])),
-                 div(style = "margin-bottom:20px;", imageOutput(session$ns("alley_img"), height = "100%")))
+                 if (!is.null(text_to_display$photo_ID)) {
+                   div(style = "margin-bottom:20px;", 
+                       imageOutput(session$ns("alley_img"), height = "100%"))
+                 }
+            )
           }
           
         }
@@ -195,7 +185,7 @@ alley_server <- function(id) {
                         stroke_width = 15, stroke_colour = "#CFCFCF",
                         fill_colour = "#CFCFCF", layer_id = "alleys_void",
                         update_view = FALSE, id = "ID", auto_highlight = FALSE) %>%
-            add_polygon(data = alleys[alleys$visited,],
+            add_polygon(data = alleys[alleys$visited, ][!is.na(alleys[alleys$visited, ]$fill), ],
                         stroke_width = focus_alley_zoom(), stroke_colour = "fill",
                         layer_id = "alleys_visited",
                         update_view = FALSE, id = "ID", auto_highlight = TRUE,
@@ -294,10 +284,10 @@ alley_server <- function(id) {
     # Hide explore panel
     observeEvent(input$hide, {
       
-      if(input$hide %% 2 == 0){
+      if (input$hide %% 2 == 0) {
         shinyjs::show(id = "alley_explore")
         txt <- sus_translate("Hide")
-      }else{
+      } else {
         shinyjs::hide(id = "alley_explore")
         txt <- sus_translate("Show")
       }

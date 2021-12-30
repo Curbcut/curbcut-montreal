@@ -125,7 +125,6 @@ green_space_explore_server <- function(id, x, var_left, var_right, selection, df
         total_rank <- ordinal_form(total_rank)
         borough_rank <- ordinal_form(borough_rank)
         
-        
         HTML(str_glue(
           paste0("<p><b>{z$name}</b><p>",
                  "<p>The green space {z$name} is a `{z$type}` of ",
