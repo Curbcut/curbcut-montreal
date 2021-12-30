@@ -4,28 +4,28 @@ library(tidyverse)
 library(qs)
 
 translation_fr <- 
-  tibble(en = character(), fr = character()) %>% 
+  tibble(en = character(), fr = character()) |> 
   
   # Menu
-  add_row(en = "Biodiversity", fr = "Biodiversité") %>%
-  add_row(en = "Learn more", fr = "En savoir plus") %>%
-  add_row(en = "Compare", fr = "Comparez") %>%
-  add_row(en = "SUS Preview", fr = "Aperçu du SUS") %>%
+  add_row(en = "Biodiversity", fr = "Biodiversité") |>
+  add_row(en = "Learn more", fr = "En savoir plus") |>
+  add_row(en = "Compare", fr = "Comparez") |>
+  add_row(en = "SUS Preview", fr = "Aperçu du SUS") |>
   
   # Module names
-  add_row(en = "Home", fr = "Accueil") %>%
-  add_row(en = "Climate change risk", fr = "Vulnérabilité aux changements climatiques") %>%
-  add_row(en = "Climate change", fr = "Changements climatiques") %>%
-  add_row(en = "Covid-19", fr = "Covid-19") %>%
-  add_row(en = "Transport", fr = "Transport") %>%
-  add_row(en = "Ecology", fr = "Écologie") %>%
-  add_row(en = "Urban life", fr = "La vie urbaine") %>%
-  add_row(en = "Accessibility to urban opportunities", fr = "Accessibilité aux opportunités urbaines") %>%
-  add_row(en = "Place explorer", fr = "Explorez un lieu") %>%
+  add_row(en = "Home", fr = "Accueil") |>
+  add_row(en = "Climate change risk", fr = "Vulnérabilité aux changements climatiques") |>
+  add_row(en = "Climate change", fr = "Changements climatiques") |>
+  add_row(en = "Covid-19", fr = "Covid-19") |>
+  add_row(en = "Transport", fr = "Transport") |>
+  add_row(en = "Ecology", fr = "Écologie") |>
+  add_row(en = "Urban life", fr = "La vie urbaine") |>
+  add_row(en = "Accessibility to urban opportunities", fr = "Accessibilité aux opportunités urbaines") |>
+  add_row(en = "Place explorer", fr = "Explorez un lieu") |>
   
   # title_text.csv
   add_row(en = "Why a dashboard? The science behind Sus", 
-          fr = "Pourquoi un tableau de bord? La science derrière Sus") %>%
+          fr = "Pourquoi un tableau de bord? La science derrière Sus") |>
   add_row(
     en = paste0(
       "The CanALE dataset (developed by Prof. Nancy Ross and her team) captures ",
@@ -35,7 +35,7 @@ translation_fr <-
       "La base de données AVA-Can (développée par la professeure Nancy Ross et son ",
       "équipe) saisit quatre éléments clés liés aux environnements de vie active: ",
       "la densité de population, les points d'intérêt, la grille des rues et la proximité ",
-      "du service de transport en commun.")) %>%
+      "du service de transport en commun.")) |>
   add_row(
     en = paste0(
       "<p>A safe and inviting pedestrian realm is not distributed equally ", 
@@ -77,7 +77,7 @@ translation_fr <-
       "2020. «Réponse de Montréal à COVID-19 : Une analyse de l'équité des nouvelles infrastructures de ",
       "transport actif». Document de travail pour le Transportation Research ",
       "Board.</a> <b>(MSSI research)</b></ul><br><p><i>Auteur(e)s ", 
-      "principaux(ales) du module: Robin Basalaev-Binder, David Wachsmuth</i>")) %>%
+      "principaux(ales) du module: Robin Basalaev-Binder, David Wachsmuth</i>")) |>
   add_row(
     en = paste0(
       "Based on 2016 commuting data, we quantify possible reductions in VMT and GHG by identifying car ",
@@ -86,7 +86,7 @@ translation_fr <-
       "Basé sur les données relatives aux déplacements domicile-travail en 2016, nous quantifions ",
       "les réductions possibles de KPV et de GES en identifiant les déplacements en voiture qui pourraient ",
       "être remplacés par des déplacement en vélo en fonction de la distance, du changement ",
-      "d'altitude et d'autres facteurs.")) %>%
+      "d'altitude et d'autres facteurs.")) |>
   add_row(
     en = paste0(
       "<p>The transportation sector is a major contributor to Canada's greenhouse gas (GHG) emissions which ",
@@ -111,7 +111,7 @@ translation_fr <-
       "déplacements actuels à vélo.<p>Les résultats ont montré que l'augmentation des déplacements à vélo peut ",
       "réduire les KPV et les émissions de GES des déplacements en voiture. D'autres mesures de réduction ",
       "sont nécessaires pour atteindre les objectifs de diminution des émissions de GES.<br><p><i>Auteurs ",
-      "principaux du module: Qiao Zhao, Kevin Manaugh</i>")) %>%
+      "principaux du module: Qiao Zhao, Kevin Manaugh</i>")) |>
   add_row(
     en = paste0(
       "The capacity for pedestrian social distancing is a capacity measurement that determines the percentage ",
@@ -120,7 +120,7 @@ translation_fr <-
     fr = paste0(
       "La capacité de distanciation sociale des piétons est une mesure de capacité qui détermine le pourcentage ",
       "de la population d'un quartier qui peut faire des trajets locaux à pied en même temps, tout en respectant ",
-      "les règles de «distanciation sociale».")) %>%
+      "les règles de «distanciation sociale».")) |>
   add_row(
     en = paste0(
       "<p>Using open data from Montreal's open data portal as well as OpenStreetMap, it was possible to calculate ",
@@ -158,12 +158,12 @@ translation_fr <-
                       "capacité piétonne locale est particulièrement pertinent en situation de pandémie, où les protections en place ",
                       "et les restrictions de déplacement ont généralement conduit à une augmentation des déplacements locaux et à ",
                       "une diminution des déplacements provenant d'autres quartiers.<br><p><i>Auteur principal du module: ",
-                      "Samuel Kohn</i>")) %>%
+                      "Samuel Kohn</i>")) |>
   add_row(en = paste0("Compare the pedestrian capacity for social distancing metric across a variety of other variables, such ",
                       "as walkable access to amenities, income level, immigration, visible minorities, population density, etc. "),
           fr = paste0("Comparez la mesure de la capacité des piétons à pratiquer la distance sociale en fonction de diverses ",
                       "autres variables, telles que l'accès à pied aux services de base, le revenu, l'immigration, les ",
-                      "minorités visibles, la densité de population, etc.")) %>%
+                      "minorités visibles, la densité de population, etc.")) |>
   add_row(en = paste0("The data shows us that the ability to safely navigate pedestrian space tends to be much lower in ",
                       "DAs with lower incomes as well as DAs with high proportions of visible minorities and immigrants ",
                       "compared to majority white regions of Montreal. While the City’s plans to increase walkable urban ",
@@ -178,7 +178,7 @@ translation_fr <-
                       "aient permis d'améliorer ces écarts, il y a place à amélioration. Les données interactives de cette ",
                       "plateforme peuvent aider les décideurs politiques à prendre des décisions stratégiques avec des résultats ",
                       "plus équitables. Vous trouverez ci-dessous un exemple d'analyse de politique utilisant deux variables: ",
-                      "la capacité de distanciation sociale des piétons et l'accès à pied aux services de base.")) %>%
+                      "la capacité de distanciation sociale des piétons et l'accès à pied aux services de base.")) |>
   add_row(en = paste0("In order to calculate the width of sidewalks in Montreal, we used a spatial dataset published by ",
                       "Montréal Open Data Portal that includes polygons of all sidewalks within the Montreal agglomeration. ",
                       "Using the the object-oriented programming language R, we developed a function which first creates ",
@@ -197,7 +197,7 @@ translation_fr <-
                       "limites du tampon se chevauchent, la géométrie devient invalide). Le résultat est l'équivalent ",
                       "d'une ligne centrale à l'intérieur de chaque polygone de trottoir. La dernière étape pour déterminer ",
                       "la largeur du trottoir consiste à additionner les distances entre la ligne centrale et les deux bords ",
-                      "d'un segment donné de polygone de trottoir. Ce processus est illustré ci-dessous.")) %>%
+                      "d'un segment donné de polygone de trottoir. Ce processus est illustré ci-dessous.")) |>
   
   # var_exp$var_name
   
@@ -205,163 +205,163 @@ translation_fr <-
   # all variables have already been all translatate under.
   
   # add_row(en = "Tenant-occupied (%)",
-  #         fr = "Locataire-occupant (%)") %>% 
+  #         fr = "Locataire-occupant (%)") |> 
   # add_row(en = "Average rent ($)",
-  #         fr = "Loyer moyen ($)") %>% 
+  #         fr = "Loyer moyen ($)") |> 
   # add_row(en = "Average property value ($)",
-  #         fr = "Valeur moyenne des propriétés ($)") %>% 
+  #         fr = "Valeur moyenne des propriétés ($)") |> 
   # add_row(en = "Unaffordable housing (%)",
-  #         fr = "Logement inabordable (%)") %>% 
+  #         fr = "Logement inabordable (%)") |> 
   # add_row(en = "Unsuitable housing (%)",
-  #         fr = "Logement inadapté (%)") %>% 
+  #         fr = "Logement inadapté (%)") |> 
   # add_row(en = "Housing requiring major repairs (%)",
-  #         fr = "Logements nécessitant des réparations importantes (%)") %>% 
+  #         fr = "Logements nécessitant des réparations importantes (%)") |> 
   # add_row(en = "Owner housing stress (%)",
-  #         fr = "Stress lié au logement des propriétaires (%)") %>% 
+  #         fr = "Stress lié au logement des propriétaires (%)") |> 
   # add_row(en = "Renter housing stress (%)",
-  #         fr = "Stress lié au logement des locataires (%)") %>% 
+  #         fr = "Stress lié au logement des locataires (%)") |> 
   # add_row(en = "One-year housing mobility (%)",
-  #         fr = "Mobilité du logement sur un an (%)") %>% 
+  #         fr = "Mobilité du logement sur un an (%)") |> 
   # add_row(en = "Five-year housing mobility (%)",
-  #         fr = "Mobilité du logement sur cinq ans (%)") %>% 
+  #         fr = "Mobilité du logement sur cinq ans (%)") |> 
   # add_row(en = "Median household income ($)",
-  #         fr = "Revenu médian des ménages ($)") %>% 
+  #         fr = "Revenu médian des ménages ($)") |> 
   # add_row(en = "Income under $50k (%)",
-  #         fr = "Revenu inférieur à 50 000 $ (%)") %>% 
+  #         fr = "Revenu inférieur à 50 000 $ (%)") |> 
   # add_row(en = "Income beetween $50k-$100k (%)",
-  #         fr = "Revenu compris entre 50 000 et 100 000 dollars (%)") %>% 
+  #         fr = "Revenu compris entre 50 000 et 100 000 dollars (%)") |> 
   # add_row(en = "Income above $100k (%)",
-  #         fr = "Revenu supérieur à 100 000 dollars (%)") %>% 
+  #         fr = "Revenu supérieur à 100 000 dollars (%)") |> 
   # add_row(en = "Prevalence of low income (after-tax) (%)",
-  #         fr = "Prévalence des faibles revenus (après impôts) (%)") %>% 
+  #         fr = "Prévalence des faibles revenus (après impôts) (%)") |> 
   # add_row(en = "Immigrants (%)",
-  #         fr = "Immigrants (%)") %>% 
+  #         fr = "Immigrants (%)") |> 
   # add_row(en = "New immigrants (%)",
-  #         fr = "Nouveaux immigrants (%)") %>% 
+  #         fr = "Nouveaux immigrants (%)") |> 
   # add_row(en = "Visible minorities (%)",
-  #         fr = "Minorités visibles (%)") %>% 
+  #         fr = "Minorités visibles (%)") |> 
   # add_row(en = "Aboriginal (%)",
-  #         fr = "Autochtones (%)") %>% 
+  #         fr = "Autochtones (%)") |> 
   # add_row(en = "Drive to work (%)",
-  #         fr = "Se rendre au travail en voiture (%)") %>% 
+  #         fr = "Se rendre au travail en voiture (%)") |> 
   # add_row(en = "Walk or cycle to work (%)",
-  #         fr = "Se rendre au travail à pied ou à vélo (%)") %>% 
+  #         fr = "Se rendre au travail à pied ou à vélo (%)") |> 
   # add_row(en = "Public transit to work (%)",
-  #         fr = "Transport en commun pour se rendre au travail (%)") %>% 
+  #         fr = "Transport en commun pour se rendre au travail (%)") |> 
   # add_row(en = "15 minutes to work (%)",
-  #         fr = "15 minutes pour aller travailler (%)") %>% 
+  #         fr = "15 minutes pour aller travailler (%)") |> 
   # add_row(en = "15-45 minutes to work (%)",
-  #         fr = "15-45 minutes pour aller travailler (%)") %>% 
+  #         fr = "15-45 minutes pour aller travailler (%)") |> 
   # add_row(en = "More than 45 minutes to work (%)",
-  #         fr = "Plus de 45 minutes pour aller travailler (%)") %>% 
+  #         fr = "Plus de 45 minutes pour aller travailler (%)") |> 
   # add_row(en = "Managerial and professional occupations (%)",
-  #         fr = "Cadres et professions libérales (%)") %>% 
+  #         fr = "Cadres et professions libérales (%)") |> 
   # add_row(en = "Creative occupations (%)",
-  #         fr = "Professions créatives (%)") %>% 
+  #         fr = "Professions créatives (%)") |> 
   # add_row(en = "Families with children (%)",
-  #         fr = "Familles avec enfants (%)") %>% 
+  #         fr = "Familles avec enfants (%)") |> 
   # add_row(en = "One person households (%)",
-  #         fr = "Ménages d'une personne (%)") %>% 
+  #         fr = "Ménages d'une personne (%)") |> 
   # add_row(en = "French only (%)",
-  #         fr = "Français seulement (%)") %>% 
+  #         fr = "Français seulement (%)") |> 
   # add_row(en = "English only (%)",
-  #         fr = "Anglais seulement (%)") %>% 
+  #         fr = "Anglais seulement (%)") |> 
   # add_row(en = "French and English (%)",
-  #         fr = "Français et anglais (%)") %>% 
+  #         fr = "Français et anglais (%)") |> 
   # add_row(en = "Neither French nor English (%)",
-  #         fr = "Ni français ni anglais (%)") %>% 
+  #         fr = "Ni français ni anglais (%)") |> 
   # add_row(en = "Aged between 0 and 14 (%)",
-  #         fr = "Âgés de 0 à 14 ans (%)") %>% 
+  #         fr = "Âgés de 0 à 14 ans (%)") |> 
   # add_row(en = "Aged between 15 and 64 (%)",
-  #         fr = "Âgés entre 15 et 64 ans (%)") %>% 
+  #         fr = "Âgés entre 15 et 64 ans (%)") |> 
   # add_row(en = "Aged 65 and above (%)",
-  #         fr = "Agés de 65 ans et plus (%)") %>% 
+  #         fr = "Agés de 65 ans et plus (%)") |> 
   # add_row(en = "Bachelor and above (%)",
-  #         fr = "Baccalauréat et plus (%)") %>% 
+  #         fr = "Baccalauréat et plus (%)") |> 
   # add_row(en = "No certificate, diploma or degree (%)",
-  #         fr = "Aucun certificat, diplôme ou grade (%)") %>% 
+  #         fr = "Aucun certificat, diplôme ou grade (%)") |> 
   # add_row(en = "CanALE index",
-  #         fr = "Indice CanALE") %>% 
+  #         fr = "Indice CanALE") |> 
   
   # var_exp$explanation
   add_row(en = "the percentage of private dwellings occupied by tenants",
-          fr = "le pourcentage de logements privés occupés par des locataires") %>% 
+          fr = "le pourcentage de logements privés occupés par des locataires") |> 
   add_row(en = "the average rent paid by tenants per month",
-          fr = "le loyer moyen payé par les locataires par mois") %>% 
+          fr = "le loyer moyen payé par les locataires par mois") |> 
   add_row(en = "the average value of owner-occupied dwellings",
-          fr = "la valeur moyenne des logements occupés par leur propriétaire") %>% 
+          fr = "la valeur moyenne des logements occupés par leur propriétaire") |> 
   add_row(en = "the percentage of dwellings for which residents pay more than 30% of income on housing costs",
-          fr = "le pourcentage de logements pour lesquels les résidents consacrent plus de 30 % de leurs revenus aux frais de logement") %>% 
+          fr = "le pourcentage de logements pour lesquels les résidents consacrent plus de 30 % de leurs revenus aux frais de logement") |> 
   add_row(en = "the percentage of households living in accommodations without enough bedrooms according to the National Occupancy Standard",
-          fr = "le pourcentage de ménages vivant dans des logements ne disposant pas d'un nombre suffisant de chambres à coucher selon la norme d'occupation nationale") %>% 
+          fr = "le pourcentage de ménages vivant dans des logements ne disposant pas d'un nombre suffisant de chambres à coucher selon la norme d'occupation nationale") |> 
   add_row(en = "the percentage of households living in dwellings requiring major repairs",
-          fr = "le pourcentage de ménages vivant dans des logements nécessitant des réparations importantes") %>% 
+          fr = "le pourcentage de ménages vivant dans des logements nécessitant des réparations importantes") |> 
   add_row(en = "the percentage of owner households that spend more than 30% of their income on shelter costs",
-          fr = "le pourcentage de ménages propriétaires qui consacrent plus de 30 % de leur revenu aux frais de logement") %>% 
+          fr = "le pourcentage de ménages propriétaires qui consacrent plus de 30 % de leur revenu aux frais de logement") |> 
   add_row(en = "the percentage of renter households that spend more than 30% of their income on shelter costs",
-          fr = "le pourcentage de ménages locataires qui consacrent plus de 30 % de leur revenu aux frais de logement") %>% 
+          fr = "le pourcentage de ménages locataires qui consacrent plus de 30 % de leur revenu aux frais de logement") |> 
   add_row(en = "the percentage of households that have moved in the past year",
-          fr = "le pourcentage de ménages qui ont déménagé au cours de l'année écoulée") %>% 
+          fr = "le pourcentage de ménages qui ont déménagé au cours de l'année écoulée") |> 
   add_row(en = "the percentage of households that have moved in the past five years",
-          fr = "le pourcentage de ménages qui ont déménagé au cours des cinq dernières années") %>% 
+          fr = "le pourcentage de ménages qui ont déménagé au cours des cinq dernières années") |> 
   add_row(en = "median before-tax household income",
-          fr = "revenu médian des ménages avant impôt") %>% 
+          fr = "revenu médian des ménages avant impôt") |> 
   add_row(en = "the percentage of households with an income less then $50,000",
-          fr = "le pourcentage de ménages dont le revenu est inférieur à 50 000 $.") %>% 
+          fr = "le pourcentage de ménages dont le revenu est inférieur à 50 000 $.") |> 
   add_row(en = "the percentage of households with an income between $50,000 and $100,000",
-          fr = "le pourcentage de ménages dont le revenu est compris entre 50 000 et 100 000 dollars") %>% 
+          fr = "le pourcentage de ménages dont le revenu est compris entre 50 000 et 100 000 dollars") |> 
   add_row(en = "the percentage of households with an income higher than $100,000",
-          fr = "le pourcentage de ménages dont le revenu est supérieur à 100 000 dollars") %>% 
+          fr = "le pourcentage de ménages dont le revenu est supérieur à 100 000 dollars") |> 
   add_row(en = "the prevalence of low income in private households based on the Low income measure, after-tax(LIM-AT)",
-          fr = "la prévalence du faible revenu dans les ménages privés, basée sur la mesure du faible revenu, après impôt (MFR-ApI)") %>% 
+          fr = "la prévalence du faible revenu dans les ménages privés, basée sur la mesure du faible revenu, après impôt (MFR-ApI)") |> 
   add_row(en = "the percentage of residents who are foreign-born",
-          fr = "le pourcentage de résidents nés à l'étranger") %>% 
+          fr = "le pourcentage de résidents nés à l'étranger") |> 
   add_row(en = "the percentage of people who have immigrated in the last five years",
-          fr = "le pourcentage de personnes qui ont immigré au cours des cinq dernières années") %>% 
+          fr = "le pourcentage de personnes qui ont immigré au cours des cinq dernières années") |> 
   add_row(en = "the percentage of people who identify as part of one or more visible minority groups",
-          fr = "le pourcentage de personnes qui s'identifient comme faisant partie d'un ou plusieurs groupes de minorités visibles") %>% 
+          fr = "le pourcentage de personnes qui s'identifient comme faisant partie d'un ou plusieurs groupes de minorités visibles") |> 
   add_row(en = "the percentage of people who are of aboriginal identity",
-          fr = "le pourcentage de personnes qui ont une identité autochtone") %>% 
+          fr = "le pourcentage de personnes qui ont une identité autochtone") |> 
   add_row(en = "the percentage of people who drive a privately owned car or truck to work",
-          fr = "le pourcentage de personnes qui conduisent une voiture ou un camion privé pour se rendre au travail") %>% 
+          fr = "le pourcentage de personnes qui conduisent une voiture ou un camion privé pour se rendre au travail") |> 
   add_row(en = "the percentage of people who walk or cycle to work",
-          fr = "le pourcentage de personnes qui se rendent au travail à pied ou à vélo") %>% 
+          fr = "le pourcentage de personnes qui se rendent au travail à pied ou à vélo") |> 
   add_row(en = "the percentage of people who use public transit to get to work",
-          fr = "le pourcentage de personnes qui utilisent les transports en commun pour se rendre au travail") %>% 
+          fr = "le pourcentage de personnes qui utilisent les transports en commun pour se rendre au travail") |> 
   add_row(en = "the percentage of people whose commute time is less than 15 minutes",
-          fr = "le pourcentage de personnes dont le temps de trajet est inférieur à 15 minutes") %>% 
+          fr = "le pourcentage de personnes dont le temps de trajet est inférieur à 15 minutes") |> 
   add_row(en = "the percentage of people whose commute time is between 15 and 45 minutes",
-          fr = "le pourcentage de personnes dont le temps de trajet est compris entre 15 et 45 minutes") %>% 
+          fr = "le pourcentage de personnes dont le temps de trajet est compris entre 15 et 45 minutes") |> 
   add_row(en = "the percentage of people whose commute time is longer than 45 minutes",
-          fr = "le pourcentage de personnes dont le temps de trajet est supérieur à 45 minutes") %>% 
+          fr = "le pourcentage de personnes dont le temps de trajet est supérieur à 45 minutes") |> 
   add_row(en = "the percentage of the workforce in professional and managerial occupations, based on the North American Industry Classification System",
-          fr = "le pourcentage de la main-d'œuvre dans les professions libérales et les postes de gestion, selon le Système de classification des industries de l'Amérique du Nord.") %>% 
+          fr = "le pourcentage de la main-d'œuvre dans les professions libérales et les postes de gestion, selon le Système de classification des industries de l'Amérique du Nord.") |> 
   add_row(en = "the percentage of the workforce in artistic and cultural occupations, based on the North American Industry Classification System",
-          fr = "le pourcentage de la main-d'œuvre dans les professions artistiques et culturelles, selon le Système de classification des industries de l'Amérique du Nord.") %>% 
+          fr = "le pourcentage de la main-d'œuvre dans les professions artistiques et culturelles, selon le Système de classification des industries de l'Amérique du Nord.") |> 
   add_row(en = "the percentage of census families with children out of total households",
-          fr = "le pourcentage de familles de recensement avec enfants par rapport au total des ménages") %>% 
+          fr = "le pourcentage de familles de recensement avec enfants par rapport au total des ménages") |> 
   add_row(en = "the percentage of one person households out of total households",
-          fr = "le pourcentage de ménages d'une personne par rapport au total des ménages") %>% 
+          fr = "le pourcentage de ménages d'une personne par rapport au total des ménages") |> 
   add_row(en = "the percentage of individuals that only know French as an official language",
-          fr = "le pourcentage d'individus qui ne connaissent que le français comme langue officielle") %>% 
+          fr = "le pourcentage d'individus qui ne connaissent que le français comme langue officielle") |> 
   add_row(en = "the percentage of individuals that only know English as an official language",
-          fr = "le pourcentage d'individus qui ne connaissent que l'anglais comme langue officielle") %>% 
+          fr = "le pourcentage d'individus qui ne connaissent que l'anglais comme langue officielle") |> 
   add_row(en = "the percentage of individuals that know both official languages (French and English)",
-          fr = "le pourcentage de personnes qui connaissent les deux langues officielles (français et anglais)") %>% 
+          fr = "le pourcentage de personnes qui connaissent les deux langues officielles (français et anglais)") |> 
   add_row(en = "the percentage of individuals that do not know either of the official languages (French or English)",
-          fr = "le pourcentage d'individus qui ne connaissent aucune des deux langues officielles (français ou anglais)") %>% 
+          fr = "le pourcentage d'individus qui ne connaissent aucune des deux langues officielles (français ou anglais)") |> 
   add_row(en = "the percentage of the population aged between 0 and 14 years old",
-          fr = "le pourcentage de la population âgée de 0 à 14 ans") %>% 
+          fr = "le pourcentage de la population âgée de 0 à 14 ans") |> 
   add_row(en = "the percentage of the population aged between 15 and 64 years old",
-          fr = "le pourcentage de la population âgée de 15 à 64 ans") %>% 
+          fr = "le pourcentage de la population âgée de 15 à 64 ans") |> 
   add_row(en = "the percentage of the population aged 65 and above",
-          fr = "le pourcentage de la population âgée de 65 ans et plus") %>% 
+          fr = "le pourcentage de la population âgée de 65 ans et plus") |> 
   add_row(en = "the percentage of the population aged 15 and over holding a degree at bachelor level or above",
-          fr = "le pourcentage de la population âgée de 15 ans et plus détenant un diplôme de niveau licence ou plus") %>% 
+          fr = "le pourcentage de la population âgée de 15 ans et plus détenant un diplôme de niveau licence ou plus") |> 
   add_row(en = "the percentage of the population aged 15 and over with no certificate, diploma or degree",
-          fr = "le pourcentage de la population âgée de 15 ans et plus ne possédant aucun certificat, diplôme ou grade") %>% 
+          fr = "le pourcentage de la population âgée de 15 ans et plus ne possédant aucun certificat, diplôme ou grade") |> 
   add_row(en = "the potential for active living",
-          fr = "le potentiel de la vie active") %>% 
+          fr = "le potentiel de la vie active") |> 
 
   # Description
   add_row(en = paste0("The whole of an ecosystem is more than the sum of its parts. ",
@@ -369,10 +369,10 @@ translation_fr <-
                       "by the quantity, quality, and composition of the species with cohabitat with."), 
           fr = paste0("L'ensemble d'un écosystème est plus que la somme de ses parties. ", 
                       "La santé et la résilience de nos espaces verts urbains sont déterminées ", 
-                      "par la quantité, la qualité et la composition des espèces avec lesquelles nous cohabitons.")) %>%
+                      "par la quantité, la qualité et la composition des espèces avec lesquelles nous cohabitons.")) |>
   add_row(en = paste0("Montreal's biodiversity is the result of many competing factors..."), 
-          fr = paste0("La biodiversité de Montréal est le résultat de nombreux facteurs concurrents...")) %>%
-  add_row(en = "Hello Shiny!", fr = "French") %>%
+          fr = paste0("La biodiversité de Montréal est le résultat de nombreux facteurs concurrents...")) |>
+  add_row(en = "Hello Shiny!", fr = "French") |>
   
   # Website descriptions
   add_row(en = paste0("Dashboards offer a tool for communicating sustainability data in a visually ", 
@@ -383,7 +383,7 @@ translation_fr <-
                       "le développment durable dans une plate-forme numérique visuelle. Nous constatons ", 
                       "une lacune dans les tableaux de bord actuels allant au-delà de la visualisation ", 
                       "de données préexistantes à des échelles statiques, laissant la place à un modèle ", 
-                      "plus orienté vers l'avenir, modulable et interactif.")) %>%
+                      "plus orienté vers l'avenir, modulable et interactif.")) |>
   add_row(en = paste0("Existing data-driven approaches to urban sustainability are characterized by static ", 
                       "data, limited user interaction, and the oversimplification of complex urban issues. ", 
                       "They provide little opportunity for user engagement and exploration of questions ", 
@@ -392,7 +392,7 @@ translation_fr <-
                       "se caractérisent par des données statiques, une interaction limitée pour les utilisateurs ",  
                       "et une simplification excessive de problèmes urbains complexes. Elles offrent peu ", 
                       "d’opportunités pour l’engagement des utilisateurs et l’exploration de questions reliant ", 
-                      "différentes données et problèmes.")) %>%
+                      "différentes données et problèmes.")) |>
   add_row(en = paste0("Some of the limitations of existing dashboards include a bias towards quantifiable, ", 
                       "measurable components of sustainability, and a reliance on data with potential bias. ", 
                       "Furthermore, they often attempt to play the role of a neutral force to communicate ", 
@@ -400,48 +400,48 @@ translation_fr <-
           fr = paste0("Parmi les limites des tableaux de bord existants, on peut citer la préférence ", 
                       "accordée aux éléments quantifiables et mesurables de la durabilité, et la dépendance ", 
                       "à l'égard de données potentiellement biaisées. En outre, ils tentent souvent de jouer ", 
-                      "le rôle d'une force neutre pour communiquer des informations “objectives” sur les villes.")) %>%
+                      "le rôle d'une force neutre pour communiquer des informations “objectives” sur les villes.")) |>
   add_row(en = paste0("Sustainability dashboards should build upon best practices to provide useful tools for ", 
                       "individuals and cities alike to examine the many facets of urban sustainability and ", 
                       "question existing assumptions."), 
           fr = paste0("Les tableaux de bord sur la durabilité devraient s'appuyer sur les meilleures pratiques ", 
                       "afin de fournir des outils utiles aux individus comme aux villes pour examiner les ",
                       "nombreuses facettes de la durabilité urbaine et remettre en question les hypothèses ", 
-                      "existantes.")) %>%
+                      "existantes.")) |>
   add_row(en = paste0("Maintaining transparency with data and methodologies, ensuring public participation ",
                       "and accurate representation of underprivileged communities, and using engaging and ", 
                       "accessible tools contribute to the success of a dashboard."), 
           fr = paste0("Maintenir la transparence des données et des méthodologies, s'assurer de la participation ", 
                       "du public et de la représentation exacte des communautés défavorisées, ainsi qu'utiliser ", 
-                      "des outils attrayants et accessibles contribuent au succès d'un tableau de bord.")) %>%
+                      "des outils attrayants et accessibles contribuent au succès d'un tableau de bord.")) |>
   add_row(en = paste0("Sus aims to more accurately represent and better engage urban residents in order to ", 
                       "harness the momentum surrounding technologically-based approaches to sustainability ", 
                       "for public good."), 
           fr = paste0("Sus vise à représenter plus justement et à mieux impliquer les résidents urbains ", 
                       "afin d'exploiter le momentum entourant les approches technologiques de la durabilité ", 
-                      "pour le bien public.")) %>%
-  add_row(en = "Further resources:", fr = "Ressources additionnelles") %>%
+                      "pour le bien public.")) |>
+  add_row(en = "Further resources:", fr = "Ressources additionnelles") |>
   
   # Sidebar menu
-  add_row(en = "Active living potential", fr = "Potentiel de vie active") %>%
-  add_row(en = "Commuter mode switching", fr = "Changement de mode de transport") %>%
-  add_row(en = "Pedestrian realm", fr = "La voie piétonne") %>%
+  add_row(en = "Active living potential", fr = "Potentiel de vie active") |>
+  add_row(en = "Commuter mode switching", fr = "Changement de mode de transport") |>
+  add_row(en = "Pedestrian realm", fr = "La voie piétonne") |>
   
   # General info
-  add_row(en = "Why a dashboard?", fr = "Pourquoi un tableau de bord?") %>%
-  add_row(en = "Meet the team", fr = "Rencontrez l'équipe") %>%
-  add_row(en = "Nature-based solutions", fr = "Solutions basées sur la nature") %>%
-  add_row(en = "Simulation", fr = "Simulation") %>%
+  add_row(en = "Why a dashboard?", fr = "Pourquoi un tableau de bord?") |>
+  add_row(en = "Meet the team", fr = "Rencontrez l'équipe") |>
+  add_row(en = "Nature-based solutions", fr = "Solutions basées sur la nature") |>
+  add_row(en = "Simulation", fr = "Simulation") |>
   
   # Built environment
-  add_row(en = "Built environment", fr = "Le cadre bâti") %>%
+  add_row(en = "Built environment", fr = "Le cadre bâti") |>
   add_row(en = "Pedestrian capacity for social distancing", 
-          fr = "Capacité de distanciation sociale dans la voie piétonne") %>%
+          fr = "Capacité de distanciation sociale dans la voie piétonne") |>
   add_row(en = "Pedestrian capacity for social distancing (census tracts)", 
-          fr = "Capacité de distanciation sociale dans la voie piétonne (secteur de recensement)") %>%
+          fr = "Capacité de distanciation sociale dans la voie piétonne (secteur de recensement)") |>
   add_row(en = "Pedestrian capacity for social distancing (dissemination areas)", 
-          fr = "Capacité de distanciation sociale dans la voie piétonne (aire de diffusion)") %>%
-  add_row(en = "Explore sidewalks and parks", fr = "Explorez les trottoirs et les parcs") %>%
+          fr = "Capacité de distanciation sociale dans la voie piétonne (aire de diffusion)") |>
+  add_row(en = "Explore sidewalks and parks", fr = "Explorez les trottoirs et les parcs") |>
   add_row(en = paste0("<ul><li>  The top 3 boroughs that have the highest proportion of people living ", 
                       "in census tracts with a low capacity for pedestrian physical distancing were 1) ", 
                       "Le Plateau-Mont-Royal (74%), 2) Villeray-Saint-Michel-Parc-Extension (65%) and 3) ", 
@@ -449,107 +449,107 @@ translation_fr <-
           fr = paste0("<ul><li>  Les trois arrondissements ayant la plus grande proportion de personnes vivant ", 
                       "dans des secteurs de recensement avec une faible capacité pour une distanciation physique ", 
                       "piétonne sont 1) Le Plateau-Mont-Royal (74%), 2) Villeray-Saint-Michel-Parc-Extension (65%) ", 
-                      "and 3) Montréal Nord (60%).</ul>")) %>%
+                      "and 3) Montréal Nord (60%).</ul>")) |>
   
   # Bivariate analysis
-  add_row(en = "Select your second variable", fr = "Choisissez votre deuxième variable") %>%
-  add_row(en = "Net Median Income", fr = "Revenu médian net") %>%
-  add_row(en = "Visible Minority Population Proportion", fr = "Minorité visible (proportion de la population)") %>%
-  add_row(en = "Immigrant Population Proportion", fr = "Immigrant (proportion de la population)") %>%
+  add_row(en = "Select your second variable", fr = "Choisissez votre deuxième variable") |>
+  add_row(en = "Net Median Income", fr = "Revenu médian net") |>
+  add_row(en = "Visible Minority Population Proportion", fr = "Minorité visible (proportion de la population)") |>
+  add_row(en = "Immigrant Population Proportion", fr = "Immigrant (proportion de la population)") |>
   add_row(en = "Montreal Covid-19 Expanded Active Transit Corridors", 
-          fr = "Voies actives et sécuritaires de la Ville de Montréal (Covid-19)") %>%
+          fr = "Voies actives et sécuritaires de la Ville de Montréal (Covid-19)") |>
   add_row(en = "Play with the slider to filter the map", 
-          fr = "Jouez avec le curseur afin de filtrer et modifier la carte") %>%
-  add_row(en = "Explore", fr = "Explorez") %>%
-  add_row(en = "Did you know?", fr = "Saviez-vous?") %>%
+          fr = "Jouez avec le curseur afin de filtrer et modifier la carte") |>
+  add_row(en = "Explore", fr = "Explorez") |>
+  add_row(en = "Did you know?", fr = "Saviez-vous?") |>
   
   # names of list
-  add_row(en = "Housing", fr = "Logement") %>% 
-  add_row(en = "Income", fr = "Revenu") %>% 
-  add_row(en = "Immigration", fr = "Immigration") %>% 
-  add_row(en = "Transportation", fr = "Déplacement domicile-travail") %>% 
+  add_row(en = "Housing", fr = "Logement") |> 
+  add_row(en = "Income", fr = "Revenu") |> 
+  add_row(en = "Immigration", fr = "Immigration") |> 
+  add_row(en = "Transportation", fr = "Déplacement domicile-travail") |> 
   
   # geographic boundaries
-  add_row(en = "Borough", fr = "Arrondissement") %>% 
-  add_row(en = "City", fr = "Ville") %>% 
-  add_row(en = "borough/city", fr = "de l'arrondissement/de la ville") %>% 
-  add_row(en = "boroughs or cities", fr = "arrondissements ou villes") %>% 
-  add_row(en = "census tract", fr = "du secteur de recensement") %>%
-  add_row(en = "census tracts", fr = "secteurs de recensement") %>% 
-  add_row(en = "dissemination area", fr = "de l'aire de diffusion") %>%
-  add_row(en = "dissemination areas", fr = "aires de diffusion") %>%
+  add_row(en = "Borough", fr = "Arrondissement") |> 
+  add_row(en = "City", fr = "Ville") |> 
+  add_row(en = "borough/city", fr = "de l'arrondissement/de la ville") |> 
+  add_row(en = "boroughs or cities", fr = "arrondissements ou villes") |> 
+  add_row(en = "census tract", fr = "du secteur de recensement") |>
+  add_row(en = "census tracts", fr = "secteurs de recensement") |> 
+  add_row(en = "dissemination area", fr = "de l'aire de diffusion") |>
+  add_row(en = "dissemination areas", fr = "aires de diffusion") |>
   add_row(en = paste0("Census tract {dat$name}"), 
-          fr = paste0("Secteur de recensement {dat$name}")) %>% 
+          fr = paste0("Secteur de recensement {dat$name}")) |> 
   add_row(en = paste0("Dissemination area {dat$name}"), 
-          fr = paste0("Aire de diffusion {dat$name}")) %>% 
+          fr = paste0("Aire de diffusion {dat$name}")) |> 
   add_row(en = paste0("{dat$name_2} of {place_name}"), 
-          fr = paste0("{dat$name_2} de {place_name}")) %>% 
+          fr = paste0("{dat$name_2} de {place_name}")) |> 
   
   # Housing
-  add_row(en = "Tenant-occupied (%)", fr = "Locataire occupant (%)") %>% 
-  add_row(en = "Average rent", fr = "Frais de logement mensuels moyens") %>% 
-  add_row(en = "Average property value", fr = "Value moyenne des logements") %>% 
-  add_row(en = "Unaffordable housing (%)", fr = "Logement inabordable (%)") %>% 
-  add_row(en = "Unsuitable housing (%)", fr = "Logement inadéquat (%)") %>% 
-  add_row(en = "Housing requiring major repairs (%)", fr = "Logement nécessitant des réparations majeures (%)") %>% 
-  add_row(en = "Owner housing stress (%)", fr = "Propriétaires dépensant plus de 30% du revenu sur le logement (%)") %>% 
-  add_row(en = "Renter housing stress (%)", fr = "Locataires dépensant plus de 30% du revenu sur le logement (%)") %>% 
+  add_row(en = "Tenant-occupied (%)", fr = "Locataire occupant (%)") |> 
+  add_row(en = "Average rent", fr = "Frais de logement mensuels moyens") |> 
+  add_row(en = "Average property value", fr = "Value moyenne des logements") |> 
+  add_row(en = "Unaffordable housing (%)", fr = "Logement inabordable (%)") |> 
+  add_row(en = "Unsuitable housing (%)", fr = "Logement inadéquat (%)") |> 
+  add_row(en = "Housing requiring major repairs (%)", fr = "Logement nécessitant des réparations majeures (%)") |> 
+  add_row(en = "Owner housing stress (%)", fr = "Propriétaires dépensant plus de 30% du revenu sur le logement (%)") |> 
+  add_row(en = "Renter housing stress (%)", fr = "Locataires dépensant plus de 30% du revenu sur le logement (%)") |> 
   
   # Income
-  add_row(en = "Median household income", fr = "Revenu médian des ménages") %>% 
-  add_row(en = "Income under $50k (%)", fr = "Revenu inférieur à 50k (%)") %>% 
-  add_row(en = "Income between $50k-$100k (%)", fr = "Revenu entre 50k-100k (%)") %>% 
-  add_row(en = "Income above $100k (%)", fr = "Revenu supérieur à 100k (%)") %>% 
-  add_row(en = "Prevalence of low income (after-tax) (%)", fr = "Prévalence de faible revenu (après taxe) (%)") %>% 
+  add_row(en = "Median household income", fr = "Revenu médian des ménages") |> 
+  add_row(en = "Income under $50k (%)", fr = "Revenu inférieur à 50k (%)") |> 
+  add_row(en = "Income between $50k-$100k (%)", fr = "Revenu entre 50k-100k (%)") |> 
+  add_row(en = "Income above $100k (%)", fr = "Revenu supérieur à 100k (%)") |> 
+  add_row(en = "Prevalence of low income (after-tax) (%)", fr = "Prévalence de faible revenu (après taxe) (%)") |> 
   
   # Immigration
-  add_row(en = "Immigration and ethnicity", fr = "Immigration et ethnie") %>% 
-  add_row(en = "Immigrants (%)", fr = "Immigrants (%)") %>% 
-  add_row(en = "New immigrants (%)", fr = "Nouveaux immigrants (%)") %>% 
-  add_row(en = "Visible minorities (%)", fr = "Minorités visibles (%)") %>% 
+  add_row(en = "Immigration and ethnicity", fr = "Immigration et ethnie") |> 
+  add_row(en = "Immigrants (%)", fr = "Immigrants (%)") |> 
+  add_row(en = "New immigrants (%)", fr = "Nouveaux immigrants (%)") |> 
+  add_row(en = "Visible minorities (%)", fr = "Minorités visibles (%)") |> 
   
   # Transportation / Trajet domicile-travail
-  add_row(en = "Drive to work (%)", fr = "Conducteur (%)") %>% 
-  add_row(en = "Walk or cycle to work (%)", fr = "À pied ou à vélo (%)") %>% 
-  add_row(en = "Public transit to work (%)", fr = "Transport en commun (%)") %>% 
-  add_row(en = "15 minutes to work (%)", fr = "Trajet de 15 minutes (%)") %>% 
-  add_row(en = "15-30 minutes to work (%)", fr = "Trajet de 15-30 minutes (%)") %>% 
-  add_row(en = "30-45 minutes to work (%)", fr = "Trajet de 30-45 minutes (%)") %>% 
-  add_row(en = "45-60 minutes to work (%)" , fr = "Trajet de 45-60 minutes (%)") %>% 
+  add_row(en = "Drive to work (%)", fr = "Conducteur (%)") |> 
+  add_row(en = "Walk or cycle to work (%)", fr = "À pied ou à vélo (%)") |> 
+  add_row(en = "Public transit to work (%)", fr = "Transport en commun (%)") |> 
+  add_row(en = "15 minutes to work (%)", fr = "Trajet de 15 minutes (%)") |> 
+  add_row(en = "15-30 minutes to work (%)", fr = "Trajet de 15-30 minutes (%)") |> 
+  add_row(en = "30-45 minutes to work (%)", fr = "Trajet de 30-45 minutes (%)") |> 
+  add_row(en = "45-60 minutes to work (%)" , fr = "Trajet de 45-60 minutes (%)") |> 
   
   # For my life to be easier
-  add_row(en = "----" , fr = "----") %>% 
-  add_row(en = " " , fr = " ") %>% 
+  add_row(en = "----" , fr = "----") |> 
+  add_row(en = " " , fr = " ") |> 
   
   # Quintiles and quantitative terms
-  add_row(en = "much larger than" , fr = "beaucoup plus grand que") %>%
-  add_row(en = "larger than" , fr = "plus grand que") %>%
-  add_row(en = "almost the same as" , fr = "presque le même que") %>%
-  add_row(en = "smaller than" , fr = "plus petit que") %>%
-  add_row(en = "much smaller than" , fr = "beaucoup plus petit que") %>%
-  add_row(en = "larger" , fr = "plus grand") %>%
-  add_row(en = "smaller" , fr = "plus petit") %>%
-  add_row(en = "strong" , fr = "forte") %>%
-  add_row(en = "poor" , fr = "faible") %>%
-  add_row(en = "moderate" , fr = "modérée") %>%
+  add_row(en = "much larger than" , fr = "beaucoup plus grand que") |>
+  add_row(en = "larger than" , fr = "plus grand que") |>
+  add_row(en = "almost the same as" , fr = "presque le même que") |>
+  add_row(en = "smaller than" , fr = "plus petit que") |>
+  add_row(en = "much smaller than" , fr = "beaucoup plus petit que") |>
+  add_row(en = "larger" , fr = "plus grand") |>
+  add_row(en = "smaller" , fr = "plus petit") |>
+  add_row(en = "strong" , fr = "forte") |>
+  add_row(en = "poor" , fr = "faible") |>
+  add_row(en = "moderate" , fr = "modérée") |>
   
   # Correlation
-  add_row(en = "positive" , fr = "positive") %>%
-  add_row(en = "negative" , fr = "négative") %>%
-  add_row(en = "weak" , fr = "faible") %>%
-  add_row(en = "higher" , fr = "plus grand") %>%
-  add_row(en = "lower" , fr = "plus petit") %>%
-  add_row(en = "high" , fr = "haute") %>%
-  add_row(en = "low" , fr = "basse") %>%
-  add_row(en = "similar" , fr = "similaires") %>%
-  add_row(en = "with only a few exceptions" , fr = "à quelques exceptions près") %>%
-  add_row(en = "although with some exceptions" , fr = "bien qu'avec des exceptions") %>%
-  add_row(en = "although with many exceptions" , fr = "bien qu'avec beaucoup d'exceptions") %>%
+  add_row(en = "positive" , fr = "positive") |>
+  add_row(en = "negative" , fr = "négative") |>
+  add_row(en = "weak" , fr = "faible") |>
+  add_row(en = "higher" , fr = "plus grand") |>
+  add_row(en = "lower" , fr = "plus petit") |>
+  add_row(en = "high" , fr = "haute") |>
+  add_row(en = "low" , fr = "basse") |>
+  add_row(en = "similar" , fr = "similaires") |>
+  add_row(en = "with only a few exceptions" , fr = "à quelques exceptions près") |>
+  add_row(en = "although with some exceptions" , fr = "bien qu'avec des exceptions") |>
+  add_row(en = "although with many exceptions" , fr = "bien qu'avec beaucoup d'exceptions") |>
   
   # Bivariate comparison 
-  add_row(en = "dramatically different" , fr = "radicalement différents") %>%
-  add_row(en = "substantially different" , fr = "sensiblement différents") %>%
-  add_row(en = "considerably different" , fr = "modérément différents") %>%
+  add_row(en = "dramatically different" , fr = "radicalement différents") |>
+  add_row(en = "substantially different" , fr = "sensiblement différents") |>
+  add_row(en = "considerably different" , fr = "modérément différents") |>
   
   # CanAle module
   # Chosen value and comparison
@@ -562,7 +562,7 @@ translation_fr <-
                       "{min_val} à {max_val}, avec une valeur moyenne de {mean_val} ",
                       "et une valeur médianne de {median_val}. ",
                       "Deux tiers {scale_plural} ont un score se situant entre {quant_low} ",
-                      "et {quant_high}.")) %>% 
+                      "et {quant_high}.")) |> 
   
   # Mohawk Territory
   add_row(en = paste0("<strong>Kahnawake Mohawk Territory</strong>",
@@ -574,13 +574,13 @@ translation_fr <-
                       "<p>Dans le cadre du recensement, Statistique Canada ne ",
                       "recueille pas les mêmes données pour les réserves ",
                       "autochtones que dans les autres juridictions, nous ne ",
-                      "pouvons donc pas afficher de résultats ici.")) %>%
+                      "pouvons donc pas afficher de résultats ici.")) |>
   
   # CanALE active living potential
-  add_row(en = "CanALE index", fr = "Indice AVA-Can") %>% 
-  add_row(en = "View in 3D", fr = "Voir en 3D") %>% 
+  add_row(en = "CanALE index", fr = "Indice AVA-Can") |> 
+  add_row(en = "View in 3D", fr = "Voir en 3D") |> 
   add_row(en = "Active living potential: the CanALE index",
-          fr = "Potentiel de vie active: l'indice AVA-Can") %>% 
+          fr = "Potentiel de vie active: l'indice AVA-Can") |> 
   add_row(en = paste0("<strong>{place_heading}</strong>", 
                       
                       "<p>{place_name} has a population of ",
@@ -600,7 +600,7 @@ translation_fr <-
                       
                       "<p>{place_name} a un potentiel {poor_strong} de vie ", 
                       "active, avec un score d'indice AVA-Can plus grand que {percentile}% ",
-                      "des {scale_plural} dans la région de Montréal.")) %>% 
+                      "des {scale_plural} dans la région de Montréal.")) |> 
   
   # Correlation explanation
   add_row(en = paste0("<p>{var_explanation}", 
@@ -614,7 +614,7 @@ translation_fr <-
                       "({correlation}) avec la variable '{var_name}' à l'échelle ",
                       "'{scale_singular}'.",
                       "<p>Cela signifie que, à l'échelle '{scale_singular}', ", 
-                      "il n'y a pas de relation entre ces deux variables.")) %>% 
+                      "il n'y a pas de relation entre ces deux variables.")) |> 
   add_row(en = paste0("<p>{var_explanation}", 
                       "<p>The {title} has a {strong_weak} {pos_neg} ",
                       "correlation ({correlation}) with '{tolower(var_name)}' at the ",
@@ -628,7 +628,7 @@ translation_fr <-
                       "'{scale_singular}'.",
                       "<p>Cela signifie qu'en général, les {scale_plural} avec un haut ",
                       "potentiel de vie active tendent à avoir des {higher_lower} ",
-                      "valeurs pour la variable '{tolower(var_name)}', {high_low_disclaimer}.")) %>% 
+                      "valeurs pour la variable '{tolower(var_name)}', {high_low_disclaimer}.")) |> 
   
   # Bivariate comparison
   add_row(en = paste0("<strong>{place_heading}</strong>", 
@@ -656,36 +656,36 @@ translation_fr <-
                       "que {percentile_left}% des {scale_plural} et ",
                       "un score pour la variable '{tolower(var_name)}' plus grand que ", 
                       "{percentile_right}% des {scale_plural} dans la ",
-                      "région de Montréal.")) %>% 
+                      "région de Montréal.")) |> 
   
   # Did you know
-  add_row(en = "Hide" , fr = "En voir moins") %>%
-  add_row(en = "Learn more" , fr = "En savoir plus") %>%
-  add_row(en = "Show" , fr = "Afficher") %>%
+  add_row(en = "Hide" , fr = "En voir moins") |>
+  add_row(en = "Learn more" , fr = "En savoir plus") |>
+  add_row(en = "Show" , fr = "Afficher") |>
   
   # Pedestrian realm 
-  add_row(en = "Perform a Bivariate Analysis" , fr = "Effectuez une analyse bivariée") %>%
-  add_row(en = "Walkable Access to Key Amenities" , fr = "Accès à pied aux services de base") %>%
-  add_row(en = "Net Median Income" , fr = "Revenu médian net") %>%
-  add_row(en = "Visible Minority Population" , fr = "Minorité visible (population)") %>%
-  add_row(en = "Immigrant Population" , fr = "Population d'immigrants") %>%
-  add_row(en = "Original Plan (May 15, 2020)" , fr = "Plan initial (15 mai 2020)") %>%
-  add_row(en = "Revised Plan (July 25, 2020)" , fr = "Plan révisé (25 juillet 2020)") %>%
-  add_row(en = "Choose more variables and explore further" , fr = "Choisissez d'autres variables et explorez davantage") %>%
-  add_row(en = "Population density per square km" , fr = "Densité de population par kilomètre carré") %>%
-  add_row(en = "Pedestrian social distancing capacity" , fr = "Capacité de distanciation sociale des piétons") %>%
-  add_row(en = "Work commutes by car (%)" , fr = "Trajets domicile-travail en voiture (%)") %>%
-  add_row(en = "Trajet MTL 2016 data on pedestrian flows" , fr = "Données Trajet MTL 2016 sur les déplacements des piétons") %>%
-  add_row(en = "Explore" , fr = "Explorez") %>%  
-  add_row(en = "Capacity for pedestrian social distancing" , fr = "Capacité de distanciation sociale des piétons") %>% 
-  add_row(en = "Capacity for pedestrian social distancing (%)" , fr = "Capacité de distanciation sociale des piétons (%)") %>% 
+  add_row(en = "Perform a Bivariate Analysis" , fr = "Effectuez une analyse bivariée") |>
+  add_row(en = "Walkable Access to Key Amenities" , fr = "Accès à pied aux services de base") |>
+  add_row(en = "Net Median Income" , fr = "Revenu médian net") |>
+  add_row(en = "Visible Minority Population" , fr = "Minorité visible (population)") |>
+  add_row(en = "Immigrant Population" , fr = "Population d'immigrants") |>
+  add_row(en = "Original Plan (May 15, 2020)" , fr = "Plan initial (15 mai 2020)") |>
+  add_row(en = "Revised Plan (July 25, 2020)" , fr = "Plan révisé (25 juillet 2020)") |>
+  add_row(en = "Choose more variables and explore further" , fr = "Choisissez d'autres variables et explorez davantage") |>
+  add_row(en = "Population density per square km" , fr = "Densité de population par kilomètre carré") |>
+  add_row(en = "Pedestrian social distancing capacity" , fr = "Capacité de distanciation sociale des piétons") |>
+  add_row(en = "Work commutes by car (%)" , fr = "Trajets domicile-travail en voiture (%)") |>
+  add_row(en = "Trajet MTL 2016 data on pedestrian flows" , fr = "Données Trajet MTL 2016 sur les déplacements des piétons") |>
+  add_row(en = "Explore" , fr = "Explorez") |>  
+  add_row(en = "Capacity for pedestrian social distancing" , fr = "Capacité de distanciation sociale des piétons") |> 
+  add_row(en = "Capacity for pedestrian social distancing (%)" , fr = "Capacité de distanciation sociale des piétons (%)") |> 
   add_row(en = paste0("Capacity of local population to make ",
                       "trips on foot while maintaining 2 meters distance (%)"),
           fr = paste0("Capacité de la population locale à effectuer des déplacements à ",
-                      "pied tout en conservant une distance de 2 mètres (%)")) %>%  
-  add_row(en = "Log of Population density / km2" , fr = "Log de la densité de population / km2") %>% 
-  add_row(en = "Pedestrian trips per sqm of walkable space index (0 = average)" , fr = "Indice des déplacements à pied par m² d'espace piétonnier (0 = moyenne)") %>%
-  add_row(en = "Clear selection" , fr = "Effacez sélection") %>% 
+                      "pied tout en conservant une distance de 2 mètres (%)")) |>  
+  add_row(en = "Log of Population density / km2" , fr = "Log de la densité de population / km2") |> 
+  add_row(en = "Pedestrian trips per sqm of walkable space index (0 = average)" , fr = "Indice des déplacements à pied par m² d'espace piétonnier (0 = moyenne)") |>
+  add_row(en = "Clear selection" , fr = "Effacez sélection") |> 
   
   # Pedestrian realm, social distancing capacity
   add_row(en = paste0("At the census tract scale, after removing outliers with a ",
@@ -703,7 +703,7 @@ translation_fr <-
                       "Deux tiers des secteurs de recensement ont un score entre {quant_low_ped_ct}% ",
                       "et {quant_high_ped_ct}%. Sur les 532 secteurs de recensement, ",
                       "227 d'entre eux ont un score de capacité en dessous de 100%, ",
-                      "alors que 85 d'entre eux ont un score de capacité en dessous de 50%.")) %>% 
+                      "alors que 85 d'entre eux ont un score de capacité en dessous de 50%.")) |> 
   add_row(en = paste0("At the dissemination area scale, after removing outliers with a population below 100, the capacity for pedestrian social distancing varies from ",
                       "{min_da_uni}% to {max_da_uni}%, with an average value of {mean_da_uni}% ",
                       "and a median value of {median_da_uni}%. ",
@@ -714,7 +714,7 @@ translation_fr <-
                       "{min_da_uni}% à {max_da_uni}%, avec une valeur moyenne de {mean_da_uni}% ",
                       "et une valeur médiane de {median_da_uni}%. ",
                       "Deux tiers des aires de diffusion ont un score entre {quant_low_da_uni}% ",
-                      "et {quant_high_da_uni}%.")) %>% 
+                      "et {quant_high_da_uni}%.")) |> 
   add_row(en = paste0("The dissemination area {dat_ped_uni$ID} has a population of ",
                       "{prettyNum(dat_ped_uni$population, ',')} and a pedestrian social distancing capacity ",
                       "of {round(poly_value_ped_uni, 2)}%, which is {larger_smaller_ped_uni} ",
@@ -726,7 +726,7 @@ translation_fr <-
                       "de {round(poly_value_ped_uni, 2)}%, ce qui est {larger_smaller_ped_uni} ",
                       "que la médiane régionale de {median_da_uni}%.", 
                       
-                      "<p>L'aire de diffusion {dat_ped_uni$ID} offre un potentiel {poor_strong_ped_uni} pour ses résidents de pratiquer la distanciation sociale dans les voies piétonnes locales.")) %>%
+                      "<p>L'aire de diffusion {dat_ped_uni$ID} offre un potentiel {poor_strong_ped_uni} pour ses résidents de pratiquer la distanciation sociale dans les voies piétonnes locales.")) |>
   
   # Pedestrian realm, correlation with other variables
   add_row(en = paste0("The capacity for pedestrian social distancing metric has effectively no correlation ",
@@ -736,7 +736,7 @@ translation_fr <-
           fr = paste0("La mesure de la capacité pour la distanciation sociale des piétons n'a en fait aucune corrélation ",
                       "({correlation_ped}) avec '{var_name_ped}' à l'échelle de l'aire de diffusion. ",
                       "<p>Cela signifie que, à l'échelle de l'aire de diffusion, ",
-                      "il n'y a pas de relation entre ces deux variables.")) %>% 
+                      "il n'y a pas de relation entre ces deux variables.")) |> 
   add_row(en = paste0("The capacity for pedestrian social distancing metric has a {strong_weak_ped} {pos_neg_ped} ",
                       "correlation ({correlation_ped}) with '{tolower(var_name_ped)}' at the dissemination area scale. ",
                       "<p>This means that, in general, dissemination areas with higher ",
@@ -746,7 +746,7 @@ translation_fr <-
                       "({correlation_ped}) avec la variable '{tolower(var_name_ped)}', à l'échelle de l'aire de diffusion. ",
                       "<p>Cela signifie que, en général, les aires de diffusion avec de plus grandes ",
                       "capacités de distanciation sociale des piétons tendent à avoir de {higher_lower_ped} ",
-                      "valeurs pour la variable '{tolower(var_name_ped)}', {high_low_disclaimer_ped}.")) %>% 
+                      "valeurs pour la variable '{tolower(var_name_ped)}', {high_low_disclaimer_ped}.")) |> 
   add_row(en = paste0("Dissemination area {dat_ped_biv$ID} has a population of ",
                       "{prettyNum(dat_ped_biv$population, ',')}, a capacity for pedestrian social distancing ",
                       "of {round(poly_value_1, 2)}%, and a '{tolower(var_name_ped)}' ",
@@ -768,10 +768,10 @@ translation_fr <-
                       "que {percentile_left}% des aires de diffusion et ",
                       "une valeur pour la variable '{tolower(var_name_ped)}' plus grand que ", 
                       "{percentile_right}% des aires de diffusion de la région ",
-                      "de Montréal.")) %>% 
+                      "de Montréal.")) |> 
   
   # Pedestrian realm, sidewalk width
-  add_row(en = "Sidewalk width (meters)" , fr = "Largeur des trottoirs (mètres)") %>% 
+  add_row(en = "Sidewalk width (meters)" , fr = "Largeur des trottoirs (mètres)") |> 
   add_row(en = paste0("Sidewalk width in Montreal varies from ",
                       "{min_sidewalk} meters to {max_sidewalk} meters, ",
                       "with an average value of {mean_sidewalk} meters ",
@@ -783,44 +783,44 @@ translation_fr <-
                       "avec une valeur moyenne de {mean_sidewalk} mètres ",
                       "et une valeur médiane de {median_sidewalk} mètres. ",
                       "Deux tiers des trottoirs montréalais ont une largeur ",
-                      "entre {quant_low_sidewalk} mètres et {quant_high_sidewalk} mètres.")) %>% 
+                      "entre {quant_low_sidewalk} mètres et {quant_high_sidewalk} mètres.")) |> 
   
   # Mode shift module
-  add_row(en = "Shifting car trips to cycling" , fr = "Transférer les trajets de voiture en vélo") %>% 
-  add_row(en = "Share of trips taken by car" , fr = "Part des trajets effectués en voiture") %>% 
-  add_row(en = "Average commuting distance" , fr = "Distance moyenne du trajet domicile-travail") %>% 
-  add_row(en = "Access to cycling infrastructure" , fr = "Accès aux infrastructures cyclables") %>% 
-  add_row(en = "% of trips taken by car, by census tract" , fr = "% des trajets effectués en voiture, par secteur de recensement") %>% 
-  add_row(en = "Modal shift scenarios" , fr = "Scénarios de transfert modal") %>% 
-  add_row(en = "Baseline" , fr = "Base de référence") %>% 
-  add_row(en = "Distance" , fr = "Distance") %>% 
-  add_row(en = "Elevation/time" , fr = "Élévation/temps") %>% 
-  add_row(en = "Show baseline" , fr = "Afficher la base de référence") %>% 
-  add_row(en = "Cycling distance (km):" , fr = "Distance parcourue à vélo (km):") %>% 
-  add_row(en = "Elevation gain (m):" , fr = "Gain d'élévation (m):") %>% 
-  add_row(en = "Time ratio:" , fr = "Ratio de temps:") %>% 
-  add_row(en = "VKT Reduction" , fr = "Réduction de KPV") %>% 
-  add_row(en = "Cycling network" , fr = "Réseau cycliste") %>% 
+  add_row(en = "Shifting car trips to cycling" , fr = "Transférer les trajets de voiture en vélo") |> 
+  add_row(en = "Share of trips taken by car" , fr = "Part des trajets effectués en voiture") |> 
+  add_row(en = "Average commuting distance" , fr = "Distance moyenne du trajet domicile-travail") |> 
+  add_row(en = "Access to cycling infrastructure" , fr = "Accès aux infrastructures cyclables") |> 
+  add_row(en = "% of trips taken by car, by census tract" , fr = "% des trajets effectués en voiture, par secteur de recensement") |> 
+  add_row(en = "Modal shift scenarios" , fr = "Scénarios de transfert modal") |> 
+  add_row(en = "Baseline" , fr = "Base de référence") |> 
+  add_row(en = "Distance" , fr = "Distance") |> 
+  add_row(en = "Elevation/time" , fr = "Élévation/temps") |> 
+  add_row(en = "Show baseline" , fr = "Afficher la base de référence") |> 
+  add_row(en = "Cycling distance (km):" , fr = "Distance parcourue à vélo (km):") |> 
+  add_row(en = "Elevation gain (m):" , fr = "Gain d'élévation (m):") |> 
+  add_row(en = "Time ratio:" , fr = "Ratio de temps:") |> 
+  add_row(en = "VKT Reduction" , fr = "Réduction de KPV") |> 
+  add_row(en = "Cycling network" , fr = "Réseau cycliste") |> 
   
   # Mode shift, scenarios
-  add_row(en = "Criteria: Cycling Distance (km)" , fr = "Critère: Distance parcourue à vélo (km)") %>% 
-  add_row(en = "Potential Cyclable Trips (per day)" , fr = "Trajets cyclistes potentiels (par jour)") %>% 
-  add_row(en = "VKT Savings (per day)" , fr = "Économies de KPV (par jour)") %>% 
-  add_row(en = "Criteria: Elevation Gain (m)" , fr = "Critère: Gain d'élévation (m)") %>% 
-  add_row(en = "Criteria: Time Ratio" , fr = "Critère: Ratio de temps") %>%
+  add_row(en = "Criteria: Cycling Distance (km)" , fr = "Critère: Distance parcourue à vélo (km)") |> 
+  add_row(en = "Potential Cyclable Trips (per day)" , fr = "Trajets cyclistes potentiels (par jour)") |> 
+  add_row(en = "VKT Savings (per day)" , fr = "Économies de KPV (par jour)") |> 
+  add_row(en = "Criteria: Elevation Gain (m)" , fr = "Critère: Gain d'élévation (m)") |> 
+  add_row(en = "Criteria: Time Ratio" , fr = "Critère: Ratio de temps") |>
   
   # Mode shift, legend
-  add_row(en = "Access to Cycling Infrastructure (km/sq.km)" , fr = "Accès aux infrastructures cyclables (km/km2)") %>%
-  add_row(en = "Share of Car Trips by Origin (%)" , fr = "Part des trajets en voiture par origine (%)") %>%
-  add_row(en = "Average Commuting Distance (km)" , fr = "Distance moyenne du trajet domicile-travail (km)") %>%
+  add_row(en = "Access to Cycling Infrastructure (km/sq.km)" , fr = "Accès aux infrastructures cyclables (km/km2)") |>
+  add_row(en = "Share of Car Trips by Origin (%)" , fr = "Part des trajets en voiture par origine (%)") |>
+  add_row(en = "Average Commuting Distance (km)" , fr = "Distance moyenne du trajet domicile-travail (km)") |>
   
   # Mode shift, map
-  add_row(en = "Access to cycling inf. (km/sq.km)" , fr = "Accès aux infr. cyclables (km/km2)") %>%
-  add_row(en = "Share of trips taken by car (%)" , fr = "Part des trajets effectués en voiture (%)") %>%
-  add_row(en = "Average commuting distance (km)" , fr = "Distance moyenne du trajet domicile-travail (km)") %>%
-  add_row(en = "Cycling infrastructure (km/sq.km) by census tract:" , fr = "Infrastructure cyclable (km/km2) par secteur de recensement:") %>%
-  add_row(en = "Length of the average commute (km), by census tract:" , fr = "Distance moyenne du trajet domicile-travail (km), par secteur de recensement :") %>%
-  add_row(en = "Access to cycling inf. (km/sq.km)" , fr = "Accès aux infr. cyclables (km/km2)") %>%
+  add_row(en = "Access to cycling inf. (km/sq.km)" , fr = "Accès aux infr. cyclables (km/km2)") |>
+  add_row(en = "Share of trips taken by car (%)" , fr = "Part des trajets effectués en voiture (%)") |>
+  add_row(en = "Average commuting distance (km)" , fr = "Distance moyenne du trajet domicile-travail (km)") |>
+  add_row(en = "Cycling infrastructure (km/sq.km) by census tract:" , fr = "Infrastructure cyclable (km/km2) par secteur de recensement:") |>
+  add_row(en = "Length of the average commute (km), by census tract:" , fr = "Distance moyenne du trajet domicile-travail (km), par secteur de recensement :") |>
+  add_row(en = "Access to cycling inf. (km/sq.km)" , fr = "Accès aux infr. cyclables (km/km2)") |>
   
   # Did you know csv
   add_row(en = paste0("21.3% of people walk or cycle to work in areas in the highest class of active living ",
@@ -828,129 +828,129 @@ translation_fr <-
                       "regional average of 6%."),
           fr = paste0("21,3 % des personnes se rendent au travail à pied ou à vélo dans des zones où le potentiel ",
                       "de vie active est le plus élevé. Dans les zones où le potentiel de vie active est le plus ",
-                      "faible, seuls 2,5 % le font, contre une moyenne régionale de 6 %.")) %>% 
+                      "faible, seuls 2,5 % le font, contre une moyenne régionale de 6 %.")) |> 
   add_row(en = paste0("Two thirds of new immigrants (67.4%) live in areas with the best access to active living ",
                       "potential (ALE class 5)."),
           fr = paste0("Deux tiers des nouveaux immigrants (67,4 %) vivent dans des zones où le potentiel de vie ",
-                      "active est le plus grand (Indice AVA classe 5).")) %>% 
+                      "active est le plus grand (Indice AVA classe 5).")) |> 
   add_row(en = paste0("Two thirds of new immigrants (67.4%) live in areas with the best access to active living ",
                       "potential (ALE class 5)."),
           fr = paste0("Deux tiers des nouveaux immigrants (67,4 %) vivent dans des zones où le potentiel de vie ",
-                      "active est le plus élevé (Indice AVA classe 5).")) %>% 
+                      "active est le plus élevé (Indice AVA classe 5).")) |> 
   add_row(en = paste0("11% of new immigrants live in areas with the worst access to active living potential ",
                       "(ALE class 1)."),
           fr = paste0("11 % des nouveaux immigrants vivent dans des zones où l'accès au potentiel de vie active ",
-                      "est le plus faible (Indice AVA classe 1).")) %>% 
+                      "est le plus faible (Indice AVA classe 1).")) |> 
   add_row(en = paste0("While, overall, there is a trend towards lower income DAs being in high ALE class, roughly ",
                       "340,000 people are in CanALE class 3 or lower AND have median household income less than $50,000."),
           fr = paste0("Alors que, généralement, on observe une tendance à ce que les AD à faible revenu fassent partie ",
                       "de la classe AVA élevée, environ 340 000 personnes font partie de la classe AVA-Can 3 ou moins et ",
-                      "ont un revenu par ménage médian inférieur à 50 000 $.")) %>% 
+                      "ont un revenu par ménage médian inférieur à 50 000 $.")) |> 
   add_row(en = paste0("Areas in class 4 of active living potential have the highest average dwelling values, but nearly ",
                       "10% fewer renters than areas with active living class 5."),
           fr = paste0("Les zones de classe 4 de potentiel de vie active ont les valeurs propriétés moyennes les plus ",
                       "élevées, mais comptent près de 10 % de locataires de moins que les zones avec un potentiel de ",
-                      "de vie active de classe 5.")) %>% 
+                      "de vie active de classe 5.")) |> 
   add_row(en = paste0("Roughly 90% of the region’s population live within a 1km walk of a transit station. The vast ",
                       "majority of areas which lack access are located off the island of Montreal."),
           fr = paste0("Environ 90 % de la population de la région vit à moins d'un kilomètre à pied d'une station de ",
                       "transport en commun. La grande majorité des zones qui ne sont pas accessibles sont situées à ",
-                      "l'extérieur de l'Île de Montréal.")) %>% 
+                      "l'extérieur de l'Île de Montréal.")) |> 
   add_row(en = paste0("The Plateau-Mont-Royal has the highest active mode share to work (36% walking or biking), ",
                       "followed by Ville Marie with 32.5%."),
           fr = paste0("Le Plateau-Mont-Royal a la part la plus élevée de modes de transport actifs pour travailler (36% à pied ",
-                      "ou à vélo), suivi de Ville Marie avec 32,5%.")) %>% 
+                      "ou à vélo), suivi de Ville Marie avec 32,5%.")) |> 
   add_row(en = paste0("Saint-Isidore, Sainte-Marthe-sur-le-Lac, Pointe-Calumet, Mascouche, Saint-Joseph-du-Lac, and Léry all ",
                       "have active mode shares of less than 2% to work."),
           fr = paste0("Saint-Isidore, Sainte-Marthe-sur-le-Lac, Pointe-Calumet, Mascouche, Saint-Joseph-du-Lac et Léry ont tous ",
-                      "des pourcentages de modes de transport actifs inférieurs à 2% pour les déplacements domicile-travail.")) %>% 
+                      "des pourcentages de modes de transport actifs inférieurs à 2% pour les déplacements domicile-travail.")) |> 
   add_row(en = paste0("Pierrefonds-Roxboro and L’Île-Bizard-Sainte-Geneviève are the two Montreal boroughs with the lowest ",
                       "active mode share to work (less than 3% walk or bike)."),
           fr = paste0("Pierrefonds-Roxboro et L'Île-Bizard-Sainte-Geneviève sont les deux arrondissements de Montréal où le ",
                       "pourcentage de modes de transport actifs pour les déplacements domicile-travail est le plus faible ",
-                      "(moins de 3 % à pied ou à vélo).")) %>% 
+                      "(moins de 3 % à pied ou à vélo).")) |> 
   add_row(en = paste0("Hampstead, Côte-des-Neiges-Notre-Dame-de-Grâce, and Villeray-Saint-Michel-Parc-Extension all have ",
                       "high active living potential (ALE class 4 or higher) and active mode shares of less than 15%."),
           fr = paste0("Hampstead, Côte-des-Neiges-Notre-Dame-de-Grâce et Villeray-Saint-Michel-Parc-Extension ont ",
                       "tous un potentiel de vie active élevé (Indice AVA classe 4 ou plus) et des pourcentages de modes de transport ",
-                      "actifs inférieurs à 15 %.")) %>%
+                      "actifs inférieurs à 15 %.")) |>
   add_row(en = paste0("Sainte-Julie has the highest active mode share (9.1%) of any borough or municipality with low active ",
                       "living potential, followed by Senneville (5.8%) and Montréal-Est (5.8%)."),
           fr = paste0("Sainte-Julie a la plus grande proportion de mode de transport actif (9,1 %) de tous les arrondissements ",
-                      "ou municipalités à faible potentiel de vie active, suivie de Senneville (5,8 %) et de Montréal-Est (5,8 %).")) %>%
+                      "ou municipalités à faible potentiel de vie active, suivie de Senneville (5,8 %) et de Montréal-Est (5,8 %).")) |>
   add_row(en = paste0("Montréal-Est has the highest proportion (22.2%) of people who take public transit to work of any ",
                       "area with low walkability."),
           fr = paste0("De tous les secteurs où le potentiel piétonnier est faible, c'est à Montréal-Est que l'on trouve ",
                       "la plus forte proportion (22,2 %) de personnes qui prennent le transport en commun pour se rendre ",
-                      "au travail.")) %>%
+                      "au travail.")) |>
   add_row(en = paste0("Hampstead has the lowest proportion (15.6%) of people who take public transit to work of any area ",
                       "with high walkability, and Côte-des-Neiges-Notre-Dame-de-Grâce has the highest (46.7%)."),
           fr = paste0("Hampstead a la plus faible proportion (15,6 %) de personnes qui prennent le transport en commun ",
                       "pour les déplacements domicile-travail parmi tous les secteurs à fort potentiel piétonnier, et ",
-                      "Côte-des-Neiges-Notre-Dame-de-Grâce a la plus forte proportion (46,7 %).")) %>%
+                      "Côte-des-Neiges-Notre-Dame-de-Grâce a la plus forte proportion (46,7 %).")) |>
   add_row(en = paste0("The proportion of people who drive to work in areas with low walkability ranges from 71.2% to ",
                       "95.7%. Montréal-Est has the lowest proportion with 71.2%."),
           fr = paste0("La proportion de personnes qui se rendent au travail en voiture dans des zones où le potentiel ",
                       "piétonnier est faible varie entre 71,2 % et 95,7 %. C'est à Montréal-Est que la proportion est la plus ",
-                      "petite, soit 71,2 %.")) %>%
+                      "petite, soit 71,2 %.")) |>
   add_row(en = paste0("The proportion of people who drive to work in areas with high walkability ranges from 24.9% in ",
                       "Le Plateau-Mont-Royal to 78.9% in Hampstead."),
           fr = paste0("La proportion de personnes qui se rendent au travail en voiture dans des zones à fort potentiel ",
-                      "piétonnier varie de 24,9 % pour le Plateau-Mont-Royal à 78,9 % à Hampstead.")) %>%
+                      "piétonnier varie de 24,9 % pour le Plateau-Mont-Royal à 78,9 % à Hampstead.")) |>
   add_row(en = paste0("Sainte-Julie has the highest proportion of people who commute less than 15 minutes to work, and ",
                       "has low active living potential (ALE class 1)."),
           fr = paste0("Sainte-Julie compte la plus forte proportion de personnes qui se rendent au travail en moins de ",
                       "15 minutes dans les arrondissements ou municipalités ayant un faible potentiel de vie active ",
-                      "(Indice AVA classe 1).")) %>%
+                      "(Indice AVA classe 1).")) |>
   add_row(en = paste0("Villeray-Saint-Michel-Parc-Extension and Rosemont-La Petite-Patrie have the lowest proportions ",
                       "of people who commute less than 15 minutes to work (11.2% and 11.9%, respectively) of areas ",
                       "with high walkability."),
           fr = paste0("Villeray-Saint-Michel-Parc-Extension et Rosemont-La Petite-Patrie affichent les plus petites ",
                       "proportions de personnes qui se rendent au travail en moins de 15 minutes (respectivement ",
-                      "11,2 % et 11,9 %) parmi les régions où le potentiel piétonnier est élevé.")) %>%
+                      "11,2 % et 11,9 %) parmi les régions où le potentiel piétonnier est élevé.")) |>
   add_row(en = paste0("Mont-Royal (medium active living potential) has the highest proportion (49.1%) of commutes ",
                       "to work between 15-30 minutes, while Mercier (low active living potential) has the lowest ",
                       "proportion for the same time (19.7%)."),
           fr = paste0("Le Mont-Royal (potentiel de vie active moyen) présente la plus grande proportion (49,1 %) ",
                       "de trajets domicile-travail de 15 à 30 minutes, tandis que le Mercier (faible potentiel de ",
-                      "vie active) présente la plus faible proportion pour la même durée (19,7 %).")) %>%
+                      "vie active) présente la plus faible proportion pour la même durée (19,7 %).")) |>
   add_row(en = paste0("Rosemont-La Petite-Patrie (high active living potential) has the highest proportion (35.1%) ",
                       "of commutes to work between 30-45 minutes, while Sainte-Julie (low active living potential) ",
                       "has the lowest proportion for the same time (9.1%)."),
           fr = paste0("Rosemont-La Petite-Patrie (fort potentiel de vie active) a la plus grande proportion (35,1 %) ",
                       "de trajets domicile-travail de 30 à 45 minutes, tandis que Sainte-Julie (faible potentiel ",
-                      "de vie active) a la plus petite proportion pour la même durée (9,1 %).")) %>%
+                      "de vie active) a la plus petite proportion pour la même durée (9,1 %).")) |>
   add_row(en = paste0("Léry (low active living potential) has the highest proportion (19.2%) of commutes to work ",
                       "between of up to 60 minutes, while Westmount (high active living potential) has the lowest ",
                       "proportion for the same time (5.5%)."),
           fr = paste0("Léry (faible potentiel de vie active) présente la plus grande proportion (19,2 %) de trajets ",
                       "domicile-travail d'une durée maximale de 60 minutes, tandis que Westmount (fort potentiel ",
-                      "de vie active) présente la plus petite proportion pour la même durée (5,5 %).")) %>%
+                      "de vie active) présente la plus petite proportion pour la même durée (5,5 %).")) |>
   add_row(en = paste0("Hampstead has the highest proportion of people with income greater than $100,000 (55.0%) ",
                       "of high walkable boroughs or municipalities, closely followed by Westmount (50.1%)."),
           fr = paste0("Hampstead a la plus grande proportion de personnes ayant un revenu supérieur à 100 000 $ ",
                       "(55,0 %) parmi les arrondissements ou municipalités avec un fort potentiel piétonnier, ",
-                      "suivie de près par Westmount (50,1 %).")) %>%
+                      "suivie de près par Westmount (50,1 %).")) |>
   add_row(en = paste0("Sainte-Anne-de-Bellevue has the highest proportion of people with income greater than ",
                       "$100,000 (55.0%) of less walkable boroughs or municipalities, closely followed by ",
                       "Beaconsfield (59.7%)."),
           fr = paste0("Sainte-Anne-de-Bellevue compte la plus forte proportion de personnes ayant un revenu ",
                       "supérieur à 100 000 $ (55,0 %) parmi les arrondissements ou municipalités avec un faible ",
-                      "potentiel piétonnier, suivie de près par Beaconsfield (59,7 %).")) %>%
+                      "potentiel piétonnier, suivie de près par Beaconsfield (59,7 %).")) |>
   add_row(en = paste0("Montréal-Est has the highest proportion of people with income less than $50,000 (49.1%) ",
                       "of all boroughs or municipalities with low active living potential."),
           fr = paste0("Montréal-Est compte la plus grande proportion de personnes ayant un revenu inférieur à ",
                       "50 000 $ (49,1 %) de tous les arrondissements ou municipalités à faible potentiel de ",
-                      "vie active.")) %>%
+                      "vie active.")) |>
   add_row(en = paste0("Villeray-Saint-Michel-Parc-Extension has the highest proportion of people with income ",
                       "less than $50,000 (57.7%) of all boroughs or municipalities with high active living potential."),
           fr = paste0("Villeray-Saint-Michel-Parc-Extension compte la plus grande proportion de personnes ",
                       "ayant un revenu inférieur à 50 000 $ (57,7 %) de tous les arrondissements ou municipalités ",
-                      "à fort potentiel de vie active.")) %>%
+                      "à fort potentiel de vie active.")) |>
   add_row(en = paste0("Sainte-Anne-de-Bellevue has the highest overall median income ($130,553) of any area with ",
                       "low active living potential, and Montréal-Est has the lowest ($50,413)."),
           fr = paste0("Sainte-Anne-de-Bellevue a le revenu médian global le plus élevé (130 553 $) de toutes ",
-                      "les régions à faible potentiel de vie active, et Montréal-Est a le plus bas (50 413 $).")) %>%
+                      "les régions à faible potentiel de vie active, et Montréal-Est a le plus bas (50 413 $).")) |>
   add_row(en = paste0("Côte-des-Neiges-Notre-Dame-de-Grâce has the highest proportion of new immigrants (12%) ",
                       "of any borough with high active living potential (average ALE class >4 across the ",
                       "entire borough). It also has the highest proportion of immigrants in general (46.7%) ",
@@ -958,166 +958,166 @@ translation_fr <-
           fr = paste0("Côte-des-Neiges-Notre-Dame-de-Grâce a la plus grande proportion de nouveaux immigrants ",
                       "(12 %) de tous les arrondissements à fort potentiel de vie active (classe AVA moyenne > 4 ",
                       "sur l'ensemble de l'arrondissement). Elle a également la plus forte proportion d'immigrants ",
-                      "en général (46,7 %) pour les mêmes conditions.")) %>%
+                      "en général (46,7 %) pour les mêmes conditions.")) |>
   add_row(en = paste0("Senneville has the highest proportion of new immigrants (4.4%) of any borough or municipality ",
                       "with low active living potential, followed by L’Île-Bizard-Sainte-Geneviève (3.6%)."),
           fr = paste0("Senneville compte la plus forte proportion de nouveaux immigrants (4,4 %) de tous les ",
                       "arrondissements ou municipalités à faible potentiel de vie active, suivie de ",
-                      "L'Île-Bizard-Sainte-Geneviève (3,6 %).")) %>%
+                      "L'Île-Bizard-Sainte-Geneviève (3,6 %).")) |>
   add_row(en = paste0("9910 (20%) of immigrants living in areas with low walkability live in Terrebonne. 1040 ",
                       "of those people are new immigrants."),
           fr = paste0("9910 (20 %) des immigrants vivant dans des zones à faible potentiel piétonnier vivent à ",
-                      "Terrebonne. 1040 de ces personnes sont de nouveaux immigrants.")) %>%
+                      "Terrebonne. 1040 de ces personnes sont de nouveaux immigrants.")) |>
   add_row(en = paste0("25 percent of immigrants (76,190 people) living in areas with high walkability live in ",
                       "Côte-des-Neiges-Notre-Dame-de-Grâce. 19,605 of those people (25.7%) are new immigrants."),
           fr = paste0("25 % des immigrants (76 190 personnes) vivant dans des secteurs à fort potentiel piétonnier ",
                       "habitent Côte-des-Neiges-Notre-Dame-de-Grâce. 19 605 de ces personnes (25,7 %) sont de nouveaux ",
-                      "immigrants.")) %>%
+                      "immigrants.")) |>
   add_row(en = paste0("302,195 immigrants live in areas with on average high walkability, while 48,635 immigrants ",
                       "live in areas with on average low walkability."),
           fr = paste0("302 195 immigrants vivent dans des zones où le potentiel piétonnier est, en moyenne, élevé tandis ",
-                      "que 48 635 immigrés vivent dans des zones où le potentiel piétionnier est, en moyenne, faible.")) %>%
+                      "que 48 635 immigrés vivent dans des zones où le potentiel piétionnier est, en moyenne, faible.")) |>
   add_row(en = paste0("Hampstead has the lowest proportion of renters (31.7%) of all areas with high active living ",
                       "potential, and Côte-des-Neiges-Notre-Dame-de-Grâce has the highest proportion (73.7%)."),
           fr = paste0("Hampstead a la plus petite proportion de locataires (31,7 %) de tous les secteurs à fort ",
-                      "potentiel de vie active, et Côte-des-Neiges-Notre-Dame-de-Grâce a la plus grande proportion (73,7 %).")) %>%
+                      "potentiel de vie active, et Côte-des-Neiges-Notre-Dame-de-Grâce a la plus grande proportion (73,7 %).")) |>
   add_row(en = paste0("Montréal-Est has the highest proportion of tenants (56.1%) of all areas with low active living ",
                       "potential, followed by Mirabel with 29.3%."),
           fr = paste0("Montréal-Est compte la plus grande proportion de locataires (56,1 %) de tous les secteurs à faible ",
-                      "potentiel de vie active, suivie de Mirabel avec 29,3 %.")) %>%
+                      "potentiel de vie active, suivie de Mirabel avec 29,3 %.")) |>
   add_row(en = paste0("Kirkland has the lowest average rent ($125) of all areas with low walkability."),
-          fr = paste0("Kirkland a le loyer moyen le plus bas (125 $) de toutes les zones à faible potentiel piétonnier.")) %>%
+          fr = paste0("Kirkland a le loyer moyen le plus bas (125 $) de toutes les zones à faible potentiel piétonnier.")) |>
   add_row(en = paste0("Mercier has the highest average rent of almost $900 per month of all areas with low walkability, ",
                       "followed by Sainte-Julie with average rent of $875."),
           fr = paste0("De tous les quartiers à faible potentiel piétionnier, Mercier a le loyer moyen le plus élevé, ",
-                      "soit près de 900 $ par mois, suivi de Sainte-Julie avec un loyer moyen de 875 $.")) %>%
+                      "soit près de 900 $ par mois, suivi de Sainte-Julie avec un loyer moyen de 875 $.")) |>
   add_row(en = paste0("Villeray-Saint-Michel-Parc-Extension has the lowest average rent ($747) of all areas with high ",
                       "walkability, followed by Mercier-Hochelage-Maisonneuve ($761)."),
           fr = paste0("Villeray-Saint-Michel-Parc-Extension a le loyer moyen le plus bas (747 $) de tous les secteurs ",
-                      "à forte potentiel piétonnier, suivi de Mercier-Hochelage-Maisonneuve (761 $).")) %>%
+                      "à forte potentiel piétonnier, suivi de Mercier-Hochelage-Maisonneuve (761 $).")) |>
   add_row(en = paste0("Senneville has by far the highest average property value ($994,294.4) of all areas with low ",
                       "walkability, and Point-Calumet has the lowest average property value ($223,573.2)."),
           fr = paste0("Senneville a de loin la valeur moyenne des propriétés la plus élevée (994 294,4 $) de toutes ",
                       "les zones à faible potentiel piétonnier, et Point-Calumet a la valeur moyenne de propriété ",
-                      "la plus basse (223 573,2 $).")) %>%
+                      "la plus basse (223 573,2 $).")) |>
   add_row(en = paste0("Mercier-Hochelage-Maisonneuve has the lowest average property value ($337,844.8) of all areas ",
                       "with high active living potential, and Westmount has the highest value ($1,242,703.7)."),
           fr = paste0("Mercier-Hochelage-Maisonneuve a la plus basse valeur moyenne des propriétés (337 844,8 $) ",
                       "de tous les secteurs à fort potentiel de vie active, et Westmount a la valeur la plus élevée ",
-                      "(1 242 703,7 $).")) %>%
+                      "(1 242 703,7 $).")) |>
   add_row(en = paste0("Montréal-Est has the highest proportion of unaffordable housing (29.4%) of all areas with ",
                       "low active living potential, and Sainte-Anne-de-Bellevue has the lowest proportion (10.1%)."),
           fr = paste0("Montréal-Est a la plus forte proportion de logements inabordables (29,4 %) de tous les ",
                       "secteurs à faible potentiel de vie active, et Sainte-Anne-de-Bellevue a la plus faible ",
-                      "proportion (10,1 %).")) %>%
+                      "proportion (10,1 %).")) |>
   add_row(en = paste0("Ville-Marie has the highest proportion of unaffordable housing (43.3%) of all areas with ",
                       "high active living potential, and Hampstead has the lowest (24.0%)."),
           fr = paste0("Ville-Marie a la plus grande proportion de logements inabordables (43,3 %) de tous les secteurs ",
-                      "à fort potentiel de vie active, et Hampstead a la plus petite (24,0 %).")) %>%
+                      "à fort potentiel de vie active, et Hampstead a la plus petite (24,0 %).")) |>
   add_row(en = paste0("Côte-des-Neiges-Notre-Dame-de-Grâce has the highest proportion of unsuitable housing (14.2%) ",
                       "of any area with high active living potential, and Westmount has the lowest (4.4%)."),
           fr = paste0("Côte-des-Neiges-Notre-Dame-de-Grâce a la plus grande proportion de logements inadéquats ",
-                      "(14,2 %) de tous les secteurs à fort potentiel de vie active, et Westmount a la plus petite (4,4 %).")) %>%
+                      "(14,2 %) de tous les secteurs à fort potentiel de vie active, et Westmount a la plus petite (4,4 %).")) |>
   add_row(en = paste0("The top 3 boroughs that have the highest proportion of people living in census tracts with a ",
                       "low capacity for pedestrian social distancing were 1) Le Plateau-Mont-Royal (74%), 2) ",
                       "Villeray-Saint-Michel-Parc-Extension (65%) and 3) Montréal Nord (60%)."),
           fr = paste0("Les trois arrondissements ayant la plus grande proportion de personnes vivant dans des ",
                       "secteurs de recensement ayant une faible capacité de distanciation sociale des piétons sont 1) ",
-                      "Le Plateau-Mont-Royal (74 %), 2) Villeray-Saint-Michel-Parc-Extension (65 %) et 3) Montréal Nord (60 %).")) %>%
+                      "Le Plateau-Mont-Royal (74 %), 2) Villeray-Saint-Michel-Parc-Extension (65 %) et 3) Montréal Nord (60 %).")) |>
   add_row(en = paste0("14.8% of Montreal Agglomeration's total population live in DAs with a pedestrian social ",
                       "distancing capacity below 25%. Of those, 76.31% were not directly serviced by the original May ",
                       "15th expanded active transit plan, and 79.85% were not directly serviced by the revised July 25th plan."),
           fr = paste0("14,8 % de la population totale de l'agglomération de Montréal vit dans des AD dont la capacité de ",
                       "distanciation sociale des piétons est inférieure à 25 %. De ce nombre, 76,31 % n'étaient pas directement ",
                       "desservis par le plan des Voies actives sécuritaires du 15 mai, et 79,85 % n'étaient pas directement desservis ",
-                      "par le plan révisé du 25 juillet.")) %>%
+                      "par le plan révisé du 25 juillet.")) |>
   add_row(en = paste0("The top 3 boroughs with the lowest proportion of its population commuting to work by car are Le ",
                       "Plateau-Mont-Royal (24.4%), Ville-Marie (26%) and Côte-des-Neiges-Notre-Dame-de-Grâce (40.6%)."),
           fr = paste0("Les trois arrondissements ayant la plus petite proportion de leur population se rendant ",
                       "au travail en voiture sont Le Plateau-Mont-Royal (24,4 %), Ville-Marie (26 %) et ",
-                      "Côte-des-Neiges-Notre-Dame-de-Grâce (40,6 %).")) %>%
+                      "Côte-des-Neiges-Notre-Dame-de-Grâce (40,6 %).")) |>
   add_row(en = paste0("Montreal’s borough with the highest population density per square meter of walkable space is ",
                       "Côte-des-Neiges-Notre-Dame-de-Grâce (0.28 people / square meters of walkable space)."),
           fr = paste0("L'arrondissement de Montréal ayant la plus forte densité de population par mètre carré de surface ",
-                      "accessible pour les piétons est Côte-des-Neiges-Notre-Dame-de-Grâce (0,28 personne / mètre carré de surface marchable).")) %>%
+                      "accessible pour les piétons est Côte-des-Neiges-Notre-Dame-de-Grâce (0,28 personne / mètre carré de surface marchable).")) |>
   add_row(en = paste0("DAs with a capacity for pedestrian social distancing less than 25% contain, on average, a net median ",
                       "income of $44,773 compared to $54,930 for the city as a whole and $61,651 for DAs with over 100% capacity."),
           fr = paste0("Les AD ayant une capacité de distanciation sociale des piétons inférieure à 25 % ont, en moyenne, ",
                       "un revenu net médian de 44 773 $, contre 54 930 $ pour l'ensemble de la ville et 61 651 $ pour les AD ",
-                      "ayant une capacité supérieure à 100 %.")) %>%
+                      "ayant une capacité supérieure à 100 %.")) |>
   add_row(en = paste0("DAs with a capacity for pedestrian social distancing less than 25% contain, on average, a 50.4% ",
                       "visible minority population compared to 32% for the city as a whole and 28% for DAs with over ",
                       "100% capacity."),
           fr = paste0("Les AD ayant une capacité de distanciation sociale des piétons inférieure à 25 % contiennent en ",
                       "moyenne 50,4 % de minorités visibles, contre 32 % pour l'ensemble de la ville et 28 % pour les ",
-                      "AD ayant une capacité supérieure à 100 %.")) %>%
+                      "AD ayant une capacité supérieure à 100 %.")) |>
   add_row(en = paste0("The 3 boroughs or independent municipalities with the highest average 'walkable access to key amenities' ",
                       "index score at the DA level are Le Plateau-Mont-Royal (0.308), Ville-Marie (0.295) ",
                       "and Villeray-Saint-Michel-Parc-Extension (0.237)"),
           fr = paste0("Les 3 arrondissements ou municipalités indépendantes avec les moyennes les plus élevés pour l’accès à pied ",
                       "aux services de base, à l’échelle des AD, sont Le Plateau-Mont-Royal (0.308), Ville-Marie (0.295) et ",
-                      "Villeray-Saint-Michel-Parc-Extension (0.237)")) %>%
+                      "Villeray-Saint-Michel-Parc-Extension (0.237)")) |>
   add_row(en = paste0("The 3 boroughs or independent municipalities with the lowest average 'walkable access to key amenities' ",
                       "index score at the DA level are: 1) Senneville (0.005); 2) Beaconsfield (0.205); 3) B'aie-d'Urfé (0.022)"),
           fr = paste0("Les 3 arrondissements ou municipalités indépendantes avec les plus basses moyennes pour l’accès à pied aux ",
-                      "services de base, à l’échelle des AD, sont Senneville (0.005), Beaconsfield (0.205), B'aie-d'Urfé (0.022)")) %>%
+                      "services de base, à l’échelle des AD, sont Senneville (0.005), Beaconsfield (0.205), B'aie-d'Urfé (0.022)")) |>
   add_row(en = paste0("Of the boroughs and independent municipalities who's average 'walkable access to key amenities' score at the DA ",
                       "level fall in the top quartile, Côte-des-Neiges-Notre-Dame-de-Grâce has the lowest median capacity for pedestrian ", 
                       "social distancing (35.78%)"),
           fr = paste0("Parmi les arrondissements et municipalités indépendantes dont le score moyen de l’indice de l’accès à pied aux ", 
                       "services de base, à l’échelle des AD, se trouve dans le quartile supérieur, Côte-des-Neiges-Notre-Dame-de-Grâce ", 
-                      "à la capacité de distanciation sociale des piétons la plus faible (35.78%)")) %>%
+                      "à la capacité de distanciation sociale des piétons la plus faible (35.78%)")) |>
   add_row(en = paste0("Denser neighbourhoods generally have better walkable access to key amenities. A correlation test between the 'walkable ", 
                       "access to key amenities' index score and the log of population density yielded a p value of 0.558, indicating a moderate ", 
                       "to strong positive correlation"),
           fr = paste0("Les quartiers les plus denses ont généralement un meilleur accès à pied aux services de base. Un test de corrélation ", 
                       "entre l’indice d’accès à pied aux services de base et le log de la densité de la population donne une valeur p de 0.558, ", 
-                      "indiquant une corrélation positive modérée voire forte entres les deux variables")) %>%
+                      "indiquant une corrélation positive modérée voire forte entres les deux variables")) |>
   add_row(en = paste0("DAs with a capacity for pedestrian social distancing less than 25% contain, on average, a 45.25% ",
                       "immigrant population compared to 33% for the city as a whole and 30% for DAs with over 100% capacity."),
           fr = paste0("Les AD ayant une capacité de distanciation sociale des piétons inférieure à 25% contiennent en ",
                       "moyenne 45,25% de population immigrante contre 33% pour l'ensemble de la ville et 30% pour les ",
-                      "AD ayant une capacité supérieure à 100%.")) %>%
+                      "AD ayant une capacité supérieure à 100%.")) |>
   add_row(en = paste0("Of the DAs with a capacity for pedestrian social distancing less than 25%, the ones located in the Ville-Marie borough have ", 
                       "the lowest average net median income ($ 13,344)."),
           fr = paste0("Parmi les ADs avec une capacité de distanciation sociale des piétons inférieure à 25%, ceux qui se situent dans l’arrondissement ", 
-                      "de Ville-Marie ont, en moyenne, les revenus médians nets les plus bas (13 344$).")) %>%
+                      "de Ville-Marie ont, en moyenne, les revenus médians nets les plus bas (13 344$).")) |>
   add_row(en = paste0("Of the DAs with a capacity for pedestrian social distancing less than 25%, the ones located in the independent municipality ", 
                       "of Beaconsfield have the highest average net median income ($ 43,349)."),
           fr = paste0("Parmi les ADs avec une capacité de distanciation sociale des piétons inférieure à 25%, ceux qui se situent dans la municipalité ", 
-                      "indépendante de Beaconsfield ont, en moyenne, les revenus médians nets les plus hauts (43 349$).")) %>%
+                      "indépendante de Beaconsfield ont, en moyenne, les revenus médians nets les plus hauts (43 349$).")) |>
   add_row(en = paste0("In absolute terms, Côte-des-Neiges-Notre-Dame-de-Grâce is the borough with the highest number of visible minorities (35,055) ", 
                       "living in DAs with less than 25% capacity for pedestrian social distancing."),
           fr = paste0("En termes absolus, Côte-des-Neiges-Notre-Dame-de-Grâce est l’arrondissement avec le plus haut nombre de minorités visibles ", 
-                      "(35,055) vivant dans des AD avec moins de 25% de capacité de distanciation sociale des piétons.")) %>%
+                      "(35,055) vivant dans des AD avec moins de 25% de capacité de distanciation sociale des piétons.")) |>
   add_row(en = paste0("In absolute terms, Outremont is the borough with the lowest number of visible minorities (305) living in DAs with less than ", 
                       "25% capacity for pedestrian social distancing."),
           fr = paste0("En termes absolus, Outremont est l’arrondissement avec le plus bas nombre de minorités visibles (305) vivant dans des AD avec ", 
-                      "moins de 25% de capacité de distanciation sociale des piétons.")) %>%
+                      "moins de 25% de capacité de distanciation sociale des piétons.")) |>
   add_row(en = paste0("In relative terms, Villeray-Saint-Michel-Parc-Extension is the borough with the highest average percentage of visible minorities ", 
                       "(66%) living in DAs with less than 25% capacity for pedestrian social distancing."),
           fr = paste0("En termes relatifs, Villeray-Saint-Michel-Parc-Extension est l’arrondissement avec le plus haut pourcentage moyen de minorités ", 
-                      "visibles (66%) vivant dans des AD avec moins de 25% de capacité de distanciation sociale des piétons.")) %>%
+                      "visibles (66%) vivant dans des AD avec moins de 25% de capacité de distanciation sociale des piétons.")) |>
   add_row(en = paste0("In relative terms, Outremont is the borough with the lowest average percentage of visible minorities (6.1%) living in DAs with ", 
                       "less than 25% capacity for pedestrian social distancing."),
           fr = paste0("En termes relatifs, Outremont est l’arrondissement avec le plus bas pourcentage moyen de minorités visibles (6.1%) vivant dans ", 
-                      "des AD avec moins de 25% de capacité de distanciation sociale des piétons.")) %>%
+                      "des AD avec moins de 25% de capacité de distanciation sociale des piétons.")) |>
   add_row(en = paste0("In absolute terms, Côte-des-Neiges-Notre-Dame-de-Grâce is the borough with the highest number of immigrants (32,270) living in ", 
                       "DAs with less than 25% capacity for pedestrian social distancing."),
           fr = paste0("En termes absolus, Côte-des-Neiges-Notre-Dame-de-Grâce est l’arrondissement avec le plus haut nombre d’immigrants (32,270) vivant ", 
-                      "dans des AD avec moins de 25% de capacité de distanciation sociale des piétons.")) %>%
+                      "dans des AD avec moins de 25% de capacité de distanciation sociale des piétons.")) |>
   add_row(en = paste0("In absolute terms, L’Île-Bizard-Sainte-Geneviève is the borough with the lowest number of immigrants (480) living in DAs with ", 
                       "less than 25% capacity for pedestrian social distancing."),
           fr = paste0("En termes absolus, L'Île-Bizard-Sainte-Geneviève est l’arrondissement avec le plus bas nombre d’immigrants (480) vivant dans des ", 
-                      "AD avec moins de 25% de capacité de distanciation sociale des piétons.")) %>%
+                      "AD avec moins de 25% de capacité de distanciation sociale des piétons.")) |>
   add_row(en = paste0("In relative terms, Saint-Laurent is the borough with the highest average percentage of immigrants (62%) living in DAs with less ", 
                       "than 25% capacity for pedestrian social distancing."),
           fr = paste0("En termes relatifs, Saint-Laurent est l’arrondissement avec le plus haut pourcentage moyen d’immigrants (62%) vivant dans des AD ", 
-                      "avec moins de 25% de capacité de distanciation sociale des piétons.")) %>%
+                      "avec moins de 25% de capacité de distanciation sociale des piétons.")) |>
   add_row(en = paste0("In relative terms, Sainte-Anne-de-Bellevue (independent municipality) has the lowest average percentage of immigrants (12%) living ", 
                       "in DAs with less than 25% capacity for pedestrian social distancing."),
           fr = paste0("En termes relatifs, Sainte-Anne-de-Bellevue (municipalité indépendante) a le plus bas pourcentage moyen d’immigrants (12%) vivant ", 
-                      "dans des AD avec moins de 25% de capacité de distanciation sociale des piétons.")) %>%
+                      "dans des AD avec moins de 25% de capacité de distanciation sociale des piétons.")) |>
   add_row(en = paste0("The top 3 boroughs or independent municipalities in the Montreal agglomeration with the lowest ",
                       "average sidewalk widths are 1) L’Île-Bizard-Sainte-Geneviève (0.48 meters), 2) Pierrefonds-Roxboro ",
                       "(0.67 meters) and 3) Dollard-des-Ormeaux (0.68 meters). More than 75% of trips to work in these ",
@@ -1125,7 +1125,7 @@ translation_fr <-
           fr = paste0("Les 3 arrondissements ou municipalités indépendantes de l'agglomération de Montréal ayant la ",
                       "plus petite largeur moyenne de trottoir sont 1) L'Île-Bizard-Sainte-Geneviève (0,48 mètre), ",
                       "2) Pierrefonds-Roxboro (0,67 mètre) et 3) Dollard-des-Ormeaux (0,68 mètre). Plus de 75 % des ",
-                      "déplacements domicile-travail dans ces trois arrondissements se font en voiture.")) %>%
+                      "déplacements domicile-travail dans ces trois arrondissements se font en voiture.")) |>
   add_row(en = paste0("Le Plateau-Mont-Royal is the borough with the highest average sidewalk width at 3.05 meters. ",
                       "However, 35% of boroughs or independent municipalities in Montreal’s agglomeration have ",
                       "lower population densities per square meter of sidewalk space than the Plateau-Mont-Royal. ",
@@ -1138,11 +1138,11 @@ translation_fr <-
                       "inférieure à celle du Plateau-Mont-Royal. De plus, 62 % des arrondissements ou des municipalités ",
                       "indépendantes de l'agglomération de Montréal ont une densité de population par mètre carré de ",
                       "surface marchable totale inférieure à celle du Plateau-Mont-Royal. Seulement 24 % des résidents ",
-                      "du Plateau-Mont-Royal se rendent au travail en voiture.")) %>%
+                      "du Plateau-Mont-Royal se rendent au travail en voiture.")) |>
   add_row(en = paste0("The highest average rent in Montreal is in Westmount, at $1269.1 per month, followed by ",
                       "Outremont at $1137.1 per month."),
           fr = paste0("Le loyer moyen le plus élevé à Montréal se trouve à Westmount, à 1269,1 $ par mois, suivi ",
-                      "d'Outremont, à 1177,1 $ par mois.")) %>%
+                      "d'Outremont, à 1177,1 $ par mois.")) |>
   add_row(en = paste0("The lowest average rent in the Montreal CMA is in Beaconsfield, at $237.4 per month, followed ", 
                       "by Rosemère ($276.2) and Boucherville ($362.2). Within the City of Montreal, the borough with ",
                       "the lowest average rent is L'Île-Bizard-Sainte-Geneviève, at $432.9 per month, followed by ",
@@ -1151,287 +1151,287 @@ translation_fr <-
                       "mois, suivi de Rosemère (276,2 $) et de Boucherville (362,2 $). Au sein de la Ville de Montréal, ",
                       "l'arrondissement où le loyer moyen est le plus bas est celui de L'Île-Bizard-Sainte-Geneviève, avec ",
                       "432,9 $ par mois, suivi de Pierrefonds-Roxboro (545,6 $) et de Rivière-des-Prairies-Pointe-aux-Trembles ",
-                      "(610,8 $).")) %>%
+                      "(610,8 $).")) |>
   add_row(en = paste0("Westmount has the highest average property value ($1,242,703.7), followed by Hampstead ",
                       "($1,125,655.9)."),
           fr = paste0("Westmount a la valeur moyenne des propriétés la plus élevée (1 242 703,7 $), suivie de ",
-                      "Hampstead (1 125 655,9 $).")) %>%
+                      "Hampstead (1 125 655,9 $).")) |>
   add_row(en = paste0("The lowest average property value in the Montreal CMA ($223,573.2) can be found in Pointe-Calumet."),
-          fr = paste0("La valeur moyenne des propriétés la plus basse dans la RMR de Montréal (223 573,2 $) se trouve à Pointe-Calumet.")) %>%
+          fr = paste0("La valeur moyenne des propriétés la plus basse dans la RMR de Montréal (223 573,2 $) se trouve à Pointe-Calumet.")) |>
   add_row(en = paste0("Baie-d'Urfé has the lowest proportion of tenants, at 2.6%, followed by Lorraine with 2.7%."),
-          fr = paste0("Baie-d'Urfé a la plus petite proportion de locataires, avec 2,6%, suivie par la Lorraine avec 2,7%.")) %>%
+          fr = paste0("Baie-d'Urfé a la plus petite proportion de locataires, avec 2,6%, suivie par la Lorraine avec 2,7%.")) |>
   add_row(en = paste0("Côte-des-Neiges-Notre-Dame-de-Grâce has the highest proportion of tenants (73.7%), closely ",
                       "followed by Ville-Marie (73.0%) and Le Plateau-Mont-Royal (72.8%)."),
           fr = paste0("Côte-des-Neiges-Notre-Dame-de-Grâce a la plus grande proportion de locataires (73,7 %), suivie ",
-                      "de près par Ville-Marie (73,0 %) et Le Plateau-Mont-Royal (72,8 %).")) %>%
+                      "de près par Ville-Marie (73,0 %) et Le Plateau-Mont-Royal (72,8 %).")) |>
   add_row(en = paste0("The top 10th percentile of tenant proportion in Montreal falls above 64.7%."),
-          fr = paste0("Le 90e percentile de la proportion de locataires à Montréal se situe au-dessus de 64,7 %.")) %>%
+          fr = paste0("Le 90e percentile de la proportion de locataires à Montréal se situe au-dessus de 64,7 %.")) |>
   add_row(en = paste0("Sainte-Anne-de-Bellevue has the lowest proportion of unaffordable housing at 10.1%, followed ",
                       "by Mercier with 10.3% unaffordable housing."),
           fr = paste0("Sainte-Anne-de-Bellevue a la plus petite proportion de logements inabordables avec ",
-                      "10,1%, suivie de Mercier avec 10,3% de logements inabordables.")) %>%
+                      "10,1%, suivie de Mercier avec 10,3% de logements inabordables.")) |>
   add_row(en = paste0("Ville-Marie has the highest proportion of unaffordable housing at 43.3%. Le Plateau-Mont-Royal ",
                       "falls just behind with 38.1% unaffordable housing."),
           fr = paste0("C'est à Ville-Marie que l'on trouve la plus forte proportion de logements inabordables, ",
-                      "soit 43,3 %. Le Plateau-Mont-Royal se situe juste derrière avec 38,1 % de logements inabordables.")) %>%
+                      "soit 43,3 %. Le Plateau-Mont-Royal se situe juste derrière avec 38,1 % de logements inabordables.")) |>
   add_row(en = paste0("The top 10 percentile of Montreal has more than 31.2% unaffordable housing."),
-          fr = paste0("Le 90e percentile de Montréal compte plus de 31,2 % de logements inabordables.")) %>%
+          fr = paste0("Le 90e percentile de Montréal compte plus de 31,2 % de logements inabordables.")) |>
   add_row(en = paste0("Sainte-Anne-de-Bellevue, Saint-Bruno-de-Montarville, Sainte-Julie, and Léry ",
                       "have 0% unsuitable housing."),
           fr = paste0("Sainte-Anne-de-Bellevue, Saint-Bruno-de-Montarville, Sainte-Julie et Léry ont 0% de ",
-                      "logements de taille non convenable.")) %>%
+                      "logements de taille non convenable.")) |>
   add_row(en = paste0("Saint-Laurent has the highest proportion of unsuitable housing at 15.0%, followed by ",
                       "Côte-des-Neiges-Notre-Dame-de-Grâce at 14.2%."),
           fr = paste0("Saint-Laurent présente la plus forte proportion de logements de taille non convenable avec ",
-                      "15,0 %, suivi de Côte-des-Neiges-Notre-Dame-de-Grâce avec 14,2 %.")) %>%
+                      "15,0 %, suivi de Côte-des-Neiges-Notre-Dame-de-Grâce avec 14,2 %.")) |>
   add_row(en = paste0("Half of areas in Montreal have more than 2.9% unsuitable housing, 30% have more than 5.2% ",
                       "unsuitable housing, and 10% have more than 8.2% unsuitable housing."),
           fr = paste0("La moitié des quartiers de Montréal ont plus de 2,9 % de logements de taille non convenable, ",
-                      "30 % ont plus de 5,2 % de logements de taille non convenable et 10 % en ont plus de 8,2 %.")) %>%
+                      "30 % ont plus de 5,2 % de logements de taille non convenable et 10 % en ont plus de 8,2 %.")) |>
   add_row(en = paste0("Montréal-Nord has the highest proportion of people with an annual income of less than $50,000 ",
                       "at 59.5%, closely followed by Villeray-Saint-Michel-Parc-Extension (57.7%) and Ville-Marie (57.6%)."),
           fr = paste0("Montréal-Nord compte la plus grande proportion de personnes ayant un revenu annuel inférieur ",
                       "à 50 000 $, soit 59,5 %, suivie de près par Villeray-Saint-Michel-Parc-Extension (57,7 %) ",
-                      "et Ville-Marie (57,6 %).")) %>%
+                      "et Ville-Marie (57,6 %).")) |>
   add_row(en = paste0("Sainte-Anne-de-Bellevue has the lowest proportion of people with an annual income of less than ",
                       "$50,000 at 7.4%."),
           fr = paste0("Sainte-Anne-de-Bellevue a la plus petite proportion de personnes ayant un revenu annuel ",
-                      "inférieur à 50 000 $, soit 7,4 %.")) %>%
+                      "inférieur à 50 000 $, soit 7,4 %.")) |>
   add_row(en = paste0("Sainte-Anne-de-Bellevue has the highest proportion of people with an annual income of ",
                       "more than $100,000 at 65.4%, and Montreal-Nord has the lowest (9.7%)."),
           fr = paste0("Sainte-Anne-de-Bellevue a la plus grande proportion de personnes ayant un revenu annuel ",
-                      "supérieur à 100 000 $, soit 65,4 %, et Montréal-Nord a la plus petite (9,7 %).")) %>%
+                      "supérieur à 100 000 $, soit 65,4 %, et Montréal-Nord a la plus petite (9,7 %).")) |>
   add_row(en = paste0("Sainte-Anne-des-Plaines has the highest proportion of people (43.7%) with an annual income of ",
                       "between $50,000 and $100,000."),
           fr = paste0("Sainte-Anne-des-Plaines compte la plus grande proportion de personnes (43,7 %) ayant un revenu ",
-                      "annuel compris entre 50 000 et 100 000 dollars.")) %>%
+                      "annuel compris entre 50 000 et 100 000 dollars.")) |>
   add_row(en = paste0("Half of the Montreal CMA's boroughs or cities has a proportion of 29.0% or less people with an ",
                       "annual income below $50,000. 10% of the Montreal CMA's borough or cities has a proportion of 49.2% ",
                       "or higher of people with an annual income below $50,000."),
           fr = paste0("La moitié des arrondissements ou des villes de la RMR de Montréal comptent une proportion de 29,0 % ",
                       "ou moins de personnes ayant un revenu annuel inférieur à 50 000 $. 10 % des arrondissements ou des ",
                       "villes de la RMR de Montréal ont une proportion de 49,2 % ou plus de personnes ayant un revenu annuel ",
-                      "inférieur à 50 000 $.")) %>%
+                      "inférieur à 50 000 $.")) |>
   add_row(en = paste0("Montreal-Nord has the lowest median income in Montreal ($43,240.1), followed by Villeray-",
                       "Saint-Michel-Parc-Extension ($43,910.8)."),
           fr = paste0("Montréal-Nord a le revenu médian le plus bas de Montréal (43 240,1 $), suivi de ",
-                      "Villeray-Saint-Michel-Parc-Extension (43 910,8 $).")) %>%
+                      "Villeray-Saint-Michel-Parc-Extension (43 910,8 $).")) |>
   add_row(en = paste0("Hampstead has the highest median income in Montreal ($134,155.3), followed by Westmount ($133,333.9), ",
                       "Sainte-Anne-de-Bellevue ($130,552.9), Mont-Royal ($130,019.4), and Beaconsfield ($129,911.4)."),
           fr = paste0("Hampstead a le revenu médian le plus élevé à Montréal (134 155,3 $), suivi de Westmount (133 333,9 $), ",
-                      "Sainte-Anne-de-Bellevue (130 552,9 $), Mont-Royal (130 019,4 $) et Beaconsfield (129 911,4 $).")) %>%
+                      "Sainte-Anne-de-Bellevue (130 552,9 $), Mont-Royal (130 019,4 $) et Beaconsfield (129 911,4 $).")) |>
   add_row(en = paste0("Sainte-Julie, Notre-Dame-de-l'Île-Perrot, Oka, Pointe-Calumet, and Charlemagne have less than ",
                       "0.2% new immigrants."),
           fr = paste0("Sainte-Julie, Notre-Dame-de-l'Île-Perrot, Oka, Pointe-Calumet, et Charlemagne ont moins de 0.2% ",
-                      "de nouveaux immigrants.")) %>%
+                      "de nouveaux immigrants.")) |>
   add_row(en = paste0("Sainte-Julie has 0.0% immigrants, and Pointe-Calumet has the next lowest proportion at 2.1%."),
           fr = paste0("Sainte-Julie compte 0,0 % d'immigrants, et Pointe-Calumet a la deuxième plus basse proportion ",
-                      "avec 2,1 %.")) %>%
+                      "avec 2,1 %.")) |>
   add_row(en = paste0("Saint-Laurent has the highest proportion of new immigrants (12.1%), followed by ",
                       "Côte-des-Neiges-Notre-Dame-de-Grâce (12.0%)."),
           fr = paste0("Saint-Laurent a la plus grande proportion de nouveaux immigrants (12,1 %), suivie de ",
-                      "Côte-des-Neiges-Notre-Dame-de-Grâce (12,0 %).")) %>%
+                      "Côte-des-Neiges-Notre-Dame-de-Grâce (12,0 %).")) |>
   add_row(en = paste0("Saint-Laurent has the highest proportion of immigrants (53.6%) and also the highest proportion ",
                       "of new immigrants (12.1%)."),
           fr = paste0("Saint-Laurent a la plus grande proportion d'immigrants (53,6 %) et aussi la plus grande proportion ",
-                      "de nouveaux immigrants (12,1 %).")) %>%
+                      "de nouveaux immigrants (12,1 %).")) |>
   add_row(en = paste0("Half of areas in Montreal has a proportion of immigrants 22.6% of higher (50th percentile)."),
-          fr = paste0("La moitié des quartiers de Montréal ont une proportion d'immigrants de 22,6 % ou plus (50e percentile).")) %>%
+          fr = paste0("La moitié des quartiers de Montréal ont une proportion d'immigrants de 22,6 % ou plus (50e percentile).")) |>
   add_row(en = paste0("50% of areas in Montreal have new immigrant proportions of 2.8% or lower, and 10% have ",
                       "proportions above 8.3%."),
           fr = paste0("50 % des quartiers de Montréal ont une proportion de nouveaux immigrants de 2,8 % ou moins, ",
-                      "et 10 % ont une proportion supérieure à 8,3 %.")) %>%
+                      "et 10 % ont une proportion supérieure à 8,3 %.")) |>
   add_row(en = paste0("The proportion of people who walk or bike to work in Montreal ranges between 0.0% (Saint-Isidore) ",
                       "and 36.0% (Le Plateau-Mont-Royal)."),
           fr = paste0("La proportion de personnes qui se rendent au travail à Montréal à pied ou à vélo varie entre ",
-                      "0,0 % (Saint-Isidore) et 36,0 % (Le Plateau-Mont-Royal).")) %>%
+                      "0,0 % (Saint-Isidore) et 36,0 % (Le Plateau-Mont-Royal).")) |>
   add_row(en = paste0("50% of areas in Montreal have proportions of people who walk or bike to work lower than 4.4%, ",
                       "and 10% of areas have proportions higher than 11.7%."),
           fr = paste0("50 % des quartiers de Montréal ont des proportions de personnes qui se rendent au travail à ",
-                      "pied ou à vélo inférieures à 4,4 %, et 10 % des quartiers ont des proportions supérieures à 11,7 %.")) %>%
+                      "pied ou à vélo inférieures à 4,4 %, et 10 % des quartiers ont des proportions supérieures à 11,7 %.")) |>
   add_row(en = paste0("The proportion of people who take public tansit to work in Montreal ranges between 3.0% ",
                       "(Mirabel) and 46.7% (Côte-des-Neiges-Notre-Dame-de-Grâce)."),
           fr = paste0("La proportion de personnes qui prennent le transport en commun pour aller travailler à Montréal ",
-                      "varie entre 3,0 % (Mirabel) et 46,7 % (Côte-des-Neiges-Notre-Dame-de-Grâce).")) %>%
+                      "varie entre 3,0 % (Mirabel) et 46,7 % (Côte-des-Neiges-Notre-Dame-de-Grâce).")) |>
   add_row(en = paste0("Côte-des-Neiges-Notre-Dame-de-Grâce has the highest proportion of people who take public ",
                       "transit to work (46.7%), followed by Villeray-Saint-Michel-Parc-Extension (45.2%)."),
           fr = paste0("Côte-des-Neiges-Notre-Dame-de-Grâce compte la plus grande proportion de personnes ",
                       "qui prennent le transport en commun pour se rendre au travail (46,7 %), suivi de ",
-                      "Villeray-Saint-Michel-Parc-Extension (45,2 %).")) %>%
+                      "Villeray-Saint-Michel-Parc-Extension (45,2 %).")) |>
   add_row(en = paste0("50% of areas in Montreal have proportions of people who take transit to work lower than 16.8%."),
           fr = paste0("Dans 50 % des quartiers de Montréal, la proportion de personnes qui prennent le transport en ",
-                      "commun pour se rendre au travail est inférieure à 16,8 %.")) %>%
+                      "commun pour se rendre au travail est inférieure à 16,8 %.")) |>
   add_row(en = paste0("10% of areas in Montreal have proportions of people taking transit to work higher than 36.0%."),
           fr = paste0("Dans 10 % des quartiers de Montréal, la proportion de personnes qui prennent le transport ",
-                      "en commun pour se rendre au travail est supérieure à 36,0 %.")) %>%
+                      "en commun pour se rendre au travail est supérieure à 36,0 %.")) |>
   add_row(en = paste0("The proportion of people who drive to work ranges from 24.9% (Le Plateau-Mont-Royal) and ",
                       "95.7% (Saint-Isidore)."),
           fr = paste0("La proportion de personnes qui se rendent au travail en voiture varie entre 24,9% ",
-                      "(Le Plateau-Mont-Royal) et 95,7% (Saint-Isidore).")) %>%
+                      "(Le Plateau-Mont-Royal) et 95,7% (Saint-Isidore).")) |>
   add_row(en = paste0("90% of areas in Montreal have proportions higher than 48.0% of people who drive to work."),
           fr = paste0("90 % des quartiers de Montréal ont des proportions supérieures à 48,0 % de personnes ",
-                      "qui se rendent au travail en voiture.")) %>%
+                      "qui se rendent au travail en voiture.")) |>
   add_row(en = paste0("The three areas with the lowest property values all have average Active Living Environment ",
                       "classes of 2 or less (Pointe-Calumet (1.7); Sainte-Anne-des-Plaines (1.8); Bois-des-Filion (2.0))."),
           fr = paste0("Les trois régions dont la valeur des propriétés est la plus faible ont toutes des moyennes de classe de","
                       potentiel de vie active de 2 ou moins (Pointe-Calumet (1,7) ; Sainte-Anne-des-Plaines ",
-                      "(1,8) ; Bois-des-Filion (2,0)).")) %>%
+                      "(1,8) ; Bois-des-Filion (2,0)).")) |>
   add_row(en = paste0("The ten areas with the highest proportion of tenants have active living environment class ",
                       "averages ranging from 3.96 to 5."),
           fr = paste0("Les dix zones ayant la plus forte proportion de locataires ont des moyennes de classe de potentiel de ",
-                      "vie active allant de 3,96 à 5.")) %>%
+                      "vie active allant de 3,96 à 5.")) |>
   add_row(en = paste0("The ten areas with the lowest proportion of tenant have average active living environments ",
                       "classes ranging from 1 and 2."),
           fr = paste0("Les dix zones ayant la plus faible proportion de locataires ont des moyennes de classe de ",
-                      "potentiel de vie active allant de 1 à 2.")) %>%
+                      "potentiel de vie active allant de 1 à 2.")) |>
   add_row(en = paste0("The areas with the lowest active living potential (ALE class 1) have tenant proportions ",
                       "ranging from 0.0% (Saint-Bruno-de-Montarville, Oka) to 24.6% (Saint-Isidore)."),
           fr = paste0("Les zones ayant le plus faible potentiel de vie active (classe 1 de l'AVA) ont des proportions ",
-                      "de locataires allant de 0,0% (Saint-Bruno-de-Montarville, Oka) à 24,6% (Saint-Isidore).")) %>%
+                      "de locataires allant de 0,0% (Saint-Bruno-de-Montarville, Oka) à 24,6% (Saint-Isidore).")) |>
   add_row(en = paste0("The areas with the lowest active living potential (ALE class 1) have average property values ",
                       "ranging from $250,046.0 (Saint-Isidore) to $994,294.4 (Saint-Anne-de-Bellevue)."),
           fr = paste0("Les zones ayant le plus faible potentiel de vie active (classe 1 de l'AVA) ont une valeur ",
-                      "moyenne des propriétés allant de 250 046,0 $ (Saint-Isidore) à 994 294,4 $ (Saint-Anne-de-Bellevue).")) %>%
+                      "moyenne des propriétés allant de 250 046,0 $ (Saint-Isidore) à 994 294,4 $ (Saint-Anne-de-Bellevue).")) |>
   add_row(en = paste0("The areas with the lowest active living potential (ALE class 1) have proportions of unaffordable ",
                       "housing ranging from 10.1% (Sainte-Anne-de-Bellevue) to 18.2% (Sainte-Julie)."),
           fr = paste0("Les zones ayant le plus faible potentiel de vie active (classe 1 de l'AVA) présentent des proportions ",
-                      "de logements inabordables allant de 10,1% (Sainte-Anne-de-Bellevue) à 18,2% (Sainte-Julie).")) %>%
+                      "de logements inabordables allant de 10,1% (Sainte-Anne-de-Bellevue) à 18,2% (Sainte-Julie).")) |>
   add_row(en = paste0("The areas with the lowest active living potential (ALE class 1) have proportions of unsuitable ",
                       "housing ranging from 0.0% (Sainte-Julie, Saint-Bruno-de-Montarville, Sainte-Anne-de-Bellevue) ",
                       "to 5.1% (Oka)."),
           fr = paste0("Les zones ayant le plus faible potentiel de vie active (classe 1 de l'AVA) présentent des proportions ",
                       "de logements de taille non convenable allant de 0,0% (Sainte-Julie, Saint-Bruno-de-Montarville, ",
-                      "Sainte-Anne-de-Bellevue) à 5,1% (Oka).")) %>%
+                      "Sainte-Anne-de-Bellevue) à 5,1% (Oka).")) |>
   add_row(en = paste0("Sainte-Anne-de-Bellevue has the highest proportion of people with an annual income of more than ",
                       "$100,000 at 65.4%, and Montreal-Nord has the lowest (9.7%)."),
           fr = paste0("Sainte-Anne-de-Bellevue a la plus forte proportion de personnes ayant un revenu annuel supérieur ",
-                      "à 100 000 $, soit 65,4 %, et Montréal-Nord a la plus faible (9,7 %).")) %>%
+                      "à 100 000 $, soit 65,4 %, et Montréal-Nord a la plus faible (9,7 %).")) |>
   add_row(en = paste0("Sainte-Anne-des-Plaines has the highest proportion of people (43.7%) with an annual income ",
                       "of up to $100,000."),
           fr = paste0("Sainte-Anne-des-Plaines compte la plus forte proportion de personnes (43,7 %) ayant un ",
-                      "revenu annuel allant jusqu'à 100 000 $.")) %>%
+                      "revenu annuel allant jusqu'à 100 000 $.")) |>
   add_row(en = paste0("The areas with the lowest active living potential (ALE class 1) have median household incomes ",
                       "ranging from $63,744.0 (Saint-Isidore) to $130,552.9 (Sainte-Anne-de-Bellevue)."),
           fr = paste0("Les régions où le potentiel de vie active est le plus faible (classe 1 de l'AVA) ont des ",
                       "revenus des ménages médians allant de 63 744,0 $ (Saint-Isidore) à 130 552,9 $ ",
-                      "(Sainte-Anne-de-Bellevue).")) %>%
+                      "(Sainte-Anne-de-Bellevue).")) |>
   add_row(en = paste0("The areas with the highest active living potential (average ALE class 5 or higher) have ",
                       "median household incomes ranging from $43,910.8 (Villeray-Saint-Michel-Parc-Extension) to ",
                       "$134,155.3 (Hampstead)."),
           fr = paste0("Les régions où le potentiel de vie active est le plus élevé (moyenne de l'AVA classe 5 ",
                       "ou plus) ont des revenus médians par ménage allant de 43 910,8 $ (Villeray-Saint-Michel-Parc-Extension) ",
-                      "à 134 155,3 $ (Hampstead).")) %>%
+                      "à 134 155,3 $ (Hampstead).")) |>
   add_row(en = paste0("The areas with the lowest proportion of people with commute times of more than one hour ",
                       "are Westmount (5.5%), Outremont (5.7%), and Mont-Royal (5.9%)."),
           fr = paste0("Les régions où la proportion de personnes ayant un temps de déplacement domicile-travail de plus d'une ",
-                      "heure est la plus faible sont Westmount (5,5 %), Outremont (5,7 %) et Mont-Royal (5,9 %).")) %>%
+                      "heure est la plus faible sont Westmount (5,5 %), Outremont (5,7 %) et Mont-Royal (5,9 %).")) |>
   add_row(en = paste0("The areas with the highest proportion of people with commute times of more than one hour ",
                       "are Léry (19.2%), Saint-Léonard (16.6%), and Anjou (16.2%)."),
           fr = paste0("Les régions où la proportion de personnes ayant un temps de déplacement domicile-travail supérieur à une heure est ",
-                      "la plus élevée sont Léry (19,2%), Saint-Léonard (16,6%) et Anjou (16,2%).")) %>%
+                      "la plus élevée sont Léry (19,2%), Saint-Léonard (16,6%) et Anjou (16,2%).")) |>
   add_row(en = paste0("The three areas with the highest proportion of people with commute times of more than one hour ",
                       "have varying classes of active living potential, from 1 (Léry) to 3.9 (Saint-Léonard)."),
           fr = paste0("Les trois zones qui comptent la plus forte proportion de personnes ayant un temps de trajet ",
                       "de plus d'une heure ont des classes de potentiel de vie active variables, de 1 (Léry) à ",
-                      "3,9 (Saint-Léonard).")) %>%
+                      "3,9 (Saint-Léonard).")) |>
   add_row(en = paste0("The three areas with the lowest proportion of people with commute times of more than one ",
                       "hour all have average classes of active living potential above 3 (Westmount: 4.36, ",
                       "Outremont: 4.43, Mont-Royal: 3.33)."),
           fr = paste0("Les trois régions qui comptent la plus faible proportion de personnes dont le temps ",
                       "de déplacement est supérieur à une heure ont toutes des classes moyennes de potentiel ",
-                      "de vie active supérieures à 3 (Westmount: 4,36, Outremont: 4,43, Mont-Royal: 3,33).")) %>%
+                      "de vie active supérieures à 3 (Westmount: 4,36, Outremont: 4,43, Mont-Royal: 3,33).")) |>
   add_row(en = paste0("The five areas with the highest active living potential are all boroughs of the ",
                       "City of Montreal (Le Plateau-Mont-Royal; Rosemont-La-Petite-Patrie; Ville-Marie; ",
                       "Villeray-Saint-Michel-Parc-Extension; Côte-des-Niges-Notre-Dame-de-Grâce)."),
           fr = paste0("Les cinq secteurs ayant le plus fort potentiel de vie active sont tous des arrondissements ",
                       "de la Ville de Montréal (Le Plateau-Mont-Royal; Rosemont-La-Petite-Patrie; Ville-Marie; ",
-                      "Villeray-Saint-Michel-Parc-Extension; Côte-des-Niges-Notre-Dame-de-Grâce).")) %>%
+                      "Villeray-Saint-Michel-Parc-Extension; Côte-des-Niges-Notre-Dame-de-Grâce).")) |>
   
   # For the waiter
   add_row(en = "Please wait, this may take a few minutes",
-          fr = "Veuillez patienter, ceci peut prendre quelques minutes") %>% 
+          fr = "Veuillez patienter, ceci peut prendre quelques minutes") |> 
   
   # Accessibility module
   add_row(en = "Access to Urban Opportunities",
-          fr = "Accès aux opportunités urbaines") %>% 
+          fr = "Accès aux opportunités urbaines") |> 
   add_row(en = "Dissemination Area",
-          fr = "Aire de diffusion") %>% 
+          fr = "Aire de diffusion") |> 
   add_row(en = "Route Planner",
-          fr = "Planificateur d'itinéraire") %>% 
+          fr = "Planificateur d'itinéraire") |> 
   add_row(en = "Cycling Network",
-          fr = "Réseau cycliste") %>% 
+          fr = "Réseau cycliste") |> 
   
   # Accessibility destionations
   add_row(en = "Select your destination",
-          fr = "Sélectionnez votre destination") %>%
+          fr = "Sélectionnez votre destination") |>
   add_row(en = "COVID-19 Testing Centre",
-          fr = "Centre de dépistage COVID-19") %>%
+          fr = "Centre de dépistage COVID-19") |>
   add_row(en = "Health Care",
-          fr = "Soins de santé") %>%
+          fr = "Soins de santé") |>
   add_row(en = "Grocery Store",
-          fr = "Épicerie") %>%
+          fr = "Épicerie") |>
   add_row(en = "Pharmacy",
-          fr = "Pharmacie") %>%
+          fr = "Pharmacie") |>
   add_row(en = "Eating Place",
-          fr = "Lieu de restauration") %>%
+          fr = "Lieu de restauration") |>
   add_row(en = "Shortest Route",
-          fr = "Itinéraire le plus court") %>%
+          fr = "Itinéraire le plus court") |>
   add_row(en = "Shortest Route",
-          fr = "Safest Route") %>%
+          fr = "Safest Route") |>
   add_row(en = "Route Information",
-          fr = "Informations sur l'itinéraire") %>%
+          fr = "Informations sur l'itinéraire") |>
   add_row(en = "Elevation Profile",
-          fr = "Profil d'élévation") %>%
+          fr = "Profil d'élévation") |>
   add_row(en = "Select a variable:",
-          fr = "Choisissez une variable:") %>%
+          fr = "Choisissez une variable:") |>
   add_row(en = "Travel Time to Closest Health Care",
-          fr = "Temps de trajet pour se rendre aux soins de santé les plus proches") %>%
+          fr = "Temps de trajet pour se rendre aux soins de santé les plus proches") |>
   add_row(en = "Travel Time to Closest Grocery",
-          fr = "Temps de trajet jusqu'à l'épicerie la plus proche") %>%
+          fr = "Temps de trajet jusqu'à l'épicerie la plus proche") |>
   add_row(en = "Travel Time to Closest Pharmacy",
-          fr = "Temps de trajet jusqu'à la pharmacie la plus proche") %>%
+          fr = "Temps de trajet jusqu'à la pharmacie la plus proche") |>
   add_row(en = "Number of Accessible Eating Places",
-          fr = "Nombre de lieux de restauration accessibles") %>%
+          fr = "Nombre de lieux de restauration accessibles") |>
   add_row(en = "Journey Time",
-          fr = "Durée du trajet") %>%
+          fr = "Durée du trajet") |>
   add_row(en = "Route Distance",
-          fr = "Distance du trajet") %>%
+          fr = "Distance du trajet") |>
   add_row(en = "Cycling Facility",
-          fr = "Installations pour cyclistes") %>%
+          fr = "Installations pour cyclistes") |>
   add_row(en = "CO2 Avoided",
-          fr = "CO2 évité") %>%
+          fr = "CO2 évité") |>
   add_row(en = "Distance (m)",
-          fr = "Distance (m)") %>%
+          fr = "Distance (m)") |>
   add_row(en = "Elevation (m)",
-          fr = "Élevation (m)") %>%
+          fr = "Élevation (m)") |>
   add_row(en = "km/sq(km)",
-          fr = "km/km2") %>%
+          fr = "km/km2") |>
   add_row(en = "Low Income Rate (2016)",
-          fr = "Taux de faible revenu (2016)") %>%
+          fr = "Taux de faible revenu (2016)") |>
   add_row(en = "Cycling Rate",
-          fr = "Taux de cyclisme") %>%
+          fr = "Taux de cyclisme") |>
   add_row(en = "Density of Cycling Facility",
-          fr = "Densité de l'infrastructure cyclable") %>%
+          fr = "Densité de l'infrastructure cyclable") |>
   add_row(en = "Density of Cycling Facility",
-          fr = "Densité de l'infrastructure cyclable") %>%
+          fr = "Densité de l'infrastructure cyclable") |>
   add_row(en = "Travel Time to Closest Health Care",
-          fr = "Temps de trajet jusqu'à l'établissement de soins de santé le plus proche") %>%
+          fr = "Temps de trajet jusqu'à l'établissement de soins de santé le plus proche") |>
   add_row(en = "Travel Time to Closest Grocery",
-          fr = "Temps de trajet jusqu'à l'épicerie la plus proche") %>%
+          fr = "Temps de trajet jusqu'à l'épicerie la plus proche") |>
   add_row(en = "Travel Time to Closest Pharmacy",
-          fr = "Temps de trajet jusqu'à la pharmacie la plus proche") %>%
+          fr = "Temps de trajet jusqu'à la pharmacie la plus proche") |>
   add_row(en = "Number of Accessible Eating Places",
-          fr = "Nombre de lieux de restauration accessibles") %>%
+          fr = "Nombre de lieux de restauration accessibles") |>
   add_row(en = "Safest Route/Fastest Route",
-          fr = "L'itinéraire le plus sécuritaire/le plus rapide") %>%
+          fr = "L'itinéraire le plus sécuritaire/le plus rapide") |>
   add_row(en = "Travel Time to Closest Health Care Facility (minutes)",
-          fr = "Temps de trajet jusqu'à l'établissement de soins de santé le plus proche (en minutes)") %>%
+          fr = "Temps de trajet jusqu'à l'établissement de soins de santé le plus proche (en minutes)") |>
   add_row(en = "Travel Time to Closest Grocery Store (minutes)",
-          fr = "Temps de trajet jusqu'à l'épicerie la plus proche (en minutes)") %>%
+          fr = "Temps de trajet jusqu'à l'épicerie la plus proche (en minutes)") |>
   add_row(en = "Travel Time to Closest Pharmacy (minutes)",
-          fr = "Temps de trajet jusqu'à la pharmacie la plus proche (en minutes)") %>%
+          fr = "Temps de trajet jusqu'à la pharmacie la plus proche (en minutes)") |>
   add_row(en = "Number of Eating Places within 15-minutes Cycling",
-          fr = "Nombre de lieux de restauration accessibles en 15 minutes de vélo") %>%
+          fr = "Nombre de lieux de restauration accessibles en 15 minutes de vélo") |>
   add_row(en = paste0("Residents of the Island live an average of 1.8 km from the nearest health care facility,",
                      "<br/>that works out to a 7-minutes cycling. Overall, 19% of people live more than",
                      "<br/>10 minutes away from their nearest health care facility, while 22% live between 5 and",
@@ -1441,54 +1441,54 @@ translation_fr <-
                       "<br/>ce qui revient à 7 minutes de vélo. Dans l'ensemble, 19% des gens habitent à plus de",
                       "<br/>10 minutes de l'établissement de soins de santé le plus proche, tandis que 22% vivent entre 5 et",
                       "<br/>10 minutes et 59% à moins de 5 minutes. Les ménages à faibles revenus",
-                      "<br/>sont plus susceptibles de vivre à proximité de l'établissement de soins de santé le plus proche.")) %>%
+                      "<br/>sont plus susceptibles de vivre à proximité de l'établissement de soins de santé le plus proche.")) |>
   add_row(en = paste0("Residents of the Island live an average of 0.4 km from the nearest grocery store,",
                      "<br/>that works out to a 2-minutes cycling. Overall, 97% of people live less than",
                      "<br/>5 minutes away from their nearest grocery store."),
           fr = paste0("Les résidents de l'Île de Montréal vivent, en moyenne, à 0.4 km de l'épicerie la plus proche,",
                       "<br/>ce qui revient à 2 minutes de vélo. Dans l'ensemble, 97% des personnes vivent à moins de 5",
-                      "<br/>minutes de vélo de l'épicerie la plus proche.")) %>%
+                      "<br/>minutes de vélo de l'épicerie la plus proche.")) |>
   add_row(en = paste0("Residents of the Island live an average of 0.7 km from the nearest pharmacy,",
                       "<br/>that works out to a 3-minutes cycling. Overall, 92% of people live less than",
                       "<br/>5 minutes away from their nearest pharmacy."),
           fr = paste0("Les résidents de l'Île de Montréal vivent, en moyenne, à 0.7 km de la pharmacie la plus proche,",
                       "<br/>ce qui revient à 3 minutes de vélo. Dans l'ensemble, 92% des personnes vivent à moins de 5",
-                      "<br/>minutes de vélo de la pharmacie la plus proche.")) %>%
-  add_row(en = "Average rent ($)", fr = "Loyer moyen ($)") %>%
-  add_row(en = "Average property value ($)", fr = "Valeur moyenne des logements ($)") %>%
-  add_row(en = "Median household income ($)", fr = "Revenu médian des ménages ($)") %>%
-  add_row(en = "15-45 minutes to work (%)", fr = "Trajet de 15-45 minutes (%)") %>%
-  add_row(en = "More than 45 minutes to work (%)", fr = "Trajet de plus de 45 minutes (%)") %>%
-  add_row(en = "Destructive storms", fr = "Tempêtes destructrices") %>%
-  add_row(en = "Drought", fr = "Sécheresses") %>%
-  add_row(en = "Flood", fr = "Inondations") %>%
-  add_row(en = "Heat wave", fr = "Vagues de chaleur") %>%
-  add_row(en = "Heavy rain", fr = "Pluies abondantes") %>%
-  add_row(en = "250-metre grid", fr = "Cellule carrée de 250m sur 250m") %>%
-  add_row(en = "Boroughs and municipalities", fr = "Arrondissements et municipalités") %>%
-  add_row(en = "{selection$name_2} of {place_name}", fr = "{selection$name_2} de {place_name}") %>%
-  add_row(en = "250-m", fr = "250-m") %>%
-  add_row(en = "areas", fr = "aires") %>%
-  add_row(en = "Insignificant", fr = "Insignifiant") %>%
-  add_row(en = "Minor", fr = "Mineur") %>%
-  add_row(en = "Moderate", fr = "Modéré") %>%
-  add_row(en = "Elevated", fr = "Élevé") %>%
-  add_row(en = "Major", fr = "Majeur") %>%
-  add_row(en = "The area around {selection$name}", fr = "La zone entourant {selection$name}") %>%
-  add_row(en = "Census tract {selection$name}", fr = "Secteur de recensement {selection$name}") %>%
-  add_row(en = "Dissemination area {selection$name}", fr = "Aire de diffusion {selection$name}") %>%
+                      "<br/>minutes de vélo de la pharmacie la plus proche.")) |>
+  add_row(en = "Average rent ($)", fr = "Loyer moyen ($)") |>
+  add_row(en = "Average property value ($)", fr = "Valeur moyenne des logements ($)") |>
+  add_row(en = "Median household income ($)", fr = "Revenu médian des ménages ($)") |>
+  add_row(en = "15-45 minutes to work (%)", fr = "Trajet de 15-45 minutes (%)") |>
+  add_row(en = "More than 45 minutes to work (%)", fr = "Trajet de plus de 45 minutes (%)") |>
+  add_row(en = "Destructive storms", fr = "Tempêtes destructrices") |>
+  add_row(en = "Drought", fr = "Sécheresses") |>
+  add_row(en = "Flood", fr = "Inondations") |>
+  add_row(en = "Heat wave", fr = "Vagues de chaleur") |>
+  add_row(en = "Heavy rain", fr = "Pluies abondantes") |>
+  add_row(en = "250-metre grid", fr = "Cellule carrée de 250m sur 250m") |>
+  add_row(en = "Boroughs and municipalities", fr = "Arrondissements et municipalités") |>
+  add_row(en = "{selection$name_2} of {place_name}", fr = "{selection$name_2} de {place_name}") |>
+  add_row(en = "250-m", fr = "250-m") |>
+  add_row(en = "areas", fr = "aires") |>
+  add_row(en = "Insignificant", fr = "Insignifiant") |>
+  add_row(en = "Minor", fr = "Mineur") |>
+  add_row(en = "Moderate", fr = "Modéré") |>
+  add_row(en = "Elevated", fr = "Élevé") |>
+  add_row(en = "Major", fr = "Majeur") |>
+  add_row(en = "The area around {selection$name}", fr = "La zone entourant {selection$name}") |>
+  add_row(en = "Census tract {selection$name}", fr = "Secteur de recensement {selection$name}") |>
+  add_row(en = "Dissemination area {selection$name}", fr = "Aire de diffusion {selection$name}") |>
   add_row(en = paste0("At the {z$scale_singular} scale, {z$exp_left} varies from '{z$min_val}' to ",
                       "'{z$max_val}'. A plurality of {z$scale_plural} ({z$mode_prop}) have a value ",
                       "of '{z$mode_val}', while {z$mode_prop_2} have a value of '{z$mode_val_2}'."),
           fr = paste0("À l'échelle {z$scale_singular}, {z$exp_left} varie de '{z$min_val}' à ",
                       "'{z$max_val}'. Une pluralité des {z$scale_plural} ({z$mode_prop}) ont une valeur ",
-                      "de '{z$mode_val}', alors que {z$mode_prop_2} ont une valeur de '{z$mode_val_2}'.")) %>%
+                      "de '{z$mode_val}', alors que {z$mode_prop_2} ont une valeur de '{z$mode_val_2}'.")) |>
   add_row(en = paste0("At the {z$scale_singular} scale, {z$exp_left} varies from {z$min_val} to {z$max_val}, ",
                       "with an average value of {z$mean_val} and a median value of {z$median_val}. Two thirds ",
                       "of {z$scale_plural} have a score between {z$quant_low} and {z$quant_high}."),
           fr = paste0("À l'échelle {z$scale_singular}, {z$exp_left} varie de {z$min_val} à {z$max_val}, ",
                       "avec une valeur moyenne de {z$mean_val} et une valeur médiane de {z$median_val}. Deux tiers ",
-                      "des {z$scale_plural} ont un score entre {z$quant_low} et {z$quant_high}.")) %>%
+                      "des {z$scale_plural} ont un score entre {z$quant_low} et {z$quant_high}.")) |>
   add_row(en = paste0("Climate change will have increasingly negative impacts on communities across ",
                       "Montreal and Canada, affecting different populations in distinct ways and at varying ",
                       "rates. The City of Montreal did an exercise examining the risk of five climate risks, ",
@@ -1497,22 +1497,22 @@ translation_fr <-
                       "de Montréal et du Canada, affectant différentes populations de manière distincte, et ",
                       "à des rythmes différents. La Ville de Montréal a examiné cinq risques climatiques, dont ",
                       "les vagues de chaleur, les inondations, les pluies abondantes, la sécheresse et les tempêtes ",
-                      "destructrices, visualisés ici.")) %>%
-  add_row(en = "Drought vulnerability", fr = "Vulnérabilité aux sécheresses") %>%
+                      "destructrices, visualisés ici.")) |>
+  add_row(en = "Drought vulnerability", fr = "Vulnérabilité aux sécheresses") |>
   add_row(en = "the vulnerability to climate-change related drought events", 
-          fr = "la vulnérabilité aux sécheresses liées aux changements climatiques") %>%
-  add_row(en = "Flood vulnerability", fr = "Vulnérabilité aux crues") %>%
+          fr = "la vulnérabilité aux sécheresses liées aux changements climatiques") |>
+  add_row(en = "Flood vulnerability", fr = "Vulnérabilité aux crues") |>
   add_row(en = "the vulnerability to climate-change related flooding events", 
-          fr = "la vulnérabilité aux crues liées aux changements climatiques") %>%
-  add_row(en = "Heavy rain vulnerability", fr = "Vulnérabilité aux pluies abondantes") %>%
+          fr = "la vulnérabilité aux crues liées aux changements climatiques") |>
+  add_row(en = "Heavy rain vulnerability", fr = "Vulnérabilité aux pluies abondantes") |>
   add_row(en = "the vulnerability to climate-change related heavy rain events", 
-          fr = "la vulnérabilité aux pluies abondantes liées aux changements climatiques") %>%
-  add_row(en = "Destructive storm vulnerability", fr = "Vulnérabilité aux tempêtes destructrices") %>%
+          fr = "la vulnérabilité aux pluies abondantes liées aux changements climatiques") |>
+  add_row(en = "Destructive storm vulnerability", fr = "Vulnérabilité aux tempêtes destructrices") |>
   add_row(en = "the vulnerability to climate-change related destructive storm events", 
-          fr = "la vulnérabilité aux tempêtes destructrices liées aux changements climatiques") %>%
-  add_row(en = "Heat wave vulnerability", fr = "Vulnérabilité aux vagues de chaleur") %>%
+          fr = "la vulnérabilité aux tempêtes destructrices liées aux changements climatiques") |>
+  add_row(en = "Heat wave vulnerability", fr = "Vulnérabilité aux vagues de chaleur") |>
   add_row(en = "the vulnerability to climate-change related heat wave events", 
-          fr = "la vulnérabilité aux vagues de chaleur liées aux changements climatiques") %>%
+          fr = "la vulnérabilité aux vagues de chaleur liées aux changements climatiques") |>
   add_row(en = paste0("<p>The Climate Change Risk datasets are part of the start of the City of Montreal’s iterative ",
                       "process examining potential climate risks for the Montreal region. It includes cartographic ",
                       "representation of five areas: heat waves, flooding, heavy rain, drought, and destructive storms. ",
@@ -1568,31 +1568,31 @@ translation_fr <-
                       "comprennent les tempêtes de vent, les tempêtes de grêle, les fortes tempêtes de neige et la pluie verglaçante. ",
                       "Les événements de pluie verglaçante ont augmenté de 26% de 1979 à 2008, et les fortes tempêtes de neige ont ",
                       "augmenté au cours des 70 dernières années. Aucune évaluation n'a pu être faite jusqu'à présent en ce qui concerne ",
-                      "les autres types de tempêtes.</ul>")) %>%
+                      "les autres types de tempêtes.</ul>")) |>
   add_row(en = paste0("<p>Displayed data for <b>{var}</b> is for the closest ",
                       "available year <b>({year_shown})</b>.</p>"),
           fr = paste0("<p>Les données représentées pour <b>{var}</b> sont celles de ",
-                      "l'année disponible la plus proche <b>({year_shown})</b>.</p>")) %>% 
+                      "l'année disponible la plus proche <b>({year_shown})</b>.</p>")) |> 
   add_row(en = "Covid interventions",
-          fr = "Interventions (COVID)") %>%
+          fr = "Interventions (COVID)") |>
   add_row(en = "Healthy Urban Features",
-          fr = "Caractéristiques d'une ville saine") %>%
+          fr = "Caractéristiques d'une ville saine") |>
   add_row(en = "Housing realm",
-          fr = "Domaine du logement") %>%
+          fr = "Domaine du logement") |>
   add_row(en = "The housing realm",
-          fr = "Le domaine du logement") %>%
+          fr = "Le domaine du logement") |>
   add_row(en = "Montréal climate plans",
-          fr = "Plans climat de Montréal") %>%
+          fr = "Plans climat de Montréal") |>
   add_row(en = "Policy",
-          fr = "Politiques") %>%
+          fr = "Politiques") |>
   add_row(en = "Safety",
-          fr = "Sécurité") %>%
+          fr = "Sécurité") |>
   add_row(en = "Safety analysis",
-          fr = "Analyse de la sécurité") %>%
+          fr = "Analyse de la sécurité") |>
   add_row(en = "Green alleys",
-          fr = "Ruelles vertes") %>%
+          fr = "Ruelles vertes") |>
   add_row(en = "Health",
-          fr = "Santé") %>%
+          fr = "Santé") |>
   add_row(en = paste0("<strong>{z$place_heading}</strong>",
                       "<p>{z$place_name} has a population of ",
                       "{prettyNum(round(z$selection$population), ',')} and a ", 
@@ -1607,261 +1607,261 @@ translation_fr <-
                       "est {z$larger_smaller} la médiane régionale de {z$median_val}.",
                       "<p>{z$place_name} a un indice relativement {z$poor_strong} pour cet indicateur, ",
                       "avec {z$exp_left} supérieur à {z$percentile}% des ",
-                      "{z$scale_plural} de la région de Montréal")) %>% 
+                      "{z$scale_plural} de la région de Montréal")) |> 
   add_row(en = "Housing is important",
-          fr = "Le logement est important") %>%
+          fr = "Le logement est important") |>
   add_row(en = "May 2020",
-          fr = "Mai 2020") %>% 
+          fr = "Mai 2020") |> 
   add_row(en = "July 2020",
-          fr = "Juillet 2020") %>% 
+          fr = "Juillet 2020") |> 
   add_row(en = "October 2020",
-          fr = "Octobre 2020") %>% 
+          fr = "Octobre 2020") |> 
   add_row(en = "TK 2021",
-          fr = "TK 2021") %>% 
+          fr = "TK 2021") |> 
   add_row(en = "Total",
-          fr = "Total") %>% 
+          fr = "Total") |> 
   add_row(en = "Pedestrian",
-          fr = "Piéton") %>% 
+          fr = "Piéton") |> 
   add_row(en = "Cyclist",
-          fr = "Cycliste") %>% 
+          fr = "Cycliste") |> 
   add_row(en = "Other",
-          fr = "Autre") %>% 
+          fr = "Autre") |> 
   add_row(en = "Count",
-          fr = "Compte") %>% 
+          fr = "Compte") |> 
   add_row(en = "Per sq km",
-          fr = "Par kilomètre carré") %>% 
+          fr = "Par kilomètre carré") |> 
   add_row(en = "Per 1000 residents",
-          fr = "Pour 1000 résidents") %>% 
+          fr = "Pour 1000 résidents") |> 
   add_row(en = "Introduction",
-          fr = "Introduction") %>% 
+          fr = "Introduction") |> 
   add_row(en = "Community and participation",
-          fr = "Communauté et participation") %>% 
+          fr = "Communauté et participation") |> 
   add_row(en = "Greening",
-          fr = "Verdir") %>% 
+          fr = "Verdir") |> 
   add_row(en = "Food and agriculture",
-          fr = "Alimentation et agriculture") %>% 
+          fr = "Alimentation et agriculture") |> 
   add_row(en = "Land use",
-          fr = "Utilisation des sols") %>% 
+          fr = "Utilisation des sols") |> 
   add_row(en = "Mobility",
-          fr = "Mobilité") %>% 
+          fr = "Mobilité") |> 
   add_row(en = "Equity",
-          fr = "Equité") %>% 
+          fr = "Equité") |> 
   add_row(en = "Adaptation and resilience",
-          fr = "Adaptation et résilience") %>% 
+          fr = "Adaptation et résilience") |> 
   add_row(en = "Economy",
-          fr = "Économie") %>% 
+          fr = "Économie") |> 
   add_row(en = "Innovation",
-          fr = "Innovation") %>% 
+          fr = "Innovation") |> 
   add_row(en = "Regionalism, internationalism and networks",
-          fr = "Régionalisme, internationalisme et réseaux") %>% 
+          fr = "Régionalisme, internationalisme et réseaux") |> 
   add_row(en = "Sustainability",
-          fr = "Durabilité") %>% 
+          fr = "Durabilité") |> 
   # Green alleys typology
   add_row(en = "green",
-          fr = "verte") %>% 
+          fr = "verte") |> 
   add_row (en = "mixed",
-           fr = "mixte") %>% 
+           fr = "mixte") |> 
   add_row(en = "community",
-          fr = "communautaire") %>% 
+          fr = "communautaire") |> 
   add_row(en = "none",
-          fr = "ni verte ni communautaire") %>% 
+          fr = "ni verte ni communautaire") |> 
   # Green alleys visited description
   add_row(en = "mainly covered with grass, very well maintained with several signs demonstrating the wish to build a sense of community (name of the alley, small community garden, play areas).",
-          fr = "principalement couverte d'herbe, très bien maintenue: plusieurs signes démontrent une volonté de développer un sentiment de communauté (nom de la ruelle, petit jardin communautaire, espaces de jeux).") %>% 
+          fr = "principalement couverte d'herbe, très bien maintenue: plusieurs signes démontrent une volonté de développer un sentiment de communauté (nom de la ruelle, petit jardin communautaire, espaces de jeux).") |> 
   add_row(en = 'it is a "ruelle champêtre". Most of the alley is permeable, with a green strip in the middle and lateral greenery on both sides. Well maintained alley, with many plants and flowers, trees and green walls.',
-          fr = "il s'agit d'une ruelle champêtre. La plupart de la ruelle est perméable, avec une bande d'herbe au milieu et de la végétation latérale des deux côtés.") %>% 
+          fr = "il s'agit d'une ruelle champêtre. La plupart de la ruelle est perméable, avec une bande d'herbe au milieu et de la végétation latérale des deux côtés.") |> 
   add_row(en = "large green strip in the middle of the alley and multiple green elements on the sides. There is also a play area for children.",
-          fr = "large bande d'herbe au milieu de la ruelle et beaucoup de végétation sur les côtés. Il y a également un espace de jeux pour enfants.") %>%
+          fr = "large bande d'herbe au milieu de la ruelle et beaucoup de végétation sur les côtés. Il y a également un espace de jeux pour enfants.") |>
   add_row(en = "one of the most famous green alleys in Montreal. Most of its surface is permeable, with a lot of greenery.",
-          fr = "une des ruelles vertes les plus connues à Montréal. La plupart de la surface de la ruelle est perméable, avec beaucoup de végétation.") %>% 
+          fr = "une des ruelles vertes les plus connues à Montréal. La plupart de la surface de la ruelle est perméable, avec beaucoup de végétation.") |> 
   add_row(en = "'family and active street' with green elements, a community garden, spaces where children can play, murals.",
-          fr = "'rue active et familiale' avec de la végétation, un jardin communautaire, des espaces où les enfants peuvent jouer, des murales.") %>% 
+          fr = "'rue active et familiale' avec de la végétation, un jardin communautaire, des espaces où les enfants peuvent jouer, des murales.") |> 
   add_row(en = "It is very green and safe for children.",
-          fr = "La ruelle est très verte et sécuritaire pour les enfants.") %>% 
+          fr = "La ruelle est très verte et sécuritaire pour les enfants.") |> 
   add_row(en = "trees, plants and flowers on the sides. Excavation works undertaken in 2012 to create permeable surface. Benches, toys and a drawing exhibition add a sense of community.",
-          fr = "arbres, plantes et fleurs sur les côtés. Des travaux d'excavation ont été entrepris en 2012 pour créer une surface perméable. Des bancs, des jeux et une exposition de dessins ajoutent un sentiment de  communauté.") %>% 
+          fr = "arbres, plantes et fleurs sur les côtés. Des travaux d'excavation ont été entrepris en 2012 pour créer une surface perméable. Des bancs, des jeux et une exposition de dessins ajoutent un sentiment de  communauté.") |> 
   add_row(en = "diverse alley that has very green sections with permeable covering, as well as one larger section open to circulation but withpaintings, murals, handmade colourful signs that add a sense of community.",
-          fr = "ruelle diverse qui a des sections très végétalisées avec une surface perméable, ainsi qu'une large section ouverte à la circulation mais qui a des peintures, des murales, des panneaux colorés faits à la main qui ajoutent un sentiment de communauté.") %>% 
+          fr = "ruelle diverse qui a des sections très végétalisées avec une surface perméable, ainsi qu'une large section ouverte à la circulation mais qui a des peintures, des murales, des panneaux colorés faits à la main qui ajoutent un sentiment de communauté.") |> 
   add_row(en = "three very green sections with green walls, flower pots, green strips. The main section is very wide and permeable.",
-          fr = "trois sections très vertes avec des murs végétalisés, des pots à fleurs et des bandes d'herbe. La section principale est très large et perméable.") %>% 
+          fr = "trois sections très vertes avec des murs végétalisés, des pots à fleurs et des bandes d'herbe. La section principale est très large et perméable.") |> 
   add_row(en = "permeable strip in the middle of the alley. An important part of the green elements come from private gardens. Murals and games for children add a sense of community.",
-          fr = "bande perméable au milieu de la ruelle. Une partie importante de la végétation  vient de jardins privés. Des murales et des jeux pour enfants ajoutent un sentiment de communauté.") %>% 
+          fr = "bande perméable au milieu de la ruelle. Une partie importante de la végétation  vient de jardins privés. Des murales et des jeux pour enfants ajoutent un sentiment de communauté.") |> 
   add_row(en = "large community garden. It has arts and craft, as well as explanatory boards that provide environment-oriented information.",
-          fr = "large jardin communautaire. Il y a de l'artisanat ainsi que des panneaux explicatifs qui fournissent des informations en lien avec l'environnement.") %>% 
+          fr = "large jardin communautaire. Il y a de l'artisanat ainsi que des panneaux explicatifs qui fournissent des informations en lien avec l'environnement.") |> 
   add_row(en = "multiple elements that create a sense of community: play areas for kids, colourful signs, crafts and floor games. Activities with the residents seem to be frequently organised.",
-          fr = "de nombreux éléments qui créent un sentiment de communauté: des espaces de jeux pour enfants, des signes colorés, de l'artisanat et des jeux au sol. Des activités entre résidents semblent être fréquemment organisées.") %>% 
+          fr = "de nombreux éléments qui créent un sentiment de communauté: des espaces de jeux pour enfants, des signes colorés, de l'artisanat et des jeux au sol. Des activités entre résidents semblent être fréquemment organisées.") |> 
   add_row(en = "lateral greenery on both sides, games for children such as hockey sticks.",
-          fr = "végétation latérale des deux côtés, jouets pour enfants comme des crosses de hockey.") %>% 
+          fr = "végétation latérale des deux côtés, jouets pour enfants comme des crosses de hockey.") |> 
   add_row(en = "very grey alley with a few green elements coming from private gardens.",
-          fr = "ruelle très grise avec un peu de végétation venant de jardins privés.") %>% 
+          fr = "ruelle très grise avec un peu de végétation venant de jardins privés.") |> 
   add_row(en = "lateral greenery (mainly green walls), small basketball baskets for kids, and murals.",
-          fr = "végétation latérale (principalement des murs végétalisés), des petits paniers de basketball pour enfants, et murales.") %>% 
+          fr = "végétation latérale (principalement des murs végétalisés), des petits paniers de basketball pour enfants, et murales.") |> 
   add_row(en = "narrow alley mainly covered with grass.",
-          fr = "ruelle étroite principalement couverte d'herbe.") %>% 
+          fr = "ruelle étroite principalement couverte d'herbe.") |> 
   add_row(en = "located next to René-Lévesque Boulevard. Most of it is covered with permeable material and seems well maintained. It has a lot of greenery: flower, plants, trees and green walls.",
-          fr = "située près du boulevard René-Lévesque. La majorité de la surface de la ruelle est  perméable et a l'air bien entretenue. La ruelle a beaucoup de végétation: fleurs, plantes, arbres et murs végétalisés.") %>% 
+          fr = "située près du boulevard René-Lévesque. La majorité de la surface de la ruelle est  perméable et a l'air bien entretenue. La ruelle a beaucoup de végétation: fleurs, plantes, arbres et murs végétalisés.") |> 
   add_row(en = "very green alley, with stairs: it has gardens on both sides, with big trees providing shade.",
-          fr = "ruelle très verte, avec des marches: il y a des jardins des deux côtés avec des grands arbres qui apportent de l'ombre.") %>% 
+          fr = "ruelle très verte, avec des marches: il y a des jardins des deux côtés avec des grands arbres qui apportent de l'ombre.") |> 
   add_row(en = "very small green alley situated next to a parking lot. It is a curving path bordered by greenery.",
-          fr = "ruelle verte très petite située près d'un espace de parking. C'est un chemin en courbe bordé de végétation.") %>% 
+          fr = "ruelle verte très petite située près d'un espace de parking. C'est un chemin en courbe bordé de végétation.") |> 
   add_row(en = "Bordered by four hotels, this alley is very grey: there are a few green elements but that do not seem to be maintained.",
-          fr = "bordé par quatre hôtels, cette ruelle est très grise: il y un peu de végétation, mais elle ne semble pas être entretenue.") %>% 
+          fr = "bordé par quatre hôtels, cette ruelle est très grise: il y un peu de végétation, mais elle ne semble pas être entretenue.") |> 
   add_row(en = "lateral greenery (mainly green walls), few benches and children use the alley to play.",
-          fr = "végétation latérale (principalement des murs végétalisés), quelques bancs, et des enfants utilisent la ruelle pour jouer.") %>% 
+          fr = "végétation latérale (principalement des murs végétalisés), quelques bancs, et des enfants utilisent la ruelle pour jouer.") |> 
   add_row(en = "lateral greenery, trees and an excavated permeable section. There are many elements that foster community life: a shared library, play areas for children, chairs.",
-          fr = "végétation latérale, des arbres et une section perméable excavée. Il y a de nombreux éléments qui favorisent une vie de communauté: une bibliothèque partagée, des espaces de jeux pour enfants, des chaises.") %>% 
+          fr = "végétation latérale, des arbres et une section perméable excavée. Il y a de nombreux éléments qui favorisent une vie de communauté: une bibliothèque partagée, des espaces de jeux pour enfants, des chaises.") |> 
   add_row (en = "The green elements mainly come from private gardens. The alley has some benches.",
-           fr = "La végétation vient principalement de jardins privés. Il y a quelques bancs dans la ruelle.") %>% 
+           fr = "La végétation vient principalement de jardins privés. Il y a quelques bancs dans la ruelle.") |> 
   add_row(en = "The green alements mainly come from private gardens. The alley has some benches and chairs.",
-          fr = "La végétation vient principalement de jardins privés. Il y a quelques bancs et chaises dans la ruelle.") %>% 
+          fr = "La végétation vient principalement de jardins privés. Il y a quelques bancs et chaises dans la ruelle.") |> 
   add_row(en = "It only has a few green elements and a table.",
-          fr = "Il y a un peu de végétation et une table dans la ruelle.") %>% 
+          fr = "Il y a un peu de végétation et une table dans la ruelle.") |> 
   add_row(en = "It is somehow divided into two parts: while the first half is very grey, with a lot of parking spots and very few vegetation, the second half is more children oriented with toys, bikes, and is greener.",
-          fr = "La ruelle est en quelque sorte divisée en deux parties: alors que la première partie est très grise, avec de nombreux espaces de stationnement et très peu de végétation, la seconde partie est davantage orientée vers les enfants avec des jouets, des vélos, et a plus de végétation.") %>% 
+          fr = "La ruelle est en quelque sorte divisée en deux parties: alors que la première partie est très grise, avec de nombreux espaces de stationnement et très peu de végétation, la seconde partie est davantage orientée vers les enfants avec des jouets, des vélos, et a plus de végétation.") |> 
   add_row(en = "recent green alley. It does not have a lot of green elements, but it has some benches and toys for kids.",
-          fr = "ruelle verte récente. Il n'y a pas beaucoup de végétation, mais il y a quelques bancs et des jouets pour enfants.") %>% 
+          fr = "ruelle verte récente. Il n'y a pas beaucoup de végétation, mais il y a quelques bancs et des jouets pour enfants.") |> 
   add_row(en = "It has green elements and is very community oriented. Colourful alley with activities for children of different ages. There are basketball baskets, a ping-pong table as well as swings and signs made by the residents.",
-          fr = "Il s'agit d'une ruelle verte et communautaire. Ruelle colorée avec des activités pour des enfants d'âges divers. Il y a des paniers de basketball, une table de ping-pong ainsi que des balançoires et des panneaux faits par les résidents.") %>% 
+          fr = "Il s'agit d'une ruelle verte et communautaire. Ruelle colorée avec des activités pour des enfants d'âges divers. Il y a des paniers de basketball, une table de ping-pong ainsi que des balançoires et des panneaux faits par les résidents.") |> 
   add_row(en = "not a lot of greenery, but several elements fostering a sense of community, such as benches and a basketball basket.",
-          fr = "peu de végétation, mais plusieurs éléments favorisant un sentiment de communauté, tels que des bancs et un panier de basketball.") %>% 
+          fr = "peu de végétation, mais plusieurs éléments favorisant un sentiment de communauté, tels que des bancs et un panier de basketball.") |> 
   add_row(en = "lateral greenery (flowers, trees), as well as benches, chairs and a shared library.",
-          fr = "végétation latérale (fleurs, arbres), ainsi que des bancs, des chaises et une bibliothèque partagée.") %>% 
+          fr = "végétation latérale (fleurs, arbres), ainsi que des bancs, des chaises et une bibliothèque partagée.") |> 
   add_row(en = "lateral greenery, a space with a basketball basket where kids can play.",
-          fr = "végétation latérale, un espace avec un panier de basketball où les enfants peuvent jouer.") %>% 
+          fr = "végétation latérale, un espace avec un panier de basketball où les enfants peuvent jouer.") |> 
   add_row(en = "short alley with very few greenery, but with benches, games for children and a shared library.",
-          fr = "courte ruelle avec très peu de végétation, mais avec des bancs, des jeux pour enfants et une bibliothèque partagée.") %>% 
+          fr = "courte ruelle avec très peu de végétation, mais avec des bancs, des jeux pour enfants et une bibliothèque partagée.") |> 
   add_row(en = "lateral greenery, shared library and chairs.",
-          fr = "végétation latérale, bibliothèque partagée et chaises.") %>% 
+          fr = "végétation latérale, bibliothèque partagée et chaises.") |> 
   add_row(en = "two different sections with permeable surface and lateral greenery. Benches and spaces for children reinforce the community dimension.",
-          fr = "deux sections distinctes avec une surface perméable et de la végétation latérale. La présence de bancs et d'espaces pour enfants renforce la dimension communautaire.") %>% 
+          fr = "deux sections distinctes avec une surface perméable et de la végétation latérale. La présence de bancs et d'espaces pour enfants renforce la dimension communautaire.") |> 
   add_row(en = "lateral greenery (plants and trees).",
-          fr = "végétation latérale (plantes et arbres).") %>% 
+          fr = "végétation latérale (plantes et arbres).") |> 
   add_row(en = "very green, with lateral greenery on each side and a grass strip in the middle.",
-          fr = "très verte, avec de la végétation latérale des deux côtés et une bande d'herbe au milieu.") %>% 
+          fr = "très verte, avec de la végétation latérale des deux côtés et une bande d'herbe au milieu.") |> 
   add_row(en = "very grey alley",
-          fr = "ruelle très grise") %>% 
+          fr = "ruelle très grise") |> 
   add_row(en = "curving path bordered by plants. It also has a shared library.",
-          fr = "chemin en courbe bordé par des plantes. La ruelle a aussi une bibliothèque partagée.") %>% 
+          fr = "chemin en courbe bordé par des plantes. La ruelle a aussi une bibliothèque partagée.") |> 
   add_row(en = "curving path bordered by plants. It also has a shared library.",
-          fr = "chemin en courbe bordé par des plantes. La ruelle a aussi une bibliothèque partagée.") %>% 
+          fr = "chemin en courbe bordé par des plantes. La ruelle a aussi une bibliothèque partagée.") |> 
   add_row(en = "very grey, with only a few elevated pots with plants.",
-          fr = "très grise, avec seulement quelques pots de plantes surélevés.") %>% 
+          fr = "très grise, avec seulement quelques pots de plantes surélevés.") |> 
   add_row(en = "The surface is permeable and the alley has lateral greenery on both sides.",
-          fr = "La surface est perméable et la ruelle a de la végétation latérale des deux côtés.") %>% 
+          fr = "La surface est perméable et la ruelle a de la végétation latérale des deux côtés.") |> 
   add_row(en = "very grey alley with very few greenery and a lot of parking spots.",
-          fr = "ruelle très grise avec très peu de végétation et beaucoup de places de stationnement.") %>% 
+          fr = "ruelle très grise avec très peu de végétation et beaucoup de places de stationnement.") |> 
   add_row(en = "located next to the Ville-Marie Expressway. It has many trees, plants and flowers. It is well maintained and also has spaces where people can gather.",
-          fr = "située près de l'autoroute Ville-Marie. Il y a de nombreux arbres, plantes et fleurs dans la ruelle. Elle est bien maintenue et a également des espaces où les gens peuvent se rassembler.") %>% 
+          fr = "située près de l'autoroute Ville-Marie. Il y a de nombreux arbres, plantes et fleurs dans la ruelle. Elle est bien maintenue et a également des espaces où les gens peuvent se rassembler.") |> 
   add_row(en = "trees and plants as well as grass strips in the middle.",
-          fr = "arbres et plantes, ainsi que bandes d'herbe au milieu.") %>% 
+          fr = "arbres et plantes, ainsi que bandes d'herbe au milieu.") |> 
   add_row(en = "lateral greenery on each side and a strip of permeable surface. One smaller section is closed to circulation and has flower pots.",
-          fr = "végétation latérale de chaque côté, et bande de surface perméable. Une plus petite section est fermée à la circulation et a des pots à fleurs.") %>% 
+          fr = "végétation latérale de chaque côté, et bande de surface perméable. Une plus petite section est fermée à la circulation et a des pots à fleurs.") |> 
   add_row(en = "some green elements and permeable sections. It is located next to a playground.",
-          fr = "un peu de végétation et des sections perméables. La ruelle est située près d'un terrain de jeux.") %>% 
+          fr = "un peu de végétation et des sections perméables. La ruelle est située près d'un terrain de jeux.") |> 
   add_row(en = "very grey alley, except for the small green strip at one entrance.",
-          fr = "ruelle très grise, à l'exception de la bande d'herbe à une des entrées.") %>% 
+          fr = "ruelle très grise, à l'exception de la bande d'herbe à une des entrées.") |> 
   add_row(en = "lateral greenery in pots, grass strips in the middle, and a small park with permeable covering.",
-          fr = "végétation latérale dans des pots de fleurs, bandes d'herbe au milieu, et un petit parc avec un revêtement perméable.") %>% 
+          fr = "végétation latérale dans des pots de fleurs, bandes d'herbe au milieu, et un petit parc avec un revêtement perméable.") |> 
   add_row(en = "lateral greenery (plants, trees and flowers), and a mural.",
-          fr = "végétation latérale (plantes, arbres et fleurs), et une murale.") %>% 
+          fr = "végétation latérale (plantes, arbres et fleurs), et une murale.") |> 
   add_row(en = "trees, plants, flowers, and a large community garden. It is also community-oriented as there are tables and chairs, and a play area for kids.",
-          fr = "arbres, plantes, fleurs, et un large jardin communautaire. La ruelle est aussi communautaire étant donné qu'il y a des tables et des chaises, ainsi qu'un espace de jeux pour enfants.") %>% 
+          fr = "arbres, plantes, fleurs, et un large jardin communautaire. La ruelle est aussi communautaire étant donné qu'il y a des tables et des chaises, ainsi qu'un espace de jeux pour enfants.") |> 
   add_row(en = "lateral greenery (trees, and plants and flowers in pots), as well as a permeable section.",
-          fr = "végétation latérale (arbres, et plantes et fleurs en pots), ainsi qu'une section perméable.") %>% 
+          fr = "végétation latérale (arbres, et plantes et fleurs en pots), ainsi qu'une section perméable.") |> 
   add_row(en = "wide paved alley with lateral greenery and big trees.",
-          fr = "large ruelle pavée avec de la végétation latérale et des grands arbres.") %>% 
+          fr = "large ruelle pavée avec de la végétation latérale et des grands arbres.") |> 
   add_row(en = "wild green alley covered with grass, with many plants and trees.",
-          fr = "ruelle verte sauvage couverte d'herbe, avec de nombreux arbres et plantes.") %>% 
+          fr = "ruelle verte sauvage couverte d'herbe, avec de nombreux arbres et plantes.") |> 
   add_row(en = "some lateral greenery, mainly coming from private garden, and a permable section in the middle.",
-          fr = "un peu de végétation latérale, venant principalement de jardins privés, et une section perméable au milieu.") %>% 
+          fr = "un peu de végétation latérale, venant principalement de jardins privés, et une section perméable au milieu.") |> 
   add_row(en = "a lot of lateral greenery, both in the alley and coming from private gardens. There are also murals and colourful signs.",
-          fr = "beaucoup de végétation latérale, à la fois dans la ruelle et venant de jardins privés. Il y a aussi des murales et des panneaux colorés.") %>% 
+          fr = "beaucoup de végétation latérale, à la fois dans la ruelle et venant de jardins privés. Il y a aussi des murales et des panneaux colorés.") |> 
   add_row(en = "wide paved alley, with lateral greenery and a space where children can play",
-          fr = "large ruelle pavée, avec de la végétation latérale et un espace où les enfants peuvent jouer.") %>% 
+          fr = "large ruelle pavée, avec de la végétation latérale et un espace où les enfants peuvent jouer.") |> 
   add_row(en = "this alley is located next to Decarie highway. To a certain extent, the lateral greenery blocks the view and the noise of the highway.",
-          fr = "cette ruelle est située près de l'autoroute Décarie. Dans une certaine mesure, la végétation latérale bloque la vue sur l'autoroute et le bruit.") %>% 
+          fr = "cette ruelle est située près de l'autoroute Décarie. Dans une certaine mesure, la végétation latérale bloque la vue sur l'autoroute et le bruit.") |> 
   add_row(en = "the first half of the alley is very grey and for cars, but the second half has lateral greenery coming from private gardens and many trees that bring shade.",
-          fr = "la première moitié de la ruelle est très grise et dédiée aux voitures, mais la seconde moitié a de la végétation latérale venant de jardins privés, et de nombreux arbres qui apportent de l'ombre.") %>% 
+          fr = "la première moitié de la ruelle est très grise et dédiée aux voitures, mais la seconde moitié a de la végétation latérale venant de jardins privés, et de nombreux arbres qui apportent de l'ombre.") |> 
   add_row(en = "lateral greenery in pots and in excavated sections, trees, and grass strips in the middle.",
-          fr = "végétation latérale dans des pots et dans des sections excavées, des arbres, et des bandes d'herbe au milieu.") %>% 
+          fr = "végétation latérale dans des pots et dans des sections excavées, des arbres, et des bandes d'herbe au milieu.") |> 
   add_row(en = "lateral greenery, trees, community garden, and murals",
-          fr = "végétation latérale, arbres, jardin communautaire et murales") %>% 
+          fr = "végétation latérale, arbres, jardin communautaire et murales") |> 
   add_row(en = "lateral greenery in excavated sections, trees and grass strips in the middle.",
-          fr = "végétation latérale dans des sections excavées, arbres et bandes d'herbe au milieu.") %>% 
+          fr = "végétation latérale dans des sections excavées, arbres et bandes d'herbe au milieu.") |> 
   add_row(en = "lateral greenery, strips of permeable surface, trees and flower pots. Murals, benches and spaces for children",
-          fr = "végétation latérale, bandes perméables, arbres et pots de fleurs. Murales, bancs et espaces pour enfants") %>% 
+          fr = "végétation latérale, bandes perméables, arbres et pots de fleurs. Murales, bancs et espaces pour enfants") |> 
   add_row(en = "lateral green surfaces with plants and trees, benches, and murals",
-          fr = "surfaces vertes latérales avec des plantes et des arbres, bancs et murales") %>% 
+          fr = "surfaces vertes latérales avec des plantes et des arbres, bancs et murales") |> 
   add_row(en = "lateral excavations with greenery, permeable pavement and green walls",
-          fr = "excavations latérales avec végétation, trottoir perméable et murs végétalisés") %>% 
+          fr = "excavations latérales avec végétation, trottoir perméable et murs végétalisés") |> 
   add_row(en = "lateral section with greenery and excavated segment",
-          fr = "section latérale avec végétation et segment excavé") %>% 
+          fr = "section latérale avec végétation et segment excavé") |> 
   add_row(en = "plant pots, benches, and floor games",
-          fr = "pots de plantes, bancs, et jeux au sol") %>% 
+          fr = "pots de plantes, bancs, et jeux au sol") |> 
   add_row(en = "plant pots, lateral greenery, trees, and mural",
-          fr = "pots de plantes, végétation latérale, arbres, et murales") %>% 
+          fr = "pots de plantes, végétation latérale, arbres, et murales") |> 
   
   
   # Green alleys circulation 
   add_row(en = "closed",
-          fr = "fermée") %>% 
+          fr = "fermée") |> 
   add_row(en = "open, with some parking spots",
-          fr = "ouverte, avec quelques places de stationnement") %>% 
+          fr = "ouverte, avec quelques places de stationnement") |> 
   add_row(en = "partially closed",
-          fr = "partiellement fermée") %>% 
+          fr = "partiellement fermée") |> 
   add_row(en = "open",
-          fr = "ouverte") %>% 
+          fr = "ouverte") |> 
   add_row(en = "open, with a speed limit of 10 km/h",
-          fr = "ouverte, avec une limitation de vitesse à 10 km/h") %>% 
+          fr = "ouverte, avec une limitation de vitesse à 10 km/h") |> 
   add_row(en = "open, with traffic calming infrastructures at both entrances",
-          fr = "ouverte, avec des infrastructures de modération du trafic à chaque entrée") %>% 
+          fr = "ouverte, avec des infrastructures de modération du trafic à chaque entrée") |> 
   add_row(en = "open, with many parking spots",
-          fr = "ouverte, avec de nombreuses places de stationnement") %>% 
+          fr = "ouverte, avec de nombreuses places de stationnement") |> 
   add_row(en = "closed, with fences at both entrances",
-          fr = "fermée, avec des barrières à chaque entrée") %>% 
+          fr = "fermée, avec des barrières à chaque entrée") |> 
   add_row(en = "open, with several parking spots",
-          fr = "ouverte, avec plusieurs places de stationnement") %>% 
+          fr = "ouverte, avec plusieurs places de stationnement") |> 
   add_row(en = "open, with traffic calming infrastructure",
-          fr = "ouverte, avec des infrastructures de modération du trafic") %>% 
+          fr = "ouverte, avec des infrastructures de modération du trafic") |> 
   add_row(en = "open, with a speed limit of 15 km/h",
-          fr = "ouverte, avec une limitation de vitesse à 15 km/h") %>% 
+          fr = "ouverte, avec une limitation de vitesse à 15 km/h") |> 
   add_row(en = "open, with many parking spots.",
-          fr = "ouverte, avec de nombreuses places de stationnement.") %>% 
+          fr = "ouverte, avec de nombreuses places de stationnement.") |> 
   add_row(en = "partially closed to circulation as there is one garage at the end of the alley.",
-          fr = "partiellement fermée à la circulation puisqu'il y a un garage à chaque entrée de la ruelle.") %>% 
+          fr = "partiellement fermée à la circulation puisqu'il y a un garage à chaque entrée de la ruelle.") |> 
   add_row(en = "open, with several garages",
-          fr = "ouverte, avec plusieurs garages") %>% 
+          fr = "ouverte, avec plusieurs garages") |> 
   
   
   # Green alleys info by borough
   add_row(en = "citizen committee of at least 3 residents, 55% of the residents must approve the project",
-          fr = "comité citoyen d'au moins 3 résidents, 55% des résidents doivent être en faveur du projet") %>% 
+          fr = "comité citoyen d'au moins 3 résidents, 55% des résidents doivent être en faveur du projet") |> 
   add_row(en = "citizen committee of at least 3 residents, 51% of the residents must approve the project",
-          fr = "comité citoyen d'au moins 3 résidents, 51% des résidents doivent être en faveur du projet") %>% 
+          fr = "comité citoyen d'au moins 3 résidents, 51% des résidents doivent être en faveur du projet") |> 
   add_row(en = "citizen committee of at least 3 residents, 75% of the residents must approve the project",
-          fr = "comité citoyen d'au moins 3 résidents, 75% des résidents doivent être en faveur du projet") %>% 
+          fr = "comité citoyen d'au moins 3 résidents, 75% des résidents doivent être en faveur du projet") |> 
   add_row(en = "citizen committee of at least 5 residents, 51% of the residents must approve the project",
-          fr = "comité citoyen d'au moins 5 résidents, 51% des résidents doivent être en faveur du projet") %>% 
+          fr = "comité citoyen d'au moins 5 résidents, 51% des résidents doivent être en faveur du projet") |> 
   add_row(en = "citizen committee of at least 5 residents, 60% of the housing units must have responded to the survey, 50% + 1 of all dwellings must approve the project",
-          fr = "comité citoyen d'au moins 5 résidents, 60% des logements doivent avoir répondu au sondage, 50% + 1 de tous les logements doivent être en faveur du projet") %>% 
+          fr = "comité citoyen d'au moins 5 résidents, 60% des logements doivent avoir répondu au sondage, 50% + 1 de tous les logements doivent être en faveur du projet") |> 
   add_row(en = "citizen committee of 3 to 5 residents, 20% of the residents must approve the project (it used to be 50% until 2019)",
-          fr = "comité citoyen de 3 à 5 résidents, 20% des résidents doivent être en faveur du projet (50% avant 2019)") %>% 
+          fr = "comité citoyen de 3 à 5 résidents, 20% des résidents doivent être en faveur du projet (50% avant 2019)") |> 
   add_row(en = "citizen committee of at least 3 residents, 70% of the residents must respond to the survey and at least 50% must approve the project",
-          fr = "comité citoyen d'au moins 3 résidents, 70% des résidents doivent répondre au sondage et au moins 50% doivent être en faveur du projet") %>% 
+          fr = "comité citoyen d'au moins 3 résidents, 70% des résidents doivent répondre au sondage et au moins 50% doivent être en faveur du projet") |> 
   add_row(en = "citizen committe of at least 5 residents, 25% of the residents must approve the project, or 50% must be against the project for it not to happen",
-          fr = "comité citoyen d'au moins 5 résidents, 25% des résidents doivent être en faveur du projet, ou 50% doivent être contre pour que la ruelle ne soit pas créée") %>% 
+          fr = "comité citoyen d'au moins 5 résidents, 25% des résidents doivent être en faveur du projet, ou 50% doivent être contre pour que la ruelle ne soit pas créée") |> 
   add_row(en = "citizen committee of at least 3 residents, 51% of the residents need to approve the project. For an access closure application, 75% of the residents must respond to the survey and 51% must approve",
-          fr = "comité citoyen d'au moins 3 résidents, 51% des résidents doivent être en faveur du projet. Pour une demande de fermeture d'accès, 75% des résidents doivent répondre au sondage et 51% doivent être en faveur") %>% 
+          fr = "comité citoyen d'au moins 3 résidents, 51% des résidents doivent être en faveur du projet. Pour une demande de fermeture d'accès, 75% des résidents doivent répondre au sondage et 51% doivent être en faveur") |> 
   add_row(en = "management",
-          fr = "gestion") %>% 
+          fr = "gestion") |> 
   add_row(en = "Each project must be supported by a Non-Profit Organisation",
-          fr = "Chaque projet doit être soutenu par une organisation non-lucrative") %>% 
+          fr = "Chaque projet doit être soutenu par une organisation non-lucrative") |> 
   add_row(en = "the Program provides a maximum amount of 5,000$ for professional support, and a maximum amount of 20,000$ will be granted to the support organisation to develop the green alley",
-          fr = "le Programme fournit un montant maximum de 5,000$ pour du soutien professionnel, et un maximum de 20,000$ sera attribué à l'organisme qui soutient le projet pour développer la ruelle verte") %>% 
+          fr = "le Programme fournit un montant maximum de 5,000$ pour du soutien professionnel, et un maximum de 20,000$ sera attribué à l'organisme qui soutient le projet pour développer la ruelle verte") |> 
   add_row(en = "300 000$ between 2017 and 2019",
-          fr = "300 000$ entre 2017 et 2019") %>% 
+          fr = "300 000$ entre 2017 et 2019") |> 
   add_row(en = "In 2021, 25 000$ for green alleys and street gardens",
-          fr = "En 2021, 25 000$ pour les ruelles vertes et les jardins de rue") %>% 
+          fr = "En 2021, 25 000$ pour les ruelles vertes et les jardins de rue") |> 
   
   # Description of green alley module 
   add_row(en = paste0("Green alleys consist in the transformation of back ",
@@ -1883,7 +1883,7 @@ translation_fr <-
                       "la pollution sonore et atmosphérique, et optimiser la gestion des eaux. ",
                       "Elles peuvent aussi favoriser les interactions sociales ",
                       "et devenir des espaces récréatifs pour les enfants, ",
-                      "dans lesquels la circulation automobile est réduite.")) %>% 
+                      "dans lesquels la circulation automobile est réduite.")) |> 
   
   add_row(en = paste0("<p>The Green Alley Program currently in place in ", 
                       "Montreal was implemented in 1995. In August 2020, ",
@@ -1958,277 +1958,277 @@ translation_fr <-
                       "<li>Les ruelles qui ne sont ni vertes ni communautaires : ",
                       "elles sont abandonnées ou utilisées comme espaces de parking ",
                       "ou voies pour accéder à des garages privés, ",
-                      "sans aucun bénéfice environnemental ou social. ")) %>% 
+                      "sans aucun bénéfice environnemental ou social. ")) |> 
   add_row(en = "Total between two dates",
-          fr = "Total entre deux dates") %>% 
+          fr = "Total entre deux dates") |> 
   add_row(en = "Montreal stories",
-          fr = "Histoires de Montréal") %>% 
+          fr = "Histoires de Montréal") |> 
   add_row(en = "Various stories on Montreal's neighborhoods.",
-          fr = "Diverses histoires sur les quartiers de Montréal.") %>% 
+          fr = "Diverses histoires sur les quartiers de Montréal.") |> 
   add_row(en = "No extra information at this time.",
-          fr = "Aucune information supplémentaire pour le moment.") %>% 
+          fr = "Aucune information supplémentaire pour le moment.") |> 
   add_row(en = "Accessibility to opportunities",
-          fr = "Accessibilité aux opportunités") %>% 
+          fr = "Accessibilité aux opportunités") |> 
   add_row(en = "Accessibility (the ease of reaching desired destinations) is the most important element of a transport network. This module displays what is accessible on public transit within 30 minutes’ “door-to-door” travel time. Clicking on individual census tracts shows which other census tracts are reachable within a given travel time and at a chosen period of the day (peak, off-peak, and night).",
-          fr = "L'accessibilité (la facilité d'atteindre les destinations souhaitées) est l'élément le plus important d'un réseau de transport. Ce module affiche ce qui est accessible en transport public dans un délai de 30 minutes de trajet “porte à porte”. En cliquant sur des secteurs de recensement individuels, on peut voir quels autres secteurs de recensement sont accessibles dans un temps de trajet donné et à une période choisie de la journée (heures de pointe, heures creuses et nuit).") %>% 
+          fr = "L'accessibilité (la facilité d'atteindre les destinations souhaitées) est l'élément le plus important d'un réseau de transport. Ce module affiche ce qui est accessible en transport public dans un délai de 30 minutes de trajet “porte à porte”. En cliquant sur des secteurs de recensement individuels, on peut voir quels autres secteurs de recensement sont accessibles dans un temps de trajet donné et à une période choisie de la journée (heures de pointe, heures creuses et nuit).") |> 
   add_row(en = "Total jobs (weekday peak)",
-          fr = "Emplois totaux (pic en semaine)") %>% 
+          fr = "Emplois totaux (pic en semaine)") |> 
   add_row(en = "the total number of jobs accessible within 30 minutes at weekday peak service",
-          fr = "le nombre total d'emplois accessibles en 30 minutes aux heures de pointe en semaine") %>% 
+          fr = "le nombre total d'emplois accessibles en 30 minutes aux heures de pointe en semaine") |> 
   add_row(en = "building",
-          fr = "bâtiment") %>% 
+          fr = "bâtiment") |> 
   add_row(en = "buildings",
-          fr = "bâtiment") %>% 
+          fr = "bâtiment") |> 
   add_row(en = "street",
-          fr = "rue") %>% 
+          fr = "rue") |> 
   add_row(en = "streets",
-          fr = "rues") %>% 
+          fr = "rues") |> 
   add_row(en = "The dissemination area around {select_name$name}",
-          fr = "L'aire de diffusion autour de {select_name$name} ") %>% 
+          fr = "L'aire de diffusion autour de {select_name$name} ") |> 
   add_row(en = "street",
-          fr = "rue") %>% 
+          fr = "rue") |> 
   add_row(en = "Census tract {select_name$name}",
-          fr = "Secteur de recensement {select_name$name} ") %>% 
+          fr = "Secteur de recensement {select_name$name} ") |> 
   add_row(en = "Dissemination area {select_name$name}",
-          fr = "Zone de diffusion {select_name$name} ") %>% 
+          fr = "Zone de diffusion {select_name$name} ") |> 
   add_row(en = "The area around {select_name$name}",
-          fr = "La zone autour de {select_name$name} ") %>% 
+          fr = "La zone autour de {select_name$name} ") |> 
   add_row(en = "At the {z$scale_sing} scale, {z$exp_left} varies from {z$min_val} to {z$max_val}, with an average value of {z$mean_val} and a median value of {z$median_val}. Two thirds of {z$scale_plural} have a score between {z$quant_low} and {z$quant_high}.",
-          fr = "À l'échelle {z$scale_sing}, {z$exp_left} varie de {z$min_val} à {z$max_val} avec une valeur moyenne de {z$mean_val} et une valeur médiane de {z$median_val} . Les deux tiers {z$scale_plural} ont un score compris entre {z$quant_low} et {z$quant_high} .") %>% 
+          fr = "À l'échelle {z$scale_sing}, {z$exp_left} varie de {z$min_val} à {z$max_val} avec une valeur moyenne de {z$mean_val} et une valeur médiane de {z$median_val} . Les deux tiers {z$scale_plural} ont un score compris entre {z$quant_low} et {z$quant_high} .") |> 
   add_row(en = "Total jobs (weekday peak)",
-          fr = "Emplois totaux (pic en semaine)") %>% 
+          fr = "Emplois totaux (pic en semaine)") |> 
   add_row(en = "<p>This module focuses on public transit accessibility to a set of key destinations: all jobs, ‘low-skill’ jobs (those not requiring university education), ‘high-skill’ jobs (those usually requiring university education), jobs with an annual salary of <$30,000, and schools and healthcare facilities.<p> This analysis allows for the identification of areas of the city or population groups that are in need of improved service, it also allows for the analysis of change throughout the day and week. It is based on 'Cumulative Opportunities' accessibility, meaning it displays the total number of destinations available within 30 minutes ‘door-to-door’ travel time (including walking to reach station, waiting time, in-vehicle time). For more info on how accessibility metrics are calculated see <a href = 'https://conservancy.umn.edu/bitstream/handle/11299/199892/CTS13-20_Access-Across-America.pdf'>'Access Across America'</a>.",
-          fr = "<p>Ce module se concentre sur l'accessibilité des transports en commun à un ensemble de destinations clés : tous les emplois, les emplois \' peu qualifiés \' (ceux qui ne nécessitent pas d'études universitaires), les emplois \' hautement qualifiés \' (ceux qui nécessitent généralement des études universitaires), les emplois dont le salaire annuel est <30 000 $, ainsi que les écoles et les établissements de santé.<p>Cette analyse permet d'identifier les zones de la ville ou les groupes de population qui ont besoin d'une amélioration du service, et elle permet également d'analyser les changements tout au long de la journée et de la semaine. Elle est basée sur l'accessibilité \' Opportunités cumulées \', ce qui signifie qu'elle affiche le nombre total de destinations disponibles dans un délai de 30 minutes de trajet \' porte à porte \' (y compris la marche pour atteindre la station, le temps d'attente, le temps dans le véhicule). Pour plus d'informations sur la façon dont les mesures d'accessibilité sont calculées, voir <a href = 'https://conservancy.umn.edu/bitstream/handle/11299/199892/CTS13-20_Access-Across-America.pdf'>'Access Across America'</a>.") %>% 
+          fr = "<p>Ce module se concentre sur l'accessibilité des transports en commun à un ensemble de destinations clés : tous les emplois, les emplois \' peu qualifiés \' (ceux qui ne nécessitent pas d'études universitaires), les emplois \' hautement qualifiés \' (ceux qui nécessitent généralement des études universitaires), les emplois dont le salaire annuel est <30 000 $, ainsi que les écoles et les établissements de santé.<p>Cette analyse permet d'identifier les zones de la ville ou les groupes de population qui ont besoin d'une amélioration du service, et elle permet également d'analyser les changements tout au long de la journée et de la semaine. Elle est basée sur l'accessibilité \' Opportunités cumulées \', ce qui signifie qu'elle affiche le nombre total de destinations disponibles dans un délai de 30 minutes de trajet \' porte à porte \' (y compris la marche pour atteindre la station, le temps d'attente, le temps dans le véhicule). Pour plus d'informations sur la façon dont les mesures d'accessibilité sont calculées, voir <a href = 'https://conservancy.umn.edu/bitstream/handle/11299/199892/CTS13-20_Access-Across-America.pdf'>'Access Across America'</a>.") |> 
   add_row(en = "<p>'{z$title_left}' has a {z$strong} {z$pos} correlation ({z$corr_disp}) with '{z$title_right}' at the {z$scale_sing} scale.<p>This means that, in general, {z$scale_plural} with a higher {sub('^the', '', z$exp_left)} tend to have a {z$higher} {sub('^the', '', z$exp_right)}, {z$high_low_disclaimer}.",
-          fr = "<p>'{z$title_left}' a une corrélation {z$strong} {z$pos} ( {z$corr_disp} ) avec '{z$title_right}' à l'échelle {z$scale_sing}. <p>Cela signifie que, en général, les {z$scale_plural} avec un plus grand {sub('^le', '', z$exp_left)} ont tendance à avoir un {z$higher}  {sub('^le', '', z$exp_right)} , {z$high_low_disclaimer} .") %>% 
+          fr = "<p>'{z$title_left}' a une corrélation {z$strong} {z$pos} ( {z$corr_disp} ) avec '{z$title_right}' à l'échelle {z$scale_sing}. <p>Cela signifie que, en général, les {z$scale_plural} avec un plus grand {sub('^le', '', z$exp_left)} ont tendance à avoir un {z$higher}  {sub('^le', '', z$exp_right)} , {z$high_low_disclaimer} .") |> 
   add_row(en = "Healthy urban features",
-          fr = "Caractéristiques d'une ville saine") %>% 
+          fr = "Caractéristiques d'une ville saine") |> 
   add_row(en = "Housing system",
-          fr = "Logement") %>% 
+          fr = "Logement") |> 
   add_row(en = "Road safety",
-          fr = "Sécurité routière") %>% 
+          fr = "Sécurité routière") |> 
   add_row(en = "The science behind SUS",
-          fr = "La science derrière SUS") %>% 
+          fr = "La science derrière SUS") |> 
   add_row(en = "Timing",
-          fr = "Timing") %>% 
+          fr = "Timing") |> 
   add_row(en = "Destination type",
-          fr = "Type de destination") %>% 
+          fr = "Type de destination") |> 
   add_row(en = "Time threshold",
-          fr = "Seuil de temps") %>% 
+          fr = "Seuil de temps") |> 
   add_row(en = "Focus on green alleys visited by our team",
-          fr = "Focus sur les allées vertes visitées par notre équipe") %>% 
+          fr = "Focus sur les allées vertes visitées par notre équipe") |> 
   add_row(en = "Grouping",
-          fr = "Regroupement") %>% 
+          fr = "Regroupement") |> 
   add_row(en = "Type of crash",
-          fr = "Type d'accident") %>% 
+          fr = "Type d'accident") |> 
   add_row(en = "Select a year",
-          fr = "Sélectionnez une année") %>% 
+          fr = "Sélectionnez une année") |> 
   add_row(en = "Select two years",
-          fr = "Sélectionnez deux années") %>% 
+          fr = "Sélectionnez deux années") |> 
   add_row(en = "Select two dates",
-          fr = "Sélectionnez deux dates") %>% 
+          fr = "Sélectionnez deux dates") |> 
   add_row(en = "Back to the map",
-          fr = "Retour à la carte") %>% 
+          fr = "Retour à la carte") |> 
   add_row(en = "Select two time periods",
-          fr = "Sélectionnez deux périodes de temps") %>% 
+          fr = "Sélectionnez deux périodes de temps") |> 
   add_row(en = "All jobs",
-          fr = "Tous les emplois") %>% 
+          fr = "Tous les emplois") |> 
   add_row(en = "Low-skill jobs",
-          fr = "Emplois peu qualifiés") %>% 
+          fr = "Emplois peu qualifiés") |> 
   add_row(en = "High-skill jobs",
-          fr = "Emplois hautement qualifiés") %>% 
+          fr = "Emplois hautement qualifiés") |> 
   add_row(en = "Jobs < $30,000 annually",
-          fr = "Emplois < 30 000 $ par an") %>% 
+          fr = "Emplois < 30 000 $ par an") |> 
   add_row(en = "Schools",
-          fr = "Écoles") %>% 
+          fr = "Écoles") |> 
   add_row(en = "Healthcare facilities",
-          fr = "Établissements de soins de santé") %>% 
+          fr = "Établissements de soins de santé") |> 
   add_row(en = "Weekday peak",
-          fr = "Pic en semaine") %>% 
+          fr = "Pic en semaine") |> 
   add_row(en = "Weekday off-peak",
-          fr = "Heures creuses en semaine") %>% 
+          fr = "Heures creuses en semaine") |> 
   add_row(en = "Weekday night",
-          fr = "Nuit de semaine") %>% 
+          fr = "Nuit de semaine") |> 
   add_row(en = "Weekend peak",
-          fr = "Pic du week-end") %>% 
+          fr = "Pic du week-end") |> 
   add_row(en = "Weekend off-peak",
-          fr = "Heures creuses en week-end") %>% 
+          fr = "Heures creuses en week-end") |> 
   add_row(en = "Weekend night",
-          fr = "Nuit du week-end") %>% 
+          fr = "Nuit du week-end") |> 
   add_row(en = "{select_name$name_2} of {out$place_name}",
-          fr = "{select_name$name_2} de {out$place_name}") %>% 
+          fr = "{select_name$name_2} de {out$place_name}") |> 
   add_row(en = "increased",
-          fr = "augmentation de") %>% 
+          fr = "augmentation de") |> 
   add_row(en = "<strong>{z$place_heading}</strong><p>{z$place_name} has a population of {z$pop} and a '{z$title_left}' score ({z$exp_left}) of {z$val_left}, which is {z$larger} the region-wide median of {z$median_val}.<p>{z$place_name} has a {z$high} relative score for this indicator, with {sub('^the', 'a', z$exp_left)} higher than {z$percentile} of {z$scale_plural} in the Montreal region.",
-          fr = "<strong>{z$place_heading}</strong><p> {z$place_name} a une population de {z$pop} et un '{z$title_left}' score ({z$exp_left}) de {z$val_left}, ce qui est {z$larger} la médiane régionale de {z$median_val}.<p>{z$place_name} a une indice relativement {z$high} pour cet indicateur, avec {sub('^the', 'a', z$exp_left)} plus élevé que {z$percentile} de {z$scale_plural} dans la région de Montréal.") %>% 
+          fr = "<strong>{z$place_heading}</strong><p> {z$place_name} a une population de {z$pop} et un '{z$title_left}' score ({z$exp_left}) de {z$val_left}, ce qui est {z$larger} la médiane régionale de {z$median_val}.<p>{z$place_name} a une indice relativement {z$high} pour cet indicateur, avec {sub('^the', 'a', z$exp_left)} plus élevé que {z$percentile} de {z$scale_plural} dans la région de Montréal.") |> 
   add_row(en = "<strong>{z$place_heading}</strong><p>{z$place_name} has a population of {z$pop}, a '{z$title_left}' value of {z$val_left}, and a '{z$title_right}' value of {z$val_right}. <p>These two scores are {z$relative_position}, in relative terms. {z$place_name} has {sub('^the', 'a', z$exp_left)} higher than {z$perc_left} of {z$scale_plural} and {sub('^the', 'a', z$exp_right)} higher than {z$perc_right} of {z$scale_plural} in the Montreal region.",
-          fr = "<strong>{z$place_heading}</strong><p> {z$place_name} a une population de {z$pop}. Ce dernier a une valeur de '{z$title_left}' de {z$val_left} et une valeur de '{z$title_right}' de {z$val_right}. <p>Ces deux scores sont {z$relative_position} en termes relatifs. {z$place_name} a {sub('^le', 'a', z$exp_left)} plus élevé que {z$perc_left} des {z$scale_plural} et {sub('^le', 'a un', z$exp_right)} plus élevé que {z$perc_right} des {z$scale_plural} dans la région de Montréal.") %>% 
+          fr = "<strong>{z$place_heading}</strong><p> {z$place_name} a une population de {z$pop}. Ce dernier a une valeur de '{z$title_left}' de {z$val_left} et une valeur de '{z$title_right}' de {z$val_right}. <p>Ces deux scores sont {z$relative_position} en termes relatifs. {z$place_name} a {sub('^le', 'a', z$exp_left)} plus élevé que {z$perc_left} des {z$scale_plural} et {sub('^le', 'a un', z$exp_right)} plus élevé que {z$perc_right} des {z$scale_plural} dans la région de Montréal.") |> 
   add_row(en = "Total jobs (weekday off-peak)",
-          fr = "Emplois totaux (jours de semaine en dehors des heures de pointe)") %>% 
+          fr = "Emplois totaux (jours de semaine en dehors des heures de pointe)") |> 
   add_row(en = "the total number of jobs accessible within 30 minutes at weekday off-peak service",
-          fr = "le nombre total d'emplois accessibles dans un délai de 30 minutes en service de semaine en heures creuses") %>% 
+          fr = "le nombre total d'emplois accessibles dans un délai de 30 minutes en service de semaine en heures creuses") |> 
   add_row(en = "Total jobs (weekday night)",
-          fr = "Total des emplois (nuit en semaine)") %>% 
+          fr = "Total des emplois (nuit en semaine)") |> 
   add_row(en = "the total number of jobs accessible within 30 minutes at weekday night service",
-          fr = "le nombre total d'emplois accessibles en 30 minutes en service de nuit en semaine") %>% 
+          fr = "le nombre total d'emplois accessibles en 30 minutes en service de nuit en semaine") |> 
   add_row(en = "Total jobs (weekday peak)",
-          fr = "Emplois totaux (pic en semaine)") %>% 
+          fr = "Emplois totaux (pic en semaine)") |> 
   add_row(en = "Total jobs (weekday off-peak)",
-          fr = "Emplois totaux (jours de semaine en dehors des heures de pointe)") %>% 
+          fr = "Emplois totaux (jours de semaine en dehors des heures de pointe)") |> 
   add_row(en = "Total jobs (weekday night)",
-          fr = "Total des emplois (nuit en semaine)") %>% 
+          fr = "Total des emplois (nuit en semaine)") |> 
   add_row(en = "Total jobs (weekend peak)",
-          fr = "Total des emplois (pic du week-end)") %>% 
+          fr = "Total des emplois (pic du week-end)") |> 
   add_row(en = "Total jobs (weekend off-peak)",
-          fr = "Total des emplois (week-end hors heures de pointe)") %>% 
+          fr = "Total des emplois (week-end hors heures de pointe)") |> 
   add_row(en = "Total jobs (weekend night)",
-          fr = "Total des emplois (week-end nuit)") %>% 
+          fr = "Total des emplois (week-end nuit)") |> 
   add_row(en = "Low-skill jobs (weekday peak)",
-          fr = "Emplois peu qualifiés (pic en semaine)") %>% 
+          fr = "Emplois peu qualifiés (pic en semaine)") |> 
   add_row(en = "Low-skill jobs (weekday off-peak)",
-          fr = "Emplois peu qualifiés (en dehors des heures de pointe en semaine)") %>% 
+          fr = "Emplois peu qualifiés (en dehors des heures de pointe en semaine)") |> 
   add_row(en = "Low-skill jobs (weekday night)",
-          fr = "Emplois peu qualifiés (nuit en semaine)") %>% 
+          fr = "Emplois peu qualifiés (nuit en semaine)") |> 
   add_row(en = "Low-skill jobs (weekend peak)",
-          fr = "Emplois peu qualifiés (pic du week-end)") %>% 
+          fr = "Emplois peu qualifiés (pic du week-end)") |> 
   add_row(en = "Low-skill jobs (weekend off-peak)",
-          fr = "Emplois peu qualifiés (week-end en heures creuses)") %>% 
+          fr = "Emplois peu qualifiés (week-end en heures creuses)") |> 
   add_row(en = "Low-skill jobs (weekend night)",
-          fr = "Emplois peu qualifiés (week-end et nuit)") %>% 
+          fr = "Emplois peu qualifiés (week-end et nuit)") |> 
   add_row(en = "High-skill jobs (weekday peak)",
-          fr = "Emplois hautement qualifiés (pic en semaine)") %>% 
+          fr = "Emplois hautement qualifiés (pic en semaine)") |> 
   add_row(en = "High-skill jobs (weekday off-peak)",
-          fr = "Emplois hautement qualifiés (en semaine en dehors des heures de pointe)") %>% 
+          fr = "Emplois hautement qualifiés (en semaine en dehors des heures de pointe)") |> 
   add_row(en = "High-skill jobs (weekday night)",
-          fr = "Emplois hautement qualifiés (nuit en semaine)") %>% 
+          fr = "Emplois hautement qualifiés (nuit en semaine)") |> 
   add_row(en = "High-skill jobs (weekend peak)",
-          fr = "Emplois hautement qualifiés (pic du week-end)") %>% 
+          fr = "Emplois hautement qualifiés (pic du week-end)") |> 
   add_row(en = "High-skill jobs (weekend off-peak)",
-          fr = "Emplois hautement qualifiés (week-end en heures creuses)") %>% 
+          fr = "Emplois hautement qualifiés (week-end en heures creuses)") |> 
   add_row(en = "High-skill jobs (weekend night)",
-          fr = "Emplois hautement qualifiés (week-end et nuit)") %>% 
+          fr = "Emplois hautement qualifiés (week-end et nuit)") |> 
   add_row(en = "Low-income jobs (weekday peak)",
-          fr = "Emplois à faibles revenus (pic en semaine)") %>% 
+          fr = "Emplois à faibles revenus (pic en semaine)") |> 
   add_row(en = "Low-income jobs (weekday off-peak)",
-          fr = "Emplois à faible revenu (en semaine en dehors des heures de pointe)") %>% 
+          fr = "Emplois à faible revenu (en semaine en dehors des heures de pointe)") |> 
   add_row(en = "Low-income jobs (weekday night)",
-          fr = "Emplois à faible revenu (nuit en semaine)") %>% 
+          fr = "Emplois à faible revenu (nuit en semaine)") |> 
   add_row(en = "Low-income jobs (weekend peak)",
-          fr = "Emplois à faible revenu (pic du week-end)") %>% 
+          fr = "Emplois à faible revenu (pic du week-end)") |> 
   add_row(en = "Low-income jobs (weekend off-peak)",
-          fr = "Emplois à faible revenu (week-end en heures creuses)") %>% 
+          fr = "Emplois à faible revenu (week-end en heures creuses)") |> 
   add_row(en = "Low-income jobs (weekend night)",
-          fr = "Emplois à faible revenu (week-end nuit)") %>% 
+          fr = "Emplois à faible revenu (week-end nuit)") |> 
   add_row(en = "Schools (weekday peak)",
-          fr = "Écoles (pic en semaine)") %>% 
+          fr = "Écoles (pic en semaine)") |> 
   add_row(en = "Schools (weekday off-peak)",
-          fr = "Écoles (jours de semaine en dehors des heures de pointe)") %>% 
+          fr = "Écoles (jours de semaine en dehors des heures de pointe)") |> 
   add_row(en = "Schools (weekday night)",
-          fr = "Écoles (nuit en semaine)") %>% 
+          fr = "Écoles (nuit en semaine)") |> 
   add_row(en = "Schools (weekend peak)",
-          fr = "Écoles (pic du week-end)") %>% 
+          fr = "Écoles (pic du week-end)") |> 
   add_row(en = "Schools (weekend off-peak)",
-          fr = "Écoles (week-end en heures creuses)") %>% 
+          fr = "Écoles (week-end en heures creuses)") |> 
   add_row(en = "Schools (weekend night)",
-          fr = "Écoles (nuit du week-end)") %>% 
+          fr = "Écoles (nuit du week-end)") |> 
   add_row(en = "Healthcare (weekday peak)",
-          fr = "Santé (pic en semaine)") %>% 
+          fr = "Santé (pic en semaine)") |> 
   add_row(en = "Healthcare (weekday off-peak)",
-          fr = "Soins de santé (jours de semaine en dehors des heures de pointe)") %>% 
+          fr = "Soins de santé (jours de semaine en dehors des heures de pointe)") |> 
   add_row(en = "Healthcare (weekday night)",
-          fr = "Soins de santé (nuit en semaine)") %>% 
+          fr = "Soins de santé (nuit en semaine)") |> 
   add_row(en = "Healthcare (weekend peak)",
-          fr = "Soins de santé (pic de week-end)") %>% 
+          fr = "Soins de santé (pic de week-end)") |> 
   add_row(en = "Healthcare (weekend off-peak)",
-          fr = "Soins de santé (week-end en heures creuses)") %>% 
+          fr = "Soins de santé (week-end en heures creuses)") |> 
   add_row(en = "Healthcare (weekend night)",
-          fr = "Soins de santé (week-end nuit)") %>% 
+          fr = "Soins de santé (week-end nuit)") |> 
   add_row(en = "the total number of jobs accessible within 30 minutes at weekday peak service",
-          fr = "le nombre total d'emplois accessibles en 30 minutes aux heures de pointe en semaine") %>% 
+          fr = "le nombre total d'emplois accessibles en 30 minutes aux heures de pointe en semaine") |> 
   add_row(en = "the total number of jobs accessible within 30 minutes at weekday off-peak service",
-          fr = "le nombre total d'emplois accessibles dans un délai de 30 minutes en service de semaine en heures creuses") %>% 
+          fr = "le nombre total d'emplois accessibles dans un délai de 30 minutes en service de semaine en heures creuses") |> 
   add_row(en = "the total number of jobs accessible within 30 minutes at weekday night service",
-          fr = "le nombre total d'emplois accessibles en 30 minutes en service de nuit en semaine") %>% 
+          fr = "le nombre total d'emplois accessibles en 30 minutes en service de nuit en semaine") |> 
   add_row(en = "the total number of jobs accessible within 30 minutes at weekend peak service",
-          fr = "le nombre total d'emplois accessibles dans un délai de 30 minutes aux heures de pointe du week-end") %>% 
+          fr = "le nombre total d'emplois accessibles dans un délai de 30 minutes aux heures de pointe du week-end") |> 
   add_row(en = "the total number of jobs accessible within 30 minutes at weekend off-peak service",
-          fr = "le nombre total d'emplois accessibles dans un délai de 30 minutes en service hors-pointe le week-end") %>% 
+          fr = "le nombre total d'emplois accessibles dans un délai de 30 minutes en service hors-pointe le week-end") |> 
   add_row(en = "the total number of jobs accessible within 30 minutes at weekend night service",
-          fr = "le nombre total d'emplois accessibles dans un délai de 30 minutes en service de nuit le week-end") %>% 
+          fr = "le nombre total d'emplois accessibles dans un délai de 30 minutes en service de nuit le week-end") |> 
   add_row(en = "the number of low-skill jobs accessible within 30 minutes at weekday peak service",
-          fr = "le nombre d'emplois peu qualifiés accessibles en 30 minutes aux heures de pointe en semaine") %>% 
+          fr = "le nombre d'emplois peu qualifiés accessibles en 30 minutes aux heures de pointe en semaine") |> 
   add_row(en = "the number of low-skill jobs accessible within 30 minutes at weekday off-peak service",
-          fr = "le nombre d'emplois peu qualifiés accessibles dans un délai de 30 minutes en semaine en heures creuses") %>% 
+          fr = "le nombre d'emplois peu qualifiés accessibles dans un délai de 30 minutes en semaine en heures creuses") |> 
   add_row(en = "the number of low-skill jobs accessible within 30 minutes at weekday night service",
-          fr = "le nombre d'emplois peu qualifiés accessibles en 30 minutes en service de nuit en semaine") %>% 
+          fr = "le nombre d'emplois peu qualifiés accessibles en 30 minutes en service de nuit en semaine") |> 
   add_row(en = "the number of low-skill jobs accessible within 30 minutes at weekend peak service",
-          fr = "le nombre d'emplois peu qualifiés accessibles en moins de 30 minutes aux heures de pointe du week-end") %>% 
+          fr = "le nombre d'emplois peu qualifiés accessibles en moins de 30 minutes aux heures de pointe du week-end") |> 
   add_row(en = "the number of low-skill jobs accessible within 30 minutes at weekend off-peak service",
-          fr = "le nombre d'emplois peu qualifiés accessibles dans un délai de 30 minutes en service de week-end hors pointe") %>% 
+          fr = "le nombre d'emplois peu qualifiés accessibles dans un délai de 30 minutes en service de week-end hors pointe") |> 
   add_row(en = "the number of low-skill jobs accessible within 30 minutes at weekend night service",
-          fr = "le nombre d'emplois peu qualifiés accessibles à moins de 30 minutes en service de nuit le week-end") %>% 
+          fr = "le nombre d'emplois peu qualifiés accessibles à moins de 30 minutes en service de nuit le week-end") |> 
   add_row(en = "the number of high-skill jobs accessible within 30 minutes at weekday peak service",
-          fr = "le nombre d'emplois hautement qualifiés accessibles en 30 minutes aux heures de pointe en semaine") %>% 
+          fr = "le nombre d'emplois hautement qualifiés accessibles en 30 minutes aux heures de pointe en semaine") |> 
   add_row(en = "the number of high-skill jobs accessible within 30 minutes at weekday off-peak service",
-          fr = "le nombre d'emplois hautement qualifiés accessibles dans un délai de 30 minutes en semaine en heures creuses") %>% 
+          fr = "le nombre d'emplois hautement qualifiés accessibles dans un délai de 30 minutes en semaine en heures creuses") |> 
   add_row(en = "the number of high-skill jobs accessible within 30 minutes at weekday night service",
-          fr = "le nombre d'emplois hautement qualifiés accessibles dans un délai de 30 minutes en service de nuit en semaine") %>% 
+          fr = "le nombre d'emplois hautement qualifiés accessibles dans un délai de 30 minutes en service de nuit en semaine") |> 
   add_row(en = "the number of high-skill jobs accessible within 30 minutes at weekend peak service",
-          fr = "le nombre d'emplois hautement qualifiés accessibles en moins de 30 minutes aux heures de pointe du week-end") %>% 
+          fr = "le nombre d'emplois hautement qualifiés accessibles en moins de 30 minutes aux heures de pointe du week-end") |> 
   add_row(en = "the number of high-skill jobs accessible within 30 minutes at weekend off-peak service",
-          fr = "le nombre d'emplois hautement qualifiés accessibles dans un délai de 30 minutes en service hors-pointe le week-end") %>% 
+          fr = "le nombre d'emplois hautement qualifiés accessibles dans un délai de 30 minutes en service hors-pointe le week-end") |> 
   add_row(en = "the number of high-skill jobs accessible within 30 minutes at weekend night service",
-          fr = "le nombre d'emplois hautement qualifiés accessibles dans un délai de 30 minutes en service de nuit le week-end") %>% 
+          fr = "le nombre d'emplois hautement qualifiés accessibles dans un délai de 30 minutes en service de nuit le week-end") |> 
   add_row(en = "the number of jobs paying less than $30,000 accessible within 30 minutes at weekday peak service",
-          fr = "le nombre d'emplois rémunérés à moins de 30 000 dollars accessibles en 30 minutes aux heures de pointe en semaine") %>% 
+          fr = "le nombre d'emplois rémunérés à moins de 30 000 dollars accessibles en 30 minutes aux heures de pointe en semaine") |> 
   add_row(en = "the number of jobs paying less than $30,000 accessible within 30 minutes at weekday off-peak service",
-          fr = "le nombre d'emplois rémunérés à moins de 30 000 dollars accessibles dans un délai de 30 minutes en semaine en heures creuses") %>% 
+          fr = "le nombre d'emplois rémunérés à moins de 30 000 dollars accessibles dans un délai de 30 minutes en semaine en heures creuses") |> 
   add_row(en = "the number of jobs paying less than $30,000 accessible within 30 minutes at weekday night service",
-          fr = "le nombre d'emplois rémunérés à moins de 30 000 dollars accessibles dans un délai de 30 minutes en service de nuit en semaine") %>% 
+          fr = "le nombre d'emplois rémunérés à moins de 30 000 dollars accessibles dans un délai de 30 minutes en service de nuit en semaine") |> 
   add_row(en = "the number of jobs paying less than $30,000 accessible within 30 minutes at weekend peak service",
-          fr = "le nombre d'emplois rémunérés à moins de 30 000 dollars accessibles en 30 minutes aux heures de pointe du week-end") %>% 
+          fr = "le nombre d'emplois rémunérés à moins de 30 000 dollars accessibles en 30 minutes aux heures de pointe du week-end") |> 
   add_row(en = "the number of jobs paying less than $30,000 accessible within 30 minutes at weekend off-peak service",
-          fr = "le nombre d'emplois rémunérés à moins de 30 000 dollars accessibles dans un délai de 30 minutes en service hors-pointe le week-end") %>% 
+          fr = "le nombre d'emplois rémunérés à moins de 30 000 dollars accessibles dans un délai de 30 minutes en service hors-pointe le week-end") |> 
   add_row(en = "the number of jobs paying less than $30,000 accessible within 30 minutes at weekend night service",
-          fr = "le nombre d'emplois rémunérés à moins de 30 000 dollars accessibles dans un délai de 30 minutes en service de nuit le week-end") %>% 
+          fr = "le nombre d'emplois rémunérés à moins de 30 000 dollars accessibles dans un délai de 30 minutes en service de nuit le week-end") |> 
   add_row(en = "the number of schools accessible within 30 minutes at weekday peak service",
-          fr = "le nombre d'écoles accessibles en 30 minutes aux heures de pointe en semaine") %>% 
+          fr = "le nombre d'écoles accessibles en 30 minutes aux heures de pointe en semaine") |> 
   add_row(en = "the number of schools accessible within 30 minutes at weekday off-peak service",
-          fr = "le nombre d'écoles accessibles en moins de 30 minutes aux heures creuses des jours de semaine") %>% 
+          fr = "le nombre d'écoles accessibles en moins de 30 minutes aux heures creuses des jours de semaine") |> 
   add_row(en = "the number of schools accessible within 30 minutes at weekday night service",
-          fr = "le nombre d'écoles accessibles en moins de 30 minutes en service de nuit en semaine") %>% 
+          fr = "le nombre d'écoles accessibles en moins de 30 minutes en service de nuit en semaine") |> 
   add_row(en = "the number of schools accessible within 30 minutes at weekend peak service",
-          fr = "le nombre d'écoles accessibles en moins de 30 minutes aux heures de pointe du week-end") %>% 
+          fr = "le nombre d'écoles accessibles en moins de 30 minutes aux heures de pointe du week-end") |> 
   add_row(en = "the number of schools accessible within 30 minutes at weekend off-peak service",
-          fr = "le nombre d'écoles accessibles dans un délai de 30 minutes en service de week-end en heures creuses") %>% 
+          fr = "le nombre d'écoles accessibles dans un délai de 30 minutes en service de week-end en heures creuses") |> 
   add_row(en = "the number of schools accessible within 30 minutes at weekend night service",
-          fr = "le nombre d'écoles accessibles en moins de 30 minutes en service de nuit le week-end") %>% 
+          fr = "le nombre d'écoles accessibles en moins de 30 minutes en service de nuit le week-end") |> 
   add_row(en = "the number of healthcare facilities accessible within 30 minutes at weekday peak service",
-          fr = "le nombre d'établissements de soins de santé accessibles en 30 minutes aux heures de pointe en semaine") %>% 
+          fr = "le nombre d'établissements de soins de santé accessibles en 30 minutes aux heures de pointe en semaine") |> 
   add_row(en = "the number of healthcare facilities accessible within 30 minutes at weekday off-peak service",
-          fr = "le nombre d'établissements de soins de santé accessibles dans un délai de 30 minutes en semaine en heures creuses") %>% 
+          fr = "le nombre d'établissements de soins de santé accessibles dans un délai de 30 minutes en semaine en heures creuses") |> 
   add_row(en = "the number of healthcare facilities within 30 minutes at weekday night service",
-          fr = "le nombre d'établissements de soins de santé situés à moins de 30 minutes en service de nuit en semaine") %>% 
+          fr = "le nombre d'établissements de soins de santé situés à moins de 30 minutes en service de nuit en semaine") |> 
   add_row(en = "the number of healthcare facilities accessible within 30 minutes at weekend peak service",
-          fr = "le nombre d'établissements de soins de santé accessibles en moins de 30 minutes aux heures de pointe du week-end") %>% 
+          fr = "le nombre d'établissements de soins de santé accessibles en moins de 30 minutes aux heures de pointe du week-end") |> 
   add_row(en = "the number of healthcare facilities accessible within 30 minutes at weekend off-peak service",
-          fr = "le nombre d'établissements de soins de santé accessibles dans un délai de 30 minutes en service de week-end en heures creuses") %>% 
+          fr = "le nombre d'établissements de soins de santé accessibles dans un délai de 30 minutes en service de week-end en heures creuses") |> 
   add_row(en = "the number of healthcare facilities accessible within 30 minutes at weekend night service",
-          fr = "le nombre d'établissements de soins de santé accessibles en moins de 30 minutes en service de nuit le week-end") %>% 
+          fr = "le nombre d'établissements de soins de santé accessibles en moins de 30 minutes en service de nuit le week-end") |> 
   add_row(en = "<h1><b><center>SUS</center></b></h1>",
-          fr = "<h1><b><center>SUS</center></b></h1>") %>% 
+          fr = "<h1><b><center>SUS</center></b></h1>") |> 
   add_row(en = "<h2><b><center>Towards a sustainable city</center></b></h2>",
-          fr = "<h2><b><center>Vers une ville durable</center></b></h2>") %>% 
+          fr = "<h2><b><center>Vers une ville durable</center></b></h2>") |> 
   add_row(en = "<h3><b><center>SUS is a platform for integrating, exploring, and analyzing a wide range of urban sustainability data sources for the Montreal region across multiple spatial and temporal scales. SUS offers a robust set of tools for scenario modelling and analysis which will be useful for researchers, policymakers, communities, and individuals.</center></b></h3>",
-          fr = "<h3><b><center>SUS est une plateforme d'intégration, d'exploration et d'analyse d'un large éventail de sources de données sur la durabilité urbaine pour la région de Montréal à travers plusieurs échelles spatiales et temporelles. SUS offre un ensemble robuste d'outils pour la modélisation et l'analyse de scénarios qui seront utiles aux chercheurs, aux décideurs politiques, aux communautés et aux individus.</center></b></h3>") %>% 
+          fr = "<h3><b><center>SUS est une plateforme d'intégration, d'exploration et d'analyse d'un large éventail de sources de données sur la durabilité urbaine pour la région de Montréal à travers plusieurs échelles spatiales et temporelles. SUS offre un ensemble robuste d'outils pour la modélisation et l'analyse de scénarios qui seront utiles aux chercheurs, aux décideurs politiques, aux communautés et aux individus.</center></b></h3>") |> 
   add_row(en = "<h3>SUS embraces an inclusive vision of urban sustainability, allowing users to contextualize questions into larger frameworks of equity and accessibility. It serves as both a data-exploration tool and a knowledge and information-sharing resource, designed to encourage greater reflection on different urban sustainability issues, and on the communities which are most impacted by them.</h3>",
-          fr = "<h3>SUS adopte une vision inclusive de la durabilité urbaine, permettant aux utilisateurs de contextualiser les questions dans des cadres plus larges d'équité et d'accessibilité. Il sert à la fois d'outil d'exploration des données et de ressource de partage des connaissances et des informations, conçu pour encourager une plus grande réflexion sur les différentes questions de durabilité urbaine, et sur les communautés qui sont les plus touchées par celles-ci.</h3>") %>% 
+          fr = "<h3>SUS adopte une vision inclusive de la durabilité urbaine, permettant aux utilisateurs de contextualiser les questions dans des cadres plus larges d'équité et d'accessibilité. Il sert à la fois d'outil d'exploration des données et de ressource de partage des connaissances et des informations, conçu pour encourager une plus grande réflexion sur les différentes questions de durabilité urbaine, et sur les communautés qui sont les plus touchées par celles-ci.</h3>") |> 
   add_row(en = "<h3>The majority of the data used are publicly available and aggregated into thematic and place-based modules to allow a range of stakeholders greater accessibility to answering sustainability questions. SUS further mobilizes both qualitative and quantitative research to bring questions without clear datasets into the discussion.</h3>",
-          fr = "<h3>La majorité des données utilisées sont disponibles publiquement et agrégées en modules thématiques et par lieu pour permettre à un éventail de parties prenantes une plus grande accessibilité pour répondre aux questions de durabilité. Le SUS mobilise en outre des recherches qualitatives et quantitatives afin d'introduire dans la discussion des questions ne disposant pas d'ensembles de données clairs.</h3>") %>% 
+          fr = "<h3>La majorité des données utilisées sont disponibles publiquement et agrégées en modules thématiques et par lieu pour permettre à un éventail de parties prenantes une plus grande accessibilité pour répondre aux questions de durabilité. Le SUS mobilise en outre des recherches qualitatives et quantitatives afin d'introduire dans la discussion des questions ne disposant pas d'ensembles de données clairs.</h3>") |> 
   add_row(en = "<h3>SUS aims to engage Montrealers to harness the momentum surrounding technologically-based approaches to sustainability for public good with a vision towards making the City more socially inclusive and less environmentally impactful.</h3>",
-          fr = "<h3>SUS vise à engager les Montréalais à exploiter l'élan entourant les approches technologiques de la durabilité pour le bien public avec une vision visant à rendre la ville plus inclusive socialement et moins impactante sur l'environnement.</h3>") %>% 
+          fr = "<h3>SUS vise à engager les Montréalais à exploiter l'élan entourant les approches technologiques de la durabilité pour le bien public avec une vision visant à rendre la ville plus inclusive socialement et moins impactante sur l'environnement.</h3>") |> 
   add_row(en = "<h5>An initiative of the <a href = 'https://www.mcgill.ca/mssi/'>McGill Sustainability Systems Initiative</a></h5>",
-          fr = "<h5>Une initiative du <a href = 'https://www.mcgill.ca/mssi/'>McGill Sustainability Systems Initiative</a></h5>") %>% 
+          fr = "<h5>Une initiative du <a href = 'https://www.mcgill.ca/mssi/'>McGill Sustainability Systems Initiative</a></h5>") |> 
   add_row(en = paste0("Housing is at the centre of our lives. In recent years, ",
                       "there have been increasing conversations surrounding ",
                       "housing affordability and accessibility in cities ",
@@ -2243,7 +2243,7 @@ translation_fr <-
                       "offers a temporal outlook on housing in Montreal’s census ",
                       "metropolitan area through census variables that relate to ",
                       "housing, socio-demographics and more."),
-          fr = "Le logement est au centre de nos vies. Ces dernières années, les conversations autour de l'abordabilité et de l'accessibilité des logements dans les villes se sont multipliées (Madden & Marcuse, 2016). L'accès à un logement abordable et adéquat est un élément central de l'équité sociale dans les villes. Au Canada, la Stratégie nationale sur le logement vise à répondre aux besoins de logement et à l'itinérance par la modernisation, la construction de nouveaux logements et l'innovation et la recherche. La Ville de Montréal a actuellement de nombreux objectifs et initiatives liés au logement, tels que le règlement Métropole mixte et la stratégie des 12 000 logements. Ce module offre une perspective temporelle sur le logement dans la région métropolitaine de recensement de Montréal à travers les variables du recensement qui se rapportent au logement, à la sociodémographie et plus encore.") %>% 
+          fr = "Le logement est au centre de nos vies. Ces dernières années, les conversations autour de l'abordabilité et de l'accessibilité des logements dans les villes se sont multipliées (Madden & Marcuse, 2016). L'accès à un logement abordable et adéquat est un élément central de l'équité sociale dans les villes. Au Canada, la Stratégie nationale sur le logement vise à répondre aux besoins de logement et à l'itinérance par la modernisation, la construction de nouveaux logements et l'innovation et la recherche. La Ville de Montréal a actuellement de nombreux objectifs et initiatives liés au logement, tels que le règlement Métropole mixte et la stratégie des 12 000 logements. Ce module offre une perspective temporelle sur le logement dans la région métropolitaine de recensement de Montréal à travers les variables du recensement qui se rapportent au logement, à la sociodémographie et plus encore.") |> 
   add_row(en = paste0("This module presents housing data from the Census, ",
                       "and explores relationships with important ", 
                       "demographic patterns, and how those patterns have ",
@@ -2254,93 +2254,99 @@ translation_fr <-
                       "'https://montreal.ca/articles/metropole-mixte-les-grandes-lignes-du-reglement-7816'>",
                       "Ville de Montréal. (4 octobre 2021). Métropole Mixte: Les grandes lignes du règlement.</a>",
                       "<li>Madden, D., & Marcuse, P. (2016). In Defense of Housing: The Politics of Crisis. New York and London: Verso Books.</ul>"),
-          fr = "Ce module présente des données sur le logement tirées du recensement et explore les relations avec d'importants profils démographiques, ainsi que la façon dont ces profils ont évolué au fil du temps.<br><p><i>Pour en savoir plus :</i></p><ul><li><a href = 'https://www.cmhc-schl.gc.ca/en/nhs/ >CMHC. (s.d.). Stratégie nationale sur le logement.</a><li><a href = 'https://montreal.ca/articles/metropole-mixte-les-grandes-lignes-du-reglement-7816'>Ville de Montréal. (4 octobre 2021). Métropole Mixte : Les grandes lignes du règlement.</a><li>Madden, D., & Marcuse, P. (2016). En défense du logement : La politique de la crise. New York et Londres : Verso Books.</ul>") %>% 
+          fr = "Ce module présente des données sur le logement tirées du recensement et explore les relations avec d'importants profils démographiques, ainsi que la façon dont ces profils ont évolué au fil du temps.<br><p><i>Pour en savoir plus :</i></p><ul><li><a href = 'https://www.cmhc-schl.gc.ca/en/nhs/ >CMHC. (s.d.). Stratégie nationale sur le logement.</a><li><a href = 'https://montreal.ca/articles/metropole-mixte-les-grandes-lignes-du-reglement-7816'>Ville de Montréal. (4 octobre 2021). Métropole Mixte : Les grandes lignes du règlement.</a><li>Madden, D., & Marcuse, P. (2016). En défense du logement : La politique de la crise. New York et Londres : Verso Books.</ul>") |> 
   add_row(en = "At the {z$scale_sing} scale, {z$exp_left} varies from '{z$min_val}' to '{z$max_val}'. A {z$majority} of {z$scale_plural} ({z$mode_prop}) have a value of '{z$mode_val}', while {z$mode_prop_2} have a value of '{z$mode_val_2}'.",
-          fr = "À l'échelle {z$scale_sing}, {z$exp_left} varie de {z$min_val} à {z$max_val}. Une {z$majority} des {z$scale_plural} ({z$mode_prop}) ont une valeur de '{z$mode_val}', tandis que {z$mode_prop_2} ont une valeur de '{z$mode_val_2}'.") %>% 
+          fr = "À l'échelle {z$scale_sing}, {z$exp_left} varie de {z$min_val} à {z$max_val}. Une {z$majority} des {z$scale_plural} ({z$mode_prop}) ont une valeur de '{z$mode_val}', tandis que {z$mode_prop_2} ont une valeur de '{z$mode_val_2}'.") |> 
   add_row(en = "<strong>{z$place_heading}</strong><p>{z$place_name} has a population of {z$pop} and a '{z$title_left}' value of '{z$val_left}', which is shared by {z$other_with_val} of {z$scale_plural} in the Montreal region.",
-          fr = "<strong>{z$place_heading}</strong><p> {z$place_name} a une population de {z$pop} et une valeur de '{z$title_left}' de ' {z$val_left}, ce qui est partagé par {z$other_with_val} des {z$scale_plural} dans la région de Montréal.") %>% 
+          fr = "<strong>{z$place_heading}</strong><p> {z$place_name} a une population de {z$pop} et une valeur de '{z$title_left}' de ' {z$val_left}, ce qui est partagé par {z$other_with_val} des {z$scale_plural} dans la région de Montréal.") |> 
   add_row(en = "<strong>{z$place_heading}</strong><p>{z$place_name} has a population of {z$pop}, a '{z$title_left}' value of '{z$val_left}', and a '{z$title_right}' value of {z$val_right}. <p>{z$place_name} has {sub('^the', 'a', z$exp_right)} higher than {z$perc} of other {z$scale_plural} with {sub('^the', 'a', z$exp_left)} of '{z$val_left}' in the Montreal region.",
-          fr = "<strong>{z$place_heading}</strong><p> {z$place_name} a une population de {z$pop}, a une valeur de '{z$title_left}'  de {z$val_left} et une valeur de '{z$title_right}' de {z$val_right}. <p> {z$place_name} a {sub('^le', 'un', z$exp_right)} plus élevé que {z$perc} des autres {z$scale_plural} avec {sub('^the', 'un', z$exp_left)} de {z$val_left} dans la région de Montréal.") %>% 
+          fr = "<strong>{z$place_heading}</strong><p> {z$place_name} a une population de {z$pop}, a une valeur de '{z$title_left}'  de {z$val_left} et une valeur de '{z$title_right}' de {z$val_right}. <p> {z$place_name} a {sub('^le', 'un', z$exp_right)} plus élevé que {z$perc} des autres {z$scale_plural} avec {sub('^the', 'un', z$exp_left)} de {z$val_left} dans la région de Montréal.") |> 
   add_row(en = "{z$place_name} has no data available on {z$exp_left} and {z$exp_right}.",
-          fr = "{z$place_name} n'a pas de données disponibles sur {z$exp_left} et {z$exp_right} .") %>% 
+          fr = "{z$place_name} n'a pas de données disponibles sur {z$exp_left} et {z$exp_right} .") |> 
   add_row(en = "Urban sustainability is a complex, multidimensional concept encompassing a variety of stakeholders, values and priorities. Individuals, households, and larger entities make decisions about mobility, accessibility, and other aspects of urban life  in the context of the built and natural environment as well as policies, regulations, and social norms, much of which are under some degree of control of local, regional, and federal decision makers. Sustainability permeates every decision we make and every relationship we maintain, but the connections between individual decisions and long-term outcomes are complex and involve many subjective comparisons between every aspect of urban living.",
-          fr = "La durabilité urbaine est un concept complexe et multidimensionnel qui englobe une variété de parties prenantes, de valeurs et de priorités. Les individus, les ménages et les grandes entités prennent des décisions sur la mobilité, l'accessibilité et d'autres aspects de la vie urbaine dans le contexte de l'environnement bâti et naturel ainsi que des politiques, des réglementations et des normes sociales, dont la plupart sont sous le contrôle des décideurs locaux, régionaux et fédéraux. La durabilité imprègne chaque décision que nous prenons et chaque relation que nous entretenons, mais les liens entre les décisions individuelles et les résultats à long terme sont complexes et impliquent de nombreuses comparaisons subjectives entre tous les aspects de la vie urbaine.") %>% 
+          fr = "La durabilité urbaine est un concept complexe et multidimensionnel qui englobe une variété de parties prenantes, de valeurs et de priorités. Les individus, les ménages et les grandes entités prennent des décisions sur la mobilité, l'accessibilité et d'autres aspects de la vie urbaine dans le contexte de l'environnement bâti et naturel ainsi que des politiques, des réglementations et des normes sociales, dont la plupart sont sous le contrôle des décideurs locaux, régionaux et fédéraux. La durabilité imprègne chaque décision que nous prenons et chaque relation que nous entretenons, mais les liens entre les décisions individuelles et les résultats à long terme sont complexes et impliquent de nombreuses comparaisons subjectives entre tous les aspects de la vie urbaine.") |> 
   add_row(en = "Dashboards offer a tool for communicating sustainability data in a visually based digital platform. We see a gap in current dashboards going beyond the visualization of pre-existing data at static scales, leaving room for a more future-oriented, scalable, and interactive model. Sustainability dashboards should build upon best practices to provide useful tools for individuals and cities alike to examine the many facets of urban sustainability and question existing assumptions. Maintaining transparency with data and methodologies, ensuring public participation and accurate representation of underprivileged communities, and using engaging and accessible tools contribute to the success of a dashboard (Cosgrave et al. 2013; Deutz and Ioppolo 2015; Kitchin 2015; Otten et al. 2015; Pettit et al. 2012).",
-          fr = "Les tableaux de bord offrent un outil pour communiquer des données sur la durabilité dans une plateforme numérique à base visuelle. Nous constatons une lacune dans les tableaux de bord actuels qui vont au-delà de la visualisation de données préexistantes à des échelles statiques, laissant place à un modèle plus orienté vers l'avenir, évolutif et interactif. Les tableaux de bord de la durabilité doivent s'appuyer sur les meilleures pratiques pour fournir des outils utiles aux individus et aux villes afin d'examiner les nombreuses facettes de la durabilité urbaine et de remettre en question les hypothèses existantes. Le maintien de la transparence des données et des méthodologies, la participation du public et la représentation précise des communautés défavorisées, ainsi que l'utilisation d'outils attrayants et accessibles contribuent au succès d'un tableau de bord (Cosgrave et al. 2013 ; Deutz et Ioppolo 2015 ; Kitchin 2015 ; Otten et al. 2015 ; Pettit et al. 2012).") %>% 
+          fr = "Les tableaux de bord offrent un outil pour communiquer des données sur la durabilité dans une plateforme numérique à base visuelle. Nous constatons une lacune dans les tableaux de bord actuels qui vont au-delà de la visualisation de données préexistantes à des échelles statiques, laissant place à un modèle plus orienté vers l'avenir, évolutif et interactif. Les tableaux de bord de la durabilité doivent s'appuyer sur les meilleures pratiques pour fournir des outils utiles aux individus et aux villes afin d'examiner les nombreuses facettes de la durabilité urbaine et de remettre en question les hypothèses existantes. Le maintien de la transparence des données et des méthodologies, la participation du public et la représentation précise des communautés défavorisées, ainsi que l'utilisation d'outils attrayants et accessibles contribuent au succès d'un tableau de bord (Cosgrave et al. 2013 ; Deutz et Ioppolo 2015 ; Kitchin 2015 ; Otten et al. 2015 ; Pettit et al. 2012).") |> 
   add_row(en = "SUS - a comprehensive and inclusive urban sustainability dashboard - aims to develop a platform for integrating, exploring, and analyzing the widest possible range of urban sustainability data sources pertaining to the Montreal region, and, on the basis of this platform, provide a robust set of tools for scenario modelling and analysis which can be of significant use to researchers, policymakers, communities and individuals. In addition to the raw, reproducible datasets, SUS incorporates the necessary contextualization for its users to place their personal or organisational questions into a larger framework of socioeconomic equity and accessibility. It therefore serves as both a data-exploration tool, as well as a knowledge and information-sharing resource, designed to encourage greater reflection on different urban sustainability issues, and which communities are most impacted by them.",
-          fr = "SUS - un tableau de bord complet et inclusif de la durabilité urbaine - vise à développer une plateforme pour intégrer, explorer et analyser le plus large éventail possible de sources de données sur la durabilité urbaine dans la région de Montréal et, sur la base de cette plateforme, à fournir un ensemble robuste d'outils pour la modélisation et l'analyse de scénarios qui peuvent être d'une grande utilité pour les chercheurs, les décideurs, les communautés et les individus. En plus des ensembles de données brutes et reproductibles, SUS incorpore la contextualisation nécessaire pour que ses utilisateurs puissent placer leurs questions personnelles ou organisationnelles dans un cadre plus large d'équité et d'accessibilité socio-économique. Il sert donc à la fois d'outil d'exploration des données et de ressource de partage des connaissances et des informations, conçu pour encourager une plus grande réflexion sur les différents problèmes de durabilité urbaine et sur les communautés les plus touchées par ces problèmes.") %>% 
+          fr = "SUS - un tableau de bord complet et inclusif de la durabilité urbaine - vise à développer une plateforme pour intégrer, explorer et analyser le plus large éventail possible de sources de données sur la durabilité urbaine dans la région de Montréal et, sur la base de cette plateforme, à fournir un ensemble robuste d'outils pour la modélisation et l'analyse de scénarios qui peuvent être d'une grande utilité pour les chercheurs, les décideurs, les communautés et les individus. En plus des ensembles de données brutes et reproductibles, SUS incorpore la contextualisation nécessaire pour que ses utilisateurs puissent placer leurs questions personnelles ou organisationnelles dans un cadre plus large d'équité et d'accessibilité socio-économique. Il sert donc à la fois d'outil d'exploration des données et de ressource de partage des connaissances et des informations, conçu pour encourager une plus grande réflexion sur les différents problèmes de durabilité urbaine et sur les communautés les plus touchées par ces problèmes.") |> 
   add_row(en = "SUS stands at the intersection of two ongoing transformations of urban life, urban governance, and urban research. First, cities are increasingly understood as key arenas for determining the planet’s environmental trajectory, and academic, policy, and public interest in urban sustainability has risen accordingly (Angelo and Wachsmuth 2019). Second, as part of a trend towards data-driven governance, cities are becoming increasingly prominent laboratories for “smart city” initiatives which incorporate digital technologies into local decision making and indeed the physical fabric of the city (Greenfield 2006; Mattern 2015).",
-          fr = "Le SUS se trouve à l'intersection de deux transformations en cours de la vie urbaine, de la gouvernance urbaine et de la recherche urbaine. Premièrement, les villes sont de plus en plus considérées comme des lieux clés pour déterminer la trajectoire environnementale de la planète, et l'intérêt des universitaires, des politiques et du public pour la durabilité urbaine a augmenté en conséquence (Angelo et Wachsmuth 2019). Deuxièmement, dans le cadre d'une tendance à la gouvernance axée sur les données, les villes deviennent des laboratoires de plus en plus importants pour les initiatives de 'ville intelligente' qui intègrent les technologies numériques dans la prise de décision locale et même dans le tissu physique de la ville (Greenfield 2006 ; Mattern 2015).") %>% 
+          fr = "Le SUS se trouve à l'intersection de deux transformations en cours de la vie urbaine, de la gouvernance urbaine et de la recherche urbaine. Premièrement, les villes sont de plus en plus considérées comme des lieux clés pour déterminer la trajectoire environnementale de la planète, et l'intérêt des universitaires, des politiques et du public pour la durabilité urbaine a augmenté en conséquence (Angelo et Wachsmuth 2019). Deuxièmement, dans le cadre d'une tendance à la gouvernance axée sur les données, les villes deviennent des laboratoires de plus en plus importants pour les initiatives de 'ville intelligente' qui intègrent les technologies numériques dans la prise de décision locale et même dans le tissu physique de la ville (Greenfield 2006 ; Mattern 2015).") |> 
   add_row(en = "SUS relies on a unified data infrastructure to help different people get different answers about common sustainability questions. The majority of these data are publicly available and reproducible, aggregated into thematic and place-based modules to allow a range of users and stakeholders greater accessibility to answering sustainability questions. A household considering a move may want to know which neighbourhoods support walkable lifestyles. Government planners may also be interested in neighbourhood walkability, but they want to understand aggregate patterns, and identify neighbourhoods which are outliers in terms of physical characteristics and observed travel patterns of residents. SUS is also a hub for academic innovation, using the questions generated by users to drive the research we do. This feedback creates something we have never seen before: a clearinghouse for urban sustainability decision making.",
-          fr = "Le SUS s'appuie sur une infrastructure de données unifiée pour aider différentes personnes à obtenir différentes réponses à des questions communes sur la durabilité. La majorité de ces données sont accessibles au public et reproductibles, regroupées en modules thématiques et localisés pour permettre à un éventail d'utilisateurs et de parties prenantes d'accéder plus facilement aux réponses aux questions de durabilité. Un ménage qui envisage de déménager peut vouloir savoir quels sont les quartiers qui favorisent les modes de vie à pied. Les responsables de l'aménagement du territoire peuvent également s'intéresser à la marchabilité d'un quartier, mais ils veulent comprendre les tendances globales et identifier les quartiers aberrants en termes de caractéristiques physiques et d'habitudes de déplacement des résidents. Le SUS est également un centre d'innovation universitaire, qui utilise les questions posées par les utilisateurs pour orienter les recherches que nous menons. Ce retour d'information crée quelque chose que nous n'avons jamais vu auparavant : un centre d'information pour la prise de décision en matière de durabilité urbaine.") %>% 
+          fr = "Le SUS s'appuie sur une infrastructure de données unifiée pour aider différentes personnes à obtenir différentes réponses à des questions communes sur la durabilité. La majorité de ces données sont accessibles au public et reproductibles, regroupées en modules thématiques et localisés pour permettre à un éventail d'utilisateurs et de parties prenantes d'accéder plus facilement aux réponses aux questions de durabilité. Un ménage qui envisage de déménager peut vouloir savoir quels sont les quartiers qui favorisent les modes de vie à pied. Les responsables de l'aménagement du territoire peuvent également s'intéresser à la marchabilité d'un quartier, mais ils veulent comprendre les tendances globales et identifier les quartiers aberrants en termes de caractéristiques physiques et d'habitudes de déplacement des résidents. Le SUS est également un centre d'innovation universitaire, qui utilise les questions posées par les utilisateurs pour orienter les recherches que nous menons. Ce retour d'information crée quelque chose que nous n'avons jamais vu auparavant : un centre d'information pour la prise de décision en matière de durabilité urbaine.") |> 
   add_row(en = "While the primary implementation of SUS is focused on the Montreal region, the infrastructure we developed is designed to scale to other cities and regions in Canada, with a streamlined pathway for new modules or research questions to be explored and added in.",
-          fr = "Bien que la mise en œuvre primaire du SUS soit axée sur la région de Montréal, l'infrastructure que nous avons développée est conçue pour s'étendre à d'autres villes et régions du Canada, avec une voie simplifiée permettant d'explorer et d'ajouter de nouveaux modules ou de nouvelles questions de recherche.") %>% 
+          fr = "Bien que la mise en œuvre primaire du SUS soit axée sur la région de Montréal, l'infrastructure que nous avons développée est conçue pour s'étendre à d'autres villes et régions du Canada, avec une voie simplifiée permettant d'explorer et d'ajouter de nouveaux modules ou de nouvelles questions de recherche.") |> 
   add_row(en = "SUS mobilizes quantitative data and analysis and qualitative data and narrative within a firm understanding of the injustices and disparities in urban life. Each module within SUS encourages a critical lens toward inequity in cities, and the potential for the data to be used to reinforce discriminatory power structures. SUS actively seeks to question the status quo and the institutional discrimination it sustains, and provides its users tools to do the same.",
-          fr = "Le SUS mobilise des données et des analyses quantitatives ainsi que des données et des récits qualitatifs dans le cadre d'une solide compréhension des injustices et des disparités de la vie urbaine. Chaque module du SUS encourage un regard critique sur les inégalités dans les villes et sur le potentiel des données à être utilisées pour renforcer les structures de pouvoir discriminatoires. SUS cherche activement à remettre en question le statu quo et la discrimination institutionnelle qu'il entretient, et fournit à ses utilisateurs des outils pour faire de même.") %>% 
+          fr = "Le SUS mobilise des données et des analyses quantitatives ainsi que des données et des récits qualitatifs dans le cadre d'une solide compréhension des injustices et des disparités de la vie urbaine. Chaque module du SUS encourage un regard critique sur les inégalités dans les villes et sur le potentiel des données à être utilisées pour renforcer les structures de pouvoir discriminatoires. SUS cherche activement à remettre en question le statu quo et la discrimination institutionnelle qu'il entretient, et fournit à ses utilisateurs des outils pour faire de même.") |> 
   add_row(en = "SUS catalyzes new understandings of urban sustainability, transforms conventional thinking about the relationship between humans and the natural environment in cities, and positively shifts the trajectory of local sustainability decision making across Canada.",
-          fr = "SUS catalyse de nouvelles compréhensions de la durabilité urbaine, transforme la pensée conventionnelle sur la relation entre les humains et l'environnement naturel dans les villes, et change positivement la trajectoire de la prise de décision sur la durabilité locale à travers le Canada.") %>% 
+          fr = "SUS catalyse de nouvelles compréhensions de la durabilité urbaine, transforme la pensée conventionnelle sur la relation entre les humains et l'environnement naturel dans les villes, et change positivement la trajectoire de la prise de décision sur la durabilité locale à travers le Canada.") |> 
   add_row(en = "<p>Data is collected by the Service de Police de la Ville de Montréal (SPVM) and compiled by the Société d’Assurance Automobile du Québec (SAAQ), and contains information related to every road collision, including the date, location and type of parties involved (i.e. cars, bicycles or pedestrians) and injury severity. <p>For more information on road collisions and a temporal analysis of the data, please consult the <a onclick='openTab(&#39;crash_analysis&#39;)' href='#'>Road safety analysis</a>.</p><p>References:</p><ul><li><a href = https://www.pietons.quebec/sites/default/files/documents/pietonsqc_vf_fiche_decouvrirapprochevisionzerosecuriteroutiere.pdf> Piétons Québec. (2021). Découvrir l’approche vision zéro en sécurité routière. Piétons Québec. Online:</a><li><a href =https://donnees.montreal.ca/ville-de-montreal/collisions-routieres>Ville de Montréal. (2021). Collisions routières. Données Ouvertes Montréal. Online:</a></ul>",
-          fr = "<p>Les données sont recueillies par le Service de police de la ville de Montréal (SPVM) et compilées par la Société d'Assurance Automobile du Québec (SAAQ), et contiennent des informations relatives à chaque collision routière, notamment la date, le lieu et le type de parties impliquées (c'est-à-dire des voitures, des vélos ou des piétons) et la gravité des blessures. <p>Pour plus d'informations sur les collisions routières et une analyse temporelle des données, veuillez consulter le <a onclick='openTab(&#39;crash_analysis&#39 ;)' href='#'>Analyse de la sécurité routière</a>.</p><p>Références:</p><ul><li><a href = https://www.pietons.quebec/sites/default/files/documents/pietonsqc_vf_fiche_decouvrirapprochevisionzerosecuriteroutiere.pdf> Piétons Québec. (2021). Découvrir l'approche vision zéro en sécurité routière. Piétons Québec. En ligne:</a><li><a href =https://donnees.montreal.ca/ville-de-montreal/collisions-routieres>Ville de Montréal. (2021). Collisions routières. Données Ouvertes Montréal. En ligne:</a></ul>") %>% 
+          fr = "<p>Les données sont recueillies par le Service de police de la ville de Montréal (SPVM) et compilées par la Société d'Assurance Automobile du Québec (SAAQ), et contiennent des informations relatives à chaque collision routière, notamment la date, le lieu et le type de parties impliquées (c'est-à-dire des voitures, des vélos ou des piétons) et la gravité des blessures. <p>Pour plus d'informations sur les collisions routières et une analyse temporelle des données, veuillez consulter le <a onclick='openTab(&#39;crash_analysis&#39 ;)' href='#'>Analyse de la sécurité routière</a>.</p><p>Références:</p><ul><li><a href = https://www.pietons.quebec/sites/default/files/documents/pietonsqc_vf_fiche_decouvrirapprochevisionzerosecuriteroutiere.pdf> Piétons Québec. (2021). Découvrir l'approche vision zéro en sécurité routière. Piétons Québec. En ligne:</a><li><a href =https://donnees.montreal.ca/ville-de-montreal/collisions-routieres>Ville de Montréal. (2021). Collisions routières. Données Ouvertes Montréal. En ligne:</a></ul>") |> 
   add_row(en = "Road safety is an important consideration for wellbeing and safety in cities. This module provides an overview and analysis of road collisions in the City of Montreal, ranging from 2012 to today.",
-          fr = "La sécurité routière est une considération importante pour le bien-être et la sécurité dans les villes. Ce module offre un aperçu et une analyse des collisions routières dans la ville de Montréal, de 2012 à aujourd'hui.") %>% 
+          fr = "La sécurité routière est une considération importante pour le bien-être et la sécurité dans les villes. Ce module offre un aperçu et une analyse des collisions routières dans la ville de Montréal, de 2012 à aujourd'hui.") |> 
   add_row(en = "This module presents housing data from the Census, and explores relationships with important demographic patterns, and how those patterns have changed over time.",
-          fr = "Ce module présente des données sur le logement tirées du recensement, et explore les relations avec d'importants modèles démographiques, ainsi que la manière dont ces modèles ont évolué au fil du temps.") %>% 
+          fr = "Ce module présente des données sur le logement tirées du recensement, et explore les relations avec d'importants modèles démographiques, ainsi que la manière dont ces modèles ont évolué au fil du temps.") |> 
   add_row(en = "Housing is one of the most important features of individual and collective urban life, and it sits at the heart of a variety of sustainability questions. ",
-          fr = "Le logement est l'une des caractéristiques les plus importantes de la vie urbaine individuelle et collective, et il est au cœur de toute une série de questions relatives à la durabilité.") %>% 
+          fr = "Le logement est l'une des caractéristiques les plus importantes de la vie urbaine individuelle et collective, et il est au cœur de toute une série de questions relatives à la durabilité.") |> 
   add_row(en = "The housing system",
-          fr = "Le système de logement") %>% 
+          fr = "Le système de logement") |> 
   add_row(en = "Compare the pedestrian capacity for social distancing metric across a variety of other variables, such as walkable access to amenities, income level, immigration, visible minorities, population density, etc.",
-          fr = "Comparer la métrique de la capacité des piétons à s'éloigner socialement à une variété d'autres variables, telles que l'accès à pied aux commodités, le niveau de revenu, l'immigration, les minorités visibles, la densité de population, etc.") %>% 
+          fr = "Comparer la métrique de la capacité des piétons à s'éloigner socialement à une variété d'autres variables, telles que l'accès à pied aux commodités, le niveau de revenu, l'immigration, les minorités visibles, la densité de population, etc.") |> 
   add_row(en = "2020 and 2021 Covid interventions",
-          fr = "Interventions de Covid en 2020 et 2021") %>% 
+          fr = "Interventions de Covid en 2020 et 2021") |> 
   add_row(en = "The onset of the COVID-19 pandemic prompted municipalities across the world to restrict public transit systems and advise citizens to make only necessary trips. For many without access to motorized vehicles, active transportation, walking and cycling, became the primary mode of transport. To accommodate the increased demand for these modes of safe travel, and to ensure the possibility to practice physical distancing while travelling, many cities made rapid changes to cycling and pedestrian networks, including constructing new bike lanes, creating temporary infrastructure, and shutting down streets to motor vehicle traffic. These changes served to minimize viral transmission during travel and to more safely connect people to essential services, health care, and greenspace.",
-          fr = "Le début de la pandémie de COVID-19 a incité les municipalités du monde entier à restreindre les systèmes de transport en commun et à conseiller aux citoyens de n'effectuer que les déplacements nécessaires. Pour beaucoup de personnes n'ayant pas accès à des véhicules motorisés, le transport actif, la marche et le vélo, est devenu le principal mode de transport. Pour répondre à la demande accrue de ces modes de déplacement sûrs et pour garantir la possibilité de pratiquer la distanciation physique lors des déplacements, de nombreuses villes ont rapidement modifié les réseaux cyclistes et piétonniers, notamment en construisant de nouvelles pistes cyclables, en créant des infrastructures temporaires et en fermant des rues à la circulation automobile. Ces changements ont permis de minimiser la transmission virale pendant les déplacements et de relier de manière plus sûre les personnes aux services essentiels, aux soins de santé et aux espaces verts.") %>% 
+          fr = "Le début de la pandémie de COVID-19 a incité les municipalités du monde entier à restreindre les systèmes de transport en commun et à conseiller aux citoyens de n'effectuer que les déplacements nécessaires. Pour beaucoup de personnes n'ayant pas accès à des véhicules motorisés, le transport actif, la marche et le vélo, est devenu le principal mode de transport. Pour répondre à la demande accrue de ces modes de déplacement sûrs et pour garantir la possibilité de pratiquer la distanciation physique lors des déplacements, de nombreuses villes ont rapidement modifié les réseaux cyclistes et piétonniers, notamment en construisant de nouvelles pistes cyclables, en créant des infrastructures temporaires et en fermant des rues à la circulation automobile. Ces changements ont permis de minimiser la transmission virale pendant les déplacements et de relier de manière plus sûre les personnes aux services essentiels, aux soins de santé et aux espaces verts.") |> 
   add_row(en = "In May 2020, the City of Montréal announced plans to establish over 300 kilometers of active transport infrastructure by the end of the summer. These plans included six distinct types of street changes: active transportation circuits, family and active streets, partially closed streets, closed streets, expanded pedestrian corridors, and planned corridors. The active transportation circuits are intended to link green spaces, provide increased access to parks for densely populated areas, and increase access to local commerce, while promoting physical distancing during travel. Family and active streets define portions of the street which have been closed to cars entirely to encourage physical distancing while residents spend time outdoors. These streets were chosen based on proximity to green space and population density. While some streets have partially closed to traffic, pedestrianizing a portion of the available car lanes, other streets have been closed entirely to motor vehicles to maximize pedestrian space. Expanded pedestrian corridors are locations where sidewalks have been widened in order to allow greater capacity for physical distancing while walking. The last group of street changes are labelled as planned corridors and  encompass all types of street changes, not specifically defined by the city.<p> The City of Montréal made multiple revisions to the plans over the course of the summer of 2020. The initial plans released in May were ambitious, providing cycling and pedestrian infrastructure to nearly 30% of the city population and envisioning a cohesive city-wide network of health corridors supplemented by local, small-scale interventions to support physical distancing. By July the plans were reduced from 311 kilometers to 104 kilometers and by fall just 80 kilometers, primarily due to the removal of nearly all the active transportation circuits. These circuits were intended to provide an alternative to public transit, creating a comprehensive system connecting Montreal's various boroughs.<p> The City of Montreal has announced more public space interventions for summer 2021 in response to the lasting effects of COVID-19 and ongoing demands for greater physical distancing capacity in dense urban areas. However, rather than prioritizing mobility and access to essential services as in the previous year, the rollout of vaccines and the gradual easing of restrictions has allowed for the city's scope to narrow.  The 2021 plans consist of pedestrianization interventions on 13 commercial streets around Montréal, an effort to revitalize the local economy and provide safer public spaces for comfortable shopping. The implementation of pedestrian-only zones on streets with high concentrations of restaurants, bars, and other retail shops creates appealing destinations for Montréal residents and promotes recovery for the businesses which have been affected by COVID-19.",
-          fr = "En mai 2020, la Ville de Montréal a annoncé des plans visant à établir plus de 300 kilomètres d'infrastructures de transport actif d'ici la fin de l'été. Ces plans comprennent six types distincts de modifications de rues : circuits de transport actif, rues familiales et actives, rues partiellement fermées, rues fermées, corridors piétonniers élargis et corridors planifiés. Les circuits de transport actif ont pour but de relier les espaces verts, de fournir un accès accru aux parcs pour les zones densément peuplées et d'augmenter l'accès au commerce local, tout en favorisant la distanciation physique pendant les déplacements. Les rues familiales et actives définissent des portions de rue qui ont été entièrement fermées aux voitures afin d'encourager la distanciation physique pendant que les résidents passent du temps à l'extérieur. Ces rues ont été choisies en fonction de la proximité d'espaces verts et de la densité de population. Alors que certaines rues ont été partiellement fermées à la circulation, rendant ainsi piétonne une partie des voies de circulation disponibles, d'autres rues ont été entièrement fermées aux véhicules à moteur afin de maximiser l'espace piétonnier. Les corridors piétonniers élargis sont des endroits où les trottoirs ont été élargis afin de permettre une plus grande capacité de distanciation physique pendant la marche. Le dernier groupe de changements de rues est appelé corridors planifiés et englobe tous les types de changements de rues, non spécifiquement définis par la ville.<p>La Ville de Montréal a apporté de multiples révisions aux plans au cours de l'été 2020. Les plans initiaux publiés en mai étaient ambitieux, offrant des infrastructures cyclables et piétonnes à près de 30 % de la population de la ville et envisageant un réseau cohésif de corridors de santé à l'échelle de la ville, complété par des interventions locales à petite échelle pour soutenir la distanciation physique. En juillet, les plans ont été réduits de 311 kilomètres à 104 kilomètres et à l'automne à seulement 80 kilomètres, principalement en raison de la suppression de presque tous les circuits de transport actif. Ces circuits devaient offrir une alternative au transport en commun, en créant un système complet reliant les différents arrondissements de Montréal.<p>La Ville de Montréal a annoncé d'autres interventions dans l'espace public pour l'été 2021 en réponse aux effets durables de COVID-19 et aux demandes continues pour une plus grande capacité de distanciation physique dans les zones urbaines denses. Cependant, plutôt que de donner la priorité à la mobilité et à l'accès aux services essentiels comme l'année précédente, le déploiement des vaccins et l'assouplissement progressif des restrictions ont permis de réduire la portée de la ville.  Les plans pour 2021 consistent en des interventions de piétonnisation sur 13 rues commerciales autour de Montréal, un effort visant à revitaliser l'économie locale et à fournir des espaces publics plus sûrs pour un shopping confortable. La mise en place de zones réservées aux piétons dans les rues à forte concentration de restaurants, de bars et d'autres commerces de détail crée des destinations attrayantes pour les Montréalais et favorise la reprise des activités des entreprises touchées par le COVID-19.") %>% 
+          fr = "En mai 2020, la Ville de Montréal a annoncé des plans visant à établir plus de 300 kilomètres d'infrastructures de transport actif d'ici la fin de l'été. Ces plans comprennent six types distincts de modifications de rues : circuits de transport actif, rues familiales et actives, rues partiellement fermées, rues fermées, corridors piétonniers élargis et corridors planifiés. Les circuits de transport actif ont pour but de relier les espaces verts, de fournir un accès accru aux parcs pour les zones densément peuplées et d'augmenter l'accès au commerce local, tout en favorisant la distanciation physique pendant les déplacements. Les rues familiales et actives définissent des portions de rue qui ont été entièrement fermées aux voitures afin d'encourager la distanciation physique pendant que les résidents passent du temps à l'extérieur. Ces rues ont été choisies en fonction de la proximité d'espaces verts et de la densité de population. Alors que certaines rues ont été partiellement fermées à la circulation, rendant ainsi piétonne une partie des voies de circulation disponibles, d'autres rues ont été entièrement fermées aux véhicules à moteur afin de maximiser l'espace piétonnier. Les corridors piétonniers élargis sont des endroits où les trottoirs ont été élargis afin de permettre une plus grande capacité de distanciation physique pendant la marche. Le dernier groupe de changements de rues est appelé corridors planifiés et englobe tous les types de changements de rues, non spécifiquement définis par la ville.<p>La Ville de Montréal a apporté de multiples révisions aux plans au cours de l'été 2020. Les plans initiaux publiés en mai étaient ambitieux, offrant des infrastructures cyclables et piétonnes à près de 30 % de la population de la ville et envisageant un réseau cohésif de corridors de santé à l'échelle de la ville, complété par des interventions locales à petite échelle pour soutenir la distanciation physique. En juillet, les plans ont été réduits de 311 kilomètres à 104 kilomètres et à l'automne à seulement 80 kilomètres, principalement en raison de la suppression de presque tous les circuits de transport actif. Ces circuits devaient offrir une alternative au transport en commun, en créant un système complet reliant les différents arrondissements de Montréal.<p>La Ville de Montréal a annoncé d'autres interventions dans l'espace public pour l'été 2021 en réponse aux effets durables de COVID-19 et aux demandes continues pour une plus grande capacité de distanciation physique dans les zones urbaines denses. Cependant, plutôt que de donner la priorité à la mobilité et à l'accès aux services essentiels comme l'année précédente, le déploiement des vaccins et l'assouplissement progressif des restrictions ont permis de réduire la portée de la ville.  Les plans pour 2021 consistent en des interventions de piétonnisation sur 13 rues commerciales autour de Montréal, un effort visant à revitaliser l'économie locale et à fournir des espaces publics plus sûrs pour un shopping confortable. La mise en place de zones réservées aux piétons dans les rues à forte concentration de restaurants, de bars et d'autres commerces de détail crée des destinations attrayantes pour les Montréalais et favorise la reprise des activités des entreprises touchées par le COVID-19.") |> 
   add_row(en = "Road safety analysis",
-          fr = "Analyse de la sécurité routière") %>% 
+          fr = "Analyse de la sécurité routière") |> 
   add_row(en = "Per 1,000 residents",
-          fr = "Pour 1,000 résidents") %>% 
+          fr = "Pour 1,000 résidents") |> 
   add_row(en = "Employment",
-          fr = "Emploi") %>% 
+          fr = "Emploi") |> 
   add_row(en = "Family",
-          fr = "Famille") %>% 
+          fr = "Famille") |> 
   add_row(en = "Language",
-          fr = "Langue") %>% 
+          fr = "Langue") |> 
   add_row(en = "Age",
-          fr = "Âge") %>% 
+          fr = "Âge") |> 
   add_row(en = "Education",
-          fr = "Éducation") %>% 
+          fr = "Éducation") |> 
   add_row(en = "Managerial and professional occupations (%)",
-          fr = "Cadres et professions libérales (%)") %>% 
+          fr = "Cadres et professions libérales (%)") |> 
   add_row(en = "Creative occupations (%)",
-          fr = "Professions des arts et de la culture (%)") %>% 
+          fr = "Professions des arts et de la culture (%)") |> 
   add_row(en = "Families with children (%)",
-          fr = "Familles avec enfants (%)") %>% 
+          fr = "Familles avec enfants (%)") |> 
   add_row(en = "One person households (%)",
-          fr = "Ménages d'une personne (%)") %>% 
+          fr = "Ménages d'une personne (%)") |> 
   add_row(en = "Families with children (%)",
-          fr = "Familles avec enfants (%)") %>% 
+          fr = "Familles avec enfants (%)") |> 
   add_row(en = "One person households (%)",
-          fr = "Ménages d'une personne (%)") %>% 
+          fr = "Ménages d'une personne (%)") |> 
   add_row(en = "French only (%)",
-          fr = "Français seulement (%)") %>% 
+          fr = "Français seulement (%)") |> 
   add_row(en = "English only (%)",
-          fr = "Anglais seulement (%)") %>% 
+          fr = "Anglais seulement (%)") |> 
   add_row(en = "French and English (%)",
-          fr = "Français et anglais (%)") %>% 
+          fr = "Français et anglais (%)") |> 
   add_row(en = "Neither French nor English (%)",
-          fr = "Ni français ni anglais (%)") %>% 
+          fr = "Ni français ni anglais (%)") |> 
   add_row(en = "Aged between 0 and 14 (%)",
-          fr = "Âgés de 0 à 14 ans (%)") %>% 
+          fr = "Âgés de 0 à 14 ans (%)") |> 
   add_row(en = "Aged between 15 and 64 (%)",
-          fr = "Âgés entre 15 et 64 ans (%)") %>% 
+          fr = "Âgés entre 15 et 64 ans (%)") |> 
   add_row(en = "Aged 65 and above (%)",
-          fr = "Agés de 65 ans et plus (%)") %>% 
+          fr = "Agés de 65 ans et plus (%)") |> 
   add_row(en = "Bachelor and above (%)",
-          fr = "Baccalauréat et plus (%)") %>% 
+          fr = "Baccalauréat et plus (%)") |> 
   add_row(en = "No certificate, diploma or degree (%)",
-          fr = "Aucun certificat, diplôme ou grade (%)") %>% 
+          fr = "Aucun certificat, diplôme ou grade (%)") |> 
+  add_row(en = "Compare dates",
+          fr = "Comparaison de dates") |> 
+  add_row(en = "Review a single variable part of the index",
+          fr = "Examiner une variable unique comprise dans l'indice") |> 
+  add_row(en = "Type of green space",
+          fr = "Type d'espace vert") |> 
   distinct(en, .keep_all = TRUE)
 
 
@@ -2349,7 +2355,7 @@ translation_fr <-
 qload("data/census.qsm")
 
 translation_fr <- 
-  translation_fr %>% 
+  translation_fr |> 
   add_row(en = borough$name,
           fr = borough$name)
 
@@ -2380,7 +2386,7 @@ rm(translation_fr)
 #   'SUS mobilizes quantitative data and analysis and qualitative data and narrative within a firm understanding of the injustices and disparities in urban life. Each module within SUS encourages a critical lens toward inequity in cities, and the potential for the data to be used to reinforce discriminatory power structures. SUS actively seeks to question the status quo and the institutional discrimination it sustains, and provides its users tools to do the same.' translation does not exist.
 # Warning in private$raw_translate(keyword) :
 #   'SUS catalyzes new understandings of urban sustainability, transforms conventional thinking about the relationship between humans and the natural environment in cities, and positively shifts the trajectory of local sustainability decision making across Canada.' translation does not exist.",
-#                 "(?<=\\').*(?=\\')") %>%
+#                 "(?<=\\').*(?=\\')") |>
 #   unlist()
 
 # Deepl helper
@@ -2404,16 +2410,16 @@ rm(translation_fr)
 # Warning: No translation text found for `Aged between 15 and 64 (%)`.
 # Warning: No translation text found for `Aged 65 and above (%)`.
 # Warning: No translation text found for `Bachelor and above (%)`.
-# Warning: No translation text found for `No certificate, diploma or degree (%)`.", "`.*`") %>%
-#   unlist() %>%
+# Warning: No translation text found for `No certificate, diploma or degree (%)`.", "`.*`") |>
+#   unlist() |>
 #   str_remove_all(., '`')
 
 # to_translate <- var_exp$explanation[45:nrow(var_exp)]
-# to_translate <- title_text[!title_text$text %in% translation_fr$en,] %>% 
-#   filter(!is.na(text)) %>% pull(text)
+# to_translate <- title_text[!title_text$text %in% translation_fr$en,] |> 
+#   filter(!is.na(text)) |> pull(text)
 # 
 # glue('add_row(en = "{to_translate}",
-#               fr = "{deeplr::toFrench2(to_translate, auth_key = .deepl_key)}") %>% ')
+#               fr = "{deeplr::toFrench2(to_translate, auth_key = .deepl_key)}") |> ')
 
 # 
 # translated_strings <-
@@ -2445,11 +2451,11 @@ rm(translation_fr)
 # Warning: No translation text found for DDESSDDE<strong>{z$place_heading}</strong><p>{z$place_name} has a population of {z$pop}, a '{z$title_left}' value of '{z$val_left}', and a '{z$title_right}' value of {z$val_right}. <p>{z$place_name} has {sub('^the', 'a', z$exp_right)} higher than {z$perc} of other {z$scale_plural} with {sub('^the', 'a', z$exp_left)} of '{z$val_left}' in the Montreal region.FFINNALL1. Automatic translation performed: HASSTTA<strong> {z$place_heading} </strong><p> {z$place_name} a une population de {z$pop} , a ' {z$title_left} ' valeur de ' {z$val_left} et un {z$title_right} La valeur de {z$val_right} . <p> {z$place_name} a {sub('^the', 'a', z$exp_right)} plus élevé que {z$perc} d'autres {z$scale_plural} avec {sub('^the', 'a', z$exp_left)} de {z$val_left} dans la région de Montréal.FFINNALL2,"
 # list_translated <-
 #   str_extract_all(translated_strings,
-#                   "(?<=DDESSDDE).*(?=FFINNALL1)|(?<=HASSTTA).*(?=FFINNALL2)") %>%
+#                   "(?<=DDESSDDE).*(?=FFINNALL1)|(?<=HASSTTA).*(?=FFINNALL2)") |>
 #   unlist()
 # 
 # en_placement <- which(1:(length(unlist(list_translated))) %% 2  == 1)
 # fr_placement <- which(1:(length(unlist(list_translated))) %% 2  == 0)
 # 
 # glue('add_row(en = "{list_translated[en_placement]}",
-#               fr = "{list_translated[fr_placement]}") %>% ')
+#               fr = "{list_translated[fr_placement]}") |> ')
