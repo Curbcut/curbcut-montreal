@@ -158,7 +158,8 @@ alley_text <-
   left_join(alleys_length |> 
                st_drop_geometry() |> 
                group_by(CSDUID) |>
-               summarize(green_alley_sqm = round(units::drop_units(sum(green_alley_sqm, na.rm = T)))),
+               summarize(green_alley_sqm = round(units::drop_units(sum(
+                 green_alley_sqm, na.rm = TRUE)))),
              by = c("ID" = "CSDUID")) |> 
   relocate(green_alley_sqm, .after = first_alley)
 
@@ -179,16 +180,19 @@ lengths_alleys_fun <- function(data) {
     st_join(select(data, ID)) |> 
     st_drop_geometry() |> 
     group_by(ID) |> 
-    summarize(green_alley_sqm = round(units::drop_units(sum(green_alley_sqm, na.rm = T))))
+    summarize(green_alley_sqm = round(units::drop_units(sum(
+      green_alley_sqm, na.rm = TRUE))))
   
   sqm_per_id |> 
     full_join(select(data, ID, population), by = "ID") |> 
     st_as_sf() |> 
-    mutate(green_alley_sqkm = 1000 * green_alley_sqm / units::drop_units(st_area(geometry)),
+    mutate(green_alley_sqkm = 1000 * green_alley_sqm / 
+             units::drop_units(st_area(geometry)),
            green_alley_per1k =  1000 * green_alley_sqm / population) |> 
     select(-green_alley_sqm) |> 
     mutate(across(starts_with("green_alley"), ~replace(., is.na(.), 0))) |> 
-    mutate(across(starts_with("green_alley"), ~replace(., is.infinite(.), 0))) |> 
+    mutate(across(starts_with("green_alley"), 
+                  ~replace(., is.infinite(.), 0))) |> 
     select(-population) |> 
     st_drop_geometry()
 
@@ -200,10 +204,8 @@ join_alleys <-
 # Add breaks --------------------------------------------------------------
 
 join_alleys <- map(join_alleys, ~add_q3(.x))
-
 gs_q3 <- map(join_alleys, get_breaks_q3)
 gs_q5 <- map(join_alleys, get_breaks_q5)
-
 join_alleys <- map2(join_alleys, gs_q5, ~bind_cols(.x, add_q5(.x, .y)))
 
 
@@ -222,6 +224,18 @@ CT <- left_join(CT, join_alleys$CT, by = "ID") |>
 
 DA <- left_join(DA, join_alleys$DA, by = "ID") |> 
   relocate(geometry, .after = last_col())
+
+building <- 
+  building |> 
+  left_join(join_alleys$DA, by = c("DAUID" = "ID")) |> 
+  relocate(geometry, .after = last_col()) |> 
+  st_set_agr("constant")
+
+street <- 
+  street |> 
+  left_join(join_alleys$DA, by = c("DAUID" = "ID")) |> 
+  relocate(geometry, .after = last_col()) |> 
+  st_set_agr("constant")
 
 
 # Meta testing ------------------------------------------------------------
@@ -244,8 +258,8 @@ variables <-
     var_code = "green_alley_sqkm",
     var_title = "Green alleys per sq km",
     var_short = "Alleys sqkm",
-    explanation = paste0("the number of square meters of green alley per ",
-                         "square kilometers"),
+    explanation = paste0("the number of square metres of green alley per ",
+                         "square kilometre"),
     category = NA,
     private = FALSE,
     dates = NA,
@@ -257,7 +271,7 @@ variables <-
     var_code = "green_alley_per1k",
     var_title = "Green alleys per 1,000",
     var_short = "Alleys 1,000",
-    explanation = paste0("the number of square meters of green alley per ",
+    explanation = paste0("the number of square metres of green alley per ",
                          "1,000 residents"),
     category = NA,
     private = FALSE,
