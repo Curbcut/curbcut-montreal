@@ -3,32 +3,39 @@
 # UI ----------------------------------------------------------------------
 
 alley_UI <- function(id) {
-  fillPage(
-    fillRow(
-      fillCol(sidebar_UI(NS(id, "sidebar"),
-                         checkboxInput(inputId = NS(id, "focus_visited"),
-                                       label = i18n$t(
-                                         "Focus on green alleys visited by our team"
-                                       )),
-                         select_var_UI(NS(id, "left"), var_list_left_alley,
-                                       label = i18n$t("Grouping")),
-                         div(class = "bottom_sidebar",
-                             tagList(legend_UI(NS(id, "legend")),
-                                     zoom_UI(NS(id, "zoom"), alley_zoom))))
-      ),
-      fillCol(
-        div(class = "mapdeck_div", 
-            mapdeckOutput(NS(id, "map"), height = "100%")),
-        right_panel(id, compare_UI(NS(id, "alley"), var_list_right_alley),
-                    fluidRow(column(width = 7, h4(i18n$t("Explore"))),
-                             column(width = 5, align = "right", 
-                                    actionLink(inputId = NS(id, "hide"), 
-                                               label = i18n$t("Hide")))),
-                    uiOutput(NS(id, "alley_explore")),
-                    div(class = "bottom_sidebar", conditionalPanel(
-                      condition = "output.poly_selected == 1", ns = NS(id),
-                      actionLink(inputId = NS(id, "clear_selection"),
-                                 label = "Clear selection"))))),
+  fillPage(fillRow(
+    fillCol(
+      
+      # Sidebar
+      sidebar_UI(
+        NS(id, "sidebar"),
+        checkboxInput(inputId = NS(id, "focus_visited"), label = i18n$t(
+          "Focus on green alleys visited by our team")),
+        select_var_UI(NS(id, "left"), var_list_left_alley, 
+                      label = i18n$t("Grouping")), 
+        div(class = "bottom_sidebar", 
+            tagList(legend_UI(NS(id, "legend")), 
+                    zoom_UI(NS(id, "zoom"), map_zoom_levels))))),
+    
+    fillCol(
+      
+      # Map
+      div(class = "mapdeck_div", mapdeckOutput(NS(id, "map"), height = "100%")),
+      
+      # Right panel
+      right_panel(
+        id = id, 
+        compare_UI(NS(id, "alley"), var_list_right_alley),
+        fluidRow(column(width = 7, h4(i18n$t("Explore"))), 
+                 column(width = 5, align = "right", 
+                        actionLink(inputId = NS(id, "hide"), 
+                                   label = i18n$t("Hide")))),
+        uiOutput(NS(id, "alley_explore")),
+        div(class = "bottom_sidebar", conditionalPanel(
+          condition = "output.poly_selected == 1", ns = NS(id),
+          actionLink(inputId = NS(id, "clear_selection"),
+                     label = "Clear selection"))))),
+    
       flex = c(1, 5)
     )
   )
@@ -40,71 +47,88 @@ alley_UI <- function(id) {
 alley_server <- function(id) {
   moduleServer(id, function(input, output, session) {
     
+    # Initial reactives
+    zoom <- reactiveVal(get_zoom(map_zoom, map_zoom_levels))
+    selection <- reactiveVal(NA)
+    
     # Sidebar
-    sidebar_server("sidebar", "alley")
+    sidebar_server(
+      id = "sidebar", 
+      x = "alley")
     
     # If COUNT isn't selected, choropleth is TRUE 
     choropleth <- reactive(!(var_left() == " " || input$focus_visited))
     
     # Map
-    output$map <- renderMapdeck({
-      mapdeck(
-        style = map_style, token = token_alley,
-        zoom = 11, location = map_location)
-    })
+    output$map <- renderMapdeck({mapdeck(
+        style = map_style, 
+        token = map_token,
+        zoom = 11, 
+        location = map_location)})
     
-    # Zoom
-    zoom_val <- reactiveVal(get_zoom(map_zoom, alley_zoom))
+    # Zoom reactive
     observeEvent(input$map_view_change$zoom, {
-      zoom_val(get_zoom(input$map_view_change$zoom, alley_zoom))
-    })
-    zoom <- zoom_server("zoom", zoom = zoom_val, zoom_levels = alley_zoom)
+      zoom(get_zoom(input$map_view_change$zoom, map_zoom_levels))})
+    
+    # Zoom level for data
+    df <- zoom_server(
+      id = "zoom", 
+      zoom = zoom, 
+      zoom_levels = map_zoom_levels)
     
     # Zoom level to use when focus is on
     focus_alley_zoom <- reactive({
       case_when(input$map_view_change$zoom >= 13 ~ 15,
-                TRUE ~ input$map_view_change$zoom*-15+220)
-    })
+                TRUE ~ input$map_view_change$zoom * -15 + 220)})
     
-    # Left variable server
+    # Time
+    time <- reactive("2016")
+    
+    # Left variable
     var_left <- select_var_server("left", reactive(var_list_left_alley))
     
     # Compare panel
     var_right <- compare_server(
       id = "alley", 
       var_list = var_list_right_alley, 
-      df = zoom, 
+      df = df, 
       show_panel = choropleth,
-      time = reactive("2016"))
+      time = time)
     
     # Data 
-    data_1 <- data_server("alley", var_left, var_right, df = zoom, zoom = zoom_val)
+    data_1 <- data_server(
+      id = "alley", 
+      var_left = var_left, 
+      var_right = var_right, 
+      df = df, 
+      zoom = zoom)
     
     data <- reactive({
-      
       if (choropleth()) {
         data_1() %>% 
           {if (nrow(.) == nrow(borough))
             filter(., ID %in% island_csduid)
             else filter(., CSDUID %in% island_csduid)}
-      }
-    })
+      }})
     
     # Legend
-    legend_server("legend", var_left, var_right, zoom_val,
-                  show_panel = choropleth)
+    legend_server(
+      id = "legend", 
+      var_left = var_left, 
+      var_right = var_right, 
+      df = df,
+      show_panel = choropleth)
     
-
     # Explore panel
     output$alley_explore <- renderUI({
       
       if (!choropleth()) {
         
-        if (rv_alley$poly_selected %in% alley_text$ID) {
+        if (selection() %in% alley_text$ID) {
           
           text_to_display <- 
             alley_text %>%
-            filter(ID == rv_alley$poly_selected) %>% 
+            filter(ID == selection()) %>% 
             select(-ID) %>% 
             select_if(~sum(!is.na(.)) > 0) %>% 
             {if (nrow(.) > 0) as.list(.) else NULL}
@@ -115,12 +139,12 @@ alley_server <- function(id) {
             HTML(unlist(text_to_display[1:(length(text_to_display) - 1)]))
           }
           
-        } else if (rv_alley$poly_selected %in% alleys[alleys$visited,]$ID) {
+        } else if (selection() %in% alleys[alleys$visited,]$ID) {
           
           text_to_display <- 
             alleys %>%
             st_drop_geometry() %>% 
-            filter(ID == rv_alley$poly_selected) %>% 
+            filter(ID == selection()) %>% 
             mutate(name = str_glue(sus_translate(paste0(
               "<p><b>{str_to_title(name)} in ",
               "{name_2}</b></p>")))) %>% 
@@ -130,10 +154,11 @@ alley_server <- function(id) {
           
           text_to_display <- alley_alleys_text(text_to_display)
           
-          output$alley_img <- renderImage({list(src = paste0("www/", text_to_display$photo_ID),
-                                                alt = "Photo of the selected green alley",
-                                                width = "100%")},
-                                          deleteFile = FALSE)
+          output$alley_img <- renderImage({
+            list(src = paste0("www/", text_to_display$photo_ID),
+                 alt = "Photo of the selected green alley",
+                 width = "100%")},
+            deleteFile = FALSE)
           
           alley_photo_id <<- text_to_display$photo_ID
           
@@ -144,14 +169,7 @@ alley_server <- function(id) {
                  if (!is.null(text_to_display$photo_ID)) {
                    div(style = "margin-bottom:20px;", 
                        imageOutput(session$ns("alley_img"), height = "100%"))
-                 }
-            )
-          }
-          
-        }
-      }
-      
-    })
+                 })}}}})
     
     onclick(
       "alley_img", 
@@ -161,21 +179,21 @@ alley_server <- function(id) {
           easyClose = TRUE,
           size = "l",
           footer = NULL
-        ))
-        })
+        ))})
     
     # Update map in response to user input in not choropleth
     observe({
         if (choropleth()) {
           
-          map_change(NS(id, "map"),
-                     df = data,
-                     zoom = zoom,
-                     polygons_to_clear = c("alleys_void", "alleys_visited", "borough_info",
-                                           "poly_highlight"))
+          map_change(
+            id = NS(id, "map"),
+            df = data,
+            zoom = df,
+            polygons_to_clear = c("alleys_void", "alleys_visited", 
+                                  "borough_info", "poly_highlight"))
           
         } else {
-        if (input$focus_visited) {
+          if (input$focus_visited) {
           mapdeck_update(map_id = NS(id, "map")) %>%
             clear_polygon() %>%
             clear_polygon(layer_id = "borough_info") %>%
@@ -218,33 +236,31 @@ alley_server <- function(id) {
         
       })
     
-    # Update poly_selected on click
+    # Update poly on click
     observeEvent(input$map_polygon_click, {
-      lst <- jsonlite::fromJSON(input$map_polygon_click)
-      if (is.null(lst$object$properties$id)) {
-        rv_alley$poly_selected <- NA
-      } else rv_alley$poly_selected <- lst$object$properties$id
+      lst <- (jsonlite::fromJSON(input$map_polygon_click))$object$properties$id
+      if (is.null(lst)) selection(NA) else selection(lst)
     })
     
     # # Clear poly_selected when input$focus_visited is clicked
-    observeEvent(input$focus_visited, {if (!choropleth()) rv_alley$poly_selected <- NA},
+    observeEvent(input$focus_visited, {if (!choropleth()) selection() <- NA},
                  ignoreInit = TRUE)
     
     
-    # Clear poly_selected on zoom
-    observeEvent(zoom(), {if (choropleth()) rv_alley$poly_selected <- NA},
+    # Clear selection on df change
+    observeEvent(df(), {if (choropleth()) selection() <- NA},
                  ignoreInit = TRUE)
     
     # Update map in response to poly_selected change
-    observeEvent(rv_alley$poly_selected, {
+    observeEvent(selection(), {
       
       if (choropleth()) {
         
-        if (!is.na(rv_alley$poly_selected)) {
+        if (!is.na(selection())) {
           width <- switch(zoom(), "borough" = 100, "CT" = 10, 2)
           data_to_add <-
             data() %>%
-            filter(ID == rv_alley$poly_selected) %>%
+            filter(ID == selection()) %>%
             mutate(fill = substr(fill, 1, 7))
           
           mapdeck_update(map_id = NS(id, "map")) %>%
@@ -258,14 +274,14 @@ alley_server <- function(id) {
         }
         
         #If not lags when an alley is selected
-    } else if (rv_alley$poly_selected %in% alley_text$ID || 
-            is.na(rv_alley$poly_selected)) {
+    } else if (selection() %in% alley_text$ID || 
+            is.na(selection())) {
           
-          if (!is.na(rv_alley$poly_selected)) {
+          if (!is.na(selection())) {
             # width <- switch(rv_canale$zoom, "borough" = 100, "CT" = 10, 2)
             data_to_add <-
               borough %>%
-              filter(ID == rv_alley$poly_selected)
+              filter(ID == selection())
             
             mapdeck_update(map_id = NS(id, "map")) %>%
               add_polygon(
@@ -306,11 +322,11 @@ alley_server <- function(id) {
     })
     
     # Hook up "Clear selection" button
-    output$poly_selected <- reactive(!is.na(rv_alley$poly_selected))
+    output$poly_selected <- reactive(!is.na(selection()))
     outputOptions(output, "poly_selected", suspendWhenHidden = FALSE)
     
     # Clear click status if prompted
-    observeEvent(input$`clear_selection`, {rv_alley$poly_selected <- NA})
+    observeEvent(input$`clear_selection`, {selection() <- NA})
     
     
   })

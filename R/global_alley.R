@@ -1,22 +1,13 @@
 ### GREEN ALLEY MODULE GLOBALS #################################################
 
-# Map token
-token_alley <- paste0("pk.eyJ1IjoiZHdhY2hzbXV0aCIsImEiOiJja2g2Y2JpbDc",
-                      "wMDc5MnltbWpja2xpYTZhIn0.BXdU7bsQYWcSwmmBx8DNqQ")
-
 # Initialize reactive values
 width_alley_higher_zoom <- 75
-rv_alley <- reactiveValues(poly_selected = NA, zoom = width_alley_higher_zoom)
 
 # Dropdown menu
 var_list_left_alley <- 
   list("Individual alleys" = " ",
        "Per sq km" = "green_alley_sqkm",
        "Per 1,000 residents" = "green_alley_per1k")
-
-# Alley zoom
-alley_zoom <- c("borough" = 0, "CT" = 10.5, "DA" = 12)
-
 
 # Dropdown menu
 var_list_right_alley <- 

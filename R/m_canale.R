@@ -117,7 +117,7 @@ canale_server <- function(id) {
       if (is.null(lst)) selection(NA) else selection(lst)
     })
     
-    # Clear poly_selected on df change
+    # Clear selection on df change
     observeEvent(df(), selection(NA), ignoreInit = TRUE)
 
     # Update map in response to poly change
