@@ -4,13 +4,18 @@
 
 # Get data ----------------------------------------------------------------
 
+reserves <- c("24670285", "24720184", "24720186", "24720187", "24720188", 
+              "24720190", "24720191", "24720192", "24720193", "24720194", 
+              "24720195", "24720196", "24720200", "24720201")
+
 canale <- 
   read_sf("dev/data/Mtl_DA_CANALE/Mtl_DA_CANALE.shp") |> 
   st_transform(4326) |> 
   st_cast("MULTIPOLYGON") |> 
   st_set_agr("constant") |> 
   st_drop_geometry() |> 
-  select(DAUID, CTUID, canale_ind = ale_index)
+  select(DAUID, CTUID, canale_ind = ale_index) |> 
+  mutate(canale_ind = if_else(DAUID %in% reserves, NA_real_, canale_ind))
 
 
 # Data testing ------------------------------------------------------------
@@ -190,6 +195,6 @@ variables <-
 # Clean up ----------------------------------------------------------------
 
 rm(borough_canale, breaks_q3_active, breaks_q5_active, canale, canale_q3,
-   canale_q5, CT_canale, DA_canale, grid_canale)
+   canale_q5, CT_canale, DA_canale, grid_canale, reserves)
 
 # To save output, run dev/build_data.R, which calls this script
