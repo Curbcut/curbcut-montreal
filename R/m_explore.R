@@ -30,19 +30,21 @@ explore_UI <- function(id) {
     conditionalPanel(
       condition = "output.hide_status == 1", ns = NS(id),
       htmlOutput(NS(id, "info_table")),
-      plotOutput(NS(id, "explore_graph"), height = 150),
+      conditionalPanel(
+        condition = "output.show_graph == true", ns = NS(id),
+        plotOutput(NS(id, "explore_graph"), height = 150)),
       conditionalPanel(
         condition = "output.poly_selected == 1", ns = NS(id),
         actionLink(inputId = NS(id, "clear_selection"),
                    label = "Clear selection")))
-    )
+  )
 }
 
 explore_server <- function(id, x, var_left, var_right, selection, df, 
                            var_left_label = NULL, var_right_label = NULL,
                            build_str_as_DA = TRUE,
-                           standard = reactive(TRUE), info = NULL, 
-                           graph = NULL) {
+                           standard = reactive(TRUE), info = reactive(NULL), 
+                           graph = reactive(NULL)) {
   
   stopifnot(is.reactive(x))
   stopifnot(is.reactive(var_left))
@@ -71,7 +73,7 @@ explore_server <- function(id, x, var_left, var_right, selection, df,
                           var_right_label = var_right_label,
                           build_str_as_DA = build_str_as_DA)()
       } else {
-        info()
+        if (!is.null(info())) info()
       }
     })
     
@@ -96,7 +98,7 @@ explore_server <- function(id, x, var_left, var_right, selection, df,
                  error = function(e) reactive(NULL),
                  silent = TRUE)()
       } else {
-        graph()
+        if (!is.null(graph())) graph()
       }
     })
     
@@ -109,6 +111,11 @@ explore_server <- function(id, x, var_left, var_right, selection, df,
     show_panel <- reactive(!is.null(info_table()) || !is.null(explore_graph()))
     output$show_panel <- show_panel
     outputOptions(output, "show_panel", suspendWhenHidden = FALSE)
+    
+    # Only show graph if there's something to show
+    show_graph <- reactive(!is.null(explore_graph()))
+    output$show_graph <- show_graph
+    outputOptions(output, "show_graph", suspendWhenHidden = FALSE)
     
     # Hide explore status
     output$hide_status <- reactive(show_panel() && input$hide %% 2 == 0)
