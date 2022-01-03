@@ -28,7 +28,8 @@
 #' - fill: A character vector of hex colour values to be passed to mapdeck for
 #' colouring choropleths drawn from the data frame.
 
-data_server <- function(id, var_left, var_right, df, zoom = df) {
+data_server <- function(id, var_left, var_right, df, zoom = df, 
+                        island_only = FALSE) {
   stopifnot(is.reactive(var_left))
   stopifnot(is.reactive(var_right))
   stopifnot(is.reactive(df))
@@ -39,6 +40,14 @@ data_server <- function(id, var_left, var_right, df, zoom = df) {
       
       # Get borough/CT/DA/grid/etc
       data <- get(df())
+      
+      # Filter in only the island
+      if (island_only) {
+        data <- data %>%
+          {if (nrow(.) == nrow(borough))
+            filter(., ID %in% island_csduid)
+            else filter(., CSDUID %in% island_csduid)}
+      }
       
       # Get data type
       data_type <- get_data_type(data, var_left, var_right)

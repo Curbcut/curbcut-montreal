@@ -13,16 +13,18 @@ map_change <- function(id_map, x, df, selection = reactive(NULL),
   observeEvent({x()
     df()
     standard_width()}, {
-  
-  geom_type <-  switch(as.character(unique(st_geometry_type(x()))),
-                       "POLYGON" = "polygon",
-                       "MULTIPOLYGON" = "polygon",
-                       "LINESTRING" = "line",
-                       "MULTILINESTRING" = "line",
-                       "MULTIPOINT" = "point",
-                       "POINT" = "point",
-                       "error")
-  
+      
+      geom_type <- map_chr(as.character(unique(st_geometry_type(alleys))), ~{
+        switch(.x,  
+               "POLYGON" = "polygon",
+               "MULTIPOLYGON" = "polygon",
+               "LINESTRING" = "line",
+               "MULTILINESTRING" = "line",
+               "MULTIPOINT" = "point",
+               "POINT" = "point",
+               "error")
+      }) |> unique()
+      
   # Used at all geometries:
   update_and_clean <- function() {
     mapdeck_update(map_id = id_map)  %>%

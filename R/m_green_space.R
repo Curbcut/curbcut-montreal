@@ -93,14 +93,12 @@ green_space_server <- function(id) {
       var_left = var_left,
       var_right = var_right, 
       df = df, 
-      zoom = zoom)
+      zoom = zoom,
+      island_only = TRUE)
     
     data <- reactive({
       if (choropleth()) {
-        data_choropleth() %>% 
-          {if (nrow(.) == nrow(borough))
-            filter(., ID %in% island_csduid)
-            else filter(., CSDUID %in% island_csduid)}
+        data_choropleth()
       } else {
         green_space %>%
           {if (var_left_type() != "total")
