@@ -174,7 +174,7 @@ alley_server <- function(id) {
       x = data,
       var_left = var_left,
       var_right = var_right,
-      select = selection,
+      selection = selection,
       df = df,
       standard = choropleth,
       info = alley_info_table)
@@ -185,8 +185,8 @@ alley_server <- function(id) {
         
         map_change(
           id = NS(id, "map"),
-          df = data,
-          zoom = df,
+          x = data,
+          df = df,
           polygons_to_clear = c("alleys_void", "alleys_visited", 
                                 "borough_info", "poly_highlight"))
         

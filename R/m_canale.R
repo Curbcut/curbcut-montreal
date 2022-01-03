@@ -89,7 +89,7 @@ canale_server <- function(id) {
       x = data, 
       var_left = var_left,
       var_right = var_right, 
-      select = selection,
+      selection = selection,
       df = df, 
       build_str_as_DA = TRUE)
 
@@ -107,9 +107,10 @@ canale_server <- function(id) {
       var_right = var_right)
 
     # Update map in response to variable changes or zooming
-    observeEvent({
-      var_right()
-      df()}, map_change(NS(id, "map"), df = data, zoom = df))
+    map_change(NS(id, "map"), 
+               x = data, 
+               df = df, 
+               selection = selection)
 
     # Update poly on click
     observeEvent(input$map_polygon_click, {
@@ -119,26 +120,6 @@ canale_server <- function(id) {
     
     # Clear selection on df change
     observeEvent(df(), selection(NA), ignoreInit = TRUE)
-
-    # Update map in response to poly change
-    observeEvent(selection(), {
-      if (!is.na(selection())) {
-        width <- switch(df(), "borough" = 100, "CT" = 10, 2)
-        data_to_add <-
-          data() |> 
-          filter(ID == selection()) |> 
-          mutate(fill = substr(fill, 1, 7))
-
-        mapdeck_update(map_id = NS(id, "map")) |> 
-          add_polygon(
-            data = data_to_add, elevation = 5, fill_colour = "fill", 
-            update_view = FALSE, layer_id = "poly_highlight", 
-            auto_highlight = TRUE, highlight_colour = "#FFFFFF90")
-        } else {
-        mapdeck_update(map_id = NS(id, "map")) |> 
-          clear_polygon(layer_id = "poly_highlight")
-        }
-      })
 
     # Clear click status if prompted
     observeEvent(input$`explore-clear_selection`, selection(NA))
