@@ -40,7 +40,9 @@ explore_UI <- function(id) {
 
 explore_server <- function(id, x, var_left, var_right, selection, df, 
                            var_left_label = NULL, var_right_label = NULL,
-                           build_str_as_DA = TRUE) {
+                           build_str_as_DA = TRUE,
+                           standard = reactive(TRUE), info = NULL, 
+                           graph = NULL) {
   
   stopifnot(is.reactive(x))
   stopifnot(is.reactive(var_left))
@@ -53,18 +55,25 @@ explore_server <- function(id, x, var_left, var_right, selection, df,
     # Get var_type
     var_type <- explore_var_type(id, x, var_left, var_right, selection,
                                  var_left_label, var_right_label)
-
+    
+    
     # Render info table
-    info_table <- info_table_server(id = "explore", 
-                      x = x, 
-                      var_type = var_type, 
-                      var_left = var_left, 
-                      var_right = var_right, 
-                      selection = selection, 
-                      df = df, 
-                      var_left_label = var_left_label, 
-                      var_right_label = var_right_label,
-                      build_str_as_DA = build_str_as_DA)
+    info_table <- reactive({
+      if (isTRUE(standard())) {
+        info_table_server(id = "explore", 
+                          x = x, 
+                          var_type = var_type, 
+                          var_left = var_left, 
+                          var_right = var_right, 
+                          selection = selection, 
+                          df = df, 
+                          var_left_label = var_left_label, 
+                          var_right_label = var_right_label,
+                          build_str_as_DA = build_str_as_DA)()
+      } else {
+        info()
+      }
+    })
     
     # Display info_table if it isn't NULL
     output$info_table <- renderUI({
@@ -72,18 +81,24 @@ explore_server <- function(id, x, var_left, var_right, selection, df,
     })
     
     # Render the graph
-    explore_graph <- tryCatch(explore_graph_server(id = "explore", 
-                         x = x, 
-                         var_type = var_type, 
-                         var_left = var_left, 
-                         var_right = var_right, 
-                         selection = selection, 
-                         df = df, 
-                         var_left_label = var_left_label,
-                         var_right_label = var_right_label,
-                         build_str_as_DA = build_str_as_DA),
-                         error = function(e) reactive(NULL),
-                         silent = TRUE)
+    explore_graph <- reactive({
+      if (isTRUE(standard())) {
+        tryCatch(explore_graph_server(id = "explore", 
+                                      x = x, 
+                                      var_type = var_type, 
+                                      var_left = var_left, 
+                                      var_right = var_right, 
+                                      selection = selection, 
+                                      df = df, 
+                                      var_left_label = var_left_label,
+                                      var_right_label = var_right_label,
+                                      build_str_as_DA = build_str_as_DA),
+                 error = function(e) reactive(NULL),
+                 silent = TRUE)()
+      } else {
+        graph()
+      }
+    })
     
     # Display graph if it isn't NULL
     output$explore_graph <- renderPlot({

@@ -89,16 +89,10 @@ green_space_server <- function(id) {
       show_panel = choropleth)
     
     # Data
-    data_choropleth <- data_server(
-      id = "green_space", 
-      var_left = var_left,
-      var_right = var_right, 
-      df = df, 
-      zoom = zoom)
-    
     data <- reactive({
       if (choropleth()) {
-        data_choropleth() %>% 
+        data_server(id = "green_space", var_left = var_left,
+                    var_right = var_right, df = df, zoom = zoom)() %>% 
           {if (nrow(.) == nrow(borough))
             filter(., ID %in% island_csduid)
             else filter(., CSDUID %in% island_csduid)}
@@ -109,15 +103,117 @@ green_space_server <- function(id) {
       }
     })
     
+    # Green space info table if choropleth is FALSE
+    green_space_info_table <- reactive({
+      
+      if (!choropleth()) {
+      
+      pnr <- function(data) prettyNum(round(data/1e+6, digits = 2), big.mark = ",")
+      
+      if (is.na(selection())) {
+        type <- if (nrow(data()) == nrow(green_space)) {
+          str_glue(sus_translate("a total of {nrow(data())} green spaces"))
+        } else {
+          str_glue(sus_translate("{nrow(data())} `{unique(data()$type)}`"))
+        }
+        
+        HTML(str_glue(
+          paste0("At the scale of the City of Montreal, there are {type}, ",
+                 "combining {pnr(sum(data()$area))} km^2. Their area range from ",
+                 "{pnr(min(data()$area))} and {pnr(max(data()$area))} km^2, with ",
+                 "an average of {pnr(mean(data()$area))} km^2.")))
+      } else {
+        data <-
+          data() |>
+          mutate(total_rank = rank(-area)) |>
+          group_by(CSDUID) |>
+          mutate(borough_rank = rank(-area))
+        
+        type <- if (nrow(data()) == nrow(green_space)) {
+          str_glue(sus_translate("green space"))
+        } else {
+          str_glue(sus_translate("`{unique(data()$type)}`"))
+        }
+        
+        z <- data[data$ID == selection(), ]
+        total_rank <- pull(z, total_rank)
+        borough_rank <- pull(z, borough_rank)
+        borough <- filter(borough, ID == pull(z, CSDUID))$name
+        
+        ordinal_form <- function(data) {
+          if (data > 20) {
+            if (data %% 100 %in% c(11 , 12, 13)) {
+              form <- "th "
+            } else {
+              form <- switch(as.character(data %% 10), "1" = "st ", "2" = "nd ",
+                             "3" = "rd ", "th ")
+            }
+            paste0(data, form)
+          } else {
+            switch(as.character(data), "1" = "", "2" = "second ",
+                   "3" = "third ", "4" = "fourth ", "5" = "fifth ", "6" = "sixth ",
+                   "7" = "seventh ", "8" = "eighth ", "9" = "ninth ", "10" = "tenth ",
+                   paste0(as.character(data), "th "))
+          }
+        }
+        
+        total_rank <- ordinal_form(total_rank)
+        borough_rank <- ordinal_form(borough_rank)
+        
+        HTML(str_glue(
+          paste0("<p><b>{z$name}</b><p>",
+                 "<p>The green space {z$name} is a `{z$type}` of ",
+                 "{prettyNum(z$area, big.mark = ',')} m^2. It is ",
+                 "categorized as a `{z$type_2}`",
+                 "and is of `{z$property}` property. Its ",
+                 "management entity is `{z$management}`.</p>",
+                 "<p>It is the {total_rank}biggest {type} in the ",
+                 "City, and the {borough_rank} largest in {borough}.</p>")))
+      }}})
+    
+    # Green space graph if choropleth() is FALSE
+    green_space_explore_graph <- reactive({
+      if (!choropleth()) {
+        if (is.na(selection())) {
+          ggplot(data(), aes(area)) +
+            geom_histogram(aes(fill = fill), alpha = 0.5, bins = 25) +
+            scale_fill_manual(values = rev(col_left_5), na.translate = FALSE) + 
+            labs(data = "Green space area (log10)", y = NULL) + 
+            scale_x_log10() +
+            theme_minimal() +
+            theme(legend.position = "none", panel.grid.minor.x = element_blank(),
+                  panel.grid.major.x = element_blank(),
+                  panel.grid.minor.y = element_blank(),
+                  axis.title = element_text(size = 8))
+        } else {
+          select_id <- selection()
+          
+          ggplot(data(), aes(area)) +
+            geom_histogram(aes(fill = round(area) == 
+                                 round(area[ID == select_id])),
+                           bins = 25) +
+            scale_fill_manual(values = col_left_5[c(1, 5)], 
+                              na.translate = FALSE) +
+            labs(data = "Green space area (log10)", y = NULL) + 
+            scale_x_log10() +
+            theme_minimal() +
+            theme(legend.position = "none", panel.grid.minor.x = element_blank(),
+                  panel.grid.major.x = element_blank(),
+                  panel.grid.minor.y = element_blank(),
+                  axis.title = element_text(size = 8))
+        }}})
+    
     # Explore panel
-    explore_content <- green_space_explore_server(
+    explore_content <- explore_server(
       id = "explore",
       x = data,
       var_left = var_left,
       var_right = var_right,
       select = selection,
       df = df,
-      standard_info = choropleth)
+      standard = choropleth,
+      info = green_space_info_table,
+      graph = green_space_explore_graph)
     
     # Legend
     legend_server(
