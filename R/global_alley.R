@@ -5,9 +5,8 @@ width_alley_higher_zoom <- 75
 
 # Dropdown menu
 var_list_left_alley <- 
-  list("Per sq km" = "green_alley_sqkm",
-       "Individual alleys" = " ",
-       # "Per sq km" = "green_alley_sqkm",
+  list("Individual alleys" = " ",
+       "Per sq km" = "green_alley_sqkm",
        "Per 1,000 residents" = "green_alley_per1k")
 
 # Dropdown menu

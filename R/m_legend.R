@@ -139,7 +139,14 @@ legend_server <- function(id, var_left, var_right, df,
     
     output$legend_render <- renderUI({
       output$legend <- renderPlot({
-        render_plot_fun()
+        
+        legend_display <- 
+          tryCatch(render_plot_fun(),
+                   error = function(e) reactive(NULL),
+                   silent = TRUE)
+        
+        if (!is.null(legend_display)) legend_display
+        
       })
       
       # Weird hack to get legend plot to inherit full namespace
