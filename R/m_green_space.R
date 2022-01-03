@@ -25,7 +25,7 @@ green_space_UI <- function(id) {
       # Right panel
       right_panel(id, compare_UI(NS(id, "green_space"), make_dropdown()),
                   div(class = "explore_dyk",
-                      green_space_explore_UI(NS(id, "explore")), 
+                      explore_UI(NS(id, "explore")), 
                       dyk_UI(NS(id, "dyk"))))),
     
     flex = c(1, 5)))

@@ -243,14 +243,29 @@ street <-
 meta_testing()
 
 
-# Clean up ----------------------------------------------------------------
-
-rm(alleys_mtl, alleys_google, alleys_mn, alleys_visited, alleys_to_filter, 
-   alleys_visited_text, missing_photos, alleys_length,
-   mtl_ids, lengths_alleys_fun, join_alleys)
-
-
 # Variable explanations ---------------------------------------------------
+
+var_list <- 
+  join_alleys |> 
+  map(~names(select(.x, -ID, -contains(c("q3", "q5"))))) |> 
+  unlist() |> 
+  unique()
+
+# Get breaks_q3
+breaks_q3_active <-
+  map(set_names(var_list), ~{
+    map2_dfr(gs_q3, names(join_alleys), function(x, scale) {
+      if (nrow(x) > 0) x |> mutate(scale = scale, date = NA, rank = 0:3,
+                                   .before = everything())}) |> 
+      select(scale, date, rank, var = all_of(.x))})
+
+# Get breaks_q5
+breaks_q5_active <- 
+  map(set_names(var_list), ~{
+    map2_dfr(gs_q5, names(join_alleys), function(x, scale) {
+      if (nrow(x) > 0) x |> mutate(scale = scale, date = NA, rank = 0:5,
+                                   .before = everything())}) |> 
+      select(scale, date, rank, var = all_of(.x))})
 
 variables <-
   variables |>
@@ -264,8 +279,8 @@ variables <-
     private = FALSE,
     dates = NA,
     scales = c("borough", "CT", "DA"),
-    breaks_q3 = NA,
-    breaks_q5 = NA,
+    breaks_q3 = breaks_q3_active$green_alley_sqkm,
+    breaks_q5 = breaks_q5_active$green_alley_sqkm,
     source = "VdM") |> 
   add_variables(
     var_code = "green_alley_per1k",
@@ -277,6 +292,14 @@ variables <-
     private = FALSE,
     dates = NA,
     scales = c("borough", "CT", "DA"),
-    breaks_q3 = NA,
-    breaks_q5 = NA,
+    breaks_q3 = breaks_q3_active$green_alley_per1k,
+    breaks_q5 = breaks_q5_active$green_alley_per1k,
     source = "VdM")
+
+
+# Clean up ----------------------------------------------------------------
+
+rm(alleys_mtl, alleys_google, alleys_mn, alleys_visited, alleys_to_filter, 
+   alleys_visited_text, missing_photos, alleys_length,
+   mtl_ids, lengths_alleys_fun, join_alleys, breaks_q3_active, breaks_q5_active,
+   var_list)

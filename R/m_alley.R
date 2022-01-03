@@ -243,12 +243,12 @@ alley_server <- function(id) {
     })
     
     # # Clear poly_selected when input$focus_visited is clicked
-    observeEvent(input$focus_visited, {if (!choropleth()) selection() <- NA},
+    observeEvent(input$focus_visited, {if (!choropleth()) selection <- NA},
                  ignoreInit = TRUE)
     
     
     # Clear selection on df change
-    observeEvent(df(), {if (choropleth()) selection() <- NA},
+    observeEvent(df(), {if (choropleth()) selection <- NA},
                  ignoreInit = TRUE)
     
     # Update map in response to poly_selected change
@@ -326,7 +326,7 @@ alley_server <- function(id) {
     outputOptions(output, "poly_selected", suspendWhenHidden = FALSE)
     
     # Clear click status if prompted
-    observeEvent(input$`clear_selection`, {selection() <- NA})
+    observeEvent(input$`clear_selection`, {selection <- NA})
     
     
   })
