@@ -3,21 +3,26 @@
 # UI ----------------------------------------------------------------------
 
 stories_UI <- function(id) {
-  fillPage(
-    fillRow(
-      fillCol(sidebar_UI(NS(id, "sidebar"),
-                         hr(id = NS(id, "hr")),
-                         actionLink(NS(id, "back"), i18n$t("Back to the map"))
-      )),
-      fillCol(
-        div(class = "mapdeck_div", 
-            mapdeckOutput(NS(id, "map"), height = "100%")),
-        shinyjs::hidden(htmlOutput(NS(id, "stories"),
-                                   style = "position:absolute; margin: 40px;
-                     max-width: 1000px; z-index:499"))),
-      flex = c(1, 5)
-    )
-  )
+  fillPage(fillRow(
+    fillCol(
+      
+      # Sidebar
+      sidebar_UI(
+        NS(id, "sidebar"),
+        hr(id = NS(id, "hr")),
+        actionLink(NS(id, "back"), i18n$t("Back to the map")))),
+    
+    fillCol(
+      
+      # Map
+      div(class = "mapdeck_div", mapdeckOutput(NS(id, "map"), height = "100%")),
+      
+      shinyjs::hidden(htmlOutput(
+        NS(id, "stories"),
+        style = paste0("position:absolute; margin: 40px; ",
+                       "max-width: 1000px; z-index:499")))),
+    
+    flex = c(1, 5)))
 }
 
 
@@ -26,32 +31,39 @@ stories_UI <- function(id) {
 stories_server <- function(id) {
   moduleServer(id, function(input, output, session) {
     
+    # Initial reactives
+    selection <- reactiveVal(NA)
+    zoom <- reactiveVal(map_zoom * -550 + 8000)
+    
     # Sidebar
-    sidebar_server("sidebar", "stories")
+    sidebar_server(
+      id = "sidebar", 
+      x = "stories")
 
     # Map
-    output$map <- renderMapdeck({
-        mapdeck(style = map_style, token = token_stories, zoom = 10.5,
-               location = map_location)
-    })
+    output$map <- renderMapdeck({mapdeck(
+      style = map_style, 
+      token = map_token, 
+      zoom = map_zoom, 
+      location = map_location)})
     
     # Zoom level
     observeEvent(input$map_view_change$zoom, {
-        rv_stories$zoom <- case_when(input$map_view_change$zoom > 13 ~ 600,
-                                     TRUE ~ input$map_view_change$zoom*-550+8000)
-      })
+      zoom(case_when(input$map_view_change$zoom > 13 ~ 600,
+                     TRUE ~ input$map_view_change$zoom * -550 + 8000))
+    })
     
     
     # Update buffer to change the map when zoom is different
     data <- reactive({
         stories %>%
-        mutate(buffer = st_buffer(geometry, rv_stories$zoom)) %>%
+        mutate(buffer = st_buffer(geometry, zoom())) %>%
         st_set_geometry("buffer")
     })
     
     observeEvent({
       data()
-      rv_stories$zoom}, {
+      zoom()}, {
 
         v1 <- 1:nrow(data())
         v2 <- paste0("stories/round_img/", data()$img[v1])
@@ -80,20 +92,20 @@ stories_server <- function(id) {
     observeEvent(input$map_polygon_click, {
       click <- jsonlite::fromJSON(input$map_polygon_click)$object$properties$id
       if (is.null(click)) {
-        rv_stories$poly_selected <- NA
-      } else if (!is.na(rv_stories$poly_selected) && 
-                 click == rv_stories$poly_selected) {
-        rv_stories$poly_selected <- NA
-      } else rv_stories$poly_selected <- click
+        selection(NA)
+      } else if (!is.na(selection()) && 
+                 click == selection()) {
+        selection(NA)
+      } else selection(click)
     })
     
     # Render the story in question, now only in english (_en)
     output$stories <- renderUI({
       
-      if(!is.na(rv_stories$poly_selected)) {
+      if (!is.na(selection())) {
         
-      rmd_name <- stories[stories$ID == rv_stories$poly_selected,]$rmd
-      bandeau_name <- stories[stories$ID == rv_stories$poly_selected,]$img
+      rmd_name <- stories[stories$ID == selection(),]$rmd
+      bandeau_name <- stories[stories$ID == selection(),]$img
       
       HTML('<div class = "main_panel_text_popup">',
            # Adding bandeau img after the first div (title)
@@ -108,20 +120,20 @@ stories_server <- function(id) {
     # Anytime to "Go back to map" button is clicked, poly_selected goes
     # NA causing the div to disappear
     observeEvent(input$back, {
-      rv_stories$poly_selected <- NA
+      selection(NA)
     })
     
-    observeEvent(rv_stories$poly_selected, {
-      shinyjs::toggle("hr", condition = !is.na(rv_stories$poly_selected))
-      shinyjs::toggle("back", condition = !is.na(rv_stories$poly_selected))
-      shinyjs::toggle("stories", condition = !is.na(rv_stories$poly_selected))
+    observeEvent(selection(), {
+      shinyjs::toggle("hr", condition = !is.na(selection()))
+      shinyjs::toggle("back", condition = !is.na(selection()))
+      shinyjs::toggle("stories", condition = !is.na(selection()))
     })
   
     # If there's an action with the map, the rmd goes away (Ultimately, any click on the map
     # should trigger these)
     observeEvent(input$map_view_change, {
       shinyjs::hide(id = "stories")
-      rv_stories$poly_selected <- NA
+      selection(NA)
     })
     
   })
