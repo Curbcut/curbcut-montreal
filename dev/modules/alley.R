@@ -278,7 +278,7 @@ variables <-
     category = NA,
     private = FALSE,
     dates = NA,
-    scales = c("borough", "CT", "DA"),
+    scales = c("borough", "building", "CT", "DA","street"),
     breaks_q3 = breaks_q3_active$green_alley_sqkm,
     breaks_q5 = breaks_q5_active$green_alley_sqkm,
     source = "VdM") |> 
@@ -291,7 +291,7 @@ variables <-
     category = NA,
     private = FALSE,
     dates = NA,
-    scales = c("borough", "CT", "DA"),
+    scales = c("borough", "building", "CT", "DA","street"),
     breaks_q3 = breaks_q3_active$green_alley_per1k,
     breaks_q5 = breaks_q5_active$green_alley_per1k,
     source = "VdM")
