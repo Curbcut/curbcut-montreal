@@ -14,11 +14,11 @@ green_space_info_table <- function(id, x, selection, ...) {
           str_glue(sus_translate("{nrow(x())} `{unique(x()$type)}`"))
         }
         
-        HTML(str_glue(
+        HTML(str_glue(sus_translate(
           paste0("At the scale of the City of Montreal, there are {type}, ",
                  "combining {pnr(sum(x()$area))} km^2. Their area range from ",
                  "{pnr(min(x()$area))} and {pnr(max(x()$area))} km^2, with ",
-                 "an average of {pnr(mean(x()$area))} km^2.")))
+                 "an average of {pnr(mean(x()$area))} km^2."))))
       } else {
         x <-
           x() |>
@@ -38,26 +38,34 @@ green_space_info_table <- function(id, x, selection, ...) {
         borough <- filter(borough, ID == pull(z, CSDUID))$name
         
         ordinal_form <- function(x) {
-          if (x > 20) {
-            if (x %% 100 %in% c(11 , 12, 13)) {
-              form <- "th "
+          # English ordinal form
+          if (sus_rv$lang() == "en") {
+            if (x > 20) {
+              if (x %% 100 %in% c(11 , 12, 13)) {
+                form <- "th "
+              } else {
+                form <- switch(as.character(x %% 10), "1" = "st ", "2" = "nd ",
+                               "3" = "rd ", "th ")
+              }
+              paste0(x, form)
             } else {
-              form <- switch(as.character(x %% 10), "1" = "st ", "2" = "nd ",
-                             "3" = "rd ", "th ")
+              switch(as.character(x), "1" = "", "2" = "second ",
+                     "3" = "third ", "4" = "fourth ", "5" = "fifth ", 
+                     "6" = "sixth ",  "7" = "seventh ", "8" = "eighth ", 
+                     "9" = "ninth ", "10" = "tenth ",
+                     paste0(as.character(x), "th "))
             }
-            paste0(x, form)
           } else {
-            switch(as.character(x), "1" = "", "2" = "second ",
-                   "3" = "third ", "4" = "fourth ", "5" = "fifth ", "6" = "sixth ",
-                   "7" = "seventh ", "8" = "eighth ", "9" = "ninth ", "10" = "tenth ",
-                   paste0(as.character(x), "th "))
+            # French ordinal form
+            switch(as.character(x), "1" = "", "2" = "deuxième ",
+                   "3" = "troisième ", paste0(as.character(x), "ième "))
           }
         }
         
         total_rank <- ordinal_form(total_rank)
         borough_rank <- ordinal_form(borough_rank)
         
-        HTML(str_glue(
+        HTML(str_glue(sus_translate(
           paste0("<p><b>{z$name}</b><p>",
                  "<p>The green space {z$name} is a `{z$type}` of ",
                  "{prettyNum(z$area, big.mark = ',')} m^2. It is ",
@@ -65,7 +73,7 @@ green_space_info_table <- function(id, x, selection, ...) {
                  "and is of `{z$property}` property. Its ",
                  "management entity is `{z$management}`.</p>",
                  "<p>It is the {total_rank}biggest {type} in the ",
-                 "City, and the {borough_rank} largest in {borough}.</p>")))
+                 "City, and the {borough_rank} largest in {borough}.</p>"))))
       }
     })
   })

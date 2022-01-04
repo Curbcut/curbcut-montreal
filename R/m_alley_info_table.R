@@ -8,9 +8,9 @@ alley_info_table <- function(id, selection, ...) {
       if (selection() %in% alley_text$ID) {
         
         text_to_display <- 
-          alley_text %>%
-          filter(ID == selection()) %>% 
-          select(-ID) %>% 
+          alley_text |>
+          filter(ID == selection()) |> 
+          select(-ID) |> 
           select_if(~sum(!is.na(.)) > 0) %>% 
           {if (nrow(.) > 0) as.list(.) else NULL}
         
@@ -23,13 +23,13 @@ alley_info_table <- function(id, selection, ...) {
       } else if (selection() %in% alleys[alleys$visited,]$ID) {
         
         text_to_display <- 
-          alleys %>%
-          st_drop_geometry() %>% 
-          filter(ID == selection()) %>% 
+          alleys |>
+          st_drop_geometry() |> 
+          filter(ID == selection()) |> 
           mutate(name = str_glue(sus_translate(paste0(
             "<p><b>{str_to_title(name)} in ",
-            "{name_2}</b></p>")))) %>% 
-          select(-ID, -CSDUID, -visited, -name_2, -fill) %>% 
+            "{name_2}</b></p>")))) |> 
+          select(-ID, -CSDUID, -visited, -name_2, -fill) |> 
           select_if(~sum(!is.na(.)) > 0) %>% 
           {if (nrow(.) > 0) as.list(.) else NULL}
         

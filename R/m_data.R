@@ -7,7 +7,7 @@
 #' "_q3".
 #' @param df A reactive which resolves to a character string representing the
 #' underlying data set to be loaded. Currently available options are 
-#' `c("borough", "building", "CT", "DA", "grid", "street)`.
+#' `c("borough", "building", "CT", "DA", "grid", "street")`.
 #' @param zoom A reactive which resolves to a character string representing the
 #' amount of transparency to be applied to the fill aesthetic in maps made from
 #' the data. Currently available options are 

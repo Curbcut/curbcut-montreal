@@ -40,7 +40,7 @@ alley_server <- function(id) {
   moduleServer(id, function(input, output, session) {
     
     # Initial reactives
-    zoom <- reactiveVal(get_zoom(map_zoom, map_zoom_levels))
+    zoom <- reactiveVal(get_zoom(11, map_zoom_levels))
     selection <- reactiveVal(NA)
     
     # Sidebar
@@ -82,7 +82,7 @@ alley_server <- function(id) {
     # Compare panel
     var_right <- compare_server(
       id = "alley", 
-      var_list = var_list_right_alley, 
+      var_list = make_dropdown(), 
       df = df, 
       show_panel = choropleth,
       time = time)
@@ -117,13 +117,13 @@ alley_server <- function(id) {
     alley_info <- reactive({
       if (selection() %in% alleys[alleys$visited,]$ID) {
         x <-
-          alleys %>%
-          st_drop_geometry() %>%
-          filter(ID == selection()) %>%
+          alleys |>
+          st_drop_geometry() |>
+          filter(ID == selection()) |>
           mutate(name = str_glue(sus_translate(paste0(
             "<p><b>{str_to_title(name)} in ",
-            "{name_2}</b></p>")))) %>%
-          select(-ID, -CSDUID, -visited, -name_2, -fill) %>%
+            "{name_2}</b></p>")))) |>
+          select(-ID, -CSDUID, -visited, -name_2, -fill) |>
           select_if(~sum(!is.na(.)) > 0) %>%
           {if (nrow(.) > 0) as.list(.) else NULL}
         
@@ -160,36 +160,39 @@ alley_server <- function(id) {
     observe({
       if (!choropleth()) {
         if (input$focus_visited) {
-          mapdeck_update(map_id = NS(id, "map")) %>%
-            clear_polygon() %>%
-            clear_polygon(layer_id = "borough_info") %>%
-            clear_polygon(layer_id = "poly_highlight") %>%
+          mapdeck_update(map_id = NS(id, "map")) |>
+            clear_polygon() |>
+            clear_polygon(layer_id = "borough_info") |>
+            clear_polygon(layer_id = "poly_highlight") |>
             add_polygon(data = data()$non_visited,
                         stroke_width = 15, stroke_colour = "#CFCFCF",
                         fill_colour = "#CFCFCF", layer_id = "alleys_void",
-                        update_view = FALSE, id = "ID", auto_highlight = FALSE) %>%
+                        update_view = FALSE, id = "ID", 
+                        auto_highlight = FALSE) |>
             add_polygon(data = data()$visited,
-                        stroke_width = focus_alley_zoom(), stroke_colour = "fill",
-                        layer_id = "alleys_visited",
+                        stroke_width = focus_alley_zoom(), 
+                        stroke_colour = "fill", layer_id = "alleys_visited",
                         update_view = FALSE, id = "ID", auto_highlight = TRUE,
                         highlight_colour = "#FFFFFF90",
                         legend = alley_legend_en)
         } else {
           # Exact same as the initial
-          mapdeck_update(map_id = NS(id, "map")) %>%
-            clear_polygon() %>%
+          mapdeck_update(map_id = NS(id, "map")) |>
+            clear_polygon() |>
             # For some reason, legend is sticky!
-            clear_legend(layer_id = "alleys_visited") %>%
-            clear_polygon(layer_id = "alleys_visited") %>%
+            clear_legend(layer_id = "alleys_visited") |>
+            clear_polygon(layer_id = "alleys_visited") |>
             add_polygon(data = borough[borough$ID %in% alley_text$ID,],
                         stroke_width = 10, stroke_colour = "#000000",
-                        fill_colour = "#FFFFFF10", update_view = FALSE, id = "ID",
-                        layer_id = "borough_info", auto_highlight = TRUE,
-                        highlight_colour = "#FFFFFF90") %>%
+                        fill_colour = "#FFFFFF10", update_view = FALSE, 
+                        id = "ID", layer_id = "borough_info", 
+                        auto_highlight = TRUE,
+                        highlight_colour = "#FFFFFF90") |>
             add_polygon(data = data()$non_visited,
                         stroke_width = 15, stroke_colour = "#007700",
                         fill_colour = "#00FF00", layer_id = "alleys_void",
-                        update_view = FALSE, id = "ID", auto_highlight = FALSE) %>%
+                        update_view = FALSE, id = "ID", 
+                        auto_highlight = FALSE) |>
             add_polygon(data = data()$visited,
                         stroke_width = 15, stroke_colour = "#007700",
                         fill_colour = "#00FF00", layer_id = "alleys_visited",
@@ -198,7 +201,10 @@ alley_server <- function(id) {
           
         }
       } else {
-        width <- switch(zoom(), "borough" = 100, "CT" = 10, "DA" = 2, "grid" = 0, 2)
+        width <- switch(zoom(), "borough" = 100, 
+                        "CT" = 10, 
+                        "DA" = 2, 
+                        "grid" = 0, 2)
         
         mapdeck_update(map_id = NS(id, "map")) |> 
           clear_polygon("alleys_void") |> 
@@ -224,34 +230,34 @@ alley_server <- function(id) {
       if (!choropleth() && !input$focus_visited) {
         if (!is.na(selection())) {
           data_to_add <-
-            borough %>%
+            borough |>
             filter(ID == selection())
           
-          mapdeck_update(map_id = NS(id, "map")) %>%
+          mapdeck_update(map_id = NS(id, "map")) |>
             add_polygon(
               data = data_to_add, stroke_width = 10, stroke_colour = "#000000",
               fill_colour = "#00770030", update_view = FALSE,
               layer_id = "poly_highlight", auto_highlight = TRUE,
               highlight_colour = "#FFFFFF02")
         } else {
-          mapdeck_update(map_id = NS(id, "map")) %>%
+          mapdeck_update(map_id = NS(id, "map")) |>
             clear_polygon(layer_id = "poly_highlight")
         }
       } else if (choropleth()) {
         if (!is.na(selection())) {
           width <- switch(zoom(), "borough" = 100, "CT" = 10, 2)
           data_to_add <-
-            data() %>%
-            filter(ID == selection()) %>%
+            data() |>
+            filter(ID == selection()) |>
             mutate(fill = substr(fill, 1, 7))
           
-          mapdeck_update(map_id = NS(id, "map")) %>%
+          mapdeck_update(map_id = NS(id, "map")) |>
             add_polygon(
               data = data_to_add, elevation = 5, fill_colour = "fill", 
               update_view = FALSE, layer_id = "poly_highlight", 
               auto_highlight = TRUE, highlight_colour = "#FFFFFF90")
         } else {
-          mapdeck_update(map_id = NS(id, "map")) %>%
+          mapdeck_update(map_id = NS(id, "map")) |>
             clear_polygon(layer_id = "poly_highlight")
         }
       }
@@ -274,17 +280,18 @@ alley_server <- function(id) {
     # If we aren't in choropleth, toggle off the legend/zoom
     observeEvent({choropleth()
       input$focus_visited}, {
-        shinyjs::toggle("zoom-auto", condition = choropleth() || !input$focus_visited)
-        shinyjs::toggle("zoom-slider", condition = choropleth() || !input$focus_visited)
-        shinyjs::toggle("legend-legend_render", condition = choropleth() || !input$focus_visited)
+        shinyjs::toggle("zoom-auto", 
+                        condition = choropleth() || !input$focus_visited)
+        shinyjs::toggle("zoom-slider", 
+                        condition = choropleth() || !input$focus_visited)
         # If focus is clicked, toggle off the dropdown menu
         shinyjs::toggle("left-var", condition = !input$focus_visited)
       })
     
     # Hook up "Clear selection" button and other variables that clears it
-    observeEvent({input$`explore-clear_selection`
-      choropleth()
-      input$focus_visited}, selection(NA))
+    observeEvent(input$`explore-clear_selection`, selection(NA))
+    observeEvent(choropleth(), selection(NA))
+    observeEvent(input$focus_visited, selection(NA))
 
   })
 }

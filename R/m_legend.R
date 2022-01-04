@@ -137,16 +137,17 @@ legend_server <- function(id, var_left, var_right, df,
       }
     }
     
+    # catch if there's an error in the legend function
+    legend_display <- reactive({
+      tryCatch(render_plot_fun(),
+               error = function(e) reactive(NULL),
+               silent = TRUE)
+    })
+    
     output$legend_render <- renderUI({
       output$legend <- renderPlot({
-        
-        legend_display <- 
-          tryCatch(render_plot_fun(),
-                   error = function(e) reactive(NULL),
-                   silent = TRUE)
-        
-        if (!is.null(legend_display)) legend_display
-        
+        # Only show legend if there's something to show
+        if (!is.null(legend_display())) legend_display()
       })
       
       # Weird hack to get legend plot to inherit full namespace
