@@ -98,86 +98,86 @@ climate_risk_server <- function(id) {
                    select = selection,
                    df = df,
                    var_left_label = climate_legend)
-
+    
     # Legend
     legend_server(
       id = "legend",
       var_left = var_left,
       var_right = var_right,
       df = df)
-
+    
     # Did-you-know panel
     dyk_server(
       id = "dyk",
       var_left = var_left,
       var_right = var_right)
-
+    
     # Update map in response to variable changes or zooming
     map_change(NS(id, "map"),
                x = data,
                df = df,
                selection = selection)
-
+    
     # Update poly on click
     observeEvent(input$map_polygon_click, {
       lst <- (jsonlite::fromJSON(input$map_polygon_click))$object$properties$id
       if (is.null(lst)) selection(NA) else selection(lst)
     })
-
+    
     # Clear click status if prompted
     observeEvent(input$`explore-clear_selection`, selection(NA))
-
+    
     # Clear selection on df change
     observeEvent(df(), selection(NA), ignoreInit = TRUE)
-
+    
     # If grid isn't clicked, toggle on the zoom menu
     observeEvent(input$grid, {
       shinyjs::toggle("zoom-auto", condition = !input$grid)
       shinyjs::toggle("zoom-slider", condition = !input$grid)
     })
-
-  # Bookmarking
-  onBookmark(function(state) {
-
-    state$values$zoom_val <- zoom_val()
-    state$values$numeric_zoom <- input$map_view_change$zoom
-    state$values$location <- c(input$map_view_change$longitude,
-                               input$map_view_change$latitude)
-    state$values$poly_selected <- rv_climate_risk$poly_selected
-    state$values$var_right <- var_right()
-    state$values$var_left <- var_left()
-  })
-
-  onRestored(function(state) {
-    restored_numeric_zoom <- state$values$numeric_zoom
-    restored_map_location <- state$values$location
-    zoom_val(state$values$zoom_val)
-
-    output$map <- renderMapdeck({
-      mapdeck(
-        style = map_style, token = token_climate_risk,
-        zoom = restored_numeric_zoom, location = restored_map_location)
+    
+    # Bookmarking
+    onBookmark(function(state) {
+      
+      state$values$zoom_val <- zoom_val()
+      state$values$numeric_zoom <- input$map_view_change$zoom
+      state$values$location <- c(input$map_view_change$longitude,
+                                 input$map_view_change$latitude)
+      state$values$poly_selected <- rv_climate_risk$poly_selected
+      state$values$var_right <- var_right()
+      state$values$var_left <- var_left()
     })
-
-    updatePickerInput(
-      session = session,
-      inputId = NS(id, "compare-var"),
-      choices = sus_translate(make_dropdown()),
-      selected = state$values$var_right
-    )
-
-    # Not working, no idea why?
-    updatePickerInput(
-      session = session,
-      inputId = NS(id, "left-var"),
-      choices = sus_translate(var_list_climate_risk),
-      selected = state$values$var_left
-    )
-
-    if (input$grid) {map_change(NS(id, "map"), df = data, zoom = reactive("grid"))}
-
-    rv_climate_risk$poly_selected <- state$values$poly_selected
-  })
-
+    
+    onRestored(function(state) {
+      restored_numeric_zoom <- state$values$numeric_zoom
+      restored_map_location <- state$values$location
+      zoom_val(state$values$zoom_val)
+      
+      output$map <- renderMapdeck({
+        mapdeck(
+          style = map_style, token = token_climate_risk,
+          zoom = restored_numeric_zoom, location = restored_map_location)
+      })
+      
+      updatePickerInput(
+        session = session,
+        inputId = NS(id, "compare-var"),
+        choices = sus_translate(make_dropdown()),
+        selected = state$values$var_right
+      )
+      
+      # Not working, no idea why?
+      updatePickerInput(
+        session = session,
+        inputId = NS(id, "left-var"),
+        choices = sus_translate(var_list_climate_risk),
+        selected = state$values$var_left
+      )
+      
+      if (input$grid) {map_change(NS(id, "map"), df = data, zoom = reactive("grid"))}
+      
+      rv_climate_risk$poly_selected <- state$values$poly_selected
+    })
+    
   })
 }

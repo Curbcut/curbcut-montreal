@@ -54,8 +54,6 @@ grid <-
                 ~pmin(.x, 3), .names = "{.col}_q3"),
          across(climate_flood_ind:climate_heat_wave_ind,
                 ~.x, .names = "{.col}_q5")) |> 
-  # mutate(across(ends_with(c("q3")), ~ .x + 1)) |> 
-  # mutate(across(ends_with(c("q3", "q5")), ~replace(., . >= 5, 5))) |> 
   relocate(geometry, .after = last_col()) |> 
   st_set_agr("constant")
 
