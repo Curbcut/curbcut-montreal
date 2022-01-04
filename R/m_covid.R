@@ -46,8 +46,7 @@ covid_server <- function(id) {
     # Legend
     output$legend_render <- renderUI({
       output$legend <- renderPlot({
-        cowplot::plot_grid(covid_legend)
-      })
+        cowplot::plot_grid(covid_legend)})
       plotOutput(NS(id, "legend"), height = 160, width = "100%")
     })
     

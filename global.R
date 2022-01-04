@@ -32,7 +32,7 @@ enableBookmarking("server")
 
 # Data --------------------------------------------------------------------
 
-var_exp <- qread("data/var_exp.qs")
+# var_exp <- qread("data/var_exp.qs")
 
 
 variables <- qread("data/variables.qs")

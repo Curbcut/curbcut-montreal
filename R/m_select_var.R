@@ -11,14 +11,16 @@ select_var_UI <- function(id, var_list, label = NULL, width = "95%",
                   selected = selected, width = width))
 }
 
-select_var_server <- function(id, var_list, disabled_choices = NULL, 
-                              time = reactive(NULL), df = NULL) {
+select_var_server <- function(id, var_list, disabled_choices = reactive(NULL), 
+                              time = reactive(NULL), df = reactive(NULL)) {
   stopifnot(is.reactive(var_list))
+  stopifnot(is.reactive(time))
+  stopifnot(is.reactive(df))
   
   moduleServer(id, function(input, output, session) {
     
     observe({
-      if (!is.null(disabled_choices)) {
+      if (!is.null(disabled_choices())) {
         updatePickerInput(
           session, "var", 
           choices = sus_translate(var_list()),
@@ -35,7 +37,7 @@ select_var_server <- function(id, var_list, disabled_choices = NULL,
     var <- reactive({
       v1 <- paste(input$var, time(), sep = "_")
       v1 <- sub("_$", "", v1)
-      if (!is.null(df)) v1 <- sapply(v1, return_closest_year, df)
+      if (!is.null(df())) v1 <- sapply(v1, return_closest_year, df())
       unique(v1)
     })
     

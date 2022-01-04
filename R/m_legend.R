@@ -38,12 +38,12 @@ legend_server <- function(id, var_left, var_right, df,
         
         axis_title <- sus_translate(
           variables |> 
-            filter(var_code == sub("_\\d{4}$", "", var_left())) |> 
+            filter(var_code == unique(sub("_\\d{4}$", "", var_left()))) |> 
             pull(var_short))
         
         break_labels <- 
           variables |> 
-          filter(var_code == sub("_\\d{4}$", "", var_left())) |> 
+          filter(var_code == unique(sub("_\\d{4}$", "", var_left()))) |> 
           pull(breaks_q5) |> 
           purrr::pluck(1) |> 
           filter(date == date_left | is.na(date))
@@ -97,18 +97,18 @@ legend_server <- function(id, var_left, var_right, df,
         
       } else {
         
-        var_left <- str_remove(var_left(), "_\\d{4}$")
-        var_right <- str_remove(var_right(), "_\\d{4}$")
+        var_left <- unique(str_remove(var_left(), "_\\d{4}$"))
+        var_right <- unique(str_remove(var_right(), "_\\d{4}$"))
         
         var_left_title <- 
-          var_exp |> 
+          variables |> 
           filter(var_code == var_left) |> 
-          pull(var_name)
+          pull(var_title)
         
         var_right_title <- 
-          var_exp |> 
+          variables |> 
           filter(var_code == var_right) |> 
-          pull(var_name)
+          pull(var_title)
         
         legend_bivar |>
           mutate(label = case_when(

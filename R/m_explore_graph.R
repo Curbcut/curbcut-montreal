@@ -42,14 +42,20 @@ explore_graph_server <- function(id, x, var_type, var_left, var_right,
       left_var_num <- length(unique(dat$left_var))
       bin_number <- min(25, left_var_num)
       var_left_title <- sus_translate(variables |> 
-          filter(var_code == sub("_\\d{4}$", "", var_left())) |> 
+          filter(var_code == unique(sub("_\\d{4}$", "", var_left()))) |> 
           pull(var_title))
       var_right_title <- sus_translate(variables %>%
-          filter(var_code == sub("_\\d{4}$", "", var_right())) |> 
+          filter(var_code == unique(sub("_\\d{4}$", "", var_right()))) |> 
           pull(var_title))
-      na_select <- nrow(filter(dat, ID == select_id, !is.na(left_var_q5)))
+      na_select <- 
+      if (left_var_num == 1) {
+        nrow(filter(dat, ID == select_id, !is.na(left_var_q5)))
+      } else {
+        nrow(filter(dat, ID == select_id, !is.na(left_var_q3)))
+      }
+
       
-      
+
       # Set up plotting variables ----------------------------------------------
       
       # Decide on plot type

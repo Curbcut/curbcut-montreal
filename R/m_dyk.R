@@ -25,7 +25,7 @@ dyk_server <- function(id, var_left, var_right) {
         pull(category)
       
       # Report variables without category matches
-      no_match <- vars[!vars %in% category_table$variable] 
+      no_match <- unique(vars[!vars %in% category_table$variable])
       if (length(no_match > 0)) {
         warning("No DYK category matches for variable(s): ", 
                 paste(no_match, collapse = ", "), call. = FALSE)

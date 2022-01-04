@@ -35,11 +35,15 @@ year_disclaimer_server <- function(id, var_left, var_right, time, pct_variation 
       left_year <- unique(str_extract(var_left(), "\\d{4}$"))
       right_year <- unique(str_extract(var_right(), "\\d{4}$"))
       
+      # Unique var_code
+      left_var_code <- unique(str_remove(var_left(), "_\\d{4}$"))
+      right_var_code <- unique(str_remove(var_right(), "_\\d{4}$"))
+      
       # Vars title
-      var_left_title <- var_exp[var_exp$var_code == str_remove(var_left, "_\\d{4}$"),]$var_name
+      var_left_title <- variables[variables$var_code == str_remove(left_var_code, "_\\d{4}$"),]$var_title
       var_left_title <- sus_translate(var_left_title)
       
-      var_right_title <- var_exp[var_exp$var_code == str_remove(var_right, "_\\d{4}$"),]$var_name
+      var_right_title <- variables[variables$var_code == str_remove(right_var_code, "_\\d{4}$"),]$var_title
       var_right_title <- sus_translate(var_right_title)
       
       # Prepare out list
@@ -71,7 +75,7 @@ year_disclaimer_server <- function(id, var_left, var_right, time, pct_variation 
         if (right_year != time() && var_right != " ") {
           out <- c(out, list(str_glue(sus_translate(paste0(
             "<p style='font-size:11px; font-style:italic;'>",
-            "Displayed data for <b>{var_left_title}</b> is for the ",
+            "Displayed data for <b>{var_right_title}</b> is for the ",
             "closest available year <b>({right_year})</b>.</p>")))
           ))
         }

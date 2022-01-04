@@ -22,7 +22,7 @@ sus_translate_list <- function(x) {
           pull()
         
         if (length(out) == 0) {
-          warning("No translation text found for `", .x, "`.", call. = FALSE)
+          # warning("No translation text found for `", .x, "`.", call. = FALSE)
           out <- .x
         }
         
@@ -30,9 +30,12 @@ sus_translate_list <- function(x) {
       }})
   
   # Re-iterate in list depth to translate every name
-  if (purrr::vec_depth(x) > 2) x <- purrr::map(x, ~{
-    if (purrr::vec_depth(.x) > 1) sus_translate_list(.x) else (.x)
-  })
+  if (purrr::vec_depth(x) > 2) {
+    x <- 
+      purrr::map(x, ~{
+      if (purrr::vec_depth(.x) > 1) sus_translate_list(.x) else (.x)
+    })
+  }
   
   x
   
@@ -49,8 +52,8 @@ sus_translate <- function(x) {
     # French
   } else if (sus_rv$lang() == "fr") {
     
-    # List
-    if (length(x) > 1) {
+    # List or vector of length > 1
+    if (is.list(x) || length(x) > 1) {
       sus_translate_list(x)
       
       # png
