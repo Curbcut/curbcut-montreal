@@ -310,34 +310,40 @@ explore_graph_server <- function(id, x, var_type, var_left, var_right,
         colours <- colour_delta$fill[1:5]
         names(colours) <- colour_delta$group[1:5]
         
-        out <- ggplot(dat, aes(left_var_1, left_var_2)) +
+        out <- if (unique(c("left_var_1", "left_var_2") %in% names(dat))) {
+          ggplot(dat, aes(left_var_1, left_var_2)) +
           geom_smooth(se = FALSE, method = "lm", formula = y ~ x, 
                       colour = "black", size = 0.5) +
           geom_point(aes(colour = group)) +
           scale_colour_manual(values = colours) +
           x_scale + y_scale + labs_xy + theme_default
+        } else NULL
       }
       
       # Multi-date univariate scatterplot, NA selection
       if (plot_type == "multi_uni_na") {
         
-        out <- ggplot(dat, aes(left_var_1, left_var_2)) +
+        out <- if (unique(c("left_var_1", "left_var_2") %in% names(dat))) {
+          ggplot(dat, aes(left_var_1, left_var_2)) +
           geom_smooth(se = FALSE, method = "lm", formula = y ~ x, 
                       colour = "black", size = 0.5) +
           geom_point(colour = col_left_3[1]) +
           x_scale + y_scale + labs_xy + theme_default
+        } else NULL
       }
       
       # Multi-date univariate scatterplot, active selection
       if (plot_type == "multi_uni_select") {
         
-        out <- ggplot(dat, aes(left_var_1, left_var_2)) +
+        out <- if (unique(c("left_var_1", "left_var_2") %in% names(dat))) {
+          ggplot(dat, aes(left_var_1, left_var_2)) +
           geom_point(colour = col_left_3[1]) +
           geom_smooth(se = FALSE, method = "lm", formula = y ~ x, 
                       colour = "black", size = 0.5) +
           geom_point(data = filter(dat, ID == select_id),
                      colour = col_bivar[9], size = 3) +
           x_scale + y_scale + labs_xy + theme_default
+        } else NULL
       }
       
       # Multi-date bivariate scatterplot, no selection

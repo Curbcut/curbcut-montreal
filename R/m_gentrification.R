@@ -1,39 +1,46 @@
-### GI MODULE ##############################################################
+### GENTRIFICATION MODULE #####################################################
 
 # UI ----------------------------------------------------------------------
 
 gentrification_UI <- function(id) {
-  fillPage(
-    fillRow(
-      fillCol(sidebar_UI(NS(id, "sidebar"),
-                         sliderInput(
-                           NS(id, "slider_time"), 
-                           i18n$t("Select two years"),
-                           min = gentrification_slider$min,
-                           max = gentrification_slider$max,
-                           step = gentrification_slider$interval, sep = "",
-                           value = gentrification_slider$init,
-                           width = "95%"),
-                         checkboxInput(NS(id, "check_single_var"),
-                                       label = i18n$t(paste0("Review a single variable ",
-                                                             "part of the index"))),
-                         select_var_UI(NS(id, "left"), 
-                                       var_list_left_gentrification),
-                         year_disclaimer_UI(NS(id, "disclaimers")),
-                         div(class = "bottom_sidebar",
-                             tagList(legend_UI(NS(id, "legend")),
-                                     zoom_UI(NS(id, "zoom"), gentrification_zoom)))
-      )),
-      fillCol(
-        div(class = "mapdeck_div", 
-            mapdeckOutput(NS(id, "map"), height = "100%")),
-        right_panel(id, compare_UI(NS(id, "gentrification"), make_dropdown(multi_year = T)),
-                    div(class = "explore_dyk",
-                        explore_UI(NS(id, "explore")), dyk_UI(NS(id, "dyk"))))),
-      flex = c(1, 5)
-    )
-  )
-  
+  fillPage(fillRow(
+    fillCol(
+      
+      # Sidebar
+      sidebar_UI(
+        NS(id, "sidebar"),
+        sliderInput(
+          NS(id, "slider_time"), 
+          i18n$t("Select two years"),
+          min = gentrification_slider$min,
+          max = gentrification_slider$max,
+          step = gentrification_slider$interval, sep = "",
+          value = gentrification_slider$init,
+          width = "95%"),
+        checkboxInput(NS(id, "check_single_var"),
+                      label = i18n$t(paste0("Review a single variable ",
+                                            "part of the index"))),
+        select_var_UI(NS(id, "left"), 
+                      var_list_left_gentrification),
+        year_disclaimer_UI(NS(id, "disclaimers")),
+        div(class = "bottom_sidebar", 
+            tagList(legend_UI(NS(id, "legend")),
+                    zoom_UI(NS(id, "zoom"), map_zoom_levels))))),
+    
+    fillCol(
+      
+      # Map
+      div(class = "mapdeck_div", mapdeckOutput(NS(id, "map"), height = "100%")),
+      
+      # Right panel
+      right_panel(
+        id = id, 
+        compare_UI(NS(id, "gentrification"), make_dropdown(multi_year = T)),
+        div(class = "explore_dyk", 
+            explore_UI(NS(id, "explore")), 
+            dyk_UI(NS(id, "dyk"))))),
+    
+    flex = c(1, 5)))
 }
 
 
@@ -42,34 +49,38 @@ gentrification_UI <- function(id) {
 gentrification_server <- function(id) {
   moduleServer(id, function(input, output, session) {
     
+    # Initial reactives
+    zoom <- reactiveVal(get_zoom(map_zoom, map_zoom_levels))
+    selection <- reactiveVal(NA)
+    
     # Sidebar
-    sidebar_server("sidebar", "gentrification", 
-                   reactive(paste0("left_", zoom(), "_", var_left())))
+    sidebar_server(
+      id = "sidebar", 
+      x = "gentrification", 
+      var_map = reactive(paste0("left_", df(), "_", var_left())))
     
     # Map
-    output$map <- renderMapdeck({
-      mapdeck(
-        style = map_style, token = token_gentrification,
-        zoom = map_zoom, location = map_location) %>%
-        add_polygon(
-          data = data(), stroke_width = 100,
-          stroke_colour = "#FFFFFF", fill_colour = "fill",
-          update_view = FALSE, id = "ID", auto_highlight = TRUE,
-          highlight_colour = "#FFFFFF90")
-    })
+    output$map <- renderMapdeck({mapdeck(
+      style = map_style, 
+      token = map_token, 
+      zoom = map_zoom, 
+      location = map_location)})
     
-    # Zoom
-    zoom_val <- reactiveVal(get_zoom(map_zoom, gentrification_zoom))
+    # Zoom reactive
     observeEvent(input$map_view_change$zoom, {
-      zoom_val(get_zoom(input$map_view_change$zoom, gentrification_zoom))
-    })
-    zoom <- zoom_server("zoom", zoom = zoom_val, zoom_levels = gentrification_zoom)
+      zoom(get_zoom(input$map_view_change$zoom, map_zoom_levels))})
+    
+    # Zoom level for data
+    df <- zoom_server(
+      id = "zoom", 
+      zoom = zoom, 
+      zoom_levels = map_zoom_levels)
     
     # Get time from slider
     time <- reactive({input$slider_time})
     
     observe({
-      if (length(unique(time())) == 1) {
+      if (length(unique(time())) == 1 && !input$check_single_var) {
         shinyalert::shinyalert(text = paste0("Gentrification is a process that ",
                                              "can only be quantified over time. ",
                                              " Please, select two different years."), 
@@ -77,16 +88,27 @@ gentrification_server <- function(id) {
       }
     })
     
+    # Greyed out right list options, depending of the year chosen
+    var_list_housing_right_disabled <- reactive({
+      if (!input$check_single_var) NULL else {
+        unlist(make_dropdown(multi_year = T)) %in% var_list_left_gentrification
+      }
+    })
+    
     # Compare panel
-    var_right <- compare_server(id = "gentrification", 
-                                var_list = make_dropdown(multi_year = T),
-                                df = zoom,
-                                time = time)
+    var_right <- compare_server(
+      id = "gentrification", 
+      var_list = make_dropdown(multi_year = T),
+      disabled_choices = var_list_housing_right_disabled,
+      df = df,
+      time = time)
     
     # Get single_var value to use if check_single_var is clicked
     single_var <- select_var_server(
-      "left", reactive(var_list_left_gentrification), time = time, df = zoom())
-    
+      id = "left", 
+      var_list = reactive(var_list_left_gentrification), 
+      time = time, 
+      df = df)
     
     # If check_single_var is clicked, toggle on the dropdown menu
     observeEvent(input$check_single_var, {
@@ -106,81 +128,67 @@ gentrification_server <- function(id) {
     })
     
     # Disclaimers and how to read the map
-    year_disclaimer_server("disclaimers", 
-                           var_left = var_left,
-                           var_right = var_right,
-                           time = time,
-                           # If the same time is selected twice, other disclaimer
-                           more_condition = reactive(length(unique(time())) == 1),
-                           more_text = str_glue(sus_translate(paste0(
-                             "<p style='font-size:11px;'>",
-                             "Gentrification is a process that can only be quantified over time. ",
-                             "Please, select two different years.</i></p>"))))
+    year_disclaimer_server(
+      id = "disclaimers", 
+      var_left = var_left,
+      var_right = var_right,
+      time = time,
+      # If the same time is selected twice, other disclaimer
+      more_condition = reactive({length(unique(time())) == 1 && 
+                                  !input$check_single_var}),
+      more_text = str_glue(sus_translate(paste0(
+        "<p style='font-size:11px;'>",
+        "Gentrification is a process that can only be quantified over time. ",
+        "Please, select two different years.</i></p>"))))
     
     # Data
-    data <- data_server(id = "gentrification", var_left = var_left,
-                        var_right = var_right, df = zoom, zoom = zoom_val)
+    data <- data_server(
+      id = "gentrification", 
+      var_left = var_left,
+      var_right = var_right, 
+      df = df, 
+      zoom = zoom)
     
     # Explore panel
-    explore_content <- explore_server(id = "explore",
-                                   x = data,
-                                   var_left = var_left,
-                                   var_right = var_right,
-                                   select = reactive(rv_gentrification$poly_selected),
-                                   zoom = zoom,
-                                   build_str_as_DA = TRUE)
+    explore_content <- explore_server(
+      id = "explore",
+      x = data,
+      var_left = var_left,
+      var_right = var_right,
+      selection = selection,
+      df = df,
+      build_str_as_DA = TRUE)
     
     # Legend
-    legend_graph <- legend_server("legend", var_left, var_right, zoom_val)
+    legend_server(
+      id = "legend",
+      var_left = var_left,
+      var_right = var_right,
+      df = df)
     
     # Did-you-know panel
-    dyk_server("dyk", var_left, var_right)
+    dyk_server(
+      id = "dyk",
+      var_left = var_left,
+      var_right = var_right)
     
     # Update map in response to variable changes or zooming
-    observeEvent({
-      var_left()
-      var_right()
-      zoom()}, map_change(NS(id, "map"), df = data, zoom = zoom))
+    map_change(NS(id, "map"),
+               x = data,
+               df = df,
+               selection = selection)
     
-    # Update poly_selected on click
+    # Update poly on click
     observeEvent(input$map_polygon_click, {
-      lst <- jsonlite::fromJSON(input$map_polygon_click)
-      if (is.null(lst$object$properties$id)) {
-        rv_gentrification$poly_selected <- NA
-      } else rv_gentrification$poly_selected <- lst$object$properties$id
+      lst <- (jsonlite::fromJSON(input$map_polygon_click))$object$properties$id
+      if (is.null(lst)) selection(NA) else selection(lst)
     })
     
-    # Update map in response to poly_selected change
-    observe({
-      if (!is.na(rv_gentrification$poly_selected)) {
-        
-        if (rv_gentrification$poly_selected %in% data()$ID) {
-          
-          width <- switch(zoom(), "borough" = 100, "CT" = 10, 2)
-          
-          data_to_add <-
-            data() %>%
-            filter(ID == rv_gentrification$poly_selected) %>%
-            mutate(fill = substr(fill, 1, 7))
-          
-          mapdeck_update(map_id = NS(id, "map")) %>%
-            add_polygon(
-              data = data_to_add, elevation = 5, fill_colour = "fill",
-              update_view = FALSE, layer_id = "poly_highlight",
-              auto_highlight = TRUE, highlight_colour = "#FFFFFF90")
-          
-        } else {rv_gentrification$poly_selected <- NA}
-        
-      } else {
-        mapdeck_update(map_id = NS(id, "map")) %>%
-          clear_polygon(layer_id = "poly_highlight")
-      }
-    })
+    # Clear selection on df change
+    observeEvent(df(), selection(NA), ignoreInit = TRUE)
     
     # Clear click status if prompted
-    # (Namespacing hardwired to explore module; could make it return a reactive)
-    observeEvent(input$`explore-clear_selection`, {
-      rv_gentrification$poly_selected <- NA})
+    observeEvent(input$`explore-clear_selection`, selection(NA))
     
     
     # Bookmarking 

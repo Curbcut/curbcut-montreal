@@ -103,12 +103,12 @@ legend_server <- function(id, var_left, var_right, df,
         var_left_title <- 
           variables |> 
           filter(var_code == var_left) |> 
-          pull(var_title)
+          pull(var_short)
         
         var_right_title <- 
           variables |> 
           filter(var_code == var_right) |> 
-          pull(var_title)
+          pull(var_short)
         
         legend_bivar |>
           mutate(label = case_when(

@@ -62,6 +62,11 @@ data_server <- function(id, var_left, var_right, df, zoom = df,
         }
       })
       
+      # Are var_left and var_right the same column?
+      if (unique(var_left == var_right)) {
+        stop("`var_left` and `var_right` are the same.")
+      }
+      
       # Get time format
       time_format_var_left <- if (str_detect(var_left[1], "_\\d{4}$")) {
         # Yearly data

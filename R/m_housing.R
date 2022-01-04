@@ -123,8 +123,7 @@ housing_server <- function(id) {
         unlist(make_dropdown(exclude = "Housing")) %in% {variables |> 
             filter(var_code %in% unlist(make_dropdown(exclude = "Housing"))) |> 
             filter(!lengths(dates) == max(lengths(dates))) |> 
-            pull(var_code)} |>
-          replace(1, FALSE)
+            pull(var_code)}
       }
     })
 
@@ -137,10 +136,11 @@ housing_server <- function(id) {
       df = df)
     
     # Disclaimers and how to read the map
-    year_disclaimer_server("disclaimers", 
-                           var_left = var_left,
-                           var_right = var_right,
-                           time = time)
+    year_disclaimer_server(
+      id = "disclaimers", 
+      var_left = var_left,
+      var_right = var_right,
+      time = time)
 
     # Data
     data <- data_server(
