@@ -146,11 +146,11 @@ unlink(list.files("~/Dropbox/sus_sync/data", full.names = TRUE),
 unlink(list.files("~/Dropbox/sus_sync/www_maps", full.names = TRUE),
        recursive = TRUE)
 
-invisible(file.copy(list.files("dev/data", full.names = TRUE), 
+invisible(file.copy(list.files("dev/data", full.names = TRUE),
                     "~/Dropbox/sus_sync/dev_data", recursive = TRUE))
-invisible(file.copy(list.files("data", full.names = TRUE), 
+invisible(file.copy(list.files("data", full.names = TRUE),
                     "~/Dropbox/sus_sync/data"))
-invisible(file.copy(list.files("www/maps", full.names = TRUE), 
+invisible(file.copy(list.files("www/maps", full.names = TRUE),
                     "~/Dropbox/sus_sync/www_maps"))
 
 

@@ -135,6 +135,16 @@ crash <-
 # Aggregate data to geometries --------------------------------------------
 
 process_crash <- function(x) {
+  
+  island_csduid <- c("2466007", "2466023_1",  "2466023_10", "2466023_11",
+                     "2466023_12", "2466023_13", "2466023_14", "2466023_15", 
+                     "2466023_16", "2466023_17", "2466023_18", "2466023_19",
+                     "2466023_2", "2466023_3", "2466023_4", "2466023_5",  
+                     "2466023_6", "2466023_7", "2466023_8", "2466023_9",
+                     "2466032", "2466047", "2466058", "2466062", "2466087", 
+                     "2466092", "2466097", "2466102", "2466107", "2466112",
+                     "2466117", "2466127", "2466142", "2466072", "2466023")
+  
     crash |> 
     st_transform(32618) |> 
     st_join(st_transform(x, 32618)) |> 
@@ -169,7 +179,7 @@ process_crash <- function(x) {
     mutate(across(starts_with("crash"), ~replace(., is.infinite(.), 0))) |>
     rename_with(~paste0(str_remove(., "_\\d{4}"),
                         str_extract(., "_\\d{4}")), starts_with("crash")) |>
-    select(-population) |>
+    select(-population, -any_of(c("CSDUID"))) |>
     st_drop_geometry()
 }
 
