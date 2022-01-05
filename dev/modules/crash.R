@@ -149,7 +149,8 @@ process_crash <- function(x) {
                 names_sep = "_",
                 values_from = n) |> 
     select(-contains("NA")) |> 
-    left_join(select(x, ID, population), ., by = "ID") |> 
+    full_join(select(x, any_of(c("ID", "CSDUID")), population), by = "ID") |> 
+    arrange(ID) |> 
     st_as_sf() |> 
     rename_with(~paste0(., "_count"), starts_with("crash")) |> 
     mutate(across(starts_with("crash"), 
@@ -157,12 +158,18 @@ process_crash <- function(x) {
                     sqkm = ~{1000000 * .x / 
                         units::drop_units(st_area(geometry))},
                     per1k = ~{1000 * .x / population}),
-                  .names = "{str_remove(.col, '_count')}_{.fn}"), .before = geometry) |> 
-    mutate(across(starts_with("crash"), ~replace(., is.na(.), 0))) |> 
-    mutate(across(starts_with("crash"), ~replace(., is.infinite(.), 0))) |> 
+                  .names = "{str_remove(.col, '_count')}_{.fn}"), 
+           .before = geometry) |> 
+    # Make sure that a missing geometry shows up as 0. Missing means no crash.
+    filter(!is.na(ID)) %>%
+    {if (nrow(.) == nrow(borough))
+      filter(., ID %in% island_csduid)
+      else filter(., CSDUID %in% island_csduid)} |>
+    mutate(across(starts_with("crash"), ~replace(., is.na(.), 0))) |>
+    mutate(across(starts_with("crash"), ~replace(., is.infinite(.), 0))) |>
     rename_with(~paste0(str_remove(., "_\\d{4}"),
                         str_extract(., "_\\d{4}")), starts_with("crash")) |>
-    select(-population) |> 
+    select(-population) |>
     st_drop_geometry()
 }
 

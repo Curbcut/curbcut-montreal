@@ -170,7 +170,7 @@ crash_server <- function(id) {
           }}     
       }
     })
-    
+
     # Prepare different type of values for the explore panel
     data_for_explore <- reactive({
       if (choropleth()) data() else {

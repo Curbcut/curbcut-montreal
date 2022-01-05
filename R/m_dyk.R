@@ -45,7 +45,7 @@ dyk_server <- function(id, var_left, var_right) {
           report <- 
             dyk %>% 
             rowwise() %>% 
-            filter(sum(vars == variable) == 1) %>% 
+            filter(sum(vars %in% variable) == 1) %>% 
             ungroup() %>% 
             rowwise() %>% 
             filter(identical(category, categories)) %>% 
@@ -71,7 +71,7 @@ dyk_server <- function(id, var_left, var_right) {
         report <- 
           dyk %>% 
           rowwise() %>% 
-          filter(sum(vars == variable) == 1) %>% 
+          filter(sum(vars %in% variable) == 1) %>% 
           ungroup() %>% 
           slice_sample(n = 2 - nrow(report)) %>% 
           bind_rows(report)
@@ -82,7 +82,7 @@ dyk_server <- function(id, var_left, var_right) {
         report <- 
           dyk %>% 
           rowwise() %>% 
-          filter(sum(category == categories) == 1) %>% 
+          filter(sum(category %in% categories) == 1) %>% 
           ungroup() %>% 
           slice_sample(n = 2 - nrow(report)) %>% 
           bind_rows(report)

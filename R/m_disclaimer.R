@@ -138,9 +138,9 @@ year_disclaimer_server <- function(id, var_left, var_right, time, pct_variation 
             "<b>How to read the map</b><br>",
             "The map displays the comparison of a percent variation ",
             "with a census variable. In green, the percent variation ",
-            "in 'var_left_title' between {left_year[1]} and {left_year[2]}. ",
-            "A darker green means a relative increase in {type_crash} ",
-            "crashes number. Displayed in blue is '{var_right_title}' numbers in {right_year}. ",
+            "in '{var_left_title}' between {left_year[1]} and {left_year[2]}. ",
+            "A darker green means a relative increase in '{var_left_title}'. ",
+            "Displayed in blue is '{var_right_title}' numbers in {right_year}. ",
             "A darker blue means a relatively higher number of '{var_right_title}'. ",
             "You can find the comparison legend at the bottom left of the page.")))
           ))
