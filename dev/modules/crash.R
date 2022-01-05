@@ -10,13 +10,13 @@ suppressPackageStartupMessages(library(lubridate))
 # Crash dataframe
 
 crash <- 
-  read_sf("dev/data/collisions_routieres/collisions_routieres.shp") %>%
-  st_transform(4326) %>%
+  read_sf("dev/data/collisions_routieres/collisions_routieres.shp") |>
+  st_transform(4326) |>
   st_set_agr("constant") |> 
   mutate(type = case_when(CD_GENRE_A == 32 ~ "ped",
                           CD_GENRE_A == 31 ~ "cyc",
-                          CD_GENRE_A != c(32, 31) ~ "other")) %>%
-  mutate(injury_total = (NB_BLESSES + NB_BLESS_1)) %>%
+                          CD_GENRE_A != c(32, 31) ~ "other")) |>
+  mutate(injury_total = (NB_BLESSES + NB_BLESS_1)) |>
   select(date = DT_ACCDN, street = RUE_ACCDN, type, seriousness = GRAVITE, 
          death_total = NB_MORTS, death_ped = NB_DECES_P, death_cyc = NB_DECES_V, 
          injury_total, inj_ped = NB_BLESS_2, inj_cyc = NB_BLESS_4,
@@ -160,10 +160,8 @@ process_crash <- function(x) {
                   .names = "{str_remove(.col, '_count')}_{.fn}"), .before = geometry) |> 
     mutate(across(starts_with("crash"), ~replace(., is.na(.), 0))) |> 
     mutate(across(starts_with("crash"), ~replace(., is.infinite(.), 0))) |> 
-    mutate(across(starts_with("crash"), ntile, n = 3, .names = "{.col}_q3"), 
-           .before = geometry) |> 
-    rename_with(~paste0(str_remove(., "_\\d{4}"), 
-                        str_extract(., "_\\d{4}")), starts_with("crash")) |> 
+    rename_with(~paste0(str_remove(., "_\\d{4}"),
+                        str_extract(., "_\\d{4}")), starts_with("crash")) |>
     select(-population) |> 
     st_drop_geometry()
 }
@@ -171,6 +169,12 @@ process_crash <- function(x) {
 crash_results <- map(list("borough" = borough, 
                           "CT" = CT, "DA" = DA, "grid" = grid), process_crash)
 
+# Add breaks --------------------------------------------------------------
+
+crash_results <- map(crash_results, add_q3)
+crash_q3 <- map(crash_results, get_breaks_q3)
+crash_q5 <- map(crash_results, get_breaks_q5)
+crash_results <- map2(crash_results, crash_q5, ~bind_cols(.x, add_q5(.x, .y)))
 
 # Data testing ------------------------------------------------------------
 
@@ -222,7 +226,47 @@ crash <-
 meta_testing()
 
 
-# Add variable explanations -----------------------------------------------
+# Add to variables table --------------------------------------------------
+
+var_list <- 
+  crash_results |> 
+  map(~names(select(.x, -ID, -contains(c("q3", "q5"))))) |> 
+  unlist() |> 
+  unique()
+
+var_list_no_dates <- str_remove(var_list, "_\\d{4}$") |> unique()
+
+# Get breaks_q3
+breaks_q3_active <-
+  map2(set_names(var_list), str_extract(var_list, "\\d{4}$"),  function(var_name, year) {
+    map2_dfr(crash_q3, names(crash_results), function(x, scale) {
+      if (nrow(x) > 0) x |> mutate(scale = scale, date = year, rank = 0:3,
+                                   .before = everything())}) |> 
+      select(scale, date, rank, var = all_of(var_name))})
+
+names(breaks_q3_active) <- str_remove(names(breaks_q3_active), "_\\d{4}$")
+
+breaks_q3_active <-
+  map(set_names(var_list_no_dates), ~{
+    breaks_q3_active[names(breaks_q3_active) == .x] |> 
+      reduce(rbind)
+  })
+
+# Get breaks_q5
+breaks_q5_active <-
+  map2(set_names(var_list), str_extract(var_list, "\\d{4}$"),  function(var_name, year) {
+    map2_dfr(crash_q5, names(crash_results), function(x, scale) {
+      if (nrow(x) > 0) x |> mutate(scale = scale, date = year, rank = 0:5,
+                                   .before = everything())}) |> 
+      select(scale, date, rank, var = all_of(var_name))})
+
+names(breaks_q5_active) <- str_remove(names(breaks_q5_active), "_\\d{4}$")
+
+breaks_q5_active <- 
+  map(set_names(var_list_no_dates), ~{
+    breaks_q5_active[names(breaks_q5_active) == .x] |> 
+      reduce(rbind)
+  })
 
 variables <- 
   variables |>
@@ -235,8 +279,8 @@ variables <-
     private = FALSE,
     dates = as.character(2012:2019),
     scales = c("borough", "building", "CT", "DA", "grid", "street"),
-    breaks_q3 = NA,
-    breaks_q5 = NA,
+    breaks_q3 = breaks_q3_active$crash_cyc_count,
+    breaks_q5 = breaks_q5_active$crash_cyc_count,
     source = "spvm_saaq") |>
   add_variables(
     var_code = "crash_other_count",
@@ -247,8 +291,8 @@ variables <-
     private = FALSE,
     dates = as.character(2012:2019),
     scales = c("borough", "building", "CT", "DA", "grid", "street"),
-    breaks_q3 = NA,
-    breaks_q5 = NA,
+    breaks_q3 = breaks_q3_active$crash_other_count,
+    breaks_q5 = breaks_q5_active$crash_other_count,
     source = "spvm_saaq") |>
   add_variables(
     var_code = "crash_ped_count",
@@ -259,8 +303,8 @@ variables <-
     private = FALSE,
     dates = as.character(2012:2019),
     scales = c("borough", "building", "CT", "DA", "grid", "street"),
-    breaks_q3 = NA,
-    breaks_q5 = NA,
+    breaks_q3 = breaks_q3_active$crash_ped_count,
+    breaks_q5 = breaks_q5_active$crash_ped_count,
     source = "spvm_saaq") |>
   add_variables(
     var_code = "crash_total_count",
@@ -271,104 +315,104 @@ variables <-
     private = FALSE,
     dates = as.character(2012:2019),
     scales = c("borough", "building", "CT", "DA", "grid", "street"),
-    breaks_q3 = NA,
-    breaks_q5 = NA,
+    breaks_q3 = breaks_q3_active$crash_total_count,
+    breaks_q5 = breaks_q5_active$crash_total_count,
     source = "spvm_saaq") |>
   add_variables(
     var_code = "crash_cyc_per1k",
     var_title = "Collisions per 1,000 (cyclists)",
-    var_short = "per 1k cyc.",
+    var_short = "Crash /1k cyc.",
     explanation = "the total number of car collisions involving cyclists per 1,000 residents",
     category = NA,
     private = FALSE,
     dates = as.character(2012:2019),
     scales = c("borough", "building", "CT", "DA", "grid", "street"),
-    breaks_q3 = NA,
-    breaks_q5 = NA,
+    breaks_q3 = breaks_q3_active$crash_cyc_per1k,
+    breaks_q5 = breaks_q5_active$crash_cyc_per1k,
     source = "spvm_saaq") |>
   add_variables(
     var_code = "crash_other_per1k",
     var_title = "Collisions per 1,000 (other)",
-    var_short = "per 1k other",
+    var_short = "Crash /1k other",
     explanation = "the total number of car collisions involving neither pedestrians or cyclists per 1,000 residents",
     category = NA,
     private = FALSE,
     dates = as.character(2012:2019),
     scales = c("borough", "building", "CT", "DA", "grid", "street"),
-    breaks_q3 = NA,
-    breaks_q5 = NA,
+    breaks_q3 = breaks_q3_active$crash_other_per1k,
+    breaks_q5 = breaks_q5_active$crash_other_per1k,
     source = "spvm_saaq") |>
   add_variables(
     var_code = "crash_ped_per1k",
     var_title = "Collisions per 1,000 (pedestrians)",
-    var_short = "per 1k ped.",
+    var_short = "Crash /1k ped.",
     explanation = "the total number of car collisions involving pedestrians per 1,000 residents",
     category = NA,
     private = FALSE,
     dates = as.character(2012:2019),
     scales = c("borough", "building", "CT", "DA", "grid", "street"),
-    breaks_q3 = NA,
-    breaks_q5 = NA,
+    breaks_q3 = breaks_q3_active$crash_ped_per1k,
+    breaks_q5 = breaks_q5_active$crash_ped_per1k,
     source = "spvm_saaq") |>
   add_variables(
     var_code = "crash_total_per1k",
     var_title = "Collisions per 1,000",
-    var_short = "per 1k total",
+    var_short = "Crash /1k total",
     explanation = "the total number of car collisions per 1,000 residents",
     category = NA,
     private = FALSE,
     dates = as.character(2012:2019),
     scales = c("borough", "building", "CT", "DA", "grid", "street"),
-    breaks_q3 = NA,
-    breaks_q5 = NA,
+    breaks_q3 = breaks_q3_active$crash_total_per1k,
+    breaks_q5 = breaks_q5_active$crash_total_per1k,
     source = "spvm_saaq") |>
   add_variables(
     var_code = "crash_cyc_sqkm",
     var_title = "Collisions per sq km (cyclists)",
-    var_short = "per sqkm cyc",
+    var_short = "Crash /sqkm cyc",
     explanation = "the total number of car collisions involving cyclists per square kilometre",
     category = NA,
     private = FALSE,
     dates = as.character(2012:2019),
     scales = c("borough", "building", "CT", "DA", "grid", "street"),
-    breaks_q3 = NA,
-    breaks_q5 = NA,
+    breaks_q3 = breaks_q3_active$crash_cyc_sqkm,
+    breaks_q5 = breaks_q5_active$crash_cyc_sqkm,
     source = "spvm_saaq") |>
   add_variables(
     var_code = "crash_other_sqkm",
     var_title = "Collisions per sq km (other)",
-    var_short = "per sqkm oth",
+    var_short = "Crash /sqkm oth",
     explanation = "the total number of car collisions involving neither pedestrians or cyclists per square kilometre",
     category = NA,
     private = FALSE,
     dates = as.character(2012:2019),
     scales = c("borough", "building", "CT", "DA", "grid", "street"),
-    breaks_q3 = NA,
-    breaks_q5 = NA,
+    breaks_q3 = breaks_q3_active$crash_other_sqkm,
+    breaks_q5 = breaks_q5_active$crash_other_sqkm,
     source = "spvm_saaq") |>
   add_variables(
     var_code = "crash_ped_sqkm",
     var_title = "Collisions per sq km (pedestrians)",
-    var_short = "per sqkm ped",
+    var_short = "Crash /sqkm ped",
     explanation = "the total number of car collisions involving pedestrians per square kilometre",
     category = NA,
     private = FALSE,
     dates = as.character(2012:2019),
     scales = c("borough", "building", "CT", "DA", "grid", "street"),
-    breaks_q3 = NA,
-    breaks_q5 = NA,
+    breaks_q3 = breaks_q3_active$crash_ped_sqkm,
+    breaks_q5 = breaks_q5_active$crash_ped_sqkm,
     source = "spvm_saaq") |>
   add_variables(
     var_code = "crash_total_sqkm",
     var_title = "Collisions per sq km",
-    var_short = "per sqkm tot",
+    var_short = "Crash /sqkm tot",
     explanation = "the total number of car collisions per square kilometre",
     category = NA,
     private = FALSE,
     dates = as.character(2012:2019),
     scales = c("borough", "building", "CT", "DA", "grid", "street"),
-    breaks_q3 = NA,
-    breaks_q5 = NA,
+    breaks_q3 = breaks_q3_active$crash_total_sqkm,
+    breaks_q5 = breaks_q5_active$crash_total_sqkm,
     source = "spvm_saaq")
 
 

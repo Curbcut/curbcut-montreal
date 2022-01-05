@@ -85,12 +85,10 @@ covid_server <- function(id) {
     
     # Update point_selected on click to trigger image popup
     observeEvent(input$map_scatterplot_click, {
-      lst <- jsonlite::fromJSON(input$map_scatterplot_click)
-      if (is.null(lst$index)) {
-        selection(NA)
-      } else {
+      lst <- jsonlite::fromJSON(input$map_scatterplot_click)$index
+      if (is.null(lst)) selection(NA) else {
         # This is a hack because of a mapdeck bug
-        selection(covid_pics[lst$index + 1,]$ID)
+        selection(covid_pics[lst + 1,]$ID)
       }
     })
     

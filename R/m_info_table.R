@@ -321,8 +321,8 @@ info_table_server <- function(id, x, var_type, var_left, var_right, selection,
       
       
       ## Return output ---------------------------------------------------------
-      
-      out <- HTML(glue(sus_translate(out)))
+
+      out <- HTML(str_glue(sus_translate(out)))
       return(out)
       
       })

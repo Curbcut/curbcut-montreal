@@ -3,7 +3,9 @@
 # q3 breaks ---------------------------------------------------------------
 
 add_q3 <- function(df) {
-  mutate(df, across(c(-ID), ntile, 3, .names = "{.col}_q3"))
+  mutate(df, across(c(-ID), ntile, 3, .names = "{.col}_q3")) |> 
+    rename_with(~paste0(str_remove(., "_\\d{4}"),
+                        str_extract(., "_\\d{4}")), matches("_\\d{4}"))
 }
 
 get_breaks_q3 <- function(df, var_list = NULL) {
@@ -17,7 +19,10 @@ get_breaks_q3 <- function(df, var_list = NULL) {
     if (.x %in% names(df)) {
       suppressWarnings(
         df |>
-          select(any_of(.x), any_of(paste0(.x, "_q3"))) |>
+          select(any_of(.x), any_of(paste0(.x, "_q3")) |
+                   any_of(paste0(str_remove(.x, "_\\d{4}"), 
+                                 paste0("_q3", str_extract(.x, "_\\d{4}"))))
+          ) |>
           set_names(c("v", "q3")) |>
           summarize(
             ranks = c(min(v, na.rm = TRUE),
@@ -25,7 +30,8 @@ get_breaks_q3 <- function(df, var_list = NULL) {
                       min(v[q3 == 3], na.rm = TRUE),
                       max(v, na.rm = TRUE))) |>
           mutate(ranks = if_else(is.infinite(ranks), NA_real_, ranks)) |> 
-          set_names(.x))
+          set_names(.x)
+      )
     }
   })
 }
@@ -41,7 +47,9 @@ add_q5 <- function(df, breaks) {
     df |>
       transmute(across(all_of(x),
                        ~ as.numeric(cut(.x, y, include.lowest = TRUE)),
-                       .names = "{.col}_q5"))
+                       .names = "{.col}_q5")) |> 
+      rename_with(~paste0(str_remove(., "_\\d{4}"),
+                          str_extract(., "_\\d{4}")), matches("_\\d{4}"))
   })
 }
 

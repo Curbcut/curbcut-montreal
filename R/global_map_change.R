@@ -26,29 +26,30 @@ map_change <- function(id_map, x, df, selection = reactive(NULL),
   stopifnot(is.reactive(selection))
   stopifnot(is.reactive(standard_width))
   
-  # Saving computation when x() stays the same, don't need to redraw maps.
-  # TKTK df() must redraw the width, but shouldn't trigger a redraw in all 
-  # cases. Only in polygon choropleth borough/CT/DA mode. 
+  geom_type <- reactive({
+    map_chr(as.character(unique(st_geometry_type(x()))), ~{
+      switch(.x,  
+             "POLYGON" = "polygon",
+             "MULTIPOLYGON" = "polygon",
+             "LINESTRING" = "line",
+             "MULTILINESTRING" = "line",
+             "MULTIPOINT" = "point",
+             "POINT" = "point",
+             "error")
+    }) |> unique()
+  })
+
   observeEvent({x()
-    standard_width()}, {
-      
-      geom_type <- map_chr(as.character(unique(st_geometry_type(alleys))), ~{
-        switch(.x,  
-               "POLYGON" = "polygon",
-               "MULTIPOLYGON" = "polygon",
-               "LINESTRING" = "line",
-               "MULTILINESTRING" = "line",
-               "MULTIPOINT" = "point",
-               "POINT" = "point",
-               "error")
-      }) |> unique()
+    standard_width()
+    df()
+    geom_type()}, {
       
       # Used at all geometries:
       update_and_clean <- function() {
         mapdeck_update(map_id = id_map)  %>%
           clear_polygon() %>%
           clear_scatterplot() %>% 
-          clear_pointcloud() %>% 
+          clear_heatmap() %>% 
           clear_path()
       }
       
@@ -58,7 +59,7 @@ map_change <- function(id_map, x, df, selection = reactive(NULL),
       })
       
       # Error handling
-      if (geom_type == "error") stop("`geom_type` is invalid in `map_change`.")
+      if (geom_type() == "error") stop("`geom_type` is invalid in `map_change`.")
       
       # Buildings should be extruded
       if (df() == "building") {
@@ -68,7 +69,7 @@ map_change <- function(id_map, x, df, selection = reactive(NULL),
                       fill_colour = "fill", auto_highlight = TRUE, 
                       highlight_colour = "#FFFFFF90")
         
-      } else if (geom_type == "polygon") {
+      } else if (geom_type() == "polygon") {
         
         width <- switch(df(), "borough" = 100, 
                         "CT" = 10, 
@@ -84,7 +85,7 @@ map_change <- function(id_map, x, df, selection = reactive(NULL),
             highlight_colour = "#FFFFFF90")
         
         
-      } else if (geom_type == "line") {
+      } else if (geom_type() == "line") {
         
         update_and_clean() %>%
           add_path(data = x(),
@@ -92,7 +93,7 @@ map_change <- function(id_map, x, df, selection = reactive(NULL),
                    stroke_colour = "fill", auto_highlight = TRUE,
                    highlight_colour = "#FFFFFF90")
         
-      } else if (geom_type == "point") {
+      } else if (geom_type() == "point") {
         
         if (df() != "street") {
           update_and_clean() %>%
@@ -119,22 +120,24 @@ map_change <- function(id_map, x, df, selection = reactive(NULL),
       
       # Update map in response to poly change
       observeEvent(selection(), {
-        if (!is.null(selection())) {
-          if (!is.na(selection())) {
-            width <- switch(df(), "borough" = 100, "CT" = 10, 2)
-            data_to_add <-
-              x() |>
-              filter(ID == selection()) |>
-              mutate(fill = substr(fill, 1, 7))
-            
-            mapdeck_update(map_id = id_map) |>
-              add_polygon(
-                data = data_to_add, elevation = 5, fill_colour = "fill",
-                update_view = FALSE, layer_id = "poly_highlight",
-                auto_highlight = TRUE, highlight_colour = "#FFFFFF90")
-          } else {
-            mapdeck_update(map_id = id_map) |>
-              clear_polygon(layer_id = "poly_highlight")
+        if (geom_type() == "polygon") {
+          if (!is.null(selection())) {
+            if (!is.na(selection())) {
+              width <- switch(df(), "borough" = 100, "CT" = 10, 2)
+              data_to_add <-
+                x() |>
+                filter(ID == selection()) |>
+                mutate(fill = substr(fill, 1, 7))
+              
+              mapdeck_update(map_id = id_map) |>
+                add_polygon(
+                  data = data_to_add, elevation = 5, fill_colour = "fill",
+                  update_view = FALSE, layer_id = "poly_highlight",
+                  auto_highlight = TRUE, highlight_colour = "#FFFFFF90")
+            } else {
+              mapdeck_update(map_id = id_map) |>
+                clear_polygon(layer_id = "poly_highlight")
+            }
           }
         }})
     })}

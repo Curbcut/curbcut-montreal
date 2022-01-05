@@ -1,13 +1,7 @@
 ### CRASH MODULE GLOBALS #######################################################
 
 # Map token
-token_crash <- paste0("pk.eyJ1IjoiZHdhY2hzbXV0aCIsImEiOiJja2g2Y2JpbDc",
-                      "wMDc5MnltbWpja2xpYTZhIn0.BXdU7bsQYWcSwmmBx8DNqQ")
-
-# Initialize reactive values
-crash_zoom <- c("borough" = 0, "CT" = 10.5, "DA" = 12, "street" = 14)
-
-rv_crash <- reactiveValues(poly_selected = NA)
+map_zoom_crash_levels = c("borough" = 0, "CT" = 10.5, "DA" = 12, "street" = 14)
 
 # Time slider values
 crash_slider <- list(
@@ -18,7 +12,7 @@ crash_slider <- list(
 
 # Dropdown menu
 var_list_left_crash_1 <- 
-  list("Count" = " ",
+  list("Count" = "count",
        "Per sq km" = "sqkm",
        "Per 1,000 residents" = "per1k")
 
