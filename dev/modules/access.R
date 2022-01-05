@@ -66,9 +66,15 @@ access <-
   pivot_wider(names_from = c(job_type, time), values_from = value) |> 
   rename_with(~paste0("access_", .x), jobs_total_pwe:healthcare_pwd) |> 
   rename_with(~paste0(.x, "_count"), 
-              access_jobs_total_pwe:access_healthcare_pwd)
+              access_jobs_total_pwe:access_healthcare_pwd) |> 
+  rename(ID = GeoUID)
 
+# Add breaks --------------------------------------------------------------
 
+access <- add_q3(access)
+access_q3 <- get_breaks_q3(access)
+access_q5 <- get_breaks_q5(access)
+access <- bind_cols(access, add_q5(access, access_q5))
 
 # Data testing ------------------------------------------------------------
 
@@ -79,10 +85,8 @@ data_testing(list("access" = access))
 
 CT <-
   CT |> 
-  left_join(access, by = c("ID" = "GeoUID")) |> 
+  left_join(access, by = "ID") |> 
   relocate(geometry, .after = last_col()) |> 
-  mutate(across(starts_with("access"), ntile, n = 3, .names = "{.col}_q3"), 
-         .before = geometry) |> 
   st_set_agr("constant")
   
 
@@ -104,10 +108,32 @@ meta_testing()
 
 # Add variable explanations -----------------------------------------------
 
+var_list <- 
+  names(select(access, -ID, -contains(c("q3", "q5")))) |> 
+  unlist() |> 
+  unique()
+
+# Get breaks_q3
+breaks_q3_active <-
+  map(set_names(var_list), ~{
+      access_q3 |> 
+      mutate(scale = "CT", date = NA, rank = 0:3, .before = everything()) |> 
+      select(scale, date, rank, var = all_of(.x))
+    })
+
+# Get breaks_q5
+breaks_q5_active <-
+  map(set_names(var_list), ~{
+    access_q5 |> 
+      mutate(scale = "CT", date = NA, rank = 0:5, .before = everything()) |> 
+      select(scale, date, rank, var = all_of(.x))
+  })
+
+
 variables <- 
 variables |>
   add_variables(
-    var_code = "access_jobs_total_pwd",
+    var_code = "access_jobs_total_pwd_count",
     var_title = "Total jobs (weekday peak)",
     var_short = "Total WKP",
     explanation = "the total number of jobs accessible within 30 minutes at weekday peak service",
@@ -115,12 +141,12 @@ variables |>
     private = FALSE,
     dates = NA,
     scales = "CT",
-    breaks_q3 = NA,
-    breaks_q5 = NA,
+    breaks_q3 = breaks_q3_active$access_jobs_total_pwd_count,
+    breaks_q5 = breaks_q5_active$access_jobs_total_pwd_count,
     source = "TKTK"
   ) |>
   add_variables(
-    var_code = "access_jobs_total_opwd",
+    var_code = "access_jobs_total_opwd_count",
     var_title = "Total jobs (weekday off-peak)",
     var_short = "Total WKOP",
     explanation = "the total number of jobs accessible within 30 minutes at weekday off-peak service",
@@ -128,12 +154,12 @@ variables |>
     private = FALSE,
     dates = NA,
     scales = "CT",
-    breaks_q3 = NA,
-    breaks_q5 = NA,
+    breaks_q3 = breaks_q3_active$access_jobs_total_opwd_count,
+    breaks_q5 = breaks_q5_active$access_jobs_total_opwd_count,
     source = "TKTK"
   ) |>
   add_variables(
-    var_code = "access_jobs_total_nwd",
+    var_code = "access_jobs_total_nwd_count",
     var_title = "Total jobs (weekday night)",
     var_short = "Total WKN",
     explanation = "the total number of jobs accessible within 30 minutes at weekday night service",
@@ -141,12 +167,12 @@ variables |>
     private = FALSE,
     dates = NA,
     scales = "CT",
-    breaks_q3 = NA,
-    breaks_q5 = NA,
+    breaks_q3 = breaks_q3_active$access_jobs_total_nwd_count,
+    breaks_q5 = breaks_q5_active$access_jobs_total_nwd_count,
     source = "TKTK"
   ) |>
   add_variables(
-    var_code = "access_jobs_total_pwe",
+    var_code = "access_jobs_total_pwe_count",
     var_title = "Total jobs (weekend peak)",
     var_short = "Total WEP",
     explanation = "the total number of jobs accessible within 30 minutes at weekend peak service",
@@ -154,12 +180,12 @@ variables |>
     private = FALSE,
     dates = NA,
     scales = "CT",
-    breaks_q3 = NA,
-    breaks_q5 = NA,
+    breaks_q3 = breaks_q3_active$access_jobs_total_pwe_count,
+    breaks_q5 = breaks_q5_active$access_jobs_total_pwe_count,
     source = "TKTK"
   ) |>
   add_variables(
-    var_code = "access_jobs_total_opwe",
+    var_code = "access_jobs_total_opwe_count",
     var_title = "Total jobs (weekend off-peak)",
     var_short = "Total WEOP",
     explanation = "the total number of jobs accessible within 30 minutes at weekend off-peak service",
@@ -167,12 +193,12 @@ variables |>
     private = FALSE,
     dates = NA,
     scales = "CT",
-    breaks_q3 = NA,
-    breaks_q5 = NA,
+    breaks_q3 = breaks_q3_active$access_jobs_total_opwe_count,
+    breaks_q5 = breaks_q5_active$access_jobs_total_opwe_count,
     source = "TKTK"
   ) |>
   add_variables(
-    var_code = "access_jobs_total_nwe",
+    var_code = "access_jobs_total_nwe_count",
     var_title = "Total jobs (weekend night)",
     var_short = "Total WEN",
     explanation = "the total number of jobs accessible within 30 minutes at weekend night service",
@@ -180,12 +206,12 @@ variables |>
     private = FALSE,
     dates = NA,
     scales = "CT",
-    breaks_q3 = NA,
-    breaks_q5 = NA,
+    breaks_q3 = breaks_q3_active$access_jobs_total_nwe_count,
+    breaks_q5 = breaks_q5_active$access_jobs_total_nwe_count,
     source = "TKTK"
   ) |>
   add_variables(
-    var_code = "access_jobs_low_pwd",
+    var_code = "access_jobs_low_pwd_count",
     var_title = "Low-skill jobs (weekday peak)",
     var_short = "Low-skill WKP",
     explanation = "the number of low-skill jobs accessible within 30 minutes at weekday peak service",
@@ -193,12 +219,12 @@ variables |>
     private = FALSE,
     dates = NA,
     scales = "CT",
-    breaks_q3 = NA,
-    breaks_q5 = NA,
+    breaks_q3 = breaks_q3_active$access_jobs_low_pwd_count,
+    breaks_q5 = breaks_q5_active$access_jobs_low_pwd_count,
     source = "TKTK"
   ) |>
   add_variables(
-    var_code = "access_jobs_low_opwd",
+    var_code = "access_jobs_low_opwd_count",
     var_title = "Low-skill jobs (weekday off-peak)",
     var_short = "Low-skill WKOP",
     explanation = "the number of low-skill jobs accessible within 30 minutes at weekday off-peak service",
@@ -206,12 +232,12 @@ variables |>
     private = FALSE,
     dates = NA,
     scales = "CT",
-    breaks_q3 = NA,
-    breaks_q5 = NA,
+    breaks_q3 = breaks_q3_active$access_jobs_low_opwd_count,
+    breaks_q5 = breaks_q5_active$access_jobs_low_opwd_count,
     source = "TKTK"
   ) |>
   add_variables(
-    var_code = "access_jobs_low_nwd",
+    var_code = "access_jobs_low_nwd_count",
     var_title = "Low-skill jobs (weekday night)",
     var_short = "Low-skill WKN",
     explanation = "the number of low-skill jobs accessible within 30 minutes at weekday night service",
@@ -219,12 +245,12 @@ variables |>
     private = FALSE,
     dates = NA,
     scales = "CT",
-    breaks_q3 = NA,
-    breaks_q5 = NA,
+    breaks_q3 = breaks_q3_active$access_jobs_low_nwd_count,
+    breaks_q5 = breaks_q5_active$access_jobs_low_nwd_count,
     source = "TKTK"
   ) |>
   add_variables(
-    var_code = "access_jobs_low_pwe",
+    var_code = "access_jobs_low_pwe_count",
     var_title = "Low-skill jobs (weekend peak)",
     var_short = "Low-skill WEP",
     explanation = "the number of low-skill jobs accessible within 30 minutes at weekend peak service",
@@ -232,12 +258,12 @@ variables |>
     private = FALSE,
     dates = NA,
     scales = "CT",
-    breaks_q3 = NA,
-    breaks_q5 = NA,
+    breaks_q3 = breaks_q3_active$access_jobs_low_pwe_count,
+    breaks_q5 = breaks_q5_active$access_jobs_low_pwe_count,
     source = "TKTK"
   ) |>
   add_variables(
-    var_code = "access_jobs_low_opwe",
+    var_code = "access_jobs_low_opwe_count",
     var_title = "Low-skill jobs (weekend off-peak)",
     var_short = "Low-skill WEOP",
     explanation = "the number of low-skill jobs accessible within 30 minutes at weekend off-peak service",
@@ -245,12 +271,12 @@ variables |>
     private = FALSE,
     dates = NA,
     scales = "CT",
-    breaks_q3 = NA,
-    breaks_q5 = NA,
+    breaks_q3 = breaks_q3_active$access_jobs_low_opwe_count,
+    breaks_q5 = breaks_q5_active$access_jobs_low_opwe_count,
     source = "TKTK"
   ) |>
   add_variables(
-    var_code = "access_jobs_low_nwe",
+    var_code = "access_jobs_low_nwe_count",
     var_title = "Low-skill jobs (weekend night)",
     var_short = "Low-skill WEN",
     explanation = "the number of low-skill jobs accessible within 30 minutes at weekend night service",
@@ -258,12 +284,12 @@ variables |>
     private = FALSE,
     dates = NA,
     scales = "CT",
-    breaks_q3 = NA,
-    breaks_q5 = NA,
+    breaks_q3 = breaks_q3_active$access_jobs_low_nwe_count,
+    breaks_q5 = breaks_q5_active$access_jobs_low_nwe_count,
     source = "TKTK"
   ) |>
   add_variables(
-    var_code = "access_jobs_high_pwd",
+    var_code = "access_jobs_high_pwd_count",
     var_title = "High-skill jobs (weekday peak)",
     var_short = "Hi-skill WKP",
     explanation = "the number of high-skill jobs accessible within 30 minutes at weekday peak service",
@@ -271,12 +297,12 @@ variables |>
     private = FALSE,
     dates = NA,
     scales = "CT",
-    breaks_q3 = NA,
-    breaks_q5 = NA,
+    breaks_q3 = breaks_q3_active$access_jobs_high_pwd_count,
+    breaks_q5 = breaks_q5_active$access_jobs_high_pwd_count,
     source = "TKTK"
   ) |>
   add_variables(
-    var_code = "access_jobs_high_opwd",
+    var_code = "access_jobs_high_opwd_count",
     var_title = "High-skill jobs (weekday off-peak)",
     var_short = "Hi-skill WKOP",
     explanation = "the number of high-skill jobs accessible within 30 minutes at weekday off-peak service",
@@ -284,12 +310,12 @@ variables |>
     private = FALSE,
     dates = NA,
     scales = "CT",
-    breaks_q3 = NA,
-    breaks_q5 = NA,
+    breaks_q3 = breaks_q3_active$access_jobs_high_opwd_count,
+    breaks_q5 = breaks_q5_active$access_jobs_high_opwd_count,
     source = "TKTK"
   ) |>
   add_variables(
-    var_code = "access_jobs_high_nwd",
+    var_code = "access_jobs_high_nwd_count",
     var_title = "High-skill jobs (weekday night)",
     var_short = "Hi-skill WKN",
     explanation = "the number of high-skill jobs accessible within 30 minutes at weekday night service",
@@ -297,12 +323,12 @@ variables |>
     private = FALSE,
     dates = NA,
     scales = "CT",
-    breaks_q3 = NA,
-    breaks_q5 = NA,
+    breaks_q3 = breaks_q3_active$access_jobs_high_nwd_count,
+    breaks_q5 = breaks_q5_active$access_jobs_high_nwd_count,
     source = "TKTK"
   ) |>
   add_variables(
-    var_code = "access_jobs_high_pwe",
+    var_code = "access_jobs_high_pwe_count",
     var_title = "High-skill jobs (weekend peak)",
     var_short = "Hi-skill WEP",
     explanation = "the number of high-skill jobs accessible within 30 minutes at weekend peak service",
@@ -310,12 +336,12 @@ variables |>
     private = FALSE,
     dates = NA,
     scales = "CT",
-    breaks_q3 = NA,
-    breaks_q5 = NA,
+    breaks_q3 = breaks_q3_active$access_jobs_high_pwe_count,
+    breaks_q5 = breaks_q5_active$access_jobs_high_pwe_count,
     source = "TKTK"
   ) |>
   add_variables(
-    var_code = "access_jobs_high_opwe",
+    var_code = "access_jobs_high_opwe_count",
     var_title = "High-skill jobs (weekend off-peak)",
     var_short = "Hi-skill WEOP",
     explanation = "the number of high-skill jobs accessible within 30 minutes at weekend off-peak service",
@@ -323,12 +349,12 @@ variables |>
     private = FALSE,
     dates = NA,
     scales = "CT",
-    breaks_q3 = NA,
-    breaks_q5 = NA,
+    breaks_q3 = breaks_q3_active$access_jobs_high_opwe_count,
+    breaks_q5 = breaks_q5_active$access_jobs_high_opwe_count,
     source = "TKTK"
   ) |>
   add_variables(
-    var_code = "access_jobs_high_nwe",
+    var_code = "access_jobs_high_nwe_count",
     var_title = "High-skill jobs (weekend night)",
     var_short = "Hi-skill WEN",
     explanation = "the number of high-skill jobs accessible within 30 minutes at weekend night service",
@@ -336,12 +362,12 @@ variables |>
     private = FALSE,
     dates = NA,
     scales = "CT",
-    breaks_q3 = NA,
-    breaks_q5 = NA,
+    breaks_q3 = breaks_q3_active$access_jobs_high_nwe_count,
+    breaks_q5 = breaks_q5_active$access_jobs_high_nwe_count,
     source = "TKTK"
   ) |>
   add_variables(
-    var_code = "access_jobs_30k_pwd",
+    var_code = "access_jobs_30k_pwd_count",
     var_title = "Low-income jobs (weekday peak)",
     var_short = "Low-inc WKP",
     explanation = "the number of jobs paying less than $30,000 accessible within 30 minutes at weekday peak service",
@@ -349,12 +375,12 @@ variables |>
     private = FALSE,
     dates = NA,
     scales = "CT",
-    breaks_q3 = NA,
-    breaks_q5 = NA,
+    breaks_q3 = breaks_q3_active$access_jobs_30k_pwd_count,
+    breaks_q5 = breaks_q5_active$access_jobs_30k_pwd_count,
     source = "TKTK"
   ) |>
   add_variables(
-    var_code = "access_jobs_30k_opwd",
+    var_code = "access_jobs_30k_opwd_count",
     var_title = "Low-income jobs (weekday off-peak)",
     var_short = "Low-inc WKOP",
     explanation = "the number of jobs paying less than $30,000 accessible within 30 minutes at weekday off-peak service",
@@ -362,12 +388,12 @@ variables |>
     private = FALSE,
     dates = NA,
     scales = "CT",
-    breaks_q3 = NA,
-    breaks_q5 = NA,
+    breaks_q3 = breaks_q3_active$access_jobs_30k_opwd_count,
+    breaks_q5 = breaks_q5_active$access_jobs_30k_opwd_count,
     source = "TKTK"
   ) |>
   add_variables(
-    var_code = "access_jobs_30k_nwd",
+    var_code = "access_jobs_30k_nwd_count",
     var_title = "Low-income jobs (weekday night)",
     var_short = "Low-inc WKN",
     explanation = "the number of jobs paying less than $30,000 accessible within 30 minutes at weekday night service",
@@ -375,12 +401,12 @@ variables |>
     private = FALSE,
     dates = NA,
     scales = "CT",
-    breaks_q3 = NA,
-    breaks_q5 = NA,
+    breaks_q3 = breaks_q3_active$access_jobs_30k_nwd_count,
+    breaks_q5 = breaks_q5_active$access_jobs_30k_nwd_count,
     source = "TKTK"
   ) |>
   add_variables(
-    var_code = "access_jobs_30k_pwe",
+    var_code = "access_jobs_30k_pwe_count",
     var_title = "Low-income jobs (weekend peak)",
     var_short = "Low-inc WEP",
     explanation = "the number of jobs paying less than $30,000 accessible within 30 minutes at weekend peak service",
@@ -388,12 +414,12 @@ variables |>
     private = FALSE,
     dates = NA,
     scales = "CT",
-    breaks_q3 = NA,
-    breaks_q5 = NA,
+    breaks_q3 = breaks_q3_active$access_jobs_30k_pwe_count,
+    breaks_q5 = breaks_q5_active$access_jobs_30k_pwe_count,
     source = "TKTK"
   ) |>
   add_variables(
-    var_code = "access_jobs_30k_opwe",
+    var_code = "access_jobs_30k_opwe_count",
     var_title = "Low-income jobs (weekend off-peak)",
     var_short = "Low-inc WEOP",
     explanation = "the number of jobs paying less than $30,000 accessible within 30 minutes at weekend off-peak service",
@@ -401,12 +427,12 @@ variables |>
     private = FALSE,
     dates = NA,
     scales = "CT",
-    breaks_q3 = NA,
-    breaks_q5 = NA,
+    breaks_q3 = breaks_q3_active$access_jobs_30k_opwe_count,
+    breaks_q5 = breaks_q5_active$access_jobs_30k_opwe_count,
     source = "TKTK"
   ) |>
   add_variables(
-    var_code = "access_jobs_30k_nwe",
+    var_code = "access_jobs_30k_nwe_count",
     var_title = "Low-income jobs (weekend night)",
     var_short = "Low-inc WEN",
     explanation = "the number of jobs paying less than $30,000 accessible within 30 minutes at weekend night service",
@@ -414,12 +440,12 @@ variables |>
     private = FALSE,
     dates = NA,
     scales = "CT",
-    breaks_q3 = NA,
-    breaks_q5 = NA,
+    breaks_q3 = breaks_q3_active$access_jobs_30k_nwe_count,
+    breaks_q5 = breaks_q5_active$access_jobs_30k_nwe_count,
     source = "TKTK"
   ) |>
   add_variables(
-    var_code = "access_schools_pwd",
+    var_code = "access_schools_pwd_count",
     var_title = "Schools (weekday peak)",
     var_short = "Schools WKP",
     explanation = "the number of schools accessible within 30 minutes at weekday peak service",
@@ -427,12 +453,12 @@ variables |>
     private = FALSE,
     dates = NA,
     scales = "CT",
-    breaks_q3 = NA,
-    breaks_q5 = NA,
+    breaks_q3 = breaks_q3_active$access_schools_pwd_count,
+    breaks_q5 = breaks_q5_active$access_schools_pwd_count,
     source = "TKTK"
   ) |>
   add_variables(
-    var_code = "access_schools_opwd",
+    var_code = "access_schools_opwd_count",
     var_title = "Schools (weekday off-peak)",
     var_short = "Schools WKOP",
     explanation = "the number of schools accessible within 30 minutes at weekday off-peak service",
@@ -440,12 +466,12 @@ variables |>
     private = FALSE,
     dates = NA,
     scales = "CT",
-    breaks_q3 = NA,
-    breaks_q5 = NA,
+    breaks_q3 = breaks_q3_active$access_schools_opwd_count,
+    breaks_q5 = breaks_q5_active$access_schools_opwd_count,
     source = "TKTK"
   ) |>
   add_variables(
-    var_code = "access_schools_nwd",
+    var_code = "access_schools_nwd_count",
     var_title = "Schools (weekday night)",
     var_short = "Schools WKN",
     explanation = "the number of schools accessible within 30 minutes at weekday night service",
@@ -453,12 +479,12 @@ variables |>
     private = FALSE,
     dates = NA,
     scales = "CT",
-    breaks_q3 = NA,
-    breaks_q5 = NA,
+    breaks_q3 = breaks_q3_active$access_schools_nwd_count,
+    breaks_q5 = breaks_q5_active$access_schools_nwd_count,
     source = "TKTK"
   ) |>
   add_variables(
-    var_code = "access_schools_pwe",
+    var_code = "access_schools_pwe_count",
     var_title = "Schools (weekend peak)",
     var_short = "Schools WEP",
     explanation = "the number of schools accessible within 30 minutes at weekend peak service",
@@ -466,12 +492,12 @@ variables |>
     private = FALSE,
     dates = NA,
     scales = "CT",
-    breaks_q3 = NA,
-    breaks_q5 = NA,
+    breaks_q3 = breaks_q3_active$access_schools_pwe_count,
+    breaks_q5 = breaks_q5_active$access_schools_pwe_count,
     source = "TKTK"
   ) |>
   add_variables(
-    var_code = "access_schools_opwe",
+    var_code = "access_schools_opwe_count",
     var_title = "Schools (weekend off-peak)",
     var_short = "Schools WEOP",
     explanation = "the number of schools accessible within 30 minutes at weekend off-peak service",
@@ -479,12 +505,12 @@ variables |>
     private = FALSE,
     dates = NA,
     scales = "CT",
-    breaks_q3 = NA,
-    breaks_q5 = NA,
+    breaks_q3 = breaks_q3_active$access_schools_opwe_count,
+    breaks_q5 = breaks_q5_active$access_schools_opwe_count,
     source = "TKTK"
   ) |>
   add_variables(
-    var_code = "access_schools_nwe",
+    var_code = "access_schools_nwe_count",
     var_title = "Schools (weekend night)",
     var_short = "Schools WEN",
     explanation = "the number of schools accessible within 30 minutes at weekend night service",
@@ -492,12 +518,12 @@ variables |>
     private = FALSE,
     dates = NA,
     scales = "CT",
-    breaks_q3 = NA,
-    breaks_q5 = NA,
+    breaks_q3 = breaks_q3_active$access_schools_nwe_count,
+    breaks_q5 = breaks_q5_active$access_schools_nwe_count,
     source = "TKTK"
   ) |>
   add_variables(
-    var_code = "access_healthcare_pwd",
+    var_code = "access_healthcare_pwd_count",
     var_title = "Healthcare (weekday peak)",
     var_short = "Healthcare WKP",
     explanation = "the number of healthcare facilities accessible within 30 minutes at weekday peak service",
@@ -505,12 +531,12 @@ variables |>
     private = FALSE,
     dates = NA,
     scales = "CT",
-    breaks_q3 = NA,
-    breaks_q5 = NA,
+    breaks_q3 = breaks_q3_active$access_healthcare_pwd_count,
+    breaks_q5 = breaks_q5_active$access_healthcare_pwd_count,
     source = "TKTK"
   ) |>
   add_variables(
-    var_code = "access_healthcare_opwd",
+    var_code = "access_healthcare_opwd_count",
     var_title = "Healthcare (weekday off-peak)",
     var_short = "Healthcare WKOP",
     explanation = "the number of healthcare facilities accessible within 30 minutes at weekday off-peak service",
@@ -518,12 +544,12 @@ variables |>
     private = FALSE,
     dates = NA,
     scales = "CT",
-    breaks_q3 = NA,
-    breaks_q5 = NA,
+    breaks_q3 = breaks_q3_active$access_healthcare_opwd_count,
+    breaks_q5 = breaks_q5_active$access_healthcare_opwd_count,
     source = "TKTK"
   ) |>
   add_variables(
-    var_code = "access_healthcare_nwd",
+    var_code = "access_healthcare_nwd_count",
     var_title = "Healthcare (weekday night)",
     var_short = "Healthcare WKN",
     explanation = "the number of healthcare facilities within 30 minutes at weekday night service",
@@ -531,12 +557,12 @@ variables |>
     private = FALSE,
     dates = NA,
     scales = "CT",
-    breaks_q3 = NA,
-    breaks_q5 = NA,
+    breaks_q3 = breaks_q3_active$access_healthcare_nwd_count,
+    breaks_q5 = breaks_q5_active$access_healthcare_nwd_count,
     source = "TKTK"
   ) |>
   add_variables(
-    var_code = "access_healthcare_pwe",
+    var_code = "access_healthcare_pwe_count",
     var_title = "Healthcare (weekend peak)",
     var_short = "Healthcare WEP",
     explanation = "the number of healthcare facilities accessible within 30 minutes at weekend peak service",
@@ -544,12 +570,12 @@ variables |>
     private = FALSE,
     dates = NA,
     scales = "CT",
-    breaks_q3 = NA,
-    breaks_q5 = NA,
+    breaks_q3 = breaks_q3_active$access_healthcare_pwe_count,
+    breaks_q5 = breaks_q5_active$access_healthcare_pwe_count,
     source = "TKTK"
   ) |>
   add_variables(
-    var_code = "access_healthcare_opwe",
+    var_code = "access_healthcare_opwe_count",
     var_title = "Healthcare (weekend off-peak)",
     var_short = "Healthcare WEOP",
     explanation = "the number of healthcare facilities accessible within 30 minutes at weekend off-peak service",
@@ -557,12 +583,12 @@ variables |>
     private = FALSE,
     dates = NA,
     scales = "CT",
-    breaks_q3 = NA,
-    breaks_q5 = NA,
+    breaks_q3 = breaks_q3_active$access_healthcare_opwe_count,
+    breaks_q5 = breaks_q5_active$access_healthcare_opwe_count,
     source = "TKTK"
   ) |>
   add_variables(
-    var_code = "access_healthcare_nwe",
+    var_code = "access_healthcare_nwe_count",
     var_title = "Healthcare (weekend night)",
     var_short = "Healthcare WEN",
     explanation = "the number of healthcare facilities accessible within 30 minutes at weekend night service",
@@ -570,8 +596,8 @@ variables |>
     private = FALSE,
     dates = NA,
     scales = "CT",
-    breaks_q3 = NA,
-    breaks_q5 = NA,
+    breaks_q3 = breaks_q3_active$access_healthcare_nwe_count,
+    breaks_q5 = breaks_q5_active$access_healthcare_nwe_count,
     source = "TKTK"
   )
 
