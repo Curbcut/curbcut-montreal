@@ -18,7 +18,8 @@ access_UI <- function(id) {
                     width = "95%"),
         div(class = "bottom_sidebar", 
             tagList(legend_UI(NS(id, "legend")),
-                    zoom_UI(NS(id, "zoom"), map_zoom_levels))))),
+                    shinyjs::hidden(zoom_UI(NS(id, "zoom"), map_zoom_levels))
+                    )))),
     
     fillCol(
       
@@ -73,10 +74,10 @@ access_server <- function(id) {
     
     # Enable or disable slider + type of destination
     observeEvent({selection()
-                 var_right()}, {
-      shinyjs::toggle("slider", condition = !is.na(selection()) && var_right() == " ")
-      shinyjs::toggle("left_1-var", condition = is.na(selection()) || var_right() != " ")
-    })
+      var_right()}, {
+        shinyjs::toggle("slider", condition = !is.na(selection()) && var_right() == " ")
+        shinyjs::toggle("left_1-var", condition = is.na(selection()) || var_right() != " ")
+      })
     
     # Left variable servers
     var_left_1 <- select_var_server("left_1", reactive(var_list_left_access_1))
@@ -124,7 +125,8 @@ access_server <- function(id) {
       id = "legend", 
       var_left = var_left, 
       var_right = var_right, 
-      df = df)
+      df = df,
+      show_panel = reactive(is.na(selection()) || var_right() != " "))
     
     # Did-you-know panel
     dyk_server(
