@@ -63,8 +63,8 @@ legend_server <- function(id, var_left, var_right, df,
         
         legend_left_5 |> 
           ggplot(aes(xmin = x - 1, xmax = x, ymin = y - 1, ymax = y, 
-                     fill = fill)) +
-          geom_rect() + 
+                     fill = fill, data_id = x)) +
+          geom_rect_interactive() + 
           scale_x_continuous(name = axis_title, breaks = 0:5,
                              labels = as.character(break_labels)) +
           scale_y_continuous(name = NULL, labels = NULL) +
@@ -145,13 +145,20 @@ legend_server <- function(id, var_left, var_right, df,
     })
     
     output$legend_render <- renderUI({
-      output$legend <- renderPlot({
+      output$legend <- renderGirafe({
         # Only show legend if there's something to show
-        if (!is.null(legend_display())) legend_display()
+        if (!is.null(legend_display())) {
+          x <- girafe(ggobj = legend_display())
+          x <- girafe_options(x,
+                              opts_hover_inv(css = "opacity:0.7"),
+                              opts_hover(css = "cursor:pointer;"),
+                              opts_selection(css = "fill:#2A5A5B;"))
+          x
+        }
       })
       
       # Weird hack to get legend plot to inherit full namespace
-      plotOutput(session$ns("legend"), height = plot_height(), width = "100%")
+      girafeOutput(session$ns("legend"), height = plot_height(), width = "100%")
       
     })
     
