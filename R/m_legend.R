@@ -63,12 +63,12 @@ legend_server <- function(id, var_left, var_right, df,
         
         legend_left_5 |> 
           ggplot(aes(xmin = x - 1, xmax = x, ymin = y - 1, ymax = y, 
-                     fill = fill, data_id = x)) +
+                     fill = fill, data_id = fill)) +
           geom_rect_interactive() + 
           scale_x_continuous(name = axis_title, breaks = 0:5,
                              labels = as.character(break_labels)) +
           scale_y_continuous(name = NULL, labels = NULL) +
-          scale_fill_manual(values = setNames(
+          scale_fill_manual_interactive(values = setNames(
             paste0(legend_left_5$fill, 
                    filter(colour_alpha, zoom == df())$alpha),
             legend_left_5$fill)) +
@@ -79,13 +79,13 @@ legend_server <- function(id, var_left, var_right, df,
       } else if (length(var_left()) == 2 && var_right()[1] == " ") {
         
         legend_delta_5 |> 
-          ggplot(aes(x, y, fill = fill)) +
-          geom_tile() +
+          ggplot(aes(x, y, fill = fill, data_id = fill)) +
+          geom_tile_interactive() +
           scale_x_continuous(name = "var_name (change DATE_1 - DATE_2)",
                              breaks = c(1.5, 2.5, 3.5, 4.5),
                              labels = c("-10%", "-2%", "+2%", "+10%")) +
           scale_y_continuous(name = NULL) +
-          scale_fill_manual(values = setNames(
+          scale_fill_manual_interactive(values = setNames(
             paste0(legend_delta_5$fill, 
                    filter(colour_alpha, zoom == "borough")$alpha),
             legend_delta_5$fill)) +
@@ -119,15 +119,15 @@ legend_server <- function(id, var_left, var_right, df,
             TRUE ~ NA_character_)) |> 
           mutate(label_colour = if_else(
             label == "Both high", "white", "black")) |> 
-          ggplot(aes(y, x, fill = fill)) +
-          geom_tile() +
+          ggplot(aes(y, x, fill = fill, data_id = fill)) +
+          geom_tile_interactive() +
           geom_text(aes(y, x, label = label, colour = label_colour), 
                     inherit.aes = FALSE, size = 3) +
-          scale_fill_manual(values = setNames(
+          scale_fill_manual_interactive(values = setNames(
             paste0(legend_bivar$fill, 
                    filter(colour_alpha, zoom == df())$alpha),
             legend_bivar$fill)) +
-          scale_colour_manual(values = c(
+          scale_colour_manual_interactive(values = c(
             "black" = "black", "white" = "white")) +
           labs(x = paste0(var_right_title, " (low to high)"), 
                y = paste0(var_left_title, "Housing (low to high)")) +
@@ -148,21 +148,20 @@ legend_server <- function(id, var_left, var_right, df,
       output$legend <- renderGirafe({
         # Only show legend if there's something to show
         if (!is.null(legend_display())) {
-          x <- girafe(ggobj = legend_display())
-          x <- girafe_options(x,
-                              opts_hover_inv(css = "opacity:0.7"),
-                              opts_hover(css = "cursor:pointer;"),
-                              opts_selection(css = "fill:#2A5A5B;"))
-          x
+          girafe(ggobj = legend_display(),
+                 options = list(
+                   opts_hover_inv(css = "opacity:0.7"),
+                   opts_hover(css = "cursor:pointer;"),
+                   opts_selection(css = "fill:red;"),
+                   opts_toolbar(position = "topright", saveaspng = FALSE)))
         }
       })
-      
       # Weird hack to get legend plot to inherit full namespace
       girafeOutput(session$ns("legend"), height = plot_height(), width = "100%")
-      
     })
-    
-    reactive(render_plot_fun())
+
+    reactive(list(plot = render_plot_fun(), 
+                  legend_selection = input$legend_selected))
     
   })
 }
