@@ -84,8 +84,11 @@ map_change <- function(id_map, x, df, selection = reactive(NULL),
         if (!is.null(legend_selection())) {
           sel <- 
             x() |> 
-            mutate(fill = case_when(str_detect(fill, paste0(legend_selection(), "..$", collapse = "|")) ~ fill,
-                                    TRUE ~ str_replace(fill, "..$", "50")))
+            mutate(fill = case_when(
+              str_detect(fill, 
+                         paste0(legend_selection(), "..$", 
+                                collapse = "|")) ~ fill,
+              TRUE ~ str_replace(fill, "..$", "50")))
           
           update_and_clean() |> 
             add_polygon(

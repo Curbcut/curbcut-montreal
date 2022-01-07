@@ -7,6 +7,7 @@ legend_UI <- function(id) {
       
       h5("Legend", style = "font-size: 12px;"),
       uiOutput(NS(id, "legend_render"))
+      # ggiraph::girafeOutput(NS(id, "legend"), width = "100%")
     )
   )
 }
@@ -25,7 +26,7 @@ legend_server <- function(id, var_left, var_right, df,
     outputOptions(output, "show_panel", suspendWhenHidden = FALSE)
     
     plot_height <- function() {
-      if (length(var_left()) == 1 && var_right()[1] == " ") 60 else 120
+      if (length(var_left()) == 1 && var_right()[1] == " ") 1 else 2
     }
     
     render_plot_fun <- function() {
@@ -74,7 +75,9 @@ legend_server <- function(id, var_left, var_right, df,
             legend_left_5$fill)) +
           theme_minimal() +
           theme(legend.position = "none",
-                panel.grid = element_blank())
+                panel.grid = element_blank(),
+                axis.text = element_text(size = 15),
+                axis.title = element_text(size = 15))
         
       } else if (length(var_left()) == 2 && var_right()[1] == " ") {
         
@@ -122,7 +125,7 @@ legend_server <- function(id, var_left, var_right, df,
           ggplot(aes(y, x, fill = fill, data_id = fill)) +
           geom_tile_interactive() +
           geom_text(aes(y, x, label = label, colour = label_colour),
-                    inherit.aes = FALSE, size = 3, na.rm = TRUE) +
+                    inherit.aes = FALSE, size = 15*0.36, na.rm = TRUE) +
           scale_fill_manual_interactive(values = setNames(
             paste0(legend_bivar$fill, 
                    filter(colour_alpha, zoom == df())$alpha),
@@ -149,15 +152,19 @@ legend_server <- function(id, var_left, var_right, df,
         # Only show legend if there's something to show
         if (!is.null(legend_display())) {
           girafe(ggobj = legend_display(),
+                 # Height is in inches
+                 height_svg = plot_height(),
                  options = list(
                    opts_hover_inv(css = "opacity:0.7"),
                    opts_hover(css = "cursor:pointer;"),
                    opts_selection(css = "fill:red;"),
-                   opts_toolbar(position = "topright", saveaspng = FALSE)))
+                   opts_toolbar(position = "topright", saveaspng = FALSE),
+                   opts_sizing(rescale = TRUE, width = 1)))
         }
       })
       # Weird hack to get legend plot to inherit full namespace
-      girafeOutput(session$ns("legend"), height = plot_height(), width = "100%")
+      girafeOutput(session$ns("legend"), height = plot_height()*60, 
+                   width = "100%")
     })
 
     reactive(list(plot = render_plot_fun(), 
