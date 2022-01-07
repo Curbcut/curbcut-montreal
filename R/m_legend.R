@@ -116,12 +116,12 @@ legend_server <- function(id, var_left, var_right, df,
             x == "1" & y == "1" ~ "Both low",
             x == "3" & y == "1" ~ paste0(var_left_title, "\nhigh only"),
             x == "1" & y == "3" ~ paste0(var_right_title, "\nhigh only"),
-            TRUE ~ NA_character_)) |> 
+            TRUE ~ "")) |> 
           mutate(label_colour = if_else(
             label == "Both high", "white", "black")) |> 
           ggplot(aes(y, x, fill = fill, data_id = fill)) +
           geom_tile_interactive() +
-          geom_text(aes(y, x, label = label, colour = label_colour), 
+          geom_text(aes(y, x, label = label, colour = label_colour),
                     inherit.aes = FALSE, size = 3) +
           scale_fill_manual_interactive(values = setNames(
             paste0(legend_bivar$fill, 
