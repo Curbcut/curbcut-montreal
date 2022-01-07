@@ -126,7 +126,7 @@ qsavem(alleys, alley_text, file = "data/alleys.qsm")
 qsavem(covid, covid_pics, file = "data/covid.qsm")
 qsave(green_space, file = "data/green_space.qs")
 qsave(metro_lines, file = "data/metro_lines.qs")
-qsave(permits, file = "data/permits.qs")
+qsavem(permits_choropleth, permits, file = "data/permits.qsm")
 qsave(stories, file = "data/stories.qs")
 
 

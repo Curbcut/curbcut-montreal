@@ -158,7 +158,7 @@ legend_server <- function(id, var_left, var_right, df,
                    opts_hover_inv(css = "opacity:0.7"),
                    opts_hover(css = "cursor:pointer;"),
                    opts_selection(css = "fill:red;"),
-                   opts_toolbar(position = "topright", saveaspng = FALSE),
+                   opts_toolbar(saveaspng = FALSE, position = "bottomleft"),
                    opts_sizing(rescale = TRUE, width = 1)))
         }
       })

@@ -94,14 +94,15 @@ permits <-
                                str_detect(category2, "Carburant|essence|Pétrolier|Transport|véhicule|Hotel|Véhicule|station-service|Stationnnement|Stationnement|Recherche et développement") ~ "Transport et auxiliaires"))
 
 
-# Clean the text field so it is all lowercase and without accents ---------------------------
+# Clean the text field so it is all lowercase and without accents ---------
+
 
 permits <- 
   permits |> 
   mutate(text = stringi::stri_trans_general(str_to_lower(text), "Latin-ASCII"))
 
 
-# Select only condo conversions ------------------------------------------------------------
+# Select only condo conversions -------------------------------------------
 
 condo_conversions <- 
   permits |> 
@@ -114,7 +115,9 @@ condo_conversions <-
   mutate(issued_date = lubridate::year(issued_date))
 
 
-# Select permits for combining of two units into one ----------------------------------------
+
+# Select permits for combining of two units into one ----------------------
+
 
 combined_dwellings <- 
   permits |> 
@@ -145,7 +148,8 @@ combined_dwellings <-
   mutate(issued_date = lubridate::year(issued_date))
 
 
-# Demolition permits ------------------------------------------------------------
+
+# Demolition permits ------------------------------------------------------
 
 demolitions <- 
   permits |> 
@@ -157,7 +161,8 @@ demolitions <-
   mutate(issued_date = lubridate::year(issued_date))
 
 
-# Renovation permits ------------------------------------------------------------
+
+# Renovation permits ------------------------------------------------------
 
 renovations <- 
   permits |> 
@@ -170,7 +175,7 @@ renovations <-
   filter(!str_detect(text, "pieux") & !str_detect(text, "structure")) |> 
   mutate(issued_date = lubridate::year(issued_date))
 
-# New construction, uef data --------------------------------------------------------
+# New construction, uef data ----------------------------------------------
 
 uef_geom <-
   read_sf("dev/data/uniteevaluationfonciere/uniteevaluationfonciere.shp") |>
@@ -196,35 +201,34 @@ new_construction <-
   left_join(uef, by = c("CIVIQUE_DE", "CIVIQUE_FI", "NOM_RUE", "ANNEE_CONS")) |> 
   st_transform(4326) |> 
   st_set_agr("constant")
-  
 
 
+# Combine five categories into one ----------------------------------------
 
-# Combine five categories into one ----------------------------------------------------
 
 condo_conversions <- 
   condo_conversions |> 
   mutate(type = "conversion") |> 
   select(id, issued_date, nb_dwellings, type) |> 
-  set_names(c("id", "date", "nb_dwellings", "type", "geometry"))
+  set_names(c("id", "year", "nb_dwellings", "type", "geometry"))
 
 renovations <- 
   renovations |> 
   mutate(type = "renovation") |> 
   select(id, issued_date, nb_dwellings, type) |> 
-  set_names(c("id", "date", "nb_dwellings", "type", "geometry"))
+  set_names(c("id", "year", "nb_dwellings", "type", "geometry"))
 
 demolitions <- 
   demolitions |> 
   mutate(type = "demolition") |> 
   select(id, issued_date, nb_dwellings, type) |> 
-  set_names(c("id", "date", "nb_dwellings", "type", "geometry"))
+  set_names(c("id", "year", "nb_dwellings", "type", "geometry"))
 
 combined_dwellings <- 
   combined_dwellings |> 
   mutate(type = "combination") |> 
   select(id, issued_date, nb_dwellings, type) |> 
-  set_names(c("id", "date", "nb_dwellings", "type", "geometry"))
+  set_names(c("id", "year", "nb_dwellings", "type", "geometry"))
 
 new_construction <- 
   new_construction |> 
@@ -232,7 +236,7 @@ new_construction <-
   mutate(id = paste0("uef", id, collapse = "_")) |> 
   mutate(type = "new_construction") |> 
   select(id, ANNEE_CONS, number_dwellings, type) |> 
-  rename(date = ANNEE_CONS,
+  rename(year = ANNEE_CONS,
          nb_dwellings = number_dwellings)
 
 permits <- 
@@ -253,15 +257,18 @@ process_permits <- function(x) {
                      "2466092", "2466097", "2466102", "2466107", "2466112",
                      "2466117", "2466127", "2466142", "2466072", "2466023")
   
-  
-  x |> 
+  y <- 
+    x |> 
     select(ID) |> 
     st_join(permits) |> 
     st_drop_geometry() |> 
-    count(ID, date, type) |> 
-    filter(!is.na(date), !is.na(type)) |> 
+    count(ID, year, type) |> 
+    filter(!is.na(year), !is.na(type)) |> 
+    group_by(ID, year) |> 
+    summarize(type = c(type, "total"), n = c(n, sum(n, na.rm = TRUE)),
+              .groups = "drop") |> 
     tidyr::pivot_wider(id_cols = "ID",
-                       names_from = c("type", "date"), 
+                       names_from = c("type", "year"), 
                        names_prefix = "permits_",
                        names_sep = "_", 
                        values_from = n) |> 
@@ -287,67 +294,52 @@ process_permits <- function(x) {
     rename_with(~paste0(str_remove(., "_\\d{4}"),
                         str_extract(., "_\\d{4}")), starts_with("permits")) |>
     select(-population, -any_of(c("CSDUID"))) |>
-    st_drop_geometry()
+    st_drop_geometry() |> 
+    full_join(select(st_drop_geometry(x), "ID"), by = "ID")
+  
+  # Make sure the order isn't lost, so we can cbind in m_permits.R
+  y[match(x$ID, y$ID),] |> 
+    select(-ID)
 }
 
 
 permits_results <- map(list("borough" = borough, "CT" = CT, "DA" = DA, 
                             "grid" = grid), process_permits)
 
+
 # Add breaks --------------------------------------------------------------
 
 permits_results <- map(permits_results, add_q3)
 permits_q3 <- map(permits_results, get_breaks_q3)
 permits_q5 <- map(permits_results, get_breaks_q5)
-permits_results <- map2(permits_results, permits_q5, ~bind_cols(.x, add_q5(.x, .y)))
+permits_choropleth <- map2(permits_results, permits_q5, ~bind_cols(.x, add_q5(.x, .y)))
+
 
 # Data testing ------------------------------------------------------------
 
 # Doesn't make sense to look at year difference, when numbers might be so low
-# ex. permits_results$borough |> 
+# ex. permits_choropleth$borough |> 
 #     select(contains("permits_conversion_count") & contains(c("1992", "1993"))
 # 1 in 1992, and 3 in 1993.
-data_testing(permits_results, ignore_year_diff = TRUE)
+data_testing(permits_choropleth, ignore_year_diff = TRUE)
 
 
 # Join to geometries ------------------------------------------------------
 
-join_permits <- function(x, join_results) {
-  x |> 
-    left_join(join_results, by = "ID") |> 
-    relocate(starts_with("permits"), .before = geometry) |> 
-    st_set_agr("constant")
-}
-
-borough <- join_permits(borough, permits_results$borough)
-CT <- join_permits(CT, permits_results$CT)
-DA <- join_permits(DA, permits_results$DA)
-grid <- join_permits(grid, permits_results$grid)
-
-building <- 
-  building |> 
-  left_join(select(as_tibble(DA), ID, starts_with("permits_")),
-            by = c("DAUID" = "ID")) |>
-  relocate(geometry, .after = last_col())
-
-street <- 
-  street |> 
-  left_join(select(as_tibble(DA), ID, starts_with("permits_")),
-            by = c("DAUID" = "ID")) |>
-  relocate(geometry, .after = last_col())
+# In this case, we join geometries only once the module is activated.
 
 
 # Add additional fields to permits ------------------------------------------
 
-permits <- 
-  permits |> 
-  arrange(date) |> 
-  mutate(ID = seq_along(date), .before = date) |> 
-  mutate(year = year(date), .after = date) |> 
-  mutate(fill = case_when(type == "ped" ~ "#91BD9AEE",
-                          type == "cyc" ~ "#6C83B5EE",
-                          type == "other" ~ "#F39D60EE",
-                          TRUE ~ "#E8E8E8EE"), .before = geometry)
+permits <-
+  permits |>
+  arrange(year) |>
+  mutate(fill = case_when(type == "combination" ~ "#008533EE",
+                          type == "conversion" ~ "#F59600EE",
+                          type == "demolition" ~ "#7C0082EE",
+                          type == "new_construction" ~ "#992400EE",
+                          type == "renovation" ~ "#0E6399EE")) |> 
+  relocate(geometry, .after = last_col())
 
 
 # Meta testing ------------------------------------------------------------
@@ -358,7 +350,7 @@ meta_testing()
 # Add to variables table --------------------------------------------------
 
 var_list <- 
-  permits_results |> 
+  permits_choropleth |> 
   map(~names(select(.x, -ID, -contains(c("q3", "q5"))))) |> 
   unlist() |> 
   unique()
@@ -368,7 +360,7 @@ var_list_no_dates <- str_remove(var_list, "_\\d{4}$") |> unique()
 # Get breaks_q3
 breaks_q3_active <-
   map2(set_names(var_list), str_extract(var_list, "\\d{4}$"),  function(var_name, year) {
-    map2_dfr(permits_q3, names(permits_results), function(x, scale) {
+    map2_dfr(permits_q3, names(permits_choropleth), function(x, scale) {
       if (nrow(x) > 0) x |> mutate(scale = scale, date = year, rank = 0:3,
                                    .before = everything())}) |> 
       select(scale, date, rank, var = all_of(var_name))})
@@ -384,7 +376,7 @@ breaks_q3_active <-
 # Get breaks_q5
 breaks_q5_active <-
   map2(set_names(var_list), str_extract(var_list, "\\d{4}$"),  function(var_name, year) {
-    map2_dfr(permits_q5, names(permits_results), function(x, scale) {
+    map2_dfr(permits_q5, names(permits_choropleth), function(x, scale) {
       if (nrow(x) > 0) x |> mutate(scale = scale, date = year, rank = 0:5,
                                    .before = everything())}) |> 
       select(scale, date, rank, var = all_of(var_name))})
@@ -400,33 +392,52 @@ breaks_q5_active <-
 
 # Add variable explanations -----------------------------------------------
 
-var_exp <- 
-  var_exp |> 
-  add_row(
-    var_code = "permits_condo_conversions",
-    var_name = "Condominium conversitions",
-    explanation = paste0("the permits emitted to convert ",
-                         "rental units into condominiums")) |> 
-  add_row(
-    var_code = "permits_renovations",
-    var_name = "Renovations",
-    explanation = paste0("the permits emitted for residential ", 
-                         "renovations")) |> 
-  add_row(
-    var_code = "permits_demolitions",
-    var_name = "Demolitions",
-    explanation = paste0("the permits emitted for demolitions ",
-                         "of all types")) |> 
-  add_row(
-    var_code = "permits_combined_dwellings",
-    var_name = "Dwelling combinations",
-    explanation = paste0("the permits emitted to combine multiple ",
-                         "residential units together")) |> 
-  add_row(
-    var_code = "permits_new_construction",
-    var_name = "New construction",
-    explanation = paste0("the residential buildings having been ",
-                         "built in the city (owner and renter)"))
+# construct green space variables table
+permits_table <- 
+  map_dfr(unique(str_remove(var_list, "_\\d{4}$")), ~{
+    type <- case_when(str_detect(.x, "combination") ~ "Dwellings combination permits",
+                      str_detect(.x, "conversion") ~ "Condo conversion permits",
+                      str_detect(.x, "demolition") ~ "Demolition permits",
+                      str_detect(.x, "new_construction") ~ "New construction permits",
+                      str_detect(.x, "renovation") ~ "Renovation permits",
+                      str_detect(.x, "total") ~ "Total permits")
+    
+    group <- 
+      if (str_detect(.x, "sqkm")) {
+        "per sq km"
+      } else if (str_detect(.x, "per1k")) {
+        "per 1,000"
+      } else "count"
+    
+    tibble(
+      var_code = .x,
+      var_title = paste(type, group),
+      var_short = str_remove_all(paste(type, group), "per |count|Dwellings | permits") |> 
+        str_replace("sq km", "sqkm") |> 
+        (\(x) paste0(toupper(substr(x, 1, 1)), substr(x, 2, nchar(x))))(),
+      explanation = paste("the number of", 
+                          str_to_lower(type), "emitted",
+                          str_replace(group, "sq km", "square kilometre") |> 
+                            str_replace("1,000", "1,000 residents") |> 
+                            str_remove("count")),
+      category = NA,
+      private = FALSE,
+      dates = list(as.character(1990:2021)),
+      scales = list(c("borough", "building", "CT", "DA", "grid")),
+      breaks_q3 = list(breaks_q3_active[[.x]]),
+      breaks_q5 = list(breaks_q5_active[[.x]]),
+      source = "VdM")
+    
+  }) |> 
+  mutate(explanation = ifelse(str_detect(explanation, "new construction"), 
+                              str_replace(explanation, "the number of new construction permits emitted",
+                                          "the number of owner and renter residential buildings built"), 
+                              explanation))
+
+# Join green space variable table to variables table
+variables <-
+  variables |>
+  bind_rows(permits_table)
 
 
 # To save output, run dev/build_geometries.R, which calls this script

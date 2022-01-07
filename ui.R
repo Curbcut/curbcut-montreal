@@ -43,8 +43,10 @@ ui <- function(request) {
                tabPanel("Housing system", housing_UI("housing"), 
                         value = "housing"),
                tabPanel("Gentrification", gentrification_UI("gentrification"),
-                        value = "gentrification")),
-
+                        value = "gentrification"),
+               tabPanel("Permits", permits_UI("permits"),
+                        value = "permits")),
+             
              navbarMenu(
                "Policy",
                tabPanel("Montréal climate plans", mcp_UI("mcp"),

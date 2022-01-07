@@ -289,6 +289,10 @@ styler <- '
   height: calc(100vh - 85px);
   overflow-y: auto;
   }
+  
+  .ggiraph-toolbar {
+  display: none;
+  }
 
 
 '

@@ -50,6 +50,8 @@ shinyServer(function(input, output, session) {
       housing_server("housing")
     } else if (active_tab == "mcp") {
       mcp_server("mcp")
+    } else if (active_tab == "permits") {
+      permits_server("permits")
     } else if (active_tab == "stories") {
       stories_server("stories")
     } else if (active_tab == "about") {
