@@ -145,7 +145,7 @@ process_crash <- function(x) {
                      "2466092", "2466097", "2466102", "2466107", "2466112",
                      "2466117", "2466127", "2466142", "2466072", "2466023")
   
-    crash |> 
+  crash |> 
     st_transform(32618) |> 
     st_join(st_transform(x, 32618)) |> 
     st_drop_geometry() |> 
@@ -158,8 +158,13 @@ process_crash <- function(x) {
                 names_prefix = "crash_",
                 names_sep = "_",
                 values_from = n) |> 
-    select(-contains("NA")) |> 
+    # select(-contains("NA")) |> 
     full_join(select(x, any_of(c("ID", "CSDUID")), population), by = "ID") |> 
+    # Make sure that a missing geometry shows up as 0. Missing means no crash.
+    filter(!is.na(ID)) %>%
+    {if (nrow(.) == nrow(borough))
+      filter(., ID %in% island_csduid)
+      else filter(., CSDUID %in% island_csduid)} |>
     arrange(ID) |> 
     st_as_sf() |> 
     rename_with(~paste0(., "_count"), starts_with("crash")) |> 
@@ -170,11 +175,6 @@ process_crash <- function(x) {
                     per1k = ~{1000 * .x / population}),
                   .names = "{str_remove(.col, '_count')}_{.fn}"), 
            .before = geometry) |> 
-    # Make sure that a missing geometry shows up as 0. Missing means no crash.
-    filter(!is.na(ID)) %>%
-    {if (nrow(.) == nrow(borough))
-      filter(., ID %in% island_csduid)
-      else filter(., CSDUID %in% island_csduid)} |>
     mutate(across(starts_with("crash"), ~replace(., is.na(.), 0))) |>
     mutate(across(starts_with("crash"), ~replace(., is.infinite(.), 0))) |>
     rename_with(~paste0(str_remove(., "_\\d{4}"),
@@ -183,8 +183,8 @@ process_crash <- function(x) {
     st_drop_geometry()
 }
 
-crash_results <- map(list("borough" = borough, 
-                          "CT" = CT, "DA" = DA, "grid" = grid), process_crash)
+crash_results <- map(list("borough" = borough, "CT" = CT, "DA" = DA, 
+                          "grid" = grid), process_crash)
 
 # Add breaks --------------------------------------------------------------
 

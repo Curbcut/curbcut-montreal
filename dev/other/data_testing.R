@@ -2,7 +2,7 @@
 #' @data is a named list of all the dataframes to evaluate. They must be the df
 #' version prior to the joining by IDs to the usual scales.
 
-data_testing <- function(data) {
+data_testing <- function(data, ignore_year_diff = FALSE) {
   
   # List to store all the possible warnings
   warn_vec <- c()
@@ -60,7 +60,7 @@ data_testing <- function(data) {
   }
   
   # Are the mean for each variable, between years, similar?
-  
+  if (ignore_year_diff == FALSE) {
   if (all(!is.na(dates))) {
     warn_vec <- 
       c(warn_vec, 
@@ -89,6 +89,7 @@ data_testing <- function(data) {
             })
           }
         }) |> unlist() |> unname())
+  }
   }
   
   if (length(warn_vec) > 0 ) {
