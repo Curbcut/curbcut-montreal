@@ -42,17 +42,18 @@ render_plot_fun <- function(var_left, var_right, df, data_type) {
     # Draw legend
     legend_left_5 |> 
       ggplot(aes(xmin = x - 1, xmax = x, ymin = y - 1, ymax = y, 
-                 fill = fill, data_id = fill)) +
-      geom_rect_interactive() + 
+                 fill = fill)) +
+      geom_rect() + 
       scale_x_continuous(name = axis_title, breaks = 0:5,
                          labels = as.character(break_labels)) +
       scale_y_continuous(name = NULL, labels = NULL) +
-      scale_fill_manual_interactive(values = set_names(legend_left_5$fill)) +
+      scale_fill_manual(values = set_names(legend_left_5$fill)) +
       theme_minimal() +
       theme(legend.position = "none",
             panel.grid = element_blank(),
-            axis.text = element_text(size = 15),
-            axis.title = element_text(size = 15))
+            # axis.text = element_text(size = 15),
+            # axis.title = element_text(size = 15)
+            )
   
     
   # Bivariate, one date, q3 ----------------------------------------------------
@@ -130,33 +131,35 @@ render_plot_fun <- function(var_left, var_right, df, data_type) {
         label == "Both high", "white", "black")) |> 
       mutate(x = as.numeric(x) - 0.5,
              y = as.numeric(y) - 0.5) |> 
-      ggplot(aes(y, x, fill = fill, data_id = fill)) +
-      geom_raster_interactive() +
-      geom_text_interactive(aes(y, x, label = label, colour = label_colour), 
-                inherit.aes = FALSE, size = 15*0.36) +
+      ggplot(aes(y, x, fill = fill)) +
+      geom_raster() +
+      geom_text(aes(y, x, label = label, colour = label_colour), 
+                inherit.aes = FALSE, size = 3#15*0.36
+                ) +
       scale_x_continuous(name = axis_title_x, breaks = 0:3, 
                          labels = break_labels_x) +
       scale_y_continuous(name = axis_title_y, breaks = 0:3, 
                          labels = break_labels_y) +
-      scale_fill_manual_interactive(values = set_names(legend_bivar$fill)) +
-      scale_colour_manual_interactive(values = c(
+      scale_fill_manual(values = set_names(legend_bivar$fill)) +
+      scale_colour_manual(values = c(
         "black" = "black", "white" = "white")) +
       theme_minimal() +
       theme(legend.position = "none",
             panel.grid = element_blank(),
-            axis.text = element_text(size = 15),
-            axis.title = element_text(size = 15))
+            # axis.text = element_text(size = 15),
+            # axis.title = element_text(size = 15)
+            )
     
   } else if (length(var_left()) == 2 && var_right()[1] == " ") {
     
     legend_delta_5 |> 
-      ggplot(aes(x, y, fill = fill, data_id = fill)) +
-      geom_tile_interactive() +
+      ggplot(aes(x, y, fill = fill)) +
+      geom_tile() +
       scale_x_continuous(name = "var_name (change DATE_1 - DATE_2)",
                          breaks = c(1.5, 2.5, 3.5, 4.5),
                          labels = c("-10%", "-2%", "+2%", "+10%")) +
       scale_y_continuous(name = NULL) +
-      scale_fill_manual_interactive(values = setNames(
+      scale_fill_manual(values = setNames(
         paste0(legend_delta_5$fill, 
                filter(colour_alpha, zoom == "borough")$alpha),
         legend_delta_5$fill)) +
@@ -165,8 +168,9 @@ render_plot_fun <- function(var_left, var_right, df, data_type) {
             axis.ticks = element_blank(),
             axis.text.y = element_blank(),
             panel.grid = element_blank(),
-            axis.text = element_text(size = 15),
-            axis.title = element_text(size = 15))
+            # axis.text = element_text(size = 15),
+            # axis.title = element_text(size = 15)
+            )
     
   } else {
     
@@ -192,22 +196,24 @@ render_plot_fun <- function(var_left, var_right, df, data_type) {
         TRUE ~ NA_character_)) |> 
       mutate(label_colour = if_else(
         label == "Both high", "white", "black")) |> 
-      ggplot(aes(y, x, fill = fill, data_id = fill)) +
-      geom_tile_interactive() +
-      geom_text_interactive(aes(y, x, label = label, colour = label_colour), 
-                inherit.aes = FALSE, size = 15*0.36) +
-      scale_fill_manual_interactive(values = setNames(
+      ggplot(aes(y, x, fill = fill)) +
+      geom_tile() +
+      geom_text(aes(y, x, label = label, colour = label_colour), 
+                inherit.aes = FALSE, size = 3#15*0.36
+                ) +
+      scale_fill_manual(values = setNames(
         paste0(legend_bivar$fill, 
                filter(colour_alpha, zoom == df())$alpha),
         legend_bivar$fill)) +
-      scale_colour_manual_interactive(values = c(
+      scale_colour_manual(values = c(
         "black" = "black", "white" = "white")) +
       labs(x = paste0(var_right_title, " (low to high)"), 
            y = paste0(var_left_title, "Housing (low to high)")) +
       theme_void() +
       theme(legend.position = "none",
-            axis.text = element_text(size = 15),
-            axis.title = element_text(size = 15))
+            # axis.text = element_text(size = 15),
+            # axis.title = element_text(size = 15)
+            )
     
   }
 }

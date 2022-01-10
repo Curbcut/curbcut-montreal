@@ -109,8 +109,9 @@ canale_server <- function(id) {
     map_change(NS(id, "map"), 
                x = data, 
                df = df, 
-               selection = selection,
-               legend_selection = reactive(legend()$legend_selection))
+               selection = selection#,
+               #legend_selection = reactive(legend()$legend_selection)
+               )
 
     # Update poly on click
     observeEvent(input$map_polygon_click, {

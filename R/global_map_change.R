@@ -41,7 +41,7 @@ map_change <- function(id_map, x, df, selection = reactive(NULL),
     }) |> unique()
   })
   
-  observeEvent({legend_selection()
+  observeEvent({#legend_selection()
     x()
     standard_width()
     df()
