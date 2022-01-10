@@ -83,7 +83,7 @@ housing_server <- function(id) {
       zoom = zoom, 
       zoom_levels = map_zoom_levels)
     
-    # Enable or disable first and second slider.
+    # Enable or disable first and second slider
     observeEvent(input$slider_switch, {
       if (!input$slider_switch) {
         shinyjs::hide("slider_bi") 
@@ -96,8 +96,7 @@ housing_server <- function(id) {
     
     # Time variable depending on which slider is active
     time <- reactive({
-      if (!input$slider_switch) input$slider_uni else input$slider_bi
-    })
+      if (!input$slider_switch) input$slider_uni else input$slider_bi})
     
     # Greyed out left list options, depending on the year(s) chosen
     var_list_housing_left_disabled <- reactive({
@@ -147,8 +146,7 @@ housing_server <- function(id) {
       id = "housing",
       var_left = var_left,
       var_right = var_right,
-      df = df,
-      zoom = zoom)
+      df = df)
 
     # Explore panel
     explore_content <- explore_server(
