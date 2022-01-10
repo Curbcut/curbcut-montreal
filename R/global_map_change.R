@@ -1,6 +1,6 @@
 #### MAP CHANGE FUNCTION #######################################################
 
-#' @param id_map Namespace id of the map to redraw, likely to be `NS(id, "map")`
+#' @param id Namespace id of the map to redraw, likely to be `NS(id, "map")`
 #' @param x A reactive sf expression containing a data frame, with the 
 #' geometries to draw on the map. 
 #' @param df A reactive which resolves to a character string representing the
@@ -18,8 +18,8 @@
 #' 0 instead?
 #' @return An update version of the mapdeck map.
 
-map_change <- function(id_map, x, df, selection = reactive(NULL), 
-                       legend = NULL,  polygons_to_clear = NULL, 
+map_change <- function(id, x, df, selection = reactive(NULL), 
+                       legend = NULL, polygons_to_clear = NULL, 
                        standard_width = reactive(TRUE)) {
   stopifnot(is.reactive(x))
   stopifnot(is.reactive(df))
@@ -46,7 +46,7 @@ map_change <- function(id_map, x, df, selection = reactive(NULL),
       
       # Used at all geometries:
       update_and_clean <- function() {
-        mapdeck_update(map_id = id_map)  %>%
+        mapdeck_update(map_id = id)  %>%
           clear_polygon() %>%
           clear_scatterplot() %>% 
           clear_heatmap() %>% 
@@ -55,15 +55,15 @@ map_change <- function(id_map, x, df, selection = reactive(NULL),
       
       # Clear layer_ids fed with polygons_to_clear
       purrr::walk(polygons_to_clear, ~{
-        mapdeck_update(map_id = id_map) |> clear_polygon(.x)
+        mapdeck_update(map_id = id) |> clear_polygon(.x)
       })
       
       # Error handling
-      if (geom_type() == "error") stop("`geom_type` is invalid in `map_change`.")
+      if (geom_type() == "error") stop("`geom_type` invalid in `map_change`.")
       
       # Buildings should be extruded
       if (df() == "building") {
-        update_and_clean() %>% 
+        update_and_clean() |>
           add_polygon(data = x(),
                       update_view = FALSE, id = "ID", elevation = 5, 
                       fill_colour = "fill", auto_highlight = TRUE, 
@@ -71,10 +71,7 @@ map_change <- function(id_map, x, df, selection = reactive(NULL),
         
       } else if (geom_type() == "polygon") {
         
-        width <- switch(df(), "borough" = 100, 
-                        "CT" = 10, 
-                        "DA" = 2, 
-                        "grid" = 0, 2)
+        width <- switch(df(), "borough" = 10, "CT" = 5, "grid" = 0, 2)
         if (!standard_width()) width <- 0
         
         update_and_clean() %>% 
@@ -83,7 +80,6 @@ map_change <- function(id_map, x, df, selection = reactive(NULL),
             stroke_colour = "#FFFFFF", fill_colour = "fill",
             update_view = FALSE, id = "ID", auto_highlight = TRUE,
             highlight_colour = "#FFFFFF90")
-        
         
       } else if (geom_type() == "line") {
         
@@ -129,13 +125,13 @@ map_change <- function(id_map, x, df, selection = reactive(NULL),
                 filter(ID == selection()) |>
                 mutate(fill = substr(fill, 1, 7))
               
-              mapdeck_update(map_id = id_map) |>
+              mapdeck_update(map_id = id) |>
                 add_polygon(
                   data = data_to_add, elevation = 5, fill_colour = "fill",
                   update_view = FALSE, layer_id = "poly_highlight",
                   auto_highlight = TRUE, highlight_colour = "#FFFFFF90")
             } else {
-              mapdeck_update(map_id = id_map) |>
+              mapdeck_update(map_id = id) |>
                 clear_polygon(layer_id = "poly_highlight")
             }
           }

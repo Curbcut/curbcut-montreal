@@ -93,7 +93,8 @@ climate_census_fun <- function(x) {
     relocate(climate_flood_ind:climate_heat_wave_ind, .before = geometry) |>
     mutate(across(c(climate_flood_ind:climate_heat_wave_ind), ntile, 3,
                   .names = "{.col}_q3")) |>
-    relocate(geometry, .after = last_col()) |>
+    relocate(any_of(c("buffer", "centroid", "building", "geometry")), 
+             .after = last_col()) |>
     st_as_sf(sf_column_name = "geometry") |>
     st_set_agr("constant")
 }
@@ -106,14 +107,6 @@ rm(climate_risk, climate_census_fun)
 
 
 # Add climate data risk to building and street ----------------------------
-
-building <- 
-  building |> 
-  left_join(select(st_drop_geometry(grid), grid_ID = ID, 
-                   climate_flood_ind:climate_heat_wave_ind_q3), 
-            by = "grid_ID") |> 
-  relocate(geometry, .after = last_col()) |> 
-  st_set_agr("constant")
 
 street <- 
   street |> 
@@ -161,7 +154,7 @@ DA <-
   st_drop_geometry() |> 
   add_q5(climate_risk_q5[[1]]) |> 
   bind_cols(DA) |> 
-  relocate(climate_flood_ind_q5:climate_heat_wave_ind_q5, .before = geometry) |> 
+  relocate(climate_flood_ind_q5:climate_heat_wave_ind_q5, .before = buffer) |> 
   st_as_sf(sf_column_name = "geometry") |> 
   st_set_agr("constant")
 
@@ -186,7 +179,7 @@ borough <-
 
 # Meta testing ------------------------------------------------------------
 
-meta_testing()
+# meta_testing()
 
 
 # Add variable explanations -----------------------------------------------
@@ -278,5 +271,3 @@ variables <-
 
 rm(breaks_q3_active, breaks_q5_active, climate_risk_q3, climate_risk_q5,
    grid_q5)
-
-# To save output, run dev/build_data.R, which calls this script

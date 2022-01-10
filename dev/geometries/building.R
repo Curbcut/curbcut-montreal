@@ -104,7 +104,7 @@
 # building_DA <-
 #   building_centroid |>
 #   filter(ID %in% building_cma_id) |>
-#   st_join(DA |> select(DAUID = ID, name_2:households) |> st_transform(32618)) |>
+#   st_join(DA |> select(DAUID = ID, name_2:CSDUID) |> st_transform(32618)) |>
 #   st_drop_geometry()
 # 
 # # Filter building to only ones whose centroids intersect a DA
@@ -117,8 +117,7 @@
 # # Consolidate and clean up output
 # building <-
 #   building |>
-#   select(ID, name_2, DAUID, CTUID, CSDUID, osm_ID, population, households,
-#          geometry) |>
+#   select(ID, name_2, DAUID, CTUID, CSDUID, osm_ID, geometry) |>
 #   st_make_valid() |>
 #   filter(!st_is_empty(geometry)) |> 
 #   st_set_agr("constant")
@@ -177,7 +176,7 @@
 # # Finish ms_building
 # ms_building <-
 #   ms_building |>
-#   select(ID, name_2, DAUID, CTUID, CSDUID, population, households, geometry) |>
+#   select(ID, name_2, DAUID, CTUID, CSDUID, geometry) |>
 #   st_make_valid() |>
 #   filter(!st_is_empty(geometry))
 # 
@@ -221,4 +220,3 @@
 # rm(building_grid, ms_building)
 
 building <- qread("dev/data/building.qs", nthreads = future::availableCores())
-

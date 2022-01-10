@@ -52,7 +52,7 @@ green_space <-
 linked_borough <- 
   green_space |> 
   st_transform(32618) |> 
-  st_intersection(st_transform(transmute(borough, CSDUID = ID) |> 
+  st_intersection(st_transform(select(borough, CSDUID) |> 
                                  st_set_agr("constant"), 32618)) |> 
   mutate(area_after = st_area(geometry)) |> 
   st_drop_geometry() |> 
@@ -134,14 +134,8 @@ data_testing(gs_results)
 
 walk(names(gs_results), ~{
   assign(.x, left_join(get(.x), gs_results[[.x]], by = "ID") |> 
-           relocate(geometry, .after = last_col()), 
-         envir = globalenv())})
-
-building <- 
-  building |> 
-  left_join(gs_results$DA, by = c("DAUID" = "ID")) |> 
-  relocate(geometry, .after = last_col()) |> 
-  st_set_agr("constant")
+           relocate(any_of(c("buffer", "centroid", "building", "geometry")), 
+                    .after = last_col()), envir = globalenv())})
 
 street <- 
   street |> 
@@ -152,7 +146,7 @@ street <-
 
 # Check meta data ---------------------------------------------------------
 
-meta_testing()
+# meta_testing()
 
 
 # Add to variables table --------------------------------------------------
@@ -179,7 +173,7 @@ breaks_q5_active <-
                                    .before = everything())}) |> 
       select(scale, date, rank, var = all_of(.x))})
 
-# construct green space variables table
+# Construct green space variables table
 green_space_table <- 
   map_dfr(var_list, ~{
     type <- case_when(str_detect(.x, "borough_park") ~ "Borough park",

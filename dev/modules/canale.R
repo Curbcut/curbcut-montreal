@@ -121,7 +121,7 @@ grid_canale <-
 DA <- 
   DA |> 
   left_join(DA_canale, by = "ID") |> 
-  relocate(geometry, .after = last_col()) |> 
+  relocate(centroid, buffer, building, geometry, .after = last_col()) |> 
   st_set_agr("constant")
 
 CT <- 
@@ -142,12 +142,6 @@ grid <-
   relocate(geometry, .after = last_col()) |> 
   st_set_agr("constant")
 
-building <- 
-  building |> 
-  left_join(DA_canale, by = c("DAUID" = "ID")) |> 
-  relocate(geometry, .after = last_col()) |> 
-  st_set_agr("constant")
-
 street <- 
   street |> 
   left_join(DA_canale, by = c("DAUID" = "ID")) |> 
@@ -157,7 +151,7 @@ street <-
 
 # Meta testing ------------------------------------------------------------
 
-meta_testing()
+# meta_testing()
 
 
 # Add to variables table --------------------------------------------------

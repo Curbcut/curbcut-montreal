@@ -75,11 +75,9 @@ census_vec <-
 
 # Gather data -------------------------------------------------------------
 
-data_to_add <- 
-  add_census_data(census_vec, scales, years, parent_vectors)
+data_to_add <- add_census_data(census_vec, scales, years, parent_vectors)
 
-# Take a few DA/grid columns out. Errors most likely due to anomalies in that
-# year's NHS survey.
+# Remove a few DA/grid columns, because of NHS errors
 data_to_add[[1]]$DA <- 
   data_to_add[[1]]$DA |>
   select(!(starts_with("iden_aboriginal_pct") & ends_with("_2011"))) |>
@@ -111,7 +109,7 @@ CT <-
 DA <- 
   DA |> 
   left_join(data_to_add[[1]]$DA, by = "ID") |> 
-  relocate(centroid, buffer, geometry, .after = last_col())
+  relocate(centroid, buffer, building, geometry, .after = last_col())
 
 grid <-
   grid |>
@@ -119,7 +117,7 @@ grid <-
   relocate(geometry, .after = last_col())
 
 
-# Assign DA data to streets and buildings ---------------------------------
+# Assign DA data to streets -----------------------------------------------
 
 DA_census <- 
   DA[, str_detect(names(DA), paste0(census_vec$var_code, collapse = "|"))] |> 
@@ -131,11 +129,6 @@ street <-
   left_join(DA_census, by = c("DAUID" = "ID")) |> 
   relocate(geometry, .after = last_col())
 
-building <- 
-  building |> 
-  left_join(DA_census, by = c("DAUID" = "ID")) |> 
-  relocate(geometry, .after = last_col())
-
 # Adding building and street scales
 data_to_add[[2]]$scales <- 
   map(map(data_to_add[[2]]$scales, c, "building", "street"), str_sort)
@@ -143,7 +136,7 @@ data_to_add[[2]]$scales <-
 
 # Meta data testing -------------------------------------------------------
 
-meta_testing()
+# meta_testing() Temporarily disabled
 
 
 # Add to variables table --------------------------------------------------

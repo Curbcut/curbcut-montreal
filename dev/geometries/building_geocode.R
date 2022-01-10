@@ -4,9 +4,6 @@
 # This script makes thousands of expensive calls to Google's geocoding API, so
 # the geocoding portion should only be run a single time!
 
-library(qs)
-
-
 # Geocode with frequent saves ---------------------------------------------
 
 # library(ggmap)
@@ -47,8 +44,7 @@ address <- qread("dev/data/building_geocode.qs",
 names <-
   address |> 
   mutate(name = str_remove(name, ", QC.*$")) |>
-  mutate(name = if_else(str_detect(name, ", .*,"),
-                        str_remove(name, "^[^,]*, "),
+  mutate(name = if_else(str_detect(name, ", .*,"), str_remove(name, "^[^,]*, "),
                         name)) |> 
   pull(name)
 
@@ -57,24 +53,52 @@ names <-
 
 building <- 
   building |> 
-  mutate(name = names, .after = ID)
+  mutate(name = names, .after = ID) |> 
+  st_set_agr("constant")
 
 rm(address, names)
 
 
-# Temporarily trim to just central city -----------------------------------
+# Temporarily trim to just island -----------------------------------------
 
-downtown <- 
-  borough |> 
-  slice(c(33, 37, 45, 46, 47, 52))
+island_CSDUID <- 
+  c("2466007", "2466023_1",  "2466023_10", "2466023_11", "2466023_12", 
+    "2466023_13", "2466023_14", "2466023_15", "2466023_16", "2466023_17", 
+    "2466023_18", "2466023_19", "2466023_2", "2466023_3", "2466023_4", 
+    "2466023_5",  "2466023_6", "2466023_7", "2466023_8", "2466023_9",
+    "2466032", "2466047", "2466058", "2466062", "2466087", "2466092", 
+    "2466097", "2466102", "2466107", "2466112", "2466117", "2466127", 
+    "2466142", "2466072", "2466023")
 
 building <- 
   building |> 
+  filter(CSDUID %in% island_CSDUID)
+
+rm(island_CSDUID)
+
+
+# Create DA geometries and join to DA -------------------------------------
+
+# Union by DA
+building_DA <- 
+  building |> 
   st_transform(32618) |> 
-  st_filter(st_transform(downtown, 32618)) |> 
-  st_transform(4326) |> 
+  group_by(DAUID) |> 
+  summarize() |> 
+  st_transform(4326)
+
+DA <- 
+  building_DA |> 
+  as_tibble() |> 
+  rename(ID = DAUID, building = geometry) |> 
+  right_join(DA, by = "ID") |> 
+  mutate(building = st_sfc(map2(building, geometry, ~{
+    if (st_is_empty(.x)) .y else .x
+  }))) |> 
+  st_as_sf(crs = 4326) |> 
+  relocate(building, .before = geometry) |> 
+  st_set_geometry("geometry") |> 
+  arrange(ID) |> 
   st_set_agr("constant")
 
-rm(downtown)
-
-# To save output, run dev/build_data.R, which calls this script
+rm(building_DA)

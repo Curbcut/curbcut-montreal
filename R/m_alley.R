@@ -94,7 +94,7 @@ alley_server <- function(id) {
       var_right = var_right, 
       df = df,
       zoom = zoom,
-      island_only = TRUE)
+      island = TRUE)
     
     data <- reactive({
       if (choropleth()) {

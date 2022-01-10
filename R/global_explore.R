@@ -25,10 +25,10 @@ explore_var_type <- function(id, x, var_left, var_right, select,
     ## Selections --------------------------------------------------------------
     
     selection <- x() %>% filter(ID == select())
-    active_left <- nrow(filter(selection, !is.na(left_var)))
+    active_left <- nrow(filter(selection, !is.na(var_left)))
     active_right <- active_left
     if (length(var_right()) != 1 || var_right() != " ") active_right <- 
-      nrow(filter(selection, !is.na(left_var), !is.na(right_var)))
+      nrow(filter(selection, !is.na(var_left), !is.na(var_right)))
     
     
     ## Decide on table type ----------------------------------------------------

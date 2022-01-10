@@ -136,7 +136,7 @@ crash <-
 
 process_crash <- function(x) {
   
-  island_csduid <- c("2466007", "2466023_1",  "2466023_10", "2466023_11",
+  island_CSDUID <- c("2466007", "2466023_1",  "2466023_10", "2466023_11",
                      "2466023_12", "2466023_13", "2466023_14", "2466023_15", 
                      "2466023_16", "2466023_17", "2466023_18", "2466023_19",
                      "2466023_2", "2466023_3", "2466023_4", "2466023_5",  
@@ -173,8 +173,8 @@ process_crash <- function(x) {
     # Make sure that a missing geometry shows up as 0. Missing means no crash.
     filter(!is.na(ID)) %>%
     {if (nrow(.) == nrow(borough))
-      filter(., ID %in% island_csduid)
-      else filter(., CSDUID %in% island_csduid)} |>
+      filter(., ID %in% island_CSDUID)
+      else filter(., CSDUID %in% island_CSDUID)} |>
     mutate(across(starts_with("crash"), ~replace(., is.na(.), 0))) |>
     mutate(across(starts_with("crash"), ~replace(., is.infinite(.), 0))) |>
     rename_with(~paste0(str_remove(., "_\\d{4}"),
@@ -183,8 +183,9 @@ process_crash <- function(x) {
     st_drop_geometry()
 }
 
-crash_results <- map(list("borough" = borough, 
-                          "CT" = CT, "DA" = DA, "grid" = grid), process_crash)
+crash_results <- map(list("borough" = borough, "CT" = CT, "DA" = DA, 
+                          "grid" = grid), process_crash)
+
 
 # Add breaks --------------------------------------------------------------
 
@@ -192,6 +193,7 @@ crash_results <- map(crash_results, add_q3)
 crash_q3 <- map(crash_results, get_breaks_q3)
 crash_q5 <- map(crash_results, get_breaks_q5)
 crash_results <- map2(crash_results, crash_q5, ~bind_cols(.x, add_q5(.x, .y)))
+
 
 # Data testing ------------------------------------------------------------
 
@@ -204,6 +206,8 @@ join_crash <- function(x, join_results) {
   x |> 
     left_join(join_results, by = "ID") |> 
     relocate(starts_with("crash"), .before = geometry) |> 
+    relocate(any_of(c("buffer", "centroid", "building", "geometry")),
+             .after = last_col()) |> 
     st_set_agr("constant")
 }
 
@@ -211,12 +215,6 @@ borough <- join_crash(borough, crash_results$borough)
 CT <- join_crash(CT, crash_results$CT)
 DA <- join_crash(DA, crash_results$DA)
 grid <- join_crash(grid, crash_results$grid)
-
-building <- 
-  building |> 
-  left_join(select(as_tibble(DA), ID, starts_with("crash_")),
-            by = c("DAUID" = "ID")) |>
-  relocate(geometry, .after = last_col())
 
 street <- 
   street |> 
@@ -240,7 +238,7 @@ crash <-
 
 # Meta testing ------------------------------------------------------------
 
-meta_testing()
+# meta_testing()
 
 
 # Add to variables table --------------------------------------------------
@@ -255,7 +253,7 @@ var_list_no_dates <- str_remove(var_list, "_\\d{4}$") |> unique()
 
 # Get breaks_q3
 breaks_q3_active <-
-  map2(set_names(var_list), str_extract(var_list, "\\d{4}$"),  function(var_name, year) {
+  map2(set_names(var_list), str_extract(var_list, "\\d{4}$"), \(var_name, year) {
     map2_dfr(crash_q3, names(crash_results), function(x, scale) {
       if (nrow(x) > 0) x |> mutate(scale = scale, date = year, rank = 0:3,
                                    .before = everything())}) |> 
@@ -266,12 +264,12 @@ names(breaks_q3_active) <- str_remove(names(breaks_q3_active), "_\\d{4}$")
 breaks_q3_active <-
   map(set_names(var_list_no_dates), ~{
     breaks_q3_active[names(breaks_q3_active) == .x] |> 
-      reduce(rbind)
+      reduce(bind_rows)
   })
 
 # Get breaks_q5
 breaks_q5_active <-
-  map2(set_names(var_list), str_extract(var_list, "\\d{4}$"),  function(var_name, year) {
+  map2(set_names(var_list), str_extract(var_list, "\\d{4}$"), \(var_name, year) {
     map2_dfr(crash_q5, names(crash_results), function(x, scale) {
       if (nrow(x) > 0) x |> mutate(scale = scale, date = year, rank = 0:5,
                                    .before = everything())}) |> 
@@ -282,7 +280,7 @@ names(breaks_q5_active) <- str_remove(names(breaks_q5_active), "_\\d{4}$")
 breaks_q5_active <- 
   map(set_names(var_list_no_dates), ~{
     breaks_q5_active[names(breaks_q5_active) == .x] |> 
-      reduce(rbind)
+      reduce(bind_rows)
   })
 
 variables <- 

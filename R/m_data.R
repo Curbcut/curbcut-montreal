@@ -8,140 +8,172 @@
 #' @param df A reactive which resolves to a character string representing the
 #' underlying data set to be loaded. Currently available options are 
 #' `c("borough", "building", "CT", "DA", "grid", "street")`.
-#' @param zoom A reactive which resolves to a character string representing the
-#' amount of transparency to be applied to the fill aesthetic in maps made from
-#' the data. Currently available options are 
-#' `c("borough", "building", "CT", "DA", "street")` and by default this argument 
-#' takes its value from the `df` parameter.
 #' @return A reactive expression containing a data frame with the following
 #' fields (If the `var_right` input is " ", the right_var_full and right_var 
 #' fields will be omitted.):
 #' - ID, name, name_2, population: The unmodified variables of the same names
 #' from the input data frame.
-#' - left_var_full, left_var: The unmodified and quantile versions, 
+#' - var_left, var_left_q3, var_left_q5: The unmodified and quantile versions, 
 #' respectively, of the variable whose name was given in `var_left`.
-#' - right_var_full, right_var: The unmodified and quantile versions, 
+#' - var_right, var_right_q3, var_right_q5: The unmodified and quantile versions, 
 #' respectively, of the variable whose name was given in `var_right`.
 #' - geometry: The unmodified geometry variable from the input data frame.
 #' - group: A character field of form "X - Y", where X and Y are the quantile
-#' values from left_var and right_var respectively.
+#' values from var_left and var_right respectively.
 #' - fill: A character vector of hex colour values to be passed to mapdeck for
 #' colouring choropleths drawn from the data frame.
 
-data_server <- function(id, var_left, var_right, df, zoom = df, 
-                        island_only = FALSE) {
+data_server <- function(id, var_left, var_right, df, island = FALSE) {
   stopifnot(is.reactive(var_left))
   stopifnot(is.reactive(var_right))
   stopifnot(is.reactive(df))
-  stopifnot(is.reactive(zoom))
-  
+
   moduleServer(id, function(input, output, session) {
     reactive({
       
-      # Get borough/CT/DA/grid/etc
-      data <- get(df())
-      
-      # Filter in only the island
-      if (island_only) {
-        data <- data %>%
-          {if (nrow(.) == nrow(borough))
-            filter(., ID %in% island_csduid)
-            else filter(., CSDUID %in% island_csduid)}
-      }
+      # Setup ------------------------------------------------------------------
       
       # Get data type
-      data_type <- get_data_type(data, var_left, var_right)
+      data_type <- get_data_type(df, var_left, var_right)
       
-      var_left <- unique(var_left())
-      var_right <- unique(var_right())
-
-      # Are var_left & var_right in df?
-      map(c(var_left, var_right), ~{
-        if (!.x %in% names(data) && .x != " ") {
-          warning(paste0(.x, " is not in the provided dataframe `", df(), "`."))
-        }
-      })
+      # Simplify variables
+      var_left <- var_left()
+      var_right <- var_right()
       
       # Are var_left and var_right the same column?
-      if (unique(var_left == var_right)) {
+      if (all(var_left == var_right)) {
         stop("`var_left` and `var_right` are the same.")
       }
       
-      # Get time format
-      time_format_var_left <- if (str_detect(var_left[1], "_\\d{4}$")) {
-        # Yearly data
-        "_\\d{4}$"
-        # Will have to find a fix to allow for NO DATE (Or the last statement is
-        # an open else for the yearly version, fixing the issue of no date)
-      } else "_\\d{4}$"
-      
-      time_format_var_right <- if (str_detect(var_right[1], "_\\d{4}$")) {
-        # Yearly data
-        "_\\d{4}$"
-        # Will have to find a fix to allow for NO DATE (Or the last statement is
-        # an open else for the yearly version, fixing the issue of no date)
-      } else "_\\d{4}$"
-      
-      # Set colour transparency
-      colour <- 
-        if (length(var_left) == 2 && var_right[1] == " ") {
-          get(paste0("colour_delta_", zoom()))
-        } else if (length(var_left) == 1 && var_right[1] == " "
-                   && df() %in% c("borough", "CT", "DA", "grid")) {
-          get(paste0("colour_left_3_", zoom()))
-        } else if (length(var_left) == 1 && var_right[1] == " "
-                   && df() %in% c("building", "street")) {
-          get("colour_left_3_DA")
-        } else get(paste0("colour_bivar_", zoom()))
+      # Get time format; TKTK does this need to be more complex?
+      time_format <- "_\\d{4}$"
       
       # Facilitate code legibility by pre-creating q3/q5 column names
-      name_left_q3_col <- 
-        paste0(str_remove(all_of(var_left), time_format_var_left), "_q3", 
-               na.omit(str_extract(var_left, time_format_var_left)))
-      name_right_q3_col <- 
-        paste0(str_remove(var_right, time_format_var_right), "_q3", 
-               na.omit(str_extract(var_right, time_format_var_right)))
-      name_left_q5_col <- 
-        paste0(str_remove(all_of(var_left), time_format_var_left), "_q5", 
-               na.omit(str_extract(var_left, time_format_var_left)))
-      name_right_q5_col <- 
-        paste0(str_remove(var_right, time_format_var_right), "_q5", 
-               na.omit(str_extract(var_right, time_format_var_right)))
+      left_q3 <- paste0(str_remove(all_of(var_left), time_format), "_q3", 
+                        na.omit(str_extract(var_left, time_format)))
+      right_q3 <- paste0(str_remove(all_of(var_right), time_format), "_q3", 
+                         na.omit(str_extract(var_right, time_format)))
+      left_q5 <- paste0(str_remove(all_of(var_left), time_format), "_q5", 
+                        na.omit(str_extract(var_left, time_format)))
+      right_q5 <- paste0(str_remove(all_of(var_right), time_format), "_q5", 
+                         na.omit(str_extract(var_right, time_format)))
       
+      
+      # Simple univariate ------------------------------------------------------
+     
+      if (data_type == "q5") {
+        
+        data <- 
+          df() |> 
+          get() |> 
+          select(ID, name, name_2, any_of(c("DAUID", "CTUID", "CSDUID")), 
+                 population, var_left = all_of(var_left), 
+                 var_left_q3 = all_of(left_q3),
+                 var_left_q5 = all_of(left_q5)) |>
+          mutate(group = coalesce(as.character(var_left_q5), "NA")) |> 
+          left_join(colour_left_5, by = "group")
+        
+        st_crs(data) <- 4326 ## TKTK TEST REMOVING THIS IN PRODUCTION
+
+      }
+      
+      
+      # Building univariate ----------------------------------------------------
+      
+      if (data_type == "building_q5") {
+        
+        data <- 
+          DA |> 
+          st_set_geometry("building") |> 
+          select(ID, name, name_2, any_of(c("DAUID", "CTUID", "CSDUID")), 
+                 population, var_left = all_of(var_left), 
+                 var_left_q3 = all_of(left_q3),
+                 var_left_q5 = all_of(left_q5),
+                 geometry = building) |>
+          mutate(group = coalesce(as.character(var_left_q5), "NA")) |> 
+          left_join(colour_left_5, by = "group")
+        
+        st_crs(data) <- 4326
+
+      }
+      
+      
+      # Simple bivariate ----------------—----------------—----------------—----
+      
+      if (data_type == "bivar") {
+        
+        data <- 
+          df() |> 
+          get() |> 
+          select(ID, name, name_2, any_of(c("DAUID", "CTUID", "CSDUID")), 
+                 population, var_left = all_of(var_left), 
+                 var_left_q3 = all_of(left_q3),
+                 var_left_q5 = all_of(left_q5),
+                 var_right = all_of(var_right), 
+                 var_right_q3 = all_of(right_q3),
+                 var_right_q5 = all_of(right_q5)) |>
+          mutate(group = paste(var_left_q3, "-", var_right_q3)) |>
+          left_join(colour_bivar, by = "group")
+
+      }
+
+      
+      # Building bivariate ----------------—----------------—----------------—--
+      
+      if (data_type == "building_bivar") {
+        
+        data <- 
+          DA |> 
+          st_set_geometry("building") |> 
+          select(ID, name, name_2, any_of(c("DAUID", "CTUID", "CSDUID")), 
+                 population, var_left = all_of(var_left), 
+                 var_left_q3 = all_of(left_q3),
+                 var_left_q5 = all_of(left_q5),
+                 var_right = all_of(var_right), 
+                 var_right_q3 = all_of(right_q3),
+                 var_right_q5 = all_of(right_q5),
+                 geometry = building) |>
+          mutate(group = paste(var_left_q3, "-", var_right_q3)) |>
+          left_join(colour_bivar, by = "group")
+        
+      }
+      
+      
+      
+      
+      
+      
+
+      
+      # Filter to island -------------------------------------------------------
+      
+      if (island) data <- filter(data, CSDUID %in% island_CSDUID)
+      
+      
+      # Return output ----------------------------------------------------------
+      
+      return(data)
+
+      
+      
+      
+
+      
+            
+      
+
       # Add NA column if q3 doesn't exist
-      if (length(name_left_q3_col) == 1 && 
-          !name_left_q3_col %in% names(data)) {
+      if (length(left_q3_col) == 1 && 
+          !left_q3_col %in% names(data)) {
         data <- 
           data %>% 
           mutate(new_col = NA)
         
-        names(data)[names(data) == "new_col"] <- name_left_q3_col
+        names(data)[names(data) == "new_col"] <- left_q3_col
       }
 
 
-      if (data_type == "uni_q5") {
-        
-        # Set colour transparency
-        colour <- get(paste0("colour_left_5_", zoom()))
-        
-        # Get data
-        data <- 
-          data %>% 
-          dplyr::select(ID, name, name_2, any_of("CSDUID"), population, 
-                        left_var = all_of(var_left),
-                        left_var_q3 = all_of(name_left_q3_col),
-                        left_var_q5 = all_of(name_left_q5_col)) |>
-          mutate(group = as.character(left_var_q5),
-                 group = if_else(is.na(group), "NA", group)) |> 
-          left_join(colour, by = "group")
-        
-        st_crs(data) <- 4326
-        return(data)
-        
-        
-      }
-      
-      
+
       
       ## Univariate data -------------------------------------------------------
       
@@ -182,7 +214,7 @@ data_server <- function(id, var_left, var_right, df, zoom = df,
               data %>% 
               dplyr::select(ID, name, name_2, any_of("CSDUID"), population, 
                             left_var = all_of(var_left),
-                            left_var_q3 = all_of(name_left_q3_col)) |>
+                            left_var_q3 = all_of(left_q3_col)) |>
               mutate(group = as.character(left_var_q3),
                      group = if_else(is.na(group), "NA", group)) |> 
               left_join(colour, by = "group")
@@ -198,9 +230,9 @@ data_server <- function(id, var_left, var_right, df, zoom = df,
              { if (length(var_left) == 1 && length(var_right) == 1) 
                dplyr::select(., ID, name, name_2, any_of("CSDUID"), population, 
                              left_var = all_of(var_left),
-                             left_var_q3 = all_of(name_left_q3_col),
+                             left_var_q3 = all_of(left_q3_col),
                              right_var = all_of(var_right), 
-                             right_var_q3 = all_of(name_right_q3_col))
+                             right_var_q3 = all_of(right_q3_col))
                else dplyr::select(., everything(),
                                   left_var = all_of(var_left),
                                   right_var = all_of(var_right))} %>% 
@@ -223,7 +255,7 @@ data_server <- function(id, var_left, var_right, df, zoom = df,
                mutate(., left_var = (left_var2 - left_var1) / abs(left_var1),
                       left_var_q3 = ntile(left_var, 3),
                       right_var = var_right, 
-                      right_var_q3 = eval(as.name(name_right_q3_col)),
+                      right_var_q3 = eval(as.name(right_q3_col)),
                       across(where(is.numeric), ~replace(., is.nan(.), NA)),
                       across(where(is.numeric), ~replace(., is.infinite(.), 
                                                          NA))) %>% 
@@ -233,7 +265,7 @@ data_server <- function(id, var_left, var_right, df, zoom = df,
                                  "right_var2"))) else .} %>%
              { if (length(var_left) == 1 && length(var_right) == 2)
                mutate(., left_var = var_left,
-                      left_var_q3 = eval(as.name(name_left_q3_col)),
+                      left_var_q3 = eval(as.name(left_q3_col)),
                       right_var = (right_var2 - right_var1) / abs(right_var1),
                       right_var_q3 = ntile(right_var, 3),
                       across(where(is.numeric), ~replace(., is.nan(.), NA)),

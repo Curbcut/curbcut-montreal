@@ -195,7 +195,7 @@ access_server <- function(id) {
                    {data() |> 
                        rowwise() |> 
                        mutate(fill_val = list(which.max((
-                         filter(colour_access, category == var_left_1()))$value >= left_var))) |> 
+                         filter(colour_access, category == var_left_1()))$value >= var_left))) |> 
                        mutate(fill_val = if (length(fill_val) == 0) NA_integer_ else fill_val) |> 
                        ungroup() |> 
                        select(-fill) |> 

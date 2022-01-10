@@ -3,16 +3,17 @@
 # This script is totally independent
 
 # Create key tibble -------------------------------------------------------
-stories <- 
-tibble(name = "Environmental Racism and Green Gentrification in Montreal’s Little Burgundy",
-       rmd = "little_burgundy", # Forget the .Rmd since there will be _en.rmd and _fr.rmd
-       img = "little_burgundy.png",
-       lon = -73.57450068915936, 
-       lat = 45.486876630300735) 
 
+stories <- tibble(
+  name = "Environmental Racism and Green Gentrification in Montreal’s Little Burgundy",
+  rmd = "little_burgundy", # Forget the .Rmd since there will be _en.rmd and _fr.rmd
+  img = "little_burgundy.png",
+  lon = -73.57450068915936, 
+  lat = 45.486876630300735) 
 
 
 # Adding stories ----------------------------------------------------------
+
 stories <- 
   stories %>% 
   add_row(name = "The old quarry",
@@ -33,8 +34,9 @@ stories <-
 
 
 # Last treatment ----------------------------------------------------------
+
 stories <- 
-stories %>% 
+  stories %>% 
   st_as_sf(coords = c("lon", "lat"), crs = 4326) %>% 
   mutate(buffer = st_buffer(geometry, 1500)) %>% 
   st_set_geometry("buffer") %>% 

@@ -80,15 +80,15 @@ make_info_table_data <- function(id, x, var_type, var_left, var_right,
   select_name <- filter(x(), ID == selection())
   selection <- filter(dat, ID == select_id)
   out$selection <- selection
-  active_left <- nrow(filter(selection, !is.na(left_var_q5)))
+  active_left <- nrow(filter(selection, !is.na(var_left_q5)))
   active_right <- active_left
   if (var_right != " ") active_right <- 
-    nrow(filter(selection, !is.na(left_var_q3), !is.na(right_var)))
+    nrow(filter(selection, !is.na(var_left_q3), !is.na(var_right)))
   out$pop <- convert_unit(selection$population)
-  val_left <- selection$left_var
+  val_left <- selection$var_left
   out$val_left <- convert_unit(val_left, var_left)
   if (var_right != " ") {
-    val_right <- selection$right_var
+    val_right <- selection$var_right
     out$val_right <- convert_unit(val_right, var_right)
     if (grepl("_multi", out$var_type)) out$val_right <- 
       convert_unit(val_right, "_prop")
@@ -171,12 +171,12 @@ make_info_table_data <- function(id, x, var_type, var_left, var_right,
   }
   
   
-  ## Descriptive statistics for left_var ---------------------------------------
+  ## Descriptive statistics for var_left ---------------------------------------
   
   vec_left <-
     dat %>%
-    filter(!is.na(left_var_q5), !is.na(left_var)) %>%
-    pull(left_var) %>% 
+    filter(!is.na(var_left_q5), !is.na(var_left)) %>%
+    pull(var_left) %>% 
     na.omit()
   
   if (grepl("quant_|date", out$var_type)) {
@@ -250,7 +250,7 @@ make_info_table_data <- function(id, x, var_type, var_left, var_right,
     out$val_left <- 
       tolower(var_left_label[names(var_left_label) == round(val_left)])
     out$other_with_val <- 
-      mean(round(dat$left_var) == round(val_left), na.rm = TRUE) |> 
+      mean(round(dat$var_left) == round(val_left), na.rm = TRUE) |> 
       convert_unit("_prop")
     
   }
@@ -259,7 +259,7 @@ make_info_table_data <- function(id, x, var_type, var_left, var_right,
   
   if (grepl("bi_quantxy|date", out$var_type)) {
     
-      corr <- cor(dat$left_var, as.numeric(dat$right_var), use = "complete.obs")
+      corr <- cor(dat$var_left, as.numeric(dat$var_right), use = "complete.obs")
       out$correlation <- corr
       out$corr_disp <- convert_unit(corr)
       out$pos <- if (corr > 0) sus_translate("positive") else 
@@ -286,8 +286,8 @@ make_info_table_data <- function(id, x, var_type, var_left, var_right,
   
   if (grepl("bi_quantxy_select", out$var_type)) {
    
-    vec_1 <- dat$left_var
-    vec_2 <- dat$right_var
+    vec_1 <- dat$var_left
+    vec_2 <- dat$var_right
     
     perc_left <- length(vec_1[vec_1 <= val_left]) / length(vec_1)
     out$perc_left <- convert_unit(perc_left, "_prop")
@@ -307,8 +307,8 @@ make_info_table_data <- function(id, x, var_type, var_left, var_right,
   
   if (grepl("bi_quanty_|bi_quantx_", out$var_type)) {
     
-    vec_1 <- dat$left_var
-    vec_2 <- dat$right_var
+    vec_1 <- dat$var_left
+    vec_2 <- dat$var_right
     
     corr <- cor(vec_1, vec_2, use = "complete.obs", method = "spearman")
     out$correlation <- corr
@@ -338,7 +338,7 @@ make_info_table_data <- function(id, x, var_type, var_left, var_right,
       tolower(var_left_label[names(var_left_label) == round(val_left)])
     
     out$perc <- 
-      mean(val_right >= vec_2[round(dat$left_var) == round(val_left)],
+      mean(val_right >= vec_2[round(dat$var_left) == round(val_left)],
            na.rm = TRUE) |> 
       convert_unit("_prop")
     
@@ -357,16 +357,16 @@ make_info_table_data <- function(id, x, var_type, var_left, var_right,
     
     coef <- 
       dat %>%
-      mutate(right_var = as.numeric(right_var)) %>%
-      lm(left_var ~ right_var, data = .) %>%
+      mutate(var_right = as.numeric(var_right)) %>%
+      lm(var_left ~ var_right, data = .) %>%
       `$`("coefficients") %>%
-      `[`("right_var") %>%
+      `[`("var_right") %>%
       signif(3)
     
     max_date <- 
       dat |> 
-      filter(left_var == max(left_var)) |> 
-      pull(right_var)
+      filter(var_left == max(var_left)) |> 
+      pull(var_right)
     
     if (length(max_date) %in% 2:3) max_date <- paste(
       paste(max_date[seq_len(length(max_date) - 1)], collapse = ", "),
@@ -376,8 +376,8 @@ make_info_table_data <- function(id, x, var_type, var_left, var_right,
     
     min_date <- 
       dat |> 
-      filter(left_var == min(left_var)) |> 
-      pull(right_var)
+      filter(var_left == min(var_left)) |> 
+      pull(var_right)
     
     if (length(min_date) %in% 2:3) min_date <- paste(
       paste(min_date[seq_len(length(min_date) - 1)], collapse = ", "),

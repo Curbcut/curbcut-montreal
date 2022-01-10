@@ -69,12 +69,14 @@ access <-
               access_jobs_total_pwe:access_healthcare_pwd) |> 
   rename(ID = GeoUID)
 
+
 # Add breaks --------------------------------------------------------------
 
 access <- add_q3(access)
 access_q3 <- get_breaks_q3(access)
 access_q5 <- get_breaks_q5(access)
 access <- bind_cols(access, add_q5(access, access_q5))
+
 
 # Data testing ------------------------------------------------------------
 
@@ -103,7 +105,7 @@ tt_matrix <-
 
 # Meta testing ------------------------------------------------------------
 
-meta_testing()
+# meta_testing()
 
 
 # Add variable explanations -----------------------------------------------
@@ -605,5 +607,3 @@ variables |>
 # Clean up ----------------------------------------------------------------
 
 rm(access, data_long, points)
-
-# To save output, run dev/build_data.R, which calls this script

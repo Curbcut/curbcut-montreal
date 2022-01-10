@@ -5,15 +5,15 @@ small_map_UI <- function(id) {
       imageOutput(NS(id, "small_map"), inline = TRUE))
 }
 
-# `string` should be, e.g. "left_borough_ale_index"
+# `string` should be, e.g. "left_borough_canale_ind_q5_2016"
 small_map_server <- function(id, string) {
   stopifnot(is.reactive(string))
   
   moduleServer(id, function(input, output, session) {
     output$small_map <- renderImage({
       
-      list(src = paste0("www/maps/", string()[length(string())], ".png"), filetype = "image/png", 
-           height = 175, width = 175)
+      list(src = paste0("www/maps/", string()[length(string())], ".png"), 
+           filetype = "image/png", height = 175, width = 175)
       }, deleteFile = FALSE)
   })
 }

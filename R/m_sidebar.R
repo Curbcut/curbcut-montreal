@@ -35,7 +35,6 @@ sidebar_server <- function(id, x, var_map = NULL) {
     # More info
     observeEvent(input$more_info, {
       toggle("title_extra", condition = input$more_info %% 2 == 1)
-      
       if (input$more_info %% 2 == 1) {
         txt <- sus_translate("Hide")
       } else txt <- sus_translate("Learn more")

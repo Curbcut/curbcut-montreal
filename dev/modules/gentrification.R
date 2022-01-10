@@ -77,10 +77,8 @@ index_fun <- function(df) {
   purrr::reduce(pre_index_fun, left_join, by = "ID")
 }
 
-gen_to_join <- 
-  map(list("borough" = borough, "CT" = CT, "DA" = DA, 
-           "grid" = grid, "street" = street, 
-           "building" = building), index_fun)
+gen_to_join <- map(list("borough" = borough, "CT" = CT, "DA" = DA, 
+                        "grid" = grid, "street" = street), index_fun)
 
 
 # Data testing ------------------------------------------------------------
@@ -99,7 +97,7 @@ CT <- left_join(CT, gen_to_join$CT, by = "ID") |>
   relocate(geometry, .after = last_col())
 
 DA <- left_join(DA, gen_to_join$DA, by = "ID") |> 
-  relocate(geometry, .after = last_col())
+  relocate(buffer, centroid, building, geometry, .after = last_col())
 
 grid <- left_join(grid, gen_to_join$grid, by = "ID") |> 
   relocate(geometry, .after = last_col())
@@ -107,13 +105,10 @@ grid <- left_join(grid, gen_to_join$grid, by = "ID") |>
 street <- left_join(street, gen_to_join$street, by = "ID") |> 
   relocate(geometry, .after = last_col())
 
-building <- left_join(building, gen_to_join$building, by = "ID") |> 
-  relocate(geometry, .after = last_col())
-
 
 # Meta testing ------------------------------------------------------------
 
-meta_testing()
+# meta_testing()
 
 
 # Add variable explanations -----------------------------------------------

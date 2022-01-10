@@ -35,15 +35,15 @@ source("dev/geometries/street_geocode.R")
 stopifnot(
   
   # Check field names
-  names(borough) == c("ID", "name", "name_2", "population", "households", 
-                      "geometry"),
+  names(borough) == c("ID", "name", "name_2", "CSDUID", "population", 
+                      "households", "geometry"),
   names(building) == c("ID", "name", "name_2", "DAUID", "CTUID", "CSDUID", 
-                       "osm_ID", "grid_ID", "population", "households", 
-                       "geometry"),
-  names(CT) == c("ID", "name", "name_2", "CSDUID", "population", "households", 
+                       "osm_ID", "grid_ID", "geometry"),
+  names(CT) == c("ID", "name", "name_2", "CTUID", "CSDUID", "population", 
+                 "households", "geometry"),
+  names(DA) == c("ID", "name", "name_2", "DAUID", "CTUID", "CSDUID", 
+                 "population", "households", "centroid", "buffer", "building",
                  "geometry"),
-  names(DA) == c("ID", "name", "name_2", "CTUID", "CSDUID", "population", 
-                 "households", "centroid", "buffer", "geometry"),
   names(grid) == c("ID", "name", "name_2", "CSDUID", "population", "households", 
                    "geometry"),
   names(street) == c("ID", "name", "name_2", "street_type", "DAUID", "CTUID", 
@@ -52,11 +52,31 @@ stopifnot(
   
   # Check row numbers
   nrow(borough) == 111,
-  nrow(building) %in% c(56614, 66884),
+  nrow(building) == 243780,
   nrow(CT) == 970,
   nrow(DA) == 6469,
   nrow(grid) == 9923,
-  nrow(street) == 68938,
+  nrow(street) == 88538,
+  
+  # Check geometry columns,
+  inherits(borough$geometry, "sfc"),
+  inherits(building$geometry, "sfc"),
+  inherits(CT$geometry, "sfc"),
+  inherits(DA$buffer, "sfc"),
+  inherits(DA$centroid, "sfc"),
+  inherits(DA$building, "sfc"),
+  inherits(DA$geometry, "sfc"),
+  inherits(grid$geometry, "sfc"),
+  inherits(street$geometry, "sfc"),
+  mean(st_is(borough$geometry, "MULTIPOLYGON")) == 1,
+  mean(st_is(building$geometry, "MULTIPOLYGON")) == 1,
+  mean(st_is(CT$geometry, "MULTIPOLYGON")) == 1,
+  mean(st_is(DA$buffer, "POLYGON")) == 1,
+  mean(st_is(DA$centroid, "POINT")) == 1,
+  mean(st_is(DA$building, "MULTIPOLYGON")) == 1,
+  mean(st_is(DA$geometry, "MULTIPOLYGON")) == 1,
+  mean(st_is(grid$geometry, "MULTIPOLYGON")) == 1,
+  mean(st_is(street$geometry, "LINESTRING")) == 1,
   
   # Check geometry relations 
   sum(st_agr(borough) != "constant") == 0,
@@ -107,9 +127,10 @@ source("dev/modules/green_space.R")
 source("dev/modules/stories.R")
 
 
-# Run tests and post-processing -------------------------------------------
+# Post-processing and simplification --------------------------------------
 
 source("dev/other/post_processing.R")
+source("dev/other/simplify.R")
 
 
 # Save data files ---------------------------------------------------------
@@ -128,7 +149,7 @@ qsave(metro_lines, file = "data/metro_lines.qs")
 qsavem(covid, covid_pics, file = "data/covid.qsm")
 
 
-# Produce left and right maps ---------------------------------------------
+# Produce colours and maps ------------------------------------------------
 
 library(patchwork)
 source("dev/other/colours.R")

@@ -4,35 +4,38 @@
 
 # 2020 shapefiles
 covid_may_2020 <- 
-  read_sf("dev/data/COVID/corridors_sanitaires-may/corridors_sanitaires.shp") |> 
+  read_sf(
+    "dev/data/COVID/corridors_sanitaires-may/corridors_sanitaires.shp") |> 
   select(ID = objectid, street = Rue, type = Type_corri, geometry) |> 
   mutate(timeframe = "may_2020", .before = geometry) |> 
   st_transform(4326) |> 
   st_set_agr("constant")
 
 covid_july_2020 <- 
-  read_sf("dev/data/COVID/corridors_sanitaires-july/corridors_sanitaires.shp") |> 
+  read_sf(
+    "dev/data/COVID/corridors_sanitaires-july/corridors_sanitaires.shp") |> 
   select(ID = objectid, street = Rue, type = Type_corri, geometry) |> 
   mutate(timeframe = "july_2020", .before = geometry) |> 
   st_transform(4326) |> 
   st_set_agr("constant")
 
 covid_oct_2020 <- 
-  read_sf("dev/data/COVID/corridors_sanitaires-october/corridors_sanitaires.shp") |> 
+  read_sf(
+    "dev/data/COVID/corridors_sanitaires-october/corridors_sanitaires.shp") |> 
   select(ID = objectid, street = Rue, type = Type_corri, geometry) |> 
   mutate(timeframe = "oct_2020", .before = geometry) |> 
   st_transform(4326) |> 
   st_set_agr("constant")
 
-covid <- 
-  rbind(covid_may_2020, covid_july_2020, covid_oct_2020)
+covid <- bind_rows(covid_may_2020, covid_july_2020, covid_oct_2020)
 
 # 2021 shapefile
-# covid_2021 <- 
-#   read_sf("dev/data/COVID/2021_covid_pedestrian/2021_pedestrian_streets.shp") |> 
-#   select(ID = UNIQUEID, street = STREETNAME, geometry) |> 
+# covid_2021 <-
+#   read_sf(
+#     "dev/data/COVID/2021_covid_pedestrian/2021_pedestrian_streets.shp") |>
+#   select(ID = UNIQUEID, street = STREETNAME, geometry) |>
 #   mutate(type = "Corridor piéton élargi", .before = geometry) |>
-#   st_transform(4326) |> 
+#   st_transform(4326) |>
 #   st_set_agr("constant")
 
 # Photos from 2020
@@ -78,22 +81,22 @@ photo_join <-
 covid <- 
   covid |> 
   left_join(photo_join, by = c("ID" = "feature_ID")) |>
-  mutate(fill = case_when(type == "Circuit des voies actives et sécuritaires" ~ "#FF5733FF",
-                          type == "Circulation locale" ~ "#FFD733FF",
-                          type == "Corridor piéton élargi" ~ "#5F940EFF",
-                          type == "Corridor projeté" ~ "#10A9A7FF",
-                          type == "File d'attente encadrée" ~ "#2D80CAFF",
-                          type == "Rue familiale et active" ~ "#FF7C2DFF",
-                          type == "Rue fermée" ~ "#6F2094FF",
-                          type == "Rue partiellement fermée" ~ "#75BB79FF",
-                          type == "Rue partagée" ~ "#75A7BAFF")) |> 
+  mutate(fill = case_when(
+    type == "Circuit des voies actives et sécuritaires" ~ "#FF5733FF",
+    type == "Circulation locale" ~ "#FFD733FF",
+    type == "Corridor piéton élargi" ~ "#5F940EFF",
+    type == "Corridor projeté" ~ "#10A9A7FF",
+    type == "File d'attente encadrée" ~ "#2D80CAFF",
+    type == "Rue familiale et active" ~ "#FF7C2DFF",
+    type == "Rue fermée" ~ "#6F2094FF",
+    type == "Rue partiellement fermée" ~ "#75BB79FF",
+    type == "Rue partagée" ~ "#75A7BAFF")) |> 
   relocate(photo_ID, fill, .before = geometry)
 
 
 # Clean up ----------------------------------------------------------------
 
-rm(photo_join, covid_may_2020, covid_july_2020, 
-   covid_oct_2020)
+rm(photo_join, covid_may_2020, covid_july_2020, covid_oct_2020)
 
 ### actual 2020 .png files are located in Sus/www/COVIDpics
 

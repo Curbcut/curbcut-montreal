@@ -135,8 +135,9 @@ alleys <-
 
 
 # Get borough text --------------------------------------------------------
+
 mtl_ids <- 
-borough |> 
+  borough |> 
   st_drop_geometry() |> 
   select(ID, name) |> 
   filter(str_starts(ID, "2466023"))
@@ -150,8 +151,8 @@ alley_text <-
 
 # Add total lengths of green alleys to boroughs
 alleys_length <- 
-alleys |> 
-  mutate(green_alley_sqm = st_area(geometry)/2)
+  alleys |> 
+  mutate(green_alley_sqm = st_area(geometry) / 2)
 
 alley_text <- 
   alley_text |> 
@@ -168,14 +169,12 @@ alley_text <-
 
 lengths_alleys_fun <- function(data) {
   
-  data <- if (nrow(data) == nrow(borough)) {
-    filter(data, str_starts(ID, "2466023")) 
-  } else {
-    filter(data, str_starts(CSDUID, "2466023")) 
-  }
+  data <- 
+    data |> 
+    filter(str_starts(CSDUID, "2466023")) 
   
   sqm_per_id <- 
-  alleys_length |> 
+    alleys_length |> 
     rename(alley_ID = ID) |> 
     st_join(select(data, ID)) |> 
     st_drop_geometry() |> 
@@ -201,6 +200,7 @@ lengths_alleys_fun <- function(data) {
 join_alleys <- 
   map(list("borough" = borough, "CT" = CT, "DA" = DA), lengths_alleys_fun)
 
+
 # Add breaks --------------------------------------------------------------
 
 join_alleys <- map(join_alleys, ~add_q3(.x))
@@ -223,13 +223,7 @@ CT <- left_join(CT, join_alleys$CT, by = "ID") |>
   relocate(geometry, .after = last_col())
 
 DA <- left_join(DA, join_alleys$DA, by = "ID") |> 
-  relocate(geometry, .after = last_col())
-
-building <- 
-  building |> 
-  left_join(join_alleys$DA, by = c("DAUID" = "ID")) |> 
-  relocate(geometry, .after = last_col()) |> 
-  st_set_agr("constant")
+  relocate(buffer, centroid, building, geometry, .after = last_col())
 
 street <- 
   street |> 
@@ -240,7 +234,7 @@ street <-
 
 # Meta testing ------------------------------------------------------------
 
-meta_testing()
+# meta_testing()
 
 
 # Variable explanations ---------------------------------------------------

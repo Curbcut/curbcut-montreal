@@ -4,28 +4,28 @@
 # We should load data from OSM once in a while for updates, but this script
 # is very computing intensive. 
 
-suppressPackageStartupMessages({
-  library(osmdata)
-  library(tidyverse)
-  library(sf)
-  library(qs)
-})
-
-
+# suppressPackageStartupMessages({
+#   library(osmdata)
+#   library(tidyverse)
+#   library(sf)
+#   library(qs)
+# })
+# 
+# 
 # # Bounding Box, Highway Key Values -----------------------------------------
 # 
 # # Bounding box of CMA Montreal
 # CMA_mtl_bb <- c(-74.32797, 45.21754, -73.12856, 45.96849)
 # 
 # # Highway key values for cars
-# kv_highway_cars <- 
-#   c("motorway", "trunk", "primary", "secondary", "tertiary", "residential", 
-#     "unclassified", "service", "motorway_link", "trunk_link", "primary_link", 
+# kv_highway_cars <-
+#   c("motorway", "trunk", "primary", "secondary", "tertiary", "residential",
+#     "unclassified", "service", "motorway_link", "trunk_link", "primary_link",
 #     "secondary_link", "tertiary_link")
 # 
 # # # Highway key values for people
-# kv_highway_people <- 
-#   c("cycleway", "living_street", "pedestrian", "track", "road", "footway", 
+# kv_highway_people <-
+#   c("cycleway", "living_street", "pedestrian", "track", "road", "footway",
 #     "path", "steps", "crossing")
 # 
 # 
@@ -57,7 +57,7 @@ suppressPackageStartupMessages({
 # qsave(street_network, "dev/data/street_network.qs")
 # 
 # 
-# Filter results ----------------------------------------------------------
+# # Filter results ----------------------------------------------------------
 # 
 # street_network <- qread("dev/data/street_network.qs")
 # 
@@ -146,42 +146,42 @@ suppressPackageStartupMessages({
 #   st_drop_geometry() |>
 #   select(osm_id, name_2 = name, street_type = highway) |>
 #   right_join(street, by = "osm_id") |>
-#   relocate(name_2, street_type, .after = ID) |> 
-#   rename(osm_ID = osm_id) |> 
-#   st_as_sf() |> 
+#   relocate(name_2, street_type, .after = ID) |>
+#   rename(osm_ID = osm_id) |>
+#   st_as_sf() |>
 #   st_set_agr("constant")
 # 
 # 
 # # Add census metadata from DA ---------------------------------------------
 # 
-# street_DA <- 
-#   street |> 
-#   st_set_agr("constant") |> 
-#   st_transform(32618) |> 
-#   st_centroid() |> 
+# street_DA <-
+#   street |>
+#   st_set_agr("constant") |>
+#   st_transform(32618) |>
+#   st_centroid() |>
 #   st_nearest_feature(st_transform(DA, 32618))
 # 
-# DA_to_add <- 
-#   DA |> 
-#   st_drop_geometry() |> 
-#   select(DAUID = ID, CTUID, CSDUID, population, households) |> 
+# DA_to_add <-
+#   DA |>
+#   st_drop_geometry() |>
+#   select(DAUID = ID, CTUID, CSDUID, population, households) |>
 #   slice(street_DA)
 # 
 # street <-
-#   street |> 
-#   bind_cols(DA_to_add) |> 
-#   relocate(geometry, .after = last_col()) |> 
+#   street |>
+#   bind_cols(DA_to_add) |>
+#   relocate(geometry, .after = last_col()) |>
 #   st_set_agr("constant") |>
-#   arrange(ID) |> 
+#   arrange(ID) |>
 #   relocate(osm_ID, .after = CSDUID)
 # 
-#
-# Add grid_ID -------------------------------------------------------------
+# 
+# # Add grid_ID -------------------------------------------------------------
 # 
 # street_grid <-
 #   street |>
 #   st_transform(32618) |>
-#   st_set_agr("constant") |> 
+#   st_set_agr("constant") |>
 #   st_centroid() |>
 #   st_join(st_transform(select(grid, grid_ID = ID, geometry), 32618)) |>
 #   st_drop_geometry() |>
@@ -190,9 +190,9 @@ suppressPackageStartupMessages({
 # street <-
 #   street |>
 #   left_join(street_grid, by = "ID") |>
-#   relocate(grid_ID, .after = osm_ID) |> 
+#   relocate(grid_ID, .after = osm_ID) |>
 #   st_set_agr("constant")
-#
+# 
 # qsave(street, file = "dev/data/street.qs")
 # 
 # rm(DA_to_add, new_street, nodes, street_grid, street_grid_edges, street_list,
@@ -206,7 +206,18 @@ street <- qread("dev/data/street.qs")
 
 # Temporarily trim to island ----------------------------------------------
 
+island_CSDUID <- 
+  c("2466007", "2466023_1",  "2466023_10", "2466023_11", "2466023_12", 
+    "2466023_13", "2466023_14", "2466023_15", "2466023_16", "2466023_17", 
+    "2466023_18", "2466023_19", "2466023_2", "2466023_3", "2466023_4", 
+    "2466023_5",  "2466023_6", "2466023_7", "2466023_8", "2466023_9",
+    "2466032", "2466047", "2466058", "2466062", "2466087", "2466092", 
+    "2466097", "2466102", "2466107", "2466112", "2466117", "2466127", 
+    "2466142", "2466072", "2466023")
+
 street <- 
   street |> 
-  st_filter(filter(borough, name_2 == "Borough"))
+  filter(CSDUID %in% island_CSDUID)
+
+rm(island_CSDUID)
 

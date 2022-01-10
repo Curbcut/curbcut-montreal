@@ -52,14 +52,15 @@ stories <- qread("data/stories.qs")
 min_census_year <- "1996"
 current_census <- "2016"
 
-island_csduid <- c("2466007", "2466023_1",  "2466023_10", "2466023_11",
-                   "2466023_12", "2466023_13", "2466023_14", "2466023_15", 
-                   "2466023_16", "2466023_17", "2466023_18", "2466023_19",
-                   "2466023_2", "2466023_3", "2466023_4", "2466023_5",  
-                   "2466023_6", "2466023_7", "2466023_8", "2466023_9",
-                   "2466032", "2466047", "2466058", "2466062", "2466087", 
-                   "2466092", "2466097", "2466102", "2466107", "2466112",
-                   "2466117", "2466127", "2466142", "2466072", "2466023")
+island_CSDUID <- 
+  c("2466007", "2466023_1",  "2466023_10", "2466023_11", "2466023_12", 
+    "2466023_13", "2466023_14", "2466023_15", "2466023_16", "2466023_17", 
+    "2466023_18", "2466023_19", "2466023_2", "2466023_3", "2466023_4", 
+    "2466023_5",  "2466023_6", "2466023_7", "2466023_8", "2466023_9",
+    "2466032", "2466047", "2466058", "2466062", "2466087", "2466092", 
+    "2466097", "2466102", "2466107", "2466112", "2466117", "2466127", 
+    "2466142", "2466072", "2466023")
+
 
 # Translation -------------------------------------------------------------
 
@@ -86,17 +87,17 @@ widget_style <- "display: inline-block; padding: 5px; vertical-align: top;"
 convert_unit <- function(x, var_name = NULL) {
   
   if (length(x) == 0) return(x)
-  if (is.na(x)) return(x)
+  if (length(x) == 1 && is.na(x)) return(x)
   
-  if (!missing(var_name) && grepl("_prop", var_name)) {
+  if (!missing(var_name) && grepl("_pct", var_name)) {
     x <- paste0(round(x * 100, 1), "%")
   } else if (!missing(var_name) && grepl("_dollar", var_name)) {
     x <- scales::dollar(x, 1)
-  } else if (abs(x) >= 100) {
+  } else if (max(abs(x)) >= 100) {
     x <- scales::comma(x, 1)
-  } else if (abs(x) >= 10) {
-    x <- as.character(round(x, 1))
-  } else x <- as.character(round(x, 2))
+  } else if (max(abs(x)) >= 10) {
+    x <- scales::comma(x, 0.1)
+  } else x <- scales::comma(x, 0.01)
   
   x
 }
@@ -105,7 +106,8 @@ right_panel <- function(id, ...) {
   
   absolutePanel(
     id = NS(id, "right_panel"), 
-    style = paste0("z-index:500; max-height: calc(100vh - 120px) ;", #overflow-y: auto; ",
+    style = paste0("z-index:500; max-height: calc(100vh - 120px) ;", 
+                   #overflow-y: auto; ",
                    "padding: 5px; border-width: 0px; width: 15vw; ",
                    "font-size: 11px; max-width: 300px"),
     class = "panel panel-default", top = 15, right = 15, # width = 300,
@@ -183,7 +185,7 @@ loadingLogo <-
 
 # Other prep --------------------------------------------------------------
 
-# # So we can switch between tabs without namespacing issues. Examples in `m_crash.R`
+# # To switch between tabs without namespacing issues. Examples in `m_crash.R`
 # # a("NAME OF LINK", onclick = "openTab('NAME OF TAB')", href="#")
 # js_links_between_modules <- "
 #         var openTab = function(tabName){

@@ -154,7 +154,7 @@ crash_server <- function(id) {
       var_right = var_right, 
       df = df, 
       zoom = zoom,
-      island_only = TRUE)
+      island = TRUE)
     
     data <- reactive({
       if (choropleth()) {
@@ -177,20 +177,20 @@ crash_server <- function(id) {
         data() |>
           st_drop_geometry() |>
           count(date) |>
-          rename(left_var = n, right_var = date) |>
-          mutate(ID = seq_along(left_var), .before = left_var) |>
-          mutate(left_var_q3 = left_var, left_var_q5 = left_var)
+          rename(var_left = n, var_right = date) |>
+          mutate(ID = seq_along(var_left), .before = var_left) |>
+          mutate(var_left_q3 = var_left, var_left_q5 = var_left)
       }
     })
     df_for_explore <- reactive({if (choropleth()) df() else "date"})
-    right_var_for_exp <- reactive({if (choropleth()) var_right() else "date"})
+    var_right_for_exp <- reactive({if (choropleth()) var_right() else "date"})
     
     # Explore panel
     explore_content <- explore_server(
       id = "explore",
       x = data_for_explore,
       var_left = var_left,
-      var_right = right_var_for_exp,
+      var_right = var_right_for_exp,
       select = selection,
       df = df_for_explore)
     

@@ -43,7 +43,7 @@ canale_server <- function(id) {
     sidebar_server(
       id = "sidebar", 
       x = "canale", 
-      var_map = reactive(paste0("left_", df(), "_", "canale_ind_2016")))
+      var_map = reactive(paste0("left_", df(), "_canale_ind_2016")))
     
     # Map
     output$map <- renderMapdeck({mapdeck(
@@ -68,7 +68,7 @@ canale_server <- function(id) {
     # Left variable
     var_left <- reactive("canale_ind_2016")
     
-    # Compare panel
+    # Right variable / compare panel
     var_right <- compare_server(
       id = "canale", 
       var_list = make_dropdown(),
@@ -80,8 +80,7 @@ canale_server <- function(id) {
       id = "canale", 
       var_left = var_left,
       var_right = var_right, 
-      df = df, 
-      zoom = zoom)
+      df = df)
     
     # Explore panel
     explore_content <- explore_server(
@@ -107,10 +106,11 @@ canale_server <- function(id) {
       var_right = var_right)
 
     # Update map in response to variable changes or zooming
-    map_change(NS(id, "map"), 
-               x = data, 
-               df = df, 
-               selection = selection)
+    map_change(
+      id = NS(id, "map"), 
+      x = data, 
+      df = df, 
+      selection = selection)
 
     # Update poly on click
     observeEvent(input$map_polygon_click, {
