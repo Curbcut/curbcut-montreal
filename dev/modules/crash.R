@@ -161,10 +161,8 @@ process_crash <- function(x) {
     # select(-contains("NA")) |> 
     full_join(select(x, any_of(c("ID", "CSDUID")), population), by = "ID") |> 
     # Make sure that a missing geometry shows up as 0. Missing means no crash.
-    filter(!is.na(ID)) %>%
-    {if (nrow(.) == nrow(borough))
-      filter(., ID %in% island_csduid)
-      else filter(., CSDUID %in% island_csduid)} |>
+    filter(!is.na(ID)) |> 
+    filter(CSDUID %in% island_CSDUID) |>
     arrange(ID) |> 
     st_as_sf() |> 
     rename_with(~paste0(., "_count"), starts_with("crash")) |> 
