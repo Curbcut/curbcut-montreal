@@ -3,7 +3,7 @@
 # q3 breaks ---------------------------------------------------------------
 
 add_q3 <- function(df) {
-  mutate(df, across(c(-ID), ntile, 3, .names = "{.col}_q3")) |> 
+  mutate(df, across(c(-any_of("ID")), ntile, 3, .names = "{.col}_q3")) |> 
     rename_with(~paste0(str_remove(., "_\\d{4}"),
                         str_extract(., "_\\d{4}")), matches("_\\d{4}"))
 }
@@ -12,7 +12,7 @@ get_breaks_q3 <- function(df, var_list = NULL) {
   
   # Automatically retrieve var_list if var_list is NULL
   if (is.null(var_list)) {
-    var_list <- names(select(df, -contains(c("q3", "q5")), -ID))
+    var_list <- names(select(df, -contains(c("q3", "q5")), -any_of("ID")))
   }
   
   map_dfc(var_list, ~{
@@ -71,7 +71,7 @@ get_breaks_q5 <- function(df, var_list = NULL) {
   
   # Automatically retrieve var_list if var_list is NULL
   if (is.null(var_list)) {
-    var_list <- names(select(df, -contains(c("q3", "q5")), -ID))
+    var_list <- names(select(df, -contains(c("q3", "q5")), -any_of("ID")))
   }
   
   cat_min <- suppressWarnings(

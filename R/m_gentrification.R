@@ -160,7 +160,7 @@ gentrification_server <- function(id) {
       build_str_as_DA = TRUE)
     
     # Legend
-    legend_server(
+    legend <- legend_server(
       id = "legend",
       var_left = var_left,
       var_right = var_right,
@@ -176,7 +176,8 @@ gentrification_server <- function(id) {
     map_change(NS(id, "map"),
                x = data,
                df = df,
-               selection = selection)
+               selection = selection,
+               legend_selection = reactive(legend()$legend_selection))
     
     # Update poly on click
     observeEvent(input$map_polygon_click, {

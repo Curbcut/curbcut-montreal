@@ -13,6 +13,7 @@ suppressPackageStartupMessages({
   library(stringr)
   library(purrr)
   library(cowplot)
+  library(ggiraph)
   
   library(sf)
   library(mapdeck) 
@@ -289,6 +290,10 @@ styler <- '
   .container {
   height: calc(100vh - 85px);
   overflow-y: auto;
+  }
+  
+  .ggiraph-toolbar {
+  display: none;
   }
 
 

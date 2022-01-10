@@ -123,6 +123,7 @@ source("dev/modules/access.R")
 source("dev/modules/alley.R")
 source("dev/modules/gentrification.R")
 source("dev/modules/green_space.R")
+source("dev/modules/permits.R")
 # source("dev/modules/dmti.R")
 source("dev/modules/stories.R")
 
@@ -143,10 +144,11 @@ qsave(street, file = "data/street.qs")
 qsave(crash, file = "data/crash.qs")
 qsave(tt_matrix, file = "data/tt_matrix.qs")
 qsavem(alleys, alley_text, file = "data/alleys.qsm")
-qsave(green_space, file = "data/green_space.qs")
-qsave(stories, file = "data/stories.qs")
-qsave(metro_lines, file = "data/metro_lines.qs")
 qsavem(covid, covid_pics, file = "data/covid.qsm")
+qsave(green_space, file = "data/green_space.qs")
+qsave(metro_lines, file = "data/metro_lines.qs")
+qsavem(permits_choropleth, permits, file = "data/permits.qsm")
+qsave(stories, file = "data/stories.qs")
 
 
 # Produce colours and maps ------------------------------------------------

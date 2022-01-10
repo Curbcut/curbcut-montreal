@@ -18,13 +18,15 @@
 #' 0 instead?
 #' @return An update version of the mapdeck map.
 
-map_change <- function(id, x, df, selection = reactive(NULL), 
-                       legend = NULL, polygons_to_clear = NULL, 
-                       standard_width = reactive(TRUE)) {
+map_change <- function(id_map, x, df, selection = reactive(NULL), 
+                       legend = NULL,  polygons_to_clear = NULL, 
+                       standard_width = reactive(TRUE),
+                       legend_selection = reactive(NULL)) {
   stopifnot(is.reactive(x))
   stopifnot(is.reactive(df))
   stopifnot(is.reactive(selection))
   stopifnot(is.reactive(standard_width))
+  stopifnot(is.reactive(legend_selection))
   
   geom_type <- reactive({
     map_chr(as.character(unique(st_geometry_type(x()))), ~{
@@ -38,18 +40,19 @@ map_change <- function(id, x, df, selection = reactive(NULL),
              "error")
     }) |> unique()
   })
-
-  observeEvent({x()
+  
+  observeEvent({legend_selection()
+    x()
     standard_width()
     df()
     geom_type()}, {
       
       # Used at all geometries:
       update_and_clean <- function() {
-        mapdeck_update(map_id = id)  %>%
-          clear_polygon() %>%
-          clear_scatterplot() %>% 
-          clear_heatmap() %>% 
+        mapdeck_update(map_id = id_map)  |>
+          clear_polygon() |>
+          clear_scatterplot() |> 
+          clear_heatmap() |> 
           clear_path()
       }
       
@@ -63,7 +66,7 @@ map_change <- function(id, x, df, selection = reactive(NULL),
       
       # Buildings should be extruded
       if (df() == "building") {
-        update_and_clean() |>
+        update_and_clean() |> 
           add_polygon(data = x(),
                       update_view = FALSE, id = "ID", elevation = 5, 
                       fill_colour = "fill", auto_highlight = TRUE, 
@@ -74,16 +77,34 @@ map_change <- function(id, x, df, selection = reactive(NULL),
         width <- switch(df(), "borough" = 10, "CT" = 5, "grid" = 0, 2)
         if (!standard_width()) width <- 0
         
-        update_and_clean() %>% 
-          add_polygon(
-            data = x(), stroke_width = width,
-            stroke_colour = "#FFFFFF", fill_colour = "fill",
-            update_view = FALSE, id = "ID", auto_highlight = TRUE,
-            highlight_colour = "#FFFFFF90")
+        # Legend selection
+        if (!is.null(legend_selection())) {
+          sel <- 
+            x() |> 
+            mutate(fill = case_when(
+              str_detect(fill, 
+                         paste0(legend_selection(), "..$", 
+                                collapse = "|")) ~ fill,
+              TRUE ~ str_replace(fill, "..$", "50")))
+          
+          update_and_clean() |> 
+            add_polygon(
+              data = sel, stroke_width = width,
+              stroke_colour = "#FFFFFF", fill_colour = "fill",
+              update_view = FALSE, id = "ID", auto_highlight = TRUE,
+              highlight_colour = "#FFFFFF90")
+        } else {
+          update_and_clean() |> 
+            add_polygon(
+              data = x(), stroke_width = width,
+              stroke_colour = "#FFFFFF", fill_colour = "fill",
+              update_view = FALSE, id = "ID", auto_highlight = TRUE,
+              highlight_colour = "#FFFFFF90")
+        }
         
       } else if (geom_type() == "line") {
         
-        update_and_clean() %>%
+        update_and_clean() |>
           add_path(data = x(),
                    update_view = FALSE, id = "ID", stroke_width = 5,
                    stroke_colour = "fill", auto_highlight = TRUE,
@@ -92,7 +113,7 @@ map_change <- function(id, x, df, selection = reactive(NULL),
       } else if (geom_type() == "point") {
         
         if (df() != "street") {
-          update_and_clean() %>%
+          update_and_clean() |>
             add_heatmap(data = x(), update_view = FALSE,
                         colour_range = c("#AECBB4", "#91BD9A", "#73AE80",
                                          "#70999B", "#6E8EA8", "#6C83B5"),
@@ -100,7 +121,7 @@ map_change <- function(id, x, df, selection = reactive(NULL),
           
         } else {
           
-          update_and_clean() %>%
+          update_and_clean() |>
             add_scatterplot(data = x(), update_view = FALSE,
                             id = "ID",
                             auto_highlight = TRUE,
