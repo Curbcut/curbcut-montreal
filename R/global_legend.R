@@ -18,8 +18,7 @@ render_plot_fun <- function(var_left, var_right, df, data_type) {
       variables |> 
       filter(var_code == unique(sub("_\\d{4}$", "", var_left()))) |> 
       pull(breaks_q5) |> 
-      purrr::pluck(1) |> 
-      filter(date == date_left | is.na(date))
+      purrr::pluck(1)
     
     if (df() %in% c("building", "street") &&
         nrow(filter(break_labels, scale == df())) == 0) {
@@ -36,7 +35,7 @@ render_plot_fun <- function(var_left, var_right, df, data_type) {
     
     # Format break labels
     if (str_detect(var_left(), "_pct|_dollar")) {
-      break_labels <- convert_unit(break_labels, var_left())
+      break_labels <- convert_unit(break_labels, var_left(), TRUE)
     }
     
     # Draw legend
@@ -117,8 +116,8 @@ render_plot_fun <- function(var_left, var_right, df, data_type) {
     }
     
     # Format breaks
-    break_labels_y <- convert_unit(break_labels_y, var_left())
-    break_labels_x <- convert_unit(break_labels_x, var_right())
+    break_labels_y <- convert_unit(break_labels_y, var_left(), TRUE)
+    break_labels_x <- convert_unit(break_labels_x, var_right(), TRUE)
     
     legend_bivar |>
       mutate(label = case_when(

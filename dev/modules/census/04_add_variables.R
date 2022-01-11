@@ -2,11 +2,11 @@
 
 # Add to variable table ---------------------------------------------------
 
-add_vars <- function(data_to_add, census_vec, breaks_q3, breaks_q5, scales,
+add_vars <- function(data_out, census_vec, breaks_q3, breaks_q5, scales,
                      years) {
   
   # Get all variables at all scales
-  all_vars <- unique(unlist(sapply(data_to_add, names)))
+  all_vars <- unique(unlist(sapply(data_out, names)))
   all_vars <- setdiff(all_vars, "ID")
   
   # Get variables to add as rows to variables table
@@ -27,26 +27,25 @@ add_vars <- function(data_to_add, census_vec, breaks_q3, breaks_q5, scales,
     # Get scales
     scales_active <- c("borough", "building", "CT", "DA", "grid", "street")
     scales_active <- scales_active[map_lgl(scales_active, function(df) {
-      if (!is.null(data_to_add[[df]])) {
-        data_to_add[[df]] |>
+      if (!is.null(data_out[[df]])) {
+        data_out[[df]] |>
           select(starts_with(.x)) |>
           length() |>
           (\(x) x > 0)()
       } else FALSE})]
     
     # Get breaks_q3
-    breaks_q3_active <- map2_dfr(breaks_q3, scales, function(x, scale) {
-      map2_dfr(x, years, function(y, date) {
+    breaks_q3_active <- map2_dfr(breaks_q3, scales, \(x, scale) {
+      map2_dfr(x, years, \(y, date) {
         if (nrow(y) > 0) y |> mutate(rank = 0:3, date = date)}) |>
         mutate(scale = scale)}) |>
       select(scale, date, rank, var = all_of(.x))
     
     # Get breaks_q5
-    breaks_q5_active <- map2_dfr(breaks_q5, scales, function(x, scale) {
-      map2_dfr(x, years, function(y, date) {
-        if (nrow(y) > 0) y |> mutate(rank = 0:5, date = date)}) |>
+    breaks_q5_active <- map2_dfr(breaks_q5, scales, \(x, scale) {
+      if (nrow(x) > 0) x |> mutate(rank = 0:5) |>
         mutate(scale = scale)}) |>
-      select(scale, date, rank, var = all_of(.x))
+      select(scale, rank, var = all_of(.x))
     
     tibble(
       var_code = .x,

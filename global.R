@@ -85,15 +85,37 @@ widget_style <- "display: inline-block; padding: 5px; vertical-align: top;"
 
 # Functions ---------------------------------------------------------------
 
-convert_unit <- function(x, var_name = NULL) {
+convert_unit <- function(x, var_name = NULL, compact = FALSE) {
   
   if (length(x) == 0) return(x)
   if (length(x) == 1 && is.na(x)) return(x)
+  if (compact) min_dig <- 
+      x |> 
+      setdiff(0) |> 
+      min(na.rm = TRUE) |> 
+      log10() |> 
+      ceiling()
   
   if (!missing(var_name) && grepl("_pct", var_name)) {
     x <- paste0(round(x * 100, 1), "%")
+  } else if (!missing(var_name) && grepl("_dollar", var_name) && compact) {
+    if (min_dig >= 10) {
+      x <- scales::dollar(x, 1, scale = 1 / 1e+09, suffix = "B")  
+    } else if (min_dig >= 7) {
+      x <- scales::dollar(x, 1, scale = 1 / 1e+06, suffix = "M")  
+    } else if (min_dig >= 4) {
+      x <- scales::dollar(x, 1, scale = 1 / 1e+03, suffix = "K")  
+    } else x <- scales::dollar(x, 1)
   } else if (!missing(var_name) && grepl("_dollar", var_name)) {
     x <- scales::dollar(x, 1)
+  } else if (compact && min_dig >= 4) {
+    if (min_dig >= 10) {
+      x <- scales::comma(x, 1, scale = 1 / 1e+09, suffix = "B")  
+    } else if (min_dig >= 7) {
+      x <- scales::comma(x, 1, scale = 1 / 1e+06, suffix = "M")  
+    } else if (min_dig >= 4) {
+      x <- scales::comma(x, 1, scale = 1 / 1e+03, suffix = "K")  
+    }
   } else if (max(abs(x)) >= 100) {
     x <- scales::comma(x, 1)
   } else if (max(abs(x)) >= 10) {

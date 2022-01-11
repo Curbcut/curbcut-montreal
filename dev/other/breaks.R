@@ -44,8 +44,8 @@ add_q5 <- function(df, breaks) {
     y[1] <- -Inf
     y[length(y)] <- Inf
     
-    df |>
-      transmute(across(all_of(x),
+    df |> 
+      transmute(across(any_of(x),
                        ~ as.numeric(cut(.x, y, include.lowest = TRUE)),
                        .names = "{.col}_q5")) |> 
       rename_with(~paste0(str_remove(., "_\\d{4}"),

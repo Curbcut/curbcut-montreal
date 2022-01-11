@@ -173,20 +173,20 @@ get_categories_q5 <- function(df, categories) {
 get_categories_q5_list <- function(df_list, census_vec) {
   categories <- unique(census_vec$category)
   categories <- categories[!is.na(categories)]
-  map(df_list, map, get_categories_q5, categories)
+  map(df_list, get_categories_q5, categories)
 }
 
 get_breaks_q5_list <- function(df_list, categories) {
-  map2(df_list, categories, map2, get_breaks_q5)
+  map2(df_list, categories, get_breaks_q5)
 }
 
 add_q5_list <- function(df_list, breaks_list) {
-  map2(df_list, breaks_list, map2, add_q5)
+  map2(df_list, breaks_list, \(x, y) map(x, add_q5, y))
 }
 
 merge_breaks <- function(df_list, df_list_q3, df_list_q5) {
-  pmap(list(df_list, df_list_q3, df_list_q5), function(df_l, df_l_q3, df_l_q5) {
-    pmap(list(df_l, df_l_q3, df_l_q5), function(df, df_q3, df_q5) {
+  pmap(list(df_list, df_list_q3, df_list_q5), \(df_l, df_l_q3, df_l_q5) {
+    pmap(list(df_l, df_l_q3, df_l_q5), \(df, df_q3, df_q5) {
       out <- full_join(df, df_q3, by = names(df))
       if (nrow(df_q5) > 0) out <- bind_cols(out, df_q5)
       out
