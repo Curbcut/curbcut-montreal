@@ -24,28 +24,33 @@ crash <-
 
 # Traffic activity
 # 
-# traffic_files <- 
-#   list.files("dev/data/traffic_activity") |> 
+# traffic_files <-
+#   list.files("dev/data/traffic_activity") |>
 #   (\(x) paste0("dev/data/traffic_activity/", x))()
 # 
-# traffic_files_names <- 
-#   list.files("dev/data/traffic_activity") |> 
-#   str_replace("comptages", "traffic") |> 
+# traffic_files_names <-
+#   list.files("dev/data/traffic_activity") |>
+#   str_replace("comptages", "traffic") |>
 #   str_remove_all("_vehicules_cyclistes_pietons|.csv")
 # 
-# traffic <- 
+# traffic <-
 #   map2(set_names(traffic_files_names), traffic_files, ~{
-#     .x <- 
-#       read_csv(.y) |> 
+#     .x <-
+#       read_csv(.y) |>
 #       select(-(Approche_Nord:Localisation_Y), -Code_Banque)
-#   }) |> 
-#   reduce(rbind) |> 
+#   }) |>
+#   reduce(rbind) |>
 #   # Sometimes . somtimes , for these ID. They normally use ,
-#   mutate(Nom_Intersection = case_when(Nom_Intersection == "Décarie / Van Horne inter. Est" ~ "Décarie / Van Horne inter, Est",
-#                                       Nom_Intersection == "Décarie / Van Horne inter. Ouest" ~ "Décarie / Van Horne inter, Ouest",
-#                                       Nom_Intersection == "Crémazie / Saint-Michel inter. Nord-Ouest" ~ "Crémazie / Saint-Michel inter, Nord-Ouest",
-#                                       Nom_Intersection == "Rita-Levi-Montalcini" ~ "Rita-Levi-Montalcini / Maurice-Duplessis",
-#                                       TRUE ~ Nom_Intersection)) |> 
+#   mutate(Nom_Intersection = case_when(
+#     Nom_Intersection == "Décarie / Van Horne inter. Est" ~ 
+#       "Décarie / Van Horne inter, Est",
+#     Nom_Intersection == "Décarie / Van Horne inter. Ouest" ~ 
+#       "Décarie / Van Horne inter, Ouest", 
+#     Nom_Intersection == "Crémazie / Saint-Michel inter. Nord-Ouest" ~ 
+#       "Crémazie / Saint-Michel inter, Nord-Ouest",
+#     Nom_Intersection == "Rita-Levi-Montalcini" ~ 
+#       "Rita-Levi-Montalcini / Maurice-Duplessis",
+#     TRUE ~ Nom_Intersection)) |>
 #   # Id_Intersection doubled for different intersection.
 #   mutate(Id_Intersection = case_when(Nom_Intersection == "rue Dobrin / boulevard Thimens int. Ouest" ~ 99999,
 #                                      TRUE ~ Id_Intersection)) |> 
@@ -187,10 +192,18 @@ crash_results <- map(list("borough" = borough, "CT" = CT, "DA" = DA,
 
 # Add breaks --------------------------------------------------------------
 
-crash_results <- map(crash_results, add_q3)
-crash_q3 <- map(crash_results, get_breaks_q3)
-crash_q5 <- map(crash_results, get_breaks_q5)
-crash_results <- map2(crash_results, crash_q5, ~bind_cols(.x, add_q5(.x, .y)))
+crash_for_q5 <- 
+  crash_results |> 
+  map(pivot_longer, cols = -ID, names_to = c("var", "year"), 
+      names_pattern = "(.*)_(\\d{4}$)", values_to = "value") |> 
+  map(pivot_wider, names_from = var, values_from = value) |> 
+  map(select, -year)
+
+crash_q3 <- map(crash_results, add_q3)
+crash_breaks_q3 <- map(crash_q3, get_breaks_q3)
+crash_breaks_q5 <- map(crash_for_q5, get_breaks_q5)
+crash_q5 <- map2(crash_results, crash_breaks_q5, add_q5)
+crash_results <- map2(crash_results, crash_q5, bind_cols)
 
 
 # Data testing ------------------------------------------------------------
@@ -247,12 +260,15 @@ var_list <-
   unlist() |> 
   unique()
 
-var_list_no_dates <- str_remove(var_list, "_\\d{4}$") |> unique()
+var_list_no_dates <- 
+  var_list |> 
+  str_remove("_\\d{4}$") |> 
+  unique()
 
 # Get breaks_q3
 breaks_q3_active <-
   map2(set_names(var_list), str_extract(var_list, "\\d{4}$"), \(var_name, year) {
-    map2_dfr(crash_q3, names(crash_results), function(x, scale) {
+    map2_dfr(crash_breaks_q3, names(crash_results), function(x, scale) {
       if (nrow(x) > 0) x |> mutate(scale = scale, date = year, rank = 0:3,
                                    .before = everything())}) |> 
       select(scale, date, rank, var = all_of(var_name))})
@@ -267,21 +283,16 @@ breaks_q3_active <-
 
 # Get breaks_q5
 breaks_q5_active <-
-  map2(set_names(var_list), str_extract(var_list, "\\d{4}$"), \(var_name, year) {
-    map2_dfr(crash_q5, names(crash_results), function(x, scale) {
-      if (nrow(x) > 0) x |> mutate(scale = scale, date = year, rank = 0:5,
-                                   .before = everything())}) |> 
-      select(scale, date, rank, var = all_of(var_name))})
+  map2(set_names(var_list_no_dates), 
+       str_extract(var_list_no_dates, "\\d{4}$"), 
+       \(var_name, year) {
+         map2_dfr(crash_breaks_q5, names(crash_results), function(x, scale) {
+           if (nrow(x) > 0) x |> mutate(scale = scale, rank = 0:5,
+                                        .before = everything())}) |> 
+           select(scale, rank, var = all_of(var_name))})
 
-names(breaks_q5_active) <- str_remove(names(breaks_q5_active), "_\\d{4}$")
-
-breaks_q5_active <- 
-  map(set_names(var_list_no_dates), ~{
-    breaks_q5_active[names(breaks_q5_active) == .x] |> 
-      reduce(bind_rows)
-  })
-
-variables <- 
+# Add new variables
+variables <-
   variables |>
   add_variables(
     var_code = "crash_cyc_count",
@@ -431,7 +442,8 @@ variables <-
 
 # Clean-up ----------------------------------------------------------------
 
-rm(crash_results, process_crash, join_crash#, 
+rm(breaks_q3_active, breaks_q5_active, crash_breaks_q3, crash_breaks_q5,
+   crash_for_q5, crash_q3, crash_q5, crash_results, var_list, var_list_no_dates,
+   join_crash, process_crash#, 
    # traffic_count, traffic_files, traffic_files_names
    )
-

@@ -129,7 +129,7 @@ climate_risk_q3 <-
     })
 
 climate_risk_q5 <- 
-  map(list(DA, CT, borough), ~{
+  map(list("DA" = DA, "CT" = CT, "borough" = borough), ~{
     .x |> 
       st_drop_geometry() |>
       get_breaks_q5(c("climate_flood_ind", "climate_heavy_rain_ind", 
@@ -147,7 +147,7 @@ grid_q5 <-
                                  "Major" = 5))) |> 
   list()
 
-climate_risk_q5 <- c(climate_risk_q5, grid_q5)
+climate_risk_q5 <- c(climate_risk_q5, "grid" = grid_q5)
 
 DA <-
   DA |> 
@@ -193,8 +193,8 @@ breaks_q3_active <-
 # Get breaks_q5
 breaks_q5_active <- 
   map2_dfr(climate_risk_q5, c("DA", "CT", "borough", "grid"), \(x, scale) {
-    if (nrow(x) > 0) x |> mutate(scale = scale, date = NA, 
-                                 rank = seq_len(nrow(x)) - 1, .before = 1)})
+    if (nrow(x) > 0) x |> mutate(scale = scale, rank = seq_len(nrow(x)) - 1, 
+                                 .before = 1)})
 
 variables <- 
   variables |>

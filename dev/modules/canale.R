@@ -166,7 +166,7 @@ breaks_q3_active <-
 # Get breaks_q5
 breaks_q5_active <- 
   map2_dfr(canale_q5, c("DA", "CT", "borough", "grid"), function(x, scale) {
-    if (nrow(x) > 0) x |> mutate(scale = scale, date = 2016, rank = 0:5,
+    if (nrow(x) > 0) x |> mutate(scale = scale, rank = 0:5, 
                                  .before = canale_ind)}) |> 
   rename(var = canale_ind)
 
