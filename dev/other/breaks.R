@@ -44,6 +44,7 @@ add_q5 <- function(df, breaks) {
     y[1] <- -Inf
     y[length(y)] <- Inf
     
+    # Check any possible year suffixes
     var_names <- c(x, paste(x, 1900:2100, sep = "_"))
     
     df |> 
@@ -57,7 +58,7 @@ add_q5 <- function(df, breaks) {
 
 find_breaks_q5 <- function(min_val, max_val) {
   breaks <- unlist(map(-3:7, ~ {
-    (10^.x) * c(1, 1.5, 2, 2.5, 3, 4, 5, 6)
+    (10 ^ .x) * c(1, 1.5, 2, 2.5, 3, 4, 5, 6)
   }))
   
   range <- max_val - min_val
@@ -73,7 +74,10 @@ get_breaks_q5 <- function(df, var_list = NULL) {
   
   # Automatically retrieve var_list if var_list is NULL
   if (is.null(var_list)) {
-    var_list <- names(select(df, -contains(c("q3", "q5")), -any_of("ID")))
+    var_list <- 
+      df |> 
+      select(-contains(c("q3", "q5")), -any_of("ID")) |> 
+      names()
   }
   
   cat_min <- suppressWarnings(
@@ -96,8 +100,9 @@ get_breaks_q5 <- function(df, var_list = NULL) {
     map(var_list, ~{
       df |>
         select(all_of(.x)) |>
-        filter_all(all_vars(between(., quantile(., .01, na.rm = T), 
-                                    quantile(., .99, na.rm = T)))) |> 
+        filter(if_all(everything(), 
+                      ~between(.x, quantile(.x, .01, na.rm = TRUE), 
+                               quantile(.x, .99, na.rm = TRUE)))) |> 
         as.matrix() |>
         mean(na.rm = TRUE)
     }))
@@ -106,18 +111,21 @@ get_breaks_q5 <- function(df, var_list = NULL) {
     map(var_list, ~{
       df |>
         select(all_of(.x)) |>
-        filter_all(all_vars(between(., quantile(., .01, na.rm = T), 
-                                    quantile(., .99, na.rm = T)))) |> 
+        filter(if_all(everything(), 
+                      ~between(.x, quantile(.x, .01, na.rm = TRUE), 
+                               quantile(.x, .99, na.rm = TRUE)))) |> 
         as.matrix() |>
         sd(na.rm = TRUE)
     }))
   
-  pmap_dfc(list(cat_min, cat_max, var_list,
-                var_mean, standard_d), function(x, y, z, a, b) {
-    breaks <- find_breaks_q5(max(a - (4 * b), x), 
-                             min(a + (4 * b), y))
-    tibble(v = breaks) |>
-      set_names(z)
-  })
+  breaks <- pmap(
+    list(cat_min, cat_max, var_mean, standard_d), \(x, y, a, b) {
+      breaks <- find_breaks_q5(max(a - (4 * b), x), min(a + (4 * b), y))
+      tibble(v = breaks, .name_repair = "minimal")}) |> 
+    bind_cols(.name_repair = "minimal") |> 
+    map2_dfc(var_list, ~{
+      map(.y, \(z) tibble(z = .x)) |> 
+        bind_cols(.name_repair = "minimal") |> 
+        set_names(.y)})
   
 }

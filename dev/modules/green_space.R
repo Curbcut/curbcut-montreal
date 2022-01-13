@@ -169,9 +169,9 @@ breaks_q3_active <-
 breaks_q5_active <- 
   map(set_names(var_list), ~{
     map2_dfr(gs_q5, names(gs_results), function(x, scale) {
-      if (nrow(x) > 0) x |> mutate(scale = scale, date = NA, rank = 0:5,
+      if (nrow(x) > 0) x |> mutate(scale = scale, rank = 0:5, 
                                    .before = everything())}) |> 
-      select(scale, date, rank, var = all_of(.x))})
+      select(scale, rank, var = all_of(.x))})
 
 # Construct green space variables table
 green_space_table <- 

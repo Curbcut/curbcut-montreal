@@ -7,7 +7,7 @@
 load("dev/data/tt_data_long.Rdata")
 
 points <- 
-  read_csv("dev/data/tt_points.csv", col_types = "dcdd") |> 
+  read_csv("dev/data/tt_points.csv", col_types = "dcdd", progress = FALSE) |> 
   select(GeoUID, CT) |> 
   mutate(CT = if_else(nchar(CT) == 7, paste0(CT, ".00"), CT))
 
@@ -47,6 +47,7 @@ metro_lines <-
   select(line, fill, geometry) %>% 
   st_transform(4326)
 
+
 # Process access table ----------------------------------------------------
 
 access <-
@@ -72,9 +73,16 @@ access <-
 
 # Add breaks --------------------------------------------------------------
 
+var_list <- list("total" = str_subset(names(access), "total"),
+                 "low" = str_subset(names(access), "low"),
+                 "high" = str_subset(names(access), "high"),
+                 "30k" = str_subset(names(access), "30k"),
+                 "schools" = str_subset(names(access), "schools"),
+                 "healthcare" = str_subset(names(access), "healthcare"))
+
 access <- add_q3(access)
 access_q3 <- get_breaks_q3(access)
-access_q5 <- get_breaks_q5(access)
+access_q5 <- get_breaks_q5(access, var_list)
 access <- bind_cols(access, add_q5(access, access_q5))
 
 
@@ -102,7 +110,6 @@ tt_matrix <-
   select(timing, origin, destination = CT, travel_time)
 
 
-
 # Meta testing ------------------------------------------------------------
 
 # meta_testing()
@@ -127,18 +134,18 @@ breaks_q3_active <-
 breaks_q5_active <-
   map(set_names(var_list), ~{
     access_q5 |> 
-      mutate(scale = "CT", date = NA, rank = 0:5, .before = everything()) |> 
-      select(scale, date, rank, var = all_of(.x))
+      mutate(scale = "CT", rank = 0:5, .before = everything()) |> 
+      select(scale, rank, var = all_of(.x))
   })
 
-
 variables <- 
-variables |>
+  variables |>
   add_variables(
     var_code = "access_jobs_total_pwd_count",
     var_title = "Total jobs (weekday peak)",
     var_short = "Total WKP",
-    explanation = "the total number of jobs accessible within 30 minutes at weekday peak service",
+    explanation = paste0("the total number of jobs accessible within 30 ",
+                         "minutes at weekday peak service"),
     category = NA,
     private = FALSE,
     dates = NA,
@@ -151,7 +158,8 @@ variables |>
     var_code = "access_jobs_total_opwd_count",
     var_title = "Total jobs (weekday off-peak)",
     var_short = "Total WKOP",
-    explanation = "the total number of jobs accessible within 30 minutes at weekday off-peak service",
+    explanation = paste0("the total number of jobs accessible within 30 ",
+                         "minutes at weekday off-peak service"),
     category = NA,
     private = FALSE,
     dates = NA,
@@ -164,7 +172,8 @@ variables |>
     var_code = "access_jobs_total_nwd_count",
     var_title = "Total jobs (weekday night)",
     var_short = "Total WKN",
-    explanation = "the total number of jobs accessible within 30 minutes at weekday night service",
+    explanation = paste0("the total number of jobs accessible within 30 ",
+                         "minutes at weekday night service"),
     category = NA,
     private = FALSE,
     dates = NA,
@@ -177,7 +186,8 @@ variables |>
     var_code = "access_jobs_total_pwe_count",
     var_title = "Total jobs (weekend peak)",
     var_short = "Total WEP",
-    explanation = "the total number of jobs accessible within 30 minutes at weekend peak service",
+    explanation = paste0("the total number of jobs accessible within 30 ",
+                         "minutes at weekend peak service"),
     category = NA,
     private = FALSE,
     dates = NA,
@@ -190,7 +200,8 @@ variables |>
     var_code = "access_jobs_total_opwe_count",
     var_title = "Total jobs (weekend off-peak)",
     var_short = "Total WEOP",
-    explanation = "the total number of jobs accessible within 30 minutes at weekend off-peak service",
+    explanation = paste0("the total number of jobs accessible within 30 ",
+                         "minutes at weekend off-peak service"),
     category = NA,
     private = FALSE,
     dates = NA,
@@ -203,7 +214,8 @@ variables |>
     var_code = "access_jobs_total_nwe_count",
     var_title = "Total jobs (weekend night)",
     var_short = "Total WEN",
-    explanation = "the total number of jobs accessible within 30 minutes at weekend night service",
+    explanation = paste0("the total number of jobs accessible within 30 ",
+                          "minutes at weekend night service"),
     category = NA,
     private = FALSE,
     dates = NA,
@@ -216,7 +228,8 @@ variables |>
     var_code = "access_jobs_low_pwd_count",
     var_title = "Low-skill jobs (weekday peak)",
     var_short = "Low-skill WKP",
-    explanation = "the number of low-skill jobs accessible within 30 minutes at weekday peak service",
+    explanation = paste0("the number of low-skill jobs accessible within ",
+                         "30 minutes at weekday peak service"),
     category = NA,
     private = FALSE,
     dates = NA,
@@ -229,7 +242,8 @@ variables |>
     var_code = "access_jobs_low_opwd_count",
     var_title = "Low-skill jobs (weekday off-peak)",
     var_short = "Low-skill WKOP",
-    explanation = "the number of low-skill jobs accessible within 30 minutes at weekday off-peak service",
+    explanation = paste0("the number of low-skill jobs accessible within ",
+                         "30 minutes at weekday off-peak service"),
     category = NA,
     private = FALSE,
     dates = NA,
@@ -242,7 +256,8 @@ variables |>
     var_code = "access_jobs_low_nwd_count",
     var_title = "Low-skill jobs (weekday night)",
     var_short = "Low-skill WKN",
-    explanation = "the number of low-skill jobs accessible within 30 minutes at weekday night service",
+    explanation = paste0("the number of low-skill jobs accessible within ",
+                         "30 minutes at weekday night service"),
     category = NA,
     private = FALSE,
     dates = NA,
@@ -255,7 +270,8 @@ variables |>
     var_code = "access_jobs_low_pwe_count",
     var_title = "Low-skill jobs (weekend peak)",
     var_short = "Low-skill WEP",
-    explanation = "the number of low-skill jobs accessible within 30 minutes at weekend peak service",
+    explanation = paste0("the number of low-skill jobs accessible within ",
+                         "30 minutes at weekend peak service"),
     category = NA,
     private = FALSE,
     dates = NA,
@@ -268,7 +284,8 @@ variables |>
     var_code = "access_jobs_low_opwe_count",
     var_title = "Low-skill jobs (weekend off-peak)",
     var_short = "Low-skill WEOP",
-    explanation = "the number of low-skill jobs accessible within 30 minutes at weekend off-peak service",
+    explanation = paste0("the number of low-skill jobs accessible within 30 ",
+                         "minutes at weekend off-peak service"),
     category = NA,
     private = FALSE,
     dates = NA,
@@ -281,7 +298,8 @@ variables |>
     var_code = "access_jobs_low_nwe_count",
     var_title = "Low-skill jobs (weekend night)",
     var_short = "Low-skill WEN",
-    explanation = "the number of low-skill jobs accessible within 30 minutes at weekend night service",
+    explanation = paste0("the number of low-skill jobs accessible within 30 ",
+                         "minutes at weekend night service"),
     category = NA,
     private = FALSE,
     dates = NA,
@@ -294,7 +312,8 @@ variables |>
     var_code = "access_jobs_high_pwd_count",
     var_title = "High-skill jobs (weekday peak)",
     var_short = "Hi-skill WKP",
-    explanation = "the number of high-skill jobs accessible within 30 minutes at weekday peak service",
+    explanation = paste0("the number of high-skill jobs accessible within 30 ",
+                         "minutes at weekday peak service"),
     category = NA,
     private = FALSE,
     dates = NA,
@@ -307,7 +326,8 @@ variables |>
     var_code = "access_jobs_high_opwd_count",
     var_title = "High-skill jobs (weekday off-peak)",
     var_short = "Hi-skill WKOP",
-    explanation = "the number of high-skill jobs accessible within 30 minutes at weekday off-peak service",
+    explanation = paste0("the number of high-skill jobs accessible within 30 ",
+                         "minutes at weekday off-peak service"),
     category = NA,
     private = FALSE,
     dates = NA,
@@ -606,4 +626,4 @@ variables |>
 
 # Clean up ----------------------------------------------------------------
 
-rm(access, data_long, points)
+rm(access, access_q3, access_q5, data_long, points)
