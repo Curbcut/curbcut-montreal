@@ -83,11 +83,10 @@ climate_risk_server <- function(id) {
     
     # Data
     data <- data_server(
-      id = "canale",
+      id = "climate_risk",
       var_left = var_left,
       var_right = var_right,
       df = df,
-      zoom = zoom,
       island = TRUE)
     
     # Explore panel

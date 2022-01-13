@@ -139,7 +139,7 @@ right_panel <- function(id, ...) {
 }
 
 return_closest_year <- function(var, df = "borough") {
-  df <- get(df)
+  if (df == "building") df <- DA else df <- get(df)
   if (!var %in% names(df)) {
     time <- as.numeric(str_extract(var, "\\d{4}"))
     x <- 
