@@ -2347,6 +2347,8 @@ translation_fr <-
           fr = "Examiner une variable unique comprise dans l'indice") |> 
   add_row(en = "Type of green space",
           fr = "Type d'espace vert") |> 
+  add_row(en = "Type of permits",
+          fr = "Type de permis") |> 
   distinct(en, .keep_all = TRUE)
 
 
