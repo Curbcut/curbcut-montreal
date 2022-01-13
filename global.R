@@ -89,9 +89,11 @@ convert_unit <- function(x, var_name = NULL, compact = FALSE) {
   
   if (length(x) == 0) return(x)
   if (length(x) == 1 && is.na(x)) return(x)
+  # TKTK SHOULD THIS BE MAX DIGIT INSTEAD??
   if (compact) min_dig <- 
       x |> 
       setdiff(0) |> 
+      abs() |> 
       min(na.rm = TRUE) |> 
       log10() |> 
       ceiling()
