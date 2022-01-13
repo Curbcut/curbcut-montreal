@@ -22,6 +22,7 @@ map_change <- function(id_map, x, df, selection = reactive(NULL),
                        legend = NULL,  polygons_to_clear = NULL, 
                        standard_width = reactive(TRUE),
                        legend_selection = reactive(NULL)) {
+  
   stopifnot(is.reactive(x))
   stopifnot(is.reactive(df))
   stopifnot(is.reactive(selection))
@@ -64,22 +65,21 @@ map_change <- function(id_map, x, df, selection = reactive(NULL),
       # Error handling
       if (geom_type() == "error") stop("`geom_type` invalid in `map_change`.")
       
+      # Map updates for polygons  
       if (geom_type() == "polygon") {
-
-        width <- switch(df(), "borough" = 10, "CT" = 5, "grid" = 0, 2)
+        
+        width <- switch(df(), "borough" = 20, "CT" = 5, "grid" = 0, 2)
         if (!standard_width()) width <- 0
         
         # Legend selection
         x <- if (!is.null(legend_selection())) {
           x() |> 
-            mutate(fill = case_when(
-              str_detect(fill, 
-                         paste0(legend_selection(), "..$", 
-                                collapse = "|")) ~ fill,
+            mutate(fill = case_when(str_detect(
+              fill, paste0(legend_selection(), "..$", collapse = "|")) ~ fill,
               TRUE ~ str_replace(fill, "..$", "50")))
-        } else {
-          x()
-        }
+        } else x()
+          
+        # Buildings should be extruded
         if (df() == "building") {
           update_and_clean() |> 
             add_polygon(
@@ -95,7 +95,6 @@ map_change <- function(id_map, x, df, selection = reactive(NULL),
               highlight_colour = "#FFFFFF90")
         }
         
-        
       } else if (geom_type() == "line") {
         
         update_and_clean() |>
@@ -106,7 +105,7 @@ map_change <- function(id_map, x, df, selection = reactive(NULL),
         
       } else if (geom_type() == "point") {
         
-        if (!df() %in% c("street", "building")) {
+        if (df() != "street") {
           update_and_clean() |>
             add_heatmap(data = x(), update_view = FALSE,
                         colour_range = c("#AECBB4", "#91BD9A", "#73AE80",
@@ -131,22 +130,24 @@ map_change <- function(id_map, x, df, selection = reactive(NULL),
       
       # Update map in response to poly change
       observeEvent(selection(), {
+        
         if (geom_type() == "polygon") {
           if (!is.null(selection())) {
             if (!is.na(selection())) {
-              width <- switch(df(), "borough" = 10, "CT" = 5, "grid" = 0, 2)
-              if (!standard_width()) width <- 0
+              
+              width <- switch(df(), "borough" = 20, "CT" = 5, 2)
               
               data_to_add <-
                 x() |>
                 filter(ID == selection()) |>
                 mutate(fill = substr(fill, 1, 7))
-
+              
               mapdeck_update(map_id = id_map) |>
                 add_polygon(
                   data = data_to_add, elevation = 5, fill_colour = "fill",
                   update_view = FALSE, layer_id = "poly_highlight",
                   auto_highlight = TRUE, highlight_colour = "#FFFFFF90")
+              
             } else {
               mapdeck_update(map_id = id_map) |>
                 clear_polygon(layer_id = "poly_highlight")

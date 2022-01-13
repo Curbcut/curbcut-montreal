@@ -72,7 +72,7 @@ year_disclaimer_server <- function(id, var_left, var_right, time, pct_variation 
       
       # Year displayed RIGHT
       if (length(var_right) == 1) {
-        if (right_year != unique(time()) && var_right != " ") {
+        if (var_right != " " && right_year != unique(time())) {
           out <- c(out, list(str_glue(sus_translate(paste0(
             "<p style='font-size:11px; font-style:italic;'>",
             "Displayed data for <b>{var_right_title}</b> is for the ",

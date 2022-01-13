@@ -102,7 +102,7 @@ crash_server <- function(id) {
       zoom = zoom, 
       zoom_levels = map_zoom_levels)
     
-    df <- reactive({if(input$grid) "grid" else df_choropleth()})
+    df <- reactive({if (input$grid) "grid" else df_choropleth()})
     
     # Enable or disable first and second slider
     observeEvent(input$bi_time, {
@@ -153,7 +153,6 @@ crash_server <- function(id) {
       var_left = var_left,
       var_right = var_right, 
       df = df, 
-      zoom = zoom,
       island = TRUE)
     
     data <- reactive({
