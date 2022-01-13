@@ -102,7 +102,7 @@ crash_server <- function(id) {
       zoom = zoom, 
       zoom_levels = map_zoom_levels)
     
-    df <- reactive({if(input$grid) "grid" else df_choropleth()})
+    df <- reactive({if (input$grid) "grid" else df_choropleth()})
     
     # Enable or disable first and second slider
     observeEvent(input$bi_time, {
@@ -139,21 +139,12 @@ crash_server <- function(id) {
       time = time,
       show_panel = choropleth)
     
-    # Disclaimers and how to read the map
-    year_disclaimer_server(
-      id = "disclaimers", 
-      var_left = var_left,
-      var_right = var_right,
-      time = time,
-      pct_variation = choropleth)
-    
     # Data 
     data_choropleth <- data_server(
       id = "crash", 
       var_left = var_left,
       var_right = var_right, 
       df = df, 
-      zoom = zoom,
       island = TRUE)
     
     data <- reactive({
@@ -170,6 +161,15 @@ crash_server <- function(id) {
           }}     
       }
     })
+    
+    # Disclaimers and how to read the map
+    year_disclaimer_server(
+      id = "disclaimers", 
+      data = data,
+      var_left = var_left,
+      var_right = var_right,
+      time = time,
+      pct_variation = choropleth)
 
     # Prepare different type of values for the explore panel
     data_for_explore <- reactive({

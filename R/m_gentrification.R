@@ -130,16 +130,17 @@ gentrification_server <- function(id) {
     # Disclaimers and how to read the map
     year_disclaimer_server(
       id = "disclaimers", 
+      data = data,
       var_left = var_left,
       var_right = var_right,
       time = time,
       # If the same time is selected twice, other disclaimer
       more_condition = reactive({length(unique(time())) == 1 && 
                                   !input$check_single_var}),
-      more_text = str_glue(sus_translate(paste0(
+      more_text = paste0(
         "<p style='font-size:11px;'>",
         "Gentrification is a process that can only be quantified over time. ",
-        "Please, select two different years.</i></p>"))))
+        "Please, select two different years.</p>"))
     
     # Data
     data <- data_server(
