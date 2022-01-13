@@ -40,10 +40,6 @@ data_server <- function(id, var_left, var_right, df, island = FALSE) {
       var_left <- var_left()
       var_right <- var_right()
       
-      print(data_type)
-      print(var_left)
-      print(var_right)
-      
       # Are var_left and var_right the same column?
       if (all(var_left == var_right)) {
         stop("`var_left` and `var_right` are the same.")
@@ -61,12 +57,8 @@ data_server <- function(id, var_left, var_right, df, island = FALSE) {
                         na.omit(str_extract(var_left, time_format)))
       right_q5 <- paste0(str_remove(all_of(var_right), time_format), "_q5", 
                          na.omit(str_extract(var_right, time_format)))
-      
-      print(left_q3)
-      print(right_q3)
-      print(left_q5)
-      print(right_q5)
-      
+
+            
       # Simple univariate ------------------------------------------------------
      
       if (data_type == "q5") {
