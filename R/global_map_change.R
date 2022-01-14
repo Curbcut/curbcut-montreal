@@ -46,8 +46,16 @@ map_change <- function(id_map, x, df, zoom = df, selection = reactive(NULL),
       unique()
   })
   
+  # Create select_id -----------------------------------------------------------
+  
+  # Clear selection on df change
+  observeEvent(df(), selection(NA), ignoreInit = TRUE)
+  
   # Process selection
   select_id <- reactive({
+    
+    print("SELECTION")
+    print(selection())
   
     # Deal with NULL/NA selection
     if (is.null(selection()) || 
@@ -65,7 +73,10 @@ map_change <- function(id_map, x, df, zoom = df, selection = reactive(NULL),
     
   })
   
-  observeEvent(select_id(), print(select_id()))
+  observeEvent(select_id(), {
+    print("SELECT_ID")
+    print(select_id())
+    })
   
   
   ## Update map on data change -------------------------------------------------
@@ -131,9 +142,7 @@ map_change <- function(id_map, x, df, zoom = df, selection = reactive(NULL),
               data = dat, stroke_width = width,
               stroke_colour = "#FFFFFF", fill_colour = "fill",
               update_view = FALSE, id = "ID", auto_highlight = TRUE,
-              highlight_colour = "#FFFFFF80", 
-              transitions = list(polygon = 1000, stroke_width = 1000,
-                                 fill_colour = 1000))
+              highlight_colour = "#FFFFFF80")
         }
         
       # TKTK THIS HASN'T BE LOOKED AT YET

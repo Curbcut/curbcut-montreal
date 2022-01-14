@@ -110,9 +110,6 @@ canale_server <- function(id) {
       selection(input$map_polygon_click)
     })
     
-    # Clear selection on df change
-    observeEvent(df(), selection(NA), ignoreInit = TRUE)
-
     # Clear click status if prompted
     observeEvent(input$`explore-clear_selection`, selection(NA))
     
