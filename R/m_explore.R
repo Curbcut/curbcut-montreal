@@ -55,7 +55,7 @@ explore_server <- function(id, x, var_left, var_right, select_id, df,
   moduleServer(id, function(input, output, session) {
     
     # Get var_type
-    var_type <- explore_var_type(id, x, var_left, var_right, select_id,
+    var_type <- explore_var_type(id, x, var_left, var_right, df, select_id,
                                  var_left_label, var_right_label)
     
     standard_table <- info_table_server(id = "explore", 

@@ -198,8 +198,6 @@ map_change <- function(id_map, x, df, zoom = df, click = reactive(NULL),
     
   })
   
-  observeEvent(building_to_add(), print(building_to_add()))
-  
   building_id <- reactive({
     if (is.null(building_to_add())) NA else building_to_add()$ID})
   
@@ -212,9 +210,6 @@ map_change <- function(id_map, x, df, zoom = df, click = reactive(NULL),
       if (!is.na(select_id())) {
         
         if (df() == "building") {
-          
-          print("BUILDING_ID")
-          print(building_id())
           
           mapdeck_update(map_id = id_map) |>
             add_polygon(

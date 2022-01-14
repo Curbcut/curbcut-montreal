@@ -1,6 +1,6 @@
 # Function to decide explore_graph and info_table details
 
-explore_var_type <- function(id, x, var_left, var_right, select_id, 
+explore_var_type <- function(id, x, var_left, var_right, df, select_id, 
                              var_left_label, var_right_label) {
   
   reactive({
@@ -24,7 +24,8 @@ explore_var_type <- function(id, x, var_left, var_right, select_id,
     
     ## Selections --------------------------------------------------------------
     
-    selection <- x() %>% filter(ID == select_id())
+    select_df <- reactive({if (df() == "building") building else x()})
+    selection <- select_df() %>% filter(ID == select_id())
     active_left <- nrow(filter(selection, !is.na(var_left)))
     active_right <- active_left
     if (length(var_right()) != 1 || var_right() != " ") active_right <- 
