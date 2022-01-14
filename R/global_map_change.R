@@ -19,7 +19,6 @@
 #' @return An update version of the mapdeck map.
 
 map_change <- function(id_map, x, df, zoom = df, click = reactive(NULL),
-                       selection = reactive(NULL), 
                        legend = NULL,  polygons_to_clear = NULL, 
                        standard_width = reactive(TRUE),
                        legend_selection = reactive(NULL),
@@ -31,7 +30,6 @@ map_change <- function(id_map, x, df, zoom = df, click = reactive(NULL),
   stopifnot(is.reactive(x))
   stopifnot(is.reactive(df))
   stopifnot(is.reactive(click))
-  stopifnot(is.reactive(selection))
   stopifnot(is.reactive(standard_width))
   stopifnot(is.reactive(legend_selection))
   stopifnot(is.reactive(explore_clear))
@@ -158,25 +156,18 @@ map_change <- function(id_map, x, df, zoom = df, click = reactive(NULL),
   
   ## Create select_id -----------------------------------------------------------
   
-  # Get on-click event
+  # Make selection and respond to events
+  selection <- reactiveVal(NA)
   observeEvent(click(), selection(click()))
-  
-  # Clear click status if prompted
   observeEvent(explore_clear(), selection(NA))
-  
-  # Clear selection on df change
   observeEvent(df(), selection(NA), ignoreInit = TRUE)
   
   # Process selection
   select_id <- reactive({
-    
     select_id <- tryCatch(jsonlite::fromJSON(selection())$object$properties$id,
                           error = function(e) NULL)
-    
     if (is.null(select_id)) select_id <- NA
-    
     return(select_id)
-    
   })
   
   
@@ -248,19 +239,15 @@ map_change <- function(id_map, x, df, zoom = df, click = reactive(NULL),
               stroke_colour = "#000000", stroke_width = width, 
               update_view = FALSE, layer_id = "highlight", 
               auto_highlight = TRUE, highlight_colour = "#FFFFFF80")
-          
-          
+
         }
-        
-        
-      } else {
-        
-        mapdeck_update(map_id = id_map) |>
-          clear_polygon(layer_id = "highlight")
-        }
+      } else mapdeck_update(map_id = id_map) |>
+        clear_polygon(layer_id = "highlight")
       }
     })
   
+  # return(reactive(list("select_id" = select_id(), 
+  #                      "building_to_add" = building_to_add())))
   return(select_id)
   
   }

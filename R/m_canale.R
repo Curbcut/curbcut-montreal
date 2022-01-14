@@ -37,8 +37,7 @@ canale_server <- function(id) {
     
     # Initial reactives
     zoom <- reactiveVal(get_zoom(map_zoom, map_zoom_levels))
-    selection <- reactiveVal(NA)
-    
+
     # Sidebar
     sidebar_server(
       id = "sidebar", 
@@ -102,7 +101,6 @@ canale_server <- function(id) {
       df = df, 
       zoom = zoom,
       click = reactive(input$map_polygon_click),
-      selection = selection,
       #legend_selection = reactive(legend()$legend_selection),
       explore_clear = reactive(input$`explore-clear_selection`)
       )
