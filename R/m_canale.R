@@ -96,16 +96,18 @@ canale_server <- function(id) {
       var_right = var_right)
 
     # Update map in response to variable changes or zooming
-    select_id <- map_change(NS(id, "map"), 
-               x = data, 
-               df = df, 
-               selection = selection#,
-               #legend_selection = reactive(legend()$legend_selection)
-               )
+    select_id <- map_change(
+      NS(id, "map"), 
+      x = data, 
+      df = df, 
+      zoom = zoom,
+      selection = selection#,
+      #legend_selection = reactive(legend()$legend_selection)
+      )
 
     # Get on-click event
     observeEvent(input$map_polygon_click, {
-      selection(jsonlite::fromJSON(input$map_polygon_click))
+      selection(input$map_polygon_click)
     })
     
     # Clear selection on df change

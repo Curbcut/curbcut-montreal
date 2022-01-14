@@ -18,7 +18,7 @@
 #' 0 instead?
 #' @return An update version of the mapdeck map.
 
-map_change <- function(id_map, x, df, selection = reactive(NULL), 
+map_change <- function(id_map, x, df, zoom = df, selection = reactive(NULL), 
                        legend = NULL,  polygons_to_clear = NULL, 
                        standard_width = reactive(TRUE),
                        legend_selection = reactive(NULL)) {
@@ -42,8 +42,8 @@ map_change <- function(id_map, x, df, selection = reactive(NULL),
              "MULTILINESTRING" = "line",
              "MULTIPOINT" = "point",
              "POINT" = "point",
-             "error")
-    }) |> unique()
+             "error")}) |> 
+      unique()
   })
   
   # Process selection
@@ -61,7 +61,7 @@ map_change <- function(id_map, x, df, selection = reactive(NULL),
       NA
     
     # Otherwise get ID
-    } else selection()$object$properties$id
+    } else jsonlite::fromJSON(selection())$object$properties$id
     
   })
   
@@ -71,7 +71,8 @@ map_change <- function(id_map, x, df, selection = reactive(NULL),
   ## Update map on data change -------------------------------------------------
   
   observeEvent({#legend_selection()
-    x()}, {
+    x()
+    zoom()}, {
       
       # Used at all geometries:
       update_and_clean <- function() {
@@ -93,33 +94,49 @@ map_change <- function(id_map, x, df, selection = reactive(NULL),
       # Map updates for polygons  
       if (geom_type() == "polygon") {
         
-        width <- switch(df(), "borough" = 20, "CT" = 5, "grid" = 0, 2)
+        # Take the minimum width implied by the zoom or the df
+        # TKTK Should probably replace this with separate zoom curves for
+        # different dfs
+        width <- 
+          switch(zoom(), "borough" = 100, "CT" = 10, "DA" = 2, "grid" = 0, 2)
+        width_2 <- 
+          switch(df(), "borough" = 100, "CT" = 10, "DA" = 2, "grid" = 0, 2)
+        width <- min(width, width_2)
         if (!standard_width()) width <- 0
         
         # Legend selection
-        x <- if (!is.null(legend_selection())) {
+        dat <- if (!is.null(legend_selection())) {
           x() |> 
             mutate(fill = case_when(str_detect(
               fill, paste0(legend_selection(), "..$", collapse = "|")) ~ fill,
               TRUE ~ str_replace(fill, "..$", "50")))
         } else x()
           
+        # Set transparency based on zoom
+        col_zoom <- colour_alpha[names(colour_alpha) == zoom()]
+        # Override for building
+        if (df() == "building") col_zoom <- "FF"
+        dat <- mutate(dat, fill = paste0(fill, col_zoom))
+        
         # Buildings should be extruded
         if (df() == "building") {
           update_and_clean() |> 
             add_polygon(
-              data = x, update_view = FALSE, id = "ID", elevation = 5, 
+              data = dat, update_view = FALSE, id = "ID", elevation = 5, 
               fill_colour = "fill", auto_highlight = TRUE, 
-              highlight_colour = "#FFFFFF90")
+              highlight_colour = "#FFFFFF80")
         } else {
           update_and_clean() |> 
             add_polygon(
-              data = x, stroke_width = width,
+              data = dat, stroke_width = width,
               stroke_colour = "#FFFFFF", fill_colour = "fill",
               update_view = FALSE, id = "ID", auto_highlight = TRUE,
-              highlight_colour = "#FFFFFF90", transitions = list(polygon = 1000))
+              highlight_colour = "#FFFFFF80", 
+              transitions = list(polygon = 1000, stroke_width = 1000,
+                                 fill_colour = 1000))
         }
         
+      # TKTK THIS HASN'T BE LOOKED AT YET
       } else if (geom_type() == "line") {
         
         update_and_clean() |>
@@ -128,6 +145,7 @@ map_change <- function(id_map, x, df, selection = reactive(NULL),
                    stroke_colour = "fill", auto_highlight = TRUE,
                    highlight_colour = "#FFFFFF90")
         
+      # TKTK THIS HASN'T BE LOOKED AT YET
       } else if (geom_type() == "point") {
         
         if (df() != "street") {
@@ -137,6 +155,7 @@ map_change <- function(id_map, x, df, selection = reactive(NULL),
                                          "#70999B", "#6E8EA8", "#6C83B5"),
                         intensity = 2)
           
+        # TKTK THIS HASN'T BE LOOKED AT YET
         } else {
           
           update_and_clean() |>
@@ -155,34 +174,42 @@ map_change <- function(id_map, x, df, selection = reactive(NULL),
       
     })
   
+  
   ## Update map on selection change --------------------------------------------
   
   observeEvent(select_id(), {
     
     if (geom_type() == "polygon") {
-      if (!is.null(selection())) {
-        if (!is.na(selection())) {
+      if (!is.na(select_id())) {
+        
+        # Take the minimum width implied by the zoom or the df
+        # TKTK Should probably replace this with separate zoom curves for
+        # different dfs
+        width <- 
+          switch(zoom(), "borough" = 100, "CT" = 10, "DA" = 2, "grid" = 0, 2)
+        width_2 <- 
+          switch(df(), "borough" = 100, "CT" = 10, "DA" = 2, "grid" = 0, 2)
+        width <- min(width, width_2)
+        if (!standard_width()) width <- 0
           
-          width <- switch(df(), "borough" = 20, "CT" = 5, 2)
+        data_to_add <-
+          x() |>
+          filter(ID == select_id()) |>
+          mutate(fill = substr(fill, 1, 7))
           
-          data_to_add <-
-            x() |>
-            filter(ID == select_id()) |>
-            mutate(fill = substr(fill, 1, 7))
-          
-          mapdeck_update(map_id = id_map) |>
-            add_polygon(
-              data = data_to_add, elevation = 5, fill_colour = "fill",
-              update_view = FALSE, layer_id = "poly_highlight",
-              auto_highlight = TRUE, highlight_colour = "#FFFFFF90")
-          
-        } else {
-          mapdeck_update(map_id = id_map) |>
-            clear_polygon(layer_id = "poly_highlight")
+        mapdeck_update(map_id = id_map) |>
+          add_polygon(
+            data = data_to_add, elevation = 5, fill_colour = "fill",
+            update_view = FALSE, layer_id = "poly_highlight",
+            auto_highlight = TRUE, highlight_colour = "#FFFFFF80")
+        
+      } else {
+        
+        mapdeck_update(map_id = id_map) |>
+          clear_polygon(layer_id = "poly_highlight")
         }
       }
-    }})
-  
+    })
   
   return(select_id)
   

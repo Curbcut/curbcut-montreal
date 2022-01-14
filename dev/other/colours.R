@@ -14,21 +14,22 @@ col_NA <- "#B3B3BB"
 
 # Opacity level -----------------------------------------------------------
 
-colour_alpha <- "CC"
+colour_alpha <- c("borough" = "EE", "CT" = "CC", "DA" = "AA", "building" = "99", 
+                  "street" = "CC")
 
 
 # Univariate 5-level colour table -----------------------------------------
 
 colour_left_5 <-
   tibble(group = c(1:5, "NA"),
-         fill = paste0(c(col_left_5, col_NA), colour_alpha))
+         fill = c(col_left_5, col_NA))
 
 
 # Univariate 3-level colour table -----------------------------------------
 
 colour_left_3 <-
   tibble(group = c(1:3, "NA"),
-         fill = paste0(c(col_left_3, col_NA), colour_alpha))
+         fill = c(col_left_3, col_NA))
 
 
 # Bivariate colour table --------------------------------------------------
@@ -40,34 +41,30 @@ colour_bivar <-
                    "NA - 1", "NA - 2", "NA - 3", 
                    "1 - NA", "2 - NA", "3 - NA",
                    "NA - NA"),
-    fill = paste0(c(col_bivar, rep(col_NA, 7)), colour_alpha))
+    fill = c(col_bivar, rep(col_NA, 7)))
 
 
 # Delta colour table ------------------------------------------------------
 
 colour_delta <- tibble(group = c("1 - 1", "2 - 1", "3 - 1", 
                                  "4 - 1", "5 - 1", "NA - 1"),
-                       fill = paste0(c(col_delta_5, col_NA), colour_alpha))
+                       fill = c(col_delta_5, col_NA))
 
 
 # Isopleth colour tables --------------------------------------------------
 
-colour_iso <- tibble(group = c("1", "2", "3"), 
-                     fill = paste0(col_iso, colour_alpha))
+colour_iso <- tibble(group = c("1", "2", "3"), fill = col_iso)
 
 
 # Objects for legends -----------------------------------------------------
 
-legend_left_3 <- tibble(
-  x = 1:3, y = 1, fill = paste0(col_left_3, colour_alpha), 
-  label = c("Bottom\nthird", "Middle\nthird", "Top\nthird"))
-legend_left_5 <- tibble(x = 1:5, y = 1, fill = paste0(col_left_5, colour_alpha))
-legend_delta_5 <- tibble(x = 1:5, y = 1, 
-                         fill = paste0(col_delta_5, colour_alpha))
+legend_left_3 <- tibble(x = 1:3, y = 1, fill = col_left_3)
+legend_left_5 <- tibble(x = 1:5, y = 1, fill = col_left_5)
+legend_delta_5 <- tibble(x = 1:5, y = 1, fill = col_delta_5)
 legend_bivar <- colour_bivar |> 
   slice(1:9) |> 
   tidyr::separate(group, into = c("x", "y"), sep = " - ")
-legend_iso <- tibble(x = 1:3, y = 1, fill = paste0(col_iso, colour_alpha))
+legend_iso <- tibble(x = 1:3, y = 1, fill = col_iso)
 
 
 # Save output -------------------------------------------------------------
