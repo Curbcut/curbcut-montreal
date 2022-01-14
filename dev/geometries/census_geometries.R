@@ -138,7 +138,7 @@ borough <-
   arrange(ID) |> 
   st_set_agr("constant")
 
-# Update CSDUID in DA and CT
+# Update CSDUID in borough, DA and CT
 borough_join <- 
   borough |> 
   st_drop_geometry() |> 
@@ -146,6 +146,10 @@ borough_join <-
   right_join(borough_join, by = "name") |> 
   select(ID = ID.y, CSDUID_new = ID.x) |> 
   arrange(ID)
+
+borough <- 
+  borough |> 
+  mutate(CSDUID = ID, .after = name)
 
 DA <- 
   DA |> 
