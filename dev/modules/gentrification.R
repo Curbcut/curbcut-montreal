@@ -81,6 +81,19 @@ gen_to_join <- map(list("borough" = borough, "CT" = CT, "DA" = DA,
                         "grid" = grid, "street" = street), index_fun)
 
 
+# Add empty q3 and q5 -----------------------------------------------------
+gen_to_join <- map(gen_to_join, ~{
+  mutate(.x, across(c(-any_of("ID")), \(x) NA_real_, .names = "{.col}_q3")) |> 
+    rename_with(~paste0(str_remove(., "_\\d{4}"),
+                        str_extract(., "_\\d{4}")), matches("_\\d{4}"))
+})
+
+gen_to_join <- map(gen_to_join, ~{
+  mutate(.x, across(c(-any_of("ID")), \(x) NA_real_, .names = "{.col}_q5")) |> 
+    rename_with(~paste0(str_remove(., "_\\d{4}"),
+                        str_extract(., "_\\d{4}")), matches("_\\d{4}"))
+})
+
 # Data testing ------------------------------------------------------------
 
 # data_testing(gen_to_join)
