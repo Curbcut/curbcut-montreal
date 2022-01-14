@@ -18,19 +18,23 @@
 #' 0 instead?
 #' @return An update version of the mapdeck map.
 
-map_change <- function(id_map, x, df, zoom = df, selection = reactive(NULL), 
+map_change <- function(id_map, x, df, zoom = df, click = reactive(NULL),
+                       selection = reactive(NULL), 
                        legend = NULL,  polygons_to_clear = NULL, 
                        standard_width = reactive(TRUE),
-                       legend_selection = reactive(NULL)) {
+                       legend_selection = reactive(NULL),
+                       explore_clear = reactive(NULL)) {
   
   ## Setup ---------------------------------------------------------------------
   
   # Error checking
   stopifnot(is.reactive(x))
   stopifnot(is.reactive(df))
+  stopifnot(is.reactive(click))
   stopifnot(is.reactive(selection))
   stopifnot(is.reactive(standard_width))
   stopifnot(is.reactive(legend_selection))
+  stopifnot(is.reactive(explore_clear))
   
   # Get geometry type
   geom_type <- reactive({
@@ -48,35 +52,34 @@ map_change <- function(id_map, x, df, zoom = df, selection = reactive(NULL),
   
   # Create select_id -----------------------------------------------------------
   
+  # Get on-click event
+  observeEvent(click(), selection(click()))
+  
+  # Clear click status if prompted
+  observeEvent(explore_clear(), selection(NA))
+  
   # Clear selection on df change
   observeEvent(df(), selection(NA), ignoreInit = TRUE)
   
   # Process selection
   select_id <- reactive({
     
-    print("SELECTION")
-    print(selection())
-  
-    # Deal with NULL/NA selection
-    if (is.null(selection()) || 
-        (length(selection()) == 1 && is.na(selection()))) {
-      
-      NA
+    select_id <- tryCatch(jsonlite::fromJSON(selection())$object$properties$id,
+                          error = function(e) NULL)
+    
+    if (is.null(select_id)) select_id <- NA
+    
     
     # Deal with buildings
-    } else if (df() == "building") {
+    if (df() == "building") {
       
-      NA
+      select_id <- NA
     
-    # Otherwise get ID
-    } else jsonlite::fromJSON(selection())$object$properties$id
+    }
+    
+    return(select_id)
     
   })
-  
-  observeEvent(select_id(), {
-    print("SELECT_ID")
-    print(select_id())
-    })
   
   
   ## Update map on data change -------------------------------------------------

@@ -101,18 +101,12 @@ canale_server <- function(id) {
       x = data, 
       df = df, 
       zoom = zoom,
-      selection = selection#,
-      #legend_selection = reactive(legend()$legend_selection)
+      click = reactive(input$map_polygon_click),
+      selection = selection,
+      #legend_selection = reactive(legend()$legend_selection),
+      explore_clear = reactive(input$`explore-clear_selection`)
       )
 
-    # Get on-click event
-    observeEvent(input$map_polygon_click, {
-      selection(input$map_polygon_click)
-    })
-    
-    # Clear click status if prompted
-    observeEvent(input$`explore-clear_selection`, selection(NA))
-    
     # Explore panel
     explore_content <- explore_server(
       id = "explore", 
