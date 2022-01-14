@@ -50,37 +50,6 @@ map_change <- function(id_map, x, df, zoom = df, click = reactive(NULL),
       unique()
   })
   
-  # Create select_id -----------------------------------------------------------
-  
-  # Get on-click event
-  observeEvent(click(), selection(click()))
-  
-  # Clear click status if prompted
-  observeEvent(explore_clear(), selection(NA))
-  
-  # Clear selection on df change
-  observeEvent(df(), selection(NA), ignoreInit = TRUE)
-  
-  # Process selection
-  select_id <- reactive({
-    
-    select_id <- tryCatch(jsonlite::fromJSON(selection())$object$properties$id,
-                          error = function(e) NULL)
-    
-    if (is.null(select_id)) select_id <- NA
-    
-    
-    # Deal with buildings
-    if (df() == "building") {
-      
-      select_id <- NA
-    
-    }
-    
-    return(select_id)
-    
-  })
-  
   
   ## Update map on data change -------------------------------------------------
   
@@ -187,6 +156,57 @@ map_change <- function(id_map, x, df, zoom = df, click = reactive(NULL),
     })
   
   
+  ## Create select_id -----------------------------------------------------------
+  
+  # Get on-click event
+  observeEvent(click(), selection(click()))
+  
+  # Clear click status if prompted
+  observeEvent(explore_clear(), selection(NA))
+  
+  # Clear selection on df change
+  observeEvent(df(), selection(NA), ignoreInit = TRUE)
+  
+  # Process selection
+  select_id <- reactive({
+    
+    select_id <- tryCatch(jsonlite::fromJSON(selection())$object$properties$id,
+                          error = function(e) NULL)
+    
+    if (is.null(select_id)) select_id <- NA
+    
+    return(select_id)
+    
+  })
+  
+  
+  ## Create building_to_add ----------------------------------------------------
+  
+  building_to_add <- reactive({
+    
+    if (df() != "building" || is.na(select_id())) return(NULL)
+    
+    lat <- jsonlite::fromJSON(selection())$lat
+    lon <- jsonlite::fromJSON(selection())$lon
+      
+    sel_coord <- 
+      c(lon, lat) |> 
+      st_point() |> 
+      st_sfc(crs = 4326) |> 
+      st_transform(32618)
+    
+    building_to_add <- 
+      building |> 
+      filter(DAUID == select_id()) |> 
+      st_transform(32618) |> 
+      st_filter(sel_coord) |> 
+      st_transform(4326)
+    
+    return(building_to_add)
+      
+  })
+
+  
   ## Update map on selection change --------------------------------------------
   
   observeEvent(select_id(), {
@@ -194,31 +214,49 @@ map_change <- function(id_map, x, df, zoom = df, click = reactive(NULL),
     if (geom_type() == "polygon") {
       if (!is.na(select_id())) {
         
-        # Take the minimum width implied by the zoom or the df
-        # TKTK Should probably replace this with separate zoom curves for
-        # different dfs
-        width <- 
-          switch(zoom(), "borough" = 100, "CT" = 10, "DA" = 2, "grid" = 0, 2)
-        width_2 <- 
-          switch(df(), "borough" = 100, "CT" = 10, "DA" = 2, "grid" = 0, 2)
-        width <- min(width, width_2)
-        if (!standard_width()) width <- 0
+        if (df() == "building") {
           
-        data_to_add <-
-          x() |>
-          filter(ID == select_id()) |>
-          mutate(fill = substr(fill, 1, 7))
+          mapdeck_update(map_id = id_map) |>
+            add_polygon(
+              data = building_to_add(), fill_colour = "#00000066", 
+              elevation = 5, update_view = FALSE, layer_id = "highlight", 
+              auto_highlight = TRUE, highlight_colour = "#FFFFFF80")
           
-        mapdeck_update(map_id = id_map) |>
-          add_polygon(
-            data = data_to_add, elevation = 5, fill_colour = "fill",
-            update_view = FALSE, layer_id = "poly_highlight",
-            auto_highlight = TRUE, highlight_colour = "#FFFFFF80")
+        } else {
+          
+          # Take the minimum width implied by the zoom or the df
+          # TKTK Should probably replace this with separate zoom curves for
+          # different dfs
+          width <- 
+            switch(zoom(), "borough" = 200, "CT" = 20, "DA" = 4, "grid" = 4, 4)
+          width_2 <- 
+            switch(df(), "borough" = 200, "CT" = 20, "DA" = 4, "grid" = 4, 4)
+          width <- min(width, width_2)
+          if (!standard_width()) width <- 0
+          
+          # Set transparency based on zoom
+          col_zoom <- colour_alpha[names(colour_alpha) == zoom()]
+          
+          data_to_add <-
+            x() |>
+            filter(ID == select_id()) |>
+            mutate(fill = paste0(fill, col_zoom))
+          
+          mapdeck_update(map_id = id_map) |>
+            add_polygon(
+              data = data_to_add, fill_colour = "fill", 
+              stroke_colour = "#000000", stroke_width = width, 
+              update_view = FALSE, layer_id = "highlight", 
+              auto_highlight = TRUE, highlight_colour = "#FFFFFF80")
+          
+          
+        }
+        
         
       } else {
         
         mapdeck_update(map_id = id_map) |>
-          clear_polygon(layer_id = "poly_highlight")
+          clear_polygon(layer_id = "highlight")
         }
       }
     })
