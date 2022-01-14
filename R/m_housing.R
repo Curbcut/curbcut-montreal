@@ -133,13 +133,6 @@ housing_server <- function(id) {
       disabled_choices = var_list_housing_right_disabled,
       time = time,
       df = df)
-    
-    # Disclaimers and how to read the map
-    year_disclaimer_server(
-      id = "disclaimers", 
-      var_left = var_left,
-      var_right = var_right,
-      time = time)
 
     # Data
     data <- data_server(
@@ -147,6 +140,14 @@ housing_server <- function(id) {
       var_left = var_left,
       var_right = var_right,
       df = df)
+    
+    # Disclaimers and how to read the map
+    year_disclaimer_server(
+      id = "disclaimers", 
+      data = data,
+      var_left = var_left,
+      var_right = var_right,
+      time = time)
 
     # Explore panel
     explore_content <- explore_server(

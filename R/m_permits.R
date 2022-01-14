@@ -63,7 +63,7 @@ permits_server <- function(id) {
   moduleServer(id, function(input, output, session) {
     
     # Load heavy data used by this module
-    if (any(!str_detect("permits_total_count_2021", names(borough)))) {
+    if (any(!str_detect("permits_combination_count_1990", names(borough)))) {
       qload("data/permits.qsm")
       borough <<- bind_cols(borough, permits_choropleth$borough)
       CT <<- bind_cols(CT, permits_choropleth$CT)
@@ -137,23 +137,14 @@ permits_server <- function(id) {
       df = df, 
       time = time,
       show_panel = choropleth)
-    
-    # Disclaimers and how to read the map
-    year_disclaimer_server(
-      id = "disclaimers", 
-      var_left = var_left,
-      var_right = var_right,
-      time = time,
-      pct_variation = choropleth)
-    
+
     # Data 
     data_choropleth <- data_server(
       id = "permits", 
       var_left = var_left,
       var_right = var_right, 
-      df = df, 
-      zoom = zoom,
-      island_only = TRUE)
+      df = df,
+      island = TRUE)
     
     data <- reactive({
       if (choropleth()) {
@@ -166,33 +157,36 @@ permits_server <- function(id) {
             filter(., year %in% time()[1]:time()[2])
           } else {
             filter(., year == time())
-          }}     
+          }}
       }
     })
-
-    # Prepare different type of values for the explore panel
-    data_for_explore <- reactive({
-      if (choropleth()) data() else {
-        data() |>
-          st_drop_geometry() |>
-          count(year) |>
-          mutate(date = year) |> 
-          rename(left_var = n, right_var = date) |>
-          mutate(ID = seq_along(left_var), .before = left_var) |>
-          mutate(left_var_q3 = left_var, left_var_q5 = left_var)
-      }
-    })
-    df_for_explore <- reactive({if (choropleth()) df() else "date"})
-    right_var_for_exp <- reactive({if (choropleth()) var_right() else "date"})
     
+    # Disclaimers and how to read the map
+    year_disclaimer_server(
+      id = "disclaimers", 
+      data = data,
+      var_left = var_left,
+      var_right = var_right,
+      time = time,
+      pct_variation = choropleth,
+      # If the same time is selected twice, other disclaimer
+      more_condition = reactive(!choropleth() && all(is.na(pull(data(), id)))),
+      more_text = paste0(
+        "<p style='font-size:11px;'>",
+        "There is no '{var_left_title}' to report for ",
+        "{left_year}.</p>"))
+
     # Explore panel
     explore_content <- explore_server(
       id = "explore",
-      x = data_for_explore,
+      x = data,
       var_left = var_left,
-      var_right = right_var_for_exp,
+      var_right = var_right,
       select = selection,
-      df = df_for_explore)
+      df = df,
+      standard = choropleth,
+      custom_info = permits_info_table,
+      custom_graph = permits_explore_graph)
     
     # Legend
     legend_server(

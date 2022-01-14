@@ -18,7 +18,7 @@ var_list_left_permits_2 <-
        "Dwellings combination" = "combination",
        "Condo conversion" = "conversion",
        "Demolition" = "demolition",
-       "New construction" = "renovation",
+       "New construction" = "new_construction",
        "Renovation" = "renovation")
 
 # Mapdeck point cloud legend

@@ -266,7 +266,22 @@ process_permits <- function(x) {
     filter(!is.na(year), !is.na(type)) |> 
     group_by(ID, year) |> 
     summarize(type = c(type, "total"), n = c(n, sum(n, na.rm = TRUE)),
-              .groups = "drop") |> 
+              .groups = "drop")
+  
+  # Add empty row for missing combination, so that they show as 0s
+  empty_rows <- 
+    {y |> 
+        count(type, year) |> 
+        tidyr::expand(type, year)} |> 
+    anti_join(y |> 
+                count(type, year), by = c("type", "year")) |> 
+    mutate(id = NA, nb_dwellings = NA)
+  
+  y <- 
+    bind_rows(y, empty_rows)
+  
+  y <- 
+    y  |> 
     tidyr::pivot_wider(id_cols = "ID",
                        names_from = c("type", "year"), 
                        names_prefix = "permits_",
@@ -275,10 +290,7 @@ process_permits <- function(x) {
     (\(z) select(z, sort(names(z))))() |> 
     # Make sure that a missing geometry shows up as 0. Missing means no permits.
     full_join(select(x, any_of(c("ID", "CSDUID")), population), by = "ID") |> 
-    filter(!is.na(ID)) %>%
-    {if (nrow(.) == nrow(borough))
-      filter(., ID %in% island_csduid)
-      else filter(., CSDUID %in% island_csduid)} |>
+    filter(CSDUID %in% island_csduid) |>
     arrange(ID) |> 
     st_as_sf() |> 
     rename_with(~paste0(., "_count"), starts_with("permits")) |> 
@@ -299,7 +311,11 @@ process_permits <- function(x) {
   
   # Make sure the order isn't lost, so we can cbind in m_permits.R
   y[match(x$ID, y$ID),] |> 
-    select(-ID)
+    select(-ID) |> 
+    # Missing 2021 for new_construction
+    mutate(permits_new_construction_count_2021 = NA_real_,
+           permits_new_construction_sqkm_2021 = NA_real_,
+           permits_new_construction_per1k_2021 = NA_real_)
 }
 
 
@@ -331,6 +347,20 @@ data_testing(permits_choropleth, ignore_year_diff = TRUE)
 
 # Add additional fields to permits ------------------------------------------
 
+# Add empty row for missing combination
+empty_rows <- 
+{permits |> 
+  st_drop_geometry() |> 
+  count(type, year) |> 
+  tidyr::expand(type, year)} |> 
+  anti_join(permits |> 
+              st_drop_geometry() |> 
+              count(type, year), by = c("type", "year")) |> 
+  mutate(id = NA, nb_dwellings = NA)
+
+permits <- 
+  bind_rows(permits, empty_rows)
+
 permits <-
   permits |>
   arrange(year) |>
@@ -341,7 +371,6 @@ permits <-
                           type == "renovation" ~ "#0E6399EE")) |> 
   relocate(geometry, .after = last_col())
 
-
 # Meta testing ------------------------------------------------------------
 
 meta_testing()
@@ -351,7 +380,7 @@ meta_testing()
 
 var_list <- 
   permits_choropleth |> 
-  map(~names(select(.x, -ID, -contains(c("q3", "q5"))))) |> 
+  map(~names(select(.x, -contains(c("q3", "q5"))))) |> 
   unlist() |> 
   unique()
 
@@ -440,4 +469,9 @@ variables <-
   bind_rows(permits_table)
 
 
-# To save output, run dev/build_geometries.R, which calls this script
+# Cleanup -----------------------------------------------------------------
+
+rm(breaks_q3_active, breaks_q5_active, combined_dwellings, condo_conversions, 
+   demolitions, empty_rows, new_construction, permits_q3, permits_q5, 
+   permits_results, permits_table, process_permits, renovations, uef, uef_geom, 
+   var_list, var_list_no_dates)

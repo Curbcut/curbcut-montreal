@@ -12,16 +12,19 @@
 
 year_disclaimer_UI <- function(id) {
   tagList(
-    htmlOutput(NS(id, "year_disclaimers")),
+    htmlOutput(NS(id, "year_disclaimers"))
   )
 }
 
-year_disclaimer_server <- function(id, var_left, var_right, time, pct_variation = reactive(T),
-                                   more_condition = reactive(F), more_text = NULL) {
+year_disclaimer_server <- function(id, data, var_left, var_right, time,
+                                   pct_variation = reactive(T),
+                                   more_condition = reactive(F), 
+                                   more_text = NULL) {
   stopifnot(is.reactive(var_left))
   stopifnot(is.reactive(var_right))
   stopifnot(is.reactive(time))
   stopifnot(is.reactive(pct_variation))
+  stopifnot(is.reactive(data))
   
   moduleServer(id, function(input, output, session) {
     
@@ -56,9 +59,29 @@ year_disclaimer_server <- function(id, var_left, var_right, time, pct_variation 
         ))
       }
       
-      
+
+    # `data()` filled with NAs ------------------------------------------------
+      if ("var_left" %in% names(data())) {
+        is_values <- 
+          data() |> 
+          st_drop_geometry() |> 
+          select(`var_left`) |> 
+          pull() |> 
+          is.na() |> 
+          all()
+        
+        if (is_values) {
+          out <- c(out, list(str_glue(sus_translate(paste0(
+            "<p style='font-size:11px;'>",
+            "There is no data for '{var_left_title}' to report for ",
+            "{left_year}.</p>")))
+          ))
+        }
+      }
+
+
     # Year displayed != year chosen -------------------------------------------
-      
+
       # Year displayed LEFT
       if (length(var_left) == 1) {
         if (left_year != unique(time())) {
@@ -69,7 +92,7 @@ year_disclaimer_server <- function(id, var_left, var_right, time, pct_variation 
           ))
         }
       }
-      
+
       # Year displayed RIGHT
       if (length(var_right) == 1) {
         if (var_right != " " && right_year != unique(time())) {
@@ -80,10 +103,10 @@ year_disclaimer_server <- function(id, var_left, var_right, time, pct_variation 
           ))
         }
       }
-      
-      
+
+
     # How to read the map -----------------------------------------------------
-      
+
       # How to read map
       if (length(var_left) == 2) {
         if (var_right[1] == " ") {
@@ -102,9 +125,9 @@ year_disclaimer_server <- function(id, var_left, var_right, time, pct_variation 
                                    "'{var_left_title}' between {time()[1]} and {time()[2]}.")))
             ))
           }
-          
+
         } else {
-          
+
           if (length(right_year) == 2) {
             if (left_year[1] == right_year[1] && left_year[2] == right_year[2]) {
               # Maybe unnecessary?
@@ -131,7 +154,7 @@ year_disclaimer_server <- function(id, var_left, var_right, time, pct_variation 
                 "the bottom left of the page.")))
               ))
             }
-            
+
           } else out <- c(out, list(str_glue(sus_translate(paste0(
             # This is used for a module like crash, where var_left and var_right
             # often have different years to display. (yearly crash nb vs census data)
@@ -144,14 +167,14 @@ year_disclaimer_server <- function(id, var_left, var_right, time, pct_variation 
             "A darker blue means a relatively higher number of '{var_right_title}'. ",
             "You can find the comparison legend at the bottom left of the page.")))
           ))
-          
+
         }
       }
-      
+
 
     # More condition for more disclaimers -------------------------------------
       if (more_condition()) {
-        out <- c(out, list(more_text))
+        out <- c(out, list(str_glue(sus_translate(more_text))))
       }
       
       out

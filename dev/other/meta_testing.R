@@ -102,21 +102,23 @@ meta_testing <- function(data = list("borough" = borough, "CT" = CT, "DA" = DA,
   
   # Check first fields name
   field_names <- 
-  list("borough" = c("ID", "name", "name_2", "population", "households"),
+  list("borough" = c("ID", "name", "name_2", "CSDUID", "population", 
+                     "households"),
        "building" = c("ID", "name", "name_2", "DAUID", "CTUID", "CSDUID", 
-                      "osm_ID", "grid_ID", "population", "households"),
-       "CT" = c("ID", "name", "name_2", "CSDUID", "population", "households"),
-       "DA" = c("ID", "name", "name_2", "CTUID", "CSDUID", "population", 
+                      "osm_ID", "grid_ID"),
+       "CT" = c("ID", "name", "name_2", "CTUID", "CSDUID", "population", 
+                "households"),
+       "DA" = c("ID", "name", "name_2", "DAUID", "CTUID", "CSDUID", "population", 
                 "households"),
        "grid" = c("ID", "name", "name_2", "CSDUID", "population", "households"),
        "street" = c("ID", "name", "name_2", "street_type", "DAUID", "CTUID", 
-                    "CSDUID", "osm_ID", "grid_ID", "population", "households"))
+                    "CSDUID", "osm_ID", "grid_ID"))
   
   expected_first_fields <- map_lgl(set_names(names(field_names)), ~{
     first_fields <- unlist(field_names[names(field_names) == .x])
-    all((data[[.x]][, 1:length(first_fields)] |> 
-      names() |> 
-        str_remove("geometry")) |> 
+    all((data[[.x]][, 1:length(first_fields)] |>
+      names() |>
+        str_remove("geometry")) |>
         str_subset(".+") == first_fields)
   })
   
