@@ -58,8 +58,7 @@ housing_server <- function(id) {
     
     # Initial reactives
     zoom <- reactiveVal(get_zoom(map_zoom, map_zoom_levels))
-    selection <- reactiveVal(NA)
-    
+
     # Sidebar
     sidebar_server(
       id = "sidebar", 
@@ -148,6 +147,17 @@ housing_server <- function(id) {
       var_left = var_left,
       var_right = var_right,
       time = time)
+    
+    # Update map in response to variable changes or zooming
+    select_id <- map_change(
+      NS(id, "map"),
+      x = data,
+      df = df,
+      zoom = zoom,
+      click = reactive(input$map_polygon_click),
+      #legend_selection = reactive(legend()$legend_selection),
+      explore_clear = reactive(input$`explore-clear_selection`)
+    )
 
     # Explore panel
     explore_content <- explore_server(
@@ -155,7 +165,7 @@ housing_server <- function(id) {
       x = data,
       var_left = var_left,
       var_right = var_right,
-      selection = selection,
+      select_id = select_id,
       df = df,
       build_str_as_DA = TRUE)
 
@@ -171,24 +181,6 @@ housing_server <- function(id) {
       id = "dyk",
       var_left = var_left,
       var_right = var_right)
-
-    # Update map in response to variable changes or zooming
-    map_change(NS(id, "map"),
-               x = data,
-               df = df,
-               selection = selection)
-
-    # Update poly on click
-    observeEvent(input$map_polygon_click, {
-      lst <- (jsonlite::fromJSON(input$map_polygon_click))$object$properties$id
-      if (is.null(lst)) selection(NA) else selection(lst)
-    })
-
-    # Clear selection on df change
-    observeEvent(df(), selection(NA), ignoreInit = TRUE)
-
-    # Clear click status if prompted
-    observeEvent(input$`explore-clear_selection`, selection(NA))
 
   })
 }

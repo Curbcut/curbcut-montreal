@@ -93,7 +93,6 @@ alley_server <- function(id) {
       var_left = var_left, 
       var_right = var_right, 
       df = df,
-      zoom = zoom,
       island = TRUE)
     
     data <- reactive({
@@ -151,7 +150,7 @@ alley_server <- function(id) {
       x = data,
       var_left = var_left,
       var_right = var_right,
-      select = selection,
+      select_id = selection,
       df = df,
       standard = choropleth,
       custom_info = alley_info_table)

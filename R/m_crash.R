@@ -185,13 +185,24 @@ crash_server <- function(id) {
     df_for_explore <- reactive({if (choropleth()) df() else "date"})
     var_right_for_exp <- reactive({if (choropleth()) var_right() else "date"})
     
+    # Update map in response to variable changes or zooming
+    select_id <- map_change(
+      NS(id, "map"),
+      x = data,
+      df = df,
+      zoom = zoom,
+      click = reactive(input$map_polygon_click),
+      #legend_selection = reactive(legend()$legend_selection),
+      explore_clear = reactive(input$`explore-clear_selection`)
+    )
+    
     # Explore panel
     explore_content <- explore_server(
       id = "explore",
       x = data_for_explore,
       var_left = var_left,
       var_right = var_right_for_exp,
-      select = selection,
+      select_id = select_id,
       df = df_for_explore)
     
     # Legend
@@ -207,20 +218,7 @@ crash_server <- function(id) {
       id = "dyk", 
       var_left = var_left,
       var_right = var_right)
-    
-    # Update map in response to variable changes or zooming
-    map_change(NS(id, "map"), 
-               x = data, 
-               df = df, 
-               selection = selection,
-               legend = crash_legend_en)
-    
-    # Update poly on click
-    observeEvent(input$map_polygon_click, {
-      lst <- (jsonlite::fromJSON(input$map_polygon_click))$object$properties$id
-      if (is.null(lst)) selection(NA) else selection(lst)
-    })
-    
+
     # Update point on click
     observeEvent(input$map_scatterplot_click, {
       lst <- jsonlite::fromJSON(input$map_scatterplot_click)$index

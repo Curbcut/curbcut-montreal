@@ -107,8 +107,7 @@ access_server <- function(id) {
       id = "access", 
       var_left = var_left,
       var_right = var_right, 
-      df = df, 
-      zoom = zoom)
+      df = df)
     
     # Explore panel
     explore_content <- explore_server(
@@ -116,7 +115,7 @@ access_server <- function(id) {
       x = data, 
       var_left = var_left,
       var_right = var_right, 
-      selection = selection,
+      select_id = selection,
       df = df, 
       build_str_as_DA = TRUE)
 

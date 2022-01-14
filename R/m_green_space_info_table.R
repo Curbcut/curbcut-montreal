@@ -1,13 +1,13 @@
 #### GREEN SPACE INFO TABLE MODULE ############################################
 
-green_space_info_table <- function(id, x, selection, ...) {
+green_space_info_table <- function(id, x, select_id, ...) {
   
   moduleServer(id, function(input, output, session) {
     reactive({
       
       pnr <- function(x) prettyNum(round(x/1e+6, digits = 2), big.mark = ",")
       
-      if (is.na(selection())) {
+      if (is.na(select_id())) {
         type <- if (nrow(x()) == nrow(green_space)) {
           str_glue(sus_translate("a total of {nrow(x())} green spaces"))
         } else {
@@ -32,10 +32,10 @@ green_space_info_table <- function(id, x, selection, ...) {
           str_glue(sus_translate("`{unique(x()$type)}`"))
         }
         
-        z <- x[x$ID == selection(), ]
+        z <- x[x$ID == select_id(), ]
         total_rank <- pull(z, total_rank)
         borough_rank <- pull(z, borough_rank)
-        borough <- filter(borough, ID == pull(z, CSDUID))$name
+        borough_name <- filter(borough, ID == z$CSDUID)$name
         
         ordinal_form <- function(x) {
           # English ordinal form
@@ -73,7 +73,8 @@ green_space_info_table <- function(id, x, selection, ...) {
                  "and is of `{z$property}` property. Its ",
                  "management entity is `{z$management}`.</p>",
                  "<p>It is the {total_rank}biggest {type} in the ",
-                 "City, and the {borough_rank} largest in {borough}.</p>"))))
+                 "City, and the {borough_rank} largest in {borough_name}.</p>"))))
+
       }
     })
   })

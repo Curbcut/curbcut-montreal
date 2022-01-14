@@ -36,7 +36,7 @@ green_space <-
   st_set_agr("constant") |> 
   mutate(type = coalesce(type_1, "Autre espace vert"), 
          # This is paste0(col_left_5[4], "AA")
-         fill = "#31A354AA",
+         fill = "#31A354",
          area = round(units::drop_units(st_area(geometry))), 
          .before = geometry) |> 
   mutate(type_1 = case_when(

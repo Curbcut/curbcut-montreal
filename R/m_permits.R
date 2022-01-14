@@ -175,6 +175,17 @@ permits_server <- function(id) {
         "<p style='font-size:11px;'>",
         "There is no '{var_left_title}' to report for ",
         "{left_year}.</p>"))
+    
+    # Update map in response to variable changes or zooming
+    select_id <- map_change(
+      NS(id, "map"),
+      x = data,
+      df = df,
+      zoom = zoom,
+      click = reactive(input$map_polygon_click),
+      #legend_selection = reactive(legend()$legend_selection),
+      explore_clear = reactive(input$`explore-clear_selection`)
+    )
 
     # Explore panel
     explore_content <- explore_server(
@@ -202,19 +213,6 @@ permits_server <- function(id) {
       var_left = var_left,
       var_right = var_right)
     
-    # Update map in response to variable changes or zooming
-    map_change(NS(id, "map"), 
-               x = data, 
-               df = df, 
-               selection = selection,
-               legend = permits_legend_en)
-    
-    # Update poly on click
-    observeEvent(input$map_polygon_click, {
-      lst <- (jsonlite::fromJSON(input$map_polygon_click))$object$properties$id
-      if (is.null(lst)) selection(NA) else selection(lst)
-    })
-    
     # Update point on click
     observeEvent(input$map_scatterplot_click, {
       lst <- jsonlite::fromJSON(input$map_scatterplot_click)$index
@@ -229,7 +227,7 @@ permits_server <- function(id) {
     
     # Clear click status if prompted
     observeEvent(input$`explore-clear_selection`, selection(NA))
-    
+
     # Bi slider label explained
     observe({
       if (!choropleth()) {

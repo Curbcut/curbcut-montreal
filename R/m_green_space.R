@@ -38,8 +38,7 @@ green_space_server <- function(id) {
     
     # Initial reactives
     zoom <- reactiveVal(get_zoom(map_zoom, map_zoom_levels))
-    selection <- reactiveVal(NA)
-    
+
     # Sidebar
     sidebar_server(
       id = "sidebar", 
@@ -93,7 +92,6 @@ green_space_server <- function(id) {
       var_left = var_left,
       var_right = var_right, 
       df = df, 
-      zoom = zoom,
       island = TRUE)
     
     data <- reactive({
@@ -106,13 +104,25 @@ green_space_server <- function(id) {
       }
     })
     
+    # Update map in response to variable changes or zooming
+    select_id <- map_change(
+      NS(id, "map"),
+      x = data,
+      df = df,
+      zoom = zoom,
+      standard_width = choropleth,
+      click = reactive(input$map_polygon_click),
+      #legend_selection = reactive(legend()$legend_selection),
+      explore_clear = reactive(input$`explore-clear_selection`)
+    )
+    
     # Explore panel
     explore_content <- explore_server(
       id = "explore",
       x = data,
       var_left = var_left,
       var_right = var_right,
-      select = selection,
+      select_id = select_id,
       df = df,
       standard = choropleth,
       custom_info = green_space_info_table,
@@ -131,25 +141,6 @@ green_space_server <- function(id) {
       id = "dyk", 
       var_left = var_left,
       var_right = var_right)
-    
-    # Update poly on click
-    observeEvent(input$map_polygon_click, {
-      lst <- (jsonlite::fromJSON(input$map_polygon_click))$object$properties$id
-      if (is.null(lst)) selection(NA) else selection(lst)
-    })
-    
-    # Update map in response to variable changes or zooming
-    map_change(NS(id, "map"), 
-               x = data, 
-               df = df, 
-               selection = selection,
-               standard_width = choropleth)
-    
-    # Clear poly_selected on data change
-    observeEvent(data(), selection(NA), ignoreInit = TRUE)
-    
-    # Clear click status if prompted
-    observeEvent(input$`explore-clear_selection`, selection(NA))
     
   })
 }

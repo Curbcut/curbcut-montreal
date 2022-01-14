@@ -161,6 +161,7 @@ map_change <- function(id_map, x, df, zoom = df, click = reactive(NULL),
   observeEvent(click(), selection(click()))
   observeEvent(explore_clear(), selection(NA))
   observeEvent(df(), selection(NA), ignoreInit = TRUE)
+  observeEvent(x(), selection(NA), ignoreInit = TRUE)
   
   # Process selection
   select_id <- reactive({

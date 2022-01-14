@@ -1,15 +1,15 @@
 #### ALLEY INFO TABLE MODULE ###################################################
 
-alley_info_table <- function(id, selection, ...) {
+alley_info_table <- function(id, select_id, ...) {
   
   moduleServer(id, function(input, output, session) {
     reactive({
 
-      if (selection() %in% alley_text$ID) {
+      if (select_id() %in% alley_text$ID) {
         
         text_to_display <- 
           alley_text |>
-          filter(ID == selection()) |> 
+          filter(ID == select_id()) |> 
           select(-ID) |> 
           select_if(~sum(!is.na(.)) > 0) %>% 
           {if (nrow(.) > 0) as.list(.) else NULL}
@@ -20,12 +20,12 @@ alley_info_table <- function(id, selection, ...) {
           HTML(unlist(text_to_display[1:(length(text_to_display) - 1)]))
         }
         
-      } else if (selection() %in% alleys[alleys$visited,]$ID) {
+      } else if (select_id() %in% alleys[alleys$visited,]$ID) {
         
         text_to_display <- 
           alleys |>
           st_drop_geometry() |> 
-          filter(ID == selection()) |> 
+          filter(ID == select_id()) |> 
           mutate(name = str_glue(sus_translate(paste0(
             "<p><b>{str_to_title(name)} in ",
             "{name_2}</b></p>")))) |> 
