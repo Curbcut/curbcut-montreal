@@ -58,10 +58,10 @@ map_change <- function(id_map, x, df, zoom = df, click = reactive(NULL),
       # Used at all geometries:
       update_and_clean <- function() {
         mapdeck_update(map_id = id_map) #|>
-          # clear_polygon() |>
-          # clear_scatterplot() |> 
-          # clear_heatmap() |> 
-          # clear_path()
+        # clear_polygon() |>
+        # clear_scatterplot() |> 
+        # clear_heatmap() |> 
+        # clear_path()
       }
       
       # Clear layer_ids fed with polygons_to_clear
@@ -92,7 +92,7 @@ map_change <- function(id_map, x, df, zoom = df, click = reactive(NULL),
               fill, paste0(legend_selection(), "..$", collapse = "|")) ~ fill,
               TRUE ~ str_replace(fill, "..$", "50")))
         } else x()
-          
+        
         # Set transparency based on zoom
         col_zoom <- colour_alpha[names(colour_alpha) == zoom()]
         # Override for building
@@ -115,7 +115,7 @@ map_change <- function(id_map, x, df, zoom = df, click = reactive(NULL),
               highlight_colour = "#FFFFFF80")
         }
         
-      # TKTK THIS HASN'T BE LOOKED AT YET
+        # TKTK THIS HASN'T BE LOOKED AT YET
       } else if (geom_type() == "line") {
         
         update_and_clean() |>
@@ -124,7 +124,7 @@ map_change <- function(id_map, x, df, zoom = df, click = reactive(NULL),
                    stroke_colour = "fill", auto_highlight = TRUE,
                    highlight_colour = "#FFFFFF90")
         
-      # TKTK THIS HASN'T BE LOOKED AT YET
+        # TKTK THIS HASN'T BE LOOKED AT YET
       } else if (geom_type() == "point") {
         
         if (df() != "street") {
@@ -134,7 +134,7 @@ map_change <- function(id_map, x, df, zoom = df, click = reactive(NULL),
                                          "#70999B", "#6E8EA8", "#6C83B5"),
                         intensity = 2)
           
-        # TKTK THIS HASN'T BE LOOKED AT YET
+          # TKTK THIS HASN'T BE LOOKED AT YET
         } else {
           
           update_and_clean() |>
@@ -180,7 +180,7 @@ map_change <- function(id_map, x, df, zoom = df, click = reactive(NULL),
     
     lat <- jsonlite::fromJSON(selection())$lat
     lon <- jsonlite::fromJSON(selection())$lon
-      
+    
     sel_coord <- 
       c(lon, lat) |> 
       st_point() |> 
@@ -195,9 +195,12 @@ map_change <- function(id_map, x, df, zoom = df, click = reactive(NULL),
       st_transform(4326)
     
     return(building_to_add)
-      
+    
   })
-
+  
+  building_id <- reactive({
+    if (is.null(building_to_add())) NA else building_to_add()$ID})
+  
   
   ## Update map on selection change --------------------------------------------
   
@@ -220,9 +223,9 @@ map_change <- function(id_map, x, df, zoom = df, click = reactive(NULL),
           # TKTK Should probably replace this with separate zoom curves for
           # different dfs
           width <- 
-            switch(zoom(), "borough" = 200, "CT" = 20, "DA" = 4, "grid" = 4, 4)
+            switch(zoom(), "borough" = 150, "CT" = 20, "DA" = 4, "grid" = 4, 4)
           width_2 <- 
-            switch(df(), "borough" = 200, "CT" = 20, "DA" = 4, "grid" = 4, 4)
+            switch(df(), "borough" = 150, "CT" = 20, "DA" = 4, "grid" = 4, 4)
           width <- min(width, width_2)
           if (!standard_width()) width <- 0
           
@@ -240,15 +243,13 @@ map_change <- function(id_map, x, df, zoom = df, click = reactive(NULL),
               stroke_colour = "#000000", stroke_width = width, 
               update_view = FALSE, layer_id = "highlight", 
               auto_highlight = TRUE, highlight_colour = "#FFFFFF80")
-
+          
         }
       } else mapdeck_update(map_id = id_map) |>
         clear_polygon(layer_id = "highlight")
-      }
-    })
+    }
+  })
   
-  # return(reactive(list("select_id" = select_id(), 
-  #                      "building_to_add" = building_to_add())))
-  return(select_id)
+  return(reactive({if (df() == "building") building_id() else select_id()}))
   
-  }
+}

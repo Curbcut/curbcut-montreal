@@ -20,14 +20,14 @@ get_data_type <- function(df, var_left, var_right) {
   
   # General cases --------------------------------------------------------------
 
-  if (var_right() == " " && length(var_left()) == 1) return("q5")
+  if (length(var_left()) == 2 && length(var_right()) == 2) return("delta_bivar")
   
+  if (length(var_left()) == 2 && var_right() == " ") return("delta")
+
   if (length(var_left()) == 1 && length(var_right()) == 1 && var_right() != " ")
     return("bivar")
   
-  if (length(var_left()) == 2 && var_right() == " ") return("delta")
-  
-  if (length(var_left()) == 2 && length(var_right()) == 2) return("delta_bivar")
+  if (var_right() == " " && length(var_left()) == 1) return("q5")
   
   
   # Fall back if no other types are detected -----------------------------------

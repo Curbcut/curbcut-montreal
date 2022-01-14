@@ -149,7 +149,10 @@ render_plot_fun <- function(var_left, var_right, df, data_type) {
             # axis.title = element_text(size = 15)
             )
     
-  } else if (length(var_left()) == 2 && var_right()[1] == " ") {
+    
+  # Bivariate, one date, q3 ----------------------------------------------------
+    
+  } else if (data_type %in% c("delta", "building_delta")) {
     
     legend_delta_5 |> 
       ggplot(aes(x, y, fill = fill)) +
@@ -158,10 +161,8 @@ render_plot_fun <- function(var_left, var_right, df, data_type) {
                          breaks = c(1.5, 2.5, 3.5, 4.5),
                          labels = c("-10%", "-2%", "+2%", "+10%")) +
       scale_y_continuous(name = NULL) +
-      scale_fill_manual(values = setNames(
-        paste0(legend_delta_5$fill, 
-               filter(colour_alpha, zoom == "borough")$alpha),
-        legend_delta_5$fill)) +
+      scale_fill_manual(values = setNames(legend_delta_5$fill, 
+                                          legend_delta_5$fill)) +
       theme_minimal() +
       theme(legend.position = "none",
             axis.ticks = element_blank(),

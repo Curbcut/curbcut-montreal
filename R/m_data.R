@@ -139,10 +139,38 @@ data_server <- function(id, var_left, var_right, df, island = FALSE) {
       }
       
       
-      
-      
-      
-      
+      # Simple delta -----------------------------------------------------------
+
+      if (data_type == "delta") {
+        
+        data <- 
+          df() |> 
+          get() |> 
+          select(ID, name, name_2, any_of(c("DAUID", "CTUID", "CSDUID")), 
+                 population, var_left = all_of(var_left), 
+                 var_left = all_of(var_left)) |>
+          mutate(
+            var_left = (var_left2 - var_left1) / abs(var_left1), 
+            var_left_q3 = case_when(
+              is.na(var_left) ~ NA_character_,
+              var_left < -1 * median(abs(var_left[abs(var_left) > 0.02]), 
+                                     na.rm = TRUE) ~ "1",
+              var_left < -0.02 ~ "2",
+              var_left < 0.02 ~ "3",
+              var_left < median(abs(var_left[abs(var_left) > 0.02]), 
+                                na.rm = TRUE) ~ "4",
+              TRUE ~ "5"),
+            across(where(is.numeric), ~replace(., is.nan(.), NA)),
+            across(where(is.numeric), ~replace(., is.infinite(.), NA))) |>
+          select(ID, name, name_2, any_of(c("DAUID", "CTUID", "CSDUID")), 
+                 population, var_left, var_left_q3, var_left_1 = var_left1, 
+                 var_left_2 = var_left2) |> 
+          mutate(group = as.character(var_left_q3),
+                 group = if_else(is.na(group), "NA", group),
+                 group = paste(group, "- 1")) |> 
+          left_join(colour_delta, by = "group")
+        
+      }
 
       
       # Filter to island -------------------------------------------------------
@@ -155,132 +183,79 @@ data_server <- function(id, var_left, var_right, df, island = FALSE) {
       return(data)
 
       
-      
-      
 
-      
-            
-      
-
-      # Add NA column if q3 doesn't exist
-      if (length(left_q3_col) == 1 && 
-          !left_q3_col %in% names(data)) {
-        data <- 
-          data %>% 
-          mutate(new_col = NA)
-        
-        names(data)[names(data) == "new_col"] <- left_q3_col
-      }
-
-
-
-      
-      ## Univariate data -------------------------------------------------------
-      
-      if (var_right[1] == " ") {
-
-        # If there are two dates, make new left_var
-        if (length(var_left) == 2) {
-          data <- 
-            data |> 
-            dplyr::select(ID, name, name_2, any_of("CSDUID"), population, 
-                          left_var = all_of(var_left)) |>
-            mutate(
-              left_var = (left_var2 - left_var1) / abs(left_var1), 
-              left_var_q3 = case_when(
-                is.na(left_var) ~ NA_character_,
-                left_var < -1 * median(abs(left_var[abs(left_var) > 0.02]), 
-                                       na.rm = TRUE) ~ "1",
-                left_var < -0.02 ~ "2",
-                left_var < 0.02 ~ "3",
-                left_var < median(abs(left_var[abs(left_var) > 0.02]), 
-                                  na.rm = TRUE) ~ "4",
-                TRUE ~ "5"),
-              across(where(is.numeric), ~replace(., is.nan(.), NA)),
-              across(where(is.numeric), ~replace(., is.infinite(.), NA))) %>% 
-            select(ID, name, name_2, any_of("CSDUID"), population, left_var, 
-                   left_var_q3, left_var_1 = left_var1, left_var_2 = left_var2) 
-          
-          # Finish up
-          data <- 
-            data |> 
-            mutate(group = as.character(left_var_q3),
-                   group = if_else(is.na(group), "NA", group),
-                   group = paste(group, "- 1")) |> 
-            left_join(colour, by = "group")
-          
-        } else {
-            data <- 
-              data %>% 
-              dplyr::select(ID, name, name_2, any_of("CSDUID"), population, 
-                            left_var = all_of(var_left),
-                            left_var_q3 = all_of(left_q3_col)) |>
-              mutate(group = as.character(left_var_q3),
-                     group = if_else(is.na(group), "NA", group)) |> 
-              left_join(colour, by = "group")
-          
-        }
-        
-        
-        ## Bivariate data ------------------------------------------------------
-        
-      } else {
-        data <-
-          (data %>%
-             { if (length(var_left) == 1 && length(var_right) == 1) 
-               dplyr::select(., ID, name, name_2, any_of("CSDUID"), population, 
-                             left_var = all_of(var_left),
-                             left_var_q3 = all_of(left_q3_col),
-                             right_var = all_of(var_right), 
-                             right_var_q3 = all_of(right_q3_col))
-               else dplyr::select(., everything(),
-                                  left_var = all_of(var_left),
-                                  right_var = all_of(var_right))} %>% 
-             { if (length(var_left) == 2 && length(var_right) == 2) 
-               mutate(., left_var = (left_var2 - left_var1) / abs(left_var1),
-                      left_var_q3 = ntile(left_var, 3),
-                      right_var = (right_var2 - right_var1) / abs(right_var1),
-                      right_var_q3 = ntile(right_var, 3),
-                      across(where(is.numeric), ~replace(., is.nan(.), NA)),
-                      across(where(is.numeric), ~replace(., is.infinite(.), 
-                                                         NA))) %>% 
-                 select(., ID, name, name_2, any_of("CSDUID"), population, 
-                        left_var, left_var_q3, right_var, right_var_q3,
-                        any_of(c("left_var1", "left_var2", "right_var1", 
-                                 "right_var2"))) else .} %>%
-             # Not always census variables: sometimes we will have data for
-             # one variable in different year than the other, e.g. crash vs borough.
-             # We might have to show different crash years vs same census year.
-             { if (length(var_left) == 2 && length(var_right) == 1) 
-               mutate(., left_var = (left_var2 - left_var1) / abs(left_var1),
-                      left_var_q3 = ntile(left_var, 3),
-                      right_var = var_right, 
-                      right_var_q3 = eval(as.name(right_q3_col)),
-                      across(where(is.numeric), ~replace(., is.nan(.), NA)),
-                      across(where(is.numeric), ~replace(., is.infinite(.), 
-                                                         NA))) %>% 
-                 select(., ID, name, name_2, any_of("CSDUID"), population, 
-                        left_var, left_var_q3, right_var, right_var_q3,
-                        any_of(c("left_var1", "left_var2", "right_var1", 
-                                 "right_var2"))) else .} %>%
-             { if (length(var_left) == 1 && length(var_right) == 2)
-               mutate(., left_var = var_left,
-                      left_var_q3 = eval(as.name(left_q3_col)),
-                      right_var = (right_var2 - right_var1) / abs(right_var1),
-                      right_var_q3 = ntile(right_var, 3),
-                      across(where(is.numeric), ~replace(., is.nan(.), NA)),
-                      across(where(is.numeric), ~replace(., is.infinite(.), 
-                                                         NA))) %>%
-                 select(., ID, name, name_2, any_of("CSDUID"), population,
-                        left_var, left_var_q3, right_var, right_var_q3,
-                        any_of(c("left_var1", "left_var2", "right_var1", 
-                                 "right_var2"))) else .} %>%
-             mutate(group = paste(left_var_q3, "-", right_var_q3)) %>% 
-             left_join(colour, by = "group"))
-      }
-      
-      st_crs(data) <- 4326
-      data
+      # # Add NA column if q3 doesn't exist
+      # if (length(left_q3_col) == 1 && 
+      #     !left_q3_col %in% names(data)) {
+      #   data <- 
+      #     data %>% 
+      #     mutate(new_col = NA)
+      #   
+      #   names(data)[names(data) == "new_col"] <- left_q3_col
+      # }
+      # 
+      # 
+      # 
+      # 
+      # ## Univariate data -------------------------------------------------------
+      # 
+      # if (var_right[1] == " ") {} else {
+      #   data <-
+      #     (data %>%
+      #        { if (length(var_left) == 1 && length(var_right) == 1) 
+      #          dplyr::select(., ID, name, name_2, any_of("CSDUID"), population, 
+      #                        left_var = all_of(var_left),
+      #                        left_var_q3 = all_of(left_q3_col),
+      #                        right_var = all_of(var_right), 
+      #                        right_var_q3 = all_of(right_q3_col))
+      #          else dplyr::select(., everything(),
+      #                             left_var = all_of(var_left),
+      #                             right_var = all_of(var_right))} %>% 
+      #        { if (length(var_left) == 2 && length(var_right) == 2) 
+      #          mutate(., left_var = (left_var2 - left_var1) / abs(left_var1),
+      #                 left_var_q3 = ntile(left_var, 3),
+      #                 right_var = (right_var2 - right_var1) / abs(right_var1),
+      #                 right_var_q3 = ntile(right_var, 3),
+      #                 across(where(is.numeric), ~replace(., is.nan(.), NA)),
+      #                 across(where(is.numeric), ~replace(., is.infinite(.), 
+      #                                                    NA))) %>% 
+      #            select(., ID, name, name_2, any_of("CSDUID"), population, 
+      #                   left_var, left_var_q3, right_var, right_var_q3,
+      #                   any_of(c("left_var1", "left_var2", "right_var1", 
+      #                            "right_var2"))) else .} %>%
+      #        # Not always census variables: sometimes we will have data for
+      #        # one variable in different year than the other, e.g. crash vs borough.
+      #        # We might have to show different crash years vs same census year.
+      #        { if (length(var_left) == 2 && length(var_right) == 1) 
+      #          mutate(., left_var = (left_var2 - left_var1) / abs(left_var1),
+      #                 left_var_q3 = ntile(left_var, 3),
+      #                 right_var = var_right, 
+      #                 right_var_q3 = eval(as.name(right_q3_col)),
+      #                 across(where(is.numeric), ~replace(., is.nan(.), NA)),
+      #                 across(where(is.numeric), ~replace(., is.infinite(.), 
+      #                                                    NA))) %>% 
+      #            select(., ID, name, name_2, any_of("CSDUID"), population, 
+      #                   left_var, left_var_q3, right_var, right_var_q3,
+      #                   any_of(c("left_var1", "left_var2", "right_var1", 
+      #                            "right_var2"))) else .} %>%
+      #        { if (length(var_left) == 1 && length(var_right) == 2)
+      #          mutate(., left_var = var_left,
+      #                 left_var_q3 = eval(as.name(left_q3_col)),
+      #                 right_var = (right_var2 - right_var1) / abs(right_var1),
+      #                 right_var_q3 = ntile(right_var, 3),
+      #                 across(where(is.numeric), ~replace(., is.nan(.), NA)),
+      #                 across(where(is.numeric), ~replace(., is.infinite(.), 
+      #                                                    NA))) %>%
+      #            select(., ID, name, name_2, any_of("CSDUID"), population,
+      #                   left_var, left_var_q3, right_var, right_var_q3,
+      #                   any_of(c("left_var1", "left_var2", "right_var1", 
+      #                            "right_var2"))) else .} %>%
+      #        mutate(group = paste(left_var_q3, "-", right_var_q3)) %>% 
+      #        left_join(colour, by = "group"))
+      # }
+      # 
+      # st_crs(data) <- 4326
+      # data
     })
   })
 }

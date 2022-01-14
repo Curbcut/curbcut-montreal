@@ -96,14 +96,13 @@ canale_server <- function(id) {
 
     # Update map in response to variable changes or zooming
     select_id <- map_change(
-      NS(id, "map"), 
+      id = NS(id, "map"), 
       x = data, 
       df = df, 
       zoom = zoom,
       click = reactive(input$map_polygon_click),
       #legend_selection = reactive(legend()$legend_selection),
-      explore_clear = reactive(input$`explore-clear_selection`)
-      )
+      explore_clear = reactive(input$`explore-clear_selection`))
 
     # Explore panel
     explore_content <- explore_server(
