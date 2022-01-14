@@ -26,7 +26,8 @@ legend_server <- function(id, var_left, var_right, df,
     # Define plot height
     plot_height <- function() {
       # if (length(var_left()) == 1 && var_right()[1] == " ") 1 else 2.5
-      if (length(var_left()) == 1 && var_right()[1] == " ") 60 else 140
+      if ((length(var_left()) == 1 && var_right()[1] == " ") ||
+          (length(var_left()) == 2 && var_right()[1] == " ")) 60 else 140
     }
     
     # # catch if there's an error in the legend function
