@@ -199,8 +199,8 @@ crash_for_q5 <-
   map(pivot_wider, names_from = var, values_from = value) |> 
   map(select, -year)
 
-crash_q3 <- map(crash_results, add_q3)
-crash_breaks_q3 <- map(crash_q3, get_breaks_q3)
+crash_results <- map(crash_results, add_q3)
+crash_breaks_q3 <- map(crash_results, get_breaks_q3)
 crash_breaks_q5 <- map(crash_for_q5, get_breaks_q5)
 crash_q5 <- map2(crash_results, crash_breaks_q5, add_q5)
 crash_results <- map2(crash_results, crash_q5, bind_cols)
