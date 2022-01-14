@@ -1,7 +1,7 @@
 #### EXPLORE GRAPH MODULE ######################################################
 
 explore_graph_server <- function(id, x, var_type, var_left, var_right, 
-                                 selection, df, var_left_label = NULL, 
+                                 select_id, df, var_left_label = NULL, 
                                  var_right_label = NULL, build_str_as_DA = TRUE,
                                  plot_type = "auto") {
   
@@ -10,7 +10,7 @@ explore_graph_server <- function(id, x, var_type, var_left, var_right,
   stopifnot(is.reactive(var_type))
   stopifnot(is.reactive(var_left))
   stopifnot(is.reactive(var_right))
-  stopifnot(is.reactive(selection))
+  stopifnot(is.reactive(select_id))
   stopifnot(is.reactive(df))
 
   # Server function
@@ -28,12 +28,12 @@ explore_graph_server <- function(id, x, var_type, var_left, var_right,
                           var_right = var_right,
                           df = reactive("DA"))
         dat <- tidyr::drop_na(tb())
-        select_id <- (filter(building, ID == selection()))$DAUID
+        select_id <- (filter(building, ID == select_id()))$DAUID
         if (length(select_id) == 0) select_id <- NA
           
       } else {
         dat <- tidyr::drop_na(x())
-        select_id <- selection()
+        select_id <- select_id()
       }
       
       

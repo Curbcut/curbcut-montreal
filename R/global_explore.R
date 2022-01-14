@@ -1,6 +1,6 @@
 # Function to decide explore_graph and info_table details
 
-explore_var_type <- function(id, x, var_left, var_right, select, 
+explore_var_type <- function(id, x, var_left, var_right, select_id, 
                              var_left_label, var_right_label) {
   
   reactive({
@@ -24,7 +24,7 @@ explore_var_type <- function(id, x, var_left, var_right, select,
     
     ## Selections --------------------------------------------------------------
     
-    selection <- x() %>% filter(ID == select())
+    selection <- x() %>% filter(ID == select_id())
     active_left <- nrow(filter(selection, !is.na(var_left)))
     active_right <- active_left
     if (length(var_right()) != 1 || var_right() != " ") active_right <- 
@@ -47,7 +47,7 @@ explore_var_type <- function(id, x, var_left, var_right, select,
         "quanty",
       TRUE ~ "qual")
     
-    select_type <- unique(case_when(is.na(select()) ~ "all", 
+    select_type <- unique(case_when(is.na(select_id()) ~ "all", 
                                     comp_type == "uni" & active_left == 0 ~ "na",
                                     active_right == 0 ~ "na",
                                     TRUE ~ "select"))

@@ -1,11 +1,11 @@
 #### GREEN SPACE EXPLORE MODULE ###############################################
 
-green_space_explore_graph <- function(id, x, selection, ...) {
+green_space_explore_graph <- function(id, x, select_id, ...) {
   
   moduleServer(id, function(input, output, session) {
     reactive({
       
-      if (is.na(selection())) {
+      if (is.na(select_id())) {
         ggplot(x(), aes(area)) +
           geom_histogram(aes(fill = fill), alpha = 0.5, bins = 25) +
           scale_fill_manual(values = rev(col_left_5), na.translate = FALSE) + 
@@ -17,7 +17,7 @@ green_space_explore_graph <- function(id, x, selection, ...) {
                 panel.grid.minor.y = element_blank(),
                 axis.title = element_text(size = 8))
       } else {
-        select_id <- selection()
+        select_id <- select_id()
         
         ggplot(x(), aes(area)) +
           geom_histogram(aes(fill = round(area) == 

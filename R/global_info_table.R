@@ -2,7 +2,7 @@
 #' info_table module.
 
 make_info_table_data <- function(id, x, var_type, var_left, var_right, 
-                                 selection, df, var_left_label, var_right_label, 
+                                 select_id, df, var_left_label, var_right_label, 
                                  build_str_as_DA) {
   
   ## Initialize output list ----------------------------------------------------
@@ -21,12 +21,12 @@ make_info_table_data <- function(id, x, var_type, var_left, var_right,
                       var_right = var_right,
                       df = reactive("DA"))
     dat <- tb()
-    select_id <- (filter(building, ID == selection()))$DAUID
+    select_id <- (filter(building, ID == select_id()))$DAUID
     if (length(select_id) == 0) select_id <- NA
     
   } else {
     dat <- x()
-    select_id <- selection()
+    select_id <- select_id()
   }
   
   
@@ -54,6 +54,7 @@ make_info_table_data <- function(id, x, var_type, var_left, var_right,
       mutate(name = NA_character_, population = NA_real_)
   }
   
+  
   ## Titles and explanations ---------------------------------------------------
   
   var_left <- unique(str_remove(var_left(), "_\\d{4}$"))
@@ -74,10 +75,10 @@ make_info_table_data <- function(id, x, var_type, var_left, var_right,
   if (var_right != " " && length(out$exp_right) == 0) warning(
     "No exp: ", var_right, call. = FALSE)
   
-  
+
   ## Selections ----------------------------------------------------------------
   
-  select_name <- filter(x(), ID == selection())
+  select_name <- filter(x(), ID == select_id)
   selection <- filter(dat, ID == select_id)
   out$selection <- selection
   active_left <- nrow(filter(selection, !is.na(var_left_q5)))
@@ -94,7 +95,7 @@ make_info_table_data <- function(id, x, var_type, var_left, var_right,
       convert_unit(val_right, "_prop")
   }
   
-  
+
   ## Special case for Kahnawake and Kanesatake ---------------------------------
   
   if (nrow(selection) > 0 && selection$ID %in% 
@@ -135,7 +136,7 @@ make_info_table_data <- function(id, x, var_type, var_left, var_right,
     scale_sing == sus_translate("street") ~ sus_translate("streets"),
     TRUE ~ NA_character_)
   
-  
+
   ## Place names ---------------------------------------------------------------
   
   out$place_name <- case_when(

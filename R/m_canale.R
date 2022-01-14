@@ -82,16 +82,6 @@ canale_server <- function(id) {
       var_right = var_right, 
       df = df)
     
-    # Explore panel
-    explore_content <- explore_server(
-      id = "explore", 
-      x = data, 
-      var_left = var_left,
-      var_right = var_right, 
-      selection = selection,
-      df = df, 
-      build_str_as_DA = TRUE)
-
     # Legend
     legend <- legend_server(
       id = "legend", 
@@ -106,17 +96,16 @@ canale_server <- function(id) {
       var_right = var_right)
 
     # Update map in response to variable changes or zooming
-    map_change(NS(id, "map"), 
+    select_id <- map_change(NS(id, "map"), 
                x = data, 
                df = df, 
                selection = selection#,
                #legend_selection = reactive(legend()$legend_selection)
                )
 
-    # Update poly on click
+    # Get on-click event
     observeEvent(input$map_polygon_click, {
-      lst <- (jsonlite::fromJSON(input$map_polygon_click))$object$properties$id
-      if (is.null(lst)) selection(NA) else selection(lst)
+      selection(jsonlite::fromJSON(input$map_polygon_click))
     })
     
     # Clear selection on df change
@@ -124,6 +113,16 @@ canale_server <- function(id) {
 
     # Clear click status if prompted
     observeEvent(input$`explore-clear_selection`, selection(NA))
+    
+    # Explore panel
+    explore_content <- explore_server(
+      id = "explore", 
+      x = data, 
+      var_left = var_left,
+      var_right = var_right, 
+      select_id = select_id,
+      df = df, 
+      build_str_as_DA = TRUE)
     
     # data naming for data_export
     data_export <- data_export_server(

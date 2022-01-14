@@ -5,10 +5,10 @@
 #' representing the left and right variables to be analyzed. Each 
 #' should have a "raw" version and quantile versions with the suffixes "_q3"
 #' and "_q5".
-#' @param selection A reactive which resolves to a character string giving the 
+#' @param select_id A reactive which resolves to a character string giving the 
 #' ID of a row in the input data frame (`x`) which has been selected.
 
-info_table_server <- function(id, x, var_type, var_left, var_right, selection, 
+info_table_server <- function(id, x, var_type, var_left, var_right, select_id, 
                               df, var_left_label, var_right_label, 
                               build_str_as_DA) {
   
@@ -16,7 +16,7 @@ info_table_server <- function(id, x, var_type, var_left, var_right, selection,
   stopifnot(is.reactive(var_type))
   stopifnot(is.reactive(var_left))
   stopifnot(is.reactive(var_right))
-  stopifnot(is.reactive(selection))
+  stopifnot(is.reactive(select_id))
   stopifnot(is.reactive(df))
 
   moduleServer(id, function(input, output, session) {
@@ -26,7 +26,7 @@ info_table_server <- function(id, x, var_type, var_left, var_right, selection,
       ## Get data list ---------------------------------------------------------
       
       z <- tryCatch(
-        make_info_table_data(id, x, var_type, var_left, var_right, selection, 
+        make_info_table_data(id, x, var_type, var_left, var_right, select_id, 
                              df, var_left_label, var_right_label, 
                              build_str_as_DA), 
         error = function(e) NULL)
