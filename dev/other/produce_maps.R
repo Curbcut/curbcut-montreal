@@ -376,5 +376,16 @@ walk(c("borough", "CT", "DA", "grid", "building", "street"), function(scale) {
 # Clean up ----------------------------------------------------------------
 
 unlink("out.png")
-rm(circle_borough, shadow_left, shadow_right, 
-   make_circle, theme_map)
+file.rename("www/maps/left_borough_ .png", "www/maps/left_borough_ _q3.png")
+file.rename("www/maps/left_CT_ .png", "www/maps/left_CT_ _q3.png")
+file.rename("www/maps/left_DA_ .png", "www/maps/left_DA_ _q3.png")
+file.rename("www/maps/left_grid_ .png", "www/maps/left_grid_ _q3.png")
+file.rename("www/maps/left_building_ .png", "www/maps/left_building_ _q3.png")
+file.rename("www/maps/left_street_ .png", "www/maps/left_street_ _q3.png")
+file.rename("www/maps/right_borough_ .png", "www/maps/right_borough_ _q3.png")
+file.rename("www/maps/right_CT_ .png", "www/maps/right_CT_ _q3.png")
+file.rename("www/maps/right_DA_ .png", "www/maps/right_DA_ _q3.png")
+file.rename("www/maps/right_grid_ .png", "www/maps/right_grid_ _q3.png")
+file.rename("www/maps/right_building_ .png", "www/maps/right_building_ _q3.png")
+file.rename("www/maps/right_street_ .png", "www/maps/right_street_ _q3.png")
+rm(circle_borough, shadow_left, shadow_right, make_circle, theme_map)
