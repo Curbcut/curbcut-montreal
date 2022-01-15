@@ -56,14 +56,8 @@ housing_UI <- function(id) {
 housing_server <- function(id) {
   moduleServer(id, function(input, output, session) {
     
-    # Initial reactives
+    # Initial zoom reactive
     zoom <- reactiveVal(get_zoom(map_zoom, map_zoom_levels))
-
-    # Sidebar
-    sidebar_server(
-      id = "sidebar", 
-      x = "housing", 
-      var_map = reactive(paste0("left_", df(), "_", var_left())))
 
     # Map
     output$map <- renderMapdeck({mapdeck(
@@ -125,14 +119,21 @@ housing_server <- function(id) {
       }
     })
 
-    # Right variable server
+    # Right variable/compare panel
     var_right <- compare_server(
       id = "housing", 
       var_list = make_dropdown(exclude = "Housing"), 
       disabled_choices = var_list_housing_right_disabled,
-      time = time,
-      df = df)
+      df = df,
+      time = time)
 
+    # Sidebar
+    sidebar_server(
+      id = "sidebar", 
+      x = "housing", 
+      var_map = reactive(paste0("left_", df(), "_", var_left())),
+      var_right = var_right)
+    
     # Data
     data <- data_server(
       id = "housing",
