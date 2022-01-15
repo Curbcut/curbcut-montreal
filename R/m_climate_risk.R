@@ -39,20 +39,15 @@ climate_risk_UI <- function(id) {
 climate_risk_server <- function(id) {
   moduleServer(id, function(input, output, session) {
     
-    # Initial reactives
+    # Initial zoom reactive
     zoom <- reactiveVal(get_zoom(map_zoom, map_zoom_levels))
     
-    # Title bar
-    sidebar_server("sidebar", "climate_risk", 
-                   reactive(paste0("left_", df(), "_", var_left())))
-    
     # Map
-    output$map <- renderMapdeck({
-      mapdeck(style = map_style, 
-              token = map_token, 
-              zoom = map_zoom, 
-              location = map_location)
-    })
+    output$map <- renderMapdeck({mapdeck(
+      style = map_style, 
+      token = map_token, 
+      zoom = map_zoom, 
+      location = map_location)})
     
     # Zoom reactive
     observeEvent(input$map_view_change$zoom, {
@@ -73,12 +68,19 @@ climate_risk_server <- function(id) {
     # Left variable server
     var_left <- select_var_server("left", reactive(var_list_climate_risk))
     
-    # Compare panel
+    # Right variable/compare panel
     var_right <- compare_server(
       id = "climate_risk", 
       var_list = make_dropdown(),
       df = df, 
       time = time)
+    
+    # Sidebar
+    sidebar_server(
+      id = "sidebar", 
+      x = "climate_risk", 
+      var_map = reactive(paste0("left_", df(), "_", var_left())),
+      var_right = var_right)
     
     # Data
     data <- data_server(
@@ -88,28 +90,8 @@ climate_risk_server <- function(id) {
       df = df,
       island = TRUE)
     
-    # Update map in response to variable changes or zooming
-    select_id <- map_change(
-      NS(id, "map"),
-      x = data,
-      df = df,
-      zoom = zoom,
-      click = reactive(input$map_polygon_click),
-      #legend_selection = reactive(legend()$legend_selection),
-      explore_clear = reactive(input$`explore-clear_selection`)
-    )
-    
-    # Explore panel
-    explore_server(id = "explore",
-                   x = data,
-                   var_left = var_left,
-                   var_right = var_right,
-                   select_id = select_id,
-                   df = df,
-                   var_left_label = climate_legend)
-    
     # Legend
-    legend_server(
+    legend <- legend_server(
       id = "legend",
       var_left = var_left,
       var_right = var_right,
@@ -120,6 +102,26 @@ climate_risk_server <- function(id) {
       id = "dyk",
       var_left = var_left,
       var_right = var_right)
+    
+    # Update map in response to variable changes or zooming
+    select_id <- map_change(
+      id = NS(id, "map"),
+      x = data,
+      df = df,
+      zoom = zoom,
+      click = reactive(input$map_polygon_click),
+      #legend_selection = reactive(legend()$legend_selection),
+      explore_clear = reactive(input$`explore-clear_selection`))
+    
+    # Explore panel
+    explore_content <- explore_server(
+      id = "explore",
+      x = data,
+      var_left = var_left,
+      var_right = var_right,
+      select_id = select_id,
+      df = df,
+      var_left_label = climate_legend)
     
     # If grid isn't clicked, toggle on the zoom menu
     observeEvent(input$grid, {

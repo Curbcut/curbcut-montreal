@@ -35,7 +35,7 @@ canale_UI <- function(id) {
 canale_server <- function(id) {
   moduleServer(id, function(input, output, session) {
     
-    # Initial reactives
+    # Initial zoom reactive
     zoom <- reactiveVal(get_zoom(map_zoom, map_zoom_levels))
 
     # Map
@@ -59,7 +59,7 @@ canale_server <- function(id) {
     time <- reactive("2016")
     
     # Left variable
-    var_left <- reactive("canale_ind_2016")
+    var_left <- reactive(paste0("canale_ind_", time()))
     
     # Right variable / compare panel
     var_right <- compare_server(

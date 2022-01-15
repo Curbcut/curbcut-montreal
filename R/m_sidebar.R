@@ -30,19 +30,17 @@ sidebar_server <- function(id, x, var_map = NULL, var_right = NULL) {
       (filter(title, type == "extra"))$text
     
     # Small map
-    if (!is.null(var_map) && !is.null(var_right())) {
-      
-      var_map <- reactive({
-        suffix <- if (var_right()[1] == " ") "_q5" else "_q3"
-        var <- str_remove(var_map(), "_\\d{4}")
-        time <- str_extract(var_map(), "_\\d{4}")
-        paste0(var, suffix, time)
-      })
-      
-      small_map_server("left", var_map)
-      
+    if (!is.null(var_map) && !is.null(var_right)) {
+      small_map_server("left", reactive(paste0(
+        # var_map without date
+        str_remove(var_map(), "_\\d{4}"), 
+        # q5 for univariate, q3 for bivariate
+        ifelse(var_right() == " ", "_q5", "_q3"), 
+        # var_map date
+        ifelse(is.na(str_extract(var_map(), "_\\d{4}")), "",
+               str_extract(var_map(), "_\\d{4}")))))
     } else if (!is.null(var_map)) small_map_server("left", var_map)
-    
+
     # More info
     observeEvent(input$more_info, {
       toggle("title_extra", condition = input$more_info %% 2 == 1)
