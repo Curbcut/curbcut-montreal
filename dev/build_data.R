@@ -182,3 +182,8 @@ invisible(file.copy(list.files("www/maps", full.names = TRUE),
 rm(add_q3, add_q5, add_variables, data_testing, find_breaks_q5, get_breaks_q3,
    get_breaks_q5, meta_testing)
 
+
+
+# Deploy app --------------------------------------------------------------
+
+rsconnect::deployApp(appName = "sus-mssi")
