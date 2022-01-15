@@ -38,12 +38,6 @@ canale_server <- function(id) {
     # Initial reactives
     zoom <- reactiveVal(get_zoom(map_zoom, map_zoom_levels))
 
-    # Sidebar
-    sidebar_server(
-      id = "sidebar", 
-      x = "canale", 
-      var_map = reactive(paste0("left_", df(), "_canale_ind_2016")))
-    
     # Map
     output$map <- renderMapdeck({mapdeck(
       style = map_style, 
@@ -74,6 +68,13 @@ canale_server <- function(id) {
       df = df, 
       time = time)
 
+    # Sidebar
+    sidebar_server(
+      id = "sidebar", 
+      x = "canale", 
+      var_map = reactive(paste0("left_", df(), "_canale_ind_2016")),
+      var_right = var_right)
+    
     # Data
     data <- data_server(
       id = "canale", 

@@ -4,9 +4,9 @@
 
 # Setup -------------------------------------------------------------------
 
+library(patchwork)
 library(progressr)
 handlers(global = TRUE)
-
 
 make_circle <- function(x) {
   borough %>% 
@@ -56,19 +56,33 @@ theme_map <- function(...) {
 }
 
 shadow_left <- png::readPNG("www/dropshadow_left.png", native = TRUE)
-legend_left <- png::readPNG("www/univariate_left.png", native = TRUE)
 shadow_right <- png::readPNG("www/dropshadow_right.png", native = TRUE)
-legend_right <- png::readPNG("www/univariate_right.png", native = TRUE)
 
 
 # Make maps ---------------------------------------------------------------
 
 walk(c("borough", "CT", "DA", "grid", "building", "street"), function(scale) {
   
-  data <- get(scale)
+  if (scale == "building") {
+    
+    island_CSDUID <- 
+      c("2466007", "2466023_1",  "2466023_10", "2466023_11", "2466023_12", 
+        "2466023_13", "2466023_14", "2466023_15", "2466023_16", "2466023_17", 
+        "2466023_18", "2466023_19", "2466023_2", "2466023_3", "2466023_4", 
+        "2466023_5",  "2466023_6", "2466023_7", "2466023_8", "2466023_9",
+        "2466032", "2466047", "2466058", "2466062", "2466087", "2466092", 
+        "2466097", "2466102", "2466107", "2466112", "2466117", "2466127", 
+        "2466142", "2466072", "2466023")
+    
+    data <- 
+      DA |> 
+      filter(CSDUID %in% island_CSDUID) |> 
+      st_set_geometry("building")
+    
+  } else data <- get(scale)
   
   data <- make_circle(data)
-  var_list <- c(" ", str_subset(names(data), "q3"))
+  var_list <- c(" ", str_subset(names(data), "q3|q5"))
   
   handlers(handler_progress(format = pillar::style_subtle(paste0(
     "Making ", scale, " map :current of :total (:tick_rate/s) [:bar] ",
@@ -125,7 +139,7 @@ walk(c("borough", "CT", "DA", "grid", "building", "street"), function(scale) {
           inset_element(p, 0.18, 0.148, 0.83, 0.85, align_to = "full")} %>% 
         ggsave("out.png", ., width = 4, height = 4)
       
-    } else {
+    } else if (str_detect(.x, "q3")) {
       
       if (scale == "grid") {
         p <-
@@ -178,20 +192,70 @@ walk(c("borough", "CT", "DA", "grid", "building", "street"), function(scale) {
       }
       
       {wrap_elements(shadow_left) + 
-          inset_element(p, 0.18, 0.148, 0.83, 0.85, align_to = "full") +
-          inset_element(wrap_elements(
-            full = legend_left) + 
-              theme(plot.background = element_rect(fill = "transparent", 
-                                                   colour = "transparent")), 
-            0.2, 0.25, 0.46, 0.5, align_to = "full")} %>% 
+          inset_element(p, 0.18, 0.148, 0.83, 0.85, align_to = "full")} %>% 
         ggsave("out.png", ., width = 4, height = 4)
       
+    } else if (str_detect(.x, "q5")) {
+      
+      if (scale == "grid") {
+        p <-
+          data %>% 
+          select(var = all_of(.x)) %>% 
+          ggplot() +
+          geom_sf(data = circle_borough, fill = "grey70", color = "white", 
+                  size = 0.01) +
+          geom_sf(aes(fill = as.factor(var)), color = "white", size = 0.01) +
+          scale_fill_manual(values = col_left_5, na.value = "grey70") +
+          theme_map() +
+          theme(legend.position = "none")
+        
+      } else if (scale == "building") {
+        p <-
+          data %>% 
+          select(var = all_of(.x)) %>% 
+          ggplot() +
+          geom_sf(data = circle_borough, fill = "grey70", color = "white", 
+                  size = 0.01) +
+          geom_sf(aes(fill = as.factor(var), colour = as.factor(var)), 
+                  size = 0.05) +
+          scale_fill_manual(values = col_left_5, na.value = "grey70") +
+          scale_colour_manual(values = col_left_5, na.value = "grey70") +
+          theme_map() +
+          theme(legend.position = "none")
+        
+      } else if (scale == "street") {
+        p <-
+          data %>% 
+          select(var = all_of(.x)) %>% 
+          ggplot() +
+          geom_sf(data = circle_borough, fill = "grey70", color = "white", 
+                  size = 0.01) +
+          geom_sf(aes(colour = as.factor(var)), size = 0.1) +
+          scale_colour_manual(values = col_left_5, na.value = "grey70") +
+          theme_map() +
+          theme(legend.position = "none")
+        
+      } else {
+        p <-
+          data %>% 
+          select(var = all_of(.x)) %>% 
+          ggplot() +
+          geom_sf(aes(fill = as.factor(var)), color = "white", size = 0.01) +
+          scale_fill_manual(values = col_left_5, na.value = "grey70") +
+          theme_map() +
+          theme(legend.position = "none")
+        
+      }
+      
+      {wrap_elements(shadow_left) + 
+          inset_element(p, 0.18, 0.148, 0.83, 0.85, align_to = "full")} %>% 
+        ggsave("out.png", ., width = 4, height = 4)
+
     }
     
     img <- png::readPNG("out.png")
     img <- img[251:950, 251:950,]
-    png::writePNG(img, paste0("www/maps/left_", scale, "_", 
-                              sub("_q3", "", .x), ".png"))
+    png::writePNG(img, paste0("www/maps/left_", scale, "_", .x, ".png"))
     
     
     # Right map
@@ -242,7 +306,7 @@ walk(c("borough", "CT", "DA", "grid", "building", "street"), function(scale) {
           inset_element(p, 0.17, 0.148 , 0.818, 0.844, align_to = "full")} %>% 
         ggsave("out.png", ., width = 4, height = 4)
       
-    } else {
+    } else if (str_detect(.x, "q3")) {
       
       if (scale == "grid") {
         p <-
@@ -295,20 +359,14 @@ walk(c("borough", "CT", "DA", "grid", "building", "street"), function(scale) {
       }
       
       {wrap_elements(shadow_right) + 
-          inset_element(p, 0.17, 0.148 , 0.818, 0.844, align_to = "full") +
-          inset_element(wrap_elements(
-            full = legend_right) + 
-              theme(plot.background = element_rect(fill = "transparent", 
-                                                   colour = "transparent")), 
-            0.54, 0.245, 0.8, 0.495, align_to = "full")} %>% 
+          inset_element(p, 0.17, 0.148 , 0.818, 0.844, align_to = "full")} %>% 
         ggsave("out.png", ., width = 4, height = 4)
       
     }
     
     img <- png::readPNG("out.png")
     img <- img[251:950, 251:950,]
-    png::writePNG(img, paste0("www/maps/right_", scale, "_", 
-                              sub("_q3", "", .x), ".png"))
+    png::writePNG(img, paste0("www/maps/right_", scale, "_", .x, ".png"))
     
   })
   
@@ -318,5 +376,5 @@ walk(c("borough", "CT", "DA", "grid", "building", "street"), function(scale) {
 # Clean up ----------------------------------------------------------------
 
 unlink("out.png")
-rm(circle_borough, legend_left, legend_right, shadow_left, shadow_right, 
+rm(circle_borough, shadow_left, shadow_right, 
    make_circle, theme_map)

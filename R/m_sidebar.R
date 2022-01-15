@@ -15,7 +15,7 @@ sidebar_UI <- function(id, ...) {
   ))
 }
 
-sidebar_server <- function(id, x, var_map = NULL) {
+sidebar_server <- function(id, x, var_map = NULL, var_right = NULL) {
   stopifnot(!is.reactive(x))
   
   moduleServer(id, function(input, output, session) {
@@ -30,7 +30,18 @@ sidebar_server <- function(id, x, var_map = NULL) {
       (filter(title, type == "extra"))$text
     
     # Small map
-    if (!is.null(var_map)) small_map_server("left", var_map)
+    if (!is.null(var_map) && !is.null(var_right())) {
+      
+      var_map <- reactive({
+        suffix <- if (var_right()[1] == " ") "_q5" else "_q3"
+        var <- str_remove(var_map(), "_\\d{4}")
+        time <- str_extract(var_map(), "_\\d{4}")
+        paste0(var, suffix, time)
+      })
+      
+      small_map_server("left", var_map)
+      
+    } else if (!is.null(var_map)) small_map_server("left", var_map)
     
     # More info
     observeEvent(input$more_info, {
