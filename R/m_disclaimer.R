@@ -111,13 +111,14 @@ year_disclaimer_server <- function(id, data, var_left, var_right, time,
       if (length(var_left) == 2) {
         if (var_right[1] == " ") {
           if (pct_variation()) {
-                      out <- c(out, list(str_glue(
-            sus_translate(paste0("<b>How to read the map</b><br>",
-                                 "The map displays the percent variation in ",
-                                 "'{var_left_title}' between {time()[1]} and {time()[2]}. ",
-                                 "Blue means an increase in '{var_left_title}', and red ",
-                                 "means a decrease.")))
-                      ))
+            out <- out
+            #           out <- c(out, list(str_glue(
+            # sus_translate(paste0("<b>How to read the map</b><br>",
+            #                      "The map displays the percent variation in ",
+            #                      "'{var_left_title}' between {time()[1]} and {time()[2]}. ",
+            #                      "Blue means an increase in '{var_left_title}', and red ",
+            #                      "means a decrease.")))
+            #           ))
           } else {
             out <- c(out, list(str_glue(
               sus_translate(paste0("<b>How to read the map</b><br>",

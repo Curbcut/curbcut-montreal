@@ -5,8 +5,9 @@ make_info_table_data <- function(id, x, var_type, var_left, var_right,
                                  select_id, df, var_left_label, var_right_label, 
                                  build_str_as_DA) {
   
-  ## Initialize output list ----------------------------------------------------
+  ## Initialize dat and output list --------------------------------------------
   
+  dat <- x()
   out <- list(var_type = var_type())
 
   
@@ -16,17 +17,15 @@ make_info_table_data <- function(id, x, var_type, var_left, var_right,
   
   # TKTK THIS IS BROKEN FOR TWO DATES!
   if (build_str_as_DA) {
-    tb <- data_server(id = "info_table",
-                      var_left = var_left,
-                      var_right = var_right,
-                      df = reactive("DA"))
-    dat <- tb()
+    dat_select <- building
+    dat_select_id <- select_id()
     select_id <- (filter(building, ID == select_id()))$DAUID
     if (length(select_id) == 0) select_id <- NA
     
   } else {
-    dat <- x()
+    dat_select <- x()
     select_id <- select_id()
+    dat_select_id <- select_id
   }
   
   
@@ -78,7 +77,8 @@ make_info_table_data <- function(id, x, var_type, var_left, var_right,
 
   ## Selections ----------------------------------------------------------------
   
-  select_name <- filter(x(), ID == select_id)
+  # select_name and selection need to be different because of building names
+  select_name <- filter(dat_select, ID == dat_select_id)
   selection <- filter(dat, ID == select_id)
   out$selection <- selection
   active_left <- nrow(filter(selection, !is.na(var_left_q5)))

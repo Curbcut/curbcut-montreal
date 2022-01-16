@@ -171,7 +171,40 @@ data_server <- function(id, var_left, var_right, df, island = FALSE) {
           left_join(colour_delta, by = "group")
         
       }
+      
+      
+      # Building delta ---------------------------------------------------------
 
+      if (data_type == "building_delta") {
+        
+        data <- 
+          DA |> 
+          st_set_geometry("building") |> 
+          select(ID, name, name_2, any_of(c("DAUID", "CTUID", "CSDUID")), 
+                 population, var_left = all_of(var_left), 
+                 var_left = all_of(var_left), geometry = building) |>
+          mutate(
+            var_left = (var_left2 - var_left1) / abs(var_left1), 
+            var_left_q3 = case_when(
+              is.na(var_left) ~ NA_character_,
+              var_left < -1 * median(abs(var_left[abs(var_left) > 0.02]), 
+                                     na.rm = TRUE) ~ "1",
+              var_left < -0.02 ~ "2",
+              var_left < 0.02 ~ "3",
+              var_left < median(abs(var_left[abs(var_left) > 0.02]), 
+                                na.rm = TRUE) ~ "4",
+              TRUE ~ "5"),
+            across(where(is.numeric), ~replace(., is.nan(.), NA)),
+            across(where(is.numeric), ~replace(., is.infinite(.), NA))) |>
+          select(ID, name, name_2, any_of(c("DAUID", "CTUID", "CSDUID")), 
+                 population, var_left, var_left_q3, var_left_1 = var_left1, 
+                 var_left_2 = var_left2) |> 
+          mutate(group = as.character(var_left_q3),
+                 group = if_else(is.na(group), "NA", group),
+                 group = paste(group, "- 1")) |> 
+          left_join(colour_delta, by = "group")
+      }
+      
       
       # Filter to island -------------------------------------------------------
       
