@@ -22,10 +22,12 @@ map_change <- function(id_map, x, df, zoom = df, click = reactive(NULL),
                        legend = NULL,  polygons_to_clear = NULL, 
                        standard_width = reactive(TRUE),
                        legend_selection = reactive(NULL),
-                       explore_clear = reactive(NULL)) {
+                       explore_clear = reactive(NULL),
+                       var_left = reactive(NULL),
+                       var_right = reactive(NULL)) {
   
   ## Setup ---------------------------------------------------------------------
-  
+
   # Error checking
   stopifnot(is.reactive(x))
   stopifnot(is.reactive(df))
@@ -53,14 +55,14 @@ map_change <- function(id_map, x, df, zoom = df, click = reactive(NULL),
   
   observeEvent({#legend_selection()
     x()
-    zoom()}, {
+    df()}, {
       
       # Used at all geometries:
       update_and_clean <- function() {
         mapdeck_update(map_id = id_map) #|>
         # clear_polygon() |>
-        # clear_scatterplot() |> 
-        # clear_heatmap() |> 
+        # clear_scatterplot() |>
+        # clear_heatmap() |>
         # clear_path()
       }
       
@@ -101,11 +103,26 @@ map_change <- function(id_map, x, df, zoom = df, click = reactive(NULL),
         
         # Buildings should be extruded
         if (df() == "building") {
-          update_and_clean() |> 
-            add_polygon(
-              data = dat, update_view = FALSE, id = "ID", elevation = 5, 
-              fill_colour = "fill", auto_highlight = TRUE, 
-              highlight_colour = "#FFFFFF80")
+          
+          # File name
+          file_name <- if (var_right() == " ") {
+            var_left()
+          } else paste0(var_left(), "-", var_right())
+          
+          df_dat <- qread(paste0("data/buildings_geojson/", file_name, ".qs"))
+
+          update_and_clean() |>
+            clear_polygon() |>
+            add_geojson(df_dat, update_view = FALSE,
+                        auto_highlight = TRUE,
+                        highlight_colour = "#FFFFFF80",
+                        extruded = TRUE)
+          
+          # update_and_clean() |>
+          #   add_polygon(
+          #     data = dat, update_view = FALSE, id = "ID", elevation = 5,
+          #     fill_colour = "fill", auto_highlight = TRUE,
+          #     highlight_colour = "#FFFFFF80")
         } else {
           update_and_clean() |> 
             add_polygon(
@@ -126,8 +143,8 @@ map_change <- function(id_map, x, df, zoom = df, click = reactive(NULL),
         
         # TKTK THIS HASN'T BE LOOKED AT YET
       } else if (geom_type() == "point") {
-        
-        if (df() != "street") {
+      
+        if (df() == "heatmap") {
           update_and_clean() |>
             add_heatmap(data = x(), update_view = FALSE,
                         colour_range = c("#AECBB4", "#91BD9A", "#73AE80",
@@ -145,7 +162,7 @@ map_change <- function(id_map, x, df, zoom = df, click = reactive(NULL),
                             fill_colour = "fill",
                             fill_opacity = 200,
                             legend = legend,
-                            # tooltip = "label",
+                            # tooltip = "ID",
                             radius = 10,
                             radius_min_pixels = 8)
         }
