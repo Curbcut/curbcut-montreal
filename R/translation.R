@@ -43,6 +43,10 @@ sus_translate_list <- function(x) {
 # Reactive translation function for text, lists and png -------------------
 
 sus_translate <- function(x) {
+  
+  # Return input if we're not in an active Shiny context
+  if (is.null(getDefaultReactiveDomain())) return(x)
+  
   # English
   if (sus_rv$lang() == "en") {
     x
