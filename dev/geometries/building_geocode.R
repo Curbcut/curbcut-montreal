@@ -92,9 +92,6 @@ DA <-
   as_tibble() |> 
   rename(ID = DAUID, building = geometry) |> 
   right_join(DA, by = "ID") |> 
-  mutate(building = st_sfc(map2(building, geometry, ~{
-    if (st_is_empty(.x)) .y else .x
-  }))) |> 
   st_as_sf(crs = 4326) |> 
   relocate(building, .before = geometry) |> 
   st_set_geometry("geometry") |> 

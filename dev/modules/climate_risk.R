@@ -106,7 +106,7 @@ DA <- climate_census_fun(DA)
 rm(climate_risk, climate_census_fun)
 
 
-# Add climate data risk to building and street ----------------------------
+# Add climate data risk to street -----------------------------------------
 
 street <- 
   street |> 
@@ -143,8 +143,13 @@ grid_q5 <-
   select(climate_flood_ind:climate_heat_wave_ind) |> 
   slice(1:6) |> 
   mutate(across(everything(), ~c("No risk" = 0, "Insignificant" = 1, 
-                                 "Minor" = 2, "Moderate" = 3, "High" = 4,
-                                 "Major" = 5))) |> 
+                                 "Minor" = 2, "Moderate" = 3, "Elevated" = 4,
+                                 "Major" = 5)),
+         across(everything(), ~c("No risk", "Insignificant", "Minor", 
+                                 "Moderate", "Elevated", "Major"),
+                .names = "{.col}_name"),
+         across(everything(), ~c("No risk", "Insig.", "Minor", "Mod.", "Elev.",
+                                 "Major"), .names = "{.col}_short")) |> 
   list()
 
 climate_risk_q5 <- c(climate_risk_q5, "grid" = grid_q5)
@@ -208,7 +213,9 @@ variables <-
     dates = NA,
     scales = c("borough", "building", "CT", "DA", "grid", "street"),
     breaks_q3 = select(breaks_q3_active, scale:rank, var = climate_drought_ind),
-    breaks_q5 = select(breaks_q5_active, scale:rank, var = climate_drought_ind),
+    breaks_q5 = select(breaks_q5_active, scale:rank, var = climate_drought_ind,
+                       var_name = climate_drought_ind_name, 
+                       var_name_short = climate_drought_ind_name_short),
     source = "VdM") |> 
   add_variables(
     var_code = "climate_flood_ind",
@@ -220,7 +227,9 @@ variables <-
     dates = NA,
     scales = c("borough", "building", "CT", "DA", "grid", "street"),
     breaks_q3 = select(breaks_q3_active, scale:rank, var = climate_flood_ind),
-    breaks_q5 = select(breaks_q5_active, scale:rank, var = climate_flood_ind),
+    breaks_q5 = select(breaks_q5_active, scale:rank, var = climate_flood_ind,
+                       var_name = climate_flood_ind_name, 
+                       var_name_short = climate_flood_ind_name_short),
     source = "VdM") |> 
   add_variables(
     var_code = "climate_heavy_rain_ind",
@@ -234,7 +243,9 @@ variables <-
     breaks_q3 = select(breaks_q3_active, scale:rank, 
                        var = climate_heavy_rain_ind),
     breaks_q5 = select(breaks_q5_active, scale:rank, 
-                       var = climate_heavy_rain_ind),
+                       var = climate_heavy_rain_ind,
+                       var_name = climate_heavy_rain_ind_name, 
+                       var_name_short = climate_heavy_rain_ind_name_short),
     source = "VdM") |> 
   add_variables(
     var_code = "climate_destructive_storms_ind",
@@ -249,7 +260,10 @@ variables <-
     breaks_q3 = select(breaks_q3_active, scale:rank, 
                        var = climate_destructive_storms_ind),
     breaks_q5 = select(breaks_q5_active, scale:rank, 
-                       var = climate_destructive_storms_ind),
+                       var = climate_destructive_storms_ind,
+                       var_name = climate_destructive_storms_ind_name, 
+                       var_name_short = 
+                         climate_destructive_storms_ind_name_short),
     source = "VdM") |> 
   add_variables(
     var_code = "climate_heat_wave_ind",
@@ -263,7 +277,9 @@ variables <-
     breaks_q3 = select(breaks_q3_active, scale:rank, 
                        var = climate_heat_wave_ind),
     breaks_q5 = select(breaks_q5_active, scale:rank, 
-                       var = climate_heat_wave_ind),
+                       var = climate_heat_wave_ind,
+                       var_name = climate_heat_wave_ind_name, 
+                       var_name_short = climate_heat_wave_ind_name_short),
     source = "VdM")
 
 

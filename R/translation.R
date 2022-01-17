@@ -3,10 +3,8 @@
 
 # Automatic translation function ------------------------------------------
 
-translate_fun <- function(x){
-  deeplr::toFrench2(x,
-                    auth_key = .deepl_key)
-}
+translate_fun <- function(x) deeplr::toFrench2(x, auth_key = .deepl_key)
+
 
 # Basic list French translation -------------------------------------------
 

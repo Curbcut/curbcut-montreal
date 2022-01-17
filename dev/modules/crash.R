@@ -443,7 +443,7 @@ variables <-
 # Clean-up ----------------------------------------------------------------
 
 rm(breaks_q3_active, breaks_q5_active, crash_breaks_q3, crash_breaks_q5,
-   crash_for_q5, crash_q3, crash_q5, crash_results, var_list, var_list_no_dates,
+   crash_for_q5, crash_q5, crash_results, var_list, var_list_no_dates,
    join_crash, process_crash#, 
    # traffic_count, traffic_files, traffic_files_names
    )

@@ -215,21 +215,7 @@ data_server <- function(id, var_left, var_right, df, island = FALSE) {
       
       return(data)
 
-      
-
-      # # Add NA column if q3 doesn't exist
-      # if (length(left_q3_col) == 1 && 
-      #     !left_q3_col %in% names(data)) {
-      #   data <- 
-      #     data %>% 
-      #     mutate(new_col = NA)
-      #   
-      #   names(data)[names(data) == "new_col"] <- left_q3_col
-      # }
-      # 
-      # 
-      # 
-      # 
+       
       # ## Univariate data -------------------------------------------------------
       # 
       # if (var_right[1] == " ") {} else {
