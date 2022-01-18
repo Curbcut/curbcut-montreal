@@ -76,11 +76,7 @@ canale_server <- function(id) {
       var_right = var_right)
     
     # Data
-    data <- data_server(
-      id = "canale", 
-      var_left = var_left,
-      var_right = var_right, 
-      df = df)
+    data <- reactive(get_data(df(), var_left(), var_right()))
     
     # Legend
     legend <- legend_server(
@@ -103,7 +99,9 @@ canale_server <- function(id) {
       zoom = zoom,
       click = reactive(input$map_polygon_click),
       #legend_selection = reactive(legend()$legend_selection),
-      explore_clear = reactive(input$`explore-clear_selection`))
+      explore_clear = reactive(input$`explore-clear_selection`),
+      var_left = var_left,
+      var_right = var_right)
 
     # Explore panel
     explore_content <- explore_server(

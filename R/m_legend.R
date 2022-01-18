@@ -62,7 +62,8 @@ legend_server <- function(id, var_left, var_right, df,
     output$legend_render <- renderUI({
       output$legend <- renderPlot({
         
-        data_type <- get_data_type(df, var_left, var_right)
+        data_type <- get_data_type(df(), var_left(), var_right())
+        
         tryCatch(render_plot_fun(var_left, var_right, df, data_type),
                  error = function(e) NULL, silent = TRUE)
       })
