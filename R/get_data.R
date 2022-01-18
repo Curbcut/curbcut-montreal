@@ -1,9 +1,9 @@
 #### GET DATA ##################################################################
 
-get_data <- function(df, var_left, var_right, island = FALSE) {
+get_data <- function(df, var_left, var_right, island = FALSE,
+                     point_df = NULL) {
   
   ## Setup ---------------------------------------------------------------------
-  
   # Error checking
   stopifnot(!is.reactive(df))
   stopifnot(!is.reactive(var_left))
@@ -12,31 +12,30 @@ get_data <- function(df, var_left, var_right, island = FALSE) {
   
   # Get data type
   data_type <- get_data_type(df, var_left, var_right)
-  
-  # Are var_left and var_right the same column?
+
+    # Are var_left and var_right the same column?
   if (all(var_left == var_right)) {
     stop("`var_left` and `var_right` are the same.")
   }
   
   # Get time format; eventually this might need to be conditional
-  time_format <- "_\\d{4}$"
+  time_format <- "\\d{4}$"
   
   # Facilitate code legibility by pre-creating q3/q5 column names
-  left_q3 <- paste0(str_remove(all_of(var_left), time_format), "_q3", 
+  left_q3 <- paste0(str_remove(all_of(var_left), time_format), "q3_", 
                     na.omit(str_extract(var_left, time_format)))
-  right_q3 <- paste0(str_remove(all_of(var_right), time_format), "_q3", 
+  right_q3 <- paste0(str_remove(all_of(var_right), time_format), "q3_", 
                      na.omit(str_extract(var_right, time_format)))
-  left_q5 <- paste0(str_remove(all_of(var_left), time_format), "_q5", 
+  left_q5 <- paste0(str_remove(all_of(var_left), time_format), "q5_", 
                     na.omit(str_extract(var_left, time_format)))
-  right_q5 <- paste0(str_remove(all_of(var_right), time_format), "_q5", 
+  right_q5 <- paste0(str_remove(all_of(var_right), time_format), "q5_", 
                      na.omit(str_extract(var_right, time_format)))
   
   
   ## Return data ---------------------------------------------------------------
-
-  data <- get_data_table(df, var_left, var_right, data_type, left_q3, right_q3,
-                         left_q5, right_q5)
   
+  data <- get_data_table(df, var_left, var_right, data_type, left_q3, right_q3,
+                         left_q5, right_q5, time_format, point_df)
   
   ## Filter to island ----------------------------------------------------------
   
@@ -49,8 +48,8 @@ get_data <- function(df, var_left, var_right, island = FALSE) {
       "2466097", "2466102", "2466107", "2466112", "2466117", "2466127", 
       "2466142", "2466072", "2466023")
   
-  if (island) data <- filter(data, CSDUID %in% island_CSDUID)
-  
+  if (island && df %in% c("borough", "CT", "DA", "grid", "street", "building"))
+    data <- filter(data, CSDUID %in% island_CSDUID)
   
   # Return output ----------------------------------------------------------
   

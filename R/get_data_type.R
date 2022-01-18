@@ -20,6 +20,7 @@ get_data_type <- function(df, var_left, var_right) {
   
   # General cases --------------------------------------------------------------
 
+  if (df %in% c("heatmap", "point")) return("point")
   if (length(var_left) == 1 && var_right[1] == " ") return("q5")
   if (length(var_left) == 1 && length(var_right) == 1 && var_right != " ")
     return("bivar")

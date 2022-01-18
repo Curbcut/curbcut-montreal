@@ -62,6 +62,10 @@ permits_UI <- function(id) {
 permits_server <- function(id) {
   moduleServer(id, function(input, output, session) {
     
+    # Initial reactives
+    zoom <- reactiveVal(get_zoom(map_zoom, c("heatmap" = 0, "point" = 12)))
+    selection <- reactiveVal(NA)
+    
     # Load heavy data used by this module
     if (any(!str_detect("permits_combination_count_1990", names(borough)))) {
       qload("data/permits.qsm")
@@ -69,11 +73,8 @@ permits_server <- function(id) {
       CT <<- bind_cols(CT, permits_choropleth$CT)
       DA <<- bind_cols(DA, permits_choropleth$DA)
       grid <<- bind_cols(grid, permits_choropleth$grid)
+      permits <<- permits
     }
-
-    # Initial reactives
-    zoom <- reactiveVal(get_zoom(map_zoom, map_zoom_levels))
-    selection <- reactiveVal(NA)
     
     # Sidebar
     sidebar_server(
@@ -83,25 +84,13 @@ permits_server <- function(id) {
     
     # If COUNT isn't selected, choropleth is TRUE 
     choropleth <- reactive(var_left_1() != "count")
-    
+
     # Map
     output$map <- renderMapdeck({mapdeck(
       style = map_style, 
       token = map_token, 
       zoom = map_zoom, 
       location = map_location)})
-    
-    # Zoom reactive
-    observeEvent(input$map_view_change$zoom, {
-      zoom(get_zoom(input$map_view_change$zoom, map_zoom_levels))})
-    
-    # Zoom level for data
-    df_choropleth <- zoom_server(
-      id = "zoom", 
-      zoom = zoom, 
-      zoom_levels = map_zoom_levels)
-    
-    df <- reactive({if (input$grid) "grid" else df_choropleth()})
     
     # Enable or disable first and second slider
     observeEvent(input$bi_time, {
@@ -110,9 +99,13 @@ permits_server <- function(id) {
     
     # If we aren't in choropleth, toggle off the zoom and grid checkbox
     observeEvent(choropleth(), {
-      shinyjs::toggle("zoom-auto", condition = choropleth())
-      shinyjs::toggle("zoom-slider", condition = choropleth())
       shinyjs::toggle("grid", condition = choropleth())
+    })
+    
+    # If we aren't in choropleth, toggle off the zoom and grid checkbox
+    observeEvent(input$grid, {
+      shinyjs::toggle("zoom-auto", condition = !input$grid)
+      shinyjs::toggle("zoom-slider", condition = !input$grid)
     })
     
     # Time variable depending on which slider
@@ -130,47 +123,48 @@ permits_server <- function(id) {
                        time(), sep = "_"), "_ ")
     })
     
+    # Zoom reactive
+    map_zoom_levels_permits <- reactive({
+      if (choropleth()) map_zoom_levels else c("heatmap" = 0, "point" = 12)
+    })
+    
+    observeEvent({input$map_view_change$zoom
+      map_zoom_levels_permits()}, {
+        actual_zoom <- if (is.null(input$map_view_change$zoom)) map_zoom else {
+          input$map_view_change$zoom
+        }
+        zoom(get_zoom(actual_zoom, map_zoom_levels_permits()))}, 
+      ignoreInit = TRUE)
+
+    # Zoom level for data
+    df_choropleth <- zoom_server(
+      id = "zoom", 
+      zoom = zoom, 
+      zoom_levels = map_zoom_levels_permits)        
+
+    df <- reactive({if (input$grid) "grid" else df_choropleth()})
+    
     # Compare panel
     var_right <- compare_server(
       id = "permits", 
       var_list = make_dropdown(), 
-      df = df, 
+      df = df,
       time = time,
       show_panel = choropleth)
-
-    # Data 
-    data_choropleth <- data_server(
-      id = "permits", 
-      var_left = var_left,
-      var_right = var_right, 
-      df = df,
-      island = TRUE)
     
-    data <- reactive({
-      if (choropleth()) {
-        data_choropleth()
-      } else {
-        permits %>%
-          { if (var_left_2() %in% unique(permits$type))
-            filter(., type == var_left_2()) else .} %>%
-          { if (length(time()) == 2) {
-            filter(., year %in% time()[1]:time()[2])
-          } else {
-            filter(., year == time())
-          }}
-      }
-    })
+    data <- reactive(get_data(df(), var_left(), var_right(), island = TRUE,
+                              point_df = "permits"))
     
     # Disclaimers and how to read the map
     year_disclaimer_server(
-      id = "disclaimers", 
+      id = "disclaimers",
       data = data,
       var_left = var_left,
       var_right = var_right,
       time = time,
       pct_variation = choropleth,
       # If the same time is selected twice, other disclaimer
-      more_condition = reactive(!choropleth() && all(is.na(pull(data(), id)))),
+      more_condition = reactive(!choropleth() && all(is.na(pull(data(), ID)))),
       more_text = paste0(
         "<p style='font-size:11px;'>",
         "There is no '{var_left_title}' to report for ",
@@ -186,14 +180,26 @@ permits_server <- function(id) {
       #legend_selection = reactive(legend()$legend_selection),
       explore_clear = reactive(input$`explore-clear_selection`)
     )
-
+    
+    # Explore select
+    # Update point on click
+    observeEvent(input$map_scatterplot_click, {
+      lst <- jsonlite::fromJSON(input$map_scatterplot_click)$index
+      if (is.null(lst)) selection(NA) else {
+        # This is a hack because of a mapdeck bug
+        selection(data()[lst + 1,]$ID)
+      }
+    })
+    
+    current_select <- reactive(if (choropleth()) select_id() else selection())
+    
     # Explore panel
     explore_content <- explore_server(
       id = "explore",
       x = data,
       var_left = var_left,
       var_right = var_right,
-      select = selection,
+      select = current_select,
       df = df,
       standard = choropleth,
       custom_info = permits_info_table,
@@ -212,15 +218,6 @@ permits_server <- function(id) {
       id = "dyk", 
       var_left = var_left,
       var_right = var_right)
-    
-    # Update point on click
-    observeEvent(input$map_scatterplot_click, {
-      lst <- jsonlite::fromJSON(input$map_scatterplot_click)$index
-      if (is.null(lst)) selection(NA) else {
-        # This is a hack because of a mapdeck bug
-        selection(permits[lst + 1,]$ID)
-      }
-    })
     
     # Clear selection on df change
     observeEvent(df(), selection(NA), ignoreInit = TRUE)

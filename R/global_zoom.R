@@ -13,7 +13,9 @@ get_zoom_name <- function(x) {
     x == "CT" ~ "Census tract",
     x == "DA" ~ "Dissemination area",
     x == "building" ~ "Building",
-    x == "street" ~ "Street")
+    x == "street" ~ "Street",
+    x == "heatmap" ~ "Heatmap",
+    x == "point" ~ "Point")
 }
 
 get_zoom_label <- function(zoom_levels) {
@@ -28,5 +30,7 @@ get_zoom_code <- function(x) {
     x == "Census tract" ~ "CT",
     x == "Dissemination area" ~ "DA",
     x == "Building" ~ "building",
-    x == "Street" ~ "street")
+    x == "Street" ~ "street",
+    x == "Heatmap" ~ "heatmap",
+    x == "Point" ~ "point")
 }

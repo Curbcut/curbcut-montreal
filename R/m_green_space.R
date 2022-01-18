@@ -65,7 +65,7 @@ green_space_server <- function(id) {
     df <- zoom_server(
       id = "zoom", 
       zoom = zoom, 
-      zoom_levels = map_zoom_levels)
+      zoom_levels = reactive(map_zoom_levels))
     
     # Left variable servers
     var_left_groupings <- select_var_server("left_groupings", 
@@ -87,16 +87,9 @@ green_space_server <- function(id) {
       show_panel = choropleth)
     
     # Data
-    data_choropleth <- data_server(
-      id = "green_space", 
-      var_left = var_left,
-      var_right = var_right, 
-      df = df, 
-      island = TRUE)
-    
     data <- reactive({
       if (choropleth()) {
-        data_choropleth()
+        get_data(df(), var_left(), var_right(), island = TRUE)
       } else {
         green_space %>%
           {if (var_left_type() != "total")

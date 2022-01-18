@@ -37,7 +37,11 @@ select_var_server <- function(id, var_list, disabled_choices = reactive(NULL),
     var <- reactive({
       v1 <- paste(input$var, time(), sep = "_")
       v1 <- sub("_$", "", v1)
-      if (!is.null(df())) v1 <- sapply(v1, return_closest_year, df())
+      if (!is.null(df())) {
+        if (df() %in% c("borough", "CT", "DA", "grid")) {
+        v1 <- sapply(v1, return_closest_year, df())
+        }}
+      v1 <- map_chr(v1, ~{if (str_detect(.x, "^ _\\d{4}$")) " " else .x})
       unique(v1)
     })
     

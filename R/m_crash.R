@@ -73,7 +73,7 @@ crash_server <- function(id) {
   moduleServer(id, function(input, output, session) {
     
     # Initial reactives
-    zoom <- reactiveVal(get_zoom(map_zoom, map_zoom_crash_levels))
+    zoom <- reactiveVal(get_zoom(map_zoom, c("heatmap" = 0, "point" = 12)))
     selection <- reactiveVal(NA)
     
     # Sidebar
@@ -93,14 +93,23 @@ crash_server <- function(id) {
       location = map_location)})
     
     # Zoom reactive
-    observeEvent(input$map_view_change$zoom, {
-      zoom(get_zoom(input$map_view_change$zoom, map_zoom_crash_levels))})
+    map_zoom_levels_crash <- reactive({
+      if (choropleth()) map_zoom_levels else c("heatmap" = 0, "point" = 12)
+    })
+    
+    observeEvent({input$map_view_change$zoom
+      map_zoom_levels_crash()}, {
+        actual_zoom <- if (is.null(input$map_view_change$zoom)) map_zoom else {
+          input$map_view_change$zoom
+        }
+        zoom(get_zoom(actual_zoom, map_zoom_levels_crash()))}, 
+      ignoreInit = TRUE)
     
     # Zoom level for data
     df_choropleth <- zoom_server(
       id = "zoom", 
       zoom = zoom, 
-      zoom_levels = map_zoom_levels)
+      zoom_levels = map_zoom_levels_crash)
     
     df <- reactive({if (input$grid) "grid" else df_choropleth()})
     
@@ -111,8 +120,6 @@ crash_server <- function(id) {
     
     # If we aren't in choropleth, toggle off the zoom and grid checkbox
     observeEvent(choropleth(), {
-      shinyjs::toggle("zoom-auto", condition = choropleth())
-      shinyjs::toggle("zoom-slider", condition = choropleth())
       shinyjs::toggle("grid", condition = choropleth())
     })
     
@@ -140,27 +147,8 @@ crash_server <- function(id) {
       show_panel = choropleth)
     
     # Data 
-    data_choropleth <- data_server(
-      id = "crash", 
-      var_left = var_left,
-      var_right = var_right, 
-      df = df, 
-      island = TRUE)
-    
-    data <- reactive({
-      if (choropleth()) {
-        data_choropleth()
-      } else {
-        crash %>%
-          { if (var_left_2() %in% unique(crash$type))
-            filter(., type == var_left_2()) else .} %>%
-          { if (length(time()) == 2) {
-            filter(., year %in% time()[1]:time()[2])
-          } else {
-            filter(., year == time())
-          }}     
-      }
-    })
+    data <- reactive(get_data(df(), var_left(), var_right(), island = TRUE,
+                              point_df = "crash"))
     
     # Disclaimers and how to read the map
     year_disclaimer_server(

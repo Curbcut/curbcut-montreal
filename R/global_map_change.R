@@ -104,25 +104,25 @@ map_change <- function(id_map, x, df, zoom = df, click = reactive(NULL),
         # Buildings should be extruded
         if (df() == "building") {
           
-          # File name
-          file_name <- if (var_right() == " ") {
-            var_left()
-          } else paste0(var_left(), "-", var_right())
-          
-          df_dat <- qread(paste0("data/buildings_geojson/", file_name, ".qs"))
-
-          update_and_clean() |>
-            clear_polygon() |>
-            add_geojson(df_dat, update_view = FALSE,
-                        auto_highlight = TRUE,
-                        highlight_colour = "#FFFFFF80",
-                        extruded = TRUE)
-          
+          # # File name
+          # file_name <- if (var_right() == " ") {
+          #   var_left()
+          # } else paste0(var_left(), "-", var_right())
+          # 
+          # df_dat <- qread(paste0("data/buildings_geojson/", file_name, ".qs"))
+          # 
           # update_and_clean() |>
-          #   add_polygon(
-          #     data = dat, update_view = FALSE, id = "ID", elevation = 5,
-          #     fill_colour = "fill", auto_highlight = TRUE,
-          #     highlight_colour = "#FFFFFF80")
+          #   clear_polygon() |>
+          #   add_geojson(df_dat, update_view = FALSE,
+          #               auto_highlight = TRUE,
+          #               highlight_colour = "#FFFFFF80",
+          #               extruded = TRUE)
+          
+          update_and_clean() |>
+            add_polygon(
+              data = dat, update_view = FALSE, id = "ID", elevation = 5,
+              fill_colour = "fill", auto_highlight = TRUE,
+              highlight_colour = "#FFFFFF80")
         } else {
           update_and_clean() |> 
             add_polygon(

@@ -66,7 +66,7 @@ alley_server <- function(id) {
     df <- zoom_server(
       id = "zoom", 
       zoom = zoom, 
-      zoom_levels = map_zoom_levels)
+      zoom_levels = reactive(map_zoom_levels))
     
     # Zoom level to use when focus is on
     focus_alley_zoom <- reactive({
@@ -86,18 +86,11 @@ alley_server <- function(id) {
       df = df, 
       show_panel = choropleth,
       time = time)
-    
-    # Data 
-    data_choropleth <- data_server(
-      id = "alley", 
-      var_left = var_left, 
-      var_right = var_right, 
-      df = df,
-      island = TRUE)
-    
+  
+    # Data
     data <- reactive({
       if (choropleth()) {
-        data_choropleth()
+        reactive(get_data(df(), var_left(), var_right(), island = TRUE))
       } else {
         list(visited = alleys[alleys$visited,],
              non_visited = alleys[!alleys$visited,])

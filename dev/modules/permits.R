@@ -210,38 +210,38 @@ condo_conversions <-
   condo_conversions |> 
   mutate(type = "conversion") |> 
   select(id, issued_date, nb_dwellings, type) |> 
-  set_names(c("id", "year", "nb_dwellings", "type", "geometry"))
+  set_names(c("ID", "year", "nb_dwellings", "type", "geometry"))
 
 renovations <- 
   renovations |> 
   mutate(type = "renovation") |> 
   select(id, issued_date, nb_dwellings, type) |> 
-  set_names(c("id", "year", "nb_dwellings", "type", "geometry"))
+  set_names(c("ID", "year", "nb_dwellings", "type", "geometry"))
 
 demolitions <- 
   demolitions |> 
   mutate(type = "demolition") |> 
   select(id, issued_date, nb_dwellings, type) |> 
-  set_names(c("id", "year", "nb_dwellings", "type", "geometry"))
+  set_names(c("ID", "year", "nb_dwellings", "type", "geometry"))
 
 combined_dwellings <- 
   combined_dwellings |> 
   mutate(type = "combination") |> 
   select(id, issued_date, nb_dwellings, type) |> 
-  set_names(c("id", "year", "nb_dwellings", "type", "geometry"))
+  set_names(c("ID", "year", "nb_dwellings", "type", "geometry"))
 
 new_construction <- 
   new_construction |> 
-  tibble::rowid_to_column(var = "id") |> 
-  mutate(id = paste0("uef", id, collapse = "_")) |> 
+  tibble::rowid_to_column(var = "ID") |> 
+  mutate(ID = paste0("uef", ID, collapse = "_")) |> 
   mutate(type = "new_construction") |> 
-  select(id, ANNEE_CONS, number_dwellings, type) |> 
+  select(ID, ANNEE_CONS, number_dwellings, type) |> 
   rename(year = ANNEE_CONS,
          nb_dwellings = number_dwellings)
 
 permits <- 
-  rbind(condo_conversions, combined_dwellings,
-        demolitions, renovations, new_construction)
+  rbind(renovations, condo_conversions, combined_dwellings,
+        demolitions, new_construction)
 
 
 # Add to existing geographies ---------------------------------------------
@@ -260,7 +260,7 @@ process_permits <- function(x) {
   y <- 
     x |> 
     select(ID) |> 
-    st_join(permits) |> 
+    st_join(select(permits, -ID)) |> 
     st_drop_geometry() |> 
     count(ID, year, type) |> 
     filter(!is.na(year), !is.na(type)) |> 
@@ -356,7 +356,7 @@ empty_rows <-
   anti_join(permits |> 
               st_drop_geometry() |> 
               count(type, year), by = c("type", "year")) |> 
-  mutate(id = NA, nb_dwellings = NA)
+  mutate(ID = NA, nb_dwellings = NA)
 
 permits <- 
   bind_rows(permits, empty_rows)
@@ -364,11 +364,11 @@ permits <-
 permits <-
   permits |>
   arrange(year) |>
-  mutate(fill = case_when(type == "combination" ~ "#008533EE",
+  mutate(fill = case_when(type == "renovation" ~ "#0E6399EE",
+                          type == "combination" ~ "#008533EE",
                           type == "conversion" ~ "#F59600EE",
                           type == "demolition" ~ "#7C0082EE",
-                          type == "new_construction" ~ "#992400EE",
-                          type == "renovation" ~ "#0E6399EE")) |> 
+                          type == "new_construction" ~ "#992400EE")) |> 
   relocate(geometry, .after = last_col())
 
 # Meta testing ------------------------------------------------------------

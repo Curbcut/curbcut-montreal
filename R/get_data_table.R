@@ -1,8 +1,8 @@
 #### GET DATA TABLE ############################################################
 
 get_data_table <- function(df, var_left, var_right, data_type, left_q3, 
-                           right_q3, left_q5, right_q5) {
-  
+                           right_q3, left_q5, right_q5, time_format, point_df) {
+
   # Univariate
   if (data_type == "q5") {
     data <- 
@@ -128,6 +128,25 @@ get_data_table <- function(df, var_left, var_right, data_type, left_q3,
       left_join(colour_delta, by = "group")
   }
   
+  # Point data
+  if (data_type == "point") {
+    
+    type_pattern <- paste(unique(get(point_df)$type), collapse = "|")
+    selected_type <- str_extract(var_left, type_pattern)
+    time <- str_extract(var_left, time_format)
+    
+    data <- 
+      point_df |> 
+      get() %>%
+      { if (str_detect(var_left, "_total_"))
+        . else filter(., str_detect(type, selected_type))} %>%
+      { if (length(time) == 2) {
+        filter(., year %in% time[1]:time[2])
+      } else {
+        filter(., year == time)
+      }}
+  }
+
   # Delta bivariate
   if (data_type == "delta_bivar") {
     

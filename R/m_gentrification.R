@@ -73,7 +73,7 @@ gentrification_server <- function(id) {
     df <- zoom_server(
       id = "zoom", 
       zoom = zoom, 
-      zoom_levels = map_zoom_levels)
+      zoom_levels = reactive(map_zoom_levels))
     
     # Get time from slider
     time <- reactive({input$slider_time})
@@ -127,11 +127,7 @@ gentrification_server <- function(id) {
     })
     
     # Data
-    data <- data_server(
-      id = "gentrification", 
-      var_left = var_left,
-      var_right = var_right, 
-      df = df)
+    data <- reactive(get_data(df(), var_left(), var_right()))
     
     # Disclaimers and how to read the map
     year_disclaimer_server(

@@ -53,7 +53,7 @@ canale_server <- function(id) {
     df <- zoom_server(
       id = "zoom", 
       zoom = zoom, 
-      zoom_levels = map_zoom_levels)
+      zoom_levels = reactive(map_zoom_levels))
     
     # Time
     time <- reactive("2016")

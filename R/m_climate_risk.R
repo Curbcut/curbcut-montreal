@@ -57,7 +57,7 @@ climate_risk_server <- function(id) {
     df_choropleth <- zoom_server(
       id = "zoom", 
       zoom = zoom, 
-      zoom_levels = map_zoom_levels)
+      zoom_levels = reactive(map_zoom_levels))
     
     # String to fetch maps and data
     df <- reactive(if (input$grid) "grid" else df_choropleth())
@@ -83,12 +83,7 @@ climate_risk_server <- function(id) {
       var_right = var_right)
     
     # Data
-    data <- data_server(
-      id = "climate_risk",
-      var_left = var_left,
-      var_right = var_right,
-      df = df,
-      island = TRUE)
+    data <- reactive(get_data(df(), var_left(), var_right()), island = TRUE)
     
     # Legend
     legend <- legend_server(

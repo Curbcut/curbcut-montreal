@@ -74,7 +74,7 @@ housing_server <- function(id) {
     df <- zoom_server(
       id = "zoom", 
       zoom = zoom, 
-      zoom_levels = map_zoom_levels)
+      zoom_levels = reactive(map_zoom_levels))
     
     # Enable or disable first and second slider
     observeEvent(input$slider_switch, {
@@ -135,11 +135,7 @@ housing_server <- function(id) {
       var_right = var_right)
     
     # Data
-    data <- data_server(
-      id = "housing",
-      var_left = var_left,
-      var_right = var_right,
-      df = df)
+    data <- reactive(get_data(df(), var_left(), var_right()))
     
     # Disclaimers and how to read the map
     year_disclaimer_server(
