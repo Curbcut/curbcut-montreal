@@ -98,7 +98,7 @@ info_table_server <- function(id, x, var_type, var_left, var_right, select_id,
       ## Univariate multi-date cases -------------------------------------------
       
       # Univariate, quantitative, no selection
-      if (z$var_type == "uni_quant_all_multi") out <- paste0(
+      if (z$var_type == "uni_quant_all_delta") out <- paste0(
         "At the {z$scale_sing} scale, the change in {z$exp_left} ",
         "between {z$start_date_left} and {z$end_date_left} varied from ",
         "{z$min_val} to {z$max_val}, with an average change of {z$mean_val} ",
@@ -107,7 +107,7 @@ info_table_server <- function(id, x, var_type, var_left, var_right, select_id,
         "and {z$quant_high}.")
       
       # Univariate, quantitative, valid selection
-      if (z$var_type == "uni_quant_select_multi") out <- paste0(
+      if (z$var_type == "uni_quant_select_delta") out <- paste0(
         "<strong>{z$place_heading}</strong>",
         "<p>{sub('^t', 'T', z$exp_left)} in {z$place_name} ",
         "{z$increase} by {sub('-', '', z$val_left)} between ",
@@ -118,14 +118,14 @@ info_table_server <- function(id, x, var_type, var_left, var_right, select_id,
         "{z$percentile} of {z$scale_plural} in the Montreal region.")
       
       # Univariate, qualitative, no selection
-      if (z$var_type == "uni_qual_all_multi") out <- paste0(
+      if (z$var_type == "uni_qual_all_delta") out <- paste0(
         "TKTK At the {z$scale_sing} scale, {z$exp_left} varies from ",
         "'{z$min_val}' to '{z$max_val}'. A {z$majority} of {z$scale_plural} ",
         "({z$mode_prop}) have a value of '{z$mode_val}', while ",
         "{z$mode_prop_2} have a value of '{z$mode_val_2}'.")
       
       # Univariate, qualitative, valid selection
-      if (z$var_type == "uni_qual_select_multi") out <- paste0(
+      if (z$var_type == "uni_qual_select_delta") out <- paste0(
         "<strong>{z$place_heading}</strong>",
         "<p>TKTK {z$place_name} has a population of {z$pop} and a ",
         "'{z$title_left}' value of '{z$val_left}', which is shared by ",
@@ -207,7 +207,7 @@ info_table_server <- function(id, x, var_type, var_left, var_right, select_id,
       ## Bivariate multi-date cases --------------------------------------------
       
       # Bivariate, quantitative, no selection
-      if (z$var_type == "bi_quantxy_all_multi") {
+      if (z$var_type == "bi_quantxy_all_delta") {
         # If correlation is close to zero
         if (abs(z$correlation) < 0.05) {
           out <- paste0(
@@ -231,7 +231,7 @@ info_table_server <- function(id, x, var_type, var_left, var_right, select_id,
       }
       
       # Bivariate, quantitative, valid selection
-      if (z$var_type == "bi_quantxy_select_multi") out <- paste0(
+      if (z$var_type == "bi_quantxy_select_delta") out <- paste0(
         "<strong>{z$place_heading}</strong>",
         "<p>From {z$start_date_left} to {z$end_date_left}, {z$place_name} had",
         "a change in its '{z$title_left}' value of {z$val_left}, ",
@@ -243,7 +243,7 @@ info_table_server <- function(id, x, var_type, var_left, var_right, select_id,
         "of {z$scale_plural} in the Montreal region.")
       
       # Bivariate, qualitative x, quantitative y, no selection
-      if (z$var_type == "bi_quanty_all_multi") {
+      if (z$var_type == "bi_quanty_all_delta") {
         # If correlation is close to zero
         if (abs(z$correlation) < 0.05) {
           out <- paste0(
@@ -268,7 +268,7 @@ info_table_server <- function(id, x, var_type, var_left, var_right, select_id,
       }
       
       # Bivariate, qualitative x, quantitative y, valid selection
-      if (z$var_type == "bi_quanty_select_multi") out <- paste0(
+      if (z$var_type == "bi_quanty_select_delta") out <- paste0(
         "<strong>{z$place_heading}</strong>",
         "<p>TKTK {z$place_name} has a population of {z$pop}, ",
         "a '{z$title_left}' value of '{z$val_left}', and a ",

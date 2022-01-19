@@ -72,8 +72,7 @@ get_data_table <- function(df, var_left, var_right, data_type, left_q3,
       df |> 
       get() |> 
       select(ID, name, name_2, any_of(c("DAUID", "CTUID", "CSDUID")), 
-             population, var_left = all_of(var_left), 
-             var_left = all_of(var_left)) |>
+             population, var_left = all_of(var_left)) |>
       mutate(
         var_left = (var_left2 - var_left1) / abs(var_left1), 
         var_left_q3 = case_when(
@@ -104,8 +103,7 @@ get_data_table <- function(df, var_left, var_right, data_type, left_q3,
       DA |> 
       st_set_geometry("building") |> 
       select(ID, name, name_2, any_of(c("DAUID", "CTUID", "CSDUID")), 
-             population, var_left = all_of(var_left), 
-             var_left = all_of(var_left), geometry = building) |>
+             population, var_left = all_of(var_left), geometry = building) |>
       mutate(
         var_left = (var_left2 - var_left1) / abs(var_left1), 
         var_left_q3 = case_when(
@@ -150,25 +148,24 @@ get_data_table <- function(df, var_left, var_right, data_type, left_q3,
   # Delta bivariate
   if (data_type == "delta_bivar") {
     
-    #   data <-
-    #     (data %>%
-    #        { if (length(var_left) == 1 && length(var_right) == 1) 
-    #          dplyr::select(., ID, name, name_2, any_of("CSDUID"), population, 
-    #                        left_var = all_of(var_left),
-    #                        left_var_q3 = all_of(left_q3_col),
-    #                        right_var = all_of(var_right), 
-    #                        right_var_q3 = all_of(right_q3_col))
-    #          else dplyr::select(., everything(),
-    #                             left_var = all_of(var_left),
-    #                             right_var = all_of(var_right))} %>% 
-    #        { if (length(var_left) == 2 && length(var_right) == 2) 
-    #          mutate(., left_var = (left_var2 - left_var1) / abs(left_var1),
-    #                 left_var_q3 = ntile(left_var, 3),
-    #                 right_var = (right_var2 - right_var1) / abs(right_var1),
-    #                 right_var_q3 = ntile(right_var, 3),
-    #                 across(where(is.numeric), ~replace(., is.nan(.), NA)),
-    #                 across(where(is.numeric), ~replace(., is.infinite(.), 
-    #                                                    NA))) %>% 
+    data <-
+      df |> 
+      get() |> 
+      select(ID, name, name_2, any_of(c("DAUID", "CTUID", "CSDUID")), 
+             population, var_left = all_of(var_left), 
+             var_right = all_of(var_right)) |>
+      mutate(var_left = (var_left2 - var_left1) / abs(var_left1),
+             var_left_q3 = ntile(var_left, 3),
+             var_right = (var_right2 - var_right1) / abs(var_right1),
+             var_right_q3 = ntile(var_right, 3),
+             across(where(is.numeric), ~replace(., is.nan(.), NA)),
+             across(where(is.numeric), ~replace(., is.infinite(.), NA))) |> 
+      select(ID, name, name_2, any_of(c("DAUID", "CTUID", "CSDUID")), 
+             population, var_left, var_right, var_left_q3, var_right_q3) |> 
+      mutate(group = paste(var_left_q3, "-", var_right_q3)) |>
+      left_join(colour_bivar, by = "group")
+    
+    
     #            select(., ID, name, name_2, any_of("CSDUID"), population, 
     #                   left_var, left_var_q3, right_var, right_var_q3,
     #                   any_of(c("left_var1", "left_var2", "right_var1", 
@@ -209,7 +206,7 @@ get_data_table <- function(df, var_left, var_right, data_type, left_q3,
   if (data_type == "building_delta_bivar") {
     
   }
-
+  
   # Return data
   return(data) 
   

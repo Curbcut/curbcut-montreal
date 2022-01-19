@@ -91,8 +91,8 @@ make_info_table_data <- function(id, x, var_type, var_left, var_right,
   if (var_right != " ") {
     val_right <- selection$var_right
     out$val_right <- convert_unit(val_right, var_right)
-    if (grepl("_multi", out$var_type)) out$val_right <- 
-      convert_unit(val_right, "_prop")
+    if (grepl("_delta", out$var_type)) out$val_right <- 
+      convert_unit(val_right, "_pct")
   }
   
 
@@ -214,7 +214,7 @@ make_info_table_data <- function(id, x, var_type, var_left, var_right,
       TRUE ~ sus_translate("moderate"))
 
     out$percentile <- convert_unit(length(vec_left[vec_left <= val_left]) / 
-                                     length(vec_left), "_prop")
+                                     length(vec_left), "_pct")
     
     out$increase <- if (val_left >= 0) sus_translate("increased") else
       sus_translate("decreased")
@@ -239,8 +239,8 @@ make_info_table_data <- function(id, x, var_type, var_left, var_right,
       tolower()
     mode_prop <- qual_tab[1] / sum(qual_tab)
     out$majority <- if (mode_prop > 0.5) "majority" else "plurality"
-    out$mode_prop <- convert_unit(mode_prop, "_prop")
-    out$mode_prop_2 <- convert_unit(qual_tab[2] / sum(qual_tab), "_prop")
+    out$mode_prop <- convert_unit(mode_prop, "_pct")
+    out$mode_prop_2 <- convert_unit(qual_tab[2] / sum(qual_tab), "_pct")
     
   }
   
@@ -252,7 +252,7 @@ make_info_table_data <- function(id, x, var_type, var_left, var_right,
       tolower(var_left_label[names(var_left_label) == round(val_left)])
     out$other_with_val <- 
       mean(round(dat$var_left) == round(val_left), na.rm = TRUE) |> 
-      convert_unit("_prop")
+      convert_unit("_pct")
     
   }
   
@@ -291,9 +291,9 @@ make_info_table_data <- function(id, x, var_type, var_left, var_right,
     vec_2 <- dat$var_right
     
     perc_left <- length(vec_1[vec_1 <= val_left]) / length(vec_1)
-    out$perc_left <- convert_unit(perc_left, "_prop")
+    out$perc_left <- convert_unit(perc_left, "_pct")
     perc_right <- length(vec_2[vec_2 <= val_right]) / length(vec_2)
-    out$perc_right <- convert_unit(perc_right, "_prop")
+    out$perc_right <- convert_unit(perc_right, "_pct")
     
     out$relative_position <- case_when(
       abs(perc_left - perc_right) > 0.5 ~ sus_translate("dramatically different"),
@@ -341,7 +341,7 @@ make_info_table_data <- function(id, x, var_type, var_left, var_right,
     out$perc <- 
       mean(val_right >= vec_2[round(dat$var_left) == round(val_left)],
            na.rm = TRUE) |> 
-      convert_unit("_prop")
+      convert_unit("_pct")
     
   }
   

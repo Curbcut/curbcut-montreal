@@ -55,8 +55,8 @@ explore_server <- function(id, x, var_left, var_right, select_id, df,
   moduleServer(id, function(input, output, session) {
     
     # Get var_type
-    var_type <- explore_var_type(id, x, var_left, var_right, df, select_id,
-                                 var_left_label, var_right_label)
+    var_type <- reactive(get_var_type(x(), var_left(), var_right(), df(), 
+                                      select_id()))
     
     standard_table <- info_table_server(id = "explore", 
                                         x = x, 
@@ -92,50 +92,29 @@ explore_server <- function(id, x, var_left, var_right, select_id, df,
       if (!is.null(info_table())) info_table()
     })
     
-    standard_graph <- 
-      tryCatch(explore_graph_server(id = "explore", 
-                                    x = x, 
-                                    var_type = var_type, 
-                                    var_left = var_left, 
-                                    var_right = var_right, 
-                                    select_id = select_id, 
-                                    df = df, 
-                                    var_left_label = var_left_label,
-                                    var_right_label = var_right_label,
-                                    build_str_as_DA = build_str_as_DA),
-               error = function(e) reactive(NULL),
-               silent = TRUE)
-    
-    custom_exp_graph <- tryCatch(custom_graph(id = "explore", 
-                                     x = x, 
-                                     var_type = var_type, 
-                                     var_left = var_left, 
-                                     var_right = var_right, 
-                                     select_id = select_id, 
-                                     df = df, 
-                                     var_left_label = var_left_label, 
-                                     var_right_label = var_right_label,
-                                     build_str_as_DA = build_str_as_DA),
-                                 error = function(e) reactive(NULL),
-                                 silent = TRUE)
-    
-    # Render the graph
-    explore_graph <- reactive({
-      if (isTRUE(standard())) standard_graph() else custom_exp_graph()
-    })
+    graph <- tryCatch(reactive(explore_graph(
+      data = x(),
+      var_type = var_type(), 
+      var_left = var_left(), 
+      var_right = var_right(), 
+      select_id = select_id(),
+      df = df(), 
+      build_str_as_DA = build_str_as_DA,
+      plot_type = "auto")),
+      error = function(e) reactive(NULL), silent = TRUE)
     
     # Display graph if it isn't NULL
     output$explore_graph <- renderPlot({
-      if (!is.null(explore_graph())) explore_graph()
+      if (!is.null(graph())) graph()
     })
     
     # Only show panel if there's something to show
-    show_panel <- reactive(!is.null(info_table()) || !is.null(explore_graph()))
+    show_panel <- reactive(!is.null(info_table()) || !is.null(graph()))
     output$show_panel <- show_panel
     outputOptions(output, "show_panel", suspendWhenHidden = FALSE)
     
     # Only show graph if there's something to show
-    show_graph <- reactive(!is.null(explore_graph()))
+    show_graph <- reactive(!is.null(graph()))
     output$show_graph <- show_graph
     outputOptions(output, "show_graph", suspendWhenHidden = FALSE)
     
@@ -155,6 +134,6 @@ explore_server <- function(id, x, var_left, var_right, select_id, df,
     outputOptions(output, "poly_selected", suspendWhenHidden = FALSE)
     
     # Return info_table text and graph to export it in report afterwards
-    reactive({list(info = info_table(), graph = explore_graph())})
+    reactive({list(info = info_table(), graph = graph())})
   })
 }
