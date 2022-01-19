@@ -42,27 +42,35 @@ convert_unit <- function(x, var_name = NULL, compact = FALSE) {
   x
 }
 
---------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
   
 return_closest_year <- function(var, df = "borough") {
+  
   if (df == "building") df <- DA else df <- get(df)
+  
   if (!var %in% names(df)) {
+    
     time <- as.numeric(str_extract(var, "\\d{4}"))
+    
     x <- 
-      df %>% 
-      select(contains(str_remove(var, "_\\d{4}$"))) %>% 
-      names() %>% 
-      str_extract("\\d{4}$") %>% 
-      as.numeric() %>% 
+      df |> 
+      select(contains(str_remove(var, "_\\d{4}$"))) |> 
+      names() |> 
+      str_extract("\\d{4}$") |> 
+      as.numeric() |> 
       na.omit()
+    
     closest_year <- x[which.min(abs(x - time))]
     var <- paste0(str_remove(var, "_\\d{4}$"), "_", closest_year)
     var <- sub("_$", "", var)
+    
   }
-  var
+  
+  return(var)
+  
 }
 
---------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 find_outliers <- function(x) {
   
