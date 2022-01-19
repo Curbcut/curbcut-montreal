@@ -1,4 +1,4 @@
-#### EXPLORE GRAPH TESTS #######################################################
+#### EXPLORE INFO TABLE TESTS ##################################################
 
 # Setup -------------------------------------------------------------------
 
@@ -11,6 +11,7 @@ suppressPackageStartupMessages({
   library(sf)
   library(qs)
   library(shiny)
+  library(glue)
   
   variables <- qread("data/variables.qs")
   qload("data/colours.qsm")
@@ -21,67 +22,74 @@ suppressPackageStartupMessages({
   building <- qread("data/building.qs")
   crash <- qread("data/crash.qs")
   
-  source("R/explore_graph.R")
-  source("R/get_axis_labels.R")
   source("R/get_data_table.R")
   source("R/get_data_type.R")
   source("R/get_data.R")
-  source("R/get_plot_type.R")
+  source("R/get_info_table_data.R")
   source("R/get_var_type.R")
-  source("R/get_x_scale.R")
-  source("R/get_y_scale.R")
-  source("R/render_explore_graph.R")
+  source("R/info_table.R")
   source("R/translation.R")
+  source("R/utils.R")
   
 })
 
 
 # Histogram, no selection -------------------------------------------------
 
-df <- "borough"
+df <- "DA"
 var_left <- "canale_ind_2016"
 var_right <- " "
 island <- FALSE
 data <- get_data(df, var_left, var_right)
 select_id <- NA
 var_type <- get_var_type(data, var_left, var_right, df, select_id)
-explore_graph(data, var_type, var_left, var_right, select_id, df, 
-              build_str_as_DA = TRUE, plot_type = "auto")
+info_table(data, var_type, var_left, var_right, select_id, df)
+
+
+# Histogram, reserve selection --------------------------------------------
+
+select_id <- "24720187"
+var_type <- get_var_type(data, var_left, var_right, df, select_id)
+info_table(data, var_type, var_left, var_right, select_id, df)
 
 
 # Histogram, NA selection -------------------------------------------------
 
-select_id <- "A"
+var_left <- "housing_tenant_pct_1996"
+data <- get_data(df, var_left, var_right)
+select_id <- "24740053"
 var_type <- get_var_type(data, var_left, var_right, df, select_id)
-explore_graph(data, var_type, var_left, var_right, select_id, df, 
-              build_str_as_DA = TRUE, plot_type = "auto")
+info_table(data, var_type, var_left, var_right, select_id, df)
 
 
 # Histogram, active selection ---------------------------------------------
 
+df <- "borough"
+var_left <- "canale_ind_2016"
+var_right <- " "
+island <- FALSE
+data <- get_data(df, var_left, var_right)
 select_id <- "2458012"
 var_type <- get_var_type(data, var_left, var_right, df, select_id)
-explore_graph(data, var_type, var_left, var_right, select_id, df, 
-              build_str_as_DA = TRUE, plot_type = "auto")
+info_table(data, var_type, var_left, var_right, select_id, df)
 
 
 # Bar, no selection -------------------------------------------------------
 
 df <- "grid"
-var_left <- "climate_destructive_storms_ind"
+var_left <- "climate_flood_ind"
+var_right <- " "
 data <- get_data(df, var_left, var_right)
 select_id <- NA
 var_type <- get_var_type(data, var_left, var_right, df, select_id)
-explore_graph(data, var_type, var_left, var_right, select_id, df, 
-              build_str_as_DA = TRUE, plot_type = "auto")
+info_table(data, var_type, var_left, var_right, select_id, df)
 
 
 # Bar, NA selection -------------------------------------------------------
 
 select_id <- "A"
 var_type <- get_var_type(data, var_left, var_right, df, select_id)
-explore_graph(data, var_type, var_left, var_right, select_id, df, 
-              build_str_as_DA = TRUE, plot_type = "auto")
+info_table(data, var_type, var_left, var_right, select_id, df)
 
 
 # Bar, active selection ---------------------------------------------------

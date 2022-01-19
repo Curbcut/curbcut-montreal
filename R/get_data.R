@@ -13,22 +13,22 @@ get_data <- function(df, var_left, var_right, island = FALSE,
   # Get data type
   data_type <- get_data_type(df, var_left, var_right)
 
-    # Are var_left and var_right the same column?
+  # Are var_left and var_right the same column?
   if (all(var_left == var_right)) {
     stop("`var_left` and `var_right` are the same.")
   }
   
   # Get time format; eventually this might need to be conditional
-  time_format <- "\\d{4}$"
+  time_format <- "_\\d{4}$"
   
   # Facilitate code legibility by pre-creating q3/q5 column names
-  left_q3 <- paste0(str_remove(all_of(var_left), time_format), "q3_", 
+  left_q3 <- paste0(str_remove(all_of(var_left), time_format), "_q3", 
                     na.omit(str_extract(var_left, time_format)))
-  right_q3 <- paste0(str_remove(all_of(var_right), time_format), "q3_", 
+  right_q3 <- paste0(str_remove(all_of(var_right), time_format), "_q3", 
                      na.omit(str_extract(var_right, time_format)))
-  left_q5 <- paste0(str_remove(all_of(var_left), time_format), "q5_", 
+  left_q5 <- paste0(str_remove(all_of(var_left), time_format), "_q5", 
                     na.omit(str_extract(var_left, time_format)))
-  right_q5 <- paste0(str_remove(all_of(var_right), time_format), "q5_", 
+  right_q5 <- paste0(str_remove(all_of(var_right), time_format), "_q5", 
                      na.omit(str_extract(var_right, time_format)))
   
   
