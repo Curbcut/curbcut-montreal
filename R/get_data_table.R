@@ -13,8 +13,9 @@ get_data_table <- function(df, var_left, var_right, data_type, left_q3,
              var_left_q3 = all_of(left_q3),
              var_left_q5 = all_of(left_q5)) |>
       mutate(group = coalesce(as.character(var_left_q5), "NA"),
-             fill = colour_left_5$fill[coalesce(var_left_q5, 6)], 
-             .after = var_left_q5)
+             .after = var_left_q5) |> 
+      left_join(colour_left_5, by = "group") |> 
+      relocate(fill, .after = group)
   }
   
   # Building univariate
@@ -28,8 +29,9 @@ get_data_table <- function(df, var_left, var_right, data_type, left_q3,
              var_left_q5 = all_of(left_q5),
              geometry = building) |>
       mutate(group = coalesce(as.character(var_left_q5), "NA"),
-             fill = colour_left_5$fill[coalesce(var_left_q5, 6)], 
-             .after = var_left_q5)
+             .after = var_left_q5) |> 
+      left_join(colour_left_5, by = "group") |> 
+      relocate(fill, .after = group)
   }
   
   # Bivariate
@@ -45,7 +47,8 @@ get_data_table <- function(df, var_left, var_right, data_type, left_q3,
              var_right_q3 = all_of(right_q3),
              var_right_q5 = all_of(right_q5)) |>
       mutate(group = paste(var_left_q3, "-", var_right_q3)) |>
-      left_join(colour_bivar, by = "group")
+      left_join(colour_bivar, by = "group") |> 
+      relocate(fill, .after = group)
   }
   
   # Building bivariate
@@ -62,7 +65,8 @@ get_data_table <- function(df, var_left, var_right, data_type, left_q3,
              var_right_q5 = all_of(right_q5),
              geometry = building) |>
       mutate(group = paste(var_left_q3, "-", var_right_q3)) |>
-      left_join(colour_bivar, by = "group")
+      left_join(colour_bivar, by = "group") |> 
+      relocate(fill, .after = group)
   }
   
   # Delta
@@ -92,7 +96,8 @@ get_data_table <- function(df, var_left, var_right, data_type, left_q3,
       mutate(group = as.character(var_left_q3),
              group = if_else(is.na(group), "NA", group),
              group = paste(group, "- 1")) |> 
-      left_join(colour_delta, by = "group")
+      left_join(colour_delta, by = "group") |> 
+      relocate(fill, .after = group)
     
   }
   
@@ -123,28 +128,10 @@ get_data_table <- function(df, var_left, var_right, data_type, left_q3,
       mutate(group = as.character(var_left_q3),
              group = if_else(is.na(group), "NA", group),
              group = paste(group, "- 1")) |> 
-      left_join(colour_delta, by = "group")
+      left_join(colour_delta, by = "group") |> 
+      relocate(fill, .after = group)
   }
   
-  # Point data
-  if (data_type == "point") {
-    
-    type_pattern <- paste(unique(get(point_df)$type), collapse = "|")
-    selected_type <- str_extract(var_left, type_pattern)
-    time <- str_extract(var_left, time_format)
-    
-    data <- 
-      point_df |> 
-      get() %>%
-      { if (str_detect(var_left, "_total_"))
-        . else filter(., str_detect(type, selected_type))} %>%
-      { if (length(time) == 2) {
-        filter(., year %in% time[1]:time[2])
-      } else {
-        filter(., year == time)
-      }}
-  }
-
   # Delta bivariate
   if (data_type == "delta_bivar") {
     
@@ -205,6 +192,25 @@ get_data_table <- function(df, var_left, var_right, data_type, left_q3,
   # Building delta bivariate
   if (data_type == "building_delta_bivar") {
     
+  }
+  
+  # Point data
+  if (data_type == "point") {
+    
+    type_pattern <- paste(unique(get(point_df)$type), collapse = "|")
+    selected_type <- str_extract(var_left, type_pattern)
+    time <- str_extract(var_left, time_format)
+    
+    data <- 
+      point_df |> 
+      get() %>%
+      { if (str_detect(var_left, "_total_"))
+        . else filter(., str_detect(type, selected_type))} %>%
+      { if (length(time) == 2) {
+        filter(., year %in% time[1]:time[2])
+      } else {
+        filter(., year == time)
+      }}
   }
   
   # Return data

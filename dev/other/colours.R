@@ -21,8 +21,8 @@ colour_alpha <- c("borough" = "EE", "CT" = "CC", "DA" = "AA", "building" = "99",
 # Univariate 5-level colour table -----------------------------------------
 
 colour_left_5 <-
-  tibble(group = c(1:5, "NA"),
-         fill = c(col_left_5, col_NA))
+  tibble(group = c(0:5, "NA"),
+         fill = c(col_NA, col_left_5, col_NA))
 
 
 # Univariate 3-level colour table -----------------------------------------
