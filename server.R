@@ -48,6 +48,8 @@ shinyServer(function(input, output, session) {
       green_space_server("green_space")
     } else if (active_tab == "housing") {
       housing_server("housing")
+    } else if (active_tab == "marketed_sustainability") {
+      marketed_sustainability_server("marketed_sustainability")
     } else if (active_tab == "mcp") {
       mcp_server("mcp")
     } else if (active_tab == "permits") {

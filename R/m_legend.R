@@ -64,7 +64,7 @@ legend_server <- function(id, var_left, var_right, df,
         
         data_type <- get_data_type(df(), var_left(), var_right())
         
-        tryCatch(render_plot_fun(var_left, var_right, df, data_type),
+        tryCatch(render_plot_fun(var_left(), var_right(), df(), data_type),
                  error = function(e) NULL, silent = TRUE)
       })
       # Weird hack to get legend plot to inherit full namespace

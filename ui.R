@@ -45,7 +45,10 @@ ui <- function(request) {
                tabPanel("Gentrification", gentrification_UI("gentrification"),
                         value = "gentrification"),
                tabPanel("Permits", permits_UI("permits"),
-                        value = "permits")),
+                        value = "permits"),
+               tabPanel("Marketed Sustainability", 
+                        marketed_sustainability_UI("marketed_sustainability"),
+                        value = "marketed_sustainability")),
              
              navbarMenu(
                "Policy",

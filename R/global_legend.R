@@ -5,23 +5,23 @@ render_plot_fun <- function(var_left, var_right, df, data_type) {
   if (data_type %in% c("q5", "building_q5")) {
     
     # Get date for convenience
-    date_left <- str_extract(var_left(), "(?<=_)\\d{4}$")
+    date_left <- str_extract(var_left, "(?<=_)\\d{4}$")
     
     # Get axis title
     axis_title <- sus_translate(
       variables |> 
-        filter(var_code == unique(sub("_\\d{4}$", "", var_left()))) |> 
+        filter(var_code == unique(sub("_\\d{4}$", "", var_left))) |> 
         pull(var_short))
     
     # Get break labels
     break_labels <- 
       variables |> 
-      filter(var_code == unique(sub("_\\d{4}$", "", var_left()))) |> 
+      filter(var_code == unique(sub("_\\d{4}$", "", var_left))) |> 
       pull(breaks_q5) |> 
       purrr::pluck(1)
     
-    if (df() %in% c("building", "street") &&
-        nrow(filter(break_labels, scale == df())) == 0) {
+    if (df %in% c("building", "street") &&
+        nrow(filter(break_labels, scale == df)) == 0) {
       break_labels <- 
         break_labels |> 
         filter(scale == "DA") |> 
@@ -29,13 +29,13 @@ render_plot_fun <- function(var_left, var_right, df, data_type) {
     } else {
       break_labels <- 
         break_labels |> 
-        filter(scale == df()) |> 
+        filter(scale == df) |> 
         pull(var)
     }
     
     # Format break labels
-    if (str_detect(var_left(), "_pct|_dollar")) {
-      break_labels <- convert_unit(break_labels, var_left(), TRUE)
+    if (str_detect(var_left, "_pct|_dollar")) {
+      break_labels <- convert_unit(break_labels, var_left, TRUE)
     }
     
     # Draw legend
@@ -60,30 +60,30 @@ render_plot_fun <- function(var_left, var_right, df, data_type) {
   } else if (data_type %in% c("bivar", "building_bivar")) {
     
     # Get dates for convenience
-    date_left <- str_extract(var_left(), "(?<=_)\\d{4}$")
-    date_right <- str_extract(var_right(), "(?<=_)\\d{4}$")
+    date_left <- str_extract(var_left, "(?<=_)\\d{4}$")
+    date_right <- str_extract(var_right, "(?<=_)\\d{4}$")
     
     # Get axis titles
     axis_title_y <- sus_translate(
       variables |> 
-        filter(var_code == unique(sub("_\\d{4}$", "", var_left()))) |> 
+        filter(var_code == unique(sub("_\\d{4}$", "", var_left))) |> 
         pull(var_short))
     
     axis_title_x <- sus_translate(
       variables |> 
-        filter(var_code == unique(sub("_\\d{4}$", "", var_right()))) |> 
+        filter(var_code == unique(sub("_\\d{4}$", "", var_right))) |> 
         pull(var_short))
     
     # Get breaks
     break_labels_y <- 
       variables |> 
-      filter(var_code == unique(sub("_\\d{4}$", "", var_left()))) |> 
+      filter(var_code == unique(sub("_\\d{4}$", "", var_left))) |> 
       pull(breaks_q3) |> 
       pluck(1) |> 
       filter(date == date_left | is.na(date))
     
-    if (df() %in% c("building", "street") &&
-        nrow(filter(break_labels_y, scale == df())) == 0) {
+    if (df %in% c("building", "street") &&
+        nrow(filter(break_labels_y, scale == df)) == 0) {
       break_labels_y <- 
         break_labels_y |> 
         filter(scale == "DA") |> 
@@ -91,19 +91,19 @@ render_plot_fun <- function(var_left, var_right, df, data_type) {
     } else {
       break_labels_y <- 
         break_labels_y |> 
-        filter(scale == df()) |> 
+        filter(scale == df) |> 
         pull(var)
     }
     
     break_labels_x <- 
       variables |> 
-      filter(var_code == unique(sub("_\\d{4}$", "", var_right()))) |> 
+      filter(var_code == unique(sub("_\\d{4}$", "", var_right))) |> 
       pull(breaks_q3) |> 
       pluck(1) |> 
       filter(date == date_right | is.na(date))
     
-    if (df() %in% c("building", "street") &&
-        nrow(filter(break_labels_x, scale == df())) == 0) {
+    if (df %in% c("building", "street") &&
+        nrow(filter(break_labels_x, scale == df)) == 0) {
       break_labels_x <- 
         break_labels_x |> 
         filter(scale == "DA") |> 
@@ -111,13 +111,13 @@ render_plot_fun <- function(var_left, var_right, df, data_type) {
     } else {
       break_labels_x <- 
         break_labels_x |> 
-        filter(scale == df()) |> 
+        filter(scale == df) |> 
         pull(var)
     }
     
     # Format breaks
-    break_labels_y <- convert_unit(break_labels_y, var_left(), TRUE)
-    break_labels_x <- convert_unit(break_labels_x, var_right(), TRUE)
+    break_labels_y <- convert_unit(break_labels_y, var_left, TRUE)
+    break_labels_x <- convert_unit(break_labels_x, var_right, TRUE)
     
     legend_bivar |>
       mutate(label = case_when(
@@ -155,11 +155,11 @@ render_plot_fun <- function(var_left, var_right, df, data_type) {
   } else if (data_type %in% c("delta", "building_delta")) {
     
     # Get date range
-    date_left <- str_extract(var_left(), "(?<=_)\\d{4}$")
+    date_left <- str_extract(var_left, "(?<=_)\\d{4}$")
     date_left <- paste(date_left, collapse = " - ")
     
     # Get variable name
-    var_name <- unique(sub("_\\d{4}$", "", var_left()))
+    var_name <- unique(sub("_\\d{4}$", "", var_left))
     
     # Get axis title
     axis_title <- sus_translate(

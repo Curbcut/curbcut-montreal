@@ -22,9 +22,7 @@ map_change <- function(id_map, x, df, zoom = df, click = reactive(NULL),
                        legend = NULL,  polygons_to_clear = NULL, 
                        standard_width = reactive(TRUE),
                        legend_selection = reactive(NULL),
-                       explore_clear = reactive(NULL),
-                       var_left = reactive(NULL),
-                       var_right = reactive(NULL)) {
+                       explore_clear = reactive(NULL)) {
   
   ## Setup ---------------------------------------------------------------------
 
@@ -182,10 +180,22 @@ map_change <- function(id_map, x, df, zoom = df, click = reactive(NULL),
   
   # Process selection
   select_id <- reactive({
-    select_id <- tryCatch(jsonlite::fromJSON(selection())$object$properties$id,
-                          error = function(e) NULL)
-    if (is.null(select_id)) select_id <- NA
-    return(select_id)
+    
+    if (geom_type() == "polygon") {
+      
+      select_id <- tryCatch(jsonlite::fromJSON(selection())$object$properties$id,
+                            error = function(e) NULL)
+      if (is.null(select_id)) select_id <- NA
+      return(select_id)
+      
+    } else if (geom_type() == "point") {
+      
+      select_id <- tryCatch(jsonlite::fromJSON(selection(x()[lst + 1,]$ID))$object$properties$id,
+                            error = function(e) NULL)
+      if (is.null(select_id)) select_id <- NA
+      return(select_id)
+      
+    }
   })
   
   

@@ -99,9 +99,7 @@ canale_server <- function(id) {
       zoom = zoom,
       click = reactive(input$map_polygon_click),
       #legend_selection = reactive(legend()$legend_selection),
-      explore_clear = reactive(input$`explore-clear_selection`),
-      var_left = var_left,
-      var_right = var_right)
+      explore_clear = reactive(input$`explore-clear_selection`))
 
     # Explore panel
     explore_content <- explore_server(
