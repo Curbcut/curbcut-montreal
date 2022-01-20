@@ -83,7 +83,11 @@ climate_risk_server <- function(id) {
       var_right = var_right)
     
     # Data
-    data <- reactive(get_data(df(), var_left(), var_right()), island = TRUE)
+    data <- reactive(get_data(
+      df = df(), 
+      var_left = var_left(), 
+      var_right = var_right(), 
+      island = TRUE))
     
     # Legend
     legend <- legend_server(
@@ -111,12 +115,11 @@ climate_risk_server <- function(id) {
     # Explore panel
     explore_content <- explore_server(
       id = "explore",
-      x = data,
+      data = data,
       var_left = var_left,
       var_right = var_right,
-      select_id = select_id,
       df = df,
-      var_left_label = climate_legend)
+      select_id = select_id)
     
     # If grid isn't clicked, toggle on the zoom menu
     observeEvent(input$grid, {

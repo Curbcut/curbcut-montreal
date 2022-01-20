@@ -111,8 +111,7 @@ canale_server <- function(id) {
       var_left = var_left,
       var_right = var_right, 
       df = df, 
-      select_id = select_id,
-      build_str_as_DA = TRUE)
+      select_id = select_id)
     
     # Data export TKTK should this become a non-reactive function?
     data_export <- data_export_server(
