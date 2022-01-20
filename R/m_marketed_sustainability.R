@@ -97,14 +97,14 @@ marketed_sustainability_server <- function(id) {
                 panel.grid = element_blank())
       })
     
-    # # Explore panel
+    # Explore panel
     explore_content <- explore_server(
       id = "explore",
-      x = reactive(marketed_sustainability),
+      data = reactive(marketed_sustainability),
       var_left = reactive(NULL),
       var_right = reactive(NULL),
-      select_id = selection,
       df = reactive(NULL),
+      select_id = selection,
       standard = reactive(FALSE),
       custom_info = marketed_sustainability_info_table,
       custom_graph = marketed_sustainability_explore_graph)
