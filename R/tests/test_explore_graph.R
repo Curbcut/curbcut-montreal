@@ -67,6 +67,7 @@ explore_graph(data, var_type, var_left, var_right, select_id, df,
 
 {df <- "grid"
 var_left <- "climate_destructive_storms_ind"
+var_right <- " "
 data <- get_data(df, var_left, var_right)
 select_id <- NA
 var_type <- get_var_type(data, var_left, var_right, df, select_id)
