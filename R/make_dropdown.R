@@ -31,8 +31,7 @@ make_dropdown <-
     
     census_var <- 
     census_var |> 
-      filter(dropdown_category != "Employment",
-             !is.na(dropdown_category))
+      filter(dropdown_category != "Employment", !is.na(dropdown_category))
     
     if (!is.null(exclude)) {
       census_var <- 
@@ -40,12 +39,10 @@ make_dropdown <-
         filter(!dropdown_category %in% exclude)
     }
     
-    if (multi_year == T) {
+    if (multi_year) {
       census_var <- 
       census_var |> 
-        mutate(years = lengths(dates)) |> 
-        filter(years == max(years)) |> 
-        select(-years)
+        filter(lengths(dates) == max(lengths(dates)))
     }
     
     c("----" = " ",
