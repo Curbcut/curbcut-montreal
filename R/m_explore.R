@@ -71,8 +71,8 @@ explore_server <- function(id, data, var_left, var_right, df, select_id,
       var_type = var_type(), 
       var_left = var_left(), 
       var_right = var_right(), 
-      select_id = select_id(),
       df = df(), 
+      select_id = select_id(),
       build_str_as_DA = build_str_as_DA,
       plot_type = "auto"))
     
@@ -89,9 +89,7 @@ explore_server <- function(id, data, var_left, var_right, df, select_id,
     
     # Change show/hide button text
     observeEvent(input$hide, {
-      if (input$hide %% 2 == 0) {
-        txt <- sus_translate("Hide")
-      } else txt <- sus_translate("Show")
+      txt <- sus_translate(switch(input$hide %% 2 + 1, "Hide", "Show"))
       updateActionButton(session, "hide", label = txt)
     })
     

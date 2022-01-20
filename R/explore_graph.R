@@ -1,6 +1,6 @@
 #### EXPLORE GRAPH #############################################################
 
-explore_graph <- function(data, var_type, var_left, var_right, select_id, df, 
+explore_graph <- function(data, var_type, var_left, var_right, df, select_id, 
                           build_str_as_DA = TRUE, plot_type = "auto") {
   
   ## Check arguments -----------------------------------------------------------
