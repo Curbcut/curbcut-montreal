@@ -69,7 +69,7 @@ explore_server <- function(id, data, var_left, var_right, df, select_id,
       })
     
     # Display info_table if it isn't NULL
-    output$info_table <- renderUI(table())
+    output$info_table <- renderUI(if (!is.null(table())) table())
     
     graph <- reactive(explore_graph(
       data = data(),
@@ -82,7 +82,7 @@ explore_server <- function(id, data, var_left, var_right, df, select_id,
       plot_type = "auto"))
     
     # Display graph if it isn't NULL
-    output$explore_graph <- renderPlot(graph())
+    output$explore_graph <- renderPlot(if (!is.null(graph())) graph())
     
     # Only show panel if there's something to show
     show_panel <- reactive(!is.null(table()) || !is.null(graph()))
