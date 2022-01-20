@@ -51,16 +51,14 @@ explore_server <- function(id, data, var_left, var_right, df, select_id,
       select_id = select_id()))
     
     # Make info table
-    table <- reactive({
-      info_table(
-        data = data(), 
-        var_type = var_type(), 
-        var_left = var_left(), 
-        var_right = var_right(), 
-        df = df(), 
-        select_id = select_id(), 
-        build_str_as_DA = build_str_as_DA)
-      })
+    table <- reactive(info_table(
+      data = data(), 
+      var_type = var_type(), 
+      var_left = var_left(), 
+      var_right = var_right(), 
+      df = df(), 
+      select_id = select_id(), 
+      build_str_as_DA = build_str_as_DA))
     
     # Display info table
     output$info_table <- renderUI(table())
