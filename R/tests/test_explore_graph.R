@@ -17,10 +17,8 @@ suppressPackageStartupMessages({
   
   qload("data/census.qsm")
   grid <- qread("data/grid.qs")
-  street <- qread("data/street.qs")
   building <- qread("data/building.qs")
-  crash <- qread("data/crash.qs")
-  
+
   source("R/explore_graph.R")
   source("R/get_axis_labels.R")
   source("R/get_data_table.R")
@@ -38,7 +36,7 @@ suppressPackageStartupMessages({
 
 # Histogram, no selection -------------------------------------------------
 
-df <- "borough"
+{df <- "borough"
 var_left <- "canale_ind_2016"
 var_right <- " "
 island <- FALSE
@@ -46,55 +44,55 @@ data <- get_data(df, var_left, var_right)
 select_id <- NA
 var_type <- get_var_type(data, var_left, var_right, df, select_id)
 explore_graph(data, var_type, var_left, var_right, select_id, df, 
-              build_str_as_DA = TRUE, plot_type = "auto")
+              build_str_as_DA = TRUE, plot_type = "auto")}
 
 
 # Histogram, NA selection -------------------------------------------------
 
-select_id <- "A"
+{select_id <- "A"
 var_type <- get_var_type(data, var_left, var_right, df, select_id)
 explore_graph(data, var_type, var_left, var_right, select_id, df, 
-              build_str_as_DA = TRUE, plot_type = "auto")
+              build_str_as_DA = TRUE, plot_type = "auto")}
 
 
 # Histogram, active selection ---------------------------------------------
 
-select_id <- "2458012"
+{select_id <- "2458012"
 var_type <- get_var_type(data, var_left, var_right, df, select_id)
 explore_graph(data, var_type, var_left, var_right, select_id, df, 
-              build_str_as_DA = TRUE, plot_type = "auto")
+              build_str_as_DA = TRUE, plot_type = "auto")}
 
 
 # Bar, no selection -------------------------------------------------------
 
-df <- "grid"
+{df <- "grid"
 var_left <- "climate_destructive_storms_ind"
 data <- get_data(df, var_left, var_right)
 select_id <- NA
 var_type <- get_var_type(data, var_left, var_right, df, select_id)
 explore_graph(data, var_type, var_left, var_right, select_id, df, 
-              build_str_as_DA = TRUE, plot_type = "auto")
+              build_str_as_DA = TRUE, plot_type = "auto")}
 
 
 # Bar, NA selection -------------------------------------------------------
 
-select_id <- "A"
+{select_id <- "A"
 var_type <- get_var_type(data, var_left, var_right, df, select_id)
 explore_graph(data, var_type, var_left, var_right, select_id, df, 
-              build_str_as_DA = TRUE, plot_type = "auto")
+              build_str_as_DA = TRUE, plot_type = "auto")}
 
 
 # Bar, active selection ---------------------------------------------------
 
-select_id <- 392
+{select_id <- 392
 var_type <- get_var_type(data, var_left, var_right, df, select_id)
 explore_graph(data, var_type, var_left, var_right, select_id, df, 
-              build_str_as_DA = TRUE, plot_type = "auto")
+              build_str_as_DA = TRUE, plot_type = "auto")}
 
 
 # Scatterplot, no selection -----------------------------------------------
 
-df <- "borough"
+{df <- "borough"
 var_left <- "canale_ind_2016"
 var_right <- "housing_tenant_pct_2016"
 island <- FALSE
@@ -102,7 +100,7 @@ data <- get_data(df, var_left, var_right)
 select_id <- NA
 var_type <- get_var_type(data, var_left, var_right, df, select_id)
 explore_graph(data, var_type, var_left, var_right, select_id, df, 
-              build_str_as_DA = TRUE, plot_type = "auto")
+              build_str_as_DA = TRUE, plot_type = "auto")}
 
 
 # Scatterplot, NA selection -----------------------------------------------

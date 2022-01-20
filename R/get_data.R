@@ -1,9 +1,9 @@
 #### GET DATA ##################################################################
 
-get_data <- function(df, var_left, var_right, island = FALSE,
-                     point_df = NULL) {
+get_data <- function(df, var_left, var_right, island = FALSE, point_df = NULL) {
   
   ## Setup ---------------------------------------------------------------------
+  
   # Error checking
   stopifnot(!is.reactive(df))
   stopifnot(!is.reactive(var_left))
@@ -32,10 +32,11 @@ get_data <- function(df, var_left, var_right, island = FALSE,
                      na.omit(str_extract(var_right, time_format)))
   
   
-  ## Return data ---------------------------------------------------------------
+  ## Get data table ------------------------------------------------------------
   
   data <- get_data_table(df, var_left, var_right, data_type, left_q3, right_q3,
                          left_q5, right_q5, time_format, point_df)
+  
   
   ## Filter to island ----------------------------------------------------------
   
@@ -50,6 +51,7 @@ get_data <- function(df, var_left, var_right, island = FALSE,
   
   if (island && df %in% c("borough", "CT", "DA", "grid", "street", "building"))
     data <- filter(data, CSDUID %in% island_CSDUID)
+  
   
   # Return output ----------------------------------------------------------
   
