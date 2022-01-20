@@ -1,18 +1,14 @@
 #### EXPLORE MODULE ############################################################
 
 #' @param id A character string representing the module id. Not otherwise used.
-#' @param x A reactive which resolves to a data frame.
+#' @param data A reactive which resolves to a data frame.
 #' @param var_left,var_right A reactive which resolves to a character string
 #' representing the left and right variables to be analyzed. Each 
 #' should have a "raw" version and quantile versions with the suffixes "_q3"
 #' and "_q5".
+#' @param df 
 #' @param select_id A reactive which resolves to a character string giving the 
-#' ID of a row in the input data frame (`x`) which has been selected.
-#' @param zoom A reactive which resolves to a character string giving the
-#' current zoom scale. Meaningful values are "borough", "CT", "DA" and "grid".
-#' @param var_left_label,var_right_label A reactive which resolves to a named
-#' character vector giving labels for the variable values of var_left or
-#' var_right.
+#' ID of a row in the input data frame (`data`) which has been selected.
 #' @param build_str_as_DA A logical scalar. Should the "building" and "street"
 #' zoom levels show graphs and text for the DA zoom level instead?
 
@@ -40,76 +36,56 @@ explore_UI <- function(id) {
   )
 }
 
-explore_server <- function(id, x, var_left, var_right, select_id, df, 
-                           var_left_label = NULL, var_right_label = NULL,
-                           build_str_as_DA = TRUE,
-                           standard = reactive(TRUE), custom_info = NULL, 
-                           custom_graph = NULL) {
+explore_server <- function(id, data, var_left, var_right, df, select_id,
+                           build_str_as_DA = TRUE) {
   
-  stopifnot(is.reactive(x))
+  stopifnot(is.reactive(data))
   stopifnot(is.reactive(var_left))
   stopifnot(is.reactive(var_right))
-  stopifnot(is.reactive(select_id))
   stopifnot(is.reactive(df))
+  stopifnot(is.reactive(select_id))
+  stopifnot(!is.reactive(build_str_as_DA))
 
   moduleServer(id, function(input, output, session) {
     
     # Get var_type
-    var_type <- reactive(get_var_type(x(), var_left(), var_right(), df(), 
-                                      select_id()))
+    var_type <- reactive(get_var_type(
+      data = data(), 
+      var_left = var_left(), 
+      var_right = var_right(), 
+      df = df(), 
+      select_id = select_id()))
     
-    standard_table <- info_table_server(id = "explore", 
-                                        x = x, 
-                                        var_type = var_type, 
-                                        var_left = var_left, 
-                                        var_right = var_right, 
-                                        select_id = select_id, 
-                                        df = df, 
-                                        var_left_label = var_left_label, 
-                                        var_right_label = var_right_label,
-                                        build_str_as_DA = build_str_as_DA)
-    
-    custom_table <- tryCatch(custom_info(id = "explore", 
-                                         x = x, 
-                                         var_type = var_type, 
-                                         var_left = var_left, 
-                                         var_right = var_right, 
-                                         select_id = select_id, 
-                                         df = df, 
-                                         var_left_label = var_left_label, 
-                                         var_right_label = var_right_label,
-                                         build_str_as_DA = build_str_as_DA),
-                             error = function(e) reactive(NULL),
-                             silent = TRUE)
-    
-    # Render info table
-    info_table <- reactive({
-      if (isTRUE(standard())) standard_table() else custom_table()
-    })
+    # Make info table
+    table <- reactive({
+      info_table(
+        data = data(), 
+        var_type = var_type(), 
+        var_left = var_left(), 
+        var_right = var_right(), 
+        df = df(), 
+        select_id = select_id(), 
+        build_str_as_DA = build_str_as_DA)
+      })
     
     # Display info_table if it isn't NULL
-    output$info_table <- renderUI({
-      if (!is.null(info_table())) info_table()
-    })
+    output$info_table <- renderUI(table())
     
-    graph <- tryCatch(reactive(explore_graph(
-      data = x(),
+    graph <- reactive(explore_graph(
+      data = data(),
       var_type = var_type(), 
       var_left = var_left(), 
       var_right = var_right(), 
       select_id = select_id(),
       df = df(), 
       build_str_as_DA = build_str_as_DA,
-      plot_type = "auto")),
-      error = function(e) reactive(NULL), silent = TRUE)
+      plot_type = "auto"))
     
     # Display graph if it isn't NULL
-    output$explore_graph <- renderPlot({
-      if (!is.null(graph())) graph()
-    })
+    output$explore_graph <- renderPlot(graph())
     
     # Only show panel if there's something to show
-    show_panel <- reactive(!is.null(info_table()) || !is.null(graph()))
+    show_panel <- reactive(!is.null(table()) || !is.null(graph()))
     output$show_panel <- show_panel
     outputOptions(output, "show_panel", suspendWhenHidden = FALSE)
     

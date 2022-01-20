@@ -104,19 +104,19 @@ canale_server <- function(id) {
     # Explore panel
     explore_content <- explore_server(
       id = "explore", 
-      x = data, 
+      data = data, 
       var_left = var_left,
       var_right = var_right, 
-      select_id = select_id,
       df = df, 
+      select_id = select_id,
       build_str_as_DA = TRUE)
     
-    # data naming for data_export
-    data_export <- data_export_server(
-      id = "canale",
-      df = data, 
-      var_left = var_left, 
-      var_right = var_right)
+    # # Data export TKTK should this become a non-reactive function?
+    # data_export <- data_export_server(
+    #   id = "canale",
+    #   df = data, 
+    #   var_left = var_left, 
+    #   var_right = var_right)
     
     # OUT
     reactive({list(
