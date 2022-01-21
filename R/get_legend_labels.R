@@ -1,0 +1,63 @@
+#### GET LEGEND AXIS LABELS ####################################################
+
+get_legend_labels <- function(var_left, var_right, data_type) {
+  
+  ## Get basic titles ----------------------------------------------------------
+  
+  title_left <- 
+    variables |> 
+    filter(var_code == unique(sub("_\\d{4}$", "", var_left)))
+  
+  title_left_short <- sus_translate(title_left$var_short)
+  title_left <- sus_translate(title_left$var_title)
+  # If axis title is too long, take the short version
+  if (nchar(title_left) > 30) title_left <- title_left_short
+  
+  title_right <- 
+    variables |> 
+    filter(var_code == unique(sub("_\\d{4}$", "", var_right)))
+  
+  if (data_type %in% c("bivar", "delta_bivar")) {
+    title_right_short <- sus_translate(title_right$var_short)
+    title_right <- sus_translate(title_right$var_title)
+    # If axis title is too long, take the short version
+    if (nchar(title_right) > 25) title_right <- title_right_short  
+  }
+  
+  
+  ## Construct labels ----------------------------------------------------------
+  
+  # q5 version
+  if (data_type == "q5") {
+    labs_xy <- list(labs(x = title_left, y = NULL))
+  }
+  
+  # Delta version
+  if (data_type == "delta") {
+    date_left <- str_extract(var_left, "(?<=_)\\d{4}$")
+    date_left <- paste(date_left, collapse = " - ")
+    title_left <- paste0(title_left, " (", date_left, ")")
+    labs_xy <- list(labs(x = title_left, y = NULL))
+  }
+  
+  # Bivar version
+  if (data_type == "bivar") {
+    labs_xy <- list(labs(x = title_right, y = title_left), 
+                    x_short = title_right_short, y_short = title_left_short)
+  }
+  
+  
+  if (data_type == "delta_bivar") {
+    date_left <- str_extract(var_left, "(?<=_)\\d{4}$")
+    date_left <- paste(date_left, collapse = " - ")
+    title_left <- paste0(title_left, " (", date_left, ")")
+    date_right <- str_extract(var_right, "(?<=_)\\d{4}$")
+    date_right <- paste(date_right, collapse = " - ")
+    title_right <- paste0(title_right, " (", date_right, ")")
+    labs_xy <- list(labs(x = title_right, y = title_left), 
+                    x_short = title_right_short, y_short = title_left_short)
+  }
+
+  return(labs_xy)
+  
+}
