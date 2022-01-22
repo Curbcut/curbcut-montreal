@@ -43,24 +43,21 @@ island <- FALSE
 data <- get_data(df, var_left, var_right)
 select_id <- NA
 var_type <- get_var_type(data, var_left, var_right, df, select_id)
-explore_graph(data, var_type, var_left, var_right, select_id, df, 
-              build_str_as_DA = TRUE, plot_type = "auto")}
+explore_graph(data, var_type, var_left, var_right, df, select_id)}
 
 
 # Histogram, NA selection -------------------------------------------------
 
 {select_id <- "A"
 var_type <- get_var_type(data, var_left, var_right, df, select_id)
-explore_graph(data, var_type, var_left, var_right, select_id, df, 
-              build_str_as_DA = TRUE, plot_type = "auto")}
+explore_graph(data, var_type, var_left, var_right, df, select_id)}
 
 
 # Histogram, active selection ---------------------------------------------
 
 {select_id <- "2458012"
 var_type <- get_var_type(data, var_left, var_right, df, select_id)
-explore_graph(data, var_type, var_left, var_right, select_id, df, 
-              build_str_as_DA = TRUE, plot_type = "auto")}
+explore_graph(data, var_type, var_left, var_right, df, select_id)}
 
 
 # Bar, no selection -------------------------------------------------------
@@ -71,24 +68,21 @@ var_right <- " "
 data <- get_data(df, var_left, var_right)
 select_id <- NA
 var_type <- get_var_type(data, var_left, var_right, df, select_id)
-explore_graph(data, var_type, var_left, var_right, select_id, df, 
-              build_str_as_DA = TRUE, plot_type = "auto")}
+explore_graph(data, var_type, var_left, var_right, df, select_id)}
 
 
 # Bar, NA selection -------------------------------------------------------
 
 {select_id <- "A"
 var_type <- get_var_type(data, var_left, var_right, df, select_id)
-explore_graph(data, var_type, var_left, var_right, select_id, df, 
-              build_str_as_DA = TRUE, plot_type = "auto")}
+explore_graph(data, var_type, var_left, var_right, df, select_id)}
 
 
 # Bar, active selection ---------------------------------------------------
 
 {select_id <- 392
 var_type <- get_var_type(data, var_left, var_right, df, select_id)
-explore_graph(data, var_type, var_left, var_right, select_id, df, 
-              build_str_as_DA = TRUE, plot_type = "auto")}
+explore_graph(data, var_type, var_left, var_right, df, select_id)}
 
 
 # Scatterplot, no selection -----------------------------------------------
@@ -100,111 +94,99 @@ island <- FALSE
 data <- get_data(df, var_left, var_right)
 select_id <- NA
 var_type <- get_var_type(data, var_left, var_right, df, select_id)
-explore_graph(data, var_type, var_left, var_right, select_id, df, 
-              build_str_as_DA = TRUE, plot_type = "auto")}
+explore_graph(data, var_type, var_left, var_right, df, select_id)}
 
 
 # Scatterplot, NA selection -----------------------------------------------
 
-select_id <- "A"
+{select_id <- "A"
 var_type <- get_var_type(data, var_left, var_right, df, select_id)
-explore_graph(data, var_type, var_left, var_right, select_id, df, 
-              build_str_as_DA = TRUE, plot_type = "auto")
+explore_graph(data, var_type, var_left, var_right, df, select_id)}
 
 
 # Scatterplot, active selection -------------------------------------------
 
-select_id <- "2458012"
+{select_id <- "2458012"
 var_type <- get_var_type(data, var_left, var_right, df, select_id)
-explore_graph(data, var_type, var_left, var_right, select_id, df, 
-              build_str_as_DA = TRUE, plot_type = "auto")
+explore_graph(data, var_type, var_left, var_right, df, select_id)}
 
 
 # Boxplot, no selection ---------------------------------------------------
 
-df <- "grid"
+{df <- "grid"
 var_left <- "climate_destructive_storms_ind"
 var_right <- "housing_tenant_pct_2016"
 island <- FALSE
 data <- get_data(df, var_left, var_right)
 select_id <- NA
 var_type <- get_var_type(data, var_left, var_right, df, select_id)
-explore_graph(data, var_type, var_left, var_right, select_id, df, 
-              build_str_as_DA = TRUE, plot_type = "auto")
+explore_graph(data, var_type, var_left, var_right, df, select_id)}
 
 
 # Boxplot, NA selection ---------------------------------------------------
 
-select_id <- "A"
+{select_id <- "A"
 var_type <- get_var_type(data, var_left, var_right, df, select_id)
-explore_graph(data, var_type, var_left, var_right, select_id, df, 
-              build_str_as_DA = TRUE, plot_type = "auto")
+explore_graph(data, var_type, var_left, var_right, df, select_id)}
 
 
 # Boxplot, active selection -----------------------------------------------
 
-select_id <- 392
+{select_id <- 392
 var_type <- get_var_type(data, var_left, var_right, df, select_id)
-explore_graph(data, var_type, var_left, var_right, select_id, df, 
-              build_str_as_DA = TRUE, plot_type = "auto")
+explore_graph(data, var_type, var_left, var_right, df, select_id)}
 
 
 # Multi-date univariate scatterplot, no selection -------------------------
 
-df <- "borough"
+{df <- "borough"
 var_left <- c("housing_tenant_pct_2001", "housing_tenant_pct_2016")
 var_right <- " "
 island <- FALSE
 data <- get_data(df, var_left, var_right)
 select_id <- NA
 var_type <- get_var_type(data, var_left, var_right, df, select_id)
-explore_graph(data, var_type, var_left, var_right, select_id, df, 
-              build_str_as_DA = TRUE, plot_type = "auto")
+explore_graph(data, var_type, var_left, var_right, df, select_id)}
 
 
 # Multi-date univariate scatterplot, NA selection -------------------------
 
-select_id <- "A"
+{select_id <- "A"
 var_type <- get_var_type(data, var_left, var_right, df, select_id)
-explore_graph(data, var_type, var_left, var_right, select_id, df, 
-              build_str_as_DA = TRUE, plot_type = "auto")
+explore_graph(data, var_type, var_left, var_right, df, select_id)}
 
 
 # Multi-date univariate scatterplot, active selection ---------------------
 
-select_id <- "2458012"
+{select_id <- "2458012"
 var_type <- get_var_type(data, var_left, var_right, df, select_id)
-explore_graph(data, var_type, var_left, var_right, select_id, df, 
-              build_str_as_DA = TRUE, plot_type = "auto")
+explore_graph(data, var_type, var_left, var_right, df, select_id)}
 
 
 # Multi-date bivariate scatterplot, no selection --------------------------
 
-df <- "borough"
+{df <- "borough"
 var_left <- c("housing_tenant_pct_2001", "housing_tenant_pct_2016")
 var_right <- c("inc_median_dollar_2001", "inc_median_dollar_2016")
 island <- FALSE
 data <- get_data(df, var_left, var_right)
 select_id <- NA
 var_type <- get_var_type(data, var_left, var_right, df, select_id)
-explore_graph(data, var_type, var_left, var_right, select_id, df, 
-              build_str_as_DA = TRUE, plot_type = "auto")
+explore_graph(data, var_type, var_left, var_right, df, select_id)}
 
 
 # Multi-date bivariate scatterplot, NA selection --------------------------
 
-select_id <- "A"
+{select_id <- "A"
 var_type <- get_var_type(data, var_left, var_right, df, select_id)
-explore_graph(data, var_type, var_left, var_right, select_id, df, 
-              build_str_as_DA = TRUE, plot_type = "auto")
+explore_graph(data, var_type, var_left, var_right, df, select_id)}
 
 
 # Multi-date bivariate scatterplot, active selection ----------------------
 
-select_id <- "2458012"
+{select_id <- "2458012"
 var_type <- get_var_type(data, var_left, var_right, df, select_id)
-explore_graph(data, var_type, var_left, var_right, select_id, df, 
-              build_str_as_DA = TRUE, plot_type = "auto")
+explore_graph(data, var_type, var_left, var_right, df, select_id)}
 
 
 # Date line graph ---------------------------------------------------------

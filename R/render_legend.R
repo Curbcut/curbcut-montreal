@@ -117,7 +117,6 @@ render_legend <- function(var_left, var_right, df, data_type) {
       scale_colour_manual(values = c("black" = "black", "white" = "white")) +
       labs_xy[[1]] + theme_default
     
-  } else {
-    NULL
-  }
+  } else NULL
+  
 }

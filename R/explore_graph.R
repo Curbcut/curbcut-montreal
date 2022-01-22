@@ -14,6 +14,13 @@ explore_graph <- function(data, var_type, var_left, var_right, df, select_id,
   stopifnot(!is.reactive(build_str_as_DA))
   stopifnot(!is.reactive(plot_type))
   
+  print(data)
+  print(var_type)
+  print(var_left)
+  print(var_right)
+  print(df)
+  print(select_id)
+  
   
   ## Deal with build_str_as_DA -------------------------------------------------
   
@@ -35,7 +42,7 @@ explore_graph <- function(data, var_type, var_left, var_right, df, select_id,
   ## Set up plotting variables -------------------------------------------------
   
   # Prepare x and y scales
-  x_scale <- get_x_scale(graph_type, var_left, var_right)
+  x_scale <- get_x_scale(graph_type, var_left, var_right, df)
   y_scale <- get_y_scale(graph_type, var_left, var_right)
   
   # Prepare axis labels

@@ -31,34 +31,34 @@ explore_UI <- function(id) {
 }
 
 explore_server <- function(id, data, var_left, var_right, df, select_id,
-                           build_str_as_DA = TRUE) {
+                           build_str_as_DA = reactive(TRUE)) {
   
   stopifnot(is.reactive(data))
   stopifnot(is.reactive(var_left))
   stopifnot(is.reactive(var_right))
   stopifnot(is.reactive(df))
   stopifnot(is.reactive(select_id))
-  stopifnot(!is.reactive(build_str_as_DA))
+  stopifnot(is.reactive(build_str_as_DA))
 
   moduleServer(id, function(input, output, session) {
     
     # Get var_type
     var_type <- reactive(get_var_type(
-      data = data(), 
-      var_left = var_left(), 
-      var_right = var_right(), 
-      df = df(), 
+      data = data(),
+      var_left = var_left(),
+      var_right = var_right(),
+      df = df(),
       select_id = select_id()))
     
     # Make info table
     table <- reactive(info_table(
-      data = data(), 
-      var_type = var_type(), 
-      var_left = var_left(), 
-      var_right = var_right(), 
-      df = df(), 
-      select_id = select_id(), 
-      build_str_as_DA = build_str_as_DA))
+      data = data(),
+      var_type = var_type(),
+      var_left = var_left(),
+      var_right = var_right(),
+      df = df(),
+      select_id = select_id(),
+      build_str_as_DA = build_str_as_DA()))
     
     # Display info table
     output$info_table <- renderUI(table())
@@ -66,20 +66,19 @@ explore_server <- function(id, data, var_left, var_right, df, select_id,
     # Make graph
     graph <- reactive(explore_graph(
       data = data(),
-      var_type = var_type(), 
-      var_left = var_left(), 
-      var_right = var_right(), 
-      df = df(), 
+      var_type = var_type(),
+      var_left = var_left(),
+      var_right = var_right(),
+      df = df(),
       select_id = select_id(),
-      build_str_as_DA = build_str_as_DA,
-      plot_type = "auto"))
+      build_str_as_DA = build_str_as_DA()))
     
     # Display graph
     output$explore_graph <- renderPlot(graph())
     
     # Show/hide components
     observe({
-      toggle("explore_content", condition = 
+      toggle("explore_content", condition =
                (!is.null(table()) || !is.null(graph())) && input$hide %% 2 == 0)
       toggle("explore_graph", condition = !is.null(graph()))
       toggle("clear_selection", condition = !is.na(select_id()))
@@ -90,8 +89,8 @@ explore_server <- function(id, data, var_left, var_right, df, select_id,
       txt <- sus_translate(switch(input$hide %% 2 + 1, "Hide", "Show"))
       updateActionButton(session, "hide", label = txt)
     })
-    
-    # Return info_table text and graph to export it in report afterwards
-    reactive({list(info = info_table(), graph = graph())})
+
+    # # Return info_table text and graph to export it in report afterwards
+    reactive(list(info = info_table(), graph = graph()))
   })
 }

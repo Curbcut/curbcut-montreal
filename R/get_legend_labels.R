@@ -11,7 +11,7 @@ get_legend_labels <- function(var_left, var_right, data_type) {
   title_left_short <- sus_translate(title_left$var_short)
   title_left <- sus_translate(title_left$var_title)
   # If axis title is too long, take the short version
-  if (nchar(title_left) > 30) title_left <- title_left_short
+  if (nchar(title_left) > 40) title_left <- title_left_short
   
   title_right <- 
     variables |> 
@@ -26,6 +26,9 @@ get_legend_labels <- function(var_left, var_right, data_type) {
   
   
   ## Construct labels ----------------------------------------------------------
+  
+  # Return NULL if no data_type matches
+  labs_xy <- NULL
   
   # q5 version
   if (data_type == "q5") {

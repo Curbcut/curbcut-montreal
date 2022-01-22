@@ -1,19 +1,16 @@
 #### LEGEND MODULE #############################################################
 
 legend_UI <- function(id) {
-  div(id = "legend",
-      h5("Legend", style = "font-size: 12px;"),
+  div(id = "legend", h5("Legend", style = "font-size: 12px;"),
       uiOutput(NS(id, "legend_render")))
 }
 
-legend_server <- function(id, var_left, var_right, df, 
-                          show_panel = reactive(TRUE)) {
+legend_server <- function(id, var_left, var_right, df) {
   
   stopifnot(is.reactive(var_left))
   stopifnot(is.reactive(var_right))
   stopifnot(is.reactive(df))
-  stopifnot(is.reactive(show_panel))
-  
+
   moduleServer(id, function(input, output, session) {
     
     # Define plot height
@@ -26,13 +23,13 @@ legend_server <- function(id, var_left, var_right, df,
     # Get data type
     data_type <- reactive(get_data_type(df(), var_left(), var_right()))
     
-    # Render legend
-    legend <- reactive(render_legend(
-      var_left(), var_right(), df(), data_type()))
+    # Make legend
+    legend <- reactive(render_legend(var_left(), var_right(), df(), 
+                                     data_type()))
     
+    # Output legend
     output$legend_render <- renderUI({
       output$legend <- renderPlot(legend())
-      
       # Weird hack to get legend plot to inherit full namespace
       plotOutput(session$ns("legend"), height = plot_height(), width = "100%")
     })
@@ -41,5 +38,6 @@ legend_server <- function(id, var_left, var_right, df,
     observe(toggle("legend", condition = !is.null(legend())))
     
     return(NULL)
+    
   })
 }
