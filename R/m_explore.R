@@ -9,8 +9,9 @@
 #' @param df 
 #' @param select_id A reactive which resolves to a character string giving the 
 #' ID of a row in the input data frame (`data`) which has been selected.
-#' @param build_str_as_DA A logical scalar. Should the "building" and "street"
-#' zoom levels show graphs and text for the DA zoom level instead?
+#' @param build_str_as_DA A reactive which resolves to a logical scalar. Should 
+#' the "building" and "street" zoom levels show graphs and text for the DA zoom 
+#' level instead?
 
 explore_UI <- function(id) {
   

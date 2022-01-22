@@ -14,14 +14,7 @@ explore_graph <- function(data, var_type, var_left, var_right, df, select_id,
   stopifnot(!is.reactive(build_str_as_DA))
   stopifnot(!is.reactive(plot_type))
   
-  print(data)
-  print(var_type)
-  print(var_left)
-  print(var_right)
-  print(df)
-  print(select_id)
-  
-  
+
   ## Deal with build_str_as_DA -------------------------------------------------
   
   if (build_str_as_DA) {
