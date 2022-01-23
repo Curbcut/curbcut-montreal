@@ -45,17 +45,41 @@ render_explore_graph <- function(plot_type, data, var_left, var_right,
   
   # Bar, no selection
   if (plot_type == "bar_all") {
-    out <- 
+    
+    # Special case for variable with an additional "empty" value
+    var_length <- 
+      data |> 
+      filter(!is.na(var_left)) |> 
+      pull(var_left) |> 
+      unique() |> 
+      length()
+    
+    cols <- if (var_length == 6) c(col_NA, rev(col_left_5)) else rev(col_left_5)
+    names(cols) <- cols
+    
+    out <-
       data |> 
       filter(!is.na(var_left)) |> 
       ggplot(aes(as.factor(var_left))) +
       geom_bar(aes(fill = fill), width = 1) +
-      scale_fill_manual(values = rev(col_left_5), na.translate = FALSE) +
+      scale_fill_manual(values = cols, na.translate = FALSE) +
       x_scale + y_scale + labs_xy + theme_default
   }
   
   # Bar, NA selection
   if (plot_type == "bar_na") {
+    
+    # Special case for variable with an additional "empty" value
+    var_length <- 
+      data |> 
+      filter(!is.na(var_left)) |> 
+      pull(var_left) |> 
+      unique() |> 
+      length()
+    
+    cols <- if (var_length == 6) c(col_NA, rev(col_left_5)) else rev(col_left_5)
+    names(cols) <- cols
+    
     out <- 
       data |> 
       filter(!is.na(var_left)) |> 
@@ -66,6 +90,18 @@ render_explore_graph <- function(plot_type, data, var_left, var_right,
   
   # Bar, active selection
   if (plot_type == "bar_select") {
+    
+    # Special case for variable with an additional "empty" value
+    var_length <- 
+      data |> 
+      filter(!is.na(var_left)) |> 
+      pull(var_left) |> 
+      unique() |> 
+      length()
+    
+    cols <- if (var_length == 6) c(col_NA, rev(col_left_5)) else rev(col_left_5)
+    names(cols) <- cols
+    
     out <- 
       data |> 
       filter(!is.na(var_left)) |> 

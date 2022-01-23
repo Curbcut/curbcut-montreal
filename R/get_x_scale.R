@@ -16,7 +16,7 @@ get_x_scale <- function(graph_type, var_left, var_right, df) {
   
   if (suppressWarnings(!is.null(breaks_q5_left$var_name)) && 
       sum(!is.na(breaks_q5_left$var_name)) > 0) {
-    var_left_label <- breaks_q5_left$var_name_short
+    var_left_label <- breaks_q5_left$var_name_short ### TKTK NEED TO EXCLUDE NO RISK IF IT'S NOT ACTUALLY PRESENT
   } else var_left_label <- NULL
   
   
@@ -62,7 +62,7 @@ get_x_scale <- function(graph_type, var_left, var_right, df) {
     list(scale_x_continuous(labels = scales::percent))
   
   if (scale_type == "discrete") out <- 
-    list(scale_x_discrete(labels = var_left_label[2:6]))
+    list(scale_x_discrete(labels = var_left_label))
   
   if (scale_type == "cont_labels") out <- list(scale_x_continuous(
     limits = c(min(0, as.numeric(names(var_left_label))),

@@ -15,18 +15,8 @@ get_legend_breaks <- function(data, var_left, var_right, df, data_type) {
       variables |> 
       filter(var_code == unique(sub("_\\d{4}$", "", var_left))) |> 
       pull(breaks_q5) |> 
-      purrr::pluck(1)
-    
-    if (df %in% c("building", "street") &&
-        nrow(filter(break_labels, scale == df)) == 0) {
-      break_labels <- 
-        break_labels |> 
-        filter(scale == "DA")
-    } else {
-      break_labels <- 
-        break_labels |> 
-        filter(scale == df)
-    }
+      purrr::pluck(1) |> 
+      filter(scale == df)
     
     if (suppressWarnings(!is.null(break_labels$var_name) && 
                          !any(is.na(break_labels$var_name)))) {
@@ -35,7 +25,6 @@ get_legend_breaks <- function(data, var_left, var_right, df, data_type) {
       
       break_labels <- 
         break_labels |> 
-        filter(rank >= 1) |> 
         pull(var_name_short)
       
     } else {
@@ -56,6 +45,13 @@ get_legend_breaks <- function(data, var_left, var_right, df, data_type) {
   }
   
   
+  ## Univariate qualitative version --------------------------------------------
+  
+  if (data_type == "qual") {
+    # TKTK add this when we have a qualitative variable to visualize
+  }
+  
+  
   ## Bivariate version ---------------------------------------------------------
   
   if (data_type == "bivar") {
@@ -69,40 +65,18 @@ get_legend_breaks <- function(data, var_left, var_right, df, data_type) {
       filter(var_code == unique(sub("_\\d{4}$", "", var_left))) |> 
       pull(breaks_q3) |> 
       pluck(1) |> 
-      filter(date == date_left | is.na(date))
-    
-    if (df %in% c("building", "street") &&
-        nrow(filter(break_labels_y, scale == df)) == 0) {
-      break_labels_y <- 
-        break_labels_y |> 
-        filter(scale == "DA") |> 
-        pull(var)
-    } else {
-      break_labels_y <- 
-        break_labels_y |> 
-        filter(scale == df) |> 
-        pull(var)
-    }
+      filter(date == date_left | is.na(date)) |> 
+      filter(scale == df) |> 
+      pull(var)
     
     break_labels_x <- 
       variables |> 
       filter(var_code == unique(sub("_\\d{4}$", "", var_right))) |> 
       pull(breaks_q3) |> 
       pluck(1) |> 
-      filter(date == date_right | is.na(date))
-    
-    if (df %in% c("building", "street") &&
-        nrow(filter(break_labels_x, scale == df)) == 0) {
-      break_labels_x <- 
-        break_labels_x |> 
-        filter(scale == "DA") |> 
-        pull(var)
-    } else {
-      break_labels_x <- 
-        break_labels_x |> 
-        filter(scale == df) |> 
-        pull(var)
-    }
+      filter(date == date_right | is.na(date)) |> 
+      filter(scale == df) |> 
+      pull(var)
     
     # Format breaks
     break_labels_y <- convert_unit(break_labels_y, var_left, TRUE)
@@ -124,18 +98,8 @@ get_legend_breaks <- function(data, var_left, var_right, df, data_type) {
       variables |> 
       filter(var_code == unique(sub("_\\d{4}$", "", var_left))) |> 
       pull(breaks_q5) |> 
-      purrr::pluck(1)
-    
-    if (df %in% c("building", "street") &&
-        nrow(filter(break_labels, scale == df)) == 0) {
-      break_labels <- 
-        break_labels |> 
-        filter(scale == "DA")
-    } else {
-      break_labels <- 
-        break_labels |> 
-        filter(scale == df)
-    }
+      purrr::pluck(1) |> 
+      filter(scale == df)
     
     if (suppressWarnings(!is.null(break_labels$var_name) && 
                          !any(is.na(break_labels$var_name)))) {

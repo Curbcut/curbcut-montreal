@@ -63,7 +63,8 @@ explore_graph(data, var_type, var_left, var_right, df, select_id)}
 # Bar, no selection -------------------------------------------------------
 
 {df <- "grid"
-var_left <- "climate_destructive_storms_ind"
+# var_left <- "climate_destructive_storms_ind"
+var_left <- "climate_heat_wave_ind"
 var_right <- " "
 data <- get_data(df, var_left, var_right)
 select_id <- NA

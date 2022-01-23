@@ -1,10 +1,12 @@
 #### RENDER LEGEND #############################################################
 
-render_legend <- function(var_left, var_right, df, data_type) {
+render_legend <- function(var_left, var_right, df, data_type, 
+                          build_str_as_DA = TRUE) {
   
-  ## Clean up data_type --------------------------------------------------------
+  ## Clean up data_type and building/street ------------------------------------
   
   data_type <- sub("building_", "", data_type)
+  if (build_str_as_DA && df %in% c("building", "street")) df <- "DA"
   
   
   ## Get date ------------------------------------------------------------------
@@ -45,11 +47,21 @@ render_legend <- function(var_left, var_right, df, data_type) {
   # q5 qualitative
   } else if (data_type == "q5" && attr(break_labels, "qual")) {
     
+    ranks <-
+      variables |> 
+      filter(var_code == unique(sub("_\\d{4}$", "", var_left))) |> 
+      pull(breaks_q5) |> 
+      purrr::pluck(1) |> 
+      filter(scale == df) |> 
+      pull(rank)
+    
     legend_left_5 |> 
+      add_row(x = 0, y = 1, fill = col_NA, .before = 1) |> 
+      filter(x %in% ranks) |> 
       ggplot(aes(xmin = x - 1, xmax = x, ymin = y - 1, ymax = y, 
                  fill = fill)) +
       geom_rect() + 
-      scale_x_continuous(breaks = 0:4 + 0.5, labels = break_labels) +
+      scale_x_continuous(breaks = ranks - 0.5, labels = break_labels) +
       scale_y_continuous(labels = NULL) +
       scale_fill_manual(values = set_names(legend_left_5$fill)) +
       labs_xy + theme_default

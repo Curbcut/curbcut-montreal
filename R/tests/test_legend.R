@@ -44,6 +44,7 @@ render_legend(var_left, var_right, df, data_type)}
 
 {df <- "grid"
 var_left <- "climate_destructive_storms_ind"
+# var_left <- "climate_flood_ind"
 var_right <- " "
 data <- get_data(df, var_left, var_right, island = TRUE)
 data_type <- get_data_type(df, var_left, var_right)
