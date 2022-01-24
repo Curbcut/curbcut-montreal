@@ -27,8 +27,7 @@ place_explorer_UI <- function(id) {
       # Search bar
       absolutePanel(
         id = NS(id, "search_bar"), 
-        style = paste0("z-index:500; padding: 5px; border-width: 0px;",
-                       "font-size: 11px;"),
+        style = "z-index:500; padding: 5px; border-width: 0.5px; text-align: center;",
         class = "panel panel-default", top = 20, left = 15,
         strong("Enter a postal code, or click on the map"),
         splitLayout(cellWidths = c("70%", "30%"),
@@ -45,7 +44,34 @@ place_explorer_UI <- function(id) {
       div(class = "mapdeck_div", mapdeckOutput(NS(id, "map"), height = "100%")),
       
       # Blog post
-      hidden(uiOutput(NS(id, "blogpost")))
+      hidden(uiOutput(NS(id, "gridelements"))),
+      # Blog post toolbox
+      hidden(absolutePanel(
+        id = NS(id, "toolbox"), 
+        style = "z-index:500; padding: 5px; border-width: 0.5px; max-width:40vw; text-align: center;",
+        class = "panel panel-default", top = 20, right = 15,
+        # Retrieve the df the user is interested in
+        sliderTextInput(
+          inputId = NS(id, "slider"), 
+          label = NULL, 
+          choices = get_zoom_label(map_zoom_levels[1:3]), 
+          hide_min_max = TRUE, 
+          force_edges = TRUE),
+        # Checkboxes of each theme
+        # checkboxGroupInput(inputId = NS(id, "themes_checkbox"),
+        #                    label = "Themes",
+        #                    choices = unique(variables$theme),
+        #                    selected = unique(variables$theme),
+        #                    inline = TRUE)
+        selectInput(
+          inputId = NS(id, "themes_checkbox"),
+          label = "Select theme(s):",
+          choices = unique(variables$theme),
+          selected = unique(variables$theme),
+          multiple = TRUE,
+          selectize = TRUE
+        )
+        )),
       
       
     )))
@@ -126,7 +152,8 @@ place_explorer_server <- function(id) {
     
     # Update map depending on selection
     observeEvent(location(), {
-      hide(id = "blogpost", anim = TRUE, animType = "fade", time = 1)
+      hide(id = "gridelements", anim = TRUE, animType = "fade", time = 1)
+      hide(id = "toolboc", anim = TRUE, animType = "fade", time = 1)
       show(id = "map", anim = TRUE, animType = "fade", time = 1)
       hide(id = "comeback_map", anim = TRUE, animType = "fade", time = 1)
       
@@ -136,7 +163,8 @@ place_explorer_server <- function(id) {
       
       hide(id = "map", anim = TRUE, animType = "fade", time = 1)
       show(id = "comeback_map", anim = TRUE, animType = "fade", time = 1)
-      show(id = "blogpost", anim = TRUE, animType = "fade", time = 1)
+      show(id = "gridelements", anim = TRUE, animType = "fade", time = 1)
+      show(id = "toolbox", anim = TRUE, animType = "fade", time = 1)
     }, ignoreInit = TRUE)
     
     # Hook up the go back to map
@@ -144,30 +172,41 @@ place_explorer_server <- function(id) {
       mapdeck_update(map_id = NS(id, "map")) |>
         clear_scatterplot()
       
-      hide(id = "blogpost", anim = TRUE, animType = "fade", time = 1)
+      hide(id = "gridelements", anim = TRUE, animType = "fade", time = 1)
+      hide(id = "toolbox", anim = TRUE, animType = "fade", time = 1)
       show(id = "map", anim = TRUE, animType = "fade", time = 1)
       hide(id = "comeback_map", anim = TRUE, animType = "fade", time = 1)
     })
     
-    # Block post style
-    output$blogpost <- renderUI({
-      output$title <- renderText(HTML("<h3>", location_name(), "</h3>"))
-      output$first_element <- renderText("second")
-      output$second_element <- renderText("third")
+    # Retrieve the df the user is interested in
+    df <- reactive(get_zoom_code(input$slider))
+    
+    # Gird elements
+    output$gridelements <- renderUI({
       
-      fixedPage(
-        verticalLayout(
-        htmlOutput(NS(id, "title"), style = paste0("margin-top: 150px; padding: 5px; ",
-                                                   "font-size: 11px;")),
-        htmlOutput(NS(id, "first_element"), style = paste0("padding: 5px; ",
-                                                           "font-size: 11px"), 
-                   class = "panel panel-default"),
-        htmlOutput(NS(id, "second_element"), style = paste0("padding: 5px; ",
-                                                            "font-size: 11px"), 
-                   class = "panel panel-default"),
-        
-        )
-      )
+      output$title <- renderText(HTML("<h3>", location_name(), "</h3>"))
+      
+      themes <- input$themes_checkbox |> 
+        str_to_lower() |> 
+        str_replace(" ", "_")
+
+      iwalk(themes, ~{
+        output_name <- paste0("theme_", .x)
+        output[[output_name]] <- renderText(as.character(.x))
+      })
+      
+      fixedPage(verticalLayout(
+        htmlOutput(NS(id, "title"), 
+                   style = paste0("margin-top: 150px; padding: 5px; ",
+                                  "font-size: 11px;")),
+        imap(themes, ~{
+          tagList(htmlOutput(
+            outputId = eval(parse(text = paste0("NS(id, 'theme_", .x, "')"))),
+            style = paste0("padding: 5px; ",
+                           "font-size: 11px"), 
+            class = "panel panel-default"))
+        })
+      ))
       
     })
     
