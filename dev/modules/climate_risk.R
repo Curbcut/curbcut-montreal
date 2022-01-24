@@ -35,14 +35,14 @@ climate_risk <-
       select(ID) |> 
       st_transform(32618) |> 
       st_set_agr("constant") |> 
-      st_intersection(df) |> 
-      full_join(st_drop_geometry(select(grid, ID)), by = "ID") |> 
+      st_intersection(df) |>
       mutate(area_int = units::drop_units(st_area(geometry))) |> 
       st_drop_geometry() |> 
       group_by(grid_ID) |> 
       filter(area_int == max(area_int)) |> 
       ungroup() |>
       select(-grid_ID, -area_int) |> 
+      full_join(st_drop_geometry(select(grid, ID)), by = "ID") |> 
       mutate(across(starts_with("climate"), ~replace(., is.na(.), 0)))
     })
 
