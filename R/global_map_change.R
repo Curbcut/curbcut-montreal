@@ -53,7 +53,8 @@ map_change <- function(id_map, x, df, zoom = df, click = reactive(NULL),
   
   observeEvent({#legend_selection()
     x()
-    df()}, {
+    df()
+    zoom()}, {
       
       # Used at all geometries:
       update_and_clean <- function() {
