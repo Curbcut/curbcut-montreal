@@ -46,17 +46,18 @@ render_explore_graph <- function(plot_type, data, var_left, var_right,
   # Bar, no selection
   if (plot_type == "bar_all") {
     
-    # Special case for variable with an additional "empty" value
-    var_length <- 
-      data |> 
-      filter(!is.na(var_left)) |> 
-      pull(var_left) |> 
-      unique() |> 
-      length()
+    # Figure out how many values to graph
+    ranks <-
+      variables |> 
+      filter(var_code == unique(sub("_\\d{4}$", "", var_left))) |> 
+      pull(breaks_q5) |> 
+      purrr::pluck(1) |> 
+      filter(scale == df) |> 
+      pull(rank)
     
-    cols <- if (var_length == 6) c(col_NA, rev(col_left_5)) else rev(col_left_5)
-    names(cols) <- cols
-    
+    # Get corresponding colours
+    cols <- set_names(c(col_NA, col_left_5)[ranks + 1])
+
     out <-
       data |> 
       filter(!is.na(var_left)) |> 
@@ -69,16 +70,17 @@ render_explore_graph <- function(plot_type, data, var_left, var_right,
   # Bar, NA selection
   if (plot_type == "bar_na") {
     
-    # Special case for variable with an additional "empty" value
-    var_length <- 
-      data |> 
-      filter(!is.na(var_left)) |> 
-      pull(var_left) |> 
-      unique() |> 
-      length()
+    # Figure out how many values to graph
+    ranks <-
+      variables |> 
+      filter(var_code == unique(sub("_\\d{4}$", "", var_left))) |> 
+      pull(breaks_q5) |> 
+      purrr::pluck(1) |> 
+      filter(scale == df) |> 
+      pull(rank)
     
-    cols <- if (var_length == 6) c(col_NA, rev(col_left_5)) else rev(col_left_5)
-    names(cols) <- cols
+    # Get corresponding colours
+    cols <- set_names(c(col_NA, col_left_5)[ranks + 1])
     
     out <- 
       data |> 
@@ -91,16 +93,17 @@ render_explore_graph <- function(plot_type, data, var_left, var_right,
   # Bar, active selection
   if (plot_type == "bar_select") {
     
-    # Special case for variable with an additional "empty" value
-    var_length <- 
-      data |> 
-      filter(!is.na(var_left)) |> 
-      pull(var_left) |> 
-      unique() |> 
-      length()
+    # Figure out how many values to graph
+    ranks <-
+      variables |> 
+      filter(var_code == unique(sub("_\\d{4}$", "", var_left))) |> 
+      pull(breaks_q5) |> 
+      purrr::pluck(1) |> 
+      filter(scale == df) |> 
+      pull(rank)
     
-    cols <- if (var_length == 6) c(col_NA, rev(col_left_5)) else rev(col_left_5)
-    names(cols) <- cols
+    # Get corresponding colours
+    cols <- set_names(c(col_NA, col_left_5)[ranks + 1])
     
     out <- 
       data |> 
