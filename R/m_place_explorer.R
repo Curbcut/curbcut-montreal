@@ -30,13 +30,13 @@ place_explorer_UI <- function(id) {
         style = "z-index:500; padding: 5px; border-width: 0.5px; text-align: center;",
         class = "panel panel-default", top = 20, left = 15,
         strong("Enter a postal code, or click on the map"),
-        splitLayout(cellWidths = c("70%", "30%"),
+        # splitLayout(cellWidths = c("70%", "30%"),
                     # Autocompletion at least for postal code would be great
                     textInput(inputId = NS(id, "adress_searched"), label = NULL,
                               # placeholder = "H3A 2T5",
                               value = "H3A 2T5"),
                     actionButton(inputId = NS(id, "search_button"), 
-                                 label = "Search")),
+                                 label = "Search"),#),
         hidden(actionLink(inputId = NS(id, "comeback_map"),
                           label = HTML("<br>Go back to the map")))),
       
