@@ -51,6 +51,8 @@ marketed_sustainability <- qread("data/marketed_sustainability.qs")
 metro_lines <- qread("data/metro_lines.qs")
 stories <- qread("data/stories.qs")
 
+postal_codes <- qread("data/postal_codes.qs")
+
 min_census_year <- "1996"
 current_census <- "2016"
 

@@ -100,6 +100,7 @@ variables <-
     var_title = character(),
     var_short = character(),
     explanation = character(),
+    theme = character(),
     category = character(),
     private = logical(),
     dates = list(),
@@ -125,6 +126,7 @@ source("dev/modules/gentrification.R")
 source("dev/modules/green_space.R")
 source("dev/modules/marketed_sustainability.R")
 # source("dev/modules/permits.R")
+source("dev/modules/place_explorer.R")
 # source("dev/modules/dmti.R")
 source("dev/modules/stories.R")
 
@@ -150,6 +152,7 @@ qsave(green_space, file = "data/green_space.qs")
 qsave(marketed_sustainability, file = "data/marketed_sustainability.qs")
 qsave(metro_lines, file = "data/metro_lines.qs")
 # qsavem(permits_choropleth, permits, file = "data/permits.qsm")
+qsave(postal_codes, file = "data/postal_codes.qs")
 qsave(stories, file = "data/stories.qs")
 
 

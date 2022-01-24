@@ -1,5 +1,5 @@
 add_variables <- function(data, var_code, var_title, var_short, explanation, 
-                          category, private, dates, scales, breaks_q3, 
+                          category, theme, private, dates, scales, breaks_q3, 
                           breaks_q5, source) {
   
   add_row(data,
@@ -8,6 +8,7 @@ add_variables <- function(data, var_code, var_title, var_short, explanation,
           var_short = if (is.na(var_short)) var_title else var_short,
           explanation = explanation,
           category = category,
+          theme = theme,
           private = private,
           dates = list(dates),
           scales = list(scales),

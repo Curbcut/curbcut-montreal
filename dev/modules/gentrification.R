@@ -134,6 +134,7 @@ variables <-
     var_short = "Gentrification",
     explanation = "the gentrification pressure an area is experiencing",
     category = NA,
+    theme = "Gentrification",
     private = FALSE,
     dates = c("1996", "2001", "2006", "2011", "2016"),
     scales = c("borough", "building", "CT", "DA", "grid", "street"),
