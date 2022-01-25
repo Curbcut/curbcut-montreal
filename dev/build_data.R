@@ -154,6 +154,7 @@ qsave(metro_lines, file = "data/metro_lines.qs")
 # qsavem(permits_choropleth, permits, file = "data/permits.qsm")
 qsave(postal_codes, file = "data/postal_codes.qs")
 qsave(stories, file = "data/stories.qs")
+source("dev/title_text.R")
 
 
 # Produce colours and maps ------------------------------------------------
