@@ -3,10 +3,40 @@
 library(tidyverse)
 library(qs)
 
-title_text <- readr::read_csv("dev/data/title_text.csv", show_col_types = FALSE)
+# title_text <- readr::read_csv("dev/data/title_text.csv", show_col_types = FALSE)
 
 title_text <-
-  title_text |>
+  tibble(tab = character(), type = character(), text = character()) |>
+  add_row(tab = "canale", type = "title", 
+          text = "Active living potential: the CanALE index") |> 
+  add_row(tab = "canale", type = "main", text = paste0(
+    "The CanALE dataset (developed by Prof. Nancy Ross and her team) captures ",
+    "four key elements related to active living environments: population ",
+    "density, points of interest, street grid, and proximity of transit ",
+    "service.")) |> 
+  add_row(tab = "canale", type = "extra", text = paste0(
+    "<p>A safe and inviting pedestrian realm is not distributed equally ",
+    "across socio-demographic factors. The risks of pedestrian injuries and ",
+    "fatalities are higher in low-income and racialized communities where ",
+    "residents often rely on walking as a daily mode of transport but where ",
+    "the local environment is not necessarily inviting and safe.",
+    "<p>In addition to evidence pointing towards large discrepancies in the ",
+    "provision of walkable urban space across income and racial lines, ",
+    "concern has been raised with regard to the possible gentrification ",
+    "and displacement impacts of improved pedestrian infrastructure. In ",
+    "other words, who can afford to live in walkable neighbourhoods?<br>",
+    "<p>Further resources:",
+    "<ul><li><a href='https://www150.statcan.gc.ca/n1/pub/82-003-x/2019005/",
+    "article/00002-eng.htm'>Thomas Herrmann, William Gleckner, Rania A. ",
+    "Wasfi, Beno\u00EEt Thierry, Yan Kestens and Nancy A. Ross. 2019. ",
+    "'A pan-Canadian measure of active living environments using open data. ",
+    "Statistics Canada Health Reports, 82-003-X.</a>",
+    "<li>Kevin Manaugh, Linnea Soli, Samuel Kohn, Robin ",
+    "Basalaev-Binder, Ty Tuff, David Wachsmuth. 2020. 'Montreal's response ",
+    "to COVID-19: An equity analysis of new active transport infrastructure.' ",
+    "Transportation Research Board working paper. <b>(MSSI research)</b>",
+    "</ul><br>",
+    "<p><i>Module lead authors: Robin Basalaev-Binder, David Wachsmuth</i>")) |> 
   add_row(tab = "climate_risk", type = "title", text = "Climate change risk") |> 
   add_row(tab = "climate_risk", type = "main", text = paste0(
     "Climate change will have increasingly negative impacts on communities ",
