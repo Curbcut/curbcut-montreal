@@ -11,15 +11,14 @@
 
 
 year_disclaimer_UI <- function(id) {
-  tagList(
-    htmlOutput(NS(id, "year_disclaimers"))
-  )
+  tagList(htmlOutput(NS(id, "year_disclaimer")))
 }
 
 year_disclaimer_server <- function(id, data, var_left, var_right, time,
-                                   pct_variation = reactive(T),
-                                   more_condition = reactive(F), 
+                                   pct_variation = reactive(TRUE),
+                                   more_condition = reactive(FALSE), 
                                    more_text = NULL) {
+  
   stopifnot(is.reactive(var_left))
   stopifnot(is.reactive(var_right))
   stopifnot(is.reactive(time))
@@ -28,7 +27,7 @@ year_disclaimer_server <- function(id, data, var_left, var_right, time,
   
   moduleServer(id, function(input, output, session) {
     
-    disclaimer_texts <- reactive({
+    disclaimer_text <- reactive({
       
       # Unique vars
       var_left <- unique(var_left())
@@ -43,10 +42,12 @@ year_disclaimer_server <- function(id, data, var_left, var_right, time,
       right_var_code <- unique(str_remove(var_right(), "_\\d{4}$"))
       
       # Vars title
-      var_left_title <- variables[variables$var_code == str_remove(left_var_code, "_\\d{4}$"),]$var_title
+      var_left_title <- variables[
+        variables$var_code == str_remove(left_var_code, "_\\d{4}$"),]$var_title
       var_left_title <- sus_translate(var_left_title)
       
-      var_right_title <- variables[variables$var_code == str_remove(right_var_code, "_\\d{4}$"),]$var_title
+      var_right_title <- variables[
+        variables$var_code == str_remove(right_var_code, "_\\d{4}$"),]$var_title
       var_right_title <- sus_translate(var_right_title)
       
       # Prepare out list
@@ -105,75 +106,8 @@ year_disclaimer_server <- function(id, data, var_left, var_right, time,
       }
 
 
-    # How to read the map -----------------------------------------------------
-
-      # How to read map
-      if (length(var_left) == 2) {
-        if (var_right[1] == " ") {
-          if (pct_variation()) {
-            out <- out
-            #           out <- c(out, list(str_glue(
-            # sus_translate(paste0("<b>How to read the map</b><br>",
-            #                      "The map displays the percent variation in ",
-            #                      "'{var_left_title}' between {time()[1]} and {time()[2]}. ",
-            #                      "Blue means an increase in '{var_left_title}', and red ",
-            #                      "means a decrease.")))
-            #           ))
-          } else {
-            out <- c(out, list(str_glue(
-              sus_translate(paste0("<b>How to read the map</b><br>",
-                                   "The map displays a data aggregate of ",
-                                   "'{var_left_title}' between {time()[1]} and {time()[2]}.")))
-            ))
-          }
-
-        } else {
-
-          if (length(right_year) == 2) {
-            if (left_year[1] == right_year[1] && left_year[2] == right_year[2]) {
-              # Maybe unnecessary?
-              out <- c(out, list(str_glue(sus_translate(paste0(
-                "<b>How to read the map</b><br>",
-                "The map displays the comparison of two percent variations ",
-                "between {left_year[1]} and {left_year[2]}. ",
-                "A darker green means a relative increase ",
-                "in '{var_left_title}', and a darker blue means a relative increase ",
-                "in '{var_right_title}'. You can find the comparison legend at ",
-                "the bottom left of the page.")))
-              ))
-            } else {
-              out <- c(out, list(str_glue(sus_translate(paste0(
-                "<b>How to read the map</b><br>",
-                "The map displays the comparison of two percent variations. ",
-                "In green, the percent variation in ",
-                "'{var_left_title}' between {left_year[1]} and {left_year[2]}. ",
-                "A darker green means a relative increase in '{var_left_title}'. ",
-                "In blue, the percent variation of '{var_right_title}' between ",
-                "{right_year[1]} and {right_year[2]}. ",
-                "A darker blue means a relative increase in '{var_right_title}'. ",
-                "You can find the comparison legend at ",
-                "the bottom left of the page.")))
-              ))
-            }
-
-          } else out <- c(out, list(str_glue(sus_translate(paste0(
-            # This is used for a module like crash, where var_left and var_right
-            # often have different years to display. (yearly crash nb vs census data)
-            "<b>How to read the map</b><br>",
-            "The map displays the comparison of a percent variation ",
-            "with a census variable. In green, the percent variation ",
-            "in '{var_left_title}' between {left_year[1]} and {left_year[2]}. ",
-            "A darker green means a relative increase in '{var_left_title}'. ",
-            "Displayed in blue is '{var_right_title}' numbers in {right_year}. ",
-            "A darker blue means a relatively higher number of '{var_right_title}'. ",
-            "You can find the comparison legend at the bottom left of the page.")))
-          ))
-
-        }
-      }
-
-
     # More condition for more disclaimers -------------------------------------
+      
       if (more_condition()) {
         out <- c(out, list(str_glue(sus_translate(more_text))))
       }
@@ -183,6 +117,6 @@ year_disclaimer_server <- function(id, data, var_left, var_right, time,
     })
     
     # Output the texts 
-    output$year_disclaimers <- renderText({paste0(disclaimer_texts())})
+    output$year_disclaimer <- renderText(paste0(disclaimer_text()))
   })
 }
