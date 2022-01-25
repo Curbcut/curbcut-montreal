@@ -29,7 +29,7 @@ housing_UI <- function(id) {
         checkboxInput(inputId = NS(id, "slider_switch"),
                       label = i18n$t("Compare dates"), 
                       width = "95%"),
-        year_disclaimer_UI(NS(id, "disclaimers")),
+        year_disclaimer_UI(NS(id, "disclaimer")),
         div(class = "bottom_sidebar", 
             tagList(legend_UI(NS(id, "legend")),
                     zoom_UI(NS(id, "zoom"), map_zoom_levels))))),
@@ -60,11 +60,11 @@ housing_server <- function(id) {
     zoom <- reactiveVal(get_zoom(map_zoom, map_zoom_levels))
 
     # Map
-    output$map <- renderMapdeck({mapdeck(
+    output$map <- renderMapdeck(mapdeck(
       style = map_style, 
       token = map_token, 
       zoom = map_zoom, 
-      location = map_location)})
+      location = map_location))
     
     # Zoom reactive
     observeEvent(input$map_view_change$zoom, {
@@ -78,18 +78,13 @@ housing_server <- function(id) {
     
     # Enable or disable first and second slider
     observeEvent(input$slider_switch, {
-      if (!input$slider_switch) {
-        hide("slider_bi") 
-        show("slider_uni")
-      } else {
-        hide("slider_uni")
-        show("slider_bi")
-      }
+      toggle("slider_uni", condition = !input$slider_switch)
+      toggle("slider_bi", condition = input$slider_switch)
     })
     
     # Time variable depending on which slider is active
     time <- reactive({
-      if (!input$slider_switch) input$slider_uni else input$slider_bi})
+      if (input$slider_switch) input$slider_bi else input$slider_uni})
     
     # Greyed out left list options, depending on the year(s) chosen
     var_list_housing_left_disabled <- reactive({
@@ -153,9 +148,9 @@ housing_server <- function(id) {
       var_left = var_left,
       var_right = var_right)
     
-    # Disclaimers and how to read the map
+    # Year disclaimer
     year_disclaimer_server(
-      id = "disclaimers", 
+      id = "disclaimer", 
       data = data,
       var_left = var_left,
       var_right = var_right,
