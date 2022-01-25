@@ -44,14 +44,14 @@ popup_server <- function(id, x, fields = NULL, plots = NULL, images = NULL,
       if (!is.null(fields) && nrow(x()) == 1) {
         
         text_fields <- paste0("<b>", names(fields), ":</b> ", 
-                              purrr::map(fields, ~pull(x(), .x)), "<br>")
+                              map(fields, ~pull(x(), .x)), "<br>")
         
-        purrr::map(text_fields, HTML)
+        map(text_fields, HTML)
         }
       })
     
     # Plots
-    output$popup_plots <- renderPlot({if (!is.null(plots)) purrr::map(plots, HTML)})
+    output$popup_plots <- renderPlot({if (!is.null(plots)) map(plots, HTML)})
     
     # Images
     output$popup_images <- renderImage({

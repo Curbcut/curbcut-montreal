@@ -3,7 +3,7 @@
 ui <- function(request) {
   tagList(
   # Styling objects
-  shinyjs::useShinyjs(),
+  useShinyjs(),
   tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "bootstrap.min.css")),
   tags$head(tags$style(HTML(styler))),
   tags$head(tags$style(HTML(navbar_js))),

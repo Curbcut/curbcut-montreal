@@ -244,10 +244,8 @@ get_info_table_data <- function(data, var_type, var_left, var_right, df,
       TRUE ~ sus_translate("much smaller than"))
 
     out$high <- case_when(
-      stringr::str_detect(out$larger, sus_translate("larger")) ~
-        sus_translate("high"),
-      stringr::str_detect(out$larger, sus_translate("smaller")) ~
-        sus_translate("low"),
+      str_detect(out$larger, sus_translate("larger")) ~ sus_translate("high"),
+      str_detect(out$larger, sus_translate("smaller")) ~ sus_translate("low"),
       TRUE ~ sus_translate("moderate"))
 
     out$percentile <- convert_unit(length(vec_left[vec_left <= val_left]) / 

@@ -25,20 +25,20 @@ get_x_scale <- function(graph_type, var_left, var_right, df) {
   scale_type <- case_when(
     graph_type == "date" ~ "date",
     graph_type == "deltabi" ~ "deltabi",
-    graph_type == "delta" & stringr::str_detect(var_left[1], "_pct") ~
+    graph_type == "delta" & str_detect(var_left[1], "_pct") ~
       "delta_pct",
-    graph_type == "delta" & stringr::str_detect(var_left[1], "_dollar") ~
+    graph_type == "delta" & str_detect(var_left[1], "_dollar") ~
       "delta_dollar",
     graph_type == "delta" ~ "delta",
     !is.null(var_left_label) & graph_type %in% c("bar", "box") ~ "discrete",
     !is.null(var_left_label) & graph_type == "hist" ~ "cont_labels",
-    graph_type == "scatter" & stringr::str_detect(var_right[1], "_pct") ~ 
+    graph_type == "scatter" & str_detect(var_right[1], "_pct") ~ 
       "cont_pct",
-    graph_type == "scatter" & stringr::str_detect(var_right[1], "_dollar") ~ 
+    graph_type == "scatter" & str_detect(var_right[1], "_dollar") ~ 
       "cont_dollar",
     graph_type == "scatter" ~ "cont_comma",
-    stringr::str_detect(var_left[1], "_pct") ~ "cont_pct",
-    stringr::str_detect(var_left[1], "_dollar") ~ "cont_dollar",
+    str_detect(var_left[1], "_pct") ~ "cont_pct",
+    str_detect(var_left[1], "_dollar") ~ "cont_dollar",
     TRUE ~ "cont_comma"
   )
   

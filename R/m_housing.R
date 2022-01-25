@@ -79,11 +79,11 @@ housing_server <- function(id) {
     # Enable or disable first and second slider
     observeEvent(input$slider_switch, {
       if (!input$slider_switch) {
-        shinyjs::hide("slider_bi") 
-        shinyjs::show("slider_uni")
+        hide("slider_bi") 
+        show("slider_uni")
       } else {
-        shinyjs::hide("slider_uni")
-        shinyjs::show("slider_bi")
+        hide("slider_uni")
+        show("slider_bi")
       }
     })
     

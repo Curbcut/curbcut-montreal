@@ -12,7 +12,7 @@ sus_translate_list <- function(x) {
   
   # translate name of lists
   names(x) <-
-    purrr::map_chr(names(x), ~{
+    map_chr(names(x), ~{
       if (is.null(.x)) NULL else {
         out <- 
           translation_fr %>%
@@ -28,10 +28,10 @@ sus_translate_list <- function(x) {
       }})
   
   # Re-iterate in list depth to translate every name
-  if (purrr::vec_depth(x) > 2) {
+  if (vec_depth(x) > 2) {
     x <- 
-      purrr::map(x, ~{
-      if (purrr::vec_depth(.x) > 1) sus_translate_list(.x) else (.x)
+      map(x, ~{
+      if (vec_depth(.x) > 1) sus_translate_list(.x) else (.x)
     })
   }
   
@@ -59,8 +59,8 @@ sus_translate <- function(x) {
       sus_translate_list(x)
       
       # png
-    } else if (any(stringr::str_detect(x, "_en.png"))) {
-      stringr::str_replace(x, "_en.png", "_fr.png")
+    } else if (any(str_detect(x, "_en.png"))) {
+      str_replace(x, "_en.png", "_fr.png")
       
       # Character
     } else if (is.character(x)) {

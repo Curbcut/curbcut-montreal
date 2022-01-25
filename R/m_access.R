@@ -18,8 +18,7 @@ access_UI <- function(id) {
                     width = "95%"),
         div(class = "bottom_sidebar", 
             tagList(legend_UI(NS(id, "legend")),
-                    shinyjs::hidden(zoom_UI(NS(id, "zoom"), map_zoom_levels))
-                    )))),
+                    hidden(zoom_UI(NS(id, "zoom"), map_zoom_levels)))))),
     
     fillCol(
       
@@ -75,8 +74,8 @@ access_server <- function(id) {
     # Enable or disable slider + type of destination
     observeEvent({selection()
       var_right()}, {
-        shinyjs::toggle("slider", condition = !is.na(selection()) && var_right() == " ")
-        shinyjs::toggle("left_1-var", condition = is.na(selection()) || var_right() != " ")
+        toggle("slider", condition = !is.na(selection()) && var_right() == " ")
+        toggle("left_1-var", condition = is.na(selection()) || var_right() != " ")
       })
     
     # Left variable servers

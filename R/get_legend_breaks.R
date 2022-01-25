@@ -15,7 +15,7 @@ get_legend_breaks <- function(data, var_left, var_right, df, data_type) {
       variables |> 
       filter(var_code == unique(sub("_\\d{4}$", "", var_left))) |> 
       pull(breaks_q5) |> 
-      purrr::pluck(1) |> 
+      pluck(1) |> 
       filter(scale == df)
     
     if (suppressWarnings(!is.null(break_labels$var_name) && 
@@ -98,7 +98,7 @@ get_legend_breaks <- function(data, var_left, var_right, df, data_type) {
       variables |> 
       filter(var_code == unique(sub("_\\d{4}$", "", var_left))) |> 
       pull(breaks_q5) |> 
-      purrr::pluck(1) |> 
+      pluck(1) |> 
       filter(scale == df)
     
     if (suppressWarnings(!is.null(break_labels$var_name) && 

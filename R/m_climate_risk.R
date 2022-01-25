@@ -123,8 +123,8 @@ climate_risk_server <- function(id) {
     
     # If grid isn't clicked, toggle on the zoom menu
     observeEvent(input$grid, {
-      shinyjs::toggle("zoom-auto", condition = !input$grid)
-      shinyjs::toggle("zoom-slider", condition = !input$grid)
+      toggle("zoom-auto", condition = !input$grid)
+      toggle("zoom-slider", condition = !input$grid)
     })
   })
 }
