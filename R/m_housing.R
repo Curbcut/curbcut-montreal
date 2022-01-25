@@ -135,7 +135,23 @@ housing_server <- function(id) {
       var_right = var_right)
     
     # Data
-    data <- reactive(get_data(df(), var_left(), var_right()))
+    data <- reactive(get_data(
+      df = df(), 
+      var_left = var_left(), 
+      var_right = var_right()))
+    
+    # Legend
+    legend_server(
+      id = "legend",
+      var_left = var_left,
+      var_right = var_right,
+      df = df)
+    
+    # Did-you-know panel
+    dyk_server(
+      id = "dyk",
+      var_left = var_left,
+      var_right = var_right)
     
     # Disclaimers and how to read the map
     year_disclaimer_server(
@@ -159,25 +175,11 @@ housing_server <- function(id) {
     # Explore panel
     explore_content <- explore_server(
       id = "explore",
-      x = data,
+      data = data,
       var_left = var_left,
       var_right = var_right,
-      select_id = select_id,
       df = df,
-      build_str_as_DA = TRUE)
-
-    # Legend
-    legend_server(
-      id = "legend",
-      var_left = var_left,
-      var_right = var_right,
-      df = df)
-
-    # Did-you-know panel
-    dyk_server(
-      id = "dyk",
-      var_left = var_left,
-      var_right = var_right)
+      select_id = select_id)
 
   })
 }
