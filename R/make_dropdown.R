@@ -45,22 +45,22 @@ make_dropdown <-
         filter(lengths(dates) == max(lengths(dates)))
     }
     
+    out <- c("----" = " ",
+             map(set_names(unique(census_var$dropdown_category)), function(cat) {
+               category_vectors <- 
+                 census_var |> 
+                 filter(dropdown_category == cat) |> 
+                 select(var_code, var_title)
+               
+               map(category_vectors$var_title, function(name) {
+                 category_vectors[category_vectors$var_title == name, ]$var_code}) |> 
+                 set_names(category_vectors$var_title)
+             })
+    )
+    
     if (!is.null(include_only)) {
-      census_var <- 
-        census_var |> 
-        filter(dropdown_category %in% include_only)
+      out <- out[names(out) %in% include_only]
     }
     
-    c("----" = " ",
-      map(set_names(unique(census_var$dropdown_category)), function(cat) {
-        category_vectors <- 
-          census_var |> 
-          filter(dropdown_category == cat) |> 
-          select(var_code, var_title)
-        
-        map(category_vectors$var_title, function(name) {
-          category_vectors[category_vectors$var_title == name, ]$var_code}) |> 
-          set_names(category_vectors$var_title)
-      })
-    )
+    return(out)
   }
