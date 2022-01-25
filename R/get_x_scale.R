@@ -1,6 +1,6 @@
 #### GET EXPLORE GRAPH X SCALE #################################################
 
-get_x_scale <- function(graph_type, var_left, var_right, df) {
+get_x_scale <- function(graph_type, data, var_left, var_right, df) {
   
   ## Get labels ----------------------------------------------------------------
   
@@ -16,7 +16,7 @@ get_x_scale <- function(graph_type, var_left, var_right, df) {
   
   if (suppressWarnings(!is.null(breaks_q5_left$var_name)) && 
       sum(!is.na(breaks_q5_left$var_name)) > 0) {
-    var_left_label <- breaks_q5_left$var_name_short ### TKTK NEED TO EXCLUDE NO RISK IF IT'S NOT ACTUALLY PRESENT
+    var_left_label <- breaks_q5_left$var_name_short
   } else var_left_label <- NULL
   
   
@@ -44,6 +44,32 @@ get_x_scale <- function(graph_type, var_left, var_right, df) {
   
   scale_type <- unique(scale_type)
   
+  ## Compress dollar values ----------------------------------------------------
+  
+  if (str_detect(scale_type, "dollar")) {
+    
+    min_dig <- if (str_detect(var_right[1], "_dollar")) data$var_right else
+      data$var_left
+    
+    min_dig <- 
+      min_dig |> 
+      setdiff(0) |> 
+      abs() |> 
+      min(na.rm = TRUE) |> 
+      log10() |> 
+      ceiling()
+    
+    if (min_dig >= 10) {
+      lab_dl <- scales::label_dollar(scale = 1 / 1e+09, suffix = "B")  
+    } else if (min_dig >= 7) {
+      lab_dl <- scales::label_dollar(scale = 1 / 1e+06, suffix = "M")  
+    } else if (min_dig >= 4) {
+      lab_dl <- scales::label_dollar(scale = 1 / 1e+03, suffix = "K")  
+    } else lab_dl <- scales::label_dollar()
+    
+  }
+  
+  
   
   ## Get scale -----------------------------------------------------------------
   
@@ -59,7 +85,7 @@ get_x_scale <- function(graph_type, var_left, var_right, df) {
     list(scale_x_continuous(labels = scales::percent))
   
   if (scale_type == "delta_dollar") out <- 
-    list(scale_x_continuous(labels = scales::percent))
+    list(scale_x_continuous(labels = lab_dl))
   
   if (scale_type == "discrete") out <- 
     list(scale_x_discrete(labels = var_left_label))
@@ -74,7 +100,7 @@ get_x_scale <- function(graph_type, var_left, var_right, df) {
     list(scale_x_continuous(labels = scales::percent))
   
   if (scale_type == "cont_dollar") out <- 
-    list(scale_x_continuous(labels = scales::dollar))
+    list(scale_x_continuous(labels = lab_dl))
   
   if (scale_type == "cont_comma") out <- 
     list(scale_x_continuous(labels = scales::comma))

@@ -89,8 +89,10 @@ explore_graph(data, var_type, var_left, var_right, df, select_id)}
 # Scatterplot, no selection -----------------------------------------------
 
 {df <- "borough"
-var_left <- "canale_ind_2016"
-var_right <- "housing_tenant_pct_2016"
+# var_left <- "canale_ind_2016"
+# var_right <- "housing_tenant_pct_2016"
+var_left <- "housing_tenant_pct_2016"
+var_right <- "inc_median_dollar_2016"
 island <- FALSE
 data <- get_data(df, var_left, var_right)
 select_id <- NA
