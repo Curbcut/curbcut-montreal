@@ -40,7 +40,7 @@ explore_graph <- function(data, var_type, var_left, var_right, df, select_id,
   
   # Prepare axis labels
   labs_xy <- get_axis_labels(graph_type, var_left, var_right)
-  
+
   # Prepare default theme
   theme_default <- list(
     theme_minimal(),
@@ -53,7 +53,7 @@ explore_graph <- function(data, var_type, var_left, var_right, df, select_id,
   
   ## Render and return plot ----------------------------------------------------
   
-  render_explore_graph(plot_type, data, var_left, var_right, select_id, x_scale, 
-                       y_scale, labs_xy, theme_default)
+  render_explore_graph(plot_type, data, var_left, var_right, df, select_id, 
+                       x_scale, y_scale, labs_xy, theme_default)
   
 }

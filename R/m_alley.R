@@ -213,7 +213,7 @@ alley_server <- function(id) {
     
     # Update poly on click
     observeEvent(input$map_polygon_click, {
-      lst <- (jsonlite::fromJSON(input$map_polygon_click))$object$properties$id
+      lst <- (fromJSON(input$map_polygon_click))$object$properties$id
       if (is.null(lst)) selection(NA) else selection(lst)
     })
     

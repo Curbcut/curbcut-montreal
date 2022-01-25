@@ -3,10 +3,49 @@
 library(tidyverse)
 library(qs)
 
-title_text <- readr::read_csv("dev/data/title_text.csv")
+title_text <- readr::read_csv("dev/data/title_text.csv", show_col_types = FALSE)
 
 title_text <-
   title_text |>
+  add_row(tab = "climate_risk", type = "title", text = "Climate change risk") |> 
+  add_row(tab = "climate_risk", type = "main", text = paste0(
+    "Climate change will have increasingly negative impacts on communities ",
+    "in Montreal, but these impacts will vary significantly by both geography ",
+    "and social factors. The distribution of five different climate risks—",
+    "heat waves, flooding, heavy rain, drought, and destructive storms—",
+    "is visualized here.")) |> 
+  add_row(tab = "climate_risk", type = "extra", text = paste0(
+    "<p>The Climate Change Risk datasets come from the City of Montreal's ",
+    "efforts to examine potential climate risks for the Montreal region in ",
+    "the 2015-2020 Urban Agglomeration Climate Change Adaptation Plan. The ",
+    "plan identifies the five variables of heat waves, flooding, heavy rain, ",
+    "drought, and destructive storms as the primary climate risk factors ",
+    "(alongside rising temperatures) for the Montreal agglomeration. The ",
+    "Adaptation Plan includes projections for potential climate-change ",
+    "impacts on buildings, municipal operations, the local environment, ",
+    "and Montreal communities.",
+    "<p>The datasets visualized here are publicly available through the ",
+    "Montreal Open Data Portal.",
+    "<ul><li>Heat waves include a range of extreme heat events based on ",
+    "temperature and duration. Montreal has generally seen an upward trend ",
+    "in extreme heat events, most noticeably during the 2000s. Heat waves ",
+    "are especially of concern in Montreal due to more than one quarter ",
+    "(28%) of the island containing heat islands.",
+    "<li>Flooding, specifically river flooding, refers to flow rate or river ",
+    "level exceeding the critical threshold. The Montreal agglomeration's ",
+    "flood risk is concentrated along the Des Prairies River.",
+    "<li>Heavy rain can cause rivers to overflow, put strain on ",
+    "infrastructures, cause public health problems, and negatively affect ",
+    "natural environments. Episodes of heavy rain are on the upward trend ",
+    "in Quebec.",
+    "<li>Drought includes meteorological drought (amount of precipitation), ",
+    "agricultural drought (soil dryness), hydrological drought (surface and ",
+    "groundwaters), and socioeconomic drought (actions of humans on water ",
+    "resources). Montreal has seen a very slight upward trend in ",
+    "meteorological droughts. <li>Destructive storms include wind storms, ",
+    "hail storms, heavy snowstorms, and freezing rain. Events of freezing ",
+    "rain increased 26% from 1979 to 2008, and heavy snowstorms have also ",
+    "increased over the past 70 years.</ul>")) |> 
   add_row(tab = "ped", type = "title",
           text = "Pedestrian capacity for social distancing") |> 
   add_row(tab = "housing", type = "title", text = "The housing system") |> 

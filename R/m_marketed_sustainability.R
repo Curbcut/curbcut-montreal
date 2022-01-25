@@ -117,7 +117,7 @@ marketed_sustainability_server <- function(id) {
     
     # Update select_id on click
     observeEvent(input$map_scatterplot_click, {
-      lst <- jsonlite::fromJSON(input$map_scatterplot_click)$index
+      lst <- fromJSON(input$map_scatterplot_click)$index
       if (is.null(lst)) selection(NA) else {
         # This is a hack because of a mapdeck bug
         selection(marketed_sustainability[lst + 1,]$ID)

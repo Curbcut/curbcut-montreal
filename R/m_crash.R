@@ -209,7 +209,7 @@ crash_server <- function(id) {
 
     # Update point on click
     observeEvent(input$map_scatterplot_click, {
-      lst <- jsonlite::fromJSON(input$map_scatterplot_click)$index
+      lst <- fromJSON(input$map_scatterplot_click)$index
       if (is.null(lst)) selection(NA) else {
         # This is a hack because of a mapdeck bug
         selection(crash[lst + 1,]$ID)

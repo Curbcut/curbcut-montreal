@@ -125,7 +125,7 @@ place_explorer_server <- function(id) {
     
     # Get point data from a click
     observeEvent(input$map_polygon_click, {
-      lst <- jsonlite::fromJSON(input$map_polygon_click)
+      lst <- fromJSON(input$map_polygon_click)
       
       location(st_point(c(lst$lon, lst$lat)) |> 
                  st_sfc(crs = 4326) |> 

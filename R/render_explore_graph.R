@@ -1,6 +1,6 @@
 #### RENDER EXPLORE GRAPH ######################################################
 
-render_explore_graph <- function(plot_type, data, var_left, var_right, 
+render_explore_graph <- function(plot_type, data, var_left, var_right, df,
                                  select_id, x_scale, y_scale, labs_xy, 
                                  theme_default) {
   

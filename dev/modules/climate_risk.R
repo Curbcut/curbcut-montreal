@@ -175,9 +175,9 @@ climate_risk_q5 <-
 # Make table with qualitative values to join to grid
 climate_join <- 
   tibble(var = 0:5, rank = 0:5,
-         var_name = c("No risk", "Insignificant", "Minor", "Moderate", 
-                      "Elevated", "Major"),
-         var_name_short = c("No risk", "Insig.", "Minor", "Mod.", "Elev.", 
+         var_name = c("None", "Insignificant", "Minor", "Moderate", "Elevated", 
+                      "Major"),
+         var_name_short = c("None", "Insig.", "Minor", "Mod.", "Elev.", 
                             "Major"))
 
 # Join each variable in grid to climate_join

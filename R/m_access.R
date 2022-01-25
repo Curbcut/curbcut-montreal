@@ -223,7 +223,7 @@ access_server <- function(id) {
 
     # Update poly_selected on click
     observeEvent(input$map_polygon_click, {
-      click <- jsonlite::fromJSON(input$map_polygon_click)$object$properties$id
+      click <- fromJSON(input$map_polygon_click)$object$properties$id
       if (is.null(click)) {
         selection(NA)
       } else if (!is.na(selection()) && 

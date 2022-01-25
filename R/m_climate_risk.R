@@ -95,7 +95,7 @@ climate_risk_server <- function(id) {
       var_left = var_left,
       var_right = var_right,
       df = df)
-    
+
     # Did-you-know panel
     dyk_server(
       id = "dyk",
