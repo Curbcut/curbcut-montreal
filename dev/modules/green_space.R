@@ -197,7 +197,7 @@ green_space_table <-
                           str_replace(group, "sq km", "square kilometre") |> 
                             str_replace("1,000", "1,000 residents")),
       category = NA,
-      theme = "Green space",
+      theme = "Urban life",
       private = FALSE,
       dates = NA,
       scales = list(c("borough", "CT", "DA", "building", "street")),

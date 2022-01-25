@@ -19,3 +19,11 @@ postal_codes <-
   st_as_sf() |> 
   mutate(postal_code = str_remove(str_to_lower(postal_code), "\\s"))
   
+
+
+# Create an index for hierarchy -------------------------------------------
+
+# variables |> 
+#   filter(var_code == "housing_tenant_pct")
+# 
+# borough

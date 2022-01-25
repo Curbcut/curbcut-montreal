@@ -450,7 +450,7 @@ permits_table <-
                             str_replace("1,000", "1,000 residents") |> 
                             str_remove("count")),
       category = NA,
-      theme = "Housing-related permits",
+      theme = "Housing",
       private = FALSE,
       dates = list(as.character(1990:2021)),
       scales = list(c("borough", "building", "CT", "DA", "grid")),

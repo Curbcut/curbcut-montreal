@@ -178,7 +178,7 @@ variables <-
     var_short = "CanALE",
     explanation = "the potential for active living",
     category = NA,
-    theme = "CanALE index",
+    theme = "Urban life",
     private = FALSE,
     dates = c("2016"),
     scales = c("borough", "building", "CT", "DA", "grid", "street"),

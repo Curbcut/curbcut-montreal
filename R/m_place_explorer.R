@@ -31,12 +31,12 @@ place_explorer_UI <- function(id) {
         class = "panel panel-default", top = 20, left = 15,
         strong("Enter a postal code, or click on the map"),
         # splitLayout(cellWidths = c("70%", "30%"),
-                    # Autocompletion at least for postal code would be great
-                    textInput(inputId = NS(id, "adress_searched"), label = NULL,
-                              # placeholder = "H3A 2T5",
-                              value = "H3A 2T5"),
-                    actionButton(inputId = NS(id, "search_button"), 
-                                 label = "Search"),#),
+        # Autocompletion at least for postal code would be great
+        textInput(inputId = NS(id, "adress_searched"), label = NULL,
+                  # placeholder = "H3A 2T5",
+                  value = "H3A 2T5"),
+        actionButton(inputId = NS(id, "search_button"), 
+                     label = "Search"),#),
         hidden(actionLink(inputId = NS(id, "comeback_map"),
                           label = HTML("<br>Go back to the map")))),
       
@@ -71,7 +71,7 @@ place_explorer_UI <- function(id) {
           multiple = TRUE,
           selectize = TRUE
         )
-        )),
+      )),
       
       
     )))
@@ -102,24 +102,24 @@ place_explorer_server <- function(id) {
     
     # Get point data from a search
     observeEvent(input$search_button, {
-
-        postal_c <- str_to_lower(input$adress_searched) |> 
+      
+      postal_c <- str_to_lower(input$adress_searched) |> 
         str_extract_all("\\w|\\d", simplify = TRUE) |> 
         paste(collapse = "")
       
-        if (postal_c %in% postal_codes$postal_code) {
-          location(postal_codes[postal_codes$postal_code == postal_c, ])
-          location_name(location()$postal_code |> 
-                          str_to_upper() |> 
-                          str_replace_all("(.{3})", "\\1 ") |> 
-                          str_trim())
-          
-          # If it is a street address
-        } else {
-          showNotification(
-            paste0("No postal code found for `", input$adress_searched, "`"), 
-            type = "error")
-        }
+      if (postal_c %in% postal_codes$postal_code) {
+        location(postal_codes[postal_codes$postal_code == postal_c, ])
+        location_name(location()$postal_code |> 
+                        str_to_upper() |> 
+                        str_replace_all("(.{3})", "\\1 ") |> 
+                        str_trim())
+        
+        # If it is a street address
+      } else {
+        showNotification(
+          paste0("No postal code found for `", input$adress_searched, "`"), 
+          type = "error")
+      }
       
     })
     
@@ -181,26 +181,67 @@ place_explorer_server <- function(id) {
     # Retrieve the df the user is interested in
     df <- reactive(get_zoom_code(input$slider))
     
+    # Retrieve the select_id
+    select_id <- reactive({
+      if (!is.null(location())) {
+        st_intersection(get(df()), location())$ID
+      } else NULL
+    })
+    
     # Gird elements
     output$gridelements <- renderUI({
       
       output$title <- renderText(HTML("<h3>", location_name(), "</h3>"))
       
-      themes <- input$themes_checkbox |> 
-        str_to_lower() |> 
-        str_replace(" ", "_")
-
-      iwalk(themes, ~{
-        output_name <- paste0("theme_", .x)
-        output[[output_name]] <- renderText(as.character(.x))
+      themes <- input$themes_checkbox
+      
+      # The "server" of every block
+      walk(themes, ~{
+        output_info_name <- paste0("theme_", .x, "_info")
+        output_graph_name <- paste0("theme_", .x, "_graph")
+        # selected_var <- input[[paste0("theme_", .x, "_select")]]
+        # explo <- place_explorer_block(df(), selected_var, select_id())
+        # Render UIs of each grid block
+        output[[output_info_name]] <- renderText({
+          selected_var <- input[[paste0("theme_", .x, "_select")]]
+          explo <- place_explorer_block(df(), selected_var, select_id())
+          explo$info})
+        output[[output_graph_name]] <- renderPlot({
+          selected_var <- input[[paste0("theme_", .x, "_select")]]
+          explo <- place_explorer_block(df(), selected_var, select_id())
+          explo$graph})
       })
       
+      # Prepare the UI of each block
+      walk(themes, ~{
+        output_name <- paste0("theme_", .x)
+        # Render UI of each grid block
+        output[[output_name]] <- renderUI({
+          selection_list <- 
+            as.list(filter(variables, theme == .x)$var_code)
+          names(selection_list) <- 
+            as.list(filter(variables, theme == .x)$var_title)
+          
+          tagList(selectInput(inputId = eval(parse(text = paste0("NS(id, 'theme_", .x, 
+                                                         "_select')"))),
+                      choices = selection_list,
+                      label = NULL),
+                  splitLayout(cellWidths = c("33%", "67%"),
+                    plotOutput(outputId = eval(parse(text = paste0("NS(id, 'theme_", .x,
+                                                                   "_graph')")))),
+                    htmlOutput(outputId = eval(parse(text = paste0("NS(id, 'theme_", .x, 
+                                                                   "_info')")))))
+          )
+        })
+      })
+
+      # Prepare the general UI UI of blocks
       fixedPage(verticalLayout(
         htmlOutput(NS(id, "title"), 
                    style = paste0("margin-top: 150px; padding: 5px; ",
                                   "font-size: 11px;")),
-        imap(themes, ~{
-          tagList(htmlOutput(
+        map(themes, ~{
+          tagList(uiOutput(
             outputId = eval(parse(text = paste0("NS(id, 'theme_", .x, "')"))),
             style = paste0("padding: 5px; ",
                            "font-size: 11px"), 
