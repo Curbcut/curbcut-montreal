@@ -67,7 +67,7 @@ stories_server <- function(id) {
 
         v1 <- 1:nrow(data())
         v2 <- paste0("stories/round_img/", data()$img[v1])
-        v3 <- paste0(map(data()$buffer, st_bbox) %>% purrr::map(., as.vector))
+        v3 <- paste0(map(data()$buffer, st_bbox) %>% map(as.vector))
         v4 <- paste0("image", v1)
         
         all_add_bitmap <- paste0('add_bitmap("', v2, '", bounds = ', v3, ', ',

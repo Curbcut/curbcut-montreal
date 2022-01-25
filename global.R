@@ -7,6 +7,7 @@ suppressPackageStartupMessages({
   library(shinyjs)
   library(shinyWidgets)
   library(shiny.i18n)
+  library(jsonify)
   library(jsonlite)
 
   library(dplyr)
