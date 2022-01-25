@@ -1,7 +1,7 @@
 # Function to make the dropdown lists
 
 make_dropdown <- 
-  function(exclude = NULL, multi_year = FALSE) {
+  function(exclude = NULL, multi_year = FALSE, include_only = NULL) {
     
     census_var <- 
       variables |> 
@@ -43,6 +43,12 @@ make_dropdown <-
       census_var <- 
       census_var |> 
         filter(lengths(dates) == max(lengths(dates)))
+    }
+    
+    if (!is.null(include_only)) {
+      census_var <- 
+        census_var |> 
+        filter(dropdown_category %in% include_only)
     }
     
     c("----" = " ",
