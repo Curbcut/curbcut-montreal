@@ -9,7 +9,7 @@ housing_UI <- function(id) {
       # Sidebar
       sidebar_UI(
         NS(id, "sidebar"),
-        select_var_UI(NS(id, "left"), var_list_housing_left), 
+        select_var_UI(NS(id, "left"), make_dropdown(include_only = "Housing")), 
         sliderInput(
           NS(id, "slider_uni"), 
           i18n$t("Select a year"),
