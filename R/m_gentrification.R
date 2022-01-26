@@ -98,7 +98,7 @@ gentrification_server <- function(id) {
     var_right <- compare_server(
       id = "gentrification", 
       var_list = make_dropdown(multi_year = T),
-      disabled_choices = var_list_housing_right_disabled,
+      disabled = var_list_housing_right_disabled,
       df = df,
       time = time)
     

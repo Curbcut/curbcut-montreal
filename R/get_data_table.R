@@ -1,8 +1,34 @@
 #### GET DATA TABLE ############################################################
 
-get_data_table <- function(df, var_left, var_right, data_type, left_q3, 
-                           right_q3, left_q5, right_q5, time_format, point_df) {
-
+get_data_table <- function(df, var_left, var_right, data_type, point_df) {
+  
+  # Get time format; eventually this might need to be conditional
+  time_format <- "_\\d{4}$"
+  
+  # Facilitate code legibility by pre-creating q3/q5 column names
+  left_q3 <- paste0(str_remove(all_of(var_left), time_format), "_q3", 
+                    na.omit(str_extract(var_left, time_format)))
+  right_q3 <- paste0(str_remove(all_of(var_right), time_format), "_q3", 
+                     na.omit(str_extract(var_right, time_format)))
+  left_q5 <- paste0(str_remove(all_of(var_left), time_format), "_q5", 
+                    na.omit(str_extract(var_left, time_format)))
+  right_q5 <- paste0(str_remove(all_of(var_right), time_format), "_q5", 
+                     na.omit(str_extract(var_right, time_format)))
+  
+  # NA
+  if (data_type == "NA") {
+    data <- 
+      df |> 
+      get() |> 
+      select(ID, name, name_2, any_of(c("DAUID", "CTUID", "CSDUID")), 
+             population) |> 
+      mutate(var_left = NA, var_left_q3 = NA, var_left_q5 = NA,
+             var_right = NA, var_right_q3 = NA, var_right_q5 = NA,
+             group = "NA - NA", .after = population) |> 
+      left_join(colour_bivar, by = "group") |> 
+      relocate(fill, .after = group)
+  }
+  
   # Univariate
   if (data_type == "q5") {
     data <- 

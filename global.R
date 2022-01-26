@@ -55,8 +55,26 @@ stories <- qread("data/stories.qs")
 
 postal_codes <- qread("data/postal_codes.qs")
 
-min_census_year <- "1996"
-current_census <- "2016"
+
+# Global variables --------------------------------------------------------
+
+census_min <- 
+  variables |> 
+  filter(source == "census") |> 
+  pull(dates) |> 
+  unlist() |> 
+  unique() |> 
+  min() |> 
+  as.numeric()
+
+census_max <- 
+  variables |> 
+  filter(source == "census") |> 
+  pull(dates) |> 
+  unlist() |> 
+  unique() |> 
+  max() |> 
+  as.numeric()
 
 island_CSDUID <- 
   c("2466007", "2466023_1",  "2466023_10", "2466023_11", "2466023_12", 
