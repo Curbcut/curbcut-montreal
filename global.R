@@ -30,8 +30,7 @@ suppressPackageStartupMessages({
 # Shiny options -----------------------------------------------------------
 
 options(shiny.trace = FALSE) # Set TRUE for debugging
-enableBookmarking("server")
-
+enableBookmarking(store = "url")
 
 # Data --------------------------------------------------------------------
 

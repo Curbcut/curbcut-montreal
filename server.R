@@ -25,12 +25,26 @@ shinyServer(function(input, output, session) {
   })
   
   
+  observe({
+    query <- parseQueryString(session$clientData$url_search)
+    if (!is.null(query)) {
+      # query returns a named list. If it's named tab, return the right
+      # tabPanel. the url example: sus.ca/?tab=housing
+      try(updateTabsetPanel(session, "sus_page", selected = query[["tab"]]))
+    }
+  })
+
+  # Update the URL when a module is launch
+  observeEvent(input$sus_page, {
+      updateQueryString(paste0("/?tab=", input$sus_page))
+  })
+  
   # Modules -----------------------------------------------------------------
   
-  home_server("home")
-  
   active_mod_server <- function(active_tab = input$sus_page) {
-    if (active_tab == "access") {
+    if (active_tab == "home") {
+      home_server("home")
+    } else if (active_tab == "access") {
       access_server("access")
     } else if (active_tab == "alley") {
       alley_server("alley")    
@@ -65,7 +79,7 @@ shinyServer(function(input, output, session) {
   
   observeEvent(input$sus_page, {
     active_mod_server()
-  }, ignoreInit = TRUE)
+  }, ignoreInit = F)
   
   onRestore(function(state) {
     active_mod_server()
