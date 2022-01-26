@@ -223,8 +223,8 @@ render_explore_graph <- function(plot_type, data, var_left, var_right, df,
     
     out <- if (unique(c("var_left_1", "var_left_2") %in% names(data))) {
       data |> 
-        filter(var_left %in% remove_outliers(var_left), 
-               var_right %in% remove_outliers(var_right)) |> 
+        filter(var_left_1 %in% remove_outliers(var_left_1), 
+               var_left_2 %in% remove_outliers(var_left_2)) |> 
         ggplot(aes(var_left_1, var_left_2)) +
         geom_smooth(se = FALSE, method = "lm", formula = y ~ x, 
                     colour = "black", size = 0.5) +
@@ -239,8 +239,8 @@ render_explore_graph <- function(plot_type, data, var_left, var_right, df,
     
     out <- if (unique(c("var_left_1", "var_left_2") %in% names(data))) {
       data |> 
-        filter(var_left %in% remove_outliers(var_left), 
-               var_right %in% remove_outliers(var_right)) |> 
+        filter(var_left_1 %in% remove_outliers(var_left_1), 
+               var_left_2 %in% remove_outliers(var_left_2)) |> 
         ggplot(aes(var_left_1, var_left_2)) +
         geom_smooth(se = FALSE, method = "lm", formula = y ~ x, 
                     colour = "black", size = 0.5) +
@@ -254,8 +254,8 @@ render_explore_graph <- function(plot_type, data, var_left, var_right, df,
     
     out <- if (unique(c("var_left_1", "var_left_2") %in% names(data))) {
       data |> 
-        filter(var_left %in% remove_outliers(var_left), 
-               var_right %in% remove_outliers(var_right)) |> 
+        filter(var_left_1 %in% remove_outliers(var_left_1), 
+               var_left_2 %in% remove_outliers(var_left_2)) |> 
         ggplot(aes(var_left_1, var_left_2)) +
         geom_point(colour = col_left_3[1]) +
         geom_smooth(se = FALSE, method = "lm", formula = y ~ x, 
