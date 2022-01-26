@@ -35,32 +35,13 @@ select_var_server <- function(id, var_list, disabled = reactive(NULL),
                                choices = sus_translate(var_list()))})
     
     var <- reactive({
-      
-      # print("input$var")
-      # print(input$var)
-      # print("time()")
-      # print(time())
-      
       v1 <- paste(input$var, time(), sep = "_")
-      # print(v1)
-      
       v1 <- sub("_$", "", v1)
-      if (!is.null(df())) {
-        if (df() %in% c("borough", "CT", "DA", "grid")) {
-        v1 <- sapply(v1, return_closest_year, df())
-        }}
-      # print("EARLY V1")
-      # print(v1)
-      v1 <- map_chr(v1, ~{if (str_detect(.x, "^ _\\d{4}$")) " " else .x})
-      # print(str(v1))
-      # print("UNLIST")
-      # print(unlist(v1))
-      # print("xxxxx")
-      v1 <- unique(v1) # Need to change to just v1 to get same date twice
-      # print("UNIQUE")
-      # print(str(v1))
-      v1
-    })
+      if (!is.null(df()) && df() %in% c("borough", "CT", "DA", "grid")) v1 <- 
+        sapply(v1, return_closest_year, df(), USE.NAMES = FALSE)
+      v1 <- if_else(str_detect(v1, "^ _\\d{4}$"), " ", v1)
+      if (all(v1 == " ")) v1 <- " "
+      v1})
     
     var
     
