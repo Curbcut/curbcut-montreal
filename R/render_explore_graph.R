@@ -124,7 +124,8 @@ render_explore_graph <- function(plot_type, data, var_left, var_right, df,
     
     out <- 
       data |> 
-      filter(!is.na(var_left), !is.na(var_right)) |> 
+      filter(var_left %in% remove_outliers(var_left), 
+             var_right %in% remove_outliers(var_right)) |> 
       ggplot(aes(var_right, var_left)) +
       geom_point(aes(colour = group)) +
       stat_smooth(geom = "line", se = FALSE, method = "loess", span = 1,
@@ -140,7 +141,8 @@ render_explore_graph <- function(plot_type, data, var_left, var_right, df,
     
     out <- 
       data |> 
-      filter(!is.na(var_left), !is.na(var_right)) |> 
+      filter(var_left %in% remove_outliers(var_left), 
+             var_right %in% remove_outliers(var_right)) |> 
       ggplot(aes(var_right, var_left)) +
       geom_point(colour = col_left_3[1]) +
       stat_smooth(geom = "line", se = FALSE, method = "loess", span = 1,
@@ -155,7 +157,8 @@ render_explore_graph <- function(plot_type, data, var_left, var_right, df,
     
     out <- 
       data |> 
-      filter(!is.na(var_left), !is.na(var_right)) |> 
+      filter(var_left %in% remove_outliers(var_left), 
+             var_right %in% remove_outliers(var_right)) |> 
       ggplot(aes(var_right, var_left)) +
       geom_point(colour = col_left_3[1]) +
       stat_smooth(geom = "line", se = FALSE, method = "loess", span = 1,
@@ -220,7 +223,8 @@ render_explore_graph <- function(plot_type, data, var_left, var_right, df,
     
     out <- if (unique(c("var_left_1", "var_left_2") %in% names(data))) {
       data |> 
-        filter(!is.na(var_left), !is.na(var_right)) |> 
+        filter(var_left %in% remove_outliers(var_left), 
+               var_right %in% remove_outliers(var_right)) |> 
         ggplot(aes(var_left_1, var_left_2)) +
         geom_smooth(se = FALSE, method = "lm", formula = y ~ x, 
                     colour = "black", size = 0.5) +
@@ -235,7 +239,8 @@ render_explore_graph <- function(plot_type, data, var_left, var_right, df,
     
     out <- if (unique(c("var_left_1", "var_left_2") %in% names(data))) {
       data |> 
-        filter(!is.na(var_left), !is.na(var_right)) |> 
+        filter(var_left %in% remove_outliers(var_left), 
+               var_right %in% remove_outliers(var_right)) |> 
         ggplot(aes(var_left_1, var_left_2)) +
         geom_smooth(se = FALSE, method = "lm", formula = y ~ x, 
                     colour = "black", size = 0.5) +
@@ -249,7 +254,8 @@ render_explore_graph <- function(plot_type, data, var_left, var_right, df,
     
     out <- if (unique(c("var_left_1", "var_left_2") %in% names(data))) {
       data |> 
-        filter(!is.na(var_left), !is.na(var_right)) |> 
+        filter(var_left %in% remove_outliers(var_left), 
+               var_right %in% remove_outliers(var_right)) |> 
         ggplot(aes(var_left_1, var_left_2)) +
         geom_point(colour = col_left_3[1]) +
         geom_smooth(se = FALSE, method = "lm", formula = y ~ x, 
@@ -267,7 +273,8 @@ render_explore_graph <- function(plot_type, data, var_left, var_right, df,
     
     out <- 
       data |> 
-      filter(!is.na(var_left), !is.na(var_right)) |> 
+      filter(var_left %in% remove_outliers(var_left), 
+             var_right %in% remove_outliers(var_right)) |> 
       ggplot(aes(var_right, var_left)) +
       geom_point(aes(colour = group)) +
       stat_smooth(geom = "line", se = FALSE, method = "loess", span = 1,
@@ -283,7 +290,8 @@ render_explore_graph <- function(plot_type, data, var_left, var_right, df,
     
     out <- 
       data |> 
-      filter(!is.na(var_left), !is.na(var_right)) |> 
+      filter(var_left %in% remove_outliers(var_left), 
+             var_right %in% remove_outliers(var_right)) |> 
       ggplot(aes(var_right, var_left)) +
       geom_point(colour = col_left_3[1]) +
       stat_smooth(geom = "line", se = FALSE, method = "loess", span = 1,
@@ -298,7 +306,8 @@ render_explore_graph <- function(plot_type, data, var_left, var_right, df,
     
     out <- 
       data |> 
-      filter(!is.na(var_left), !is.na(var_right)) |> 
+      filter(var_left %in% remove_outliers(var_left), 
+             var_right %in% remove_outliers(var_right)) |> 
       ggplot(aes(var_right, var_left)) +
       geom_point(colour = col_left_3[1]) +
       stat_smooth(geom = "line", se = FALSE, method = "loess", span = 1,
