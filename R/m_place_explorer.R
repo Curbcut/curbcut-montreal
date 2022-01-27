@@ -83,6 +83,11 @@ place_explorer_UI <- function(id) {
 place_explorer_server <- function(id) {
   moduleServer(id, function(input, output, session) {
     
+    # Load data used by this module
+    if (!exists("pe_var_hierarchy")) {
+      qload("data/place_explorer.qsm")
+    }
+    
     # Reactive values initialization
     location <- reactiveVal()
     location_name <- reactiveVal()
@@ -193,8 +198,12 @@ place_explorer_server <- function(id) {
       
       output$title <- renderText(HTML("<h3>", location_name(), "</h3>"))
       
-      themes <- input$themes_checkbox
-      
+      themes <- 
+        pe_theme_order[[df()]] |> 
+        filter(ID == select_id(), theme %in% input$themes_checkbox) |> 
+        arrange(theme_order) |> 
+        pull(theme)
+        
       # The "server" of every block
       walk(themes, ~{
         output_info_name <- paste0("theme_", .x, "_info")
@@ -217,10 +226,16 @@ place_explorer_server <- function(id) {
         output_name <- paste0("theme_", .x)
         # Render UI of each grid block
         output[[output_name]] <- renderUI({
-          selection_list <- 
-            as.list(filter(variables, theme == .x)$var_code)
-          names(selection_list) <- 
-            as.list(filter(variables, theme == .x)$var_title)
+          
+          variables_arranged <- 
+            pe_variable_order[[df()]] |> 
+            filter(ID == select_id(), theme == .x) |> 
+            arrange(variable_order) |> 
+            select(var_code) |> 
+            left_join(variables, by = "var_code")
+          
+          selection_list <- as.list(variables_arranged$var_code)
+          names(selection_list) <- as.list(variables_arranged$var_title)
           
           tagList(selectInput(inputId = eval(parse(text = paste0("NS(id, 'theme_", .x, 
                                                          "_select')"))),
