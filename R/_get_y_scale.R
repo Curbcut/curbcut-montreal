@@ -10,13 +10,13 @@ get_y_scale <- function(graph_type, var_left, var_right) {
     graph_type == "deltabi" ~ 
       list(scale_y_continuous(labels = scales::percent)),
     # Multi_uni, continuous scale, percent
-    graph_type == "delta" & str_detect(var_left, "_pct") ~ 
+    graph_type %in% c("delta", "NAdelta") & str_detect(var_left, "_pct") ~ 
       list(scale_y_continuous(labels = scales::percent)),
     # Continuous scale, dollar
-    graph_type == "delta" & str_detect(var_left, "_dollar") ~ 
+    graph_type %in% c("delta", "NAdelta") & str_detect(var_left, "_dollar") ~ 
       list(scale_y_continuous(labels = scales::dollar)),
     # Continuous scale, comma
-    graph_type == "delta" ~ 
+    graph_type %in% c("delta", "NAdelta") ~ 
       list(scale_y_continuous(labels = scales::comma)),
     # Continuous scale, comma, no decimal
     graph_type %in% c("hist", "bar") ~ 
