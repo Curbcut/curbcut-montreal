@@ -15,8 +15,7 @@ compare_UI <- function(id, var_list) {
       condition = "output.hide_status == 1", ns = NS(id),
       div(class = "compare_dropdown",
           select_var_UI(NS(id, "compare"), var_list, inline = FALSE,
-                    more_style = "margin:auto; width:95%;")),
-      small_map_UI(NS(id, "right"))),
+                    more_style = "margin:auto; width:95%;"))),
     
     conditionalPanel(
       condition = "output.show_panel == true", ns = NS(id),
@@ -38,14 +37,6 @@ compare_server <- function(id, var_list, df, disabled = reactive(NULL),
     var_right <- select_var_server("compare", reactive(var_list), 
                                    disabled = disabled, time = time, df = df)
     
-    # Right map
-    small_map_server("right", reactive({
-      var <- str_remove(var_right(), "_\\d{4}")
-      time <- str_extract(var_right(), "_\\d{4}")
-      if (is.na(time)) time <- NULL
-      paste0("right_", df(), "_", var, "_q3", time)
-      }))
-
     # Hide compare status
     output$show_panel <- show_panel
     outputOptions(output, "show_panel", suspendWhenHidden = FALSE)

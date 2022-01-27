@@ -76,11 +76,7 @@ climate_risk_server <- function(id) {
       time = time)
     
     # Sidebar
-    sidebar_server(
-      id = "sidebar", 
-      x = "climate_risk", 
-      var_map = reactive(paste0("left_", df(), "_", var_left())),
-      var_right = var_right)
+    sidebar_server(id = "sidebar", x = "climate_risk")
     
     # Data
     data <- reactive(get_data(

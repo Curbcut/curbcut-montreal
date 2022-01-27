@@ -106,11 +106,7 @@ housing_server <- function(id) {
       time = time)
 
     # Sidebar
-    sidebar_server(
-      id = "sidebar", 
-      x = "housing", 
-      var_map = reactive(paste0("left_", df(), "_", var_left())),
-      var_right = var_right)
+    sidebar_server(id = "sidebar", x = "housing")
     
     # Data
     data <- reactive(get_data(
