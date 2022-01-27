@@ -25,11 +25,11 @@ get_x_scale <- function(graph_type, data, var_left, var_right, df) {
   scale_type <- case_when(
     graph_type == "date" ~ "date",
     graph_type == "deltabi" ~ "deltabi",
-    graph_type == "delta" & str_detect(var_left[1], "_pct") ~
+    graph_type %in% c("delta", "NAdelta") & str_detect(var_left[1], "_pct") ~
       "delta_pct",
-    graph_type == "delta" & str_detect(var_left[1], "_dollar") ~
+    graph_type %in% c("delta", "NAdelta") & str_detect(var_left[1], "_dollar") ~
       "delta_dollar",
-    graph_type == "delta" ~ "delta",
+    graph_type %in% c("delta", "NAdelta") ~ "delta",
     !is.null(var_left_label) & graph_type %in% c("bar", "box") ~ "discrete",
     !is.null(var_left_label) & graph_type == "hist" ~ "cont_labels",
     graph_type == "scatter" & str_detect(var_right[1], "_pct") ~ 
@@ -44,31 +44,34 @@ get_x_scale <- function(graph_type, data, var_left, var_right, df) {
   
   scale_type <- unique(scale_type)
   
+  
   ## Compress dollar values ----------------------------------------------------
   
   if (str_detect(scale_type, "dollar")) {
     
-    min_dig <- if (str_detect(var_right[1], "_dollar")) data$var_right else
-      data$var_left
-    
-    min_dig <- 
-      min_dig |> 
-      setdiff(0) |> 
-      abs() |> 
-      min(na.rm = TRUE) |> 
-      log10() |> 
-      ceiling()
-    
-    if (min_dig >= 10) {
-      lab_dl <- scales::label_dollar(scale = 1 / 1e+09, suffix = "B")  
-    } else if (min_dig >= 7) {
-      lab_dl <- scales::label_dollar(scale = 1 / 1e+06, suffix = "M")  
-    } else if (min_dig >= 4) {
-      lab_dl <- scales::label_dollar(scale = 1 / 1e+03, suffix = "K")  
-    } else lab_dl <- scales::label_dollar()
-    
+    if (str_detect(var_type, "NA")) lab_dl <- scales::label_dollar() else {
+      
+      min_dig <- if (str_detect(var_right[1], "_dollar")) data$var_right else
+        data$var_left
+      
+      min_dig <- 
+        min_dig |> 
+        setdiff(0) |> 
+        abs() |> 
+        min(na.rm = TRUE) |> 
+        log10() |> 
+        ceiling()
+      
+      if (min_dig >= 10) {
+        lab_dl <- scales::label_dollar(scale = 1 / 1e+09, suffix = "B")  
+      } else if (min_dig >= 7) {
+        lab_dl <- scales::label_dollar(scale = 1 / 1e+06, suffix = "M")  
+      } else if (min_dig >= 4) {
+        lab_dl <- scales::label_dollar(scale = 1 / 1e+03, suffix = "K")  
+      } else lab_dl <- scales::label_dollar()
+      
+    }
   }
-  
   
   
   ## Get scale -----------------------------------------------------------------

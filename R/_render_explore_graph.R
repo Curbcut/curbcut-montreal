@@ -216,7 +216,7 @@ render_explore_graph <- function(plot_type, data, var_left, var_right, df,
   }
   
   # Multi-date univariate scatterplot, no selection
-  if (plot_type == "delta_all") {
+  if (plot_type %in% c("delta_all", "NAdelta_all")) {
     
     colours <- colour_delta$fill[1:5]
     names(colours) <- colour_delta$group[1:5]
@@ -235,7 +235,7 @@ render_explore_graph <- function(plot_type, data, var_left, var_right, df,
   }
   
   # Multi-date univariate scatterplot, NA selection
-  if (plot_type == "delta_na") {
+  if (plot_type %in% c("delta_na", "NAdelta_na")) {
     
     out <- if (unique(c("var_left_1", "var_left_2") %in% names(data))) {
       data |> 
@@ -250,7 +250,7 @@ render_explore_graph <- function(plot_type, data, var_left, var_right, df,
   }
   
   # Multi-date univariate scatterplot, active selection
-  if (plot_type == "delta_select") {
+  if (plot_type %in% c("delta_select", "NAdelta_select")) {
     
     out <- if (unique(c("var_left_1", "var_left_2") %in% names(data))) {
       data |> 
@@ -267,7 +267,7 @@ render_explore_graph <- function(plot_type, data, var_left, var_right, df,
   }
   
   # Multi-date bivariate scatterplot, no selection
-  if (plot_type == "deltabi_all") {
+  if (plot_type %in% c("deltabi_all", "NAdeltabi_all")) {
     
     opac <- abs(cor(data$var_left, data$var_right, use = "complete.obs"))
     
@@ -284,7 +284,7 @@ render_explore_graph <- function(plot_type, data, var_left, var_right, df,
   }
   
   # Multi-date bivariate scatterplot, NA selection
-  if (plot_type == "deltabi_na") {
+  if (plot_type %in% c("deltabi_na", "NAdeltabi_na")) {
     
     opac <- abs(cor(data$var_left, data$var_right, use = "complete.obs"))
     
@@ -300,7 +300,7 @@ render_explore_graph <- function(plot_type, data, var_left, var_right, df,
   }
   
   # Multi-date bivariate scatterplot, active selection
-  if (plot_type == "deltabi_select") {
+  if (plot_type %in% c("deltabi_select", "NAdeltabi_select")) {
     
     opac <- abs(cor(data$var_left, data$var_right, use = "complete.obs"))
     
