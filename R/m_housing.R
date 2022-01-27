@@ -136,8 +136,7 @@ housing_server <- function(id) {
       id = "disclaimer", 
       data = data,
       var_left = var_left,
-      var_right = var_right,
-      time = time)
+      var_right = var_right)
     
     # Update map in response to variable changes or zooming
     select_id <- map_change(
