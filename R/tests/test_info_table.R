@@ -19,14 +19,14 @@ suppressPackageStartupMessages({
   qload("data/census.qsm")
   grid <- qread("data/grid.qs")
 
-  source("R/get_data_table.R")
-  source("R/get_data_type.R")
-  source("R/get_data.R")
-  source("R/get_info_table_data.R")
-  source("R/get_var_type.R")
-  source("R/info_table.R")
-  source("R/translation.R")
-  source("R/utils.R")
+  source("R/_get_data_table.R")
+  source("R/_get_data_type.R")
+  source("R/_get_data.R")
+  source("R/_get_info_table_data.R")
+  source("R/_get_var_type.R")
+  source("R/_info_table.R")
+  source("R/_translation.R")
+  source("R/_utils.R")
   
 })
 
@@ -60,6 +60,15 @@ info_table(data, var_type, var_left, var_right, df, select_id)}
 {var_right <- "canale_ind_2016"
 data <- get_data(df, var_left, var_right)
 select_id <- "24740053"
+var_type <- get_var_type(data, var_left, var_right, df, select_id)
+info_table(data, var_type, var_left, var_right, df, select_id)}
+
+# NA delta data
+{df <- "borough"
+var_left <- c("housing_tenant_pct_2001", "housing_tenant_pct_2001")
+var_right <- " "
+data <- get_data(df, var_left, var_right)
+select_id <- NA
 var_type <- get_var_type(data, var_left, var_right, df, select_id)
 info_table(data, var_type, var_left, var_right, df, select_id)}
 
