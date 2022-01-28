@@ -35,8 +35,7 @@ render_explore_graph <- function(plot_type, data, var_left, var_right, df,
       data |> 
       filter(!is.na(var_left)) |> 
       ggplot(aes(var_left)) +
-      geom_histogram(aes(fill = round(var_left) == 
-                           round(var_left[ID == select_id])),
+      geom_histogram(aes(fill = var_left == var_left[ID == select_id]),
                      bins = bin_number) +
       scale_fill_manual(values = col_left_5[c(1, 5)], 
                         na.translate = FALSE) +
