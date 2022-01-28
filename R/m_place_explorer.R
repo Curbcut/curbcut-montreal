@@ -206,19 +206,26 @@ place_explorer_server <- function(id) {
         
       # The "server" of every block
       walk(themes, ~{
-        output_info_name <- paste0("theme_", .x, "_info")
-        output_graph_name <- paste0("theme_", .x, "_graph")
-        # selected_var <- input[[paste0("theme_", .x, "_select")]]
+        output_info_name <- paste0("theme_", .x, "_block_text")
+        output_graph_name <- paste0("theme_", .x, "_block_graph")
+        # selected_var <- input[[paste0("theme_", .x, "_block_select")]]
         # explo <- place_explorer_block(df(), selected_var, select_id())
         # Render UIs of each grid block
         output[[output_info_name]] <- renderText({
-          selected_var <- input[[paste0("theme_", .x, "_select")]]
-          explo <- place_explorer_block(df(), selected_var, select_id())
-          explo$info})
+          selected_var <- input[[paste0("theme_", .x, "_block_select")]]
+          place_explorer_block_text(df(), selected_var, select_id())
+        })
         output[[output_graph_name]] <- renderPlot({
-          selected_var <- input[[paste0("theme_", .x, "_select")]]
-          explo <- place_explorer_block(df(), selected_var, select_id())
-          explo$graph})
+          selected_var <- input[[paste0("theme_", .x, "_block_select")]]
+          place_explorer_block_graph(df(), selected_var, select_id())
+        })
+      })
+      
+      observe({
+        walk(themes, ~{
+        toggle(paste0("theme_", .x, "_block_content"), 
+               condition = input[[paste0("theme_", .x, "_hide")]] %% 2 == 0)
+        })
       })
       
       # Prepare the UI of each block
@@ -236,19 +243,22 @@ place_explorer_server <- function(id) {
           
           selection_list <- as.list(variables_arranged$var_code)
           names(selection_list) <- as.list(variables_arranged$var_title)
-          
-          tagList(selectInput(inputId = eval(parse(text = paste0("NS(id, 'theme_", .x, 
-                                                         "_select')"))),
-                      choices = selection_list,
-                      label = NULL),
-                  splitLayout(cellWidths = c("33%", "67%"),
-                    plotOutput(outputId = eval(parse(text = paste0("NS(id, 'theme_", .x,
-                                                                   "_graph')")))),
-                    htmlOutput(outputId = eval(parse(text = paste0("NS(id, 'theme_", .x, 
-                                                                   "_info')")))))
-          )
+              tagList(
+                div(id = eval(parse(text = paste0("NS(id, 'theme_", .x, "_block_title')"))),
+                    fluidRow(column(width = 7, h4(i18n$t(.x))),
+                             column(width = 5, align = "right", 
+                                    actionLink(inputId = eval(parse(text = paste0("NS(id, 'theme_", .x, "_hide')"))), 
+                                               label = i18n$t("Hide/Show"))))),
+                
+                div(id = eval(parse(text = paste0("NS(id, 'theme_", .x, "_block_content')"))),
+                    selectInput(inputId = eval(parse(text = paste0("NS(id, 'theme_", .x, "_block_select')"))),
+                                choices = selection_list,
+                                label = NULL),
+                    htmlOutput(eval(parse(text = paste0("NS(id, 'theme_", .x, "_block_text')")))),
+                    plotOutput(eval(parse(text = paste0("NS(id, 'theme_", .x, "_block_graph')"))), height = 150))
+              )
+            })
         })
-      })
 
       # Prepare the general UI UI of blocks
       fixedPage(verticalLayout(

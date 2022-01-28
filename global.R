@@ -268,7 +268,7 @@ styler <- '
   }
   
   .explore_dyk {
-  max-height: calc(100vh - 420px); 
+  max-height: calc(100vh - 250px); 
   overflow-y: auto; 
   overflow-x: hidden;  
   }
