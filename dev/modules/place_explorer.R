@@ -50,9 +50,7 @@ pe_var_hierarchy <-
         select(ID, var = all_of(var)) |> 
         mutate(var_percentile = percent_rank(var))
       
-      names(out) <- c("ID", str_remove(var, paste0("_", max_date)),
-                      paste0(str_remove(var, paste0("_", max_date)), 
-                             "_percentile"))
+      names(out) <- c("ID", var, paste0(var, "_percentile"))
       
       out
       

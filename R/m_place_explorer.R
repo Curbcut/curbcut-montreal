@@ -58,18 +58,17 @@ place_explorer_UI <- function(id) {
           hide_min_max = TRUE, 
           force_edges = TRUE),
         # Checkboxes of each theme
-        # checkboxGroupInput(inputId = NS(id, "themes_checkbox"),
-        #                    label = "Themes",
-        #                    choices = unique(variables$theme),
-        #                    selected = unique(variables$theme),
-        #                    inline = TRUE)
-        selectInput(
+        checkboxGroupButtons(
           inputId = NS(id, "themes_checkbox"),
           label = "Select theme(s):",
           choices = unique(variables$theme),
           selected = unique(variables$theme),
-          multiple = TRUE,
-          selectize = TRUE
+          individual = TRUE,
+          checkIcon = list(
+            yes = tags$i(class = "fa fa-circle", 
+                         style = "color: steelblue"),
+            no = tags$i(class = "fa fa-circle-o", 
+                        style = "color: steelblue"))
         )
       )),
       
@@ -219,12 +218,10 @@ place_explorer_server <- function(id) {
         })
       })
       
-      observe({
-        walk(themes, ~{
-        toggle(paste0("theme_", .x, "_block_content"), 
-               condition = input[[paste0("theme_", .x, "_hide")]] %% 2 == 0)
-        })
-      })
+      # observe({
+      #   walk(themes, ~{
+      #     input[[paste0("theme_", .x, "_link")]]
+      # })
       
       # Prepare the UI of each block
       walk(themes, ~{
@@ -245,8 +242,8 @@ place_explorer_server <- function(id) {
                 div(id = eval(parse(text = paste0("NS(id, 'theme_", .x, "_block_title')"))),
                     fluidRow(column(width = 7, h4(i18n$t(.x))),
                              column(width = 5, align = "right", 
-                                    actionLink(inputId = eval(parse(text = paste0("NS(id, 'theme_", .x, "_hide')"))), 
-                                               label = i18n$t("Hide/Show"))))),
+                                    actionLink(inputId = eval(parse(text = paste0("NS(id, 'theme_", .x, "_link')"))), 
+                                               label = i18n$t("Disabled action Link"))))),
                 
                 div(id = eval(parse(text = paste0("NS(id, 'theme_", .x, "_block_content')"))),
                     selectInput(inputId = eval(parse(text = paste0("NS(id, 'theme_", .x, "_block_select')"))),
@@ -277,7 +274,7 @@ place_explorer_server <- function(id) {
           
           tagList(uiOutput(
             outputId = eval(parse(text = paste0("NS(id, 'theme_", .x, "')"))),
-            style = paste0("padding: 20px; margin: 10px; ",
+            style = paste0("padding: 20px; margin: 10px; font-size: 11px;",
                            "height: 33vh; display: inline-grid; ",
                            "overflow-y: auto; overflow-x: hidden;"), 
             class = paste0("panel panel-default ", block_size)))

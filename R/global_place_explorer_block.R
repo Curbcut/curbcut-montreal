@@ -10,16 +10,17 @@
 
 place_explorer_block_text <- function(df, selected_var, select_id) {
   
-  
   ## Setup -------------------------------------------------------------------
   
-  # Attach year in case of census data.
-  year <- 
-    if (filter(variables, var_code == selected_var)$source == "census") {
-      tidyr::unnest(filter(variables, var_code == selected_var), dates) |> 
-        filter(dates == max(dates)) |> 
-        pull(dates)
-    } else return("No information yet.")
+  selected_var_q3 <- paste0(selected_var, "_q3")
+  
+  var_dates <- 
+    tidyr::unnest(filter(variables, var_code == selected_var), dates)$dates
+
+    if (!(length(var_dates) == 1 && is.na(var_dates))) {
+      selected_var <- paste0(selected_var, "_", var_dates[length(var_dates)])
+      selected_var_q3 <- paste0(selected_var_q3, "_", var_dates[length(var_dates)])
+    }
   
   # Get dataframe from df characters tring
   data <- get(df)
@@ -32,28 +33,32 @@ place_explorer_block_text <- function(df, selected_var, select_id) {
   data <- 
     data |> 
     st_drop_geometry() |> 
-    select(ID:households, any_of(starts_with(selected_var)) & ends_with(year)) |> 
+    select(ID:households, all_of(selected_var), all_of(selected_var_q3)) |> 
     rename(ID = ID,
-           var_left = paste0(selected_var, "_", year),
-           var_left_q3 = paste0(selected_var, "_q3_", year)) |> 
+           var_left = all_of(selected_var),
+           var_left_q3 = all_of(selected_var_q3)) |> 
     select(ID:households, var_left, var_left_q3)
   
-  info_table(data, var_type, selected_var, " ", df, select_id)
+  info_table(data, var_type, selected_var, " ", df, select_id) |> 
+    str_remove("<strong>.*</strong>") |> 
+    str_remove("population of .* and a ")
+    
 }
 
 
 place_explorer_block_graph <- function(df, selected_var, select_id) {
   
-  
   ## Setup -------------------------------------------------------------------
   
-  # Attach year in case of census data.
-  year <- 
-    if (filter(variables, var_code == selected_var)$source == "census") {
-      tidyr::unnest(filter(variables, var_code == selected_var), dates) |> 
-        filter(dates == max(dates)) |> 
-        pull(dates)
-    } else return(NULL)
+  selected_var_q3 <- paste0(selected_var, "_q3")
+  
+  var_dates <- 
+    tidyr::unnest(filter(variables, var_code == selected_var), dates)$dates
+  
+  if (!(length(var_dates) == 1 && is.na(var_dates))) {
+    selected_var <- paste0(selected_var, "_", var_dates[length(var_dates)])
+    selected_var_q3 <- paste0(selected_var_q3, "_", var_dates[length(var_dates)])
+  }
   
   # Get dataframe from df characters tring
   data <- get(df)
@@ -66,10 +71,10 @@ place_explorer_block_graph <- function(df, selected_var, select_id) {
   data <- 
     data |> 
     st_drop_geometry() |> 
-    select(ID:households, any_of(starts_with(selected_var)) & ends_with(year)) |> 
+    select(ID:households, all_of(selected_var), all_of(selected_var_q3)) |> 
     rename(ID = ID,
-           var_left = paste0(selected_var, "_", year),
-           var_left_q3 = paste0(selected_var, "_q3_", year)) |> 
+           var_left = all_of(selected_var),
+           var_left_q3 = all_of(selected_var_q3)) |> 
     select(ID:households, var_left, var_left_q3)
   
   
