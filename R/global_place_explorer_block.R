@@ -19,7 +19,7 @@ place_explorer_block_text <- function(df, selected_var, select_id) {
       tidyr::unnest(filter(variables, var_code == selected_var), dates) |> 
         filter(dates == max(dates)) |> 
         pull(dates)
-    } else return(list(graph = NA, info = "NOT A CENSUS DATA"))
+    } else return("No information yet.")
   
   # Get dataframe from df characters tring
   data <- get(df)
@@ -53,7 +53,7 @@ place_explorer_block_graph <- function(df, selected_var, select_id) {
       tidyr::unnest(filter(variables, var_code == selected_var), dates) |> 
         filter(dates == max(dates)) |> 
         pull(dates)
-    } else return(list(graph = NA, info = "NOT A CENSUS DATA"))
+    } else return(NULL)
   
   # Get dataframe from df characters tring
   data <- get(df)
