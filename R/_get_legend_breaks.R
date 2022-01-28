@@ -4,7 +4,7 @@ get_legend_breaks <- function(data, var_left, var_right, df, data_type) {
   
   # Return NULL if no data_type matches
   break_labels <- NULL
-  
+
   
   ## Univariate q5 version -----------------------------------------------------
   
@@ -164,7 +164,6 @@ get_legend_breaks <- function(data, var_left, var_right, df, data_type) {
     
   }
     
-  
   ## Return output -------------------------------------------------------------
   
   return(break_labels)

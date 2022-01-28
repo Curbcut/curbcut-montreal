@@ -1,6 +1,6 @@
 #### RENDER LEGEND #############################################################
 
-render_legend <- function(var_left, var_right, df, data_type, 
+render_legend <- function(data, var_left, var_right, df, data_type, 
                           build_str_as_DA = TRUE) {
   
   ## Clean up data_type and building/street ------------------------------------

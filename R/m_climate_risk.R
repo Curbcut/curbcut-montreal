@@ -88,6 +88,7 @@ climate_risk_server <- function(id) {
     # Legend
     legend <- legend_server(
       id = "legend",
+      data = data,
       var_left = var_left,
       var_right = var_right,
       df = df)
