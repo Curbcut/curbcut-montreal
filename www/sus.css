@@ -1,0 +1,52 @@
+:root {
+  --dark-blue: #4a5c83;
+}
+
+:root {
+  --nav-content: var(--dark-blue);
+}
+
+
+@font-face {
+  font-family: sus-brand;
+  src: url("fonts/Outfit-Bold.ttf");
+}
+
+@font-face {
+  font-family: sus-label;
+  src: url("fonts/Outfit-Regular.ttf");
+}
+
+@font-face {
+  font-family: sus-text;
+  src: url("fonts/SourceSansPro-Regular.ttf");
+}
+
+.navbar[role="navigation"] {
+  background: none;
+  border-bottom: none;
+}
+
+.navbar a:hover, .navbar a:focus {
+  text-decoration: none;
+}
+
+.navbar a {
+  text-shadow: none !important;
+}
+
+.navbar-header a#title {
+  display: inline-block;
+  color: var(--nav-content);
+  font-family: 'sus-brand';
+  transform: skew(-8deg, 0deg);
+}
+
+.navbar-nav a {
+  color: var(--nav-content) !important;
+  font-family: 'sus-label';
+}
+
+.navbar[role="navigation"] a:focus {
+  background: none;
+}

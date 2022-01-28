@@ -5,6 +5,7 @@ ui <- function(request) {
   # Styling objects
   shinyjs::useShinyjs(),
   tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "bootstrap.min.css")),
+  tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "sus.css")),
   tags$head(tags$style(HTML(styler))),
   tags$head(tags$style(HTML(navbar_js))),
   usei18n(i18n),
