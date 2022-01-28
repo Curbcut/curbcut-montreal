@@ -1,6 +1,6 @@
 #### GET EXPLORE GRAPH X SCALE #################################################
 
-get_x_scale <- function(graph_type, data, var_left, var_right, df) {
+get_x_scale <- function(graph_type, data, var_type, var_left, var_right, df) {
   
   ## Get labels ----------------------------------------------------------------
   
