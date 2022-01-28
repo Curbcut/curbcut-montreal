@@ -208,8 +208,6 @@ place_explorer_server <- function(id) {
       walk(themes, ~{
         output_info_name <- paste0("theme_", .x, "_block_text")
         output_graph_name <- paste0("theme_", .x, "_block_graph")
-        # selected_var <- input[[paste0("theme_", .x, "_block_select")]]
-        # explo <- place_explorer_block(df(), selected_var, select_id())
         # Render UIs of each grid block
         output[[output_info_name]] <- renderText({
           selected_var <- input[[paste0("theme_", .x, "_block_select")]]
@@ -261,18 +259,19 @@ place_explorer_server <- function(id) {
         })
 
       # Prepare the general UI UI of blocks
-      fixedPage(verticalLayout(
+      fixedPage(
         htmlOutput(NS(id, "title"), 
                    style = paste0("margin-top: 150px; padding: 5px; ",
                                   "font-size: 11px;")),
         map(themes, ~{
           tagList(uiOutput(
             outputId = eval(parse(text = paste0("NS(id, 'theme_", .x, "')"))),
-            style = paste0("padding: 5px; ",
-                           "font-size: 11px"), 
+            style = paste0("padding: 20px; width: 45%; margin: 10px; ",
+                           "height: 33vh; display: inline-grid; ",
+                           "overflow-y: auto; overflow-x: hidden;"), 
             class = "panel panel-default"))
         })
-      ))
+      )
       
     })
     
