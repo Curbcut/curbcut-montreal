@@ -10,10 +10,10 @@ get_y_scale <- function(graph_type, var_left, var_right) {
     graph_type == "deltabi" ~ 
       list(scale_y_continuous(labels = scales::percent)),
     # Multi_uni, continuous scale, percent
-    graph_type == "delta" & stringr::str_detect(var_left, "_pct") ~ 
+    graph_type == "delta" & str_detect(var_left, "_pct") ~ 
       list(scale_y_continuous(labels = scales::percent)),
     # Continuous scale, dollar
-    graph_type == "delta" & stringr::str_detect(var_left, "_dollar") ~ 
+    graph_type == "delta" & str_detect(var_left, "_dollar") ~ 
       list(scale_y_continuous(labels = scales::dollar)),
     # Continuous scale, comma
     graph_type == "delta" ~ 
@@ -22,18 +22,18 @@ get_y_scale <- function(graph_type, var_left, var_right) {
     graph_type %in% c("hist", "bar") ~ 
       list(scale_y_continuous(labels = scales::label_comma(accuracy = 1))),
     # Scatterplot, continuous scale, percent
-    graph_type == "scatter" & stringr::str_detect(var_left, "_pct") ~ 
+    graph_type == "scatter" & str_detect(var_left, "_pct") ~ 
       list(scale_y_continuous(labels = scales::percent)),
     # Scatterplot, continuous scale, dollar
-    graph_type == "scatter" & stringr::str_detect(var_left, "_dollar") ~ 
+    graph_type == "scatter" & str_detect(var_left, "_dollar") ~ 
       list(scale_y_continuous(labels = scales::dollar)),
     # Scatterplot, continuous scale, comma
     graph_type == "scatter" ~ list(scale_y_continuous(labels = scales::comma)),
     # Continuous scale, percent
-    stringr::str_detect(var_right, "_pct") ~ 
+    str_detect(var_right, "_pct") ~ 
       list(scale_y_continuous(labels = scales::percent)),
     # Continuous scale, dollar
-    stringr::str_detect(var_right, "_dollar") ~ 
+    str_detect(var_right, "_dollar") ~ 
       list(scale_y_continuous(labels = scales::dollar)),
     # Continuous scale, comma
     TRUE ~ list(scale_y_continuous(labels = scales::comma))

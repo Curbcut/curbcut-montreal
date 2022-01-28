@@ -129,7 +129,7 @@ dmti_server <- function(id) {
     
     # Update poly_selected on click
     observeEvent(input$map_polygon_click, {
-      lst <- jsonlite::fromJSON(input$map_polygon_click)
+      lst <- fromJSON(input$map_polygon_click)
       if (is.null(lst$object$properties$id)) {
         rv_dmti$poly_selected <- NA
       } else rv_dmti$poly_selected <- lst$object$properties$id

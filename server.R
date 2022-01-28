@@ -56,6 +56,8 @@ shinyServer(function(input, output, session) {
       permits_server("permits")
     } else if (active_tab == "stories") {
       stories_server("stories")
+    } else if (active_tab == "place_explorer") {
+      place_explorer_server("place_explorer")
     } else if (active_tab == "about") {
       why_dash_server("why_dash")
     }

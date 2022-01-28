@@ -97,14 +97,14 @@ marketed_sustainability_server <- function(id) {
                 panel.grid = element_blank())
       })
     
-    # # Explore panel
+    # Explore panel
     explore_content <- explore_server(
       id = "explore",
-      x = reactive(marketed_sustainability),
+      data = reactive(marketed_sustainability),
       var_left = reactive(NULL),
       var_right = reactive(NULL),
-      select_id = selection,
       df = reactive(NULL),
+      select_id = selection,
       standard = reactive(FALSE),
       custom_info = marketed_sustainability_info_table,
       custom_graph = marketed_sustainability_explore_graph)
@@ -117,7 +117,7 @@ marketed_sustainability_server <- function(id) {
     
     # Update select_id on click
     observeEvent(input$map_scatterplot_click, {
-      lst <- jsonlite::fromJSON(input$map_scatterplot_click)$index
+      lst <- fromJSON(input$map_scatterplot_click)$index
       if (is.null(lst)) selection(NA) else {
         # This is a hack because of a mapdeck bug
         selection(marketed_sustainability[lst + 1,]$ID)

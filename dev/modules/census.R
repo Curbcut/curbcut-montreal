@@ -141,7 +141,16 @@ data_to_add[[2]]$scales <-
 
 # Add to variables table --------------------------------------------------
 
-variables <- bind_rows(variables, data_to_add[[2]])
+variables <- bind_rows(variables, data_to_add[[2]]) |> 
+  mutate(theme = case_when(str_starts(var_code, "housing") ~ "Housing",
+                           str_starts(var_code, "inc") ~ "Income",
+                           str_starts(var_code, "iden") ~ "Identity",
+                           str_starts(var_code, "trans") ~ "Transport",
+                           str_starts(var_code, "emp") ~ "Employment",
+                           str_starts(var_code, "family") ~ "Family",
+                           str_starts(var_code, "lang") ~ "Language",
+                           str_starts(var_code, "age") ~ "Age",
+                           str_starts(var_code, "edu") ~ "Education"))
 
 
 # Clean up ----------------------------------------------------------------

@@ -3,7 +3,7 @@
 ui <- function(request) {
   tagList(
   # Styling objects
-  shinyjs::useShinyjs(),
+  useShinyjs(),
   tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "bootstrap.min.css")),
   tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "sus.css")),
   tags$head(tags$style(HTML(styler))),
@@ -72,7 +72,8 @@ ui <- function(request) {
              tabPanel("Montréal stories", stories_UI("stories"),
                       value = "stories"),
              
-             # tabPanel("Place explorer", "More to come!"),
+             tabPanel("Place explorer", place_explorer_UI("place_explorer"),
+                      value = "place_explorer"),
              
              tabPanel("About", why_dash_UI("why_dash"), value = "why_dash")
              

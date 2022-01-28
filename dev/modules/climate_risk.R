@@ -35,14 +35,14 @@ climate_risk <-
       select(ID) |> 
       st_transform(32618) |> 
       st_set_agr("constant") |> 
-      st_intersection(df) |> 
-      full_join(st_drop_geometry(select(grid, ID)), by = "ID") |> 
+      st_intersection(df) |>
       mutate(area_int = units::drop_units(st_area(geometry))) |> 
       st_drop_geometry() |> 
       group_by(grid_ID) |> 
       filter(area_int == max(area_int)) |> 
       ungroup() |>
       select(-grid_ID, -area_int) |> 
+      full_join(st_drop_geometry(select(grid, ID)), by = "ID") |> 
       mutate(across(starts_with("climate"), ~replace(., is.na(.), 0)))
     })
 
@@ -119,6 +119,7 @@ street <-
 
 # Add breaks --------------------------------------------------------------
 
+# Do q3 breaks for all scales
 climate_risk_q3 <- 
   map(list(DA, CT, borough, grid), ~{
     .x |> 
@@ -128,6 +129,7 @@ climate_risk_q3 <-
                       "climate_heat_wave_ind"))
     })
 
+# Do q5 breaks for census scales
 climate_risk_q5 <- 
   map(list("DA" = DA, "CT" = CT, "borough" = borough), ~{
     .x |> 
@@ -137,23 +139,7 @@ climate_risk_q5 <-
                       "climate_heat_wave_ind"))
   })
 
-grid_q5 <- 
-  grid |> 
-  st_drop_geometry() |> 
-  select(climate_flood_ind:climate_heat_wave_ind) |> 
-  slice(1:6) |> 
-  mutate(across(everything(), ~c("No risk" = 0, "Insignificant" = 1, 
-                                 "Minor" = 2, "Moderate" = 3, "Elevated" = 4,
-                                 "Major" = 5)),
-         across(everything(), ~c("No risk", "Insignificant", "Minor", 
-                                 "Moderate", "Elevated", "Major"),
-                .names = "{.col}_name"),
-         across(everything(), ~c("No risk", "Insig.", "Minor", "Mod.", "Elev.",
-                                 "Major"), .names = "{.col}_short")) |> 
-  list()
-
-climate_risk_q5 <- c(climate_risk_q5, "grid" = grid_q5)
-
+# Add q5 values to census scales
 DA <-
   DA |> 
   st_drop_geometry() |> 
@@ -181,6 +167,39 @@ borough <-
   st_as_sf(sf_column_name = "geometry") |> 
   st_set_agr("constant")
 
+climate_risk_q5 <-
+  map2(climate_risk_q5, c("DA", "CT", "borough"), \(x, scale) {
+    if (nrow(x) > 0) x |> mutate(scale = scale, rank = seq_len(nrow(x)) - 1, 
+                                 .before = 1)})
+
+# Make table with qualitative values to join to grid
+climate_join <- 
+  tibble(var = 0:5, rank = 0:5,
+         var_name = c("None", "Insignificant", "Minor", "Moderate", "Elevated", 
+                      "Major"),
+         var_name_short = c("None", "Insig.", "Minor", "Mod.", "Elev.", 
+                            "Major"))
+
+# Join each variable in grid to climate_join
+grid_q5 <- 
+  grid |> 
+  st_drop_geometry() |> 
+  select(climate_flood_ind:climate_heat_wave_ind) |> 
+  map(unique) |> 
+  map(sort) |> 
+  map(tibble) |> 
+  map(set_names, "var") |> 
+  map(mutate, scale = "grid", .before = var) |> 
+  map(left_join, climate_join, by = "var") |> 
+  map(relocate, rank, .after = scale)
+
+# Consolidate q5 breaks table
+climate_risk_q5 <- map2(grid_q5, names(grid_q5), \(x, y) {
+  map2_dfr(climate_risk_q5, names(climate_risk_q5), ~mutate(.x, scale = .y)) |> 
+    select(scale, rank, all_of(y)) |> 
+    set_names(c("scale", "rank", "var")) |> 
+    bind_rows(x)})
+
 
 # Meta testing ------------------------------------------------------------
 
@@ -195,12 +214,6 @@ breaks_q3_active <-
     if (nrow(x) > 0) x |> mutate(scale = scale, date = NA, rank = 0:3,
                                  .before = 1)})
 
-# Get breaks_q5
-breaks_q5_active <- 
-  map2_dfr(climate_risk_q5, c("DA", "CT", "borough", "grid"), \(x, scale) {
-    if (nrow(x) > 0) x |> mutate(scale = scale, rank = seq_len(nrow(x)) - 1, 
-                                 .before = 1)})
-
 variables <- 
   variables |>
   add_variables(
@@ -209,13 +222,12 @@ variables <-
     var_short = "Drought",
     explanation = "the vulnerability to climate-change related drought",
     category = NA,
+    theme = "Climate",
     private = FALSE,
     dates = NA,
     scales = c("borough", "building", "CT", "DA", "grid", "street"),
     breaks_q3 = select(breaks_q3_active, scale:rank, var = climate_drought_ind),
-    breaks_q5 = select(breaks_q5_active, scale:rank, var = climate_drought_ind,
-                       var_name = climate_drought_ind_name, 
-                       var_name_short = climate_drought_ind_name_short),
+    breaks_q5 = climate_risk_q5$climate_drought_ind,
     source = "VdM") |> 
   add_variables(
     var_code = "climate_flood_ind",
@@ -223,13 +235,12 @@ variables <-
     var_short = "Flood",
     explanation = "the vulnerability to climate-change related flooding",
     category = NA,
+    theme = "Climate",
     private = FALSE,
     dates = NA,
     scales = c("borough", "building", "CT", "DA", "grid", "street"),
     breaks_q3 = select(breaks_q3_active, scale:rank, var = climate_flood_ind),
-    breaks_q5 = select(breaks_q5_active, scale:rank, var = climate_flood_ind,
-                       var_name = climate_flood_ind_name, 
-                       var_name_short = climate_flood_ind_name_short),
+    breaks_q5 = climate_risk_q5$climate_flood_ind,
     source = "VdM") |> 
   add_variables(
     var_code = "climate_heavy_rain_ind",
@@ -237,15 +248,13 @@ variables <-
     var_short = "Heavy rain",
     explanation = "the vulnerability to climate-change related heavy rain",
     category = NA,
+    theme = "Climate",
     private = FALSE,
     dates = NA,
     scales = c("borough", "building", "CT", "DA", "grid", "street"),
     breaks_q3 = select(breaks_q3_active, scale:rank, 
                        var = climate_heavy_rain_ind),
-    breaks_q5 = select(breaks_q5_active, scale:rank, 
-                       var = climate_heavy_rain_ind,
-                       var_name = climate_heavy_rain_ind_name, 
-                       var_name_short = climate_heavy_rain_ind_name_short),
+    breaks_q5 = climate_risk_q5$climate_heavy_rain_ind,
     source = "VdM") |> 
   add_variables(
     var_code = "climate_destructive_storms_ind",
@@ -254,16 +263,13 @@ variables <-
     explanation = paste0("the vulnerability to climate-change related ",
                          "destructive storms"),
     category = NA,
+    theme = "Climate",
     private = FALSE,
     dates = NA,
     scales = c("borough", "building", "CT", "DA", "grid", "street"),
     breaks_q3 = select(breaks_q3_active, scale:rank, 
                        var = climate_destructive_storms_ind),
-    breaks_q5 = select(breaks_q5_active, scale:rank, 
-                       var = climate_destructive_storms_ind,
-                       var_name = climate_destructive_storms_ind_name, 
-                       var_name_short = 
-                         climate_destructive_storms_ind_name_short),
+    breaks_q5 = climate_risk_q5$climate_destructive_storms_ind,
     source = "VdM") |> 
   add_variables(
     var_code = "climate_heat_wave_ind",
@@ -271,19 +277,16 @@ variables <-
     var_short = "Heat wave",
     explanation = "the vulnerability to climate-change related heat waves",
     category = NA,
+    theme = "Climate",
     private = FALSE,
     dates = NA,
     scales = c("borough", "building", "CT", "DA", "grid", "street"),
     breaks_q3 = select(breaks_q3_active, scale:rank, 
                        var = climate_heat_wave_ind),
-    breaks_q5 = select(breaks_q5_active, scale:rank, 
-                       var = climate_heat_wave_ind,
-                       var_name = climate_heat_wave_ind_name, 
-                       var_name_short = climate_heat_wave_ind_name_short),
+    breaks_q5 = climate_risk_q5$climate_heat_wave_ind,
     source = "VdM")
 
 
 # Clean up ----------------------------------------------------------------
 
-rm(breaks_q3_active, breaks_q5_active, climate_risk_q3, climate_risk_q5,
-   grid_q5)
+rm(breaks_q3_active, climate_join, climate_risk_q3, climate_risk_q5, grid_q5)

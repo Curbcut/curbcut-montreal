@@ -83,7 +83,11 @@ climate_risk_server <- function(id) {
       var_right = var_right)
     
     # Data
-    data <- reactive(get_data(df(), var_left(), var_right()), island = TRUE)
+    data <- reactive(get_data(
+      df = df(), 
+      var_left = var_left(), 
+      var_right = var_right(), 
+      island = TRUE))
     
     # Legend
     legend <- legend_server(
@@ -91,7 +95,7 @@ climate_risk_server <- function(id) {
       var_left = var_left,
       var_right = var_right,
       df = df)
-    
+
     # Did-you-know panel
     dyk_server(
       id = "dyk",
@@ -111,61 +115,16 @@ climate_risk_server <- function(id) {
     # Explore panel
     explore_content <- explore_server(
       id = "explore",
-      x = data,
+      data = data,
       var_left = var_left,
       var_right = var_right,
-      select_id = select_id,
       df = df,
-      var_left_label = climate_legend)
+      select_id = select_id)
     
     # If grid isn't clicked, toggle on the zoom menu
     observeEvent(input$grid, {
-      shinyjs::toggle("zoom-auto", condition = !input$grid)
-      shinyjs::toggle("zoom-slider", condition = !input$grid)
+      toggle("zoom-auto", condition = !input$grid)
+      toggle("zoom-slider", condition = !input$grid)
     })
-    
-    # Bookmarking
-    onBookmark(function(state) {
-      
-      state$values$zoom_val <- zoom_val()
-      state$values$numeric_zoom <- input$map_view_change$zoom
-      state$values$location <- c(input$map_view_change$longitude,
-                                 input$map_view_change$latitude)
-      state$values$poly_selected <- rv_climate_risk$poly_selected
-      state$values$var_right <- var_right()
-      state$values$var_left <- var_left()
-    })
-    
-    onRestored(function(state) {
-      restored_numeric_zoom <- state$values$numeric_zoom
-      restored_map_location <- state$values$location
-      zoom_val(state$values$zoom_val)
-      
-      output$map <- renderMapdeck({
-        mapdeck(
-          style = map_style, token = token_climate_risk,
-          zoom = restored_numeric_zoom, location = restored_map_location)
-      })
-      
-      updatePickerInput(
-        session = session,
-        inputId = NS(id, "compare-var"),
-        choices = sus_translate(make_dropdown()),
-        selected = state$values$var_right
-      )
-      
-      # Not working, no idea why?
-      updatePickerInput(
-        session = session,
-        inputId = NS(id, "left-var"),
-        choices = sus_translate(var_list_climate_risk),
-        selected = state$values$var_left
-      )
-      
-      if (input$grid) {map_change(NS(id, "map"), df = data, zoom = reactive("grid"))}
-      
-      rv_climate_risk$poly_selected <- state$values$poly_selected
-    })
-    
   })
 }

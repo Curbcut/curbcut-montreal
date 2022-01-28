@@ -111,16 +111,13 @@ gentrification_server <- function(id) {
     
     # If check_single_var is clicked, toggle on the dropdown menu
     observeEvent(input$check_single_var, {
-      shinyjs::toggle("left-var", condition = input$check_single_var)
+      toggle("left-var", condition = input$check_single_var)
     })
     
     # Construct left variable string
     var_left <- reactive({
       if (!input$check_single_var) {
-        stringr::str_remove(paste(
-          "gentrification_ind",
-          time(),
-          sep = "_"), "_ $")
+        str_remove(paste("gentrification_ind", time(), sep = "_"), "_ $")
       } else {
         single_var()
       }

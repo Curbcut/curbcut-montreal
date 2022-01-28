@@ -35,7 +35,7 @@ crash_UI <- function(id) {
         div(id = NS(id, "slider_switch"),
             checkboxInput(inputId = NS(id, "bi_time"),
                           label = i18n$t("Compare dates"))),
-        shinyjs::hidden(checkboxInput(
+        hidden(checkboxInput(
           inputId = NS(id, "grid"), 
           label = i18n$t("250-metre grid"))),
         year_disclaimer_UI(NS(id, "disclaimers")),
@@ -46,7 +46,7 @@ crash_UI <- function(id) {
     fillCol(
       
       # Crash analysis
-      shinyjs::hidden(htmlOutput(
+      hidden(htmlOutput(
         NS(id, "crash_analysis"),
         style = paste0("position:absolute; margin: 40px; ",
                        "max-width: 1000px; z-index:499"))),
@@ -115,12 +115,12 @@ crash_server <- function(id) {
     
     # Enable or disable first and second slider
     observeEvent(input$bi_time, {
-      shinyjs::toggle("left_bi_time", condition = input$bi_time)
-      shinyjs::toggle("left", condition = !input$bi_time)})
+      toggle("left_bi_time", condition = input$bi_time)
+      toggle("left", condition = !input$bi_time)})
     
     # If we aren't in choropleth, toggle off the zoom and grid checkbox
     observeEvent(choropleth(), {
-      shinyjs::toggle("grid", condition = choropleth())
+      toggle("grid", condition = choropleth())
     })
     
     # Time variable depending on which slider
@@ -209,7 +209,7 @@ crash_server <- function(id) {
 
     # Update point on click
     observeEvent(input$map_scatterplot_click, {
-      lst <- jsonlite::fromJSON(input$map_scatterplot_click)$index
+      lst <- fromJSON(input$map_scatterplot_click)$index
       if (is.null(lst)) selection(NA) else {
         # This is a hack because of a mapdeck bug
         selection(crash[lst + 1,]$ID)
@@ -249,19 +249,19 @@ crash_server <- function(id) {
       
       updateActionLink(session, "analysis", label = txt)
       
-      shinyjs::toggle("hr", condition = !input$analysis %% 2)
-      shinyjs::toggle("left_1-var", condition = !input$analysis %% 2)
-      shinyjs::toggle("left_2-var", condition = !input$analysis %% 2)
-      shinyjs::toggle("slider", condition = !input$analysis %% 2)
-      shinyjs::toggle("slider_switch", condition = !input$analysis %% 2)
-      shinyjs::toggle("right_panel", condition = !input$analysis %% 2)
-      shinyjs::toggle("how_to_read_map", condition = !input$analysis %% 2)
-      shinyjs::toggle("year_displayed_right", condition = !input$analysis %% 2)
-      shinyjs::toggle("legend-legend_render", condition = !input$analysis %% 2)
-      shinyjs::toggle("zoom-auto", condition = !input$analysis %% 2)
-      shinyjs::toggle("zoom-slider", condition = !input$analysis %% 2)
-      shinyjs::toggle("grid", condition = !input$analysis %% 2)
-      shinyjs::toggle("crash_analysis", condition = input$analysis %% 2)
+      toggle("hr", condition = !input$analysis %% 2)
+      toggle("left_1-var", condition = !input$analysis %% 2)
+      toggle("left_2-var", condition = !input$analysis %% 2)
+      toggle("slider", condition = !input$analysis %% 2)
+      toggle("slider_switch", condition = !input$analysis %% 2)
+      toggle("right_panel", condition = !input$analysis %% 2)
+      toggle("how_to_read_map", condition = !input$analysis %% 2)
+      toggle("year_displayed_right", condition = !input$analysis %% 2)
+      toggle("legend-legend_render", condition = !input$analysis %% 2)
+      toggle("zoom-auto", condition = !input$analysis %% 2)
+      toggle("zoom-slider", condition = !input$analysis %% 2)
+      toggle("grid", condition = !input$analysis %% 2)
+      toggle("crash_analysis", condition = input$analysis %% 2)
       
     })
   })

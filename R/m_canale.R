@@ -39,11 +39,11 @@ canale_server <- function(id) {
     zoom <- reactiveVal(get_zoom(map_zoom, map_zoom_levels))
 
     # Map
-    output$map <- renderMapdeck({mapdeck(
+    output$map <- renderMapdeck(mapdeck(
       style = map_style, 
       token = map_token, 
       zoom = map_zoom, 
-      location = map_location)})
+      location = map_location))
     
     # Zoom reactive
     observeEvent(input$map_view_change$zoom, {
@@ -76,7 +76,10 @@ canale_server <- function(id) {
       var_right = var_right)
     
     # Data
-    data <- reactive(get_data(df(), var_left(), var_right()))
+    data <- reactive(get_data(
+      df = df(), 
+      var_left = var_left(), 
+      var_right = var_right()))
     
     # Legend
     legend <- legend_server(
@@ -104,18 +107,17 @@ canale_server <- function(id) {
     # Explore panel
     explore_content <- explore_server(
       id = "explore", 
-      x = data, 
+      data = data, 
       var_left = var_left,
       var_right = var_right, 
-      select_id = select_id,
       df = df, 
-      build_str_as_DA = TRUE)
+      select_id = select_id)
     
-    # data naming for data_export
+    # Data export TKTK should this become a non-reactive function?
     data_export <- data_export_server(
       id = "canale",
-      df = data, 
-      var_left = var_left, 
+      df = data,
+      var_left = var_left,
       var_right = var_right)
     
     # OUT

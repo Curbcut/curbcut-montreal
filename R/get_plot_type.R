@@ -24,10 +24,10 @@ get_plot_type <- function(data, var_type, var_left, var_right, select_id, df) {
     df == "date" ~ "date",
     var_right[1] == " " & grepl("_delta", var_type) ~ "delta",
     var_right[1] != " " & grepl("_delta", var_type) ~ "deltabi",
-    var_right[1] == " " & var_left_num > 6 ~ "hist",
-    var_right[1] == " " & var_left_num <= 6 ~ "bar",
-    var_right[1] != " " & var_left_num > 6 ~ "scatter",
-    var_right[1] != " " & var_left_num <= 6 ~ "box") |> 
+    var_right[1] == " " & var_left_num > 7 ~ "hist",
+    var_right[1] == " " & var_left_num <= 7 ~ "bar",
+    var_right[1] != " " & var_left_num > 7 ~ "scatter",
+    var_right[1] != " " & var_left_num <= 7 ~ "box") |> 
     unique()
     
   # Get selection status

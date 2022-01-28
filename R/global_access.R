@@ -27,7 +27,7 @@ access_categories <-
     "access_jobs_30k", "access_schools", "access_healthcare")
 
 access_max <- 
-  purrr::map_dbl(access_categories, ~{
+  map_dbl(access_categories, ~{
     CT |> 
       st_drop_geometry() |> 
       select(starts_with(.x) & !contains("q3")) |> 

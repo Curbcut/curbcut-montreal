@@ -7,6 +7,8 @@ suppressPackageStartupMessages({
   library(shinyjs)
   library(shinyWidgets)
   library(shiny.i18n)
+  library(jsonify)
+  library(jsonlite)
 
   library(dplyr)
   library(ggplot2)
@@ -50,6 +52,8 @@ tt_matrix <- qread("data/tt_matrix.qs")
 marketed_sustainability <- qread("data/marketed_sustainability.qs")
 metro_lines <- qread("data/metro_lines.qs")
 stories <- qread("data/stories.qs")
+
+postal_codes <- qread("data/postal_codes.qs")
 
 min_census_year <- "1996"
 current_census <- "2016"

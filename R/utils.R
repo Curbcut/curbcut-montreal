@@ -1,5 +1,7 @@
 #### UTILS #####################################################################
 
+# convert_unit ------------------------------------------------------------
+
 convert_unit <- function(x, var_name = NULL, compact = FALSE) {
   
   if (length(x) == 0) return(x)
@@ -42,8 +44,9 @@ convert_unit <- function(x, var_name = NULL, compact = FALSE) {
   x
 }
 
-# ------------------------------------------------------------------------------
-  
+
+# return_closest_year -----------------------------------------------------
+
 return_closest_year <- function(var, df = "borough") {
   
   if (df == "building") df <- DA else df <- get(df)
@@ -70,22 +73,29 @@ return_closest_year <- function(var, df = "borough") {
   
 }
 
-# ------------------------------------------------------------------------------
+
+# find_outliers -----------------------------------------------------------
 
 find_outliers <- function(x) {
   
-  outside_quant <- 
-    between(x, quantile(x, .01, na.rm = TRUE), 
-            quantile(x, .99, na.rm = TRUE))
+  outside_quant <- between(x, quantile(x, .01, na.rm = TRUE), 
+                           quantile(x, .99, na.rm = TRUE))
   
   inside <- x[outside_quant]
-  
   avg <- mean(inside, na.rm = TRUE) 
   standard_d <- sd(inside, na.rm = TRUE)
   
-  no_outliers <- 
-    inside[between(inside, avg - 4 * standard_d, avg + 4 * standard_d)]
-  
-  x[!x %in% no_outliers] |> na.omit()
+  no_out <- inside[between(inside, avg - 4 * standard_d, avg + 4 * standard_d)]
+  x[!x %in% no_out] |> na.omit()
   
 }
+
+
+# remove_outliers ---------------------------------------------------------
+
+remove_outliers <- function(x) {
+  x[!x %in% find_outliers(x)] |> 
+    na.omit() |> 
+    as.numeric()
+}
+  

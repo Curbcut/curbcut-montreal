@@ -1,6 +1,6 @@
 #### RENDER EXPLORE GRAPH ######################################################
 
-render_explore_graph <- function(plot_type, data, var_left, var_right, 
+render_explore_graph <- function(plot_type, data, var_left, var_right, df,
                                  select_id, x_scale, y_scale, labs_xy, 
                                  theme_default) {
   
@@ -45,17 +45,43 @@ render_explore_graph <- function(plot_type, data, var_left, var_right,
   
   # Bar, no selection
   if (plot_type == "bar_all") {
-    out <- 
+    
+    # Figure out how many values to graph
+    ranks <-
+      variables |> 
+      filter(var_code == unique(sub("_\\d{4}$", "", var_left))) |> 
+      pull(breaks_q5) |> 
+      pluck(1) |> 
+      filter(scale == df) |> 
+      pull(rank)
+    
+    # Get corresponding colours
+    cols <- set_names(c(col_NA, col_left_5)[ranks + 1])
+
+    out <-
       data |> 
       filter(!is.na(var_left)) |> 
       ggplot(aes(as.factor(var_left))) +
       geom_bar(aes(fill = fill), width = 1) +
-      scale_fill_manual(values = rev(col_left_5), na.translate = FALSE) +
+      scale_fill_manual(values = cols, na.translate = FALSE) +
       x_scale + y_scale + labs_xy + theme_default
   }
   
   # Bar, NA selection
   if (plot_type == "bar_na") {
+    
+    # Figure out how many values to graph
+    ranks <-
+      variables |> 
+      filter(var_code == unique(sub("_\\d{4}$", "", var_left))) |> 
+      pull(breaks_q5) |> 
+      pluck(1) |> 
+      filter(scale == df) |> 
+      pull(rank)
+    
+    # Get corresponding colours
+    cols <- set_names(c(col_NA, col_left_5)[ranks + 1])
+    
     out <- 
       data |> 
       filter(!is.na(var_left)) |> 
@@ -66,6 +92,19 @@ render_explore_graph <- function(plot_type, data, var_left, var_right,
   
   # Bar, active selection
   if (plot_type == "bar_select") {
+    
+    # Figure out how many values to graph
+    ranks <-
+      variables |> 
+      filter(var_code == unique(sub("_\\d{4}$", "", var_left))) |> 
+      pull(breaks_q5) |> 
+      pluck(1) |> 
+      filter(scale == df) |> 
+      pull(rank)
+    
+    # Get corresponding colours
+    cols <- set_names(c(col_NA, col_left_5)[ranks + 1])
+    
     out <- 
       data |> 
       filter(!is.na(var_left)) |> 
@@ -85,7 +124,8 @@ render_explore_graph <- function(plot_type, data, var_left, var_right,
     
     out <- 
       data |> 
-      filter(!is.na(var_left), !is.na(var_right)) |> 
+      filter(var_left %in% remove_outliers(var_left), 
+             var_right %in% remove_outliers(var_right)) |> 
       ggplot(aes(var_right, var_left)) +
       geom_point(aes(colour = group)) +
       stat_smooth(geom = "line", se = FALSE, method = "loess", span = 1,
@@ -101,7 +141,8 @@ render_explore_graph <- function(plot_type, data, var_left, var_right,
     
     out <- 
       data |> 
-      filter(!is.na(var_left), !is.na(var_right)) |> 
+      filter(var_left %in% remove_outliers(var_left), 
+             var_right %in% remove_outliers(var_right)) |> 
       ggplot(aes(var_right, var_left)) +
       geom_point(colour = col_left_3[1]) +
       stat_smooth(geom = "line", se = FALSE, method = "loess", span = 1,
@@ -116,7 +157,8 @@ render_explore_graph <- function(plot_type, data, var_left, var_right,
     
     out <- 
       data |> 
-      filter(!is.na(var_left), !is.na(var_right)) |> 
+      filter(var_left %in% remove_outliers(var_left), 
+             var_right %in% remove_outliers(var_right)) |> 
       ggplot(aes(var_right, var_left)) +
       geom_point(colour = col_left_3[1]) +
       stat_smooth(geom = "line", se = FALSE, method = "loess", span = 1,
@@ -181,7 +223,8 @@ render_explore_graph <- function(plot_type, data, var_left, var_right,
     
     out <- if (unique(c("var_left_1", "var_left_2") %in% names(data))) {
       data |> 
-        filter(!is.na(var_left), !is.na(var_right)) |> 
+        filter(var_left %in% remove_outliers(var_left), 
+               var_right %in% remove_outliers(var_right)) |> 
         ggplot(aes(var_left_1, var_left_2)) +
         geom_smooth(se = FALSE, method = "lm", formula = y ~ x, 
                     colour = "black", size = 0.5) +
@@ -196,7 +239,8 @@ render_explore_graph <- function(plot_type, data, var_left, var_right,
     
     out <- if (unique(c("var_left_1", "var_left_2") %in% names(data))) {
       data |> 
-        filter(!is.na(var_left), !is.na(var_right)) |> 
+        filter(var_left %in% remove_outliers(var_left), 
+               var_right %in% remove_outliers(var_right)) |> 
         ggplot(aes(var_left_1, var_left_2)) +
         geom_smooth(se = FALSE, method = "lm", formula = y ~ x, 
                     colour = "black", size = 0.5) +
@@ -210,7 +254,8 @@ render_explore_graph <- function(plot_type, data, var_left, var_right,
     
     out <- if (unique(c("var_left_1", "var_left_2") %in% names(data))) {
       data |> 
-        filter(!is.na(var_left), !is.na(var_right)) |> 
+        filter(var_left %in% remove_outliers(var_left), 
+               var_right %in% remove_outliers(var_right)) |> 
         ggplot(aes(var_left_1, var_left_2)) +
         geom_point(colour = col_left_3[1]) +
         geom_smooth(se = FALSE, method = "lm", formula = y ~ x, 
@@ -228,7 +273,8 @@ render_explore_graph <- function(plot_type, data, var_left, var_right,
     
     out <- 
       data |> 
-      filter(!is.na(var_left), !is.na(var_right)) |> 
+      filter(var_left %in% remove_outliers(var_left), 
+             var_right %in% remove_outliers(var_right)) |> 
       ggplot(aes(var_right, var_left)) +
       geom_point(aes(colour = group)) +
       stat_smooth(geom = "line", se = FALSE, method = "loess", span = 1,
@@ -244,7 +290,8 @@ render_explore_graph <- function(plot_type, data, var_left, var_right,
     
     out <- 
       data |> 
-      filter(!is.na(var_left), !is.na(var_right)) |> 
+      filter(var_left %in% remove_outliers(var_left), 
+             var_right %in% remove_outliers(var_right)) |> 
       ggplot(aes(var_right, var_left)) +
       geom_point(colour = col_left_3[1]) +
       stat_smooth(geom = "line", se = FALSE, method = "loess", span = 1,
@@ -259,7 +306,8 @@ render_explore_graph <- function(plot_type, data, var_left, var_right,
     
     out <- 
       data |> 
-      filter(!is.na(var_left), !is.na(var_right)) |> 
+      filter(var_left %in% remove_outliers(var_left), 
+             var_right %in% remove_outliers(var_right)) |> 
       ggplot(aes(var_right, var_left)) +
       geom_point(colour = col_left_3[1]) +
       stat_smooth(geom = "line", se = FALSE, method = "loess", span = 1,

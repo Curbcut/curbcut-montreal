@@ -1,52 +1,52 @@
+#### GET INFO TABLE DATA #######################################################
+
 #' @return A named list with all the data components necessary to power the
 #' info_table module.
 
-make_info_table_data <- function(id, x, var_type, var_left, var_right, 
-                                 select_id, df, var_left_label, var_right_label, 
-                                 build_str_as_DA) {
+get_info_table_data <- function(data, var_type, var_left, var_right, df, 
+                                select_id, build_str_as_DA = TRUE) {
   
   ## Initialize dat and output list --------------------------------------------
   
-  dat <- x()
-  out <- list(var_type = var_type())
+  dat <- data
+  out <- list(var_type = var_type)
 
   
   ## Get modified df for building/street ---------------------------------------
   
-  if (!df() %in% c("building", "street")) build_str_as_DA <- FALSE
+  if (!df %in% c("building", "street")) build_str_as_DA <- FALSE
   
   # TKTK THIS IS BROKEN FOR TWO DATES!
   if (build_str_as_DA) {
     dat_select <- building
-    dat_select_id <- select_id()
-    select_id <- (filter(building, ID == select_id()))$DAUID
+    dat_select_id <- select_id
+    select_id <- (filter(building, ID == select_id))$DAUID
     if (length(select_id) == 0) select_id <- NA
     
   } else {
-    dat_select <- x()
-    select_id <- select_id()
+    dat_select <- data
     dat_select_id <- select_id
   }
   
   
   ## Handle dates --------------------------------------------------------------
   
-  date_left <- str_extract(var_left(), "(?<=_)\\d{4}$")
+  date_left <- str_extract(var_left, "(?<=_)\\d{4}$")
   
-  if (length(var_left()) == 2) {
+  if (length(var_left) == 2) {
     out$start_date_left <- date_left[1]
     out$end_date_left <- date_left[2]
   }
   
-  if (length(var_right()) == 2) {
-    out$start_date_right <- str_extract(var_right(), "(?<=_)\\d{4}$")[1]
-    out$end_date_right <- str_extract(var_right(), "(?<=_)\\d{4}$")[2]
+  if (length(var_right) == 2) {
+    out$start_date_right <- str_extract(var_right, "(?<=_)\\d{4}$")[1]
+    out$end_date_right <- str_extract(var_right, "(?<=_)\\d{4}$")[2]
   }
   
   
   ## Special case for date-type data -------------------------------------------
   
-  if (df() == "date") {
+  if (df == "date") {
     out$var_type <- "date_all"
     dat <- 
       dat |> 
@@ -56,8 +56,45 @@ make_info_table_data <- function(id, x, var_type, var_left, var_right,
   
   ## Titles and explanations ---------------------------------------------------
   
-  var_left <- unique(str_remove(var_left(), "_\\d{4}$"))
-  var_right <- unique(str_remove(var_right(), "_\\d{4}$"))
+  var_left <- unique(str_remove(var_left, "_\\d{4}$"))
+  var_right <- unique(str_remove(var_right, "_\\d{4}$"))
+  
+  breaks_q5_left <- 
+    variables |> 
+    filter(var_code == unique(sub("_\\d{4}$", "", var_left))) |> 
+    pull(breaks_q5) |> 
+    pluck(1) |> 
+    filter(scale == df)
+  
+  if (!suppressWarnings(is.null(breaks_q5_left$var_name)) && 
+      !all(is.na(breaks_q5_left$var_name))) {
+    
+    var_left_label <- 
+      breaks_q5_left$var_name |> 
+      set_names(breaks_q5_left$var)
+    
+  } else var_left_label <- NULL
+  
+  if (var_right != " ") {
+    
+    breaks_q5_right <- 
+      variables |> 
+      filter(var_code == var_right) |> 
+      pull(breaks_q5) |> 
+      pluck(1) |> 
+      filter(scale == df)
+    
+    if (!suppressWarnings(is.null(breaks_q5_right$var_name)) && 
+        !all(is.na(breaks_q5_right$var_name))) {
+      
+      var_right_label <- 
+        breaks_q5_right$var_name |> 
+        set_names(breaks_q5_right$var)
+    
+    } else var_right_label <- NULL
+    
+  } else var_right_label <- NULL
+    
   var_left_label <- sus_translate(var_left_label)
   var_right_label <- sus_translate(var_right_label)
   
@@ -81,7 +118,7 @@ make_info_table_data <- function(id, x, var_type, var_left, var_right,
   select_name <- filter(dat_select, ID == dat_select_id)
   selection <- filter(dat, ID == select_id)
   out$selection <- selection
-  active_left <- nrow(filter(selection, !is.na(var_left_q5)))
+  active_left <- nrow(filter(selection, !is.na(var_left_q3)))
   active_right <- active_left
   if (var_right != " ") active_right <- 
     nrow(filter(selection, !is.na(var_left_q3), !is.na(var_right)))
@@ -112,7 +149,7 @@ make_info_table_data <- function(id, x, var_type, var_left, var_right,
   ## Scale ---------------------------------------------------------------------
   
   scale_sing <- switch(
-    df(),  
+    df,  
     "date" = NA_character_,
     "borough" = sus_translate("borough/city"),
     "CT" = sus_translate("census tract"),
@@ -140,7 +177,7 @@ make_info_table_data <- function(id, x, var_type, var_left, var_right,
   ## Place names ---------------------------------------------------------------
   
   out$place_name <- case_when(
-    df() %in% c("building", "street") & build_str_as_DA ~
+    df %in% c("building", "street") & build_str_as_DA ~
       glue(sus_translate(paste0(
         "The dissemination area around {select_name$name}"))),
     scale_sing == sus_translate("building") ~
@@ -158,11 +195,11 @@ make_info_table_data <- function(id, x, var_type, var_left, var_right,
     TRUE ~ NA_character_)
   
   if (grepl("select", out$var_type)) {
-    if (df() == "borough") select_name$name_2 <- 
+    if (df == "borough") select_name$name_2 <- 
         sus_translate(glue("{select_name$name_2}"))
     
     out$place_heading <- case_when(
-      df() %in% c("building", "street") & build_str_as_DA ~
+      df %in% c("building", "street") & build_str_as_DA ~
         glue(sus_translate(select_name$name)),
       scale_sing == sus_translate("borough/city") ~
         glue(sus_translate(paste0("{select_name$name_2} of {out$place_name}"))), 
@@ -176,7 +213,7 @@ make_info_table_data <- function(id, x, var_type, var_left, var_right,
   
   vec_left <-
     dat %>%
-    filter(!is.na(var_left_q5), !is.na(var_left)) %>%
+    filter(!is.na(var_left_q3), !is.na(var_left)) %>%
     pull(var_left) %>% 
     na.omit()
   
@@ -207,10 +244,8 @@ make_info_table_data <- function(id, x, var_type, var_left, var_right,
       TRUE ~ sus_translate("much smaller than"))
 
     out$high <- case_when(
-      stringr::str_detect(out$larger, sus_translate("larger")) ~
-        sus_translate("high"),
-      stringr::str_detect(out$larger, sus_translate("smaller")) ~
-        sus_translate("low"),
+      str_detect(out$larger, sus_translate("larger")) ~ sus_translate("high"),
+      str_detect(out$larger, sus_translate("smaller")) ~ sus_translate("low"),
       TRUE ~ sus_translate("moderate"))
 
     out$percentile <- convert_unit(length(vec_left[vec_left <= val_left]) / 
@@ -349,6 +384,12 @@ make_info_table_data <- function(id, x, var_type, var_left, var_right,
     
     out$val_right <- 
       tolower(var_right_label[names(var_right_label) == round(val_right)])
+    
+    out$perc <- 
+      mean(val_left >= vec_1[round(dat$var_right) == round(val_right)],
+           na.rm = TRUE) |> 
+      convert_unit("_pct")
+    
   }
   
   

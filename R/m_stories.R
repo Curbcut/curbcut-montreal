@@ -17,7 +17,7 @@ stories_UI <- function(id) {
       # Map
       div(class = "mapdeck_div", mapdeckOutput(NS(id, "map"), height = "100%")),
       
-      shinyjs::hidden(htmlOutput(
+      hidden(htmlOutput(
         NS(id, "stories"),
         style = paste0("position:absolute; margin: 40px; ",
                        "max-width: 1000px; z-index:499")))),
@@ -67,8 +67,7 @@ stories_server <- function(id) {
 
         v1 <- 1:nrow(data())
         v2 <- paste0("stories/round_img/", data()$img[v1])
-        v3 <- paste0(
-          purrr::map(data()$buffer, st_bbox) %>% purrr::map(., as.vector))
+        v3 <- paste0(map(data()$buffer, st_bbox) %>% map(as.vector))
         v4 <- paste0("image", v1)
         
         all_add_bitmap <- paste0('add_bitmap("', v2, '", bounds = ', v3, ', ',
@@ -90,7 +89,7 @@ stories_server <- function(id) {
     
     # Update poly_selected on click
     observeEvent(input$map_polygon_click, {
-      click <- jsonlite::fromJSON(input$map_polygon_click)$object$properties$id
+      click <- fromJSON(input$map_polygon_click)$object$properties$id
       if (is.null(click)) {
         selection(NA)
       } else if (!is.na(selection()) && 
@@ -124,15 +123,15 @@ stories_server <- function(id) {
     })
     
     observeEvent(selection(), {
-      shinyjs::toggle("hr", condition = !is.na(selection()))
-      shinyjs::toggle("back", condition = !is.na(selection()))
-      shinyjs::toggle("stories", condition = !is.na(selection()))
+      toggle("hr", condition = !is.na(selection()))
+      toggle("back", condition = !is.na(selection()))
+      toggle("stories", condition = !is.na(selection()))
     })
   
     # If there's an action with the map, the rmd goes away (Ultimately, any click on the map
     # should trigger these)
     observeEvent(input$map_view_change, {
-      shinyjs::hide(id = "stories")
+      hide(id = "stories")
       selection(NA)
     })
     

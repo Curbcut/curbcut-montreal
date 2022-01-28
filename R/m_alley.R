@@ -213,7 +213,7 @@ alley_server <- function(id) {
     
     # Update poly on click
     observeEvent(input$map_polygon_click, {
-      lst <- (jsonlite::fromJSON(input$map_polygon_click))$object$properties$id
+      lst <- (fromJSON(input$map_polygon_click))$object$properties$id
       if (is.null(lst)) selection(NA) else selection(lst)
     })
     
@@ -259,10 +259,10 @@ alley_server <- function(id) {
     observeEvent(input$hide, {
       
       if (input$hide %% 2 == 0) {
-        shinyjs::show(id = "alley_explore")
+        show(id = "alley_explore")
         txt <- sus_translate("Hide")
       } else {
-        shinyjs::hide(id = "alley_explore")
+        hide(id = "alley_explore")
         txt <- sus_translate("Show")
       }
       updateActionButton(session, "hide", label = txt)
@@ -272,12 +272,12 @@ alley_server <- function(id) {
     # If we aren't in choropleth, toggle off the legend/zoom
     observeEvent({choropleth()
       input$focus_visited}, {
-        shinyjs::toggle("zoom-auto", 
+        toggle("zoom-auto", 
                         condition = choropleth() || !input$focus_visited)
-        shinyjs::toggle("zoom-slider", 
+        toggle("zoom-slider", 
                         condition = choropleth() || !input$focus_visited)
         # If focus is clicked, toggle off the dropdown menu
-        shinyjs::toggle("left-var", condition = !input$focus_visited)
+        toggle("left-var", condition = !input$focus_visited)
       })
     
     # Hook up "Clear selection" button and other variables that clears it

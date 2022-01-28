@@ -3,10 +3,79 @@
 library(tidyverse)
 library(qs)
 
-title_text <- readr::read_csv("dev/data/title_text.csv")
+# title_text <- readr::read_csv("dev/data/title_text.csv", show_col_types = FALSE)
 
 title_text <-
-  title_text |>
+  tibble(tab = character(), type = character(), text = character()) |>
+  add_row(tab = "canale", type = "title", 
+          text = "Active living potential: the CanALE index") |> 
+  add_row(tab = "canale", type = "main", text = paste0(
+    "The CanALE dataset (developed by Prof. Nancy Ross and her team) captures ",
+    "four key elements related to active living environments: population ",
+    "density, points of interest, street grid, and proximity of transit ",
+    "service.")) |> 
+  add_row(tab = "canale", type = "extra", text = paste0(
+    "<p>A safe and inviting pedestrian realm is not distributed equally ",
+    "across socio-demographic factors. The risks of pedestrian injuries and ",
+    "fatalities are higher in low-income and racialized communities where ",
+    "residents often rely on walking as a daily mode of transport but where ",
+    "the local environment is not necessarily inviting and safe.",
+    "<p>In addition to evidence pointing towards large discrepancies in the ",
+    "provision of walkable urban space across income and racial lines, ",
+    "concern has been raised with regard to the possible gentrification ",
+    "and displacement impacts of improved pedestrian infrastructure. In ",
+    "other words, who can afford to live in walkable neighbourhoods?<br>",
+    "<p>Further resources:",
+    "<ul><li><a href='https://www150.statcan.gc.ca/n1/pub/82-003-x/2019005/",
+    "article/00002-eng.htm'>Thomas Herrmann, William Gleckner, Rania A. ",
+    "Wasfi, Beno\u00EEt Thierry, Yan Kestens and Nancy A. Ross. 2019. ",
+    "'A pan-Canadian measure of active living environments using open data. ",
+    "Statistics Canada Health Reports, 82-003-X.</a>",
+    "<li>Kevin Manaugh, Linnea Soli, Samuel Kohn, Robin ",
+    "Basalaev-Binder, Ty Tuff, David Wachsmuth. 2020. 'Montreal's response ",
+    "to COVID-19: An equity analysis of new active transport infrastructure.' ",
+    "Transportation Research Board working paper. <b>(MSSI research)</b>",
+    "</ul><br>",
+    "<p><i>Module lead authors: Robin Basalaev-Binder, David Wachsmuth</i>")) |> 
+  add_row(tab = "climate_risk", type = "title", text = "Climate change risk") |> 
+  add_row(tab = "climate_risk", type = "main", text = paste0(
+    "Climate change will have increasingly negative impacts on communities ",
+    "in Montreal, but these impacts will vary significantly by both geography ",
+    "and social factors. The distribution of five different climate risks—",
+    "heat waves, flooding, heavy rain, drought, and destructive storms—",
+    "is visualized here.")) |> 
+  add_row(tab = "climate_risk", type = "extra", text = paste0(
+    "<p>The Climate Change Risk datasets come from the City of Montreal's ",
+    "efforts to examine potential climate risks for the Montreal region in ",
+    "the 2015-2020 Urban Agglomeration Climate Change Adaptation Plan. The ",
+    "plan identifies the five variables of heat waves, flooding, heavy rain, ",
+    "drought, and destructive storms as the primary climate risk factors ",
+    "(alongside rising temperatures) for the Montreal agglomeration. The ",
+    "Adaptation Plan includes projections for potential climate-change ",
+    "impacts on buildings, municipal operations, the local environment, ",
+    "and Montreal communities.",
+    "<p>The datasets visualized here are publicly available through the ",
+    "Montreal Open Data Portal.",
+    "<ul><li>Heat waves include a range of extreme heat events based on ",
+    "temperature and duration. Montreal has generally seen an upward trend ",
+    "in extreme heat events, most noticeably during the 2000s. Heat waves ",
+    "are especially of concern in Montreal due to more than one quarter ",
+    "(28%) of the island containing heat islands.",
+    "<li>Flooding, specifically river flooding, refers to flow rate or river ",
+    "level exceeding the critical threshold. The Montreal agglomeration's ",
+    "flood risk is concentrated along the Des Prairies River.",
+    "<li>Heavy rain can cause rivers to overflow, put strain on ",
+    "infrastructures, cause public health problems, and negatively affect ",
+    "natural environments. Episodes of heavy rain are on the upward trend ",
+    "in Quebec.",
+    "<li>Drought includes meteorological drought (amount of precipitation), ",
+    "agricultural drought (soil dryness), hydrological drought (surface and ",
+    "groundwaters), and socioeconomic drought (actions of humans on water ",
+    "resources). Montreal has seen a very slight upward trend in ",
+    "meteorological droughts. <li>Destructive storms include wind storms, ",
+    "hail storms, heavy snowstorms, and freezing rain. Events of freezing ",
+    "rain increased 26% from 1979 to 2008, and heavy snowstorms have also ",
+    "increased over the past 70 years.</ul>")) |> 
   add_row(tab = "ped", type = "title",
           text = "Pedestrian capacity for social distancing") |> 
   add_row(tab = "housing", type = "title", text = "The housing system") |> 

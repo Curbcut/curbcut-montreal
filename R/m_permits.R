@@ -31,7 +31,7 @@ permits_UI <- function(id) {
         div(id = NS(id, "slider_switch"),
             checkboxInput(inputId = NS(id, "bi_time"),
                           label = i18n$t("Compare dates"))),
-        shinyjs::hidden(checkboxInput(
+        hidden(checkboxInput(
           inputId = NS(id, "grid"), 
           label = i18n$t("250-metre grid"))),
         year_disclaimer_UI(NS(id, "disclaimers")),
@@ -94,18 +94,18 @@ permits_server <- function(id) {
     
     # Enable or disable first and second slider
     observeEvent(input$bi_time, {
-      shinyjs::toggle("left_bi_time", condition = input$bi_time)
-      shinyjs::toggle("left", condition = !input$bi_time)})
+      toggle("left_bi_time", condition = input$bi_time)
+      toggle("left", condition = !input$bi_time)})
     
     # If we aren't in choropleth, toggle off the zoom and grid checkbox
     observeEvent(choropleth(), {
-      shinyjs::toggle("grid", condition = choropleth())
+      toggle("grid", condition = choropleth())
     })
     
     # If we aren't in choropleth, toggle off the zoom and grid checkbox
     observeEvent(input$grid, {
-      shinyjs::toggle("zoom-auto", condition = !input$grid)
-      shinyjs::toggle("zoom-slider", condition = !input$grid)
+      toggle("zoom-auto", condition = !input$grid)
+      toggle("zoom-slider", condition = !input$grid)
     })
     
     # Time variable depending on which slider
@@ -184,7 +184,7 @@ permits_server <- function(id) {
     # Explore select
     # Update point on click
     observeEvent(input$map_scatterplot_click, {
-      lst <- jsonlite::fromJSON(input$map_scatterplot_click)$index
+      lst <- fromJSON(input$map_scatterplot_click)$index
       if (is.null(lst)) selection(NA) else {
         # This is a hack because of a mapdeck bug
         selection(data()[lst + 1,]$ID)

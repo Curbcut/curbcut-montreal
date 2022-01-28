@@ -53,7 +53,8 @@ map_change <- function(id_map, x, df, zoom = df, click = reactive(NULL),
   
   observeEvent({#legend_selection()
     x()
-    df()}, {
+    df()
+    zoom()}, {
       
       # Used at all geometries:
       update_and_clean <- function() {
@@ -65,9 +66,8 @@ map_change <- function(id_map, x, df, zoom = df, click = reactive(NULL),
       }
       
       # Clear layer_ids fed with polygons_to_clear
-      purrr::walk(polygons_to_clear, ~{
-        mapdeck_update(map_id = id) |> clear_polygon(.x)
-      })
+      walk(polygons_to_clear, ~{
+        mapdeck_update(map_id = id) |> clear_polygon(.x)})
       
       # Error handling
       if (geom_type() == "error") stop("`geom_type` invalid in `map_change`.")
@@ -183,14 +183,14 @@ map_change <- function(id_map, x, df, zoom = df, click = reactive(NULL),
     
     if (geom_type() == "polygon") {
       
-      select_id <- tryCatch(jsonlite::fromJSON(selection())$object$properties$id,
+      select_id <- tryCatch(fromJSON(selection())$object$properties$id,
                             error = function(e) NULL)
       if (is.null(select_id)) select_id <- NA
       return(select_id)
       
     } else if (geom_type() == "point") {
       
-      select_id <- tryCatch(jsonlite::fromJSON(selection(x()[lst + 1,]$ID))$object$properties$id,
+      select_id <- tryCatch(fromJSON(selection(x()[lst + 1,]$ID))$object$properties$id,
                             error = function(e) NULL)
       if (is.null(select_id)) select_id <- NA
       return(select_id)
@@ -205,8 +205,8 @@ map_change <- function(id_map, x, df, zoom = df, click = reactive(NULL),
     
     if (df() != "building" || is.na(select_id())) return(NULL)
     
-    lat <- jsonlite::fromJSON(selection())$lat
-    lon <- jsonlite::fromJSON(selection())$lon
+    lat <- fromJSON(selection())$lat
+    lon <- fromJSON(selection())$lon
     
     sel_coord <- 
       c(lon, lat) |> 
