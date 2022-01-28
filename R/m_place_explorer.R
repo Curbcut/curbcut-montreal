@@ -257,19 +257,30 @@ place_explorer_server <- function(id) {
               )
             })
         })
+      
+
+      # Change class of a ui depending on its location
 
       # Prepare the general UI UI of blocks
+      
       fixedPage(
+      inlineCSS(list(.smallblock = "width: 45%")),
+      inlineCSS(list(.bigblock = "width: calc(90% + 20px)")),
+        
         htmlOutput(NS(id, "title"), 
                    style = paste0("margin-top: 150px; padding: 5px; ",
                                   "font-size: 11px;")),
-        map(themes, ~{
+        imap(themes, ~{
+          
+          # Only first element starts with a bigblock
+          block_size <- if (.y == 1) "bigblock" else "smallblock"
+          
           tagList(uiOutput(
             outputId = eval(parse(text = paste0("NS(id, 'theme_", .x, "')"))),
-            style = paste0("padding: 20px; width: 45%; margin: 10px; ",
+            style = paste0("padding: 20px; margin: 10px; ",
                            "height: 33vh; display: inline-grid; ",
                            "overflow-y: auto; overflow-x: hidden;"), 
-            class = "panel panel-default"))
+            class = paste0("panel panel-default ", block_size)))
         })
       )
       
