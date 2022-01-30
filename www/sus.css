@@ -3,7 +3,11 @@
 }
 
 :root {
-  --nav-content: var(--dark-blue);
+  --primary: var(--dark-blue);
+}
+
+:root {
+  --nav-content: var(--primary);
 }
 
 
@@ -35,16 +39,71 @@
   text-shadow: none !important;
 }
 
-.navbar-header a#title {
-  display: inline-block;
-  color: var(--nav-content);
-  font-family: 'sus-brand';
-  transform: skew(-8deg, 0deg);
+.navbar-fixed {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  height: 100%;
+  width: min-content;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  align-content: center;
 }
 
-.navbar-nav a {
+.navbar-fixed a,
+.navbar-fixed a > span,
+.navbar-fixed > div,
+.navbar-fixed > div > button,
+.navbar-fixed > div > button.btn.btn-circle  {
+  width: auto;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  align-content: flex-start;
+  border: none;
+  background: none;
+}
+
+.navbar-fixed a,
+.navbar-fixed > div > button {
+  padding-right: 15px;
+  padding-left: 15px;
+}
+
+.navbar-fixed > div > button.btn.btn-circle  {
+  border: none;
+  background: none;
+  border-radius: unset;
+  font-size: inherit;
+  text-align: inherit;
+  line-height: inherit;
+  padding-bottom: unset;
+  padding-top: unset;
+  padding-right: 15px;
+  padding-left: 15px;
+}
+
+.navbar-fixed span.material-icons {
+  color: var(--nav-content) !important;
+  transform: scale(0.8, 0.8);
+}
+
+.navbar-fixed a span.material-icons:not(:last-child) {
+  margin-right: 0.2em;
+}
+
+.navbar-header a, .navbar-nav a, .navbar-fixed a  {
   color: var(--nav-content) !important;
   font-family: 'sus-label';
+  white-space: nowrap;
+}
+
+.navbar-header a#title {
+  display: inline-block;
+  font-family: 'sus-brand';
+  transform: skew(-8deg, 0deg);
 }
 
 .navbar[role="navigation"] a:focus {

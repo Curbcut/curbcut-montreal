@@ -24,6 +24,7 @@ suppressPackageStartupMessages({
   library(DT)
   library(qs)
   library(glue)
+  library(metathis)
 })
 
 
