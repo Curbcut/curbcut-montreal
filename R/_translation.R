@@ -42,7 +42,16 @@ sus_translate_list <- function(x) {
 
 # Reactive translation function for text, lists and png -------------------
 
-sus_translate <- function(x) {
+sus_translate <- function(...) {
+  
+  # Error if we provide lists + character vectors unintentionally
+  args <- list(...)
+  error_check <- map_lgl(args, inherits, "list")
+  stopifnot(length(error_check) == sum(error_check) || sum(error_check) == 0)
+  
+  x <- c(...)
+  if (!is.list(x)) x <- paste0(..., collapse = "")
+  
   
   # Return input if we're not in an active Shiny context
   if (is.null(getDefaultReactiveDomain())) return(x)
