@@ -1,7 +1,7 @@
 ##### SUS SERVER SCRIPT ########################################################
 
 languageButtonLabel <- function(text) {
-  as.character(tags$span(tags$span(class="material-icons", "language"), text))
+  as.character(tags$span(tags$span(class="material-icons", "language"), span(text)))
 }
 
 shinyServer(function(input, output, session) {

@@ -1,5 +1,6 @@
 ##### SUS UI SCRIPT ############################################################
 
+# Make a standard navbarPage with addition fixed-position controls
 navbarPageWithInputs <- function(..., inputs) {
   navbar <- navbarPage(...)
   form <- tags$div(class = "navbar-fixed", inputs)
@@ -8,6 +9,7 @@ navbarPageWithInputs <- function(..., inputs) {
   navbar
 }
 
+# Replace the inner text of a <button> tag with a Material icon span
 materialIconButton <- function(tag, icon) {
   tag <- tagSetChildren(tag, .cssSelector = "button", span(class="material-icons", icon))
   tag
@@ -95,8 +97,8 @@ ui <- function(request) {
       # Language toggle
       actionLink(
         inputId = "language_button",
-        style="min-width: 108px;",
-        label = span(span(class="material-icons", "language"), "English")),
+        style="min-width: 112px;",
+        label = span(span(class="material-icons", "language"), span("English"))),
       
       # Actions dropdown
       materialIconButton(dropdownButton(inputId = "settings",

@@ -1,42 +1,53 @@
+/* define colors */
 :root {
   --dark-blue: #4a5c83;
+  --muted-green: #b8d6be;
+  --muted-blue: #b5c0da;
+  --light-muted-green: #ddeee0;
+  --light-muted-blue: #d8dfee;
+  --test: #178acc;
 }
 
+/* define color roles */
 :root {
   --primary: var(--dark-blue);
+  --primary-bg: white;
+  --primary-bg-hover: var(--light-muted-blue);
+  --primary-bg-active: var(--muted-blue);
+  --primary-bg-focus: var(--muted-blue);
+  --primary-bg-open: var(--light-muted-green);
 }
 
+/* define nav style variables */
 :root {
-  --nav-content: var(--primary);
+  --nav-content-color: var(--primary);
+  --nav-content-active-bg-color: var(--primary-bg-active);
+  --nav-content-focus-bg-color: var(--primary-bg-focus);
+  --nav-content-hover-bg-color: var(--primary-bg-hover);
+  --nav-content-current-bg-color: var(--primary-bg-open);
+  --default-padding: 15px;
 }
 
-
+/* define font families */ 
 @font-face {
-  font-family: sus-brand;
+  font-family: ff-brand;
   src: url("fonts/Outfit-Bold.ttf");
 }
 
 @font-face {
-  font-family: sus-label;
+  font-family: ff-label;
   src: url("fonts/Outfit-Regular.ttf");
 }
 
 @font-face {
-  font-family: sus-text;
+  font-family: ff-text;
   src: url("fonts/SourceSansPro-Regular.ttf");
 }
 
-.navbar[role="navigation"] {
+
+.navbar-default {
   background: none;
   border-bottom: none;
-}
-
-.navbar a:hover, .navbar a:focus {
-  text-decoration: none;
-}
-
-.navbar a {
-  text-shadow: none !important;
 }
 
 .navbar-fixed {
@@ -49,6 +60,15 @@
   flex-direction: row;
   align-items: flex-end;
   align-content: center;
+}
+
+.navbar a {
+  text-shadow: none !important;
+  text-decoration: none !important;
+}
+
+.navbar * {
+  color: var(--nav-content-color) !important;
 }
 
 .navbar-fixed a,
@@ -68,8 +88,8 @@
 
 .navbar-fixed a,
 .navbar-fixed > div > button {
-  padding-right: 15px;
-  padding-left: 15px;
+  padding-right: var(--default-padding);
+  padding-left: var(--default-padding);
 }
 
 .navbar-fixed > div > button.btn.btn-circle  {
@@ -81,31 +101,96 @@
   line-height: inherit;
   padding-bottom: unset;
   padding-top: unset;
-  padding-right: 15px;
-  padding-left: 15px;
+  padding-right: var(--default-padding);
+  padding-left: var(--default-padding);
+  -webkit-appearance: unset;
 }
 
-.navbar-fixed span.material-icons {
-  color: var(--nav-content) !important;
-  transform: scale(0.8, 0.8);
+/* make Material icons a little smaller */
+span.material-icons {
+  transform: scale(0.9, 0.9);
 }
 
-.navbar-fixed a span.material-icons:not(:last-child) {
+/* give Material icons some breathing room when used before/after other content */
+span.material-icons:not(:last-child) {
   margin-right: 0.2em;
 }
 
+span.material-icons:not(:first-child) {
+  margin-left: 0.2em;
+}
+
 .navbar-header a, .navbar-nav a, .navbar-fixed a  {
-  color: var(--nav-content) !important;
-  font-family: 'sus-label';
+  font-family: 'ff-label';
   white-space: nowrap;
 }
 
 .navbar-header a#title {
   display: inline-block;
-  font-family: 'sus-brand';
+  font-family: 'ff-brand';
   transform: skew(-8deg, 0deg);
 }
 
-.navbar[role="navigation"] a:focus {
-  background: none;
+.navbar-default a:hover:not(#title),
+.navbar-default button.btn.btn-circle:hover {
+  background-color: var(--nav-content-hover-bg-color) !important;
+  box-shadow: none !important;
+}
+
+.navbar-default a:active:not(#title),
+.navbar-default button.btn.btn-circle:active {
+  background-color: var(--nav-content-focus-bg-color) !important;
+  box-shadow: none !important;
+}
+
+.nav .open > a,
+.nav .open > a:hover,
+.nav .open > a:focus,
+.navbar-default .navbar-nav > .open > a
+.navbar-default .navbar-nav > .open > a:hover,
+.navbar-default .navbar-nav > .open > a:active,
+.navbar-default .navbar-nav > .open > a:focus,
+.navbar-default a:focus:not(#title),
+.navbar-default button.btn.btn-circle:focus {
+  background-color: var(--nav-content-focus-bg-color) !important;
+  box-shadow: none !important;
+}
+
+.navbar-default .navbar-nav > .active > a,
+.navbar-default .navbar-nav > .active > a:focus,
+.navbar-default .navbar-nav > .active > a:focus:not(#title)  {
+  background-color: var(--nav-content-current-bg-color) !important;
+  box-shadow: none !important;
+}
+
+ul.dropdown-menu > li {
+  margin-left: 0px !important;
+  margin-right: 0px !important;
+}
+
+#dropdown-menu-settings {
+  right: 0px !important;
+}
+
+.navbar {
+  margin-bottom: 0px !important;
+}
+
+body > div.container-fluid {
+  padding-left: 0px;
+  padding-right: 0px;
+}
+
+div.tab-content > div.tab-pane > div.container {
+  height: calc(100vh - 50px) !important;
+  overflow-y: unset !important;
+}
+
+.mapdeck_div {
+  height: calc(100vh - 50px) !important;
+}
+
+.sidebar_content {
+  padding-top: var(--default-padding);
+  padding-left: var(--default-padding);
 }
