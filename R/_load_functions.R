@@ -12,7 +12,7 @@
 # the "global" environment. We can get the current environment of the shiny
 # session, and feed it to the local argument.
 
-envir <- rlang::get_env()
+envir <- rlang::get_env(\(x) x)
 
 walk(list.files("R/functions/"), ~{
   source(paste0("R/functions/", .x), local = envir)
