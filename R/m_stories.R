@@ -10,7 +10,7 @@ stories_UI <- function(id) {
       sidebar_UI(
         NS(id, "sidebar"),
         hr(id = NS(id, "hr")),
-        actionLink(NS(id, "back"), i18n$t("Back to the map")))),
+        actionLink(NS(id, "back"), sus_translate("Back to the map")))),
     
     fillCol(
       

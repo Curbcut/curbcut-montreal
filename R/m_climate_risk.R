@@ -12,7 +12,7 @@ climate_risk_UI <- function(id) {
         select_var_UI(NS(id, "left"), var_list_climate_risk), 
         checkboxInput(
           inputId = NS(id, "grid"), value = TRUE,
-          label = i18n$t("250-metre grid")),
+          label = sus_translate("250-metre grid")),
         div(class = "bottom_sidebar",
             tagList(legend_UI(NS(id, "legend")),
                     zoom_UI(NS(id, "zoom"), map_zoom_levels))))),

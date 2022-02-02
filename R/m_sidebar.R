@@ -8,7 +8,7 @@ sidebar_UI <- function(id, ...) {
         tagList(
           uiOutput(NS(id, "title")),
           uiOutput(NS(id, "title_main")),
-          actionLink(NS(id, "more_info"), i18n$t("Learn more")),
+          actionLink(NS(id, "more_info"), sus_translate("Learn more")),
           hidden(uiOutput(outputId = NS(id, "title_extra")))),
     ...
   ))

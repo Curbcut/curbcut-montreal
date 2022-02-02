@@ -9,10 +9,10 @@ alley_UI <- function(id) {
       # Sidebar
       sidebar_UI(
         NS(id, "sidebar"),
-        checkboxInput(inputId = NS(id, "focus_visited"), label = i18n$t(
+        checkboxInput(inputId = NS(id, "focus_visited"), label = sus_translate(
           "Focus on green alleys visited by our team")),
         select_var_UI(NS(id, "left"), var_list_left_alley, 
-                      label = i18n$t("Grouping")), 
+                      label = sus_translate("Grouping")), 
         div(class = "bottom_sidebar", 
             tagList(legend_UI(NS(id, "legend")), 
                     zoom_UI(NS(id, "zoom"), map_zoom_levels))))),

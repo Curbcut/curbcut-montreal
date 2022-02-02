@@ -12,7 +12,7 @@ housing_UI <- function(id) {
         select_var_UI(NS(id, "left"), vars_housing_left), 
         sliderInput(
           NS(id, "slider_uni"), 
-          i18n$t("Select a year"),
+          sus_translate("Select a year"),
           min = census_min,
           max = census_max,
           step = 5, sep = "",
@@ -20,7 +20,7 @@ housing_UI <- function(id) {
           width = "95%"),
         sliderInput(
           NS(id, "slider_bi"), 
-          i18n$t("Select two years"), 
+          sus_translate("Select two years"), 
           min = census_min,
           max = census_max, 
           step = 5, sep = "", 
@@ -28,7 +28,7 @@ housing_UI <- function(id) {
           width = "95%"),
         checkboxInput(
           inputId = NS(id, "slider_switch"),
-          label = i18n$t("Compare dates"), 
+          label = sus_translate("Compare dates"), 
           width = "95%"),
         year_disclaimer_UI(NS(id, "disclaimer")),
         div(class = "bottom_sidebar", 

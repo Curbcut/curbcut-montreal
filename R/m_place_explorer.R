@@ -240,10 +240,10 @@ place_explorer_server <- function(id) {
           names(selection_list) <- as.list(variables_arranged$var_title)
               tagList(
                 div(id = eval(parse(text = paste0("NS(id, 'theme_", .x, "_block_title')"))),
-                    fluidRow(column(width = 7, h4(i18n$t(.x))),
+                    fluidRow(column(width = 7, h4(sus_translate(.x))),
                              column(width = 5, align = "right", 
                                     actionLink(inputId = eval(parse(text = paste0("NS(id, 'theme_", .x, "_link')"))), 
-                                               label = i18n$t("Disabled action Link"))))),
+                                               label = sus_translate("Disabled action Link"))))),
                 
                 div(id = eval(parse(text = paste0("NS(id, 'theme_", .x, "_block_content')"))),
                     selectInput(inputId = eval(parse(text = paste0("NS(id, 'theme_", .x, "_block_select')"))),

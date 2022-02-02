@@ -89,7 +89,7 @@ dyk_server <- function(id, var_left, var_right) {
       }
       
       if (nrow(report) > 0) {
-        sus_translate(report$text) %>%
+        map_chr(report$text, sus_translate) %>%
         paste("<li> ", ., collapse = "") %>%
         paste0("<ul>", ., "</ul>") %>%
         HTML()

@@ -6,10 +6,10 @@ compare_UI <- function(id, var_list) {
     
     conditionalPanel(
       condition = "output.show_panel == true", ns = NS(id),
-      fluidRow(column(width = 7, h4(i18n$t("Compare"))),
+      fluidRow(column(width = 7, h4(sus_translate("Compare"))),
                column(width = 5, align = "right", 
                       actionLink(inputId = NS(id, "hide"), 
-                                 label = i18n$t("Hide"))))),
+                                 label = sus_translate("Hide"))))),
     
     conditionalPanel(
       condition = "output.hide_status == 1", ns = NS(id),

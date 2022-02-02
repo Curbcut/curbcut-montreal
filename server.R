@@ -8,19 +8,18 @@ shinyServer(function(input, output, session) {
   
   # Language button ---------------------------------------------------------
   
+  
+  # Language reactive variable, and JS set language. Both onclick of the 
+  # language button.
   sus_rv$lang <- 
     eventReactive(input$language_button, {
       if (input$language_button[1] %% 2 != 0) "en" else "fr"
     }, ignoreNULL = FALSE)
-  
   observeEvent(input$language_button,{
     if (input$language_button[1] %% 2 != 0) {
-      update_lang(session, "en")
-      updateActionLink(inputId = "language_button", label = "Français")
+      js$setLanguage("en")
     } else {
-      update_lang(session, "fr")
-      updateActionLink(inputId = "language_button", label = "English")
-      
+      js$setLanguage("fr")
     }
   })
   

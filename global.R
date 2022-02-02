@@ -6,7 +6,6 @@ suppressPackageStartupMessages({
   library(shiny)
   library(shinyjs)
   library(shinyWidgets)
-  library(shiny.i18n)
   library(jsonify)
   library(jsonlite)
 
@@ -87,9 +86,6 @@ island_CSDUID <-
 
 # Translation -------------------------------------------------------------
 
-suppressWarnings({
-  i18n <- Translator$new(translation_csvs_path = "translations/")})
-i18n$set_translation_language("fr")
 translation_fr <- qread("data/translation_fr.qs")
 sus_rv <- reactiveValues(lang = "fr")
 
@@ -327,3 +323,26 @@ navbar_js <- "@media (max-width: 1050px) {
         display: none !important;
     }
 }"
+
+set_ui_lang <- "shinyjs.setLanguage = function(language) {
+    document.querySelector('body').className = `user-lang-${language}`;
+  };"
+
+lang_classes <- "
+    .lang-en {
+      visibility: hidden;
+      display: none;
+    }
+    .lang-fr {
+      visibility: hidden;
+      display: none;
+    }
+    
+    .user-lang-en .lang-en {
+      visibility: visible !important;
+      display: inline; 
+    }
+    .user-lang-fr .lang-fr {
+      visibility: visible !important;
+      display: inline; 
+    }"

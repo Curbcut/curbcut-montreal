@@ -53,69 +53,33 @@ sus_translate <- function(...) {
   if (!is.list(x)) x <- paste0(..., collapse = "")
   
   
-  # Return input if we're not in an active Shiny context
-  if (is.null(getDefaultReactiveDomain())) return(x)
+  # Return input if we're not in a Shiny context
+  if (!shiny::isRunning()) return(x) 
+  
+  # If not in a reactive shiny context, return 2 spans.
+  if (is.null(getDefaultReactiveDomain())) return(
+    tagList(tags$span(class = "lang-en", x),
+            tags$span(class = "lang-fr", 
+                      translation_fr[translation_fr$en == x, ]$fr))
+  )
   
   # English
-  if (sus_rv$lang() == "en") {
-    x
-    
-    # French
-  } else if (sus_rv$lang() == "fr") {
-    
-    # List or vector of length > 1
-    if (is.list(x) || length(x) > 1) {
-      sus_translate_list(x)
-      
-      # png
-    } else if (any(str_detect(x, "_en.png"))) {
-      str_replace(x, "_en.png", "_fr.png")
-      
-      # Character
-    } else if (is.character(x)) {
-      
-      # In some cases, there are multiple different strings to translate (e.g. 
-      # m_dyk and the list created there). This loop will take care of it.
-      translated <- vector("character", length(x))
-      
-      for (i in seq_along(x)) {
-        out <- 
-          translation_fr %>%
-          filter(en == x[[i]]) %>%
-          pull()
-        
-        if (length(out) == 0) {
-          
-          # NO AUTOMATIC TRANSLATION
-          
-            # try({y <- unlist(str_split(x, "(?=\\{)"))
-            #     splited_text <- unlist(str_split(y, "(?<=\\})"))
-            # 
-            #     which_to_translate <- !unlist(lapply(as.list(splited_text), str_detect, "\\{.*\\}"))
-            # 
-            #     to_unsplit <- modify_if(as.list(splited_text), .p = which_to_translate,
-            #                             .f = translate_fun)
-            # 
-            #     deepled <- str_c(str_trim(to_unsplit), collapse = " ")},
-            #     silent = T)
-            # 
-            # if (!exists("deepled")) deepled <- x
-            # 
-            # warning("No translation text found for DDESSDDE", x,
-            #         "FFINNALL1. Automatic translation performed: HASSTTA", deepled, "FFINNALL2,",
-            #         call. = FALSE)
-            # out <- deepled[[i]]
-
-          out <- x
-        }
-        
-        translated[i] <- out
-      }
-      
-      # For vectors with names (such as used for x axis of some modules' graph)
-      if (!is.null(names(x))) names(translated) <- names(x)
-      
-      translated
-    }
-  }
+  if (sus_rv$lang() == "en") return(x)
+  
+  # If not english, so french
+  # List
+  if (is.list(x)) return(sus_translate_list(x))
+  
+  # # PNG
+  # if (str_detect(x, "_en.png")) return(str_replace(x, "_en.png", "_fr.png"))
+  
+  # Character
+  translated <- translation_fr[translation_fr$en == x, ]$fr
+  # In case there is no translations:
+  if (length(translated) == 0) return(x)
+  
+  # For vectors with names (such as used for x axis of some modules' graph)
+  if (!is.null(names(x))) names(translated) <- names(x)
+  
+  translated
 }

@@ -7,7 +7,13 @@ ui <- function(request) {
   tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "bootstrap.min.css")),
   tags$head(tags$style(HTML(styler))),
   tags$head(tags$style(HTML(navbar_js))),
-  usei18n(i18n),
+  
+  # Add a class to the body, to toggle between languages.
+  tags$body(class = "user-lang-fr"),
+  # Add visible and hidden to classes, to switch between active language
+  tags$head(tags$style(HTML(lang_classes))),
+  # JS function to change body class when button is clicked
+  extendShinyjs(text = set_ui_lang, functions = "setLanguage"),
   
   # Settings button
   fixedPanel(

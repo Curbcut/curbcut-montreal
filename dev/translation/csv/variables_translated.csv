@@ -1,0 +1,342 @@
+en,fr
+Tenant-occupied (%),Locataire occupant (%)
+Average rent ($),Loyer moyen ($)
+Housing requiring major repairs (%),Logement nécessitant des réparations majeures (%)
+Average property value ($),Valeur moyenne des logements ($)
+One-year housing mobility (%),NA
+Five-year housing mobility (%),NA
+Median household income ($),Revenu médian des ménages ($)
+Income under $50k (%),Revenu inférieur à 50k (%)
+Income between $50k-$100k (%),Revenu entre 50k-100k (%)
+Income above $100k (%),Revenu supérieur à 100k (%)
+Immigrants (%),Immigrants (%)
+New immigrants (%),Nouveaux immigrants (%)
+Visible minorities (%),Minorités visibles (%)
+Aboriginal (%),NA
+Drive to work (%),Conducteur (%)
+Walk or cycle to work (%),À pied ou à vélo (%)
+Public transit to work (%),Transport en commun (%)
+Living alone,NA
+French only (%),NA
+English only (%),NA
+French and English (%),NA
+Neither French nor English (%),NA
+Aged between 0 and 14 (%),NA
+Aged between 15 and 64 (%),NA
+Aged 65 and above (%),NA
+Bachelor and above (%),NA
+"No certificate, diploma or degree (%)",NA
+Managerial and professional occupations (%),NA
+Creative occupations (%),NA
+Families with children (%),NA
+Unsuitable housing (%),Logement inadéquat (%)
+Renter housing stress (%),Locataires dépensant plus de 30% du revenu sur le logement (%)
+Owner housing stress (%),Propriétaires dépensant plus de 30% du revenu sur le logement (%)
+Unaffordable housing (%),Logement inabordable (%)
+Prevalence of low income (after-tax) (%),Prévalence de faible revenu (après taxe) (%)
+Commute under 15 minutes (%),NA
+Commute 15-45 minutes (%),NA
+Commute more than 45 minutes (%),NA
+CanALE index,Indice AVA-Can
+Drought vulnerability,Vulnérabilité aux sécheresses
+Flood vulnerability,Vulnérabilité aux crues
+Heavy rain vulnerability,Vulnérabilité aux pluies abondantes
+Destructive storm vulnerability,Vulnérabilité aux tempêtes destructrices
+Heat wave vulnerability,Vulnérabilité aux vagues de chaleur
+Collisions (cyclists),NA
+Collisions (other),NA
+Collisions (pedestrians),NA
+Collisions,NA
+"Collisions per 1,000 (cyclists)",NA
+"Collisions per 1,000 (other)",NA
+"Collisions per 1,000 (pedestrians)",NA
+"Collisions per 1,000",NA
+Collisions per sq km (cyclists),NA
+Collisions per sq km (other),NA
+Collisions per sq km (pedestrians),NA
+Collisions per sq km,NA
+Total jobs (weekday peak),NA
+Total jobs (weekday off-peak),NA
+Total jobs (weekday night),NA
+Total jobs (weekend peak),NA
+Total jobs (weekend off-peak),NA
+Total jobs (weekend night),NA
+Low-skill jobs (weekday peak),NA
+Low-skill jobs (weekday off-peak),NA
+Low-skill jobs (weekday night),NA
+Low-skill jobs (weekend peak),NA
+Low-skill jobs (weekend off-peak),NA
+Low-skill jobs (weekend night),NA
+High-skill jobs (weekday peak),NA
+High-skill jobs (weekday off-peak),NA
+High-skill jobs (weekday night),NA
+High-skill jobs (weekend peak),NA
+High-skill jobs (weekend off-peak),NA
+High-skill jobs (weekend night),NA
+Low-income jobs (weekday peak),NA
+Low-income jobs (weekday off-peak),NA
+Low-income jobs (weekday night),NA
+Low-income jobs (weekend peak),NA
+Low-income jobs (weekend off-peak),NA
+Low-income jobs (weekend night),NA
+Schools (weekday peak),NA
+Schools (weekday off-peak),NA
+Schools (weekday night),NA
+Schools (weekend peak),NA
+Schools (weekend off-peak),NA
+Schools (weekend night),NA
+Healthcare (weekday peak),NA
+Healthcare (weekday off-peak),NA
+Healthcare (weekday night),NA
+Healthcare (weekend peak),NA
+Healthcare (weekend off-peak),NA
+Healthcare (weekend night),NA
+Green alleys per sq km,NA
+"Green alleys per 1,000",NA
+Gentrification index,NA
+Borough park per sq km,NA
+"Borough park per 1,000",NA
+Large park per sq km,NA
+"Large park per 1,000",NA
+Other park per sq km,NA
+"Other park per 1,000",NA
+Road space per sq km,NA
+"Road space per 1,000",NA
+Under validation per sq km,NA
+"Under validation per 1,000",NA
+Total green space per sq km,NA
+"Total green space per 1,000",NA
+Tenant,NA
+Avg. rent,NA
+Repairs,NA
+Avg. value,NA
+1-year mob.,NA
+5-year mob.,NA
+Med. income,NA
+Inc. <$50k,NA
+Inc. $50-100k,NA
+Inc. >$100k,NA
+Immigrants,NA
+New immigrants,NA
+Vis. minorities,NA
+Aboriginal,NA
+Drive,NA
+Walk or cycle,NA
+Transit,NA
+TKTK,NA
+Fr. only,NA
+Eng. only,NA
+Fr. and Eng.,NA
+Non-official,NA
+0-14 yo,NA
+15-64 yo,NA
+6+5 yo,NA
+Bachelor+,NA
+No degree,NA
+Professional,NA
+Creative,NA
+With child,NA
+Unsuitable,NA
+Renter stress,NA
+Owner stress,NA
+Unaffordable,NA
+Low income,NA
+Commute <15m,NA
+Commute 14-45m,NA
+Commute >45m,NA
+CanALE,NA
+Drought,Sécheresses
+Flood,Inondations
+Heavy rain,Pluies abondantes
+Destr. storm,NA
+Heat wave,Vagues de chaleur
+Cyclists,NA
+Other,NA
+Pedestrian,NA
+Total,NA
+Crash /1k cyc.,NA
+Crash /1k other,NA
+Crash /1k ped.,NA
+Crash /1k total,NA
+Crash /sqkm cyc,NA
+Crash /sqkm oth,NA
+Crash /sqkm ped,NA
+Crash /sqkm tot,NA
+Total WKP,NA
+Total WKOP,NA
+Total WKN,NA
+Total WEP,NA
+Total WEOP,NA
+Total WEN,NA
+Low-skill WKP,NA
+Low-skill WKOP,NA
+Low-skill WKN,NA
+Low-skill WEP,NA
+Low-skill WEOP,NA
+Low-skill WEN,NA
+Hi-skill WKP,NA
+Hi-skill WKOP,NA
+Hi-skill WKN,NA
+Hi-skill WEP,NA
+Hi-skill WEOP,NA
+Hi-skill WEN,NA
+Low-inc WKP,NA
+Low-inc WKOP,NA
+Low-inc WKN,NA
+Low-inc WEP,NA
+Low-inc WEOP,NA
+Low-inc WEN,NA
+Schools WKP,NA
+Schools WKOP,NA
+Schools WKN,NA
+Schools WEP,NA
+Schools WEOP,NA
+Schools WEN,NA
+Healthcare WKP,NA
+Healthcare WKOP,NA
+Healthcare WKN,NA
+Healthcare WEP,NA
+Healthcare WEOP,NA
+Healthcare WEN,NA
+Alleys sqkm,NA
+"Alleys 1,000",NA
+Gentrification,NA
+Borough park sqkm,NA
+"Borough park 1,000",NA
+Large park sqkm,NA
+"Large park 1,000",NA
+Other park sqkm,NA
+"Other park 1,000",NA
+Road space sqkm,NA
+"Road space 1,000",NA
+Under validation sqkm,NA
+"Under validation 1,000",NA
+Total sqkm,NA
+"Total 1,000",NA
+the percentage of private dwellings occupied by tenants,le pourcentage de logements privés occupés par des locataires
+the average rent paid by tenants per month,le loyer moyen payé par les locataires par mois
+the percentage of households living in dwellings requiring major repairs,le pourcentage de ménages vivant dans des logements nécessitant des réparations importantes
+the average value of owner-occupied dwellings,la valeur moyenne des logements occupés par leur propriétaire
+the percentage of households that have moved in the past year,le pourcentage de ménages qui ont déménagé au cours de l'année écoulée
+the percentage of households that have moved in the past five years,le pourcentage de ménages qui ont déménagé au cours des cinq dernières années
+median before-tax household income,revenu médian des ménages avant impôt
+"the percentage of households with an income less then $50,000",le pourcentage de ménages dont le revenu est inférieur à 50 000 $.
+"the percentage of households with an income between$50,000 and $100,000",NA
+"the percentage of households with an income higher than $100,000",le pourcentage de ménages dont le revenu est supérieur à 100 000 dollars
+the percentage of residents who are foreign-born,le pourcentage de résidents nés à l'étranger
+the percentage of people who have immigrated in the last five years,le pourcentage de personnes qui ont immigré au cours des cinq dernières années
+the percentage of people who identify as part of one or more visible minority groups,le pourcentage de personnes qui s'identifient comme faisant partie d'un ou plusieurs groupes de minorités visibles
+the percentage of people who are of aboriginal identity,le pourcentage de personnes qui ont une identité autochtone
+the percentage of people who drive a privately owned car or truck to work,le pourcentage de personnes qui conduisent une voiture ou un camion privé pour se rendre au travail
+the percentage of people who walk or cycle to work,le pourcentage de personnes qui se rendent au travail à pied ou à vélo
+the percentage of people who use public transit to get to work,le pourcentage de personnes qui utilisent les transports en commun pour se rendre au travail
+the percentage of one person households out of total households,le pourcentage de ménages d'une personne par rapport au total des ménages
+the percentage of individuals that only know French as an official language,le pourcentage d'individus qui ne connaissent que le français comme langue officielle
+the percentage of individuals that only know English as an official language,le pourcentage d'individus qui ne connaissent que l'anglais comme langue officielle
+the percentage of individuals that know both official languages (French and English),le pourcentage de personnes qui connaissent les deux langues officielles (français et anglais)
+the percentage of individuals that do not know either of the official languages (French or English),le pourcentage d'individus qui ne connaissent aucune des deux langues officielles (français ou anglais)
+the percentage of the population aged between 0 and 14 years old,le pourcentage de la population âgée de 0 à 14 ans
+the percentage of the population aged between 15 and 64 years old,le pourcentage de la population âgée de 15 à 64 ans
+the percentage of the population aged 65 and above,le pourcentage de la population âgée de 65 ans et plus
+the percentage of the population aged 15 and over holding a degree at bachelor level or above,le pourcentage de la population âgée de 15 ans et plus détenant un diplôme de niveau licence ou plus
+"the percentage of the population aged 15 and over with no certificate, diploma or degree","le pourcentage de la population âgée de 15 ans et plus ne possédant aucun certificat, diplôme ou grade"
+"the percentage of the workforce in professional and managerial occupations, based on the North American Industry Classification System","le pourcentage de la main-d'œuvre dans les professions libérales et les postes de gestion, selon le Système de classification des industries de l'Amérique du Nord."
+"the percentage of the workforce in artistic and cultural occupations, based on the North American Industry Classification System","le pourcentage de la main-d'œuvre dans les professions artistiques et culturelles, selon le Système de classification des industries de l'Amérique du Nord."
+the percentage of census families with children out of total households,le pourcentage de familles de recensement avec enfants par rapport au total des ménages
+the percentage of households living in accommodations without enough bedrooms,NA
+the percentage of renter households that spend more than 30% of their income on shelter costs,le pourcentage de ménages locataires qui consacrent plus de 30 % de leur revenu aux frais de logement
+the percentage of owner households that spend more than 30% of their income on shelter costs,le pourcentage de ménages propriétaires qui consacrent plus de 30 % de leur revenu aux frais de logement
+the percentage of dwellings for which residents pay more than 30% of income on housing costs,le pourcentage de logements pour lesquels les résidents consacrent plus de 30 % de leurs revenus aux frais de logement
+"the prevalence of low income in private households based on the Low-income measure, after-tax (LIM-AT)",NA
+the percentage of people whose commute time is less than 15 minutes,le pourcentage de personnes dont le temps de trajet est inférieur à 15 minutes
+the percentage of people whose commute time is between 15 and 45 minutes,le pourcentage de personnes dont le temps de trajet est compris entre 15 et 45 minutes
+the percentage of people whose commute time is longer than 45 minutes,le pourcentage de personnes dont le temps de trajet est supérieur à 45 minutes
+the potential for active living,le potentiel de la vie active
+the vulnerability to climate-change related drought,NA
+the vulnerability to climate-change related flooding,NA
+the vulnerability to climate-change related heavy rain,NA
+the vulnerability to climate-change related destructive storms,NA
+the vulnerability to climate-change related heat waves,NA
+the total number of car collisions involving cyclists,NA
+the total number of car collisions involving neither pedestrians or cyclists,NA
+the total number of car collisions involving pedestrians,NA
+the total number of car collisions,NA
+"the total number of car collisions involving cyclists per 1,000 residents",NA
+"the total number of car collisions involving neither pedestrians or cyclists per 1,000 residents",NA
+"the total number of car collisions involving pedestrians per 1,000 residents",NA
+"the total number of car collisions per 1,000 residents",NA
+the total number of car collisions involving cyclists per square kilometre,NA
+the total number of car collisions involving neither pedestrians or cyclists per square kilometre,NA
+the total number of car collisions involving pedestrians per square kilometre,NA
+the total number of car collisions per square kilometre,NA
+the total number of jobs accessible within 30 minutes at weekday peak service,NA
+the total number of jobs accessible within 30 minutes at weekday off-peak service,NA
+the total number of jobs accessible within 30 minutes at weekday night service,NA
+the total number of jobs accessible within 30 minutes at weekend peak service,NA
+the total number of jobs accessible within 30 minutes at weekend off-peak service,NA
+the total number of jobs accessible within 30 minutes at weekend night service,NA
+the number of low-skill jobs accessible within 30 minutes at weekday peak service,NA
+the number of low-skill jobs accessible within 30 minutes at weekday off-peak service,NA
+the number of low-skill jobs accessible within 30 minutes at weekday night service,NA
+the number of low-skill jobs accessible within 30 minutes at weekend peak service,NA
+the number of low-skill jobs accessible within 30 minutes at weekend off-peak service,NA
+the number of low-skill jobs accessible within 30 minutes at weekend night service,NA
+the number of high-skill jobs accessible within 30 minutes at weekday peak service,NA
+the number of high-skill jobs accessible within 30 minutes at weekday off-peak service,NA
+the number of high-skill jobs accessible within 30 minutes at weekday night service,NA
+the number of high-skill jobs accessible within 30 minutes at weekend peak service,NA
+the number of high-skill jobs accessible within 30 minutes at weekend off-peak service,NA
+the number of high-skill jobs accessible within 30 minutes at weekend night service,NA
+"the number of jobs paying less than $30,000 accessible within 30 minutes at weekday peak service",NA
+"the number of jobs paying less than $30,000 accessible within 30 minutes at weekday off-peak service",NA
+"the number of jobs paying less than $30,000 accessible within 30 minutes at weekday night service",NA
+"the number of jobs paying less than $30,000 accessible within 30 minutes at weekend peak service",NA
+"the number of jobs paying less than $30,000 accessible within 30 minutes at weekend off-peak service",NA
+"the number of jobs paying less than $30,000 accessible within 30 minutes at weekend night service",NA
+the number of schools accessible within 30 minutes at weekday peak service,NA
+the number of schools accessible within 30 minutes at weekday off-peak service,NA
+the number of schools accessible within 30 minutes at weekday night service,NA
+the number of schools accessible within 30 minutes at weekend peak service,NA
+the number of schools accessible within 30 minutes at weekend off-peak service,NA
+the number of schools accessible within 30 minutes at weekend night service,NA
+the number of healthcare facilities accessible within 30 minutes at weekday peak service,NA
+the number of healthcare facilities accessible within 30 minutes at weekday off-peak service,NA
+the number of healthcare facilities within 30 minutes at weekday night service,NA
+the number of healthcare facilities accessible within 30 minutes at weekend peak service,NA
+the number of healthcare facilities accessible within 30 minutes at weekend off-peak service,NA
+the number of healthcare facilities accessible within 30 minutes at weekend night service,NA
+the number of square metres of green alley per square kilometre,NA
+"the number of square metres of green alley per 1,000 residents",NA
+the gentrification pressure an area is experiencing,NA
+the number of square metres of borough park per square kilometre,NA
+"the number of square metres of borough park per 1,000 residents",NA
+the number of square metres of large park per square kilometre,NA
+"the number of square metres of large park per 1,000 residents",NA
+the number of square metres of other park per square kilometre,NA
+"the number of square metres of other park per 1,000 residents",NA
+the number of square metres of road space per square kilometre,NA
+"the number of square metres of road space per 1,000 residents",NA
+the number of square metres of green space under validation per square kilometre,NA
+"the number of square metres of green space under validation per 1,000 residents",NA
+the number of square metres of total green space per square kilometre,NA
+"the number of square metres of total green space per 1,000 residents",NA
+Housing,Logement
+Income,Revenu
+Identity,NA
+Transport,Transport
+Family,NA
+Language,NA
+Age,NA
+Education,NA
+Employment,NA
+Urban life,La vie urbaine
+Climate,NA
+Insignificant,Insignifiant
+Minor,Mineur
+Moderate,Modéré
+Elevated,Élevé
+Major,Majeur
+None,NA
+Insig.,NA
+Mod.,NA
+Elev.,NA
