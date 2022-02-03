@@ -102,9 +102,3 @@ map_location <- c(-73.58, 45.53)
 widget_style <- "display: inline-block; padding: 5px; vertical-align: top;"
 
 
-
-# Functions and additional objects ----------------------------------------
-
-# Load design related functions and styling objects
-source("design.R")
-
