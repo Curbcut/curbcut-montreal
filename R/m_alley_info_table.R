@@ -26,9 +26,9 @@ alley_info_table <- function(id, select_id, ...) {
           alleys |>
           st_drop_geometry() |> 
           filter(ID == select_id()) |> 
-          mutate(name = str_glue(sus_translate(
+          mutate(name = sus_translate(
             "<p><b>{str_to_title(name)} in ",
-            "{name_2}</b></p>"))) |> 
+            "{name_2}</b></p>")) |> 
           select(-ID, -CSDUID, -visited, -name_2, -fill) |> 
           select_if(~sum(!is.na(.)) > 0) %>% 
           {if (nrow(.) > 0) as.list(.) else NULL}

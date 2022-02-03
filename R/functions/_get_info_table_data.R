@@ -178,8 +178,8 @@ get_info_table_data <- function(data, var_type, var_left, var_right, df,
   
   out$place_name <- case_when(
     df %in% c("building", "street") & build_str_as_DA ~
-      glue(sus_translate(
-        "The dissemination area around {select_name$name}")),
+      sus_translate(
+        "The dissemination area around {select_name$name}"),
     scale_sing == sus_translate("building") ~
       glue("{select_name$name}"),
     scale_sing == sus_translate("street") ~
@@ -187,11 +187,11 @@ get_info_table_data <- function(data, var_type, var_left, var_right, df,
     scale_sing == sus_translate("borough/city") ~
       glue("{select_name$name}"),
     scale_sing == sus_translate("census tract") ~
-      glue(sus_translate("Census tract {select_name$name}")),
+      sus_translate("Census tract {select_name$name}"),
     scale_sing == sus_translate("dissemination area") ~
-      glue(sus_translate("Dissemination area {select_name$name}")),
+      sus_translate("Dissemination area {select_name$name}"),
     scale_sing == sus_translate("250-m") ~
-      glue(sus_translate("The area around {select_name$name}")),
+      sus_translate("The area around {select_name$name}"),
     TRUE ~ NA_character_)
   
   if (grepl("select", out$var_type)) {
@@ -200,9 +200,9 @@ get_info_table_data <- function(data, var_type, var_left, var_right, df,
     
     out$place_heading <- case_when(
       df %in% c("building", "street") & build_str_as_DA ~
-        glue(sus_translate(select_name$name)),
+        sus_translate(select_name$name),
       scale_sing == sus_translate("borough/city") ~
-        glue(sus_translate("{select_name$name_2} of {out$place_name}")), 
+        sus_translate("{select_name$name_2} of {out$place_name}"), 
       scale_sing == sus_translate("250-m") ~ 
         sus_translate(select_name$name),
       TRUE ~ glue("{out$place_name} ({select_name$name_2})"))

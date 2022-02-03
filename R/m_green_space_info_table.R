@@ -9,16 +9,16 @@ green_space_info_table <- function(id, x, select_id, ...) {
       
       if (is.na(select_id())) {
         type <- if (nrow(x()) == nrow(green_space)) {
-          str_glue(sus_translate("a total of {nrow(x())} green spaces"))
+          sus_translate("a total of {nrow(x())} green spaces")
         } else {
-          str_glue(sus_translate("{nrow(x())} `{unique(x()$type)}`"))
+          sus_translate("{nrow(x())} `{unique(x()$type)}`")
         }
         
-        HTML(str_glue(sus_translate(
-          paste0("At the scale of the City of Montreal, there are {type}, ",
-                 "combining {pnr(sum(x()$area))} km^2. Their area range from ",
-                 "{pnr(min(x()$area))} and {pnr(max(x()$area))} km^2, with ",
-                 "an average of {pnr(mean(x()$area))} km^2."))))
+        HTML(sus_translate(
+          "At the scale of the City of Montreal, there are {type}, ",
+          "combining {pnr(sum(x()$area))} km^2. Their area range from ",
+          "{pnr(min(x()$area))} and {pnr(max(x()$area))} km^2, with ",
+          "an average of {pnr(mean(x()$area))} km^2."))
       } else {
         x <-
           x() |>
@@ -27,9 +27,9 @@ green_space_info_table <- function(id, x, select_id, ...) {
           mutate(borough_rank = rank(-area))
         
         type <- if (nrow(x()) == nrow(green_space)) {
-          str_glue(sus_translate("green space"))
+          sus_translate("green space")
         } else {
-          str_glue(sus_translate("`{unique(x()$type)}`"))
+          sus_translate("`{unique(x()$type)}`")
         }
         
         z <- x[x$ID == select_id(), ]
@@ -65,16 +65,16 @@ green_space_info_table <- function(id, x, select_id, ...) {
         total_rank <- ordinal_form(total_rank)
         borough_rank <- ordinal_form(borough_rank)
         
-        HTML(str_glue(sus_translate(
-          paste0("<p><b>{z$name}</b><p>",
-                 "<p>The green space {z$name} is a `{z$type}` of ",
-                 "{prettyNum(z$area, big.mark = ',')} m^2. It is ",
-                 "categorized as a `{z$type_2}`",
-                 "and is of `{z$property}` property. Its ",
-                 "management entity is `{z$management}`.</p>",
-                 "<p>It is the {total_rank}biggest {type} in the ",
-                 "City, and the {borough_rank} largest in {borough_name}.</p>"))))
-
+        HTML(sus_translate(
+          "<p><b>{z$name}</b><p>",
+          "<p>The green space {z$name} is a `{z$type}` of ",
+          "{prettyNum(z$area, big.mark = ',')} m^2. It is ",
+          "categorized as a `{z$type_2}`",
+          "and is of `{z$property}` property. Its ",
+          "management entity is `{z$management}`.</p>",
+          "<p>It is the {total_rank}biggest {type} in the ",
+          "City, and the {borough_rank} largest in {borough_name}.</p>"))
+        
       }
     })
   })

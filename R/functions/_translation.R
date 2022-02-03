@@ -42,7 +42,7 @@ sus_translate_list <- function(x) {
 
 # Reactive translation function for text, lists and png -------------------
 
-sus_translate <- function(...) {
+sus_translate <- function(..., .envir = parent.frame()) {
   
   # Error if we provide lists + character vectors unintentionally
   args <- list(...)
@@ -54,7 +54,7 @@ sus_translate <- function(...) {
   
   
   # Return input if we're not in a Shiny context
-  if (!shiny::isRunning()) return(x) 
+  if (!shiny::isRunning()) return(glue(x, .envir = .envir)) 
   
   # If not in a reactive shiny context, return 2 spans.
   if (is.null(getDefaultReactiveDomain())) return(
@@ -64,7 +64,7 @@ sus_translate <- function(...) {
   )
   
   # English
-  if (sus_rv$lang() == "en") return(x)
+  if (sus_rv$lang() == "en") return(glue(x, .envir = .envir))
   
   # If not english, so french
   # List
@@ -76,10 +76,10 @@ sus_translate <- function(...) {
   # Character
   translated <- translation_fr[translation_fr$en == x, ]$fr
   # In case there is no translations:
-  if (length(translated) == 0) return(x)
+  if (length(translated) == 0) return(glue(x, .envir = .envir))
   
   # For vectors with names (such as used for x axis of some modules' graph)
   if (!is.null(names(x))) names(translated) <- names(x)
   
-  translated
+  glue(translated, .envir = .envir)
 }

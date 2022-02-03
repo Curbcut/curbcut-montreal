@@ -6,8 +6,8 @@ get_disclaimer <- function(data, var_left, var_right, more, more_text) {
   
   # Same year selected
   if (length(var_left) == 2 && var_left[1] == var_left[2]) {
-    out <- c(out, list(str_glue(sus_translate(
-      "<p><i>Comparison requires two different dates.</i></p>"))))
+    out <- c(out, list(sus_translate(
+      "<p><i>Comparison requires two different dates.</i></p>")))
   }
   
   return(out)
@@ -69,10 +69,10 @@ get_disclaimer <- function(data, var_left, var_right, more, more_text) {
   #   # Year displayed LEFT
   #   if (length(var_left) == 1) {
   #     if (left_year != unique(time())) {
-  #       out <- c(out, list(str_glue(sus_translate(
+  #       out <- c(out, list(sus_translate(
   #         "<p style='font-size:11px; font-style:italic;'>",
   #         "Displayed data for <b>{var_left_title}</b> is for the ",
-  #         "closest available year <b>({left_year})</b>.</p>"))
+  #         "closest available year <b>({left_year})</b>.</p>")
   #       ))
   #     }
   #   }
@@ -80,10 +80,10 @@ get_disclaimer <- function(data, var_left, var_right, more, more_text) {
   #   # Year displayed RIGHT
   #   if (length(var_right) == 1) {
   #     if (var_right != " " && right_year != unique(time())) {
-  #       out <- c(out, list(str_glue(sus_translate(
+  #       out <- c(out, list(sus_translate(
   #         "<p style='font-size:11px; font-style:italic;'>",
   #         "Displayed data for <b>{var_right_title}</b> is for the ",
-  #         "closest available year <b>({right_year})</b>.</p>"))
+  #         "closest available year <b>({right_year})</b>.</p>")
   #       ))
   #     }
   #   }
@@ -91,7 +91,7 @@ get_disclaimer <- function(data, var_left, var_right, more, more_text) {
   #   
   #   # More condition for more disclaimers -------------------------------------
   #   
-  #   if (more()) out <- c(out, list(str_glue(sus_translate(more_text))))
+  #   if (more()) out <- c(out, list(sus_translate(more_text)))
   #   
   #   out
   #   
