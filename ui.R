@@ -1,20 +1,5 @@
 ##### SUS UI SCRIPT ############################################################
 
-# Make a standard navbarPage with addition fixed-position controls
-navbarPageWithInputs <- function(..., inputs) {
-  navbar <- navbarPage(...)
-  form <- tags$div(class = "navbar-fixed", inputs)
-  navbar[[4]][[1]][[1]]$children[[1]]$children[[2]] <- htmltools::tagAppendChild(
-    navbar[[4]][[1]][[1]]$children[[1]]$children[[2]], form)
-  navbar
-}
-
-# Replace the inner text of a <button> tag with a Material icon span
-materialIconButton <- function(tag, icon) {
-  tag <- tagSetChildren(tag, .cssSelector = "button", span(class="material-icons", icon))
-  tag
-}
-
 ui <- function(request) {
   tagList(
   # Styling objects
@@ -32,7 +17,7 @@ ui <- function(request) {
   # JS function to change body class when button is clicked
   extendShinyjs(text = set_ui_lang, functions = "setLanguage"),
   
-  meta() %>%
+  meta() |> 
     meta_social(
       title = "Welcome | MSSI SUS | Towards a sustainable city",
       description = "SUS is an online platform for integrating, exploring, and analyzing urban sustainability data sources for the Montreal region.",
@@ -103,8 +88,9 @@ ui <- function(request) {
       # Language toggle
       actionLink(
         inputId = "language_button",
-        style="min-width: 112px;",
-        label = span(span(class="material-icons", "language"), span("English"))),
+        style = "min-width: 112px;",
+        label = span(span(class = "material-icons", "language"), 
+                     span("English"))),
       
       # Actions dropdown
       materialIconButton(dropdownButton(inputId = "settings",
