@@ -77,7 +77,7 @@ info_table <- function(data, var_type, var_left, var_right, df, select_id,
     "'{z$title_left}' score ({z$exp_left}) of {z$val_left}, which is ", 
     "{z$larger} the region-wide median of {z$median_val}.",
     "<p>{z$place_name} has a {z$high} relative score for this ", 
-    "indicator, with {sub('^the', 'a', z$exp_left)} higher than ", 
+    "indicator, with '{z$exp_left}' higher than ", 
     "{z$percentile} of {z$scale_plural} in the Montreal region.")
   
   # Univariate, qualitative, no selection
@@ -107,9 +107,10 @@ info_table <- function(data, var_type, var_left, var_right, df, select_id,
     "and {z$quant_high}.")
   
   # Univariate, quantitative, valid selection
+  sentence <- \(x) paste0(toupper(substr(x, 1, 1)), substr(x, 2, nchar(x)))
   if (z$var_type == "uni_quant_select_delta") out <- sus_translate(
     "<strong>{z$place_heading}</strong>",
-    "<p>{sub('^t', 'T', z$exp_left)} in {z$place_name} ",
+    "<p>{sentence(z$exp_left)} in {z$place_name} ",
     "{z$increase} by {sub('-', '', z$val_left)} between ",
     "{z$start_date_left} and {z$end_date_left}, which is {z$larger} ",
     "the region-wide median change of {z$median_val}.",

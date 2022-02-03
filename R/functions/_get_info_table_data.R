@@ -154,7 +154,7 @@ get_info_table_data <- function(data, var_type, var_left, var_right, df,
     "borough" = sus_translate("borough/city"),
     "CT" = sus_translate("census tract"),
     "DA" = sus_translate("dissemination area"),
-    "grid" = "250-m",
+    "grid" = sus_translate("250-m"),
     "building" = if (build_str_as_DA) sus_translate("dissemination area") else
       sus_translation("building"),
     "street" = if (build_str_as_DA) sus_translate("dissemination area") else
@@ -237,22 +237,25 @@ get_info_table_data <- function(data, var_type, var_left, var_right, df,
     quintile <- quantile(vec_left, c(0.2, 0.4, 0.6, 0.8))
 
     out$larger <- case_when(
-      val_left >= quintile[4] ~ sus_translate("much larger than"),
-      val_left >= quintile[3] ~ sus_translate("larger than"),
-      val_left >= quintile[2] ~ sus_translate("almost the same as"),
-      val_left >= quintile[1] ~ sus_translate("smaller than"),
-      TRUE ~ sus_translate("much smaller than"))
+      val_left >= quintile[4] ~ sus_translate("much larger than<<m>>"),
+      val_left >= quintile[3] ~ sus_translate("larger than<<m>>"),
+      val_left >= quintile[2] ~ sus_translate("almost the same as<<m>>"),
+      val_left >= quintile[1] ~ sus_translate("smaller than<<m>>"),
+      TRUE ~ sus_translate("much smaller than<<m>>"))
 
     out$high <- case_when(
-      str_detect(out$larger, sus_translate("larger")) ~ sus_translate("high"),
-      str_detect(out$larger, sus_translate("smaller")) ~ sus_translate("low"),
-      TRUE ~ sus_translate("moderate"))
+      str_detect(out$larger, sus_translate("larger")) ~ sus_translate("high<<m>>"),
+      str_detect(out$larger, sus_translate("smaller")) ~ sus_translate("low<<m>>"),
+      TRUE ~ sus_translate("moderate<<m>>"))
 
     out$percentile <- convert_unit(length(vec_left[vec_left <= val_left]) / 
                                      length(vec_left), "_pct")
     
-    out$increase <- if (val_left >= 0) sus_translate("increased") else
-      sus_translate("decreased")
+    # Translation note: whatever if the explanation (the subject) is masculine 
+    # or feminine, on n'accordera pas increased/decreased avec son sujet s'il
+    # est employé avec avoir (our case here).
+    out$increase <- if (val_left >= 0) sus_translate("increased<<m>>") else
+      sus_translate("decreased<<m>>")
     
     }
   
@@ -273,7 +276,7 @@ get_info_table_data <- function(data, var_type, var_left, var_right, df,
       {var_left_label[names(var_left_label) == names(.)]} %>%
       tolower()
     mode_prop <- qual_tab[1] / sum(qual_tab)
-    out$majority <- if (mode_prop > 0.5) "majority" else "plurality"
+    out$majority <- if (mode_prop > 0.5) sus_translate("majority") else sus_translate("plurality")
     out$mode_prop <- convert_unit(mode_prop, "_pct")
     out$mode_prop_2 <- convert_unit(qual_tab[2] / sum(qual_tab), "_pct")
     
@@ -298,12 +301,12 @@ get_info_table_data <- function(data, var_type, var_left, var_right, df,
       corr <- cor(dat$var_left, as.numeric(dat$var_right), use = "complete.obs")
       out$correlation <- corr
       out$corr_disp <- convert_unit(corr)
-      out$pos <- if (corr > 0) sus_translate("positive") else 
-        sus_translate("negative")
+      out$pos <- if (corr > 0) sus_translate("positive<<f>>") else 
+        sus_translate("negative<<f>>")
       out$strong <- case_when(
-        abs(corr) > 0.6 ~ sus_translate("strong"),
-        abs(corr) > 0.3 ~ sus_translate("moderate"),
-        TRUE ~ "weak")
+        abs(corr) > 0.6 ~ sus_translate("strong<<f>>"),
+        abs(corr) > 0.3 ~ sus_translate("moderate<<f>>"),
+        TRUE ~ sus_translate("weak<<f>>"))
       out$higher <- if_else(out$pos == sus_translate("positive"),
                             sus_translate("higher"),
                             sus_translate("lower"))

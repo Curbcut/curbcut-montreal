@@ -19,14 +19,14 @@ suppressPackageStartupMessages({
   qload("data/census.qsm")
   grid <- qread("data/grid.qs")
 
-  source("R/_get_data_table.R")
-  source("R/_get_data_type.R")
-  source("R/_get_data.R")
-  source("R/_get_info_table_data.R")
-  source("R/_get_var_type.R")
-  source("R/_info_table.R")
-  source("R/_translation.R")
-  source("R/_utils.R")
+  source("R/functions/_get_data_table.R")
+  source("R/functions/_get_data_type.R")
+  source("R/functions/_get_data.R")
+  source("R/functions/_get_info_table_data.R")
+  source("R/functions/_get_var_type.R")
+  source("R/functions/_info_table.R")
+  source("R/functions/_translation.R")
+  source("R/functions/_utils.R")
   
 })
 
