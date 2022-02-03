@@ -132,13 +132,15 @@ span.material-icons:not(:first-child) {
 }
 
 .navbar-default a:hover:not(#title),
-.navbar-default button.btn.btn-circle:hover {
+.navbar-default button.btn.btn-circle:hover,
+.navbar-default button.navbar-toggle:hover {
   background-color: var(--nav-content-hover-bg-color) !important;
   box-shadow: none !important;
 }
 
 .navbar-default a:active:not(#title),
-.navbar-default button.btn.btn-circle:active {
+.navbar-default button.btn.btn-circle:active,
+.navbar-default button.navbar-toggle:active {
   background-color: var(--nav-content-focus-bg-color) !important;
   box-shadow: none !important;
 }
@@ -151,7 +153,8 @@ span.material-icons:not(:first-child) {
 .navbar-default .navbar-nav > .open > a:active,
 .navbar-default .navbar-nav > .open > a:focus,
 .navbar-default a:focus:not(#title),
-.navbar-default button.btn.btn-circle:focus {
+.navbar-default button.btn.btn-circle:focus,
+.navbar-default button.navbar-toggle:focus {
   background-color: var(--nav-content-focus-bg-color) !important;
   box-shadow: none !important;
 }
