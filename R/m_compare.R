@@ -6,17 +6,16 @@ compare_UI <- function(id, var_list) {
     
     conditionalPanel(
       condition = "output.show_panel == true", ns = NS(id),
-      fluidRow(column(width = 7, h4(i18n$t("Compare"))),
+      fluidRow(column(width = 7, h4(sus_translate("Compare"))),
                column(width = 5, align = "right", 
                       actionLink(inputId = NS(id, "hide"), 
-                                 label = i18n$t("Hide"))))),
+                                 label = sus_translate("Hide"))))),
     
     conditionalPanel(
       condition = "output.hide_status == 1", ns = NS(id),
       div(class = "compare_dropdown",
           select_var_UI(NS(id, "compare"), var_list, inline = FALSE,
-                    more_style = "margin:auto; width:95%;")),
-      small_map_UI(NS(id, "right"))),
+                    more_style = "margin:auto; width:95%;"))),
     
     conditionalPanel(
       condition = "output.show_panel == true", ns = NS(id),
@@ -24,29 +23,20 @@ compare_UI <- function(id, var_list) {
   )
 }
 
-compare_server <- function(id, var_list, df, disabled_choices = reactive(NULL),
+compare_server <- function(id, var_list, df, disabled = reactive(NULL),
                            time = reactive(NULL), show_panel = reactive(TRUE)) {
   
   stopifnot(!is.reactive(var_list))
   stopifnot(is.reactive(df))
-  stopifnot(is.reactive(disabled_choices))
+  stopifnot(is.reactive(disabled))
   stopifnot(is.reactive(time))
   stopifnot(is.reactive(show_panel))
 
   moduleServer(id, function(input, output, session) {
     
     var_right <- select_var_server("compare", reactive(var_list), 
-                                   disabled_choices = disabled_choices, 
-                                   time = time, df = df)
+                                   disabled = disabled, time = time, df = df)
     
-    # Right map
-    small_map_server("right", reactive({
-      var <- str_remove(var_right(), "_\\d{4}")
-      time <- str_extract(var_right(), "_\\d{4}")
-      if (is.na(time)) time <- NULL
-      paste0("right_", df(), "_", var, "_q3", time)
-      }))
-
     # Hide compare status
     output$show_panel <- show_panel
     outputOptions(output, "show_panel", suspendWhenHidden = FALSE)

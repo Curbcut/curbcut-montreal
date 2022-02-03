@@ -6,7 +6,6 @@ suppressPackageStartupMessages({
   library(shiny)
   library(shinyjs)
   library(shinyWidgets)
-  library(shiny.i18n)
   library(jsonify)
   library(jsonlite)
 
@@ -31,8 +30,7 @@ suppressPackageStartupMessages({
 # Shiny options -----------------------------------------------------------
 
 options(shiny.trace = FALSE) # Set TRUE for debugging
-enableBookmarking("server")
-
+enableBookmarking(store = "url")
 
 # Data --------------------------------------------------------------------
 
@@ -56,8 +54,26 @@ stories <- qread("data/stories.qs")
 
 postal_codes <- qread("data/postal_codes.qs")
 
-min_census_year <- "1996"
-current_census <- "2016"
+
+# Global variables --------------------------------------------------------
+
+census_min <- 
+  variables |> 
+  filter(source == "census") |> 
+  pull(dates) |> 
+  unlist() |> 
+  unique() |> 
+  min() |> 
+  as.numeric()
+
+census_max <- 
+  variables |> 
+  filter(source == "census") |> 
+  pull(dates) |> 
+  unlist() |> 
+  unique() |> 
+  max() |> 
+  as.numeric()
 
 island_CSDUID <- 
   c("2466007", "2466023_1",  "2466023_10", "2466023_11", "2466023_12", 
@@ -71,9 +87,6 @@ island_CSDUID <-
 
 # Translation -------------------------------------------------------------
 
-suppressWarnings({
-  i18n <- Translator$new(translation_csvs_path = "translations/")})
-i18n$set_translation_language("fr")
 translation_fr <- qread("data/translation_fr.qs")
 sus_rv <- reactiveValues(lang = "fr")
 
@@ -252,7 +265,7 @@ styler <- '
   }
   
   .explore_dyk {
-  max-height: calc(100vh - 420px); 
+  max-height: calc(100vh - 250px); 
   overflow-y: auto; 
   overflow-x: hidden;  
   }
@@ -311,3 +324,26 @@ navbar_js <- "@media (max-width: 1050px) {
         display: none !important;
     }
 }"
+
+set_ui_lang <- "shinyjs.setLanguage = function(language) {
+    document.querySelector('body').className = `user-lang-${language}`;
+  };"
+
+lang_classes <- "
+    .lang-en {
+      visibility: hidden;
+      display: none;
+    }
+    .lang-fr {
+      visibility: hidden;
+      display: none;
+    }
+    
+    .user-lang-en .lang-en {
+      visibility: visible !important;
+      display: inline; 
+    }
+    .user-lang-fr .lang-fr {
+      visibility: visible !important;
+      display: inline; 
+    }"

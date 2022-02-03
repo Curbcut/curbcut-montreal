@@ -12,7 +12,7 @@ climate_risk_UI <- function(id) {
         select_var_UI(NS(id, "left"), var_list_climate_risk), 
         checkboxInput(
           inputId = NS(id, "grid"), value = TRUE,
-          label = i18n$t("250-metre grid")),
+          label = sus_translate("250-metre grid")),
         div(class = "bottom_sidebar",
             tagList(legend_UI(NS(id, "legend")),
                     zoom_UI(NS(id, "zoom"), map_zoom_levels))))),
@@ -76,11 +76,7 @@ climate_risk_server <- function(id) {
       time = time)
     
     # Sidebar
-    sidebar_server(
-      id = "sidebar", 
-      x = "climate_risk", 
-      var_map = reactive(paste0("left_", df(), "_", var_left())),
-      var_right = var_right)
+    sidebar_server(id = "sidebar", x = "climate_risk")
     
     # Data
     data <- reactive(get_data(
@@ -92,6 +88,7 @@ climate_risk_server <- function(id) {
     # Legend
     legend <- legend_server(
       id = "legend",
+      data = data,
       var_left = var_left,
       var_right = var_right,
       df = df)

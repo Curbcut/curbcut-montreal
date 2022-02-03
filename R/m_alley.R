@@ -9,10 +9,10 @@ alley_UI <- function(id) {
       # Sidebar
       sidebar_UI(
         NS(id, "sidebar"),
-        checkboxInput(inputId = NS(id, "focus_visited"), label = i18n$t(
+        checkboxInput(inputId = NS(id, "focus_visited"), label = sus_translate(
           "Focus on green alleys visited by our team")),
         select_var_UI(NS(id, "left"), var_list_left_alley, 
-                      label = i18n$t("Grouping")), 
+                      label = sus_translate("Grouping")), 
         div(class = "bottom_sidebar", 
             tagList(legend_UI(NS(id, "legend")), 
                     zoom_UI(NS(id, "zoom"), map_zoom_levels))))),
@@ -112,9 +112,9 @@ alley_server <- function(id) {
           alleys |>
           st_drop_geometry() |>
           filter(ID == selection()) |>
-          mutate(name = str_glue(sus_translate(paste0(
+          mutate(name = str_glue(sus_translate(
             "<p><b>{str_to_title(name)} in ",
-            "{name_2}</b></p>")))) |>
+            "{name_2}</b></p>"))) |>
           select(-ID, -CSDUID, -visited, -name_2, -fill) |>
           select_if(~sum(!is.na(.)) > 0) %>%
           {if (nrow(.) > 0) as.list(.) else NULL}

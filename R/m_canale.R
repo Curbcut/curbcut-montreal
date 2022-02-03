@@ -69,11 +69,7 @@ canale_server <- function(id) {
       time = time)
 
     # Sidebar
-    sidebar_server(
-      id = "sidebar", 
-      x = "canale", 
-      var_map = reactive(paste0("left_", df(), "_canale_ind_2016")),
-      var_right = var_right)
+    sidebar_server(id = "sidebar", x = "canale")
     
     # Data
     data <- reactive(get_data(
@@ -84,6 +80,7 @@ canale_server <- function(id) {
     # Legend
     legend <- legend_server(
       id = "legend", 
+      data = data,
       var_left = var_left, 
       var_right = var_right, 
       df = df)

@@ -22,6 +22,8 @@ get_plot_type <- function(data, var_type, var_left, var_right, select_id, df) {
   # Get main graph type
   graph_type <- case_when(
     df == "date" ~ "date",
+    var_type == "NA_delta" ~ "NAdelta",
+    var_type == "NA_delta_bivar" ~ "NAdeltabivar",
     var_right[1] == " " & grepl("_delta", var_type) ~ "delta",
     var_right[1] != " " & grepl("_delta", var_type) ~ "deltabi",
     var_right[1] == " " & var_left_num > 7 ~ "hist",

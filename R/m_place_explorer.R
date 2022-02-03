@@ -58,18 +58,17 @@ place_explorer_UI <- function(id) {
           hide_min_max = TRUE, 
           force_edges = TRUE),
         # Checkboxes of each theme
-        # checkboxGroupInput(inputId = NS(id, "themes_checkbox"),
-        #                    label = "Themes",
-        #                    choices = unique(variables$theme),
-        #                    selected = unique(variables$theme),
-        #                    inline = TRUE)
-        selectInput(
+        checkboxGroupButtons(
           inputId = NS(id, "themes_checkbox"),
           label = "Select theme(s):",
           choices = unique(variables$theme),
           selected = unique(variables$theme),
-          multiple = TRUE,
-          selectize = TRUE
+          individual = TRUE,
+          checkIcon = list(
+            yes = tags$i(class = "fa fa-circle", 
+                         style = "color: steelblue"),
+            no = tags$i(class = "fa fa-circle-o", 
+                        style = "color: steelblue"))
         )
       )),
       
@@ -82,6 +81,11 @@ place_explorer_UI <- function(id) {
 
 place_explorer_server <- function(id) {
   moduleServer(id, function(input, output, session) {
+    
+    # Load data used by this module
+    if (!exists("pe_var_hierarchy")) {
+      qload("data/place_explorer.qsm")
+    }
     
     # Reactive values initialization
     location <- reactiveVal()
@@ -193,61 +197,89 @@ place_explorer_server <- function(id) {
       
       output$title <- renderText(HTML("<h3>", location_name(), "</h3>"))
       
-      themes <- input$themes_checkbox
-      
+      themes <- 
+        pe_theme_order[[df()]] |> 
+        filter(ID == select_id(), theme %in% input$themes_checkbox) |> 
+        arrange(theme_order) |> 
+        pull(theme)
+        
       # The "server" of every block
       walk(themes, ~{
-        output_info_name <- paste0("theme_", .x, "_info")
-        output_graph_name <- paste0("theme_", .x, "_graph")
-        # selected_var <- input[[paste0("theme_", .x, "_select")]]
-        # explo <- place_explorer_block(df(), selected_var, select_id())
+        output_info_name <- paste0("theme_", .x, "_block_text")
+        output_graph_name <- paste0("theme_", .x, "_block_graph")
         # Render UIs of each grid block
         output[[output_info_name]] <- renderText({
-          selected_var <- input[[paste0("theme_", .x, "_select")]]
-          explo <- place_explorer_block(df(), selected_var, select_id())
-          explo$info})
+          selected_var <- input[[paste0("theme_", .x, "_block_select")]]
+          place_explorer_block_text(df(), selected_var, select_id())
+        })
         output[[output_graph_name]] <- renderPlot({
-          selected_var <- input[[paste0("theme_", .x, "_select")]]
-          explo <- place_explorer_block(df(), selected_var, select_id())
-          explo$graph})
+          selected_var <- input[[paste0("theme_", .x, "_block_select")]]
+          place_explorer_block_graph(df(), selected_var, select_id())
+        })
       })
+      
+      # observe({
+      #   walk(themes, ~{
+      #     input[[paste0("theme_", .x, "_link")]]
+      # })
       
       # Prepare the UI of each block
       walk(themes, ~{
         output_name <- paste0("theme_", .x)
         # Render UI of each grid block
         output[[output_name]] <- renderUI({
-          selection_list <- 
-            as.list(filter(variables, theme == .x)$var_code)
-          names(selection_list) <- 
-            as.list(filter(variables, theme == .x)$var_title)
           
-          tagList(selectInput(inputId = eval(parse(text = paste0("NS(id, 'theme_", .x, 
-                                                         "_select')"))),
-                      choices = selection_list,
-                      label = NULL),
-                  splitLayout(cellWidths = c("33%", "67%"),
-                    plotOutput(outputId = eval(parse(text = paste0("NS(id, 'theme_", .x,
-                                                                   "_graph')")))),
-                    htmlOutput(outputId = eval(parse(text = paste0("NS(id, 'theme_", .x, 
-                                                                   "_info')")))))
-          )
+          variables_arranged <- 
+            pe_variable_order[[df()]] |> 
+            filter(ID == select_id(), theme == .x) |> 
+            arrange(variable_order) |> 
+            select(var_code) |> 
+            left_join(variables, by = "var_code")
+          
+          selection_list <- as.list(variables_arranged$var_code)
+          names(selection_list) <- as.list(variables_arranged$var_title)
+              tagList(
+                div(id = eval(parse(text = paste0("NS(id, 'theme_", .x, "_block_title')"))),
+                    fluidRow(column(width = 7, h4(sus_translate(.x))),
+                             column(width = 5, align = "right", 
+                                    actionLink(inputId = eval(parse(text = paste0("NS(id, 'theme_", .x, "_link')"))), 
+                                               label = sus_translate("Disabled action Link"))))),
+                
+                div(id = eval(parse(text = paste0("NS(id, 'theme_", .x, "_block_content')"))),
+                    selectInput(inputId = eval(parse(text = paste0("NS(id, 'theme_", .x, "_block_select')"))),
+                                choices = selection_list,
+                                label = NULL),
+                    htmlOutput(eval(parse(text = paste0("NS(id, 'theme_", .x, "_block_text')")))),
+                    plotOutput(eval(parse(text = paste0("NS(id, 'theme_", .x, "_block_graph')"))), height = 150))
+              )
+            })
         })
-      })
+      
+
+      # Change class of a ui depending on its location
 
       # Prepare the general UI UI of blocks
-      fixedPage(verticalLayout(
+      
+      fixedPage(
+      inlineCSS(list(.smallblock = "width: 45%")),
+      inlineCSS(list(.bigblock = "width: calc(90% + 20px)")),
+        
         htmlOutput(NS(id, "title"), 
                    style = paste0("margin-top: 150px; padding: 5px; ",
                                   "font-size: 11px;")),
-        map(themes, ~{
+        imap(themes, ~{
+          
+          # Only first element starts with a bigblock
+          block_size <- if (.y == 1) "bigblock" else "smallblock"
+          
           tagList(uiOutput(
             outputId = eval(parse(text = paste0("NS(id, 'theme_", .x, "')"))),
-            style = paste0("padding: 5px; ",
-                           "font-size: 11px"), 
-            class = "panel panel-default"))
+            style = paste0("padding: 20px; margin: 10px; font-size: 11px;",
+                           "height: 33vh; display: inline-grid; ",
+                           "overflow-y: auto; overflow-x: hidden;"), 
+            class = paste0("panel panel-default ", block_size)))
         })
-      ))
+      )
       
     })
     

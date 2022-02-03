@@ -33,46 +33,46 @@ home_server <- function(id) {
       paste0(
         sus_translate("<h1><b><center>SUS</center></b></h1>"),
         sus_translate("<h2><b><center>Towards a sustainable city</center></b></h2>"),
-        sus_translate(paste0("<h3><b><center>",
+        sus_translate("<h3><b><center>",
           "SUS is a platform for integrating, exploring, and analyzing a ", 
           "wide range of urban sustainability data sources for the Montreal ",
           "region across multiple spatial and temporal scales. SUS offers ",
           "a robust set of tools for scenario modelling and analysis which ",
           "will be useful for researchers, policymakers, communities, and ",
-          "individuals.</center></b></h3>")))
+          "individuals.</center></b></h3>"))
     })
     
     output$second <- renderText({
-      HTML(sus_translate(paste0(
+      HTML(sus_translate(
         "<h3>SUS embraces an inclusive vision of urban sustainability, allowing ",
         "users to contextualize questions into larger frameworks of equity and ",
         "accessibility. It serves as both a data-exploration tool and a knowledge ",
         "and information-sharing resource, designed to encourage greater ",
         "reflection on different urban sustainability issues, and on the ",
-        "communities which are most impacted by them.</h3>")))
+        "communities which are most impacted by them.</h3>"))
       })
     
     output$third <- renderText({
-      HTML(sus_translate(paste0(
+      HTML(sus_translate(
         "<h3>The majority of the data used are publicly available and aggregated ",
         "into thematic and place-based modules to allow a range of stakeholders ",
         "greater accessibility to answering sustainability questions. SUS ",
         "further mobilizes both qualitative and quantitative research to bring ",
-        "questions without clear datasets into the discussion.</h3>")))
+        "questions without clear datasets into the discussion.</h3>"))
     })
     
     output$fourth <- renderText({
-      HTML(sus_translate(paste0(
+      HTML(sus_translate(
         "<h3>SUS aims to engage Montrealers to harness the momentum surrounding ",
         "technologically-based approaches to sustainability for public good with ",
         "a vision towards making the City more socially inclusive and less ",
-        "environmentally impactful.</h3>")))
+        "environmentally impactful.</h3>"))
     })
     
     output$fifth <- renderText({
-      sus_translate(paste0(
+      sus_translate(
         "<h5>An initiative of the <a href = 'https://www.mcgill.ca/mssi/'>McGill ",
-        "Sustainability Systems Initiative</a></h5>"))
+        "Sustainability Systems Initiative</a></h5>")
     })
 
   })

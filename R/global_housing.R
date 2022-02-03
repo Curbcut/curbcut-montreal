@@ -1,20 +1,16 @@
-### HOUSING MODULE GLOBALS #####################################################
+#### HOUSING MODULE GLOBALS ####################################################
 
-# Time slider values
-housing_slider <- list(
-  min = as.numeric(min_census_year),
-  max = as.numeric(current_census),
-  interval = 5,
-  init = as.numeric(current_census))
+vars_housing_left <- make_dropdown(include_only = "Housing")
+vars_housing_right <- make_dropdown(exclude = "Housing")
 
-# Dropdown menu
-var_list_housing_left <- 
-  list("Housing" = list(
-         "Tenant-occupied (%)" = "housing_tenant_pct",
-         "Average rent ($)" = "housing_rent_avg_dollar",
-         "Average property value ($)" = "housing_value_avg_dollar",
-         "Unaffordable housing (%)" = "housing_unafford_pct",
-         "Unsuitable housing (%)" = "housing_unsuit_pct",
-         "Housing requiring major repairs (%)" = "housing_repairs_pct",
-         "Owner housing stress (%)" = "housing_stress_owner_pct",
-         "Renter housing stress (%)" = "housing_stress_renter_pct"))
+vars_housing_left_dis <- unlist(vars_housing_left) %in% {
+  variables |> 
+    filter(var_code %in% unlist(vars_housing_left)) |> 
+    filter(!lengths(dates) == max(lengths(dates))) |> 
+    pull(var_code)}
+
+vars_housing_right_dis <- unlist(vars_housing_right) %in% {
+  variables |> 
+    filter(var_code %in% unlist(vars_housing_right)) |> 
+    filter(!lengths(dates) == max(lengths(dates))) |> 
+    pull(var_code)}

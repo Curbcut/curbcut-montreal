@@ -5,7 +5,7 @@
 meet_the_team_UI <- function(id) {
   ns <- NS(id)
   absolutePanel(
-    h2(i18n$t("Meet the team")),
+    h2(sus_translate("Meet the team")),
     uiOutput(outputId = ns("meet_the_team_html")),
     left = "250px",
     style = "max-height: 88vh; overflow-y: auto;"

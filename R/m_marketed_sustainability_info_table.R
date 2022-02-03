@@ -25,10 +25,10 @@ marketed_sustainability_info_table <- function(id, x, select_id, ...) {
         title <- str_glue(sus_translate(
           "{z$Name} development from {z$dev_company}"))
         
-        civic <- str_glue(sus_translate(paste0(
+        civic <- str_glue(sus_translate(
           "{paste(unique(z$civic_start, z$civic_end), sep = '-')} ",
-          "{z$street_name} in {z$borough}")
-          ))
+          "{z$street_name} in {z$borough}"
+        ))
         
         area <- str_glue(sus_translate(
           "{z$surface_area} m^2 and {z$number_units} units"))
@@ -36,11 +36,11 @@ marketed_sustainability_info_table <- function(id, x, select_id, ...) {
         score <- scales::percent(z$sustainability_prop, accuracy = 0.01)
         
         HTML(str_glue(
-          sus_translate(paste0("<p><b>{title}</b></p>",
-                               "At the {civic}, development {z$Name} built in ",
-                               "{z$year_construction} has a score of {score} regarding ",
-                               "the proportion of words flagged as being ",
-                               "`sustainability-related."))))
+          sus_translate("<p><b>{title}</b></p>",
+                        "At the {civic}, development {z$Name} built in ",
+                        "{z$year_construction} has a score of {score} regarding ",
+                        "the proportion of words flagged as being ",
+                        "`sustainability-related.")))
         
       }
       

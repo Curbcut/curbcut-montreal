@@ -12,29 +12,44 @@ shinyServer(function(input, output, session) {
   
   # Language button ---------------------------------------------------------
   
+  
+  # Language reactive variable, and JS set language. Both onclick of the 
+  # language button.
   sus_rv$lang <- 
     eventReactive(input$language_button, {
       if (input$language_button[1] %% 2 != 0) "en" else "fr"
     }, ignoreNULL = FALSE)
-  
   observeEvent(input$language_button,{
     if (input$language_button[1] %% 2 != 0) {
-      update_lang(session, "en")
+      js$setLanguage("en")
       updateActionLink(inputId = "language_button", label = languageButtonLabel("Français"))
     } else {
-      update_lang(session, "fr")
+      js$setLanguage("fr")
       updateActionLink(inputId = "language_button", label = languageButtonLabel("English"))
-      
     }
   })
   
   
+  observe({
+    query <- parseQueryString(session$clientData$url_search)
+    if (!is.null(query)) {
+      # query returns a named list. If it's named tab, return the right
+      # tabPanel. the url example: sus.ca/?tab=housing
+      try(updateTabsetPanel(session, "sus_page", selected = query[["tab"]]))
+    }
+  })
+
+  # Update the URL when a module is launch
+  observeEvent(input$sus_page, {
+      updateQueryString(paste0("/?tab=", input$sus_page))
+  })
+  
   # Modules -----------------------------------------------------------------
   
-  home_server("home")
-  
   active_mod_server <- function(active_tab = input$sus_page) {
-    if (active_tab == "access") {
+    if (active_tab == "home") {
+      home_server("home")
+    } else if (active_tab == "access") {
       access_server("access")
     } else if (active_tab == "alley") {
       alley_server("alley")    
@@ -69,7 +84,7 @@ shinyServer(function(input, output, session) {
   
   observeEvent(input$sus_page, {
     active_mod_server()
-  }, ignoreInit = TRUE)
+  }, ignoreInit = F)
   
   onRestore(function(state) {
     active_mod_server()

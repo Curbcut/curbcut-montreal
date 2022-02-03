@@ -12,6 +12,13 @@ info_table <- function(data, var_type, var_left, var_right, df, select_id,
   stopifnot(!is.reactive(build_str_as_DA))
   
   
+  ## Return early for all-NA table ---------------------------------------------
+  
+  if (var_type %in% c("NA_delta", "NA_delta_bivar")) {
+    out <- "No data available."
+    return(HTML(str_glue(sus_translate(out))))}
+  
+  
   ## Get data list -------------------------------------------------------------
   
   z <- get_info_table_data(

@@ -18,14 +18,14 @@ suppressPackageStartupMessages({
   qload("data/census.qsm")
   grid <- qread("data/grid.qs")
 
-  source("R/get_data_table.R")
-  source("R/get_data_type.R")
-  source("R/get_data.R")
-  source("R/get_legend_breaks.R")
-  source("R/get_legend_labels.R")
-  source("R/render_legend.R")
-  source("R/translation.R")
-  source("R/utils.R")
+  source("R/_get_data_table.R")
+  source("R/_get_data_type.R")
+  source("R/_get_data.R")
+  source("R/_get_legend_breaks.R")
+  source("R/_get_legend_labels.R")
+  source("R/_render_legend.R")
+  source("R/_translation.R")
+  source("R/_utils.R")
   
 })
 
@@ -75,7 +75,7 @@ render_legend(var_left, var_right, df, data_type)}
 
 {df <- "borough"
 var_left <- c("housing_tenant_pct_2001", "housing_tenant_pct_2016")
-var_right <- c("housing_value_avg_dollar_2001", "housing_value_avg_dollar_2016")
+var_right <- c("inc_50_pct_2001", "inc_50_pct_2016")
 data <- get_data(df, var_left, var_right)
 data_type <- get_data_type(df, var_left, var_right)
 render_legend(var_left, var_right, df, data_type)}

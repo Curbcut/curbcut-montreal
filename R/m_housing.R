@@ -1,4 +1,4 @@
-### HOUSING MODULE ##############################################################
+#### HOUSING MODULE ############################################################
 
 # UI ----------------------------------------------------------------------
 
@@ -9,26 +9,27 @@ housing_UI <- function(id) {
       # Sidebar
       sidebar_UI(
         NS(id, "sidebar"),
-        select_var_UI(NS(id, "left"), make_dropdown(include_only = "Housing")), 
+        select_var_UI(NS(id, "left"), vars_housing_left), 
         sliderInput(
           NS(id, "slider_uni"), 
-          i18n$t("Select a year"),
-          min = housing_slider$min,
-          max = housing_slider$max,
-          step = housing_slider$interval, sep = "",
-          value = housing_slider$init,
+          sus_translate("Select a year"),
+          min = census_min,
+          max = census_max,
+          step = 5, sep = "",
+          value = census_max,
           width = "95%"),
         sliderInput(
           NS(id, "slider_bi"), 
-          i18n$t("Select two years"), 
-          min = housing_slider$min,
-          max = housing_slider$max, 
-          step = housing_slider$interval, sep = "", 
+          sus_translate("Select two years"), 
+          min = census_min,
+          max = census_max, 
+          step = 5, sep = "", 
           value = c("2006", "2016"),
           width = "95%"),
-        checkboxInput(inputId = NS(id, "slider_switch"),
-                      label = i18n$t("Compare dates"), 
-                      width = "95%"),
+        checkboxInput(
+          inputId = NS(id, "slider_switch"),
+          label = sus_translate("Compare dates"), 
+          width = "95%"),
         year_disclaimer_UI(NS(id, "disclaimer")),
         div(class = "bottom_sidebar", 
             tagList(legend_UI(NS(id, "legend")),
@@ -42,7 +43,7 @@ housing_UI <- function(id) {
       # Right panel
       right_panel(
         id = id,
-        compare_UI(NS(id, "housing"), make_dropdown(exclude = "Housing")),
+        compare_UI(NS(id, "housing"), vars_housing_right),
         div(class = "explore_dyk", 
             explore_UI(NS(id, "explore")), 
             dyk_UI(NS(id, "dyk"))))),
@@ -86,48 +87,26 @@ housing_server <- function(id) {
     time <- reactive({
       if (input$slider_switch) input$slider_bi else input$slider_uni})
     
-    # Greyed out left list options, depending on the year(s) chosen
-    var_list_housing_left_disabled <- reactive({
-      if (!input$slider_switch) NULL else {
-        unlist(var_list_housing_left) %in% {variables |> 
-            filter(var_code %in% unlist(var_list_housing_left)) |> 
-            filter(!lengths(dates) == max(lengths(dates))) |> 
-            pull(var_code)}
-      }
-    })
-
     # Left variable server
     var_left <- select_var_server(
       id = "left", 
-      var_list = reactive(var_list_housing_left), 
-      disabled_choices = var_list_housing_left_disabled,
+      var_list = reactive(vars_housing_left), 
+      disabled = reactive(if (!input$slider_switch) NULL else 
+        vars_housing_left_dis),
       time = time, 
       df = df)
-    
-    # Greyed out right list options, depending of the year chosen
-    var_list_housing_right_disabled <- reactive({
-      if (!input$slider_switch) NULL else {
-        unlist(make_dropdown(exclude = "Housing")) %in% {variables |> 
-            filter(var_code %in% unlist(make_dropdown(exclude = "Housing"))) |> 
-            filter(!lengths(dates) == max(lengths(dates))) |> 
-            pull(var_code)}
-      }
-    })
 
     # Right variable/compare panel
     var_right <- compare_server(
       id = "housing", 
-      var_list = make_dropdown(exclude = "Housing"), 
-      disabled_choices = var_list_housing_right_disabled,
+      var_list = vars_housing_right, 
+      disabled = reactive(if (!input$slider_switch) NULL else 
+        vars_housing_right_dis),
       df = df,
       time = time)
 
     # Sidebar
-    sidebar_server(
-      id = "sidebar", 
-      x = "housing", 
-      var_map = reactive(paste0("left_", df(), "_", var_left())),
-      var_right = var_right)
+    sidebar_server(id = "sidebar", x = "housing")
     
     # Data
     data <- reactive(get_data(
@@ -138,6 +117,7 @@ housing_server <- function(id) {
     # Legend
     legend_server(
       id = "legend",
+      data = data,
       var_left = var_left,
       var_right = var_right,
       df = df)
@@ -153,8 +133,7 @@ housing_server <- function(id) {
       id = "disclaimer", 
       data = data,
       var_left = var_left,
-      var_right = var_right,
-      time = time)
+      var_right = var_right)
     
     # Update map in response to variable changes or zooming
     select_id <- map_change(

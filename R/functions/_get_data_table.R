@@ -1,8 +1,20 @@
 #### GET DATA TABLE ############################################################
 
-get_data_table <- function(df, var_left, var_right, data_type, left_q3, 
-                           right_q3, left_q5, right_q5, time_format, point_df) {
-
+get_data_table <- function(df, var_left, var_right, data_type, point_df) {
+  
+  # Get time format; eventually this might need to be conditional
+  time_format <- "_\\d{4}$"
+  
+  # Facilitate code legibility by pre-creating q3/q5 column names
+  left_q3 <- paste0(str_remove(all_of(var_left), time_format), "_q3", 
+                    na.omit(str_extract(var_left, time_format)))
+  right_q3 <- paste0(str_remove(all_of(var_right), time_format), "_q3", 
+                     na.omit(str_extract(var_right, time_format)))
+  left_q5 <- paste0(str_remove(all_of(var_left), time_format), "_q5", 
+                    na.omit(str_extract(var_left, time_format)))
+  right_q5 <- paste0(str_remove(all_of(var_right), time_format), "_q5", 
+                     na.omit(str_extract(var_right, time_format)))
+  
   # Univariate
   if (data_type == "q5") {
     data <- 
@@ -132,9 +144,34 @@ get_data_table <- function(df, var_left, var_right, data_type, left_q3,
       relocate(fill, .after = group)
   }
   
+  # NA_delta
+  if (data_type == "NA_delta") {
+    data <- 
+      df |> 
+      get() |> 
+      select(ID, name, name_2, any_of(c("DAUID", "CTUID", "CSDUID")), 
+             population) |> 
+      mutate(var_left = NA, var_left_q3 = NA, var_left_1 = NA,
+             var_left_2 = NA, group = "NA - 1", .after = population) |> 
+      left_join(colour_delta, by = "group") |> 
+      relocate(fill, .after = group)
+  }
+  
+  # building_NA_delta
+  if (data_type == "building_NA_delta") {
+    data <- 
+      DA |> 
+      st_set_geometry("building") |> 
+      select(ID, name, name_2, any_of(c("DAUID", "CTUID", "CSDUID")), 
+             population, geometry = building) |> 
+      mutate(var_left = NA, var_left_q3 = NA, var_left_1 = NA,
+             var_left_2 = NA, group = "NA - 1", .after = population) |> 
+      left_join(colour_delta, by = "group") |> 
+      relocate(fill, .after = group)
+  }
+  
   # Delta bivariate
   if (data_type == "delta_bivar") {
-    
     data <-
       df |> 
       get() |> 
@@ -151,7 +188,53 @@ get_data_table <- function(df, var_left, var_right, data_type, left_q3,
              population, var_left, var_right, var_left_q3, var_right_q3) |> 
       mutate(group = paste(var_left_q3, "-", var_right_q3)) |>
       left_join(colour_bivar, by = "group")
+  }
     
+  # NA_delta_bivar
+  if (data_type == "NA_delta_bivar") {
+    data <- 
+      df |> 
+      get() |> 
+      select(ID, name, name_2, any_of(c("DAUID", "CTUID", "CSDUID")), 
+             population) |> 
+      mutate(var_left = NA, var_left_q3 = NA, var_right = NA, 
+             var_right_q3 = NA, group = "NA - NA", .after = population) |> 
+      left_join(colour_bivar, by = "group") |> 
+      relocate(fill, .after = group)
+  }
+  
+  # Building delta bivariate
+  if (data_type == "building_delta_bivar") {
+    data <-
+      df |> 
+      get() |> 
+      select(ID, name, name_2, any_of(c("DAUID", "CTUID", "CSDUID")), 
+             population, var_left = all_of(var_left), 
+             var_right = all_of(var_right), geometry = building) |>
+      mutate(var_left = (var_left2 - var_left1) / abs(var_left1),
+             var_left_q3 = ntile(var_left, 3),
+             var_right = (var_right2 - var_right1) / abs(var_right1),
+             var_right_q3 = ntile(var_right, 3),
+             across(where(is.numeric), ~replace(., is.nan(.), NA)),
+             across(where(is.numeric), ~replace(., is.infinite(.), NA))) |> 
+      select(ID, name, name_2, any_of(c("DAUID", "CTUID", "CSDUID")), 
+             population, var_left, var_right, var_left_q3, var_right_q3) |> 
+      mutate(group = paste(var_left_q3, "-", var_right_q3)) |>
+      left_join(colour_bivar, by = "group")
+  }
+    
+  # building_NA_delta_bivar
+  if (data_type == "building_NA_delta_bivar") {
+    data <- 
+      DA |> 
+      st_set_geometry("building") |> 
+      select(ID, name, name_2, any_of(c("DAUID", "CTUID", "CSDUID")), 
+             population, geometry = building) |> 
+      mutate(var_left = NA, var_left_q3 = NA, var_right = NA, 
+             var_right_q3 = NA, group = "NA - NA", .after = population) |> 
+      left_join(colour_bivar, by = "group") |> 
+      relocate(fill, .after = group)
+  }
     
     #            select(., ID, name, name_2, any_of("CSDUID"), population, 
     #                   left_var, left_var_q3, right_var, right_var_q3,
@@ -186,13 +269,7 @@ get_data_table <- function(df, var_left, var_right, data_type, left_q3,
     #                            "right_var2"))) else .} %>%
     #        mutate(group = paste(left_var_q3, "-", right_var_q3)) %>% 
     #        left_join(colour, by = "group"))
-    
-  }
   
-  # Building delta bivariate
-  if (data_type == "building_delta_bivar") {
-    
-  }
   
   # Point data
   if (data_type == "point") {

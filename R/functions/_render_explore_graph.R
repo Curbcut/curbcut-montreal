@@ -35,8 +35,7 @@ render_explore_graph <- function(plot_type, data, var_left, var_right, df,
       data |> 
       filter(!is.na(var_left)) |> 
       ggplot(aes(var_left)) +
-      geom_histogram(aes(fill = round(var_left) == 
-                           round(var_left[ID == select_id])),
+      geom_histogram(aes(fill = var_left == var_left[ID == select_id]),
                      bins = bin_number) +
       scale_fill_manual(values = col_left_5[c(1, 5)], 
                         na.translate = FALSE) +
@@ -216,15 +215,15 @@ render_explore_graph <- function(plot_type, data, var_left, var_right, df,
   }
   
   # Multi-date univariate scatterplot, no selection
-  if (plot_type == "delta_all") {
+  if (plot_type %in% c("delta_all", "NAdelta_all")) {
     
     colours <- colour_delta$fill[1:5]
     names(colours) <- colour_delta$group[1:5]
     
     out <- if (unique(c("var_left_1", "var_left_2") %in% names(data))) {
       data |> 
-        filter(var_left %in% remove_outliers(var_left), 
-               var_right %in% remove_outliers(var_right)) |> 
+        filter(var_left_1 %in% remove_outliers(var_left_1), 
+               var_left_2 %in% remove_outliers(var_left_2)) |> 
         ggplot(aes(var_left_1, var_left_2)) +
         geom_smooth(se = FALSE, method = "lm", formula = y ~ x, 
                     colour = "black", size = 0.5) +
@@ -235,12 +234,12 @@ render_explore_graph <- function(plot_type, data, var_left, var_right, df,
   }
   
   # Multi-date univariate scatterplot, NA selection
-  if (plot_type == "delta_na") {
+  if (plot_type %in% c("delta_na", "NAdelta_na")) {
     
     out <- if (unique(c("var_left_1", "var_left_2") %in% names(data))) {
       data |> 
-        filter(var_left %in% remove_outliers(var_left), 
-               var_right %in% remove_outliers(var_right)) |> 
+        filter(var_left_1 %in% remove_outliers(var_left_1), 
+               var_left_2 %in% remove_outliers(var_left_2)) |> 
         ggplot(aes(var_left_1, var_left_2)) +
         geom_smooth(se = FALSE, method = "lm", formula = y ~ x, 
                     colour = "black", size = 0.5) +
@@ -250,12 +249,12 @@ render_explore_graph <- function(plot_type, data, var_left, var_right, df,
   }
   
   # Multi-date univariate scatterplot, active selection
-  if (plot_type == "delta_select") {
+  if (plot_type %in% c("delta_select", "NAdelta_select")) {
     
     out <- if (unique(c("var_left_1", "var_left_2") %in% names(data))) {
       data |> 
-        filter(var_left %in% remove_outliers(var_left), 
-               var_right %in% remove_outliers(var_right)) |> 
+        filter(var_left_1 %in% remove_outliers(var_left_1), 
+               var_left_2 %in% remove_outliers(var_left_2)) |> 
         ggplot(aes(var_left_1, var_left_2)) +
         geom_point(colour = col_left_3[1]) +
         geom_smooth(se = FALSE, method = "lm", formula = y ~ x, 
@@ -267,7 +266,7 @@ render_explore_graph <- function(plot_type, data, var_left, var_right, df,
   }
   
   # Multi-date bivariate scatterplot, no selection
-  if (plot_type == "deltabi_all") {
+  if (plot_type %in% c("deltabi_all", "NAdeltabi_all")) {
     
     opac <- abs(cor(data$var_left, data$var_right, use = "complete.obs"))
     
@@ -284,7 +283,7 @@ render_explore_graph <- function(plot_type, data, var_left, var_right, df,
   }
   
   # Multi-date bivariate scatterplot, NA selection
-  if (plot_type == "deltabi_na") {
+  if (plot_type %in% c("deltabi_na", "NAdeltabi_na")) {
     
     opac <- abs(cor(data$var_left, data$var_right, use = "complete.obs"))
     
@@ -300,7 +299,7 @@ render_explore_graph <- function(plot_type, data, var_left, var_right, df,
   }
   
   # Multi-date bivariate scatterplot, active selection
-  if (plot_type == "deltabi_select") {
+  if (plot_type %in% c("deltabi_select", "NAdeltabi_select")) {
     
     opac <- abs(cor(data$var_left, data$var_right, use = "complete.obs"))
     

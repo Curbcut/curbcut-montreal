@@ -152,6 +152,8 @@ qsave(green_space, file = "data/green_space.qs")
 qsave(marketed_sustainability, file = "data/marketed_sustainability.qs")
 qsave(metro_lines, file = "data/metro_lines.qs")
 # qsavem(permits_choropleth, permits, file = "data/permits.qsm")
+qsavem(pe_var_hierarchy, pe_theme_order, 
+       pe_variable_order, file = "data/place_explorer.qsm")
 qsave(postal_codes, file = "data/postal_codes.qs")
 qsave(stories, file = "data/stories.qs")
 source("dev/title_text.R")
