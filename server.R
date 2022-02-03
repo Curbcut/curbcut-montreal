@@ -1,5 +1,9 @@
 ##### SUS SERVER SCRIPT ########################################################
 
+languageButtonLabel <- function(text) {
+  as.character(tags$span(tags$span(class="material-icons", "language"), span(text)))
+}
+
 shinyServer(function(input, output, session) {
   
   observeEvent(input$title, {
@@ -18,8 +22,10 @@ shinyServer(function(input, output, session) {
   observeEvent(input$language_button,{
     if (input$language_button[1] %% 2 != 0) {
       js$setLanguage("en")
+      updateActionLink(inputId = "language_button", label = languageButtonLabel("Français"))
     } else {
       js$setLanguage("fr")
+      updateActionLink(inputId = "language_button", label = languageButtonLabel("English"))
     }
   })
   

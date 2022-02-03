@@ -1,10 +1,27 @@
 ##### SUS UI SCRIPT ############################################################
 
+# Make a standard navbarPage with addition fixed-position controls
+navbarPageWithInputs <- function(..., inputs) {
+  navbar <- navbarPage(...)
+  form <- tags$div(class = "navbar-fixed", inputs)
+  navbar[[4]][[1]][[1]]$children[[1]]$children[[2]] <- htmltools::tagAppendChild(
+    navbar[[4]][[1]][[1]]$children[[1]]$children[[2]], form)
+  navbar
+}
+
+# Replace the inner text of a <button> tag with a Material icon span
+materialIconButton <- function(tag, icon) {
+  tag <- tagSetChildren(tag, .cssSelector = "button", span(class="material-icons", icon))
+  tag
+}
+
 ui <- function(request) {
   tagList(
   # Styling objects
   useShinyjs(),
   tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "bootstrap.min.css")),
+  tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "sus.css")),
+  tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "https://fonts.googleapis.com/icon?family=Material+Icons")),
   tags$head(tags$style(HTML(styler))),
   tags$head(tags$style(HTML(navbar_js))),
   
@@ -15,21 +32,20 @@ ui <- function(request) {
   # JS function to change body class when button is clicked
   extendShinyjs(text = set_ui_lang, functions = "setLanguage"),
   
-  # Settings button
-  fixedPanel(
-    id = "settings_button",
-    style = "z-index: 1001; border-color: #FFFFFF00; background-color: #FFFFFF00;",
-    top = 7, right = 150, width = 0,
-      dropdownButton(inputId = "settings", icon = icon("tools"), circle = T, size = "sm",
-        actionLink(inputId = "language_button", label = "English", icon = icon("globe")),
-        actionLink(inputId = "._bookmark_", label = "Bookmark", icon = icon("link")),
-        actionLink(inputId = "download_data", label = "Data explanation and export", icon("download")),
-        downloadLink("create_report", label = div(icon("file-pdf"), "Generate a report")),
-        actionLink(inputId = "contact", label = "Contact/feedback", icon("comment"))
-        )),
+  meta() %>%
+    meta_social(
+      title = "Welcome | MSSI SUS | Towards a sustainable city",
+      description = "SUS is an online platform for integrating, exploring, and analyzing urban sustainability data sources for the Montreal region.",
+      url = "https://e978-174-91-206-108.ngrok.io/",
+      image = "https://e978-174-91-206-108.ngrok.io/share.jpg",
+      image_alt = "A photo of a winding footpath through a verdant Montreal alley.",
+      twitter_creator = "@McGillMSSI",
+      twitter_card_type = "summary",
+      twitter_site = "@McGillMSSI"
+    ),
   
   # Navigation bar
-  navbarPage(id = "sus_page", windowTitle = "SUS", 
+  navbarPageWithInputs(id = "sus_page", windowTitle = "SUS", 
              title = actionLink("title", "SUS"),
              
              tabPanel("Home", home_UI("home"), value = "home"),
@@ -80,8 +96,24 @@ ui <- function(request) {
              tabPanel("Place explorer", place_explorer_UI("place_explorer"),
                       value = "place_explorer"),
              
-             tabPanel("About", why_dash_UI("why_dash"), value = "why_dash")
+             tabPanel("About", why_dash_UI("why_dash"), value = "why_dash"),
              
-  , collapsible = TRUE)
+  collapsible = TRUE,
+  inputs = list(
+      # Language toggle
+      actionLink(
+        inputId = "language_button",
+        style="min-width: 112px;",
+        label = span(span(class="material-icons", "language"), span("English"))),
+      
+      # Actions dropdown
+      materialIconButton(dropdownButton(inputId = "settings",
+        actionLink(inputId = "._bookmark_", label = "Bookmark", icon = icon("link")),
+        actionLink(inputId = "download_data", label = "Data explanation and export", icon("download")),
+        downloadLink("create_report", label = div(icon("file-pdf"), "Generate a report"))
+        # actionLink(inputId = "contact", label = "Contact/feedback", icon("comment"))
+      ), "summarize")
+    )
+  )
 )
 }
