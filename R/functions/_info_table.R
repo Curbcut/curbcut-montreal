@@ -15,7 +15,7 @@ info_table <- function(data, var_type, var_left, var_right, df, select_id,
   ## Return early for all-NA table ---------------------------------------------
   
   if (var_type %in% c("NA_delta", "NA_delta_bivar")) {
-    out <- "No data available."
+    out <- sus_translate("No data available.")
     return(HTML(sus_translate(out)))}
   
   
@@ -146,15 +146,15 @@ info_table <- function(data, var_type, var_left, var_right, df, select_id,
         "<p>This means that, at the {z$scale_sing} scale, ",
         "there is no relationship between the two variables.")
     } else {
-      out <- sus_translate(
+      out <- paste0(
         if (z$strong == sus_translate("strong")) 
-          "<p><b>STRONG CORRELATION</b></p>",
-        "<p>'{z$title_left}' has a {z$strong} {z$pos} ",
+          sus_translate("<p><b>STRONG CORRELATION</b></p>"),
+        sus_translate("<p>'{z$title_left}' has a {z$strong} {z$pos} ",
         "correlation ({z$corr_disp}) with '{z$title_right}' at ",
         "the {z$scale_sing} scale.",
         "<p>This means that, in general, {z$scale_plural} with a higher ",
         "{sub('^the ', '', z$exp_right)} tend to have a {z$higher} ",
-        "{sub('^the ', '', z$exp_left)}, {z$high_low_disclaimer}.")
+        "{sub('^the ', '', z$exp_left)}, {z$high_low_disclaimer}."))
     }
   }
   
@@ -181,15 +181,15 @@ info_table <- function(data, var_type, var_left, var_right, df, select_id,
         "<p>This means that, at the {z$scale_sing} scale, ",
         "there is no relationship between the two variables.")
     } else {
-      out <- sus_translate(
+      out <- paste0(
         if (z$strong == sus_translate("strong")) 
-          "<p><b>STRONG CORRELATION</b></p>",
-        "<p>'{z$title_left}' has a {z$strong} {z$pos} correlation ",
+          sus_translate("<p><b>STRONG CORRELATION</b></p>"),
+        sus_translate("<p>'{z$title_left}' has a {z$strong} {z$pos} correlation ",
         "(Spearman's rho: {z$corr_disp}) with '{z$title_right}' ",
         "at the {z$scale_sing} scale.",
         "<p>This means that, in general, {z$scale_plural} with a higher ",
         "{sub('^the ', '', z$exp_right)} tend to have a {z$higher} ",
-        "{sub('^the ', '', z$exp_left)}, {z$high_low_disclaimer}.")
+        "{sub('^the ', '', z$exp_left)}, {z$high_low_disclaimer}."))
     }
   }
   
@@ -215,15 +215,15 @@ info_table <- function(data, var_type, var_left, var_right, df, select_id,
         "<p>This means that, at the {z$scale_sing} scale, ",
         "there is no relationship between the two variables.")
     } else {
-      out <- sus_translate(
+      out <- paste0(
         if (z$strong == sus_translate("strong")) 
-          "<p><b>STRONG CORRELATION</b></p>",
-        "<p>'{z$title_left}' has a {z$strong} {z$pos} correlation ",
+          sus_translate("<p><b>STRONG CORRELATION</b></p>"),
+        sus_translate("<p>'{z$title_left}' has a {z$strong} {z$pos} correlation ",
         "(Spearman's rho: {z$corr_disp}) with '{z$title_right}' ",
         "at the {z$scale_sing} scale.",
         "<p>This means that, in general, {z$scale_plural} with a higher ",
         "{sub('^the ', '', z$exp_right)} tend to have a {z$higher} ",
-        "{sub('^the ', '', z$exp_left)}, {z$high_low_disclaimer}.")
+        "{sub('^the ', '', z$exp_left)}, {z$high_low_disclaimer}."))
     }
   }
   
@@ -252,16 +252,16 @@ info_table <- function(data, var_type, var_left, var_right, df, select_id,
         "<p>This means that, at the {z$scale_sing} scale, there was no ",
         "relationship between the change in the two variables.")
     } else {
-      out <- sus_translate(
+      out <- paste0(
         if (z$strong == sus_translate("strong")) 
-          "<p><b>STRONG CORRELATION</b></p>",
-        "<p>From {z$start_date_left} to {z$end_date_left}, the change in ", 
+          sus_translate("<p><b>STRONG CORRELATION</b></p>"),
+        sus_translate("<p>From {z$start_date_left} to {z$end_date_left}, the change in ", 
         "'{z$title_left}' had a {z$strong} {z$pos} ",
         "correlation ({z$corr_disp}) with the change in '{z$title_right}' ", 
         "at the {z$scale_sing} scale.",
         "<p>This means that, in general, {z$scale_plural} with a higher ",
         "change in {z$exp_left} tended to have a {z$higher} change in ",
-        "{z$exp_right}, {z$high_low_disclaimer}.")
+        "{z$exp_right}, {z$high_low_disclaimer}."))
     }
   }
   
@@ -289,16 +289,16 @@ info_table <- function(data, var_type, var_left, var_right, df, select_id,
         "<p>This means that, at the {z$scale_sing} scale, there was no ",
         "relationship between the change in the two variables.")
     } else {
-      out <- sus_translate(
+      out <- paste0(
         if (z$strong == sus_translate("strong")) 
-          "<p><b>STRONG CORRELATION</b></p>",
-        "<p>From {z$start_date_left} to {z$end_date_left}, the change in ", 
+          sus_translate("<p><b>STRONG CORRELATION</b></p>"),
+        sus_translate("<p>From {z$start_date_left} to {z$end_date_left}, the change in ", 
         "'{z$title_left}' had a {z$strong} {z$pos} ",
         "correlation (Spearman's rho: {z$corr_disp}) with the change in ", 
         "'{z$title_right}' at the {z$scale_sing} scale.",
         "<p>This means that, in general, {z$scale_plural} with a higher ",
         "change in {z$exp_left} tended to have a {z$higher} change in ",
-        "{z$exp_right}, {z$high_low_disclaimer}.")
+        "{z$exp_right}, {z$high_low_disclaimer}."))
     }
   }
   

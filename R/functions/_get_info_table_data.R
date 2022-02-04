@@ -237,16 +237,16 @@ get_info_table_data <- function(data, var_type, var_left, var_right, df,
     quintile <- quantile(vec_left, c(0.2, 0.4, 0.6, 0.8))
 
     out$larger <- case_when(
-      val_left >= quintile[4] ~ sus_translate("much larger than<<m>>"),
-      val_left >= quintile[3] ~ sus_translate("larger than<<m>>"),
-      val_left >= quintile[2] ~ sus_translate("almost the same as<<m>>"),
-      val_left >= quintile[1] ~ sus_translate("smaller than<<m>>"),
-      TRUE ~ sus_translate("much smaller than<<m>>"))
+      val_left >= quintile[4] ~ sus_translate("much larger than"),
+      val_left >= quintile[3] ~ sus_translate("larger than"),
+      val_left >= quintile[2] ~ sus_translate("almost the same as"),
+      val_left >= quintile[1] ~ sus_translate("smaller than"),
+      TRUE ~ sus_translate("much smaller than"))
 
     out$high <- case_when(
-      str_detect(out$larger, sus_translate("larger")) ~ sus_translate("high<<m>>"),
-      str_detect(out$larger, sus_translate("smaller")) ~ sus_translate("low<<m>>"),
-      TRUE ~ sus_translate("moderate<<m>>"))
+      str_detect(out$larger, sus_translate("larger")) ~ sus_translate("high"),
+      str_detect(out$larger, sus_translate("smaller")) ~ sus_translate("low"),
+      TRUE ~ sus_translate("moderate"))
 
     out$percentile <- convert_unit(length(vec_left[vec_left <= val_left]) / 
                                      length(vec_left), "_pct")
@@ -254,8 +254,8 @@ get_info_table_data <- function(data, var_type, var_left, var_right, df,
     # Translation note: whatever if the explanation (the subject) is masculine 
     # or feminine, on n'accordera pas increased/decreased avec son sujet s'il
     # est employé avec avoir (our case here).
-    out$increase <- if (val_left >= 0) sus_translate("increased<<m>>") else
-      sus_translate("decreased<<m>>")
+    out$increase <- if (val_left >= 0) sus_translate("increased") else
+      sus_translate("decreased")
     
     }
   
@@ -301,12 +301,12 @@ get_info_table_data <- function(data, var_type, var_left, var_right, df,
       corr <- cor(dat$var_left, as.numeric(dat$var_right), use = "complete.obs")
       out$correlation <- corr
       out$corr_disp <- convert_unit(corr)
-      out$pos <- if (corr > 0) sus_translate("positive<<f>>") else 
-        sus_translate("negative<<f>>")
+      out$pos <- if (corr > 0) sus_translate("positive") else 
+        sus_translate("negative")
       out$strong <- case_when(
-        abs(corr) > 0.6 ~ sus_translate("strong<<f>>"),
-        abs(corr) > 0.3 ~ sus_translate("moderate<<f>>"),
-        TRUE ~ sus_translate("weak<<f>>"))
+        abs(corr) > 0.6 ~ sus_translate("strong"),
+        abs(corr) > 0.3 ~ sus_translate("moderate"),
+        TRUE ~ sus_translate("weak"))
       out$higher <- if_else(out$pos == sus_translate("positive"),
                             sus_translate("higher"),
                             sus_translate("lower"))
@@ -415,8 +415,8 @@ get_info_table_data <- function(data, var_type, var_left, var_right, df,
     
     if (length(max_date) %in% 2:3) max_date <- paste(
       paste(max_date[seq_len(length(max_date) - 1)], collapse = ", "),
-      max_date[length(max_date)], sep = " and ")
-    if (length(max_date) > 3) out$max_date <- "several different dates"
+      max_date[length(max_date)], sep = sus_translate(" and "))
+    if (length(max_date) > 3) out$max_date <- sus_translate("several different dates")
     out$max_date <- max_date
     
     min_date <- 
@@ -426,12 +426,12 @@ get_info_table_data <- function(data, var_type, var_left, var_right, df,
     
     if (length(min_date) %in% 2:3) min_date <- paste(
       paste(min_date[seq_len(length(min_date) - 1)], collapse = ", "),
-      max_date[length(min_date)], sep = " and ")
-    if (length(min_date) > 3) min_date <- "several different dates"
+      max_date[length(min_date)], sep = sus_translate(" and "))
+    if (length(min_date) > 3) min_date <- sus_translate("several different dates")
     out$min_date <- min_date
     
     out$coef <- abs(coef)
-    out$coef_increasing <- if (coef >= 0) "increasing" else "decreasing"
+    out$coef_increasing <- if (coef >= 0) sus_translate("increasing") else sus_translate("decreasing")
     out$date_left <- paste(date_left, collapse = '-')
   }
   

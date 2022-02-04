@@ -19,7 +19,7 @@ sus_translate_list <- function(x) {
           filter(en == .x) %>%
           pull()
         
-        if (length(out) == 0) {
+        if (length(out) == 0 || is.na(out)) {
           # warning("No translation text found for `", .x, "`.", call. = FALSE)
           out <- .x
         }
@@ -62,8 +62,14 @@ sus_translate <- function(..., .envir = parent.frame()) {
   # If not in a reactive shiny context, return 2 spans.
   if (is.null(getDefaultReactiveDomain())) return(
     tagList(tags$span(class = "lang-en", x),
-            tags$span(class = "lang-fr", 
-                      translation_fr[translation_fr$en == x, ]$fr))
+            tags$span(class = "lang-fr", {
+              translated <- translation_fr[translation_fr$en == x, ]$fr
+              if (length(translated) != 0 && !is.na(translated)) translated else {
+                # warning("No translation text found for `", x, "`.", 
+                #         call. = FALSE)
+                x
+              }
+            }))
   )
   
   # English
@@ -76,13 +82,11 @@ sus_translate <- function(..., .envir = parent.frame()) {
   # List
   if (is.list(x)) return(sus_translate_list(x))
   
-  # # PNG
-  # if (str_detect(x, "_en.png")) return(str_replace(x, "_en.png", "_fr.png"))
-  
   # Character
   translated <- translation_fr[translation_fr$en == x, ]$fr
   # In case there is no translations:
-  if (length(translated) == 0) return({
+  if (length(translated) == 0 || is.na(translated)) return({
+    # warning("No translation text found for `", x, "`.", call. = FALSE)
     x <- sub("<<.>>", "", x)
     glue(x, .envir = .envir)})
   

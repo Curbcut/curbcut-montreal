@@ -2367,9 +2367,6 @@ rm(borough, DA, CT)
 # save --------------------------------------------------------------------
 
 qsave(translation_fr, "data/translation_fr.qs")
-write_csv(translation_fr, "translations/translation_fr.csv")
-
-rm(translation_fr)
 
 # to_translate <-
 # str_extract_all("Warning in private$raw_translate(keyword) :

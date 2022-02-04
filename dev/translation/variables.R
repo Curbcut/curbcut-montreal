@@ -62,6 +62,7 @@ walk(seq_along(variables_translated$fr), ~{
 # Save --------------------------------------------------------------------
 
 # Saving fresh version of variables table translated
+Encoding(variables_translated$en) <- "UTF-8"
 Encoding(variables_translated$fr) <- "UTF-8"
 write_csv(variables_translated, 
           file = "dev/translation/csv/variables_translated.csv")

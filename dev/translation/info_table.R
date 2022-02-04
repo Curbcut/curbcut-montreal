@@ -7,7 +7,8 @@ info_table_translated <- read.csv("dev/translation/csv/info_table_translated.csv
   as_tibble()
 
 
-# Strings - R/functions/_get_info_table_data.R ----------------------------
+
+# Info table smaller strings ----------------------------------------------
 
 # small_strings <-
 # as_tibble(sifr::sif("sus_translate\\(.*\\)", markers = FALSE)) |>
@@ -29,8 +30,10 @@ info_table_translated <- read.csv("dev/translation/csv/info_table_translated.csv
 #      small_strings_translated$fr, ~{cat('c("', .x, '" = "',.y,'"),\n', sep = "")}) |> 
 #   unlist()
 
-# Named vector, easier to build.
+# Named vector for smaller strings, easier to build.
 small_strings_translated <- 
+  
+  # _get_info_table_data.R script
   c(c("borough/city" = "de l'arrondissement/de la ville"),
     c("census tract" = "du secteur de recensement"),
     c("dissemination area" = "de l'aire de diffusion"),
@@ -48,23 +51,22 @@ small_strings_translated <-
     c("Dissemination area {select_name$name}" = "Zone de diffusion {select_name$name} "),
     c("The area around {select_name$name}" = "La zone autour de {select_name$name} "),
     c("{select_name$name_2} of {out$place_name}" = "{select_name$name_2} de {out$place_name}"),
-    c("much larger than<<m>>" = "beaucoup plus grand que"),
-    c("larger than<<m>>" = "plus grand que"),
-    c("almost the same as<<m>>" = "presque identique à"),
-    c("smaller than<<m>>" = "plus petit que"),
-    c("much smaller than<<m>>" = "beaucoup plus petit que"),
-    c("high<<m>>" = "élevé"),
-    c("low<<m>>" = "faible"),
-    c("moderate<<m>>" = "modéré"),
-    c("increased<<m>>" = "augmenté"),
-    c("decreased<<m>>" = "diminué"),
+    c("much larger than" = "beaucoup plus grand que"),
+    c("larger than" = "plus grand que"),
+    c("almost the same as" = "presque identique à"),
+    c("smaller than" = "plus petit que"),
+    c("much smaller than" = "beaucoup plus petit que"),
+    c("high" = "élevé/e"),
+    c("low" = "faible"),
+    c("moderate" = "modéré/e"),
+    c("increased" = "augmenté"),
+    c("decreased" = "diminué"),
     c("majority" = "majorité"),
     c("plurality" = "pluralité"),
-    c("positive<<f>>" = "positive"),
-    c("negative<<f>>" = "négative"),
-    c("strong<<f>>" = "forte"),
-    c("moderate<<f>>" = "modérée"),
-    c("weak<<f>>" = "faible"),
+    c("positive" = "positive"),
+    c("negative" = "négative"),
+    c("strong" = "forte"),
+    c("weak" = "faible"),
     c("higher" = "plus grand/e"),
     c("lower" = "plus petit/e"),
     c("with only a few exceptions" = "à quelques exceptions près"),
@@ -74,7 +76,18 @@ small_strings_translated <-
     c("dramatically different" = "radicalement différents"),
     c("substantially different" = "sensiblement différents"),
     c("considerably different" = "modérément différents"),
-    c("similar" = "similaires"))
+    c("similar" = "similaires"),
+    c(" and " = " et "),
+    c("several different dates" = "plusieurs dates différentes"),
+    c("increasing" = "augmentant"),
+    c("decreasing" = "diminuant"),
+    
+    # _info_table.R script
+    c("No data available." = "Aucune donnée disponible."),
+    c("<i>(Data from {date_left}.)</i>" = "<i>(Données de {date_left}.)</i>"),
+    ("<p><b>STRONG CORRELATION</b></p>" = "<p><b>FORTE CORRÉLATION</b></p>")
+
+    )
 
 small_strings_translated <- 
   tibble(en = names(small_strings_translated),
@@ -128,7 +141,7 @@ paste0(
   "'{z$title_left}' score ({z$exp_left}) of {z$val_left}, which is ", 
   "{z$larger} the region-wide median of {z$median_val}.",
   "<p>{z$place_name} has a {z$high} relative score for this ", 
-  "indicator, with '{z$exp_left)}' higher than ", 
+  "indicator, with '{z$exp_left}' higher than ", 
   "{z$percentile} of {z$scale_plural} in the Montreal region."),
 
 # Univariate, qualitative, no selection
@@ -195,7 +208,6 @@ paste0(
       "there is no relationship between the two variables."),
 # If correlation is strong
 paste0(
-      "<p><b>STRONG CORRELATION</b></p>",
       "<p>'{z$title_left}' has a {z$strong} {z$pos} ",
       "correlation ({z$corr_disp}) with '{z$title_right}' at ",
       "the {z$scale_sing} scale.",
@@ -223,7 +235,6 @@ paste0(
       "<p>This means that, at the {z$scale_sing} scale, ",
       "there is no relationship between the two variables."),
 paste0(
-      "<p><b>STRONG CORRELATION</b></p>",
       "<p>'{z$title_left}' has a {z$strong} {z$pos} correlation ",
       "(Spearman's rho: {z$corr_disp}) with '{z$title_right}' ",
       "at the {z$scale_sing} scale.",
@@ -253,7 +264,6 @@ paste0(
       "there is no relationship between the two variables."),
 # If correlation is strong
 paste0(
-      "<p><b>STRONG CORRELATION</b></p>",
       "<p>'{z$title_left}' has a {z$strong} {z$pos} correlation ",
       "(Spearman's rho: {z$corr_disp}) with '{z$title_right}' ",
       "at the {z$scale_sing} scale.",
@@ -285,7 +295,6 @@ paste0(
       "relationship between the change in the two variables."),
 # If correlation is strong
 paste0(
-        "<p><b>STRONG CORRELATION</b></p>",
       "<p>From {z$start_date_left} to {z$end_date_left}, the change in ", 
       "'{z$title_left}' had a {z$strong} {z$pos} ",
       "correlation ({z$corr_disp}) with the change in '{z$title_right}' ", 
@@ -317,7 +326,6 @@ paste0(
       "relationship between the change in the two variables."),
 # If correlation is strong
 paste0(
-      "<p><b>STRONG CORRELATION</b></p>",
       "<p>From {z$start_date_left} to {z$end_date_left}, the change in ", 
       "'{z$title_left}' had a {z$strong} {z$pos} ",
       "correlation (Spearman's rho: {z$corr_disp}) with the change in ", 
@@ -372,7 +380,7 @@ info_table_translated <-
 
 # Do we need to update this file?
 modif_date_info_table <- file.info("R/functions/_info_table.R")$mtime
-modif_date_this_file <- file.info("dev/translation/prep_info_table.R")$mtime
+modif_date_this_file <- file.info("dev/translation/info_table.R")$mtime
 
 if (modif_date_info_table > modif_date_this_file) {
   warning("Info table texts have possibly been changed since last translation.")
