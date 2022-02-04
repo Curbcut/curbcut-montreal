@@ -1,9 +1,5 @@
 ##### SUS SERVER SCRIPT ########################################################
 
-languageButtonLabel <- function(text) {
-  as.character(tags$span(tags$span(class="material-icons", "language"), span(text)))
-}
-
 shinyServer(function(input, output, session) {
   
   observeEvent(input$title, {
@@ -19,6 +15,8 @@ shinyServer(function(input, output, session) {
     eventReactive(input$language_button, {
       if (input$language_button[1] %% 2 != 0) "en" else "fr"
     }, ignoreNULL = FALSE)
+  
+  
   observeEvent(input$language_button,{
     if (input$language_button[1] %% 2 != 0) {
       js$setLanguage("en")
@@ -35,13 +33,24 @@ shinyServer(function(input, output, session) {
     if (!is.null(query)) {
       # query returns a named list. If it's named tab, return the right
       # tabPanel. the url example: sus.ca/?tab=housing
-      try(updateTabsetPanel(session, "sus_page", selected = query[["tab"]]))
+      try({
+        tab <- query[["tab"]]
+        if (!is.null(tab)) 
+        updateTabsetPanel(session, "sus_page", selected = query[["tab"]])
+        })
+      # Update language with query.
+      try({
+        lang <- query[["lang"]]
+        if (!is.null(lang) && lang == "en") 
+          click("language_button")
+      })
     }
   })
 
   # Update the URL when a module is launch
-  observeEvent(input$sus_page, {
-      updateQueryString(paste0("/?tab=", input$sus_page))
+  observe({
+      updateQueryString(paste0("/?tab=", input$sus_page, 
+                               "&lang=", sus_rv$lang()))
   })
   
   # Modules -----------------------------------------------------------------

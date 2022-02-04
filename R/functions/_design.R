@@ -3,6 +3,11 @@
 
 # Design functions --------------------------------------------------------
 
+languageButtonLabel <- function(text) {
+  as.character(tags$span(tags$span(class = "material-icons", "language"), 
+                         span(text)))
+}
+
 # Make a standard navbarPage with addition fixed-position controls
 navbarPageWithInputs <- function(..., inputs) {
   navbar <- navbarPage(...)
