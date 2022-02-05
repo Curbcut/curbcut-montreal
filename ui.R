@@ -7,8 +7,8 @@ ui <- function(request) {
   tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "bootstrap.min.css")),
   tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "sus.css")),
   tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "https://fonts.googleapis.com/icon?family=Material+Icons")),
+  tags$head(tags$script(src = "sus.js")),
   tags$head(tags$style(HTML(styler))),
-  tags$head(tags$style(HTML(navbar_js))),
   
   # Add a class to the body, to toggle between languages.
   tags$body(class = "user-lang-fr"),

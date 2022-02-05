@@ -18,6 +18,13 @@
   --primary-bg-open: var(--light-muted-green);
 }
 
+/* define global layout values */
+:root {
+  --default-padding-h: 15px;
+  --default-padding-v: 10px;
+  --default-line-height: 20px;
+}
+
 /* define nav style variables */
 :root {
   --nav-content-color: var(--primary);
@@ -25,7 +32,7 @@
   --nav-content-focus-bg-color: var(--primary-bg-focus);
   --nav-content-hover-bg-color: var(--primary-bg-hover);
   --nav-content-current-bg-color: var(--primary-bg-open);
-  --default-padding: 15px;
+  --navbar-height: 50px;
 }
 
 /* define font families */ 
@@ -54,7 +61,7 @@
   position: absolute;
   top: 0px;
   right: 0px;
-  height: 100%;
+  height: var(--navbar-height);
   width: min-content;
   display: flex;
   flex-direction: row;
@@ -69,6 +76,10 @@
 
 .navbar * {
   color: var(--nav-content-color) !important;
+}
+
+.navbar {
+  min-height: var(--navbar-height);
 }
 
 .navbar-fixed a,
@@ -88,8 +99,8 @@
 
 .navbar-fixed a,
 .navbar-fixed > div > button {
-  padding-right: var(--default-padding);
-  padding-left: var(--default-padding);
+  padding-right: var(--default-padding-h);
+  padding-left: var(--default-padding-h);
 }
 
 .navbar-fixed > div > button.btn.btn-circle  {
@@ -101,8 +112,8 @@
   line-height: inherit;
   padding-bottom: unset;
   padding-top: unset;
-  padding-right: var(--default-padding);
-  padding-left: var(--default-padding);
+  padding-right: var(--default-padding-h);
+  padding-left: var(--default-padding-h);
   -webkit-appearance: unset;
 }
 
@@ -179,21 +190,46 @@ ul.dropdown-menu > li {
   margin-bottom: 0px !important;
 }
 
+.navbar-default .navbar-toggle {
+  border: none;
+  height: var(--navbar-height);
+  margin-top: 0px;
+  margin-bottom: 0px;
+  border-radius: 0px;
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  padding-left: var(--default-padding-h);
+  padding-right: var(--default-padding-h);
+  margin-right: 0px;
+}
+
+.navbar-default .navbar-toggle .icon-bar {
+  background-color: var(--nav-content-color);
+  width: 20px;
+  margin-left: 2px;
+  margin-right: 2px;
+}
+
+.navbar-collapse {
+  border-top: none !important;
+}
+
 body > div.container-fluid {
   padding-left: 0px;
   padding-right: 0px;
 }
 
 div.tab-content > div.tab-pane > div.container {
-  height: calc(100vh - 50px) !important;
+  height: calc(100vh - var(--navbar-height)) !important;
   overflow-y: unset !important;
 }
 
 .mapdeck_div {
-  height: calc(100vh - 50px) !important;
+  height: calc(100vh - var(--navbar-height)) !important;
 }
 
 .sidebar_content {
-  padding-top: var(--default-padding);
-  padding-left: var(--default-padding);
+  padding-top: var(--default-padding-h);
+  padding-left: var(--default-padding-h);
 }
