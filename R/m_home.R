@@ -3,24 +3,43 @@
 # UI ----------------------------------------------------------------------
 
 home_UI <- function(id) {
-  fixedPage( 
-            # tags$style('#home {background-color: #FFFFFF;}'),
-            fluidRow(
-              column(width = 4, img(src = "logo_large.png", 
-                                    style = "height:30vh; max-height:600px; vertical-align:middle;"), 
-                     align = "center"),
-              column(width = 8, 
-                     htmlOutput(NS(id, "first")))),
-            fluidRow(hr()),
-            fluidRow(htmlOutput(NS(id, "second"))),
-            fluidRow(htmlOutput(NS(id, "third"))),
-            fluidRow(htmlOutput(NS(id, "fourth"))),
-            fluidRow(hr()),
-            fluidRow(
-              img(src = "mssi_logo.png", style = "height:10vh; max-height:70px"),
-              align = "center"),
-            fluidRow(htmlOutput(NS(id, "fifth")), align = "center")
+  tags$div(class="sus-page sus-page-home",
+    tags$div(class="sus-banner",
+      tags$div(class="sus-banner-bg sus-bg-img-map"),
+      tags$div(class="sus-banner-bg sus-bg-img-skyline"),
+      tags$h1(class="sus-brand sus-banner-text", "SUS")
+    ),
+    tags$div(class="sus-page-content",
+      tags$div(class="sus-carousel",
+        tags$div(class="sus-carousel-slide",
+          tags$h2("Towards a sustainable city"),
+          tags$p("SUS is a platform for integrating, exploring, and analyzing a wide range of urban sustainability data sources for the Montreal region across multiple spatial and temporal scales. SUS offers a robust set of tools for scenario modelling and analysis which will be useful for researchers, policymakers, communities, and individuals."),
+          tags$div(class="sus-button-group",
+            tags$button(class="sus-button sus-icon-button sus-button-secondary", span("Learn More"), span(class="material-icons", "auto_stories")),
+            tags$button(class="sus-button sus-icon-button sus-button-primary", span("Start Exploring Maps"), span(class="material-icons", "travel_explore"))
           )
+        )
+      ) 
+    )
+  )
+  # fixedPage( 
+  #           # tags$style('#home {background-color: #FFFFFF;}'),
+  #           fluidRow(
+  #             column(width = 4, img(src = "logo_large.png", 
+  #                                   style = "height:30vh; max-height:600px; vertical-align:middle;"), 
+  #                    align = "center"),
+  #             column(width = 8, 
+  #                    htmlOutput(NS(id, "first")))),
+  #           fluidRow(hr()),
+  #           fluidRow(htmlOutput(NS(id, "second"))),
+  #           fluidRow(htmlOutput(NS(id, "third"))),
+  #           fluidRow(htmlOutput(NS(id, "fourth"))),
+  #           fluidRow(hr()),
+  #           fluidRow(
+  #             img(src = "mssi_logo.png", style = "height:10vh; max-height:70px"),
+  #             align = "center"),
+  #           fluidRow(htmlOutput(NS(id, "fifth")), align = "center")
+  #         )
   }
 
 

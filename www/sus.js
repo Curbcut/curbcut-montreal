@@ -6,10 +6,14 @@ window.addEventListener('load', (evt) => {
   const navbarFixed = document.querySelector('.navbar-static-top div.navbar-fixed');
 
   const breakpoint = Math.ceil(navbarBrand.clientWidth + navbarLinks.clientWidth + navbarFixed.clientWidth);
+  const bodyMinWidth = Math.ceil(navbarBrand.clientWidth + navbarFixed.clientWidth + 54);
 
-  const style = document.createElement('style');
+  var style = document.createElement('style');
   style.innerText =
-`@media (max-width: ${breakpoint}px) {
+`body {
+  min-width: calc(max(300px, ${bodyMinWidth}px));
+}
+@media (max-width: ${breakpoint}px) {
   .navbar-header {
     float: none;
   }
@@ -57,4 +61,12 @@ window.addEventListener('load', (evt) => {
 `;
 
   head.appendChild(style);
+
+  const params = new URLSearchParams(window.location.search);
+
+  if (params.has('tab') && params.get('tab') == 'home') {
+    var style = document.createElement('style');
+    // style.innerText = `.navbar-`;
+    head.appendChild(style);
+}
 });

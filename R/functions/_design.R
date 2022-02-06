@@ -11,10 +11,10 @@ languageButtonLabel <- function(text) {
 # Make a standard navbarPage with addition fixed-position controls
 navbarPageWithInputs <- function(..., inputs) {
   navbar <- navbarPage(...)
-  form <- tags$div(class = "navbar-fixed", inputs)
+  container <- tags$div(class = "navbar-fixed", inputs)
   navbar[[4]][[1]][[1]]$children[[1]] <- 
     htmltools::tagAppendChild(
-    navbar[[4]][[1]][[1]]$children[[1]], form)
+    navbar[[4]][[1]][[1]]$children[[1]], container)
   navbar
 }
 

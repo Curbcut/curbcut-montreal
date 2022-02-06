@@ -1,11 +1,50 @@
+/* define font families */ 
+@font-face {
+  font-family: outfit-regular;
+  src: url("fonts/Outfit-Regular.ttf");
+}
+
+@font-face {
+  font-family: outfit-medium;
+  src: url("fonts/Outfit-Medium.ttf");
+}
+
+@font-face {
+  font-family: outfit-semibold;
+  src: url("fonts/Outfit-SemiBold.ttf");
+}
+
+@font-face {
+  font-family: outfit-bold;
+  src: url("fonts/Outfit-Bold.ttf");
+}
+
+@font-face {
+  font-family: source-sans-pro-regular;
+  src: url("fonts/SourceSansPro-Regular.ttf");
+}
+
+/* define font usage */
+:root {
+  --ff-brand: 'outfit-bold';
+  --ff-banner: 'outfit-semibold';
+  --ff-label: 'outfit-medium';
+  --ff-header: 'outfit-regular';
+  --ff-body: 'source-sans-pro-regular';
+}
+
 /* define colors */
 :root {
   --dark-blue: #4a5c83;
+  --medium-blue: #6c83b5;
   --muted-green: #b8d6be;
   --muted-blue: #b5c0da;
+  --medium-muted-green: #90b2b3;
   --light-muted-green: #ddeee0;
+  --medium-muted-blue: #cad7ed;
   --light-muted-blue: #d8dfee;
-  --test: #178acc;
+  --light-muted-blue-alt: #dadfec;
+  --medium-green-blue: #567994;
 }
 
 /* define color roles */
@@ -16,13 +55,26 @@
   --primary-bg-active: var(--muted-blue);
   --primary-bg-focus: var(--muted-blue);
   --primary-bg-open: var(--light-muted-green);
+  --secondary: var(--medium-muted-green);
+  --paragraph: var(--dark-blue);
+  --h1: var(--medium-green-blue);
+  --h2: var(--medium-green-blue);
+  --h3: var(--medium-green-blue);
+  --h4: var(--medium-green-blue);
 }
 
-/* define global layout values */
+/* define global style values */
 :root {
   --default-padding-h: 15px;
   --default-padding-v: 10px;
   --default-line-height: 20px;
+  --brand-transform: skew(-8deg, 0deg);
+  --border-radius-sm: 3px;
+  --border-radius-md: calc(var(--border-radius-sm) * 1.5);
+  --border-radius-lg: calc(var(--border-radius-md) * 2);
+  --box-shadow-sm: 0px 1px 1px 0px #rgba(0, 0, 0, 0.15);
+  --box-shadow-md: 0px 2.5px 10px 0px #rgba(0, 0, 0, 0.15);
+  --box-shadow-lg: 0px 5px 20px 0px #rgba(0, 0, 0, 0.15);
 }
 
 /* define nav style variables */
@@ -35,25 +87,50 @@
   --navbar-height: 50px;
 }
 
-/* define font families */ 
-@font-face {
-  font-family: ff-brand;
-  src: url("fonts/Outfit-Bold.ttf");
+/* define landing page style variables */
+:root {
+  --home-bg-gradient-start: var(--medium-muted-blue);
+  --home-bg-gradient-end: var(--dark-blue);
 }
 
-@font-face {
-  font-family: ff-label;
-  src: url("fonts/Outfit-Regular.ttf");
+p {
+  font-family: var(--ff-body);
+  color: var(--paragraph);
+  font-size: 1.75rem;
+  margin-bottom: 1em;
 }
 
-@font-face {
-  font-family: ff-text;
-  src: url("fonts/SourceSansPro-Regular.ttf");
+h1 {
+  color: var(--h1);
+  font-family: var(--ff-header);
+  transform: var(--brand-transform);
+  font-size: 6rem;
 }
 
+h2 {
+  color: var(--h2);
+  font-family: var(--ff-header);
+  transform: var(--brand-transform);
+  font-size: 4rem;
+  margin-bottom: 0.75em;
+}
+
+h3 {
+  color: var(--h3);
+  font-family: var(--ff-header);
+  transform: var(--brand-transform);
+  font-size: 3rem;
+}
+
+h4 {
+  color: var(--h4);
+  font-family: var(--ff-header);
+  transform: var(--brand-transform);
+  font-size: 2rem;
+}
 
 .navbar-default {
-  background: none;
+  background: var(--primary-bg);
   border-bottom: none;
 }
 
@@ -132,14 +209,14 @@ span.material-icons:not(:first-child) {
 }
 
 .navbar-header a, .navbar-nav a, .navbar-fixed a  {
-  font-family: 'ff-label';
+  font-family: var(--ff-label);
   white-space: nowrap;
 }
 
 .navbar-header a#title {
   display: inline-block;
-  font-family: 'ff-brand';
-  transform: skew(-8deg, 0deg);
+  font-family: var(--ff-brand);
+  transform: var(--brand-transform);
 }
 
 .navbar-default a:hover:not(#title),
@@ -232,4 +309,238 @@ div.tab-content > div.tab-pane > div.container {
 .sidebar_content {
   padding-top: var(--default-padding-h);
   padding-left: var(--default-padding-h);
+}
+
+div.tab-content:first-child > div.tab-pane > div.container {
+  overflow-y: auto !important;
+  height: auto !important;
+}
+
+.sus-brand {
+  color: var(--primary);
+  font-family: var(--ff-brand);
+  content: "SUS";
+  transform: var(--brand-transform);
+}
+
+:root {
+  --banner-font-size: calc(max(min(min(40vh, 40vw), 28rem), 12rem));
+  --banner-height: calc(var(--navbar-height) + var(--banner-font-size));
+}
+
+.sus-banner {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  bottom: 0px;
+  right: 0px;
+  background-color: var(--light-muted-blue-alt);
+  overflow: hidden;
+  height: var(--banner-height);
+  font-size: var(--banner-font-size);
+}
+
+.sus-banner-bg {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  bottom: 0px;
+  right: 0px;
+}
+
+.sus-banner-text {
+  font-size: inherit;
+  font-family: var(--ff-banner) !important;
+  color: #6c83b5 !important;
+  position: absolute;
+  display: block;
+  text-align: center;
+  left: 0px;
+  right: 0px;
+  bottom: -0.28em;
+  margin: 0px 0px 0px 0px;
+}
+
+.sus-bg-img-map {
+  background-image: url('banner-map.jpg');
+  background-size: cover;
+  background-position: 50% 75%;
+}
+
+.sus-bg-img-skyline {
+  background-image: url('banner-skyline.svg');
+  background-size: cover;
+  background-position: 50% 50%;
+  transform: translate(0px, 40%);
+}
+
+.sus-button {
+  border: none;
+  border-radius: var(--border-radius-sm);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  align-content: center;
+  padding: 0px var(--default-padding-h) 0px var(--default-padding-h);
+  width: auto;
+  min-height: 45px;
+  max-height: 45px;
+  text-transform: uppercase;
+  font-family: var(--ff-button);
+  font-size: 1.75rem;
+  transform-origin: center;
+  white-space: nowrap;
+}
+
+.sus-button:hover {
+  transform: scale(1.02, 1.02);
+  filter: brightness(1.05);
+  transition: transform ease-in-out 0.1s;
+}
+
+.sus-button:active {
+  transform: scale(1, 1);
+  filter: brightness(0.95);
+  transition: transform ease-in-out 0.1s;
+}
+
+.sus-button-primary {
+  background-color: var(--primary);
+  color: white;
+}
+
+.sus-button-secondary{
+  background-color: var(--secondary);
+  color: white;
+}
+
+.sus-button-group {
+  display: flex;
+}
+
+.sus-button-group-vertical {
+  flex-direction: column;
+}
+
+.sus-button-group:not(.sus-button-group-vertical) .sus-button:not(:first-child) {
+  margin-left: calc(var(--default-padding-h) / 1.5);
+}
+
+.sus-button-group.sus-button-group-vertical .sus-button:not(:first-child) {
+  margin-top: calc(var(--default-padding-h) / 1.5);
+  width: 100%;
+}
+
+.sus-page {
+  height: 100%;
+  width: 100%;
+  position: relative;
+}
+
+.sus-page-home {
+  background: linear-gradient(to bottom, var(--home-bg-gradient-start), var(--home-bg-gradient-end));
+  top: 0px;
+  min-height: 100vh;
+  margin-top: calc(-1 * var(--navbar-height));
+  padding-top: var(--banner-height);
+}
+
+:root {
+  --home-page-content-height: calc(100vh - var(--banner-height));
+}
+
+.sus-page-home .sus-page-content {
+  height: var(--home-page-content-height);
+  min-height: var(--home-page-content-height);
+  max-height: var(--home-page-content-height);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  background-image: url('landing.jpg');
+  background-size: cover;
+  background-position: 50% 50%;
+  padding-top: 30px;
+  padding-bottom: 30px;
+}
+
+@media (max-height: 800px) {
+  .sus-page-home .sus-page-content {
+    max-height: min-content !important;
+    height: min-content !important;
+  }
+}
+
+@media (max-width: 600px) {
+  .sus-page-home .sus-page-content {
+    max-height: min-content !important;
+    height: min-content !important;
+  }
+}
+
+:root {
+  --carousel-padding: calc(var(--default-padding-h) * 1.5);
+}
+
+.sus-carousel {
+  width: 600px;
+  height: min-content;
+  border-radius: var(--border-radius-lg);
+  padding: var(--carousel-padding) var(--carousel-padding) var(--carousel-padding) var(--carousel-padding);
+}
+
+@media (max-width: 600px) {
+  .sus-carousel {
+    width: 300px;
+  }
+  h1 {
+    font-size: 3rem;
+  }
+  h2 {
+    font-size: 3rem;
+  }
+  h3 {
+    font-size: 2rem;
+  }
+  h4 {
+    font-size: 2rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .sus-button-group:not(.sus-button-group-vertical) {
+    flex-direction: column;
+  }
+
+  .sus-button-group:not(.sus-button-group-vertical) .sus-button:not(:first-child) {
+    margin-left: unset;
+    margin-top: calc(var(--default-padding-h) / 1.5);
+    width: 100%;
+  }
+}
+
+.sus-page-home .sus-page-content .sus-carousel {
+  background-color: rgba(255, 255, 255, 0.6);
+  box-sizing: var(--box-shadow-lg);
+}
+
+.sus-carousel .sus-button-group {
+  margin-top: 40px;
+  width: 100%;
+  justify-content: flex-end;
+}
+
+.sus-carousel h1, .sus-carousel h2, .sus-carousel h3, .sus-carousel h4, .sus-carousel p {
+  margin-left: var(--default-padding-h);
+  margin-right: var(--default-padding-h);
+  text-align: center;
+}
+
+html {
+  overflow: initial !important;
+}
+
+body {
+  overflow: initial !important;
 }
