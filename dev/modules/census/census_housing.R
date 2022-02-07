@@ -126,7 +126,7 @@ census_vec <-
                          "past five years"),
     private = FALSE) |>
   add_row_census_vec(
-    var_code = "single_detached_house_pct",
+    var_code = "housing_single_detached_house_pct",
     vec_2016 = "v_CA16_409",
     vec_2011 = "v_CA11F_200",
     vec_2006 = "v_CA06_120",
