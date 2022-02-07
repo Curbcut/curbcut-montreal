@@ -818,7 +818,7 @@ body.user-tab-home .navbar-default {
   padding: 10px 10px 10px 10px;
   border-radius: var(--border-radius-lg);
   width: 100%;
-  max-width: 300px;
+  max-width: 208px;
   height: auto;
   object-fit: contain;
   box-shadow: var(--box-shadow-md);
