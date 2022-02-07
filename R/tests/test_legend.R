@@ -18,14 +18,14 @@ suppressPackageStartupMessages({
   qload("data/census.qsm")
   grid <- qread("data/grid.qs")
 
-  source("R/_get_data_table.R")
-  source("R/_get_data_type.R")
-  source("R/_get_data.R")
-  source("R/_get_legend_breaks.R")
-  source("R/_get_legend_labels.R")
-  source("R/_render_legend.R")
-  source("R/_translation.R")
-  source("R/_utils.R")
+  source("R/functions/_get_data_table.R")
+  source("R/functions/_get_data_type.R")
+  source("R/functions/_get_data.R")
+  source("R/functions/_get_legend_breaks.R")
+  source("R/functions/_get_legend_labels.R")
+  source("R/functions/_render_legend.R")
+  source("R/functions/_translation.R")
+  source("R/functions/_utils.R")
   
 })
 
@@ -37,7 +37,7 @@ var_left <- "canale_ind_2016"
 var_right <- " "
 data <- get_data(df, var_left, var_right)
 data_type <- get_data_type(df, var_left, var_right)
-render_legend(var_left, var_right, df, data_type)}
+render_legend(data, var_left, var_right, df, data_type)}
 
 
 # Univariate, qualitative -------------------------------------------------
@@ -48,7 +48,7 @@ var_left <- "climate_destructive_storms_ind"
 var_right <- " "
 data <- get_data(df, var_left, var_right, island = TRUE)
 data_type <- get_data_type(df, var_left, var_right)
-render_legend(var_left, var_right, df, data_type)}
+render_legend(data, var_left, var_right, df, data_type)}
 
 
 # Bivariate, single date --------------------------------------------------

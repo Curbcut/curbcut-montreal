@@ -152,7 +152,7 @@ DA <-
 CT <-
   CT |> 
   st_drop_geometry() |> 
-  add_q5(climate_risk_q5[[1]]) |> 
+  add_q5(climate_risk_q5[[2]]) |> 
   bind_cols(CT) |> 
   relocate(climate_flood_ind_q5:climate_heat_wave_ind_q5, .before = geometry) |> 
   st_as_sf(sf_column_name = "geometry") |> 
@@ -161,7 +161,7 @@ CT <-
 borough <-
   borough |> 
   st_drop_geometry() |> 
-  add_q5(climate_risk_q5[[1]]) |> 
+  add_q5(climate_risk_q5[[3]]) |> 
   bind_cols(borough) |> 
   relocate(climate_flood_ind_q5:climate_heat_wave_ind_q5, .before = geometry) |> 
   st_as_sf(sf_column_name = "geometry") |> 

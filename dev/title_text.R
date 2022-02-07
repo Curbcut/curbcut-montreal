@@ -8,6 +8,8 @@ title_text <-
   select(tab, type, text)
 
 title_text <-
+  title_text |> 
+  filter(tab != "housing") |> 
   add_row(tab = "housing", type = "title", text = "The housing system") |> 
   add_row(tab = "housing", type = "main",
           text = paste0("Housing is at the centre of our lives. In recent years, ",
