@@ -124,6 +124,18 @@ census_vec <-
     var_short = "5-year mob.",
     explanation = paste0("the percentage of households that have moved in the ",
                          "past five years"),
+    private = FALSE) |>
+  add_row_census_vec(
+    var_code = "single_detached_house_pct",
+    vec_2016 = "v_CA16_409",
+    vec_2011 = "v_CA11F_200",
+    vec_2006 = "v_CA06_120",
+    vec_2001 = "v_CA01_113",
+    vec_1996 = "v_CA1996_108",
+    var_title = "Single-detached house (%)",
+    var_short = "Single-detached",
+    explanation = paste0("the percentage of occupied private dwellings that are",
+                         "single-detached houses"),
     private = FALSE)
   
 
