@@ -95,8 +95,8 @@ get_info_table_data <- function(data, var_type, var_left, var_right, df,
     
   } else var_right_label <- NULL
     
-  var_left_label <- sus_translate(var_left_label)
-  var_right_label <- sus_translate(var_right_label)
+  var_left_label <- map_chr(var_left_label, sus_translate)
+  var_right_label <- map_chr(var_right_label, sus_translate)
   
   out$title_left <- 
     sus_translate(variables[variables$var_code == var_left,]$var_title)
