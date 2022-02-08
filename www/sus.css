@@ -539,27 +539,22 @@ div.tab-content:first-child > div.tab-pane > div.container {
 
 .sus-maps-list {
   display: flex;
-  flex-wrap: wrap;
+  flex-flow: column wrap;
+  align-items: flex-start;
+  justify-content: flex-start;
   margin-left: -5px;
   margin-right: -10px;
   overflow-x: hidden;
-  justify-content: stretch;
-}
-
-@media (max-width: 600px) {
-  .sus-maps-list {
-    display: flex;
-    flex-direction: column;
-    justify-content: stretch;
-  }
+  height: 50vh;
 }
 
 .sus-maps-list-group {
-  flex-grow: 1;
-  width: max-content;
-  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.2));
-  border-radius: var(--border-radius-md);
-  box-shadow: var(--box-shadow-md);
+  flex-grow: 0;
+  min-width: max-content;
+  width: 30%;
+  background: none;
+  border-radius: 0px;
+  box-shadow: none;
   margin: 5px;
   padding-top: var(--default-padding-v);
   padding-left: var(--default-padding-h);
@@ -567,7 +562,19 @@ div.tab-content:first-child > div.tab-pane > div.container {
   margin-bottom: var(--default-padding-v);
 }
 
+@media (max-width: 900px) {
+  .sus-maps-list {
+    height: 75vh;
+  }
+  .sus-maps-list-group {
+    width: 50%;
+  }
+}
+
 @media (max-width: 600px) {
+  .sus-maps-list {
+    height: unset;
+  }
   .sus-maps-list-group {
     width: calc(100% - 15px);
   }

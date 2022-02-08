@@ -46,33 +46,23 @@ home_UI <- function(id) {
       tags$div(class="sus-page-content-section",
         tags$h2("Maps"),
         tags$div(class="sus-maps-list",
-          tags$div(class="sus-maps-list-group",
-            tags$h3("Climate"),
-            tags$ul(class="sus-map-link-group",
-              tags$li(tags$a(class="noselect", "Climate risk"))
-            )
-          ),
-          tags$div(class="sus-maps-list-group",
-            tags$h3("Covid"),
-            tags$ul(class="sus-map-link-group",
-              tags$li(tags$a(class="noselect", "Covid interventions"))
-            )
-          ),
-          tags$div(class="sus-maps-list-group",
-            tags$h3("Housing"),
-            tags$ul(class="sus-map-link-group",
-              tags$li(tags$a(class="noselect", "Housing system")),
-              tags$li(tags$a(class="noselect", "Gentrification")),
-              tags$li(tags$a(class="noselect", "Permits")),
-              tags$li(tags$a(class="noselect", "Marketed sustainability"))
-            )
-          ),
-          tags$div(class="sus-maps-list-group",
-            tags$h3("Policy"),
-            tags$ul(class="sus-map-link-group",
-              tags$li(tags$a(class="noselect", "Montreal climate plans"))
-            )
-          ),
+                 tags$div(class="sus-maps-list-group",
+                          tags$h3("Housing"),
+                          tags$ul(class="sus-map-link-group",
+                                  tags$li(tags$a(class="noselect", "Housing system")),
+                                  tags$li(tags$a(class="noselect", "Gentrification")),
+                                  tags$li(tags$a(class="noselect", "Permits")),
+                                  tags$li(tags$a(class="noselect", "Marketed sustainability"))
+                          )
+                 ),
+                 tags$div(class="sus-maps-list-group",
+                          tags$h3("Urban Life"),
+                          tags$ul(class="sus-map-link-group",
+                                  tags$li(tags$a(class="noselect", "Active greening potential")),
+                                  tags$li(tags$a(class="noselect", "Green alleys")),
+                                  tags$li(tags$a(class="noselect", "Green spaces"))
+                          )
+                 ),
           tags$div(class="sus-maps-list-group",
             tags$h3("Transport"),
             tags$ul(class="sus-map-link-group",
@@ -81,21 +71,31 @@ home_UI <- function(id) {
             )
           ),
           tags$div(class="sus-maps-list-group",
-            tags$h3("Urban Life"),
-            tags$ul(class="sus-map-link-group",
-              tags$li(tags$a(class="noselect", "Active greening potential")),
-              tags$li(tags$a(class="noselect", "Green alleys")),
-              tags$li(tags$a(class="noselect", "Green spaces"))
-            )
+                   tags$h3("Climate"),
+                   tags$ul(class="sus-map-link-group",
+                           tags$li(tags$a(class="noselect", "Climate risk"))
+                   )
           ),
           tags$div(class="sus-maps-list-group",
-            tags$h3("More"),
-            tags$ul(class="sus-map-link-group",
-              tags$li(tags$a(class="noselect", "Active greening potential")),
-              tags$li(tags$a(class="noselect", "Green alleys")),
-              tags$li(tags$a(class="noselect", "Green spaces"))
-            )
+                   tags$h3("Covid"),
+                   tags$ul(class="sus-map-link-group",
+                           tags$li(tags$a(class="noselect", "Covid interventions"))
+                   )
           ),
+          tags$div(class="sus-maps-list-group",
+                   tags$h3("Policy"),
+                   tags$ul(class="sus-map-link-group",
+                           tags$li(tags$a(class="noselect", "Montreal climate plans"))
+                   )
+          ),
+          tags$div(class="sus-maps-list-group",
+                   tags$h3("More"),
+                   tags$ul(class="sus-map-link-group",
+                           tags$li(tags$a(class="noselect", "Active greening potential")),
+                           tags$li(tags$a(class="noselect", "Green alleys")),
+                           tags$li(tags$a(class="noselect", "Green spaces"))
+                   )
+          )
         )
       )
     ),
