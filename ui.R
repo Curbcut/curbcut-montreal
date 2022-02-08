@@ -5,6 +5,7 @@ ui <- function(request) {
   # Styling objects
   useShinyjs(),
   tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "bootstrap.min.css")),
+  tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "stevens.greenblue.css")),
   tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "sus.css")),
   tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "https://fonts.googleapis.com/icon?family=Material+Icons")),
   tags$head(tags$script(src = "sus.js")),

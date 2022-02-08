@@ -53,14 +53,14 @@ home_UI <- function(id) {
             tags$h2(tags$em("Towards a sustainable city")),
             tags$p("SUS is a platform for integrating, exploring, and analyzing a wide range of urban sustainability data sources for the Montreal region across multiple spatial and temporal scales. SUS offers a robust set of tools for scenario modelling and analysis which will be useful for researchers, policymakers, communities, and individuals."),
             tags$div(class="sus-button-group",
-              tags$button(class="sus-button sus-icon-button sus-button-secondary", span("Learn More"), span(class="material-icons", "auto_stories")),
-              tags$button(class="sus-button sus-icon-button sus-button-primary", span("Start Exploring Maps"), span(class="material-icons", "travel_explore"))
+              tags$a(class="sus-button sus-icon-button sus-button-secondary", href="#learn-more", span("Learn More"), span(class="material-icons", "auto_stories")),
+              tags$a(class="sus-button sus-icon-button sus-button-primary", href="#start-exploring", span("Start Exploring Maps"), span(class="material-icons", "travel_explore"))
             )
           )
         )
       ),
       tags$div(class="sus-page-content-section",
-        tags$h2("Statement"),
+        tags$h2("Statement", id="learn-more"),
         tags$p("SUS embraces an inclusive vision of urban sustainability, allowing ",
                "users to contextualize questions into larger frameworks of equity and ",
                "accessibility. It serves as both a data-exploration tool and a knowledge ",
@@ -81,7 +81,7 @@ home_UI <- function(id) {
         ))
       ),
       tags$div(class="sus-page-content-section",
-        tags$h2("Maps"),
+        tags$h2("Maps", id="start-exploring"),
         tags$div(class="sus-maps-list",
           linkListGroup(name="Housing",
            list(name="Housing system", url="#"),
@@ -112,6 +112,17 @@ home_UI <- function(id) {
            list(name="Active greening potential", url="#")
           )
         )
+      ),
+      tags$div(class="palette-grid", hidden="true",
+        tags$div(class="palette-swatch"),
+        tags$div(class="palette-swatch"),
+        tags$div(class="palette-swatch"),
+        tags$div(class="palette-swatch"),
+        tags$div(class="palette-swatch"),
+        tags$div(class="palette-swatch"),
+        tags$div(class="palette-swatch"),
+        tags$div(class="palette-swatch"),
+        tags$div(class="palette-swatch")
       )
     ),
     susFooter()
