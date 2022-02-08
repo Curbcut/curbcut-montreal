@@ -2,6 +2,43 @@
 
 # UI ----------------------------------------------------------------------
 
+linkListGroupElement <- function(link) {
+  return(tags$li(tags$a(class="noselect", href=link$url, link$name)))
+}
+
+linkListGroup <- function(name, ...) {
+  namedArgs = list(class="sus-map-link-group")
+  args = c(namedArgs, lapply(list(...), linkListGroupElement))
+  
+  return(tags$div(class="sus-maps-list-group",
+      tags$h3(name),
+      do.call(tags$ul, args)
+    )
+  )
+}
+
+susFooter <- function() {
+  return(tags$div(class="sus-page-footer",
+    tags$div(class="sus-page-footer-content",
+      tags$div(class="sus-page-footer-logos",
+        tags$a(href="https://www.mcgill.ca/mssi/", target="_blank",
+           tags$img(class="sus-page-footer-logo", src="mcgill-mssi-logo-final.png")
+        )
+      ),
+      tags$div(class="sus-page-footer-links",
+        tags$ul(
+          tags$li(tags$a(href="", "About")),
+          tags$li(tags$a(href="", "Terms & Conditions")),
+          tags$li(tags$a(href="", "Privacy Policy")),
+          tags$li(tags$a(href="", "Contact"))
+        )
+      )
+    )
+  ))
+}
+
+tags$div(class="blah", id="yolo", "Hey y'all", span("Aasdasd"))
+
 home_UI <- function(id) {
   tags$div(class="sus-page sus-page-home",
     tags$div(class="sus-banner noselect",
@@ -46,74 +83,38 @@ home_UI <- function(id) {
       tags$div(class="sus-page-content-section",
         tags$h2("Maps"),
         tags$div(class="sus-maps-list",
-                 tags$div(class="sus-maps-list-group",
-                          tags$h3("Housing"),
-                          tags$ul(class="sus-map-link-group",
-                                  tags$li(tags$a(class="noselect", "Housing system")),
-                                  tags$li(tags$a(class="noselect", "Gentrification")),
-                                  tags$li(tags$a(class="noselect", "Permits")),
-                                  tags$li(tags$a(class="noselect", "Marketed sustainability"))
-                          )
-                 ),
-                 tags$div(class="sus-maps-list-group",
-                          tags$h3("Urban Life"),
-                          tags$ul(class="sus-map-link-group",
-                                  tags$li(tags$a(class="noselect", "Active greening potential")),
-                                  tags$li(tags$a(class="noselect", "Green alleys")),
-                                  tags$li(tags$a(class="noselect", "Green spaces"))
-                          )
-                 ),
-          tags$div(class="sus-maps-list-group",
-            tags$h3("Transport"),
-            tags$ul(class="sus-map-link-group",
-              tags$li(tags$a(class="noselect", "Accessibility")),
-              tags$li(tags$a(class="noselect", "Road safety"))
-            )
+          linkListGroup(name="Housing",
+           list(name="Housing system", url="#"),
+           list(name="Gentrification", url="#"),
+           list(name="Permits", url="#"),
+           list(name="Marketed sustainability", url="#")
           ),
-          tags$div(class="sus-maps-list-group",
-                   tags$h3("Climate"),
-                   tags$ul(class="sus-map-link-group",
-                           tags$li(tags$a(class="noselect", "Climate risk"))
-                   )
+          linkListGroup(name="Urban Life",
+           list(name="Active greening potential", url="#"),
+           list(name="Green alleys", url="#"),
+           list(name="Green spaces", url="#")
           ),
-          tags$div(class="sus-maps-list-group",
-                   tags$h3("Covid"),
-                   tags$ul(class="sus-map-link-group",
-                           tags$li(tags$a(class="noselect", "Covid interventions"))
-                   )
+          linkListGroup(name="Transport",
+           list(name="Accessibility", url="#"),
+           list(name="Road safety", url="#"),
+           list(name="Green spaces", url="#")
           ),
-          tags$div(class="sus-maps-list-group",
-                   tags$h3("Policy"),
-                   tags$ul(class="sus-map-link-group",
-                           tags$li(tags$a(class="noselect", "Montreal climate plans"))
-                   )
+          linkListGroup(name="Climate",
+           list(name="Climate risk", url="#")
           ),
-          tags$div(class="sus-maps-list-group",
-                   tags$h3("More"),
-                   tags$ul(class="sus-map-link-group",
-                           tags$li(tags$a(class="noselect", "Active greening potential")),
-                           tags$li(tags$a(class="noselect", "Green alleys")),
-                           tags$li(tags$a(class="noselect", "Green spaces"))
-                   )
+          linkListGroup(name="Covid",
+           list(name="Covid interventions", url="#")
+          ),
+          linkListGroup(name="Policy",
+           list(name="Montreal climate plans", url="#")
+          ),
+          linkListGroup(name="More",
+           list(name="Active greening potential", url="#")
           )
         )
       )
     ),
-    tags$div(class="sus-page-footer",
-      tags$div(class="sus-page-footer-content",
-        tags$div(class="sus-page-footer-logos",
-          tags$img(class="sus-page-footer-logo", src="mcgill-mssi-logo-final.png")
-        ),
-        tags$div(class="sus-page-footer-links",
-          tags$ul(
-            tags$li(tags$a(href="", "About")),
-            tags$li(tags$a(href="", "Terms & Conditions")),
-            tags$li(tags$a(href="", "Privacy Policy")),
-            tags$li(tags$a(href="", "Contact"))
-          )
-        )
-      )
-    )
+    susFooter()
   )
   # fixedPage( 
   #           # tags$style('#home {background-color: #FFFFFF;}'),

@@ -509,8 +509,12 @@ div.tab-content:first-child > div.tab-pane > div.container {
   padding-bottom: 30px;
   padding-left: 100px;
   padding-right: 100px;
-  background-color: rgba(255, 255, 255, 0.75);
-  box-shadow: var(--box-shadow-lg);
+  /* background-color: rgba(255, 255, 255, 0.75);
+  box-shadow: var(--box-shadow-lg); */
+}
+
+.sus-page-home .sus-page-content-section:not(:first-child) * {
+  color: white;
 }
 
 @media (max-width: 950px) {
@@ -610,7 +614,7 @@ div.tab-content:first-child > div.tab-pane > div.container {
 .sus-maps-list-group li > * {
   display: inline-block;
   width: 100%;
-  color: var(--h3);
+  color: var(--primary) !important;
   font-family: var(--ff-button);
   text-decoration: none !important;
   cursor: pointer;
