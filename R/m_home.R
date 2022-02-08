@@ -17,26 +17,6 @@ linkListGroup <- function(name, ...) {
   )
 }
 
-susFooter <- function() {
-  return(tags$div(class="sus-page-footer",
-    tags$div(class="sus-page-footer-content",
-      tags$div(class="sus-page-footer-logos",
-        tags$a(href="https://www.mcgill.ca/mssi/", target="_blank",
-           tags$img(class="sus-page-footer-logo", src="mcgill-mssi-logo-final.png")
-        )
-      ),
-      tags$div(class="sus-page-footer-links",
-        tags$ul(
-          tags$li(tags$a(href="", "About")),
-          tags$li(tags$a(href="", "Terms & Conditions")),
-          tags$li(tags$a(href="", "Privacy Policy")),
-          tags$li(tags$a(href="", "Contact"))
-        )
-      )
-    )
-  ))
-}
-
 tags$div(class="blah", id="yolo", "Hey y'all", span("Aasdasd"))
 
 home_UI <- function(id) {

@@ -1,6 +1,5 @@
 ##### DESIGN RELATED SCRIPT ####################################################
 
-
 # Design functions --------------------------------------------------------
 
 languageButtonLabel <- function(text) {
@@ -37,6 +36,27 @@ right_panel <- function(id, ...) {
     class = "panel panel-default", top = 15, right = 15, # width = 300,
     ...
   )
+}
+
+# Make a generic global footer (for use on text pages only)
+susFooter <- function() {
+  return(tags$div(class="sus-page-footer",
+    tags$div(class="sus-page-footer-content",
+      tags$div(class="sus-page-footer-logos",
+        tags$a(href="https://www.mcgill.ca/mssi/", target="_blank",
+          tags$img(class="sus-page-footer-logo", src="mcgill-mssi-logo-final.png")
+        )
+      ),
+      tags$div(class="sus-page-footer-links",
+        tags$ul(
+          tags$li(tags$a(href="", "About")),
+          tags$li(tags$a(href="", "Terms & Conditions")),
+          tags$li(tags$a(href="", "Privacy Policy")),
+          tags$li(tags$a(href="", "Contact"))
+        )
+      )
+    )
+  ))
 }
 
 # # unused function at the moment
