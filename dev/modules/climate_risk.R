@@ -51,9 +51,9 @@ grid <-
   reduce(left_join, by = "ID", .init = grid) |> 
   relocate(geometry, .after = last_col()) |>
   mutate(across(climate_flood_ind:climate_heat_wave_ind, 
-                ~pmin(.x, 3), .names = "{.col}_q3"),
+                ~pmax(pmin(.x, 3), 1), .names = "{.col}_q3"),
          across(climate_flood_ind:climate_heat_wave_ind,
-                ~.x, .names = "{.col}_q5")) |> 
+                ~pmax(.x, 1), .names = "{.col}_q5")) |> 
   relocate(geometry, .after = last_col()) |> 
   st_set_agr("constant")
 
