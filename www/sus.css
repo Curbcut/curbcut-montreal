@@ -656,7 +656,7 @@ div.tab-content:first-child > div.tab-pane > div.container {
   margin-left: -5px;
   margin-right: -10px;
   overflow-x: hidden;
-  height: 50vh;
+  height: 450px;
 }
 
 .sus-maps-list-group {
@@ -675,7 +675,7 @@ div.tab-content:first-child > div.tab-pane > div.container {
 
 @media (max-width: 900px) {
   .sus-maps-list {
-    height: 75vh;
+    height: 550px;
   }
   .sus-maps-list-group {
     width: 50%;
