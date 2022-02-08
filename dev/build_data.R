@@ -164,9 +164,6 @@ source("dev/title_text.R")
 library(patchwork)
 source("dev/other/colours.R")
 
-# Dependent script: needs 'borough' object
-source("dev/other/produce_maps.R")
-
 
 # Copy large data files to Dropbox ----------------------------------------
 
