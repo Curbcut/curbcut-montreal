@@ -68,7 +68,7 @@ var_left <- c("housing_tenant_pct_2001", "housing_tenant_pct_2016")
 var_right <- " "
 data <- get_data(df, var_left, var_right)
 data_type <- get_data_type(df, var_left, var_right)
-render_legend(var_left, var_right, df, data_type)}
+render_legend(data, var_left, var_right, df, data_type)}
 
 
 # Bivariate, multi-date ---------------------------------------------------
@@ -78,4 +78,4 @@ var_left <- c("housing_tenant_pct_2001", "housing_tenant_pct_2016")
 var_right <- c("inc_50_pct_2001", "inc_50_pct_2016")
 data <- get_data(df, var_left, var_right)
 data_type <- get_data_type(df, var_left, var_right)
-render_legend(var_left, var_right, df, data_type)}
+render_legend(data, var_left, var_right, df, data_type)}
