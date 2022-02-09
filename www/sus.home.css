@@ -1,0 +1,40 @@
+:root {
+  --h-home-content: calc(100vh - var(--h-banner));
+  --c-home-bg-gradient-start: var(--c-medium-muted-blue);
+  --c-home-bg-gradient-end: var(--c-dark-blue);
+}
+
+.sus-page-home {
+  background: linear-gradient(to bottom, var(--c-home-bg-gradient-start), var(--c-home-bg-gradient-end));
+  top: 0px;
+  min-height: 100vh;
+  /* margin-top: calc(-1 * var(--navbar-height)); */
+  padding-top: var(--h-banner);
+}
+
+.sus-page-home .sus-page-content-section:first-child {
+  height: var(--h-home-content);
+  min-height: var(--h-home-content);
+  max-height: var(--h-home-content);
+  background-image: url('landing.jpg');
+  background-size: cover;
+  background-position: 50% 50%;
+}
+
+@media (max-height: 800px) {
+  .sus-page-home .sus-page-content-section:first-child {
+    max-height: min-content !important;
+    height: min-content !important;
+  }
+}
+
+@media (max-width: 600px) {
+  .sus-page-home .sus-page-content-section:first-child {
+    max-height: min-content !important;
+    height: min-content !important;
+  }
+}
+
+.sus-page-home .sus-page-content-section:not(:first-child) * {
+  color: white;
+}

@@ -1,0 +1,45 @@
+:root {
+  --padding-carousel: calc(var(--padding-h-md) * 1.5);
+}
+
+.sus-carousel {
+  width: 600px;
+  height: min-content;
+  border-radius: var(--border-radius-md);
+  padding: var(--padding-carousel) var(--padding-carousel) var(--padding-carousel) var(--padding-carousel);
+}
+
+@media (max-width: 600px) {
+  .sus-carousel {
+    width: 300px;
+  }
+  h1 {
+    font-size: 3rem;
+  }
+  h2 {
+    font-size: 3rem;
+  }
+  h3 {
+    font-size: 2rem;
+  }
+  h4 {
+    font-size: 2rem;
+  }
+}
+
+.sus-carousel {
+  background-color: rgba(255, 255, 255, 0.6);
+  box-shadow: var(--box-shadow-lg);
+}
+
+.sus-carousel .sus-button-group {
+  margin-top: 40px;
+  width: 100%;
+  justify-content: flex-end;
+}
+
+.sus-carousel h1, .sus-carousel h2, .sus-carousel h3, .sus-carousel h4, .sus-carousel p {
+  margin-left: var(--padding-h-md);
+  margin-right: var(--padding-h-md);
+  text-align: center;
+}

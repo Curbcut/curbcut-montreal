@@ -1,0 +1,62 @@
+
+:root {
+  --padding-page-section-h-lg: 100px;
+  --padding-page-section-h-md: 50px;
+  --padding-page-section-h-sm: var(--padding-h-md);
+  
+  --padding-page-section-v-lg: 30px;
+  --padding-page-section-v-md: 20px;
+
+  --margin-page-section-v-lg: 30px;
+}
+
+.sus-page {
+  height: 100%;
+  width: 100%;
+  position: relative;
+}
+
+.sus-page-content-section {
+  max-width: 900px;
+  margin-top: var(--margin-page-section-v-lg);
+  margin-bottom: var(--margin-page-section-v-lg);
+  margin-left: auto;
+  margin-right: auto;
+  padding-top: var(--padding-page-section-v-lg);
+  padding-bottom: var(--padding-page-section-v-lg);
+  padding-left: var(--padding-page-section-h-lg);
+  padding-right: var(--padding-page-section-h-lg);
+}
+
+@media (max-width: 950px) {
+  .sus-page-content-section {
+    width: 100%;
+    max-width: unset;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    margin-left: 0px;
+    margin-right: 0px;
+    padding-top: var(--padding-page-section-v-md);
+    padding-bottom: var(--padding-page-section-v-md);
+    padding-left: var(--padding-page-section-h-md);
+    padding-right: var(--padding-page-section-h-md);
+  }
+}
+
+@media (max-width: 600px) {
+  .sus-page-content-section {
+    padding-left: var(--padding-page-section-h-sm);
+    padding-right: var(--padding-page-section-h-sm);
+  }
+}
+
+.sus-page-content-section-feature {
+  width: 100%;
+  max-width: unset;
+  margin-top: unset;
+  margin-bottom: unset;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}

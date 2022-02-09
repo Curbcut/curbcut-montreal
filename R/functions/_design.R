@@ -38,6 +38,27 @@ right_panel <- function(id, ...) {
   )
 }
 
+# Make a link button styled to go inside of a link list group
+linkListGroupElement <- function(link) {
+  return(tags$li(tags$a(class="noselect", href=link$url, link$name)))
+}
+
+# Make a link list group that can have link list group elements
+# passed into it via the dynamic arguments ...
+linkListGroup <- function(name, ...) {
+  namedArgs = list(class="")
+  args = c(namedArgs, lapply(list(...), linkListGroupElement))
+  
+  return(tags$div(class="sus-link-list-group",
+    tags$h3(name),
+    do.call(tags$ul, args)
+  ))
+}
+
+linkList <- function(...) {
+  return(tags$div(class="sus-link-list",...))
+}
+
 # Make a generic global footer (for use on text pages only)
 susFooter <- function() {
   return(tags$div(class="sus-page-footer",
@@ -57,6 +78,37 @@ susFooter <- function() {
       )
     )
   ))
+}
+
+#Make the full-width home page "SUS" banner
+susBanner <- function () {
+  return(tags$div(class="sus-banner noselect",
+    tags$div(class="sus-banner-bg sus-bg-img-map"),
+    tags$div(class="sus-banner-bg sus-bg-img-skyline"),
+    tags$h1(class="sus-brand sus-banner-text", "SUS")
+  ))
+}
+
+# Make a section inside of a page
+susPageSection <- function(..., class="") {
+  return(tags$div(class=paste("sus-page-content-section", class),...))
+}
+
+susPageSectionFeature <- function(..., class="") {
+  return(susPageSection(class=paste("sus-page-content-section-feature", class), ...))
+}
+
+# Make a text page with optional header & footer, typically,
+# if you include a footer, it would simply be: susFooter()
+susPage <- function(..., class="", header=NULL, footer=NULL) {
+  children = list(tags$div(class="sus-page-content",...))
+  if (!is.null(header)) {
+    children = c(list(header), children);
+  }
+  if (!is.null(footer)) {
+    children = c(children, list(footer));
+  }
+  return(tags$div(class=paste("sus-page", class), children))
 }
 
 # # unused function at the moment
