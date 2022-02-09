@@ -30,6 +30,7 @@ suppressPackageStartupMessages({
   source("R/functions/_get_y_scale.R")
   source("R/functions/_render_explore_graph.R")
   source("R/functions/_translation.R")
+  source("R/functions/_utils.R")
   
 })
 
@@ -143,7 +144,7 @@ explore_graph(data, var_type, var_left, var_right, df, select_id)}
 # Multi-date univariate scatterplot, no selection -------------------------
 
 {df <- "borough"
-var_left <- c("housing_tenant_pct_2001", "housing_tenant_pct_2016")
+var_left <- c("housing_value_avg_dollar_2001", "housing_value_avg_dollar_2016")
 var_right <- " "
 island <- FALSE
 data <- get_data(df, var_left, var_right)

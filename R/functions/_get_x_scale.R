@@ -51,8 +51,12 @@ get_x_scale <- function(graph_type, data, var_type, var_left, var_right, df) {
     
     if (str_detect(var_type, "NA")) lab_dl <- scales::label_dollar() else {
       
-      min_dig <- if (str_detect(var_right[1], "_dollar")) data$var_right else
-        data$var_left
+      if (str_detect(scale_type, "delta_")) {
+        min_dig <- data$var_left_1
+      } else {
+        min_dig <- if (str_detect(var_right[1], "_dollar")) data$var_right else
+          data$var_left
+      }
       
       min_dig <- 
         min_dig |> 

@@ -36,7 +36,7 @@ explore_graph <- function(data, var_type, var_left, var_right, df, select_id,
   
   # Prepare x and y scales
   x_scale <- get_x_scale(graph_type, data, var_type, var_left, var_right, df)
-  y_scale <- get_y_scale(graph_type, var_left, var_right)
+  y_scale <- get_y_scale(graph_type, data, var_type, var_left, var_right)
   
   # Prepare axis labels
   labs_xy <- get_axis_labels(graph_type, var_left, var_right)
