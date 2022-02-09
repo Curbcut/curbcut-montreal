@@ -45,10 +45,10 @@ get_axis_labels <- function(graph_type, var_left, var_right) {
       pull(var_short)
     
     labs_xy <- list(labs(
-      y = paste0(var_right_title, " (change ", 
+      x = paste0(var_right_title, " (change ", 
                  str_extract(var_right, "(?<=_)\\d{4}$")[1], "-",
                  str_extract(var_right, "(?<=_)\\d{4}$")[2], ")"),
-      x = paste0(var_left_title, " (change ", 
+      y = paste0(var_left_title, " (change ", 
                  str_extract(var_left, "(?<=_)\\d{4}$")[1], "-",
                  str_extract(var_left, "(?<=_)\\d{4}$")[2], ")")))
   } 
