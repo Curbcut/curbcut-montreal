@@ -32,7 +32,7 @@ get_axis_labels <- function(graph_type, var_left, var_right) {
     y = paste0(var_left_title, " (", 
                str_extract(var_left, "(?<=_)\\d{4}$")[2], ")")))
   
-  if (graph_type %in% c("deltabi", "NAdeltabi")) {
+  if (graph_type %in% c("deltabivar", "NAdeltabivar")) {
     
     var_left_title <-
       variables |> 
@@ -45,10 +45,10 @@ get_axis_labels <- function(graph_type, var_left, var_right) {
       pull(var_short)
     
     labs_xy <- list(labs(
-      x = paste0(var_right_title, " (change ", 
+      x = paste0(var_right_title, " (\u0394 ", 
                  str_extract(var_right, "(?<=_)\\d{4}$")[1], "-",
                  str_extract(var_right, "(?<=_)\\d{4}$")[2], ")"),
-      y = paste0(var_left_title, " (change ", 
+      y = paste0(var_left_title, " (\u0394 ", 
                  str_extract(var_left, "(?<=_)\\d{4}$")[1], "-",
                  str_extract(var_left, "(?<=_)\\d{4}$")[2], ")")))
   } 
