@@ -1,5 +1,32 @@
 #### BUILD ALL SUS DATA ########################################################
 
+
+# utils -------------------------------------------------------------------
+
+char_fix <- function(x) {
+  
+  key_table <- 
+    tibble(expected = c('À', 'Â', 'Ã', 'Ä', 'Å', 'Æ', 'Ç', 'È', 'É', 'Ê', 'Ë', 'Ì', 
+                        'Î', 'Ñ', 'Ò', 'Ó', 'Ô', 'Õ', 'Ö', '×', 'Ø', 'Ù', 'Ú', 'Û', 
+                        'Ü', 'Þ', 'ß', 'à', 'á', 'â', 'ã', 'ä', 'å', 'æ', 'ç', 'è', 
+                        'é', 'ê', 'ë', 'ì', 'í', 'î', 'ï', 'ð', 'ñ', 'ò', 'ó', 'ô', 
+                        'õ', 'ö', '÷', 'ø', 'ù', 'ú', 'û', 'ü', 'ý', 'þ', 'ÿ'),
+           actual = c('Ã€', 'Ã‚', 'Ãƒ', 'Ã„', 'Ã…', 'Ã†', 'Ã‡', 'Ãˆ', 'Ã‰', 'ÃŠ', 
+                      'Ã‹', 'ÃŒ', 'ÃŽ', 'Ã‘', 'Ã’', 'Ã“', 'Ã”', 'Ã•', 'Ã–', 'Ã—', 
+                      'Ã˜', 'Ã™', 'Ãš', 'Ã›', 'Ãœ', 'Ãž', 'ÃŸ', 'Ã ', 'Ã¡', 'Ã¢', 
+                      'Ã£', 'Ã¤', 'Ã¥', 'Ã¦', 'Ã§', 'Ã¨', 'Ã©', 'Ãª', 'Ã«', 'Ã¬', 
+                      'Ã­', 'Ã®', 'Ã¯', 'Ã°', 'Ã±', 'Ã²', 'Ã³', 'Ã´', 'Ãµ', 'Ã¶', 
+                      'Ã·', 'Ã¸', 'Ã¹', 'Ãº', 'Ã»', 'Ã¼', 'Ã½', 'Ã¾', 'Ã¿'))  |> 
+    add_row(expected = "à", actual = "Ã.") |> 
+    add_row(expected = "'", actual = "â€™")
+  
+  walk(key_table$actual, ~{
+    x <<- gsub(.x, key_table[key_table$actual == .x, ]$expected, x)
+  })
+  
+  return(x)
+}
+
 # Create raw borough/CT/DA/grid tables ------------------------------------
 
 # Import DA, CT and borough geometries
@@ -152,7 +179,7 @@ qsave(green_space, file = "data/green_space.qs")
 qsave(marketed_sustainability, file = "data/marketed_sustainability.qs")
 qsave(metro_lines, file = "data/metro_lines.qs")
 # qsavem(permits_choropleth, permits, file = "data/permits.qsm")
-qsavem(pe_var_hierarchy, pe_theme_order, 
+qsavem(title_card_indicators, pe_var_hierarchy, pe_theme_order, CSDUID_groups,
        pe_variable_order, file = "data/place_explorer.qsm")
 qsave(postal_codes, file = "data/postal_codes.qs")
 qsave(stories, file = "data/stories.qs")
