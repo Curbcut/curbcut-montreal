@@ -18,7 +18,8 @@ char_fix <- function(x) {
                       'Ã­', 'Ã®', 'Ã¯', 'Ã°', 'Ã±', 'Ã²', 'Ã³', 'Ã´', 'Ãµ', 'Ã¶', 
                       'Ã·', 'Ã¸', 'Ã¹', 'Ãº', 'Ã»', 'Ã¼', 'Ã½', 'Ã¾', 'Ã¿'))  |> 
     add_row(expected = "à", actual = "Ã.") |> 
-    add_row(expected = "'", actual = "â€™")
+    add_row(expected = "'", actual = "â€™") |> 
+    add_row(expected = "—", actual = "â€”")
   
   walk(key_table$actual, ~{
     x <<- gsub(.x, key_table[key_table$actual == .x, ]$expected, x)
