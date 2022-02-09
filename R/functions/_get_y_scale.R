@@ -7,7 +7,7 @@ get_y_scale <- function(graph_type, var_left, var_right) {
     graph_type == "date" ~ 
       list(scale_y_continuous(labels = scales::comma)),
     # Multi_bi
-    graph_type == "deltabi" ~ 
+    graph_type %in% c("deltabi", "NAdeltabi") ~ 
       list(scale_y_continuous(labels = scales::percent)),
     # Multi_uni, continuous scale, percent
     graph_type %in% c("delta", "NAdelta") & str_detect(var_left, "_pct") ~ 

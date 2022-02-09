@@ -166,6 +166,18 @@ var_type <- get_var_type(data, var_left, var_right, df, select_id)
 explore_graph(data, var_type, var_left, var_right, df, select_id)}
 
 
+# Multi-date univariate scatterplot, same dates ---------------------------
+
+{df <- "borough"
+var_left <- c("housing_tenant_pct_2016", "housing_tenant_pct_2016")
+var_right <- " "
+island <- FALSE
+data <- get_data(df, var_left, var_right)
+select_id <- NA
+var_type <- get_var_type(data, var_left, var_right, df, select_id)
+explore_graph(data, var_type, var_left, var_right, df, select_id)}
+
+
 # Multi-date bivariate scatterplot, no selection --------------------------
 
 {df <- "borough"
@@ -188,6 +200,18 @@ explore_graph(data, var_type, var_left, var_right, df, select_id)}
 # Multi-date bivariate scatterplot, active selection ----------------------
 
 {select_id <- "2458012"
+var_type <- get_var_type(data, var_left, var_right, df, select_id)
+explore_graph(data, var_type, var_left, var_right, df, select_id)}
+
+
+# Multi-date bivariate scatterplot, same dates ----------------------------
+
+{df <- "borough"
+var_left <- c("housing_tenant_pct_2016", "housing_tenant_pct_2016")
+var_right <- c("inc_median_dollar_2016", "inc_median_dollar_2016")
+island <- FALSE
+data <- get_data(df, var_left, var_right)
+select_id <- NA
 var_type <- get_var_type(data, var_left, var_right, df, select_id)
 explore_graph(data, var_type, var_left, var_right, df, select_id)}
 

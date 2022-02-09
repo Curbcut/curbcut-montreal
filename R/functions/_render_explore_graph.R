@@ -266,9 +266,11 @@ render_explore_graph <- function(plot_type, data, var_left, var_right, df,
   }
   
   # Multi-date bivariate scatterplot, no selection
-  if (plot_type %in% c("deltabi_all", "NAdeltabi_all")) {
+  if (plot_type %in% c("deltabivar_all", "NAdeltabivar_all")) {
     
-    opac <- abs(cor(data$var_left, data$var_right, use = "complete.obs"))
+    opac <- if (sum(!is.na(data$var_left)) > 0) {
+      abs(cor(data$var_left, data$var_right, use = "complete.obs"))
+      } else 1
     
     out <- 
       data |> 
@@ -283,9 +285,11 @@ render_explore_graph <- function(plot_type, data, var_left, var_right, df,
   }
   
   # Multi-date bivariate scatterplot, NA selection
-  if (plot_type %in% c("deltabi_na", "NAdeltabi_na")) {
+  if (plot_type %in% c("deltabivar_na", "NAdeltabivar_na")) {
     
-    opac <- abs(cor(data$var_left, data$var_right, use = "complete.obs"))
+    opac <- if (sum(!is.na(data$var_left)) > 0) {
+      abs(cor(data$var_left, data$var_right, use = "complete.obs"))
+    } else 1
     
     out <- 
       data |> 
@@ -299,9 +303,11 @@ render_explore_graph <- function(plot_type, data, var_left, var_right, df,
   }
   
   # Multi-date bivariate scatterplot, active selection
-  if (plot_type %in% c("deltabi_select", "NAdeltabi_select")) {
+  if (plot_type %in% c("deltabivar_select", "NAdeltabivar_select")) {
     
-    opac <- abs(cor(data$var_left, data$var_right, use = "complete.obs"))
+    opac <- if (sum(!is.na(data$var_left)) > 0) {
+      abs(cor(data$var_left, data$var_right, use = "complete.obs"))
+    } else 1
     
     out <- 
       data |> 

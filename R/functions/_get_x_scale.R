@@ -24,7 +24,7 @@ get_x_scale <- function(graph_type, data, var_type, var_left, var_right, df) {
   
   scale_type <- case_when(
     graph_type == "date" ~ "date",
-    graph_type == "deltabi" ~ "deltabi",
+    graph_type %in% c("deltabi", "NAdeltabi") ~ "deltabi",
     graph_type %in% c("delta", "NAdelta") & str_detect(var_left[1], "_pct") ~
       "delta_pct",
     graph_type %in% c("delta", "NAdelta") & str_detect(var_left[1], "_dollar") ~
