@@ -1,6 +1,5 @@
 ##### DESIGN RELATED SCRIPT ####################################################
 
-
 # Design functions --------------------------------------------------------
 
 languageButtonLabel <- function(text) {
@@ -11,10 +10,10 @@ languageButtonLabel <- function(text) {
 # Make a standard navbarPage with addition fixed-position controls
 navbarPageWithInputs <- function(..., inputs) {
   navbar <- navbarPage(...)
-  form <- tags$div(class = "navbar-fixed", inputs)
-  navbar[[4]][[1]][[1]]$children[[1]]$children[[2]] <- 
+  container <- tags$div(class = "navbar-fixed", inputs)
+  navbar[[4]][[1]][[1]]$children[[1]] <- 
     htmltools::tagAppendChild(
-    navbar[[4]][[1]][[1]]$children[[1]]$children[[2]], form)
+    navbar[[4]][[1]][[1]]$children[[1]], container)
   navbar
 }
 
@@ -37,6 +36,79 @@ right_panel <- function(id, ...) {
     class = "panel panel-default", top = 15, right = 15, # width = 300,
     ...
   )
+}
+
+# Make a link button styled to go inside of a link list group
+linkListGroupElement <- function(link) {
+  return(tags$li(tags$a(class="noselect", href=link$url, link$name)))
+}
+
+# Make a link list group that can have link list group elements
+# passed into it via the dynamic arguments ...
+linkListGroup <- function(name, ...) {
+  namedArgs = list(class="")
+  args = c(namedArgs, lapply(list(...), linkListGroupElement))
+  
+  return(tags$div(class="sus-link-list-group",
+    tags$h3(name),
+    do.call(tags$ul, args)
+  ))
+}
+
+linkList <- function(...) {
+  return(tags$div(class="sus-link-list",...))
+}
+
+# Make a generic global footer (for use on text pages only)
+susFooter <- function() {
+  return(tags$div(class="sus-page-footer",
+    tags$div(class="sus-page-footer-content",
+      tags$div(class="sus-page-footer-logos",
+        tags$a(href="https://www.mcgill.ca/mssi/", target="_blank",
+          tags$img(class="sus-page-footer-logo", src="mcgill-mssi-logo-final.png")
+        )
+      ),
+      tags$div(class="sus-page-footer-links",
+        tags$ul(
+          tags$li(tags$a(href="", "About")),
+          tags$li(tags$a(href="", "Terms & Conditions")),
+          tags$li(tags$a(href="", "Privacy Policy")),
+          tags$li(tags$a(href="", "Contact"))
+        )
+      )
+    )
+  ))
+}
+
+#Make the full-width home page "SUS" banner
+susBanner <- function () {
+  return(tags$div(class="sus-banner noselect",
+    tags$div(class="sus-banner-bg sus-bg-img-map"),
+    tags$div(class="sus-banner-bg sus-bg-img-skyline"),
+    tags$h1(class="sus-brand sus-banner-text", "SUS")
+  ))
+}
+
+# Make a section inside of a page
+susPageSection <- function(..., class="") {
+  return(tags$div(class=paste("sus-page-content-section", class),...))
+}
+
+susPageSectionFeature <- function(..., class="") {
+  return(susPageSection(class=paste("sus-page-content-section-feature", class), ...))
+}
+
+# Make a text page with optional header & footer, typically,
+# if you include a footer, it would simply be: susFooter()
+susPage <- function(..., class="", header=NULL, footer=NULL) {
+  children = list(tags$div(class="sus-page-content",...))
+  if (!is.null(header)) {
+    children = c(list(header), children);
+  }
+  if (!is.null(footer)) {
+    children = c(children, list(footer));
+  }
+  return(tags$div(class=paste("sus-page", class), children))
 }
 
 # # unused function at the moment
@@ -179,49 +251,6 @@ styler <- '
 
 
 '
-
-navbar_js <- "@media (max-width: 1050px) {
-    .navbar-header {
-        float: none;
-    }
-    .navbar-left,.navbar-right {
-        float: none !important;
-    }
-    .navbar-toggle {
-        display: block;
-    }
-    .navbar-collapse {
-        border-top: 1px solid transparent;
-        box-shadow: inset 0 1px 0 rgba(255,255,255,0.1);
-    }
-    .navbar-fixed-top {
-        top: 0;
-        border-width: 0 0 1px;
-    }
-    .navbar-collapse.collapse {
-        display: none!important;
-    }
-    .navbar-nav {
-        float: none!important;
-        margin-top: 7.5px;
-    }
-    .navbar-nav>li {
-        float: none;
-    }
-    .navbar-nav>li>a {
-        padding-top: 10px;
-        padding-bottom: 10px;
-    }
-    .collapse.in{
-        display:block !important;
-    }
-}
-
-    @media (max-height: 900px) {
-    .sus_sidebar .small_map img {
-        display: none !important;
-    }
-}"
 
 set_ui_lang <- "shinyjs.setLanguage = function(language) {
     document.querySelector('body').className = `user-lang-${language}`;

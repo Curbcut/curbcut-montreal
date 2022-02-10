@@ -1,109 +1,137 @@
-/* define colors */
-:root {
-  --dark-blue: #4a5c83;
-  --muted-green: #b8d6be;
-  --muted-blue: #b5c0da;
-  --light-muted-green: #ddeee0;
-  --light-muted-blue: #d8dfee;
-  --test: #178acc;
-}
-
-/* define color roles */
-:root {
-  --primary: var(--dark-blue);
-  --primary-bg: white;
-  --primary-bg-hover: var(--light-muted-blue);
-  --primary-bg-active: var(--muted-blue);
-  --primary-bg-focus: var(--muted-blue);
-  --primary-bg-open: var(--light-muted-green);
-}
-
-/* define nav style variables */
-:root {
-  --nav-content-color: var(--primary);
-  --nav-content-active-bg-color: var(--primary-bg-active);
-  --nav-content-focus-bg-color: var(--primary-bg-focus);
-  --nav-content-hover-bg-color: var(--primary-bg-hover);
-  --nav-content-current-bg-color: var(--primary-bg-open);
-  --default-padding: 15px;
-}
-
 /* define font families */ 
 @font-face {
-  font-family: ff-brand;
-  src: url("fonts/Outfit-Bold.ttf");
-}
-
-@font-face {
-  font-family: ff-label;
+  font-family: outfit-regular;
   src: url("fonts/Outfit-Regular.ttf");
 }
 
 @font-face {
-  font-family: ff-text;
+  font-family: outfit-medium;
+  src: url("fonts/Outfit-Medium.ttf");
+}
+
+@font-face {
+  font-family: outfit-semibold;
+  src: url("fonts/Outfit-SemiBold.ttf");
+}
+
+@font-face {
+  font-family: outfit-bold;
+  src: url("fonts/Outfit-Bold.ttf");
+}
+
+@font-face {
+  font-family: source-sans-pro-regular;
   src: url("fonts/SourceSansPro-Regular.ttf");
 }
 
-
-.navbar-default {
-  background: none;
-  border-bottom: none;
+/* define font usage */
+:root {
+  --ff-brand: 'outfit-bold';
+  --ff-button: 'outfit-medium';
+  --ff-label: 'outfit-medium';
+  --ff-h1: 'outfit-regular';
+  --ff-h2: 'outfit-regular';
+  --ff-h3: 'outfit-medium';
+  --ff-h4: 'outfit-semibold';
+  --ff-body: 'source-sans-pro-regular';
 }
 
-.navbar-fixed {
-  position: absolute;
-  top: 0px;
-  right: 0px;
-  height: 100%;
-  width: min-content;
-  display: flex;
-  flex-direction: row;
-  align-items: flex-end;
-  align-content: center;
+/* define colors */
+:root {
+  --c-dark-blue: #4a5c83;
+  --c-medium-blue: #6c83b5;
+  --c-muted-green: #b8d6be;
+  --c-muted-blue: #b5c0da;
+  --c-medium-muted-green: #90b2b3;
+  --c-light-muted-green: #ddeee0;
+  --c-medium-muted-blue: #cad7ed;
+  --c-light-muted-blue: #d8dfee;
+  --c-light-muted-blue-alt: #dadfec;
+  --c-medium-green-blue: #567994;
 }
 
-.navbar a {
-  text-shadow: none !important;
-  text-decoration: none !important;
+/* define color relationships */
+:root {
+  --c-primary: var(--c-dark-blue);
+  --c-primary-hover: var(--c-dark-blue);
+  --c-primary-complement: white;
+  --c-primary-complement-hover: var(--c-light-muted-blue);
+  --c-primary-complement-active: var(--c-muted-blue);
+  --c-primary-complement-focus: var(--c-muted-blue);
+  --c-primary-complement-highlight: var(--c-light-muted-green);
+  --c-secondary: var(--c-medium-muted-green);
 }
 
-.navbar * {
-  color: var(--nav-content-color) !important;
+/* define color roles */
+:root {
+  --c-paragraph: var(--c-dark-blue);
+  --c-h1: var(--c-dark-blue);
+  --c-h2: var(--c-medium-green-blue);
+  --c-h3: var(--c-medium-green-blue);
+  --c-h4: var(--c-medium-green-blue);
 }
 
-.navbar-fixed a,
-.navbar-fixed a > span,
-.navbar-fixed > div,
-.navbar-fixed > div > button,
-.navbar-fixed > div > button.btn.btn-circle  {
-  width: auto;
-  height: 100%;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  align-content: flex-start;
-  border: none;
-  background: none;
+/* define global style values */
+:root {
+  --padding-h-md: 15px;
+  --padding-v-md: 10px;
+  --line-height: 20px;
+
+  --border-radius-sm: 3px;
+  --border-radius-md: calc(var(--border-radius-sm) * 4);
+  --border-radius-lg: calc(var(--border-radius-md) * 3);
+
+  --box-shadow-sm: 0px 1px 5px 0px rgba(0, 0, 0, 0.1);
+  --box-shadow-md: 0px 2.5px 10px 0px rgba(0, 0, 0, 0.1);
+  --box-shadow-lg: 0px 5px 20px 0px rgba(0, 0, 0, 0.1);
+
+  --brand-transform: skew(-8deg, 0deg);
 }
 
-.navbar-fixed a,
-.navbar-fixed > div > button {
-  padding-right: var(--default-padding);
-  padding-left: var(--default-padding);
+em {
+  font-style: inherit;
+  transform: var(--brand-transform);
+  display: inline-block;
 }
 
-.navbar-fixed > div > button.btn.btn-circle  {
-  border: none;
-  background: none;
-  border-radius: unset;
-  font-size: inherit;
-  text-align: inherit;
-  line-height: inherit;
-  padding-bottom: unset;
-  padding-top: unset;
-  padding-right: var(--default-padding);
-  padding-left: var(--default-padding);
-  -webkit-appearance: unset;
+p {
+  font-family: var(--ff-body);
+  color: var(--c-paragraph);
+  font-size: 1.75rem;
+  margin-bottom: 1em;
+}
+
+li {
+  font-family: var(--ff-body);
+  color: var(--c-paragraph);
+  font-size: 1.5rem;
+}
+
+h1 {
+  color: var(--c-h1);
+  font-family: var(--ff-h1);
+  font-size: 6rem;
+}
+
+h2 {
+  color: var(--c-h2);
+  font-family: var(--ff-h2);
+  font-size: 4rem;
+  margin-bottom: 0.75em;
+}
+
+h3 {
+  color: var(--c-h3);
+  font-family: var(--ff-h3);
+  font-size: 2rem;
+  text-transform: uppercase;
+  opacity: 0.75;
+}
+
+h4 {
+  color: var(--c-h4);
+  font-family: var(--ff-h4);
+  font-size: 2rem;
 }
 
 /* make Material icons a little smaller */
@@ -120,80 +148,70 @@ span.material-icons:not(:first-child) {
   margin-left: 0.2em;
 }
 
-.navbar-header a, .navbar-nav a, .navbar-fixed a  {
-  font-family: 'ff-label';
-  white-space: nowrap;
-}
-
-.navbar-header a#title {
-  display: inline-block;
-  font-family: 'ff-brand';
-  transform: skew(-8deg, 0deg);
-}
-
-.navbar-default a:hover:not(#title),
-.navbar-default button.btn.btn-circle:hover,
-.navbar-default button.navbar-toggle:hover {
-  background-color: var(--nav-content-hover-bg-color) !important;
-  box-shadow: none !important;
-}
-
-.navbar-default a:active:not(#title),
-.navbar-default button.btn.btn-circle:active,
-.navbar-default button.navbar-toggle:active {
-  background-color: var(--nav-content-focus-bg-color) !important;
-  box-shadow: none !important;
-}
-
-.nav .open > a,
-.nav .open > a:hover,
-.nav .open > a:focus,
-.navbar-default .navbar-nav > .open > a
-.navbar-default .navbar-nav > .open > a:hover,
-.navbar-default .navbar-nav > .open > a:active,
-.navbar-default .navbar-nav > .open > a:focus,
-.navbar-default a:focus:not(#title),
-.navbar-default button.btn.btn-circle:focus,
-.navbar-default button.navbar-toggle:focus {
-  background-color: var(--nav-content-focus-bg-color) !important;
-  box-shadow: none !important;
-}
-
-.navbar-default .navbar-nav > .active > a,
-.navbar-default .navbar-nav > .active > a:focus,
-.navbar-default .navbar-nav > .active > a:focus:not(#title)  {
-  background-color: var(--nav-content-current-bg-color) !important;
-  box-shadow: none !important;
-}
-
-ul.dropdown-menu > li {
-  margin-left: 0px !important;
-  margin-right: 0px !important;
-}
-
-#dropdown-menu-settings {
-  right: 0px !important;
-}
-
-.navbar {
-  margin-bottom: 0px !important;
-}
-
-body > div.container-fluid {
-  padding-left: 0px;
-  padding-right: 0px;
-}
-
-div.tab-content > div.tab-pane > div.container {
-  height: calc(100vh - 50px) !important;
-  overflow-y: unset !important;
-}
-
 .mapdeck_div {
-  height: calc(100vh - 50px) !important;
+  height: calc(100vh - var(--navbar-height)) !important;
 }
 
 .sidebar_content {
-  padding-top: var(--default-padding);
-  padding-left: var(--default-padding);
+  padding-top: var(--padding-h-md);
+  padding-left: var(--padding-h-md);
+}
+
+div.tab-content:first-child > div.tab-pane > div.container {
+  overflow-y: auto !important;
+  height: auto !important;
+}
+
+.sus-brand {
+  color: var(--c-primary);
+  font-family: var(--ff-brand);
+  content: "SUS";
+  transform: var(--brand-transform);
+}
+
+span.sus-col-br {
+  display: inline-block;
+  break-after: column;
+}
+
+html {
+  overflow: initial !important;
+}
+
+body {
+  overflow: initial !important;
+}
+
+.noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Old versions of Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome, Edge, Opera and Firefox */
+}
+
+.navbar-default {
+  opacity: 0;
+}
+
+.navbar-default.loaded {
+  background: var(--c-primary-complement);
+  opacity: 1;
+  transition: ease-in-out 0.1s;
+}
+
+body.user-tab-home:not(.user-scroll) .navbar-default:not(:hover) {
+  /* background: none !important; */
+  background: rgba(255, 255, 255, 0.5) !important;
+  box-shadow: 0px 1px 10px rgba(0, 0, 0, 0.05) !important;
+  transition: ease-in-out 0.1s;
+}
+
+body.user-tab-home .navbar-default {
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  right: 0px;
 }

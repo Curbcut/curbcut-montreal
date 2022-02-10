@@ -5,10 +5,20 @@ ui <- function(request) {
   # Styling objects
   useShinyjs(),
   tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "bootstrap.min.css")),
+  tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "stevens.greenblue.css")),
+  tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "sus.palette.css")),
   tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "sus.css")),
+  tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "sus.navbar.css")),
+  tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "sus.footer.css")),
+  tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "sus.button.css")),
+  tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "sus.carousel.css")),
+  tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "sus.pages.css")),
+  tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "sus.banner.css")),
+  tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "sus.linklist.css")),
+  tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "sus.home.css")),
   tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "https://fonts.googleapis.com/icon?family=Material+Icons")),
+  tags$head(tags$script(src = "sus.js")),
   tags$head(tags$style(HTML(styler))),
-  tags$head(tags$style(HTML(navbar_js))),
   
   # Add a class to the body, to toggle between languages.
   tags$body(class = "user-lang-fr"),

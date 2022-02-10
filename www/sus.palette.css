@@ -1,0 +1,89 @@
+/* interpolate mid color HSL values */
+:root {
+  --min-mid-r: calc((var(--min-min-r) + var(--min-max-r)) / 2);
+  --min-mid-g: calc((var(--min-min-g) + var(--min-max-g)) / 2);
+  --min-mid-b: calc((var(--min-min-b) + var(--min-max-b)) / 2);
+
+  --max-mid-r: calc((var(--max-min-r) + var(--max-max-r)) / 2);
+  --max-mid-g: calc((var(--max-min-g) + var(--max-max-g)) / 2);
+  --max-mid-b: calc((var(--max-min-b) + var(--max-max-b)) / 2);
+
+  --mid-min-r: calc((var(--min-min-r) + var(--max-min-r)) / 2);
+  --mid-min-g: calc((var(--min-min-g) + var(--max-min-g)) / 2);
+  --mid-min-b: calc((var(--min-min-b) + var(--max-min-b)) / 2);
+
+  --mid-max-r: calc((var(--min-max-r) + var(--max-max-r)) / 2);
+  --mid-max-g: calc((var(--min-max-g) + var(--max-max-g)) / 2);
+  --mid-max-b: calc((var(--min-max-b) + var(--max-max-b)) / 2);
+
+  --mid-mid-r: calc((var(--min-mid-r) + var(--mid-min-r) + var(--max-mid-r) + var(--mid-max-r)) / 4);
+  --mid-mid-g: calc((var(--min-mid-g) + var(--mid-min-g) + var(--max-mid-g) + var(--mid-max-g)) / 4);
+  --mid-mid-b: calc((var(--min-mid-b) + var(--mid-min-b) + var(--max-mid-b) + var(--mid-max-b)) / 4);
+}
+
+/* initialize 3x3 palette using HSL values */
+:root {
+  --c-min-min: rgb(var(--min-min-r), var(--min-min-g), var(--min-min-b));
+  --c-min-mid: rgb(var(--min-mid-r), var(--min-mid-g), var(--min-mid-b));
+  --c-min-max: rgb(var(--min-max-r), var(--min-max-g), var(--min-max-b));
+  --c-mid-max: rgb(var(--mid-max-r), var(--mid-max-g), var(--mid-max-b));
+  --c-mid-min: rgb(var(--mid-min-r), var(--mid-min-g), var(--mid-min-b));
+  --c-max-min: rgb(var(--max-min-r), var(--max-min-g), var(--max-min-b));
+  --c-max-mid: rgb(var(--max-mid-r), var(--max-mid-g), var(--max-mid-b));
+  --c-mid-mid: rgb(var(--mid-mid-r), var(--mid-mid-g), var(--mid-mid-b));
+  --c-max-max: rgb(var(--max-max-r), var(--max-max-g), var(--max-max-b));
+}
+
+.palette-grid {
+  width: 300px;
+  height: 300px;
+  display: grid;
+  grid-auto-flow: row reverse;
+  grid-template-rows: repeat(3, calc(100% / 3)) ;
+  grid-template-columns: repeat(3, calc(100% / 3));
+}
+
+.palette-grid[hidden] {
+  display: none;
+}
+
+.palette-swatch {
+  width: 100%;
+  height: 100%;
+}
+
+.palette-swatch:nth-child(1) {
+  background-color: var(--c-min-min);
+}
+
+.palette-swatch:nth-child(2) {
+  background-color: var(--c-min-mid);
+}
+
+.palette-swatch:nth-child(3) {
+  background-color: var(--c-min-max);
+}
+
+.palette-swatch:nth-child(4) {
+  background-color: var(--c-mid-min);
+}
+
+.palette-swatch:nth-child(5) {
+  background-color: var(--c-mid-mid);
+}
+
+.palette-swatch:nth-child(6) {
+  background-color: var(--c-mid-max);
+}
+
+.palette-swatch:nth-child(7) {
+  background-color: var(--c-max-min);
+}
+
+.palette-swatch:nth-child(8) {
+  background-color: var(--c-max-mid);
+}
+
+.palette-swatch:nth-child(9) {
+  background-color: var(--c-max-max);
+}
