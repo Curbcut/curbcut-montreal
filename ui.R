@@ -7,7 +7,7 @@ ui <- function(request) {
   tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "bootstrap.min.css")),
   tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "stevens.greenblue.css")),
   tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "sus.palette.css")),
-  tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "sus.css")),
+  # tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "sus.css")),
   tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "sus.navbar.css")),
   tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "sus.footer.css")),
   tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "sus.button.css")),
