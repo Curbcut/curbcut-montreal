@@ -1,6 +1,5 @@
 #### DID YOU KNOW MODULE ######################################################
 
-qload("data/dyk.qsm")
 dyk_hide_status <- reactive(TRUE)
 
 dyk_UI <- function(id) {
@@ -14,87 +13,7 @@ dyk_server <- function(id, var_left, var_right) {
   
   moduleServer(id, function(input, output, session) {
     
-    dyk_output <- reactive({
-      
-      vars <- c(str_remove(var_left(), "_\\d{4}$"), 
-                str_remove(var_right(), "_\\d{4}$"))
-      vars <- vars[vars != " "]
-      categories <- 
-        tibble(variable = vars) %>% 
-        inner_join(category_table, by = "variable") %>% 
-        pull(category)
-      
-      # Report variables without category matches
-      no_match <- unique(vars[!vars %in% category_table$variable])
-      if (length(no_match > 0)) {
-        warning("No DYK category matches for variable(s): ", 
-                paste(no_match, collapse = ", "), call. = FALSE)
-        }
-      
-      # Find rows which match both variables
-      report <- 
-        dyk %>% 
-        rowwise() %>% 
-        filter(identical(variable, vars)) %>%
-        ungroup() %>% 
-        slice_sample(n = 2)
-      
-      # If total < 2, find rows which match one variable and both categories
-      if (length(categories) > 0) {
-        if (nrow(report) < 2) {
-          report <- 
-            dyk %>% 
-            rowwise() %>% 
-            filter(sum(vars %in% variable) == 1) %>% 
-            ungroup() %>% 
-            rowwise() %>% 
-            filter(identical(category, categories)) %>% 
-            ungroup() %>% 
-            slice_sample(n = 2 - nrow(report)) %>% 
-            bind_rows(report)
-        }
-        
-        # If total < 2, find rows which match both categories
-        if (nrow(report) < 2) {
-          report <- 
-            dyk %>% 
-            rowwise() %>% 
-            filter(identical(category, categories)) %>% 
-            ungroup() %>% 
-            slice_sample(n = 2 - nrow(report)) %>% 
-            bind_rows(report)
-        }
-      }
-      
-      # If total < 2, find rows which match one variable
-      if (nrow(report) < 2) {
-        report <- 
-          dyk %>% 
-          rowwise() %>% 
-          filter(sum(vars %in% variable) == 1) %>% 
-          ungroup() %>% 
-          slice_sample(n = 2 - nrow(report)) %>% 
-          bind_rows(report)
-      }
-      
-      # If total < 2, find rows which match one category
-      if (nrow(report) < 2) {
-        report <- 
-          dyk %>% 
-          rowwise() %>% 
-          filter(sum(category %in% categories) == 1) %>% 
-          ungroup() %>% 
-          slice_sample(n = 2 - nrow(report)) %>% 
-          bind_rows(report)
-      }
-      
-      if (nrow(report) > 0) {
-        map_chr(report$text, sus_translate) %>%
-        paste("<li> ", ., collapse = "") %>%
-        paste0("<ul>", ., "</ul>") %>%
-        HTML()
-      } else NULL
-    })
+    dyk_output <- reactive(get_dyk_table(var_left(), var_right()))
     
     # Only show box if dyk_output isn't empty
     output$dyk_box <- renderUI({

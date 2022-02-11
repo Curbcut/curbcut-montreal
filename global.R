@@ -36,6 +36,7 @@ enableBookmarking(store = "url")
 
 variables <- qread("data/variables.qs")
 title_text <- qread("data/title_text.qs")
+qload("data/dyk.qsm")
 qload("data/colours.qsm")
 
 qload("data/census.qsm")
