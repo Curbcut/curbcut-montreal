@@ -1,32 +1,13 @@
 #### BUILD ALL SUS DATA ########################################################
 
 
-# utils -------------------------------------------------------------------
+# Load funtions -----------------------------------------------------------
 
-char_fix <- function(x) {
-  
-  key_table <- 
-    tibble(expected = c('À', 'Â', 'Ã', 'Ä', 'Å', 'Æ', 'Ç', 'È', 'É', 'Ê', 'Ë', 'Ì', 
-                        'Î', 'Ñ', 'Ò', 'Ó', 'Ô', 'Õ', 'Ö', '×', 'Ø', 'Ù', 'Ú', 'Û', 
-                        'Ü', 'Þ', 'ß', 'à', 'á', 'â', 'ã', 'ä', 'å', 'æ', 'ç', 'è', 
-                        'é', 'ê', 'ë', 'ì', 'í', 'î', 'ï', 'ð', 'ñ', 'ò', 'ó', 'ô', 
-                        'õ', 'ö', '÷', 'ø', 'ù', 'ú', 'û', 'ü', 'ý', 'þ', 'ÿ'),
-           actual = c('Ã€', 'Ã‚', 'Ãƒ', 'Ã„', 'Ã…', 'Ã†', 'Ã‡', 'Ãˆ', 'Ã‰', 'ÃŠ', 
-                      'Ã‹', 'ÃŒ', 'ÃŽ', 'Ã‘', 'Ã’', 'Ã“', 'Ã”', 'Ã•', 'Ã–', 'Ã—', 
-                      'Ã˜', 'Ã™', 'Ãš', 'Ã›', 'Ãœ', 'Ãž', 'ÃŸ', 'Ã ', 'Ã¡', 'Ã¢', 
-                      'Ã£', 'Ã¤', 'Ã¥', 'Ã¦', 'Ã§', 'Ã¨', 'Ã©', 'Ãª', 'Ã«', 'Ã¬', 
-                      'Ã­', 'Ã®', 'Ã¯', 'Ã°', 'Ã±', 'Ã²', 'Ã³', 'Ã´', 'Ãµ', 'Ã¶', 
-                      'Ã·', 'Ã¸', 'Ã¹', 'Ãº', 'Ã»', 'Ã¼', 'Ã½', 'Ã¾', 'Ã¿'))  |> 
-    add_row(expected = "à", actual = "Ã.") |> 
-    add_row(expected = "'", actual = "â€™") |> 
-    add_row(expected = "—", actual = "â€”")
-  
-  walk(key_table$actual, ~{
-    x <<- gsub(.x, key_table[key_table$actual == .x, ]$expected, x)
-  })
-  
-  return(x)
-}
+source("dev/other/data_testing.R")
+source("dev/other/meta_testing.R", encoding = "utf-8")
+source("dev/other/breaks.R")
+source("dev/other/char_fix.R")
+
 
 # Create raw borough/CT/DA/grid tables ------------------------------------
 
@@ -114,10 +95,6 @@ stopifnot(
   sum(st_agr(grid) != "constant") == 0,
   sum(st_agr(street) != "constant") == 0
 )
-
-source("dev/other/data_testing.R")
-source("dev/other/meta_testing.R", encoding = "utf-8")
-source("dev/other/breaks.R")
 
 
 # Build variable table ----------------------------------------------------
