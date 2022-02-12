@@ -148,15 +148,6 @@ span.material-icons:not(:first-child) {
   margin-left: 0.2em;
 }
 
-.mapdeck_div {
-  height: calc(100vh - var(--navbar-height)) !important;
-}
-
-.sidebar_content {
-  padding-top: var(--padding-h-md);
-  padding-left: var(--padding-h-md);
-}
-
 div.tab-content:first-child > div.tab-pane > div.container {
   overflow-y: auto !important;
   height: auto !important;
@@ -190,16 +181,6 @@ body {
         -ms-user-select: none; /* Internet Explorer/Edge */
             user-select: none; /* Non-prefixed version, currently
                                   supported by Chrome, Edge, Opera and Firefox */
-}
-
-.navbar-default {
-  opacity: 0;
-}
-
-.navbar-default.loaded {
-  background: var(--c-primary-complement);
-  opacity: 1;
-  transition: ease-in-out 0.1s;
 }
 
 body.user-tab-home:not(.user-scroll) .navbar-default:not(:hover) {

@@ -7,6 +7,20 @@
   --c-nav-content-bg-current: var(--c-primary-complement-highlight);
 }
 
+.navbar {
+  margin-bottom: 0px !important;
+}
+
+.navbar-default {
+  opacity: 0;
+}
+
+.navbar-default.loaded {
+  background: var(--c-primary-complement);
+  opacity: 1;
+  transition: ease-in-out 0.1s;
+}
+
 .navbar-default {
   background: none;
   border-bottom: none;
@@ -125,10 +139,6 @@ ul.dropdown-menu > li {
 
 #dropdown-menu-settings {
   right: 0px !important;
-}
-
-.navbar {
-  margin-bottom: 0px !important;
 }
 
 .navbar-default .navbar-toggle {
