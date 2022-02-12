@@ -1,0 +1,10 @@
+
+
+.mapdeck_div {
+  height: calc(100vh - var(--h-navbar)) !important;
+}
+
+.sidebar_content {
+  padding-top: var(--padding-h-md);
+  padding-left: var(--padding-h-md);
+}

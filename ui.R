@@ -16,6 +16,7 @@ ui <- function(request) {
   tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "sus.banner.css")),
   tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "sus.linklist.css")),
   tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "sus.home.css")),
+  tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "sus.maps.css")),
   tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "https://fonts.googleapis.com/icon?family=Material+Icons")),
   tags$head(tags$script(src = "sus.js")),
   tags$head(tags$style(HTML(styler))),
