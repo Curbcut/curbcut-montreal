@@ -5,7 +5,7 @@ legend_UI <- function(id) {
       uiOutput(NS(id, "legend_render")))
 }
 
-legend_server <- function(id, data, var_left, var_right, df, 
+legend_server <- function(id, data, var_left, var_right, df, zoom = df,
                           build_str_as_DA = reactive(TRUE)) {
   
   stopifnot(is.reactive(var_left))
@@ -27,7 +27,7 @@ legend_server <- function(id, data, var_left, var_right, df,
     
     # Make legend
     legend <- reactive(render_legend(data(), var_left(), var_right(), df(), 
-                                     data_type(), build_str_as_DA()))
+                                     zoom(), data_type(), build_str_as_DA()))
     
     # Output legend
     output$legend_render <- renderUI({

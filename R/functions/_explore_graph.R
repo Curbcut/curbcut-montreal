@@ -1,7 +1,8 @@
 #### EXPLORE GRAPH #############################################################
 
-explore_graph <- function(data, var_type, var_left, var_right, df, select_id, 
-                          build_str_as_DA = TRUE, plot_type = "auto") {
+explore_graph <- function(data, var_type, var_left, var_right, df, zoom,
+                          select_id, build_str_as_DA = TRUE, 
+                          plot_type = "auto") {
   
   ## Check arguments -----------------------------------------------------------
   
@@ -53,7 +54,7 @@ explore_graph <- function(data, var_type, var_left, var_right, df, select_id,
   
   ## Render and return plot ----------------------------------------------------
   
-  render_explore_graph(plot_type, data, var_left, var_right, df, select_id, 
-                       x_scale, y_scale, labs_xy, theme_default)
+  render_explore_graph(plot_type, data, var_left, var_right, df, zoom, 
+                       select_id, x_scale, y_scale, labs_xy, theme_default)
   
 }

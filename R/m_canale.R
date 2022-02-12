@@ -83,7 +83,8 @@ canale_server <- function(id) {
       data = data,
       var_left = var_left, 
       var_right = var_right, 
-      df = df)
+      df = df,
+      zoom = zoom)
 
     # Did-you-know panel
     dyk_server(
@@ -108,6 +109,7 @@ canale_server <- function(id) {
       var_left = var_left,
       var_right = var_right, 
       df = df, 
+      zoom = zoom,
       select_id = select_id)
     
     # Data export TKTK should this become a non-reactive function?

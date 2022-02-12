@@ -15,8 +15,8 @@ col_NA <- "#B3B3BB"
 
 # Opacity level -----------------------------------------------------------
 
-colour_alpha <- c("borough" = "EE", "CT" = "CC", "DA" = "AA", "building" = "99", 
-                  "street" = "CC")
+colour_alpha <- c("borough" = "EE", "CT" = "D5", "DA" = "BB", "building" = "AA", 
+                  "street" = "AA")
 
 
 # Univariate 5-level colour table -----------------------------------------
