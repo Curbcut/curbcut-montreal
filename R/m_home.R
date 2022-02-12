@@ -47,7 +47,7 @@ home_UI <- function(id) {
          list(name="Marketed sustainability", url="#")
         ),
         linkListGroup(name="Urban Life",
-         list(name="Active greening potential", url="#"),
+         list(name="Active living potential", url="#"),
          list(name="Green alleys", url="#"),
          list(name="Green spaces", url="#")
         ),
@@ -66,7 +66,8 @@ home_UI <- function(id) {
          list(name="Montreal climate plans", url="#")
         ),
         linkListGroup(name="More",
-         list(name="Active greening potential", url="#")
+         list(name="Montreal stories", url="#"),
+         list(name="Place explorer", url="#")
         )
       )
     ),
