@@ -12,6 +12,15 @@
   padding-top: var(--h-banner);
 }
 
+.sus-page-home .sus-page-content {
+  background: unset;
+}
+
+.sus-page-home .sus-page-content-section {
+  background: unset;
+  box-shadow: unset;
+}
+
 .sus-page-home .sus-page-content-section:first-child {
   height: var(--h-home-content);
   min-height: var(--h-home-content);
@@ -37,4 +46,9 @@
 
 .sus-page-home .sus-page-content-section:not(:first-child) * {
   color: white;
+}
+
+.sus-page-home .sus-page-content {
+  margin-top: unset;
+  margin-bottom: unset;
 }

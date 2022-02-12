@@ -4,7 +4,7 @@
   --padding-page-section-h-md: 50px;
   --padding-page-section-h-sm: var(--padding-h-md);
   
-  --padding-page-section-v-lg: 30px;
+  --padding-page-section-v-lg: 60px;
   --padding-page-section-v-md: 20px;
 
   --margin-page-section-v-lg: 30px;
@@ -16,24 +16,37 @@
   position: relative;
 }
 
+.sus-page-content {
+  margin-top: var(--h-navbar);
+  margin-bottom: var(--h-navbar);
+}
+
 .sus-page-content-section {
   max-width: 900px;
-  margin-top: var(--margin-page-section-v-lg);
-  margin-bottom: var(--margin-page-section-v-lg);
+  margin-top: 0px;
+  margin-bottom: 0px;
   margin-left: auto;
   margin-right: auto;
   padding-top: var(--padding-page-section-v-lg);
   padding-bottom: var(--padding-page-section-v-lg);
   padding-left: var(--padding-page-section-h-lg);
   padding-right: var(--padding-page-section-h-lg);
+  background-color: var(--c-primary-complement);
+  box-shadow: var(--box-shadow-md);
+}
+
+.sus-page-content-section > img {
+  width: calc(100% + var(--padding-page-section-h-lg) * 2);
+  height: auto;
+  margin-left: calc(var(--padding-page-section-h-lg) * -1);
+  margin-right: calc(var(--padding-page-section-h-lg) * -1);
+  margin-bottom: 6rem;
 }
 
 @media (max-width: 950px) {
   .sus-page-content-section {
     width: 100%;
     max-width: unset;
-    margin-top: 0px;
-    margin-bottom: 0px;
     margin-left: 0px;
     margin-right: 0px;
     padding-top: var(--padding-page-section-v-md);
@@ -41,12 +54,26 @@
     padding-left: var(--padding-page-section-h-md);
     padding-right: var(--padding-page-section-h-md);
   }
+
+  .sus-page-content-section > img {
+    width: calc(100% + var(--padding-page-section-h-md) * 2);
+    margin-left: calc(var(--padding-page-section-h-md) * -1);
+    margin-right: calc(var(--padding-page-section-h-md) * -1);
+    margin-bottom: 4rem;
+  }
 }
 
 @media (max-width: 600px) {
   .sus-page-content-section {
     padding-left: var(--padding-page-section-h-sm);
     padding-right: var(--padding-page-section-h-sm);
+  }
+  
+  .sus-page-content-section > img {
+    width: calc(100% + var(--padding-page-section-h-sm) * 2);
+    margin-left: calc(var(--padding-page-section-h-sm) * -1);
+    margin-right: calc(var(--padding-page-section-h-sm) * -1);
+    margin-bottom: 3rem;
   }
 }
 

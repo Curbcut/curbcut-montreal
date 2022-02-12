@@ -75,6 +75,8 @@
 :root {
   --padding-h-md: 15px;
   --padding-v-md: 10px;
+  --padding-h-lg: calc(var(--padding-h-md) * 3);
+  --padding-v-lg:  calc(var(--padding-v-md) * 3);
   --line-height: 20px;
 
   --border-radius-sm: 3px;
@@ -85,26 +87,38 @@
   --box-shadow-md: 0px 2.5px 10px 0px rgba(0, 0, 0, 0.1);
   --box-shadow-lg: 0px 5px 20px 0px rgba(0, 0, 0, 0.1);
 
-  --brand-transform: skew(-8deg, 0deg);
+  --tr-brand: skew(-8deg, 0deg);
+
+  --depth-ui: 10;
+  --depth-ui-shadow: calc(var(--depth-ui) - 1);
 }
 
-em {
-  font-style: inherit;
-  transform: var(--brand-transform);
-  display: inline-block;
+.container-fluid {
+  padding-right: var(--padding-h-md);
+  padding-left: var(--padding-h-md);
+}
+
+body {
+  background-color: var(--c-min-mid);
 }
 
 p {
   font-family: var(--ff-body);
   color: var(--c-paragraph);
-  font-size: 1.75rem;
+  font-size: 1.65rem;
   margin-bottom: 1em;
+}
+
+em {
+  font-style: inherit;
+  transform: var(--tr-brand);
+  display: inline-block;
 }
 
 li {
   font-family: var(--ff-body);
   color: var(--c-paragraph);
-  font-size: 1.5rem;
+  font-size: 1.45rem;
 }
 
 h1 {
@@ -157,7 +171,7 @@ div.tab-content:first-child > div.tab-pane > div.container {
   color: var(--c-primary);
   font-family: var(--ff-brand);
   content: "SUS";
-  transform: var(--brand-transform);
+  transform: var(--tr-brand);
 }
 
 span.sus-col-br {

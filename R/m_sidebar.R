@@ -3,8 +3,8 @@
 sidebar_UI <- function(id, ...) {
   
   div(
-    id = "title_bar", class = "sus_sidebar", 
-    div(class = "sidebar_content",
+    id = "title_bar", class = "sus-map-sidebar", 
+    div(class = "sus-map-sidebar-content",
         tagList(
           uiOutput(NS(id, "title")),
           uiOutput(NS(id, "title_main")),

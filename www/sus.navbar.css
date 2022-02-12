@@ -175,3 +175,8 @@ div.tab-content > div.tab-pane > div.container {
   height: calc(100vh - var(--h-navbar)) !important;
   overflow-y: unset !important;
 }
+
+.navbar-collapse.collapse > ul {
+  margin-left: calc(-1 * var(--padding-h-md));
+  margin-right: calc(-1 * var(--padding-h-md));
+}

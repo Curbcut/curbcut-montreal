@@ -28,12 +28,8 @@ materialIconButton <- function(tag, icon) {
 right_panel <- function(id, ...) {
   
   absolutePanel(
-    id = NS(id, "right_panel"), 
-    style = paste0("z-index:500; max-height: calc(100vh - 120px) ;", 
-                   #overflow-y: auto; ",
-                   "padding: 5px; border-width: 0px; width: 15vw; ",
-                   "font-size: 11px; max-width: 300px"),
-    class = "panel panel-default", top = 15, right = 15, # width = 300,
+    id = NS(id, "right_panel"),
+    class = "panel panel-default sus-map-panel",
     ...
   )
 }
