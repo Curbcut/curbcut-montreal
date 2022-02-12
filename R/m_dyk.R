@@ -32,10 +32,9 @@ dyk_server <- function(id, var_left, var_right) {
     # Track hide status with clicks on input$hide button
     dyk_hide_status <- reactive(as.logical(input$hide %% 2 == 0))
     
-    # Hide and reveal DYK status
+    # Change show/hide button text
     observeEvent(dyk_hide_status(), {
-      if (dyk_hide_status()) txt <- sus_translate("Hide") else 
-        txt <- sus_translate("Show")
+      txt <- sus_translate(switch(input$hide %% 2 + 1, "Hide", "Show"))
       updateActionButton(session, "hide", label = txt)
     }, ignoreInit = TRUE)
     
