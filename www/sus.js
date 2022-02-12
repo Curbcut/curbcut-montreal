@@ -1,4 +1,32 @@
+const rgbToHex = (r, g, b) => {
+  function cToHex(c) {
+    var hex = c.toString(16);
+    return hex.length == 1 ? "0" + hex : hex;
+  }
+  return `${cToHex(r)}${cToHex(g)}${cToHex(b)}`;
+}
+
 window.addEventListener('load', (evt) => {
+  const getLegendColor = (n) => {
+    const style = getComputedStyle(document.documentElement);
+
+    const r = parseInt(style.getPropertyValue(`--legend-${n}-r`));
+    const g = parseInt(style.getPropertyValue(`--legend-${n}-g`));
+    const b = parseInt(style.getPropertyValue(`--legend-${n}-b`));
+
+    return rgbToHex(r, g, b);
+  };
+
+  const getPaletteColor = (v1, v2) => {
+    const style = getComputedStyle(document.documentElement);
+
+    const r = parseInt(style.getPropertyValue(`--${v1}-${v2}-r`));
+    const g = parseInt(style.getPropertyValue(`--${v1}-${v2}-g`));
+    const b = parseInt(style.getPropertyValue(`--${v1}-${v2}-b`));
+
+    return rgbToHex(r, g, b);
+  };
+
   const head = document.querySelector('head');
   const body = document.querySelector('body');
 
@@ -6,9 +34,42 @@ window.addEventListener('load', (evt) => {
   const navbarBrand = document.querySelector('.navbar-static-top span.navbar-brand');
   const navbarLinks = document.querySelector('.navbar-static-top ul#sus_page');
   const navbarFixed = document.querySelector('.navbar-static-top div.navbar-fixed');
+  const navbarCollapse = document.querySelector('.navbar-static-top div.navbar-collapse');
 
-  const breakpoint = Math.ceil(navbarBrand.clientWidth + navbarLinks.clientWidth + navbarFixed.clientWidth);
+  function reflow(elt){
+    console.log(elt.offsetHeight);
+  }
+
+  const collapsed = navbarCollapse.classList.contains('collapse');
+  
+  if (collapsed) {
+    navbarCollapse.classList.remove('collapse');
+    reflow(navbarCollapse);
+  }
+
+  function sumWidths(elts) {
+    var w = 0;
+    for(var i = 0; i < elts.length; i++) {
+      w += elts[i].clientWidth;
+    }
+    return w;
+  }
+
+  const linksMinWidth = Math.ceil(sumWidths(navbarLinks.querySelectorAll(':scope > li > a'))); 
+  const breakpoint = Math.ceil(navbarBrand.clientWidth + linksMinWidth + navbarFixed.clientWidth);
   const bodyMinWidth = Math.ceil(navbarBrand.clientWidth + navbarFixed.clientWidth + 54);
+
+  console.log('navbarBrand.clientWidth: ' + navbarBrand.clientWidth);
+  console.log('navbarLinks.clientWidth: ' + navbarLinks.clientWidth);
+  console.log('linksMinWidth ' + linksMinWidth);
+  console.log('navbarFixed.clientWidth: ' + navbarFixed.clientWidth);
+  console.log('breakpoint: ' + breakpoint);
+  console.log('bodyMinWidth: ' + bodyMinWidth);
+
+  if (collapsed) {
+    navbarCollapse.classList.add('collapse');
+    reflow(navbarCollapse);
+  }
 
   var style = document.createElement('style');
   style.innerText =
@@ -17,6 +78,9 @@ window.addEventListener('load', (evt) => {
 }
 .navbar-default {
   min-width: calc(max(300px, ${bodyMinWidth}px));
+}
+.navbar-collapse > ul > li > a {
+  width: 100%;
 }
 @media (max-width: ${breakpoint}px) {
   .navbar-header {
@@ -31,6 +95,9 @@ window.addEventListener('load', (evt) => {
   .navbar-collapse {
     border-top: 1px solid transparent;
     box-shadow: inset 0 1px 0 rgba(255,255,255,0.1);
+  }
+  .collapse {
+    display: none;
   }
   .navbar-fixed-top {
     top: 0;
@@ -67,9 +134,9 @@ window.addEventListener('load', (evt) => {
 
   head.appendChild(style);
 
-  const navbarHeight = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--navbar-height'));
+  const navbarHeight = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--h-navbar'));
 
-  console.log(navbarHeight);
+  console.log('navbarHeight:' + navbarHeight);
 
   window.setInterval(() =>
   {

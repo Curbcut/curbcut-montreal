@@ -30,7 +30,7 @@ right_panel <- function(id, ...) {
   absolutePanel(
     id = NS(id, "right_panel"),
     class = "panel panel-default sus-map-panel",
-    ...
+    tags$div(class="sus-map-panel-content", ...)
   )
 }
 
@@ -105,6 +105,30 @@ susPage <- function(..., class="", header=NULL, footer=NULL) {
     children = c(children, list(footer));
   }
   return(tags$div(class=paste("sus-page", class), children))
+}
+
+susPalette <- function() {
+  return( tags$div(class="palette-grid",
+    tags$div(class="palette-swatch"),
+    tags$div(class="palette-swatch"),
+    tags$div(class="palette-swatch"),
+    tags$div(class="palette-swatch"),
+    tags$div(class="palette-swatch"),
+    tags$div(class="palette-swatch"),
+    tags$div(class="palette-swatch"),
+    tags$div(class="palette-swatch"),
+    tags$div(class="palette-swatch")
+  ))
+}
+
+susLegend <- function() {
+  return(tags$div(class="legend-grid",
+    tags$div(class="legend-swatch"),
+    tags$div(class="legend-swatch"),
+    tags$div(class="legend-swatch"),
+    tags$div(class="legend-swatch"),
+    tags$div(class="legend-swatch")
+  ))
 }
 
 # # unused function at the moment

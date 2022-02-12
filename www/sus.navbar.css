@@ -164,6 +164,7 @@ ul.dropdown-menu > li {
 
 .navbar-collapse {
   border-top: none !important;
+  overflow-x: hidden;
 }
 
 body > div.container-fluid {
@@ -176,7 +177,11 @@ div.tab-content > div.tab-pane > div.container {
   overflow-y: unset !important;
 }
 
-.navbar-collapse.collapse > ul {
+.navbar-collapse.collapse.in > ul, .navbar-collapse.collapsing > ul {
   margin-left: calc(-1 * var(--padding-h-md));
   margin-right: calc(-1 * var(--padding-h-md));
+}
+
+.navbar-collapse > ul > li > a {
+  width: fit-content;
 }

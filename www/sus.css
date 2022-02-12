@@ -185,6 +185,9 @@ html {
 
 body {
   overflow: initial !important;
+  font-family: var(--ff-body);
+  color: var(--c-paragraph);
+  font-size: 1.45rem;
 }
 
 .noselect {
@@ -209,4 +212,8 @@ body.user-tab-home .navbar-default {
   top: 0px;
   left: 0px;
   right: 0px;
+}
+
+a.sus-small-link {
+  font-size: 1.25rem;
 }

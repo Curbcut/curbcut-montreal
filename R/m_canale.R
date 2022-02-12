@@ -22,9 +22,8 @@ canale_UI <- function(id) {
       right_panel(
         id = id,
         compare_UI(NS(id, "canale"), make_dropdown()),
-        div(class = "explore_dyk", 
-            explore_UI(NS(id, "explore")), 
-            dyk_UI(NS(id, "dyk"))))),
+        explore_UI(NS(id, "explore")), 
+        dyk_UI(NS(id, "dyk")))),
     
     flex = c(1, 5)))
 }

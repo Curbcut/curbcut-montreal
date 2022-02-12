@@ -20,7 +20,7 @@ explore_UI <- function(id) {
     div(id = NS(id, "explore_title"),
         fluidRow(column(width = 7, h4(sus_translate("Explore"))),
                  column(width = 5, align = "right", 
-                        actionLink(inputId = NS(id, "hide"), 
+                        actionLink(inputId = NS(id, "hide"), class="sus-small-link", 
                                    label = sus_translate("Hide"))))),
     
     div(id = NS(id, "explore_content"),

@@ -70,18 +70,7 @@ home_UI <- function(id) {
          list(name="Place explorer", url="#")
         )
       )
-    ),
-    tags$div(class="palette-grid", hidden="true",
-      tags$div(class="palette-swatch"),
-      tags$div(class="palette-swatch"),
-      tags$div(class="palette-swatch"),
-      tags$div(class="palette-swatch"),
-      tags$div(class="palette-swatch"),
-      tags$div(class="palette-swatch"),
-      tags$div(class="palette-swatch"),
-      tags$div(class="palette-swatch"),
-      tags$div(class="palette-swatch")
-    )
+    ), tags$div(style="width: 250px; height: 50px;", hidden="", susLegend()),
   )
   
   # fixedPage( 
