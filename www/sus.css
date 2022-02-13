@@ -33,6 +33,7 @@
   --ff-h2: 'outfit-regular';
   --ff-h3: 'outfit-medium';
   --ff-h4: 'outfit-semibold';
+  --ff-h5: 'outfit-semibold';
   --ff-body: 'source-sans-pro-regular';
 }
 
@@ -60,6 +61,9 @@
   --c-primary-complement-focus: var(--c-muted-blue);
   --c-primary-complement-highlight: var(--c-light-muted-green);
   --c-secondary: var(--c-medium-muted-green);
+  --c-secondary-complement: white;
+  --c-default: var(--c-min-min);
+  --c-default-complement: rgb(48, 48, 48);
 }
 
 /* define color roles */
@@ -69,12 +73,15 @@
   --c-h2: var(--c-medium-green-blue);
   --c-h3: var(--c-medium-green-blue);
   --c-h4: var(--c-medium-green-blue);
+  --c-h4: var(--c-medium-green-blue);
 }
 
 /* define global style values */
 :root {
   --padding-h-md: 15px;
   --padding-v-md: 10px;
+  --padding-h-lg: calc(var(--padding-h-md) * 3);
+  --padding-v-lg:  calc(var(--padding-v-md) * 3);
   --line-height: 20px;
 
   --border-radius-sm: 3px;
@@ -85,53 +92,71 @@
   --box-shadow-md: 0px 2.5px 10px 0px rgba(0, 0, 0, 0.1);
   --box-shadow-lg: 0px 5px 20px 0px rgba(0, 0, 0, 0.1);
 
-  --brand-transform: skew(-8deg, 0deg);
+  --tr-brand: skew(-8deg, 0deg);
+
+  --depth-ui: 1100;
+  --depth-ui-shadow: calc(var(--depth-ui) - 100);
 }
 
-em {
-  font-style: inherit;
-  transform: var(--brand-transform);
-  display: inline-block;
+.container-fluid {
+  padding-right: var(--padding-h-md);
+  padding-left: var(--padding-h-md);
+}
+
+body {
+  background-color: var(--c-min-mid);
 }
 
 p {
   font-family: var(--ff-body);
   color: var(--c-paragraph);
-  font-size: 1.75rem;
+  font-size: 1.65rem;
   margin-bottom: 1em;
+}
+
+em {
+  font-style: inherit;
+  transform: var(--tr-brand);
+  display: inline-block;
 }
 
 li {
   font-family: var(--ff-body);
   color: var(--c-paragraph);
-  font-size: 1.5rem;
+  font-size: 1.45rem;
 }
 
-h1 {
+h1, .h1 {
   color: var(--c-h1);
   font-family: var(--ff-h1);
   font-size: 6rem;
 }
 
-h2 {
+h2, .h2 {
   color: var(--c-h2);
   font-family: var(--ff-h2);
   font-size: 4rem;
   margin-bottom: 0.75em;
 }
 
-h3 {
+h3, .h3 {
   color: var(--c-h3);
   font-family: var(--ff-h3);
   font-size: 2rem;
   text-transform: uppercase;
-  opacity: 0.75;
 }
 
-h4 {
+h4, .h4 {
   color: var(--c-h4);
   font-family: var(--ff-h4);
   font-size: 2rem;
+}
+
+h5, .h5 {
+  color: var(--c-h5);
+  font-family: var(--ff-h5);
+  font-size: 1rem;
+  text-transform: uppercase;
 }
 
 /* make Material icons a little smaller */
@@ -157,7 +182,7 @@ div.tab-content:first-child > div.tab-pane > div.container {
   color: var(--c-primary);
   font-family: var(--ff-brand);
   content: "SUS";
-  transform: var(--brand-transform);
+  transform: var(--tr-brand);
 }
 
 span.sus-col-br {
@@ -171,6 +196,9 @@ html {
 
 body {
   overflow: initial !important;
+  font-family: var(--ff-body);
+  color: var(--c-paragraph);
+  font-size: 1.45rem;
 }
 
 .noselect {
@@ -183,16 +211,74 @@ body {
                                   supported by Chrome, Edge, Opera and Firefox */
 }
 
-body.user-tab-home:not(.user-scroll) .navbar-default:not(:hover) {
-  /* background: none !important; */
-  background: rgba(255, 255, 255, 0.5) !important;
-  box-shadow: 0px 1px 10px rgba(0, 0, 0, 0.05) !important;
-  transition: ease-in-out 0.1s;
-}
-
 body.user-tab-home .navbar-default {
   position: fixed;
   top: 0px;
+  left: 0px;
+  right: 0px;
+}
+
+a.sus-small-link {
+  font-size: 1.25rem;
+}
+
+.overlay-container {
+  position: absolute;
+  left: 0px;
+  right: 0px;
+  top: 0px;
+  bottom: 0px;
+  overflow: hidden;
+}
+
+:root {
+  --scrollbar-width: 10px;
+}
+
+.sus-scrollbar {
+  position: absolute;
+  z-index: calc(var(--depth-ui) + 1);
+  top: 0px;
+  bottom: 0px;
+  right: 0px;
+  width: var(--scrollbar-width);
+  display: none;
+  background-color: rgb(200, 200, 200);
+}
+
+.sus-scrollbar-handle {
+  position: absolute;
+  z-index: calc(var(--depth-ui) + 2);
+  top: 0px;
+  right: 0px;
+  width: var(--scrollbar-width);
+  /* this doesn't work, for some reason */
+  /* width: var(--scrollbar-width); */ 
+  /* border-radius: calc(var(--scrollbar-width) / 2); */
+  display: none;
+  background-color: rgb(240, 240, 240);
+}
+
+.sus-scroll.sus-scroll-enabled:hover .sus-scrollbar,
+.sus-scroll.sus-scroll-enabled:hover .sus-scrollbar-handle {
+  display: block;
+}
+
+.sus-scrollbar-handle:hover {
+  background-color: rgb(250, 250, 250);
+}
+
+.sus-scrollbar-handle:active {
+  background-color: rgb(245, 245, 245);
+}
+
+.panel {
+  border-radius: var(--border-radius-sm);
+}
+
+.tab-content .tab-pane {
+  position: absolute;
+  top: var(--h-navbar);
   left: 0px;
   right: 0px;
 }

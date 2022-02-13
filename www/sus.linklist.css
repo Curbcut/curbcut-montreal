@@ -17,7 +17,7 @@
 .sus-link-list-group {
   flex-grow: 0;
   min-width: max-content;
-  width: 30%;
+  width: calc(100% / 3 - var(--padding-h-md));
   background: none;
   border-radius: 0px;
   box-shadow: none;
@@ -33,7 +33,7 @@
     height: 550px;
   }
   .sus-link-list-group {
-    width: 50%;
+    width: calc(50% - var(--padding-h-md));
   }
 }
 
@@ -42,7 +42,7 @@
     height: unset;
   }
   .sus-link-list-group {
-    width: calc(100% - 15px);
+    width: calc(100% - var(--padding-h-md));
   }
 }
 

@@ -7,33 +7,24 @@
   height: min-content;
   border-radius: var(--border-radius-md);
   padding: var(--padding-carousel) var(--padding-carousel) var(--padding-carousel) var(--padding-carousel);
-}
-
-@media (max-width: 600px) {
-  .sus-carousel {
-    width: 300px;
-  }
-  h1 {
-    font-size: 3rem;
-  }
-  h2 {
-    font-size: 3rem;
-  }
-  h3 {
-    font-size: 2rem;
-  }
-  h4 {
-    font-size: 2rem;
-  }
-}
-
-.sus-carousel {
   background-color: rgba(255, 255, 255, 0.6);
   box-shadow: var(--box-shadow-lg);
 }
 
+@media (max-width: 750px) {
+  .sus-carousel {
+    min-width: 300px;
+    width: calc(100% - var(--padding-h-lg));
+  }
+}
+
+@media (max-width: 600px) {
+  .sus-carousel {
+    width: calc(100% - var(--padding-h-md));
+  }
+}
 .sus-carousel .sus-button-group {
-  margin-top: 40px;
+  margin-top: 30px;
   width: 100%;
   justify-content: flex-end;
 }

@@ -32,9 +32,8 @@ place_explorer_UI <- function(id) {
       
       ## SEARCH PANEL -----------------------------------------------------
       absolutePanel(
-        id = NS(id, "search_bar"), 
-        style = "z-index:5; padding: 5px; border-width: 0.5px; text-align: center;",
-        class = "panel panel-default", top = 20, right = 15,
+        id = NS(id, "search_bar"),
+        class = "panel panel-default",
         strong("Enter a postal code, or click on the map"),
         textInput(inputId = NS(id, "adress_searched"), label = NULL,
                   placeholder = "H3A 2T5"),

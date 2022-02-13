@@ -1,0 +1,13 @@
+/* batch one, direct interpolation based on stevens.greenblue */
+e3efe6
+c7dfcc
+abceb3
+8fbe99
+73ae80
+
+/* batch two, more contrast */
+d7e8db
+b0d1b7
+88b993
+60a26f
+388b4b

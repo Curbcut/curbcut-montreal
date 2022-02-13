@@ -1,13 +1,15 @@
 :root {
+  --scale-button-hover: 1.02;
+  --scale-button-active: 1;
   --c-button-content: var(--c-primary-complement);
   --transition-button: transform ease-in-out 0.1s;
-  --tr-button-hover: scale(1.02, 1.02);
+  --tr-button-hover: scale(var(--scale-button-hover), var(--scale-button-hover));
   --filter-button-hover: brightness(1.05);
-  --tr-button-active: scale(1, 1);;
+  --tr-button-active: scale(var(--scale-button-active), var(--scale-button-active));;
   --filter-button-active: brightness(0.95);
 }
 
-.sus-button {
+.sus-button, .tab-content .btn {
   display: block;
   text-decoration: none;
   border: none;
@@ -25,8 +27,38 @@
   font-size: 1.75rem;
   transform-origin: center;
   white-space: nowrap;
-  box-shadow: var(--box-shadow-md);
   color: var(--c-button-content);
+  text-shadow: unset;
+  outline: unset;
+}
+
+.sus-button-default, .tab-content .btn-default, .tab-content .dropdown {
+  color: var(--c-primary);
+}
+
+.sus-button-default, .tab-content .btn-default{
+  background: var(--c-default);
+}
+
+.tab-content .dropdown {
+  background: none;
+  border: 3px solid var(--c-default);
+  text-shadow: unset;
+  box-shadow: unset;
+}
+
+.tab-content .dropdown .dropdown-menu.open {
+  overflow: visible;
+}
+
+.tab-content .dropdown > .btn {
+  background: none;
+  box-shadow: unset;
+  width: 100%;
+}
+
+.sus-button {
+  box-shadow: var(--box-shadow-md);
 }
 
 .sus-button:hover {
@@ -62,6 +94,11 @@
 
 .sus-button-group {
   display: flex;
+  flex-wrap: wrap;
+}
+
+.sus-button-group .sus-button {
+  margin-top: var(--padding-v-md);
 }
 
 .sus-button-group-vertical {
@@ -69,11 +106,11 @@
 }
 
 .sus-button-group:not(.sus-button-group-vertical) .sus-button:not(:first-child) {
-  margin-left: calc(var(--padding-h-md) / 1.5);
+  margin-left: var(--padding-v-md);
 }
 
 .sus-button-group.sus-button-group-vertical .sus-button:not(:first-child) {
-  margin-top: calc(var(--padding-h-md) / 1.5);
+  margin-top: var(--padding-v-md);
   width: 100%;
 }
 
@@ -84,7 +121,102 @@
 
   .sus-button-group:not(.sus-button-group-vertical) .sus-button:not(:first-child) {
     margin-left: unset;
-    margin-top: calc(var(--padding-h-md) / 1.5);
+    margin-top: var(--padding-v-md);
     width: 100%;
   }
+}
+
+.irs--shiny {
+  display: block;
+  height: 60px;
+  padding-bottom: 20px;
+}
+
+.irs--shiny .irs-bar,
+.irs--shiny .irs-handle,
+.irs--shiny .irs .irs-line {
+  transform: translate(0px, 10px) scale(1, 1);
+}
+
+.irs--shiny .irs-handle {
+  border: unset;
+  background: unset;
+  background-color: var(--c-primary);
+  transition: var(--transition-button);
+  box-shadow: var(--box-shadow-md);
+  top: 20px;
+  width: 18px;
+  height: 18px;
+}
+
+.irs--shiny .irs-handle:hover, .irs--shiny .irs-handle.state_hover {
+  background: unset;
+  background-color: var(--c-primary);
+  filter: var(--filter-button-hover);
+}
+
+.irs--shiny .irs-handle:active, .irs--shiny .irs-handle.state_active {
+  background: unset;
+  background-color: var(--c-primary);
+  filter: var(--filter-button-active);
+}
+
+.irs--shiny .irs-line {
+  border: unset;
+  background: unset;
+  background-color: var(--c-default);
+}
+
+.irs--shiny .irs-bar {
+  border: unset;
+  background: unset;
+  background-color: var(--c-secondary);
+}
+
+.irs--shiny .irs-single {
+  background-color: var(--c-secondary);
+}
+
+.dropdown-menu {
+  border-radius: var(--border-radius-sm);
+}
+
+.tab-content .dropdown-menu,
+.tab-content .dropdown-menu.open {
+  border: 0.5px solid rgba(0, 0, 0, 0.05);
+  overflow: scroll;
+  overflow-x: hidden;
+  padding-top: 0px;
+  padding-bottom: 0px;
+  box-shadow: var(--box-shadow-md);
+  min-width: unset !important;
+  width: fit-content;
+  position: fixed;
+  top: 0px;
+  right: 0px;
+}
+
+.tab-content .dropdown-menu > li > a {
+  font-family: var(--ff-button);
+  text-transform: none;
+  font-size: 1.25rem;
+  font-weight: unset;
+  color: var(--c-primary);
+}
+
+.tab-content .dropdown-menu > li > a:hover, 
+.tab-content .dropdown-menu > li > a:focus,
+.tab-content .dropdown-menu > .active > a,
+.tab-content .dropdown-menu > .active > a:hover,
+.tab-content .dropdown-menu > .active > a:focus {
+  background-color: var(--c-primary-complement-hover);
+}
+
+.tab-content input[type="text"] {
+  border: 3px solid var(--c-default);
+  font-family: var(--ff-button);
+  font-size: 1.25rem;
+  color: var(--c-primary);
+  background: unset;
+  box-shadow: unset;
 }

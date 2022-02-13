@@ -8,14 +8,14 @@ compare_UI <- function(id, var_list) {
       condition = "output.show_panel == true", ns = NS(id),
       fluidRow(column(width = 7, h4(sus_translate("Compare"))),
                column(width = 5, align = "right", 
-                      actionLink(inputId = NS(id, "hide"), 
+                      actionLink(inputId = NS(id, "hide"), class="sus-small-link",
                                  label = sus_translate("Hide"))))),
     
     conditionalPanel(
       condition = "output.hide_status == 1", ns = NS(id),
       div(class = "compare_dropdown",
           select_var_UI(NS(id, "compare"), var_list, inline = FALSE,
-                    more_style = "margin:auto; width:95%;"))),
+                    more_style = "width:100%;"))),
     
     conditionalPanel(
       condition = "output.show_panel == true", ns = NS(id),

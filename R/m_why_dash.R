@@ -3,15 +3,11 @@
 why_dash_UI <- function(id) {
 
   tagList(
-
     tags$head(tags$style(HTML(
       '#why_title_bar {border-width: 10px; border-color: rgb(255, 255, 255);}'))
-      ),
-
-    fixedPage(
-      id = "why_title_bar", class = "panel panel-default", draggable = FALSE,
-      top = 70, left = 270, width = "50%",
-      h2(sus_translate("Why a dashboard? The science behind Sus")),
+    ),
+    susPage(class="sus-page-about", footer=susFooter(),susPageSection(
+      h2(sus_translate("Why a dashboard? The science behind SUS")),
       img(src = "glamour_shot.png", height = 300),
       p(sus_translate("Urban sustainability is a complex, multidimensional ",
                       "concept encompassing a variety of stakeholders, values ",
@@ -121,8 +117,8 @@ why_dash_UI <- function(id) {
                   "and David Wachsmuth. 2020. 'Progress in ",
                   "data-driven urban sustainability'. ",
                   "Working paper.</a> <b>(MSSI research)</b></ul>"))
-      )
-    )
+      
+    )))
 }
 
 

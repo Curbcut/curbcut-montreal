@@ -23,7 +23,7 @@ dyk_server <- function(id, var_left, var_right) {
           hr(),
           fluidRow(column(width = 7, h4(sus_translate("Did you know?"))),
                    column(width = 5, align = "right",
-                          actionLink(inputId = session$ns("hide"), 
+                          actionLink(inputId = session$ns("hide"), class="sus-small-link",
                                      label = sus_translate("Hide"))))
         )
       }  

@@ -2,6 +2,11 @@
 
 # Design functions --------------------------------------------------------
 
+scrollAnchor <- function(id) {
+  return(tags$span(style="position: relative;display: inline-block;height: 100%;vertical-align: top;",
+         tags$span(id=id, style="display: block;position: absolute;top: calc(var(--h-navbar) * -2);")))
+}
+
 languageButtonLabel <- function(text) {
   as.character(tags$span(tags$span(class = "material-icons", "language"), 
                          span(text)))
@@ -28,13 +33,9 @@ materialIconButton <- function(tag, icon) {
 right_panel <- function(id, ...) {
   
   absolutePanel(
-    id = NS(id, "right_panel"), 
-    style = paste0("z-index:500; max-height: calc(100vh - 120px) ;", 
-                   #overflow-y: auto; ",
-                   "padding: 5px; border-width: 0px; width: 15vw; ",
-                   "font-size: 11px; max-width: 300px"),
-    class = "panel panel-default", top = 15, right = 15, # width = 300,
-    ...
+    id = NS(id, "right_panel"),
+    class = "panel panel-default sus-map-panel sus-scroll",
+    tags$div(class="sus-map-panel-content sus-scroll-content", ...)
   )
 }
 
@@ -109,6 +110,30 @@ susPage <- function(..., class="", header=NULL, footer=NULL) {
     children = c(children, list(footer));
   }
   return(tags$div(class=paste("sus-page", class), children))
+}
+
+susPalette <- function() {
+  return( tags$div(class="palette-grid",
+    tags$div(class="palette-swatch"),
+    tags$div(class="palette-swatch"),
+    tags$div(class="palette-swatch"),
+    tags$div(class="palette-swatch"),
+    tags$div(class="palette-swatch"),
+    tags$div(class="palette-swatch"),
+    tags$div(class="palette-swatch"),
+    tags$div(class="palette-swatch"),
+    tags$div(class="palette-swatch")
+  ))
+}
+
+susLegend <- function() {
+  return(tags$div(class="legend-grid",
+    tags$div(class="legend-swatch"),
+    tags$div(class="legend-swatch"),
+    tags$div(class="legend-swatch"),
+    tags$div(class="legend-swatch"),
+    tags$div(class="legend-swatch")
+  ))
 }
 
 # # unused function at the moment

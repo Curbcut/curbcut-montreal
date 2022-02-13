@@ -1,6 +1,6 @@
 #### SELECT VARIABLE MODULE ####################################################
 
-select_var_UI <- function(id, var_list, label = NULL, width = "95%", 
+select_var_UI <- function(id, var_list, label = NULL, width = "100%", 
                           inline = FALSE, more_style = NULL, selected = NULL) {
   style <- ""
   if (inline) style <- paste("display: inline-block;", style)

@@ -10,21 +10,16 @@
 zoom_UI <- function(id, zoom_levels) {
   
   tagList(
-      div(checkboxInput(
+      div(class="sus-sidebar-control", checkboxInput(
         inputId = NS(id, "auto"), 
         label = "Auto-zoom", 
-        value = TRUE, 
-        width = "50px"),
-        style = widget_style),
-      div(sliderTextInput(
+        value = TRUE)),
+      div(class="sus-sidebar-control", sliderTextInput(
         inputId = NS(id, "slider"), 
         label = NULL, 
         choices = get_zoom_label(zoom_levels), 
         hide_min_max = TRUE, 
-        force_edges = TRUE, 
-        width = "100%"), 
-        # 50px the checkbox + margins
-        style = paste(widget_style, "width: calc(100% - 70px)"))
+        force_edges = TRUE))
   )
   
 }

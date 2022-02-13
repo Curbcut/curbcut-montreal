@@ -8,7 +8,6 @@ shinyServer(function(input, output, session) {
   
   # Language button ---------------------------------------------------------
   
-  
   # Language reactive variable, and JS set language. Both onclick of the 
   # language button.
   sus_rv$lang <- 

@@ -9,6 +9,20 @@
 
 .navbar {
   margin-bottom: 0px !important;
+  position: relative;
+  z-index: calc(10 + var(--depth-ui));
+  box-shadow: unset;
+}
+
+.navbar-shadow {
+  position: fixed;
+  z-index: calc(10 + var(--depth-ui-shadow));
+  height: var(--h-navbar);
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  background-color: rgba(0, 0, 0, 0);
+  box-shadow: var(--box-shadow-md);
 }
 
 .navbar-default {
@@ -164,6 +178,7 @@ ul.dropdown-menu > li {
 
 .navbar-collapse {
   border-top: none !important;
+  overflow-x: hidden;
 }
 
 body > div.container-fluid {
@@ -174,4 +189,13 @@ body > div.container-fluid {
 div.tab-content > div.tab-pane > div.container {
   height: calc(100vh - var(--h-navbar)) !important;
   overflow-y: unset !important;
+}
+
+.navbar-collapse.collapse.in > ul, .navbar-collapse.collapsing > ul {
+  margin-left: calc(-1 * var(--padding-h-md));
+  margin-right: calc(-1 * var(--padding-h-md));
+}
+
+.navbar-collapse > ul > li > a {
+  width: fit-content;
 }
