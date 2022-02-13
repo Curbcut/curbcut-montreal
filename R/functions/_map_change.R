@@ -232,7 +232,12 @@ map_change <- function(id_map, x, df, zoom = df, click = reactive(NULL),
     zoom()}, {
     
     if (geom_type() == "polygon") {
-      if (!is.na(select_id())) {
+      
+      if (is.na(select_id())) {
+        mapdeck_update(map_id = id_map) |>
+          clear_polygon(layer_id = "highlight")
+        
+      } else {
         
         if (df() == "building") {
           
@@ -270,8 +275,7 @@ map_change <- function(id_map, x, df, zoom = df, click = reactive(NULL),
               auto_highlight = TRUE, highlight_colour = "#FFFFFF80")
           
         }
-      } else mapdeck_update(map_id = id_map) |>
-        clear_polygon(layer_id = "highlight")
+      }
     }
   })
   
