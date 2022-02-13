@@ -17,7 +17,7 @@ home_UI <- function(id) {
       )
     ),
     susPageSection(
-      tags$h2("Statement", id="learn-more"),
+      tags$h2("Statement", scrollAnchor(id="learn-more")),
       tags$p("SUS embraces an inclusive vision of urban sustainability, allowing ",
              "users to contextualize questions into larger frameworks of equity and ",
              "accessibility. It serves as both a data-exploration tool and a knowledge ",
@@ -38,7 +38,7 @@ home_UI <- function(id) {
       ))
     ),
     susPageSection(
-      tags$h2("Maps", id="start-exploring"),
+      tags$h2("Maps", scrollAnchor(id="start-exploring")),
       linkList(
         linkListGroup(name="Housing",
          list(name="Housing system", url="#"),

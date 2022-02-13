@@ -2,6 +2,11 @@
 
 # Design functions --------------------------------------------------------
 
+scrollAnchor <- function(id) {
+  return(tags$span(style="position: relative;display: inline-block;height: 100%;vertical-align: top;",
+         tags$span(id=id, style="display: block;position: absolute;top: calc(var(--h-navbar) * -2);")))
+}
+
 languageButtonLabel <- function(text) {
   as.character(tags$span(tags$span(class = "material-icons", "language"), 
                          span(text)))
