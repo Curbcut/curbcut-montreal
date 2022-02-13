@@ -107,7 +107,7 @@ widget_style <- "display: inline-block; padding: 5px; vertical-align: top;"
 
 # Set up fonts ------------------------------------------------------------
 
-showtext::font_add(family = "SourceSansPro", 
+sysfonts::font_add(family = "SourceSansPro", 
                    regular = "www/fonts/SourceSansPro-Regular.ttf",
                    italic = "www/fonts/SourceSansPro-Italic.ttf",
                    bold = "www/fonts/SourceSansPro-Bold.ttf",
