@@ -9,8 +9,8 @@ sidebar_UI <- function(id, ...) {
     div(class = "sus-map-sidebar-content sus-scroll-content",
         div(tagList(
           uiOutput(NS(id, "title")),
-          uiOutput(NS(id, "title_main")),
-          actionLink(NS(id, "more_info"), class="sus-small-link", sus_translate("Learn more")),
+          tags$p(uiOutput(NS(id, "title_main"))),
+          tags$p(actionLink(NS(id, "more_info"), class="sus-small-link", sus_translate("Learn more"))),
           hidden(uiOutput(outputId = NS(id, "title_extra"))))),
     ...
   )))

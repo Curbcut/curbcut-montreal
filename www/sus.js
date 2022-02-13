@@ -44,8 +44,13 @@ window.addEventListener('load', (evt) => {
   navbarShadow.classList.add('navbar-shadow');
   navbar.parentElement.insertBefore(navbarShadow, navbar);
 
+  var condition = false;
+
   function reflow(elt){
-    console.log(elt.offsetHeight);
+    if (elt.offsetHeight > 0 && condition) {
+      console.info(elt.offsetHeight);
+    }
+    // console.log(elt.offsetHeight);
   }
 
   const collapsed = navbarCollapse.classList.contains('collapse');
@@ -137,7 +142,7 @@ window.addEventListener('load', (evt) => {
 
   const navbarHeight = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--h-navbar'));
 
-  console.log('navbarHeight:' + navbarHeight);
+  // console.log('navbarHeight:' + navbarHeight);
 
   window.setInterval(() =>
   {
@@ -147,13 +152,13 @@ window.addEventListener('load', (evt) => {
     if (!body.classList.contains(activeTabClassName)) {
       for(var i = 0; i < body.classList.length; i++) {
         if (body.classList[i].startsWith('user-tab-')) {
-          console.log(`Old active tab: ${body.classList[i].substring(9)} (polled)`);
+          // console.log(`Old active tab: ${body.classList[i].substring(9)} (polled)`);
           body.classList.remove(body.classList[i]);
           i--;
         }
       }
       body.classList.add(activeTabClassName);
-      console.log(`New active tab: ${activeTabName} (polled)`);
+      // console.log(`New active tab: ${activeTabName} (polled)`);
     }
     const userScroll = body.getBoundingClientRect().top < -10;
     const userScrollClassName = 'user-scroll';
@@ -182,12 +187,12 @@ window.addEventListener('load', (evt) => {
       if (mutation.type === 'attributes' && mutation.target.parentElement === targetNode && mutation.attributeName === 'class') {
         if (mutation.target.classList.contains('active')) {
           const tab = mutation.target.getAttribute('data-value');
-          console.log(`New active tab: ${tab}`);
+          // console.log(`New active tab: ${tab}`);
           const tabClass = `user-tab-${tab}`;
           body.classList.add(tabClass);
         } else {
           const tab = mutation.target.getAttribute('data-value');
-          console.log(`Old active tab: ${tab}`);
+          // console.log(`Old active tab: ${tab}`);
           const tabClass = `user-tab-${tab}`;
           body.classList.remove(tabClass);
         }
@@ -239,7 +244,7 @@ window.addEventListener('load', (evt) => {
 
   const scrolls = document.querySelectorAll('.sus-scroll');
 
-  console.log('scrolls: ' + scrolls.length);
+  // console.log('scrolls: ' + scrolls.length);
 
   for(var i = 0; i < scrolls.length; i++) {
     const scroll = scrolls[i];
@@ -258,20 +263,20 @@ window.addEventListener('load', (evt) => {
     scroll.id = id;
     
     content.addEventListener('pointerdown', () => {
-      console.log('#' + scroll.id + ' content pressed');
+      // console.log('#' + scroll.id + ' content pressed');
     });
     content.addEventListener('pointerup', () =>{
-      console.log('#' + scroll.id + ' content released');
+      // console.log('#' + scroll.id + ' content released');
     });
     content.addEventListener('wheel', () => {
-      console.log('#' + scroll.id + ' content scrolled');
+      // console.log('#' + scroll.id + ' content scrolled');
     });
 
     handle.addEventListener('pointerdown', () => {
-      console.log('#' + scroll.id +  ' handle pressed');
+      // console.log('#' + scroll.id +  ' handle pressed');
     });
     handle.addEventListener('pointerup', () =>{
-      console.log('#' + scroll.id + ' handle released');
+      // console.log('#' + scroll.id + ' handle released');
     });
 
     const updateScroll = () => {
@@ -314,4 +319,35 @@ window.addEventListener('load', (evt) => {
     // Start observing the target node for configured mutations
     scrollObserver.observe(scroll, config);
   }
-});
+
+  const links = document.querySelectorAll('a');
+  // console.log('links: ' + links.length);
+  for(var i = 0; i < links.length; i++) {
+    const link = links[i];
+    if (link.hasAttribute('href')) {
+      const href = link.getAttribute('href');
+      if (href.startsWith('#')) {
+        if (href.startsWith('#tab')) {
+          // console.log('tab link: ' + href);
+        } else if (href.length > 1) {
+          const target = document.getElementById(href.substring(1));
+          if (target != null) {
+            // console.log('scroll link: ' + href);
+            link.addEventListener('click', (evt) => {
+              evt.preventDefault();
+              const y = target.getBoundingClientRect().y + window.scrollY;
+              // console.log('scrolling to ' + href + ` (${y})`);
+              window.scroll({
+                top: y,
+                left: 0,
+                behavior: 'smooth'
+              });
+            });
+          }
+        }
+      } else {
+        // console.log('outbound link: ' + href);
+      }
+    }
+  }
+  });
