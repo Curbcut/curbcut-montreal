@@ -183,15 +183,17 @@ map_change <- function(id_map, x, df, zoom = df, click = reactive(NULL),
     
     if (geom_type() == "polygon") {
       
-      select_id <- tryCatch(fromJSON(selection())$object$properties$id,
-                            error = function(e) NULL)
+      select_id <- tryCatch(
+        fromJSON(selection())$object$properties$id,
+        error = function(e) NULL)
       if (is.null(select_id)) select_id <- NA
       return(select_id)
       
     } else if (geom_type() == "point") {
       
-      select_id <- tryCatch(fromJSON(selection(x()[lst + 1,]$ID))$object$properties$id,
-                            error = function(e) NULL)
+      select_id <- tryCatch(
+        fromJSON(selection(x()[lst + 1,]$ID))$object$properties$id,
+        error = function(e) NULL)
       if (is.null(select_id)) select_id <- NA
       return(select_id)
       
