@@ -15,5 +15,5 @@
 envir <- rlang::get_env(\(x) x)
 
 walk(list.files("R/functions/"), ~{
-  source(paste0("R/functions/", .x), local = envir)
+  source(paste0("R/functions/", .x), local = envir, encoding = "utf-8")
 })

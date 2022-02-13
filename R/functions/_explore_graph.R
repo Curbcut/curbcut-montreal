@@ -1,7 +1,8 @@
 #### EXPLORE GRAPH #############################################################
 
-explore_graph <- function(data, var_type, var_left, var_right, df, select_id, 
-                          build_str_as_DA = TRUE, plot_type = "auto") {
+explore_graph <- function(data, var_type, var_left, var_right, df, zoom,
+                          select_id, build_str_as_DA = TRUE, 
+                          plot_type = "auto") {
   
   ## Check arguments -----------------------------------------------------------
   
@@ -36,7 +37,7 @@ explore_graph <- function(data, var_type, var_left, var_right, df, select_id,
   
   # Prepare x and y scales
   x_scale <- get_x_scale(graph_type, data, var_type, var_left, var_right, df)
-  y_scale <- get_y_scale(graph_type, var_left, var_right)
+  y_scale <- get_y_scale(graph_type, data, var_type, var_left, var_right)
   
   # Prepare axis labels
   labs_xy <- get_axis_labels(graph_type, var_left, var_right)
@@ -44,7 +45,8 @@ explore_graph <- function(data, var_type, var_left, var_right, df, select_id,
   # Prepare default theme
   theme_default <- list(
     theme_minimal(),
-    theme(legend.position = "none", 
+    theme(text = element_text(family = "SourceSansPro"),
+          legend.position = "none", 
           panel.grid.minor.x = element_blank(),
           panel.grid.major.x = element_blank(), 
           panel.grid.minor.y = element_blank(), 
@@ -53,7 +55,7 @@ explore_graph <- function(data, var_type, var_left, var_right, df, select_id,
   
   ## Render and return plot ----------------------------------------------------
   
-  render_explore_graph(plot_type, data, var_left, var_right, df, select_id, 
-                       x_scale, y_scale, labs_xy, theme_default)
+  render_explore_graph(plot_type, data, var_left, var_right, df, zoom, 
+                       select_id, x_scale, y_scale, labs_xy, theme_default)
   
 }

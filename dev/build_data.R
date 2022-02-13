@@ -1,5 +1,14 @@
 #### BUILD ALL SUS DATA ########################################################
 
+
+# Load funtions -----------------------------------------------------------
+
+source("dev/other/data_testing.R")
+source("dev/other/meta_testing.R", encoding = "utf-8")
+source("dev/other/breaks.R")
+source("dev/other/char_fix.R")
+
+
 # Create raw borough/CT/DA/grid tables ------------------------------------
 
 # Import DA, CT and borough geometries
@@ -87,10 +96,6 @@ stopifnot(
   sum(st_agr(street) != "constant") == 0
 )
 
-source("dev/other/data_testing.R")
-source("dev/other/meta_testing.R", encoding = "utf-8")
-source("dev/other/breaks.R")
-
 
 # Build variable table ----------------------------------------------------
 
@@ -152,8 +157,8 @@ qsave(green_space, file = "data/green_space.qs")
 qsave(marketed_sustainability, file = "data/marketed_sustainability.qs")
 qsave(metro_lines, file = "data/metro_lines.qs")
 # qsavem(permits_choropleth, permits, file = "data/permits.qsm")
-qsavem(pe_var_hierarchy, pe_theme_order, 
-       pe_variable_order, file = "data/place_explorer.qsm")
+qsavem(title_card_indicators, pe_var_hierarchy, pe_theme_order, CSDUID_groups,
+       title_card_index, pe_variable_order, file = "data/place_explorer.qsm")
 qsave(postal_codes, file = "data/postal_codes.qs")
 qsave(stories, file = "data/stories.qs")
 source("dev/title_text.R")
@@ -164,9 +169,6 @@ source("dev/title_text.R")
 library(patchwork)
 source("dev/other/colours.R")
 
-# Dependent script: needs 'borough' object
-source("dev/other/produce_maps.R")
-
 
 # Copy large data files to Dropbox ----------------------------------------
 
@@ -174,15 +176,11 @@ unlink(list.files("~/Dropbox/sus_sync/dev_data", full.names = TRUE),
        recursive = TRUE)
 unlink(list.files("~/Dropbox/sus_sync/data", full.names = TRUE),
        recursive = TRUE)
-unlink(list.files("~/Dropbox/sus_sync/www_maps", full.names = TRUE),
-       recursive = TRUE)
 
 invisible(file.copy(list.files("dev/data", full.names = TRUE),
                     "~/Dropbox/sus_sync/dev_data", recursive = TRUE))
 invisible(file.copy(list.files("data", full.names = TRUE),
                     "~/Dropbox/sus_sync/data"))
-invisible(file.copy(list.files("www/maps", full.names = TRUE),
-                    "~/Dropbox/sus_sync/www_maps"))
 
 
 # Cleanup -----------------------------------------------------------------

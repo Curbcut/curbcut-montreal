@@ -36,6 +36,7 @@ enableBookmarking(store = "url")
 
 variables <- qread("data/variables.qs")
 title_text <- qread("data/title_text.qs")
+qload("data/dyk.qsm")
 qload("data/colours.qsm")
 
 qload("data/census.qsm")
@@ -49,6 +50,7 @@ qload("data/alleys.qsm")
 crash <- qread("data/crash.qs")
 tt_matrix <- qread("data/tt_matrix.qs")
 marketed_sustainability <- qread("data/marketed_sustainability.qs")
+qload("data/place_explorer.qsm")
 metro_lines <- qread("data/metro_lines.qs")
 stories <- qread("data/stories.qs")
 
@@ -97,8 +99,26 @@ map_token <- paste0("pk.eyJ1IjoiZHdhY2hzbXV0aCIsImEiOiJja2g2Y2JpbDc",
                     "wMDc5MnltbWpja2xpYTZhIn0.BXdU7bsQYWcSwmmBx8DNqQ")
 map_style <- "mapbox://styles/dwachsmuth/ckh6cg4wg05nw19p5yrs9tib7"
 map_zoom <- 10.1
-map_zoom_levels <- c("borough" = 0, "CT" = 10.5, "DA" = 12, "building" = 14)
+map_zoom_levels <- c("borough" = 0, "CT" = 10.5, "DA" = 12#, "building" = 14)
+                    )
 map_location <- c(-73.58, 45.53)
 widget_style <- "display: inline-block; padding: 5px; vertical-align: top;"
 
 
+# Set up fonts ------------------------------------------------------------
+
+showtext::font_add(family = "SourceSansPro", 
+                   regular = "www/fonts/SourceSansPro-Regular.ttf",
+                   italic = "www/fonts/SourceSansPro-Italic.ttf",
+                   bold = "www/fonts/SourceSansPro-Bold.ttf",
+                   bolditalic = "www/fonts/SourceSansPro-BoldItalic.ttf")
+
+showtext::showtext_auto()
+
+# 
+# if (Sys.info()[["sysname"]] == "Linux") {
+#   dir.create("~/.fonts")
+#   file.copy(list.files("www/fonts", full.names = TRUE),
+#             "~/.fonts")
+#   system("fc-cache -f ~/.fonts")
+# }

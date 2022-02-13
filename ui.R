@@ -30,14 +30,16 @@ ui <- function(request) {
   
   meta() |> 
     meta_social(
-      title = "Welcome | MSSI SUS | Towards a sustainable city",
-      description = "SUS is an online platform for integrating, exploring, and analyzing urban sustainability data sources for the Montreal region.",
+      title = "Welcome | SUS | Towards a sustainable city",
+      description = paste0("SUS is an online platform for integrating, ",
+                           "exploring, and analyzing urban sustainability ",
+                           "data sources for the Montreal region."),
       url = "https://e978-174-91-206-108.ngrok.io/",
       image = "https://e978-174-91-206-108.ngrok.io/share.jpg",
       image_alt = "A photo of a winding footpath through a verdant Montreal alley.",
-      twitter_creator = "@McGillMSSI",
+      twitter_creator = "@sus_montreal",
       twitter_card_type = "summary",
-      twitter_site = "@McGillMSSI"
+      twitter_site = "@sus_montreal"
     ),
   
   # Navigation bar

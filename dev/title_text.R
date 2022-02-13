@@ -8,38 +8,7 @@ title_text <-
   select(tab, type, text)
 
 title_text <-
-  add_row(tab = "housing", type = "title", text = "The housing system") |> 
-  add_row(tab = "housing", type = "main",
-          text = paste0("Housing is at the centre of our lives. In recent years, ",
-                        "there have been increasing conversations surrounding ",
-                        "housing affordability and accessibility in cities ",
-                        "(Madden & Marcuse, 2016). This module ",
-                        "offers a temporal outlook on housing in Montreal’s census ",
-                        "metropolitan area through census variables that relate to ",
-                        "housing, socio-demographics and more.")) |> 
-  add_row(tab = "housing", type = "extra",
-          text = paste0("<p>Access to affordable and ",
-                        "adequate housing is a core element for social equity ",
-                        "in cities. In Canada, the National Housing Strategy aims ",
-                        "at addressing housing needs and houselessness through ",
-                        "modernization, new construction and innovation and research. ",
-                        "The City of Montreal currently has many housing-related ",
-                        "objectives and initiatives, such as the Diverse Metropolis ",
-                        "by-law and the 12,000 housing unit strategy. ",
-                        "<p>This module presents housing data from the Census, ",
-                        "and explores relationships with important ", 
-                        "demographic patterns, and how those patterns have ",
-                        "changed over time.",
-                        "<br><p><i>For further reading:</i></p>",
-                        "<ul><li><a href = 'https://www.cmhc-schl.gc.ca/en/nhs/'>",
-                        "CMHC. (n.d.). National Housing Strategy.</a><li><a href =",
-                        "'https://montreal.ca/articles/metropole-mixte-les-",
-                        "grandes-lignes-du-reglement-7816'>",
-                        "Ville de Montréal. (4 octobre 2021). Métropole ", 
-                        "Mixte: Les grandes lignes du règlement.</a>",
-                        "<li>Madden, D., & Marcuse, P. (2016). In Defense of ",
-                        "Housing: The Politics of Crisis. New York and ",
-                        "London: Verso Books.</ul>")) |> 
+  title_text |> 
   add_row(tab = "crash", type = "title", text = "Road safety") |> 
   add_row(tab = "crash", type = "main",
           text = paste0("Road safety is an important consideration for wellbeing ",

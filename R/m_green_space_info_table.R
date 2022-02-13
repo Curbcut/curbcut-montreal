@@ -37,31 +37,6 @@ green_space_info_table <- function(id, x, select_id, ...) {
         borough_rank <- pull(z, borough_rank)
         borough_name <- filter(borough, ID == z$CSDUID)$name
         
-        ordinal_form <- function(x) {
-          # English ordinal form
-          if (sus_rv$lang() == "en") {
-            if (x > 20) {
-              if (x %% 100 %in% c(11 , 12, 13)) {
-                form <- "th "
-              } else {
-                form <- switch(as.character(x %% 10), "1" = "st ", "2" = "nd ",
-                               "3" = "rd ", "th ")
-              }
-              paste0(x, form)
-            } else {
-              switch(as.character(x), "1" = "", "2" = "second ",
-                     "3" = "third ", "4" = "fourth ", "5" = "fifth ", 
-                     "6" = "sixth ",  "7" = "seventh ", "8" = "eighth ", 
-                     "9" = "ninth ", "10" = "tenth ",
-                     paste0(as.character(x), "th "))
-            }
-          } else {
-            # French ordinal form
-            switch(as.character(x), "1" = "", "2" = "deuxième ",
-                   "3" = "troisième ", paste0(as.character(x), "ième "))
-          }
-        }
-        
         total_rank <- ordinal_form(total_rank)
         borough_rank <- ordinal_form(borough_rank)
         
