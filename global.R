@@ -108,17 +108,16 @@ widget_style <- "display: inline-block; padding: 5px; vertical-align: top;"
 
 # Set up fonts ------------------------------------------------------------
 
-if (Sys.info()[["sysname"]] == "Linux") {
-  dir.create("~/.fonts")
-  file.copy(list.files("www/fonts", full.names = TRUE),
-            "~/.fonts")
-  system("fc-cache -f ~/.fonts")
-}
+# if (Sys.info()[["sysname"]] == "Linux") {
+#   dir.create("~/.fonts")
+#   file.copy(list.files("www/fonts", full.names = TRUE),
+#             "~/.fonts")
+#   system("fc-cache -f ~/.fonts")
+# }
 
-# sysfonts::font_add(family = "SourceSansPro", 
-#                    regular = "www/fonts/SourceSansPro-Regular.ttf",
-#                    italic = "www/fonts/SourceSansPro-Italic.ttf",
-#                    bold = "www/fonts/SourceSansPro-Bold.ttf",
-#                    bolditalic = "www/fonts/SourceSansPro-BoldItalic.ttf")
-# 
-# showtext::showtext_auto()
+systemfonts::register_font(
+  name = "SourceSansPro", 
+  plain = "www/fonts/SourceSansPro-Regular.ttf",
+  italic = "www/fonts/SourceSansPro-Italic.ttf",
+  bold = "www/fonts/SourceSansPro-Bold.ttf",
+  bolditalic = "www/fonts/SourceSansPro-BoldItalic.ttf")
