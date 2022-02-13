@@ -61,11 +61,12 @@
   max-width: var(--w-panel);
   width: 20vw;
   min-height: min-content;
-  max-height: calc(100vh - var(--h-navbar) - 2 * var(--padding-v-md));
+  max-height: calc(100vh - var(--h-navbar) - 30px);
   height: fit-content;
   border: 0.5px solid rgba(0, 0, 0, 0.05);
   box-shadow: var(--box-shadow-md);
   transition: margin-right 0.5s ease-in-out;
+  border: 0.4px solid rgba(0, 0, 0, 0.05);
 }
 
 @media (max-width: 650px) {
@@ -123,4 +124,12 @@
   text-transform: none;
   font-size: 1.25rem;
   font-weight: unset;
+}
+
+.mapboxgl-map .mapboxgl-ctrl a {
+  font-family: var(--ff-body);
+  color: rgb(128, 128, 128);
+}
+.mapboxgl-ctrl.mapboxgl-ctrl-attrib {
+  background: none !important;
 }
