@@ -9,6 +9,20 @@
 
 .navbar {
   margin-bottom: 0px !important;
+  position: relative;
+  z-index: calc(10 + var(--depth-ui));
+  box-shadow: unset;
+}
+
+.navbar-shadow {
+  position: fixed;
+  z-index: calc(10 + var(--depth-ui-shadow));
+  height: var(--h-navbar);
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  background-color: rgba(0, 0, 0, 0);
+  box-shadow: var(--box-shadow-md);
 }
 
 .navbar-default {

@@ -2,16 +2,18 @@
 
 sidebar_UI <- function(id, ...) {
   
+  tagList(
+  div(class="sus-map-sidebar-shadow"),
   div(
-    id = "title_bar", class = "sus-map-sidebar", 
-    div(class = "sus-map-sidebar-content",
-        tagList(
+    id = "title_bar", class = "sus-map-sidebar sus-scroll", 
+    div(class = "sus-map-sidebar-content sus-scroll-content",
+        div(tagList(
           uiOutput(NS(id, "title")),
           uiOutput(NS(id, "title_main")),
           actionLink(NS(id, "more_info"), class="sus-small-link", sus_translate("Learn more")),
-          hidden(uiOutput(outputId = NS(id, "title_extra")))),
+          hidden(uiOutput(outputId = NS(id, "title_extra"))))),
     ...
-  ))
+  )))
 }
 
 sidebar_server <- function(id, x) {
@@ -34,7 +36,7 @@ sidebar_server <- function(id, x) {
       if (input$more_info %% 2 == 1) {
         txt <- sus_translate("Hide")
       } else txt <- sus_translate("Learn more")
-      updateActionLink(session, "more_info", label = txt)
+        updateActionLink(session, "more_info", label = txt)
       })
     
     output$title <- renderUI(h3(sus_translate(title_title)))

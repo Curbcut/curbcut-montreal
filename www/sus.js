@@ -30,11 +30,19 @@ window.addEventListener('load', (evt) => {
   const head = document.querySelector('head');
   const body = document.querySelector('body');
 
+  // const overlayContainer = document.createElement('div');
+  // overlayContainer.classList.add('overlay-container');
+  // body.appendChild(overlayContainer);
+
   const navbar = document.querySelector('.navbar-default');
   const navbarBrand = document.querySelector('.navbar-static-top span.navbar-brand');
   const navbarLinks = document.querySelector('.navbar-static-top ul#sus_page');
   const navbarFixed = document.querySelector('.navbar-static-top div.navbar-fixed');
   const navbarCollapse = document.querySelector('.navbar-static-top div.navbar-collapse');
+
+  const navbarShadow = document.createElement('div');
+  navbarShadow.classList.add('navbar-shadow');
+  navbar.parentElement.insertBefore(navbarShadow, navbar);
 
   function reflow(elt){
     console.log(elt.offsetHeight);
@@ -58,13 +66,6 @@ window.addEventListener('load', (evt) => {
   const linksMinWidth = Math.ceil(sumWidths(navbarLinks.querySelectorAll(':scope > li > a'))); 
   const breakpoint = Math.ceil(navbarBrand.clientWidth + linksMinWidth + navbarFixed.clientWidth);
   const bodyMinWidth = Math.ceil(navbarBrand.clientWidth + navbarFixed.clientWidth + 54);
-
-  console.log('navbarBrand.clientWidth: ' + navbarBrand.clientWidth);
-  console.log('navbarLinks.clientWidth: ' + navbarLinks.clientWidth);
-  console.log('linksMinWidth ' + linksMinWidth);
-  console.log('navbarFixed.clientWidth: ' + navbarFixed.clientWidth);
-  console.log('breakpoint: ' + breakpoint);
-  console.log('bodyMinWidth: ' + bodyMinWidth);
 
   if (collapsed) {
     navbarCollapse.classList.add('collapse');
@@ -175,7 +176,7 @@ window.addEventListener('load', (evt) => {
   const config = { attributes: true, childList: true, subtree: true };
 
   // Callback function to execute when mutations are observed
-  const callback = function(mutationsList, observer) {
+  const activeTabCallback = function(mutationsList, observer) {
     // Use traditional 'for loops' for IE 11
     for(const mutation of mutationsList) {
       if (mutation.type === 'attributes' && mutation.target.parentElement === targetNode && mutation.attributeName === 'class') {
@@ -195,8 +196,122 @@ window.addEventListener('load', (evt) => {
   };
 
   // Create an observer instance linked to the callback function
-  const activeTabObserver = new MutationObserver(callback);
+  const activeTabObserver = new MutationObserver(activeTabCallback);
 
   // Start observing the target node for configured mutations
   activeTabObserver.observe(targetNode, config);
+
+  const dropdowns = document.querySelectorAll('.tab-content .dropdown');
+
+  for(var i = 0; i < dropdowns.length; i++) {
+    const dropdown = dropdowns[i];
+    const menu = dropdown.querySelector('.dropdown-menu');
+    dropdowns[i].addEventListener('click', () => {
+      const opening = !dropdown.classList.contains('open');
+      if (opening) {
+        const parent = menu.parentElement;
+        const rect = parent.getBoundingClientRect();
+        console.log(rect);
+        const x = (rect.left + rect.right) / 2;
+        const y = (rect.bottom + rect.top) / 2;
+        var top = undefined;
+        var left  = undefined;
+        var bottom = undefined;
+        var right = undefined;
+        if (x > window.innerWidth / 2) {
+          left = 'unset';
+          right = `${Math.ceil( window.innerWidth - rect.right )}px`;
+        } else {
+          left = `${Math.ceil( rect.left )}px`;
+          right = 'unset';
+        }
+        if (y > window.innerHeight / 2) {
+          top = 'unset';
+          bottom = `${Math.ceil( window.innerHeight - rect.top )}px`;
+        } else {
+          top = `${Math.ceil( rect.bottom )}px`;
+          bottom = 'unset';
+        }
+        menu.style = `top: ${top}; left: ${left}; bottom: ${bottom}; right: ${right};`;
+      }
+    });
+  }
+
+  const scrolls = document.querySelectorAll('.sus-scroll');
+
+  console.log('scrolls: ' + scrolls.length);
+
+  for(var i = 0; i < scrolls.length; i++) {
+    const scroll = scrolls[i];
+    const content = scroll.querySelector('.sus-scroll-content');
+
+    const bg = document.createElement('div');
+    bg.classList.add('sus-scrollbar');
+    
+    const handle = document.createElement('div');
+    handle.classList.add('sus-scrollbar-handle');
+
+    scroll.appendChild(bg);
+    scroll.appendChild(handle);
+
+    const id = `sus-scroll-${i}`;
+    scroll.id = id;
+    
+    content.addEventListener('pointerdown', () => {
+      console.log('#' + scroll.id + ' content pressed');
+    });
+    content.addEventListener('pointerup', () =>{
+      console.log('#' + scroll.id + ' content released');
+    });
+    content.addEventListener('wheel', () => {
+      console.log('#' + scroll.id + ' content scrolled');
+    });
+
+    handle.addEventListener('pointerdown', () => {
+      console.log('#' + scroll.id +  ' handle pressed');
+    });
+    handle.addEventListener('pointerup', () =>{
+      console.log('#' + scroll.id + ' handle released');
+    });
+
+    const updateScroll = () => {
+      const enabled = content.offsetHeight > scroll.offsetHeight;
+      // if (scroll.classList.contains('sus-scroll-enabled') != enabled) {
+      //   if (enabled) {
+      //     scroll.classList.add('sus-scroll-enabled');
+      //   } else {
+      //     scroll.classList.remove('sus-scroll-enabled');
+      //   }
+      // }
+      if (enabled) {
+        scroll.style = `overflow-y: scroll;`;
+      } else {
+        scroll.style = 'overflow-y: hidden;';
+      }
+      if (enabled) {
+        handle.style = `height: calc(100% * ${scroll.offsetHeight / content.offsetHeight})`;
+      }
+    };
+
+    var throttle = false;
+
+    // Callback function to execute when mutations are observed
+    const scrollCallback = function(mutationsList, observer) {
+      if (throttle) {
+        return;
+      } else {
+        updateScroll();
+        throttle = true;
+        setTimeout(() =>{
+          throttle = false;
+        }, 20);
+      }
+    };
+
+    // Create an observer instance linked to the callback function
+    const scrollObserver = new MutationObserver(scrollCallback);
+
+    // Start observing the target node for configured mutations
+    scrollObserver.observe(scroll, config);
+  }
 });

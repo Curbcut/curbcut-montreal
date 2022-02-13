@@ -2,6 +2,10 @@
 
 # UI ----------------------------------------------------------------------
 
+nowrap <- function(...) {
+  return(tags$span(style="white-space: nowrap;", ...))
+}
+
 canale_UI <- function(id) {
   fillPage(fillRow(
     fillCol(

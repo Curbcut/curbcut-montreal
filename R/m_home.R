@@ -7,7 +7,7 @@ home_UI <- function(id) {
     susPageSectionFeature(
       tags$div(class="sus-carousel",
         tags$div(class="sus-carousel-slide",
-          tags$h2(tags$em("Towards a sustainable city")),
+          tags$h2(tags$em(nowrap("Towards a"), nowrap("sustainable city"))),
           tags$p("SUS is a platform for integrating, exploring, and analyzing a wide range of urban sustainability data sources for the Montreal region across multiple spatial and temporal scales. SUS offers a robust set of tools for scenario modelling and analysis which will be useful for researchers, policymakers, communities, and individuals."),
           tags$div(class="sus-button-group",
             tags$a(class="sus-button sus-icon-button sus-button-secondary", href="#learn-more", span("Learn More"), span(class="material-icons", "auto_stories")),

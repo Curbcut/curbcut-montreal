@@ -7,11 +7,7 @@
 }
 
 .sus-banner {
-  position: absolute;
-  top: 0px;
-  left: 0px;
-  bottom: 0px;
-  right: 0px;
+  position: relative;
   background-color: var(--c-light-muted-blue-alt);
   overflow: hidden;
   height: var(--h-banner);

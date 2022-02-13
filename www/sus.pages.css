@@ -11,8 +11,6 @@
 
 .sus-page {
   height: 100%;
-  width: 100%;
-  position: relative;
 }
 
 .sus-page-content {
@@ -43,6 +41,11 @@
 }
 
 @media (max-width: 950px) {
+  .sus-page-content {
+    margin-top: 0px;
+    margin-bottom: 0px;
+  }
+  
   .sus-page-content-section {
     width: 100%;
     max-width: unset;
@@ -54,11 +57,32 @@
     padding-right: var(--padding-page-section-h-md);
   }
 
+  .sus-page-content-section:first-child {
+    padding-top: calc(var(--padding-page-section-v-md) + var(--h-navbar));
+  }
+
+  .sus-page-content-section:last-child {
+    padding-bottom: calc(var(--padding-page-section-v-md) + var(--h-navbar));
+  }
+
   .sus-page-content-section > img {
     width: calc(100% + var(--padding-page-section-h-md) * 2);
     margin-left: calc(var(--padding-page-section-h-md) * -1);
     margin-right: calc(var(--padding-page-section-h-md) * -1);
     margin-bottom: 4rem;
+  }
+  
+  .sus-page-content h1, .sus-page-content .h1 {
+    font-size: 4.5rem;
+  }
+  .sus-page-content h2, .sus-page-content .h2 {
+    font-size: 3.75rem;
+  }
+  .sus-page-content h3, .sus-page-content .h3 {
+    font-size: 1.75rem;
+  }
+  .sus-page-content h4, .sus-page-content .h4 {
+    font-size: 1.75rem;
   }
 }
 
@@ -73,6 +97,19 @@
     margin-left: calc(var(--padding-page-section-h-sm) * -1);
     margin-right: calc(var(--padding-page-section-h-sm) * -1);
     margin-bottom: 3rem;
+  }
+  
+  .sus-page-content h1, .sus-page-content .h1 {
+    font-size: 3.5rem;
+  }
+  .sus-page-content h2, .sus-page-content .h2 {
+    font-size: 3rem;
+  }
+  .sus-page-content h3, .sus-page-content .h3 {
+    font-size: 1.5rem;
+  }
+  .sus-page-content h4, .sus-page-content .h4 {
+    font-size: 1.5rem;
   }
 }
 
