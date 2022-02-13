@@ -26,9 +26,8 @@ place_explorer_UI <- function(id) {
       
       # Search bar
       absolutePanel(
-        id = NS(id, "search_bar"), 
-        style = "z-index:500; padding: 5px; border-width: 0.5px; text-align: center;",
-        class = "panel panel-default", top = 20, left = 15,
+        id = NS(id, "search_bar"),
+        class = "panel panel-default",
         strong("Enter a postal code, or click on the map"),
         # splitLayout(cellWidths = c("70%", "30%"),
         # Autocompletion at least for postal code would be great

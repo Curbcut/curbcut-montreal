@@ -211,7 +211,12 @@
 .tab-content .dropdown-menu > .active > a:focus {
   background-color: var(--c-primary-complement-hover);
 }
-/* 
-.tab-content li.dropdown-header {
-  text-transform: uppercase;
-} */
+
+.tab-content input[type="text"] {
+  border: 3px solid var(--c-default);
+  font-family: var(--ff-button);
+  font-size: 1.25rem;
+  color: var(--c-primary);
+  background: unset;
+  box-shadow: unset;
+}
