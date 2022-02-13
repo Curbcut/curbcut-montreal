@@ -45,12 +45,11 @@ explore_graph <- function(data, var_type, var_left, var_right, df, zoom,
   # Prepare default theme
   theme_default <- list(
     theme_minimal(),
-    theme(text = element_text(family = "SourceSansPro"),
+    theme(text = element_text(family = "SourceSansPro", size = 17),
           legend.position = "none", 
           panel.grid.minor.x = element_blank(),
           panel.grid.major.x = element_blank(), 
-          panel.grid.minor.y = element_blank(), 
-          axis.title = element_text(size = 8)))
+          panel.grid.minor.y = element_blank()))
       
   
   ## Render and return plot ----------------------------------------------------

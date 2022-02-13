@@ -30,6 +30,7 @@ suppressPackageStartupMessages({
 # Shiny options -----------------------------------------------------------
 
 options(shiny.trace = FALSE) # Set TRUE for debugging
+options(shiny.useragg = TRUE)
 enableBookmarking(store = "url")
 
 # Data --------------------------------------------------------------------
@@ -107,18 +108,17 @@ widget_style <- "display: inline-block; padding: 5px; vertical-align: top;"
 
 # Set up fonts ------------------------------------------------------------
 
-sysfonts::font_add(family = "SourceSansPro", 
-                   regular = "www/fonts/SourceSansPro-Regular.ttf",
-                   italic = "www/fonts/SourceSansPro-Italic.ttf",
-                   bold = "www/fonts/SourceSansPro-Bold.ttf",
-                   bolditalic = "www/fonts/SourceSansPro-BoldItalic.ttf")
+if (Sys.info()[["sysname"]] == "Linux") {
+  dir.create("~/.fonts")
+  file.copy(list.files("www/fonts", full.names = TRUE),
+            "~/.fonts")
+  system("fc-cache -f ~/.fonts")
+}
 
-showtext::showtext_auto()
-
+# sysfonts::font_add(family = "SourceSansPro", 
+#                    regular = "www/fonts/SourceSansPro-Regular.ttf",
+#                    italic = "www/fonts/SourceSansPro-Italic.ttf",
+#                    bold = "www/fonts/SourceSansPro-Bold.ttf",
+#                    bolditalic = "www/fonts/SourceSansPro-BoldItalic.ttf")
 # 
-# if (Sys.info()[["sysname"]] == "Linux") {
-#   dir.create("~/.fonts")
-#   file.copy(list.files("www/fonts", full.names = TRUE),
-#             "~/.fonts")
-#   system("fc-cache -f ~/.fonts")
-# }
+# showtext::showtext_auto()
