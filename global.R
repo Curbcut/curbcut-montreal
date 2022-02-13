@@ -105,3 +105,11 @@ map_location <- c(-73.58, 45.53)
 widget_style <- "display: inline-block; padding: 5px; vertical-align: top;"
 
 
+# # Set up fonts on server --------------------------------------------------
+# 
+# if (Sys.info()[["sysname"]] == "Linux") {
+#   dir.create("~/.fonts")
+#   file.copy(list.files("www/fonts", full.names = TRUE),
+#             "~/.fonts")
+#   system("fc-cache -f ~/.fonts")
+# }

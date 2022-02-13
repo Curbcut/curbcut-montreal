@@ -228,7 +228,7 @@ map_change <- function(id_map, x, df, zoom = df, click = reactive(NULL),
   ## Update map on selection change --------------------------------------------
   
   observeEvent({
-    select_id()
+    selection()
     zoom()}, {
     
     if (geom_type() == "polygon") {
