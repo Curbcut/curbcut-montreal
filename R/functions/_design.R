@@ -2,6 +2,10 @@
 
 # Design functions --------------------------------------------------------
 
+nowrap <- function(...) {
+  return(tags$span(style="white-space: nowrap;", ...))
+}
+
 scrollAnchor <- function(id) {
   return(tags$span(style="position: relative;display: inline-block;height: 100%;vertical-align: top;",
          tags$span(id=id, style="display: block;position: absolute;top: calc(var(--h-navbar) * -2);")))
