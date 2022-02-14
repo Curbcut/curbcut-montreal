@@ -88,6 +88,25 @@ island_CSDUID <-
     "2466142", "2466072", "2466023")
 
 
+# Modules ready -----------------------------------------------------------
+
+mods_rdy <- list("Climate" = c("Climate risk" = "climate_risk"),
+                 "Covid" = c("Covid interventions" = "covid"),
+                 "Housing" = c("Housing system" = "housing", 
+                               "Gentrification" = "gentrification", 
+                               "Permits" = "permits", 
+                               "Marketed Sustainability" = "marketed_sustainability"),
+                 "Policy" = c("Montréal climate plans" = "mcp"),
+                 "Transport" = c("Accessibility" = "access", 
+                                 "Road safety" = "crash"),
+                 "Urban life" = c("Active living potential" = "canale", 
+                                  "Green alleys" = "alley", 
+                                  "Green spaces" = "green_space"))
+
+stand_alone_tabs <- c("Montréal stories" = "stories",
+                      "Place explorer" = "place_explorer",
+                      "About" = "why_dash")
+
 # Translation -------------------------------------------------------------
 
 translation_fr <- qread("data/translation_fr.qs")
@@ -108,8 +127,9 @@ map_location <- c(-73.58, 45.53)
 # Set up fonts ------------------------------------------------------------
 
 systemfonts::register_font(
-  name = "SourceSansPro", 
+  name = "SourceSansPro",
   plain = "www/fonts/SourceSansPro-Regular.ttf",
   italic = "www/fonts/SourceSansPro-Italic.ttf",
   bold = "www/fonts/SourceSansPro-Bold.ttf",
   bolditalic = "www/fonts/SourceSansPro-BoldItalic.ttf")
+

@@ -31,8 +31,30 @@ ui_and_misc_translated <-
     c("Focus on green alleys visited by our team" = 
         "Focus sur les allées vertes visitées par notre équipe"),
     c("Type of green space" = "Type d'espace vert"),
-    c("Back to the map" = "Retour à la carte"))
-
+    c("Back to the map" = "Retour à la carte"),
+    c("Maps" = "Cartes"),
+    c("Housing" = "Logement"),
+    c("Housing system" = "Le système de logement"),
+    c("Gentrification" = "Gentrification"),
+    c("Permits" = "Permis"),
+    c("Marketed sustainability" = "Durabilité commercialisée"),
+    c("Urban Life" = "Vie urbaine"),
+    c("Active living potential" = "Potentiel de vie active"),
+    c("Green alleys" = "Allées vertes"),
+    c("Green spaces" = "Espaces verts"),
+    c("Transport" = "Transport"),
+    c("Accessibility" = "Accessibilité"),
+    c("Road safety" = "Sécurité routière"),
+    c("Climate" = "Climat"),
+    c("Climate risk" = "Risque climatique"),
+    c("Covid" = "Covid"),
+    c("Covid interventions" = "Mesures Covid"),
+    c("Policy" = "Politiques"),
+    c("Montreal climate plans" = "Plans climatiques de Montréal"),
+    c("More" = "Davantage"),
+    c("Montreal stories" = "Histoires de Montréal"),
+    c("Place explorer" = "Explorez un lieu"))
+    
 ui_and_misc_translated <- 
   tibble(en = names(ui_and_misc_translated),
          fr = ui_and_misc_translated)
