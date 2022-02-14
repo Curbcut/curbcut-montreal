@@ -37,7 +37,7 @@ enableBookmarking(store = "url")
 
 variables <- qread("data/variables.qs")
 title_text <- qread("data/title_text.qs")
-qload("data/dyk.qsm")
+dyk <- qread("data/dyk.qs")
 qload("data/colours.qsm")
 
 qload("data/census.qsm")
@@ -103,17 +103,9 @@ map_zoom <- 10.1
 map_zoom_levels <- c("borough" = 0, "CT" = 10.5, "DA" = 12#, "building" = 14)
                     )
 map_location <- c(-73.58, 45.53)
-widget_style <- "display: inline-block; padding: 5px; vertical-align: top;"
 
 
 # Set up fonts ------------------------------------------------------------
-
-# if (Sys.info()[["sysname"]] == "Linux") {
-#   dir.create("~/.fonts")
-#   file.copy(list.files("www/fonts", full.names = TRUE),
-#             "~/.fonts")
-#   system("fc-cache -f ~/.fonts")
-# }
 
 systemfonts::register_font(
   name = "SourceSansPro", 

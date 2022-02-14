@@ -14,20 +14,19 @@ suppressPackageStartupMessages({
   library(glue)
   
   variables <- qread("data/variables.qs")
-  qload("data/colours.qsm")
   
   qload("data/census.qsm")
   grid <- qread("data/grid.qs")
   
-  source("R/functions/_get_data_table.R")
-  source("R/functions/_get_data_type.R")
-  source("R/functions/_get_data.R")
   source("R/functions/_get_dyk_table.R")
   source("R/functions/_translation.R")
   source("R/functions/_utils.R")
   
 })
 
+var_left <- "canale_ind"
+var_right <- " "
+var_right <- "iden_imm_pct"
 get_dyk_table("canale_ind", " ")
 get_dyk_table("housing_tenant_pct", " ")
 get_dyk_table("canale_ind", "housing_tenant_pct")

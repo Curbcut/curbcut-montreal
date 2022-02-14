@@ -282,4 +282,3 @@ title_text <-
                     "existing data to determine the average score per number of ",
                     "units in a development and the average score per year."))
   
-qsave(title_text, "data/title_text.qs")

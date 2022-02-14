@@ -2,83 +2,73 @@
 
 get_dyk_table <- function(var_left, var_right, zoom = NULL, point = NULL) {
   
+  # Prepare variables ----------------------------------------------------------
+  
   stopifnot(!is.reactive(var_left))
   stopifnot(!is.reactive(var_right))
   
-  vars <- c(str_remove(var_left, "_\\d{4}$"), 
-            str_remove(var_right, "_\\d{4}$"))
+  vars <- c(str_remove(var_left, "_\\d{4}$"), str_remove(var_right, "_\\d{4}$"))
   vars <- vars[vars != " "]
-  categories <- 
-    tibble(variable = vars) %>% 
-    inner_join(category_table, by = "variable") %>% 
-    pull(category)
   
-  # Report variables without category matches
-  no_match <- unique(vars[!vars %in% category_table$variable])
-  if (length(no_match > 0)) {
-    warning("No DYK category matches for variable(s): ", 
-            paste(no_match, collapse = ", "), call. = FALSE)
+  themes <- variables |> 
+    filter(var_code %in% vars) |> 
+    pull(theme) |> 
+    unique()
+  
+  
+  # Find special matches -------------------------------------------------------
+  
+  if (!is.null(zoom) && !is.null(point)) {
+    
   }
   
-  # Find rows which match both variables
-  report <- 
-    dyk %>% 
-    rowwise() %>% 
-    filter(identical(variable, vars)) %>%
-    ungroup() %>% 
-    slice_sample(n = 2)
   
-  # If total < 2, find rows which match one variable and both categories
-  if (length(categories) > 0) {
-    if (nrow(report) < 2) {
-      report <- 
-        dyk %>% 
-        rowwise() %>% 
-        filter(sum(vars %in% variable) == 1) %>% 
-        ungroup() %>% 
-        rowwise() %>% 
-        filter(identical(category, categories)) %>% 
-        ungroup() %>% 
-        slice_sample(n = 2 - nrow(report)) %>% 
-        bind_rows(report)
+  # Score rows -----------------------------------------------------------------
+  
+  dyk_scored <- 
+    dyk |> 
+    rowwise() |> 
+    mutate(score = sum(vars %in% variable) * 3 + sum(themes %in% theme) * 2) |> 
+    ungroup() |> 
+    arrange(-score) |> 
+    filter(score > 0)
+
+
+  # Choose rows ----------------------------------------------------------------
+  
+  out <- dyk_scored[0,]
+
+  while (nrow(out) < 2 && nrow(dyk_scored) > 0) {
+   
+    to_add <- 
+      dyk_scored |> 
+      filter(score == max(score))
+    
+    if (nrow(to_add) > 2 - nrow(out)) {
+      to_add <- slice_sample(to_add, n = 2 - nrow(out))
     }
     
-    # If total < 2, find rows which match both categories
-    if (nrow(report) < 2) {
-      report <- 
-        dyk %>% 
-        rowwise() %>% 
-        filter(identical(category, categories)) %>% 
-        ungroup() %>% 
-        slice_sample(n = 2 - nrow(report)) %>% 
-        bind_rows(report)
-    }
+    out <- bind_rows(out, to_add)
+    
+    dyk_scored <- 
+      dyk_scored |> 
+      filter(score != max(score))
+    
   }
   
-  # If total < 2, find rows which match one variable
-  if (nrow(report) < 2) {
-    report <- 
-      dyk %>% 
-      rowwise() %>% 
-      filter(sum(vars %in% variable) == 1) %>% 
-      ungroup() %>% 
-      slice_sample(n = 2 - nrow(report)) %>% 
-      bind_rows(report)
+  
+  # Warn if <2 DYKs ------------------------------------------------------------
+  
+  if (nrow(out) < 2) {
+    warning("No DYK matches for variable(s): ", 
+            paste(vars, collapse = ", "), call. = FALSE)
   }
   
-  # If total < 2, find rows which match one category
-  if (nrow(report) < 2) {
-    report <- 
-      dyk %>% 
-      rowwise() %>% 
-      filter(sum(category %in% categories) == 1) %>% 
-      ungroup() %>% 
-      slice_sample(n = 2 - nrow(report)) %>% 
-      bind_rows(report)
-  }
+
+  # Return output --------------------------------------------------------------
   
-  if (nrow(report) > 0) {
-    map_chr(report$text, sus_translate) %>%
+  if (nrow(out) > 0) {
+    map_chr(out$text, sus_translate) %>%
       paste("<li> ", ., collapse = "") %>%
       paste0("<ul>", ., "</ul>") %>%
       HTML()

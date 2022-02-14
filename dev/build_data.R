@@ -142,6 +142,17 @@ source("dev/other/post_processing.R")
 source("dev/other/simplify.R")
 
 
+# Produce title_text and dyk ----------------------------------------------
+
+source("dev/other/dyk.R")
+source("dev/other/title_text.R")
+
+
+# Produce colours ---------------------------------------------------------
+
+source("dev/other/colours.R")
+
+
 # Save data files ---------------------------------------------------------
 
 qsave(variables, file = "data/variables.qs")
@@ -161,13 +172,8 @@ qsavem(title_card_indicators, pe_var_hierarchy, pe_theme_order, CSDUID_groups,
        title_card_index, pe_variable_order, file = "data/place_explorer.qsm")
 qsave(postal_codes, file = "data/postal_codes.qs")
 qsave(stories, file = "data/stories.qs")
-source("dev/title_text.R")
-
-
-# Produce colours and maps ------------------------------------------------
-
-library(patchwork)
-source("dev/other/colours.R")
+qsave(dyk, "data/dyk.qs")
+qsave(title_text, "data/title_text.qs")
 
 
 # Copy large data files to Dropbox ----------------------------------------
