@@ -6,7 +6,7 @@
 source("dev/other/data_testing.R")
 source("dev/other/meta_testing.R", encoding = "utf-8")
 source("dev/other/breaks.R")
-source("dev/other/char_fix.R")
+source("dev/other/char_fix.R", encoding = "utf-8")
 
 
 # Create raw borough/CT/DA/grid tables ------------------------------------

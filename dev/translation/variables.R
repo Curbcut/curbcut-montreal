@@ -5,6 +5,8 @@ suppressPackageStartupMessages({
   require(qs)
 })
 
+source("dev/other/char_fix.R", encoding = "utf-8")
+
 
 # Import variables and translation ----------------------------------------
 variables <- qread("data/variables.qs")
@@ -12,6 +14,9 @@ variables <- qread("data/variables.qs")
 translated <- read.csv("dev/translation/csv/variables_translated.csv") |> 
   as_tibble()
 
+# Fix weird encoding
+translated$en <- char_fix(translated$en)
+translated$fr <- char_fix(translated$fr)
 
 # Prepare for translation -------------------------------------------------
 

@@ -189,7 +189,8 @@ green_space_table <-
       var_code = .x,
       var_title = paste(type, group),
       var_short = str_remove_all(paste(type, group), "per |green space ") |> 
-        str_replace("sq km", "sqkm"),
+        str_replace("sq km", "/sqkm") |> 
+        str_replace("1,000", "/1,000"),
       explanation = paste("the number of square metres of", 
                           str_to_lower(type) |> 
                             str_replace("under validation", 

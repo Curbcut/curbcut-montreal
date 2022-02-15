@@ -184,13 +184,13 @@ place_explorer_server <- function(id) {
     
     ## MAIN MAP UPDATES AND JS ------------------------------------------
     observeEvent(location(), {
-      hide(id = "gridelements", anim = TRUE, animType = "fade", time = 1)
-      hide(id = "sidebar", anim = TRUE, animType = "fade", time = 1)
-      hide(id = "comeback_map", anim = TRUE, animType = "fade", time = 1)
-      
       mapdeck_update(map_id = NS(id, "map")) |>
         add_scatterplot(data = location(), radius = 20,
                         fill_colour = "#2A5A5BEE")
+      
+      hide(id = "gridelements", anim = TRUE, animType = "fade", time = 1)
+      hide(id = "sidebar", anim = TRUE, animType = "fade", time = 1)
+      hide(id = "comeback_map", anim = TRUE, animType = "fade", time = 1)
       
       show(id = "comeback_map", anim = TRUE, animType = "fade", time = 1)
       show(id = "gridelements", anim = TRUE, animType = "fade", time = 1)
@@ -201,11 +201,11 @@ place_explorer_server <- function(id) {
     
     # Hook up the go back to map
     observeEvent(input$comeback_map, {
-      removeCssClass(id = "mapcontainer", class = "banner_map")
-      addCssClass(id = "mapcontainer", class = "big_map") 
-      
       mapdeck_update(map_id = NS(id, "map")) |>
         clear_scatterplot()
+      
+      removeCssClass(id = "mapcontainer", class = "banner_map")
+      addCssClass(id = "mapcontainer", class = "big_map") 
       
       hide(id = "gridelements", anim = TRUE, animType = "fade", time = 1)
       hide(id = "sidebar", anim = TRUE, animType = "fade", time = 1)

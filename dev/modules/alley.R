@@ -266,7 +266,7 @@ variables <-
   add_variables(
     var_code = "green_alley_sqkm",
     var_title = "Green alleys per sq km",
-    var_short = "Alleys sqkm",
+    var_short = "Alleys/sqkm",
     explanation = paste0("the number of square metres of green alley per ",
                          "square kilometre"),
     category = NA,
@@ -280,7 +280,7 @@ variables <-
   add_variables(
     var_code = "green_alley_per1k",
     var_title = "Green alleys per 1,000",
-    var_short = "Alleys 1,000",
+    var_short = "Alleys/1,000",
     explanation = paste0("the number of square metres of green alley per ",
                          "1,000 residents"),
     category = NA,
