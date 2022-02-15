@@ -72,7 +72,12 @@ ui <- function(request) {
            title = actionLink("title", "SUS"),
            tabPanel("Home", home_UI("home"), value = "home")),
       ready_modules_ui(mods_rdy),
-      list(collapsible = TRUE,
+      list(tabPanel("Montréal stories", stories_UI("stories"),
+                    value = "stories"),
+           tabPanel("Place explorer", place_explorer_UI("place_explorer"),
+                    value = "place_explorer"),
+           tabPanel("About", why_dash_UI("why_dash"), value = "why_dash"),
+           collapsible = TRUE,
            inputs = list(
              # Language toggle
              actionLink(
