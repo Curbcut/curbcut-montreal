@@ -1,5 +1,20 @@
 ### CANALE MODULE ##############################################################
 
+ready_modules_home <- function(mods_rdy) {
+  
+  list_args <- 
+  map(1:length(mods_rdy), function(higher_theme) {
+    c(list(name = sus_translate(names(mods_rdy[higher_theme]))),
+      map(1:length(mods_rdy[[higher_theme]]), function(lower_theme) {
+        list(name = sus_translate(names(mods_rdy[[higher_theme]][lower_theme])), 
+             onclick = paste0("openTab('", mods_rdy[[higher_theme]][lower_theme], "')"))
+      }))
+  })
+  
+  map(list_args, ~{do.call(linkListGroup, .x)})
+  
+}
+
 # UI ----------------------------------------------------------------------
 
 home_UI <- function(id) {
@@ -40,35 +55,12 @@ home_UI <- function(id) {
     ),
     susPageSection(
       tags$h2(sus_translate("Maps"), scrollAnchor(id = "start-exploring")),
-      linkList(
-        linkListGroup(name = sus_translate("Housing"),
-         list(name = sus_translate("Housing system"), onclick = "openTab('housing')"),
-         list(name = sus_translate("Gentrification"), onclick = "openTab('gentrification')"),
-         list(name = sus_translate("Permits"), onclick = "openTab('permits')"),
-         list(name = sus_translate("Marketed sustainability"), onclick = "openTab('marketed_sustainability')")
-        ),
-        linkListGroup(name = sus_translate("Urban Life"),
-         list(name = sus_translate("Active living potential"), onclick = "openTab('canale')"),
-         list(name = sus_translate("Green alleys"), onclick = "openTab('alley')"),
-         list(name = sus_translate("Green spaces"), onclick = "openTab('green_spaces')")
-        ),
-        linkListGroup(name = sus_translate("Transport"),
-         list(name = sus_translate("Accessibility"), onclick = "openTab('access')"),
-         list(name = sus_translate("Road safety"), onclick = "openTab('crash')")
-        ),
-        linkListGroup(name = sus_translate("Climate"),
-         list(name = sus_translate("Climate risk"), onclick = "openTab('climate')")
-        ),
-        linkListGroup(name = sus_translate("Covid"),
-         list(name = sus_translate("Covid interventions"), onclick = "openTab('covid')")
-        ),
-        linkListGroup(name = sus_translate("Policy"),
-         list(name = sus_translate("Montreal climate plans"), onclick = "openTab('mcp')")
-        ),
-        linkListGroup(name = sus_translate("More"),
-         list(name = sus_translate("Montreal stories"), onclick = "openTab('stories')"),
-         list(name = sus_translate("Place explorer"), uonclick = "openTab('place_explorer')")
-        )
+      do.call(linkList, c(ready_modules_home(mods_rdy),
+                          list(linkListGroup(name = sus_translate("More"),
+                                             list(name = sus_translate("Montreal stories"), 
+                                                  onclick = "openTab('stories')"),
+                                             list(name = sus_translate("Place explorer"), 
+                                                  onclick = "openTab('place_explorer')"))))
       )
     ), tags$div(style = "width: 250px; height: 50px;", hidden = "", susLegend())
   )
