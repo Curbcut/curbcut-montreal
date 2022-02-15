@@ -26,6 +26,11 @@ shinyServer(function(input, output, session) {
     }
   })
   
+
+  # URL and active tab ------------------------------------------------------
+  
+  sus_rv$active_tab <- 
+    eventReactive(input$sus_page, input$sus_page, ignoreNULL = FALSE)
   
   observe({
     query <- parseQueryString(session$clientData$url_search)
