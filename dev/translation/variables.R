@@ -14,9 +14,9 @@ variables <- qread("data/variables.qs")
 translated <- read.csv("dev/translation/csv/variables_translated.csv") |> 
   as_tibble()
 
-# Fix weird encoding
-translated$en <- char_fix(translated$en)
-translated$fr <- char_fix(translated$fr)
+# # Fix weird encoding
+# translated$en <- char_fix(translated$en)
+# translated$fr <- char_fix(translated$fr)
 
 # Prepare for translation -------------------------------------------------
 

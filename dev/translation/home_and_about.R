@@ -7,6 +7,10 @@ home_and_about_translated <-
   read.csv("dev/translation/csv/home_and_about_translated.csv") |> 
   as_tibble()
 
+# # Fix weird encoding
+# home_and_about_translated$en <- char_fix(home_and_about_translated$en)
+# home_and_about_translated$fr <- char_fix(home_and_about_translated$fr)
+
 
 # Home and about translations ---------------------------------------------
 

@@ -25,14 +25,14 @@ home_UI <- function(id) {
           tags$h2(tags$em(nowrap(sus_translate("Towards a")), nowrap(sus_translate("sustainable city")))),
           tags$p(sus_translate("SUS is a platform for integrating, exploring, and analyzing a wide range of urban sustainability data sources for the Montreal region across multiple spatial and temporal scales. SUS offers a robust set of tools for scenario modelling and analysis which will be useful for researchers, policymakers, communities, and individuals.")),
           tags$div(class = "sus-button-group",
-            tags$a(class = "sus-button sus-icon-button sus-button-secondary", href = "#learn-more", sus_translate("Learn More"), span(class = "material-icons", "auto_stories")),
+            tags$a(class = "sus-button sus-icon-button sus-button-secondary", href = "#learn-more", sus_translate("Learn more"), span(class = "material-icons", "auto_stories")),
             tags$a(class = "sus-button sus-icon-button sus-button-primary", href = "#start-exploring", sus_translate("Start Exploring Maps"), span(class = "material-icons", "travel_explore"))
           )
         )
       )
     ),
     susPageSection(
-      tags$h2("Statement", scrollAnchor(id = "learn-more")),
+      tags$h2(sus_translate("Statement"), scrollAnchor(id = "learn-more")),
       tags$p(sus_translate("SUS embraces an inclusive vision of urban sustainability, allowing ",
              "users to contextualize questions into larger frameworks of equity and ",
              "accessibility. It serves as both a data-exploration tool and a knowledge ",
