@@ -237,7 +237,7 @@ a.sus-small-link {
 
 .sus-scroll-content {
   overflow-x: hidden;
-  padding-right: 32px !important;
+  /* padding-right: 32px !important; */
 }
 
 .sus-scrollbar {

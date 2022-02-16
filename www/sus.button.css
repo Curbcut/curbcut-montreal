@@ -132,10 +132,9 @@
   padding-bottom: 20px;
 }
 
-.irs--shiny .irs-bar,
-.irs--shiny .irs-handle,
-.irs--shiny .irs .irs-line {
-  transform: translate(0px, 10px) scale(1, 1);
+.irs--shiny > .irs .irs-line,
+.irs--shiny > :not(.irs) {
+  transform: translate(0px, 5px) scale(1, 1);
 }
 
 .irs--shiny .irs-handle {

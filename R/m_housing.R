@@ -5,31 +5,33 @@
 housing_UI <- function(id) {
   return(tagList(
       # Sidebar
-      sidebar_UI(
+      sidebar_UI2(
         NS(id, "sidebar"),
-        select_var_UI(NS(id, "left"), vars_housing_left), 
-        sliderInput(
-          NS(id, "slider_uni"), 
-          sus_translate("Select a year"),
-          min = census_min,
-          max = census_max,
-          step = 5, sep = "",
-          value = census_max,
-          width = "95%"),
-        sliderInput(
-          NS(id, "slider_bi"), 
-          sus_translate("Select two years"), 
-          min = census_min,
-          max = census_max, 
-          step = 5, sep = "", 
-          value = c("2006", "2016"),
-          width = "95%"),
-        checkboxInput(
-          inputId = NS(id, "slider_switch"),
-          label = sus_translate("Compare dates"), 
-          width = "95%"),
-        year_disclaimer_UI(NS(id, "disclaimer")),
-        div(class = "bottom_sidebar", 
+        susSidebarWidgets(
+          select_var_UI(NS(id, "left"), vars_housing_left), 
+          sliderInput(
+            NS(id, "slider_uni"), 
+            sus_translate("Select a year"),
+            min = census_min,
+            max = census_max,
+            step = 5, sep = "",
+            value = census_max,
+            width = "95%"),
+          sliderInput(
+            NS(id, "slider_bi"), 
+            sus_translate("Select two years"), 
+            min = census_min,
+            max = census_max, 
+            step = 5, sep = "", 
+            value = c("2006", "2016"),
+            width = "95%"),
+          checkboxInput(
+            inputId = NS(id, "slider_switch"),
+            label = sus_translate("Compare dates"), 
+            width = "95%"),
+          year_disclaimer_UI(NS(id, "disclaimer"))
+        ),
+        bottom=div(class = "bottom_sidebar", 
             tagList(legend_UI(NS(id, "legend")),
                     zoom_UI(NS(id, "zoom"), map_zoom_levels)))),
     
@@ -40,9 +42,8 @@ housing_UI <- function(id) {
       right_panel(
         id = id,
         compare_UI(NS(id, "housing"), vars_housing_right),
-        div(class = "explore_dyk", 
-            explore_UI(NS(id, "explore")), 
-            dyk_UI(NS(id, "dyk"))))
+        explore_UI(NS(id, "explore")), 
+        dyk_UI(NS(id, "dyk")))
   ))
 }
 

@@ -5,7 +5,7 @@
 canale_UI <- function(id) {
   return(tagList(
       # Sidebar
-      sidebar_UI(
+      sidebar_UI2(
         NS(id, "sidebar"), 
         div(class = "bottom_sidebar", 
             tagList(legend_UI(NS(id, "legend")),

@@ -146,12 +146,22 @@
   font-size: 1.45rem;
 }
 
+.sus-map-sidebar div.form-group,
+.sus-map-panel div.form-group {
+  margin-top: var(--padding-v-md);
+}
+
+.sus-map-sidebar button.dropdown-toggle,
+.sus-map-panel button.dropdown-toggle,
 .compare_dropdown .btn {
   min-height: 30px;
   max-height: 30px;
 }
 
-.compare_dropdown .btn, .compare_dropdown .dropdown-menu > li > a {
+.sus-map-sidebar button.dropdown-toggle,
+.sus-map-panel button.dropdown-toggle,
+.compare_dropdown .btn,
+.compare_dropdown .dropdown-menu > li > a {
   font-family: var(--ff-button);
   text-transform: none;
   font-size: 1.25rem;
@@ -200,4 +210,14 @@
   min-height: 38px;
   max-height: 38px;
   float: right;
+}
+
+.sus-sidebar-widgets {
+  margin-top: var(--padding-v-md);
+  padding-top: var(--padding-v-md);
+  border-top: 1px solid var(--c-default);
+}
+
+.sus-sidebar-widgets > *:first-child {
+  margin-top: var(--padding-v-md);
 }
