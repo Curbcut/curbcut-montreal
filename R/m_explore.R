@@ -31,8 +31,8 @@ explore_UI <- function(id) {
   )
 }
 
-explore_server <- function(id, data, var_left, var_right, df, select_id,
-                           build_str_as_DA = reactive(TRUE)) {
+explore_server <- function(id, data, var_left, var_right, df, zoom = df,
+                           select_id, build_str_as_DA = reactive(TRUE)) {
   
   stopifnot(is.reactive(data))
   stopifnot(is.reactive(var_left))
@@ -71,6 +71,7 @@ explore_server <- function(id, data, var_left, var_right, df, select_id,
       var_left = var_left(),
       var_right = var_right(),
       df = df(),
+      zoom = zoom(),
       select_id = select_id(),
       build_str_as_DA = build_str_as_DA()))
     

@@ -12,8 +12,8 @@
 #' @param legend A mapdeck manual legend to be placed at the bottom right of the 
 #' map. The output of a `mapdeck::mapdeck_legend` and `mapdeck::legend_element` 
 #' combination.
-#' @param polygons_to_clear A strings vector indicating the specific layer_id 
-#' of the map to be cleared every time the map is redrawn..
+#' @param polygons_to_clear A character vector indicating the specific layer_id 
+#' of the map to be cleared when the map is redrawn..
 #' @param standard_width A reactive logical scalar. Should the polygon width be 
 #' 0 instead?
 #' @return An update version of the mapdeck map.
@@ -57,13 +57,7 @@ map_change <- function(id_map, x, df, zoom = df, click = reactive(NULL),
     zoom()}, {
       
       # Used at all geometries:
-      update_and_clean <- function() {
-        mapdeck_update(map_id = id_map) #|>
-        # clear_polygon() |>
-        # clear_scatterplot() |>
-        # clear_heatmap() |>
-        # clear_path()
-      }
+      update_and_clean <- function() mapdeck_update(map_id = id_map)
       
       # Clear layer_ids fed with polygons_to_clear
       walk(polygons_to_clear, ~{
@@ -183,15 +177,17 @@ map_change <- function(id_map, x, df, zoom = df, click = reactive(NULL),
     
     if (geom_type() == "polygon") {
       
-      select_id <- tryCatch(fromJSON(selection())$object$properties$id,
-                            error = function(e) NULL)
+      select_id <- tryCatch(
+        fromJSON(selection())$object$properties$id,
+        error = function(e) NULL)
       if (is.null(select_id)) select_id <- NA
       return(select_id)
       
     } else if (geom_type() == "point") {
       
-      select_id <- tryCatch(fromJSON(selection(x()[lst + 1,]$ID))$object$properties$id,
-                            error = function(e) NULL)
+      select_id <- tryCatch(
+        fromJSON(selection(x()[lst + 1,]$ID))$object$properties$id,
+        error = function(e) NULL)
       if (is.null(select_id)) select_id <- NA
       return(select_id)
       
@@ -231,10 +227,17 @@ map_change <- function(id_map, x, df, zoom = df, click = reactive(NULL),
   
   ## Update map on selection change --------------------------------------------
   
-  observeEvent(select_id(), {
+  observeEvent({
+    selection()
+    zoom()}, {
     
     if (geom_type() == "polygon") {
-      if (!is.na(select_id())) {
+      
+      if (is.na(select_id())) {
+        mapdeck_update(map_id = id_map) |>
+          clear_polygon(layer_id = "highlight")
+        
+      } else {
         
         if (df() == "building") {
           
@@ -272,8 +275,7 @@ map_change <- function(id_map, x, df, zoom = df, click = reactive(NULL),
               auto_highlight = TRUE, highlight_colour = "#FFFFFF80")
           
         }
-      } else mapdeck_update(map_id = id_map) |>
-        clear_polygon(layer_id = "highlight")
+      }
     }
   })
   
