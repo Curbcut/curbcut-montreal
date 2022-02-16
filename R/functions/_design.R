@@ -2,9 +2,13 @@
 
 # Design functions --------------------------------------------------------
 
+nowrap <- function(...) {
+  return(tags$span(style = "white-space: nowrap;", ...))
+}
+
 scrollAnchor <- function(id) {
-  return(tags$span(style="position: relative;display: inline-block;height: 100%;vertical-align: top;",
-         tags$span(id=id, style="display: block;position: absolute;top: calc(var(--h-navbar) * -2);")))
+  return(tags$span(style = "position: relative;display: inline-block;height: 100%;vertical-align: top;",
+         tags$span(id = id, style = "display: block;position: absolute;top: calc(var(--h-navbar) * -2);")))
 }
 
 languageButtonLabel <- function(text) {
@@ -35,46 +39,46 @@ right_panel <- function(id, ...) {
   absolutePanel(
     id = NS(id, "right_panel"),
     class = "panel panel-default sus-map-panel sus-scroll",
-    tags$div(class="sus-map-panel-content sus-scroll-content", ...)
+    tags$div(class = "sus-map-panel-content sus-scroll-content", ...)
   )
 }
 
 # Make a link button styled to go inside of a link list group
 linkListGroupElement <- function(link) {
-  return(tags$li(tags$a(class="noselect", href=link$url, link$name)))
+  return(tags$li(tags$a(class = "noselect", href = NULL, onclick = link$onclick, link$name)))
 }
 
 # Make a link list group that can have link list group elements
 # passed into it via the dynamic arguments ...
 linkListGroup <- function(name, ...) {
-  namedArgs = list(class="")
+  namedArgs = list(class = "")
   args = c(namedArgs, lapply(list(...), linkListGroupElement))
   
-  return(tags$div(class="sus-link-list-group",
+  return(tags$div(class = "sus-link-list-group",
     tags$h3(name),
     do.call(tags$ul, args)
   ))
 }
 
 linkList <- function(...) {
-  return(tags$div(class="sus-link-list",...))
+  return(tags$div(class = "sus-link-list",...))
 }
 
 # Make a generic global footer (for use on text pages only)
 susFooter <- function() {
-  return(tags$div(class="sus-page-footer",
-    tags$div(class="sus-page-footer-content",
-      tags$div(class="sus-page-footer-logos",
-        tags$a(href="https://www.mcgill.ca/mssi/", target="_blank",
-          tags$img(class="sus-page-footer-logo", src="mcgill-mssi-logo-final.png")
+  return(tags$div(class = "sus-page-footer",
+    tags$div(class = "sus-page-footer-content",
+      tags$div(class = "sus-page-footer-logos",
+        tags$a(href = "https://www.mcgill.ca/mssi/", target = "_blank",
+          tags$img(class = "sus-page-footer-logo", src = "mcgill-mssi-logo-final.png")
         )
       ),
-      tags$div(class="sus-page-footer-links",
+      tags$div(class = "sus-page-footer-links",
         tags$ul(
-          tags$li(tags$a(href="", "About")),
-          tags$li(tags$a(href="", "Terms & Conditions")),
-          tags$li(tags$a(href="", "Privacy Policy")),
-          tags$li(tags$a(href="", "Contact"))
+          tags$li(tags$a(href = "", "About")),
+          tags$li(tags$a(href = "", "Terms & Conditions")),
+          tags$li(tags$a(href = "", "Privacy Policy")),
+          tags$li(tags$a(href = "", "Contact"))
         )
       )
     )
@@ -82,57 +86,57 @@ susFooter <- function() {
 }
 
 #Make the full-width home page "SUS" banner
-susBanner <- function () {
-  return(tags$div(class="sus-banner noselect",
-    tags$div(class="sus-banner-bg sus-bg-img-map"),
-    tags$div(class="sus-banner-bg sus-bg-img-skyline"),
-    tags$h1(class="sus-brand sus-banner-text", "SUS")
+susBanner <- function() {
+  return(tags$div(class = "sus-banner noselect",
+    tags$div(class = "sus-banner-bg sus-bg-img-map"),
+    tags$div(class = "sus-banner-bg sus-bg-img-skyline"),
+    tags$h1(class = "sus-brand sus-banner-text", "SUS")
   ))
 }
 
 # Make a section inside of a page
 susPageSection <- function(..., class="") {
-  return(tags$div(class=paste("sus-page-content-section", class),...))
+  return(tags$div(class = paste("sus-page-content-section", class),...))
 }
 
 susPageSectionFeature <- function(..., class="") {
-  return(susPageSection(class=paste("sus-page-content-section-feature", class), ...))
+  return(susPageSection(class = paste("sus-page-content-section-feature", class), ...))
 }
 
 # Make a text page with optional header & footer, typically,
 # if you include a footer, it would simply be: susFooter()
 susPage <- function(..., class="", header=NULL, footer=NULL) {
-  children = list(tags$div(class="sus-page-content",...))
+  children = list(tags$div(class = "sus-page-content",...))
   if (!is.null(header)) {
     children = c(list(header), children);
   }
   if (!is.null(footer)) {
     children = c(children, list(footer));
   }
-  return(tags$div(class=paste("sus-page", class), children))
+  return(tags$div(class = paste("sus-page", class), children))
 }
 
 susPalette <- function() {
-  return( tags$div(class="palette-grid",
-    tags$div(class="palette-swatch"),
-    tags$div(class="palette-swatch"),
-    tags$div(class="palette-swatch"),
-    tags$div(class="palette-swatch"),
-    tags$div(class="palette-swatch"),
-    tags$div(class="palette-swatch"),
-    tags$div(class="palette-swatch"),
-    tags$div(class="palette-swatch"),
-    tags$div(class="palette-swatch")
+  return( tags$div(class = "palette-grid",
+    tags$div(class = "palette-swatch"),
+    tags$div(class = "palette-swatch"),
+    tags$div(class = "palette-swatch"),
+    tags$div(class = "palette-swatch"),
+    tags$div(class = "palette-swatch"),
+    tags$div(class = "palette-swatch"),
+    tags$div(class = "palette-swatch"),
+    tags$div(class = "palette-swatch"),
+    tags$div(class = "palette-swatch")
   ))
 }
 
 susLegend <- function() {
-  return(tags$div(class="legend-grid",
-    tags$div(class="legend-swatch"),
-    tags$div(class="legend-swatch"),
-    tags$div(class="legend-swatch"),
-    tags$div(class="legend-swatch"),
-    tags$div(class="legend-swatch")
+  return(tags$div(class = "legend-grid",
+    tags$div(class = "legend-swatch"),
+    tags$div(class = "legend-swatch"),
+    tags$div(class = "legend-swatch"),
+    tags$div(class = "legend-swatch"),
+    tags$div(class = "legend-swatch")
   ))
 }
 
@@ -164,17 +168,17 @@ susLegend <- function() {
 
 # Design objects ----------------------------------------------------------
 
-# # To switch between tabs without namespacing issues. Examples in `m_crash.R`
-# # a("NAME OF LINK", onclick = "openTab('NAME OF TAB')", href="#")
-# js_links_between_modules <- "
-#         var openTab = function(tabName){
-#           $('a', $('.sidebar')).each(function() {
-#             if(this.getAttribute('data-value') == tabName) {
-#               this.click()
-#             };
-#           });
-#         }
-#       "
+# To switch between tabs without namespacing issues. Examples in `m_crash.R`
+# a("NAME OF LINK", onclick = "openTab('canale')", href = NULL, style = "cursor: pointer;")
+js_links_between_modules <- "
+        var openTab = function(tabName){
+          $('a', $('.navbar')).each(function() {
+            if(this.getAttribute('data-value') == tabName) {
+              this.click()
+            };
+          });
+        }
+      "
 
 styler <- '
 /* the big panel popup when we show an RMD in a map module */

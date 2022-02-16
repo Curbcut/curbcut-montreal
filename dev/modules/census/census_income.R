@@ -41,7 +41,7 @@ census_vec <-
     vec_1996 = paste0("v_CA1996_16", 20:24),
     var_title = "Income between $50k-$100k (%)",
     var_short = "Inc. $50-100k",
-    explanation = paste0("the percentage of households with an income between", 
+    explanation = paste0("the percentage of households with an income between ", 
                          "$50,000 and $100,000"),
     private = FALSE) |>
   add_row_census_vec(

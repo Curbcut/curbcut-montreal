@@ -38,7 +38,7 @@ census_vec <-
     vec_2001 = c(paste0("v_CA01_", 20:24), paste0("v_CA01_", 39:43)),
     vec_1996 = c(paste0("v_CA1996_", 25:29), paste0("v_CA1996_", 49:53)),
     var_title = "Aged 65 and above (%)",
-    var_short = "6+5 yo",
+    var_short = "65+ yo",
     explanation = "the percentage of the population aged 65 and above",
     private = FALSE)
 

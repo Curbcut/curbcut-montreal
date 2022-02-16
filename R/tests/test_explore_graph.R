@@ -6,11 +6,12 @@ suppressPackageStartupMessages({
   
   library(dplyr)
   library(ggplot2)
-  library(stringr)
+  library(glue)
   library(purrr)
-  library(sf)
   library(qs)
+  library(sf)
   library(shiny)
+  library(stringr)
   
   variables <- qread("data/variables.qs")
   qload("data/colours.qsm")

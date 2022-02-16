@@ -30,13 +30,14 @@ suppressPackageStartupMessages({
 # Shiny options -----------------------------------------------------------
 
 options(shiny.trace = FALSE) # Set TRUE for debugging
+options(shiny.useragg = TRUE)
 enableBookmarking(store = "url")
 
 # Data --------------------------------------------------------------------
 
 variables <- qread("data/variables.qs")
 title_text <- qread("data/title_text.qs")
-qload("data/dyk.qsm")
+dyk <- qread("data/dyk.qs")
 qload("data/colours.qsm")
 
 qload("data/census.qsm")
@@ -87,10 +88,29 @@ island_CSDUID <-
     "2466142", "2466072", "2466023")
 
 
+# Modules ready -----------------------------------------------------------
+
+mods_rdy <- list("Climate" = c("Climate risk" = "climate_risk"),
+                 "Covid" = c("Covid interventions" = "covid"),
+                 "Housing" = c("Housing system" = "housing", 
+                               "Gentrification" = "gentrification", 
+                               "Permits" = "permits", 
+                               "Marketed Sustainability" = "marketed_sustainability"),
+                 "Policy" = c("Montréal climate plans" = "mcp"),
+                 "Transport" = c("Accessibility" = "access", 
+                                 "Road safety" = "crash"),
+                 "Urban life" = c("Active living potential" = "canale", 
+                                  "Green alleys" = "alley", 
+                                  "Green spaces" = "green_space"))
+
+stand_alone_tabs <- c("Montréal stories" = "stories",
+                      "Place explorer" = "place_explorer",
+                      "About" = "why_dash")
+
 # Translation -------------------------------------------------------------
 
 translation_fr <- qread("data/translation_fr.qs")
-sus_rv <- reactiveValues(lang = "fr")
+sus_rv <- reactiveValues(lang = "fr", active_tab = "home")
 
 
 # Map defaults ------------------------------------------------------------
@@ -102,23 +122,14 @@ map_zoom <- 10.1
 map_zoom_levels <- c("borough" = 0, "CT" = 10.5, "DA" = 12#, "building" = 14)
                     )
 map_location <- c(-73.58, 45.53)
-widget_style <- "display: inline-block; padding: 5px; vertical-align: top;"
 
 
 # Set up fonts ------------------------------------------------------------
 
-showtext::font_add(family = "SourceSansPro", 
-                   regular = "www/fonts/SourceSansPro-Regular.ttf",
-                   italic = "www/fonts/SourceSansPro-Italic.ttf",
-                   bold = "www/fonts/SourceSansPro-Bold.ttf",
-                   bolditalic = "www/fonts/SourceSansPro-BoldItalic.ttf")
+systemfonts::register_font(
+  name = "SourceSansPro",
+  plain = "www/fonts/SourceSansPro-Regular.ttf",
+  italic = "www/fonts/SourceSansPro-Italic.ttf",
+  bold = "www/fonts/SourceSansPro-Bold.ttf",
+  bolditalic = "www/fonts/SourceSansPro-BoldItalic.ttf")
 
-showtext::showtext_auto()
-
-# 
-# if (Sys.info()[["sysname"]] == "Linux") {
-#   dir.create("~/.fonts")
-#   file.copy(list.files("www/fonts", full.names = TRUE),
-#             "~/.fonts")
-#   system("fc-cache -f ~/.fonts")
-# }

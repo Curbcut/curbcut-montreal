@@ -528,4 +528,4 @@ pe_variable_order <-
 
 rm(basic_percentile_retrieval, gentrification_min_max, min_access_var_code,
    bixi_stations, census_max, groups, last_crash_data_year, 
-   ndvi, no2, percentile_calc, transit_stations)
+   ndvi, no2, percentile_calc)

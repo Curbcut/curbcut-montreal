@@ -17,16 +17,15 @@ dyk_server <- function(id, var_left, var_right) {
     
     # Only show box if dyk_output isn't empty
     output$dyk_box <- renderUI({
-      
       if (!is.null(dyk_output())) {
         tagList(
           hr(),
           fluidRow(column(width = 7, h4(sus_translate("Did you know?"))),
                    column(width = 5, align = "right",
-                          actionLink(inputId = session$ns("hide"), class="sus-small-link",
-                                     label = sus_translate("Hide"))))
-        )
-      }  
+                          actionLink(inputId = session$ns("hide"), 
+                                     class="sus-small-link",
+                                     label = sus_translate("Hide")))))
+      }
     })
 
     # Track hide status with clicks on input$hide button
