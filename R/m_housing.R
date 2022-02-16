@@ -3,9 +3,7 @@
 # UI ----------------------------------------------------------------------
 
 housing_UI <- function(id) {
-  fillPage(fillRow(
-    fillCol(
-      
+  return(tagList(
       # Sidebar
       sidebar_UI(
         NS(id, "sidebar"),
@@ -33,10 +31,8 @@ housing_UI <- function(id) {
         year_disclaimer_UI(NS(id, "disclaimer")),
         div(class = "bottom_sidebar", 
             tagList(legend_UI(NS(id, "legend")),
-                    zoom_UI(NS(id, "zoom"), map_zoom_levels))))),
+                    zoom_UI(NS(id, "zoom"), map_zoom_levels)))),
     
-    fillCol(
-      
       # Map
       div(class = "mapdeck_div", mapdeckOutput(NS(id, "map"), height = "100%")),
       
@@ -46,9 +42,8 @@ housing_UI <- function(id) {
         compare_UI(NS(id, "housing"), vars_housing_right),
         div(class = "explore_dyk", 
             explore_UI(NS(id, "explore")), 
-            dyk_UI(NS(id, "dyk"))))),
-    
-    flex = c(1, 5)))
+            dyk_UI(NS(id, "dyk"))))
+  ))
 }
 
 

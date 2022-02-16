@@ -3,9 +3,7 @@
 # UI ----------------------------------------------------------------------
 
 access_UI <- function(id) {
-  fillPage(fillRow(
-    fillCol(
-      
+  return(tagList(
       # Sidebar
       sidebar_UI(
         NS(id, "sidebar"),
@@ -18,10 +16,7 @@ access_UI <- function(id) {
                     width = "95%"),
         div(class = "bottom_sidebar", 
             tagList(legend_UI(NS(id, "legend")),
-                    hidden(zoom_UI(NS(id, "zoom"), map_zoom_levels)))))),
-    
-    fillCol(
-      
+                    hidden(zoom_UI(NS(id, "zoom"), map_zoom_levels))))),
       # Map
       div(class = "mapdeck_div", 
           mapdeckOutput(NS(id, "map"), height = "100%")),
@@ -32,9 +27,8 @@ access_UI <- function(id) {
         compare_UI(NS(id, "access"), make_dropdown()),
         div(class = "explore_dyk", 
             explore_UI(NS(id, "explore")), 
-            dyk_UI(NS(id, "dyk"))))),
-    
-    flex = c(1, 5)))
+            dyk_UI(NS(id, "dyk"))))
+  ))
 }
 
 

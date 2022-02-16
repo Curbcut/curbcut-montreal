@@ -3,18 +3,14 @@
 # UI ----------------------------------------------------------------------
 
 marketed_sustainability_UI <- function(id) {
-  fillPage(fillRow(
-    fillCol(
-      
+  return(tagList(
       # Sidebar
       sidebar_UI(
         NS(id, "sidebar"),
       div(class = "bottom_sidebar", 
           h5("Legend", style = "font-size: 12px;"),
-          plotOutput(NS(id, "legend"), height = 60)))),
+          plotOutput(NS(id, "legend"), height = 60))),
     
-    fillCol(
-      
       # Map
       div(class = "mapdeck_div", 
           mapdeckOutput(NS(id, "map"), height = "100%")),
@@ -25,9 +21,8 @@ marketed_sustainability_UI <- function(id) {
         # compare_UI(NS(id, "marketed_sustainability"), make_dropdown()),
         div(class = "explore_dyk", 
             explore_UI(NS(id, "explore")), 
-            dyk_UI(NS(id, "dyk"))))),
-    
-    flex = c(1, 5)))
+            dyk_UI(NS(id, "dyk"))))
+  ))
 }
 
 

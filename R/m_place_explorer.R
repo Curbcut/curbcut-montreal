@@ -50,9 +50,7 @@ place_explorer_UI <- function(id) {
       
       
       ## EXPLORER ONCE A LOCATION IS SELECTED -----------------------------
-      fillPage(fillRow(
-        fillCol(
-          
+      tagList(
           # Side bar div
           hidden(div(
             id = NS(id, "sidebar"), class = "sus_sidebar", 
@@ -97,13 +95,11 @@ place_explorer_UI <- function(id) {
                 htmlOutput(outputId = NS(id, "actual_comparison_scale"))
               ),
             )
-          ))),
+          )),
         
         # Main panel as a uiOutput. The amount of themes displayed is reactive
-        fillCol(
-          hidden(uiOutput(NS(id, "gridelements")))),
-        flex = c(1,5)
-      ))
+          hidden(uiOutput(NS(id, "gridelements")))
+      )
     )))
 }
 
