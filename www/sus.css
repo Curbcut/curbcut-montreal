@@ -235,6 +235,11 @@ a.sus-small-link {
   --scrollbar-width: 10px;
 }
 
+.sus-scroll-content {
+  overflow-x: hidden;
+  padding-right: 32px !important;
+}
+
 .sus-scrollbar {
   position: absolute;
   z-index: calc(var(--depth-ui) + 1);

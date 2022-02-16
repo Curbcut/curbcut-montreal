@@ -279,6 +279,8 @@ window.addEventListener('load', (evt) => {
       // console.log('#' + scroll.id + ' handle released');
     });
 
+    const paddingRight = getComputedStyle(content).getPropertyValue('padding-right');
+
     const updateScroll = () => {
       const enabled = content.offsetHeight > scroll.offsetHeight;
       // if (scroll.classList.contains('sus-scroll-enabled') != enabled) {
@@ -288,28 +290,39 @@ window.addEventListener('load', (evt) => {
       //     scroll.classList.remove('sus-scroll-enabled');
       //   }
       // }
-      if (enabled) {
-        scroll.style = `overflow-y: scroll;`;
+      console.log(`${scroll.id}: evaluating offset heights (${content.offsetHeight} > ${scroll.offsetHeight} ? ${enabled})`);
+      const scrollStyle = getComputedStyle(scroll);
+      const oldOverflow = scrollStyle.getPropertyValue('overflow-y');
+      const newOverflow = enabled ? 'scroll' : 'hidden';
+      if (oldOverflow != newOverflow) {
+        console.log(`${scroll.id}: updating overflow-y (old value: ${oldOverflow}, new value: ${newOverflow})`)
+        scroll.style = `overflow-y: ${newOverflow};`;
+        const scrollbarWidth = scroll.offsetWidth - scroll.clientWidth;
+        content.style = `width: calc(100% + ${scrollbarWidth}px);`;
       } else {
-        scroll.style = 'overflow-y: hidden;';
+        console.log(`${scroll.id}: (already up-to-date)`);
       }
-      if (enabled) {
-        handle.style = `height: calc(100% * ${scroll.offsetHeight / content.offsetHeight})`;
-      }
+      // if (enabled) {
+      //   handle.style = `height: calc(100% * ${scroll.offsetHeight / content.offsetHeight})`;
+      // }
     };
 
     var throttle = false;
+    var throttleTimeout = undefined;
 
     // Callback function to execute when mutations are observed
     const scrollCallback = function(mutationsList, observer) {
-      if (throttle) {
-        return;
-      } else {
-        updateScroll();
+      if (!throttle) {
         throttle = true;
-        setTimeout(() =>{
+        setTimeout(() => {
+          console.log(`${scroll.id}: update scroll (content mutation)`);
+          updateScroll();
+        }, 40);
+        setTimeout(() => {
           throttle = false;
-        }, 20);
+        }, 50);
+      } else {
+        console.log(`${scroll.id}: throttled`);
       }
     };
 
@@ -317,7 +330,16 @@ window.addEventListener('load', (evt) => {
     const scrollObserver = new MutationObserver(scrollCallback);
 
     // Start observing the target node for configured mutations
-    scrollObserver.observe(scroll, config);
+    scrollObserver.observe(content, config);
+
+    setTimeout(() => {
+      console.log(`${scroll.id}: update scroll (initial)`);
+      updateScroll();
+    }, 100);
+    window.addEventListener('resize', () => {
+      console.log(`${scroll.id}: update scroll (window resized)`);
+      updateScroll();
+    });
   }
 
   const links = document.querySelectorAll('a');

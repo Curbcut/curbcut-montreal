@@ -60,7 +60,7 @@
 
 .sus-map-sidebar-content {
   overflow: scroll;
-  overflow-x: visible;
+  overflow-x: hidden;
   height: fit-content;
   width: 100%;
   flex-grow: 1;
@@ -80,7 +80,7 @@
   position: absolute;
   /* overflow: hidden; */
   overflow: scroll;
-  overflow-x: visible;
+  overflow-x: hidden;
   z-index: var(--depth-ui);
   top: var(--padding-v-md);
   right: var(--padding-h-md);
