@@ -9,7 +9,9 @@
 
 .navbar {
   margin-bottom: 0px !important;
-  position: relative;
+  position: fixed;
+  left: 0px;
+  right: 0px;
   z-index: calc(10 + var(--depth-ui));
   box-shadow: unset;
 }
