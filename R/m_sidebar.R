@@ -1,19 +1,25 @@
 #### SIDEBAR MODULE ############################################################
 
 sidebar_UI <- function(id, ...) {
-  
   tagList(
-  div(class="sus-map-sidebar-shadow"),
-  div(
-    id = "title_bar", class = "sus-map-sidebar sus-scroll", 
-    div(class = "sus-map-sidebar-content sus-scroll-content",
-        div(tagList(
-          uiOutput(NS(id, "title")),
-          tags$p(uiOutput(NS(id, "title_main"))),
-          tags$p(actionLink(NS(id, "more_info"), class="sus-small-link", sus_translate("Learn more"))),
-          hidden(uiOutput(outputId = NS(id, "title_extra"))))),
-    ...
-  )))
+    div(class="sus-map-sidebar-shadow"),
+    div(
+      id = "title_bar", class = "sus-map-sidebar", 
+      div(class = "sus-map-sidebar-container",
+        div(class = "sus-map-sidebar-content sus-scroll",
+          div(class = "sus-scroll-content",
+            tagList(
+              uiOutput(NS(id, "title")),
+              tags$p(uiOutput(NS(id, "title_main"))),
+              tags$p(actionLink(NS(id, "more_info"), class="sus-small-link", sus_translate("Learn more"))),
+              hidden(uiOutput(outputId = NS(id, "title_extra")))
+            )
+          )
+        ),
+        ...
+      )
+    )
+  )
 }
 
 sidebar_server <- function(id, x) {
