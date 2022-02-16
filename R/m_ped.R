@@ -3,7 +3,8 @@
 # UI ----------------------------------------------------------------------
 
 ped_UI <- function(id) {
-  fillPage(div(class = "mapdeck_div", 
+  return(tagList(
+  div(class = "mapdeck_div", 
                mapdeckOutput(NS(id, "map"), height = "100%")),
           title_UI(NS(id, "title")),
           right_panel(id,
@@ -11,7 +12,7 @@ ped_UI <- function(id) {
           #             explore_UI(NS(id, "explore")),
                       dyk_UI(NS(id, "dyk")))#,
           # legend_bivar_UI(NS(id, "climate_risk")))
-  )
+  ))
   }
 
 

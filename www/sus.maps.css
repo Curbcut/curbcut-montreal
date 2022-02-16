@@ -5,6 +5,17 @@
 
 .mapdeck_div {
   height: calc(100vh - var(--h-navbar)) !important;
+  position: absolute;
+  top: 0px;
+  left: calc(var(--w-sidebar) - 1px);
+  right: 0px;
+  padding: unset !important;
+  margin: unset !important;
+  border: unset !important;
+}
+
+.mapdeck_div:first-child {
+  left: 0px;
 }
 
 .sidebar_content {
