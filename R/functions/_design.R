@@ -2,6 +2,10 @@
 
 # Design functions --------------------------------------------------------
 
+susSidebarWidgets <- function(...) {
+  return(div(class="sus-sidebar-widgets",...))
+}
+
 nowrap <- function(...) {
   return(tags$span(style = "white-space: nowrap;", ...))
 }

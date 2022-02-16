@@ -7,11 +7,13 @@ climate_risk_UI <- function(id) {
       # Sidebar
       sidebar_UI(
         NS(id, "sidebar"),
-        select_var_UI(NS(id, "left"), var_list_climate_risk), 
-        checkboxInput(
-          inputId = NS(id, "grid"), value = TRUE,
-          label = sus_translate("250-metre grid")),
-        div(class = "bottom_sidebar",
+        susSidebarWidgets(
+          select_var_UI(NS(id, "left"), var_list_climate_risk), 
+          checkboxInput(
+            inputId = NS(id, "grid"), value = TRUE,
+            label = sus_translate("250-metre grid"))
+        ),
+        bottom=div(class = "bottom_sidebar",
             tagList(legend_UI(NS(id, "legend")),
                     zoom_UI(NS(id, "zoom"), map_zoom_levels)))),
 

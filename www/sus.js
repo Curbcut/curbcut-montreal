@@ -242,83 +242,106 @@ window.addEventListener('load', (evt) => {
     });
   }
 
-  const scrolls = document.querySelectorAll('.sus-scroll');
+  // const scrolls = document.querySelectorAll('.sus-scroll');
 
-  // console.log('scrolls: ' + scrolls.length);
+  // // console.log('scrolls: ' + scrolls.length);
 
-  for(var i = 0; i < scrolls.length; i++) {
-    const scroll = scrolls[i];
-    const content = scroll.querySelector('.sus-scroll-content');
+  // for(var i = 0; i < scrolls.length; i++) {
+  //   const scroll = scrolls[i];
+  //   const content = scroll.querySelector('.sus-scroll-content');
 
-    const bg = document.createElement('div');
-    bg.classList.add('sus-scrollbar');
+  //   const bg = document.createElement('div');
+  //   bg.classList.add('sus-scrollbar');
     
-    const handle = document.createElement('div');
-    handle.classList.add('sus-scrollbar-handle');
+  //   const handle = document.createElement('div');
+  //   handle.classList.add('sus-scrollbar-handle');
 
-    scroll.appendChild(bg);
-    scroll.appendChild(handle);
+  //   scroll.appendChild(bg);
+  //   scroll.appendChild(handle);
 
-    const id = `sus-scroll-${i}`;
-    scroll.id = id;
+  //   const id = `sus-scroll-${i}`;
+  //   scroll.id = id;
     
-    content.addEventListener('pointerdown', () => {
-      // console.log('#' + scroll.id + ' content pressed');
-    });
-    content.addEventListener('pointerup', () =>{
-      // console.log('#' + scroll.id + ' content released');
-    });
-    content.addEventListener('wheel', () => {
-      // console.log('#' + scroll.id + ' content scrolled');
-    });
+  //   content.addEventListener('pointerdown', () => {
+  //     // console.log('#' + scroll.id + ' content pressed');
+  //   });
+  //   content.addEventListener('pointerup', () =>{
+  //     // console.log('#' + scroll.id + ' content released');
+  //   });
+  //   content.addEventListener('wheel', () => {
+  //     // console.log('#' + scroll.id + ' content scrolled');
+  //   });
 
-    handle.addEventListener('pointerdown', () => {
-      // console.log('#' + scroll.id +  ' handle pressed');
-    });
-    handle.addEventListener('pointerup', () =>{
-      // console.log('#' + scroll.id + ' handle released');
-    });
+  //   handle.addEventListener('pointerdown', () => {
+  //     // console.log('#' + scroll.id +  ' handle pressed');
+  //   });
+  //   handle.addEventListener('pointerup', () =>{
+  //     // console.log('#' + scroll.id + ' handle released');
+  //   });
 
-    const updateScroll = () => {
-      const enabled = content.offsetHeight > scroll.offsetHeight;
-      // if (scroll.classList.contains('sus-scroll-enabled') != enabled) {
-      //   if (enabled) {
-      //     scroll.classList.add('sus-scroll-enabled');
-      //   } else {
-      //     scroll.classList.remove('sus-scroll-enabled');
-      //   }
-      // }
-      if (enabled) {
-        scroll.style = `overflow-y: scroll;`;
-      } else {
-        scroll.style = 'overflow-y: hidden;';
-      }
-      if (enabled) {
-        handle.style = `height: calc(100% * ${scroll.offsetHeight / content.offsetHeight})`;
-      }
-    };
+  //   const paddingRight = getComputedStyle(content).getPropertyValue('padding-right');
 
-    var throttle = false;
+  //   const updateScroll = () => {
+  //     const enabled = content.offsetHeight > scroll.offsetHeight;
+  //     // if (scroll.classList.contains('sus-scroll-enabled') != enabled) {
+  //     //   if (enabled) {
+  //     //     scroll.classList.add('sus-scroll-enabled');
+  //     //   } else {
+  //     //     scroll.classList.remove('sus-scroll-enabled');
+  //     //   }
+  //     // }
+  //     console.log(`${scroll.id}: evaluating offset heights (${content.offsetHeight} > ${scroll.offsetHeight} ? ${enabled})`);
+  //     const scrollStyle = getComputedStyle(scroll);
+  //     const oldOverflow = scrollStyle.getPropertyValue('overflow-y');
+  //     const newOverflow = enabled ? 'scroll' : 'hidden';
+  //     if (oldOverflow != newOverflow) {
+  //       console.log(`${scroll.id}: updating overflow-y (old value: ${oldOverflow}, new value: ${newOverflow})`)
+  //       scroll.style = `overflow-y: ${newOverflow};`;
+  //       const scrollbarWidth = scroll.offsetWidth - scroll.clientWidth;
+  //       content.style = `width: calc(100% + ${scrollbarWidth}px);`;
+  //     } else {
+  //       console.log(`${scroll.id}: (already up-to-date)`);
+  //     }
+  //     // if (enabled) {
+  //     //   handle.style = `height: calc(100% * ${scroll.offsetHeight / content.offsetHeight})`;
+  //     // }
+  //   };
 
-    // Callback function to execute when mutations are observed
-    const scrollCallback = function(mutationsList, observer) {
-      if (throttle) {
-        return;
-      } else {
-        updateScroll();
-        throttle = true;
-        setTimeout(() =>{
-          throttle = false;
-        }, 20);
-      }
-    };
+  //   var throttle = false;
+  //   var throttleTimeout = undefined;
 
-    // Create an observer instance linked to the callback function
-    const scrollObserver = new MutationObserver(scrollCallback);
+  //   // Callback function to execute when mutations are observed
+  //   const scrollCallback = function(mutationsList, observer) {
+  //     if (!throttle) {
+  //       throttle = true;
+  //       setTimeout(() => {
+  //         console.log(`${scroll.id}: update scroll (content mutation)`);
+  //         updateScroll();
+  //       }, 40);
+  //       setTimeout(() => {
+  //         throttle = false;
+  //       }, 50);
+  //     } else {
+  //       console.log(`${scroll.id}: throttled`);
+  //     }
+  //   };
 
-    // Start observing the target node for configured mutations
-    scrollObserver.observe(scroll, config);
-  }
+  //   // Create an observer instance linked to the callback function
+  //   const scrollObserver = new MutationObserver(scrollCallback);
+
+  //   // Start observing the target node for configured mutations
+  //   scrollObserver.observe(content, config);
+
+  //   setTimeout(() => {
+  //     console.log(`${scroll.id}: update scroll (initial)`);
+  //     updateScroll();
+  //   }, 100);
+
+  //   window.addEventListener('resize', () => {
+  //     console.log(`${scroll.id}: update scroll (window resized)`);
+  //     updateScroll();
+  //   });
+  // }
 
   const links = document.querySelectorAll('a');
   // console.log('links: ' + links.length);

@@ -15,7 +15,6 @@ shinyServer(function(input, output, session) {
       if (input$language_button[1] %% 2 != 0) "en" else "fr"
     }, ignoreNULL = FALSE)
   
-  
   observeEvent(input$language_button,{
     if (input$language_button[1] %% 2 != 0) {
       js$setLanguage("en")
