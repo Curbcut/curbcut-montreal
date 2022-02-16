@@ -3,26 +3,21 @@
 # UI ----------------------------------------------------------------------
 
 stories_UI <- function(id) {
-  fillPage(fillRow(
-    fillCol(
-      
+  return(tagList(
       # Sidebar
       sidebar_UI(
         NS(id, "sidebar"),
         hr(id = NS(id, "hr")),
-        actionLink(NS(id, "back"), sus_translate("Back to the map")))),
+        actionLink(NS(id, "back"), sus_translate("Back to the map"))),
     
-    fillCol(
-      
       # Map
       div(class = "mapdeck_div", mapdeckOutput(NS(id, "map"), height = "100%")),
       
       hidden(htmlOutput(
         NS(id, "stories"),
         style = paste0("position:absolute; margin: 40px; ",
-                       "max-width: 1000px; z-index:499")))),
-    
-    flex = c(1, 5)))
+                       "max-width: 1000px; z-index:499")))
+  ))
 }
 
 

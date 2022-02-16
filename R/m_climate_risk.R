@@ -3,9 +3,7 @@
 # UI ----------------------------------------------------------------------
 
 climate_risk_UI <- function(id) {
-  fillPage(fillRow(
-    fillCol(
-      
+  return(tagList(
       # Sidebar
       sidebar_UI(
         NS(id, "sidebar"),
@@ -15,10 +13,8 @@ climate_risk_UI <- function(id) {
           label = sus_translate("250-metre grid")),
         div(class = "bottom_sidebar",
             tagList(legend_UI(NS(id, "legend")),
-                    zoom_UI(NS(id, "zoom"), map_zoom_levels))))),
-    
-    fillCol(
-      
+                    zoom_UI(NS(id, "zoom"), map_zoom_levels)))),
+
       # Map
       div(class = "mapdeck_div", mapdeckOutput(NS(id, "map"), height = "100%")),
       
@@ -28,9 +24,8 @@ climate_risk_UI <- function(id) {
         compare_UI(NS(id, "climate_risk"), make_dropdown()),
         div(class = "explore_dyk",
             explore_UI(NS(id, "explore")),
-            dyk_UI(NS(id, "dyk"))))),
-    
-    flex = c(1, 5)))
+            dyk_UI(NS(id, "dyk"))))
+  ))
 }
 
 

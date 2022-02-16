@@ -3,9 +3,7 @@
 # UI ----------------------------------------------------------------------
 
 crash_UI <- function(id) {
-  fillPage(fillRow(
-    fillCol(
-      
+  return(tagList(
       # Sidebar
       sidebar_UI(
         NS(id, "sidebar"),
@@ -41,10 +39,8 @@ crash_UI <- function(id) {
         year_disclaimer_UI(NS(id, "disclaimers")),
         div(class = "bottom_sidebar", 
             tagList(legend_UI(NS(id, "legend")),
-                    zoom_UI(NS(id, "zoom"), map_zoom_levels))))),
-    
-    fillCol(
-      
+                    zoom_UI(NS(id, "zoom"), map_zoom_levels)))),
+
       # Crash analysis
       hidden(htmlOutput(
         NS(id, "crash_analysis"),
@@ -61,9 +57,8 @@ crash_UI <- function(id) {
         compare_UI(NS(id, "crash"), make_dropdown()),
         div(class = "explore_dyk", 
             explore_UI(NS(id, "explore")), 
-            dyk_UI(NS(id, "dyk"))))),
-    
-    flex = c(1, 5)))
+            dyk_UI(NS(id, "dyk"))))
+  ))
 }
 
 

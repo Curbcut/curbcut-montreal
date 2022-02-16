@@ -3,9 +3,7 @@
 # UI ----------------------------------------------------------------------
 
 alley_UI <- function(id) {
-  fillPage(fillRow(
-    fillCol(
-      
+  return(tagList(
       # Sidebar
       sidebar_UI(
         NS(id, "sidebar"),
@@ -15,10 +13,8 @@ alley_UI <- function(id) {
                       label = sus_translate("Grouping")), 
         div(class = "bottom_sidebar", 
             tagList(legend_UI(NS(id, "legend")), 
-                    zoom_UI(NS(id, "zoom"), map_zoom_levels))))),
+                    zoom_UI(NS(id, "zoom"), map_zoom_levels)))),
     
-    fillCol(
-      
       # Map
       div(class = "mapdeck_div", mapdeckOutput(NS(id, "map"), height = "100%")),
       
@@ -26,11 +22,9 @@ alley_UI <- function(id) {
       right_panel(id, compare_UI(NS(id, "alley"), make_dropdown()),
                   div(class = "explore_dyk",
                       explore_UI(NS(id, "explore")), 
-                      dyk_UI(NS(id, "dyk"))))),
+                      dyk_UI(NS(id, "dyk"))))
     
-    flex = c(1, 5)
-  )
-  )
+  ))
 }
 
 
