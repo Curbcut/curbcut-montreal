@@ -52,18 +52,12 @@ gentrification_server <- function(id) {
     # Initial reactives
     zoom <- reactiveVal(get_zoom(map_zoom, map_zoom_levels))
     
-    # Sidebar
-    sidebar_server(
-      id = "sidebar", 
-      x = "gentrification", 
-      var_map = reactive(paste0("left_", df(), "_", var_left())))
-    
     # Map
-    output$map <- renderMapdeck({mapdeck(
+    output$map <- renderMapdeck(mapdeck(
       style = map_style, 
       token = map_token, 
       zoom = map_zoom, 
-      location = map_location)})
+      location = map_location))
     
     # Zoom reactive
     observeEvent(input$map_view_change$zoom, {
@@ -80,10 +74,11 @@ gentrification_server <- function(id) {
     
     observe({
       if (length(unique(time())) == 1 && !input$check_single_var) {
-        shinyalert::shinyalert(text = paste0("Gentrification is a process that ",
-                                             "can only be quantified over time. ",
-                                             " Please, select two different years."), 
-                               type = "error")
+        shinyalert::shinyalert(text = paste0(
+          "Gentrification is a process that ",
+          "can only be quantified over time. ",
+          " Please, select two different years."), 
+          type = "error")
       }
     })
     
@@ -94,10 +89,10 @@ gentrification_server <- function(id) {
       }
     })
     
-    # Compare panel
+    # Right variable / compare panel
     var_right <- compare_server(
       id = "gentrification", 
-      var_list = make_dropdown(multi_year = T),
+      var_list = make_dropdown(multi_year = TRUE),
       disabled = var_list_housing_right_disabled,
       df = df,
       time = time)
@@ -123,48 +118,49 @@ gentrification_server <- function(id) {
       }
     })
     
+    # Sidebar
+    sidebar_server(id = "sidebar", x = "gentrification")
+    
     # Data
     data <- reactive(get_data(df(), var_left(), var_right()))
     
-    # Disclaimers and how to read the map
-    year_disclaimer_server(
-      id = "disclaimers", 
-      data = data,
-      var_left = var_left,
-      var_right = var_right,
-      time = time,
-      # If the same time is selected twice, other disclaimer
-      more_condition = reactive({length(unique(time())) == 1 && 
-          !input$check_single_var}),
-      more_text = paste0(
-        "<p style='font-size:11px;'>",
-        "Gentrification is a process that can only be quantified over time. ",
-        "Please, select two different years.</p>"))
+    # # Disclaimers and how to read the map
+    # year_disclaimer_server(
+    #   id = "disclaimers", 
+    #   data = data,
+    #   var_left = var_left,
+    #   var_right = var_right,
+    #   # If the same time is selected twice, other disclaimer
+    #   more = reactive({length(unique(time())) == 1 && 
+    #       !input$check_single_var}),
+    #   more_text = paste0(
+    #     "<p style='font-size:11px;'>",
+    #     "Gentrification is a process that can only be quantified over time. ",
+    #     "Please, select two different years.</p>"))
     
     # Update map in response to variable changes or zooming
     select_id <- map_change(
-      NS(id, "map"),
+      id = NS(id, "map"),
       x = data,
       df = df,
       zoom = zoom,
       click = reactive(input$map_polygon_click),
       #legend_selection = reactive(legend()$legend_selection),
-      explore_clear = reactive(input$`explore-clear_selection`)
-    )
+      explore_clear = reactive(input$`explore-clear_selection`))
     
     # Explore panel
     explore_content <- explore_server(
       id = "explore",
-      x = data,
+      data = data,
       var_left = var_left,
       var_right = var_right,
-      select_id = select_id,
       df = df,
-      build_str_as_DA = TRUE)
+      select_id = select_id)
     
     # Legend
     legend <- legend_server(
       id = "legend",
+      data = data,
       var_left = var_left,
       var_right = var_right,
       df = df)

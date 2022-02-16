@@ -53,12 +53,8 @@ zoom_server <- function(id, zoom, zoom_levels) {
     zoom_out <- reactive({
       if (input$auto) zoom() else get_zoom_code(input$slider)
       })
-    
-    # observe(zoom_out(), {
-    #   print("ZOOM_OUT")
-    #   print(zoom_out())  
-    # })
-    
-    zoom_out
+
+    # Return value    
+    return(zoom_out)
   })
 }
