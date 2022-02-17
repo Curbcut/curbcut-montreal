@@ -22,19 +22,19 @@ dyk_server <- function(id, var_left, var_right) {
           hr(),
           fluidRow(column(width = 7, h4(sus_translate("Did you know?"))),
                    column(width = 5, align = "right",
-                          actionLink(inputId = session$ns("hide"), 
+                          actionLink(inputId = session$ns("hide_dyk"), 
                                      class="sus-small-link",
                                      label = sus_translate("Hide")))))
       }
     })
 
     # Track hide status with clicks on input$hide button
-    dyk_hide_status <- reactive(as.logical(input$hide %% 2 == 0))
+    dyk_hide_status <- reactive(as.logical(input$hide_dyk %% 2 == 0))
     
     # Change show/hide button text
     observeEvent(dyk_hide_status(), {
-      txt <- sus_translate(switch(input$hide %% 2 + 1, "Hide", "Show"))
-      updateActionButton(session, "hide", label = txt)
+      txt <- sus_translate(switch(input$hide_dyk %% 2 + 1, "Hide", "Show"))
+      updateActionButton(session, "hide_dyk", label = txt)
     }, ignoreInit = TRUE)
     
     # Only show contents if dyk_output isn't empty and !dyk_hide_status

@@ -20,7 +20,8 @@ explore_UI <- function(id) {
     div(id = NS(id, "explore_title"),
         fluidRow(column(width = 7, h4(sus_translate("Explore"))),
                  column(width = 5, align = "right", 
-                        actionLink(inputId = NS(id, "hide"), class="sus-small-link", 
+                        actionLink(inputId = NS(id, "hide_explore"), 
+                                   class="sus-small-link", 
                                    label = sus_translate("Hide"))))),
     
     div(id = NS(id, "explore_content"),
@@ -81,15 +82,15 @@ explore_server <- function(id, data, var_left, var_right, df, zoom = df,
     # Show/hide components
     observe({
       toggle("explore_content", condition =
-               (!is.null(table()) || !is.null(graph())) && input$hide %% 2 == 0)
+               (!is.null(table()) || !is.null(graph())) && input$hide_explore %% 2 == 0)
       toggle("explore_graph", condition = !is.null(graph()))
       toggle("clear_selection", condition = !is.na(select_id()))
     })
     
     # Change show/hide button text
-    observeEvent(input$hide, {
-      txt <- sus_translate(switch(input$hide %% 2 + 1, "Hide", "Show"))
-      updateActionButton(session, "hide", label = txt)
+    observeEvent(input$hide_explore, {
+      txt <- sus_translate(switch(input$hide_explore %% 2 + 1, "Hide", "Show"))
+      updateActionButton(session, "hide_explore", label = txt)
     })
 
     # # Return info_table text and graph to export it in report afterwards

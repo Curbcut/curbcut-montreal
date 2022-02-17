@@ -6,7 +6,7 @@ ready_modules_ui <- function(mods_rdy, stand_alone_tabs) {
     map(1:length(mods_rdy), function(higher_theme) {
       c(names(mods_rdy[higher_theme]),
         map(1:length(mods_rdy[[higher_theme]]), function(lower_theme) {
-          name <- names(mods_rdy[[higher_theme]][lower_theme])
+          name <- sus_translate(names(mods_rdy[[higher_theme]][lower_theme]))
           key <- unname(mods_rdy[[higher_theme]][lower_theme])
           tabPanel(name,
                    eval(parse(text = paste0(key, "_UI('", key, "')"))),
@@ -70,11 +70,11 @@ ui <- function(request) {
     c(list(id = "sus_page", 
            windowTitle = "SUS", 
            title = actionLink("title", "SUS"),
-           tabPanel("Home", home_UI("home"), value = "home")),
+           tabPanel(sus_translate("Home"), home_UI("home"), value = "home")),
       ready_modules_ui(mods_rdy),
-      list(tabPanel("Montréal stories", stories_UI("stories"),
+      list(tabPanel(sus_translate("Montréal stories"), stories_UI("stories"),
                     value = "stories"),
-           tabPanel("Place explorer", place_explorer_UI("place_explorer"),
+           tabPanel(sus_translate("Place explorer"), place_explorer_UI("place_explorer"),
                     value = "place_explorer"),
            tabPanel("About", why_dash_UI("why_dash"), value = "why_dash"),
            collapsible = TRUE,

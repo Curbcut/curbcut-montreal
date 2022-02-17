@@ -1,73 +1,28 @@
 #### SLIDER MODULE ########################################################
 
-# slider_range_init <- c(2006, 2016) # Initial value for the Range slider
-
-# slider_years <- c("1991", "1992", "1993", "1994", "1995",
-#                   "1996", "1997", "1998", "1999", "2000",
-#                   "2001", "2002", "2003", "2004", "2005",
-#                   "2006", "2007", "2008", "2009", "2010",
-#                   "2011", "2012", "2013", "2014", "2015", 
-#                   "2016", "2017", "2018", "2019", "2020",
-#                   "2021")
-
 # UI ----------------------------------------------------------------------
 
-slider_UI <- function(id, label = "Select a year:", slider_min, slider_max, slider_interval, slider_init) {
+slider_UI <- function(id, slider_id = NULL, 
+                      label = sus_translate("Select a year"), min = census_min, 
+                      max = census_max, step = 5, sep = "", value = census_max,
+                      width = "95%", ...) {
   
-  sliderInput(NS(id, "slider"), label,
-              min = slider_min, max = slider_max,
-              step = slider_interval,
-              sep = "",
-              value = slider_init)
-  # checkboxInput("checkbox", "Compare between years", FALSE)
+  slider_id <- if (is.null(slider_id)) "slider" else slider_id
   
-  
-  
-  # conditionalPanel(
-  # condition = "input.checkbox==0",
-  # sliderInput("slider", "Integer:",
-  #             min = slider_min, max = slider_max,
-  #             step = slider_int,
-  #             sep = "",
-  #             value = slider_init),
-  # ),
-  # conditionalPanel(
-  #   condition = "input.checkbox==1",
-  #   sliderInput("slider", "Range:",
-  #               min = slider_min, max = slider_max,
-  #               step = slider_int,
-  #               sep = "",
-  #               value = slider_range_init
-  #   )
-  # ),
-  #   checkboxInput("checkbox", "Compare between years", FALSE)
-  # ),
-  
-  # mainPanel()
-  # )
-  # )
+  sliderInput(NS(id, slider_id), label, min = min, max = max, step = step,
+              sep = sep, value = value, width = width,  ...)
 }
 
 
 # Server ------------------------------------------------------------------
 
-slider_server <- function(id, init = NULL) {
+slider_server <- function(id, slider_id = NULL) {
   
   moduleServer(id, function(input, output, session) {
     
-    # slider_values <- reactiveVal(slider_init)
-
-    # observe({
-    #   if (input$checkbox == 1) {
-    #     slider_values(isolate(input$range))
-    #     updateSliderInput(session, "range", value = slider_range_init)
-    #   } else {
-    #     updateSliderInput(session, "integer", value = slider_init)
-    #   }
-    #   #outputOptions(output, "slider_values", suspendWhenHidden = FALSE)
-    # })
+    slider_id <- if (is.null(slider_id)) "slider" else slider_id
     
-    reactive(input$slider)
+    reactive(input[[slider_id]])
     
   })
   

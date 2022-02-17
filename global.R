@@ -111,6 +111,7 @@ stand_alone_tabs <- c("Montréal stories" = "stories",
 
 translation_fr <- qread("data/translation_fr.qs")
 sus_rv <- reactiveValues(lang = "fr", active_tab = "home")
+sus_bookmark <- reactiveValues()
 
 
 # Map defaults ------------------------------------------------------------

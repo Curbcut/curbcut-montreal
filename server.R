@@ -34,26 +34,46 @@ shinyServer(function(input, output, session) {
   observe({
     query <- parseQueryString(session$clientData$url_search)
     if (!is.null(query)) {
+      
+      # MARK THE ACTIVE BOOKMARKED
+      sus_bookmark$active <- TRUE
+      
       # query returns a named list. If it's named tab, return the right
       # tabPanel. the url example: sus.ca/?tab=housing
       try({
         tab <- query[["tab"]]
-        if (!is.null(tab)) 
-        updateTabsetPanel(session, "sus_page", selected = query[["tab"]])
-        })
+        if (!is.null(tab))
+          updateTabsetPanel(session, "sus_page", selected = query[["tab"]])
+      })
       # Update language with query.
       try({
         lang <- query[["lang"]]
-        if (!is.null(lang) && lang == "en") 
+        if (!is.null(lang) && lang == "en")
           click("language_button")
       })
+      # Retrieve important map info
+      try({
+        sus_bookmark$zoom <- as.numeric(query[["zoom"]])
+        sus_bookmark$location <- c(as.numeric(query[["lon"]]), 
+                                   as.numeric(query[["lat"]]))
+      })
+      # Retrieve var_right
+      try({
+        sus_bookmark$var_right <- query[["var_right"]]
+      })
+      # Retrieve select_id
+      try({
+        sus_bookmark$select_id <- query[["select_id"]]
+      })
+      # Retrieve if df is manual
+      try({
+        sus_bookmark$zoom_auto <- as.logical(query[["zoom_auto"]])
+        sus_bookmark$df <- query[["df"]]
+      })
+      try({
+        sus_bookmark$more_args <- query[["more_args"]]
+      })
     }
-  })
-
-  # Update the URL when a module is launch
-  observe({
-      updateQueryString(paste0("/?tab=", input$sus_page, 
-                               "&lang=", sus_rv$lang()))
   })
   
   # Modules -----------------------------------------------------------------
