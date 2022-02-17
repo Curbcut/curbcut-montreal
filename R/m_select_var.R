@@ -22,7 +22,6 @@ select_var_server <- function(id, var_list, disabled = reactive(NULL),
     
     # Update dropdown menu if there are disabled choices
     observe({
-      
       if (!is.null(disabled())) {
         updatePickerInput(
           session, "var", 
@@ -31,8 +30,7 @@ select_var_server <- function(id, var_list, disabled = reactive(NULL),
                             style = ifelse(disabled(), 
                                            "color: rgba(119, 119, 119, 0.5);", 
                                            "")))
-      } else updatePickerInput(session, "var", 
-                               choices = sus_translate(var_list()))})
+      }})
     
     var <- reactive({
       v1 <- paste(input$var, time(), sep = "_")

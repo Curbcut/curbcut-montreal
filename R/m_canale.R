@@ -101,7 +101,7 @@ canale_server <- function(id) {
       data = data, 
       df = df, 
       zoom = zoom,
-      click = click_id,
+      click = click_id
       )
     
     # Explore panel

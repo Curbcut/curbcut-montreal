@@ -99,8 +99,6 @@ housing_server <- function(id) {
         vars_housing_right_dis),
       df = df,
       time = time)
-    
-    observe(print(var_right()))
 
     # Sidebar
     sidebar_server(id = ns_id, x = "housing")
