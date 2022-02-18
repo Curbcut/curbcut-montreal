@@ -33,7 +33,8 @@ shinyServer(function(input, output, session) {
   
   observe({
     query <- parseQueryString(session$clientData$url_search)
-    if (!is.null(query)) {
+
+    if (length(query) != 0) {
       
       # MARK THE ACTIVE BOOKMARKED
       sus_bookmark$active <- TRUE
@@ -53,26 +54,34 @@ shinyServer(function(input, output, session) {
       })
       # Retrieve important map info
       try({
-        sus_bookmark$zoom <- as.numeric(query[["zm"]])
+        if (!is.null(query[["zm"]])) {
+        sus_bookmark$zoom <- as.numeric(query[["zm"]])}
+        
+        if (!is.null(query[["lon"]])) {
         sus_bookmark$location <- c(as.numeric(query[["lon"]]), 
-                                   as.numeric(query[["lat"]]))
+                                   as.numeric(query[["lat"]]))}
       })
       # Retrieve var_right
       try({
+        if (!is.null(query[["v_r"]]))
         sus_bookmark$var_right <- query[["v_r"]]
       })
       # Retrieve select_id
       try({
-        sus_bookmark$select_id <- query[["id"]]
+        if (!is.null(query[["s_id"]]))
+        sus_bookmark$select_id <- query[["s_id"]]
       })
       # Retrieve if df is manual
       try({
+        if (!is.null(query[["zm_a"]])) {
         sus_bookmark$zoom_auto <- as.logical(query[["zm_a"]])
-        sus_bookmark$df <- query[["df"]]
+        sus_bookmark$df <- query[["df"]]}
       })
       try({
+        if (!is.null(query[["more"]]))
         sus_bookmark$more_args <- query[["more"]]
       })
+      print(sus_bookmark)
     }
   })
   

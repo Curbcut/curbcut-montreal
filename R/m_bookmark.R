@@ -25,8 +25,12 @@
 #' 
 #'       id = "canale",
 
-bookmark_server <- function(id, map_view_change, var_right, select_id, zoom_auto,
-                            df, map_id, more_args = reactive(NULL)) {
+bookmark_server <- function(id, map_view_change = reactive(NULL), 
+                            var_right = reactive(NULL), 
+                            select_id = reactive(NULL), 
+                            zoom_auto = reactive(NULL),
+                            df = reactive(NULL), map_id = NULL, 
+                            more_args = reactive(NULL)) {
   
   stopifnot(is.reactive(map_view_change))
   stopifnot(is.reactive(var_right))
@@ -41,35 +45,44 @@ bookmark_server <- function(id, map_view_change, var_right, select_id, zoom_auto
       
       # Map arguments
       if (!is.null(map_view_change())) {
-        zoom <- floor(map_view_change()$zoom * 100) / 100
-        longitude <- round(as.numeric(map_view_change()$longitude), digits = 6)
-        latitude <- round(as.numeric(map_view_change()$latitude), digits = 6)
+        zm <- floor(map_view_change()$zoom * 100) / 100
+        lon <- round(as.numeric(map_view_change()$longitude), digits = 6)
+        lat <- round(as.numeric(map_view_change()$latitude), digits = 6)
       }
       
-      zoom <- if (!exists("zoom")) map_zoom else zoom
-      latitude <- if (!exists("latitude")) map_location[2] else latitude
-      longitude <- if (!exists("longitude")) map_location[1] else longitude
+      # Right variable
+      if (!is.null(var_right())) v_r <- get_dropdown_list_nb(unique(str_remove(var_right(), "_\\d{4}$")))
+      if (!is.null(select_id()) && !is.na(select_id())) s_id <- select_id()
+      if (!is.null(input$zoom_auto)) zm_a <- str_extract(input$zoom_auto, "^.")
+      if (!is.null(df())) df <- df()
       
       # More arguments
+      if (!is.null(more_args())) {
       widget_type <- names(more_args())
       widget_value <- more_args()
-      more_arguments <- 
+      more <- 
         paste(widget_type, widget_value, sep = ":", collapse = ";")
+      }
       
+      # If not supplied, shouldn't appear in the URL:
+      default <- paste0("/?tb=", sus_rv$active_tab(),"&lng=", sus_rv$lang())
+      
+      add_arguments <- c("zm", "lat", "lon", "v_r", "s_id", "zm_a", "df", "more")
+      add_arguments <- 
+        map(add_arguments, ~{
+          if (exists(.x) && !is.null(.x)) {
+            value <- get(.x)
+            if (is.reactive(value)) return(NULL)
+            return(paste0("&", .x, "=", value))
+          }
+        }) |> (\(x) x[lengths(x) != 0])()
+      
+      url <- reduce(c(default, add_arguments), paste0)
+    
       # Update the URL
-      updateQueryString(paste0("/?tb=", sus_rv$active_tab(),
-                               "&lng=", sus_rv$lang(),
-                               "&zm=", zoom,
-                               "&lat=", latitude,
-                               "&lon=", longitude,
-                               "&v_r=", get_dropdown_list_nb(unique(str_remove(var_right(), 
-                                                                "_\\d{4}$"))),
-                               "&id=", select_id(),
-                               "&zm_a=", str_extract(input$zoom_auto, "^."),
-                               "&df=", df(),
-                               "&more=", more_arguments
-      ))
+      updateQueryString(url)
     })
+    
 
     # Update from bookmark
     observeEvent(sus_bookmark$active, {
@@ -82,14 +95,15 @@ bookmark_server <- function(id, map_view_change, var_right, select_id, zoom_auto
         
         # Update mapdeck_view
         if (!all(map_lgl(c(sus_bookmark$zoom, sus_bookmark$location), is.null))) {
+          if (!is.null(map_id)) {
           mapdeck_update(map_id = map_id) |>
             mapdeck_view(
               location = sus_bookmark$location,
               zoom = sus_bookmark$zoom,
-              duration = 1000,
+              duration = 500,
               transition = "fly",
             )
-        }
+        }}
         
         # Update df()
         if (!is.null(sus_bookmark$df)) {
@@ -132,10 +146,15 @@ bookmark_server <- function(id, map_view_change, var_right, select_id, zoom_auto
                 value = value
               )
             } else if (widget_type == "d") {
+              
+              # Does it follow a code from get_dropdown_list_nb ?
+              selected_value <- if (str_detect(value, "^\\d*_\\d*$")) {
+                get_dropdown_list_nb(value)} else value
+              
               delayupdatePickerInput(
                   session = session,
                   inputId = inputId,
-                  selected = get_dropdown_list_nb(value)
+                  selected = selected_value
               )
             }
           })

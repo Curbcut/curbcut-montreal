@@ -179,7 +179,7 @@ housing_server <- function(id) {
       }
       
       # So that bookmarking gets triggered only ONCE
-      sus_bookmark$active <- FALSE
+      delay(3000, {sus_bookmark$active <- FALSE})
       
     }, priority = -2)
 
