@@ -11,15 +11,15 @@ housing_UI <- function(id) {
         NS(id, ns_id),
         susSidebarWidgets(
           select_var_UI(NS(id, ns_id), vars_housing_left), 
-          slider_UI(NS(id, ns_id), slider_id = "sl_u"), 
-          slider_UI(NS(id, ns_id), slider_id = "sl_b",
+          slider_UI(NS(id, ns_id), slider_id = "slu"), 
+          slider_UI(NS(id, ns_id), slider_id = "slb",
                     label = sus_translate("Select two years"),
                     value = c("2006", "2016")), 
           checkbox_UI(NS(id, ns_id),
             label = sus_translate("Compare dates")),
           year_disclaimer_UI(NS(id, ns_id))
         ),
-        bottom=div(class = "bottom_sidebar", 
+        bottom = div(class = "bottom_sidebar", 
             tagList(legend_UI(NS(id, ns_id)),
                     zoom_UI(NS(id, ns_id), map_zoom_levels)))),
     
@@ -72,13 +72,13 @@ housing_server <- function(id) {
     
     # Enable or disable first and second slider
     observeEvent(slider_switch(), {
-      toggle(NS(id, "sl_u"), condition = !slider_switch())
-      toggle(NS(id, "sl_b"), condition = slider_switch())
+      toggle(NS(id, "slu"), condition = !slider_switch())
+      toggle(NS(id, "slb"), condition = slider_switch())
     })
     
     # Time variable depending on which slider is active
-    slider_uni <- slider_server(id = ns_id, slider_id = "sl_u")
-    slider_bi <- slider_server(id = ns_id, slider_id = "sl_b")
+    slider_uni <- slider_server(id = ns_id, slider_id = "slu")
+    slider_bi <- slider_server(id = ns_id, slider_id = "slb")
     time <- reactive({
       if (slider_switch()) slider_bi() else slider_uni()})
     
@@ -159,18 +159,19 @@ housing_server <- function(id) {
       select_id = select_id,
       df = df,
       map_id = NS(id, "map"),
-      more_args = reactive(c("c-checkbox" = slider_switch(),
-                             "s-sl_u" = slider_uni(),
-                             "s-sl_b" = paste(slider_bi(), 
-                                                   collapse = "-")))
+      more_args = reactive(c("c-cbox" = slider_switch(),
+                             "s-slu" = slider_uni(),
+                             "s-slb" = paste(slider_bi(),
+                                              collapse = "-"),
+                             "d-var" = get_dropdown_list_nb(input$`housing-var`)))
     )
     
     # Last bookmark step: update click_id() + mark bookmark as inactive
     observeEvent(sus_bookmark$active, {
-      # Delay of 500 milliseconds more than the zoom update from bookmark.
+      # Delay of 100 milliseconds more than the map update from bookmark.
       # The map/df/data needs to be updated before we select an ID.
       if (isTRUE(sus_bookmark$active)) {
-        delay(2000, {
+        delay(1100, {
           if (!is.null(sus_bookmark$select_id)) {
             if (sus_bookmark$select_id != "NA") click_id(sus_bookmark$select_id)
           }

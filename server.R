@@ -41,37 +41,37 @@ shinyServer(function(input, output, session) {
       # query returns a named list. If it's named tab, return the right
       # tabPanel. the url example: sus.ca/?tab=housing
       try({
-        tab <- query[["tab"]]
+        tab <- query[["tb"]]
         if (!is.null(tab))
-          updateTabsetPanel(session, "sus_page", selected = query[["tab"]])
+          updateTabsetPanel(session, "sus_page", selected = query[["tb"]])
       })
       # Update language with query.
       try({
-        lang <- query[["lang"]]
+        lang <- query[["lng"]]
         if (!is.null(lang) && lang == "en")
           click("language_button")
       })
       # Retrieve important map info
       try({
-        sus_bookmark$zoom <- as.numeric(query[["zoom"]])
+        sus_bookmark$zoom <- as.numeric(query[["zm"]])
         sus_bookmark$location <- c(as.numeric(query[["lon"]]), 
                                    as.numeric(query[["lat"]]))
       })
       # Retrieve var_right
       try({
-        sus_bookmark$var_right <- query[["var_right"]]
+        sus_bookmark$var_right <- query[["v_r"]]
       })
       # Retrieve select_id
       try({
-        sus_bookmark$select_id <- query[["select_id"]]
+        sus_bookmark$select_id <- query[["id"]]
       })
       # Retrieve if df is manual
       try({
-        sus_bookmark$zoom_auto <- as.logical(query[["zoom_auto"]])
+        sus_bookmark$zoom_auto <- as.logical(query[["zm_a"]])
         sus_bookmark$df <- query[["df"]]
       })
       try({
-        sus_bookmark$more_args <- query[["more_args"]]
+        sus_bookmark$more_args <- query[["more"]]
       })
     }
   })

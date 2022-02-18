@@ -4,7 +4,7 @@
 
 checkbox_UI <- function(id, ...) {
   
-  checkboxInput(NS(id, "checkbox"), ...)
+  checkboxInput(NS(id, "cbox"), ...)
   
 }
 
@@ -15,7 +15,7 @@ checkbox_server <- function(id) {
   
   moduleServer(id, function(input, output, session) {
     
-    reactive(input$checkbox)
+    reactive(input$cbox)
     
   })
   

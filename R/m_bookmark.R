@@ -47,8 +47,8 @@ bookmark_server <- function(id, map_view_change, var_right, select_id, zoom_auto
       }
       
       zoom <- if (!exists("zoom")) map_zoom else zoom
-      latitude <- if(!exists("latitude")) map_location[2] else latitude
-      longitude <- if(!exists("longitude")) map_location[1] else longitude
+      latitude <- if (!exists("latitude")) map_location[2] else latitude
+      longitude <- if (!exists("longitude")) map_location[1] else longitude
       
       # More arguments
       widget_type <- names(more_args())
@@ -57,22 +57,26 @@ bookmark_server <- function(id, map_view_change, var_right, select_id, zoom_auto
         paste(widget_type, widget_value, sep = ":", collapse = ";")
       
       # Update the URL
-      updateQueryString(paste0("/?tab=", sus_rv$active_tab(),
-                               "&lang=", sus_rv$lang(),
-                               "&zoom=", zoom,
+      updateQueryString(paste0("/?tb=", sus_rv$active_tab(),
+                               "&lng=", sus_rv$lang(),
+                               "&zm=", zoom,
                                "&lat=", latitude,
                                "&lon=", longitude,
-                               "&var_right=", unique(str_remove(var_right(), 
-                                                                "_\\d{4}$")),
-                               "&select_id=", select_id(),
-                               "&zoom_auto=", input$zoom_auto,
+                               "&v_r=", get_dropdown_list_nb(unique(str_remove(var_right(), 
+                                                                "_\\d{4}$"))),
+                               "&id=", select_id(),
+                               "&zm_a=", str_extract(input$zoom_auto, "^."),
                                "&df=", df(),
-                               "&more_args=", more_arguments
+                               "&more=", more_arguments
       ))
     })
 
     # Update from bookmark
     observeEvent(sus_bookmark$active, {
+      
+      # Drop down menus should be delayed, as updating other widgets could 
+      # have a reset power on them (e.g. housing)
+      delayupdatePickerInput <- function(...) delay(100, updatePickerInput(...))
       
       if (isTRUE(sus_bookmark$active)) {
         
@@ -82,7 +86,7 @@ bookmark_server <- function(id, map_view_change, var_right, select_id, zoom_auto
             mapdeck_view(
               location = sus_bookmark$location,
               zoom = sus_bookmark$zoom,
-              duration = 1500,
+              duration = 1000,
               transition = "fly",
             )
         }
@@ -127,20 +131,23 @@ bookmark_server <- function(id, map_view_change, var_right, select_id, zoom_auto
                 inputId = inputId,
                 value = value
               )
+            } else if (widget_type == "d") {
+              delayupdatePickerInput(
+                  session = session,
+                  inputId = inputId,
+                  selected = get_dropdown_list_nb(value)
+              )
             }
           })
         }
         
         # Update var_right
         if (!is.null(sus_bookmark$var_right)) {
-          # Delay for the dropdown, as other argument supplied in more_args 
-          # might have reset effects on it if they are updated at ~the same time
-          delay(500,
-          updatePickerInput(
+          delayupdatePickerInput(
             session = session,
             inputId = "compare-var",
-            selected = if (sus_bookmark$var_right == "") " " else sus_bookmark$var_right
-          ))
+            selected = get_dropdown_list_nb(sus_bookmark$var_right)
+          )
         }
         
       }

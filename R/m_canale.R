@@ -9,7 +9,7 @@ canale_UI <- function(id) {
       # Sidebar
       sidebar_UI2(
         NS(id, ns_id), 
-        bottom=div(class = "bottom_sidebar", 
+        bottom = div(class = "bottom_sidebar", 
             tagList(legend_UI(NS(id, ns_id)),
                     zoom_UI(NS(id, ns_id), map_zoom_levels)))),
 
