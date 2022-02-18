@@ -159,7 +159,7 @@ housing_server <- function(id) {
       select_id = select_id,
       df = df,
       map_id = NS(id, "map"),
-      more_args = reactive(c("c-cbox" = slider_switch(),
+      more_args = reactive(c("c-cbox" = str_extract(slider_switch(), "^."),
                              "s-slu" = slider_uni(),
                              "s-slb" = paste(slider_bi(),
                                               collapse = "-"),

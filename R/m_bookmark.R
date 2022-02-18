@@ -1,34 +1,24 @@
 #### BOOKMARK MODULE ########################################################
 
 #' @param id A character string representing the module id. Not otherwise used.
-#' @param var_left,var_right A reactive which resolves to a character string
-#' representing the left and right variables to be mapped and analyzed. Each 
-#' should have both a "raw" version and a quantile version with the suffix 
-#' "_q3".
+#' @param map_view_change A reactive which resolves to an output of a map view
+#' change, coming from a mapdeck object.
+#' @param var_right A reactive which resolves to a character string
+#' representing the right variables to be mapped and analyzed. 
+#' @param select_id A reactive which resolves to a character string
+#' representing the geometry selected on the map.
+#' @param zoom_auto A reactive which resolves to a logical string
+#' indicating if the user is an auto-zoom.
 #' @param df A reactive which resolves to a character string representing the
-#' underlying data set to be loaded. Currently available options are 
+#' underlying data set that is mapped. Currently available options are 
 #' `c("borough", "building", "CT", "DA", "grid", "street")`.
-#' @return A reactive expression containing a data frame with the following
-#' fields (If the `var_right` input is " ", the right_var_full and right_var 
-#' fields will be omitted.):
-#' - ID, name, name_2, population: The unmodified variables of the same names
-#' from the input data frame.
-#' - var_left, var_left_q3, var_left_q5: The unmodified and quantile versions, 
-#' respectively, of the variable whose name was given in `var_left`.
-#' - var_right, var_right_q3, var_right_q5: The unmodified and quantile versions, 
-#' respectively, of the variable whose name was given in `var_right`.
-#' - geometry: The unmodified geometry variable from the input data frame.
-#' - group: A character field of form "X - Y", where X and Y are the quantile
-#' values from var_left and var_right respectively.
-#' - fill: A character vector of hex colour values to be passed to mapdeck for
-#' colouring choropleths drawn from the data frame.
-#' 
-#'       id = "canale",
+#' @param map_id The id of the map that must be updated following bookmarking. 
+#' @param more_args Named vectors indicating other input that must be updated
+#' following bookmarking.
 
 bookmark_server <- function(id, map_view_change = reactive(NULL), 
                             var_right = reactive(NULL), 
                             select_id = reactive(NULL), 
-                            zoom_auto = reactive(NULL),
                             df = reactive(NULL), map_id = NULL, 
                             more_args = reactive(NULL)) {
   
@@ -58,10 +48,10 @@ bookmark_server <- function(id, map_view_change = reactive(NULL),
       
       # More arguments
       if (!is.null(more_args())) {
-      widget_type <- names(more_args())
-      widget_value <- more_args()
-      more <- 
-        paste(widget_type, widget_value, sep = ":", collapse = ";")
+        widget_type <- names(more_args())
+        widget_value <- more_args()
+        more <- 
+          paste(widget_type, widget_value, sep = ":", collapse = ";")
       }
       
       # If not supplied, shouldn't appear in the URL:
@@ -78,102 +68,24 @@ bookmark_server <- function(id, map_view_change = reactive(NULL),
         }) |> (\(x) x[lengths(x) != 0])()
       
       url <- reduce(c(default, add_arguments), paste0)
-    
+      
       # Update the URL
       updateQueryString(url)
     })
     
-
+    
     # Update from bookmark
     observeEvent(sus_bookmark$active, {
-      
-      # Drop down menus should be delayed, as updating other widgets could 
-      # have a reset power on them (e.g. housing)
-      delayupdatePickerInput <- function(...) delay(100, updatePickerInput(...))
-      
       if (isTRUE(sus_bookmark$active)) {
-        
-        # Update mapdeck_view
-        if (!all(map_lgl(c(sus_bookmark$zoom, sus_bookmark$location), is.null))) {
-          if (!is.null(map_id)) {
-          mapdeck_update(map_id = map_id) |>
-            mapdeck_view(
-              location = sus_bookmark$location,
-              zoom = sus_bookmark$zoom,
-              duration = 500,
-              transition = "fly",
-            )
-        }}
-        
-        # Update df()
-        if (!is.null(sus_bookmark$df)) {
-          if (isFALSE(sus_bookmark$zoom_auto)) {
-            updateCheckboxInput(
-              session = session,
-              inputId = "zoom_auto",
-              value = FALSE
-            )
-            updateSliderTextInput(
-              session = session,
-              inputId = "zoom_slider",
-              selected = get_zoom_name(sus_bookmark$df)
-            )
-          }
-        }
-        
-        # PARSE more_args from the URL
-        if (!is.null(sus_bookmark$more_args)) {
-          additional <- str_split(sus_bookmark$more_args, ";")[[1]]
-
-          walk(additional, function(arg) {
-            type_inputId <- str_split(arg, ":")[[1]][1]
-            widget_type <- str_split(type_inputId, "-")[[1]][1]
-            inputId <- str_split(type_inputId, "-")[[1]][2]
-            value <- str_split(arg, ":")[[1]][2] |> 
-              str_split("-")
-            value <- value[[1]]
-
-            if (widget_type == "c") {
-              updateCheckboxInput(
-                session = session,
-                inputId = inputId,
-                value = if (str_detect(value, "^\\d$")) value else as.logical(value)
-              )
-            } else if (widget_type == "s") {
-              updateSliderInput(
-                session = session,
-                inputId = inputId,
-                value = value
-              )
-            } else if (widget_type == "d") {
-              
-              # Does it follow a code from get_variables_rowid ?
-              selected_value <- if (str_detect(value, "^\\d*$")) {
-                get_variables_rowid(value)} else value
-              
-              delayupdatePickerInput(
-                  session = session,
-                  inputId = inputId,
-                  selected = selected_value
-              )
-            }
-          })
-        }
-        
-        # Update var_right
-        if (!is.null(sus_bookmark$var_right)) {
-          print(sus_bookmark$var_right)
-          delayupdatePickerInput(
-            session = session,
-            inputId = "compare-var",
-            selected = get_variables_rowid(sus_bookmark$var_right)
-          )
-        }
-        
+        update_module(session = session,zoom = sus_bookmark$zoom, 
+                      location = sus_bookmark$location, 
+                      map_id = map_id, df = sus_bookmark$df, 
+                      zoom_auto = sus_bookmark$zoom_auto, 
+                      var_right = sus_bookmark$var_right, 
+                      more_args = sus_bookmark$more_args)
       }
+      
     }, priority = -1, autoDestroy = TRUE, once = TRUE)
-    
-    
     
   })
 }

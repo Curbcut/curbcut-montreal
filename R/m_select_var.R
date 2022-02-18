@@ -32,6 +32,12 @@ select_var_server <- function(id, var_list, disabled = reactive(NULL),
                                            "")))
       }})
     
+    observeEvent(sus_rv$lang, {
+      updatePickerInput(
+        session, "var", 
+        choices = sus_translate(var_list()))
+    })
+    
     var <- reactive({
       v1 <- paste(input$var, time(), sep = "_")
       v1 <- sub("_$", "", v1)

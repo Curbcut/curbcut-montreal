@@ -107,11 +107,12 @@ stand_alone_tabs <- c("Montréal stories" = "stories",
                       "Place explorer" = "place_explorer",
                       "About" = "why_dash")
 
-# Translation -------------------------------------------------------------
+# Translation and other global reactive values ----------------------------
 
 translation_fr <- qread("data/translation_fr.qs")
-sus_rv <- reactiveValues(lang = "fr", active_tab = "home")
+sus_rv <- reactiveValues(lang = "fr", active_tab = "home", link = NULL)
 sus_bookmark <- reactiveValues()
+sus_link <- reactiveValues()
 
 
 # Map defaults ------------------------------------------------------------

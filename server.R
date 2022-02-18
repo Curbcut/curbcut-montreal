@@ -18,18 +18,44 @@ shinyServer(function(input, output, session) {
   observeEvent(input$language_button,{
     if (input$language_button[1] %% 2 != 0) {
       js$setLanguage("en")
-      updateActionLink(inputId = "language_button", label = languageButtonLabel("Français"))
+      updateActionLink(inputId = "language_button", 
+                       label = languageButtonLabel("Français"))
     } else {
       js$setLanguage("fr")
-      updateActionLink(inputId = "language_button", label = languageButtonLabel("English"))
+      updateActionLink(inputId = "language_button", 
+                       label = languageButtonLabel("English"))
     }
   })
   
 
-  # URL and active tab ------------------------------------------------------
+  # Active tab -------------------------------------------------------------
   
-  sus_rv$active_tab <- 
+  sus_rv$active_tab <-
     eventReactive(input$sus_page, input$sus_page, ignoreNULL = FALSE)
+
+  observeEvent(sus_rv$link, {
+    # Switch active tab when link is opened
+    updateTabsetPanel(session, "sus_page", selected = sus_rv$link())
+    # Turn off the link
+    sus_rv$link <- NULL
+  }, ignoreInit = TRUE, ignoreNULL = TRUE)
+  
+  # Links between modules
+  observeEvent(sus_link$activity, {
+      # Delay to make sure the linked module is fully loaded
+      delay(500, {
+        update_module(mod_ns = sus_link$mod_ns, session = session, 
+                      zoom = sus_link$zoom, location = sus_link$location, 
+                      map_id = sus_link$map_id,
+                      df = sus_link$df, 
+                      zoom_auto = sus_link$zoom_auto, 
+                      var_right = sus_link$var_right, 
+                      more_args = sus_link$more_args)
+      })
+  }, ignoreInit = TRUE)
+  
+
+  # Parse URL --------------------------------------------------------------
   
   observe({
     query <- parseQueryString(session$clientData$url_search)
@@ -88,7 +114,7 @@ shinyServer(function(input, output, session) {
   
   active_mod_server <- function(active_tab = input$sus_page) {
     if (active_tab == "home") {
-      home_server("home")
+      home_server("home", session)
     } else if (active_tab == "access") {
       access_server("access")
     } else if (active_tab == "alley") {
