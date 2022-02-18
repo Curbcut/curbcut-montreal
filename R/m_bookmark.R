@@ -51,7 +51,7 @@ bookmark_server <- function(id, map_view_change = reactive(NULL),
       }
       
       # Right variable
-      if (!is.null(var_right())) v_r <- get_dropdown_list_nb(unique(str_remove(var_right(), "_\\d{4}$")))
+      if (!is.null(var_right())) v_r <- get_variables_rowid(unique(str_remove(var_right(), "_\\d{4}$")))
       if (!is.null(select_id()) && !is.na(select_id())) s_id <- select_id()
       if (!is.null(input$zoom_auto)) zm_a <- str_extract(input$zoom_auto, "^.")
       if (!is.null(df())) df <- df()
@@ -137,7 +137,7 @@ bookmark_server <- function(id, map_view_change = reactive(NULL),
               updateCheckboxInput(
                 session = session,
                 inputId = inputId,
-                value = as.logical(value)
+                value = if (str_detect(value, "^\\d$")) value else as.logical(value)
               )
             } else if (widget_type == "s") {
               updateSliderInput(
@@ -147,9 +147,9 @@ bookmark_server <- function(id, map_view_change = reactive(NULL),
               )
             } else if (widget_type == "d") {
               
-              # Does it follow a code from get_dropdown_list_nb ?
-              selected_value <- if (str_detect(value, "^\\d*_\\d*$")) {
-                get_dropdown_list_nb(value)} else value
+              # Does it follow a code from get_variables_rowid ?
+              selected_value <- if (str_detect(value, "^\\d*$")) {
+                get_variables_rowid(value)} else value
               
               delayupdatePickerInput(
                   session = session,
@@ -162,10 +162,11 @@ bookmark_server <- function(id, map_view_change = reactive(NULL),
         
         # Update var_right
         if (!is.null(sus_bookmark$var_right)) {
+          print(sus_bookmark$var_right)
           delayupdatePickerInput(
             session = session,
             inputId = "compare-var",
-            selected = get_dropdown_list_nb(sus_bookmark$var_right)
+            selected = get_variables_rowid(sus_bookmark$var_right)
           )
         }
         

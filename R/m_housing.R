@@ -163,7 +163,7 @@ housing_server <- function(id) {
                              "s-slu" = slider_uni(),
                              "s-slb" = paste(slider_bi(),
                                               collapse = "-"),
-                             "d-var" = get_dropdown_list_nb(input$`housing-var`)))
+                             "d-var" = get_variables_rowid(input$`housing-var`)))
     )
     
     # Last bookmark step: update click_id() + mark bookmark as inactive
@@ -179,7 +179,7 @@ housing_server <- function(id) {
       }
       
       # So that bookmarking gets triggered only ONCE
-      delay(3000, {sus_bookmark$active <- FALSE})
+      delay(1500, {sus_bookmark$active <- FALSE})
       
     }, priority = -2)
 

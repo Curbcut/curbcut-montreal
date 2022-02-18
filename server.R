@@ -81,7 +81,6 @@ shinyServer(function(input, output, session) {
         if (!is.null(query[["more"]]))
         sus_bookmark$more_args <- query[["more"]]
       })
-      print(sus_bookmark)
     }
   })
   
