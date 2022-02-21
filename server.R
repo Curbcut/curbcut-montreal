@@ -158,12 +158,13 @@ shinyServer(function(input, output, session) {
   }
   
   observeEvent(input$sus_page, {
+    bookmark_server("reset")
     if (!input$sus_page %in% sus_rv$previous_tabs()) active_mod_server()
   }, ignoreInit = F)
   
-  onRestore(function(state) {
-    active_mod_server()
-  })
+  observeEvent(input$sus_page, {
+    updateQueryString("?")
+  }, ignoreInit = F)
   
   # Data download -----------------------------------------------------------
   
