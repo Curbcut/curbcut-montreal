@@ -32,6 +32,15 @@ shinyServer(function(input, output, session) {
   
   sus_rv$active_tab <-
     eventReactive(input$sus_page, input$sus_page, ignoreNULL = FALSE)
+  
+  observeEvent(input$sus_page, {
+    sus_rv$last_module <- unique(c(sus_rv$current_module, sus_rv$last_module))
+    sus_rv$current_module <- c(input$sus_page, sus_rv$last_module)})
+  
+  sus_rv$previous_tabs <- reactive({
+    req(input$sus_page)
+    input$sus_page
+    sus_rv$last_module})
 
   observeEvent(sus_rv$link, {
     # Switch active tab when link is opened
@@ -149,7 +158,7 @@ shinyServer(function(input, output, session) {
   }
   
   observeEvent(input$sus_page, {
-    active_mod_server()
+    if (!input$sus_page %in% sus_rv$previous_tabs()) active_mod_server()
   }, ignoreInit = F)
   
   onRestore(function(state) {
