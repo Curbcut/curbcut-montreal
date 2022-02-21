@@ -2,7 +2,7 @@
 
 get_variables_rowid <- function(input) {
   
-  if (input == " ") return(" ")
+  if (input[1] == " ") return(" ")
 
   index <- 
     imap(variables$var_code, function(var_code, var_rowid) {
@@ -11,7 +11,7 @@ get_variables_rowid <- function(input) {
       out
     }) |> unlist()
   
-  if (str_detect(input, "^\\d*$")) return(names(index[index == input]))
-  if (!str_detect(input, "^\\d*$")) return(unname(index[names(index) == input]))
+  if (str_detect(input[1], "^\\d*$")) return(names(index[index == input[1]]))
+  if (!str_detect(input[1], "^\\d*$")) return(unname(index[names(index) == input[1]]))
   
 }

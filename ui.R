@@ -15,7 +15,12 @@ ready_modules_ui <- function(mods_rdy, stand_alone_tabs) {
       )
     })
   
-  map(list_args, ~{do.call(navbarMenu, .x)})
+  map(list_args, ~{do.call(navbarMenu, .x)}) |> 
+    map(~{
+      .x$title <- sus_translate(.x$title)
+      .x$menuName <- sus_translate(.x$menuName)
+      .x
+    })
 
 }
 

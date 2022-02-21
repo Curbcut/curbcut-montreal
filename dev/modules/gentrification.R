@@ -82,17 +82,22 @@ gen_to_join <- map(list("borough" = borough, "CT" = CT, "DA" = DA,
 
 
 # Add empty q3 and q5 -----------------------------------------------------
-gen_to_join <- map(gen_to_join, ~{
-  mutate(.x, across(c(-any_of("ID")), \(x) NA_real_, .names = "{.col}_q3")) |> 
-    rename_with(~paste0(str_remove(., "_\\d{4}"),
-                        str_extract(., "_\\d{4}")), matches("_\\d{4}"))
-})
+# gen_to_join <- map(gen_to_join, ~{
+#   mutate(.x, across(c(-any_of("ID")), \(x) NA_real_, .names = "{.col}_q3")) |> 
+#     rename_with(~paste0(str_remove(., "_\\d{4}"),
+#                         str_extract(., "_\\d{4}")), matches("_\\d{4}"))
+# })
+# 
+# gen_to_join <- map(gen_to_join, ~{
+#   mutate(.x, across(c(-any_of("ID")), \(x) NA_real_, .names = "{.col}_q5")) |> 
+#     rename_with(~paste0(str_remove(., "_\\d{4}"),
+#                         str_extract(., "_\\d{4}")), matches("_\\d{4}"))
+# })
 
-gen_to_join <- map(gen_to_join, ~{
-  mutate(.x, across(c(-any_of("ID")), \(x) NA_real_, .names = "{.col}_q5")) |> 
-    rename_with(~paste0(str_remove(., "_\\d{4}"),
-                        str_extract(., "_\\d{4}")), matches("_\\d{4}"))
-})
+gen_results <- map(gen_to_join, add_q3)
+gen_q3 <- map(gen_results, get_breaks_q3)
+gen_q5 <- map(gen_results, get_breaks_q5)
+gen_results <- map2(gen_results, gen_q5, ~bind_cols(.x, add_q5(.x, .y)))
 
 # Data testing ------------------------------------------------------------
 
@@ -103,20 +108,18 @@ gen_to_join <- map(gen_to_join, ~{
 
 # Apply function ----------------------------------------------------------
 
-borough <- left_join(borough, gen_to_join$borough, by = "ID") |> 
-  relocate(geometry, .after = last_col())
+# Join data ---------------------------------------------------------------
 
-CT <- left_join(CT, gen_to_join$CT, by = "ID") |> 
-  relocate(geometry, .after = last_col())
+walk(names(gen_results), ~{
+  assign(.x, left_join(get(.x), gen_results[[.x]], by = "ID") |> 
+           relocate(any_of(c("buffer", "centroid", "building", "geometry")), 
+                    .after = last_col()), envir = globalenv())})
 
-DA <- left_join(DA, gen_to_join$DA, by = "ID") |> 
-  relocate(buffer, centroid, building, geometry, .after = last_col())
-
-grid <- left_join(grid, gen_to_join$grid, by = "ID") |> 
-  relocate(geometry, .after = last_col())
-
-street <- left_join(street, gen_to_join$street, by = "ID") |> 
-  relocate(geometry, .after = last_col())
+street <- 
+  street |> 
+  left_join(gen_results$DA, by = c("DAUID" = "ID")) |> 
+  relocate(geometry, .after = last_col()) |> 
+  st_set_agr("constant")
 
 
 # Meta testing ------------------------------------------------------------
@@ -125,6 +128,38 @@ street <- left_join(street, gen_to_join$street, by = "ID") |>
 
 
 # Add variable explanations -----------------------------------------------
+
+var_list <- 
+  gen_results |> 
+  map(~names(select(.x, -ID, -contains(c("q3", "q5"))))) |> 
+  unlist() |> 
+  unique()
+
+years <- str_extract(var_list, "\\d{4}$")
+
+# Get breaks_q3
+breaks_q3_active <-
+  map(set_names(var_list), ~{
+    map2_dfr(gen_q3, names(gen_results), function(x, scale) {
+      if (nrow(x) > 0) x |> mutate(scale = scale, date = NA, rank = 0:3,
+                                   .before = everything())}) |> 
+      select(scale, date, rank, var = all_of(.x))}) |> 
+  map2(years, ~{
+    .x |> mutate(date = .y)
+  }) |> 
+  reduce(bind_rows)
+
+# Get breaks_q5
+breaks_q5_active <- 
+  map(set_names(var_list), ~{
+    map2_dfr(gen_q5, names(gen_results), function(x, scale) {
+      if (nrow(x) > 0) x |> mutate(scale = scale, rank = 0:5, 
+                                   .before = everything())}) |> 
+      select(scale, rank, var = all_of(.x))}) |> 
+  map2(years, ~{
+    .x |> mutate(date = .y)
+  }) |> 
+  reduce(bind_rows)
 
 variables <-
   variables |>
@@ -138,8 +173,8 @@ variables <-
     private = FALSE,
     dates = c("1996", "2001", "2006", "2011", "2016"),
     scales = c("borough", "building", "CT", "DA", "grid", "street"),
-    breaks_q3 = NA,
-    breaks_q5 = NA,
+    breaks_q3 = breaks_q3_active,
+    breaks_q5 = breaks_q5_active,
     source = "sus_team")
 
 

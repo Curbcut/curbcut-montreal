@@ -31,7 +31,6 @@ suppressPackageStartupMessages({
 
 options(shiny.trace = FALSE) # Set TRUE for debugging
 options(shiny.useragg = TRUE)
-enableBookmarking(store = "url")
 
 # Data --------------------------------------------------------------------
 

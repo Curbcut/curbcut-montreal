@@ -3,25 +3,26 @@
 # UI ----------------------------------------------------------------------
 
 covid_UI <- function(id) {
+  ns_id <- "covid"
+  
   return(tagList(
-      # Sidebar
-      sidebar_UI(
-        NS(id, "sidebar"),
-        select_var_UI(NS(id, "left"), var_list_covid),
-        div(class = "bottom_sidebar",
-            tagList(
-              h5("Legend", style = "font-size: 12px;"),
-              uiOutput(NS(id, "legend_render"))))),
-
-      # Map
-      div(class = "mapdeck_div", mapdeckOutput(NS(id, "map"), height = "100%")),
-      
-      # Right panel
-      right_panel(
-        id = id, 
-        div(class = "explore_dyk", 
-            explore_UI(NS(id, "explore")), 
-            dyk_UI(NS(id, "dyk"))))
+    # Sidebar
+    sidebar_UI2(
+      NS(id, ns_id),
+      select_var_UI(NS(id, ns_id), var_list_covid),
+      bottom = div(class = "bottom_sidebar",
+                   tagList(
+                     h5("Legend", style = "font-size: 12px;"),
+                     uiOutput(NS(id, "legend_render"))))),
+    
+    # Map
+    div(class = "mapdeck_div", mapdeckOutput(NS(id, "map"), height = "100%")),
+    
+    # Right panel
+    # MUST ADD A `HIDDEN` ENTIRE RIGHT PANEL IF DYK IS EMPTY
+    right_panel(
+      id = id, 
+      dyk_UI(NS(id, ns_id)))
   ))
 }
 
@@ -29,14 +30,13 @@ covid_UI <- function(id) {
 
 covid_server <- function(id) {
   moduleServer(id, function(input, output, session) {
+    ns_id <- "covid"
     
     # Initial reactives
     selection <- reactiveVal(NA)
     
     # Sidebar
-    sidebar_server(
-      id = "sidebar", 
-      x = "covid")
+    sidebar_server(id = ns_id, x = "covid")
     
     # Legend
     output$legend_render <- renderUI({
@@ -55,13 +55,13 @@ covid_server <- function(id) {
       location = map_location)})
     
     # Left variable server
-    var_left <- select_var_server("left", reactive(var_list_covid))
+    var_left <- select_var_server(ns_id, reactive(var_list_covid))
     
     # Data 
     data <- reactive(filter(covid, timeframe == var_left()))
     
     # Did-you-know panel
-    dyk_server("dyk", reactive(paste0("covid_", var_left(), "_2020")),
+    dyk_server(ns_id, reactive(paste0("covid_", var_left(), "_2020")),
                reactive(" "))
     
     # Update map in response to variable change
