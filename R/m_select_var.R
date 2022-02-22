@@ -1,17 +1,21 @@
 #### SELECT VARIABLE MODULE ####################################################
 
-select_var_UI <- function(id, var_list, label = NULL, width = "100%", 
+select_var_UI <- function(id, select_var_id = NULL, 
+                          var_list, label = NULL, width = "100%", 
                           inline = FALSE, more_style = NULL, selected = NULL) {
   style <- ""
   if (inline) style <- paste("display: inline-block;", style)
   if (!is.null(more_style)) style <- paste(style, more_style)
   
+  select_var_id <- if (is.null(select_var_id)) "var" else select_var_id
+  
   div(style = style,
-      pickerInput(NS(id, "var"), label = label, choices = var_list, 
+      pickerInput(NS(id, select_var_id), label = label, choices = var_list, 
                   selected = selected, width = width))
 }
 
-select_var_server <- function(id, var_list, disabled = reactive(NULL), 
+select_var_server <- function(id, select_var_id = NULL,
+                              var_list, disabled = reactive(NULL), 
                               time = reactive(NULL), df = reactive(NULL)) {
   
   stopifnot(is.reactive(var_list))
@@ -20,11 +24,13 @@ select_var_server <- function(id, var_list, disabled = reactive(NULL),
   
   moduleServer(id, function(input, output, session) {
     
+    select_var_id <- if (is.null(select_var_id)) "var" else select_var_id
+    
     # Update dropdown menu if there are disabled choices
     observe({
       if (!is.null(disabled())) {
         updatePickerInput(
-          session, "var", 
+          session, select_var_id, 
           choices = sus_translate(var_list()),
           choicesOpt = list(disabled = disabled(),
                             style = ifelse(disabled(), 
@@ -34,12 +40,12 @@ select_var_server <- function(id, var_list, disabled = reactive(NULL),
     
     observeEvent(sus_rv$lang, {
       updatePickerInput(
-        session, "var", 
+        session, select_var_id, 
         choices = sus_translate(var_list()))
     })
     
     var <- reactive({
-      v1 <- paste(input$var, time(), sep = "_")
+      v1 <- paste(input[[select_var_id]], time(), sep = "_")
       v1 <- sub("_$", "", v1)
       if (!is.null(df()) && df() %in% c("borough", "CT", "DA", "grid")) v1 <- 
         sapply(v1, return_closest_year, df(), USE.NAMES = FALSE)

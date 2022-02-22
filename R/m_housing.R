@@ -10,7 +10,7 @@ housing_UI <- function(id) {
       sidebar_UI2(
         NS(id, ns_id),
         susSidebarWidgets(
-          select_var_UI(NS(id, ns_id), vars_housing_left), 
+          select_var_UI(NS(id, ns_id), var_list = vars_housing_left), 
           slider_UI(NS(id, ns_id), slider_id = "slu"), 
           slider_UI(NS(id, ns_id), slider_id = "slb",
                     label = sus_translate("Select two years"),

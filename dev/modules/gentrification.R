@@ -101,7 +101,7 @@ gen_results <- map2(gen_results, gen_q5, ~bind_cols(.x, add_q5(.x, .y)))
 
 # Data testing ------------------------------------------------------------
 
-# data_testing(gen_to_join)
+data_testing(gen_to_join, ignore_year_diff = TRUE)
 # Wranings on absolute average difference between years. In the case of
 # gentrification ind., these warnings should be taken lightly.
 

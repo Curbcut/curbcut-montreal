@@ -6,9 +6,9 @@ dmti_UI <- function(id) {
   return(div(class = "mapdeck_div", 
                mapdeckOutput(NS(id, "map"), height = "100%")),
           title_UI(NS(id, "title"),
-                   select_var_UI(NS(id, "left_1"), var_list_left_dmti_1), 
-                   select_var_UI(NS(id, "left_2"), var_list_left_dmti_2), 
-                   select_var_UI(NS(id, "left_3"), var_list_left_dmti_3), 
+                   select_var_UI(NS(id, "left_1"), var_list = var_list_left_dmti_1), 
+                   select_var_UI(NS(id, "left_2"), var_list = var_list_left_dmti_2), 
+                   select_var_UI(NS(id, "left_3"), var_list = var_list_left_dmti_3), 
                    slider_UI(NS(id, "left"), dmti_slider$min, dmti_slider$max, 
                              dmti_slider$interval, dmti_slider$init)
           ),
@@ -55,7 +55,7 @@ dmti_server <- function(id) {
                                       reactive(rv_dmti$zoom))
     
     # Left variable servers
-    var_left_dmti_1 <- select_var_server("left_1", reactive(var_list_left_dmti_1))
+    var_left_dmti_1 <- select_var_server("left_1", var_list = reactive(var_list_left_dmti_1))
     
     left_2_update <- reactive({
       output <- list()
@@ -77,8 +77,8 @@ dmti_server <- function(id) {
       output
     })
     
-    var_left_dmti_2 <- select_var_server("left_2", left_2_update)
-    var_left_dmti_3 <- select_var_server("left_3", left_3_update)
+    var_left_dmti_2 <- select_var_server("left_2", var_list = left_2_update)
+    var_left_dmti_3 <- select_var_server("left_3", var_list = left_3_update)
     
     # Get time from slider
     time <- slider_server("left")

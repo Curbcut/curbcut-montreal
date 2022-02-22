@@ -6,9 +6,10 @@ gentrification_UI <- function(id) {
   ns_id <- "gentrification"
   
   return(tagList(
-      # Sidebar
-      sidebar_UI2(
-        NS(id, ns_id),
+    # Sidebar
+    sidebar_UI2(
+      NS(id, ns_id),
+      susSidebarWidgets(
         slider_UI(NS(id, ns_id), 
                   label = sus_translate("Select two years"),
                   value = c("2006", "2016")),
@@ -16,21 +17,22 @@ gentrification_UI <- function(id) {
                     label = sus_translate("Review a single variable ",
                                           "part of the index")),
         select_var_UI(NS(id, ns_id), 
-                      var_list_left_gentrification),
-        year_disclaimer_UI(NS(id, ns_id)),
-        bottom = div(class = "bottom_sidebar", 
-            tagList(legend_UI(NS(id, ns_id)),
-                    zoom_UI(NS(id, ns_id), map_zoom_levels)))),
-
-      # Map
-      div(class = "mapdeck_div", mapdeckOutput(NS(id, "map"), height = "100%")),
-      
-      # Right panel
-      right_panel(
-        id = id, 
-        compare_UI(NS(id,ns_id), make_dropdown(multi_year = T)),
-        explore_UI(NS(id, ns_id)), 
-        dyk_UI(NS(id, ns_id)))
+                      var_list = var_list_left_gentrification),
+        year_disclaimer_UI(NS(id, ns_id))
+      ),
+      bottom = div(class = "bottom_sidebar", 
+                   tagList(legend_UI(NS(id, ns_id)),
+                           zoom_UI(NS(id, ns_id), map_zoom_levels)))),
+    
+    # Map
+    div(class = "mapdeck_div", mapdeckOutput(NS(id, "map"), height = "100%")),
+    
+    # Right panel
+    right_panel(
+      id = id, 
+      compare_UI(NS(id,ns_id), make_dropdown(multi_year = T)),
+      explore_UI(NS(id, ns_id)), 
+      dyk_UI(NS(id, ns_id)))
   ))
 }
 
@@ -125,10 +127,6 @@ gentrification_server <- function(id) {
       df = df(),
       var_left = var_left(),
       var_right = var_right()))
-    
-    observe(print(df()))
-    observe(print(var_left()))
-    observe(print(var_right()))
 
     # Disclaimers and how to read the map
     year_disclaimer_server(

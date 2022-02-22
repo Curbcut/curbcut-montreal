@@ -9,7 +9,7 @@ covid_UI <- function(id) {
     # Sidebar
     sidebar_UI2(
       NS(id, ns_id),
-      select_var_UI(NS(id, ns_id), var_list_covid),
+      select_var_UI(NS(id, ns_id), var_list = var_list_covid),
       bottom = div(class = "bottom_sidebar",
                    tagList(
                      h5("Legend", style = "font-size: 12px;"),
@@ -55,7 +55,7 @@ covid_server <- function(id) {
       location = map_location)})
     
     # Left variable server
-    var_left <- select_var_server(ns_id, reactive(var_list_covid))
+    var_left <- select_var_server(ns_id, var_list = reactive(var_list_covid))
     
     # Data 
     data <- reactive(filter(covid, timeframe == var_left()))

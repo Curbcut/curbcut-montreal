@@ -3,16 +3,16 @@
 get_data_table <- function(df, var_left, var_right, data_type, point_df) {
   
   # Get time format; eventually this might need to be conditional
-  time_format <- "_\\d{4}$"
+  time_format <- "\\d{4}$"
   
   # Facilitate code legibility by pre-creating q3/q5 column names
-  left_q3 <- paste0(str_remove(all_of(var_left), time_format), "_q3", 
+  left_q3 <- paste0(str_remove(all_of(var_left), time_format), "q3_", 
                     na.omit(str_extract(var_left, time_format)))
-  right_q3 <- paste0(str_remove(all_of(var_right), time_format), "_q3", 
+  right_q3 <- paste0(str_remove(all_of(var_right), time_format), "q3_", 
                      na.omit(str_extract(var_right, time_format)))
-  left_q5 <- paste0(str_remove(all_of(var_left), time_format), "_q5", 
+  left_q5 <- paste0(str_remove(all_of(var_left), time_format), "q5_", 
                     na.omit(str_extract(var_left, time_format)))
-  right_q5 <- paste0(str_remove(all_of(var_right), time_format), "_q5", 
+  right_q5 <- paste0(str_remove(all_of(var_right), time_format), "q5_", 
                      na.omit(str_extract(var_right, time_format)))
   
   # Univariate

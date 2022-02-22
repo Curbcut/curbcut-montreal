@@ -3,51 +3,58 @@
 # UI ----------------------------------------------------------------------
 
 permits_UI <- function(id) {
+  ns_id <- "permits"
+  
   return(tagList(
-      # Sidebar
-      sidebar_UI(
-        NS(id, "sidebar"),
-        select_var_UI(NS(id, "left_1"), var_list_left_permits_1,
+    # Sidebar
+    sidebar_UI2(
+      NS(id, ns_id),
+      susSidebarWidgets(
+        select_var_UI(NS(id, ns_id), select_var_id = "gr",
+                      var_list = var_list_left_permits_1,
                       label = sus_translate("Grouping")),
-        select_var_UI(NS(id, "left_2"), var_list_left_permits_2,
+        select_var_UI(NS(id, ns_id), select_var_id = "tp",
+                      var_list = var_list_left_permits_2,
                       label = sus_translate("Type of permits")),
         div(id = NS(id, "slider"),
-            sliderInput(NS(id, "left"), 
-                        sus_translate("Select a year"),
-                        min = permits_slider$min,
-                        max = permits_slider$max,
-                        step = permits_slider$interval, sep = "",
-                        value = permits_slider$init,
-                        width = "95%"),
-            sliderInput(NS(id, "left_bi_time"), 
-                        sus_translate("Select two dates"), 
-                        min = permits_slider$min,
-                        max = permits_slider$max, 
-                        step = permits_slider$interval, sep = "", 
-                        value = c("2000", "2021"),
-                        width = "95%")),
+            slider_UI(NS(id, ns_id), 
+                      slider_id = "slu",
+                      label = sus_translate("Select a year"),
+                      min = permits_slider$min,
+                      max = permits_slider$max,
+                      step = permits_slider$interval, sep = "",
+                      value = permits_slider$init,
+                      width = "95%"),
+            slider_UI(NS(id, ns_id), 
+                      slider_id = "slb",
+                      label = sus_translate("Select two dates"), 
+                      min = permits_slider$min,
+                      max = permits_slider$max, 
+                      step = permits_slider$interval, sep = "", 
+                      value = c("2000", "2021"),
+                      width = "95%")),
         div(id = NS(id, "slider_switch"),
-            checkboxInput(inputId = NS(id, "bi_time"),
-                          label = sus_translate("Compare dates"))),
-        hidden(checkboxInput(
-          inputId = NS(id, "grid"), 
-          label = sus_translate("250-metre grid"))),
-        year_disclaimer_UI(NS(id, "disclaimers")),
-        div(class = "bottom_sidebar", 
-            tagList(legend_UI(NS(id, "legend")),
-                    zoom_UI(NS(id, "zoom"), map_zoom_levels)))),
+            checkbox_UI(NS(id, ns_id),
+                        checkbox_id = "comp_d",
+                        label = sus_translate("Compare dates"))),
+        hidden(checkbox_UI(NS(id, ns_id), 
+                           checkbox_id = "grid",
+                           label = sus_translate("250-metre grid"))),
+        year_disclaimer_UI(NS(id, ns_id))
+      ),
+      bottom = div(class = "bottom_sidebar", 
+                   tagList(legend_UI(NS(id, ns_id)),
+                           zoom_UI(NS(id, ns_id), map_zoom_levels)))),
     
-      # Map
-      div(class = "mapdeck_div", 
-          mapdeckOutput(NS(id, "map"), height = "100%")),
-      
-      # Right panel
-      right_panel(
-        id = id, 
-        compare_UI(NS(id, "permits"), make_dropdown()),
-        div(class = "explore_dyk", 
-            explore_UI(NS(id, "explore")), 
-            dyk_UI(NS(id, "dyk"))))
+    # Map
+    div(class = "mapdeck_div", mapdeckOutput(NS(id, "map"), height = "100%")),
+    
+    # Right panel
+    right_panel(
+      id = id, 
+      compare_UI(NS(id, ns_id), make_dropdown()),
+      explore_UI(NS(id, ns_id)), 
+      dyk_UI(NS(id, ns_id)))
   ))
 }
 
@@ -56,10 +63,12 @@ permits_UI <- function(id) {
 
 permits_server <- function(id) {
   moduleServer(id, function(input, output, session) {
+    ns_id <- "permits"
     
     # Initial reactives
     zoom <- reactiveVal(get_zoom(map_zoom, c("heatmap" = 0, "point" = 12)))
     selection <- reactiveVal(NA)
+    click_id <- reactiveVal(NULL)
     
     # Load heavy data used by this module
     if (any(!str_detect("permits_combination_count_1990", names(borough)))) {
@@ -71,11 +80,12 @@ permits_server <- function(id) {
       permits <<- permits
     }
     
+    # Click reactive
+    observeEvent(input$map_polygon_click, {
+      click_id(get_click(input$map_polygon_click))})
+    
     # Sidebar
-    sidebar_server(
-      id = "sidebar", 
-      x = "permits", 
-      var_map = reactive(paste0("left_", df(), "_", var_left())))
+    sidebar_server(id = ns_id, x = "permits")
     
     # If COUNT isn't selected, choropleth is TRUE 
     choropleth <- reactive(var_left_1() != "count")
@@ -87,28 +97,37 @@ permits_server <- function(id) {
       zoom = map_zoom, 
       location = map_location)})
     
+    # Checkbox values
+    bi_time <- checkbox_server(id = ns_id, checkbox_id = "comp_d")
+    cbox_grid <- checkbox_server(id = ns_id, checkbox_id = "grid")
+    
     # Enable or disable first and second slider
-    observeEvent(input$bi_time, {
-      toggle("left_bi_time", condition = input$bi_time)
-      toggle("left", condition = !input$bi_time)})
+    slider_uni <- slider_server(id = ns_id, slider_id = "slu")
+    slider_bi <- slider_server(id = ns_id, slider_id = "slb")
+    
+    observeEvent(bi_time(), {
+      toggle("permits-slb", condition = bi_time())
+      toggle("permits-slu", condition = !bi_time())})
     
     # If we aren't in choropleth, toggle off the zoom and grid checkbox
     observeEvent(choropleth(), {
-      toggle("grid", condition = choropleth())
+      toggle("permits-grid", condition = choropleth())
     })
     
     # If we aren't in choropleth, toggle off the zoom and grid checkbox
-    observeEvent(input$grid, {
-      toggle("zoom-auto", condition = !input$grid)
-      toggle("zoom-slider", condition = !input$grid)
+    observeEvent(cbox_grid(), {
+      toggle("permits-zoom_auto", condition = !cbox_grid())
+      toggle("permits-zoom_slider", condition = !cbox_grid())
     })
     
     # Time variable depending on which slider
-    time <- reactive({if (!input$bi_time) input$left else input$left_bi_time})
+    time <- reactive({if (!bi_time()) slider_uni() else slider_bi()})
     
     # Left variable servers
-    var_left_1 <- select_var_server("left_1", reactive(var_list_left_permits_1))
-    var_left_2 <- select_var_server("left_2", reactive(var_list_left_permits_2))
+    var_left_1 <- select_var_server(ns_id, select_var_id = "gr",
+                                    var_list = reactive(var_list_left_permits_1))
+    var_left_2 <- select_var_server(ns_id, select_var_id = "tp",
+                                    var_list = reactive(var_list_left_permits_2))
     
     # Construct left variable string
     var_left <- reactive({
@@ -117,65 +136,64 @@ permits_server <- function(id) {
                        var_left_1(), 
                        time(), sep = "_"), "_ ")
     })
-    
+
     # Zoom reactive
     map_zoom_levels_permits <- reactive({
       if (choropleth()) map_zoom_levels else c("heatmap" = 0, "point" = 12)
     })
-    
+
     observeEvent({input$map_view_change$zoom
       map_zoom_levels_permits()}, {
         actual_zoom <- if (is.null(input$map_view_change$zoom)) map_zoom else {
           input$map_view_change$zoom
         }
-        zoom(get_zoom(actual_zoom, map_zoom_levels_permits()))}, 
+        zoom(get_zoom(actual_zoom, map_zoom_levels_permits()))},
       ignoreInit = TRUE)
 
     # Zoom level for data
     df_choropleth <- zoom_server(
-      id = "zoom", 
-      zoom = zoom, 
-      zoom_levels = map_zoom_levels_permits)        
+      id = ns_id,
+      zoom = zoom,
+      zoom_levels = map_zoom_levels_permits)
 
-    df <- reactive({if (input$grid) "grid" else df_choropleth()})
+    df <- reactive({if (cbox_grid()) "grid" else df_choropleth()})
     
     # Compare panel
     var_right <- compare_server(
-      id = "permits", 
-      var_list = make_dropdown(), 
+      id = ns_id,
+      var_list = make_dropdown(),
       df = df,
       time = time,
       show_panel = choropleth)
-    
+
     data <- reactive(get_data(df(), var_left(), var_right(), island = TRUE,
                               point_df = "permits"))
-    
+
     # Disclaimers and how to read the map
     year_disclaimer_server(
-      id = "disclaimers",
+      id = ns_id,
       data = data,
       var_left = var_left,
-      var_right = var_right,
-      time = time,
-      pct_variation = choropleth,
-      # If the same time is selected twice, other disclaimer
-      more_condition = reactive(!choropleth() && all(is.na(pull(data(), ID)))),
-      more_text = paste0(
-        "<p style='font-size:11px;'>",
-        "There is no '{var_left_title}' to report for ",
-        "{left_year}.</p>"))
-    
+      var_right = var_right)
+    #   # time = time,
+    #   # pct_variation = choropleth,
+    #   # # If the same time is selected twice, other disclaimer
+    #   # more_condition = reactive(!choropleth() && all(is.na(pull(data(), ID)))),
+    #   # more_text = paste0(
+    #   #   "<p style='font-size:11px;'>",
+    #   #   "There is no '{var_left_title}' to report for ",
+    #   #   "{left_year}.</p>"))
+    # 
     # Update map in response to variable changes or zooming
     select_id <- map_change(
-      NS(id, "map"),
-      x = data,
+      id = ns_id,
+      map_id = NS(id, "map"),
+      data = data,
       df = df,
       zoom = zoom,
-      click = reactive(input$map_polygon_click),
-      #legend_selection = reactive(legend()$legend_selection),
-      explore_clear = reactive(input$`explore-clear_selection`)
+      click = click_id,
     )
-    
+
     # Explore select
     # Update point on click
     observeEvent(input$map_scatterplot_click, {
@@ -185,48 +203,50 @@ permits_server <- function(id) {
         selection(data()[lst + 1,]$ID)
       }
     })
-    
+
     current_select <- reactive(if (choropleth()) select_id() else selection())
-    
+
     # Explore panel
-    explore_content <- explore_server(
-      id = "explore",
-      x = data,
-      var_left = var_left,
-      var_right = var_right,
-      select = current_select,
-      df = df,
-      standard = choropleth,
-      custom_info = permits_info_table,
-      custom_graph = permits_explore_graph)
-    
-    # Legend
-    legend_server(
-      id = "legend", 
-      var_left = var_left, 
-      var_right = var_right, 
-      df = df,
-      show_panel = choropleth)
-    
-    # Did-you-know panel
+    # explore_content <- explore_server(
+    #   id = ns_id,
+    #   data = data,
+    #   var_left = var_left,
+    #   var_right = var_right,
+    #   df = df,
+    #   zoom = zoom,
+    #   select_id = select_id)
+    #   # custom_info = permits_info_table,
+    #   # custom_graph = permits_explore_graph)
+    # 
+    # # Legend
+    # legend_server(
+    #   id = ns_id, 
+    #   data = data,
+    #   var_left = var_left, 
+    #   var_right = var_right, 
+    #   df = df,
+    #   zoom = zoom)
+    #   # show_panel = choropleth)
+    # 
+    # # Did-you-know panel
     dyk_server(
-      id = "dyk", 
+      id = ns_id,
       var_left = var_left,
       var_right = var_right)
-    
+
     # Clear selection on df change
     observeEvent(df(), selection(NA), ignoreInit = TRUE)
-    
+
     # Clear click status if prompted
     observeEvent(input$`explore-clear_selection`, selection(NA))
 
     # Bi slider label explained
     observe({
       if (!choropleth()) {
-        updateSliderInput(session, inputId = "left_bi_time", 
+        updateSliderInput(session, inputId = "permits-slb",
                           label = sus_translate("Total between two dates"))
       } else if (choropleth()) {
-        updateSliderInput(session, inputId = "left_bi_time", 
+        updateSliderInput(session, inputId = "permits-slb",
                           label = sus_translate("Compare two dates"))
       }
     })

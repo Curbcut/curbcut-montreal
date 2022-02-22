@@ -10,7 +10,7 @@ climate_risk_UI <- function(id) {
       sidebar_UI2(
         NS(id, ns_id),
         susSidebarWidgets(
-          select_var_UI(NS(id, ns_id), var_list_climate_risk), 
+          select_var_UI(NS(id, ns_id), var_list = var_list_climate_risk), 
           checkbox_UI(NS(id, ns_id), value = TRUE,
                       label = sus_translate("250-metre grid")),
         ),
@@ -72,7 +72,7 @@ climate_risk_server <- function(id) {
     time <- reactive("2016")
     
     # Left variable server
-    var_left <- select_var_server(ns_id, reactive(var_list_climate_risk))
+    var_left <- select_var_server(ns_id, var_list = reactive(var_list_climate_risk))
     
     # Right variable/compare panel
     var_right <- compare_server(

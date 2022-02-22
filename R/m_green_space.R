@@ -7,9 +7,9 @@ green_space_UI <- function(id) {
       # Side bar
       sidebar_UI(NS(id, "sidebar"),
                  select_var_UI(NS(id, "left_groupings"), 
-                               green_space_groupings,
+                               var_list = green_space_groupings,
                                label = sus_translate("Grouping")),
-                 select_var_UI(NS(id, "left_type"), green_space_type,
+                 select_var_UI(NS(id, "left_type"), var_list = green_space_type,
                                label = sus_translate("Type of green space")),
                  div(class = "bottom_sidebar",
                      tagList(legend_UI(NS(id, "legend")),
@@ -65,9 +65,9 @@ green_space_server <- function(id) {
     
     # Left variable servers
     var_left_groupings <- select_var_server("left_groupings", 
-                                    reactive(green_space_groupings))
+                                            var_list = reactive(green_space_groupings))
     var_left_type <- select_var_server("left_type", 
-                                    reactive(green_space_type))
+                                       var_list = reactive(green_space_type))
     
     # Construct left variable string
     var_left <- reactive(str_remove(paste("green_space", var_left_type(), 

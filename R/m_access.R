@@ -7,9 +7,9 @@ access_UI <- function(id) {
       # Sidebar
       sidebar_UI(
         NS(id, "sidebar"),
-        select_var_UI(NS(id, "left_2"), var_list_left_access_2,
+        select_var_UI(NS(id, "left_2"), var_list = var_list_left_access_2,
                       label = sus_translate("Timing")),
-        select_var_UI(NS(id, "left_1"), var_list_left_access_1,
+        select_var_UI(NS(id, "left_1"), var_list = var_list_left_access_1,
                       label = sus_translate("Destination type")),
         sliderInput(NS(id, "slider"), sus_translate("Time threshold"),
                     min = 10, max = 60, step = 1, value = 30,
@@ -73,8 +73,8 @@ access_server <- function(id) {
       })
     
     # Left variable servers
-    var_left_1 <- select_var_server("left_1", reactive(var_list_left_access_1))
-    var_left_2 <- select_var_server("left_2", reactive(var_list_left_access_2))
+    var_left_1 <- select_var_server("left_1", var_list = reactive(var_list_left_access_1))
+    var_left_2 <- select_var_server("left_2", var_list = reactive(var_list_left_access_2))
     
     # Construct left variable string
     var_left <- reactive(paste0(var_left_1(), "_", var_left_2(), "_count"))

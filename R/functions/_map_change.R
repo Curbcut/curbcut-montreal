@@ -35,7 +35,7 @@ map_change <- function(id, map_id, data, df, zoom = df, click = reactive(NULL),
   moduleServer(id, function(input, output, session) {
     
     # Get geometry type
-    geom_type <- reactive({
+    sus_rv$map_geom_type <- reactive({
       map_chr(as.character(unique(st_geometry_type(data()))), ~{
         switch(.x,  
                "POLYGON" = "polygon",
@@ -48,6 +48,13 @@ map_change <- function(id, map_id, data, df, zoom = df, click = reactive(NULL),
         unique()
     })
     
+    observeEvent(sus_rv$map_geom_type(), {
+      sus_rv$last_geom_type <- unique(c(sus_rv$current_geom_type, sus_rv$last_geom_type))
+      sus_rv$current_geom_type <- c(sus_rv$map_geom_type(), sus_rv$last_geom_type)
+      sus_rv$previous_geom_type <- sus_rv$last_geom_type[[1]]})
+    
+    observe(print(sus_rv$previous_geom_type))
+    
     
     ## Update map on data change -------------------------------------------------
     
@@ -57,17 +64,45 @@ map_change <- function(id, map_id, data, df, zoom = df, click = reactive(NULL),
       zoom()}, {
         
         # Used at all geometries:
-        update_and_clean <- function() mapdeck_update(map_id = map_id)
+        update_and_clean <- function() {
+          if (!is.null(sus_rv$previous_geom_type) && 
+              sus_rv$previous_geom_type != sus_rv$map_geom_type()) {
+            mapdeck_update(map_id = map_id) |>
+              clear_heatmap() |>
+              clear_polygon() |>
+              clear_path() |>
+              clear_scatterplot()
+          } else mapdeck_update(map_id = map_id)
+          
+          
+          #else if (sus_rv$previous_geom_type != sus_rv$map_geom_type) {
+            # mapdeck_update(map_id = map_id) |>
+            #     clear_heatmap() |>
+            #       clear_polygon() |>
+            #       clear_path() |>
+            #       clear_scatterplot()
+          # }
+          
+          # mapdeck_update(map_id = map_id) |> 
+          #   # If new geom_type isn't the same as the previous, purge everything
+          #   (\(x) if (!is.null(sus_rv$previous_geom_type()) && 
+          #             sus_rv$previous_geom_type() != sus_rv$map_geom_type()) {
+          #     clear_heatmap(x) |> 
+          #       clear_polygon() |> 
+          #       clear_path() |> 
+          #       clear_scatterplot()
+          #   } else x)()
+        }
         
         # Clear layer_ids fed with polygons_to_clear
         walk(polygons_to_clear, ~{
           mapdeck_update(map_id = id) |> clear_polygon(.x)})
         
         # Error handling
-        if (geom_type() == "error") stop("`geom_type` invalid in `map_change`.")
+        if (sus_rv$map_geom_type() == "error") stop("`sus_rv$map_geom_type` invalid in `map_change`.")
         
         # Map updates for polygons  
-        if (geom_type() == "polygon") {
+        if (sus_rv$map_geom_type() == "polygon") {
           
           # Take the minimum width implied by the zoom or the df
           # TKTK Should probably replace this with separate zoom curves for
@@ -125,7 +160,7 @@ map_change <- function(id, map_id, data, df, zoom = df, click = reactive(NULL),
           }
           
           # TKTK THIS HASN'T BE LOOKED AT YET
-        } else if (geom_type() == "line") {
+        } else if (sus_rv$map_geom_type() == "line") {
           
           update_and_clean() |>
             add_path(data = data(),
@@ -134,10 +169,11 @@ map_change <- function(id, map_id, data, df, zoom = df, click = reactive(NULL),
                      highlight_colour = "#FFFFFF90")
           
           # TKTK THIS HASN'T BE LOOKED AT YET
-        } else if (geom_type() == "point") {
+        } else if (sus_rv$map_geom_type() == "point") {
           
           if (df() == "heatmap") {
             update_and_clean() |>
+              clear_scatterplot() |> 
               add_heatmap(data = data(), update_view = FALSE,
                           colour_range = c("#AECBB4", "#91BD9A", "#73AE80",
                                            "#70999B", "#6E8EA8", "#6C83B5"),
@@ -147,6 +183,7 @@ map_change <- function(id, map_id, data, df, zoom = df, click = reactive(NULL),
           } else {
             
             update_and_clean() |>
+              clear_heatmap() |> 
               add_scatterplot(data = data(), update_view = FALSE,
                               id = "ID",
                               auto_highlight = TRUE,
@@ -210,7 +247,7 @@ map_change <- function(id, map_id, data, df, zoom = df, click = reactive(NULL),
       zoom()
       data()}, {
         
-        if (geom_type() == "polygon") {
+        if (sus_rv$map_geom_type() == "polygon") {
           
           if (is.na(selection())) {
             mapdeck_update(map_id = map_id) |>

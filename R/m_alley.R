@@ -9,7 +9,7 @@ alley_UI <- function(id) {
         NS(id, "sidebar"),
         checkboxInput(inputId = NS(id, "focus_visited"), label = sus_translate(
           "Focus on green alleys visited by our team")),
-        select_var_UI(NS(id, "left"), var_list_left_alley, 
+        select_var_UI(NS(id, "left"), var_list = var_list_left_alley, 
                       label = sus_translate("Grouping")), 
         div(class = "bottom_sidebar", 
             tagList(legend_UI(NS(id, "legend")), 
@@ -71,7 +71,7 @@ alley_server <- function(id) {
     time <- reactive("2016")
     
     # Left variable
-    var_left <- select_var_server("left", reactive(var_list_left_alley))
+    var_left <- select_var_server("left", var_list = reactive(var_list_left_alley))
     
     # Compare panel
     var_right <- compare_server(

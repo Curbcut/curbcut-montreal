@@ -11,9 +11,9 @@ crash_UI <- function(id) {
         actionLink(NS(id, "analysis"), 
                    sus_translate("Road safety analysis")),
         hr(id = NS(id, "hr")),
-        select_var_UI(NS(id, "left_1"), var_list_left_crash_1,
+        select_var_UI(NS(id, "left_1"), var_list = var_list_left_crash_1,
                       label = sus_translate("Grouping")),
-        select_var_UI(NS(id, "left_2"), var_list_left_crash_2,
+        select_var_UI(NS(id, "left_2"), var_list = var_list_left_crash_2,
                       label = sus_translate("Type of crash")),
         div(id = NS(id, "slider"),
             sliderInput(NS(id, "left"), 
@@ -122,8 +122,8 @@ crash_server <- function(id) {
     time <- reactive({if (!input$bi_time) input$left else input$left_bi_time})
     
     # Left variable servers
-    var_left_1 <- select_var_server("left_1", reactive(var_list_left_crash_1))
-    var_left_2 <- select_var_server("left_2", reactive(var_list_left_crash_2))
+    var_left_1 <- select_var_server("left_1", var_list = reactive(var_list_left_crash_1))
+    var_left_2 <- select_var_server("left_2", var_list = reactive(var_list_left_crash_2))
     
     # Construct left variable string
     var_left <- reactive({

@@ -15,7 +15,7 @@ compare_UI <- function(id, var_list) {
     conditionalPanel(
       condition = "output.hide_status == 1", ns = NS(id),
       div(class = "compare_dropdown",
-          select_var_UI(NS(id, "compare"), var_list, inline = FALSE,
+          select_var_UI(NS(id, "compare"), var_list = var_list, inline = FALSE,
                     more_style = "width:100%;"))),
     
     conditionalPanel(
@@ -35,7 +35,7 @@ compare_server <- function(id, var_list, df, disabled = reactive(NULL),
 
   moduleServer(id, function(input, output, session) {
     
-    var_right <- select_var_server("compare", reactive(var_list), 
+    var_right <- select_var_server("compare", var_list = reactive(var_list), 
                                    disabled = disabled, time = time, df = df)
     
     # Hide compare status
