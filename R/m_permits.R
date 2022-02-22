@@ -217,7 +217,7 @@ permits_server <- function(id) {
     #   select_id = select_id)
     #   # custom_info = permits_info_table,
     #   # custom_graph = permits_explore_graph)
-    # 
+
     # # Legend
     # legend_server(
     #   id = ns_id, 
@@ -227,7 +227,7 @@ permits_server <- function(id) {
     #   df = df,
     #   zoom = zoom)
     #   # show_panel = choropleth)
-    # 
+
     # # Did-you-know panel
     dyk_server(
       id = ns_id,
@@ -250,5 +250,40 @@ permits_server <- function(id) {
                           label = sus_translate("Compare two dates"))
       }
     })
+    
+    # Bookmarking
+    bookmark_server(
+      id = ns_id,
+      map_view_change = reactive(input$map_view_change),
+      var_right = var_right,
+      select_id = select_id,
+      df = df,
+      map_id = NS(id, "map"),
+      more_args = reactive(c("c-comp_d" = str_extract(bi_time(), "^."),
+                             "c-grid" = str_extract(cbox_grid(), "^."),
+                             "s-slu" = slider_uni(),
+                             "s-slb" = paste(slider_bi(),
+                                             collapse = "-"),
+                             "d-gr" = var_left_1(),
+                             "d-tp" = var_left_2()))
+    )
+    
+    # Last bookmark step: update click_id() + mark bookmark as inactive
+    observeEvent(sus_bookmark$active, {
+      # Delay of 100 milliseconds more than the map update from bookmark.
+      # The map/df/data needs to be updated before we select an ID.
+      if (isTRUE(sus_bookmark$active)) {
+        delay(1100, {
+          if (!is.null(sus_bookmark$select_id)) {
+            if (sus_bookmark$select_id != "NA") click_id(sus_bookmark$select_id)
+          }
+        })
+      }
+      
+      # So that bookmarking gets triggered only ONCE
+      delay(1500, {sus_bookmark$active <- FALSE})
+      
+    }, priority = -2)
+    
   })
 }

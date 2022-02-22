@@ -281,7 +281,7 @@ get_data_table <- function(df, var_left, var_right, data_type, point_df) {
     data <- 
       point_df |> 
       get() %>%
-      { if (str_detect(var_left, "_total_"))
+      { if (str_detect(var_left[1], "_total_"))
         . else filter(., str_detect(type, selected_type))} %>%
       { if (length(time) == 2) {
         filter(., year %in% time[1]:time[2])

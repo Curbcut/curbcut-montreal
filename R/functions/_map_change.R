@@ -48,12 +48,15 @@ map_change <- function(id, map_id, data, df, zoom = df, click = reactive(NULL),
         unique()
     })
     
+    # Keep track of previous geometry type.
     observeEvent(sus_rv$map_geom_type(), {
       sus_rv$last_geom_type <- unique(c(sus_rv$current_geom_type, sus_rv$last_geom_type))
       sus_rv$current_geom_type <- c(sus_rv$map_geom_type(), sus_rv$last_geom_type)
       sus_rv$previous_geom_type <- sus_rv$last_geom_type[[1]]})
     
-    observe(print(sus_rv$previous_geom_type))
+    # A switch between module might trigger a map purge (no that it is an issue).
+    # Should we follow this pattern, to store change in geom_type in a per-module 
+    # basis? ------->     `sus_rv[[paste0(id, "_map_geom_type")]]`
     
     
     ## Update map on data change -------------------------------------------------
@@ -73,25 +76,6 @@ map_change <- function(id, map_id, data, df, zoom = df, click = reactive(NULL),
               clear_path() |>
               clear_scatterplot()
           } else mapdeck_update(map_id = map_id)
-          
-          
-          #else if (sus_rv$previous_geom_type != sus_rv$map_geom_type) {
-            # mapdeck_update(map_id = map_id) |>
-            #     clear_heatmap() |>
-            #       clear_polygon() |>
-            #       clear_path() |>
-            #       clear_scatterplot()
-          # }
-          
-          # mapdeck_update(map_id = map_id) |> 
-          #   # If new geom_type isn't the same as the previous, purge everything
-          #   (\(x) if (!is.null(sus_rv$previous_geom_type()) && 
-          #             sus_rv$previous_geom_type() != sus_rv$map_geom_type()) {
-          #     clear_heatmap(x) |> 
-          #       clear_polygon() |> 
-          #       clear_path() |> 
-          #       clear_scatterplot()
-          #   } else x)()
         }
         
         # Clear layer_ids fed with polygons_to_clear
