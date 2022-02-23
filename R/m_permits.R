@@ -202,7 +202,7 @@ permits_server <- function(id) {
 
     current_select <- reactive(if (choropleth()) select_id() else selection())
 
-    # Explore panel
+    # # Explore panel
     # explore_content <- explore_server(
     #   id = ns_id,
     #   data = data,
