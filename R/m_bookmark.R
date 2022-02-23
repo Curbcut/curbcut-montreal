@@ -84,7 +84,6 @@ bookmark_server <- function(id, map_view_change = reactive(NULL),
                       var_right = sus_bookmark$var_right, 
                       more_args = sus_bookmark$more_args)
       }
-      
     }, priority = -1, autoDestroy = TRUE, once = TRUE)
     
   })

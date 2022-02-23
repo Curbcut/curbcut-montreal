@@ -3,25 +3,25 @@
 # UI ----------------------------------------------------------------------
 
 marketed_sustainability_UI <- function(id) {
+  ns_id <- "marketed_sustainability"
+  
   return(tagList(
-      # Sidebar
-      sidebar_UI(
-        NS(id, "sidebar"),
-      div(class = "bottom_sidebar", 
-          h5("Legend", style = "font-size: 12px;"),
-          plotOutput(NS(id, "legend"), height = 60))),
+    # Sidebar
+    sidebar_UI2(
+      NS(id, ns_id),
+      bottom = div(class = "bottom_sidebar", 
+                   h5("Legend", style = "font-size: 12px;"),
+                   plotOutput(NS(id, "legend"), height = 60))),
     
-      # Map
-      div(class = "mapdeck_div", 
-          mapdeckOutput(NS(id, "map"), height = "100%")),
-      
-      # Right panel
-      right_panel(
-        id = id, 
-        # compare_UI(NS(id, "marketed_sustainability"), make_dropdown()),
-        div(class = "explore_dyk", 
-            explore_UI(NS(id, "explore")), 
-            dyk_UI(NS(id, "dyk"))))
+    # Map
+    div(class = "mapdeck_div", 
+        mapdeckOutput(NS(id, "map"), height = "100%")),
+    
+    # Right panel
+    right_panel(
+      id = id, 
+      explore_UI(NS(id, ns_id)), 
+      dyk_UI(NS(id, ns_id)))
   ))
 }
 
@@ -30,15 +30,13 @@ marketed_sustainability_UI <- function(id) {
 
 marketed_sustainability_server <- function(id) {
   moduleServer(id, function(input, output, session) {
+    ns_id <- "marketed_sustainability"
     
     # Initial reactives
     selection <- reactiveVal(NA)
 
     # Sidebar
-    sidebar_server(
-      id = "sidebar", 
-      x = "marketed_sustainability", 
-      var_map = NULL)
+    sidebar_server(id = ns_id, x = "marketed_sustainability")
     
     # Map
     output$map <- renderMapdeck({mapdeck(
@@ -93,20 +91,20 @@ marketed_sustainability_server <- function(id) {
       })
     
     # Explore panel
-    explore_content <- explore_server(
-      id = "explore",
-      data = reactive(marketed_sustainability),
-      var_left = reactive(NULL),
-      var_right = reactive(NULL),
-      df = reactive(NULL),
-      select_id = selection,
-      standard = reactive(FALSE),
-      custom_info = marketed_sustainability_info_table,
-      custom_graph = marketed_sustainability_explore_graph)
+    # explore_content <- explore_server(
+    #   id = ns_id,
+    #   data = reactive(marketed_sustainability),
+    #   var_left = reactive(NULL),
+    #   var_right = reactive(NULL),
+    #   df = reactive(NULL),
+    #   select_id = selection,
+    #   standard = reactive(FALSE),
+    #   custom_info = marketed_sustainability_info_table,
+    #   custom_graph = marketed_sustainability_explore_graph)
     
     # Did-you-know panel
     dyk_server(
-      id = "dyk",
+      id = ns_id,
       var_left = reactive(NULL),
       var_right = reactive(NULL))
     

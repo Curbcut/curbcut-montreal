@@ -17,3 +17,8 @@ envir <- rlang::get_env(\(x) x)
 walk(list.files("R/functions/"), ~{
   source(paste0("R/functions/", .x), local = envir, encoding = "utf-8")
 })
+
+# Load locally in R
+# walk(list.files("R/")[!list.files("R/") %in% c("functions", "tests", "_load_functions.R")], ~{
+#   source(paste0("R/", .x), local = envir, encoding = "utf-8")
+# })
