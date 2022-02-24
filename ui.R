@@ -45,6 +45,13 @@ ui <- function(request) {
   tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "sus.maps.css")),
   tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "https://fonts.googleapis.com/icon?family=Material+Icons")),
   tags$head(tags$script(src = "sus.js")),
+  tags$head(tags$script(src = "cookie.js")),
+  tags$script(
+    src = paste0(
+      "https://cdn.jsdelivr.net/npm/js-cookie@rc/",
+      "dist/js.cookie.min.js"
+    )
+  ),
   tags$head(tags$script(js_links_between_modules)),
   tags$head(tags$script(bookmark_url)),
   tags$head(tags$style(HTML(styler))),

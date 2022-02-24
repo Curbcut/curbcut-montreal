@@ -8,8 +8,8 @@ shinyServer(function(input, output, session) {
   
   # Language button ---------------------------------------------------------
   
-  # Language reactive variable, and JS set language. Both onclick of the 
-  # language button.
+  # Language reactive variable,  JS set language, and language cookie. 
+  # The three onclick of the language button.
   sus_rv$lang <- 
     eventReactive(input$language_button, {
       if (input$language_button[1] %% 2 != 0) "en" else "fr"
@@ -20,12 +20,25 @@ shinyServer(function(input, output, session) {
       js$setLanguage("en")
       updateActionLink(inputId = "language_button", 
                        label = languageButtonLabel("Français"))
+      
+      lang_cookie <- list(name = "lang", value = "en")
+      session$sendCustomMessage("cookie-set", lang_cookie)
+      
     } else {
       js$setLanguage("fr")
       updateActionLink(inputId = "language_button", 
                        label = languageButtonLabel("English"))
+      
+      lang_cookie <- list(name = "lang", value = "fr")
+      session$sendCustomMessage("cookie-set", lang_cookie)
     }
   })
+  
+  observeEvent(input$cookies$lang, {
+    if (!is.null(input$cookies$lang) && input$cookies$lang == "en")
+      click("language_button")
+    # COOKIE, runs only once at launch !
+  }, once = TRUE)
   
 
   # Active tab -------------------------------------------------------------
