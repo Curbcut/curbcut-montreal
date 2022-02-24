@@ -80,7 +80,7 @@ map_change <- function(id, map_id, data, df, zoom = df, click = reactive(NULL),
         
         # Clear layer_ids fed with polygons_to_clear
         walk(polygons_to_clear, ~{
-          mapdeck_update(map_id = id) |> clear_polygon(.x)})
+          mapdeck_update(map_id = map_id) |> clear_polygon(.x)})
         
         # Error handling
         if (sus_rv$map_geom_type() == "error") stop("`sus_rv$map_geom_type` invalid in `map_change`.")

@@ -3,27 +3,32 @@
 # UI ----------------------------------------------------------------------
 
 green_space_UI <- function(id) {
+  ns_id <- "green_space"
+  
   return(tagList(
-      # Side bar
-      sidebar_UI(NS(id, "sidebar"),
-                 select_var_UI(NS(id, "left_groupings"), 
-                               var_list = green_space_groupings,
-                               label = sus_translate("Grouping")),
-                 select_var_UI(NS(id, "left_type"), var_list = green_space_type,
-                               label = sus_translate("Type of green space")),
-                 div(class = "bottom_sidebar",
-                     tagList(legend_UI(NS(id, "legend")),
-                             zoom_UI(NS(id, "zoom"), map_zoom_levels)))),
-
-      # Map
-      div(class = "mapdeck_div", 
-          mapdeckOutput(NS(id, "map"), height = "100%")),
-      
-      # Right panel
-      right_panel(id, compare_UI(NS(id, "green_space"), make_dropdown()),
-                  div(class = "explore_dyk",
-                      explore_UI(NS(id, "explore")), 
-                      dyk_UI(NS(id, "dyk"))))
+    # Side bar
+    sidebar_UI2(
+      NS(id, ns_id),
+      susSidebarWidgets(
+        select_var_UI(NS(id, ns_id), select_var_id = "lg",
+                      var_list = green_space_groupings,
+                      label = sus_translate("Grouping")),
+        select_var_UI(NS(id, ns_id), select_var_id = "lt",
+                      var_list = green_space_type,
+                      label = sus_translate("Type of green space"))
+      ),
+      bottom = div(class = "bottom_sidebar",
+                   tagList(legend_UI(NS(id, ns_id)),
+                           zoom_UI(NS(id, ns_id), map_zoom_levels)))),
+    
+    # Map
+    div(class = "mapdeck_div", 
+        mapdeckOutput(NS(id, "map"), height = "100%")),
+    
+    # Right panel
+    right_panel(id, compare_UI(NS(id, ns_id), make_dropdown()),
+                explore_UI(NS(id, ns_id)), 
+                dyk_UI(NS(id, ns_id)))
   ))
 }
 
@@ -31,17 +36,14 @@ green_space_UI <- function(id) {
 
 green_space_server <- function(id) {
   moduleServer(id, function(input, output, session) {
+    ns_id <- "green_space"
     
     # Initial reactives
     zoom <- reactiveVal(get_zoom(map_zoom, map_zoom_levels))
+    click_id <- reactiveVal(NULL)
 
     # Sidebar
-    sidebar_server(
-      id = "sidebar", 
-      x = "green_space"#, 
-      # Adding a small map for the green_space df is needed
-      # var_map = reactive(paste0("left_", df(), "_", "green_space"))
-      )
+    sidebar_server(ns_id, x = "green_space")
     
     # If green space isn't selected, choropleth is TRUE 
     choropleth <- reactive(var_left_groupings() != " ")
@@ -57,32 +59,36 @@ green_space_server <- function(id) {
     observeEvent(input$map_view_change$zoom, {
       zoom(get_zoom(input$map_view_change$zoom, map_zoom_levels))})
     
+    # Click reactive
+    observeEvent(input$map_polygon_click, {
+      click_id(get_click(input$map_polygon_click))})
+    
     # Zoom level for data
     df <- zoom_server(
-      id = "zoom", 
+      id = ns_id, 
       zoom = zoom, 
       zoom_levels = reactive(map_zoom_levels))
     
     # Left variable servers
-    var_left_groupings <- select_var_server("left_groupings", 
+    var_left_groupings <- select_var_server(ns_id, select_var_id = "lg",
                                             var_list = reactive(green_space_groupings))
-    var_left_type <- select_var_server("left_type", 
+    var_left_type <- select_var_server(ns_id, select_var_id = "lt",
                                        var_list = reactive(green_space_type))
     
     # Construct left variable string
     var_left <- reactive(str_remove(paste("green_space", var_left_type(), 
                                           var_left_groupings(), sep = "_"), 
                                     "_ "))
-    
+
     # Compare panel
     var_right <- compare_server(
-      id = "green_space", 
+      id = ns_id,
       var_list = make_dropdown(),
       df = df,
       time = reactive("2016"),
       show_panel = choropleth)
-    
-    # Data
+
+    # # Data
     data <- reactive({
       if (choropleth()) {
         get_data(df(), var_left(), var_right(), island = TRUE)
@@ -92,44 +98,75 @@ green_space_server <- function(id) {
             filter(., type_1 == var_left_type()) else .}
       }
     })
-    
-    # Update map in response to variable changes or zooming
+
+    # # Update map in response to variable changes or zooming
     select_id <- map_change(
-      NS(id, "map"),
-      x = data,
+      id = ns_id,
+      map_id = NS(id, "map"),
+      data = data,
       df = df,
       zoom = zoom,
-      standard_width = choropleth,
-      click = reactive(input$map_polygon_click),
-      #legend_selection = reactive(legend()$legend_selection),
-      explore_clear = reactive(input$`explore-clear_selection`)
+      click = click_id,
+      standard_width = choropleth
     )
+
+    # # Explore panel
+    # explore_content <- explore_server(
+    #   id = ns_id,
+    #   data = data,
+    #   var_left = var_left,
+    #   var_right = var_right,
+    #   df = df,
+    #   zoom = zoom,
+    #   select_id = select_id)
+    #   # standard = choropleth,
+    #   # custom_info = green_space_info_table,
+    #   # custom_graph = green_space_explore_graph)
+    # 
+    # # Legend
+    # legend_server(
+    #   id = ns_id,
+    #   data = data,
+    #   var_left = var_left,
+    #   var_right = var_right,
+    #   df = df,
+    #   zoom = zoom)
+      # show_panel = choropleth)
+
+    # # Did-you-know panel
+    # dyk_server(
+    #   id = ns_id,
+    #   var_left = var_left,
+    #   var_right = var_right)
     
-    # Explore panel
-    explore_content <- explore_server(
-      id = "explore",
-      x = data,
-      var_left = var_left,
+    # Bookmarking
+    bookmark_server(
+      id = ns_id,
+      map_view_change = reactive(input$map_view_change),
       var_right = var_right,
       select_id = select_id,
       df = df,
-      standard = choropleth,
-      custom_info = green_space_info_table,
-      custom_graph = green_space_explore_graph)
+      map_id = NS(id, "map"),
+      more_args = reactive(c("d-lg" = var_left_groupings(),
+                             "d-lt" = var_left_type()))
+    )
     
-    # Legend
-    legend_server(
-      id = "legend",
-      var_left = var_left,
-      var_right = var_right,
-      df = df,
-      show_panel = choropleth)
-    
-    # Did-you-know panel
-    dyk_server(
-      id = "dyk", 
-      var_left = var_left,
-      var_right = var_right)
+    # Last bookmark step: update click_id() + mark bookmark as inactive
+    observeEvent(sus_bookmark$active, {
+      # Delay of 100 milliseconds more than the map update from bookmark.
+      # The map/df/data needs to be updated before we select an ID.
+      if (isTRUE(sus_bookmark$active)) {
+        delay(1100, {
+          if (!is.null(sus_bookmark$select_id)) {
+            if (sus_bookmark$select_id != "NA") click_id(sus_bookmark$select_id)
+          }
+        })
+      }
+      
+      # So that bookmarking gets triggered only ONCE
+      delay(1500, {sus_bookmark$active <- FALSE})
+      
+    }, priority = -2)
     
   })
 }
