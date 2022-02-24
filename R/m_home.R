@@ -24,6 +24,7 @@ home_UI <- function(id) {
         tags$div(class = "sus-carousel-slide",
           tags$h2(tags$em(nowrap(sus_translate("Towards a")), nowrap(sus_translate("sustainable city")))),
           
+          HTML('<button onclick="copyToClipboard()">Copy Link</button>'),
           actionLink(NS(id, "module_link"), "CLICK HERE for a CanALE + tenant-occupied bivariate comparison"),
           
           tags$p(sus_translate("SUS is a platform for integrating, exploring, ",

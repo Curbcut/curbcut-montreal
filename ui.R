@@ -46,6 +46,7 @@ ui <- function(request) {
   tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "https://fonts.googleapis.com/icon?family=Material+Icons")),
   tags$head(tags$script(src = "sus.js")),
   tags$head(tags$script(js_links_between_modules)),
+  tags$head(tags$script(bookmark_url)),
   tags$head(tags$style(HTML(styler))),
   
   # Add a class to the body, to toggle between languages.
@@ -92,10 +93,20 @@ ui <- function(request) {
                             span("English"))),
              
              # Actions dropdown
-             materialIconButton(dropdownButton(inputId = "settings",
-                                               actionLink(inputId = "._bookmark_", label = "Bookmark", icon = icon("link")),
-                                               actionLink(inputId = "download_data", label = "Data explanation and export", icon("download")),
-                                               downloadLink("create_report", label = div(icon("file-pdf"), "Generate a report"))
+             materialIconButton(
+               dropdownButton(inputId = "settings",
+                              a(id = "bookmark",
+                                class = "action-button shiny-bound-input",
+                                role = "menuitem",
+                                href = "#",
+                                icon("link"), "Bookmark", 
+                                onclick = "copyUrl()"),
+                              actionLink(inputId = "download_data", 
+                                         label = "Data explanation and export", 
+                                         icon("download")),
+                              downloadLink("create_report", 
+                                           label = div(icon("file-pdf"), 
+                                                       "Generate a report"))
                                                # actionLink(inputId = "contact", label = "Contact/feedback", icon("comment"))
              ), "summarize")
            )

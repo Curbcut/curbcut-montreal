@@ -183,6 +183,16 @@ js_links_between_modules <- "
           });
         }
       "
+bookmark_url <- 
+    'function copyUrl(text) {
+       var inputc = document.body.appendChild(document.createElement("input"));
+       inputc.value = window.location.href;
+       inputc.focus();
+       inputc.select();
+       document.execCommand("copy");
+       inputc.parentNode.removeChild(inputc);
+       alert("URL successfully copied.");
+}'
 
 styler <- '
 /* the big panel popup when we show an RMD in a map module */
