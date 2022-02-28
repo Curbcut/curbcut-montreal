@@ -479,12 +479,13 @@ pe_theme_order <-
                                           TRUE ~ str_extract(var_code, "access_[^_]*")))
       )
     
-    pe_var_hierarchy[[.x]] |> 
+    pe_var_hierarchy[[.x]] |>
       pivot_longer(-ID) |> 
       filter(str_ends(name, "percentile")) |> 
       transmute(ID, 
                 var_code = str_remove(name, "_percentile"), 
                 percentile = value) |> 
+      mutate(var_code = str_remove(var_code, "_\\d{4}$")) |> 
       mutate(max_or_min = abs(0.5 - percentile)) |> 
       left_join(select(place_ex_variables, var_code, theme), 
                 by = c("var_code")) |> 
@@ -514,6 +515,7 @@ pe_variable_order <-
       transmute(ID, 
                 var_code = str_remove(name, "_percentile"), 
                 percentile = value) |> 
+      mutate(var_code = str_remove(var_code, "_\\d{4}$")) |> 
       mutate(max_or_min = abs(0.5 - percentile)) |> 
       left_join(select(place_ex_variables, var_code, theme), 
                 by = c("var_code")) |> 

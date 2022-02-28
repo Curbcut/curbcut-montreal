@@ -5,7 +5,7 @@
 stories_UI <- function(id) {
   return(tagList(
       # Sidebar
-      sidebar_UI(
+      sidebar_UI2(
         NS(id, "sidebar"),
         hr(id = NS(id, "hr")),
         actionLink(NS(id, "back"), sus_translate("Back to the map"))),

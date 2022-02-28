@@ -9,11 +9,11 @@
 # df <- sample(c("borough", "CT", "DA"), 1)
 # select_id <- sample(get(df)$ID, 1)
 # 
-# df <- "borough"
-# select_id <- "2466023_7"
+# df <- "DA"
+# select_id <- "24663329"
 # 
 # select_id <- sample(get(df)$ID, 1)
-# title_card_indicators_fun(df, select_id)
+# title_card_indicators_fun(df, select_id, island_only_comparison = TRUE)
 
 title_card_row_prep_fun <- function(df, select_id, ind, percent = TRUE,
                                     high_is_good = TRUE, val_digits = 0,
@@ -60,7 +60,9 @@ title_card_row_prep_fun <- function(df, select_id, ind, percent = TRUE,
       data_rank <- data[data$ID == select_id, ]$region_percentile
     }
     info$data_rank <- 
-      if (data_rank > 0.75) {
+      if (is.na(data_rank)) {
+        ""
+      } else if (data_rank > 0.75) {
         sus_translate("The {geo_area} ranks in the ", 
                       if (high_is_good) "top " else "bottom ",
                       if (abs(data_rank - 1) < 1) "1%" else scales::percent(abs(data_rank - 1)))
@@ -127,25 +129,35 @@ title_card_indicators_fun <- function(df, select_id, island_only_comparison) {
                                    island = on_island, geo_area = geo_area,
                                    geo_areas = geo_areas)
       
+      text <- 
+        if (is.na(z$pretty_data_var)) sus_translate("No data.") else {
+          sus_translate("{z$pretty_data_var} of residents ",
+                        "use public transit, walk or ",
+                        "bicycle to get to work. {z$data_rank}. ",
+                        "(Data from {z$data_date})")
+        }
+      
       list(row_title = "Sus. transport",
            graph = z$plot,
-           text = sus_translate("{z$pretty_data_var} of residents ",
-                                "use public transit, walk or ",
-                                "bicycle to get to work. {z$data_rank}. ",
-                                "(Data from {z$data_date})"))
+           text = text)
       
     } else if (.x == "single_detached") {
 
       z <- title_card_row_prep_fun(df, select_id, ind = "single_detached",
                                    island = on_island, high_is_good = FALSE, 
                                    geo_area = geo_area, geo_areas = geo_areas)
+      
+      text <- 
+        if (is.na(z$pretty_data_var)) sus_translate("No data.") else {
+          sus_translate("{z$pretty_data_var} of occupied dwellings are ",
+                        "single-detached houses. {z$data_rank}. ",
+                        "(Data from {z$data_date})")
+        }
 
       
       list(row_title = "Housing",
            graph = z$plot,
-           text = sus_translate("{z$pretty_data_var} of occupied dwellings are ",
-                                "single-detached houses. {z$data_rank}. ",
-                                "(Data from {z$data_date})"))
+           text = text)
       
     } else if (.x == "total_crash_per1k") {
 
@@ -154,11 +166,16 @@ title_card_indicators_fun <- function(df, select_id, island_only_comparison) {
                                    island = on_island, high_is_good = FALSE, 
                                    geo_area = geo_area, geo_areas = geo_areas)
       
+      text <- 
+        if (is.na(z$pretty_data_var)) sus_translate("No data.") else {
+          sus_translate("There were {z$pretty_data_var} total crashes ",
+                        "per 1,000 residents in {z$data_date}. ", 
+                        "{z$data_rank}. ")
+        }
+      
       list(row_title = "Road safety",
            graph = z$plot,
-           text = sus_translate("There were {z$pretty_data_var} total crashes ",
-                                "per 1,000 residents in {z$data_date}. ", 
-                                "{z$data_rank}. "))
+           text = text)
       
     } else if (.x == "air_quality_no2") {
 
@@ -185,11 +202,16 @@ title_card_indicators_fun <- function(df, select_id, island_only_comparison) {
                                    island = on_island, high_is_good = TRUE, 
                                    geo_area = geo_area, geo_areas = geo_areas)
       
+      text <- 
+        if (is.na(z$pretty_data_var)) sus_translate("No data.") else {
+          sus_translate("{z$data_rank} in terms of greenery. (NDVI ", 
+                        "= {z$pretty_data_var}, data from ", 
+                        "{z$data_date})")
+        }
+      
       list(row_title = "Greenery",
            graph = z$plot,
-           text = sus_translate("{z$data_rank} in terms of greenery. (NDVI ", 
-                                "= {z$pretty_data_var}, data from ", 
-                                "{z$data_date})"))
+           text = text)
       
       
     } else if (.x == "canale_index") {
@@ -199,10 +221,15 @@ title_card_indicators_fun <- function(df, select_id, island_only_comparison) {
                                    island = on_island, high_is_good = TRUE, 
                                    geo_area = geo_area, geo_areas = geo_areas)
       
+      text <- 
+        if (is.na(z$pretty_data_var)) sus_translate("No data.") else {
+          sus_translate("{z$data_rank} in terms of active living. ",
+                        "(Data from {z$data_date})")
+        }
+      
       list(row_title = "Active living",
            graph = z$plot,
-           text = sus_translate("{z$data_rank} in terms of active living. ",
-                                "(Data from {z$data_date})"))
+           text = text)
     }
     
     iteration_result
@@ -233,7 +260,7 @@ update_scale_map <- function(id_map, location, init = TRUE) {
                 id = "df",
                 tooltip = "tooltip",
                 highlight_colour = "#FFFFFF80",
-                fill_colour = "#BAE4B3",
+                fill_colour = "#BAE4B3BB",
                 stroke_colour = "#FFFFFF",
                 stroke_width = 10,
                 auto_highlight = TRUE,
@@ -245,7 +272,7 @@ update_scale_map <- function(id_map, location, init = TRUE) {
                 id = "df",
                 tooltip = "tooltip",
                 highlight_colour = "#FFFFFF80",
-                fill_colour = "#74C476",
+                fill_colour = "#74C476BB",
                 stroke_colour = "#FFFFFF",
                 stroke_width = 10,
                 auto_highlight = TRUE,
@@ -257,7 +284,7 @@ update_scale_map <- function(id_map, location, init = TRUE) {
                 id = "df",
                 tooltip = "tooltip",
                 highlight_colour = "#FFFFFF80",
-                fill_colour = "#006D2C",
+                fill_colour = "#006D2CBB",
                 stroke_colour = "#FFFFFF",
                 stroke_width = 10,
                 auto_highlight = TRUE,
@@ -292,76 +319,84 @@ island_region_map <- function(location) {
 }
 
 
-# place_explorer_block_text <- function(df, selected_var, select_id) {
-#   
-#   ## Setup -------------------------------------------------------------------
-#   
-#   selected_var_q3 <- paste0(selected_var, "_q3")
-#   
-#   var_dates <- 
-#     tidyr::unnest(filter(variables, var_code == selected_var), dates)$dates
-# 
-#     if (!(length(var_dates) == 1 && is.na(var_dates))) {
-#       selected_var <- paste0(selected_var, "_", var_dates[length(var_dates)])
-#       selected_var_q3 <- paste0(selected_var_q3, "_", var_dates[length(var_dates)])
-#     }
-#   
-#   # Get dataframe from df characters tring
-#   data <- get(df)
-#   
-#   
-#   ## Retrieve text and graph -------------------------------------------------
-#   
-#   var_type <- get_var_type(data, selected_var, " ", df, select_id)
-#   
-#   data <- 
-#     data |> 
-#     st_drop_geometry() |> 
-#     select(ID:households, all_of(selected_var), all_of(selected_var_q3)) |> 
-#     rename(ID = ID,
-#            var_left = all_of(selected_var),
-#            var_left_q3 = all_of(selected_var_q3)) |> 
-#     select(ID:households, var_left, var_left_q3)
-#   
-#   info_table(data, var_type, selected_var, " ", df, select_id) |> 
-#     str_remove("<strong>.*</strong>") |> 
-#     str_remove("population of .* and a ")
-#     
-# }
-# 
-# 
-# place_explorer_block_graph <- function(df, selected_var, select_id) {
-#   
-#   ## Setup -------------------------------------------------------------------
-#   
-#   selected_var_q3 <- paste0(selected_var, "_q3")
-#   
-#   var_dates <- 
-#     tidyr::unnest(filter(variables, var_code == selected_var), dates)$dates
-#   
-#   if (!(length(var_dates) == 1 && is.na(var_dates))) {
-#     selected_var <- paste0(selected_var, "_", var_dates[length(var_dates)])
-#     selected_var_q3 <- paste0(selected_var_q3, "_", var_dates[length(var_dates)])
-#   }
-#   
-#   # Get dataframe from df characters tring
-#   data <- get(df)
-#   
-#   
-#   ## Retrieve text and graph -------------------------------------------------
-#   
-#   var_type <- get_var_type(data, selected_var, " ", df, select_id)
-#   
-#   data <- 
-#     data |> 
-#     st_drop_geometry() |> 
-#     select(ID:households, all_of(selected_var), all_of(selected_var_q3)) |> 
-#     rename(ID = ID,
-#            var_left = all_of(selected_var),
-#            var_left_q3 = all_of(selected_var_q3)) |> 
-#     select(ID:households, var_left, var_left_q3)
-#   
-#   
-#   explore_graph(data, var_type, selected_var, " ", df, select_id, 
-#                 build_str_as_DA = TRUE, plot_type = "auto")
-# }
+place_explorer_block_text <- function(df, theme, select_id, 
+                                      island_only_comparison) {
+  
+  on_island <- filter(get(df), ID == select_id)$CSDUID %in% island_CSDUID
+  if (on_island && island_only_comparison == "region") on_island <- FALSE
+  
+  out <- 
+    pe_variable_order[[df]] |>
+    filter(theme == !!theme, ID == select_id) |>
+    arrange(variable_order) |>
+    left_join(variables, by = "var_code") |> 
+    select(var_code, var_title, explanation)
+  
+  names(pe_var_hierarchy[[df]]) <- 
+    names(pe_var_hierarchy[[df]]) |> str_remove("_\\d{4}$")
+  
+  out <- 
+    pe_var_hierarchy[[df]] |> 
+    filter(ID == select_id) |> 
+    select(contains(all_of(out$var_code))) |> 
+    tidyr::pivot_longer(everything(), names_to = "var_code") |> 
+    (\(x) bind_cols(
+      filter(x, !str_ends(var_code, "percentile")),
+      filter(x, str_ends(var_code, "percentile")) |> 
+        transmute(percentile = value)
+    ))() |> 
+    left_join(out, by = "var_code")
+  
+  out <- 
+    out |> 
+    mutate(percentile = round(percentile, digit = 2),
+           value = map2_chr(out$value, out$var_code, convert_unit))
+  
+  
+  return(select(out, var_title, explanation, percentile, value))
+}
+
+place_explorer_block_plot <- function(df, theme, select_id, 
+                                      island_only_comparison) {
+  
+  on_island <- filter(get(df), ID == select_id)$CSDUID %in% island_CSDUID
+  if (on_island && island_only_comparison == "region") on_island <- FALSE
+  
+  out <- 
+    pe_variable_order[[df]] |>
+    filter(theme == !!theme) |>
+    arrange(variable_order) |>
+    left_join(variables, by = "var_code") |> 
+    select(var_code, var_title, explanation)
+  
+  names(pe_var_hierarchy[[df]]) <- 
+    names(pe_var_hierarchy[[df]]) |> str_remove("_\\d{4}$")
+  
+  out <- 
+    pe_var_hierarchy[[df]] |> 
+    filter(ID == select_id) |> 
+    select(contains(all_of(out$var_code))) |> 
+    tidyr::pivot_longer(everything(), names_to = "var_code") |> 
+    (\(x) bind_cols(
+      filter(x, !str_ends(var_code, "percentile")),
+      filter(x, str_ends(var_code, "percentile")) |> 
+        transmute(percentile = value)
+    ))() |> 
+    left_join(out, by = "var_code")
+
+  # Plot
+  ggplot(out, aes(x = value, y = var_title, fill = ..x..)) +
+    ggridges::geom_density_ridges_gradient(scale = 3, rel_min_height = 0.01) +
+    viridis::scale_fill_viridis(name = "Temp. [F]", option = "C") +
+    labs(title = NULL,
+         y = NULL,
+         x = NULL) +
+    theme_minimal() +
+    theme(
+      legend.position = "none",
+      panel.spacing = unit(0.1, "lines"),
+      axis.title.y = element_blank(),
+      axis.text.y = element_blank(),
+      axis.ticks.y = element_blank()
+    )
+}

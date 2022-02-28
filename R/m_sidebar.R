@@ -2,7 +2,7 @@
 
 sidebar_UI2 <- function(id, ..., bottom=NULL) {
   return(tagList(
-    div(class="sus-map-sidebar-shadow"),
+    div(class = "sus-map-sidebar-shadow"),
     div(
       id = "title_bar", class = "sus-map-sidebar", 
       div(class = "sus-map-sidebar-container",
@@ -11,7 +11,9 @@ sidebar_UI2 <- function(id, ..., bottom=NULL) {
                   tagList(
                     uiOutput(NS(id, "title")),
                     tags$p(uiOutput(NS(id, "title_main"))),
-                    tags$p(actionLink(NS(id, "more_info"), class="sus-small-link", sus_translate("Learn more"))),
+                    tags$p(actionLink(NS(id, "more_info"), 
+                                      class = "sus-small-link", 
+                                      sus_translate("Learn more"))),
                     hidden(uiOutput(outputId = NS(id, "title_extra"))),
                     ...
                   )
@@ -23,27 +25,27 @@ sidebar_UI2 <- function(id, ..., bottom=NULL) {
   ))
 }
 
-sidebar_UI <- function(id, ...) {
-  return(tagList(
-    div(class="sus-map-sidebar-shadow"),
-    div(
-      id = "title_bar", class = "sus-map-sidebar", 
-      div(class = "sus-map-sidebar-container",
-        div(class = "sus-map-sidebar-content sus-scroll",
-          div(class = "sus-scroll-content",
-            tagList(
-              uiOutput(NS(id, "title")),
-              tags$p(uiOutput(NS(id, "title_main"))),
-              tags$p(actionLink(NS(id, "more_info"), class="sus-small-link", sus_translate("Learn more"))),
-              hidden(uiOutput(outputId = NS(id, "title_extra")))
-            )
-          )
-        ),
-        ...
-      )
-    )
-  ))
-}
+# sidebar_UI <- function(id, ...) {
+#   return(tagList(
+#     div(class="sus-map-sidebar-shadow"),
+#     div(
+#       id = "title_bar", class = "sus-map-sidebar", 
+#       div(class = "sus-map-sidebar-container",
+#         div(class = "sus-map-sidebar-content sus-scroll",
+#           div(class = "sus-scroll-content",
+#             tagList(
+#               uiOutput(NS(id, "title")),
+#               tags$p(uiOutput(NS(id, "title_main"))),
+#               tags$p(actionLink(NS(id, "more_info"), class="sus-small-link", sus_translate("Learn more"))),
+#               hidden(uiOutput(outputId = NS(id, "title_extra")))
+#             )
+#           )
+#         ),
+#         ...
+#       )
+#     )
+#   ))
+# }
 
 sidebar_server <- function(id, x) {
   stopifnot(!is.reactive(x))
