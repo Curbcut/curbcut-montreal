@@ -9,7 +9,7 @@ place_explorer_UI <- function(id) {
       ## STYLE ------------------------------------------------------------
       inlineCSS("#deckgl-overlay { z-index:4; }"),
       inlineCSS(list(.big_map = "width: 100%; height: 100vh;")),
-      inlineCSS(list(.banner_map = "width: 100%; height: 200px;")),
+      inlineCSS(list(.banner_map = "width: 100%; height: 125px;")),
       # Temporary fix to clicking the enter key is as clicking on Search button
       tags$script('$(function() {
                   var $els = $("[data-proxy-click]");
@@ -29,69 +29,65 @@ place_explorer_UI <- function(id) {
                                 '), 
       `data-proxy-click` = "place_explorer-search_button",
       
-      
-      ## SEARCH PANEL -----------------------------------------------------
-      absolutePanel(
-        # id = NS(id, "search_bar"),
-        style = "z-index:1000; padding:20px;",
-        right = 20, top = 20,
-        class = "panel panel-default",
-        strong("Enter a postal code, or click on the map"),
-        textInput(inputId = NS(id, "adress_searched"), label = NULL,
-                  placeholder = "H3A 2T5"),
-        actionButton(inputId = NS(id, "search_button"), 
-                     label = "Search"),
-        hidden(actionLink(inputId = NS(id, "comeback_map"),
-                          label = HTML("<br>Go back to full-page map")))),
-      
-      
       ## MAIN MAP ---------------------------------------------------------
       div(id = NS(id, "mapdeck_div"), 
           class = "big_map", 
           mapdeckOutput(NS(id, "map"), height = "100%")),
       
       
-      ## EXPLORER ONCE A LOCATION IS SELECTED -----------------------------+
+      ## SIDEBAR
       sidebar_UI2(NS(id, "place_explorer"),
-                               # hidden(div(id = "sidebar_widgets",
-                               
-                               # fluidRow(
-                                 # Checkboxes of each theme
-                               susSidebarWidgets(
-                                 pickerInput(
-                                   inputId = NS(id, "themes_checkbox"),
-                                   label = "Select theme(s):",
-                                   choices = unique(variables$theme),
-                                   selected = unique(variables$theme),
-                                   options = list(
-                                     `selected-text-format` = "count > 4"), 
-                                   multiple = TRUE
-                                 )),
-                               
-                               # Retrieve the scale the user is interested in
-                               susSidebarWidgets(
-                                 # fluidRow(
-                                   HTML('<label class = "control-label">Select scale:</label>'),
-                                   mapdeckOutput(NS(id, "scalemap"), height = 150),
-                                   sliderTextInput(
-                                     inputId = NS(id, "slider"), 
-                                     label = NULL, 
-                                     choices = get_zoom_label(map_zoom_levels[1:3]), 
-                                     selected = get_zoom_label(map_zoom_levels[1:3])[3],
-                                     hide_min_max = TRUE, 
-                                     force_edges = TRUE)
-                                 ),
-                               
-                               # Island only comparison, or region-wide
-                               susSidebarWidgets(
-                                 # fluidRow(
-                                   HTML(paste0('<label id = ', NS(id, "comparison_scale_label"),
-                                               ' class = "control-label">',
-                                               sus_translate('Choose comparison scale:'), '</label>')),
-                                   mapdeckOutput(NS(id, "island_region"), height = 150),
-                                   htmlOutput(outputId = NS(id, "actual_comparison_scale"))
-                                 ),
-                             ),#),
+
+                  susSidebarWidgets(
+                    # Search box
+                    strong(sus_translate("Enter a postal code, ",
+                                         "or click on the map")),
+                    textInput(inputId = NS(id, "adress_searched"), label = NULL,
+                              placeholder = "H3A 2T5"),
+                    actionButton(inputId = NS(id, "search_button"), 
+                                 label = "Search"),
+                    hidden(actionLink(inputId = NS(id, "comeback_map"),
+                                      label = HTML("<br>Go back to full-page map"))),
+                    
+                    br(), br(),
+                    
+                   # Checkboxes of each theme
+                    hidden(pickerInput(
+                      inputId = NS(id, "themes_checkbox"),
+                      label = "Select theme(s):",
+                      choices = unique(variables$theme),
+                      selected = unique(variables$theme),
+                      options = list(
+                        `selected-text-format` = "count > 4"), 
+                      multiple = TRUE
+                    )),
+                   
+                   br(),
+                    
+                    # Retrieve the scale the user is interested in
+                    HTML(paste0('<label id = "', NS(id, "scalemap_label"),
+                                '" class = "control-label" style = "display:none;">',
+                                sus_translate('Select scale'), ':</label>')),
+                    hidden(mapdeckOutput(NS(id, "scalemap"), height = 150)),
+                    hidden(sliderTextInput(
+                      inputId = NS(id, "slider"), 
+                      label = NULL, 
+                      choices = get_zoom_label(map_zoom_levels[1:3]), 
+                      selected = get_zoom_label(map_zoom_levels[1:3])[3],
+                      hide_min_max = TRUE, 
+                      force_edges = TRUE)),
+                   
+                   br(),
+                   
+                   # Island only comparison, or region-wide
+                   HTML(paste0('<label id = "', NS(id, "scalemap_label"),
+                               '" class = "control-label" style = "display:none;">',
+                               sus_translate('Choose comparison scale'), ':</label>')),
+                   hidden(mapdeckOutput(NS(id, "island_region"), height = 150)),
+                   hidden(htmlOutput(outputId = NS(id, "actual_comparison_scale"), 
+                                     style = "display:none;"))
+        
+                  )),
       
       # Main panel as a uiOutput. The amount of themes displayed is reactive
       hidden(uiOutput(NS(id, "gridelements")))
@@ -177,18 +173,23 @@ place_explorer_server <- function(id) {
     })
     
     ## MAIN MAP UPDATES AND JS ------------------------------------------
+    widgets_name <- c("themes_checkbox", "scalemap", "slider", "scalemap_label",
+                      "comparison_scale_label", "island_region", 
+                      "actual_comparison_scale")
+    
     observeEvent(location(), {
       mapdeck_update(map_id = NS(id, "map")) |>
         add_scatterplot(data = location(), radius = 20,
                         fill_colour = "#2A5A5BEE")
-      
+
+      walk(widgets_name, ~hide(.x, anim = TRUE, animType = "fade", time = 1))
       hide(id = "gridelements", anim = TRUE, animType = "fade", time = 1)
-      # hide(id = "sidebar_widgets", anim = TRUE, animType = "fade", time = 1)
       hide(id = "comeback_map", anim = TRUE, animType = "fade", time = 1)
       
       show(id = "comeback_map", anim = TRUE, animType = "fade", time = 1)
       show(id = "gridelements", anim = TRUE, animType = "fade", time = 1)
-      show(id = "sidebar_widgets", anim = TRUE, animType = "fade", time = 1)
+      walk(widgets_name, ~show(.x, anim = TRUE, animType = "fade", time = 1))
+
       removeCssClass(id = "mapdeck_div", class = "big_map")
       addCssClass(id = "mapdeck_div", class = "banner_map") 
     }, ignoreInit = TRUE)
@@ -202,8 +203,9 @@ place_explorer_server <- function(id) {
       addCssClass(id = "mapdeck_div", class = "big_map") 
       
       hide(id = "gridelements", anim = TRUE, animType = "fade", time = 1)
-      # hide(id = "sidebar_widgets", anim = TRUE, animType = "fade", time = 1)
       hide(id = "comeback_map", anim = TRUE, animType = "fade", time = 1)
+      walk(widgets_name, ~hide(.x, anim = TRUE, animType = "fade", time = 1))
+      
     })
     
     
@@ -238,7 +240,8 @@ place_explorer_server <- function(id) {
     
     
     ## ISLAND OR REGION COMPARISON -------------------------------------
-    output$island_region <- renderMapdeck(island_region_map(location()))
+    output$island_region <- renderMapdeck({if (!is.null(location())) 
+      island_region_map(location())})
     
     location_on_island <- reactive({
       if (!is.null(location())) {
@@ -260,8 +263,9 @@ place_explorer_server <- function(id) {
     
     # Let the user know what is the actual scale
     output$actual_comparison_scale <- renderText({
+      if (!is.null(location())) {
       scale <- str_to_sentence(sus_translate(island_comparison()))
-      sus_translate("Actual scale: {scale}")
+      sus_translate("Actual scale: {scale}")}
     })
     
     
@@ -447,8 +451,8 @@ place_explorer_server <- function(id) {
       # Prepare the general UI UI of blocks
       
       fluidPage(
-        div(style = paste0("margin-top:225px; overflow-x: hidden; ",
-                           "overflow-y: auto;  height: calc(100vh - 310px);",
+        div(style = paste0("margin-top:150px; overflow-x: hidden; ",
+                           "overflow-y: auto;  height: calc(100vh - 235px);",
                            "margin-left:310px; background-color:#ffffff;"),
             uiOutput(NS(id, "title_card"), 
                      style = paste0("padding: 5px;",
