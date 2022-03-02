@@ -93,7 +93,7 @@ title_card_row_prep_fun <- function(df, select_id, ind, percent = TRUE,
         ggplot() +
         geom_density(aes(x = var), size = 1, color = hex_to_plot) +
         geom_vline(aes(xintercept = data_var),
-                   color = hex_to_plot, size = 1, alpha = 1) +
+                   color = "#000000", size = 1, alpha = 1) +
         theme_void()
     } else ggplot()
   
@@ -319,84 +319,92 @@ island_region_map <- function(location) {
 }
 
 
-place_explorer_block_text <- function(df, theme, select_id, 
+
+
+place_explorer_block_text <- function(df, theme, select_id,
                                       island_only_comparison) {
-  
+
   on_island <- filter(get(df), ID == select_id)$CSDUID %in% island_CSDUID
   if (on_island && island_only_comparison == "region") on_island <- FALSE
-  
-  out <- 
+
+  out <-
     pe_variable_order[[df]] |>
     filter(theme == !!theme, ID == select_id) |>
     arrange(variable_order) |>
-    left_join(variables, by = "var_code") |> 
-    select(var_code, var_title, explanation)
-  
-  names(pe_var_hierarchy[[df]]) <- 
+    left_join(variables, by = "var_code") |>
+    select(var_code, var_title, explanation) |> 
+    filter(!str_starts(var_code, "access"))
+
+  names(pe_var_hierarchy[[df]]) <-
     names(pe_var_hierarchy[[df]]) |> str_remove("_\\d{4}$")
-  
-  out <- 
-    pe_var_hierarchy[[df]] |> 
-    filter(ID == select_id) |> 
-    select(contains(all_of(out$var_code))) |> 
-    tidyr::pivot_longer(everything(), names_to = "var_code") |> 
+
+  out <-
+    pe_var_hierarchy[[df]] |>
+    filter(ID == select_id) |>
+    select(contains(all_of(out$var_code))) |>
+    tidyr::pivot_longer(everything(), names_to = "var_code") |>
     (\(x) bind_cols(
       filter(x, !str_ends(var_code, "percentile")),
-      filter(x, str_ends(var_code, "percentile")) |> 
+      filter(x, str_ends(var_code, "percentile")) |>
         transmute(percentile = value)
-    ))() |> 
+    ))() |>
     left_join(out, by = "var_code")
-  
-  out <- 
-    out |> 
+
+  out <-
+    out |>
     mutate(percentile = round(percentile, digit = 2),
+           raw_value = value,
            value = map2_chr(out$value, out$var_code, convert_unit))
-  
-  
+
   return(select(out, var_title, explanation, percentile, value))
+
 }
 
-place_explorer_block_plot <- function(df, theme, select_id, 
+place_explorer_block_plot <- function(df, theme, select_id,
                                       island_only_comparison) {
   
   on_island <- filter(get(df), ID == select_id)$CSDUID %in% island_CSDUID
   if (on_island && island_only_comparison == "region") on_island <- FALSE
   
-  out <- 
+  order <-
     pe_variable_order[[df]] |>
-    filter(theme == !!theme) |>
-    arrange(variable_order) |>
-    left_join(variables, by = "var_code") |> 
-    select(var_code, var_title, explanation)
+    filter(theme == !!theme, ID == select_id) |>
+    arrange(variable_order)  |> 
+    filter(!str_starts(var_code, "access")) |> 
+    pull(var_code)
   
-  names(pe_var_hierarchy[[df]]) <- 
-    names(pe_var_hierarchy[[df]]) |> str_remove("_\\d{4}$")
+  names(pe_var_hierarchy[[df]]) <-
+    names(pe_var_hierarchy[[df]]) |> str_remove("_\\d{4}")
   
-  out <- 
-    pe_var_hierarchy[[df]] |> 
+  out_values <-
+    pe_var_hierarchy[[df]] |>
+    select(ID, all_of(order))
+  
+  out_percentiles <-
+    pe_var_hierarchy[[df]] |>
     filter(ID == select_id) |> 
-    select(contains(all_of(out$var_code))) |> 
-    tidyr::pivot_longer(everything(), names_to = "var_code") |> 
-    (\(x) bind_cols(
-      filter(x, !str_ends(var_code, "percentile")),
-      filter(x, str_ends(var_code, "percentile")) |> 
-        transmute(percentile = value)
-    ))() |> 
-    left_join(out, by = "var_code")
-
+    select(all_of(paste0(order, "_percentile")))
+  
   # Plot
-  ggplot(out, aes(x = value, y = var_title, fill = ..x..)) +
-    ggridges::geom_density_ridges_gradient(scale = 3, rel_min_height = 0.01) +
-    viridis::scale_fill_viridis(name = "Temp. [F]", option = "C") +
-    labs(title = NULL,
-         y = NULL,
-         x = NULL) +
-    theme_minimal() +
-    theme(
-      legend.position = "none",
-      panel.spacing = unit(0.1, "lines"),
-      axis.title.y = element_blank(),
-      axis.text.y = element_blank(),
-      axis.ticks.y = element_blank()
-    )
+  plots <- 
+    map(set_names(order), function(var_code) {
+      
+      hex_to_plot <- "#A9A9A9"
+
+      data <- select(out_values, all_of(var_code)) |> rename(var = 1)
+      data_var <- out_values |> filter(ID == select_id) |> select(all_of(var_code)) |> pull()
+      
+      if (length(hex_to_plot) > 0) {
+        data |>
+          filter(!is.na(var)) |>
+          ggplot() +
+          geom_density(aes(x = var), size = 1, color = hex_to_plot) +
+          geom_vline(aes(xintercept = data_var),
+                     color = "#000000", size = 1, alpha = 1) +
+          theme_void()
+      } else ggplot()
+      
+    })
+
 }
+
