@@ -32,10 +32,18 @@ get_dyk_table <- function(var_left, var_right, poi = NULL) {
                "class='action-button shiny-bound-input'>[LEARN MORE]</a>")
         })
       
+      link_attrs <- 
+        map(seq_along(out), ~{
+          list(module = "stories",
+               select_ID = out$ID[.x])
+        })
+      
       out <- paste(out$preview, links)
       out <- paste("<li> ", out, collapse = "")
       out <- paste0("<ul>", out, "</ul>")
-      HTML(out)
+      out <- HTML(out)
+      attr(out, "links") <- link_attrs
+      out
       
     })
   }
