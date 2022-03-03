@@ -98,7 +98,7 @@ stories_server <- function(id) {
       
       if (!is.na(selection())) {
         
-      rmd_name <- stories[stories$ID == selection(),]$rmd
+      rmd_name <- stories[stories$ID == selection(),]$name
       bandeau_name <- stories[stories$ID == selection(),]$img
       
       HTML('<div class = "main_panel_text_popup">',
