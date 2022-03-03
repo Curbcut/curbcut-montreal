@@ -52,45 +52,63 @@ place_explorer_UI <- function(id) {
                     
                     br(), br(),
                     
-                    # Checkboxes of each theme
-                    hidden(pickerInput(
-                      inputId = NS(id, "themes_checkbox"),
-                      label = "Select theme(s):",
-                      choices = unique(variables$theme),
-                      selected = unique(variables$theme),
-                      options = list(
-                        `selected-text-format` = "count > 4"), 
-                      multiple = TRUE
-                    )),
-                    
-                    br(),
-                    
-                    # Retrieve the scale the user is interested in
-                    HTML(paste0('<label id = "', NS(id, "scalemap_label"),
-                                '" class = "control-label" style = "display:none;">',
-                                sus_translate('Select scale'), ':</label>')),
-                    hidden(mapdeckOutput(NS(id, "scalemap"), height = 150)),
-                    hidden(sliderTextInput(
-                      inputId = NS(id, "slider"), 
-                      label = NULL, 
-                      choices = get_zoom_label(map_zoom_levels[1:3]), 
-                      selected = get_zoom_label(map_zoom_levels[1:3])[3],
-                      hide_min_max = TRUE, 
-                      force_edges = TRUE)),
-                    
-                    br(),
-                    
-                    # Island only comparison, or region-wide
-                    HTML(paste0('<label id = "', NS(id, "comparison_label"),
-                                '" class = "control-label" style = "display:none;">',
-                                sus_translate('Choose comparison scale'), ':</label>')),
-                    hidden(mapdeckOutput(NS(id, "island_region"), height = 150)),
-                    hidden(htmlOutput(outputId = NS(id, "actual_comparison_scale"), 
-                                      style = "display:none;"))
-                    
-                  )),
+                    hidden(div(id = NS(id, "sidebar_widgets"),
+                               
+                               # Checkboxes of each theme
+                               pickerInput(
+                                 inputId = NS(id, "themes_checkbox"),
+                                 label = "Select theme(s):",
+                                 choices = unique(variables$theme),
+                                 selected = unique(variables$theme),
+                                 options = list(
+                                   `selected-text-format` = "count > 4"), 
+                                 multiple = TRUE
+                               ),
+                               
+                               br(),
+                               
+                               # Retrieve the scale the user is interested in
+                               HTML(paste0('<label id = "', NS(id, "scalemap_label"),
+                                           '" class = "control-label">',
+                                           sus_translate('Select scale'), ':</label>')),
+                               mapdeckOutput(NS(id, "scalemap"), height = 150),
+                               sliderTextInput(
+                                 inputId = NS(id, "slider"), 
+                                 label = NULL, 
+                                 choices = get_zoom_label(map_zoom_levels[1:3]), 
+                                 selected = get_zoom_label(map_zoom_levels[1:3])[3],
+                                 hide_min_max = TRUE, 
+                                 force_edges = TRUE),
+                               
+                               br(),
+                               
+                               # Island only comparison, or region-wide
+                               HTML(paste0('<label id = "', NS(id, "comparison_label"),
+                                           '" class = "control-label">',
+                                           sus_translate('Choose comparison scale'), ':</label>')),
+                               mapdeckOutput(NS(id, "island_region"), height = 150),
+                               htmlOutput(outputId = NS(id, "actual_comparison_scale"), 
+                                          style = "display:none;")
+                               
+                    )))),
       
       # Main panel as a uiOutput. The amount of themes displayed is reactive
+      fluidPage(
+        hidden(div(id = NS(id, "grid_elements"), 
+                   style = paste0("margin-top:150px; overflow-x: hidden; ",
+                                  "overflow-y: auto;  height: calc(100vh - 235px);",
+                                  "margin-left:310px; background-color:#ffffff;"),
+                   fluidRow(
+                     style = paste0("padding: 5px;",
+                                    "font-size: 11px;",
+                                    "max-width: 1200px; margin:auto;",
+                                    "padding:30px;"),
+                     column(8, htmlOutput(NS(id, "title_card_title")),
+                            uiOutput(NS(id, "title_card"))),
+                     column(4, mapdeckOutput(NS(id, "title_card_map")))),
+                   
+                   fluidRow(uiOutput(NS(id, "themes_grid")))))),
+      
       hidden(uiOutput(NS(id, "gridelements")))
     )))
 }
@@ -174,9 +192,8 @@ place_explorer_server <- function(id) {
     })
     
     ## MAIN MAP UPDATES AND JS ------------------------------------------
-    widgets_name <- c("themes_checkbox", "scalemap", "slider", "scalemap_label",
-                      "comparison_label", "island_region", 
-                      "actual_comparison_scale", "gridelements", "comeback_map")
+    widgets_name <- c("gridelements", "comeback_map",
+                      "grid_elements", "sidebar_widgets")
     
     observeEvent(location(), {
       mapdeck_update(map_id = NS(id, "map")) |>
@@ -260,34 +277,67 @@ place_explorer_server <- function(id) {
         sus_translate("Actual scale: {scale}")}
     })
     
+
+    ## TITLE CARD -------------------------------------------------------
+    shinyjs::delay(1, shinyjs::show("grid_elements"))
+    shinyjs::delay(500, shinyjs::hide("grid_elements"))
+
+    output$title_card_map <- renderMapdeck({
+      mapdeck(
+        style = map_style, 
+        token = map_token, 
+        zoom = map_zoom, 
+        location = map_location)
+    })
     
-    ## PLACE EXPLORER DATA ----------------------------------------------
-    output$gridelements <- renderUI({
+    observeEvent({df()
+      location()
+      select_id()}, {
+        
+      if (!is.null(df()) && !is.null(select_id()) && !is.null(location())) {
+      data <- get(df()) |>
+        filter(ID == select_id()) |>
+        select(-everything()) |>
+        mutate(tooltip = df())
       
-      # TITLE CARD
-      output$title_card <- renderUI({
-        
-        output$title <- renderText({
-          HTML("<h2>", 
-               if (df() == "borough") {
-                 borough[borough$ID == select_id(),]$name
-               } else location_name(), 
-               "</h2>")
-        })
-        
+      mapdeck_update(map_id = NS(id, "title_card_map")) |>
+        add_polygon(data = data,
+                    tooltip = "tooltip",
+                    highlight_colour = "#FFFFFF80",
+                    fill_colour = "#BAE4B3BB",
+                    stroke_colour = "#FFFFFF",
+                    stroke_width = 5,
+                    auto_highlight = TRUE,
+                    update_view = TRUE)
+      }
+    })
+    
+    output$title_card_title <- renderText({
+      if (!is.null(df()) && !is.null(select_id()) && !is.null(location())) {
+      HTML("<h2>",
+           if (df() == "borough") {
+             borough[borough$ID == select_id(),]$name
+           } else location_name(),
+           "</h2>")
+      } else HTML("<h2>Your selected location</h2>")
+    })
+    
+    output$title_card <- renderUI({
+
         output$list <- renderUI({
-          
+          if (!is.null(df()) && !is.null(select_id()) && !is.null(location())) {
+
           to_grid <- get_title_card(
             df(), select_id(),
             island_or_region = island_comparison())
-          
+
           map(names(to_grid), ~{
             output[[paste0("ind_", .x, "_row_title")]] <- renderText({
-              to_grid[[.x]][["row_title"]] |> 
+              to_grid[[.x]][["row_title"]] |>
                 str_to_upper()
             })
             output[[paste0("ind_", .x, "_percentile")]] <- renderText({
-              to_grid[[.x]][["percentile"]] |> 
+              to_grid[[.x]][["percentile"]] |>
                 str_to_upper()
             })
             output[[paste0("ind_", .x, "_plot")]] <- renderPlot({
@@ -297,11 +347,11 @@ place_explorer_server <- function(id) {
               to_grid[[.x]][["text"]]
             })
           })
-          
+
           map(names(to_grid), ~{
             tagList(
               fluidRow(
-                column(width = 2, 
+                column(width = 2,
                        htmlOutput(eval(parse(
                          text = paste0("NS(id, 'ind_", .x, "_row_title')"))),
                          style = paste0("margin:auto; text-align:center; ",
@@ -318,46 +368,21 @@ place_explorer_server <- function(id) {
                        htmlOutput(eval(parse(
                          text = paste0("NS(id, 'ind_", .x, "_text')"))),
                          style = "color: #999999"))
-                
+
               ),
               br()
             )
           })
-          
+          }
         })
-        
-        # If the renderUI is rerun, it reruns a mapdeck with the same name,
-        # which makes it crash I mark every iteration with the time, so a new
-        # mapdeck gets created every time.
-        time <- Sys.time() |> str_replace_all(" |:|-", "_")
-        
-        output[[paste("title_card_plot", time)]] <- renderMapdeck({
-          data <- get(df()) |>
-            filter(ID == select_id()) |>
-            select(-everything()) |>
-            mutate(tooltip = df())
-          
-          mapdeck(
-            style = map_style,
-            token = map_token,
-            zoom = map_zoom,
-            location = map_location) |>
-            add_polygon(data = data,
-                        tooltip = "tooltip",
-                        highlight_colour = "#FFFFFF80",
-                        fill_colour = "#BAE4B3BB",
-                        stroke_colour = "#FFFFFF",
-                        stroke_width = 10,
-                        auto_highlight = TRUE,
-                        update_view = TRUE)
-        })
-        
-        tagList(
-          column(8, fluidRow(htmlOutput(NS(id, "title")),
-                             uiOutput(NS(id, "list")))),
-          column(4, mapdeckOutput(NS(id, paste("title_card_plot", time)))))
-      })
-      
+
+        tagList(uiOutput(NS(id, "list")))
+
+    })
+  
+    
+    ## PLACE EXPLORER DATA ----------------------------------------------
+    output$themes_grid <- renderUI({
       
       themes <-
         pe_theme_order[[df()]] |>
@@ -447,32 +472,17 @@ place_explorer_server <- function(id) {
             
           })
         })
+        
+        imap(themes, ~{
+          tagList(uiOutput(
+            outputId = eval(parse(text = paste0("NS(id, 'theme_", .x, "')"))),
+            style = paste0("padding: 20px; margin: 10px; font-size: 11px;",
+                           "display: inline-grid; ",
+                           "overflow-y: auto; overflow-x: hidden;",
+                           "width: 48%"), 
+            class = "panel panel-default "))
+        })
       })
-      
-      # Change class of a ui depending on its location
-      
-      # Prepare the general UI UI of blocks
-      
-      fluidPage(
-        div(style = paste0("margin-top:150px; overflow-x: hidden; ",
-                           "overflow-y: auto;  height: calc(100vh - 235px);",
-                           "margin-left:310px; background-color:#ffffff;"),
-            uiOutput(NS(id, "title_card"), 
-                     style = paste0("padding: 5px;",
-                                    "font-size: 11px;",
-                                    "max-width: 1200px; margin:auto;",
-                                    "padding:30px;")),
-            imap(themes, ~{
-              tagList(uiOutput(
-                outputId = eval(parse(text = paste0("NS(id, 'theme_", .x, "')"))),
-                style = paste0("padding: 20px; margin: 10px; font-size: 11px;",
-                               "display: inline-grid; ",
-                               "overflow-y: auto; overflow-x: hidden;",
-                               "width: 48%"), 
-                class = "panel panel-default "))
-            })
-        )
-      )
       
     })
     
