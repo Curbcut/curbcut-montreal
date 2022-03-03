@@ -64,17 +64,17 @@ census_max <-
   as.numeric()
 
 # DA 1000m buffers with ID and CSDUID
-# DA_buffer <- 
-#   DA |> 
-#   select(ID, CSDUID) |> 
-#   rowwise() |> 
-#   mutate(buffer = st_buffer(st_centroid(geometry), 1000)) |> 
-#   ungroup() |> 
-#   st_set_geometry("buffer") |> 
+# DA_buffer <-
+#   DA |>
+#   select(ID, CSDUID) |>
+#   rowwise() |>
+#   mutate(buffer = st_buffer(st_centroid(geometry), 1000)) |>
+#   ungroup() |>
+#   st_set_geometry("buffer") |>
 #   select(-geometry)
-
-# qsave(DA_buffer, file = "DA_buffer.qs")
-DA_buffer <- qread("DA_buffer.qs")
+# 
+# qsave(DA_buffer, file = "data/DA_1000m_buffer.qs")
+DA_buffer <- qread("data/DA_1000m_buffer.qs")
 
 # Function taking a df of 3 columns: ID, CSDUID and the column to calculate on.
 percentile_calc <- function(x) {
@@ -104,8 +104,13 @@ title_card_indicators <- list()
 
 # Prepare tibble for easy indexing
 title_card_index <- tibble(name = as.character(),
+                           title = as.character(),
                            island_only = as.logical(),
-                           date = as.numeric())
+                           date = as.numeric(),
+                           percent = as.logical(),
+                           high_is_good = as.logical(),
+                           val_digits = 0,
+                           text = as.character())
 
 ## Driving mode share - census --------------------------------------------
 title_card_indicators <- 
@@ -124,109 +129,120 @@ title_card_indicators <-
 title_card_index <- 
   title_card_index |> 
   add_row(name = "transit_walk_cycle_share",
+          title = "Sus. transport",
           island_only = FALSE,
-          date = census_max)
+          date = census_max,
+          percent = TRUE,
+          high_is_good = TRUE, 
+          val_digits = 0,
+          text = paste0("{z$pretty_data_var} of residents ",
+                        "use public transit, walk or ",
+                        "bicycle to get to work. {z$data_rank}. ",
+                        "(Data from {z$data_date})"))
 
 # Number of transit stops - Mtl open data ---------------------------------
 
-commuters_stations <- 
-  read_sf("dev/data/place_explorer/mtl_commuterstn.shp") |> 
-  select(-everything()) |> 
-  st_transform(4326) |> 
-  mutate(station = TRUE)
-
-metro_stations <- 
-  read_sf("dev/data/place_explorer/mtl_metrostn.shp") |> 
-  select(-everything()) |> 
-  st_transform(4326) |> 
-  mutate(station = TRUE)
-
-bus_stations <- 
-  read_sf("dev/data/place_explorer/region_bus.shp") |> 
-  select(line) |> 
-  st_transform(4326) |> 
-  mutate(station = TRUE)
-
-bixi_stations <- 
-  read_csv("dev/data/place_explorer/bixi_stations.csv") |> 
-  st_as_sf(coords = c("longitude", "latitude"), crs = 4326) |> 
-  select(-name) |> 
-  mutate(station = TRUE)
-
-title_card_indicators <- 
-  append(title_card_indicators, 
-         list("number_transit_stations" =
-                map(set_names(c("borough", "CT", "DA")), ~{
-                  
-                  data <- if (.x %in% c("borough", "CT")) get(.x) else DA_buffer
-                  
-                  # Bixi stations
-                  bixi_stations_ <- 
-                    data |>
-                    select(ID, CSDUID) |> 
-                    st_join(bixi_stations) |> 
-                    st_drop_geometry() |> 
-                    filter(station) |> 
-                    group_by(ID, CSDUID) |> 
-                    summarize(bixi_stations = n(), .groups = "drop")
-                  
-                  # Bus lines
-                  bus_lines_ <- 
-                    data |>
-                    select(ID, CSDUID) |> 
-                    st_join(bus_stations) |> 
-                    st_drop_geometry() |> 
-                    filter(station) |> 
-                    group_by(ID, CSDUID) |> 
-                    distinct(line) |> 
-                    summarize(bus_lines = n(), .groups = "drop")
-                  
-                  # Bus stops
-                  bus_stops_ <- 
-                    data |>
-                    select(ID, CSDUID) |> 
-                    st_join(bus_stations) |> 
-                    st_drop_geometry() |> 
-                    filter(station) |> 
-                    group_by(ID, CSDUID) |> 
-                    summarize(bus_stops = n(), .groups = "drop")
-                  
-                  # Metro station
-                  metro_stations_ <- 
-                    data |>
-                    select(ID, CSDUID) |> 
-                    st_join(metro_stations) |> 
-                    st_drop_geometry() |> 
-                    filter(station) |> 
-                    group_by(ID, CSDUID) |> 
-                    summarize(metro_stations = n(), .groups = "drop")
-                  
-                  # Commuter rail stations
-                  commuters_stations_ <- 
-                    data |>
-                    select(ID, CSDUID) |> 
-                    st_join(commuters_stations) |> 
-                    st_drop_geometry() |> 
-                    filter(station) |> 
-                    group_by(ID, CSDUID) |> 
-                    summarize(commuters_stations = n(), .groups = "drop")
-                  
-                  get(.x) |> 
-                    select(ID, CSDUID) |> 
-                    left_join(bixi_stations_, by = c("ID", "CSDUID")) |> 
-                    left_join(bus_lines_, by = c("ID", "CSDUID")) |> 
-                    left_join(bus_stops_, by = c("ID", "CSDUID")) |> 
-                    left_join(metro_stations_, by = c("ID", "CSDUID")) |> 
-                    left_join(commuters_stations_, by = c("ID", "CSDUID"))
-                  
-                })
-         ))
-
-title_card_index <- 
-  title_card_index |> 
-  add_row(name = "transit_bixi",
-          island_only = FALSE,
-          date = c(2020, 2021))
+# commuters_stations <- 
+#   read_sf("dev/data/place_explorer/mtl_commuterstn.shp") |> 
+#   select(-everything()) |> 
+#   st_transform(4326) |> 
+#   mutate(station = TRUE)
+# 
+# metro_stations <- 
+#   read_sf("dev/data/place_explorer/mtl_metrostn.shp") |> 
+#   select(-everything()) |> 
+#   st_transform(4326) |> 
+#   mutate(station = TRUE)
+# 
+# bus_stations <- 
+#   read_sf("dev/data/place_explorer/region_bus.shp") |> 
+#   select(line) |> 
+#   st_transform(4326) |> 
+#   mutate(station = TRUE)
+# 
+# bixi_stations <- 
+#   read_csv("dev/data/place_explorer/bixi_stations.csv") |> 
+#   st_as_sf(coords = c("longitude", "latitude"), crs = 4326) |> 
+#   select(-name) |> 
+#   mutate(station = TRUE)
+# 
+# title_card_indicators <- 
+#   append(title_card_indicators, 
+#          list("number_transit_stations" =
+#                 map(set_names(c("borough", "CT", "DA")), ~{
+#                   
+#                   data <- if (.x %in% c("borough", "CT")) get(.x) else DA_buffer
+#                   
+#                   # Bixi stations
+#                   bixi_stations_ <- 
+#                     data |>
+#                     select(ID, CSDUID) |> 
+#                     st_join(bixi_stations) |> 
+#                     st_drop_geometry() |> 
+#                     filter(station) |> 
+#                     group_by(ID, CSDUID) |> 
+#                     summarize(bixi_stations = n(), .groups = "drop")
+#                   
+#                   # Bus lines
+#                   bus_lines_ <- 
+#                     data |>
+#                     select(ID, CSDUID) |> 
+#                     st_join(bus_stations) |> 
+#                     st_drop_geometry() |> 
+#                     filter(station) |> 
+#                     group_by(ID, CSDUID) |> 
+#                     distinct(line) |> 
+#                     summarize(bus_lines = n(), .groups = "drop")
+#                   
+#                   # Bus stops
+#                   bus_stops_ <- 
+#                     data |>
+#                     select(ID, CSDUID) |> 
+#                     st_join(bus_stations) |> 
+#                     st_drop_geometry() |> 
+#                     filter(station) |> 
+#                     group_by(ID, CSDUID) |> 
+#                     summarize(bus_stops = n(), .groups = "drop")
+#                   
+#                   # Metro station
+#                   metro_stations_ <- 
+#                     data |>
+#                     select(ID, CSDUID) |> 
+#                     st_join(metro_stations) |> 
+#                     st_drop_geometry() |> 
+#                     filter(station) |> 
+#                     group_by(ID, CSDUID) |> 
+#                     summarize(metro_stations = n(), .groups = "drop")
+#                   
+#                   # Commuter rail stations
+#                   commuters_stations_ <- 
+#                     data |>
+#                     select(ID, CSDUID) |> 
+#                     st_join(commuters_stations) |> 
+#                     st_drop_geometry() |> 
+#                     filter(station) |> 
+#                     group_by(ID, CSDUID) |> 
+#                     summarize(commuters_stations = n(), .groups = "drop")
+#                   
+#                   get(.x) |> 
+#                     select(ID, CSDUID) |> 
+#                     left_join(bixi_stations_, by = c("ID", "CSDUID")) |> 
+#                     left_join(bus_lines_, by = c("ID", "CSDUID")) |> 
+#                     left_join(bus_stops_, by = c("ID", "CSDUID")) |> 
+#                     left_join(metro_stations_, by = c("ID", "CSDUID")) |> 
+#                     left_join(commuters_stations_, by = c("ID", "CSDUID"))
+#                   
+#                 })
+#          ))
+# 
+# title_card_index <- 
+#   title_card_index |> 
+#   add_row(name = "transit_bixi",
+#           island_only = FALSE,
+#           date = c(2020, 2021),
+#           percent = TRUE,
+#           high_is_good = TRUE, 
+#           val_digits = 0)
 
 
 ## Number of crashes - Mtl data portal ------------------------------------
@@ -252,9 +268,15 @@ title_card_indicators <-
 title_card_index <- 
   title_card_index |> 
   add_row(name = "total_crash_per1k",
-          # explanation = "The total number of crash per square km",
+          title = "Road collision",
           island_only = TRUE,
-          date = last_crash_data_year)
+          date = last_crash_data_year,
+          percent = FALSE,
+          high_is_good = FALSE, 
+          val_digits = 0,
+          text = paste0("There were {z$pretty_data_var} total crashes ",
+                        "per 1,000 residents in {z$data_date}. ", 
+                        "{z$data_rank}."))
 
 ## Air quality - PM2.5 - CANUE --------------------------------------------
 
@@ -290,9 +312,15 @@ title_card_indicators <-
 title_card_index <- 
   title_card_index |> 
   add_row(name = "air_quality_no2",
-          # explanation = "The air quality measurement (NO2)",
+          title = "Air pollution",
           island_only = FALSE,
-          date = 2016)
+          date = 2016,
+          percent = FALSE,
+          high_is_good = FALSE, 
+          val_digits = 1,
+          text = paste0("{z$data_rank} in terms of level of NO2 ",
+                        "pollution. {higher_than_threshold}(NO2 = ",
+                        "{z$pretty_data_var}, data from {z$data_date})"))
 
 ## Percentage of Single Family Homes - Census -----------------------------
 
@@ -310,8 +338,15 @@ title_card_indicators <-
 title_card_index <-
   title_card_index |>
   add_row(name = "single_detached",
+          title = "Housing",
           island_only = FALSE,
-          date = census_max)
+          date = census_max,
+          percent = TRUE,
+          high_is_good = FALSE, 
+          val_digits = 0,
+          text = paste0("{z$pretty_data_var} of occupied dwellings are ",
+                        "single-detached houses. {z$data_rank}. ",
+                        "(Data from {z$data_date})"))
 
 ## Amount of greenspace in spatial unit - Mtl data portal -----------------
 
@@ -345,8 +380,15 @@ title_card_indicators <-
 title_card_index <- 
   title_card_index |> 
   add_row(name = "green_space_ndvi",
+          title = "Greenery",
           island_only = FALSE,
-          date = 2019)
+          date = 2019,
+          percent = TRUE,
+          high_is_good = TRUE, 
+          val_digits = 0,
+          text = paste0("{z$data_rank} in terms of greenery. (NDVI ", 
+                        "= {z$pretty_data_var}, data from ", 
+                        "{z$data_date})"))
 
 ## Active Living potential - CanALE ---------------------------------------
 title_card_indicators <-
@@ -363,8 +405,14 @@ title_card_indicators <-
 title_card_index <- 
   title_card_index |> 
   add_row(name = "canale_index",
+          title = "Active living",
           island_only = FALSE,
-          date = census_max)
+          date = census_max,
+          percent = FALSE,
+          high_is_good = TRUE, 
+          val_digits = 0,
+          text = paste0("{z$data_rank} in terms of active living. ",
+                        "(Data from {z$data_date})"))
 
 
 
@@ -375,8 +423,7 @@ title_card_index <-
 basic_percentile_retrieval <- 
   variables |> 
   filter(source == "census" |
-           str_starts(var_code, "climate") |
-           str_starts(var_code, "canale"))
+           str_starts(var_code, "climate"))
 
 pe_var_hierarchy <- 
   map(set_names(c("borough", "CT", "DA")), function(scale) {
@@ -471,12 +518,12 @@ pe_theme_order <-
   map(set_names(names(pe_var_hierarchy)), ~{
     
     place_ex_variables <- 
-      rbind(filter(variables, !str_starts(var_code, "access")),
-            variables |> 
-              filter(str_starts(var_code, "access")) |>
-              mutate(var_code = case_when(str_starts(var_code, "access_jobs") ~ 
-                                            str_extract(var_code, "access_jobs_[^_]*"),
-                                          TRUE ~ str_extract(var_code, "access_[^_]*")))
+      rbind(filter(variables, !str_starts(var_code, "access"))
+            # variables |> 
+            #   filter(str_starts(var_code, "access")) |>
+            #   mutate(var_code = case_when(str_starts(var_code, "access_jobs") ~ 
+            #                                 str_extract(var_code, "access_jobs_[^_]*"),
+            #                               TRUE ~ str_extract(var_code, "access_[^_]*")))
       )
     
     pe_var_hierarchy[[.x]] |>

@@ -81,89 +81,88 @@ island_region_map <- function(location) {
                 update_view = TRUE)
 }
 
-
-
-
 place_explorer_block_text <- function(df, theme, select_id,
                                       island_or_region) {
-
+  
   on_island <- filter(get(df), ID == select_id)$CSDUID %in% island_CSDUID
   if (on_island && island_or_region == "region") on_island <- FALSE
+  
+  raw_data_order <- pe_variable_order[[df]]
+  data_order <- raw_data_order[raw_data_order$theme == theme & 
+                           raw_data_order$ID == select_id, 
+                   c("var_code")]
+  variables_theme <- variables[variables$var_code %in% data_order$var_code, ]
+  variables_theme <- 
+    variables_theme[order(match(variables_theme$var_code, data_order$var_code)), 
+                    c("var_title", "explanation")]
+  data_order <- bind_cols(data_order, variables_theme)
 
-  out <-
-    pe_variable_order[[df]] |>
-    filter(theme == !!theme, ID == select_id) |>
-    arrange(variable_order) |>
-    left_join(variables, by = "var_code") |>
-    select(var_code, var_title, explanation) |> 
-    filter(!str_starts(var_code, "access"))
-
-  names(pe_var_hierarchy[[df]]) <-
-    names(pe_var_hierarchy[[df]]) |> str_remove("_\\d{4}$")
-
-  out <-
-    pe_var_hierarchy[[df]] |>
-    filter(ID == select_id) |>
-    select(contains(all_of(out$var_code))) |>
-    tidyr::pivot_longer(everything(), names_to = "var_code") |>
-    (\(x) bind_cols(
-      filter(x, !str_ends(var_code, "percentile")),
-      filter(x, str_ends(var_code, "percentile")) |>
-        transmute(percentile = value)
-    ))() |>
-    left_join(out, by = "var_code")
-
-  out <-
-    out |>
-    mutate(percentile = round(percentile, digit = 2),
-           raw_value = value,
-           value = map2_chr(out$value, out$var_code, convert_unit))
-
+  raw_data_var <- pe_var_hierarchy[[df]]
+  names(raw_data_var) <- gsub("_\\d{4}", '', names(raw_data_var))
+  cols_keep <- c(data_order$var_code, 
+                    paste0(data_order$var_code, "_percentile"))
+  data_var <- raw_data_var[raw_data_var$ID == select_id, cols_keep]
+  data_var <- tidyr::pivot_longer(data_var, everything(), names_to = "var_code")
+  out <- 
+    bind_cols(
+      data_order, 
+      tibble(value = data_var[!grepl("_percentile", data_var$var_code), ]$value,
+             percentile = data_var[grepl("_percentile", data_var$var_code), ]$value)
+    )
+  out <- out[!is.na(out$value), ]
+  
+  percentile <- map_chr(out$percentile, function(out_percentiles) {
+    if (out_percentiles > 0.50) {
+      per <- scales::percent(abs(out_percentiles - 1))
+      if (per == "0%") per <- "1%"
+      sus_translate("Top {per}")
+    } else {
+      per <- scales::percent(abs(out_percentiles))
+      if (per == "0%") per <- "1%"
+      sus_translate("Bottom {per}")
+    }
+  })
+  out$percentile <- percentile
+  out$value <- map2_chr(out$value, out$var_code, convert_unit)
+  
   return(select(out, var_title, explanation, percentile, value))
-
+  
 }
 
 place_explorer_block_plot <- function(df, theme, select_id,
                                       island_or_region) {
   
-  on_island <- filter(get(df), ID == select_id)$CSDUID %in% island_CSDUID
-  if (on_island && island_or_region == "region") on_island <- FALSE
+  on_island <- if (island_or_region == "region") FALSE else 
+    data$CSDUID[data$ID == select_id] %in% island_CSDUID
   
-  order <-
-    pe_variable_order[[df]] |>
-    filter(theme == !!theme, ID == select_id) |>
-    arrange(variable_order)  |> 
-    filter(!str_starts(var_code, "access")) |> 
-    pull(var_code)
+  raw_data_order <- pe_variable_order[[df]]
+  data_order <- raw_data_order[raw_data_order$theme == theme & 
+                                 raw_data_order$ID == select_id, ]$var_code
   
-  names(pe_var_hierarchy[[df]]) <-
-    names(pe_var_hierarchy[[df]]) |> str_remove("_\\d{4}")
+  raw_data_var <- pe_var_hierarchy[[df]]
+  names(raw_data_var) <- gsub("_\\d{4}", '', names(raw_data_var))
   
   out_values <-
-    pe_var_hierarchy[[df]] |>
-    select(ID, all_of(order))
-  
-  out_percentiles <-
-    pe_var_hierarchy[[df]] |>
-    filter(ID == select_id) |> 
-    select(all_of(paste0(order, "_percentile")))
+    raw_data_var[, c("ID", data_order)]
   
   # Plot
   plots <- 
-    map(set_names(order), function(var_code) {
+    map(data_order, function(var_code) {
       
       hex_to_plot <- "#A9A9A9"
 
-      data <- select(out_values, all_of(var_code)) |> rename(var = 1)
-      data_var <- out_values |> filter(ID == select_id) |> select(all_of(var_code)) |> pull()
+      data <- out_values[, var_code]
+      names(data) <- "var"
+      data <- data[!is.na(data$var), ]
+      
+      data_var <- out_values[out_values$ID == select_id, var_code][[var_code]]
       
       outlier <- if (data_var %in% remove_outliers(data$var)) FALSE else TRUE
       
-      if (length(hex_to_plot) > 0) {
-        data |>
-          filter(!is.na(var)) |>
+      if (!is.na(data_var)) {
+        data |> 
           (\(x) if (outlier) x else 
-            filter(x, var %in% c(remove_outliers(data$var))))() |> 
+            x[x$var %in% c(remove_outliers(data$var)),])() |> 
           ggplot() +
           geom_density(aes(x = var), size = 1, color = hex_to_plot) +
           geom_vline(aes(xintercept = data_var),

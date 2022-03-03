@@ -37,67 +37,68 @@ place_explorer_UI <- function(id) {
       
       ## SIDEBAR
       sidebar_UI(NS(id, "place_explorer"),
-                  
-                  hidden(actionLink(inputId = NS(id, "comeback_map"),
-                                    label = sus_translate("Go back to full-page map"))),
-                  
-                  susSidebarWidgets(
-                    # Search box
-                    strong(sus_translate("Enter a postal code, ",
-                                         "or click on the map")),
-                    textInput(inputId = NS(id, "adress_searched"), label = NULL,
-                              placeholder = "H3A 2T5"),
-                    actionButton(inputId = NS(id, "search_button"), 
-                                 label = "Search"),
-                    
-                    br(), br(),
-                    
-                    hidden(div(id = NS(id, "sidebar_widgets"),
-                               
-                               # Checkboxes of each theme
-                               pickerInput(
-                                 inputId = NS(id, "themes_checkbox"),
-                                 label = "Select theme(s):",
-                                 choices = unique(variables$theme),
-                                 selected = unique(variables$theme),
-                                 options = list(
-                                   `selected-text-format` = "count > 4"), 
-                                 multiple = TRUE
-                               ),
-                               
-                               br(),
-                               
-                               # Retrieve the scale the user is interested in
-                               HTML(paste0('<label id = "', NS(id, "scalemap_label"),
-                                           '" class = "control-label">',
-                                           sus_translate('Select scale'), ':</label>')),
-                               mapdeckOutput(NS(id, "scalemap"), height = 150),
-                               sliderTextInput(
-                                 inputId = NS(id, "slider"), 
-                                 label = NULL, 
-                                 choices = get_zoom_label(map_zoom_levels[1:3]), 
-                                 selected = get_zoom_label(map_zoom_levels[1:3])[3],
-                                 hide_min_max = TRUE, 
-                                 force_edges = TRUE),
-                               
-                               br(),
-                               
-                               # Island only comparison, or region-wide
-                               HTML(paste0('<label id = "', NS(id, "comparison_label"),
-                                           '" class = "control-label">',
-                                           sus_translate('Choose comparison scale'), ':</label>')),
-                               mapdeckOutput(NS(id, "island_region"), height = 150),
-                               htmlOutput(outputId = NS(id, "actual_comparison_scale"), 
-                                          style = "display:none;")
-                               
-                    )))),
+                 
+                 hidden(actionLink(inputId = NS(id, "comeback_map"),
+                                   label = sus_translate("Go back to full-page map"))),
+                 
+                 susSidebarWidgets(
+                   # Search box
+                   strong(sus_translate("Enter a postal code, ",
+                                        "or click on the map")),
+                   textInput(inputId = NS(id, "adress_searched"), label = NULL,
+                             placeholder = "H3A 2T5"),
+                   actionButton(inputId = NS(id, "search_button"), 
+                                label = "Search"),
+                   
+                   br(), br(),
+                   
+                   hidden(div(id = NS(id, "sidebar_widgets"),
+                              
+                              # Checkboxes of each theme
+                              pickerInput(
+                                inputId = NS(id, "themes_checkbox"),
+                                label = "Select theme(s):",
+                                choices = unique(variables$theme),
+                                selected = unique(variables$theme),
+                                options = list(
+                                  `selected-text-format` = "count > 4"), 
+                                multiple = TRUE
+                              ),
+                              
+                              br(),
+                              
+                              # Retrieve the scale the user is interested in
+                              HTML(paste0('<label id = "', NS(id, "scalemap_label"),
+                                          '" class = "control-label">',
+                                          sus_translate('Select scale'), ':</label>')),
+                              mapdeckOutput(NS(id, "scalemap"), height = 150),
+                              sliderTextInput(
+                                inputId = NS(id, "slider"), 
+                                label = NULL, 
+                                choices = get_zoom_label(map_zoom_levels[1:3]), 
+                                selected = get_zoom_label(map_zoom_levels[1:3])[3],
+                                hide_min_max = TRUE, 
+                                force_edges = TRUE),
+                              
+                              br(),
+                              
+                              # Island only comparison, or region-wide
+                              HTML(paste0('<label id = "', NS(id, "comparison_label"),
+                                          '" class = "control-label">',
+                                          sus_translate('Choose comparison scale'), ':</label>')),
+                              mapdeckOutput(NS(id, "island_region"), height = 150),
+                              htmlOutput(outputId = NS(id, "actual_comparison_scale"), 
+                                         style = "display:none;")
+                              
+                   )))),
       
       # Main panel as a uiOutput. The amount of themes displayed is reactive
       fluidPage(
         hidden(div(id = NS(id, "grid_elements"), 
                    style = paste0("margin-top:150px; overflow-x: hidden; ",
                                   "overflow-y: auto;  height: calc(100vh - 235px);",
-                                  "margin-left:310px; background-color:#ffffff;"),
+                                  "margin-left:310px; background-color:#ffffff;",
+                                  "padding:25px;"),
                    fluidRow(
                      style = paste0("padding: 5px;",
                                     "font-size: 11px;",
@@ -108,8 +109,6 @@ place_explorer_UI <- function(id) {
                      column(4, mapdeckOutput(NS(id, "title_card_map")))),
                    
                    fluidRow(uiOutput(NS(id, "themes_grid")))))),
-      
-      hidden(uiOutput(NS(id, "gridelements")))
     )))
 }
 
@@ -218,7 +217,6 @@ place_explorer_server <- function(id) {
     })
     
     
-    
     ## RETRIEVE df AND ROW ID ------------------------------------------
     # Reactive map depending on location
     output$scalemap <- renderMapdeck({
@@ -277,11 +275,11 @@ place_explorer_server <- function(id) {
         sus_translate("Actual scale: {scale}")}
     })
     
-
+    
     ## TITLE CARD -------------------------------------------------------
     shinyjs::delay(1, shinyjs::show("grid_elements"))
     shinyjs::delay(500, shinyjs::hide("grid_elements"))
-
+    
     output$title_card_map <- renderMapdeck({
       mapdeck(
         style = map_style, 
@@ -294,44 +292,44 @@ place_explorer_server <- function(id) {
       location()
       select_id()}, {
         
-      if (!is.null(df()) && !is.null(select_id()) && !is.null(location())) {
-      data <- get(df()) |>
-        filter(ID == select_id()) |>
-        select(-everything()) |>
-        mutate(tooltip = df())
-      
-      mapdeck_update(map_id = NS(id, "title_card_map")) |>
-        add_polygon(data = data,
-                    tooltip = "tooltip",
-                    highlight_colour = "#FFFFFF80",
-                    fill_colour = "#BAE4B3BB",
-                    stroke_colour = "#FFFFFF",
-                    stroke_width = 5,
-                    auto_highlight = TRUE,
-                    update_view = TRUE)
-      }
-    })
+        if (!is.null(df()) && !is.null(select_id()) && !is.null(location())) {
+          data <- get(df()) |>
+            filter(ID == select_id()) |>
+            select(-everything()) |>
+            mutate(tooltip = df())
+          
+          mapdeck_update(map_id = NS(id, "title_card_map")) |>
+            add_polygon(data = data,
+                        tooltip = "tooltip",
+                        highlight_colour = "#FFFFFF80",
+                        fill_colour = "#BAE4B3BB",
+                        stroke_colour = "#FFFFFF",
+                        stroke_width = 5,
+                        auto_highlight = TRUE,
+                        update_view = TRUE)
+        }
+      })
     
     output$title_card_title <- renderText({
       if (!is.null(df()) && !is.null(select_id()) && !is.null(location())) {
-      HTML("<h2>",
-           if (df() == "borough") {
-             borough[borough$ID == select_id(),]$name
-           } else location_name(),
-           "</h2>")
+        HTML("<h2>",
+             if (df() == "borough") {
+               borough[borough$ID == select_id(),]$name
+             } else location_name(),
+             "</h2>")
       } else HTML("<h2>Your selected location</h2>")
     })
     
     output$title_card <- renderUI({
-
-        output$list <- renderUI({
-          if (!is.null(df()) && !is.null(select_id()) && !is.null(location())) {
-
+      
+      output$list <- renderUI({
+        if (!is.null(df()) && !is.null(select_id()) && !is.null(location())) {
+          
           to_grid <- get_title_card(
             df(), select_id(),
             island_or_region = island_comparison())
-
-          map(names(to_grid), ~{
+          
+          map(seq_along(to_grid), ~{
             output[[paste0("ind_", .x, "_row_title")]] <- renderText({
               to_grid[[.x]][["row_title"]] |>
                 str_to_upper()
@@ -347,8 +345,8 @@ place_explorer_server <- function(id) {
               to_grid[[.x]][["text"]]
             })
           })
-
-          map(names(to_grid), ~{
+          
+          map(seq_along(to_grid), ~{
             tagList(
               fluidRow(
                 column(width = 2,
@@ -368,123 +366,110 @@ place_explorer_server <- function(id) {
                        htmlOutput(eval(parse(
                          text = paste0("NS(id, 'ind_", .x, "_text')"))),
                          style = "color: #999999"))
-
+                
               ),
               br()
             )
           })
-          }
-        })
-
-        tagList(uiOutput(NS(id, "list")))
-
+        }
+      })
+      
+      tagList(uiOutput(NS(id, "list")))
+      
     })
-  
+    
     
     ## PLACE EXPLORER DATA ----------------------------------------------
     output$themes_grid <- renderUI({
-      
-      themes <-
-        pe_theme_order[[df()]] |>
-        filter(ID == select_id(), theme %in% input$themes_checkbox) |>
-        arrange(theme_order) |>
-        pull(theme)
-      
-      # The "server" of every block
-      delay(1000, {
+      if (!is.null(df()) && !is.null(select_id()) && !is.null(location())) {
+        
+        themes <-
+          pe_theme_order[[df()]] |>
+          filter(ID == select_id(), theme %in% input$themes_checkbox) |>
+          arrange(theme_order) |>
+          pull(theme)
+        
+        # The "server" of every block
         iwalk(themes, function(theme, ite) {
-          
-          delay((ite - 1)*250, {
-          block <- paste0("theme_", theme, "_block")
-          
-          output[[block]] <- renderUI({
+          delay(ite*100, {
+            block <- paste0("theme_", theme, "_block")
             
-            to_grid <- place_explorer_block_text(
-              df = df(), 
-              theme = theme,
-              select_id = select_id(),
-              island_or_region = island_comparison())
-            
-            plots <- place_explorer_block_plot(
-              df = df(), 
-              theme = theme,
-              select_id = select_id(),
-              island_or_region = island_comparison()
-            )
-            
-            map(1:(nrow(to_grid)), ~{
-              output[[paste0("ind_", theme, .x, "_row_title")]] <- renderText({
-                
-                paste(to_grid[.x, ][["var_title"]],
-                      icon("question", 
-                           title = str_to_sentence(to_grid[.x, ][["explanation"]])))
-              })
-              output[[paste0("ind_", theme,  .x, "_percentile")]] <- renderText({
-                to_grid[.x, ][["percentile"]]
-              })
-              output[[paste0("ind_", theme, .x, "_value")]] <- renderText({
-                to_grid[.x, ][["value"]]
-              })
-              output[[paste0("ind_", theme, .x, "_plot")]] <- renderPlot({
-                plots[[.x]]
-              })
-            })
-            
-            map(1:(nrow(to_grid)), ~{
-              tagList(
-                fluidRow(
-                  column(width = 4, 
-                         if (.x == 1) h5(sus_translate("Variable")),
-                         htmlOutput(eval(parse(
-                           text = paste0("NS(id, 'ind_", theme, .x, "_row_title')"))))),
-                  column(width = 2,
-                         if (.x == 1) h5(sus_translate("Percentile")),
-                         htmlOutput(eval(parse(
-                           text = paste0("NS(id, 'ind_", theme, .x, "_percentile')"))))),
-                  column(width = 2,
-                         if (.x == 1) h5(sus_translate("Value")),
-                         htmlOutput(eval(parse(
-                           text = paste0("NS(id, 'ind_", theme, .x, "_value')"))))),
-                  column(width = 3,
-                         if (.x == 1) h5(sus_translate("Plot")),
-                         plotOutput(eval(parse(
-                           text = paste0("NS(id, 'ind_", theme, .x, "_plot')"))),
-                           height = 25))
-                ),
-                br()
+            output[[block]] <- renderUI({
+              
+              to_grid <- place_explorer_block_text(
+                df = df(), 
+                theme = theme,
+                select_id = select_id(),
+                island_or_region = island_comparison())
+              
+              plots <- place_explorer_block_plot(
+                df = df(), 
+                theme = theme,
+                select_id = select_id(),
+                island_or_region = island_comparison()
               )
+              
+              if (nrow(to_grid) > 0)
+              map(1:(nrow(to_grid)), ~{
+                output[[paste0("ind_", theme, .x, "_row_title")]] <- renderText({
+                  
+                  paste(to_grid[.x, ][["var_title"]],
+                        icon("question", 
+                             title = str_to_sentence(to_grid[.x, ][["explanation"]])))
+                })
+                output[[paste0("ind_", theme,  .x, "_percentile")]] <- renderText({
+                  to_grid[.x, ][["percentile"]]
+                })
+                output[[paste0("ind_", theme, .x, "_value")]] <- renderText({
+                  to_grid[.x, ][["value"]]
+                })
+                output[[paste0("ind_", theme, .x, "_plot")]] <- renderPlot({
+                  plots[[.x]]
+                })
+              })
+              
+              if (nrow(to_grid) > 0) {
+              tagList(h3(sus_translate(theme)),
+                      map(1:(nrow(to_grid)), ~{
+                        tagList(
+                          fluidRow(
+                            column(width = 4, 
+                                   if (.x == 1) h5(sus_translate("Variable")),
+                                   htmlOutput(eval(parse(
+                                     text = paste0("NS(id, 'ind_", theme, .x, "_row_title')"))))),
+                            column(width = 2,
+                                   if (.x == 1) h5(sus_translate("Rank")),
+                                   htmlOutput(eval(parse(
+                                     text = paste0("NS(id, 'ind_", theme, .x, "_percentile')"))))),
+                            column(width = 2,
+                                   if (.x == 1) h5(sus_translate("Value")),
+                                   htmlOutput(eval(parse(
+                                     text = paste0("NS(id, 'ind_", theme, .x, "_value')"))))),
+                            column(width = 3,
+                                   if (.x == 1) h5(sus_translate("Plot")),
+                                   plotOutput(eval(parse(
+                                     text = paste0("NS(id, 'ind_", theme, .x, "_plot')"))),
+                                     height = 25))
+                          ),
+                          br()
+                        )
+                      })
+              )} else {
+                tagList(fluidRow(h3(sus_translate(theme))), 
+                        fluidRow("No data."))
+              }
             })
-            
-          })
-          })
-          
-        })
-        
-        # Prepare the UI of each block
-        walk(themes, ~{
-          output_name <- paste0("theme_", .x)
-          # Render UI of each grid block
-          output[[output_name]] <- renderUI({
-            tagList(
-              h3(sus_translate(.x)),
-              uiOutput(eval(parse(text = paste0("NS(id, 'theme_", .x, "_block')"))))
-            )
-            
           })
         })
         
-        imap(themes, ~{
+        map(themes, ~{
           tagList(uiOutput(
-            outputId = eval(parse(text = paste0("NS(id, 'theme_", .x, "')"))),
+            outputId = eval(parse(text = paste0("NS(id, 'theme_", .x, "_block')"))),
             style = paste0("padding: 20px; margin: 10px; font-size: 11px;",
-                           "display: inline-grid; ",
-                           "overflow-y: auto; overflow-x: hidden;",
-                           "width: 48%"), 
+                           "display: inline-grid; width: 48%;"), 
             class = "panel panel-default "))
         })
-      })
-      
+      }
     })
-    
   })
 }
