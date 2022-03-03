@@ -1,6 +1,6 @@
 #### GET DYK TABLE #############################################################
 
-get_dyk_table <- function(var_left, var_right, poi = NULL) {
+get_dyk_table <- function(id, var_left, var_right, poi = NULL) {
   
   # Prepare variables ----------------------------------------------------------
   
@@ -27,15 +27,14 @@ get_dyk_table <- function(var_left, var_right, poi = NULL) {
         slice(1:2)
       
       links <- map_chr(seq_along(out$name), ~{
-        paste0("<a id='dyk_", .x, 
-               "home-module_link' href='#' ",
+        paste0("<a id='", id, "-", id, "-dyk_", .x, "' href='#' ",
                "class='action-button shiny-bound-input'>[LEARN MORE]</a>")
         })
       
       link_attrs <- 
         map(seq_along(nrow(out)), ~{
           list(module = "stories",
-               select_ID = out$ID[.x])
+               select_id = out$ID[.x])
         })
       
       out <- paste(out$preview, links)

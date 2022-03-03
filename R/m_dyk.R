@@ -13,7 +13,14 @@ dyk_server <- function(id, var_left, var_right, poi = reactive(NULL)) {
   
   moduleServer(id, function(input, output, session) {
     
-    dyk_output <- reactive(get_dyk_table(var_left(), var_right(), poi()))
+    dyk_output <- reactive(get_dyk_table(id, var_left(), var_right(), poi()))
+    
+    # Observe for clicks
+    observeEvent(input$dyk_1, {
+      do.call(module_link, attr(dyk_output(), "links")[[1]])})
+    
+    observeEvent(input$dyk_2, {
+      do.call(module_link, attr(dyk_output(), "links")[[2]])})
     
     # Only show box if dyk_output isn't empty
     output$dyk_box <- renderUI({
