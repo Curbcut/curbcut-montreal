@@ -29,8 +29,10 @@ stories_UI <- function(id) {
 stories_server <- function(id) {
   moduleServer(id, function(input, output, session) {
     
+    ns_id <- "stories"
+    
     # Initial reactives
-    selection <- reactiveVal(NA)
+    select_id <- reactiveVal(NA)
     zoom <- reactiveVal(map_zoom * -550 + 8000)
     
     # Sidebar
@@ -89,20 +91,20 @@ stories_server <- function(id) {
     observeEvent(input$map_polygon_click, {
       click <- fromJSON(input$map_polygon_click)$object$properties$id
       if (is.null(click)) {
-        selection(NA)
-      } else if (!is.na(selection()) && 
-                 click == selection()) {
-        selection(NA)
-      } else selection(click)
+        select_id(NA)
+      } else if (!is.na(select_id()) && 
+                 click == select_id()) {
+        select_id(NA)
+      } else select_id(click)
     })
     
     # Render the story in question, now only in english (_en)
     output$stories <- renderUI({
       
-      if (!is.na(selection())) {
+      if (!is.na(select_id())) {
         
-        rmd_name <- stories[stories$ID == selection(),]$name
-        bandeau_name <- stories[stories$ID == selection(),]$img
+        rmd_name <- stories[stories$ID == select_id(),]$name
+        bandeau_name <- stories[stories$ID == select_id(),]$img
         
         HTML('<div class = "main_panel_text_popup">',
              # Adding bandeau img after the first div (title)
@@ -118,21 +120,54 @@ stories_server <- function(id) {
     # Anytime to "Go back to map" button is clicked, poly_selected goes
     # NA causing the div to disappear
     observeEvent(input$back, {
-      selection(NA)
+      select_id(NA)
     })
     
-    observeEvent(selection(), {
-      toggle("hr", condition = !is.na(selection()))
-      toggle("back", condition = !is.na(selection()))
-      toggle("stories", condition = !is.na(selection()))
+    observeEvent(select_id(), {
+      toggle("hr", condition = !is.na(select_id()))
+      toggle("back", condition = !is.na(select_id()))
+      toggle("stories", condition = !is.na(select_id()))
     })
   
     # If there's an action with the map, the rmd goes away (Ultimately, any click on the map
     # should trigger these)
     observeEvent(input$map_view_change, {
       hide(id = "stories")
-      selection(NA)
+      select_id(NA)
     })
+    
+    # Bookmarking
+    bookmark_server(
+      id = ns_id,
+      map_view_change = reactive(input$map_view_change),
+      select_id = select_id,
+      map_id = NS(id, "map"),
+    )
+    
+    # Update click_id() on bookmark
+    observeEvent(sus_bookmark$active, {
+      # Delay of 500 milliseconds more than the zoom update from bookmark.
+      # The map/df/data needs to be updated before we select an ID.
+      if (isTRUE(sus_bookmark$active)) {
+        delay(2000, {
+          if (!is.null(sus_bookmark$select_id)) {
+            if (sus_bookmark$select_id != "NA") select_id(sus_bookmark$select_id)
+          }
+        })
+      }
+      
+      # So that bookmarking gets triggered only ONCE
+      delay(1500, {sus_bookmark$active <- FALSE})      
+    }, priority = -2)
+    
+    # Update click_id() on modulke link
+    observeEvent(sus_link$activity, {
+      # Delay of 500 milliseconds more than the zoom update from bookmark.
+      # The map/df/data needs to be updated before we select an ID.
+      delay(2000, {
+        if (!is.null(sus_link$select_id)) select_id(sus_link$select_id)
+      })
+    }, priority = -2)
     
   })
 }
