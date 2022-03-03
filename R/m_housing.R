@@ -7,7 +7,7 @@ housing_UI <- function(id) {
   
   return(tagList(
       # Sidebar
-      sidebar_UI2(
+      sidebar_UI(
         NS(id, ns_id),
         susSidebarWidgets(
           select_var_UI(NS(id, ns_id), var_list = vars_housing_left), 

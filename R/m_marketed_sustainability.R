@@ -7,7 +7,7 @@ marketed_sustainability_UI <- function(id) {
   
   return(tagList(
     # Sidebar
-    sidebar_UI2(
+    sidebar_UI(
       NS(id, ns_id),
       bottom = div(class = "bottom_sidebar", 
                    h5("Legend", style = "font-size: 12px;"),

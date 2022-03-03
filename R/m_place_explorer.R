@@ -36,7 +36,7 @@ place_explorer_UI <- function(id) {
       
       
       ## SIDEBAR
-      sidebar_UI2(NS(id, "place_explorer"),
+      sidebar_UI(NS(id, "place_explorer"),
                   
                   hidden(actionLink(inputId = NS(id, "comeback_map"),
                                     label = sus_translate("Go back to full-page map"))),

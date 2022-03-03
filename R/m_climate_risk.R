@@ -7,7 +7,7 @@ climate_risk_UI <- function(id) {
   
   return(tagList(
       # Sidebar
-      sidebar_UI2(
+      sidebar_UI(
         NS(id, ns_id),
         susSidebarWidgets(
           select_var_UI(NS(id, ns_id), var_list = var_list_climate_risk), 

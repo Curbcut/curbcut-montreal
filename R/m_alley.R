@@ -7,7 +7,7 @@ alley_UI <- function(id) {
   
   return(tagList(
     # Sidebar
-    sidebar_UI2(
+    sidebar_UI(
       NS(id, ns_id),
       susSidebarWidgets(
       checkbox_UI(id = NS(id, ns_id), 

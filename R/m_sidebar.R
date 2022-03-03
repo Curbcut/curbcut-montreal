@@ -1,6 +1,6 @@
 #### SIDEBAR MODULE ############################################################
 
-sidebar_UI2 <- function(id, ..., bottom=NULL) {
+sidebar_UI <- function(id, ..., bottom=NULL) {
   return(tagList(
     div(class = "sus-map-sidebar-shadow"),
     div(
