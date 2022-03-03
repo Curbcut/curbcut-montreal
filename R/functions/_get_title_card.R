@@ -6,8 +6,10 @@ get_title_card <- function(df, select_id, island_only) {
   
   ## Setup ---------------------------------------------------------------------
   
+  # Get data frame
   data <- get(df)
   
+  # Test if comparison will be only on island
   on_island <- if (island_only == "region") FALSE else 
     data$CSDUID[data$ID == select_id] %in% island_CSDUID
   
@@ -17,12 +19,11 @@ get_title_card <- function(df, select_id, island_only) {
       title_card_index[title_card_index$island_only == FALSE, ]
       } else title_card_index
   
-  geo_area <- switch(df, "borough" = "borough/city",
-                     "CT" = "census tract",
+  # Get scale names
+  geo_area <- switch(df, "borough" = "borough/city", "CT" = "census tract",
                      "DA" = "dissemination area")
-  geo_areas <- switch(df, "borough" = "boroughs or cities",
-                      "CT" = "census tracts",
-                      "DA" = "dissemination areas")
+  geo_areas <- switch(df, "borough" = "boroughs or cities", 
+                      "CT" = "census tracts", "DA" = "dissemination areas")
   
   
   ## Generate output grid ------------------------------------------------------
