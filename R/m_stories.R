@@ -101,15 +101,16 @@ stories_server <- function(id) {
       
       if (!is.na(selection())) {
         
-      rmd_name <- stories[stories$ID == selection(),]$name
-      bandeau_name <- stories[stories$ID == selection(),]$img
-      
-      HTML('<div class = "main_panel_text_popup">',
-           # Adding bandeau img after the first div (title)
-           str_replace(includeHTML(paste0("www/stories/", rmd_name, "_en.html")),
-                       "</div>", paste0("</div><img src =", "stories/bandeau_img/",
-                       bandeau_name,"><br><br>")),
-           '</div>')
+        rmd_name <- stories[stories$ID == selection(),]$name
+        bandeau_name <- stories[stories$ID == selection(),]$img
+        
+        HTML('<div class = "main_panel_text_popup">',
+             # Adding bandeau img after the first div (title)
+             str_replace(
+               includeHTML(paste0("www/stories/", rmd_name, "_en.html")),
+               "</div>", paste0("</div><img src =", "stories/bandeau_img/",
+                                bandeau_name,"><br><br>")),
+             '</div>')
       }
       
     })
