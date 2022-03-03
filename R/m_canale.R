@@ -98,7 +98,8 @@ canale_server <- function(id) {
     dyk_server(
       id = ns_id, 
       var_left = var_left,
-      var_right = var_right)
+      var_right = var_right,
+      poi = poi)
     
     # Update map in response to variable changes or zooming
     select_id <- map_change(
