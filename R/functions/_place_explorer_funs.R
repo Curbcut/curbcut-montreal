@@ -85,10 +85,10 @@ island_region_map <- function(location) {
 
 
 place_explorer_block_text <- function(df, theme, select_id,
-                                      island_only_comparison) {
+                                      island_only) {
 
   on_island <- filter(get(df), ID == select_id)$CSDUID %in% island_CSDUID
-  if (on_island && island_only_comparison == "region") on_island <- FALSE
+  if (on_island && island_only == "region") on_island <- FALSE
 
   out <-
     pe_variable_order[[df]] |>
@@ -124,10 +124,10 @@ place_explorer_block_text <- function(df, theme, select_id,
 }
 
 place_explorer_block_plot <- function(df, theme, select_id,
-                                      island_only_comparison) {
+                                      island_only) {
   
   on_island <- filter(get(df), ID == select_id)$CSDUID %in% island_CSDUID
-  if (on_island && island_only_comparison == "region") on_island <- FALSE
+  if (on_island && island_only == "region") on_island <- FALSE
   
   order <-
     pe_variable_order[[df]] |>

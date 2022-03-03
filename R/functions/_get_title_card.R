@@ -1,21 +1,31 @@
 #### GET TITLE CARD ############################################################
 
-get_title_card <- function(df, select_id, island_only_comparison) {
+#' @param island_only A character string which is either "region" or "island".
+
+get_title_card <- function(df, select_id, island_only) {
   
-  on_island <- filter(get(df), ID == select_id)$CSDUID %in% island_CSDUID
+  ## Setup ---------------------------------------------------------------------
   
-  if (on_island && island_only_comparison == "region") on_island <- FALSE
+  data <- get(df)
   
-  indicators_table <- if (!filter(get(df), ID == select_id)$CSDUID %in% island_CSDUID) {
-    title_card_index[title_card_index$island_only == FALSE, ]
-  } else title_card_index
+  on_island <- if (island_only == "region") FALSE else 
+    data$CSDUID[data$ID == select_id] %in% island_CSDUID
+  
+  # Choose indicators based on data availability
+  indicators_table <- 
+    if (!data$CSDUID[data$ID == select_id] %in% island_CSDUID) {
+      title_card_index[title_card_index$island_only == FALSE, ]
+      } else title_card_index
   
   geo_area <- switch(df, "borough" = "borough/city",
                      "CT" = "census tract",
-                     "DA" = "dessimination area")
+                     "DA" = "dissemination area")
   geo_areas <- switch(df, "borough" = "boroughs or cities",
                       "CT" = "census tracts",
-                      "DA" = "dessimination areas")
+                      "DA" = "dissemination areas")
+  
+  
+  ## Generate output grid ------------------------------------------------------
   
   to_grid <- 
     map(set_names(indicators_table$name), ~{

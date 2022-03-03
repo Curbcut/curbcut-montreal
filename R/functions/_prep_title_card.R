@@ -46,14 +46,16 @@ prep_title_card <- function(df, select_id, ind, percent = TRUE,
       } else if (data_rank > 0.75) {
         sus_translate("The {geo_area} ranks in the ", 
                       if (high_is_good) "highest " else "lowest ",
-                      if (abs(data_rank - 1) < 1) "1%" else scales::percent(abs(data_rank - 1)))
+                      if (abs(data_rank - 1) < 1) "1%" else scales::percent(abs(data_rank - 1)),
+                      ".")
       } else if (data_rank < 0.25) {
         sus_translate("The {geo_area} ranks in the ",
                       if (!high_is_good) "highest " else "lowest ",
-                      if (data_rank == 0) "1%" else scales::percent(data_rank))
+                      if (data_rank == 0) "1%" else scales::percent(data_rank),
+                      ".")
       } else {
         sus_translate("Its value is higher than ", scales::percent(data_rank), 
-                      " of ", geo_areas, if (island) " on the island" else " in the region")
+                      " of ", geo_areas, if (island) " on the island." else " in the region.")
       }
   }
   
