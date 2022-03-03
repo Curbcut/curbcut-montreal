@@ -7,7 +7,7 @@ green_space_UI <- function(id) {
   
   return(tagList(
     # Side bar
-    sidebar_UI2(
+    sidebar_UI(
       NS(id, ns_id),
       susSidebarWidgets(
         select_var_UI(NS(id, ns_id), select_var_id = "lg",
