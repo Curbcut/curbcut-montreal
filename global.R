@@ -50,10 +50,10 @@ qload("data/alleys.qsm")
 crash <- qread("data/crash.qs")
 tt_matrix <- qread("data/tt_matrix.qs")
 marketed_sustainability <- qread("data/marketed_sustainability.qs")
-qload("data/place_explorer.qsm")
 metro_lines <- qread("data/metro_lines.qs")
 stories <- qread("data/stories.qs")
 
+qload("data/place_explorer.qsm")
 postal_codes <- qread("data/postal_codes.qs")
 
 

@@ -277,7 +277,7 @@ place_explorer_server <- function(id) {
         
         output$list <- renderUI({
           
-          to_grid <- title_card_indicators_fun(
+          to_grid <- get_title_card(
             df(), select_id(),
             island_only_comparison = island_comparison())
           
