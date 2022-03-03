@@ -38,6 +38,7 @@ canale_server <- function(id) {
     # Initial reactives
     zoom <- reactiveVal(get_zoom(map_zoom, map_zoom_levels))
     click_id <- reactiveVal(NULL)
+    poi <- reactiveVal(NULL)
     
     # Map
     output$map <- renderMapdeck(mapdeck(
@@ -46,9 +47,11 @@ canale_server <- function(id) {
       zoom = map_zoom, 
       location = map_location))
     
-    # Zoom reactive
-    observeEvent(input$map_view_change$zoom, {
-      zoom(get_zoom(input$map_view_change$zoom, map_zoom_levels))})
+    # Zoom and POI reactives
+    observeEvent(input$map_view_change, {
+      zoom(get_zoom(input$map_view_change$zoom, map_zoom_levels))
+      poi(observe_map(input$map_view_change))
+    })
     
     # Click reactive
     observeEvent(input$map_polygon_click, {
