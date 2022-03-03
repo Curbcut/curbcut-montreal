@@ -326,8 +326,8 @@ place_explorer_server <- function(id) {
           
         })
         
-        # If the renderUI is reran, it reruns a mapdeck with the same name,
-        # which makes it lag. I mark every iteration with the time, so a new
+        # If the renderUI is rerun, it reruns a mapdeck with the same name,
+        # which makes it crash I mark every iteration with the time, so a new
         # mapdeck gets created every time.
         time <- Sys.time() |> str_replace_all(" |:|-", "_")
         
