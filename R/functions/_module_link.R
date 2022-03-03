@@ -24,3 +24,16 @@ module_link <- function(module, zoom = NULL, location = map_location,
   sus_link$select_id <- select_id
   
 }
+
+
+# EXAMPLE ON HOW TO MAKE A LINK:
+
+# UI
+# actionLink(NS(id, "module_link"), "CLICK HERE for a CanALE + tenant-occupied bivariate comparison"),
+
+# SERVER
+# observeEvent(input$module_link, {
+#   module_link("canale", zoom = 9.5, location = c(-74.037371, 45.570801),
+#               select_id = "24740044", var_right = "housing_tenant_pct",
+#               zoom_auto = FALSE, df = "DA")
+# }, ignoreInit = TRUE, ignoreNULL = TRUE)

@@ -23,9 +23,6 @@ home_UI <- function(id) {
       tags$div(class = "sus-carousel",
         tags$div(class = "sus-carousel-slide",
           tags$h2(tags$em(nowrap(sus_translate("Towards a")), nowrap(sus_translate("sustainable city")))),
-
-          actionLink(NS(id, "module_link"), "CLICK HERE for a CanALE + tenant-occupied bivariate comparison"),
-          
           tags$p(sus_translate("SUS is a platform for integrating, exploring, ",
                                "and analyzing a wide range of urban sustainability ",
                                "data sources for the Montreal region across ",
@@ -85,12 +82,6 @@ home_UI <- function(id) {
 
 home_server <- function(id, session) {
   moduleServer(id, function(input, output, session) {
-    
-    observeEvent(input$module_link, {
-      module_link("canale", zoom = 9.5, location = c(-74.037371, 45.570801),
-                  select_id = "24740044", var_right = "housing_tenant_pct",
-                  zoom_auto = FALSE, df = "DA")
-    }, ignoreInit = TRUE, ignoreNULL = TRUE)
     
     bookmark_server(id = "home")
 
