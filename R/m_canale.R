@@ -3,26 +3,29 @@
 # UI ----------------------------------------------------------------------
 
 canale_UI <- function(id) {
+  
   ns_id <- "canale"
   
-  return(tagList(
-      # Sidebar
-      sidebar_UI(
-        NS(id, ns_id), 
-        bottom = div(class = "bottom_sidebar", 
-            tagList(legend_UI(NS(id, ns_id)),
-                    zoom_UI(NS(id, ns_id), map_zoom_levels)))),
-
-      # Map
-      div(class = "mapdeck_div", mapdeckOutput(NS(id, "map"), height = "100%")),
-      
-      # Right panel
-      right_panel(
-        id = id,
-        compare_UI(NS(id, ns_id), make_dropdown()),
-        explore_UI(NS(id, ns_id)), 
-        dyk_UI(NS(id, ns_id)))
-  ))
+  tagList(
+    
+    # Sidebar
+    sidebar_UI(
+      NS(id, ns_id), 
+      bottom = div(class = "bottom_sidebar", 
+                   tagList(legend_UI(NS(id, ns_id)),
+                           zoom_UI(NS(id, ns_id), map_zoom_levels)))),
+    
+    # Map
+    div(class = "mapdeck_div", mapdeckOutput(NS(id, "map"), height = "100%")),
+    
+    # Right panel
+    right_panel(
+      id = id,
+      compare_UI(NS(id, ns_id), make_dropdown()),
+      explore_UI(NS(id, ns_id)), 
+      dyk_UI(NS(id, ns_id)))
+    
+    )
 }
 
 
