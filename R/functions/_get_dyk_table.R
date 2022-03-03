@@ -33,7 +33,7 @@ get_dyk_table <- function(var_left, var_right, poi = NULL) {
         })
       
       link_attrs <- 
-        map(seq_along(out), ~{
+        map(seq_along(nrow(out)), ~{
           list(module = "stories",
                select_ID = out$ID[.x])
         })

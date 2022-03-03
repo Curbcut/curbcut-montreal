@@ -27,6 +27,8 @@ suppressPackageStartupMessages({
 var_left <- "canale_ind"
 var_right <- " "
 var_right <- "iden_imm_pct"
+poi <- "little_burgundy"
 get_dyk_table("canale_ind", " ")
+get_dyk_table("canale_ind", " ", poi) |> attr("links")
 get_dyk_table("housing_tenant_pct", " ")
 get_dyk_table("canale_ind", "housing_tenant_pct")
