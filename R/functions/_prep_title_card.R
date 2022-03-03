@@ -13,7 +13,7 @@ prep_title_card <- function(df, select_id, ind, percent = TRUE,
   info <- list()
   
   data <- title_card_indicators[[ind]][[df]]
-  data_var <- data[data$ID == select_id, ]$var
+  data_var <- data$var[data$ID == select_id]
   
   info$pretty_data_var <- if (percent) {
     scales::percent(data_var)
