@@ -22,6 +22,8 @@ suppressPackageStartupMessages({
   postal_codes <- qread("data/postal_codes.qs")
   
   source("R/functions/_place_explorer_funs.R")
+  source("R/functions/_get_title_card.R")
+  source("R/functions/_prep_title_card.R")
   source("R/functions/_translation.R")
   source("R/functions/_utils.R")
   
@@ -39,5 +41,5 @@ test[[5]]$graph
 
 
 bench::mark(
-  title_card = {test <- get_title_card(df, select_id, island_only_comparison = TRUE)}
+  title_card = {test <- get_title_card(df, select_id, island_or_region = TRUE)}
 )

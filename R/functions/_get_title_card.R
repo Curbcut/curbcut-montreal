@@ -1,8 +1,8 @@
 #### GET TITLE CARD ############################################################
 
-#' @param island_only A character string which is either "region" or "island".
+#' @param island_or_region A character string which is either "region" or "island".
 
-get_title_card <- function(df, select_id, island_only) {
+get_title_card <- function(df, select_id, island_or_region) {
   
   ## Setup ---------------------------------------------------------------------
   
@@ -10,13 +10,13 @@ get_title_card <- function(df, select_id, island_only) {
   data <- get(df)
   
   # Test if comparison will be only on island
-  on_island <- if (island_only == "region") FALSE else 
+  on_island <- if (island_or_region == "region") FALSE else 
     data$CSDUID[data$ID == select_id] %in% island_CSDUID
   
   # Choose indicators based on data availability
   indicators_table <- 
     if (!data$CSDUID[data$ID == select_id] %in% island_CSDUID) {
-      title_card_index[title_card_index$island_only == FALSE, ]
+      title_card_index[title_card_index$island_or_region == FALSE, ]
       } else title_card_index
   
   # Get scale names

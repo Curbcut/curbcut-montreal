@@ -279,7 +279,7 @@ place_explorer_server <- function(id) {
           
           to_grid <- get_title_card(
             df(), select_id(),
-            island_only = island_comparison())
+            island_or_region = island_comparison())
           
           map(names(to_grid), ~{
             output[[paste0("ind_", .x, "_row_title")]] <- renderText({
@@ -378,13 +378,13 @@ place_explorer_server <- function(id) {
               df = df(), 
               theme = theme,
               select_id = select_id(),
-              island_only = island_comparison())
+              island_or_region = island_comparison())
             
             plots <- place_explorer_block_plot(
               df = df(), 
               theme = theme,
               select_id = select_id(),
-              island_only = island_comparison()
+              island_or_region = island_comparison()
             )
             
             map(1:(nrow(to_grid)), ~{
