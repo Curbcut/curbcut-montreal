@@ -7,13 +7,13 @@ dyk_UI <- function(id) {
           uiOutput(NS(id, "dyk_contents")))
   }
 
-dyk_server <- function(id, var_left, var_right) {
+dyk_server <- function(id, var_left, var_right, poi = reactive(NULL)) {
   stopifnot(is.reactive(var_left))
   stopifnot(is.reactive(var_right))
   
   moduleServer(id, function(input, output, session) {
     
-    dyk_output <- reactive(get_dyk_table(var_left(), var_right()))
+    dyk_output <- reactive(get_dyk_table(var_left(), var_right(), poi()))
     
     # Only show box if dyk_output isn't empty
     output$dyk_box <- renderUI({

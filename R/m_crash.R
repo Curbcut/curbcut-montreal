@@ -7,7 +7,7 @@ crash_UI <- function(id) {
   
   return(tagList(
     # Sidebar
-    sidebar_UI2(
+    sidebar_UI(
       NS(id, ns_id),
       susSidebarWidgets(
         actionLink(NS(id, "analysis"), 

@@ -3,26 +3,29 @@
 # UI ----------------------------------------------------------------------
 
 canale_UI <- function(id) {
+  
   ns_id <- "canale"
   
-  return(tagList(
-      # Sidebar
-      sidebar_UI2(
-        NS(id, ns_id), 
-        bottom = div(class = "bottom_sidebar", 
-            tagList(legend_UI(NS(id, ns_id)),
-                    zoom_UI(NS(id, ns_id), map_zoom_levels)))),
-
-      # Map
-      div(class = "mapdeck_div", mapdeckOutput(NS(id, "map"), height = "100%")),
-      
-      # Right panel
-      right_panel(
-        id = id,
-        compare_UI(NS(id, ns_id), make_dropdown()),
-        explore_UI(NS(id, ns_id)), 
-        dyk_UI(NS(id, ns_id)))
-  ))
+  tagList(
+    
+    # Sidebar
+    sidebar_UI(
+      NS(id, ns_id), 
+      bottom = div(class = "bottom_sidebar", 
+                   tagList(legend_UI(NS(id, ns_id)),
+                           zoom_UI(NS(id, ns_id), map_zoom_levels)))),
+    
+    # Map
+    div(class = "mapdeck_div", mapdeckOutput(NS(id, "map"), height = "100%")),
+    
+    # Right panel
+    right_panel(
+      id = id,
+      compare_UI(NS(id, ns_id), make_dropdown()),
+      explore_UI(NS(id, ns_id)), 
+      dyk_UI(NS(id, ns_id)))
+    
+    )
 }
 
 
@@ -35,6 +38,7 @@ canale_server <- function(id) {
     # Initial reactives
     zoom <- reactiveVal(get_zoom(map_zoom, map_zoom_levels))
     click_id <- reactiveVal(NULL)
+    poi <- reactiveVal(NULL)
     
     # Map
     output$map <- renderMapdeck(mapdeck(
@@ -43,9 +47,11 @@ canale_server <- function(id) {
       zoom = map_zoom, 
       location = map_location))
     
-    # Zoom reactive
-    observeEvent(input$map_view_change$zoom, {
-      zoom(get_zoom(input$map_view_change$zoom, map_zoom_levels))})
+    # Zoom and POI reactives
+    observeEvent(input$map_view_change, {
+      zoom(get_zoom(input$map_view_change$zoom, map_zoom_levels))
+      poi(observe_map(input$map_view_change))
+    })
     
     # Click reactive
     observeEvent(input$map_polygon_click, {

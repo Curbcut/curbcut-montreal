@@ -3,21 +3,24 @@
 # UI ----------------------------------------------------------------------
 
 stories_UI <- function(id) {
-  return(tagList(
-      # Sidebar
-      sidebar_UI2(
-        NS(id, "sidebar"),
-        hr(id = NS(id, "hr")),
-        actionLink(NS(id, "back"), sus_translate("Back to the map"))),
+  tagList(
     
-      # Map
-      div(class = "mapdeck_div", mapdeckOutput(NS(id, "map"), height = "100%")),
-      
-      hidden(htmlOutput(
-        NS(id, "stories"),
-        style = paste0("position:absolute; margin: 40px; ",
-                       "max-width: 1000px; z-index:499")))
-  ))
+    # Sidebar
+    sidebar_UI(
+      NS(id, "sidebar"),
+      hr(id = NS(id, "hr")),
+      actionLink(NS(id, "back"), sus_translate("Back to the map"))),
+    
+    # Map
+    div(class = "mapdeck_div", mapdeckOutput(NS(id, "map"), height = "100%")),
+    
+    # Stories
+    hidden(htmlOutput(
+      NS(id, "stories"),
+      style = paste0("position:absolute; margin: 40px; ",
+                     "max-width: 1000px; z-index:499")))
+    
+  )
 }
 
 
@@ -98,15 +101,16 @@ stories_server <- function(id) {
       
       if (!is.na(selection())) {
         
-      rmd_name <- stories[stories$ID == selection(),]$rmd
-      bandeau_name <- stories[stories$ID == selection(),]$img
-      
-      HTML('<div class = "main_panel_text_popup">',
-           # Adding bandeau img after the first div (title)
-           str_replace(includeHTML(paste0("www/stories/", rmd_name, "_en.html")),
-                       "</div>", paste0("</div><img src =", "stories/bandeau_img/",
-                       bandeau_name,"><br><br>")),
-           '</div>')
+        rmd_name <- stories[stories$ID == selection(),]$name
+        bandeau_name <- stories[stories$ID == selection(),]$img
+        
+        HTML('<div class = "main_panel_text_popup">',
+             # Adding bandeau img after the first div (title)
+             str_replace(
+               includeHTML(paste0("www/stories/", rmd_name, "_en.html")),
+               "</div>", paste0("</div><img src =", "stories/bandeau_img/",
+                                bandeau_name,"><br><br>")),
+             '</div>')
       }
       
     })

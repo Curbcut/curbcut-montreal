@@ -1,6 +1,6 @@
 #### GET DYK TABLE #############################################################
 
-get_dyk_table <- function(var_left, var_right, zoom = NULL, point = NULL) {
+get_dyk_table <- function(var_left, var_right, poi = NULL) {
   
   # Prepare variables ----------------------------------------------------------
   
@@ -18,8 +18,22 @@ get_dyk_table <- function(var_left, var_right, zoom = NULL, point = NULL) {
   
   # Find special matches -------------------------------------------------------
   
-  if (!is.null(zoom) && !is.null(point)) {
-    
+  if (!is.null(poi)) {
+    return({
+      
+      out <- 
+        stories |> 
+        filter(name %in% poi)
+      
+      links <- map_chr(out$name, ~{
+        r"(<a onclick='openTab("stories")' style='cursor: pointer;'>[LEARN MORE]</a>)"})
+      
+      out <- paste(out$preview, links)
+      out <- paste("<li> ", out, collapse = "")
+      out <- paste0("<ul>", out, "</ul>")
+      HTML(out)
+      
+    })
   }
   
   
