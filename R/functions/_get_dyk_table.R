@@ -23,10 +23,14 @@ get_dyk_table <- function(var_left, var_right, poi = NULL) {
       
       out <- 
         stories |> 
-        filter(name %in% poi)
+        filter(name %in% poi) |> 
+        slice(1:2)
       
-      links <- map_chr(out$name, ~{
-        r"(<a onclick='openTab("stories")' style='cursor: pointer;'>[LEARN MORE]</a>)"})
+      links <- map_chr(seq_along(out$name), ~{
+        paste0("<a id='dyk_", .x, 
+               "home-module_link' href='#' ",
+               "class='action-button shiny-bound-input'>[LEARN MORE]</a>")
+        })
       
       out <- paste(out$preview, links)
       out <- paste("<li> ", out, collapse = "")
