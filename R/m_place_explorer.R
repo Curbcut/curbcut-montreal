@@ -39,7 +39,7 @@ place_explorer_UI <- function(id) {
       sidebar_UI(NS(id, "place_explorer"),
                  
                  hidden(actionLink(inputId = NS(id, "comeback_map"),
-                                   label = sus_translate("Go back to full-page map"))),
+                                   label = sus_translate("Go back to map"))),
                  
                  susSidebarWidgets(
                    # Search box
