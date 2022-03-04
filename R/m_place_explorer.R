@@ -46,11 +46,21 @@ place_explorer_UI <- function(id) {
                    # Search box
                    strong(sus_translate("Enter a postal code, ",
                                         "or click on the map")),
-                   splitLayout(cellWidths = c("60%", "40%"),
-                   textInput(inputId = NS(id, "adress_searched"), label = NULL,
-                             placeholder = "H3A 2T5"),
-                   actionButton(inputId = NS(id, "search_button"), 
-                                label = "Search", style = "margin-top: var(--padding-v-md);"))),
+                   HTML(paste0('
+                   <div class="shiny-split-layout">
+                     <div style="width: 60%;">',
+                     textInput(inputId = NS(id, "adress_searched"), label = NULL,
+                               placeholder = "H3A 2T5"),
+                     '</div>
+                     <div style="width: 40%;">',
+                     actionButton(inputId = NS(id, "search_button"), 
+                                  label = "Search", style = "margin-top: var(--padding-v-md);"),
+                     '</div>
+                     </div>'))),
+                   # textInput(inputId = NS(id, "adress_searched"), label = NULL,
+                   #           placeholder = "H3A 2T5"),
+                   # actionButton(inputId = NS(id, "search_button"), 
+                   #              label = "Search", style = "margin-top: var(--padding-v-md);"))),
                    
                    hidden(div(id = NS(id, "sidebar_widgets"),
                               susSidebarWidgets(
