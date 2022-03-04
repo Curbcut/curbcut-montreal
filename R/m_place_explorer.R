@@ -101,9 +101,9 @@ place_explorer_UI <- function(id) {
                                     "font-size: 11px;",
                                     "max-width: 1200px; margin:auto;",
                                     "padding:30px;"),
-                     column(8, htmlOutput(NS(id, "title_card_title")),
+                     column(9, htmlOutput(NS(id, "title_card_title")),
                             uiOutput(NS(id, "title_card"))),
-                     column(4, mapdeckOutput(NS(id, "title_card_map")))),
+                     column(3, mapdeckOutput(NS(id, "title_card_map")))),
                    
                    fluidRow(uiOutput(NS(id, "themes_grid")))))),
     )))
