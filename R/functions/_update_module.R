@@ -2,9 +2,8 @@
 #' links between modules. Ex. to call a change in the canale module from a link
 #' in housing (from a housing namespace to a canale). In that case, the link would
 #' be present in housing and the mod_ns would be "canale". NOT to use for bookmarking.
-#' @param id A character string representing the module id, used for bookmarking. 
-#' It is used to correctly identify how to collect and recreate var_left. NOT
-#' to use for module links or in DYK.
+#' @param id A character string representing the module id, used for bookmarking AND dyk. 
+#' It is used to correctly identify how to collect and recreate var_left. 
 
 update_module <- function(mod_ns = NULL, id = NULL, session, zoom, location, 
                           map_id = "map", df, zoom_auto, var_left, var_right, 

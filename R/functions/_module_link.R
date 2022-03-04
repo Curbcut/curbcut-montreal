@@ -1,7 +1,8 @@
 #### LINKS BETWEEN MODULES #####################################################
 
 module_link <- function(module, zoom = NULL, location = map_location, 
-                        select_id = NULL, var_right = NULL, df = NULL, 
+                        select_id = NULL, var_left = NULL,
+                        var_right = NULL, df = NULL, 
                         zoom_auto = NULL, more_args = NULL) {
   
   sus_link$mod_ns <- paste(module, module, sep = "-")
@@ -16,6 +17,7 @@ module_link <- function(module, zoom = NULL, location = map_location,
     if (is.null(sus_link$activity)) 0 else sus_link$activity + 1
   sus_link$zoom <- zoom
   sus_link$location <- location
+  sus_link$var_left <- var_left
   sus_link$var_right <- var_right
   sus_link$df <- df
   sus_link$zoom_auto <- zoom_auto

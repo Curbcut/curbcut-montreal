@@ -66,11 +66,14 @@ shinyServer(function(input, output, session) {
   observeEvent(sus_link$activity, {
       # Delay to make sure the linked module is fully loaded
       delay(500, {
-        update_module(mod_ns = sus_link$mod_ns, session = session, 
+        update_module(mod_ns = sus_link$mod_ns, 
+                      id = sus_link$mod_ns,
+                      session = session, 
                       zoom = sus_link$zoom, location = sus_link$location, 
                       map_id = sus_link$map_id,
                       df = sus_link$df, 
                       zoom_auto = sus_link$zoom_auto, 
+                      var_left = sus_link$var_left,
                       var_right = sus_link$var_right, 
                       more_args = sus_link$more_args)
       })
