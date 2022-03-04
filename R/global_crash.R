@@ -11,12 +11,12 @@ crash_slider <- list(
   init = lubridate::year(max(crash$date)))
 
 # Dropdown menu
-var_list_left_crash_1 <- 
+var_left_list_2_crash <- 
   list("Count" = "count",
        "Per sq km" = "sqkm",
        "Per 1,000 residents" = "per1k")
 
-var_list_left_crash_2 <- 
+var_left_list_1_crash <- 
   list("Total" = "total",
        "Pedestrian" = "ped",
        "Cyclist" = "cyc",

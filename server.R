@@ -109,6 +109,11 @@ shinyServer(function(input, output, session) {
         sus_bookmark$location <- c(as.numeric(query[["lon"]]), 
                                    as.numeric(query[["lat"]]))}
       })
+      # Retrieve var_left
+      try({
+        if (!is.null(query[["v_l"]]))
+          sus_bookmark$var_left <- query[["v_l"]]
+      })
       # Retrieve var_right
       try({
         if (!is.null(query[["v_r"]]))

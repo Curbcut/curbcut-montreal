@@ -1,7 +1,7 @@
 ### ACCESS MODULE GLOBALS ######################################################
 
 # Dropdown menu
-var_list_left_access_1 <- 
+var_left_list_1_access <- 
   list("All jobs" = "access_jobs_total",
        "Low-skill jobs" = "access_jobs_low",
        "High-skill jobs" = "access_jobs_high",
@@ -9,7 +9,7 @@ var_list_left_access_1 <-
        "Schools" = "access_schools",
        "Healthcare facilities" = "access_healthcare")
 
-var_list_left_access_2 <- 
+var_left_list_2_access <- 
   list("Weekday peak" = "pwd",
        "Weekday off-peak" = "opwd",
        "Weekday night" = "nwd",

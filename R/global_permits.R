@@ -8,12 +8,12 @@ permits_slider <- list(
   init = 2021)
 
 # Dropdown menu
-var_list_left_permits_1 <- 
+var_left_list_1_permits <- 
   list("Count" = "count",
        "Per sq km" = "sqkm",
        "Per 1,000 residents" = "per1k")
 
-var_list_left_permits_2 <- 
+var_left_list_2_permits <- 
   list("Total" = "total",
        "Dwellings combination" = "combination",
        "Condo conversion" = "conversion",

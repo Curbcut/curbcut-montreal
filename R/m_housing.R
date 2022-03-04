@@ -155,6 +155,7 @@ housing_server <- function(id) {
     bookmark_server(
       id = ns_id,
       map_view_change = reactive(input$map_view_change),
+      var_left = var_left,
       var_right = var_right,
       select_id = select_id,
       df = df,
@@ -162,8 +163,7 @@ housing_server <- function(id) {
       more_args = reactive(c("c-cbox" = str_extract(slider_switch(), "^."),
                              "s-slu" = slider_uni(),
                              "s-slb" = paste(slider_bi(),
-                                              collapse = "-"),
-                             "d-var" = get_variables_rowid(input$`housing-var`)))
+                                              collapse = "-")))
     )
     
     # Last bookmark step: update click_id() + mark bookmark as inactive

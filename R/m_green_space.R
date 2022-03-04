@@ -10,11 +10,11 @@ green_space_UI <- function(id) {
     sidebar_UI(
       NS(id, ns_id),
       susSidebarWidgets(
-        select_var_UI(NS(id, ns_id), select_var_id = "lg",
-                      var_list = green_space_groupings,
+        select_var_UI(NS(id, ns_id), select_var_id = "d_1",
+                      var_list = var_left_list_1_green_space,
                       label = sus_translate("Grouping")),
-        select_var_UI(NS(id, ns_id), select_var_id = "lt",
-                      var_list = green_space_type,
+        select_var_UI(NS(id, ns_id), select_var_id = "d_2",
+                      var_list = var_left_list_2_green_space,
                       label = sus_translate("Type of green space"))
       ),
       bottom = div(class = "bottom_sidebar",
@@ -70,10 +70,10 @@ green_space_server <- function(id) {
       zoom_levels = reactive(map_zoom_levels))
     
     # Left variable servers
-    var_left_groupings <- select_var_server(ns_id, select_var_id = "lg",
-                                            var_list = reactive(green_space_groupings))
-    var_left_type <- select_var_server(ns_id, select_var_id = "lt",
-                                       var_list = reactive(green_space_type))
+    var_left_groupings <- select_var_server(ns_id, select_var_id = "d_1",
+                                            var_list = reactive(var_left_list_1_green_space))
+    var_left_type <- select_var_server(ns_id, select_var_id = "d_2",
+                                       var_list = reactive(var_left_list_2_green_space))
     
     # Construct left variable string
     var_left <- reactive(str_remove(paste("green_space", var_left_type(), 
@@ -143,12 +143,11 @@ green_space_server <- function(id) {
     bookmark_server(
       id = ns_id,
       map_view_change = reactive(input$map_view_change),
+      var_left = var_left,
       var_right = var_right,
       select_id = select_id,
       df = df,
-      map_id = NS(id, "map"),
-      more_args = reactive(c("d-lg" = var_left_groupings(),
-                             "d-lt" = var_left_type()))
+      map_id = NS(id, "map")
     )
     
     # Last bookmark step: update click_id() + mark bookmark as inactive

@@ -1,12 +1,12 @@
 ### GREEN SPACE GLOBALS #######################################################
 
 # Dropdown menu
-green_space_groupings <- 
+var_left_list_1_green_space <- 
   list("Green space" = " ",
        "Per sq km" = "sqkm",
        "Per 1,000 residents" = "per1k")
 
-green_space_type <- 
+var_left_list_2_green_space <- 
   list("Total" = "total",
        "Borough park" = "borough_park",
        "Large park" = "large_park",

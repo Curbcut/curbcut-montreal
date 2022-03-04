@@ -9,11 +9,11 @@ access_UI <- function(id) {
     # Sidebar
     sidebar_UI(
       NS(id, ns_id),
-      select_var_UI(NS(id, ns_id), select_var_id = "ti",
-                    var_list = var_list_left_access_2,
+      select_var_UI(NS(id, ns_id), select_var_id = "d_2",
+                    var_list = var_left_list_2_access,
                     label = sus_translate("Timing")),
-      select_var_UI(NS(id, ns_id), select_var_id = "dt",
-                    var_list = var_list_left_access_1,
+      select_var_UI(NS(id, ns_id), select_var_id = "d_1",
+                    var_list = var_left_list_1_access,
                     label = sus_translate("Destination type")),
       slider_UI(NS(id, ns_id), label = sus_translate("Time threshold"),
                   min = 10, max = 60, step = 1, value = 30),
@@ -75,10 +75,10 @@ access_server <- function(id) {
     slider <- slider_server(id = ns_id)
     
     # Left variable servers
-    var_left_1 <- select_var_server(ns_id, select_var_id = "dt", 
-                                    var_list = reactive(var_list_left_access_1))
-    var_left_2 <- select_var_server(ns_id, select_var_id = "ti", 
-                                    var_list = reactive(var_list_left_access_2))
+    var_left_1 <- select_var_server(ns_id, select_var_id = "d_1", 
+                                    var_list = reactive(var_left_list_1_access))
+    var_left_2 <- select_var_server(ns_id, select_var_id = "d_2", 
+                                    var_list = reactive(var_left_list_2_access))
     
     # Construct left variable string
     var_left <- reactive(paste0(var_left_1(), "_", var_left_2(), "_count"))
@@ -231,12 +231,11 @@ access_server <- function(id) {
     bookmark_server(
       id = ns_id,
       map_view_change = reactive(input$map_view_change),
+      var_left = var_left,
       var_right = var_right,
       select_id = select_id,
       map_id = NS(id, "map"),
-      more_args = reactive(c("s-slider" = slider(),
-                             "d-dt" = var_left_1(),
-                             "d-ti" = var_left_2()))
+      more_args = reactive(c("s-slider" = slider()))
     )
     
     # Last bookmark step: update click_id() + mark bookmark as inactive

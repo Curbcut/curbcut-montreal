@@ -10,11 +10,11 @@ permits_UI <- function(id) {
     sidebar_UI(
       NS(id, ns_id),
       susSidebarWidgets(
-        select_var_UI(NS(id, ns_id), select_var_id = "gr",
-                      var_list = var_list_left_permits_1,
+        select_var_UI(NS(id, ns_id), select_var_id = "d_1",
+                      var_list = var_left_list_1_permits,
                       label = sus_translate("Grouping")),
-        select_var_UI(NS(id, ns_id), select_var_id = "tp",
-                      var_list = var_list_left_permits_2,
+        select_var_UI(NS(id, ns_id), select_var_id = "d_2",
+                      var_list = var_left_list_2_permits,
                       label = sus_translate("Type of permits")),
         slider_UI(NS(id, ns_id), 
                   slider_id = "slu",
@@ -120,10 +120,10 @@ permits_server <- function(id) {
     time <- reactive({if (!bi_time()) slider_uni() else slider_bi()})
     
     # Left variable servers
-    var_left_1 <- select_var_server(ns_id, select_var_id = "gr",
-                                    var_list = reactive(var_list_left_permits_1))
-    var_left_2 <- select_var_server(ns_id, select_var_id = "tp",
-                                    var_list = reactive(var_list_left_permits_2))
+    var_left_1 <- select_var_server(ns_id, select_var_id = "d_1",
+                                    var_list = reactive(var_left_list_1_permits))
+    var_left_2 <- select_var_server(ns_id, select_var_id = "d_2",
+                                    var_list = reactive(var_left_list_2_permits))
     
     # Construct left variable string
     var_left <- reactive({
@@ -251,6 +251,7 @@ permits_server <- function(id) {
     bookmark_server(
       id = ns_id,
       map_view_change = reactive(input$map_view_change),
+      var_left = var_left,
       var_right = var_right,
       select_id = select_id,
       df = df,
@@ -259,9 +260,7 @@ permits_server <- function(id) {
                              "c-grid" = str_extract(cbox_grid(), "^."),
                              "s-slu" = slider_uni(),
                              "s-slb" = paste(slider_bi(),
-                                             collapse = "-"),
-                             "d-gr" = var_left_1(),
-                             "d-tp" = var_left_2()))
+                                             collapse = "-")))
     )
     
     # Last bookmark step: update click_id() + mark bookmark as inactive

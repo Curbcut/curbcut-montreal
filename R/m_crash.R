@@ -12,11 +12,11 @@ crash_UI <- function(id) {
       susSidebarWidgets(
         actionLink(NS(id, "analysis"), 
                    sus_translate("Road safety analysis")),
-        select_var_UI(NS(id, ns_id), select_var_id = "gr",
-                      var_list = var_list_left_crash_1,
+        select_var_UI(NS(id, ns_id), select_var_id = "d_2",
+                      var_list = var_left_list_2_crash,
                       label = sus_translate("Grouping")),
-        select_var_UI(NS(id, ns_id), select_var_id = "tp",
-                      var_list = var_list_left_crash_2,
+        select_var_UI(NS(id, ns_id), select_var_id = "d_1",
+                      var_list = var_left_list_1_crash,
                       label = sus_translate("Type of crash")),
         
         slider_UI(NS(id, ns_id), 
@@ -127,10 +127,10 @@ crash_server <- function(id) {
     time <- reactive({if (!bi_time()) slider_uni() else slider_bi()})
 
     # Left variable servers
-    var_left_1 <- select_var_server(ns_id, select_var_id = "gr",
-                                    var_list = reactive(var_list_left_crash_1))
-    var_left_2 <- select_var_server(ns_id, select_var_id = "tp",
-                                    var_list = reactive(var_list_left_crash_2))
+    var_left_1 <- select_var_server(ns_id, select_var_id = "d_2",
+                                    var_list = reactive(var_left_list_2_crash))
+    var_left_2 <- select_var_server(ns_id, select_var_id = "d_1",
+                                    var_list = reactive(var_left_list_1_crash))
 
     # Construct left variable string
     var_left <- reactive({
@@ -251,8 +251,8 @@ crash_server <- function(id) {
 
       updateActionLink(session, "analysis", label = txt)
 
-      toggle("crash-gr", condition = !input$analysis %% 2)
-      toggle("crash-tp", condition = !input$analysis %% 2)
+      toggle("crash-d_1", condition = !input$analysis %% 2)
+      toggle("crash-d_2", condition = !input$analysis %% 2)
       toggle("right_panel", condition = !input$analysis %% 2)
       toggle("how_to_read_map", condition = !input$analysis %% 2)
       toggle("year_displayed_right", condition = !input$analysis %% 2)
@@ -282,6 +282,7 @@ crash_server <- function(id) {
     bookmark_server(
       id = ns_id,
       map_view_change = reactive(input$map_view_change),
+      var_left = var_left,
       var_right = var_right,
       select_id = select_id,
       df = df,
@@ -290,9 +291,7 @@ crash_server <- function(id) {
                              "c-grid" = str_extract(cbox_grid(), "^."),
                              "s-slu" = slider_uni(),
                              "s-slb" = paste(slider_bi(),
-                                             collapse = "-"),
-                             "d-gr" = var_left_1(),
-                             "d-tp" = var_left_2()))
+                                             collapse = "-")))
     )
     
     # Last bookmark step: update click_id() + mark bookmark as inactive

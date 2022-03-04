@@ -3,6 +3,8 @@
 #' @param id A character string representing the module id. Not otherwise used.
 #' @param map_view_change A reactive which resolves to an output of a map view
 #' change, coming from a mapdeck object.
+#' @param var_left A reactive which resolves to a character string
+#' representing the right variables to be mapped and analyzed. 
 #' @param var_right A reactive which resolves to a character string
 #' representing the right variables to be mapped and analyzed. 
 #' @param select_id A reactive which resolves to a character string
@@ -17,6 +19,7 @@
 #' following bookmarking.
 
 bookmark_server <- function(id, map_view_change = reactive(NULL), 
+                            var_left = reactive(NULL),
                             var_right = reactive(NULL), 
                             select_id = reactive(NULL), 
                             df = reactive(NULL), map_id = NULL, 
@@ -41,6 +44,7 @@ bookmark_server <- function(id, map_view_change = reactive(NULL),
       }
       
       # Right variable
+      if (!is.null(var_left())) v_l <- get_variables_rowid(unique(str_remove(var_left(), "_\\d{4}$")))
       if (!is.null(var_right())) v_r <- get_variables_rowid(unique(str_remove(var_right(), "_\\d{4}$")))
       if (!is.null(select_id()) && !is.na(select_id())) s_id <- select_id()
       if (!is.null(input$zoom_auto)) zm_a <- str_extract(input$zoom_auto, "^.")
@@ -57,7 +61,8 @@ bookmark_server <- function(id, map_view_change = reactive(NULL),
       # If not supplied, shouldn't appear in the URL:
       default <- paste0("/?tb=", sus_rv$active_tab(),"&lng=", sus_rv$lang())
       
-      add_arguments <- c("zm", "lat", "lon", "v_r", "s_id", "zm_a", "df", "more")
+      add_arguments <- c("zm", "lat", "lon", "v_l", "v_r", "s_id", "zm_a", 
+                         "df", "more")
       add_arguments <- 
         map(add_arguments, ~{
           if (exists(.x) && !is.null(.x)) {
@@ -77,10 +82,13 @@ bookmark_server <- function(id, map_view_change = reactive(NULL),
     # Update from bookmark
     observeEvent(sus_bookmark$active, {
       if (isTRUE(sus_bookmark$active)) {
-        update_module(session = session,zoom = sus_bookmark$zoom, 
+        update_module(session = session,
+                      id = id,
+                      zoom = sus_bookmark$zoom, 
                       location = sus_bookmark$location, 
                       map_id = map_id, df = sus_bookmark$df, 
                       zoom_auto = sus_bookmark$zoom_auto, 
+                      var_left = sus_bookmark$var_left,
                       var_right = sus_bookmark$var_right, 
                       more_args = sus_bookmark$more_args)
       }

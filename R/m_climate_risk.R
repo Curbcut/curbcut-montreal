@@ -136,12 +136,12 @@ climate_risk_server <- function(id) {
     bookmark_server(
       id = ns_id,
       map_view_change = reactive(input$map_view_change),
+      var_left = var_left,
       var_right = var_right,
       select_id = select_id,
       df = df,
       map_id = NS(id, "map"),
-      more_args = reactive(c("c-cbox" = as.logical(grid()),
-                             "d-var" = get_variables_rowid(input$`climate_risk-var`)))
+      more_args = reactive(c("c-cbox" = as.logical(grid())))
     )
 
     # Last bookmark step: update click_id() + mark bookmark as inactive
