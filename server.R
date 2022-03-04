@@ -67,7 +67,6 @@ shinyServer(function(input, output, session) {
       # Delay to make sure the linked module is fully loaded
       delay(500, {
         update_module(mod_ns = sus_link$mod_ns, 
-                      id = sus_link$mod_ns,
                       session = session, 
                       zoom = sus_link$zoom, location = sus_link$location, 
                       map_id = sus_link$map_id,

@@ -5,7 +5,7 @@
 #' @param id A character string representing the module id, used for bookmarking AND dyk. 
 #' It is used to correctly identify how to collect and recreate var_left. 
 
-update_module <- function(mod_ns = NULL, id = NULL, session, zoom, location, 
+update_module <- function(mod_ns = NULL, id = mod_ns, session, zoom, location, 
                           map_id = "map", df, zoom_auto, var_left, var_right, 
                           more_args) {
   
