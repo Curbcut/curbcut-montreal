@@ -74,7 +74,7 @@ census_max <-
 #   select(-geometry)
 # 
 # qsave(DA_buffer, file = "data/DA_1000m_buffer.qs")
-DA_buffer <- qread("data/DA_1000m_buffer.qs")
+# DA_buffer <- qread("data/DA_1000m_buffer.qs")
 
 # Function taking a df of 3 columns: ID, CSDUID and the column to calculate on.
 percentile_calc <- function(x) {
@@ -131,7 +131,7 @@ title_card_indicators <-
 title_card_index <- 
   title_card_index |> 
   add_row(name = "transit_walk_cycle_share",
-          title = "Sus. transport",
+          title = "Sustainable transport",
           island_only = FALSE,
           date = census_max,
           percent = TRUE,
@@ -249,7 +249,7 @@ title_card_index <-
 
 ## Number of crashes - Mtl data portal ------------------------------------
 last_crash_data_year <- 
-names(borough) |>
+  names(borough) |>
   str_subset("crash_total_per1k") |> 
   str_extract("\\d{4}") |> 
   as.numeric() |> 
@@ -270,7 +270,7 @@ title_card_indicators <-
 title_card_index <- 
   title_card_index |> 
   add_row(name = "total_crash_per1k",
-          title = "Road collision",
+          title = "Road collisions",
           island_only = TRUE,
           date = last_crash_data_year,
           percent = FALSE,
@@ -382,13 +382,13 @@ title_card_indicators <-
 title_card_index <- 
   title_card_index |> 
   add_row(name = "green_space_ndvi",
-          title = "Greenery",
+          title = "Green space",
           island_only = FALSE,
           date = 2019,
           percent = TRUE,
           high_is_good = TRUE, 
           val_digits = 0,
-          text = paste0("{z$data_rank} in terms of greenery. (NDVI ", 
+          text = paste0("{z$data_rank} in terms of green space. (NDVI ", 
                         "= {z$pretty_data_var}, data from ", 
                         "{z$data_date})"))
 
