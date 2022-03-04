@@ -27,7 +27,7 @@ get_data <- function(df, var_left, var_right, island = FALSE, point_df = NULL) {
   ## Filter to island ----------------------------------------------------------
   
   if (island && df %in% c("borough", "CT", "DA", "grid", "street", "building"))
-    data <- filter(data, CSDUID %in% island_CSDUID)
+    data <- data[data$CSDUID %in% island_CSDUID,]
   
   
   # Return output ----------------------------------------------------------
