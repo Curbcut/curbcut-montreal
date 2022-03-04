@@ -7,6 +7,11 @@
 
 update_scale_map <- function(id_map, location, init = TRUE) {
   
+  borough <- st_set_agr(borough, "constant")
+  CT <- st_set_agr(CT, "constant")
+  DA <- st_set_agr(DA, "constant")
+  location <- st_set_agr(location, "constant")
+  
   (\(x) if (init) {
     mapdeck(
       style = map_style, 
