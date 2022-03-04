@@ -271,7 +271,7 @@ place_explorer_server <- function(id) {
     output$actual_comparison_scale <- renderText({
       if (!is.null(location())) {
         scale <- str_to_sentence(sus_translate(island_comparison()))
-        sus_translate("Actual scale: {scale}")}
+        sus_translate("Current scale: {scale}")}
     })
     
     
