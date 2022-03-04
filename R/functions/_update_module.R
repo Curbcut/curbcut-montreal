@@ -46,46 +46,48 @@ update_module <- function(mod_ns = NULL, id = NULL, session, zoom, location,
   }
   
   # Update var_left
-  if (id %in% c("canale", "marketed_sustainability")) {
-
-  } else if (id %in% c("climate_risk", "housing", "gentrification",
-                           "alley")) {
-    if (!is.null(var_left)) {
-      selected_var <- if (str_detect(var_left, "^\\d*$")) {
-        get_variables_rowid(var_left)} else var_left
-      updatePickerInput(
-        session = session,
-        inputId = construct_namespace("var"),
-        selected = selected_var
-      )
-    }
-  } else if (id %in% c("permits", "access", "crash", "green_space")) {
-    if (!is.null(var_left)) {
-
-    selected_var <- if (str_detect(var_left, "^\\d*$")) {
-      get_variables_rowid(var_left)} else var_left
-
-    var_left_list_1 <- get(paste0("var_left_list_1_", id))
-    var_left_list_2 <- get(paste0("var_left_list_2_", id))
-
-    selected_var_1 <-
-      str_extract(selected_var, paste0(var_left_list_1, collapse = "|")) |> 
-      na.omit()
-
-    selected_var_2 <-
-      str_extract(selected_var, paste0(var_left_list_2, collapse = "|")) |> 
-      na.omit()
-
-    updatePickerInput(
-      session = session,
-      inputId = construct_namespace("d_1"),
-      selected = selected_var_1
-    )
-    updatePickerInput(
-      session = session,
-      inputId = construct_namespace("d_2"),
-      selected = selected_var_2
-    )
+  if (!is.null(id)) {
+    if (id %in% c("canale", "marketed_sustainability")) {
+      
+    } else if (id %in% c("climate_risk", "housing", "gentrification",
+                         "alley")) {
+      if (!is.null(var_left)) {
+        selected_var <- if (str_detect(var_left, "^\\d*$")) {
+          get_variables_rowid(var_left)} else var_left
+        updatePickerInput(
+          session = session,
+          inputId = construct_namespace("var"),
+          selected = selected_var
+        )
+      }
+    } else if (id %in% c("permits", "access", "crash", "green_space")) {
+      if (!is.null(var_left)) {
+        
+        selected_var <- if (str_detect(var_left, "^\\d*$")) {
+          get_variables_rowid(var_left)} else var_left
+        
+        var_left_list_1 <- get(paste0("var_left_list_1_", id))
+        var_left_list_2 <- get(paste0("var_left_list_2_", id))
+        
+        selected_var_1 <-
+          str_extract(selected_var, paste0(var_left_list_1, collapse = "|")) |> 
+          na.omit()
+        
+        selected_var_2 <-
+          str_extract(selected_var, paste0(var_left_list_2, collapse = "|")) |> 
+          na.omit()
+        
+        updatePickerInput(
+          session = session,
+          inputId = construct_namespace("d_1"),
+          selected = selected_var_1
+        )
+        updatePickerInput(
+          session = session,
+          inputId = construct_namespace("d_2"),
+          selected = selected_var_2
+        )
+      }
     }
   }
 
