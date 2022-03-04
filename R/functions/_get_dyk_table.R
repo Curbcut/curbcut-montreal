@@ -6,14 +6,9 @@ get_dyk_table <- function(id, var_left, var_right, poi = NULL) {
   
   stopifnot(!is.reactive(var_left))
   stopifnot(!is.reactive(var_right))
-  
   vars <- c(str_remove(var_left, "_\\d{4}$"), str_remove(var_right, "_\\d{4}$"))
   vars <- vars[vars != " "]
-  
-  themes <- variables |> 
-    filter(var_code %in% vars) |> 
-    pull(theme) |> 
-    unique()
+  themes <- unique(variables$theme[variables$var_code %in% vars])
   
   
   # Find special matches -------------------------------------------------------
@@ -21,21 +16,15 @@ get_dyk_table <- function(id, var_left, var_right, poi = NULL) {
   if (!is.null(poi)) {
     return({
       
-      out <- 
-        stories |> 
-        filter(name %in% poi) |> 
-        slice(1:2)
-      
+      out <- slice(stories[stories$name %in% poi,], 1:2)
+
       links <- map_chr(seq_along(out$name), ~{
         paste0("<a id='", id, "-", id, "-dyk_", .x, "' href='#' ",
-               "class='action-button shiny-bound-input'>[LEARN MORE]</a>")
-        })
+               "class='action-button shiny-bound-input'>", 
+               sus_translate("[LEARN MORE]"), "</a>")})
       
-      link_attrs <- 
-        map(seq_along(nrow(out)), ~{
-          list(module = "stories",
-               select_id = out$ID[.x])
-        })
+      link_attrs <- map(seq_along(out$name), ~list(module = "stories", 
+                                                   select_id = out$ID[.x]))
       
       out <- paste(out$preview, links)
       out <- paste("<li> ", out, collapse = "")
@@ -50,14 +39,12 @@ get_dyk_table <- function(id, var_left, var_right, poi = NULL) {
   
   # Score rows -----------------------------------------------------------------
   
-  dyk_scored <- 
-    dyk |> 
-    rowwise() |> 
-    mutate(score = sum(vars %in% variable) * 3 + sum(themes %in% theme) * 2) |> 
-    ungroup() |> 
-    arrange(-score) |> 
-    filter(score > 0)
-
+  dyk_scored <- dyk
+  dyk_scored$score <- sapply(dyk$variable, \(x) sum(vars %in% x) * 3) +
+    sapply(dyk$theme, \(x) sum(themes %in% x) * 2)
+  dyk_scored <- dyk_scored[dyk_scored$score > 0,]
+  dyk_scored <- dyk_scored[order(dyk_scored$score, decreasing = TRUE),]
+  
 
   # Choose rows ----------------------------------------------------------------
   
@@ -65,20 +52,13 @@ get_dyk_table <- function(id, var_left, var_right, poi = NULL) {
 
   while (nrow(out) < 2 && nrow(dyk_scored) > 0) {
    
-    to_add <- 
-      dyk_scored |> 
-      filter(score == max(score))
-    
+    to_add <- dyk_scored[dyk_scored$score == max(dyk_scored$score),]
     if (nrow(to_add) > 2 - nrow(out)) {
       to_add <- slice_sample(to_add, n = 2 - nrow(out))
     }
-    
     out <- bind_rows(out, to_add)
-    
-    dyk_scored <- 
-      dyk_scored |> 
-      filter(score != max(score))
-    
+    dyk_scored <- dyk_scored[dyk_scored$score != max(dyk_scored$score),]
+
   }
   
   
@@ -89,14 +69,43 @@ get_dyk_table <- function(id, var_left, var_right, poi = NULL) {
             paste(vars, collapse = ", "), call. = FALSE)
   }
   
+  
+  # Process links --------------------------------------------------------------
+  
+  if (nrow(out) > 0) {
+    links <- out[!is.na(out$module),]
+    
+    links <- map_chr(seq_along(out$module), ~{
+      if (is.na(out$module[.x]) || out$module[.x] != "canale") "" else {
+        paste0(" <a id='", id, "-", id, "-dyk_", .x, "' href='#' ",
+               "class='action-button shiny-bound-input'>", 
+               sus_translate("[LEARN MORE]"), "</a>")
+      }
+    })
+    
+    link_attrs <- map(seq_len(nrow(out)), ~{
+      if (is.na(out$module[.x]) || out$module[.x] != "canale") list() else {
+        link_vars <- get_dyk_link_vars(out[.x,])
+        list(module = out$module[.x], 
+             if (!is.null(link_vars[[1]])) var_left = link_vars[[1]],
+             var_right = link_vars[[2]],
+             if (!is.na(out$df[.x])) df = out$df[.x])
+      }
+    })
+    
+  }
 
   # Return output --------------------------------------------------------------
   
   if (nrow(out) > 0) {
-    map_chr(out$text, sus_translate) %>%
-      paste("<li> ", ., collapse = "") %>%
-      paste0("<ul>", ., "</ul>") %>%
+    out <- 
+      map_chr(out$text, sus_translate) |> 
+      paste0(links) |> 
+      (\(x) paste("<li> ", x, collapse = ""))() |> 
+      (\(x) paste0("<ul>", x, "</ul>"))() |> 
       HTML()
+    attr(out, "links") <- link_attrs
+    out
   } else NULL
   
 }
