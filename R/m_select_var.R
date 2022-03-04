@@ -36,7 +36,12 @@ select_var_server <- function(id, select_var_id = NULL,
                             style = ifelse(disabled(), 
                                            "color: rgba(119, 119, 119, 0.5);", 
                                            "")))
-      }})
+      } else {
+        updatePickerInput(
+        session, select_var_id, 
+        choices = sus_translate(var_list()))
+      }
+      })
     
     observeEvent(sus_rv$lang, {
       updatePickerInput(
