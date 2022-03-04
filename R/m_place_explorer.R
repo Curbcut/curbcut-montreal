@@ -386,6 +386,7 @@ place_explorer_server <- function(id) {
         themes <-
           pe_theme_order[[df()]] |>
           filter(ID == select_id(), theme %in% input$themes_checkbox) |>
+          filter(group == !!island_comparison()) |> 
           arrange(theme_order) |>
           pull(theme)
         
