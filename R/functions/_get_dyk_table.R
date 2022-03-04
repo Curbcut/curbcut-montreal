@@ -85,11 +85,10 @@ get_dyk_table <- function(id, var_left, var_right, poi = NULL) {
     
     link_attrs <- map(seq_len(nrow(out)), ~{
       if (is.na(out$module[.x]) || out$module[.x] != "canale") list() else {
+        link_vars <- get_dyk_link_vars(out[.x,])
         list(module = out$module[.x], 
-             # TKTK Eventually need handling for different var_left scenarios
-             # var_left = out$variable[[.x]][1],
-             var_right = if (length(out$variable[[.x]]) == 1) " " else 
-               out$variable[[.x]][2],
+             if (!is.null(link_vars[[1]])) var_left = link_vars[[1]],
+             var_right = link_vars[[2]],
              if (!is.na(out$df[.x])) df = out$df[.x])
       }
     })

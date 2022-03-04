@@ -19,6 +19,7 @@ suppressPackageStartupMessages({
   grid <- qread("data/grid.qs")
   
   source("R/functions/_get_dyk_table.R")
+  source("R/functions/_get_dyk_link_vars.R")
   source("R/functions/_translation.R")
   source("R/functions/_utils.R")
   
