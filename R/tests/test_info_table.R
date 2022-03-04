@@ -130,6 +130,16 @@ select_id <- "2458012"
 var_type <- get_var_type(data, var_left, var_right, df, select_id)
 info_table(data, var_type, var_left, var_right, df, select_id)}
 
+# Univariate, quantitative, NA selection
+{df <- "borough"
+var_left <- c("housing_tenant_pct_2001", "housing_tenant_pct_2016")
+var_right <- " "
+data <- get_data(df, var_left, var_right)
+select_id <- "2471025"
+var_type <- get_var_type(data, var_left, var_right, df, select_id)
+info_table(data, var_type, var_left, var_right, df, select_id)}
+
+
 # Univariate, qualitative, no selection
 # Univariate, qualitative, valid selection
 

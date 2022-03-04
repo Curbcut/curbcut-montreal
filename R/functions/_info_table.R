@@ -58,7 +58,13 @@ info_table <- function(data, var_type, var_left, var_right, df, select_id,
     "{z$place_name} has no data available on {z$exp_left} and ",
     "{z$exp_right}.")
   
+  # Univariate multi-date, NA selection
+  if (z$var_type == "uni_na_delta") out <- sus_translate(
+    "{z$place_name} has no data available on the change in {z$exp_left} ",
+    "between {z$start_date_left} - {z$end_date_left}.")
   
+  
+
   ## Univariate single-date cases ----------------------------------------------
   
   # Univariate, quantitative, no selection

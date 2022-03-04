@@ -146,6 +146,7 @@ explore_graph(data, var_type, var_left, var_right, df, zoom, select_id)}
 # Multi-date univariate scatterplot, no selection -------------------------
 
 {df <- "borough"
+zoom <- "CT"
 var_left <- c("housing_value_avg_dollar_2001", "housing_value_avg_dollar_2016")
 var_right <- " "
 island <- FALSE
@@ -157,7 +158,7 @@ explore_graph(data, var_type, var_left, var_right, df, zoom, select_id)}
 
 # Multi-date univariate scatterplot, NA selection -------------------------
 
-{select_id <- "A"
+{select_id <- "2471025"
 var_type <- get_var_type(data, var_left, var_right, df, select_id)
 explore_graph(data, var_type, var_left, var_right, df, zoom, select_id)}
 

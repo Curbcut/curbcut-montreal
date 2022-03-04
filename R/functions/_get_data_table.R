@@ -7,16 +7,16 @@ get_data_table <- function(df, var_left, var_right, data_type, point_df) {
   
   # Facilitate code legibility by pre-creating q3/q5 column names
   left_q3 <- paste0(str_remove(all_of(var_left), time_format), 
-                    if (str_detect(var_left, time_format)) "q3_" else "_q3", 
+                    if (str_detect(var_left[1], time_format)) "q3_" else "_q3", 
                     na.omit(str_extract(var_left, time_format)))
   right_q3 <- paste0(str_remove(all_of(var_right), time_format), 
-                     if (str_detect(var_right, time_format)) "q3_" else "_q3", 
+                     if (str_detect(var_right[1], time_format)) "q3_" else "_q3", 
                      na.omit(str_extract(var_right, time_format)))
   left_q5 <- paste0(str_remove(all_of(var_left), time_format), 
-                    if (str_detect(var_left, time_format)) "q5_" else "_q5", 
+                    if (str_detect(var_left[1], time_format)) "q5_" else "_q5", 
                     na.omit(str_extract(var_left, time_format)))
   right_q5 <- paste0(str_remove(all_of(var_right), time_format), 
-                     if (str_detect(var_right, time_format)) "q5_" else "_q5", 
+                     if (str_detect(var_right[1], time_format)) "q5_" else "_q5", 
                      na.omit(str_extract(var_right, time_format)))
   
   # Univariate
