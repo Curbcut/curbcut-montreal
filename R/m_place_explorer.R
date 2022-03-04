@@ -39,20 +39,21 @@ place_explorer_UI <- function(id) {
       sidebar_UI(NS(id, "place_explorer"),
                  
                  hidden(actionLink(inputId = NS(id, "comeback_map"),
-                                   label = sus_translate("Go back to full-page map"))),
+                                   label = sus_translate("Go back to full-page map"),
+                                   style = "font-size: 1.25rem;")),
                  
                  susSidebarWidgets(
                    # Search box
                    strong(sus_translate("Enter a postal code, ",
                                         "or click on the map")),
+                   splitLayout(cellWidths = c("60%", "40%"),
                    textInput(inputId = NS(id, "adress_searched"), label = NULL,
                              placeholder = "H3A 2T5"),
                    actionButton(inputId = NS(id, "search_button"), 
-                                label = "Search"),
-                   
-                   br(), br(),
+                                label = "Search", style = "margin-top: var(--padding-v-md);"))),
                    
                    hidden(div(id = NS(id, "sidebar_widgets"),
+                              susSidebarWidgets(
                               
                               # Checkboxes of each theme
                               pickerInput(
@@ -63,9 +64,7 @@ place_explorer_UI <- function(id) {
                                 options = list(
                                   `selected-text-format` = "count > 4"), 
                                 multiple = TRUE
-                              ),
-                              
-                              br(),
+                              ), br(),
                               
                               # Retrieve the scale the user is interested in
                               HTML(paste0('<label id = "', NS(id, "scalemap_label"),
@@ -80,13 +79,11 @@ place_explorer_UI <- function(id) {
                                 hide_min_max = TRUE, 
                                 force_edges = TRUE),
                               
-                              br(),
-                              
                               # Island only comparison, or region-wide
                               HTML(paste0('<label id = "', NS(id, "comparison_label"),
                                           '" class = "control-label">',
                                           sus_translate('Choose comparison scale'), ':</label>')),
-                              mapdeckOutput(NS(id, "island_region"), height = 150),
+                              mapdeckOutput(NS(id, "island_region"), height = 100),
                               htmlOutput(outputId = NS(id, "actual_comparison_scale"), 
                                          style = "display:none;")
                               
@@ -170,7 +167,8 @@ place_explorer_server <- function(id) {
       location(st_point(c(lst$lon, lst$lat)) |> 
                  st_sfc(crs = 4326) |> 
                  as_tibble() |> 
-                 st_as_sf())
+                 st_as_sf() |> 
+                 st_set_agr("constant"))
       
       name <- tmaptools::rev_geocode_OSM(location())[[1]]
       
@@ -241,7 +239,8 @@ place_explorer_server <- function(id) {
     # Depending on `df`, retrieve the ID.
     select_id <- reactive({
       if (!is.null(location())) {
-        st_intersection(get(df()), location())$ID
+        st_intersection(st_set_agr(get(df()), "constant"), 
+                        st_set_agr(location(), "constant"))$ID
       } else NULL
     })
     
@@ -377,7 +376,6 @@ place_explorer_server <- function(id) {
       tagList(uiOutput(NS(id, "list")))
       
     })
-    
     
     ## PLACE EXPLORER DATA ----------------------------------------------
     output$themes_grid <- renderUI({
