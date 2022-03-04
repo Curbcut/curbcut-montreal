@@ -97,7 +97,41 @@ place_explorer_block_text <- function(df, theme, select_id,
   data_order <- data_order[data_order$theme == theme & 
                              data_order$ID == select_id, 
                    c("var_code")]
-  variables_theme <- variables[variables$var_code %in% data_order$var_code, ]
+  
+  if (df == "CT" && theme == "Transport") 
+    data_order <- distinct(data_order, var_code)
+  
+  # Access for CT
+  variables_var_codes <- 
+    if (df == "CT" && theme == "Transport") {
+      bind_rows(
+        variables[!grepl("access", variables$var_code), ], {
+          access_vars <- variables[grepl("access", variables$var_code), ]
+          new_var_code <- 
+            case_when(str_starts(access_vars$var_code, "access_jobs") ~
+                        str_extract(access_vars$var_code, "access_jobs_[^_]*"),
+                      TRUE ~ str_extract(access_vars$var_code, "access_[^_]*"))
+          
+          access_vars$var_code <- new_var_code
+          access_vars <- distinct(access_vars, var_code, .keep_all = TRUE)
+          
+          exp_suffix <- c("at weekday peak service",
+                          "at weekday off-peak service",
+                          "at weekday night service",
+                          "at weekend peak service",
+                          "at weekend off-peak service",
+                          "at weekend night service")
+          
+          access_vars$explanation <- 
+            str_replace(access_vars$explanation, paste0(exp_suffix, collapse = "|"), 
+                        "on average")
+          
+          access_vars
+        }
+      )
+    } else variables
+  
+  variables_theme <- variables_var_codes[variables_var_codes$var_code %in% data_order$var_code, ]
   variables_theme <- 
     variables_theme[order(match(variables_theme$var_code, data_order$var_code)), 
                     c("var_title", "explanation")]
@@ -147,6 +181,9 @@ place_explorer_block_plot <- function(df, theme, select_id,
   data_order <- data_order[data_order$theme == theme & 
                              data_order$ID == select_id, 
                            c("var_code")]
+  
+  if (df == "CT" && theme == "Transport") 
+    data_order <- distinct(data_order, var_code)
   
   raw_data_var <- pe_var_hierarchy[[df]][names(pe_var_hierarchy[[df]]) %in% data_order$var_code]
   
