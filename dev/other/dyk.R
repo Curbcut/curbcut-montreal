@@ -20,7 +20,7 @@ dyk <-
 
 stopifnot(
   setdiff(unique(unlist(dyk$theme)), NA) %in% themes,
-  unique(unlist(dyk$variable)) %in% variables$var_code
+  setdiff(unique(unlist(dyk$variable)), NA) %in% variables$var_code
 )
 
 

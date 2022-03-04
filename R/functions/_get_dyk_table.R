@@ -28,14 +28,11 @@ get_dyk_table <- function(id, var_left, var_right, poi = NULL) {
       
       links <- map_chr(seq_along(out$name), ~{
         paste0("<a id='", id, "-", id, "-dyk_", .x, "' href='#' ",
-               "class='action-button shiny-bound-input'>[LEARN MORE]</a>")
-        })
+               "class='action-button shiny-bound-input'>", 
+               sus_translate("[LEARN MORE]"), "</a>")})
       
-      link_attrs <- 
-        map(seq_along(nrow(out)), ~{
-          list(module = "stories",
-               select_id = out$ID[.x])
-        })
+      link_attrs <- map(seq_along(out$name), ~list(module = "stories", 
+                                                   select_id = out$ID[.x]))
       
       out <- paste(out$preview, links)
       out <- paste("<li> ", out, collapse = "")
@@ -89,14 +86,44 @@ get_dyk_table <- function(id, var_left, var_right, poi = NULL) {
             paste(vars, collapse = ", "), call. = FALSE)
   }
   
+  
+  # Process links --------------------------------------------------------------
+  
+  if (nrow(out) > 0) {
+    links <- out[!is.na(out$module),]
+    
+    links <- map_chr(seq_along(out$module), ~{
+      if (is.na(out$module[.x]) || out$module[.x] != "canale") "" else {
+        paste0(" <a id='", id, "-", id, "-dyk_", .x, "' href='#' ",
+               "class='action-button shiny-bound-input'>", 
+               sus_translate("[LEARN MORE]"), "</a>")
+      }
+    })
+    
+    link_attrs <- map(seq_len(nrow(out)), ~{
+      if (is.na(out$module[.x]) || out$module[.x] != "canale") list() else {
+        list(module = out$module[.x], 
+             # TKTK Eventually need handling for different var_left scenarios
+             # var_left = out$variable[[.x]][1],
+             var_right = if (length(out$variable[[.x]]) == 1) " " else 
+               out$variable[[.x]][2],
+             if (!is.na(out$df[.x])) df = out$df[.x])
+      }
+    })
+    
+  }
 
   # Return output --------------------------------------------------------------
   
   if (nrow(out) > 0) {
-    map_chr(out$text, sus_translate) %>%
-      paste("<li> ", ., collapse = "") %>%
-      paste0("<ul>", ., "</ul>") %>%
+    out <- 
+      map_chr(out$text, sus_translate) |> 
+      paste0(links) |> 
+      (\(x) paste("<li> ", x, collapse = ""))() |> 
+      (\(x) paste0("<ul>", x, "</ul>"))() |> 
       HTML()
+    attr(out, "links") <- link_attrs
+    out
   } else NULL
   
 }
