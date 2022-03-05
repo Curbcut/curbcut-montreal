@@ -76,7 +76,10 @@ get_dyk_table <- function(id, var_left, var_right, poi = NULL) {
     links <- out[!is.na(out$module),]
     
     links <- map_chr(seq_along(out$module), ~{
-      if (is.na(out$module[.x]) || out$module[.x] != "canale") "" else {
+      # Don't display a link if the variables are the same
+      if (is.na(out$module[.x]) || out$module[.x] != "canale" ||
+          all(out$variable[[.x]] %in% str_remove(c(var_left, var_right), 
+                                                 "_\\d{4}$"))) "" else {
         paste0(" <a id='", id, "-", id, "-dyk_", .x, "' href='#' ",
                "class='action-button shiny-bound-input'>", 
                sus_translate("[LEARN MORE]"), "</a>")
@@ -85,10 +88,10 @@ get_dyk_table <- function(id, var_left, var_right, poi = NULL) {
     
     link_attrs <- map(seq_len(nrow(out)), ~{
       if (is.na(out$module[.x]) || out$module[.x] != "canale") list() else {
-        link_vars <- get_dyk_link_vars(out[.x,])
         list(module = out$module[.x], 
-             if (!is.null(link_vars[[1]])) var_left = link_vars[[1]],
-             var_right = link_vars[[2]],
+             var_left = out$variable[[.x]][1],
+             var_right = if (length(out$variable[[.x]]) == 1) " " else 
+               out$variable[[.x]][2],
              if (!is.na(out$df[.x])) df = out$df[.x])
       }
     })
