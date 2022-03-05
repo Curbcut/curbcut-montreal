@@ -34,6 +34,7 @@ select_id <- sample(get(df)$ID, 1)
 
 df <- "DA"
 select_id <- "24663329"
+select_id <- "24661269"
 
 select_id <- sample(get(df)$ID, 1)
 test <- get_title_card(df, select_id, island_only_comparison = TRUE)
@@ -43,3 +44,9 @@ test[[5]]$graph
 bench::mark(
   title_card = {test <- get_title_card(df, select_id, island_or_region = TRUE)}
 )
+
+
+island_or_region <- "island"
+theme <- "Housing"
+
+test <- place_explorer_block_plot(df, theme, select_id, island_or_region)

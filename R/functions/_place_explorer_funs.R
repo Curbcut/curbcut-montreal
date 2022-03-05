@@ -95,8 +95,7 @@ place_explorer_block_text <- function(df, theme, select_id,
   raw_data_order <- pe_variable_order[[df]]
   data_order <- raw_data_order[raw_data_order$group == island_or_region, ]
   data_order <- data_order[data_order$theme == theme & 
-                             data_order$ID == select_id, 
-                   c("var_code")]
+                             data_order$ID == select_id, c("var_code")]
   
   if (df == "CT" && theme == "Transport") 
     data_order <- distinct(data_order, var_code)
@@ -178,7 +177,7 @@ place_explorer_block_plot <- function(df, theme, select_id, island_or_region) {
   raw_data_order <- pe_variable_order[[df]]
   data_order <- raw_data_order[raw_data_order$group == island_or_region, ]
   data_order <- data_order[data_order$theme == theme & 
-                             data_order$ID == select_id, c("var_code")]
+                             data_order$ID == select_id,]["var_code"]
   
   if (df == "CT" && theme == "Transport") 
     data_order <- distinct(data_order, var_code)
@@ -194,15 +193,13 @@ place_explorer_block_plot <- function(df, theme, select_id, island_or_region) {
     data <- raw_data_var[[var_code]]
     # data <- out_values[, var_code]
     data <- data[!is.na(data$var), ]
-    
     data_var <- data[data$ID == select_id, ]$var
-    
     outlier <- if (data_var %in% remove_outliers(data$var)) FALSE else TRUE
     
     if (!is.na(data_var)) {
       data |> 
         (\(x) if (outlier) x else 
-          x[x$var %in% c(remove_outliers(data$var)),])() |> 
+          x[x$var %in% c(remove_outliers(data$var)), ])() |> 
         ggplot() +
         geom_density(aes(x = var), size = 1, color = hex_to_plot) +
         geom_vline(aes(xintercept = data_var), color = "#000000", size = 1, 
