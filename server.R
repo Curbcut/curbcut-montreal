@@ -183,9 +183,9 @@ shinyServer(function(input, output, session) {
     if (!input$sus_page %in% sus_rv$previous_tabs()) active_mod_server()
   }, ignoreInit = F)
   
-  observeEvent(input$sus_page, {
-    updateQueryString("?")
-  }, ignoreInit = F)
+  # observeEvent(input$sus_page, {
+  #   updateQueryString("?")
+  # }, ignoreInit = F)
   
   
   # Data download -----------------------------------------------------------

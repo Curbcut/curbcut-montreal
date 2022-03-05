@@ -75,7 +75,7 @@ bookmark_server <- function(id, map_view_change = reactive(NULL),
       url <- reduce(c(default, add_arguments), paste0)
       
       # Update the URL
-      updateQueryString(url)
+      updateQueryString(paste0("/sus-mssi", url))
     })
     
     
