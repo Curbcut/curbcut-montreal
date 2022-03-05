@@ -170,8 +170,7 @@ place_explorer_block_text <- function(df, theme, select_id,
   
 }
 
-place_explorer_block_plot <- function(df, theme, select_id,
-                                      island_or_region) {
+place_explorer_block_plot <- function(df, theme, select_id, island_or_region) {
   
   on_island <- if (island_or_region == "region") FALSE else 
     data$CSDUID[data$ID == select_id] %in% island_CSDUID
@@ -179,37 +178,36 @@ place_explorer_block_plot <- function(df, theme, select_id,
   raw_data_order <- pe_variable_order[[df]]
   data_order <- raw_data_order[raw_data_order$group == island_or_region, ]
   data_order <- data_order[data_order$theme == theme & 
-                             data_order$ID == select_id, 
-                           c("var_code")]
+                             data_order$ID == select_id, c("var_code")]
   
   if (df == "CT" && theme == "Transport") 
     data_order <- distinct(data_order, var_code)
   
-  raw_data_var <- pe_var_hierarchy[[df]][names(pe_var_hierarchy[[df]]) %in% data_order$var_code]
+  raw_data_var <- pe_var_hierarchy[[df]][
+    names(pe_var_hierarchy[[df]]) %in% data_order$var_code]
   
   # Plot
-  plots <- 
-    map(data_order$var_code, function(var_code) {
-      
-      hex_to_plot <- "#A9A9A9"
-      
-      data <- raw_data_var[[var_code]]
-      # data <- out_values[, var_code]
-      data <- data[!is.na(data$var), ]
-      
-      data_var <- data[data$ID == select_id, ]$var
-      
-      outlier <- if (data_var %in% remove_outliers(data$var)) FALSE else TRUE
-      
-      if (!is.na(data_var)) {
-        data |> 
-          (\(x) if (outlier) x else 
-            x[x$var %in% c(remove_outliers(data$var)),])() |> 
-          ggplot() +
-          geom_density(aes(x = var), size = 1, color = hex_to_plot) +
-          geom_vline(aes(xintercept = data_var),
-                     color = "#000000", size = 1, alpha = 1) +
-          theme_void()
+  plots <- map(data_order$var_code, function(var_code) {
+    
+    hex_to_plot <- "#A9A9A9"
+    
+    data <- raw_data_var[[var_code]]
+    # data <- out_values[, var_code]
+    data <- data[!is.na(data$var), ]
+    
+    data_var <- data[data$ID == select_id, ]$var
+    
+    outlier <- if (data_var %in% remove_outliers(data$var)) FALSE else TRUE
+    
+    if (!is.na(data_var)) {
+      data |> 
+        (\(x) if (outlier) x else 
+          x[x$var %in% c(remove_outliers(data$var)),])() |> 
+        ggplot() +
+        geom_density(aes(x = var), size = 1, color = hex_to_plot) +
+        geom_vline(aes(xintercept = data_var), color = "#000000", size = 1, 
+                   alpha = 1) +
+        theme_void()
       } else ggplot()
       
     })
