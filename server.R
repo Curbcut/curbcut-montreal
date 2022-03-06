@@ -179,13 +179,11 @@ shinyServer(function(input, output, session) {
   
   observeEvent(input$sus_page, {
     bookmark_server("reset")
-    if (!is.null(sus_bookmark$active) && isTRUE(sus_bookmark$active)) active_mod_server()
+    if (!is.null(sus_bookmark$active) && isTRUE(sus_bookmark$active)) 
+      active_mod_server()
     if (!input$sus_page %in% sus_rv$previous_tabs()) active_mod_server()
-  }, ignoreInit = F)
-  
-  # observeEvent(input$sus_page, {
-  #   updateQueryString("?")
-  # }, ignoreInit = F)
+    updateQueryString("?")
+  }, ignoreInit = FALSE)
   
   
   # Data download -----------------------------------------------------------
