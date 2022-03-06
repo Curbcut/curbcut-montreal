@@ -48,9 +48,8 @@ get_info_table_data <- function(data, var_type, var_left, var_right, df,
   
   if (df == "date") {
     out$var_type <- "date_all"
-    dat <- 
-      dat |> 
-      mutate(name = NA_character_, population = NA_real_)
+    dat$name <- NA_character_
+    dat$population <- NA_real_
   }
   
   
@@ -59,12 +58,9 @@ get_info_table_data <- function(data, var_type, var_left, var_right, df,
   var_left <- unique(str_remove(var_left, "_\\d{4}$"))
   var_right <- unique(str_remove(var_right, "_\\d{4}$"))
   
-  breaks_q5_left <- 
-    variables |> 
-    filter(var_code == unique(sub("_\\d{4}$", "", var_left))) |> 
-    pull(breaks_q5) |> 
-    pluck(1) |> 
-    filter(scale == df)
+  breaks_q5_left <- variables$breaks_q5[
+    variables$var_code == unique(sub("_\\d{4}$", "", var_left))][[1]]
+  breaks_q5_left <- breaks_q5_left[breaks_q5_left$scale == df,]
   
   if (!suppressWarnings(is.null(breaks_q5_left$var_name)) && 
       !all(is.na(breaks_q5_left$var_name))) {
@@ -77,12 +73,9 @@ get_info_table_data <- function(data, var_type, var_left, var_right, df,
   
   if (var_right != " ") {
     
-    breaks_q5_right <- 
-      variables |> 
-      filter(var_code == var_right) |> 
-      pull(breaks_q5) |> 
-      pluck(1) |> 
-      filter(scale == df)
+    breaks_q5_right <- variables$breaks_q5[
+      variables$var_code == unique(sub("_\\d{4}$", "", var_right))][[1]]
+    breaks_q5_right <- breaks_q5_left[breaks_q5_right$scale == df,]
     
     if (!suppressWarnings(is.null(breaks_q5_right$var_name)) && 
         !all(is.na(breaks_q5_right$var_name))) {
@@ -115,12 +108,15 @@ get_info_table_data <- function(data, var_type, var_left, var_right, df,
   ## Selections ----------------------------------------------------------------
   
   # select_name and selection need to be different because of building names
-  select_name <- filter(dat_select, ID == dat_select_id)
-  selection <- filter(dat, ID == select_id)
+  select_name <- if (is.na(dat_select_id)) dat_select[0,] else dat_select[
+    dat_select$ID == dat_select_id,]
+  selection <- if (is.na(select_id)) dat[0,] else dat[dat$ID == select_id,]
   out$selection <- selection
-  active_left <- nrow(filter(selection, !is.na(var_left_q3)))
+  active_left <- length(selection$ID[!is.na(selection$var_left_q3)])
   active_right <- active_left
   if (var_right != " ") active_right <- 
+    length(selection$ID[!is.na(selection$var_left_q3) & 
+                          !is.na(selection$var_left_q3)])
     nrow(filter(selection, !is.na(var_left_q3), !is.na(var_right)))
   out$pop <- convert_unit(selection$population)
   val_left <- selection$var_left
@@ -211,11 +207,8 @@ get_info_table_data <- function(data, var_type, var_left, var_right, df,
   
   ## Descriptive statistics for var_left ---------------------------------------
   
-  vec_left <-
-    dat %>%
-    filter(!is.na(var_left_q3), !is.na(var_left)) %>%
-    pull(var_left) %>% 
-    na.omit()
+  vec_left <- na.omit(dat$var_left[!is.na(dat$var_left_q3) & 
+                                     !is.na(dat$var_left)])
   
   if (grepl("quant_|date", out$var_type)) {
     out$min_val <- convert_unit(min(vec_left), var_left)
@@ -276,7 +269,8 @@ get_info_table_data <- function(data, var_type, var_left, var_right, df,
       {var_left_label[names(var_left_label) == names(.)]} %>%
       tolower()
     mode_prop <- qual_tab[1] / sum(qual_tab)
-    out$majority <- if (mode_prop > 0.5) sus_translate("majority") else sus_translate("plurality")
+    out$majority <- if (mode_prop > 0.5) sus_translate("majority") else 
+      sus_translate("plurality")
     out$mode_prop <- convert_unit(mode_prop, "_pct")
     out$mode_prop_2 <- convert_unit(qual_tab[2] / sum(qual_tab), "_pct")
     
@@ -408,30 +402,27 @@ get_info_table_data <- function(data, var_type, var_left, var_right, df,
       `[`("var_right") %>%
       signif(3)
     
-    max_date <- 
-      dat |> 
-      filter(var_left == max(var_left)) |> 
-      pull(var_right)
+    max_date <- dat$var_right[dat$var_left == max(dat$var_left)]
     
     if (length(max_date) %in% 2:3) max_date <- paste(
       paste(max_date[seq_len(length(max_date) - 1)], collapse = ", "),
       max_date[length(max_date)], sep = sus_translate(" and "))
-    if (length(max_date) > 3) out$max_date <- sus_translate("several different dates")
+    if (length(max_date) > 3) out$max_date <- 
+      sus_translate("several different dates")
     out$max_date <- max_date
     
-    min_date <- 
-      dat |> 
-      filter(var_left == min(var_left)) |> 
-      pull(var_right)
+    min_date <- dat$var_right[dat$var_left == min(dat$var_left)]
     
     if (length(min_date) %in% 2:3) min_date <- paste(
       paste(min_date[seq_len(length(min_date) - 1)], collapse = ", "),
       max_date[length(min_date)], sep = sus_translate(" and "))
-    if (length(min_date) > 3) min_date <- sus_translate("several different dates")
+    if (length(min_date) > 3) min_date <- 
+      sus_translate("several different dates")
     out$min_date <- min_date
     
     out$coef <- abs(coef)
-    out$coef_increasing <- if (coef >= 0) sus_translate("increasing") else sus_translate("decreasing")
+    out$coef_increasing <- if (coef >= 0) sus_translate("increasing") else 
+      sus_translate("decreasing")
     out$date_left <- paste(date_left, collapse = '-')
   }
   
