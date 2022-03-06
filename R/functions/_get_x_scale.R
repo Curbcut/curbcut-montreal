@@ -4,16 +4,12 @@ get_x_scale <- function(graph_type, data, var_type, var_left, var_right, df) {
   
   ## Get labels ----------------------------------------------------------------
   
-  breaks_q5_left <- 
-    variables |> 
-    filter(var_code == unique(sub("_\\d{4}$", "", var_left))) |> 
-    pull(breaks_q5)
+  breaks_q5_left <- variables$breaks_q5[
+    variables$var_code == unique(sub("_\\d{4}$", "", var_left))]
   
   if (length(breaks_q5_left) > 0) breaks_q5_left <- 
-      breaks_q5_left |> 
-      pluck(1) |> 
-      filter(scale == df)
-  
+      breaks_q5_left[[1]][breaks_q5_left[[1]]$scale == df,]
+
   if (suppressWarnings(!is.null(breaks_q5_left$var_name)) && 
       sum(!is.na(breaks_q5_left$var_name)) > 0) {
     var_left_label <- breaks_q5_left$var_name_short

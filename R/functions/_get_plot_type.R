@@ -12,11 +12,13 @@ get_plot_type <- function(data, var_type, var_left, var_right, select_id, df) {
   
   # Convenience variables
   var_left_num <- length(unique(data$var_left))
-  na_select <- if (var_right[1] == " ") {
-    nrow(filter(data, ID == select_id, !is.na(var_left_q3)))
+  na_select <- if (is.na(select_id)) {
+    0L
+  } else if (var_right[1] == " ") {
+    nrow(data[data$ID == select_id & !is.na(data$var_left_q3),])
   } else {
-    nrow(filter(data, ID == select_id, !is.na(var_left_q3), 
-                !is.na(var_right_q3)))
+    nrow(data[data$ID == select_id & !is.na(data$var_left_q3) & 
+                !is.na(data$var_right_q3),])
   }
   
   # Get main graph type
