@@ -50,3 +50,5 @@ island_or_region <- "island"
 theme <- "Housing"
 
 test <- place_explorer_block_plot(df, theme, select_id, island_or_region)
+
+bench::mark(x = place_explorer_block_plot(df, theme, select_id, island_or_region))

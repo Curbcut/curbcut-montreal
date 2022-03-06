@@ -191,22 +191,20 @@ place_explorer_block_plot <- function(df, theme, select_id, island_or_region) {
     hex_to_plot <- "#A9A9A9"
     
     data <- raw_data_var[[var_code]]
-    # data <- out_values[, var_code]
     data <- data[!is.na(data$var), ]
     data_var <- data[data$ID == select_id, ]$var
-    outlier <- if (data_var %in% remove_outliers(data$var)) FALSE else TRUE
+    var_outlier <- remove_outliers(data$var)
+    outlier <- if (data_var %in% var_outlier) FALSE else TRUE
     
     if (!is.na(data_var)) {
-      data |> 
-        (\(x) if (outlier) x else 
-          x[x$var %in% c(remove_outliers(data$var)), ])() |> 
-        ggplot() +
+      data_out <- if (outlier) data[data$var %in% var_outlier,] else data
+      ggplot(data_out) +
         geom_density(aes(x = var), size = 1, color = hex_to_plot) +
-        geom_vline(aes(xintercept = data_var), color = "#000000", size = 1, 
+        geom_vline(aes(xintercept = data_var), color = "#000000", size = 1,
                    alpha = 1) +
         theme_void()
-      } else ggplot()
-      
-    })
+    } else ggplot()
+    
+  })
 
 }
