@@ -3,119 +3,115 @@
 # UI ----------------------------------------------------------------------
 
 place_explorer_UI <- function(id) {
-  fillPage(fillRow(
-    fillCol(
+  fillPage(fillRow(fillCol(
+    
+    # Style
+    inlineCSS("#deckgl-overlay { z-index:4; }"),
+    inlineCSS(list(.big_map = "width: 100%; height: 100vh;")),
+    inlineCSS(list(.banner_map = "width: 100%; height: 125px;")),
+    # Temporary fix to clicking the enter key is as clicking on Search button
+    tags$script('$(function() {
+      var $els = $("[data-proxy-click]");
+                       $.each(
+                         $els,
+                         function(idx, el) {
+                           var $el = $(el);
+                           var $proxy = $("#" + $el.data("proxyClick"));
+                           $el.keydown(function (e) {
+                             if (e.keyCode == 13) {
+                               $proxy.click();
+                             }
+                           });
+                         }
+                       );
+                     });
+                     '),
+    `data-proxy-click` = "place_explorer-search_button",
+    
+    # Main map
+    div(
+      id = NS(id, "mapdeck_div"), 
+      class = "big_map", 
+      mapdeckOutput(NS(id, "map"), height = "100%")),
       
-      ## STYLE ------------------------------------------------------------
-      inlineCSS("#deckgl-overlay { z-index:4; }"),
-      inlineCSS(list(.big_map = "width: 100%; height: 100vh;")),
-      inlineCSS(list(.banner_map = "width: 100%; height: 125px;")),
-      # Temporary fix to clicking the enter key is as clicking on Search button
-      tags$script('$(function() {
-                  var $els = $("[data-proxy-click]");
-                                  $.each(
-                                    $els,
-                                    function(idx, el) {
-                                      var $el = $(el);
-                                      var $proxy = $("#" + $el.data("proxyClick"));
-                                      $el.keydown(function (e) {
-                                        if (e.keyCode == 13) {
-                                          $proxy.click();
-                                        }
-                                      });
-                                    }
-                                  );
-                                });
-                                '), 
-      `data-proxy-click` = "place_explorer-search_button",
+    # Sidebar
+    sidebar_UI(
+      NS(id, "place_explorer"),
+      hidden(actionLink(inputId = NS(id, "comeback_map"),
+                        label = sus_translate("Go back to map"),
+                        style = "font-size: 1.25rem;")),
       
-      ## MAIN MAP ---------------------------------------------------------
-      div(id = NS(id, "mapdeck_div"), 
-          class = "big_map", 
-          mapdeckOutput(NS(id, "map"), height = "100%")),
-      
-      
-      ## SIDEBAR
-      sidebar_UI(NS(id, "place_explorer"),
-                 
-                 hidden(actionLink(inputId = NS(id, "comeback_map"),
-                                   label = sus_translate("Go back to map"),
-                                   style = "font-size: 1.25rem;")),
-                 
-                 susSidebarWidgets(
-                   # Search box
-                   strong(sus_translate("Enter a postal code, ",
-                                        "or click on the map")),
-                   HTML(paste0('
+      susSidebarWidgets(
+        # Search box
+        strong(sus_translate("Enter a postal code or click on the map")),
+        HTML(paste0('
                    <div class="shiny-split-layout">
                      <div style="width: 60%;">',
                      textInput(inputId = NS(id, "adress_searched"), label = NULL,
                                placeholder = "H3A 2T5"),
                      '</div>
                      <div style="width: 40%;">',
-                     actionButton(inputId = NS(id, "search_button"), 
-                                  label = "Search", style = "margin-top: var(--padding-v-md);"),
+                    actionButton(inputId = NS(id, "search_button"), 
+                                 label = "Search", 
+                                 style = "margin-top: var(--padding-v-md);"),
                      '</div>
                      </div>'))),
-                   # textInput(inputId = NS(id, "adress_searched"), label = NULL,
-                   #           placeholder = "H3A 2T5"),
-                   # actionButton(inputId = NS(id, "search_button"), 
-                   #              label = "Search", style = "margin-top: var(--padding-v-md);"))),
-                   
-                   hidden(div(id = NS(id, "sidebar_widgets"),
-                              susSidebarWidgets(
-                              
-                              # Checkboxes of each theme
-                              pickerInput(
-                                inputId = NS(id, "themes_checkbox"),
-                                label = "Select theme(s):",
-                                choices = unique(variables$theme),
-                                selected = unique(variables$theme),
-                                options = list(
-                                  `selected-text-format` = "count > 4"), 
-                                multiple = TRUE
-                              ), br(),
-                              
-                              # Retrieve the scale the user is interested in
-                              HTML(paste0('<label id = "', NS(id, "scalemap_label"),
-                                          '" class = "control-label">',
-                                          sus_translate('Select scale'), ':</label>')),
-                              mapdeckOutput(NS(id, "scalemap"), height = 150),
-                              sliderTextInput(
-                                inputId = NS(id, "slider"), 
-                                label = NULL, 
-                                choices = get_zoom_label(map_zoom_levels[1:3]), 
-                                selected = get_zoom_label(map_zoom_levels[1:3])[3],
-                                hide_min_max = TRUE, 
-                                force_edges = TRUE),
-                              
-                              # Island only comparison, or region-wide
-                              HTML(paste0('<label id = "', NS(id, "comparison_label"),
-                                          '" class = "control-label">',
-                                          sus_translate('Choose comparison scale'), ':</label>')),
-                              mapdeckOutput(NS(id, "island_region"), height = 100),
-                              htmlOutput(outputId = NS(id, "actual_comparison_scale"), 
-                                         style = "display:none;")
-                              
-                   )))),
+       # textInput(inputId = NS(id, "adress_searched"), label = NULL,
+       #           placeholder = "H3A 2T5"),
+       # actionButton(inputId = NS(id, "search_button"), 
+       #              label = "Search", style = "margin-top: var(--padding-v-md);"))),
       
-      # Main panel as a uiOutput. The amount of themes displayed is reactive
-      fluidPage(
-        hidden(div(id = NS(id, "grid_elements"), 
-                   style = paste0("margin-top:150px; overflow-x: hidden; ",
-                                  "overflow-y: auto;  height: calc(100vh - 235px);",
-                                  "margin-left:310px; background-color:#ffffff;",
-                                  "padding:25px;"),
-                   fluidRow(
-                     style = paste0("padding: 5px;",
-                                    "font-size: 11px;",
-                                    "max-width: 1200px; margin:auto;",
-                                    "padding:30px;"),
-                     column(9, htmlOutput(NS(id, "title_card_title")),
-                            uiOutput(NS(id, "title_card"))),
-                     column(3, mapdeckOutput(NS(id, "title_card_map")))),
-                   
-                   fluidRow(uiOutput(NS(id, "themes_grid")))))),
+      hidden(div(id = NS(id, "sidebar_widgets"), susSidebarWidgets(
+        
+        # Checkboxes of each theme
+        pickerInput(
+          inputId = NS(id, "themes_checkbox"),
+          label = "Select theme(s):",
+          choices = unique(variables$theme),
+          selected = unique(variables$theme),
+          options = list(`selected-text-format` = "count > 4"), 
+          multiple = TRUE), 
+        
+        br(),
+        
+        # Retrieve the scale the user is interested in
+        HTML(paste0('<label id = "', NS(id, "scalemap_label"),
+                    '" class = "control-label">',
+                    sus_translate('Select scale'), ':</label>')),
+        mapdeckOutput(NS(id, "scalemap"), height = 150),
+        sliderTextInput(inputId = NS(id, "slider"), 
+                        label = NULL, 
+                        choices = get_zoom_label(map_zoom_levels[1:3]), 
+                        selected = get_zoom_label(map_zoom_levels[1:3])[3],
+                        hide_min_max = TRUE, force_edges = TRUE),
+        
+        # Island only comparison, or region-wide
+        HTML(paste0('<label id = "', NS(id, "comparison_label"),
+                    '" class = "control-label">',
+                    sus_translate('Choose comparison scale'), ':</label>')),
+        mapdeckOutput(NS(id, "island_region"), height = 100),
+        htmlOutput(outputId = NS(id, "actual_comparison_scale"), 
+                   style = "display:none;")
+        
+        )))),
+    
+    # Main panel as a uiOutput. The number of themes displayed is reactive
+    fluidPage(
+      hidden(div(id = NS(id, "grid_elements"), 
+                 style = paste0("margin-top:150px; overflow-x: hidden; ",
+                                "overflow-y: auto;  height: calc(100vh - 235px);",
+                                "margin-left:310px; background-color:#ffffff;",
+                                "padding:25px;"),
+                 fluidRow(
+                   style = paste0("padding: 5px;",
+                                  "font-size: 11px;",
+                                  "max-width: 1200px; margin:auto;",
+                                  "padding:30px;"),
+                   column(9, htmlOutput(NS(id, "title_card_title")),
+                          uiOutput(NS(id, "title_card"))),
+                   column(3, mapdeckOutput(NS(id, "title_card_map")))),
+                 
+                 fluidRow(uiOutput(NS(id, "themes_grid")))))),
     )))
 }
 
