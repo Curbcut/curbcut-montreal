@@ -75,7 +75,7 @@ get_info_table_data <- function(data, var_type, var_left, var_right, df,
     
     breaks_q5_right <- variables$breaks_q5[
       variables$var_code == unique(sub("_\\d{4}$", "", var_right))][[1]]
-    breaks_q5_right <- breaks_q5_left[breaks_q5_right$scale == df,]
+    breaks_q5_right <- breaks_q5_right[breaks_q5_right$scale == df,]
     
     if (!suppressWarnings(is.null(breaks_q5_right$var_name)) && 
         !all(is.na(breaks_q5_right$var_name))) {
