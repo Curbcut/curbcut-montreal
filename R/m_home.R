@@ -68,7 +68,7 @@ home_UI <- function(id) {
       tags$h2(sus_translate("Maps"), scrollAnchor(id = "start-exploring")),
       do.call(linkList, c(ready_modules_home(mods_rdy),
                           list(linkListGroup(name = sus_translate("More"),
-                                             list(name = sus_translate("Montreal stories"), 
+                                             list(name = sus_translate("Montréal stories"), 
                                                   onclick = "openTab('stories')"),
                                              list(name = sus_translate("Place explorer"), 
                                                   onclick = "openTab('place_explorer')"))))

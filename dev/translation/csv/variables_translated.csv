@@ -94,7 +94,6 @@ Healthcare (weekend off-peak),Établissements de soins de santé  (hors pointe de 
 Healthcare (weekend night),Établissements de soins de santé  (nuit de fin de semaine)
 Green alleys per sq km,Ruelles vertes par km2
 "Green alleys per 1,000",Ruelles vertes pour 1 000
-Gentrification index,Indice de gentrification
 Borough park per sq km,Parcs d'arrondissements par km2
 "Borough park per 1,000",Parcs d'arrondissements pour 1 000
 Large park per sq km,Grands parcs par km2
@@ -107,6 +106,25 @@ Under validation per sq km,En cours de validation par km2
 "Under validation per 1,000",En cours de validation pour 1 000
 Total green space per sq km,Total d'espaces verts par km2
 "Total green space per 1,000",Total d'espaces verts pour 1 000
+Gentrification index,Indice de gentrification
+Dwellings combination permits count,NA
+Condo conversion permits count,NA
+Demolition permits count,NA
+New construction permits count,NA
+Renovation permits count,NA
+Total permits count,NA
+Dwellings combination permits per sq km,NA
+"Dwellings combination permits per 1,000",NA
+Condo conversion permits per sq km,NA
+"Condo conversion permits per 1,000",NA
+Demolition permits per sq km,NA
+"Demolition permits per 1,000",NA
+New construction permits per sq km,NA
+"New construction permits per 1,000",NA
+Renovation permits per sq km,NA
+"Renovation permits per 1,000",NA
+Total permits per sq km,NA
+"Total permits per 1,000",NA
 Tenant,Locataire
 Avg. rent,Loyer moy.
 Repairs,Réparations
@@ -132,7 +150,7 @@ Fr. and Eng.,Fr. et ang.
 Non-official,Non-officiel
 0-14 yo,0-14 ans
 15-64 yo,15-64 ans
-65+ yo,65+ ans
+6+5 yo,NA
 Bachelor+,Bac.+
 No degree,Aucun diplôme
 Professional,Professionel
@@ -200,21 +218,37 @@ Healthcare WKN,Santé NS
 Healthcare WEP,Santé PFDS
 Healthcare WEOP,Santé HPFDSH
 Healthcare WEN,Santé NFDS
-Alleys/sqkm,Ruelles/km2
-"Alleys/1,000",Ruelles/1 000
+Alleys sqkm,NA
+"Alleys 1,000",NA
+Borough park sqkm,NA
+"Borough park 1,000",NA
+Large park sqkm,NA
+"Large park 1,000",NA
+Other park sqkm,NA
+"Other park 1,000",NA
+Road space sqkm,NA
+"Road space 1,000",NA
+Under validation sqkm,NA
+"Under validation 1,000",NA
+Total sqkm,NA
+"Total 1,000",NA
 Gentrification,Gentrification
-Borough park/sqkm,Parcs d'arrond./km2
-"Borough park/1,000",Parcs d'arrond./1 000
-Large park/sqkm,Gr. parcs/km2
-"Large park/1,000",Gr. parcs/1 000
-Other park/sqkm,Autres parcs/km2
-"Other park/1,000",Autres parcs/1 000
-Road space/sqkm,Esp. routier/km2
-"Road space/1,000",Esp. routier/1 000
-Under validation/sqkm,Att. de valid./km2
-"Under validation/1,000",Att. de valid./1 000
-Total/sqkm,Total/km2
-"Total/1,000",Total/1 000
+Combination ,NA
+Condo conversion ,NA
+Demolition ,NA
+New construction ,NA
+Renovation ,NA
+Total ,NA
+Combination sqkm,NA
+"Combination 1,000",NA
+Condo conversion sqkm,NA
+"Condo conversion 1,000",NA
+Demolition sqkm,NA
+"Demolition 1,000",NA
+New construction sqkm,NA
+"New construction 1,000",NA
+Renovation sqkm,NA
+"Renovation 1,000",NA
 the percentage of private dwellings occupied by tenants,le pourcentage de logements privés occupés par des locataires
 the average rent paid by tenants per month,le loyer moyen payé par les locataires par mois
 the percentage of households living in dwellings requiring major repairs,le pourcentage de ménages vivant dans des logements nécessitant des réparations importantes
@@ -224,7 +258,7 @@ the percentage of households that have moved in the past five years,le pourcenta
 the percentage of occupied private dwellings that are single-detached houses,le pourcentage de logements privés occupés qui sont des maisons individuelles non attenantes
 median before-tax household income,revenu médian des ménages avant impôt
 "the percentage of households with an income less then $50,000",le pourcentage de ménages dont le revenu est inférieur à 50 000 $
-"the percentage of households with an income between $50,000 and $100,000",le pourcentage de ménages dont le revenu est entre 50 000$ et 100 000 $
+"the percentage of households with an income between$50,000 and $100,000",NA
 "the percentage of households with an income higher than $100,000",le pourcentage de ménages dont le revenu est supérieur à 100 000 $
 the percentage of residents who are foreign-born,le pourcentage de résidents nés à l'étranger
 the percentage of people who have immigrated in the last five years,le pourcentage de personnes qui ont immigré au cours des cinq dernières années
@@ -310,7 +344,6 @@ the number of healthcare facilities accessible within 30 minutes at weekend off-
 the number of healthcare facilities accessible within 30 minutes at weekend night service,le nombre total d'établissements de santé accessibles en 30 minutes et moins la nuit la fin de semaine
 the number of square metres of green alley per square kilometre,le nombre de m2 de ruelle verte par km2
 "the number of square metres of green alley per 1,000 residents",le nombre de m2 de ruelle verte pour 1 000 résidents
-the gentrification pressure an area is experiencing,la pression de gentrification que subit un secteur
 the number of square metres of borough park per square kilometre,le nombre de m2 de parc d'arrondissement par km2
 "the number of square metres of borough park per 1,000 residents",le nombre de m2 de parc d'arrondissement pour 1 000 résidents
 the number of square metres of large park per square kilometre,le nombre de m2 de grand parc par km2
@@ -323,6 +356,25 @@ the number of square metres of green space under validation per square kilometre
 "the number of square metres of green space under validation per 1,000 residents",le nombre de m2 d'espace vert en cours de validation pour 1 000 résidents
 the number of square metres of total green space per square kilometre,le nombre de m2 d'espace vert total par km2
 "the number of square metres of total green space per 1,000 residents",le nombre de m2 d'espace vert total pour 1 000 résidents
+the gentrification pressure an area is experiencing,la pression de gentrification que subit un secteur
+the number of dwellings combination permits emitted ,NA
+the number of condo conversion permits emitted ,NA
+the number of demolition permits emitted ,NA
+the number of owner and renter residential buildings built ,NA
+the number of renovation permits emitted ,NA
+the number of total permits emitted ,NA
+the number of dwellings combination permits emitted per square kilometre,NA
+"the number of dwellings combination permits emitted per 1,000 residents",NA
+the number of condo conversion permits emitted per square kilometre,NA
+"the number of condo conversion permits emitted per 1,000 residents",NA
+the number of demolition permits emitted per square kilometre,NA
+"the number of demolition permits emitted per 1,000 residents",NA
+the number of owner and renter residential buildings built per square kilometre,NA
+"the number of owner and renter residential buildings built per 1,000 residents",NA
+the number of renovation permits emitted per square kilometre,NA
+"the number of renovation permits emitted per 1,000 residents",NA
+the number of total permits emitted per square kilometre,NA
+"the number of total permits emitted per 1,000 residents",NA
 Housing,Logement
 Income,Revenu
 Identity,Identité

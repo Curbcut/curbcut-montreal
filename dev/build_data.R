@@ -134,7 +134,7 @@ source("dev/modules/marketed_sustainability.R")
 # source("dev/modules/permits.R")
 source("dev/modules/place_explorer.R")
 # source("dev/modules/dmti.R")
-source("dev/modules/stories.R")
+source("dev/modules/stories.R", encoding = "utf-8")
 
 
 # Post-processing and simplification --------------------------------------

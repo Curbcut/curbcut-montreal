@@ -37,7 +37,7 @@ ui_and_misc_translated <-
     c("Housing system" = "Le système de logement"),
     c("Gentrification" = "Gentrification"),
     c("Permits" = "Permis"),
-    c("Marketed sustainability" = "Durabilité commercialisée"),
+    c("Marketed Sustainability" = "Durabilité commercialisée"),
     c("Urban Life" = "Vie urbaine"),
     c("Active living potential" = "Potentiel de vie active"),
     c("Green alleys" = "Allées vertes"),
@@ -50,11 +50,15 @@ ui_and_misc_translated <-
     c("Covid" = "Covid"),
     c("Covid interventions" = "Mesures Covid"),
     c("Policy" = "Politiques"),
-    c("Montreal climate plans" = "Plans climatiques de Montréal"),
+    c("Montréal climate plans" = "Plans climatiques de Montréal"),
     c("More" = "Davantage"),
-    c("Montreal stories" = "Histoires de Montréal"),
-    c("Place explorer" = "Explorez un lieu"))
-    
+    c("Montréal stories" = "Histoires de Montréal"),
+    c("Place explorer" = "Explorez un lieu"),
+    c("About" = "À propos"),
+    c("Terms & Conditions" = "Termes et conditions"),
+    c("Privacy Policy" = "Politique de confidentialité"),
+    c("Contact" = "Contactez-nous"))
+
 ui_and_misc_translated <- 
   tibble(en = names(ui_and_misc_translated),
          fr = ui_and_misc_translated)

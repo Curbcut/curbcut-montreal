@@ -89,7 +89,7 @@ ui <- function(request) {
                     value = "stories"),
            tabPanel(sus_translate("Place explorer"), place_explorer_UI("place_explorer"),
                     value = "place_explorer"),
-           tabPanel("About", why_dash_UI("why_dash"), value = "why_dash"),
+           tabPanel(sus_translate("About"), why_dash_UI("why_dash"), value = "why_dash"),
            collapsible = TRUE,
            inputs = list(
              # Language toggle

@@ -79,10 +79,10 @@ susFooter <- function() {
       ),
       tags$div(class = "sus-page-footer-links",
         tags$ul(
-          tags$li(tags$a(href = "", "About")),
-          tags$li(tags$a(href = "", "Terms & Conditions")),
-          tags$li(tags$a(href = "", "Privacy Policy")),
-          tags$li(tags$a(href = "", "Contact"))
+          tags$li(tags$a(href = "", sus_translate("About"))),
+          tags$li(tags$a(href = "", sus_translate("Terms & Conditions"))),
+          tags$li(tags$a(href = "", sus_translate("Privacy Policy"))),
+          tags$li(tags$a(href = "", sus_translate("Contact")))
         )
       )
     )
