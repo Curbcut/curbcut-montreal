@@ -18,7 +18,7 @@ stories_UI <- function(id) {
     hidden(htmlOutput(
       NS(id, "stories"),
       style = paste0("position:absolute; margin: 40px; ",
-                     "max-width: 1000px; z-index:499")))
+                     "max-width: 1200px; z-index:499")))
     
   )
 }

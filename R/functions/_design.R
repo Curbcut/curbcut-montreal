@@ -197,12 +197,13 @@ bookmark_url <-
 styler <- '
 /* the big panel popup when we show an RMD in a map module */
   .main_panel_text_popup {
-    max-height: calc(100vh - 165px);
+    max-height: calc(100vh - 155px);
     overflow: auto;
     background-color: #fff;
     border: 1px solid transparent;
     border-radius: 4px;
     box-shadow: 0 50px 50px rgba(0,0,0,.6);
+    margin-left: 300px;
   }
   
   #sus_page > li:first-child { 
