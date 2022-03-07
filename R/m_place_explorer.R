@@ -240,6 +240,7 @@ place_explorer_server <- function(id) {
                             inputId = "slider",
                             selected = get_zoom_name(select_df))
     })
+    
     df <- reactive(get_zoom_code(input$slider))
     
     # Depending on `df`, retrieve the ID.
@@ -255,6 +256,7 @@ place_explorer_server <- function(id) {
     output$island_region <- renderMapdeck({if (!is.null(location())) 
       island_region_map(location())})
     
+    # Reactive to toggle on or off the presence of the island_region wdiget
     location_on_island <- reactive({
       if (!is.null(location())) {
         filter(get(df()), ID == select_id())$CSDUID %in% island_CSDUID
@@ -263,11 +265,19 @@ place_explorer_server <- function(id) {
     # Should we show the map, or not? Only if location() is on island
     observe({
       toggle(id = "island_region", condition = location_on_island())
-      toggle(id = "comparison_scale_label", condition = location_on_island())
+      toggle(id = "comparison_label", condition = location_on_island())
       toggle(id = "actual_comparison_scale", condition = location_on_island())
     })
     
-    # island or region reactive.
+    # Everytime the selected id changes, reevaluate if we're starting with 
+    # an island-only comparison, or region-wide. 
+    observeEvent(select_id(), {
+      if (!is.null(select_id())) {
+        island_comparison(if (location_on_island()) "island" else "region")
+      }
+    })
+    
+    # The reaction of a click on the widget's map
     observeEvent(input$island_region_polygon_click, {
       island_comparison({
         fromJSON(input$island_region_polygon_click)$object$properties$id})

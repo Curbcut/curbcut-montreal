@@ -10,14 +10,13 @@ get_title_card <- function(df, select_id, island_or_region) {
   data <- get(df)
   
   # Test if comparison will be only on island
-  on_island <- if (island_or_region == "region") FALSE else 
-    data$CSDUID[data$ID == select_id] %in% island_CSDUID
+  on_island <- if (island_or_region == "island") TRUE else FALSE
   
   # Choose indicators based on data availability
   indicators_table <- 
-    if (!data$CSDUID[data$ID == select_id] %in% island_CSDUID) {
-      title_card_index[title_card_index$island_or_region == FALSE, ]
-      } else title_card_index
+    if (on_island) title_card_index else {
+      title_card_index[title_card_index$island_only == FALSE, ]
+    }
   
   # Get scale names
   geo_area <- switch(df, "borough" = "borough/city", "CT" = "census tract",

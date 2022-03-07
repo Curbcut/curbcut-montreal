@@ -86,11 +86,8 @@ island_region_map <- function(location) {
                 update_view = TRUE)
 }
 
-place_explorer_block_text <- function(df, theme, select_id,
+place_explorer_block_text <- function(data, df, theme, select_id,
                                       island_or_region) {
-  
-  on_island <- filter(get(df), ID == select_id)$CSDUID %in% island_CSDUID
-  if (on_island && island_or_region == "region") on_island <- FALSE
   
   raw_data_order <- pe_variable_order[[df]]
   data_order <- raw_data_order[raw_data_order$group == island_or_region, ]
@@ -169,10 +166,8 @@ place_explorer_block_text <- function(df, theme, select_id,
   
 }
 
-place_explorer_block_plot <- function(df, theme, select_id, island_or_region) {
-  
-  on_island <- if (island_or_region == "region") FALSE else 
-    data$CSDUID[data$ID == select_id] %in% island_CSDUID
+place_explorer_block_plot <- function(data, df, theme, select_id, 
+                                      island_or_region) {
   
   raw_data_order <- pe_variable_order[[df]]
   data_order <- raw_data_order[raw_data_order$group == island_or_region, ]
