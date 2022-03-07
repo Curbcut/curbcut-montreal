@@ -56,10 +56,6 @@ place_explorer_UI <- function(id) {
                                  style = "margin-top: var(--padding-v-md);"),
                      '</div>
                      </div>'))),
-       # textInput(inputId = NS(id, "adress_searched"), label = NULL,
-       #           placeholder = "H3A 2T5"),
-       # actionButton(inputId = NS(id, "search_button"), 
-       #              label = "Search", style = "margin-top: var(--padding-v-md);"))),
       
       hidden(div(id = NS(id, "sidebar_widgets"), susSidebarWidgets(
         
@@ -121,6 +117,9 @@ place_explorer_UI <- function(id) {
 place_explorer_server <- function(id) {
   moduleServer(id, function(input, output, session) {
     
+    # When place_explorer is launched, calculate the basemap
+    basemap <- st_union(borough) |> as_tibble() |> st_as_sf()
+    
     # Reactive values initialization
     location <- reactiveVal()
     location_name <- reactiveVal()
@@ -136,13 +135,34 @@ place_explorer_server <- function(id) {
       token = map_token, 
       zoom = map_zoom, 
       location = map_location) |> 
-        # There must to be a base layer to enable lat-lon retrieval on click
-        add_polygon(data = borough, 
+        add_polygon(data = basemap, 
                     fill_colour = NULL, 
-                    stroke_opacity = 1,
+                    stroke_colour = "#AAB6CF",
+                    stroke_width = 100,
                     fill_opacity = 1,
                     update_view = FALSE))
     
+    place_explorer_zoom <- reactive({
+    case_when(input$map_view_change$zoom <= 10 ~ 300,
+              input$map_view_change$zoom >= 13 ~ 15,
+              TRUE ~ abs(input$map_view_change$zoom * -15 + 220))})
+    
+    observeEvent(place_explorer_zoom(), {
+      if (input$map_view_change$zoom < 8) {
+        mapdeck_update(map_id = NS(id, "map")) |>
+          add_polygon(data = basemap,
+                      fill_colour = "#AAB6CF",
+                      update_view = FALSE)
+      } else {
+        mapdeck_update(map_id = NS(id, "map")) |>
+          add_polygon(data = basemap,
+                      fill_colour = NULL,
+                      stroke_colour = "#AAB6CF",
+                      stroke_width = place_explorer_zoom(),
+                      fill_opacity = 1,
+                      update_view = FALSE)
+      }
+    }, ignoreInit = TRUE)
     
     ## RETRIEVE LOCATION ------------------------------------------------
     # Get point data from a search

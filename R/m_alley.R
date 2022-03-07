@@ -163,6 +163,7 @@ alley_server <- function(id) {
       select_id()
       df()
       zoom()
+      focus_alley_zoom()
       }, {
       if (!choropleth()) {
         if (focus_visited()) {

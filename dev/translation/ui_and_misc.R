@@ -57,7 +57,10 @@ ui_and_misc_translated <-
     c("About" = "À propos"),
     c("Terms & Conditions" = "Termes et conditions"),
     c("Privacy Policy" = "Politique de confidentialité"),
-    c("Contact" = "Contactez-nous"))
+    c("Contact" = "Contactez-nous"),
+    c("Bookmark" = "Signet"),
+    c("Data explanation and export" = "Explication et export des données"),
+    c("Generate a report" = "Générez un rapport"))
 
 ui_and_misc_translated <- 
   tibble(en = names(ui_and_misc_translated),

@@ -3,7 +3,7 @@
 # Design functions --------------------------------------------------------
 
 susSidebarWidgets <- function(...) {
-  return(div(class="sus-sidebar-widgets",...))
+  return(div(class = "sus-sidebar-widgets",...))
 }
 
 nowrap <- function(...) {
@@ -205,7 +205,7 @@ styler <- '
     box-shadow: 0 50px 50px rgba(0,0,0,.6);
     margin-left: 300px;
   }
-  
+
   #sus_page > li:first-child { 
     display:none;
   }

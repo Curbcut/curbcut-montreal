@@ -106,14 +106,17 @@ ui <- function(request) {
                                 class = "action-button shiny-bound-input",
                                 role = "menuitem",
                                 href = "#",
-                                icon("link"), "Bookmark", 
+                                icon("link"), #sus_translate()
+                                "Bookmark", 
                                 onclick = "copyUrl()"),
                               actionLink(inputId = "download_data", 
-                                         label = "Data explanation and export", 
+                                         label = #sus_translate()
+                                           "Data explanation and export", 
                                          icon("download")),
                               downloadLink("create_report", 
                                            label = div(icon("file-pdf"), 
-                                                       "Generate a report"))
+                                                       # sus_translate()
+                                                         "Generate a report"))
                                                # actionLink(inputId = "contact", label = "Contact/feedback", icon("comment"))
              ), "summarize")
            )

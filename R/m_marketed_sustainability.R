@@ -111,7 +111,8 @@ marketed_sustainability_server <- function(id) {
     # Update select_id on click
     observeEvent(input$map_scatterplot_click, {
       lst <- fromJSON(input$map_scatterplot_click)$index
-      if (is.null(lst)) selection(NA) else {
+      print(lst)
+      if (lst == 0) selection(NA) else {
         # This is a hack because of a mapdeck bug
         selection(marketed_sustainability[lst + 1,]$ID)
       }
@@ -133,7 +134,7 @@ marketed_sustainability_server <- function(id) {
             stroke_colour = "#000000",
             auto_highlight = TRUE,
             highlight_colour = "#FFFFFF90",
-            radius = 250,
+            radius = 100,
             radius_min_pixels = 25)
       } else {
         mapdeck_update(map_id = NS(id, "map")) |>
