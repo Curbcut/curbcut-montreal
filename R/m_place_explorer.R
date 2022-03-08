@@ -7,8 +7,8 @@ place_explorer_UI <- function(id) {
     
     # Style
     inlineCSS("#deckgl-overlay { z-index:4; }"),
-    inlineCSS(list(.big_map = "width: 100%; height: 100vh;")),
-    inlineCSS(list(.banner_map = "width: 100%; height: 125px;")),
+    inlineCSS(list(.big_map = "width: 100%; height: 100vh; display:visible;")),
+    inlineCSS(list(.banner_map = "display:none;")),#"width: 100%; height: 125px;")),
     # Temporary fix to clicking the enter key is as clicking on Search button
     tags$script('$(function() {
       var $els = $("[data-proxy-click]");
@@ -94,8 +94,8 @@ place_explorer_UI <- function(id) {
     # Main panel as a uiOutput. The number of themes displayed is reactive
     fluidPage(
       hidden(div(id = NS(id, "grid_elements"), 
-                 style = paste0("margin-top:150px; overflow-x: hidden; ",
-                                "overflow-y: auto;  height: calc(100vh - 235px);",
+                 style = paste0("margin-top:25px; overflow-x: hidden; ",
+                                "overflow-y: auto;  height: calc(100vh - 105px);",
                                 "margin-left:310px; background-color:#ffffff;",
                                 "padding:25px;"),
                  fluidRow(
@@ -189,6 +189,33 @@ place_explorer_server <- function(id) {
     # Get point data from a click
     observeEvent(input$map_polygon_click, {
       lst <- fromJSON(input$map_polygon_click)
+      
+      location(st_point(c(lst$lon, lst$lat)) |> 
+                 st_sfc(crs = 4326) |> 
+                 as_tibble() |> 
+                 st_as_sf() |> 
+                 st_set_agr("constant"))
+      
+      name <- tmaptools::rev_geocode_OSM(location())[[1]]
+      
+      town_city_county <- 
+        if (!is.null(name$town)) {
+          name$town
+        } else if (!is.null(name$city)) {
+          name$city
+        } else if (!is.null(name$county)) {
+          name$county
+        }
+      
+      location_name(paste0(
+        name$house_number, " ",
+        name$road, ", ",
+        # One or the other:
+        town_city_county))
+    })
+    
+    observeEvent(input$title_card_map_polygon_click, {
+      lst <- fromJSON(input$title_card_map_polygon_click)
       
       location(st_point(c(lst$lon, lst$lat)) |> 
                  st_sfc(crs = 4326) |> 
@@ -320,7 +347,14 @@ place_explorer_server <- function(id) {
         style = map_style, 
         token = map_token, 
         zoom = map_zoom, 
-        location = map_location)
+        location = map_location) |> 
+        add_polygon(data = borough |> mutate(tooltip = sus_translate("Click to select a new location")), 
+                    tooltip = "tooltip",
+                    fill_colour = NULL, 
+                    stroke_opacity = 1,
+                    fill_opacity = 1,
+                    update_view = FALSE,
+                    layer_id = "basemap")
     })
     
     observeEvent({df()
@@ -419,10 +453,31 @@ place_explorer_server <- function(id) {
         
         themes <-
           pe_theme_order[[df()]] |>
-          filter(ID == select_id(), theme %in% input$themes_checkbox) |>
+          filter(ID == select_id()) |>
           filter(group == !!island_comparison()) |> 
-          arrange(theme_order) |>
+          arrange(theme_order) 
+        
+        standout <- 
+          themes |>
+          pull(standout)
+        
+        themes <- 
+          themes |>
           pull(theme)
+        
+        standout_definition <- 
+          c("Extreme outlier" = 
+              paste0("`Extreme outlier` means that the variables comprising ",
+                     "the theme, on average, \nrank  in the top or bottom 10% ",
+                     "relative to the {island_comparison()}."),
+            "Outlier" = 
+              paste0("`Outlier` means that the variables comprising the theme, ",
+                     "on average, \nrank in the top or bottom 20% relative to ",
+                     "the {island_comparison()}."),
+            "Typical" = 
+              paste0("`Typical` means that the variables comprising the theme, ",
+                     "on average, \nrank between the top or bottom 20% relative ",
+                     "to the {island_comparison()}."))
         
         # The "server" of every block
         iwalk(themes, function(theme, ite) {
@@ -448,8 +503,8 @@ place_explorer_server <- function(id) {
               map(1:(nrow(to_grid)), ~{
                 output[[paste0("ind_", theme, .x, "_row_title")]] <- renderText({
                   
-                  paste(to_grid[.x, ][["var_title"]],
-                        icon("question", 
+                  paste(p(style = "    font-size: 11px;", to_grid[.x, ][["var_title"]],
+                        icon("question"), 
                              title = str_to_sentence(to_grid[.x, ][["explanation"]])))
                 })
                 output[[paste0("ind_", theme,  .x, "_percentile")]] <- renderText({
@@ -464,8 +519,19 @@ place_explorer_server <- function(id) {
               })
               
               if (nrow(to_grid) > 0) {
-              tagList(h3(sus_translate(theme)),
-                      map(1:(nrow(to_grid)), ~{
+                translated_theme <- sus_translate(theme)
+                translated_standout <- sus_translate(standout[[ite]])
+                translated_standout_definition <- 
+                  sus_translate(standout_definition[[which(names(standout_definition) == standout[[ite]])]])
+                
+                nb_values_to_show <- min(nrow(to_grid), 5)
+                
+              tagList(div(div(style = "float:left;", 
+                                   h3(style = "margin-top:0px;", translated_theme)),
+                               div(style = "float:right;", 
+                                   h4(style = "margin-top:0px", translated_standout,
+                                      title = translated_standout_definition))),
+                      map(1:nb_values_to_show, ~{
                         tagList(
                           fluidRow(
                             column(width = 4, 
@@ -497,14 +563,45 @@ place_explorer_server <- function(id) {
           })
         })
         
-        map(themes, ~{
-          tagList(uiOutput(
-            outputId = eval(parse(text = paste0("NS(id, 'theme_", .x, "_block')"))),
+        which_standout <- which(standout %in% c("Extreme outlier", "Outlier"))
+        
+        imap(themes, function(theme, ite) {
+          tagList(
+            if (ite == 1) {
+              tagList(h2(sus_translate("Explore where the {df()} stands out")))
+            } else if (ite - 1 == which_standout[length(which_standout)]) {
+              tagList(h2(sus_translate("Explore other themes")))
+            },
+            uiOutput(
+            outputId = eval(parse(text = paste0("NS(id, 'theme_", theme, "_block')"))),
             style = paste0("padding: 20px; margin: 10px; font-size: 11px;",
                            "display: inline-grid; width: 48%;"), 
             class = "panel panel-default "))
         })
       }
     })
+    
+    observeEvent(input$themes_checkbox, {
+      if (!is.null(df()) && !is.null(select_id()) && !is.null(location())) {
+        themes <-
+          pe_theme_order[[df()]] |>
+          filter(ID == select_id()) |>
+          filter(group == !!island_comparison()) |> 
+          arrange(theme_order) |> 
+          pull(theme)
+        
+        to_hide <- themes[!themes %in% input$themes_checkbox]
+        to_show <- themes[themes %in% input$themes_checkbox]
+        
+        map(to_hide, ~{
+          hide(paste0("theme_", .x, "_block"))
+        })
+        
+        map(to_show, ~{
+          show(paste0("theme_", .x, "_block"))
+        })
+      }
+    })
+    
   })
 }

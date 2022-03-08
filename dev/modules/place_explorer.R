@@ -548,11 +548,14 @@ pe_theme_order <-
       left_join(select(place_ex_variables, var_code, theme), 
                 by = c("var_code")) |> 
       group_by(ID, theme, group) |> 
-      summarize(theme_order = mean(max_or_min), .groups = "drop") |> 
+      summarize(standout_score = mean(max_or_min), .groups = "drop") |> 
       group_by(ID, group) |> 
-      arrange(-theme_order) |> 
+      arrange(-standout_score) |> 
       mutate(theme_order = row_number()) |> 
-      ungroup()
+      ungroup() |> 
+      mutate(standout = case_when(standout_score > 0.4 ~ "Extreme outlier",
+                                  standout_score > 0.3 ~ "Outlier",
+                                  TRUE ~ "Typical"))
   })
 
 pe_variable_order <- 

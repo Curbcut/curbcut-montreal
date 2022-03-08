@@ -45,7 +45,15 @@ stories_server <- function(id) {
       style = map_style, 
       token = map_token, 
       zoom = map_zoom, 
-      location = map_location)})
+      location = map_location) |> 
+        # Initiate a basemap so that a click outside the popup 
+        # have the power to deselect it.
+        add_polygon(data = borough, 
+                    fill_colour = NULL, 
+                    stroke_opacity = 1,
+                    fill_opacity = 1,
+                    update_view = FALSE,
+                    layer_id = "basemap")})
     
     # Zoom level
     observeEvent(input$map_view_change$zoom, {
@@ -92,9 +100,11 @@ stories_server <- function(id) {
       click <- fromJSON(input$map_polygon_click)$object$properties$id
       if (is.null(click)) {
         select_id(NA)
+        hide(id = "stories")
       } else if (!is.na(select_id()) && 
                  click == select_id()) {
         select_id(NA)
+        hide(id = "stories")
       } else select_id(click)
     })
     
