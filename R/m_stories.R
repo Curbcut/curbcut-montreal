@@ -156,12 +156,12 @@ stories_server <- function(id) {
     
     # Update click_id() on bookmark
     observeEvent(sus_bookmark$active, {
-      # Delay of 500 milliseconds more than the zoom update from bookmark.
+      # Delay of 2000 milliseconds more than the zoom update from bookmark.
       # The map/df/data needs to be updated before we select an ID.
       if (isTRUE(sus_bookmark$active)) {
         delay(2000, {
           if (!is.null(sus_bookmark$select_id)) {
-            if (sus_bookmark$select_id != "NA") select_id(sus_bookmark$select_id)
+            if (sus_bookmark$select_id != "NA") click_id(sus_bookmark$select_id)
           }
         })
       }
@@ -170,12 +170,12 @@ stories_server <- function(id) {
       delay(1500, {sus_bookmark$active <- FALSE})      
     }, priority = -2)
     
-    # Update click_id() on modulke link
+    # Update click_id() on module link
     observeEvent(sus_link$activity, {
-      # Delay of 500 milliseconds more than the zoom update from bookmark.
+      # Delay of 2000 milliseconds more than the zoom update from bookmark.
       # The map/df/data needs to be updated before we select an ID.
       delay(2000, {
-        if (!is.null(sus_link$select_id)) select_id(sus_link$select_id)
+        if (!is.null(sus_link$select_id)) click_id(sus_link$select_id)
       })
     }, priority = -2)
     

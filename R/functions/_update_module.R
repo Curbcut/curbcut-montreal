@@ -44,6 +44,8 @@ update_module <- function(mod_ns = NULL, id = mod_ns, session, zoom, location,
     }
   }
   
+  id <- str_extract(id, ".*(?=-)")
+  
   # Update var_left
   if (!is.null(id)) {
     if (id %in% c("canale", "marketed_sustainability")) {

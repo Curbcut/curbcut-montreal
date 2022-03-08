@@ -112,7 +112,9 @@ title_card_index <- tibble(name = as.character(),
                            percent = as.logical(),
                            high_is_good = as.logical(),
                            val_digits = 0,
-                           text = as.character())
+                           text = as.character(),
+                           link_module = as.character(),
+                           link_var_left = as.character())
 
 ## Driving mode share - census --------------------------------------------
 title_card_indicators <- 
@@ -278,7 +280,9 @@ title_card_index <-
           val_digits = 0,
           text = paste0("There were {z$pretty_data_var} total crashes ",
                         "per 1,000 residents in {z$data_date}. ", 
-                        "{z$data_rank}."))
+                        "{z$data_rank}."),
+          link_module = "crash",
+          link_var_left = "crash_total_per1k")
 
 ## Air quality - PM2.5 - CANUE --------------------------------------------
 
@@ -348,7 +352,9 @@ title_card_index <-
           val_digits = 0,
           text = paste0("{z$pretty_data_var} of occupied dwellings are ",
                         "single-detached houses. {z$data_rank}. ",
-                        "(Data from {z$data_date})"))
+                        "(Data from {z$data_date})"),
+          link_module = "housing",
+          link_var_left = "housing_single_detached_pct")
 
 ## Amount of greenspace in spatial unit - Mtl data portal -----------------
 
@@ -390,7 +396,9 @@ title_card_index <-
           val_digits = 0,
           text = paste0("{z$data_rank} in terms of green space. (NDVI ", 
                         "= {z$pretty_data_var}, data from ", 
-                        "{z$data_date})"))
+                        "{z$data_date})"),
+          link_module = "green_space",
+          link_var_left = "green_space_total_sqkm")
 
 ## Active Living potential - CanALE ---------------------------------------
 title_card_indicators <-
@@ -414,7 +422,9 @@ title_card_index <-
           high_is_good = TRUE, 
           val_digits = 0,
           text = paste0("{z$data_rank} in terms of active living. ",
-                        "(Data from {z$data_date})"))
+                        "(Data from {z$data_date})"),
+          link_module = "canale",
+          link_var_left = NULL)
 
 
 

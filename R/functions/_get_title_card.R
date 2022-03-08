@@ -29,6 +29,7 @@ get_title_card <- function(df, select_id, island_or_region) {
   to_grid <- pmap(indicators_table, ~{
     z <- prep_title_card(df, select_id, ind =  ..1,
                     percent = ..5, high_is_good = ..6, val_digits = ..7,
+                    link_module = ..9, link_var_left = ..10,
                     island = on_island, geo_area = geo_area,
                     geo_areas = geo_areas)
     
@@ -41,8 +42,13 @@ get_title_card <- function(df, select_id, island_or_region) {
          percentile = z$percentile,
          graph = z$plot,
          text = if (is.na(z$pretty_data_var)) 
-           sus_translate("No data.") else sus_translate(..8))
+           sus_translate("No data.") else sus_translate(..8),
+         link = z$link,
+         link_module = z$link_module,
+         link_var_left = z$link_var_left)
   })
+  
+  names(to_grid) <- indicators_table$name
   
   to_grid[sapply(to_grid, is.null)] <- NULL
   

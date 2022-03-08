@@ -348,7 +348,8 @@ place_explorer_server <- function(id) {
         token = map_token, 
         zoom = map_zoom, 
         location = map_location) |> 
-        add_polygon(data = borough |> mutate(tooltip = sus_translate("Click to select a new location")), 
+        add_polygon(data = borough |> 
+                      mutate(tooltip = sus_translate("Click to select a new location")), 
                     tooltip = "tooltip",
                     fill_colour = NULL, 
                     stroke_opacity = 1,
@@ -394,28 +395,29 @@ place_explorer_server <- function(id) {
       output$list <- renderUI({
         if (!is.null(df()) && !is.null(select_id()) && !is.null(location())) {
           
-          to_grid <- get_title_card(
+          title_card_to_grid <<- get_title_card(
             df(), select_id(),
             island_or_region = island_comparison())
           
-          map(seq_along(to_grid), ~{
+          map(seq_along(title_card_to_grid), ~{
             output[[paste0("ind_", .x, "_row_title")]] <- renderText({
-              to_grid[[.x]][["row_title"]] |>
+              title_card_to_grid[[.x]][["row_title"]] |>
                 str_to_upper()
             })
             output[[paste0("ind_", .x, "_percentile")]] <- renderText({
-              to_grid[[.x]][["percentile"]] |>
+              title_card_to_grid[[.x]][["percentile"]] |>
                 str_to_upper()
             })
             output[[paste0("ind_", .x, "_plot")]] <- renderPlot({
-              to_grid[[.x]][["graph"]]
+              title_card_to_grid[[.x]][["graph"]]
             })
             output[[paste0("ind_", .x, "_text")]] <- renderText({
-              to_grid[[.x]][["text"]]
+              paste0(title_card_to_grid[[.x]][["text"]], 
+                     title_card_to_grid[[.x]][["link"]])
             })
           })
           
-          map(seq_along(to_grid), ~{
+          map(seq_along(title_card_to_grid), ~{
             tagList(
               fluidRow(
                 column(width = 2,
@@ -568,9 +570,11 @@ place_explorer_server <- function(id) {
         imap(themes, function(theme, ite) {
           tagList(
             if (ite == 1) {
-              tagList(h2(sus_translate("Explore where the {df()} stands out")))
+              tagList(h2(style = "padding: 10px;",
+                         sus_translate("Explore where the {df()} stands out")))
             } else if (ite - 1 == which_standout[length(which_standout)]) {
-              tagList(h2(sus_translate("Explore other themes")))
+              tagList(h2(style = "padding: 10px;",
+                         sus_translate("Explore other themes")))
             },
             uiOutput(
             outputId = eval(parse(text = paste0("NS(id, 'theme_", theme, "_block')"))),
@@ -601,6 +605,38 @@ place_explorer_server <- function(id) {
           show(paste0("theme_", .x, "_block"))
         })
       }
+    })
+    
+    observeEvent(input$title_card_total_crash_per1k, {
+      z <- title_card_to_grid[["total_crash_per1k"]]
+      module_link(module = z$link_module,
+                  select_id = select_id(),
+                  var_left = z$link_var_left,
+                  df = df())
+      })
+    
+    observeEvent(input$title_card_single_detached, {
+      z <- title_card_to_grid[["single_detached"]]
+      module_link(module = z$link_module,
+                  select_id = select_id(),
+                  var_left = z$link_var_left,
+                  df = df())
+    })
+    
+    observeEvent(input$title_card_green_space_ndvi, {
+      z <- title_card_to_grid[["green_space_ndvi"]]
+      module_link(module = z$link_module,
+                  select_id = select_id(),
+                  var_left = z$link_var_left,
+                  df = df())
+    })
+    
+    observeEvent(input$title_card_canale_index, {
+      z <- title_card_to_grid[["canale_index"]]
+      module_link(module = z$link_module,
+                  select_id = select_id(),
+                  var_left = z$link_var_left,
+                  df = df())
     })
     
   })

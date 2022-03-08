@@ -3,7 +3,8 @@
 module_link <- function(module, zoom = NULL, location = map_location, 
                         select_id = NULL, var_left = NULL,
                         var_right = NULL, df = NULL, 
-                        zoom_auto = NULL, more_args = NULL) {
+                        zoom_auto = NULL, more_args = NULL, 
+                        update_view = TRUE) {
   
   sus_link$mod_ns <- paste(module, module, sep = "-")
   
@@ -12,11 +13,26 @@ module_link <- function(module, zoom = NULL, location = map_location,
   # Tweak map namespace
   sus_link$map_id <- paste(module, "map", sep = "-")
   
+  # Update view
+  sus_link$zoom <- NULL
+  sus_link$location <- NULL
+  
+  if (update_view) {
+    if (!is.null(df) && !is.null(select_id)) {
+      sus_link$zoom <- 
+        if (df == "borough") map_zoom else map_zoom_levels[[df]] + 0.75
+      
+      data <- st_set_agr(get(df), "constant")
+      sus_link$location <- 
+        data[data$ID == select_id, ] |> 
+        st_centroid() |> 
+        st_coordinates()
+    }
+  }
+  
   # Other values 
   sus_link$activity <- 
     if (is.null(sus_link$activity)) 0 else sus_link$activity + 1
-  sus_link$zoom <- zoom
-  sus_link$location <- location
   sus_link$var_left <- var_left
   sus_link$var_right <- var_right
   sus_link$df <- df

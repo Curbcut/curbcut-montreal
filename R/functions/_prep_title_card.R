@@ -1,7 +1,9 @@
 #### PREPARE TITLE CARD ROW ####################################################
 
 prep_title_card <- function(df, select_id, ind, percent = TRUE,
-                            high_is_good = TRUE, val_digits = 0, island = TRUE, 
+                            high_is_good = TRUE, val_digits = 0, 
+                            link_module = NULL, link_var_left = NULL,
+                            island = TRUE, 
                             geo_area = geo_area, geo_areas = geo_areas) {
   
   # TKTK This needs to be moved to the colours dev script
@@ -56,6 +58,20 @@ prep_title_card <- function(df, select_id, ind, percent = TRUE,
                       " of ", geo_areas, if (island) " on the island" else " in the region")
       }
   }
+  
+  # MODULE LINK
+    if (!is.na(link_module) && !is.null(link_module)) {
+      info$link <- paste0(" <a id='", "place_explorer",
+             "-title_card_", ind, "' href='#' ",
+             "class='action-button shiny-bound-input'>", 
+             sus_translate("[SEE MORE]"), "</a>")
+      info$link_module <- link_module
+      info$link_var_left <- link_var_left
+    } else {
+      info$link <- NULL
+      info$link_module <- NULL
+      info$link_var_left <- NULL
+    }
   
   #### PLOT AND PERCENTILE (FOR COLOR)
   colors_which <- 
