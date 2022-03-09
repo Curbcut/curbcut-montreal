@@ -33,7 +33,7 @@ place_explorer_UI <- function(id) {
       id = NS(id, "mapdeck_div"), 
       class = "big_map", 
       mapdeckOutput(NS(id, "map"), height = "100%")),
-      
+    
     # Sidebar
     sidebar_UI(
       NS(id, "place_explorer"),
@@ -47,14 +47,14 @@ place_explorer_UI <- function(id) {
         HTML(paste0('
                    <div class="shiny-split-layout">
                      <div style="width: 60%;">',
-                     textInput(inputId = NS(id, "adress_searched"), label = NULL,
-                               placeholder = "H3A 2T5"),
-                     '</div>
+                    textInput(inputId = NS(id, "adress_searched"), label = NULL,
+                              placeholder = "H3A 2T5"),
+                    '</div>
                      <div style="width: 40%;">',
                     actionButton(inputId = NS(id, "search_button"), 
                                  label = "Search", 
                                  style = "margin-top: var(--padding-v-md);"),
-                     '</div>
+                    '</div>
                      </div>'))),
       
       hidden(div(id = NS(id, "sidebar_widgets"), susSidebarWidgets(
@@ -89,7 +89,7 @@ place_explorer_UI <- function(id) {
         htmlOutput(outputId = NS(id, "actual_comparison_scale"), 
                    style = "display:none;")
         
-        )))),
+      )))),
     
     # Main panel as a uiOutput. The number of themes displayed is reactive
     fluidPage(
@@ -108,7 +108,7 @@ place_explorer_UI <- function(id) {
                    column(3, mapdeckOutput(NS(id, "title_card_map")))),
                  
                  fluidRow(uiOutput(NS(id, "themes_grid")))))),
-    )))
+  )))
 }
 
 
@@ -143,9 +143,9 @@ place_explorer_server <- function(id) {
                     update_view = FALSE))
     
     place_explorer_zoom <- reactive({
-    case_when(input$map_view_change$zoom <= 10 ~ 300,
-              input$map_view_change$zoom >= 13 ~ 15,
-              TRUE ~ abs(input$map_view_change$zoom * -15 + 220))})
+      case_when(input$map_view_change$zoom <= 10 ~ 300,
+                input$map_view_change$zoom >= 13 ~ 15,
+                TRUE ~ abs(input$map_view_change$zoom * -15 + 220))})
     
     observeEvent(place_explorer_zoom(), {
       if (input$map_view_change$zoom < 8) {
@@ -502,65 +502,65 @@ place_explorer_server <- function(id) {
               )
               
               if (nrow(to_grid) > 0)
-              map(1:(nrow(to_grid)), ~{
-                output[[paste0("ind_", theme, .x, "_row_title")]] <- renderText({
-                  
-                  paste(p(style = "    font-size: 11px;", to_grid[.x, ][["var_title"]],
-                        icon("question"), 
-                             title = str_to_sentence(to_grid[.x, ][["explanation"]])))
+                map(1:(nrow(to_grid)), ~{
+                  output[[paste0("ind_", theme, .x, "_row_title")]] <- renderText({
+                    
+                    paste(p(style = "    font-size: 11px;", to_grid[.x, ][["var_title"]],
+                            icon("question"), 
+                            title = str_to_sentence(to_grid[.x, ][["explanation"]])))
+                  })
+                  output[[paste0("ind_", theme,  .x, "_percentile")]] <- renderText({
+                    to_grid[.x, ][["percentile"]]
+                  })
+                  output[[paste0("ind_", theme, .x, "_value")]] <- renderText({
+                    to_grid[.x, ][["value"]]
+                  })
+                  output[[paste0("ind_", theme, .x, "_plot")]] <- renderPlot({
+                    plots[[.x]]
+                  })
                 })
-                output[[paste0("ind_", theme,  .x, "_percentile")]] <- renderText({
-                  to_grid[.x, ][["percentile"]]
-                })
-                output[[paste0("ind_", theme, .x, "_value")]] <- renderText({
-                  to_grid[.x, ][["value"]]
-                })
-                output[[paste0("ind_", theme, .x, "_plot")]] <- renderPlot({
-                  plots[[.x]]
-                })
-              })
               
               if (nrow(to_grid) > 0) {
-                translated_theme <- sus_translate(theme)
-                translated_standout <- sus_translate(standout[[ite]])
+                translated_theme <- str_to_upper(sus_translate(theme))
+                translated_standout <- str_to_lower(sus_translate(standout[[ite]]))
                 translated_standout_definition <- 
                   sus_translate(standout_definition[[which(names(standout_definition) == standout[[ite]])]])
                 
                 nb_values_to_show <- min(nrow(to_grid), 5)
                 
-              tagList(div(div(style = "float:left;", 
-                                   h3(style = "margin-top:0px;", translated_theme)),
-                               div(style = "float:right;", 
-                                   h4(style = "margin-top:0px", translated_standout,
-                                      title = translated_standout_definition))),
-                      map(1:nb_values_to_show, ~{
-                        tagList(
-                          fluidRow(
-                            column(width = 4, 
-                                   if (.x == 1) h5(sus_translate("Variable")),
-                                   htmlOutput(eval(parse(
-                                     text = paste0("NS(id, 'ind_", theme, .x, "_row_title')"))))),
-                            column(width = 2,
-                                   if (.x == 1) h5(sus_translate("Rank")),
-                                   htmlOutput(eval(parse(
-                                     text = paste0("NS(id, 'ind_", theme, .x, "_percentile')"))))),
-                            column(width = 2,
-                                   if (.x == 1) h5(sus_translate("Value")),
-                                   htmlOutput(eval(parse(
-                                     text = paste0("NS(id, 'ind_", theme, .x, "_value')"))))),
-                            column(width = 3,
-                                   if (.x == 1) h5(sus_translate("Plot")),
-                                   plotOutput(eval(parse(
-                                     text = paste0("NS(id, 'ind_", theme, .x, "_plot')"))),
-                                     height = 25))
-                          ),
-                          br()
-                        )
-                      })
-              )} else {
-                tagList(fluidRow(h3(sus_translate(theme))), 
-                        fluidRow("No data."))
-              }
+                block_title <- paste0(translated_theme, " (", translated_standout, ")")
+                
+                tagList(h3(style = "text-transform:inherit;",
+                           block_title,
+                           title = translated_standout_definition),
+                        map(1:nb_values_to_show, ~{
+                          tagList(
+                            fluidRow(
+                              column(width = 4, 
+                                     if (.x == 1) h5(sus_translate("Variable")),
+                                     htmlOutput(eval(parse(
+                                       text = paste0("NS(id, 'ind_", theme, .x, "_row_title')"))))),
+                              column(width = 2,
+                                     if (.x == 1) h5(sus_translate("Rank")),
+                                     htmlOutput(eval(parse(
+                                       text = paste0("NS(id, 'ind_", theme, .x, "_percentile')"))))),
+                              column(width = 2,
+                                     if (.x == 1) h5(sus_translate("Value")),
+                                     htmlOutput(eval(parse(
+                                       text = paste0("NS(id, 'ind_", theme, .x, "_value')"))))),
+                              column(width = 3,
+                                     if (.x == 1) h5(sus_translate("Plot")),
+                                     plotOutput(eval(parse(
+                                       text = paste0("NS(id, 'ind_", theme, .x, "_plot')"))),
+                                       height = 25))
+                            ),
+                            br()
+                          )
+                        })
+                )} else {
+                  tagList(fluidRow(h3(sus_translate(theme))), 
+                          fluidRow("No data."))
+                }
             })
           })
         })
@@ -577,10 +577,10 @@ place_explorer_server <- function(id) {
                          sus_translate("Explore other themes")))
             },
             uiOutput(
-            outputId = eval(parse(text = paste0("NS(id, 'theme_", theme, "_block')"))),
-            style = paste0("padding: 20px; margin: 10px; font-size: 11px;",
-                           "display: inline-grid; width: 48%;"), 
-            class = "panel panel-default "))
+              outputId = eval(parse(text = paste0("NS(id, 'theme_", theme, "_block')"))),
+              style = paste0("padding: 20px; margin: 10px; font-size: 11px;",
+                             "display: inline-grid; width: 48%;"), 
+              class = "panel panel-default "))
         })
       }
     })
@@ -613,7 +613,7 @@ place_explorer_server <- function(id) {
                   select_id = select_id(),
                   var_left = z$link_var_left,
                   df = df())
-      })
+    })
     
     observeEvent(input$title_card_single_detached, {
       z <- title_card_to_grid[["single_detached"]]

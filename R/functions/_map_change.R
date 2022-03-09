@@ -35,7 +35,7 @@ map_change <- function(id, map_id, data, df, zoom = df, click = reactive(NULL),
   moduleServer(id, function(input, output, session) {
     
     # Get geometry type
-    sus_rv$map_geom_type <- reactive({
+    sus_rv[[paste0(id, '_map_geom_type')]] <- reactive({
       map_chr(as.character(unique(st_geometry_type(data()))), ~{
         switch(.x,  
                "POLYGON" = "polygon",
@@ -49,9 +49,9 @@ map_change <- function(id, map_id, data, df, zoom = df, click = reactive(NULL),
     })
     
     # Keep track of previous geometry type.
-    observeEvent(sus_rv$map_geom_type(), {
+    observeEvent(sus_rv[[paste0(id, '_map_geom_type')]](), {
       sus_rv$last_geom_type <- unique(c(sus_rv$current_geom_type, sus_rv$last_geom_type))
-      sus_rv$current_geom_type <- c(sus_rv$map_geom_type(), sus_rv$last_geom_type)
+      sus_rv$current_geom_type <- c(sus_rv[[paste0(id, '_map_geom_type')]](), sus_rv$last_geom_type)
       sus_rv$previous_geom_type <- sus_rv$last_geom_type[[1]]})
     
     # A switch between module might trigger a map purge (no that it is an issue).
@@ -66,10 +66,12 @@ map_change <- function(id, map_id, data, df, zoom = df, click = reactive(NULL),
       df()
       zoom()}, {
         
+        geom_data_type <- sus_rv[[paste0(id, '_map_geom_type')]]
+        
         # Used at all geometries:
         update_and_clean <- function() {
           if (!is.null(sus_rv$previous_geom_type) && 
-              sus_rv$previous_geom_type != sus_rv$map_geom_type()) {
+              sus_rv$previous_geom_type != geom_data_type()) {
             mapdeck_update(map_id = map_id) |>
               clear_heatmap() |>
               clear_polygon() |>
@@ -83,10 +85,10 @@ map_change <- function(id, map_id, data, df, zoom = df, click = reactive(NULL),
           mapdeck_update(map_id = map_id) |> clear_polygon(.x)})
         
         # Error handling
-        if (sus_rv$map_geom_type() == "error") stop("`sus_rv$map_geom_type` invalid in `map_change`.")
+        if (geom_data_type() == "error") stop("`geom_data_type` invalid in `map_change`.")
         
         # Map updates for polygons  
-        if (sus_rv$map_geom_type() == "polygon") {
+        if (geom_data_type() == "polygon") {
           
           # Take the minimum width implied by the zoom or the df
           # TKTK Should probably replace this with separate zoom curves for
@@ -144,7 +146,7 @@ map_change <- function(id, map_id, data, df, zoom = df, click = reactive(NULL),
           }
           
           # TKTK THIS HASN'T BE LOOKED AT YET
-        } else if (sus_rv$map_geom_type() == "line") {
+        } else if (geom_data_type() == "line") {
           
           update_and_clean() |>
             add_path(data = data(),
@@ -153,7 +155,7 @@ map_change <- function(id, map_id, data, df, zoom = df, click = reactive(NULL),
                      highlight_colour = "#FFFFFF90")
           
           # TKTK THIS HASN'T BE LOOKED AT YET
-        } else if (sus_rv$map_geom_type() == "point") {
+        } else if (geom_data_type() == "point") {
           
           if (df() == "heatmap") {
             update_and_clean() |>
@@ -231,7 +233,9 @@ map_change <- function(id, map_id, data, df, zoom = df, click = reactive(NULL),
       zoom()
       data()}, {
         
-        if (sus_rv$map_geom_type() == "polygon") {
+        geom_data_type <- sus_rv[[paste0(id, '_map_geom_type')]]
+        
+        if (geom_data_type() == "polygon") {
           
           if (is.na(selection())) {
             mapdeck_update(map_id = map_id) |>

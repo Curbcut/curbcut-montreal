@@ -64,7 +64,7 @@ prep_title_card <- function(df, select_id, ind, percent = TRUE,
       info$link <- paste0(" <a id='", "place_explorer",
              "-title_card_", ind, "' href='#' ",
              "class='action-button shiny-bound-input'>", 
-             sus_translate("[SEE MORE]"), "</a>")
+             sus_translate("[LEARN MORE]"), "</a>")
       info$link_module <- link_module
       info$link_var_left <- link_var_left
     } else {
