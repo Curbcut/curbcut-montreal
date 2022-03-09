@@ -41,8 +41,41 @@ covid_server <- function(id) {
     # Legend
     output$legend_render <- renderUI({
       output$legend <- renderPlot({
+        legend_hex <- c("#FF5733FF", "#5F940EFF", "#10A9A7FF", "#2D80CAFF", 
+                        "#75BB79FF", "#FF7C2DFF", "#6F2094FF", "#FFD733FF", 
+                        "#75A7BAFF")
+        
+        legend_names <- c("Active and safe lane circuit",
+                          "Expanded pedestrian corridor",
+                          "Projected corridor",
+                          "Framed queue",
+                          "Street partially closed",
+                          "Family and active street",
+                          "Closed street",
+                          "Local circulation",
+                          "Shared street")
+        
+        names(legend_hex) <- map_chr(legend_names, sus_translate)
+        
+        covid_legend_plot <- 
+          covid |> 
+          distinct(type, fill) |> 
+          mutate(x = 1:9,
+                 y = 1:9) |> 
+          rbind(covid |> 
+                  distinct(type, fill) |> 
+                  mutate(x = 1:9,
+                         y = 1:9)) |> 
+          ggplot() +
+          geom_line(aes(x,y, color = type), size = 2) +
+          scale_color_manual(name = NULL,
+                             values = legend_hex) +
+          theme_void() +
+          theme(legend.text = element_text(family = "SourceSansPro", size = 12))
+        
+        covid_legend <- cowplot::get_legend(covid_legend_plot)
         cowplot::plot_grid(covid_legend)})
-      plotOutput(NS(id, "legend"), height = 160, width = "100%")
+      plotOutput(NS(id, "legend"), height = 180, width = "100%")
     })
     
     renderPlot({cowplot::plot_grid(covid_legend)})
@@ -58,7 +91,11 @@ covid_server <- function(id) {
     var_left <- select_var_server(ns_id, var_list = reactive(var_list_covid))
     
     # Data 
-    data <- reactive(filter(covid, timeframe == var_left()))
+    data <- reactive({
+      out <- filter(covid, timeframe == var_left())
+      out$type <- map_chr(out$type, sus_translate)
+      out
+    })
     
     # Did-you-know panel
     dyk_server(ns_id, reactive(paste0("covid_", var_left(), "_2020")),

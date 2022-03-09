@@ -29,7 +29,7 @@ get_title_card <- function(df, select_id, island_or_region) {
   to_grid <- pmap(indicators_table, ~{
     z <- prep_title_card(df, select_id, ind =  ..1,
                     percent = ..5, high_is_good = ..6, val_digits = ..7,
-                    link_module = ..9, link_var_left = ..10,
+                    link_module = ..9, link_var_left = ..10, link_outside = ..11,
                     island = on_island, geo_area = geo_area,
                     geo_areas = geo_areas)
     

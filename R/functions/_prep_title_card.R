@@ -3,7 +3,7 @@
 prep_title_card <- function(df, select_id, ind, percent = TRUE,
                             high_is_good = TRUE, val_digits = 0, 
                             link_module = NULL, link_var_left = NULL,
-                            island = TRUE, 
+                            link_outside = NULL, island = TRUE, 
                             geo_area = geo_area, geo_areas = geo_areas) {
   
   # TKTK This needs to be moved to the colours dev script
@@ -67,6 +67,12 @@ prep_title_card <- function(df, select_id, ind, percent = TRUE,
              sus_translate("[LEARN MORE]"), "</a>")
       info$link_module <- link_module
       info$link_var_left <- link_var_left
+    } else if (!is.na(link_outside) && !is.null(link_outside)){
+      info$link <- paste0(" <a href='", link_outside, "' ",
+                          "target='_blank'>", 
+                          sus_translate("[LEARN MORE]"), "</a>")
+      info$link_module <- NULL
+      info$link_var_left <- NULL
     } else {
       info$link <- NULL
       info$link_module <- NULL

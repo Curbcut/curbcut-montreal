@@ -114,7 +114,8 @@ title_card_index <- tibble(name = as.character(),
                            val_digits = 0,
                            text = as.character(),
                            link_module = as.character(),
-                           link_var_left = as.character())
+                           link_var_left = as.character(),
+                           link_outside = as.character())
 
 ## Driving mode share - census --------------------------------------------
 title_card_indicators <- 
@@ -326,7 +327,8 @@ title_card_index <-
           val_digits = 1,
           text = paste0("{z$data_rank} in terms of level of NO2 ",
                         "pollution. {higher_than_threshold}(NO2 = ",
-                        "{z$pretty_data_var}, data from {z$data_date})"))
+                        "{z$pretty_data_var}, data from {z$data_date})"),
+          link_outside = "https://www.canuedata.ca/tmp/CANUE_METADATA_NO2LUR_A_YY.pdf")
 
 ## Percentage of Single Family Homes - Census -----------------------------
 
@@ -394,9 +396,12 @@ title_card_index <-
           percent = TRUE,
           high_is_good = TRUE, 
           val_digits = 0,
-          text = paste0("{z$data_rank} in terms of green space. (NDVI ", 
-                        "= {z$pretty_data_var}, data from ", 
-                        "{z$data_date})"),
+          text = paste0("{z$data_rank} in terms of green space. (",
+                        "<a href='", 
+                        "https://www.canuedata.ca/tmp/CANUE_METADATA_GRAVH_AMN_YY.pdf", 
+                        "' ","target='_blank'>", 
+                        "NDVI", "</a> = {z$pretty_data_var}, ",
+                        "data from {z$data_date})"),
           link_module = "green_space",
           link_var_left = "green_space_total_sqkm")
 

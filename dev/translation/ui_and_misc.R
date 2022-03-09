@@ -60,7 +60,20 @@ ui_and_misc_translated <-
     c("Contact" = "Contactez-nous"),
     c("Bookmark" = "Signet"),
     c("Data explanation and export" = "Explication et export des données"),
-    c("Generate a report" = "Générez un rapport"))
+    c("Generate a report" = "Générez un rapport"),
+    # Covid legend (mapdeck's tooltip doesn't deal with accents)
+    c("Active and safe lane circuit" = "Circuit des voies actives \net securitaires"),
+    c("Expanded pedestrian corridor" = "Corridor pieton elargi"),
+    c("Projected corridor" = "Corridor projete"),
+    c("Framed queue" = "File d'attente encadree"),
+    c("Street partially closed" = "Rue partiellement fermee"),
+    c("Family and active street" = "Rue familiale et active"),
+    c("Closed street" = "Rue fermee"),
+    c("Local circulation" = "Circulation locale"),
+    c("Shared street" = "Rue partagee"),
+    c("May 2020" = "Mai 2020"),
+    c("July 2020" = "Juillet 2020"),
+    c("October 2020" = "Octobre 2020"))
 
 ui_and_misc_translated <- 
   tibble(en = names(ui_and_misc_translated),

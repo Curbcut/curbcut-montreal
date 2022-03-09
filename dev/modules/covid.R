@@ -91,6 +91,16 @@ covid <-
     type == "Rue fermée" ~ "#6F2094FF",
     type == "Rue partiellement fermée" ~ "#75BB79FF",
     type == "Rue partagée" ~ "#75A7BAFF")) |> 
+  mutate(type = case_when(
+    type == "Circuit des voies actives et sécuritaires" ~ "Active and safe lane circuit",
+    type == "Circulation locale" ~ "Local circulation",
+    type == "Corridor piéton élargi" ~ "Expanded pedestrian corridor",
+    type == "Corridor projeté" ~ "Projected corridor",
+    type == "File d'attente encadrée" ~ "Framed queue",
+    type == "Rue familiale et active" ~ "Family and active street",
+    type == "Rue fermée" ~ "Closed street",
+    type == "Rue partiellement fermée" ~ "Street partially closed",
+    type == "Rue partagée" ~ "Shared street")) |> 
   relocate(photo_ID, fill, .before = geometry)
 
 

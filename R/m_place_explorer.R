@@ -638,6 +638,5 @@ place_explorer_server <- function(id) {
                   var_left = z$link_var_left,
                   df = df())
     })
-    
   })
 }
