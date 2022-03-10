@@ -164,6 +164,8 @@ shinyServer(function(input, output, session) {
       housing_server("housing")
     } else if (active_tab == "marketed_sustainability") {
       marketed_sustainability_server("marketed_sustainability")
+    } else if (active_tab == "natural_infrastructure") {
+      natural_infrastructure_server("natural_infrastructure")
     } else if (active_tab == "mcp") {
       mcp_server("mcp")
     } else if (active_tab == "permits") {

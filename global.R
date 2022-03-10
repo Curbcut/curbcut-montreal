@@ -51,6 +51,7 @@ qload("data/alleys.qsm")
 crash <- qread("data/crash.qs")
 tt_matrix <- qread("data/tt_matrix.qs")
 marketed_sustainability <- qread("data/marketed_sustainability.qs")
+natural_infrastructure <- qread("data/natural_infrastructure.qs")
 metro_lines <- qread("data/metro_lines.qs")
 stories <- qread("data/stories.qs")
 
@@ -101,7 +102,8 @@ mods_rdy <- list("Climate" = c("Climate risk" = "climate_risk"),
                                  "Road safety" = "crash"),
                  "Urban life" = c("Active living potential" = "canale", 
                                   "Green alleys" = "alley", 
-                                  "Green spaces" = "green_space"))
+                                  "Green spaces" = "green_space"),
+                 "Ecology" = c("Natural infrastructure" = "natural_infrastructure"))
 
 stand_alone_tabs <- c("Montréal stories" = "stories",
                       "Place explorer" = "place_explorer",

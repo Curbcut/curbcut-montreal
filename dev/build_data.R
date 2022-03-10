@@ -131,6 +131,7 @@ source("dev/modules/alley.R")
 source("dev/modules/gentrification.R")
 source("dev/modules/green_space.R")
 source("dev/modules/marketed_sustainability.R")
+source("dev/modules/natural_infrastructure.R")
 # source("dev/modules/permits.R")
 source("dev/modules/place_explorer.R")
 # source("dev/modules/dmti.R")
@@ -167,6 +168,7 @@ qsavem(alleys, alley_text, file = "data/alleys.qsm")
 qsavem(covid, covid_pics, file = "data/covid.qsm")
 qsave(green_space, file = "data/green_space.qs")
 qsave(marketed_sustainability, file = "data/marketed_sustainability.qs")
+qsave(natural_infrastructure, "data/natural_infrastructure.qs")
 qsave(metro_lines, file = "data/metro_lines.qs")
 # qsavem(permits_choropleth, permits, file = "data/permits.qsm")
 qsavem(title_card_indicators, pe_var_hierarchy, pe_theme_order, CSDUID_groups,
@@ -193,7 +195,7 @@ invisible(file.copy(list.files("data", full.names = TRUE),
 # Cleanup -----------------------------------------------------------------
 
 rm(add_q3, add_q5, add_variables, data_testing, find_breaks_q5, get_breaks_q3,
-   get_breaks_q5, meta_testing)
+   get_breaks_q5, meta_testing, natural_infrastructure)
 
 
 

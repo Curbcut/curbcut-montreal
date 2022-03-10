@@ -69,15 +69,13 @@ permits_server <- function(id) {
     click_id <- reactiveVal(NULL)
     
     # Load heavy data used by this module
-    if (any(!str_detect("permits_combination_count_1990", names(borough)))) {
       qload("data/permits.qsm")
       borough <<- bind_cols(borough, permits_choropleth$borough)
       CT <<- bind_cols(CT, permits_choropleth$CT)
       DA <<- bind_cols(DA, permits_choropleth$DA)
       grid <<- bind_cols(grid, permits_choropleth$grid)
       permits <<- permits
-    }
-    
+
     # Click reactive
     observeEvent(input$map_polygon_click, {
       click_id(get_click(input$map_polygon_click))})
