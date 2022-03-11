@@ -96,7 +96,6 @@ explore_graph(data, var_type, var_left, var_right, df, zoom, select_id)}
 # var_right <- "housing_tenant_pct_2016"
 var_left <- "housing_tenant_pct_2016"
 var_right <- "inc_median_dollar_2016"
-island <- FALSE
 data <- get_data(df, var_left, var_right)
 select_id <- NA
 var_type <- get_var_type(data, var_left, var_right, df, select_id)
