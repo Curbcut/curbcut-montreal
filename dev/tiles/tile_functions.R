@@ -41,6 +41,23 @@ create_tileset <- function(tileset, recipe, username, access_token) {
 }
 
 
+# Update tileset ----------------------------------------------------------
+
+# TKTK DOESN'T WORK
+update_tileset <- function(tileset, recipe, username, access_token) {
+  
+  PATCH(
+    url = paste0("https://api.mapbox.com/tilesets/v1/",
+                 username, ".", tileset, "/recipe"),
+    query = list(access_token = access_token),
+    body = recipe,
+    content_type("application/json")
+  )
+  
+}
+
+
+
 # Publish tileset ---------------------------------------------------------
 
 publish_tileset <- function(tileset, username, access_token) {
@@ -51,4 +68,19 @@ publish_tileset <- function(tileset, username, access_token) {
   )
 }
   
+
+
+# Create style ------------------------------------------------------------
+
+create_style <- function(style, username, access_token) {
+  
+  POST(
+    url = paste0("https://api.mapbox.com/styles/v1/", username),
+    query = list(access_token = access_token),
+    body = style,
+    content_type("application/json")
+  )
+  
+}
+
   
