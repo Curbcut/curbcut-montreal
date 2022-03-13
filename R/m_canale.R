@@ -16,7 +16,7 @@ canale_UI <- function(id) {
                            zoom_UI(NS(id, ns_id), map_zoom_levels)))),
     
     # Map
-    div(class = "mapdeck_div", mapdeckOutput(NS(id, "map"), height = "100%")),
+    div(class = "mapdeck_div", rdeckOutput(NS(id, "map"), height = "100%")),
     
     # Right panel
     right_panel(
@@ -41,21 +41,32 @@ canale_server <- function(id) {
     poi <- reactiveVal(NULL)
     
     # Map
-    output$map <- renderMapdeck(mapdeck(
-      style = map_style, 
-      token = map_token, 
-      zoom = map_zoom, 
-      location = map_location))
+    output$map <- renderRdeck({
+      rdeck(theme = map_style,
+            initial_view_state = view_state(center = c(-73.58, 45.53), 
+                                            zoom = 10.1)) |> 
+        add_mvt_layer(id = "canale", 
+                      data = mvt_url("dwachsmuth.canale-borough3"),
+                      auto_highlight = TRUE, highlight_color = "#AAFFFFFF",
+                      pickable = TRUE, get_fill_color = scale_color_category(
+                        col = canale_ind_2016, 
+                        palette = paste0(c(colour_left_5$fill, 
+                                           colour_bivar$fill), "EE"),
+                        unmapped_color = paste0(colour_left_5$fill[1], "EE"),
+                        levels = c(paste0("q5_", colour_left_5$group), 
+                                   colour_bivar$group)),
+                      get_line_color = "#FFFFFF")
+        })
     
-    # Zoom and POI reactives
-    observeEvent(input$map_view_change, {
-      zoom(get_zoom(input$map_view_change$zoom, map_zoom_levels))
-      poi(observe_map(input$map_view_change))
-    })
-    
-    # Click reactive
-    observeEvent(input$map_polygon_click, {
-      click_id(get_click(input$map_polygon_click))})
+    # # Zoom and POI reactives
+    # observeEvent(input$map_view_change, {
+    #   zoom(get_zoom(input$map_view_change$zoom, map_zoom_levels))
+    #   poi(observe_map(input$map_view_change))
+    # })
+    # 
+    # # Click reactive
+    # observeEvent(input$map_polygon_click, {
+    #   click_id(get_click(input$map_polygon_click))})
     
     # Zoom level for data
     df <- zoom_server(
@@ -75,6 +86,23 @@ canale_server <- function(id) {
       var_list = make_dropdown(),
       df = df, 
       time = time)
+    
+    map_var <- reactive(str_remove(paste(var_left(), var_right(), sep = "_"), "_ $"))
+    
+    observe({
+      rdeck_proxy("map") |>
+        add_mvt_layer(id = "canale",
+                      auto_highlight = TRUE, highlight_color = "#AAFFFFFF",
+                      pickable = TRUE, get_fill_color = scale_color_category(
+                        col = !!rlang::sym(map_var()),
+                        palette = paste0(c(colour_left_5$fill, 
+                                           colour_bivar$fill), "EE"),
+                        unmapped_color = paste0(colour_left_5$fill[1], "EE"),
+                        levels = c(paste0("q5_", colour_left_5$group), 
+                                   colour_bivar$group)),
+                      get_line_color = "#FFFFFF")
+
+    })
     
     # Sidebar
     sidebar_server(id = ns_id, x = "canale")
@@ -102,14 +130,34 @@ canale_server <- function(id) {
       poi = poi)
     
     # Update map in response to variable changes or zooming
-    select_id <- map_change(
-      id = ns_id,
-      map_id = NS(id, "map"), 
-      data = data, 
-      df = df, 
-      zoom = zoom,
-      click = click_id
-      )
+    select_id <- reactive(NA_character_)
+    # select_id <- map_change(
+    #   id = ns_id,
+    #   map_id = NS(id, "map"), 
+    #   data = data, 
+    #   df = df, 
+    #   zoom = zoom,
+    #   click = click_id
+    #   )
+    
+    
+    # observe({
+    # 
+    #   rdeck_proxy("map") |>
+    #     add_mvt_layer(id = "canale",
+    #                   auto_highlight = TRUE,
+    #                   pickable = TRUE,
+    #                   tooltip = TRUE,
+    #                   get_fill_color = 
+    #                     scale_color_category(
+    #                       col = !!rlang::sym(input$choose),
+    #                       palette = colour_left_5$fill[1:6],
+    #                       unmapped_color = colour_left_5$fill[1],
+    #                       levels = 0:5),
+    #                   get_line_color = "#FFFFFF")
+    #   
+    #       })
+    
     
     # Explore panel
     explore_content <- explore_server(

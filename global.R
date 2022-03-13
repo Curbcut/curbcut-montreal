@@ -20,6 +20,7 @@ suppressPackageStartupMessages({
   library(sf)
   library(mapdeck) 
   library(mapboxapi)
+  library(rdeck)
   
   library(DT)
   library(qs)
