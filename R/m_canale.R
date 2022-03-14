@@ -1,5 +1,11 @@
 ### CANALE MODULE ##############################################################
 
+sus_scale <- function(var) scale_color_category(
+  col = !!var, palette = paste0(c(colour_left_5$fill, colour_bivar$fill), "EE"),
+  unmapped_color = paste0(colour_left_5$fill[1], "EE"), 
+  levels = c(paste0("q5_", colour_left_5$group), colour_bivar$group))
+
+
 # UI ----------------------------------------------------------------------
 
 canale_UI <- function(id) {
@@ -42,19 +48,13 @@ canale_server <- function(id) {
     
     # Map
     output$map <- renderRdeck({
-      rdeck(theme = map_style,
-            initial_view_state = view_state(center = c(-73.58, 45.53), 
-                                            zoom = 10.1)) |> 
+      rdeck(theme = map_style, initial_view_state = view_state(
+        center = c(-73.58, 45.53), zoom = 10.1)) |> 
         add_mvt_layer(id = "canale", 
-                      data = mvt_url("dwachsmuth.canale-borough3"),
+                      data = mvt_url("dwachsmuth.canale-autozoom-test-1"),
                       auto_highlight = TRUE, highlight_color = "#AAFFFFFF",
-                      pickable = TRUE, get_fill_color = scale_color_category(
-                        col = canale_ind_2016, 
-                        palette = paste0(c(colour_left_5$fill, 
-                                           colour_bivar$fill), "EE"),
-                        unmapped_color = paste0(colour_left_5$fill[1], "EE"),
-                        levels = c(paste0("q5_", colour_left_5$group), 
-                                   colour_bivar$group)),
+                      pickable = TRUE, tooltip = TRUE,
+                      get_fill_color = sus_scale("canale_ind_2016"),
                       get_line_color = "#FFFFFF")
         })
     
@@ -87,22 +87,8 @@ canale_server <- function(id) {
       df = df, 
       time = time)
     
-    map_var <- reactive(str_remove(paste(var_left(), var_right(), sep = "_"), "_ $"))
-    
-    observe({
-      rdeck_proxy("map") |>
-        add_mvt_layer(id = "canale",
-                      auto_highlight = TRUE, highlight_color = "#AAFFFFFF",
-                      pickable = TRUE, get_fill_color = scale_color_category(
-                        col = !!rlang::sym(map_var()),
-                        palette = paste0(c(colour_left_5$fill, 
-                                           colour_bivar$fill), "EE"),
-                        unmapped_color = paste0(colour_left_5$fill[1], "EE"),
-                        levels = c(paste0("q5_", colour_left_5$group), 
-                                   colour_bivar$group)),
-                      get_line_color = "#FFFFFF")
-
-    })
+    map_var <- reactive(
+      str_remove(paste(var_left(), var_right(), sep = "_"), "_ $"))
     
     # Sidebar
     sidebar_server(id = ns_id, x = "canale")
@@ -140,24 +126,14 @@ canale_server <- function(id) {
     #   click = click_id
     #   )
     
-    
-    # observe({
-    # 
-    #   rdeck_proxy("map") |>
-    #     add_mvt_layer(id = "canale",
-    #                   auto_highlight = TRUE,
-    #                   pickable = TRUE,
-    #                   tooltip = TRUE,
-    #                   get_fill_color = 
-    #                     scale_color_category(
-    #                       col = !!rlang::sym(input$choose),
-    #                       palette = colour_left_5$fill[1:6],
-    #                       unmapped_color = colour_left_5$fill[1],
-    #                       levels = 0:5),
-    #                   get_line_color = "#FFFFFF")
-    #   
-    #       })
-    
+    # Observe variable changes to update map
+    observe({
+      rdeck_proxy("map") |>
+        add_mvt_layer(id = "canale", auto_highlight = TRUE,
+                      highlight_color = "#AAFFFFFF", pickable = TRUE,
+                      get_fill_color = sus_scale(rlang::sym(map_var())),
+                      get_line_color = "#FFFFFF")
+    })
     
     # Explore panel
     explore_content <- explore_server(

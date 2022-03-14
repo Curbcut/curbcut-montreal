@@ -1,23 +1,5 @@
-# Initialize map
-test_map <- 
-  rdeck(theme = map_style,
-        initial_view_state = view_state(center = c(-73.58, 45.53), 
-                                        zoom = 10.1)) |> 
-  add_mvt_layer(id = "test", 
-                data = mvt_url("dwachsmuth.canale-borough3"),
-                auto_highlight = TRUE, highlight_color = "#AAFFFFFF",
-                pickable = TRUE, tooltip = TRUE, 
-                get_fill_color = scale_color_category(
-                  col = canale_ind_2016, 
-                  palette = paste0(c(colour_left_5$fill, 
-                                     colour_bivar$fill), "EE"),
-                  unmapped_color = paste0(colour_left_5$fill[1], "EE"),
-                  levels = c(paste0("q5_", colour_left_5$group), 
-                             colour_bivar$group)),
-                get_line_color = "#FFFFFF")
+#### RDECK TEST APP ############################################################
 
-
-# Does not work
 shinyApp(
   ui = fillPage(
     rdeckOutput("map", height = "100%"),
@@ -29,7 +11,23 @@ shinyApp(
   
   server = function(input, output) {
     
-    output$map <- renderRdeck(test_map)
+    output$map <- renderRdeck(
+      rdeck(theme = map_style,
+            initial_view_state = view_state(center = c(-73.58, 45.53), 
+                                            zoom = 10.1)) |> 
+        add_mvt_layer(id = "test", 
+                      data = mvt_url("dwachsmuth.canale-borough3"),
+                      auto_highlight = TRUE, highlight_color = "#AAFFFFFF",
+                      pickable = TRUE, tooltip = TRUE, 
+                      get_fill_color = scale_color_category(
+                        col = canale_ind_2016, 
+                        palette = paste0(c(colour_left_5$fill, 
+                                           colour_bivar$fill), "EE"),
+                        unmapped_color = paste0(colour_left_5$fill[1], "EE"),
+                        levels = c(paste0("q5_", colour_left_5$group), 
+                                   colour_bivar$group)),
+                      get_line_color = "#FFFFFF")
+    )
     
     var_right <- reactive(input$fill)
     
