@@ -110,6 +110,7 @@ stand_alone_tabs <- c("Montréal stories" = "stories",
                       "Place explorer" = "place_explorer",
                       "About" = "why_dash")
 
+
 # Translation and other global reactive values ----------------------------
 
 translation_fr <- qread("data/translation_fr.qs")
@@ -120,8 +121,8 @@ sus_link <- reactiveValues()
 
 # Map defaults ------------------------------------------------------------
 
-map_token <- paste0("pk.eyJ1IjoiZHdhY2hzbXV0aCIsImEiOiJja2g2Y2JpbDc",
-                    "wMDc5MnltbWpja2xpYTZhIn0.BXdU7bsQYWcSwmmBx8DNqQ")
+map_token <- paste0("pk.eyJ1Ijoic3VzLW1jZ2lsbCIsImEiOiJjbDBxMTcyNWwyNTl0M2",
+                    "RtZzRremNxOHA3In0.V2Ah5lxy-3RZlF2QKOvIjg")
 map_style <- "mapbox://styles/dwachsmuth/ckh6cg4wg05nw19p5yrs9tib7"
 map_zoom <- 10.1
 map_zoom_levels <- c("borough" = 0, "CT" = 10.5, "DA" = 12#, "building" = 14)

@@ -27,7 +27,7 @@ borough |>
   mutate(canale_ind_2016 = paste0("q5_", canale_ind_2016)) |> 
   st_as_sf() |> 
   st_set_agr("constant") |> 
-  upload_tile_source("canale-borough3", "dwachsmuth", access_token)
+  upload_tile_source("canale-borough", "sus-mcgill", .sus_token)
 
 
 # Process CT then upload tile source ---------------------------------
@@ -45,7 +45,7 @@ CT |>
   mutate(canale_ind_2016 = paste0("q5_", canale_ind_2016)) |> 
   st_as_sf() |> 
   st_set_agr("constant") |> 
-  upload_tile_source("canale-CT", "dwachsmuth", access_token)
+  upload_tile_source("canale-CT", "sus-mcgill", .sus_token)
 
 
 # Process DA then upload tile source ---------------------------------
@@ -63,7 +63,7 @@ DA |>
   mutate(canale_ind_2016 = paste0("q5_", canale_ind_2016)) |> 
   st_as_sf() |> 
   st_set_agr("constant") |> 
-  upload_tile_source("canale-DA", "dwachsmuth", access_token)
+  upload_tile_source("canale-DA", "sus-mcgill", .sus_token)
 
 
 
@@ -91,33 +91,30 @@ recipe_autzoom <- '
     "version": 1,
     "layers": {
       "borough": {
-        "source": "mapbox://tileset-source/dwachsmuth/canale-borough3",
+        "source": "mapbox://tileset-source/sus-mcgill/canale-borough",
         "minzoom": 2,
-        "maxzoom": 5
+        "maxzoom": 9
       },
       "CT": {
-        "source": "mapbox://tileset-source/dwachsmuth/canale-CT",
-        "minzoom": 6,
-        "maxzoom": 8
+        "source": "mapbox://tileset-source/sus-mcgill/canale-CT",
+        "minzoom": 10,
+        "maxzoom": 11
       },
        "DA": {
-        "source": "mapbox://tileset-source/dwachsmuth/canale-DA",
-        "minzoom": 9,
-        "maxzoom": 10
+        "source": "mapbox://tileset-source/sus-mcgill/canale-DA",
+        "minzoom": 12,
+        "maxzoom": 13
       }
 
     }
   },
-  "name": "canale-autozoom-test-1"
+  "name": "canale-autozoom"
 }
 '
 
 
 # Create and publish tileset ----------------------------------------------
 
-create_tileset("canale-borough3", recipe, "dwachsmuth", access_token)
-publish_tileset("canale-borough3", "dwachsmuth", access_token)
-
-create_tileset("canale-autozoom-test-1", recipe_autzoom, "dwachsmuth", access_token)
-publish_tileset("canale-autozoom-test-1", "dwachsmuth", access_token)
+create_tileset("canale-autozoom", recipe_autzoom, "sus-mcgill", .sus_token)
+publish_tileset("canale-autozoom", "sus-mcgill", .sus_token)
 

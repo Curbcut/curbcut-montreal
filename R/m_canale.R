@@ -51,7 +51,7 @@ canale_server <- function(id) {
       rdeck(theme = map_style, initial_view_state = view_state(
         center = c(-73.58, 45.53), zoom = 10.1)) |> 
         add_mvt_layer(id = "canale", 
-                      data = mvt_url("dwachsmuth.canale-autozoom-test-1"),
+                      data = mvt_url("sus-mcgill.canale-autozoom"),
                       auto_highlight = TRUE, highlight_color = "#AAFFFFFF",
                       pickable = TRUE, tooltip = TRUE,
                       get_fill_color = sus_scale("canale_ind_2016"),

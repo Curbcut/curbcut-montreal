@@ -12,8 +12,8 @@ upload_tile_source <- function(df, id, username, access_token) {
   df |> 
     geojsonsf::sf_geojson() |> 
     paste0(collapse = " ") |> 
-    featurecollection() |> 
-    ndgeo_write(tmp)
+    geojson::featurecollection() |> 
+    geojson::ndgeo_write(tmp)
   
   # Construct system call
   out <- paste0('curl -X POST "https://api.mapbox.com/tilesets/v1/sources/', 
@@ -30,12 +30,12 @@ upload_tile_source <- function(df, id, username, access_token) {
 
 create_tileset <- function(tileset, recipe, username, access_token) {
   
-  POST(
+  httr::POST(
     url = paste0("https://api.mapbox.com/tilesets/v1/",
                  username, ".", tileset),
     query = list(access_token = access_token),
     body = recipe,
-    content_type("application/json")
+    httr::content_type("application/json")
   )
   
 }
@@ -61,7 +61,7 @@ update_tileset <- function(tileset, recipe, username, access_token) {
 # Publish tileset ---------------------------------------------------------
 
 publish_tileset <- function(tileset, username, access_token) {
-  POST(
+  httr::POST(
     url = paste0("https://api.mapbox.com/tilesets/v1/", username, ".", tileset,
                  "/publish"),
     query = list(access_token = access_token)
