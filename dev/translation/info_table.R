@@ -1,415 +1,811 @@
-#### `Info table` preparation for translation ##################################
-
-
-# Import existing translation ---------------------------------------------
-
-info_table_translated <- read.csv("dev/translation/csv/info_table_translated.csv") |> 
-  as_tibble()
-
-
-
-# Info table smaller strings ----------------------------------------------
-
-# small_strings <-
-# as_tibble(sifr::sif("sus_translate\\(.*\\)", markers = FALSE)) |>
-#   filter(path == "./R/functions/_get_info_table_data.R") |>
-#   mutate(contents = str_extract(contents, "sus_translate\\(.*")) |>
-#   mutate(contents = str_remove_all(contents, "sus_translate\\(|\\).*")) |>
-#   pull(contents) |>
-#   unique() |>
-#   str_replace_all('"', "'") |>
-#   str_remove_all("\\\\\\'") |>
-#   str_subset("'") |>
-#   str_remove_all("'")
+# #### `Info table` preparation for translation ##################################
+# 
+# 
+# # Import existing translation ---------------------------------------------
+# 
+# info_table_translated <- read.csv("dev/translation/csv/info_table_translated.csv") |> 
+#   as_tibble()
+# 
+# 
+# 
+# # Info table smaller strings ----------------------------------------------
+# 
+# # small_strings <-
+# # as_tibble(sifr::sif("sus_translate\\(.*\\)", markers = FALSE)) |>
+# #   filter(path == "./R/functions/_get_info_table_data.R") |>
+# #   mutate(contents = str_extract(contents, "sus_translate\\(.*")) |>
+# #   mutate(contents = str_remove_all(contents, "sus_translate\\(|\\).*")) |>
+# #   pull(contents) |>
+# #   unique() |>
+# #   str_replace_all('"', "'") |>
+# #   str_remove_all("\\\\\\'") |>
+# #   str_subset("'") |>
+# #   str_remove_all("'")
+# # 
+# # small_strings_translated <- 
+# #   tibble(en = small_strings) |> 
+# #   left_join(translation_fr, by = "en")
+# # 
+# # map2(small_strings_translated$en, 
+# #      small_strings_translated$fr, ~{cat('c("', .x, '" = "',.y,'"),\n', sep = "")}) |> 
+# #   unlist()
+# 
+# # Named vector for smaller strings, easier to build.
+# small_strings_translated <- 
+#   
+#   # _get_info_table_data.R script
+#   c(c("borough/city" = "de l'arrondissement/de la ville"),
+#     c("census tract" = "du secteur de recensement"),
+#     c("dissemination area" = "de l'aire de diffusion"),
+#     c("250-m" = "de 250-m"),
+#     c("building" = "du bâtiment"),
+#     c("street" = "rue"),
+#     c("boroughs or cities" = "arrondissements ou villes"),
+#     c("census tracts" = "secteurs de recensement"),
+#     c("dissemination areas" = "aires de diffusion"),
+#     c("areas" = "aires"),
+#     c("buildings" = "bâtiments"),
+#     c("streets" = "rues"),
+#     c("The dissemination area around {select_name$name}" = "L'aire de diffusion autour de {select_name$name}"),
+#     c("Census tract {select_name$name}" = "Secteur de recensement {select_name$name} "),
+#     c("Dissemination area {select_name$name}" = "Zone de diffusion {select_name$name} "),
+#     c("The area around {select_name$name}" = "La zone autour de {select_name$name} "),
+#     c("{select_name$name_2} of {out$place_name}" = "{select_name$name_2} de {out$place_name}"),
+#     c("much larger than" = "beaucoup plus grand que"),
+#     c("larger than" = "plus grand que"),
+#     c("almost the same as" = "presque identique à"),
+#     c("smaller than" = "plus petit que"),
+#     c("much smaller than" = "beaucoup plus petit que"),
+#     c("high" = "élevé/e"),
+#     c("low" = "faible"),
+#     c("moderate" = "modéré/e"),
+#     c("increased" = "augmenté"),
+#     c("decreased" = "diminué"),
+#     c("majority" = "majorité"),
+#     c("plurality" = "pluralité"),
+#     c("positive" = "positive"),
+#     c("negative" = "négative"),
+#     c("strong" = "forte"),
+#     c("weak" = "faible"),
+#     c("higher" = "plus grand/e"),
+#     c("lower" = "plus petit/e"),
+#     c("with only a few exceptions" = "à quelques exceptions près"),
+#     c("although with some exceptions" = "bien qu'avec des exceptions"),
+#     c("although with many exceptions" = "bien qu'avec beaucoup d'exceptions"),
+#     c("weak" = "faible"),
+#     c("dramatically different" = "radicalement différents"),
+#     c("substantially different" = "sensiblement différents"),
+#     c("considerably different" = "modérément différents"),
+#     c("similar" = "similaires"),
+#     c(" and " = " et "),
+#     c("several different dates" = "plusieurs dates différentes"),
+#     c("increasing" = "augmentant"),
+#     c("decreasing" = "diminuant"),
+#     
+#     # _info_table.R script
+#     c("No data available." = "Aucune donnée disponible."),
+#     c("<i>(Data from {date_left}.)</i>" = "<i>(Données de {date_left}.)</i>"),
+#     ("<p><b>STRONG CORRELATION</b></p>" = "<p><b>FORTE CORRÉLATION</b></p>")
+# 
+#     )
 # 
 # small_strings_translated <- 
-#   tibble(en = small_strings) |> 
-#   left_join(translation_fr, by = "en")
+#   tibble(en = names(small_strings_translated),
+#          fr = small_strings_translated)
 # 
-# map2(small_strings_translated$en, 
-#      small_strings_translated$fr, ~{cat('c("', .x, '" = "',.y,'"),\n', sep = "")}) |> 
-#   unlist()
+# # Texts info table --------------------------------------------------------
+# 
+# texts_translated <- 
+#   tibble(en = c(
+#     
+# ## Handle NAs  ------------------------------------------------------------
+# # Special case for Kahnawake
+# paste0(
+#   "<strong>Kahnawake Mohawk Territory</strong>",
+#   "<p>Statistics Canada does not gather the same ",
+#   "data for indigenous reserves in the Census as it does ",
+#   "for other jurisdictions, so we cannot display findings here."),
+# 
+# # Special case for Kanestake
+# paste0(
+#   "<strong>Kanehsatà:ke</strong>",
+#   "<p>Statistics Canada does not gather the same ",
+#   "data for indigenous reserves in the Census as it does ",
+#   "for other jurisdictions, so we cannot display findings here."),
+# 
+# # Univariate, NA selection
+# paste0(
+#   "{z$place_name} has no data available on {z$exp_left}."),
+# 
+# # Bivariate, NA selection
+# paste0(
+#   "{z$place_name} has no data available on {z$exp_left} and ",
+#   "{z$exp_right}."),
+# 
+# 
+# ## Univariate single-date cases -------------------------------------------
+# 
+# # Univariate, quantitative, no selection
+# paste0(
+#   "At the {z$scale_sing} scale, {z$exp_left} varies from ",
+#   "{z$min_val} to {z$max_val}, with an average value of {z$mean_val} ",
+#   "and a median value of {z$median_val}. ",
+#   "Two thirds of {z$scale_plural} have a score between {z$quant_low} ",
+#   "and {z$quant_high}."),
+# 
+# 
+# # Univariate, quantitative, valid selection
+# paste0(
+#   "<strong>{z$place_heading}</strong>",
+#   "<p>{z$place_name} has a population of {z$pop} and a ", 
+#   "'{z$title_left}' score ({z$exp_left}) of {z$val_left}, which is ", 
+#   "{z$larger} the region-wide median of {z$median_val}.",
+#   "<p>{z$place_name} has a {z$high} relative score for this ", 
+#   "indicator, with '{z$exp_left}' higher than ", 
+#   "{z$percentile} of {z$scale_plural} in the Montreal region."),
+# 
+# # Univariate, qualitative, no selection
+# paste0(
+#   "At the {z$scale_sing} scale, {z$exp_left} varies from ",
+#   "'{z$min_val}' to '{z$max_val}'. A {z$majority} of {z$scale_plural} ",
+#   "({z$mode_prop}) have a value of '{z$mode_val}', while ",
+#   "{z$mode_prop_2} have a value of '{z$mode_val_2}'."),
+# 
+# # Univariate, qualitative, valid selection
+# paste0(
+#   "<strong>{z$place_heading}</strong>",
+#   "<p>{z$place_name} has a population of {z$pop} and a ",
+#   "'{z$title_left}' value of '{z$val_left}', which is shared by ",
+#   "{z$other_with_val} of {z$scale_plural} in the Montreal region."),
+# 
+# 
+# ## Univariate multi-date cases -------------------------------------------
+# 
+# # Univariate, quantitative, no selection
+# paste0(
+#   "At the {z$scale_sing} scale, the change in {z$exp_left} ",
+#   "between {z$start_date_left} and {z$end_date_left} varied from ",
+#   "{z$min_val} to {z$max_val}, with an average change of {z$mean_val} ",
+#   "and a median change of {z$median_val}. ",
+#   "Two thirds of {z$scale_plural} saw a change between {z$quant_low} ",
+#   "and {z$quant_high}."),
+# 
+# # Univariate, quantitative, valid selection
+# paste0(
+#   "<strong>{z$place_heading}</strong>",
+#   "<p>{sentence(z$exp_left)} in {z$place_name} ",
+#   "{z$increase} by {sub('-', '', z$val_left)} between ",
+#   "{z$start_date_left} and {z$end_date_left}, which is {z$larger} ",
+#   "the region-wide median change of {z$median_val}.",
+#   "<p>{z$place_name} had a {z$high} relative change for this ",
+#   "indicator, with a change in {z$exp_left} larger than ",
+#   "{z$percentile} of {z$scale_plural} in the Montreal region."),
+# 
+# # Univariate, qualitative, no selection
+# paste0(
+#   "TKTK At the {z$scale_sing} scale, {z$exp_left} varies from ",
+#   "'{z$min_val}' to '{z$max_val}'. A {z$majority} of {z$scale_plural} ",
+#   "({z$mode_prop}) have a value of '{z$mode_val}', while ",
+#   "{z$mode_prop_2} have a value of '{z$mode_val_2}'."),
+# 
+# # Univariate, qualitative, valid selection
+# paste0(
+#   "<strong>{z$place_heading}</strong>",
+#   "<p>TKTK {z$place_name} has a population of {z$pop} and a ",
+#   "'{z$title_left}' value of '{z$val_left}', which is shared by ",
+#   "{z$other_with_val} of {z$scale_plural} in the Montreal region."),
+# 
+# 
+# ## Bivariate cases -------------------------------------------------------
+# 
+# # Bivariate, quantitative, no selection
+#   # If correlation is close to zero
+# paste0(
+#       "<p>'{z$title_left}' has effectively no correlation ",
+#       "({z$corr_disp}) with '{z$title_right}' at the {z$scale_sing} ",
+#       "scale.",
+#       "<p>This means that, at the {z$scale_sing} scale, ",
+#       "there is no relationship between the two variables."),
+# # If correlation is strong
+# paste0(
+#       "<p>'{z$title_left}' has a {z$strong} {z$pos} ",
+#       "correlation ({z$corr_disp}) with '{z$title_right}' at ",
+#       "the {z$scale_sing} scale.",
+#       "<p>This means that, in general, {z$scale_plural} with a higher ",
+#       "{sub('^the ', '', z$exp_right)} tend to have a {z$higher} ",
+#       "{sub('^the ', '', z$exp_left)}, {z$high_low_disclaimer}."),
+# 
+# # Bivariate, quantitative, valid selection
+# paste0(
+#   "<strong>{z$place_heading}</strong>",
+#   "<p>{z$place_name} has a population of {z$pop}, ",
+#   "a '{z$title_left}' value of {z$val_left}, ",
+#   "and a '{z$title_right}' value of {z$val_right}. ",
+#   "<p>These two scores are {z$relative_position}, in relative ",
+#   "terms. {z$place_name} has {sub('^the', 'a', z$exp_left)} higher ",
+#   "than {z$perc_left} of {z$scale_plural} and ",
+#   "{sub('^the', 'a', z$exp_right)} higher than {z$perc_right} ",
+#   "of {z$scale_plural} in the Montreal region."),
+# 
+# # Bivariate, qualitative x, quantitative y, no selection
+# paste0(
+#       "<p>'{z$title_left}' has effectively no correlation ",
+#       "(Spearman's rho: {z$corr_disp}) with '{z$title_right}' at the ", 
+#       "{z$scale_sing} scale.",
+#       "<p>This means that, at the {z$scale_sing} scale, ",
+#       "there is no relationship between the two variables."),
+# paste0(
+#       "<p>'{z$title_left}' has a {z$strong} {z$pos} correlation ",
+#       "(Spearman's rho: {z$corr_disp}) with '{z$title_right}' ",
+#       "at the {z$scale_sing} scale.",
+#       "<p>This means that, in general, {z$scale_plural} with a higher ",
+#       "{sub('^the ', '', z$exp_right)} tend to have a {z$higher} ",
+#       "{sub('^the ', '', z$exp_left)}, {z$high_low_disclaimer}."),
+# 
+# # Bivariate, qualitative x, quantitative y, valid selection
+# paste0(
+#   "<strong>{z$place_heading}</strong>",
+#   "<p>{z$place_name} has a population of {z$pop}, ",
+#   "a '{z$title_left}' value of '{z$val_left}', and a ",
+#   "'{z$title_right}' value of {z$val_right}. ",
+#   "<p>{z$place_name} has {sub('^the', 'a', z$exp_right)} ",
+#   "higher than {z$perc} of other {z$scale_plural} with ",
+#   "{sub('^the', 'a', z$exp_left)} of '{z$val_left}' in the ",
+#   "Montreal region."),
+# 
+# # Bivariate, quantitative x, qualitative y, no selection
+# 
+# # If correlation is close to zero
+# paste0(
+#       "<p>'{z$title_left}' has effectively no correlation ",
+#       "(Spearman's rho: {z$corr_disp}) with '{z$title_right}' at the ", 
+#       "{z$scale_sing} scale.",
+#       "<p>This means that, at the {z$scale_sing} scale, ",
+#       "there is no relationship between the two variables."),
+# # If correlation is strong
+# paste0(
+#       "<p>'{z$title_left}' has a {z$strong} {z$pos} correlation ",
+#       "(Spearman's rho: {z$corr_disp}) with '{z$title_right}' ",
+#       "at the {z$scale_sing} scale.",
+#       "<p>This means that, in general, {z$scale_plural} with a higher ",
+#       "{sub('^the ', '', z$exp_right)} tend to have a {z$higher} ",
+#       "{sub('^the ', '', z$exp_left)}, {z$high_low_disclaimer}."),
+# 
+# # Bivariate, quantitative x, qualitative y, valid selection
+# paste0(
+#   "<strong>{z$place_heading}</strong>",
+#   "<p>{z$place_name} has a population of {z$pop}, ",
+#   "a {z$title_left} value of '{z$val_left}', and a ",
+#   "'{z$title_right}' value of '{z$val_right}'. ",
+#   "<p>{z$place_name} has {sub('^the', 'a', z$exp_left)} ",
+#   "higher than {z$perc} of other {z$scale_plural} with ",
+#   "{sub('^the', 'a', z$exp_right)} of '{z$val_right}' in the ",
+#   "Montreal region."),
+# 
+# 
+# ## Bivariate multi-date cases ---------------------------------------------
+# 
+# # Bivariate, quantitative, no selection
+# # If correlation is close to zero
+# paste0(
+#       "<p>From {z$start_date_left} to {z$end_date_left}, the change in ", 
+#       "'{z$title_left}' had effectively no correlation ({z$corr_disp}) ", 
+#       "with the change in '{z$title_right}' at the {z$scale_sing} scale.",
+#       "<p>This means that, at the {z$scale_sing} scale, there was no ",
+#       "relationship between the change in the two variables."),
+# # If correlation is strong
+# paste0(
+#       "<p>From {z$start_date_left} to {z$end_date_left}, the change in ", 
+#       "'{z$title_left}' had a {z$strong} {z$pos} ",
+#       "correlation ({z$corr_disp}) with the change in '{z$title_right}' ", 
+#       "at the {z$scale_sing} scale.",
+#       "<p>This means that, in general, {z$scale_plural} with a higher ",
+#       "change in {z$exp_left} tended to have a {z$higher} change in ",
+#       "{z$exp_right}, {z$high_low_disclaimer}."),
+# 
+# # Bivariate, quantitative, valid selection
+# paste0(
+#   "<strong>{z$place_heading}</strong>",
+#   "<p>From {z$start_date_left} to {z$end_date_left}, {z$place_name} had ",
+#   "a change in its '{z$title_left}' value of {z$val_left}, ",
+#   "and a change in its '{z$title_right}' value of {z$val_right}. ",
+#   "<p>These two scores are {z$relative_position}, in relative ",
+#   "terms. {z$place_name} had a change in {z$exp_left} higher ",
+#   "than {z$perc_left} of {z$scale_plural} and ",
+#   "a change in {z$exp_right} higher than {z$perc_right} ",
+#   "of {z$scale_plural} in the Montreal region."),
+# 
+# # Bivariate, qualitative x, quantitative y, no selection
+# # If correlation is close to zero
+# paste0(
+#       "<p>From {z$start_date_left} to {z$end_date_left}, the change in ", 
+#       "'{z$title_left}' had effectively no correlation ", 
+#       "(Spearman's rho: {z$corr_disp}) ", 
+#       "with the change in '{z$title_right}' at the {z$scale_sing} scale.",
+#       "<p>This means that, at the {z$scale_sing} scale, there was no ",
+#       "relationship between the change in the two variables."),
+# # If correlation is strong
+# paste0(
+#       "<p>From {z$start_date_left} to {z$end_date_left}, the change in ", 
+#       "'{z$title_left}' had a {z$strong} {z$pos} ",
+#       "correlation (Spearman's rho: {z$corr_disp}) with the change in ", 
+#       "'{z$title_right}' at the {z$scale_sing} scale.",
+#       "<p>This means that, in general, {z$scale_plural} with a higher ",
+#       "change in {z$exp_left} tended to have a {z$higher} change in ",
+#       "{z$exp_right}, {z$high_low_disclaimer}."),
+# 
+# # Bivariate, qualitative x, quantitative y, valid selection
+# paste0(
+#   "<strong>{z$place_heading}</strong>",
+#   "<p>TKTK {z$place_name} has a population of {z$pop}, ",
+#   "a '{z$title_left}' value of '{z$val_left}', and a ",
+#   "'{z$title_right}' value of {z$val_right}. ",
+#   "<p>{z$place_name} has {sub('^the', 'a', z$exp_right)} ",
+#   "higher than {z$perc} of other {z$scale_plural} with ",
+#   "{sub('^the', 'a', z$exp_left)} of '{z$val_left}' in the ",
+#   "Montreal region."),
+# 
+# 
+# ## Special cases ----------------------------------------------------------
+# 
+# # If correlation is close to zero
+# paste0(
+#       "<p>During {z$date_left}, {z$exp_left} ",
+#       "averaged {z$mean_val} per day. ",
+#       "The maximum value was {z$max_val} on {z$max_date}, and the ",
+#       "minimum value was {z$min_val} on {z$min_date}. ",
+#       "There was no growth trend during this time period."),
+# # If correlation is strong
+# paste0(
+#       "<p>During {z$date_left}, {z$exp_left} ",
+#       "averaged {z$mean_val} per day. ",
+#       "The maximum value was {z$max_val} on {z$max_date}, and the ",
+#       "minimum value was {z$min_val} on {z$min_date}. ",
+#       "There was a {z$strong} {z$pos} growth trend during this time ",
+#       "period, with {z$exp_left} {z$coef_increasing} an average of ",
+#       "{z$coef} each day.")
+# 
+# )) |> 
+#   left_join(info_table_translated, by = "en")
+# 
+# 
+# # Same file for both smaller strings and texts ----------------------------
+# 
+# info_table_translated <- 
+#   bind_rows(small_strings_translated, texts_translated) |> 
+#   distinct()
+# 
+# 
+# # Warnings ----------------------------------------------------------------
+# 
+# # Do we need to update this file?
+# modif_date_info_table <- file.info("R/functions/_info_table.R")$mtime
+# modif_date_this_file <- file.info("dev/translation/info_table.R")$mtime
+# 
+# if (modif_date_info_table > modif_date_this_file) {
+#   warning("Info table texts have possibly been changed since last translation.")
+# }
+# 
+# # Or missing translation would give the same result
+# walk(seq_along(info_table_translated$fr), ~{
+#   
+#   x <- pull(info_table_translated[.x, "fr"])
+#   
+#   if (is.na(x)) {
+#     no_translation <-
+#       pull(info_table_translated[.x, "en"])
+#     warning(paste0("No translation found for `", no_translation, 
+#                    "` (variables table)."), 
+#             call. = FALSE)
+#   }
+# })
 
-# Named vector for smaller strings, easier to build.
-small_strings_translated <- 
-  
-  # _get_info_table_data.R script
-  c(c("borough/city" = "de l'arrondissement/de la ville"),
-    c("census tract" = "du secteur de recensement"),
-    c("dissemination area" = "de l'aire de diffusion"),
-    c("250-m" = "de 250-m"),
-    c("building" = "du bâtiment"),
-    c("street" = "rue"),
-    c("boroughs or cities" = "arrondissements ou villes"),
-    c("census tracts" = "secteurs de recensement"),
-    c("dissemination areas" = "aires de diffusion"),
-    c("areas" = "aires"),
-    c("buildings" = "bâtiments"),
-    c("streets" = "rues"),
-    c("The dissemination area around {select_name$name}" = "L'aire de diffusion autour de {select_name$name}"),
-    c("Census tract {select_name$name}" = "Secteur de recensement {select_name$name} "),
-    c("Dissemination area {select_name$name}" = "Zone de diffusion {select_name$name} "),
-    c("The area around {select_name$name}" = "La zone autour de {select_name$name} "),
-    c("{select_name$name_2} of {out$place_name}" = "{select_name$name_2} de {out$place_name}"),
-    c("much larger than" = "beaucoup plus grand que"),
-    c("larger than" = "plus grand que"),
-    c("almost the same as" = "presque identique à"),
-    c("smaller than" = "plus petit que"),
-    c("much smaller than" = "beaucoup plus petit que"),
-    c("high" = "élevé/e"),
-    c("low" = "faible"),
-    c("moderate" = "modéré/e"),
-    c("increased" = "augmenté"),
-    c("decreased" = "diminué"),
-    c("majority" = "majorité"),
-    c("plurality" = "pluralité"),
-    c("positive" = "positive"),
-    c("negative" = "négative"),
-    c("strong" = "forte"),
-    c("weak" = "faible"),
-    c("higher" = "plus grand/e"),
-    c("lower" = "plus petit/e"),
-    c("with only a few exceptions" = "à quelques exceptions près"),
-    c("although with some exceptions" = "bien qu'avec des exceptions"),
-    c("although with many exceptions" = "bien qu'avec beaucoup d'exceptions"),
-    c("weak" = "faible"),
-    c("dramatically different" = "radicalement différents"),
-    c("substantially different" = "sensiblement différents"),
-    c("considerably different" = "modérément différents"),
-    c("similar" = "similaires"),
-    c(" and " = " et "),
-    c("several different dates" = "plusieurs dates différentes"),
-    c("increasing" = "augmentant"),
-    c("decreasing" = "diminuant"),
-    
-    # _info_table.R script
-    c("No data available." = "Aucune donnée disponible."),
-    c("<i>(Data from {date_left}.)</i>" = "<i>(Données de {date_left}.)</i>"),
-    ("<p><b>STRONG CORRELATION</b></p>" = "<p><b>FORTE CORRÉLATION</b></p>")
-
-    )
-
-small_strings_translated <- 
-  tibble(en = names(small_strings_translated),
-         fr = small_strings_translated)
-
-# Texts info table --------------------------------------------------------
-
-texts_translated <- 
-  tibble(en = c(
-    
-## Handle NAs  ------------------------------------------------------------
-# Special case for Kahnawake
-paste0(
-  "<strong>Kahnawake Mohawk Territory</strong>",
-  "<p>Statistics Canada does not gather the same ",
-  "data for indigenous reserves in the Census as it does ",
-  "for other jurisdictions, so we cannot display findings here."),
-
-# Special case for Kanestake
-paste0(
-  "<strong>Kanehsatà:ke</strong>",
-  "<p>Statistics Canada does not gather the same ",
-  "data for indigenous reserves in the Census as it does ",
-  "for other jurisdictions, so we cannot display findings here."),
-
-# Univariate, NA selection
-paste0(
-  "{z$place_name} has no data available on {z$exp_left}."),
-
-# Bivariate, NA selection
-paste0(
-  "{z$place_name} has no data available on {z$exp_left} and ",
-  "{z$exp_right}."),
-
-
-## Univariate single-date cases -------------------------------------------
-
-# Univariate, quantitative, no selection
-paste0(
-  "At the {z$scale_sing} scale, {z$exp_left} varies from ",
-  "{z$min_val} to {z$max_val}, with an average value of {z$mean_val} ",
-  "and a median value of {z$median_val}. ",
-  "Two thirds of {z$scale_plural} have a score between {z$quant_low} ",
-  "and {z$quant_high}."),
-
-
-# Univariate, quantitative, valid selection
-paste0(
-  "<strong>{z$place_heading}</strong>",
-  "<p>{z$place_name} has a population of {z$pop} and a ", 
-  "'{z$title_left}' score ({z$exp_left}) of {z$val_left}, which is ", 
-  "{z$larger} the region-wide median of {z$median_val}.",
-  "<p>{z$place_name} has a {z$high} relative score for this ", 
-  "indicator, with '{z$exp_left}' higher than ", 
-  "{z$percentile} of {z$scale_plural} in the Montreal region."),
-
-# Univariate, qualitative, no selection
-paste0(
-  "At the {z$scale_sing} scale, {z$exp_left} varies from ",
-  "'{z$min_val}' to '{z$max_val}'. A {z$majority} of {z$scale_plural} ",
-  "({z$mode_prop}) have a value of '{z$mode_val}', while ",
-  "{z$mode_prop_2} have a value of '{z$mode_val_2}'."),
-
-# Univariate, qualitative, valid selection
-paste0(
-  "<strong>{z$place_heading}</strong>",
-  "<p>{z$place_name} has a population of {z$pop} and a ",
-  "'{z$title_left}' value of '{z$val_left}', which is shared by ",
-  "{z$other_with_val} of {z$scale_plural} in the Montreal region."),
-
-
-## Univariate multi-date cases -------------------------------------------
-
-# Univariate, quantitative, no selection
-paste0(
-  "At the {z$scale_sing} scale, the change in {z$exp_left} ",
-  "between {z$start_date_left} and {z$end_date_left} varied from ",
-  "{z$min_val} to {z$max_val}, with an average change of {z$mean_val} ",
-  "and a median change of {z$median_val}. ",
-  "Two thirds of {z$scale_plural} saw a change between {z$quant_low} ",
-  "and {z$quant_high}."),
-
-# Univariate, quantitative, valid selection
-paste0(
-  "<strong>{z$place_heading}</strong>",
-  "<p>{sentence(z$exp_left)} in {z$place_name} ",
-  "{z$increase} by {sub('-', '', z$val_left)} between ",
-  "{z$start_date_left} and {z$end_date_left}, which is {z$larger} ",
-  "the region-wide median change of {z$median_val}.",
-  "<p>{z$place_name} had a {z$high} relative change for this ",
-  "indicator, with a change in {z$exp_left} larger than ",
-  "{z$percentile} of {z$scale_plural} in the Montreal region."),
-
-# Univariate, qualitative, no selection
-paste0(
-  "TKTK At the {z$scale_sing} scale, {z$exp_left} varies from ",
-  "'{z$min_val}' to '{z$max_val}'. A {z$majority} of {z$scale_plural} ",
-  "({z$mode_prop}) have a value of '{z$mode_val}', while ",
-  "{z$mode_prop_2} have a value of '{z$mode_val_2}'."),
-
-# Univariate, qualitative, valid selection
-paste0(
-  "<strong>{z$place_heading}</strong>",
-  "<p>TKTK {z$place_name} has a population of {z$pop} and a ",
-  "'{z$title_left}' value of '{z$val_left}', which is shared by ",
-  "{z$other_with_val} of {z$scale_plural} in the Montreal region."),
-
-
-## Bivariate cases -------------------------------------------------------
-
-# Bivariate, quantitative, no selection
-  # If correlation is close to zero
-paste0(
-      "<p>'{z$title_left}' has effectively no correlation ",
-      "({z$corr_disp}) with '{z$title_right}' at the {z$scale_sing} ",
-      "scale.",
-      "<p>This means that, at the {z$scale_sing} scale, ",
-      "there is no relationship between the two variables."),
-# If correlation is strong
-paste0(
-      "<p>'{z$title_left}' has a {z$strong} {z$pos} ",
-      "correlation ({z$corr_disp}) with '{z$title_right}' at ",
-      "the {z$scale_sing} scale.",
-      "<p>This means that, in general, {z$scale_plural} with a higher ",
-      "{sub('^the ', '', z$exp_right)} tend to have a {z$higher} ",
-      "{sub('^the ', '', z$exp_left)}, {z$high_low_disclaimer}."),
-
-# Bivariate, quantitative, valid selection
-paste0(
-  "<strong>{z$place_heading}</strong>",
-  "<p>{z$place_name} has a population of {z$pop}, ",
-  "a '{z$title_left}' value of {z$val_left}, ",
-  "and a '{z$title_right}' value of {z$val_right}. ",
-  "<p>These two scores are {z$relative_position}, in relative ",
-  "terms. {z$place_name} has {sub('^the', 'a', z$exp_left)} higher ",
-  "than {z$perc_left} of {z$scale_plural} and ",
-  "{sub('^the', 'a', z$exp_right)} higher than {z$perc_right} ",
-  "of {z$scale_plural} in the Montreal region."),
-
-# Bivariate, qualitative x, quantitative y, no selection
-paste0(
-      "<p>'{z$title_left}' has effectively no correlation ",
-      "(Spearman's rho: {z$corr_disp}) with '{z$title_right}' at the ", 
-      "{z$scale_sing} scale.",
-      "<p>This means that, at the {z$scale_sing} scale, ",
-      "there is no relationship between the two variables."),
-paste0(
-      "<p>'{z$title_left}' has a {z$strong} {z$pos} correlation ",
-      "(Spearman's rho: {z$corr_disp}) with '{z$title_right}' ",
-      "at the {z$scale_sing} scale.",
-      "<p>This means that, in general, {z$scale_plural} with a higher ",
-      "{sub('^the ', '', z$exp_right)} tend to have a {z$higher} ",
-      "{sub('^the ', '', z$exp_left)}, {z$high_low_disclaimer}."),
-
-# Bivariate, qualitative x, quantitative y, valid selection
-paste0(
-  "<strong>{z$place_heading}</strong>",
-  "<p>{z$place_name} has a population of {z$pop}, ",
-  "a '{z$title_left}' value of '{z$val_left}', and a ",
-  "'{z$title_right}' value of {z$val_right}. ",
-  "<p>{z$place_name} has {sub('^the', 'a', z$exp_right)} ",
-  "higher than {z$perc} of other {z$scale_plural} with ",
-  "{sub('^the', 'a', z$exp_left)} of '{z$val_left}' in the ",
-  "Montreal region."),
-
-# Bivariate, quantitative x, qualitative y, no selection
-
-# If correlation is close to zero
-paste0(
-      "<p>'{z$title_left}' has effectively no correlation ",
-      "(Spearman's rho: {z$corr_disp}) with '{z$title_right}' at the ", 
-      "{z$scale_sing} scale.",
-      "<p>This means that, at the {z$scale_sing} scale, ",
-      "there is no relationship between the two variables."),
-# If correlation is strong
-paste0(
-      "<p>'{z$title_left}' has a {z$strong} {z$pos} correlation ",
-      "(Spearman's rho: {z$corr_disp}) with '{z$title_right}' ",
-      "at the {z$scale_sing} scale.",
-      "<p>This means that, in general, {z$scale_plural} with a higher ",
-      "{sub('^the ', '', z$exp_right)} tend to have a {z$higher} ",
-      "{sub('^the ', '', z$exp_left)}, {z$high_low_disclaimer}."),
-
-# Bivariate, quantitative x, qualitative y, valid selection
-paste0(
-  "<strong>{z$place_heading}</strong>",
-  "<p>{z$place_name} has a population of {z$pop}, ",
-  "a {z$title_left} value of '{z$val_left}', and a ",
-  "'{z$title_right}' value of '{z$val_right}'. ",
-  "<p>{z$place_name} has {sub('^the', 'a', z$exp_left)} ",
-  "higher than {z$perc} of other {z$scale_plural} with ",
-  "{sub('^the', 'a', z$exp_right)} of '{z$val_right}' in the ",
-  "Montreal region."),
-
-
-## Bivariate multi-date cases ---------------------------------------------
-
-# Bivariate, quantitative, no selection
-# If correlation is close to zero
-paste0(
-      "<p>From {z$start_date_left} to {z$end_date_left}, the change in ", 
-      "'{z$title_left}' had effectively no correlation ({z$corr_disp}) ", 
-      "with the change in '{z$title_right}' at the {z$scale_sing} scale.",
-      "<p>This means that, at the {z$scale_sing} scale, there was no ",
-      "relationship between the change in the two variables."),
-# If correlation is strong
-paste0(
-      "<p>From {z$start_date_left} to {z$end_date_left}, the change in ", 
-      "'{z$title_left}' had a {z$strong} {z$pos} ",
-      "correlation ({z$corr_disp}) with the change in '{z$title_right}' ", 
-      "at the {z$scale_sing} scale.",
-      "<p>This means that, in general, {z$scale_plural} with a higher ",
-      "change in {z$exp_left} tended to have a {z$higher} change in ",
-      "{z$exp_right}, {z$high_low_disclaimer}."),
-
-# Bivariate, quantitative, valid selection
-paste0(
-  "<strong>{z$place_heading}</strong>",
-  "<p>From {z$start_date_left} to {z$end_date_left}, {z$place_name} had ",
-  "a change in its '{z$title_left}' value of {z$val_left}, ",
-  "and a change in its '{z$title_right}' value of {z$val_right}. ",
-  "<p>These two scores are {z$relative_position}, in relative ",
-  "terms. {z$place_name} had a change in {z$exp_left} higher ",
-  "than {z$perc_left} of {z$scale_plural} and ",
-  "a change in {z$exp_right} higher than {z$perc_right} ",
-  "of {z$scale_plural} in the Montreal region."),
-
-# Bivariate, qualitative x, quantitative y, no selection
-# If correlation is close to zero
-paste0(
-      "<p>From {z$start_date_left} to {z$end_date_left}, the change in ", 
-      "'{z$title_left}' had effectively no correlation ", 
-      "(Spearman's rho: {z$corr_disp}) ", 
-      "with the change in '{z$title_right}' at the {z$scale_sing} scale.",
-      "<p>This means that, at the {z$scale_sing} scale, there was no ",
-      "relationship between the change in the two variables."),
-# If correlation is strong
-paste0(
-      "<p>From {z$start_date_left} to {z$end_date_left}, the change in ", 
-      "'{z$title_left}' had a {z$strong} {z$pos} ",
-      "correlation (Spearman's rho: {z$corr_disp}) with the change in ", 
-      "'{z$title_right}' at the {z$scale_sing} scale.",
-      "<p>This means that, in general, {z$scale_plural} with a higher ",
-      "change in {z$exp_left} tended to have a {z$higher} change in ",
-      "{z$exp_right}, {z$high_low_disclaimer}."),
-
-# Bivariate, qualitative x, quantitative y, valid selection
-paste0(
-  "<strong>{z$place_heading}</strong>",
-  "<p>TKTK {z$place_name} has a population of {z$pop}, ",
-  "a '{z$title_left}' value of '{z$val_left}', and a ",
-  "'{z$title_right}' value of {z$val_right}. ",
-  "<p>{z$place_name} has {sub('^the', 'a', z$exp_right)} ",
-  "higher than {z$perc} of other {z$scale_plural} with ",
-  "{sub('^the', 'a', z$exp_left)} of '{z$val_left}' in the ",
-  "Montreal region."),
-
-
-## Special cases ----------------------------------------------------------
-
-# If correlation is close to zero
-paste0(
-      "<p>During {z$date_left}, {z$exp_left} ",
-      "averaged {z$mean_val} per day. ",
-      "The maximum value was {z$max_val} on {z$max_date}, and the ",
-      "minimum value was {z$min_val} on {z$min_date}. ",
-      "There was no growth trend during this time period."),
-# If correlation is strong
-paste0(
-      "<p>During {z$date_left}, {z$exp_left} ",
-      "averaged {z$mean_val} per day. ",
-      "The maximum value was {z$max_val} on {z$max_date}, and the ",
-      "minimum value was {z$min_val} on {z$min_date}. ",
-      "There was a {z$strong} {z$pos} growth trend during this time ",
-      "period, with {z$exp_left} {z$coef_increasing} an average of ",
-      "{z$coef} each day.")
-
-)) |> 
-  left_join(info_table_translated, by = "en")
-
-
-# Same file for both smaller strings and texts ----------------------------
+# REVERT TO R SCRIPT ------------------------------------------------------
 
 info_table_translated <- 
-  bind_rows(small_strings_translated, texts_translated) |> 
-  distinct()
-
-
-# Warnings ----------------------------------------------------------------
-
-# Do we need to update this file?
-modif_date_info_table <- file.info("R/functions/_info_table.R")$mtime
-modif_date_this_file <- file.info("dev/translation/info_table.R")$mtime
-
-if (modif_date_info_table > modif_date_this_file) {
-  warning("Info table texts have possibly been changed since last translation.")
-}
-
-# Or missing translation would give the same result
-walk(seq_along(info_table_translated$fr), ~{
-  
-  x <- pull(info_table_translated[.x, "fr"])
-  
-  if (is.na(x)) {
-    no_translation <-
-      pull(info_table_translated[.x, "en"])
-    warning(paste0("No translation found for `", no_translation, 
-                   "` (variables table)."), 
-            call. = FALSE)
-  }
-})
+tibble(en = character(), fr = character()) |>
+  add_row(en = paste0("borough/city"), 
+          fr = paste0("de l'arrondissement/de la ville")) |> 
+  add_row(en = paste0("census tract"), 
+          fr = paste0("du secteur de recensement")) |> 
+  add_row(en = paste0("dissemination area"), 
+          fr = paste0("de l'aire de diffusion")) |> 
+  add_row(en = paste0("250-m"), 
+          fr = paste0("de 250-m")) |> 
+  add_row(en = paste0("building"), 
+          fr = paste0("du bâtiment")) |> 
+  add_row(en = paste0("street"), 
+          fr = paste0("rue")) |> 
+  add_row(en = paste0("boroughs or cities"), 
+          fr = paste0("arrondissements ou villes")) |> 
+  add_row(en = paste0("census tracts"), 
+          fr = paste0("secteurs de recensement")) |> 
+  add_row(en = paste0("dissemination areas"), 
+          fr = paste0("aires de diffusion")) |> 
+  add_row(en = paste0("areas"), 
+          fr = paste0("aires")) |> 
+  add_row(en = paste0("buildings"), 
+          fr = paste0("bâtiments")) |> 
+  add_row(en = paste0("streets"), 
+          fr = paste0("rues")) |> 
+  add_row(en = paste0("The dissemination area around {select_name$name}"), 
+          fr = paste0("L'aire de diffusion autour de {select_name$name}")) |> 
+  add_row(en = paste0("Census tract {select_name$name}"), 
+          fr = paste0("Secteur de recensement {select_name$name} ")) |> 
+  add_row(en = paste0("Dissemination area {select_name$name}"), 
+          fr = paste0("Zone de diffusion {select_name$name} ")) |> 
+  add_row(en = paste0("The area around {select_name$name}"), 
+          fr = paste0("La zone autour de {select_name$name} ")) |> 
+  add_row(en = paste0("{select_name$name_2} of {out$place_name}"), 
+          fr = paste0("{select_name$name_2} de {out$place_name}")) |> 
+  add_row(en = paste0("much larger than"), 
+          fr = paste0("beaucoup plus grand que")) |> 
+  add_row(en = paste0("larger than"), 
+          fr = paste0("plus grand que")) |> 
+  add_row(en = paste0("almost the same as"), 
+          fr = paste0("presque identique à")) |> 
+  add_row(en = paste0("smaller than"), 
+          fr = paste0("plus petit que")) |> 
+  add_row(en = paste0("much smaller than"), 
+          fr = paste0("beaucoup plus petit que")) |> 
+  add_row(en = paste0("high"), 
+          fr = paste0("élevé/e")) |> 
+  add_row(en = paste0("low"), 
+          fr = paste0("faible")) |> 
+  add_row(en = paste0("moderate"), 
+          fr = paste0("modéré/e")) |> 
+  add_row(en = paste0("increased"), 
+          fr = paste0("augmenté")) |> 
+  add_row(en = paste0("decreased"), 
+          fr = paste0("diminué")) |> 
+  add_row(en = paste0("majority"), 
+          fr = paste0("majorité")) |> 
+  add_row(en = paste0("plurality"), 
+          fr = paste0("pluralité")) |> 
+  add_row(en = paste0("positive"), 
+          fr = paste0("positive")) |> 
+  add_row(en = paste0("negative"), 
+          fr = paste0("négative")) |> 
+  add_row(en = paste0("strong"), 
+          fr = paste0("forte")) |> 
+  add_row(en = paste0("weak"), 
+          fr = paste0("faible")) |> 
+  add_row(en = paste0("higher"), 
+          fr = paste0("plus grand/e")) |> 
+  add_row(en = paste0("lower"), 
+          fr = paste0("plus petit/e")) |> 
+  add_row(en = paste0("with only a few exceptions"), 
+          fr = paste0("à quelques exceptions près")) |> 
+  add_row(en = paste0("although with some exceptions"), 
+          fr = paste0("bien qu'avec des exceptions")) |> 
+  add_row(en = paste0("although with many exceptions"), 
+          fr = paste0("bien qu'avec beaucoup d'exceptions")) |> 
+  add_row(en = paste0("dramatically different"), 
+          fr = paste0("radicalement différents")) |> 
+  add_row(en = paste0("substantially different"), 
+          fr = paste0("sensiblement différents")) |> 
+  add_row(en = paste0("considerably different"), 
+          fr = paste0("modérément différents")) |> 
+  add_row(en = paste0("similar"), 
+          fr = paste0("similaires")) |> 
+  add_row(en = paste0(" and "), 
+          fr = paste0(" et ")) |> 
+  add_row(en = paste0("several different dates"), 
+          fr = paste0("plusieurs dates différentes")) |> 
+  add_row(en = paste0("increasing"), 
+          fr = paste0("augmentant")) |> 
+  add_row(en = paste0("decreasing"), 
+          fr = paste0("diminuant")) |> 
+  add_row(en = paste0("No data available."), 
+          fr = paste0("Aucune donnée disponible.")) |> 
+  add_row(en = paste0("<i>(Data from {date_left}.)</i>"), 
+          fr = paste0("<i>(Données de {date_left}.)</i>")) |> 
+  add_row(en = paste0(""), 
+          fr = paste0("<p><b>FORTE CORRÉLATION</b></p>")) |> 
+  add_row(en = paste0("<strong>Kahnawake Mohawk Territory</strong><p>Statistic",
+                      "s Canada does not gather the same data for indigenous r",
+                      "eserves in the Census as it does for other jurisdiction",
+                      "s, so we cannot display findings here."), 
+          fr = paste0("<strong>Kahnawake (Réserve indienne)</strong><p>Dans le",
+                      " cadre du recensement, Statistique Canada ne recueille ",
+                      "pas les mêmes données pour les réserves autochtones que",
+                      " dans les autres juridictions, nous ne pouvons donc pas",
+                      " afficher de résultats ici.")) |> 
+  add_row(en = paste0("<strong>Kanehsatà:ke</strong><p>Statistics Canada does ",
+                      "not gather the same data for indigenous reserves in the",
+                      " Census as it does for other jurisdictions, so we canno",
+                      "t display findings here."), 
+          fr = paste0("<strong>Kanehsatà:ke</strong><p>Dans le cadre du recens",
+                      "ement, Statistique Canada ne recueille pas les mêmes do",
+                      "nnées pour les réserves autochtones que dans les autres",
+                      " juridictions, nous ne pouvons donc pas afficher de rés",
+                      "ultats ici.")) |> 
+  add_row(en = paste0("{z$place_name} has no data available on {z$exp_left}."), 
+          fr = paste0("{z$place_name} n'a pas de données disponibles sur {z$ex",
+                      "p_left}.")) |> 
+  add_row(en = paste0("{z$place_name} has no data available on {z$exp_left} an",
+                      "d {z$exp_right}."), 
+          fr = paste0("{z$place_name} n'a pas de données disponibles sur {z$ex",
+                      "p_left} et {z$exp_right} .")) |> 
+  add_row(en = paste0("At the {z$scale_sing} scale, {z$exp_left} varies from {",
+                      "z$min_val} to {z$max_val}, with an average value of {z$",
+                      "mean_val} and a median value of {z$median_val}. Two thi",
+                      "rds of {z$scale_plural} have a score between {z$quant_l",
+                      "ow} and {z$quant_high}."), 
+          fr = paste0("À l'échelle {z$scale_sing}, {z$exp_left} varie de {z$mi",
+                      "n_val} à {z$max_val} avec une valeur moyenne de {z$mean",
+                      "_val} et une valeur médiane de {z$median_val} . Les deu",
+                      "x tiers des {z$scale_plural} ont un score compris entre",
+                      " {z$quant_low} et {z$quant_high} .")) |> 
+  add_row(en = paste0("<strong>{z$place_heading}</strong><p>{z$place_name} has",
+                      " a population of {z$pop} and a '{z$title_left}' score (",
+                      "{z$exp_left}) of {z$val_left}, which is {z$larger} the ",
+                      "region-wide median of {z$median_val}.<p>{z$place_name} ",
+                      "has a {z$high} relative score for this indicator, with ",
+                      "'{z$exp_left}' higher than {z$percentile} of {z$scale_p",
+                      "lural} in the Montreal region."), 
+          fr = paste0("<strong>{z$place_heading}</strong><p> {z$place_name} a ",
+                      "une population de {z$pop} et un score pour '{z$title_le",
+                      "ft}' ({z$exp_left}) de {z$val_left}, ce qui est {z$larg",
+                      "er} la médiane régionale de {z$median_val}.<p>{z$place_",
+                      "name} a une valeur relativement {z$high} pour cet indic",
+                      "ateur, avec '{z$exp_left}' plus élevé/e que {z$percenti",
+                      "le} des {z$scale_plural} de la région de Montréal.")) |> 
+  add_row(en = paste0("At the {z$scale_sing} scale, {z$exp_left} varies from '",
+                      "{z$min_val}' to '{z$max_val}'. A {z$majority} of {z$sca",
+                      "le_plural} ({z$mode_prop}) have a value of '{z$mode_val",
+                      "}', while {z$mode_prop_2} have a value of '{z$mode_val_",
+                      "2}'."), 
+          fr = paste0("À l'échelle {z$scale_sing}, {z$exp_left} varie de {z$mi",
+                      "n_val} à {z$max_val}. Une {z$majority} des {z$scale_plu",
+                      "ral} ({z$mode_prop}) ont une valeur de '{z$mode_val}', ",
+                      "tandis que {z$mode_prop_2} ont une valeur de '{z$mode_v",
+                      "al_2}'.")) |> 
+  add_row(en = paste0("<strong>{z$place_heading}</strong><p>{z$place_name} has",
+                      " a population of {z$pop} and a '{z$title_left}' value o",
+                      "f '{z$val_left}', which is shared by {z$other_with_val}",
+                      " of {z$scale_plural} in the Montreal region."), 
+          fr = paste0("<strong>{z$place_heading}</strong><p> {z$place_name} a ",
+                      "une population de {z$pop} et une valeur '{z$title_left}",
+                      "' de ' {z$val_left}, ce qui est partagé par {z$other_wi",
+                      "th_val} des {z$scale_plural} de la région de Montréal.")) |> 
+  add_row(en = paste0("At the {z$scale_sing} scale, the change in {z$exp_left}",
+                      " between {z$start_date_left} and {z$end_date_left} vari",
+                      "ed from {z$min_val} to {z$max_val}, with an average cha",
+                      "nge of {z$mean_val} and a median change of {z$median_va",
+                      "l}. Two thirds of {z$scale_plural} saw a change between",
+                      " {z$quant_low} and {z$quant_high}."), 
+          fr = paste0("À l'échelle {z$scale_sing}, la variation pour '{z$exp_l",
+                      "eft}' entre {z$start_date_left} et {z$end_date_left} a ",
+                      "varié de {z$min_val} à {z$max_val}, avec une variation ",
+                      "moyenne de {z$mean_val} et une variation médiane de {z$",
+                      "median_val}. Deux tiers des {z$scale_plural} ont connu ",
+                      "une variation comprise entre {z$quant_low} et {z$quant_",
+                      "high}.")) |> 
+  add_row(en = paste0("<strong>{z$place_heading}</strong><p>{sentence(z$exp_le",
+                      "ft)} in {z$place_name} {z$increase} by {sub('-', '', z$",
+                      "val_left)} between {z$start_date_left} and {z$end_date_",
+                      "left}, which is {z$larger} the region-wide median chang",
+                      "e of {z$median_val}.<p>{z$place_name} had a {z$high} re",
+                      "lative change for this indicator, with a change in {z$e",
+                      "xp_left} larger than {z$percentile} of {z$scale_plural}",
+                      " in the Montreal region."), 
+          fr = paste0("<strong>{z$place_heading}</strong><p>{sentence(z$exp_le",
+                      "ft)} à {z$place_name} a {z$increase} de {sub('-', '', z",
+                      "$val_left)} entre {z$start_date_left} et {z$end_date_le",
+                      "ft}, ce qui est {z$larger} que la variation médiane à l",
+                      "'échelle de la région ({z$median_val}).<p>{z$place_name",
+                      "} a connu un changement relatif {z$high} pour cet indic",
+                      "ateur, avec une variation pour '{z$exp_left}' plus gran",
+                      "d que {z$percentile} des {z$scale_plural} de la région ",
+                      "de Montréal.")) |> 
+  add_row(en = paste0("TKTK At the {z$scale_sing} scale, {z$exp_left} varies f",
+                      "rom '{z$min_val}' to '{z$max_val}'. A {z$majority} of {",
+                      "z$scale_plural} ({z$mode_prop}) have a value of '{z$mod",
+                      "e_val}', while {z$mode_prop_2} have a value of '{z$mode",
+                      "_val_2}'."), 
+          fr = paste0("TKTK")) |> 
+  add_row(en = paste0("<strong>{z$place_heading}</strong><p>TKTK {z$place_name",
+                      "} has a population of {z$pop} and a '{z$title_left}' va",
+                      "lue of '{z$val_left}', which is shared by {z$other_with",
+                      "_val} of {z$scale_plural} in the Montreal region."), 
+          fr = paste0("TKTK")) |> 
+  add_row(en = paste0("<p>'{z$title_left}' has effectively no correlation ({z$",
+                      "corr_disp}) with '{z$title_right}' at the {z$scale_sing",
+                      "} scale.<p>This means that, at the {z$scale_sing} scale",
+                      ", there is no relationship between the two variables."), 
+          fr = paste0("<p>'{z$title_left}' n'a effectivement aucune corrélatio",
+                      "n ({z$corr_disp}) avec '{z$title_right}' à l'échelle {z",
+                      "$scale_sing}.<p>Cela signifie qu'à l'échelle {z$scale_s",
+                      "ing}, il n'y a pas de relation entre les deux variables",
+                      ".")) |> 
+  add_row(en = paste0("<p>'{z$title_left}' has a {z$strong} {z$pos} correlatio",
+                      "n ({z$corr_disp}) with '{z$title_right}' at the {z$scal",
+                      "e_sing} scale.<p>This means that, in general, {z$scale_",
+                      "plural} with a higher {sub('^the ', '', z$exp_right)} t",
+                      "end to have a {z$higher} {sub('^the ', '', z$exp_left)}",
+                      ", {z$high_low_disclaimer}."), 
+          fr = paste0("<p>'{z$title_left}' présente une {z$strong} corrélation",
+                      " {z$pos} ({z$corr_disp}) avec '{z$title_right}' à l'éch",
+                      "elle {z$scale_sing}.<p>Cela signifie qu'en général, les",
+                      " {z$scale_plural} avec un/e plus grand/e {sub('^le |^la",
+                      " ', '', z$exp_right)} ont tendance à avoir un/e {z$high",
+                      "er} {sub('^le |^la ', '', z$exp_left)}, {z$high_low_dis",
+                      "claimer}.")) |> 
+  add_row(en = paste0("<strong>{z$place_heading}</strong><p>{z$place_name} has",
+                      " a population of {z$pop}, a '{z$title_left}' value of {",
+                      "z$val_left}, and a '{z$title_right}' value of {z$val_ri",
+                      "ght}. <p>These two scores are {z$relative_position}, in",
+                      " relative terms. {z$place_name} has {sub('^the', 'a', z",
+                      "$exp_left)} higher than {z$perc_left} of {z$scale_plura",
+                      "l} and {sub('^the', 'a', z$exp_right)} higher than {z$p",
+                      "erc_right} of {z$scale_plural} in the Montreal region."), 
+          fr = paste0("<strong>{z$place_heading}</strong><p> {z$place_name} a ",
+                      "une population de {z$pop}, une valeur  '{z$title_left}'",
+                      " de {z$val_left} et une valeur  '{z$title_right}' de {z",
+                      "$val_right}. <p>Ces deux scores sont {z$relative_positi",
+                      "on}, en termes relatifs. {z$place_name} a {sub('^le', '",
+                      "un', z$exp_left)} supérieur à {z$perc_left} des {z$scal",
+                      "e_plural} et {sub('^le', 'un', z$exp_right)} supérieur ",
+                      "à {z$perc_right} des {z$scale_plural} de la région de M",
+                      "ontréal.")) |> 
+  add_row(en = paste0("<p>'{z$title_left}' has effectively no correlation (Spe",
+                      "arman's rho: {z$corr_disp}) with '{z$title_right}' at t",
+                      "he {z$scale_sing} scale.<p>This means that, at the {z$s",
+                      "cale_sing} scale, there is no relationship between the ",
+                      "two variables."), 
+          fr = paste0("<p>'{z$title_left}' n'a effectivement aucune corrélatio",
+                      "n (rho de Spearman: {z$corr_disp}) avec '{z$title_right",
+                      "}' à l'échelle {z$scale_sing}.<p>Cela signifie qu'à l'é",
+                      "chelle {z$scale_sing} scale, il n'y a pas de relation e",
+                      "ntre les deux variables")) |> 
+  add_row(en = paste0("<p>'{z$title_left}' has a {z$strong} {z$pos} correlatio",
+                      "n (Spearman's rho: {z$corr_disp}) with '{z$title_right}",
+                      "' at the {z$scale_sing} scale.<p>This means that, in ge",
+                      "neral, {z$scale_plural} with a higher {sub('^the ', '',",
+                      " z$exp_right)} tend to have a {z$higher} {sub('^the ', ",
+                      "'', z$exp_left)}, {z$high_low_disclaimer}."), 
+          fr = paste0("<p>'{z$title_left}' présente une {z$strong} correlation",
+                      " {z$pos} (rho de Spearman: {z$corr_disp}) avec '{z$titl",
+                      "e_right}' à l'échelle {z$scale_sing}.<p>Cela signifie q",
+                      "u'en général, les {z$scale_plural} avec un/e plus grand",
+                      "/e {sub('^le |^la ', '', z$exp_right)} ont tendance à a",
+                      "voir un/e {z$higher} {sub('^le |^la ', '', z$exp_left)}",
+                      ", {z$high_low_disclaimer}.")) |> 
+  add_row(en = paste0("<strong>{z$place_heading}</strong><p>{z$place_name} has",
+                      " a population of {z$pop}, a '{z$title_left}' value of '",
+                      "{z$val_left}', and a '{z$title_right}' value of {z$val_",
+                      "right}. <p>{z$place_name} has {sub('^the', 'a', z$exp_r",
+                      "ight)} higher than {z$perc} of other {z$scale_plural} w",
+                      "ith {sub('^the', 'a', z$exp_left)} of '{z$val_left}' in",
+                      " the Montreal region."), 
+          fr = paste0("TKTK")) |> 
+  add_row(en = paste0("<strong>{z$place_heading}</strong><p>{z$place_name} has",
+                      " a population of {z$pop}, a {z$title_left} value of '{z",
+                      "$val_left}', and a '{z$title_right}' value of '{z$val_r",
+                      "ight}'. <p>{z$place_name} has {sub('^the', 'a', z$exp_l",
+                      "eft)} higher than {z$perc} of other {z$scale_plural} wi",
+                      "th {sub('^the', 'a', z$exp_right)} of '{z$val_right}' i",
+                      "n the Montreal region."), 
+          fr = paste0("TKTK")) |> 
+  add_row(en = paste0("<p>From {z$start_date_left} to {z$end_date_left}, the c",
+                      "hange in '{z$title_left}' had effectively no correlatio",
+                      "n ({z$corr_disp}) with the change in '{z$title_right}' ",
+                      "at the {z$scale_sing} scale.<p>This means that, at the ",
+                      "{z$scale_sing} scale, there was no relationship between",
+                      " the change in the two variables."), 
+          fr = paste0("<p>De {z$start_date_left} à {z$end_date_left}, la varia",
+                      "tion de la valeur '{z$title_left}' n'a effectivement au",
+                      "cune corrélation avec la variation de la valeur '{z$tit",
+                      "le_right}' à l'échelle {z$scale_sing}.<p>Cela signifie ",
+                      "qu'à l'échelle {z$scale_sing}, il n'y avait pas re rela",
+                      "tion entre la variation des deux variables.")) |> 
+  add_row(en = paste0("<p>From {z$start_date_left} to {z$end_date_left}, the c",
+                      "hange in '{z$title_left}' had a {z$strong} {z$pos} corr",
+                      "elation ({z$corr_disp}) with the change in '{z$title_ri",
+                      "ght}' at the {z$scale_sing} scale.<p>This means that, i",
+                      "n general, {z$scale_plural} with a higher change in {z$",
+                      "exp_left} tended to have a {z$higher} change in {z$exp_",
+                      "right}, {z$high_low_disclaimer}."), 
+          fr = paste0("<p>De {z$start_date_left} à {z$end_date_left}, la varia",
+                      "tion de la valeur '{z$title_left}' avait une {z$strong}",
+                      " corrélation {z$pos} ({z$corr_disp}) avec la variation ",
+                      "de la valeur '{z$title_right}' à l'échelle {z$scale_sin",
+                      "g}.<p>Cela signifie qu'en général, les {z$scale_plural}",
+                      " présentant une plus grande variation pour '{z$exp_left",
+                      "}' ont tendance à avoir un/e {z$higher} variation pour ",
+                      "'{z$exp_right}', {z$high_low_disclaimer}.")) |> 
+  add_row(en = paste0("<strong>{z$place_heading}</strong><p>From {z$start_date",
+                      "_left} to {z$end_date_left}, {z$place_name} had a chang",
+                      "e in its '{z$title_left}' value of {z$val_left}, and a ",
+                      "change in its '{z$title_right}' value of {z$val_right}.",
+                      " <p>These two scores are {z$relative_position}, in rela",
+                      "tive terms. {z$place_name} had a change in {z$exp_left}",
+                      " higher than {z$perc_left} of {z$scale_plural} and a ch",
+                      "ange in {z$exp_right} higher than {z$perc_right} of {z$",
+                      "scale_plural} in the Montreal region."), 
+          fr = paste0("<strong>{z$place_heading}</strong><p>De {z$start_date_l",
+                      "eft} à {z$end_date_left}, {z$place_name} a connu une va",
+                      "riation de sa valeur '{z$title_left}' de {z$val_left}, ",
+                      "et une variation de sa valeur '{z$title_right}' de {z$v",
+                      "al_right}. <p>Ces deux résultats sont {z$relative_posit",
+                      "ion}, en termes relatifs. {z$place_name} a eu une varia",
+                      "tion pour '{z$exp_left}' supérieure à {z$perc_left} des",
+                      " {z$scale_plural} et une variation pour '{z$exp_right}'",
+                      " supérieure à {z$perc_right} des {z$scale_plural} de la",
+                      " région de Montréal.")) |> 
+  add_row(en = paste0("<p>From {z$start_date_left} to {z$end_date_left}, the c",
+                      "hange in '{z$title_left}' had effectively no correlatio",
+                      "n (Spearman's rho: {z$corr_disp}) with the change in '{",
+                      "z$title_right}' at the {z$scale_sing} scale.<p>This mea",
+                      "ns that, at the {z$scale_sing} scale, there was no rela",
+                      "tionship between the change in the two variables."), 
+          fr = paste0("<p>Entre {z$start_date_left} et {z$end_date_left}, la v",
+                      "ariation de la valeur '{z$title_left}' n'avait effectiv",
+                      "ement aucune corrélation (rho de Spearman: {z$corr_disp",
+                      "}) avec la variation de la valeur '{z$title_right}' à l",
+                      "'échelle {z$scale_sing}.<p>Cela signifie qu'à l'échelle",
+                      " {z$scale_sing}, il n'y avait aucune relation entre la ",
+                      "variation des deux variables.")) |> 
+  add_row(en = paste0("<p>From {z$start_date_left} to {z$end_date_left}, the c",
+                      "hange in '{z$title_left}' had a {z$strong} {z$pos} corr",
+                      "elation (Spearman's rho: {z$corr_disp}) with the change",
+                      " in '{z$title_right}' at the {z$scale_sing} scale.<p>Th",
+                      "is means that, in general, {z$scale_plural} with a high",
+                      "er change in {z$exp_left} tended to have a {z$higher} c",
+                      "hange in {z$exp_right}, {z$high_low_disclaimer}."), 
+          fr = paste0("<p>De {z$start_date_left} à {z$end_date_left}, la varia",
+                      "tion de la valeur '{z$title_left}' avait une {z$strong}",
+                      " corrélation {z$pos} (rho de Spearman: {z$corr_disp}) a",
+                      "vec variation de la valeur '{z$title_right}' à l'échell",
+                      "e {z$scale_sing}.<p>Cela signifie qu'en général, les {z",
+                      "$scale_plural} présentant une plus grande variation du ",
+                      "{sub('^le |^la ', '', z$exp_left)} avaient tendance à a",
+                      "voir une {z$higher} variation du {sub('^le |^la ', '', ",
+                      "z$exp_right)}, {z$high_low_disclaimer}.")) |> 
+  add_row(en = paste0("<strong>{z$place_heading}</strong><p>TKTK {z$place_name",
+                      "} has a population of {z$pop}, a '{z$title_left}' value",
+                      " of '{z$val_left}', and a '{z$title_right}' value of {z",
+                      "$val_right}. <p>{z$place_name} has {sub('^the', 'a', z$",
+                      "exp_right)} higher than {z$perc} of other {z$scale_plur",
+                      "al} with {sub('^the', 'a', z$exp_left)} of '{z$val_left",
+                      "}' in the Montreal region."), 
+          fr = paste0("TKTK")) |> 
+  add_row(en = paste0("<p>During {z$date_left}, {z$exp_left} averaged {z$mean_",
+                      "val} per day. The maximum value was {z$max_val} on {z$m",
+                      "ax_date}, and the minimum value was {z$min_val} on {z$m",
+                      "in_date}. There was no growth trend during this time pe",
+                      "riod."), 
+          fr = paste0("<p>En {z$date_left}, {z$exp_left} était en moyenne de {",
+                      "z$mean_val} par jour. La valeur maximale était de {z$ma",
+                      "x_val} le/les/à {z$max_date}, et la valeur minimale éta",
+                      "it de {z$min_val} le/les/à {z$min_date}. Il n'y a pas e",
+                      "u de tendances de croissance/décroissance pendant cette",
+                      " période.")) |> 
+  add_row(en = paste0("<p>During {z$date_left}, {z$exp_left} averaged {z$mean_",
+                      "val} per day. The maximum value was {z$max_val} on {z$m",
+                      "ax_date}, and the minimum value was {z$min_val} on {z$m",
+                      "in_date}. There was a {z$strong} {z$pos} growth trend d",
+                      "uring this time period, with {z$exp_left} {z$coef_incre",
+                      "asing} an average of {z$coef} each day."), 
+          fr = paste0("<p>En {z$date_left}, {z$exp_left} était en moyenne de {",
+                      "z$mean_val} par jour. La valeur maximale était de {z$ma",
+                      "x_val} le/les/à {z$max_date}, et la valeur minimale éta",
+                      "it de {z$min_val} le/les/à {z$min_date}. Une {z$strong}",
+                      " tendance à la croissance {z$pos} a été observée au cou",
+                      "rs de cette période, {z$exp_left} {z$coef_increasing} e",
+                      "n moyenne de {z$coef} chaque jour."))
 
 
 # Save --------------------------------------------------------------------
 
-# Also encode english for `Kanehsatà:ke`
-Encoding(info_table_translated$en) <- "UTF-8"
-Encoding(info_table_translated$fr) <- "UTF-8"
-write_csv(info_table_translated, 
-          file = "dev/translation/csv/info_table_translated.csv")
+# # Also encode english for `Kanehsatà:ke`
+# Encoding(info_table_translated$en) <- "UTF-8"
+# Encoding(info_table_translated$fr) <- "UTF-8"
+# write_csv(info_table_translated, 
+#           file = "dev/translation/csv/info_table_translated.csv")
 
 # Clean-up ----------------------------------------------------------------
 
-rm(info_table_translated, small_strings_translated, 
-   texts_translated)
+# rm(info_table_translated, small_strings_translated, 
+#    texts_translated)

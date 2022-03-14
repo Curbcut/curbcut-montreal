@@ -1,6 +1,20 @@
 #### Build translation #########################################################
 
 
+# From a CSV to code to create tibbles ------------------------------------
+
+# form_translation_tibble <- function(df) {
+#   
+#   en <- gsub("(.{55})", '\\1",\n"', df$en)
+#   fr <- gsub("(.{55})", '\\1",\n"', df$fr)
+#   
+#   writeLines(paste0('tibble(en = character(), fr = character()) |>\n',
+# 
+#   paste0('add_row(en = paste0("', en, '"), \nfr = paste0("', fr, '"))',
+#                     collapse = ' |> \n'))
+#   )
+# }
+
 
 # Run all the translation preparation -------------------------------------
 source("dev/translation/variables.R", encoding = "utf-8")
@@ -18,7 +32,13 @@ translation_fr <-
   reduce(bind_rows) |> 
   distinct(en, .keep_all = TRUE)
 
+bind_rows(home_and_about_translated,
+          info_table_translated,
+          ui_and_misc_translated,
+          )
+
 
 # Save to the translation files -------------------------------------------
 
 qsave(translation_fr, "data/translation_fr.qs")
+
