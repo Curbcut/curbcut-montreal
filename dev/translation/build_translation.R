@@ -24,18 +24,19 @@ source("dev/translation/home_and_about.R", encoding = "utf-8")
 
 
 # Retrieve and bind translated csvs ---------------------------------------
-translation_fr <- 
-  map(list.files("dev/translation/csv"), ~{
-    read.csv(paste0("dev/translation/csv/", .x)) |> 
-      as_tibble()
-  }) |> 
-  reduce(bind_rows) |> 
-  distinct(en, .keep_all = TRUE)
+# translation_fr <- 
+#   map(list.files("dev/translation/csv"), ~{
+#     read.csv(paste0("dev/translation/csv/", .x)) |> 
+#       as_tibble()
+#   }) |> 
+#   reduce(bind_rows) |> 
+#   distinct(en, .keep_all = TRUE)
 
+translation_fr <- 
 bind_rows(home_and_about_translated,
           info_table_translated,
           ui_and_misc_translated,
-          )
+          variables_translated)
 
 
 # Save to the translation files -------------------------------------------
