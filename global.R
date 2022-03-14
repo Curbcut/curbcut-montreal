@@ -34,6 +34,7 @@ suppressPackageStartupMessages({
 options(shiny.trace = FALSE) # Set TRUE for debugging
 options(shiny.useragg = TRUE)
 
+
 # Data --------------------------------------------------------------------
 
 variables <- qread("data/variables.qs")
@@ -123,6 +124,7 @@ sus_link <- reactiveValues()
 
 map_token <- paste0("pk.eyJ1Ijoic3VzLW1jZ2lsbCIsImEiOiJjbDBxMTcyNWwyNTl0M2",
                     "RtZzRremNxOHA3In0.V2Ah5lxy-3RZlF2QKOvIjg")
+options(rdeck.mapbox_access_token = map_token)
 map_style <- "mapbox://styles/dwachsmuth/ckh6cg4wg05nw19p5yrs9tib7"
 map_zoom <- 10.1
 map_zoom_levels <- c("borough" = 0, "CT" = 10.5, "DA" = 12#, "building" = 14)
