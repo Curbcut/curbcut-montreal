@@ -36,7 +36,8 @@ translation_fr <-
 bind_rows(home_and_about_translated,
           info_table_translated,
           ui_and_misc_translated,
-          variables_translated)
+          variables_translated) |> 
+  distinct(en, .keep_all = TRUE)
 
 
 # Save to the translation files -------------------------------------------
