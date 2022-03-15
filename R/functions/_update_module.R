@@ -19,13 +19,10 @@ update_module <- function(mod_ns = NULL, id = mod_ns, session, zoom, location,
   # Update mapdeck_view
   if (!all(map_lgl(c(zoom, location), is.null))) {
     if (!is.null(map_id)) {
-      mapdeck_update(map_id = map_id) |>
-        mapdeck_view(
-          location = location,
-          zoom = zoom,
-          duration = 500,
-          transition = "fly",
-        )
+      rdeck_proxy(id = map_id,
+                  initial_view_state = 
+                    view_state(center = location, zoom = zoom)
+      )
     }}
   
   # Update df()

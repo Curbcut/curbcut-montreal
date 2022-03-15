@@ -1,7 +1,7 @@
 #### BOOKMARK MODULE ########################################################
 
 #' @param id A character string representing the module id. Not otherwise used.
-#' @param map_view_change A reactive which resolves to an output of a map view
+#' @param map_viewstate A reactive which resolves to an output of a map view
 #' change, coming from a mapdeck object.
 #' @param var_left A reactive which resolves to a character string
 #' representing the right variables to be mapped and analyzed. 
@@ -18,14 +18,14 @@
 #' @param more_args Named vectors indicating other input that must be updated
 #' following bookmarking.
 
-bookmark_server <- function(id, map_view_change = reactive(NULL), 
+bookmark_server <- function(id, map_viewstate = reactive(NULL), 
                             var_left = reactive(NULL),
                             var_right = reactive(NULL), 
                             select_id = reactive(NULL), 
                             df = reactive(NULL), map_id = NULL, 
                             more_args = reactive(NULL)) {
   
-  stopifnot(is.reactive(map_view_change))
+  stopifnot(is.reactive(map_viewstate))
   stopifnot(is.reactive(var_right))
   stopifnot(is.reactive(select_id))
   stopifnot(is.reactive(df))
@@ -37,10 +37,10 @@ bookmark_server <- function(id, map_view_change = reactive(NULL),
     observe({
       
       # Map arguments
-      if (!is.null(map_view_change())) {
-        zm <- floor(map_view_change()$zoom * 100) / 100
-        lon <- round(as.numeric(map_view_change()$longitude), digits = 6)
-        lat <- round(as.numeric(map_view_change()$latitude), digits = 6)
+      if (!is.null(map_viewstate())) {
+        zm <- floor(map_viewstate()$zoom * 100) / 100
+        lon <- round(as.numeric(map_viewstate()$center[[1]]), digits = 6)
+        lat <- round(as.numeric(map_viewstate()$center[[2]]), digits = 6)
       }
       
       # Right variable

@@ -3,7 +3,6 @@
 # UI ----------------------------------------------------------------------
 
 canale_UI <- function(id) {
-  
   ns_id <- "canale"
   
   tagList(
@@ -16,7 +15,8 @@ canale_UI <- function(id) {
                            zoom_UI(NS(id, ns_id), map_zoom_levels)))),
     
     # Map
-    div(class = "mapdeck_div", rdeckOutput(NS(id, "map"), height = "100%")),
+    div(class = "mapdeck_div", rdeckOutput(NS(id, paste0(ns_id, "-map")), 
+                                           height = "100%")),
     
     # Right panel
     right_panel(
@@ -41,7 +41,7 @@ canale_server <- function(id) {
     poi <- reactiveVal(NULL)
     
     # Map
-    output$map <- renderRdeck({
+    output[[paste0(ns_id, "-map")]] <- renderRdeck({
       rdeck(map_style = map_base_style, initial_view_state = view_state(
         center = map_location, zoom = map_zoom)) |> 
         add_mvt_layer(id = ns_id, 
@@ -54,18 +54,20 @@ canale_server <- function(id) {
         })
     
     # Zoom and POI reactives
-    observeEvent(input$map_viewstate, {
-      zoom(get_zoom(input$map_viewstate$zoom, map_zoom_levels))
+    observeEvent(input[[paste0(ns_id, "-map_viewstate")]], {
+      zoom(get_zoom(input[[paste0(ns_id, "-map_viewstate")]]$zoom, map_zoom_levels))
       # poi(observe_map(input$map_viewstate))
     })
     
     # Click reactive
-    observeEvent(input$map_click, {
+    observeEvent(input[[paste0(ns_id, "-map_click")]], {
       if (!is.na(select_id()) &&
-                 input$map_click$data$ID == select_id()) select_id(NA) else {
-        select_id(get_click(input$map_click))
+          input[[paste0(ns_id, "-map_click")]]$data$ID == select_id()) {
+        select_id(NA)
+      } else {
+        select_id(get_click(input[[paste0(ns_id, "-map_click")]]))
       }
-      })
+    })
     
     # Choose tileset
     tile <- zoom_server(
@@ -118,43 +120,42 @@ canale_server <- function(id) {
       var_right = var_right,
       poi = poi)
     
-    # Update map in response to variable changes or zooming
-    # select_id <- rdeck_change(
-    #   id = ns_id,
-    #   map_id = NS(id, "map"),
-    #   tile = tile,
-    #   map_var = map_var,
-    #   select_id = select_id
-    # )
-    
+    rdeck_change(
+      id = ns_id, 
+      map_id = "map", 
+      tile = tile, 
+      map_var = map_var, 
+      zoom = zoom,
+      select_id = select_id
+    )
 
 # FUTURE MAP_CHANGE -------------------------------------------------------
     
-    observe({
-      rdeck_proxy("map") |>
-        add_mvt_layer(
-          id = ns_id, 
-          auto_highlight = TRUE,
-          highlight_color = "#FFFFFF80", pickable = TRUE,
-          get_fill_color = scale_fill_sus(rlang::sym(map_var()), "EE"),
-          get_line_color = "#FFFFFF", line_width_units = "pixels",
-          get_line_width = 1)
-    })
-    
-    observeEvent(tile(), {
-      observe({
-        rdeck_proxy("map") |>
-          add_mvt_layer(
-            id = ns_id, 
-            data = mvt_url(paste0("sus-mcgill.canale-", tile())),
-            auto_highlight = TRUE,
-            highlight_color = "#FFFFFF80", pickable = TRUE,
-            get_fill_color = scale_fill_sus(rlang::sym(map_var()), "EE"),
-            get_line_color = "#FFFFFF", line_width_units = "pixels",
-            get_line_width = 1)
-      })
-    })
-    
+    # observe({
+    #   rdeck_proxy("map") |>
+    #     add_mvt_layer(
+    #       id = ns_id, 
+    #       auto_highlight = TRUE,
+    #       highlight_color = "#FFFFFF80", pickable = TRUE,
+    #       get_fill_color = scale_fill_sus(rlang::sym(map_var()), "EE"),
+    #       get_line_color = "#FFFFFF", line_width_units = "pixels",
+    #       get_line_width = 1)
+    # })
+    # 
+    # observeEvent(tile(), {
+    #   observe({
+    #     rdeck_proxy("map") |>
+    #       add_mvt_layer(
+    #         id = ns_id, 
+    #         data = mvt_url(paste0("sus-mcgill.canale-", tile())),
+    #         auto_highlight = TRUE,
+    #         highlight_color = "#FFFFFF80", pickable = TRUE,
+    #         get_fill_color = scale_fill_sus(rlang::sym(map_var()), "EE"),
+    #         get_line_color = "#FFFFFF", line_width_units = "pixels",
+    #         get_line_width = 1)
+    #   })
+    # })
+
     observeEvent(input$`canale-clear_selection`, select_id(NA))
     observeEvent(df(), select_id(NA), ignoreInit = TRUE)
     # error check
@@ -182,39 +183,39 @@ canale_server <- function(id) {
     #   var_right = var_right)
     
     # Bookmarking
-    # bookmark_server(
-    #   id = ns_id,
-    #   map_view_change = reactive(input$map_view_change),
-    #   var_right = var_right,
-    #   select_id = select_id,
-    #   df = df,
-    #   map_id = NS(id, "map"),
-    # )
+    bookmark_server(
+      id = ns_id,
+      map_viewstate = reactive(input[[paste0(ns_id, "-map_viewstate")]]),
+      var_right = var_right,
+      select_id = select_id,
+      df = df,
+      map_id = "map",
+    )
     
     # Update select_id() on bookmark
-    # observeEvent(sus_bookmark$active, {
-    #   # Delay of 2000 milliseconds more than the zoom update from bookmark.
-    #   # The map/df/data needs to be updated before we select an ID.
-    #   if (isTRUE(sus_bookmark$active)) {
-    #     delay(2000, {
-    #       if (!is.null(sus_bookmark$select_id)) {
-    #         if (sus_bookmark$select_id != "NA") select_id(sus_bookmark$select_id)
-    #       }
-    #     })
-    #   }
-    #   
-    #   # So that bookmarking gets triggered only ONCE
-    #   delay(1500, {sus_bookmark$active <- FALSE})      
-    # }, priority = -2)
+    observeEvent(sus_bookmark$active, {
+      # Delay of 2000 milliseconds more than the zoom update from bookmark.
+      # The map/df/data needs to be updated before we select an ID.
+      if (isTRUE(sus_bookmark$active)) {
+        delay(2000, {
+          if (!is.null(sus_bookmark$select_id)) {
+            if (sus_bookmark$select_id != "NA") select_id(sus_bookmark$select_id)
+          }
+        })
+      }
+
+      # So that bookmarking gets triggered only ONCE
+      delay(1500, {sus_bookmark$active <- FALSE})
+    }, priority = -2)
     
     # Update select_id() on module link
-    # observeEvent(sus_link$activity, {
-    #   # Delay of 2000 milliseconds more than the zoom update from bookmark.
-    #   # The map/df/data needs to be updated before we select an ID.
-    #   delay(2000, {
-    #     if (!is.null(sus_link$select_id)) select_id(sus_link$select_id)
-    #   })
-    # }, priority = -2)
+    observeEvent(sus_link$activity, {
+      # Delay of 2000 milliseconds more than the zoom update from bookmark.
+      # The map/df/data needs to be updated before we select an ID.
+      delay(2000, {
+        if (!is.null(sus_link$select_id)) select_id(sus_link$select_id)
+      })
+    }, priority = -2)
     
     # OUT
     # reactive({list(
