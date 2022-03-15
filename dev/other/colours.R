@@ -18,6 +18,28 @@ colour_alpha <- c("borough" = "EE", "CT" = "D5", "DA" = "BB", "building" = "AA",
                   "street" = "AA")
 
 
+# Rdeck colours -----------------------------------------------------------
+
+c_q5 <- tibble(
+  palette = "q5",
+  group = paste0("q5_", c(0:5, NA)),
+  value = c(col_NA, col_left_5, col_NA))
+
+c_bivar <- tibble(
+  palette = "bivar",
+  group = c("1 - 1", "2 - 1", "3 - 1", "1 - 2", "2 - 2", "3 - 2",
+            "1 - 3", "2 - 3", "3 - 3", "NA - 1", "NA - 2", "NA - 3", 
+            "1 - NA", "2 - NA", "3 - NA", "NA - NA"),
+  value = c(col_bivar, rep(col_NA, 7)))
+
+c_delta <- tibble(
+  palette = "delta",
+  group = paste0("d_", c(1:5, NA)),
+  value = c(col_delta_5, col_NA))
+
+colour_table <- bind_rows(c_q5, c_bivar, c_delta)
+  
+
 # Univariate 5-level colour table -----------------------------------------
 
 colour_left_5 <-
@@ -72,4 +94,4 @@ legend_iso <- tibble(x = 1:3, y = 1, fill = col_iso)
 qsavem(colour_alpha, colour_bivar, colour_delta, colour_iso, colour_left_3, 
        colour_left_5, legend_bivar, legend_delta_5, legend_iso, legend_left_3, 
        legend_left_5, col_bivar, col_delta_5, col_iso, col_left_3, col_left_5, 
-       col_NA, col_right_3, file = "data/colours.qsm")
+       col_NA, col_right_3, colour_table, file = "data/colours.qsm")

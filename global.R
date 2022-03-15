@@ -18,8 +18,6 @@ suppressPackageStartupMessages({
   library(ggiraph)
   
   library(sf)
-  library(mapdeck) 
-  library(mapboxapi)
   library(rdeck)
   
   library(DT)
@@ -93,23 +91,41 @@ island_CSDUID <-
 
 # Modules ready -----------------------------------------------------------
 
-mods_rdy <- list("Climate" = c("Climate risk" = "climate_risk"),
-                 "Covid" = c("Covid interventions" = "covid"),
-                 "Housing" = c("Housing system" = "housing", 
-                               "Gentrification" = "gentrification", 
-                               "Permits" = "permits", 
-                               "Marketed Sustainability" = "marketed_sustainability"),
-                 "Policy" = c("Montréal climate plans" = "mcp"),
-                 "Transport" = c("Accessibility" = "access", 
-                                 "Road safety" = "crash"),
-                 "Urban life" = c("Active living potential" = "canale", 
-                                  "Green alleys" = "alley", 
-                                  "Green spaces" = "green_space"),
-                 "Ecology" = c("Natural infrastructure" = "natural_infrastructure"))
+mods_rdy <- list(
+  # "Climate" = c(
+  #   "Climate risk" = "climate_risk"
+  #   ),
+  # "Covid" = c(
+  #   "Covid interventions" = "covid"
+  #   ),
+  # "Housing" = c(
+  #   "Housing system" = "housing", 
+  #   "Gentrification" = "gentrification", 
+  #   "Permits" = "permits", 
+  #   "Marketed Sustainability" = "marketed_sustainability"
+  #   ),
+  # "Policy" = c(
+  #   "Montréal climate plans" = "mcp"
+  #   ),
+  # "Transport" = c(
+  #   "Accessibility" = "access", 
+  #   "Road safety" = "crash"
+  #   ),
+  "Urban life" = c(
+    "Active living potential" = "canale"#, 
+    # "Green alleys" = "alley", 
+    # "Green spaces" = "green_space"
+    )#,
+  # "Ecology" = c(
+  #   "Natural infrastructure" = "natural_infrastructure"
+  #   )
+  )
 
-stand_alone_tabs <- c("Montréal stories" = "stories",
-                      "Place explorer" = "place_explorer",
-                      "About" = "why_dash")
+stand_alone_tabs <- c(
+  # "Montréal stories" = "stories",
+  # "Place explorer" = "place_explorer",
+  "About" = "why_dash"
+  )
 
 
 # Translation and other global reactive values ----------------------------
@@ -125,7 +141,7 @@ sus_link <- reactiveValues()
 map_token <- paste0("pk.eyJ1Ijoic3VzLW1jZ2lsbCIsImEiOiJjbDBxMTcyNWwyNTl0M2",
                     "RtZzRremNxOHA3In0.V2Ah5lxy-3RZlF2QKOvIjg")
 options(rdeck.mapbox_access_token = map_token)
-map_style <- "mapbox://styles/dwachsmuth/ckh6cg4wg05nw19p5yrs9tib7"
+map_base_style <- "mapbox://styles/sus-mcgill/cl0reqoz4000z15pekuh48ld6"
 map_zoom <- 10.1
 map_zoom_levels <- c("borough" = 0, "CT" = 10.5, "DA" = 12#, "building" = 14)
                     )

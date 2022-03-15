@@ -1,11 +1,5 @@
 ### CANALE MODULE ##############################################################
 
-sus_scale <- function(var) scale_color_category(
-  col = !!var, palette = paste0(c(colour_left_5$fill, colour_bivar$fill), "EE"),
-  unmapped_color = paste0(colour_left_5$fill[1], "EE"), 
-  levels = c(paste0("q5_", colour_left_5$group), colour_bivar$group))
-
-
 # UI ----------------------------------------------------------------------
 
 canale_UI <- function(id) {
@@ -48,14 +42,15 @@ canale_server <- function(id) {
     
     # Map
     output$map <- renderRdeck({
-      rdeck(theme = map_style, initial_view_state = view_state(
+      rdeck(map_style = map_base_style, initial_view_state = view_state(
         center = c(-73.58, 45.53), zoom = 10.1)) |> 
         add_mvt_layer(id = "canale", 
                       data = mvt_url("sus-mcgill.canale-autozoom"),
                       auto_highlight = TRUE, highlight_color = "#AAFFFFFF",
                       pickable = TRUE, tooltip = TRUE,
-                      get_fill_color = sus_scale("canale_ind_2016"),
-                      get_line_color = "#FFFFFF")
+                      get_fill_color = scale_fill_sus("canale_ind_2016", "EE"),
+                      get_line_color = "#FFFFFF",
+                      line_width_units = "pixels", get_line_width = 1)
         })
     
     # # Zoom and POI reactives
@@ -87,6 +82,7 @@ canale_server <- function(id) {
       df = df, 
       time = time)
     
+    # Composite variable for map
     map_var <- reactive(
       str_remove(paste(var_left(), var_right(), sep = "_"), "_ $"))
     
@@ -97,12 +93,12 @@ canale_server <- function(id) {
     data <- reactive(get_data(
       df = df(), 
       var_left = var_left(), 
-      var_right = var_right()))
+      var_right = var_right()),
+      new = TRUE)
     
     # Legend
     legend <- legend_server(
       id = ns_id, 
-      data = data,
       var_left = var_left, 
       var_right = var_right, 
       df = df,
@@ -129,10 +125,12 @@ canale_server <- function(id) {
     # Observe variable changes to update map
     observe({
       rdeck_proxy("map") |>
-        add_mvt_layer(id = "canale", auto_highlight = TRUE,
-                      highlight_color = "#AAFFFFFF", pickable = TRUE,
-                      get_fill_color = sus_scale(rlang::sym(map_var())),
-                      get_line_color = "#FFFFFF")
+        add_mvt_layer(
+          id = "canale", auto_highlight = TRUE,
+          highlight_color = "#AAFFFFFF", pickable = TRUE,
+          get_fill_color = scale_fill_sus(rlang::sym(map_var()), "EE"),
+          get_line_color = "#FFFFFF", line_width_units = "pixels", 
+          get_line_width = 1)
     })
     
     # Explore panel
@@ -146,60 +144,60 @@ canale_server <- function(id) {
       select_id = select_id)
     
     # Data export TKTK should this become a non-reactive function?
-    data_export <- data_export_server(
-      id = ns_id,
-      df = data,
-      var_left = var_left,
-      var_right = var_right)
+    # data_export <- data_export_server(
+    #   id = ns_id,
+    #   df = data,
+    #   var_left = var_left,
+    #   var_right = var_right)
     
     # Bookmarking
-    bookmark_server(
-      id = ns_id,
-      map_view_change = reactive(input$map_view_change),
-      var_right = var_right,
-      select_id = select_id,
-      df = df,
-      map_id = NS(id, "map"),
-    )
+    # bookmark_server(
+    #   id = ns_id,
+    #   map_view_change = reactive(input$map_view_change),
+    #   var_right = var_right,
+    #   select_id = select_id,
+    #   df = df,
+    #   map_id = NS(id, "map"),
+    # )
     
     # Update click_id() on bookmark
-    observeEvent(sus_bookmark$active, {
-      # Delay of 2000 milliseconds more than the zoom update from bookmark.
-      # The map/df/data needs to be updated before we select an ID.
-      if (isTRUE(sus_bookmark$active)) {
-        delay(2000, {
-          if (!is.null(sus_bookmark$select_id)) {
-            if (sus_bookmark$select_id != "NA") click_id(sus_bookmark$select_id)
-          }
-        })
-      }
-      
-      # So that bookmarking gets triggered only ONCE
-      delay(1500, {sus_bookmark$active <- FALSE})      
-    }, priority = -2)
+    # observeEvent(sus_bookmark$active, {
+    #   # Delay of 2000 milliseconds more than the zoom update from bookmark.
+    #   # The map/df/data needs to be updated before we select an ID.
+    #   if (isTRUE(sus_bookmark$active)) {
+    #     delay(2000, {
+    #       if (!is.null(sus_bookmark$select_id)) {
+    #         if (sus_bookmark$select_id != "NA") click_id(sus_bookmark$select_id)
+    #       }
+    #     })
+    #   }
+    #   
+    #   # So that bookmarking gets triggered only ONCE
+    #   delay(1500, {sus_bookmark$active <- FALSE})      
+    # }, priority = -2)
     
     # Update click_id() on module link
-    observeEvent(sus_link$activity, {
-      # Delay of 2000 milliseconds more than the zoom update from bookmark.
-      # The map/df/data needs to be updated before we select an ID.
-      delay(2000, {
-        if (!is.null(sus_link$select_id)) click_id(sus_link$select_id)
-      })
-    }, priority = -2)
+    # observeEvent(sus_link$activity, {
+    #   # Delay of 2000 milliseconds more than the zoom update from bookmark.
+    #   # The map/df/data needs to be updated before we select an ID.
+    #   delay(2000, {
+    #     if (!is.null(sus_link$select_id)) click_id(sus_link$select_id)
+    #   })
+    # }, priority = -2)
     
     # OUT
-    reactive({list(
-      module_short_title = "the CanALE index",
-      module_id = "canale",
-      time = "2016",
-      data = data_export(),
-      token = map_token,
-      map_zoom = input$map_view_change$zoom,
-      map_location = c(input$map_view_change$longitude, 
-                       input$map_view_change$latitude),
-      df = df(),
-      explore_content = explore_content(),
-      poly_selected = selection())})
+    # reactive({list(
+    #   module_short_title = "the CanALE index",
+    #   module_id = "canale",
+    #   time = "2016",
+    #   data = data_export(),
+    #   token = map_token,
+    #   map_zoom = input$map_view_change$zoom,
+    #   map_location = c(input$map_view_change$longitude, 
+    #                    input$map_view_change$latitude),
+    #   df = df(),
+    #   explore_content = explore_content(),
+    #   poly_selected = selection())})
     
   })
 }
