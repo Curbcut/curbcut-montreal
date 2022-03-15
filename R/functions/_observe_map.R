@@ -5,8 +5,8 @@ observe_map <- function(map_input) {
   # Initialize objects
   out <- NULL
   zoom <- map_input$zoom
-  lat <- map_input$latitude
-  lon <- map_input$longitude
+  lat <- map_input$center[[2]]
+  lon <- map_input$center[[1]]
   
   # Exit early if the map isn't sufficiently zoomed in
   if (zoom < 13) return(out)
