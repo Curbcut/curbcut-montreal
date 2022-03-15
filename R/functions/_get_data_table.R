@@ -1,6 +1,6 @@
 #### GET DATA TABLE ############################################################
 
-get_data_table <- function(df, var_left, var_right, data_type, point_df) {
+get_data_table <- function(df, var_left, var_right, data_type, point_df, new) {
   
   # Get time format; eventually this might need to be conditional
   time_format <- "\\d{4}$"
@@ -25,19 +25,35 @@ get_data_table <- function(df, var_left, var_right, data_type, point_df) {
   
   # Univariate
   if (data_type == "q5") {
+    
     data <- get(df)
-    data <- data[c("ID", "name", "name_2", if (df == "DA") "DAUID", 
-                   if (df %in% c("DA", "CT")) "CTUID", "CSDUID", "population", 
-                   var_left, left_q3, left_q5, "geometry")]
-    data$group <- coalesce(as.character(data[[left_q5]]), "NA")
-    data <- left_join(data, colour_left_5, by = "group")
-    data <- data[c("ID", "name", "name_2", if (df == "DA") "DAUID", 
-                   if (df %in% c("DA", "CT")) "CTUID", "CSDUID", "population", 
-                   var_left, left_q3, left_q5, "group", "fill", "geometry")]
-    names(data) <- c("ID", "name", "name_2", if (df == "DA") "DAUID", 
+    
+    if (new) {
+      data <- data[c("ID", "name", "name_2", if (df == "DA") "DAUID", 
                      if (df %in% c("DA", "CT")) "CTUID", "CSDUID", "population", 
-                     "var_left", "var_left_q3", "var_left_q5", "group", "fill", 
-                     "geometry")
+                     var_left, left_q3, left_q5)] |> 
+        st_drop_geometry() |> 
+        setNames(c("ID", "name", "name_2", if (df == "DA") "DAUID", 
+                   if (df %in% c("DA", "CT")) "CTUID", "CSDUID", "population",
+                   "var_left", "var_left_q3", "var_left_q5"))
+      
+    } else {
+     
+      data <- data[c("ID", "name", "name_2", if (df == "DA") "DAUID", 
+                     if (df %in% c("DA", "CT")) "CTUID", "CSDUID", "population", 
+                     var_left, left_q3, left_q5, "geometry")]
+      data$group <- coalesce(as.character(data[[left_q5]]), "NA")
+      data <- left_join(data, colour_left_5, by = "group")
+      data <- data[c("ID", "name", "name_2", if (df == "DA") "DAUID", 
+                     if (df %in% c("DA", "CT")) "CTUID", "CSDUID", "population", 
+                     var_left, left_q3, left_q5, "group", "fill", "geometry")]
+      names(data) <- c("ID", "name", "name_2", if (df == "DA") "DAUID", 
+                       if (df %in% c("DA", "CT")) "CTUID", "CSDUID", "population", 
+                       "var_left", "var_left_q3", "var_left_q5", "group", "fill", 
+                       "geometry")
+      
+    }
+    
   }
   
   # Building univariate TKTK update with base R
@@ -59,21 +75,38 @@ get_data_table <- function(df, var_left, var_right, data_type, point_df) {
   # Bivariate
   if (data_type == "bivar") {
     data <- get(df)
-    data <- data[c("ID", "name", "name_2", if (df == "DA") "DAUID", 
-                   if (df %in% c("DA", "CT")) "CTUID", "CSDUID", "population", 
-                   var_left, left_q3, left_q5, var_right, right_q3, right_q5, 
-                   "geometry")]
-    data$group <- paste(data[[left_q3]], "-", data[[right_q3]])
-    data <- left_join(data, colour_bivar, by = "group")
-    data <- data[c("ID", "name", "name_2", if (df == "DA") "DAUID", 
-                   if (df %in% c("DA", "CT")) "CTUID", "CSDUID", "population", 
-                   var_left, left_q3, left_q5, var_right, right_q3, right_q5, 
-                   "group", "fill", "geometry")]
-    names(data) <- c("ID", "name", "name_2", if (df == "DA") "DAUID", 
+    
+    if (new) {
+      
+      data <- data[c("ID", "name", "name_2", if (df == "DA") "DAUID", 
                      if (df %in% c("DA", "CT")) "CTUID", "CSDUID", "population", 
-                     "var_left", "var_left_q3", "var_left_q5", "var_right", 
-                     "var_right_q3", "var_right_q5", "group", "fill", 
-                     "geometry")
+                     var_left, left_q3, left_q5, var_right, right_q3, 
+                     right_q5)] |> 
+        st_drop_geometry() |> 
+        setNames(c("ID", "name", "name_2", if (df == "DA") "DAUID", 
+                   if (df %in% c("DA", "CT")) "CTUID", "CSDUID", "population", 
+                   "var_left", "var_left_q3", "var_left_q5", "var_right", 
+                    "var_right_q3", "var_right_q5")) |> 
+        mutate(group = paste(var_left_q3, var_right_q3, sep = " - "))
+      
+    } else {
+      
+      data <- data[c("ID", "name", "name_2", if (df == "DA") "DAUID", 
+                     if (df %in% c("DA", "CT")) "CTUID", "CSDUID", "population", 
+                     var_left, left_q3, left_q5, var_right, right_q3, right_q5, 
+                     "geometry")]
+      data$group <- paste(data[[left_q3]], "-", data[[right_q3]])
+      data <- left_join(data, colour_bivar, by = "group")
+      data <- data[c("ID", "name", "name_2", if (df == "DA") "DAUID", 
+                     if (df %in% c("DA", "CT")) "CTUID", "CSDUID", "population", 
+                     var_left, left_q3, left_q5, var_right, right_q3, right_q5, 
+                     "group", "fill", "geometry")]
+      names(data) <- c("ID", "name", "name_2", if (df == "DA") "DAUID", 
+                       if (df %in% c("DA", "CT")) "CTUID", "CSDUID", "population", 
+                       "var_left", "var_left_q3", "var_left_q5", "var_right", 
+                       "var_right_q3", "var_right_q5", "group", "fill", 
+                       "geometry")
+    }
   }
   
   # Building bivariate TKTK update with base R

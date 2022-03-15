@@ -63,11 +63,14 @@ canale_server <- function(id) {
     # observeEvent(input$map_polygon_click, {
     #   click_id(get_click(input$map_polygon_click))})
     
-    # Zoom level for data
-    df <- zoom_server(
+    # Choose tileset
+    tile <- zoom_server(
       id = ns_id, 
       zoom = zoom, 
       zoom_levels = reactive(map_zoom_levels))
+    
+    # Get df for explore/legend/etc
+    df <- reactive(get_df(tile(), zoom(), map_zoom_levels))
     
     # Time
     time <- reactive("2016")
@@ -93,8 +96,8 @@ canale_server <- function(id) {
     data <- reactive(get_data(
       df = df(), 
       var_left = var_left(), 
-      var_right = var_right()),
-      new = TRUE)
+      var_right = var_right(),
+      new = TRUE))
     
     # Legend
     legend <- legend_server(

@@ -65,7 +65,6 @@ render_explore_graph <- function(plot_type, data, var_left, var_right, df,
     out <- 
       data[data$var_left %in% remove_outliers(data$var_left) &
              data$var_right %in% remove_outliers(data$var_right),] |> 
-      mutate(fill = paste0(fill, opac)) |> 
       ggplot(aes(var_right, var_left)) +
       geom_point(aes(colour = group)) +
       {if (plot_type == "scatter_select") geom_point(

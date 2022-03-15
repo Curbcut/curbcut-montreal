@@ -44,7 +44,7 @@ suppressPackageStartupMessages({
 {df <- "borough"
 var_left <- "canale_ind_2016"
 var_right <- " "
-data <- get_data(df, var_left, var_right)
+data <- get_data(df, var_left, var_right, new = TRUE)
 data_type <- get_data_type(df, var_left, var_right)
 render_legend(data, var_left, var_right, df, df, data_type)}
 
