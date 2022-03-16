@@ -56,17 +56,19 @@ canale_server <- function(id) {
     
     # Zoom and POI reactives
     observeEvent(input[[paste0(ns_id, "-map_viewstate")]], {
-      zoom(get_zoom(input[[paste0(ns_id, "-map_viewstate")]]$zoom, map_zoom_levels))
-      poi(observe_map(input[[paste0(ns_id, "-map_viewstate")]]))
+      zoom(get_zoom(input[[paste0(ns_id, "-map_viewstate")]]$viewState$zoom, map_zoom_levels))
+      poi(observe_map(input[[paste0(ns_id, "-map_viewstate")]]$viewState))
     })
     
     # Click reactive
     observeEvent(input[[paste0(ns_id, "-map_click")]], {
+      
+      # print(input[[paste0(ns_id, "-map_click")]])
       if (!is.na(select_id()) &&
-          input[[paste0(ns_id, "-map_click")]]$data$ID == select_id()) {
+          input[[paste0(ns_id, "-map_click")]]$object$ID == select_id()) {
         select_id(NA)
       } else {
-        select_id(get_click(input[[paste0(ns_id, "-map_click")]]))
+        select_id(get_click(input[[paste0(ns_id, "-map_click")]]$object))
       }
     })
     
@@ -151,7 +153,7 @@ canale_server <- function(id) {
     # Bookmarking
     bookmark_server(
       id = ns_id,
-      map_viewstate = reactive(input[[paste0(ns_id, "-map_viewstate")]]),
+      map_viewstate = reactive(input[[paste0(ns_id, "-map_viewstate")]]$viewState),
       var_right = var_right,
       select_id = select_id,
       df = df,
