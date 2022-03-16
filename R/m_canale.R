@@ -163,9 +163,9 @@ canale_server <- function(id) {
       if (isTRUE(sus_bookmark$active)) {
         if (!is.null(sus_bookmark$df)) df(sus_bookmark$df)
         delay(1000, {
-          if (!is.null(sus_bookmark$select_id)) {
-            if (sus_bookmark$select_id != "NA") select_id(sus_bookmark$select_id)
-          }
+          if (!is.null(sus_bookmark$select_id))
+            if (sus_bookmark$select_id != "NA") 
+              select_id(sus_bookmark$select_id)
         })
       }
       # So that bookmarking gets triggered only ONCE
