@@ -1,5 +1,13 @@
 #### CANALE TILE PROCESSING ####################################################
 
+library(tidyverse)
+library(sf)
+library(qs)
+qload("data/census.qsm")
+variables <- qread("data/variables.qs")
+source("dev/tiles/tile_functions.R")
+
+
 # Get variables to add ----------------------------------------------------
 
 vars_to_add <- 
@@ -75,17 +83,59 @@ recipe_borough <- '
     "version": 1,
     "layers": {
       "borough": {
-        "source": "mapbox://tileset-source/dwachsmuth/canale-borough3",
-        "minzoom": 2,
-        "maxzoom": 5
+        "source": "mapbox://tileset-source/sus-mcgill/canale-borough",
+        "minzoom": 3,
+        "maxzoom": 11,
+        "features": {
+          "simplification": [ "case",
+            [ "==", [ "zoom" ], 10 ], 1, 4 
+          ]
+        }
       }
     }
   },
-  "name": "canale-borough3"
+  "name": "canale-borough"
 }
 '
 
-recipe_autzoom <- '
+recipe_CT <- '
+{
+  "recipe": {
+    "version": 1,
+    "layers": {
+      "CT": {
+        "source": "mapbox://tileset-source/sus-mcgill/canale-CT",
+        "minzoom": 3,
+        "maxzoom": 12,
+        "features": {
+          "simplification": [ "case",
+            [ "==", [ "zoom" ], 12 ], 1, 4 
+          ]
+        }
+      }
+    }
+  },
+  "name": "canale-CT"
+}
+'
+
+recipe_DA <- '
+{
+  "recipe": {
+    "version": 1,
+    "layers": {
+      "DA": {
+        "source": "mapbox://tileset-source/sus-mcgill/canale-DA",
+        "minzoom": 3,
+        "maxzoom": 13
+      }
+    }
+  },
+  "name": "canale-DA"
+}
+'
+
+recipe_auto_zoom <- '
 {
   "recipe": {
     "version": 1,
@@ -93,28 +143,40 @@ recipe_autzoom <- '
       "borough": {
         "source": "mapbox://tileset-source/sus-mcgill/canale-borough",
         "minzoom": 2,
-        "maxzoom": 9
+        "maxzoom": 10
       },
       "CT": {
         "source": "mapbox://tileset-source/sus-mcgill/canale-CT",
-        "minzoom": 10,
-        "maxzoom": 11
+        "minzoom": 11,
+        "maxzoom": 12
       },
        "DA": {
         "source": "mapbox://tileset-source/sus-mcgill/canale-DA",
-        "minzoom": 12,
-        "maxzoom": 13
+        "minzoom": 13,
+        "maxzoom": 13,
+        "features": {
+          "simplification": 3
+        }
       }
 
     }
   },
-  "name": "canale-autozoom"
+  "name": "canale-auto_zoom"
 }
 '
 
 
-# Create and publish tileset ----------------------------------------------
+# Create and publish tilesets ---------------------------------------------
 
-create_tileset("canale-autozoom", recipe_autzoom, "sus-mcgill", .sus_token)
-publish_tileset("canale-autozoom", "sus-mcgill", .sus_token)
+create_tileset("canale-borough", recipe_borough, "sus-mcgill", .sus_token)
+publish_tileset("canale-borough", "sus-mcgill", .sus_token)
+
+create_tileset("canale-CT", recipe_CT, "sus-mcgill", .sus_token)
+publish_tileset("canale-CT", "sus-mcgill", .sus_token)
+
+create_tileset("canale-DA", recipe_DA, "sus-mcgill", .sus_token)
+publish_tileset("canale-DA", "sus-mcgill", .sus_token)
+
+create_tileset("canale-auto_zoom", recipe_auto_zoom, "sus-mcgill", .sus_token)
+publish_tileset("canale-auto_zoom", "sus-mcgill", .sus_token)
 
