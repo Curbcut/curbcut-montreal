@@ -1,9 +1,9 @@
-#### MAP CHANGE FUNCTION #######################################################
+#### RDECK CHANGE SERVER #######################################################
 
 #' @param map_id Namespace id of the map to redraw, likely to be `NS(id, "map")`
 #' @return An updated version of the rdeck map.
 
-rdeck_change <- function(id, map_id, tile, map_var, zoom, select_id) {
+rdeck_server <- function(id, map_id, tile, map_var, zoom, select_id) {
   
   ## Setup ---------------------------------------------------------------------
   

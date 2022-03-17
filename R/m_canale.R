@@ -116,7 +116,7 @@ canale_server <- function(id) {
       poi = poi)
     
     # Update map in response to variable changes or zooming
-    rdeck_change(
+    rdeck_server(
       id = ns_id, 
       map_id = "map", 
       tile = tile, 
