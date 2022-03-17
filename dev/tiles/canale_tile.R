@@ -257,26 +257,17 @@ recipe_building <- '
       "DA_building_empty": {
         "source": "mapbox://tileset-source/sus-mcgill/canale-DA_building_empty",
         "minzoom": 3,
-        "maxzoom": 8,
-        "tiles": {
-          "bbox": [ -73.57, 45.50, -73.56, 45.51 ]
-        }
+        "maxzoom": 8
       },
       "DA_building": {
         "source": "mapbox://tileset-source/sus-mcgill/canale-DA_building",
         "minzoom": 9,
-        "maxzoom": 12,
-        "tiles": {
-          "bbox": [ -73.57, 45.50, -73.56, 45.51 ]
-        }
+        "maxzoom": 12
       },
       "building": {
         "source": "mapbox://tileset-source/sus-mcgill/canale-building",
         "minzoom": 13,
-        "maxzoom": 16,
-        "tiles": {
-          "bbox": [ -73.57, 45.50, -73.56, 45.51 ]
-        }
+        "maxzoom": 16
       }
     }
   },
@@ -332,4 +323,45 @@ publish_tileset("canale-building", "sus-mcgill", .sus_token)
 
 create_tileset("canale-auto_zoom", recipe_auto_zoom, "sus-mcgill", .sus_token)
 publish_tileset("canale-auto_zoom", "sus-mcgill", .sus_token)
+
+
+
+
+# Recipe for building testing ---------------------------------------------
+
+recipe_building_test <- '
+{
+  "recipe": {
+    "version": 1,
+    "layers": {
+      "DA_building_empty": {
+        "source": "mapbox://tileset-source/sus-mcgill/canale-DA_building_empty",
+        "minzoom": 3,
+        "maxzoom": 8,
+        "tiles": {
+          "bbox": [ -73.57, 45.50, -73.56, 45.51 ]
+        }
+      },
+      "DA_building": {
+        "source": "mapbox://tileset-source/sus-mcgill/canale-DA_building",
+        "minzoom": 9,
+        "maxzoom": 12,
+        "tiles": {
+          "bbox": [ -73.57, 45.50, -73.56, 45.51 ]
+        }
+      },
+      "building": {
+        "source": "mapbox://tileset-source/sus-mcgill/canale-building",
+        "minzoom": 13,
+        "maxzoom": 16,
+        "tiles": {
+          "bbox": [ -73.57, 45.50, -73.56, 45.51 ]
+        }
+      }
+    }
+  },
+  "name": "canale-building_test"
+}
+'
+
 
