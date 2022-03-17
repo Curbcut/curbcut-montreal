@@ -62,13 +62,11 @@ get_data_table <- function(df, var_left, var_right, data_type, point_df, new) {
     data <- DA
     
     if (new) {
-      data <- data[c("ID", "name", "name_2", if (df == "DA") "DAUID", 
-                     if (df %in% c("DA", "CT")) "CTUID", "CSDUID", "population", 
-                     var_left, left_q3, left_q5)] |> 
+      data <- data[c("ID", "name", "name_2", "DAUID", "CTUID", "CSDUID", 
+                     "population", var_left, left_q3, left_q5)] |> 
         st_drop_geometry() |> 
-        setNames(c("ID", "name", "name_2", if (df == "DA") "DAUID", 
-                   if (df %in% c("DA", "CT")) "CTUID", "CSDUID", "population",
-                   "var_left", "var_left_q3", "var_left_q5"))
+        setNames(c("ID", "name", "name_2", "DAUID", "CTUID", "CSDUID", 
+                   "population", "var_left", "var_left_q3", "var_left_q5"))
       
     } else {
       
@@ -126,20 +124,36 @@ get_data_table <- function(df, var_left, var_right, data_type, point_df, new) {
   
   # Building bivariate TKTK update with base R
   if (data_type == "building_bivar") {
-    data <- 
-      DA |> 
-      st_set_geometry("building") |> 
-      select(ID, name, name_2, any_of(c("DAUID", "CTUID", "CSDUID")), 
-             population, var_left = all_of(var_left), 
-             var_left_q3 = all_of(left_q3),
-             var_left_q5 = all_of(left_q5),
-             var_right = all_of(var_right), 
-             var_right_q3 = all_of(right_q3),
-             var_right_q5 = all_of(right_q5),
-             geometry = building) |>
-      mutate(group = paste(var_left_q3, "-", var_right_q3)) |>
-      left_join(colour_bivar, by = "group") |> 
-      relocate(fill, .after = group)
+    
+    data <- DA
+    
+    if (new) {
+      data <- data[c("ID", "name", "name_2", "DAUID", "CTUID", "CSDUID", 
+                     "population", var_left, left_q3, left_q5, var_right, 
+                     right_q3, right_q5)] |> 
+        st_drop_geometry() |> 
+        setNames(c("ID", "name", "name_2", "DAUID", "CTUID", "CSDUID", 
+                   "population", "var_left", "var_left_q3", "var_left_q5", 
+                   "var_right", "var_right_q3", "var_right_q5")) |> 
+        mutate(group = paste(var_left_q3, var_right_q3, sep = " - "))
+      
+      
+    } else {
+      data <- 
+        DA |> 
+        st_set_geometry("building") |> 
+        select(ID, name, name_2, any_of(c("DAUID", "CTUID", "CSDUID")), 
+               population, var_left = all_of(var_left), 
+               var_left_q3 = all_of(left_q3),
+               var_left_q5 = all_of(left_q5),
+               var_right = all_of(var_right), 
+               var_right_q3 = all_of(right_q3),
+               var_right_q5 = all_of(right_q5),
+               geometry = building) |>
+        mutate(group = paste(var_left_q3, "-", var_right_q3)) |>
+        left_join(colour_bivar, by = "group") |> 
+        relocate(fill, .after = group)
+    }
   }
   
   # Delta
