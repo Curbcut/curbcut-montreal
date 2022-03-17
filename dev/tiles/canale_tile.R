@@ -265,14 +265,14 @@ recipe_building <- '
       "DA_building": {
         "source": "mapbox://tileset-source/sus-mcgill/canale-DA_building",
         "minzoom": 9,
-        "maxzoom": 11,
+        "maxzoom": 12,
         "tiles": {
           "bbox": [ -73.57, 45.50, -73.56, 45.51 ]
         }
       },
       "building": {
         "source": "mapbox://tileset-source/sus-mcgill/canale-building",
-        "minzoom": 12,
+        "minzoom": 13,
         "maxzoom": 16,
         "tiles": {
           "bbox": [ -73.57, 45.50, -73.56, 45.51 ]

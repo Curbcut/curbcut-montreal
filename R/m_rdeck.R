@@ -25,7 +25,9 @@ rdeck_server <- function(id, map_id, tile, map_var, zoom, select_id) {
         add_mvt_layer(
           id = id, 
           auto_highlight = TRUE, highlight_color = "#FFFFFF80", 
-          pickable = if (tile() == "DA" && zoom() == "borough") FALSE else TRUE,
+          pickable = if ((tile() == "DA" && zoom() == "borough") |
+                         tile() == "building" && zoom() %in% c("borough", "CT")
+                         ) FALSE else TRUE,
           get_fill_color = scale_fill_sus(rlang::sym(map_var()), "FF"),
           get_line_color = "#FFFFFF", line_width_units = "pixels", 
           get_line_width = scale_line_width_sus(select_id()),
@@ -40,7 +42,9 @@ rdeck_server <- function(id, map_id, tile, map_var, zoom, select_id) {
           add_mvt_layer(
             id = id, data = mvt_url(paste0("sus-mcgill.canale-", tile())),
             auto_highlight = TRUE, highlight_color = "#FFFFFF80", 
-            pickable = if (tile() == "DA" && zoom() == "borough") FALSE else TRUE,
+            pickable = if ((tile() == "DA" && zoom() == "borough") |
+                           tile() == "building" && zoom() %in% 
+                           c("borough", "CT")) FALSE else TRUE,
             get_fill_color = scale_fill_sus(rlang::sym(map_var()), "FF"),
             get_line_color = "#FFFFFF", line_width_units = "pixels",
             get_line_width = scale_line_width_sus(select_id()),
