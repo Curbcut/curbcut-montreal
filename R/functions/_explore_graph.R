@@ -19,9 +19,16 @@ explore_graph <- function(data, var_type, var_left, var_right, df, zoom,
   ## Deal with build_str_as_DA -------------------------------------------------
   
   if (build_str_as_DA) {
-    if (df == "building") select_id <- building$DAUID[building$ID == select_id]
-    if (df == "street") select_id <- street$DAUID[street$ID == select_id]
-    if (length(select_id) == 0) select_id <- NA
+    
+    if (!is.na(select_id)) {
+      if (df == "building") select_id <- 
+          building$DAUID[building$ID == select_id]
+      if (df == "street") select_id <- street$DAUID[street$ID == select_id]
+      if (sum(!is.na(select_id)) == 0) select_id <- NA
+    }
+    
+    df <- "DA"
+    
   }
   
   

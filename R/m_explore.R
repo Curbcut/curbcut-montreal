@@ -50,7 +50,8 @@ explore_server <- function(id, data, var_left, var_right, df, zoom = df,
       var_left = var_left(),
       var_right = var_right(),
       df = df(),
-      select_id = select_id()))
+      select_id = select_id(),
+      build_str_as_DA = build_str_as_DA()))
     
     # Make info table
     table <- reactive(info_table(

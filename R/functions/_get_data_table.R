@@ -56,10 +56,24 @@ get_data_table <- function(df, var_left, var_right, data_type, point_df, new) {
     
   }
   
-  # Building univariate TKTK update with base R
+  # Building univariate
   if (data_type == "building_q5") {
+    
+    data <- DA
+    
+    if (new) {
+      data <- data[c("ID", "name", "name_2", if (df == "DA") "DAUID", 
+                     if (df %in% c("DA", "CT")) "CTUID", "CSDUID", "population", 
+                     var_left, left_q3, left_q5)] |> 
+        st_drop_geometry() |> 
+        setNames(c("ID", "name", "name_2", if (df == "DA") "DAUID", 
+                   if (df %in% c("DA", "CT")) "CTUID", "CSDUID", "population",
+                   "var_left", "var_left_q3", "var_left_q5"))
+      
+    } else {
+      
     data <- 
-      DA |> 
+      data |> 
       st_set_geometry("building") |> 
       select(ID, name, name_2, any_of(c("DAUID", "CTUID", "CSDUID")), 
              population, var_left = all_of(var_left), 
@@ -70,6 +84,7 @@ get_data_table <- function(df, var_left, var_right, data_type, point_df, new) {
              .after = var_left_q5) |> 
       left_join(colour_left_5, by = "group") |> 
       relocate(fill, .after = group)
+    }
   }
   
   # Bivariate

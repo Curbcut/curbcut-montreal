@@ -227,6 +227,12 @@ CT <- join_crash(CT, crash_results$CT)
 DA <- join_crash(DA, crash_results$DA)
 grid <- join_crash(grid, crash_results$grid)
 
+building <- 
+  building |> 
+  left_join(select(as_tibble(DA), ID, starts_with("crash_")),
+            by = c("DAUID" = "ID")) |>
+  relocate(geometry, .after = last_col())
+
 street <- 
   street |> 
   left_join(select(as_tibble(DA), ID, starts_with("crash_")),

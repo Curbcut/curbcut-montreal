@@ -62,7 +62,7 @@ stopifnot(
   
   # Check row numbers
   nrow(borough) == 111,
-  nrow(building) == 243780,
+  nrow(building) == 860499,
   nrow(CT) == 970,
   nrow(DA) == 6469,
   nrow(grid) == 9923,
@@ -131,17 +131,16 @@ source("dev/modules/alley.R")
 source("dev/modules/gentrification.R")
 source("dev/modules/green_space.R")
 source("dev/modules/marketed_sustainability.R")
-source("dev/modules/natural_infrastructure.R")
+# source("dev/modules/natural_infrastructure.R")
 # source("dev/modules/permits.R")
-source("dev/modules/place_explorer.R")
+# source("dev/modules/place_explorer.R")
 # source("dev/modules/dmti.R")
-source("dev/modules/stories.R", encoding = "utf-8")
+# source("dev/modules/stories.R", encoding = "utf-8")
 
 
-# Post-processing and simplification --------------------------------------
+# Post-processing ---------------------------------------------------------
 
 source("dev/other/post_processing.R")
-source("dev/other/simplify.R")
 
 
 # Produce title_text and dyk ----------------------------------------------

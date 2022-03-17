@@ -22,10 +22,10 @@ canale_UI <- function(id) {
     right_panel(
       id = id,
       compare_UI(NS(id, ns_id), make_dropdown()),
-      explore_UI(NS(id, ns_id)), 
+      explore_UI(NS(id, ns_id)),
       dyk_UI(NS(id, ns_id)))
     
-    )
+  )
 }
 
 
@@ -44,26 +44,18 @@ canale_server <- function(id) {
     # Map
     output[[paste0(ns_id, "-map")]] <- renderRdeck({
       rdeck(map_style = map_base_style, initial_view_state = view_state(
-        center = map_location, zoom = map_zoom)) |> 
-        add_mvt_layer(id = ns_id, 
-                      data = mvt_url("sus-mcgill.canale-auto_zoom"),
-                      auto_highlight = TRUE, highlight_color = "#FFFFFF80",
-                      pickable = TRUE,
-                      get_fill_color = scale_fill_sus("canale_ind_2016", "EE"),
-                      get_line_color = "#FFFFFF",
-                      line_width_units = "pixels", get_line_width = 1)
-        })
+        center = map_location, zoom = map_zoom))
+    })
     
     # Zoom and POI reactives
     observeEvent(input[[paste0(ns_id, "-map_viewstate")]], {
-      zoom(get_zoom(input[[paste0(ns_id, "-map_viewstate")]]$viewState$zoom, map_zoom_levels))
+      zoom(get_zoom(input[[paste0(ns_id, "-map_viewstate")]]$viewState$zoom, 
+                    map_zoom_levels))
       poi(observe_map(input[[paste0(ns_id, "-map_viewstate")]]$viewState))
     })
     
     # Click reactive
     observeEvent(input[[paste0(ns_id, "-map_click")]], {
-      
-      # print(input[[paste0(ns_id, "-map_click")]])
       if (!is.na(select_id()) &&
           input[[paste0(ns_id, "-map_click")]]$object$ID == select_id()) {
         select_id(NA)
@@ -133,13 +125,13 @@ canale_server <- function(id) {
       select_id = select_id
     )
     
-    # Deselections
+    # De-select
     observeEvent(input[[paste0(ns_id, "-clear_selection")]], select_id(NA))
     observeEvent(df(), select_id(NA), ignoreInit = TRUE)
-        # error check
+    # Error check
     observeEvent(data(), if (!select_id() %in% data()$ID) select_id(NA),
                  ignoreInit = TRUE)
-
+    
     # Explore panel
     explore_content <- explore_server(
       id = ns_id,
@@ -153,7 +145,8 @@ canale_server <- function(id) {
     # Bookmarking
     bookmark_server(
       id = ns_id,
-      map_viewstate = reactive(input[[paste0(ns_id, "-map_viewstate")]]$viewState),
+      map_viewstate = reactive(
+        input[[paste0(ns_id, "-map_viewstate")]]$viewState),
       var_right = var_right,
       select_id = select_id,
       df = df,

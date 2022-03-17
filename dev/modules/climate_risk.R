@@ -106,7 +106,15 @@ DA <- climate_census_fun(DA)
 rm(climate_risk, climate_census_fun)
 
 
-# Add climate data risk to street -----------------------------------------
+# Add climate data risk to building and street ----------------------------
+
+building <- 
+  building |> 
+  left_join(select(st_drop_geometry(grid), grid_ID = ID, 
+                   climate_flood_ind:climate_heat_wave_ind_q3), 
+            by = "grid_ID") |> 
+  relocate(geometry, .after = last_col()) |> 
+  st_set_agr("constant")
 
 street <- 
   street |> 
@@ -165,6 +173,24 @@ borough <-
   bind_cols(borough) |> 
   relocate(climate_flood_ind_q5:climate_heat_wave_ind_q5, .before = geometry) |> 
   st_as_sf(sf_column_name = "geometry") |> 
+  st_set_agr("constant")
+
+building <- 
+  building |> 
+  left_join(DA |> 
+              st_drop_geometry() |> 
+              select(DAUID = ID, climate_flood_ind_q5:climate_heat_wave_ind_q5),
+            by = "DAUID") |> 
+  relocate(geometry, .after = last_col()) |> 
+  st_set_agr("constant")
+
+street <- 
+  street |> 
+  left_join(DA |> 
+              st_drop_geometry() |> 
+              select(DAUID = ID, climate_flood_ind_q5:climate_heat_wave_ind_q5),
+            by = "DAUID") |> 
+  relocate(geometry, .after = last_col()) |> 
   st_set_agr("constant")
 
 climate_risk_q5 <-

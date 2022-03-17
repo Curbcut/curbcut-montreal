@@ -38,12 +38,12 @@ suppressPackageStartupMessages({
 
 # Histogram, no selection -------------------------------------------------
 
-{df <- "borough"
-zoom <- "CT"
+{df <- "building"
+zoom <- "building"
 var_left <- "canale_ind_2016"
 var_right <- " "
 island <- FALSE
-data <- get_data(df, var_left, var_right)
+data <- get_data(df, var_left, var_right, build_str_as_DA = TRUE, new = TRUE)
 select_id <- NA
 var_type <- get_var_type(data, var_left, var_right, df, select_id)
 explore_graph(data, var_type, var_left, var_right, df, zoom, select_id)}

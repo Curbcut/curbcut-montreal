@@ -64,7 +64,7 @@ datas <- c("habitat_quality" = "Fig11a.asc",
 #   read_stars("dev/data/2018_FDS_InfraNat_Conn/Fig16.tif")
 
 grid <- 
-  borough  |> 
+  borough |> 
   st_transform(32618) |> 
   st_make_grid(c(250, 250)) |> 
   st_intersection(st_transform(borough, 32618)) |> 

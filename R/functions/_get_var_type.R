@@ -1,6 +1,7 @@
 # GET EXPLORE VARIABLE TYPE ####################################################
 
-get_var_type <- function(data, var_left, var_right, df, select_id) {
+get_var_type <- function(data, var_left, var_right, df, select_id, 
+                         build_str_as_DA) {
   
   ## Identify NA tables --------------------------------------------------------
   
@@ -19,16 +20,23 @@ get_var_type <- function(data, var_left, var_right, df, select_id) {
   
   ## Selections ----------------------------------------------------------------
   
-  select_df <- if (df == "building") building else data
+  select_df <- if (build_str_as_DA && df == "building") building else data
   selection <- if (is.na(select_id)) select_df[0,] else 
     select_df[select_df$ID == select_id,]
-  active_left <- sum(!is.na(selection$var_left))
+  active_left <- if (build_str_as_DA && df == "building") {
+    sum(!is.na(data$var_left[data$ID == selection$DAUID]))
+  } else sum(!is.na(selection$var_left))
   active_right <- active_left
-  if (length(var_right) != 1 || var_right != " ") active_right <- 
-    sum(!is.na(selection$var_left) & !is.na(selection$var_right))
+  if (length(var_right) != 1 || var_right != " ") 
+    active_right <- if (build_str_as_DA && df == "building") {
+      sum(!is.na(data$var_left[data$ID == selection$DAUID]) &
+            !is.na(data$var_right[data$ID == selection$DAUID])) 
+    } else sum(!is.na(selection$var_left) & !is.na(selection$var_right))
   
   
   ## Create var_left_label and var_right_label ---------------------------------
+  
+  if (build_str_as_DA) df <- "DA"
   
   breaks_q5_left <- variables$breaks_q5[
     variables$var_code == unique(sub("_\\d{4}$", "", var_left))]

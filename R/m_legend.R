@@ -23,7 +23,8 @@ legend_server <- function(id, data, var_left, var_right, df, zoom = df,
     }
     
     # Get data type
-    data_type <- reactive(get_data_type(df(), var_left(), var_right()))
+    data_type <- reactive(get_data_type(df(), var_left(), var_right(),
+                                        build_str_as_DA()))
     
     # Make legend
     legend <- reactive(render_legend(data(), var_left(), var_right(), df(), 

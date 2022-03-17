@@ -117,12 +117,17 @@ grid <-
   relocate(geometry, .after = last_col())
 
 
-# Assign DA data to streets -----------------------------------------------
+# Assign DA data to building and street -----------------------------------
 
 DA_census <- 
   DA[, str_detect(names(DA), paste0(census_vec$var_code, collapse = "|"))] |> 
   mutate(ID = DA$ID) |> 
   st_drop_geometry()
+
+building <- 
+  building |> 
+  left_join(DA_census, by = c("DAUID" = "ID")) |> 
+  relocate(geometry, .after = last_col())
 
 street <- 
   street |> 

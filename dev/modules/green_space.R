@@ -137,6 +137,12 @@ walk(names(gs_results), ~{
            relocate(any_of(c("buffer", "centroid", "building", "geometry")), 
                     .after = last_col()), envir = globalenv())})
 
+building <- 
+  building |> 
+  left_join(gs_results$DA, by = c("DAUID" = "ID")) |> 
+  relocate(geometry, .after = last_col()) |> 
+  st_set_agr("constant")
+
 street <- 
   street |> 
   left_join(gs_results$DA, by = c("DAUID" = "ID")) |> 
