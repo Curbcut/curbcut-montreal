@@ -24,12 +24,13 @@ rdeck_server <- function(id, map_id, tile, map_var, zoom, select_id) {
       }, rdeck_proxy(map_id) |>
         add_mvt_layer(
           id = id, 
-          auto_highlight = TRUE, highlight_color = "#FFFFFF80", pickable = TRUE,
+          auto_highlight = TRUE, highlight_color = "#FFFFFF80", 
+          pickable = if (tile() == "DA" && zoom() == "borough") FALSE else TRUE,
           get_fill_color = scale_fill_sus(rlang::sym(map_var()), "FF"),
           get_line_color = "#FFFFFF", line_width_units = "pixels", 
           get_line_width = scale_line_width_sus(select_id()),
-          extruded = if (zoom() == "building") TRUE else FALSE, 
-          material = FALSE, get_elevation = 5)
+          extruded = if (tile() == "auto_zoom" && zoom() == "building") 
+            TRUE else FALSE, material = FALSE, get_elevation = 5)
     )
     
     observeEvent(tile(), {
@@ -38,12 +39,12 @@ rdeck_server <- function(id, map_id, tile, map_var, zoom, select_id) {
           add_mvt_layer(
             id = id, data = mvt_url(paste0("sus-mcgill.canale-", tile())),
             auto_highlight = TRUE, highlight_color = "#FFFFFF80", 
-            pickable = TRUE, 
+            pickable = if (tile() == "DA" && zoom() == "borough") FALSE else TRUE,
             get_fill_color = scale_fill_sus(rlang::sym(map_var()), "FF"),
             get_line_color = "#FFFFFF", line_width_units = "pixels",
             get_line_width = scale_line_width_sus(select_id()),
-            extruded = if (zoom() == "building") TRUE else FALSE, 
-            material = FALSE, get_elevation = 5)
+            extruded = if (tile() == "auto_zoom" && zoom() == "building") 
+              TRUE else FALSE, material = FALSE, get_elevation = 5)
       })
     })
   })
