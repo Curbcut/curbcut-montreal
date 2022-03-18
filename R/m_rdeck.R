@@ -30,7 +30,7 @@ rdeck_server <- function(id, map_id, tile, map_var, zoom, select_id) {
                          ) FALSE else TRUE,
           get_fill_color = scale_fill_sus(rlang::sym(map_var()), "FF"),
           get_line_color = "#FFFFFF", line_width_units = "pixels", 
-          get_line_width = scale_line_width_sus(select_id()),
+          get_line_width = scale_line_width_sus(select_id(), zoom()),
           extruded = if ((tile() == "auto_zoom" && zoom() == "building") | 
                          tile() == "building") TRUE else FALSE, 
           material = FALSE, get_elevation = 5)
@@ -47,10 +47,17 @@ rdeck_server <- function(id, map_id, tile, map_var, zoom, select_id) {
                            c("borough", "CT")) FALSE else TRUE,
             get_fill_color = scale_fill_sus(rlang::sym(map_var()), "FF"),
             get_line_color = "#FFFFFF", line_width_units = "pixels",
-            get_line_width = scale_line_width_sus(select_id()),
+            get_line_width = scale_line_width_sus(select_id(), zoom()),
             extruded = if ((tile() == "auto_zoom" && zoom() == "building") | 
                            tile() == "building") TRUE else FALSE, 
-            material = FALSE, get_elevation = 5)
+            material = FALSE, get_elevation = 5) |> 
+          add_mvt_layer(
+            id = "street", data = mvt_url("maxbdb2.texture13"),
+            line_width_units = "pixels",
+            get_line_width = scale_line_width_texture_sus(select_id(), zoom()),
+            get_line_color = "#FFFFFFFF",
+            get_fill_color = if (zoom() != "building") "#A9A9A94D" else "#A9A9A900"
+          )
       })
     })
   })
