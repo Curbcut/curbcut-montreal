@@ -13,7 +13,7 @@ recipe_texture <- '
     "version": 1,
     "layers": {
       "streets": {
-        "source": "mapbox://tileset-source/maxbdb2/streets",
+        "source": "mapbox://tileset-source/maxbdb2/streets2",
         "minzoom": 12,
         "maxzoom": 16,
         "tiles": {
@@ -37,7 +37,7 @@ recipe_texture <- '
       },
       "parks": {
         "source": "mapbox://tileset-source/maxbdb2/parks",
-        "minzoom": 13,
+        "minzoom": 14,
         "maxzoom": 16,
         "tiles": {
           "bbox": [ -73.63, 45.45, -73.56, 45.51 ]
@@ -45,9 +45,10 @@ recipe_texture <- '
       }
     }
   },
-  "name": "texture13"
+  "name": "texture16"
 }
 '
+
 
 # ,
 # "buildings": {
@@ -59,10 +60,83 @@ recipe_texture <- '
 #   }
 # }
 
-
 # Create and publish tilesets ---------------------------------------------
 
-resp <- create_tileset("texture13", recipe_texture, "maxbdb2", .sus_token)
+resp <- create_tileset("texture16", recipe_texture, "maxbdb2", .sus_token)
 httr::content(resp)
-resp <- publish_tileset("texture13", "maxbdb2", .sus_token)
+resp <- publish_tileset("texture16", "maxbdb2", .sus_token)
 httr::content(resp)
+
+# Three different tiles ---------------------------------------------------
+# 
+# recipe_street_low <- '
+# {
+#   "recipe": {
+#     "version": 1,
+#     "layers": {
+#       "streets": {
+#         "source": "mapbox://tileset-source/maxbdb2/street-low2",
+#         "minzoom": 12,
+#         "maxzoom": 16,
+#         "tiles": {
+#           "bbox": [ -73.63, 45.45, -73.56, 45.51 ]
+#         }
+#       }
+#     }
+#   },
+#   "name": "street-low2"
+# }
+# '
+# 
+# recipe_street_mid <- '
+# {
+#   "recipe": {
+#     "version": 1,
+#     "layers": {
+#       "streets": {
+#         "source": "mapbox://tileset-source/maxbdb2/street-mid3",
+#         "minzoom": 13,
+#         "maxzoom": 16,
+#         "tiles": {
+#           "bbox": [ -73.63, 45.45, -73.56, 45.51 ]
+#         }
+#       }
+#     }
+#   },
+#   "name": "street-mid3"
+# }
+# '
+# 
+# recipe_street_high <- '
+# {
+#   "recipe": {
+#     "version": 1,
+#     "layers": {
+#       "streets": {
+#         "source": "mapbox://tileset-source/maxbdb2/street-high3",
+#         "minzoom": 14,
+#         "maxzoom": 16,
+#         "tiles": {
+#           "bbox": [ -73.63, 45.45, -73.56, 45.51 ]
+#         }
+#       }
+#     }
+#   },
+#   "name": "street-high3"
+# }
+# '
+# 
+# resp <- create_tileset("street-low2", recipe_street_low, "maxbdb2", .sus_token)
+# httr::content(resp)
+# resp <- publish_tileset("street-low2", "maxbdb2", .sus_token)
+# httr::content(resp)
+# 
+# resp <- create_tileset("street-mid3", recipe_street_mid, "maxbdb2", .sus_token)
+# httr::content(resp)
+# resp <- publish_tileset("street-mid3", "maxbdb2", .sus_token)
+# httr::content(resp)
+# 
+# resp <- create_tileset("street-high3", recipe_street_high, "maxbdb2", .sus_token)
+# httr::content(resp)
+# resp <- publish_tileset("street-high3", "maxbdb2", .sus_token)
+# httr::content(resp)

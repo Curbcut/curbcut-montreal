@@ -52,11 +52,11 @@ rdeck_server <- function(id, map_id, tile, map_var, zoom, select_id) {
                            tile() == "building") TRUE else FALSE, 
             material = FALSE, get_elevation = 5) |> 
           add_mvt_layer(
-            id = "street", data = mvt_url("maxbdb2.texture13"),
+            id = "street", data = mvt_url("maxbdb2.texture16"),
             line_width_units = "pixels",
             get_line_width = scale_line_width_texture_sus(select_id(), zoom()),
-            get_line_color = "#FFFFFFFF",
-            get_fill_color = if (zoom() != "building") "#A9A9A94D" else "#A9A9A900"
+            get_line_color = if (tile() != "building") "#FFFFFFFF" else "#FFFFFF00",
+            get_fill_color = if (tile() != "building") "#A9A9A94D" else "#A9A9A900"
           )
       })
     })
