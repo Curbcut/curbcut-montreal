@@ -44,7 +44,9 @@ canale_server <- function(id) {
     # Map
     output[[paste0(ns_id, "-map")]] <- renderRdeck({
       rdeck(map_style = map_base_style, initial_view_state = view_state(
-        center = map_location, zoom = map_zoom))
+        center = map_location, zoom = map_zoom)) |> 
+        add_mvt_layer(id = ns_id) |> 
+        add_mvt_layer(id = paste0(ns_id, "_roads"))
     })
     
     # Zoom and POI reactives
