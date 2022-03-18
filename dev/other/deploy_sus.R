@@ -1,16 +1,16 @@
-deploy_sus <- function(app_name = "sus-mssi") {
+deploy_sus <- function(app_name = "sus-mssi", ...) {
   
   stopifnot(app_name %in% c("sus-mssi", "sus-dev"))
   
   # Temporarily update server.R
   server_to_update <- readLines("server.R")
-  which_line_s <- str_which(server_to_update, 'updateQueryString\\("\\?"\\)')
+  which_line_s <- stringr::str_which(server_to_update, 'updateQueryString\\("\\?"\\)')
   server_to_update[which_line_s] <- r"(    # updateQueryString("?"))"
   writeLines(server_to_update, "server.R")
   
   # Temporarily update m_bookmark.R
   bookmark_to_update <- readLines("R/m_bookmark.R")
-  which_line_b <- str_which(bookmark_to_update, 'updateQueryString\\(url\\)')
+  which_line_b <- stringr::str_which(bookmark_to_update, 'updateQueryString\\(url\\)')
   if (app_name == "sus-mssi") {
     bookmark_to_update[which_line_b] <- 
       r"(      updateQueryString(paste0("/sus-mssi", url)))"   
@@ -21,7 +21,7 @@ deploy_sus <- function(app_name = "sus-mssi") {
   writeLines(bookmark_to_update, "R/m_bookmark.R")
   
   # Deploy app
-  tryCatch(rsconnect::deployApp(appName = app_name, forceUpdate = TRUE),
+  tryCatch(rsconnect::deployApp(appName = app_name, forceUpdate = TRUE, ...),
            error = function(e) cat("DEPLOY ERROR"))
   
   # Restore server.R and m_bookmark.R

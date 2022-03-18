@@ -14,13 +14,11 @@ suppressPackageStartupMessages({
   library(ggplot2)
   library(stringr)
   library(purrr)
-  library(cowplot)
   library(ggiraph)
   
   library(sf)
   library(rdeck)
-  library(mapdeck)
-  
+
   library(DT)
   library(qs)
   library(glue)
