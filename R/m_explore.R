@@ -32,8 +32,8 @@ explore_UI <- function(id) {
   )
 }
 
-explore_server <- function(id, data, var_left, var_right, df, zoom = df,
-                           select_id, build_str_as_DA = reactive(TRUE)) {
+explore_server <- function(id, data, var_left, var_right, df, select_id, 
+                           build_str_as_DA = reactive(TRUE)) {
   
   stopifnot(is.reactive(data))
   stopifnot(is.reactive(var_left))
@@ -73,7 +73,6 @@ explore_server <- function(id, data, var_left, var_right, df, zoom = df,
       var_left = var_left(),
       var_right = var_right(),
       df = df(),
-      zoom = zoom(),
       select_id = select_id(),
       build_str_as_DA = build_str_as_DA()))
     
@@ -83,7 +82,8 @@ explore_server <- function(id, data, var_left, var_right, df, zoom = df,
     # Show/hide components
     observe({
       toggle("explore_content", condition =
-               (!is.null(table()) || !is.null(graph())) && input$hide_explore %% 2 == 0)
+               (!is.null(table()) || !is.null(graph())) && 
+               input$hide_explore %% 2 == 0)
       toggle("explore_graph", condition = !is.null(graph()))
       toggle("clear_selection", condition = !is.na(select_id()))
     })

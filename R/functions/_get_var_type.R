@@ -1,7 +1,7 @@
 # GET EXPLORE VARIABLE TYPE ####################################################
 
 get_var_type <- function(data, var_left, var_right, df, select_id, 
-                         build_str_as_DA) {
+                         build_str_as_DA = TRUE) {
   
   ## Identify NA tables --------------------------------------------------------
   
@@ -36,7 +36,7 @@ get_var_type <- function(data, var_left, var_right, df, select_id,
   
   ## Create var_left_label and var_right_label ---------------------------------
   
-  if (build_str_as_DA) df <- "DA"
+  if (build_str_as_DA && df == "building") df <- "DA"
   
   breaks_q5_left <- variables$breaks_q5[
     variables$var_code == unique(sub("_\\d{4}$", "", var_left))]

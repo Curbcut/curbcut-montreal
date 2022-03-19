@@ -1,14 +1,12 @@
 #### RENDER EXPLORE GRAPH ######################################################
 
 render_explore_graph <- function(plot_type, data, var_left, var_right, df,
-                                 zoom, select_id, x_scale, y_scale, labs_xy, 
+                                 select_id, x_scale, y_scale, labs_xy, 
                                  theme_default) {
   
   # Set convenience variables
   var_left_num <- length(unique(data$var_left))
   bin_number <- min(25, var_left_num)
-  opac <- colour_alpha[names(colour_alpha) == zoom]
-  if (length(opac) == 0) opac <- "FF"
   
   # Histogram
   if (plot_type %in% c("hist_all", "hist_na", "hist_select")) {
@@ -28,7 +26,7 @@ render_explore_graph <- function(plot_type, data, var_left, var_right, df,
         lwd = 1.5)} +
       binned_scale(aesthetics = "fill",
                    scale_name = "stepsn",
-                   palette = \(x) paste0(col_left_5, opac),
+                   palette = \(x) col_left_5,
                    breaks = vals) +
       x_scale + y_scale + labs_xy + theme_default
     
@@ -47,13 +45,12 @@ render_explore_graph <- function(plot_type, data, var_left, var_right, df,
 
     out <-
       data[!is.na(data$var_left),] |> 
-      mutate(fill = paste0(fill, opac)) |> 
       ggplot(aes(as.factor(var_left))) +
       geom_bar(aes(fill = fill), width = 1) +
       {if (plot_type == "bar_select") geom_vline(
         xintercept = data$var_left[data$ID == select_id], colour = "black", 
         lwd = 1.5)} +
-      scale_fill_manual(values = paste0(cols, opac), na.translate = FALSE) +
+      scale_fill_manual(values = cols, na.translate = FALSE) +
       x_scale + y_scale + labs_xy + theme_default
   }
   
@@ -72,21 +69,18 @@ render_explore_graph <- function(plot_type, data, var_left, var_right, df,
         fill = "black", size = 4)} +
       stat_smooth(geom = "line", se = FALSE, method = "loess", span = 1,
                   formula = y ~ x, alpha = opac_line) +
-      scale_colour_manual(values = paste0(tibble::deframe(colour_bivar), 
-                                          opac)) +
+      scale_colour_manual(values = tibble::deframe(colour_bivar)) +
       x_scale + y_scale + labs_xy + theme_default
   }
   
   # Boxplot, no selection
   if (plot_type %in% c("box_all", "box_na", "box_select")) {
     
-    colours <- paste0(c(col_left_3[1:2], rep(col_left_3[3], var_left_num - 2)),
-                      opac)
+    colours <- c(col_left_3[1:2], rep(col_left_3[3], var_left_num - 2))
     names(colours) <- as.factor(unique(sort(data$var_left)))
     
     out <- 
       data[!is.na(data$var_left) & !is.na(data$var_right),] |> 
-      mutate(fill = paste0(fill, opac)) |> 
       ggplot(aes(as.factor(var_left), var_right)) +
       geom_boxplot(aes(fill = as.factor(var_left))) +
       {if (plot_type == "box_select") geom_point(
@@ -100,7 +94,7 @@ render_explore_graph <- function(plot_type, data, var_left, var_right, df,
   if (plot_type %in% c("delta_all", "NAdelta_all", "delta_na", "NAdelta_na",
                        "delta_select", "NAdelta_select")) {
     
-    colours <- paste0(colour_delta$fill[1:5], opac)
+    colours <- colour_delta$fill[1:5]
     names(colours) <- colour_delta$group[1:5]
     
     out <- if (unique(c("var_left_1", "var_left_2") %in% names(data))) {
@@ -130,7 +124,6 @@ render_explore_graph <- function(plot_type, data, var_left, var_right, df,
     out <- 
       data[data$var_left %in% remove_outliers(data$var_left) &
              data$var_right %in% remove_outliers(data$var_right),] |> 
-      mutate(fill = paste0(fill, opac)) |> 
       ggplot(aes(var_right, var_left)) +
       geom_point(aes(colour = group)) +
       {if (plot_type == "deltabivar_select") geom_point(
@@ -138,8 +131,7 @@ render_explore_graph <- function(plot_type, data, var_left, var_right, df,
         fill = "black", size = 4)} +
       stat_smooth(geom = "line", se = FALSE, method = "loess", span = 1,
                   formula = y ~ x, alpha = opac_line) +
-      scale_colour_manual(values = paste0(tibble::deframe(colour_bivar), 
-                                          opac)) +
+      scale_colour_manual(values = tibble::deframe(colour_bivar)) +
       x_scale + y_scale + labs_xy + theme_default
   }
   

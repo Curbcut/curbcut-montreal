@@ -164,7 +164,6 @@ canale_server <- function(id) {
       var_left = var_left,
       var_right = var_right,
       df = df,
-      zoom = zoom,
       select_id = select_id)
     
     # Bookmarking
