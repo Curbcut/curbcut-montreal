@@ -131,8 +131,7 @@ canale_server <- function(id) {
       id = ns_id, 
       var_left = var_left, 
       var_right = var_right, 
-      df = df,
-      zoom = zoom)
+      df = df)
     
     # Did-you-know panel
     dyk_server(
