@@ -1,6 +1,6 @@
 #### GET DATA TYPE #############################################################
 
-get_data_type <- function(df, var_left, var_right, build_str_as_DA) {
+get_data_type <- function(df, var_left, var_right, build_str_as_DA = TRUE) {
   
   # Building special cases -----------------------------------------------------
 
