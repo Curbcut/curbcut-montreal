@@ -1,6 +1,6 @@
 deploy_sus <- function(app_name = "sus-mssi", ...) {
   
-  stopifnot(app_name %in% c("sus-mssi", "sus-dev"))
+  stopifnot(app_name %in% c("sus-mssi", "sus-dev", "sus-dev2"))
   
   # Temporarily update server.R
   server_to_update <- readLines("server.R")
@@ -17,6 +17,9 @@ deploy_sus <- function(app_name = "sus-mssi", ...) {
   } else if (app_name == "sus-dev") {
     bookmark_to_update[which_line_b] <- 
       r"(      updateQueryString(paste0("/sus-dev", url)))" 
+  } else if (app_name == "sus-dev2") {
+    bookmark_to_update[which_line_b] <- 
+      r"(      updateQueryString(paste0("/sus-dev2", url)))" 
   }
   writeLines(bookmark_to_update, "R/m_bookmark.R")
   

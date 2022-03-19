@@ -173,14 +173,6 @@ DA |>
   upload_tile_source("canale-DA_building", "sus-mcgill", .sus_token)
 
 
-# Process DA_building_empty then upload tile source -----------------------
-
-DA |> 
-  st_set_geometry("building") |> 
-  select(ID, name, geometry = building) |> 
-  upload_tile_source("canale-DA_building_empty", "sus-mcgill", .sus_token)
-
-
 # Add recipes -------------------------------------------------------------
 
 recipe_borough <- '
@@ -255,7 +247,7 @@ recipe_building <- '
     "version": 1,
     "layers": {
       "DA_building_empty": {
-        "source": "mapbox://tileset-source/sus-mcgill/canale-DA_building_empty",
+        "source": "mapbox://tileset-source/sus-mcgill/DA_building_empty",
         "minzoom": 3,
         "maxzoom": 8
       },
@@ -267,7 +259,10 @@ recipe_building <- '
       "building": {
         "source": "mapbox://tileset-source/sus-mcgill/canale-building",
         "minzoom": 13,
-        "maxzoom": 16
+        "maxzoom": 16,
+        "tiles": {
+          "layer_size": 2500
+        }
       }
     }
   },
@@ -323,8 +318,6 @@ publish_tileset("canale-building", "sus-mcgill", .sus_token)
 
 create_tileset("canale-auto_zoom", recipe_auto_zoom, "sus-mcgill", .sus_token)
 publish_tileset("canale-auto_zoom", "sus-mcgill", .sus_token)
-
-
 
 
 # Recipe for building testing ---------------------------------------------

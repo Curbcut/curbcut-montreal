@@ -45,32 +45,9 @@ canale_server <- function(id) {
     output[[paste0(ns_id, "-map")]] <- renderRdeck({
       rdeck(map_style = map_base_style, initial_view_state = view_state(
         center = map_location, zoom = map_zoom)) |> 
-        add_mvt_layer(id = ns_id) #|> 
-        # add_mvt_layer(id = paste0(ns_id, "_roads")) |> 
-        # add_mvt_layer(
-        #   id = "street_1", data = mvt_url("maxbdb2.street-low2"),
-        #   line_width_units = "pixels",
-        #   get_line_width = 3.5,
-        #   get_line_color = "#FFFFFFFF"
-        # ) |> 
-        # add_mvt_layer(
-        #   id = "street_2", data = mvt_url("maxbdb2.street-mid3"),
-        #   line_width_units = "pixels",
-        #   get_line_width = 1.25,
-        #   get_line_color = "#FFFFFFFF"
-        # ) |> 
-        # add_mvt_layer(
-        #   id = "street_3", data = mvt_url("maxbdb2.street-high3"),
-        #   line_width_units = "pixels",
-        #   get_line_width = 0.7,
-        #   get_line_color = "#FFFFFFFF"
-        # ) |> 
-        # add_mvt_layer(id = "label", data = mvt_url("maxbdb2.label2"),
-        #               get_text = rlang::sym("name"),
-        #               point_type = "text",
-        #               line_width_units = "pixels",
-        #               get_text_size = 15,
-        #               text_font_family = "source-sans-pro-regular")
+        add_mvt_layer(id = ns_id) |> 
+        add_mvt_layer(id = paste0(ns_id, "_street")) |> 
+        add_mvt_layer(id = paste0(ns_id, "_building"))
     })
     
     # Zoom and POI reactives

@@ -1,9 +1,21 @@
 #### MTS FUNCTIONS #############################################################
 
 
+# List tile sources -------------------------------------------------------
+
+list_tile_sources <- function(username = "sus-mcgill", 
+                              access_token = .sus_token) {
+  
+  httr::GET(paste0("https://api.mapbox.com/tilesets/v1/sources/", username),
+            query = list(access_token = access_token)) |> 
+    httr::content()
+  
+}
+
 # Upload tile source ------------------------------------------------------
 
-upload_tile_source <- function(df, id, username, access_token) {
+upload_tile_source <- function(df, id, username = "sus-mcgill", 
+                               access_token = .sus_token) {
   
   # Initialize tempfile
   tmp <- tempfile(fileext = ".json")
@@ -26,9 +38,21 @@ upload_tile_source <- function(df, id, username, access_token) {
 }
 
 
+# Delete tileset source ---------------------------------------------------
+
+delete_tileset_source <- function(id, username = "sus-mcgill", 
+                                  access_token = .sus_token) {
+  
+  httr::DELETE(paste0("https://api.mapbox.com/tilesets/v1/sources/", username,
+                      "/", id), query = list(access_token = access_token)
+  )
+}
+
+
 # Create tileset ----------------------------------------------------------
 
-create_tileset <- function(tileset, recipe, username, access_token) {
+create_tileset <- function(tileset, recipe, username = "sus-mcgill", 
+                           access_token = .sus_token) {
   
   httr::POST(
     url = paste0("https://api.mapbox.com/tilesets/v1/",
@@ -60,7 +84,8 @@ update_tileset <- function(tileset, recipe, username, access_token) {
 
 # Publish tileset ---------------------------------------------------------
 
-publish_tileset <- function(tileset, username, access_token) {
+publish_tileset <- function(tileset, username = "sus-mcgill", 
+                            access_token = .sus_token) {
   httr::POST(
     url = paste0("https://api.mapbox.com/tilesets/v1/", username, ".", tileset,
                  "/publish"),
