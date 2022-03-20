@@ -37,17 +37,18 @@ qload("data/colours.qsm")
 
 qload("data/census.qsm")
 grid <- qread("data/grid.qs")
-street <- qread("data/street.qs")
+# street <- qread("data/street.qs")
 building <- qread("data/building.qs")
 
-qload("data/covid.qsm")
-green_space <- qread("data/green_space.qs")
-qload("data/alleys.qsm")
-crash <- qread("data/crash.qs")
-tt_matrix <- qread("data/tt_matrix.qs")
-marketed_sustainability <- qread("data/marketed_sustainability.qs")
-natural_infrastructure <- qread("data/natural_infrastructure.qs")
-metro_lines <- qread("data/metro_lines.qs")
+# qload("data/covid.qsm")
+# green_space <- qread("data/green_space.qs")
+# qload("data/alleys.qsm")
+# crash <- qread("data/crash.qs")
+# tt_matrix <- qread("data/tt_matrix.qs")
+# marketed_sustainability <- qread("data/marketed_sustainability.qs")
+# natural_infrastructure <- qread("data/natural_infrastructure.qs")
+# metro_lines <- qread("data/metro_lines.qs")
+
 stories <- qread("data/stories.qs")
 
 qload("data/place_explorer.qsm")
@@ -146,4 +147,3 @@ systemfonts::register_font(
   italic = "www/fonts/SourceSansPro-Italic.ttf",
   bold = "www/fonts/SourceSansPro-Bold.ttf",
   bolditalic = "www/fonts/SourceSansPro-BoldItalic.ttf")
-

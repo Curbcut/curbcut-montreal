@@ -154,12 +154,22 @@ source("dev/other/title_text.R")
 source("dev/other/colours.R")
 
 
+# Trim building -----------------------------------------------------------
+
+building_full <- building
+building <- 
+  building_full |> 
+  select(ID, name, name_2, DAUID) |> 
+  sf::st_drop_geometry()
+
+
 # Save data files ---------------------------------------------------------
 
 qsave(variables, file = "data/variables.qs")
 qsavem(borough, CT, DA, file = "data/census.qsm")
 qsave(grid, file = "data/grid.qs")
 qsave(building, file = "data/building.qs")
+qsave(building_full, file = "data/building_full.qs")
 qsave(street, file = "data/street.qs")
 qsave(crash, file = "data/crash.qs")
 qsave(tt_matrix, file = "data/tt_matrix.qs")
@@ -200,5 +210,5 @@ rm(add_q3, add_q5, add_variables, data_testing, find_breaks_q5, get_breaks_q3,
 
 # Deploy app --------------------------------------------------------------
 
-deploy_sus("sus-dev") # Development
+deploy_sus("sus-dev2") # Development
 deploy_sus() # Production
