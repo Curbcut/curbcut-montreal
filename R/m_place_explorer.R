@@ -1,642 +1,642 @@
-### PLACE EXPLORER MODULE ######################################################
-
-# UI ----------------------------------------------------------------------
-
-place_explorer_UI <- function(id) {
-  fillPage(fillRow(fillCol(
-    
-    # Style
-    inlineCSS("#deckgl-overlay { z-index:4; }"),
-    inlineCSS(list(.big_map = "width: 100%; height: 100vh; display:visible;")),
-    inlineCSS(list(.banner_map = "display:none;")),#"width: 100%; height: 125px;")),
-    # Temporary fix to clicking the enter key is as clicking on Search button
-    tags$script('$(function() {
-      var $els = $("[data-proxy-click]");
-                       $.each(
-                         $els,
-                         function(idx, el) {
-                           var $el = $(el);
-                           var $proxy = $("#" + $el.data("proxyClick"));
-                           $el.keydown(function (e) {
-                             if (e.keyCode == 13) {
-                               $proxy.click();
-                             }
-                           });
-                         }
-                       );
-                     });
-                     '),
-    `data-proxy-click` = "place_explorer-search_button",
-    
-    # Main map
-    div(
-      id = NS(id, "mapdeck_div"), 
-      class = "big_map", 
-      mapdeckOutput(NS(id, "map"), height = "100%")),
-    
-    # Sidebar
-    sidebar_UI(
-      NS(id, "place_explorer"),
-      hidden(actionLink(inputId = NS(id, "comeback_map"),
-                        label = sus_translate("Go back to map"),
-                        style = "font-size: 1.25rem;")),
-      
-      susSidebarWidgets(
-        # Search box
-        strong(sus_translate("Enter a postal code or click on the map")),
-        HTML(paste0('
-                   <div class="shiny-split-layout">
-                     <div style="width: 60%;">',
-                    textInput(inputId = NS(id, "adress_searched"), label = NULL,
-                              placeholder = "H3A 2T5"),
-                    '</div>
-                     <div style="width: 40%;">',
-                    actionButton(inputId = NS(id, "search_button"), 
-                                 label = "Search", 
-                                 style = "margin-top: var(--padding-v-md);"),
-                    '</div>
-                     </div>'))),
-      
-      hidden(div(id = NS(id, "sidebar_widgets"), susSidebarWidgets(
-        
-        # Checkboxes of each theme
-        pickerInput(
-          inputId = NS(id, "themes_checkbox"),
-          label = "Select theme(s):",
-          choices = unique(variables$theme),
-          selected = unique(variables$theme),
-          options = list(`selected-text-format` = "count > 4"), 
-          multiple = TRUE), 
-        
-        br(),
-        
-        # Retrieve the scale the user is interested in
-        HTML(paste0('<label id = "', NS(id, "scalemap_label"),
-                    '" class = "control-label">',
-                    sus_translate('Select scale'), ':</label>')),
-        mapdeckOutput(NS(id, "scalemap"), height = 150),
-        sliderTextInput(inputId = NS(id, "slider"), 
-                        label = NULL, 
-                        choices = get_zoom_label(map_zoom_levels[1:3]), 
-                        selected = get_zoom_label(map_zoom_levels[1:3])[3],
-                        hide_min_max = TRUE, force_edges = TRUE),
-        
-        # Island only comparison, or region-wide
-        HTML(paste0('<label id = "', NS(id, "comparison_label"),
-                    '" class = "control-label">',
-                    sus_translate('Choose comparison scale'), ':</label>')),
-        mapdeckOutput(NS(id, "island_region"), height = 100),
-        htmlOutput(outputId = NS(id, "actual_comparison_scale"), 
-                   style = "display:none;")
-        
-      )))),
-    
-    # Main panel as a uiOutput. The number of themes displayed is reactive
-    fluidPage(
-      hidden(div(id = NS(id, "grid_elements"), 
-                 style = paste0("margin-top:25px; overflow-x: hidden; ",
-                                "overflow-y: auto;  height: calc(100vh - 105px);",
-                                "margin-left:310px; background-color:#ffffff;",
-                                "padding:25px;"),
-                 fluidRow(
-                   style = paste0("padding: 5px;",
-                                  "font-size: 11px;",
-                                  "max-width: 1200px; margin:auto;",
-                                  "padding:30px;"),
-                   column(9, htmlOutput(NS(id, "title_card_title")),
-                          uiOutput(NS(id, "title_card"))),
-                   column(3, mapdeckOutput(NS(id, "title_card_map")))),
-                 
-                 fluidRow(uiOutput(NS(id, "themes_grid")))))),
-  )))
-}
-
-
-# Server ------------------------------------------------------------------
-
-place_explorer_server <- function(id) {
-  moduleServer(id, function(input, output, session) {
-    
-    # When place_explorer is launched, calculate the basemap
-    basemap <- st_union(borough) |> as_tibble() |> st_as_sf()
-    
-    # Reactive values initialization
-    location <- reactiveVal()
-    location_name <- reactiveVal()
-    island_comparison <- reactiveVal("island")
-    
-    # Sidebar
-    sidebar_server(id = "place_explorer", x = "place_explorer")
-    
-    
-    ## MAIN MAP ----------------------------------------------------------
-    output$map <- renderMapdeck(mapdeck(
-      style = map_style, 
-      token = map_token, 
-      zoom = map_zoom, 
-      location = map_location) |> 
-        add_polygon(data = basemap, 
-                    fill_colour = NULL, 
-                    stroke_colour = "#AAB6CF",
-                    stroke_width = 100,
-                    fill_opacity = 1,
-                    update_view = FALSE))
-    
-    place_explorer_zoom <- reactive({
-      case_when(input$map_view_change$zoom <= 10 ~ 300,
-                input$map_view_change$zoom >= 13 ~ 15,
-                TRUE ~ abs(input$map_view_change$zoom * -15 + 220))})
-    
-    observeEvent(place_explorer_zoom(), {
-      if (input$map_view_change$zoom < 8) {
-        mapdeck_update(map_id = NS(id, "map")) |>
-          add_polygon(data = basemap,
-                      fill_colour = "#AAB6CF",
-                      update_view = FALSE)
-      } else {
-        mapdeck_update(map_id = NS(id, "map")) |>
-          add_polygon(data = basemap,
-                      fill_colour = NULL,
-                      stroke_colour = "#AAB6CF",
-                      stroke_width = place_explorer_zoom(),
-                      fill_opacity = 1,
-                      update_view = FALSE)
-      }
-    }, ignoreInit = TRUE)
-    
-    ## RETRIEVE LOCATION ------------------------------------------------
-    # Get point data from a search
-    observeEvent(input$search_button, {
-      
-      postal_c <- str_to_lower(input$adress_searched) |> 
-        str_extract_all("\\w|\\d", simplify = TRUE) |> 
-        paste(collapse = "")
-      
-      if (postal_c %in% postal_codes$postal_code) {
-        location(postal_codes[postal_codes$postal_code == postal_c, ])
-        location_name(location()$postal_code |> 
-                        str_to_upper() |> 
-                        str_replace_all("(.{3})", "\\1 ") |> 
-                        str_trim())
-      } else {
-        showNotification(
-          paste0("No postal code found for `", input$adress_searched, "`"), 
-          type = "error")
-      }
-      
-    })
-    
-    # Get point data from a click
-    observeEvent(input$map_polygon_click, {
-      lst <- fromJSON(input$map_polygon_click)
-      
-      location(st_point(c(lst$lon, lst$lat)) |> 
-                 st_sfc(crs = 4326) |> 
-                 as_tibble() |> 
-                 st_as_sf() |> 
-                 st_set_agr("constant"))
-      
-      name <- tmaptools::rev_geocode_OSM(location())[[1]]
-      
-      town_city_county <- 
-        if (!is.null(name$town)) {
-          name$town
-        } else if (!is.null(name$city)) {
-          name$city
-        } else if (!is.null(name$county)) {
-          name$county
-        }
-      
-      location_name(paste0(
-        name$house_number, " ",
-        name$road, ", ",
-        # One or the other:
-        town_city_county))
-    })
-    
-    observeEvent(input$title_card_map_polygon_click, {
-      lst <- fromJSON(input$title_card_map_polygon_click)
-      
-      location(st_point(c(lst$lon, lst$lat)) |> 
-                 st_sfc(crs = 4326) |> 
-                 as_tibble() |> 
-                 st_as_sf() |> 
-                 st_set_agr("constant"))
-      
-      name <- tmaptools::rev_geocode_OSM(location())[[1]]
-      
-      town_city_county <- 
-        if (!is.null(name$town)) {
-          name$town
-        } else if (!is.null(name$city)) {
-          name$city
-        } else if (!is.null(name$county)) {
-          name$county
-        }
-      
-      location_name(paste0(
-        name$house_number, " ",
-        name$road, ", ",
-        # One or the other:
-        town_city_county))
-    })
-    
-    ## MAIN MAP UPDATES AND JS ------------------------------------------
-    widgets_name <- c("gridelements", "comeback_map",
-                      "grid_elements", "sidebar_widgets")
-    
-    observeEvent(location(), {
-      mapdeck_update(map_id = NS(id, "map")) |>
-        add_scatterplot(data = location(), radius = 20,
-                        fill_colour = "#2A5A5BEE")
-      
-      walk(widgets_name, ~hide(.x, anim = TRUE, animType = "fade", time = 1))
-      walk(widgets_name, ~show(.x, anim = TRUE, animType = "fade", time = 1))
-      removeCssClass(id = "mapdeck_div", class = "big_map")
-      addCssClass(id = "mapdeck_div", class = "banner_map") 
-    }, ignoreInit = TRUE)
-    
-    # Hook up the go back to map
-    observeEvent(input$comeback_map, {
-      mapdeck_update(map_id = NS(id, "map")) |>
-        clear_scatterplot()
-      
-      removeCssClass(id = "mapdeck_div", class = "banner_map")
-      addCssClass(id = "mapdeck_div", class = "big_map") 
-      walk(widgets_name, ~hide(.x, anim = TRUE, animType = "fade", time = 1))
-      
-    })
-    
-    
-    ## RETRIEVE df AND ROW ID ------------------------------------------
-    # Reactive map depending on location
-    output$scalemap <- renderMapdeck({
-      update_scale_map(id_map = NS(id, "scalemap"), location = location(),
-                       init = TRUE)
-    })
-    observeEvent(location(), {
-      update_scale_map(id_map = NS(id, "scalemap"), location = location(),
-                       init = FALSE)
-    })
-    
-    # Change df on scalemap click
-    observeEvent(input$scalemap_polygon_click, {
-      select_df <- fromJSON(input$scalemap_polygon_click)$object$properties$id
-      # A click on the map triggers a change in the slider, domino to `df`
-      updateSliderTextInput(session = session, 
-                            inputId = "slider",
-                            selected = get_zoom_name(select_df))
-    })
-    
-    df <- reactive(get_zoom_code(input$slider))
-    
-    # Depending on `df`, retrieve the ID.
-    select_id <- reactive({
-      if (!is.null(location())) {
-        st_intersection(st_set_agr(get(df()), "constant"), 
-                        st_set_agr(location(), "constant"))$ID
-      } else NULL
-    })
-    
-    
-    ## ISLAND OR REGION COMPARISON -------------------------------------
-    output$island_region <- renderMapdeck({if (!is.null(location())) 
-      island_region_map(location())})
-    
-    # Reactive to toggle on or off the presence of the island_region wdiget
-    location_on_island <- reactive({
-      if (!is.null(location())) {
-        filter(get(df()), ID == select_id())$CSDUID %in% island_CSDUID
-      }})
-    
-    # Should we show the map, or not? Only if location() is on island
-    observe({
-      toggle(id = "island_region", condition = location_on_island())
-      toggle(id = "comparison_label", condition = location_on_island())
-      toggle(id = "actual_comparison_scale", condition = location_on_island())
-    })
-    
-    # Everytime the selected id changes, reevaluate if we're starting with 
-    # an island-only comparison, or region-wide. 
-    observeEvent(select_id(), {
-      if (!is.null(select_id())) {
-        island_comparison(if (location_on_island()) "island" else "region")
-      }
-    })
-    
-    # The reaction of a click on the widget's map
-    observeEvent(input$island_region_polygon_click, {
-      island_comparison({
-        fromJSON(input$island_region_polygon_click)$object$properties$id})
-    })
-    
-    # Let the user know what is the actual scale
-    output$actual_comparison_scale <- renderText({
-      if (!is.null(location())) {
-        scale <- str_to_sentence(sus_translate(island_comparison()))
-        sus_translate("Current scale: {scale}")}
-    })
-    
-    
-    ## TITLE CARD -------------------------------------------------------
-    shinyjs::delay(1, shinyjs::show("grid_elements"))
-    shinyjs::delay(500, shinyjs::hide("grid_elements"))
-    
-    output$title_card_map <- renderMapdeck({
-      mapdeck(
-        style = map_style, 
-        token = map_token, 
-        zoom = map_zoom, 
-        location = map_location) |> 
-        add_polygon(data = borough |> 
-                      mutate(tooltip = sus_translate("Click to select a new location")), 
-                    tooltip = "tooltip",
-                    fill_colour = NULL, 
-                    stroke_opacity = 1,
-                    fill_opacity = 1,
-                    update_view = FALSE,
-                    layer_id = "basemap")
-    })
-    
-    observeEvent({df()
-      location()
-      select_id()}, {
-        
-        if (!is.null(df()) && !is.null(select_id()) && !is.null(location())) {
-          data <- get(df()) |>
-            filter(ID == select_id()) |>
-            select(-everything()) |>
-            mutate(tooltip = df())
-          
-          mapdeck_update(map_id = NS(id, "title_card_map")) |>
-            add_polygon(data = data,
-                        tooltip = "tooltip",
-                        highlight_colour = "#FFFFFF80",
-                        fill_colour = "#BAE4B3BB",
-                        stroke_colour = "#FFFFFF",
-                        stroke_width = 5,
-                        auto_highlight = TRUE,
-                        update_view = TRUE)
-        }
-      })
-    
-    output$title_card_title <- renderText({
-      if (!is.null(df()) && !is.null(select_id()) && !is.null(location())) {
-        HTML("<h2>",
-             if (df() == "borough") {
-               borough[borough$ID == select_id(),]$name
-             } else location_name(),
-             "</h2>")
-      } else HTML("<h2>Your selected location</h2>")
-    })
-    
-    output$title_card <- renderUI({
-      
-      output$list <- renderUI({
-        if (!is.null(df()) && !is.null(select_id()) && !is.null(location())) {
-          
-          title_card_to_grid <<- get_title_card(
-            df(), select_id(),
-            island_or_region = island_comparison())
-          
-          map(seq_along(title_card_to_grid), ~{
-            output[[paste0("ind_", .x, "_row_title")]] <- renderText({
-              title_card_to_grid[[.x]][["row_title"]] |>
-                str_to_upper()
-            })
-            output[[paste0("ind_", .x, "_percentile")]] <- renderText({
-              title_card_to_grid[[.x]][["percentile"]] |>
-                str_to_upper()
-            })
-            output[[paste0("ind_", .x, "_plot")]] <- renderPlot({
-              title_card_to_grid[[.x]][["graph"]]
-            })
-            output[[paste0("ind_", .x, "_text")]] <- renderText({
-              paste0(title_card_to_grid[[.x]][["text"]], 
-                     title_card_to_grid[[.x]][["link"]])
-            })
-          })
-          
-          map(seq_along(title_card_to_grid), ~{
-            tagList(
-              fluidRow(
-                column(width = 2,
-                       htmlOutput(eval(parse(
-                         text = paste0("NS(id, 'ind_", .x, "_row_title')"))),
-                         style = paste0("margin:auto; text-align:center; ",
-                                        "font-size: medium; font-weight:bold;"))),
-                column(width = 2,
-                       htmlOutput(eval(parse(
-                         text = paste0("NS(id, 'ind_", .x, "_percentile')"))),
-                         style = paste0("margin:auto; text-align:center;"))),
-                column(width = 2,
-                       plotOutput(eval(parse(
-                         text = paste0("NS(id, 'ind_", .x, "_plot')"))),
-                         height = 25)),
-                column(width = 6,
-                       htmlOutput(eval(parse(
-                         text = paste0("NS(id, 'ind_", .x, "_text')"))),
-                         style = "color: #999999"))
-                
-              ),
-              br()
-            )
-          })
-        }
-      })
-      
-      tagList(uiOutput(NS(id, "list")))
-      
-    })
-    
-    ## PLACE EXPLORER DATA ----------------------------------------------
-    output$themes_grid <- renderUI({
-      if (!is.null(df()) && !is.null(select_id()) && !is.null(location())) {
-        
-        themes <-
-          pe_theme_order[[df()]] |>
-          filter(ID == select_id()) |>
-          filter(group == !!island_comparison()) |> 
-          arrange(theme_order) 
-        
-        standout <- 
-          themes |>
-          pull(standout)
-        
-        themes <- 
-          themes |>
-          pull(theme)
-        
-        standout_definition <- 
-          c("Extreme outlier" = 
-              paste0("`Extreme outlier` means that the variables comprising ",
-                     "the theme, on average, \nrank  in the top or bottom 10% ",
-                     "relative to the {island_comparison()}."),
-            "Outlier" = 
-              paste0("`Outlier` means that the variables comprising the theme, ",
-                     "on average, \nrank in the top or bottom 20% relative to ",
-                     "the {island_comparison()}."),
-            "Typical" = 
-              paste0("`Typical` means that the variables comprising the theme, ",
-                     "on average, \nrank between the top or bottom 20% relative ",
-                     "to the {island_comparison()}."))
-        
-        # The "server" of every block
-        iwalk(themes, function(theme, ite) {
-          delay(ite*100, {
-            block <- paste0("theme_", theme, "_block")
-            
-            output[[block]] <- renderUI({
-              
-              to_grid <- place_explorer_block_text(
-                df = df(), 
-                theme = theme,
-                select_id = select_id(),
-                island_or_region = island_comparison())
-              
-              plots <- place_explorer_block_plot(
-                df = df(), 
-                theme = theme,
-                select_id = select_id(),
-                island_or_region = island_comparison()
-              )
-              
-              if (nrow(to_grid) > 0)
-                map(1:(nrow(to_grid)), ~{
-                  output[[paste0("ind_", theme, .x, "_row_title")]] <- renderText({
-                    
-                    paste(p(style = "    font-size: 11px;", to_grid[.x, ][["var_title"]],
-                            icon("question"), 
-                            title = str_to_sentence(to_grid[.x, ][["explanation"]])))
-                  })
-                  output[[paste0("ind_", theme,  .x, "_percentile")]] <- renderText({
-                    to_grid[.x, ][["percentile"]]
-                  })
-                  output[[paste0("ind_", theme, .x, "_value")]] <- renderText({
-                    to_grid[.x, ][["value"]]
-                  })
-                  output[[paste0("ind_", theme, .x, "_plot")]] <- renderPlot({
-                    plots[[.x]]
-                  })
-                })
-              
-              if (nrow(to_grid) > 0) {
-                translated_theme <- str_to_upper(sus_translate(theme))
-                translated_standout <- str_to_lower(sus_translate(standout[[ite]]))
-                translated_standout_definition <- 
-                  sus_translate(standout_definition[[which(names(standout_definition) == standout[[ite]])]])
-                
-                nb_values_to_show <- min(nrow(to_grid), 5)
-                
-                block_title <- paste0(translated_theme, " (", translated_standout, ")")
-                
-                tagList(h3(style = "text-transform:inherit;",
-                           block_title,
-                           title = translated_standout_definition),
-                        map(1:nb_values_to_show, ~{
-                          tagList(
-                            fluidRow(
-                              column(width = 4, 
-                                     if (.x == 1) h5(sus_translate("Variable")),
-                                     htmlOutput(eval(parse(
-                                       text = paste0("NS(id, 'ind_", theme, .x, "_row_title')"))))),
-                              column(width = 2,
-                                     if (.x == 1) h5(sus_translate("Rank")),
-                                     htmlOutput(eval(parse(
-                                       text = paste0("NS(id, 'ind_", theme, .x, "_percentile')"))))),
-                              column(width = 2,
-                                     if (.x == 1) h5(sus_translate("Value")),
-                                     htmlOutput(eval(parse(
-                                       text = paste0("NS(id, 'ind_", theme, .x, "_value')"))))),
-                              column(width = 3,
-                                     if (.x == 1) h5(sus_translate("Plot")),
-                                     plotOutput(eval(parse(
-                                       text = paste0("NS(id, 'ind_", theme, .x, "_plot')"))),
-                                       height = 25))
-                            ),
-                            br()
-                          )
-                        })
-                )} else {
-                  tagList(fluidRow(h3(sus_translate(theme))), 
-                          fluidRow("No data."))
-                }
-            })
-          })
-        })
-        
-        which_standout <- which(standout %in% c("Extreme outlier", "Outlier"))
-        
-        imap(themes, function(theme, ite) {
-          tagList(
-            if (ite == 1) {
-              tagList(h2(style = "padding: 10px;",
-                         sus_translate("Explore where the {df()} stands out")))
-            } else if (ite - 1 == which_standout[length(which_standout)]) {
-              tagList(h2(style = "padding: 10px;",
-                         sus_translate("Explore other themes")))
-            },
-            uiOutput(
-              outputId = eval(parse(text = paste0("NS(id, 'theme_", theme, "_block')"))),
-              style = paste0("padding: 20px; margin: 10px; font-size: 11px;",
-                             "display: inline-grid; width: 48%;"), 
-              class = "panel panel-default "))
-        })
-      }
-    })
-    
-    observeEvent(input$themes_checkbox, {
-      if (!is.null(df()) && !is.null(select_id()) && !is.null(location())) {
-        themes <-
-          pe_theme_order[[df()]] |>
-          filter(ID == select_id()) |>
-          filter(group == !!island_comparison()) |> 
-          arrange(theme_order) |> 
-          pull(theme)
-        
-        to_hide <- themes[!themes %in% input$themes_checkbox]
-        to_show <- themes[themes %in% input$themes_checkbox]
-        
-        map(to_hide, ~{
-          hide(paste0("theme_", .x, "_block"))
-        })
-        
-        map(to_show, ~{
-          show(paste0("theme_", .x, "_block"))
-        })
-      }
-    })
-    
-    observeEvent(input$title_card_total_crash_per1k, {
-      z <- title_card_to_grid[["total_crash_per1k"]]
-      module_link(module = z$link_module,
-                  select_id = select_id(),
-                  var_left = z$link_var_left,
-                  df = df())
-    })
-    
-    observeEvent(input$title_card_single_detached, {
-      z <- title_card_to_grid[["single_detached"]]
-      module_link(module = z$link_module,
-                  select_id = select_id(),
-                  var_left = z$link_var_left,
-                  df = df())
-    })
-    
-    observeEvent(input$title_card_green_space_ndvi, {
-      z <- title_card_to_grid[["green_space_ndvi"]]
-      module_link(module = z$link_module,
-                  select_id = select_id(),
-                  var_left = z$link_var_left,
-                  df = df())
-    })
-    
-    observeEvent(input$title_card_canale_index, {
-      z <- title_card_to_grid[["canale_index"]]
-      module_link(module = z$link_module,
-                  select_id = select_id(),
-                  var_left = z$link_var_left,
-                  df = df())
-    })
-  })
-}
+# ### PLACE EXPLORER MODULE ######################################################
+# 
+# # UI ----------------------------------------------------------------------
+# 
+# place_explorer_UI <- function(id) {
+#   fillPage(fillRow(fillCol(
+#     
+#     # Style
+#     inlineCSS("#deckgl-overlay { z-index:4; }"),
+#     inlineCSS(list(.big_map = "width: 100%; height: 100vh; display:visible;")),
+#     inlineCSS(list(.banner_map = "display:none;")),#"width: 100%; height: 125px;")),
+#     # Temporary fix to clicking the enter key is as clicking on Search button
+#     tags$script('$(function() {
+#       var $els = $("[data-proxy-click]");
+#                        $.each(
+#                          $els,
+#                          function(idx, el) {
+#                            var $el = $(el);
+#                            var $proxy = $("#" + $el.data("proxyClick"));
+#                            $el.keydown(function (e) {
+#                              if (e.keyCode == 13) {
+#                                $proxy.click();
+#                              }
+#                            });
+#                          }
+#                        );
+#                      });
+#                      '),
+#     `data-proxy-click` = "place_explorer-search_button",
+#     
+#     # Main map
+#     div(
+#       id = NS(id, "mapdeck_div"), 
+#       class = "big_map", 
+#       mapdeckOutput(NS(id, "map"), height = "100%")),
+#     
+#     # Sidebar
+#     sidebar_UI(
+#       NS(id, "place_explorer"),
+#       hidden(actionLink(inputId = NS(id, "comeback_map"),
+#                         label = sus_translate("Go back to map"),
+#                         style = "font-size: 1.25rem;")),
+#       
+#       susSidebarWidgets(
+#         # Search box
+#         strong(sus_translate("Enter a postal code or click on the map")),
+#         HTML(paste0('
+#                    <div class="shiny-split-layout">
+#                      <div style="width: 60%;">',
+#                     textInput(inputId = NS(id, "adress_searched"), label = NULL,
+#                               placeholder = "H3A 2T5"),
+#                     '</div>
+#                      <div style="width: 40%;">',
+#                     actionButton(inputId = NS(id, "search_button"), 
+#                                  label = "Search", 
+#                                  style = "margin-top: var(--padding-v-md);"),
+#                     '</div>
+#                      </div>'))),
+#       
+#       hidden(div(id = NS(id, "sidebar_widgets"), susSidebarWidgets(
+#         
+#         # Checkboxes of each theme
+#         pickerInput(
+#           inputId = NS(id, "themes_checkbox"),
+#           label = "Select theme(s):",
+#           choices = unique(variables$theme),
+#           selected = unique(variables$theme),
+#           options = list(`selected-text-format` = "count > 4"), 
+#           multiple = TRUE), 
+#         
+#         br(),
+#         
+#         # Retrieve the scale the user is interested in
+#         HTML(paste0('<label id = "', NS(id, "scalemap_label"),
+#                     '" class = "control-label">',
+#                     sus_translate('Select scale'), ':</label>')),
+#         mapdeckOutput(NS(id, "scalemap"), height = 150),
+#         sliderTextInput(inputId = NS(id, "slider"), 
+#                         label = NULL, 
+#                         choices = get_zoom_label(map_zoom_levels[1:3]), 
+#                         selected = get_zoom_label(map_zoom_levels[1:3])[3],
+#                         hide_min_max = TRUE, force_edges = TRUE),
+#         
+#         # Island only comparison, or region-wide
+#         HTML(paste0('<label id = "', NS(id, "comparison_label"),
+#                     '" class = "control-label">',
+#                     sus_translate('Choose comparison scale'), ':</label>')),
+#         mapdeckOutput(NS(id, "island_region"), height = 100),
+#         htmlOutput(outputId = NS(id, "actual_comparison_scale"), 
+#                    style = "display:none;")
+#         
+#       )))),
+#     
+#     # Main panel as a uiOutput. The number of themes displayed is reactive
+#     fluidPage(
+#       hidden(div(id = NS(id, "grid_elements"), 
+#                  style = paste0("margin-top:25px; overflow-x: hidden; ",
+#                                 "overflow-y: auto;  height: calc(100vh - 105px);",
+#                                 "margin-left:310px; background-color:#ffffff;",
+#                                 "padding:25px;"),
+#                  fluidRow(
+#                    style = paste0("padding: 5px;",
+#                                   "font-size: 11px;",
+#                                   "max-width: 1200px; margin:auto;",
+#                                   "padding:30px;"),
+#                    column(9, htmlOutput(NS(id, "title_card_title")),
+#                           uiOutput(NS(id, "title_card"))),
+#                    column(3, mapdeckOutput(NS(id, "title_card_map")))),
+#                  
+#                  fluidRow(uiOutput(NS(id, "themes_grid")))))),
+#   )))
+# }
+# 
+# 
+# # Server ------------------------------------------------------------------
+# 
+# place_explorer_server <- function(id) {
+#   moduleServer(id, function(input, output, session) {
+#     
+#     # When place_explorer is launched, calculate the basemap
+#     basemap <- st_union(borough) |> as_tibble() |> st_as_sf()
+#     
+#     # Reactive values initialization
+#     location <- reactiveVal()
+#     location_name <- reactiveVal()
+#     island_comparison <- reactiveVal("island")
+#     
+#     # Sidebar
+#     sidebar_server(id = "place_explorer", x = "place_explorer")
+#     
+#     
+#     ## MAIN MAP ----------------------------------------------------------
+#     output$map <- renderMapdeck(mapdeck(
+#       style = map_style, 
+#       token = map_token, 
+#       zoom = map_zoom, 
+#       location = map_location) |> 
+#         add_polygon(data = basemap, 
+#                     fill_colour = NULL, 
+#                     stroke_colour = "#AAB6CF",
+#                     stroke_width = 100,
+#                     fill_opacity = 1,
+#                     update_view = FALSE))
+#     
+#     place_explorer_zoom <- reactive({
+#       case_when(input$map_view_change$zoom <= 10 ~ 300,
+#                 input$map_view_change$zoom >= 13 ~ 15,
+#                 TRUE ~ abs(input$map_view_change$zoom * -15 + 220))})
+#     
+#     observeEvent(place_explorer_zoom(), {
+#       if (input$map_view_change$zoom < 8) {
+#         mapdeck_update(map_id = NS(id, "map")) |>
+#           add_polygon(data = basemap,
+#                       fill_colour = "#AAB6CF",
+#                       update_view = FALSE)
+#       } else {
+#         mapdeck_update(map_id = NS(id, "map")) |>
+#           add_polygon(data = basemap,
+#                       fill_colour = NULL,
+#                       stroke_colour = "#AAB6CF",
+#                       stroke_width = place_explorer_zoom(),
+#                       fill_opacity = 1,
+#                       update_view = FALSE)
+#       }
+#     }, ignoreInit = TRUE)
+#     
+#     ## RETRIEVE LOCATION ------------------------------------------------
+#     # Get point data from a search
+#     observeEvent(input$search_button, {
+#       
+#       postal_c <- str_to_lower(input$adress_searched) |> 
+#         str_extract_all("\\w|\\d", simplify = TRUE) |> 
+#         paste(collapse = "")
+#       
+#       if (postal_c %in% postal_codes$postal_code) {
+#         location(postal_codes[postal_codes$postal_code == postal_c, ])
+#         location_name(location()$postal_code |> 
+#                         str_to_upper() |> 
+#                         str_replace_all("(.{3})", "\\1 ") |> 
+#                         str_trim())
+#       } else {
+#         showNotification(
+#           paste0("No postal code found for `", input$adress_searched, "`"), 
+#           type = "error")
+#       }
+#       
+#     })
+#     
+#     # Get point data from a click
+#     observeEvent(input$map_polygon_click, {
+#       lst <- fromJSON(input$map_polygon_click)
+#       
+#       location(st_point(c(lst$lon, lst$lat)) |> 
+#                  st_sfc(crs = 4326) |> 
+#                  as_tibble() |> 
+#                  st_as_sf() |> 
+#                  st_set_agr("constant"))
+#       
+#       name <- tmaptools::rev_geocode_OSM(location())[[1]]
+#       
+#       town_city_county <- 
+#         if (!is.null(name$town)) {
+#           name$town
+#         } else if (!is.null(name$city)) {
+#           name$city
+#         } else if (!is.null(name$county)) {
+#           name$county
+#         }
+#       
+#       location_name(paste0(
+#         name$house_number, " ",
+#         name$road, ", ",
+#         # One or the other:
+#         town_city_county))
+#     })
+#     
+#     observeEvent(input$title_card_map_polygon_click, {
+#       lst <- fromJSON(input$title_card_map_polygon_click)
+#       
+#       location(st_point(c(lst$lon, lst$lat)) |> 
+#                  st_sfc(crs = 4326) |> 
+#                  as_tibble() |> 
+#                  st_as_sf() |> 
+#                  st_set_agr("constant"))
+#       
+#       name <- tmaptools::rev_geocode_OSM(location())[[1]]
+#       
+#       town_city_county <- 
+#         if (!is.null(name$town)) {
+#           name$town
+#         } else if (!is.null(name$city)) {
+#           name$city
+#         } else if (!is.null(name$county)) {
+#           name$county
+#         }
+#       
+#       location_name(paste0(
+#         name$house_number, " ",
+#         name$road, ", ",
+#         # One or the other:
+#         town_city_county))
+#     })
+#     
+#     ## MAIN MAP UPDATES AND JS ------------------------------------------
+#     widgets_name <- c("gridelements", "comeback_map",
+#                       "grid_elements", "sidebar_widgets")
+#     
+#     observeEvent(location(), {
+#       mapdeck_update(map_id = NS(id, "map")) |>
+#         add_scatterplot(data = location(), radius = 20,
+#                         fill_colour = "#2A5A5BEE")
+#       
+#       walk(widgets_name, ~hide(.x, anim = TRUE, animType = "fade", time = 1))
+#       walk(widgets_name, ~show(.x, anim = TRUE, animType = "fade", time = 1))
+#       removeCssClass(id = "mapdeck_div", class = "big_map")
+#       addCssClass(id = "mapdeck_div", class = "banner_map") 
+#     }, ignoreInit = TRUE)
+#     
+#     # Hook up the go back to map
+#     observeEvent(input$comeback_map, {
+#       mapdeck_update(map_id = NS(id, "map")) |>
+#         clear_scatterplot()
+#       
+#       removeCssClass(id = "mapdeck_div", class = "banner_map")
+#       addCssClass(id = "mapdeck_div", class = "big_map") 
+#       walk(widgets_name, ~hide(.x, anim = TRUE, animType = "fade", time = 1))
+#       
+#     })
+#     
+#     
+#     ## RETRIEVE df AND ROW ID ------------------------------------------
+#     # Reactive map depending on location
+#     output$scalemap <- renderMapdeck({
+#       update_scale_map(id_map = NS(id, "scalemap"), location = location(),
+#                        init = TRUE)
+#     })
+#     observeEvent(location(), {
+#       update_scale_map(id_map = NS(id, "scalemap"), location = location(),
+#                        init = FALSE)
+#     })
+#     
+#     # Change df on scalemap click
+#     observeEvent(input$scalemap_polygon_click, {
+#       select_df <- fromJSON(input$scalemap_polygon_click)$object$properties$id
+#       # A click on the map triggers a change in the slider, domino to `df`
+#       updateSliderTextInput(session = session, 
+#                             inputId = "slider",
+#                             selected = get_zoom_name(select_df))
+#     })
+#     
+#     df <- reactive(get_zoom_code(input$slider))
+#     
+#     # Depending on `df`, retrieve the ID.
+#     select_id <- reactive({
+#       if (!is.null(location())) {
+#         st_intersection(st_set_agr(get(df()), "constant"), 
+#                         st_set_agr(location(), "constant"))$ID
+#       } else NULL
+#     })
+#     
+#     
+#     ## ISLAND OR REGION COMPARISON -------------------------------------
+#     output$island_region <- renderMapdeck({if (!is.null(location())) 
+#       island_region_map(location())})
+#     
+#     # Reactive to toggle on or off the presence of the island_region wdiget
+#     location_on_island <- reactive({
+#       if (!is.null(location())) {
+#         filter(get(df()), ID == select_id())$CSDUID %in% island_CSDUID
+#       }})
+#     
+#     # Should we show the map, or not? Only if location() is on island
+#     observe({
+#       toggle(id = "island_region", condition = location_on_island())
+#       toggle(id = "comparison_label", condition = location_on_island())
+#       toggle(id = "actual_comparison_scale", condition = location_on_island())
+#     })
+#     
+#     # Everytime the selected id changes, reevaluate if we're starting with 
+#     # an island-only comparison, or region-wide. 
+#     observeEvent(select_id(), {
+#       if (!is.null(select_id())) {
+#         island_comparison(if (location_on_island()) "island" else "region")
+#       }
+#     })
+#     
+#     # The reaction of a click on the widget's map
+#     observeEvent(input$island_region_polygon_click, {
+#       island_comparison({
+#         fromJSON(input$island_region_polygon_click)$object$properties$id})
+#     })
+#     
+#     # Let the user know what is the actual scale
+#     output$actual_comparison_scale <- renderText({
+#       if (!is.null(location())) {
+#         scale <- str_to_sentence(sus_translate(island_comparison()))
+#         sus_translate("Current scale: {scale}")}
+#     })
+#     
+#     
+#     ## TITLE CARD -------------------------------------------------------
+#     shinyjs::delay(1, shinyjs::show("grid_elements"))
+#     shinyjs::delay(500, shinyjs::hide("grid_elements"))
+#     
+#     output$title_card_map <- renderMapdeck({
+#       mapdeck(
+#         style = map_style, 
+#         token = map_token, 
+#         zoom = map_zoom, 
+#         location = map_location) |> 
+#         add_polygon(data = borough |> 
+#                       mutate(tooltip = sus_translate("Click to select a new location")), 
+#                     tooltip = "tooltip",
+#                     fill_colour = NULL, 
+#                     stroke_opacity = 1,
+#                     fill_opacity = 1,
+#                     update_view = FALSE,
+#                     layer_id = "basemap")
+#     })
+#     
+#     observeEvent({df()
+#       location()
+#       select_id()}, {
+#         
+#         if (!is.null(df()) && !is.null(select_id()) && !is.null(location())) {
+#           data <- get(df()) |>
+#             filter(ID == select_id()) |>
+#             select(-everything()) |>
+#             mutate(tooltip = df())
+#           
+#           mapdeck_update(map_id = NS(id, "title_card_map")) |>
+#             add_polygon(data = data,
+#                         tooltip = "tooltip",
+#                         highlight_colour = "#FFFFFF80",
+#                         fill_colour = "#BAE4B3BB",
+#                         stroke_colour = "#FFFFFF",
+#                         stroke_width = 5,
+#                         auto_highlight = TRUE,
+#                         update_view = TRUE)
+#         }
+#       })
+#     
+#     output$title_card_title <- renderText({
+#       if (!is.null(df()) && !is.null(select_id()) && !is.null(location())) {
+#         HTML("<h2>",
+#              if (df() == "borough") {
+#                borough[borough$ID == select_id(),]$name
+#              } else location_name(),
+#              "</h2>")
+#       } else HTML("<h2>Your selected location</h2>")
+#     })
+#     
+#     output$title_card <- renderUI({
+#       
+#       output$list <- renderUI({
+#         if (!is.null(df()) && !is.null(select_id()) && !is.null(location())) {
+#           
+#           title_card_to_grid <<- get_title_card(
+#             df(), select_id(),
+#             island_or_region = island_comparison())
+#           
+#           map(seq_along(title_card_to_grid), ~{
+#             output[[paste0("ind_", .x, "_row_title")]] <- renderText({
+#               title_card_to_grid[[.x]][["row_title"]] |>
+#                 str_to_upper()
+#             })
+#             output[[paste0("ind_", .x, "_percentile")]] <- renderText({
+#               title_card_to_grid[[.x]][["percentile"]] |>
+#                 str_to_upper()
+#             })
+#             output[[paste0("ind_", .x, "_plot")]] <- renderPlot({
+#               title_card_to_grid[[.x]][["graph"]]
+#             })
+#             output[[paste0("ind_", .x, "_text")]] <- renderText({
+#               paste0(title_card_to_grid[[.x]][["text"]], 
+#                      title_card_to_grid[[.x]][["link"]])
+#             })
+#           })
+#           
+#           map(seq_along(title_card_to_grid), ~{
+#             tagList(
+#               fluidRow(
+#                 column(width = 2,
+#                        htmlOutput(eval(parse(
+#                          text = paste0("NS(id, 'ind_", .x, "_row_title')"))),
+#                          style = paste0("margin:auto; text-align:center; ",
+#                                         "font-size: medium; font-weight:bold;"))),
+#                 column(width = 2,
+#                        htmlOutput(eval(parse(
+#                          text = paste0("NS(id, 'ind_", .x, "_percentile')"))),
+#                          style = paste0("margin:auto; text-align:center;"))),
+#                 column(width = 2,
+#                        plotOutput(eval(parse(
+#                          text = paste0("NS(id, 'ind_", .x, "_plot')"))),
+#                          height = 25)),
+#                 column(width = 6,
+#                        htmlOutput(eval(parse(
+#                          text = paste0("NS(id, 'ind_", .x, "_text')"))),
+#                          style = "color: #999999"))
+#                 
+#               ),
+#               br()
+#             )
+#           })
+#         }
+#       })
+#       
+#       tagList(uiOutput(NS(id, "list")))
+#       
+#     })
+#     
+#     ## PLACE EXPLORER DATA ----------------------------------------------
+#     output$themes_grid <- renderUI({
+#       if (!is.null(df()) && !is.null(select_id()) && !is.null(location())) {
+#         
+#         themes <-
+#           pe_theme_order[[df()]] |>
+#           filter(ID == select_id()) |>
+#           filter(group == !!island_comparison()) |> 
+#           arrange(theme_order) 
+#         
+#         standout <- 
+#           themes |>
+#           pull(standout)
+#         
+#         themes <- 
+#           themes |>
+#           pull(theme)
+#         
+#         standout_definition <- 
+#           c("Extreme outlier" = 
+#               paste0("`Extreme outlier` means that the variables comprising ",
+#                      "the theme, on average, \nrank  in the top or bottom 10% ",
+#                      "relative to the {island_comparison()}."),
+#             "Outlier" = 
+#               paste0("`Outlier` means that the variables comprising the theme, ",
+#                      "on average, \nrank in the top or bottom 20% relative to ",
+#                      "the {island_comparison()}."),
+#             "Typical" = 
+#               paste0("`Typical` means that the variables comprising the theme, ",
+#                      "on average, \nrank between the top or bottom 20% relative ",
+#                      "to the {island_comparison()}."))
+#         
+#         # The "server" of every block
+#         iwalk(themes, function(theme, ite) {
+#           delay(ite*100, {
+#             block <- paste0("theme_", theme, "_block")
+#             
+#             output[[block]] <- renderUI({
+#               
+#               to_grid <- place_explorer_block_text(
+#                 df = df(), 
+#                 theme = theme,
+#                 select_id = select_id(),
+#                 island_or_region = island_comparison())
+#               
+#               plots <- place_explorer_block_plot(
+#                 df = df(), 
+#                 theme = theme,
+#                 select_id = select_id(),
+#                 island_or_region = island_comparison()
+#               )
+#               
+#               if (nrow(to_grid) > 0)
+#                 map(1:(nrow(to_grid)), ~{
+#                   output[[paste0("ind_", theme, .x, "_row_title")]] <- renderText({
+#                     
+#                     paste(p(style = "    font-size: 11px;", to_grid[.x, ][["var_title"]],
+#                             icon("question"), 
+#                             title = str_to_sentence(to_grid[.x, ][["explanation"]])))
+#                   })
+#                   output[[paste0("ind_", theme,  .x, "_percentile")]] <- renderText({
+#                     to_grid[.x, ][["percentile"]]
+#                   })
+#                   output[[paste0("ind_", theme, .x, "_value")]] <- renderText({
+#                     to_grid[.x, ][["value"]]
+#                   })
+#                   output[[paste0("ind_", theme, .x, "_plot")]] <- renderPlot({
+#                     plots[[.x]]
+#                   })
+#                 })
+#               
+#               if (nrow(to_grid) > 0) {
+#                 translated_theme <- str_to_upper(sus_translate(theme))
+#                 translated_standout <- str_to_lower(sus_translate(standout[[ite]]))
+#                 translated_standout_definition <- 
+#                   sus_translate(standout_definition[[which(names(standout_definition) == standout[[ite]])]])
+#                 
+#                 nb_values_to_show <- min(nrow(to_grid), 5)
+#                 
+#                 block_title <- paste0(translated_theme, " (", translated_standout, ")")
+#                 
+#                 tagList(h3(style = "text-transform:inherit;",
+#                            block_title,
+#                            title = translated_standout_definition),
+#                         map(1:nb_values_to_show, ~{
+#                           tagList(
+#                             fluidRow(
+#                               column(width = 4, 
+#                                      if (.x == 1) h5(sus_translate("Variable")),
+#                                      htmlOutput(eval(parse(
+#                                        text = paste0("NS(id, 'ind_", theme, .x, "_row_title')"))))),
+#                               column(width = 2,
+#                                      if (.x == 1) h5(sus_translate("Rank")),
+#                                      htmlOutput(eval(parse(
+#                                        text = paste0("NS(id, 'ind_", theme, .x, "_percentile')"))))),
+#                               column(width = 2,
+#                                      if (.x == 1) h5(sus_translate("Value")),
+#                                      htmlOutput(eval(parse(
+#                                        text = paste0("NS(id, 'ind_", theme, .x, "_value')"))))),
+#                               column(width = 3,
+#                                      if (.x == 1) h5(sus_translate("Plot")),
+#                                      plotOutput(eval(parse(
+#                                        text = paste0("NS(id, 'ind_", theme, .x, "_plot')"))),
+#                                        height = 25))
+#                             ),
+#                             br()
+#                           )
+#                         })
+#                 )} else {
+#                   tagList(fluidRow(h3(sus_translate(theme))), 
+#                           fluidRow("No data."))
+#                 }
+#             })
+#           })
+#         })
+#         
+#         which_standout <- which(standout %in% c("Extreme outlier", "Outlier"))
+#         
+#         imap(themes, function(theme, ite) {
+#           tagList(
+#             if (ite == 1) {
+#               tagList(h2(style = "padding: 10px;",
+#                          sus_translate("Explore where the {df()} stands out")))
+#             } else if (ite - 1 == which_standout[length(which_standout)]) {
+#               tagList(h2(style = "padding: 10px;",
+#                          sus_translate("Explore other themes")))
+#             },
+#             uiOutput(
+#               outputId = eval(parse(text = paste0("NS(id, 'theme_", theme, "_block')"))),
+#               style = paste0("padding: 20px; margin: 10px; font-size: 11px;",
+#                              "display: inline-grid; width: 48%;"), 
+#               class = "panel panel-default "))
+#         })
+#       }
+#     })
+#     
+#     observeEvent(input$themes_checkbox, {
+#       if (!is.null(df()) && !is.null(select_id()) && !is.null(location())) {
+#         themes <-
+#           pe_theme_order[[df()]] |>
+#           filter(ID == select_id()) |>
+#           filter(group == !!island_comparison()) |> 
+#           arrange(theme_order) |> 
+#           pull(theme)
+#         
+#         to_hide <- themes[!themes %in% input$themes_checkbox]
+#         to_show <- themes[themes %in% input$themes_checkbox]
+#         
+#         map(to_hide, ~{
+#           hide(paste0("theme_", .x, "_block"))
+#         })
+#         
+#         map(to_show, ~{
+#           show(paste0("theme_", .x, "_block"))
+#         })
+#       }
+#     })
+#     
+#     observeEvent(input$title_card_total_crash_per1k, {
+#       z <- title_card_to_grid[["total_crash_per1k"]]
+#       module_link(module = z$link_module,
+#                   select_id = select_id(),
+#                   var_left = z$link_var_left,
+#                   df = df())
+#     })
+#     
+#     observeEvent(input$title_card_single_detached, {
+#       z <- title_card_to_grid[["single_detached"]]
+#       module_link(module = z$link_module,
+#                   select_id = select_id(),
+#                   var_left = z$link_var_left,
+#                   df = df())
+#     })
+#     
+#     observeEvent(input$title_card_green_space_ndvi, {
+#       z <- title_card_to_grid[["green_space_ndvi"]]
+#       module_link(module = z$link_module,
+#                   select_id = select_id(),
+#                   var_left = z$link_var_left,
+#                   df = df())
+#     })
+#     
+#     observeEvent(input$title_card_canale_index, {
+#       z <- title_card_to_grid[["canale_index"]]
+#       module_link(module = z$link_module,
+#                   select_id = select_id(),
+#                   var_left = z$link_var_left,
+#                   df = df())
+#     })
+#   })
+# }

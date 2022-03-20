@@ -1,20 +1,5 @@
 ### CANALE MODULE ##############################################################
 
-ready_modules_home <- function(mods_rdy) {
-  
-  list_args <- 
-  map(1:length(mods_rdy), function(higher_theme) {
-    c(list(name = sus_translate(names(mods_rdy[higher_theme]))),
-      map(1:length(mods_rdy[[higher_theme]]), function(lower_theme) {
-        list(name = sus_translate(names(mods_rdy[[higher_theme]][lower_theme])), 
-             onclick = paste0("openTab('", mods_rdy[[higher_theme]][lower_theme], "')"))
-      }))
-  })
-  
-  map(list_args, ~{do.call(linkListGroup, .x)})
-  
-}
-
 # UI ----------------------------------------------------------------------
 
 home_UI <- function(id) {
