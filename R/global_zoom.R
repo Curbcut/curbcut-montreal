@@ -7,16 +7,17 @@ get_zoom <- function(zoom, zoom_levels) {
   return(out)
 }
 
-get_zoom_name <- function(x) {
-  case_when(
-    x == "borough" ~ "Borough/city",
-    x == "CT" ~ "Census tract",
-    x == "DA" ~ "Dissemination area",
-    x == "building" ~ "Building",
-    x == "street" ~ "Street",
-    x == "heatmap" ~ "Heatmap",
-    x == "point" ~ "Point")
-}
+get_zoom_name <- function(x) sapply(
+  x, 
+  switch, 
+  "borough" = "Borough/city",
+  "CT" = "Census tract",
+  "DA" = "Dissemination area",
+  "building" = "Building",
+  "street" = "Street",
+  "heatmap" = "Heatmap",
+  "point" = "Point",
+  USE.NAMES = FALSE)
 
 get_zoom_label <- function(zoom_levels) {
   zl <- names(sort(zoom_levels))
@@ -24,13 +25,14 @@ get_zoom_label <- function(zoom_levels) {
   return(zl)
 }
 
-get_zoom_code <- function(x) {
-  case_when(
-    x == "Borough/city" ~ "borough",
-    x == "Census tract" ~ "CT",
-    x == "Dissemination area" ~ "DA",
-    x == "Building" ~ "building",
-    x == "Street" ~ "street",
-    x == "Heatmap" ~ "heatmap",
-    x == "Point" ~ "point")
-}
+get_zoom_code <- function(x) sapply(
+  x, 
+  switch,
+  "Borough/city" ~ "borough",
+  "Census tract" = "CT",
+  "Dissemination area" = "DA",
+  "Building" = "building",
+  "Street" = "street",
+  "Heatmap" = "heatmap",
+  "Point" = "point",
+  USE.NAMES = FALSE)
