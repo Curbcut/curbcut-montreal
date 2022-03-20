@@ -16,15 +16,16 @@ get_dyk_table <- function(id, var_left, var_right, poi = NULL) {
   if (!is.null(poi)) {
     return({
       
-      out <- slice(stories[stories$name %in% poi,], 1:2)
+      out <- stories[stories$name %in% poi,]
+      out <- out[min(1, nrow(out)):min(2, nrow(out)),]
 
-      links <- map_chr(seq_along(out$name), ~{
-        paste0("<a id='", id, "-", id, "-dyk_", .x, "' href='#' ",
+      links <- sapply(seq_along(out$name), \(x) {
+        paste0("<a id='", id, "-", id, "-dyk_", x, "' href='#' ",
                "class='action-button shiny-bound-input'>", 
                sus_translate("[LEARN MORE]"), "</a>")})
       
-      link_attrs <- map(seq_along(out$name), ~list(module = "stories", 
-                                                   select_id = out$ID[.x]))
+      link_attrs <- lapply(seq_along(out$name), 
+                           \(x) list(module = "stories", select_id = out$ID[x]))
       
       out <- paste(out$preview, links)
       out <- paste("<li> ", out, collapse = "")
@@ -54,9 +55,9 @@ get_dyk_table <- function(id, var_left, var_right, poi = NULL) {
    
     to_add <- dyk_scored[dyk_scored$score == max(dyk_scored$score),]
     if (nrow(to_add) > 2 - nrow(out)) {
-      to_add <- slice_sample(to_add, n = 2 - nrow(out))
+      to_add <- to_add[sample.int(nrow(to_add), min(2, nrow(to_add))),]
     }
-    out <- bind_rows(out, to_add)
+    out <- rbind(out, to_add)
     dyk_scored <- dyk_scored[dyk_scored$score != max(dyk_scored$score),]
 
   }
@@ -75,24 +76,24 @@ get_dyk_table <- function(id, var_left, var_right, poi = NULL) {
   if (nrow(out) > 0) {
     links <- out[!is.na(out$module),]
     
-    links <- map_chr(seq_along(out$module), ~{
+    links <- sapply(seq_along(out$module), \(x) {
       # Don't display a link if the variables are the same
-      if (is.na(out$module[.x]) || out$module[.x] != "canale" ||
-          all(out$variable[[.x]] %in% str_remove(c(var_left, var_right), 
-                                                 "_\\d{4}$"))) "" else {
-        paste0(" <a id='", id, "-", id, "-dyk_", .x, "' href='#' ",
+      if (is.na(out$module[x]) || out$module[x] != "canale" ||
+          all(out$variable[[x]] %in% str_remove(c(var_left, var_right), 
+                                                "_\\d{4}$"))) "" else {
+        paste0(" <a id='", id, "-", id, "-dyk_", x, "' href='#' ",
                "class='action-button shiny-bound-input'>", 
                sus_translate("[LEARN MORE]"), "</a>")
       }
     })
     
-    link_attrs <- map(seq_len(nrow(out)), ~{
-      if (is.na(out$module[.x]) || out$module[.x] != "canale") list() else {
-        list(module = out$module[.x], 
-             var_left = out$variable[[.x]][1],
-             var_right = if (length(out$variable[[.x]]) == 1) " " else 
-               out$variable[[.x]][2],
-             if (!is.na(out$df[.x])) df = out$df[.x])
+    link_attrs <- lapply(seq_len(nrow(out)), \(x) {
+      if (is.na(out$module[x]) || out$module[x] != "canale") list() else {
+        list(module = out$module[x], 
+             var_left = out$variable[[x]][1],
+             var_right = if (length(out$variable[[x]]) == 1) " " else 
+               out$variable[[x]][2],
+             if (!is.na(out$df[x])) df = out$df[x])
       }
     })
     
@@ -102,7 +103,7 @@ get_dyk_table <- function(id, var_left, var_right, poi = NULL) {
   
   if (nrow(out) > 0) {
     out <- 
-      map_chr(out$text, sus_translate) |> 
+      sapply(out$text, sus_translate) |> 
       paste0(links) |> 
       (\(x) paste("<li> ", x, collapse = ""))() |> 
       (\(x) paste0("<ul>", x, "</ul>"))() |> 
