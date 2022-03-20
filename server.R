@@ -8,7 +8,7 @@ shinyServer(function(input, output, session) {
   
   # Language button ---------------------------------------------------------
   
-  # Language reactive variable,  JS set language, and language cookie. 
+  # Language reactive variable, JS set language, and language cookie. 
   # The three onclick of the language button.
   sus_rv$lang <- 
     eventReactive(input$language_button, {
@@ -210,59 +210,57 @@ shinyServer(function(input, output, session) {
   })
   
   output$download_csv <-
-    downloadHandler(filename = paste0(active_mod()$module_id, "_data.csv"),
-                    content = function(file) {
-                      data <- st_drop_geometry(active_mod()$data)
-                      write.csv2(data, file)
-                    },
-                    contentType = "text/csv")
+    downloadHandler(
+      filename = paste0(active_mod()$module_id, "_data.csv"),
+      content = function(file) {
+        data <- st_drop_geometry(active_mod()$data)
+        write.csv2(data, file)
+        },
+      contentType = "text/csv")
   
   output$download_shp <-
-    downloadHandler(filename = paste0(active_mod()$module_id, "_shp.zip"),
-                    content = function(file) {
-                      withProgress(message = "Exporting Data", {
-                        
-                        incProgress(0.5)
-                        tmp.path <- dirname(file)
-                        
-                        name.base <- file.path(tmp.path, paste0(active_mod()$module_id, "_data"))
-                        name.glob <- paste0(name.base, ".*")
-                        name.shp  <- paste0(name.base, ".shp")
-                        name.zip  <- paste0(name.base, ".zip")
-                        
-                        if (length(Sys.glob(name.glob)) > 0) file.remove(Sys.glob(name.glob))
-                        sf::st_write(active_mod()$data, dsn = name.shp, 
-                                     driver = "ESRI Shapefile", quiet = TRUE)
-                        
-                        zip::zipr(zipfile = name.zip, files = Sys.glob(name.glob))
-                        req(file.copy(name.zip, file))
-                        
-                        if (length(Sys.glob(name.glob)) > 0) file.remove(Sys.glob(name.glob))
-                        
-                        incProgress(0.5)
-                        
-                      })
-                    })
+    downloadHandler(
+      filename = paste0(active_mod()$module_id, "_shp.zip"),
+      content = function(file) {
+        withProgress(message = "Exporting Data", {
+          incProgress(0.5)
+          tmp.path <- dirname(file)
+          name.base <- file.path(tmp.path, 
+                                 paste0(active_mod()$module_id, "_data"))
+          name.glob <- paste0(name.base, ".*")
+          name.shp  <- paste0(name.base, ".shp")
+          name.zip  <- paste0(name.base, ".zip")
+          
+          if (length(Sys.glob(name.glob)) > 0) file.remove(Sys.glob(name.glob))
+          sf::st_write(active_mod()$data, dsn = name.shp, 
+                       driver = "ESRI Shapefile", quiet = TRUE)
+          
+          zip::zipr(zipfile = name.zip, files = Sys.glob(name.glob))
+          req(file.copy(name.zip, file))
+          
+          if (length(Sys.glob(name.glob)) > 0) file.remove(Sys.glob(name.glob))
+          incProgress(0.5)
+        })
+      })
   
   
   # Contact form ------------------------------------------------------------
   
   contactModal <- function() {
     modalDialog(
-      selectInput("contact_type", "Reason of contact",
+      selectInput("contact_type", "Reason for contact",
                   choices = c("Contact" = "CONTACT",
                               "Report a bug" = "BUG",
                               "Feedback" = "FEEDBACK",
                               "Other" = "OTHER"), width = "75%"),
-      textInput("contact_from_name", "Your name and organization", width = "75%"),
+      textInput("contact_from_name", "Your name/organization", width = "75%"),
       textInput("contact_from", "Your email adress", "@", width = "75%"),
       textInput("contact_subject", "Subject", width = "75%"),
       textAreaInput("contact_body", "Content", width = "75%", height = "300px"),
       
       footer = tagList(
         modalButton("Cancel"),
-        actionButton("send_feedback", "Send")
-      ),
+        actionButton("send_feedback", "Send")),
       title = "Contact form"
     )
   }
@@ -292,7 +290,8 @@ shinyServer(function(input, output, session) {
     file_name <- paste0("contacts/",input$contact_type, "-", time_stamp, ".csv")
     write.csv2(contact_form, file = file_name)
     removeModal()
-    showNotification(sus_translate("Sent and received. Thank you!"), duration = 1.5)
+    showNotification(sus_translate("Sent and received. Thank you!"), 
+                     duration = 1.5)
   })
   
   
