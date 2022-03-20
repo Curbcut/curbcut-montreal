@@ -46,7 +46,9 @@ canale_server <- function(id) {
       rdeck(map_style = map_base_style, initial_view_state = view_state(
         center = map_location, zoom = map_zoom)) |> 
         add_mvt_layer(id = ns_id) |> 
-        add_mvt_layer(id = paste0(ns_id, "_street")) |> 
+        add_mvt_layer(id = paste0(ns_id, "_street_1")) |> 
+        add_mvt_layer(id = paste0(ns_id, "_street_2")) |> 
+        add_mvt_layer(id = paste0(ns_id, "_street_2")) |> 
         add_mvt_layer(id = paste0(ns_id, "_building"))
     })
     

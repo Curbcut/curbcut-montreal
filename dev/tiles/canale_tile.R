@@ -304,20 +304,25 @@ recipe_auto_zoom <- '
 
 # Create and publish tilesets ---------------------------------------------
 
-create_tileset("canale-borough", recipe_borough, "sus-mcgill", .sus_token)
-publish_tileset("canale-borough", "sus-mcgill", .sus_token)
+create_tileset("canale-borough", recipe_borough)
+publish_tileset("canale-borough")
 
-create_tileset("canale-CT", recipe_CT, "sus-mcgill", .sus_token)
-publish_tileset("canale-CT", "sus-mcgill", .sus_token)
+create_tileset("canale-CT", recipe_CT)
+publish_tileset("canale-CT")
 
-create_tileset("canale-DA", recipe_DA, "sus-mcgill", .sus_token)
-publish_tileset("canale-DA", "sus-mcgill", .sus_token)
+create_tileset("canale-DA", recipe_DA)
+publish_tileset("canale-DA")
 
-create_tileset("canale-building", recipe_building, "sus-mcgill", .sus_token)
-publish_tileset("canale-building", "sus-mcgill", .sus_token)
+create_tileset("canale-building", recipe_building)
+publish_tileset("canale-building")
 
-create_tileset("canale-auto_zoom", recipe_auto_zoom, "sus-mcgill", .sus_token)
-publish_tileset("canale-auto_zoom", "sus-mcgill", .sus_token)
+create_tileset("canale-auto_zoom", recipe_auto_zoom)
+publish_tileset("canale-auto_zoom")
+
+
+
+
+
 
 
 # Recipe for building testing ---------------------------------------------
