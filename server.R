@@ -299,36 +299,37 @@ shinyServer(function(input, output, session) {
   # Generating report -------------------------------------------------------
   
   output$create_report <-
-    downloadHandler(filename = "report.html",
-                    content = function(file) {
-                      shiny::withProgress(
-                        message = sus_translate(paste0("Generating report on ",
-                                                       active_mod()$module_short_title)),
-                        {
-                          shiny::incProgress(0.35)
-                          tempReport <- file.path(tempdir(), "report.Rmd")
-                          file.copy("www/report.Rmd", tempReport, overwrite = TRUE)
-                          params <- list(module_short_title = active_mod()$module_short_title,
-                                         module = active_mod()$module_id,
-                                         map_title = (filter(filter(title_text,
-                                                                    tab == active_mod()$module_id),
-                                                             type == "title"))$text,
-                                         time = active_mod()$time,
-                                         data = active_mod()$data,
-                                         token = active_mod()$token,
-                                         map_zoom = active_mod()$map_zoom,
-                                         map_location = active_mod()$map_location,
-                                         df = active_mod()$df,
-                                         explore_content = active_mod()$explore_content,
-                                         poly_selected = active_mod()$poly_selected,
-                                         legend_graph = active_mod()$legend_graph)
-                          shiny::incProgress(0.35)
-                          rmarkdown::render(tempReport, output_file = file,
-                                            params = params,
-                                            envir = new.env(parent = globalenv()))
-                          shiny::incProgress(0.3)
-                        })
-                    }
-    )
-  
-})
+    downloadHandler(
+      filename = "report.html",
+      content = function(file) {
+        shiny::withProgress(
+          message = sus_translate(paste0("Generating report on ",
+                                         active_mod()$module_short_title)),
+          {
+            shiny::incProgress(0.35)
+            tempReport <- file.path(tempdir(), "report.Rmd")
+            file.copy("www/report.Rmd", tempReport, overwrite = TRUE)
+            params <- list(
+              module_short_title = active_mod()$module_short_title,
+              module = active_mod()$module_id,
+              map_title = title_text$text[
+                title_text$tab == active_mod()$module_id & 
+                  title_text$type == "title"],
+              time = active_mod()$time,
+              data = active_mod()$data,
+              token = active_mod()$token,
+              map_zoom = active_mod()$map_zoom,
+              map_location = active_mod()$map_location,
+              df = active_mod()$df,
+              explore_content = active_mod()$explore_content,
+              poly_selected = active_mod()$poly_selected,
+              legend_graph = active_mod()$legend_graph)
+            shiny::incProgress(0.35)
+            rmarkdown::render(tempReport, output_file = file,
+                              params = params,
+                              envir = new.env(parent = globalenv()))
+            shiny::incProgress(0.3)
+          })
+        }
+      )
+  })

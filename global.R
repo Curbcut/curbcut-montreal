@@ -6,20 +6,16 @@ suppressPackageStartupMessages({
   library(shiny)
   library(shinyjs)
   library(shinyWidgets)
-  library(jsonify)
-  library(jsonlite)
 
   library(tidyr)
   library(dplyr)
   library(ggplot2)
   library(stringr)
   library(purrr)
-  library(ggiraph)
-  
+
   library(sf)
   library(rdeck)
 
-  library(DT)
   library(qs)
   library(glue)
   library(metathis)
@@ -61,18 +57,14 @@ postal_codes <- qread("data/postal_codes.qs")
 # Global variables --------------------------------------------------------
 
 census_min <- 
-  variables |> 
-  filter(source == "census") |> 
-  pull(dates) |> 
+  variables$dates[variables$source == "census"] |> 
   unlist() |> 
   unique() |> 
   min() |> 
   as.numeric()
 
 census_max <- 
-  variables |> 
-  filter(source == "census") |> 
-  pull(dates) |> 
+  variables$dates[variables$source == "census"] |> 
   unlist() |> 
   unique() |> 
   max() |> 
