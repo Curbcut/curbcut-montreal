@@ -23,6 +23,9 @@ rdeck_server <- function(id, map_id, tile, map_var, zoom, select_id) {
                           tile() == "building")
     show_street <- reactive(tile() %in% c("borough", "CT", "DA") ||
                               (tile() == "auto_zoom" && zoom() != "building"))
+    show_label <- reactive(tile() %in% c("borough") ||
+                              (tile() %in% c("CT", "auto_zoom") && 
+                                 !zoom() %in% c("DA", "building")))
     
     # Update data layer on variable change or selection 
     observeEvent({
@@ -114,7 +117,24 @@ rdeck_server <- function(id, map_id, tile, map_var, zoom, select_id) {
           get_fill_color = "#FFFFFF55", 
           extruded = TRUE, 
           material = FALSE, 
-          get_elevation = 5)
+          get_elevation = 5) |>
+        
+        # Update label layer
+        add_mvt_layer(
+          id = paste0(id, "_borough_labels"), 
+          data = if (tile() %in% c("borough", "CT", "auto_zoom")) mvt_url(
+            "maxbdb2.label7") else NULL,
+          visible = show_label(),
+          point_type = "text", 
+          get_text = rlang::sym("name"),
+          text_background = TRUE,
+          text_background_padding = c(5, 5, 5, 5),
+          text_font_family = "source-sans-pro-regular",
+          text_font_weight = "bold",
+          get_text_size = 13,
+          get_text_background_color = "#ffffffCC",
+          get_text_border_color = "#0000001A",
+          get_text_border_width = 2)
       })
     
     # Update street visibility on zoom
@@ -141,6 +161,7 @@ rdeck_server <- function(id, map_id, tile, map_var, zoom, select_id) {
           get_line_width = 8,
           get_line_color = "#FFFFFF",
           get_fill_color = "#A9A9A94D") |> 
+        # Update street layer 3
         add_mvt_layer(
           id = paste0(id, "_street_3"),
           visible = show_street(),
@@ -150,7 +171,22 @@ rdeck_server <- function(id, map_id, tile, map_var, zoom, select_id) {
           line_cap_rounded = TRUE,
           get_line_width = 4,
           get_line_color = "#FFFFFF",
-          get_fill_color = "#A9A9A94D")
+          get_fill_color = "#A9A9A94D") |>
+        # Update label layer
+        add_mvt_layer(
+          id = paste0(id, "_borough_labels"), 
+          visible = show_label(),
+          point_type = "text", get_text = rlang::sym("name"),
+          text_background = TRUE,
+          text_background_padding = c(5, 5, 5, 5),
+          text_font_family = "source-sans-pro-regular",
+          text_font_weight = "bold",
+          get_text_color = "#000000ff",
+          get_text_size = 13,
+          get_text_background_color = "#ffffffCC",
+          get_text_border_color = "#0000001A",
+          get_text_border_width = 2
+          )
         
     })
   })

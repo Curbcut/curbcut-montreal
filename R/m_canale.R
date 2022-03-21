@@ -49,7 +49,8 @@ canale_server <- function(id) {
         add_mvt_layer(id = paste0(ns_id, "_street_1")) |> 
         add_mvt_layer(id = paste0(ns_id, "_street_2")) |> 
         add_mvt_layer(id = paste0(ns_id, "_street_2")) |> 
-        add_mvt_layer(id = paste0(ns_id, "_building"))
+        add_mvt_layer(id = paste0(ns_id, "_building")) |> 
+        add_mvt_layer(id = paste0(ns_id, "_borough_labels"))
     })
     
     # Zoom and POI reactives
