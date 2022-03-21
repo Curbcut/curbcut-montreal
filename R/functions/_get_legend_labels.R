@@ -5,15 +5,13 @@ get_legend_labels <- function(var_left, var_right, data_type) {
   ## Get basic titles ----------------------------------------------------------
   
   title_left <- 
-    variables |> 
-    filter(var_code == unique(sub("_\\d{4}$", "", var_left)))
+    variables[variables$var_code == unique(sub("_\\d{4}$", "", var_left)),]
   
   title_left_short <- sus_translate(title_left$var_short)
   title_left <- sus_translate(title_left$var_title)
 
   title_right <- 
-    variables |> 
-    filter(var_code == unique(sub("_\\d{4}$", "", var_right)))
+    variables[variables$var_code == unique(sub("_\\d{4}$", "", var_right)),]
   
   if (data_type %in% c("bivar", "delta_bivar")) {
     title_right_short <- sus_translate(title_right$var_short)

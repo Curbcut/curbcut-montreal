@@ -18,27 +18,34 @@ get_x_scale <- function(graph_type, data, var_type, var_left, var_right, df) {
   
   ## Get scale type ------------------------------------------------------------
   
-  scale_type <- case_when(
-    graph_type == "date" ~ "date",
-    graph_type %in% c("deltabi", "NAdeltabi") ~ "deltabi",
-    graph_type %in% c("delta", "NAdelta") & str_detect(var_left[1], "_pct") ~
-      "delta_pct",
-    graph_type %in% c("delta", "NAdelta") & str_detect(var_left[1], "_dollar") ~
-      "delta_dollar",
-    graph_type %in% c("delta", "NAdelta") ~ "delta",
-    !is.null(var_left_label) & graph_type %in% c("bar", "box") ~ "discrete",
-    !is.null(var_left_label) & graph_type == "hist" ~ "cont_labels",
-    graph_type == "scatter" & str_detect(var_right[1], "_pct") ~ 
-      "cont_pct",
-    graph_type == "scatter" & str_detect(var_right[1], "_dollar") ~ 
-      "cont_dollar",
-    graph_type == "scatter" ~ "cont_comma",
-    str_detect(var_left[1], "_pct") ~ "cont_pct",
-    str_detect(var_left[1], "_dollar") ~ "cont_dollar",
-    TRUE ~ "cont_comma"
-  )
-  
-  scale_type <- unique(scale_type)
+  scale_type <- 
+    if (graph_type == "date") {
+      "date"
+    } else if (graph_type %in% c("deltabi", "NAdeltabi")) {
+      "deltabi"
+    } else if (graph_type %in% c("delta", "NAdelta") && 
+               str_detect(var_left[1], "_pct")) {
+      "delta_pct"
+    } else if (graph_type %in% c("delta", "NAdelta") && 
+               str_detect(var_left[1], "_dollar")) {
+      "delta_dollar"
+    } else if (graph_type %in% c("delta", "NAdelta")) {
+      "delta"
+    } else if (!is.null(var_left_label) && graph_type %in% c("bar", "box")) {
+      "discrete"
+    } else if (!is.null(var_left_label) && graph_type == "hist") {
+      "cont_labels"
+    } else if (graph_type == "scatter" && str_detect(var_right[1], "_pct")) {
+      "cont_pct"
+    } else if (graph_type == "scatter" && str_detect(var_right[1], "_dollar")) {
+      "cont_dollar"
+    } else if (graph_type == "scatter") {
+      "cont_comma"
+    } else if (str_detect(var_left[1], "_pct")) {
+      "cont_pct"
+    } else if (str_detect(var_left[1], "_dollar")) {
+      "cont_dollar"
+    } else "cont_comma"
   
   
   ## Compress dollar values ----------------------------------------------------

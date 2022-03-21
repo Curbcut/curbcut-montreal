@@ -3,34 +3,28 @@
 make_dropdown <- 
   function(exclude = NULL, multi_year = FALSE, include_only = NULL) {
     
-    census_var <- 
-      variables |> 
-      filter(source == "census") |> 
-      filter(theme != "Employment", !is.na(theme))
-    
+    census_var <- variables[variables$source == "census" &
+                              !is.na(variables$theme) &
+                              variables$theme != "Employment",]
+
     if (!is.null(exclude)) {
-      census_var <- 
-        census_var |> 
-        filter(!theme %in% exclude)
+      census_var <- census_var[!census_var$theme %in% exclude,]
     }
     
     if (multi_year) {
-      census_var <- 
-        census_var |> 
-        filter(lengths(dates) == max(lengths(dates)))
+      census_var <- census_var[lengths(census_var$dates) == 
+                                 max(lengths(census_var$dates))]
     }
     
     out <- c("----" = " ",
-             map(set_names(unique(census_var$theme)), \(cat) {
-               category_vectors <- 
-                 census_var |> 
-                 filter(theme == cat) |> 
-                 select(var_code, var_title)
+             lapply(setNames(unique(census_var$theme),
+                             unique(census_var$theme)), \(cat) {
+               cat_vecs <- 
+                 census_var[census_var$theme == cat, c("var_code", "var_title")]
                
-               map(category_vectors$var_title, \(name) {
-                 category_vectors[category_vectors$var_title == 
-                                    name, ]$var_code}) |> 
-                 set_names(category_vectors$var_title)
+               lapply(cat_vecs$var_title, \(name) {
+                 cat_vecs[cat_vecs$var_title == name, ]$var_code}) |> 
+                 setNames(cat_vecs$var_title)
              })
     )
     

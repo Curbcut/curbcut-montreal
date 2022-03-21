@@ -44,8 +44,10 @@ bookmark_server <- function(id, map_viewstate = reactive(NULL),
       }
       
       # Right variable
-      if (!is.null(var_left())) v_l <- get_variables_rowid(unique(str_remove(var_left(), "_\\d{4}$")))
-      if (!is.null(var_right())) v_r <- get_variables_rowid(unique(str_remove(var_right(), "_\\d{4}$")))
+      if (!is.null(var_left())) v_l <- 
+          get_variables_rowid(unique(str_remove(var_left(), "_\\d{4}$")))
+      if (!is.null(var_right())) v_r <- 
+          get_variables_rowid(unique(str_remove(var_right(), "_\\d{4}$")))
       if (!is.null(select_id()) && !is.na(select_id())) s_id <- select_id()
       if (!is.null(input$zoom_auto)) zm_a <- str_extract(input$zoom_auto, "^.")
       if (!is.null(df())) df <- df()
@@ -64,15 +66,14 @@ bookmark_server <- function(id, map_viewstate = reactive(NULL),
       add_arguments <- c("zm", "lat", "lon", "v_l", "v_r", "s_id", "zm_a", 
                          "df", "more")
       add_arguments <- 
-        map(add_arguments, ~{
-          if (exists(.x) && !is.null(.x)) {
-            value <- get(.x)
+        lapply(add_arguments, \(x)
+          if (exists(x) && !is.null(x)) {
+            value <- get(x)
             if (is.reactive(value)) return(NULL)
-            return(paste0("&", .x, "=", value))
-          }
-        }) |> (\(x) x[lengths(x) != 0])()
+            return(paste0("&", x, "=", value))
+          }) |> (\(x) x[lengths(x) != 0])()
       
-      url <- reduce(c(default, add_arguments), paste0)
+      url <- Reduce(paste0, c(default, add_arguments))
       
       # Update the URL
       updateQueryString(url)

@@ -1,7 +1,7 @@
 #### GET DATA ##################################################################
 
 get_data <- function(df, var_left, var_right, island = FALSE, point_df = NULL,
-                     build_str_as_DA = TRUE, new = FALSE) {
+                     build_str_as_DA = TRUE) {
   
   ## Setup ---------------------------------------------------------------------
   
@@ -22,7 +22,7 @@ get_data <- function(df, var_left, var_right, island = FALSE, point_df = NULL,
   
   ## Get data table ------------------------------------------------------------
   
-  data <- get_data_table(df, var_left, var_right, data_type, point_df, new)
+  data <- get_data_table(df, var_left, var_right, data_type, point_df)
   
   
   ## Filter to island ----------------------------------------------------------

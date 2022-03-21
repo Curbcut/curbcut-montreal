@@ -4,13 +4,11 @@
 
 suppressPackageStartupMessages({
   
-  library(dplyr)
   library(ggplot2)
   library(stringr)
-  library(purrr)
-  library(sf)
   library(qs)
   library(shiny)
+  library(glue)
   
   variables <- qread("data/variables.qs")
   qload("data/colours.qsm")
@@ -44,9 +42,9 @@ suppressPackageStartupMessages({
 {df <- "borough"
 var_left <- "canale_ind_2016"
 var_right <- " "
-data <- get_data(df, var_left, var_right, new = TRUE)
+data <- get_data(df, var_left, var_right)
 data_type <- get_data_type(df, var_left, var_right)
-render_legend(data, var_left, var_right, df, df, data_type)}
+render_legend(data, var_left, var_right, df, data_type)}
 
 
 # Univariate, qualitative -------------------------------------------------
@@ -57,7 +55,7 @@ var_left <- "climate_destructive_storms_ind"
 var_right <- " "
 data <- get_data(df, var_left, var_right, island = TRUE)
 data_type <- get_data_type(df, var_left, var_right)
-render_legend(data, var_left, var_right, df, df, data_type)}
+render_legend(data, var_left, var_right, df, data_type)}
 
 
 # Bivariate, single date --------------------------------------------------
@@ -67,7 +65,7 @@ var_left <- "canale_ind_2016"
 var_right <- "housing_tenant_pct_2016"
 data <- get_data(df, var_left, var_right)
 data_type <- get_data_type(df, var_left, var_right)
-render_legend(data, var_left, var_right, df, df, data_type)}
+render_legend(data, var_left, var_right, df, data_type)}
 
 
 # Delta -------------------------------------------------------------------

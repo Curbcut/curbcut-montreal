@@ -103,8 +103,7 @@ canale_server <- function(id) {
     data <- reactive(get_data(
       df = df(), 
       var_left = var_left(), 
-      var_right = var_right(),
-      new = TRUE))
+      var_right = var_right()))
     
     # Legend
     legend <- legend_server(
