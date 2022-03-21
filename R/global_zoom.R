@@ -28,7 +28,7 @@ get_zoom_label <- function(zoom_levels) {
 get_zoom_code <- function(x) sapply(
   x, 
   switch,
-  "Borough/city" ~ "borough",
+  "Borough/city" = "borough",
   "Census tract" = "CT",
   "Dissemination area" = "DA",
   "Building" = "building",
