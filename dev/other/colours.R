@@ -81,7 +81,7 @@ colour_iso <- tibble(group = c("1", "2", "3"), fill = col_iso)
 # Objects for legends -----------------------------------------------------
 
 legend_left_3 <- tibble(x = 1:3, y = 1, fill = col_left_3)
-legend_left_5 <- tibble(x = 1:5, y = 1, fill = col_left_5)
+legend_left_5 <- tibble(x = 0:5, y = 1, fill = c(col_NA, col_left_5))
 legend_delta_5 <- tibble(x = 1:5, y = 1, fill = col_delta_5)
 legend_bivar <- colour_bivar |> 
   slice(1:9) |> 
