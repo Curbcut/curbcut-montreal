@@ -58,8 +58,8 @@ stories_server <- function(id) {
 
     # Update buffer to change the map when zoom is different
     data <- reactive({
-        stories |> 
-        mutate(buffer = st_buffer(geometry, zoom())) |> 
+      stories |> 
+      transform(buffer = st_buffer(stories$geometry, zoom())) |> 
         st_set_geometry("buffer")
     })
 
@@ -70,7 +70,7 @@ stories_server <- function(id) {
         row_n <- 1:nrow(data())
         images <- paste0("https://raw.githubusercontent.com/MSSI-urban/Sus/main/",
                          "www/stories/round_img/", data()$img[row_n])
-        bboxes <- map(data()$buffer, ~{st_bbox(.x) |> round(digits = 5)})
+        bboxes <- lapply(data()$buffer, \(x) st_bbox(x) |> round(digits = 5))
         layer_ids <- paste0("image", row_n)
 
         all_add_bitmap <- paste0('add_bitmap_layer(data = data()[', row_n,', ], image = "', images, '", bounds = ', bboxes, ', ',
