@@ -7,7 +7,6 @@ source("dev/other/data_testing.R")
 source("dev/other/meta_testing.R", encoding = "utf-8")
 source("dev/other/breaks.R")
 source("dev/other/char_fix.R", encoding = "utf-8")
-source("dev/other/deploy_sus.R")
 
 
 # Create raw borough/CT/DA/grid tables ------------------------------------
@@ -210,5 +209,6 @@ rm(add_q3, add_q5, add_variables, data_testing, find_breaks_q5, get_breaks_q3,
 
 # Deploy app --------------------------------------------------------------
 
+source("dev/other/deploy_sus.R")
 deploy_sus("sus-dev") # Development
 deploy_sus() # Production
