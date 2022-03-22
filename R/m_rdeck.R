@@ -16,16 +16,14 @@ rdeck_server <- function(id, map_id, tile, map_var, zoom, select_id) {
   moduleServer(id, function(input, output, session) {
     
     # Helper variables
-    pick <- reactive(!((tile() == "DA" && zoom() == "borough") ||
-                         tile() == "building" && zoom() %in% 
-                         c("borough", "CT")))
-    extrude <- reactive((tile() == "auto_zoom" && zoom() == "building") | 
+    pick <- reactive(!tile() %in% c("building", "DA") || zoom() >= 13.5 ||
+                       (tile() == "DA" && zoom() >= 10.5))
+    extrude <- reactive((tile() == "auto_zoom" && zoom() >= 15.5) | 
                           tile() == "building")
     show_street <- reactive(tile() %in% c("borough", "CT", "DA") ||
-                              (tile() == "auto_zoom" && zoom() != "building"))
-    show_label <- reactive(tile() %in% c("borough") ||
-                              (tile() %in% c("CT", "auto_zoom") && 
-                                 !zoom() %in% c("DA", "building")))
+                              (tile() == "auto_zoom" && zoom() < 15.5))
+    show_label <- reactive(tile() %in% c("borough") || 
+                             (tile() != "building" && zoom() < 12.5))
     
     # Update data layer on variable change or selection 
     observeEvent({
@@ -138,9 +136,24 @@ rdeck_server <- function(id, map_id, tile, map_var, zoom, select_id) {
         )
     })
     
-    # Update street/label visibility on zoom
+    # Update data pickability and street/label visibility on zoom
     observeEvent(zoom(), {
         rdeck_proxy(map_id) |> 
+        
+        # Update data layer
+        add_mvt_layer(
+          id = id, 
+          pickable = pick(), 
+          auto_highlight = TRUE, 
+          highlight_color = "#FFFFFF50", 
+          get_fill_color = scale_fill_sus(rlang::sym(map_var()), "FF"),
+          get_line_color = "#FFFFFF", 
+          line_width_units = "pixels",
+          get_line_width = scale_line_width_sus(select_id()),
+          extruded = extrude(), 
+          material = FALSE, 
+          get_elevation = 5) |> 
+        
         # Update street layer 1
         add_mvt_layer(
           id = paste0(id, "_street_1"),
@@ -152,6 +165,7 @@ rdeck_server <- function(id, map_id, tile, map_var, zoom, select_id) {
           line_cap_rounded = TRUE,
           get_line_color = "#FFFFFF",
           get_fill_color = "#A9A9A94D") |> 
+        
         # Update street layer 2
         add_mvt_layer(
           id = paste0(id, "_street_2"),
@@ -163,6 +177,7 @@ rdeck_server <- function(id, map_id, tile, map_var, zoom, select_id) {
           get_line_width = 8,
           get_line_color = "#FFFFFF",
           get_fill_color = "#A9A9A94D") |> 
+        
         # Update street layer 3
         add_mvt_layer(
           id = paste0(id, "_street_3"),
@@ -174,6 +189,7 @@ rdeck_server <- function(id, map_id, tile, map_var, zoom, select_id) {
           get_line_width = 4,
           get_line_color = "#FFFFFF",
           get_fill_color = "#A9A9A94D") |>
+        
         # Update label layer
         add_mvt_layer(
           id = paste0(id, "_borough_labels"), 

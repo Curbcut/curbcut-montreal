@@ -117,7 +117,7 @@ recipe_street_1 <- '
   "recipe": {
     "version": 1,
     "layers": {
-      "streets": {
+      "street": {
         "source": "mapbox://tileset-source/sus-mcgill/street_1",
         "minzoom": 12,
         "maxzoom": 16,
@@ -139,7 +139,7 @@ recipe_street_2 <- '
   "recipe": {
     "version": 1,
     "layers": {
-      "streets": {
+      "street": {
         "source": "mapbox://tileset-source/sus-mcgill/street_2",
         "minzoom": 13,
         "maxzoom": 16,
@@ -161,7 +161,7 @@ recipe_street_3 <- '
   "recipe": {
     "version": 1,
     "layers": {
-      "streets": {
+      "street": {
         "source": "mapbox://tileset-source/sus-mcgill/street_3",
         "minzoom": 14,
         "maxzoom": 16,
@@ -171,7 +171,7 @@ recipe_street_3 <- '
           ]
         }
       },
-      "parks": {
+      "park": {
         "source": "mapbox://tileset-source/sus-mcgill/park",
         "minzoom": 14,
         "maxzoom": 16

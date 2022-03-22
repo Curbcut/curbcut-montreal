@@ -36,7 +36,7 @@ canale_server <- function(id) {
     ns_id <- "canale"
     
     # Initial reactives
-    zoom <- reactiveVal(get_zoom(map_zoom, map_zoom_levels))
+    zoom <- reactiveVal(get_zoom(map_zoom))
     select_id <- reactiveVal(NA)
     poi <- reactiveVal(NULL)
     
@@ -54,8 +54,7 @@ canale_server <- function(id) {
     
     # Zoom and POI reactives
     observeEvent(input[[paste0(ns_id, "-map_viewstate")]], {
-      zoom(get_zoom(input[[paste0(ns_id, "-map_viewstate")]]$viewState$zoom, 
-                    map_zoom_levels))
+      zoom(get_zoom(input[[paste0(ns_id, "-map_viewstate")]]$viewState$zoom))
       poi(observe_map(input[[paste0(ns_id, "-map_viewstate")]]$viewState))
     })
     
