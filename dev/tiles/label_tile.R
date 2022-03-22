@@ -7,17 +7,17 @@ qload("data/census.qsm")
 source("dev/tiles/tile_functions.R")
 
 
-# Process CMA then upload tile source -------------------------------------
+# Process label then upload tile source -----------------------------------
 
 borough |> 
   select(name, population) |> 
   mutate(name = stringi::stri_trans_general(name, id = "Latin-ASCII")) |> 
   st_set_agr("constant") |> 
-  st_centroid() |> View()
-  upload_tile_source("label4", "maxbdb2", .sus_token)
+  st_centroid() |>
+  upload_tile_source("borough_label")
 
 
-# Add recipes -------------------------------------------------------------
+# Add recipe --------------------------------------------------------------
 
 recipe_label <- '
 {
@@ -25,7 +25,7 @@ recipe_label <- '
     "version": 1,
     "layers": {
       "label": {
-        "source": "mapbox://tileset-source/maxbdb2/label4",
+        "source": "mapbox://tileset-source/sus-mcgill/borough_label",
         "minzoom": 9,
         "maxzoom": 14,
         "tiles": {
@@ -36,12 +36,11 @@ recipe_label <- '
       }
     }
   },
-  "name": "label7"
+  "name": "borough_label"
 }
 '
 
-# Create and publish tilesets ---------------------------------------------
+# Create and publish tileset ----------------------------------------------
 
-resp <- create_tileset("label7", recipe_label, "maxbdb2", .sus_token)
-httr::content(resp)
-publish_tileset("label7", "maxbdb2", .sus_token)
+create_tileset("borough_label", recipe_label)
+publish_tileset("borough_label")

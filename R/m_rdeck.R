@@ -123,33 +123,35 @@ rdeck_server <- function(id, map_id, tile, map_var, zoom, select_id) {
         add_mvt_layer(
           id = paste0(id, "_borough_labels"), 
           data = if (tile() %in% c("borough", "CT", "auto_zoom")) mvt_url(
-            "maxbdb2.label7") else NULL,
+            "sus-mcgill.borough_label") else NULL,
           visible = show_label(),
-          point_type = "text", 
-          get_text = rlang::sym("name"),
+          point_type = "text", get_text = rlang::sym("name"),
           text_background = TRUE,
-          text_background_padding = c(5, 5, 5, 5),
+          text_background_padding = rep(2, 4),
           text_font_family = "source-sans-pro-regular",
           text_font_weight = "bold",
-          get_text_size = 13,
-          get_text_background_color = "#ffffffCC",
-          get_text_border_color = "#0000001A",
-          get_text_border_width = 2)
-      })
+          get_text_color = "#000000FF",
+          get_text_size = 10,
+          get_text_background_color = "#FFFFFF90",
+          get_text_border_color = "#00000000",
+          get_text_border_width = 0
+        )
+    })
     
-    # Update street visibility on zoom
+    # Update street/label visibility on zoom
     observeEvent(zoom(), {
         rdeck_proxy(map_id) |> 
-          add_mvt_layer(
-            id = paste0(id, "_street_1"),
-            visible = show_street(),
-            get_line_width = 15,
-            line_width_units = "meters",
-            line_width_min_pixels = 2,
-            line_joint_rounded = TRUE,
-            line_cap_rounded = TRUE,
-            get_line_color = "#FFFFFF",
-            get_fill_color = "#A9A9A94D") |> 
+        # Update street layer 1
+        add_mvt_layer(
+          id = paste0(id, "_street_1"),
+          visible = show_street(),
+          get_line_width = 15,
+          line_width_units = "meters",
+          line_width_min_pixels = 2,
+          line_joint_rounded = TRUE,
+          line_cap_rounded = TRUE,
+          get_line_color = "#FFFFFF",
+          get_fill_color = "#A9A9A94D") |> 
         # Update street layer 2
         add_mvt_layer(
           id = paste0(id, "_street_2"),
@@ -178,15 +180,15 @@ rdeck_server <- function(id, map_id, tile, map_var, zoom, select_id) {
           visible = show_label(),
           point_type = "text", get_text = rlang::sym("name"),
           text_background = TRUE,
-          text_background_padding = c(5, 5, 5, 5),
+          text_background_padding = rep(2, 4),
           text_font_family = "source-sans-pro-regular",
           text_font_weight = "bold",
-          get_text_color = "#000000ff",
-          get_text_size = 13,
-          get_text_background_color = "#ffffffCC",
-          get_text_border_color = "#0000001A",
-          get_text_border_width = 2
-          )
+          get_text_color = "#000000FF",
+          get_text_size = 10,
+          get_text_background_color = "#FFFFFF90",
+          get_text_border_color = "#00000000",
+          get_text_border_width = 0
+        )
         
     })
   })
