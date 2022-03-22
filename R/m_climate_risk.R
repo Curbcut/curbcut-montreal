@@ -10,7 +10,8 @@ climate_risk_UI <- function(id) {
       sidebar_UI(
         NS(id, ns_id),
         susSidebarWidgets(
-          select_var_UI(NS(id, ns_id), var_list = var_list_climate_risk), 
+          select_var_UI(NS(id, ns_id), var_list = make_dropdown(
+            include_only = "Climate")), 
           checkbox_UI(NS(id, ns_id), value = TRUE,
                       label = sus_translate("250-metre grid")),
         ),
@@ -38,48 +39,70 @@ climate_risk_server <- function(id) {
     ns_id <- "climate_risk"
     
     # Initial reactives
-    zoom <- reactiveVal(get_zoom(map_zoom, map_zoom_levels))
-    click_id <- reactiveVal(NULL)
+    zoom <- reactiveVal(get_zoom(map_zoom))
+    select_id <- reactiveVal(NA)
+    poi <- reactiveVal(NULL)
     
     # Map
-    output$map <- renderMapdeck({mapdeck(
-      style = map_style, 
-      token = map_token, 
-      zoom = map_zoom, 
-      location = map_location)})
+    output[[paste0(ns_id, "-map")]] <- renderRdeck({
+      rdeck(map_style = map_base_style, initial_view_state = view_state(
+        center = map_location, zoom = map_zoom)) |> 
+        add_mvt_layer(id = ns_id) |> 
+        add_mvt_layer(id = paste0(ns_id, "_street_1")) |> 
+        add_mvt_layer(id = paste0(ns_id, "_street_2")) |> 
+        add_mvt_layer(id = paste0(ns_id, "_street_2")) |> 
+        add_mvt_layer(id = paste0(ns_id, "_building")) |> 
+        add_mvt_layer(id = paste0(ns_id, "_borough_labels"))
+    })
     
-    # Zoom reactive
-    observeEvent(input$map_view_change$zoom, {
-      zoom(get_zoom(input$map_view_change$zoom, map_zoom_levels))})
+    # Zoom and POI reactives
+    observeEvent(input[[paste0(ns_id, "-map_viewstate")]], {
+      zoom(get_zoom(input[[paste0(ns_id, "-map_viewstate")]]$viewState$zoom))
+      poi(observe_map(input[[paste0(ns_id, "-map_viewstate")]]$viewState))
+    })
     
     # Click reactive
-    observeEvent(input$map_polygon_click, {
-      click_id(get_click(input$map_polygon_click))})
-    
-    # Zoom level for data
-    df_choropleth <- zoom_server(
-      id = ns_id, 
-      zoom = zoom, 
-      zoom_levels = reactive(map_zoom_levels))
+    observeEvent(input[[paste0(ns_id, "-map_click")]], {
+      if (!is.na(select_id()) &&
+          input[[paste0(ns_id, "-map_click")]]$object$ID == select_id()) {
+        select_id(NA)
+      } else {
+        select_id(get_click(input[[paste0(ns_id, "-map_click")]]$object))
+      }
+    })
     
     # Grid value
     grid <- checkbox_server(id = ns_id)
     
-    # String to fetch maps and data
-    df <- reactive(if (grid()) "grid" else df_choropleth())
+    # Zoom level for data
+    tile_choropleth <- zoom_server(
+      id = ns_id, 
+      zoom = zoom, 
+      zoom_levels = reactive(map_zoom_levels))
+    
+    # Choose tileset
+    tile <- reactive(if (grid()) "grid" else tile_choropleth())
+    
+    # Get df for explore/legend/etc
+    df <- reactive(get_df(tile(), zoom(), map_zoom_levels))
     
     # Time
     time <- reactive("2016")
     
     # Left variable server
-    var_left <- select_var_server(ns_id, var_list = reactive(var_list_climate_risk))
+    var_left <- select_var_server(ns_id, var_list = reactive(make_dropdown(
+      include_only = "Climate")))
     
-    # Right variable/compare panel
+    # Right variable / compare panel
     var_right <- compare_server(
       id = ns_id, 
       var_list = make_dropdown(),
       df = df, 
       time = time)
+    
+    # Composite variable for map
+    map_var <- reactive(
+      str_remove(paste(var_left(), var_right(), sep = "_"), "_ $"))
     
     # Sidebar
     sidebar_server(id = ns_id, x = "climate_risk")

@@ -5,7 +5,7 @@ library(sf)
 library(qs)
 qload("data/census.qsm")
 grid <- qread("data/grid.qs")
-building <- qread("data/building.qs")
+building <- qread("data/building_full.qs")
 variables <- qread("data/variables.qs")
 source("dev/tiles/tile_functions.R")
 
@@ -105,18 +105,18 @@ DA |>
 building_to_process <- 
   building |> 
   as_tibble() |> 
-  select(ID, name, all_of(vars_to_add), geometry) |> 
-  mutate(across(contains("_q3"), 
-                ~paste(canale_ind_q3_2016, .x, sep = " - "))) |> 
-  relocate(canale_ind_q5_2016, .after = name) |> 
-  select(-canale_ind_q3_2016) |> 
-  rename_with(~paste0("canale_ind_2016_", str_remove(.x, "_q3")),
-              contains("_q3")) |> 
-  rename(canale_ind_2016 = canale_ind_q5_2016) |> 
-  mutate(canale_ind_2016 = paste0("q5_", canale_ind_2016)) |> 
+  select(ID, name, all_of(left_vars_census), geometry) |> 
+  mutate(across(all_of(left_vars_census), ~paste0("q5_", .x))) |> 
+  bind_cols({
+    map_dfc(left_vars, \(x) {
+      map_dfc(right_vars, \(y) 
+              paste(building[[paste0(x, "_q3")]], building[[y]], sep = " - ")) |> 
+        set_names(paste(x, str_replace(right_vars, "_q3", ""), sep = "_"))})
+  }) |> 
+  relocate(geometry, .after = last_col()) |> 
   st_as_sf() |> 
   st_set_agr("constant")
-
+  
 iter_size <- ceiling(nrow(building_to_process) / 100)
 
 building_to_process_list <- 
@@ -144,7 +144,7 @@ map(1:10, ~{
   
   # Upload to MTS
   out <- paste0('curl -X POST "https://api.mapbox.com/tilesets/v1/sources/', 
-                'sus-mcgill/canale-building?access_token=', .sus_token, 
+                'sus-mcgill/climate_risk-building?access_token=', .sus_token, 
                 '" -F file=@', tmp, 
                 ' --header "Content-Type: multipart/form-data"')
   system(out)
@@ -157,26 +157,18 @@ map(1:10, ~{
 DA |> 
   st_set_geometry("building") |> 
   as_tibble() |> 
-  select(ID, name, all_of(vars_to_add), geometry = building) |> 
-  mutate(across(contains("_q3"), 
-                ~paste(canale_ind_q3_2016, .x, sep = " - "))) |> 
-  relocate(canale_ind_q5_2016, .after = name) |> 
-  select(-canale_ind_q3_2016) |> 
-  rename_with(~paste0("canale_ind_2016_", str_remove(.x, "_q3")),
-              contains("_q3")) |> 
-  rename(canale_ind_2016 = canale_ind_q5_2016) |> 
-  mutate(canale_ind_2016 = paste0("q5_", canale_ind_2016)) |> 
+  select(ID, name, all_of(left_vars_census), geometry = building) |> 
+  mutate(across(all_of(left_vars_census), ~paste0("q5_", .x))) |> 
+  bind_cols({
+    map_dfc(left_vars, \(x) {
+      map_dfc(right_vars, \(y) 
+              paste(DA[[paste0(x, "_q3")]], DA[[y]], sep = " - ")) |> 
+        set_names(paste(x, str_replace(right_vars, "_q3", ""), sep = "_"))})
+  }) |> 
+  relocate(geometry, .after = last_col()) |> 
   st_as_sf() |> 
   st_set_agr("constant") |> 
-  upload_tile_source("canale-DA_building", "sus-mcgill", .sus_token)
-
-
-# Process DA_building_empty then upload tile source -----------------------
-
-DA |> 
-  st_set_geometry("building") |> 
-  select(ID, name, geometry = building) |> 
-  upload_tile_source("canale-DA_building_empty", "sus-mcgill", .sus_token)
+  upload_tile_source("climate_risk-DA_building")
 
 
 # Add recipes -------------------------------------------------------------
@@ -187,7 +179,7 @@ recipe_borough <- '
     "version": 1,
     "layers": {
       "borough": {
-        "source": "mapbox://tileset-source/sus-mcgill/canale-borough",
+        "source": "mapbox://tileset-source/sus-mcgill/climate_risk-borough",
         "minzoom": 3,
         "maxzoom": 11,
         "features": {
@@ -198,7 +190,7 @@ recipe_borough <- '
       }
     }
   },
-  "name": "canale-borough"
+  "name": "climate_risk-borough"
 }
 '
 
@@ -208,7 +200,7 @@ recipe_CT <- '
     "version": 1,
     "layers": {
       "CT": {
-        "source": "mapbox://tileset-source/sus-mcgill/canale-CT",
+        "source": "mapbox://tileset-source/sus-mcgill/climate_risk-CT",
         "minzoom": 3,
         "maxzoom": 12,
         "features": {
@@ -219,7 +211,7 @@ recipe_CT <- '
       }
     }
   },
-  "name": "canale-CT"
+  "name": "climate_risk-CT"
 }
 '
 
@@ -229,21 +221,26 @@ recipe_DA <- '
     "version": 1,
     "layers": {
       "DA_empty": {
-        "source": "mapbox://tileset-source/sus-mcgill/canale-DA_empty",
+        "source": "mapbox://tileset-source/sus-mcgill/DA_empty",
         "minzoom": 3,
         "maxzoom": 8
       },
       "DA": {
-        "source": "mapbox://tileset-source/sus-mcgill/canale-DA",
+        "source": "mapbox://tileset-source/sus-mcgill/climate_risk-DA",
         "minzoom": 9,
         "maxzoom": 13,
         "features": {
-           "simplification": 1
+          "simplification": [ "case",
+            [ "==", [ "zoom" ], 13 ], 1, 4 
+          ]
+        },
+        "tiles": {
+          "layer_size": 2500
         }
       }
     }
   },
-  "name": "canale-DA"
+  "name": "climate_risk-DA"
 }
 '
 
@@ -253,17 +250,17 @@ recipe_building <- '
     "version": 1,
     "layers": {
       "DA_building_empty": {
-        "source": "mapbox://tileset-source/sus-mcgill/canale-DA_building_empty",
+        "source": "mapbox://tileset-source/sus-mcgill/climate_risk-DA_building_empty",
         "minzoom": 3,
         "maxzoom": 8
       },
       "DA_building": {
-        "source": "mapbox://tileset-source/sus-mcgill/canale-DA_building",
+        "source": "mapbox://tileset-source/sus-mcgill/climate_risk-DA_building",
         "minzoom": 9,
         "maxzoom": 12
       },
       "building": {
-        "source": "mapbox://tileset-source/sus-mcgill/canale-building",
+        "source": "mapbox://tileset-source/sus-mcgill/climate_risk-building",
         "minzoom": 13,
         "maxzoom": 16,
         "tiles": {
@@ -272,7 +269,7 @@ recipe_building <- '
       }
     }
   },
-  "name": "canale-building"
+  "name": "climate_risk-building"
 }
 '
 
@@ -282,87 +279,45 @@ recipe_auto_zoom <- '
     "version": 1,
     "layers": {
       "borough": {
-        "source": "mapbox://tileset-source/sus-mcgill/canale-borough",
+        "source": "mapbox://tileset-source/sus-mcgill/climate_risk-borough",
         "minzoom": 2,
         "maxzoom": 10
       },
       "CT": {
-        "source": "mapbox://tileset-source/sus-mcgill/canale-CT",
+        "source": "mapbox://tileset-source/sus-mcgill/climate_risk-CT",
         "minzoom": 11,
         "maxzoom": 12
       },
        "DA": {
-        "source": "mapbox://tileset-source/sus-mcgill/canale-DA",
+        "source": "mapbox://tileset-source/sus-mcgill/climate_risk-DA",
         "minzoom": 13,
         "maxzoom": 15
       },
        "building": {
-        "source": "mapbox://tileset-source/sus-mcgill/canale-building",
+        "source": "mapbox://tileset-source/sus-mcgill/climate_risk-building",
         "minzoom": 16,
         "maxzoom": 16
       }
     }
   },
-  "name": "canale-auto_zoom"
+  "name": "climate_risk-auto_zoom"
 }
 '
 
 
 # Create and publish tilesets ---------------------------------------------
 
-create_tileset("canale-borough", recipe_borough, "sus-mcgill", .sus_token)
-publish_tileset("canale-borough", "sus-mcgill", .sus_token)
+create_tileset("climate_risk-borough", recipe_borough)
+publish_tileset("climate_risk-borough")
 
-create_tileset("canale-CT", recipe_CT, "sus-mcgill", .sus_token)
-publish_tileset("canale-CT", "sus-mcgill", .sus_token)
+create_tileset("climate_risk-CT", recipe_CT)
+publish_tileset("climate_risk-CT")
 
-create_tileset("canale-DA", recipe_DA, "sus-mcgill", .sus_token)
-publish_tileset("canale-DA", "sus-mcgill", .sus_token)
+create_tileset("climate_risk-DA", recipe_DA)
+publish_tileset("climate_risk-DA")
 
-create_tileset("canale-building", recipe_building, "sus-mcgill", .sus_token)
-publish_tileset("canale-building", "sus-mcgill", .sus_token)
+create_tileset("climate_risk-building", recipe_building)
+publish_tileset("climate_risk-building")
 
-create_tileset("canale-auto_zoom", recipe_auto_zoom, "sus-mcgill", .sus_token)
-publish_tileset("canale-auto_zoom", "sus-mcgill", .sus_token)
-
-
-
-
-# Recipe for building testing ---------------------------------------------
-
-recipe_building_test <- '
-{
-  "recipe": {
-    "version": 1,
-    "layers": {
-      "DA_building_empty": {
-        "source": "mapbox://tileset-source/sus-mcgill/canale-DA_building_empty",
-        "minzoom": 3,
-        "maxzoom": 8,
-        "tiles": {
-          "bbox": [ -73.57, 45.50, -73.56, 45.51 ]
-        }
-      },
-      "DA_building": {
-        "source": "mapbox://tileset-source/sus-mcgill/canale-DA_building",
-        "minzoom": 9,
-        "maxzoom": 12,
-        "tiles": {
-          "bbox": [ -73.57, 45.50, -73.56, 45.51 ]
-        }
-      },
-      "building": {
-        "source": "mapbox://tileset-source/sus-mcgill/canale-building",
-        "minzoom": 13,
-        "maxzoom": 16,
-        "tiles": {
-          "bbox": [ -73.57, 45.50, -73.56, 45.51 ]
-        }
-      }
-    }
-  },
-  "name": "canale-building_test"
-}
-'
-
-
+create_tileset("climate_risk-auto_zoom", recipe_auto_zoom)
+publish_tileset("climate_risk-auto_zoom")

@@ -12,5 +12,5 @@ source("dev/tiles/tile_functions.R")
 # Process DA_empty then upload tile source ---------------------------
 
 DA |> 
-  select(ID, name, geometry) |> 
+  select(ID, geometry) |> 
   upload_tile_source("DA_empty")

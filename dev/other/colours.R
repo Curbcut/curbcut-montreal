@@ -20,24 +20,27 @@ colour_alpha <- c("borough" = "EE", "CT" = "D5", "DA" = "BB", "building" = "AA",
 
 # Rdeck colours -----------------------------------------------------------
 
+c_NA <- tibble(
+  palette = "NA",
+  group = 0L,
+  value = col_NA)
+
 c_q5 <- tibble(
   palette = "q5",
-  group = paste0("q5_", c(0:5, NA)),
-  value = c(col_NA, col_left_5, col_NA))
+  group = 1:5,
+  value = col_left_5)
 
 c_bivar <- tibble(
   palette = "bivar",
-  group = c("1 - 1", "2 - 1", "3 - 1", "1 - 2", "2 - 2", "3 - 2",
-            "1 - 3", "2 - 3", "3 - 3", "NA - 1", "NA - 2", "NA - 3", 
-            "1 - NA", "2 - NA", "3 - NA", "NA - NA"),
-  value = c(col_bivar, rep(col_NA, 7)))
+  group = 6:14,
+  value = col_bivar)
 
 c_delta <- tibble(
   palette = "delta",
-  group = paste0("d_", c(1:5, NA)),
-  value = c(col_delta_5, col_NA))
+  group = 15:19,
+  value = col_delta_5)
 
-colour_table <- bind_rows(c_q5, c_bivar, c_delta)
+colour_table <- bind_rows(c_NA, c_q5, c_bivar, c_delta)
   
 
 # Univariate 5-level colour table -----------------------------------------

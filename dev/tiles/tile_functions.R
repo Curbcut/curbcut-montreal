@@ -94,18 +94,21 @@ publish_tileset <- function(tileset, username = "sus-mcgill",
 }
   
 
+# Manipulate variables ----------------------------------------------------
 
-# Create style ------------------------------------------------------------
+trans_table <-
+  tibble(group = c("1 - 1", "2 - 1", "3 - 1", "1 - 2", "2 - 2", "3 - 2",
+                   "1 - 3", "2 - 3", "3 - 3"),
+         vals = 6:14)
 
-create_style <- function(style, username, access_token) {
-  
-  POST(
-    url = paste0("https://api.mapbox.com/styles/v1/", username),
-    query = list(access_token = access_token),
-    body = style,
-    content_type("application/json")
-  )
-  
+trans_var_internal <- function(x) {
+  args <- tibble::deframe(trans_table)
+  args <- c(list(EXPR = x), args, list(0))
+  do.call(switch, args)
+}
+
+trans_var <- function(x) {
+  as.integer(sapply(x, trans_var_internal, USE.NAMES = FALSE))
 }
 
   

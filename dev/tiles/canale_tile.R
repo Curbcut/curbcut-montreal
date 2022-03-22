@@ -4,7 +4,7 @@ library(tidyverse)
 library(sf)
 library(qs)
 qload("data/census.qsm")
-building <- qread("data/building.qs")
+building <- qread("data/building_full.qs")
 variables <- qread("data/variables.qs")
 source("dev/tiles/tile_functions.R")
 
@@ -196,7 +196,7 @@ recipe_DA <- '
     "version": 1,
     "layers": {
       "DA_empty": {
-        "source": "mapbox://tileset-source/sus-mcgill/canale-DA_empty",
+        "source": "mapbox://tileset-source/sus-mcgill/DA_empty",
         "minzoom": 3,
         "maxzoom": 8
       },
@@ -205,7 +205,9 @@ recipe_DA <- '
         "minzoom": 9,
         "maxzoom": 13,
         "features": {
-           "simplification": 1
+          "simplification": [ "case",
+            [ "==", [ "zoom" ], 13 ], 1, 4 
+          ]
         }
       }
     }
