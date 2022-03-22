@@ -1,7 +1,7 @@
 #### LEGEND MODULE #############################################################
 
 legend_UI <- function(id) {
-  div(id = "legend", h5("Legend", style = "font-size: 12px;"),
+  div(id = "legend", h5(sus_translate("Legend"), style = "font-size: 12px;"),
       uiOutput(NS(id, "legend_render")))
 }
 
