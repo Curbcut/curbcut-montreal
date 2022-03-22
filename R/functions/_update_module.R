@@ -1,9 +1,11 @@
 #' @param mod_ns A character string representing the module namespace, for 
 #' links between modules. Ex. to call a change in the canale module from a link
-#' in housing (from a housing namespace to a canale). In that case, the link would
-#' be present in housing and the mod_ns would be "canale". NOT to use for bookmarking.
-#' @param id A character string representing the module id, used for bookmarking AND dyk. 
-#' It is used to correctly identify how to collect and recreate var_left. 
+#' in housing (from a housing namespace to a canale). In that case, the link 
+#' would be present in housing and the mod_ns would be "canale". NOT to use for 
+#' bookmarking.
+#' @param id A character string representing the module id, used for 
+#' bookmarking AND dyk. It is used to correctly identify how to collect and 
+#' recreate var_left. 
 
 update_module <- function(mod_ns = NULL, id = mod_ns, session, zoom, location, 
                           map_id = "map", df, zoom_auto, var_left, var_right, 
@@ -17,7 +19,7 @@ update_module <- function(mod_ns = NULL, id = mod_ns, session, zoom, location,
   }
   
   # Update mapdeck_view
-  if (!all(map_lgl(c(zoom, location), is.null))) {
+  if (!all(vapply(c(zoom, location), is.null, TRUE))) {
     if (!is.null(map_id)) {
       rdeck_proxy(id = map_id,
                   initial_view_state = 
@@ -88,13 +90,12 @@ update_module <- function(mod_ns = NULL, id = mod_ns, session, zoom, location,
       }
     }
   }
-
   
   # PARSE more_args from the URL
   if (!is.null(more_args)) {
     additional <- str_split(more_args, ";")[[1]]
     
-    walk(additional, function(arg) {
+    lapply(additional, function(arg) {
       type_inputId <- str_split(arg, ":")[[1]][1]
       widget_type <- str_split(type_inputId, "-")[[1]][1]
       inputId <- str_split(type_inputId, "-")[[1]][2]

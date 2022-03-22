@@ -41,8 +41,9 @@ render_explore_graph <- function(plot_type, data, var_left, var_right, df,
     ranks <- ranks$rank[ranks$scale == df]
     
     # Get corresponding colours
-    cols <- set_names(rev(c(col_NA, col_left_5)[ranks + 1]))
-
+    cols <- setNames(rev(c(col_NA, col_left_5)[ranks + 1]),
+                     rev(c(col_NA, col_left_5)[ranks + 1]))
+    
     out <-
       data[!is.na(data$var_left),] |> 
       ggplot(aes(as.factor(var_left))) +
@@ -60,8 +61,8 @@ render_explore_graph <- function(plot_type, data, var_left, var_right, df,
     opac_line <- abs(cor(data$var_left, data$var_right, use = "complete.obs"))
     
     out <- 
-      data[data$var_left %in% remove_outliers(data$var_left) &
-             data$var_right %in% remove_outliers(data$var_right),] |> 
+      data |> 
+      remove_outliers_df("var_left", "var_right") |> 
       ggplot(aes(var_right, var_left)) +
       geom_point(aes(colour = group)) +
       {if (plot_type == "scatter_select") geom_point(
@@ -69,7 +70,8 @@ render_explore_graph <- function(plot_type, data, var_left, var_right, df,
         fill = "black", size = 4)} +
       stat_smooth(geom = "line", se = FALSE, method = "loess", span = 1,
                   formula = y ~ x, alpha = opac_line) +
-      scale_colour_manual(values = tibble::deframe(colour_bivar)) +
+      scale_colour_manual(values = setNames(
+        colour_bivar$fill, colour_bivar$group)) +
       x_scale + y_scale + labs_xy + theme_default
   }
   
@@ -98,8 +100,8 @@ render_explore_graph <- function(plot_type, data, var_left, var_right, df,
     names(colours) <- colour_delta$group[1:5]
     
     out <- if (unique(c("var_left_1", "var_left_2") %in% names(data))) {
-      data[data$var_left_1 %in% remove_outliers(data$var_left_1) &
-             data$var_left_2 %in% remove_outliers(data$var_left_2),] |> 
+      data |> 
+        remove_outliers_df("var_left_1", "var_left_2") |> 
         ggplot(aes(var_left_1, var_left_2)) +
         geom_smooth(se = FALSE, method = "lm", formula = y ~ x, 
                     colour = "black", size = 0.5) +
@@ -119,11 +121,11 @@ render_explore_graph <- function(plot_type, data, var_left, var_right, df,
     
     opac_line <- if (sum(!is.na(data$var_left)) > 0) {
       abs(cor(data$var_left, data$var_right, use = "complete.obs"))
-      } else 1
+    } else 1
     
     out <- 
-      data[data$var_left %in% remove_outliers(data$var_left) &
-             data$var_right %in% remove_outliers(data$var_right),] |> 
+      data |> 
+      remove_outliers_df("var_left", "var_right") |> 
       ggplot(aes(var_right, var_left)) +
       geom_point(aes(colour = group)) +
       {if (plot_type == "deltabivar_select") geom_point(
@@ -131,7 +133,8 @@ render_explore_graph <- function(plot_type, data, var_left, var_right, df,
         fill = "black", size = 4)} +
       stat_smooth(geom = "line", se = FALSE, method = "loess", span = 1,
                   formula = y ~ x, alpha = opac_line) +
-      scale_colour_manual(values = tibble::deframe(colour_bivar)) +
+      scale_colour_manual(values = setNames(
+        colour_bivar$fill, colour_bivar$group)) +
       x_scale + y_scale + labs_xy + theme_default
   }
   

@@ -18,11 +18,13 @@
 #' @param more_args Named vectors indicating other input that must be updated
 #' following bookmarking.
 
-bookmark_server <- function(id, map_viewstate = reactive(NULL), 
+bookmark_server <- function(id, 
+                            map_viewstate = reactive(NULL), 
                             var_left = reactive(NULL),
                             var_right = reactive(NULL), 
                             select_id = reactive(NULL), 
-                            df = reactive(NULL), map_id = NULL, 
+                            df = reactive(NULL), 
+                            map_id = NULL, 
                             more_args = reactive(NULL)) {
   
   stopifnot(is.reactive(map_viewstate))

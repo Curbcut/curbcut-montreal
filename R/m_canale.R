@@ -38,7 +38,6 @@ canale_server <- function(id) {
     # Initial reactives
     zoom <- reactiveVal(get_zoom(map_zoom, map_zoom_levels))
     select_id <- reactiveVal(NA)
-    df <- reactiveVal("borough")
     poi <- reactiveVal(NULL)
     
     # Map
@@ -77,7 +76,7 @@ canale_server <- function(id) {
       zoom_levels = reactive(map_zoom_levels))
     
     # Get df for explore/legend/etc
-    observe(df(get_df(tile(), zoom(), map_zoom_levels)))
+    df <- reactive(get_df(tile(), zoom(), map_zoom_levels))
     
     # Time
     time <- reactive("2016")

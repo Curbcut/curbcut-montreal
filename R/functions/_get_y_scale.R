@@ -4,26 +4,35 @@ get_y_scale <- function(graph_type, data, var_type, var_left, var_right) {
   
   ## Get scale type ------------------------------------------------------------
   
-  scale_type <- case_when(
-    graph_type == "date" ~ "date",
-    graph_type %in% c("deltabivar", "NAdeltabivar") ~ "deltabivar",
-    graph_type %in% c("delta", "NAdelta") & 
-      unique(str_detect(var_left, "_pct")) ~ "delta_pct",
-    graph_type %in% c("delta", "NAdelta") & 
-      unique(str_detect(var_left, "_dollar")) ~ "delta_dollar",
-    graph_type %in% c("delta", "NAdelta") ~ "delta",
-    graph_type == "box" & str_detect(var_right, "_pct") ~ "box_pct",
-    graph_type == "box" & str_detect(var_right, "_dollar") ~ "box_dollar",
-    graph_type == "box" ~ "box",
-    graph_type == "scatter" & str_detect(var_left, "_pct") ~ "scatter_pct",
-    graph_type == "scatter" & str_detect(var_left, "_dollar") ~ 
-      "scatter_dollar",
-    graph_type %in% c("bar") ~ "discrete",
-    graph_type == "scatter" ~ "scatter",
-    graph_type == "hist" ~ "hist"
-  )
-  
-  scale_type <- unique(scale_type)
+  scale_type <- if (graph_type == "date") {
+    "date"
+  } else if (graph_type %in% c("deltabivar", "NAdeltabivar")) {
+    "deltabivar"
+  } else if (graph_type %in% c("delta", "NAdelta") && 
+             str_detect(var_left[1], "_pct")) {
+    "delta_pct"
+  } else if (graph_type %in% c("delta", "NAdelta") &&
+             str_detect(var_left, "_dollar")) {
+    "delta_dollar"
+  } else if (graph_type %in% c("delta", "NAdelta")) {
+    "delta"
+  } else if (graph_type == "box" && str_detect(var_right[1], "_pct")) {
+    "box_pct"
+  } else if (graph_type == "box" && str_detect(var_right[1], "_dollar")) {
+    "box_dollar"
+  } else if (graph_type == "box") {
+    "box"
+  } else if (graph_type == "scatter" && str_detect(var_left[1], "_pct")) {
+    "scatter_pct"
+  } else if (graph_type == "scatter" && str_detect(var_left[1], "_dollar")) {
+    "scatter_dollar"
+  } else if (graph_type %in% c("bar")) {
+    "discrete"
+  } else if (graph_type == "scatter") {
+    "scatter"
+  } else if (graph_type == "hist") {
+    "hist"
+  }
   
   
   ## Compress dollar values ----------------------------------------------------
@@ -61,43 +70,43 @@ get_y_scale <- function(graph_type, data, var_type, var_left, var_right) {
   ## Get scale -----------------------------------------------------------------
   
   if (scale_type == "date") out <- 
-    list(scale_y_continuous(labels = scales::comma))
+      list(scale_y_continuous(labels = scales::comma))
   
   if (scale_type == "deltabivar") out <- 
-    list(scale_y_continuous(labels = scales::percent))
+      list(scale_y_continuous(labels = scales::percent))
   
   if (scale_type == "delta_pct") out <- 
-    list(scale_y_continuous(labels = scales::percent))
-    
+      list(scale_y_continuous(labels = scales::percent))
+  
   if (scale_type == "delta_dollar") out <- 
-    list(scale_y_continuous(labels = lab_dl))
+      list(scale_y_continuous(labels = lab_dl))
   
   if (scale_type == "delta") out <- 
-    list(scale_y_continuous(labels = scales::comma))
+      list(scale_y_continuous(labels = scales::comma))
   
   if (scale_type == "box_pct") out <- 
-    list(scale_y_continuous(labels = scales::percent))
+      list(scale_y_continuous(labels = scales::percent))
   
   if (scale_type == "box_dollar") out <- 
-    list(scale_y_continuous(labels = lab_dl))
+      list(scale_y_continuous(labels = lab_dl))
   
   if (scale_type == "box") out <- 
-    list(scale_y_continuous(labels = scales::comma))
+      list(scale_y_continuous(labels = scales::comma))
   
   if (scale_type == "scatter_pct") out <- 
-    list(scale_y_continuous(labels = scales::percent))
+      list(scale_y_continuous(labels = scales::percent))
   
   if (scale_type == "scatter_dollar") out <- 
-    list(scale_y_continuous(labels = lab_dl))
+      list(scale_y_continuous(labels = lab_dl))
   
   if (scale_type == "scatter") out <- 
-    list(scale_y_continuous(labels = scales::comma))
+      list(scale_y_continuous(labels = scales::comma))
   
   if (scale_type == "discrete") out <- 
-    list(scale_y_continuous(labels = scales::label_comma(accuracy = 1)))
+      list(scale_y_continuous(labels = scales::label_comma(accuracy = 1)))
   
   if (scale_type == "hist") out <- 
-    list(scale_y_continuous(labels = scales::comma))
+      list(scale_y_continuous(labels = scales::comma))
   
   return(out)
   

@@ -50,8 +50,10 @@ stories_server <- function(id) {
     
     # Zoom level
     observeEvent(input[[paste0(ns_id, "-map_viewstate")]], {
-      zoom(case_when(input[[paste0(ns_id, "-map_viewstate")]]$viewState$zoom > 13 ~ 600,
-                     TRUE ~ input[[paste0(ns_id, "-map_viewstate")]]$viewState$zoom * -550 + 8000))
+      zoom(if (input[[paste0(ns_id, "-map_viewstate")]]$viewState$zoom > 13) {
+        600
+        } else input[[paste0(ns_id, "-map_viewstate")]]$
+          viewState$zoom * -550 + 8000)
       select_id(NA)
     })
 
@@ -73,8 +75,10 @@ stories_server <- function(id) {
         bboxes <- lapply(data()$buffer, \(x) st_bbox(x) |> round(digits = 5))
         layer_ids <- paste0("image", row_n)
 
-        all_add_bitmap <- paste0('add_bitmap_layer(data = data()[', row_n,', ], image = "', images, '", bounds = ', bboxes, ', ',
-                                 'id ="',layer_ids ,'", pickable = TRUE)', collapse = ' |>  ')
+        all_add_bitmap <- 
+          paste0('add_bitmap_layer(data = data()[', row_n,', ], image = "', 
+                 images, '", bounds = ', bboxes, ', ', 'id ="', layer_ids, 
+                 '", pickable = TRUE)', collapse = ' |>  ')
         updated_map <-
           paste0('rdeck_proxy(id = "stories-map") |> ',
                  paste0(text = all_add_bitmap))
@@ -89,7 +93,7 @@ stories_server <- function(id) {
       click <- st_point(c(input[[paste0(ns_id, "-map_click")]]$coordinate[[1]], 
                           input[[paste0(ns_id, "-map_click")]]$coordinate[[2]])) |>
         st_sfc(crs = 4326) |>
-        as_tibble() |>
+        as.data.frame() |>
         st_as_sf() |>
         st_set_agr("constant")
       
@@ -130,7 +134,7 @@ stories_server <- function(id) {
       toggle("stories", condition = !is.na(select_id()))
     })
 
-    # If there's an action with the map, the rmd goes away (Ultimately, any click on the map
+    # If there's an action with the map, the rmd goes away
     # should trigger these)
     observeEvent(input$map_view_change, {
       hide(id = "stories")

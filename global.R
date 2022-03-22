@@ -7,11 +7,8 @@ suppressPackageStartupMessages({
   library(shinyjs)
   library(shinyWidgets)
 
-  library(tidyr)
-  library(dplyr)
   library(ggplot2)
   library(stringr)
-  library(purrr)
 
   library(sf)
   library(rdeck)
