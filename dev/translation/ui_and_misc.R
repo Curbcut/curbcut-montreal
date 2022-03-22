@@ -447,7 +447,9 @@ ui_and_misc_translated <-
   add_row(en = paste0("Saint-Jérôme"), 
           fr = paste0("Saint-Jérôme")) |> 
   add_row(en = paste0("Gore"), 
-          fr = paste0("Gore"))
+          fr = paste0("Gore")) |> 
+  add_row(en = paste0("[LEARN MORE]"), 
+          fr = paste0("[EN SAVOIR PLUS]"))
 
 # Save --------------------------------------------------------------------
 

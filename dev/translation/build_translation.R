@@ -4,10 +4,10 @@
 # From a CSV to code to create tibbles ------------------------------------
 
 # form_translation_tibble <- function(df) {
-#   
+# 
 #   en <- gsub("(.{55})", '\\1",\n"', df$en)
 #   fr <- gsub("(.{55})", '\\1",\n"', df$fr)
-#   
+# 
 #   writeLines(paste0('tibble(en = character(), fr = character()) |>\n',
 # 
 #   paste0('add_row(en = paste0("', en, '"), \nfr = paste0("', fr, '"))',
@@ -22,7 +22,7 @@ source("dev/translation/info_table.R", encoding = "utf-8")
 source("dev/translation/ui_and_misc.R", encoding = "utf-8")
 source("dev/translation/home_and_about.R", encoding = "utf-8")
 source("dev/translation/title_text.R", encoding = "utf-8")
-
+source("dev/translation/dyk.R", encoding = "utf-8")
 
 # Retrieve and bind translated csvs ---------------------------------------
 # translation_fr <- 
@@ -38,7 +38,8 @@ translation_fr <-
             info_table_translated,
             ui_and_misc_translated,
             variables_translated,
-            title_text_translation) |> 
+            title_text_translation,
+            dyk_translated) |> 
   distinct(en, .keep_all = TRUE)
 
 
