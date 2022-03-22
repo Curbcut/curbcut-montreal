@@ -210,5 +210,5 @@ rm(add_q3, add_q5, add_variables, data_testing, find_breaks_q5, get_breaks_q3,
 
 # Deploy app --------------------------------------------------------------
 
-deploy_sus("sus-dev2") # Development
+deploy_sus("sus-dev") # Development
 deploy_sus() # Production
