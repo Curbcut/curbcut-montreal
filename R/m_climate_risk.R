@@ -1,13 +1,5 @@
 ### CLIMATE RISK MODULE ########################################################
 
-# Dropdown menu
-var_list_climate_risk <- 
-  list("Destructive storms" = "climate_destructive_storms_ind",
-       "Drought" = "climate_drought_ind",
-       "Flood" = "climate_flood_ind",
-       "Heat wave" = "climate_heat_wave_ind",
-       "Heavy rain" = "climate_heavy_rain_ind")
-
 # UI ----------------------------------------------------------------------
 
 climate_risk_UI <- function(id) {
@@ -18,7 +10,8 @@ climate_risk_UI <- function(id) {
       sidebar_UI(
         NS(id, ns_id),
         susSidebarWidgets(
-          select_var_UI(NS(id, ns_id), var_list = var_list_climate_risk), 
+          select_var_UI(NS(id, ns_id), 
+                        var_list = make_dropdown(include_only = "Climate")), 
           checkbox_UI(NS(id, ns_id), value = TRUE,
                       label = sus_translate("250-metre grid")),
         ),
@@ -98,7 +91,9 @@ climate_risk_server <- function(id) {
     time <- reactive("2016")
     
     # Left variable server
-    var_left <- select_var_server(ns_id, var_list = reactive(var_list_climate_risk))
+    var_left <- select_var_server(ns_id, 
+                                  var_list = 
+                                    reactive(make_dropdown(include_only = "Climate")))
     
     # Right variable / compare panel
     var_right <- compare_server(
