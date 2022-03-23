@@ -66,7 +66,7 @@ get_legend_breaks <- function(data, var_left, var_right, df, data_type) {
       variables$var_code == unique(sub("_\\d{4}$", "", var_right))]
     if (length(break_labs_x) > 0) break_labs_x <- 
       break_labs_x[[1]]$var[
-        (break_labs_x[[1]]$date == date_left | 
+        (break_labs_x[[1]]$date == date_right | 
            is.na(break_labs_x[[1]]$date)) &
           break_labs_x[[1]]$scale == df]
     
