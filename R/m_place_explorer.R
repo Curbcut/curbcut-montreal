@@ -206,7 +206,7 @@ place_explorer_server <- function(id) {
           name$county
         }
 
-      location_name(paste0("The area around ",
+      location_name(paste0(
         name$house_number, " ",
         name$road, ", ",
         # One or the other:
@@ -231,7 +231,7 @@ place_explorer_server <- function(id) {
           name$county
         }
 
-      location_name(paste0("The area around ",
+      location_name(paste0(
         name$house_number, " ",
         name$road, ", ",
         # One or the other:
@@ -380,7 +380,8 @@ place_explorer_server <- function(id) {
              if (df() == "borough") {
                paste0(borough[borough$ID == select_id(),]$name, " (", 
                       borough[borough$ID == select_id(),]$name_2, ")")
-             } else location_name(),
+             } else paste0("The area around ", location_name(), 
+                           " (", get_zoom_name(df()), ")"),
              "</h2>")
       } else HTML("<h2>Your selected location</h2>")
     })
