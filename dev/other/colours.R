@@ -22,22 +22,22 @@ colour_alpha <- c("borough" = "EE", "CT" = "D5", "DA" = "BB", "building" = "AA",
 
 c_NA <- tibble(
   palette = "NA",
-  group = 0L,
+  group = "0",
   value = col_NA)
 
 c_q5 <- tibble(
   palette = "q5",
-  group = 1:5,
+  group = as.character(1:5),
   value = col_left_5)
 
 c_bivar <- tibble(
   palette = "bivar",
-  group = 6:14,
+  group = as.character(6:14),
   value = col_bivar)
 
 c_delta <- tibble(
   palette = "delta",
-  group = 15:19,
+  group = as.character(15:19),
   value = col_delta_5)
 
 colour_table <- bind_rows(c_NA, c_q5, c_bivar, c_delta)

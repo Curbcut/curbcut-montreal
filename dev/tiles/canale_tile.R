@@ -33,7 +33,8 @@ borough |>
   rename_with(~paste0("canale_ind_2016_", str_remove(.x, "_q3")),
               contains("_q3")) |> 
   rename(canale_ind_2016 = canale_ind_q5_2016) |> 
-  mutate(canale_ind_2016 = paste0("q5_", canale_ind_2016)) |> 
+  mutate(canale_ind_2016 = as.integer(canale_ind_2016),
+         across(c(-ID, -name, -canale_ind_2016, -geometry), trans_var)) |> 
   st_as_sf() |> 
   st_set_agr("constant") |> 
   upload_tile_source("canale-borough", "sus-mcgill", .sus_token)
@@ -51,7 +52,8 @@ CT |>
   rename_with(~paste0("canale_ind_2016_", str_remove(.x, "_q3")),
               contains("_q3")) |> 
   rename(canale_ind_2016 = canale_ind_q5_2016) |> 
-  mutate(canale_ind_2016 = paste0("q5_", canale_ind_2016)) |> 
+  mutate(canale_ind_2016 = as.integer(canale_ind_2016),
+         across(c(-ID, -name, -canale_ind_2016, -geometry), trans_var)) |> 
   st_as_sf() |> 
   st_set_agr("constant") |> 
   upload_tile_source("canale-CT", "sus-mcgill", .sus_token)
@@ -69,7 +71,8 @@ DA |>
   rename_with(~paste0("canale_ind_2016_", str_remove(.x, "_q3")),
               contains("_q3")) |> 
   rename(canale_ind_2016 = canale_ind_q5_2016) |> 
-  mutate(canale_ind_2016 = paste0("q5_", canale_ind_2016)) |> 
+  mutate(canale_ind_2016 = as.integer(canale_ind_2016),
+         across(c(-ID, -name, -canale_ind_2016, -geometry), trans_var)) |> 
   st_as_sf() |> 
   st_set_agr("constant") |> 
   upload_tile_source("canale-DA", "sus-mcgill", .sus_token)
@@ -88,7 +91,8 @@ building_to_process <-
   rename_with(~paste0("canale_ind_2016_", str_remove(.x, "_q3")),
               contains("_q3")) |> 
   rename(canale_ind_2016 = canale_ind_q5_2016) |> 
-  mutate(canale_ind_2016 = paste0("q5_", canale_ind_2016)) |> 
+  mutate(canale_ind_2016 = as.integer(canale_ind_2016),
+         across(c(-ID, -name, -canale_ind_2016, -geometry), trans_var)) |> 
   st_as_sf() |> 
   st_set_agr("constant")
 
@@ -140,7 +144,8 @@ DA |>
   rename_with(~paste0("canale_ind_2016_", str_remove(.x, "_q3")),
               contains("_q3")) |> 
   rename(canale_ind_2016 = canale_ind_q5_2016) |> 
-  mutate(canale_ind_2016 = paste0("q5_", canale_ind_2016)) |> 
+  mutate(canale_ind_2016 = as.integer(canale_ind_2016),
+         across(c(-ID, -name, -canale_ind_2016, -geometry), trans_var)) |> 
   st_as_sf() |> 
   st_set_agr("constant") |> 
   upload_tile_source("canale-DA_building", "sus-mcgill", .sus_token)
@@ -336,5 +341,3 @@ recipe_building_test <- '
   "name": "canale-building_test"
 }
 '
-
-
