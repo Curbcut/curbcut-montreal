@@ -92,7 +92,11 @@ prep_title_card <- function(df, select_id, ind, percent = TRUE,
   info$percentile <- {
     data_rank <- data[data$ID == select_id, ][[paste0(scale, "_percentile")]]
 
-    if (data_rank > 0.50) {
+    if (is.na(data_rank)) {
+      sus_translate("<p style = 'font-size: small; ",
+                    "margin:auto; text-align:center;",
+                    "color:", "#999999","'></p>")
+    } else if (data_rank > 0.50) {
       per <- scales::percent(abs(data_rank - 1))
       if (per == "0%") per <- "1%"
       sus_translate("<p style = 'font-size: small; ",

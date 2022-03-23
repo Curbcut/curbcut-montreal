@@ -168,4 +168,19 @@ title_text_translation <-
   add_row(en = paste0("Various stories on Montreal's neighborhoods."), 
           fr = paste0("Diverses histoires sur les quartiers de Montréal.")) |> 
   add_row(en = paste0("No extra information at this time."), 
-          fr = paste0("Aucune information supplémentaire pour le moment."))
+          fr = paste0("Aucune information supplémentaire pour le moment.")) |> 
+  add_row(en = paste0("Place explorer"), 
+          fr = paste0("Explorez un lieu")) |> 
+  add_row(en = paste0("Select a location by entering a postal code or clicking",
+                      " on the map, and see how it compares to the rest of the",
+                      " Montreal region or island across a variety of sustaina",
+                      "bility indicators."), 
+          fr = paste0("Sélectionnez un lieu en entrant un code postal ou en cl",
+                      "iquant sur la carte, et voyez comment il se compare au ",
+                      "reste de la région ou de l'île de Montréal pour une var",
+                      "iété d'indicateurs de durabilité.")) |> 
+  add_row(en = paste0("Additional details about data sources will be added soo",
+                      "n!"), 
+          fr = paste0("Des détails supplémentaires sur les sources de données ",
+                      "seront bientôt ajoutés !"))
+  

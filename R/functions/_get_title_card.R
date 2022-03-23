@@ -2,7 +2,7 @@
 
 #' @param island_or_region A character string which is either "region" or "island".
 
-get_title_card <- function(data, df, select_id, island_or_region) {
+get_title_card <- function(df, select_id, island_or_region) {
 
   ## Setup ---------------------------------------------------------------------
 
