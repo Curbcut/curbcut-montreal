@@ -1,5 +1,13 @@
 ### CLIMATE RISK MODULE ########################################################
 
+# Dropdown menu
+var_list_climate_risk <- 
+  list("Destructive storms" = "climate_destructive_storms_ind",
+       "Drought" = "climate_drought_ind",
+       "Flood" = "climate_flood_ind",
+       "Heat wave" = "climate_heat_wave_ind",
+       "Heavy rain" = "climate_heavy_rain_ind")
+
 # UI ----------------------------------------------------------------------
 
 climate_risk_UI <- function(id) {
@@ -10,8 +18,7 @@ climate_risk_UI <- function(id) {
       sidebar_UI(
         NS(id, ns_id),
         susSidebarWidgets(
-          select_var_UI(NS(id, ns_id), var_list = make_dropdown(
-            include_only = "Climate")), 
+          select_var_UI(NS(id, ns_id), var_list = var_list_climate_risk), 
           checkbox_UI(NS(id, ns_id), value = TRUE,
                       label = sus_translate("250-metre grid")),
         ),
@@ -20,7 +27,8 @@ climate_risk_UI <- function(id) {
                     zoom_UI(NS(id, ns_id), map_zoom_levels)))),
 
       # Map
-      div(class = "mapdeck_div", mapdeckOutput(NS(id, "map"), height = "100%")),
+      div(class = "mapdeck_div", rdeckOutput(NS(id, paste0(ns_id, "-map")), 
+                                             height = "100%")),
       
       # Right panel
       right_panel(
@@ -90,8 +98,7 @@ climate_risk_server <- function(id) {
     time <- reactive("2016")
     
     # Left variable server
-    var_left <- select_var_server(ns_id, var_list = reactive(make_dropdown(
-      include_only = "Climate")))
+    var_left <- select_var_server(ns_id, var_list = reactive(var_list_climate_risk))
     
     # Right variable / compare panel
     var_right <- compare_server(
@@ -120,24 +127,31 @@ climate_risk_server <- function(id) {
       data = data,
       var_left = var_left,
       var_right = var_right,
-      df = df,
-      zoom = zoom)
+      df = df)
 
     # Did-you-know panel
     dyk_server(
       id = ns_id,
       var_left = var_left,
-      var_right = var_right)
+      var_right = var_right,
+      poi = poi)
     
     # Update map in response to variable changes or zooming
-    select_id <- map_change(
-      id = ns_id,
-      map_id = NS(id, "map"),
-      data = data,
-      df = df,
+    rdeck_server(
+      id = ns_id, 
+      map_id = "map", 
+      tile = tile, 
+      map_var = map_var, 
       zoom = zoom,
-      click = click_id,
+      select_id = select_id
     )
+    
+    # De-select
+    observeEvent(input[[paste0(ns_id, "-clear_selection")]], select_id(NA))
+    observeEvent(df(), select_id(NA), ignoreInit = TRUE)
+    # Error check
+    observeEvent(data(), if (!select_id() %in% data()$ID) select_id(NA),
+                 ignoreInit = TRUE)
     
     # Explore panel
     explore_content <- explore_server(
@@ -146,7 +160,6 @@ climate_risk_server <- function(id) {
       var_left = var_left,
       var_right = var_right,
       df = df,
-      zoom = zoom,
       select_id = select_id)
     
     # If grid isn't clicked, toggle on the zoom menu
@@ -158,30 +171,37 @@ climate_risk_server <- function(id) {
     # Bookmarking
     bookmark_server(
       id = ns_id,
-      map_view_change = reactive(input$map_view_change),
+      map_viewstate = reactive(
+        input[[paste0(ns_id, "-map_viewstate")]]$viewState),
       var_left = var_left,
       var_right = var_right,
       select_id = select_id,
       df = df,
-      map_id = NS(id, "map"),
+      map_id = "map",
       more_args = reactive(c("c-cbox" = as.logical(grid())))
     )
 
-    # Last bookmark step: update click_id() + mark bookmark as inactive
+    # Update select_id() on bookmark
     observeEvent(sus_bookmark$active, {
-      # Delay of 100 milliseconds more than the map update from bookmark.
-      # The map/df/data needs to be updated before we select an ID.
       if (isTRUE(sus_bookmark$active)) {
-        delay(1100, {
-          if (!is.null(sus_bookmark$select_id)) {
-            if (sus_bookmark$select_id != "NA") click_id(sus_bookmark$select_id)
-          }
+        if (!is.null(sus_bookmark$df)) df(sus_bookmark$df)
+        delay(1000, {
+          if (!is.null(sus_bookmark$select_id))
+            if (sus_bookmark$select_id != "NA") 
+              select_id(sus_bookmark$select_id)
         })
       }
-
       # So that bookmarking gets triggered only ONCE
       delay(1500, {sus_bookmark$active <- FALSE})
-
     }, priority = -2)
+    
+    # Update select_id() on module link
+    observeEvent(sus_link$activity, {
+      if (!is.null(sus_bookmark$df)) df(sus_bookmark$df)
+      delay(1000, {
+        if (!is.null(sus_link$select_id)) select_id(sus_link$select_id)
+      })
+    }, priority = -2)
+    
   })
 }

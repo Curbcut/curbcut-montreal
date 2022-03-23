@@ -14,6 +14,9 @@ get_data <- function(df, var_left, var_right, island = FALSE, point_df = NULL,
   # Get data type
   data_type <- get_data_type(df, var_left, var_right, build_str_as_DA)
 
+  print(var_left)
+  print(var_right)
+  
   # Are var_left and var_right the same column?
   if (all(var_left == var_right)) {
     stop("`var_left` and `var_right` are the same.")

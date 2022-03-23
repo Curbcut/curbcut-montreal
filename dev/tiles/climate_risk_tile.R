@@ -5,7 +5,7 @@ library(sf)
 library(qs)
 qload("data/census.qsm")
 grid <- qread("data/grid.qs")
-building <- qread("data/building_full.qs")
+building_full <- qread("data/building_full.qs")
 variables <- qread("data/variables.qs")
 source("dev/tiles/tile_functions.R")
 
@@ -33,11 +33,12 @@ right_vars <-
 grid |> 
   as_tibble() |> 
   select(ID, name, all_of(left_vars), geometry) |> 
-  mutate(across(all_of(left_vars), ~paste0("q5_", .x))) |> 
+  mutate(across(all_of(left_vars), as.character)) |> 
   bind_cols({
     map_dfc(left_vars, \(x) {
       map_dfc(right_vars, \(y) 
               paste(grid[[paste0(x, "_q3")]], grid[[y]], sep = " - ")) |> 
+        mutate(across(everything(), trans_var)) |> 
         set_names(paste(x, str_replace(right_vars, "_q3", ""), sep = "_"))})
   }) |> 
   relocate(geometry, .after = last_col()) |> 
@@ -51,13 +52,14 @@ grid |>
 borough |> 
   as_tibble() |> 
   select(ID, name, all_of(left_vars_census), geometry) |> 
-  mutate(across(all_of(left_vars_census), ~paste0("q5_", .x))) |> 
+  mutate(across(all_of(left_vars_census), as.character)) |> 
   bind_cols({
     map_dfc(left_vars, \(x) {
       map_dfc(right_vars, \(y) 
               paste(borough[[paste0(x, "_q3")]], borough[[y]], sep = " - ")) |> 
-        set_names(paste(x, str_replace(right_vars, "_q3", ""), sep = "_"))
-    })}) |> 
+        mutate(across(everything(), trans_var)) |> 
+        set_names(paste(x, str_replace(right_vars, "_q3", ""), sep = "_"))})
+    }) |> 
   relocate(geometry, .after = last_col()) |> 
   st_as_sf() |> 
   st_set_agr("constant") |> 
@@ -69,13 +71,14 @@ borough |>
 CT |> 
   as_tibble() |> 
   select(ID, name, all_of(left_vars_census), geometry) |> 
-  mutate(across(all_of(left_vars_census), ~paste0("q5_", .x))) |> 
+  mutate(across(all_of(left_vars_census), as.character)) |> 
   bind_cols({
     map_dfc(left_vars, \(x) {
       map_dfc(right_vars, \(y) 
               paste(CT[[paste0(x, "_q3")]], CT[[y]], sep = " - ")) |> 
+        mutate(across(everything(), trans_var)) |> 
         set_names(paste(x, str_replace(right_vars, "_q3", ""), sep = "_"))})
-  }) |> 
+    }) |> 
   relocate(geometry, .after = last_col()) |> 
   st_as_sf() |> 
   st_set_agr("constant") |> 
@@ -87,11 +90,12 @@ CT |>
 DA |> 
   as_tibble() |> 
   select(ID, name, all_of(left_vars_census), geometry) |> 
-  mutate(across(all_of(left_vars_census), ~paste0("q5_", .x))) |> 
+  mutate(across(all_of(left_vars_census), as.character)) |> 
   bind_cols({
     map_dfc(left_vars, \(x) {
       map_dfc(right_vars, \(y) 
               paste(DA[[paste0(x, "_q3")]], DA[[y]], sep = " - ")) |> 
+        mutate(across(everything(), trans_var)) |> 
         set_names(paste(x, str_replace(right_vars, "_q3", ""), sep = "_"))})
   }) |> 
   relocate(geometry, .after = last_col()) |> 
@@ -103,14 +107,16 @@ DA |>
 # Process building then upload tile source --------------------------------
 
 building_to_process <- 
-  building |> 
+  building_full |> 
   as_tibble() |> 
   select(ID, name, all_of(left_vars_census), geometry) |> 
-  mutate(across(all_of(left_vars_census), ~paste0("q5_", .x))) |> 
+  mutate(across(all_of(left_vars_census), as.character)) |> 
   bind_cols({
     map_dfc(left_vars, \(x) {
       map_dfc(right_vars, \(y) 
-              paste(building[[paste0(x, "_q3")]], building[[y]], sep = " - ")) |> 
+              paste(building_full[[paste0(x, "_q3")]], 
+                    building_full[[y]], sep = " - ")) |> 
+        mutate(across(everything(), trans_var)) |> 
         set_names(paste(x, str_replace(right_vars, "_q3", ""), sep = "_"))})
   }) |> 
   relocate(geometry, .after = last_col()) |> 
@@ -172,6 +178,35 @@ DA |>
 
 
 # Add recipes -------------------------------------------------------------
+
+recipe_grid <- '
+{
+  "recipe": {
+    "version": 1,
+    "layers": {
+      "borough_low": {
+        "source": "mapbox://tileset-source/sus-mcgill/climate_risk-grid",
+        "minzoom": 3,
+        "maxzoom": 10,
+        "features": {
+          "simplification": [ "case",
+            [ "==", [ "zoom" ], 13 ], 1, 4 
+          ]
+        },
+        "tiles": {
+          "layer_size": 2500,
+          "union": [
+            {
+              "group_by": [ "height", "construction_type" ]
+            }
+          ]
+        }
+      }
+    }
+  },
+  "name": "climate_risk-grid"
+}
+'
 
 recipe_borough <- '
 {
@@ -296,7 +331,10 @@ recipe_auto_zoom <- '
        "building": {
         "source": "mapbox://tileset-source/sus-mcgill/climate_risk-building",
         "minzoom": 16,
-        "maxzoom": 16
+        "maxzoom": 16,
+        "tiles": {
+          "layer_size": 2500
+        }
       }
     }
   },
@@ -306,6 +344,9 @@ recipe_auto_zoom <- '
 
 
 # Create and publish tilesets ---------------------------------------------
+
+create_tileset("climate_risk-grid", recipe_grid)
+publish_tileset("climate_risk-grid")
 
 create_tileset("climate_risk-borough", recipe_borough)
 publish_tileset("climate_risk-borough")
