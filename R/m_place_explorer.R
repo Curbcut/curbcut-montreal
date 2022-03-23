@@ -318,12 +318,9 @@ place_explorer_server <- function(id) {
         
         if (!is.null(loc_DAUID())) {
           data <- data()[data()$ID == select_id(), "geometry"]
-          
-          get_zoom_code(input$slider)
           zoom <- map_zoom_levels[
             which(get_zoom_code(input$slider) == names(map_zoom_levels))] + 2
           if (zoom == 2) zoom <- 11
-          
           rdeck_proxy(id = "title_card_map",
                       initial_view_state = 
                         view_state(center = 
