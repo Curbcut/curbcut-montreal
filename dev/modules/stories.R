@@ -26,8 +26,8 @@ stories <-
     preview = paste0("Little Burgundy has been the site of nearly 100 years ",
                      "of social and environmental transformation, and is ",
                      "currently undergoing a wave of green gentrification."),
-    lon = -73.57450068915936, 
-    lat = 45.486876630300735) |> 
+    lon = -73.574962, 
+    lat = 45.479311) |> 
   
   add_row(
     name = "old_quarry",
@@ -51,7 +51,17 @@ stories <-
     img = "flooding_pierrefonds.png",
     preview = paste0("Flooding test"),
     lon = -73.85489584811597,
-    lat = 45.49182349238028)
+    lat = 45.49182349238028) |> 
+  
+  add_row(
+    name = "griffintown",
+    title = paste0("Griffintown, From a Gift of the Machine Age to a Water ",
+                   "Wheel in the Growth Machine"),
+    img = "griffintown.png",
+    preview = paste0("Griffintown, From a Gift of the Machine Age to a Water ",
+                     "Wheel in the Growth Machine"),
+    lon = -73.560739,
+    lat = 45.496812)
 
 
 # Finish table ------------------------------------------------------------

@@ -52,8 +52,7 @@ stories_server <- function(id) {
     observeEvent(input[[paste0(ns_id, "-map_viewstate")]], {
       zoom(if (input[[paste0(ns_id, "-map_viewstate")]]$viewState$zoom > 13) {
         600
-        } else input[[paste0(ns_id, "-map_viewstate")]]$
-          viewState$zoom * -550 + 8000)
+        } else input[[paste0(ns_id, "-map_viewstate")]]$viewState$zoom * -550 + 8000)
       select_id(NA)
     })
 
@@ -70,7 +69,7 @@ stories_server <- function(id) {
       zoom()}, {
 
         row_n <- 1:nrow(data())
-        images <- paste0("https://raw.githubusercontent.com/MSSI-urban/Sus/main/",
+        images <- paste0("https://raw.githubusercontent.com/MSSI-urban/Sus/rdeck/",
                          "www/stories/round_img/", data()$img[row_n])
         bboxes <- lapply(data()$buffer, \(x) st_bbox(x) |> round(digits = 5))
         layer_ids <- paste0("image", row_n)
