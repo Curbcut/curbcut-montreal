@@ -37,13 +37,13 @@ knitr::include_graphics(here("www/stories/visuals/griffintown/figure1.jpg"))
 ### The Revival of Both Griffintown and Neglected Flood Risks
 <p>While Mayor Pr&eacute;fontaine addressed seasonal floods for Old Port and Griffintown in 1899, the West Island and most municipalities in the <em>Communaut&eacute; M&eacute;tropolitaine de Montr&eacute;al</em> (CMM) continue to struggle with the spring-time floods to this day. However, due to the increasing frequency and intensity of large rainfall events, as well as less predictable weather patterns, flooding has re-emerged in recent years as an important planning consideration for Montreal&rsquo;s downtown neighbourhoods. One poignant example of this is the Montreal flood of 1987 where 100 mm of rain fell within an hour, flooding expressways with nearly 4m of water, backing up the sewer system into approximately 40,000 homes and businesses, closing the subway system and killing two people (Public Safety Canada, 2013).</p>
 
-<!-- ```{r, echo=FALSE, fig.show='hold', fig.align = 'center', out.width="30%", fig.cap="Figure 2.&nbsp; Flash flood in Milton-Parc neighbourhood of Montreal, 2012. This flooding of storm water with nowhere to go in a network of impervious surfaces is expected to increase with climate change (IPCC, 2019), and the planning of Griffintown. Source: Montreal in Pictures, 2012 (https://montrealinpictures.com/montreal-image-photo-gallery/may-2012/)"} -->
+```{r, echo=FALSE, fig.show='hold', fig.align = 'center', out.width="30%", fig.cap="Figure 2.&nbsp; Flash flood in Milton-Parc neighbourhood of Montreal, 2012. This flooding of storm water with nowhere to go in a network of impervious surfaces is expected to increase with climate change (IPCC, 2019), and the planning of Griffintown. Source: Montreal in Pictures, 2012 (https://montrealinpictures.com/montreal-image-photo-gallery/may-2012/)"}
 
-<!-- knitr::include_graphics(c(here("www/stories/visuals/griffintown/figure2_1.jpg"), -->
-<!--                          here("www/stories/visuals/griffintown/figure2_2.jpg"), -->
-<!--                          here("www/stories/visuals/griffintown/figure2_3.jpg"))) -->
+knitr::include_graphics(c(here("www/stories/visuals/griffintown/figure2_1.jpg"),
+                         here("www/stories/visuals/griffintown/figure2_2.jpg"),
+                         here("www/stories/visuals/griffintown/figure2_3.jpg")))
 
-<!-- ``` -->
+```
 
 <p>By 1990, Montreal had grown both in population and sprawl enough that post-industrial Griffintown became valuable land to the city for development. The downtown had expanded enough that Griffintown was then the last undeveloped neighbourhood adjacent to downtown. The city&rsquo;s ambitions for Griffintown in the 1990s lacked a comprehensive planning process and consisted of the city selling land to developers and approving numerous rezoning applications for high rise developments. The City of Montreal was looking for the neighbourhood to provide an economic boost to the city just as it had back in the early 19<sup>th</sup> Century. This time, however, through gentrification.</p>
 <p>Following the re-zoning of a number of significant parcels and budding gentrification in the area, the square-foot price of land in Griffintown increased from 8\$-20\$/sqft in 2005 to 300\$/sqft in 2015 (Friede, 2015). Most recently, community backlash from the lack of community services and amenities provision (Greenspace, transportation, schools, ect.) has prompted a shift in the branding and apparent focus of Griffintown&rsquo;s redevelopment.</p>

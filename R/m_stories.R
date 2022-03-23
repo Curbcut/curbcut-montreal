@@ -115,7 +115,9 @@ stories_server <- function(id) {
              str_replace(
                includeHTML(paste0("www/stories/", rmd_name, "_en.html")),
                "</div>", paste0("</div><img src =", "stories/bandeau_img/",
-                                bandeau_name,"><br><br>")),
+                                bandeau_name,"><br><br>")) |> 
+               str_replace_all('<img src="visuals/', 
+                               '<img src="stories/visuals/'),
              '</div>')
       }
 
