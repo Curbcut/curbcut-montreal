@@ -99,7 +99,7 @@ publish_tileset <- function(tileset, username = "sus-mcgill",
 trans_table <-
   tibble(group = c("1 - 1", "2 - 1", "3 - 1", "1 - 2", "2 - 2", "3 - 2",
                    "1 - 3", "2 - 3", "3 - 3"),
-         vals = 6:14)
+         vals = as.character(6:14))
 
 trans_var_internal <- function(x) {
   args <- tibble::deframe(trans_table)
@@ -108,7 +108,7 @@ trans_var_internal <- function(x) {
 }
 
 trans_var <- function(x) {
-  as.integer(sapply(x, trans_var_internal, USE.NAMES = FALSE))
+  sapply(x, trans_var_internal, USE.NAMES = FALSE)
 }
 
   

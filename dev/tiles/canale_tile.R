@@ -4,7 +4,7 @@ library(tidyverse)
 library(sf)
 library(qs)
 qload("data/census.qsm")
-building <- qread("data/building_full.qs")
+building_full <- qread("data/building_full.qs")
 variables <- qread("data/variables.qs")
 source("dev/tiles/tile_functions.R")
 
@@ -33,7 +33,7 @@ borough |>
   rename_with(~paste0("canale_ind_2016_", str_remove(.x, "_q3")),
               contains("_q3")) |> 
   rename(canale_ind_2016 = canale_ind_q5_2016) |> 
-  mutate(canale_ind_2016 = as.integer(canale_ind_2016),
+  mutate(canale_ind_2016 = as.character(canale_ind_2016),
          across(c(-ID, -name, -canale_ind_2016, -geometry), trans_var)) |> 
   st_as_sf() |> 
   st_set_agr("constant") |> 
@@ -52,7 +52,7 @@ CT |>
   rename_with(~paste0("canale_ind_2016_", str_remove(.x, "_q3")),
               contains("_q3")) |> 
   rename(canale_ind_2016 = canale_ind_q5_2016) |> 
-  mutate(canale_ind_2016 = as.integer(canale_ind_2016),
+  mutate(canale_ind_2016 = as.character(canale_ind_2016),
          across(c(-ID, -name, -canale_ind_2016, -geometry), trans_var)) |> 
   st_as_sf() |> 
   st_set_agr("constant") |> 
@@ -71,7 +71,7 @@ DA |>
   rename_with(~paste0("canale_ind_2016_", str_remove(.x, "_q3")),
               contains("_q3")) |> 
   rename(canale_ind_2016 = canale_ind_q5_2016) |> 
-  mutate(canale_ind_2016 = as.integer(canale_ind_2016),
+  mutate(canale_ind_2016 = as.character(canale_ind_2016),
          across(c(-ID, -name, -canale_ind_2016, -geometry), trans_var)) |> 
   st_as_sf() |> 
   st_set_agr("constant") |> 
@@ -81,7 +81,7 @@ DA |>
 # Process building then upload tile source --------------------------------
 
 building_to_process <- 
-  building |> 
+  building_full |> 
   as_tibble() |> 
   select(ID, name, all_of(vars_to_add), geometry) |> 
   mutate(across(contains("_q3"), 
@@ -91,7 +91,7 @@ building_to_process <-
   rename_with(~paste0("canale_ind_2016_", str_remove(.x, "_q3")),
               contains("_q3")) |> 
   rename(canale_ind_2016 = canale_ind_q5_2016) |> 
-  mutate(canale_ind_2016 = as.integer(canale_ind_2016),
+  mutate(canale_ind_2016 = as.character(canale_ind_2016),
          across(c(-ID, -name, -canale_ind_2016, -geometry), trans_var)) |> 
   st_as_sf() |> 
   st_set_agr("constant")
@@ -144,7 +144,7 @@ DA |>
   rename_with(~paste0("canale_ind_2016_", str_remove(.x, "_q3")),
               contains("_q3")) |> 
   rename(canale_ind_2016 = canale_ind_q5_2016) |> 
-  mutate(canale_ind_2016 = as.integer(canale_ind_2016),
+  mutate(canale_ind_2016 = as.character(canale_ind_2016),
          across(c(-ID, -name, -canale_ind_2016, -geometry), trans_var)) |> 
   st_as_sf() |> 
   st_set_agr("constant") |> 
