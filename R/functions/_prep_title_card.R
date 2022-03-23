@@ -111,10 +111,9 @@ prep_title_card <- function(df, select_id, ind, percent = TRUE,
 
   info$plot <-
     if (length(hex_to_plot) > 0) {
-      data |>
-        filter(!is.na(var)) |>
+      data[!is.na(data$var),] |> 
         (\(x) if (outlier) x else
-          filter(x, var %in% c(remove_outliers(data$var))))() |>
+          x[x$var %in% c(remove_outliers(data$var)), ])() |>
         ggplot() +
         geom_density(aes(x = var), size = 1, color = hex_to_plot) +
         geom_vline(aes(xintercept = data_var),

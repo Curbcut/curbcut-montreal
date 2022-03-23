@@ -87,7 +87,7 @@ island_region_map <- function() {
                       get_polygon = rlang::sym("x"))
 }
 
-place_explorer_block_text <- function(data, df, theme, select_id,
+place_explorer_block_text <- function(df, theme, select_id,
                                       island_or_region) {
 
   raw_data_order <- pe_variable_order[[df]]
@@ -101,7 +101,7 @@ place_explorer_block_text <- function(data, df, theme, select_id,
   # Access for CT
   variables_var_codes <-
     if (df == "CT" && theme == "Transport") {
-      bind_rows(
+      rbind(
         variables[!grepl("access", variables$var_code), ], {
           access_vars <- variables[grepl("access", variables$var_code), ]
           new_var_code <-
@@ -132,24 +132,30 @@ place_explorer_block_text <- function(data, df, theme, select_id,
   variables_theme <-
     variables_theme[order(match(variables_theme$var_code, data_order$var_code)),
                     c("var_title", "explanation")]
-  data_order <- bind_cols(data_order, variables_theme)
+  data_order <- cbind(data_order, variables_theme)
 
   raw_data_var <- pe_var_hierarchy[[df]][names(pe_var_hierarchy[[df]]) %in%
                                            data_order$var_code]
-  data_var <- map(raw_data_var, ~{.x[.x$ID == select_id, ]})
+  data_var <- lapply(raw_data_var, \(x) {x[x$ID == select_id, ]})
 
   col <- paste0(island_or_region, "_percentile")
-  data_var <- map2(raw_data_var, names(raw_data_var), ~{
-    df <- .x[.x$ID == select_id, c("var", col)]
-    names(df)[1] <- .y
-    tidyr::pivot_longer(df, 1, names_to = "var_code", values_to = "value")
-    }) |> reduce(bind_rows)
+  data_var <- 
+    data.frame(
+      col = sapply(raw_data_var, \(x) x[x$ID == select_id,][[col]], 
+                   USE.NAMES = FALSE),
+      var_code = names(raw_data_var),
+      value = sapply(raw_data_var, \(x) x$var[x$ID == select_id], 
+                     USE.NAMES = FALSE),
+      row.names = NULL
+    ) |> 
+    setNames(c(col, "var_code", "value"))
+  
   names(data_var)[1] <- "percentile"
 
-  out <- left_join(data_order, data_var, by = "var_code")
+  out <- merge(data_order, data_var, by = "var_code")
   out <- out[!is.na(out$value), ]
 
-  percentile <- map_chr(out$percentile, function(out_percentiles) {
+  percentile <- sapply(out$percentile, \(out_percentiles) {
     if (out_percentiles > 0.50) {
       per <- scales::percent(abs(out_percentiles - 1))
       if (per == "0%") per <- "1%"
@@ -161,13 +167,14 @@ place_explorer_block_text <- function(data, df, theme, select_id,
     }
   })
   out$percentile <- percentile
-  out$value <- map2_chr(out$value, out$var_code, convert_unit)
+  out$value <- mapply(convert_unit, out$value, out$var_code, 
+                      USE.NAMES = FALSE)
 
-  return(select(out, var_title, explanation, percentile, value))
+  return(out[, c("var_title", "explanation", "percentile", "value")])
 
 }
 
-place_explorer_block_plot <- function(data, df, theme, select_id,
+place_explorer_block_plot <- function(df, theme, select_id,
                                       island_or_region) {
 
   raw_data_order <- pe_variable_order[[df]]
@@ -182,7 +189,7 @@ place_explorer_block_plot <- function(data, df, theme, select_id,
     names(pe_var_hierarchy[[df]]) %in% data_order$var_code]
 
   # Plot
-  plots <- map(data_order$var_code, function(var_code) {
+  plots <- lapply(data_order$var_code, \(var_code) {
 
     hex_to_plot <- "#A9A9A9"
 
