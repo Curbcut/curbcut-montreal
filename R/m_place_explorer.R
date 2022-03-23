@@ -64,7 +64,7 @@ place_explorer_UI <- function(id) {
         # Checkboxes of each theme
         pickerInput(
           inputId = NS(id, "themes_checkbox"),
-          label = "Select theme(s):",
+          label = sus_translate("Select theme(s):"),
           choices = unique(variables$theme),
           selected = unique(variables$theme),
           options = list(`selected-text-format` = "count > 4"),
@@ -76,7 +76,6 @@ place_explorer_UI <- function(id) {
         HTML(paste0('<label id = "', NS(id, "scalemap_label"),
                     '" class = "control-label">',
                     sus_translate('Select scale'), ':</label>')),
-        rdeckOutput(NS(id, "scalemap"), height = 150),
         sliderTextInput(inputId = NS(id, "slider"),
                         label = NULL,
                         choices = c("borough", "CT", "DA"),
@@ -85,10 +84,12 @@ place_explorer_UI <- function(id) {
                         force_edges = TRUE),
         
         # Island only comparison, or region-wide
-        HTML(paste0('<label id = "', NS(id, "comparison_label"),
-                    '" class = "control-label">',
-                    sus_translate('Choose comparison scale'), ':</label>')),
-        rdeckOutput(NS(id, "island_region"), height = 100),
+        pickerInput(
+          inputId = NS(id, "comparison_scale"),
+          label = "Choose comparison scale",
+          choices = list("Island" = "island",
+                      "Region" = "region"),
+          selected = unique(variables$theme)),
         htmlOutput(outputId = NS(id, "actual_comparison_scale"),
                    style = "display:none;")
         
@@ -216,15 +217,6 @@ place_explorer_server <- function(id) {
     
     
     ## RETRIEVE df AND ROW ID ------------------------------------------
-    # Reactive map depending on location
-    output$scalemap <- renderRdeck({
-      update_scale_map(id_map = NS(id, "scalemap"), loc_DAUID = loc_DAUID(),
-                       init = TRUE)
-    })
-    observeEvent(loc_DAUID(), {
-      update_scale_map(id_map = NS(id, "scalemap"), loc_DAUID = loc_DAUID(),
-                       init = FALSE)
-    })
     
     observe({
       # Placing the following as a triggering event. sus_rv$lang() is also
@@ -237,16 +229,6 @@ place_explorer_server <- function(id) {
                             "slider",
                             choices = get_zoom_label(map_zoom_levels[1:3]),
                             selected = get_zoom_label(map_zoom_levels[1:3])[3])
-    })
-    
-    
-    # Change df on scalemap click
-    observeEvent(input[["scalemap_click"]], {
-      select_df <- input[["scalemap_click"]]$layer$id
-      # A click on the map triggers a change in the slider, domino to `df`
-      updateSliderTextInput(session = session,
-                            inputId = "slider",
-                            selected = get_zoom_name(select_df))
     })
     
     df <- reactive({
@@ -279,7 +261,6 @@ place_explorer_server <- function(id) {
     })
     
     ## ISLAND OR REGION COMPARISON -------------------------------------
-    output$island_region <- renderRdeck({island_region_map()})
     
     # Reactive to toggle on or off the presence of the island_region wdiget
     location_on_island <- reactive({
@@ -303,8 +284,8 @@ place_explorer_server <- function(id) {
     })
     
     # The reaction of a click on the widget's map
-    observeEvent(input[["island_region_click"]], {
-      island_comparison(input[["island_region_click"]]$layer$id)
+    observeEvent(input$comparison_scale, {
+      island_comparison(input$comparison_scale)
     })
     
     # Let the user know what is the actual scale
