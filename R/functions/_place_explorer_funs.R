@@ -96,7 +96,7 @@ place_explorer_block_text <- function(df, theme, select_id,
                              data_order$ID == select_id, c("var_code")]
 
   if (df == "CT" && theme == "Transport")
-    data_order <- distinct(data_order, var_code)
+    data_order <- unique.data.frame(data_order)
 
   # Access for CT
   variables_var_codes <-
@@ -104,13 +104,15 @@ place_explorer_block_text <- function(df, theme, select_id,
       rbind(
         variables[!grepl("access", variables$var_code), ], {
           access_vars <- variables[grepl("access", variables$var_code), ]
-          new_var_code <-
-            case_when(str_starts(access_vars$var_code, "access_jobs") ~
-                        str_extract(access_vars$var_code, "access_jobs_[^_]*"),
-                      TRUE ~ str_extract(access_vars$var_code, "access_[^_]*"))
+
+          new_var_code <- c(
+          access_vars$var_code[str_starts(access_vars$var_code, "access_jobs")] |> 
+            str_extract("access_jobs_[^_]*"),
+          access_vars$var_code[!str_starts(access_vars$var_code, "access_jobs")] |> 
+            str_extract("access_[^_]*"))
 
           access_vars$var_code <- new_var_code
-          access_vars <- distinct(access_vars, var_code, .keep_all = TRUE)
+          access_vars <- unique.data.frame(access_vars)
 
           exp_suffix <- c("at weekday peak service",
                           "at weekday off-peak service",
@@ -183,7 +185,7 @@ place_explorer_block_plot <- function(df, theme, select_id,
                              data_order$ID == select_id,]["var_code"]
 
   if (df == "CT" && theme == "Transport")
-    data_order <- distinct(data_order, var_code)
+    data_order <- unique.data.frame(data_order)
 
   raw_data_var <- pe_var_hierarchy[[df]][
     names(pe_var_hierarchy[[df]]) %in% data_order$var_code]

@@ -191,10 +191,52 @@ place_explorer_server <- function(id) {
     # Get point data from a click
     observeEvent(input[[paste0(ns_id, "-map_click")]], {
       loc_DAUID(input[[paste0(ns_id, "-map_click")]]$object$DAUID)
+      
+      lon <- input[[paste0(ns_id, "-map_click")]]$coordinate[[1]]
+      lat <- input[[paste0(ns_id, "-map_click")]]$coordinate[[2]]
+      
+      name <- tmaptools::rev_geocode_OSM(x = lon, y = lat)[[1]]
+
+      town_city_county <-
+        if (!is.null(name$town)) {
+          name$town
+        } else if (!is.null(name$city)) {
+          name$city
+        } else if (!is.null(name$county)) {
+          name$county
+        }
+
+      location_name(paste0("The area around ",
+        name$house_number, " ",
+        name$road, ", ",
+        # One or the other:
+        town_city_county))
+      
     })
     
     observeEvent(input[["title_card_map_click"]], {
       loc_DAUID(input[["title_card_map_click"]]$object$DAUID)
+      
+      lon <- input[["title_card_map_click"]]$coordinate[[1]]
+      lat <- input[["title_card_map_click"]]$coordinate[[2]]
+      
+      name <- tmaptools::rev_geocode_OSM(x = lon, y = lat)[[1]]
+      
+      town_city_county <-
+        if (!is.null(name$town)) {
+          name$town
+        } else if (!is.null(name$city)) {
+          name$city
+        } else if (!is.null(name$county)) {
+          name$county
+        }
+
+      location_name(paste0("The area around ",
+        name$house_number, " ",
+        name$road, ", ",
+        # One or the other:
+        town_city_county))
+
     })
     
     ## MAIN MAP UPDATES AND JS ------------------------------------------
@@ -253,13 +295,7 @@ place_explorer_server <- function(id) {
         DA[[to_retrieve]][DA$DAUID == loc_DAUID()]
       } else NULL
     })
-    
-    observe({
-      if (!is.null(select_id()) && !is.null(df())) {
-        location_name(paste(get_zoom_name(df()), select_id()))
-      }
-    })
-    
+  
     ## ISLAND OR REGION COMPARISON -------------------------------------
     
     # Reactive to toggle on or off the presence of the island_region wdiget
@@ -342,7 +378,8 @@ place_explorer_server <- function(id) {
       if (!is.null(df()) && !is.null(select_id()) && !is.null(loc_DAUID())) {
         HTML("<h2>",
              if (df() == "borough") {
-               borough[borough$ID == select_id(),]$name
+               paste0(borough[borough$ID == select_id(),]$name, " (", 
+                      borough[borough$ID == select_id(),]$name_2, ")")
              } else location_name(),
              "</h2>")
       } else HTML("<h2>Your selected location</h2>")
