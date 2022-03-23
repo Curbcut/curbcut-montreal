@@ -3,12 +3,13 @@
 make_dropdown <- 
   function(exclude = NULL, multi_year = FALSE, include_only = NULL) {
     
-    census_var <- variables[variables$source == "census" &
+    census_var <- variables[(variables$source == "census" &
                               !is.na(variables$theme) &
-                              variables$theme != "Employment",]
+                              variables$theme != "Employment") |
+                              variables$theme %in% include_only, ]
 
     if (!is.null(exclude)) {
-      census_var <- census_var[!census_var$theme %in% exclude,]
+      census_var <- census_var[!census_var$theme %in% exclude, ]
     }
     
     if (multi_year) {
