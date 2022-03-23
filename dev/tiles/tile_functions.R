@@ -111,4 +111,89 @@ trans_var <- function(x) {
   sapply(x, trans_var_internal, USE.NAMES = FALSE)
 }
 
+
+# Create recipes ----------------------------------------------------------
+
+create_recipe <- function(layer_names, source, minzoom, maxzoom,
+                          layer_size = NULL, simplification_zoom = NULL, 
+                          bbox = NULL, recipe_name) {
+  out <- list()
+  out$recipe$version <- 1
+  out$name <- recipe_name
+  
+  out$recipe$layers <- 
+    if (length(layer_names) > 1) {
+      map(layer_names, function(layer) {
+        layers[[layer]]$source <- source[[layer]]
+        layers[[layer]]$minzoom <- minzoom[[layer]]
+        layers[[layer]]$maxzoom <- maxzoom[[layer]]
+        if (!is.null(layer_size[[layer]]) && !is.na(layer_size[[layer]])) 
+          layers[[layer]]$tiles$layer_size <- layer_size[[layer]]
+        if (!is.null(simplification_zoom[[layer]]) && !is.na(simplification_zoom[[layer]])) {
+          layers[[layer]]$features$simplification[[1]] <- "case"
+          layers[[layer]]$features$simplification[[2]] <- 
+            list("==", "zoom", simplification_zoom[[layer]])
+          layers[[layer]]$features$simplification[[3]] <- 1
+          layers[[layer]]$features$simplification[[4]] <- 4
+        }
+        if (!is.null(bbox)) layers[[layer]]$tiles$bbox <- bbox
+        layers
+      }) |> reduce(c)
+    } else {
+      layers[[layer_names]]$source <- source
+      layers[[layer_names]]$minzoom <- minzoom
+      layers[[layer_names]]$maxzoom <- maxzoom
+      if (!is.null(layer_size) && !is.na(layer_size)) 
+        layers[[layer_names]]$tiles$layer_size <- layer_size
+      if (!is.null(simplification_zoom) && !is.na(simplification_zoom)) {
+        layers[[layer_names]]$features$simplification[[1]] <- "case"
+        layers[[layer_names]]$features$simplification[[2]] <- 
+          list("==", "zoom", simplification_zoom)
+        layers[[layer_names]]$features$simplification[[3]] <- 1
+        layers[[layer_names]]$features$simplification[[4]] <- 4
+      }
+      if (!is.null(bbox)) layers[[layer_names]]$tiles$bbox <- bbox
+      layers
+    }
+  
+  out <- jsonlite::toJSON(out, pretty = TRUE, auto_unbox = TRUE)
+  
+  out <- 
+    str_replace_all(paste0(out), paste0('\"simplification\": \\[\n            ',
+                                        '\"case\",\n            \\[\n         ',
+                                        '     \"==\",\n              \"zoom\",'),
+                    paste0('\"simplification\": \\[\n            \"case\",\n  ',
+                           '          \\[\n              \"==\",\n            ',
+                           '  [ \"zoom\" ],')) |> 
+    jsonlite::prettify()
+  
+  out
+  
+}
+
+# example_recipe_1 <- 
+#   create_recipe(layer_names = "DA", 
+#                 source = "mapbox://tileset-source/maxbdb2/place_explorer-DA2", 
+#                 minzoom = 12, 
+#                 maxzoom = 14, 
+#                 layer_size = 2500, 
+#                 simplification_zoom = 12,
+#                 bbox = c(-73.57, 45.50, -73.56, 45.51),
+#                 recipe_name = "test17")
+
+# example_recipe_2 <- 
+#   to_send <- 
+#   create_recipe(layer_names = c("DA", "CT"), 
+#                 source = c("DA" = "mapbox://tileset-source/maxbdb2/place_explorer-DA2",
+#                            "CT" = "mapbox://tileset-source/maxbdb2/place_explorer-CT2"), 
+#                 minzoom = c("DA" = 12,
+#                             "CT" = 8), 
+#                 maxzoom = c("DA" = 14,
+#                             "CT" = 12), 
+#                 layer_size = c("DA" = 2500,
+#                                "CT" = NA), 
+#                 simplification_zoom = c("DA" = NA,
+#                                         "CT" = 12),
+#                 bbox = c(-73.57, 45.50, -73.56, 45.51),
+#                 recipe_name = "test17")
   
