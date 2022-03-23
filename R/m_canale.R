@@ -90,6 +90,9 @@ canale_server <- function(id) {
       df = df, 
       time = time)
     
+    # Additional tileset identifier
+    tile2 <- reactive("")
+    
     # Composite variable for map
     map_var <- reactive(
       str_remove(paste(var_left(), var_right(), sep = "_"), "_ $"))
@@ -121,7 +124,8 @@ canale_server <- function(id) {
     rdeck_server(
       id = ns_id, 
       map_id = "map", 
-      tile = tile, 
+      tile = tile,
+      tile2 =  tile2,
       map_var = map_var, 
       zoom = zoom,
       select_id = select_id
