@@ -120,6 +120,7 @@ create_recipe <- function(layer_names, source, minzoom, maxzoom,
   out <- list()
   out$recipe$version <- 1
   out$name <- recipe_name
+  layers <- list()
   
   out$recipe$layers <- 
     if (length(layer_names) > 1) {
@@ -129,7 +130,8 @@ create_recipe <- function(layer_names, source, minzoom, maxzoom,
         layers[[layer]]$maxzoom <- maxzoom[[layer]]
         if (!is.null(layer_size[[layer]]) && !is.na(layer_size[[layer]])) 
           layers[[layer]]$tiles$layer_size <- layer_size[[layer]]
-        if (!is.null(simplification_zoom[[layer]]) && !is.na(simplification_zoom[[layer]])) {
+        if (!is.null(simplification_zoom[[layer]]) && 
+            !is.na(simplification_zoom[[layer]])) {
           layers[[layer]]$features$simplification[[1]] <- "case"
           layers[[layer]]$features$simplification[[2]] <- 
             list("==", "zoom", simplification_zoom[[layer]])

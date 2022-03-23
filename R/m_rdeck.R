@@ -25,6 +25,9 @@ rdeck_server <- function(id, map_id, tile, tile2, map_var, zoom, select_id) {
     show_label <- reactive(tile() %in% c("borough") || 
                              (tile() != "building" && zoom() < 12.5))
     
+    # Create final tileset string
+    tile_string <- reactive(paste0(tile(), tile2()))
+    
     # Update data layer on variable change or selection 
     observeEvent({
       map_var()
@@ -45,13 +48,13 @@ rdeck_server <- function(id, map_id, tile, tile2, map_var, zoom, select_id) {
     )
     
     # Update layer sources on tile change
-    observeEvent(tile(), {
+    observeEvent(tile_string(), {
       rdeck_proxy(map_id) |>
         
         # Update data layer
         add_mvt_layer(
           id = id, 
-          data = mvt_url(paste0("sus-mcgill.", id, "-", tile())),
+          data = mvt_url(paste0("sus-mcgill.", id, "-", tile_string())),
           pickable = pick(), 
           auto_highlight = TRUE, 
           highlight_color = "#FFFFFF50", 
@@ -74,7 +77,7 @@ rdeck_server <- function(id, map_id, tile, tile2, map_var, zoom, select_id) {
           line_joint_rounded = TRUE,
           line_cap_rounded = TRUE,
           get_line_width = 15,
-          get_line_color = "#FFFFFF",
+          get_line_color = "#FFFFFFBB",
           get_fill_color = "#A9A9A94D") |> 
         
         # Update street layer 2
@@ -88,7 +91,7 @@ rdeck_server <- function(id, map_id, tile, tile2, map_var, zoom, select_id) {
           line_joint_rounded = TRUE,
           line_cap_rounded = TRUE,
           get_line_width = 8,
-          get_line_color = "#FFFFFF",
+          get_line_color = "#FFFFFFBB",
           get_fill_color = "#A9A9A94D") |> 
         
         # Update street layer 3
@@ -102,7 +105,7 @@ rdeck_server <- function(id, map_id, tile, tile2, map_var, zoom, select_id) {
           line_joint_rounded = TRUE,
           line_cap_rounded = TRUE,
           get_line_width = 4,
-          get_line_color = "#FFFFFF",
+          get_line_color = "#FFFFFFBB",
           get_fill_color = "#A9A9A94D") |> 
         
         # Update building layer
@@ -163,7 +166,7 @@ rdeck_server <- function(id, map_id, tile, tile2, map_var, zoom, select_id) {
           line_width_min_pixels = 2,
           line_joint_rounded = TRUE,
           line_cap_rounded = TRUE,
-          get_line_color = "#FFFFFF",
+          get_line_color = "#FFFFFFBB",
           get_fill_color = "#A9A9A94D") |> 
         
         # Update street layer 2
@@ -175,7 +178,7 @@ rdeck_server <- function(id, map_id, tile, tile2, map_var, zoom, select_id) {
           line_joint_rounded = TRUE,
           line_cap_rounded = TRUE,
           get_line_width = 8,
-          get_line_color = "#FFFFFF",
+          get_line_color = "#FFFFFFBB",
           get_fill_color = "#A9A9A94D") |> 
         
         # Update street layer 3
@@ -187,7 +190,7 @@ rdeck_server <- function(id, map_id, tile, tile2, map_var, zoom, select_id) {
           line_joint_rounded = TRUE,
           line_cap_rounded = TRUE,
           get_line_width = 4,
-          get_line_color = "#FFFFFF",
+          get_line_color = "#FFFFFFBB",
           get_fill_color = "#A9A9A94D") |>
         
         # Update label layer

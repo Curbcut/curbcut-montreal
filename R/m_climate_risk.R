@@ -91,9 +91,8 @@ climate_risk_server <- function(id) {
     time <- reactive("2016")
     
     # Left variable server
-    var_left <- select_var_server(ns_id, 
-                                  var_list = 
-                                    reactive(make_dropdown(include_only = "Climate")))
+    var_left <- select_var_server(ns_id, var_list = reactive(
+      make_dropdown(include_only = "Climate")))
     
     # Right variable / compare panel
     var_right <- compare_server(
@@ -103,7 +102,10 @@ climate_risk_server <- function(id) {
       time = time)
     
     # Additional tileset identifier
-    tile2 <- reactive("")
+    tile2 <- reactive({
+      tile_lookup$suffix[tile_lookup$module == "climate_risk" &
+                           tile_lookup$tile2 == var_left()]
+    })
     
     # Composite variable for map
     map_var <- reactive(

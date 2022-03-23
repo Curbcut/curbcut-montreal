@@ -165,7 +165,7 @@ recipe_borough <- '
         "maxzoom": 11,
         "features": {
           "simplification": [ "case",
-            [ "==", [ "zoom" ], 10 ], 1, 4 
+            [ "==", [ "zoom" ], 11 ], 1, 4 
           ]
         }
       }

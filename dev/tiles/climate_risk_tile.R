@@ -28,26 +28,127 @@ right_vars <-
   paste0("_q3_2016")
 
 
-# Process grid then upload tile source ------------------------------------
+# Construct tile lookup table ---------------------------------------------
 
-grid |> 
-  as_tibble() |> 
-  select(ID, name, all_of(left_vars), geometry) |> 
-  mutate(across(all_of(left_vars), as.character)) |> 
-  bind_cols({
-    map_dfc(left_vars, \(x) {
+tile_lookup <- tibble(
+  module = "climate_risk",
+  tile2 = left_vars,
+  suffix = paste0("-", 1:5)
+)
+
+qsave(tile_lookup, "data/tile_lookup.qs")
+
+
+# Process grid ------------------------------------------------------------
+
+# Upload tile source
+map(left_vars, ~{
+  grid |> 
+    as_tibble() |> 
+    select(ID, name, all_of(.x), geometry) |> 
+    mutate(across(all_of(.x), as.character)) |> 
+    bind_cols({
       map_dfc(right_vars, \(y) 
-              paste(grid[[paste0(x, "_q3")]], grid[[y]], sep = " - ")) |> 
+              paste(grid[[paste0(.x, "_q3")]], grid[[y]], sep = " - ")) |> 
         mutate(across(everything(), trans_var)) |> 
-        set_names(paste(x, str_replace(right_vars, "_q3", ""), sep = "_"))})
-  }) |> 
-  relocate(geometry, .after = last_col()) |> 
-  st_as_sf() |> 
-  st_set_agr("constant") |> 
-  upload_tile_source("climate_risk-grid")
+        set_names(paste(.x, str_replace(right_vars, "_q3", ""), sep = "_"))
+    }) |> 
+    relocate(geometry, .after = last_col()) |> 
+    st_as_sf() |> 
+    st_set_agr("constant") |> 
+    upload_tile_source(paste0("climate_risk-grid", tile_lookup$suffix[
+      tile_lookup$module == "climate_risk" & tile_lookup$tile2 == .x]))
+})
+
+# Create recipes
+grid_recipes <- 
+  map(left_vars, ~{
+    suffix <- tile_lookup$suffix[tile_lookup$module == "climate_risk" &
+                                   tile_lookup$tile2 == .x]
+    create_recipe(
+      layer_names = "grid",
+      source = paste0(
+        "mapbox://tileset-source/sus-mcgill/climate_risk-grid", suffix),
+      minzoom = 3,
+      maxzoom = 13, 
+      layer_size = 2500,
+      simplification_zoom = 13,
+      recipe_name = paste0("climate_risk-grid", suffix))
+  })
+
+# Create tilesets
+for (i in seq_along(left_vars)) {
+  suffix <- tile_lookup$suffix[tile_lookup$module == "climate_risk" &
+                                 tile_lookup$tile2 == left_vars[i]]
+  create_tileset(paste0("climate_risk-grid", suffix), grid_recipes[[i]])
+  Sys.sleep(2)
+}
+
+# Publish tilesets
+for (var in left_vars[5]) {
+  suffix <- tile_lookup$suffix[tile_lookup$module == "climate_risk" &
+                                 tile_lookup$tile2 == var]
+  publish_tileset(paste0("climate_risk-grid", suffix))
+  Sys.sleep(2)
+}
 
 
 # Process borough then upload tile source ---------------------------------
+
+# Upload tile source
+map(left_vars, ~{
+  borough |> 
+    as_tibble() |> 
+    select(ID, name, all_of(.x), geometry) |> 
+    mutate(across(all_of(.x), as.character)) |> 
+    bind_cols({
+      map_dfc(right_vars, \(y) 
+              paste(borough[[paste0(.x, "_q3")]], borough[[y]], sep = " - ")) |> 
+        mutate(across(everything(), trans_var)) |> 
+        set_names(paste(.x, str_replace(right_vars, "_q3", ""), sep = "_"))
+    }) |> 
+    relocate(geometry, .after = last_col()) |> 
+    st_as_sf() |> 
+    st_set_agr("constant") |> 
+    upload_tile_source(paste0("climate_risk-borough", tile_lookup$suffix[
+      tile_lookup$module == "climate_risk" & tile_lookup$tile2 == .x]))
+})
+
+# Create recipes
+borough_recipes <- 
+  map(left_vars, ~{
+    suffix <- tile_lookup$suffix[tile_lookup$module == "climate_risk" &
+                                   tile_lookup$tile2 == .x]
+    create_recipe(
+      layer_names = "borough",
+      source = paste0(
+        "mapbox://tileset-source/sus-mcgill/climate_risk-borough", suffix),
+      minzoom = 3,
+      maxzoom = 11, 
+      layer_size = 2500,
+      simplification_zoom = 11,
+      recipe_name = paste0("climate_risk-borough", suffix))
+  })
+
+# Create tilesets
+for (i in seq_along(left_vars)) {
+  suffix <- tile_lookup$suffix[tile_lookup$module == "climate_risk" &
+                                 tile_lookup$tile2 == left_vars[i]]
+  create_tileset(paste0("climate_risk-borough", suffix), 
+                 borough_recipes[[i]])
+  Sys.sleep(2)
+}
+
+# Publish tilesets
+for (var in left_vars[5]) {
+  suffix <- tile_lookup$suffix[tile_lookup$module == "climate_risk" &
+                                 tile_lookup$tile2 == var]
+  publish_tileset(paste0("climate_risk-borough", suffix))
+  Sys.sleep(2)
+}
+
+
+
 
 borough |> 
   as_tibble() |> 
@@ -179,55 +280,9 @@ DA |>
 
 # Add recipes -------------------------------------------------------------
 
-recipe_grid <- '
-{
-  "recipe": {
-    "version": 1,
-    "layers": {
-      "borough_low": {
-        "source": "mapbox://tileset-source/sus-mcgill/climate_risk-grid",
-        "minzoom": 3,
-        "maxzoom": 10,
-        "features": {
-          "simplification": [ "case",
-            [ "==", [ "zoom" ], 13 ], 1, 4 
-          ]
-        },
-        "tiles": {
-          "layer_size": 2500,
-          "union": [
-            {
-              "group_by": [ "height", "construction_type" ]
-            }
-          ]
-        }
-      }
-    }
-  },
-  "name": "climate_risk-grid"
-}
-'
 
-recipe_borough <- '
-{
-  "recipe": {
-    "version": 1,
-    "layers": {
-      "borough": {
-        "source": "mapbox://tileset-source/sus-mcgill/climate_risk-borough",
-        "minzoom": 3,
-        "maxzoom": 11,
-        "features": {
-          "simplification": [ "case",
-            [ "==", [ "zoom" ], 10 ], 1, 4 
-          ]
-        }
-      }
-    }
-  },
-  "name": "climate_risk-borough"
-}
-'
+
+
 
 recipe_CT <- '
 {
@@ -345,8 +400,7 @@ recipe_auto_zoom <- '
 
 # Create and publish tilesets ---------------------------------------------
 
-create_tileset("climate_risk-grid", recipe_grid)
-publish_tileset("climate_risk-grid")
+
 
 create_tileset("climate_risk-borough", recipe_borough)
 publish_tileset("climate_risk-borough")
