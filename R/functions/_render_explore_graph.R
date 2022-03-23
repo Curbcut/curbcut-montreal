@@ -41,13 +41,12 @@ render_explore_graph <- function(plot_type, data, var_left, var_right, df,
     ranks <- ranks$rank[ranks$scale == df]
     
     # Get corresponding colours
-    cols <- setNames(rev(c(col_NA, col_left_5)[ranks + 1]),
-                     rev(c(col_NA, col_left_5)[ranks + 1]))
+    cols <- c(col_NA, col_left_5)[ranks + 1]
     
     out <-
       data[!is.na(data$var_left),] |> 
       ggplot(aes(as.factor(var_left))) +
-      geom_bar(aes(fill = fill), width = 1) +
+      geom_bar(aes(fill = as.factor(var_left)), width = 1) +
       {if (plot_type == "bar_select") geom_vline(
         xintercept = data$var_left[data$ID == select_id], colour = "black", 
         lwd = 1.5)} +
