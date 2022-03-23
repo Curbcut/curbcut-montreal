@@ -17,17 +17,10 @@ postal_codes <-
   st_filter(borough) |> 
   as_tibble() |> 
   st_as_sf() |> 
-  mutate(postal_code = str_remove(str_to_lower(postal_code), "\\s"))
-
-
+  mutate(postal_code = str_remove(str_to_lower(postal_code), "\\s")) |> 
+  st_join(select(DA, DAUID), left = FALSE)
 
 # Title text highlights ---------------------------------------------------
-
-# Value, Percentile (group + region.)
-# 3 groups: Island, North shore (including Laval), South shore.
-
-# Air quality for this location is X. It ranks at the X percentile on the
-# island/north shore/south shore, and X for the wider region of Montreal.
 
 # Groupings
 groups <- 
@@ -464,36 +457,6 @@ pe_var_hierarchy <-
     }) 
   })
 
-# Add gentrification from the minimum date to its maximum.
-# gentrification_min_max <- 
-#   borough |> 
-#   st_drop_geometry() |> 
-#   select(starts_with("gentrification")) |> 
-#   names() |> 
-#   str_extract("\\d{4}$") |> 
-#   unique() |> 
-#   (\(x) list(min = min(x), max = max(x)))()
-# 
-# pe_var_hierarchy <-
-#   map(set_names(names(pe_var_hierarchy)), ~{
-#     
-#     id_gentrification_ind <- 
-#       get(.x) |> 
-#       st_drop_geometry() |> 
-#       select(ID, starts_with("gentrification") & 
-#                ends_with(c(gentrification_min_max$min, 
-#                            gentrification_min_max$max)),
-#              -contains(c("q3", "q5"))) |> 
-#       (\(x) mutate(x, gentrification_ind = (x[[3]] - x[[2]]) /
-#                      x[[2]]))() |> 
-#       select(ID, gentrification_ind) |> 
-#       mutate(gentrification_ind_percentile = 
-#                percent_rank(gentrification_ind))
-#     
-#     left_join(pe_var_hierarchy[[.x]], id_gentrification_ind, by = "ID")
-#     
-#   })
-
 # Retrieve access average values
 min_access_var_code <-
   variables |>
@@ -615,6 +578,28 @@ pe_variable_order <-
       ungroup() |> 
       select(ID, theme, group, var_code, variable_order, theme)
   })
+
+
+
+# Geometries --------------------------------------------------------------
+
+place_explorer_basemap <- st_union(borough) |> st_as_sf()
+
+place_explorer_island <-
+  borough |> 
+  filter(ID %in% island_CSDUID) |> 
+  st_union() |> 
+  st_as_sf() |> 
+  transmute(click = "island", tooltip = "Island only")
+  
+
+place_explorer_CMA <- 
+  borough |> 
+  filter(!ID %in% island_CSDUID) |> 
+  st_union() |> 
+  st_as_sf() |> 
+  transmute(click = "region", tooltip = "Region-wide")
+
 
 # Cleanup -----------------------------------------------------------------
 

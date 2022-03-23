@@ -61,8 +61,8 @@ ui <- function(request) {
       ready_modules_ui(mods_rdy),
       list(tabPanel(sus_translate("Montréal stories"), stories_UI("stories"),
                     value = "stories"),
-           # tabPanel(sus_translate("Place explorer"), place_explorer_UI("place_explorer"),
-                    # value = "place_explorer"),
+           tabPanel(sus_translate("Place explorer"), place_explorer_UI("place_explorer"),
+           value = "place_explorer"),
            tabPanel(sus_translate("About"), why_dash_UI("why_dash"), value = "why_dash"),
            collapsible = TRUE,
            inputs = list(
