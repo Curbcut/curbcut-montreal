@@ -170,7 +170,7 @@ get_info_table_data <- function(data, var_type, var_left, var_right, df,
   ## Place names ---------------------------------------------------------------
   
   out$place_name <- if (df %in% c("building", "street") && build_str_as_DA) {
-        "The dissemination area around {select_name$name}"
+        glue("The dissemination area around {select_name$name}")
   } else switch(
     scale_sing,
     "building" = glue("{select_name$name}"),

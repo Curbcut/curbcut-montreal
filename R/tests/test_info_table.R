@@ -4,10 +4,8 @@
 
 suppressPackageStartupMessages({
   
-  library(dplyr)
   library(ggplot2)
   library(stringr)
-  library(purrr)
   library(sf)
   library(qs)
   library(shiny)
@@ -17,6 +15,7 @@ suppressPackageStartupMessages({
   qload("data/colours.qsm")
   
   qload("data/census.qsm")
+  building <- qread("data/building.qs")
   grid <- qread("data/grid.qs")
 
   source("R/functions/_get_data_table.R")
