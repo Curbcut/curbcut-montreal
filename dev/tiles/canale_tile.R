@@ -147,7 +147,8 @@ DA |>
   mutate(canale_ind_2016 = as.character(canale_ind_2016),
          across(c(-ID, -name, -canale_ind_2016, -geometry), trans_var)) |> 
   st_as_sf() |> 
-  st_set_agr("constant") |> 
+  st_set_agr("constant") |>
+  filter(!st_is_empty(geometry)) |> 
   upload_tile_source("canale-DA_building", "sus-mcgill", .sus_token)
 
 
