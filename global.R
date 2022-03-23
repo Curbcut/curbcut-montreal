@@ -81,9 +81,9 @@ island_CSDUID <-
 # Modules ready -----------------------------------------------------------
 
 mods_rdy <- list(
-  # "Climate" = c(
-  #   "Climate risk" = "climate_risk"
-  #   ),
+  "Climate" = c(
+    "Climate risk" = "climate_risk"
+    ),
   # "Covid" = c(
   #   "Covid interventions" = "covid"
   #   ),
