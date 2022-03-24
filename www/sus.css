@@ -287,3 +287,14 @@ a.sus-small-link {
   left: 0px;
   right: 0px;
 }
+
+i.fa {
+	width: 1em;
+	display: inline-flex;
+	flex-direction: row;
+	justify-content: center;
+}
+
+.fa:not(:last-child) {
+  padding-right: 0.5em;
+}
