@@ -35,7 +35,7 @@ stories_server <- function(id) {
 
     # Initial reactives
     select_id <- reactiveVal(NA)
-    zoom <- reactiveVal(map_zoom * -550 + 8000)
+    zoom <- reactiveVal(map_zoom * -700 + 9000)
 
     # Sidebar
     sidebar_server(
@@ -50,9 +50,7 @@ stories_server <- function(id) {
     
     # Zoom level
     observeEvent(input[[paste0(ns_id, "-map_viewstate")]], {
-      zoom(if (input[[paste0(ns_id, "-map_viewstate")]]$viewState$zoom > 13) {
-        600
-        } else input[[paste0(ns_id, "-map_viewstate")]]$viewState$zoom * -550 + 8000)
+      zoom(max(600, input[[paste0(ns_id, "-map_viewstate")]]$viewState$zoom * -700 + 9000))
       select_id(NA)
     })
 
