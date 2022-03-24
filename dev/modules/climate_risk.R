@@ -68,6 +68,7 @@ climate_census_fun <- function(x) {
     mutate(area_x = units::drop_units(st_area(geometry))) |> 
     st_set_agr("constant")
   
+  out <- 
   grid |> 
     select(grid_ID = ID) |> 
     st_transform(32618) |> 
@@ -75,21 +76,18 @@ climate_census_fun <- function(x) {
     st_intersection(x_int) |> 
     mutate(area_int = units::drop_units(st_area(geometry))) |> 
     st_drop_geometry() |> 
-    group_by(grid_ID) |> 
-    filter(area_int == max(area_int)) |> 
-    ungroup() |> 
     select(grid_ID, ID, area_x) |>
     inner_join(select(grid, grid_ID = ID,
                       climate_flood_ind:climate_heat_wave_ind),
                by = "grid_ID") |>
-    mutate(area_int = units::drop_units(st_area(geometry))) |>
+    mutate(area_int = units::drop_units(st_area(geometry))) |> 
     group_by(ID) |>
     summarize(
       across(climate_flood_ind:climate_heat_wave_ind, ~{
       if (sum(area_int[!is.na(.x)]) >= 0.5 * max(area_x)) {
         weighted.mean(.x, area_int, na.rm = TRUE)
-        } else NA_real_}), .groups = "drop") |>
-    right_join(x, by = "ID") |>
+        } else NA_real_}), .groups = "drop") |> 
+    right_join(x, by = "ID") |> 
     relocate(climate_flood_ind:climate_heat_wave_ind, .before = geometry) |>
     mutate(across(c(climate_flood_ind:climate_heat_wave_ind), ntile, 3,
                   .names = "{.col}_q3")) |>

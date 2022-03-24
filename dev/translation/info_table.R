@@ -433,7 +433,7 @@ info_table_translated <-
   add_row(en = paste0("Census tract {select_name$name}"), 
           fr = paste0("Secteur de recensement {select_name$name} ")) |> 
   add_row(en = paste0("Dissemination area {select_name$name}"), 
-          fr = paste0("Zone de diffusion {select_name$name} ")) |> 
+          fr = paste0("Aire de diffusion {select_name$name} ")) |> 
   add_row(en = paste0("The area around {select_name$name}"), 
           fr = paste0("La zone autour de {select_name$name} ")) |> 
   add_row(en = paste0("{select_name$name_2} of {out$place_name}"), 
