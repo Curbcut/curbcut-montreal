@@ -94,6 +94,8 @@ place_explorer_block_text <- function(df, theme, select_id,
   data_order <- raw_data_order[raw_data_order$group == island_or_region, ]
   data_order <- data_order[data_order$theme == theme &
                              data_order$ID == select_id, c("var_code")]
+  
+  if (nrow(data_order) == 0) return(data.frame())
 
   if (df == "CT" && theme == "Transport")
     data_order <- unique.data.frame(data_order)
@@ -112,7 +114,8 @@ place_explorer_block_text <- function(df, theme, select_id,
             str_extract("access_[^_]*"))
 
           access_vars$var_code <- new_var_code
-          access_vars <- unique.data.frame(access_vars)
+          unique(access_vars, incomparables = FALSE, MARGIN = 2)
+          access_vars <- access_vars[!duplicated(access_vars$var_code), ]
 
           exp_suffix <- c("at weekday peak service",
                           "at weekday off-peak service",

@@ -7,10 +7,6 @@ place_explorer_UI <- function(id) {
   
   fillPage(fillRow(fillCol(
     
-    # Style
-    inlineCSS("#deckgl-overlay { z-index:4; }"),
-    inlineCSS(list(.big_map = "width: 100%; height: 100vh; display:visible;")),
-    inlineCSS(list(.banner_map = "display:none;")),#"width: 100%; height: 125px;")),
     # Temporary fix to clicking the enter key is as clicking on Search button
     tags$script('$(function() {
       var $els = $("[data-proxy-click]");
@@ -31,9 +27,8 @@ place_explorer_UI <- function(id) {
     `data-proxy-click` = "place_explorer-search_button",
     
     # Main map
-    div(
-      id = NS(id, "mapdeck_div"),
-      class = "big_map",
+    div(id = NS(id, "mapdeck_div"),
+      class = "mapdeck_div",
       rdeckOutput(NS(id, paste0(ns_id, "-map")), height = "100%")),
     
     # Sidebar
@@ -73,26 +68,20 @@ place_explorer_UI <- function(id) {
         br(),
         
         # Retrieve the scale the user is interested in
-        HTML(paste0('<label id = "', NS(id, "scalemap_label"),
-                    '" class = "control-label">',
-                    sus_translate('Select scale'), ':</label>')),
         sliderTextInput(inputId = NS(id, "slider"),
-                        label = NULL,
-                        choices = c("borough", "CT", "DA"),
-                        selected = "DA",
+                        label = sus_translate("Select scale:"),
+                        choices = c("Borough/city", "Census tract", 
+                                    "Dissemination area"),
+                        selected = "Dissemination area",
                         hide_min_max = TRUE, 
                         force_edges = TRUE),
         
         # Island only comparison, or region-wide
         pickerInput(
           inputId = NS(id, "comparison_scale"),
-          label = "Choose comparison scale",
+          label = sus_translate("Choose comparison scale:"),
           choices = list("Island" = "island",
-                      "Region" = "region"),
-          selected = unique(variables$theme)),
-        htmlOutput(outputId = NS(id, "actual_comparison_scale"),
-                   style = "display:none;")
-        
+                      "Region" = "region"))
       )))),
     
     # Main panel as a uiOutput. The number of themes displayed is reactive
@@ -131,6 +120,18 @@ place_explorer_server <- function(id) {
     # Sidebar
     sidebar_server(id = "place_explorer", x = "place_explorer")
     
+    ## Picker input translation ------------------------------------------
+    
+    observe({
+      all_themes <- unique(variables$theme)
+      names(all_themes) <- sapply(eso, sus_translate, USE.NAMES = FALSE)
+      
+      updatePickerInput(
+        session = session,
+        inputId = "themes_checkbox",
+        choices = all_themes,
+        selected = all_themes)
+    })
     
     ## MAIN MAP ----------------------------------------------------------
     output[[paste0(ns_id, "-map")]] <- renderRdeck({
@@ -196,7 +197,7 @@ place_explorer_server <- function(id) {
       lat <- input[[paste0(ns_id, "-map_click")]]$coordinate[[2]]
       
       name <- tmaptools::rev_geocode_OSM(x = lon, y = lat)[[1]]
-
+      
       town_city_county <-
         if (!is.null(name$town)) {
           name$town
@@ -205,7 +206,7 @@ place_explorer_server <- function(id) {
         } else if (!is.null(name$county)) {
           name$county
         }
-
+      
       location_name(paste0(
         name$house_number, " ",
         name$road, ", ",
@@ -230,13 +231,13 @@ place_explorer_server <- function(id) {
         } else if (!is.null(name$county)) {
           name$county
         }
-
+      
       location_name(paste0(
         name$house_number, " ",
         name$road, ", ",
         # One or the other:
         town_city_county))
-
+      
     })
     
     ## MAIN MAP UPDATES AND JS ------------------------------------------
@@ -246,27 +247,19 @@ place_explorer_server <- function(id) {
     observeEvent(loc_DAUID(), {
       lapply(widgets_name, \(x) hide(x, anim = TRUE, animType = "fade", time = 0.5))
       lapply(widgets_name, \(x) show(x, anim = TRUE, animType = "fade", time = 0.5))
-      removeCssClass(id = "mapdeck_div", class = "big_map")
-      addCssClass(id = "mapdeck_div", class = "banner_map")
+      hide("mapdeck_div", anim = TRUE, animType = "fade", time = 0.5)
     }, ignoreInit = TRUE)
     
     # Hook up the go back to map
     observeEvent(input$comeback_map, {
-      removeCssClass(id = "mapdeck_div", class = "banner_map")
-      addCssClass(id = "mapdeck_div", class = "big_map")
       lapply(widgets_name, \(x) hide(x, anim = TRUE, animType = "fade", time = 0.5))
+      show("mapdeck_div", anim = TRUE, animType = "fade", time = 0.5)
     })
     
     
     ## RETRIEVE df AND ROW ID ------------------------------------------
-    
     observe({
-      # Placing the following as a triggering event. sus_rv$lang() is also
-      # a triggering event from its presence in get_zoom_label(), and
-      # for the sake of translated labels, a click on the language button
-      # will change the value of the slider input.
       loc_DAUID()
-      
       updateSliderTextInput(session = session,
                             "slider",
                             choices = get_zoom_label(map_zoom_levels[1:3]),
@@ -275,93 +268,81 @@ place_explorer_server <- function(id) {
     
     df <- reactive({
       out <- unlist(get_zoom_code(input$slider))
-      if (length(out) == 0) return(NULL) else return(out)
+      if (length(out) == 0) return("DA") else return(out)
     })
     
     data <- reactive({
       out <- unlist(get_zoom_code(input$slider))
-      if (length(out) == 0) return(NULL) else return(get(out))
+      if (length(out) == 0) return(DA) else return(get(out))
     })
     
-    # Depending on `data`, retrieve the ID.
-    select_id <- reactive({
-      #depending on df
-      if (!is.null(loc_DAUID()) && !is.null(df())) {
+    # Depending on `df`, retrieve the ID.
+    select_id <- eventReactive({
+      df()
+      loc_DAUID()}, {
         to_retrieve <- 
           switch(df(),
                  "borough" = "CSDUID",
                  "CT" = "CTUID",
                  "DA" = "DAUID")
         DA[[to_retrieve]][DA$DAUID == loc_DAUID()]
-      } else NULL
-    })
-  
+      }, ignoreInit = TRUE)
+
     ## ISLAND OR REGION COMPARISON -------------------------------------
     
-    # Reactive to toggle on or off the presence of the island_region wdiget
-    location_on_island <- reactive({
-      if (!is.null(select_id())) {
-        data()$CSDUID[data()$ID == select_id()] %in% island_CSDUID
-      }})
+    # Reactive to toggle on or off the presence of the island_region widget
+    location_on_island <- eventReactive(select_id(), {
+      data()$CSDUID[data()$ID == select_id()] %in% island_CSDUID
+    }, ignoreInit = TRUE)
     
-    # Should we show the map, or not? Only if loc_DAUID() is on island
+    # Should we show the wdiget, or not? Only if loc_DAUID() is on island
+    observe(toggle(id = "comparison_scale", condition = location_on_island()))
+    
     observe({
-      toggle(id = "island_region", condition = location_on_island())
-      toggle(id = "comparison_label", condition = location_on_island())
-      toggle(id = "actual_comparison_scale", condition = location_on_island())
+      updatePickerInput(session,
+                        inputId = "comparison_scale",
+                        choices = sus_translate(list("Island" = "island",
+                                                     "Region" = "region")),
+                        selected = if (location_on_island()) "island" else "region")
     })
     
-    # Everytime the selected id changes, reevaluate if we're starting with
+    # Every time the selected id changes, re-evaluate if we're starting with
     # an island-only comparison, or region-wide.
-    observeEvent(select_id(), {
-      if (!is.null(select_id())) {
+    observeEvent(location_on_island(), {
         island_comparison(if (location_on_island()) "island" else "region")
-      }
-    })
+    }, ignoreInit = TRUE)
     
-    # The reaction of a click on the widget's map
     observeEvent(input$comparison_scale, {
-      island_comparison(input$comparison_scale)
+        island_comparison(input$comparison_scale)
     })
-    
-    # Let the user know what is the actual scale
-    output$actual_comparison_scale <- renderText({
-      if (!is.null(loc_DAUID())) {
-        scale <- str_to_sentence(sus_translate(island_comparison()))
-        sus_translate("Current scale: {scale}")}
-    })
-    
     
     ## TITLE CARD -------------------------------------------------------
     shinyjs::delay(1, shinyjs::show("grid_elements"))
-    shinyjs::delay(100, shinyjs::hide("grid_elements"))
-    
+    shinyjs::delay(200, shinyjs::hide("grid_elements"))
+
     output$title_card_map <- renderRdeck({
-      rdeck(map_style = map_base_style, 
-            initial_view_state = 
+      rdeck(map_style = map_base_style,
+            initial_view_state =
               view_state(center = map_location,
-                         zoom = 14)) |> 
+                         zoom = 14)) |>
         add_mvt_layer(
-          id = "ghost_DA", 
+          id = "ghost_DA",
           data = mvt_url("maxbdb2.place_explorer-DA2"),
           pickable = TRUE,
           get_fill_color = "#FFFFFF00",
           get_line_color = "#FFFFFF00")
     })
-    
-    observeEvent({loc_DAUID()
-      data()}, {
-        
-        if (!is.null(loc_DAUID())) {
+
+    observeEvent(loc_DAUID(), {
           data <- data()[data()$ID == select_id(), "geometry"]
           zoom <- map_zoom_levels[
-            which(get_zoom_code(input$slider) == names(map_zoom_levels))] + 2
+            which(df() == names(map_zoom_levels))] + 2
           if (zoom == 2) zoom <- 11
+          center <- eval(parse(text =
+                                 as.character(st_centroid(data)$geometry)))
           rdeck_proxy(id = "title_card_map",
-                      initial_view_state = 
-                        view_state(center = 
-                                     eval(parse(text = 
-                                                  as.character(st_centroid(data)$geometry))),
+                      initial_view_state =
+                        view_state(center = center,
                                    zoom = as.numeric(zoom))) |>
             add_polygon_layer(data = data,
                               id = "actual_location",
@@ -371,30 +352,25 @@ place_explorer_server <- function(id) {
                               get_line_width = 5,
                               auto_highlight = TRUE,
                               get_polygon = rlang::sym("geometry"))
-        }
       }, ignoreInit = TRUE)
-    
+
     output$title_card_title <- renderText({
-      if (!is.null(df()) && !is.null(select_id()) && !is.null(loc_DAUID())) {
         HTML("<h2>",
              if (df() == "borough") {
-               paste0(borough[borough$ID == select_id(),]$name, " (", 
+               paste0(borough[borough$ID == select_id(),]$name, " (",
                       borough[borough$ID == select_id(),]$name_2, ")")
-             } else paste0("The area around ", location_name(), 
+             } else paste0("The area around ", location_name(),
                            " (", get_zoom_name(df()), ")"),
              "</h2>")
-      } else HTML("<h2>Your selected location</h2>")
     })
-    
+
     output$title_card <- renderUI({
-      
+
       output$list <- renderUI({
-        if (!is.null(data()) && !is.null(select_id()) && !is.null(loc_DAUID())) {
-          
           title_card_to_grid <<- get_title_card(
             df(), select_id(),
             island_or_region = island_comparison())
-          
+
           lapply(seq_along(title_card_to_grid), \(x) {
             output[[paste0("ind_", x, "_row_title")]] <- renderText({
               title_card_to_grid[[x]][["row_title"]] |>
@@ -412,7 +388,7 @@ place_explorer_server <- function(id) {
                      title_card_to_grid[[x]][["link"]])
             })
           })
-          
+
           lapply(seq_along(title_card_to_grid), \(x) {
             tagList(
               fluidRow(
@@ -433,30 +409,24 @@ place_explorer_server <- function(id) {
                        htmlOutput(eval(parse(
                          text = paste0("NS(id, 'ind_", x, "_text')"))),
                          style = "color: #999999"))
-                
+
               ),
               br()
             )
           })
-        }
       })
-      
-      tagList(uiOutput(NS(id, "list")))
-      
     })
-    
+
     ## PLACE EXPLORER DATA ----------------------------------------------
     output$themes_grid <- renderUI({
-      if (!is.null(df()) && !is.null(select_id()) && !is.null(loc_DAUID())) {
-        
         themes <-
           pe_theme_order[[df()]][pe_theme_order[[df()]]$ID == select_id(), ]
-        themes <- 
+        themes <-
           themes[themes$group == island_comparison(), ]
-        
+
         standout <- themes$standout
         themes <- themes$theme
-        
+
         standout_definition <-
           c("Extreme outlier" =
               paste0("`Extreme outlier` means that the variables comprising ",
@@ -470,32 +440,32 @@ place_explorer_server <- function(id) {
               paste0("`Typical` means that the variables comprising the theme, ",
                      "on average, \nrank between the top or bottom 20% relative ",
                      "to the {island_comparison()}."))
-        
+
         # The "server" of every block
         lapply(seq_along(themes), \(x) {
           delay(x*100, {
             block <- paste0("theme_", themes[[x]], "_block")
-            
+
             output[[block]] <- renderUI({
               if (!is.null(df()) && !is.null(select_id()) && !is.null(loc_DAUID())) {
-                
+
                 to_grid <- place_explorer_block_text(
                   df = df(),
                   theme = themes[[x]],
                   select_id = select_id(),
                   island_or_region = island_comparison())
-                
+
                 plots <- place_explorer_block_plot(
                   df = df(),
                   theme = themes[[x]],
                   select_id = select_id(),
                   island_or_region = island_comparison()
                 )
-                
+
                 if (nrow(to_grid) > 0)
                   lapply(1:(nrow(to_grid)), \(z) {
                     output[[paste0("ind_", themes[[x]], z, "_row_title")]] <- renderText({
-                      
+
                       paste(p(style = "    font-size: 11px;", to_grid[z, ][["var_title"]],
                               icon("question"),
                               title = str_to_sentence(to_grid[z, ][["explanation"]])))
@@ -510,17 +480,17 @@ place_explorer_server <- function(id) {
                       plots[[z]]
                     })
                   })
-                
+
                 if (nrow(to_grid) > 0) {
                   translated_theme <- str_to_upper(sus_translate(themes[[x]]))
                   translated_standout <- str_to_lower(sus_translate(standout[[x]]))
                   translated_standout_definition <-
                     sus_translate(standout_definition[[which(names(standout_definition) == standout[[x]])]])
-                  
+
                   nb_values_to_show <- min(nrow(to_grid), 5)
-                  
+
                   block_title <- paste0(translated_theme, " (", translated_standout, ")")
-                  
+
                   tagList(h3(style = "text-transform:inherit;",
                              block_title,
                              title = translated_standout_definition),
@@ -556,9 +526,9 @@ place_explorer_server <- function(id) {
             })
           })
         })
-        
+
         which_standout <- which(standout %in% c("Extreme outlier", "Outlier"))
-        
+
         lapply(seq_along(themes), \(x) {
           tagList(
             if (x == 1) {
@@ -574,31 +544,26 @@ place_explorer_server <- function(id) {
                              "display: inline-grid; width: 48%;"),
               class = "panel panel-default "))
         })
-      }
     })
-    
+
     observeEvent(input$themes_checkbox, {
-      if (!is.null(df()) && !is.null(select_id()) && !is.null(loc_DAUID())) {
-        
         themes <-
           pe_theme_order[[df()]][pe_theme_order[[df()]]$ID == select_id(), ]
-        themes <- 
+        themes <-
           themes[themes$group == island_comparison(), ]
         themes <- themes$theme
-        
+
         to_hide <- themes[!themes %in% input$themes_checkbox]
         to_show <- themes[themes %in% input$themes_checkbox]
-        
+
         lapply(to_hide, \(x) {
           hide(paste0("theme_", x, "_block"))
         })
-        
         lapply(to_show, \(x) {
           show(paste0("theme_", x, "_block"))
         })
-      }
     })
-    
+
     observeEvent(input$title_card_total_crash_per1k, {
       z <- title_card_to_grid[["total_crash_per1k"]]
       module_link(module = z$link_module,
@@ -606,7 +571,7 @@ place_explorer_server <- function(id) {
                   var_left = z$link_var_left,
                   df = df())
     })
-    
+
     observeEvent(input$title_card_single_detached, {
       z <- title_card_to_grid[["single_detached"]]
       module_link(module = z$link_module,
@@ -614,7 +579,7 @@ place_explorer_server <- function(id) {
                   var_left = z$link_var_left,
                   df = df())
     })
-    
+
     observeEvent(input$title_card_green_space_ndvi, {
       z <- title_card_to_grid[["green_space_ndvi"]]
       module_link(module = z$link_module,
@@ -622,7 +587,7 @@ place_explorer_server <- function(id) {
                   var_left = z$link_var_left,
                   df = df())
     })
-    
+
     observeEvent(input$title_card_canale_index, {
       z <- title_card_to_grid[["canale_index"]]
       module_link(module = z$link_module,
@@ -632,3 +597,4 @@ place_explorer_server <- function(id) {
     })
   })
 }
+
