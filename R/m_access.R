@@ -27,7 +27,7 @@
 #     # Right panel
 #     right_panel(
 #       id = id,
-#       compare_UI(NS(id, ns_id), make_dropdown()),
+#       compare_UI(NS(id, ns_id), make_dropdown(compare_default = TRUE)),
 #       explore_UI(NS(id, ns_id)), 
 #       dyk_UI(NS(id, ns_id)))
 #   ))
@@ -86,7 +86,7 @@
 #     # Compare panel
 #     var_right <- compare_server(
 #       id = ns_id,
-#       var_list = make_dropdown(),
+#       var_list = make_dropdown(compare_default = TRUE),
 #       df = df,
 #       time = time)
 #     
@@ -95,7 +95,7 @@
 #       updatePickerInput(
 #         session,
 #         inputId = "access-access-var", 
-#         choices = sus_translate(make_dropdown()),
+#         choices = sus_translate(make_dropdown(compare_default = TRUE)),
 #         selected = " ")
 #     }, priority = 1)
 # 

@@ -26,7 +26,7 @@
 #         mapdeckOutput(NS(id, "map"), height = "100%")),
 #     
 #     # Right panel
-#     right_panel(id, compare_UI(NS(id, ns_id), make_dropdown()),
+#     right_panel(id, compare_UI(NS(id, ns_id), make_dropdown(compare_default = TRUE)),
 #                 explore_UI(NS(id, ns_id)), 
 #                 dyk_UI(NS(id, ns_id)))
 #   ))
@@ -83,7 +83,7 @@
 #     # Compare panel
 #     var_right <- compare_server(
 #       id = ns_id,
-#       var_list = make_dropdown(),
+#       var_list = make_dropdown(compare_default = TRUE),
 #       df = df,
 #       time = reactive("2016"),
 #       show_panel = choropleth)

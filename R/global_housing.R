@@ -1,7 +1,9 @@
 #### HOUSING MODULE GLOBALS ####################################################
 
-vars_housing_left <- make_dropdown(include_only = "Housing")
-vars_housing_right <- make_dropdown(exclude = "Housing")
+vars_housing_left <- make_dropdown(only = list(theme = "Housing",
+                                               source = "census"))
+vars_housing_right <- make_dropdown(exclude = list(theme = "Housing"),
+                                    compare_default = TRUE)
 
 vars_housing_left_dis <- unlist(vars_housing_left) %in% {
   v <- variables[variables$var_code %in% unlist(vars_housing_left),]

@@ -17,25 +17,25 @@
 
 make_dropdown <- 
   function(multi_year = FALSE, only = list(source = "census"), 
-           exclude = NULL) {
+           exclude = NULL, compare_default = FALSE) {
 
     vars <- variables
     
     if (!is.null(only)) {
-      if (!all(names(only) %in% names(vars))) {
-        stop(paste("A name of the `only` list doesn't correspond to a column ",
-                   "of the `variables` table."))
-      }
+      # if (!all(names(only) %in% names(vars))) {
+      #   stop(paste("A name of the `only` list doesn't correspond to a column ",
+      #              "of the `variables` table."))
+      # }
       vars <- 
         Reduce(\(df1, df2) {df1[df1$var_code %in% df2$var_code, ]}, 
                lapply(names(only), \(x) vars[vars[[x]] %in% only[[x]], ]))
     }
     
     if (!is.null(exclude)) {
-      if (!all(names(exclude) %in% names(vars))) {
-        stop(paste("A name of the `exclude` list doesn't correspond to a ", 
-                   "column of the `variables` table."))
-      }
+      # if (!all(names(exclude) %in% names(vars))) {
+      #   stop(paste("A name of the `exclude` list doesn't correspond to a ", 
+      #              "column of the `variables` table."))
+      # }
       vars <- 
         Reduce(\(df1, df2) {df1[df1$var_code %in% df2$var_code, ]}, 
                lapply(names(exclude), \(x) vars[!vars[[x]] %in% exclude[[x]], ]))
@@ -44,8 +44,7 @@ make_dropdown <-
     if (multi_year) 
       vars <- vars[lengths(vars$dates) == max(lengths(vars$dates)), ]
     
-    out <- c("----" = " ",
-             lapply(setNames(unique(vars$theme),
+    out <- lapply(setNames(unique(vars$theme),
                              unique(vars$theme)), \(cat) {
                                cat_vecs <- 
                                  vars[vars$theme == cat, c("var_code", "var_title")]
@@ -54,8 +53,8 @@ make_dropdown <-
                                  cat_vecs[cat_vecs$var_title == name, ]$var_code}) |> 
                                  setNames(cat_vecs$var_title)
                              })
-    )
+    
+    if (compare_default) out <- c("----" = " ", out)
     
     return(out)
   }
-
