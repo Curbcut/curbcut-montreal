@@ -339,7 +339,7 @@ map(left_vars, ~{
     as_tibble() |> 
     select(ID, name, all_of(.x), geometry = building) |> 
     mutate(across(all_of(.x), as.character)) |> 
-    mutate(across(all_of(left_vars[i]), replace_na, "0")) |> 
+    mutate(across(all_of(.x), replace_na, "0")) |> 
     bind_cols({
       map_dfc(right_vars, \(y) 
               paste(DA[[paste0(.x, "_q3")]], DA[[y]], sep = " - ")) |> 
@@ -349,6 +349,7 @@ map(left_vars, ~{
     relocate(geometry, .after = last_col()) |> 
     st_as_sf() |> 
     st_set_agr("constant") |> 
+    filter(!st_is_empty(geometry)) |> 
     upload_tile_source(paste0("climate_risk-DA_building", tile_lookup$suffix[
       tile_lookup$module == "climate_risk" & tile_lookup$tile2 == .x]))
 })
@@ -431,7 +432,7 @@ for (i in seq_along(left_vars)) {
   suffix <- tile_lookup$suffix[tile_lookup$module == "climate_risk" &
                                  tile_lookup$tile2 == left_vars[i]]
   create_tileset(paste0("climate_risk-auto_zoom", suffix), 
-                 building_recipes[[i]])
+                 auto_zoom_recipes[[i]])
   Sys.sleep(2)
 }
 
