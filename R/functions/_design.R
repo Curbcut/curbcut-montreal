@@ -303,18 +303,18 @@ set_ui_lang <- "shinyjs.setLanguage = function(language) {
 lang_classes <- "
     .lang-en {
       visibility: hidden;
-      display: none;
+      display: none !important;
     }
     .lang-fr {
       visibility: hidden;
-      display: none;
+      display: none !important;
     }
     
     .user-lang-en .lang-en {
       visibility: visible !important;
-      display: inline; 
+      display: inline !important; 
     }
     .user-lang-fr .lang-fr {
       visibility: visible !important;
-      display: inline; 
+      display: inline !important; 
     }"
