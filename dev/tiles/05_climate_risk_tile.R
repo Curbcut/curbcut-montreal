@@ -381,7 +381,7 @@ building_recipes <-
       layer_names = c("DA_building_empty", "DA_building", "building"),
       source = c(
         DA_building_empty = 
-          "mapbox://tileset-source/sus-mcgill/DA_building_empty",
+          "mapbox://tileset-source/sus-mcgill/DA_building_empty_island",
         DA_building = paste0(
           "mapbox://tileset-source/sus-mcgill/climate_risk-DA_building", 
           suffix),
@@ -398,9 +398,10 @@ building_recipes <-
 for (i in seq_along(left_vars)) {
   suffix <- tile_lookup$suffix[tile_lookup$module == "climate_risk" &
                                  tile_lookup$tile2 == left_vars[i]]
-  create_tileset(paste0("climate_risk-building", suffix), 
+  out <- create_tileset(paste0("climate_risk-building", suffix), 
                  building_recipes[[i]])
-  Sys.sleep(2)
+  if (out$status_code != 200) stop(var)
+  Sys.sleep(1)
 }
 
 # Publish tilesets
@@ -408,8 +409,8 @@ for (var in left_vars) {
   suffix <- tile_lookup$suffix[tile_lookup$module == "climate_risk" &
                                  tile_lookup$tile2 == var]
   out <- publish_tileset(paste0("climate_risk-building", suffix))
-  if (!str_detect(httr::content(out)$message, "Processing")) break
-  Sys.sleep(2)
+  if (out$status_code != 200) stop(var)
+  Sys.sleep(30)
 }
 
 

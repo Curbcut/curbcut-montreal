@@ -32,3 +32,20 @@ DA |>
   filter(CSDUID %in% island_CSDUID) |> 
   select(ID, geometry) |> 
   upload_tile_source("DA_empty_island")
+
+
+# Load and process DA_building_empty data ---------------------------------
+
+DA |> 
+  st_set_geometry("building") |> 
+  select(ID, name, geometry = building) |> 
+  upload_tile_source("DA_building_empty", "sus-mcgill", .sus_token)
+
+
+# Load and process DA_building_empty_island data --------------------------
+
+DA |> 
+  filter(CSDUID %in% island_CSDUID) |> 
+  st_set_geometry("building") |> 
+  select(ID, name, geometry = building) |> 
+  upload_tile_source("DA_building_empty_island", "sus-mcgill", .sus_token)
