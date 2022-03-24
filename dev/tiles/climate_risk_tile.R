@@ -441,6 +441,6 @@ for (var in left_vars) {
   suffix <- tile_lookup$suffix[tile_lookup$module == "climate_risk" &
                                  tile_lookup$tile2 == var]
   out <- publish_tileset(paste0("climate_risk-auto_zoom", suffix))
-  if (!str_detect(httr::content(out)$message, "Processing")) break
+  if (out$status_code != 200) stop(var)
   Sys.sleep(2)
 }
