@@ -29,13 +29,13 @@ stories <-
     lon = -73.574962, 
     lat = 45.479311) |> 
   
-  add_row(
-    name = "old_quarry",
-    title = "The old quarry",
-    img = "old_quarry.png",
-    preview = paste0("Quarry test"),
-    lon = -73.61389,
-    lat = 45.57222) |> 
+  # add_row(
+  #   name = "old_quarry",
+  #   title = "The old quarry",
+  #   img = "old_quarry.png",
+  #   preview = paste0("Quarry test"),
+  #   lon = -73.61389,
+  #   lat = 45.57222) |> 
   
   add_row(
     name = "parc_ouest",
@@ -45,13 +45,13 @@ stories <-
     lon = -73.93723394534209,
     lat = 45.45384833740566) |> 
   
-  add_row(
-    name = "flooding_pierrefonds",
-    title = "Flooding in Pierrefonds",
-    img = "flooding_pierrefonds.png",
-    preview = paste0("Flooding test"),
-    lon = -73.85489584811597,
-    lat = 45.49182349238028) |> 
+  # add_row(
+  #   name = "flooding_pierrefonds",
+  #   title = "Flooding in Pierrefonds",
+  #   img = "flooding_pierrefonds.png",
+  #   preview = paste0("Flooding test"),
+  #   lon = -73.85489584811597,
+  #   lat = 45.49182349238028) |> 
   
   add_row(
     name = "griffintown",
