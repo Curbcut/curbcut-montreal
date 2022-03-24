@@ -7,7 +7,16 @@ qload("data/census.qsm")
 grid <- qread("data/grid.qs")
 building_full <- qread("data/building_full.qs")
 variables <- qread("data/variables.qs")
-source("dev/tiles/tile_functions.R")
+source("dev/_tiles/tile_functions.R")
+
+island_CSDUID <- 
+  c("2466007", "2466023_1",  "2466023_10", "2466023_11", "2466023_12", 
+    "2466023_13", "2466023_14", "2466023_15", "2466023_16", "2466023_17", 
+    "2466023_18", "2466023_19", "2466023_2", "2466023_3", "2466023_4", 
+    "2466023_5",  "2466023_6", "2466023_7", "2466023_8", "2466023_9",
+    "2466032", "2466047", "2466058", "2466062", "2466087", "2466092", 
+    "2466097", "2466102", "2466107", "2466112", "2466117", "2466127", 
+    "2466142", "2466072", "2466023")
 
 
 # Get variables to add ----------------------------------------------------
@@ -100,16 +109,16 @@ for (var in left_vars) {
 map(left_vars, ~{
   borough |> 
     as_tibble() |> 
-    select(ID, name, all_of(.x), geometry) |> 
-    mutate(across(all_of(.x), as.character)) |> 
-    mutate(across(all_of(left_vars[i]), replace_na, "0")) |> 
-    bind_cols({
-      map_dfc(right_vars, \(y) 
-              paste(borough[[paste0(.x, "_q3")]], borough[[y]], sep = " - ")) |> 
-        mutate(across(everything(), trans_var)) |> 
-        set_names(paste(.x, str_replace(right_vars, "_q3", ""), sep = "_"))
-    }) |> 
-    relocate(geometry, .after = last_col()) |> 
+    filter(CSDUID %in% island_CSDUID) |> 
+    select(ID, name, all_of(paste0(.x, c("_q5", "_q3"))), right_vars, 
+           geometry) |> 
+    set_names(c("ID", "name", "var", "var_q3", right_vars, "geometry")) |> 
+    mutate(var = as.character(replace_na(var, 0))) |> 
+    mutate(across(all_of(right_vars), \(y) 
+                  trans_var(paste(var_q3, y, sep = " - ")))) |> 
+    select(-var_q3) |> 
+    set_names(c("ID", "name", .x, paste(.x, str_remove(right_vars, "_q3"), 
+                                        sep = "_"), "geometry")) |> 
     st_as_sf() |> 
     st_set_agr("constant") |> 
     upload_tile_source(paste0("climate_risk-borough", tile_lookup$suffix[
@@ -136,17 +145,19 @@ borough_recipes <-
 for (i in seq_along(left_vars)) {
   suffix <- tile_lookup$suffix[tile_lookup$module == "climate_risk" &
                                  tile_lookup$tile2 == left_vars[i]]
-  create_tileset(paste0("climate_risk-borough", suffix), 
-                 borough_recipes[[i]])
-  Sys.sleep(2)
+  out <- create_tileset(paste0("climate_risk-borough", suffix), 
+                        borough_recipes[[i]])
+  if (out$status_code != 200) stop(var)
+  Sys.sleep(1)
 }
 
 # Publish tilesets
 for (var in left_vars) {
   suffix <- tile_lookup$suffix[tile_lookup$module == "climate_risk" &
                                  tile_lookup$tile2 == var]
-  publish_tileset(paste0("climate_risk-borough", suffix))
-  Sys.sleep(2)
+  out <- publish_tileset(paste0("climate_risk-borough", suffix))
+  if (out$status_code != 200) stop(var)
+  Sys.sleep(30)
 }
 
 
@@ -156,16 +167,16 @@ for (var in left_vars) {
 map(left_vars, ~{
   CT |> 
     as_tibble() |> 
-    select(ID, name, all_of(.x), geometry) |> 
-    mutate(across(all_of(.x), as.character)) |> 
-    mutate(across(all_of(left_vars[i]), replace_na, "0")) |> 
-    bind_cols({
-      map_dfc(right_vars, \(y) 
-              paste(CT[[paste0(.x, "_q3")]], CT[[y]], sep = " - ")) |> 
-        mutate(across(everything(), trans_var)) |> 
-        set_names(paste(.x, str_replace(right_vars, "_q3", ""), sep = "_"))
-    }) |> 
-    relocate(geometry, .after = last_col()) |> 
+    filter(CSDUID %in% island_CSDUID) |> 
+    select(ID, name, all_of(paste0(.x, c("_q5", "_q3"))), right_vars, 
+           geometry) |> 
+    set_names(c("ID", "name", "var", "var_q3", right_vars, "geometry")) |> 
+    mutate(var = as.character(replace_na(var, 0))) |> 
+    mutate(across(all_of(right_vars), \(y) 
+                  trans_var(paste(var_q3, y, sep = " - ")))) |> 
+    select(-var_q3) |> 
+    set_names(c("ID", "name", .x, paste(.x, str_remove(right_vars, "_q3"), 
+                                        sep = "_"), "geometry")) |> 
     st_as_sf() |> 
     st_set_agr("constant") |> 
     upload_tile_source(paste0("climate_risk-CT", tile_lookup$suffix[
@@ -192,17 +203,19 @@ CT_recipes <-
 for (i in seq_along(left_vars)) {
   suffix <- tile_lookup$suffix[tile_lookup$module == "climate_risk" &
                                  tile_lookup$tile2 == left_vars[i]]
-  create_tileset(paste0("climate_risk-CT", suffix), 
-                 CT_recipes[[i]])
-  Sys.sleep(2)
+  out <- create_tileset(paste0("climate_risk-CT", suffix), 
+                        CT_recipes[[i]])
+  if (out$status_code != 200) stop(var)
+  Sys.sleep(1)
 }
 
 # Publish tilesets
 for (var in left_vars) {
   suffix <- tile_lookup$suffix[tile_lookup$module == "climate_risk" &
                                  tile_lookup$tile2 == var]
-  publish_tileset(paste0("climate_risk-CT", suffix))
-  Sys.sleep(2)
+  out <- publish_tileset(paste0("climate_risk-CT", suffix))
+  if (out$status_code != 200) stop(var)
+  Sys.sleep(30)
 }
 
 
@@ -212,16 +225,16 @@ for (var in left_vars) {
 map(left_vars, ~{
   DA |> 
     as_tibble() |> 
-    select(ID, name, all_of(.x), geometry) |> 
-    mutate(across(all_of(.x), as.character)) |> 
-    mutate(across(all_of(left_vars[i]), replace_na, "0")) |> 
-    bind_cols({
-      map_dfc(right_vars, \(y) 
-              paste(DA[[paste0(.x, "_q3")]], DA[[y]], sep = " - ")) |> 
-        mutate(across(everything(), trans_var)) |> 
-        set_names(paste(.x, str_replace(right_vars, "_q3", ""), sep = "_"))
-    }) |> 
-    relocate(geometry, .after = last_col()) |> 
+    filter(CSDUID %in% island_CSDUID) |> 
+    select(ID, name, all_of(paste0(.x, c("_q5", "_q3"))), right_vars, 
+           geometry) |> 
+    set_names(c("ID", "name", "var", "var_q3", right_vars, "geometry")) |> 
+    mutate(var = as.character(replace_na(var, 0))) |> 
+    mutate(across(all_of(right_vars), \(y) 
+                  trans_var(paste(var_q3, y, sep = " - ")))) |> 
+    select(-var_q3) |> 
+    set_names(c("ID", "name", .x, paste(.x, str_remove(right_vars, "_q3"), 
+                                        sep = "_"), "geometry")) |> 
     st_as_sf() |> 
     st_set_agr("constant") |> 
     upload_tile_source(paste0("climate_risk-DA", tile_lookup$suffix[
@@ -238,7 +251,7 @@ DA_recipes <-
     create_recipe(
       layer_names = c("DA_empty", "DA"),
       source = c(
-        DA_empty = "mapbox://tileset-source/sus-mcgill/DA_empty",
+        DA_empty = "mapbox://tileset-source/sus-mcgill/DA_empty_island",
         DA = paste0("mapbox://tileset-source/sus-mcgill/climate_risk-DA", 
                     suffix)),
       minzoom = c(DA_empty = 3, DA = 9),
@@ -252,9 +265,10 @@ DA_recipes <-
 for (i in seq_along(left_vars)) {
   suffix <- tile_lookup$suffix[tile_lookup$module == "climate_risk" &
                                  tile_lookup$tile2 == left_vars[i]]
-  create_tileset(paste0("climate_risk-DA", suffix), 
-                 DA_recipes[[i]])
-  Sys.sleep(2)
+  out <- create_tileset(paste0("climate_risk-DA", suffix), 
+                        DA_recipes[[i]])
+  if (out$status_code != 200) stop(var)
+  Sys.sleep(1)
 }
 
 # Publish tilesets
@@ -262,8 +276,8 @@ for (var in left_vars) {
   suffix <- tile_lookup$suffix[tile_lookup$module == "climate_risk" &
                                  tile_lookup$tile2 == var]
   out <- publish_tileset(paste0("climate_risk-DA", suffix))
-  if (!str_detect(httr::content(out)$message, "Processing")) break
-  Sys.sleep(2)
+  if (out$status_code != 200) stop(var)
+  Sys.sleep(30)
 }
 
 
@@ -276,26 +290,28 @@ for (i in seq_along(left_vars)) {
   building_to_process[[i]] <- 
     building_full |> 
     as_tibble() |> 
-    select(ID, name, all_of(left_vars[i]), geometry) |> 
-    mutate(across(all_of(left_vars[i]), as.character)) |> 
-    mutate(across(all_of(left_vars[i]), replace_na, "0")) |> 
-    bind_cols({
-      map_dfc(right_vars, \(y) trans_var(paste(
-        building_full[[paste0(left_vars[i], "_q3")]], building_full[[y]], 
-        sep = " - "))) |> 
-        set_names(paste(left_vars[i], str_replace(right_vars, "_q3", ""), 
-                        sep = "_"))}) |> 
-    relocate(geometry, .after = last_col()) |> 
+    filter(CSDUID %in% island_CSDUID) |> 
+    select(ID, name, all_of(paste0(left_vars[i], c("_q5", "_q3"))), right_vars, 
+           geometry) |> 
+    set_names(c("ID", "name", "var", "var_q3", right_vars, "geometry")) |> 
+    mutate(var = as.character(replace_na(var, 0))) |> 
+    mutate(across(all_of(right_vars), \(y) 
+                  trans_var(paste(var_q3, y, sep = " - ")))) |> 
+    select(-var_q3) |> 
+    set_names(c("ID", "name", left_vars[i], paste(
+      left_vars[i], str_remove(right_vars, "_q3"), sep = "_"), "geometry")) |> 
     st_as_sf() |> 
     st_set_agr("constant")
 }
 
 for (i in seq_along(left_vars)) {
   
+  print(i)
+  
   suffix <- tile_lookup$suffix[tile_lookup$module == "climate_risk" &
                                  tile_lookup$tile2 == left_vars[i]]
   
-  iter_size <- ceiling(nrow(building_to_process[[1]]) / 100)
+  iter_size <- ceiling(nrow(building_to_process[[i]]) / 100)
   
   building_to_process_list <- 
     map(1:100, ~{
@@ -313,6 +329,7 @@ for (i in seq_along(left_vars)) {
   for (j in 1:10) {
     
     print(j)
+    
     to_process <- building_to_process_list[((j - 1) * 10 + 1):(j * 10)]
     walk2(to_process, tmp_list, geojson::ndgeo_write)
     
@@ -333,20 +350,19 @@ for (i in seq_along(left_vars)) {
 
 # Upload DA_building tile source
 map(left_vars, ~{
-  
   DA |> 
     st_set_geometry("building") |> 
     as_tibble() |> 
-    select(ID, name, all_of(.x), geometry = building) |> 
-    mutate(across(all_of(.x), as.character)) |> 
-    mutate(across(all_of(.x), replace_na, "0")) |> 
-    bind_cols({
-      map_dfc(right_vars, \(y) 
-              paste(DA[[paste0(.x, "_q3")]], DA[[y]], sep = " - ")) |> 
-        mutate(across(everything(), trans_var)) |> 
-        set_names(paste(.x, str_replace(right_vars, "_q3", ""), sep = "_"))
-    }) |> 
-    relocate(geometry, .after = last_col()) |> 
+    filter(CSDUID %in% island_CSDUID) |> 
+    select(ID, name, all_of(paste0(.x, c("_q5", "_q3"))), right_vars, 
+           geometry = building) |> 
+    set_names(c("ID", "name", "var", "var_q3", right_vars, "geometry")) |> 
+    mutate(var = as.character(replace_na(var, 0))) |> 
+    mutate(across(all_of(right_vars), \(y) 
+                  trans_var(paste(var_q3, y, sep = " - ")))) |> 
+    select(-var_q3) |> 
+    set_names(c("ID", "name", .x, paste(.x, str_remove(right_vars, "_q3"), 
+                                        sep = "_"), "geometry")) |> 
     st_as_sf() |> 
     st_set_agr("constant") |> 
     filter(!st_is_empty(geometry)) |> 
@@ -365,7 +381,7 @@ building_recipes <-
       layer_names = c("DA_building_empty", "DA_building", "building"),
       source = c(
         DA_building_empty = 
-          "mapbox://tileset-source/sus-mcgill/DA_building_empty",
+          "mapbox://tileset-source/sus-mcgill/DA_building_empty_island",
         DA_building = paste0(
           "mapbox://tileset-source/sus-mcgill/climate_risk-DA_building", 
           suffix),
@@ -382,9 +398,10 @@ building_recipes <-
 for (i in seq_along(left_vars)) {
   suffix <- tile_lookup$suffix[tile_lookup$module == "climate_risk" &
                                  tile_lookup$tile2 == left_vars[i]]
-  create_tileset(paste0("climate_risk-building", suffix), 
+  out <- create_tileset(paste0("climate_risk-building", suffix), 
                  building_recipes[[i]])
-  Sys.sleep(2)
+  if (out$status_code != 200) stop(var)
+  Sys.sleep(1)
 }
 
 # Publish tilesets
@@ -392,8 +409,8 @@ for (var in left_vars) {
   suffix <- tile_lookup$suffix[tile_lookup$module == "climate_risk" &
                                  tile_lookup$tile2 == var]
   out <- publish_tileset(paste0("climate_risk-building", suffix))
-  if (!str_detect(httr::content(out)$message, "Processing")) break
-  Sys.sleep(2)
+  if (out$status_code != 200) stop(var)
+  Sys.sleep(30)
 }
 
 
@@ -431,8 +448,9 @@ auto_zoom_recipes <-
 for (i in seq_along(left_vars)) {
   suffix <- tile_lookup$suffix[tile_lookup$module == "climate_risk" &
                                  tile_lookup$tile2 == left_vars[i]]
-  create_tileset(paste0("climate_risk-auto_zoom", suffix), 
-                 auto_zoom_recipes[[i]])
+  out <- create_tileset(paste0("climate_risk-auto_zoom", suffix), 
+                        auto_zoom_recipes[[i]])
+  if (out$status_code != 200) stop(var)
   Sys.sleep(2)
 }
 
@@ -442,5 +460,5 @@ for (var in left_vars) {
                                  tile_lookup$tile2 == var]
   out <- publish_tileset(paste0("climate_risk-auto_zoom", suffix))
   if (out$status_code != 200) stop(var)
-  Sys.sleep(2)
+  Sys.sleep(30)
 }

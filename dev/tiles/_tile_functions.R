@@ -49,6 +49,16 @@ delete_tileset_source <- function(id, username = "sus-mcgill",
 }
 
 
+# List tilesets -----------------------------------------------------------
+
+list_tilesets <- function(username = "sus-mcgill", access_token = .sus_token) {
+  
+  httr::GET(paste0("https://api.mapbox.com/tilesets/v1/", username),
+            query = list(access_token = access_token)) |> 
+    httr::content()
+  
+}
+
 # Create tileset ----------------------------------------------------------
 
 create_tileset <- function(tileset, recipe, username = "sus-mcgill", 
@@ -64,6 +74,16 @@ create_tileset <- function(tileset, recipe, username = "sus-mcgill",
   
 }
 
+
+# Delete tileset ----------------------------------------------------------
+
+delete_tileset <- function(id, username = "sus-mcgill", 
+                           access_token = .sus_token) {
+  
+  httr::DELETE(paste0("https://api.mapbox.com/tilesets/v1/", username,
+                      ".", id), query = list(access_token = access_token)
+  )
+}
 
 # Update tileset ----------------------------------------------------------
 

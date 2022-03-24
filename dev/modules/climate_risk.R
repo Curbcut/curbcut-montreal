@@ -68,13 +68,11 @@ climate_census_fun <- function(x) {
     mutate(area_x = units::drop_units(st_area(geometry))) |> 
     st_set_agr("constant")
   
-  out <- 
   grid |> 
     select(grid_ID = ID) |> 
     st_transform(32618) |> 
     st_set_agr("constant") |> 
     st_intersection(x_int) |> 
-    mutate(area_int = units::drop_units(st_area(geometry))) |> 
     st_drop_geometry() |> 
     select(grid_ID, ID, area_x) |>
     inner_join(select(grid, grid_ID = ID,

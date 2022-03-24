@@ -1,18 +1,10 @@
-#### STREET/BUILDING TILE PROCESSING ###########################################
+#### STREET/PARK TILE PROCESSING ###############################################
 
 library(tidyverse)
 library(sf)
 library(qs)
 source("dev/tiles/tile_functions.R")
 qload("data/census.qsm")
-
-
-# Load and process empty building data ------------------------------------
-
-DA |> 
-  st_set_geometry("building") |> 
-  select(ID, name, geometry = building) |> 
-  upload_tile_source("DA_building_empty", "sus-mcgill", .sus_token)
 
 
 # Load and process street data --------------------------------------------
