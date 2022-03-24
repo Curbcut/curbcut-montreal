@@ -2,6 +2,15 @@
 
 # This script relies on objects created in dev/census.R
 
+island_CSDUID <- 
+  c("2466007", "2466023_1",  "2466023_10", "2466023_11", "2466023_12", 
+    "2466023_13", "2466023_14", "2466023_15", "2466023_16", "2466023_17", 
+    "2466023_18", "2466023_19", "2466023_2", "2466023_3", "2466023_4", 
+    "2466023_5",  "2466023_6", "2466023_7", "2466023_8", "2466023_9",
+    "2466032", "2466047", "2466058", "2466062", "2466087", "2466092", 
+    "2466097", "2466102", "2466107", "2466112", "2466117", "2466127", 
+    "2466142", "2466072", "2466023")
+
 
 # Import postal codes -----------------------------------------------------
 
@@ -605,5 +614,5 @@ place_explorer_CMA <-
 
 rm(basic_percentile_retrieval, gentrification_min_max, min_access_var_code,
    # bixi_stations, 
-   census_max, groups, last_crash_data_year, 
+   census_max, groups, last_crash_data_year, island_CSDUID,
    ndvi, no2, percentile_calc)
