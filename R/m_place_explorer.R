@@ -266,15 +266,8 @@ place_explorer_server <- function(id) {
                             selected = get_zoom_label_t(map_zoom_levels[1:3])[3])
     })
     
-    df <- reactive({
-      out <- unlist(get_zoom_code(input$slider))
-      if (length(out) == 0) return("DA") else return(out)
-    })
-    
-    data <- reactive({
-      out <- unlist(get_zoom_code(input$slider))
-      if (length(out) == 0) return(DA) else return(get(out))
-    })
+    df <- reactive(get_zoom_code(input$slider))
+    data <- reactive(get(get_zoom_code(input$slider)))
     
     # Depending on `df`, retrieve the ID.
     select_id <- eventReactive({
@@ -447,7 +440,6 @@ place_explorer_server <- function(id) {
             block <- paste0("theme_", themes[[x]], "_block")
 
             output[[block]] <- renderUI({
-              if (!is.null(df()) && !is.null(select_id()) && !is.null(loc_DAUID())) {
 
                 to_grid <- place_explorer_block_text(
                   df = df(),
@@ -522,7 +514,6 @@ place_explorer_server <- function(id) {
                     tagList(fluidRow(h3(sus_translate(themes[[x]]))),
                             fluidRow("No data."))
                   }
-              }
             })
           })
         })
