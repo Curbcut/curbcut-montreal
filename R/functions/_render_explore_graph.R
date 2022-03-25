@@ -26,7 +26,7 @@ render_explore_graph <- function(plot_type, data, var_left, var_right, df,
         lwd = 1.5)} +
       binned_scale(aesthetics = "fill",
                    scale_name = "stepsn",
-                   palette = \(x) col_left_5,
+                   palette = \(x) colour_left_5$fill[2:6],
                    breaks = vals) +
       x_scale + y_scale + labs_xy + theme_default
     
@@ -41,7 +41,7 @@ render_explore_graph <- function(plot_type, data, var_left, var_right, df,
     ranks <- ranks$rank[ranks$scale == df]
     
     # Get corresponding colours
-    cols <- c(col_NA, col_left_5)[ranks + 1]
+    cols <- colour_left_5$fill[ranks + 1]
     
     out <-
       data[!is.na(data$var_left),] |> 
@@ -77,7 +77,8 @@ render_explore_graph <- function(plot_type, data, var_left, var_right, df,
   # Boxplot, no selection
   if (plot_type %in% c("box_all", "box_na", "box_select")) {
     
-    colours <- c(col_left_3[1:2], rep(col_left_3[3], var_left_num - 2))
+    colours <- c(colour_bivar$fill[1:2], rep(colour_bivar$fill[3], 
+                                             var_left_num - 2))
     names(colours) <- as.factor(unique(sort(data$var_left)))
     
     out <- 
@@ -140,9 +141,9 @@ render_explore_graph <- function(plot_type, data, var_left, var_right, df,
   # Date line graph
   if (plot_type == "date_all") {
     out <- ggplot(data, aes(var_right, var_left)) +
-      geom_line(colour = col_bivar[5]) +
+      geom_line(colour = colour_bivar$fill[5]) +
       stat_smooth(geom = "line", se = FALSE, method = "loess", span = 1,
-                  formula = y ~ x, colour = col_bivar[9]) +
+                  formula = y ~ x, colour = colour_bivar$fill[9]) +
       x_scale + y_scale + labs_xy + theme_default
   }
   

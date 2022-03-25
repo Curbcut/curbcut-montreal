@@ -69,71 +69,69 @@ get_data_table <- function(df, var_left, var_right, data_type, point_df) {
   }
   
   # Delta
-  # if (data_type == "delta") {
-  #   
-  #   data <- get(df)
-  #   data <- data[c("ID", "name", "name_2", if (df == "DA") "DAUID", 
-  #                  if (df %in% c("DA", "CT")) "CTUID", "CSDUID", "population", 
-  #                  var_left, "geometry")]
-  #   data$var_left <- (data[[var_left[2]]] - data[[var_left[1]]]) / 
-  #     abs(data[[var_left[1]]])
-  #   data$var_left <- replace(data$var_left, is.nan(data$var_left), NA)
-  #   data$var_left <- replace(data$var_left, is.infinite(data$var_left), NA)
-  #   data_med <- median(abs(data$var_left[abs(data$var_left) > 0.02]), 
-  #                      na.rm = TRUE)
-  #   data$var_left_q3 <- case_when(
-  #     is.na(data$var_left) ~ NA_character_,
-  #     data$var_left < -1 * data_med ~ "1",
-  #     data$var_left < -0.02 ~ "2",
-  #     data$var_left < 0.02 ~ "3",
-  #     data$var_left < data_med ~ "4",
-  #     TRUE ~ "5")
-  #   
-  #   data$group <- as.character(data$var_left_q3)
-  #   data$group <- paste(if_else(is.na(data$group), "NA", data$group), "- 1")
-  #   data <- left_join(data, colour_delta, by = "group")
-  #   
-  #   data <- data[c("ID", "name", "name_2", if (df == "DA") "DAUID", 
-  #                  if (df %in% c("DA", "CT")) "CTUID", "CSDUID", "population", 
-  #                  "var_left", "var_left_q3", var_left, "group", "fill", 
-  #                  "geometry")]
-  #   names(data) <- c("ID", "name", "name_2", if (df == "DA") "DAUID", 
-  #                    if (df %in% c("DA", "CT")) "CTUID", "CSDUID", "population", 
-  #                    "var_left", "var_left_q3", "var_left_1", "var_left_2", 
-  #                    "group", "fill", "geometry")
-  #   
-  # }
+  if (data_type == "delta") {
+    
+    data <- sf::st_drop_geometry(get(df))
+    
+    data <- data[c("ID", "name", "name_2", if (df == "DA") "DAUID",
+                   if (df %in% c("DA", "CT")) "CTUID", "CSDUID", "population",
+                   var_left)]
+    
+    data$var_left <- (data[[var_left[2]]] - data[[var_left[1]]]) / 
+      data[[var_left[1]]]
+    
+    data$var_left <- replace(data$var_left, is.nan(data$var_left), NA)
+    data$var_left <- replace(data$var_left, is.infinite(data$var_left), NA)
+    data_med <- median(abs(data$var_left[abs(data$var_left) > 0.02]), 
+                       na.rm = TRUE)
+    data$var_left_q3 <- "5"
+    data$var_left_q3[data$var_left < data_med] <- "4"
+    data$var_left_q3[data$var_left < 0.02] <- "3"
+    data$var_left_q3[data$var_left < -0.02] <- "2"
+    data$var_left_q3[data$var_left < -1 * data_med] <- "1"
+    data$var_left_q3[is.na(data$var_left)] <- NA_character_
+    data$group <- data$var_left_q3
+    
+    data <- data[c("ID", "name", "name_2", if (df == "DA") "DAUID",
+                   if (df %in% c("DA", "CT")) "CTUID", "CSDUID", "population",
+                   "var_left", "var_left_q3", var_left, "group")]
+    names(data) <- c("ID", "name", "name_2", if (df == "DA") "DAUID",
+                     if (df %in% c("DA", "CT")) "CTUID", "CSDUID", "population",
+                     "var_left", "var_left_q3", "var_left_1", "var_left_2",
+                     "group")
+    
+  }
   
-  # Building delta TKTK update with base R
-  # if (data_type == "building_delta") {
-  #   
-  #   data <- 
-  #     DA |> 
-  #     st_set_geometry("building") |> 
-  #     select(ID, name, name_2, any_of(c("DAUID", "CTUID", "CSDUID")), 
-  #            population, var_left = all_of(var_left), geometry = building) |>
-  #     mutate(
-  #       var_left = (var_left2 - var_left1) / abs(var_left1), 
-  #       var_left_q3 = case_when(
-  #         is.na(var_left) ~ NA_character_,
-  #         var_left < -1 * median(abs(var_left[abs(var_left) > 0.02]), 
-  #                                na.rm = TRUE) ~ "1",
-  #         var_left < -0.02 ~ "2",
-  #         var_left < 0.02 ~ "3",
-  #         var_left < median(abs(var_left[abs(var_left) > 0.02]), 
-  #                           na.rm = TRUE) ~ "4",
-  #         TRUE ~ "5"),
-  #       across(where(is.numeric), ~replace(., is.nan(.), NA)),
-  #       across(where(is.numeric), ~replace(., is.infinite(.), NA))) |>
-  #     select(ID, name, name_2, any_of(c("DAUID", "CTUID", "CSDUID")), 
-  #            population, var_left, var_left_q3, var_left_1 = var_left1, 
-  #            var_left_2 = var_left2) |> 
-  #     mutate(group = as.character(var_left_q3),
-  #            group = if_else(is.na(group), "NA", group),
-  #            group = paste(group, "- 1")) |> 
-  #     left_join(colour_delta, by = "group") |> 
-  #     relocate(fill, .after = group)
-  # }
+  # Building delta
+  if (data_type == "building_delta") {
+
+    data <- sf::st_drop_geometry(DA)
+    
+    data <- data[c("ID", "name", "name_2", if (df == "DA") "DAUID",
+                   if (df %in% c("DA", "CT")) "CTUID", "CSDUID", "population",
+                   var_left)]
+    
+    data$var_left <- (data[[var_left[2]]] - data[[var_left[1]]]) / 
+      data[[var_left[1]]]
+    
+    data$var_left <- replace(data$var_left, is.nan(data$var_left), NA)
+    data$var_left <- replace(data$var_left, is.infinite(data$var_left), NA)
+    data_med <- median(abs(data$var_left[abs(data$var_left) > 0.02]), 
+                       na.rm = TRUE)
+    data$var_left_q3 <- "5"
+    data$var_left_q3[data$var_left < data_med] <- "4"
+    data$var_left_q3[data$var_left < 0.02] <- "3"
+    data$var_left_q3[data$var_left < -0.02] <- "2"
+    data$var_left_q3[data$var_left < -1 * data_med] <- "1"
+    data$var_left_q3[is.na(data$var_left)] <- NA_character_
+    data$group <- data$var_left_q3
+    
+    data <- data[c("ID", "name", "name_2", "DAUID", "CTUID", "CSDUID", 
+                   "population", "var_left", "var_left_q3", var_left, "group")]
+    names(data) <- c("ID", "name", "name_2", "DAUID", "CTUID", "CSDUID", 
+                     "population", "var_left", "var_left_q3", "var_left_1", 
+                     "var_left_2", "group", "geometry")
+  }
   
   # NA_delta
   # if (data_type == "NA_delta") {

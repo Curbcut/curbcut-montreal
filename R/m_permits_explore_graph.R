@@ -49,9 +49,9 @@
 #           count(year)
 #         
 #         ggplot(z, aes(year, n)) +
-#           geom_line(colour = col_bivar[5]) +
+#           geom_line(colour = colour_bivar$fill[5]) +
 #           stat_smooth(geom = "line", se = FALSE, method = "loess", span = 1,
-#                       formula = y ~ x, colour = col_bivar[9]) +
+#                       formula = y ~ x, colour = colour_bivar$fill[9]) +
 #           labs(y = "Count", x = NULL) +
 #           theme_minimal() +
 #           theme(legend.position = "none", panel.grid.minor.x = element_blank(),
