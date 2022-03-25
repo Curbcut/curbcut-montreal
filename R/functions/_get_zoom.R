@@ -12,13 +12,13 @@ get_zoom_string <- function(zoom, zoom_levels) {
 get_zoom_name <- function(x) sapply(
   x, 
   switch, 
-  "borough" = sus_translate("Borough/city"),
-  "CT" = sus_translate("Census tract"),
-  "DA" = sus_translate("Dissemination area"),
-  "building" = sus_translate("Building"),
-  "street" = sus_translate("Street"),
-  "heatmap" = sus_translate("Heatmap"),
-  "point" = sus_translate("Point"),
+  "borough" = "Borough/city",
+  "CT" = "Census tract",
+  "DA" = "Dissemination area",
+  "building" = "Building",
+  "street" = "Street",
+  "heatmap" = "Heatmap",
+  "point" = "Point",
   USE.NAMES = FALSE)
 
 get_zoom_label <- function(zoom_levels) {
@@ -27,24 +27,25 @@ get_zoom_label <- function(zoom_levels) {
   return(zl)
 }
 
-get_zoom_code <- function(x) {
-  
-  x <- 
-    if (sus_rv$lang() == "fr") {
-      z <- translation_fr[translation_fr$fr == x, ]$en
-      z[!is.na(z)]
-    } else x
-  
-  sapply(
-    x, 
-    switch,
-    "Borough/city" = "borough",
-    "Census tract" = "CT",
-    "Dissemination area" = "DA",
-    "Building" = "building",
-    "Street" = "street",
-    "Heatmap" = "heatmap",
-    "Point" = "point",
-    USE.NAMES = FALSE)
+get_zoom_label_t <- function(zoom_levels) {
+  zl <- names(sort(zoom_levels))
+  zl <- sapply(get_zoom_name(zl), sus_translate, USE.NAMES = FALSE)
+  return(zl)
+}
 
+get_zoom_code <- function(x) {
+  if (x == "Borough/city" || x == "Arrondissement/ville")
+    return("borough")
+  if (x == "Census tract" || x == "Secteur de recensement")
+    return("CT")
+  if (x == "Dissemination area" || x == "Aire de diffusion")
+    return("DA")
+  if (x == "Building" || x == "bâtiment")
+    return("building")
+  if (x == "Street" || x == "Rue")
+    return("street")
+  if (x == "Heatmap")
+    return("heatmap")
+  if (x == "Point")
+    return("point")
 }
