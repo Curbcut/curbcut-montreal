@@ -152,7 +152,7 @@ stories_server <- function(id) {
     # Update select_id() on bookmark
     observeEvent(sus_bookmark$active, {
       if (isTRUE(sus_bookmark$active)) {
-        if (!is.null(sus_bookmark$df)) df(sus_bookmark$df)
+        if (!is.null(sus_bookmark$df)) df <- reactiveVal(sus_bookmark$df)
         delay(1000, {
           if (!is.null(sus_bookmark$select_id))
             if (sus_bookmark$select_id != "NA") 
@@ -165,7 +165,7 @@ stories_server <- function(id) {
     
     # Update select_id() on module link
     observeEvent(sus_link$activity, {
-      if (!is.null(sus_bookmark$df)) df(sus_bookmark$df)
+      if (!is.null(sus_bookmark$df)) df <- reactiveVal(sus_bookmark$df)
       delay(1000, {
         if (!is.null(sus_link$select_id)) select_id(sus_link$select_id)
       })
