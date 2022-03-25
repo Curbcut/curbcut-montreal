@@ -15,7 +15,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ### What is the Grang Parc de L'Ouest (GPO)?
 <p>Spanning more than 3,000 hectares (ha) and 32 square kilometers, the GPO is expected to be the largest urban park in Canada. It&rsquo;s part of the Commanaut&eacute; m&eacute;tropolitaine de Montr&eacute;al&rsquo;s (CMM) vision to protect 17% of its territory from development, and the City of Montreal&rsquo;s goal of protecting 10% of the amalgamated city.</p>
 <p>Collaboration is baked into the Grand Parc de L&rsquo;Ouest&rsquo;s DNA. It involves the City of Montreal, two <em>arrondissements </em>within the city (l&rsquo;&Icirc;le-Bizard-Sainte-Genevi&egrave;ve and Pierrefonds-Roxboro), two non-amalgamated towns on the West Island of Montreal (Saint-Anne-de-Bellevue and Beaconsfield), and 1 village (Senneville). It weaves together five existing parks between the West Island and l&rsquo;&Icirc;le-Bizard, including l'Anse-&agrave;-l'Orme, Bois-de-L&rsquo;&icirc;le-Bizard, Cap-Saint-Jacques, Rapides-du-Cheval-Blanc, and the agricultural park Bois-de-la-Roche. The city is also buying land from private owners and expanding the boundaries of l&rsquo;Anse-&agrave;-l&rsquo;Orme. In the process, it&rsquo;s conserving some of the last unprotected greenspace on the Island of Montreal.</p>
-```{r, echo=FALSE, out.width="30%", out.extra='style="float:left; padding:10px;"', warning=FALSE}
+```{r, echo=FALSE, out.width="30%", out.extra='style="float:right; padding:10px;"', warning=FALSE}
 
 knitr::include_graphics(here("www/stories/visuals/parc_ouest/flowers_bees.gif"))
 

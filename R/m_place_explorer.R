@@ -124,7 +124,7 @@ place_explorer_server <- function(id) {
     
     observe({
       all_themes <- unique(variables$theme)
-      names(all_themes) <- sapply(eso, sus_translate, USE.NAMES = FALSE)
+      names(all_themes) <- sapply(all_themes, sus_translate, USE.NAMES = FALSE)
       
       updatePickerInput(
         session = session,
@@ -262,19 +262,12 @@ place_explorer_server <- function(id) {
       loc_DAUID()
       updateSliderTextInput(session = session,
                             "slider",
-                            choices = get_zoom_label(map_zoom_levels[1:3]),
-                            selected = get_zoom_label(map_zoom_levels[1:3])[3])
+                            choices = get_zoom_label_t(map_zoom_levels[1:3]),
+                            selected = get_zoom_label_t(map_zoom_levels[1:3])[3])
     })
     
-    df <- reactive({
-      out <- unlist(get_zoom_code(input$slider))
-      if (length(out) == 0) return("DA") else return(out)
-    })
-    
-    data <- reactive({
-      out <- unlist(get_zoom_code(input$slider))
-      if (length(out) == 0) return(DA) else return(get(out))
-    })
+    df <- reactive(get_zoom_code(input$slider))
+    data <- reactive(get(get_zoom_code(input$slider)))
     
     # Depending on `df`, retrieve the ID.
     select_id <- eventReactive({
@@ -447,7 +440,6 @@ place_explorer_server <- function(id) {
             block <- paste0("theme_", themes[[x]], "_block")
 
             output[[block]] <- renderUI({
-              if (!is.null(df()) && !is.null(select_id()) && !is.null(loc_DAUID())) {
 
                 to_grid <- place_explorer_block_text(
                   df = df(),
@@ -522,7 +514,6 @@ place_explorer_server <- function(id) {
                     tagList(fluidRow(h3(sus_translate(themes[[x]]))),
                             fluidRow("No data."))
                   }
-              }
             })
           })
         })
