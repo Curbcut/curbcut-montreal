@@ -124,7 +124,7 @@ place_explorer_server <- function(id) {
     
     observe({
       all_themes <- unique(variables$theme)
-      names(all_themes) <- sapply(eso, sus_translate, USE.NAMES = FALSE)
+      names(all_themes) <- sapply(all_themes, sus_translate, USE.NAMES = FALSE)
       
       updatePickerInput(
         session = session,
@@ -262,8 +262,8 @@ place_explorer_server <- function(id) {
       loc_DAUID()
       updateSliderTextInput(session = session,
                             "slider",
-                            choices = get_zoom_label(map_zoom_levels[1:3]),
-                            selected = get_zoom_label(map_zoom_levels[1:3])[3])
+                            choices = get_zoom_label_t(map_zoom_levels[1:3]),
+                            selected = get_zoom_label_t(map_zoom_levels[1:3])[3])
     })
     
     df <- reactive({
