@@ -39,7 +39,7 @@ DA |>
 DA |> 
   st_set_geometry("building") |> 
   select(ID, name, geometry = building) |> 
-  upload_tile_source("DA_building_empty", "sus-mcgill", .sus_token)
+  upload_tile_source("DA_building_empty")
 
 
 # Load and process DA_building_empty_island data --------------------------
@@ -48,4 +48,60 @@ DA |>
   filter(CSDUID %in% island_CSDUID) |> 
   st_set_geometry("building") |> 
   select(ID, name, geometry = building) |> 
-  upload_tile_source("DA_building_empty_island", "sus-mcgill", .sus_token)
+  upload_tile_source("DA_building_empty_island")
+
+
+# Load and process building_empty -----------------------------------------
+
+building_to_process <- 
+  building_full |> 
+  select(ID, name, geometry)
+
+iter_size <- ceiling(nrow(building_to_process) / 100)
+
+building_to_process_list <- 
+  map(1:100, ~{
+    building_to_process |> 
+      slice(((.x - 1) * iter_size + 1):(.x * iter_size)) |> 
+      geojsonsf::sf_geojson() |> 
+      paste0(collapse = " ") |> 
+      geojson::featurecollection()  
+  })
+
+# Iteratively post files to tile source
+tmp <- tempfile(fileext = ".json")
+tmp_list <- map(1:10, ~tempfile(fileext = ".json"))
+
+map(1:10, ~{
+  
+  print(.x)
+  to_process <- building_to_process_list[((.x - 1) * 10 + 1):(.x * 10)]
+  walk2(to_process, tmp_list, geojson::ndgeo_write)
+  
+  # Concatenate geoJSONs
+  out <- paste0("cat ", paste(tmp_list, collapse = " "), " > ", tmp)
+  system(out)
+  
+  # Upload to MTS
+  out <- paste0('curl -X POST "https://api.mapbox.com/tilesets/v1/sources/', 
+                'sus-mcgill/building_empty?access_token=', .sus_token, 
+                '" -F file=@', tmp, 
+                ' --header "Content-Type: multipart/form-data"')
+  system(out)
+  
+})
+
+
+# Create and publish building_empty tileset -------------------------------
+
+building_recipe <- 
+  create_recipe(
+  layer_names = "building",
+  source = "mapbox://tileset-source/sus-mcgill/building_empty",
+  minzoom = 14,
+  maxzoom = 14, 
+  layer_size = 2500,
+  recipe_name = "building_empty")
+
+create_tileset("building_empty", building_recipe)
+publish_tileset("building_empty")
