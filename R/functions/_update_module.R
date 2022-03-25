@@ -38,7 +38,7 @@ update_module <- function(mod_ns = NULL, id = mod_ns, session, zoom, location,
       updateSliderTextInput(
         session = session,
         inputId = construct_namespace("zoom_slider"),
-        selected = get_zoom_name(df)
+        selected = sus_translate(get_zoom_name(df))
       )
     }
   }
