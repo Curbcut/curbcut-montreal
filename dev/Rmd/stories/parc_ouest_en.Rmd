@@ -34,11 +34,12 @@ knitr::include_graphics(here("www/stories/visuals/parc_ouest/flowers_bees.gif"))
 <p>Since 2013, Montreal has adopted more aggressive climate and biodiversity protection goals. The city&rsquo;s 2013 <em>Biodiversity Report </em>outlined a biodiversity strategy and action plan, acknowledging risks threatening the St. Laurence river and its tributaries due to urban growth. Additionally, the Communaut&eacute; m&eacute;tropolitaine de Montr&eacute;al&rsquo;s (CMM) <em>Metropolitan Land Use and Development Plan </em>(PMAD), implemented in 2012, aims to 17% of greater Montreal&rsquo;s territory (up from 12%).</p>
 <p>The GPO has also received investment and regulation from the federal and provincial government. In 2019, Justin Trudeau&rsquo;s federal government pledged CAD \$50 million to the project, aimed mostly acquiring private land in the expansion of l&rsquo;Anse-&agrave;-l&rsquo;Orme, protecting floodplains, and mapping the area. In 2021, the Gouvernement du Qu&eacute;bec designated the western end of &Icirc;le-Bizard a &ldquo;humanized landscape,&rdquo; recognizing land that transformed by human activity but that &ldquo;remains in harmony with nature.&rdquo;</p>
 ### Building the Grand-parc-de-l&rsquo;Ouest
-```{r, echo=FALSE, fig.align = 'center', out.width="100%", warning=FALSE}
+```{r, echo=FALSE, fig.align = 'center', out.width="100%", warning=FALSE, out.extra='style="padding:10px;"'}
 
 knitr::include_graphics(here("www/stories/visuals/parc_ouest/water.jpg"))
 
 ```
+<br>
 <p>Today, the Grand Park de l&rsquo;Ouest is well on its way to becoming a reality. Consultations were carried out through 2020, and the Ville de Montr&eacute;al is acquiring land on <a href="https://journalmetro.com/local/ouest-de-lile/2758708/grand-parc-ouest-montreal-acquiert-terrain-ile-bizard/">&Icirc;le-Bizard</a>, <a href="https://journalmetro.com/actualites/montreal/2745653/le-grand-parc-de-louest-sagrandit/">Senneville</a>, and in Pierrefonds West.</p>
 <p>The one thing that&rsquo;s missing? Cap Nature.</p>
 <p>The demise of Cap Nature happened swiftly: in 2016, Projet Montr&eacute;al, Mayor Val&eacute;rie Plante&rsquo;s party, <a href="https://journalmetro.com/local/ouest-de-lile/917728/developpement-immobilier-pierrefonds-ouest-projet-montreal-se-prononce-contre-le-projet/">pronounced itself against the development</a>. It suggested building on the multiple unused lots in Pierrefonds and highlighted that Cap Nature would be poorly served by public transit. Though the decision and its repercussions have been highly politicized, it represents a paradigm-altering shift: cities <em>can </em>choose to protect over developing and can choose to build density in existing, underutilized spaces instead.</p>
