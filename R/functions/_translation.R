@@ -57,8 +57,8 @@ sus_translate <- function(..., .envir = parent.frame()) {
             tags$span(class = "lang-fr", {
               translated <- translation_fr[translation_fr$en == x, ]$fr
               if (length(translated) != 0 && !is.na(translated)) translated else {
-                warning("No translation text found for `", x, "`.",
-                        call. = FALSE)
+                # warning("No translation text found for `", x, "`.",
+                        # call. = FALSE)
                 x
               }
             }))
@@ -77,7 +77,7 @@ sus_translate <- function(..., .envir = parent.frame()) {
   translated <- translation_fr[translation_fr$en == x, ]$fr
   # In case there is no translations:
   if (length(translated) == 0 || is.na(translated)) return({
-    warning("No translation text found for `", x, "`.", call. = FALSE)
+    # warning("No translation text found for `", x, "`.", call. = FALSE)
     x <- sub("<<.>>", "", x)
     glue(x, .envir = .envir)})
   
