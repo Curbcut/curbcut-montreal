@@ -134,35 +134,35 @@ get_data_table <- function(df, var_left, var_right, data_type, point_df) {
   }
   
   # NA_delta
-  # if (data_type == "NA_delta") {
-  #   data <- get(df)
-  #   data <- data[c("ID", "name", "name_2", if (df == "DA") "DAUID", 
-  #                  if (df %in% c("DA", "CT")) "CTUID", "CSDUID", "population",
-  #                  "geometry")]
-  #   data$group <- "NA - 1"
-  #   data <- left_join(data, colour_delta, by = "group")
-  #   data$var_left <- NA
-  #   data$var_left_q3 <- NA
-  #   data$var_left_1 <- NA
-  #   data$var_left_2 <- NA
-  #   data <- data[c("ID", "name", "name_2", if (df == "DA") "DAUID", 
-  #                  if (df %in% c("DA", "CT")) "CTUID", "CSDUID", "population", 
-  #                  "var_left", "var_left_q3", "var_left_1", "var_left_2", 
-  #                  "group", "fill", "geometry")]
-  # }
+  if (data_type == "NA_delta") {
+    data <- sf::st_drop_geometry(get(df))
+    data <- data[c("ID", "name", "name_2", if (df == "DA") "DAUID",
+                   if (df %in% c("DA", "CT")) "CTUID", "CSDUID", "population")]
+    data$group <- "NA"
+    data$var_left <- NA
+    data$var_left_q3 <- NA
+    data$var_left_1 <- NA
+    data$var_left_2 <- NA
+    data <- data[c("ID", "name", "name_2", if (df == "DA") "DAUID",
+                   if (df %in% c("DA", "CT")) "CTUID", "CSDUID", "population",
+                   "var_left", "var_left_q3", "var_left_1", "var_left_2",
+                   "group", "fill")]
+  }
   
-  # building_NA_delta TKTK update with base R
-  # if (data_type == "building_NA_delta") {
-  #   data <- 
-  #     DA |> 
-  #     st_set_geometry("building") |> 
-  #     select(ID, name, name_2, any_of(c("DAUID", "CTUID", "CSDUID")), 
-  #            population, geometry = building) |> 
-  #     mutate(var_left = NA, var_left_q3 = NA, var_left_1 = NA,
-  #            var_left_2 = NA, group = "NA - 1", .after = population) |> 
-  #     left_join(colour_delta, by = "group") |> 
-  #     relocate(fill, .after = group)
-  # }
+  # building_NA_delta
+  if (data_type == "building_NA_delta") {
+    data <- sf::st_drop_geometry(DA)
+    data <- data[c("ID", "name", "name_2", "DAUID", "CTUID", "CSDUID", 
+                   "population")]
+    data$group <- "NA"
+    data$var_left <- NA
+    data$var_left_q3 <- NA
+    data$var_left_1 <- NA
+    data$var_left_2 <- NA
+    data <- data[c("ID", "name", "name_2", "DAUID", "CTUID", "CSDUID", 
+                   "population", "var_left", "var_left_q3", "var_left_1", 
+                   "var_left_2", "group", "fill")]
+  }
   
   # Delta bivariate
   # if (data_type == "delta_bivar") {
