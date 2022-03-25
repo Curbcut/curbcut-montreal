@@ -143,7 +143,7 @@ ordinal_form <- function(x) {
 # vec_dep -----------------------------------------------------------------
 
 # Reimplemntation of purrr::vec_depth in base R
-vec_dep <- function (x) {
+vec_dep <- function(x) {
   if (is.null(x)) {
     0L
   } else if (is.atomic(x)) {
@@ -153,5 +153,31 @@ vec_dep <- function (x) {
     1L + max(depths, 0L)
   } else {
     abort("`x` must be a vector")
+  }
+}
+
+
+# ntile -------------------------------------------------------------------
+
+ntile <- function(x = row_number(), n) {
+  if (!missing(x)) {
+    x <- rank(x, ties.method = "first", na.last = "keep")
+  }
+  len <- length(x) - sum(is.na(x))
+  n <- as.integer(floor(n))
+  if (len == 0L) {
+    rep(NA_integer_, length(x))
+  }
+  else {
+    n_larger <- as.integer(len %% n)
+    n_smaller <- as.integer(n - n_larger)
+    size <- len/n
+    larger_size <- as.integer(ceiling(size))
+    smaller_size <- as.integer(floor(size))
+    larger_threshold <- larger_size * n_larger
+    bins <- ifelse(x <= larger_threshold, (x + (larger_size - 
+                                                   1L))/larger_size, (x + (-larger_threshold + smaller_size - 
+                                                                             1L))/smaller_size + n_larger)
+    as.integer(floor(bins))
   }
 }
