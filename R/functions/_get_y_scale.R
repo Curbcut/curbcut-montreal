@@ -12,7 +12,7 @@ get_y_scale <- function(graph_type, data, var_type, var_left, var_right) {
              str_detect(var_left[1], "_pct")) {
     "delta_pct"
   } else if (graph_type %in% c("delta", "NAdelta") &&
-             str_detect(var_left, "_dollar")) {
+             str_detect(var_left[1], "_dollar")) {
     "delta_dollar"
   } else if (graph_type %in% c("delta", "NAdelta")) {
     "delta"
