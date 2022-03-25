@@ -40,7 +40,8 @@ zoom_server <- function(id, zoom, zoom_levels) {
     })
     
     # Update the slider if zoom_levels changes
-    observe({
+    observeEvent({zoom_levels()
+      sus_rv$lang()}, {
       updateSliderTextInput(session, "zoom_slider", 
                             selected = get_zoom_name(zoom_string()),
                             choices = get_zoom_label_t(zoom_levels()))
