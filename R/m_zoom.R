@@ -43,9 +43,16 @@ zoom_server <- function(id, zoom, zoom_levels) {
     observeEvent({zoom_levels()
       sus_rv$lang()}, {
       updateSliderTextInput(session, "zoom_slider", 
-                            selected = get_zoom_name(zoom_string()),
+                            selected = sus_translate(get_zoom_name(zoom_string())),
                             choices = get_zoom_label_t(zoom_levels()))
     })
+    
+    # Update the slider when zomo changes, only on auto_zoom
+    observeEvent(zoom_string(), {
+      if (input$zoom_auto)
+        updateSliderTextInput(session, "zoom_slider", 
+                              selected = sus_translate(get_zoom_name(zoom_string())))
+    }, priority = -1)
     
     # Update the slider if in auto mode
     observeEvent(zoom(), {
