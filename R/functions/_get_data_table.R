@@ -165,28 +165,38 @@ get_data_table <- function(df, var_left, var_right, data_type, point_df) {
   }
   
   # Delta bivariate
-  # if (data_type == "delta_bivar") {
-  #   data <- get(df)
-  #   data <- data[c("ID", "name", "name_2", if (df == "DA") "DAUID", 
-  #                  if (df %in% c("DA", "CT")) "CTUID", "CSDUID", "population", 
-  #                  var_left, var_right, "geometry")]
-  #   data$var_left <- (data[[var_left[2]]] - data[[var_left[1]]]) / 
-  #     abs(data[[var_left[1]]])
-  #   data$var_left <- replace(data$var_left, is.nan(data$var_left), NA)
-  #   data$var_left <- replace(data$var_left, is.infinite(data$var_left), NA)
-  #   data$var_left_q3 <- ntile(data$var_left, 3)
-  #   data$var_right <- (data[[var_right[2]]] - data[[var_right[1]]]) / 
-  #     abs(data[[var_right[1]]])
-  #   data$var_right <- replace(data$var_right, is.nan(data$var_right), NA)
-  #   data$var_right <- replace(data$var_right, is.infinite(data$var_right), NA)
-  #   data$var_right_q3 <- ntile(data$var_right, 3)
-  #   data$group <- paste(data$var_left_q3, "-", data$var_right_q3)
-  #   data <- left_join(data, colour_bivar, by = "group")
-  #   data <- data[c("ID", "name", "name_2", if (df == "DA") "DAUID", 
-  #                  if (df %in% c("DA", "CT")) "CTUID", "CSDUID", "population", 
-  #                  "var_left", "var_right", "var_left_q3", "var_right_q3",
-  #                  "group", "fill", "geometry")]
-  # }
+  if (data_type == "delta_bivar") {
+    data <- get(df)
+    data <- data[c("ID", "name", "name_2", if (df == "DA") "DAUID",
+                   if (df %in% c("DA", "CT")) "CTUID", "CSDUID", "population",
+                   var_left, var_right, "geometry")]
+    data$var_left <- (data[[var_left[2]]] - data[[var_left[1]]]) /
+      abs(data[[var_left[1]]])
+    data$var_left <- replace(data$var_left, is.nan(data$var_left), NA)
+    data$var_left <- replace(data$var_left, is.infinite(data$var_left), NA)
+    data$var_left_q3 <- as.numeric(cut(data$var_left,
+                                       breaks = quantile(data$var_left,
+                                                         probs = seq(0, 1, length = 4),
+                                                         na.rm = TRUE,
+                                                         type = 2),
+                                       include.lowest = TRUE))
+    data$var_right <- (data[[var_right[2]]] - data[[var_right[1]]]) /
+      abs(data[[var_right[1]]])
+    data$var_right <- replace(data$var_right, is.nan(data$var_right), NA)
+    data$var_right <- replace(data$var_right, is.infinite(data$var_right), NA)
+    data$var_right_q3 <- as.numeric(cut(data$var_right,
+                                        breaks = quantile(data$var_right,
+                                                          probs = seq(0, 1, length = 4),
+                                                          na.rm = TRUE,
+                                                          type = 2),
+                                        include.lowest = TRUE))
+    data$group <- paste(data$var_left_q3, "-", data$var_right_q3)
+    data <-  merge(data, colour_bivar, by = "group")
+    data <- data[c("ID", "name", "name_2", if (df == "DA") "DAUID",
+                   if (df %in% c("DA", "CT")) "CTUID", "CSDUID", "population",
+                   "var_left", "var_right", "var_left_q3", "var_right_q3",
+                   "group", "fill", "geometry")]
+  }
     
   # NA_delta_bivar
   # if (data_type == "NA_delta_bivar") {
