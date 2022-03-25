@@ -10,8 +10,8 @@ climate_risk_UI <- function(id) {
       sidebar_UI(
         NS(id, ns_id),
         susSidebarWidgets(
-          select_var_UI(NS(id, ns_id), 
-                        var_list = make_dropdown(only = list(theme = "Climate"))), 
+          select_var_UI(NS(id, ns_id), var_list = make_dropdown(
+            only = list(theme = "Climate"))), 
           checkbox_UI(NS(id, ns_id), value = TRUE,
                       label = sus_translate("250-metre grid")),
         ),

@@ -221,9 +221,10 @@ var_groups <- c(var_groups_long, var_groups_short)
 
 tile_lookup <- 
   tile_lookup |> 
+  filter(module != "housing") |> 
   bind_rows(
     map2_dfr(var_groups, seq_along(var_groups), ~tibble(
-      module = "housing", tile2 = .x, suffix = paste("-", .y)))
+      module = "housing", tile2 = .x, suffix = paste0("-", .y)))
   )
 
 qsave(tile_lookup, "data/tile_lookup.qs")
@@ -731,6 +732,49 @@ building_housing <-
   select(-DAUID)
 
 
+# Process and upload borough ----------------------------------------------
+
+for (i in seq_along(var_groups)) {
+  
+  borough_housing |> 
+    select(ID, name, all_of(var_groups[[i]]), geometry) |> 
+    st_set_agr("constant") |> 
+    upload_tile_source(paste0("housing-borough-", i))
+  
+}
+
+
+# Create borough recipe and publish ---------------------------------------
+
+borough_recipes <- 
+  map(seq_along(var_groups), ~{
+    create_recipe(
+      layer_names = "borough",
+      source = paste0(
+        "mapbox://tileset-source/sus-mcgill/housing-borough-", .x),
+      minzoom = 3,
+      maxzoom = 11, 
+      layer_size = 2500,
+      simplification_zoom = 11,
+      recipe_name = paste0("housing-borough-", .x))
+  })
+
+# Create tilesets
+for (i in seq_along(var_groups)) {
+  out <- create_tileset(paste0("housing-borough-", i), borough_recipes[[i]])
+  if (out$status_code != 200) stop(var)
+  Sys.sleep(1)
+}
+
+# Publish tilesets
+for (i in seq_along(var_groups)) {
+  out <- publish_tileset(paste0("housing-borough-", i))
+  if (out$status_code != 200) stop(var)
+  Sys.sleep(30)
+}
+
+
+
 
 
 # Test one building chunk -------------------------------------------------
@@ -774,18 +818,5 @@ map(1:10, ~{
 })
 
 
-# Create and publish building_empty tileset -------------------------------
-
-building_recipe <- 
-  create_recipe(
-    layer_names = "building",
-    source = "mapbox://tileset-source/sus-mcgill/housing-building_test",
-    minzoom = 14,
-    maxzoom = 14, 
-    layer_size = 2500,
-    recipe_name = "housing-building_test")
-
-create_tileset("housing-building_test", building_recipe)
-publish_tileset("housing-building_test")
 
 

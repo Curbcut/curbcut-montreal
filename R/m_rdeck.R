@@ -9,11 +9,20 @@ rdeck_server <- function(id, map_id, tile, tile2, map_var, zoom, select_id) {
   
   # Error checking
   stopifnot(is.reactive(tile))
+  stopifnot(is.reactive(tile2))
   stopifnot(is.reactive(map_var))
   stopifnot(is.reactive(select_id))
   stopifnot(is.reactive(zoom))
   
   moduleServer(id, function(input, output, session) {
+    
+    observe({
+      print(tile())
+      print(tile2())
+      print(map_var())
+      print(zoom())
+      print(select_id())
+    })
     
     # Helper variables
     pick <- reactive(!tile() %in% c("building", "DA") || zoom() >= 13.5 ||

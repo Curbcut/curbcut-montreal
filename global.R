@@ -88,12 +88,12 @@ mods_rdy <- list(
   # "Covid" = c(
   #   "Covid interventions" = "covid"
   #   ),
-  # "Housing" = c(
-  #   "Housing system" = "housing", 
+  "Housing" = c(
+    "Housing system" = "housing"
   #   "Gentrification" = "gentrification", 
   #   "Permits" = "permits", 
   #   "Marketed Sustainability" = "marketed_sustainability"
-  #   ),
+    ),
   # "Policy" = c(
   #   "Montréal climate plans" = "mcp"
   #   ),
