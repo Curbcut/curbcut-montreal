@@ -120,7 +120,7 @@ make_housing_tiles <- function(df) {
           
           val <- (dat[[paste(var, .x[2], sep = "_")]] - 
                     dat[[paste(var, .x[1], sep = "_")]]) / 
-            dat[[paste(var, .x[1], sep = "_")]]
+            abs(dat[[paste(var, .x[1], sep = "_")]])
           
           val <- replace(val, is.nan(val), NA)
           val <- replace(val, is.infinite(val), NA)
@@ -351,26 +351,27 @@ for (i in seq_along(var_groups)) {
 DA_recipes <- 
   map(seq_along(var_groups), ~{
     create_recipe(
-      layer_names = "DA",
-      source = paste0(
-        "mapbox://tileset-source/sus-mcgill/housing-DA-", .x),
-      minzoom = 3,
-      maxzoom = 12, 
-      layer_size = 2500,
-      simplification_zoom = 12,
-      recipe_name = paste0("housing-CT-", .x))
+      layer_names = c("DA_empty", "DA"),
+      source = c(
+        DA_empty = "mapbox://tileset-source/sus-mcgill/DA_empty",
+        DA = paste0("mapbox://tileset-source/sus-mcgill/housing-DA-", .x)),
+      minzoom = c(DA_empty = 3, DA = 9),
+      maxzoom = c(DA_empty = 8, DA = 13), 
+      layer_size = c(DA_empty = NA, DA = 2500),
+      simplification_zoom = c(DA_empty = NA, DA = 13),
+      recipe_name = paste0("housing-DA-", .x))
   })
 
 # Create tilesets
 for (i in seq_along(var_groups)) {
-  out <- create_tileset(paste0("housing-CT-", i), CT_recipes[[i]])
+  out <- create_tileset(paste0("housing-DA-", i), DA_recipes[[i]])
   if (out$status_code != 200) stop(var)
   Sys.sleep(1)
 }
 
 # Publish tilesets
 for (i in seq_along(var_groups)) {
-  out <- publish_tileset(paste0("housing-CT-", i))
+  out <- publish_tileset(paste0("housing-DA-", i))
   if (out$status_code != 200) stop(var)
   Sys.sleep(30)
 }

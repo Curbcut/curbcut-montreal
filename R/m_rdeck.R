@@ -16,14 +16,6 @@ rdeck_server <- function(id, map_id, tile, tile2, map_var, zoom, select_id) {
   
   moduleServer(id, function(input, output, session) {
     
-    observe({
-      print(tile())
-      print(tile2())
-      print(map_var())
-      print(zoom())
-      print(select_id())
-    })
-    
     # Helper variables
     pick <- reactive(!tile() %in% c("building", "DA") || zoom() >= 13.5 ||
                        (tile() == "DA" && zoom() >= 10.5))

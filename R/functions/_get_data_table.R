@@ -166,10 +166,10 @@ get_data_table <- function(df, var_left, var_right, data_type, point_df) {
   
   # Delta bivariate
   if (data_type == "delta_bivar") {
-    data <- get(df)
+    data <- sf::st_drop_geometry(get(df))
     data <- data[c("ID", "name", "name_2", if (df == "DA") "DAUID",
                    if (df %in% c("DA", "CT")) "CTUID", "CSDUID", "population",
-                   var_left, var_right, "geometry")]
+                   var_left, var_right)]
     data$var_left <- (data[[var_left[2]]] - data[[var_left[1]]]) /
       abs(data[[var_left[1]]])
     data$var_left <- replace(data$var_left, is.nan(data$var_left), NA)
@@ -181,63 +181,66 @@ get_data_table <- function(df, var_left, var_right, data_type, point_df) {
     data$var_right <- replace(data$var_right, is.infinite(data$var_right), NA)
     data$var_right_q3 <- ntile(data$var_right, 3)
     data$group <- paste(data$var_left_q3, "-", data$var_right_q3)
-    data <-  merge(data, colour_bivar, by = "group")
     data <- data[c("ID", "name", "name_2", if (df == "DA") "DAUID",
                    if (df %in% c("DA", "CT")) "CTUID", "CSDUID", "population",
                    "var_left", "var_right", "var_left_q3", "var_right_q3",
-                   "group", "fill", "geometry")]
+                   "group")]
   }
     
   # NA_delta_bivar
-  # if (data_type == "NA_delta_bivar") {
-  #   data <- get(df)
-  #   data <- data[c("ID", "name", "name_2", if (df == "DA") "DAUID", 
-  #                  if (df %in% c("DA", "CT")) "CTUID", "CSDUID", "population",
-  #                  "geometry")]
-  #   data$group <- "NA - NA"
-  #   data <- left_join(data, colour_bivar, by = "group")
-  #   data$var_left <- NA
-  #   data$var_left_q3 <- NA
-  #   data$var_right <- NA
-  #   data$var_right_q3 <- NA
-  #   data <- data[c("ID", "name", "name_2", if (df == "DA") "DAUID", 
-  #                  if (df %in% c("DA", "CT")) "CTUID", "CSDUID", "population", 
-  #                  "var_left", "var_left_q3", "var_right", "var_right_q3", 
-  #                  "group", "fill", "geometry")]
-  # }
+  if (data_type == "NA_delta_bivar") {
+    data <- st_drop_geometry(get(df))
+    data <- data[c("ID", "name", "name_2", if (df == "DA") "DAUID",
+                   if (df %in% c("DA", "CT")) "CTUID", "CSDUID", "population")]
+    data$group <- "NA - NA"
+    data$var_left <- NA
+    data$var_left_q3 <- NA
+    data$var_right <- NA
+    data$var_right_q3 <- NA
+    data <- data[c("ID", "name", "name_2", if (df == "DA") "DAUID",
+                   if (df %in% c("DA", "CT")) "CTUID", "CSDUID", "population",
+                   "var_left", "var_left_q3", "var_right", "var_right_q3",
+                   "group")]
+  }
   
-  # Building delta bivariate TKTK update with base R
-  # if (data_type == "building_delta_bivar") {
-  #   data <-
-  #     df |> 
-  #     get() |> 
-  #     select(ID, name, name_2, any_of(c("DAUID", "CTUID", "CSDUID")), 
-  #            population, var_left = all_of(var_left), 
-  #            var_right = all_of(var_right), geometry = building) |>
-  #     mutate(var_left = (var_left2 - var_left1) / abs(var_left1),
-  #            var_left_q3 = ntile(var_left, 3),
-  #            var_right = (var_right2 - var_right1) / abs(var_right1),
-  #            var_right_q3 = ntile(var_right, 3),
-  #            across(where(is.numeric), ~replace(., is.nan(.), NA)),
-  #            across(where(is.numeric), ~replace(., is.infinite(.), NA))) |> 
-  #     select(ID, name, name_2, any_of(c("DAUID", "CTUID", "CSDUID")), 
-  #            population, var_left, var_right, var_left_q3, var_right_q3) |> 
-  #     mutate(group = paste(var_left_q3, "-", var_right_q3)) |>
-  #     left_join(colour_bivar, by = "group")
-  # }
+  # Building delta bivariate
+  if (data_type == "building_delta_bivar") {
+    data <- sf::st_drop_geometry(DA)
+    data <- data[c("ID", "name", "name_2", if (df == "DA") "DAUID",
+                   if (df %in% c("DA", "CT")) "CTUID", "CSDUID", "population",
+                   var_left, var_right)]
+    data$var_left <- (data[[var_left[2]]] - data[[var_left[1]]]) /
+      abs(data[[var_left[1]]])
+    data$var_left <- replace(data$var_left, is.nan(data$var_left), NA)
+    data$var_left <- replace(data$var_left, is.infinite(data$var_left), NA)
+    data$var_left_q3 <- ntile(data$var_left, 3)
+    data$var_right <- (data[[var_right[2]]] - data[[var_right[1]]]) /
+      abs(data[[var_right[1]]])
+    data$var_right <- replace(data$var_right, is.nan(data$var_right), NA)
+    data$var_right <- replace(data$var_right, is.infinite(data$var_right), NA)
+    data$var_right_q3 <- ntile(data$var_right, 3)
+    data$group <- paste(data$var_left_q3, "-", data$var_right_q3)
+    data <- data[c("ID", "name", "name_2", if (df == "DA") "DAUID",
+                   if (df %in% c("DA", "CT")) "CTUID", "CSDUID", "population",
+                   "var_left", "var_right", "var_left_q3", "var_right_q3",
+                   "group")]
+  }
     
-  # building_NA_delta_bivar TKTK update with base R
-  # if (data_type == "building_NA_delta_bivar") {
-  #   data <- 
-  #     DA |> 
-  #     st_set_geometry("building") |> 
-  #     select(ID, name, name_2, any_of(c("DAUID", "CTUID", "CSDUID")), 
-  #            population, geometry = building) |> 
-  #     mutate(var_left = NA, var_left_q3 = NA, var_right = NA, 
-  #            var_right_q3 = NA, group = "NA - NA", .after = population) |> 
-  #     left_join(colour_bivar, by = "group") |> 
-  #     relocate(fill, .after = group)
-  # }
+  # building_NA_delta_bivar
+  if (data_type == "building_NA_delta_bivar") {
+    data <- st_drop_geometry(DA)
+    data <- data[c("ID", "name", "name_2", if (df == "DA") "DAUID",
+                   if (df %in% c("DA", "CT")) "CTUID", "CSDUID", "population")]
+    data$group <- "NA - NA"
+    data$var_left <- NA
+    data$var_left_q3 <- NA
+    data$var_right <- NA
+    data$var_right_q3 <- NA
+    data <- data[c("ID", "name", "name_2", if (df == "DA") "DAUID",
+                   if (df %in% c("DA", "CT")) "CTUID", "CSDUID", "population",
+                   "var_left", "var_left_q3", "var_right", "var_right_q3",
+                   "group")]
+  }
     
   # Point data TKTK update with base R
   # if (data_type == "point") {
