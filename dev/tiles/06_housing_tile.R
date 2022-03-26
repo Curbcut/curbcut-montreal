@@ -33,61 +33,22 @@ right_vars <-
   pull(var_code)
 
 
-# Process borough ---------------------------------------------------------
+# Processing function -----------------------------------------------------
 
-df <- "borough"
-dat <- get(df)
-
-# Get all multi-date right vars
-rv_delta_bivar <- map_dfc(right_vars, \(var) {
+make_housing_tiles <- function(df) {
   
-  var_year <-
-    variables |> 
-    filter(var_code == var) |> 
-    pull(dates) |> 
-    pluck(1)
+  dat <- get(df)
   
-  if (length(var_year) != length(all_years)) return(NULL)
-  
-  var_year_comb <-
-    expand.grid(var_year, var_year) |> 
-    as_tibble() |> 
-    mutate(across(everything(), as.character)) |> 
-    mutate(across(everything(), as.numeric)) |> 
-    filter(Var1 < Var2) |> 
-    as.vector() |> 
-    split(1:10) |> 
-    map(unlist) |> 
-    map(unname)
-  
-  # Get delta values for all 2-year comparisons
-  multi_year <-
-    map_dfc(var_year_comb, ~{
-      
-      val <- (dat[[paste(var, .x[2], sep = "_")]] - 
-                dat[[paste(var, .x[1], sep = "_")]]) / 
-        dat[[paste(var, .x[1], sep = "_")]]
-      
-      val <- replace(val, is.nan(val), NA)
-      val <- replace(val, is.infinite(val), NA)
-      q3 <- ntile(val, 3)
-      tibble(q3) |> 
-        set_names(paste(var, "q3", paste(.x, collapse = "_"), sep = "_"))
-    })
-  
-})
-
-# Get all combinations for all left vars
-borough_housing <- 
-  dat |> 
-  select(ID, name, geometry) |>
-  bind_cols(map_dfc(left_vars, \(var) {
+  # Get all multi-date right vars
+  rv_delta_bivar <- map_dfc(right_vars, \(var) {
     
     var_year <-
       variables |> 
       filter(var_code == var) |> 
       pull(dates) |> 
       pluck(1)
+    
+    if (length(var_year) != length(all_years)) return(NULL)
     
     var_year_comb <-
       expand.grid(var_year, var_year) |> 
@@ -96,26 +57,12 @@ borough_housing <-
       mutate(across(everything(), as.numeric)) |> 
       filter(Var1 < Var2) |> 
       as.vector() |> 
-      # Need to calculate the triangular number to see how many pairs there are
-      split(1:(length(var_year) * (length(var_year) - 1) / 2)) |> 
+      split(1:10) |> 
       map(unlist) |> 
       map(unname)
     
-    # Get q5 values for individual years
-    single_year_q5 <- 
-      map_dfc(var_year, ~dat[[paste(var, "q5", .x, sep = "_")]]) |> 
-      set_names(paste(var, var_year, sep = "_")) |> 
-      mutate(across(everything(), as.character))
-    
-    # Get q3 values for individual years
-    single_year_q3 <- 
-      map_dfc(var_year, ~dat[[paste(var, "q3", .x, sep = "_")]]) |> 
-      set_names(paste(var, "q3", var_year, sep = "_")) |> 
-      mutate(across(everything(), as.character))
-    
     # Get delta values for all 2-year comparisons
-    multi_year <- if (length(var_year) != length(all_years)) NULL else {
-      
+    multi_year <-
       map_dfc(var_year_comb, ~{
         
         val <- (dat[[paste(var, .x[2], sep = "_")]] - 
@@ -125,72 +72,145 @@ borough_housing <-
         val <- replace(val, is.nan(val), NA)
         val <- replace(val, is.infinite(val), NA)
         q3 <- ntile(val, 3)
-        data_med <- median(abs(val[abs(val) > 0.02]), na.rm = TRUE)
-        val_delta <- "19"
-        val_delta[val < data_med] <- "18"
-        val_delta[val < 0.02] <- "17"
-        val_delta[val < -0.02] <- "16"
-        val_delta[val < -1 * data_med] <- "15"
-        val_delta[is.na(val)] <- "0"
-        tibble(val_delta, q3) |> 
-          set_names(c(paste(var, paste(.x, collapse = "_"), sep = "_"),
-                      paste(var, "q3", paste(.x, collapse = "_"), sep = "_")))
+        tibble(q3) |> 
+          set_names(paste(var, "q3", paste(.x, collapse = "_"), sep = "_"))
       })
-    }
     
-    multi_year_q3 <- if (is.null(multi_year)) NULL else {
-      multi_year |> 
-        select(contains("q3"))
-    }
+  })
+  
+  # Get all combinations for all left vars
+  dat |> 
+    select(ID, name, any_of(c("building", "geometry"))) |>
+    bind_cols(map_dfc(left_vars, \(var) {
       
-    multi_year <- if (is.null(multi_year)) NULL else {
-      multi_year |> 
-        select(!contains("q3"))
-    }
+      var_year <-
+        variables |> 
+        filter(var_code == var) |> 
+        pull(dates) |> 
+        pluck(1)
       
-    # Get bivar values for all single years
-    bivar <- map_dfc(right_vars, \(rv) {
+      var_year_comb <-
+        expand.grid(var_year, var_year) |> 
+        as_tibble() |> 
+        mutate(across(everything(), as.character)) |> 
+        mutate(across(everything(), as.numeric)) |> 
+        filter(Var1 < Var2) |> 
+        as.vector() |> 
+        # Need to calculate triangular number to see how many pairs there are
+        split(1:(length(var_year) * (length(var_year) - 1) / 2)) |> 
+        map(unlist) |> 
+        map(unname)
       
-      map_dfc(names(single_year_q3), ~{
-        year <- str_extract(.x, "\\d{4}$")
-        rv_2 <- paste(rv, "q3", year, sep = "_") |> 
-          return_closest_year(df)
-        paste(single_year_q3[[.x]], dat[[rv_2]], sep = " - ")}) |> 
-        set_names(paste(var, rv, str_extract(names(single_year_q3), "\\d{4}$"),
-                        sep = "_"))
+      # Get q5 values for individual years
+      single_year_q5 <- 
+        map_dfc(var_year, ~dat[[paste(var, "q5", .x, sep = "_")]]) |> 
+        set_names(paste(var, var_year, sep = "_")) |> 
+        mutate(across(everything(), as.character))
       
-    })
-    
-    # Get delta bivar values for all year combinations
-    delta_bivar <- if (is.null(multi_year_q3)) NULL else {
+      # Get q3 values for individual years
+      single_year_q3 <- 
+        map_dfc(var_year, ~dat[[paste(var, "q3", .x, sep = "_")]]) |> 
+        set_names(paste(var, "q3", var_year, sep = "_")) |> 
+        mutate(across(everything(), as.character))
       
-      multi_year_q3 |> 
-        names() |> 
-        map_dfc(\(x) {
+      # Get delta values for all 2-year comparisons
+      multi_year <- if (length(var_year) != length(all_years)) NULL else {
+        
+        map_dfc(var_year_comb, ~{
           
-          vec <- multi_year_q3[[x]]
-          years <- str_extract(x, "\\d{4}_\\d{4}$")
+          val <- (dat[[paste(var, .x[2], sep = "_")]] - 
+                    dat[[paste(var, .x[1], sep = "_")]]) / 
+            dat[[paste(var, .x[1], sep = "_")]]
           
-          rv_names <- 
-            rv_delta_bivar |> 
-            select(contains(years)) |> 
-            names()
-          
-          rv_delta_bivar[rv_names] |> 
-            mutate(across(everything(), 
-                          ~trans_var(paste(vec, .x, sep = " - ")))) |> 
-            set_names(paste(str_remove(x, "_q3.*$"), 
-                            str_remove(rv_names, "_q3"),
-                            sep = "_"))
-          
+          val <- replace(val, is.nan(val), NA)
+          val <- replace(val, is.infinite(val), NA)
+          q3 <- ntile(val, 3)
+          data_med <- median(abs(val[abs(val) > 0.02]), na.rm = TRUE)
+          val_delta <- rep("19", length(val))
+          val_delta[val < data_med] <- "18"
+          val_delta[val < 0.02] <- "17"
+          val_delta[val < -0.02] <- "16"
+          val_delta[val < -1 * data_med] <- "15"
+          val_delta[is.na(val)] <- "0"
+          tibble(val_delta, q3) |> 
+            set_names(c(paste(var, paste(.x, collapse = "_"), sep = "_"),
+                        paste(var, "q3", paste(.x, collapse = "_"), sep = "_")))
         })
+      }
       
-    }
-    
-    bind_cols(single_year_q5, multi_year, bivar, delta_bivar)
-    
-  })) |> 
-  relocate(geometry, .after = last_col())
+      multi_year_q3 <- if (is.null(multi_year)) NULL else {
+        multi_year |> 
+          select(contains("q3"))
+      }
+      
+      multi_year <- if (is.null(multi_year)) NULL else {
+        multi_year |> 
+          select(!contains("q3"))
+      }
+      
+      # Get bivar values for all single years
+      bivar <- map_dfc(right_vars, \(rv) {
+        
+        map_dfc(names(single_year_q3), ~{
+          year <- str_extract(.x, "\\d{4}$")
+          rv_2 <- paste(rv, "q3", year, sep = "_") |> 
+            return_closest_year(df)
+          paste(single_year_q3[[.x]], dat[[rv_2]], sep = " - ")}) |> 
+          set_names(paste(var, rv, str_extract(names(single_year_q3), "\\d{4}$"),
+                          sep = "_"))
+        
+      })
+      
+      # Get delta bivar values for all year combinations
+      delta_bivar <- if (is.null(multi_year_q3)) NULL else {
+        
+        multi_year_q3 |> 
+          names() |> 
+          map_dfc(\(x) {
+            
+            vec <- multi_year_q3[[x]]
+            years <- str_extract(x, "\\d{4}_\\d{4}$")
+            
+            rv_names <- 
+              rv_delta_bivar |> 
+              select(contains(years)) |> 
+              names()
+            
+            rv_delta_bivar[rv_names] |> 
+              mutate(across(everything(), 
+                            ~trans_var(paste(vec, .x, sep = " - ")))) |> 
+              set_names(paste(str_remove(x, "_q3.*$"), 
+                              str_remove(rv_names, "_q3"),
+                              sep = "_"))
+            
+          })
+        
+      }
+      
+      bind_cols(single_year_q5, multi_year, bivar, delta_bivar)
+      
+    })) |> 
+    relocate(any_of(c("building", "geometry")), .after = last_col())
+  
+}
+
+
+# Process geometries ------------------------------------------------------
+
+borough_housing <- make_housing_tiles("borough")
+CT_housing <- make_housing_tiles("CT")
+DA_housing <- make_housing_tiles("DA")
+DA_building_housing <- DA_housing |> 
+  st_set_geometry("building") |> 
+  select(-geometry) |> 
+  rename(geometry = building)
+DA_housing <- select(DA_housing, -building)
+building_housing <- 
+  building_full |> 
+  select(ID, name, DAUID) |> 
+  left_join(select(st_drop_geometry(DA_housing), -name), 
+            by = c("DAUID" = "ID")) |> 
+  select(-DAUID)
 
 
 # Construct tile lookup table ---------------------------------------------
@@ -230,508 +250,6 @@ tile_lookup <-
 qsave(tile_lookup, "data/tile_lookup.qs")
 
 
-# Process CT --------------------------------------------------------------
-
-df <- "CT"
-dat <- get(df)
-
-# Get all multi-date right vars
-rv_delta_bivar <- map_dfc(right_vars, \(var) {
-  
-  var_year <-
-    variables |> 
-    filter(var_code == var) |> 
-    pull(dates) |> 
-    pluck(1)
-  
-  if (length(var_year) != length(all_years)) return(NULL)
-  
-  var_year_comb <-
-    expand.grid(var_year, var_year) |> 
-    as_tibble() |> 
-    mutate(across(everything(), as.character)) |> 
-    mutate(across(everything(), as.numeric)) |> 
-    filter(Var1 < Var2) |> 
-    as.vector() |> 
-    split(1:10) |> 
-    map(unlist) |> 
-    map(unname)
-  
-  # Get delta values for all 2-year comparisons
-  multi_year <-
-    map_dfc(var_year_comb, ~{
-      
-      val <- (dat[[paste(var, .x[2], sep = "_")]] - 
-                dat[[paste(var, .x[1], sep = "_")]]) / 
-        dat[[paste(var, .x[1], sep = "_")]]
-      
-      val <- replace(val, is.nan(val), NA)
-      val <- replace(val, is.infinite(val), NA)
-      q3 <- ntile(val, 3)
-      tibble(q3) |> 
-        set_names(paste(var, "q3", paste(.x, collapse = "_"), sep = "_"))
-    })
-  
-})
-
-# Get all combinations for all left vars
-CT_housing <- 
-  dat |> 
-  select(ID, name, geometry) |>
-  bind_cols(map_dfc(left_vars, \(var) {
-    
-    var_year <-
-      variables |> 
-      filter(var_code == var) |> 
-      pull(dates) |> 
-      pluck(1)
-    
-    var_year_comb <-
-      expand.grid(var_year, var_year) |> 
-      as_tibble() |> 
-      mutate(across(everything(), as.character)) |> 
-      mutate(across(everything(), as.numeric)) |> 
-      filter(Var1 < Var2) |> 
-      as.vector() |> 
-      # Need to calculate the triangular number to see how many pairs there are
-      split(1:(length(var_year) * (length(var_year) - 1) / 2)) |> 
-      map(unlist) |> 
-      map(unname)
-    
-    # Get q5 values for individual years
-    single_year_q5 <- 
-      map_dfc(var_year, ~dat[[paste(var, "q5", .x, sep = "_")]]) |> 
-      set_names(paste(var, var_year, sep = "_")) |> 
-      mutate(across(everything(), as.character))
-    
-    # Get q3 values for individual years
-    single_year_q3 <- 
-      map_dfc(var_year, ~dat[[paste(var, "q3", .x, sep = "_")]]) |> 
-      set_names(paste(var, "q3", var_year, sep = "_")) |> 
-      mutate(across(everything(), as.character))
-    
-    # Get delta values for all 2-year comparisons
-    multi_year <- if (length(var_year) != length(all_years)) NULL else {
-      
-      map_dfc(var_year_comb, ~{
-        
-        val <- (dat[[paste(var, .x[2], sep = "_")]] - 
-                  dat[[paste(var, .x[1], sep = "_")]]) / 
-          dat[[paste(var, .x[1], sep = "_")]]
-        
-        val <- replace(val, is.nan(val), NA)
-        val <- replace(val, is.infinite(val), NA)
-        q3 <- ntile(val, 3)
-        data_med <- median(abs(val[abs(val) > 0.02]), na.rm = TRUE)
-        val_delta <- "19"
-        val_delta[val < data_med] <- "18"
-        val_delta[val < 0.02] <- "17"
-        val_delta[val < -0.02] <- "16"
-        val_delta[val < -1 * data_med] <- "15"
-        val_delta[is.na(val)] <- "0"
-        tibble(val_delta, q3) |> 
-          set_names(c(paste(var, paste(.x, collapse = "_"), sep = "_"),
-                      paste(var, "q3", paste(.x, collapse = "_"), sep = "_")))
-      })
-    }
-    
-    multi_year_q3 <- if (is.null(multi_year)) NULL else {
-      multi_year |> 
-        select(contains("q3"))
-    }
-    
-    multi_year <- if (is.null(multi_year)) NULL else {
-      multi_year |> 
-        select(!contains("q3"))
-    }
-    
-    # Get bivar values for all single years
-    bivar <- map_dfc(right_vars, \(rv) {
-      
-      map_dfc(names(single_year_q3), ~{
-        year <- str_extract(.x, "\\d{4}$")
-        rv_2 <- paste(rv, "q3", year, sep = "_") |> 
-          return_closest_year(df)
-        paste(single_year_q3[[.x]], dat[[rv_2]], sep = " - ")}) |> 
-        set_names(paste(var, rv, str_extract(names(single_year_q3), "\\d{4}$"),
-                        sep = "_"))
-      
-    })
-    
-    # Get delta bivar values for all year combinations
-    delta_bivar <- if (is.null(multi_year_q3)) NULL else {
-      
-      multi_year_q3 |> 
-        names() |> 
-        map_dfc(\(x) {
-          
-          vec <- multi_year_q3[[x]]
-          years <- str_extract(x, "\\d{4}_\\d{4}$")
-          
-          rv_names <- 
-            rv_delta_bivar |> 
-            select(contains(years)) |> 
-            names()
-          
-          rv_delta_bivar[rv_names] |> 
-            mutate(across(everything(), 
-                          ~trans_var(paste(vec, .x, sep = " - ")))) |> 
-            set_names(paste(str_remove(x, "_q3.*$"), 
-                            str_remove(rv_names, "_q3"),
-                            sep = "_"))
-          
-        })
-      
-    }
-    
-    bind_cols(single_year_q5, multi_year, bivar, delta_bivar)
-    
-  })) |> 
-  relocate(geometry, .after = last_col())
-
-
-# Process DA --------------------------------------------------------------
-
-df <- "DA"
-dat <- get(df)
-
-# Get all multi-date right vars
-rv_delta_bivar <- map_dfc(right_vars, \(var) {
-  
-  var_year <-
-    variables |> 
-    filter(var_code == var) |> 
-    pull(dates) |> 
-    pluck(1)
-  
-  if (length(var_year) != length(all_years)) return(NULL)
-  
-  var_year_comb <-
-    expand.grid(var_year, var_year) |> 
-    as_tibble() |> 
-    mutate(across(everything(), as.character)) |> 
-    mutate(across(everything(), as.numeric)) |> 
-    filter(Var1 < Var2) |> 
-    as.vector() |> 
-    split(1:10) |> 
-    map(unlist) |> 
-    map(unname)
-  
-  # Get delta values for all 2-year comparisons
-  multi_year <-
-    map(var_year_comb, ~{
-      
-      val <- (dat[[paste(var, .x[2], sep = "_")]] - 
-                dat[[paste(var, .x[1], sep = "_")]]) / 
-        dat[[paste(var, .x[1], sep = "_")]]
-      
-      val <- replace(val, is.nan(val), NA)
-      val <- replace(val, is.infinite(val), NA)
-      q3 <- ntile(val, 3)
-      tibble(q3) |> 
-        set_names(paste(var, "q3", paste(.x, collapse = "_"), sep = "_"))
-    })
-  
-})
-
-# Get all combinations for all left vars
-DA_housing <- 
-  dat |> 
-  select(ID, name, geometry) |>
-  bind_cols(map_dfc(left_vars, \(var) {
-    
-    var_year <-
-      variables |> 
-      filter(var_code == var) |> 
-      pull(dates) |> 
-      pluck(1)
-    
-    var_year_comb <-
-      expand.grid(var_year, var_year) |> 
-      as_tibble() |> 
-      mutate(across(everything(), as.character)) |> 
-      mutate(across(everything(), as.numeric)) |> 
-      filter(Var1 < Var2) |> 
-      as.vector() |> 
-      # Need to calculate the triangular number to see how many pairs there are
-      split(1:(length(var_year) * (length(var_year) - 1) / 2)) |> 
-      map(unlist) |> 
-      map(unname)
-    
-    # Get q5 values for individual years
-    single_year_q5 <- 
-      map_dfc(var_year, ~dat[[paste(var, "q5", .x, sep = "_")]]) |> 
-      set_names(paste(var, var_year, sep = "_")) |> 
-      mutate(across(everything(), as.character))
-    
-    # Get q3 values for individual years
-    single_year_q3 <- 
-      map_dfc(var_year, ~dat[[paste(var, "q3", .x, sep = "_")]]) |> 
-      set_names(paste(var, "q3", var_year, sep = "_")) |> 
-      mutate(across(everything(), as.character))
-    
-    # Get delta values for all 2-year comparisons
-    multi_year <- if (length(var_year) != length(all_years)) NULL else {
-      
-      map_dfc(var_year_comb, ~{
-        
-        val <- (dat[[paste(var, .x[2], sep = "_")]] - 
-                  dat[[paste(var, .x[1], sep = "_")]]) / 
-          dat[[paste(var, .x[1], sep = "_")]]
-        
-        val <- replace(val, is.nan(val), NA)
-        val <- replace(val, is.infinite(val), NA)
-        q3 <- ntile(val, 3)
-        data_med <- median(abs(val[abs(val) > 0.02]), na.rm = TRUE)
-        val_delta <- "19"
-        val_delta[val < data_med] <- "18"
-        val_delta[val < 0.02] <- "17"
-        val_delta[val < -0.02] <- "16"
-        val_delta[val < -1 * data_med] <- "15"
-        val_delta[is.na(val)] <- "0"
-        tibble(val_delta, q3) |> 
-          set_names(c(paste(var, paste(.x, collapse = "_"), sep = "_"),
-                      paste(var, "q3", paste(.x, collapse = "_"), sep = "_")))
-      })
-    }
-    
-    multi_year_q3 <- if (is.null(multi_year)) NULL else {
-      multi_year |> 
-        select(contains("q3"))
-    }
-    
-    multi_year <- if (is.null(multi_year)) NULL else {
-      multi_year |> 
-        select(!contains("q3"))
-    }
-    
-    # Get bivar values for all single years
-    bivar <- map_dfc(right_vars, \(rv) {
-      
-      map_dfc(names(single_year_q3), ~{
-        year <- str_extract(.x, "\\d{4}$")
-        rv_2 <- paste(rv, "q3", year, sep = "_") |> 
-          return_closest_year(df)
-        paste(single_year_q3[[.x]], dat[[rv_2]], sep = " - ")}) |> 
-        set_names(paste(var, rv, str_extract(names(single_year_q3), "\\d{4}$"),
-                        sep = "_"))
-      
-    })
-    
-    # Get delta bivar values for all year combinations
-    delta_bivar <- if (is.null(multi_year_q3)) NULL else {
-      
-      multi_year_q3 |> 
-        names() |> 
-        map_dfc(\(x) {
-          
-          vec <- multi_year_q3[[x]]
-          years <- str_extract(x, "\\d{4}_\\d{4}$")
-          
-          rv_names <- 
-            rv_delta_bivar |> 
-            select(contains(years)) |> 
-            names()
-          
-          rv_delta_bivar[rv_names] |> 
-            mutate(across(everything(), 
-                          ~trans_var(paste(vec, .x, sep = " - ")))) |> 
-            set_names(paste(str_remove(x, "_q3.*$"), 
-                            str_remove(rv_names, "_q3"),
-                            sep = "_"))
-          
-        })
-      
-    }
-    
-    bind_cols(single_year_q5, multi_year, bivar, delta_bivar)
-    
-  })) |> 
-  relocate(geometry, .after = last_col())
-
-
-# Process DA --------------------------------------------------------------
-
-df <- "DA"
-dat <- get(df)
-
-# Get all multi-date right vars
-rv_delta_bivar <- map_dfc(right_vars, \(var) {
-  
-  var_year <-
-    variables |> 
-    filter(var_code == var) |> 
-    pull(dates) |> 
-    pluck(1)
-  
-  if (length(var_year) != length(all_years)) return(NULL)
-  
-  var_year_comb <-
-    expand.grid(var_year, var_year) |> 
-    as_tibble() |> 
-    mutate(across(everything(), as.character)) |> 
-    mutate(across(everything(), as.numeric)) |> 
-    filter(Var1 < Var2) |> 
-    as.vector() |> 
-    split(1:10) |> 
-    map(unlist) |> 
-    map(unname)
-  
-  # Get delta values for all 2-year comparisons
-  multi_year <-
-    map(var_year_comb, ~{
-      
-      val <- (dat[[paste(var, .x[2], sep = "_")]] - 
-                dat[[paste(var, .x[1], sep = "_")]]) / 
-        dat[[paste(var, .x[1], sep = "_")]]
-      
-      val <- replace(val, is.nan(val), NA)
-      val <- replace(val, is.infinite(val), NA)
-      q3 <- ntile(val, 3)
-      tibble(q3) |> 
-        set_names(paste(var, "q3", paste(.x, collapse = "_"), sep = "_"))
-    })
-  
-})
-
-# Get all combinations for all left vars
-DA_housing <- 
-  dat |> 
-  select(ID, name, building, geometry) |>
-  bind_cols(map_dfc(left_vars, \(var) {
-    
-    var_year <-
-      variables |> 
-      filter(var_code == var) |> 
-      pull(dates) |> 
-      pluck(1)
-    
-    var_year_comb <-
-      expand.grid(var_year, var_year) |> 
-      as_tibble() |> 
-      mutate(across(everything(), as.character)) |> 
-      mutate(across(everything(), as.numeric)) |> 
-      filter(Var1 < Var2) |> 
-      as.vector() |> 
-      # Need to calculate the triangular number to see how many pairs there are
-      split(1:(length(var_year) * (length(var_year) - 1) / 2)) |> 
-      map(unlist) |> 
-      map(unname)
-    
-    # Get q5 values for individual years
-    single_year_q5 <- 
-      map_dfc(var_year, ~dat[[paste(var, "q5", .x, sep = "_")]]) |> 
-      set_names(paste(var, var_year, sep = "_")) |> 
-      mutate(across(everything(), as.character))
-    
-    # Get q3 values for individual years
-    single_year_q3 <- 
-      map_dfc(var_year, ~dat[[paste(var, "q3", .x, sep = "_")]]) |> 
-      set_names(paste(var, "q3", var_year, sep = "_")) |> 
-      mutate(across(everything(), as.character))
-    
-    # Get delta values for all 2-year comparisons
-    multi_year <- if (length(var_year) != length(all_years)) NULL else {
-      
-      map_dfc(var_year_comb, ~{
-        
-        val <- (dat[[paste(var, .x[2], sep = "_")]] - 
-                  dat[[paste(var, .x[1], sep = "_")]]) / 
-          dat[[paste(var, .x[1], sep = "_")]]
-        
-        val <- replace(val, is.nan(val), NA)
-        val <- replace(val, is.infinite(val), NA)
-        q3 <- ntile(val, 3)
-        data_med <- median(abs(val[abs(val) > 0.02]), na.rm = TRUE)
-        val_delta <- "19"
-        val_delta[val < data_med] <- "18"
-        val_delta[val < 0.02] <- "17"
-        val_delta[val < -0.02] <- "16"
-        val_delta[val < -1 * data_med] <- "15"
-        val_delta[is.na(val)] <- "0"
-        tibble(val_delta, q3) |> 
-          set_names(c(paste(var, paste(.x, collapse = "_"), sep = "_"),
-                      paste(var, "q3", paste(.x, collapse = "_"), sep = "_")))
-      })
-    }
-    
-    multi_year_q3 <- if (is.null(multi_year)) NULL else {
-      multi_year |> 
-        select(contains("q3"))
-    }
-    
-    multi_year <- if (is.null(multi_year)) NULL else {
-      multi_year |> 
-        select(!contains("q3"))
-    }
-    
-    # Get bivar values for all single years
-    bivar <- map_dfc(right_vars, \(rv) {
-      
-      map_dfc(names(single_year_q3), ~{
-        year <- str_extract(.x, "\\d{4}$")
-        rv_2 <- paste(rv, "q3", year, sep = "_") |> 
-          return_closest_year(df)
-        paste(single_year_q3[[.x]], dat[[rv_2]], sep = " - ")}) |> 
-        set_names(paste(var, rv, str_extract(names(single_year_q3), "\\d{4}$"),
-                        sep = "_"))
-      
-    })
-    
-    # Get delta bivar values for all year combinations
-    delta_bivar <- if (is.null(multi_year_q3)) NULL else {
-      
-      multi_year_q3 |> 
-        names() |> 
-        map_dfc(\(x) {
-          
-          vec <- multi_year_q3[[x]]
-          years <- str_extract(x, "\\d{4}_\\d{4}$")
-          
-          rv_names <- 
-            rv_delta_bivar |> 
-            select(contains(years)) |> 
-            names()
-          
-          rv_delta_bivar[rv_names] |> 
-            mutate(across(everything(), 
-                          ~trans_var(paste(vec, .x, sep = " - ")))) |> 
-            set_names(paste(str_remove(x, "_q3.*$"), 
-                            str_remove(rv_names, "_q3"),
-                            sep = "_"))
-          
-        })
-      
-    }
-    
-    bind_cols(single_year_q5, multi_year, bivar, delta_bivar)
-    
-  })) |> 
-  relocate(building, geometry, .after = last_col())
-
-
-# Process DA_building -----------------------------------------------------
-
-DA_building_housing <- 
-  DA_housing |> 
-  st_set_geometry("building") |> 
-  select(everything(), -geometry, geometry = building)
-
-DA_housing <- 
-  DA_housing |> 
-  select(-building)
-
-
-# Process building --------------------------------------------------------
-
-building_housing <- 
-  building_full |> 
-  select(ID, name, DAUID) |> 
-  left_join(select(st_drop_geometry(DA_housing), -name), 
-            by = c("DAUID" = "ID")) |> 
-  select(-DAUID)
-
-
 # Process and upload borough ----------------------------------------------
 
 for (i in seq_along(var_groups)) {
@@ -769,6 +287,90 @@ for (i in seq_along(var_groups)) {
 # Publish tilesets
 for (i in seq_along(var_groups)) {
   out <- publish_tileset(paste0("housing-borough-", i))
+  if (out$status_code != 200) stop(var)
+  Sys.sleep(30)
+}
+
+
+# Process and upload CT ---------------------------------------------------
+
+for (i in seq_along(var_groups)) {
+  
+  CT_housing |> 
+    select(ID, name, all_of(var_groups[[i]]), geometry) |> 
+    st_set_agr("constant") |> 
+    upload_tile_source(paste0("housing-CT-", i))
+  
+}
+
+
+# Create CT recipe and publish --------------------------------------------
+
+CT_recipes <- 
+  map(seq_along(var_groups), ~{
+    create_recipe(
+      layer_names = "CT",
+      source = paste0(
+        "mapbox://tileset-source/sus-mcgill/housing-CT-", .x),
+      minzoom = 3,
+      maxzoom = 12, 
+      layer_size = 2500,
+      simplification_zoom = 12,
+      recipe_name = paste0("housing-CT-", .x))
+  })
+
+# Create tilesets
+for (i in seq_along(var_groups)) {
+  out <- create_tileset(paste0("housing-CT-", i), CT_recipes[[i]])
+  if (out$status_code != 200) stop(var)
+  Sys.sleep(1)
+}
+
+# Publish tilesets
+for (i in seq_along(var_groups)) {
+  out <- publish_tileset(paste0("housing-CT-", i))
+  if (out$status_code != 200) stop(var)
+  Sys.sleep(30)
+}
+
+
+# Process and upload DA ---------------------------------------------------
+
+for (i in seq_along(var_groups)) {
+  
+  DA_housing |> 
+    select(ID, name, all_of(var_groups[[i]]), geometry) |> 
+    st_set_agr("constant") |> 
+    upload_tile_source(paste0("housing-DA-", i))
+  
+}
+
+
+# Create DA recipe and publish --------------------------------------------
+
+DA_recipes <- 
+  map(seq_along(var_groups), ~{
+    create_recipe(
+      layer_names = "DA",
+      source = paste0(
+        "mapbox://tileset-source/sus-mcgill/housing-DA-", .x),
+      minzoom = 3,
+      maxzoom = 12, 
+      layer_size = 2500,
+      simplification_zoom = 12,
+      recipe_name = paste0("housing-CT-", .x))
+  })
+
+# Create tilesets
+for (i in seq_along(var_groups)) {
+  out <- create_tileset(paste0("housing-CT-", i), CT_recipes[[i]])
+  if (out$status_code != 200) stop(var)
+  Sys.sleep(1)
+}
+
+# Publish tilesets
+for (i in seq_along(var_groups)) {
+  out <- publish_tileset(paste0("housing-CT-", i))
   if (out$status_code != 200) stop(var)
   Sys.sleep(30)
 }
