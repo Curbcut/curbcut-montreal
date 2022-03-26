@@ -265,6 +265,7 @@ for (i in seq_along(var_groups)) {
 
 # Create borough recipe and publish ---------------------------------------
 
+# Create recipes
 borough_recipes <- 
   map(seq_along(var_groups), ~{
     create_recipe(
@@ -307,6 +308,7 @@ for (i in seq_along(var_groups)) {
 
 # Create CT recipe and publish --------------------------------------------
 
+# Create recipes
 CT_recipes <- 
   map(seq_along(var_groups), ~{
     create_recipe(
@@ -349,6 +351,7 @@ for (i in seq_along(var_groups)) {
 
 # Create DA recipe and publish --------------------------------------------
 
+# Create recipes
 DA_recipes <- 
   map(seq_along(var_groups), ~{
     create_recipe(
@@ -434,3 +437,74 @@ for (i in seq_along(var_groups)) {
   
 }
 
+
+# Create auto_zoom recipe and publish -------------------------------------
+
+# Create recipes
+auto_zoom_recipes <- 
+  map(seq_along(var_groups), ~{
+    
+    create_recipe(
+      layer_names = c("borough", "CT", "DA", "building"),
+      source = c(
+        borough = paste0(
+          "mapbox://tileset-source/sus-mcgill/housing-borough-", .x),
+        CT = paste0("mapbox://tileset-source/sus-mcgill/housing-CT-", .x),
+        DA = paste0("mapbox://tileset-source/sus-mcgill/housing-DA-", .x),
+        building = paste0(
+          "mapbox://tileset-source/sus-mcgill/housing-building-", .x)),
+      minzoom = c(borough = 2, CT = 11, DA = 13, building = 16),
+      maxzoom = c(borough = 10, CT = 12, DA = 15, building = 16), 
+      layer_size = c(borough = NA, CT = NA, DA = NA, building = 2500),
+      recipe_name = paste0("housing-auto_zoom-", .x))
+  })
+
+# Create tilesets
+for (i in seq_along(var_groups)) {
+  out <- create_tileset(paste0("housing-auto_zoom-", i), auto_zoom_recipes[[i]])
+  if (out$status_code != 200) stop(var)
+  Sys.sleep(1)
+}
+
+# Publish tilesets
+for (i in seq_along(var_groups)) {
+  out <- publish_tileset(paste0("housing-auto_zoom-", i))
+  if (out$status_code != 200) stop(var)
+  Sys.sleep(30)
+}
+
+
+# Create building recipe and publish --------------------------------------
+
+# Create recipes
+building_recipes <- 
+  map(seq_along(var_groups), ~{
+    
+    create_recipe(
+      layer_names = c("DA_building_empty", "DA_building", "building"),
+      source = c(
+        DA_building_empty = 
+          "mapbox://tileset-source/sus-mcgill/DA_building_empty",
+        DA_building = paste0(
+          "mapbox://tileset-source/sus-mcgill/housing-DA_building-", .x),
+        building = paste0(
+          "mapbox://tileset-source/sus-mcgill/housing-building-", .x)),
+      minzoom = c(DA_building_empty = 3, DA_building = 9, building = 13),
+      maxzoom = c(DA_building_empty = 8, DA_building = 12, building = 16), 
+      layer_size = c(DA_building_empty = NA, DA_building = NA, building = 2500),
+      recipe_name = paste0("housing-building-", .x))
+  })
+
+# Create tilesets
+for (i in seq_along(var_groups)) {
+  out <- create_tileset(paste0("housing-building-", i), building_recipes[[i]])
+  if (out$status_code != 200) stop(var)
+  Sys.sleep(1)
+}
+
+# Publish tilesets
+for (i in seq_along(var_groups)) {
+  out <- publish_tileset(paste0("housing-building-", i))
+  if (out$status_code != 200) stop(var)
+  Sys.sleep(30)
+}
