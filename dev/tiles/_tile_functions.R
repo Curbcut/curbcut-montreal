@@ -58,8 +58,13 @@ delete_tileset_source <- function(id, username = "sus-mcgill",
 list_tilesets <- function(username = "sus-mcgill", access_token = .sus_token) {
   
   httr::GET(paste0("https://api.mapbox.com/tilesets/v1/", username),
-            query = list(access_token = access_token)) |> 
-    httr::content()
+            query = list(access_token = access_token, limit = 500)) |> 
+  httr::content() |> 
+    map_dfr(~tibble(
+      id = str_remove(.x$id, "sus-mcgill."),
+      size = .x$filesize / 1024 ^ 2,
+      precisions = paste(names(.x$tileset_precisions), collapse = ", ")
+    ))
   
 }
 
