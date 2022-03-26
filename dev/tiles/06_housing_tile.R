@@ -238,6 +238,7 @@ var_groups_short <- var_groups[lengths(var_groups) <= 100]
 var_groups_short <- list(c(var_groups_short[[1]], var_groups_short[[2]]),
                          c(var_groups_short[[3]], var_groups_short[[4]]))
 var_groups <- c(var_groups_long, var_groups_short)
+rm(var_groups_short, var_groups_long)
 
 tile_lookup <- 
   tile_lookup |> 
@@ -377,49 +378,59 @@ for (i in seq_along(var_groups)) {
 }
 
 
+# Process and upload DA_building ------------------------------------------
+
+for (i in seq_along(var_groups)) {
+  
+  DA_building_housing |> 
+    select(ID, name, all_of(var_groups[[i]]), geometry) |> 
+    st_set_agr("constant") |> 
+    upload_tile_source(paste0("housing-DA_building-", i))
+  
+}
 
 
+# Process and upload building ---------------------------------------------
 
-# Test one building chunk -------------------------------------------------
-
-building_to_process <- 
-  building_housing |> 
-  select(ID, name, all_of(var_groups[[1]]), geometry)
-
-iter_size <- ceiling(nrow(building_to_process) / 100)
-
-building_to_process_list <- 
-  map(1:100, ~{
-    building_to_process |> 
-      slice(((.x - 1) * iter_size + 1):(.x * iter_size)) |> 
-      geojsonsf::sf_geojson() |> 
-      paste0(collapse = " ") |> 
-      geojson::featurecollection()  
+for (i in seq_along(var_groups)) {
+  
+  building_to_process <- 
+    building_housing |> 
+    select(ID, name, all_of(var_groups[[i]]), geometry)
+  
+  iter_size <- ceiling(nrow(building_to_process) / 100)
+  
+  building_to_process_list <- 
+    map(1:100, ~{
+      building_to_process |> 
+        slice(((.x - 1) * iter_size + 1):(.x * iter_size)) |> 
+        geojsonsf::sf_geojson() |> 
+        paste0(collapse = " ") |> 
+        geojson::featurecollection()  
+    })
+  
+  # Iteratively post files to tile source
+  tmp <- tempfile(fileext = ".json")
+  tmp_list <- map(1:10, ~tempfile(fileext = ".json"))
+  
+  map(1:10, ~{
+    
+    print(.x)
+    to_process <- building_to_process_list[((.x - 1) * 10 + 1):(.x * 10)]
+    walk2(to_process, tmp_list, geojson::ndgeo_write)
+    
+    # Concatenate geoJSONs
+    out <- paste0("cat ", paste(tmp_list, collapse = " "), " > ", tmp)
+    system(out)
+    
+    # Upload to MTS
+    out <- paste0('curl -X POST "https://api.mapbox.com/tilesets/v1/sources/', 
+                  'sus-mcgill/housing-building-', i, '?access_token=', 
+                  .sus_token, '" -F file=@', tmp, 
+                  ' --header "Content-Type: multipart/form-data"')
+    system(out)
+    
   })
-
-# Iteratively post files to tile source
-tmp <- tempfile(fileext = ".json")
-tmp_list <- map(1:10, ~tempfile(fileext = ".json"))
-
-map(1:10, ~{
   
-  print(.x)
-  to_process <- building_to_process_list[((.x - 1) * 10 + 1):(.x * 10)]
-  walk2(to_process, tmp_list, geojson::ndgeo_write)
-  
-  # Concatenate geoJSONs
-  out <- paste0("cat ", paste(tmp_list, collapse = " "), " > ", tmp)
-  system(out)
-  
-  # Upload to MTS
-  out <- paste0('curl -X POST "https://api.mapbox.com/tilesets/v1/sources/', 
-                'sus-mcgill/housing-building_test?access_token=', .sus_token, 
-                '" -F file=@', tmp, 
-                ' --header "Content-Type: multipart/form-data"')
-  system(out)
-  
-})
-
-
-
+}
 

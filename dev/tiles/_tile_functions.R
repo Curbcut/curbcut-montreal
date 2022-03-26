@@ -7,8 +7,12 @@ list_tile_sources <- function(username = "sus-mcgill",
                               access_token = .sus_token) {
   
   httr::GET(paste0("https://api.mapbox.com/tilesets/v1/sources/", username),
-            query = list(access_token = access_token)) |> 
-    httr::content()
+              query = list(access_token = access_token, limit = 500)) |> 
+    httr::content() |> 
+    map_dfr(~tibble(
+      id = str_remove(.x$id, "mapbox://tileset-source/sus-mcgill/"),
+      size = .x$size / 1024 ^ 2,
+      files = .x$files))
   
 }
 
