@@ -528,8 +528,8 @@ building_recipes <-
           "mapbox://tileset-source/sus-mcgill/housing-DA_building-", .x),
         building = paste0(
           "mapbox://tileset-source/sus-mcgill/housing-building-", .x)),
-      minzoom = c(DA_building_empty = 3, DA_building = 9, building = 13),
-      maxzoom = c(DA_building_empty = 8, DA_building = 12, building = 16), 
+      minzoom = c(DA_building_empty = 3, DA_building = 9, building = 14),
+      maxzoom = c(DA_building_empty = 8, DA_building = 13, building = 16), 
       layer_size = c(DA_building_empty = NA, DA_building = NA, building = 2500),
       recipe_name = paste0("housing-building-", .x))
   })

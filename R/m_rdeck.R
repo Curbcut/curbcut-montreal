@@ -16,9 +16,22 @@ rdeck_server <- function(id, map_id, tile, tile2, map_var, zoom, select_id) {
   
   moduleServer(id, function(input, output, session) {
     
+    observe({
+      print(id)
+      print(zoom())
+      print(tile())
+    })
+    
     # Helper variables
-    pick <- reactive(!tile() %in% c("building", "DA") || zoom() >= 13.5 ||
-                       (tile() == "DA" && zoom() >= 10.5))
+    pick <- reactive(
+      # Always pickable unless in DA/building
+      !tile() %in% c("building", "DA") || 
+        # Start at 14.5 for building-housing
+        (id == "housing" && zoom() >= 14.5) ||
+        # Start at 13.5 for other building layers
+        (id != "housing" && zoom() >= 13.5) ||
+        # Start at 10.5 for DA
+        (tile() == "DA" && zoom() >= 10.5))
     extrude <- reactive((tile() == "auto_zoom" && zoom() >= 15.5) | 
                           tile() == "building")
     show_street <- reactive(tile() %in% c("borough", "CT", "DA") ||
