@@ -408,6 +408,7 @@ for (i in seq_along(var_groups)) {
       
     }
   
+    if (!success) stop("UPLOAD ERROR")
   }
   
 }
