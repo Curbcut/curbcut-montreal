@@ -155,9 +155,10 @@ make_housing_tiles <- function(df) {
           year <- str_extract(.x, "\\d{4}$")
           rv_2 <- paste(rv, "q3", year, sep = "_") |> 
             return_closest_year(df)
-          paste(single_year_q3[[.x]], dat[[rv_2]], sep = " - ")}) |> 
-          set_names(paste(var, rv, str_extract(names(single_year_q3), "\\d{4}$"),
-                          sep = "_"))
+          paste(single_year_q3[[.x]], dat[[rv_2]], sep = " - ") |> 
+            trans_var()}) |> 
+          set_names(paste(var, rv, str_extract(names(single_year_q3), 
+                                               "\\d{4}$"), sep = "_"))
         
       })
       
@@ -253,6 +254,8 @@ qsave(tile_lookup, "data/tile_lookup.qs")
 
 # Process and upload borough ----------------------------------------------
 
+list_tile_sources() |> filter(str_detect(id, "housing-borough"))
+
 for (i in seq_along(var_groups)) {
   
   borough_housing |> 
@@ -294,7 +297,12 @@ for (i in seq_along(var_groups)) {
 }
 
 
+#### TEST NOW! ####
+
+
 # Process and upload CT ---------------------------------------------------
+
+list_tile_sources() |> filter(str_detect(id, "housing-CT"))
 
 for (i in seq_along(var_groups)) {
   
@@ -306,38 +314,9 @@ for (i in seq_along(var_groups)) {
 }
 
 
-# Create CT recipe and publish --------------------------------------------
-
-# Create recipes
-CT_recipes <- 
-  map(seq_along(var_groups), ~{
-    create_recipe(
-      layer_names = "CT",
-      source = paste0(
-        "mapbox://tileset-source/sus-mcgill/housing-CT-", .x),
-      minzoom = 3,
-      maxzoom = 12, 
-      layer_size = 2500,
-      simplification_zoom = 12,
-      recipe_name = paste0("housing-CT-", .x))
-  })
-
-# Create tilesets
-for (i in seq_along(var_groups)) {
-  out <- create_tileset(paste0("housing-CT-", i), CT_recipes[[i]])
-  if (out$status_code != 200) stop(var)
-  Sys.sleep(1)
-}
-
-# Publish tilesets
-for (i in seq_along(var_groups)) {
-  out <- publish_tileset(paste0("housing-CT-", i))
-  if (out$status_code != 200) stop(var)
-  Sys.sleep(30)
-}
-
-
 # Process and upload DA ---------------------------------------------------
+
+list_tile_sources() |> filter(str_detect(id, "housing-DA"))
 
 for (i in seq_along(var_groups)) {
   
@@ -349,39 +328,9 @@ for (i in seq_along(var_groups)) {
 }
 
 
-# Create DA recipe and publish --------------------------------------------
-
-# Create recipes
-DA_recipes <- 
-  map(seq_along(var_groups), ~{
-    create_recipe(
-      layer_names = c("DA_empty", "DA"),
-      source = c(
-        DA_empty = "mapbox://tileset-source/sus-mcgill/DA_empty",
-        DA = paste0("mapbox://tileset-source/sus-mcgill/housing-DA-", .x)),
-      minzoom = c(DA_empty = 3, DA = 9),
-      maxzoom = c(DA_empty = 8, DA = 13), 
-      layer_size = c(DA_empty = NA, DA = 2500),
-      simplification_zoom = c(DA_empty = NA, DA = 13),
-      recipe_name = paste0("housing-DA-", .x))
-  })
-
-# Create tilesets
-for (i in seq_along(var_groups)) {
-  out <- create_tileset(paste0("housing-DA-", i), DA_recipes[[i]])
-  if (out$status_code != 200) stop(var)
-  Sys.sleep(1)
-}
-
-# Publish tilesets
-for (i in seq_along(var_groups)) {
-  out <- publish_tileset(paste0("housing-DA-", i))
-  if (out$status_code != 200) stop(var)
-  Sys.sleep(30)
-}
-
-
 # Process and upload DA_building ------------------------------------------
+
+list_tile_sources() |> filter(str_detect(id, "housing-DA_building"))
 
 for (i in seq_along(var_groups)) {
   
@@ -395,7 +344,15 @@ for (i in seq_along(var_groups)) {
 
 # Process and upload building ---------------------------------------------
 
+library(future)  
+plan(multisession, workers = 8)
+options('future.globals.maxSize' = Inf)
+
+list_tile_sources() |> filter(str_detect(id, "housing-building"))
+
 for (i in seq_along(var_groups)) {
+  
+  cat(paste0("\nProcessing group ", i, "\n"))
   
   building_to_process <- 
     building_housing |> 
@@ -404,7 +361,7 @@ for (i in seq_along(var_groups)) {
   iter_size <- ceiling(nrow(building_to_process) / 100)
   
   building_to_process_list <- 
-    map(1:100, ~{
+    furrr::future_map(1:100, ~{
       building_to_process |> 
         slice(((.x - 1) * iter_size + 1):(.x * iter_size)) |> 
         geojsonsf::sf_geojson() |> 
@@ -416,24 +373,42 @@ for (i in seq_along(var_groups)) {
   tmp <- tempfile(fileext = ".json")
   tmp_list <- map(1:10, ~tempfile(fileext = ".json"))
   
-  map(1:10, ~{
+  cat(paste0("\nUploading group ", i, "\n"))
+  
+  for (j in 1:10) {
     
-    print(.x)
-    to_process <- building_to_process_list[((.x - 1) * 10 + 1):(.x * 10)]
-    walk2(to_process, tmp_list, geojson::ndgeo_write)
+    try <- 0L
+    success <- FALSE
     
-    # Concatenate geoJSONs
-    out <- paste0("cat ", paste(tmp_list, collapse = " "), " > ", tmp)
-    system(out)
-    
-    # Upload to MTS
-    out <- paste0('curl -X POST "https://api.mapbox.com/tilesets/v1/sources/', 
-                  'sus-mcgill/housing-building-', i, '?access_token=', 
-                  .sus_token, '" -F file=@', tmp, 
-                  ' --header "Content-Type: multipart/form-data"')
-    system(out)
-    
-  })
+    while (try < 4 && !success) {
+      
+      try <- try + 1L
+      
+      cat(paste0("\n", j, "\n"))
+      to_process <- building_to_process_list[((j - 1) * 10 + 1):(j * 10)]
+      walk2(to_process, tmp_list, geojson::ndgeo_write)
+      
+      # Concatenate geoJSONs
+      out <- paste0("cat ", paste(tmp_list, collapse = " "), " > ", tmp)
+      system(out)
+      
+      # Upload to MTS
+      out <- paste0('curl -X POST "https://api.mapbox.com/tilesets/v1/sources/', 
+                    'sus-mcgill/housing-building-', i, '?access_token=', 
+                    .sus_token, '" -F file=@', tmp, 
+                    ' --header "Content-Type: multipart/form-data"')
+      system(out)
+      
+      file_n <- 
+        list_tile_sources() |> 
+        filter(str_detect(id, paste0("housing-building-", i))) |> 
+        pull(files)
+      
+      if (file_n == j) success <- TRUE
+      
+    }
+  
+  }
   
 }
 
@@ -469,6 +444,69 @@ for (i in seq_along(var_groups)) {
 # Publish tilesets
 for (i in seq_along(var_groups)) {
   out <- publish_tileset(paste0("housing-auto_zoom-", i))
+  if (out$status_code != 200) stop(var)
+  Sys.sleep(30)
+}
+
+
+# Create CT recipe and publish --------------------------------------------
+
+# Create recipes
+CT_recipes <- 
+  map(seq_along(var_groups), ~{
+    create_recipe(
+      layer_names = "CT",
+      source = paste0(
+        "mapbox://tileset-source/sus-mcgill/housing-CT-", .x),
+      minzoom = 3,
+      maxzoom = 12, 
+      layer_size = 2500,
+      simplification_zoom = 12,
+      recipe_name = paste0("housing-CT-", .x))
+  })
+
+# Create tilesets
+for (i in seq_along(var_groups)) {
+  out <- create_tileset(paste0("housing-CT-", i), CT_recipes[[i]])
+  if (out$status_code != 200) stop(var)
+  Sys.sleep(1)
+}
+
+# Publish tilesets
+for (i in seq_along(var_groups)) {
+  out <- publish_tileset(paste0("housing-CT-", i))
+  if (out$status_code != 200) stop(var)
+  Sys.sleep(30)
+}
+
+
+# Create DA recipe and publish --------------------------------------------
+
+# Create recipes
+DA_recipes <- 
+  map(seq_along(var_groups), ~{
+    create_recipe(
+      layer_names = c("DA_empty", "DA"),
+      source = c(
+        DA_empty = "mapbox://tileset-source/sus-mcgill/DA_empty",
+        DA = paste0("mapbox://tileset-source/sus-mcgill/housing-DA-", .x)),
+      minzoom = c(DA_empty = 3, DA = 9),
+      maxzoom = c(DA_empty = 8, DA = 13), 
+      layer_size = c(DA_empty = NA, DA = 2500),
+      simplification_zoom = c(DA_empty = NA, DA = 13),
+      recipe_name = paste0("housing-DA-", .x))
+  })
+
+# Create tilesets
+for (i in seq_along(var_groups)) {
+  out <- create_tileset(paste0("housing-DA-", i), DA_recipes[[i]])
+  if (out$status_code != 200) stop(var)
+  Sys.sleep(1)
+}
+
+# Publish tilesets
+for (i in seq_along(var_groups)) {
+  out <- publish_tileset(paste0("housing-DA-", i))
   if (out$status_code != 200) stop(var)
   Sys.sleep(30)
 }

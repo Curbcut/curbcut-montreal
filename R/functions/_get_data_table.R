@@ -146,7 +146,7 @@ get_data_table <- function(df, var_left, var_right, data_type, point_df) {
     data <- data[c("ID", "name", "name_2", if (df == "DA") "DAUID",
                    if (df %in% c("DA", "CT")) "CTUID", "CSDUID", "population",
                    "var_left", "var_left_q3", "var_left_1", "var_left_2",
-                   "group", "fill")]
+                   "group")]
   }
   
   # building_NA_delta
@@ -161,7 +161,7 @@ get_data_table <- function(df, var_left, var_right, data_type, point_df) {
     data$var_left_2 <- NA
     data <- data[c("ID", "name", "name_2", "DAUID", "CTUID", "CSDUID", 
                    "population", "var_left", "var_left_q3", "var_left_1", 
-                   "var_left_2", "group", "fill")]
+                   "var_left_2", "group")]
   }
   
   # Delta bivariate
