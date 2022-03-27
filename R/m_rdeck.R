@@ -16,12 +16,6 @@ rdeck_server <- function(id, map_id, tile, tile2, map_var, zoom, select_id) {
   
   moduleServer(id, function(input, output, session) {
     
-    observe({
-      print(id)
-      print(zoom())
-      print(tile())
-    })
-    
     # Helper variables
     pick <- reactive(
       # Always pickable unless in DA/building
