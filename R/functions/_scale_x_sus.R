@@ -10,11 +10,11 @@ scale_fill_sus <- function(var) {
   )
 }
 
-scale_line_width_sus <- function(select_id) {
+scale_line_width_sus <- function(select_id, tile) {
     scale_category(
       col = ID,
-      range = c(5, 1),
-      unmapped_value = 1,
+      range = c(5, if (tile == "grid") 0.3 else 1),
+      unmapped_value = if (tile == "grid") 0.3 else 1,
       levels = c(select_id, "NA"),
       legend = FALSE
     )

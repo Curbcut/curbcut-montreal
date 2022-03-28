@@ -49,7 +49,7 @@ rdeck_server <- function(id, map_id, tile, tile2, map_var, zoom, select_id) {
           get_fill_color = scale_fill_sus(rlang::sym(map_var())),
           get_line_color = "#FFFFFF", 
           line_width_units = "pixels", 
-          get_line_width = scale_line_width_sus(select_id()),
+          get_line_width = scale_line_width_sus(select_id(), tile()),
           extruded = extrude(), 
           material = FALSE,
           get_elevation = 5)
@@ -69,7 +69,7 @@ rdeck_server <- function(id, map_id, tile, tile2, map_var, zoom, select_id) {
           get_fill_color = scale_fill_sus(rlang::sym(map_var())),
           get_line_color = "#FFFFFF", 
           line_width_units = "pixels",
-          get_line_width = scale_line_width_sus(select_id()),
+          get_line_width = scale_line_width_sus(select_id(), tile()),
           extruded = extrude(), 
           material = FALSE, 
           get_elevation = 5) |> 
@@ -160,7 +160,7 @@ rdeck_server <- function(id, map_id, tile, tile2, map_var, zoom, select_id) {
           get_fill_color = scale_fill_sus(rlang::sym(map_var())),
           get_line_color = "#FFFFFF", 
           line_width_units = "pixels",
-          get_line_width = scale_line_width_sus(select_id()),
+          get_line_width = scale_line_width_sus(select_id(), tile()),
           extruded = extrude(), 
           material = FALSE, 
           get_elevation = 5) |> 
