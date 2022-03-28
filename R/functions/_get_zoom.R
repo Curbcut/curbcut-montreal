@@ -37,7 +37,7 @@ get_zoom_code <- function(x) {
   if (x == "Borough/city" || x == "Arrondissement/ville") return("borough")
   if (x == "Census tract" || x == "Secteur de recensement") return("CT")
   if (x == "Dissemination area" || x == "Aire de diffusion") return("DA")
-  if (x == "Building" || x == "bâtiment") return("building")
+  if (x == "Building" || x == "Bâtiment") return("building")
   if (x == "Street" || x == "Rue") return("street")
   if (x == "Heatmap") return("heatmap")
   if (x == "Point") return("point")
