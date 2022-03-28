@@ -28,7 +28,7 @@ rdeck_server <- function(id, map_id, tile, tile2, map_var, zoom, select_id) {
         (tile() == "DA" && zoom() >= 10.5))
     extrude <- reactive((tile() == "auto_zoom" && zoom() >= 15.5) | 
                           tile() == "building")
-    show_street <- reactive(tile() %in% c("borough", "CT", "DA") ||
+    show_street <- reactive(tile() %in% c("borough", "CT", "DA", "grid") ||
                               (tile() == "auto_zoom" && zoom() < 15.5))
     show_label <- reactive(tile() %in% c("borough") || 
                              (tile() != "building" && zoom() < 12.5))
@@ -77,7 +77,7 @@ rdeck_server <- function(id, map_id, tile, tile2, map_var, zoom, select_id) {
         # Update street layer 1
         add_mvt_layer(
           id = paste0(id, "_street_1"),
-          data = if (tile() %in% c("borough", "CT", "DA", "auto_zoom")) 
+          data = if (tile() %in% c("borough", "CT", "DA", "grid", "auto_zoom")) 
             mvt_url("sus-mcgill.street_1") else NULL,
           visible = show_street(),
           line_width_units = "meters",
@@ -91,7 +91,7 @@ rdeck_server <- function(id, map_id, tile, tile2, map_var, zoom, select_id) {
         # Update street layer 2
         add_mvt_layer(
           id = paste0(id, "_street_2"),
-          data = if (tile() %in% c("borough", "CT", "DA", "auto_zoom")) 
+          data = if (tile() %in% c("borough", "CT", "DA", "grid", "auto_zoom")) 
             mvt_url("sus-mcgill.street_2") else NULL,
           visible = show_street(),
           line_width_units = "meters",
@@ -105,7 +105,7 @@ rdeck_server <- function(id, map_id, tile, tile2, map_var, zoom, select_id) {
         # Update street layer 3
         add_mvt_layer(
           id = paste0(id, "_street_3"),
-          data = if (tile() %in% c("borough", "CT", "DA", "auto_zoom")) 
+          data = if (tile() %in% c("borough", "CT", "DA", "grid", "auto_zoom")) 
             mvt_url("sus-mcgill.street_3") else NULL,
           visible = show_street(),
           line_width_units = "meters",
@@ -119,7 +119,7 @@ rdeck_server <- function(id, map_id, tile, tile2, map_var, zoom, select_id) {
         # Update building layer
         add_mvt_layer(
           id = paste0(id, "_building"), 
-          data = if (tile() %in% c("borough", "CT", "DA")) mvt_url(
+          data = if (tile() %in% c("borough", "CT", "DA", "grid")) mvt_url(
             "sus-mcgill.DA_building_empty") else NULL, 
           pickable = FALSE,
           auto_highlight = FALSE, 
@@ -131,8 +131,8 @@ rdeck_server <- function(id, map_id, tile, tile2, map_var, zoom, select_id) {
         # Update label layer
         add_mvt_layer(
           id = paste0(id, "_borough_labels"), 
-          data = if (tile() %in% c("borough", "CT", "auto_zoom")) mvt_url(
-            "sus-mcgill.borough_label") else NULL,
+          data = if (tile() %in% c("borough", "CT", "grid", "auto_zoom")) 
+            mvt_url("sus-mcgill.borough_label") else NULL,
           visible = show_label(),
           point_type = "text", get_text = rlang::sym("name"),
           text_background = TRUE,

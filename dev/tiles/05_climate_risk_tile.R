@@ -7,7 +7,7 @@ qload("data/census.qsm")
 grid <- qread("data/grid.qs")
 building_full <- qread("data/building_full.qs")
 variables <- qread("data/variables.qs")
-source("dev/_tiles/tile_functions.R")
+source("dev/tiles/_tile_functions.R")
 
 island_CSDUID <- 
   c("2466007", "2466023_1",  "2466023_10", "2466023_11", "2466023_12", 
@@ -55,8 +55,9 @@ map(left_vars, ~{
   grid |> 
     as_tibble() |> 
     select(ID, name, all_of(.x), geometry) |> 
+    mutate(ID = as.character(ID)) |> 
     mutate(across(all_of(.x), as.character)) |> 
-    mutate(across(all_of(left_vars[i]), replace_na, "0")) |> 
+    mutate(across(all_of(.x), replace_na, "0")) |> 
     bind_cols({
       map_dfc(right_vars, \(y) 
               paste(grid[[paste0(.x, "_q3")]], grid[[y]], sep = " - ")) |> 
@@ -90,16 +91,18 @@ grid_recipes <-
 for (i in seq_along(left_vars)) {
   suffix <- tile_lookup$suffix[tile_lookup$module == "climate_risk" &
                                  tile_lookup$tile2 == left_vars[i]]
-  create_tileset(paste0("climate_risk-grid", suffix), grid_recipes[[i]])
-  Sys.sleep(2)
+  out <- create_tileset(paste0("climate_risk-grid", suffix), grid_recipes[[i]])
+  if (out$status_code != 200) stop(var)
+  Sys.sleep(1)
 }
 
 # Publish tilesets
 for (var in left_vars) {
   suffix <- tile_lookup$suffix[tile_lookup$module == "climate_risk" &
                                  tile_lookup$tile2 == var]
-  publish_tileset(paste0("climate_risk-grid", suffix))
-  Sys.sleep(2)
+  out <- publish_tileset(paste0("climate_risk-grid", suffix))
+  if (out$status_code != 200) stop(var)
+  Sys.sleep(30)
 }
 
 
