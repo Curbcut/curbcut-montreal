@@ -25,20 +25,28 @@ prep_title_card <- function(df, select_id, ind, percent = TRUE,
 
   if (df == "borough") {
     rank <- data[data$ID == select_id, ][[paste0(scale, "_rank")]]
-    df_row <- if (island) data |> na.omit(island_rank) |> na.omit(var) |> nrow() else {
+    df_row <- if (island) {
+      data |> 
+        na.omit(island_rank) |> 
+        na.omit(var) |> 
+        nrow()
+      } else {
       df_row <- length(na.omit(data$var))
-    }
+      }
+    
     # If high is good, then last rank means 1st. Inverse!
     data_rank <-
       if (high_is_good) df_row - rank + 1 else rank
     info$data_rank <-
       if (data_rank > 1/3*df_row) {
-        sus_translate("It ranks ", if (data_rank > 2/3*df_row) "relatively low at ",
+        sus_translate("It ranks ", 
+                      if (data_rank > 2/3*df_row) "relatively low at ",
                       ordinal_form(data_rank), "/{df_row}",
                       if (island) " on the island" else " in the region")
       } else {
         sus_translate("It ranks ", ordinal_form(data_rank),
-                      "best", if (island) " on the island" else " in the region")
+                      "best", 
+                      if (island) " on the island" else " in the region")
       }
   } else {
     data_rank <- data[data$ID == select_id, ][[paste0(scale, "_percentile")]]
@@ -48,14 +56,16 @@ prep_title_card <- function(df, select_id, ind, percent = TRUE,
       } else if (data_rank > 0.75) {
         sus_translate("The {geo_area} ranks in the ",
                       if (high_is_good) "highest " else "lowest ",
-                      if (abs(data_rank - 1) < 0.01) "1%" else scales::percent(abs(data_rank - 1)))
+                      if (abs(data_rank - 1) < 0.01) "1%" else 
+                        scales::percent(abs(data_rank - 1)))
       } else if (data_rank < 0.25) {
         sus_translate("The {geo_area} ranks in the ",
                       if (!high_is_good) "highest " else "lowest ",
                       if (data_rank == 0) "1%" else scales::percent(data_rank))
       } else {
         sus_translate("Its value is higher than ", scales::percent(data_rank),
-                      " of ", geo_areas, if (island) " on the island" else " in the region")
+                      " of ", geo_areas, if (island) " on the island" else 
+                        " in the region")
       }
   }
 
@@ -84,7 +94,8 @@ prep_title_card <- function(df, select_id, ind, percent = TRUE,
     if (high_is_good) c(0.1,0.3,0.5,0.7,0.9) else rev(c(0.1,0.3,0.5,0.7,0.9))
   hex_to_plot <-
     hex_scale[which.min(abs(colors_which -
-                              data[data$ID == select_id, ][[paste0(scale, "_percentile")]]))]
+                              data[data$ID == select_id, ][[paste0(
+                                scale, "_percentile")]]))]
 
   # In case it's higher than the threshold of 5
   if (ind == "air_quality_no2" && data_var >= 5) hex_to_plot <- "#CA0020"
@@ -122,7 +133,11 @@ prep_title_card <- function(df, select_id, ind, percent = TRUE,
         geom_density(aes(x = var), size = 1, color = hex_to_plot) +
         geom_vline(aes(xintercept = data_var),
                    color = "#000000", size = 1, alpha = 1) +
-        theme_void()
+        theme_void() +
+        theme(plot.background = element_rect(fill = "transparent",
+                                             colour = "transparent"),
+              panel.background = element_rect(fill = "transparent",
+                                              colour = "transparent"))
     } else ggplot()
 
   return(info)

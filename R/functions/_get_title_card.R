@@ -21,6 +21,7 @@ get_title_card <- function(df, select_id, island_or_region) {
   geo_areas <- switch(df, "borough" = "boroughs or cities",
                       "CT" = "census tracts", "DA" = "dissemination areas")
 
+  
   ## Generate output grid ------------------------------------------------------
   
   to_grid <- lapply(1:nrow(indicators_table), \(x) {
