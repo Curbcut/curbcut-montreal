@@ -28,7 +28,7 @@ upload_tile_source <- function(df, id, username = "sus-mcgill",
   # Write Geojson to tempfile
   geojsonio::geojson_write(df, file = tmp2)
   
-  readtext::readtext(tmp2) |> 
+  suppressWarnings(readtext::readtext(tmp2)) |> 
     paste0(collapse = " ") |> 
     geojson::featurecollection() |> 
     geojson::ndgeo_write(tmp1)
