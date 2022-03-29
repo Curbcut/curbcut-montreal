@@ -92,10 +92,9 @@ place_explorer_UI <- function(id) {
                                 "margin-left:310px; background-color:#ffffff;",
                                 "padding:25px;"),
                  fluidRow(
-                   style = paste0("padding: 5px;",
-                                  "font-size: 11px;",
-                                  "max-width: 1200px; margin:auto;",
-                                  "padding:30px;"),
+                   style = paste0("font-size: 11px;",
+                                  "max-width: 100%; margin:auto; background-color:#fbfbfb;",
+                                  "padding:30px; border: 1px solid #00000030;"),
                    column(9, htmlOutput(NS(id, "title_card_title")),
                           uiOutput(NS(id, "title_card"), style = "margin-top:20px;")),
                    column(3, rdeckOutput(NS(id, "title_card_map")))
@@ -311,7 +310,7 @@ place_explorer_server <- function(id) {
     
     ## TITLE CARD -------------------------------------------------------
     shinyjs::delay(1, shinyjs::show("grid_elements"))
-    shinyjs::delay(500, shinyjs::hide("grid_elements"))
+    shinyjs::delay(750, shinyjs::hide("grid_elements"))
 
     output$title_card_map <- renderRdeck({
       rdeck(map_style = map_base_style,
@@ -449,7 +448,7 @@ place_explorer_server <- function(id) {
                 )
                 
                 if (nrow(to_grid) > 0)
-                  lapply(seq_along(nrow(to_grid)), \(z) {
+                  lapply(seq_len(nrow(to_grid)), \(z) {
                     output[[paste0("ind_", themes[[x]], z, "_row_title")]] <- renderText({
 
                       paste(p(style = "    font-size: 11px;", to_grid[z, ][["var_title"]],
@@ -480,7 +479,7 @@ place_explorer_server <- function(id) {
                   tagList(h3(style = "text-transform:inherit;",
                              block_title,
                              title = translated_standout_definition),
-                          lapply(seq_along(nb_values_to_show), \(z) {
+                          lapply(seq_len(nb_values_to_show), \(z) {
                             tagList(
                               fluidRow(
                                 column(width = 4,
