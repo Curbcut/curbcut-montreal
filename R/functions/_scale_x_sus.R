@@ -11,7 +11,14 @@ scale_fill_sus <- function(var) {
 }
 
 scale_line_width_sus <- function(id, select_id, tile) {
-  if (id == "alley" && tile %in% c("empty_borough", "individual")) return(3)
+  if (id == "alley" && tile %in% c("empty_borough", "individual")) 
+    scale_category(
+      col = ID,
+      range = c(4, 2.5),
+      unmapped_value = 2.5,
+      levels = c(select_id, "NA"),
+      legend = FALSE
+    )
   
   scale_category(
     col = ID,
