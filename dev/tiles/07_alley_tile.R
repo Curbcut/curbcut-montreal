@@ -33,19 +33,20 @@ alleys |>
                           type == "community" ~ "21",
                           type == "mixed" ~ "22",
                           type == "none" ~ "23")) |>
-  upload_tile_source("alley-individual2", username = "maxbdb2")
+  upload_tile_source("alley-individual")
 
 alley_individual <- 
   create_recipe(
     layer_names = "alley-individual",
-    source = "mapbox://tileset-source/maxbdb2/alley-individual2",
+    source = "mapbox://tileset-source/sus-mcgill/alley-individual",
     minzoom = 3,
     maxzoom = 16, 
     layer_size = 2500,
+    simplification_zoom = 3,
     recipe_name = "alley-individual")
 
-create_tileset("alley-individual", alley_individual, username = "maxbdb2")
-publish_tileset("alley-individual", username = "maxbdb2")
+create_tileset("alley-individual", alley_individual)
+publish_tileset("alley-individual")
 
 
 # Empty borough -----------------------------------------------------------
@@ -54,19 +55,19 @@ borough |>
   select(ID) |> 
   filter(ID %in% alley_text$ID) |> 
   st_set_agr("constant") |> 
-  upload_tile_source("alley-empty_borough", "maxbdb2", .sus_token)
+  upload_tile_source("alley-empty_borough", .sus_token)
 
 alley_empty_borough <- 
   create_recipe(
     layer_names = "alley-empty_borough",
-    source = "mapbox://tileset-source/maxbdb2/alley-empty_borough",
+    source = "mapbox://tileset-source/sus-mcgill/alley-empty_borough",
     minzoom = 3,
     maxzoom = 11, 
     layer_size = 2500,
     recipe_name = "alley-empty_borough")
 
-create_tileset("alley-empty_borough", alley_empty_borough, "maxbdb2")
-publish_tileset("alley-empty_borough", "maxbdb2")
+create_tileset("alley-empty_borough", alley_empty_borough)
+publish_tileset("alley-empty_borough")
 
 
 ### Processing function ---------------------------------------------------
@@ -122,7 +123,7 @@ borough_2 <-
   st_set_agr("constant") 
 
 left_join(borough_1, st_drop_geometry(borough_2), by = c("ID", "name")) |> 
-  upload_tile_source("alley-borough", "maxbdb2", .sus_token)
+  upload_tile_source("alley-borough", .sus_token)
 
 
 # Process CT then upload tile source ---------------------------------
@@ -164,7 +165,7 @@ CT_2 <-
   st_set_agr("constant") 
 
 left_join(CT_1, st_drop_geometry(CT_2), by = c("ID", "name")) |> 
-  upload_tile_source("alley-CT", "maxbdb2", .sus_token)
+  upload_tile_source("alley-CT", .sus_token)
 
 
 # Process DA then upload tile source ---------------------------------
@@ -206,7 +207,7 @@ DA_2 <-
   st_set_agr("constant") 
 
 left_join(DA_1, st_drop_geometry(DA_2), by = c("ID", "name")) |> 
-  upload_tile_source("alley-DA", "maxbdb2", .sus_token)
+  upload_tile_source("alley-DA", .sus_token)
 
 
 # Process building then upload tile source --------------------------------
@@ -280,7 +281,7 @@ left_join(DA_1, st_drop_geometry(DA_2), by = c("ID", "name")) |>
 #   st_as_sf() |> 
 #   st_set_agr("constant") |>
 #   filter(!st_is_empty(geometry)) |> 
-#   upload_tile_source("canale-DA_building", "sus-mcgill", .sus_token)
+#   upload_tile_source("canale-DA_building", .sus_token)
 
 
 # Add recipes -------------------------------------------------------------
@@ -288,7 +289,7 @@ left_join(DA_1, st_drop_geometry(DA_2), by = c("ID", "name")) |>
 recipe_borough <- 
   create_recipe(
     layer_names = "borough",
-    source = "mapbox://tileset-source/maxbdb2/alley-borough",
+    source = "mapbox://tileset-source/sus-mcgill/alley-borough",
     minzoom = 3,
     maxzoom = 11, 
     simplification_zoom = 11,
@@ -297,7 +298,7 @@ recipe_borough <-
 recipe_CT <- 
   create_recipe(
     layer_names = "CT",
-    source = "mapbox://tileset-source/maxbdb2/alley-CT",
+    source = "mapbox://tileset-source/sus-mcgill/alley-CT",
     minzoom = 3,
     maxzoom = 12, 
     simplification_zoom = 12,
@@ -307,8 +308,8 @@ recipe_DA <-
   create_recipe(
     layer_names = c("DA_empty", "DA"),
     source = c(
-      DA_empty = "mapbox://tileset-source/maxbdb2/DA_empty",
-      DA = "mapbox://tileset-source/maxbdb2/alley-DA"),
+      DA_empty = "mapbox://tileset-source/sus-mcgill/DA_empty",
+      DA = "mapbox://tileset-source/sus-mcgill/alley-DA"),
     minzoom = c(DA_empty = 3, DA = 9),
     maxzoom = c(DA_empty = 8, DA = 13), 
     layer_size = c(DA_empty = NA, DA = 2500),
@@ -320,9 +321,9 @@ recipe_building <-
   create_recipe(
     layer_names = c("DA_building_empty", "DA_building", "building"),
     source = c(
-      DA_building_empty = "mapbox://tileset-source/maxbdb2/DA_building_empty",
-      DA_building = "mapbox://tileset-source/maxbdb2/alley-DA_building",
-      building = "mapbox://tileset-source/maxbdb2/alley-building"),
+      DA_building_empty = "mapbox://tileset-source/sus-mcgill/DA_building_empty",
+      DA_building = "mapbox://tileset-source/sus-mcgill/alley-DA_building",
+      building = "mapbox://tileset-source/sus-mcgill/alley-building"),
     minzoom = c(DA_building_empty = 3, DA_building = 9, building = 14),
     maxzoom = c(DA_building_empty = 8, DA_building = 13, building = 16), 
     layer_size = c(DA_building_empty = NA, DA_building = NA, building = 2500),
@@ -334,10 +335,10 @@ recipe_auto_zoom <-
   create_recipe(
     layer_names = c("borough", "CT", "DA", "building"),
     source = c(
-      borough = "mapbox://tileset-source/maxbdb2/alley-borough",
-      CT = "mapbox://tileset-source/maxbdb2/alley-CT",
-      DA = "mapbox://tileset-source/maxbdb2/alley-DA",
-      building = "mapbox://tileset-source/maxbdb2/alley-building"),
+      borough = "mapbox://tileset-source/sus-mcgill/alley-borough",
+      CT = "mapbox://tileset-source/sus-mcgill/alley-CT",
+      DA = "mapbox://tileset-source/sus-mcgill/alley-DA",
+      building = "mapbox://tileset-source/sus-mcgill/alley-building"),
     minzoom = c(borough = 2, CT = 11, DA = 13, building = 16),
     maxzoom = c(borough = 10, CT = 12, DA = 15, building = 16), 
     layer_size = c(borough = NA, CT = NA, DA = NA, building = 2500),
@@ -346,14 +347,14 @@ recipe_auto_zoom <-
 
 # Create and publish tilesets ---------------------------------------------
 
-create_tileset("alley-borough", recipe_borough, username = "maxbdb2")
-publish_tileset("alley-borough", username = "maxbdb2")
+create_tileset("alley-borough", recipe_borough)
+publish_tileset("alley-borough")
 
-create_tileset("alley-CT", recipe_CT, username = "maxbdb2")
-publish_tileset("alley-CT", username = "maxbdb2")
+create_tileset("alley-CT", recipe_CT)
+publish_tileset("alley-CT")
 
-create_tileset("alley-DA", recipe_DA, username = "maxbdb2")
-publish_tileset("alley-DA", username = "maxbdb2")
+create_tileset("alley-DA", recipe_DA)
+publish_tileset("alley-DA")
 
 create_tileset("alley-building", recipe_building)
 publish_tileset("alley-building")
