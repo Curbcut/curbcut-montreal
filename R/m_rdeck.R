@@ -81,7 +81,7 @@ rdeck_server <- function(id, map_id, tile, tile2, map_var, zoom, select_id) {
         # Update street layer 1
         add_mvt_layer(
           id = paste0(id, "_street_1"),
-          data = if (tile() %in% c("borough", "CT", "DA", "grid", "auto_zoom")) 
+          data = if (tile() %in% c("borough", "CT", "DA", "grid", "auto_zoom"))
             mvt_url("sus-mcgill.street_1") else "",
           visible = show_street(),
           line_width_units = "meters",

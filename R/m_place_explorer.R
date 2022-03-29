@@ -142,7 +142,7 @@ place_explorer_server <- function(id) {
         center = map_location, zoom = map_zoom)) |> 
         add_mvt_layer(
           id = "ghost_DA", 
-          data = tile_json("sus-mcgill.DA_empty"),
+          data = mvt_url("sus-mcgill.DA_empty"),
           pickable = TRUE,
           get_fill_color = "#FFFFFF00",
           get_line_color = "#FFFFFF00")
@@ -329,7 +329,7 @@ place_explorer_server <- function(id) {
                          zoom = 14)) |>
         add_mvt_layer(
           id = "ghost_DA",
-          data = tile_json("sus-mcgill.DA_empty"),
+          data = mvt_url("sus-mcgill.DA_empty"),
           pickable = TRUE,
           get_fill_color = "#FFFFFF00",
           get_line_color = "#FFFFFF00")
