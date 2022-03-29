@@ -181,9 +181,7 @@ qsave(green_space, file = "data/green_space.qs")
 qsave(metro_lines, file = "data/metro_lines.qs")
 # qsavem(permits_choropleth, permits, file = "data/permits.qsm")
 qsavem(title_card_indicators, pe_var_hierarchy, pe_theme_order, CSDUID_groups,
-       title_card_index, pe_variable_order, place_explorer_basemap,
-       place_explorer_island, place_explorer_CMA, 
-       file = "data/place_explorer.qsm")
+       title_card_index, pe_variable_order, file = "data/place_explorer.qsm")
 qsave(postal_codes, file = "data/postal_codes.qs")
 qsave(stories, file = "data/stories.qs")
 qsave(dyk, "data/dyk.qs")
