@@ -97,7 +97,7 @@ place_explorer_UI <- function(id) {
                                   "max-width: 1200px; margin:auto;",
                                   "padding:30px;"),
                    column(9, htmlOutput(NS(id, "title_card_title")),
-                          uiOutput(NS(id, "title_card"))),
+                          uiOutput(NS(id, "title_card"), style = "margin-top:20px;")),
                    column(3, rdeckOutput(NS(id, "title_card_map")))
                  ),
                  
@@ -311,7 +311,7 @@ place_explorer_server <- function(id) {
     
     ## TITLE CARD -------------------------------------------------------
     shinyjs::delay(1, shinyjs::show("grid_elements"))
-    shinyjs::delay(200, shinyjs::hide("grid_elements"))
+    shinyjs::delay(500, shinyjs::hide("grid_elements"))
 
     output$title_card_map <- renderRdeck({
       rdeck(map_style = map_base_style,
@@ -519,10 +519,10 @@ place_explorer_server <- function(id) {
           tagList(
             if (x == 1) {
               tagList(h2(style = "padding: 10px;",
-                         sus_translate("Defining Characteristics")))
+                         sus_translate("What makes this area unique?")))
             } else if (x - 1 == which_standout[length(which_standout)]) {
               tagList(h2(style = "padding: 10px;",
-                         sus_translate("Other Characteristics")))
+                         sus_translate("Other characteristics")))
             },
             uiOutput(
               outputId = eval(parse(text = paste0("NS(id, 'theme_", themes[[x]], "_block')"))),
