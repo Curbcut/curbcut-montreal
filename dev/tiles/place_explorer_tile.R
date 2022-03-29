@@ -6,7 +6,7 @@ library(qs)
 qload("data/census.qsm")
 source("dev/tiles/tile_functions.R")
 
-# Process DA_building then upload tile source -----------------------------
+# Process empty DA then upload tile source --------------------------------
 
 DA |> 
   select(DAUID, CTUID, CSDUID) |> 

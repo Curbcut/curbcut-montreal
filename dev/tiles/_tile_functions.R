@@ -22,19 +22,21 @@ upload_tile_source <- function(df, id, username = "sus-mcgill",
                                access_token = .sus_token) {
   
   # Initialize tempfile
-  tmp <- tempfile(fileext = ".json")
+  tmp1 <- tempfile(fileext = ".json")
+  tmp2 <- tempfile(fileext = ".geojson")
   
-  # Write JSON to tempfile
-  df |> 
-    geojsonsf::sf_geojson() |> 
+  # Write Geojson to tempfile
+  geojsonio::geojson_write(df, file = tmp2)
+  
+  readtext::readtext(tmp2) |> 
     paste0(collapse = " ") |> 
     geojson::featurecollection() |> 
-    geojson::ndgeo_write(tmp)
+    geojson::ndgeo_write(tmp1)
   
   # Construct system call
   out <- paste0('curl -X POST "https://api.mapbox.com/tilesets/v1/sources/', 
                 username, '/', id, '?access_token=', access_token, 
-                '" -F file=@', tmp, 
+                '" -F file=@', tmp1, 
                 ' --header "Content-Type: multipart/form-data"')
   
   system(out)

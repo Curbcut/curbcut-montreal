@@ -11,6 +11,7 @@ col_right_3 <- c("#E8E8E8", "#B5C0DA", "#6C83B5")
 col_delta_5 <- c("#CA0020", "#F4A582", "#E8E8E8", "#92C5DE", "#0571B0")
 col_bivar <- c(col_left_3, "#B5C0DA", "#90B2B3", "#5A9178", "#6C83B5",
                "#567994", "#2A5A5B")
+col_qualit <- c("#008100", "#F6BE00", "#B37400", "#262626")
 col_iso <- col_bivar[c(3, 6, 9)]
 col_NA <- "#B3B3BB"
 
@@ -37,7 +38,12 @@ c_delta <- tibble(
   group = as.character(15:19),
   value = col_delta_5)
 
-colour_table <- dplyr::bind_rows(c_NA, c_q5, c_bivar, c_delta)
+c_qualit <- tibble(
+  palette = "qualit",
+  group = as.character(20:23),
+  value = col_qualit)
+
+colour_table <- dplyr::bind_rows(c_NA, c_q5, c_bivar, c_delta, c_qualit)
   
 
 # Univariate 5-level colour table -----------------------------------------

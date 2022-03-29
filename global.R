@@ -40,7 +40,7 @@ building <- qread("data/building.qs")
 
 # qload("data/covid.qsm")
 # green_space <- qread("data/green_space.qs")
-# qload("data/alleys.qsm")
+qload("data/alleys.qsm")
 # crash <- qread("data/crash.qs")
 # tt_matrix <- qread("data/tt_matrix.qs")
 # marketed_sustainability <- qread("data/marketed_sustainability.qs")
@@ -102,8 +102,8 @@ mods_rdy <- list(
   #   "Road safety" = "crash"
   #   ),
   "Urban life" = c(
-    "Active living potential" = "canale"#, 
-    # "Green alleys" = "alley", 
+    "Active living potential" = "canale", 
+    "Green alleys" = "alley"#,
     # "Green spaces" = "green_space"
     )#,
   # "Ecology" = c(
