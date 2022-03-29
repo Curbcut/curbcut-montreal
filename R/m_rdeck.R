@@ -64,7 +64,7 @@ rdeck_server <- function(id, map_id, tile, tile2, map_var, zoom, select_id) {
         # Update data layer
         add_mvt_layer(
           id = id, 
-          data = tile_json(paste0("sus-mcgill.", id, "-", tile_string())),
+          data = mvt_url(paste0("sus-mcgill.", id, "-", tile_string())),
           pickable = pick(), 
           auto_highlight = TRUE, 
           highlight_color = "#FFFFFF50", 
@@ -82,7 +82,7 @@ rdeck_server <- function(id, map_id, tile, tile2, map_var, zoom, select_id) {
         add_mvt_layer(
           id = paste0(id, "_street_1"),
           data = if (tile() %in% c("borough", "CT", "DA", "grid", "auto_zoom")) 
-            tile_json("sus-mcgill.street_1") else NULL,
+            mvt_url("sus-mcgill.street_1") else NULL,
           visible = show_street(),
           line_width_units = "meters",
           line_width_min_pixels = 2,
@@ -96,7 +96,7 @@ rdeck_server <- function(id, map_id, tile, tile2, map_var, zoom, select_id) {
         add_mvt_layer(
           id = paste0(id, "_street_2"),
           data = if (tile() %in% c("borough", "CT", "DA", "grid", "auto_zoom")) 
-            tile_json("sus-mcgill.street_2") else NULL,
+            mvt_url("sus-mcgill.street_2") else NULL,
           visible = show_street(),
           line_width_units = "meters",
           line_width_min_pixels = 1,
@@ -110,7 +110,7 @@ rdeck_server <- function(id, map_id, tile, tile2, map_var, zoom, select_id) {
         add_mvt_layer(
           id = paste0(id, "_street_3"),
           data = if (tile() %in% c("borough", "CT", "DA", "grid", "auto_zoom")) 
-            tile_json("sus-mcgill.street_3") else NULL,
+            mvt_url("sus-mcgill.street_3") else NULL,
           visible = show_street(),
           line_width_units = "meters",
           line_width_min_pixels = 0.5,
@@ -123,7 +123,7 @@ rdeck_server <- function(id, map_id, tile, tile2, map_var, zoom, select_id) {
         # Update building layer
         add_mvt_layer(
           id = paste0(id, "_building"), 
-          data = if (tile() %in% c("borough", "CT", "DA", "grid")) tile_json(
+          data = if (tile() %in% c("borough", "CT", "DA", "grid")) mvt_url(
             "sus-mcgill.DA_building_empty") else NULL, 
           pickable = FALSE,
           auto_highlight = FALSE, 
@@ -136,7 +136,7 @@ rdeck_server <- function(id, map_id, tile, tile2, map_var, zoom, select_id) {
         add_mvt_layer(
           id = paste0(id, "_borough_labels"), 
           data = if (tile() %in% c("borough", "CT", "grid", "auto_zoom")) 
-            tile_json("sus-mcgill.borough_label") else NULL,
+            mvt_url("sus-mcgill.borough_label") else NULL,
           visible = show_label(),
           point_type = "text", get_text = rlang::sym("name"),
           text_background = TRUE,
