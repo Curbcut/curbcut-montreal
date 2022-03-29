@@ -19,11 +19,25 @@ island_CSDUID <-
     "2466142", "2466072", "2466023")
 
 
-# Process DA_empty then upload tile source ---------------------------
+# Process DA_empty then upload tile source --------------------------------
 
 DA |> 
   select(ID, geometry) |> 
   upload_tile_source("DA_empty")
+
+
+# Create and publish DA_empty tileset -------------------------------------
+
+DA_empty_recipe <- 
+  create_recipe(
+    layer_names = "DA",
+    source = "mapbox://tileset-source/sus-mcgill/DA_empty",
+    minzoom = 8,
+    maxzoom = 13, 
+    recipe_name = "building_empty")
+
+create_tileset("DA_empty", DA_empty_recipe)
+publish_tileset("DA_empty")
 
 
 # Process DA_empty_island then upload tile source -------------------------

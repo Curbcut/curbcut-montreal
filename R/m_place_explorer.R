@@ -142,7 +142,7 @@ place_explorer_server <- function(id) {
         center = map_location, zoom = map_zoom)) |> 
         add_mvt_layer(
           id = "ghost_DA", 
-          data = tile_json("sus-mcgill.place_explorer-DA2"),
+          data = tile_json("sus-mcgill.DA_empty"),
           pickable = TRUE,
           get_fill_color = "#FFFFFF00",
           get_line_color = "#FFFFFF00")
@@ -218,7 +218,7 @@ place_explorer_server <- function(id) {
     })
     
     observeEvent(input[["title_card_map_click"]], {
-      loc_DAUID(input[["title_card_map_click"]]$object$DAUID)
+      loc_DAUID(input[["title_card_map_click"]]$object$ID)
       
       lon <- input[["title_card_map_click"]]$coordinate[[1]]
       lat <- input[["title_card_map_click"]]$coordinate[[2]]
@@ -329,7 +329,7 @@ place_explorer_server <- function(id) {
                          zoom = 14)) |>
         add_mvt_layer(
           id = "ghost_DA",
-          data = tile_json("sus-mcgill.place_explorer-DA2"),
+          data = tile_json("sus-mcgill.DA_empty"),
           pickable = TRUE,
           get_fill_color = "#FFFFFF00",
           get_line_color = "#FFFFFF00")
