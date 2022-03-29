@@ -64,7 +64,7 @@ rdeck_server <- function(id, map_id, tile, tile2, map_var, zoom, select_id) {
         # Update data layer
         add_mvt_layer(
           id = id, 
-          data = tile_json(paste0("maxbdb2.", id, "-", tile_string())),
+          data = tile_json(paste0("sus-mcgill.", id, "-", tile_string())),
           pickable = pick(), 
           auto_highlight = TRUE, 
           highlight_color = "#FFFFFF50", 

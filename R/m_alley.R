@@ -199,7 +199,7 @@ alley_server <- function(id) {
     #                   initial_view_state = view_state(
     #                     center = map_location, zoom = 13)) |>
     #         add_mvt_layer(id = ns_id,
-    #                       data = tile_json("maxbdb2.alley-individual"),
+    #                       data = tile_json("sus-mcgill.alley-individual"),
     #                       pickable = TRUE,
     #                       auto_highlight = TRUE,
     #                       highlight_color = "#FFFFFF50",
@@ -210,7 +210,7 @@ alley_server <- function(id) {
     #     } else {
     #       rdeck_proxy(id = paste0(ns_id, "-map")) |>
     #         add_mvt_layer(id = ns_id,
-    #                       data = tile_json("maxbdb2.alley-empty_borough"),
+    #                       data = tile_json("sus-mcgill.alley-empty_borough"),
     #                       pickable = TRUE,
     #                       auto_highlight = TRUE,
     #                       highlight_color = "#FFFFFF50",
