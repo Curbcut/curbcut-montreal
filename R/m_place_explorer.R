@@ -139,7 +139,7 @@ place_explorer_server <- function(id) {
         center = map_location, zoom = map_zoom)) |> 
         add_mvt_layer(
           id = "ghost_DA", 
-          data = mvt_url("maxbdb2.place_explorer-DA2"),
+          data = tile_json("maxbdb2.place_explorer-DA2"),
           pickable = TRUE,
           get_fill_color = "#FFFFFF00",
           get_line_color = "#FFFFFF00")
@@ -320,7 +320,7 @@ place_explorer_server <- function(id) {
                          zoom = 14)) |>
         add_mvt_layer(
           id = "ghost_DA",
-          data = mvt_url("maxbdb2.place_explorer-DA2"),
+          data = tile_json("maxbdb2.place_explorer-DA2"),
           pickable = TRUE,
           get_fill_color = "#FFFFFF00",
           get_line_color = "#FFFFFF00")
@@ -348,15 +348,23 @@ place_explorer_server <- function(id) {
       }, ignoreInit = TRUE)
 
     output$title_card_title <- renderText({
+      if (df() == "borough") {
         HTML("<h2>",
-             if (df() == "borough") {
-               paste0(borough[borough$ID == select_id(),]$name, " (",
-                      borough[borough$ID == select_id(),]$name_2, ")")
-             } else paste0("The area around ", location_name(),
-                           " (", get_zoom_name(df()), ")"),
-             "</h2>")
+             paste0(borough[borough$ID == select_id(),]$name, " (",
+                    borough[borough$ID == select_id(),]$name_2, ")"),
+             "/h2>")
+      } else HTML("<h2 style = 'display:inline;'>", 
+                  paste0("The area around ", location_name(),
+                         "<i style = 'color: var(--c-h2);
+    font-family: var(--ff-h2); font-size: 2.5rem; margin-bottom: 0.75em; 
+                         display:inline;'>", 
+                         "&nbsp;&nbsp;&nbsp;(", get_zoom_name(df()), ")"), 
+                  "</i></h2>")
     })
-
+    
+    HTML("<h2>", paste0("The area around ", location_name(),
+                        "<p style = 'font-size:2rem'>", " (", get_zoom_name(df()), ")"), "</p></h2>")
+    
     output$title_card <- renderUI({
 
       output$list <- renderUI({
