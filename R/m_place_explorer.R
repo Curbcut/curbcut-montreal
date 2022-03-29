@@ -114,10 +114,16 @@ place_explorer_server <- function(id) {
   moduleServer(id, function(input, output, session) {
     ns_id <- "place_explorer"
     
-    # Reactive values initialization
+    # Initial reactives
+    zoom <- reactiveVal(get_zoom(map_zoom))
     loc_DAUID <- reactiveVal()
     location_name <- reactiveVal()
     island_comparison <- reactiveVal("island")
+    
+    # Zoom reactive
+    observeEvent(input[[paste0(ns_id, "-map_viewstate")]], {
+      zoom(get_zoom(input[[paste0(ns_id, "-map_viewstate")]]$viewState$zoom))
+    })
     
     # Sidebar
     sidebar_server(id = "place_explorer", x = "place_explorer")
@@ -145,27 +151,26 @@ place_explorer_server <- function(id) {
           data = mvt_url("sus-mcgill.DA_empty"),
           pickable = TRUE,
           get_fill_color = "#FFFFFF00",
-          get_line_color = "#FFFFFF00")
+          get_line_color = "#FFFFFF00") |> 
+        add_mvt_layer(
+          id = "CMA",
+          data = mvt_url("sus-mcgill.CMA_empty"),
+          get_fill_color = "#AAB6CF00",
+          get_line_color = "#AAB6CFFF",
+          line_width_units = "pixels",
+          get_line_width = 3)
     })
     
-    observeEvent(input[[paste0(ns_id, "-map_viewstate")]]$viewState$zoom, {
-      if (input[[paste0(ns_id, "-map_viewstate")]]$viewState$zoom < 8) {
-        rdeck_proxy(id = paste0(ns_id, "-map")) |>
-          add_polygon_layer(data = place_explorer_basemap,
-                            id = "border",
-                            get_fill_color = "#AAB6CF",
-                            get_polygon = rlang::sym("x"))
-      } else {
-        rdeck_proxy(id = paste0(ns_id, "-map")) |>
-          add_polygon_layer(data = place_explorer_basemap,
-                            id = "border",
-                            get_fill_color = "#AAB6CF00",
-                            get_line_color = "#AAB6CFFF",
-                            line_width_units = "pixels",
-                            get_line_width = 3,
-                            get_polygon = rlang::sym("x"))
-      }
-    }, ignoreInit = TRUE)
+    observeEvent(zoom(), {
+      print(zoom())
+
+      rdeck_proxy(id = paste0(ns_id, "-map")) |>
+        add_mvt_layer(id = "CMA", 
+                      get_fill_color = if (zoom() >= 8) "#AAB6CF00" else "#AAB6CFFF",
+                      get_line_color = "#AAB6CFFF",
+                      line_width_units = "pixels",
+                      get_line_width = if (zoom() >= 8) 3 else 0)
+      }, ignoreInit = TRUE)
     
     
     # Retrieve location --------------------------------------------------------

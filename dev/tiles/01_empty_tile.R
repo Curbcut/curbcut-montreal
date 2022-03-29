@@ -7,7 +7,7 @@ qload("data/census.qsm")
 grid <- qread("data/grid.qs")
 building <- qread("data/building.qs")
 variables <- qread("data/variables.qs")
-source("dev/tiles/tile_functions.R")
+source("dev/tiles/_tile_functions.R")
 
 island_CSDUID <- 
   c("2466007", "2466023_1",  "2466023_10", "2466023_11", "2466023_12", 
@@ -17,6 +17,28 @@ island_CSDUID <-
     "2466032", "2466047", "2466058", "2466062", "2466087", "2466092", 
     "2466097", "2466102", "2466107", "2466112", "2466117", "2466127", 
     "2466142", "2466072", "2466023")
+
+
+# Process CMA_empty then upload tile source -------------------------------
+
+borough |> 
+  summarize() |> 
+  mutate(ID = "1", name = "CMA", .before = geometry) |> 
+  upload_tile_source("CMA_empty")
+
+
+# Create and publish CMA_empty tileset ------------------------------------
+
+CMA_empty_recipe <- 
+  create_recipe(
+    layer_names = "CMA",
+    source = "mapbox://tileset-source/sus-mcgill/CMA_empty",
+    minzoom = 3,
+    maxzoom = 11, 
+    recipe_name = "CMA_empty")
+
+create_tileset("CMA_empty", CMA_empty_recipe)
+publish_tileset("CMA_empty")
 
 
 # Process DA_empty then upload tile source --------------------------------
