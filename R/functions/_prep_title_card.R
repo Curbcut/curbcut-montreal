@@ -134,10 +134,8 @@ prep_title_card <- function(df, select_id, ind, percent = TRUE,
         geom_vline(aes(xintercept = data_var),
                    color = "#000000", size = 1, alpha = 1) +
         theme_void() +
-        theme(plot.background = element_rect(fill = "transparent",
-                                             colour = "transparent"),
-              panel.background = element_rect(fill = "transparent",
-                                              colour = "transparent"))
+        theme(panel.background = element_rect(fill = "#fbfbfb", colour = NA),
+              plot.background = element_rect(fill = "#fbfbfb", colour = NA))
     } else ggplot()
 
   return(info)
