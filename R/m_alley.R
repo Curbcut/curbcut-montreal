@@ -52,16 +52,18 @@ alley_server <- function(id) {
     choropleth <- reactive(!(var_left() == " " || focus_visited()))
 
     # Map
-    # Map
     output[[paste0(ns_id, "-map")]] <- renderRdeck({
       rdeck(map_style = map_base_style, initial_view_state = view_state(
         center = map_location, zoom = map_zoom)) |> 
-        add_mvt_layer(id = ns_id) #|>
-        # add_mvt_layer(id = paste0(ns_id, "_street_1")) |> 
-        # add_mvt_layer(id = paste0(ns_id, "_street_2")) |> 
-        # add_mvt_layer(id = paste0(ns_id, "_street_2")) |> 
-        # add_mvt_layer(id = paste0(ns_id, "_building")) |> 
-        # add_mvt_layer(id = paste0(ns_id, "_borough_labels"))
+        add_mvt_layer(id = "alleys",
+                      data = tile_json("maxbdb2.alley-individual"),
+                      pickable = FALSE,
+                      auto_highlight = FALSE,
+                      get_fill_color = "#00000035",
+                      get_line_color = "#00000035",
+                      line_width_units = "pixels",
+                      get_line_width = 2) |> 
+        add_mvt_layer(id = ns_id)
     })
 
     # Zoom and POI reactives
@@ -73,11 +75,9 @@ alley_server <- function(id) {
     # Click reactive
     observeEvent(get_clicked_object(paste0(ns_id, "-map")), {
       selection <- get_clicked_object(paste0(ns_id, "-map"))$ID
-      if (!is.na(select_id()) && selection == select_id()) {
-        select_id(NA)
-      } else {
-        select_id(selection)
-      }
+      if (!is.na(select_id()) && selection == select_id()) return(select_id(NA))
+      
+      select_id(selection)
     })
 
     # Choose tileset
@@ -118,13 +118,10 @@ alley_server <- function(id) {
 
     # Data
     data <- reactive({
-      if (choropleth()) {
-        get_data(df(), var_left(), var_right(), island = TRUE)
-        # print(get_data(df(), var_left(), var_right(), island = TRUE))
-      } else {
-        list(visited = alleys[alleys$visited, ],
-             non_visited = alleys[!alleys$visited, ])
-      }
+      if (choropleth()) 
+        return(get_data(df(), var_left(), var_right(), island = TRUE))
+
+      return(NULL)
     })
     
     # Composite variable for map
@@ -135,6 +132,9 @@ alley_server <- function(id) {
       return("type")
     })
 
+    
+    # We need to be able to deactivate the legend. Not only hide it, as its 
+    # presence crashes the module initially
     # Legend
     # legend_server(
     #   id = ns_id,
@@ -184,47 +184,6 @@ alley_server <- function(id) {
     #   df = df,
     #   standard = choropleth,
     #   custom_info = alley_info_table)
-
-    # Update map in response to user input
-    # observeEvent({
-    #   choropleth()
-    #   focus_visited()
-    #   data()
-    #   # select_id()
-    #   df()
-    # }, {
-    #   if (!choropleth()) {
-    #     if (focus_visited()) {
-    #       rdeck_proxy(id = paste0(ns_id, "-map"),
-    #                   initial_view_state = view_state(
-    #                     center = map_location, zoom = 13)) |>
-    #         add_mvt_layer(id = ns_id,
-    #                       data = tile_json("sus-mcgill.alley-individual"),
-    #                       pickable = TRUE,
-    #                       auto_highlight = TRUE,
-    #                       highlight_color = "#FFFFFF50",
-    #                       get_fill_color = scale_fill_sus(rlang::sym("type")),
-    #                       get_line_color = scale_fill_sus(rlang::sym("type")),
-    #                       line_width_units = "pixels",
-    #                       get_line_width = 3)
-    #     } else {
-    #       rdeck_proxy(id = paste0(ns_id, "-map")) |>
-    #         add_mvt_layer(id = ns_id,
-    #                       data = tile_json("sus-mcgill.alley-empty_borough"),
-    #                       pickable = TRUE,
-    #                       auto_highlight = TRUE,
-    #                       highlight_color = "#FFFFFF50",
-    #                       get_fill_color = "#FFFFFF00",
-    #                       get_line_color = "#008100FF",
-    #                       line_width_units = "pixels",
-    #                       get_line_width = 2)
-    #     }
-    #   } else {
-    #     rdeck_proxy(id = paste0(ns_id, "-map")) |>
-    #       add_mvt_layer(id = ns_id,
-    #                     data = tile_json(""))
-    #   }
-    # })
     
     rdeck_server(
       id = ns_id,
