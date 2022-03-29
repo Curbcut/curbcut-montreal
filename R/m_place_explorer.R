@@ -196,7 +196,7 @@ place_explorer_server <- function(id) {
     
     # Get point data from click
     observeEvent(input[[paste0(ns_id, "-map_click")]], {
-      loc_DAUID(input[[paste0(ns_id, "-map_click")]]$object$DAUID)
+      loc_DAUID(input[[paste0(ns_id, "-map_click")]]$object$ID)
       
       lon <- input[[paste0(ns_id, "-map_click")]]$coordinate[[1]]
       lat <- input[[paste0(ns_id, "-map_click")]]$coordinate[[2]]
