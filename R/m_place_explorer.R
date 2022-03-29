@@ -361,60 +361,46 @@ place_explorer_server <- function(id) {
                          "&nbsp;&nbsp;&nbsp;(", get_zoom_name(df()), ")"), 
                   "</i></h2>")
     })
-    
-    HTML("<h2>", paste0("The area around ", location_name(),
-                        "<p style = 'font-size:2rem'>", " (", get_zoom_name(df()), ")"), "</p></h2>")
-    
+
     output$title_card <- renderUI({
-
+      
       output$list <- renderUI({
-          title_card_to_grid <<- get_title_card(
-            df(), select_id(),
-            island_or_region = island_comparison())
-
-          lapply(seq_along(title_card_to_grid), \(x) {
-            output[[paste0("ind_", x, "_row_title")]] <- renderText({
-              title_card_to_grid[[x]][["row_title"]] |>
-                str_to_upper()
-            })
-            output[[paste0("ind_", x, "_percentile")]] <- renderText({
-              title_card_to_grid[[x]][["percentile"]] |>
-                str_to_upper()
-            })
-            output[[paste0("ind_", x, "_plot")]] <- renderPlot({
-              title_card_to_grid[[x]][["graph"]]
-            })
-            output[[paste0("ind_", x, "_text")]] <- renderText({
-              paste0(title_card_to_grid[[x]][["text"]],
-                     title_card_to_grid[[x]][["link"]])
-            })
+        title_card_to_grid <<- get_title_card(
+          df(), select_id(),
+          island_or_region = island_comparison())
+        
+        lapply(seq_along(title_card_to_grid), \(x) {
+          output[[paste0("ind_", x, "_plot")]] <- renderPlot({
+            title_card_to_grid[[x]][["graph"]]
           })
-
-          lapply(seq_along(title_card_to_grid), \(x) {
-            tagList(
-              fluidRow(
-                column(width = 2,
-                       htmlOutput(eval(parse(
-                         text = paste0("NS(id, 'ind_", x, "_row_title')"))),
-                         style = paste0("margin:auto; text-align:center; ",
-                                        "font-size: medium; font-weight:bold;"))),
-                column(width = 2,
-                       htmlOutput(eval(parse(
-                         text = paste0("NS(id, 'ind_", x, "_percentile')"))),
-                         style = paste0("margin:auto; text-align:center;"))),
-                column(width = 2,
-                       plotOutput(eval(parse(
-                         text = paste0("NS(id, 'ind_", x, "_plot')"))),
-                         height = 25)),
-                column(width = 6,
-                       htmlOutput(eval(parse(
-                         text = paste0("NS(id, 'ind_", x, "_text')"))),
-                         style = "color: #999999"))
-
-              ),
-              br()
-            )
-          })
+        })
+        
+        lapply(seq_along(title_card_to_grid), \(x) {
+          tagList(
+            fluidRow(
+              column(width = 2,
+                     HTML(paste0("<p style = 'margin:auto; text-align:center;",
+                                 "font-size: medium; font-weight:bold;'>",
+                                 title_card_to_grid[[x]][["row_title"]] |>
+                                   str_to_upper(), "</p>"))),
+              column(width = 2,
+                     HTML(paste0("<p style = 'margin:auto; text-align:center;'>",
+                                 title_card_to_grid[[x]][["percentile"]] |>
+                                   str_to_upper(), "</p>"))),
+              column(width = 2,
+                     plotOutput(eval(parse(
+                       text = paste0("NS(id, 'ind_", x, "_plot')"))),
+                       height = 25)),
+              column(width = 6,
+                     HTML(paste0("<p style = 'color: #999999; font-size:small'>",
+                                 paste0(title_card_to_grid[[x]][["text"]],
+                                        title_card_to_grid[[x]][["link"]]), 
+                                 "</p>")))
+              
+            ),
+            br()
+          )
+        })
       })
     })
 
@@ -461,9 +447,9 @@ place_explorer_server <- function(id) {
                   select_id = select_id(),
                   island_or_region = island_comparison()
                 )
-
+                
                 if (nrow(to_grid) > 0)
-                  lapply(1:(nrow(to_grid)), \(z) {
+                  lapply(seq_along(nrow(to_grid)), \(z) {
                     output[[paste0("ind_", themes[[x]], z, "_row_title")]] <- renderText({
 
                       paste(p(style = "    font-size: 11px;", to_grid[z, ][["var_title"]],
@@ -480,7 +466,7 @@ place_explorer_server <- function(id) {
                       plots[[z]]
                     })
                   })
-
+                
                 if (nrow(to_grid) > 0) {
                   translated_theme <- str_to_upper(sus_translate(themes[[x]]))
                   translated_standout <- str_to_lower(sus_translate(standout[[x]]))
@@ -494,7 +480,7 @@ place_explorer_server <- function(id) {
                   tagList(h3(style = "text-transform:inherit;",
                              block_title,
                              title = translated_standout_definition),
-                          lapply(1:nb_values_to_show, \(z) {
+                          lapply(seq_along(nb_values_to_show), \(z) {
                             tagList(
                               fluidRow(
                                 column(width = 4,
@@ -529,13 +515,14 @@ place_explorer_server <- function(id) {
         which_standout <- which(standout %in% c("Extreme outlier", "Outlier"))
 
         lapply(seq_along(themes), \(x) {
+          # print(x)
           tagList(
             if (x == 1) {
               tagList(h2(style = "padding: 10px;",
-                         sus_translate("Explore where the {df()} stands out")))
+                         sus_translate("Defining Characteristics")))
             } else if (x - 1 == which_standout[length(which_standout)]) {
               tagList(h2(style = "padding: 10px;",
-                         sus_translate("Explore other themes")))
+                         sus_translate("Other Characteristics")))
             },
             uiOutput(
               outputId = eval(parse(text = paste0("NS(id, 'theme_", themes[[x]], "_block')"))),
