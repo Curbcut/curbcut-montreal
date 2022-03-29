@@ -431,7 +431,7 @@ place_explorer_server <- function(id) {
         lapply(seq_along(themes), \(x) {
           delay(x*100, {
             block <- paste0("theme_", themes[[x]], "_block")
-
+            
             output[[block]] <- renderUI({
 
                 to_grid <- place_explorer_block_text(
@@ -514,14 +514,15 @@ place_explorer_server <- function(id) {
         which_standout <- which(standout %in% c("Extreme outlier", "Outlier"))
 
         lapply(seq_along(themes), \(x) {
-          # print(x)
           tagList(
-            if (x == 1) {
+            if (x == 1 && length(which_standout) != 0) {
               tagList(h2(style = "padding: 10px;",
                          sus_translate("What makes this area unique?")))
-            } else if (x - 1 == which_standout[length(which_standout)]) {
+            } else if ((x == 1 && length(which_standout) == 0) ||
+                       (length(which_standout) != 0 && 
+                       x - 1 == which_standout[length(which_standout)])) {
               tagList(h2(style = "padding: 10px;",
-                         sus_translate("Other characteristics")))
+                         sus_translate("What makes this area similar to others?")))
             },
             uiOutput(
               outputId = eval(parse(text = paste0("NS(id, 'theme_", themes[[x]], "_block')"))),
