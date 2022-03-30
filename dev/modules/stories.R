@@ -49,7 +49,7 @@ stories <-
     name = "turcot_interchange",
     title = paste0("The Reconstruction of the Turcot Interchange: The ",
                    "Intersection of Community Desires and Government Priorities"),
-    img = "flooding_pierrefonds.png",
+    img = "turcot_interchange.png",
     preview = paste0("Turcot interchange"),
     lon = -73.600007,
     lat = 45.468355) |>
