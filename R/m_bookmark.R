@@ -41,8 +41,8 @@ bookmark_server <- function(id,
       # Map arguments
       if (!is.null(map_viewstate())) {
         zm <- floor(map_viewstate()$zoom * 100) / 100
-        lon <- round(as.numeric(map_viewstate()$center[[1]]), digits = 6)
-        lat <- round(as.numeric(map_viewstate()$center[[2]]), digits = 6)
+        lon <- round(as.numeric(map_viewstate()$longitude), digits = 6)
+        lat <- round(as.numeric(map_viewstate()$latitude), digits = 6)
       }
       
       # Right variable

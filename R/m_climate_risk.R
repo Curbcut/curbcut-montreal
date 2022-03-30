@@ -57,9 +57,9 @@ climate_risk_server <- function(id) {
     })
     
     # Zoom and POI reactives
-    observeEvent(input[[paste0(ns_id, "-map_viewstate")]], {
-      zoom(get_zoom(input[[paste0(ns_id, "-map_viewstate")]]$viewState$zoom))
-      poi(observe_map(input[[paste0(ns_id, "-map_viewstate")]]$viewState))
+    observeEvent(get_view_state(paste0(ns_id, "-map")), {
+      zoom(get_zoom(get_view_state(paste0(ns_id, "-map"))$zoom))
+      poi(observe_map(get_view_state(paste0(ns_id, "-map"))))
     })
     
     # Click reactive
@@ -170,8 +170,7 @@ climate_risk_server <- function(id) {
     # Bookmarking
     bookmark_server(
       id = ns_id,
-      map_viewstate = reactive(
-        input[[paste0(ns_id, "-map_viewstate")]]$viewState),
+      map_viewstate = reactive(get_view_state(paste0(ns_id, "-map"))),
       var_left = var_left,
       var_right = var_right,
       select_id = select_id,
