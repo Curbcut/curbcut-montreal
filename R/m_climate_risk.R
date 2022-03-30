@@ -63,13 +63,11 @@ climate_risk_server <- function(id) {
     })
     
     # Click reactive
-    observeEvent(input[[paste0(ns_id, "-map_click")]], {
-      if (!is.na(select_id()) &&
-          input[[paste0(ns_id, "-map_click")]]$object$ID == select_id()) {
-        select_id(NA)
-      } else {
-        select_id(get_click(input[[paste0(ns_id, "-map_click")]]$object))
-      }
+    observeEvent(get_clicked_object(paste0(ns_id, "-map")), {
+      selection <- get_clicked_object(paste0(ns_id, "-map"))$ID
+      if (!is.na(select_id()) && selection == select_id()) return(select_id(NA))
+      
+      select_id(selection)
     })
     
     # Grid value

@@ -139,7 +139,7 @@ ui_and_misc_translated <-
   add_row(en = paste0("Type of crash"), 
           fr = paste0("Type d'accident")) |> 
   add_row(en = paste0("Focus on green alleys visited by our team"), 
-          fr = paste0("Focus sur les allées vertes visitées par notre équipe")) |> 
+          fr = paste0("Focus sur les ruelles vertes visitées par notre équipe")) |> 
   add_row(en = paste0("Type of green space"), 
           fr = paste0("Type d'espace vert")) |> 
   add_row(en = paste0("Back to the map"), 
@@ -161,7 +161,7 @@ ui_and_misc_translated <-
   add_row(en = paste0("Active living potential"), 
           fr = paste0("Potentiel de vie active")) |> 
   add_row(en = paste0("Green alleys"), 
-          fr = paste0("Allées vertes")) |> 
+          fr = paste0("Ruelles vertes")) |> 
   add_row(en = paste0("Green spaces"), 
           fr = paste0("Espaces verts")) |> 
   add_row(en = paste0("Transport"), 

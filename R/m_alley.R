@@ -107,8 +107,12 @@ alley_server <- function(id) {
     time <- reactive("2016")
 
     # Left variable
-    var_left <- select_var_server(id = ns_id,
+    var_left_1 <- select_var_server(id = ns_id,
                                   var_list = reactive(var_list_left_alley))
+    var_left <- reactive({
+      if (focus_visited()) return(var_list_left_alley[1])
+      var_left_1()
+    })
 
     # Compare panel
     var_right <- compare_server(
