@@ -38,11 +38,12 @@ alleys |>
 alley_individual <- 
   create_recipe(
     layer_names = "alley-individual",
-    source = "mapbox://tileset-source/sus-mcgill/alley-individual",
+    source = "mapbox://tileset-source/sus-mssi/alley-individual",
     minzoom = 3,
     maxzoom = 16, 
     layer_size = 2500,
-    simplification_zoom = 3,
+    fallback_simpplification_zoom = 1,
+    simplification_zoom = 1,
     recipe_name = "alley-individual")
 
 create_tileset("alley-individual", alley_individual)

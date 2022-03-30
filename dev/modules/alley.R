@@ -66,7 +66,10 @@ alleys_visited <-
 alleys_visited_text <-
   suppressMessages(read_csv2("dev/data/green_alleys/alleys_visited.csv", 
             show_col_types = FALSE)) |>
-  mutate_all(list(~na_if(.,"")))
+  mutate_all(list(~na_if(.,""))) |> 
+  select(-description_fr, -circulation_fr)
+
+
 
 # Which photo does not exist? Throw a warning message
 missing_photos <- 
@@ -115,6 +118,10 @@ alleys <-
   mutate(ID = row_number()) |> 
   select(ID, name, date, created, visited, type, description, circulation, 
          photo_ID, geometry)
+
+# First letter of the name in capital letter
+alleys$name <- 
+  paste(toupper(substr(alleys$name, 1, 1)), substr(alleys$name, 2, nchar(alleys$name)), sep="")
 
 # Join borough name and CSDUID
 alleys <- 
@@ -225,16 +232,9 @@ CT <- left_join(CT, join_alleys$CT, by = "ID") |>
 DA <- left_join(DA, join_alleys$DA, by = "ID") |> 
   relocate(buffer, centroid, building, geometry, .after = last_col())
 
-street <- 
-  street |> 
-  left_join(join_alleys$DA, by = c("DAUID" = "ID")) |> 
-  relocate(geometry, .after = last_col()) |> 
-  st_set_agr("constant")
-
-
 # Meta testing ------------------------------------------------------------
 
-# meta_testing()
+meta_testing()
 
 
 # Variable explanations ---------------------------------------------------

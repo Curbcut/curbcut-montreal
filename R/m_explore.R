@@ -54,27 +54,27 @@ explore_server <- function(id, data, var_left, var_right, df, select_id,
       build_str_as_DA = build_str_as_DA()))
     
     # Make info table
-    table <- reactive(info_table(
+    table <- reactive(tryCatch(info_table(
       data = data(),
       var_type = var_type(),
       var_left = var_left(),
       var_right = var_right(),
       df = df(),
       select_id = select_id(),
-      build_str_as_DA = build_str_as_DA()))
+      build_str_as_DA = build_str_as_DA()), error = function(e) NULL))
     
     # Display info table
     output$info_table <- renderUI(table())
     
     # Make graph
-    graph <- reactive(explore_graph(
+    graph <- reactive(tryCatch(explore_graph(
       data = data(),
       var_type = var_type(),
       var_left = var_left(),
       var_right = var_right(),
       df = df(),
       select_id = select_id(),
-      build_str_as_DA = build_str_as_DA()))
+      build_str_as_DA = build_str_as_DA()), error = function(e) NULL))
     
     # Display graph
     output$explore_graph <- renderPlot(graph())

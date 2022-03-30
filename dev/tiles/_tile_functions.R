@@ -147,7 +147,9 @@ trans_var <- function(x) {
 
 create_recipe <- function(layer_names, source, minzoom, maxzoom,
                           layer_size = NULL, simplification_zoom = NULL, 
-                          bbox = NULL, recipe_name) {
+                          fallback_simpplification_zoom = 4,
+                          features_simplification = NULL, bbox = NULL, 
+                          recipe_name) {
   out <- list()
   out$recipe$version <- 1
   out$name <- recipe_name
@@ -183,7 +185,8 @@ create_recipe <- function(layer_names, source, minzoom, maxzoom,
         layers[[layer_names]]$features$simplification[[2]] <- 
           list("==", "zoom", simplification_zoom)
         layers[[layer_names]]$features$simplification[[3]] <- 1
-        layers[[layer_names]]$features$simplification[[4]] <- 4
+        layers[[layer_names]]$features$simplification[[4]] <- 
+          fallback_simpplification_zoom
       }
       if (!is.null(bbox)) layers[[layer_names]]$tiles$bbox <- bbox
       layers
@@ -203,30 +206,3 @@ create_recipe <- function(layer_names, source, minzoom, maxzoom,
   out
   
 }
-
-# example_recipe_1 <- 
-#   create_recipe(layer_names = "DA", 
-#                 source = "mapbox://tileset-source/maxbdb2/place_explorer-DA2", 
-#                 minzoom = 12, 
-#                 maxzoom = 14, 
-#                 layer_size = 2500, 
-#                 simplification_zoom = 12,
-#                 bbox = c(-73.57, 45.50, -73.56, 45.51),
-#                 recipe_name = "test17")
-
-# example_recipe_2 <- 
-#   to_send <- 
-#   create_recipe(layer_names = c("DA", "CT"), 
-#                 source = c("DA" = "mapbox://tileset-source/maxbdb2/place_explorer-DA2",
-#                            "CT" = "mapbox://tileset-source/maxbdb2/place_explorer-CT2"), 
-#                 minzoom = c("DA" = 12,
-#                             "CT" = 8), 
-#                 maxzoom = c("DA" = 14,
-#                             "CT" = 12), 
-#                 layer_size = c("DA" = 2500,
-#                                "CT" = NA), 
-#                 simplification_zoom = c("DA" = NA,
-#                                         "CT" = 12),
-#                 bbox = c(-73.57, 45.50, -73.56, 45.51),
-#                 recipe_name = "test17")
-  

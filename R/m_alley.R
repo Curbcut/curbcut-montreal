@@ -28,6 +28,7 @@ alley_UI <- function(id) {
       id = id,
       compare_UI(NS(id, ns_id), make_dropdown(compare_default = TRUE)),
       explore_UI(NS(id, ns_id)),
+      uiOutput(NS(id, "special_explore")),
       dyk_UI(NS(id, ns_id)))
 
   ))
@@ -41,7 +42,7 @@ alley_server <- function(id) {
     ns_id <- "alley"
 
     # Initial reactives
-    zoom <- reactiveVal(get_zoom(map_zoom))
+    zoom <- reactiveVal(get_zoom(12))
     select_id <- reactiveVal(NA)
     poi <- reactiveVal(NULL)
 
@@ -54,13 +55,13 @@ alley_server <- function(id) {
     # Map
     output[[paste0(ns_id, "-map")]] <- renderRdeck({
       rdeck(map_style = map_base_style, initial_view_state = view_state(
-        center = map_location, zoom = map_zoom)) |> 
+        center = map_location, zoom = 12)) |> 
         add_mvt_layer(id = "alleys",
-                      data = tile_json("maxbdb2.alley-individual"),
+                      data = mvt_url("maxbdb2.alley-individual"),
                       pickable = FALSE,
                       auto_highlight = FALSE,
-                      get_fill_color = "#00000035",
-                      get_line_color = "#00000035",
+                      get_fill_color = "#00000020",
+                      get_line_color = "#00000020",
                       line_width_units = "pixels",
                       get_line_width = 2) |> 
         add_mvt_layer(id = ns_id)
@@ -144,7 +145,7 @@ alley_server <- function(id) {
 
     # Extract alley name and photo_ID for the following click event
     alley_info <- reactive({
-      if (select_id() %in% alleys[alleys$visited,]$ID) {
+      if (select_id() %in% alleys$ID) {
         x <-
           alleys |>
           st_drop_geometry() |>
@@ -163,27 +164,77 @@ alley_server <- function(id) {
       }
     })
 
-    # Popup the image if it's clicked on
-    # onclick(
-    #   "alley-explore-alley_img",
-    #   { showModal(modalDialog(
-    #     title = HTML(alley_info()$name),
-    #     HTML(paste0('<img src="', alley_info()$photo_ID, '", width = 100%>')),
-    #     easyClose = TRUE,
-    #     size = "l",
-    #     footer = NULL
-    #   ))})
-
     # Explore panel
-    # explore_content <- explore_server(
-    #   id = ns_id,
-    #   x = data,
-    #   var_left = var_left,
-    #   var_right = var_right,
-    #   select_id = select_id,
-    #   df = df,
-    #   standard = choropleth,
-    #   custom_info = alley_info_table)
+    explore_content <- explore_server(
+      id = ns_id,
+      data = data,
+      var_left = var_left,
+      var_right = var_right,
+      df = df,
+      select_id = select_id)
+    
+    # Did-you-know panel
+    dyk_server(
+      id = ns_id, 
+      var_left = var_left,
+      var_right = var_right,
+      poi = poi)
+    
+    output$special_explore <- renderUI({
+      if (input$`alley-hide_explore`  %% 2 == 0)
+      if (select_id() %in% alley_text$ID) {
+        
+        #TKTKTKTK
+        
+      } else if (select_id() %in% alleys$ID) {
+        
+        data <- alleys[alleys$ID == select_id(),]
+
+        text_to_display <- list()
+        text_to_display$title <- paste0("<p><b>", data$name, " (", data$name_2, 
+                                        ")", "</b></p>")
+        if (!is.na(data$created)) 
+          text_to_display$inauguration <- paste0("<p>",
+                                                 sus_translate("Inauguration date: "), 
+                                                 data$created, "</p>")
+        text_to_display$text <- 
+          if (is.na(data$description)) {
+            sus_translate("<p>We currently do not have information on this alley.</p>")
+          } else {
+            paste0("<p>", sus_translate(data$description), "</p>",
+                   if (!is.na(data$circulation)) {
+                     paste0("<p>Circulation: ", sus_translate(data$circulation),
+                            "</p>")
+                   })
+          }
+        
+        output$alley_img <- renderImage({
+          if (!is.na(data$photo_ID))
+            list(src = paste0("www/alleys/", data$photo_ID),
+                 alt = sus_translate("Photo of the selected green alley"),
+                 width = "100%")},
+          deleteFile = FALSE)
+        
+        list(HTML(unlist(text_to_display)),
+             if (!is.null(data$photo_ID)) {
+               div(style = "margin-bottom:20px; cursor:pointer;",
+                   imageOutput(session$ns("alley_img"), height = "100%"))
+             })
+      }
+    })
+    
+    # Popup the alley image if it's clicked on
+    onclick(
+      "alley_img", 
+      {showModal(modalDialog(
+        title = alleys[alleys$ID == select_id(),]$name,
+        HTML(paste0('<img src="alleys/',
+                    alleys[alleys$ID == select_id(),]$photo_ID,
+                    '", width = 100%>')),
+        easyClose = TRUE,
+        size = "m",
+        footer = NULL
+      ))})
     
     rdeck_server(
       id = ns_id,
