@@ -154,6 +154,11 @@ source("dev/other/title_text.R")
 source("dev/other/colours.R")
 
 
+# Build translation qs ----------------------------------------------------
+
+source("dev/translation/build_translation.R", encoding = "utf-8")
+
+
 # Trim building -----------------------------------------------------------
 
 building_full <- building

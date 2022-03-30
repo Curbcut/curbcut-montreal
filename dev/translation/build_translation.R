@@ -1,6 +1,11 @@
 #### Build translation #########################################################
 
 
+# Load libraries ----------------------------------------------------------
+
+library(tidyverse)
+library(qs)
+
 # From a CSV to code to create tibbles ------------------------------------
 
 # form_translation_tibble <- function(df) {
