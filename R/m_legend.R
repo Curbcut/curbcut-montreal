@@ -1,17 +1,19 @@
 #### LEGEND MODULE #############################################################
 
 legend_UI <- function(id) {
-  div(id = "legend", h5(sus_translate("Legend"), style = "font-size: 12px;"),
+  div(id = NS(id, "legend_div"), h5(sus_translate("Legend"), style = "font-size: 12px;"),
       uiOutput(NS(id, "legend_render")))
 }
 
 legend_server <- function(id, data, var_left, var_right, df, 
+                          hide = reactive(FALSE), 
                           build_str_as_DA = reactive(TRUE)) {
   
   stopifnot(is.reactive(var_left))
   stopifnot(is.reactive(var_right))
   stopifnot(is.reactive(df))
   stopifnot(is.reactive(build_str_as_DA))
+  stopifnot(is.reactive(hide))
   
   moduleServer(id, function(input, output, session) {
     
@@ -23,13 +25,25 @@ legend_server <- function(id, data, var_left, var_right, df,
     }
     
     # Get data type
-    data_type <- reactive(get_data_type(df(), var_left(), var_right(),
-                                        build_str_as_DA()))
+    data_type <- reactive(tryCatch(
+      get_data_type(
+        df = df(), 
+        var_left = var_left(), 
+        var_right = var_right(),
+        build_str_as_DA = build_str_as_DA()), 
+      error = function(e) NULL))
     
     # Make legend
-    legend <- reactive(render_legend(data(), var_left(), var_right(), df(), 
-                                     data_type(), build_str_as_DA()))
-    
+    legend <- reactive(tryCatch(
+      render_legend(
+        data = data(), 
+        var_left = var_left(), 
+        var_right = var_right(), 
+        df = df(), 
+        data_type = data_type(), 
+        build_str_as_DA = build_str_as_DA()), 
+      error = function(e) NULL))
+
     # Output legend
     output$legend_render <- renderUI({
       output$legend <- renderPlot(legend())
@@ -38,7 +52,7 @@ legend_server <- function(id, data, var_left, var_right, df,
     })
     
     # Toggle legend display
-    observe(toggle("legend", condition = !is.null(legend())))
+    observe(toggle("legend_div", condition = !is.null(legend())))
     
     return(NULL)
     
