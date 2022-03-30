@@ -17,6 +17,7 @@ alley_UI <- function(id) {
       ),
       bottom = div(class = "bottom_sidebar",
                    tagList(legend_UI(NS(id, ns_id)),
+                           uiOutput(NS(id, "special_legend")),
                            zoom_UI(NS(id, ns_id), map_zoom_levels)))),
 
     # Map
@@ -133,9 +134,6 @@ alley_server <- function(id) {
       return("type")
     })
 
-    
-    # We need to be able to deactivate the legend. Not only hide it, as its 
-    # presence crashes the module initially
     # Legend
     legend_server(
       id = ns_id,
@@ -143,29 +141,79 @@ alley_server <- function(id) {
       var_right = var_right,
       df = df,
       hide = reactive(!choropleth()))
-
-    # Extract alley name and photo_ID for the following click event
-    alley_info <- reactive({
-      if (select_id() %in% alleys$ID) {
-        x <-
-          alleys |>
-          st_drop_geometry() |>
-          filter(ID == select_id()) |>
-          mutate(name = sus_translate(
-            "<p><b>{str_to_title(name)} in ",
-            "{name_2}</b></p>")) |>
-          select(-ID, -CSDUID, -visited, -name_2, -fill) |>
-          select_if(~sum(!is.na(.)) > 0) %>%
-          {if (nrow(.) > 0) as.list(.) else NULL}
-
-        out <- alley_alleys_text(x)
-
-        list(name = out$name,
-             photo_ID = out$photo_ID)
-      }
+    
+    output$special_legend <- renderUI({
+        if (focus_visited()) {
+          output$legend <- renderPlot({
+            
+            legend_hex <- c("#008100", "#F6BE00", "#B37400", "#262626", "#B3B3BB")
+            legend_names <- c("Green", "Community", "Mixed", "None", "Unvisited")
+            names(legend_hex) <- map_chr(legend_names, sus_translate)
+            
+            alley_legend_plot <-
+              alleys |>
+              distinct(type) |>
+              mutate(x = 1:5, y = 1:5) |>
+              rbind(alleys |> distinct(type) |> mutate(x = 1:5, y = 1:5)) |>
+              ggplot() +
+              geom_line(aes(x, y, color = type), size = 2) +
+              scale_color_manual(name = NULL,
+                                 values = legend_hex) +
+              theme_void() +
+              theme(legend.text = element_text(family = "SourceSansPro", size = 14))
+            
+            alley_legend <- 
+              cowplot::get_legend(suppressMessages({alley_legend_plot}))
+            
+            cowplot::plot_grid(alley_legend)})
+          
+          tagList(HTML(paste0("<h5  style = 'font-size: 12px; margin-bottom:0px')>", 
+                              sus_translate("Green alley type"),  "</h5>")),
+                  plotOutput(NS(id, "legend"), height = 100, width = "100%"))
+        }
     })
+    
+        # Legend
+        output$legend_render <- renderUI({
+          output$legend <- renderPlot({
+            legend_hex <- c("#FF5733FF", "#5F940EFF", "#10A9A7FF", "#2D80CAFF",
+                            "#75BB79FF", "#FF7C2DFF", "#6F2094FF", "#FFD733FF",
+                            "#75A7BAFF")
 
-    # Explore panel
+            legend_names <- c("Active and safe lane circuit",
+                              "Expanded pedestrian corridor",
+                              "Projected corridor",
+                              "Framed queue",
+                              "Street partially closed",
+                              "Family and active street",
+                              "Closed street",
+                              "Local circulation",
+                              "Shared street")
+
+            names(legend_hex) <- map_chr(legend_names, sus_translate)
+
+            covid_legend_plot <-
+              covid |>
+              distinct(type, fill) |>
+              mutate(x = 1:9,
+                     y = 1:9) |>
+              rbind(covid |>
+                      distinct(type, fill) |>
+                      mutate(x = 1:9,
+                             y = 1:9)) |>
+              ggplot() +
+              geom_line(aes(x,y, color = type), size = 2) +
+              scale_color_manual(name = NULL,
+                                 values = legend_hex) +
+              theme_void() +
+              theme(legend.text = element_text(family = "SourceSansPro", size = 12))
+
+            covid_legend <- cowplot::get_legend(covid_legend_plot)
+            cowplot::plot_grid(covid_legend)})
+          plotOutput(NS(id, "legend"), height = 180, width = "100%")
+        })
+    
+    # Explore panels
     explore_content <- explore_server(
       id = ns_id,
       data = data,
@@ -173,13 +221,6 @@ alley_server <- function(id) {
       var_right = var_right,
       df = df,
       select_id = select_id)
-    
-    # Did-you-know panel
-    dyk_server(
-      id = ns_id, 
-      var_left = var_left,
-      var_right = var_right,
-      poi = poi)
     
     output$special_explore <- renderUI({
       if (input$`alley-hide_explore`  %% 2 == 0)
@@ -241,6 +282,7 @@ alley_server <- function(id) {
         footer = NULL
       ))})
     
+    # Update map in response to variable changes or zooming
     rdeck_server(
       id = ns_id,
       map_id = "map",
@@ -250,6 +292,13 @@ alley_server <- function(id) {
       zoom = zoom,
       select_id = select_id
     )
+    
+    # Did-you-know panel
+    dyk_server(
+      id = ns_id, 
+      var_left = var_left,
+      var_right = var_right,
+      poi = poi)
 
     # If we aren't in choropleth, toggle off the legend/zoom
     observeEvent({choropleth()

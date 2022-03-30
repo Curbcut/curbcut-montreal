@@ -406,5 +406,15 @@ tibble(en = character(), fr = character()) |>
           fr = paste0("Date d'inauguration: ")) |> 
   add_row(en = paste0("We do not have information available on this green alley"), 
           fr = paste0("Nous n'avons actuellement pas d'informations disponible",
-                      "s sur cette ruelle verte"))
+                      "s sur cette ruelle verte")) |> 
+  add_row(en = paste0("Green"), 
+          fr = paste0("Verte")) |> 
+  add_row(en = paste0("Community"), 
+          fr = paste0("Communautaire")) |> 
+  add_row(en = paste0("Mixed"), 
+          fr = paste0("Mixte")) |> 
+  add_row(en = paste0("Unvisited"), 
+          fr = paste0("Non-visitée")) |> 
+  add_row(en = paste0("Green alley type"), 
+          fr = paste0("Type de ruelle verte"))
   

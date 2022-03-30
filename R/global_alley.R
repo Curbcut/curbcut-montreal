@@ -1,26 +1,10 @@
 ### GREEN ALLEY MODULE GLOBALS #################################################
 
-# Initialize reactive values
-width_alley_higher_zoom <- 75
-
 # Dropdown menu
 var_list_left_alley <-
   list("Borough information" = " ",
        "Per sq km" = "green_alley_sqkm",
        "Per 1,000 residents" = "green_alley_per1k")
-
-# Legend ------------------------------------------------------------------
-# 
-# alley_legend_en <-
-#   mapdeck_legend(
-#     legend_element(
-#       variables = c("Green", "Community", "Mixed", "None"),
-#       colours = c("#008100EE","#F6BE00EE", "#B37400EE", "#262626EE"),
-#       colour_type = "fill",
-#       variable_type = "category",
-#       title = "Green alley type")
-#   )
-
 
 # Functions to treat text -------------------------------------------------
 
