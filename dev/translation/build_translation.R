@@ -33,13 +33,6 @@ source("dev/translation/dyk.R", encoding = "utf-8")
 source("dev/translation/green_alleys.R", encoding = "utf-8")
 
 # Retrieve and bind translated csvs ---------------------------------------
-# translation_fr <- 
-#   map(list.files("dev/translation/csv"), ~{
-#     read.csv(paste0("dev/translation/csv/", .x)) |> 
-#       as_tibble()
-#   }) |> 
-#   reduce(bind_rows) |> 
-#   distinct(en, .keep_all = TRUE)
 
 translation_fr <- 
   bind_rows(home_and_about_translated,

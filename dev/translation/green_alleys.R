@@ -401,5 +401,10 @@ tibble(en = character(), fr = character()) |>
           fr = paste0("partiellement fermée à la circulation puisqu'il y a un ",
                       "garage à chaque entrée de la ruelle.")) |> 
   add_row(en = paste0("open, with several garages"), 
-          fr = paste0("ouverte, avec plusieurs garages"))
+          fr = paste0("ouverte, avec plusieurs garages")) |> 
+  add_row(en = paste0("Inauguration date: "), 
+          fr = paste0("Date d'inauguration: ")) |> 
+  add_row(en = paste0("We do not have information available on this green alley"), 
+          fr = paste0("Nous n'avons actuellement pas d'informations disponible",
+                      "s sur cette ruelle verte"))
   

@@ -137,11 +137,12 @@ alley_server <- function(id) {
     # We need to be able to deactivate the legend. Not only hide it, as its 
     # presence crashes the module initially
     # Legend
-    # legend_server(
-    #   id = ns_id,
-    #   var_left = var_left,
-    #   var_right = var_right,
-    #   df = df)
+    legend_server(
+      id = ns_id,
+      var_left = var_left,
+      var_right = var_right,
+      df = df,
+      hide = reactive(!choropleth()))
 
     # Extract alley name and photo_ID for the following click event
     alley_info <- reactive({
@@ -189,17 +190,21 @@ alley_server <- function(id) {
       } else if (select_id() %in% alleys$ID) {
         
         data <- alleys[alleys$ID == select_id(),]
-
+        
         text_to_display <- list()
         text_to_display$title <- paste0("<p><b>", data$name, " (", data$name_2, 
                                         ")", "</b></p>")
         if (!is.na(data$created)) 
-          text_to_display$inauguration <- paste0("<p>",
-                                                 sus_translate("Inauguration date: "), 
-                                                 data$created, "</p>")
+          text_to_display$inauguration <- 
+          paste0("<p>",
+                 sus_translate("Inauguration date: "), 
+                 data$created, "</p>")
         text_to_display$text <- 
           if (is.na(data$description)) {
-            sus_translate("<p>We currently do not have information on this alley.</p>")
+            paste0("<p>",
+                   sus_translate("We do not have information available ",
+                                 "on this green alley."),
+                   "</p>")
           } else {
             paste0("<p>", sus_translate(data$description), "</p>",
                    if (!is.na(data$circulation)) {
@@ -216,7 +221,7 @@ alley_server <- function(id) {
           deleteFile = FALSE)
         
         list(HTML(unlist(text_to_display)),
-             if (!is.null(data$photo_ID)) {
+             if (!is.na(data$photo_ID)) {
                div(style = "margin-bottom:20px; cursor:pointer;",
                    imageOutput(session$ns("alley_img"), height = "100%"))
              })

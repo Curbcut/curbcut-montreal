@@ -449,7 +449,13 @@ ui_and_misc_translated <-
   add_row(en = paste0("Gore"), 
           fr = paste0("Gore")) |> 
   add_row(en = paste0("[LEARN MORE]"), 
-          fr = paste0("[EN SAVOIR PLUS]"))
+          fr = paste0("[EN SAVOIR PLUS]")) |> 
+  add_row(en = paste0("Borough information"), 
+          fr = paste0("Informations sur l'arrondissement")) |> 
+  add_row(en = paste0("Per sq km"), 
+          fr = paste0("Par km2")) |> 
+  add_row(en = paste0("Per 1,000 residents"), 
+          fr = paste0("Par 1,000 résidents"))
 
 # Save --------------------------------------------------------------------
 
