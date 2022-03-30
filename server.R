@@ -142,41 +142,29 @@ shinyServer(function(input, output, session) {
   # Modules -----------------------------------------------------------------
   
   active_mod_server <- function(active_tab = input$sus_page) {
-    if (active_tab == "home") {
-      home_server("home", session)
-    } else if (active_tab == "access") {
-      access_server("access")
-    } else if (active_tab == "alley") {
-      alley_server("alley")    
-    } else if (active_tab == "canale") {
-      active_mod <<- canale_server("canale")
-    } else if (active_tab == "climate_risk") {
-      climate_risk_server("climate_risk")
-    } else if (active_tab == "covid") {
-      covid_server("covid")
-    } else if (active_tab == "crash") {
-      crash_server("crash")
-    } else if (active_tab == "gentrification") {
-      active_mod <<- gentrification_server("gentrification")
-    } else if (active_tab == "green_space") {
-      green_space_server("green_space")
-    } else if (active_tab == "housing") {
-      housing_server("housing")
-    } else if (active_tab == "marketed_sustainability") {
-      marketed_sustainability_server("marketed_sustainability")
-    } else if (active_tab == "natural_infrastructure") {
-      natural_infrastructure_server("natural_infrastructure")
-    } else if (active_tab == "mcp") {
-      mcp_server("mcp")
-    } else if (active_tab == "permits") {
-      permits_server("permits")
-    } else if (active_tab == "stories") {
-      stories_server("stories")
-    } else if (active_tab == "place_explorer") {
-      place_explorer_server("place_explorer")
-    } else if (active_tab == "about") {
-      why_dash_server("why_dash")
-    }
+    if (active_tab == "home") return(home_server("home", session))
+    if (active_tab == "access") return(access_server("access"))
+    if (active_tab == "alley") return(alley_server("alley"))    
+    if (active_tab == "canale") return(active_mod <<- canale_server("canale"))
+    if (active_tab == "climate_risk") 
+      return(climate_risk_server("climate_risk"))
+    if (active_tab == "covid") return(covid_server("covid"))
+    if (active_tab == "crash") return(crash_server("crash"))
+    if (active_tab == "gentrification") 
+      return(active_mod <<- gentrification_server("gentrification"))
+    if (active_tab == "green_space") return(green_space_server("green_space"))
+    if (active_tab == "housing") return(housing_server("housing"))
+    if (active_tab == "marketed_sustainability") 
+      return(marketed_sustainability_server("marketed_sustainability"))
+    if (active_tab == "natural_infrastructure") 
+      return(natural_infrastructure_server("natural_infrastructure"))
+    if (active_tab == "mcp") return(mcp_server("mcp"))
+    if (active_tab == "permits") return(permits_server("permits"))
+    if (active_tab == "stories") return(stories_server("stories"))
+    if (active_tab == "place_explorer") 
+      return(place_explorer_server("place_explorer"))
+    if (active_tab == "about") return(why_dash_server("why_dash"))
+    if (active_tab == "how_to_use") return(how_to_use_server("how_to_use"))
   }
   
   observeEvent(input$sus_page, {

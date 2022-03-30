@@ -42,3 +42,9 @@ process_rmd("crash.Rmd", "crash")
 stories_files <- list.files("dev/Rmd/stories")
 library(here)
 purrr::walk(stories_files, process_rmd, path = "stories")
+
+
+# Standalone --------------------------------------------------------------
+
+# standalone_files <- list.files("dev/Rmd/standalone")
+# purrr::walk(standalone_files, process_rmd, path = "standalone")

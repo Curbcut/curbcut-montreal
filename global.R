@@ -113,7 +113,8 @@ mods_rdy <- list(
 
 stand_alone_tabs <- c(
   "Montréal stories" = "stories",
-  # "Place explorer" = "place_explorer",
+  "Place explorer" = "place_explorer",
+  "How to use" = "how_to_use",
   "About" = "why_dash"
   )
 
