@@ -169,7 +169,9 @@ alley_text <-
                summarize(green_alley_sqm = round(units::drop_units(sum(
                  green_alley_sqm, na.rm = TRUE)))),
              by = c("ID" = "CSDUID")) |> 
-  relocate(green_alley_sqm, .after = first_alley)
+  relocate(green_alley_sqm, .after = first_alley) |> 
+  mutate(green_alley_sqm = if_else(is.na(green_alley_sqm), NA_character_,
+                                   prettyNum(green_alley_sqm, big.mark = ",")))
 
 
 # Add green alleys sqm to census geographies -----------------------------

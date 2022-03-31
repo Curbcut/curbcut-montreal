@@ -416,5 +416,142 @@ tibble(en = character(), fr = character()) |>
   add_row(en = paste0("Unvisited"), 
           fr = paste0("Non-visitée")) |> 
   add_row(en = paste0("Green alley type"), 
-          fr = paste0("Type de ruelle verte"))
-  
+          fr = paste0("Type de ruelle verte")) |> 
+  add_row(en = paste0("The citizen committee must be composed of at least 3 re",
+                      "sidents. Moreover, 55% of the residents must approve th",
+                      "e project."), 
+          fr = paste0("Le comité de citoyens doit être composé d'au moins 3 ré",
+                      "sidents. De plus, 55% des riverains doivent être en fav",
+                      "eur du projet.")) |> 
+  add_row(en = paste0("The citizen committee must be composed of at least 3 re",
+                      "sidents. Moreover, 51% of the residents must approve th",
+                      "e project."), 
+          fr = paste0("Le comité de citoyens doit être composé d'au moins 3 ré",
+                      "sidents. De plus, 51% des riverains doivent être en fav",
+                      "eur du projet.")) |> 
+  add_row(en = paste0("The citizen committee must be composed of at least 3 re",
+                      "sidents. Moreover, 75% of the residents must approve th",
+                      "e project."), 
+          fr = paste0("Le comité de citoyens doit être composé d'au moins 3 ré",
+                      "sidents. De plus, 75% des riverains doivent être en fav",
+                      "eur du projet.")) |> 
+  add_row(en = paste0("The citizen committee must be composed of at least 5 re",
+                      "sidents. Moreover, 51% of the residents must approve th",
+                      "e project."), 
+          fr = paste0("Le comité de citoyens doit être composé d'au moins 5 ré",
+                      "sidents. De plus, 51% des riverains doivent être en fav",
+                      "eur du projet.")) |> 
+  add_row(en = paste0("The citizen committee must be composed of at least 5 re",
+                      "sidents. Moreover, 60% of the housing units must have r",
+                      "esponded to the survey and 50% + 1 of all dwellings mus",
+                      "t approve the project."), 
+          fr = paste0("Le comité de ciotyens doit être composé d'au moins 5 ré",
+                      "sidents. De plus, 60% des logements doivent avoir répon",
+                      "du au sondage et 50% + 1 de tous les logements doivent ",
+                      "être en faveur du projet.")) |> 
+  add_row(en = paste0("The citizen committee must be composed of 3 to 5 reside",
+                      "nts. Moreover, 20% of the residents must approve the pr",
+                      "oject (it used to be 50% until 2019)."), 
+          fr = paste0("Le comité de citoyens doit être composé de 3 à 5 réside",
+                      "nts. De plus, 20% des riverains doivent être en faveur ",
+                      "du projet (50% étaient nécessaires jusqu'en 2019).")) |> 
+  add_row(en = paste0("The citizen committee must be composed of at least 3 re",
+                      "sidents. Moreover, 70% of the residents must respond to",
+                      " the survey and at least 50% must approve the project."), 
+          fr = paste0("Le comité de citoyens doit être composé d'au moins 3 ré",
+                      "sidents. De plus, 70% des riverains doivent répondre au",
+                      " sondage et au moins 50% doivent être en faveur du proj",
+                      "et.")) |> 
+  add_row(en = paste0("The citizen committe must be composed of at least 5 res",
+                      "idents. Moreover, 25% of the residents must approve the",
+                      " project for it to be implemented, or 50% must be again",
+                      "st the project for it not to happen."), 
+          fr = paste0("Le comité de citoyens doit être composé d'au moins 5 ré",
+                      "sidents. De plus, 25% des riverains doivent être en fav",
+                      "eur du projet pour qu'il soit réalisé, ou 50% doivent y",
+                      " être opposés afin que la ruelle ne soit pas créée.")) |> 
+  add_row(en = paste0("The citizen committee must be composed of at least 3 re",
+                      "sidents. Moreover, 51% of the residents need to approve",
+                      " the project. To close the alley to car circulation, 75",
+                      "% of the residents must respond to the access closure s",
+                      "urvey and 51% must approve."), 
+          fr = paste0("Le comité de citoyens doit être composé d'au moins 3 ré",
+                      "sidents. De plus, 51% des riverains doivent être en fav",
+                      "eur du projet. Pour une demande de fermeture d'accès à ",
+                      "la circulation, 75% des résidents doivent répondre au s",
+                      "ondage concernant la fermeture, et 51% doivent être en ",
+                      "faveur.")) |> 
+  add_row(en = paste0("The citizen committee must be composed of at least 5 re",
+                      "sidents. Moreover, 51% of the residents must approve th",
+                      "e project."), 
+          fr = paste0("Le comité de citoyens doit être composé d'au moins 5 ré",
+                      "sidents. De plus, 51% des riverains doivent être en fav",
+                      "eur du projet.")) |> 
+  add_row(en = paste0("The citizen committee must be composed of 5 to 10 resid",
+                      "ents in Sainte-Marie. There are no specific requirement",
+                      "s in Saint-Jacques and Peter-McGill in terms of the com",
+                      "mittee's composition. In all three districts, there is ",
+                      "no required minimum number of residents that must appro",
+                      "ve the project for it to be implemented."), 
+          fr = paste0("Le comité de citoyens doit être composé de 5 à 10 résid",
+                      "ents à Sainte-Marie. Il n'y a pas d'exigences spécifiqu",
+                      "es en termes de composition du comité de citoyens à Sai",
+                      "nt-Jacques et à Peter-McGill. Dans les trois districts,",
+                      " il n'y a pas de nombre minimum requis de résidents qui",
+                      " doivent être en faveur du projet pour qu'il soit mis e",
+                      "n place.")) |> 
+  add_row(en = paste0("The citizen committee must be composed of at least 5 re",
+                      "sidents. Moreover, 51% of the residents must approve th",
+                      "e project."), 
+          fr = paste0("Le comité de citoyens doit être composé d'au moins 5 ré",
+                      "sidents. De plus, 51% des riverains doivent être en fav",
+                      "eur du projet.")) |> 
+  add_row(en = paste0("The program is managed by the Eco-Quartier."), 
+          fr = paste0("Le programme est géré par l'Eco-Quartier.")) |> 
+  add_row(en = paste0("The program is managed by the Eco-Quartier."), 
+          fr = paste0("Le programme est géré par l'Eco-Quartier.")) |> 
+  add_row(en = paste0("The program is managed by the Eco-Quartier. And each pr",
+                      "oject must be supported by a Non-Profit Organisation."), 
+          fr = paste0("Le programme est géré par l'Eco-Quartier. Et chaque pro",
+                      "jet doit être soutenu par une organisation non-lucrativ",
+                      "e.")) |> 
+  add_row(en = paste0("The program is managed by the borough."), 
+          fr = paste0("Le programme est géré par l'arrondissement.")) |> 
+  add_row(en = paste0("The program is managed by the Eco-Quartier."), 
+          fr = paste0("Le programme est géré par l'Eco-Quartier.")) |> 
+  add_row(en = paste0("The program is managed by the Eco-Quartier."), 
+          fr = paste0("Le programme est géré par l'Eco-Quartier.")) |> 
+  add_row(en = paste0("The program is managed by the borough."), 
+          fr = paste0("Le programme est géré par l'arrondissement.")) |> 
+  add_row(en = paste0("The program is managed by the Eco-Quartier."), 
+          fr = paste0("Le programme est géré par l'Eco-Quartier.")) |> 
+  add_row(en = paste0("The program is managed by the borough."), 
+          fr = paste0("Le programme est géré par l'arrondissement.")) |> 
+  add_row(en = paste0("The program is managed by the Eco-Quartiers."), 
+          fr = paste0("Le programme est géré par les Eco-Quartiers.")) |> 
+  add_row(en = paste0("The program is managed by the Eco-Quartier."), 
+          fr = paste0("Le programme est géré par l'Eco-Quartier.")) |>
+  add_row(en = paste0("The program provides a maximum amount of 5,000$ for pro",
+                      "fessional support, and a maximum amount of 20,000$ will",
+                      " be granted to the support organisation to develop the ",
+                      "green alley."), 
+          fr = paste0("Le programme fournit un montant maximum de 5,000$ pour ",
+                      "du soutien professionnel, et un maximum de 20,000$ sera",
+                      " attribué à l'organisme qui soutient le projet pour dév",
+                      "elopper la ruelle verte.")) |> 
+  add_row(en = paste0("The budget was 300,000$ between 2017 and 2019."), 
+          fr = paste0("Le budget était de 300,000$ entre 2017 et 2019.")) |> 
+  add_row(en = paste0("In 2021, the budget was 25,000$ for green alleys and st",
+                      "reet gardens."), 
+          fr = paste0("En 2021, le budget était de 25,000$ pour les ruelles ve",
+                      "rtes et les jardins de rue.")) |>
+  add_row(en = paste0("The first green alley inauguration was in "), 
+          fr = paste0("La première inauguration d'une ruelle verte a eu lieu en ")) |>
+  add_row(en = paste0(" and there are {data$green_alley_sqm} square",
+                      " meters of green alley in the borough."), 
+          fr = paste0(" et il y a {data$green_alley_sqm} mètres carrés de ruelle verte ",
+                      "dans l'arrondissement.")) |>
+  add_row(en = paste0("The green alley guide of {data$name}"), 
+          fr = paste0("Le guide d'aménagement d'une ruelle verte de {data$name}")) |> 
+  add_row(en = paste0("Borough"), 
+          fr = paste0("Arrondissement"))

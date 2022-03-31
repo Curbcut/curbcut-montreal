@@ -9,7 +9,7 @@ library(qs)
 # From a CSV to code to create tibbles ------------------------------------
 
 # form_translation_tibble <- function(df) {
-#   
+# 
 #   df <- df[!is.na(df$fr), ]
 # 
 #   en <- gsub("(.{55})", '\\1",\n"', df$en)

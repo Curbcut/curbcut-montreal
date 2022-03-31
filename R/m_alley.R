@@ -109,8 +109,9 @@ alley_server <- function(id) {
     # Left variable
     var_left_1 <- select_var_server(id = ns_id,
                                   var_list = reactive(var_list_left_alley))
+    
     var_left <- reactive({
-      if (focus_visited()) return(var_list_left_alley[1])
+      if (focus_visited()) return(" ")
       var_left_1()
     })
 
@@ -188,9 +189,39 @@ alley_server <- function(id) {
     
     output$special_explore <- renderUI({
       if (input$`alley-hide_explore`  %% 2 == 0)
-      if (select_id() %in% alley_text$ID) {
+      if (var_left() == var_list_left_alley[1] && 
+          select_id() %in% alley_text$ID) {
         
-        #TKTKTKTK
+        data <- alley_text[alley_text$ID == select_id(),]
+        
+        text_to_display <- list()
+        text_to_display$title <- paste0("<p><b>", sus_translate("Borough"), " ", 
+                                        data$name, "</b></p>")
+        text_to_display$intro <-
+          paste0("<p>",
+                 sus_translate("The first green alley inauguration was in "),
+                 data$first_alley, if (!is.na(data$green_alley_sqm)) 
+                   sus_translate(" and there are {data$green_alley_sqm} square",
+                                 " meters of green alley in the borough.") else ".",
+                 "</p>")
+        text_to_display$text <- 
+          paste0("<p>",
+                 if (!is.na(data$app_process)) sus_translate(data$app_process), " ",
+                 if (!is.na(data$management)) sus_translate(data$management), " ",
+                 if (!is.na(data$budget)) sus_translate(data$budget),
+                 "</p>")
+        
+        text_to_display$guide <- 
+          paste0(glue("<p><a href = {data$guide}>"),
+                 sus_translate("The green alley guide of {data$name}"),
+                 "</a></p>")
+        
+        text_to_display$contact <- 
+          if (!is.na(data$contact))
+          glue("<p>Contact: <a href = 'mailto:{data$contact}'>",
+               "{data$contact}</a></p>")
+        
+        HTML(unlist(text_to_display))
         
       } else if (select_id() %in% alleys$ID) {
         
