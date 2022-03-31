@@ -6,10 +6,64 @@ shinyServer(function(input, output, session) {
     updateNavbarPage(session, "sus_page", "home")
   })
   
+
+  # First visit - no cookies ------------------------------------------------
+  # Reset after 14 days of last time the banner was shown
+  observeEvent(input$cookies$time_last_htu_banner, {
+    if (is.null(input$cookies$time_last_htu_banner) ||
+        (!is.null(input$cookies$time_last_htu_banner) &&
+         Sys.time() > (as.POSIXct(input$cookies$time_last_htu_banner) + 1209600))) {
+      
+      #TKTK SHOW BANNER HERE
+      insertUI(selector = ".navbar-shadow",
+               where = "beforeBegin",
+               ui = HTML(paste0("<div id = 'htu_footer' class='fixed_footer'>",
+                                "<p style = 'margin-bottom:0px; color:white; display:inline;'>",
+                                "Première fois sur Sus? Visitez la page ",
+                                paste0("<a id='go_to_htu_fr' href='#' style = 'color:white;'",
+                                       "class='action-button shiny-bound-input'>",
+                                       "<b>", "Mode d'emploi", 
+                                       "</b></a> !&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;"),
+                                "First time on Sus? Visit the ",
+                                paste0("<a id='go_to_htu_en' href='#' style = 'color:white;'",
+                                       "class='action-button shiny-bound-input'>",
+                                       "<b>", "How to use", 
+                                       "</b></a> page!"), "</p>",
+                                "<a id='go_to_htu_x' href='#' style = 'float:right;display:inline;color",
+                                ":#FBFBFB;' class='action-button shiny-bound-input'>X</a>","</div>")))
+    }
+    
+    # So that it repeats if there's a gap of 7 days between all visits
+    time_last_htu_banner <- list(name = "time_last_htu_banner", 
+                                 value = Sys.time())
+    session$sendCustomMessage("cookie-set", time_last_htu_banner)
+  }, once = TRUE)
+  
+  observeEvent(input$go_to_htu_en, {
+    removeUI("#htu_footer")
+    updateTabsetPanel(session, "sus_page", selected = "how_to_use")
+  })
+  
+  observeEvent(input$go_to_htu_fr, {
+    removeUI("#htu_footer")
+    updateTabsetPanel(session, "sus_page", selected = "how_to_use")
+  })
+  
+  observeEvent(input$go_to_htu_x, {
+    removeUI("#htu_footer")
+  })
+  
   # Language button ---------------------------------------------------------
   
   # Language reactive variable, JS set language, and language cookie. 
   # The three onclick of the language button.
+  
+  observeEvent(input$cookies$lang, {
+    if (!is.null(input$cookies$lang) && input$cookies$lang == "en")
+      click("language_button")
+    # COOKIE, runs only once at launch !
+  }, once = TRUE)
+  
   sus_rv$lang <- 
     eventReactive(input$language_button, {
       if (input$language_button[1] %% 2 != 0) "en" else "fr"
@@ -33,12 +87,6 @@ shinyServer(function(input, output, session) {
       session$sendCustomMessage("cookie-set", lang_cookie)
     }
   })
-  
-  observeEvent(input$cookies$lang, {
-    if (!is.null(input$cookies$lang) && input$cookies$lang == "en")
-      click("language_button")
-    # COOKIE, runs only once at launch !
-  }, once = TRUE)
   
 
   # Active tab -------------------------------------------------------------

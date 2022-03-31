@@ -455,7 +455,11 @@ ui_and_misc_translated <-
   add_row(en = paste0("Per sq km"), 
           fr = paste0("Par km2")) |> 
   add_row(en = paste0("Per 1,000 residents"), 
-          fr = paste0("Par 1,000 résidents"))
+          fr = paste0("Par 1,000 résidents")) |> 
+  add_row(en = paste0("About Sus"), 
+          fr = paste0("À propos de Sus")) |> 
+  add_row(en = paste0("How to use"), 
+          fr = paste0("Mode d'emploi"))
 
 # Save --------------------------------------------------------------------
 

@@ -63,8 +63,9 @@ ui <- function(request) {
                     value = "stories"),
            tabPanel(sus_translate("Place explorer"), place_explorer_UI("place_explorer"),
            value = "place_explorer"),
-           # tabPanel(sus_translate("How to use"), how_to_use_UI("how_to_use"), value = "how_to_use"),
-           tabPanel(sus_translate("About"), why_dash_UI("why_dash"), value = "why_dash"),
+           navbarMenu(sus_translate("About"),
+                      tabPanel(sus_translate("About Sus"), why_dash_UI("why_dash"), value = "why_dash"),
+           tabPanel(sus_translate("How to use"), how_to_use_UI("how_to_use"), value = "how_to_use")),
            collapsible = TRUE,
            inputs = list(
              # Language toggle
@@ -81,8 +82,7 @@ ui <- function(request) {
                                 class = "action-button shiny-bound-input",
                                 role = "menuitem",
                                 href = "#",
-                                icon("link"), sus_translate(
-                                "Bookmark"), 
+                                icon("link"), sus_translate("Bookmark"), 
                                 onclick = "copyUrl()"),
                               actionLink(inputId = "download_data", 
                                          label = sus_translate(

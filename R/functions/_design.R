@@ -292,6 +292,18 @@ styler <- '
   .ggiraph-toolbar {
   display: none;
   }
+  
+  .fixed_footer {
+   position: fixed;
+   z-index:50000;
+   left: 0;
+   bottom: 0;
+   width: 100%;
+   background-color: #6C83B5B0;
+   text-align: center;
+   font-size: 1.65rem;
+   padding:20px;
+   }
 
 
 '
