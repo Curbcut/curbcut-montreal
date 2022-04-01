@@ -24,7 +24,7 @@
 #   updatePickerInput(
 #     session = session,
 #     inputId = NS(id, "compare-var"),
-#     choices = sus_translate(make_dropdown(compare_default = TRUE)),
+#     choices = sus_translate(make_dropdown(compare = TRUE)),
 #     selected = state$values$var_right
 #   )
 #   
