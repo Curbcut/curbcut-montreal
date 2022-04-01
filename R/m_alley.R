@@ -1,5 +1,14 @@
 ### GREEN ALLEY MODULE #########################################################
 
+
+# Dropdown menu -----------------------------------------------------------
+
+var_list_left_alley <-
+  list("Borough summary" = " ",
+       "Per sq km" = "green_alley_sqkm",
+       "Per 1,000 residents" = "green_alley_per1k")
+
+
 # UI ----------------------------------------------------------------------
 
 alley_UI <- function(id) {
@@ -11,7 +20,7 @@ alley_UI <- function(id) {
       NS(id, ns_id),
       susSidebarWidgets(
       checkbox_UI(id = NS(id, ns_id),
-                  label = sus_translate("Focus on green alleys visited by our team")),
+                  label = sus_translate("Green alleys visited by our team")),
       select_var_UI(NS(id, ns_id), var_list = var_list_left_alley,
                     label = sus_translate("Grouping"))
       ),
