@@ -107,9 +107,8 @@ get_data_table <- function(df, var_left, var_right, data_type, point_df) {
 
     data <- sf::st_drop_geometry(DA)
     
-    data <- data[c("ID", "name", "name_2", if (df == "DA") "DAUID",
-                   if (df %in% c("DA", "CT")) "CTUID", "CSDUID", "population",
-                   var_left)]
+    data <- data[c("ID", "name", "name_2", "DAUID", "CTUID", "CSDUID", 
+                   "population", var_left)]
     
     data$var_left <- (data[[var_left[2]]] - data[[var_left[1]]]) / 
       data[[var_left[1]]]
