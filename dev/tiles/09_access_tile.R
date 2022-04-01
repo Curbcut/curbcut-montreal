@@ -10,6 +10,7 @@ source("dev/tiles/_tile_functions.R")
 source("R/functions/_utils.R")
 qload("data/colours.qsm")
 qload("data/accesss.qsm")
+qload("data/colours.qsm")
 
 # Get variables to add ----------------------------------------------------
 
@@ -106,6 +107,12 @@ right_vars <-
 
 test_data_to_upload("CT", CT_data, left_vars, right_vars)
                         
+
+# CT upload source --------------------------------------------------------
+
+CT_data |> 
+  upload_tile_source("access-CT")
+
 # Add recipes -------------------------------------------------------------
 
 recipe_CT <- 
@@ -114,7 +121,8 @@ recipe_CT <-
     source = "mapbox://tileset-source/sus-mcgill/access-CT",
     minzoom = 3,
     maxzoom = 12, 
-    simplification_zoom = 12,
+    simp_zoom = 12,
+    layer_size = 2500,
     recipe_name = "access-CT")
 
 # Create and publish tilesets ---------------------------------------------
