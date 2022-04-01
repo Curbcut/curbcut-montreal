@@ -94,7 +94,6 @@ map(left_vars, function(left_var) {
 }) |> reduce(left_join, by = c("ID", "name"))
 
 
-
 # Test the data -----------------------------------------------------------
 
 right_vars <-   

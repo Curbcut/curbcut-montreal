@@ -3,7 +3,8 @@
 #' @param map_id Namespace id of the map to redraw, likely to be `NS(id, "map")`
 #' @return An updated version of the rdeck map.
 
-rdeck_server <- function(id, map_id, tile, tile2, map_var, zoom, select_id) {
+rdeck_server <- function(id, map_id, tile, tile2, map_var, zoom, select_id,
+                         access_colors = reactive(NULL)) {
   
   ## Setup ---------------------------------------------------------------------
   
@@ -40,14 +41,17 @@ rdeck_server <- function(id, map_id, tile, tile2, map_var, zoom, select_id) {
     observeEvent({
       map_var()
       select_id()
+      access_colors()
       }, rdeck_proxy(map_id) |>
         add_mvt_layer(
           id = id, 
           pickable = pick(),
           auto_highlight = TRUE, 
           highlight_color = "#FFFFFF50", 
-          get_fill_color = if (id == "alley" && tile() == "empty_borough") 
-            "#FFFFFF00" else scale_fill_sus(rlang::sym(map_var())),
+          get_fill_color = scale_fill_sus(var = rlang::sym(map_var()), 
+                                          id = id, 
+                                          tile = tile(),
+                                          access_colors = access_colors()),
           get_line_color = if (id == "alley") 
             scale_line_color_alley(map_var(), tile()) else "#FFFFFF", 
           line_width_units = "pixels", 
@@ -68,15 +72,18 @@ rdeck_server <- function(id, map_id, tile, tile2, map_var, zoom, select_id) {
           pickable = pick(), 
           auto_highlight = TRUE, 
           highlight_color = "#FFFFFF50", 
-          get_fill_color = if (id == "alley" && tile() == "empty_borough") 
-            "#FFFFFF00" else scale_fill_sus(rlang::sym(map_var())),
+          get_fill_color = scale_fill_sus(var = rlang::sym(map_var()), 
+                                          id = id, 
+                                          tile = tile(),
+                                          access_colors = access_colors()),
           get_line_color = if (id == "alley") 
             scale_line_color_alley(map_var(), tile()) else "#FFFFFF", 
           line_width_units = "pixels",
           get_line_width = scale_line_width_sus(id, select_id(), tile()),
           extruded = extrude(), 
           material = FALSE, 
-          get_elevation = 5) |> 
+          get_elevation = 5
+          ) |> 
         
         # Update street layer 1
         add_mvt_layer(
@@ -161,8 +168,10 @@ rdeck_server <- function(id, map_id, tile, tile2, map_var, zoom, select_id) {
           pickable = pick(), 
           auto_highlight = TRUE, 
           highlight_color = "#FFFFFF50", 
-          get_fill_color = if (id == "alley" && tile() == "empty_borough") 
-            "#FFFFFF00" else scale_fill_sus(rlang::sym(map_var())),
+          get_fill_color = scale_fill_sus(var = rlang::sym(map_var()), 
+                                          id = id, 
+                                          tile = tile(),
+                                          access_colors = access_colors()),
           get_line_color = if (id == "alley") 
             scale_line_color_alley(map_var(), tile()) else "#FFFFFF", 
           line_width_units = "pixels",
