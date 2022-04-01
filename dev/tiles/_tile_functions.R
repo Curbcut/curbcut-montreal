@@ -182,7 +182,7 @@ create_recipe <- function(layer_names, source, minzoom, maxzoom,
       if (!is.null(simp_zoom) && !is.na(simp_zoom)) {
         layers[[layer_names]]$features$simplification[[1]] <- "case"
         layers[[layer_names]]$features$simplification[[2]] <- 
-          list("==", "zoom", simplification_zoom)
+          list("==", "zoom", simp_zoom)
         layers[[layer_names]]$features$simplification[[3]] <- 1
         layers[[layer_names]]$features$simplification[[4]] <- 
           fallback_simp_zoom
