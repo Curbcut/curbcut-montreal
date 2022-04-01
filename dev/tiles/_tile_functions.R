@@ -7,7 +7,7 @@ list_tile_sources <- function(username = "sus-mcgill",
                               access_token = .sus_token) {
   
   httr::GET(paste0("https://api.mapbox.com/tilesets/v1/sources/", username),
-              query = list(access_token = access_token, limit = 500)) |> 
+            query = list(access_token = access_token, limit = 500)) |> 
     httr::content() |> 
     map_dfr(~tibble(
       id = str_remove(.x$id, "mapbox://tileset-source/sus-mcgill/"),
@@ -26,7 +26,8 @@ upload_tile_source <- function(df, id, username = "sus-mcgill",
   tmp2 <- tempfile(fileext = ".geojson")
   
   # Write Geojson to tempfile
-  geojsonio::geojson_write(df, file = tmp2)
+  out <- capture.output(capture.output(
+    geojsonio::geojson_write(df, file = tmp2), type = "message"))
   
   suppressWarnings(readtext::readtext(tmp2)) |> 
     paste0(collapse = " ") |> 
@@ -34,11 +35,11 @@ upload_tile_source <- function(df, id, username = "sus-mcgill",
     geojson::ndgeo_write(tmp1)
   
   # Construct system call
-  out <- paste0('curl -X POST "https://api.mapbox.com/tilesets/v1/sources/', 
-                username, '/', id, '?access_token=', access_token, 
-                '" -F file=@', tmp1, 
+  out <- paste0('curl -X POST "https://api.mapbox.com/tilesets/v1/sources/',
+                username, '/', id, '?access_token=', access_token,
+                '" -F file=@', tmp1,
                 ' --header "Content-Type: multipart/form-data"')
-  
+
   system(out)
   
 }
@@ -61,7 +62,7 @@ list_tilesets <- function(username = "sus-mcgill", access_token = .sus_token) {
   
   httr::GET(paste0("https://api.mapbox.com/tilesets/v1/", username),
             query = list(access_token = access_token, limit = 500)) |> 
-  httr::content() |> 
+    httr::content() |> 
     map_dfr(~tibble(
       id = str_remove(.x$id, "sus-mcgill."),
       size = .x$filesize / 1024 ^ 2,
@@ -123,7 +124,7 @@ publish_tileset <- function(tileset, username = "sus-mcgill",
     query = list(access_token = access_token)
   )
 }
-  
+
 
 # Manipulate variables ----------------------------------------------------
 
@@ -146,10 +147,8 @@ trans_var <- function(x) {
 # Create recipes ----------------------------------------------------------
 
 create_recipe <- function(layer_names, source, minzoom, maxzoom,
-                          layer_size = NULL, simplification_zoom = NULL, 
-                          fallback_simpplification_zoom = 4,
-                          features_simplification = NULL, bbox = NULL, 
-                          recipe_name) {
+                          layer_size = NULL, simp_zoom = NULL, 
+                          fallback_simp_zoom = 4, bbox = NULL, recipe_name) {
   out <- list()
   out$recipe$version <- 1
   out$name <- recipe_name
@@ -163,11 +162,11 @@ create_recipe <- function(layer_names, source, minzoom, maxzoom,
         layers[[layer]]$maxzoom <- maxzoom[[layer]]
         if (!is.null(layer_size[[layer]]) && !is.na(layer_size[[layer]])) 
           layers[[layer]]$tiles$layer_size <- layer_size[[layer]]
-        if (!is.null(simplification_zoom[[layer]]) && 
-            !is.na(simplification_zoom[[layer]])) {
+        if (!is.null(simp_zoom[[layer]]) && 
+            !is.na(simp_zoom[[layer]])) {
           layers[[layer]]$features$simplification[[1]] <- "case"
           layers[[layer]]$features$simplification[[2]] <- 
-            list("==", "zoom", simplification_zoom[[layer]])
+            list("==", "zoom", simp_zoom[[layer]])
           layers[[layer]]$features$simplification[[3]] <- 1
           layers[[layer]]$features$simplification[[4]] <- 4
         }
@@ -180,13 +179,13 @@ create_recipe <- function(layer_names, source, minzoom, maxzoom,
       layers[[layer_names]]$maxzoom <- maxzoom
       if (!is.null(layer_size) && !is.na(layer_size)) 
         layers[[layer_names]]$tiles$layer_size <- layer_size
-      if (!is.null(simplification_zoom) && !is.na(simplification_zoom)) {
+      if (!is.null(simp_zoom) && !is.na(simp_zoom)) {
         layers[[layer_names]]$features$simplification[[1]] <- "case"
         layers[[layer_names]]$features$simplification[[2]] <- 
           list("==", "zoom", simplification_zoom)
         layers[[layer_names]]$features$simplification[[3]] <- 1
         layers[[layer_names]]$features$simplification[[4]] <- 
-          fallback_simpplification_zoom
+          fallback_simp_zoom
       }
       if (!is.null(bbox)) layers[[layer_names]]$tiles$bbox <- bbox
       layers
