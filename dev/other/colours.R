@@ -5,7 +5,8 @@ library(tibble)
 
 # Basic colour palettes ---------------------------------------------------
 
-col_left_5 <- c("#D7E8DB", "#B0D1B7", "#88B993", "#60A26F", "#388B4B")
+# col_left_5 <- c("#D7E8DB", "#B0D1B7", "#88B993", "#60A26F", "#388B4B")
+col_left_5 <- c("#C7DFCC", "#9DC6A6", "#73AE80", "#517A5A", "#2E4633")
 col_left_3 <- c("#E8E8E8", "#B8D6BE", "#73AE80")
 col_right_3 <- c("#E8E8E8", "#B5C0DA", "#6C83B5")
 col_delta_5 <- c("#CA0020", "#F4A582", "#E8E8E8", "#92C5DE", "#0571B0")
