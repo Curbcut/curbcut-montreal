@@ -129,7 +129,7 @@ ui_and_misc_translated <-
   add_row(en = paste0("Select two dates"), 
           fr = paste0("Sélectionnez deux dates")) |> 
   add_row(en = paste0("Timing"), 
-          fr = paste0("Timing")) |> 
+          fr = paste0("Horaire")) |> 
   add_row(en = paste0("Destination type"), 
           fr = paste0("Type de destination")) |> 
   add_row(en = paste0("Time threshold"), 
@@ -459,7 +459,31 @@ ui_and_misc_translated <-
   add_row(en = paste0("About Sus"), 
           fr = paste0("À propos de Sus")) |> 
   add_row(en = paste0("How to use"), 
-          fr = paste0("Mode d'emploi"))
+          fr = paste0("Mode d'emploi")) |>
+  add_row(en = paste0("All jobs"), 
+          fr = paste0("Tous les emplois")) |> 
+  add_row(en = paste0("Low-skill jobs"), 
+          fr = paste0("Emplois peu qualifiés")) |> 
+  add_row(en = paste0("High-skill jobs"), 
+          fr = paste0("Emplois hautement qualifiés")) |> 
+  add_row(en = paste0("Jobs < $30,000 annually"), 
+          fr = paste0("Emplois < 30 000 $ par an")) |> 
+  add_row(en = paste0("Schools"), 
+          fr = paste0("Écoles")) |> 
+  add_row(en = paste0("Healthcare facilities"), 
+          fr = paste0("Établissements de soins de santé")) |> 
+  add_row(en = paste0("Weekday peak"), 
+          fr = paste0("Pointe en semaine")) |> 
+  add_row(en = paste0("Weekday off-peak"), 
+          fr = paste0("Hors pointe en semaine")) |> 
+  add_row(en = paste0("Weekday night"), 
+          fr = paste0("Nuit de semaine")) |> 
+  add_row(en = paste0("Weekend peak"), 
+          fr = paste0("Pointe de fin de semaine")) |> 
+  add_row(en = paste0("Weekend off-peak"), 
+          fr = paste0("Hors pointe de fin de semaine")) |> 
+  add_row(en = paste0("Weekend night"), 
+          fr = paste0("Nuit de fin de semaine"))
 
 # Save --------------------------------------------------------------------
 

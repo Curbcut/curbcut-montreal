@@ -97,10 +97,10 @@ mods_rdy <- list(
   # "Policy" = c(
   #   "Montréal climate plans" = "mcp"
   #   ),
-  # "Transport" = c(
-  #   "Accessibility" = "access", 
+  "Transport" = c(
+    "Accessibility" = "access"#,
   #   "Road safety" = "crash"
-  #   ),
+    ),
   "Urban life" = c(
     "Active living potential" = "canale", 
     "Green alleys" = "alley"#,

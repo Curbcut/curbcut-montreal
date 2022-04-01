@@ -15,8 +15,6 @@ qload("data/alleys.qsm")
 
 left_vars <- c("green_alley_sqkm", "green_alley_per1k")
 
-all_years <- "2016"
-
 right_vars <-
   variables |> 
   filter(source == "census") |> 
@@ -29,16 +27,16 @@ right_vars <-
 alleys |> 
   select(ID, type) |> 
   mutate(ID = as.character(ID)) |> 
-  mutate(type = case_when(type == "green" ~ "20",
-                          type == "community" ~ "21",
-                          type == "mixed" ~ "22",
-                          type == "none" ~ "23")) |>
+  mutate(type = case_when(type == "green" ~ "21",
+                          type == "community" ~ "22",
+                          type == "mixed" ~ "23",
+                          type == "none" ~ "24")) |>
   upload_tile_source("alley-individual")
 
 alley_individual <- 
   create_recipe(
     layer_names = "alley-individual",
-    source = "mapbox://tileset-source/sus-mssi/alley-individual",
+    source = "mapbox://tileset-source/sus-mcgill/alley-individual",
     minzoom = 3,
     maxzoom = 16, 
     layer_size = 2500,

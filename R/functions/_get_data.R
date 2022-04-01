@@ -6,10 +6,10 @@ get_data <- function(df, var_left, var_right, island = FALSE, point_df = NULL,
   ## Setup ---------------------------------------------------------------------
   
   # Error checking
-  stopifnot(!is.reactive(df))
-  stopifnot(!is.reactive(var_left))
-  stopifnot(!is.reactive(var_right))
-  stopifnot(!is.reactive(island))
+  # stopifnot(!is.reactive(df))
+  # stopifnot(!is.reactive(var_left))
+  # stopifnot(!is.reactive(var_right))
+  # stopifnot(!is.reactive(island))
   
   # Get data type
   data_type <- get_data_type(df, var_left, var_right, build_str_as_DA)

@@ -206,3 +206,45 @@ create_recipe <- function(layer_names, source, minzoom, maxzoom,
   out
   
 }
+
+
+# Test data before upload -------------------------------------------------
+
+test_data_to_upload <- function(df, new_data, left_vars, right_vars) {
+  
+  source("R/functions/_get_data.R")
+  source("R/functions/_get_data_type.R")
+  source("R/functions/_get_data_table.R")
+  
+  new_data <- st_drop_geometry(new_data)
+  
+  walk(left_vars, function(var_left) {
+    map(right_vars, function(var_right) {
+      
+      new_data <- {
+        if (var_right == " ") return(new_data[, var_left])
+        new_data[, paste0(var_left, "_", var_right)]
+      }
+      
+      get_data_fill <- 
+        get_data(df, var_left, var_right) |> 
+        select(ID, group) |> 
+        left_join(colour_bivar, by = "group") |> 
+        pull(fill)
+      
+      new_data <- 
+        new_data |> 
+        rename(group = 1) |> 
+        left_join(my_colour_table, by = "group") |> 
+        pull(value)
+      
+      sum(get_data_fill == new_data) == length(new_data)
+      
+      if (!sum(get_data_fill == new_data) == length(new_data)) {
+        stop(paste0(left_var, " and ", var_left, " have the wrong trans_var")) 
+      }
+    })
+    
+  })
+  
+}

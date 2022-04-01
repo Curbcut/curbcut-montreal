@@ -151,7 +151,7 @@ alley_server <- function(id) {
         if (focus_visited()) {
           output$legend <- renderPlot({
             
-            legend_hex <- c("#008100", "#F6BE00", "#B37400", "#262626", "#B3B3BB")
+            legend_hex <- c(colour_table[21:24,]$value, "#B3B3BB")
             legend_names <- c("Green", "Community", "Mixed", "None", "Unvisited")
             names(legend_hex) <- map_chr(legend_names, sus_translate)
             
