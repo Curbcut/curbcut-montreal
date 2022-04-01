@@ -15,9 +15,8 @@
 #' @return A named list that can be supplied to `select_var_UI` and 
 #' `select_var_server`.
 
-make_dropdown <- 
-  function(multi_year = FALSE, only = list(source = "census"), 
-           exclude = NULL, compare_default = FALSE) {
+make_dropdown <- function(multi_year = FALSE, only = list(source = "census"), 
+                          exclude = NULL, compare = FALSE) {
 
     vars <- variables
     
@@ -54,7 +53,7 @@ make_dropdown <-
                                  setNames(cat_vecs$var_title)
                              })
     
-    if (compare_default) out <- c("----" = " ", out)
+    if (compare) out <- c("----" = " ", out)
     
     return(out)
   }

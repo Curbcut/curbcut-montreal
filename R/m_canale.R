@@ -21,7 +21,7 @@ canale_UI <- function(id) {
     # Right panel
     right_panel(
       id = id,
-      compare_UI(NS(id, ns_id), make_dropdown(compare_default = TRUE)),
+      compare_UI(NS(id, ns_id), make_dropdown(compare = TRUE)),
       explore_UI(NS(id, ns_id)),
       dyk_UI(NS(id, ns_id)))
     
@@ -84,7 +84,7 @@ canale_server <- function(id) {
     # Right variable / compare panel
     var_right <- compare_server(
       id = ns_id, 
-      var_list = make_dropdown(compare_default = TRUE),
+      var_list = make_dropdown(compare = TRUE),
       df = df, 
       time = time)
     
