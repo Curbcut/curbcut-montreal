@@ -36,7 +36,7 @@ alley_UI <- function(id) {
     # Right panel
     right_panel(
       id = id,
-      compare_UI(NS(id, ns_id), make_dropdown(compare_default = TRUE)),
+      compare_UI(NS(id, ns_id), make_dropdown(compare = TRUE)),
       explore_UI(NS(id, ns_id)),
       uiOutput(NS(id, "special_explore")),
       dyk_UI(NS(id, ns_id)))
@@ -127,7 +127,7 @@ alley_server <- function(id) {
     # Compare panel
     var_right <- compare_server(
       id = ns_id,
-      var_list = make_dropdown(compare_default = TRUE),
+      var_list = make_dropdown(compare = TRUE),
       df = df,
       show_panel = choropleth,
       time = time)
