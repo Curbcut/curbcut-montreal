@@ -30,8 +30,6 @@ vignettes/*.pdf
 /dev/data*
 # Main data
 /data*
-# Small maps
-/www/maps
 # Other
 *DS_Store
 *.Rproj

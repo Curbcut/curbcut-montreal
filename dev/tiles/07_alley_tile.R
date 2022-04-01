@@ -62,19 +62,19 @@ borough |>
   select(ID) |> 
   filter(ID %in% alley_text$ID) |> 
   st_set_agr("constant") |> 
-  upload_tile_source("alley-empty_borough", .sus_token)
+  upload_tile_source("alley-borough_empty")
 
-alley_empty_borough <- 
+alley_borough_empty_recipe <- 
   create_recipe(
-    layer_names = "alley-empty_borough",
-    source = "mapbox://tileset-source/sus-mcgill/alley-empty_borough",
+    layer_names = "alley-borough_empty",
+    source = "mapbox://tileset-source/sus-mcgill/alley-borough_empty",
     minzoom = 3,
     maxzoom = 11, 
     layer_size = 2500,
-    recipe_name = "alley-empty_borough")
+    recipe_name = "alley-borough_empty")
 
-create_tileset("alley-empty_borough", alley_empty_borough)
-publish_tileset("alley-empty_borough")
+create_tileset("alley-borough_empty", alley_borough_empty_recipe)
+publish_tileset("alley-borough_empty")
 
 
 ### Processing function ---------------------------------------------------
