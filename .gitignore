@@ -37,3 +37,5 @@ rsconnect/*
 shiny_bookmarks
 bookmarks.rds
 desktop.ini
+# www
+/www/stories/visuals*
