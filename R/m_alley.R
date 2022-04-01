@@ -58,7 +58,7 @@ alley_server <- function(id) {
       rdeck(map_style = map_base_style, initial_view_state = view_state(
         center = map_location, zoom = 12)) |> 
         add_mvt_layer(id = "alleys",
-                      data = mvt_url("maxbdb2.alley-individual"),
+                      data = mvt_url("sus-mcgill.alley-alley"),
                       pickable = FALSE,
                       auto_highlight = FALSE,
                       get_fill_color = "#00000020",
@@ -94,7 +94,7 @@ alley_server <- function(id) {
     tile <- reactive({
       if (choropleth()) return(tile_choropleth())
       if (!focus_visited()) return("empty_borough")
-      return("individual")
+      return("alley")
     })
     
     # Get df for explore/legend/etc

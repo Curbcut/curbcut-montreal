@@ -11,6 +11,7 @@ source("R/functions/_utils.R")
 qload("data/colours.qsm")
 qload("data/alleys.qsm")
 
+
 # Get variables to add ----------------------------------------------------
 
 left_vars <- c("green_alley_sqkm", "green_alley_per1k")
@@ -24,28 +25,35 @@ right_vars <-
 
 # Individual alley tile ---------------------------------------------------
 
-alleys |> 
+alley_alley <- 
+  alleys |> 
   select(ID, type) |> 
   mutate(ID = as.character(ID)) |> 
-  mutate(type = case_when(type == "green" ~ "21",
-                          type == "community" ~ "22",
-                          type == "mixed" ~ "23",
-                          type == "none" ~ "24")) |>
-  upload_tile_source("alley-individual")
+  mutate(type = case_when(type == "green" ~ "20",
+                          type == "community" ~ "21",
+                          type == "mixed" ~ "22",
+                          type == "none" ~ "23"))
 
-alley_individual <- 
+ggplot(alley_alley) +
+  geom_sf(aes(fill = type), colour = "transparent") +
+  scale_fill_manual(values = setNames(colour_table$value, colour_table$group)) +
+  theme_void()
+
+upload_tile_source(alley_alley, "alley-alley")
+
+alley_alley_recipe <- 
   create_recipe(
-    layer_names = "alley-individual",
-    source = "mapbox://tileset-source/sus-mcgill/alley-individual",
+    layer_names = "alley-alley",
+    source = "mapbox://tileset-source/sus-mcgill/alley-alley",
     minzoom = 3,
     maxzoom = 16, 
     layer_size = 2500,
-    fallback_simpplification_zoom = 1,
-    simplification_zoom = 1,
-    recipe_name = "alley-individual")
+    simp_zoom = 1,
+    fallback_simp_zoom = 1,
+    recipe_name = "alley-alley")
 
-create_tileset("alley-individual", alley_individual)
-publish_tileset("alley-individual")
+create_tileset("alley-alley", alley_alley_recipe)
+publish_tileset("alley-alley")
 
 
 # Empty borough -----------------------------------------------------------
