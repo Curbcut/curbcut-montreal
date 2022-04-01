@@ -11,7 +11,8 @@ col_right_3 <- c("#E8E8E8", "#B5C0DA", "#6C83B5")
 col_delta_5 <- c("#CA0020", "#F4A582", "#E8E8E8", "#92C5DE", "#0571B0")
 col_bivar <- c(col_left_3, "#B5C0DA", "#90B2B3", "#5A9178", "#6C83B5",
                "#567994", "#2A5A5B")
-col_qualit <- c("#008100", "#F6BE00", "#B37400", "#262626")
+col_qual <- c(col_left_3[3], col_right_3[3], "#AE7673", "#B58A6C", col_bivar[9], 	
+              "#5B362A")
 col_iso <- col_bivar[c(3, 6, 9)]
 col_NA <- "#B3B3BB"
 
@@ -38,12 +39,12 @@ c_delta <- tibble(
   group = as.character(15:19),
   value = col_delta_5)
 
-c_qualit <- tibble(
-  palette = "qualit",
-  group = as.character(20:23),
-  value = col_qualit)
+c_qual <- tibble(
+  palette = "qual",
+  group = as.character(20:25),
+  value = col_qual)
 
-colour_table <- dplyr::bind_rows(c_NA, c_q5, c_bivar, c_delta, c_qualit)
+colour_table <- dplyr::bind_rows(c_NA, c_q5, c_bivar, c_delta, c_qual)
   
 
 # Univariate 5-level colour table -----------------------------------------
@@ -83,14 +84,15 @@ legend_delta_5 <- tibble(x = 1:5, y = 1, fill = col_delta_5)
 legend_bivar <- colour_bivar |> 
   dplyr::slice(1:9) |> 
   tidyr::separate(group, into = c("x", "y"), sep = " - ")
+legend_qual <- tibble(x = 1:6, y = 1, fill = col_qual)
 legend_iso <- tibble(x = 1:3, y = 1, fill = col_iso)
 
 
 # Save output -------------------------------------------------------------
 
 qs::qsavem(colour_bivar, colour_delta, colour_iso, colour_left_5, 
-           colour_table, legend_bivar, legend_delta_5, legend_iso, 
+           colour_table, legend_bivar, legend_delta_5, legend_qual, legend_iso, 
            legend_left_5, file = "data/colours.qsm")
 
-rm(c_bivar, c_delta, c_NA, c_q5, col_bivar, col_delta_5, col_iso, col_left_3,
-   col_left_5, col_NA, col_right_3)
+rm(c_bivar, c_delta, c_NA, c_qual, c_q5, col_bivar, col_delta_5, col_iso, 
+   col_left_3, col_left_5, col_NA, col_qual, col_right_3)
