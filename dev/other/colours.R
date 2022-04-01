@@ -84,7 +84,7 @@ legend_delta_5 <- tibble(x = 1:5, y = 1, fill = col_delta_5)
 legend_bivar <- colour_bivar |> 
   dplyr::slice(1:9) |> 
   tidyr::separate(group, into = c("x", "y"), sep = " - ")
-legend_qual <- tibble(x = 1:6, y = 1, fill = col_qual)
+legend_qual <- tibble(x = 0:6, y = 1, fill = c(col_NA, col_qual))
 legend_iso <- tibble(x = 1:3, y = 1, fill = col_iso)
 
 
