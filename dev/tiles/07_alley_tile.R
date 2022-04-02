@@ -9,7 +9,7 @@ variables <- qread("data/variables.qs")
 source("dev/tiles/_tile_functions.R")
 source("R/functions/_utils.R")
 qload("data/colours.qsm")
-qload("data/alleys.qsm")
+qload("data/alley.qsm")
 
 
 # Get variables to add ----------------------------------------------------
@@ -26,7 +26,7 @@ right_vars <-
 # Individual alley tile ---------------------------------------------------
 
 alley_alley <- 
-  alleys |> 
+  alley |> 
   select(ID, type) |> 
   mutate(ID = as.character(ID)) |> 
   mutate(type = case_when(type == "green" ~ "20",

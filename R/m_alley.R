@@ -60,13 +60,13 @@ alley_server <- function(id) {
     sidebar_server(id = ns_id, x = "alley")
 
     # Enter in choropleth() depending on var_left select_id
-    choropleth <- reactive(!(var_left() == " " || focus_visited()))
+    choropleth <- reactive(!(var_left() == " " || visited()))
 
     # Map
     output[[paste0(ns_id, "-map")]] <- renderRdeck({
       rdeck(map_style = map_base_style, initial_view_state = view_state(
         center = map_location, zoom = 12)) |> 
-        add_mvt_layer(id = "alleys",
+        add_mvt_layer(id = "alley-alley",
                       data = mvt_url("sus-mcgill.alley-alley"),
                       pickable = FALSE,
                       auto_highlight = FALSE,
@@ -97,32 +97,31 @@ alley_server <- function(id) {
       zoom = zoom, 
       zoom_levels = reactive(map_zoom_levels))
     
+    tile <- reactive({
+      if (choropleth()) {
+        tile_choropleth()
+      } else if (!visited()) {
+        "borough_empty"
+      } else "alley"
+    })
+
     # Additional tileset identifier
     tile2 <- reactive("")
-    
-    tile <- reactive({
-      if (choropleth()) return(tile_choropleth())
-      if (!focus_visited()) return("empty_borough")
-      return("alley")
-    })
     
     # Get df for explore/legend/etc
     df <- reactive(get_df(tile(), zoom(), map_zoom_levels))
 
     # Focus on visited alleys
-    focus_visited <- checkbox_server(id = ns_id)
+    visited <- checkbox_server(id = ns_id)
 
     # Time
     time <- reactive("2016")
 
     # Left variable
-    var_left_1 <- select_var_server(id = ns_id,
-                                  var_list = reactive(var_list_left_alley))
+    var_left_1 <- select_var_server(id = ns_id, 
+                                    var_list = reactive(var_list_left_alley))
     
-    var_left <- reactive({
-      if (focus_visited()) return(" ")
-      var_left_1()
-    })
+    var_left <- reactive(if (visited()) " " else var_left_1())
 
     # Compare panel
     var_right <- compare_server(
@@ -134,18 +133,18 @@ alley_server <- function(id) {
 
     # Data
     data <- reactive({
-      if (choropleth()) 
-        return(get_data(df(), var_left(), var_right(), island = TRUE))
-
-      return(NULL)
+      if (choropleth()) {
+        get_data(df(), var_left(), var_right(), island = TRUE)
+      } else NULL
     })
     
     # Composite variable for map
     map_var <- reactive({
-      if (choropleth()) 
-        return(str_remove(paste(var_left(), var_right(), sep = "_"), "_ $"))
-      if (!focus_visited()) return("")
-      return("type")
+      if (choropleth()) {
+        str_remove(paste(var_left(), var_right(), sep = "_"), "_ $")
+      } else if (!visited()) {
+        ""
+      } else "type"
     })
 
     # Legend
@@ -157,7 +156,7 @@ alley_server <- function(id) {
       hide = reactive(!choropleth()))
     
     output$special_legend <- renderUI({
-        if (focus_visited()) {
+        if (visited()) {
           output$legend <- renderPlot({
             
             legend_hex <- c(colour_table[21:24,]$value, "#B3B3BB")
@@ -165,10 +164,10 @@ alley_server <- function(id) {
             names(legend_hex) <- map_chr(legend_names, sus_translate)
             
             alley_legend_plot <-
-              alleys |>
+              alley |>
               distinct(type) |>
               mutate(x = 1:5, y = 1:5) |>
-              rbind(alleys |> distinct(type) |> mutate(x = 1:5, y = 1:5)) |>
+              rbind(alley |> distinct(type) |> mutate(x = 1:5, y = 1:5)) |>
               ggplot() +
               geom_line(aes(x, y, color = type), size = 2) +
               scale_color_manual(name = NULL,
@@ -232,9 +231,9 @@ alley_server <- function(id) {
         
         HTML(unlist(text_to_display))
         
-      } else if (select_id() %in% alleys$ID) {
+      } else if (select_id() %in% alley$ID) {
         
-        data <- alleys[alleys$ID == select_id(),]
+        data <- alley[alley$ID == select_id(),]
         
         text_to_display <- list()
         text_to_display$title <- paste0("<p><b>", data$name, " (", data$name_2, 
@@ -277,9 +276,9 @@ alley_server <- function(id) {
     onclick(
       "alley_img", 
       {showModal(modalDialog(
-        title = alleys[alleys$ID == select_id(),]$name,
-        HTML(paste0('<img src="alleys/',
-                    alleys[alleys$ID == select_id(),]$photo_ID,
+        title = alley[alley$ID == select_id(),]$name,
+        HTML(paste0('<img src="alley/',
+                    alley[alley$ID == select_id(),]$photo_ID,
                     '", width = 100%>')),
         easyClose = TRUE,
         size = "m",
@@ -306,19 +305,19 @@ alley_server <- function(id) {
 
     # If we aren't in choropleth, toggle off the legend/zoom
     observeEvent({choropleth()
-      focus_visited()}, {
+      visited()}, {
         toggle("alley-zoom_auto",
-                        condition = choropleth() && !focus_visited())
+                        condition = choropleth() && !visited())
         toggle("alley-zoom_slider",
-                        condition = choropleth() && !focus_visited())
+                        condition = choropleth() && !visited())
         # If focus is clicked, toggle off the dropdown menu
-        toggle("alley-var", condition = !focus_visited())
+        toggle("alley-var", condition = !visited())
       })
 
     # Hook up "Clear select_id" button and other variables that clears it
     observeEvent(input$`alley-clear_select_id`, select_id(NA))
     observeEvent(choropleth(), select_id(NA))
-    observeEvent(focus_visited(), select_id(NA))
+    observeEvent(visited(), select_id(NA))
     observeEvent(df(), if (choropleth()) select_id(NA))
 
     # Bookmarking
@@ -329,7 +328,7 @@ alley_server <- function(id) {
       select_id = select_id,
       df = df,
       map_id = "map",
-      more_args = reactive(c("c-cbox" = focus_visited()))
+      more_args = reactive(c("c-cbox" = visited()))
     )
 
     # Update select_id() on bookmark

@@ -15,6 +15,7 @@ suppressPackageStartupMessages({
   
   qload("data/census.qsm")
   grid <- qread("data/grid.qs")
+  alley <- qread("data/alley.qs")
 
   source("R/functions/_get_data_table.R")
   source("R/functions/_get_data_type.R")

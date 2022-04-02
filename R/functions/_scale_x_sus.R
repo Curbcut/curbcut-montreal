@@ -1,7 +1,7 @@
 #### SUS SCALES FOR MAPS #######################################################
 
 scale_fill_sus <- function(var, id, tile, access_colors = NULL) {
-  if (id == "alley" && tile == "empty_borough") return("#FFFFFF00")
+  if (id == "alley" && tile == "borough_empty") return("#FFFFFF00")
   if (!is.null(access_colors)) colour_table <- access_colors
   
   scale_color_category(
@@ -15,7 +15,7 @@ scale_fill_sus <- function(var, id, tile, access_colors = NULL) {
 
 scale_line_width_sus <- function(id, select_id, tile) {
   
-  if (id == "alley" && tile %in% c("empty_borough", "alley")) {
+  if (id == "alley" && tile %in% c("borough_empty", "alley")) {
     scale_category(
       col = ID,
       range = c(4, 2.5),
@@ -46,7 +46,7 @@ scale_line_width_street_sus <- function() {
 }
 
 scale_line_color_alley <- function(var, tile) {
-  if (tile == "empty_borough") return("#008100")
+  if (tile == "borough_empty") return("#008100")
   if (tile == "alley") return(scale_color_category(
     col = !!rlang::sym(var), 
     palette = colour_table$value,

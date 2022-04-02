@@ -3,6 +3,8 @@
 
 # Load funtions -----------------------------------------------------------
 
+library(tidyverse)
+library(sf)
 source("dev/other/data_testing.R")
 source("dev/other/meta_testing.R", encoding = "utf-8")
 source("dev/other/breaks.R")
@@ -178,7 +180,7 @@ qsave(building_full, file = "data/building_full.qs")
 qsave(street, file = "data/street.qs")
 qsave(crash, file = "data/crash.qs")
 qsave(tt_matrix, file = "data/tt_matrix.qs")
-qsavem(alleys, alley_text, file = "data/alleys.qsm")
+qsavem(alley, alley_text, file = "data/alley.qsm")
 qsavem(covid, covid_pics, file = "data/covid.qsm")
 qsave(green_space, file = "data/green_space.qs")
 # qsave(marketed_sustainability, file = "data/marketed_sustainability.qs")

@@ -100,45 +100,34 @@ alleys_visited <-
 # Combine files -----------------------------------------------------------
 
 # First, give priority to the alleys_visited version
-alleys <- 
+alley <- 
   bind_rows(alleys_mtl, alleys_google, alleys_mn) |> 
   st_set_agr("constant")
 
 alleys_to_filter <- 
   alleys_visited |> 
-  st_intersection(alleys)
+  st_intersection(alley)
 
-alleys <- 
-  alleys |> 
+alley <- 
+  alley |> 
   filter(!name %in% alleys_to_filter$name.1)
 
-alleys <- 
+alley <- 
   alleys_visited |>
-  bind_rows(alleys) |> 
+  bind_rows(alley) |> 
   mutate(ID = row_number()) |> 
   select(ID, name, date, created, visited, type, description, circulation, 
          photo_ID, geometry)
 
 # First letter of the name in capital letter
-alleys$name <- 
-  paste(toupper(substr(alleys$name, 1, 1)), substr(alleys$name, 2, nchar(alleys$name)), sep="")
+alley$name <- paste(toupper(substr(alley$name, 1, 1)), 
+                    substr(alley$name, 2, nchar(alley$name)), sep="")
 
 # Join borough name and CSDUID
-alleys <- 
-  alleys |>
+alley <- 
+  alley |>
   st_join(rename(select(borough, ID, name), CSDUID = ID, name_2 = name)) |>
   relocate(CSDUID, name_2, .after = name)
-
-# Add fill color
-alleys <- 
-  alleys %>% 
-  mutate(fill = case_when(type == "green" ~ "#008100EE",
-                          visited == TRUE & is.na(type) ~ "#008100EE",
-                          type == "community" ~ "#F6BE00EE",
-                          type == "mixed" ~ "#B37400EE",
-                          type == "none" ~ "#262626EE",
-                          TRUE ~ NA_character_)) |> 
-  relocate(geometry, .after = last_col())
 
 
 # Get borough text --------------------------------------------------------
@@ -158,7 +147,7 @@ alley_text <-
 
 # Add total lengths of green alleys to boroughs
 alleys_length <- 
-  alleys |> 
+  alley |> 
   mutate(green_alley_sqm = st_area(geometry) / 2)
 
 alley_text <- 
