@@ -255,6 +255,25 @@ breaks_q5_active <-
 variables <-
   variables |>
   add_variables(
+    var_code = "alley_qual",
+    var_title = "Green alley type",
+    var_short = "Alley",
+    explanation = "the type of green alley",
+    category = NA,
+    theme = "Urban life",
+    private = FALSE,
+    dates = NA,
+    scales = "alley",
+    breaks_q3 = tibble(),
+    breaks_q5 = tibble(
+      scale = "alley",
+      date = NA,
+      rank = 1:4,
+      var = c("community", "green", "mixed", "none"),
+      var_name = c("Community", "Green", "Mixed", "None"),
+      var_name_short = c("Commun.", "Green", "Mixed", "None")),
+    source = "VdM") |> 
+  add_variables(
     var_code = "green_alley_sqkm",
     var_title = "Green alleys per sq km",
     var_short = "Alleys/sqkm",

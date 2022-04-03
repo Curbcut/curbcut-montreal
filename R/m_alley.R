@@ -27,7 +27,6 @@ alley_UI <- function(id) {
                       label = sus_translate("Grouping"))),
       bottom = div(class = "bottom_sidebar",
                    tagList(legend_UI(NS(id, ns_id)),
-                           uiOutput(NS(id, "special_legend")),
                            zoom_UI(NS(id, ns_id), map_zoom_levels)))),
     
     # Map
@@ -131,7 +130,7 @@ alley_server <- function(id) {
     var_left_1 <- select_var_server(id = ns_id, 
                                     var_list = reactive(var_list_left_alley))
     
-    var_left <- reactive(if (visited()) " " else var_left_1())
+    var_left <- reactive(if (visited()) "alley_qual" else var_left_1())
 
     # Compare panel
     var_right <- compare_server(
@@ -141,11 +140,7 @@ alley_server <- function(id) {
       time = time)
 
     # Data
-    data <- reactive({
-      if (choropleth()) {
-        get_data(df(), var_left(), var_right(), island = TRUE)
-      } else NULL
-    })
+    data <- reactive(get_data(df(), var_left(), var_right(), island = TRUE))
     
     # Composite variable for map
     map_var <- reactive({
@@ -162,38 +157,7 @@ alley_server <- function(id) {
       var_left = var_left,
       var_right = var_right,
       df = df,
-      hide = reactive(!choropleth()))
-    
-    output$special_legend <- renderUI({
-        if (visited()) {
-          output$legend <- renderPlot({
-            
-            legend_hex <- c(colour_table[21:24,]$value, "#B3B3BB")
-            legend_names <- c("Green", "Community", "Mixed", "None", "Unvisited")
-            names(legend_hex) <- map_chr(legend_names, sus_translate)
-            
-            alley_legend_plot <-
-              alley |>
-              distinct(type) |>
-              mutate(x = 1:5, y = 1:5) |>
-              rbind(alley |> distinct(type) |> mutate(x = 1:5, y = 1:5)) |>
-              ggplot() +
-              geom_line(aes(x, y, color = type), size = 2) +
-              scale_color_manual(name = NULL,
-                                 values = legend_hex) +
-              theme_void() +
-              theme(legend.text = element_text(family = "SourceSansPro", size = 14))
-            
-            alley_legend <- 
-              cowplot::get_legend(suppressMessages({alley_legend_plot}))
-            
-            cowplot::plot_grid(alley_legend)})
-          
-          tagList(HTML(paste0("<h5  style = 'font-size: 12px; margin-bottom:0px')>", 
-                              sus_translate("Green alley type"),  "</h5>")),
-                  plotOutput(NS(id, "legend"), height = 100, width = "100%"))
-        }
-    })
+      hide = reactive(tile() == "borough_empty"))
     
     # Explore panels
     explore_content <- explore_server(

@@ -64,7 +64,12 @@ render_legend <- function(data, var_left, var_right, df, data_type,
   
     # Qualitative  
   } else if (data_type == "qual") {
-    legend_qual |> 
+    
+    ranks <- variables$breaks_q5[
+      variables$var_code == unique(sub("_\\d{4}$", "", var_left))]
+    if (length(ranks) > 0) ranks <- ranks[[1]]$rank[ranks[[1]]$scale == df]
+    
+    legend_qual[legend_qual$x %in% ranks,] |> 
       ggplot(aes(xmin = x - 1, xmax = x, ymin = y - 1, ymax = y, 
                  fill = fill)) +
       geom_rect() + 
@@ -128,8 +133,8 @@ render_legend <- function(data, var_left, var_right, df, data_type,
       geom_text(aes(y, x, label = label, colour = label_colour), 
                 inherit.aes = FALSE, size = 3#15*0.36
       ) +
-      scale_x_continuous(breaks = 0:3, labels = break_labs$x) +
-      scale_y_continuous(breaks = 0:3, labels = break_labs$y) +
+      scale_x_continuous(breaks = 0:3, labels = NULL) +
+      scale_y_continuous(breaks = 0:3, labels = NULL) +
       scale_fill_manual(values = setNames(
         legend_bivar$fill, legend_bivar$fill)) +
       scale_colour_manual(values = c("black" = "black", "white" = "white")) +

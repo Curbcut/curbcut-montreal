@@ -3,14 +3,9 @@
 get_data <- function(df, var_left, var_right, island = FALSE, point_df = NULL,
                      build_str_as_DA = TRUE) {
   
-  ## Setup ---------------------------------------------------------------------
-  
-  # Error checking
-  # stopifnot(!is.reactive(df))
-  # stopifnot(!is.reactive(var_left))
-  # stopifnot(!is.reactive(var_right))
-  # stopifnot(!is.reactive(island))
-  
+  # Return raw df or NULL if df isn't whitelisted
+  if (!df %in% c("borough", "CT", "DA", "building", "grid")) return(get0(df))
+
   # Get data type
   data_type <- get_data_type(df, var_left, var_right, build_str_as_DA)
 

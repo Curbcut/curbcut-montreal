@@ -25,6 +25,8 @@ get_data_type <- function(df, var_left, var_right, build_str_as_DA = TRUE) {
   # General cases --------------------------------------------------------------
 
   if (df %in% c("heatmap", "point")) return("point")
+  if (str_detect(var_left[1], "_qual$")) return("qual")
+  if (!df %in% c("borough", "CT", "DA", "building", "grid")) return(df)
   if (length(var_right) == 2 && var_right[1] == var_right[2]) return(
     "NA_delta_bivar")
   if (length(var_left) == 2 && var_left[1] == var_left[2]) return("NA_delta")

@@ -32,6 +32,11 @@ get_legend_labels <- function(var_left, var_right, data_type) {
     labs_xy <- list(labs(x = title_left, y = NULL))
   }
   
+  # qual version
+  if (data_type == "qual") {
+    labs_xy <- list(labs(x = title_left, y = NULL))
+  }
+  
   # Delta version
   if (data_type == "delta") {
     date_left <- str_extract(var_left, "(?<=_)\\d{4}$")

@@ -9,6 +9,7 @@ suppressPackageStartupMessages({
   library(qs)
   library(shiny)
   library(glue)
+  library(sf)
   
   variables <- qread("data/variables.qs")
   qload("data/colours.qsm")
@@ -61,6 +62,12 @@ render_legend(data, var_left, var_right, df, data_type)}
 
 # Univariate, qualitative -------------------------------------------------
 
+{df <- "alley"
+var_left <- "alley_qual"
+var_right <- " "
+data <- get_data(df, var_left, var_right, island = TRUE)
+data_type <- get_data_type(df, var_left, var_right)
+render_legend(data, var_left, var_right, df, data_type)}
 
 
 # Bivariate, single date --------------------------------------------------

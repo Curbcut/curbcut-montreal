@@ -13,8 +13,8 @@ col_right_3 <- c("#E8E8E8", "#B5C0DA", "#6C83B5")
 col_delta_5 <- c("#CA0020", "#F4A582", "#E8E8E8", "#92C5DE", "#0571B0")
 col_bivar <- c(col_left_3, "#B5C0DA", "#90B2B3", "#5A9178", "#6C83B5",
                "#567994", "#2A5A5B")
-col_qual <- c(col_left_3[3], col_right_3[3], "#AE7673", "#B58A6C", col_bivar[9], 	
-              "#5B362A")
+col_qual <- c(col_left_3[3], col_right_3[3], "#5B362A", "#B58A6C", col_bivar[9], 	
+              "#AE7673")
 col_NA <- "#B3B3BB"
 
 
