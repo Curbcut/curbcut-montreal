@@ -71,8 +71,8 @@ alley_server <- function(id) {
                       data = mvt_url("sus-mcgill.alley-alley"),
                       pickable = FALSE,
                       auto_highlight = FALSE,
-                      get_fill_color = "#B3B3BB90",
-                      get_line_color = "#B3B3BB90",
+                      get_fill_color = paste0(colour_table$value[1], "90"),
+                      get_line_color = paste0(colour_table$value[1], "90"),
                       line_width_units = "pixels",
                       get_line_width = 2)
     })

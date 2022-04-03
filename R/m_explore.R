@@ -33,7 +33,8 @@ explore_UI <- function(id) {
 }
 
 explore_server <- function(id, data, var_left, var_right, df, select_id, 
-                           build_str_as_DA = reactive(TRUE)) {
+                           build_str_as_DA = reactive(TRUE), 
+                           graph = explore_graph, table = info_table) {
   
   stopifnot(is.reactive(data))
   stopifnot(is.reactive(var_left))
@@ -54,7 +55,7 @@ explore_server <- function(id, data, var_left, var_right, df, select_id,
       build_str_as_DA = build_str_as_DA()))
     
     # Make info table
-    table <- reactive(tryCatch(info_table(
+    table_out <- reactive(tryCatch(table(
       data = data(),
       var_type = var_type(),
       var_left = var_left(),
@@ -64,10 +65,10 @@ explore_server <- function(id, data, var_left, var_right, df, select_id,
       build_str_as_DA = build_str_as_DA()), error = function(e) NULL))
     
     # Display info table
-    output$info_table <- renderUI(table())
+    output$info_table <- renderUI(table_out())
     
     # Make graph
-    graph <- reactive(tryCatch(explore_graph(
+    graph_out <- reactive(tryCatch(graph(
       data = data(),
       var_type = var_type(),
       var_left = var_left(),
@@ -77,14 +78,14 @@ explore_server <- function(id, data, var_left, var_right, df, select_id,
       build_str_as_DA = build_str_as_DA()), error = function(e) NULL))
     
     # Display graph
-    output$explore_graph <- renderPlot(graph())
+    output$explore_graph <- renderPlot(graph_out())
     
     # Show/hide components
     observe({
       toggle("explore_content", condition =
-               (!is.null(table()) || !is.null(graph())) && 
+               (!is.null(table_out()) || !is.null(graph_out())) && 
                input$hide_explore %% 2 == 0)
-      toggle("explore_graph", condition = !is.null(graph()))
+      toggle("explore_graph", condition = !is.null(graph_out()))
       toggle("clear_selection", condition = !is.na(select_id()))
     })
     
@@ -95,6 +96,6 @@ explore_server <- function(id, data, var_left, var_right, df, select_id,
     })
 
     # # Return info_table text and graph to export it in report afterwards
-    reactive(list(info = info_table(), graph = graph()))
+    reactive(list(info = table_out(), graph = graph_out()))
   })
 }
