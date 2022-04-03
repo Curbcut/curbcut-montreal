@@ -70,14 +70,13 @@ alley_borough_empty_recipe <-
     source = "mapbox://tileset-source/sus-mcgill/alley-borough_empty",
     minzoom = 3,
     maxzoom = 11, 
+    simp_zoom = 11,
     layer_size = 2500,
     recipe_name = "alley-borough_empty")
 
 create_tileset("alley-borough_empty", alley_borough_empty_recipe)
 publish_tileset("alley-borough_empty")
 
-
-### Processing function ---------------------------------------------------
 
 # Get variables to add ----------------------------------------------------
 
@@ -91,252 +90,127 @@ vars_to_add <-
   c(paste0(left_vars, "_q5"))
 
 
-# Process borough then upload tile source ---------------------------------
+# Processing function -----------------------------------------------------
 
-borough_1 <- 
-  borough |> 
-  as_tibble() |> 
+make_alley_tiles <- function(df) {
+  
+  df_1 <- 
+    get(df) |> 
+    as_tibble() |> 
+    filter(CSDUID %in% alley_text$ID) |> 
+    select(ID, name, all_of(vars_to_add), geometry) |> 
+    mutate(across(contains("_q3"), 
+                  ~paste(green_alley_sqkm_q3, .x, sep = " - "))) |> 
+    relocate(green_alley_sqkm_q5, .after = name) |> 
+    select(-green_alley_sqkm_q3) |> 
+    rename_with(~paste0("green_alley_sqkm_", str_remove(.x, "_q3")),
+                contains("_q3")) |> 
+    rename(green_alley_sqkm = green_alley_sqkm_q5) |> 
+    mutate(green_alley_sqkm = as.character(green_alley_sqkm),
+           across(c(-ID, -name, -green_alley_sqkm, -geometry), 
+                  trans_var)) |> 
+    st_as_sf() |> 
+    st_set_agr("constant") 
+  
+  df_2 <- 
+    get(df) |> 
+    as_tibble() |> 
+    filter(CSDUID %in% alley_text$ID) |> 
+    select(ID, name, all_of(vars_to_add), geometry) |> 
+    mutate(across(contains("_q3"),
+                  ~paste(green_alley_per1k_q3, .x, sep = " - "))) |>
+    relocate(green_alley_per1k_q5, .after = name) |>
+    select(-green_alley_per1k_q3) |>
+    rename_with(~paste0("green_alley_per1k_", str_remove(.x, "_q3")),
+                contains("_q3")) |>
+    rename(green_alley_per1k = green_alley_per1k_q5) |>
+    mutate(green_alley_per1k = as.character(green_alley_per1k),
+           across(c(-ID, -name, -green_alley_per1k, -geometry), 
+                  trans_var)) |> 
+    st_as_sf() |> 
+    st_set_agr("constant") 
+  
+  left_join(df_1, st_drop_geometry(df_2), by = c("ID", "name"))
+}
+
+
+# Process census geographies and upload tileset sources -------------------
+
+make_alley_tiles("borough") |> upload_tile_source("alley-borough")
+make_alley_tiles("CT") |> upload_tile_source("alley-CT")
+make_alley_tiles("DA") |> upload_tile_source("alley-DA")
+
+
+
+# Process building --------------------------------------------------------
+
+DA |> 
   filter(CSDUID %in% alley_text$ID) |> 
-  select(ID, name, all_of(vars_to_add), geometry) |> 
-  mutate(across(contains("_q3"), 
-                ~paste(green_alley_sqkm_q3, .x, sep = " - "))) |> 
-  relocate(green_alley_sqkm_q5, .after = name) |> 
-  select(-green_alley_sqkm_q3) |> 
-  rename_with(~paste0("green_alley_sqkm_", str_remove(.x, "_q3")),
-              contains("_q3")) |> 
-  rename(green_alley_sqkm = green_alley_sqkm_q5) |> 
-  mutate(green_alley_sqkm = as.character(green_alley_sqkm),
-         across(c(-ID, -name, -green_alley_sqkm, -geometry), 
-                trans_var)) |> 
-  st_as_sf() |> 
-  st_set_agr("constant") 
-
-borough_2 <- 
-  borough |> 
-  as_tibble() |> 
+  st_set_geometry("building") |> 
+  select(ID, name, geometry = building) |> 
+  left_join(select(st_drop_geometry(make_alley_tiles("DA")), -name), 
+            by = "ID") |> 
+  relocate(geometry, .after = last_col()) |>
+  filter(!st_is_empty(geometry)) |> 
+  upload_tile_source("alley-DA_building")
+  
+building_to_process <-
+  building_full |> 
   filter(CSDUID %in% alley_text$ID) |> 
-  select(ID, name, all_of(vars_to_add), geometry) |> 
-  mutate(across(contains("_q3"),
-                ~paste(green_alley_per1k_q3, .x, sep = " - "))) |>
-  relocate(green_alley_per1k_q5, .after = name) |>
-  select(-green_alley_per1k_q3) |>
-  rename_with(~paste0("green_alley_per1k_", str_remove(.x, "_q3")),
-              contains("_q3")) |>
-  rename(green_alley_per1k = green_alley_per1k_q5) |>
-  mutate(green_alley_per1k = as.character(green_alley_per1k),
-         across(c(-ID, -name, -green_alley_per1k, -geometry), 
-                trans_var)) |> 
-  st_as_sf() |> 
-  st_set_agr("constant") 
+  select(ID:DAUID) |> 
+  left_join(select(st_drop_geometry(make_alley_tiles("DA")), -name),
+            by = c("DAUID" = "ID"))
+  
+iter_size <- ceiling(nrow(building_to_process) / 100)
 
-left_join(borough_1, st_drop_geometry(borough_2), by = c("ID", "name")) |> 
-  upload_tile_source("alley-borough", .sus_token)
+building_to_process_list <-
+  map(1:100, ~{
+    building_to_process |>
+      slice(((.x - 1) * iter_size + 1):(.x * iter_size)) |>
+      geojsonsf::sf_geojson() |>
+      paste0(collapse = " ") |>
+      geojson::featurecollection()
+  })
 
+# Iteratively post files to tile source
+tmp <- tempfile(fileext = ".json")
+tmp_list <- map(1:10, ~tempfile(fileext = ".json"))
 
-# Process CT then upload tile source ---------------------------------
-
-CT_1 <- 
-  CT |> 
-  as_tibble() |> 
-  filter(CSDUID %in% alley_text$ID) |> 
-  select(ID, name, all_of(vars_to_add), geometry) |> 
-  mutate(across(contains("_q3"), 
-                ~paste(green_alley_sqkm_q3, .x, sep = " - "))) |> 
-  relocate(green_alley_sqkm_q5, .after = name) |> 
-  select(-green_alley_sqkm_q3) |> 
-  rename_with(~paste0("green_alley_sqkm_", str_remove(.x, "_q3")),
-              contains("_q3")) |> 
-  rename(green_alley_sqkm = green_alley_sqkm_q5) |> 
-  mutate(green_alley_sqkm = as.character(green_alley_sqkm),
-         across(c(-ID, -name, -green_alley_sqkm, -geometry), 
-                trans_var)) |> 
-  st_as_sf() |> 
-  st_set_agr("constant") 
-
-CT_2 <- 
-  CT |> 
-  as_tibble() |> 
-  filter(CSDUID %in% alley_text$ID) |> 
-  select(ID, name, all_of(vars_to_add), geometry) |> 
-  mutate(across(contains("_q3"),
-                ~paste(green_alley_per1k_q3, .x, sep = " - "))) |>
-  relocate(green_alley_per1k_q5, .after = name) |>
-  select(-green_alley_per1k_q3) |>
-  rename_with(~paste0("green_alley_per1k_", str_remove(.x, "_q3")),
-              contains("_q3")) |>
-  rename(green_alley_per1k = green_alley_per1k_q5) |>
-  mutate(green_alley_per1k = as.character(green_alley_per1k),
-         across(c(-ID, -name, -green_alley_per1k, -geometry), 
-                trans_var)) |> 
-  st_as_sf() |> 
-  st_set_agr("constant") 
-
-left_join(CT_1, st_drop_geometry(CT_2), by = c("ID", "name")) |> 
-  upload_tile_source("alley-CT", .sus_token)
-
-
-# Process DA then upload tile source ---------------------------------
-
-DA_1 <- 
-  DA |> 
-  as_tibble() |> 
-  filter(CSDUID %in% alley_text$ID) |>
-  select(ID, name, all_of(vars_to_add), geometry) |> 
-  mutate(across(contains("_q3"), 
-                ~paste(green_alley_sqkm_q3, .x, sep = " - "))) |> 
-  relocate(green_alley_sqkm_q5, .after = name) |> 
-  select(-green_alley_sqkm_q3) |> 
-  rename_with(~paste0("green_alley_sqkm_", str_remove(.x, "_q3")),
-              contains("_q3")) |> 
-  rename(green_alley_sqkm = green_alley_sqkm_q5) |> 
-  mutate(green_alley_sqkm = as.character(green_alley_sqkm),
-         across(c(-ID, -name, -green_alley_sqkm, -geometry), 
-                trans_var)) |> 
-  st_as_sf() |> 
-  st_set_agr("constant") 
-
-DA_2 <- 
-  DA |> 
-  as_tibble() |> 
-  filter(CSDUID %in% alley_text$ID) |>
-  select(ID, name, all_of(vars_to_add), geometry) |> 
-  mutate(across(contains("_q3"),
-                ~paste(green_alley_per1k_q3, .x, sep = " - "))) |>
-  relocate(green_alley_per1k_q5, .after = name) |>
-  select(-green_alley_per1k_q3) |>
-  rename_with(~paste0("green_alley_per1k_", str_remove(.x, "_q3")),
-              contains("_q3")) |>
-  rename(green_alley_per1k = green_alley_per1k_q5) |>
-  mutate(green_alley_per1k = as.character(green_alley_per1k),
-         across(c(-ID, -name, -green_alley_per1k, -geometry), 
-                trans_var)) |> 
-  st_as_sf() |> 
-  st_set_agr("constant") 
-
-left_join(DA_1, st_drop_geometry(DA_2), by = c("ID", "name")) |> 
-  upload_tile_source("alley-DA", .sus_token)
-
-
-# Process building then upload tile source --------------------------------
-
-building_to_process_1 <- 
-  building_full |>
-  as_tibble() |> 
-  filter(CSDUID %in% alley_text$ID) |>
-  select(ID, name, all_of(vars_to_add), geometry) |> 
-  mutate(across(contains("_q3"), 
-                ~paste(green_alley_sqkm_q3, .x, sep = " - "))) |> 
-  relocate(green_alley_sqkm_q5, .after = name) |> 
-  select(-green_alley_sqkm_q3) |> 
-  rename_with(~paste0("green_alley_sqkm_", str_remove(.x, "_q3")),
-              contains("_q3")) |> 
-  rename(green_alley_sqkm = green_alley_sqkm_q5) |> 
-  mutate(green_alley_sqkm = as.character(green_alley_sqkm),
-         across(c(-ID, -name, -green_alley_sqkm, -geometry), 
-                trans_var)) |> 
-  st_as_sf() |> 
-  st_set_agr("constant") 
-
-building_to_process_2 <- 
-  building_full |>
-  as_tibble() |> 
-  filter(CSDUID %in% alley_text$ID) |>
-  select(ID, name, all_of(vars_to_add), geometry) |> 
-  mutate(across(contains("_q3"),
-                ~paste(green_alley_per1k_q3, .x, sep = " - "))) |>
-  relocate(green_alley_per1k_q5, .after = name) |>
-  select(-green_alley_per1k_q3) |>
-  rename_with(~paste0("green_alley_per1k_", str_remove(.x, "_q3")),
-              contains("_q3")) |>
-  rename(green_alley_per1k = green_alley_per1k_q5) |>
-  mutate(green_alley_per1k = as.character(green_alley_per1k),
-         across(c(-ID, -name, -green_alley_per1k, -geometry), 
-                trans_var)) |> 
-  st_as_sf() |> 
-  st_set_agr("constant") 
-
-building_to_process <- 
-  left_join(DA_building_1, st_drop_geometry(DA_building_2), 
-            by = c("ID", "name"))
-
-# iter_size <- ceiling(nrow(building_to_process) / 100)
-# 
-# building_to_process_list <- 
-#   map(1:100, ~{
-#     building_to_process |> 
-#       slice(((.x - 1) * iter_size + 1):(.x * iter_size)) |> 
-#       geojsonsf::sf_geojson() |> 
-#       paste0(collapse = " ") |> 
-#       geojson::featurecollection()  
-#   })
-# 
-# # Iteratively post files to tile source
-# tmp <- tempfile(fileext = ".json")
-# tmp_list <- map(1:10, ~tempfile(fileext = ".json"))
-# 
-# map(1:10, ~{
-#   
-#   print(.x)
-#   to_process <- building_to_process_list[((.x - 1) * 10 + 1):(.x * 10)]
-#   walk2(to_process, tmp_list, geojson::ndgeo_write)
-#   
-#   # Concatenate geoJSONs
-#   out <- paste0("cat ", paste(tmp_list, collapse = " "), " > ", tmp)
-#   system(out)
-#   
-#   # Upload to MTS
-#   out <- paste0('curl -X POST "https://api.mapbox.com/tilesets/v1/sources/', 
-#                 'sus-mcgill/canale-building?access_token=', .sus_token, 
-#                 '" -F file=@', tmp, 
-#                 ' --header "Content-Type: multipart/form-data"')
-#   system(out)
-#   
-# })
-
-
-# Process DA_building then upload tile source -----------------------------
-
-DA_building_1 <- 
-  DA |> 
-  st_set_geometry("building") |>
-  as_tibble() |> 
-  filter(CSDUID %in% alley_text$ID) |>
-  select(ID, name, all_of(vars_to_add), geometry) |> 
-  mutate(across(contains("_q3"), 
-                ~paste(green_alley_sqkm_q3, .x, sep = " - "))) |> 
-  relocate(green_alley_sqkm_q5, .after = name) |> 
-  select(-green_alley_sqkm_q3) |> 
-  rename_with(~paste0("green_alley_sqkm_", str_remove(.x, "_q3")),
-              contains("_q3")) |> 
-  rename(green_alley_sqkm = green_alley_sqkm_q5) |> 
-  mutate(green_alley_sqkm = as.character(green_alley_sqkm),
-         across(c(-ID, -name, -green_alley_sqkm, -geometry), 
-                trans_var)) |> 
-  st_as_sf() |> 
-  st_set_agr("constant") 
-
-DA_building_2 <- 
-  DA |> 
-  st_set_geometry("building") |>
-  as_tibble() |> 
-  filter(CSDUID %in% alley_text$ID) |>
-  select(ID, name, all_of(vars_to_add), geometry) |> 
-  mutate(across(contains("_q3"),
-                ~paste(green_alley_per1k_q3, .x, sep = " - "))) |>
-  relocate(green_alley_per1k_q5, .after = name) |>
-  select(-green_alley_per1k_q3) |>
-  rename_with(~paste0("green_alley_per1k_", str_remove(.x, "_q3")),
-              contains("_q3")) |>
-  rename(green_alley_per1k = green_alley_per1k_q5) |>
-  mutate(green_alley_per1k = as.character(green_alley_per1k),
-         across(c(-ID, -name, -green_alley_per1k, -geometry), 
-                trans_var)) |> 
-  st_as_sf() |> 
-  st_set_agr("constant") 
-
-left_join(DA_building_1, st_drop_geometry(DA_building_2), 
-          by = c("ID", "name")) |> 
-  upload_tile_source("alley-DA_building", .sus_token)
+for (j in 1:10) {
+  
+  try <- 0L
+  success <- FALSE
+  
+  while (try < 4 && !success) {
+    
+    try <- try + 1L
+    
+    cat(paste0("\n", j, "\n"))
+    to_process <- building_to_process_list[((j - 1) * 10 + 1):(j * 10)]
+    walk2(to_process, tmp_list, geojson::ndgeo_write)
+    
+    # Concatenate geoJSONs
+    out <- paste0("cat ", paste(tmp_list, collapse = " "), " > ", tmp)
+    system(out)
+    
+    # Upload to MTS
+    out <- paste0('curl -X POST "https://api.mapbox.com/tilesets/v1/sources/', 
+                  'sus-mcgill/alley-building?access_token=', 
+                  .sus_token, '" -F file=@', tmp, 
+                  ' --header "Content-Type: multipart/form-data"')
+    system(out)
+    
+    file_n <- 
+      list_tile_sources() |> 
+      filter(str_detect(id, "alley-building")) |> 
+      pull(files)
+    
+    if (file_n == j) success <- TRUE
+    
+  }
+  
+  if (!success) stop("UPLOAD ERROR")
+}
 
 
 # Add recipes -------------------------------------------------------------
@@ -347,7 +221,7 @@ recipe_borough <-
     source = "mapbox://tileset-source/sus-mcgill/alley-borough",
     minzoom = 3,
     maxzoom = 11, 
-    simplification_zoom = 11,
+    simp_zoom = 11,
     recipe_name = "alley-borough")
 
 recipe_CT <- 
@@ -356,7 +230,7 @@ recipe_CT <-
     source = "mapbox://tileset-source/sus-mcgill/alley-CT",
     minzoom = 3,
     maxzoom = 12, 
-    simplification_zoom = 12,
+    simp_zoom = 12,
     recipe_name = "alley-CT")
 
 recipe_DA <- 
@@ -368,7 +242,7 @@ recipe_DA <-
     minzoom = c(DA_empty = 3, DA = 9),
     maxzoom = c(DA_empty = 8, DA = 13), 
     layer_size = c(DA_empty = NA, DA = 2500),
-    simplification_zoom = c(DA_empty = NA, DA = 13),
+    simp_zoom = c(DA_empty = NA, DA = 13),
     recipe_name = "alley-DA")
 
 recipe_building <- 

@@ -137,7 +137,6 @@ alley_server <- function(id) {
     var_right <- compare_server(
       id = ns_id,
       var_list = make_dropdown(compare = TRUE),
-      df = df,
       show_panel = choropleth,
       time = time)
 
