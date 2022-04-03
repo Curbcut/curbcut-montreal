@@ -4,6 +4,7 @@
 
 canale_UI <- function(id) {
   ns_id <- "canale"
+  ns_id_map <- paste0(ns_id, "-map")
   
   tagList(
     
@@ -15,8 +16,7 @@ canale_UI <- function(id) {
                            zoom_UI(NS(id, ns_id), map_zoom_levels)))),
     
     # Map
-    div(class = "mapdeck_div", rdeckOutput(NS(id, paste0(ns_id, "-map")), 
-                                           height = "100%")),
+    div(class = "mapdeck_div", rdeckOutput(NS(id, ns_id_map), height = "100%")),
     
     # Right panel
     right_panel(
@@ -34,47 +34,52 @@ canale_UI <- function(id) {
 canale_server <- function(id) {
   moduleServer(id, function(input, output, session) {
     ns_id <- "canale"
+    ns_id_map <- paste0(ns_id, "-map")
     
     # Initial reactives
     zoom <- reactiveVal(get_zoom(map_zoom))
+    zoom_string <- reactiveVal(get_zoom_string(map_zoom, map_zoom_levels))
     select_id <- reactiveVal(NA)
     poi <- reactiveVal(NULL)
-    
+
     # Map
-    output[[paste0(ns_id, "-map")]] <- renderRdeck({
+    output[[ns_id_map]] <- renderRdeck({
       rdeck(map_style = map_base_style, initial_view_state = view_state(
-        center = map_location, zoom = map_zoom)) |> 
-        add_mvt_layer(id = ns_id) |> 
-        add_mvt_layer(id = paste0(ns_id, "_street_1")) |> 
-        add_mvt_layer(id = paste0(ns_id, "_street_2")) |> 
-        add_mvt_layer(id = paste0(ns_id, "_street_2")) |> 
-        add_mvt_layer(id = paste0(ns_id, "_building")) |> 
-        add_mvt_layer(id = paste0(ns_id, "_borough_labels"))
+        center = map_location, zoom = map_zoom))
     })
     
     # Zoom and POI reactives
-    observeEvent(get_view_state(paste0(ns_id, "-map")), {
-      zoom(get_zoom(get_view_state(paste0(ns_id, "-map"))$zoom))
-      poi(observe_map(get_view_state(paste0(ns_id, "-map"))))
+    observeEvent(get_view_state(ns_id_map), {
+      zoom(get_zoom(get_view_state(ns_id_map)$zoom))
+      new_poi <- observe_map(get_view_state(ns_id_map))
+      if ((is.null(new_poi) && !is.null(poi())) || 
+          (!is.null(new_poi) && (is.null(poi()) || !all(new_poi == poi()))))
+        poi(new_poi)
+    })
+    
+    # Zoom string reactive
+    observeEvent(zoom(), {
+      new_zoom_string <- get_zoom_string(zoom(), map_zoom_levels)
+      if (new_zoom_string != zoom_string()) zoom_string(new_zoom_string)
     })
     
     # Click reactive
-    observeEvent(get_clicked_object(paste0(ns_id, "-map")), {
-      selection <- get_clicked_object(paste0(ns_id, "-map"))$ID
-      if (!is.na(select_id()) && selection == select_id()) return(select_id(NA))
-      
-      select_id(selection)
+    observeEvent(get_clicked_object(ns_id_map), {
+      selection <- get_clicked_object(ns_id_map)$ID
+      if (!is.na(select_id()) && selection == select_id()) {
+        select_id(NA)
+      } else select_id(selection)
     })
     
     # Choose tileset
     tile <- zoom_server(
       id = ns_id, 
-      zoom = zoom, 
+      zoom_string = zoom_string, 
       zoom_levels = reactive(map_zoom_levels))
     
     # Get df for explore/legend/etc
-    df <- reactive(get_df(tile(), zoom(), map_zoom_levels))
-    
+    df <- reactive(get_df(tile(), zoom_string()))
+
     # Time
     time <- reactive("2016")
     
@@ -85,7 +90,6 @@ canale_server <- function(id) {
     var_right <- compare_server(
       id = ns_id, 
       var_list = make_dropdown(compare = TRUE),
-      df = df, 
       time = time)
     
     # Additional tileset identifier
@@ -126,8 +130,14 @@ canale_server <- function(id) {
       tile2 =  tile2,
       map_var = map_var, 
       zoom = zoom,
-      select_id = select_id
-    )
+      select_id = select_id)
+    
+    # Update map labels
+    label_server(
+      id = ns_id, 
+      map_id = "map", 
+      tile = tile,
+      zoom = zoom)
     
     # De-select
     observeEvent(input[[paste0(ns_id, "-clear_selection")]], select_id(NA))
@@ -148,7 +158,7 @@ canale_server <- function(id) {
     # Bookmarking
     bookmark_server(
       id = ns_id,
-      map_viewstate = reactive(get_view_state(paste0(ns_id, "-map"))),
+      map_viewstate = reactive(get_view_state(ns_id_map)),
       var_right = var_right,
       select_id = select_id,
       df = df,

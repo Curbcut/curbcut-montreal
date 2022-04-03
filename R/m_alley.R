@@ -13,25 +13,25 @@ var_list_left_alley <-
 
 alley_UI <- function(id) {
   ns_id <- "alley"
+  ns_id_map <- paste0(ns_id, "-map")
 
-  return(tagList(
+  tagList(
+    
     # Sidebar
     sidebar_UI(
       NS(id, ns_id),
       susSidebarWidgets(
-      checkbox_UI(id = NS(id, ns_id),
-                  label = sus_translate("Green alleys visited by our team")),
-      select_var_UI(NS(id, ns_id), var_list = var_list_left_alley,
-                    label = sus_translate("Grouping"))
-      ),
+        checkbox_UI(id = NS(id, ns_id),
+                    label = sus_translate("Green alleys visited by our team")),
+        select_var_UI(NS(id, ns_id), var_list = var_list_left_alley,
+                      label = sus_translate("Grouping"))),
       bottom = div(class = "bottom_sidebar",
                    tagList(legend_UI(NS(id, ns_id)),
                            uiOutput(NS(id, "special_legend")),
                            zoom_UI(NS(id, ns_id), map_zoom_levels)))),
-
+    
     # Map
-    div(class = "mapdeck_div", rdeckOutput(NS(id, paste0(ns_id, "-map")), 
-                                           height = "100%")),
+    div(class = "mapdeck_div", rdeckOutput(NS(id, ns_id_map), height = "100%")),
 
     # Right panel
     right_panel(
@@ -41,7 +41,7 @@ alley_UI <- function(id) {
       uiOutput(NS(id, "special_explore")),
       dyk_UI(NS(id, ns_id)))
 
-  ))
+  )
 }
 
 
@@ -50,12 +50,14 @@ alley_UI <- function(id) {
 alley_server <- function(id) {
   moduleServer(id, function(input, output, session) {
     ns_id <- "alley"
+    ns_id_map <- paste0(ns_id, "-map")
 
     # Initial reactives
-    zoom <- reactiveVal(get_zoom(12))
+    zoom <- reactiveVal(get_zoom(map_zoom))
+    zoom_string <- reactiveVal(get_zoom_string(map_zoom, map_zoom_levels))
     select_id <- reactiveVal(NA)
     poi <- reactiveVal(NULL)
-
+    
     # Sidebar
     sidebar_server(id = ns_id, x = "alley")
 
@@ -63,7 +65,7 @@ alley_server <- function(id) {
     choropleth <- reactive(!(var_left() == " " || visited()))
 
     # Map
-    output[[paste0(ns_id, "-map")]] <- renderRdeck({
+    output[[ns_id_map]] <- renderRdeck({
       rdeck(map_style = map_base_style, initial_view_state = view_state(
         center = map_location, zoom = 12)) |> 
         add_mvt_layer(id = "alley-alley",
@@ -73,28 +75,36 @@ alley_server <- function(id) {
                       get_fill_color = "#00000020",
                       get_line_color = "#00000020",
                       line_width_units = "pixels",
-                      get_line_width = 2) |> 
-        add_mvt_layer(id = ns_id)
+                      get_line_width = 2)
     })
 
     # Zoom and POI reactives
-    observeEvent(get_view_state(paste0(ns_id, "-map")), {
-      zoom(get_zoom(get_view_state(paste0(ns_id, "-map"))$zoom))
-      poi(observe_map(get_view_state(paste0(ns_id, "-map"))))
+    observeEvent(get_view_state(ns_id_map), {
+      zoom(get_zoom(get_view_state(ns_id_map)$zoom))
+      new_poi <- observe_map(get_view_state(ns_id_map))
+      if ((is.null(new_poi) && !is.null(poi())) || 
+          (!is.null(new_poi) && (is.null(poi()) || !all(new_poi == poi()))))
+        poi(new_poi)
     })
-
+    
+    # Zoom string reactive
+    observeEvent(zoom(), {
+      new_zoom_string <- get_zoom_string(zoom(), map_zoom_levels)
+      if (new_zoom_string != zoom_string()) zoom_string(new_zoom_string)
+    })
+    
     # Click reactive
-    observeEvent(get_clicked_object(paste0(ns_id, "-map")), {
-      selection <- get_clicked_object(paste0(ns_id, "-map"))$ID
-      if (!is.na(select_id()) && selection == select_id()) return(select_id(NA))
-      
-      select_id(selection)
+    observeEvent(get_clicked_object(ns_id_map), {
+      selection <- get_clicked_object(ns_id_map)$ID
+      if (!is.na(select_id()) && selection == select_id()) {
+        select_id(NA)
+      } else select_id(selection)
     })
 
     # Choose tileset
     tile_choropleth <- zoom_server(
       id = ns_id, 
-      zoom = zoom, 
+      zoom_string = zoom_string, 
       zoom_levels = reactive(map_zoom_levels))
     
     tile <- reactive({
@@ -109,7 +119,7 @@ alley_server <- function(id) {
     tile2 <- reactive("")
     
     # Get df for explore/legend/etc
-    df <- reactive(get_df(tile(), zoom(), map_zoom_levels))
+    df <- reactive(get_df(tile(), zoom()))
 
     # Focus on visited alleys
     visited <- checkbox_server(id = ns_id)
@@ -293,8 +303,18 @@ alley_server <- function(id) {
       tile2 =  tile2,
       map_var = map_var,
       zoom = zoom,
-      select_id = select_id
-    )
+      select_id = select_id,
+      fill = scale_fill_alley,
+      fill_args = reactive(list(map_var(), tile())),
+      colour = scale_colour_alley,
+      colour_args = reactive(list(map_var(), tile())))
+    
+    # Update map labels
+    label_server(
+      id = ns_id, 
+      map_id = "map", 
+      tile = tile,
+      zoom = zoom)
     
     # Did-you-know panel
     dyk_server(
@@ -323,7 +343,7 @@ alley_server <- function(id) {
     # Bookmarking
     bookmark_server(
       id = ns_id,
-      map_viewstate = reactive(get_view_state(paste0(ns_id, "-map"))),
+      map_viewstate = reactive(get_view_state(ns_id_map)),
       var_right = var_right,
       select_id = select_id,
       df = df,

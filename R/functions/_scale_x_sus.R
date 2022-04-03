@@ -1,9 +1,49 @@
 #### SUS SCALES FOR MAPS #######################################################
 
-scale_fill_sus <- function(var, id, tile, access_colors = NULL) {
-  if (id == "alley" && tile == "borough_empty") return("#FFFFFF00")
-  if (!is.null(access_colors)) colour_table <- access_colors
+# Default scales ----------------------------------------------------------
+
+# Default fill
+scale_fill_sus <- function(var) {
+  scale_color_category(
+    col = !!rlang::sym(var), 
+    palette = colour_table$value,
+    unmapped_color = colour_table$value[1], 
+    levels = colour_table$group,
+    legend = FALSE)
+}
+
+# Default line colour
+scale_colour_sus <- function(...) "#FFFFFF"
+
+# Default line width
+scale_lwd_sus <- function(select_id) {
+  scale_category(
+    col = ID,
+    range = c(5, 1),
+    unmapped_value = 1,
+    levels = c(select_id, "NA"),
+    legend = FALSE) 
+}
+
+
+# Module-specific scales --------------------------------------------------
+
+# Climate_risk lwd
+scale_lwd_climate_risk <- function(select_id, tile) {
   
+  scale_category(
+    col = ID,
+    range = c(5, if (tile == "grid") 0.3 else 1),
+    unmapped_value = if (tile == "grid") 0.3 else 1,
+    levels = c(select_id, "NA"),
+    legend = FALSE) 
+  
+}
+
+# Alley fill
+scale_fill_alley <- function(var, tile) {
+  if (tile == "borough_empty") return("#FFFFFF00")
+
   scale_color_category(
     col = !!var, 
     palette = colour_table$value,
@@ -13,25 +53,34 @@ scale_fill_sus <- function(var, id, tile, access_colors = NULL) {
   )
 }
 
-scale_line_width_sus <- function(id, select_id, tile) {
-  
-  if (id == "alley" && tile %in% c("borough_empty", "alley")) {
-    scale_category(
-      col = ID,
-      range = c(4, 2.5),
-      unmapped_value = 2.5,
-      levels = c(select_id, "NA"),
+# Alley colour
+scale_colour_alley <- function(var, tile) {
+  if (tile == "borough_empty") {
+    "#008100"
+  } else if (tile == "alley") {
+    scale_color_category(
+      col = !!rlang::sym(var), 
+      palette = colour_table$value,
+      unmapped_color = colour_table$value[1], 
+      levels = colour_table$group,
       legend = FALSE)
-  } else {
-    scale_category(
-      col = ID,
-      range = c(5, if (tile == "grid") 0.3 else 1),
-      unmapped_value = if (tile == "grid") 0.3 else 1,
-      levels = c(select_id, "NA"),
-      legend = FALSE) 
-  }
-    
+  } else "#FFFFFF"
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 scale_line_width_street_sus <- function() {
     scale_category(
@@ -45,14 +94,13 @@ scale_line_width_street_sus <- function() {
     )
 }
 
-scale_line_color_alley <- function(var, tile) {
-  if (tile == "borough_empty") return("#008100")
-  if (tile == "alley") return(scale_color_category(
-    col = !!rlang::sym(var), 
-    palette = colour_table$value,
-    unmapped_color = colour_table$value[1], 
-    levels = colour_table$group,
-    legend = FALSE))
-  
-  "#FFFFFF"
+
+
+scale_line_width_alley <- function(select_id) {
+    scale_category(
+      col = ID,
+      range = c(4, 2.5),
+      unmapped_value = 2.5,
+      levels = c(select_id, "NA"),
+      legend = FALSE)
 }

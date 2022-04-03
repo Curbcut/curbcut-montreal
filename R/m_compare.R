@@ -1,5 +1,9 @@
 #### COMPARE MODULE ############################################################
 
+#' @param df This only needs to be supplied to get the `return_closest_year`
+#' feature. If that isn't needed, leave df NULL to avoid unneccessary reactivity
+#' updates.
+
 compare_UI <- function(id, var_list) {
   
   tagList(
@@ -24,8 +28,10 @@ compare_UI <- function(id, var_list) {
   )
 }
 
-compare_server <- function(id, var_list, df, disabled = reactive(NULL),
-                           time = reactive(NULL), show_panel = reactive(TRUE)) {
+compare_server <- function(id, var_list, df = reactive(NULL), 
+                           disabled = reactive(NULL), 
+                           time = reactive(NULL), 
+                           show_panel = reactive(TRUE)) {
   
   stopifnot(!is.reactive(var_list))
   stopifnot(is.reactive(df))
