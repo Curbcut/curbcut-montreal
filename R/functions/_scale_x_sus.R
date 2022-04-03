@@ -42,15 +42,9 @@ scale_lwd_climate_risk <- function(select_id, tile) {
 
 # Alley fill
 scale_fill_alley <- function(var, tile) {
-  if (tile == "borough_empty") return("#FFFFFF00")
-
-  scale_color_category(
-    col = !!var, 
-    palette = colour_table$value,
-    unmapped_color = colour_table$value[1], 
-    levels = colour_table$group,
-    legend = FALSE
-  )
+  if (tile == "borough_empty") {
+    "#FFFFFF00"
+  } else scale_fill_sus(var)
 }
 
 # Alley colour
@@ -67,40 +61,21 @@ scale_colour_alley <- function(var, tile) {
   } else "#FFFFFF"
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-scale_line_width_street_sus <- function() {
-    scale_category(
-      col = street_type,
-      range = c(3, 3, 3, 2, 2, 1, 1, 1, 1, 0.5),
-      unmapped_value = 0,
-      levels = c("motorway", "trunk", "primary", "secondary", "tertiary",
-                 "motorway_link", "trunk_link", "primary_link", "residential", 
-                 "service"),
-      legend = FALSE
-    )
-}
-
-
-
-scale_line_width_alley <- function(select_id) {
+# Alley lwd
+scale_lwd_alley <- function(select_id, tile) {
+  if (tile == "borough_empty") {
     scale_category(
       col = ID,
-      range = c(4, 2.5),
-      unmapped_value = 2.5,
+      range = c(5, 1),
+      unmapped_value = 1,
       levels = c(select_id, "NA"),
-      legend = FALSE)
+      legend = FALSE) 
+  } else if (tile == "alley") {
+    scale_category(
+      col = ID,
+      range = c(6, 3),
+      unmapped_value = 3,
+      levels = c(select_id, "NA"),
+      legend = FALSE) 
+  } else scale_lwd_sus(select_id)
 }

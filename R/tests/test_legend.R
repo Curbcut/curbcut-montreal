@@ -15,7 +15,7 @@ suppressPackageStartupMessages({
   
   qload("data/census.qsm")
   grid <- qread("data/grid.qs")
-  alley <- qread("data/alley.qs")
+  qload("data/alley.qsm")
 
   source("R/functions/_get_data_table.R")
   source("R/functions/_get_data_type.R")
@@ -48,7 +48,7 @@ data_type <- get_data_type(df, var_left, var_right)
 render_legend(data, var_left, var_right, df, data_type)}
 
 
-# Univariate, qualitative -------------------------------------------------
+# Univariate, ordinal -----------------------------------------------------
 
 {df <- "grid"
 var_left <- "climate_destructive_storms_ind"
@@ -57,6 +57,10 @@ var_right <- " "
 data <- get_data(df, var_left, var_right, island = TRUE)
 data_type <- get_data_type(df, var_left, var_right)
 render_legend(data, var_left, var_right, df, data_type)}
+
+
+# Univariate, qualitative -------------------------------------------------
+
 
 
 # Bivariate, single date --------------------------------------------------

@@ -45,7 +45,7 @@ render_legend <- function(data, var_left, var_right, df, data_type,
         legend_left_5$fill[2:6], legend_left_5$fill[2:6])) +
       labs_xy + theme_default
     
-    # q5 qualitative
+    # q5 ordinal
   } else if (data_type == "q5" && attr(break_labs, "qual")) {
     
     ranks <- variables$breaks_q5[
@@ -61,7 +61,18 @@ render_legend <- function(data, var_left, var_right, df, data_type,
       scale_fill_manual(values = setNames(
         legend_left_5$fill, legend_left_5$fill)) +
       labs_xy + theme_default
-    
+  
+    # Qualitative  
+  } else if (data_type == "qual") {
+    legend_qual |> 
+      ggplot(aes(xmin = x - 1, xmax = x, ymin = y - 1, ymax = y, 
+                 fill = fill)) +
+      geom_rect() + 
+      scale_x_continuous(breaks = ranks - 0.5, labels = break_labs) +
+      scale_y_continuous(labels = NULL) +
+      scale_fill_manual(values = setNames(legend_qual$fill, legend_qual$fill)) +
+      labs_xy + theme_default
+  
     # Bivariate, single date
   } else if (data_type == "bivar") {
     

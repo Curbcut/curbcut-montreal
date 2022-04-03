@@ -72,8 +72,8 @@ alley_server <- function(id) {
                       data = mvt_url("sus-mcgill.alley-alley"),
                       pickable = FALSE,
                       auto_highlight = FALSE,
-                      get_fill_color = "#00000020",
-                      get_line_color = "#00000020",
+                      get_fill_color = "#B3B3BB90",
+                      get_line_color = "#B3B3BB90",
                       line_width_units = "pixels",
                       get_line_width = 2)
     })
@@ -307,7 +307,9 @@ alley_server <- function(id) {
       fill = scale_fill_alley,
       fill_args = reactive(list(map_var(), tile())),
       colour = scale_colour_alley,
-      colour_args = reactive(list(map_var(), tile())))
+      colour_args = reactive(list(map_var(), tile())),
+      lwd = scale_lwd_alley,
+      lwd_args = reactive(list(select_id(), tile())))
     
     # Update map labels
     label_server(
