@@ -34,7 +34,18 @@ explore_UI <- function(id) {
 
 explore_server <- function(id, data, var_left, var_right, df, select_id, 
                            build_str_as_DA = reactive(TRUE), 
-                           graph = explore_graph, table = info_table) {
+                           graph = explore_graph, 
+                           graph_args = reactive(list(
+                             data = data(), var_left = var_left(), 
+                             var_right = var_right(), df = df(), 
+                             select_id = select_id(), 
+                             build_str_as_DA = build_str_as_DA())),
+                           table = info_table,
+                           table_args = reactive(list(
+                             data = data(), var_left = var_left(),
+                             var_right = var_right(), df = df(),
+                             select_id = select_id(),
+                             build_str_as_DA = build_str_as_DA()))) {
   
   stopifnot(is.reactive(data))
   stopifnot(is.reactive(var_left))
@@ -54,28 +65,20 @@ explore_server <- function(id, data, var_left, var_right, df, select_id,
       select_id = select_id(),
       build_str_as_DA = build_str_as_DA()))
     
+    # Reconstruct variable args
+    table_args2 <- reactive(c(table_args(), var_type = var_type()))
+    graph_args2 <- reactive(c(graph_args(), var_type = var_type()))
+    
     # Make info table
-    table_out <- reactive(tryCatch(table(
-      data = data(),
-      var_type = var_type(),
-      var_left = var_left(),
-      var_right = var_right(),
-      df = df(),
-      select_id = select_id(),
-      build_str_as_DA = build_str_as_DA()), error = function(e) NULL))
+    table_out <- reactive(tryCatch(do.call(table, table_args2()), 
+                                   error = function(e) NULL))
     
     # Display info table
     output$info_table <- renderUI(table_out())
     
     # Make graph
-    graph_out <- reactive(tryCatch(graph(
-      data = data(),
-      var_type = var_type(),
-      var_left = var_left(),
-      var_right = var_right(),
-      df = df(),
-      select_id = select_id(),
-      build_str_as_DA = build_str_as_DA()), error = function(e) NULL))
+    graph_out <- reactive(tryCatch(do.call(graph, graph_args2()),
+                                   error = function(e) NULL))
     
     # Display graph
     output$explore_graph <- renderPlot(graph_out())
@@ -85,6 +88,7 @@ explore_server <- function(id, data, var_left, var_right, df, select_id,
       toggle("explore_content", condition =
                (!is.null(table_out()) || !is.null(graph_out())) && 
                input$hide_explore %% 2 == 0)
+      toggle("info_table", condition = !is.null(table_out()))
       toggle("explore_graph", condition = !is.null(graph_out()))
       toggle("clear_selection", condition = !is.na(select_id()))
     })
