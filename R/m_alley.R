@@ -37,7 +37,6 @@ alley_UI <- function(id) {
       id = id,
       compare_UI(NS(id, ns_id), make_dropdown(compare = TRUE)),
       explore_UI(NS(id, ns_id)),
-      uiOutput(NS(id, "special_explore")),
       dyk_UI(NS(id, ns_id)))
 
   )
@@ -159,17 +158,29 @@ alley_server <- function(id) {
       df = df,
       hide = reactive(tile() == "borough_empty"))
     
-    # Explore panels
+    # Choose explore graph
+    alley_graph <- reactive({
+      if (df() %in% c("alley", "borough_empty")) {
+        explore_graph_alley
+      } else explore_graph
+    })
+    
+    # observe({
+    #   print(df())
+    #   print(alley_graph())})
+    
+    # Explore panel
     explore_content <- explore_server(
       id = ns_id,
       data = data,
       var_left = var_left,
       var_right = var_right,
       df = df,
-      select_id = select_id)
+      select_id = select_id,
+      graph = alley_graph)
     
     output$special_explore <- renderUI({
-      if (input$`alley-hide_explore`  %% 2 == 0)
+      if (input$`alley-hide_explore` %% 2 == 0)
       if (var_left() == var_list_left_alley[1] && 
           select_id() %in% alley_text$ID) {
         
@@ -288,14 +299,13 @@ alley_server <- function(id) {
       var_right = var_right,
       poi = poi)
 
-    # If we aren't in choropleth, toggle off the legend/zoom
-    observeEvent({choropleth()
+    # Toggle zoom
+    observeEvent({
+      choropleth()
       visited()}, {
-        toggle("alley-zoom_auto",
-                        condition = choropleth() && !visited())
-        toggle("alley-zoom_slider",
-                        condition = choropleth() && !visited())
-        # If focus is clicked, toggle off the dropdown menu
+        toggle("alley-zoom_auto", condition = choropleth() && !visited())
+        toggle("alley-zoom_slider", condition = choropleth() && !visited())
+        # If focus is clicked, toggle dropdown menu
         toggle("alley-var", condition = !visited())
       })
 

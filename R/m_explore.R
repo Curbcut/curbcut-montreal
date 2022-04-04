@@ -34,13 +34,13 @@ explore_UI <- function(id) {
 
 explore_server <- function(id, data, var_left, var_right, df, select_id, 
                            build_str_as_DA = reactive(TRUE), 
-                           graph = explore_graph, 
+                           graph = reactive(explore_graph), 
                            graph_args = reactive(list(
                              data = data(), var_left = var_left(), 
                              var_right = var_right(), df = df(), 
                              select_id = select_id(), 
                              build_str_as_DA = build_str_as_DA())),
-                           table = info_table,
+                           table = reactive(info_table),
                            table_args = reactive(list(
                              data = data(), var_left = var_left(),
                              var_right = var_right(), df = df(),
@@ -70,14 +70,14 @@ explore_server <- function(id, data, var_left, var_right, df, select_id,
     graph_args2 <- reactive(c(graph_args(), var_type = var_type()))
     
     # Make info table
-    table_out <- reactive(tryCatch(do.call(table, table_args2()), 
+    table_out <- reactive(tryCatch(do.call(table(), table_args2()), 
                                    error = function(e) NULL))
     
     # Display info table
     output$info_table <- renderUI(table_out())
     
     # Make graph
-    graph_out <- reactive(tryCatch(do.call(graph, graph_args2()),
+    graph_out <- reactive(tryCatch(do.call(graph(), graph_args2()),
                                    error = function(e) NULL))
     
     # Display graph
