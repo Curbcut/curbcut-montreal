@@ -117,8 +117,8 @@ alley_server <- function(id) {
     tile2 <- reactive("")
     
     # Get df for explore/legend/etc
-    df <- reactive(get_df(tile(), zoom()))
-
+    df <- reactive(get_df(tile(), zoom_string()))
+    
     # Focus on visited alleys
     visited <- checkbox_server(id = ns_id)
 
@@ -169,7 +169,7 @@ alley_server <- function(id) {
     alley_table <- reactive({
       if (df() %in% c("alley", "borough_empty")) {
         info_table_alley
-      } else into_table
+      } else info_table
     })
     
     # Explore panel
