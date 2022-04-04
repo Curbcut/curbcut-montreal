@@ -1078,7 +1078,23 @@ variables_translated <-
   add_row(en = paste0("Mod."), 
           fr = paste0("Mod.")) |> 
   add_row(en = paste0("Elev."), 
-          fr = paste0("Élev."))
+          fr = paste0("Élev.")) |> 
+  add_row(en = paste0("Community"), 
+          fr = paste0("Communautaire")) |> 
+  add_row(en = paste0("Green"), 
+          fr = paste0("Verte")) |> 
+  add_row(en = paste0("Mixed"), 
+          fr = paste0("Mixte")) |> 
+  add_row(en = paste0("Unmaintained"), 
+          fr = paste0("Non-maintenue")) |> 
+  add_row(en = paste0("Commun."), 
+          fr = paste0("Commun.")) |> 
+  add_row(en = paste0("Green"), 
+          fr = paste0("Verte")) |> 
+  add_row(en = paste0("Mixed"), 
+          fr = paste0("Mixte")) |> 
+  add_row(en = paste0("Unmain."), 
+          fr = paste0("Non-maint."))
 
 # Save --------------------------------------------------------------------
 

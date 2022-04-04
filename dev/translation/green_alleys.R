@@ -571,4 +571,14 @@ tibble(en = character(), fr = character()) |>
   add_row(en = paste0("Visited green alleys type"), 
           fr = paste0("Type des ruelles vertes visitées")) |> 
   add_row(en = paste0("Green alley start date"), 
-          fr = paste0("Date de début des ruelles vertes"))
+          fr = paste0("Date d'inauguration des ruelles vertes")) |> 
+  add_row(en = paste0("There are {participating_boroughs} Montreal boroughs ",
+                      "with a green alley program, out of 19. They combine a ",
+                      "total of {nb_alleys} green alleys."), 
+          fr = paste0("Il y a {participating_boroughs} arrondissements à ",
+                      "Montréal qui ont un programme de ruelles vertes, ",
+                      "sur 19, avec un total de {nb_alleys} ruelles vertes."))
+
+
+
+Il y a {participating_boroughs} arrondissements montréalais qui ont un programme de ruelles vertes.

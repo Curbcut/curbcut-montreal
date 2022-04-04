@@ -27,6 +27,8 @@ explore_graph_alley <- function(data, var_type, var_left, var_right, df,
         as.data.frame() |> 
         pull(var_name_short)
       
+      labels <- sapply(labels, sus_translate, USE.NAMES = FALSE)
+      
       ranks <- variables$breaks_q5[
         variables$var_code == unique(sub("_\\d{4}$", "", var_left))]
       if (length(ranks) > 0) ranks <- ranks[[1]]$rank[ranks[[1]]$scale == df]
