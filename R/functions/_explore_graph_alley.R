@@ -22,10 +22,8 @@ explore_graph_alley <- function(data, var_type, var_left, var_right, df,
   } else if (df == "alley") {
     if (is.na(select_id)) {
       
-      labels <- 
-        variables$breaks_q5[variables$var_code == "alley_qual"] |> 
-        as.data.frame() |> 
-        pull(var_name_short)
+      labels <- variables$breaks_q5[
+        variables$var_code == "alley_qual"][[1]]$var_name_short
       
       labels <- sapply(labels, sus_translate, USE.NAMES = FALSE)
       
