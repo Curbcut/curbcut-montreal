@@ -12,6 +12,24 @@ qload("data/colours.qsm")
 qload("data/accesss.qsm")
 qload("data/colours.qsm")
 
+
+# Upload metro lines ------------------------------------------------------
+
+metro_lines |> 
+  upload_tile_source("access-metro_lines", .sus_token)
+
+access_metro_lines <- 
+  create_recipe(
+    layer_names = "access-metro_lines",
+    source = "mapbox://tileset-source/sus-mcgill/access-metro_lines",
+    minzoom = 3,
+    maxzoom = 12, 
+    simp_zoom = 12,
+    recipe_name = "access-metro_lines")
+
+create_tileset("access-metro_lines", access_metro_lines)
+publish_tileset("access-metro_lines")
+
 # Get variables to add ----------------------------------------------------
 
 left_vars <- 
@@ -38,7 +56,7 @@ access_empty_CT <-
     source = "mapbox://tileset-source/sus-mcgill/access-empty_CT",
     minzoom = 3,
     maxzoom = 12, 
-    simplification_zoom = 12,
+    simp_zoom = 12,
     recipe_name = "access-empty_CT")
 
 create_tileset("access-empty_CT", access_empty_CT)

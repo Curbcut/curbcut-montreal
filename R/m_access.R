@@ -53,7 +53,13 @@ access_server <- function(id) {
     # Map
     output[[ns_id_map]] <- renderRdeck({
       rdeck(map_style = map_base_style, initial_view_state = view_state(
-        center = map_location, zoom = map_zoom))
+        center = map_location, zoom = map_zoom)) |> 
+        add_mvt_layer(id = ns_id) |> 
+        add_mvt_layer(id = "metro_lines",
+                      data = mvt_url("maxbdb2.access-metro_lines"),
+                      get_line_color = !!rlang::sym("fill"),
+                      get_line_width = 2,
+                      line_width_units = "pixels")
     })
     
     # Zoom and POI reactives
@@ -155,7 +161,7 @@ access_server <- function(id) {
       df = df(), 
       var_left = var_left(), 
       var_right = var_right()))
-
+    
     # Explore panel
     explore_content <- explore_server(
       id = ns_id,
@@ -187,9 +193,9 @@ access_server <- function(id) {
         tt_matrix |>
         filter(origin == select_id(), travel_time <= tt_thresh,
                timing == var_left_2()) |>
-        mutate(group = as.character(4 - pmax(1, ceiling(travel_time / tt_thresh * 3)))) |>
+        mutate(group = as.character(6 - pmax(1, ceiling(travel_time / tt_thresh * 5)))) |>
         select(destination, group) |>
-        left_join(colour_iso, by = "group")
+        left_join(colour_left_5, by = "group")
 
       rbind(data() |>
               select(ID) |>
@@ -198,67 +204,13 @@ access_server <- function(id) {
             data() |>
               filter(ID == select_id()) |>
               select(ID) |>
-              mutate(fill = "#00000033")) |> 
+              mutate(fill = "#00000033")) |>
         rename(group = ID, value = fill)
       } else NULL
     })
 
-    # Update map in response to variable changes
-    # observeEvent({
-    #   select_id()
-    #   var_left()
-    #   var_right()
-    #   slider()
-    # }, {
-    #   if (!is.na(select_id()) && var_right() == " ") {
-    #     
-        # slider <- slider()
-        # select_id <- select_id()
-        # var_left_2 <- var_left_2()
-        # data <- data()
-        # 
-        # tt_thresh <- slider * 60
-        # 
-        # CTs_to_map <-
-        #   tt_matrix |>
-        #   filter(origin == select_id, travel_time <= tt_thresh,
-        #          timing == var_left_2) |>
-        #   mutate(group = as.character(4 - pmax(1, ceiling(travel_time / tt_thresh * 3)))) |>
-        #   select(destination, group) |>
-        #   left_join(colour_iso, by = "group")
-        # 
-        # data_to_add <-
-        #   data |>
-        #   select(ID) |>
-        #   inner_join(CTs_to_map, by = c("ID" = "destination"))
-        # 
-        # poly_to_add <-
-        #   data |>
-        #   filter(ID == select_id) |>
-        #   mutate(fill = "#00000033")
-    # 
-    #     mapdeck_update(map_id = NS(id, "map")) |>
-    #       clear_path() |>
-    #       clear_polygon() |>
-    #       add_polygon(
-    #         data = CT, stroke_width = 10, stroke_colour = "#FFFFFF", id = "ID",
-    #         fill_colour = "#EDF8E9CC", update_view = FALSE,
-    #         layer_id = "poly_bg", auto_highlight = TRUE,
-    #         highlight_colour = "#FFFFFF90") |>
-    #       add_polygon(
-    #         data = data_to_add, stroke_width = 10, stroke_colour = "#FFFFFF",
-    #         fill_colour = "fill", update_view = FALSE, id = "ID",
-    #         layer_id = "poly_iso", auto_highlight = TRUE,
-    #         highlight_colour = "#FFFFFF90") |>
-    #       add_polygon(
-    #         data = poly_to_add, fill_colour = "fill", stroke_width = 20,
-    #         stroke_colour = "#000000", update_view = FALSE, id = "ID",
-    #         layer_id = "poly_highlight", auto_highlight = TRUE,
-    #         highlight_colour = "#FFFFFF90") |>
-    #       add_path(data = metro_lines, stroke_colour = "fill",
-    #                stroke_width = 50, update_view = FALSE)
-    # 
-    #   } else if (is.na(select_id()) && var_right() == " ") {
+    ## TKTK PREVIOUS MAP :
+    # else if (is.na(select_id()) && var_right() == " ") {
     # Start with this here first:
         # mapdeck_update(map_id = NS(id, "map"))  |>
         #   clear_path() |>
@@ -281,18 +233,6 @@ access_server <- function(id) {
         #          auto_highlight = TRUE, highlight_colour = "#FFFFFF90") |>
         #   add_path(data = metro_lines, stroke_colour = "fill",
         #            stroke_width = 50, update_view = FALSE)
-    #   } else {
-    #     map_change(
-    #       id = ns_id,
-    #       map_id = NS(id, "map"),
-    #       data = data,
-    #       df = df,
-    #       zoom = zoom,
-    #       click = select_id,
-    #       polygons_to_clear = c("poly_bg", "poly_iso", "poly_highlight")
-    #     )
-    #     }
-    #   })
     
     # Update map in response to variable changes or zooming
     rdeck_server(
