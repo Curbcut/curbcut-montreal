@@ -92,6 +92,8 @@
 
 ui_and_misc_translated <- 
   tibble(en = character(), fr = character()) |>
+  add_row(en = paste0("----"), 
+          fr = paste0("----")) |> 
   add_row(en = paste0("Learn more"), 
           fr = paste0("En savoir plus")) |> 
   add_row(en = paste0("Did you know?"), 
@@ -483,7 +485,28 @@ ui_and_misc_translated <-
   add_row(en = paste0("Weekend off-peak"), 
           fr = paste0("Hors pointe de fin de semaine")) |> 
   add_row(en = paste0("Weekend night"), 
-          fr = paste0("Nuit de fin de semaine"))
+          fr = paste0("Nuit de fin de semaine")) |> 
+  add_row(en = paste0("Further resources:"), 
+          fr = paste0("Ressources supplémentaires :")) |> 
+  add_row(en = paste0("Home"), 
+          fr = paste0("Accueil")) |> 
+  add_row(en = paste0("Go back to map"), 
+          fr = paste0("De retour à la carte")) |> 
+  add_row(en = paste0("Enter a postal code or click on the map"), 
+          fr = paste0("Entrez un code postal ou cliquez sur la carte")) |> 
+  add_row(en = paste0("Select theme(s):"), 
+          fr = paste0("Sélectionnez le(s) thème(s) :")) |> 
+  add_row(en = paste0("Select scale:"), 
+          fr = paste0("Sélectionnez l'échelle :")) |> 
+  add_row(en = paste0("Choose comparison scale:"), 
+          fr = paste0("Choisissez l'échelle de comparaison :")) |> 
+  add_row(en = paste0("\nhigh only"), 
+          fr = paste0("\nhélevé seulement")) |> 
+  add_row(en = paste0("Both high"), 
+          fr = paste0("Les deux élevés")) |> 
+  add_row(en = paste0("Both low"), 
+          fr = paste0("Les deux faibles"))
+
 
 # Save --------------------------------------------------------------------
 
