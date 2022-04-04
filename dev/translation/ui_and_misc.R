@@ -138,8 +138,8 @@ ui_and_misc_translated <-
           fr = paste0("Analyse de la sécurité routière")) |> 
   add_row(en = paste0("Type of crash"), 
           fr = paste0("Type d'accident")) |> 
-  add_row(en = paste0("Focus on green alleys visited by our team"), 
-          fr = paste0("Focus sur les ruelles vertes visitées par notre équipe")) |> 
+  add_row(en = paste0("Green alleys visited by our team"), 
+          fr = paste0("Ruelles vertes visitées par notre équipe")) |> 
   add_row(en = paste0("Type of green space"), 
           fr = paste0("Type d'espace vert")) |> 
   add_row(en = paste0("Back to the map"), 

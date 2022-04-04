@@ -577,8 +577,6 @@ tibble(en = character(), fr = character()) |>
                       "total of {nb_alleys} green alleys."), 
           fr = paste0("Il y a {participating_boroughs} arrondissements à ",
                       "Montréal qui ont un programme de ruelles vertes, ",
-                      "sur 19, avec un total de {nb_alleys} ruelles vertes."))
-
-
-
-Il y a {participating_boroughs} arrondissements montréalais qui ont un programme de ruelles vertes.
+                      "sur 19, avec un total de {nb_alleys} ruelles vertes.")) |> 
+  add_row(en = paste0("Borough summary"), 
+          fr = paste0("Sommaire de l'arrondissement"))
