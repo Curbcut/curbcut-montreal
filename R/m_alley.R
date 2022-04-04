@@ -165,9 +165,12 @@ alley_server <- function(id) {
       } else explore_graph
     })
     
-    # observe({
-    #   print(df())
-    #   print(alley_graph())})
+    # Choose explore graph
+    alley_table <- reactive({
+      if (df() %in% c("alley", "borough_empty")) {
+        info_table_alley
+      } else into_table
+    })
     
     # Explore panel
     explore_content <- explore_server(
@@ -177,93 +180,17 @@ alley_server <- function(id) {
       var_right = var_right,
       df = df,
       select_id = select_id,
-      graph = alley_graph)
-    
-    output$special_explore <- renderUI({
-      if (input$`alley-hide_explore` %% 2 == 0)
-      if (var_left() == var_list_left_alley[1] && 
-          select_id() %in% alley_text$ID) {
-        
-        data <- alley_text[alley_text$ID == select_id(),]
-        
-        text_to_display <- list()
-        text_to_display$title <- paste0("<p><b>", sus_translate("Borough"), " ", 
-                                        data$name, "</b></p>")
-        text_to_display$intro <-
-          paste0("<p>",
-                 sus_translate("The first green alley inauguration was in "),
-                 data$first_alley, if (!is.na(data$green_alley_sqm)) 
-                   sus_translate(" and there are {data$green_alley_sqm} square",
-                                 " meters of green alley in the borough.") else ".",
-                 "</p>")
-        text_to_display$text <- 
-          paste0("<p>",
-                 if (!is.na(data$app_process)) sus_translate(data$app_process), " ",
-                 if (!is.na(data$management)) sus_translate(data$management), " ",
-                 if (!is.na(data$budget)) sus_translate(data$budget),
-                 "</p>")
-        
-        text_to_display$guide <- 
-          paste0(glue("<p><a href = {data$guide}>"),
-                 sus_translate("The green alley guide of {data$name}"),
-                 "</a></p>")
-        
-        text_to_display$contact <- 
-          if (!is.na(data$contact))
-          glue("<p>Contact: <a href = 'mailto:{data$contact}'>",
-               "{data$contact}</a></p>")
-        
-        HTML(unlist(text_to_display))
-        
-      } else if (select_id() %in% alley$ID) {
-        
-        data <- alley[alley$ID == select_id(),]
-        
-        text_to_display <- list()
-        text_to_display$title <- paste0("<p><b>", data$name, " (", data$name_2, 
-                                        ")", "</b></p>")
-        if (!is.na(data$created)) 
-          text_to_display$inauguration <- 
-          paste0("<p>",
-                 sus_translate("Inauguration date: "), 
-                 data$created, "</p>")
-        text_to_display$text <- 
-          if (is.na(data$description)) {
-            paste0("<p>",
-                   sus_translate("We do not have information available ",
-                                 "on this green alley."),
-                   "</p>")
-          } else {
-            paste0("<p>", sus_translate(data$description), "</p>",
-                   if (!is.na(data$circulation)) {
-                     paste0("<p>Circulation: ", sus_translate(data$circulation),
-                            "</p>")
-                   })
-          }
-        
-        output$alley_img <- renderImage({
-          if (!is.na(data$photo_ID))
-            list(src = paste0("www/alleys/", data$photo_ID),
-                 alt = sus_translate("Photo of the selected green alley"),
-                 width = "100%")},
-          deleteFile = FALSE)
-        
-        list(HTML(unlist(text_to_display)),
-             if (!is.na(data$photo_ID)) {
-               div(style = "margin-bottom:20px; cursor:pointer;",
-                   imageOutput(session$ns("alley_img"), height = "100%"))
-             })
-      }
-    })
+      graph = alley_graph,
+      table = alley_table)
     
     # Popup the alley image if it's clicked on
     onclick(
       "alley_img", 
       {showModal(modalDialog(
         title = alley[alley$ID == select_id(),]$name,
-        HTML(paste0('<img src="alley/',
+        HTML(paste0('<img src="alleys/',
                     alley[alley$ID == select_id(),]$photo_ID,
-                    '", width = 100%>')),
+                    '" width = 100%>')),
         easyClose = TRUE,
         size = "m",
         footer = NULL
@@ -298,7 +225,7 @@ alley_server <- function(id) {
       var_left = var_left,
       var_right = var_right,
       poi = poi)
-
+    
     # Toggle zoom
     observeEvent({
       choropleth()
@@ -310,7 +237,7 @@ alley_server <- function(id) {
       })
 
     # Hook up "Clear select_id" button and other variables that clears it
-    observeEvent(input$`alley-clear_select_id`, select_id(NA))
+    observeEvent(input[[paste0(ns_id, "-clear_selection")]], select_id(NA))
     observeEvent(choropleth(), select_id(NA))
     observeEvent(visited(), select_id(NA))
     observeEvent(df(), if (choropleth()) select_id(NA))

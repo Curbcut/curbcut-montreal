@@ -67,7 +67,8 @@ alleys_visited_text <-
   suppressMessages(read_csv2("dev/data/green_alleys/alleys_visited.csv", 
             show_col_types = FALSE)) |>
   mutate_all(list(~na_if(.,""))) |> 
-  select(-description_fr, -circulation_fr)
+  select(-description_fr, -circulation_fr) |> 
+  mutate(type = if_else(type == "none", "unmaintained", type))
 
 
 
@@ -269,9 +270,9 @@ variables <-
       scale = "alley",
       date = NA,
       rank = 1:4,
-      var = c("community", "green", "mixed", "none"),
-      var_name = c("Community", "Green", "Mixed", "None"),
-      var_name_short = c("Commun.", "Green", "Mixed", "None")),
+      var = c("community", "green", "mixed", "unmaintained"),
+      var_name = c("Community", "Green", "Mixed", "Unmaintained"),
+      var_name_short = c("Commun.", "Green", "Mixed", "Unmain.")),
     source = "VdM") |> 
   add_variables(
     var_code = "green_alley_sqkm",

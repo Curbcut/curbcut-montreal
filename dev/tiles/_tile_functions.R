@@ -214,7 +214,7 @@ test_data_to_upload <- function(df, new_data, left_vars, right_vars) {
   source("R/functions/_get_data.R")
   source("R/functions/_get_data_type.R")
   source("R/functions/_get_data_table.R")
-  
+
   new_data <- st_drop_geometry(new_data)
   
   walk(left_vars, function(var_left) {
@@ -234,7 +234,7 @@ test_data_to_upload <- function(df, new_data, left_vars, right_vars) {
       new_data <- 
         new_data |> 
         rename(group = 1) |> 
-        left_join(my_colour_table, by = "group") |> 
+        left_join(colour_table, by = "group") |> 
         pull(value)
       
       sum(get_data_fill == new_data) == length(new_data)

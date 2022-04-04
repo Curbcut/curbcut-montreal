@@ -554,4 +554,21 @@ tibble(en = character(), fr = character()) |>
   add_row(en = paste0("The green alley guide of {data$name}"), 
           fr = paste0("Le guide d'aménagement d'une ruelle verte de {data$name}")) |> 
   add_row(en = paste0("Borough"), 
-          fr = paste0("Arrondissement"))
+          fr = paste0("Arrondissement")) |> 
+  add_row(en = paste0("Our team visited {nrow(alley_visited)} of the ",
+                      "{nrow(alley)} green alleys in Montreal. We classified ",
+                      "{green} ({green_per}) as 'green' alleys, {community} ",
+                      "({community_per}) as 'community' alleys, {mixed} ",
+                      "({mixed_per}) as 'mixed' green and community alleys, and ",
+                      "{none} ({none_per}) as 'unmaintained' alleys."), 
+          fr = paste0("Notre équipe a visité {nrow(alley_visited)} des ",
+                      "{nrow(alley)} ruelles vertes de Montréal. Nous avons ",
+                      "classé {green} ({green_per}) de ces ruelles comme ",
+                      "'vertes', {community} ({community_per}) ruelles ",
+                      "'communautaires', {mixed} ({mixed_per}) ruelles 'mixtes' ",
+                      "vertes et communautaires, et {none} ({none_per}) ",
+                      "ruelles 'non entretenues'.")) |> 
+  add_row(en = paste0("Visited green alleys type"), 
+          fr = paste0("Type des ruelles vertes visitées")) |> 
+  add_row(en = paste0("Green alley start date"), 
+          fr = paste0("Date de début des ruelles vertes"))
