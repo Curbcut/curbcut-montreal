@@ -18,7 +18,7 @@ explore_graph_alley <- function(data, var_type, var_left, var_right, df,
             panel.grid.major.x = element_blank(), 
             panel.grid.minor.y = element_blank())
     
-    # Show nothing in alley selection mode?
+  # Show type-summary histogram or NULL in alley mode
   } else if (df == "alley") {
     if (is.na(select_id)) {
       
@@ -33,8 +33,7 @@ explore_graph_alley <- function(data, var_type, var_left, var_right, df,
 
       alley[!is.na(alley$created),] |> 
         ggplot(aes(type)) +
-        geom_histogram(fill = legend_qual[legend_qual$x %in% ranks,]$fill[1:4], 
-                       stat = "count") +
+        geom_bar(fill = legend_qual[legend_qual$x %in% ranks,]$fill[1:4]) +
         scale_y_continuous(name = NULL) +
         scale_x_discrete(labels = labels,
                          name = sus_translate("Visited green alleys type")) +
