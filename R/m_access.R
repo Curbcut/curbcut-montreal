@@ -41,6 +41,9 @@ access_server <- function(id) {
     ns_id <- "access"
     ns_id_map <- paste0(ns_id, "-map")
     
+    # Sidebar
+    sidebar_server(id = ns_id, x = "access")
+    
     # Initial reactives
     zoom <- reactiveVal(get_zoom(map_zoom))
     zoom_string <- reactiveVal(get_zoom_string(map_zoom, map_zoom_levels))
