@@ -3,7 +3,7 @@
 # Default scales ----------------------------------------------------------
 
 # Default fill
-scale_fill_sus <- function(var) {
+scale_fill_sus <- function(var, colour_table = colour_table) {
   scale_color_category(
     col = !!rlang::sym(var), 
     palette = colour_table$value,
@@ -79,3 +79,11 @@ scale_lwd_alley <- function(select_id, tile) {
       legend = FALSE) 
   } else scale_lwd_sus(select_id)
 }
+
+# Access fill
+scale_fill_access <- function(var, tile, access_colors) {
+  if (!is.null(access_colors)) colour_table <- access_colors
+  
+  scale_fill_sus(var, colour_table = colour_table)
+}
+

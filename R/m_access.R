@@ -4,6 +4,7 @@
 
 access_UI <- function(id) {
   ns_id <- "access"
+  ns_id_map <- paste0(ns_id, "-map")
 
   return(tagList(
     # Sidebar
@@ -21,8 +22,7 @@ access_UI <- function(id) {
           tagList(legend_UI(NS(id, ns_id)),
                   hidden(zoom_UI(NS(id, ns_id), map_zoom_levels))))),
     # Map
-    div(class = "mapdeck_div", rdeckOutput(NS(id, paste0(ns_id, "-map")), 
-                                           height = "100%")),
+    div(class = "mapdeck_div", rdeckOutput(NS(id, ns_id_map), height = "100%")),
 
     # Right panel
     right_panel(
@@ -39,44 +39,52 @@ access_UI <- function(id) {
 access_server <- function(id) {
   moduleServer(id, function(input, output, session) {
     ns_id <- "access"
-
+    ns_id_map <- paste0(ns_id, "-map")
+    
     # Initial reactives
     zoom <- reactiveVal(get_zoom(map_zoom))
+    zoom_string <- reactiveVal(get_zoom_string(map_zoom, map_zoom_levels))
     select_id <- reactiveVal(NA)
     poi <- reactiveVal(NULL)
-
-    # Sidebar
-    sidebar_server(id = ns_id, x = "access")
-
+    
     # Map
-    output[[paste0(ns_id, "-map")]] <- renderRdeck({
+    output[[ns_id_map]] <- renderRdeck({
       rdeck(map_style = map_base_style, initial_view_state = view_state(
-        center = map_location, zoom = map_zoom)) |> 
-        add_mvt_layer(id = ns_id) |> 
-        add_mvt_layer(id = paste0(ns_id, "_street_1")) |> 
-        add_mvt_layer(id = paste0(ns_id, "_street_2")) |> 
-        add_mvt_layer(id = paste0(ns_id, "_street_2")) |> 
-        add_mvt_layer(id = paste0(ns_id, "_building")) |> 
-        add_mvt_layer(id = paste0(ns_id, "_borough_labels"))
+        center = map_location, zoom = map_zoom))
     })
-
+    
     # Zoom and POI reactives
-    observeEvent(get_view_state(paste0(ns_id, "-map")), {
-      zoom(get_zoom(get_view_state(paste0(ns_id, "-map"))$zoom))
-      poi(observe_map(get_view_state(paste0(ns_id, "-map"))))
+    observeEvent(get_view_state(ns_id_map), {
+      zoom(get_zoom(get_view_state(ns_id_map)$zoom))
+      new_poi <- observe_map(get_view_state(ns_id_map))
+      if ((is.null(new_poi) && !is.null(poi())) || 
+          (!is.null(new_poi) && (is.null(poi()) || !all(new_poi == poi()))))
+        poi(new_poi)
+    })
+    
+    # Zoom string reactive
+    observeEvent(zoom(), {
+      new_zoom_string <- get_zoom_string(zoom(), map_zoom_levels)
+      if (new_zoom_string != zoom_string()) zoom_string(new_zoom_string)
     })
     
     # Click reactive
-    observeEvent(get_clicked_object(paste0(ns_id, "-map")), {
-      selection <- get_clicked_object(paste0(ns_id, "-map"))$ID
-      if (!is.na(select_id()) && selection == select_id()) return(select_id(NA))
-      
-      select_id(selection)
+    observeEvent(get_clicked_object(ns_id_map), {
+      selection <- get_clicked_object(ns_id_map)$ID
+      if (!is.na(select_id()) && selection == select_id()) {
+        select_id(NA)
+      } else select_id(selection)
     })
-
-    # Zoom level for data is always CT
+    
+    # Choose tileset
+    tile <- zoom_server(
+      id = ns_id, 
+      zoom_string = zoom_string, 
+      zoom_levels = reactive(map_zoom_levels))
+    
+    # Get df for explore/legend/etc
     df <- reactive("CT")
-
+    
     # Time
     time <- reactive("2016")
     
@@ -115,7 +123,7 @@ access_server <- function(id) {
 
     # Construct left variable string
     var_left <- reactive(paste0(var_left_1(), "_", var_left_2(), "_count"))
-
+    
     # Compare panel
     var_right <- compare_server(
       id = ns_id,
@@ -140,7 +148,10 @@ access_server <- function(id) {
     }, priority = 1)
 
     # Data
-    data <- reactive(get_data(df(), var_left(), var_right()))
+    data <- reactive(get_data(
+      df = df(), 
+      var_left = var_left(), 
+      var_right = var_right()))
 
     # Explore panel
     explore_content <- explore_server(
@@ -152,18 +163,18 @@ access_server <- function(id) {
       select_id = select_id)
 
     # Legend
-    legend_server(
-      id = ns_id,
-      data = data,
-      var_left = var_left,
-      var_right = var_right,
+    legend <- legend_server(
+      id = ns_id, 
+      var_left = var_left, 
+      var_right = var_right, 
       df = df)
-
+    
     # Did-you-know panel
     dyk_server(
-      id = ns_id,
+      id = ns_id, 
       var_left = var_left,
-      var_right = var_right)
+      var_right = var_right,
+      poi = poi)
     
     access_colors <- reactive({
       if (!is.na(select_id()) && var_right() == " ") {
@@ -289,11 +300,23 @@ access_server <- function(id) {
       map_var = map_var,
       zoom = zoom,
       select_id = select_id,
-      access_colors = access_colors
+      fill = scale_fill_access,
+      fill_args = reactive(list(map_var(), tile(), access_colors())),
     )
     
-    # Clear click status if prompted
-    observeEvent(input$`access-clear_selection`, select_id(NA))
+    # Update map labels
+    label_server(
+      id = ns_id, 
+      map_id = "map", 
+      tile = tile,
+      zoom = zoom)
+    
+    # De-select
+    observeEvent(input[[paste0(ns_id, "-clear_selection")]], select_id(NA))
+    observeEvent(df(), select_id(NA), ignoreInit = TRUE)
+    # Error check
+    observeEvent(data(), if (!select_id() %in% data()$ID) select_id(NA),
+                 ignoreInit = TRUE)
 
     # Bookmarking
     bookmark_server(
