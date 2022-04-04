@@ -9,9 +9,9 @@ info_table_alley <- function(data, var_type, var_left, var_right, df,
       participating_boroughs <- nrow(alley_text)
       nb_alleys <- {nrow(alley)}
       
-      sus_translate("There are {participating_boroughs} Montreal boroughs ",
-                    "with a green alley program, out of 19. They combine a ",
-                    "total of {nb_alleys} green alleys.")
+      sus_translate("{participating_boroughs} out of 19 Montreal boroughs ",
+                    "have a green alley program. They collectively have ",
+                    "{nb_alleys} green alleys.")
       
     } else if (df == "alley") {
       
@@ -28,10 +28,10 @@ info_table_alley <- function(data, var_type, var_left, var_right, df,
       
       sus_translate("Our team visited {nrow(alley_visited)} of the ",
                     "{nrow(alley)} green alleys in Montreal. We classified ",
-                    "{green} ({green_per}) as 'green' alleys, {community} ",
-                    "({community_per}) as 'community' alleys, {mixed} ",
-                    "({mixed_per}) as 'mixed' green and community alleys, and ",
-                    "{none} ({none_per}) as 'unmaintained' alleys.")
+                    "{green} ({green_per}) as 'green', {community} ",
+                    "({community_per}) as 'community', {mixed} ",
+                    "({mixed_per}) as 'mixed' green and community, and ",
+                    "{none} ({none_per}) as 'unmaintained'.")
     }
     
   } else {
@@ -84,7 +84,7 @@ info_table_alley <- function(data, var_type, var_left, var_right, df,
       text_to_display$text <- 
         if (is.na(data$description)) {
           paste0("<p>",
-                 sus_translate("We do not have information available ",
+                 sus_translate("We do not have information ",
                                "on this green alley."),
                  "</p>")
         } else {
