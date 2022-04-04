@@ -8,7 +8,7 @@ explore_graph_alley <- function(data, var_type, var_left, var_right, df,
   if (df == "borough_empty") {
     alley[!is.na(alley$created),] |> 
       ggplot(aes(created)) +
-      geom_histogram(fill = colour_left_5$fill[3]) +
+      geom_histogram(fill = colour_left_5$fill[3], bins = 30) +
       scale_y_continuous(name = NULL) +
       scale_x_continuous(name = sus_translate("Green alley start date")) +
       theme_minimal() +
