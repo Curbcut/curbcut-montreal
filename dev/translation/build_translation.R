@@ -31,6 +31,7 @@ source("dev/translation/home_and_about.R", encoding = "utf-8")
 source("dev/translation/title_text.R", encoding = "utf-8")
 source("dev/translation/dyk.R", encoding = "utf-8")
 source("dev/translation/green_alleys.R", encoding = "utf-8")
+source("dev/translation/place_explorer.R", encoding = "utf-8")
 
 # Retrieve and bind translated csvs ---------------------------------------
 
@@ -41,7 +42,8 @@ translation_fr <-
             variables_translated,
             title_text_translation,
             dyk_translated,
-            green_alleys_translated) |> 
+            green_alleys_translated,
+            place_explorer_translated) |> 
   distinct(en, .keep_all = TRUE)
 
 

@@ -28,7 +28,7 @@ get_legend_breaks <- function(data, var_left, var_right, df, data_type) {
       break_labs <- break_labs$var
       
       # Format break labels
-      if (str_detect(var_left, "_pct|_dollar")) {
+      if (str_detect(var_left, "_pct|_dollar|_count")) {
         break_labs <- convert_unit(break_labs, var_left, TRUE)
       }
     }

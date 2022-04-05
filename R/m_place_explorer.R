@@ -43,13 +43,13 @@ place_explorer_UI <- function(id) {
         strong(sus_translate("Enter a postal code or click on the map")),
         HTML(paste0('
                    <div class="shiny-split-layout">
-                     <div style="width: 60%;">',
+                     <div style="width: 80%;">',
                     textInput(inputId = NS(id, "address_searched"), label = NULL,
                               placeholder = "H3A 2T5"),
                     '</div>
-                     <div style="width: 40%;">',
+                     <div style="width: 20%;">',
                     actionButton(inputId = NS(id, "search_button"),
-                                 label = "Search",
+                                 label = icon("search"),
                                  style = "margin-top: var(--padding-v-md);"),
                     '</div>
                      </div>'))),
@@ -62,7 +62,7 @@ place_explorer_UI <- function(id) {
           label = sus_translate("Select theme(s):"),
           choices = unique(variables$theme),
           selected = unique(variables$theme),
-          options = list(`selected-text-format` = "count > 4"),
+          # options = list(`selected-text-format` = "count > 4"),
           multiple = TRUE),
         
         br(),
@@ -77,11 +77,12 @@ place_explorer_UI <- function(id) {
                         force_edges = TRUE),
         
         # Island only comparison, or region-wide
-        pickerInput(
-          inputId = NS(id, "comparison_scale"),
+        select_var_UI(
+          id = ns_id,
+          select_var_id = NS(id, "comparison_scale"),
           label = sus_translate("Choose comparison scale:"),
-          choices = list("Island" = "island",
-                      "Region" = "region"))
+          var_list = list("Island" = "island",
+                         "Region" = "region"))
       )))),
     
     # Main panel as a uiOutput. The number of themes displayed is reactive
@@ -303,13 +304,11 @@ place_explorer_server <- function(id) {
     # Should we show the wdiget, or not? Only if loc_DAUID() is on island
     observe(toggle(id = "comparison_scale", condition = location_on_island()))
     
-    observe({
-      updatePickerInput(
-        session,
-        inputId = "comparison_scale",
-        choices = sus_translate(list("Island" = "island", "Region" = "region")),
-        selected = if (location_on_island()) "island" else "region")
-    })
+    # Update dropdown language
+    comparison_scale <- select_var_server(
+      id = ns_id, 
+      select_var_id = "comparison_scale",
+      var_list = reactive(list("Island" = "island", "Region" = "region")))
     
     # Every time the selected id changes, re-evaluate if we're starting with
     # an island-only comparison, or region-wide.
@@ -317,10 +316,9 @@ place_explorer_server <- function(id) {
         island_comparison(if (location_on_island()) "island" else "region")
     }, ignoreInit = TRUE)
     
-    observeEvent(input$comparison_scale, {
-        island_comparison(input$comparison_scale)
+    observeEvent(comparison_scale(), {
+        island_comparison(comparison_scale())
     })
-    
     
     # Title card ---------------------------------------------------------------
     
@@ -368,11 +366,11 @@ place_explorer_server <- function(id) {
                     borough[borough$ID == select_id(),]$name_2, ")"),
              "/h2>")
       } else HTML("<h2 style = 'display:inline;'>", 
-                  paste0("The area around ", location_name(),
+                  paste0(sus_translate("The area around "), location_name(),
                          "<i style = 'color: var(--c-h2);
     font-family: var(--ff-h2); font-size: 2.5rem; margin-bottom: 0.75em; 
                          display:inline;'>", 
-                         "&nbsp;&nbsp;&nbsp;(", get_zoom_name(df()), ")"), 
+                         "&nbsp;&nbsp;&nbsp;(", sus_translate(get_zoom_name(df())), ")"), 
                   "</i></h2>")
     })
 
@@ -395,7 +393,7 @@ place_explorer_server <- function(id) {
               column(width = 2, HTML(paste0(
                 "<p style = 'margin:auto; text-align:center;",
                 "font-size: medium; font-weight:bold;'>",
-                title_card_to_grid[[x]][["row_title"]] |>
+                sus_translate(title_card_to_grid[[x]][["row_title"]]) |>
                   str_to_upper(), "</p>"))),
               column(width = 2, HTML(paste0(
                 "<p style = 'margin:auto; text-align:center;'>",
@@ -414,7 +412,6 @@ place_explorer_server <- function(id) {
         })
       })
     })
-
     
     ## Place explorer data -----------------------------------------------------
     
@@ -463,10 +460,10 @@ place_explorer_server <- function(id) {
                     output[[paste0("ind_", themes[[x]], z, "_row_title")]] <- 
                       renderText({
                         paste(p(style = "    font-size: 11px;", 
-                                to_grid[z, ][["var_title"]],
+                                sus_translate(to_grid[z, ][["var_title"]]),
                                 icon("question"),
                                 title = str_to_sentence(
-                                  to_grid[z, ][["explanation"]])))
+                                  sus_translate(to_grid[z, ][["explanation"]]))))
                     })
                     
                     output[[paste0("ind_", themes[[x]],  z, "_percentile")]] <- 

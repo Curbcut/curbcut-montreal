@@ -54,6 +54,7 @@ place_explorer_block_text <- function(df, theme, select_id,
 
   raw_data_var <- pe_var_hierarchy[[df]][names(pe_var_hierarchy[[df]]) %in%
                                            data_order$var_code]
+  raw_data_var <- raw_data_var[order(match(names(raw_data_var), data_order$var_code))]
   data_var <- lapply(raw_data_var, \(x) {x[x$ID == select_id, ]})
 
   col <- paste0(island_or_region, "_percentile")
@@ -70,7 +71,7 @@ place_explorer_block_text <- function(df, theme, select_id,
   
   names(data_var)[1] <- "percentile"
 
-  out <- merge(data_order, data_var, by = "var_code")
+  out <- cbind(data_order, data_var)
   out <- out[!is.na(out$value), ]
 
   percentile <- sapply(out$percentile, \(out_percentiles) {
