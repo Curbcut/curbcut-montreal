@@ -26,9 +26,6 @@ borough |>
   mutate(ID = "1", name = "CMA", .before = geometry) |> 
   upload_tile_source("CMA_empty")
 
-
-# Create and publish CMA_empty tileset ------------------------------------
-
 CMA_empty_recipe <- 
   create_recipe(
     layer_names = "CMA",
@@ -41,14 +38,29 @@ create_tileset("CMA_empty", CMA_empty_recipe)
 publish_tileset("CMA_empty")
 
 
+# Process CT_empty then upload tile source --------------------------------
+
+CT |> 
+  select(ID, geometry) |> 
+  upload_tile_source("CT_empty")
+
+CT_empty_recipe <- 
+  create_recipe(
+    layer_names = "CT",
+    source = "mapbox://tileset-source/sus-mcgill/CT_empty",
+    minzoom = 3,
+    maxzoom = 12, 
+    simp_zoom = 12,
+    recipe_name = "CT_empty")
+
+create_tileset("CT_empty", CT_empty_recipe)
+publish_tileset("CT_empty")
+
 # Process DA_empty then upload tile source --------------------------------
 
 DA |> 
   select(ID, geometry) |> 
   upload_tile_source("DA_empty")
-
-
-# Create and publish DA_empty tileset -------------------------------------
 
 DA_empty_recipe <- 
   create_recipe(

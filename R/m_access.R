@@ -56,7 +56,7 @@ access_server <- function(id) {
         center = map_location, zoom = map_zoom)) |> 
         add_mvt_layer(id = ns_id) |> 
         add_mvt_layer(id = "metro_lines",
-                      data = mvt_url("maxbdb2.access-metro_lines"),
+                      data = mvt_url("sus-mcgill.metro_lines"),
                       get_line_color = !!rlang::sym("fill"),
                       get_line_width = 2,
                       line_width_units = "pixels")
@@ -98,27 +98,20 @@ access_server <- function(id) {
     time <- reactive("2016")
     
     # Choose tileset
-    tile_1 <- zoom_server(
-      id = ns_id, 
-      zoom = zoom, 
-      zoom_levels = reactive(map_zoom_levels))
+    tile <- reactive("CT")
     
     # Additional tileset identifier
-    tile2 <- reactive({
-      if (!is.na(select_id()) && var_right() == " ") return("")
-      ""
-      })
-    
-    tile <- reactive({
-      if (!is.na(select_id()) && var_right() == " ") return("empty_CT")
-      "empty_CT"# tile_1()
-    })
+    tile2 <- reactive(
+      tile_lookup$suffix[tile_lookup$module == "access" & 
+                           tile_lookup$tile2 == var_left()])
 
     # Enable or disable slider + type of destination
     observeEvent({select_id()
       var_right()}, {
-        toggle("access-slider", condition = !is.na(select_id()) && var_right() == " ")
-        toggle("access-d_1", condition = is.na(select_id()) || var_right() != " ")
+        toggle("access-slider", condition = !is.na(select_id()) && 
+                 var_right() == " ")
+        toggle("access-d_1", condition = is.na(select_id()) || 
+                 var_right() != " ")
       })
 
     # Slider widget
@@ -193,9 +186,11 @@ access_server <- function(id) {
         CTs_to_map <- CTs_to_map[CTs_to_map$travel_time <= tt_thresh, ]
         CTs_to_map <- CTs_to_map[CTs_to_map$timing == var_left_2(), ]
         CTs_to_map$group <-
-          as.character(6 - pmax(1, ceiling(CTs_to_map$travel_time / tt_thresh * 5)))
+          as.character(6 - pmax(1, ceiling(CTs_to_map$travel_time / 
+                                             tt_thresh * 5)))
         CTs_to_map <- CTs_to_map[, c("destination", "group")]
-        CTs_to_map <- merge(CTs_to_map, colour_left_5, by = "group", all.x = TRUE)
+        CTs_to_map <- merge(CTs_to_map, colour_left_5, by = "group", 
+                            all.x = TRUE)
 
         names(CTs_to_map) <- c("group", "ID", "fill")
 
@@ -210,31 +205,7 @@ access_server <- function(id) {
         out
       } else NULL
     })
-    ## TKTK PREVIOUS MAP :
-    # else if (is.na(select_id()) && var_right() == " ") {
-    # Start with this here first:
-        # mapdeck_update(map_id = NS(id, "map"))  |>
-        #   clear_path() |>
-        #   clear_polygon() |>
-        #   clear_polygon(layer_id = "poly_bg") |>
-        #   clear_polygon(layer_id = "poly_iso") |>
-        #   clear_polygon(layer_id = "poly_highlight") |>
-        #   add_sf(data =
-        #            {data() |>
-        #                rowwise() |>
-        #                mutate(fill_val = list(which.max((
-        #                  filter(colour_access, category == var_left_1()))$value >= var_left))) |>
-        #                mutate(fill_val = if (length(fill_val) == 0) NA_integer_ else fill_val) |>
-        #                ungroup() |>
-        #                select(-fill) |>
-        #                left_join(colour_absolute, by = "fill_val") |>
-        #                mutate(fill = if_else(is.na(fill), "#B3B3BBCC", fill))},
-        #          stroke_width = 10, stroke_colour = "#FFFFFF",
-        #          fill_colour = "fill", update_view = FALSE, id = "ID",
-        #          auto_highlight = TRUE, highlight_colour = "#FFFFFF90") |>
-        #   add_path(data = metro_lines, stroke_colour = "fill",
-        #            stroke_width = 50, update_view = FALSE)
-    
+
     # Update map in response to variable changes or zooming
     rdeck_server(
       id = ns_id,

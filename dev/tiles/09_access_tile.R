@@ -4,31 +4,30 @@ library(tidyverse)
 library(sf)
 library(qs)
 qload("data/census.qsm")
-building_full <- qread("data/building_full.qs", nthreads = 4)
+metro_lines <- qread("data/metro_lines.qs")
 variables <- qread("data/variables.qs")
 source("dev/tiles/_tile_functions.R")
 source("R/functions/_utils.R")
-qload("data/colours.qsm")
-qload("data/accesss.qsm")
 qload("data/colours.qsm")
 
 
 # Upload metro lines ------------------------------------------------------
 
 metro_lines |> 
-  upload_tile_source("access-metro_lines", .sus_token)
+  upload_tile_source("metro_lines")
 
-access_metro_lines <- 
+metro_lines_recipe <- 
   create_recipe(
-    layer_names = "access-metro_lines",
-    source = "mapbox://tileset-source/sus-mcgill/access-metro_lines",
+    layer_names = "metro_lines",
+    source = "mapbox://tileset-source/sus-mcgill/metro_lines",
     minzoom = 3,
     maxzoom = 12, 
     simp_zoom = 12,
-    recipe_name = "access-metro_lines")
+    recipe_name = "metro_lines")
 
-create_tileset("access-metro_lines", access_metro_lines)
-publish_tileset("access-metro_lines")
+create_tileset("metro_lines", metro_lines_recipe)
+publish_tileset("metro_lines")
+
 
 # Get variables to add ----------------------------------------------------
 
@@ -43,30 +42,6 @@ right_vars <-
   filter(!theme %in% c("Employment"), !is.na(theme)) |> 
   pull(var_code)
 
-# Empty CT ---------------------------------------------------------------
-
-CT |> 
-  select(ID) |> 
-  st_set_agr("constant") |> 
-  upload_tile_source("access-empty_CT", .sus_token)
-
-access_empty_CT <- 
-  create_recipe(
-    layer_names = "access-empty_CT",
-    source = "mapbox://tileset-source/sus-mcgill/access-empty_CT",
-    minzoom = 3,
-    maxzoom = 12, 
-    simp_zoom = 12,
-    recipe_name = "access-empty_CT")
-
-create_tileset("access-empty_CT", access_empty_CT)
-publish_tileset("access-empty_CT")
-
-
-### Processing function ---------------------------------------------------
-
-# Get variables to add ----------------------------------------------------
-
 vars_to_add <- 
   variables |> 
   filter(source == "census") |> 
@@ -80,70 +55,92 @@ vars_to_add <-
 # Process borough then upload tile source ---------------------------------
 
 CT_data <-
-map(left_vars, function(left_var) {
-  
-  vars_to_add_one_access <- 
-    c(vars_to_add[!str_starts(vars_to_add, "access")], paste0(left_var, "_q3"),
-      paste0(left_var, "_q5"))
-  
-  out <- 
-    CT |> 
-    as_tibble() |> 
-    select(ID, name, all_of(vars_to_add_one_access), geometry) |> 
-    mutate(across(contains("_q3"), 
-                  ~paste(eval(parse(text = paste0(left_var, "_q3"))), .x, sep = " - "))) |> 
-    relocate(paste0(left_var, "_q5"), .after = name) |> 
-    select(-paste0(left_var, "_q3")) |>
-    rename_with(~paste0(paste0(left_var, "_"), str_remove(.x, "_q3")),
-                contains("_q3")) |> 
-    rename_with(~paste0(left_var), paste0(left_var, "_q5"))
-  
-  out[[left_var]] <- as.character(out[[left_var]])
-  
-  out <- 
-    out |> 
-    mutate(across(c(-ID, -name, -left_var, -geometry), trans_var)) |> 
-    st_as_sf() |> 
-    st_set_agr("constant") 
-  
-  if (left_var != left_vars[1]) out <- st_drop_geometry(out)
-  
-  out
-  
-}) |> reduce(left_join, by = c("ID", "name"))
+  map(left_vars, function(left_var) {
+    
+    vars_to_add_one_access <- 
+      c(vars_to_add[!str_starts(vars_to_add, "access")], 
+        paste0(left_var, "_q3"), paste0(left_var, "_q5"))
+    
+    out <- 
+      CT |> 
+      as_tibble() |> 
+      select(ID, name, all_of(vars_to_add_one_access), geometry) |> 
+      mutate(across(contains("_q3"), 
+                    ~paste(eval(parse(text = paste0(left_var, "_q3"))), .x, 
+                           sep = " - "))) |> 
+      relocate(all_of(paste0(left_var, "_q5")), .after = name) |> 
+      select(-all_of(paste0(left_var, "_q3"))) |>
+      rename_with(~paste0(paste0(left_var, "_"), str_remove(.x, "_q3")),
+                  contains("_q3")) |> 
+      rename_with(~paste0(left_var), paste0(left_var, "_q5"))
+    
+    out[[left_var]] <- as.character(out[[left_var]])
+    
+    out <- 
+      out |> 
+      mutate(across(c(-ID, -name, -left_var, -geometry), trans_var)) |> 
+      st_as_sf() |> 
+      st_set_agr("constant") 
+    
+    if (left_var != left_vars[1]) out <- st_drop_geometry(out)
+    
+    out
+    
+    }) |> reduce(left_join, by = c("ID", "name"))
 
 
-# Test the data -----------------------------------------------------------
 
-right_vars <-   
-  variables |> 
-  filter(source == "census") |> 
-  filter(theme != "Employment", !is.na(theme)) |> 
-  pull(var_code) |> 
-  paste0("_2016") |> 
-  c(" ")
+# Split data for upload ---------------------------------------------------
 
-test_data_to_upload("CT", CT_data, left_vars, right_vars)
-                        
+CT_data_list <- 
+  map(left_vars, ~select(CT_data, ID, name, starts_with(.x), geometry))
+
+
+# Construct tile lookup table ---------------------------------------------
+
+tile_lookup <- 
+  qread("data/tile_lookup.qs") |> 
+  filter(module != "access") |> 
+  bind_rows(
+    tibble(module = "access", 
+           tile2 = left_vars,
+           suffix = paste0("-", seq_along(left_vars)))
+  )
+
+qsave(tile_lookup, "data/tile_lookup.qs")
+  
 
 # CT upload source --------------------------------------------------------
 
-CT_data |> 
-  upload_tile_source("access-CT")
+CT_data_list |> 
+  walk2(seq_along(left_vars), ~upload_tile_source(.x, paste0("access-CT-", .y)))
+
 
 # Add recipes -------------------------------------------------------------
 
 recipe_CT <- 
-  create_recipe(
+  map(seq_along(left_vars), ~create_recipe(
     layer_names = "CT",
-    source = "mapbox://tileset-source/sus-mcgill/access-CT",
+    source = paste0("mapbox://tileset-source/sus-mcgill/access-CT-", .x),
     minzoom = 3,
     maxzoom = 12, 
     simp_zoom = 12,
     layer_size = 2500,
-    recipe_name = "access-CT")
+    recipe_name = paste0("access-CT-", .x)))
+
 
 # Create and publish tilesets ---------------------------------------------
 
-create_tileset("access-CT", recipe_CT)
-publish_tileset("access-CT")
+# Create tilesets
+for (i in seq_along(left_vars)) {
+  out <- create_tileset(paste0("access-CT-", i), recipe_CT[[i]])
+  if (out$status_code != 200) stop(var)
+  Sys.sleep(1)
+}
+
+# Publish tilesets
+for (i in seq_along(left_vars)) {
+  out <- publish_tileset(paste0("access-CT-", i))
+  if (out$status_code != 200) stop(var)
+  Sys.sleep(30)
+}
