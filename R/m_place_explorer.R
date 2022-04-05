@@ -163,8 +163,6 @@ place_explorer_server <- function(id) {
     })
     
     observeEvent(zoom(), {
-      print(zoom())
-
       rdeck_proxy(id = paste0(ns_id, "-map")) |>
         add_mvt_layer(id = "CMA", 
                       get_fill_color = if (zoom() >= 8) "#AAB6CF00" else "#AAB6CFFF",
