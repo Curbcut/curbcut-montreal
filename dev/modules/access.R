@@ -109,6 +109,10 @@ tt_matrix <-
   left_join(points, by = c("destination" = "GeoUID")) |> 
   select(timing, origin, destination = CT, travel_time)
 
+tt_matrix <- 
+  tt_matrix |> 
+  pivot_wider(names_from = origin, values_from = c(travel_time))
+
 
 # Meta testing ------------------------------------------------------------
 

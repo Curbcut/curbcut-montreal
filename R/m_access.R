@@ -183,24 +183,21 @@ access_server <- function(id) {
       if (!is.na(select_id()) && var_right() == " ") {
         tt_thresh <- slider() * 60
 
-        CTs_to_map <- tt_matrix[tt_matrix$origin == select_id(), ]
-        CTs_to_map <- CTs_to_map[CTs_to_map$travel_time <= tt_thresh, ]
+        CTs_to_map <- tt_matrix[c("timing", "destination", select_id())]
+        names(CTs_to_map) <- c("timing", "destination", "travel_time")
         CTs_to_map <- CTs_to_map[CTs_to_map$timing == var_left_2(), ]
-        CTs_to_map$group <-
-          as.character(6 - pmax(1, ceiling(CTs_to_map$travel_time / 
-                                             tt_thresh * 5)))
+        CTs_to_map <- CTs_to_map[CTs_to_map$travel_time <= tt_thresh, ]
+        CTs_to_map <- CTs_to_map[CTs_to_map$destination != select_id(),]
+        CTs_to_map$group <- as.character(6 - ceiling((
+          CTs_to_map$travel_time) / tt_thresh * 5))
         CTs_to_map <- CTs_to_map[, c("destination", "group")]
         CTs_to_map <- merge(CTs_to_map, colour_left_5, by = "group", 
                             all.x = TRUE)
-
         names(CTs_to_map) <- c("group", "ID", "fill")
-
         data_1 <- data()[, "ID"] |> merge(CTs_to_map, by = "ID")
         data_1 <- data_1[, c("ID", "fill")]
-
         data_2 <- data()[data()$ID == select_id(), "ID"]
         data_2$fill <- "#000000"
-
         out <- rbind(data_1, data_2)
         names(out) <- c("group", "value")
         out
