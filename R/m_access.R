@@ -10,6 +10,7 @@ access_UI <- function(id) {
     # Sidebar
     sidebar_UI(
       NS(id, ns_id),
+      susSidebarWidgets(
       select_var_UI(NS(id, ns_id), select_var_id = "d_2",
                     var_list = var_left_list_2_access,
                     label = sus_translate("Timing")),
@@ -17,7 +18,7 @@ access_UI <- function(id) {
                     var_list = var_left_list_1_access,
                     label = sus_translate("Destination type")),
       slider_UI(NS(id, ns_id), label = sus_translate("Time threshold"),
-                  min = 10, max = 60, step = 1, value = 30),
+                  min = 10, max = 60, step = 1, value = 30)),
       bottom = div(class = "bottom_sidebar",
           tagList(legend_UI(NS(id, ns_id)),
                   hidden(zoom_UI(NS(id, ns_id), map_zoom_levels))))),
@@ -166,14 +167,14 @@ access_server <- function(id) {
 
     # Legend
     legend <- legend_server(
-      id = ns_id, 
-      var_left = var_left, 
-      var_right = var_right, 
+      id = ns_id,
+      var_left = var_left,
+      var_right = var_right,
       df = df)
     
     # Did-you-know panel
     dyk_server(
-      id = ns_id, 
+      id = ns_id,
       var_left = var_left,
       var_right = var_right,
       poi = poi)

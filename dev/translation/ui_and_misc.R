@@ -500,8 +500,8 @@ ui_and_misc_translated <-
           fr = paste0("Sélectionnez l'échelle :")) |> 
   add_row(en = paste0("Choose comparison scale:"), 
           fr = paste0("Choisissez l'échelle de comparaison :")) |> 
-  add_row(en = paste0("\nhigh only"), 
-          fr = paste0("\nhélevé seulement")) |> 
+  add_row(en = paste0("high only"), 
+          fr = paste0("élevé seulement")) |> 
   add_row(en = paste0("Both high"), 
           fr = paste0("Les deux élevés")) |> 
   add_row(en = paste0("Both low"), 

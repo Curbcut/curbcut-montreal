@@ -231,9 +231,13 @@ get_info_table_data <- function(data, var_type, var_left, var_right, df,
       sus_translate("smaller than")
     } else sus_translate("much smaller than")
 
-    out$high <- if (str_detect(out$larger, sus_translate("larger"))) {
+    out$high <- if (str_detect(out$larger, paste(sus_translate("much larger than"), 
+                                                  sus_translate("larger than"), 
+                                                  sep = "|"))) {
       sus_translate("high")
-    } else if (str_detect(out$larger, sus_translate("smaller"))) {
+    } else if (str_detect(out$larger, paste(sus_translate("smaller than"), 
+                                            sus_translate("much smaller than"), 
+                                            sep = "|"))) {
       sus_translate("low")
     } else sus_translate("moderate")
 
