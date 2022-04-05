@@ -360,9 +360,13 @@ place_explorer_server <- function(id) {
     output$title_card_title <- renderText({
       if (df() == "borough") {
         HTML("<h2>",
-             paste0(borough[borough$ID == select_id(),]$name, " (",
-                    borough[borough$ID == select_id(),]$name_2, ")"),
-             "</h2>")
+             paste0(borough[borough$ID == select_id(),]$name, 
+                    "<i style = 'color: var(--c-h2);
+    font-family: var(--ff-h2); font-size: 2.5rem; margin-bottom: 0.75em; 
+                         display:inline;'>", 
+                    "&nbsp;&nbsp;&nbsp;(", borough[borough$ID == select_id(),]$name_2, 
+                    ")"), 
+             "</i></h2>")
       } else HTML("<h2 style = 'display:inline;'>", 
                   paste0(sus_translate("The area around "), location_name(),
                          "<i style = 'color: var(--c-h2);
