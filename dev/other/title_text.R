@@ -82,8 +82,7 @@ title_text <-
                         "ither green nor community-oriented alleys: they are aba",
                         "ndoned or used as parking spaces or as ways to access p",
                         "rivate garages, without any environmental or social-com",
-                        "munity benefit.
-</ul>")) |> 
+                        "munity benefit.</ul>")) |> 
   add_row(tab = "covid", type = "title",
           text = "2020 and 2021 Covid interventions") |> 
   add_row(tab = "covid", type = "main",
