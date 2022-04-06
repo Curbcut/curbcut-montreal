@@ -799,9 +799,6 @@ info_table_translated <-
           fr = paste0("<p><b>FORTE CORRÉLATION</b></p>"))
 
 
-("<p><b>STRONG CORRELATION</b></p>" = "<p><b>FORTE CORRÉLATION</b></p>")
-
-
 # Save --------------------------------------------------------------------
 
 # # Also encode english for `Kanehsatà:ke`

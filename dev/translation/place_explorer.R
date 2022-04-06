@@ -14,8 +14,8 @@ place_explorer_translated <-
           fr = paste0("plus haut")) |>
   add_row(en = paste0("lowest"), 
           fr = paste0("plus bas")) |>
-  add_row(en = paste0("The borough"), 
-          fr = paste0("L'arrondissement")) |>
+  add_row(en = paste0("The borough/city"), 
+          fr = paste0("L'arrondissement/la ville")) |>
   add_row(en = paste0("The census tract"), 
           fr = paste0("Le secteur de recensement")) |>
   add_row(en = paste0("The dissemination area"), 
@@ -44,22 +44,22 @@ place_explorer_translated <-
   add_row(en = paste0("Extreme outlier"), 
           fr = paste0("Donnée aberrante extrême")) |>
   add_row(en = paste0("`Extreme outlier`: the variables rank in the ",
-                      "top/bottom 10% relative to the {island_comparison()}."), 
+                      "top/bottom 10% relative to {text_island_region}."), 
           fr = paste0("`Donnée aberrante extrême`: les variables se classent ",
-                      "dans les 10% supéreurs/inférieurs par rapport à la ",
-                      "{island_comparison()}")) |>
+                      "dans les 10% supéreurs/inférieurs par rapport à ",
+                      "{text_island_region}")) |>
   add_row(en = paste0("Typical"), 
           fr = paste0("Typique")) |>
   add_row(en = paste0("`Outlier`: the variables rank in the top/bottom 20% ",
-                      "relative to the {island_comparison()}."), 
+                      "relative to {text_island_region}."), 
           fr = paste0("`Donnée aberrante` : les variables se classent dans ",
-                      "les 20% supérieurs/ inférieurs par rapport à la ",
-                      "{island_comparison()}")) |>
+                      "les 20% supérieurs/ inférieurs par rapport à ",
+                      "{text_island_region}")) |>
   add_row(en = paste0("`Typical`: the variables rank in the middle 60% ",
-                      "relative to the {island_comparison()}."), 
+                      "relative to {text_island_region}."), 
           fr = paste0("`Typique` : les variables se situent dans la ",
                       "fourchette intermédiaire (entre les 20% et 80%) ",
-                      "par rapport à la {island_comparison()}.")) |>
+                      "par rapport à {text_island_region}.")) |>
   add_row(en = paste0("{geo_area} ranks in the {text_high_is_good} "), 
           fr = paste0("{geo_area} se classe dans le {text_high_is_good} ")) |>
   add_row(en = paste0("There were {z$pretty_data_var} total crashes per 1,000 ",
@@ -67,7 +67,7 @@ place_explorer_translated <-
           fr = paste0("Il y a eu {z$pretty_data_var} collisions pour 1 000 ",
                       "habitants en {z$data_date}. {z$data_rank}")) |> 
   add_row(en = paste0("Its value is higher than WHO's guideline value of 5. "), 
-          fr = paste0("Sa valeur est supérieure à la valeur minimale recommandée par ",
+          fr = paste0("Sa valeur est supérieure à la valeur maximale recommandée par ",
                       "l'OMS, qui est de 5. ")) |>
   add_row(en = paste0("{z$data_rank} in terms of level of NO2 pollution. ",
                       "{higher_than_threshold}(NO2 = {z$pretty_data_var}, ",
@@ -104,4 +104,39 @@ place_explorer_translated <-
   add_row(en = paste0("Active living"), 
           fr = paste0("Vie active")) |> 
   add_row(en = paste0("The area around "), 
-          fr = paste0("La zone autour du "))
+          fr = paste0("La zone autour du ")) |> 
+  add_row(en = paste0("It ranks {text_data_rank} {text_island_region}"), 
+          fr = paste0("Il se classe {text_data_rank} {text_island_region}")) |> 
+  add_row(en = paste0("relatively low at {ordinal_form(data_rank)}"), 
+          fr = paste0("relativement bas au {ordinal_form(data_rank)} rang")) |> 
+  add_row(en = paste0(" on the island"), 
+          fr = paste0(" sur l'île")) |> 
+  add_row(en = paste0(" in the region"), 
+          fr = paste0(" dans la région")) |> 
+  add_row(en = paste0("the island"), 
+          fr = paste0("l'île")) |> 
+  add_row(en = paste0("the region"), 
+          fr = paste0("la région")) |> 
+  add_row(en = paste0("{ordinal_form(data_rank)} best"), 
+          fr = paste0("en {ordinal_form(data_rank)} position")) |> 
+  add_row(en = paste0("Its value is higher than {scale_percent_data_rank} of ",
+                      "{geo_areas} {text_island_region}"), 
+          fr = paste0("Sa valeur est supérieure à {scale_percent_data_rank} des ",
+                      "{geo_areas} {text_island_region}.")) |> 
+  add_row(en = paste0("the total number of jobs accessible within 30 minutes on average"), 
+          fr = paste0("le nombre total d'emplois accessibles en 30 minutes et moins en moyenne")) |> 
+  add_row(en = paste0("the number of low-skill jobs accessible within 30 minutes on average"), 
+          fr = paste0("le nombre total d'emplois peu qualifiés accessibles en 30 minutes et moins en moyenne")) |> 
+  add_row(en = paste0("the number of high-skill jobs accessible within 30 minutes on average"), 
+          fr = paste0("le nombre total d'emplois hautement qualifiés accessibles en 30 minutes et moins en moyenne")) |> 
+  add_row(en = paste0("the number of jobs paying less than $30,000 accessible within 30 minutes on average"), 
+          fr = paste0("le nombre total d'emplois ayant un salaire de moins de 30 000$ accessibles en 30 minutes et moins en moyenne")) |> 
+  add_row(en = paste0("the number of schools accessible within 30 minutes on average"), 
+          fr = paste0("le nombre total d'écoles accessibles en 30 minutes et moins en moyenne")) |> 
+  add_row(en = paste0("the number of healthcare facilities within 30 minutes on average"), 
+          fr = paste0("le nombre total d'établissements de santé accessibles en 30 minutes et moins en moyenne")) |> 
+  add_row(en = paste0("the number of healthcare facilities accessible within 30 minutes on average"), 
+          fr = paste0("le nombre total d'établissements de santé accessibles en 30 minutes et moins en moyenne")) |> 
+  add_row(en = paste0("City"), 
+          fr = paste0("Ville"))
+  

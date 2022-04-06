@@ -41,13 +41,18 @@ prep_title_card <- function(df, select_id, ind, percent = TRUE,
       if (high_is_good) df_row - rank + 1 else rank
     
     text_data_rank <- if (data_rank > 1/3*df_row) {
-      paste0(if (data_rank > 2/3*df_row) sus_translate("relatively low at "),
-             ordinal_form(data_rank))
+      if (data_rank > 2/3*df_row) {
+        sus_translate("relatively low at {ordinal_form(data_rank)}")
+      } else {
+        ordinal_form(data_rank)
+      }
     } else {
-      paste0(ordinal_form(data_rank),
-             "best")
+      if (sus_rv$lang() == "fr" && {ordinal_form(data_rank)} == "") "premier" else {
+        sus_translate("{ordinal_form(data_rank)} best")
+      }
     }
-    text_island_region <- if (island) " on the island" else " in the region"
+    text_island_region <- if (island) sus_translate(" on the island") else 
+      sus_translate(" in the region")
     
     info$data_rank <- sus_translate("It ranks {text_data_rank} {text_island_region}")
     
@@ -67,7 +72,6 @@ prep_title_card <- function(df, select_id, ind, percent = TRUE,
           sus_translate("{geo_area} ranks in the {text_high_is_good} "),
           if (abs(data_rank - 1) < 0.01) "1%" else 
             scales::percent(abs(data_rank - 1)))
-        
         
       } else if (data_rank < 0.25) {
         
