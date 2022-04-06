@@ -5,7 +5,7 @@ get_legend_labels <- function(var_left, var_right, data_type, breaks = NULL) {
   ## If breaks has non-NULL name, use it ---------------------------------------
   
   if (!is.null(breaks) && !is.null(names(breaks[1]))) {
-    labs_xy <- list(labs(x = sus_translate(names(breaks[1])), y = NULL))
+    labs_xy <- list(labs(x = names(breaks[1]), y = NULL))
     return(labs_xy)
   }
   
@@ -62,11 +62,11 @@ get_legend_labels <- function(var_left, var_right, data_type, breaks = NULL) {
   if (data_type == "delta_bivar") {
     date_left <- str_extract(var_left, "(?<=_)\\d{4}$")
     date_left <- paste(date_left, collapse = " - ")
-    if (nchar(sus_translate(title_left)) > 16) title_left <- title_left_short
+    if (nchar(title_left) > 16) title_left <- title_left_short
     title_left <- paste0(title_left, " (\u0394 ", date_left, ")")
     date_right <- str_extract(var_right, "(?<=_)\\d{4}$")
     date_right <- paste(date_right, collapse = " - ")
-    if (nchar(sus_translate(title_right)) > 16) title_right <- title_right_short
+    if (nchar(title_right) > 16) title_right <- title_right_short
     title_right <- paste0(title_right, " (\u0394 ", date_right, ")")
     labs_xy <- list(labs(x = title_right, y = title_left), 
                     x_short = title_right_short, y_short = title_left_short)

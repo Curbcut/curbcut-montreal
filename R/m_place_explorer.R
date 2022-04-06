@@ -336,7 +336,7 @@ place_explorer_server <- function(id) {
           get_line_color = "#FFFFFF00")
     })
 
-    observeEvent(loc_DAUID(), {
+    observeEvent(select_id(), {
           data <- data()[data()$ID == select_id(), "geometry"]
           zoom <- map_zoom_levels[
             which(df() == names(map_zoom_levels))] + 2
@@ -425,18 +425,25 @@ place_explorer_server <- function(id) {
 
         standout <- themes$standout
         themes <- themes$theme
-
+        
+        text_island_region <- 
+          if (island_comparison() == "island") {
+            sus_translate("the island")
+          } else {
+            sus_translate("the region")
+          }
+        
         standout_definition <-
           c("Extreme outlier" =
-              paste0("`Extreme outlier`: the variables rank in the top/bottom ",
-                     "10% relative to the {island_comparison()}."),
+              sus_translate("`Extreme outlier`: the variables rank in the top/bottom ",
+                     "10% relative to {text_island_region}."),
             "Outlier" =
-              paste0("`Outlier`: the variables rank in the top/bottom 20% ",
-                     "relative to the {island_comparison()}."),
+              sus_translate("`Outlier`: the variables rank in the top/bottom 20% ",
+                     "relative to {text_island_region}."),
             "Typical" =
-              paste0("`Typical`: the variables rank in the middle 60% ",
-                     "relative to the {island_comparison()}."))
-
+              sus_translate("`Typical`: the variables rank in the middle 60% ",
+                     "relative to {text_island_region}."))
+        
         # The "server" of every block
         lapply(seq_along(themes), \(x) {
           delay(x*100, {
@@ -485,8 +492,8 @@ place_explorer_server <- function(id) {
                   translated_standout <- 
                     str_to_lower(sus_translate(standout[[x]]))
                   translated_standout_definition <-
-                    sus_translate(standout_definition[[which(names(
-                      standout_definition) == standout[[x]])]])
+                    standout_definition[[which(names(
+                      standout_definition) == standout[[x]])]]
 
                   nb_values_to_show <- min(nrow(to_grid), 5)
 
