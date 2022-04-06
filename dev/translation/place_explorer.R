@@ -113,6 +113,10 @@ place_explorer_translated <-
           fr = paste0(" sur l'île")) |> 
   add_row(en = paste0(" in the region"), 
           fr = paste0(" dans la région")) |> 
+  add_row(en = paste0("on the island"), 
+          fr = paste0("sur l'île")) |> 
+  add_row(en = paste0("in the region"), 
+          fr = paste0("dans la région")) |> 
   add_row(en = paste0("the island"), 
           fr = paste0("l'île")) |> 
   add_row(en = paste0("the region"), 

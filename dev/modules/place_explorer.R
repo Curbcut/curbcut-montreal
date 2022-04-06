@@ -588,28 +588,6 @@ pe_variable_order <-
       select(ID, theme, group, var_code, variable_order, theme)
   })
 
-
-
-# Geometries --------------------------------------------------------------
-
-place_explorer_basemap <- st_union(borough) |> st_as_sf()
-
-place_explorer_island <-
-  borough |> 
-  filter(ID %in% island_CSDUID) |> 
-  st_union() |> 
-  st_as_sf() |> 
-  transmute(click = "island", tooltip = "Island only")
-  
-
-place_explorer_CMA <- 
-  borough |> 
-  filter(!ID %in% island_CSDUID) |> 
-  st_union() |> 
-  st_as_sf() |> 
-  transmute(click = "region", tooltip = "Region-wide")
-
-
 # Cleanup -----------------------------------------------------------------
 
 rm(basic_percentile_retrieval, gentrification_min_max, min_access_var_code,

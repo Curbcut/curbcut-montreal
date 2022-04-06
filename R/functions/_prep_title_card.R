@@ -12,6 +12,7 @@ prep_title_card <- function(df, select_id, ind, percent = TRUE,
   scale <- if (island) "island" else "region"
   
   geo_area <- sus_translate("The ", geo_area)
+  geo_areas <- sus_translate(geo_areas)
   
   # Prepare list to store all data
   info <- list()
@@ -84,7 +85,7 @@ prep_title_card <- function(df, select_id, ind, percent = TRUE,
       } else {
         
         scale_percent_data_rank <- scales::percent(data_rank)
-        text_island_region <- if (island) " on the island" else " in the region"
+        text_island_region <- if (island) "on the island" else "in the region"
         
         sus_translate("Its value is higher than {scale_percent_data_rank} ",
                       "of {geo_areas} {text_island_region}")
