@@ -58,12 +58,17 @@ render_explore_graph <- function(plot_type, data, var_left, var_right, df,
   if (plot_type %in% c("scatter_all", "scatter_na", "scatter_select")) {
     
     opac_line <- abs(cor(data$var_left, data$var_right, use = "complete.obs"))
+    point_size <- if (nrow(data) > 1000) {
+      0.5
+    } else if (nrow(data) > 500) {
+      1
+    } else 2
     
-    out <- 
+    out <-
       data |> 
       remove_outliers_df("var_left", "var_right") |> 
       ggplot(aes(var_right, var_left)) +
-      geom_point(aes(colour = group)) +
+      geom_point(aes(colour = group), size = point_size) +
       {if (plot_type == "scatter_select") geom_point(
         data = data[data$ID == select_id,], shape = 21, colour = "white", 
         fill = "black", size = 4)} +
