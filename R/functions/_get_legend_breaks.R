@@ -1,10 +1,21 @@
 #### GET LEGEND BREAKS #########################################################
 
-get_legend_breaks <- function(data, var_left, var_right, df, data_type) {
+get_legend_breaks <- function(data, var_left, var_right, df, data_type, 
+                              breaks) {
   
-  # Return NULL if no data_type matches
+  ## Return NULL if no data_type matches ---------------------------------------
+  
   break_labs <- NULL
+  
+  
+  ## If manual breaks are supplied, format them --------------------------------
 
+  if (!is.null(breaks)) {
+    break_labs <- convert_unit(breaks, var_left, TRUE)
+    attr(break_labs, "qual") <- FALSE
+    return(break_labs)
+  }
+  
   
   ## Univariate q5 version -----------------------------------------------------
   

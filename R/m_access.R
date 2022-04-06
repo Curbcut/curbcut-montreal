@@ -118,6 +118,14 @@ access_server <- function(id) {
     # Slider widget
     slider <- slider_server(id = ns_id)
 
+    # Manual legend breaks
+    breaks <- reactive({
+      if (!is.na(select_id())) {
+        setNames(slider() / 5 * 5:0, 
+                 sus_translate("Minutes to reach census tract"))  
+      } else NULL
+    })
+    
     # Left variable servers
     var_left_1 <- select_var_server(ns_id, select_var_id = "d_1",
                                     var_list = reactive(var_left_list_1_access))
@@ -170,7 +178,8 @@ access_server <- function(id) {
       id = ns_id,
       var_left = var_left,
       var_right = var_right,
-      df = df)
+      df = df,
+      breaks = breaks)
     
     # Did-you-know panel
     dyk_server(

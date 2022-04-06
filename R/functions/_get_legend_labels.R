@@ -1,6 +1,13 @@
 #### GET LEGEND AXIS LABELS ####################################################
 
-get_legend_labels <- function(var_left, var_right, data_type) {
+get_legend_labels <- function(var_left, var_right, data_type, breaks = NULL) {
+  
+  ## If breaks has non-NULL name, use it ---------------------------------------
+  
+  if (!is.null(breaks) && !is.null(names(breaks[1]))) {
+    labs_xy <- list(labs(x = sus_translate(names(breaks[1])), y = NULL))
+    return(labs_xy)
+  }
   
   ## Get basic titles ----------------------------------------------------------
   

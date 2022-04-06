@@ -1,13 +1,15 @@
 #### LEGEND MODULE #############################################################
 
 legend_UI <- function(id) {
-  div(id = NS(id, "legend_div"), h5(sus_translate("Legend"), style = "font-size: 12px;"),
+  div(id = NS(id, "legend_div"), h5(sus_translate("Legend"), 
+                                    style = "font-size: 12px;"),
       uiOutput(NS(id, "legend_render")))
 }
 
 legend_server <- function(id, data, var_left, var_right, df, 
                           hide = reactive(FALSE), 
-                          build_str_as_DA = reactive(TRUE)) {
+                          build_str_as_DA = reactive(TRUE),
+                          breaks = reactive(NULL)) {
   
   stopifnot(is.reactive(var_left))
   stopifnot(is.reactive(var_right))
@@ -41,7 +43,8 @@ legend_server <- function(id, data, var_left, var_right, df,
         var_right = var_right(),
         df = df(),
         data_type = data_type(),
-        build_str_as_DA = build_str_as_DA()),
+        build_str_as_DA = build_str_as_DA(),
+        breaks = breaks()),
       error = function(e) NULL))
 
     # Output legend

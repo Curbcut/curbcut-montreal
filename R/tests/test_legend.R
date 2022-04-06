@@ -60,6 +60,18 @@ data_type <- get_data_type(df, var_left, var_right)
 render_legend(data, var_left, var_right, df, data_type)}
 
 
+# Univariate, manual breaks -----------------------------------------------
+
+{df <- "CT"
+var_left <- "access_jobs_total_pwd_count"
+var_right <- " "
+data <- get_data(df, var_left, var_right)
+data_type <- get_data_type(df, var_left, var_right)
+breaks <- 6 * 5:0
+names(breaks) <- "Minutes to reach census tract"
+render_legend(data, var_left, var_right, df, data_type, breaks = breaks)}
+
+
 # Univariate, qualitative -------------------------------------------------
 
 {df <- "alley"

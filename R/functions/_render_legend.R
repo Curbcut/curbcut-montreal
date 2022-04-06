@@ -1,7 +1,7 @@
 #### RENDER LEGEND #############################################################
 
 render_legend <- function(data, var_left, var_right, df, data_type, 
-                          build_str_as_DA = TRUE) {
+                          build_str_as_DA = TRUE, breaks = NULL) {
   
   ## Clean up data_type and building/street ------------------------------------
   
@@ -17,8 +17,9 @@ render_legend <- function(data, var_left, var_right, df, data_type,
   
   ## Get axis titles and breaks ------------------------------------------------
   
-  labs_xy <- get_legend_labels(var_left, var_right, data_type)
-  break_labs <- get_legend_breaks(data, var_left, var_right, df, data_type)
+  labs_xy <- get_legend_labels(var_left, var_right, data_type, breaks)
+  break_labs <- get_legend_breaks(data, var_left, var_right, df, data_type,
+                                  breaks)
   
   
   ## Prepare default theme -----------------------------------------------------
