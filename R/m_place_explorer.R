@@ -155,7 +155,7 @@ place_explorer_server <- function(id) {
           line_width_units = "pixels",
           get_line_width = 0) |> 
         add_mvt_layer(
-          id = "ghost_DA", 
+          id = "DA", 
           data = mvt_url("sus-mcgill.DA_empty"),
           pickable = TRUE,
           auto_highlight = TRUE,
@@ -210,15 +210,7 @@ place_explorer_server <- function(id) {
       lat <- input[[paste0(ns_id, "-map_click")]]$coordinate[[2]]
       
       name <- tmaptools::rev_geocode_OSM(x = lon, y = lat)[[1]]
-      
-      town_city_county <-
-        if (!is.null(name$town)) {
-          name$town
-        } else if (!is.null(name$city)) {
-          name$city
-        } else if (!is.null(name$county)) {
-          name$county
-        }
+      town_city_county <- get_pe_loc(name)
       
       location_name(paste0(name$house_number, " ", name$road, ", ", 
                            town_city_county)) # One or the other
@@ -233,15 +225,7 @@ place_explorer_server <- function(id) {
       lat <- input[["title_card_map_click"]]$coordinate[[2]]
       
       name <- tmaptools::rev_geocode_OSM(x = lon, y = lat)[[1]]
-      
-      town_city_county <-
-        if (!is.null(name$town)) {
-          name$town
-        } else if (!is.null(name$city)) {
-          name$city
-        } else if (!is.null(name$county)) {
-          name$county
-        }
+      town_city_county <- get_pe_loc(name)
       
       location_name(paste0(name$house_number, " ", name$road, ", ",
                            town_city_county)) # One or the other
@@ -311,19 +295,22 @@ place_explorer_server <- function(id) {
     shinyjs::delay(1, shinyjs::show("grid_elements"))
     shinyjs::delay(750, shinyjs::hide("grid_elements"))
     
+    # Draw title card map
     output$title_card_map <- renderRdeck({
       rdeck(map_style = map_base_style,
             initial_view_state = view_state(center = map_loc, zoom = 14)) |>
         add_mvt_layer(
-          id = "ghost_DA",
+          id = "DA",
           data = mvt_url("sus-mcgill.DA_empty"),
           pickable = TRUE,
+          auto_highlight = TRUE,
+          highlight_color = "#AAB6CF60",
           get_fill_color = "#FFFFFF00",
           get_line_color = "#FFFFFF00")
     })
     
-    
-    observeEvent(select_id(), {
+    # Update map on selection
+    observe({
       data <- data()[data()$ID == select_id(), "geometry"]
       zoom <- map_zoom_levels[
         which(df() == names(map_zoom_levels))] + 2
@@ -342,7 +329,8 @@ place_explorer_server <- function(id) {
                           get_line_width = 5,
                           auto_highlight = TRUE,
                           get_polygon = rlang::sym("geometry"))
-    })
+    }) |> 
+      bindEvent(select_id())
     
     output$title_card_title <- renderText({
       if (df() == "borough") {

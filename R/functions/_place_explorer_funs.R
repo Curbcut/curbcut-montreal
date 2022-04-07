@@ -244,3 +244,15 @@ place_explorer_block_sentence <- function(df, theme, select_id,
   } else NULL
   
 }
+
+# ------------------------------------------------------------------------------
+
+get_pe_loc <- function(name) {
+  if (!is.null(name$town)) {
+    name$town
+    } else if (!is.null(name$city)) {
+      name$city
+      } else if (!is.null(name$county)) {
+      name$county
+    }
+}
