@@ -44,8 +44,8 @@ place_explorer_UI <- function(id) {
         HTML(paste0('
                    <div class="shiny-split-layout">
                      <div style="width: 80%;">',
-                    textInput(inputId = NS(id, "address_searched"), label = NULL,
-                              placeholder = "H3A 2T5"),
+                    textInput(inputId = NS(id, "address_searched"), 
+                              label = NULL, placeholder = "H3A 2T5"),
                     '</div>
                      <div style="width: 20%;">',
                     actionButton(inputId = NS(id, "search_button"),
@@ -56,13 +56,12 @@ place_explorer_UI <- function(id) {
       
       hidden(div(id = NS(id, "sidebar_widgets"), susSidebarWidgets(
         
-        # Checkboxes of each theme
+        # Checkboxes for each theme
         pickerInput(
           inputId = NS(id, "themes_checkbox"),
           label = sus_translate("Select theme(s):"),
           choices = unique(variables$theme),
           selected = unique(variables$theme),
-          # options = list(`selected-text-format` = "count > 4"),
           multiple = TRUE),
         
         br(),
@@ -76,13 +75,12 @@ place_explorer_UI <- function(id) {
                         hide_min_max = TRUE, 
                         force_edges = TRUE),
         
-        # Island only comparison, or region-wide
+        # Island-only or region-wide comparison
         select_var_UI(
           id = ns_id,
           select_var_id = NS(id, "comparison_scale"),
           label = sus_translate("Choose comparison scale:"),
-          var_list = list("Island" = "island",
-                          "Region" = "region"))
+          var_list = list("Island" = "island", "Region" = "region"))
       )))),
     
     # Main panel as a uiOutput. The number of themes displayed is reactive
@@ -93,6 +91,7 @@ place_explorer_UI <- function(id) {
                    "overflow-y: auto;  height: calc(100vh - 105px);",
                    "margin-left:310px; background-color:#ffffff;",
                    "padding:25px;"),
+                 
                  fluidRow(
                    style = paste0(
                      "font-size: 11px;",
@@ -101,8 +100,7 @@ place_explorer_UI <- function(id) {
                    column(9, htmlOutput(NS(id, "title_card_title")),
                           uiOutput(NS(id, "title_card"), 
                                    style = "margin-top:20px;")),
-                   column(3, rdeckOutput(NS(id, "title_card_map")))
-                 ),
+                   column(3, rdeckOutput(NS(id, "title_card_map")))),
                  
                  fluidRow(uiOutput(NS(id, "themes_grid")))))),
   )))
@@ -114,6 +112,8 @@ place_explorer_UI <- function(id) {
 place_explorer_server <- function(id) {
   moduleServer(id, function(input, output, session) {
     ns_id <- "place_explorer"
+    
+    # Inputs and reactives -----------------------------------------------------
     
     # Initial reactives
     zoom <- reactiveVal(get_zoom(map_zoom))
@@ -148,27 +148,27 @@ place_explorer_server <- function(id) {
       rdeck(map_style = map_base_style, initial_view_state = view_state(
         center = map_location, zoom = map_zoom)) |> 
         add_mvt_layer(
+          id = "CMA",
+          data = mvt_url("sus-mcgill.CMA_empty"),
+          get_fill_color = "#AAB6CF20",
+          get_line_color = "#AAB6CF00",
+          line_width_units = "pixels",
+          get_line_width = 0) |> 
+        add_mvt_layer(
           id = "ghost_DA", 
           data = mvt_url("sus-mcgill.DA_empty"),
           pickable = TRUE,
+          auto_highlight = TRUE,
+          highlight_color = "#AAB6CF60",
           get_fill_color = "#FFFFFF00",
-          get_line_color = "#FFFFFF00") |> 
-        add_mvt_layer(
-          id = "CMA",
-          data = mvt_url("sus-mcgill.CMA_empty"),
-          get_fill_color = "#AAB6CF00",
-          get_line_color = "#AAB6CFFF",
-          line_width_units = "pixels",
-          get_line_width = 3)
+          get_line_color = "#FFFFFF00")
     })
     
     observeEvent(zoom(), {
       rdeck_proxy(id = paste0(ns_id, "-map")) |>
         add_mvt_layer(id = "CMA", 
-                      get_fill_color = if (zoom() >= 8) "#AAB6CF00" else "#AAB6CFFF",
-                      get_line_color = "#AAB6CFFF",
-                      line_width_units = "pixels",
-                      get_line_width = if (zoom() >= 8) 3 else 0)
+                      get_fill_color = if (zoom() >= 8) 
+                        "#AAB6CF20" else "#AAB6CFFF")
     })
     
     
@@ -181,14 +181,15 @@ place_explorer_server <- function(id) {
         str_extract_all("\\w|\\d", simplify = TRUE) |>
         paste(collapse = "")
       
-      if (postal_c %in% postal_codes$postal_code) {
-        loc_DAUID(postal_codes$DAUID[postal_codes$postal_code == postal_c])
+      pcs <- postal_codes$postal_code == postal_c
+      
+      if (sum(pcs) > 0) {
+        loc_DAUID(postal_codes$DAUID[pcs])
         
         location_name(
-          postal_codes$postal_code[postal_codes$postal_code == postal_c] |>
+          postal_codes$postal_code[pcs] |>
             str_to_upper() |>
-            str_replace_all("(.{3})", "\\1 ") |>
-            str_trim())
+            (\(x) paste(substr(x, 1, 3), substr(x, 4, 6)))())
         
       } else {
         showNotification(
@@ -198,7 +199,10 @@ place_explorer_server <- function(id) {
       
     })
     
-    # Get point data from click
+    
+    # Get point data from click ------------------------------------------------
+    
+    # Click on map
     observeEvent(input[[paste0(ns_id, "-map_click")]], {
       loc_DAUID(input[[paste0(ns_id, "-map_click")]]$object$ID)
       
@@ -221,6 +225,7 @@ place_explorer_server <- function(id) {
       
     })
     
+    # Click on title card map
     observeEvent(input[["title_card_map_click"]], {
       loc_DAUID(input[["title_card_map_click"]]$object$ID)
       
