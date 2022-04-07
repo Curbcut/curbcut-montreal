@@ -129,7 +129,7 @@ place_explorer_server <- function(id) {
     # Sidebar
     sidebar_server(id = "place_explorer", x = "place_explorer")
     
-    # Picker input translation
+    # Translate picker input labels
     observe({
       all_themes <- unique(variables$theme)
       names(all_themes) <- sapply(all_themes, sus_translate, USE.NAMES = FALSE)
@@ -140,6 +140,12 @@ place_explorer_server <- function(id) {
         choices = all_themes,
         selected = all_themes)
     })
+    
+    # Translate zoom slider labels
+    observe(updateSliderTextInput(
+      session = session, "slider",
+      choices = get_zoom_label_t(map_zoom_levels[1:3])))
+    
     
     
     # Main map -----------------------------------------------------------------
@@ -252,10 +258,6 @@ place_explorer_server <- function(id) {
     
     
     # Retrieve df and row ID ---------------------------------------------------
-    
-    observe(updateSliderTextInput(
-      session = session, "slider",
-      choices = get_zoom_label_t(map_zoom_levels[1:3])))
     
     df <- reactive(get_zoom_code(input$slider))
     data <- reactive(get(get_zoom_code(input$slider)))
