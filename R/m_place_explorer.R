@@ -290,10 +290,6 @@ place_explorer_server <- function(id) {
     
     # Title card ---------------------------------------------------------------
     
-    # Show title card briefly to allow map to initialize
-    shinyjs::delay(1, shinyjs::show("grid_elements"))
-    shinyjs::delay(750, shinyjs::hide("grid_elements"))
-    
     # Draw title card map
     output$title_card_map <- renderRdeck({
       rdeck(map_style = map_base_style,
@@ -307,6 +303,9 @@ place_explorer_server <- function(id) {
           get_fill_color = "#FFFFFF00",
           get_line_color = "#FFFFFF00")
     })
+    
+    # Make sure the map draws in the background, so it can respond to select_id
+    outputOptions(output, "title_card_map", suspendWhenHidden = FALSE)
     
     # Update map on selection
     observe({
