@@ -269,14 +269,12 @@ place_explorer_server <- function(id) {
     
     # Retrieve df and row ID ---------------------------------------------------
     
-    # observe({
-    #   loc_DAUID()
-    #   updateSliderTextInput(
-    #     session = session,
-    #     "slider",
-    #     choices = get_zoom_label_t(map_zoom_levels[1:3]),
-    #     selected = get_zoom_label_t(map_zoom_levels[1:3])[3])
-    # })
+    observe({
+      updateSliderTextInput(
+        session = session,
+        "slider",
+        choices = get_zoom_label_t(map_zoom_levels[1:3]))
+    })
     
     df <- reactive(get_zoom_code(input$slider))
     data <- reactive(get(get_zoom_code(input$slider)))
