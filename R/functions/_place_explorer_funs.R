@@ -144,7 +144,7 @@ place_explorer_block_sentence <- function(df, theme, select_id,
   data_order <- data_order[data_order$theme == theme &
                              data_order$ID == select_id, c("var_code")]
   
-  variables_theme <- variables_var_codes[variables_var_codes$var_code %in% data_order$var_code, ]
+  variables_theme <- variables[variables$var_code %in% data_order$var_code, ]
   variables_theme <-
     variables_theme[order(match(variables_theme$var_code, data_order$var_code)),
                     c("var_title", "explanation")]
