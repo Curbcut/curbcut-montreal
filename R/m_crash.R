@@ -92,7 +92,7 @@ crash_server <- function(id) {
       style = map_style, 
       token = map_token, 
       zoom = map_zoom, 
-      location = map_location)})
+      location = map_loc)})
     
     # Zoom reactive
     map_zoom_levels_crash <- reactive({

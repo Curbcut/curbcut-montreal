@@ -33,7 +33,7 @@
 #     output$map <- renderMapdeck({
 #       mapdeck(
 #         style = map_style, token = token_dmti,
-#         zoom = map_zoom, location = map_location) %>%
+#         zoom = map_zoom, location = map_loc) %>%
 #         add_polygon(data = borough %>%
 #                       mutate(group = paste(dmti_food_healthy_2016_q3, "- 1")) %>%
 #                       left_join(colour_bivar_borough, by = "group"),

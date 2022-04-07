@@ -354,7 +354,7 @@ shinyServer(function(input, output, session) {
               data = active_mod()$data,
               token = active_mod()$token,
               map_zoom = active_mod()$map_zoom,
-              map_location = active_mod()$map_location,
+              map_loc = active_mod()$map_loc,
               df = active_mod()$df,
               explore_content = active_mod()$explore_content,
               poly_selected = active_mod()$poly_selected,

@@ -64,8 +64,8 @@ alley_server <- function(id) {
 
     # Map
     output[[ns_id_map]] <- renderRdeck({
-      rdeck(map_style = map_base_style, initial_view_state = view_state(
-        center = map_location, zoom = 12)) |> 
+      rdeck(map_style = map_base_style, 
+            initial_view_state = view_state(center = map_loc, zoom = 12)) |> 
         add_mvt_layer(id = "alley-alley",
                       data = mvt_url("sus-mcgill.alley-alley"),
                       pickable = FALSE,

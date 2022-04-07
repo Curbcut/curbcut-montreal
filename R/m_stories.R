@@ -45,7 +45,7 @@ stories_server <- function(id) {
     # Map
     output[[paste0(ns_id, "-map")]] <- renderRdeck({
       rdeck(map_style = map_base_style, initial_view_state = view_state(
-        center = map_location, zoom = map_zoom))
+        center = map_loc, zoom = map_zoom))
     })
     
     # Zoom level

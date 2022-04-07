@@ -91,7 +91,7 @@
 #       style = map_style, 
 #       token = map_token, 
 #       zoom = map_zoom, 
-#       location = map_location)})
+#       location = map_loc)})
 #     
 #     # Checkbox values
 #     bi_time <- checkbox_server(id = ns_id, checkbox_id = "comp_d")

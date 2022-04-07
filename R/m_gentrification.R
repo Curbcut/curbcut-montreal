@@ -52,7 +52,7 @@ gentrification_server <- function(id) {
       style = map_style,
       token = map_token,
       zoom = map_zoom,
-      location = map_location))
+      location = map_loc))
 
     # Zoom reactive
     observeEvent(input$map_view_change$zoom, {
@@ -228,7 +228,7 @@ gentrification_server <- function(id) {
   #                  data = data_export(),
   #                  token = token_gentrification,
   #                  map_zoom = input$map_view_change$zoom,
-  #                  map_location = c(input$map_view_change$longitude, 
+  #                  map_loc = c(input$map_view_change$longitude, 
   #                                   input$map_view_change$latitude),
   #                  zoom = zoom(),
   #                  explore_content = explore_content(),

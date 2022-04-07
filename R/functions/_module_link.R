@@ -1,6 +1,6 @@
 #### LINKS BETWEEN MODULES #####################################################
 
-module_link <- function(module, zoom = NULL, location = map_location, 
+module_link <- function(module, zoom = NULL, location = map_loc, 
                         select_id = NULL, var_left = NULL,
                         var_right = NULL, df = NULL, 
                         zoom_auto = NULL, more_args = NULL, 

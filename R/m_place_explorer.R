@@ -146,7 +146,7 @@ place_explorer_server <- function(id) {
     
     output[[paste0(ns_id, "-map")]] <- renderRdeck({
       rdeck(map_style = map_base_style, initial_view_state = view_state(
-        center = map_location, zoom = map_zoom)) |> 
+        center = map_loc, zoom = map_zoom)) |> 
         add_mvt_layer(
           id = "CMA",
           data = mvt_url("sus-mcgill.CMA_empty"),
@@ -297,8 +297,7 @@ place_explorer_server <- function(id) {
     
     # Reactive to toggle on or off the presence of the island_region widget
     location_on_island <- reactive(
-      data()$CSDUID[data()$ID == select_id()] %in% island_CSDUID
-      ) |> 
+      data()$CSDUID[data()$ID == select_id()] %in% island_CSDUID) |> 
       bindEvent(select_id())
     
     # Should we show the widget, or not? Only if loc_DAUID() is on island
@@ -324,9 +323,7 @@ place_explorer_server <- function(id) {
     
     output$title_card_map <- renderRdeck({
       rdeck(map_style = map_base_style,
-            initial_view_state =
-              view_state(center = map_location,
-                         zoom = 14)) |>
+            initial_view_state = view_state(center = map_loc, zoom = 14)) |>
         add_mvt_layer(
           id = "ghost_DA",
           data = mvt_url("sus-mcgill.DA_empty"),

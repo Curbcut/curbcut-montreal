@@ -27,7 +27,7 @@
 #     # Map
 #     output$map <- renderMapdeck({
 #       mapdeck(style = "mapbox://styles/skohn90/ckgjqwg1w00bv1bmorr5oad7q",
-#               token = token_ped, zoom = map_zoom, location = map_location)
+#               token = token_ped, zoom = map_zoom, location = map_loc)
 #     })
 #     
 #     # Zoom level

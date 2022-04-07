@@ -43,7 +43,7 @@
 #       style = map_style, 
 #       token = map_token, 
 #       zoom = map_zoom, 
-#       location = map_location) |>
+#       location = map_loc) |>
 #         add_scatterplot(data = marketed_sustainability, update_view = FALSE,
 #                         id = "ID",
 #                         fill_colour = "fill",

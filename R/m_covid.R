@@ -85,7 +85,7 @@
 #       style = map_style, 
 #       token = map_token, 
 #       zoom = map_zoom, 
-#       location = map_location)})
+#       location = map_loc)})
 #     
 #     # Left variable server
 #     var_left <- select_var_server(ns_id, var_list = reactive(var_list_covid))

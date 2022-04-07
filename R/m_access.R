@@ -54,7 +54,7 @@ access_server <- function(id) {
     # Map
     output[[ns_id_map]] <- renderRdeck({
       rdeck(map_style = map_base_style, initial_view_state = view_state(
-        center = map_location, zoom = map_zoom)) |> 
+        center = map_loc, zoom = map_zoom)) |> 
         add_mvt_layer(id = ns_id) |> 
         add_mvt_layer(id = "metro_lines",
                       data = mvt_url("sus-mcgill.metro_lines"),

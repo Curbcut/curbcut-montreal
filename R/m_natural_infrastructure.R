@@ -56,7 +56,7 @@
 #       style = map_style, 
 #       token = map_token, 
 #       zoom = map_zoom, 
-#       location = map_location))
+#       location = map_loc))
 #     
 #     # Zoom and POI reactives
 #     observeEvent(input$map_view_change, {
