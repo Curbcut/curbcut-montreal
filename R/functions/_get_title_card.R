@@ -1,6 +1,6 @@
 #### GET TITLE CARD ############################################################
 
-#' @param island_or_region A character string which is either "region" or "island".
+#' @param island_or_region A character string, either "region" or "island".
 
 get_title_card <- function(df, select_id, island_or_region) {
 

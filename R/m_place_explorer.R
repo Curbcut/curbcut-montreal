@@ -165,7 +165,7 @@ place_explorer_server <- function(id) {
         data = mvt_url(paste0("sus-mcgill.DA_empty")),
         pickable = TRUE,
         auto_highlight = TRUE,
-        highlight_color = "#AAB6CF60",
+        highlight_color = "#AAB6CF80",
         get_fill_color = "#AAB6CF20",
         get_line_color = "#FFFFFF00"))
     
@@ -327,44 +327,41 @@ place_explorer_server <- function(id) {
                   "</i></h2>")
     })
 
-    # output$title_card <- renderUI({
-    #   
-    #   output$list <- renderUI({
-    #     title_card_to_grid <<- get_title_card(
-    #       df(), select_id(),
-    #       island_or_region = island_comparison())
-    #     
-    #     lapply(seq_along(title_card_to_grid), \(x) {
-    #       output[[paste0("ind_", x, "_plot")]] <- renderPlot({
-    #         title_card_to_grid[[x]][["graph"]]
-    #       })
-    #     })
-    #     
-    #     lapply(seq_along(title_card_to_grid), \(x) {
-    #       tagList(
-    #         fluidRow(
-    #           column(width = 2, HTML(paste0(
-    #             "<p style = 'margin:auto; text-align:center;",
-    #             "font-size: medium; font-weight:bold;'>",
-    #             sus_translate(title_card_to_grid[[x]][["row_title"]]) |>
-    #               str_to_upper(), "</p>"))),
-    #           column(width = 2, HTML(paste0(
-    #             "<p style = 'margin:auto; text-align:center;'>",
-    #             title_card_to_grid[[x]][["percentile"]] |>
-    #               str_to_upper(), "</p>"))),
-    #           column(width = 2, plotOutput(eval(parse(
-    #             text = paste0("NS(id, 'ind_", x, "_plot')"))), height = 25)),
-    #           column(width = 6, HTML(paste0(
-    #             "<p style = 'color: #999999; font-size:small'>",
-    #             paste0(title_card_to_grid[[x]][["text"]],
-    #                    title_card_to_grid[[x]][["link"]]), 
-    #             "</p>")))
-    #         ),
-    #         br()
-    #       )
-    #     })
-    #   })
-    # })
+    output$title_card <- renderUI({
+      
+      title_card_to_grid <<- get_title_card(
+        df(), select_id(), island_comparison())
+      
+      lapply(seq_along(title_card_to_grid), \(x) {
+        output[[paste0("ind_", x, "_plot")]] <- renderPlot({
+          title_card_to_grid[[x]][["graph"]]
+          })
+        })
+      
+      lapply(seq_along(title_card_to_grid), \(x) {
+        tagList(
+          fluidRow(
+            column(width = 2, HTML(paste0(
+              "<p style = 'margin:auto; text-align:center;",
+              "font-size: medium; font-weight:bold;'>",
+              sus_translate(title_card_to_grid[[x]][["row_title"]]) |>
+                str_to_upper(), "</p>"))),
+            column(width = 2, HTML(paste0(
+              "<p style = 'margin:auto; text-align:center;'>",
+              title_card_to_grid[[x]][["percentile"]] |>
+                str_to_upper(), "</p>"))),
+            column(width = 2, plotOutput(eval(parse(
+              text = paste0("NS(id, 'ind_", x, "_plot')"))), height = 25)),
+            column(width = 6, HTML(paste0(
+              "<p style = 'color: #999999; font-size:small'>",
+              paste0(title_card_to_grid[[x]][["text"]],
+                     title_card_to_grid[[x]][["link"]]),
+              "</p>")))
+            ),
+          br()
+          )
+        })
+    }) |> bindCache(df(), select_id(), island_comparison())
     # 
     # ## Place explorer data -----------------------------------------------------
     # 
