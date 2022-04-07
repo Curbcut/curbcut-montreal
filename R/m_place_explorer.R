@@ -251,60 +251,57 @@ place_explorer_server <- function(id) {
     
     # Main map updates and JS --------------------------------------------------
     
-    widgets_name <- c("gridelements", "comeback_map",
-                      "grid_elements", "sidebar_widgets")
+    widgets_name <- c("gridelements", "comeback_map", "grid_elements", 
+                      "sidebar_widgets")
     
     observeEvent(loc_DAUID(), {
-      lapply(widgets_name, \(x) 
-             hide(x, anim = TRUE, animType = "fade", time = 0.5))
-      lapply(widgets_name, \(x) 
-             show(x, anim = TRUE, animType = "fade", time = 0.5))
+      lapply(widgets_name, hide, anim = TRUE, animType = "fade", time = 0.5)
+      lapply(widgets_name, show, anim = TRUE, animType = "fade", time = 0.5)
       hide("mapdeck_div", anim = TRUE, animType = "fade", time = 0.5)
     }, ignoreInit = TRUE)
     
     # Hook up the 'go back to map'
     observeEvent(input$comeback_map, {
-      lapply(widgets_name, \(x) 
-             hide(x, anim = TRUE, animType = "fade", time = 0.5))
+      lapply(widgets_name, hide, anim = TRUE, animType = "fade", time = 0.5)
       show("mapdeck_div", anim = TRUE, animType = "fade", time = 0.5)
     })
     
     
     # Retrieve df and row ID ---------------------------------------------------
     
-    observe({
-      loc_DAUID()
-      updateSliderTextInput(
-        session = session,
-        "slider",
-        choices = get_zoom_label_t(map_zoom_levels[1:3]),
-        selected = get_zoom_label_t(map_zoom_levels[1:3])[3])
-    })
+    # observe({
+    #   loc_DAUID()
+    #   updateSliderTextInput(
+    #     session = session,
+    #     "slider",
+    #     choices = get_zoom_label_t(map_zoom_levels[1:3]),
+    #     selected = get_zoom_label_t(map_zoom_levels[1:3])[3])
+    # })
     
     df <- reactive(get_zoom_code(input$slider))
     data <- reactive(get(get_zoom_code(input$slider)))
     
     # Depending on `df`, retrieve the ID.
-    select_id <- eventReactive({
-      df()
-      loc_DAUID()}, {
-        to_retrieve <- 
-          switch(df(),
-                 "borough" = "CSDUID",
-                 "CT" = "CTUID",
-                 "DA" = "DAUID")
-        DA[[to_retrieve]][DA$DAUID == loc_DAUID()]
-      }, ignoreInit = TRUE)
+    select_id <- reactive({
+      to_retrieve <- 
+        switch(df(),
+               "borough" = "CSDUID",
+               "CT" = "CTUID",
+               "DA" = "DAUID")
+      DA[[to_retrieve]][DA$DAUID == loc_DAUID()]
+    }) |> 
+      bindEvent(df(), loc_DAUID(), ignoreInit = TRUE)
     
     
     # Island or region comparison ----------------------------------------------
     
     # Reactive to toggle on or off the presence of the island_region widget
-    location_on_island <- eventReactive(select_id(), {
+    location_on_island <- reactive(
       data()$CSDUID[data()$ID == select_id()] %in% island_CSDUID
-    })
+      ) |> 
+      bindEvent(select_id())
     
-    # Should we show the wdiget, or not? Only if loc_DAUID() is on island
+    # Should we show the widget, or not? Only if loc_DAUID() is on island
     observe(toggle(id = "comparison_scale", condition = location_on_island()))
     
     # Update dropdown language
@@ -313,12 +310,11 @@ place_explorer_server <- function(id) {
       select_var_id = "comparison_scale",
       var_list = reactive(list("Island" = "island", "Region" = "region")))
     
-    # Every time the selected id changes, re-evaluate if we're starting with
-    # an island-only comparison, or region-wide.
-    island_comparison <- reactive({
-      if (!location_on_island()) return("region")
-      return(comparison_scale())
-    })
+    # Every time select_id changes, reevaluate if we're starting with
+    # an island-only or region-wide comparison
+    island_comparison <- reactive(
+      if (!location_on_island()) "region" else comparison_scale()
+    )
     
     
     # Title card ---------------------------------------------------------------
@@ -368,7 +364,8 @@ place_explorer_server <- function(id) {
                     "<i style = 'color: var(--c-h2);
     font-family: var(--ff-h2); font-size: 2.5rem; margin-bottom: 0.75em; 
                          display:inline;'>", 
-                    "&nbsp;&nbsp;&nbsp;(", borough[borough$ID == select_id(),]$name_2, 
+                    "&nbsp;&nbsp;&nbsp;(", 
+                    borough[borough$ID == select_id(),]$name_2, 
                     ")"), 
              "</i></h2>")
       } else HTML("<h2 style = 'display:inline;'>", 
@@ -376,7 +373,8 @@ place_explorer_server <- function(id) {
                          "<i style = 'color: var(--c-h2);
     font-family: var(--ff-h2); font-size: 2.5rem; margin-bottom: 0.75em; 
                          display:inline;'>", 
-                         "&nbsp;&nbsp;&nbsp;(", sus_translate(get_zoom_name(df())), ")"), 
+                         "&nbsp;&nbsp;&nbsp;(", 
+                         sus_translate(get_zoom_name(df())), ")"), 
                   "</i></h2>")
     })
     
