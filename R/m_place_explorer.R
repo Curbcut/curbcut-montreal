@@ -235,16 +235,16 @@ place_explorer_server <- function(id) {
     
     # Main map updates and JS --------------------------------------------------
     
-    widgets_name <- c("gridelements", "comeback_map", "grid_elements", 
-                      "sidebar_widgets")
+    widgets_name <- c("comeback_map", "grid_elements", "sidebar_widgets")
     
+    # Show widgets when the selection updates
     observeEvent(loc_DAUID(), {
       lapply(widgets_name, hide, anim = TRUE, animType = "fade", time = 0.5)
       lapply(widgets_name, show, anim = TRUE, animType = "fade", time = 0.5)
       hide("mapdeck_div", anim = TRUE, animType = "fade", time = 0.5)
     }, ignoreInit = TRUE)
     
-    # Hook up the 'go back to map'
+    # Hide widgets and go back to map when the button is clicked
     observeEvent(input$comeback_map, {
       lapply(widgets_name, hide, anim = TRUE, animType = "fade", time = 0.5)
       show("mapdeck_div", anim = TRUE, animType = "fade", time = 0.5)
@@ -292,6 +292,7 @@ place_explorer_server <- function(id) {
     
     # Title card ---------------------------------------------------------------
     
+    # Show title card briefly to allow map to initialize
     shinyjs::delay(1, shinyjs::show("grid_elements"))
     shinyjs::delay(750, shinyjs::hide("grid_elements"))
     
