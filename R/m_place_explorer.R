@@ -133,7 +133,6 @@ place_explorer_server <- function(id) {
     observe({
       all_themes <- unique(variables$theme)
       names(all_themes) <- sapply(all_themes, sus_translate, USE.NAMES = FALSE)
-      
       updatePickerInput(
         session = session,
         inputId = "themes_checkbox",
@@ -146,6 +145,16 @@ place_explorer_server <- function(id) {
       session = session, "slider",
       choices = get_zoom_label_t(map_zoom_levels[1:3])))
     
+    # df and data
+    df <- reactive(get_zoom_code(input$slider))
+    data <- reactive(get(get_zoom_code(input$slider)))
+    
+    # Depending on `df`, retrieve select_id
+    select_id <- reactive({
+      to_retrieve <- switch(df(), "borough" = "CSDUID", "CT" = "CTUID",
+                            "DA" = "DAUID")
+      DA[[to_retrieve]][DA$DAUID == loc_DAUID()]}) |> 
+      bindEvent(df(), loc_DAUID(), ignoreInit = TRUE)
     
     
     # Main map -----------------------------------------------------------------
@@ -208,7 +217,7 @@ place_explorer_server <- function(id) {
     
     # Get point data from click ------------------------------------------------
     
-    # Click on map
+    # Map click
     observeEvent(input[[paste0(ns_id, "-map_click")]], {
       loc_DAUID(input[[paste0(ns_id, "-map_click")]]$object$ID)
       
@@ -223,7 +232,7 @@ place_explorer_server <- function(id) {
       
     })
     
-    # Click on title card map
+    # Title card map click
     observeEvent(input[["title_card_map_click"]], {
       loc_DAUID(input[["title_card_map_click"]]$object$ID)
       
@@ -255,19 +264,6 @@ place_explorer_server <- function(id) {
       lapply(widgets_name, hide, anim = TRUE, animType = "fade", time = 0.5)
       show("mapdeck_div", anim = TRUE, animType = "fade", time = 0.5)
     })
-    
-    
-    # Retrieve df and row ID ---------------------------------------------------
-    
-    df <- reactive(get_zoom_code(input$slider))
-    data <- reactive(get(get_zoom_code(input$slider)))
-    
-    # Depending on `df`, retrieve the ID.
-    select_id <- reactive({
-      to_retrieve <- switch(df(), "borough" = "CSDUID", "CT" = "CTUID",
-                            "DA" = "DAUID")
-      DA[[to_retrieve]][DA$DAUID == loc_DAUID()]}) |> 
-      bindEvent(df(), loc_DAUID(), ignoreInit = TRUE)
     
     
     # Island or region comparison ----------------------------------------------
