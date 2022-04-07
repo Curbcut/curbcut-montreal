@@ -80,7 +80,7 @@ place_explorer_UI <- function(id) {
         # Island-only or region-wide comparison
         select_var_UI(
           id = ns_id,
-          select_var_id = NS(id, "comparison_scale"),
+          select_var_id = "comparison_scale",
           label = sus_translate("Choose comparison scale:"),
           var_list = list("Island" = "island", "Region" = "region"))
       )))),
@@ -267,68 +267,66 @@ place_explorer_server <- function(id) {
       select_var_id = "comparison_scale",
       var_list = reactive(list("Island" = "island", "Region" = "region")))
 
-    # Every time select_id changes, reevaluate if we're starting with
-    # an island-only or region-wide comparison
+    # When select_id changes, check island/region again
     island_comparison <- reactive(if (!loc_on_island())
       "region" else comparison_scale())
 
 
-    # # Title card ---------------------------------------------------------------
-    # 
-    # # Draw title card map
-    # output$title_card_map <- renderRdeck({
-    #   rdeck(map_style = map_base_style,
-    #         initial_view_state = view_state(center = map_loc, zoom = 14))
-    # })
-    # 
-    # # Make sure the map draws in the background, so it can respond to select_id
-    # outputOptions(output, "title_card_map", suspendWhenHidden = FALSE)
-    # 
-    # # Update map on selection
-    # observe({
-    #   
-    #   # Get zoom and center
-    #   zoom <- map_zoom_levels[which(df() == names(map_zoom_levels))] + 1
-    #   if (zoom == 1) zoom <- 10
-    #   print(select_id())
-    #   ct <- if (is.na(select_id())) c(40, 40) else 
-    #     data()$centroid[data()$ID == select_id()][[1]]
-    #   print(ct)
-    #   
-    #   # Update map
-    #   rdeck_proxy(id = "title_card_map",
-    #               initial_view_state = view_state(center = ct, zoom = zoom)) |>
-    #     add_mvt_layer(id = "location",
-    #                   data = mvt_url(paste0("sus-mcgill.", df(), "_empty")),
-    #                   pickable = TRUE,
-    #                   auto_highlight = TRUE,
-    #                   highlight_color = "#AAB6CF60",
-    #                   get_fill_color = scale_fill_pe(select_id()),
-    #                   get_line_width = 0)
-    #   })
-    # 
-    # output$title_card_title <- renderText({
-    #   if (df() == "borough") {
-    #     HTML("<h2>",
-    #          paste0(borough[borough$ID == select_id(),]$name, 
-    #                 "<i style = 'color: var(--c-h2); ",
-    #                 "font-family: var(--ff-h2); ",
-    #                 "font-size: 2.5rem; margin-bottom: 0.75em; ",
-    #                 "display:inline;'>", 
-    #                 "&nbsp;&nbsp;&nbsp;(", 
-    #                 borough[borough$ID == select_id(),]$name_2, 
-    #                 ")"), 
-    #          "</i></h2>")
-    #   } else HTML("<h2 style = 'display:inline;'>", 
-    #               paste0(sus_translate("The area around "), loc_name(),
-    #                      "<i style = 'color: var(--c-h2);
-    # font-family: var(--ff-h2); font-size: 2.5rem; margin-bottom: 0.75em; 
-    #                      display:inline;'>", 
-    #                      "&nbsp;&nbsp;&nbsp;(", 
-    #                      sus_translate(get_zoom_name(df())), ")"), 
-    #               "</i></h2>")
-    # })
-    # 
+    # Title card ---------------------------------------------------------------
+
+    # Draw title card map
+    output$title_card_map <- renderRdeck({
+      rdeck(map_style = map_base_style,
+            initial_view_state = view_state(center = map_loc, zoom = 14))
+    })
+
+    # Make sure the map draws in the background, so it can respond to select_id
+    outputOptions(output, "title_card_map", suspendWhenHidden = FALSE)
+
+    # Update map on selection
+    observe({
+
+      # Get zoom and center
+      zoom <- map_zoom_levels[which(df() == names(map_zoom_levels))] + 1
+      if (zoom == 1) zoom <- 10
+      ct <- if (is.na(select_id())) c(0, 0) else
+        data()$centroid[data()$ID == select_id()][[1]]
+
+      # Update map
+      rdeck_proxy(id = "title_card_map",
+                  initial_view_state = view_state(center = ct, zoom = zoom)) |>
+        add_mvt_layer(id = "location",
+                      data = mvt_url(paste0("sus-mcgill.", df(), "_empty")),
+                      pickable = TRUE,
+                      auto_highlight = TRUE,
+                      highlight_color = "#AAB6CF60",
+                      get_fill_color = scale_fill_pe(select_id()),
+                      get_line_width = 0)
+      })
+
+    output$title_card_title <- renderText({
+      if (df() == "borough") {
+        HTML("<h2>",
+             paste0(borough[borough$ID == select_id(),]$name,
+                    "<i style = 'color: var(--c-h2); ",
+                    "font-family: var(--ff-h2); ",
+                    "font-size: 2.5rem; margin-bottom: 0.75em; ",
+                    "display:inline;'>",
+                    "&nbsp;&nbsp;&nbsp;(",
+                    borough[borough$ID == select_id(),]$name_2,
+                    ")"),
+             "</i></h2>")
+      } else HTML("<h2 style = 'display:inline;'>",
+                  paste0(sus_translate("The area around "), loc_name(),
+                         "<i style = 'color: var(--c-h2); ",
+                         "font-family: var(--ff-h2); ",
+                         "font-size: 2.5rem; margin-bottom: 0.75em; ",
+                         "display:inline;'>",
+                         "&nbsp;&nbsp;&nbsp;(",
+                         sus_translate(get_zoom_name(df())), ")"),
+                  "</i></h2>")
+    })
+
     # output$title_card <- renderUI({
     #   
     #   output$list <- renderUI({
