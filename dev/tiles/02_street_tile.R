@@ -83,26 +83,6 @@ upload_tile_source(park, "park", "sus-mcgill", .sus_token)
 
 # Create recipes ----------------------------------------------------------
 
-# Empty buildings
-recipe_DA_building_empty <- '
-{
-  "recipe": {
-    "version": 1,
-    "layers": {
-      "building_empty": {
-        "source": "mapbox://tileset-source/sus-mcgill/DA_building_empty",
-        "minzoom": 16,
-        "maxzoom": 16,
-        "tiles": {
-          "layer_size": 2500
-        }
-      }
-    }
-  },
-  "name": "DA_building_empty"
-}
-'
-
 # Street 1
 recipe_street_1 <- '
 {
@@ -179,9 +159,6 @@ recipe_street_3 <- '
 
 # Publish tilesets --------------------------------------------------------
 
-create_tileset("DA_building_empty", recipe_DA_building_empty)
-publish_tileset("DA_building_empty")
-
 create_tileset("street_1", recipe_street_1)
 publish_tileset("street_1")
 
@@ -190,10 +167,3 @@ publish_tileset("street_2")
 
 create_tileset("street_3", recipe_street_3)
 publish_tileset("street_3")
-
-
-
-
-
-
-

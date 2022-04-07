@@ -38,7 +38,26 @@ create_tileset("CMA_empty", CMA_empty_recipe)
 publish_tileset("CMA_empty")
 
 
-# Process CT_empty then upload tile source --------------------------------
+# Process borough_empty ---------------------------------------------------
+
+borough |> 
+  select(ID, geometry) |> 
+  upload_tile_source("borough_empty")
+
+borough_empty_recipe <- 
+  create_recipe(
+    layer_names = "borough",
+    source = "mapbox://tileset-source/sus-mcgill/borough_empty",
+    minzoom = 3,
+    maxzoom = 12, 
+    simp_zoom = 12,
+    recipe_name = "borough_empty")
+
+create_tileset("borough_empty", borough_empty_recipe)
+publish_tileset("borough_empty")
+
+
+# Process CT_empty --------------------------------------------------------
 
 CT |> 
   select(ID, geometry) |> 
@@ -56,7 +75,8 @@ CT_empty_recipe <-
 create_tileset("CT_empty", CT_empty_recipe)
 publish_tileset("CT_empty")
 
-# Process DA_empty then upload tile source --------------------------------
+
+# Process DA_empty --------------------------------------------------------
 
 DA |> 
   select(ID, geometry) |> 
@@ -68,13 +88,13 @@ DA_empty_recipe <-
     source = "mapbox://tileset-source/sus-mcgill/DA_empty",
     minzoom = 8,
     maxzoom = 13, 
-    recipe_name = "building_empty")
+    recipe_name = "DA_empty")
 
 create_tileset("DA_empty", DA_empty_recipe)
 publish_tileset("DA_empty")
 
 
-# Process DA_empty_island then upload tile source -------------------------
+# Process DA_empty_island -------------------------------------------------
 
 DA |> 
   filter(CSDUID %in% island_CSDUID) |> 
@@ -82,12 +102,25 @@ DA |>
   upload_tile_source("DA_empty_island")
 
 
-# Load and process DA_building_empty data ---------------------------------
+# Process DA_building_empty -----------------------------------------------
 
 DA |> 
   st_set_geometry("building") |> 
   select(ID, name, geometry = building) |> 
   upload_tile_source("DA_building_empty")
+
+# Empty buildings
+DA_building_empty_recipe <-
+  create_recipe(
+    layer_names = "DA_building",
+    source = "mapbox://tileset-source/sus-mcgill/DA_building_empty",
+    minzoom = 16,
+    maxzoom = 16,
+    recipe_name = "DA_building_empty")
+
+create_tileset("DA_building_empty", DA_building_empty_recipe)
+publish_tileset("DA_building_empty")
+
 
 
 # Load and process DA_building_empty_island data --------------------------
