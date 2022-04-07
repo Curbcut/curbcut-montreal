@@ -26,7 +26,6 @@
 #       if (cat == "total") {
 #         enum <-
 #           x() |>
-#           st_drop_geometry() |>
 #           count(type) |>
 #           mutate(type =
 #                    case_when(type == "combination" ~ "dwellings combination",

@@ -97,3 +97,13 @@ scale_fill_access <- function(var, tile, access_colors) {
     legend = FALSE)
 }
 
+# Place explorer fill
+scale_fill_pe <- function(select_id) {
+  scale_color_category(
+    col = ID,
+    palette = c("#BAE4B3BB", "#BAE4B300"),
+    unmapped_color = "#BAE4B300",
+    levels = c(select_id, "NA"),
+    legend = FALSE) 
+}
+

@@ -18,7 +18,6 @@ get_disclaimer <- function(data, var_left, var_right, more, more_text) {
   # if ("var_left" %in% names(data())) {
   #   is_values <- 
   #     data() |> 
-  #     st_drop_geometry() |> 
   #     select(`var_left`) |> 
   #     pull() |> 
   #     is.na() |> 

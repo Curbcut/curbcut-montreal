@@ -165,7 +165,6 @@ crash_server <- function(id) {
     # data_for_explore <- reactive({
     #   if (choropleth()) data() else {
     #     data() |>
-    #       st_drop_geometry() |>
     #       count(date) |>
     #       rename(var_left = n, var_right = date) |>
     #       mutate(ID = seq_along(var_left), .before = var_left) |>

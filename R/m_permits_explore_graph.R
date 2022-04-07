@@ -45,7 +45,6 @@
 #         
 #       } else if (cat == "uni_type" && length(time) == 2) {
 #         z <- x() |> 
-#           st_drop_geometry() |> 
 #           count(year)
 #         
 #         ggplot(z, aes(year, n)) +

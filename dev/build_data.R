@@ -161,7 +161,40 @@ source("dev/other/colours.R")
 source("dev/translation/build_translation.R", encoding = "utf-8")
 
 
-# Trim building -----------------------------------------------------------
+# Remove geometries -------------------------------------------------------
+
+borough_full <- borough
+borough <-
+  borough_full |> 
+  rowwise() |> 
+  mutate(centroid = list(as.numeric(st_coordinates(st_centroid(geometry))))) |> 
+  ungroup() |> 
+  st_drop_geometry()
+
+CT_full <- CT
+CT <- 
+  CT_full |> 
+  rowwise() |> 
+  mutate(centroid = list(as.numeric(st_coordinates(st_centroid(geometry))))) |> 
+  ungroup() |> 
+  st_drop_geometry()
+
+DA_full <- DA
+DA <- 
+  DA_full |> 
+  select(-building, -buffer, -centroid) |> 
+  rowwise() |> 
+  mutate(centroid = list(as.numeric(st_coordinates(st_centroid(geometry))))) |> 
+  ungroup() |> 
+  st_drop_geometry()
+
+grid_full <- grid
+grid <- 
+  grid_full |> 
+  rowwise() |> 
+  mutate(centroid = list(as.numeric(st_coordinates(st_centroid(geometry))))) |> 
+  ungroup() |> 
+  st_drop_geometry()
 
 building_full <- building
 building <- 
@@ -174,7 +207,9 @@ building <-
 
 qsave(variables, file = "data/variables.qs")
 qsavem(borough, CT, DA, file = "data/census.qsm")
+qsavem(borough_full, CT_full, DA_full, file = "data/census_full.qsm")
 qsave(grid, file = "data/grid.qs")
+qsave(grid_full, file = "data/grid_full.qs")
 qsave(building, file = "data/building.qs")
 qsave(building_full, file = "data/building_full.qs")
 qsave(street, file = "data/street.qs")

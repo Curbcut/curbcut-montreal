@@ -249,7 +249,7 @@ shinyServer(function(input, output, session) {
     downloadHandler(
       filename = paste0(active_mod()$module_id, "_data.csv"),
       content = function(file) {
-        data <- st_drop_geometry(active_mod()$data)
+        data <- active_mod()$data
         write.csv2(data, file)
         },
       contentType = "text/csv")

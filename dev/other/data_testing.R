@@ -11,7 +11,6 @@ data_testing <- function(data, ignore_year_diff = FALSE) {
   data <- map(data, ~{
     ids_col <- .x[, str_detect(names(.x), "ID")] |> names()
     .x |> 
-      # st_drop_geometry() |> 
       select(!contains(c("q3", "q5")), -any_of(ids_col))
   })
   

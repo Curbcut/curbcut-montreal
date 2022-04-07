@@ -25,7 +25,6 @@ get_data_table <- function(df, var_left, var_right, data_type, point_df) {
     data <- data[c("ID", "name", "name_2", if (df == "DA") "DAUID", 
                    if (df %in% c("DA", "CT")) "CTUID", "CSDUID", "population", 
                    var_left, l_q3, l_q5)] |> 
-      sf::st_drop_geometry() |> 
       setNames(c("ID", "name", "name_2", if (df == "DA") "DAUID", 
                  if (df %in% c("DA", "CT")) "CTUID", "CSDUID", "population",
                  "var_left", "var_left_q3", "var_left_q5"))
@@ -36,7 +35,6 @@ get_data_table <- function(df, var_left, var_right, data_type, point_df) {
     data <- DA
     data <- data[c("ID", "name", "name_2", "DAUID", "CTUID", "CSDUID", 
                    "population", var_left, l_q3, l_q5)] |> 
-      sf::st_drop_geometry() |> 
       setNames(c("ID", "name", "name_2", "DAUID", "CTUID", "CSDUID", 
                  "population", "var_left", "var_left_q3", "var_left_q5"))
   }
@@ -47,7 +45,6 @@ get_data_table <- function(df, var_left, var_right, data_type, point_df) {
     data <- data[c("ID", "name", "name_2", if (df == "DA") "DAUID", 
                    if (df %in% c("DA", "CT")) "CTUID", "CSDUID", "population", 
                    var_left, l_q3, l_q5, var_right, r_q3, r_q5)] |> 
-      sf::st_drop_geometry() |> 
       setNames(c("ID", "name", "name_2", if (df == "DA") "DAUID", 
                  if (df %in% c("DA", "CT")) "CTUID", "CSDUID", "population", 
                  "var_left", "var_left_q3", "var_left_q5", "var_right", 
@@ -61,7 +58,6 @@ get_data_table <- function(df, var_left, var_right, data_type, point_df) {
     data <- data[c("ID", "name", "name_2", "DAUID", "CTUID", "CSDUID", 
                    "population", var_left, l_q3, l_q5, var_right, r_q3, 
                    r_q5)] |> 
-      sf::st_drop_geometry() |> 
       setNames(c("ID", "name", "name_2", "DAUID", "CTUID", "CSDUID", 
                  "population", "var_left", "var_left_q3", "var_left_q5", 
                  "var_right", "var_right_q3", "var_right_q5"))
@@ -71,7 +67,7 @@ get_data_table <- function(df, var_left, var_right, data_type, point_df) {
   # Delta
   if (data_type == "delta") {
     
-    data <- sf::st_drop_geometry(get(df))
+    data <- get(df)
     
     data <- data[c("ID", "name", "name_2", if (df == "DA") "DAUID",
                    if (df %in% c("DA", "CT")) "CTUID", "CSDUID", "population",
@@ -105,7 +101,7 @@ get_data_table <- function(df, var_left, var_right, data_type, point_df) {
   # Building delta
   if (data_type == "building_delta") {
 
-    data <- sf::st_drop_geometry(DA)
+    data <- DA
     
     data <- data[c("ID", "name", "name_2", "DAUID", "CTUID", "CSDUID", 
                    "population", var_left)]
@@ -134,7 +130,7 @@ get_data_table <- function(df, var_left, var_right, data_type, point_df) {
   
   # NA_delta
   if (data_type == "NA_delta") {
-    data <- sf::st_drop_geometry(get(df))
+    data <- get(df)
     data <- data[c("ID", "name", "name_2", if (df == "DA") "DAUID",
                    if (df %in% c("DA", "CT")) "CTUID", "CSDUID", "population")]
     data$group <- "NA"
@@ -150,7 +146,7 @@ get_data_table <- function(df, var_left, var_right, data_type, point_df) {
   
   # building_NA_delta
   if (data_type == "building_NA_delta") {
-    data <- sf::st_drop_geometry(DA)
+    data <- DA
     data <- data[c("ID", "name", "name_2", "DAUID", "CTUID", "CSDUID", 
                    "population")]
     data$group <- "NA"
@@ -165,7 +161,7 @@ get_data_table <- function(df, var_left, var_right, data_type, point_df) {
   
   # Delta bivariate
   if (data_type == "delta_bivar") {
-    data <- sf::st_drop_geometry(get(df))
+    data <- get(df)
     data <- data[c("ID", "name", "name_2", if (df == "DA") "DAUID",
                    if (df %in% c("DA", "CT")) "CTUID", "CSDUID", "population",
                    var_left, var_right)]
@@ -188,7 +184,7 @@ get_data_table <- function(df, var_left, var_right, data_type, point_df) {
     
   # NA_delta_bivar
   if (data_type == "NA_delta_bivar") {
-    data <- st_drop_geometry(get(df))
+    data <- get(df)
     data <- data[c("ID", "name", "name_2", if (df == "DA") "DAUID",
                    if (df %in% c("DA", "CT")) "CTUID", "CSDUID", "population")]
     data$group <- "NA - NA"
@@ -204,7 +200,7 @@ get_data_table <- function(df, var_left, var_right, data_type, point_df) {
   
   # Building delta bivariate
   if (data_type == "building_delta_bivar") {
-    data <- sf::st_drop_geometry(DA)
+    data <- DA
     data <- data[c("ID", "name", "name_2", if (df == "DA") "DAUID",
                    if (df %in% c("DA", "CT")) "CTUID", "CSDUID", "population",
                    var_left, var_right)]
@@ -227,7 +223,7 @@ get_data_table <- function(df, var_left, var_right, data_type, point_df) {
     
   # building_NA_delta_bivar
   if (data_type == "building_NA_delta_bivar") {
-    data <- st_drop_geometry(DA)
+    data <- DA
     data <- data[c("ID", "name", "name_2", if (df == "DA") "DAUID",
                    if (df %in% c("DA", "CT")) "CTUID", "CSDUID", "population")]
     data$group <- "NA - NA"

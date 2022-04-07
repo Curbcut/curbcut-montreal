@@ -293,15 +293,7 @@ place_explorer_server <- function(id) {
     # Draw title card map
     output$title_card_map <- renderRdeck({
       rdeck(map_style = map_base_style,
-            initial_view_state = view_state(center = map_loc, zoom = 14)) |>
-        add_mvt_layer(
-          id = "DA",
-          data = mvt_url("sus-mcgill.DA_empty"),
-          pickable = TRUE,
-          auto_highlight = TRUE,
-          highlight_color = "#AAB6CF60",
-          get_fill_color = "#FFFFFF00",
-          get_line_color = "#FFFFFF00")
+            initial_view_state = view_state(center = map_loc, zoom = 14))
     })
     
     # Make sure the map draws in the background, so it can respond to select_id
@@ -309,26 +301,23 @@ place_explorer_server <- function(id) {
     
     # Update map on selection
     observe({
-      data <- data()[data()$ID == select_id(), "geometry"]
-      zoom <- map_zoom_levels[
-        which(df() == names(map_zoom_levels))] + 2
-      if (zoom == 2) zoom <- 11
-      center <- eval(parse(text =
-                             as.character(st_centroid(data)$geometry)))
+      
+      # Get zoom and center
+      zoom <- map_zoom_levels[which(df() == names(map_zoom_levels))] + 1
+      if (zoom == 1) zoom <- 10
+      ct <- data()$centroid[data()$ID == select_id()][[1]]
+      
+      # Update map
       rdeck_proxy(id = "title_card_map",
-                  initial_view_state =
-                    view_state(center = center,
-                               zoom = as.numeric(zoom))) |>
-        add_polygon_layer(data = data,
-                          id = "actual_location",
-                          highlight_color = "#FFFFFF80",
-                          get_fill_color = "#BAE4B3BB",
-                          get_line_color = "#FFFFFF",
-                          get_line_width = 5,
-                          auto_highlight = TRUE,
-                          get_polygon = rlang::sym("geometry"))
-    }) |> 
-      bindEvent(select_id())
+                  initial_view_state = view_state(center = ct, zoom = zoom)) |>
+        add_mvt_layer(id = "location",
+                      data = mvt_url(paste0("sus-mcgill.", df(), "_empty")),
+                      pickable = TRUE,
+                      auto_highlight = TRUE,
+                      highlight_color = "#AAB6CF60",
+                      get_fill_color = scale_fill_pe(select_id()),
+                      get_line_width = 0)
+      })
     
     output$title_card_title <- renderText({
       if (df() == "borough") {
