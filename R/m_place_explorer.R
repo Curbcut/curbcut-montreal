@@ -269,25 +269,18 @@ place_explorer_server <- function(id) {
     
     # Retrieve df and row ID ---------------------------------------------------
     
-    observe({
-      updateSliderTextInput(
-        session = session,
-        "slider",
-        choices = get_zoom_label_t(map_zoom_levels[1:3]))
-    })
+    observe(updateSliderTextInput(
+      session = session, "slider",
+      choices = get_zoom_label_t(map_zoom_levels[1:3])))
     
     df <- reactive(get_zoom_code(input$slider))
     data <- reactive(get(get_zoom_code(input$slider)))
     
     # Depending on `df`, retrieve the ID.
     select_id <- reactive({
-      to_retrieve <- 
-        switch(df(),
-               "borough" = "CSDUID",
-               "CT" = "CTUID",
-               "DA" = "DAUID")
-      DA[[to_retrieve]][DA$DAUID == loc_DAUID()]
-    }) |> 
+      to_retrieve <- switch(df(), "borough" = "CSDUID", "CT" = "CTUID",
+                            "DA" = "DAUID")
+      DA[[to_retrieve]][DA$DAUID == loc_DAUID()]}) |> 
       bindEvent(df(), loc_DAUID(), ignoreInit = TRUE)
     
     
@@ -309,9 +302,8 @@ place_explorer_server <- function(id) {
     
     # Every time select_id changes, reevaluate if we're starting with
     # an island-only or region-wide comparison
-    island_comparison <- reactive(
-      if (!location_on_island()) "region" else comparison_scale()
-    )
+    island_comparison <- reactive(if (!location_on_island()) 
+      "region" else comparison_scale())
     
     
     # Title card ---------------------------------------------------------------
