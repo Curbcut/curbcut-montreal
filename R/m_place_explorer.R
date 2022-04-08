@@ -538,8 +538,8 @@ place_explorer_server <- function(id) {
     }) |> bindCache(df(), select_id(), island_comparison(), 
                     input$themes_checkbox)
 
+    # Update grid based on checkbox
     observe({
-
       themes <- pe_theme_order[[df()]][[island_comparison()]]
       themes <- themes[themes$ID == select_id(), ]
       themes <- themes$theme
@@ -551,6 +551,9 @@ place_explorer_server <- function(id) {
       lapply(to_show, \(x) show(paste0("theme_", x, "_block")))
     }) |> bindEvent(input$themes_checkbox, ignoreInit = TRUE)
 
+    
+    ## Links to other modules --------------------------------------------------
+    
     observe({
       z <- title_card_to_grid[["total_crash_per1k"]]
       module_link(module = z$link_module,

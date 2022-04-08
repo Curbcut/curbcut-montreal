@@ -5,8 +5,7 @@ get_pe_block_text <- function(df, theme, select_id, island_or_region,
   
   if (length(data_order$var_code) == 0) return(data.frame())
   
-  if (df == "CT" && theme == "Transport")
-    data_order <- unique(data_order)
+  if (df == "CT" && theme == "Transport") data_order <- unique(data_order)
   
   # Access for CT
   variables_var_codes <-

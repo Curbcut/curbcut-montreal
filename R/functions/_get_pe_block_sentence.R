@@ -3,10 +3,51 @@
 get_pe_block_sentence <- function(df, theme, select_id, island_or_region,
                                   data_order) {
   
-  variables_theme <- variables[variables$var_code %in% data_order$var_code, ]
+  if (df == "CT" && theme == "Transport") data_order <- unique(data_order)
+  
+  # Access for CT
+  variables_var_codes <-
+    if (df == "CT" && theme == "Transport") {
+      rbind(
+        variables[!grepl("access", variables$var_code), ], {
+          
+          access_vars <- variables[grepl("access", variables$var_code), ]
+          
+          new_var_code <- c(
+            access_vars$var_code[
+              str_starts(access_vars$var_code, "access_jobs")] |> 
+              str_extract("access_jobs_[^_]*"),
+            access_vars$var_code[
+              !str_starts(access_vars$var_code, "access_jobs")] |> 
+              str_extract("access_[^_]*"))
+          
+          access_vars$var_code <- new_var_code
+          unique(access_vars, incomparables = FALSE, MARGIN = 2)
+          access_vars <- access_vars[!duplicated(access_vars$var_code), ]
+          
+          exp_suffix <- c("at weekday peak service",
+                          "at weekday off-peak service",
+                          "at weekday night service",
+                          "at weekend peak service",
+                          "at weekend off-peak service",
+                          "at weekend night service")
+          
+          access_vars$explanation <-
+            str_replace(access_vars$explanation, 
+                        paste0(exp_suffix, collapse = "|"),
+                        "on average")
+          
+          access_vars
+        }
+      )
+    } else variables
+  
+  variables_theme <- 
+    variables_var_codes[variables_var_codes$var_code %in% data_order$var_code, ]
   variables_theme <-
     variables_theme[order(match(variables_theme$var_code, data_order$var_code)),
                     c("var_title", "explanation")]
+  
   data_order <- cbind(data_order, variables_theme)
   
   raw_data_var <- pe_var_hierarchy[[df]][names(pe_var_hierarchy[[df]]) %in%
