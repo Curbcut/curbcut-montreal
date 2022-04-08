@@ -271,7 +271,8 @@ place_explorer_server <- function(id) {
       })
 
     # Should we show the widget, or not? Only if select_id() is on island
-    observe(toggle(id = paste0(ns_id, "-comparison_scale"), condition = loc_on_island()))
+    observe(toggle(id = paste0(ns_id, "-comparison_scale"), 
+                   condition = loc_on_island()))
 
     # Update dropdown language
     comparison_scale <- select_var_server(
@@ -378,11 +379,8 @@ place_explorer_server <- function(id) {
 
     output$themes_grid <- renderUI({
       
-      themes <- 
-        pe_theme_order[[df()]][pe_theme_order[[df()]]$ID == select_id(), ]
-      themes <-
-        themes[themes$group == island_comparison(), ]
-
+      themes <- pe_theme_order[[df()]][[island_comparison()]]
+      themes <- themes[themes$ID == select_id(), ]
       standout <- themes$standout
       themes <- themes$theme
 
@@ -460,17 +458,14 @@ place_explorer_server <- function(id) {
             })
           
           if (nrow(to_grid) > 0) {
-            translated_theme <-
-              str_to_upper(sus_translate(themes[[x]]))
-            translated_standout <-
-              str_to_lower(sus_translate(standout[[x]]))
-            translated_standout_definition <-
-              standout_definition[[which(names(
-                standout_definition) == standout[[x]])]]
+            translated_theme <- str_to_upper(sus_translate(themes[[x]]))
+            translated_standout <- str_to_lower(sus_translate(standout[[x]]))
+            translated_standout_definition <- standout_definition[[which(names(
+              standout_definition) == standout[[x]])]]
             
             nb_values_to_show <- min(nrow(to_grid), 5)
             
-            block_title <- paste0(translated_theme, " (",
+            block_title <- paste0(translated_theme, " (", 
                                   translated_standout, ")")
             
             tagList(
@@ -539,25 +534,20 @@ place_explorer_server <- function(id) {
             class = "panel panel-default "))
       })
     })
-    # 
-    # observeEvent(input$themes_checkbox, {
-    #   themes <-
-    #     pe_theme_order[[df()]][pe_theme_order[[df()]]$ID == select_id(), ]
-    #   themes <-
-    #     themes[themes$group == island_comparison(), ]
-    #   themes <- themes$theme
-    #   
-    #   to_hide <- themes[!themes %in% input$themes_checkbox]
-    #   to_show <- themes[themes %in% input$themes_checkbox]
-    #   
-    #   lapply(to_hide, \(x) {
-    #     hide(paste0("theme_", x, "_block"))
-    #   })
-    #   lapply(to_show, \(x) {
-    #     show(paste0("theme_", x, "_block"))
-    #   })
-    # })
-    # 
+
+    observeEvent(input$themes_checkbox, {
+
+      themes <- pe_theme_order[[df()]][[island_comparison()]]
+      themes <- themes[themes$ID == select_id(), ]
+      themes <- themes$theme
+      
+      to_hide <- themes[!themes %in% input$themes_checkbox]
+      to_show <- themes[themes %in% input$themes_checkbox]
+
+      lapply(to_hide, \(x) hide(paste0("theme_", x, "_block")))
+      lapply(to_show, \(x) show(paste0("theme_", x, "_block")))
+    })
+
     # observeEvent(input$title_card_total_crash_per1k, {
     #   z <- title_card_to_grid[["total_crash_per1k"]]
     #   module_link(module = z$link_module,
