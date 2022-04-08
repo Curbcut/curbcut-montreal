@@ -548,37 +548,37 @@ place_explorer_server <- function(id) {
       lapply(to_show, \(x) show(paste0("theme_", x, "_block")))
     })
 
-    # observeEvent(input$title_card_total_crash_per1k, {
-    #   z <- title_card_to_grid[["total_crash_per1k"]]
-    #   module_link(module = z$link_module,
-    #               select_id = select_id(),
-    #               var_left = z$link_var_left,
-    #               df = df())
-    # })
-    # 
-    # observeEvent(input$title_card_single_detached, {
-    #   z <- title_card_to_grid[["single_detached"]]
-    #   module_link(module = z$link_module,
-    #               select_id = select_id(),
-    #               var_left = z$link_var_left,
-    #               df = df())
-    # })
-    # 
-    # observeEvent(input$title_card_green_space_ndvi, {
-    #   z <- title_card_to_grid[["green_space_ndvi"]]
-    #   module_link(module = z$link_module,
-    #               select_id = select_id(),
-    #               var_left = z$link_var_left,
-    #               df = df())
-    # })
-    # 
-    # observeEvent(input$title_card_canale_index, {
-    #   z <- title_card_to_grid[["canale_index"]]
-    #   module_link(module = z$link_module,
-    #               select_id = select_id(),
-    #               var_left = z$link_var_left,
-    #               df = df())
-    # })
+    observeEvent(input$title_card_total_crash_per1k, {
+      z <- title_card_to_grid[["total_crash_per1k"]]
+      module_link(module = z$link_module,
+                  select_id = select_id(),
+                  var_left = z$link_var_left,
+                  df = df())
+    })
+
+    observeEvent(input$title_card_single_detached, {
+      z <- title_card_to_grid[["single_detached"]]
+      module_link(module = z$link_module,
+                  select_id = select_id(),
+                  var_left = z$link_var_left,
+                  df = df())
+    })
+
+    observeEvent(input$title_card_green_space_ndvi, {
+      z <- title_card_to_grid[["green_space_ndvi"]]
+      module_link(module = z$link_module,
+                  select_id = select_id(),
+                  var_left = z$link_var_left,
+                  df = df())
+    })
+
+    observeEvent(input$title_card_canale_index, {
+      z <- title_card_to_grid[["canale_index"]]
+      module_link(module = z$link_module,
+                  select_id = select_id(),
+                  var_left = z$link_var_left,
+                  df = df())
+    })
   })
 }
 
