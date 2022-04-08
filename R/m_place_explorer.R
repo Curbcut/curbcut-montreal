@@ -535,7 +535,8 @@ place_explorer_server <- function(id) {
                            "display: inline-grid; width: 48%;"),
             class = "panel panel-default "))
       })
-    })
+    }) |> bindCache(df(), select_id(), island_comparison(), 
+                    input$themes_checkbox)
 
     observe({
 
