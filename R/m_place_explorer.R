@@ -519,12 +519,12 @@ place_explorer_server <- function(id) {
       lapply(seq_along(themes), \(x) {
         tagList(
           if (x == 1 && length(which_standout) != 0) {
-            tagList(h2(style = "padding: 10px;",
+            tagList(h2(style = "padding: 10px; margin-bottom:0px",
                        sus_translate("What makes this area unique?")))
           } else if ((x == 1 && length(which_standout) == 0) ||
                      (length(which_standout) != 0 &&
                       x - 1 == which_standout[length(which_standout)])) {
-            tagList(h2(style = "padding: 10px;",
+            tagList(h2(style = "padding: 10px; margin-bottom:0px",
                        sus_translate(
                          "What makes this area similar to others?")))
           },
