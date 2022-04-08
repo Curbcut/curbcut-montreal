@@ -24,7 +24,7 @@ get_title_card <- function(df, select_id, island_or_region) {
   
   ## Generate output grid ------------------------------------------------------
   
-  to_grid <- lapply(1:nrow(indicators_table), \(x) {
+  to_grid <- lapply(seq_along(indicators_table$name), \(x) {
     
     z <- prep_title_card(df, select_id, 
                          ind = indicators_table$name[x],
