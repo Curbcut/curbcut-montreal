@@ -362,7 +362,7 @@ place_explorer_server <- function(id) {
           )
         })
     }) |> bindCache(df(), select_id(), island_comparison())
-    # 
+
     # ## Place explorer data -----------------------------------------------------
     # 
     # output$themes_grid <- renderUI({
