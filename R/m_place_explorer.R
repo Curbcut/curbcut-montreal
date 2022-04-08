@@ -162,7 +162,7 @@ place_explorer_server <- function(id) {
       if (is.na(loc_DAUID())) NA else {
         to_retrieve <- switch(df(), "borough" = "CSDUID", "CT" = "CTUID", 
                               "DA" = "DAUID")
-        DA[[to_retrieve]][DA$DAUID == loc_DAUID()]  
+        DA[[to_retrieve]][DA$DAUID == loc_DAUID()]
       }
     })
     
@@ -179,7 +179,8 @@ place_explorer_server <- function(id) {
         auto_highlight = TRUE,
         highlight_color = "#AAB6CF80",
         get_fill_color = "#AAB6CF20",
-        get_line_color = "#FFFFFF00"))
+        get_line_color = "#FFFFFF00")
+      )
     
     
     # Retrieve location --------------------------------------------------------
@@ -187,8 +188,8 @@ place_explorer_server <- function(id) {
     # Search
     observe({
 
-      postal_c <- 
-        input$address_searched |> 
+      postal_c <-
+        input$address_searched |>
         str_to_lower() |>
         str_extract_all("\\w|\\d", simplify = TRUE) |>
         paste(collapse = "")
@@ -209,12 +210,12 @@ place_explorer_server <- function(id) {
           paste0("No postal code found for `", input$address_searched, "`"),
           type = "error")
       }
-      
+
     }) |> bindEvent(input$search_button)
 
     # Map click
     observe({
-      
+
       loc_DAUID(input[[ns_id_map_click]]$object$ID)
 
       lon <- input[[ns_id_map_click]]$coordinate[[1]]
@@ -271,7 +272,7 @@ place_explorer_server <- function(id) {
       })
 
     # Should we show the widget, or not? Only if select_id() is on island
-    observe(toggle(id = paste0(ns_id, "-comparison_scale"), 
+    observe(toggle(id = paste0(ns_id, "-comparison_scale"),
                    condition = loc_on_island()))
 
     # Update dropdown language
@@ -281,9 +282,9 @@ place_explorer_server <- function(id) {
       var_list = reactive(list("Island" = "island", "Region" = "region")))
 
     # When select_id changes, check island/region again
-    island_comparison <- reactive(if (!loc_on_island()) "region" else 
+    island_comparison <- reactive(if (!loc_on_island()) "region" else
       comparison_scale())
-    
+
     # Title card ---------------------------------------------------------------
 
     # Draw title card map
@@ -339,16 +340,16 @@ place_explorer_server <- function(id) {
     })
 
     output$title_card <- renderUI({
-      
+
       title_card_to_grid <<- get_title_card(
         df(), select_id(), island_comparison())
-      
+
       lapply(seq_along(title_card_to_grid), \(x) {
         output[[paste0("ind_", x, "_plot")]] <- renderPlot({
           title_card_to_grid[[x]][["graph"]]
           })
         })
-      
+
       lapply(seq_along(title_card_to_grid), \(x) {
         tagList(
           fluidRow(
@@ -374,11 +375,11 @@ place_explorer_server <- function(id) {
         })
     }) |> bindCache(df(), select_id(), island_comparison())
 
-    
+
     ## Place explorer data -----------------------------------------------------
 
     output$themes_grid <- renderUI({
-      
+
       themes <- pe_theme_order[[df()]][[island_comparison()]]
       themes <- themes[themes$ID == select_id(), ]
       standout <- themes$standout
@@ -404,37 +405,37 @@ place_explorer_server <- function(id) {
 
       # The "server" of every block
       lapply(seq_along(themes), \(x) {
-        
+
         block <- paste0("theme_", themes[[x]], "_block")
-        
+
         output[[block]] <- renderUI({
-          
+
           data_order <- pe_variable_order[[df()]]
           data_order <- data_order[[island_comparison()]]
           data_order <- data_order[data_order$theme == themes[[x]],]
           data_order <- data_order[data_order$ID == select_id(), "var_code"]
-          
+
           to_grid <- get_pe_block_text(
             df = df(),
             theme = themes[[x]],
             select_id = select_id(),
             island_or_region = island_comparison(),
             data_order = data_order)
-          
+
           plots <- get_pe_block_plot(
             df = df(),
             theme = themes[[x]],
             select_id = select_id(),
             island_or_region = island_comparison(),
             data_order = data_order)
-          
+
           sentence <- get_pe_block_sentence(
             df = df(),
             theme = themes[[x]],
             select_id = select_id(),
             island_or_region = island_comparison(),
             data_order = data_order)
-          
+
           if (nrow(to_grid) > 0)
             lapply(seq_len(nrow(to_grid)), \(z) {
               output[[paste0("ind_", themes[[x]], z, "_row_title")]] <-
@@ -445,29 +446,29 @@ place_explorer_server <- function(id) {
                           title = str_to_sentence(
                             sus_translate(to_grid[z, ][["explanation"]]))))
                 })
-              
+
               output[[paste0("ind_", themes[[x]],  z, "_percentile")]] <-
                 renderText({to_grid[z, ][["percentile"]]})
-              
+
               output[[paste0("ind_", themes[[x]], z, "_value")]] <-
                 renderText({to_grid[z, ][["value"]]})
-              
+
               output[[paste0("ind_", themes[[x]], z, "_plot")]] <-
                 renderPlot({plots[[z]]})
-              
+
             })
-          
+
           if (nrow(to_grid) > 0) {
             translated_theme <- str_to_upper(sus_translate(themes[[x]]))
             translated_standout <- str_to_lower(sus_translate(standout[[x]]))
             translated_standout_definition <- standout_definition[[which(names(
               standout_definition) == standout[[x]])]]
-            
+
             nb_values_to_show <- min(nrow(to_grid), 5)
-            
-            block_title <- paste0(translated_theme, " (", 
+
+            block_title <- paste0(translated_theme, " (",
                                   translated_standout, ")")
-            
+
             tagList(
               h3(style = "text-transform:inherit;",
                  block_title,
@@ -476,25 +477,25 @@ place_explorer_server <- function(id) {
                                         sentence),
               lapply(seq_len(nb_values_to_show), \(z) {
                 tagList(fluidRow(
-                  
+
                   column(width = 4,
                          if (z == 1) h5(sus_translate("Variable")),
                          htmlOutput(eval(parse(
                            text = paste0("NS(id, 'ind_", themes[[x]], z,
                                          "_row_title')"))))),
-                  
+
                   column(width = 2,
                          if (z == 1) h5(sus_translate("Rank")),
                          htmlOutput(eval(parse(
                            text = paste0("NS(id, 'ind_", themes[[x]], z,
                                          "_percentile')"))))),
-                  
+
                   column(width = 2,
                          if (z == 1) h5(sus_translate("Value")),
                          htmlOutput(eval(parse(
                            text = paste0("NS(id, 'ind_", themes[[x]], z,
                                          "_value')"))))),
-                  
+
                   column(width = 3,
                          if (z == 1) h5(sus_translate("Plot")),
                          plotOutput(eval(parse(
@@ -540,13 +541,13 @@ place_explorer_server <- function(id) {
       themes <- pe_theme_order[[df()]][[island_comparison()]]
       themes <- themes[themes$ID == select_id(), ]
       themes <- themes$theme
-      
+
       to_hide <- themes[!themes %in% input$themes_checkbox]
       to_show <- themes[themes %in% input$themes_checkbox]
 
       lapply(to_hide, \(x) hide(paste0("theme_", x, "_block")))
       lapply(to_show, \(x) show(paste0("theme_", x, "_block")))
-    })
+    }, ignoreInit = TRUE)
 
     observeEvent(input$title_card_total_crash_per1k, {
       z <- title_card_to_grid[["total_crash_per1k"]]
