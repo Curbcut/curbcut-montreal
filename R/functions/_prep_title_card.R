@@ -18,7 +18,7 @@ prep_title_card <- function(df, select_id, ind, percent = TRUE,
   
   data <- title_card_indicators[[ind]][[df]]
   data_var <- data$var[data$ID == select_id]
-  
+  if (length(data_var) == 0) return(NULL)
   
   # pretty_data_var ------------------------------------------------------------
   

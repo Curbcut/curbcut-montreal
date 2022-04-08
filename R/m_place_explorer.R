@@ -335,7 +335,8 @@ place_explorer_server <- function(id) {
                          "font-size: 2.5rem; margin-bottom: 0.75em; ",
                          "display:inline;'>",
                          "&nbsp;&nbsp;&nbsp;(",
-                         sus_translate(get_zoom_name(df())), ")"),
+                         sus_translate(get_zoom_name(df())), " ", select_id(), 
+                         ")"),
                   "</i></h2>")
     })
 
