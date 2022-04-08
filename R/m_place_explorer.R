@@ -93,7 +93,7 @@ place_explorer_UI <- function(id) {
         # Island-only or region-wide comparison
         select_var_UI(
           id = ns_id,
-          select_var_id = "comparison_scale",
+          select_var_id = NS(id, "comparison_scale"),
           label = sus_translate("Choose comparison scale:"),
           var_list = list("Island" = "island", "Region" = "region"))
       )))),
@@ -271,7 +271,7 @@ place_explorer_server <- function(id) {
       })
 
     # Should we show the widget, or not? Only if select_id() is on island
-    observe(toggle(id = "comparison_scale", condition = loc_on_island()))
+    observe(toggle(id = paste0(ns_id, "-comparison_scale"), condition = loc_on_island()))
 
     # Update dropdown language
     comparison_scale <- select_var_server(
@@ -282,8 +282,7 @@ place_explorer_server <- function(id) {
     # When select_id changes, check island/region again
     island_comparison <- reactive(if (!loc_on_island()) "region" else 
       comparison_scale())
-
-
+    
     # Title card ---------------------------------------------------------------
 
     # Draw title card map
@@ -297,9 +296,6 @@ place_explorer_server <- function(id) {
 
     # Update map on selection
     observe({
-      print(comparison_scale())
-      print(island_comparison())
-
       # Get zoom and center
       zoom <- map_zoom_levels[which(df() == names(map_zoom_levels))] + 1
       if (zoom == 1) zoom <- 10
