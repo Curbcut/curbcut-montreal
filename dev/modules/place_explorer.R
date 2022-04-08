@@ -589,10 +589,10 @@ pe_variable_order <-
   })
 
 
-# Split pe_variable_order tables by group ---------------------------------
+# Split tables by group ---------------------------------------------------
 
 pe_variable_order <- lapply(pe_variable_order, \(x) split(x, x$group)) 
-
+pe_theme_order <- lapply(pe_theme_order, \(x) split(x, x$group)) 
 
 # Cleanup -----------------------------------------------------------------
 
