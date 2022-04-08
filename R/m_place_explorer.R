@@ -536,7 +536,7 @@ place_explorer_server <- function(id) {
       })
     })
 
-    observeEvent(input$themes_checkbox, {
+    observe({
 
       themes <- pe_theme_order[[df()]][[island_comparison()]]
       themes <- themes[themes$ID == select_id(), ]
@@ -547,39 +547,39 @@ place_explorer_server <- function(id) {
 
       lapply(to_hide, \(x) hide(paste0("theme_", x, "_block")))
       lapply(to_show, \(x) show(paste0("theme_", x, "_block")))
-    }, ignoreInit = TRUE)
+    }) |> bindEvent(input$themes_checkbox, ignoreInit = TRUE)
 
-    observeEvent(input$title_card_total_crash_per1k, {
+    observe({
       z <- title_card_to_grid[["total_crash_per1k"]]
       module_link(module = z$link_module,
                   select_id = select_id(),
                   var_left = z$link_var_left,
                   df = df())
-    })
+    }) |> bindEvent(input$title_card_total_crash_per1k)
 
-    observeEvent(input$title_card_single_detached, {
+    observe({
       z <- title_card_to_grid[["single_detached"]]
       module_link(module = z$link_module,
                   select_id = select_id(),
                   var_left = z$link_var_left,
                   df = df())
-    })
+    }) |> bindEvent(input$title_card_single_detached)
 
-    observeEvent(input$title_card_green_space_ndvi, {
+    observe({
       z <- title_card_to_grid[["green_space_ndvi"]]
       module_link(module = z$link_module,
                   select_id = select_id(),
                   var_left = z$link_var_left,
                   df = df())
-    })
+    }) |> bindEvent(input$title_card_green_space_ndvi)
 
-    observeEvent(input$title_card_canale_index, {
+    observe({
       z <- title_card_to_grid[["canale_index"]]
       module_link(module = z$link_module,
                   select_id = select_id(),
                   var_left = z$link_var_left,
                   df = df())
-    })
+    }) |> bindEvent(input$title_card_canale_index)
   })
 }
 
