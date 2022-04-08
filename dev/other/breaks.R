@@ -12,14 +12,14 @@ get_breaks_q3 <- function(df, var_list = NULL) {
   
   # Automatically retrieve var_list if var_list is NULL
   if (is.null(var_list)) {
-    var_list <- names(select(df, -contains(c("q3", "q5")), -any_of("ID")))
+    var_list <- names(dplyr::select(df, -contains(c("q3", "q5")), -any_of("ID")))
   }
   
   map_dfc(var_list, ~{
     if (.x %in% names(df)) {
       suppressWarnings(
         df |>
-          select(any_of(.x), any_of(paste0(.x, "_q3")) |
+          dplyr::select(any_of(.x), any_of(paste0(.x, "_q3")) |
                    any_of(paste0(str_remove(.x, "_\\d{4}"), 
                                  paste0("_q3", str_extract(.x, "_\\d{4}"))))
           ) |>
@@ -48,7 +48,7 @@ add_q5 <- function(df, breaks) {
     var_names <- c(x, paste(x, 1900:2100, sep = "_"))
     
     df |> 
-      transmute(across(any_of(var_names),
+      dplyr::transmute(across(any_of(var_names),
                        ~ as.numeric(cut(.x, y, include.lowest = TRUE)),
                        .names = "{.col}_q5")) |> 
       rename_with(~paste0(str_remove(., "_\\d{4}"),
@@ -76,14 +76,14 @@ get_breaks_q5 <- function(df, var_list = NULL) {
   if (is.null(var_list)) {
     var_list <- 
       df |> 
-      select(-contains(c("q3", "q5")), -any_of("ID")) |> 
+      dplyr::select(-contains(c("q3", "q5")), -any_of("ID")) |> 
       names()
   }
   
   cat_min <- suppressWarnings(
     map(var_list, ~{
       df |>
-        select(all_of(.x)) |>
+        dplyr::select(all_of(.x)) |>
         as.matrix() |>
         min(na.rm = TRUE)
     }))
@@ -91,7 +91,7 @@ get_breaks_q5 <- function(df, var_list = NULL) {
   cat_max <- suppressWarnings(
     map(var_list, ~{
       df |>
-        select(all_of(.x)) |>
+        dplyr::select(all_of(.x)) |>
         as.matrix() |>
         max(na.rm = TRUE)
     }))
@@ -99,7 +99,7 @@ get_breaks_q5 <- function(df, var_list = NULL) {
   var_mean <- suppressWarnings(
     map(var_list, ~{
       df |>
-        select(all_of(.x)) |>
+        dplyr::select(all_of(.x)) |>
         filter(if_all(everything(), 
                       ~between(.x, quantile(.x, .01, na.rm = TRUE), 
                                quantile(.x, .99, na.rm = TRUE)))) |> 
@@ -110,7 +110,7 @@ get_breaks_q5 <- function(df, var_list = NULL) {
   standard_d <- suppressWarnings(
     map(var_list, ~{
       df |>
-        select(all_of(.x)) |>
+        dplyr::select(all_of(.x)) |>
         filter(if_all(everything(), 
                       ~between(.x, quantile(.x, .01, na.rm = TRUE), 
                                quantile(.x, .99, na.rm = TRUE)))) |> 

@@ -107,3 +107,7 @@ scale_fill_pe <- function(select_id) {
     legend = FALSE) 
 }
 
+# Natural infrastructure lws
+scale_lwd_natural_infrastructure <- function() {
+  0
+}

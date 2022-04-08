@@ -14,6 +14,7 @@ suppressPackageStartupMessages({
   library(stars)
   library(furrr)
   library(tidyverse)
+  library(qs)
 })
 
 
@@ -63,22 +64,8 @@ datas <- c("habitat_quality" = "Fig11a.asc",
 # conservation_prioritization <- 
 #   read_stars("dev/data/2018_FDS_InfraNat_Conn/Fig16.tif")
 
-grid <- 
-  borough |> 
-  st_transform(32618) |> 
-  st_make_grid(c(250, 250)) |> 
-  st_intersection(st_transform(borough, 32618)) |> 
-  as_tibble() |> 
-  st_as_sf(crs = st_crs(32618))
-
-grid <- 
-  grid |> 
-  mutate(ID = row_number(),
-         area = units::drop_units(st_area(geometry)),
-         .before = "geometry")
-
-natural_infrastructure <- 
-  future_map2(names(datas), datas, function(name, path) {
+natural_infrastructure_tiles <- 
+  future_map2(set_names(names(datas)), datas, function(name, path) {
     
     data <- read_stars(paste0("dev/data/2018_FDS_InfraNat_Conn/", path))
     
@@ -89,111 +76,95 @@ natural_infrastructure <-
       st_as_sf(crs = st_crs(2950)) |> 
       st_make_valid()
     
+    data <-
+      data |>
+      rename(var = 1) |>
+      mutate(rank = ntile(var, 100)) |> 
+      mutate(var = round(var, digits = 2)) |> 
+      group_by(var, rank) |> 
+      summarize()
+    
     data <- 
-      st_transform(data, 4326) |> 
-      st_transform(32618)
+      st_transform(data, 4326) |>
+      filter(st_is(geometry, "POLYGON") | st_is(geometry, "MULTIPOLYGON")) |>
+      st_cast("MULTIPOLYGON")
     
-    intersected <- 
-      grid |> st_intersection(data)
+    names(data)[1] <- name
+    names(data)[2] <- paste0(name, "_q100")
     
-    interpolated <- 
-      intersected |> 
-      mutate(percent_area = units::drop_units(st_area(geometry))/area) |> 
-      st_drop_geometry() |> 
-      rename(var = 3) |> 
-      group_by(ID) |> 
-      filter(!is.na(var),
-             sum(percent_area) > 0.5) |> 
-      summarize(conservation_prioritization = mean(var))
+    data
     
-    names(interpolated) <- c("ID", name)
-    
-    interpolated
-  }) |> reduce(left_join, by = "ID")
+  })
+
+qsave(natural_infrastructure_tiles, "dev/data/natural_infrastructure_tiles.qs")
+
+
+# Join all pixels into one df ---------------------------------------------
 
 natural_infrastructure <- 
-  left_join(grid, natural_infrastructure) |> 
-  relocate(geometry, .after = last_col()) |> 
-  select(-area)
+  future_map2(set_names(names(datas)), datas, function(name, path) {
+    
+    data <- read_stars(paste0("dev/data/2018_FDS_InfraNat_Conn/", path))
+    
+    data <- 
+      st_as_sf(data, as_points = FALSE, #merge = TRUE,
+               crs = st_crs(2950)) |> 
+      as_tibble() |> 
+      st_as_sf(crs = st_crs(2950)) |> 
+      st_make_valid()
+    
+    data <- 
+      st_transform(data, 4326)
+    
+    data <-
+      data |>
+      rename(var = 1) |>
+      mutate(rank = ntile(var, 100))
+    
+    names(data)[1] <- name
+    names(data)[3] <- paste0(name, "_q100")
+    
+    data
+    
+  })
 
+# Move to centroids for the first dataframe
+natural_infrastructure[[1]] <- 
+  natural_infrastructure[[1]] |> 
+  mutate(geometry = st_centroid(geometry))
+
+natural_infrastructure <- reduce(natural_infrastructure, st_join) |> 
+  st_drop_geometry()
 
 # Get breaks --------------------------------------------------------------
 
-ni_results <- add_q3(st_drop_geometry(natural_infrastructure))
-ni_q3 <- get_breaks_q3(ni_results)
-ni_q5 <- get_breaks_q5(ni_results)
-ni_results <- bind_cols(ni_results, add_q5(ni_results, ni_q5))
+# ni_results <- map(map(natural_infrastructure, st_drop_geometry), add_q3)
+# ni_q3 <- map(ni_results, get_breaks_q3)
+# ni_q5 <- map(ni_results, get_breaks_q5)
+# ni_results <- map2(ni_results, ni_q5, ~{bind_cols(.x, add_q5(.x, .y))})
 
-natural_infrastructure <- 
-  left_join(ni_results, select(natural_infrastructure, ID),
-            by = "ID") |> 
-  st_as_sf()
+# ni_results <- add_q3(st_drop_geometry(natural_infrastructure))
+# ni_q3 <- get_breaks_q3(ni_results)
+# ni_q5 <- get_breaks_q5(ni_results)
+# ni_results <- bind_cols(ni_results, add_q5(ni_results, ni_q5))
 
-# Adding usual grid columns -----------------------------------------------
+# natural_infrastructure <- 
+#   map2(natural_infrastructure, ni_results, left_join)
 
-# qs::qload("data/census.qsm")
-
-DA_data <- 
-  DA %>% 
-  st_transform(32618) %>% 
-  select(ID, population, households) %>% 
-  mutate(area = st_area(geometry), .before = geometry) %>% 
-  st_set_agr("constant")
-
-natural_infrastructure_census <-
-  natural_infrastructure |> 
-  select(ID) |> 
-  st_transform(32618) |> 
-  st_set_agr("constant") |> 
-  st_intersection(DA_data) |> 
-  mutate(area_prop = st_area(geometry) / area) |> 
-  mutate(across(population:households, 
-                ~{.x * units::drop_units(area_prop)})) |> 
-  select(ID, population, households, geometry) |> 
-  st_drop_geometry() |> 
-  arrange(ID) |> 
-  group_by(ID) |> 
-  summarize(across(population:households, sum, na.rm = TRUE))
-
-natural_infrastructure <- 
-  natural_infrastructure |> 
-  left_join(natural_infrastructure_census, by = "ID") |> 
-  mutate(name = ID, .after = ID) |> 
-  relocate(geometry, .after = last_col()) |> 
-  relocate(population, .after = name) |> 
-  relocate(households, .after = name) |> 
-  st_set_agr("constant")
-
-borough_index <- 
-  natural_infrastructure |> 
-  st_transform(32618) |> 
-  st_centroid() |> 
-  st_nearest_feature(st_transform(borough, 32618))
-
-natural_infrastructure <- 
-  natural_infrastructure |> 
-  mutate(name = ID, .after = ID) |> 
-  mutate(CSDUID = map_chr(borough_index, ~borough$ID[.x]), .after = name) |> 
-  st_set_agr("constant")
-
-natural_infrastructure <- 
-  natural_infrastructure |> 
-  left_join(select(st_drop_geometry(borough), CSDUID = ID, name_2 = name), 
-            by = "CSDUID") |> 
-  relocate(name_2, .after = name) |> 
-  st_set_agr("constant")
+# natural_infrastructure <-
+#   left_join(ni_results, select(natural_infrastructure, ID),
+#             by = "ID") |>
+#   st_as_sf()
 
 
 # Final SF operations -----------------------------------------------------
 
-natural_infrastructure <- 
-  natural_infrastructure |> 
-  st_transform(4326) |>
-  filter(st_is(geometry, "POLYGON") | st_is(geometry, "MULTIPOLYGON")) |> 
-  st_cast("MULTIPOLYGON")
+# natural_infrastructure <-
+#   natural_infrastructure |>
+#   st_transform(4326) |>
+#   filter(st_is(geometry, "POLYGON") | st_is(geometry, "MULTIPOLYGON")) |>
+#   st_cast("MULTIPOLYGON")
 
 # Cleanup -----------------------------------------------------------------
 
-# future::plan(future::multisession, workers = 1)
-
-rm(datas, grid, borough_index, DA_data, natural_infrastructure_census)
+rm(datas)

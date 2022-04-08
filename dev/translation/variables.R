@@ -605,9 +605,10 @@ variables_translated <-
                       "50,000"), 
           fr = paste0("le pourcentage de ménages dont le revenu est inférieur ",
                       "à 50 000 $")) |> 
-  add_row(en = paste0("the percentage of households with an income between$50,",
+  add_row(en = paste0("the percentage of households with an income between $50,",
                       "000 and $100,000"), 
-          fr = NA) |> 
+          fr = paste0("le pourcentage de ménages dont le revenu est entre ",
+                      "$50 000 et 100 000 $")) |> 
   add_row(en = paste0("the percentage of households with an income higher than",
                       " $100,000"), 
           fr = paste0("le pourcentage de ménages dont le revenu est supérieur ",
