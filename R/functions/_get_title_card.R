@@ -46,8 +46,8 @@ get_title_card <- function(df, select_id, island_or_region) {
     list(row_title = indicators_table$title[x],
          percentile = z$percentile,
          graph = z$plot,
-         text = if (is.na(z$pretty_data_var))
-           sus_translate("No data.") else sus_translate(indicators_table$text[x]),
+         text = if (is.na(z$pretty_data_var)) sus_translate("No data.") else 
+           sus_translate(indicators_table$text[x]),
          link = z$link,
          link_module = z$link_module,
          link_var_left = z$link_var_left)

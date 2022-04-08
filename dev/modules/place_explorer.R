@@ -588,6 +588,12 @@ pe_variable_order <-
       select(ID, theme, group, var_code, variable_order, theme)
   })
 
+
+# Split pe_variable_order tables by group ---------------------------------
+
+pe_variable_order <- lapply(pe_variable_order, \(x) split(x, x$group)) 
+
+
 # Cleanup -----------------------------------------------------------------
 
 rm(basic_percentile_retrieval, gentrification_min_max, min_access_var_code,
