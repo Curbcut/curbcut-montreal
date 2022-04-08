@@ -492,11 +492,11 @@ ui_and_misc_translated <-
           fr = paste0("Accueil")) |> 
   add_row(en = paste0("Go back to map"), 
           fr = paste0("De retour à la carte")) |> 
-  add_row(en = paste0("Enter a postal code or click on the map"), 
+  add_row(en = paste0("Enter postal code or click on the map"), 
           fr = paste0("Entrez un code postal ou cliquez sur la carte")) |> 
-  add_row(en = paste0("Select theme(s):"), 
+  add_row(en = paste0("Choose themes:"), 
           fr = paste0("Sélectionnez le(s) thème(s) :")) |> 
-  add_row(en = paste0("Select scale:"), 
+  add_row(en = paste0("Choose scale:"), 
           fr = paste0("Sélectionnez l'échelle :")) |> 
   add_row(en = paste0("Choose comparison scale:"), 
           fr = paste0("Choisissez l'échelle de comparaison :")) |> 

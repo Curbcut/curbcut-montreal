@@ -67,6 +67,8 @@ get_pe_block_sentence <- function(df, theme, select_id, island_or_region,
   out <- cbind(data_order, data_var)
   out <- out[!is.na(out$value), ]
   
+  island_or_region <- sus_translate("the ", island_or_region)
+  
   if (theme == "Age") {
     z <- out[out$var_code %in% c("age_65_plus_pct", "age_0_14_pct"), ]
     z <- z[z$percentile == max(z$percentile), ]
@@ -75,7 +77,7 @@ get_pe_block_sentence <- function(df, theme, select_id, island_or_region,
         if (z$var_code == "age_65_plus_pct") sus_translate("older") else 
           sus_translate("younger")
       sus_translate("The area's population is {older_younger} than average ",
-                    "for the {island_or_region}.")
+                    "for {island_or_region}.")
     } else NULL
     
   } else if (theme == "Identity") {
@@ -83,7 +85,7 @@ get_pe_block_sentence <- function(df, theme, select_id, island_or_region,
     more_less <- if (z$percentile > 0.5) sus_translate("more") else 
       sus_translate("less")
     sus_translate("The area has {more_less} foreign-born residents than ",
-                  "average for the {island_or_region}.")
+                  "average for {island_or_region}.")
     
   } else if (theme == "Income") {
     z <- out[out$var_code %in% c("inc_limat_pct", "inc_high_pct"), ]
@@ -94,7 +96,7 @@ get_pe_block_sentence <- function(df, theme, select_id, island_or_region,
         if (z$var_code == "inc_high_pct") sus_translate("higher") else 
           sus_translate("lower")
       sus_translate("Incomes in the area are {higher_lower} than ",
-                    "average for the {island_or_region}.")
+                    "average for {island_or_region}.")
     } else NULL
     
   } else if (theme == "Language") {
@@ -110,7 +112,7 @@ get_pe_block_sentence <- function(df, theme, select_id, island_or_region,
           sus_translate("speak more French")
         } else sus_translate("are more bilingual (French and English)")
       }
-      sus_translate("The area's residents {lang} than average for the ",
+      sus_translate("The area's residents {lang} than average for ",
                     "{island_or_region}.")
     } else NULL
     
@@ -123,7 +125,7 @@ get_pe_block_sentence <- function(df, theme, select_id, island_or_region,
           sus_translate("lower")
       }
       sus_translate("Residents of the area have a {more_less} proportion of ",
-                    "university degrees than average for the ",
+                    "university degrees than average for ",
                     "{island_or_region}.")
     } else NULL
     
@@ -135,10 +137,10 @@ get_pe_block_sentence <- function(df, theme, select_id, island_or_region,
     if (z$percentile > 0.5) {
       if (z$var_code == "housing_value_avg_dollar") {
         sus_translate("Property values in the area are higher than average ",
-                      "for the {island_or_region}.")
+                      "for {island_or_region}.")
       } else {
         sus_translate("The area's percentage of tenants is higher than ",
-                      "average for the {island_or_region}.")
+                      "average for {island_or_region}.")
       }
     } else NULL
     
@@ -150,7 +152,7 @@ get_pe_block_sentence <- function(df, theme, select_id, island_or_region,
       sus_translate("less")
     
     sus_translate("Residents in the area drive to work {more_less} than ",
-                  "average for the {island_or_region}.")
+                  "average for {island_or_region}.")
   } else NULL
   
 }
