@@ -4,11 +4,8 @@
 
 suppressPackageStartupMessages({
   
-  library(dplyr)
   library(ggplot2)
   library(stringr)
-  library(purrr)
-  library(sf)
   library(qs)
   library(shiny)
   library(glue)
@@ -16,12 +13,13 @@ suppressPackageStartupMessages({
   variables <- qread("data/variables.qs")
   
   qload("data/census.qsm")
-  grid <- qread("data/grid.qs")
-  
+
   qload("data/place_explorer.qsm")
   postal_codes <- qread("data/postal_codes.qs")
   
-  source("R/functions/_place_explorer_funs.R")
+  source("R/functions/_get_pe_block_plot.R")
+  source("R/functions/_get_pe_block_sentence.R")
+  source("R/functions/_get_pe_block_text.R")
   source("R/functions/_get_title_card.R")
   source("R/functions/_prep_title_card.R")
   source("R/functions/_translation.R")

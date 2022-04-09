@@ -374,7 +374,7 @@ place_explorer_server <- function(id) {
           br()
           )
         })
-    }) |> bindCache(df(), select_id(), island_comparison())
+    })
 
 
     ## Place explorer data -----------------------------------------------------
@@ -511,7 +511,8 @@ place_explorer_server <- function(id) {
               tagList(fluidRow(h3(sus_translate(themes[[x]]))),
                       fluidRow("No data."))
             }
-        })
+        }) |> bindCache(df(), select_id(), island_comparison(), x,
+                       input$themes_checkbox)
       })
 
       which_standout <- which(standout %in% c("Extreme outlier", "Outlier"))
@@ -535,8 +536,7 @@ place_explorer_server <- function(id) {
                            "display: inline-grid; width: 48%;"),
             class = "panel panel-default "))
       })
-    }) |> bindCache(df(), select_id(), island_comparison(), 
-                    input$themes_checkbox)
+    })
 
     # Update grid based on checkbox
     observe({
