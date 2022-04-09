@@ -99,132 +99,200 @@ get_pe_block <- function(df, theme, select_id, island_or_region) {
   
   out <- cbind(data_order, out)
   out <- out[!is.na(out$value), ]
-  ior <- sus_translate("the ", island_or_region)
+  ior <- paste0("the ", island_or_region)
   
   # Age
   sentence <- if (theme == "Age") {
     
-    z <- out[out$var_code %in% c("age_65_plus_pct", "age_0_14_pct"), ]
-    z <- z[z$percentile == max(z$percentile), ]
-    if (z$percentile > 0.5) {
-      older_younger <- 
-        if (z$var_code == "age_65_plus_pct") sus_translate("older") else 
-          sus_translate("younger")
-      sus_translate("The area's population is {older_younger} than average ",
-                    "for {ior}.")
-    } else NULL
-    
-    # Climate risk  
+    z <- out$percentile[out$percentile == max(out$percentile)]
+    z_var <- out$var_code[out$percentile == z]
+    age <- if (z_var == "age_0_14_pct") {
+      "0-14"
+    } else if (z_var == "age_15_64_pct") {
+      "15-64"
+    } else if (z_var == "age_65_plus_pct") {
+      "65+"
+    }
+    sus_translate("The area's residents are disproportionately in the {age} ",
+                  "age range, compared to the rest of {ior}.")
+
+  # Climate risk  
   } else if (theme == "Climate risk") {
     
     z <- mean(out$percentile)
     more_less <- if (z >= 0.8) {
-      sus_translate("much higher")
+      "much higher"
     } else if (z >= 0.6) {
-      sus_translate("higher")
+      "higher"
     } else if (z >= 0.5) {
-      sus_translate("slightly higher")
+      "slightly higher"
     } else if (z >= 0.4) {
-      sus_translate("slightly lower")
+      "slightly lower"
     } else if (z >= 0.2) {
-      sus_translate("lower")
-    } else sus_translate("much lower")
+      "lower"
+    } else "much lower"
     sus_translate("The area has a {more_less} level of climate risk than ",
                   "average for {ior}.")
     
-    # Identity
+  # Education
+  } else if (theme == "Education") {
+    
+    z <- out$percentile[out$var_code == "edu_bachelor_above_pct"]
+    more_less <- if (z >= 0.8) {
+      "much more"
+    } else if (z >= 0.6) {
+      "more"
+    } else if (z >= 0.5) {
+      "slightly more"
+    } else if (z >= 0.4) {
+      "slightly less"
+    } else if (z >= 0.2) {
+      "less"
+    } else "much less"
+    sus_translate("Residents of the area are {more_less} likely than the rest ",
+                  "of {ior} to have a university degree.")
+
+  # Employment
+  } else if (theme == "Employment") {
+    
+    z <- mean(out$percentile)
+    more_less <- if (z >= 0.8) {
+      "much higher"
+    } else if (z >= 0.6) {
+      "higher"
+    } else if (z >= 0.5) {
+      "slightly higher"
+    } else if (z >= 0.4) {
+      "slightly lower"
+    } else if (z >= 0.2) {
+      "lower"
+    } else "much lower"
+    sus_translate("A {more_less} than average share of the area's residents ",
+                  "work in creative and professional occupations compared to ",
+                  "the rest of {ior}.")
+    
+  # Family
+  } else if (theme == "Family") {
+    
+    z <- mean(c(1 - out$percentile[out$var_code == "family_one_person_pct"],
+                out$percentile[out$var_code == "family_children_pct"]))
+    more_less <- if (z >= 0.8) {
+      "much larger"
+    } else if (z >= 0.6) {
+      "larger"
+    } else if (z >= 0.5) {
+      "slightly larger"
+    } else if (z >= 0.4) {
+      "slightly smaller"
+    } else if (z >= 0.2) {
+      "smaller"
+    } else "much smaller"
+    sus_translate("The area's families are {more_less} than average for {ior}.")
+    
+  # Housing
+  } else if (theme == "Housing") {
+    
+    z <- out$percentile[out$var_code == "housing_rent_avg_dollar"] *
+      out$value[out$var_code == "housing_tenant_pct"] +
+      out$percentile[out$var_code == "housing_value_avg_dollar"] *
+      (1 - out$percentile[out$var_code == "housing_tenant_pct"])
+    more_less <- if (z >= 0.8) {
+      "much more expensive"
+    } else if (z >= 0.6) {
+      "more expensive"
+    } else if (z >= 0.5) {
+      "slightly more expensive"
+    } else if (z >= 0.4) {
+      "slightly cheaper"
+    } else if (z >= 0.2) {
+      "cheaper"
+    } else "much cheaper"
+    sus_translate("Housing costs in the area are {more_less} than average ",
+                  "for {ior}.")
+
+  # Identity
   } else if (theme == "Identity") {
     
-    z <- out[out$var_code == "iden_imm_pct", ]
-    more_less <- if (z$percentile > 0.5) sus_translate("more") else 
-      sus_translate("fewer")
+    z <- out$percentile[out$var_code == "iden_imm_pct"]
+    more_less <- if (z >= 0.8) {
+      "much more"
+    } else if (z >= 0.6) {
+      "more"
+    } else if (z >= 0.5) {
+      "slightly more"
+    } else if (z >= 0.4) {
+      "slightly fewer"
+    } else if (z >= 0.2) {
+      "fewer"
+    } else "much fewer"
     sus_translate("The area has {more_less} foreign-born residents than ",
                   "average for {ior}.")
     
-    # Income
+  # Income
   } else if (theme == "Income") {
     
-    z <- out[out$var_code %in% c("inc_limat_pct", "inc_high_pct"), ]
-    z <- z[z$percentile == max(z$percentile), ]
-    
-    if (z$percentile > 0.5) {
-      higher_lower <- 
-        if (z$var_code == "inc_high_pct") sus_translate("higher") else 
-          sus_translate("lower")
-      sus_translate("Incomes in the area are {higher_lower} than ",
-                    "average for {ior}.")
-    } else NULL
-    
-    # Language
+    z <- out$percentile[out$var_code == "inc_median_dollar"]
+    more_less <- if (z >= 0.8) {
+      "much higher"
+    } else if (z >= 0.6) {
+      "higher"
+    } else if (z >= 0.5) {
+      "slightly higher"
+    } else if (z >= 0.4) {
+      "slightly lower"
+    } else if (z >= 0.2) {
+      "lower"
+    } else "much lower"
+    sus_translate("Incomes in the area are {more_less} than average for {ior}.")
+
+  # Language
   } else if (theme == "Language") {
     
-    z <- out[out$var_code %in% c("lang_eng_only_pct", "lang_french_only_pct",
-                                 "lang_french_eng_pct"), ]
-    z <- z[z$percentile == max(z$percentile), ]
-    
-    if (z$percentile > 0.5) {
-      lang <- {
-        if (z$var_code == "lang_eng_only_pct") {
-          sus_translate("speak more English")
-        } else if (z$var_code == "lang_french_only_pct") {
-          sus_translate("speak more French")
-        } else sus_translate("are more bilingual (French and English)")
-      }
-      sus_translate("The area's residents {lang} than average for ",
-                    "{ior}.")
-    } else NULL
-    
-    # Education
-  } else if (theme == "Education") {
-    
-    z <- out[out$percentile == max(out$percentile), ]
-    
-    if (z$percentile > 0.5) {
-      more_less <- {
-        if (z$var_code == "edu_bachelor_above_pct") sus_translate("higher") else
-          sus_translate("lower")
-      }
-      sus_translate("Residents of the area have a {more_less} proportion of ",
-                    "university degrees than average for ",
-                    "{ior}.")
-    } else NULL
-    
-    # Housing
-  } else if (theme == "Housing") {
-    
-    z <- out[out$var_code %in% c("housing_tenant_pct", 
-                                 "housing_value_avg_dollar"), ]
-    z <- z[z$percentile == max(z$percentile), ]
-    
-    if (z$percentile > 0.5) {
-      if (z$var_code == "housing_value_avg_dollar") {
-        sus_translate("Property values in the area are higher than average ",
-                      "for {ior}.")
-      } else {
-        sus_translate("The area's percentage of tenants is higher than ",
-                      "average for {ior}.")
-      }
-    } else NULL
-    
-    # Transport
+    z_table <- out[out$percentile == max(out$percentile), ]
+    z <- z_table$percentile
+    z_var <- z_table$var_code
+    more_less <- if (z >= 0.8) {
+      "much more"
+    } else if (z >= 0.6) {
+      "more"
+    } else if (z >= 0.5) {
+      "slightly more"
+    } else if (z >= 0.4) {
+      "slightly less"
+    } else if (z >= 0.2) {
+      "less"
+    } else "much less"
+    lang <- if (z_var == "lang_eng_only_pct") {
+      "speak English"
+    } else if (z_var == "lang_french_only_pct") {
+      "speak French"
+    } else if (z_var == "lang_french_eng_pct") {
+      "be bilingual (French and English)"
+    } else if (z_var == "lang_no_official_pct") {
+      "speak neither French nor English"
+    }
+    sus_translate("The area's residents are {more_less} likely to {lang} ",
+                  "than average for {ior}.")
+
+  # Transport
   } else if (theme == "Transport") {
     
     z <- out$percentile[out$var_code == "trans_car_pct"]
 
     more_less <- if (z >= 0.8) {
-      sus_translate("much more")
+      "much more"
     } else if (z >= 0.6) {
-      sus_translate("more")
+      "more"
     } else if (z >= 0.5) {
-      sus_translate("slightly more")
+      "slightly more"
     } else if (z >= 0.4) {
-      sus_translate("slightly less")
+      "slightly less"
     } else if (z >= 0.2) {
-      sus_translate("less")
-    } else sus_translate("much less")
+      "less"
+    } else "much less"
     
     sus_translate("Residents in the area drive to work {more_less} than ",
-                  "average for {ior}.")
+                  "average compared to the rest of {ior}.")
   } else NULL
   
   
