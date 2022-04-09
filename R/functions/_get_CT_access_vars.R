@@ -1,3 +1,4 @@
+#### GET CT ACCESS VARS FOR PLACE EXPLORER #####################################
 
 get_CT_access_vars <- function(variables) {
   

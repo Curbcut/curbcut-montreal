@@ -3,6 +3,8 @@
 get_pe_block_sentence <- function(df, theme, select_id, island_or_region,
                                   data_order) {
   
+  ## Setup ---------------------------------------------------------------------
+  
   data_ord <- data_order
   vars <- variables
   
@@ -35,6 +37,10 @@ get_pe_block_sentence <- function(df, theme, select_id, island_or_region,
   
   ior <- sus_translate("the ", island_or_region)
   
+  
+  ## Theme outputs -------------------------------------------------------------
+  
+  # Age
   if (theme == "Age") {
     z <- out[out$var_code %in% c("age_65_plus_pct", "age_0_14_pct"), ]
     z <- z[z$percentile == max(z$percentile), ]
@@ -45,14 +51,33 @@ get_pe_block_sentence <- function(df, theme, select_id, island_or_region,
       sus_translate("The area's population is {older_younger} than average ",
                     "for {ior}.")
     } else NULL
-    
+  
+  # Climate risk  
+  } else if (theme == "Climate risk") {
+    z <- mean(out$percentile)
+    more_less <- if (z >= 0.8) {
+      sus_translate("much higher")
+    } else if (z >= 0.6) {
+      sus_translate("higher")
+    } else if (z >= 0.5) {
+      sus_translate("slightly higher")
+    } else if (z >= 0.4) {
+      sus_translate("slightly lower")
+    } else if (z >= 0.2) {
+      sus_translate("lower")
+    } else sus_translate("much lower")
+    sus_translate("The area has a {more_less} level of climate risk than ",
+                  "average for {ior}.")
+  
+  # Identity
   } else if (theme == "Identity") {
     z <- out[out$var_code == "iden_imm_pct", ]
     more_less <- if (z$percentile > 0.5) sus_translate("more") else 
-      sus_translate("less")
+      sus_translate("fewer")
     sus_translate("The area has {more_less} foreign-born residents than ",
                   "average for {ior}.")
-    
+  
+  # Income
   } else if (theme == "Income") {
     z <- out[out$var_code %in% c("inc_limat_pct", "inc_high_pct"), ]
     z <- z[z$percentile == max(z$percentile), ]
@@ -65,6 +90,7 @@ get_pe_block_sentence <- function(df, theme, select_id, island_or_region,
                     "average for {ior}.")
     } else NULL
     
+  # Language
   } else if (theme == "Language") {
     z <- out[out$var_code %in% c("lang_eng_only_pct", "lang_french_only_pct",
                                  "lang_french_eng_pct"), ]
@@ -81,7 +107,8 @@ get_pe_block_sentence <- function(df, theme, select_id, island_or_region,
       sus_translate("The area's residents {lang} than average for ",
                     "{ior}.")
     } else NULL
-    
+  
+  # Education
   } else if (theme == "Education") {
     z <- out[out$percentile == max(out$percentile), ]
     
@@ -95,6 +122,7 @@ get_pe_block_sentence <- function(df, theme, select_id, island_or_region,
                     "{ior}.")
     } else NULL
     
+  # Housing
   } else if (theme == "Housing") {
     z <- out[out$var_code %in% c("housing_tenant_pct", 
                                  "housing_value_avg_dollar"), ]
@@ -110,6 +138,7 @@ get_pe_block_sentence <- function(df, theme, select_id, island_or_region,
       }
     } else NULL
     
+  # Transport
   } else if (theme == "Transport") {
     z <- out[out$var_code %in% "trans_car_pct", ]
     z <- z[z$percentile == max(z$percentile), ]

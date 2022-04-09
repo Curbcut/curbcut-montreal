@@ -284,6 +284,7 @@ place_explorer_server <- function(id) {
     # When select_id changes, check island/region again
     island_or_region <- reactive(if (!loc_on_island()) "region" else
       comparison_scale())
+    
 
     # Title card ---------------------------------------------------------------
 
@@ -381,142 +382,119 @@ place_explorer_server <- function(id) {
 
     output$themes_grid <- renderUI({
 
-      themes <- pe_theme_order[[df()]][[island_or_region()]]
-      themes <- themes[themes$ID == select_id(), ]
-      standout <- themes$standout
-      themes <- themes$theme
-
-      text_island_region <-
-        if (island_or_region() == "island") {
-          sus_translate("the island")
-        } else {
-          sus_translate("the region")
-        }
-
-      standout_definition <-
-        c("Extreme outlier" =
-            sus_translate("`Extreme outlier`: the variables rank in the top/bottom ",
-                          "10% relative to {text_island_region}."),
-          "Outlier" =
-            sus_translate("`Outlier`: the variables rank in the top/bottom 20% ",
-                          "relative to {text_island_region}."),
-          "Typical" =
-            sus_translate("`Typical`: the variables rank in the middle 60% ",
-                          "relative to {text_island_region}."))
+      # Prepare themes and text
+      themes <- get_pe_themes(df(), select_id(), island_or_region())
+      text_ior <- sus_translate(paste0("the ", island_or_region()))
+      stand_def <- c(
+        "Extreme outlier" = sus_translate(
+          "`Extreme outlier`: the variables rank in the top/bottom 10% of ",
+          "{text_ior}."),
+        "Outlier" = sus_translate(
+          "`Outlier`: the variables rank in the top/bottom 20% of {text_ior}."),
+        "Typical" = sus_translate(
+          "`Typical`: the variables rank in the middle 60% of {text_ior}."))
 
       # The "server" of every block
-      lapply(seq_along(themes), \(x) {
+      lapply(themes, \(x) {
 
-        block <- paste0("theme_", themes[[x]], "_block")
+        block_id <- paste0("theme_", x[1], "_block")
 
-        output[[block]] <- renderUI({
+        output[[block_id]] <- renderUI({
 
-          data_order <- get_pe_data_order(
+          # Get the components of the block
+          block <- get_pe_block(
             df = df(), 
-            theme = themes[[x]],
+            theme = x[1],
             select_id = select_id(), 
             island_or_region = island_or_region())
+          
+          text <- block[[1]]
+          plots <- block[[2]]
+          sentence <- block[[3]]
 
-          to_grid <- get_pe_block_text(
-            df = df(),
-            theme = themes[[x]],
-            select_id = select_id(),
-            island_or_region = island_or_region(),
-            data_order = data_order)
-
-          plots <- get_pe_block_plot(
-            df = df(),
-            theme = themes[[x]],
-            select_id = select_id(),
-            island_or_region = island_or_region(),
-            data_order = data_order)
-
-          sentence <- get_pe_block_sentence(
-            df = df(),
-            theme = themes[[x]],
-            select_id = select_id(),
-            island_or_region = island_or_region(),
-            data_order = data_order)
-
-          if (nrow(to_grid) > 0)
-            lapply(seq_len(nrow(to_grid)), \(z) {
-              output[[paste0("ind_", themes[[x]], z, "_row_title")]] <-
+          # Only proceed if the block has data
+          if (!is.null(block)) {
+            
+            # Render the text and plots
+            lapply(seq_along(text$var_title), \(z) {
+              
+              output[[paste0("ind_", x[1], z, "_row_title")]] <-
                 renderText({
-                  paste(p(style = "    font-size: 11px;",
-                          sus_translate(to_grid[z, ][["var_title"]]),
+                  paste(p(style = "font-size: 11px;",
+                          sus_translate(text$var_title[z]),
                           icon("question"),
                           title = str_to_sentence(
-                            sus_translate(to_grid[z, ][["explanation"]]))))
+                            sus_translate(text$explanation[z]))))
                 })
 
-              output[[paste0("ind_", themes[[x]],  z, "_percentile")]] <-
-                renderText({to_grid[z, ][["percentile"]]})
+              output[[paste0("ind_", x[1],  z, "_percentile")]] <-
+                renderText(text$percentile[z])
 
-              output[[paste0("ind_", themes[[x]], z, "_value")]] <-
-                renderText({to_grid[z, ][["value"]]})
+              output[[paste0("ind_", x[1], z, "_value")]] <-
+                renderText(text$value[z])
 
-              output[[paste0("ind_", themes[[x]], z, "_plot")]] <-
-                renderPlot({plots[[z]]})
+              output[[paste0("ind_", x[1], z, "_plot")]] <-
+                renderPlot(plots[[z]])
 
             })
-
-          if (nrow(to_grid) > 0) {
-            translated_theme <- str_to_upper(sus_translate(themes[[x]]))
-            translated_standout <- str_to_lower(sus_translate(standout[[x]]))
-            translated_standout_definition <- standout_definition[[which(names(
-              standout_definition) == standout[[x]])]]
-
-            nb_values_to_show <- min(nrow(to_grid), 5)
-
-            block_title <- paste0(translated_theme, " (",
-                                  translated_standout, ")")
-
+            
+            trans_theme <- str_to_upper(sus_translate(x[1]))
+            trans_standout <- str_to_lower(sus_translate(x[2]))
+            trans_stand_def <- stand_def[[which(names(stand_def) == x[2])]]
+            
+            nb_values_to_show <- min(nrow(text), 5)
+            
+            block_title <- paste0(trans_theme, " (", trans_standout, ")")
+            
+            # Final block rendering
             tagList(
               h3(style = "text-transform:inherit;",
                  block_title,
-                 title = translated_standout_definition),
+                 title = trans_stand_def),
               if (!is.null(sentence)) p(style = "font-size: small;",
                                         sentence),
               lapply(seq_len(nb_values_to_show), \(z) {
                 tagList(fluidRow(
-
+                  
                   column(width = 4,
                          if (z == 1) h5(sus_translate("Variable")),
                          htmlOutput(eval(parse(
-                           text = paste0("NS(id, 'ind_", themes[[x]], z,
+                           text = paste0("NS(id, 'ind_", x[1], z,
                                          "_row_title')"))))),
-
+                  
                   column(width = 2,
                          if (z == 1) h5(sus_translate("Rank")),
                          htmlOutput(eval(parse(
-                           text = paste0("NS(id, 'ind_", themes[[x]], z,
+                           text = paste0("NS(id, 'ind_", x[1], z,
                                          "_percentile')"))))),
-
+                  
                   column(width = 2,
                          if (z == 1) h5(sus_translate("Value")),
                          htmlOutput(eval(parse(
-                           text = paste0("NS(id, 'ind_", themes[[x]], z,
+                           text = paste0("NS(id, 'ind_", x[1], z,
                                          "_value')"))))),
-
+                  
                   column(width = 3,
                          if (z == 1) h5(sus_translate("Plot")),
                          plotOutput(eval(parse(
-                           text = paste0("NS(id, 'ind_", themes[[x]], z,
+                           text = paste0("NS(id, 'ind_", x[1], z,
                                          "_plot')"))),
                            height = 25))
                 ),
                 br()
                 )
               })
-            )} else {
-              tagList(fluidRow(h3(sus_translate(themes[[x]]))),
-                      fluidRow("No data."))
-            }
-        }) |> bindCache(df(), select_id(), island_or_region(), x,
-                       input$themes_checkbox)
+            )
+            
+          } else tagList(fluidRow(h3(sus_translate(x[1]))),
+                         fluidRow("No data."))
+        }) #|> bindCache(df(), select_id(), island_or_region(), x,
+            #           input$themes_checkbox)
       })
 
+      standout <- sapply(themes, \(x) x[2])
       which_standout <- which(standout %in% c("Extreme outlier", "Outlier"))
+      themes <- sapply(themes, \(x) x[1])
 
       lapply(seq_along(themes), \(x) {
         tagList(
