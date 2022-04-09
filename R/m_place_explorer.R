@@ -130,7 +130,8 @@ place_explorer_server <- function(id) {
     ns_id_map <- paste0(ns_id, "-map")
     ns_id_map_click <- paste0(ns_id, "-map_click")
     
-    # Inputs and reactives -----------------------------------------------------
+    
+    ## Inputs and reactives ----------------------------------------------------
     
     # Initial reactives
     loc_DAUID <- reactiveVal(NA)
@@ -160,14 +161,14 @@ place_explorer_server <- function(id) {
     data <- reactive(get(df()))
     select_id <- reactive({
       if (is.na(loc_DAUID())) NA else {
-        to_retrieve <- switch(df(), "borough" = "CSDUID", "CT" = "CTUID", 
-                              "DA" = "DAUID")
+        to_retrieve <- switch(df(), borough = "CSDUID", CT = "CTUID", 
+                              DA = "DAUID")
         DA[[to_retrieve]][DA$DAUID == loc_DAUID()]
       }
     })
     
     
-    # Main map -----------------------------------------------------------------
+    ## Main map ----------------------------------------------------------------
     
     output[[ns_id_map]] <- renderRdeck(
       rdeck(map_style = map_base_style, initial_view_state = view_state(
@@ -183,7 +184,7 @@ place_explorer_server <- function(id) {
       )
     
     
-    # Retrieve location --------------------------------------------------------
+    ## Retrieve location -------------------------------------------------------
 
     # Search
     observe({
@@ -199,11 +200,9 @@ place_explorer_server <- function(id) {
       if (sum(pcs) > 0) {
         loc_DAUID(postal_codes$DAUID[pcs])
 
-        loc_name(
-          postal_codes$postal_code[pcs] |>
-            str_to_upper() |>
-            (\(x) paste(substr(x, 1, 3), substr(x, 4, 6)))()
-          )
+        loc_name(postal_codes$postal_code[pcs] |>
+                   str_to_upper() |>
+                   (\(x) paste(substr(x, 1, 3), substr(x, 4, 6)))())
 
       } else {
         showNotification(
@@ -245,7 +244,7 @@ place_explorer_server <- function(id) {
     }) |> bindEvent(input[["title_card_map_click"]])
 
 
-    # Main map updates and JS --------------------------------------------------
+    ## Main map updates and JS -------------------------------------------------
 
     widgets_name <- c("back_to_map", "grid_elements", "sidebar_widgets")
 
@@ -286,7 +285,7 @@ place_explorer_server <- function(id) {
       comparison_scale())
     
 
-    # Title card ---------------------------------------------------------------
+    ## Title card --------------------------------------------------------------
 
     # Draw title card map
     output$title_card_map <- renderRdeck({
@@ -317,6 +316,7 @@ place_explorer_server <- function(id) {
                       get_line_width = 0)
       })
 
+    # Title card title
     output$title_card_title <- renderText({
       if (df() == "borough") {
         HTML("<h2>",
@@ -341,6 +341,7 @@ place_explorer_server <- function(id) {
                   "</i></h2>")
     })
 
+    # Title card contents
     output$title_card <- renderUI({
 
       title_card_to_grid <<- get_title_card(
@@ -375,7 +376,7 @@ place_explorer_server <- function(id) {
           br()
           )
         })
-    })
+    }) |> bindCache(df(), select_id(), island_or_region())
 
 
     ## Place explorer data -----------------------------------------------------
@@ -488,8 +489,8 @@ place_explorer_server <- function(id) {
             
           } else tagList(fluidRow(h3(sus_translate(x[1]))),
                          fluidRow("No data."))
-        }) #|> bindCache(df(), select_id(), island_or_region(), x,
-            #           input$themes_checkbox)
+        }) |> bindCache(df(), select_id(), island_or_region(), x,
+                        input$themes_checkbox)
       })
 
       standout <- sapply(themes, \(x) x[2])
