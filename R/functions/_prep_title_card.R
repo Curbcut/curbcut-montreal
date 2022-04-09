@@ -177,7 +177,9 @@ prep_title_card <- function(df, select_id, ind, percent = TRUE,
         theme(panel.background = element_rect(fill = "#fbfbfb", colour = NA),
               plot.background = element_rect(fill = "#fbfbfb", colour = NA))
       
-    } else ggplot()
+    } else ggplot() +
+    theme(panel.background = element_rect(fill = "#fbfbfb", colour = NA),
+          plot.background = element_rect(fill = "#fbfbfb", colour = NA))
   
   
   return(info)

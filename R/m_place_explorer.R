@@ -282,7 +282,7 @@ place_explorer_server <- function(id) {
       var_list = reactive(list("Island" = "island", "Region" = "region")))
 
     # When select_id changes, check island/region again
-    island_comparison <- reactive(if (!loc_on_island()) "region" else
+    island_or_region <- reactive(if (!loc_on_island()) "region" else
       comparison_scale())
 
     # Title card ---------------------------------------------------------------
@@ -343,7 +343,7 @@ place_explorer_server <- function(id) {
     output$title_card <- renderUI({
 
       title_card_to_grid <<- get_title_card(
-        df(), select_id(), island_comparison())
+        df(), select_id(), island_or_region())
 
       lapply(seq_along(title_card_to_grid), \(x) {
         output[[paste0("ind_", x, "_plot")]] <- renderPlot({
@@ -381,13 +381,13 @@ place_explorer_server <- function(id) {
 
     output$themes_grid <- renderUI({
 
-      themes <- pe_theme_order[[df()]][[island_comparison()]]
+      themes <- pe_theme_order[[df()]][[island_or_region()]]
       themes <- themes[themes$ID == select_id(), ]
       standout <- themes$standout
       themes <- themes$theme
 
       text_island_region <-
-        if (island_comparison() == "island") {
+        if (island_or_region() == "island") {
           sus_translate("the island")
         } else {
           sus_translate("the region")
@@ -411,30 +411,31 @@ place_explorer_server <- function(id) {
 
         output[[block]] <- renderUI({
 
-          data_order <- pe_variable_order[[df()]]
-          data_order <- data_order[[island_comparison()]]
-          data_order <- data_order[data_order$theme == themes[[x]],]
-          data_order <- data_order[data_order$ID == select_id(), "var_code"]
+          data_order <- get_pe_data_order(
+            df = df(), 
+            theme = themes[[x]],
+            select_id = select_id(), 
+            island_or_region = island_or_region())
 
           to_grid <- get_pe_block_text(
             df = df(),
             theme = themes[[x]],
             select_id = select_id(),
-            island_or_region = island_comparison(),
+            island_or_region = island_or_region(),
             data_order = data_order)
 
           plots <- get_pe_block_plot(
             df = df(),
             theme = themes[[x]],
             select_id = select_id(),
-            island_or_region = island_comparison(),
+            island_or_region = island_or_region(),
             data_order = data_order)
 
           sentence <- get_pe_block_sentence(
             df = df(),
             theme = themes[[x]],
             select_id = select_id(),
-            island_or_region = island_comparison(),
+            island_or_region = island_or_region(),
             data_order = data_order)
 
           if (nrow(to_grid) > 0)
@@ -511,7 +512,7 @@ place_explorer_server <- function(id) {
               tagList(fluidRow(h3(sus_translate(themes[[x]]))),
                       fluidRow("No data."))
             }
-        }) |> bindCache(df(), select_id(), island_comparison(), x,
+        }) |> bindCache(df(), select_id(), island_or_region(), x,
                        input$themes_checkbox)
       })
 
@@ -540,7 +541,7 @@ place_explorer_server <- function(id) {
 
     # Update grid based on checkbox
     observe({
-      themes <- pe_theme_order[[df()]][[island_comparison()]]
+      themes <- pe_theme_order[[df()]][[island_or_region()]]
       themes <- themes[themes$ID == select_id(), ]
       themes <- themes$theme
 

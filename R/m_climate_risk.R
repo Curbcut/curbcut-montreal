@@ -13,7 +13,7 @@ climate_risk_UI <- function(id) {
       NS(id, ns_id),
       susSidebarWidgets(
         select_var_UI(NS(id, ns_id), var_list = make_dropdown(
-          only = list(theme = "Climate"))), 
+          only = list(theme = "Climate risk"))), 
         checkbox_UI(NS(id, ns_id), value = TRUE,
                     label = sus_translate("250-metre grid"))),
       bottom = div(class = "bottom_sidebar",
@@ -96,7 +96,7 @@ climate_risk_server <- function(id) {
     
     # Left variable server
     var_left <- select_var_server(ns_id, var_list = reactive(
-      make_dropdown(only = list(theme = "Climate"))))
+      make_dropdown(only = list(theme = "Climate risk"))))
     
     # Right variable / compare panel
     var_right <- compare_server(

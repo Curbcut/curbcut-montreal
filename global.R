@@ -23,8 +23,7 @@ suppressPackageStartupMessages({
 
 options(shiny.trace = FALSE) # Set TRUE for debugging
 options(shiny.useragg = TRUE)
-shinyOptions(cache = cachem::cache_disk(file.path(dirname(tempdir()),
-                                                  "cache")))
+shinyOptions(cache = cachem::cache_disk(file.path(dirname(tempdir()), "cache")))
 
 
 # Data --------------------------------------------------------------------

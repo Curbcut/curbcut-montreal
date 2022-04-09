@@ -126,7 +126,8 @@ title_card_indicators <-
                 map(set_names(c("borough", "CT", "DA")), ~{
                   get(.x) |> 
                     st_drop_geometry() |> 
-                    select(ID, CSDUID, paste0("trans_walk_or_bike_pct_", census_max),
+                    select(ID, CSDUID, paste0("trans_walk_or_bike_pct_", 
+                                              census_max),
                            paste0("trans_transit_pct_", census_max)) |> 
                     (\(x) mutate(x, transit_walk_cycle = x[[3]] + x[[4]]))() |> 
                     percentile_calc()
@@ -330,7 +331,8 @@ title_card_index <-
           text = paste0("{z$data_rank} in terms of level of NO2 ",
                         "pollution. {higher_than_threshold}(NO2 = ",
                         "{z$pretty_data_var}, data from {z$data_date})"),
-          link_outside = "https://www.canuedata.ca/tmp/CANUE_METADATA_NO2LUR_A_YY.pdf")
+          link_outside = 
+            "https://www.canuedata.ca/tmp/CANUE_METADATA_NO2LUR_A_YY.pdf")
 
 ## Percentage of Single Family Homes - Census -----------------------------
 
@@ -340,7 +342,8 @@ title_card_indicators <-
                 map(set_names(c("borough", "CT", "DA")), ~{
                   get(.x) |>
                     st_drop_geometry() |>
-                    select(ID, CSDUID, paste0("housing_single_detached_pct_", census_max)) |>
+                    select(ID, CSDUID, paste0("housing_single_detached_pct_", 
+                                              census_max)) |>
                     percentile_calc()
                 })
          ))
@@ -400,7 +403,8 @@ title_card_index <-
           val_digits = 0,
           text = paste0("{z$data_rank} in terms of green space. (",
                         "<a href='", 
-                        "https://www.canuedata.ca/tmp/CANUE_METADATA_GRAVH_AMN_YY.pdf", 
+                        "https://www.canuedata.ca/tmp/",
+                        "CANUE_METADATA_GRAVH_AMN_YY.pdf", 
                         "' ","target='_blank'>", 
                         "NDVI", "</a> = {z$pretty_data_var}, ",
                         "data from {z$data_date})"),
@@ -445,8 +449,8 @@ basic_percentile_retrieval <-
            str_starts(var_code, "climate"))
 
 pe_var_hierarchy <- 
-  map(set_names(c("borough", "CT", "DA")), function(scale) {
-    map(set_names(basic_percentile_retrieval$var_code), function(variable_code) {
+  map(set_names(c("borough", "CT", "DA")), \(scale) {
+    map(set_names(basic_percentile_retrieval$var_code), \(variable_code) {
       
       var_row <- variables[variables$var_code == variable_code, ]
       max_date <- unlist(var_row$dates)[length(unlist(var_row$dates))]
@@ -506,9 +510,10 @@ pe_theme_order <-
       rbind(filter(variables, !str_starts(var_code, "access")),
             variables |>
               filter(str_starts(var_code, "access")) |>
-              mutate(var_code = case_when(str_starts(var_code, "access_jobs") ~
-                                            str_extract(var_code, "access_jobs_[^_]*"),
-                                          TRUE ~ str_extract(var_code, "access_[^_]*")))
+              mutate(var_code = case_when(
+                str_starts(var_code, "access_jobs") ~
+                  str_extract(var_code, "access_jobs_[^_]*"),
+                TRUE ~ str_extract(var_code, "access_[^_]*")))
       )
     
     data <- pe_var_hierarchy[[.x]]
@@ -527,8 +532,10 @@ pe_theme_order <-
       select(ID, contains("percentile")) |> 
       pivot_longer(-ID) |>
       transmute(ID, 
-                group = ifelse(str_detect(name, "island_percentile"), "island", "region"),
-             var_code = str_remove(name, "_island_percentile|_region_percentile"),
+                group = ifelse(str_detect(name, "island_percentile"), 
+                               "island", "region"),
+             var_code = str_remove(name, 
+                                   "_island_percentile|_region_percentile"),
              percentile = value) |> 
       filter(!is.na(percentile)) |> 
       mutate(max_or_min = abs(0.5 - percentile)) |> 
@@ -553,9 +560,10 @@ pe_variable_order <-
       rbind(filter(variables, !str_starts(var_code, "access")),
             variables |>
               filter(str_starts(var_code, "access")) |>
-              mutate(var_code = case_when(str_starts(var_code, "access_jobs") ~
-                                            str_extract(var_code, "access_jobs_[^_]*"),
-                                          TRUE ~ str_extract(var_code, "access_[^_]*")))
+              mutate(var_code = case_when(
+                str_starts(var_code, "access_jobs") ~
+                  str_extract(var_code, "access_jobs_[^_]*"),
+                TRUE ~ str_extract(var_code, "access_[^_]*")))
       )
     
     data <- pe_var_hierarchy[[.x]]
@@ -574,8 +582,10 @@ pe_variable_order <-
       select(ID, contains("percentile")) |> 
       pivot_longer(-ID) |>
       transmute(ID, 
-                group = ifelse(str_detect(name, "island_percentile"), "island", "region"),
-                var_code = str_remove(name, "_island_percentile|_region_percentile"),
+                group = ifelse(str_detect(name, "island_percentile"), 
+                               "island", "region"),
+                var_code = str_remove(name, 
+                                      "_island_percentile|_region_percentile"),
                 percentile = value) |> 
       filter(!is.na(percentile)) |> 
       mutate(max_or_min = abs(0.5 - percentile)) |> 
