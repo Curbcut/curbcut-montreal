@@ -13,8 +13,8 @@ get_pe_block_sentence <- function(df, theme, select_id, island_or_region,
   }
   
   vars_theme <- vars[vars$var_code %in% data_ord$var_code, ]
-  vars_theme <- vars_theme[order(match(
-    vars_theme$var_code, data_ord$var_code)), c("var_title", "explanation")]
+  vars_theme <- vars_theme[order(match(vars_theme$var_code, data_ord$var_code)), 
+                           c("var_title", "explanation")]
   
   data_ord <- cbind(data_ord, vars_theme)
   
