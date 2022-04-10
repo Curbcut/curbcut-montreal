@@ -19,6 +19,7 @@ suppressPackageStartupMessages({
   postal_codes <- qread("data/postal_codes.qs")
   
   source("R/functions/_get_pe_data_order.R")
+  source("R/functions/_get_pe_themes.R")
   source("R/functions/_get_pe_block.R")
   source("R/functions/_get_CT_access_vars.R")
   source("R/functions/_get_title_card.R")
@@ -38,13 +39,13 @@ island_or_region = "region"
 # select_id <- "24661269"
 
 df <- "CT"
-select_id <- "4620213.00"
+select_id <- "4620145.00"
 island_or_region <- "island"
 
 title_card <- get_title_card(df, select_id, island_or_region)
 themes <- get_pe_themes(df, select_id, island_or_region)
 
-x <- themes[[10]]
+x <- themes[[1]]
 theme <- x[1]
 
 block <- get_pe_block(

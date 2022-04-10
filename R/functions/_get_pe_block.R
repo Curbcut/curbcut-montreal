@@ -279,20 +279,39 @@ get_pe_block <- function(df, theme, select_id, island_or_region) {
     
     z <- out$percentile[out$var_code == "trans_car_pct"]
 
-    more_less <- if (z >= 0.8) {
-      "much more"
-    } else if (z >= 0.6) {
-      "more"
-    } else if (z >= 0.5) {
-      "slightly more"
-    } else if (z >= 0.4) {
-      "slightly less"
-    } else if (z >= 0.2) {
-      "less"
-    } else "much less"
-    
-    sus_translate("Residents in the area drive to work {more_less} than ",
-                  "average compared to the rest of {ior}.")
+    if (length(z) > 0) {
+      more_less <- if (z >= 0.8) {
+        "much more"
+      } else if (z >= 0.6) {
+        "more"
+      } else if (z >= 0.5) {
+        "slightly more"
+      } else if (z >= 0.4) {
+        "slightly less"
+      } else if (z >= 0.2) {
+        "less"
+      } else "much less"
+      
+      sus_translate("Residents in the area drive to work {more_less} than ",
+                    "average compared to the rest of {ior}.")
+    } else {
+      z <- out$percentile[out$var_code == "access_jobs_total"]
+      more_less <- if (z >= 0.8) {
+        "much more"
+      } else if (z >= 0.6) {
+        "more"
+      } else if (z >= 0.5) {
+        "slightly more"
+      } else if (z >= 0.4) {
+        "slightly less"
+      } else if (z >= 0.2) {
+        "less"
+      } else "much less"
+      
+      sus_translate("The area has {more_less} public transit access to jobs ",
+                    "than the rest of {ior}.")
+      
+    }
   } else NULL
   
   
