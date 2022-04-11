@@ -8,9 +8,9 @@ library(magick)
 
 round_img_shadow <- function(img_name) {
 
-  path <- paste0("dev/data/stories_raw_images/banner_bubble_raw_img", img_name)
+  path <- paste0("dev/data/stories_raw_images/banner_bubble_raw_img/", img_name)
   img <- magick::image_read(path)
-  shadow_right <- magick::image_read("www/dropshadow_right.png")
+  shadow_right <- magick::image_read("dev/data/dropshadow_right.png")
   
   # get height, width and crop longer side to match shorter side
   img_info <- magick::image_info(img)
@@ -48,7 +48,8 @@ round_img_shadow <- function(img_name) {
   
 }
 
-stories_img <- str_subset(list.files("www/stories/raw_img"), ".png$")
+stories_img <- str_subset(list.files("dev/data/stories_raw_images/banner_bubble_raw_img"), 
+                          ".png$")
 
 if (length(stories_img) != length(list.files("dev/data/stories_raw_images/banner_bubble_raw_img"))) {
   not_pngs <- 
