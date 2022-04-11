@@ -336,7 +336,7 @@ shinyServer(function(input, output, session) {
     write.csv2(contact_form, file = file_name)
     removeModal()
     showNotification(sus_translate("Sent and received. Thank you!"), 
-                     duration = 1.5)
+                     duration = 3)
   })
   
   

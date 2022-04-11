@@ -79,10 +79,14 @@ susFooter <- function() {
       ),
       tags$div(class = "sus-page-footer-links",
         tags$ul(
-          tags$li(tags$a(href = "", sus_translate("About"))),
-          tags$li(tags$a(href = "", sus_translate("Terms & Conditions"))),
-          tags$li(tags$a(href = "", sus_translate("Privacy Policy"))),
-          tags$li(tags$a(href = "", sus_translate("Contact")))
+          tags$li(tags$a(href = NULL, HTML("&nbsp;"))),#sus_translate("Terms & Conditions"))),
+          tags$li(tags$a(href = NULL, style = "cursor:pointer;", 
+                         onclick = "openTab('why_dash')", 
+                         sus_translate("About"))),
+          tags$li(tags$a(href = NULL, style = "cursor:pointer;", 
+                         onclick = "document.getElementById('contact').click();",
+                         sus_translate("Contact"))),
+          tags$li(tags$a(href = NULL, HTML("&nbsp;")))#sus_translate("Privacy Policy"))),
         )
       )
     )

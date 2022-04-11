@@ -84,15 +84,15 @@ ui <- function(request) {
                                 href = "#",
                                 icon("link"), sus_translate("Bookmark"), 
                                 onclick = "copyUrl()"),
-                              actionLink(inputId = "download_data", 
-                                         label = sus_translate(
-                                           "Data explanation and export"), 
-                                         icon("download")),
-                              downloadLink("create_report", 
-                                           label = div(icon("file-pdf"), 
-                                                        sus_translate(
-                                                         "Generate a report")))
-                                               # actionLink(inputId = "contact", label = "Contact/feedback", icon("comment"))
+                              # actionLink(inputId = "download_data", 
+                              #            label = sus_translate(
+                              #              "Data explanation and export"), 
+                              #            icon("download")),
+                              # downloadLink("create_report", 
+                              #              label = div(icon("file-pdf"), 
+                              #                           sus_translate(
+                              #                            "Generate a report")))
+                                               actionLink(inputId = "contact", label = "Contact/feedback", icon("comment"))
              ), "summarize")
            )
       ))
