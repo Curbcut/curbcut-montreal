@@ -314,6 +314,13 @@ place_explorer_server <- function(id) {
                       auto_highlight = TRUE,
                       highlight_color = "#AAB6CF60",
                       get_fill_color = scale_fill_pe(select_id()),
+                      get_line_width = 0) |>
+        add_mvt_layer(id = "DA_empty",
+                      data = mvt_url(paste0("sus-mcgill.DA_empty")),
+                      pickable = TRUE,
+                      auto_highlight = TRUE,
+                      highlight_color = "#AAB6CF60",
+                      get_fill_color = scale_fill_pe(select_id()),
                       get_line_width = 0)
       })
 
