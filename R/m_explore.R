@@ -28,7 +28,7 @@ explore_UI <- function(id) {
         htmlOutput(NS(id, "info_table")),
         plotOutput(NS(id, "explore_graph"), height = 150),
         hidden(actionLink(inputId = NS(id, "clear_selection"),
-                          label = "Clear selection")))
+                          label = sus_translate("Clear selection"))))
   )
 }
 

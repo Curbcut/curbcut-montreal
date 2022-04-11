@@ -239,7 +239,9 @@ title_text_translation <-
                       "cking on individual census tracts shows which other cen",
                       "sus tracts are reachable within a given travel time and",
                       " at a chosen period of the day (peak, off-peak, and nig",
-                      "ht)."), 
+                      "ht). To return to the accessibility map, click on the s",
+                      "ame census tract again or on ‘Clear selection’ in the E",
+                      "xplore panel."), 
           fr = paste0("L’accessibilité (la facilité à atteindre les destinatio",
                       "ns souhaitées) est l’élément le plus important d’un rés",
                       "eau de transport. Ce module affiche les endroits access",
@@ -249,7 +251,9 @@ title_text_translation <-
                       "quels autres secteurs de recensement sont accessibles d",
                       "ans un temps de trajet donné et à une période choisie d",
                       "e la journée (heures de pointe, heures hors-pointe et n",
-                      "uit).")) |> 
+                      "uit). Pour revenir à la carte sur l'accessibilité, cliq",
+                      "uez à nouveau sur le même secteur de recensement ou sur",
+                      " 'Effacer la sélection' dans le panneau 'Explorez'.")) |> 
   add_row(en = paste0("<p>This module focuses on public transit accessibility ",
                       "to a set of key destinations: all jobs, ‘low-skill’ job",
                       "s (those not requiring a university degree), ‘high-skil",

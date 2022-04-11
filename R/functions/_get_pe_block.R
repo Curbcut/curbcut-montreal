@@ -75,7 +75,7 @@ get_pe_block <- function(df, theme, select_id, island_or_region) {
       dat <- data[!is.na(data$var),]
       outliers <- find_outliers(dat$var)
       if (length(outliers) > 0 && !data_sel %in% dat$var[outliers]) {
-        dat <- dat[-outliers,]
+        dat <- dat[-outliers, ]
       }
       
       ggplot(dat) +

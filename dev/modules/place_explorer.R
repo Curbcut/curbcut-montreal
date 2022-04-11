@@ -446,7 +446,8 @@ title_card_index <-
 basic_percentile_retrieval <- 
   variables |> 
   filter(source == "census" |
-           str_starts(var_code, "climate"))
+           str_starts(var_code, "climate")) |> 
+  filter(var_code != "climate_flood_ind")
 
 pe_var_hierarchy <- 
   map(set_names(c("borough", "CT", "DA")), \(scale) {
@@ -606,7 +607,7 @@ pe_theme_order <- lapply(pe_theme_order, \(x) split(x, x$group))
 
 # Cleanup -----------------------------------------------------------------
 
-rm(basic_percentile_retrieval, gentrification_min_max, min_access_var_code,
+rm(basic_percentile_retrieval, min_access_var_code,
    # bixi_stations, 
    census_max, groups, last_crash_data_year, island_CSDUID,
    ndvi, no2, percentile_calc)

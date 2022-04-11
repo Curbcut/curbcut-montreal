@@ -507,7 +507,9 @@ ui_and_misc_translated <-
   add_row(en = paste0("Both low"), 
           fr = paste0("Les deux faibles")) |> 
   add_row(en = paste0("Minutes to reach census tract"), 
-          fr = paste0("Minutes pour atteindre le secteur de recensement")) 
+          fr = paste0("Minutes pour atteindre le secteur de recensement")) |> 
+  add_row(en = paste0("Clear selection"), 
+          fr = paste0("Effacer la selection"))
 
 # Save --------------------------------------------------------------------
 

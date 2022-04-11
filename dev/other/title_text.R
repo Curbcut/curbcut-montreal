@@ -143,12 +143,16 @@ title_text <-
                         "recovery for the businesses which have been affected by COVID-19.")) |> 
   add_row(tab = "access", type = "title", text = "Accessibility to opportunities") |> 
   add_row(tab = "access", type = "main", text = paste0(
-    "Accessibility (the ease of reaching desired destinations) is the most ",
-    "important element of a transport network. This module displays what is ",
-    "accessible on public transit within 30 minutes’ “door-to-door” travel time. ",
-    "Clicking on individual census tracts shows which other census tracts are ",
-    "reachable within a given travel time and at a chosen period of the day ",
-    "(peak, off-peak, and night).")) |> 
+    "Accessibility (the ease of reaching desired destination",
+    "s) is the most important element of a transport network",
+    ". This module displays what is accessible on public tra",
+    "nsit within 30 minutes’ “door-to-door” travel time. Cli",
+    "cking on individual census tracts shows which other cen",
+    "sus tracts are reachable within a given travel time and",
+    " at a chosen period of the day (peak, off-peak, and nig",
+    "ht). To return to the accessibility map, click on the s",
+    "ame census tract again or on ‘Clear selection’ in the E",
+    "xplore panel.")) |> 
   add_row(tab = "access", type = "extra", text = paste0(
     "<p>This module focuses on public transit accessibility to a set of key ",
     "destinations: ", 
