@@ -44,17 +44,17 @@ prep_title_card <- function(df, select_id, ind, percent = TRUE,
       } else sum(!is.na(data$var))
     
     # If high is good, then last rank means 1st. Inverse!
-    data_rank <- if (high_is_good) df_row - rank + 1 else rank
+    data_borough_rank <- if (high_is_good) df_row - rank + 1 else rank
     
     text_data_rank <- 
-      if (data_rank > 2 / 3 * df_row) {
-        sus_translate("relatively low at {ordinal_form(data_rank)}")
-      } else if (data_rank > 1 / 3 * df_row) {
-        ordinal_form(data_rank)
+      if (data_borough_rank > 2 / 3 * df_row) {
+        sus_translate("relatively low at {ordinal_form(data_borough_rank)}")
+      } else if (data_borough_rank > 1 / 3 * df_row) {
+        ordinal_form(data_borough_rank)
       } else {
-      if (sus_rv$lang() == "fr" && {ordinal_form(data_rank)} == "") {
+      if (sus_rv$lang() == "fr" && {ordinal_form(data_borough_rank)} == "") {
         "premier"
-      } else sus_translate("{ordinal_form(data_rank)} best")
+      } else sus_translate("{ordinal_form(data_borough_rank)} best")
     }
     
     text_island_region <- if (island) sus_translate(" on the island") else 
@@ -72,20 +72,14 @@ prep_title_card <- function(df, select_id, ind, percent = TRUE,
         
       } else if (data_rank > 0.75) {
         
-        text_high_is_good <- if (high_is_good) sus_translate("highest") else 
-          sus_translate("lowest")
-        
-        paste0(sus_translate("{geo_area} ranks in the {text_high_is_good} "),
+        paste0(sus_translate("{geo_area} ranks in the top "),
                if (abs(data_rank - 1) < 0.01) "1%" else 
                  scales::percent(abs(data_rank - 1)))
         
       } else if (data_rank < 0.25) {
         
-        text_high_is_good <- if (!high_is_good) sus_translate("highest") else 
-          sus_translate("lowest")
-        
         paste0(
-          sus_translate("{geo_area} ranks in the {text_high_is_good} "),
+          sus_translate("{geo_area} ranks in the bottom "),
           if (data_rank == 0) "1%" else scales::percent(data_rank))
         
       } else {
@@ -165,8 +159,8 @@ prep_title_card <- function(df, select_id, ind, percent = TRUE,
       
       dat <- data[!is.na(data$var),]
       outliers <- find_outliers(dat$var)
-      if (length(outliers) > 0 && data_var %in% dat$var[outliers]) {
-          dat <- dat[-outliers,]
+      if (length(outliers) > 0 && !data_var %in% dat$var[outliers]) {
+          dat <- dat[!dat$var %in% outliers, ]
       }
       
       dat |> 

@@ -112,7 +112,8 @@ place_explorer_UI <- function(id) {
                      "font-size: 11px;",
                      "max-width: 100%; margin:auto; background-color:#fbfbfb;",
                      "padding:30px; border: 1px solid #00000030;"),
-                   column(9, htmlOutput(NS(id, "title_card_title")),
+                   htmlOutput(NS(id, "title_card_title")),
+                   column(9,
                           uiOutput(NS(id, "title_card"), 
                                    style = "margin-top:20px;")),
                    column(3, rdeckOutput(NS(id, "title_card_map")))),
@@ -340,43 +341,44 @@ place_explorer_server <- function(id) {
                          ")"),
                   "</i></h2>")
     })
+    
+    title_card_to_grid <- reactive(get_title_card(
+      df(), select_id(), island_or_region())) |> 
+      bindCache(df(), select_id(), island_or_region(), sus_rv$lang())
 
     # Title card contents
     output$title_card <- renderUI({
 
-      title_card_to_grid <<- get_title_card(
-        df(), select_id(), island_or_region())
-
-      lapply(seq_along(title_card_to_grid), \(x) {
+      lapply(seq_along(title_card_to_grid()), \(x) {
         output[[paste0("ind_", x, "_plot")]] <- renderPlot({
-          title_card_to_grid[[x]][["graph"]]
+          title_card_to_grid()[[x]][["graph"]]
           })
         })
 
-      lapply(seq_along(title_card_to_grid), \(x) {
+      lapply(seq_along(title_card_to_grid()), \(x) {
         tagList(
           fluidRow(
             column(width = 2, HTML(paste0(
               "<p style = 'margin:auto; text-align:center;",
               "font-size: medium; font-weight:bold;'>",
-              sus_translate(title_card_to_grid[[x]][["row_title"]]) |>
+              sus_translate(title_card_to_grid()[[x]][["row_title"]]) |>
                 str_to_upper(), "</p>"))),
             column(width = 2, HTML(paste0(
               "<p style = 'margin:auto; text-align:center;'>",
-              title_card_to_grid[[x]][["percentile"]] |>
+              title_card_to_grid()[[x]][["percentile"]] |>
                 str_to_upper(), "</p>"))),
             column(width = 2, plotOutput(eval(parse(
               text = paste0("NS(id, 'ind_", x, "_plot')"))), height = 25)),
             column(width = 6, HTML(paste0(
               "<p style = 'color: #999999; font-size:small'>",
-              paste0(title_card_to_grid[[x]][["text"]],
-                     title_card_to_grid[[x]][["link"]]),
+              paste0(title_card_to_grid()[[x]][["text"]],
+                     title_card_to_grid()[[x]][["link"]]),
               "</p>")))
             ),
           br()
           )
         })
-    }) |> bindCache(df(), select_id(), island_or_region())
+    })
 
 
     ## Place explorer data -----------------------------------------------------
@@ -490,7 +492,7 @@ place_explorer_server <- function(id) {
           } else tagList(fluidRow(h3(sus_translate(x[1]))),
                          fluidRow("No data."))
         }) |> bindCache(df(), select_id(), island_or_region(), x,
-                        input$themes_checkbox)
+                        input$themes_checkbox, sus_rv$lang())
       })
 
       standout <- sapply(themes, \(x) x[2])
@@ -535,7 +537,7 @@ place_explorer_server <- function(id) {
     ## Links to other modules --------------------------------------------------
     
     observe({
-      z <- title_card_to_grid[["total_crash_per1k"]]
+      z <- title_card_to_grid()[["total_crash_per1k"]]
       module_link(module = z$link_module,
                   select_id = select_id(),
                   var_left = z$link_var_left,
@@ -543,7 +545,7 @@ place_explorer_server <- function(id) {
     }) |> bindEvent(input$title_card_total_crash_per1k)
 
     observe({
-      z <- title_card_to_grid[["single_detached"]]
+      z <- title_card_to_grid()[["single_detached"]]
       module_link(module = z$link_module,
                   select_id = select_id(),
                   var_left = z$link_var_left,
@@ -551,7 +553,7 @@ place_explorer_server <- function(id) {
     }) |> bindEvent(input$title_card_single_detached)
 
     observe({
-      z <- title_card_to_grid[["green_space_ndvi"]]
+      z <- title_card_to_grid()[["green_space_ndvi"]]
       module_link(module = z$link_module,
                   select_id = select_id(),
                   var_left = z$link_var_left,
@@ -559,7 +561,7 @@ place_explorer_server <- function(id) {
     }) |> bindEvent(input$title_card_green_space_ndvi)
 
     observe({
-      z <- title_card_to_grid[["canale_index"]]
+      z <- title_card_to_grid()[["canale_index"]]
       module_link(module = z$link_module,
                   select_id = select_id(),
                   var_left = z$link_var_left,
