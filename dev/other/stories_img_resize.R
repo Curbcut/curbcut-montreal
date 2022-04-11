@@ -4,6 +4,8 @@ photos <-
   map(list.files("dev/data/stories_raw_images", full.names = TRUE), 
       list.files, full.names = TRUE) |> unlist()
 
+photos <- photos[!str_detect(photos, "banner_bubble_raw_img|.gif$")]
+
 walk(photos, function(photo) {
   img <- magick::image_read(photo)
   final_path <- photo |> str_replace("dev/data/stories_raw_images/", 
