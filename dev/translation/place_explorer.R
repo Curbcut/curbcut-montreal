@@ -44,24 +44,23 @@ place_explorer_translated <-
   add_row(en = paste0("Extreme outlier"), 
           fr = paste0("Donnée aberrante extrême")) |>
   add_row(en = paste0("`Extreme outlier`: the variables rank in the ",
-                      "top/bottom 10% relative to {text_island_region}."), 
-          fr = paste0("`Donnée aberrante extrême`: les variables se classent ",
-                      "dans les 10% supéreurs/inférieurs par rapport à ",
-                      "{text_island_region}")) |>
+                      "top/bottom 10% of {text_ior}."), 
+          fr = paste0("`Donnée aberrante extrême` : les variables se classent ",
+                      "dans les 10% supérieurs/inférieurs de {text_ior}.")) |>
   add_row(en = paste0("Typical"), 
           fr = paste0("Typique")) |>
   add_row(en = paste0("`Outlier`: the variables rank in the top/bottom 20% ",
-                      "relative to {text_island_region}."), 
+                      "of {text_ior}."), 
           fr = paste0("`Donnée aberrante` : les variables se classent dans ",
-                      "les 20% supérieurs/ inférieurs par rapport à ",
-                      "{text_island_region}")) |>
+                      "les 20% supérieurs/inférieurs de {text_ior}.")) |>
   add_row(en = paste0("`Typical`: the variables rank in the middle 60% ",
-                      "relative to {text_island_region}."), 
-          fr = paste0("`Typique` : les variables se situent dans la ",
-                      "fourchette intermédiaire (entre les 20% et 80%) ",
-                      "par rapport à {text_island_region}.")) |>
-  add_row(en = paste0("{geo_area} ranks in the {text_high_is_good} "), 
-          fr = paste0("{geo_area} se classe dans le {text_high_is_good} ")) |>
+                      "of {text_ior}."), 
+          fr = paste0("`Typique` : les variables se situent dans les ",
+                      "60% moyens de {text_ior}.")) |>
+  add_row(en = paste0("{geo_area} ranks in the top "), 
+          fr = paste0("{geo_area} se classe dans le plus haut ")) |>
+  add_row(en = paste0("{geo_area} ranks in the bottom "), 
+          fr = paste0("{geo_area} se classe dans le plus bas ")) |>
   add_row(en = paste0("There were {z$pretty_data_var} total crashes per 1,000 ",
                       "residents in {z$data_date}. {z$data_rank}."), 
           fr = paste0("Il y a eu {z$pretty_data_var} collisions pour 1 000 ",
@@ -107,8 +106,8 @@ place_explorer_translated <-
           fr = paste0("La zone autour du ")) |> 
   add_row(en = paste0("It ranks {text_data_rank} {text_island_region}"), 
           fr = paste0("Il se classe {text_data_rank} {text_island_region}")) |> 
-  add_row(en = paste0("relatively low at {ordinal_form(data_rank)}"), 
-          fr = paste0("relativement bas au {ordinal_form(data_rank)} rang")) |> 
+  add_row(en = paste0("relatively low at {ordinal_form(data_borough_rank)}"), 
+          fr = paste0("relativement bas au {ordinal_form(data_borough_rank)} rang")) |> 
   add_row(en = paste0(" on the island"), 
           fr = paste0(" sur l'île")) |> 
   add_row(en = paste0(" in the region"), 
@@ -121,12 +120,12 @@ place_explorer_translated <-
           fr = paste0("l'île")) |> 
   add_row(en = paste0("the region"), 
           fr = paste0("la région")) |> 
-  add_row(en = paste0("{ordinal_form(data_rank)} best"), 
-          fr = paste0("en {ordinal_form(data_rank)} position")) |> 
+  add_row(en = paste0("{ordinal_form(data_borough_rank)} best"), 
+          fr = paste0("en {ordinal_form(data_borough_rank)} position")) |> 
   add_row(en = paste0("Its value is higher than {scale_percent_data_rank} of ",
                       "{geo_areas} {text_island_region}"), 
           fr = paste0("Sa valeur est supérieure à {scale_percent_data_rank} des ",
-                      "{geo_areas} {text_island_region}.")) |> 
+                      "{geo_areas} {text_island_region}")) |> 
   add_row(en = paste0("the total number of jobs accessible within 30 minutes on average"), 
           fr = paste0("le nombre total d'emplois accessibles en 30 minutes et moins en moyenne")) |> 
   add_row(en = paste0("the number of low-skill jobs accessible within 30 minutes on average"), 
@@ -143,33 +142,118 @@ place_explorer_translated <-
           fr = paste0("le nombre total d'établissements de santé accessibles en 30 minutes et moins en moyenne")) |> 
   add_row(en = paste0("City"), 
           fr = paste0("Ville")) |> 
-  add_row(en = paste0("Residents of the area have a {more_less} proportion of university degrees than average for {island_or_region}."), 
-          fr = paste0("Les résidents de la zone ont une {more_less} proportion de diplômes universitaires en rapport à la moyenne de {island_or_region}.")) |> 
-  add_row(en = paste0("less"), 
-          fr = paste0("moins")) |> 
+  
+  add_row(en = paste0("The area's residents are disproportionately in the {age} ",
+                      "age range, compared to the rest of {ior}."), 
+          fr = paste0("Les résidents de la zone sont disproportionnellement dans ",
+                      "la tranche d'âge {age}, par rapport au reste de {ior}.")) |> 
+  add_row(en = paste0("much higher"), 
+          fr = paste0("beaucoup plus élevé")) |> 
+  add_row(en = paste0("slightly higher"), 
+          fr = paste0("légèrement supérieur")) |> 
+  add_row(en = paste0("slightly lower"), 
+          fr = paste0("légèrement inférieur")) |> 
+  add_row(en = paste0("lower"), 
+          fr = paste0("inférieur")) |> 
+  add_row(en = paste0("much lower"), 
+          fr = paste0("bien inférieur")) |> 
+  add_row(en = paste0("The area has a {more_less} level of climate risk than ",
+                      "average for {ior}."), 
+          fr = paste0("La zone présente un niveau de risque climatique ",
+                      "{more_less} à/que la moyenne de {ior}.")) |> 
+  
+  add_row(en = paste0("much more"), 
+          fr = paste0("beaucoup plus")) |> 
   add_row(en = paste0("more"), 
           fr = paste0("plus")) |> 
-  add_row(en = paste0("Residents in the area drive to work {more_less} than average for {island_or_region}."), 
-          fr = paste0("Les habitants de la région se rendent {more_less} au travail en voiture que la moyenne de {island_or_region}.")) |> 
-  add_row(en = paste0("Property values in the area are higher than average for {island_or_region}."), 
-          fr = paste0("La valeur des propriétés dans la zone est supérieure à la moyenne de {island_or_region}.")) |> 
-  add_row(en = paste0("are more bilingual (French and English)"), 
-          fr = paste0("sont plus bilingues (français et anglais)")) |> 
-  add_row(en = paste0("The area's residents {lang} than average for {island_or_region}."), 
-          fr = paste0("Les habitants de la zone {lang} que la moyenne de {island_or_region}.")) |> 
-  add_row(en = paste0("speak more English"), 
-          fr = paste0("parlent plus l'anglais")) |> 
-  add_row(en = paste0("speak more French"), 
-          fr = paste0("parlent plus le français")) |> 
-  add_row(en = paste0("Incomes in the area are {higher_lower} than average for {island_or_region}."), 
-          fr = paste0("Les revenus de la région sont {higher_lower} que la moyenne de {island_or_region}.")) |> 
-  add_row(en = paste0("The area has {more_less} foreign-born residents than average for {island_or_region}."), 
-          fr = paste0("La zone compte {more_less} de résidents nés à l'étranger que la moyenne de {island_or_region}.")) |> 
-  add_row(en = paste0("The area's population is {older_younger} than average for {island_or_region}."), 
-          fr = paste0("La population de la zone est {older_younger} que la moyenne de {island_or_region}.")) |> 
-  add_row(en = paste0("older"), 
-          fr = paste0("plus vieille")) |> 
-  add_row(en = paste0("younger"), 
-          fr = paste0("plus jeune")) |> 
-  add_row(en = paste0("The area's percentage of tenants is higher than average for {island_or_region}."), 
-          fr = paste0("Le pourcentage de locataires de la zone est supérieur à la moyenne de {island_or_region}."))
+  add_row(en = paste0("slightly more"), 
+          fr = paste0("un peu plus")) |> 
+  add_row(en = paste0("slightly less"), 
+          fr = paste0("un peu moins")) |> 
+  add_row(en = paste0("less"), 
+          fr = paste0("moins")) |> 
+  add_row(en = paste0("much less"), 
+          fr = paste0("beaucoup moins")) |> 
+  add_row(en = paste0("Residents of the area are {more_less} likely than the rest ",
+                      "of {ior} to have a university degree."), 
+          fr = paste0("Les résidents de la zone sont {more_less} ",
+                      "susceptibles que le reste de {ior} d'avoir un diplôme ",
+                      "universitaire.")) |> 
+  
+  add_row(en = paste0("A {more_less} than average share of the area's residents ",
+                      "work in creative and professional occupations compared to ",
+                      "the rest of {ior}."), 
+          fr = paste0("Une part {more_less} à/que la moyenne des résidents ",
+                      "de la zone travaille dans des professions créatives et ",
+                      "professionnelles, par rapport au reste de {ior}.")) |> 
+  
+  add_row(en = paste0("much larger"), 
+          fr = paste0("beaucoup plus grand/s/e/es")) |> 
+  add_row(en = paste0("larger"), 
+          fr = paste0("plus grand/s/e/es")) |> 
+  add_row(en = paste0("slightly larger"), 
+          fr = paste0("un peu plus grand/s/e/es")) |> 
+  add_row(en = paste0("slightly smaller"), 
+          fr = paste0("un peu plus petit/s/e/es")) |> 
+  add_row(en = paste0("smaller"), 
+          fr = paste0("plus petit/s/e/es")) |> 
+  add_row(en = paste0("much smaller"), 
+          fr = paste0("beaucoup plus petit/s/e/es")) |> 
+  add_row(en = paste0("The area's families are {more_less} than average for {ior}."), 
+          fr = paste0("Les familles de la région sont {more_less} que la moyenne de {ior}.")) |> 
+  
+  add_row(en = paste0("much more expensive"), 
+          fr = paste0("beaucoup plus élevé")) |> 
+  add_row(en = paste0("more expensive"), 
+          fr = paste0("plus élevé")) |> 
+  add_row(en = paste0("slightly more expensive"), 
+          fr = paste0("un peu plus élevé")) |> 
+  add_row(en = paste0("slightly cheaper"), 
+          fr = paste0("un peu moins élevé")) |> 
+  add_row(en = paste0("cheaper"), 
+          fr = paste0("moins élevés")) |> 
+  add_row(en = paste0("much cheaper"), 
+          fr = paste0("beaucoup moins élevé")) |> 
+  add_row(en = paste0("Housing costs in the area are {more_less} than average ",
+                      "for {ior}."), 
+          fr = paste0("Le coût du logement dans la zone est {more_less} que ",
+                      "la moyenne de {ior}.")) |> 
+  
+  add_row(en = paste0("slightly fewer"), 
+          fr = paste0("un peu moins")) |> 
+  add_row(en = paste0("fewer"), 
+          fr = paste0("moins")) |> 
+  add_row(en = paste0("much fewer"), 
+          fr = paste0("beaucoup moins")) |> 
+  add_row(en = paste0("The area has {more_less} foreign-born residents than ",
+                      "average for {ior}."), 
+          fr = paste0("La zone compte {more_less} de résidents nés à ",
+                      "l'étranger que la moyenne de {ior}.")) |> 
+  
+  add_row(en = paste0("Incomes in the area are {more_less} than average for {ior}."), 
+          fr = paste0("Les revenus dans la zone sont {more_less} que la moyenne de {ior}.")) |> 
+  
+  add_row(en = paste0("speak English"), 
+          fr = paste0("parler anglais")) |> 
+  add_row(en = paste0("speak French"), 
+          fr = paste0("parler français")) |> 
+  add_row(en = paste0("be bilingual (French and English)"), 
+          fr = paste0("parler bilingue (français et anglais)")) |> 
+  add_row(en = paste0("speak neither French nor English"), 
+          fr = paste0("ne parler ni français ni anglais")) |> 
+  add_row(en = paste0("The area's residents are {more_less} likely to {lang} ",
+                      "than average for {ior}."), 
+          fr = paste0("Les habitants de la zone sont {more_less} susceptibles de ",
+                      "{lang} que la moyenne de {ior}.")) |> 
+  
+  add_row(en = paste0("Residents in the area drive to work {more_less} than ",
+                      "average compared to the rest of {ior}."), 
+          fr = paste0("Les habitants de la région se rendent {more_less} au ",
+                      "travail en voiture que la moyenne par rapport au ",
+                      "reste de {ior}.")) |> 
+  
+  add_row(en = paste0("The area has {more_less} public transit access to jobs ",
+                      "than the rest of {ior}."), 
+          fr = paste0("La zone dispose d'un accès aux emplois par les ",
+                      "transports en commun {more_less} important que le reste de {ior}."))
+  

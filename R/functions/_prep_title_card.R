@@ -85,7 +85,8 @@ prep_title_card <- function(df, select_id, ind, percent = TRUE,
       } else {
         
         scale_percent_data_rank <- scales::percent(data_rank)
-        text_island_region <- if (island) "on the island" else "in the region"
+        text_island_region <- if (island) sus_translate("on the island") else 
+          sus_translate("in the region")
         
         sus_translate("Its value is higher than {scale_percent_data_rank} ",
                       "of {geo_areas} {text_island_region}")
@@ -160,7 +161,7 @@ prep_title_card <- function(df, select_id, ind, percent = TRUE,
       dat <- data[!is.na(data$var),]
       outliers <- find_outliers(dat$var)
       if (length(outliers) > 0 && !data_var %in% dat$var[outliers]) {
-          dat <- dat[!dat$var %in% outliers, ]
+          dat <- dat[-outliers, ]
       }
       
       dat |> 

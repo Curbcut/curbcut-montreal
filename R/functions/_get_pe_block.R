@@ -99,7 +99,7 @@ get_pe_block <- function(df, theme, select_id, island_or_region) {
   
   out <- cbind(data_order, out)
   out <- out[!is.na(out$value), ]
-  ior <- paste0("the ", island_or_region)
+  ior <- sus_translate("the ", island_or_region)
   
   # Age
   sentence <- if (theme == "Age") {
@@ -121,16 +121,16 @@ get_pe_block <- function(df, theme, select_id, island_or_region) {
     
     z <- mean(out$percentile)
     more_less <- if (z >= 0.8) {
-      "much higher"
+      sus_translate("much higher")
     } else if (z >= 0.6) {
-      "higher"
+      sus_translate("higher")
     } else if (z >= 0.5) {
-      "slightly higher"
+      sus_translate("slightly higher")
     } else if (z >= 0.4) {
-      "slightly lower"
+      sus_translate("slightly lower")
     } else if (z >= 0.2) {
-      "lower"
-    } else "much lower"
+      sus_translate("lower")
+    } else sus_translate("much lower")
     sus_translate("The area has a {more_less} level of climate risk than ",
                   "average for {ior}.")
     
@@ -139,16 +139,16 @@ get_pe_block <- function(df, theme, select_id, island_or_region) {
     
     z <- out$percentile[out$var_code == "edu_bachelor_above_pct"]
     more_less <- if (z >= 0.8) {
-      "much more"
+      sus_translate("much more")
     } else if (z >= 0.6) {
-      "more"
+      sus_translate("more")
     } else if (z >= 0.5) {
-      "slightly more"
+      sus_translate("slightly more")
     } else if (z >= 0.4) {
-      "slightly less"
+      sus_translate("slightly less")
     } else if (z >= 0.2) {
-      "less"
-    } else "much less"
+      sus_translate("less")
+    } else sus_translate("much less")
     sus_translate("Residents of the area are {more_less} likely than the rest ",
                   "of {ior} to have a university degree.")
 
@@ -157,16 +157,16 @@ get_pe_block <- function(df, theme, select_id, island_or_region) {
     
     z <- mean(out$percentile)
     more_less <- if (z >= 0.8) {
-      "much higher"
+      sus_translate("much higher")
     } else if (z >= 0.6) {
-      "higher"
+      sus_translate("higher")
     } else if (z >= 0.5) {
-      "slightly higher"
+      sus_translate("slightly higher")
     } else if (z >= 0.4) {
-      "slightly lower"
+      sus_translate("slightly lower")
     } else if (z >= 0.2) {
-      "lower"
-    } else "much lower"
+      sus_translate("lower")
+    } else sus_translate("much lower")
     sus_translate("A {more_less} than average share of the area's residents ",
                   "work in creative and professional occupations compared to ",
                   "the rest of {ior}.")
@@ -177,16 +177,16 @@ get_pe_block <- function(df, theme, select_id, island_or_region) {
     z <- mean(c(1 - out$percentile[out$var_code == "family_one_person_pct"],
                 out$percentile[out$var_code == "family_children_pct"]))
     more_less <- if (z >= 0.8) {
-      "much larger"
+      sus_translate("much larger")
     } else if (z >= 0.6) {
-      "larger"
+      sus_translate("larger")
     } else if (z >= 0.5) {
-      "slightly larger"
+      sus_translate("slightly larger")
     } else if (z >= 0.4) {
-      "slightly smaller"
+      sus_translate("slightly smaller")
     } else if (z >= 0.2) {
-      "smaller"
-    } else "much smaller"
+      sus_translate("smaller")
+    } else sus_translate("much smaller")
     sus_translate("The area's families are {more_less} than average for {ior}.")
     
   # Housing
@@ -197,16 +197,16 @@ get_pe_block <- function(df, theme, select_id, island_or_region) {
       out$percentile[out$var_code == "housing_value_avg_dollar"] *
       (1 - out$percentile[out$var_code == "housing_tenant_pct"])
     more_less <- if (z >= 0.8) {
-      "much more expensive"
+      sus_translate("much more expensive")
     } else if (z >= 0.6) {
-      "more expensive"
+      sus_translate("more expensive")
     } else if (z >= 0.5) {
-      "slightly more expensive"
+      sus_translate("slightly more expensive")
     } else if (z >= 0.4) {
-      "slightly cheaper"
+      sus_translate("slightly cheaper")
     } else if (z >= 0.2) {
-      "cheaper"
-    } else "much cheaper"
+      sus_translate("cheaper")
+    } else sus_translate("much cheaper")
     sus_translate("Housing costs in the area are {more_less} than average ",
                   "for {ior}.")
 
@@ -215,16 +215,16 @@ get_pe_block <- function(df, theme, select_id, island_or_region) {
     
     z <- out$percentile[out$var_code == "iden_imm_pct"]
     more_less <- if (z >= 0.8) {
-      "much more"
+      sus_translate( "much more")
     } else if (z >= 0.6) {
-      "more"
+      sus_translate("more")
     } else if (z >= 0.5) {
-      "slightly more"
+      sus_translate("slightly more")
     } else if (z >= 0.4) {
-      "slightly fewer"
+      sus_translate("slightly fewer")
     } else if (z >= 0.2) {
-      "fewer"
-    } else "much fewer"
+      sus_translate("fewer")
+    } else sus_translate("much fewer")
     sus_translate("The area has {more_less} foreign-born residents than ",
                   "average for {ior}.")
     
@@ -233,16 +233,16 @@ get_pe_block <- function(df, theme, select_id, island_or_region) {
     
     z <- out$percentile[out$var_code == "inc_median_dollar"]
     more_less <- if (z >= 0.8) {
-      "much higher"
+      sus_translate("much higher")
     } else if (z >= 0.6) {
-      "higher"
+      sus_translate("higher")
     } else if (z >= 0.5) {
-      "slightly higher"
+      sus_translate("slightly higher")
     } else if (z >= 0.4) {
-      "slightly lower"
+      sus_translate("slightly lower")
     } else if (z >= 0.2) {
-      "lower"
-    } else "much lower"
+      sus_translate("lower")
+    } else sus_translate("much lower")
     sus_translate("Incomes in the area are {more_less} than average for {ior}.")
 
   # Language
@@ -252,24 +252,24 @@ get_pe_block <- function(df, theme, select_id, island_or_region) {
     z <- z_table$percentile
     z_var <- z_table$var_code
     more_less <- if (z >= 0.8) {
-      "much more"
+      sus_translate("much more")
     } else if (z >= 0.6) {
-      "more"
+      sus_translate("more")
     } else if (z >= 0.5) {
-      "slightly more"
+      sus_translate("slightly more")
     } else if (z >= 0.4) {
-      "slightly less"
+      sus_translate("slightly less")
     } else if (z >= 0.2) {
-      "less"
-    } else "much less"
+      sus_translate("less")
+    } else sus_translate("much less")
     lang <- if (z_var == "lang_eng_only_pct") {
-      "speak English"
+      sus_translate("speak English")
     } else if (z_var == "lang_french_only_pct") {
-      "speak French"
+      sus_translate("speak French")
     } else if (z_var == "lang_french_eng_pct") {
-      "be bilingual (French and English)"
+      sus_translate("be bilingual (French and English)")
     } else if (z_var == "lang_no_official_pct") {
-      "speak neither French nor English"
+      sus_translate("speak neither French nor English")
     }
     sus_translate("The area's residents are {more_less} likely to {lang} ",
                   "than average for {ior}.")
@@ -281,32 +281,32 @@ get_pe_block <- function(df, theme, select_id, island_or_region) {
 
     if (length(z) > 0) {
       more_less <- if (z >= 0.8) {
-        "much more"
+        sus_translate("much more")
       } else if (z >= 0.6) {
-        "more"
+        sus_translate("more")
       } else if (z >= 0.5) {
-        "slightly more"
+        sus_translate("slightly more")
       } else if (z >= 0.4) {
-        "slightly less"
+        sus_translate("slightly less")
       } else if (z >= 0.2) {
-        "less"
-      } else "much less"
+        sus_translate("less")
+      } else sus_translate("much less")
       
       sus_translate("Residents in the area drive to work {more_less} than ",
                     "average compared to the rest of {ior}.")
     } else {
       z <- out$percentile[out$var_code == "access_jobs_total"]
       more_less <- if (z >= 0.8) {
-        "much more"
+        sus_translate("much more")
       } else if (z >= 0.6) {
-        "more"
+        sus_translate("more")
       } else if (z >= 0.5) {
-        "slightly more"
+        sus_translate("slightly more")
       } else if (z >= 0.4) {
-        "slightly less"
+        sus_translate("slightly less")
       } else if (z >= 0.2) {
-        "less"
-      } else "much less"
+        sus_translate("less")
+      } else sus_translate("much less")
       
       sus_translate("The area has {more_less} public transit access to jobs ",
                     "than the rest of {ior}.")
