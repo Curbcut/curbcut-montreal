@@ -236,11 +236,17 @@ unlink(list.files("~/Dropbox/sus_sync/dev_data", full.names = TRUE),
        recursive = TRUE)
 unlink(list.files("~/Dropbox/sus_sync/data", full.names = TRUE),
        recursive = TRUE)
+unlink(list.files("~/Dropbox/sus_sync/data2", full.names = TRUE),
+       recursive = TRUE)
+
 
 invisible(file.copy(list.files("dev/data", full.names = TRUE),
                     "~/Dropbox/sus_sync/dev_data", recursive = TRUE))
 invisible(file.copy(list.files("data", full.names = TRUE),
                     "~/Dropbox/sus_sync/data"))
+invisible(file.copy(list.files("data2", full.names = TRUE),
+                    "~/Dropbox/sus_sync/data2"))
+
 
 
 # Cleanup -----------------------------------------------------------------
