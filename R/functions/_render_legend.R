@@ -36,14 +36,18 @@ render_legend <- function(data, var_left, var_right, df, data_type,
   # q5 quantitative
   if (data_type == "q5" && !attr(break_labs, "qual")) {
     
-    legend_left_5[2:6,] |> 
+    leg <- if (!is.null(breaks) && !is.null(attr(breaks, "palette"))) {
+      attr(breaks, "palette")
+    } else legend_left_5[2:6,]
+    
+    leg |> 
       ggplot(aes(xmin = x - 1, xmax = x, ymin = y - 1, ymax = y, 
                  fill = fill)) +
       geom_rect() + 
       scale_x_continuous(breaks = 0:5, labels = as.character(break_labs)) +
       scale_y_continuous(labels = NULL) +
       scale_fill_manual(values = setNames(
-        legend_left_5$fill[2:6], legend_left_5$fill[2:6])) +
+        leg$fill, leg$fill)) +
       labs_xy + theme_default
     
     # q5 ordinal

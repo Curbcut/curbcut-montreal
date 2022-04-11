@@ -4,8 +4,8 @@ get_legend_labels <- function(var_left, var_right, data_type, breaks = NULL) {
   
   ## If breaks has non-NULL name, use it ---------------------------------------
   
-  if (!is.null(breaks) && !is.null(names(breaks[1]))) {
-    labs_xy <- list(labs(x = names(breaks[1]), y = NULL))
+  if (!is.null(breaks) && !is.null(attr(breaks, "label"))) {
+    labs_xy <- list(labs(x = attr(breaks, "label"), y = NULL))
     return(labs_xy)
   }
   

@@ -121,8 +121,10 @@ access_server <- function(id) {
     # Manual legend breaks
     breaks <- reactive({
       if (!is.na(select_id())) {
-        setNames(slider() / 5 * 5:0, 
-                 sus_translate("Minutes to reach census tract"))  
+        breaks <- slider() / 5 * 5:0
+        attr(breaks, "label") <- sus_translate("Minutes to reach census tract")
+        attr(breaks, "palette") <- legend_iso
+        breaks
       } else NULL
     })
     
@@ -200,7 +202,7 @@ access_server <- function(id) {
         CTs_to_map$group <- as.character(6 - ceiling((
           CTs_to_map$travel_time) / tt_thresh * 5))
         CTs_to_map <- CTs_to_map[, c("destination", "group")]
-        CTs_to_map <- merge(CTs_to_map, colour_left_5, by = "group", 
+        CTs_to_map <- merge(CTs_to_map, colour_iso, by = "group", 
                             all.x = TRUE)
         names(CTs_to_map) <- c("group", "ID", "fill")
         data_1 <- data()[, "ID"] |> merge(CTs_to_map, by = "ID")
