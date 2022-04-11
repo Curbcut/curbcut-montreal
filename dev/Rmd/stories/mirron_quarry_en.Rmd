@@ -9,9 +9,6 @@ runtime: shiny_prerendered
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-
-<p><strong>An informative example of the possibilities of change in Saint-Michel</strong>&nbsp;</p>
-<p>Jennah Landgraf&nbsp;</p>
 <p>Over the past ten years, residents and the city government alike have been coming together to shape the future of the Saint-Michel Environmental Complex, located on the site of the former Miron Quarry. The Environmental Complex is a large 92-hectare site that includes a nature park, composting and recycling facilities, and the headquarters of Cirque du Soleil and la TOHU, a non-profit that holds shows and cultural activities. What may now be described as a space of serenity and peace was once synonymous with foul odors and unbearable noise and air pollution. Located in between the peri-central boroughs of Saint-Michel and Ahuntsic in the north of Montreal, this former limestone quarry has seen tremendous change over the past century.&nbsp;&nbsp;</p>
 <p>When one enters <a href="https://montreal.ca/articles/le-parc-frederic-back-une-metamorphose-unique-18997">Frederic-Back Park</a>, the nature park within the Environmental Complex, there is an art structure to commemorate the citizen mobilization that aided in large part to the formation of this park space. The inhabitants of Saint-Michel had a long history of problems and complications with this space linked to the Miron Quarry and the sanitary landfill sites. The citizen mobilization for Frederic-Back Park has become an integral part of the history of this borough in transformation.&nbsp;&nbsp;</p>
 ### The Miron Quarry
