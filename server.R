@@ -124,7 +124,8 @@ shinyServer(function(input, output, session) {
       delay(500, {
         update_module(mod_ns = sus_link$mod_ns, 
                       session = session, 
-                      zoom = sus_link$zoom, location = sus_link$location, 
+                      zoom = sus_link$zoom, 
+                      location = sus_link$location, 
                       map_id = sus_link$map_id,
                       df = sus_link$df, 
                       zoom_auto = sus_link$zoom_auto, 
@@ -136,6 +137,8 @@ shinyServer(function(input, output, session) {
   
 
   ## Parse URL -----------------------------------------------------------------
+  
+  sus_bookmark$active <- FALSE
   
   observe({
     query <- parseQueryString(session$clientData$url_search)

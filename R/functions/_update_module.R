@@ -17,7 +17,7 @@ update_module <- function(mod_ns = NULL, id = mod_ns, session, zoom, location,
   construct_namespace <- function(inputId) {
     paste(mod_ns, inputId, sep = "-") |> str_remove("^-")
   }
-  
+
   # Update mapdeck_view
   if (!all(vapply(c(zoom, location), is.null, TRUE))) {
     if (!is.null(map_id)) {
@@ -35,12 +35,12 @@ update_module <- function(mod_ns = NULL, id = mod_ns, session, zoom, location,
         inputId = construct_namespace("zoom_auto"),
         value = FALSE
       )
-      updateSliderTextInput(
-        session = session,
-        inputId = construct_namespace("zoom_slider"),
-        selected = sus_translate(get_zoom_name(df))
-      )
     }
+    updateSliderTextInput(
+      session = session,
+      inputId = construct_namespace("zoom_slider"),
+      selected = sus_translate(get_zoom_name(df))
+    )
   }
 
   if (str_detect(id, "-$")) id <- str_extract(id, ".*(?=-)")

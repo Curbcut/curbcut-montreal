@@ -50,7 +50,12 @@ canale_server <- function(id) {
     
     # Zoom and POI reactives
     observeEvent(get_view_state(ns_id_map), {
-      zoom(get_zoom(get_view_state(ns_id_map)$zoom))
+      zoom({
+        if (!is.null(sus_bookmark$zoom)) {
+          sus_bookmark$zoom
+        } else if (!is.null(sus_link$zoom)) {
+          sus_link$zoom
+        } else get_zoom(get_view_state(ns_id_map)$zoom)})
       new_poi <- observe_map(get_view_state(ns_id_map))
       if ((is.null(new_poi) && !is.null(poi())) || 
           (!is.null(new_poi) && (is.null(poi()) || !all(new_poi == poi()))))
@@ -141,7 +146,6 @@ canale_server <- function(id) {
     
     # De-select
     observeEvent(input[[paste0(ns_id, "-clear_selection")]], select_id(NA))
-    observeEvent(df(), select_id(NA), ignoreInit = TRUE)
     # Error check
     observeEvent(data(), if (!select_id() %in% data()$ID) select_id(NA),
                  ignoreInit = TRUE)
@@ -164,11 +168,10 @@ canale_server <- function(id) {
       df = df,
       map_id = "map",
     )
-    
+
     # Update select_id() on bookmark
     observeEvent(sus_bookmark$active, {
       if (isTRUE(sus_bookmark$active)) {
-        if (!is.null(sus_bookmark$df)) df <- reactiveVal(sus_bookmark$df)
         delay(1000, {
           if (!is.null(sus_bookmark$select_id))
             if (sus_bookmark$select_id != "NA") 
@@ -176,14 +179,19 @@ canale_server <- function(id) {
         })
       }
       # So that bookmarking gets triggered only ONCE
-      delay(1500, {sus_bookmark$active <- FALSE})
+      delay(1500, {
+        sus_bookmark$active <- FALSE
+      sus_bookmark$df <- NULL
+      sus_bookmark$zoom <- NULL
+      })
     }, priority = -2)
     
     # Update select_id() on module link
     observeEvent(sus_link$activity, {
-      if (!is.null(sus_bookmark$df)) df <- reactiveVal(sus_bookmark$df)
       delay(1000, {
         if (!is.null(sus_link$select_id)) select_id(sus_link$select_id)
+        sus_link$df <- NULL
+        sus_link$zoom <- NULL
       })
     }, priority = -2)
     

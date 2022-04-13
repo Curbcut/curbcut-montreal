@@ -11,7 +11,7 @@ module_link <- function(module, zoom = NULL, location = map_loc,
   # Open the link to the linked moule
   sus_rv$link <- reactive(module)
   # Tweak map namespace
-  sus_link$map_id <- paste(module, "map", sep = "-")
+  sus_link$map_id <- paste(module, module, "map", sep = "-")
   
   # Update view
   sus_link$zoom <- NULL
@@ -22,11 +22,9 @@ module_link <- function(module, zoom = NULL, location = map_loc,
       sus_link$zoom <- 
         if (df == "borough") map_zoom else map_zoom_levels[[df]] + 0.75
       
-      data <- st_set_agr(get(df), "constant")
-      sus_link$location <- 
-        data[data$ID == select_id, ] |> 
-        st_centroid() |> 
-        st_coordinates()
+      data <- get(df)
+      sus_link$location <- sapply(unlist(data[data$ID == select_id, ]$centroid),
+                                  round, digits = 2)
     }
   }
   
