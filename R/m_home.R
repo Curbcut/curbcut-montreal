@@ -28,7 +28,7 @@ home_UI <- function(id) {
       )
     ),
     susPageSection(
-      tags$h2(sus_translate("Abous Sus"), scrollAnchor(id = "learn-more")),
+      tags$h2(sus_translate("About Sus"), scrollAnchor(id = "learn-more")),
       tags$p(sus_translate("Sus embraces an inclusive vision of urban ",
                            "sustainability, allowing users to pose questions ",
                            "about environmental issues and contextualize them ",
@@ -50,9 +50,14 @@ home_UI <- function(id) {
                            "of the data is publicly available, and over time ",
                            "we will be adding more tools for users to export ",
                            "the data and use it themselves.")),
-      tags$p(sus_translate("See the “How to use” page for more information on ",
-                           "how Sus works. And see the “Authors” page to learn ",
-                           "more about our team.")),
+      tags$p(HTML(paste0(sus_translate("See the "),
+                         "<a style ='cursor:pointer;' onclick = openTab('how_to_use')>",
+                         sus_translate("“How to use”"),"</a>",
+                         sus_translate("page for more information on ",
+                         "how Sus works. And see the "),
+                         "<a style ='cursor:pointer;' onclick = openTab('authors')>",
+                         sus_translate("“Authors”"), "</a>", 
+                         sus_translate(" page to learn more about our team.")))),
       tags$p(class = "text-center", tags$em(sus_translate("An initiative of the "),
         HTML(paste0("<a href = 'https://www.mcgill.ca/mssi/'>",
         sus_translate("McGill Sustainability Systems Initiative"), "</a>."))
