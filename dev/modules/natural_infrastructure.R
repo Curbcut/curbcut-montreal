@@ -321,35 +321,113 @@ natural_infrastructure_tiles_unioned_nis <-
 
 natural_infrastructure_custom_priority_unioned <-
   natural_infrastructure_tiles_unioned_nis |>
+  mutate(area = units::drop_units(st_area(geometry))) |> 
   st_drop_geometry()
 
 # plan(multisession, workers = 10)
 
+slider_values <- c(0, 0.5, 1, 1.5, 2)
+
+top_slider_ <- (0:50)/2
+
+qload("data/colours.qsm")
+
 natural_infrastructure$custom_priorities <- 
-  future_map_dfr(0:20, function(biodiversity) {
-    map_dfr(0:20, function(heat_island) {
-      map_dfr(0:20, function(flood_prevention) {
-        
-        ids <- 
+  map_dfr(top_slider_, function(top_slider) {
+    sum(natural_infrastructure_custom_priority_unioned$area)
+    
+    kept_pct <- top_slider/25
+    kept_area <- kept_pct*sum(natural_infrastructure_custom_priority_unioned$area)
+    
+    map_dfr(slider_values, function(biodiversity) {
+      map_dfr(slider_values, function(heat_island) {
+        map_dfr(slider_values, function(flood_prevention) {
           natural_infrastructure_custom_priority_unioned |> 
-          filter(ni_contribution_biodiversity_conservation_q20 <=
-                   biodiversity,
-                 ni_contribution_heat_island_reduction_q20 <=
-                   heat_island,
-                 ni_contribution_flood_prevention_q20 <=
-                   flood_prevention) |> 
-          pull(ID)
-        
-        tibble(ID = list(ids),
-               "biodiversity" = 
-                 biodiversity,
-               "heat_island" = 
-                 heat_island,
-               "flood_prevention" = 
-                 flood_prevention)
+            mutate(ni_contribution_biodiversity_conservation_q20 = 
+                     ni_contribution_biodiversity_conservation_q20*biodiversity,
+                   ni_contribution_heat_island_reduction_q20 = 
+                     ni_contribution_heat_island_reduction_q20*heat_island,
+                   ni_contribution_flood_prevention_q20 = 
+                     ni_contribution_flood_prevention_q20*flood_prevention) |> 
+            group_by(ID, area) |> 
+            summarize(score = sum(ni_contribution_biodiversity_conservation_q20,
+                                  ni_contribution_heat_island_reduction_q20,
+                                  ni_contribution_flood_prevention_q20),
+                      .groups = "drop") |> 
+            arrange(-score) |> 
+            mutate(ite_area = slider::slide_dbl(area, sum, .before = n())) |> 
+            filter(!ite_area > kept_area) |> 
+            mutate(percent_conservation =
+                     top_slider,
+                   "biodiversity" = 
+                     biodiversity,
+                   "heat_island" = 
+                     heat_island,
+                   "flood" = 
+                     flood_prevention) |> 
+            # Pre-compute ID&score column to directly fit in
+            # `scale_fill_natural_infrastructure`
+            rename(group = ID) |> 
+            mutate(score = as.character(round(score/max(score)*100) + 100),
+                   group = as.character(group)) |> 
+            left_join(select(colour_table, group, value), by = c("score" = "group")) |> 
+            select(-area, -ite_area, -score) |> 
+            mutate(value = if_else(is.na(value), 
+                                   colour_table$value[colour_table$group == 101], 
+                                   value))
+        })
       })
     })
   })
+
+# Pre-compute values for the explore panel
+total_areas <- 
+natural_infrastructure_custom_priority_unioned |> 
+  mutate(total_biodiversity = ni_contribution_biodiversity_conservation_q20 * area,
+         total_heat_island = ni_contribution_heat_island_reduction_q20 * area,
+         total_flood = ni_contribution_flood_prevention_q20 * area) |> 
+  summarize(total_biodiversity = sum(total_biodiversity),
+            total_heat_island = sum(total_heat_island),
+            total_flood = sum(total_flood))
+
+
+natural_infrastructure$custom_priorities_explore_values <- 
+  map_dfr(top_slider_, function(top_slider) {
+    map_dfr(slider_values, function(biodiversity) {
+      map_dfr(slider_values, function(heat_island) {
+        map_dfr(slider_values, function(flood) {
+          
+          ids <- 
+            natural_infrastructure$custom_priorities |> 
+            filter(percent_conservation == top_slider,
+                   biodiversity == !!biodiversity,
+                   heat_island == !!heat_island,
+                   flood_prevention == !!flood_prevention) |> 
+            pull(group)
+          
+          perc_protection <- 
+          natural_infrastructure_custom_priority_unioned |> 
+            filter(ID %in% ids) |> 
+            mutate(biodiversity = ni_contribution_biodiversity_conservation_q20 * area,
+                   heat_island = ni_contribution_heat_island_reduction_q20 * area,
+                   flood = ni_contribution_flood_prevention_q20 * area) |> 
+            summarize(biodiversity = sum(biodiversity)/total_areas$total_biodiversity,
+                      heat_island = sum(heat_island)/total_areas$total_heat_island,
+                      flood_prevention = sum(flood)/total_areas$total_flood)
+          
+          tibble(percent_conservation = top_slider,
+                 biodiversity = biodiversity,
+                 heat_island = heat_island,
+                 flood = flood,
+                 flood_prevention = perc_protection$flood_prevention,
+                 biodiversity_conservation = perc_protection$biodiversity,
+                 heat_island_reduction = perc_protection$heat_island)
+          
+        })
+      })
+    })
+  })
+  
 
 # Cleanup -----------------------------------------------------------------
 

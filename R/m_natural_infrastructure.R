@@ -23,36 +23,33 @@ natural_infrastructure_UI <- function(id) {
                   label = sus_translate("Choose the level of natural ", 
                                         "infrastructure protection:"),
                   min = 0,
-                  max = 100,
-                  step = NULL,
-                  value = 68,
+                  max = 25,
+                  step = 0.5,
+                  value = 17,
                   post = "%"),
+        checkbox_UI(NS(id, ns_id),
+                    label = sus_translate("Choose custom priorities")),
         slider_UI(NS(id, ns_id),
                   slider_id = "s_bio",
                   label = sus_translate("Biodiversity conservation:"),
-                  min = 5,
-                  max = 100,
-                  step = 5,
-                  value = 70,
-                  post = "%"),
+                  min = 0,
+                  max = 2,
+                  step = 0.5,
+                  value = 1),
         slider_UI(NS(id, ns_id),
                   slider_id = "s_hea",
                   label = sus_translate("Heat island reduction:"),
                   min = 0,
-                  max = 100,
-                  step = 5,
-                  value = 70,
-                  post = "%"),
+                  max = 2,
+                  step = 0.5,
+                  value = 1),
         slider_UI(NS(id, ns_id),
                   slider_id = "s_flo",
                   label = sus_translate("Flood prevention:"),
                   min = 0,
-                  max = 100,
-                  step = 5,
-                  value = 70,
-                  post = "%"),
-        checkbox_UI(NS(id, ns_id),
-                    label = sus_translate("Choose custom priorities"))
+                  max = 2,
+                  step = 0.5,
+                  value = 1)
         ),
       bottom = div(class = "bottom_sidebar",
                    tagList(legend_UI(NS(id, ns_id)),
@@ -185,25 +182,38 @@ natural_infrastructure_server <- function(id) {
     # Enable or disable the main main_slider
     observe({
       toggle(NS(id, "slider"), 
-             condition = (var_left() == "conservation_prioritization" &&
-                            !custom_priorities()))
+             condition = var_left() == "conservation_prioritization")
     })
     
     # Data
-    data <- eventReactive({var_left()
-      main_slider()}, {
+    data <- reactive({
         if (var_left() == "conservation_prioritization") {
+          
+          slider <- main_slider()*4
+          
           if (!custom_priorities()) {
+          
             dat <- 
               natural_infrastructure$original_priorities[
                 natural_infrastructure$original_priorities$percent_conservation == 
-                  main_slider(), ]
+                  slider, ]
             
             return(list(flood_prevention = dat$flood_prevention,
                         biodiversity_conservation = dat$biodiversity_conservation,
                         heat_island_reduction = dat$heat_island_reduction,
-                        slider = main_slider()))
-          } else NULL
+                        ni_protection = slider))
+          } else {
+            custom <- natural_infrastructure$custom_priorities_explore_values
+            custom <- custom[custom$percent_conservation == main_slider(), ]
+            custom <- custom[custom$biodiversity == s_bio(), ]
+            custom <- custom[custom$heat_island == s_hea(), ]
+            custom <- custom[custom$flood == s_flo(), ]
+            
+            return(list(flood_prevention = custom$flood_prevention,
+                        biodiversity_conservation = custom$biodiversity_conservation,
+                        heat_island_reduction = custom$heat_island_reduction,
+                        ni_protection = slider))
+          }
         } else NULL
         
       })
@@ -213,7 +223,9 @@ natural_infrastructure_server <- function(id) {
       if (var_left() == "conservation_prioritization") {
         if (!custom_priorities()) {
           
-          remove <- seq_len(abs(main_slider() - 100)) + 100
+          slider <- main_slider()*4
+          
+          remove <- seq_len(abs(slider - 100)) + 100
           
           ni_colour_table <- colour_table[colour_table$group %in% 101:200, ]
           
@@ -226,18 +238,17 @@ natural_infrastructure_server <- function(id) {
           
         } else {
           custom <- natural_infrastructure$custom_priorities
-          custom <- custom[custom$biodiversity == (s_bio()/5), ]
-          custom <- custom[custom$heat_island == (s_hea()/5), ]
-          kept_ids <- custom[custom$flood_prevention == (s_flo()/5), ]$ID |>
-            unlist()
+          custom <- custom[custom$percent_conservation == main_slider(), ]
+          custom <- custom[custom$biodiversity == s_bio(), ]
+          custom <- custom[custom$heat_island == s_hea(), ]
+          custom <- custom[custom$flood_prevention == s_flo(), ]
           
           out <-
             data.frame(group =
                          as.character(seq_along(natural_infrastructure_custom_priority_unioned$ID)),
                        value = "#FFFFFF00")
-          out <- out[!out$group %in% kept_ids, ]
-          rbind(out, data.frame(group = as.character(kept_ids),
-                                value = colour_table$value[colour_table$group == 151]))
+          out <- out[!out$group %in% custom$group, ]
+          rbind(out, custom[, c("group", "value")])
           
         }
       } else NULL
@@ -282,15 +293,15 @@ natural_infrastructure_server <- function(id) {
       zoom = zoom)
 
     # Explore panel
-    # explore_content <- explore_server(
-    #   id = ns_id,
-    #   data = data,
-    #   var_left = var_left,
-    #   var_right = var_right,
-    #   df = reactive(NULL),
-    #   select_id = reactive(NA),
-    #   graph = reactive(explore_graph_natural_infrastructure),
-    #   table = reactive(info_table_natural_infrastructure))
+    explore_content <- explore_server(
+      id = ns_id,
+      data = data,
+      var_left = var_left,
+      var_right = var_right,
+      df = reactive(NULL),
+      select_id = reactive(NA),
+      graph = reactive(explore_graph_natural_infrastructure),
+      table = reactive(info_table_natural_infrastructure))
 
     # Bookmarking
     bookmark_server(
