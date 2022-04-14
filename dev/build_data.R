@@ -219,7 +219,8 @@ qsavem(alley, alley_text, file = "data/alley.qsm")
 qsavem(covid, covid_pics, file = "data/covid.qsm")
 qsave(green_space, file = "data/green_space.qs")
 # qsave(marketed_sustainability, file = "data/marketed_sustainability.qs")
-# qsave(natural_infrastructure, "data/natural_infrastructure.qs")
+qsavem(natural_infrastructure, natural_infrastructure_custom_priority_unioned,
+       file = "data/natural_infrastructure.qsm")
 qsave(metro_lines, file = "data/metro_lines.qs")
 # qsavem(permits_choropleth, permits, file = "data/permits.qsm")
 qsavem(title_card_indicators, pe_var_hierarchy, pe_theme_order, CSDUID_groups,

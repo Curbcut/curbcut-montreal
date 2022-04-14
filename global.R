@@ -45,7 +45,7 @@ qload("data/alley.qsm")
 # crash <- qread("data/crash.qs")
 tt_matrix <- qread("data/tt_matrix.qs")
 # marketed_sustainability <- qread("data/marketed_sustainability.qs")
-# natural_infrastructure <- qread("data/natural_infrastructure.qs")
+# qload("data/natural_infrastructure.qsm")
 metro_lines <- qread("data/metro_lines.qs")
 
 stories <- qread("data/stories.qs")
@@ -106,10 +106,10 @@ mods_rdy <- list(
     "Active living potential" = "canale", 
     "Green alleys" = "alley"#,
     # "Green spaces" = "green_space"
-    )#,
-  # "Ecology" = c(
-  #   "Natural infrastructure" = "natural_infrastructure"
-  #   )
+    ),
+  "Ecology" = c(
+    "Natural infrastructure" = "natural_infrastructure"
+    )
   )
 
 stand_alone_tabs <- c(

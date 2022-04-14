@@ -40,6 +40,11 @@ rdeck_server <- function(id, map_id, tile, tile2, map_var, zoom, select_id,
     extrude <- reactive((tile() == "auto_zoom" && zoom() >= 15.5) | 
                           tile() == "building")
     
+    highlight <- reactive({
+      if (id == "natural_infrastructure") return(FALSE)
+      return(TRUE)
+    })
+    
     # Create final tileset string
     tile_string <- reactive(paste0(tile(), tile2()))
     
@@ -55,7 +60,7 @@ rdeck_server <- function(id, map_id, tile, tile2, map_var, zoom, select_id,
         add_mvt_layer(
           id = id, 
           pickable = pick(),
-          auto_highlight = TRUE, 
+          auto_highlight = highlight(), 
           highlight_color = "#FFFFFF50", 
           get_fill_color = do.call(fill, fill_args()),
           get_line_color = do.call(colour, colour_args()),
@@ -73,7 +78,7 @@ rdeck_server <- function(id, map_id, tile, tile2, map_var, zoom, select_id,
           id = id, 
           data = mvt_url(paste0("sus-mcgill.", id, "-", tile_string())),
           pickable = pick(), 
-          auto_highlight = TRUE, 
+          auto_highlight = highlight(), 
           highlight_color = "#FFFFFF50", 
           get_fill_color = do.call(fill, fill_args()),
           get_line_color = do.call(colour, colour_args()),

@@ -57,13 +57,14 @@ explore_server <- function(id, data, var_left, var_right, df, select_id,
   moduleServer(id, function(input, output, session) {
     
     # Get var_type
-    var_type <- reactive(get_var_type(
+    var_type <- reactive(tryCatch(get_var_type(
       data = data(),
       var_left = var_left(),
       var_right = var_right(),
       df = df(),
       select_id = select_id(),
-      build_str_as_DA = build_str_as_DA()))
+      build_str_as_DA = build_str_as_DA()), 
+      error = function(e) NULL))
     
     # Reconstruct variable args
     table_args2 <- reactive(c(table_args(), var_type = var_type()))
@@ -75,7 +76,7 @@ explore_server <- function(id, data, var_left, var_right, df, select_id,
     
     # Display info table
     output$info_table <- renderUI(table_out())
-    
+
     # Make graph
     graph_out <- reactive(tryCatch(do.call(graph(), graph_args2()),
                                    error = function(e) NULL))
