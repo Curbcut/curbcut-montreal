@@ -132,7 +132,7 @@ source("dev/modules/alley.R")
 source("dev/modules/gentrification.R")
 source("dev/modules/green_space.R")
 # source("dev/modules/marketed_sustainability.R")
-# source("dev/modules/natural_infrastructure.R")
+# source("dev/modules/natural_inf.R")
 # source("dev/modules/permits.R")
 # source("dev/modules/dmti.R")
 
@@ -219,8 +219,7 @@ qsavem(alley, alley_text, file = "data/alley.qsm")
 qsavem(covid, covid_pics, file = "data/covid.qsm")
 qsave(green_space, file = "data/green_space.qs")
 # qsave(marketed_sustainability, file = "data/marketed_sustainability.qs")
-qsavem(natural_infrastructure, natural_infrastructure_custom_priority_unioned,
-       file = "data/natural_infrastructure.qsm")
+qsavem(natural_inf, natural_inf_custom, file = "data/natural_inf.qsm")
 qsave(metro_lines, file = "data/metro_lines.qs")
 # qsavem(permits_choropleth, permits, file = "data/permits.qsm")
 qsavem(title_card_indicators, pe_var_hierarchy, pe_theme_order, CSDUID_groups,

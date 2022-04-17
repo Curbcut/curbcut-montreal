@@ -17,8 +17,9 @@ natural_infrastructure_UI <- function(id) {
         select_var_UI(NS(id, ns_id), 
                       select_var_id = "vl_2",
                       var_list = list("----" = " "),
-                      label = sus_translate("Dive further in the selected ",
-                                            "natural infrastructure's contributions:")),
+                      label = sus_translate(
+                        "Dive further in the selected ",
+                        "natural infrastructure's contributions:")),
         slider_UI(NS(id, ns_id),
                   label = sus_translate("Choose the level of natural ", 
                                         "infrastructure protection:"),
@@ -189,7 +190,7 @@ natural_infrastructure_server <- function(id) {
     data <- reactive({
         if (var_left() == "conservation_prioritization") {
           
-          slider <- main_slider()*4
+          slider <- main_slider() * 4
           
           if (!custom_priorities()) {
           
@@ -230,7 +231,8 @@ natural_infrastructure_server <- function(id) {
           ni_colour_table <- colour_table[colour_table$group %in% 101:200, ]
           
           transparent_rows <- ni_colour_table[ni_colour_table$group %in% remove, ]
-          transparent_rows$value <- str_replace(transparent_rows$value, "FF$", "00")
+          transparent_rows$value <- str_replace(transparent_rows$value, "FF$", 
+                                                "00")
           
           colored_rows <- ni_colour_table[!ni_colour_table$group %in% remove, ]
           
@@ -245,7 +247,8 @@ natural_infrastructure_server <- function(id) {
           
           out <-
             data.frame(group =
-                         as.character(seq_along(natural_infrastructure_custom_priority_unioned$ID)),
+                         as.character(seq_along(
+                           natural_infrastructure_custom_priority_unioned$ID)),
                        value = "#FFFFFF00")
           out <- out[!out$group %in% custom$group, ]
           rbind(out, custom[, c("group", "value")])

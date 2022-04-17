@@ -105,5 +105,6 @@ qs::qsavem(colour_bivar, colour_delta, colour_iso, colour_left_5,
            colour_table, legend_bivar, legend_delta_5, legend_qual, legend_iso, 
            legend_left_5, col_pe, file = "data/colours.qsm")
 
-rm(c_bivar, c_delta, c_NA, c_qual, c_q5, col_bivar, col_delta_5, col_right_5, 
-   col_left_3, col_left_5, col_NA, col_qual, col_right_3)
+rm(c_bivar, c_delta, c_NA, c_qual, c_q5, c_viridis, col_bivar, col_delta_5, 
+   col_right_5, col_left_3, col_left_5, col_NA, col_qual, col_right_3,
+   col_viridis)

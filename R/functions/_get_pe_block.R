@@ -104,7 +104,7 @@ get_pe_block <- function(df, theme, select_id, island_or_region) {
   # Age
   sentence <- if (theme == "Age") {
     
-    z <- out$percentile[out$percentile == max(out$percentile)]
+    z <- max(out$percentile)
     z_var <- out$var_code[out$percentile == z]
     age <- if (z_var == "age_0_14_pct") {
       "0-14"
