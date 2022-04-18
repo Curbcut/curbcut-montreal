@@ -48,10 +48,10 @@ imap(natural_inf_tiles_raw, ~{
 })
 
 
-# Tileset for custom set of prioritization --------------------------------
+# Tileset for custom priorities -------------------------------------------
 
 natural_inf_tiles <- 
-natural_inf_tiles |> 
+  natural_inf_tiles |> 
   mutate(ID = as.character(ID))
 
 iter_size <- ceiling(nrow(natural_inf_tiles) / 100)
@@ -91,7 +91,7 @@ map(1:10, ~{
   
 })
 
-natural_inf_raster_recipe <-
+natural_inf_recipe <-
   create_recipe(
     layer_names = "natural_inf-custom",
     source = paste0("mapbox://tileset-source/sus-mcgill/natural_inf-custom"),
@@ -100,7 +100,5 @@ natural_inf_raster_recipe <-
     layer_size = 2500,
     recipe_name = "natural_inf-custom")
 
-create_tileset("natural_inf-custom",
-               natural_inf_raster_recipe, username = "sus-mcgill")
-Sys.sleep(1)
-publish_tileset("natural_inf-custom", username = "sus-mcgill")
+create_tileset("natural_inf-custom", natural_inf_recipe)
+publish_tileset("natural_inf-custom")
