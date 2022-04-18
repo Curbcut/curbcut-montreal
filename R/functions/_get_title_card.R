@@ -42,7 +42,8 @@ get_title_card <- function(df, select_id, island_or_region) {
     
     if (indicators_table$name[x] == "air_quality_no2") higher_than_threshold <-
         if (z$pretty_data_var > 5) {
-          sus_translate("Its value is higher than WHO's guideline value of 5. ")
+          sus_translate(
+            "Its value is higher than the WHO's guideline value of 5. ")
         } else ""
     
     list(row_title = indicators_table$title[x],
