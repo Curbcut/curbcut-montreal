@@ -195,8 +195,8 @@ natural_infrastructure_server <- function(id) {
           if (!custom_priorities()) {
           
             dat <- 
-              natural_infrastructure$original_priorities[
-                natural_infrastructure$original_priorities$percent_conservation == 
+              natural_inf$original_priorities[
+                natural_inf$original_priorities$percent_conservation == 
                   slider, ]
             
             return(list(flood_prevention = dat$flood_prevention,
@@ -204,8 +204,8 @@ natural_infrastructure_server <- function(id) {
                         heat_island_reduction = dat$heat_island_reduction,
                         ni_protection = slider))
           } else {
-            custom <- natural_infrastructure$custom_priorities_explore_values
-            custom <- custom[custom$percent_conservation == main_slider(), ]
+            custom <- natural_inf$custom_explore
+            custom <- custom[custom$conservation_pct == main_slider(), ]
             custom <- custom[custom$biodiversity == s_bio(), ]
             custom <- custom[custom$heat_island == s_hea(), ]
             custom <- custom[custom$flood == s_flo(), ]
@@ -239,16 +239,14 @@ natural_infrastructure_server <- function(id) {
           rbind(transparent_rows, colored_rows)
           
         } else {
-          custom <- natural_infrastructure$custom_priorities
-          custom <- custom[custom$percent_conservation == main_slider(), ]
+          custom <- natural_inf$custom
+          custom <- custom[custom$conservation_pct == main_slider(), ]
           custom <- custom[custom$biodiversity == s_bio(), ]
           custom <- custom[custom$heat_island == s_hea(), ]
-          custom <- custom[custom$flood_prevention == s_flo(), ]
+          custom <- custom[custom$flood == s_flo(), ]
           
           out <-
-            data.frame(group =
-                         as.character(seq_along(
-                           natural_infrastructure_custom_priority_unioned$ID)),
+            data.frame(group = as.character(seq_along(natural_inf_custom$ID)),
                        value = "#FFFFFF00")
           out <- out[!out$group %in% custom$group, ]
           rbind(out, custom[, c("group", "value")])
