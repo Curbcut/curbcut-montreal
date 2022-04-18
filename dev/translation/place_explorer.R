@@ -126,6 +126,10 @@ place_explorer_translated <-
                       "{geo_areas} {text_island_region}"), 
           fr = paste0("Sa valeur est supérieure à {scale_percent_data_rank} des ",
                       "{geo_areas} {text_island_region}")) |> 
+  add_row(en = paste0("Its value is worse than {scale_percent_data_rank} of ",
+                      "{geo_areas} {text_island_region}"), 
+          fr = paste0("Sa valeur est pire que celle de {scale_percent_data_rank} des ",
+                      "{geo_areas} {text_island_region}")) |> 
   add_row(en = paste0("the total number of jobs accessible within 30 minutes on average"), 
           fr = paste0("le nombre total d'emplois accessibles en 30 minutes et moins en moyenne")) |> 
   add_row(en = paste0("the number of low-skill jobs accessible within 30 minutes on average"), 

@@ -41,7 +41,7 @@ prep_title_card <- function(df, select_id, ind, percent = TRUE,
     rank <- data[data$ID == select_id, ][[paste0(scale, "_rank")]]
     df_row <- if (island) {
       sum(!is.na(data$var[!is.na(data$island_rank)]))
-      } else sum(!is.na(data$var))
+    } else sum(!is.na(data$var))
     
     # If high is good, then last rank means 1st. Inverse!
     data_borough_rank <- if (high_is_good) df_row - rank + 1 else rank
@@ -52,10 +52,10 @@ prep_title_card <- function(df, select_id, ind, percent = TRUE,
       } else if (data_borough_rank > 1 / 3 * df_row) {
         ordinal_form(data_borough_rank)
       } else {
-      if (sus_rv$lang() == "fr" && {ordinal_form(data_borough_rank)} == "") {
-        "premier"
-      } else sus_translate("{ordinal_form(data_borough_rank)} best")
-    }
+        if (sus_rv$lang() == "fr" && {ordinal_form(data_borough_rank)} == "") {
+          "premier"
+        } else sus_translate("{ordinal_form(data_borough_rank)} best")
+      }
     
     text_island_region <- if (island) sus_translate(" on the island") else 
       sus_translate(" in the region")
@@ -88,8 +88,13 @@ prep_title_card <- function(df, select_id, ind, percent = TRUE,
         text_island_region <- if (island) sus_translate("on the island") else 
           sus_translate("in the region")
         
-        sus_translate("Its value is higher than {scale_percent_data_rank} ",
-                      "of {geo_areas} {text_island_region}")
+        if (ind == "air_quality_no2") {
+          sus_translate("Its value is worse than {scale_percent_data_rank} ",
+                        "of {geo_areas} {text_island_region}")
+        } else {
+          sus_translate("Its value is higher than {scale_percent_data_rank} ",
+                        "of {geo_areas} {text_island_region}")
+        }
         
       }
   }
