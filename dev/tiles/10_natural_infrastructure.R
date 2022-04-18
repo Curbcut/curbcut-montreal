@@ -10,36 +10,72 @@ source("dev/tiles/_tile_functions.R")
 
 # Process the lists then upload tile source ---------------------------------
 
-map2(names(natural_inf_tiles_raw), natural_inf_tiles_raw, ~{
+map2(names(natural_inf_tiles_raw), natural_inf_tiles_raw, function(cat) {
   
-  delete_tileset_source(paste0("natural_inf-", .x), username = "sus-mcgill")
-  
-  .y |>
-    as_tibble() |>
-    dplyr::select(ends_with("_q100"), geometry) |>
-    mutate(across(where(is.numeric), as.character)) |>
-    st_as_sf() |>
-    st_set_agr("constant") |>
-    upload_tile_source(paste0("natural_inf-", .x), "sus-mcgill", .sus_token)
+  map(c("high", "mid", "low", "vlow"), function(level) {
+    
+    # delete_tileset_source(paste0("natural_inf-", cat, "_", str_extract(level, ".")),
+    #                       "sus-mcgill")
+    
+    natural_inf_tiles_raw$habitat_con[[level]] |>
+      as_tibble() |>
+      dplyr::select(ends_with("_q100"), geometry) |>
+      mutate(across(where(is.numeric), as.character)) |>
+      st_as_sf() |>
+      st_set_agr("constant") |>
+      upload_tile_source(paste0("natural_inf-", cat, "_", str_extract(level, ".")), 
+                         "sus-mcgill", .sus_token)
+  })
   
   # Add recipes -------------------------------------------------------------
   
   natural_inf_raster_recipe <-
     create_recipe(
-      layer_names = paste0("natural_inf-", .x),
-      source = paste0("mapbox://tileset-source/sus-mcgill/natural_inf-", .x),
-      minzoom = 3,
-      maxzoom = 13,
-      layer_size = 2500,
-      recipe_name = paste0("natural_inf-", .x))
-
+      layer_names = c(paste0("natural_inf-", cat, "_v"),
+                      paste0("natural_inf-", cat, "_l"),
+                      paste0("natural_inf-", cat, "_m"),
+                      paste0("natural_inf-", cat, "_h")),
+      source = c(setNames(nm = paste0("natural_inf-", cat, "_v"), 
+                          paste0("mapbox://tileset-source/sus-mcgill/natural_inf-", cat, "_v")),
+                 setNames(nm = paste0("natural_inf-", cat, "_l"), 
+                          paste0("mapbox://tileset-source/sus-mcgill/natural_inf-", cat, "_l")),
+                 setNames(nm = paste0("natural_inf-", cat, "_m"), 
+                          paste0("mapbox://tileset-source/sus-mcgill/natural_inf-", cat, "_m")),
+                 setNames(nm = paste0("natural_inf-", cat, "_h"), 
+                          paste0("mapbox://tileset-source/sus-mcgill/natural_inf-", cat, "_h"))),
+      minzoom = c(setNames(nm = paste0("natural_inf-", cat, "_v"), 3),
+                  setNames(nm = paste0("natural_inf-", cat, "_l"), 9),
+                  setNames(nm = paste0("natural_inf-", cat, "_m"), 10), 
+                  setNames(nm = paste0("natural_inf-", cat, "_h"), 11)),
+      maxzoom = c(setNames(nm = paste0("natural_inf-", cat, "_v"), 8),
+                  setNames(nm = paste0("natural_inf-", cat, "_l"), 9),
+                  setNames(nm = paste0("natural_inf-", cat, "_m"), 10), 
+                  setNames(nm = paste0("natural_inf-", cat, "_h"), 13)),
+      layer_size = c(setNames(nm = paste0("natural_inf-", cat, "_v"), 2500),
+                     setNames(nm = paste0("natural_inf-", cat, "_l"), 2500),
+                     setNames(nm = paste0("natural_inf-", cat, "_m"), 2500), 
+                     setNames(nm = paste0("natural_inf-", cat, "_h"), 2500)),
+      simp_zoom = c(setNames(nm = paste0("natural_inf-", cat, "_v"), 8),
+                    setNames(nm = paste0("natural_inf-", cat, "_l"), 9),
+                    setNames(nm = paste0("natural_inf-", cat, "_m"), 10), 
+                    setNames(nm = paste0("natural_inf-", cat, "_h"), NA)),
+      simp_value = c(setNames(nm = paste0("natural_inf-", cat, "_v"), 1),
+                     setNames(nm = paste0("natural_inf-", cat, "_l"), 1),
+                     setNames(nm = paste0("natural_inf-", cat, "_m"), 1), 
+                     setNames(nm = paste0("natural_inf-", cat, "_h"), NA)),
+      fallback_simp_zoom = c(setNames(nm = paste0("natural_inf-", cat, "_v"), 4),
+                             setNames(nm = paste0("natural_inf-", cat, "_l"), 4),
+                             setNames(nm = paste0("natural_inf-", cat, "_m"), 4), 
+                             setNames(nm = paste0("natural_inf-", cat, "_h"), NA)),
+      recipe_name = paste0("natural_inf-", cat))
+  
 
   # Create and publish ------------------------------------------------------
 
-  create_tileset(paste0("natural_inf-", .x),
+  create_tileset(paste0("natural_inf-", cat),
                  natural_inf_raster_recipe, username = "sus-mcgill")
   Sys.sleep(15)
-  publish_tileset(paste0("natural_inf-", .x), username = "sus-mcgill")
+  publish_tileset(paste0("natural_inf-", cat), username = "sus-mcgill")
   
 })
 

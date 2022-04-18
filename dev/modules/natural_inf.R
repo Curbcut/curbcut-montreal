@@ -90,50 +90,159 @@ natural_inf_tiles_raw <-
     }
     
     if (name == "flood") {
-      data <-
+      data_q100 <-
         data |>
         rename(var = 1) |>
         mutate(rank = 200) |> 
-        group_by(var, rank) |> 
+        group_by(rank) |> 
         summarize(.groups = "drop")
     } else if (name == "heat") {
-      data <-
+      data_q100 <-
         data |>
         rename(var = 1) |>
         mutate(rank = 200) |> 
-        group_by(var, rank) |> 
+        group_by(rank) |> 
         summarize(.groups = "drop")
     } else if (name == "cool") {
-      data <-
+      data_q100 <-
         data |>
         rename(var = 1) |>
         mutate(rank = 101) |> 
-        group_by(var, rank) |> 
+        group_by(rank) |> 
         summarize(.groups = "drop")
     } else {
-      data <-
+      data_q100 <-
         data |>
         rename(var = 1) |>
         mutate(rank = ntile(var, 100) + 100) |> 
         mutate(var = round(var, digits = 2)) |> 
-        group_by(var, rank) |> 
+        group_by(rank) |> 
         summarize(.groups = "drop")
     }
-
-    data <- 
-      st_transform(data, 4326) |>
+    
+    if (name == "flood") {
+      data_q50 <-
+        data |>
+        rename(var = 1) |>
+        mutate(rank = 200) |>
+        group_by(rank) |>
+        summarize(.groups = "drop")
+    } else if (name == "heat") {
+      data_q50 <-
+        data |>
+        rename(var = 1) |>
+        mutate(rank = 200) |>
+        group_by(rank) |>
+        summarize(.groups = "drop")
+    } else if (name == "cool") {
+      data_q50 <-
+        data |>
+        rename(var = 1) |>
+        mutate(rank = 101) |>
+        group_by(rank) |>
+        summarize(.groups = "drop")
+    } else {
+      data_q50 <-
+        data |>
+        rename(var = 1) |>
+        mutate(rank = ntile(var, 50) * 2 + 100) |>
+        mutate(var = round(var, digits = 2)) |>
+        group_by(rank) |>
+        summarize(.groups = "drop")
+    }
+    
+    if (name == "flood") {
+      data_q25 <-
+        data |>
+        rename(var = 1) |>
+        mutate(rank = 200) |>
+        group_by(rank) |>
+        summarize(.groups = "drop")
+    } else if (name == "heat") {
+      data_q25 <-
+        data |>
+        rename(var = 1) |>
+        mutate(rank = 200) |>
+        group_by(rank) |>
+        summarize(.groups = "drop")
+    } else if (name == "cool") {
+      data_q25 <-
+        data |>
+        rename(var = 1) |>
+        mutate(rank = 101) |>
+        group_by(rank) |>
+        summarize(.groups = "drop")
+    } else {
+      data_q25 <-
+        data |>
+        rename(var = 1) |>
+        mutate(rank = ntile(var, 25) * 4 + 100) |>
+        mutate(var = round(var, digits = 2)) |>
+        group_by(rank) |>
+        summarize(.groups = "drop")
+    }
+    
+    if (name == "flood") {
+      data_q10 <-
+        data |>
+        rename(var = 1) |>
+        mutate(rank = 200) |>
+        group_by(rank) |>
+        summarize(.groups = "drop")
+    } else if (name == "heat") {
+      data_q10 <-
+        data |>
+        rename(var = 1) |>
+        mutate(rank = 200) |>
+        group_by(rank) |>
+        summarize(.groups = "drop")
+    } else if (name == "cool") {
+      data_q10 <-
+        data |>
+        rename(var = 1) |>
+        mutate(rank = 101) |>
+        group_by(rank) |>
+        summarize(.groups = "drop")
+    } else {
+      data_q10 <-
+        data |>
+        rename(var = 1) |>
+        mutate(rank = ntile(var, 10) * 10 + 100) |>
+        mutate(var = round(var, digits = 2)) |>
+        group_by(rank) |>
+        summarize(.groups = "drop")
+    }
+    
+    data_q100 <- 
+      st_transform(data_q100, 4326) |>
+      filter(st_is(geometry, "POLYGON") | st_is(geometry, "MULTIPOLYGON")) |>
+      st_cast("MULTIPOLYGON")
+    data_q50 <-
+      st_transform(data_q50, 4326) |>
+      filter(st_is(geometry, "POLYGON") | st_is(geometry, "MULTIPOLYGON")) |>
+      st_cast("MULTIPOLYGON")
+    data_q25 <-
+      st_transform(data_q25, 4326) |>
+      filter(st_is(geometry, "POLYGON") | st_is(geometry, "MULTIPOLYGON")) |>
+      st_cast("MULTIPOLYGON")
+    data_q10 <-
+      st_transform(data_q10, 4326) |>
       filter(st_is(geometry, "POLYGON") | st_is(geometry, "MULTIPOLYGON")) |>
       st_cast("MULTIPOLYGON")
     
-    names(data)[1] <- name
-    names(data)[2] <- paste0(name, "_q100")
+    names(data_q100)[1] <- paste0(name, "_q100")
+    names(data_q50)[1] <- paste0(name, "_q100")
+    names(data_q25)[1] <- paste0(name, "_q100")
+    names(data_q10)[1] <- paste0(name, "_q100")
     
-    data
+    out <- list(data_q100, data_q50, data_q25, data_q10)
+    names(out) <- c("high", "mid", "low", "vlow")
+
+    out
     
   })
 
 qsave(natural_inf_tiles_raw, "dev/data/natural_inf_tiles_raw.qs")
-
 
 
 # To enable unique sets of priorities -------------------------------------

@@ -147,7 +147,7 @@ trans_var <- function(x) {
 # Create recipes ----------------------------------------------------------
 
 create_recipe <- function(layer_names, source, minzoom, maxzoom,
-                          layer_size = NULL, simp_zoom = NULL, 
+                          layer_size = NULL, simp_zoom = NULL, simp_value = NULL, 
                           fallback_simp_zoom = 4, bbox = NULL, recipe_name) {
   out <- list()
   out$recipe$version <- 1
@@ -167,8 +167,11 @@ create_recipe <- function(layer_names, source, minzoom, maxzoom,
           layers[[layer]]$features$simplification[[1]] <- "case"
           layers[[layer]]$features$simplification[[2]] <- 
             list("==", "zoom", simp_zoom[[layer]])
-          layers[[layer]]$features$simplification[[3]] <- 1
-          layers[[layer]]$features$simplification[[4]] <- 4
+          layers[[layer]]$features$simplification[[3]] <- 
+            if (!is.null(simp_value[[layer]]) && 
+                         !is.na(simp_value[[layer]])) simp_value[[layer]] else 1
+          layers[[layer]]$features$simplification[[4]] <- 
+            fallback_simp_zoom[[layer]]
         }
         if (!is.null(bbox)) layers[[layer]]$tiles$bbox <- bbox
         layers
@@ -183,7 +186,8 @@ create_recipe <- function(layer_names, source, minzoom, maxzoom,
         layers[[layer_names]]$features$simplification[[1]] <- "case"
         layers[[layer_names]]$features$simplification[[2]] <- 
           list("==", "zoom", simp_zoom)
-        layers[[layer_names]]$features$simplification[[3]] <- 1
+        layers[[layer_names]]$features$simplification[[3]] <- 
+          if (!is.null(simp_value) && !is.na(simp_value)) simp_value else 1
         layers[[layer_names]]$features$simplification[[4]] <- 
           fallback_simp_zoom
       }
