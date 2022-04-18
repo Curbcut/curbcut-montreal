@@ -2,8 +2,8 @@
 
 # UI ----------------------------------------------------------------------
 
-natural_infrastructure_UI <- function(id) {
-  ns_id <- "natural_infrastructure"
+natural_inf_UI <- function(id) {
+  ns_id <- "natural_inf"
   ns_id_map <- paste0(ns_id, "-map")
 
   tagList(
@@ -13,7 +13,7 @@ natural_infrastructure_UI <- function(id) {
       susSidebarWidgets(
         select_var_UI(NS(id, ns_id), 
                       select_var_id = "vl_1",
-                      var_list = vars_natural_infrastructure_left),
+                      var_list = vars_natural_inf_left),
         select_var_UI(NS(id, ns_id), 
                       select_var_id = "vl_2",
                       var_list = list("----" = " "),
@@ -70,9 +70,9 @@ natural_infrastructure_UI <- function(id) {
 
 # Server ------------------------------------------------------------------
 
-natural_infrastructure_server <- function(id) {
+natural_inf_server <- function(id) {
   moduleServer(id, function(input, output, session) {
-    ns_id <- "natural_infrastructure"
+    ns_id <- "natural_inf"
     ns_id_map <- paste0(ns_id, "-map")
 
     # Initial reactives
@@ -106,21 +106,21 @@ natural_infrastructure_server <- function(id) {
       if (var_left() == "conservation_prioritization" &&
           custom_priorities()) return("custom")
       
-      which(names(natural_infrastructure_tiles) == var_left())
+      which(names(natural_inf_tiles) == var_left())
       })
 
     # Left variable
     var_left_1 <- select_var_server(
       id = ns_id,
       select_var_id = "vl_1",
-      var_list = reactive(vars_natural_infrastructure_left))
+      var_list = reactive(vars_natural_inf_left))
     
     var_left_2_list <- reactive({
       if (var_left_1() == "conservation_prioritization") 
         return(list("----" = " "))
       
       eval(parse(text =
-                   paste0("vars_natural_infrastructure_left_",
+                   paste0("vars_natural_inf_left_",
                           var_left_1())))
     })
     
@@ -172,7 +172,7 @@ natural_infrastructure_server <- function(id) {
     var_right <- reactive(" ")
 
     # Sidebar
-    sidebar_server(id = ns_id, x = "natural_infrastructure")
+    sidebar_server(id = ns_id, x = "natural_inf")
     
     # Composite variable for map
     map_var <- reactive({
@@ -220,7 +220,7 @@ natural_infrastructure_server <- function(id) {
       })
     
     # Map custom colors
-    natural_infrastructure_colors <- reactive({
+    natural_inf_colors <- reactive({
       if (var_left() == "conservation_prioritization") {
         if (!custom_priorities()) {
           
@@ -281,10 +281,10 @@ natural_infrastructure_server <- function(id) {
       map_var = map_var, 
       zoom = zoom,
       select_id = reactive(NA),
-      lwd = scale_lwd_natural_infrastructure,
+      lwd = scale_lwd_natural_inf,
       lwd_args = reactive(list()),
-      fill = scale_fill_natural_infrastructure,
-      fill_args = reactive(list(map_var(), tile(), natural_infrastructure_colors())))
+      fill = scale_fill_natural_inf,
+      fill_args = reactive(list(map_var(), tile(), natural_inf_colors())))
     
     # Update map labels
     label_server(
@@ -301,8 +301,8 @@ natural_infrastructure_server <- function(id) {
       var_right = var_right,
       df = reactive(NULL),
       select_id = reactive(NA),
-      graph = reactive(explore_graph_natural_infrastructure),
-      table = reactive(info_table_natural_infrastructure))
+      graph = reactive(explore_graph_natural_inf),
+      table = reactive(info_table_natural_inf))
 
     # Bookmarking
     bookmark_server(

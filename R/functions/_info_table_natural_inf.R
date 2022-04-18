@@ -1,6 +1,6 @@
 #### NATURAL INFRASTRUCTURE EXPLORE INFO TABLE GRAPH ##########################
 
-info_table_natural_infrastructure <- function(data, var_type, var_left, 
+info_table_natural_inf <- function(data, var_type, var_left, 
                                               var_right, df, select_id, 
                                               build_str_as_DA = TRUE) {
   

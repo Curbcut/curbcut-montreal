@@ -1,7 +1,7 @@
 #### NATURAL INFRASTRUCTURE EXPLORE GRAPH ######################################
 
 
-explore_graph_natural_infrastructure <- function(data, var_type, var_left, var_right, df, 
+explore_graph_natural_inf <- function(data, var_type, var_left, var_right, df, 
                                                  select_id, build_str_as_DA = TRUE) {
 
   if (!is.null(data)) {
