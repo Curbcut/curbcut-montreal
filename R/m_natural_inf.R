@@ -103,10 +103,10 @@ natural_inf_server <- function(id) {
     
     # Choose tileset
     tile <- reactive({
-      if (var_left() == "conservation_prioritization" &&
+      if (var_left() == "c_priority" &&
           custom_priorities()) return("custom")
       
-      which(names(natural_inf_tiles) == var_left())
+      var_left()
       })
 
     # Left variable
@@ -116,7 +116,7 @@ natural_inf_server <- function(id) {
       var_list = reactive(vars_natural_inf_left))
     
     var_left_2_list <- reactive({
-      if (var_left_1() == "conservation_prioritization") 
+      if (var_left_1() == "c_priority") 
         return(list("----" = " "))
       
       eval(parse(text =
@@ -136,7 +136,7 @@ natural_inf_server <- function(id) {
     
     observeEvent(var_left_1(), {
       toggle(NS(id, "vl_2"), 
-             condition = var_left_1() != "conservation_prioritization")
+             condition = var_left_1() != "c_priority")
     })
     
     # Checkbox value
@@ -148,7 +148,7 @@ natural_inf_server <- function(id) {
     })
     observeEvent(var_left_1(), {
       toggle(NS(id, "cbox"), 
-             condition = var_left_1() == "conservation_prioritization")
+             condition = var_left_1() == "c_priority")
     })
     
 
@@ -183,12 +183,12 @@ natural_inf_server <- function(id) {
     # Enable or disable the main main_slider
     observe({
       toggle(NS(id, "slider"), 
-             condition = var_left() == "conservation_prioritization")
+             condition = var_left() == "c_priority")
     })
     
     # Data
     data <- reactive({
-        if (var_left() == "conservation_prioritization") {
+        if (var_left() == "c_priority") {
           
           slider <- main_slider() * 4
           
@@ -221,7 +221,7 @@ natural_inf_server <- function(id) {
     
     # Map custom colors
     natural_inf_colors <- reactive({
-      if (var_left() == "conservation_prioritization") {
+      if (var_left() == "c_priority") {
         if (!custom_priorities()) {
           
           slider <- main_slider()*4

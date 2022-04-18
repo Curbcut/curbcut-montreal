@@ -20,16 +20,16 @@ suppressPackageStartupMessages({
 
 # Convert raster data to grid polygon -------------------------------------
 
-datasets <- c("habitat_quality" = "Fig11a.asc", 
-              "habitat_connectivity" = "Fig11b.asc", 
-              "favorable_climatic_conditions" = "Fig11c.asc",
-              "ni_contribution_flood_prevention" = "Fig13.tif", 
-              "ni_contribution_biodiversity_conservation" = "Fig14.asc",
-              "ni_contribution_heat_island_reduction" = "Fig15.tif", 
-              "conservation_prioritization" = "Fig16.tif",
-              "flood_risks" = "Flood_CMM/Flood_CMM.tif",
-              "heat_islands" = "heatcoolislands/heatislands3.asc",
-              "cool_islands" = "heatcoolislands/coolislands5.asc")
+datasets <- c("habitat_qual" = "Fig11a.asc", 
+              "habitat_con" = "Fig11b.asc", 
+              "favorable_cc" = "Fig11c.asc",
+              "c_flood" = "Fig13.tif", 
+              "c_bio" = "Fig14.asc",
+              "c_heat" = "Fig15.tif", 
+              "c_priority" = "Fig16.tif",
+              "flood" = "Flood_CMM/Flood_CMM.tif",
+              "heat" = "heatcoolislands/heatislands3.asc",
+              "cool" = "heatcoolislands/coolislands5.asc")
 
 # # Data used to identify priority areas for conservation
 # habitat_quality <- 
@@ -81,7 +81,7 @@ natural_inf_tiles_raw <-
       st_as_sf(crs = st_crs(2950)) |> 
       st_make_valid()
     
-    if (name %in% c("heat_islands", "cool_islands")) {
+    if (name %in% c("heat", "cool")) {
       data <- 
         data |> 
         mutate(area = st_area(geometry)) |> 
@@ -89,21 +89,21 @@ natural_inf_tiles_raw <-
         dplyr::select(-area)
     }
     
-    if (name == "flood_risks") {
+    if (name == "flood") {
       data <-
         data |>
         rename(var = 1) |>
         mutate(rank = 200) |> 
         group_by(var, rank) |> 
         summarize(.groups = "drop")
-    } else if (name == "heat_islands") {
+    } else if (name == "heat") {
       data <-
         data |>
         rename(var = 1) |>
         mutate(rank = 200) |> 
         group_by(var, rank) |> 
         summarize(.groups = "drop")
-    } else if (name == "cool_islands") {
+    } else if (name == "cool") {
       data <-
         data |>
         rename(var = 1) |>
@@ -163,10 +163,7 @@ natural_inf_tiles <-
   })
 
 # Change list order
-natural_inf_tiles <- natural_inf_tiles[c(
-  "ni_contribution_biodiversity_conservation", 
-  "ni_contribution_heat_island_reduction",
-  "ni_contribution_flood_prevention")]
+natural_inf_tiles <- natural_inf_tiles[c("c_bio", "c_heat", "c_flood")]
 
 natural_inf_tiles[[1]] <- 
   natural_inf_tiles[[1]] |> 
@@ -192,9 +189,9 @@ natural_inf_tiles_2 <-
 
 natural_inf_tiles <- 
   natural_inf_tiles_2 |> 
-  group_by(ni_contribution_biodiversity_conservation_q20,
-           ni_contribution_heat_island_reduction_q20,
-           ni_contribution_flood_prevention_q20) |> 
+  group_by(c_bio_q20,
+           c_heat_q20,
+           c_flood_q20) |> 
   summarize(.groups = "drop")
 
 natural_inf_tiles <- 
@@ -230,7 +227,7 @@ natural_inf <-
       st_as_sf(crs = st_crs(2950)) |> 
       st_make_valid()
     
-    if (name %in% c("heat_islands", "cool_islands")) {
+    if (name %in% c("heat", "cool")) {
       data <- 
         data |> 
         mutate(area = st_area(geometry)) |> 
@@ -241,17 +238,17 @@ natural_inf <-
     data <- 
       st_transform(data, 4326)
     
-    if (name == "flood_risks") {
+    if (name == "flood") {
       data <-
         data |>
         rename(var = 1) |>
         mutate(rank = 100)
-    } else if (name == "heat_islands") {
+    } else if (name == "heat") {
       data <-
         data |>
         rename(var = 1) |>
         mutate(rank = 100)
-    } else if (name == "cool_islands") {
+    } else if (name == "cool") {
       data <-
         data |>
         rename(var = 1) |>
@@ -421,6 +418,162 @@ natural_inf$custom_explore <- map_dfr(top_slider, function(top_slider) {
   
 })
   
+
+# Add variable explanations -----------------------------------------------
+
+variables <- 
+  variables |>
+  add_variables(
+    var_code = "habitat_quality",
+    var_title = "Habitat quality",
+    var_short = "Quality",
+    explanation = paste0("the ability of the ecosystem to provide conditions ",
+                         "appropriate for individual and population persistence"),
+    category = NA,
+    theme = "Ecology",
+    private = TRUE,
+    dates = NA,
+    scales = NA,
+    breaks_q3 = NA,
+    breaks_q5 = NA,
+    source = "David Suzuki Foundation"
+  ) |>
+  add_variables(
+    var_code = "habitat_connectivity",
+    var_title = "Habitat Connectivity",
+    var_short = "Connectivity",
+    explanation = paste0("the degree to which the landscape facilitates or ",
+                         "impedes animal movement and other ecological processes"),
+    category = NA,
+    theme = "Ecology",
+    private = TRUE,
+    dates = NA,
+    scales = NA,
+    breaks_q3 = NA,
+    breaks_q5 = NA,
+    source = "David Suzuki Foundation"
+  ) |>
+  add_variables(
+    var_code = "favorable_climatic_conditions",
+    var_title = "Favorable climatic conditions",
+    var_short = "Favorable CC",
+    explanation = paste0("the degree to which climatic conditions (past and f",
+                         "uture) are favourable to the life of species"),
+    category = NA,
+    theme = "Ecology",
+    private = TRUE,
+    dates = NA,
+    scales = NA,
+    breaks_q3 = NA,
+    breaks_q5 = NA,
+    source = "David Suzuki Foundation"
+  ) |>
+  add_variables(
+    var_code = "ni_contribution_flood_prevention",
+    var_title = "Contribution to flood prevention",
+    var_short = "Flood prev.",
+    explanation = paste0("the effect of natural infrastructure on flood ",
+                         "prevention"),
+    category = NA,
+    theme = "Ecology",
+    private = TRUE,
+    dates = NA,
+    scales = NA,
+    breaks_q3 = NA,
+    breaks_q5 = NA,
+    source = "David Suzuki Foundation"
+  ) |>
+  add_variables(
+    var_code = "ni_contribution_biodiversity_conservation",
+    var_title = "Contribution to biodiversity conservation",
+    var_short = "Biodiversity cons.",
+    explanation = paste0("the effect of natural infrastructure on ",
+                         "biodiversity conservation"),
+    category = NA,
+    theme = "Ecology",
+    private = TRUE,
+    dates = NA,
+    scales = NA,
+    breaks_q3 = NA,
+    breaks_q5 = NA,
+    source = "David Suzuki Foundation"
+  ) |>
+  add_variables(
+    var_code = "ni_contribution_heat_island_reduction",
+    var_title = "Contribution to heat island reduction",
+    var_short = "Heat island reduct.",
+    explanation = paste0("the effect of natural infrastructure on ",
+                         "heat island reduction"),
+    category = NA,
+    theme = "Ecology",
+    private = TRUE,
+    dates = NA,
+    scales = NA,
+    breaks_q3 = NA,
+    breaks_q5 = NA,
+    source = "David Suzuki Foundation"
+  ) |>
+  add_variables(
+    var_code = "conservation_prioritization",
+    var_title = "Conservation prioritization",
+    var_short = "Conservation",
+    explanation = paste0(""),
+    category = NA,
+    theme = "Ecology",
+    private = TRUE,
+    dates = NA,
+    scales = NA,
+    breaks_q3 = NA,
+    breaks_q5 = NA,
+    source = "David Suzuki Foundation"
+  ) |>
+  add_variables(
+    var_code = "flood_risks",
+    var_title = "Flood risks",
+    var_short = "Flood risks",
+    explanation = paste0("the land areas at risk of flooding"),
+    category = NA,
+    theme = "Ecology",
+    private = TRUE,
+    dates = NA,
+    scales = NA,
+    breaks_q3 = NA,
+    breaks_q5 = NA,
+    source = "David Suzuki Foundation"
+  ) |>
+  add_variables(
+    var_code = "heat_islands",
+    var_title = "Heat islands",
+    var_short = "Heat islands",
+    explanation = paste0("the intra-urban areas with a higher air or surface ",
+                         "temperature than other areas in the same urban ",
+                         "environment"),
+    category = NA,
+    theme = "Ecology",
+    private = TRUE,
+    dates = NA,
+    scales = NA,
+    breaks_q3 = NA,
+    breaks_q5 = NA,
+    source = "David Suzuki Foundation"
+  ) |>
+  add_variables(
+    var_code = "cool_islands",
+    var_title = "Cool islands",
+    var_short = "Cool islands",
+    explanation = paste0("the intra-urban areas with a lower air or surface ",
+                         "temperature than other areas in the same urban ",
+                         "environment"),
+    category = NA,
+    theme = "Ecology",
+    private = TRUE,
+    dates = NA,
+    scales = NA,
+    breaks_q3 = NA,
+    breaks_q5 = NA,
+    source = "David Suzuki Foundation"
+  )
+
 
 # Cleanup -----------------------------------------------------------------
 

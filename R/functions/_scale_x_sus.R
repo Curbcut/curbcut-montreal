@@ -121,6 +121,8 @@ scale_fill_natural_inf <- function(var, tile, natural_inf_colors) {
     unmapped_color <- colour_table$value[1]
   }
   
+  print(var)
+  
   scale_color_category(
     col = !!rlang::sym(var), 
     palette = colour_table$value,

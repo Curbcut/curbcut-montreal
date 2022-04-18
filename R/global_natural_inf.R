@@ -5,37 +5,25 @@
 # Dropdown list -----------------------------------------------------------
 
 vars_natural_inf_left <- 
-  list("Conservation prioritization" = "conservation_prioritization",
-       "Contribution to flood prevention" = "ni_contribution_flood_prevention", 
-       "Contribution to biodiversity conservation" = "ni_contribution_biodiversity_conservation",
-       "Contribution to heat island reduction" = "ni_contribution_heat_island_reduction")
+  list("Conservation prioritization" = "c_priority",
+       "Contribution to flood prevention" = "c_flood", 
+       "Contribution to biodiversity conservation" = "c_bio",
+       "Contribution to heat island reduction" = "c_heat")
 
-vars_natural_inf_left_ni_contribution_biodiversity_conservation <- 
+vars_natural_inf_left_c_bio <- 
   list("----" = " ",
-       "Habitat quality" = "habitat_quality", 
-       "Habitat connectivity" = "habitat_connectivity", 
-       "Favorable climatic conditions" = "favorable_climatic_conditions")
+       "Habitat quality" = "habitat_qual", 
+       "Habitat connectivity" = "habitat_con", 
+       "Favorable climatic conditions" = "favorable_cc")
 
-vars_natural_inf_left_ni_contribution_flood_prevention <- 
+vars_natural_inf_left_c_flood <- 
   list("----" = " ",
-       "Flood risk areas" = "flood_risks")
+       "Flood risk areas" = "flood")
 
-vars_natural_inf_left_ni_contribution_heat_island_reduction <- 
+vars_natural_inf_left_c_heat <- 
   list("----" = " ",
-       "Heat islands" = "heat_islands",
-       "Cool islands" = "cool_islands")
-
-natural_inf_tiles <- 
-  list("habitat_quality" = 1,
-       "habitat_connectivity" = 2,
-       "favorable_climatic_conditions" = 3,
-       "ni_contribution_flood_prevention" = 4,
-       "ni_contribution_biodiversity_conservation" = 5,
-       "ni_contribution_heat_island_reduction" = 6,
-       "conservation_prioritization" = 7,
-       "flood_risks" = 8,
-       "heat_islands" = 9,
-       "cool_islands" = 10)
+       "Heat islands" = "heat",
+       "Cool islands" = "cool")
 
 
 # Variable explanation ----------------------------------------------------

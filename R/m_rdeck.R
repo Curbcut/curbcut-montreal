@@ -41,7 +41,7 @@ rdeck_server <- function(id, map_id, tile, tile2, map_var, zoom, select_id,
                           tile() == "building")
     
     highlight <- reactive({
-      if (id == "natural_infrastructure") return(FALSE)
+      if (id == "natural_inf") return(FALSE)
       return(TRUE)
     })
     
