@@ -4,42 +4,46 @@ library(tidyverse)
 library(sf)
 library(qs)
 natural_inf_tiles_raw <- qread("dev/data/natural_inf_tiles_raw.qs")
-natural_inf_tiles <- 
-  qread("dev/data/natural_inf_tiles.qs")
+natural_inf_tiles <- qread("dev/data/natural_inf_tiles.qs")
 source("dev/tiles/_tile_functions.R")
+
 
 # Process the lists then upload tile source ---------------------------------
 
-map2(names(natural_inf_tiles_raw), natural_inf_tiles_raw, ~{
+imap(natural_inf_tiles_raw, ~{
   
-  delete_tileset_source(paste0("natural_inf-", .x), username = "sus-mcgill")
+  # Start time
+  start_time <- Sys.time()
   
-  .y |>
+  # Upload tile source
+  .x |>
     as_tibble() |>
     dplyr::select(ends_with("_q100"), geometry) |>
     mutate(across(where(is.numeric), as.character)) |>
     st_as_sf() |>
     st_set_agr("constant") |>
-    upload_tile_source(paste0("natural_inf-", .x), "sus-mcgill", .sus_token)
+    upload_tile_source(paste0("natural_inf-", .y))
   
-  # Add recipes -------------------------------------------------------------
-  
-  natural_inf_raster_recipe <-
+  # Create recipe
+  natural_inf_recipe <-
     create_recipe(
-      layer_names = paste0("natural_inf-", .x),
-      source = paste0("mapbox://tileset-source/sus-mcgill/natural_inf-", .x),
+      layer_names = paste0("natural_inf-", .y),
+      source = paste0("mapbox://tileset-source/sus-mcgill/natural_inf-", .y),
       minzoom = 3,
       maxzoom = 13,
+      simplification_zoom = 13,
       layer_size = 2500,
-      recipe_name = paste0("natural_inf-", .x))
-
-
-  # Create and publish ------------------------------------------------------
-
-  create_tileset(paste0("natural_inf-", .x),
-                 natural_inf_raster_recipe, username = "sus-mcgill")
-  Sys.sleep(15)
-  publish_tileset(paste0("natural_inf-", .x), username = "sus-mcgill")
+      recipe_name = paste0("natural_inf-", .y))
+  
+  # Create tileset
+  create_tileset(paste0("natural_inf-", .y), natural_inf_recipe)
+  
+  # Publish tileset
+  publish_tileset(paste0("natural_inf-", .y))
+  
+  # Wait if necessary
+  time_dif <- Sys.time() - start_time
+  if (time_dif < 31) Sys.sleep(31 - time_dif)
   
 })
 
