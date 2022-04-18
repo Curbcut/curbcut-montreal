@@ -274,7 +274,8 @@ natural_inf_server <- function(id) {
 
     # Update map in response to variable changes or zooming
     rdeck_server(
-      id = ns_id, 
+      # id = ns_id, 
+      id = "natural_inf2", 
       map_id = "map", 
       tile = tile,
       tile2 =  reactive(""),

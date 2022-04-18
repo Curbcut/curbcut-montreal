@@ -216,19 +216,26 @@ natural_inf_tiles_raw <-
     data_q100 <- 
       st_transform(data_q100, 4326) |>
       filter(st_is(geometry, "POLYGON") | st_is(geometry, "MULTIPOLYGON")) |>
-      st_cast("MULTIPOLYGON")
+      st_cast("MULTIPOLYGON") |> 
+      mutate(ID = seq_len(n()), .before = 1)
+    
     data_q50 <-
       st_transform(data_q50, 4326) |>
       filter(st_is(geometry, "POLYGON") | st_is(geometry, "MULTIPOLYGON")) |>
-      st_cast("MULTIPOLYGON")
+      st_cast("MULTIPOLYGON") |> 
+      mutate(ID = seq_len(n()), .before = 1)
+    
     data_q25 <-
       st_transform(data_q25, 4326) |>
       filter(st_is(geometry, "POLYGON") | st_is(geometry, "MULTIPOLYGON")) |>
-      st_cast("MULTIPOLYGON")
+      st_cast("MULTIPOLYGON") |> 
+      mutate(ID = seq_len(n()), .before = 1)
+    
     data_q10 <-
       st_transform(data_q10, 4326) |>
       filter(st_is(geometry, "POLYGON") | st_is(geometry, "MULTIPOLYGON")) |>
-      st_cast("MULTIPOLYGON")
+      st_cast("MULTIPOLYGON") |> 
+      mutate(ID = seq_len(n()), .before = 1)
     
     names(data_q100)[1] <- paste0(name, "_q100")
     names(data_q50)[1] <- paste0(name, "_q100")
