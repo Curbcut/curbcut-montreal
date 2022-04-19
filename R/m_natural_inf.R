@@ -196,12 +196,12 @@ natural_inf_server <- function(id) {
           
             dat <- 
               natural_inf$original_priorities[
-                natural_inf$original_priorities$percent_conservation == 
+                natural_inf$original_priorities$conservation_pct == 
                   slider, ]
             
-            return(list(flood_prevention = dat$flood_prevention,
-                        biodiversity_conservation = dat$biodiversity_conservation,
-                        heat_island_reduction = dat$heat_island_reduction,
+            return(list(flood_prevention = dat$flood,
+                        biodiversity_conservation = dat$biodiversity,
+                        heat_island_reduction = dat$heat_island,
                         ni_protection = slider))
           } else {
             custom <- natural_inf$custom_explore
@@ -210,9 +210,9 @@ natural_inf_server <- function(id) {
             custom <- custom[custom$heat_island == s_hea(), ]
             custom <- custom[custom$flood == s_flo(), ]
             
-            return(list(flood_prevention = custom$flood_prevention,
-                        biodiversity_conservation = custom$biodiversity_conservation,
-                        heat_island_reduction = custom$heat_island_reduction,
+            return(list(flood_prevention = custom$flood,
+                        biodiversity_conservation = custom$biodiversity,
+                        heat_island_reduction = custom$heat_island,
                         ni_protection = slider))
           }
         } else NULL
