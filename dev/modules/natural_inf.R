@@ -87,86 +87,45 @@ natural_inf_tiles_raw <-
         dplyr::select(-area)
     }
     
-    
     if (name == "flood") {
-      data_q20 <-
+      data <-
         data |>
         rename(var = 1) |>
-        mutate(rank = 45) |>
+        mutate(rank = 50) |>
         group_by(rank) |>
         summarize(.groups = "drop")
     } else if (name == "heat") {
-      data_q20 <-
+      data <-
         data |>
         rename(var = 1) |>
-        mutate(rank = 45) |>
+        mutate(rank = 50) |>
         group_by(rank) |>
         summarize(.groups = "drop")
     } else if (name == "cool") {
-      data_q20 <-
+      data <-
         data |>
         rename(var = 1) |>
         mutate(rank = 26) |>
         group_by(rank) |>
         summarize(.groups = "drop")
     } else {
-      data_q20 <-
+      data <-
         data |>
         rename(var = 1) |>
-        mutate(rank = ntile(var, 20) + 25) |>
+        mutate(rank = ntile(var, 25) + 25) |>
         group_by(rank) |>
         summarize(.groups = "drop")
     }
     
-    if (name == "flood") {
-      data_q10 <-
-        data |>
-        rename(var = 1) |>
-        mutate(rank = 45) |>
-        group_by(rank) |>
-        summarize(.groups = "drop")
-    } else if (name == "heat") {
-      data_q10 <-
-        data |>
-        rename(var = 1) |>
-        mutate(rank = 45) |>
-        group_by(rank) |>
-        summarize(.groups = "drop")
-    } else if (name == "cool") {
-      data_q10 <-
-        data |>
-        rename(var = 1) |>
-        mutate(rank = 26) |>
-        group_by(rank) |>
-        summarize(.groups = "drop")
-    } else {
-      data_q10 <-
-        data |>
-        rename(var = 1) |>
-        mutate(rank = ntile(var, 10) * 2 + 25) |>
-        group_by(rank) |>
-        summarize(.groups = "drop")
-    }
-    
-    data_q20 <-
-      st_transform(data_q20, 4326) |>
+    data <-
+      st_transform(data, 4326) |>
       filter(st_is(geometry, "POLYGON") | st_is(geometry, "MULTIPOLYGON")) |>
       st_cast("MULTIPOLYGON") |> 
       mutate(ID = seq_len(n()), .before = 1)
     
-    data_q10 <-
-      st_transform(data_q10, 4326) |>
-      filter(st_is(geometry, "POLYGON") | st_is(geometry, "MULTIPOLYGON")) |>
-      st_cast("MULTIPOLYGON") |> 
-      mutate(ID = seq_len(n()), .before = 1)
-    
-    names(data_q20)[2] <- paste0(name, "_q20")
-    names(data_q10)[2] <- paste0(name, "_q20")
-    
-    out <- list(data_q20, data_q10)
-    names(out) <- c("high", "low")
+    names(data)[2] <- name
 
-    out
+    data
     
   })
 
@@ -362,7 +321,7 @@ natural_inf_custom <-
 # plan(multisession, workers = 10)
 
 slider_values <- c(0, 0.5, 1, 1.5, 2)
-top_slider <- 0:50 / 2
+top_slider <- 0:25
 qload("data/colours.qsm")
 
 natural_inf$custom <- map_dfr(top_slider, \(x) {

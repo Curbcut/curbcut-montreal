@@ -24,7 +24,7 @@ natural_inf_UI <- function(id) {
                   label = sus_translate("Natural infrastructure protection:"),
                   min = 0,
                   max = 25,
-                  step = 0.5,
+                  step = 1,
                   value = 17,
                   post = "%"),
         checkbox_UI(NS(id, ns_id),
@@ -175,7 +175,7 @@ natural_inf_server <- function(id) {
     # Composite variable for map
     map_var <- reactive({
       if (custom_priorities()) return("ID")
-      paste0(var_left(), "_q20")
+      var_left()
     })
     
     # Enable or disable the main main_slider

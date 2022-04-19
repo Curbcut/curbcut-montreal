@@ -13,21 +13,16 @@ source("dev/tiles/_tile_functions.R")
 
 for (i in seq_len(length(natural_inf_tiles_raw))) {
   
-  map(c("high", "low"), function(level) {
-    
-    delete_tileset_source(paste0(
-      "natural_inf-", names(natural_inf_tiles_raw)[[i]], "_", 
-      str_extract(level, ".")))
-    
-    natural_inf_tiles_raw[[i]][[level]] |>
-      mutate(across(where(is.numeric), as.character)) |>
-      st_set_agr("constant") |>
-      upload_tile_source(paste0(
-        "natural_inf-", names(natural_inf_tiles_raw)[[i]], "_", 
-        str_extract(level, ".")))
-  })
+  delete_tileset_source(paste0(
+    "natural_inf-", names(natural_inf_tiles_raw)[[i]]))
   
+  natural_inf_tiles_raw[[i]] |>
+    mutate(across(where(is.numeric), as.character)) |>
+    st_set_agr("constant") |>
+    upload_tile_source(paste0(
+      "natural_inf-", names(natural_inf_tiles_raw)[[i]]))
 }
+
 
 
 # Create recipes ----------------------------------------------------------
@@ -35,34 +30,34 @@ for (i in seq_len(length(natural_inf_tiles_raw))) {
 natural_inf_recipe <- imap(natural_inf_tiles_raw, \(cat_data, cat) {
   
   create_recipe(
-    layer_names = c(paste0(cat, "_l1"),
-                    paste0(cat, "_l2"),
-                    paste0(cat, "_h")),
+    layer_names = c(paste0(cat, "_a"),
+                    paste0(cat, "_b"),
+                    paste0(cat, "_c")),
     source = c(
-      setNames(nm = paste0(cat, "_l1"), paste0(
-        "mapbox://tileset-source/sus-mcgill/natural_inf-", cat, "_l")),
-      setNames(nm = paste0(cat, "_l2"), paste0(
-        "mapbox://tileset-source/sus-mcgill/natural_inf-", cat, "_l")),
-      setNames(nm = paste0(cat, "_h"), paste0(
-        "mapbox://tileset-source/sus-mcgill/natural_inf-", cat, "_h"))),
-    minzoom = c(setNames(nm = paste0(cat, "_l1"), 3),
-                setNames(nm = paste0(cat, "_l2"), 10),
-                setNames(nm = paste0(cat, "_h"), 11)),
-    maxzoom = c(setNames(nm = paste0(cat, "_l1"), 9),
-                setNames(nm = paste0(cat, "_l2"), 10),
-                setNames(nm = paste0(cat, "_h"), 15)),
-    layer_size = c(setNames(nm = paste0(cat, "_l1"), 2500),
-                   setNames(nm = paste0(cat, "_l2"), 2500),
-                   setNames(nm = paste0(cat, "_h"), 2500)),
-    simp_zoom = c(setNames(nm = paste0(cat, "_l1"), 9),
-                  setNames(nm = paste0(cat, "_l2"), 10),
-                  setNames(nm = paste0(cat, "_h"), 15)),
-    simp_value = c(setNames(nm = paste0(cat, "_l1"), 1),
-                   setNames(nm = paste0(cat, "_l2"), 1),
-                   setNames(nm = paste0(cat, "_h"), 1)),
-    fallback_simp_zoom = c(setNames(nm = paste0(cat, "_l1"), 4),
-                           setNames(nm = paste0(cat, "_l2"), 4),
-                           setNames(nm = paste0(cat, "_h"), 4)),
+      setNames(nm = paste0(cat, "_a"), paste0(
+        "mapbox://tileset-source/sus-mcgill/natural_inf-", cat)),
+      setNames(nm = paste0(cat, "_b"), paste0(
+        "mapbox://tileset-source/sus-mcgill/natural_inf-", cat)),
+      setNames(nm = paste0(cat, "_c"), paste0(
+        "mapbox://tileset-source/sus-mcgill/natural_inf-", cat))),
+    minzoom = c(setNames(nm = paste0(cat, "_a"), 3),
+                setNames(nm = paste0(cat, "_b"), 9),
+                setNames(nm = paste0(cat, "_c"), 11)),
+    maxzoom = c(setNames(nm = paste0(cat, "_a"), 8),
+                setNames(nm = paste0(cat, "_b"), 10),
+                setNames(nm = paste0(cat, "_c"), 15)),
+    layer_size = c(setNames(nm = paste0(cat, "_a"), 2500),
+                   setNames(nm = paste0(cat, "_b"), 2500),
+                   setNames(nm = paste0(cat, "_c"), 2500)),
+    simp_zoom = c(setNames(nm = paste0(cat, "_a"), NA),
+                  setNames(nm = paste0(cat, "_b"), 10),
+                  setNames(nm = paste0(cat, "_c"), 15)),
+    simp_value = c(setNames(nm = paste0(cat, "_a"), NA),
+                   setNames(nm = paste0(cat, "_b"), 1),
+                   setNames(nm = paste0(cat, "_c"), 1)),
+    fallback_simp_zoom = c(setNames(nm = paste0(cat, "_a"), NA),
+                           setNames(nm = paste0(cat, "_b"), 1),
+                           setNames(nm = paste0(cat, "_c"), 4)),
     recipe_name = paste0("natural_inf-", cat))
   
 })
@@ -74,6 +69,7 @@ natural_inf_recipe <- imap(natural_inf_tiles_raw, \(cat_data, cat) {
 for (i in seq_len(length(natural_inf_tiles_raw))) {
   create_tileset(paste0("natural_inf-", names(natural_inf_tiles_raw)[[i]]), 
                  natural_inf_recipe[[i]])
+  Sys.sleep(5)
 }
   
 
@@ -81,6 +77,7 @@ for (i in seq_len(length(natural_inf_tiles_raw))) {
 
 for (i in seq_len(length(natural_inf_tiles_raw))) {
   publish_tileset(paste0("natural_inf-", names(natural_inf_tiles_raw)[[i]]))
+  Sys.sleep(15)
 }
 
 
