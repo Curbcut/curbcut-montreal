@@ -219,39 +219,22 @@ natural_inf_server <- function(id) {
         
       })
     
-    # Map custom colors
-    natural_inf_colors <- reactive({
-      if (var_left() == "c_priority") {
-        if (!custom_priorities()) {
-          
-          slider <- main_slider()*4
-          
-          remove <- seq_len(abs(slider - 100)) + 100
-          
-          ni_colour_table <- colour_table[colour_table$group %in% 101:200, ]
-          
-          transparent_rows <- ni_colour_table[ni_colour_table$group %in% remove, ]
-          transparent_rows$value <- str_replace(transparent_rows$value, "FF$", 
-                                                "00")
-          
-          colored_rows <- ni_colour_table[!ni_colour_table$group %in% remove, ]
-          
-          rbind(transparent_rows, colored_rows)
-          
-        } else {
-          custom <- natural_inf$custom
-          custom <- custom[custom$conservation_pct == main_slider(), ]
-          custom <- custom[custom$biodiversity == s_bio(), ]
-          custom <- custom[custom$heat_island == s_hea(), ]
-          custom <- custom[custom$flood == s_flo(), ]
-          
-          out <-
-            data.frame(group = as.character(seq_along(natural_inf_custom$ID)),
-                       value = "#FFFFFF00")
-          out <- out[!out$group %in% custom$group, ]
-          rbind(out, custom[, c("group", "value")])
-          
-        }
+    # Map custom colours
+    natural_inf_colours <- reactive({
+      if (var_left() == "c_priority" && custom_priorities()) {
+        
+        custom <- natural_inf$custom
+        custom <- custom[custom$conservation_pct == main_slider(), ]
+        custom <- custom[custom$biodiversity == s_bio(), ]
+        custom <- custom[custom$heat_island == s_hea(), ]
+        custom <- custom[custom$flood == s_flo(), ]
+        
+        out <-
+          data.frame(group = as.character(seq_along(natural_inf_custom$ID)),
+                     value = "#FFFFFF00")
+        out <- out[!out$group %in% custom$group, ]
+        rbind(out, custom[, c("group", "value")])
+        
       } else NULL
       
     })
@@ -288,7 +271,7 @@ natural_inf_server <- function(id) {
       lwd = scale_lwd_natural_inf,
       lwd_args = reactive(list()),
       fill = scale_fill_natural_inf,
-      fill_args = reactive(list(map_var(), tile(), natural_inf_colors())))
+      fill_args = reactive(list(map_var(), tile(), natural_inf_colours())))
     
     # Update map labels
     label_server(

@@ -113,18 +113,33 @@ scale_lwd_natural_inf <- function() {
 }
 
 # Natural infrastructure fill
-scale_fill_natural_inf <- function(var, tile, natural_inf_colors) {
-  if (!is.null(natural_inf_colors)) {
-    colour_table <- natural_inf_colors
-    unmapped_color <- "#B3B3BB"
+scale_fill_natural_inf <- function(var, tile, natural_inf_colours) {
+  
+  if (is.null(natural_inf_colours)) {
+    print("TEST")
+    scale_color_linear(
+      col = c_priority_q100, 
+      palette = scales::viridis_pal(),
+      na_color = "#B3B3BB",
+      limits = c(101, 200),
+      legend = TRUE
+    )
   } else {
-    unmapped_color <- colour_table$value[1]
+    
+    if (!is.null(natural_inf_colours)) {
+      colour_table <- natural_inf_colours
+      unmapped_color <- "#B3B3BB"
+    } else {
+      unmapped_color <- colour_table$value[1]
+    }
+    
+    scale_color_category(
+      col = !!rlang::sym(var), 
+      palette = colour_table$value,
+      unmapped_color = unmapped_color, 
+      levels = colour_table$group,
+      legend = FALSE)
+    
   }
   
-  scale_color_category(
-    col = !!rlang::sym(var), 
-    palette = colour_table$value,
-    unmapped_color = unmapped_color, 
-    levels = colour_table$group,
-    legend = FALSE)
 }

@@ -40,10 +40,7 @@ rdeck_server <- function(id, map_id, tile, tile2, map_var, zoom, select_id,
     extrude <- reactive((tile() == "auto_zoom" && zoom() >= 15.5) | 
                           tile() == "building")
     
-    highlight <- reactive({
-      if (id == "natural_inf") return(FALSE)
-      return(TRUE)
-    })
+    highlight <- reactive(if (id == "natural_inf") FALSE else TRUE)
     
     # Create final tileset string
     tile_string <- reactive(paste0(tile(), tile2()))
@@ -56,6 +53,8 @@ rdeck_server <- function(id, map_id, tile, tile2, map_var, zoom, select_id,
       colour_args()
       lwd_args()
       zoom}, {
+        
+        print(fill_args())
       rdeck_proxy(map_id) |>
         add_mvt_layer(
           id = id, 
