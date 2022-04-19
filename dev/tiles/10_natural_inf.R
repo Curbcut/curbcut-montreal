@@ -13,16 +13,12 @@ source("dev/tiles/_tile_functions.R")
 
 for (i in seq_len(length(natural_inf_tiles_raw))) {
   
-  delete_tileset_source(paste0(
-    "natural_inf-", names(natural_inf_tiles_raw)[[i]]))
-  
   natural_inf_tiles_raw[[i]] |>
     mutate(across(where(is.numeric), as.character)) |>
     st_set_agr("constant") |>
     upload_tile_source(paste0(
       "natural_inf-", names(natural_inf_tiles_raw)[[i]]))
 }
-
 
 
 # Create recipes ----------------------------------------------------------

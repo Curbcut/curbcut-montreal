@@ -144,27 +144,25 @@ natural_inf_server <- function(id) {
                           inputId = NS(id, "cbox"),
                           value = FALSE)
     })
-    observeEvent(var_left_1(), {
-      toggle(NS(id, "cbox"), 
-             condition = var_left_1() == "c_priority")
-    })
+    observe(toggle(NS(id, "cbox"), condition = var_left_1() == "c_priority")) |> 
+      bindEvent(var_left_1())
     
-
     # Main slider value
     main_slider <- slider_server(id = ns_id)
     
-    # Three other sliders
+    # Custom priority sliders
     s_bio <- slider_server(id = ns_id, slider_id = "s_bio")
     s_hea <- slider_server(id = ns_id, slider_id = "s_hea")
     s_flo <- slider_server(id = ns_id, slider_id = "s_flo")
-    observeEvent(custom_priorities(), {
+    observe({
       toggle(NS(id, "s_bio"), 
              condition = custom_priorities())
       toggle(NS(id, "s_hea"), 
              condition = custom_priorities())
       toggle(NS(id, "s_flo"), 
              condition = custom_priorities())
-    })
+      }) |> 
+      bindEvent(custom_priorities())
 
     # Right variable / compare panel
     var_right <- reactive(" ")
@@ -173,16 +171,10 @@ natural_inf_server <- function(id) {
     sidebar_server(id = ns_id, x = "natural_inf")
     
     # Composite variable for map
-    map_var <- reactive({
-      if (custom_priorities()) return("ID")
-      var_left()
-    })
+    map_var <- reactive(if (custom_priorities()) "ID" else var_left())
     
     # Enable or disable the main main_slider
-    observe({
-      toggle(NS(id, "slider"), 
-             condition = var_left() == "c_priority")
-    })
+    observe(toggle(NS(id, "slider"), condition = var_left() == "c_priority"))
     
     # Data
     data <- reactive({
@@ -219,20 +211,31 @@ natural_inf_server <- function(id) {
     
     # Map custom colours
     natural_inf_colours <- reactive({
-      if (var_left() == "c_priority" && custom_priorities()) {
+      if (var_left() == "c_priority") {
         
-        custom <- natural_inf$custom
-        custom <- custom[custom$conservation_pct == main_slider(), ]
-        custom <- custom[custom$biodiversity == s_bio(), ]
-        custom <- custom[custom$heat_island == s_hea(), ]
-        custom <- custom[custom$flood == s_flo(), ]
-        
-        out <-
-          data.frame(group = as.character(seq_along(natural_inf_custom$ID)),
-                     value = "#FFFFFF00")
-        out <- out[!out$group %in% custom$group, ]
-        rbind(out, custom[, c("group", "value")])
-        
+        if (!custom_priorities()) {
+          
+          slider <- main_slider() * 4
+          remove <- seq_len(abs(slider - 100)) + 100
+          ni_colour_table <- colour_table[colour_table$group %in% 101:200, ]
+          transparent_rows <- ni_colour_table[ni_colour_table$group %in% remove, ]
+          transparent_rows$value <- str_replace(transparent_rows$value, "FF$", "00")
+          colored_rows <- ni_colour_table[!ni_colour_table$group %in% remove, ]
+          rbind(transparent_rows, colored_rows)
+          
+        } else {
+          custom <- natural_inf$custom
+          custom <- custom[custom$conservation_pct == main_slider(), ]
+          custom <- custom[custom$biodiversity == s_bio(), ]
+          custom <- custom[custom$heat_island == s_hea(), ]
+          custom <- custom[custom$flood == s_flo(), ]
+          
+          out <-
+            data.frame(group = as.character(seq_along(natural_inf_custom$ID)),
+                       value = "#FFFFFF00")
+          out <- out[!out$group %in% custom$group, ]
+          rbind(out, custom[, c("group", "value")])
+        }
       } else NULL
       
     })

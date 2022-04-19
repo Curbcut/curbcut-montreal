@@ -108,9 +108,7 @@ scale_fill_pe <- function(select_id) {
 }
 
 # Natural infrastructure lws
-scale_lwd_natural_inf <- function() {
-  0
-}
+scale_lwd_natural_inf <- function() 0
 
 # Natural infrastructure fill
 scale_fill_natural_inf <- function(var, tile, natural_inf_colours) {
