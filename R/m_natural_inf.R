@@ -175,7 +175,7 @@ natural_inf_server <- function(id) {
     # Composite variable for map
     map_var <- reactive({
       if (custom_priorities()) return("ID")
-      paste0(var_left(), "_q100")
+      paste0(var_left(), "_q20")
     })
     
     # Enable or disable the main main_slider
@@ -258,8 +258,7 @@ natural_inf_server <- function(id) {
 
     # Update map in response to variable changes or zooming
     rdeck_server(
-      # id = ns_id, 
-      id = "natural_inf2", 
+      id = ns_id,
       map_id = "map", 
       tile = tile,
       tile2 =  reactive(""),
