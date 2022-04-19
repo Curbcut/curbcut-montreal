@@ -210,9 +210,9 @@ natural_inf_server <- function(id) {
             custom <- custom[custom$heat_island == s_hea(), ]
             custom <- custom[custom$flood == s_flo(), ]
             
-            return(list(flood_prevention = custom$flood,
-                        biodiversity_conservation = custom$biodiversity,
-                        heat_island_reduction = custom$heat_island,
+            return(list(flood_prevention = custom$flood_prevention,
+                        biodiversity_conservation = custom$biodiversity_conservation,
+                        heat_island_reduction = custom$heat_island_reduction,
                         ni_protection = slider))
           }
         } else NULL
