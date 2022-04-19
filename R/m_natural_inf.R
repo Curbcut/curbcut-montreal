@@ -216,8 +216,8 @@ natural_inf_server <- function(id) {
         if (!custom_priorities()) {
           
           slider <- main_slider() * 4
-          remove <- seq_len(abs(slider - 100)) + 100
-          ni_colour_table <- colour_table[colour_table$group %in% 101:200, ]
+          remove <- seq_len(abs(slider - 25)) + 25
+          ni_colour_table <- colour_table[colour_table$group %in% 26:50, ]
           transparent_rows <- ni_colour_table[ni_colour_table$group %in% remove, ]
           transparent_rows$value <- str_replace(transparent_rows$value, "FF$", "00")
           colored_rows <- ni_colour_table[!ni_colour_table$group %in% remove, ]
