@@ -145,6 +145,22 @@ render_legend <- function(data, var_left, var_right, df, data_type,
       scale_colour_manual(values = c("black" = "black", "white" = "white")) +
       labs_xy[[1]] + theme_default
     
+  } else if (data_type == "q100") {
+
+    leg <- data.frame(x = 1:10,
+                      y = 1,
+                      fill = scales::viridis_pal()(10))
+    
+    leg |> 
+      ggplot(aes(xmin = x - 1, xmax = x, ymin = y - 1, ymax = y, 
+                 fill = fill)) +
+      geom_rect() + 
+      scale_x_continuous(breaks = 0:10, 
+                         labels = break_labs) +
+      scale_y_continuous(labels = NULL) +
+      scale_fill_manual(values = setNames(
+        leg$fill, leg$fill)) +
+      labs_xy + theme_default
   } else NULL
   
 }

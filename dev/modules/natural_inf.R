@@ -540,7 +540,7 @@ natural_inf$custom_explore <- map_dfr(top_slider, function(top_slider) {
 variables <- 
   variables |>
   add_variables(
-    var_code = "habitat_quality",
+    var_code = "habitat_qual",
     var_title = "Habitat quality",
     var_short = "Quality",
     explanation = paste0("the ability of the ecosystem to provide conditions ",
@@ -555,7 +555,7 @@ variables <-
     source = "David Suzuki Foundation"
   ) |>
   add_variables(
-    var_code = "habitat_connectivity",
+    var_code = "habitat_con",
     var_title = "Habitat Connectivity",
     var_short = "Connectivity",
     explanation = paste0("the degree to which the landscape facilitates or ",
@@ -570,7 +570,7 @@ variables <-
     source = "David Suzuki Foundation"
   ) |>
   add_variables(
-    var_code = "favorable_climatic_conditions",
+    var_code = "favorable_cc",
     var_title = "Favorable climatic conditions",
     var_short = "Favorable CC",
     explanation = paste0("the degree to which climatic conditions (past and f",
@@ -585,7 +585,7 @@ variables <-
     source = "David Suzuki Foundation"
   ) |>
   add_variables(
-    var_code = "ni_contribution_flood_prevention",
+    var_code = "c_flood",
     var_title = "Contribution to flood prevention",
     var_short = "Flood prev.",
     explanation = paste0("the effect of natural infrastructure on flood ",
@@ -600,7 +600,7 @@ variables <-
     source = "David Suzuki Foundation"
   ) |>
   add_variables(
-    var_code = "ni_contribution_biodiversity_conservation",
+    var_code = "c_bio",
     var_title = "Contribution to biodiversity conservation",
     var_short = "Biodiversity cons.",
     explanation = paste0("the effect of natural infrastructure on ",
@@ -615,7 +615,7 @@ variables <-
     source = "David Suzuki Foundation"
   ) |>
   add_variables(
-    var_code = "ni_contribution_heat_island_reduction",
+    var_code = "c_heat",
     var_title = "Contribution to heat island reduction",
     var_short = "Heat island reduct.",
     explanation = paste0("the effect of natural infrastructure on ",
@@ -630,7 +630,7 @@ variables <-
     source = "David Suzuki Foundation"
   ) |>
   add_variables(
-    var_code = "conservation_prioritization",
+    var_code = "c_priority",
     var_title = "Conservation prioritization",
     var_short = "Conservation",
     explanation = paste0(""),
@@ -644,7 +644,7 @@ variables <-
     source = "David Suzuki Foundation"
   ) |>
   add_variables(
-    var_code = "flood_risks",
+    var_code = "flood",
     var_title = "Flood risks",
     var_short = "Flood risks",
     explanation = paste0("the land areas at risk of flooding"),
@@ -658,7 +658,7 @@ variables <-
     source = "David Suzuki Foundation"
   ) |>
   add_variables(
-    var_code = "heat_islands",
+    var_code = "heat",
     var_title = "Heat islands",
     var_short = "Heat islands",
     explanation = paste0("the intra-urban areas with a higher air or surface ",
@@ -674,7 +674,7 @@ variables <-
     source = "David Suzuki Foundation"
   ) |>
   add_variables(
-    var_code = "cool_islands",
+    var_code = "cool",
     var_title = "Cool islands",
     var_short = "Cool islands",
     explanation = paste0("the intra-urban areas with a lower air or surface ",

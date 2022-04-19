@@ -39,6 +39,11 @@ get_legend_labels <- function(var_left, var_right, data_type, breaks = NULL) {
     labs_xy <- list(labs(x = title_left, y = NULL))
   }
   
+  # q100 version
+  if (data_type == "q100") {
+    labs_xy <- list(labs(x = title_left, y = NULL))
+  }
+  
   # qual version
   if (data_type == "qual") {
     labs_xy <- list(labs(x = title_left, y = NULL))

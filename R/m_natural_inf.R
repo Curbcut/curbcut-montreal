@@ -255,15 +255,18 @@ natural_inf_server <- function(id) {
       } else NULL
       
     })
+    
+    legend_raster <- reactive({
+      if (var_left() %in% c("heat", "cool", "flood")) return(NULL)
+      "raster"
+    })
 
     # Legend
-    # legend <- legend_server(
-    #   id = ns_id,
-    #   data = data,
-    #   var_left = var_left,
-    #   var_right = var_right,
-    #   df = df,
-    #   zoom = zoom)
+    legend <- legend_server(
+      id = ns_id,
+      var_left = var_left,
+      var_right = var_right,
+      df = legend_raster)
 
     # Did-you-know panel
     dyk_server(

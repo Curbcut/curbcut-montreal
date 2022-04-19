@@ -101,6 +101,16 @@ get_legend_breaks <- function(data, var_left, var_right, df, data_type,
      
   }
   
+  ## Univariate q100 version ---------------------------------------------------
+  
+  if (data_type == "q100") {
+    
+    # Create break labels
+    break_labs <- c(sus_translate("Low"), sapply(1:9, \(x) NULL),
+                    sus_translate("High"))
+    
+  }
+  
   
   ## Return output -------------------------------------------------------------
   
