@@ -21,15 +21,14 @@ natural_inf_UI <- function(id) {
                         "Dive further in the selected ",
                         "natural infrastructure's contributions:")),
         slider_UI(NS(id, ns_id),
-                  label = sus_translate("Choose the level of natural ", 
-                                        "infrastructure protection:"),
+                  label = sus_translate("Natural infrastructure protection:"),
                   min = 0,
                   max = 25,
                   step = 0.5,
                   value = 17,
                   post = "%"),
         checkbox_UI(NS(id, ns_id),
-                    label = sus_translate("Choose custom priorities")),
+                    label = sus_translate("Custom priorities")),
         slider_UI(NS(id, ns_id),
                   slider_id = "s_bio",
                   label = sus_translate("Biodiversity conservation:"),
@@ -53,8 +52,7 @@ natural_inf_UI <- function(id) {
                   value = 1)
         ),
       bottom = div(class = "bottom_sidebar",
-                   tagList(legend_UI(NS(id, ns_id)),
-                           zoom_UI(NS(id, ns_id), map_zoom_levels)))),
+                   tagList(legend_UI(NS(id, ns_id))))),
 
     # Map
     div(class = "mapdeck_div", rdeckOutput(NS(id, ns_id_map), height = "100%")),
