@@ -17,14 +17,14 @@ for (i in seq_len(length(natural_inf_tiles_raw))) {
     
     delete_tileset_source(paste0(
       "natural_inf-", names(natural_inf_tiles_raw)[[i]], "_", 
-      str_extract(level, ".")), "maxbdb2")
+      str_extract(level, ".")))
     
     natural_inf_tiles_raw[[i]][[level]] |>
       mutate(across(where(is.numeric), as.character)) |>
       st_set_agr("constant") |>
       upload_tile_source(paste0(
         "natural_inf-", names(natural_inf_tiles_raw)[[i]], "_", 
-        str_extract(level, ".")), "maxbdb2")
+        str_extract(level, ".")))
   })
   
 }
@@ -40,11 +40,11 @@ natural_inf_recipe <- imap(natural_inf_tiles_raw, \(cat_data, cat) {
                     paste0(cat, "_h")),
     source = c(
       setNames(nm = paste0(cat, "_l1"), paste0(
-        "mapbox://tileset-source/maxbdb2/natural_inf-", cat, "_l")),
+        "mapbox://tileset-source/sus-mcgill/natural_inf-", cat, "_l")),
       setNames(nm = paste0(cat, "_l2"), paste0(
-        "mapbox://tileset-source/maxbdb2/natural_inf-", cat, "_l")),
+        "mapbox://tileset-source/sus-mcgill/natural_inf-", cat, "_l")),
       setNames(nm = paste0(cat, "_h"), paste0(
-        "mapbox://tileset-source/maxbdb2/natural_inf-", cat, "_h"))),
+        "mapbox://tileset-source/sus-mcgill/natural_inf-", cat, "_h"))),
     minzoom = c(setNames(nm = paste0(cat, "_l1"), 3),
                 setNames(nm = paste0(cat, "_l2"), 10),
                 setNames(nm = paste0(cat, "_h"), 11)),
@@ -73,14 +73,14 @@ natural_inf_recipe <- imap(natural_inf_tiles_raw, \(cat_data, cat) {
 
 for (i in seq_len(length(natural_inf_tiles_raw))) {
   create_tileset(paste0("natural_inf-", names(natural_inf_tiles_raw)[[i]]), 
-                 natural_inf_recipe[[i]], "maxbdb2")
+                 natural_inf_recipe[[i]])
 }
   
 
 # Publish tilesets --------------------------------------------------------
 
 for (i in seq_len(length(natural_inf_tiles_raw))) {
-  publish_tileset(paste0("natural_inf-", names(natural_inf_tiles_raw)[[i]]), "maxbdb2")
+  publish_tileset(paste0("natural_inf-", names(natural_inf_tiles_raw)[[i]]))
 }
 
 
