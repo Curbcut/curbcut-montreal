@@ -215,15 +215,15 @@ natural_inf_server <- function(id) {
         
         if (!custom_priorities()) {
           
-          slider <- main_slider() * 4
-          remove <- seq_len(abs(slider - 25)) + 25
-          ni_colour_table <- colour_table[colour_table$group %in% 26:50, ]
-          transparent_rows <- ni_colour_table[ni_colour_table$group %in% remove, ]
-          transparent_rows$value <- str_replace(transparent_rows$value, "FF$", "00")
-          colored_rows <- ni_colour_table[!ni_colour_table$group %in% remove, ]
-          rbind(transparent_rows, colored_rows)
+          remove <- 50 - main_slider()
+          ni_colour_table <- colour_table[colour_table$palette == "viridis", ]
+          ni_colour_table$value[ni_colour_table$group <= remove] <- 
+            paste0(substr(ni_colour_table$value[
+              ni_colour_table$group <= remove], 1, 7), "00")
+          ni_colour_table
           
         } else {
+          
           custom <- natural_inf$custom
           custom <- custom[custom$conservation_pct == main_slider(), ]
           custom <- custom[custom$biodiversity == s_bio(), ]

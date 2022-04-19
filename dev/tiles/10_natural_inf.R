@@ -65,7 +65,7 @@ natural_inf_recipe <- imap(natural_inf_tiles_raw, \(cat_data, cat) {
 for (i in seq_len(length(natural_inf_tiles_raw))) {
   create_tileset(paste0("natural_inf-", names(natural_inf_tiles_raw)[[i]]), 
                  natural_inf_recipe[[i]])
-  Sys.sleep(5)
+  Sys.sleep(1)
 }
   
 
@@ -73,9 +73,8 @@ for (i in seq_len(length(natural_inf_tiles_raw))) {
 
 for (i in seq_len(length(natural_inf_tiles_raw))) {
   publish_tileset(paste0("natural_inf-", names(natural_inf_tiles_raw)[[i]]))
-  Sys.sleep(15)
+  Sys.sleep(30)
 }
-
 
 
 # Tileset for custom priorities -------------------------------------------
