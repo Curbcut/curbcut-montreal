@@ -1048,8 +1048,8 @@ variables_translated <-
           fr = paste0("Identité")) |> 
   add_row(en = paste0("Transport"), 
           fr = paste0("Transport")) |> 
-  add_row(en = paste0("Family"), 
-          fr = paste0("Famille")) |> 
+  add_row(en = paste0("Household"), 
+          fr = paste0("Ménage")) |> 
   add_row(en = paste0("Language"), 
           fr = paste0("Langue")) |> 
   add_row(en = paste0("Age"), 

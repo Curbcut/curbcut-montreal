@@ -556,7 +556,7 @@ variables <-
   ) |>
   add_variables(
     var_code = "habitat_con",
-    var_title = "Habitat Connectivity",
+    var_title = "Habitat connectivity",
     var_short = "Connectivity",
     explanation = paste0("the degree to which the landscape facilitates or ",
                          "impedes animal movement and other ecological processes"),
