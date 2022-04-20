@@ -304,20 +304,39 @@ natural_inf_custom <-
 
 # plan(multisession, workers = 10)
 
+qload("data/colours.qsm")
 slider_values <- c(0, 0.5, 1, 1.5, 2)
 top_slider <- 0:25
-qload("data/colours.qsm")
+all_sliders <-
+  tibble(
+    biodiversity = rep(0, 13),
+    heat_island = c(0, 0.5, 0.5, 1, 1, 1, 1, 1.5, 1.5, 1.5, 2, 2, 2),
+    flood = c(1, 1.5, 2, 0, 1, 1.5, 2, 0.5, 1, 2, 0.5, 1, 1.5)) |>
+  add_row(
+    biodiversity = rep(0.5, 16),
+    heat_island = c(0, 0, 0.5, 0.5, 1, 1, rep(1.5, 5), rep(2, 5)),
+    flood = c(1.5, 2, 1.5, 2, 1.5, 2, 0, 0.5, 1, 1.5, 2, 0, 0.5, 1, 1.5, 2)) |>
+  add_row(
+    biodiversity = rep(1, 20),
+    heat_island = c(rep(0, 4), 0.5, 0.5, rep(1, 4), rep(1.5, 5), rep(2, 5)),
+    flood = c(0, 1, 1.5, 2, 1.5, 2, 0, 1, 1.5, 2, 0, 0.5, 1, 1.5, 2, 0, 0.5, 1, 
+              1.5, 2)) |>
+  add_row(
+    biodiversity = rep(1.5, 22),
+    heat_island = c(rep(0, 4), rep(0.5, 5), rep(1, 5), rep(1.5, 3), rep(2, 5)),
+    flood = c(0.5, 1, 1.5, 2, 0, 0.5, 1, 1.5, 2, 0, 0.5, 1, 1.5, 2, 0.5, 1, 2,
+              0, 0.5, 1, 1.5, 2)) |>
+  add_row(
+    biodiversity = rep(2, 21),
+    heat_island = c(rep(0, 3), rep(0.5, 5), rep(1, 5), rep(1.5, 5), rep(2, 3)),
+    flood = c(0.5, 1, 1.5, 0, 0.5, 1, 1.5, 2, 0, 0.5, 1, 1.5, 2, 0, 0.5, 1, 1.5, 
+              2, 0.5, 1, 1.5))
 
 natural_inf$custom <- map_dfr(top_slider, \(x) {
   
   kept_pct <- x / 25
   kept_area <- kept_pct * sum(natural_inf_custom$area)
     
-  all_sliders <- 
-    expand.grid(slider_values, slider_values, slider_values) |> 
-    as_tibble() |> 
-    set_names(c("biodiversity", "heat_island", "flood"))
-  
   map_dfr(seq_len(nrow(all_sliders)), \(y) {
     
     df <- all_sliders[y,]
@@ -330,39 +349,34 @@ natural_inf$custom <- map_dfr(top_slider, \(x) {
       select(-biodiversity, -heat_island, -flood) |> 
       arrange(-score) |> 
       mutate(ite_area = slider::slide_dbl(area, sum, .before = n())) |> 
-      filter(!ite_area > kept_area) |> 
+      filter(ite_area <= kept_area) |> 
       mutate(conservation_pct = x,
              biodiversity = df$biodiversity,
              heat_island = df$heat_island,
              flood = df$flood) |> 
       # Pre-compute ID/score columns to directly fit in `scale_fill_natural_inf`
       rename(group = ID) |> 
-      mutate(score = as.character(round(score / max(score) * 100) + 100),
+      mutate(score = as.character(round(score / max(score) * 24) + 26),
              group = as.character(group)) |> 
       left_join(select(colour_table, group, value), 
                 by = c("score" = "group")) |> 
       select(-area, -ite_area, -score) |> 
       mutate(value = if_else(is.na(value), colour_table$value[
-        colour_table$group == 101], value))
+        colour_table$group == 26], value))
     })
   })
 
 # Pre-compute values for the explore panel
 total_areas <- 
   natural_inf_custom |> 
-  mutate(total_biodiversity = biodiversity_q20 * area,
-         total_heat_island = heat_island_q20 * area,
-         total_flood = flood_q20 * area) |> 
+  mutate(total_biodiversity = biodiversity * area,
+         total_heat_island = heat_island * area,
+         total_flood = flood * area) |> 
   summarize(total_biodiversity = sum(total_biodiversity),
             total_heat_island = sum(total_heat_island),
             total_flood = sum(total_flood))
 
 natural_inf$custom_explore <- map_dfr(top_slider, function(top_slider) {
-  
-  all_sliders <- 
-    expand.grid(slider_values, slider_values, slider_values) |> 
-    as_tibble() |> 
-    set_names(c("biodiversity", "heat_island", "flood"))
   
   map_dfr(seq_len(nrow(all_sliders)), \(y) {
     
@@ -379,9 +393,9 @@ natural_inf$custom_explore <- map_dfr(top_slider, function(top_slider) {
     perc_protection <- 
       natural_inf_custom |> 
       filter(ID %in% ids) |> 
-      mutate(biodiversity = biodiversity_q20 * area,
-             heat_island = heat_island_q20 * area,
-             flood = flood_q20 * area) |> 
+      mutate(biodiversity = biodiversity * area,
+             heat_island = heat_island * area,
+             flood = flood * area) |> 
       summarize(
         biodiversity = sum(biodiversity) / total_areas$total_biodiversity,
         heat_island = sum(heat_island) / total_areas$total_heat_island,
@@ -391,9 +405,9 @@ natural_inf$custom_explore <- map_dfr(top_slider, function(top_slider) {
            biodiversity = df$biodiversity,
            heat_island = df$heat_island,
            flood = df$flood,
-           biodiversity_conservation = perc_protection$biodiversity,
-           heat_island_reduction = perc_protection$heat_island,
-           flood_prevention = perc_protection$flood)
+           c_biodiversity = perc_protection$biodiversity,
+           c_heat_island = perc_protection$heat_island,
+           c_flood = perc_protection$flood)
   })
   
 })
@@ -406,9 +420,10 @@ variables <-
   add_variables(
     var_code = "habitat_qual",
     var_title = "Habitat quality",
-    var_short = "Quality",
-    explanation = paste0("the ability of the ecosystem to provide conditions ",
-                         "appropriate for individual and population persistence"),
+    var_short = "Hab. quality",
+    explanation = paste0("the ability of an ecosystem to provide conditions ",
+                         "appropriate for individual and population ",
+                         "persistence"),
     category = NA,
     theme = "Ecology",
     private = TRUE,
@@ -421,9 +436,10 @@ variables <-
   add_variables(
     var_code = "habitat_con",
     var_title = "Habitat connectivity",
-    var_short = "Connectivity",
-    explanation = paste0("the degree to which the landscape facilitates or ",
-                         "impedes animal movement and other ecological processes"),
+    var_short = "Hab. connect.",
+    explanation = paste0("the degree to which a landscape facilitates or ",
+                         "impedes animal movement and other ecological ",
+                         "processes"),
     category = NA,
     theme = "Ecology",
     private = TRUE,
@@ -437,8 +453,8 @@ variables <-
     var_code = "favorable_cc",
     var_title = "Favorable climatic conditions",
     var_short = "Favorable CC",
-    explanation = paste0("the degree to which climatic conditions (past and f",
-                         "uture) are favourable to the life of species"),
+    explanation = paste0("the degree to which past and future climatic ",
+                         "conditions are favourable to species life"),
     category = NA,
     theme = "Ecology",
     private = TRUE,
@@ -452,7 +468,7 @@ variables <-
     var_code = "c_flood",
     var_title = "Contribution to flood prevention",
     var_short = "Flood prev.",
-    explanation = paste0("the effect of natural infrastructure on flood ",
+    explanation = paste0("the contribution of natural infrastructure to flood ",
                          "prevention"),
     category = NA,
     theme = "Ecology",
@@ -467,7 +483,7 @@ variables <-
     var_code = "c_bio",
     var_title = "Contribution to biodiversity conservation",
     var_short = "Biodiversity cons.",
-    explanation = paste0("the effect of natural infrastructure on ",
+    explanation = paste0("the contribution of natural infrastructure to ",
                          "biodiversity conservation"),
     category = NA,
     theme = "Ecology",
@@ -482,8 +498,8 @@ variables <-
     var_code = "c_heat",
     var_title = "Contribution to heat island reduction",
     var_short = "Heat island reduct.",
-    explanation = paste0("the effect of natural infrastructure on ",
-                         "heat island reduction"),
+    explanation = paste0("the contribution of natural infrastructure to ",
+                         "heat-island reduction"),
     category = NA,
     theme = "Ecology",
     private = TRUE,
@@ -495,9 +511,12 @@ variables <-
   ) |>
   add_variables(
     var_code = "c_priority",
-    var_title = "Conservation prioritization",
+    var_title = "Conservation priority",
     var_short = "Conservation",
-    explanation = paste0(""),
+    explanation = paste0("the importance of preserving natural ",
+                         "infrastructure, based on its total contribution to ",
+                         "biodiversity conservation, heat-island reduction, ",
+                         "and flood protection"),
     category = NA,
     theme = "Ecology",
     private = TRUE,
@@ -525,7 +544,7 @@ variables <-
     var_code = "heat",
     var_title = "Heat islands",
     var_short = "Heat islands",
-    explanation = paste0("the intra-urban areas with a higher air or surface ",
+    explanation = paste0("the urban areas with a higher air or surface ",
                          "temperature than other areas in the same urban ",
                          "environment"),
     category = NA,
@@ -541,7 +560,7 @@ variables <-
     var_code = "cool",
     var_title = "Cool islands",
     var_short = "Cool islands",
-    explanation = paste0("the intra-urban areas with a lower air or surface ",
+    explanation = paste0("the urban areas with a lower air or surface ",
                          "temperature than other areas in the same urban ",
                          "environment"),
     category = NA,
