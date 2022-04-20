@@ -277,26 +277,19 @@ natural_inf_ <- qread("dev/data/natural_inf.qs")
 natural_inf <- list()
 
 # Original priorities
-natural_inf$original_priorities <- map_dfr(1:25, ~{
+natural_inf$original_priorities <- map_dfr(0:25, ~{
   
-  conservation_pct <- .x*4
-  
-  dat <- natural_inf_[natural_inf_$c_priority_q100 >= 
-                        abs(conservation_pct - 100),]
-  
-  biodiversity <- 
-    sum(dat$c_bio, na.rm = TRUE) / sum(natural_inf_$c_bio, na.rm = TRUE)
-  
-  heat_island <- 
-    sum(dat$c_heat, na.rm = TRUE) / sum(natural_inf_$c_heat, na.rm = TRUE)
-  
-  flood <- 
-    sum(dat$c_flood, na.rm = TRUE) / sum(natural_inf_$c_flood, na.rm = TRUE)
+  con_pct <- .x * 4
+  dat <- natural_inf_[natural_inf_$c_priority_q100 > 100 - con_pct,]
+  bio <- sum(dat$c_bio, na.rm = TRUE) / sum(natural_inf_$c_bio, na.rm = TRUE)
+  heat <- sum(dat$c_heat, na.rm = TRUE) / sum(natural_inf_$c_heat, na.rm = TRUE)
+  flood <- sum(dat$c_flood, na.rm = TRUE) / sum(natural_inf_$c_flood, 
+                                                na.rm = TRUE)
 
   tibble(slider = .x,
-         conservation_pct = conservation_pct,
-         biodiversity = biodiversity,
-         heat_island = heat_island,
+         conservation_pct = con_pct,
+         biodiversity = bio,
+         heat_island = heat,
          flood = flood)
   
 })
@@ -330,11 +323,11 @@ natural_inf$custom <- map_dfr(top_slider, \(x) {
     df <- all_sliders[y,]
     
     natural_inf_custom |> 
-      mutate(biodiversity_q20 = biodiversity_q20 * df$biodiversity,
-             heat_island_q20 = heat_island_q20 * df$heat_island,
-             flood_q20 = flood_q20 * df$flood) |> 
-      mutate(score = biodiversity_q20 + heat_island_q20 + flood_q20) |> 
-      select(-biodiversity_q20, -heat_island_q20, -flood_q20) |> 
+      mutate(biodiversity = biodiversity * df$biodiversity,
+             heat_island = heat_island * df$heat_island,
+             flood = flood * df$flood) |> 
+      mutate(score = biodiversity + heat_island + flood) |> 
+      select(-biodiversity, -heat_island, -flood) |> 
       arrange(-score) |> 
       mutate(ite_area = slider::slide_dbl(area, sum, .before = n())) |> 
       filter(!ite_area > kept_area) |> 
