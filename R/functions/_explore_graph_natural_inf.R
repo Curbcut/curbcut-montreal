@@ -22,7 +22,7 @@ explore_graph_natural_inf <- function(data, var_type, var_left, var_right, df,
       scale_y_continuous(name = NULL, labels = scales::percent) +
       scale_x_discrete(name = sus_translate("Prevention conservation")) +
       theme_minimal() +
-      theme(text = element_text(family = "SourceSansPro", size = 13),
+      theme(text = element_text(family = "SourceSansPro", size = 12),
             legend.position = "none", 
             panel.grid.minor.x = element_blank(),
             panel.grid.major.x = element_blank(), 

@@ -12,7 +12,7 @@ explore_graph_alley <- function(data, var_type, var_left, var_right, df,
       scale_y_continuous(name = NULL) +
       scale_x_continuous(name = sus_translate("Green alley start date")) +
       theme_minimal() +
-      theme(text = element_text(family = "SourceSansPro", size = 13),
+      theme(text = element_text(family = "SourceSansPro", size = 12),
             legend.position = "none", 
             panel.grid.minor.x = element_blank(),
             panel.grid.major.x = element_blank(), 
@@ -38,7 +38,7 @@ explore_graph_alley <- function(data, var_type, var_left, var_right, df,
         scale_x_discrete(labels = labels,
                          name = sus_translate("Visited green alleys type")) +
         theme_minimal() +
-        theme(text = element_text(family = "SourceSansPro", size = 13),
+        theme(text = element_text(family = "SourceSansPro", size = 12),
               legend.position = "none", 
               panel.grid.minor.x = element_blank(),
               panel.grid.major.x = element_blank(), 
