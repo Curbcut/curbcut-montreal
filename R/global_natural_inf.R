@@ -5,23 +5,23 @@
 # Dropdown list -----------------------------------------------------------
 
 vars_natural_inf_left <- 
-  list("Conservation prioritization" = "c_priority",
-       "Contribution to flood prevention" = "c_flood", 
-       "Contribution to biodiversity conservation" = "c_bio",
-       "Contribution to heat island reduction" = "c_heat")
+  list("Conservation priority" = "c_priority",
+       "Biodiversity" = "c_bio",
+       "Flood" = "c_flood", 
+       "Heat island" = "c_heat")
 
 vars_natural_inf_left_c_bio <- 
-  list("----" = " ",
+  list("Contribution to biodiversity conservation" = " ",
        "Habitat quality" = "habitat_qual", 
        "Habitat connectivity" = "habitat_con", 
-       "Favorable climatic conditions" = "favorable_cc")
+       "Favourable climatic conditions" = "favorable_cc")
 
 vars_natural_inf_left_c_flood <- 
-  list("----" = " ",
+  list("Contribution to flood prevention" = " ",
        "Flood risk areas" = "flood")
 
 vars_natural_inf_left_c_heat <- 
-  list("----" = " ",
+  list("Contribution to heat island reduction" = " ",
        "Heat islands" = "heat",
        "Cool islands" = "cool")
 

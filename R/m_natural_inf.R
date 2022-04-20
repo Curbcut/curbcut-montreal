@@ -13,15 +13,14 @@ natural_inf_UI <- function(id) {
       susSidebarWidgets(
         select_var_UI(NS(id, ns_id), 
                       select_var_id = "vl_1",
-                      var_list = vars_natural_inf_left),
+                      var_list = vars_natural_inf_left,
+                      label = sus_translate("Theme")),
         select_var_UI(NS(id, ns_id), 
                       select_var_id = "vl_2",
                       var_list = list("----" = " "),
-                      label = sus_translate(
-                        "Dive further in the selected ",
-                        "natural infrastructure's contributions:")),
+                      label = sus_translate("Indicator")),
         slider_UI(NS(id, ns_id),
-                  label = sus_translate("Natural infrastructure protection:"),
+                  label = sus_translate("Natural infrastructure protection"),
                   min = 0,
                   max = 25,
                   step = 1,
@@ -114,12 +113,9 @@ natural_inf_server <- function(id) {
       var_list = reactive(vars_natural_inf_left))
     
     var_left_2_list <- reactive({
-      if (var_left_1() == "c_priority") 
-        return(list("----" = " "))
-      
-      eval(parse(text =
-                   paste0("vars_natural_inf_left_",
-                          var_left_1())))
+      if (var_left_1() == "c_priority") {
+        list("----" = " ")
+      } else eval(parse(text = paste0("vars_natural_inf_left_", var_left_1())))
     })
     
     var_left_2 <- select_var_server(
@@ -127,10 +123,8 @@ natural_inf_server <- function(id) {
       select_var_id = "vl_2",
       var_list = reactive(var_left_2_list()))
     
-    var_left <- reactive({
-      if (var_left_2() != " ") return(var_left_2())
-      var_left_1()
-    })
+    var_left <- reactive(if (var_left_2() != " ") var_left_2() else 
+      var_left_1())
     
     observeEvent(var_left_1(), {
       toggle(NS(id, "vl_2"), 
