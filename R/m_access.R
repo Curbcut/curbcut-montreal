@@ -125,7 +125,7 @@ access_server <- function(id) {
 
     # Manual legend breaks
     breaks <- reactive({
-      if (!is.na(select_id())) {
+      if (!is.na(select_id()) && var_right() == " ") {
         breaks <- slider() / 5 * 5:0
         attr(breaks, "label") <- sus_translate("Minutes to reach census tract")
         attr(breaks, "palette") <- legend_iso
