@@ -28,27 +28,27 @@ natural_inf_UI <- function(id) {
                   post = "%"),
         checkbox_UI(NS(id, ns_id),
                     label = sus_translate("Custom priorities")),
-        slider_UI(NS(id, ns_id),
-                  slider_id = "s_bio",
-                  label = sus_translate("Biodiversity conservation:"),
-                  min = 0,
-                  max = 2,
-                  step = 0.5,
-                  value = 1),
-        slider_UI(NS(id, ns_id),
-                  slider_id = "s_hea",
-                  label = sus_translate("Heat island reduction:"),
-                  min = 0,
-                  max = 2,
-                  step = 0.5,
-                  value = 1),
-        slider_UI(NS(id, ns_id),
-                  slider_id = "s_flo",
-                  label = sus_translate("Flood prevention:"),
-                  min = 0,
-                  max = 2,
-                  step = 0.5,
-                  value = 1)
+        slider_text_UI(NS(id, ns_id),
+                       slider_id = "s_bio",
+                       label = sus_translate("Biodiversity conservation"),
+                       choices = c("Not important", "Somewhat important", 
+                                   "Important", "Very important", 
+                                   "Extremely important"),
+                       selected = "Important"),
+        slider_text_UI(NS(id, ns_id),
+                       slider_id = "s_hea",
+                       label = sus_translate("Heat island reduction"),
+                       choices = c("Not important", "Somewhat important", 
+                                   "Important", "Very important", 
+                                   "Extremely important"),
+                       selected = "Important"),
+        slider_text_UI(NS(id, ns_id),
+                       slider_id = "s_flo",
+                       label = sus_translate("Flood prevention"),
+                       choices = c("Not important", "Somewhat important", 
+                                   "Important", "Very important", 
+                                   "Extremely important"),
+                       selected = "Important")
         ),
       bottom = div(class = "bottom_sidebar",
                    tagList(legend_UI(NS(id, ns_id))))),
@@ -99,12 +99,9 @@ natural_inf_server <- function(id) {
     })
     
     # Choose tileset
-    tile <- reactive({
-      if (var_left() == "c_priority" &&
-          custom_priorities()) return("custom")
-      
-      var_left()
-      })
+    tile <- reactive(if (var_left() == "c_priority" && custom_priorities()) {
+      "custom" 
+      } else var_left())
 
     # Left variable
     var_left_1 <- select_var_server(
@@ -131,11 +128,9 @@ natural_inf_server <- function(id) {
     
     # Checkbox value
     custom_priorities <- checkbox_server(id = ns_id)
-    observeEvent(var_left_1(), {
-      updateCheckboxInput(session = session,
-                          inputId = NS(id, "cbox"),
-                          value = FALSE)
-    })
+    observe(updateCheckboxInput(session = session, inputId = NS(id, "cbox"),
+                                value = FALSE)) |> 
+      bindEvent(var_left_1())
     observe(toggle(NS(id, "cbox"), condition = var_left_1() == "c_priority")) |> 
       bindEvent(var_left_1())
     
@@ -143,16 +138,14 @@ natural_inf_server <- function(id) {
     main_slider <- slider_server(id = ns_id)
     
     # Custom priority sliders
-    s_bio <- slider_server(id = ns_id, slider_id = "s_bio")
-    s_hea <- slider_server(id = ns_id, slider_id = "s_hea")
-    s_flo <- slider_server(id = ns_id, slider_id = "s_flo")
+    s_bio <- slider_text_server(id = ns_id, slider_id = "s_bio")
+    s_hea <- slider_text_server(id = ns_id, slider_id = "s_hea")
+    s_flo <- slider_text_server(id = ns_id, slider_id = "s_flo")
+    ni_slider <- reactive(process_ni_sliders(s_bio(), s_hea(), s_flo()))
     observe({
-      toggle(NS(id, "s_bio"), 
-             condition = custom_priorities())
-      toggle(NS(id, "s_hea"), 
-             condition = custom_priorities())
-      toggle(NS(id, "s_flo"), 
-             condition = custom_priorities())
+      toggle(NS(id, "s_bio"), condition = custom_priorities())
+      toggle(NS(id, "s_hea"), condition = custom_priorities())
+      toggle(NS(id, "s_flo"), condition = custom_priorities())
       }) |> 
       bindEvent(custom_priorities())
 
@@ -188,13 +181,13 @@ natural_inf_server <- function(id) {
           } else {
             custom <- natural_inf$custom_explore
             custom <- custom[custom$conservation_pct == main_slider(), ]
-            custom <- custom[custom$biodiversity == s_bio(), ]
-            custom <- custom[custom$heat_island == s_hea(), ]
-            custom <- custom[custom$flood == s_flo(), ]
+            custom <- custom[custom$biodiversity == ni_slider()[1], ]
+            custom <- custom[custom$heat_island == ni_slider()[2], ]
+            custom <- custom[custom$flood == ni_slider()[3], ]
             
-            return(list(flood_prevention = custom$flood_prevention,
-                        biodiversity_conservation = custom$biodiversity_conservation,
-                        heat_island_reduction = custom$heat_island_reduction,
+            return(list(flood_prevention = custom$c_flood,
+                        biodiversity_conservation = custom$c_biodiversity,
+                        heat_island_reduction = custom$c_heat_island,
                         ni_protection = slider))
           }
         } else NULL
@@ -218,9 +211,9 @@ natural_inf_server <- function(id) {
           
           custom <- natural_inf$custom
           custom <- custom[custom$conservation_pct == main_slider(), ]
-          custom <- custom[custom$biodiversity == s_bio(), ]
-          custom <- custom[custom$heat_island == s_hea(), ]
-          custom <- custom[custom$flood == s_flo(), ]
+          custom <- custom[custom$biodiversity == ni_slider()[1], ]
+          custom <- custom[custom$heat_island == ni_slider()[2], ]
+          custom <- custom[custom$flood == ni_slider()[3], ]
           
           out <-
             data.frame(group = as.character(seq_along(natural_inf_custom$ID)),

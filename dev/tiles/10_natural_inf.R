@@ -83,10 +83,10 @@ natural_inf_tiles <-
   natural_inf_tiles |> 
   mutate(ID = as.character(ID))
 
-iter_size <- ceiling(nrow(natural_inf_tiles) / 100)
+iter_size <- ceiling(nrow(natural_inf_tiles) / 50)
 
 union_to_process_list <- 
-  map(1:100, ~{
+  map(1:50, ~{
     natural_inf_tiles |> 
       slice(((.x - 1) * iter_size + 1):(.x * iter_size)) |> 
       geojsonsf::sf_geojson() |> 
@@ -96,16 +96,16 @@ union_to_process_list <-
 
 # Iteratively post files to tile source
 tmp <- tempfile(fileext = ".json")
-tmp_list <- map(1:10, ~tempfile(fileext = ".json"))
+tmp_list <- map(1:5, ~tempfile(fileext = ".json"))
 
 map(1:10, ~{
 
-  to_process <- union_to_process_list[((.x - 1) * 10 + 1):(.x * 10)]
+  to_process <- union_to_process_list[((.x - 1) * 5 + 1):(.x * 5)]
   walk2(to_process, tmp_list, geojson::ndgeo_write)
   
   # Concatenate geoJSONs
   out_file <- file(tmp, "w")
-  for (i in tmp_list){
+  for (i in tmp_list) {
     x <- readLines(i)
     writeLines(x, out_file) 
   }
@@ -125,7 +125,9 @@ natural_inf_recipe <-
     layer_names = "natural_inf-custom",
     source = paste0("mapbox://tileset-source/sus-mcgill/natural_inf-custom"),
     minzoom = 3,
-    maxzoom = 14,
+    maxzoom = 15,
+    simp_zoom = 15,
+    simp_value = 1,
     layer_size = 2500,
     recipe_name = "natural_inf-custom")
 

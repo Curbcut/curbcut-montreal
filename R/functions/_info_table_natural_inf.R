@@ -3,7 +3,7 @@
 info_table_natural_inf <- function(data, var_type, var_left, 
                                               var_right, df, select_id, 
                                               build_str_as_DA = TRUE) {
-  print(data)
+  # print(data)
   total_ni_protection <- data$ni_protection 
   slider <- data$slider
   
