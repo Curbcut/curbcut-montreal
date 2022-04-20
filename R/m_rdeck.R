@@ -52,7 +52,7 @@ rdeck_server <- function(id, map_id, tile, tile2, map_var, zoom, select_id,
       fill_args()
       colour_args()
       lwd_args()
-      zoom}, {
+      extrude()}, {
         
       rdeck_proxy(map_id) |>
         add_mvt_layer(
