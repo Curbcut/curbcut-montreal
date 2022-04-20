@@ -279,26 +279,17 @@ natural_inf <- list()
 # Original priorities
 natural_inf$original_priorities <- map_dfr(1:100, ~{
   
-  dat <-
-    natural_inf_[
-      natural_inf_$conservation_prioritization_q100 >=
-        abs(.x - 100), str_starts(names(natural_inf_), "ni_")]
+  dat <- natural_inf_[natural_inf_$c_priority_q100 >= abs(.x - 100),]
   
-  biodiversity <- {dat$ni_contribution_biodiversity_conservation |>
-      sum(na.rm = TRUE)} / {
-        natural_inf_$ni_contribution_biodiversity_conservation |>
-          sum(na.rm = TRUE)}
+  biodiversity <- 
+    sum(dat$c_bio, na.rm = TRUE) / sum(natural_inf_$c_bio, na.rm = TRUE)
   
-  heat_island <- {dat$ni_contribution_heat_island_reduction |>
-      sum(na.rm = TRUE)} / {
-        natural_inf_$ni_contribution_heat_island_reduction |>
-          sum(na.rm = TRUE)}
+  heat_island <- 
+    sum(dat$c_heat, na.rm = TRUE) / sum(natural_inf_$c_heat, na.rm = TRUE)
   
-  flood <- {dat$ni_contribution_flood_prevention |>
-      sum(na.rm = TRUE)} / {
-        natural_inf_$ni_contribution_flood_prevention |>
-          sum(na.rm = TRUE)}
-  
+  flood <- 
+    sum(dat$c_flood, na.rm = TRUE) / sum(natural_inf_$c_flood, na.rm = TRUE)
+
   tibble(conservation_pct = .x,
          biodiversity = biodiversity,
          heat_island = heat_island,
