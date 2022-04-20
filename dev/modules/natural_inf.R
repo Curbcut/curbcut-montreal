@@ -350,7 +350,7 @@ natural_inf$custom <- map_dfr(top_slider, \(x) {
       arrange(-score) |> 
       mutate(ite_area = slider::slide_dbl(area, sum, .before = n())) |> 
       filter(ite_area <= kept_area) |> 
-      mutate(conservation_pct = x,
+      mutate(slider = x,
              biodiversity = df$biodiversity,
              heat_island = df$heat_island,
              flood = df$flood) |> 
@@ -384,7 +384,7 @@ natural_inf$custom_explore <- map_dfr(top_slider, function(top_slider) {
     
     ids <- 
       natural_inf$custom |> 
-      filter(conservation_pct == top_slider,
+      filter(slider == top_slider,
              biodiversity == df$biodiversity,
              heat_island == df$heat_island,
              flood == df$flood) |> 
@@ -401,7 +401,8 @@ natural_inf$custom_explore <- map_dfr(top_slider, function(top_slider) {
         heat_island = sum(heat_island) / total_areas$total_heat_island,
         flood = sum(flood) / total_areas$total_flood)
     
-    tibble(conservation_pct = top_slider,
+    tibble(slider = top_slider,
+           conservation_pct = slider * 4,
            biodiversity = df$biodiversity,
            heat_island = df$heat_island,
            flood = df$flood,

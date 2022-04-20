@@ -163,32 +163,17 @@ natural_inf_server <- function(id) {
     
     # Data
     data <- reactive({
-        if (var_left() == "c_priority") {
-          
-          slider <- main_slider() * 4
-          
-          if (!custom_priorities()) {
-          
-            dat <- 
-              natural_inf$original_priorities[
-                natural_inf$original_priorities$slider == main_slider(), ]
-            
-            return(list(flood_prevention = dat$flood,
-                        biodiversity_conservation = dat$biodiversity,
-                        heat_island_reduction = dat$heat_island,
-                        ni_protection = dat$conservation_pct,
-                        slider = main_slider()))
+      if (var_left() == "c_priority") {
+        if (!custom_priorities()) {
+          natural_inf$original_priorities[
+            natural_inf$original_priorities$slider == main_slider(), ]
           } else {
             custom <- natural_inf$custom_explore
-            custom <- custom[custom$conservation_pct == main_slider(), ]
+            custom <- custom[custom$slider == main_slider(), ]
             custom <- custom[custom$biodiversity == ni_slider()[1], ]
             custom <- custom[custom$heat_island == ni_slider()[2], ]
             custom <- custom[custom$flood == ni_slider()[3], ]
-            
-            return(list(flood_prevention = custom$c_flood,
-                        biodiversity_conservation = custom$c_biodiversity,
-                        heat_island_reduction = custom$c_heat_island,
-                        ni_protection = slider))
+            custom
           }
         } else NULL
         
@@ -210,7 +195,7 @@ natural_inf_server <- function(id) {
         } else {
           
           custom <- natural_inf$custom
-          custom <- custom[custom$conservation_pct == main_slider(), ]
+          custom <- custom[custom$slider == main_slider(), ]
           custom <- custom[custom$biodiversity == ni_slider()[1], ]
           custom <- custom[custom$heat_island == ni_slider()[2], ]
           custom <- custom[custom$flood == ni_slider()[3], ]
