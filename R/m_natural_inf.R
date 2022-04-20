@@ -178,13 +178,13 @@ natural_inf_server <- function(id) {
           
             dat <- 
               natural_inf$original_priorities[
-                natural_inf$original_priorities$conservation_pct == 
-                  slider, ]
+                natural_inf$original_priorities$slider == main_slider(), ]
             
             return(list(flood_prevention = dat$flood,
                         biodiversity_conservation = dat$biodiversity,
                         heat_island_reduction = dat$heat_island,
-                        ni_protection = slider))
+                        ni_protection = dat$conservation_pct,
+                        slider = main_slider()))
           } else {
             custom <- natural_inf$custom_explore
             custom <- custom[custom$conservation_pct == main_slider(), ]

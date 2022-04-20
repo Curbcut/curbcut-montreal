@@ -277,9 +277,12 @@ natural_inf_ <- qread("dev/data/natural_inf.qs")
 natural_inf <- list()
 
 # Original priorities
-natural_inf$original_priorities <- map_dfr(1:100, ~{
+natural_inf$original_priorities <- map_dfr(1:25, ~{
   
-  dat <- natural_inf_[natural_inf_$c_priority_q100 >= abs(.x - 100),]
+  conservation_pct <- .x*4
+  
+  dat <- natural_inf_[natural_inf_$c_priority_q100 >= 
+                        abs(conservation_pct - 100),]
   
   biodiversity <- 
     sum(dat$c_bio, na.rm = TRUE) / sum(natural_inf_$c_bio, na.rm = TRUE)
@@ -290,7 +293,8 @@ natural_inf$original_priorities <- map_dfr(1:100, ~{
   flood <- 
     sum(dat$c_flood, na.rm = TRUE) / sum(natural_inf_$c_flood, na.rm = TRUE)
 
-  tibble(conservation_pct = .x,
+  tibble(slider = .x,
+         conservation_pct = conservation_pct,
          biodiversity = biodiversity,
          heat_island = heat_island,
          flood = flood)
