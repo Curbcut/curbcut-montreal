@@ -366,6 +366,9 @@ natural_inf$custom <- map_dfr(top_slider, \(x) {
     })
   })
 
+# Split for faster retrieval
+natural_inf$custom <- split(natural_inf$custom, natural_inf$custom$slider)
+
 # Pre-compute values for the explore panel
 total_areas <- 
   natural_inf_custom |> 

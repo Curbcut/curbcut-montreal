@@ -194,17 +194,16 @@ natural_inf_server <- function(id) {
           
         } else {
           
-          custom <- natural_inf$custom
-          custom <- custom[custom$slider == main_slider(), ]
-          custom <- custom[custom$biodiversity == ni_slider()[1], ]
-          custom <- custom[custom$heat_island == ni_slider()[2], ]
-          custom <- custom[custom$flood == ni_slider()[3], ]
-          
-          out <-
-            data.frame(group = as.character(seq_along(natural_inf_custom$ID)),
-                       value = "#FFFFFF00")
-          out <- out[!out$group %in% custom$group, ]
-          rbind(out, custom[, c("group", "value")])
+          if (main_slider() == 0) {
+            data.frame(group = "ABCD", value = "#FFFFFF00")
+          } else {
+            custom <- natural_inf$custom
+            custom <- custom[[main_slider()]]
+            custom <- custom[custom$biodiversity == ni_slider()[1], ]
+            custom <- custom[custom$heat_island == ni_slider()[2], ]
+            custom <- custom[custom$flood == ni_slider()[3], ]
+            custom[, c("group", "value")] 
+          }
         }
       } else NULL
       
