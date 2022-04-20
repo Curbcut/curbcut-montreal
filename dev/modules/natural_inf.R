@@ -304,20 +304,39 @@ natural_inf_custom <-
 
 # plan(multisession, workers = 10)
 
+qload("data/colours.qsm")
 slider_values <- c(0, 0.5, 1, 1.5, 2)
 top_slider <- 0:25
-qload("data/colours.qsm")
+all_sliders <-
+  tibble(
+    biodiversity = rep(0, 13),
+    heat_island = c(0, 0.5, 0.5, 1, 1, 1, 1, 1.5, 1.5, 1.5, 2, 2, 2),
+    flood = c(1, 1.5, 2, 0, 1, 1.5, 2, 0.5, 1, 2, 0.5, 1, 1.5)) |>
+  add_row(
+    biodiversity = rep(0.5, 16),
+    heat_island = c(0, 0, 0.5, 0.5, 1, 1, rep(1.5, 5), rep(2, 5)),
+    flood = c(1.5, 2, 1.5, 2, 1.5, 2, 0, 0.5, 1, 1.5, 2, 0, 0.5, 1, 1.5, 2)) |>
+  add_row(
+    biodiversity = rep(1, 20),
+    heat_island = c(rep(0, 4), 0.5, 0.5, rep(1, 4), rep(1.5, 5), rep(2, 5)),
+    flood = c(0, 1, 1.5, 2, 1.5, 2, 0, 1, 1.5, 2, 0, 0.5, 1, 1.5, 2, 0, 0.5, 1, 
+              1.5, 2)) |>
+  add_row(
+    biodiversity = rep(1.5, 22),
+    heat_island = c(rep(0, 4), rep(0.5, 5), rep(1, 5), rep(1.5, 3), rep(2, 5)),
+    flood = c(0.5, 1, 1.5, 2, 0, 0.5, 1, 1.5, 2, 0, 0.5, 1, 1.5, 2, 0.5, 1, 2,
+              0, 0.5, 1, 1.5, 2)) |>
+  add_row(
+    biodiversity = rep(2, 21),
+    heat_island = c(rep(0, 3), rep(0.5, 5), rep(1, 5), rep(1.5, 5), rep(2, 3)),
+    flood = c(0.5, 1, 1.5, 0, 0.5, 1, 1.5, 2, 0, 0.5, 1, 1.5, 2, 0, 0.5, 1, 1.5, 
+              2, 0.5, 1, 1.5))
 
 natural_inf$custom <- map_dfr(top_slider, \(x) {
   
   kept_pct <- x / 25
   kept_area <- kept_pct * sum(natural_inf_custom$area)
     
-  all_sliders <- 
-    expand.grid(slider_values, slider_values, slider_values) |> 
-    as_tibble() |> 
-    set_names(c("biodiversity", "heat_island", "flood"))
-  
   map_dfr(seq_len(nrow(all_sliders)), \(y) {
     
     df <- all_sliders[y,]
@@ -330,20 +349,20 @@ natural_inf$custom <- map_dfr(top_slider, \(x) {
       select(-biodiversity, -heat_island, -flood) |> 
       arrange(-score) |> 
       mutate(ite_area = slider::slide_dbl(area, sum, .before = n())) |> 
-      filter(!ite_area > kept_area) |> 
+      filter(ite_area <= kept_area) |> 
       mutate(conservation_pct = x,
              biodiversity = df$biodiversity,
              heat_island = df$heat_island,
              flood = df$flood) |> 
       # Pre-compute ID/score columns to directly fit in `scale_fill_natural_inf`
       rename(group = ID) |> 
-      mutate(score = as.character(round(score / max(score) * 100) + 100),
+      mutate(score = as.character(round(score / max(score) * 24) + 26),
              group = as.character(group)) |> 
       left_join(select(colour_table, group, value), 
                 by = c("score" = "group")) |> 
       select(-area, -ite_area, -score) |> 
       mutate(value = if_else(is.na(value), colour_table$value[
-        colour_table$group == 101], value))
+        colour_table$group == 26], value))
     })
   })
 
