@@ -20,7 +20,7 @@ natural_inf_UI <- function(id) {
                       var_list = list("----" = " "),
                       label = sus_translate("Indicator")),
         slider_UI(NS(id, ns_id),
-                  label = sus_translate("Natural infrastructure protection"),
+                  label = sus_translate("Amount of territory to protect"),
                   min = 0,
                   max = 25,
                   step = 1,
@@ -126,10 +126,8 @@ natural_inf_server <- function(id) {
     var_left <- reactive(if (var_left_2() != " ") var_left_2() else 
       var_left_1())
     
-    observeEvent(var_left_1(), {
-      toggle(NS(id, "vl_2"), 
-             condition = var_left_1() != "c_priority")
-    })
+    observe(toggle(NS(id, "vl_2"), condition = var_left_1() != "c_priority")) |> 
+      bindEvent(var_left_1())
     
     # Checkbox value
     custom_priorities <- checkbox_server(id = ns_id)
@@ -234,10 +232,9 @@ natural_inf_server <- function(id) {
       
     })
     
-    legend_raster <- reactive({
-      if (var_left() %in% c("heat", "cool", "flood")) return(NULL)
-      "raster"
-    })
+    legend_raster <- reactive(
+      if (var_left() %in% c("heat", "cool", "flood")) NULL else "raster"
+    )
 
     # Legend
     legend <- legend_server(

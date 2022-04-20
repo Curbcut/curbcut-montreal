@@ -8,7 +8,6 @@
 
 suppressPackageStartupMessages({
   library(raster)
-  # library(anglr)
   library(stars)
   library(furrr)
   library(tidyverse)
@@ -73,8 +72,7 @@ natural_inf_tiles_raw <-
     data <- read_stars(paste0("dev/data/2018_FDS_InfraNat_Conn/", path))
     
     data <- 
-      st_as_sf(data, as_points = FALSE, merge = TRUE,
-               crs = st_crs(2950)) |> 
+      st_as_sf(data, as_points = FALSE, merge = TRUE, crs = st_crs(2950)) |> 
       as_tibble() |> 
       st_as_sf(crs = st_crs(2950)) |> 
       st_make_valid()
@@ -171,8 +169,7 @@ natural_inf_tiles_2[[1]] <-
   natural_inf_tiles_2[[1]] |> 
   mutate(geometry = st_centroid(geometry))
 
-natural_inf_tiles_2 <- 
-  reduce(natural_inf_tiles_2, st_join)
+natural_inf_tiles_2 <- reduce(natural_inf_tiles_2, st_join)
 
 natural_inf_tiles_2 <- 
   natural_inf_tiles_2 |> 
@@ -185,9 +182,7 @@ natural_inf_tiles_2 <-
 
 natural_inf_tiles <- 
   natural_inf_tiles_2 |> 
-  group_by(c_bio_q20,
-           c_heat_q20,
-           c_flood_q20) |> 
+  group_by(c_bio_q20, c_heat_q20, c_flood_q20) |> 
   summarize(.groups = "drop")
 
 natural_inf_tiles <- 
@@ -201,8 +196,7 @@ natural_inf_tiles <-
 
 natural_inf_tiles <- 
   natural_inf_tiles |> 
-  set_names(c("ID", "biodiversity_q20", "heat_island_q20", "flood_q20", 
-              "geometry"))
+  set_names(c("ID", "biodiversity", "heat_island", "flood", "geometry"))
 
 qsave(natural_inf_tiles, "dev/data/natural_inf_tiles.qs")
 
@@ -268,7 +262,9 @@ natural_inf[[1]] <-
   natural_inf[[1]] |> 
   mutate(geometry = st_centroid(geometry))
 
-natural_inf <- reduce(natural_inf, st_join) |> 
+natural_inf <- 
+  natural_inf |> 
+  reduce(st_join) |> 
   st_drop_geometry()
 
 qsave(natural_inf, "dev/data/natural_inf.qs")
