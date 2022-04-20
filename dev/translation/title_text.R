@@ -80,9 +80,9 @@ title_text_translation <-
                       "andissant sur les communautés montréalaises, mais ces i",
                       "mpacts vont varier de manière significative selon des f",
                       "acteurs autant géographiques que sociaux. La distributi",
-                      "on de cinq éléments de risques climatiques — vagues de ",
+                      "on de cinq éléments de risques climatiques—vagues de ",
                       "chaleur, crues (inondations), pluies abondantes, sécher",
-                      "esses et tempêtes destructrices— est illustrée ici. ")) |> 
+                      "esses et tempêtes destructrices—est illustrée ici. ")) |> 
   add_row(en = paste0("<p>The Climate Change Risk datasets come from the City ",
                       "of Montreal's efforts to examine potential climate risk",
                       "s for the Montreal region in the 2015-2020 Urban Agglom",
@@ -226,6 +226,19 @@ title_text_translation <-
                       "iquant sur la carte, et voyez comment il se compare au ",
                       "reste de la région ou de l'île de Montréal pour une var",
                       "iété d'indicateurs de durabilité.")) |> 
+  add_row(en = paste0("The data in the Place Explorer is taken from other Sus",
+                      " modules, with two exceptions: <a href = 'https://www.c",
+                      "anuedata.ca/tmp/CANUE_METADATA_NO2LUR_A_YY.pdf'>Air pol",
+                      "lution</a> and <a href = 'https://www.canuedata.ca/tmp/",
+                      "CANUE_METADATA_GRAVH_AMN_YY.pdf'>green space</a> data a",
+                      "re taken from <a href = 'https://www.canuedata.ca'>CANU",
+                      "E</a>."), 
+          fr = paste0("Les données utilisées proviennent d'autres modules de S",
+                      "us, à deux exceptions près : Les données sur la <a href",
+                      " = 'https://www.canuedata.ca/tmp/CANUE_METADATA_NO2LUR_",
+                      "A_YY.pdf'>pollution atmosphérique</a> et les <a href = ",
+                      "'https://www.canuedata.ca/tmp/CANUE_METADATA_GRAVH_AMN_",
+                      "YY.pdf'>espaces verts</a> proviennent de CANUE.")) |> 
   add_row(en = paste0("Additional details about data sources will be added soo",
                       "n!"), 
           fr = paste0("Des détails supplémentaires sur les sources de données ",
@@ -394,3 +407,5 @@ title_text_translation <-
                       " comme moyen d'accéder à des garages privés, sans aucun",
                       " avantage environnemental ou socio-communautaire.</ul",
                       ">"))
+
+
