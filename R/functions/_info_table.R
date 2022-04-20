@@ -31,7 +31,7 @@ info_table <- function(data, var_type, var_left, var_right, df, select_id,
     build_str_as_DA = build_str_as_DA)
   
   if (is.null(z)) return(z)
-      
+  
       
   ## Handle NAs ----------------------------------------------------------------
       

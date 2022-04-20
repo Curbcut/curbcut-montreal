@@ -356,7 +356,7 @@ get_info_table_data <- function(data, var_type, var_left, var_right, df,
       sus_translate("strong")
     } else if (abs(corr) > 0.3) {
       sus_translate("moderate")
-    } else "weak"
+    } else sus_translate("weak")
     
     out$higher <- ifelse(out$pos == sus_translate("positive"),
                          sus_translate("higher"), sus_translate("lower"))

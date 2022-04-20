@@ -300,8 +300,6 @@ variables_translated <-
           fr = paste0("Pied ou vélo")) |> 
   add_row(en = paste0("Transit"), 
           fr = paste0("Transp. commun")) |> 
-  add_row(en = paste0("TKTK"), 
-          fr = NA) |> 
   add_row(en = paste0("Fr. only"), 
           fr = paste0("Fr. seul.")) |> 
   add_row(en = paste0("Eng. only"), 
@@ -314,8 +312,8 @@ variables_translated <-
           fr = paste0("0-14 ans")) |> 
   add_row(en = paste0("15-64 yo"), 
           fr = paste0("15-64 ans")) |> 
-  add_row(en = paste0("6+5 yo"), 
-          fr = NA) |> 
+  add_row(en = paste0("65+ yo"), 
+          fr = paste0("65+ ans")) |> 
   add_row(en = paste0("Bachelor+"), 
           fr = paste0("Bac.+")) |> 
   add_row(en = paste0("No degree"), 

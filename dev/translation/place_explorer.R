@@ -65,7 +65,7 @@ place_explorer_translated <-
                       "residents in {z$data_date}. {z$data_rank}."), 
           fr = paste0("Il y a eu {z$pretty_data_var} collisions pour 1 000 ",
                       "habitants en {z$data_date}. {z$data_rank}")) |> 
-  add_row(en = paste0("Its value is higher than WHO's guideline value of 5. "), 
+  add_row(en = paste0("Its value is higher than the WHO's guideline value of 5. "), 
           fr = paste0("Sa valeur est supérieure à la valeur maximale recommandée par ",
                       "l'OMS, qui est de 5. ")) |>
   add_row(en = paste0("{z$data_rank} in terms of level of NO2 pollution. ",

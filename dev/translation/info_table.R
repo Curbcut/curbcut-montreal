@@ -98,8 +98,6 @@ info_table_translated <-
           fr = paste0("Aucune donnée disponible.")) |> 
   add_row(en = paste0("<i>(Data from {date_left}.)</i>"), 
           fr = paste0("<i>(Données de {date_left}.)</i>")) |> 
-  add_row(en = paste0(""), 
-          fr = paste0("<p><b>FORTE CORRÉLATION</b></p>")) |> 
   add_row(en = paste0("<strong>Kahnawake Mohawk Territory</strong><p>Statistic",
                       "s Canada does not gather the same data for indigenous r",
                       "eserves in the Census as it does for other jurisdiction",
@@ -223,7 +221,7 @@ info_table_translated <-
                       "plural} with a higher {sub('^the ', '', z$exp_right)} t",
                       "end to have a {z$higher} {sub('^the ', '', z$exp_left)}",
                       ", {z$high_low_disclaimer}."), 
-          fr = paste0("<p>'{z$title_left}' présente une {z$strong} corrélation",
+          fr = paste0("<p>'{z$title_left}' présente une corrélation {z$strong}",
                       " {z$pos} ({z$corr_disp}) avec '{z$title_right}' à l'éch",
                       "elle {z$scale_sing}.<p>Cela signifie qu'en général, les",
                       " {z$scale_plural} avec un/e plus grand/e {sub('^le |^la",
