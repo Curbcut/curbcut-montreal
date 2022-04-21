@@ -190,7 +190,9 @@ js_links_between_modules <- "
 bookmark_url <- 
     'function copyUrl(text) {
        var inputc = document.body.appendChild(document.createElement("input"));
-       inputc.value = window.location.href;
+       const p = window.location.href;
+       const part_replace = /sus-mcgill.shinyapps.io/i;
+       inputc.value = p.replace(part_replace, "susmontreal.ca");
        inputc.focus();
        inputc.select();
        document.execCommand("copy");
