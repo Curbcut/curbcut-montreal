@@ -191,8 +191,8 @@ bookmark_url <-
     'function copyUrl(text) {
        var inputc = document.body.appendChild(document.createElement("input"));
        const p = window.location.href;
-       const part_replace = /sus-mcgill.shinyapps.io/i;
-       inputc.value = p.replace(part_replace, "susmontreal.ca");
+       const part_replace = /https://sus-mcgill.shinyapps.io/i;
+       inputc.value = p.replace(part_replace, "http://www.susmontreal.ca");
        inputc.focus();
        inputc.select();
        document.execCommand("copy");
