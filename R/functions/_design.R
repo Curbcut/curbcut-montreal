@@ -188,10 +188,10 @@ js_links_between_modules <- "
         }
       "
 bookmark_url <- 
-    'function copyUrl(text) {
+  'function copyUrl(text) {
        var inputc = document.body.appendChild(document.createElement("input"));
        const p = window.location.href;
-       const part_replace = /https://sus-mcgill.shinyapps.io/i;
+       const part_replace = "https://sus-mcgill.shinyapps.io";
        inputc.value = p.replace(part_replace, "http://www.susmontreal.ca");
        inputc.focus();
        inputc.select();
