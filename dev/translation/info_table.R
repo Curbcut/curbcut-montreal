@@ -409,9 +409,9 @@ info_table_translated <-
                       "ant {slider} % du territoire global en tant qu'infrastru",
                       "cture naturelle, {conservation_pct} % de l'infrastructur",
                       "e naturelle de la région serait protégée.</p>",
-                      "<p>Ce niveau de protection permet de conserver {flood} ",
-                      "% de la réduction du ruissellement, {biodiversity} % de",
-                      " la conservation de la biodiversité et {heat_island} % ",
+                      "<p>Ce niveau de protection permet de conserver {flood}",
+                      " de la réduction du ruissellement, {biodiversity} de",
+                      " la conservation de la biodiversité et {heat_island} ",
                       "des effets de réduction des îlots de chaleur urbains fo",
                       "urnis par les infrastructures naturelles de la région.<",
                       "/p>")) |> 
