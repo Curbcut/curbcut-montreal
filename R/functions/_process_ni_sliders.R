@@ -29,6 +29,9 @@ process_ni_sliders <- function(x, y, z) {
 }
 
 ni_helper <- function(x) {
-  switch(x, "Not important" = 0, "Somewhat important" = 0.5, 
-         "Important" = 1, "Very important" = 1.5, "Extremely important" = 2)
+  if (x == "Not important" || x == "Pas important") return(0)
+  if (x == "Somewhat important" || x == "Peu important") return(0.5)
+  if (x == "Important" || x == "Important") return(1)
+  if (x == "Very important" || x == "Très important") return(1.5)
+  if (x == "Extremely important" || x == "Extrêmement important") return(2)
 }

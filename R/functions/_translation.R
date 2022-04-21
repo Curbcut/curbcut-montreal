@@ -37,6 +37,8 @@ sus_translate_list <- function(x) {
 
 sus_translate <- function(..., .envir = parent.frame()) {
   
+  
+  
   # Error if we provide lists + character vectors unintentionally
   args <- list(...)
   error_check <- sapply(args, inherits, "list")
@@ -63,6 +65,8 @@ sus_translate <- function(..., .envir = parent.frame()) {
               }
             }))
   )
+  
+  if (all(x == "")) return("")
   
   # English
   if (sus_rv$lang() == "en") return({

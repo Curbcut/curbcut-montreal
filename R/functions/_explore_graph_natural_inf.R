@@ -4,17 +4,16 @@
 explore_graph_natural_inf <- function(data, var_type, var_left, var_right, df, 
                                       select_id, build_str_as_DA = TRUE) {
 
-  print(var_left)
   if (var_left == "c_priority") {
     
-    labels <- sapply(c("Flood prevention", "Biodiversity cons.", 
-                       "Heat island red."), sus_translate, 
+    labels <- sapply(c("Flood", "Biodiversity", 
+                       "Heat island"), sus_translate, 
                      USE.NAMES = FALSE)
     
     data.frame(labels = labels, 
-               cons_levels = c(data$flood,
-                               data$biodiversity,
-                               data$heat_island),
+               cons_levels = c(data$c_flood,
+                               data$c_biodiversity,
+                               data$c_heat_island),
                total_cons = c(1, 1, 1)) |> 
       ggplot() +
       geom_bar(aes(labels, total_cons), stat = "identity", 

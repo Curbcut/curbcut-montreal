@@ -288,9 +288,9 @@ natural_inf$original_priorities <- map_dfr(0:25, ~{
 
   tibble(slider = .x,
          conservation_pct = con_pct,
-         biodiversity = bio,
-         heat_island = heat,
-         flood = flood)
+         c_biodiversity = bio,
+         c_heat_island = heat,
+         c_flood = flood)
   
 })
 

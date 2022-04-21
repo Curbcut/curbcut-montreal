@@ -31,23 +31,17 @@ natural_inf_UI <- function(id) {
         slider_text_UI(NS(id, ns_id),
                        slider_id = "s_bio",
                        label = sus_translate("Biodiversity conservation"),
-                       choices = c("Not important", "Somewhat important", 
-                                   "Important", "Very important", 
-                                   "Extremely important"),
+                       choices = custom_slider_choices,
                        selected = "Important"),
         slider_text_UI(NS(id, ns_id),
                        slider_id = "s_hea",
                        label = sus_translate("Heat island reduction"),
-                       choices = c("Not important", "Somewhat important", 
-                                   "Important", "Very important", 
-                                   "Extremely important"),
+                       choices = custom_slider_choices,
                        selected = "Important"),
         slider_text_UI(NS(id, ns_id),
                        slider_id = "s_flo",
                        label = sus_translate("Flood prevention"),
-                       choices = c("Not important", "Somewhat important", 
-                                   "Important", "Very important", 
-                                   "Extremely important"),
+                       choices = custom_slider_choices,
                        selected = "Important")
         ),
       bottom = div(class = "bottom_sidebar",
@@ -138,9 +132,12 @@ natural_inf_server <- function(id) {
     main_slider <- slider_server(id = ns_id)
     
     # Custom priority sliders
-    s_bio <- slider_text_server(id = ns_id, slider_id = "s_bio")
-    s_hea <- slider_text_server(id = ns_id, slider_id = "s_hea")
-    s_flo <- slider_text_server(id = ns_id, slider_id = "s_flo")
+    s_bio <- slider_text_server(id = ns_id, slider_id = "s_bio",
+                                choices = reactive(custom_slider_choices))
+    s_hea <- slider_text_server(id = ns_id, slider_id = "s_hea",
+                                choices = reactive(custom_slider_choices))
+    s_flo <- slider_text_server(id = ns_id, slider_id = "s_flo",
+                                choices = reactive(custom_slider_choices))
     ni_slider <- reactive(process_ni_sliders(s_bio(), s_hea(), s_flo()))
     observe({
       toggle(NS(id, "s_bio"), condition = custom_priorities())

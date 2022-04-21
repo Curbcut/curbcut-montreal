@@ -64,13 +64,15 @@ slider_text_server <- function(id, slider_id = NULL, choices = reactive(NULL),
     
     slider_id <- if (is.null(slider_id)) "slider" else slider_id
     
+    choices <- sapply(choices(), sus_translate, USE.NAMES = FALSE)
+    
     observe({
       if (!is.null(choices()) || !is.null(selected())) {
         shinyWidgets::updateSliderTextInput(
           session,
           inputId = slider_id,
           selected = selected(),
-          choices = choices())
+          choices = choices)
       }
     })
     

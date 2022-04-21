@@ -1031,4 +1031,91 @@ variables_translated <-
   add_row(en = paste0("Mixed"), 
           fr = paste0("Mixte")) |> 
   add_row(en = paste0("Unmain."), 
-          fr = paste0("Non-maint."))
+          fr = paste0("Non-maint.")) |> 
+  # Natural infrastructure
+  add_row(en = paste0("Habitat quality"), 
+          fr = paste0("Qualité de l'habitat")) |> 
+  add_row(en = paste0("Habitat connectivity"), 
+          fr = paste0("Connectivité de l'habitat")) |> 
+  add_row(en = paste0("Favourable climatic conditions"), 
+          fr = paste0("Conditions climatiques à l'habitat")) |> 
+  add_row(en = paste0("Contribution to flood prevention"), 
+          fr = paste0("Contribution dans la prévention des inondations")) |> 
+  add_row(en = paste0("Contribution to biodiversity conservation"), 
+          fr = paste0("Contribution dans la conservation de la biodiversité")) |> 
+  add_row(en = paste0("Contribution to heat island reduction"), 
+          fr = paste0("Contribution dans la réduction des îlots de chaleurs")) |> 
+  add_row(en = paste0("Conservation priority"), 
+          fr = paste0("Priorisation de conservation")) |> 
+  add_row(en = paste0("Flood risks"), 
+          fr = paste0("Risques d'inondation")) |> 
+  add_row(en = paste0("Heat islands"), 
+          fr = paste0("Îlots de chaleur")) |> 
+  add_row(en = paste0("Cool islands"), 
+          fr = paste0("Îlots de fraicheur")) |> 
+  add_row(en = paste0("Hab. quality"), 
+          fr = paste0("Qualité")) |> 
+  add_row(en = paste0("Hab. connect."), 
+          fr = paste0("Connectivité")) |> 
+  add_row(en = paste0("Favourable CC"), 
+          fr = paste0("Conditions climatiques")) |> 
+  add_row(en = paste0("Flood prev."), 
+          fr = paste0("Prév. inondations")) |> 
+  add_row(en = paste0("Biodiversity cons."), 
+          fr = paste0("Cons. biodiversité")) |> 
+  add_row(en = paste0("Heat island reduct."), 
+          fr = paste0("Rédu. îlots chaleurs")) |> 
+  add_row(en = paste0("Conservation"), 
+          fr = paste0("Conservation")) |> 
+  add_row(en = paste0("Flood risks"), 
+          fr = paste0("Risques inondation")) |> 
+  add_row(en = paste0("Heat islands"), 
+          fr = paste0("Îlots chaleur")) |> 
+  add_row(en = paste0("Cool islands"), 
+          fr = paste0("Îlots fraicheur")) |> 
+  add_row(en = paste0("the ability of an ecosystem to provide conditions appro",
+                      "priate for individual and population persistence"), 
+          fr = paste0("la capacité d'un écosystème à fournir des conditions ap",
+                      "propriées pour la persistance des individus et des popu",
+                      "lations")) |> 
+  add_row(en = paste0("the degree to which a landscape facilitates or impedes ",
+                      "animal movement and other ecological processes"), 
+          fr = paste0("la mesure dans laquelle un environnement facilite ou en",
+                      "trave les déplacements des animaux et d'autres processu",
+                      "s écologiques")) |> 
+  add_row(en = paste0("the degree to which past and future climatic conditions",
+                      " are favourable to species life"), 
+          fr = paste0("la mesure dans laquelle les conditions climatiques pass",
+                      "ées et futures sont favorables à la vie des espèces")) |> 
+  add_row(en = paste0("the contribution of natural infrastructure to flood pre",
+                      "vention"), 
+          fr = paste0("la contribution des infrastructures naturelles à la pré",
+                      "vention des inondations")) |> 
+  add_row(en = paste0("the contribution of natural infrastructure to biodivers",
+                      "ity conservation"), 
+          fr = paste0("la contribution des infrastructures naturelles à la con",
+                      "servation de la biodiversité")) |> 
+  add_row(en = paste0("the contribution of natural infrastructure to heat-isla",
+                      "nd reduction"), 
+          fr = paste0("la contribution des infrastructures naturelles à la réd",
+                      "uction des îlots de chaleur")) |> 
+  add_row(en = paste0("the importance of preserving natural infrastructure, ba",
+                      "sed on its total contribution to biodiversity conservat",
+                      "ion, heat-island reduction, and flood protection"), 
+          fr = paste0("l'importance de préserver les infrastructures naturelle",
+                      "s, sur la base de leur contribution totale à la conserv",
+                      "ation de la biodiversité, à la réduction des îlots de c",
+                      "haleur et à la protection contre les inondations")) |> 
+  add_row(en = paste0("the land areas at risk of flooding"), 
+          fr = paste0("les zones terrestres exposées aux risques d'inondation")) |> 
+  add_row(en = paste0("the urban areas with a higher air or surface temperatur",
+                      "e than other areas in the same urban environment"), 
+          fr = paste0("les zones urbaines où la température de l'air ou de la ",
+                      "surface est plus élevée que dans les autres zones du mê",
+                      "me environnement urbain")) |> 
+  add_row(en = paste0("the urban areas with a lower air or surface temperature",
+                      " than other areas in the same urban environment"), 
+          fr = paste0("les zones urbaines dont la température de l'air ou de l",
+                      "a surface est inférieure à celle des autres zones du mê",
+                      "me environnement urbain"))
+
