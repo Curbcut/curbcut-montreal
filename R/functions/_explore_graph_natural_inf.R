@@ -6,7 +6,8 @@ explore_graph_natural_inf <- function(data, var_type, var_left, var_right, df,
 
   if (!is.null(data)) {
     
-    labels <- sapply(c("Flood", "Biodiversity", "Heat island"), sus_translate, 
+    labels <- sapply(c("Flood prevention", "Biodiversity cons.", 
+                       "Heat island red."), sus_translate, 
                      USE.NAMES = FALSE)
     
     data.frame(labels = labels, 
@@ -19,8 +20,9 @@ explore_graph_natural_inf <- function(data, var_type, var_left, var_right, df,
                fill = legend_qual$fill[c(3, 2, 4)], alpha = 0.2) +
       geom_bar(aes(labels, cons_levels), stat = "identity", 
                fill = legend_qual$fill[c(3, 2, 4)]) +
-      scale_y_continuous(name = NULL, labels = scales::percent) +
-      scale_x_discrete(name = sus_translate("Prevention conservation")) +
+      scale_y_continuous(name = NULL, 
+                         labels = scales::percent) +
+      scale_x_discrete(name = sus_translate("Amount protected")) +
       theme_minimal() +
       theme(text = element_text(family = "SourceSansPro", size = 12),
             legend.position = "none", 
