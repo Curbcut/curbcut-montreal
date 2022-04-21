@@ -328,3 +328,7 @@ i.fa {
 .fa:not(:last-child) {
   padding-right: 0.5em;
 }
+
+.modal {
+  z-index: var(--depth-ui-over);
+}
