@@ -476,8 +476,8 @@ variables <-
   ) |>
   add_variables(
     var_code = "favorable_cc",
-    var_title = "Favorable climatic conditions",
-    var_short = "Favorable CC",
+    var_title = "Favourable climatic conditions",
+    var_short = "Favourable CC",
     explanation = paste0("the degree to which past and future climatic ",
                          "conditions are favourable to species life"),
     category = NA,

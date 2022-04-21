@@ -54,7 +54,7 @@ info_table_natural_inf <- function(data, var_type, var_left,
 
     HTML(sus_translate(
       "<p>Natural infrastructure represents approximately 25% of the ",
-      "territory of the Montreal region. Glood-related natural ", 
+      "territory of the Montreal region. Flood-related natural ", 
       "infrastructure functions include:</p><ul>", c_flood, flood, "</ul>"))
     
   } else if (var_left %in% c("c_heat", "heat", "cool")) {

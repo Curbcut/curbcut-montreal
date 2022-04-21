@@ -32,14 +32,24 @@ explore_graph_natural_inf <- function(data, var_type, var_left, var_right, df,
             panel.grid.minor.y = element_blank())
     
   } else {
-    data |> 
-      ggplot(aes(value_pct, name, fill = name)) +
+
+    dat <- merge(data, variables[c("var_code", "var_short")], by.x = "name", 
+                 by.y = "var_code")
+    var_names <- dat$var_short[c(4, 9, 3, 6, 2, 5, 7, 8, 1)]
+    dat$var_short <- factor(dat$var_short, levels = var_names)
+    
+    pal <- rev(c(colour_left_5$fill[6:3], colour_iso$fill[c(4, 2)],
+                 colour_table$value[colour_table$palette == "qual"][c(3:4, 6)]))
+    
+    dat |> 
+      ggplot(aes(value_pct, var_short, fill = var_short)) +
       geom_col() +
+      geom_hline(yintercept = dat$var_short[dat$name == var_left], 
+                 colour = "black", lwd = 1) +
       scale_x_continuous(name = sus_translate("Share of Montreal area"), 
-                         labels = scales::percent) +
+                         labels = scales::label_percent(1)) +
       scale_y_discrete(name = NULL) +
-      scale_fill_manual(
-        values = rep(colour_table$value[colour_table$palette == "qual"], 2)) +
+      scale_fill_manual(values = pal) +
       theme_minimal() +
       theme(legend.position = "none")
     
