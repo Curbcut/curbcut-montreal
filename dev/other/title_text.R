@@ -386,5 +386,23 @@ title_text <-
                     "that correspond to words in the dictionary. Resulting ",
                     "sustainability scores were used in conjunction with ",
                     "existing data to determine the average score per number of ",
-                    "units in a development and the average score per year."))
+                    "units in a development and the average score per year.")) |> 
+  add_row(tab = "natural_inf", type = "title", 
+          text = "Natural infrastructure") |> 
+  add_row(tab = "natural_inf", type = "main", text = paste0(
+    "Natural spaces contribute to well-being, quality of life and public ",
+    "health. In the Montreal region, approximately 25% of the territory is ",
+    "natural infrastructure, but these spaces are threatened by forces ",
+    "including pollution and urban sprawl. This module quantifies the ",
+    "benefits provided by natural infrastructure related to biodiversity ",
+    "conservation, flood prevention, and heat-island reduction.")) |> 
+  add_row(tab = "natural_inf", type = "extra", text = paste0(
+    "<p>For more information on natural infrastructure in general, and the ",
+    "data used for this module, see <a href = 'https://fr.davidsuzuki.or",
+    "g/publication-scientifique/le-role-des-infrastructures-natu",
+    "relles-dans-la-prevention-des-inondations-dans-la-communaut",
+    "e-metropolitaine-de-montreal/' target = '_blank'>",
+    "Maure et al., 2018, Le rôle des infrastructures naturelles dans la ",
+    "prévention des inondations dans la Communauté métropolitaine de ",
+    "Montréal, Fondation David Suzuki."))
   
