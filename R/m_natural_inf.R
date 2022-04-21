@@ -175,7 +175,7 @@ natural_inf_server <- function(id) {
             custom <- custom[custom$flood == ni_slider()[3], ]
             custom
           }
-        } else NULL
+        } else natural_inf$explore
         
       })
     

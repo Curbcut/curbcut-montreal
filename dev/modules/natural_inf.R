@@ -415,6 +415,27 @@ natural_inf$custom_explore <- map_dfr(top_slider, function(top_slider) {
   })
   
 })
+
+qload("data2/census_full.qsm")
+
+borough_area <- 
+  borough_full |> 
+  st_transform(32618) |> 
+  st_area() |> 
+  units::drop_units() |> 
+  sum()
+
+natural_inf$explore <- map(natural_inf_tiles_raw, ~{
+  .x |> 
+    st_transform(32618) |> 
+    st_area() |> 
+    units::drop_units() |> 
+    sum()}) |> 
+  enframe() |> 
+  mutate(value = unlist(value)) |> 
+  mutate(value_pct = value / borough_area) |> 
+  filter(name != "c_priority")
+
   
 
 # Add variable explanations -----------------------------------------------

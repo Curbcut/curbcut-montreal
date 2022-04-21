@@ -4,7 +4,8 @@
 explore_graph_natural_inf <- function(data, var_type, var_left, var_right, df, 
                                       select_id, build_str_as_DA = TRUE) {
 
-  if (!is.null(data)) {
+  print(var_left)
+  if (var_left == "c_priority") {
     
     labels <- sapply(c("Flood prevention", "Biodiversity cons.", 
                        "Heat island red."), sus_translate, 
@@ -30,6 +31,18 @@ explore_graph_natural_inf <- function(data, var_type, var_left, var_right, df,
             panel.grid.major.x = element_blank(), 
             panel.grid.minor.y = element_blank())
     
-  } else NULL
+  } else {
+    data |> 
+      ggplot(aes(value_pct, name, fill = name)) +
+      geom_col() +
+      scale_x_continuous(name = sus_translate("Share of Montreal area"), 
+                         labels = scales::percent) +
+      scale_y_discrete(name = NULL) +
+      scale_fill_manual(
+        values = rep(colour_table$value[colour_table$palette == "qual"], 2)) +
+      theme_minimal() +
+      theme(legend.position = "none")
+    
+  }
   
 }
