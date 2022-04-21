@@ -65,13 +65,13 @@ home_UI <- function(id) {
     ),
     susPageSection(
       tags$h2(sus_translate("Maps"), scrollAnchor(id = "start-exploring")),
-      do.call(linkList, c(ready_modules_home(mods_rdy),
+      tags$div(class="text-width", do.call(linkList, c(ready_modules_home(mods_rdy),
                           list(linkListGroup(name = sus_translate("More"),
                                              list(name = sus_translate("Montréal stories"), 
                                                   onclick = "openTab('stories')"),
                                              list(name = sus_translate("Place explorer"), 
                                                   onclick = "openTab('place_explorer')"))))
-      )
+      ))
     ), tags$div(style = "width: 250px; height: 50px;", hidden = "", susLegend())
   )
 }

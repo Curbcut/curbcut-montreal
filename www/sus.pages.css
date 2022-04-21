@@ -7,6 +7,8 @@
   --padding-page-section-v-md: 20px;
 
   --margin-page-section-v-lg: 30px;
+
+  --w-page-text: calc(1rem * 60);
 }
 
 .sus-page {
@@ -16,6 +18,25 @@
 .sus-page-content {
   margin-top: var(--h-navbar);
   margin-bottom: var(--h-navbar);
+}
+
+.sus-page-content h1,
+.sus-page-content h2 {
+  color: var(--c-primary-complement);
+  margin-bottom: var(--padding-v-lg);
+}
+
+.sus-page-content p,
+.sus-page-content h1,
+.sus-page-content h2,
+.sus-page-content h3,
+.sus-page-content h4,
+.sus-page-content h5,
+.sus-page-content h6,
+.sus-page-content div.text-width {
+  max-width: var(--w-page-text);
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .sus-page-content-section {
@@ -28,8 +49,88 @@
   padding-bottom: var(--padding-page-section-v-lg);
   padding-left: var(--padding-page-section-h-lg);
   padding-right: var(--padding-page-section-h-lg);
-  background-color: var(--c-primary-complement);
+  /* background-color: var(--c-primary-complement); */
+  /* box-shadow: var(--box-shadow-md); */
+}
+
+.sus-page-controls-container {
+  position: fixed;
+  top: var(--h-navbar);
+  left: 0px;
+  right: 0px;
+}
+
+.sus-page-controls {
+  position: relative;
+  z-index: calc(20 + var(--depth-ui));
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-items: flex-start;
+  max-width: 900px;
+  margin-top: calc(var(--padding-v-lg));
+  margin-bottom: 0px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--padding-v-md);
+  padding-right: var(--padding-v-md);
+  padding-top: var(--padding-v-md);
+  padding-bottom: var(--padding-v-md);
+  background: var(--c-primary-complement);
+  border-radius: var(--border-radius-md);
   box-shadow: var(--box-shadow-md);
+}
+
+.sus-page-images {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  height: 400px;
+  margin-top: var(--padding-v-lg);
+  margin-bottom: var(--padding-v-lg);
+}
+
+.sus-page-images img {
+  height: 100%;
+  width: auto;
+  margin: 10px;
+}
+
+.sus-page-controls-shadow {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  bottom: 0px;
+  right: 0px;
+}
+
+.sus-page-controls-shadow-caster {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  z-index: calc(10 + var(--depth-ui));
+  background-color: rgba(0, 0, 0, 0);
+  box-shadow: var(--box-shadow-md);
+}
+
+.sus-page-controls-spacer {
+  position: relative;
+  height: 60px;
+  margin-bottom: -40px;
+  transition: 0.2s ease-in-out;
+}
+
+@media (max-width: 1349px) {
+  body.user-scroll .sus-page-controls {
+    width: 100%;
+    max-width: unset;
+    margin-top: 0px;
+    margin-left: 0px;
+    margin-right: 0px;
+    border-radius: unset;
+    border-top: 1px solid var(--c-default);
+  }
 }
 
 .sus-page-content-section > img {
@@ -40,7 +141,43 @@
   margin-bottom: 6rem;
 }
 
+@media (min-width: 1350px) {
+  .sus-page-controls-spacer {
+    margin-bottom: -70px;
+  }
+
+  .sus-page-controls-container {
+    height: 100%;
+  }
+
+  .sus-page-controls {
+    position: absolute;
+    top: 0px;
+    left: calc((100% - var(--w-page-text)) / 2 - 350px - var(--padding-h-md));
+    max-width: 350px;
+    width: min-content;
+    flex-direction: column;
+    justify-content: stretch;
+  }
+
+  .sus-page-controls > * {
+    width: 100%;
+  }
+
+  .sus-page-controls-spacer {
+    height: 0px;
+  }
+}
+
 @media (max-width: 950px) {
+  .sus-page-controls-spacer {
+    margin-bottom: unset;
+  }
+
+  .sus-page-images {
+    height: 350px;
+  }
+
   .sus-page-content {
     margin-top: 0px;
     margin-bottom: 0px;
@@ -55,6 +192,16 @@
     padding-bottom: var(--padding-page-section-v-md);
     padding-left: var(--padding-page-section-h-md);
     padding-right: var(--padding-page-section-h-md);
+  }
+  
+  .sus-page-controls {
+    width: 100%;
+    max-width: unset;
+    margin-top: 0px;
+    margin-left: 0px;
+    margin-right: 0px;
+    border-radius: unset;
+    border-top: 1px solid var(--c-default);
   }
 
   .sus-page-content-section:first-child {
@@ -87,6 +234,10 @@
 }
 
 @media (max-width: 600px) {
+  .sus-page-images {
+    height: 300px;
+  }
+
   .sus-page-content-section {
     padding-left: var(--padding-page-section-h-sm);
     padding-right: var(--padding-page-section-h-sm);
@@ -122,4 +273,8 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+}
+
+.sus-page-content a:not(.sus-button) {
+	color: #4466b1;
 }

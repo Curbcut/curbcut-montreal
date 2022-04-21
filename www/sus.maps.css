@@ -27,14 +27,22 @@
 
 .sus-map-sidebar, .sus-map-sidebar-shadow {
   position: fixed;
-  z-index: var(--depth-ui);
   top: var(--h-navbar);
   left: 0px;
   bottom: 0px;
   min-width: var(--w-sidebar);
   max-width: var(--w-sidebar);
   width: var(--w-sidebar);
+}
+
+.sus-map-sidebar {
   background: var(--c-primary-complement);
+}
+
+.sus-map-sidebar-shadow {
+  z-index: var(--depth-ui-shadow);
+  box-shadow: var(--box-shadow-md);
+  clip-path: inset(0px -15px 0px 0px);
 }
 
 .sus-map-sidebar {
@@ -42,12 +50,9 @@
   border-top: 1px solid var(--c-default);
 }
 
-.sus-map-sidebar-shadow {
-  box-shadow: var(--box-shadow-md);
-  z-index: 900;
-}
-
 .sus-map-sidebar-container {
+  position: relative;
+  z-index: calc(20 + var(--depth-ui));
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -81,7 +86,6 @@
   /* overflow: hidden; */
   overflow: scroll;
   overflow-x: hidden;
-  z-index: var(--depth-ui);
   top: var(--padding-v-md);
   right: var(--padding-h-md);
   min-width: var(--w-panel);
@@ -103,6 +107,8 @@
 }
 
 .sus-map-panel-content {
+  position: relative;
+  z-index: calc(20 + var(--depth-ui));
   width: 100%;
   padding-left: var(--padding-h-md);
   padding-right: var(--padding-h-md);

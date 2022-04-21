@@ -10,18 +10,13 @@ mcp_UI <- function(id) {
   #   ))
   # )
   tagList(
-          #Only change the size of photos in this module
-          tags$head(tags$style(
-            HTML('
-      .mcp_module img {
-                  margin:10px;
-                  margin-top:0px
-      }'))),
-          select_var_UI(NS(id, "left"), var_list = var_list_left_mcp, width = "300px",
-                        inline = T),
-          susPage(class="sus-page-about", footer = susFooter(),susPageSection(
-            htmlOutput(NS(id, "mcp_output"))
-          )))
+          susPage(class="sus-page-about", footer = susFooter(),
+            susPageControls(select_var_UI(NS(id, "left"), var_list = var_list_left_mcp, width = "300px", inline = T)),
+            susPageSection(
+              htmlOutput(NS(id, "mcp_output"))
+            )
+          )
+        )
 }
 
 

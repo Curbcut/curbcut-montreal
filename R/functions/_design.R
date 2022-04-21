@@ -102,6 +102,21 @@ susBanner <- function() {
   ))
 }
 
+# Make controls for a page
+susPageControls <- function(..., class="") {
+  return(
+    tagList(
+      tags$div(class="sus-page-controls-spacer"),
+      tags$div(class="sus-page-controls-container",
+        tags$div(class = paste("sus-page-controls", class),...))
+    )
+  )
+}
+
+susPageImages <- function(..., class="") {
+  return(tags$div(class = paste("sus-page-images", class),...))
+}
+
 # Make a section inside of a page
 susPageSection <- function(..., class="") {
   return(tags$div(class = paste("sus-page-content-section", class),...))

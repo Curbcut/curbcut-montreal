@@ -44,6 +44,10 @@ window.addEventListener('load', (evt) => {
   navbarShadow.classList.add('navbar-shadow');
   navbar.parentElement.insertBefore(navbarShadow, navbar);
 
+  const navbarShadowCaster = document.createElement('div');
+  navbarShadowCaster.classList.add('navbar-shadow-caster');
+  navbarShadow.appendChild(navbarShadowCaster);
+
   var condition = false;
 
   function reflow(elt){
@@ -129,6 +133,10 @@ window.addEventListener('load', (evt) => {
   .navbar-fixed {
     margin-right: 52px
   }
+  .navbar-collapse > ul#sus_page {
+    box-shadow: var(--box-shadow-md);
+    clip-path: inset(0px 0px -15px 0px);
+  }
 }
 
 @media (max-height: 900px) {
@@ -139,6 +147,17 @@ window.addEventListener('load', (evt) => {
 `;
 
   head.appendChild(style);
+
+  const mapdeckDivs = document.querySelectorAll('.mapdeck_div');
+
+  for (var i = 0; i < mapdeckDivs.length; i++) {
+    const mapdeckDiv = mapdeckDivs[i];
+
+    const shadow = document.createElement('div');
+    shadow.classList.add('shadow-md-bottom');
+
+    mapdeckDiv.appendChild(shadow);
+  }
 
   const navbarHeight = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--h-navbar'));
 
