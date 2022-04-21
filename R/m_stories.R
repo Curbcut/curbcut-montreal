@@ -1,5 +1,9 @@
 ### STORIES MODULE ##############################################################
 
+# Temporary non-translated stories:
+available_stories <- list.files("www/stories", full.names = TRUE) |> 
+  str_subset(".html")
+
 # UI ----------------------------------------------------------------------
 
 stories_UI <- function(id) {
@@ -107,11 +111,20 @@ stories_server <- function(id) {
 
         rmd_name <- stories[stories$ID == select_id(),]$name
         bandeau_name <- stories[stories$ID == select_id(),]$img
+        
+        story_link <- paste0("www/stories/", rmd_name, "_", sus_rv$lang(), 
+                             ".html")
+        
+        # Construct story link, serve en if no translation available.
+        story_link <- if (story_link %in% available_stories) story_link else {
+          paste0("www/stories/", rmd_name, "_", "en", 
+                 ".html")
+        }
 
         HTML('<div class = "main_panel_text_popup">',
              # Adding bandeau img after the first div (title)
              str_replace(
-               includeHTML(paste0("www/stories/", rmd_name, "_en.html")),
+               includeHTML(story_link),
                "</div>", paste0("</div><img src =", "stories/bandeau_img/",
                                 bandeau_name,"><br><br>")) |> 
                str_replace_all('<img src="visuals/', 
