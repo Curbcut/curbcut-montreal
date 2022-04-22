@@ -1,5 +1,5 @@
 ---
-title: "Environmental Racism and Green Gentrification in Montreal’s Little Burgundy"
+title: "Environmental racism and green gentrification in Montreal’s Little Burgundy"
 subtitle: "A neighbourhood in transformation"  
 output: html_document
 author: "Sara Hashemi"

@@ -1,5 +1,5 @@
 ---
-title: "Griffintown, From a Gift of the Machine Age to a Water Wheel in the Growth Machine"
+title: "Griffintown, from a gift of the machine age to a water wheel in the growth machine"
 output: html_document
 author: "Camille Forest"
 runtime: shiny_prerendered
