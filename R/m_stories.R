@@ -76,32 +76,32 @@ stories_server <- function(id) {
         bboxes <- lapply(data()$buffer, \(x) st_bbox(x) |> round(digits = 5))
         layer_ids <- paste0("image", row_n)
 
-        all_add_bitmap <- 
-          paste0('add_bitmap_layer(data = data()[', row_n,', ], image = "', 
-                 images, '", bounds = ', bboxes, ', ', 'id ="', layer_ids, 
+        all_add_bitmap <-
+          paste0('add_bitmap_layer(image = "',
+                 images, '", bounds = ', bboxes, ', ', 'id ="', layer_ids,
                  '", pickable = TRUE)', collapse = ' |>  ')
         updated_map <-
           paste0('rdeck_proxy(id = "stories-map") |> ',
                  paste0(text = all_add_bitmap))
-
+        
         eval(parse(text = updated_map))
 
   })
 
     # Click reactive
     observeEvent(input[[paste0(ns_id, "-map_click")]], {
-      
-      click <- st_point(c(input[[paste0(ns_id, "-map_click")]]$coordinate[[1]], 
+
+      click <- st_point(c(input[[paste0(ns_id, "-map_click")]]$coordinate[[1]],
                           input[[paste0(ns_id, "-map_click")]]$coordinate[[2]])) |>
         st_sfc(crs = 4326) |>
         as.data.frame() |>
         st_as_sf() |>
         st_set_agr("constant")
-      
+
       hay <- st_intersection(click, st_set_agr(data(), "constant"))
-      
+
       if (nrow(hay) == 1) select_id(hay$ID) else select_id(NA)
-      
+
     })
 
     # Render the story in question, now only in english (_en)
@@ -111,13 +111,13 @@ stories_server <- function(id) {
 
         rmd_name <- stories[stories$ID == select_id(),]$name
         bandeau_name <- stories[stories$ID == select_id(),]$img
-        
-        story_link <- paste0("www/stories/", rmd_name, "_", sus_rv$lang(), 
+
+        story_link <- paste0("www/stories/", rmd_name, "_", sus_rv$lang(),
                              ".html")
-        
+
         # Construct story link, serve en if no translation available.
         story_link <- if (story_link %in% available_stories) story_link else {
-          paste0("www/stories/", rmd_name, "_", "en", 
+          paste0("www/stories/", rmd_name, "_", "en",
                  ".html")
         }
 
@@ -126,8 +126,8 @@ stories_server <- function(id) {
              str_replace(
                includeHTML(story_link),
                "</div>", paste0("</div><img src =", "stories/bandeau_img/",
-                                bandeau_name,"><br><br>")) |> 
-               str_replace_all('<img src="visuals/', 
+                                bandeau_name,"><br><br>")) |>
+               str_replace_all('<img src="visuals/',
                                '<img src="stories/visuals/'),
              '</div>')
       }
@@ -168,14 +168,14 @@ stories_server <- function(id) {
         if (!is.null(sus_bookmark$df)) df <- reactiveVal(sus_bookmark$df)
         delay(1000, {
           if (!is.null(sus_bookmark$select_id))
-            if (sus_bookmark$select_id != "NA") 
+            if (sus_bookmark$select_id != "NA")
               select_id(sus_bookmark$select_id)
         })
       }
       # So that bookmarking gets triggered only ONCE
       delay(1500, {sus_bookmark$active <- FALSE})
     }, priority = -2)
-    
+
     # Update select_id() on module link
     observeEvent(sus_link$activity, {
       if (!is.null(sus_bookmark$df)) df <- reactiveVal(sus_bookmark$df)

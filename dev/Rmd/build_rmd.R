@@ -46,7 +46,7 @@ purrr::walk(stories_files, process_rmd, path = "stories")
 
 # Standalone --------------------------------------------------------------
 
-# NOT RUN
+# NOT RUN, A lot of manual modifications to the .html doc are needed.
 # standalone_files <- list.files("dev/Rmd/standalone")
 # library(here)
 # purrr::walk(standalone_files, process_rmd, path = "standalone")
