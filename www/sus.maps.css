@@ -5,8 +5,8 @@
 
 .mapdeck_div {
   height: calc(100vh - var(--h-navbar)) !important;
-  position: absolute;
-  top: 0px;
+  position: fixed;
+  top: var(--h-navbar);
   left: calc(var(--w-sidebar) - 1px);
   right: 0px;
   padding: unset !important;
@@ -30,13 +30,18 @@
   top: var(--h-navbar);
   left: 0px;
   bottom: 0px;
-  min-width: var(--w-sidebar);
-  max-width: var(--w-sidebar);
-  width: var(--w-sidebar);
 }
 
 .sus-map-sidebar {
   background: var(--c-primary-complement);
+  min-width: var(--w-sidebar);
+  max-width: var(--w-sidebar);
+  width: var(--w-sidebar);
+  background: var(--c-primary-complement);
+  overflow-y: hidden;
+  overflow-x: visible;
+  border-top: 1px solid var(--c-default);
+  z-index: var(--depth-ui);
 }
 
 .sus-map-sidebar-shadow {
@@ -44,11 +49,9 @@
   box-shadow: var(--box-shadow-md);
   clip-path: inset(0px -15px 0px 0px);
   pointer-events: none;
-}
-
-.sus-map-sidebar {
-  overflow: hidden;
-  border-top: 1px solid var(--c-default);
+  min-width: calc(var(--w-sidebar) - 1px);
+  max-width: calc(var(--w-sidebar) - 1px);
+  width: calc(var(--w-sidebar) - 1px);
 }
 
 .sus-map-sidebar-container {
@@ -227,4 +230,14 @@
 
 .sus-sidebar-widgets > *:first-child {
   margin-top: var(--padding-v-md);
+}
+
+.mapboxgl-control-container {
+  position: fixed;
+  bottom: var(--padding-v-md);
+  right: var(--padding-h-md);
+}
+
+.mapboxgl-ctrl-attrib-button {
+	display: none;
 }
