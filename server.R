@@ -14,7 +14,7 @@ shinyServer(function(input, output, session) {
   observeEvent(input$cookies$time_last_htu_banner, {
     if (is.null(input$cookies$time_last_htu_banner) ||
         (!is.null(input$cookies$time_last_htu_banner) &&
-         Sys.time() > (as.POSIXct(input$cookies$time_last_htu_banner) + 1209600))) {
+         Sys.time() > (as.POSIXct(input$cookies$time_last_htu_banner) + 1))) { #1209600))) {
       
       #TKTK SHOW BANNER HERE
       insertUI(selector = ".navbar-shadow",
@@ -54,6 +54,9 @@ shinyServer(function(input, output, session) {
   observeEvent(input$go_to_htu_x, {
     removeUI("#htu_footer")
   })
+  observeEvent(input$sus_page, {
+    removeUI("#htu_footer")
+  }, ignoreInit = TRUE)
   
   ## Language button -----------------------------------------------------------
   
