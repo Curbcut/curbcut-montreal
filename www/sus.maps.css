@@ -43,6 +43,7 @@
   z-index: var(--depth-ui-shadow);
   box-shadow: var(--box-shadow-md);
   clip-path: inset(0px -15px 0px 0px);
+  pointer-events: none;
 }
 
 .sus-map-sidebar {

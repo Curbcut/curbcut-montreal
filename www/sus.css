@@ -332,3 +332,7 @@ i.fa {
 .modal {
   z-index: var(--depth-ui-over);
 }
+
+.modal-backdrop {
+  z-index: var(--depth-ui-over-shadow);
+}
