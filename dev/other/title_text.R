@@ -397,8 +397,9 @@ title_text <-
     "benefits provided by natural infrastructure related to biodiversity ",
     "conservation, flood prevention, and heat-island reduction.")) |> 
   add_row(tab = "natural_inf", type = "extra", text = paste0(
-    "<p>For more information on natural infrastructure in general, and the ",
-    "data used for this module, see <a href = 'https://fr.davidsuzuki.or",
+    "<p>Data made available by <a href='https://www.habitat-nature.com/'>",
+    "Habitat</a>. For more information on the methods and data used for this ",
+    "module, see <a href = 'https://fr.davidsuzuki.or",
     "g/publication-scientifique/le-role-des-infrastructures-natu",
     "relles-dans-la-prevention-des-inondations-dans-la-communaut",
     "e-metropolitaine-de-montreal/' target = '_blank'>",
