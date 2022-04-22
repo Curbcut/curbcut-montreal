@@ -31,9 +31,15 @@ explore_graph_natural_inf <- function(data, var_type, var_left, var_right, df,
             panel.grid.minor.y = element_blank())
     
   } else {
+    
+    var_titles <- variables[c("var_code", "var_short")]
 
     dat <- merge(data, variables[c("var_code", "var_short")], by.x = "name", 
                  by.y = "var_code")
+    
+    dat$var_short <- sapply(dat$var_short, sus_translate, 
+                            USE.NAMES = FALSE)
+    
     var_names <- dat$var_short[c(4, 9, 3, 6, 2, 5, 7, 8, 1)]
     dat$var_short <- factor(dat$var_short, levels = var_names)
     

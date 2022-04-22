@@ -460,5 +460,7 @@ ui_and_misc_translated <-
   add_row(en = paste0("Amount protected"), 
           fr = paste0("Montant protégé")) |> 
   add_row(en = paste0("Flood risk areas"), 
-          fr = paste0("Zones à risque d'inondation"))
+          fr = paste0("Zones à risque d'inondation")) |> 
+  add_row(en = paste0("Share of Montreal area"), 
+          fr = paste0("Part de la région de Montréal"))
   
