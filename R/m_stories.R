@@ -61,8 +61,8 @@ stories_server <- function(id) {
 
 
     # Update buffer to change the map when zoom is different
-    data <- reactive(transform(stories, 
-                               buffer = st_buffer(stories$geometry, zoom())))
+    data <- reactive(
+      transform(stories, buffer = st_buffer(stories$geometry, zoom())))
 
     observe({
       
