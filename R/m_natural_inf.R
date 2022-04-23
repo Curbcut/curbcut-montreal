@@ -73,7 +73,7 @@ natural_inf_server <- function(id) {
     
     # Map
     output[[ns_id_map]] <- renderRdeck({
-      rdeck(map_style = map_base_style, initial_view_state = view_state(
+      rdeck(map_style = map_style_building, initial_view_state = view_state(
         center = map_loc, zoom = 9.5))
     })
     

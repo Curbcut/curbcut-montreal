@@ -172,7 +172,7 @@ place_explorer_server <- function(id) {
     ## Main map ----------------------------------------------------------------
     
     output[[ns_id_map]] <- renderRdeck(
-      rdeck(map_style = map_base_style, initial_view_state = view_state(
+      rdeck(map_style = map_style_building, initial_view_state = view_state(
         center = map_loc, zoom = map_zoom)) |> 
         add_mvt_layer(
         id = "DA",

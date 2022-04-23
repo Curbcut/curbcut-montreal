@@ -134,6 +134,7 @@ map_token <- paste0("pk.eyJ1Ijoic3VzLW1jZ2lsbCIsImEiOiJjbDBxMTcyNWwyNTl0M2",
                     "RtZzRremNxOHA3In0.V2Ah5lxy-3RZlF2QKOvIjg")
 options(rdeck.mapbox_access_token = map_token)
 map_base_style <- "mapbox://styles/sus-mcgill/cl0reqoz4000z15pekuh48ld6"
+map_style_building <- "mapbox://styles/sus-mcgill/cl2bwtrsp000516rwyrkt9ior"
 map_zoom <- 10.1
 map_zoom_levels <- c("borough" = 0, "CT" = 10.5, "DA" = 12.5, "building" = 15.5)
 map_loc <- c(-73.58, 45.53)
