@@ -64,7 +64,7 @@ ui <- function(request) {
            tabPanel(sus_translate("Place explorer"), place_explorer_UI("place_explorer"),
            value = "place_explorer"),
            navbarMenu(sus_translate("About"),
-                      tabPanel(sus_translate("About Sus"), why_dash_UI("why_dash"), value = "why_dash"),
+                      tabPanel(sus_translate("About Sus"), about_sus_UI("about_sus"), value = "about_sus"),
            tabPanel(sus_translate("How to use"), how_to_use_UI("how_to_use"), value = "how_to_use")),
            collapsible = TRUE,
            inputs = list(

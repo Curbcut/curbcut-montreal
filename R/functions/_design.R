@@ -81,7 +81,7 @@ susFooter <- function() {
         tags$ul(
           tags$li(tags$a(href = NULL, HTML("&nbsp;"))),#sus_translate("Terms & Conditions"))),
           tags$li(tags$a(href = NULL, style = "cursor:pointer;", 
-                         onclick = "openTab('why_dash')", 
+                         onclick = "openTab('about_sus')", 
                          sus_translate("About"))),
           tags$li(tags$a(href = NULL, style = "cursor:pointer;", 
                          onclick = "document.getElementById('contact').click();",
