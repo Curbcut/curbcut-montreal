@@ -3,6 +3,9 @@
 library(tidyverse)
 library(qs)
 
+
+# Canale ------------------------------------------------------------------
+
 title_text <-
   tibble(tab = character(), type = character(), text = character()) |> 
   add_row(tab = "canale", type = "title", 
@@ -41,6 +44,10 @@ title_text <-
     "Transportation Research Board working paper. ",
     "<b>(MSSI research)</b></ul><br><p><i>Module lead ",
     "authors: David Wachsmuth, Robin Basalaev-Binder</i>")) |> 
+
+  
+# Climate risk ------------------------------------------------------------
+
   add_row(tab = "climate_risk", type = "title", text = "Climate change risk") |> 
   add_row(tab = "climate_risk", type = "main", text = paste0(
     "Climate change will have increasingly negative ",
@@ -78,6 +85,10 @@ title_text <-
     "include wind storms, hail storms, heavy snowstorms, and freezing rain. ",
     "Events of freezing rain increased 26% from 1979 to 2008, and heavy ",
     "snowstorms have also increased over the past 70 years.</ul>")) |> 
+
+  
+# Housing -----------------------------------------------------------------
+  
   add_row(tab = "housing", type = "title", text = "The housing system") |> 
   add_row(tab = "housing", type = "main", text = paste0(
     "Housing is at the centre of our lives. Our ability to find affordable, ",
@@ -99,6 +110,10 @@ title_text <-
     "règlement.</a><li>Madden, D., & Marcuse, P. (2016). <i>In Defense of ",
     "Housing: The Politics of Crisis</i>. New York and London: Verso ",
     "Books.</ul>")) |> 
+  
+
+# Place explorer ----------------------------------------------------------
+
   add_row(tab = "place_explorer", type = "title", text = "Place explorer") |> 
   add_row(tab = "place_explorer", type = "main", text = paste0(
     "Select a location by entering a postal code or clicking on the map, ",
@@ -111,139 +126,157 @@ title_text <-
     "<a href = 'https://www.canuedata.ca/tmp/CANUE_METADATA_GRAVH_AMN_YY.pdf'>",
     "green space</a> data are taken from <a href = 'https://www.canuedata.ca'>",
     "CANUE</a>.")) |> 
+  
+
+# Crash -------------------------------------------------------------------
+
   add_row(tab = "crash", type = "title", text = "Road safety") |> 
   add_row(tab = "crash", type = "main", text = paste0(
     "Road safety is an important consideration for wellbeing ",
     "and safety in cities. This module ",
     "provides an overview and analysis of road collisions ",
     "in the City of Montreal, ranging from 2012 to today.")) |> 
-  add_row(tab = "crash", type = "extra",
-          text = paste0("<p>Data is collected by the Service de Police de la ","
-                        Ville de Montréal (SPVM) and compiled by the Société ",
-                        "d’Assurance Automobile du Québec (SAAQ), and contains ",
-                        "information related to every road collision, including the date, ",
-                        "location and type of parties involved (i.e. cars, bicycles ",
-                        "or pedestrians) and injury severity. ",
-                        "<p>For more information on road collisions and a temporal ",
-                        "analysis of the data, please consult the ", 
-                        "<i>Road safety analysis</i> above.</p>",
-                        "<p>References:</p><ul><li><a href = https://www.pietons.quebec/",
-                        "sites/default/files/documents/pietonsqc_vf_fiche_decouvrirapproche",
-                        "visionzerosecuriteroutiere.pdf> Piétons Québec. (2021). Découvrir ",
-                        "l’approche vision zéro en sécurité routière. Piétons Québec. Online:</a>",
-                        "<li><a href =https://donnees.montreal.ca/ville-de-montreal/collisions-routieres>",
-                        "Ville de Montréal. (2021). Collisions routières. ",
-                        "Données Ouvertes Montréal. Online:</a></ul>")) |> 
-  mutate(tab = if_else(tab == "pedestrian_ct", "ped", tab)) |> 
+  add_row(tab = "crash", type = "extra", text = paste0(
+    "<p>Data is collected by the Service de Police de la ","
+    Ville de Montréal (SPVM) and compiled by the Société ",
+    "d’Assurance Automobile du Québec (SAAQ), and contains ",
+    "information related to every road collision, including the date, ",
+    "location and type of parties involved (i.e. cars, bicycles ",
+    "or pedestrians) and injury severity. ",
+    "<p>For more information on road collisions and a temporal ",
+    "analysis of the data, please consult the ", 
+    "<i>Road safety analysis</i> above.</p>",
+    "<p>References:</p><ul><li><a href = https://www.pietons.quebec/",
+    "sites/default/files/documents/pietonsqc_vf_fiche_decouvrirapproche",
+    "visionzerosecuriteroutiere.pdf> Piétons Québec. (2021). Découvrir ",
+    "l’approche vision zéro en sécurité routière. Piétons Québec. Online:</a>",
+    "<li><a href='https://donnees.montreal.ca/ville-de-montreal/collisions-",
+    "routieres'>Ville de Montréal. (2021). Collisions routières. ",
+    "Données Ouvertes Montréal.</a></ul>")) |> 
+  
+
+# Green alley -------------------------------------------------------------
+  
   add_row(tab = "alley", type = "title",
           text = "Green alleys") |> 
-  add_row(tab = "alley", type = "main",
-          text = paste0("Green alleys are back alleys which have been transforme",
-                        "d into spaces that improve people’s living environments",
-                        ". When adequately designed, these public spaces can hel",
-                        "p reduce heat island effects, noise and air pollution, ",
-                        "and improve water management. They can also enhance soc",
-                        "ial interactions and become recreational spaces for chi",
-                        "ldren where car circulation is reduced.")) |> 
-  add_row(tab = "alley", type = "extra",
-          text = paste0("<p>The Green Alley Program in Montreal was implemented ",
-                        "in 1995. At latest count  there were a total of 573 gre",
-                        "en alleys in the city with more scheduled to be  create",
-                        "d . First put in place in Plateau-Mont-Royal and Rosemo",
-                        "nt-La-Petite-Patrie, the program was then extended to m",
-                        "ost of Montreal’s boroughs. The program promotes public",
-                        " participation and citizen governance; the initiative t",
-                        "o create a green alley comes from the residents themsel",
-                        "ves. The Ecoquartiers (most boroughs have at least one ",
-                        "of them) are key actors in green alley development: the",
-                        "y receive applications, select the submissions, and fol",
-                        "low the evolution of the projects.</p><p>The Green All",
-                        "ey dataset is a mix of data from the City of Montreal O",
-                        "pen Data Portal, from boroughs’ Eco-quartiers, newspape",
-                        "r articles and personal observations (68 alleys were vi",
-                        "sited and classified). No fully complete list of green ",
-                        "alleys in Montreal exists.</p><p>Green alleys are dive",
-                        "rse in activities, design, dimensions, and dwellings de",
-                        "nsity in the surrounding area. Within that diversity, w",
-                        "e classify four types of alleys:</p><ul><li>Green all",
-                        "eys: most of the alley includes greenery such as permea",
-                        "ble surfaces, gardens, and green walls that provide env",
-                        "ironmental benefits like cooling the street temperature",
-                        ", filtrating rainwater, and contributing to enriching t",
-                        "he biodiversity of the alleys. They are generally close",
-                        "d to circulation.<li>Community-oriented alleys: their ",
-                        "main characteristic is the existence of gathering space",
-                        "s that enrich community life. This type of alley presen",
-                        "ts activities organized by the residents, and includes ",
-                        "the appropriation of the alley with furniture and art, ",
-                        "and play areas for children.<li>Mixed alleys: these in",
-                        "clude green elements and are also spaces that allow div",
-                        "erse community activities, especially interventions tha",
-                        "t create safe areas for children, such as measures that",
-                        " reduce car traffic and, in some cases, parking.<li>Ne",
-                        "ither green nor community-oriented alleys: they are aba",
-                        "ndoned or used as parking spaces or as ways to access p",
-                        "rivate garages, without any environmental or social-com",
-                        "munity benefit.</ul>")) |> 
+  add_row(tab = "alley", type = "main", text = paste0(
+    "Green alleys are back alleys which have been transforme",
+    "d into spaces that improve people’s living environments",
+    ". When adequately designed, these public spaces can hel",
+    "p reduce heat island effects, noise and air pollution, ",
+    "and improve water management. They can also enhance soc",
+    "ial interactions and become recreational spaces for chi",
+    "ldren where car circulation is reduced.")) |> 
+  add_row(tab = "alley", type = "extra", text = paste0(
+    "<p>The Green Alley Program in Montreal was implemented ",
+    "in 1995. At latest count  there were a total of 573 gre",
+    "en alleys in the city with more scheduled to be  create",
+    "d . First put in place in Plateau-Mont-Royal and Rosemo",
+    "nt-La-Petite-Patrie, the program was then extended to m",
+    "ost of Montreal’s boroughs. The program promotes public",
+    " participation and citizen governance; the initiative t",
+    "o create a green alley comes from the residents themsel",
+    "ves. The Ecoquartiers (most boroughs have at least one ",
+    "of them) are key actors in green alley development: the",
+    "y receive applications, select the submissions, and fol",
+    "low the evolution of the projects.</p><p>The Green All",
+    "ey dataset is a mix of data from the City of Montreal O",
+    "pen Data Portal, from boroughs’ Eco-quartiers, newspape",
+    "r articles and personal observations (68 alleys were vi",
+    "sited and classified). No fully complete list of green ",
+    "alleys in Montreal exists.</p><p>Green alleys are dive",
+    "rse in activities, design, dimensions, and dwellings de",
+    "nsity in the surrounding area. Within that diversity, w",
+    "e classify four types of alleys:</p><ul><li>Green all",
+    "eys: most of the alley includes greenery such as permea",
+    "ble surfaces, gardens, and green walls that provide env",
+    "ironmental benefits like cooling the street temperature",
+    ", filtrating rainwater, and contributing to enriching t",
+    "he biodiversity of the alleys. They are generally close",
+    "d to circulation.<li>Community-oriented alleys: their ",
+    "main characteristic is the existence of gathering space",
+    "s that enrich community life. This type of alley presen",
+    "ts activities organized by the residents, and includes ",
+    "the appropriation of the alley with furniture and art, ",
+    "and play areas for children.<li>Mixed alleys: these in",
+    "clude green elements and are also spaces that allow div",
+    "erse community activities, especially interventions tha",
+    "t create safe areas for children, such as measures that",
+    " reduce car traffic and, in some cases, parking.<li>Ne",
+    "ither green nor community-oriented alleys: they are aba",
+    "ndoned or used as parking spaces or as ways to access p",
+    "rivate garages, without any environmental or social-com",
+    "munity benefit.</ul>")) |> 
+  
+
+# Covid -------------------------------------------------------------------
+
   add_row(tab = "covid", type = "title",
           text = "2020 and 2021 Covid interventions") |> 
-  add_row(tab = "covid", type = "main",
-          text = paste0("The onset of the COVID-19 pandemic prompted municipalities ",
-                        "across the world to restrict public transit systems and advise citizens ",
-                        "to make only necessary trips. For many without access to motorized vehicles, ",
-                        "active transportation, walking and cycling, became the primary mode of transport. ",
-                        "To accommodate the increased demand for these modes of safe travel, and to ensure ",
-                        "the possibility to practice physical distancing while travelling, many cities ",
-                        "made rapid changes to cycling and pedestrian networks, including constructing ",
-                        "new bike lanes, creating temporary infrastructure, and shutting down streets ",
-                        "to motor vehicle traffic. These changes served to minimize viral transmission ",
-                        "during travel and to more safely connect people to essential services, health ",
-                        "care, and greenspace.")) |> 
-  add_row(tab = "covid", type = "extra",
-          text = paste0("In May 2020, the City of Montréal announced plans to establish ",
-                        "over 300 kilometers of active transport infrastructure by the ",
-                        "end of the summer. These plans included six distinct types of ",
-                        "street changes: active transportation circuits, family and active ",
-                        "streets, partially closed streets, closed streets, expanded ",
-                        "pedestrian corridors, and planned corridors. The active ",
-                        "transportation circuits are intended to link green spaces, ",
-                        "provide increased access to parks for densely populated areas, ",
-                        "and increase access to local commerce, while promoting physical ",
-                        "distancing during travel. Family and active streets define ",
-                        "portions of the street which have been closed to cars entirely ",
-                        "to encourage physical distancing while residents spend time outdoors. ",
-                        "These streets were chosen based on proximity to green space and ",
-                        "population density. While some streets have partially closed to ",
-                        "traffic, pedestrianizing a portion of the available car lanes, ",
-                        "other streets have been closed entirely to motor vehicles to maximize ",
-                        "pedestrian space. Expanded pedestrian corridors are locations where ",
-                        "sidewalks have been widened in order to allow greater capacity for ",
-                        "physical distancing while walking. The last group of street changes ",
-                        "are labelled as planned corridors and  encompass all types of street ",
-                        "changes, not specifically defined by the city.<p> The City of Montréal ",
-                        "made multiple revisions to the plans over the course of the summer ",
-                        "of 2020. The initial plans released in May were ambitious, providing ",
-                        "cycling and pedestrian infrastructure to nearly 30% of the city ",
-                        "population and envisioning a cohesive city-wide network of health ",
-                        "corridors supplemented by local, small-scale interventions to support ",
-                        "physical distancing. By July the plans were reduced from 311 kilometers ",
-                        "to 104 kilometers and by fall just 80 kilometers, primarily due to the ",
-                        "removal of nearly all the active transportation circuits. These circuits ",
-                        "were intended to provide an alternative to public transit, creating a ",
-                        "comprehensive system connecting Montreal's various boroughs.<p> The City ",
-                        "of Montreal has announced more public space interventions for summer ",
-                        "2021 in response to the lasting effects of COVID-19 and ongoing demands ",
-                        "for greater physical distancing capacity in dense urban areas. However, ",
-                        "rather than prioritizing mobility and access to essential services as in ",
-                        "the previous year, the rollout of vaccines and the gradual easing of ",
-                        "restrictions has allowed for the city's scope to narrow.  The 2021 plans ",
-                        "consist of pedestrianization interventions on 13 commercial streets around ",
-                        "Montréal, an effort to revitalize the local economy and provide safer public ",
-                        "spaces for comfortable shopping. The implementation of pedestrian-only zones ",
-                        "on streets with high concentrations of restaurants, bars, and other retail ",
-                        "shops creates appealing destinations for Montréal residents and promotes ",
-                        "recovery for the businesses which have been affected by COVID-19.")) |> 
-  add_row(tab = "access", type = "title", text = "Accessibility to opportunities") |> 
+  add_row(tab = "covid", type = "main", text = paste0(
+    "The onset of the COVID-19 pandemic prompted municipalities ",
+    "across the world to restrict public transit systems and advise citizens ",
+    "to make only necessary trips. For many without access to motorized ",
+    "vehicles, active transportation, walking and cycling, became the primary ",
+    "mode of transport. To accommodate the increased demand for these modes ",
+    "of safe travel, and to ensure the possibility to practice physical ",
+    "distancing while travelling, many cities made rapid changes to cycling ",
+    "and pedestrian networks, including constructing new bike lanes, ",
+    "creating temporary infrastructure, and shutting down streets ",
+    "to motor vehicle traffic. These changes served to minimize viral ",
+    "transmission during travel and to more safely connect people to ",
+    "essential services, health care, and greenspace.")) |> 
+  add_row(tab = "covid", type = "extra", text = paste0(
+    "In May 2020, the City of Montréal announced plans to establish ",
+    "over 300 kilometers of active transport infrastructure by the ",
+    "end of the summer. These plans included six distinct types of ",
+    "street changes: active transportation circuits, family and active ",
+    "streets, partially closed streets, closed streets, expanded ",
+    "pedestrian corridors, and planned corridors. The active ",
+    "transportation circuits are intended to link green spaces, ",
+    "provide increased access to parks for densely populated areas, ",
+    "and increase access to local commerce, while promoting physical ",
+    "distancing during travel. Family and active streets define ",
+    "portions of the street which have been closed to cars entirely ",
+    "to encourage physical distancing while residents spend time outdoors. ",
+    "These streets were chosen based on proximity to green space and ",
+    "population density. While some streets have partially closed to ",
+    "traffic, pedestrianizing a portion of the available car lanes, ",
+    "other streets have been closed entirely to motor vehicles to maximize ",
+    "pedestrian space. Expanded pedestrian corridors are locations where ",
+    "sidewalks have been widened in order to allow greater capacity for ",
+    "physical distancing while walking. The last group of street changes ",
+    "are labelled as planned corridors and  encompass all types of street ",
+    "changes, not specifically defined by the city.<p> The City of Montréal ",
+    "made multiple revisions to the plans over the course of the summer ",
+    "of 2020. The initial plans released in May were ambitious, providing ",
+    "cycling and pedestrian infrastructure to nearly 30% of the city ",
+    "population and envisioning a cohesive city-wide network of health ",
+    "corridors supplemented by local, small-scale interventions to support ",
+    "physical distancing. By July the plans were reduced from 311 kilometers ",
+    "to 104 kilometers and by fall just 80 kilometers, primarily due to the ",
+    "removal of nearly all the active transportation circuits. These circuits ",
+    "were intended to provide an alternative to public transit, creating a ",
+    "comprehensive system connecting Montreal's various boroughs.<p> The City ",
+    "of Montreal has announced more public space interventions for summer ",
+    "2021 in response to the lasting effects of COVID-19 and ongoing demands ",
+    "for greater physical distancing capacity in dense urban areas. However, ",
+    "rather than prioritizing mobility and access to essential services as in ",
+    "the previous year, the rollout of vaccines and the gradual easing of ",
+    "restrictions has allowed for the city's scope to narrow. The 2021 plans ",
+    "consist of pedestrianization interventions on 13 commercial streets ",
+    "around Montréal, an effort to revitalize the local economy and provide ",
+    "safer public spaces for comfortable shopping. The implementation of ",
+    "pedestrian-only zones on streets with high concentrations of ",
+    "restaurants, bars, and other retail shops creates appealing destinations ",
+    "for Montréal residents and promotes recovery for the businesses which ",
+    "have been affected by COVID-19.")) |> 
+  
+
+# Access ------------------------------------------------------------------
+  
+  add_row(tab = "access", type = "title", 
+          text = "Accessibility to opportunities") |> 
   add_row(tab = "access", type = "main", text = paste0(
     "Accessibility (the ease of reaching desired destination",
     "s) is the most important element of a transport network",
@@ -270,23 +303,34 @@ title_text <-
     "time). For more info on how accessibility metrics are calculated see ",
     "<a href = 'https://conservancy.umn.edu/bitstream/handle/11299/199892/",
     "CTS13-20_Access-Across-America.pdf'>'Access Across America'</a>.")) |> 
+  
+
+# Montreal stories --------------------------------------------------------
+  
   add_row(tab = "stories", type = "title", text = "Montreal stories") |> 
   add_row(tab = "stories", type = "main", text = paste0(
-    "Various stories on Montreal's neighborhoods.")) |> 
+    "Narrative case studies on sustainability issues in Montreal's ",
+    "neighborhoods.")) |> 
   add_row(tab = "stories", type = "extra", text = paste0(
-    "No extra information at this time.")) |> 
+    "These stories, written by Sus contributors, explore Montreal ",
+    "sustainability issues that aren't well suited to representation in our ",
+    "standard interactive map format.")) |> 
+  
+
+# Gentrification ----------------------------------------------------------
+
   add_row(tab = "gentrification", type = "title", 
           text = "Neighbourhood change pattern: Gentrification index") |> 
   add_row(tab = "gentrification", type = "main", text = paste0(
-    "This gentrification index shows neighbourhood change patterns over time based ",
-    "on census data. Seven key indicators are chosen to capture changes in ",
-    "resident and housing characteristics: median household income, educational ",
-    "attainment, occupation, visible minority proportion, tenant proportion, ",
-    "average property values, and average rent.")) |> 
+    "This gentrification index shows neighbourhood change patterns over time ",
+    "based on census data. Seven key indicators are chosen to capture changes ",
+    "in resident and housing characteristics: median household income, ",
+    "educational attainment, occupation, visible minority proportion, tenant ",
+    "proportion, average property values, and average rent.")) |> 
   add_row(tab = "gentrification", type = "extra", text = paste0(
-    "<p>Gentrification is a process of neighbourhood upgrading, but the benefits ",
-    "of improvements are experienced differently by different classes of ",
-    "residents. While the middle-upper class residents benefit from the ",
+    "<p>Gentrification is a process of neighbourhood upgrading, but the 
+    benefits of improvements are experienced differently by different classes ",
+    "of residents. While the middle-upper class residents benefit from the ",
     "better living quality, lower-income and marginalized groups could face ","
     the pressure of unaffordable housing and displacement and be forced to ",
     "move out.</p>",
@@ -299,94 +343,104 @@ title_text <-
     "Daniel Fuller, Meghan Winters, and Yan Kestens. 'Gentrification, Urban ",
     "Interventions and Equity (GENUINE): A map-based gentrification tool ",
     "for Canadian metropolitan areas.' Health reports 32.5 (2021): 15-28.",
-    "<li>Walks, Alan R., and Richard Maaranen. The timing, patterning, & forms ",
-    "of gentrification & neighbourhood upgrading in Montreal, Toronto, & ",
-    "Vancouver, 1961 to 2001. Toronto, ON: Centre for Urban and Community ",
+    "<li>Walks, Alan R., and Richard Maaranen. The timing, patterning, & ",
+    "forms of gentrification & neighbourhood upgrading in Montreal, Toronto, ",
+    "& Vancouver, 1961 to 2001. Toronto, ON: Centre for Urban and Community ",
     "Studies, Cities Centre, University of Toronto, 2008.</ul>")) |> 
+  
+
+# Green space -------------------------------------------------------------
+
   add_row(tab = "green_space", type = "title", text = "Green spaces") |> 
-  add_row(tab = "green_space", type = "main",
-          text = paste0("There are around 1500 parks in the City of Montreal, ",
-                        "which combined represent a surface of over 45 km^2. ",
-                        "It is widely acknowledged that accessibility to such ",
-                        "green spaces can contribute to physical health, ",
-                        "mental health, and social well-being. However, these ",
-                        "areas may not be equally accessible to all. This ",
-                        "module offers an outlook on parks and other public ",
-                        "spaces with possible comparison to housing, ",
-                        "socio-demographic, and other census variables.")) |> 
-  add_row(tab = "green_space", type = "extra",
-          text = paste0("TKTK")) |> 
+  add_row(tab = "green_space", type = "main", text = paste0(
+    "There are around 1500 parks in the City of Montreal, ",
+    "which combined represent a surface of over 45 km^2. ",
+    "It is widely acknowledged that accessibility to such ",
+    "green spaces can contribute to physical health, ",
+    "mental health, and social well-being. However, these ",
+    "areas may not be equally accessible to all. This ",
+    "module offers an outlook on parks and other public ",
+    "spaces with possible comparison to housing, ",
+    "socio-demographic, and other census variables.")) |> 
+  add_row(tab = "green_space", type = "extra", text = paste0("TKTK")) |> 
+  
+
+# Marketed sustainability -------------------------------------------------
+
   add_row(tab = "marketed_sustainability", type = "title", 
-          text = "Sustainability-related marketing in new housing developments") |> 
-  add_row(
-    tab = "marketed_sustainability", type = "main",
-    text = paste0("<p>The idea of a “creative class” proposes that the societal ",
-                  "elite do not solely exist as small groups of wealthy ",
-                  "individuals operating in the shadows, but rather that ",
-                  "a large group of individuals made up of scientists, ",
-                  "engineers, professors, writers, and artists as well ",
-                  "as people in knowledge-intensive industries like high tech, ",
-                  "finance, law, health care, and business management ",
-                  "constitute an elite class with unique influence over ",
-                  "society who “create, manage, and problem-solve” ",
-                  "(Florida 2002/2019, Berry & Portney 2016). Cities with ",
-                  "large creative class populations tend to pursue ",
-                  "sustainability policies and have active local environmental ",
-                  "groups involved in policy making, although these policies ",
-                  "may have disproportionately negative effects on marginalized ",
-                  "groups (Berry & Portney 2016). Gould and Lewis (2018) ",
-                  "propose a variation of the existing definition of creative ",
-                  "class by arguing that individuals with sustainability-focused ",
-                  "values who have the financial means to act on their ",
-                  "environmental concerns through luxury consumption constitute ",
-                  "their own class, the “sustainability class”. This term has ",
-                  "remained largely unexplored in the literature with only ",
-                  "brief mention in discussions of green gentrification and ",
-                  "its impacts on marginalized groups (Anguelovski et al. 2019, ",
-                  "Berry & Portney 2016, Gould & Lewis 2018, Kuo 2017, ",
-                  "Mullenbach et al. 2021, Tubridy 2021).</p>",
-                  "<p>This module explores the marketing language used by ",
-                  "recently constructed housing developments in Montreal as ",
-                  "a way to examine targeted marketing towards members of the ",
-                  "“sustainability class”. Text from development websites was ",
-                  "analyzed using a constructed sustainability dictionary to ",
-                  "assign each development a sustainability score.")) |>
-    add_row(tab = "marketed_sustainability", type = "extra",
-      text = paste0("180 housing developments constructed after 2015 on the ",
-                    "island of Montreal were identified from Montreal Open ",
-                    "Data “Unités d’évaluation foncière” property assessment data. ",
-                    "Marketing websites for 137 developments were found to be ",
-                    "used for text mining. A sustainability dictionary was ",
-                    "created using keywords from existing criteria used to ",
-                    "designate sustainability accolades, including Leadership ",
-                    "in Energy and Environmental Design (LEED), B Corps, ",
-                    "Building Research Establishment Environmental Assessment ",
-                    "Method (BREEAM), Comprehensive Assessment System for Built ",
-                    "Environmental Efficiency (CASBEE), International ",
-                    "Organization for Standardization (ISO), Living ",
-                    "Building Challenge, and Green Building Initiative (GBI). ",
-                    "Dictionary entries were categorized into nine categories: ",
-                    "accessibility, economic, energy, environment, jargon, ",
-                    "materials & waste, social, technological, agriculture & ",
-                    "food. Each entry was also labeled as green or grey based ",
-                    "on Wachsmuth and Angelo’s (2018) concepts of green and ",
-                    "grey urban nature. Text was scraped from development ",
-                    "websites using the rvest package and subsequently cleaned ",
-                    "by removing punctuation and stopwords. The text was ",
-                    "initially analyzed using existing dictionaries of positive ",
-                    "and negative words from the qdapDictionaries package to ",
-                    "perform sentiment analysis and ensure that analysis would ",
-                    "function well. The constructed sustainability dictionary ",
-                    "was then used to assign a sustainability score to each of ",
-                    "the housing development websites, first counting the number ",
-                    "of sustainability-related terms in each piece of text and ",
-                    "dividing this count by the total number of words from each ",
-                    "website. This results in a score with a maximum of 1.00, ",
-                    "representing the percentage of words in the website text ",
-                    "that correspond to words in the dictionary. Resulting ",
-                    "sustainability scores were used in conjunction with ",
-                    "existing data to determine the average score per number of ",
-                    "units in a development and the average score per year.")) |> 
+          text = "Sustainability marketing in new housing developments") |> 
+  add_row(tab = "marketed_sustainability", type = "main", text = paste0(
+    "<p>The idea of a “creative class” proposes that the societal ",
+    "elite do not solely exist as small groups of wealthy ",
+    "individuals operating in the shadows, but rather that ",
+    "a large group of individuals made up of scientists, ",
+    "engineers, professors, writers, and artists as well ",
+    "as people in knowledge-intensive industries like high tech, ",
+    "finance, law, health care, and business management ",
+    "constitute an elite class with unique influence over ",
+    "society who “create, manage, and problem-solve” ",
+    "(Florida 2002/2019, Berry & Portney 2016). Cities with ",
+    "large creative class populations tend to pursue ",
+    "sustainability policies and have active local environmental ",
+    "groups involved in policy making, although these policies ",
+    "may have disproportionately negative effects on marginalized ",
+    "groups (Berry & Portney 2016). Gould and Lewis (2018) ",
+    "propose a variation of the existing definition of creative ",
+    "class by arguing that individuals with sustainability-focused ",
+    "values who have the financial means to act on their ",
+    "environmental concerns through luxury consumption constitute ",
+    "their own class, the “sustainability class”. This term has ",
+    "remained largely unexplored in the literature with only ",
+    "brief mention in discussions of green gentrification and ",
+    "its impacts on marginalized groups (Anguelovski et al. 2019, ",
+    "Berry & Portney 2016, Gould & Lewis 2018, Kuo 2017, ",
+    "Mullenbach et al. 2021, Tubridy 2021).</p>",
+    "<p>This module explores the marketing language used by ",
+    "recently constructed housing developments in Montreal as ",
+    "a way to examine targeted marketing towards members of the ",
+    "“sustainability class”. Text from development websites was ",
+    "analyzed using a constructed sustainability dictionary to ",
+    "assign each development a sustainability score.")) |>
+  add_row(tab = "marketed_sustainability", type = "extra", text = paste0(
+    "180 housing developments constructed after 2015 on the ",
+    "island of Montreal were identified from Montreal Open ",
+    "Data “Unités d’évaluation foncière” property assessment data. ",
+    "Marketing websites for 137 developments were found to be ",
+    "used for text mining. A sustainability dictionary was ",
+    "created using keywords from existing criteria used to ",
+    "designate sustainability accolades, including Leadership ",
+    "in Energy and Environmental Design (LEED), B Corps, ",
+    "Building Research Establishment Environmental Assessment ",
+    "Method (BREEAM), Comprehensive Assessment System for Built ",
+    "Environmental Efficiency (CASBEE), International ",
+    "Organization for Standardization (ISO), Living ",
+    "Building Challenge, and Green Building Initiative (GBI). ",
+    "Dictionary entries were categorized into nine categories: ",
+    "accessibility, economic, energy, environment, jargon, ",
+    "materials & waste, social, technological, agriculture & ",
+    "food. Each entry was also labeled as green or grey based ",
+    "on Wachsmuth and Angelo’s (2018) concepts of green and ",
+    "grey urban nature. Text was scraped from development ",
+    "websites using the rvest package and subsequently cleaned ",
+    "by removing punctuation and stopwords. The text was ",
+    "initially analyzed using existing dictionaries of positive ",
+    "and negative words from the qdapDictionaries package to ",
+    "perform sentiment analysis and ensure that analysis would ",
+    "function well. The constructed sustainability dictionary ",
+    "was then used to assign a sustainability score to each of ",
+    "the housing development websites, first counting the number ",
+    "of sustainability-related terms in each piece of text and ",
+    "dividing this count by the total number of words from each ",
+    "website. This results in a score with a maximum of 1.00, ",
+    "representing the percentage of words in the website text ",
+    "that correspond to words in the dictionary. Resulting ",
+    "sustainability scores were used in conjunction with ",
+    "existing data to determine the average score per number of ",
+    "units in a development and the average score per year.")) |> 
+  
+
+# Natural infrastructure --------------------------------------------------
+
   add_row(tab = "natural_inf", type = "title", 
           text = "Natural infrastructure") |> 
   add_row(tab = "natural_inf", type = "main", text = paste0(

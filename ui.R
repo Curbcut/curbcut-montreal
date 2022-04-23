@@ -2,56 +2,78 @@
 
 ui <- function(request) {
   tagList(
-  # Styling objects
+  
+      
+  # Styling objects ------------------------------------------------------------
+  
   useShinyjs(),
-  tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "bootstrap.min.css")),
-  tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "stevens.greenblue.css")),
-  tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "sus.palette.css")),
-  tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "sus.css")),
-  tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "sus.navbar.css")),
-  tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "sus.footer.css")),
-  tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "sus.button.css")),
-  tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "sus.carousel.css")),
-  tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "sus.pages.css")),
-  tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "sus.banner.css")),
-  tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "sus.linklist.css")),
-  tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "sus.home.css")),
-  tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "sus.maps.css")),
-  tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "https://fonts.googleapis.com/icon?family=Material+Icons")),
+  tags$head(tags$link(rel = "stylesheet", type = "text/css", 
+                      href = "bootstrap.min.css")),
+  tags$head(tags$link(rel = "stylesheet", type = "text/css", 
+                      href = "stevens.greenblue.css")),
+  tags$head(tags$link(rel = "stylesheet", type = "text/css", 
+                      href = "sus.palette.css")),
+  tags$head(tags$link(rel = "stylesheet", type = "text/css", 
+                      href = "sus.css")),
+  tags$head(tags$link(rel = "stylesheet", type = "text/css", 
+                      href = "sus.navbar.css")),
+  tags$head(tags$link(rel = "stylesheet", type = "text/css", 
+                      href = "sus.footer.css")),
+  tags$head(tags$link(rel = "stylesheet", type = "text/css", 
+                      href = "sus.button.css")),
+  tags$head(tags$link(rel = "stylesheet", type = "text/css", 
+                      href = "sus.carousel.css")),
+  tags$head(tags$link(rel = "stylesheet", type = "text/css", 
+                      href = "sus.pages.css")),
+  tags$head(tags$link(rel = "stylesheet", type = "text/css", 
+                      href = "sus.banner.css")),
+  tags$head(tags$link(rel = "stylesheet", type = "text/css", 
+                      href = "sus.linklist.css")),
+  tags$head(tags$link(rel = "stylesheet", type = "text/css", 
+                      href = "sus.home.css")),
+  tags$head(tags$link(rel = "stylesheet", type = "text/css", 
+                      href = "sus.maps.css")),
+  tags$head(tags$link(rel = "stylesheet", type = "text/css", 
+                      href = paste0("https://fonts.googleapis.com/icon?",
+                                    "family=Material+Icons"))),
   tags$head(tags$script(src = "sus.js")),
   tags$head(tags$script(src = "cookie.js")),
-  tags$script(
-    src = paste0(
-      "https://cdn.jsdelivr.net/npm/js-cookie@rc/",
-      "dist/js.cookie.min.js"
-    )
-  ),
+  tags$script(src = paste0("https://cdn.jsdelivr.net/npm/js-cookie@rc/",
+                           "dist/js.cookie.min.js")),
   tags$head(tags$script(js_links_between_modules)),
   tags$head(tags$script(bookmark_url)),
   tags$head(tags$style(HTML(styler))),
   
-  # Add a class to the body, to toggle between languages.
+  # Language switching ---------------------------------------------------------
+  
+  # Add a class to the body, to toggle between languages
   tags$body(class = "user-lang-fr"),
   # Add visible and hidden to classes, to switch between active language
   tags$head(tags$style(HTML(lang_classes))),
   # JS function to change body class when button is clicked
   extendShinyjs(text = set_ui_lang, functions = "setLanguage"),
   
+  
+  # Sharing card ---------------------------------------------------------------
+  
   meta() |> 
     meta_social(
       title = "Welcome | SUS | Towards a sustainable city",
-      description = paste0("SUS is an online platform for integrating, ",
-                           "exploring, and analyzing urban sustainability ",
-                           "data sources for the Montreal region."),
+      description = paste0("Sus is a platform for exploring urban ",
+                           "sustainability in the Montreal region across ",
+                           "multiple spatial and temporal scales."),
       url = "https://e978-174-91-206-108.ngrok.io/",
       image = "https://e978-174-91-206-108.ngrok.io/share.jpg",
-      image_alt = "A photo of a winding footpath through a verdant Montreal alley.",
-      twitter_creator = "@sus_montreal",
+      image_alt = paste0("A photo of a winding footpath through a verdant ",
+                         "Montreal alley."),
+      twitter_creator = "@susmontreal",
       twitter_card_type = "summary",
-      twitter_site = "@sus_montreal"
+      twitter_site = "@susmontreal"
     ),
   
-  # Navigation bar
+  
+  # Navigation bar -------------------------------------------------------------
+  
   do.call(
     navbarPageWithInputs, 
     c(list(id = "sus_page", 
@@ -61,11 +83,14 @@ ui <- function(request) {
       ready_modules_ui(mods_rdy),
       list(tabPanel(sus_translate("Montréal stories"), stories_UI("stories"),
                     value = "stories"),
-           tabPanel(sus_translate("Place explorer"), place_explorer_UI("place_explorer"),
+           tabPanel(sus_translate("Place explorer"), 
+                    place_explorer_UI("place_explorer"),
            value = "place_explorer"),
            navbarMenu(sus_translate("About"),
-                      tabPanel(sus_translate("About Sus"), about_sus_UI("about_sus"), value = "about_sus"),
-           tabPanel(sus_translate("How to use"), how_to_use_UI("how_to_use"), value = "how_to_use")),
+                      tabPanel(sus_translate("About Sus"), 
+                               about_sus_UI("about_sus"), value = "about_sus"),
+           tabPanel(sus_translate("How to use"), how_to_use_UI("how_to_use"), 
+                    value = "how_to_use")),
            collapsible = TRUE,
            inputs = list(
              # Language toggle
@@ -92,7 +117,9 @@ ui <- function(request) {
                               #              label = div(icon("file-pdf"), 
                               #                           sus_translate(
                               #                            "Generate a report")))
-                                               actionLink(inputId = "contact", label = "Contact/feedback", icon("comment"))
+                              actionLink(inputId = "contact", 
+                                         label = "Contact/feedback", 
+                                         icon("comment"))
              ), "summarize")
            )
       ))

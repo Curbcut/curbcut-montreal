@@ -2,7 +2,7 @@
 
 shinyServer(function(input, output, session) {
   
-  ## Home page -----------------------------------------------------------------
+  # Home page ------------------------------------------------------------------
   
   observe(updateNavbarPage(session, "sus_page", "home")) |> 
     bindEvent(input$title)
@@ -11,52 +11,47 @@ shinyServer(function(input, output, session) {
   # First visit banner ---------------------------------------------------------
   
   # Reset after 14 days of last time the banner was shown
-  observeEvent(input$cookies$time_last_htu_banner, {
-    if (is.null(input$cookies$time_last_htu_banner) ||
-        (!is.null(input$cookies$time_last_htu_banner) &&
-         Sys.time() > (as.POSIXct(input$cookies$time_last_htu_banner) + 1))) { #1209600))) {
+  observe({
+    if (is.null(input$cookies$banner) || 
+        (!is.null(input$cookies$banner) &&
+         Sys.time() > (as.POSIXct(input$cookies$banner) + 1))) { #1209600))) {
       
-      #TKTK SHOW BANNER HERE
-      insertUI(selector = ".navbar-shadow",
-               where = "beforeBegin",
-               ui = HTML(paste0("<div id = 'htu_footer' class='fixed_footer'>",
-                                "<p style = 'margin-bottom:0px; color:white; display:inline;'>",
-                                "Première fois sur Sus? Visitez la page ",
-                                paste0("<a id='go_to_htu_fr' href='#' style = 'color:white;'",
-                                       "class='action-button shiny-bound-input'>",
-                                       "<b>", "Mode d'emploi", 
-                                       "</b></a> !&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;"),
-                                "First time on Sus? Visit the ",
-                                paste0("<a id='go_to_htu_en' href='#' style = 'color:white;'",
-                                       "class='action-button shiny-bound-input'>",
-                                       "<b>", "How to use", 
-                                       "</b></a> page!"), "</p>",
-                                "<a id='go_to_htu_x' href='#' style = 'float:right;display:inline;color",
-                                ":#FBFBFB;' class='action-button shiny-bound-input'>X</a>","</div>")))
+      insertUI(selector = ".navbar-shadow", where = "beforeBegin", ui = HTML(
+        paste0("<div id = 'htu_footer' class='fixed_footer'>",
+               "<p style = 'margin-bottom:0px; color:white; display:inline;'>",
+               "Première fois sur Sus? Visitez la page ",
+               paste0("<a id='go_to_htu_fr' href='#' style = 'color:white;'",
+                      "class='action-button shiny-bound-input'>",
+                      "<b>", "Mode d'emploi", 
+                      "</b></a> !&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;"),
+               "First time on Sus? Visit the ",
+               paste0("<a id='go_to_htu_en' href='#' style = 'color:white;'",
+                      "class='action-button shiny-bound-input'>",
+                      "<b>", "How to use", "</b></a> page!"), "</p>",
+               "<a id='go_to_htu_x' href='#' style = 'float:right;display:",
+               "inline;color:#FBFBFB;' class='action-button shiny-bound-",
+               "input'>X</a>", "</div>")))
     }
     
     # So that it repeats if there's a gap of 7 days between all visits
-    time_last_htu_banner <- list(name = "time_last_htu_banner", 
-                                 value = Sys.time())
-    session$sendCustomMessage("cookie-set", time_last_htu_banner)
-  }, once = TRUE)
+    banner <- list(name = "banner", value = Sys.time())
+    session$sendCustomMessage("cookie-set", banner)
+  }) |> bindEvent(input$cookies$banner, once = TRUE)
   
-  observeEvent(input$go_to_htu_en, {
+  observe({
     removeUI("#htu_footer")
     updateTabsetPanel(session, "sus_page", selected = "how_to_use")
-  })
+  }) |> bindEvent(input$go_to_htu_en)
   
-  observeEvent(input$go_to_htu_fr, {
+  observe({
     removeUI("#htu_footer")
     updateTabsetPanel(session, "sus_page", selected = "how_to_use")
-  })
+  }) |> bindEvent(input$go_to_htu_fr)
   
-  observeEvent(input$go_to_htu_x, {
-    removeUI("#htu_footer")
-  })
-  observeEvent(input$sus_page, {
-    removeUI("#htu_footer")
-  }, ignoreInit = TRUE)
+  observe(removeUI("#htu_footer")) |> bindEvent(input$go_to_htu_x)
+  observe(removeUI("#htu_footer")) |> bindEvent(input$sus_page, 
+                                                ignoreInit = TRUE)
+  
   
   ## Language button -----------------------------------------------------------
   

@@ -48,50 +48,47 @@ stories_server <- function(id) {
 
     # Map
     output[[paste0(ns_id, "-map")]] <- renderRdeck({
-      rdeck(map_style = map_base_style, initial_view_state = view_state(
+      rdeck(map_style = map_style_building, initial_view_state = view_state(
         center = map_loc, zoom = map_zoom))
     })
     
     # Zoom level
     observeEvent(input[[paste0(ns_id, "-map_viewstate")]], {
-      zoom(max(600, input[[paste0(ns_id, "-map_viewstate")]]$viewState$zoom * -750 + 9000))
+      zoom(max(600, input[[paste0(ns_id, "-map_viewstate")]]$viewState$zoom *
+                 -750 + 9000))
       select_id(NA)
     })
 
 
     # Update buffer to change the map when zoom is different
-    data <- reactive({
-      stories |> 
-      transform(buffer = st_buffer(stories$geometry, zoom()))
-    })
+    data <- reactive(transform(stories, 
+                               buffer = st_buffer(stories$geometry, zoom())))
 
-    observeEvent({
-      data()
-      zoom()}, {
-
-        row_n <- 1:nrow(data())
-        images <- paste0("https://raw.githubusercontent.com/MSSI-urban/Sus/rdeck/",
-                         "www/stories/round_img/", data()$img[row_n])
-        bboxes <- lapply(data()$buffer, \(x) st_bbox(x) |> round(digits = 5))
-        layer_ids <- paste0("image", row_n)
-
-        all_add_bitmap <-
-          paste0('add_bitmap_layer(image = "',
-                 images, '", bounds = ', bboxes, ', ', 'id ="', layer_ids,
-                 '", pickable = TRUE)', collapse = ' |>  ')
-        updated_map <-
-          paste0('rdeck_proxy(id = "stories-map") |> ',
-                 paste0(text = all_add_bitmap))
-        
-        eval(parse(text = updated_map))
-
-  })
-
+    observe({
+      
+      row_n <- 1:nrow(data())
+      images <- paste0("https://raw.githubusercontent.com/MSSI-urban/Sus/",
+                       "rdeck/www/stories/round_img/", data()$img[row_n])
+      bboxes <- lapply(data()$buffer, \(x) st_bbox(x) |> round(digits = 5))
+      layer_ids <- paste0("image", row_n)
+      
+      all_add_bitmap <- paste0(
+        'add_bitmap_layer(image = "', images, '", bounds = ', bboxes, ', ', 
+        'id ="', layer_ids, '", pickable = TRUE)', collapse = ' |>  ')
+      
+      updated_map <- paste0('rdeck_proxy(id = "stories-map") |> ',
+                            paste0(text = all_add_bitmap))
+      
+      eval(parse(text = updated_map))
+      
+      }) |> bindEvent(data(), zoom())
+    
     # Click reactive
-    observeEvent(input[[paste0(ns_id, "-map_click")]], {
+    observe({
 
       click <- st_point(c(input[[paste0(ns_id, "-map_click")]]$coordinate[[1]],
-                          input[[paste0(ns_id, "-map_click")]]$coordinate[[2]])) |>
+                          input[[paste0(ns_id, "-map_click")]]$coordinate[[2]])
+                        ) |>
         st_sfc(crs = 4326) |>
         as.data.frame() |>
         st_as_sf() |>
@@ -101,7 +98,7 @@ stories_server <- function(id) {
 
       if (nrow(hay) == 1) select_id(hay$ID) else select_id(NA)
 
-    })
+    }) |> bindEvent(input[[paste0(ns_id, "-map_click")]])
 
     # Render the story in question, now only in english (_en)
     output$stories <- renderUI({
@@ -135,22 +132,19 @@ stories_server <- function(id) {
 
     # Anytime to "Go back to map" button is clicked, poly_selected goes
     # NA causing the div to disappear
-    observeEvent(input$back, {
-      select_id(NA)
-    })
+    observe(select_id(NA)) |> bindEvent(input$back)
 
-    observeEvent(select_id(), {
+    observe({
       toggle("hr", condition = !is.na(select_id()))
       toggle("back", condition = !is.na(select_id()))
       toggle("stories", condition = !is.na(select_id()))
-    })
+    }) |> bindEvent(select_id())
 
     # If there's an action with the map, the rmd goes away
-    # should trigger these)
-    observeEvent(input$map_view_change, {
+    observe({
       hide(id = "stories")
       select_id(NA)
-    })
+    }) |> bindEvent(input$map_view_change)
 
     # Bookmarking
     bookmark_server(
