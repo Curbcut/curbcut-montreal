@@ -20,6 +20,25 @@ languageButtonLabel <- function(text) {
                          span(text)))
 }
 
+susAuthorLink <- function(title, href=NULL, icon=NULL) {
+  if (is.null(icon)) {
+    icon = materialIcon("link")
+  }
+  return(tags$a(class="sus-author-link", href=href, target="_blank", span(class="sus-author-link-icon", icon), title)) 
+}
+
+susAuthorBio <- function(...) {
+  tags$div(class="sus-author-bio", ...)
+}
+
+susAuthor <- function(name, role, img_src, ...) {
+  tags$div(class="sus-author",
+    tags$img(class="sus-author-img", src=img_src),
+    tags$h3(class="sus-author-name", name),
+    tags$h4(class="sus-author-role", role),
+    ...)
+}
+
 # Make a standard navbarPage with addition fixed-position controls
 navbarPageWithInputs <- function(..., inputs) {
   navbar <- navbarPage(...)
@@ -30,10 +49,14 @@ navbarPageWithInputs <- function(..., inputs) {
   navbar
 }
 
+materialIcon <- function(icon) {
+  span(class = "material-icons", icon)
+}
+
 # Replace the inner text of a <button> tag with a Material icon span
 materialIconButton <- function(tag, icon) {
   tag <- tagSetChildren(tag, .cssSelector = "button", 
-                        span(class = "material-icons", icon))
+                        materialIcon(icon))
   tag
 }
 

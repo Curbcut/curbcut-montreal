@@ -4,6 +4,7 @@ ui <- function(request) {
   tagList(
   # Styling objects
   useShinyjs(),
+  tags$head(tags$link(rel = "icon", href = "favicon.ico")),
   tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "bootstrap.min.css")),
   tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "stevens.greenblue.css")),
   tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "sus.palette.css")),
@@ -17,6 +18,7 @@ ui <- function(request) {
   tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "sus.linklist.css")),
   tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "sus.home.css")),
   tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "sus.maps.css")),
+  tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "sus.authors.css")),
   tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "https://fonts.googleapis.com/icon?family=Material+Icons")),
   tags$head(tags$script(src = "sus.js")),
   tags$head(tags$script(src = "cookie.js")),
@@ -65,7 +67,8 @@ ui <- function(request) {
            value = "place_explorer"),
            navbarMenu(sus_translate("About"),
                       tabPanel(sus_translate("About Sus"), why_dash_UI("why_dash"), value = "why_dash"),
-           tabPanel(sus_translate("How to use"), how_to_use_UI("how_to_use"), value = "how_to_use")),
+           tabPanel(sus_translate("How to use"), how_to_use_UI("how_to_use"), value = "how_to_use"),
+           tabPanel(sus_translate("Authors"), authors_UI("authors"), value = "authors")),
            collapsible = TRUE,
            inputs = list(
              # Language toggle

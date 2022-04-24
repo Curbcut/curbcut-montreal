@@ -116,7 +116,8 @@ stand_alone_tabs <- c(
   "Montréal stories" = "stories",
   "Place explorer" = "place_explorer",
   "How to use" = "how_to_use",
-  "About" = "why_dash"
+  "About" = "why_dash",
+  "Authors" = "authors"
   )
 
 

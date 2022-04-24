@@ -225,6 +225,7 @@ shinyServer(function(input, output, session) {
       return(place_explorer_server("place_explorer"))
     if (active_tab == "about") return(why_dash_server("why_dash"))
     if (active_tab == "how_to_use") return(how_to_use_server("how_to_use"))
+    if (active_tab == "authors") return(authors_server("authors"))
   }
   
   observeEvent(input$sus_page, {
