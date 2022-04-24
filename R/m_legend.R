@@ -23,7 +23,7 @@ legend_server <- function(id, data, var_left, var_right, df,
     plot_height <- function() {
       # if (length(var_left()) == 1 && var_right()[1] == " ") 1 else 2.5
       if ((length(var_left()) == 1 && var_right()[1] == " ") ||
-          (length(var_left()) == 2 && var_right()[1] == " ")) 60 else 140
+          (length(var_left()) == 2 && var_right()[1] == " ")) 60 else 150
     }
     
     # Get data type
