@@ -117,9 +117,10 @@ ui <- function(request) {
                               #              label = div(icon("file-pdf"), 
                               #                           sus_translate(
                               #                            "Generate a report")))
-                              actionLink(inputId = "contact", 
-                                         label = "Contact/feedback", 
-                                         icon("comment"))
+                              actionLink(inputId = "contact",
+                                         label = sus_translate("Contact/feedback"),
+                                         icon("comment"),
+                                         onclick = "window.open('mailto:contact@susmontreal.ca', '_blank')")
              ), "summarize")
            )
       ))

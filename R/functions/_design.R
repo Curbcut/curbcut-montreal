@@ -85,7 +85,7 @@ susFooter <- function() {
                          sus_translate("About"))),
           tags$li(tags$a(href = NULL, style = "cursor:pointer;", 
                          onclick = "document.getElementById('contact').click();",
-                         sus_translate("Contact"))),
+                         sus_translate("Contact/feedback"))),
           tags$li(tags$a(href = NULL, HTML("&nbsp;")))#sus_translate("Privacy Policy"))),
         )
       )

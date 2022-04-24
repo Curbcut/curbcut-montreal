@@ -106,8 +106,8 @@ ui_and_misc_translated <-
           fr = paste0("Termes et conditions")) |> 
   add_row(en = paste0("Privacy Policy"), 
           fr = paste0("Politique de confidentialité")) |> 
-  add_row(en = paste0("Contact"), 
-          fr = paste0("Contactez-nous")) |> 
+  add_row(en = paste0("Contact/feedback"), 
+          fr = paste0("Contact/commentaires")) |> 
   add_row(en = paste0("Bookmark"), 
           fr = paste0("Signet")) |> 
   add_row(en = paste0("Data explanation and export"), 

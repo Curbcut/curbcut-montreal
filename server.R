@@ -11,46 +11,51 @@ shinyServer(function(input, output, session) {
   # First visit banner ---------------------------------------------------------
   
   # Reset after 14 days of last time the banner was shown
-  observe({
-    if (is.null(input$cookies$banner) || 
-        (!is.null(input$cookies$banner) &&
-         Sys.time() > (as.POSIXct(input$cookies$banner) + 1))) { #1209600))) {
+  observeEvent(input$cookies$time_last_htu_banner, {
+    if (is.null(input$cookies$time_last_htu_banner) ||
+        (!is.null(input$cookies$time_last_htu_banner) &&
+         Sys.time() > (as.POSIXct(input$cookies$time_last_htu_banner) + 1))) { #1209600))) {
       
-      insertUI(selector = ".navbar-shadow", where = "beforeBegin", ui = HTML(
-        paste0("<div id = 'htu_footer' class='fixed_footer'>",
-               "<p style = 'margin-bottom:0px; color:white; display:inline;'>",
-               "Première fois sur Sus? Visitez la page ",
-               paste0("<a id='go_to_htu_fr' href='#' style = 'color:white;'",
-                      "class='action-button shiny-bound-input'>",
-                      "<b>", "Mode d'emploi", 
-                      "</b></a> !&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;"),
-               "First time on Sus? Visit the ",
-               paste0("<a id='go_to_htu_en' href='#' style = 'color:white;'",
-                      "class='action-button shiny-bound-input'>",
-                      "<b>", "How to use", "</b></a> page!"), "</p>",
-               "<a id='go_to_htu_x' href='#' style = 'float:right;display:",
-               "inline;color:#FBFBFB;' class='action-button shiny-bound-",
-               "input'>X</a>", "</div>")))
+      #TKTK SHOW BANNER HERE
+      insertUI(selector = ".navbar-shadow",
+               where = "beforeBegin",
+               ui = HTML(paste0("<div id = 'htu_footer' class='fixed_footer'>",
+                                "<p style = 'margin-bottom:0px; color:white; display:inline;'>",
+                                "Première fois sur Sus? Visitez la page ",
+                                paste0("<a id='go_to_htu_fr' href='#' style = 'color:white;'",
+                                       "class='action-button shiny-bound-input'>",
+                                       "<b>", "Mode d'emploi", 
+                                       "</b></a> !&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;"),
+                                "First time on Sus? Visit the ",
+                                paste0("<a id='go_to_htu_en' href='#' style = 'color:white;'",
+                                       "class='action-button shiny-bound-input'>",
+                                       "<b>", "How to use", 
+                                       "</b></a> page!"), "</p>",
+                                "<a id='go_to_htu_x' href='#' style = 'float:right;display:inline;color",
+                                ":#FBFBFB;' class='action-button shiny-bound-input'>X</a>","</div>")))
     }
     
     # So that it repeats if there's a gap of 7 days between all visits
-    banner <- list(name = "banner", value = Sys.time())
-    session$sendCustomMessage("cookie-set", banner)
-  }) |> bindEvent(input$cookies$banner, once = TRUE)
+    time_last_htu_banner <- list(name = "time_last_htu_banner", 
+                                 value = Sys.time())
+    session$sendCustomMessage("cookie-set", time_last_htu_banner)
+  }, once = TRUE)
   
-  observe({
+  observeEvent(input$go_to_htu_en, {
     removeUI("#htu_footer")
     updateTabsetPanel(session, "sus_page", selected = "how_to_use")
-  }) |> bindEvent(input$go_to_htu_en)
-  
-  observe({
+  })
+  observeEvent(input$go_to_htu_fr, {
     removeUI("#htu_footer")
     updateTabsetPanel(session, "sus_page", selected = "how_to_use")
-  }) |> bindEvent(input$go_to_htu_fr)
+  })
   
-  observe(removeUI("#htu_footer")) |> bindEvent(input$go_to_htu_x)
-  observe(removeUI("#htu_footer")) |> bindEvent(input$sus_page, 
-                                                ignoreInit = TRUE)
+  observeEvent(input$go_to_htu_x, {
+    removeUI("#htu_footer")
+  })
+  observeEvent(input$sus_page, {
+    removeUI("#htu_footer")
+  }, ignoreInit = TRUE)
   
   
   ## Language button -----------------------------------------------------------
@@ -286,53 +291,53 @@ shinyServer(function(input, output, session) {
   
   ## Contact form --------------------------------------------------------------
   
-  contactModal <- function() {
-    modalDialog(
-      selectInput("contact_type", "Reason for contact",
-                  choices = c("Contact" = "CONTACT",
-                              "Report a bug" = "BUG",
-                              "Feedback" = "FEEDBACK",
-                              "Other" = "OTHER"), width = "75%"),
-      textInput("contact_from_name", "Your name/organization", width = "75%"),
-      textInput("contact_from", "Your email adress", "@", width = "75%"),
-      textInput("contact_subject", "Subject", width = "75%"),
-      textAreaInput("contact_body", "Content", width = "75%", height = "300px"),
-      
-      footer = tagList(
-        modalButton("Cancel"),
-        actionButton("send_feedback", "Send")),
-      title = "Contact form"
-    )
-  }
-  
-  onclick("contact", {
-    showModal(
-      contactModal()
-    )
-  })
-  
-  observeEvent(input$send_feedback, {
-    # sendmailR::sendmail(from = paste0("<", input$contact_from, ">"),
-    #                     to = "<maximebdeblois@gmail.com>",
-    #                     subject = paste0(input$contact_type, " - ", 
-    #                                     input$contact_subject),
-    #                     body = input$contact_body,
-    #                     # This is the part not working atm:
-    #                     control = list(smtpServer="smtp.gmail.com"))
-    
-    # Other possibility:
-    contact_form <- c(name = input$contact_from_name,
-                      email = input$contact_from,
-                      subject = paste(input$contact_type, " - ", 
-                                      input$contact_subject),
-                      body = input$contact_body)
-    time_stamp <- str_replace_all(Sys.time(), c(" |:"), "-")
-    file_name <- paste0("contacts/",input$contact_type, "-", time_stamp, ".csv")
-    write.csv2(contact_form, file = file_name)
-    removeModal()
-    showNotification(sus_translate("Sent and received. Thank you!"), 
-                     duration = 3)
-  })
+  # contactModal <- function() {
+  #   modalDialog(
+  #     selectInput("contact_type", "Reason for contact",
+  #                 choices = c("Contact" = "CONTACT",
+  #                             "Report a bug" = "BUG",
+  #                             "Feedback" = "FEEDBACK",
+  #                             "Other" = "OTHER"), width = "75%"),
+  #     textInput("contact_from_name", "Your name/organization", width = "75%"),
+  #     textInput("contact_from", "Your email adress", "@", width = "75%"),
+  #     textInput("contact_subject", "Subject", width = "75%"),
+  #     textAreaInput("contact_body", "Content", width = "75%", height = "300px"),
+  #     
+  #     footer = tagList(
+  #       modalButton("Cancel"),
+  #       actionButton("send_feedback", "Send")),
+  #     title = "Contact form"
+  #   )
+  # }
+  # 
+  # onclick("contact", {
+  #   showModal(
+  #     contactModal()
+  #   )
+  # })
+  # 
+  # observeEvent(input$send_feedback, {
+  #   # sendmailR::sendmail(from = paste0("<", input$contact_from, ">"),
+  #   #                     to = "<maximebdeblois@gmail.com>",
+  #   #                     subject = paste0(input$contact_type, " - ", 
+  #   #                                     input$contact_subject),
+  #   #                     body = input$contact_body,
+  #   #                     # This is the part not working atm:
+  #   #                     control = list(smtpServer="smtp.gmail.com"))
+  #   
+  #   # Other possibility:
+  #   contact_form <- c(name = input$contact_from_name,
+  #                     email = input$contact_from,
+  #                     subject = paste(input$contact_type, " - ", 
+  #                                     input$contact_subject),
+  #                     body = input$contact_body)
+  #   time_stamp <- str_replace_all(Sys.time(), c(" |:"), "-")
+  #   file_name <- paste0("contacts/",input$contact_type, "-", time_stamp, ".csv")
+  #   write.csv2(contact_form, file = file_name)
+  #   removeModal()
+  #   showNotification(sus_translate("Sent and received. Thank you!"), 
+  #                    duration = 3)
+  # })
   
   
   ## Generating report ---------------------------------------------------------

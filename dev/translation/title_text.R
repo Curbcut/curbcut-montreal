@@ -445,4 +445,16 @@ title_text_translation <-
                       "ommunaute-metropolitaine-de-montreal/' target = '_blank",
                       "'>Maure et al., 2018, Le rôle des infrastructures natur",
                       "elles dans la prévention des inondations dans la Commun",
-                      "auté métropolitaine de Montréal, Fondation David Suzuki."))
+                      "auté métropolitaine de Montréal, Fondation David Suzuki.")) |> 
+  add_row(en = paste0("Narrative case studies on sustainability issues in Mont",
+                      "real's neighborhoods."), 
+          fr = paste0("Études de cas narratives sur les enjeux de durabilité d",
+                      "ans les quartiers de Montréal.")) |> 
+  add_row(en = paste0("These stories, written by Sus contributors, explore Mon",
+                      "treal sustainability issues that aren't well suited to ",
+                      "representation in our standard interactive map format."), 
+          fr = paste0("Ces histoires, rédigées par des collaborateurs de Sus, ",
+                      "explorent les enjeux de durabilité de Montréal qui ne s",
+                      "e prêtent pas forcément à une représentation dans notre",
+                      " format standard de carte interactive."))
+  
