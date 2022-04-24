@@ -39,7 +39,7 @@ shinyServer(function(input, output, session) {
     time_last_htu_banner <- list(name = "time_last_htu_banner", 
                                  value = Sys.time())
     session$sendCustomMessage("cookie-set", time_last_htu_banner)
-  }, once = TRUE)
+  }, once = TRUE, ignoreNULL = FALSE)
   
   observeEvent(input$go_to_htu_en, {
     removeUI("#htu_footer")
