@@ -228,9 +228,9 @@
   .sus-page-content h3, .sus-page-content .h3 {
     font-size: 1.75rem;
   }
-  .sus-page-content h4, .sus-page-content .h4 {
+  /* .sus-page-content h4, .sus-page-content .h4 {
     font-size: 1.75rem;
-  }
+  } */
 }
 
 @media (max-width: 600px) {
@@ -259,9 +259,9 @@
   .sus-page-content h3, .sus-page-content .h3 {
     font-size: 1.5rem;
   }
-  .sus-page-content h4, .sus-page-content .h4 {
+  /* .sus-page-content h4, .sus-page-content .h4 {
     font-size: 1.5rem;
-  }
+  } */
 }
 
 .sus-page-content-section-feature {

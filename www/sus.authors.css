@@ -45,6 +45,35 @@
   padding-left: 2.5em;
   padding-right: 0.75em;
   overflow: hidden;
+  font-size: 1.35rem;
+}
+
+@media (max-width: 600px) {
+  .sus-author {
+    padding-left: unset;
+    padding-top: calc(var(--sus-author-img-size) + 1em);
+  }
+
+  .sus-author > h3,
+  .sus-author > h4 {
+    display: block;
+    position: absolute;
+    left: calc(var(--sus-author-img-size) + var(--padding-h-md));
+  }
+
+  .sus-author > h3 {
+    top: 0px;
+    font-size: 2rem;
+  }
+  
+  .sus-author > h4 {
+    top: 4rem;
+    font-size: 1.5rem;
+  }
+
+  .sus-author-link {
+    font-size: 1.25rem;
+  }
 }
 
 .sus-author-link-icon {
