@@ -26,7 +26,7 @@ render_legend <- function(data, var_left, var_right, df, data_type,
   
   theme_default <- list(
     theme_minimal(),
-    theme(text = element_text(family = "SourceSansPro", size = 12),
+    theme(text = element_text(family = "SourceSansPro", size = 11),
           legend.position = "none", 
           panel.grid = element_blank()))
   
