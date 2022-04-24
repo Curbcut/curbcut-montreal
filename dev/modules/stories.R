@@ -98,15 +98,15 @@ round_img_shadow <- function(img_name) {
   img1 <- magick::image_crop(img, geometry = paste0(smaller_side, "x", 
                                                     smaller_side, "!"))
   
-  # Resize to 300px
-  img2 <- magick::image_resize(img1, "300x300!")
+  # Resize to 100px
+  img2 <- magick::image_resize(img1, "100x100!")
   
   # Resize shadow_right to fit with image size
   shadow_info <- magick::image_info(shadow_right)
   
   shadow_right <- magick::image_crop(shadow_right, paste0(
     {shadow_info$width - 334}, "x", shadow_info$height, "+167"))
-  shadow_right <- magick::image_resize(shadow_right, "300x300!")
+  shadow_right <- magick::image_resize(shadow_right, "100x100!")
   
   # Create an image composite using both images
   round_img_shadow <- 
@@ -142,10 +142,10 @@ stories_mapping <-
   stories$name |> 
   seq_along() |> 
   map(~list(
-    x = (.x - 1) * 300,
+    x = (.x - 1) * 100,
     y = 0,
-    width = 300,
-    height = 300
+    width = 100,
+    height = 100
   )) |> 
   set_names(stories$name)
 

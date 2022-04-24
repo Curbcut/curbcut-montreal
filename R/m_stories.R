@@ -101,8 +101,7 @@ stories_server <- function(id) {
 
     })
 
-    # Anytime to "Go back to map" button is clicked, poly_selected goes
-    # NA causing the div to disappear
+    # Hide map when "Go back to map" button is clicked
     observe(select_id(NA)) |> bindEvent(input$back)
 
     observe({
