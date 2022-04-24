@@ -39,6 +39,14 @@ window.addEventListener('load', (evt) => {
   const navbarLinks = document.querySelector('.navbar-static-top ul#sus_page');
   const navbarFixed = document.querySelector('.navbar-static-top div.navbar-fixed');
   const navbarCollapse = document.querySelector('.navbar-static-top div.navbar-collapse');
+  const mainContainer = document.querySelector('body > .container-fluid');
+
+  mainContainer.addEventListener('click', () => {
+    if (navbarCollapse.classList.contains('in')) {
+      navbarCollapse.classList.remove('in');
+      navbarCollapse.setAttribute('aria-expanded', 'false');
+    }
+  });
 
   const navbarShadow = document.createElement('div');
   navbarShadow.classList.add('navbar-shadow');
@@ -135,7 +143,7 @@ window.addEventListener('load', (evt) => {
   }
   .navbar-collapse > ul#sus_page {
     box-shadow: var(--box-shadow-md);
-    clip-path: inset(0px 0px -15px 0px);
+    clip-path: inset(0px 0px -500px 0px);
   }
 }
 
