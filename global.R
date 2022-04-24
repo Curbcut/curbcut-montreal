@@ -7,11 +7,9 @@ suppressPackageStartupMessages({
   library(shinyjs)
   library(shinyWidgets)
 
+  library(rdeck)
   library(ggplot2)
   library(stringr)
-
-  library(sf)
-  library(rdeck)
 
   library(qs)
   library(glue)
@@ -48,7 +46,7 @@ tt_matrix <- qread("data/tt_matrix.qs")
 qload("data/natural_inf.qsm")
 metro_lines <- qread("data/metro_lines.qs")
 
-stories <- qread("data/stories.qs")
+qload("data/stories.qsm")
 
 qload("data/place_explorer.qsm")
 postal_codes <- qread("data/postal_codes.qs")

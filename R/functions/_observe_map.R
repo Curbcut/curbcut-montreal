@@ -12,10 +12,10 @@ observe_map <- function(map_input) {
   if (zoom < 13) return(out)
   
   # Get POIs; currently just Montreal Stories
-  poi <- stories[c("name", "geometry")]
+  poi <- stories[c("name", "lon", "lat")]
     
   # Find distance from map centre to the POIs
-  dist <- get_dist(st_coordinates(poi$geometry), c(lon, lat))
+  dist <- get_dist(poi[c("lon", "lat")], c(lon, lat))
 
   # If any POI is within 2000 m of centre, return it
   out <- poi$name[dist < 2000]

@@ -36,10 +36,10 @@ stories_UI <- function(id) {
 stories_server <- function(id) {
   moduleServer(id, function(input, output, session) {
     ns_id <- "stories"
+    ns_id_map <- paste0(ns_id, "-map")
 
-    # Initial reactives
+    # Initial reactive
     select_id <- reactiveVal(NA)
-    zoom <- reactiveVal(map_zoom * -750 + 9000)
 
     # Sidebar
     sidebar_server(
@@ -47,59 +47,30 @@ stories_server <- function(id) {
       x = "stories")
 
     # Map
-    output[[paste0(ns_id, "-map")]] <- renderRdeck({
+    output[[ns_id_map]] <- renderRdeck({
       rdeck(map_style = map_style_building, initial_view_state = view_state(
-        center = map_loc, zoom = map_zoom))
+        center = map_loc, zoom = map_zoom)) |> 
+        add_mvt_layer(
+          id = "stories",
+          data = mvt_url("sus-mcgill.stories-stories"),
+          point_type = "icon",
+          get_icon = name,
+          icon_atlas = "stories/image_atlas.png",
+          icon_mapping = stories_mapping,
+          icon_size_scale = 60,
+          pickable = TRUE,
+          auto_highlight = TRUE,
+          highlight_color = "#FFFFFF50")
     })
-    
-    # Zoom level
-    observeEvent(input[[paste0(ns_id, "-map_viewstate")]], {
-      zoom(max(600, input[[paste0(ns_id, "-map_viewstate")]]$viewState$zoom *
-                 -750 + 9000))
-      select_id(NA)
-    })
-
-
-    # Update buffer to change the map when zoom is different
-    data <- reactive(
-      transform(stories, buffer = st_buffer(stories$geometry, zoom())))
-
-    observe({
-      
-      row_n <- 1:nrow(data())
-      images <- paste0("https://raw.githubusercontent.com/MSSI-urban/Sus/",
-                       "rdeck/www/stories/round_img/", data()$img[row_n])
-      bboxes <- lapply(data()$buffer, \(x) st_bbox(x) |> round(digits = 5))
-      layer_ids <- paste0("image", row_n)
-      
-      all_add_bitmap <- paste0(
-        'add_bitmap_layer(image = "', images, '", bounds = ', bboxes, ', ', 
-        'id ="', layer_ids, '", pickable = TRUE)', collapse = ' |>  ')
-      
-      updated_map <- paste0('rdeck_proxy(id = "stories-map") |> ',
-                            paste0(text = all_add_bitmap))
-      
-      eval(parse(text = updated_map))
-      
-      }) |> bindEvent(data(), zoom())
     
     # Click reactive
     observe({
-
-      click <- st_point(c(input[[paste0(ns_id, "-map_click")]]$coordinate[[1]],
-                          input[[paste0(ns_id, "-map_click")]]$coordinate[[2]])
-                        ) |>
-        st_sfc(crs = 4326) |>
-        as.data.frame() |>
-        st_as_sf() |>
-        st_set_agr("constant")
-
-      hay <- st_intersection(click, st_set_agr(data(), "constant"))
-
-      if (nrow(hay) == 1) select_id(hay$ID) else select_id(NA)
-
-    }) |> bindEvent(input[[paste0(ns_id, "-map_click")]])
-
+      selection <- get_clicked_object(ns_id_map)$ID
+      if (!is.na(select_id()) && selection == select_id()) {
+        select_id(NA)
+      } else select_id(selection)
+    }) |> bindEvent(get_clicked_object(ns_id_map))
+    
     # Render the story in question, now only in english (_en)
     output$stories <- renderUI({
 
@@ -140,11 +111,11 @@ stories_server <- function(id) {
       toggle("stories", condition = !is.na(select_id()))
     }) |> bindEvent(select_id())
 
-    # If there's an action with the map, the rmd goes away
+    # If there's an action on the map, the story goes away
     observe({
       hide(id = "stories")
       select_id(NA)
-    }) |> bindEvent(input$map_view_change)
+    }) |> bindEvent(get_view_state(ns_id_map))
 
     # Bookmarking
     bookmark_server(
