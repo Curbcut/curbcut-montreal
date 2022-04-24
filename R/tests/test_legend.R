@@ -9,8 +9,7 @@ suppressPackageStartupMessages({
   library(qs)
   library(shiny)
   library(glue)
-  library(sf)
-  
+
   variables <- qread("data/variables.qs")
   qload("data/colours.qsm")
   
@@ -109,4 +108,4 @@ var_left <- c("housing_tenant_pct_2001", "housing_tenant_pct_2016")
 var_right <- c("inc_50_pct_2001", "inc_50_pct_2016")
 data <- get_data(df, var_left, var_right)
 data_type <- get_data_type(df, var_left, var_right)
-render_legend(data, var_left, var_right, df, df, data_type)}
+render_legend(data, var_left, var_right, df, data_type)}
