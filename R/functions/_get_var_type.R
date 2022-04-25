@@ -6,7 +6,7 @@ get_var_type <- function(data, var_left, var_right, df, select_id,
   ## Invalidate if non-standard df() -------------------------------------------
   
   if (!df %in% c("borough", "CT", "DA", "building", "grid",
-                 "street", "heatmap", "point")) return(NULL)
+                 "street", "heatmap", "point")) return(df)
   
   
   ## Identify NA tables --------------------------------------------------------
