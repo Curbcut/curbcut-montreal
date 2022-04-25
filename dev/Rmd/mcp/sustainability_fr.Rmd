@@ -39,13 +39,13 @@ Permettre le don et la réutilisation des textiles (les textiles représentent 4
 ## Discussion
 
 ```{r, echo=FALSE, fig.align = 'center', warning=FALSE, out.width="80%"}
-knitr::include_graphics(here("www","/mcp","/visuals","/sustainability","/emissions_sector.png"))
+knitr::include_graphics("visuals/sustainability/emissions_sector.png")
 
 ```
 
 Les plus grandes différences entre le PMD et le Plan climat en termes de politiques de développement durable sont l'accent mis par le PMD sur les services (l'eau en particulier), et l'accent mis par le Plan climat sur la réforme de la gouvernance de Montréal pour une meilleure durabilité. En effet, plusieurs des politiques les plus intéressantes proposées dans le Plan climat sont orientées vers la gouvernance et, selon leur mise en œuvre, pourraient apporter de profonds changements.  Les politiques de construction sont en quelque sorte progressives, notamment dans leur façon d'agir sur les actifs municipaux. D'abord l'amélioration de l'efficacité des bâtiments municipaux et l'obtention de certifications dans le PMD, puis l'interdiction de l'utilisation de combustibles fossiles dans ces bâtiments et la mise en place de nouvelles normes d'efficacité énergétique et de climatisation dans le Plan climat. La réglementation de la construction et les programmes de réglementation et de subvention de l'efficacité énergétique des bâtiments du Plan climat pourraient être très efficaces en termes de réduction des émissions si de nouveaux règlements sont effectivement proposés et approuvés et si le programme de financement peut être mis en place. Dans une ville où 28 % des émissions totales proviennent des bâtiments (résidentiels, commerciaux et institutionnels), une réglementation plus stricte en matière d'efficacité énergétique et de construction propre sera très utile. Comme c'est le cas pour de nombreuses politiques du PMD et du Plan climat, les détails sont difficiles à trouver, en particulier pour les mesures de gouvernance les plus radicales. Le PMD ne définit pas l'envergure de ses politiques d'approvisionnement responsable, ni sa promesse d'étudier le désinvestissement des combustibles fossiles. Le Plan climat explique peu les paramètres de son budget carbone et de son test climatique pour les décisions municipales.
 
 ```{r, echo=FALSE, fig.align = 'center', warning=FALSE, out.width="80%"}
-knitr::include_graphics(here("www","/mcp","/visuals","/sustainability","/emissions_source.png"))
+knitr::include_graphics("visuals/sustainability/emissions_source.png")
 
 ```

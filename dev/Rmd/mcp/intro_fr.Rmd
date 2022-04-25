@@ -12,12 +12,12 @@ La nécessité de faire face au changement climatique se faisant de plus en plus
 
 ```{r, echo=FALSE, fig.align = 'center', warning=FALSE, out.width="47%", out.extra='style="padding:10px"'}
 
-knitr::include_graphics(here("www","/mcp","/visuals","/intro","/pmd.png"))
+knitr::include_graphics("visuals/intro/pmd.png")
 
 ```
 ```{r, echo=FALSE, fig.align = 'center', warning=FALSE, out.width="47%", out.extra='style="padding:10px"'}
 
-knitr::include_graphics(here("www","/mcp","/visuals","/intro","/pc.png"))
+knitr::include_graphics("visuals/intro/pc.png")
 
 ```
 

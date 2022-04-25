@@ -36,7 +36,7 @@ process_rmd <- function(file, path) {
 
 # MCP ---------------------------------------------------------------------
 
-mcp_files <- list.files("dev/Rmd/mcp")
+mcp_files <- list.files("dev/Rmd/mcp") |> str_subset(".Rmd$")
 purrr::walk(mcp_files, process_rmd, path = "mcp")
 
 

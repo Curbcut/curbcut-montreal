@@ -24,6 +24,6 @@ The PACCAM and Plan climat have very different understandings of the management 
 
 ```{r, echo=FALSE, fig.align = 'center', warning=FALSE, out.width="75%", fig.cap="Heat islands are one of the major adaptation challenegs facing Montreal in the coming years."}
 
-knitr::include_graphics(here("www","/mcp","/visuals","/adaptation","/heat_island.jpg"))
+knitr::include_graphics("visuals/adaptation/heat_island.jpg")
 
 ```

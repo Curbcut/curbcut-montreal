@@ -448,10 +448,10 @@ variables_translated <-
           fr = paste0("Santé HPFDSH")) |> 
   add_row(en = paste0("Healthcare WEN"), 
           fr = paste0("Santé NFDS")) |> 
-  add_row(en = paste0("Alleys sqkm"), 
-          fr = NA) |> 
-  add_row(en = paste0("Alleys 1,000"), 
-          fr = NA) |> 
+  add_row(en = paste0("Alleys/sqkm"), 
+          fr = paste0("Ruelles/sqkm")) |> 
+  add_row(en = paste0("Alleys/1,000"), 
+          fr = paste0("Ruelles/1,000")) |> 
   add_row(en = paste0("Borough park sqkm"), 
           fr = NA) |> 
   add_row(en = paste0("Borough park 1,000"), 

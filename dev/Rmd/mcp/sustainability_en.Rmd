@@ -39,13 +39,13 @@ Enable donation and reuse of textiles (textiles account for 4% of emissions for 
 ## Discussion
 
 ```{r, echo=FALSE, fig.align = 'center', warning=FALSE, out.width="80%"}
-knitr::include_graphics(here("www","/mcp","/visuals","/sustainability","/emissions_sector.png"))
+knitr::include_graphics("visuals/sustainability/emissions_sector.png")
 
 ```
 
 The greatest differences between the PMD and the Plan climat in terms of their sustainable development policies are the PMD's emphasis on services (water in particular), and the Plan climat's emphasis on reforming the Montreal's governace in a sustainable direction. Indeed, many of the most interesting policies proposed in the Plan climat are oriented towards governance and, depending on their implementation, could bring real change.  Building policies are incremental, in a sense, particularly in how they act on municipal assets. First improving the efficiency of municipal buildings and attaining certifications in the PMD, and then banning fossil fuel use in those buildings and implementing new norms for energy efficiency and cooling in the Plan climat. The Plan climat's regulations on construction and programs to regulate and subsidize the energy-efficiency of buildings could be highly effective emissions-reducing policies if new bylaws are indeed proposed and approved, and the funding program can get off the ground. In a city where 28% of total emissions come from buildings (residential, commercial and institutional), tighter regulations for energy efficiency and clean construction will go a long way. As is the case for many policies in the PMD and the Plan climat, details are hard to come by, particularly for the more sweeping governance measures. The PMD does not define its responsible supply policies, not its promise to investigate fossil fuel divestment. The Plan climat does little to explain the parameters of its carbon budget and its climate test for municipal decisions.
 
 ```{r, echo=FALSE, fig.align = 'center', warning=FALSE, out.width="80%"}
-knitr::include_graphics(here("www","/mcp","/visuals","/sustainability","/emissions_source.png"))
+knitr::include_graphics("visuals/sustainability/emissions_source.png")
 
 ```

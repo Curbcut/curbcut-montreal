@@ -555,12 +555,11 @@ tibble(en = character(), fr = character()) |>
           fr = paste0("Le guide d'aménagement d'une ruelle verte de {data$name}")) |> 
   add_row(en = paste0("Borough"), 
           fr = paste0("Arrondissement")) |> 
-  add_row(en = paste0("Our team visited {nrow(alley_visited)} of the ",
-                      "{nrow(alley)} green alleys in Montreal. We classified ",
-                      "{green} ({green_per}) as 'green' alleys, {community} ",
-                      "({community_per}) as 'community' alleys, {mixed} ",
-                      "({mixed_per}) as 'mixed' green and community alleys, and ",
-                      "{none} ({none_per}) as 'unmaintained' alleys."), 
+  add_row(en = paste0("Our team visited {nrow(alley_visited)} of the {nrow(alley)} ",
+                      "green alleys in Montreal. We classified {green} ",
+                      "({green_per}) as 'green', {community} ({community_per}) ",
+                      "as 'community', {mixed} ({mixed_per}) as 'mixed' green ",
+                      "and community, and {none} ({none_per}) as 'unmaintained'."), 
           fr = paste0("Notre équipe a visité {nrow(alley_visited)} des ",
                       "{nrow(alley)} ruelles vertes de Montréal. Nous avons ",
                       "classé {green} ({green_per}) de ces ruelles comme ",
@@ -579,4 +578,6 @@ tibble(en = character(), fr = character()) |>
                       "Montréal ont un programme de ruelles vertes. ",
                       "Ils comptent collectivement {nb_alleys} allées vertes.")) |> 
   add_row(en = paste0("Borough summary"), 
-          fr = paste0("Sommaire de l'arrondissement"))
+          fr = paste0("Sommaire de l'arrondissement")) |> 
+  add_row(en = paste0("Alley"), 
+          fr = paste0("Ruelle"))

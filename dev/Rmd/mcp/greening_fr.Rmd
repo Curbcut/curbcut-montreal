@@ -20,7 +20,7 @@ Planter, préserver et protéger 500 000 arbres, en priorisant les zones vulnér
 
 ```{r, echo=FALSE, fig.align = 'left', warning=FALSE, out.width="50%", out.extra='style="float:right; padding:10px"'}
 
-knitr::include_graphics(here("www","/mcp","/visuals","/greening","/canopy_2015.jpg"))
+knitr::include_graphics("visuals/greening/canopy_2015.jpg")
 
 ```
 

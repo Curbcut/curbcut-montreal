@@ -24,6 +24,6 @@ Le PACCAM et le Plan climat présentent des approches trèes différentes envers
 
 ```{r, echo=FALSE, fig.align = 'center', warning=FALSE, out.width="75%", fig.cap="Les îlots de chaleur représentent l'un des plus importants défis d'adaptation auxquels Montréal devra faire face."}
 
-knitr::include_graphics(here("www","/mcp","/visuals","/adaptation","/heat_island.jpg"))
+knitr::include_graphics("visuals/adaptation/heat_island.jpg")
 
 ```

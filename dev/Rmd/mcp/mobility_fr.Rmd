@@ -13,7 +13,7 @@ library(here)
 
 ```{r, echo=FALSE, fig.align = 'left', warning=FALSE, out.width="50%", out.extra='style="float:right; padding:10px"'}
 
-knitr::include_graphics(here("www","/mcp","/visuals","/mobility","/bicycle_1.jpg"))
+knitr::include_graphics("visuals/mobility/bicycle_1.jpg")
 
 ```
 
@@ -38,7 +38,7 @@ Convertir 230 des véhicules de la ville à la propulsion électrique. Remplacer
 
 ```{r, echo=FALSE, fig.align = 'left', warning=FALSE, out.width="50%", out.extra='style="float:right; padding:10px"'}
 
-knitr::include_graphics(here("www","/mcp","/visuals","/mobility","/metro_1.jpg"))
+knitr::include_graphics("visuals/mobility/metro_1.jpg")
 
 ```
 
@@ -67,6 +67,6 @@ Ces politiques de mobilité reflètent une différence significative d'ordre pol
 
 ```{r, echo=FALSE, fig.align = 'center', warning=FALSE, out.width="75%", fig.cap="L'automobile domine encore fortement les déplacements dans la région métropolitaine."}
 
-knitr::include_graphics(here("www","/mcp","/visuals","/mobility","/mode_share.png"))
+knitr::include_graphics("visuals/mobility/mode_share.png")
 
 ```

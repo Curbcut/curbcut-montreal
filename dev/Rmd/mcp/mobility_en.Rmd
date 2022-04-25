@@ -13,7 +13,7 @@ library(here)
 
 ```{r, echo=FALSE, fig.align = 'left', warning=FALSE, out.width="50%", out.extra='style="float:right; padding:10px"'}
 
-knitr::include_graphics(here("www","/mcp","/visuals","/mobility","/bicycle_1.jpg"))
+knitr::include_graphics("visuals/mobility/bicycle_1.jpg")
 
 ```
 
@@ -38,7 +38,7 @@ Convert 230 of the city’s vehicles to electric propulsion. Replace 100 of the 
 
 ```{r, echo=FALSE, fig.align = 'left', warning=FALSE, out.width="50%", out.extra='style="float:right; padding:10px"'}
 
-knitr::include_graphics(here("www","/mcp","/visuals","/mobility","/metro_1.jpg"))
+knitr::include_graphics("visuals/mobility/metro_1.jpg")
 
 ```
 
@@ -67,6 +67,6 @@ These mobility policies reflect significant politically-based difference between
 
 ```{r, echo=FALSE, fig.align = 'center', warning=FALSE, out.width="75%", fig.cap="The automobile remains the dominant mode of transportation in the metropolitan region."}
 
-knitr::include_graphics(here("www","/mcp","/visuals","/mobility","/mode_share.png"))
+knitr::include_graphics("visuals/mobility/mode_share.png")
 
 ```

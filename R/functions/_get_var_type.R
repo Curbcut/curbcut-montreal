@@ -3,6 +3,12 @@
 get_var_type <- function(data, var_left, var_right, df, select_id, 
                          build_str_as_DA = TRUE) {
   
+  ## Invalidate if non-standard df() -------------------------------------------
+  
+  if (!df %in% c("borough", "CT", "DA", "building", 
+                 "street", "heatmap", "point")) return(NULL)
+  
+  
   ## Identify NA tables --------------------------------------------------------
   
   if (length(var_right) == 2 && var_right[1] == var_right[2]) 

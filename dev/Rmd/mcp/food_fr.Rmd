@@ -10,7 +10,7 @@ library(here)
 
 ```{r, echo=FALSE, fig.align = 'left', out.width="50%", out.extra='style="float:right; padding:10px"'}
 
-knitr::include_graphics(here("www","/mcp","/visuals","/food","/market_2.jpeg"))
+knitr::include_graphics("visuals/food/market_2.jpeg")
 
 ```
 
@@ -26,7 +26,7 @@ Créer une grappe d'innovation agroalimentaire basée sur l'économie circulaire
 
 ```{r, echo=FALSE, fig.align = 'left', out.width="50%", out.extra='style="float:right; padding:10px"'}
 
-knitr::include_graphics(here("www","/mcp","/visuals","/food","/market_1.jpeg"))
+knitr::include_graphics("visuals/food/market_1.jpeg")
 
 ```
 

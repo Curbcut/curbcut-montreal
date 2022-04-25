@@ -12,12 +12,12 @@ As the need to address climate change has grown more pressing, cities have relea
 
 ```{r, echo=FALSE, fig.align = 'center', warning=FALSE, out.width="48%", out.extra='style="padding:10px"'}
 
-knitr::include_graphics(here("www","/mcp","/visuals","/intro","/pmd.png"))
+knitr::include_graphics("visuals/intro/pmd.png")
 
 ```
 ```{r, echo=FALSE, fig.align = 'center', warning=FALSE, out.width="48%", out.extra='style="padding:10px"'}
 
-knitr::include_graphics(here("www","/mcp","/visuals","/intro","/pc.png"))
+knitr::include_graphics("visuals/intro/pc.png")
 
 ```
 This module allows you to explore the climate policies included in these two plans classified according to categories that can be accessed below:
