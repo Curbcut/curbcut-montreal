@@ -7,22 +7,31 @@
   --c-nav-content-bg-current: var(--c-primary-complement-highlight);
 }
 
+.navbar-static-top {
+  z-index: var(--depth-ui-fixed);
+}
+
 .navbar {
   margin-bottom: 0px !important;
   position: fixed;
   left: 0px;
   right: 0px;
-  z-index: calc(10 + var(--depth-ui));
   box-shadow: unset;
 }
 
 .navbar-shadow {
   position: fixed;
-  z-index: calc(10 + var(--depth-ui-shadow));
   height: var(--h-navbar);
   top: 0px;
   left: 0px;
   right: 0px;
+}
+
+.navbar-shadow-caster {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  z-index: var(--depth-ui-fixed-shadow);
   background-color: rgba(0, 0, 0, 0);
   box-shadow: var(--box-shadow-md);
 }
@@ -201,3 +210,8 @@ div.tab-content > div.tab-pane > div.container {
 .navbar-collapse > ul > li > a {
   width: fit-content;
 }
+
+/* .navbar-collapse.collapse-in::after {
+  margin-left: -15px;
+  margin-right: -15px;
+} */

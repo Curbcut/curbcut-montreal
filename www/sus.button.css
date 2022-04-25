@@ -219,3 +219,7 @@
   background: unset;
   box-shadow: unset;
 }
+
+button {
+  outline: none !important;
+}

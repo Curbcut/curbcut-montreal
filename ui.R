@@ -7,6 +7,7 @@ ui <- function(request) {
   # Styling objects ------------------------------------------------------------
   
   useShinyjs(),
+  tags$head(tags$link(rel = "icon", href = "favicon.ico")),
   tags$head(tags$link(rel = "stylesheet", type = "text/css", 
                       href = "bootstrap.min.css")),
   tags$head(tags$link(rel = "stylesheet", type = "text/css", 
@@ -33,6 +34,8 @@ ui <- function(request) {
                       href = "sus.home.css")),
   tags$head(tags$link(rel = "stylesheet", type = "text/css", 
                       href = "sus.maps.css")),
+  tags$head(tags$link(rel = "stylesheet", type = "text/css", 
+                      href = "sus.authors.css")),
   tags$head(tags$link(rel = "stylesheet", type = "text/css", 
                       href = paste0("https://fonts.googleapis.com/icon?",
                                     "family=Material+Icons"))),
@@ -90,7 +93,8 @@ ui <- function(request) {
                       tabPanel(sus_translate("About Sus"), 
                                about_sus_UI("about_sus"), value = "about_sus"),
            tabPanel(sus_translate("How to use"), how_to_use_UI("how_to_use"), 
-                    value = "how_to_use")),
+                    value = "how_to_use"),
+           tabPanel(sus_translate("Authors"), authors_UI("authors"), value = "authors")),
            collapsible = TRUE,
            inputs = list(
              # Language toggle
