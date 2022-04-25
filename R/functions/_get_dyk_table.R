@@ -27,7 +27,8 @@ get_dyk_table <- function(id, var_left, var_right, poi = NULL) {
       link_attrs <- lapply(seq_along(out$name), 
                            \(x) list(module = "stories", select_id = out$ID[x]))
       
-      out <- paste(out$preview, links)
+      previews <- sapply(out$preview, sus_translate, USE.NAMES = FALSE)
+      out <- paste(previews, links)
       out <- paste("<li> ", out, collapse = "")
       out <- paste0("<ul>", out, "</ul>")
       out <- HTML(out)

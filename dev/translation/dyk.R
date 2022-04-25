@@ -164,4 +164,41 @@ dyk_translated <-
           fr = paste0("La moitié des quartiers de l'île de Montréal compte plu",
                       "s de 4,3 % des ménages de 2016 vivant dans un logement ",
                       "inadéquat, tandis qu'un quart en compte plus de 11,3 %.",
-                      ""))
+                      "")) |> 
+  # Stories preview
+  add_row(en = paste0("Little Burgundy has been the site of nearly 100 years o",
+                      "f social and environmental transformation, and is curre",
+                      "ntly undergoing a wave of green gentrification."), 
+          fr = paste0("La Petite Bourgogne a été le théâtre de près de 100 ans",
+                      " de transformations sociales et environnementales, et c",
+                      "onnaît actuellement une vague de gentrification écologi",
+                      "que.")) |> 
+  add_row(en = paste0("Residents and government are coming together to shape t",
+                      "he future of the Saint-Michel Environmental Complex, lo",
+                      "cated on the site of the former Miron Quarry."), 
+          fr = paste0("Les résidents et le gouvernement s'unissent pour façonn",
+                      "er l'avenir du complexe environnemental de Saint-Michel",
+                      ", situé sur le site de l'ancienne carrière Miron.")) |> 
+  add_row(en = paste0("In the Grand Parc de L’Ouest, a renewed drive to protec",
+                      "t biodiversity and create greenspace illustrates the ch",
+                      "anging politics of development on the island."), 
+          fr = paste0("Dans le Grand Parc de l'Ouest, une volonté renouvelée d",
+                      "e protéger la biodiversité et de créer des espaces vert",
+                      "s illustre l'évolution des politiques de développement ",
+                      "sur l'île.")) |> 
+  add_row(en = paste0("The City of Montreal claims it is looking to support pe",
+                      "destrian-oriented projects as a pathway towards sustain",
+                      "able mobility, but contradictions in the implementation",
+                      " stage of the Turcot Interchange suggest otherwise."), 
+          fr = paste0("La Ville de Montréal affirme qu'elle cherche à soutenir",
+                      " les projets axés sur les piétons comme une voie vers l",
+                      "a mobilité durable, mais les contradictions dans l'étap",
+                      "e de mise en œuvre de l'échangeur Turcot suggèrent le c",
+                      "ontraire.")) |> 
+  add_row(en = paste0("Griffintown’s social and governance history can be defi",
+                      "ned through the politics of water management."), 
+          fr = paste0("L'histoire sociale et de gouvernance de Griffintown peu",
+                      "t être définie par la politique de gestion de l'eau."))
+
+
+
