@@ -48,6 +48,7 @@ ui <- function(request) {
   tags$head(tags$script(js_links_between_modules)),
   tags$head(tags$script(bookmark_url)),
   tags$head(tags$style(HTML(styler))),
+  tags$head(tags$style(HTML(temp_styler))),
   
   # Language switching ---------------------------------------------------------
   

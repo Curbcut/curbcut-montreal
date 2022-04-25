@@ -138,4 +138,4 @@ authors_translation <-
                       "eur contractuel en sciences sociales et statistiques po",
                       "ur la Société canadienne d'hypothèques et de logement.")) |> 
   add_row(en = paste0("Senior Designer"), 
-          fr = paste0("Concepteur principal"))
+          fr = paste0("Concepteur senior"))
