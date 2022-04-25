@@ -17,6 +17,17 @@
   margin-left: unset;
 }
 
+.sus-author > h3 {
+  margin-bottom: 0.4rem;
+  font-size: 2rem;
+  color: var(--c-primary-complement);
+}
+
+.sus-author > h4 {
+  margin-top: unset;
+  font-size: 1.5rem;
+}
+
 .sus-author-img {
   position: absolute;
   left: 0px;
@@ -41,7 +52,7 @@
   padding-top: 0.225em;
   height: 2em;
   border-radius: 1em;
-  background: var(--c-primary-complement);
+  background: #ffffff66;
   padding-left: 2.5em;
   padding-right: 0.75em;
   overflow: hidden;
@@ -67,7 +78,7 @@
   }
   
   .sus-author > h4 {
-    top: 4rem;
+    top: 5rem;
     font-size: 1.5rem;
   }
 
