@@ -1,0 +1,101 @@
+#stories-stories {
+  position: absolute;
+  top: 0px;
+  left: var(--w-sidebar);
+  right: 0px;
+  height: calc(100vh - var(--h-navbar));
+  z-index: var(--depth-ui);
+}
+
+div#stories-back {
+  position: absolute;
+  top: 0px;
+  left: var(--w-sidebar);
+  right: 0px;
+  height: var(--h-navbar);
+  z-index: var(--depth-ui-fixed);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  background: var(--c-primary-complement);
+  border-top: 1px solid var(--c-default);
+  padding-left: var(--h-navbar);
+  padding-right: var(--h-navbar);
+  box-shadow: var(--box-shadow-md);
+  clip-path: inset(0px 0px -15px 0px);
+}
+
+a#stories-back ,
+a#stories-back:hover,
+a#stories-back:active,
+a#stories-back:focus {
+  color: var(--c-primary);
+  margin-left: unset !important;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+div#stories-back button {
+  background: none !important;
+  border: none !important;
+  height: 100%;
+  position: absolute;
+  top: 0px;
+  bottom: 0px;
+  width: var(--h-navbar);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+div#stories-back button:first-child {
+  left: 0px;
+}
+
+div#stories-back button:last-child {
+  right: 0px;
+}
+
+.main_panel_text_popup {
+	max-height: calc(100% - var(--h-navbar)) !important;
+	margin-top: var(--h-navbar) !important;
+  margin-left: unset !important;
+  box-shadow: unset !important;
+  border-left: unset !important;
+  border-right: unset !important;
+  border-bottom: unset !important;
+  border-top: 1px solid var(--c-default) !important;
+}
+
+.main_panel_text_popup img {
+  margin-top: var(--padding-v-md);
+  margin-left: -15px;
+  margin-right: -30px;
+  width: calc(100% + 30px);
+  max-width: unset !important;
+}
+
+.main_panel_text_popup  h1 {
+  font-size: 3.5rem;
+  margin-bottom: 2rem;
+}
+
+.main_panel_text_popup p,
+.main_panel_text_popup h1,
+.main_panel_text_popup h2,
+.main_panel_text_popup h3,
+.main_panel_text_popup h4,
+.main_panel_text_popup h5,
+.main_panel_text_popup h6 {
+  max-width: calc(1rem * 60);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@media (max-width: 775px) {
+  #stories-stories,
+  div#stories-back {
+    left: 0px;
+  }
+}

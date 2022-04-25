@@ -37,6 +37,8 @@ ui <- function(request) {
   tags$head(tags$link(rel = "stylesheet", type = "text/css", 
                       href = "sus.authors.css")),
   tags$head(tags$link(rel = "stylesheet", type = "text/css", 
+                      href = "sus.stories.css")),
+  tags$head(tags$link(rel = "stylesheet", type = "text/css", 
                       href = paste0("https://fonts.googleapis.com/icon?",
                                     "family=Material+Icons"))),
   tags$head(tags$script(src = "sus.js")),

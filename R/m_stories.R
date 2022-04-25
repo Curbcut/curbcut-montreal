@@ -14,8 +14,9 @@ stories_UI <- function(id) {
     # Sidebar
     sidebar_UI(
       NS(id, "sidebar"),
-      hr(id = NS(id, "hr")),
-      actionLink(NS(id, "back"), sus_translate("Back to the map"))),
+      # hr(id = NS(id, "hr")),
+      actionLink(NS(id, "back"), sus_translate("Back to the map"))
+    ),
 
     # Map
     div(class = "mapdeck_div", rdeckOutput(NS(id, paste0(ns_id, "-map")), 
@@ -23,9 +24,7 @@ stories_UI <- function(id) {
 
     # Stories
     hidden(htmlOutput(
-      NS(id, "stories"),
-      style = paste0("position:absolute; margin: 40px; ",
-                     "max-width: 1200px; z-index:499")))
+      NS(id, "stories")))
 
   )
 }

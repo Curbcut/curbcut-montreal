@@ -167,6 +167,40 @@ window.addEventListener('load', (evt) => {
     mapdeckDiv.appendChild(shadow);
   }
 
+  const storiesMapdeckDiv = document.querySelector('.tab-pane[data-value="stories"] .mapdeck_div');
+
+  storiesMapdeckDiv.addEventListener('click', () => {
+
+  });
+
+  const storiesBack = document.querySelector('#stories-back');
+  const storiesContainer = document.querySelector('#stories-stories');
+  const storiesTopBar = document.createElement('div');
+  const storiesBackButton = document.createElement('button');
+  const storiesCloseButton = document.createElement('button');
+
+  const backIcon = document.createElement('span');
+  backIcon.className = 'material-icons';
+  backIcon.innerText = 'navigate_before';
+
+  const closeIcon = document.createElement('span');
+  closeIcon.className = 'material-icons';
+  closeIcon.innerText = 'close';
+
+  storiesBackButton.appendChild(backIcon);
+  storiesCloseButton.appendChild(closeIcon);
+
+  storiesBackButton.addEventListener('click', () => storiesBack.click());
+  storiesCloseButton.addEventListener('click', () => storiesBack.click());
+  
+  storiesTopBar.appendChild(storiesBackButton);
+  storiesTopBar.appendChild(storiesBack);
+  storiesTopBar.appendChild(storiesCloseButton);
+  storiesTopBar.id = 'stories-back';
+  storiesTopBar.style.display = 'none';
+
+  storiesContainer.parentElement.appendChild(storiesTopBar);
+  
   const navbarHeight = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--h-navbar'));
 
   // console.log('navbarHeight:' + navbarHeight);
