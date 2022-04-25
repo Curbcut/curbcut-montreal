@@ -10,7 +10,7 @@ library(here)
 
 ## PMD (Coderre administration): 
 
-```{r, echo=FALSE, fig.align = 'left', out.width="50%", out.extra='style="float:right; padding:10px"'}
+```{r, echo=FALSE, fig.align = 'left', warning=FALSE, out.width="50%", out.extra='style="float:right; padding:10px"'}
 
 knitr::include_graphics(here("www","/mcp","/visuals","/landuse","/neighbourhood_2.jpeg"))
 
@@ -24,7 +24,7 @@ Improve the city’s planning tools to favour building human-scale neighbourhood
 
 ## Discussion
 
-```{r, echo=FALSE, fig.align = 'left', out.width="50%", out.extra='style="float:right; padding:10px"'}
+```{r, echo=FALSE, fig.align = 'left', warning=FALSE, out.width="50%", out.extra='style="float:right; padding:10px"'}
 
 knitr::include_graphics(here("www","/mcp","/visuals","/landuse","/neighbourhood_1.jpeg"))
 

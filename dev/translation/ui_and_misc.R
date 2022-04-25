@@ -22,6 +22,8 @@ ui_and_misc_translated <-
           fr = paste0("Grille de 250 mètres")) |> 
   add_row(en = paste0("Compare"), 
           fr = paste0("Comparez")) |> 
+  add_row(en = paste0("Authors"), 
+          fr = paste0("Auteurs")) |> 
   add_row(en = paste0("Hide"), 
           fr = paste0("En voir moins")) |> 
   add_row(en = paste0("Explore"), 
@@ -462,5 +464,30 @@ ui_and_misc_translated <-
   add_row(en = paste0("Flood risk areas"), 
           fr = paste0("Zones à risque d'inondation")) |> 
   add_row(en = paste0("Share of Montreal area"), 
-          fr = paste0("Part de la région de Montréal"))
+          fr = paste0("Part de la région de Montréal")) |>
+  # MCP dropdown
+  add_row(en = paste0("Introduction"), 
+          fr = paste0("Introduction")) |> 
+  add_row(en = paste0("Community and participation"), 
+          fr = paste0("Commuauté et implication collective")) |> 
+  add_row(en = paste0("Greening"), 
+          fr = paste0("Verdissement")) |> 
+  add_row(en = paste0("Food and agriculture"), 
+          fr = paste0("Alimentation et agriculture")) |> 
+  add_row(en = paste0("Land use"), 
+          fr = paste0("Utilisation du sol")) |> 
+  add_row(en = paste0("Mobility"), 
+          fr = paste0("Mobilité")) |> 
+  add_row(en = paste0("Equity"), 
+          fr = paste0("Équité")) |> 
+  add_row(en = paste0("Adaptation and resilience"), 
+          fr = paste0("Adaptation et résilience")) |> 
+  add_row(en = paste0("Economy"), 
+          fr = paste0("Économie")) |> 
+  add_row(en = paste0("Innovation"), 
+          fr = paste0("Innovation")) |> 
+  add_row(en = paste0("Regionalism, internationalism and networks"), 
+          fr = paste0("Régionalisme, internationalisme et réseaux")) |> 
+  add_row(en = paste0("Sustainability"), 
+          fr = paste0("Développement durable"))
   

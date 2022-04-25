@@ -10,12 +10,12 @@ library(here)
 
 La nécessité de faire face au changement climatique se faisant de plus en plus pressante, les villes ont publié des plans qui tentent d'organiser les efforts pour atténuer les émissions de gaz à effet de serre, s'adapter aux effets du réchauffement et rendre leurs institutions, leurs entreprises et leurs populations plus résilientes. Ce module explore les deux derniers plans climats de la ville de Montréal: le Plan Montréal durable 2016 (PMD) de l'administration de Denis Coderre, et le Plan climat 2020-2030 (Plan climat) de l'administration de Valérie Plante. 
 
-```{r, echo=FALSE, fig.align = 'center', out.width="47%", out.extra='style="padding:10px"'}
+```{r, echo=FALSE, fig.align = 'center', warning=FALSE, out.width="47%", out.extra='style="padding:10px"'}
 
 knitr::include_graphics(here("www","/mcp","/visuals","/intro","/pmd.png"))
 
 ```
-```{r, echo=FALSE, fig.align = 'center', out.width="47%", out.extra='style="padding:10px"'}
+```{r, echo=FALSE, fig.align = 'center', warning=FALSE, out.width="47%", out.extra='style="padding:10px"'}
 
 knitr::include_graphics(here("www","/mcp","/visuals","/intro","/pc.png"))
 

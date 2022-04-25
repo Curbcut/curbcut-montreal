@@ -1,5 +1,5 @@
 ---
-title: "Regionalism, internationalism, networks"
+title: "Régionalisme, internationalisme et réseaux"
 output: html_document
 ---
 

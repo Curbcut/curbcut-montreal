@@ -3,6 +3,7 @@
 # Processing function -----------------------------------------------------
 
 process_rmd <- function(file, path) {
+
   # Error handling
   stopifnot(sum(str_detect(file, "Rmd")) == length(file))
   
@@ -23,6 +24,13 @@ process_rmd <- function(file, path) {
   
   # Write ouput
   # writeLines(x, out)
+  
+  # Take head out, which breaks Sus' CSS
+  x <- readLines(out)
+  x <- 
+  x[-((str_detect(x, "<head") |> which()):(str_detect(x, "</head") |> which()))]
+  
+  writeLines(x, out)
 }
 
 

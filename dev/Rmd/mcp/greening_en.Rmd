@@ -18,7 +18,7 @@ Plant, preserve and protect 500,000 trees, prioritizing zones vulnerable to heat
 
 ## Discussion
 
-```{r, echo=FALSE, fig.align = 'left', out.width="50%", out.extra='style="float:right; padding:10px"'}
+```{r, echo=FALSE, fig.align = 'left', warning=FALSE, out.width="50%", out.extra='style="float:right; padding:10px"'}
 
 knitr::include_graphics(here("www","/mcp","/visuals","/greening","/canopy_2015.jpg"))
 
