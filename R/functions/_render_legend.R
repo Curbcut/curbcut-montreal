@@ -26,7 +26,7 @@ render_legend <- function(data, var_left, var_right, df, data_type,
   
   theme_default <- list(
     theme_minimal(),
-    theme(text = element_text(family = "SourceSansPro", size = 13),
+    theme(text = element_text(family = "SourceSansPro", size = 11),
           legend.position = "none", 
           panel.grid = element_blank()))
   
@@ -125,9 +125,9 @@ render_legend <- function(data, var_left, var_right, df, data_type,
     
     l <- legend_bivar
     l$label <- c(sus_translate("Both low"), " ", 
-                 paste0(labs_xy$y_short, sus_translate("\\nhigh only")), " ",
+                 paste0(labs_xy$y_short, "\n", sus_translate("high only")), " ",
                  " ", " ", 
-                 paste0(labs_xy$x_short, sus_translate("\\nhigh only")), " ", 
+                 paste0(labs_xy$x_short, "\n", sus_translate("high only")), " ", 
                  sus_translate("Both high"))
     l$label_colour <- c(rep("black", 8), "white")
     l$x <- as.numeric(l$x) - 0.5
@@ -138,13 +138,26 @@ render_legend <- function(data, var_left, var_right, df, data_type,
       geom_text(aes(y, x, label = label, colour = label_colour), 
                 inherit.aes = FALSE, size = 3#15*0.36
       ) +
-      scale_x_continuous(breaks = 0:3, labels = NULL) +
-      scale_y_continuous(breaks = 0:3, labels = NULL) +
+      scale_x_continuous(breaks = 0:3, labels = break_labs$x) +
+      scale_y_continuous(breaks = 0:3, labels = break_labs$y) +
       scale_fill_manual(values = setNames(
         legend_bivar$fill, legend_bivar$fill)) +
       scale_colour_manual(values = c("black" = "black", "white" = "white")) +
       labs_xy[[1]] + theme_default
     
+  } else if (data_type == "q100") {
+
+    leg <- data.frame(x = 1:10, y = 1, fill = scales::viridis_pal()(10))
+    
+    leg |> 
+      ggplot(aes(xmin = x - 1, xmax = x, ymin = y - 1, ymax = y, 
+                 fill = fill)) +
+      geom_rect() + 
+      scale_x_continuous(breaks = 0:10, 
+                         labels = break_labs) +
+      scale_y_continuous(labels = NULL) +
+      scale_fill_manual(values = setNames(leg$fill, leg$fill)) +
+      labs_xy + theme_default
   } else NULL
   
 }

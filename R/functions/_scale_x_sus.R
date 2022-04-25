@@ -108,23 +108,18 @@ scale_fill_pe <- function(select_id) {
 }
 
 # Natural infrastructure lws
-scale_lwd_natural_inf <- function() {
-  0
-}
+scale_lwd_natural_inf <- function() 0
 
 # Natural infrastructure fill
-scale_fill_natural_inf <- function(var, tile, natural_inf_colors) {
-  if (!is.null(natural_inf_colors)) {
-    colour_table <- natural_inf_colors
-    unmapped_color <- "#B3B3BB"
-  } else {
-    unmapped_color <- colour_table$value[1]
-  }
+scale_fill_natural_inf <- function(var, tile, natural_inf_colours) {
+    
+    if (!is.null(natural_inf_colours)) colour_table <- natural_inf_colours
+
+    scale_color_category(
+      col = !!rlang::sym(var), 
+      palette = colour_table$value,
+      unmapped_color = "#FFFFFF00", 
+      levels = colour_table$group,
+      legend = FALSE)
   
-  scale_color_category(
-    col = !!rlang::sym(var), 
-    palette = colour_table$value,
-    unmapped_color = unmapped_color, 
-    levels = colour_table$group,
-    legend = FALSE)
 }

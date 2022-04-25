@@ -1,4 +1,5 @@
 ### DYK translation ############################################################
+
 dyk_translated <- 
   tibble(en = character(), fr = character()) |>
   add_row(en = paste0("21.3% of people walk or cycle to work in areas in the h",

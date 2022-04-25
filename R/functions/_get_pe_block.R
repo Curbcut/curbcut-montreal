@@ -171,8 +171,8 @@ get_pe_block <- function(df, theme, select_id, island_or_region) {
                   "work in creative and professional occupations compared to ",
                   "the rest of {ior}.")
     
-  # Family
-  } else if (theme == "Family") {
+  # Household
+  } else if (theme == "Household") {
     
     z <- mean(c(1 - out$percentile[out$var_code == "family_one_person_pct"],
                 out$percentile[out$var_code == "family_children_pct"]))

@@ -1,5 +1,5 @@
 ---
-title: "The Miron Quarry: The Transformation of an Industrial Limestone Quarry into a Flourishing Environmental Complex"
+title: "The Miron Quarry: The transformation of an industrial limestone quarry into a flourishing environmental complex"
 subtitle: "An informative example of the possibilities of change in Saint-Michel"  
 output: html_document
 author: "Jennah Landgraf"

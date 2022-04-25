@@ -18,7 +18,7 @@ col_qual <- c(col_left_3[3], col_right_3[3], "#5B362A", "#B58A6C", col_bivar[9],
 col_pe <- c("#CA0020", "#F4A582", "#A9A9A9", "#BAE4B3", "#31A354")
 col_NA <- "#B3B3BB"
 
-col_viridis <- scales::viridis_pal()(100)
+col_viridis <- scales::viridis_pal()(25)
 
 
 
@@ -51,7 +51,7 @@ c_qual <- tibble(
 
 c_viridis <- tibble(
   palette = "viridis",
-  group = as.character(101:200),
+  group = as.character(26:50),
   value = col_viridis)
 
 colour_table <- dplyr::bind_rows(c_NA, c_q5, c_bivar, c_delta, c_qual, 

@@ -69,12 +69,12 @@ canale_server <- function(id) {
     })
     
     # Click reactive
-    observeEvent(get_clicked_object(ns_id_map), {
+    observe({
       selection <- get_clicked_object(ns_id_map)$ID
       if (!is.na(select_id()) && selection == select_id()) {
         select_id(NA)
       } else select_id(selection)
-    })
+    }) |> bindEvent(get_clicked_object(ns_id_map))
     
     # Choose tileset
     tile <- zoom_server(

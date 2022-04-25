@@ -7,11 +7,9 @@ suppressPackageStartupMessages({
   library(shinyjs)
   library(shinyWidgets)
 
+  library(rdeck)
   library(ggplot2)
   library(stringr)
-
-  library(sf)
-  library(rdeck)
 
   library(qs)
   library(glue)
@@ -48,7 +46,7 @@ tt_matrix <- qread("data/tt_matrix.qs")
 qload("data/natural_inf.qsm")
 metro_lines <- qread("data/metro_lines.qs")
 
-stories <- qread("data/stories.qs")
+qload("data/stories.qsm")
 
 qload("data/place_explorer.qsm")
 postal_codes <- qread("data/postal_codes.qs")
@@ -96,8 +94,8 @@ mods_rdy <- list(
   #   "Marketed Sustainability" = "marketed_sustainability"
     ),
   "Policy" = c(
-   "Montréal climate plans" = "mcp"
-   ),
+    "Montréal climate plans" = "mcp"
+    ),
   "Transport" = c(
     "Accessibility" = "access"#,
   #   "Road safety" = "crash"
@@ -135,6 +133,7 @@ map_token <- paste0("pk.eyJ1Ijoic3VzLW1jZ2lsbCIsImEiOiJjbDBxMTcyNWwyNTl0M2",
                     "RtZzRremNxOHA3In0.V2Ah5lxy-3RZlF2QKOvIjg")
 options(rdeck.mapbox_access_token = map_token)
 map_base_style <- "mapbox://styles/sus-mcgill/cl0reqoz4000z15pekuh48ld6"
+map_style_building <- "mapbox://styles/sus-mcgill/cl2bwtrsp000516rwyrkt9ior"
 map_zoom <- 10.1
 map_zoom_levels <- c("borough" = 0, "CT" = 10.5, "DA" = 12.5, "building" = 15.5)
 map_loc <- c(-73.58, 45.53)

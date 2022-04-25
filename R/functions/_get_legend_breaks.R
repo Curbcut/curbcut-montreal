@@ -102,6 +102,44 @@ get_legend_breaks <- function(data, var_left, var_right, df, data_type,
   }
   
   
+  ## Delta bivariate version ---------------------------------------------------
+  
+  if (data_type == "delta_bivar") {
+    
+    # Get breaks
+    break_labs_y <- c(
+      min(data$var_left, na.rm = TRUE),
+      max(data$var_left[data$var_left_q3 == 1], na.rm = TRUE),
+      max(data$var_left[data$var_left_q3 == 2], na.rm = TRUE),
+      max(data$var_left, na.rm = TRUE))
+    
+    break_labs_x <- c(
+      min(data$var_right, na.rm = TRUE),
+      max(data$var_right[data$var_right_q3 == 1], na.rm = TRUE),
+      max(data$var_right[data$var_right_q3 == 2], na.rm = TRUE),
+      max(data$var_right, na.rm = TRUE))
+
+    # Format breaks
+    break_labs_y <- convert_unit(break_labs_y, "_pct", TRUE)
+    break_labs_x <- convert_unit(break_labs_x, "_pct", TRUE)
+    
+    # Construct result
+    break_labs <- list(x = break_labs_x, y = break_labs_y)
+    attr(break_labs, "qual") <- FALSE
+    
+  }
+  
+  ## Univariate q100 version ---------------------------------------------------
+  
+  if (data_type == "q100") {
+    
+    # Create break labels
+    break_labs <- c(sus_translate("Low"), sapply(1:9, \(x) NULL),
+                    sus_translate("High"))
+    
+  }
+  
+  
   ## Return output -------------------------------------------------------------
   
   return(break_labs)

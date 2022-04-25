@@ -12,14 +12,15 @@ rdeck_server <- function(id, map_id, tile, tile2, map_var, zoom, select_id,
                          lwd_args = reactive(list(select_id())),
                          line_units = "pixels") {
   
+  
   ## Setup ---------------------------------------------------------------------
   
   # Error checking
   stopifnot(is.reactive(tile))
   stopifnot(is.reactive(tile2))
   stopifnot(is.reactive(map_var))
-  stopifnot(is.reactive(select_id))
   stopifnot(is.reactive(zoom))
+  stopifnot(is.reactive(select_id))
   
   
   ## Module --------------------------------------------------------------------
@@ -40,39 +41,13 @@ rdeck_server <- function(id, map_id, tile, tile2, map_var, zoom, select_id,
     extrude <- reactive((tile() == "auto_zoom" && zoom() >= 15.5) | 
                           tile() == "building")
     
-    highlight <- reactive({
-      if (id == "natural_inf") return(FALSE)
-      return(TRUE)
-    })
+    highlight <- reactive(if (id == "natural_inf") FALSE else TRUE)
     
     # Create final tileset string
     tile_string <- reactive(paste0(tile(), tile2()))
     
-    # Update data layer on variable change
-    observeEvent({
-      map_var()
-      select_id()
-      fill_args()
-      colour_args()
-      lwd_args()
-      zoom}, {
-      rdeck_proxy(map_id) |>
-        add_mvt_layer(
-          id = id, 
-          pickable = pick(),
-          auto_highlight = highlight(), 
-          highlight_color = "#FFFFFF50", 
-          get_fill_color = do.call(fill, fill_args()),
-          get_line_color = do.call(colour, colour_args()),
-          get_line_width = do.call(lwd, lwd_args()),
-          line_width_units = line_units, 
-          extruded = extrude(), 
-          material = FALSE,
-          get_elevation = 5)
-    })
-    
     # Update data layer source on tile change
-    observeEvent(tile_string(), {
+    observe(
       rdeck_proxy(map_id) |>
         add_mvt_layer(
           id = id, 
@@ -86,9 +61,25 @@ rdeck_server <- function(id, map_id, tile, tile2, map_var, zoom, select_id,
           line_width_units = line_units, 
           extruded = extrude(), 
           material = FALSE, 
-          get_elevation = 5)
-        
-    })
+          get_elevation = 5)) |> bindEvent(tile_string())
+    
+    # Update data layer on variable change
+    observe(
+      rdeck_proxy(map_id) |>
+        add_mvt_layer(
+          id = id, 
+          pickable = pick(),
+          auto_highlight = highlight(), 
+          highlight_color = "#FFFFFF50", 
+          get_fill_color = do.call(fill, fill_args()),
+          get_line_color = do.call(colour, colour_args()),
+          get_line_width = do.call(lwd, lwd_args()),
+          line_width_units = line_units, 
+          extruded = extrude(), 
+          material = FALSE,
+          get_elevation = 5)) |> 
+      bindEvent(map_var(), select_id(), fill_args(), colour_args(), lwd_args(),
+                extrude(), pick())
     
   })
 }

@@ -225,7 +225,7 @@ qsave(metro_lines, file = "data/metro_lines.qs")
 qsavem(title_card_indicators, pe_var_hierarchy, pe_theme_order, CSDUID_groups,
        title_card_index, pe_variable_order, file = "data/place_explorer.qsm")
 qsave(postal_codes, file = "data/postal_codes.qs")
-qsave(stories, file = "data/stories.qs")
+qsavem(stories, stories_mapping, file = "data/stories.qsm")
 qsave(dyk, "data/dyk.qs")
 qsave(title_text, "data/title_text.qs")
 

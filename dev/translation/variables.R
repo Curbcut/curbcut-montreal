@@ -1,66 +1,4 @@
 # #### `Variables` preparation for translation ###################################
-# 
-# source("dev/other/char_fix.R", encoding = "utf-8")
-# 
-# 
-# # Import variables and translation ----------------------------------------
-# variables <- qread("data/variables.qs")
-# 
-# translated <- read.csv("dev/translation/csv/variables_translated.csv") |> 
-#   as_tibble()
-# 
-# # # Fix weird encoding
-# # translated$en <- char_fix(translated$en)
-# # translated$fr <- char_fix(translated$fr)
-# 
-# # Prepare for translation -------------------------------------------------
-# 
-# # Retrieve text from columns to translate
-# cols_to_translate <- 
-#   variables |> 
-#   select(var_title, var_short, explanation, theme) |> 
-#   names()
-# 
-# text_variables <- 
-#   map(cols_to_translate, ~variables[[.x]]) |> reduce(c) |> unique()
-# 
-# # Unnest breaks and retrieve qualitative breaks
-# breaks_quali <- 
-#   variables |> 
-#   unnest(breaks_q5) |> 
-#   filter(!is.na(var_name) | !is.na(var_name_short)) |> 
-#   select(var_name, var_name_short) |> 
-#   distinct()
-# 
-# breaks_quali <- 
-#   c(breaks_quali$var_name, breaks_quali$var_name_short) |> 
-#   unique()
-# 
-# # Construct vector to translate
-# to_translate <- c(text_variables, breaks_quali)
-# 
-# 
-# # Create table to join existing french translation ------------------------
-# variables_translated <- 
-#   tibble(en = to_translate) |> 
-#   left_join(translated, by = "en")
-# 
-# # Warning if missing translation
-# walk(seq_along(variables_translated$fr), ~{
-#   
-#   x <- pull(variables_translated[.x, "fr"])
-#   
-#   if (is.na(x)) {
-#     no_translation <-
-#       pull(variables_translated[.x, "en"])
-#     warning(paste0("No translation found for `", no_translation, 
-#                    "` (variables table)."), 
-#             call. = FALSE)
-#   }
-# })
-
-
-# REVERT TO R SCRIPT ------------------------------------------------------
 
 variables_translated <- 
   tibble(en = character(), fr = character()) |>
@@ -362,8 +300,6 @@ variables_translated <-
           fr = paste0("Pied ou vélo")) |> 
   add_row(en = paste0("Transit"), 
           fr = paste0("Transp. commun")) |> 
-  add_row(en = paste0("TKTK"), 
-          fr = NA) |> 
   add_row(en = paste0("Fr. only"), 
           fr = paste0("Fr. seul.")) |> 
   add_row(en = paste0("Eng. only"), 
@@ -376,8 +312,8 @@ variables_translated <-
           fr = paste0("0-14 ans")) |> 
   add_row(en = paste0("15-64 yo"), 
           fr = paste0("15-64 ans")) |> 
-  add_row(en = paste0("6+5 yo"), 
-          fr = NA) |> 
+  add_row(en = paste0("65+ yo"), 
+          fr = paste0("65+ ans")) |> 
   add_row(en = paste0("Bachelor+"), 
           fr = paste0("Bac.+")) |> 
   add_row(en = paste0("No degree"), 
@@ -1048,8 +984,8 @@ variables_translated <-
           fr = paste0("Identité")) |> 
   add_row(en = paste0("Transport"), 
           fr = paste0("Transport")) |> 
-  add_row(en = paste0("Family"), 
-          fr = paste0("Famille")) |> 
+  add_row(en = paste0("Household"), 
+          fr = paste0("Ménage")) |> 
   add_row(en = paste0("Language"), 
           fr = paste0("Langue")) |> 
   add_row(en = paste0("Age"), 
@@ -1095,18 +1031,91 @@ variables_translated <-
   add_row(en = paste0("Mixed"), 
           fr = paste0("Mixte")) |> 
   add_row(en = paste0("Unmain."), 
-          fr = paste0("Non-maint."))
+          fr = paste0("Non-maint.")) |> 
+  # Natural infrastructure
+  add_row(en = paste0("Habitat quality"), 
+          fr = paste0("Qualité de l'habitat")) |> 
+  add_row(en = paste0("Habitat connectivity"), 
+          fr = paste0("Connectivité de l'habitat")) |> 
+  add_row(en = paste0("Favourable climatic conditions"), 
+          fr = paste0("Conditions climatiques à l'habitat")) |> 
+  add_row(en = paste0("Contribution to flood prevention"), 
+          fr = paste0("Contribution dans la prévention des inondations")) |> 
+  add_row(en = paste0("Contribution to biodiversity conservation"), 
+          fr = paste0("Contribution dans la conservation de la biodiversité")) |> 
+  add_row(en = paste0("Contribution to heat island reduction"), 
+          fr = paste0("Contribution dans la réduction des îlots de chaleurs")) |> 
+  add_row(en = paste0("Conservation priority"), 
+          fr = paste0("Priorisation de conservation")) |> 
+  add_row(en = paste0("Flood risks"), 
+          fr = paste0("Risques d'inondation")) |> 
+  add_row(en = paste0("Heat islands"), 
+          fr = paste0("Îlots de chaleur")) |> 
+  add_row(en = paste0("Cool islands"), 
+          fr = paste0("Îlots de fraicheur")) |> 
+  add_row(en = paste0("Hab. quality"), 
+          fr = paste0("Qualité")) |> 
+  add_row(en = paste0("Hab. connect."), 
+          fr = paste0("Connectivité")) |> 
+  add_row(en = paste0("Favourable CC"), 
+          fr = paste0("Conditions climatiques")) |> 
+  add_row(en = paste0("Flood prev."), 
+          fr = paste0("Prév. inondations")) |> 
+  add_row(en = paste0("Biodiversity cons."), 
+          fr = paste0("Cons. biodiversité")) |> 
+  add_row(en = paste0("Heat island reduct."), 
+          fr = paste0("Rédu. îlots chaleurs")) |> 
+  add_row(en = paste0("Conservation"), 
+          fr = paste0("Conservation")) |> 
+  add_row(en = paste0("Flood risks"), 
+          fr = paste0("Risques inondation")) |> 
+  add_row(en = paste0("Heat islands"), 
+          fr = paste0("Îlots chaleur")) |> 
+  add_row(en = paste0("Cool islands"), 
+          fr = paste0("Îlots fraicheur")) |> 
+  add_row(en = paste0("the ability of an ecosystem to provide conditions appro",
+                      "priate for individual and population persistence"), 
+          fr = paste0("la capacité d'un écosystème à fournir des conditions ap",
+                      "propriées pour la persistance des individus et des popu",
+                      "lations")) |> 
+  add_row(en = paste0("the degree to which a landscape facilitates or impedes ",
+                      "animal movement and other ecological processes"), 
+          fr = paste0("la mesure dans laquelle un environnement facilite ou en",
+                      "trave les déplacements des animaux et d'autres processu",
+                      "s écologiques")) |> 
+  add_row(en = paste0("the degree to which past and future climatic conditions",
+                      " are favourable to species life"), 
+          fr = paste0("la mesure dans laquelle les conditions climatiques pass",
+                      "ées et futures sont favorables à la vie des espèces")) |> 
+  add_row(en = paste0("the contribution of natural infrastructure to flood pre",
+                      "vention"), 
+          fr = paste0("la contribution des infrastructures naturelles à la pré",
+                      "vention des inondations")) |> 
+  add_row(en = paste0("the contribution of natural infrastructure to biodivers",
+                      "ity conservation"), 
+          fr = paste0("la contribution des infrastructures naturelles à la con",
+                      "servation de la biodiversité")) |> 
+  add_row(en = paste0("the contribution of natural infrastructure to heat-isla",
+                      "nd reduction"), 
+          fr = paste0("la contribution des infrastructures naturelles à la réd",
+                      "uction des îlots de chaleur")) |> 
+  add_row(en = paste0("the importance of preserving natural infrastructure, ba",
+                      "sed on its total contribution to biodiversity conservat",
+                      "ion, heat-island reduction, and flood protection"), 
+          fr = paste0("l'importance de préserver les infrastructures naturelle",
+                      "s, sur la base de leur contribution totale à la conserv",
+                      "ation de la biodiversité, à la réduction des îlots de c",
+                      "haleur et à la protection contre les inondations")) |> 
+  add_row(en = paste0("the land areas at risk of flooding"), 
+          fr = paste0("les zones terrestres exposées aux risques d'inondation")) |> 
+  add_row(en = paste0("the urban areas with a higher air or surface temperatur",
+                      "e than other areas in the same urban environment"), 
+          fr = paste0("les zones urbaines où la température de l'air ou de la ",
+                      "surface est plus élevée que dans les autres zones du mê",
+                      "me environnement urbain")) |> 
+  add_row(en = paste0("the urban areas with a lower air or surface temperature",
+                      " than other areas in the same urban environment"), 
+          fr = paste0("les zones urbaines dont la température de l'air ou de l",
+                      "a surface est inférieure à celle des autres zones du mê",
+                      "me environnement urbain"))
 
-# Save --------------------------------------------------------------------
-
-# Saving fresh version of variables table translated
-# Encoding(variables_translated$en) <- "UTF-8"
-# Encoding(variables_translated$fr) <- "UTF-8"
-# write_csv(variables_translated, 
-#           file = "dev/translation/csv/variables_translated.csv")
-
-
-# Clean-up ----------------------------------------------------------------
-# rm("breaks_quali", "cols_to_translate", "con", "prev_translation", 
-#   "text_variables", "to_translate", "translated", "variables", 
-#   "variables_translated")

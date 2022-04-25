@@ -104,11 +104,11 @@ susFooter <- function() {
         tags$ul(
           tags$li(tags$a(href = NULL, HTML("&nbsp;"))),#sus_translate("Terms & Conditions"))),
           tags$li(tags$a(href = NULL, style = "cursor:pointer;", 
-                         onclick = "openTab('why_dash')", 
+                         onclick = "openTab('about_sus')", 
                          sus_translate("About"))),
           tags$li(tags$a(href = NULL, style = "cursor:pointer;", 
                          onclick = "document.getElementById('contact').click();",
-                         sus_translate("Contact"))),
+                         sus_translate("Contact/feedback"))),
           tags$li(tags$a(href = NULL, HTML("&nbsp;")))#sus_translate("Privacy Policy"))),
         )
       )
@@ -226,9 +226,11 @@ js_links_between_modules <- "
         }
       "
 bookmark_url <- 
-    'function copyUrl(text) {
+  'function copyUrl(text) {
        var inputc = document.body.appendChild(document.createElement("input"));
-       inputc.value = window.location.href;
+       const p = window.location.href;
+       const part_replace = "https://sus-mcgill.shinyapps.io";
+       inputc.value = p.replace(part_replace, "http://www.susmontreal.ca");
        inputc.focus();
        inputc.select();
        document.execCommand("copy");
