@@ -41,12 +41,26 @@ window.addEventListener('load', (evt) => {
   const navbarCollapse = document.querySelector('.navbar-static-top div.navbar-collapse');
   const mainContainer = document.querySelector('body > .container-fluid');
 
-  mainContainer.addEventListener('click', () => {
+  const collapseTopNav = () => {
     if (navbarCollapse.classList.contains('in')) {
       navbarCollapse.classList.remove('in');
       navbarCollapse.setAttribute('aria-expanded', 'false');
     }
+  };
+
+  mainContainer.addEventListener('click', () => {
+    collapseTopNav();
   });
+
+  const navbarTabLinks = document.querySelectorAll('.navbar-static-top .navbar-collapse ul li a[data-toggle="tab"]');
+
+  for(var i = 0; i < navbarTabLinks.length; i++) {
+    const navbarTabLink = navbarTabLinks[i];
+    console.log(navbarTabLink.innerText);
+    navbarTabLink.addEventListener('click', () => {
+      collapseTopNav();
+    });
+  }
 
   const navbarShadow = document.createElement('div');
   navbarShadow.classList.add('navbar-shadow');
