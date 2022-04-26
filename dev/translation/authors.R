@@ -113,8 +113,8 @@ authors_translation <-
                       "ur la Société canadienne d'hypothèques et de logement.")) |> 
   add_row(en = paste0("Senior Designer"), 
           fr = paste0("Concepteur senior")) |> 
-  add_row(en = paste0("Collaborator"), 
-          fr = paste0("collaboratrice-eur")) |> 
+  add_row(en = paste0("Contributor"), 
+          fr = paste0("Contributrice-eur")) |> 
   add_row(en = paste0("Cloé St-Hilaire is currently a PhD student in Planning ",
                       "at the University of Waterloo, studying the financializ",
                       "ation and digitization of Canada’s rental housing secto",

@@ -96,7 +96,7 @@ authors_UI <- function(id) {
                                 "nd Housing Corporation.")
                 )),
       susAuthor("Cloé St-Hilaire", 
-                sus_translate("Collaborator"), 
+                sus_translate("Contributor"), 
                 "team/photos/cloe_st_hilaire.jpg",
                 susAuthorBio(
                   sus_translate("Cloé St-Hilaire is currently a PhD student in",
@@ -123,7 +123,7 @@ authors_UI <- function(id) {
                                 "ications of technology.")
                 )),
       susAuthor("Emma Ezvan", 
-                sus_translate("Collaborator"), 
+                sus_translate("Contributor"), 
                 "team/photos/emma_ezvan.jpg",
                 susAuthorBio(
                   sus_translate("Currently a second-year master student in Urb",
@@ -148,7 +148,7 @@ authors_UI <- function(id) {
                                 "cts.")
                 )),
       susAuthor("Daniela Rodriguez", 
-                sus_translate("Collaborator"), 
+                sus_translate("Contributor"), 
                 "team/photos/daniela_rodriguez.jpg",
                 susAuthorBio(
                   sus_translate("Daniela Rodríguez is currently a second-year ",
@@ -171,7 +171,7 @@ authors_UI <- function(id) {
                                 ".")
                 )),
       susAuthor("Connor Cordingley", 
-                sus_translate("Collaborator"), 
+                sus_translate("Contributor"), 
                 "team/photos/connor_cordingley.jpeg",
                 susAuthorBio(
                   sus_translate("Connor is a current Master of Urban Planning ",
@@ -191,7 +191,7 @@ authors_UI <- function(id) {
                                 "d.")
                 )),
       susAuthor("Robin Basalaev-Binder", 
-                sus_translate("Collaborator"), 
+                sus_translate("Contributor"), 
                 "team/photos/robin_basalaev.jpg",
                 susAuthorBio(
                   sus_translate("Robin completed their Master of Urban Plannin",
@@ -214,7 +214,7 @@ authors_UI <- function(id) {
                                 "American contexts.")
                 )),
       susAuthor("Josh Medicoff", 
-                sus_translate("Collaborator"), 
+                sus_translate("Contributor"), 
                 "team/photos/josh_medicoff.jpg",
                 susAuthorBio(
                   sus_translate("Josh Medicoff is a master’s candidate in the ",
