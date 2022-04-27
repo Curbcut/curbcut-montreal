@@ -174,7 +174,8 @@ housing_server <- function(id) {
       id = ns_id, 
       data = data,
       var_left = var_left,
-      var_right = var_right)
+      var_right = var_right,
+      time = time)
     
     # Update map in response to variable changes or zooming
     rdeck_server(

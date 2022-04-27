@@ -1,15 +1,5 @@
 # ### CRASH MODULE GLOBALS #######################################################
 # 
-# # Map token
-# map_zoom_crash_levels = c("borough" = 0, "CT" = 10.5, "DA" = 12, "street" = 14)
-# 
-# # Time slider values
-# crash_slider <- list(
-#   min = lubridate::year(min(crash$date)),
-#   max = lubridate::year(max(crash$date)),
-#   interval = 1,
-#   init = lubridate::year(max(crash$date)))
-# 
 # # Dropdown menu
 # var_left_list_2_crash <- 
 #   list("Count" = "count",

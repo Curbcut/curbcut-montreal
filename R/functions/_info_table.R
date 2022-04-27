@@ -15,7 +15,7 @@ info_table <- function(data, var_type, var_left, var_right, df, select_id,
   ## Return early for all-NA table ---------------------------------------------
   
   if (var_type %in% c("NA_delta", "NA_delta_bivar")) {
-    out <- sus_translate("No data available.")
+    out <- "No data available."
     return(HTML(sus_translate(out)))}
   
   

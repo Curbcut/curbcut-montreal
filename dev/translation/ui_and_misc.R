@@ -489,5 +489,12 @@ ui_and_misc_translated <-
   add_row(en = paste0("Regionalism, internationalism and networks"), 
           fr = paste0("Régionalisme, internationalisme et réseaux")) |> 
   add_row(en = paste0("Sustainability"), 
-          fr = paste0("Développement durable"))
+          fr = paste0("Développement durable")) |> 
+  # Disclaimer
+  add_row(en = paste0("Displayed data for <b>{var_left_title}</b> is for the closest available year <b>({left_year})</b>."), 
+          fr = paste0("Les données présentées pour `<b>{var_left_title}</b>` sont celles de l'année disponible la plus proche <b>({left_year})</b>.")) |> 
+  add_row(en = paste0("Displayed data for <b>{var_right_title}</b> is for the closest available year <b>({right_year})</b>."), 
+          fr = paste0("Les données présentées pour `<b>{var_right_title}</b>` sont celles de l'année disponible la plus proche <b>({right_year})</b>.")) |> 
+  add_row(en = paste0("Comparison requires two different dates."), 
+          fr = paste0("Une comparaison nécessite deux dates différentes."))
   

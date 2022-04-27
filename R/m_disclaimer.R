@@ -12,7 +12,7 @@ year_disclaimer_UI <- function(id) {
   tagList(htmlOutput(NS(id, "year_disclaimer")))
 }
 
-year_disclaimer_server <- function(id, data, var_left, var_right, 
+year_disclaimer_server <- function(id, data, var_left, var_right, time,
                                    more = reactive(FALSE), 
                                    more_text = reactive(NULL)) {
   
@@ -23,7 +23,7 @@ year_disclaimer_server <- function(id, data, var_left, var_right,
   moduleServer(id, function(input, output, session) {
     
     disclaimer <- reactive(get_disclaimer(data(), var_left(), var_right(),
-                                          more(), more_text()))
+                                          time(), more(), more_text()))
     
     output$year_disclaimer <- renderText(paste0(disclaimer()))
   })
