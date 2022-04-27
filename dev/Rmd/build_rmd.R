@@ -48,13 +48,12 @@ process_rmd("crash.Rmd", "crash")
 # Montreal stories --------------------------------------------------------
 
 stories_files <- list.files("dev/Rmd/stories")
-library(here)
+# library(here)
 purrr::walk(stories_files, process_rmd, path = "stories")
 
 
 # Standalone --------------------------------------------------------------
 
-# NOT RUN, A lot of manual modifications to the .html doc are needed.
-# standalone_files <- list.files("dev/Rmd/standalone")
-# library(here)
-# purrr::walk(standalone_files, process_rmd, path = "standalone")
+standalone_files <- list.files("dev/Rmd/standalone") |> str_subset(".Rmd$")
+purrr::walk(standalone_files, process_rmd, path = "standalone")
+
