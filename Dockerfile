@@ -31,16 +31,16 @@ COPY . .
 COPY ./renv.lock ./renv.lock
 
 # install R packages
-RUN R -e "install.packages(pkgs = c('shiny', 'shinyjs', 'shinyWidgets', 'ggplot2', 'stringr', 'qs', 'glue', 'metathis', 'systemfonts'), repos = 'https://cran.rstudio.com/')"
-RUN R -e "install.packages('remotes')"
+#RUN R -e "install.packages(pkgs = c('shiny', 'shinyjs', 'shinyWidgets', 'ggplot2', 'stringr', 'qs', 'glue', 'metathis', 'systemfonts'), repos = 'https://cran.rstudio.com/')"
+#RUN R -e "install.packages('remotes')"
 # Add github token here
-RUN R -e "Sys.setenv(GITHUB_PAT = 'githubtoken')"
-RUN R -e "remotes::install_github('anthonynorth/rdeck')"
+#RUN R -e "Sys.setenv(GITHUB_PAT = 'githubtoken')"
+#RUN R -e "remotes::install_github('anthonynorth/rdeck')"
 
 # install renv & restore packages
-#RUN Rscript -e 'install.packages("renv")'
-#RUN Rscript -e 'renv::consent(provided = TRUE)'
-#RUN Rscript -e 'renv::restore()'
+RUN Rscript -e 'install.packages("renv")'
+RUN Rscript -e 'renv::consent(provided = TRUE)'
+RUN Rscript -e 'renv::restore()'
 
 # expose port
 EXPOSE 3838
