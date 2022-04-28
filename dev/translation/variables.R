@@ -1118,4 +1118,3 @@ variables_translated <-
           fr = paste0("les zones urbaines dont la température de l'air ou de l",
                       "a surface est inférieure à celle des autres zones du mê",
                       "me environnement urbain"))
-

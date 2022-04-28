@@ -497,4 +497,3 @@ ui_and_misc_translated <-
           fr = paste0("Les données présentées pour `<b>{var_right_title}</b>` sont celles de l'année disponible la plus proche <b>({right_year})</b>.")) |> 
   add_row(en = paste0("Comparison requires two different dates."), 
           fr = paste0("Une comparaison nécessite deux dates différentes."))
-  
