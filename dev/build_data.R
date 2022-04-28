@@ -208,18 +208,17 @@ building <-
 qsave(variables, file = "data/variables.qs")
 qsavem(borough, CT, DA, file = "data/census.qsm")
 qsavem(borough_full, CT_full, DA_full, file = "data2/census_full.qsm")
-qsave(grid, file = "data/grid.qs")
+# qsave(grid, file = "data/grid.qs")
 qsave(grid_full, file = "data2/grid_full.qs")
-qsave(building, file = "data/building.qs")
+# qsave(building, file = "data/building.qs")
 qsave(building_full, file = "data2/building_full.qs")
 qsave(street, file = "data2/street.qs")
 qsave(crash, file = "data/crash.qs")
-qsave(tt_matrix, file = "data/tt_matrix.qs")
+# qsave(tt_matrix, file = "data/tt_matrix.qs")
 qsavem(alley, alley_text, file = "data/alley.qsm")
 qsavem(covid, covid_pics, file = "data/covid.qsm")
 qsave(green_space, file = "data/green_space.qs")
 # qsave(marketed_sustainability, file = "data/marketed_sustainability.qs")
-qsavem(natural_inf, natural_inf_custom, file = "data/natural_inf.qsm")
 qsave(metro_lines, file = "data/metro_lines.qs")
 # qsavem(permits_choropleth, permits, file = "data/permits.qsm")
 qsavem(title_card_indicators, pe_var_hierarchy, pe_theme_order, CSDUID_groups,
@@ -228,6 +227,60 @@ qsave(postal_codes, file = "data/postal_codes.qs")
 qsavem(stories, stories_mapping, file = "data/stories.qsm")
 qsave(dyk, "data/dyk.qs")
 qsave(title_text, "data/title_text.qs")
+
+
+# Save data to the sql db -------------------------------------------------
+
+library(RSQLite)
+sqlitePath <- "data/sql_db.sqlite"
+
+# Overwrite!
+unlink(sqlitePath)
+
+# Create the db
+db <- dbConnect(SQLite(), sqlitePath)
+
+# natural_inf
+dbWriteTable(db, "natural_inf_custom", natural_inf_custom)
+
+walk2(names(natural_inf), natural_inf, function(name, df) {
+  if (!is.data.frame(df)) {
+    walk2(df, seq_along(df), function(x, y) {
+      dbWriteTable(db, paste("natural_inf", name, y, sep = "_"), x)
+      dbExecute(db, paste0("CREATE INDEX index_biodiversity_", y, 
+                            " ON natural_inf_custom_", y, " (biodiversity)"))
+    })
+  }
+  else {
+    dbWriteTable(db, paste("natural_inf", name, sep = "_"), df)
+  }
+  
+  if (name == "custom_explore") {
+    dbExecute(db, paste0("CREATE INDEX index_natural_inf_custom_explore_slider",
+                         " ON natural_inf_custom_explore (slider)"))
+  }
+})
+
+# tt_matrix
+dbWriteTable(db, "tt_matrix", tt_matrix)
+dbExecute(db, paste0("CREATE INDEX index_tt_matrix_destination",
+                     " ON tt_matrix (destination)"))
+
+# building with primary key
+dbWriteTable(db, "pre_pk_building", building)
+
+dbExecute(db, paste0("CREATE TABLE building1 ",
+                     "(ID INTEGER, ",
+                     "name VARCHAR, ",
+                     "name_2 VARCHAR, ",
+                     "DAUID VARCHAR,
+                     CONSTRAINT building1_pk PRIMARY KEY (ID))"))
+dbExecute(db, "INSERT INTO building1 SELECT * FROM pre_pk_building")
+dbExecute(db, "DROP TABLE pre_pk_building")
+
+# dbListTables(db)
+# Close the connection
+dbDisconnect(db)
 
 
 # Copy large data files to Dropbox ----------------------------------------

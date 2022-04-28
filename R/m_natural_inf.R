@@ -158,23 +158,26 @@ natural_inf_server <- function(id) {
     # Enable or disable the main main_slider
     observe(toggle(NS(id, "slider"), condition = var_left() == "c_priority"))
     
-    # Data
+    # SQL retrieval
     data <- reactive({
-      if (var_left() == "c_priority") {
-        if (!custom_priorities()) {
-          natural_inf$original_priorities[
-            natural_inf$original_priorities$slider == main_slider(), ]
+      db_call <- 
+        if (var_left() == "c_priority") {
+          if (!custom_priorities()) {
+            paste0("SELECT * FROM natural_inf_original_priorities ",
+                   "WHERE slider = ", main_slider())
           } else {
-            custom <- natural_inf$custom_explore
-            custom <- custom[custom$slider == main_slider(), ]
-            custom <- custom[custom$biodiversity == ni_slider()[1], ]
-            custom <- custom[custom$heat_island == ni_slider()[2], ]
-            custom <- custom[custom$flood == ni_slider()[3], ]
-            custom
+            paste0("SELECT * FROM natural_inf_custom_explore ",
+                   "WHERE slider = ", main_slider(), 
+                   " AND biodiversity = ", ni_slider()[1], 
+                   " AND heat_island = ", ni_slider()[2], 
+                   " AND flood = ", ni_slider()[3])
           }
-        } else natural_inf$explore
-        
-      })
+        } else {
+          paste0("SELECT * FROM natural_inf_explore")
+        }
+      
+      dbGetQuery(db, db_call)
+    })
     
     # Map custom colours
     natural_inf_colours <- reactive({
@@ -194,12 +197,11 @@ natural_inf_server <- function(id) {
           if (main_slider() == 0) {
             data.frame(group = "ABCD", value = "#FFFFFF00")
           } else {
-            custom <- natural_inf$custom
-            custom <- custom[[main_slider()]]
-            custom <- custom[custom$biodiversity == ni_slider()[1], ]
-            custom <- custom[custom$heat_island == ni_slider()[2], ]
-            custom <- custom[custom$flood == ni_slider()[3], ]
-            custom[, c("group", "value")] 
+            db_call <- paste0("SELECT * FROM natural_inf_custom_", main_slider(),
+                              " WHERE biodiversity = ", ni_slider()[1], 
+                              " AND heat_island = ", ni_slider()[2], 
+                              " AND flood = ", ni_slider()[3])
+            dbGetQuery(db, db_call)[, c("group", "value")] 
           }
         }
       } else NULL
