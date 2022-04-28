@@ -43,7 +43,6 @@ building <- qread("data/building.qs")
 # green_space <- qread("data/green_space.qs")
 qload("data/alley.qsm")
 # crash <- qread("data/crash.qs")
-tt_matrix <- qread("data/tt_matrix.qs")
 # marketed_sustainability <- qread("data/marketed_sustainability.qs")
 metro_lines <- qread("data/metro_lines.qs")
 

@@ -340,7 +340,6 @@ shinyServer(function(input, output, session) {
   #                    duration = 3)
   # })
   
-  
   ## Generating report ---------------------------------------------------------
   
   output$create_report <-
