@@ -208,9 +208,7 @@ building <-
 qsave(variables, file = "data/variables.qs")
 qsavem(borough, CT, DA, file = "data/census.qsm")
 qsavem(borough_full, CT_full, DA_full, file = "data2/census_full.qsm")
-# qsave(grid, file = "data/grid.qs")
 qsave(grid_full, file = "data2/grid_full.qs")
-# qsave(building, file = "data/building.qs")
 qsave(building_full, file = "data2/building_full.qs")
 qsave(street, file = "data2/street.qs")
 qsave(crash, file = "data/crash.qs")
@@ -228,9 +226,28 @@ qsave(dyk, "data/dyk.qs")
 qsave(title_text, "data/title_text.qs")
 
 
+# Save files we'll save in the SQL to dev/data ----------------------------
+
+qsavem(natural_inf, natural_inf_custom, file = "dev/data/natural_inf.qsm")
+qsave(tt_matrix, file = "dev/data/tt_matrix.qs")
+qsave(building, file = "dev/data/building.qs")
+qsave(grid, file = "dev/data/grid.qs")
+
+
 # Save data to the sql db -------------------------------------------------
 
 library(RSQLite)
+library(qs)
+qload("dev/data/natural_inf.qsm")
+tt_matrix <- qread("dev/data/tt_matrix.qs")
+building <- qread("dev/data/building.qs")
+grid <- qread("dev/data/grid.qs") |> 
+  dplyr::rowwise() |> 
+  dplyr::mutate(centroid_lat = unlist(centroid)[1],
+                centroid_lon = unlist(centroid)[2]) |> 
+  dplyr::ungroup() |> 
+  dplyr::select(-centroid)
+
 sqlitePath <- "data/sql_db.sqlite"
 
 # Overwrite!
@@ -242,9 +259,9 @@ db <- dbConnect(SQLite(), sqlitePath)
 # natural_inf
 dbWriteTable(db, "natural_inf_custom", natural_inf_custom)
 
-walk2(names(natural_inf), natural_inf, function(name, df) {
+purrr::walk2(names(natural_inf), natural_inf, function(name, df) {
   if (!is.data.frame(df)) {
-    walk2(df, seq_along(df), function(x, y) {
+    purrr::walk2(df, seq_along(df), function(x, y) {
       dbWriteTable(db, paste("natural_inf", name, y, sep = "_"), x)
       dbExecute(db, paste0("CREATE INDEX index_biodiversity_", y, 
                             " ON natural_inf_custom_", y, " (biodiversity)"))
@@ -267,17 +284,32 @@ dbExecute(db, paste0("CREATE INDEX index_tt_matrix_destination",
 
 # building with primary key
 dbWriteTable(db, "pre_pk_building", building)
-
-dbExecute(db, paste0("CREATE TABLE building1 ",
+dbExecute(db, paste0("CREATE TABLE building ",
                      "(ID INTEGER, ",
                      "name VARCHAR, ",
                      "name_2 VARCHAR, ",
                      "DAUID VARCHAR,
-                     CONSTRAINT building1_pk PRIMARY KEY (ID))"))
-dbExecute(db, "INSERT INTO building1 SELECT * FROM pre_pk_building")
+                     CONSTRAINT building_pk PRIMARY KEY (ID))"))
+dbExecute(db, "INSERT INTO building SELECT * FROM pre_pk_building")
 dbExecute(db, "DROP TABLE pre_pk_building")
 
-# dbListTables(db)
+# grid with primary key
+dbWriteTable(db, "pre_pk_grid", grid)
+# Construct column names and type to
+col_names_types <- 
+  paste0(names(grid), " ", purrr::map_chr(names(grid), ~{class(grid[[.x]])}) |> 
+         str_replace_all("character", "VARCHAR") |> 
+         str_replace_all("integer", "INTEGER") |> 
+         str_replace_all("numeric", "DOUBLE")) |> 
+  paste0(collapse = ", ")
+dbExecute(db, paste0("CREATE TABLE grid ",
+                     "(", col_names_types, ", ",
+                     "CONSTRAINT grid_pk PRIMARY KEY (ID))"))
+dbExecute(db, "INSERT INTO grid SELECT * FROM pre_pk_grid")
+dbExecute(db, "DROP TABLE pre_pk_grid")
+
+# List active dataframes in the db
+dbListTables(db)
 # Close the connection
 dbDisconnect(db)
 
