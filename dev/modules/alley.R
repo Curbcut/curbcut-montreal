@@ -66,7 +66,11 @@ alleys_visited <-
 alleys_visited_text <-
   suppressMessages(read_csv2("dev/data/green_alleys/alleys_visited.csv", 
             show_col_types = FALSE)) |>
-  mutate_all(list(~na_if(.,"")))
+  mutate_all(list(~na_if(.,""))) |> 
+  select(-description_fr, -circulation_fr) |> 
+  mutate(type = if_else(type == "none", "unmaintained", type))
+
+
 
 # Which photo does not exist? Throw a warning message
 missing_photos <- 
@@ -97,41 +101,34 @@ alleys_visited <-
 # Combine files -----------------------------------------------------------
 
 # First, give priority to the alleys_visited version
-alleys <- 
+alley <- 
   bind_rows(alleys_mtl, alleys_google, alleys_mn) |> 
   st_set_agr("constant")
 
 alleys_to_filter <- 
   alleys_visited |> 
-  st_intersection(alleys)
+  st_intersection(alley)
 
-alleys <- 
-  alleys |> 
+alley <- 
+  alley |> 
   filter(!name %in% alleys_to_filter$name.1)
 
-alleys <- 
+alley <- 
   alleys_visited |>
-  bind_rows(alleys) |> 
+  bind_rows(alley) |> 
   mutate(ID = row_number()) |> 
   select(ID, name, date, created, visited, type, description, circulation, 
          photo_ID, geometry)
 
+# First letter of the name in capital letter
+alley$name <- paste(toupper(substr(alley$name, 1, 1)), 
+                    substr(alley$name, 2, nchar(alley$name)), sep="")
+
 # Join borough name and CSDUID
-alleys <- 
-  alleys |>
+alley <- 
+  alley |>
   st_join(rename(select(borough, ID, name), CSDUID = ID, name_2 = name)) |>
   relocate(CSDUID, name_2, .after = name)
-
-# Add fill color
-alleys <- 
-  alleys %>% 
-  mutate(fill = case_when(type == "green" ~ "#008100EE",
-                          visited == TRUE & is.na(type) ~ "#008100EE",
-                          type == "community" ~ "#F6BE00EE",
-                          type == "mixed" ~ "#B37400EE",
-                          type == "none" ~ "#262626EE",
-                          TRUE ~ NA_character_)) |> 
-  relocate(geometry, .after = last_col())
 
 
 # Get borough text --------------------------------------------------------
@@ -151,7 +148,7 @@ alley_text <-
 
 # Add total lengths of green alleys to boroughs
 alleys_length <- 
-  alleys |> 
+  alley |> 
   mutate(green_alley_sqm = st_area(geometry) / 2)
 
 alley_text <- 
@@ -162,7 +159,9 @@ alley_text <-
                summarize(green_alley_sqm = round(units::drop_units(sum(
                  green_alley_sqm, na.rm = TRUE)))),
              by = c("ID" = "CSDUID")) |> 
-  relocate(green_alley_sqm, .after = first_alley)
+  relocate(green_alley_sqm, .after = first_alley) |> 
+  mutate(green_alley_sqm = if_else(is.na(green_alley_sqm), NA_character_,
+                                   prettyNum(green_alley_sqm, big.mark = ",")))
 
 
 # Add green alleys sqm to census geographies -----------------------------
@@ -225,16 +224,9 @@ CT <- left_join(CT, join_alleys$CT, by = "ID") |>
 DA <- left_join(DA, join_alleys$DA, by = "ID") |> 
   relocate(buffer, centroid, building, geometry, .after = last_col())
 
-street <- 
-  street |> 
-  left_join(join_alleys$DA, by = c("DAUID" = "ID")) |> 
-  relocate(geometry, .after = last_col()) |> 
-  st_set_agr("constant")
-
-
 # Meta testing ------------------------------------------------------------
 
-# meta_testing()
+meta_testing()
 
 
 # Variable explanations ---------------------------------------------------
@@ -263,6 +255,25 @@ breaks_q5_active <-
 
 variables <-
   variables |>
+  add_variables(
+    var_code = "alley_qual",
+    var_title = "Green alley type",
+    var_short = "Alley",
+    explanation = "the type of green alley",
+    category = NA,
+    theme = "Urban life",
+    private = FALSE,
+    dates = NA,
+    scales = "alley",
+    breaks_q3 = tibble(),
+    breaks_q5 = tibble(
+      scale = "alley",
+      date = NA,
+      rank = 1:4,
+      var = c("community", "green", "mixed", "unmaintained"),
+      var_name = c("Community", "Green", "Mixed", "Unmaintained"),
+      var_name_short = c("Commun.", "Green", "Mixed", "Unmain.")),
+    source = "VdM") |> 
   add_variables(
     var_code = "green_alley_sqkm",
     var_title = "Green alleys per sq km",

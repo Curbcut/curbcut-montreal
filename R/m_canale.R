@@ -3,8 +3,8 @@
 # UI ----------------------------------------------------------------------
 
 canale_UI <- function(id) {
-  
   ns_id <- "canale"
+  ns_id_map <- paste0(ns_id, "-map")
   
   tagList(
     
@@ -16,16 +16,16 @@ canale_UI <- function(id) {
                            zoom_UI(NS(id, ns_id), map_zoom_levels)))),
     
     # Map
-    div(class = "mapdeck_div", mapdeckOutput(NS(id, "map"), height = "100%")),
+    div(class = "mapdeck_div", rdeckOutput(NS(id, ns_id_map), height = "100%")),
     
     # Right panel
     right_panel(
       id = id,
-      compare_UI(NS(id, ns_id), make_dropdown()),
-      explore_UI(NS(id, ns_id)), 
+      compare_UI(NS(id, ns_id), make_dropdown(compare = TRUE)),
+      explore_UI(NS(id, ns_id)),
       dyk_UI(NS(id, ns_id)))
     
-    )
+  )
 }
 
 
@@ -34,35 +34,57 @@ canale_UI <- function(id) {
 canale_server <- function(id) {
   moduleServer(id, function(input, output, session) {
     ns_id <- "canale"
+    ns_id_map <- paste0(ns_id, "-map")
     
     # Initial reactives
-    zoom <- reactiveVal(get_zoom(map_zoom, map_zoom_levels))
-    click_id <- reactiveVal(NULL)
+    zoom <- reactiveVal(get_zoom(map_zoom))
+    zoom_string <- reactiveVal(get_zoom_string(map_zoom, map_zoom_levels))
+    select_id <- reactiveVal(NA)
     poi <- reactiveVal(NULL)
-    
+
     # Map
-    output$map <- renderMapdeck(mapdeck(
-      style = map_style, 
-      token = map_token, 
-      zoom = map_zoom, 
-      location = map_location))
+    output[[ns_id_map]] <- renderRdeck({
+      rdeck(map_style = map_base_style, initial_view_state = view_state(
+        center = map_loc, zoom = map_zoom))
+    })
     
     # Zoom and POI reactives
-    observeEvent(input$map_view_change, {
-      zoom(get_zoom(input$map_view_change$zoom, map_zoom_levels))
-      poi(observe_map(input$map_view_change))
+    observeEvent(get_view_state(ns_id_map), {
+      zoom({
+        if (!is.null(sus_bookmark$zoom)) {
+          sus_bookmark$zoom
+        } else if (!is.null(sus_link$zoom)) {
+          sus_link$zoom
+        } else get_zoom(get_view_state(ns_id_map)$zoom)})
+      new_poi <- observe_map(get_view_state(ns_id_map))
+      if ((is.null(new_poi) && !is.null(poi())) || 
+          (!is.null(new_poi) && (is.null(poi()) || !all(new_poi == poi()))))
+        poi(new_poi)
+    })
+    
+    # Zoom string reactive
+    observeEvent(zoom(), {
+      new_zoom_string <- get_zoom_string(zoom(), map_zoom_levels)
+      if (new_zoom_string != zoom_string()) zoom_string(new_zoom_string)
     })
     
     # Click reactive
-    observeEvent(input$map_polygon_click, {
-      click_id(get_click(input$map_polygon_click))})
+    observe({
+      selection <- get_clicked_object(ns_id_map)$ID
+      if (!is.na(select_id()) && selection == select_id()) {
+        select_id(NA)
+      } else select_id(selection)
+    }) |> bindEvent(get_clicked_object(ns_id_map))
     
-    # Zoom level for data
-    df <- zoom_server(
+    # Choose tileset
+    tile <- zoom_server(
       id = ns_id, 
-      zoom = zoom, 
+      zoom_string = zoom_string, 
       zoom_levels = reactive(map_zoom_levels))
     
+    # Get df for explore/legend/etc
+    df <- reactive(get_df(tile(), zoom_string()))
+
     # Time
     time <- reactive("2016")
     
@@ -72,9 +94,15 @@ canale_server <- function(id) {
     # Right variable / compare panel
     var_right <- compare_server(
       id = ns_id, 
-      var_list = make_dropdown(),
-      df = df, 
+      var_list = make_dropdown(compare = TRUE),
       time = time)
+    
+    # Additional tileset identifier
+    tile2 <- reactive("")
+    
+    # Composite variable for map
+    map_var <- reactive(
+      str_remove(paste(var_left(), var_right(), sep = "_"), "_ $"))
     
     # Sidebar
     sidebar_server(id = ns_id, x = "canale")
@@ -88,11 +116,9 @@ canale_server <- function(id) {
     # Legend
     legend <- legend_server(
       id = ns_id, 
-      data = data,
       var_left = var_left, 
       var_right = var_right, 
-      df = df,
-      zoom = zoom)
+      df = df)
     
     # Did-you-know panel
     dyk_server(
@@ -102,80 +128,72 @@ canale_server <- function(id) {
       poi = poi)
     
     # Update map in response to variable changes or zooming
-    select_id <- map_change(
-      id = ns_id,
-      map_id = NS(id, "map"), 
-      data = data, 
-      df = df, 
-      zoom = zoom,
-      click = click_id
-      )
-    
-    # Explore panel
-    explore_content <- explore_server(
+    rdeck_server(
       id = ns_id, 
-      data = data, 
-      var_left = var_left,
-      var_right = var_right, 
-      df = df, 
+      map_id = "map", 
+      tile = tile,
+      tile2 =  tile2,
+      map_var = map_var, 
       zoom = zoom,
       select_id = select_id)
     
-    # Data export TKTK should this become a non-reactive function?
-    data_export <- data_export_server(
+    # Update map labels
+    label_server(
+      id = ns_id, 
+      map_id = "map", 
+      tile = tile,
+      zoom = zoom)
+    
+    # De-select
+    observeEvent(input[[paste0(ns_id, "-clear_selection")]], select_id(NA))
+    # Error check
+    observeEvent(data(), if (!select_id() %in% data()$ID) select_id(NA),
+                 ignoreInit = TRUE)
+    
+    # Explore panel
+    explore_content <- explore_server(
       id = ns_id,
-      df = data,
+      data = data,
       var_left = var_left,
-      var_right = var_right)
+      var_right = var_right,
+      df = df,
+      select_id = select_id)
     
     # Bookmarking
     bookmark_server(
       id = ns_id,
-      map_view_change = reactive(input$map_view_change),
+      map_viewstate = reactive(get_view_state(ns_id_map)),
       var_right = var_right,
       select_id = select_id,
       df = df,
-      map_id = NS(id, "map"),
+      map_id = "map",
     )
-    
-    # Update click_id() on bookmark
+
+    # Update select_id() on bookmark
     observeEvent(sus_bookmark$active, {
-      # Delay of 2000 milliseconds more than the zoom update from bookmark.
-      # The map/df/data needs to be updated before we select an ID.
       if (isTRUE(sus_bookmark$active)) {
-        delay(2000, {
-          if (!is.null(sus_bookmark$select_id)) {
-            if (sus_bookmark$select_id != "NA") click_id(sus_bookmark$select_id)
-          }
+        delay(1000, {
+          if (!is.null(sus_bookmark$select_id))
+            if (sus_bookmark$select_id != "NA") 
+              select_id(sus_bookmark$select_id)
         })
       }
-      
       # So that bookmarking gets triggered only ONCE
-      delay(1500, {sus_bookmark$active <- FALSE})      
-    }, priority = -2)
-    
-    # Update click_id() on module link
-    observeEvent(sus_link$activity, {
-      # Delay of 2000 milliseconds more than the zoom update from bookmark.
-      # The map/df/data needs to be updated before we select an ID.
-      delay(2000, {
-        if (!is.null(sus_link$select_id)) click_id(sus_link$select_id)
+      delay(1500, {
+        sus_bookmark$active <- FALSE
+      sus_bookmark$df <- NULL
+      sus_bookmark$zoom <- NULL
       })
     }, priority = -2)
     
-    # OUT
-    reactive({list(
-      module_short_title = "the CanALE index",
-      module_id = "canale",
-      time = "2016",
-      data = data_export(),
-      token = map_token,
-      map_zoom = input$map_view_change$zoom,
-      map_location = c(input$map_view_change$longitude, 
-                       input$map_view_change$latitude),
-      df = df(),
-      explore_content = explore_content(),
-      poly_selected = selection())})
+    # Update select_id() on module link
+    observeEvent(sus_link$activity, {
+      delay(1000, {
+        if (!is.null(sus_link$select_id)) select_id(sus_link$select_id)
+        sus_link$df <- NULL
+        sus_link$zoom <- NULL
+      })
+    }, priority = -2)
     
   })
 }

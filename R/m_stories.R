@@ -1,25 +1,31 @@
 ### STORIES MODULE ##############################################################
 
+# Temporary non-translated stories:
+available_stories <- list.files("www/stories", full.names = TRUE) |> 
+  str_subset(".html")
+
 # UI ----------------------------------------------------------------------
 
 stories_UI <- function(id) {
+  ns_id <- "stories"
+  
   tagList(
-    
+
     # Sidebar
     sidebar_UI(
       NS(id, "sidebar"),
-      hr(id = NS(id, "hr")),
-      actionLink(NS(id, "back"), sus_translate("Back to the map"))),
-    
+      # hr(id = NS(id, "hr")),
+      actionLink(NS(id, "back"), sus_translate("Back to the map"))
+    ),
+
     # Map
-    div(class = "mapdeck_div", mapdeckOutput(NS(id, "map"), height = "100%")),
-    
+    div(class = "mapdeck_div", rdeckOutput(NS(id, paste0(ns_id, "-map")), 
+                                             height = "100%")),
+
     # Stories
     hidden(htmlOutput(
-      NS(id, "stories"),
-      style = paste0("position:absolute; margin: 40px; ",
-                     "max-width: 1200px; z-index:499")))
-    
+      NS(id, "stories")))
+
   )
 }
 
@@ -28,156 +34,117 @@ stories_UI <- function(id) {
 
 stories_server <- function(id) {
   moduleServer(id, function(input, output, session) {
-    
     ns_id <- "stories"
-    
-    # Initial reactives
+    ns_id_map <- paste0(ns_id, "-map")
+
+    # Initial reactive
     select_id <- reactiveVal(NA)
-    zoom <- reactiveVal(map_zoom * -550 + 8000)
-    
+
     # Sidebar
     sidebar_server(
-      id = "sidebar", 
+      id = "sidebar",
       x = "stories")
 
     # Map
-    output$map <- renderMapdeck({mapdeck(
-      style = map_style, 
-      token = map_token, 
-      zoom = map_zoom, 
-      location = map_location) |> 
-        # Initiate a basemap so that a click outside the popup 
-        # have the power to deselect it.
-        add_polygon(data = borough, 
-                    fill_colour = NULL, 
-                    stroke_opacity = 1,
-                    fill_opacity = 1,
-                    update_view = FALSE,
-                    layer_id = "basemap")})
-    
-    # Zoom level
-    observeEvent(input$map_view_change$zoom, {
-      zoom(case_when(input$map_view_change$zoom > 13 ~ 600,
-                     TRUE ~ input$map_view_change$zoom * -550 + 8000))
+    output[[ns_id_map]] <- renderRdeck({
+      rdeck(map_style = map_style_building, initial_view_state = view_state(
+        center = map_loc, zoom = map_zoom)) |> 
+        add_mvt_layer(
+          id = "stories",
+          data = mvt_url("sus-mcgill.stories-stories"),
+          point_type = "icon",
+          get_icon = name,
+          icon_atlas = "stories/image_atlas.png",
+          icon_mapping = stories_mapping,
+          icon_size_scale = 60,
+          pickable = TRUE,
+          auto_highlight = TRUE,
+          highlight_color = "#FFFFFF50")
     })
     
-    
-    # Update buffer to change the map when zoom is different
-    data <- reactive({
-        stories %>%
-        mutate(buffer = st_buffer(geometry, zoom())) %>%
-        st_set_geometry("buffer")
-    })
-    
-    observeEvent({
-      data()
-      zoom()}, {
-
-        v1 <- 1:nrow(data())
-        v2 <- paste0("stories/round_img/", data()$img[v1])
-        v3 <- paste0(map(data()$buffer, st_bbox) %>% map(as.vector))
-        v4 <- paste0("image", v1)
-        
-        all_add_bitmap <- paste0('add_bitmap("', v2, '", bounds = ', v3, ', ',
-                                 'layer_id ="',v4 ,'", update_view = FALSE) %>% ')
-        
-        all_add_bitmap[length(all_add_bitmap)] <-
-          str_remove_all(all_add_bitmap[length(all_add_bitmap)], "%>%")
-        
-        updated_map <-
-          paste0('mapdeck_update(map_id = NS(id, "map")) %>%',
-                 'add_polygon(data(),',
-                      'id = "ID", fill_opacity = 0, layer_id = "clickable",',
-                      'stroke_opacity = 0, update_view = FALSE) %>% ',
-                 parse(text = all_add_bitmap))
-        
-        eval(parse(text = updated_map))
-        
-  })
-    
-    # Update poly_selected on click
-    observeEvent(input$map_polygon_click, {
-      click <- fromJSON(input$map_polygon_click)$object$properties$id
-      if (is.null(click)) {
+    # Click reactive
+    observe({
+      selection <- get_clicked_object(ns_id_map)$ID
+      if (!is.na(select_id()) && selection == select_id()) {
         select_id(NA)
-        hide(id = "stories")
-      } else if (!is.na(select_id()) && 
-                 click == select_id()) {
-        select_id(NA)
-        hide(id = "stories")
-      } else select_id(click)
-    })
+      } else select_id(selection)
+    }) |> bindEvent(get_clicked_object(ns_id_map))
     
     # Render the story in question, now only in english (_en)
     output$stories <- renderUI({
-      
+
       if (!is.na(select_id())) {
-        
+
         rmd_name <- stories[stories$ID == select_id(),]$name
         bandeau_name <- stories[stories$ID == select_id(),]$img
-        
+
+        story_link <- paste0("www/stories/", rmd_name, "_", sus_rv$lang(),
+                             ".html")
+
+        # Construct story link, serve en if no translation available.
+        story_link <- if (story_link %in% available_stories) story_link else {
+          paste0("www/stories/", rmd_name, "_", "en",
+                 ".html")
+        }
+
         HTML('<div class = "main_panel_text_popup">',
              # Adding bandeau img after the first div (title)
              str_replace(
-               includeHTML(paste0("www/stories/", rmd_name, "_en.html")),
+               includeHTML(story_link),
                "</div>", paste0("</div><img src =", "stories/bandeau_img/",
-                                bandeau_name,"><br><br>")),
+                                bandeau_name,"><br><br>")) |>
+               str_replace_all('<img src="visuals/',
+                               '<img src="stories/visuals/'),
              '</div>')
       }
-      
+
     })
-    
-    # Anytime to "Go back to map" button is clicked, poly_selected goes
-    # NA causing the div to disappear
-    observeEvent(input$back, {
-      select_id(NA)
-    })
-    
-    observeEvent(select_id(), {
+
+    # Hide map when "Go back to map" button is clicked
+    observe(select_id(NA)) |> bindEvent(input$back)
+
+    observe({
       toggle("hr", condition = !is.na(select_id()))
       toggle("back", condition = !is.na(select_id()))
       toggle("stories", condition = !is.na(select_id()))
-    })
-  
-    # If there's an action with the map, the rmd goes away (Ultimately, any click on the map
-    # should trigger these)
-    observeEvent(input$map_view_change, {
+    }) |> bindEvent(select_id())
+
+    # If there's an action on the map, the story goes away
+    observe({
       hide(id = "stories")
       select_id(NA)
-    })
-    
+    }) |> bindEvent(get_view_state(ns_id_map))
+
     # Bookmarking
     bookmark_server(
       id = ns_id,
-      map_view_change = reactive(input$map_view_change),
+      map_viewstate = reactive(
+        input[[paste0(ns_id, "-map_viewstate")]]$viewState),
       select_id = select_id,
-      map_id = NS(id, "map"),
+      map_id = "map",
     )
-    
-    # Update click_id() on bookmark
+
+    # Update select_id() on bookmark
     observeEvent(sus_bookmark$active, {
-      # Delay of 2000 milliseconds more than the zoom update from bookmark.
-      # The map/df/data needs to be updated before we select an ID.
       if (isTRUE(sus_bookmark$active)) {
-        delay(2000, {
-          if (!is.null(sus_bookmark$select_id)) {
-            if (sus_bookmark$select_id != "NA") click_id(sus_bookmark$select_id)
-          }
+        if (!is.null(sus_bookmark$df)) df <- reactiveVal(sus_bookmark$df)
+        delay(1000, {
+          if (!is.null(sus_bookmark$select_id))
+            if (sus_bookmark$select_id != "NA")
+              select_id(sus_bookmark$select_id)
         })
       }
-      
       # So that bookmarking gets triggered only ONCE
-      delay(1500, {sus_bookmark$active <- FALSE})      
+      delay(1500, {sus_bookmark$active <- FALSE})
     }, priority = -2)
-    
-    # Update click_id() on module link
+
+    # Update select_id() on module link
     observeEvent(sus_link$activity, {
-      # Delay of 2000 milliseconds more than the zoom update from bookmark.
-      # The map/df/data needs to be updated before we select an ID.
-      delay(2000, {
-        if (!is.null(sus_link$select_id)) click_id(sus_link$select_id)
+      if (!is.null(sus_bookmark$df)) df <- reactiveVal(sus_bookmark$df)
+      delay(1000, {
+        if (!is.null(sus_link$select_id)) select_id(sus_link$select_id)
       })
     }, priority = -2)
-    
+
   })
 }

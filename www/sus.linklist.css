@@ -8,8 +8,8 @@
   flex-flow: column wrap;
   align-items: flex-start;
   justify-content: flex-start;
-  margin-left: -5px;
-  margin-right: -10px;
+  margin-left: calc(-1 * var(--padding-h-md));
+  margin-right: calc(-1 * var(--padding-h-md));
   overflow-x: hidden;
   height: 450px;
 }
@@ -17,7 +17,7 @@
 .sus-link-list-group {
   flex-grow: 0;
   min-width: max-content;
-  width: calc(100% / 3 - var(--padding-h-md));
+  width: calc(100% / 2 - var(--padding-h-md));
   background: none;
   border-radius: 0px;
   box-shadow: none;
@@ -58,7 +58,7 @@
 }
 
 .sus-link-list-group li {
-  background-color: rgba(255, 255, 255, 0.5);
+  background-color: rgba(255, 255, 255, 0.3);
   margin-left: calc(var(--dx-link-list-group) * -1 + 2px);
   margin-right: calc(var(--dx-link-list-group) * -1 + 2px);
   padding-left: var(--dx-link-list-group);
@@ -80,10 +80,11 @@
 }
 
 .sus-link-list-group li:hover {
-  background-color: var(--c-primary-complement);
+  background-color: rgba(255, 255, 255, 0.5);
 }
 
 .sus-link-list-group li:active {
+  background-color: rgba(255, 255, 255, 0.4);
   transform: scale(0.99, 0.99);
 }
 

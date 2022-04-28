@@ -47,29 +47,29 @@ convert_unit <- function(x, var_name = NULL, compact = FALSE) {
 
 # return_closest_year -----------------------------------------------------
 
-return_closest_year <- function(var, df = "borough") {
+return_closest_year <- function(var, df = "borough", build_str_as_DA = TRUE) {
   
-  if (df == "building") df <- DA else df <- get(df)
+  dat <- if (build_str_as_DA && df == "building") DA else get(df)
   
-  if (!var %in% names(df)) {
+  if (!var %in% names(dat)) {
     
     time <- as.numeric(str_extract(var, "\\d{4}"))
     
-    x <- 
-      df |> 
-      select(contains(str_remove(var, "_\\d{4}$"))) |> 
+    x <-
+      dat |> 
       names() |> 
+      str_subset(str_remove(var, "_\\d{4}$")) |> 
       str_extract("\\d{4}$") |> 
       as.numeric() |> 
       na.omit()
     
     closest_year <- x[which.min(abs(x - time))]
-    var <- paste0(str_remove(var, "_\\d{4}$"), "_", closest_year)
-    var <- sub("_$", "", var)
+    out <- paste0(str_remove(var, "_\\d{4}$"), "_", closest_year)
+    out <- sub("_$", "", out)
     
-  }
+  } else out <- var
   
-  return(var)
+  return(out)
   
 }
 
@@ -77,30 +77,42 @@ return_closest_year <- function(var, df = "borough") {
 # find_outliers -----------------------------------------------------------
 
 find_outliers <- function(x) {
-  
-  outside_quant <- between(x, quantile(x, .01, na.rm = TRUE), 
-                           quantile(x, .99, na.rm = TRUE))
-  
-  inside <- x[outside_quant]
-  avg <- mean(inside, na.rm = TRUE) 
-  standard_d <- sd(inside, na.rm = TRUE)
-  
-  no_out <- inside[between(inside, avg - 4 * standard_d, avg + 4 * standard_d)]
-  x[!x %in% no_out] |> na.omit()
-  
+  q1 <- quantile(x, 0.25, na.rm = TRUE)
+  q3 <- quantile(x, 0.75, na.rm = TRUE)
+  iqr <- (q3 - q1) * 1.5
+  which(x < q1 - iqr | x > q3 + iqr)
 }
 
 
 # remove_outliers ---------------------------------------------------------
 
 remove_outliers <- function(x) {
-  x[!x %in% find_outliers(x)] |> 
-    na.omit() |> 
-    as.numeric()
+  fo <- find_outliers(x)
+  out <- if (length(fo) == 0) x else x[-find_outliers(x)]
+  out[!is.na(out)]
+}
+
+
+# remove_outliers_df ------------------------------------------------------
+
+remove_outliers_df <- function(x, var_1, var_2 = NULL) {
+  
+  left_na <- which(is.na(x[[var_1]]))
+  left_out <- find_outliers(x[[var_1]])
+  if (!is.null(var_2)) {
+    right_na <- which(is.na(x[[var_2]]))
+    right_out <- find_outliers(x[[var_2]])  
+  } else {
+    right_na <- NULL
+    right_out <- NULL
+  }
+  comb <- unique(c(left_na, right_na, left_out, right_out))
+  if (length(comb) == 0) x else x[-comb,]
+  
 }
   
 
-# ordinal form ------------------------------------------------------------
+# ordinal_form ------------------------------------------------------------
 
 ordinal_form <- function(x) {
   # English ordinal form
@@ -125,4 +137,68 @@ ordinal_form <- function(x) {
     switch(as.character(x), "1" = "", "2" = "deuxième ",
            "3" = "troisième ", paste0(as.character(x), "ième "))
   }
+}
+
+
+# vec_dep -----------------------------------------------------------------
+
+# Reimplemntation of purrr::vec_depth in base R
+vec_dep <- function(x) {
+  if (is.null(x)) {
+    0L
+  } else if (is.atomic(x)) {
+    1L
+  } else if (is.list(x)) {
+    depths <- vapply(x, vec_dep, vector("integer", 1))
+    1L + max(depths, 0L)
+  } else {
+    abort("`x` must be a vector")
+  }
+}
+
+
+# ntile -------------------------------------------------------------------
+
+ntile <- function(x, n) {
+  x <- rank(x, ties.method = "first", na.last = "keep")
+  len <- length(x) - sum(is.na(x))
+  if (len == 0L) {
+    rep(NA_integer_, length(x))
+  }
+  else {
+    n <- as.integer(floor(n))
+    n_larger <- as.integer(len %% n)
+    n_smaller <- as.integer(n - n_larger)
+    size <- len / n
+    larger_size <- as.integer(ceiling(size))
+    smaller_size <- as.integer(floor(size))
+    larger_threshold <- larger_size * n_larger
+    bins <- ifelse(x <= larger_threshold, 
+                   (x + (larger_size - 1L)) / larger_size, 
+                   (x + (-larger_threshold + smaller_size - 1L)) / 
+                     smaller_size + n_larger)
+    as.integer(floor(bins))
+  }
+}
+
+
+# Get distance in metres from lon/lat coordinate pairs --------------------
+
+get_dist <- function(x, y) {
+
+  # For consistent indexing
+  if (!is.null(dim(x))) x <- as.matrix(x)
+  # If x is matrix or df, take lon/lat vectors
+  lon_1 <- if (!is.null(dim(x))) x[,1] else x[1]
+  lat_1 <- if (!is.null(dim(x))) x[,2] else x[2]
+  lon_2 <- y[1]
+  lat_1_r <- lat_1 * pi / 180
+  lat_2 <- y[2]
+  lat_2_r <- lat_2 * pi / 180
+  delta_lat <- (lat_2 - lat_1) * pi / 180
+  delta_lon <- (lon_2 - lon_1) * pi / 180
+  a_dist <- sin(delta_lat / 2) * sin(delta_lat / 2) + cos(lat_1_r) * 
+    cos(lat_2_r) * sin(delta_lon / 2) * sin(delta_lon / 2)
+  c_dist <- 2 * atan2(sqrt(a_dist), sqrt(1 - a_dist))
+  6371e3 * c_dist
 }

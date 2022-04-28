@@ -1,35 +1,45 @@
 ### GREEN ALLEY MODULE #########################################################
 
+
+# Dropdown menu -----------------------------------------------------------
+
+var_list_left_alley <-
+  list("Borough summary" = " ",
+       "Per sq km" = "green_alley_sqkm",
+       "Per 1,000 residents" = "green_alley_per1k")
+
+
 # UI ----------------------------------------------------------------------
 
 alley_UI <- function(id) {
   ns_id <- "alley"
-  
-  return(tagList(
+  ns_id_map <- paste0(ns_id, "-map")
+
+  tagList(
+    
     # Sidebar
     sidebar_UI(
       NS(id, ns_id),
       susSidebarWidgets(
-      checkbox_UI(id = NS(id, ns_id), 
-                  label = sus_translate("Focus on green alleys visited by our team")),
-      select_var_UI(NS(id, ns_id), var_list = var_list_left_alley, 
-                    label = sus_translate("Grouping"))
-      ), 
-      bottom = div(class = "bottom_sidebar", 
-                   tagList(legend_UI(NS(id, ns_id)), 
+        checkbox_UI(id = NS(id, ns_id),
+                    label = sus_translate("Green alleys visited by our team")),
+        select_var_UI(NS(id, ns_id), var_list = var_list_left_alley,
+                      label = sus_translate("Grouping"))),
+      bottom = div(class = "bottom_sidebar",
+                   tagList(legend_UI(NS(id, ns_id)),
                            zoom_UI(NS(id, ns_id), map_zoom_levels)))),
     
     # Map
-    div(class = "mapdeck_div", mapdeckOutput(NS(id, "map"), height = "100%")),
-    
+    div(class = "mapdeck_div", rdeckOutput(NS(id, ns_id_map), height = "100%")),
+
     # Right panel
     right_panel(
-      id = id, 
-      compare_UI(NS(id, ns_id), make_dropdown()),
-      explore_UI(NS(id, ns_id)), 
+      id = id,
+      compare_UI(NS(id, ns_id), make_dropdown(compare = TRUE)),
+      explore_UI(NS(id, ns_id)),
       dyk_UI(NS(id, ns_id)))
-    
-  ))
+
+  )
 }
 
 
@@ -38,311 +48,239 @@ alley_UI <- function(id) {
 alley_server <- function(id) {
   moduleServer(id, function(input, output, session) {
     ns_id <- "alley"
-    
+    ns_id_map <- paste0(ns_id, "-map")
+
     # Initial reactives
-    zoom <- reactiveVal(get_zoom(11, map_zoom_levels))
+    zoom <- reactiveVal(get_zoom(map_zoom))
+    zoom_string <- reactiveVal(get_zoom_string(map_zoom, map_zoom_levels))
     select_id <- reactiveVal(NA)
-    select_id <- reactiveVal(NA)
+    poi <- reactiveVal(NULL)
     
     # Sidebar
     sidebar_server(id = ns_id, x = "alley")
-    
+
     # Enter in choropleth() depending on var_left select_id
-    choropleth <- reactive(!(var_left() == " " || focus_visited()))
-    
+    choropleth <- reactive(!(var_left() == " " || visited()))
+
     # Map
-    output$map <- renderMapdeck({mapdeck(
-      style = map_style, 
-      token = map_token,
-      zoom = 11, 
-      location = map_location)})
+    output[[ns_id_map]] <- renderRdeck({
+      rdeck(map_style = map_base_style, 
+            initial_view_state = view_state(center = map_loc, zoom = 12)) |> 
+        add_mvt_layer(id = "alley-alley",
+                      data = mvt_url("sus-mcgill.alley-alley"),
+                      pickable = FALSE,
+                      auto_highlight = FALSE,
+                      get_fill_color = paste0(colour_table$value[1], "90"),
+                      get_line_color = paste0(colour_table$value[1], "90"),
+                      line_width_units = "pixels",
+                      get_line_width = 2)
+    })
+
+    # Zoom and POI reactives
+    observeEvent(get_view_state(ns_id_map), {
+      zoom({
+        if (!is.null(sus_bookmark$zoom)) {
+          sus_bookmark$zoom
+        } else if (!is.null(sus_link$zoom)) {
+          sus_link$zoom
+        } else get_zoom(get_view_state(ns_id_map)$zoom)})
+      new_poi <- observe_map(get_view_state(ns_id_map))
+      if ((is.null(new_poi) && !is.null(poi())) || 
+          (!is.null(new_poi) && (is.null(poi()) || !all(new_poi == poi()))))
+        poi(new_poi)
+    })
     
-    # Zoom reactive
-    observeEvent(input$map_view_change$zoom, {
-      zoom(get_zoom(input$map_view_change$zoom, map_zoom_levels))})
+    # Zoom string reactive
+    observeEvent(zoom(), {
+      new_zoom_string <- get_zoom_string(zoom(), map_zoom_levels)
+      if (new_zoom_string != zoom_string()) zoom_string(new_zoom_string)
+    })
     
     # Click reactive
-    observeEvent(input$map_polygon_click, {
-      select_id(get_click(input$map_polygon_click))})
-    
-    # Zoom level for data
-    df <- zoom_server(
+    observeEvent(get_clicked_object(ns_id_map), {
+      selection <- get_clicked_object(ns_id_map)$ID
+      if (!is.na(select_id()) && selection == select_id()) {
+        select_id(NA)
+      } else select_id(selection)
+    })
+
+    # Choose tileset
+    tile_choropleth <- zoom_server(
       id = ns_id, 
-      zoom = zoom, 
+      zoom_string = zoom_string, 
       zoom_levels = reactive(map_zoom_levels))
     
-    # Zoom level to use when focus is on
-    focus_alley_zoom <- reactive({
-      case_when(input$map_view_change$zoom >= 13 ~ 15,
-                TRUE ~ input$map_view_change$zoom * -15 + 220)})
+    tile <- reactive({
+      if (choropleth()) {
+        tile_choropleth()
+      } else if (!visited()) {
+        "borough_empty"
+      } else "alley"
+    })
+
+    # Additional tileset identifier
+    tile2 <- reactive("")
+    
+    # Get df for explore/legend/etc
+    df <- reactive(get_df(tile(), zoom_string()))
     
     # Focus on visited alleys
-    focus_visited <- checkbox_server(id = ns_id)
-    
+    visited <- checkbox_server(id = ns_id)
+
     # Time
     time <- reactive("2016")
-    
+
     # Left variable
-    var_left <- select_var_server(id = ns_id, 
-                                  var_list = reactive(var_list_left_alley))
+    var_left_1 <- select_var_server(id = ns_id, 
+                                    var_list = reactive(var_list_left_alley))
     
+    var_left <- reactive(if (visited()) "alley_qual" else var_left_1())
+
     # Compare panel
     var_right <- compare_server(
-      id = ns_id, 
-      var_list = make_dropdown(), 
-      df = df, 
+      id = ns_id,
+      var_list = make_dropdown(compare = TRUE),
       show_panel = choropleth,
       time = time)
-  
+
     # Data
-    data <- reactive({
+    data <- reactive(get_data(df(), var_left(), var_right(), island = TRUE))
+    
+    # Composite variable for map
+    map_var <- reactive({
       if (choropleth()) {
-        get_data(df(), var_left(), var_right(), island = TRUE)
-        # print(get_data(df(), var_left(), var_right(), island = TRUE))
-      } else {
-        list(visited = alleys[alleys$visited, ],
-             non_visited = alleys[!alleys$visited, ])
-      }
+        str_remove(paste(var_left(), var_right(), sep = "_"), "_ $")
+      } else if (!visited()) {
+        ""
+      } else "type"
     })
-    
+
     # Legend
-    # legend_server(
-    #   id = ns_id, 
-    #   var_left = var_left, 
-    #   var_right = var_right, 
-    #   df = df)
+    legend_server(
+      id = ns_id,
+      var_left = var_left,
+      var_right = var_right,
+      df = df,
+      hide = reactive(tile() == "borough_empty"))
     
-    # Extract alley name and photo_ID for the following click event
-    alley_info <- reactive({
-      if (select_id() %in% alleys[alleys$visited,]$ID) {
-        x <-
-          alleys |>
-          st_drop_geometry() |>
-          filter(ID == select_id()) |>
-          mutate(name = sus_translate(
-            "<p><b>{str_to_title(name)} in ",
-            "{name_2}</b></p>")) |>
-          select(-ID, -CSDUID, -visited, -name_2, -fill) |>
-          select_if(~sum(!is.na(.)) > 0) %>%
-          {if (nrow(.) > 0) as.list(.) else NULL}
-        
-        out <- alley_alleys_text(x)
-        
-        list(name = out$name, 
-             photo_ID = out$photo_ID)
-      }
+    # Choose explore graph
+    alley_graph <- reactive({
+      if (df() %in% c("alley", "borough_empty")) {
+        explore_graph_alley
+      } else explore_graph
     })
     
-    # Popup the image if it's clicked on
-    # onclick(
-    #   "alley-explore-alley_img", 
-    #   { showModal(modalDialog(
-    #     title = HTML(alley_info()$name),
-    #     HTML(paste0('<img src="', alley_info()$photo_ID, '", width = 100%>')),
-    #     easyClose = TRUE,
-    #     size = "l",
-    #     footer = NULL
-    #   ))})
+    # Choose explore graph
+    alley_table <- reactive({
+      if (df() %in% c("alley", "borough_empty")) {
+        info_table_alley
+      } else info_table
+    })
     
     # Explore panel
-    # explore_content <- explore_server(
-    #   id = ns_id,
-    #   x = data,
-    #   var_left = var_left,
-    #   var_right = var_right,
-    #   select_id = select_id,
-    #   df = df,
-    #   standard = choropleth,
-    #   custom_info = alley_info_table)
+    explore_content <- explore_server(
+      id = ns_id,
+      data = data,
+      var_left = var_left,
+      var_right = var_right,
+      df = df,
+      select_id = select_id,
+      graph = alley_graph,
+      table = alley_table)
     
-    # Update map in response to user input
+    # Popup the alley image if it's clicked on
+    onclick(
+      "alley_img", 
+      {showModal(modalDialog(
+        title = alley[alley$ID == select_id(),]$name,
+        HTML(paste0('<img src="alleys/',
+                    alley[alley$ID == select_id(),]$photo_ID,
+                    '" width = 100%>')),
+        easyClose = TRUE,
+        size = "m",
+        footer = NULL
+      ))})
+    
+    # Update map in response to variable changes or zooming
+    rdeck_server(
+      id = ns_id,
+      map_id = "map",
+      tile = tile,
+      tile2 =  tile2,
+      map_var = map_var,
+      zoom = zoom,
+      select_id = select_id,
+      fill = scale_fill_alley,
+      fill_args = reactive(list(map_var(), tile())),
+      colour = scale_colour_alley,
+      colour_args = reactive(list(map_var(), tile())),
+      lwd = scale_lwd_alley,
+      lwd_args = reactive(list(select_id(), tile())))
+    
+    # Update map labels
+    label_server(
+      id = ns_id, 
+      map_id = "map", 
+      tile = tile,
+      zoom = zoom)
+    
+    # Did-you-know panel
+    dyk_server(
+      id = ns_id, 
+      var_left = var_left,
+      var_right = var_right,
+      poi = poi)
+    
+    # Toggle zoom
     observeEvent({
       choropleth()
-      focus_visited()
-      data()
-      select_id()
-      df()
-      zoom()
-      focus_alley_zoom()
-      }, {
-      if (!choropleth()) {
-        if (focus_visited()) {
-          mapdeck_update(map_id = NS(id, "map")) |>
-            clear_polygon() |>
-            clear_polygon(layer_id = "highlight") |>
-            clear_polygon(layer_id = "borough_info") |>
-            clear_polygon(layer_id = "poly_highlight") |>
-            add_polygon(data = data()$non_visited,
-                        stroke_width = 15, stroke_colour = "#CFCFCF",
-                        fill_colour = "#CFCFCF", layer_id = "alleys_void",
-                        update_view = FALSE, id = "ID",
-                        auto_highlight = FALSE) |>
-            add_polygon(data = data()$visited,
-                        stroke_width = focus_alley_zoom(),
-                        stroke_colour = "fill", layer_id = "alleys_visited",
-                        update_view = FALSE, id = "ID", auto_highlight = TRUE,
-                        highlight_colour = "#FFFFFF90",
-                        legend = alley_legend_en)
-        } else {
-          # Exact same as the initial
-          mapdeck_update(map_id = NS(id, "map")) |>
-            clear_polygon() |>
-            clear_polygon(layer_id = "highlight") |>
-            # For some reason, legend is sticky!
-            clear_legend(layer_id = "alleys_visited") |>
-            clear_polygon(layer_id = "alleys_visited") |>
-          add_polygon(data = borough[borough$ID %in% alley_text$ID,],
-                      stroke_width = 10, stroke_colour = "#000000",
-                      fill_colour = "#FFFFFF10", update_view = FALSE,
-                      id = "ID", layer_id = "borough_info",
-                      auto_highlight = TRUE,
-                      highlight_colour = "#FFFFFF90") |>
-          add_polygon(data = data()$non_visited,
-                      stroke_width = 15, stroke_colour = "#007700",
-                      fill_colour = "#00FF00", layer_id = "alleys_void",
-                      update_view = FALSE, id = "ID",
-                      auto_highlight = FALSE) |>
-          add_polygon(data = data()$visited,
-                      stroke_width = 15, stroke_colour = "#007700",
-                      fill_colour = "#00FF00", layer_id = "alleys_visited",
-                      update_view = FALSE, id = "ID", auto_highlight = TRUE,
-                      highlight_colour = "#FFFFFF90")
-        }
-      } else {
-        
-        walk(c("alleys_void", "alleys_visited", "borough_info",
-               "poly_highlight"), ~{
-                 mapdeck_update(map_id = NS(id, "map")) |> clear_polygon(.x)})
-        
-        width <- 
-          switch(zoom(), "borough" = 100, "CT" = 10, "DA" = 2, "grid" = 0, 2)
-        width_2 <- 
-          switch(df(), "borough" = 100, "CT" = 10, "DA" = 2, "grid" = 0, 2)
-        width <- min(width, width_2)
-        
-        # Set transparency based on zoom
-        col_zoom <- colour_alpha[names(colour_alpha) == zoom()]
-        dat <- mutate(data(), fill = paste0(fill, col_zoom))
-        
-        mapdeck_update(map_id = NS(id, "map")) |>
-          add_polygon(
-            data = dat, stroke_width = width,
-            stroke_colour = "#FFFFFF", fill_colour = "fill",
-            update_view = FALSE, id = "ID", auto_highlight = TRUE,
-            highlight_colour = "#FFFFFF80")
-        
-        if (!is.na(select_id())) {
-          # SELECTION
-          width <- 
-            switch(zoom(), "borough" = 150, "CT" = 20, "DA" = 4, "grid" = 4, 4)
-          width_2 <- 
-            switch(df(), "borough" = 150, "CT" = 20, "DA" = 4, "grid" = 4, 4)
-          width <- min(width, width_2)
-          
-          # Set transparency based on zoom
-          col_zoom <- colour_alpha[names(colour_alpha) == zoom()]
-          
-          data_to_add <-
-            data() |>
-            filter(ID == select_id()) |>
-            mutate(fill = paste0(fill, col_zoom))
-          
-          if (nrow(data_to_add) != 0) {
-            mapdeck_update(map_id = NS(id, "map")) |>
-              add_polygon(
-                data = data_to_add, fill_colour = "fill", 
-                stroke_colour = "#000000", stroke_width = width, 
-                update_view = FALSE, layer_id = "highlight", 
-                auto_highlight = TRUE, highlight_colour = "#FFFFFF80")
-          }
-        } else {
-          mapdeck_update(map_id = NS(id, "map")) |>
-            clear_polygon(layer_id = "highlight")
-        }
-      }
-    })
-    
-    # Update poly on click
-    observeEvent(input$map_polygon_click, {
-      lst <- (fromJSON(input$map_polygon_click))$object$properties$id
-      if (is.null(lst)) select_id(NA) else select_id(lst)
-    })
-
-
-
-    # Update map in response to poly_selected change outside of choropleth()
-    observeEvent(select_id(), {
-      if (!choropleth() && !focus_visited()) {
-        if (!is.na(select_id())) {
-          data_to_add <-
-            borough |>
-            filter(ID == select_id())
-
-          mapdeck_update(map_id = NS(id, "map")) |>
-            add_polygon(
-              data = data_to_add, stroke_width = 10, stroke_colour = "#000000",
-              fill_colour = "#00770030", update_view = FALSE,
-              layer_id = "poly_highlight", auto_highlight = TRUE,
-              highlight_colour = "#FFFFFF02")
-
-          select_id(select_id())
-        } else {
-          mapdeck_update(map_id = NS(id, "map")) |>
-            clear_polygon(layer_id = "poly_highlight")
-        }
-      }
-    })
-
-    # If we aren't in choropleth, toggle off the legend/zoom
-    observeEvent({choropleth()
-      focus_visited()}, {
-        toggle("alley-zoom_auto",
-                        condition = choropleth() && !focus_visited())
-        toggle("alley-zoom_slider",
-                        condition = choropleth() && !focus_visited())
-        # If focus is clicked, toggle off the dropdown menu
-        toggle("alley-var", condition = !focus_visited())
+      visited()}, {
+        toggle("alley-zoom_auto", condition = choropleth() && !visited())
+        toggle("alley-zoom_slider", condition = choropleth() && !visited())
+        # If focus is clicked, toggle dropdown menu
+        toggle("alley-var", condition = !visited())
       })
 
     # Hook up "Clear select_id" button and other variables that clears it
-    observeEvent(input$`alley-clear_select_id`, select_id(NA))
+    observeEvent(input[[paste0(ns_id, "-clear_selection")]], select_id(NA))
     observeEvent(choropleth(), select_id(NA))
-    observeEvent(focus_visited(), select_id(NA))
-    observeEvent(df(), if (choropleth()) select_id(NA))
+    observeEvent(visited(), select_id(NA))
+    observeEvent(data(), if (choropleth()) select_id(NA))
 
     # Bookmarking
     bookmark_server(
       id = ns_id,
-      map_view_change = reactive(input$map_view_change),
-      var_left = var_left,
+      map_viewstate = reactive(get_view_state(ns_id_map)),
       var_right = var_right,
       select_id = select_id,
-      map_id = NS(id, "map"),
-      more_args = reactive(c("c-cbox" = focus_visited()))
+      df = df,
+      map_id = "map",
+      more_args = reactive(c("c-cbox" = visited()))
     )
 
-    # Update click_id() on bookmark
+    # Update select_id() on bookmark
     observeEvent(sus_bookmark$active, {
-      # Delay of 2000 milliseconds more than the zoom update from bookmark.
-      # The map/df/data needs to be updated before we select an ID.
       if (isTRUE(sus_bookmark$active)) {
-        delay(2000, {
-          if (!is.null(sus_bookmark$select_id)) {
-            if (sus_bookmark$select_id != "NA") select_id(sus_bookmark$select_id)
-          }
+        delay(1000, {
+          if (!is.null(sus_bookmark$select_id))
+            if (sus_bookmark$select_id != "NA") 
+              select_id(sus_bookmark$select_id)
         })
       }
-      
       # So that bookmarking gets triggered only ONCE
-      delay(1500, {sus_bookmark$active <- FALSE})      
+      delay(1500, {
+        sus_bookmark$active <- FALSE
+        sus_bookmark$df <- NULL
+        sus_bookmark$zoom <- NULL
+      })
     }, priority = -2)
     
-    # Update click_id() on module link
+    # Update select_id() on module link
     observeEvent(sus_link$activity, {
-      # Delay of 2000 milliseconds more than the zoom update from bookmark.
-      # The map/df/data needs to be updated before we select an ID.
-      delay(2000, {
+      delay(1000, {
         if (!is.null(sus_link$select_id)) select_id(sus_link$select_id)
+        sus_link$df <- NULL
+        sus_link$zoom <- NULL
       })
     }, priority = -2)
 

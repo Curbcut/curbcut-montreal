@@ -20,6 +20,25 @@ languageButtonLabel <- function(text) {
                          span(text)))
 }
 
+susAuthorLink <- function(title, href=NULL, icon=NULL) {
+  if (is.null(icon)) {
+    icon = materialIcon("link")
+  }
+  return(tags$a(class="sus-author-link", href=href, target="_blank", span(class="sus-author-link-icon", icon), title)) 
+}
+
+susAuthorBio <- function(...) {
+  tags$div(class="sus-author-bio", ...)
+}
+
+susAuthor <- function(name, role, img_src, ...) {
+  tags$div(class="sus-author",
+    tags$img(class="sus-author-img", src=img_src),
+    tags$h3(class="sus-author-name", name),
+    tags$h4(class="sus-author-role", role),
+    ...)
+}
+
 # Make a standard navbarPage with addition fixed-position controls
 navbarPageWithInputs <- function(..., inputs) {
   navbar <- navbarPage(...)
@@ -30,10 +49,14 @@ navbarPageWithInputs <- function(..., inputs) {
   navbar
 }
 
+materialIcon <- function(icon) {
+  span(class = "material-icons", icon)
+}
+
 # Replace the inner text of a <button> tag with a Material icon span
 materialIconButton <- function(tag, icon) {
   tag <- tagSetChildren(tag, .cssSelector = "button", 
-                        span(class = "material-icons", icon))
+                        materialIcon(icon))
   tag
 }
 
@@ -79,10 +102,14 @@ susFooter <- function() {
       ),
       tags$div(class = "sus-page-footer-links",
         tags$ul(
-          tags$li(tags$a(href = "", sus_translate("About"))),
-          tags$li(tags$a(href = "", sus_translate("Terms & Conditions"))),
-          tags$li(tags$a(href = "", sus_translate("Privacy Policy"))),
-          tags$li(tags$a(href = "", sus_translate("Contact")))
+          tags$li(tags$a(href = NULL, HTML("&nbsp;"))),#sus_translate("Terms & Conditions"))),
+          tags$li(tags$a(href = NULL, style = "cursor:pointer;", 
+                         onclick = "openTab('about_sus')", 
+                         sus_translate("About"))),
+          tags$li(tags$a(href = NULL, style = "cursor:pointer;", 
+                         onclick = "document.getElementById('contact').click();",
+                         sus_translate("Contact/feedback"))),
+          tags$li(tags$a(href = NULL, HTML("&nbsp;")))#sus_translate("Privacy Policy"))),
         )
       )
     )
@@ -96,6 +123,21 @@ susBanner <- function() {
     tags$div(class = "sus-banner-bg sus-bg-img-skyline"),
     tags$h1(class = "sus-brand sus-banner-text", "SUS")
   ))
+}
+
+# Make controls for a page
+susPageControls <- function(..., class="") {
+  return(
+    tagList(
+      tags$div(class="sus-page-controls-spacer"),
+      tags$div(class="sus-page-controls-container",
+        tags$div(class = paste("sus-page-controls", class),...))
+    )
+  )
+}
+
+susPageImages <- function(..., class="") {
+  return(tags$div(class = paste("sus-page-images", class),...))
 }
 
 # Make a section inside of a page
@@ -184,9 +226,11 @@ js_links_between_modules <- "
         }
       "
 bookmark_url <- 
-    'function copyUrl(text) {
+  'function copyUrl(text) {
        var inputc = document.body.appendChild(document.createElement("input"));
-       inputc.value = window.location.href;
+       const p = window.location.href;
+       const part_replace = "https://sus-mcgill.shinyapps.io";
+       inputc.value = p.replace(part_replace, "http://www.susmontreal.ca");
        inputc.focus();
        inputc.select();
        document.execCommand("copy");
@@ -292,7 +336,27 @@ styler <- '
   .ggiraph-toolbar {
   display: none;
   }
+  
+  .fixed_footer {
+   position: fixed;
+   z-index:50000;
+   left: 0;
+   bottom: 0;
+   width: 100%;
+   background-color: #6C83B5B0;
+   text-align: center;
+   font-size: 1.65rem;
+   padding:20px;
+   }
 
+
+'
+
+temp_styler <- '
+
+  #stories-back {
+    z-index: 1000 !important;
+  }
 
 '
 
@@ -303,18 +367,18 @@ set_ui_lang <- "shinyjs.setLanguage = function(language) {
 lang_classes <- "
     .lang-en {
       visibility: hidden;
-      display: none;
+      display: none !important;
     }
     .lang-fr {
       visibility: hidden;
-      display: none;
+      display: none !important;
     }
     
     .user-lang-en .lang-en {
       visibility: visible !important;
-      display: inline; 
+      display: inline !important; 
     }
     .user-lang-fr .lang-fr {
       visibility: visible !important;
-      display: inline; 
+      display: inline !important; 
     }"

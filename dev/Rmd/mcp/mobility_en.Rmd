@@ -11,9 +11,9 @@ library(here)
 
 ## PMD (Coderre administration): 
 
-```{r, echo=FALSE, fig.align = 'left', out.width="50%", out.extra='style="float:right; padding:10px"'}
+```{r, echo=FALSE, fig.align = 'left', warning=FALSE, out.width="50%", out.extra='style="float:right; padding:10px"'}
 
-knitr::include_graphics(here("www","/mcp","/visuals","/mobility","/bicycle_1.jpg"))
+knitr::include_graphics("visuals/mobility/bicycle_1.jpg")
 
 ```
 
@@ -36,9 +36,9 @@ Convert 230 of the city’s vehicles to electric propulsion. Replace 100 of the 
 
 ## Plan climat (Plante administration): 
 
-```{r, echo=FALSE, fig.align = 'left', out.width="50%", out.extra='style="float:right; padding:10px"'}
+```{r, echo=FALSE, fig.align = 'left', warning=FALSE, out.width="50%", out.extra='style="float:right; padding:10px"'}
 
-knitr::include_graphics(here("www","/mcp","/visuals","/mobility","/metro_1.jpg"))
+knitr::include_graphics("visuals/mobility/metro_1.jpg")
 
 ```
 
@@ -65,8 +65,8 @@ The PMD’s mobility goals are modest, and build off of the objectives of previo
 
 These mobility policies reflect significant politically-based difference between the climate plans. Transportation projects were a large part of Plante’s electoral platform, while Coderre has defined himself against these large projects and tends to align himself with more distant and automobile infrastructure-reliant boroughs. It is of interest, however, that Coderre's PMD promises a larger addition to cycling infrastructure than Plante's Plan climat, given that Coderre and his political base are lukewarm, at best, towards this kind of active mobility.
 
-```{r, echo=FALSE, fig.align = 'center', out.width="75%", fig.cap="The automobile remains the dominant mode of transportation in the metropolitan region."}
+```{r, echo=FALSE, fig.align = 'center', warning=FALSE, out.width="75%", fig.cap="The automobile remains the dominant mode of transportation in the metropolitan region."}
 
-knitr::include_graphics(here("www","/mcp","/visuals","/mobility","/mode_share.png"))
+knitr::include_graphics("visuals/mobility/mode_share.png")
 
 ```

@@ -73,23 +73,19 @@ climate_census_fun <- function(x) {
     st_transform(32618) |> 
     st_set_agr("constant") |> 
     st_intersection(x_int) |> 
-    mutate(area_int = units::drop_units(st_area(geometry))) |> 
     st_drop_geometry() |> 
-    group_by(grid_ID) |> 
-    filter(area_int == max(area_int)) |> 
-    ungroup() |> 
     select(grid_ID, ID, area_x) |>
     inner_join(select(grid, grid_ID = ID,
                       climate_flood_ind:climate_heat_wave_ind),
                by = "grid_ID") |>
-    mutate(area_int = units::drop_units(st_area(geometry))) |>
+    mutate(area_int = units::drop_units(st_area(geometry))) |> 
     group_by(ID) |>
     summarize(
       across(climate_flood_ind:climate_heat_wave_ind, ~{
       if (sum(area_int[!is.na(.x)]) >= 0.5 * max(area_x)) {
         weighted.mean(.x, area_int, na.rm = TRUE)
-        } else NA_real_}), .groups = "drop") |>
-    right_join(x, by = "ID") |>
+        } else NA_real_}), .groups = "drop") |> 
+    right_join(x, by = "ID") |> 
     relocate(climate_flood_ind:climate_heat_wave_ind, .before = geometry) |>
     mutate(across(c(climate_flood_ind:climate_heat_wave_ind), ntile, 3,
                   .names = "{.col}_q3")) |>
@@ -106,7 +102,15 @@ DA <- climate_census_fun(DA)
 rm(climate_risk, climate_census_fun)
 
 
-# Add climate data risk to street -----------------------------------------
+# Add climate data risk to building and street ----------------------------
+
+building <- 
+  building |> 
+  left_join(select(st_drop_geometry(grid), grid_ID = ID, 
+                   climate_flood_ind:climate_heat_wave_ind_q3), 
+            by = "grid_ID") |> 
+  relocate(geometry, .after = last_col()) |> 
+  st_set_agr("constant")
 
 street <- 
   street |> 
@@ -167,6 +171,24 @@ borough <-
   st_as_sf(sf_column_name = "geometry") |> 
   st_set_agr("constant")
 
+building <- 
+  building |> 
+  left_join(DA |> 
+              st_drop_geometry() |> 
+              select(DAUID = ID, climate_flood_ind_q5:climate_heat_wave_ind_q5),
+            by = "DAUID") |> 
+  relocate(geometry, .after = last_col()) |> 
+  st_set_agr("constant")
+
+street <- 
+  street |> 
+  left_join(DA |> 
+              st_drop_geometry() |> 
+              select(DAUID = ID, climate_flood_ind_q5:climate_heat_wave_ind_q5),
+            by = "DAUID") |> 
+  relocate(geometry, .after = last_col()) |> 
+  st_set_agr("constant")
+
 climate_risk_q5 <-
   map2(climate_risk_q5, c("DA", "CT", "borough"), \(x, scale) {
     if (nrow(x) > 0) x |> mutate(scale = scale, rank = seq_len(nrow(x)) - 1, 
@@ -222,7 +244,7 @@ variables <-
     var_short = "Drought",
     explanation = "the vulnerability to climate-change related drought",
     category = NA,
-    theme = "Climate",
+    theme = "Climate risk",
     private = FALSE,
     dates = NA,
     scales = c("borough", "building", "CT", "DA", "grid", "street"),
@@ -235,7 +257,7 @@ variables <-
     var_short = "Flood",
     explanation = "the vulnerability to climate-change related flooding",
     category = NA,
-    theme = "Climate",
+    theme = "Climate risk",
     private = FALSE,
     dates = NA,
     scales = c("borough", "building", "CT", "DA", "grid", "street"),
@@ -248,7 +270,7 @@ variables <-
     var_short = "Heavy rain",
     explanation = "the vulnerability to climate-change related heavy rain",
     category = NA,
-    theme = "Climate",
+    theme = "Climate risk",
     private = FALSE,
     dates = NA,
     scales = c("borough", "building", "CT", "DA", "grid", "street"),
@@ -263,7 +285,7 @@ variables <-
     explanation = paste0("the vulnerability to climate-change related ",
                          "destructive storms"),
     category = NA,
-    theme = "Climate",
+    theme = "Climate risk",
     private = FALSE,
     dates = NA,
     scales = c("borough", "building", "CT", "DA", "grid", "street"),
@@ -277,7 +299,7 @@ variables <-
     var_short = "Heat wave",
     explanation = "the vulnerability to climate-change related heat waves",
     category = NA,
-    theme = "Climate",
+    theme = "Climate risk",
     private = FALSE,
     dates = NA,
     scales = c("borough", "building", "CT", "DA", "grid", "street"),

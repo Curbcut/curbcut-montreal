@@ -94,8 +94,18 @@
 
   --tr-brand: skew(-8deg, 0deg);
 
-  --depth-ui: 1100;
-  --depth-ui-shadow: calc(var(--depth-ui) - 100);
+  --shadow-depth-offset: 100;
+
+  --layer-depth-offset: 1000;
+
+  --depth-ui: calc(var(--layer-depth-offset));
+  --depth-ui-shadow: calc(var(--depth-ui) - var(--shadow-depth-offset));
+  
+  --depth-ui-fixed: calc(var(--depth-ui) + var(--layer-depth-offset));
+  --depth-ui-fixed-shadow: calc(var(--depth-ui-fixed) - var(--shadow-depth-offset));
+  
+  --depth-ui-over: calc(var(--depth-ui-fixed) + var(--layer-depth-offset));
+  --depth-ui-over-shadow: calc(var(--depth-ui-over) - var(--shadow-depth-offset));
 }
 
 .container-fluid {
@@ -218,6 +228,26 @@ body.user-tab-home .navbar-default {
   right: 0px;
 }
 
+.shadow-md-bottom {
+  position: absolute;
+  top: -15px;
+  height: 15px;
+  left: 0px;
+  right: 0px;
+  pointer-events: none;
+}
+
+.shadow-md-bottom::after {
+  content: "";
+  display: block;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  z-index: calc(10 + var(--depth-ui));
+  box-shadow: var(--box-shadow-md);
+  clip-path: inset(0px 0px -15px 0px);
+}
+
 a.sus-small-link {
   font-size: 1.25rem;
 }
@@ -286,4 +316,23 @@ a.sus-small-link {
   top: var(--h-navbar);
   left: 0px;
   right: 0px;
+}
+
+i.fa {
+	width: 1em;
+	display: inline-flex;
+	flex-direction: row;
+	justify-content: center;
+}
+
+.fa:not(:last-child) {
+  padding-right: 0.5em;
+}
+
+.modal {
+  z-index: var(--depth-ui-over);
+}
+
+.modal-backdrop {
+  z-index: var(--depth-ui-over-shadow);
 }

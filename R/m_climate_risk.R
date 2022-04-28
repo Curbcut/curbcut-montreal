@@ -4,30 +4,33 @@
 
 climate_risk_UI <- function(id) {
   ns_id <- "climate_risk"
+  ns_id_map <- paste0(ns_id, "-map")
   
-  return(tagList(
-      # Sidebar
-      sidebar_UI(
-        NS(id, ns_id),
-        susSidebarWidgets(
-          select_var_UI(NS(id, ns_id), var_list = var_list_climate_risk), 
-          checkbox_UI(NS(id, ns_id), value = TRUE,
-                      label = sus_translate("250-metre grid")),
-        ),
-        bottom = div(class = "bottom_sidebar",
-            tagList(legend_UI(NS(id, ns_id)),
-                    zoom_UI(NS(id, ns_id), map_zoom_levels)))),
-
-      # Map
-      div(class = "mapdeck_div", mapdeckOutput(NS(id, "map"), height = "100%")),
-      
-      # Right panel
-      right_panel(
-        id = id, 
-        compare_UI(NS(id, ns_id), make_dropdown()),
-        explore_UI(NS(id, ns_id)), 
-        dyk_UI(NS(id, ns_id)))
-  ))
+  tagList(
+    
+    # Sidebar
+    sidebar_UI(
+      NS(id, ns_id),
+      susSidebarWidgets(
+        select_var_UI(NS(id, ns_id), var_list = make_dropdown(
+          only = list(theme = "Climate risk"))), 
+        checkbox_UI(NS(id, ns_id), value = TRUE,
+                    label = sus_translate("250-metre grid"))),
+      bottom = div(class = "bottom_sidebar",
+                   tagList(legend_UI(NS(id, ns_id)),
+                           zoom_UI(NS(id, ns_id), map_zoom_levels)))),
+    
+    # Map
+    div(class = "mapdeck_div", rdeckOutput(NS(id, ns_id_map), height = "100%")),
+    
+    # Right panel
+    right_panel(
+      id = id, 
+      compare_UI(NS(id, ns_id), make_dropdown(compare = TRUE)),
+      explore_UI(NS(id, ns_id)), 
+      dyk_UI(NS(id, ns_id)))
+    
+  )
 }
 
 
@@ -36,50 +39,85 @@ climate_risk_UI <- function(id) {
 climate_risk_server <- function(id) {
   moduleServer(id, function(input, output, session) {
     ns_id <- "climate_risk"
+    ns_id_map <- paste0(ns_id, "-map")
     
     # Initial reactives
-    zoom <- reactiveVal(get_zoom(map_zoom, map_zoom_levels))
-    click_id <- reactiveVal(NULL)
+    zoom <- reactiveVal(get_zoom(map_zoom))
+    zoom_string <- reactiveVal(get_zoom_string(map_zoom, map_zoom_levels))
+    select_id <- reactiveVal(NA)
+    poi <- reactiveVal(NULL)
     
     # Map
-    output$map <- renderMapdeck({mapdeck(
-      style = map_style, 
-      token = map_token, 
-      zoom = map_zoom, 
-      location = map_location)})
+    output[[ns_id_map]] <- renderRdeck({
+      rdeck(map_style = map_base_style, initial_view_state = view_state(
+        center = map_loc, zoom = map_zoom))
+    })
     
-    # Zoom reactive
-    observeEvent(input$map_view_change$zoom, {
-      zoom(get_zoom(input$map_view_change$zoom, map_zoom_levels))})
+    # Zoom and POI reactives
+    observeEvent(get_view_state(ns_id_map), {
+      zoom({
+        if (!is.null(sus_bookmark$zoom)) {
+          sus_bookmark$zoom
+        } else if (!is.null(sus_link$zoom)) {
+          sus_link$zoom
+        } else get_zoom(get_view_state(ns_id_map)$zoom)})
+      new_poi <- observe_map(get_view_state(ns_id_map))
+      if ((is.null(new_poi) && !is.null(poi())) || 
+          (!is.null(new_poi) && (is.null(poi()) || !all(new_poi == poi()))))
+        poi(new_poi)
+    })
+    
+    # Zoom string reactive
+    observeEvent(zoom(), {
+      new_zoom_string <- get_zoom_string(zoom(), map_zoom_levels)
+      if (new_zoom_string != zoom_string()) zoom_string(new_zoom_string)
+    })
     
     # Click reactive
-    observeEvent(input$map_polygon_click, {
-      click_id(get_click(input$map_polygon_click))})
-    
-    # Zoom level for data
-    df_choropleth <- zoom_server(
-      id = ns_id, 
-      zoom = zoom, 
-      zoom_levels = reactive(map_zoom_levels))
+    observeEvent(get_clicked_object(ns_id_map), {
+      selection <- get_clicked_object(ns_id_map)$ID
+      if (!is.na(select_id()) && selection == select_id()) return(select_id(NA))
+      
+      select_id(selection)
+    })
     
     # Grid value
     grid <- checkbox_server(id = ns_id)
     
-    # String to fetch maps and data
-    df <- reactive(if (grid()) "grid" else df_choropleth())
+    # Zoom level for data
+    tile_choropleth <- zoom_server(
+      id = ns_id, 
+      zoom_string = zoom_string, 
+      zoom_levels = reactive(map_zoom_levels))
+    
+    # Choose tileset
+    tile <- reactive(if (grid()) "grid" else tile_choropleth())
+    
+    # Get df for explore/legend/etc
+    df <- reactive(get_df(tile(), zoom_string()))
     
     # Time
     time <- reactive("2016")
     
     # Left variable server
-    var_left <- select_var_server(ns_id, var_list = reactive(var_list_climate_risk))
+    var_left <- select_var_server(ns_id, var_list = reactive(
+      make_dropdown(only = list(theme = "Climate risk"))))
     
-    # Right variable/compare panel
+    # Right variable / compare panel
     var_right <- compare_server(
       id = ns_id, 
-      var_list = make_dropdown(),
-      df = df, 
+      var_list = make_dropdown(compare = TRUE),
       time = time)
+    
+    # Additional tileset identifier
+    tile2 <- reactive({
+      tile_lookup$suffix[tile_lookup$module == "climate_risk" &
+                           tile_lookup$tile2 == var_left()]
+    })
+    
+    # Composite variable for map
+    map_var <- reactive(
+      str_remove(paste(var_left(), var_right(), sep = "_"), "_ $"))
     
     # Sidebar
     sidebar_server(id = ns_id, x = "climate_risk")
@@ -97,24 +135,39 @@ climate_risk_server <- function(id) {
       data = data,
       var_left = var_left,
       var_right = var_right,
-      df = df,
-      zoom = zoom)
+      df = df)
 
     # Did-you-know panel
     dyk_server(
       id = ns_id,
       var_left = var_left,
-      var_right = var_right)
+      var_right = var_right,
+      poi = poi)
     
     # Update map in response to variable changes or zooming
-    select_id <- map_change(
-      id = ns_id,
-      map_id = NS(id, "map"),
-      data = data,
-      df = df,
+    rdeck_server(
+      id = ns_id, 
+      map_id = "map", 
+      tile = tile, 
+      tile2 = tile2,
+      map_var = map_var, 
       zoom = zoom,
-      click = click_id,
-    )
+      select_id = select_id,
+      lwd = scale_lwd_climate_risk, 
+      lwd_args = reactive(list(select_id(), tile())))
+    
+    # Update map labels
+    label_server(
+      id = ns_id, 
+      map_id = "map", 
+      tile = tile,
+      zoom = zoom)
+    
+    # De-select
+    observeEvent(input[[paste0(ns_id, "-clear_selection")]], select_id(NA))
+    # Error check
+    observeEvent(data(), if (!select_id() %in% data()$ID) select_id(NA),
+                 ignoreInit = TRUE)
     
     # Explore panel
     explore_content <- explore_server(
@@ -123,7 +176,6 @@ climate_risk_server <- function(id) {
       var_left = var_left,
       var_right = var_right,
       df = df,
-      zoom = zoom,
       select_id = select_id)
     
     # If grid isn't clicked, toggle on the zoom menu
@@ -135,30 +187,40 @@ climate_risk_server <- function(id) {
     # Bookmarking
     bookmark_server(
       id = ns_id,
-      map_view_change = reactive(input$map_view_change),
+      map_viewstate = reactive(get_view_state(ns_id_map)),
       var_left = var_left,
       var_right = var_right,
       select_id = select_id,
       df = df,
-      map_id = NS(id, "map"),
+      map_id = "map",
       more_args = reactive(c("c-cbox" = as.logical(grid())))
     )
-
-    # Last bookmark step: update click_id() + mark bookmark as inactive
+    
+    # Update select_id() on bookmark
     observeEvent(sus_bookmark$active, {
-      # Delay of 100 milliseconds more than the map update from bookmark.
-      # The map/df/data needs to be updated before we select an ID.
       if (isTRUE(sus_bookmark$active)) {
-        delay(1100, {
-          if (!is.null(sus_bookmark$select_id)) {
-            if (sus_bookmark$select_id != "NA") click_id(sus_bookmark$select_id)
-          }
+        delay(1000, {
+          if (!is.null(sus_bookmark$select_id))
+            if (sus_bookmark$select_id != "NA") 
+              select_id(sus_bookmark$select_id)
         })
       }
-
       # So that bookmarking gets triggered only ONCE
-      delay(1500, {sus_bookmark$active <- FALSE})
-
+      delay(1500, {
+        sus_bookmark$active <- FALSE
+        sus_bookmark$df <- NULL
+        sus_bookmark$zoom <- NULL
+      })
     }, priority = -2)
+    
+    # Update select_id() on module link
+    observeEvent(sus_link$activity, {
+      delay(1000, {
+        if (!is.null(sus_link$select_id)) select_id(sus_link$select_id)
+        sus_link$df <- NULL
+        sus_link$zoom <- NULL
+      })
+    }, priority = -2)
+    
   })
 }

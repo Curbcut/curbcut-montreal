@@ -20,7 +20,7 @@ get_info_table_data <- function(data, var_type, var_left, var_right, df,
   if (build_str_as_DA) {
     dat_select <- building
     dat_select_id <- select_id
-    select_id <- (filter(building, ID == select_id))$DAUID
+    if (!is.na(select_id)) select_id <- building$DAUID[building$ID == select_id]
     if (length(select_id) == 0) select_id <- NA
     
   } else {
@@ -67,7 +67,7 @@ get_info_table_data <- function(data, var_type, var_left, var_right, df,
     
     var_left_label <- 
       breaks_q5_left$var_name |> 
-      set_names(breaks_q5_left$var)
+      setNames(breaks_q5_left$var)
     
   } else var_left_label <- NULL
   
@@ -82,14 +82,14 @@ get_info_table_data <- function(data, var_type, var_left, var_right, df,
       
       var_right_label <- 
         breaks_q5_right$var_name |> 
-        set_names(breaks_q5_right$var)
+        setNames(breaks_q5_right$var)
     
     } else var_right_label <- NULL
     
   } else var_right_label <- NULL
     
-  var_left_label <- map_chr(var_left_label, sus_translate)
-  var_right_label <- map_chr(var_right_label, sus_translate)
+  var_left_label <- sapply(var_left_label, sus_translate)
+  var_right_label <- sapply(var_right_label, sus_translate)
   
   out$title_left <- 
     sus_translate(variables[variables$var_code == var_left,]$var_title)
@@ -117,7 +117,6 @@ get_info_table_data <- function(data, var_type, var_left, var_right, df,
   if (var_right != " ") active_right <- 
     length(selection$ID[!is.na(selection$var_left_q3) & 
                           !is.na(selection$var_left_q3)])
-    nrow(filter(selection, !is.na(var_left_q3), !is.na(var_right)))
   out$pop <- convert_unit(selection$population)
   val_left <- selection$var_left
   out$val_left <- convert_unit(val_left, var_left)
@@ -147,61 +146,54 @@ get_info_table_data <- function(data, var_type, var_left, var_right, df,
   scale_sing <- switch(
     df,  
     "date" = NA_character_,
-    "borough" = sus_translate("borough/city"),
-    "CT" = sus_translate("census tract"),
-    "DA" = sus_translate("dissemination area"),
-    "grid" = sus_translate("250-m"),
-    "building" = if (build_str_as_DA) sus_translate("dissemination area") else
-      sus_translation("building"),
-    "street" = if (build_str_as_DA) sus_translate("dissemination area") else
-      sus_translation("street"))
-  out$scale_sing <- scale_sing
+    "borough" = "borough/city",
+    "CT" = "census tract",
+    "DA" = "dissemination area",
+    "grid" = "250-m",
+    "building" = if (build_str_as_DA) "dissemination area" else "building",
+    "street" = if (build_str_as_DA) "dissemination area" else "street")
   
-  out$scale_plural <- case_when(
-    scale_sing == sus_translate("borough/city") ~ 
-      sus_translate("boroughs or cities"),
-    scale_sing == sus_translate("census tract") ~ 
-      sus_translate("census tracts"),
-    scale_sing == sus_translate("dissemination area") ~ 
-      sus_translate("dissemination areas"),
-    scale_sing == sus_translate("250-m") ~ sus_translate("areas"),
-    scale_sing == sus_translate("building") ~ sus_translate("buildings"),
-    scale_sing == sus_translate("street") ~ sus_translate("streets"),
-    TRUE ~ NA_character_)
+  scale_plural <- switch(
+    scale_sing,
+    "borough/city" = "boroughs or cities",
+    "census tract" = "census tracts",
+    "dissemination area" = "dissemination areas",
+    "250-m" = "areas",
+    "building" = "buildings",
+    "street" = "streets",
+    NA_character_)
+  
+  out$scale_sing <- sus_translate(scale_sing)
+  out$scale_plural <- sus_translate(scale_plural)
   
 
   ## Place names ---------------------------------------------------------------
   
-  out$place_name <- case_when(
-    df %in% c("building", "street") & build_str_as_DA ~
-      sus_translate(
-        "The dissemination area around {select_name$name}"),
-    scale_sing == sus_translate("building") ~
-      glue("{select_name$name}"),
-    scale_sing == sus_translate("street") ~
-      glue("{select_name$name}"),
-    scale_sing == sus_translate("borough/city") ~
-      glue("{select_name$name}"),
-    scale_sing == sus_translate("census tract") ~
-      sus_translate("Census tract {select_name$name}"),
-    scale_sing == sus_translate("dissemination area") ~
+  out$place_name <- if (df %in% c("building", "street") && build_str_as_DA) {
+        glue("The dissemination area around {select_name$name}")
+  } else switch(
+    scale_sing,
+    "building" = glue("{select_name$name}"),
+    "street" = glue("{select_name$name}"),
+    "borough/city" = glue("{select_name$name}"),
+    "census tract" = sus_translate("Census tract {select_name$name}"),
+    "dissemination area" = 
       sus_translate("Dissemination area {select_name$name}"),
-    scale_sing == sus_translate("250-m") ~
-      sus_translate("The area around {select_name$name}"),
-    TRUE ~ NA_character_)
+    "250-m" = sus_translate("The area around {select_name$name}"),
+    NA_character_)
   
   if (grepl("select", out$var_type)) {
     if (df == "borough") select_name$name_2 <- 
         sus_translate(glue("{select_name$name_2}"))
     
-    out$place_heading <- case_when(
-      df %in% c("building", "street") & build_str_as_DA ~
-        sus_translate(select_name$name),
-      scale_sing == sus_translate("borough/city") ~
-        sus_translate("{select_name$name_2} of {out$place_name}"), 
-      scale_sing == sus_translate("250-m") ~ 
-        sus_translate(select_name$name),
-      TRUE ~ glue("{out$place_name} ({select_name$name_2})"))
+    out$place_heading <- if (df %in% c("building", "street") && 
+                             build_str_as_DA) {
+      sus_translate(select_name$name)
+    } else if (scale_sing == "borough/city") {
+      sus_translate("{select_name$name_2} of {out$place_name}")
+    } else if (scale_sing == "250-m") {
+      sus_translate(select_name$name)
+    } else glue("{out$place_name} ({select_name$name_2})")
   }
   
   
@@ -229,17 +221,25 @@ get_info_table_data <- function(data, var_type, var_left, var_right, df,
     
     quintile <- quantile(vec_left, c(0.2, 0.4, 0.6, 0.8))
 
-    out$larger <- case_when(
-      val_left >= quintile[4] ~ sus_translate("much larger than"),
-      val_left >= quintile[3] ~ sus_translate("larger than"),
-      val_left >= quintile[2] ~ sus_translate("almost the same as"),
-      val_left >= quintile[1] ~ sus_translate("smaller than"),
-      TRUE ~ sus_translate("much smaller than"))
+    out$larger <- if (val_left >= quintile[4]) {
+      sus_translate("much larger than")
+    } else if (val_left >= quintile[3]) {
+      sus_translate("larger than")
+    } else if (val_left >= quintile[2]) {
+      sus_translate("almost the same as")
+    } else if (val_left >= quintile[1]) {
+      sus_translate("smaller than")
+    } else sus_translate("much smaller than")
 
-    out$high <- case_when(
-      str_detect(out$larger, sus_translate("larger")) ~ sus_translate("high"),
-      str_detect(out$larger, sus_translate("smaller")) ~ sus_translate("low"),
-      TRUE ~ sus_translate("moderate"))
+    out$high <- if (str_detect(out$larger, paste(sus_translate("much larger than"), 
+                                                  sus_translate("larger than"), 
+                                                  sep = "|"))) {
+      sus_translate("high")
+    } else if (str_detect(out$larger, paste(sus_translate("smaller than"), 
+                                            sus_translate("much smaller than"), 
+                                            sep = "|"))) {
+      sus_translate("low")
+    } else sus_translate("moderate")
 
     out$percentile <- convert_unit(length(vec_left[vec_left <= val_left]) / 
                                      length(vec_left), "_pct")
@@ -297,21 +297,23 @@ get_info_table_data <- function(data, var_type, var_left, var_right, df,
       out$corr_disp <- convert_unit(corr)
       out$pos <- if (corr > 0) sus_translate("positive") else 
         sus_translate("negative")
-      out$strong <- case_when(
-        abs(corr) > 0.6 ~ sus_translate("strong"),
-        abs(corr) > 0.3 ~ sus_translate("moderate"),
-        TRUE ~ sus_translate("weak"))
-      out$higher <- if_else(out$pos == sus_translate("positive"),
-                            sus_translate("higher"),
-                            sus_translate("lower"))
-      out$high_low_disclaimer <- case_when(
-        out$strong == sus_translate("strong") ~
-          sus_translate("with only a few exceptions"),
-        out$strong == sus_translate("moderate") ~ 
-          sus_translate("although with some exceptions"),
-        out$strong == sus_translate("weak") ~ 
-          sus_translate("although with many exceptions"))
-    
+      
+      out$strong <- if (abs(corr) > 0.6) {
+        sus_translate("strong")
+      } else if (abs(corr) > 0.3) {
+        sus_translate("moderate")
+      } else sus_translate("weak")
+      
+      out$higher <- ifelse(out$pos == sus_translate("positive"),
+                           sus_translate("higher"), sus_translate("lower"))
+      
+      out$high_low_disclaimer <- if (out$strong == sus_translate("strong")) {
+        sus_translate("with only a few exceptions")
+      } else if (out$strong == sus_translate("moderate")) {
+        sus_translate("although with some exceptions")
+      } else if (out$strong == sus_translate("weak")) {
+        sus_translate("although with many exceptions")
+      }
   }
   
   
@@ -327,12 +329,13 @@ get_info_table_data <- function(data, var_type, var_left, var_right, df,
     perc_right <- length(vec_2[vec_2 <= val_right]) / length(vec_2)
     out$perc_right <- convert_unit(perc_right, "_pct")
     
-    out$relative_position <- case_when(
-      abs(perc_left - perc_right) > 0.5 ~ sus_translate("dramatically different"),
-      abs(perc_left - perc_right) > 0.3 ~ sus_translate("substantially different"),
-      abs(perc_left - perc_right) > 0.1 ~ sus_translate("considerably different"),
-      TRUE ~ sus_translate("similar")
-    )
+    out$relative_position <- if (abs(perc_left - perc_right) > 0.5) {
+      sus_translate("dramatically different")
+    } else if (abs(perc_left - perc_right) > 0.3) {
+      sus_translate("substantially different")
+    } else if (abs(perc_left - perc_right) > 0.1) {
+      sus_translate("considerably different")
+    } else sus_translate("similar")
     
   }
   
@@ -348,20 +351,23 @@ get_info_table_data <- function(data, var_type, var_left, var_right, df,
     out$corr_disp <- convert_unit(corr)
     out$pos <- if (corr > 0) sus_translate("positive") else 
       sus_translate("negative")
-    out$strong <- case_when(
-      abs(corr) > 0.6 ~ sus_translate("strong"),
-      abs(corr) > 0.3 ~ sus_translate("moderate"),
-      TRUE ~ "weak")
-    out$higher <- if_else(out$pos == sus_translate("positive"),
-                          sus_translate("higher"),
-                          sus_translate("lower"))
-    out$high_low_disclaimer <- case_when(
-      out$strong == sus_translate("strong") ~
-        sus_translate("with only a few exceptions"),
-      out$strong == sus_translate("moderate") ~ 
-        sus_translate("although with some exceptions"),
-      out$strong == sus_translate("weak") ~ 
-        sus_translate("although with many exceptions"))
+    
+    out$strong <- if (abs(corr) > 0.6) {
+      sus_translate("strong")
+    } else if (abs(corr) > 0.3) {
+      sus_translate("moderate")
+    } else sus_translate("weak")
+    
+    out$higher <- ifelse(out$pos == sus_translate("positive"),
+                         sus_translate("higher"), sus_translate("lower"))
+    
+    out$high_low_disclaimer <- if (out$strong == sus_translate("strong")) {
+      sus_translate("with only a few exceptions")
+    } else if (out$strong == sus_translate("moderate")) {
+      sus_translate("although with some exceptions")
+    } else if (out$strong == sus_translate("weak")) {
+      sus_translate("although with many exceptions")
+    }
 
   }
   
@@ -394,13 +400,11 @@ get_info_table_data <- function(data, var_type, var_left, var_right, df,
   
   if (grepl("date_", out$var_type)) {
     
-    coef <- 
-      dat %>%
-      mutate(var_right = as.numeric(var_right)) %>%
-      lm(var_left ~ var_right, data = .) %>%
-      `$`("coefficients") %>%
-      `[`("var_right") %>%
-      signif(3)
+    coef <- dat
+    coef$var_right <- as.numeric(coef$var_right)
+    coef <- lm(var_left ~ var_right, data = coef)
+    coef <- coef$coefficients
+    coef <- signif(coef$var_right, 3)
     
     max_date <- dat$var_right[dat$var_left == max(dat$var_left)]
     

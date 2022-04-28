@@ -11,28 +11,21 @@ translate_fun <- function(x) deeplr::toFrench2(x, auth_key = .deepl_key)
 sus_translate_list <- function(x) {
   
   # translate name of lists
-  names(x) <-
-    map_chr(names(x), ~{
-      if (is.null(.x)) NULL else {
-        out <- 
-          translation_fr %>%
-          filter(en == .x) %>%
-          pull()
-        
-        if (length(out) == 0 || is.na(out)) {
-          # warning("No translation text found for `", .x, "`.", call. = FALSE)
-          out <- .x
-        }
-        
-        out
-      }})
+  names(x) <- sapply(names(x), \(y) {
+    if (is.null(y)) NULL else {
+      out <- translation_fr$fr[translation_fr$en == y]
+      
+      if (length(out) == 0 || is.na(out)) {
+        warning("No translation text found for `", y, "`.", call. = FALSE)
+        out <- y
+      }
+      
+      out
+    }})
   
   # Re-iterate in list depth to translate every name
-  if (vec_depth(x) > 2) {
-    x <- 
-      map(x, ~{
-      if (vec_depth(.x) > 1) sus_translate_list(.x) else (.x)
-    })
+  if (vec_dep(x) > 2) {
+    x <- lapply(x, \(y) if (vec_dep(y) > 1) sus_translate_list(y) else (y))
   }
   
   x
@@ -44,14 +37,15 @@ sus_translate_list <- function(x) {
 
 sus_translate <- function(..., .envir = parent.frame()) {
   
+  
+  
   # Error if we provide lists + character vectors unintentionally
   args <- list(...)
-  error_check <- map_lgl(args, inherits, "list")
+  error_check <- sapply(args, inherits, "list")
   stopifnot(length(error_check) == sum(error_check) || sum(error_check) == 0)
   
   x <- c(...)
   if (!is.list(x)) x <- paste0(..., collapse = "")
-  
   
   # Return input if we're not in a Shiny context
   if (!shiny::isRunning()) return({
@@ -65,12 +59,14 @@ sus_translate <- function(..., .envir = parent.frame()) {
             tags$span(class = "lang-fr", {
               translated <- translation_fr[translation_fr$en == x, ]$fr
               if (length(translated) != 0 && !is.na(translated)) translated else {
-                # warning("No translation text found for `", x, "`.", 
-                #         call. = FALSE)
+                warning("No translation text found for `", x, "`.",
+                call. = FALSE)
                 x
               }
             }))
   )
+  
+  if (all(x == "")) return("")
   
   # English
   if (sus_rv$lang() == "en") return({
@@ -78,15 +74,14 @@ sus_translate <- function(..., .envir = parent.frame()) {
     x <- sub("<<.>>", "", x)
     glue(x, .envir = .envir)})
   
-  # If not english, so french
-  # List
+  # French
   if (is.list(x)) return(sus_translate_list(x))
   
   # Character
   translated <- translation_fr[translation_fr$en == x, ]$fr
   # In case there is no translations:
   if (length(translated) == 0 || is.na(translated)) return({
-    # warning("No translation text found for `", x, "`.", call. = FALSE)
+    warning("No translation text found for `", x, "`.", call. = FALSE)
     x <- sub("<<.>>", "", x)
     glue(x, .envir = .envir)})
   

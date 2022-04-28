@@ -1,31 +1,32 @@
 #### GET DATA TYPE #############################################################
 
-get_data_type <- function(df, var_left, var_right) {
+get_data_type <- function(df, var_left, var_right, build_str_as_DA = TRUE) {
   
   # Building special cases -----------------------------------------------------
 
-  if (df == "building" && length(var_right) == 2 && 
+  if (build_str_as_DA && df == "building" && length(var_right) == 2 && 
       var_right[1] == var_right[2]) return("building_NA_delta_bivar")
-  if (df == "building" && length(var_left) == 2 && 
+  if (build_str_as_DA && df == "building" && length(var_left) == 2 && 
       var_left[1] == var_left[2]) return("building_NA_delta")
   
-  if (df == "building" && length(var_left) == 1 && var_right[1] == " ")
-    return("building_q5")
+  if (build_str_as_DA && df == "building" && length(var_left) == 1 
+      && var_right[1] == " ") return("building_q5")
   
-  if (df == "building" && length(var_left) == 1 && length(var_right) == 1 && 
-      var_right != " ")
-    return("building_bivar")
+  if (build_str_as_DA && df == "building" && length(var_left) == 1 && 
+      length(var_right) == 1 && var_right != " ") return("building_bivar")
   
-  if (df == "building" && length(var_left) == 2 && var_right[1] == " ")
-    return("building_delta")
+  if (build_str_as_DA && df == "building" && length(var_left) == 2 && 
+      var_right[1] == " ") return("building_delta")
   
-  if (df == "building" && length(var_left) == 2 && length(var_right) == 2)
-    return("building_delta_bivar")
-  
+  if (build_str_as_DA && df == "building" && length(var_left) == 2 && 
+      length(var_right) == 2) return("building_delta_bivar")
   
   # General cases --------------------------------------------------------------
 
+  if (df == "raster") return("q100")  
   if (df %in% c("heatmap", "point")) return("point")
+  if (str_detect(var_left[1], "_qual$")) return("qual")
+  if (!df %in% c("borough", "CT", "DA", "building", "grid")) return(df)
   if (length(var_right) == 2 && var_right[1] == var_right[2]) return(
     "NA_delta_bivar")
   if (length(var_left) == 2 && var_left[1] == var_left[2]) return("NA_delta")

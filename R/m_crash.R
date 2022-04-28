@@ -21,23 +21,22 @@ crash_UI <- function(id) {
         
         slider_UI(NS(id, ns_id), 
                   slider_id = "slu",
-                  label = sus_translate("Select a year"),
-                  min = crash_slider$min,
-                  max = crash_slider$max,
-                  step = crash_slider$interval, sep = "",
-                  value = crash_slider$init),
+                  min = min(crash$year),
+                  max = max(crash$year),
+                  step = 1, sep = "",
+                  value = max(crash$year)),
         slider_UI(NS(id, ns_id), 
                   slider_id = "slb",
-                  label = sus_translate("Select two dates"), 
-                  min = crash_slider$min,
-                  max = crash_slider$max, 
-                  step = crash_slider$interval, sep = "", 
+                  label = sus_translate("Select two years (data aggregate)"), 
+                  min = min(crash$year),
+                  max = max(crash$year), 
+                  step = 1, sep = "", 
                   value = c("2012", "2019")),
         
         checkbox_UI(NS(id, ns_id),
                     checkbox_id = "comp_d",
                     label = sus_translate("Compare dates")),
-        hidden(checkbox_UI(NS(id, ns_id), 
+        hidden(checkbox_UI(NS(id, ns_id),
                            checkbox_id = "grid",
                            label = sus_translate("250-metre grid"))),
         year_disclaimer_UI(NS(id, ns_id))
@@ -59,7 +58,7 @@ crash_UI <- function(id) {
     # Right panel
     right_panel(
       id = id, 
-      compare_UI(NS(id, ns_id), make_dropdown()),
+      compare_UI(NS(id, ns_id), make_dropdown(compare = TRUE)),
       explore_UI(NS(id, ns_id)), 
       dyk_UI(NS(id, ns_id)))
   ))
@@ -92,7 +91,7 @@ crash_server <- function(id) {
       style = map_style, 
       token = map_token, 
       zoom = map_zoom, 
-      location = map_location)})
+      location = map_loc)})
     
     # Zoom reactive
     map_zoom_levels_crash <- reactive({
@@ -143,7 +142,7 @@ crash_server <- function(id) {
     # Compare panel
     var_right <- compare_server(
       id = ns_id,
-      var_list = make_dropdown(),
+      var_list = make_dropdown(compare = TRUE),
       df = df,
       time = time,
       show_panel = choropleth)
@@ -165,7 +164,6 @@ crash_server <- function(id) {
     # data_for_explore <- reactive({
     #   if (choropleth()) data() else {
     #     data() |>
-    #       st_drop_geometry() |>
     #       count(date) |>
     #       rename(var_left = n, var_right = date) |>
     #       mutate(ID = seq_along(var_left), .before = var_left) |>

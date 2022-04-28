@@ -21,19 +21,31 @@ explore_UI <- function(id) {
         fluidRow(column(width = 7, h4(sus_translate("Explore"))),
                  column(width = 5, align = "right", 
                         actionLink(inputId = NS(id, "hide_explore"), 
-                                   class="sus-small-link", 
+                                   class = "sus-small-link", 
                                    label = sus_translate("Hide"))))),
     
     div(id = NS(id, "explore_content"),
         htmlOutput(NS(id, "info_table")),
         plotOutput(NS(id, "explore_graph"), height = 150),
         hidden(actionLink(inputId = NS(id, "clear_selection"),
-                          label = "Clear selection")))
+                          label = sus_translate("Clear selection"))))
   )
 }
 
-explore_server <- function(id, data, var_left, var_right, df, zoom = df,
-                           select_id, build_str_as_DA = reactive(TRUE)) {
+explore_server <- function(id, data, var_left, var_right, df, select_id, 
+                           build_str_as_DA = reactive(TRUE), 
+                           graph = reactive(explore_graph), 
+                           graph_args = reactive(list(
+                             data = data(), var_left = var_left(), 
+                             var_right = var_right(), df = df(), 
+                             select_id = select_id(), 
+                             build_str_as_DA = build_str_as_DA())),
+                           table = reactive(info_table),
+                           table_args = reactive(list(
+                             data = data(), var_left = var_left(),
+                             var_right = var_right(), df = df(),
+                             select_id = select_id(),
+                             build_str_as_DA = build_str_as_DA()))) {
   
   stopifnot(is.reactive(data))
   stopifnot(is.reactive(var_left))
@@ -45,45 +57,40 @@ explore_server <- function(id, data, var_left, var_right, df, zoom = df,
   moduleServer(id, function(input, output, session) {
     
     # Get var_type
-    var_type <- reactive(get_var_type(
+    var_type <- reactive(tryCatch(get_var_type(
       data = data(),
       var_left = var_left(),
       var_right = var_right(),
       df = df(),
-      select_id = select_id()))
+      select_id = select_id(),
+      build_str_as_DA = build_str_as_DA()),
+      error = function(e) NULL))
+
+    # Reconstruct variable args
+    table_args2 <- reactive(c(table_args(), var_type = var_type()))
+    graph_args2 <- reactive(c(graph_args(), var_type = var_type()))
     
     # Make info table
-    table <- reactive(info_table(
-      data = data(),
-      var_type = var_type(),
-      var_left = var_left(),
-      var_right = var_right(),
-      df = df(),
-      select_id = select_id(),
-      build_str_as_DA = build_str_as_DA()))
+    table_out <- reactive(tryCatch(do.call(table(), table_args2()), 
+                                   error = function(e) NULL))
     
     # Display info table
-    output$info_table <- renderUI(table())
-    
+    output$info_table <- renderUI(table_out())
+
     # Make graph
-    graph <- reactive(explore_graph(
-      data = data(),
-      var_type = var_type(),
-      var_left = var_left(),
-      var_right = var_right(),
-      df = df(),
-      zoom = zoom(),
-      select_id = select_id(),
-      build_str_as_DA = build_str_as_DA()))
+    graph_out <- reactive(tryCatch(do.call(graph(), graph_args2()),
+                                   error = function(e) NULL))
     
     # Display graph
-    output$explore_graph <- renderPlot(graph())
+    output$explore_graph <- renderPlot(graph_out())
     
     # Show/hide components
     observe({
       toggle("explore_content", condition =
-               (!is.null(table()) || !is.null(graph())) && input$hide_explore %% 2 == 0)
-      toggle("explore_graph", condition = !is.null(graph()))
+               (!is.null(table_out()) || !is.null(graph_out())) && 
+               input$hide_explore %% 2 == 0)
+      toggle("info_table", condition = !is.null(table_out()))
+      toggle("explore_graph", condition = !is.null(graph_out()))
       toggle("clear_selection", condition = !is.na(select_id()))
     })
     
@@ -94,6 +101,6 @@ explore_server <- function(id, data, var_left, var_right, df, zoom = df,
     })
 
     # # Return info_table text and graph to export it in report afterwards
-    reactive(list(info = info_table(), graph = graph()))
+    reactive(list(info = table_out(), graph = graph_out()))
   })
 }

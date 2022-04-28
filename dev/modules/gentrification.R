@@ -78,7 +78,7 @@ index_fun <- function(df) {
 }
 
 gen_to_join <- map(list("borough" = borough, "CT" = CT, "DA" = DA, 
-                        "grid" = grid, "street" = street), index_fun)
+                        "grid" = grid), index_fun)
 
 
 # Add empty q3 and q5 -----------------------------------------------------
@@ -114,6 +114,12 @@ walk(names(gen_results), ~{
   assign(.x, left_join(get(.x), gen_results[[.x]], by = "ID") |> 
            relocate(any_of(c("buffer", "centroid", "building", "geometry")), 
                     .after = last_col()), envir = globalenv())})
+
+building <- 
+  building |> 
+  left_join(gen_results$DA, by = c("DAUID" = "ID")) |> 
+  relocate(geometry, .after = last_col()) |> 
+  st_set_agr("constant")
 
 street <- 
   street |> 

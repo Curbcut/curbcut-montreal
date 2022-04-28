@@ -1,20 +1,5 @@
 ### CANALE MODULE ##############################################################
 
-ready_modules_home <- function(mods_rdy) {
-  
-  list_args <- 
-  map(1:length(mods_rdy), function(higher_theme) {
-    c(list(name = sus_translate(names(mods_rdy[higher_theme]))),
-      map(1:length(mods_rdy[[higher_theme]]), function(lower_theme) {
-        list(name = sus_translate(names(mods_rdy[[higher_theme]][lower_theme])), 
-             onclick = paste0("openTab('", mods_rdy[[higher_theme]][lower_theme], "')"))
-      }))
-  })
-  
-  map(list_args, ~{do.call(linkListGroup, .x)})
-  
-}
-
 # UI ----------------------------------------------------------------------
 
 home_UI <- function(id) {
@@ -23,13 +8,13 @@ home_UI <- function(id) {
       tags$div(class = "sus-carousel",
         tags$div(class = "sus-carousel-slide",
           tags$h2(tags$em(nowrap(sus_translate("Towards a")), nowrap(sus_translate("sustainable city")))),
-          tags$p(sus_translate("SUS is a platform for integrating, exploring, ",
-                               "and analyzing a wide range of urban sustainability ",
-                               "data sources for the Montreal region across ",
-                               "multiple spatial and temporal scales. SUS ",
-                               "offers a robust set of tools for scenario ",
-                               "modelling and analysis which will be useful ",
-                               "for researchers, policymakers, communities, ",
+          tags$p(sus_translate("Sus is a platform for exploring urban ",
+                               "sustainability in the Montreal region across ",
+                               "multiple spatial and temporal scales. Sus ",
+                               "offers a justice- and inclusivity-focused ",
+                               "approach to sustainability which integrates ",
+                               "the widest possible range of data sources to ",
+                               "help researchers, policymakers, communities, ",
                                "and individuals.")),
           tags$div(class = "sus-button-group",
             tags$a(class = "sus-button sus-icon-button sus-button-secondary", 
@@ -43,22 +28,36 @@ home_UI <- function(id) {
       )
     ),
     susPageSection(
-      tags$h2(sus_translate("Statement"), scrollAnchor(id = "learn-more")),
-      tags$p(sus_translate("SUS embraces an inclusive vision of urban sustainability, allowing ",
-             "users to contextualize questions into larger frameworks of equity and ",
-             "accessibility. It serves as both a data-exploration tool and a knowledge ",
-             "and information-sharing resource, designed to encourage greater ",
-             "reflection on different urban sustainability issues, and on the ",
-             "communities which are most impacted by them.")),
-      tags$p(sus_translate("The majority of the data used are publicly available and aggregated ",
-             "into thematic and place-based modules to allow a range of stakeholders ",
-             "greater accessibility to answering sustainability questions. SUS ",
-             "further mobilizes both qualitative and quantitative research to bring ",
-             "questions without clear datasets into the discussion.")),
-      tags$p(sus_translate("SUS aims to engage Montrealers to harness the momentum surrounding ",
-             "technologically-based approaches to sustainability for public good with ",
-             "a vision towards making the City more socially inclusive and less ",
-             "environmentally impactful.")),
+      tags$h2(sus_translate("About Sus"), scrollAnchor(id = "learn-more")),
+      tags$p(sus_translate("Sus embraces an inclusive vision of urban ",
+                           "sustainability, allowing users to pose questions ",
+                           "about environmental issues and contextualize them ",
+                           "within larger frameworks of equity and ",
+                           "accessibility. It serves as both a data-exploration ",
+                           "tool and a knowledge and information-sharing ",
+                           "resource, designed to encourage greater reflection ",
+                           "on urban sustainability challenges, and on the ",
+                           "communities which are most affected by them.")),
+      tags$p(sus_translate("Sus is organized into thematic and place-based ",
+                           "“modules”, each of which takes a narrow slice of ",
+                           "our data and presents it in a way designed to ",
+                           "answer existing questions and provoke new ones. ",
+                           "What is the relationship between heat risk and ",
+                           "housing tenure? Does my neighbourhood have better ",
+                           "or worse active transport options than the rest ",
+                           "of the city? What is the history of environmental ",
+                           "gentrification in Little Burgundy? The majority ",
+                           "of the data is publicly available, and over time ",
+                           "we will be adding more tools for users to export ",
+                           "the data and use it themselves.")),
+      tags$p(HTML(paste0(sus_translate("See the "),
+                         "<a style ='cursor:pointer;' onclick = openTab('how_to_use')>",
+                         sus_translate("“How to use”"),"</a>",
+                         sus_translate("page for more information on ",
+                         "how Sus works. And see the "),
+                         "<a style ='cursor:pointer;' onclick = openTab('authors')>",
+                         sus_translate("“Authors”"), "</a>", 
+                         sus_translate(" page to learn more about our team.")))),
       tags$p(class = "text-center", tags$em(sus_translate("An initiative of the "),
         HTML(paste0("<a href = 'https://www.mcgill.ca/mssi/'>",
         sus_translate("McGill Sustainability Systems Initiative"), "</a>."))
@@ -66,13 +65,13 @@ home_UI <- function(id) {
     ),
     susPageSection(
       tags$h2(sus_translate("Maps"), scrollAnchor(id = "start-exploring")),
-      do.call(linkList, c(ready_modules_home(mods_rdy),
+      tags$div(class="text-width", do.call(linkList, c(ready_modules_home(mods_rdy),
                           list(linkListGroup(name = sus_translate("More"),
                                              list(name = sus_translate("Montréal stories"), 
                                                   onclick = "openTab('stories')"),
                                              list(name = sus_translate("Place explorer"), 
                                                   onclick = "openTab('place_explorer')"))))
-      )
+      ))
     ), tags$div(style = "width: 250px; height: 50px;", hidden = "", susLegend())
   )
 }

@@ -6,7 +6,7 @@
 library(tidyverse)
 library(qs)
 themes <- c("Housing", "Income", "Identity", "Transport", "Family", "Language", 
-            "Age", "Education", "Employment", "Urban life", "Climate")
+            "Age", "Education", "Employment", "Urban life", "Climate risk")
 
 
 # Import CSV and check for errors -----------------------------------------

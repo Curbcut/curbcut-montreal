@@ -24,36 +24,45 @@ zoom_UI <- function(id, zoom_levels) {
   
 }
 
-zoom_server <- function(id, zoom, zoom_levels) {
+zoom_server <- function(id, zoom_string, zoom_levels) {
   
-  stopifnot(is.reactive(zoom))
+  stopifnot(is.reactive(zoom_string))
   stopifnot(is.reactive(zoom_levels))
   
   moduleServer(id, function(input, output, session) {
-
+    
     # Disable the slider if in auto mode
     observeEvent(input$zoom_auto, {
       toggleState(id = "zoom_slider", condition = !input$zoom_auto)
     })
     
     # Update the slider if zoom_levels changes
-    observeEvent(zoom_levels(), {
+    observeEvent({zoom_levels()
+      sus_rv$lang()}, {
       updateSliderTextInput(session, "zoom_slider", 
-                            selected = get_zoom_name(zoom()),
-                            choices = get_zoom_label(zoom_levels()))
+                            selected = sus_translate(get_zoom_name(zoom_string())),
+                            choices = get_zoom_label_t(zoom_levels()))
     })
     
+    # Update the slider when zomo changes, only on auto_zoom
+    observeEvent(zoom_string(), {
+      if (input$zoom_auto)
+        updateSliderTextInput(session, "zoom_slider", 
+                              selected = sus_translate(get_zoom_name(zoom_string())))
+    }, priority = -1)
+    
     # Update the slider if in auto mode
-    observeEvent(zoom(), {
-      if (input$zoom_auto) updateSliderTextInput(session, "zoom_slider", 
-                                            selected = get_zoom_name(zoom()))
+    observeEvent(zoom_string(), {
+      if (input$zoom_auto) updateSliderTextInput(
+        session, "zoom_slider", 
+        selected = get_zoom_name(zoom_string()))
     })
     
     # Get slider value
     zoom_out <- reactive({
-      if (input$zoom_auto) zoom() else get_zoom_code(input$zoom_slider)
+      if (input$zoom_auto) "auto_zoom" else get_zoom_code(input$zoom_slider)
       })
-
+    
     # Return value    
     return(zoom_out)
   })

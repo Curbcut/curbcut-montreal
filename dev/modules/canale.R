@@ -142,6 +142,12 @@ grid <-
   relocate(geometry, .after = last_col()) |> 
   st_set_agr("constant")
 
+building <- 
+  building |> 
+  left_join(DA_canale, by = c("DAUID" = "ID")) |> 
+  relocate(geometry, .after = last_col()) |> 
+  st_set_agr("constant")
+
 street <- 
   street |> 
   left_join(DA_canale, by = c("DAUID" = "ID")) |> 

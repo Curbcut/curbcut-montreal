@@ -78,15 +78,15 @@ census_vec <-
 data_to_add <- add_census_data(census_vec, scales, years, parent_vectors)
 
 # Remove a few DA/grid columns, because of NHS errors
-data_to_add[[1]]$DA <- 
-  data_to_add[[1]]$DA |>
-  select(!(starts_with("iden_aboriginal_pct") & ends_with("_2011"))) |>
-  select(!(starts_with("emp_creative_pct") & ends_with("_2011")))
-
-data_to_add[[1]]$grid <- 
-  data_to_add[[1]]$grid |>
-  select(!(starts_with("iden_aboriginal_pct") & ends_with("_2011"))) |>
-  select(!(starts_with("emp_creative_pct") & ends_with("_2011")))
+# data_to_add[[1]]$DA <- 
+#   data_to_add[[1]]$DA |>
+#   select(!(starts_with("iden_aboriginal_pct") & ends_with("_2011"))) |>
+#   select(!(starts_with("emp_creative_pct") & ends_with("_2011")))
+# 
+# data_to_add[[1]]$grid <- 
+#   data_to_add[[1]]$grid |>
+#   select(!(starts_with("iden_aboriginal_pct") & ends_with("_2011"))) |>
+#   select(!(starts_with("emp_creative_pct") & ends_with("_2011")))
 
 
 # Data testing ------------------------------------------------------------
@@ -117,12 +117,17 @@ grid <-
   relocate(geometry, .after = last_col())
 
 
-# Assign DA data to streets -----------------------------------------------
+# Assign DA data to building and street -----------------------------------
 
 DA_census <- 
   DA[, str_detect(names(DA), paste0(census_vec$var_code, collapse = "|"))] |> 
   mutate(ID = DA$ID) |> 
   st_drop_geometry()
+
+building <- 
+  building |> 
+  left_join(DA_census, by = c("DAUID" = "ID")) |> 
+  relocate(geometry, .after = last_col())
 
 street <- 
   street |> 
@@ -147,7 +152,7 @@ variables <- bind_rows(variables, data_to_add[[2]]) |>
                            str_starts(var_code, "iden") ~ "Identity",
                            str_starts(var_code, "trans") ~ "Transport",
                            str_starts(var_code, "emp") ~ "Employment",
-                           str_starts(var_code, "family") ~ "Family",
+                           str_starts(var_code, "family") ~ "Household",
                            str_starts(var_code, "lang") ~ "Language",
                            str_starts(var_code, "age") ~ "Age",
                            str_starts(var_code, "edu") ~ "Education"))

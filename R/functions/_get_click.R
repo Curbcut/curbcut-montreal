@@ -4,7 +4,7 @@ get_click <- function(click, type = "polygon_click", retrieve = "id") {
   
   if (type == "polygon_click") {
     select_id <- tryCatch(
-      fromJSON(click)$object$properties$id,
+      click$ID,
       error = function(e) NULL)
     if (is.null(select_id)) select_id <- NA
     

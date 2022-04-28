@@ -1,14 +1,12 @@
 #### RENDER EXPLORE GRAPH ######################################################
 
 render_explore_graph <- function(plot_type, data, var_left, var_right, df,
-                                 zoom, select_id, x_scale, y_scale, labs_xy, 
+                                 select_id, x_scale, y_scale, labs_xy, 
                                  theme_default) {
   
   # Set convenience variables
   var_left_num <- length(unique(data$var_left))
   bin_number <- min(25, var_left_num)
-  opac <- colour_alpha[names(colour_alpha) == zoom]
-  if (length(opac) == 0) opac <- "FF"
   
   # Histogram
   if (plot_type %in% c("hist_all", "hist_na", "hist_select")) {
@@ -28,7 +26,7 @@ render_explore_graph <- function(plot_type, data, var_left, var_right, df,
         lwd = 1.5)} +
       binned_scale(aesthetics = "fill",
                    scale_name = "stepsn",
-                   palette = \(x) paste0(col_left_5, opac),
+                   palette = \(x) colour_left_5$fill[2:6],
                    breaks = vals) +
       x_scale + y_scale + labs_xy + theme_default
     
@@ -43,17 +41,16 @@ render_explore_graph <- function(plot_type, data, var_left, var_right, df,
     ranks <- ranks$rank[ranks$scale == df]
     
     # Get corresponding colours
-    cols <- set_names(rev(c(col_NA, col_left_5)[ranks + 1]))
-
+    cols <- colour_left_5$fill[ranks + 1]
+    
     out <-
       data[!is.na(data$var_left),] |> 
-      mutate(fill = paste0(fill, opac)) |> 
       ggplot(aes(as.factor(var_left))) +
-      geom_bar(aes(fill = fill), width = 1) +
+      geom_bar(aes(fill = as.factor(var_left)), width = 1) +
       {if (plot_type == "bar_select") geom_vline(
         xintercept = data$var_left[data$ID == select_id], colour = "black", 
         lwd = 1.5)} +
-      scale_fill_manual(values = paste0(cols, opac), na.translate = FALSE) +
+      scale_fill_manual(values = cols, na.translate = FALSE) +
       x_scale + y_scale + labs_xy + theme_default
   }
   
@@ -61,33 +58,36 @@ render_explore_graph <- function(plot_type, data, var_left, var_right, df,
   if (plot_type %in% c("scatter_all", "scatter_na", "scatter_select")) {
     
     opac_line <- abs(cor(data$var_left, data$var_right, use = "complete.obs"))
+    point_size <- if (nrow(data) > 1000) {
+      0.5
+    } else if (nrow(data) > 500) {
+      1
+    } else 2
     
-    out <- 
-      data[data$var_left %in% remove_outliers(data$var_left) &
-             data$var_right %in% remove_outliers(data$var_right),] |> 
-      mutate(fill = paste0(fill, opac)) |> 
+    out <-
+      data |> 
+      remove_outliers_df("var_left", "var_right") |> 
       ggplot(aes(var_right, var_left)) +
-      geom_point(aes(colour = group)) +
+      geom_point(aes(colour = group), size = point_size) +
       {if (plot_type == "scatter_select") geom_point(
         data = data[data$ID == select_id,], shape = 21, colour = "white", 
         fill = "black", size = 4)} +
       stat_smooth(geom = "line", se = FALSE, method = "loess", span = 1,
                   formula = y ~ x, alpha = opac_line) +
-      scale_colour_manual(values = paste0(tibble::deframe(colour_bivar), 
-                                          opac)) +
+      scale_colour_manual(values = setNames(
+        colour_bivar$fill, colour_bivar$group)) +
       x_scale + y_scale + labs_xy + theme_default
   }
   
   # Boxplot, no selection
   if (plot_type %in% c("box_all", "box_na", "box_select")) {
     
-    colours <- paste0(c(col_left_3[1:2], rep(col_left_3[3], var_left_num - 2)),
-                      opac)
+    colours <- c(colour_bivar$fill[1:2], rep(colour_bivar$fill[3], 
+                                             var_left_num - 2))
     names(colours) <- as.factor(unique(sort(data$var_left)))
     
     out <- 
       data[!is.na(data$var_left) & !is.na(data$var_right),] |> 
-      mutate(fill = paste0(fill, opac)) |> 
       ggplot(aes(as.factor(var_left), var_right)) +
       geom_boxplot(aes(fill = as.factor(var_left))) +
       {if (plot_type == "box_select") geom_point(
@@ -101,12 +101,12 @@ render_explore_graph <- function(plot_type, data, var_left, var_right, df,
   if (plot_type %in% c("delta_all", "NAdelta_all", "delta_na", "NAdelta_na",
                        "delta_select", "NAdelta_select")) {
     
-    colours <- paste0(colour_delta$fill[1:5], opac)
+    colours <- colour_delta$fill[1:5]
     names(colours) <- colour_delta$group[1:5]
     
     out <- if (unique(c("var_left_1", "var_left_2") %in% names(data))) {
-      data[data$var_left_1 %in% remove_outliers(data$var_left_1) &
-             data$var_left_2 %in% remove_outliers(data$var_left_2),] |> 
+      data |> 
+        remove_outliers_df("var_left_1", "var_left_2") |> 
         ggplot(aes(var_left_1, var_left_2)) +
         geom_smooth(se = FALSE, method = "lm", formula = y ~ x, 
                     colour = "black", size = 0.5) +
@@ -126,12 +126,11 @@ render_explore_graph <- function(plot_type, data, var_left, var_right, df,
     
     opac_line <- if (sum(!is.na(data$var_left)) > 0) {
       abs(cor(data$var_left, data$var_right, use = "complete.obs"))
-      } else 1
+    } else 1
     
     out <- 
-      data[data$var_left %in% remove_outliers(data$var_left) &
-             data$var_right %in% remove_outliers(data$var_right),] |> 
-      mutate(fill = paste0(fill, opac)) |> 
+      data |> 
+      remove_outliers_df("var_left", "var_right") |> 
       ggplot(aes(var_right, var_left)) +
       geom_point(aes(colour = group)) +
       {if (plot_type == "deltabivar_select") geom_point(
@@ -139,17 +138,17 @@ render_explore_graph <- function(plot_type, data, var_left, var_right, df,
         fill = "black", size = 4)} +
       stat_smooth(geom = "line", se = FALSE, method = "loess", span = 1,
                   formula = y ~ x, alpha = opac_line) +
-      scale_colour_manual(values = paste0(tibble::deframe(colour_bivar), 
-                                          opac)) +
+      scale_colour_manual(values = setNames(
+        colour_bivar$fill, colour_bivar$group)) +
       x_scale + y_scale + labs_xy + theme_default
   }
   
   # Date line graph
   if (plot_type == "date_all") {
     out <- ggplot(data, aes(var_right, var_left)) +
-      geom_line(colour = col_bivar[5]) +
+      geom_line(colour = colour_bivar$fill[5]) +
       stat_smooth(geom = "line", se = FALSE, method = "loess", span = 1,
-                  formula = y ~ x, colour = col_bivar[9]) +
+                  formula = y ~ x, colour = colour_bivar$fill[9]) +
       x_scale + y_scale + labs_xy + theme_default
   }
   

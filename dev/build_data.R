@@ -3,11 +3,12 @@
 
 # Load funtions -----------------------------------------------------------
 
+library(tidyverse)
+library(sf)
 source("dev/other/data_testing.R")
 source("dev/other/meta_testing.R", encoding = "utf-8")
 source("dev/other/breaks.R")
 source("dev/other/char_fix.R", encoding = "utf-8")
-source("dev/other/deploy_sus.R")
 
 
 # Create raw borough/CT/DA/grid tables ------------------------------------
@@ -62,7 +63,7 @@ stopifnot(
   
   # Check row numbers
   nrow(borough) == 111,
-  nrow(building) == 243780,
+  nrow(building) == 860499,
   nrow(CT) == 970,
   nrow(DA) == 6469,
   nrow(grid) == 9923,
@@ -130,18 +131,18 @@ source("dev/modules/access.R")
 source("dev/modules/alley.R")
 source("dev/modules/gentrification.R")
 source("dev/modules/green_space.R")
-source("dev/modules/marketed_sustainability.R")
-source("dev/modules/natural_infrastructure.R")
+# source("dev/modules/marketed_sustainability.R")
+# source("dev/modules/natural_inf.R")
 # source("dev/modules/permits.R")
-source("dev/modules/place_explorer.R")
 # source("dev/modules/dmti.R")
+
 source("dev/modules/stories.R", encoding = "utf-8")
+source("dev/modules/place_explorer.R")
 
 
-# Post-processing and simplification --------------------------------------
+# Post-processing ---------------------------------------------------------
 
 source("dev/other/post_processing.R")
-source("dev/other/simplify.R")
 
 
 # Produce title_text and dyk ----------------------------------------------
@@ -155,26 +156,76 @@ source("dev/other/title_text.R")
 source("dev/other/colours.R")
 
 
+# Build translation qs ----------------------------------------------------
+
+source("dev/translation/build_translation.R", encoding = "utf-8")
+
+
+# Remove geometries -------------------------------------------------------
+
+borough_full <- borough
+borough <-
+  borough_full |> 
+  rowwise() |> 
+  mutate(centroid = list(as.numeric(st_coordinates(st_centroid(geometry))))) |> 
+  ungroup() |> 
+  st_drop_geometry()
+
+CT_full <- CT
+CT <- 
+  CT_full |> 
+  rowwise() |> 
+  mutate(centroid = list(as.numeric(st_coordinates(st_centroid(geometry))))) |> 
+  ungroup() |> 
+  st_drop_geometry()
+
+DA_full <- DA
+DA <- 
+  DA_full |> 
+  select(-building, -buffer, -centroid) |> 
+  rowwise() |> 
+  mutate(centroid = list(as.numeric(st_coordinates(st_centroid(geometry))))) |> 
+  ungroup() |> 
+  st_drop_geometry()
+
+grid_full <- grid
+grid <- 
+  grid_full |> 
+  rowwise() |> 
+  mutate(centroid = list(as.numeric(st_coordinates(st_centroid(geometry))))) |> 
+  ungroup() |> 
+  st_drop_geometry()
+
+building_full <- building
+building <- 
+  building_full |> 
+  select(ID, name, name_2, DAUID) |> 
+  sf::st_drop_geometry()
+
+
 # Save data files ---------------------------------------------------------
 
 qsave(variables, file = "data/variables.qs")
 qsavem(borough, CT, DA, file = "data/census.qsm")
+qsavem(borough_full, CT_full, DA_full, file = "data2/census_full.qsm")
 qsave(grid, file = "data/grid.qs")
+qsave(grid_full, file = "data2/grid_full.qs")
 qsave(building, file = "data/building.qs")
-qsave(street, file = "data/street.qs")
+qsave(building_full, file = "data2/building_full.qs")
+qsave(street, file = "data2/street.qs")
 qsave(crash, file = "data/crash.qs")
 qsave(tt_matrix, file = "data/tt_matrix.qs")
-qsavem(alleys, alley_text, file = "data/alleys.qsm")
+qsavem(alley, alley_text, file = "data/alley.qsm")
 qsavem(covid, covid_pics, file = "data/covid.qsm")
 qsave(green_space, file = "data/green_space.qs")
-qsave(marketed_sustainability, file = "data/marketed_sustainability.qs")
-qsave(natural_infrastructure, "data/natural_infrastructure.qs")
+# qsave(marketed_sustainability, file = "data/marketed_sustainability.qs")
+qsavem(natural_inf, natural_inf_custom, file = "data/natural_inf.qsm")
 qsave(metro_lines, file = "data/metro_lines.qs")
 # qsavem(permits_choropleth, permits, file = "data/permits.qsm")
 qsavem(title_card_indicators, pe_var_hierarchy, pe_theme_order, CSDUID_groups,
        title_card_index, pe_variable_order, file = "data/place_explorer.qsm")
 qsave(postal_codes, file = "data/postal_codes.qs")
-qsave(stories, file = "data/stories.qs")
+qsavem(stories, stories_mapping, file = "data/stories.qsm")
 qsave(dyk, "data/dyk.qs")
 qsave(title_text, "data/title_text.qs")
 
@@ -185,11 +236,17 @@ unlink(list.files("~/Dropbox/sus_sync/dev_data", full.names = TRUE),
        recursive = TRUE)
 unlink(list.files("~/Dropbox/sus_sync/data", full.names = TRUE),
        recursive = TRUE)
+unlink(list.files("~/Dropbox/sus_sync/data2", full.names = TRUE),
+       recursive = TRUE)
+
 
 invisible(file.copy(list.files("dev/data", full.names = TRUE),
                     "~/Dropbox/sus_sync/dev_data", recursive = TRUE))
 invisible(file.copy(list.files("data", full.names = TRUE),
                     "~/Dropbox/sus_sync/data"))
+invisible(file.copy(list.files("data2", full.names = TRUE),
+                    "~/Dropbox/sus_sync/data2"))
+
 
 
 # Cleanup -----------------------------------------------------------------
@@ -201,4 +258,6 @@ rm(add_q3, add_q5, add_variables, data_testing, find_breaks_q5, get_breaks_q3,
 
 # Deploy app --------------------------------------------------------------
 
-deploy_sus()
+source("dev/other/deploy_sus.R")
+deploy_sus("sus-dev") # Development
+deploy_sus() # Production

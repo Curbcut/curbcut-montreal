@@ -1,6 +1,13 @@
 # GET EXPLORE VARIABLE TYPE ####################################################
 
-get_var_type <- function(data, var_left, var_right, df, select_id) {
+get_var_type <- function(data, var_left, var_right, df, select_id, 
+                         build_str_as_DA = TRUE) {
+  
+  ## Invalidate if non-standard df() -------------------------------------------
+  
+  if (!df %in% c("borough", "CT", "DA", "building", "grid",
+                 "street", "heatmap", "point")) return(df)
+  
   
   ## Identify NA tables --------------------------------------------------------
   
@@ -19,34 +26,40 @@ get_var_type <- function(data, var_left, var_right, df, select_id) {
   
   ## Selections ----------------------------------------------------------------
   
-  select_df <- if (df == "building") building else data
-  selection <- filter(select_df, ID == select_id)
-  active_left <- nrow(filter(selection, !is.na(var_left)))
+  select_df <- if (build_str_as_DA && df == "building") building else data
+  selection <- if (is.na(select_id)) select_df[0,] else 
+    select_df[select_df$ID == select_id,]
+  active_left <- if (build_str_as_DA && df == "building") {
+    sum(!is.na(data$var_left[data$ID == selection$DAUID]))
+  } else sum(!is.na(selection$var_left))
   active_right <- active_left
-  if (length(var_right) != 1 || var_right != " ") active_right <- 
-    nrow(filter(selection, !is.na(var_left), !is.na(var_right)))
+  if (length(var_right) != 1 || var_right != " ") 
+    active_right <- if (build_str_as_DA && df == "building") {
+      sum(!is.na(data$var_left[data$ID == selection$DAUID]) &
+            !is.na(data$var_right[data$ID == selection$DAUID])) 
+    } else sum(!is.na(selection$var_left) & !is.na(selection$var_right))
   
   
   ## Create var_left_label and var_right_label ---------------------------------
   
-  breaks_q5_left <- 
-    variables |> 
-    filter(var_code == unique(sub("_\\d{4}$", "", var_left))) |> 
-    pull(breaks_q5) |> 
-    pluck(1) |> 
-    filter(scale == df)
+  if (build_str_as_DA && df == "building") df <- "DA"
+  
+  breaks_q5_left <- variables$breaks_q5[
+    variables$var_code == unique(sub("_\\d{4}$", "", var_left))]
+  
+  if (length(breaks_q5_left) > 0) breaks_q5_left <- 
+    breaks_q5_left[[1]][breaks_q5_left[[1]]$scale == df,]
   
   var_left_label <- suppressWarnings(breaks_q5_left$var_name)
   if (all(is.na(var_left_label))) var_left_label <- NULL
   
   if (var_right != " ") {
     
-    breaks_q5_right <- 
-      variables |> 
-      filter(var_code == var_right) |> 
-      pull(breaks_q5) |> 
-      pluck(1) |> 
-      filter(scale == df)
+    breaks_q5_right <- variables$breaks_q5[
+      variables$var_code == unique(sub("_\\d{4}$", "", var_right))]
+    
+    if (length(breaks_q5_right) > 0) breaks_q5_right <- 
+        breaks_q5_right[[1]][breaks_q5_right[[1]]$scale == df,]
     
     var_right_label <- suppressWarnings(breaks_q5_right$var_name)
     if (all(is.na(var_right_label))) var_right_label <- NULL
@@ -56,23 +69,21 @@ get_var_type <- function(data, var_left, var_right, df, select_id) {
   
   ## Decide on table type ------------------------------------------------------
   
-  comp_type <- case_when(var_right == " " ~ "uni", TRUE ~ "bi")
+  comp_type <- if (var_right == " ") "uni" else "bi"
   
-  var_type <- case_when(
-    comp_type == "uni" & is.null(var_left_label) ~ "quant",
-    comp_type == "bi" & is.null(var_left_label) & is.null(var_right_label) ~ 
-      "quantxy",
-    comp_type == "bi" & is.null(var_left_label) & !is.null(var_right_label) ~ 
-      "quantx",
-    comp_type == "bi" & !is.null(var_left_label) & is.null(var_right_label) ~ 
-      "quanty",
-    TRUE ~ "qual")
+  var_type <- 
+    if (comp_type == "uni" && all(is.null(var_left_label))) "quant" else
+      if (comp_type == "bi" && all(is.null(var_left_label)) && 
+          all(is.null(var_right_label))) "quantxy" else
+            if (comp_type == "bi" && all(is.null(var_left_label)) && 
+                !all(is.null(var_right_label))) "quantx" else
+                  if (comp_type == "bi" && !all(is.null(var_left_label)) && 
+                      all(is.null(var_right_label))) "quanty" else "qual"
   
-  select_type <- unique(case_when(
-    is.na(select_id) ~ "all", 
-    comp_type == "uni" & active_left == 0 ~ "na",
-    active_right == 0 ~ "na",
-    TRUE ~ "select"))
+  select_type <- 
+    if (is.na(select_id)) "all" else
+      if (comp_type == "uni" && active_left == 0) "na" else
+        if (active_right == 0) "na" else "select"
   
   table_type <- paste(comp_type, var_type, select_type, sep = "_")
   if (select_type == "na") table_type <- paste0(comp_type, "_na")

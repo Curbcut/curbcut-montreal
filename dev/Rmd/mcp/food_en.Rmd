@@ -8,9 +8,9 @@ knitr::opts_chunk$set(echo = TRUE)
 library(here)
 ```
 
-```{r, echo=FALSE, fig.align = 'left', out.width="50%", out.extra='style="float:right; padding:10px"'}
+```{r, echo=FALSE, fig.align = 'left', warning=FALSE, out.width="50%", out.extra='style="float:right; padding:10px"'}
 
-knitr::include_graphics(here("www","/mcp","/visuals","/food","/market_2.jpeg"))
+knitr::include_graphics("visuals/food/market_2.jpeg")
 
 ```
 
@@ -24,9 +24,9 @@ Create a bio/agribusiness innovation cluster based in the circular economy to se
 
 ## Discussion
 
-```{r, echo=FALSE, fig.align = 'left', out.width="50%", out.extra='style="float:right; padding:10px"'}
+```{r, echo=FALSE, fig.align = 'left', warning=FALSE, out.width="50%", out.extra='style="float:right; padding:10px"'}
 
-knitr::include_graphics(here("www","/mcp","/visuals","/food","/market_1.jpeg"))
+knitr::include_graphics("visuals/food/market_1.jpeg")
 
 ```
 

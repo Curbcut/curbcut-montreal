@@ -1,19 +1,24 @@
 #### GET LEGEND AXIS LABELS ####################################################
 
-get_legend_labels <- function(var_left, var_right, data_type) {
+get_legend_labels <- function(var_left, var_right, data_type, breaks = NULL) {
+  
+  ## If breaks has non-NULL name, use it ---------------------------------------
+  
+  if (!is.null(breaks) && !is.null(attr(breaks, "label"))) {
+    labs_xy <- list(labs(x = attr(breaks, "label"), y = NULL))
+    return(labs_xy)
+  }
   
   ## Get basic titles ----------------------------------------------------------
   
   title_left <- 
-    variables |> 
-    filter(var_code == unique(sub("_\\d{4}$", "", var_left)))
+    variables[variables$var_code == unique(sub("_\\d{4}$", "", var_left)),]
   
   title_left_short <- sus_translate(title_left$var_short)
   title_left <- sus_translate(title_left$var_title)
 
   title_right <- 
-    variables |> 
-    filter(var_code == unique(sub("_\\d{4}$", "", var_right)))
+    variables[variables$var_code == unique(sub("_\\d{4}$", "", var_right)),]
   
   if (data_type %in% c("bivar", "delta_bivar")) {
     title_right_short <- sus_translate(title_right$var_short)
@@ -31,6 +36,16 @@ get_legend_labels <- function(var_left, var_right, data_type) {
   
   # q5 version
   if (data_type == "q5") {
+    labs_xy <- list(labs(x = title_left, y = NULL))
+  }
+  
+  # q100 version
+  if (data_type == "q100") {
+    labs_xy <- list(labs(x = title_left, y = NULL))
+  }
+  
+  # qual version
+  if (data_type == "qual") {
     labs_xy <- list(labs(x = title_left, y = NULL))
   }
   

@@ -1,5 +1,5 @@
 ---
-title: "Mobility"
+title: "Mobilité"
 output: html_document
 ---
 
@@ -11,9 +11,9 @@ library(here)
 
 ## PMD (Administration Coderre): 
 
-```{r, echo=FALSE, fig.align = 'left', out.width="50%", out.extra='style="float:right; padding:10px"'}
+```{r, echo=FALSE, fig.align = 'left', warning=FALSE, out.width="50%", out.extra='style="float:right; padding:10px"'}
 
-knitr::include_graphics(here("www","/mcp","/visuals","/mobility","/bicycle_1.jpg"))
+knitr::include_graphics("visuals/mobility/bicycle_1.jpg")
 
 ```
 
@@ -36,9 +36,9 @@ Convertir 230 des véhicules de la ville à la propulsion électrique. Remplacer
 
 ## Plan climat (Administration Plante): 
 
-```{r, echo=FALSE, fig.align = 'left', out.width="50%", out.extra='style="float:right; padding:10px"'}
+```{r, echo=FALSE, fig.align = 'left', warning=FALSE, out.width="50%", out.extra='style="float:right; padding:10px"'}
 
-knitr::include_graphics(here("www","/mcp","/visuals","/mobility","/metro_1.jpg"))
+knitr::include_graphics("visuals/mobility/metro_1.jpg")
 
 ```
 
@@ -65,8 +65,8 @@ Les objectifs de mobilité du PMD sont modestes. Ils visent à améliorer la mob
 
 Ces politiques de mobilité reflètent une différence significative d'ordre politique entre les plans climatiques. Les projets de transport constituaient une importante partie de la plateforme électorale de Plante, tandis que Coderre s'est défini contre ces grands projets et a tendance à s'aligner avec les arrondissements plus éloignés et dépendants des infrastructures automobiles. Il est toutefois intéressant de noter que le PMD de Coderre promet un ajout plus important aux infrastructures cyclables que le Plan climat de Plante, étant donné que Coderre et sa base politique sont plutôt tièdes à l'égard de cette sorte de mobilité active.
 
-```{r, echo=FALSE, fig.align = 'center', out.width="75%", fig.cap="L'automobile domine encore fortement les déplacements dans la région métropolitaine."}
+```{r, echo=FALSE, fig.align = 'center', warning=FALSE, out.width="75%", fig.cap="L'automobile domine encore fortement les déplacements dans la région métropolitaine."}
 
-knitr::include_graphics(here("www","/mcp","/visuals","/mobility","/mode_share.png"))
+knitr::include_graphics("visuals/mobility/mode_share.png")
 
 ```

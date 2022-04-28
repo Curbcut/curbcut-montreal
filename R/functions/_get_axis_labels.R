@@ -4,11 +4,28 @@ get_axis_labels <- function(graph_type, var_left, var_right) {
   
   ## Get basic axis labels -----------------------------------------------------
   
-  var_left_title <- sus_translate(variables$var_title[
+  var_left_title <- sus_translate(variables$var_short[
     variables$var_code == unique(sub("_\\d{4}$", "", var_left))])
-  
-  var_right_title <- sus_translate(variables$var_title[
+
+  var_right_title <- sus_translate(variables$var_short[
     variables$var_code == unique(sub("_\\d{4}$", "", var_right))])
+  
+  # var_left_title <- {
+  #   x <- variables[
+  #     variables$var_code == unique(sub("_\\d{4}$", "", var_left)), ]
+  #   out <- 
+  #     if (nchar(sus_translate(x$var_title)) > 16) x$var_short else x$var_title
+  #   sus_translate(out)
+  # }
+  # 
+  # var_right_title <- {
+  #   x <- variables[
+  #     variables$var_code == unique(sub("_\\d{4}$", "", var_right)), ]
+  #   if (length(x$var_title) == 0) return(NULL)
+  #   out <- 
+  #     if (nchar(sus_translate(x$var_title)) > 16) x$var_short else x$var_title
+  #   sus_translate(out)
+  # }
   
   
   ## Construct labs_xy based on graph_type -------------------------------------

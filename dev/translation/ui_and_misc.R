@@ -1,103 +1,29 @@
 #### `Info table` preparation for translation ##################################
 
-
-# Import existing translation ---------------------------------------------
-
-# ui_and_misc_translated <-
-#   read.csv("dev/translation/csv/ui_and_misc_translated.csv") |>
-#   as_tibble()
-
-
-# Translate UI strings ----------------------------------------------------
-# ui_and_misc_translated <- 
-#   c(c("Learn more" = "En savoir plus"),
-#     c("250-metre grid" = "Grille de 250 mètres"),
-#     c("Compare" = "Comparez"),
-#     c("Hide" = "En voir moins"),
-#     c("Explore" = "Explorez"),
-#     c("Select a year" = "Sélectionnez une année"),
-#     c("Select two years" = "Sélectionnez deux années"),
-#     c("Compare dates" = "Comparaison de dates"),
-#     c("Review a single variable part of the index" = 
-#         "Examiner une variable unique comprise dans l'indice"),
-#     c("Grouping" = "Regroupement"),
-#     c("Type of permits" = "Type de permis"),
-#     c("Select two dates" = "Sélectionnez deux dates"),
-#     c("Timing" = "Timing"),
-#     c("Destination type" = "Type de destination"),
-#     c("Time threshold" = "Seuil de temps"),
-#     c("Road safety analysis" = "Analyse de la sécurité routière"),
-#     c("Type of crash" = "Type d'accident"),
-#     c("Focus on green alleys visited by our team" = 
-#         "Focus sur les allées vertes visitées par notre équipe"),
-#     c("Type of green space" = "Type d'espace vert"),
-#     c("Back to the map" = "Retour à la carte"),
-#     c("Maps" = "Cartes"),
-#     c("Housing" = "Logement"),
-#     c("Housing system" = "Le système de logement"),
-#     c("Gentrification" = "Gentrification"),
-#     c("Permits" = "Permis"),
-#     c("Marketed Sustainability" = "Durabilité commercialisée"),
-#     c("Urban Life" = "Vie urbaine"),
-#     c("Active living potential" = "Potentiel de vie active"),
-#     c("Green alleys" = "Allées vertes"),
-#     c("Green spaces" = "Espaces verts"),
-#     c("Transport" = "Transport"),
-#     c("Accessibility" = "Accessibilité"),
-#     c("Road safety" = "Sécurité routière"),
-#     c("Climate" = "Climat"),
-#     c("Climate risk" = "Risque climatique"),
-#     c("Covid" = "Covid"),
-#     c("Covid interventions" = "Mesures Covid"),
-#     c("Policy" = "Politiques"),
-#     c("Montréal climate plans" = "Plans climatiques de Montréal"),
-#     c("More" = "Davantage"),
-#     c("Montréal stories" = "Histoires de Montréal"),
-#     c("Place explorer" = "Explorez un lieu"),
-#     c("About" = "À propos"),
-#     c("Terms & Conditions" = "Termes et conditions"),
-#     c("Privacy Policy" = "Politique de confidentialité"),
-#     c("Contact" = "Contactez-nous"),
-#     c("Bookmark" = "Signet"),
-#     c("Data explanation and export" = "Explication et export des données"),
-#     c("Generate a report" = "Générez un rapport"),
-#     # Covid legend (mapdeck's tooltip doesn't deal with accents)
-#     c("Active and safe lane circuit" = "Circuit des voies actives \net securitaires"),
-#     c("Expanded pedestrian corridor" = "Corridor pieton elargi"),
-#     c("Projected corridor" = "Corridor projete"),
-#     c("Framed queue" = "File d'attente encadree"),
-#     c("Street partially closed" = "Rue partiellement fermee"),
-#     c("Family and active street" = "Rue familiale et active"),
-#     c("Closed street" = "Rue fermee"),
-#     c("Local circulation" = "Circulation locale"),
-#     c("Shared street" = "Rue partagee"),
-#     c("May 2020" = "Mai 2020"),
-#     c("July 2020" = "Juillet 2020"),
-#     c("October 2020" = "Octobre 2020"))
-# 
-# ui_and_misc_translated <- 
-#   tibble(en = names(ui_and_misc_translated),
-#          fr = ui_and_misc_translated)
-
-
-# "Translate" names -------------------------------------------------------
-
-# ui_and_misc_translated <- 
-#   bind_rows(ui_and_misc_translated,
-#             tibble(en = borough$name,
-#                    fr = borough$name)
-#   )
-
-# REVERT TO R SCRIPT ------------------------------------------------------
-
 ui_and_misc_translated <- 
-tibble(en = character(), fr = character()) |>
+  tibble(en = character(), fr = character()) |>
+  add_row(en = paste0("----"), 
+          fr = paste0("----")) |> 
   add_row(en = paste0("Learn more"), 
           fr = paste0("En savoir plus")) |> 
+  add_row(en = paste0("Did you know?"), 
+          fr = paste0("Le saviez-vous?")) |> 
+  add_row(en = paste0("Borough/city"), 
+          fr = paste0("Arrondissement/ville")) |> 
+  add_row(en = paste0("Census tract"), 
+          fr = paste0("Secteur de recensement")) |> 
+  add_row(en = paste0("Dissemination area"), 
+          fr = paste0("Aire de diffusion")) |> 
+  add_row(en = paste0("Building"), 
+          fr = paste0("Bâtiment")) |> 
+  add_row(en = paste0("Legend"), 
+          fr = paste0("Légende")) |> 
   add_row(en = paste0("250-metre grid"), 
           fr = paste0("Grille de 250 mètres")) |> 
   add_row(en = paste0("Compare"), 
           fr = paste0("Comparez")) |> 
+  add_row(en = paste0("Authors"), 
+          fr = paste0("Auteurs")) |> 
   add_row(en = paste0("Hide"), 
           fr = paste0("En voir moins")) |> 
   add_row(en = paste0("Explore"), 
@@ -117,7 +43,7 @@ tibble(en = character(), fr = character()) |>
   add_row(en = paste0("Select two dates"), 
           fr = paste0("Sélectionnez deux dates")) |> 
   add_row(en = paste0("Timing"), 
-          fr = paste0("Timing")) |> 
+          fr = paste0("Horaire")) |> 
   add_row(en = paste0("Destination type"), 
           fr = paste0("Type de destination")) |> 
   add_row(en = paste0("Time threshold"), 
@@ -126,8 +52,8 @@ tibble(en = character(), fr = character()) |>
           fr = paste0("Analyse de la sécurité routière")) |> 
   add_row(en = paste0("Type of crash"), 
           fr = paste0("Type d'accident")) |> 
-  add_row(en = paste0("Focus on green alleys visited by our team"), 
-          fr = paste0("Focus sur les allées vertes visitées par notre équipe")) |> 
+  add_row(en = paste0("Green alleys visited by our team"), 
+          fr = paste0("Ruelles vertes visitées par notre équipe")) |> 
   add_row(en = paste0("Type of green space"), 
           fr = paste0("Type d'espace vert")) |> 
   add_row(en = paste0("Back to the map"), 
@@ -149,7 +75,7 @@ tibble(en = character(), fr = character()) |>
   add_row(en = paste0("Active living potential"), 
           fr = paste0("Potentiel de vie active")) |> 
   add_row(en = paste0("Green alleys"), 
-          fr = paste0("Allées vertes")) |> 
+          fr = paste0("Ruelles vertes")) |> 
   add_row(en = paste0("Green spaces"), 
           fr = paste0("Espaces verts")) |> 
   add_row(en = paste0("Transport"), 
@@ -182,8 +108,8 @@ tibble(en = character(), fr = character()) |>
           fr = paste0("Termes et conditions")) |> 
   add_row(en = paste0("Privacy Policy"), 
           fr = paste0("Politique de confidentialité")) |> 
-  add_row(en = paste0("Contact"), 
-          fr = paste0("Contactez-nous")) |> 
+  add_row(en = paste0("Contact/feedback"), 
+          fr = paste0("Contact/commentaires")) |> 
   add_row(en = paste0("Bookmark"), 
           fr = paste0("Signet")) |> 
   add_row(en = paste0("Data explanation and export"), 
@@ -435,11 +361,139 @@ tibble(en = character(), fr = character()) |>
   add_row(en = paste0("Saint-Jérôme"), 
           fr = paste0("Saint-Jérôme")) |> 
   add_row(en = paste0("Gore"), 
-          fr = paste0("Gore"))
-
-# Save --------------------------------------------------------------------
-
-# Encoding(ui_and_misc_translated$en) <- "UTF-8"
-# Encoding(ui_and_misc_translated$fr) <- "UTF-8"
-# write_csv(ui_and_misc_translated, 
-#           file = "dev/translation/csv/ui_and_misc_translated.csv")
+          fr = paste0("Gore")) |> 
+  add_row(en = paste0("[LEARN MORE]"), 
+          fr = paste0("[EN SAVOIR PLUS]")) |> 
+  add_row(en = paste0("Borough information"), 
+          fr = paste0("Informations sur l'arrondissement")) |> 
+  add_row(en = paste0("Per sq km"), 
+          fr = paste0("Par km2")) |> 
+  add_row(en = paste0("Per 1,000 residents"), 
+          fr = paste0("Par 1,000 résidents")) |> 
+  add_row(en = paste0("About Sus"), 
+          fr = paste0("À propos de Sus")) |> 
+  add_row(en = paste0("How to use"), 
+          fr = paste0("Mode d'emploi")) |>
+  add_row(en = paste0("All jobs"), 
+          fr = paste0("Tous les emplois")) |> 
+  add_row(en = paste0("Low-skill jobs"), 
+          fr = paste0("Emplois peu qualifiés")) |> 
+  add_row(en = paste0("High-skill jobs"), 
+          fr = paste0("Emplois hautement qualifiés")) |> 
+  add_row(en = paste0("Jobs < $30,000 annually"), 
+          fr = paste0("Emplois < 30 000 $ par an")) |> 
+  add_row(en = paste0("Schools"), 
+          fr = paste0("Écoles")) |> 
+  add_row(en = paste0("Healthcare facilities"), 
+          fr = paste0("Établissements de soins de santé")) |> 
+  add_row(en = paste0("Weekday peak"), 
+          fr = paste0("Pointe en semaine")) |> 
+  add_row(en = paste0("Weekday off-peak"), 
+          fr = paste0("Hors pointe en semaine")) |> 
+  add_row(en = paste0("Weekday night"), 
+          fr = paste0("Nuit de semaine")) |> 
+  add_row(en = paste0("Weekend peak"), 
+          fr = paste0("Pointe de fin de semaine")) |> 
+  add_row(en = paste0("Weekend off-peak"), 
+          fr = paste0("Hors pointe de fin de semaine")) |> 
+  add_row(en = paste0("Weekend night"), 
+          fr = paste0("Nuit de fin de semaine")) |> 
+  add_row(en = paste0("Further resources:"), 
+          fr = paste0("Ressources supplémentaires :")) |> 
+  add_row(en = paste0("Home"), 
+          fr = paste0("Accueil")) |> 
+  add_row(en = paste0("Go back to map"), 
+          fr = paste0("De retour à la carte")) |> 
+  add_row(en = paste0("Enter postal code or click on the map"), 
+          fr = paste0("Entrez un code postal ou cliquez sur la carte")) |> 
+  add_row(en = paste0("Choose themes:"), 
+          fr = paste0("Sélectionnez le(s) thème(s) :")) |> 
+  add_row(en = paste0("Choose scale:"), 
+          fr = paste0("Sélectionnez l'échelle :")) |> 
+  add_row(en = paste0("Choose comparison scale:"), 
+          fr = paste0("Choisissez l'échelle de comparaison :")) |> 
+  add_row(en = paste0("high only"), 
+          fr = paste0("élevé seulement")) |> 
+  add_row(en = paste0("Both high"), 
+          fr = paste0("Les deux élevés")) |> 
+  add_row(en = paste0("Both low"), 
+          fr = paste0("Les deux faibles")) |> 
+  add_row(en = paste0("Minutes to reach census tract"), 
+          fr = paste0("Minutes pour atteindre le secteur de recensement")) |> 
+  add_row(en = paste0("Clear selection"), 
+          fr = paste0("Effacer la selection")) |> 
+  # Natural infrastructure
+  add_row(en = paste0("Ecology"), 
+          fr = paste0("Écologie")) |> 
+  add_row(en = paste0("Natural infrastructure"), 
+          fr = paste0("Infrastructure naturelle")) |> 
+  add_row(en = paste0("Theme"), 
+          fr = paste0("Thème")) |> 
+  add_row(en = paste0("Amount of territory to protect"), 
+          fr = paste0("Quantité de territoire à protéger")) |> 
+  add_row(en = paste0("Custom priorities"), 
+          fr = paste0("Priorités personnalisées")) |> 
+  add_row(en = paste0("Not important"), 
+          fr = paste0("Pas important")) |> 
+  add_row(en = paste0("Somewhat important"), 
+          fr = paste0("Peu important")) |> 
+  add_row(en = paste0("Important"), 
+          fr = paste0("Important")) |> 
+  add_row(en = paste0("Very important"), 
+          fr = paste0("Très important")) |> 
+  add_row(en = paste0("Extremely important"), 
+          fr = paste0("Extrêmement important")) |> 
+  add_row(en = paste0("Indicator"), 
+          fr = paste0("Indicateur")) |> 
+  add_row(en = paste0("Biodiversity conservation"), 
+          fr = paste0("Conservation de la biodiversité")) |> 
+  add_row(en = paste0("Heat island reduction"), 
+          fr = paste0("Réduction des îlots de chaleur")) |> 
+  add_row(en = paste0("Flood prevention"), 
+          fr = paste0("Prévention des inondations")) |> 
+  add_row(en = paste0("Biodiversity"), 
+          fr = paste0("Biodiversité")) |> 
+  add_row(en = paste0("Heat island"), 
+          fr = paste0("Îlot de chaleur")) |> 
+  add_row(en = paste0("Low"), 
+          fr = paste0("Bas")) |> 
+  add_row(en = paste0("High"), 
+          fr = paste0("Élevé")) |> 
+  add_row(en = paste0("Amount protected"), 
+          fr = paste0("Montant protégé")) |> 
+  add_row(en = paste0("Flood risk areas"), 
+          fr = paste0("Zones à risque d'inondation")) |> 
+  add_row(en = paste0("Share of Montreal area"), 
+          fr = paste0("Part de la région de Montréal")) |>
+  # MCP dropdown
+  add_row(en = paste0("Introduction"), 
+          fr = paste0("Introduction")) |> 
+  add_row(en = paste0("Community and participation"), 
+          fr = paste0("Commuauté et implication collective")) |> 
+  add_row(en = paste0("Greening"), 
+          fr = paste0("Verdissement")) |> 
+  add_row(en = paste0("Food and agriculture"), 
+          fr = paste0("Alimentation et agriculture")) |> 
+  add_row(en = paste0("Land use"), 
+          fr = paste0("Utilisation du sol")) |> 
+  add_row(en = paste0("Mobility"), 
+          fr = paste0("Mobilité")) |> 
+  add_row(en = paste0("Equity"), 
+          fr = paste0("Équité")) |> 
+  add_row(en = paste0("Adaptation and resilience"), 
+          fr = paste0("Adaptation et résilience")) |> 
+  add_row(en = paste0("Economy"), 
+          fr = paste0("Économie")) |> 
+  add_row(en = paste0("Innovation"), 
+          fr = paste0("Innovation")) |> 
+  add_row(en = paste0("Regionalism, internationalism and networks"), 
+          fr = paste0("Régionalisme, internationalisme et réseaux")) |> 
+  add_row(en = paste0("Sustainability"), 
+          fr = paste0("Développement durable")) |> 
+  # Disclaimer
+  add_row(en = paste0("Displayed data for <b>{var_left_title}</b> is for the closest available year <b>({left_year})</b>."), 
+          fr = paste0("Les données présentées pour `<b>{var_left_title}</b>` sont celles de l'année disponible la plus proche <b>({left_year})</b>.")) |> 
+  add_row(en = paste0("Displayed data for <b>{var_right_title}</b> is for the closest available year <b>({right_year})</b>."), 
+          fr = paste0("Les données présentées pour `<b>{var_right_title}</b>` sont celles de l'année disponible la plus proche <b>({right_year})</b>.")) |> 
+  add_row(en = paste0("Comparison requires two different dates."), 
+          fr = paste0("Une comparaison nécessite deux dates différentes."))

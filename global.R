@@ -6,22 +6,11 @@ suppressPackageStartupMessages({
   library(shiny)
   library(shinyjs)
   library(shinyWidgets)
-  library(jsonify)
-  library(jsonlite)
 
-  library(tidyr)
-  library(dplyr)
+  library(rdeck)
   library(ggplot2)
   library(stringr)
-  library(purrr)
-  library(cowplot)
-  library(ggiraph)
-  
-  library(sf)
-  library(mapdeck) 
-  library(mapboxapi)
-  
-  library(DT)
+
   library(qs)
   library(glue)
   library(metathis)
@@ -32,6 +21,8 @@ suppressPackageStartupMessages({
 
 options(shiny.trace = FALSE) # Set TRUE for debugging
 options(shiny.useragg = TRUE)
+shinyOptions(cache = cachem::cache_disk(file.path(dirname(tempdir()), "cache")))
+
 
 # Data --------------------------------------------------------------------
 
@@ -39,21 +30,23 @@ variables <- qread("data/variables.qs")
 title_text <- qread("data/title_text.qs")
 dyk <- qread("data/dyk.qs")
 qload("data/colours.qsm")
+tile_lookup <- qread("data/tile_lookup.qs")
 
 qload("data/census.qsm")
 grid <- qread("data/grid.qs")
-street <- qread("data/street.qs")
+# street <- qread("data/street.qs")
 building <- qread("data/building.qs")
 
-qload("data/covid.qsm")
-green_space <- qread("data/green_space.qs")
-qload("data/alleys.qsm")
-crash <- qread("data/crash.qs")
+# qload("data/covid.qsm")
+# green_space <- qread("data/green_space.qs")
+qload("data/alley.qsm")
+# crash <- qread("data/crash.qs")
 tt_matrix <- qread("data/tt_matrix.qs")
-marketed_sustainability <- qread("data/marketed_sustainability.qs")
-natural_infrastructure <- qread("data/natural_infrastructure.qs")
+# marketed_sustainability <- qread("data/marketed_sustainability.qs")
+qload("data/natural_inf.qsm")
 metro_lines <- qread("data/metro_lines.qs")
-stories <- qread("data/stories.qs")
+
+qload("data/stories.qsm")
 
 qload("data/place_explorer.qsm")
 postal_codes <- qread("data/postal_codes.qs")
@@ -62,18 +55,14 @@ postal_codes <- qread("data/postal_codes.qs")
 # Global variables --------------------------------------------------------
 
 census_min <- 
-  variables |> 
-  filter(source == "census") |> 
-  pull(dates) |> 
+  variables$dates[variables$source == "census"] |> 
   unlist() |> 
   unique() |> 
   min() |> 
   as.numeric()
 
 census_max <- 
-  variables |> 
-  filter(source == "census") |> 
-  pull(dates) |> 
+  variables$dates[variables$source == "census"] |> 
   unlist() |> 
   unique() |> 
   max() |> 
@@ -91,23 +80,44 @@ island_CSDUID <-
 
 # Modules ready -----------------------------------------------------------
 
-mods_rdy <- list("Climate" = c("Climate risk" = "climate_risk"),
-                 "Covid" = c("Covid interventions" = "covid"),
-                 "Housing" = c("Housing system" = "housing", 
-                               "Gentrification" = "gentrification", 
-                               "Permits" = "permits", 
-                               "Marketed Sustainability" = "marketed_sustainability"),
-                 "Policy" = c("Montréal climate plans" = "mcp"),
-                 "Transport" = c("Accessibility" = "access", 
-                                 "Road safety" = "crash"),
-                 "Urban life" = c("Active living potential" = "canale", 
-                                  "Green alleys" = "alley", 
-                                  "Green spaces" = "green_space"),
-                 "Ecology" = c("Natural infrastructure" = "natural_infrastructure"))
+mods_rdy <- list(
+  "Climate" = c(
+    "Climate risk" = "climate_risk"
+    ),
+  # "Covid" = c(
+  #   "Covid interventions" = "covid"
+  #   ),
+  "Housing" = c(
+    "Housing system" = "housing"
+  #   "Gentrification" = "gentrification", 
+  #   "Permits" = "permits", 
+  #   "Marketed Sustainability" = "marketed_sustainability"
+    ),
+  "Policy" = c(
+    "Montréal climate plans" = "mcp"
+    ),
+  "Transport" = c(
+    "Accessibility" = "access"#,
+  #   "Road safety" = "crash"
+    ),
+  "Urban life" = c(
+    "Active living potential" = "canale", 
+    "Green alleys" = "alley"#,
+    # "Green spaces" = "green_space"
+    ),
+  "Ecology" = c(
+    "Natural infrastructure" = "natural_inf"
+    )
+  )
 
-stand_alone_tabs <- c("Montréal stories" = "stories",
-                      "Place explorer" = "place_explorer",
-                      "About" = "why_dash")
+stand_alone_tabs <- c(
+  "Montréal stories" = "stories",
+  "Place explorer" = "place_explorer",
+  "How to use" = "how_to_use",
+  "About" = "about_sus",
+  "Authors" = "authors"
+  )
+
 
 # Translation and other global reactive values ----------------------------
 
@@ -119,13 +129,14 @@ sus_link <- reactiveValues()
 
 # Map defaults ------------------------------------------------------------
 
-map_token <- paste0("pk.eyJ1IjoiZHdhY2hzbXV0aCIsImEiOiJja2g2Y2JpbDc",
-                    "wMDc5MnltbWpja2xpYTZhIn0.BXdU7bsQYWcSwmmBx8DNqQ")
-map_style <- "mapbox://styles/dwachsmuth/ckh6cg4wg05nw19p5yrs9tib7"
+map_token <- paste0("pk.eyJ1Ijoic3VzLW1jZ2lsbCIsImEiOiJjbDBxMTcyNWwyNTl0M2",
+                    "RtZzRremNxOHA3In0.V2Ah5lxy-3RZlF2QKOvIjg")
+options(rdeck.mapbox_access_token = map_token)
+map_base_style <- "mapbox://styles/sus-mcgill/cl0reqoz4000z15pekuh48ld6"
+map_style_building <- "mapbox://styles/sus-mcgill/cl2bwtrsp000516rwyrkt9ior"
 map_zoom <- 10.1
-map_zoom_levels <- c("borough" = 0, "CT" = 10.5, "DA" = 12#, "building" = 14)
-                    )
-map_location <- c(-73.58, 45.53)
+map_zoom_levels <- c("borough" = 0, "CT" = 10.5, "DA" = 12.5, "building" = 15.5)
+map_loc <- c(-73.58, 45.53)
 
 
 # Set up fonts ------------------------------------------------------------
@@ -136,4 +147,3 @@ systemfonts::register_font(
   italic = "www/fonts/SourceSansPro-Italic.ttf",
   bold = "www/fonts/SourceSansPro-Bold.ttf",
   bolditalic = "www/fonts/SourceSansPro-BoldItalic.ttf")
-

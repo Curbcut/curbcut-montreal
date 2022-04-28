@@ -39,10 +39,36 @@ window.addEventListener('load', (evt) => {
   const navbarLinks = document.querySelector('.navbar-static-top ul#sus_page');
   const navbarFixed = document.querySelector('.navbar-static-top div.navbar-fixed');
   const navbarCollapse = document.querySelector('.navbar-static-top div.navbar-collapse');
+  const mainContainer = document.querySelector('body > .container-fluid');
+
+  const collapseTopNav = () => {
+    if (navbarCollapse.classList.contains('in')) {
+      navbarCollapse.classList.remove('in');
+      navbarCollapse.setAttribute('aria-expanded', 'false');
+    }
+  };
+
+  mainContainer.addEventListener('click', () => {
+    collapseTopNav();
+  });
+
+  const navbarTabLinks = document.querySelectorAll('.navbar-static-top .navbar-collapse ul li a[data-toggle="tab"]');
+
+  for(var i = 0; i < navbarTabLinks.length; i++) {
+    const navbarTabLink = navbarTabLinks[i];
+    console.log(navbarTabLink.innerText);
+    navbarTabLink.addEventListener('click', () => {
+      collapseTopNav();
+    });
+  }
 
   const navbarShadow = document.createElement('div');
   navbarShadow.classList.add('navbar-shadow');
   navbar.parentElement.insertBefore(navbarShadow, navbar);
+
+  const navbarShadowCaster = document.createElement('div');
+  navbarShadowCaster.classList.add('navbar-shadow-caster');
+  navbarShadow.appendChild(navbarShadowCaster);
 
   var condition = false;
 
@@ -129,6 +155,10 @@ window.addEventListener('load', (evt) => {
   .navbar-fixed {
     margin-right: 52px
   }
+  .navbar-collapse > ul#sus_page {
+    box-shadow: var(--box-shadow-md);
+    clip-path: inset(0px 0px -500px 0px);
+  }
 }
 
 @media (max-height: 900px) {
@@ -140,6 +170,51 @@ window.addEventListener('load', (evt) => {
 
   head.appendChild(style);
 
+  const mapdeckDivs = document.querySelectorAll('.mapdeck_div');
+
+  for (var i = 0; i < mapdeckDivs.length; i++) {
+    const mapdeckDiv = mapdeckDivs[i];
+
+    const shadow = document.createElement('div');
+    shadow.classList.add('shadow-md-bottom');
+
+    mapdeckDiv.appendChild(shadow);
+  }
+
+  const storiesMapdeckDiv = document.querySelector('.tab-pane[data-value="stories"] .mapdeck_div');
+
+  storiesMapdeckDiv.addEventListener('click', () => {
+
+  });
+
+  const storiesBack = document.querySelector('#stories-back');
+  const storiesContainer = document.querySelector('#stories-stories');
+  const storiesTopBar = document.createElement('div');
+  const storiesBackButton = document.createElement('button');
+  const storiesCloseButton = document.createElement('button');
+
+  const backIcon = document.createElement('span');
+  backIcon.className = 'material-icons';
+  backIcon.innerText = 'navigate_before';
+
+  const closeIcon = document.createElement('span');
+  closeIcon.className = 'material-icons';
+  closeIcon.innerText = 'close';
+
+  storiesBackButton.appendChild(backIcon);
+  storiesCloseButton.appendChild(closeIcon);
+
+  storiesBackButton.addEventListener('click', () => storiesBack.click());
+  storiesCloseButton.addEventListener('click', () => storiesBack.click());
+  
+  storiesTopBar.appendChild(storiesBackButton);
+  storiesTopBar.appendChild(storiesBack);
+  storiesTopBar.appendChild(storiesCloseButton);
+  storiesTopBar.id = 'stories-back';
+  storiesTopBar.style.display = 'none';
+
+  storiesContainer.parentElement.appendChild(storiesTopBar);
+  
   const navbarHeight = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--h-navbar'));
 
   // console.log('navbarHeight:' + navbarHeight);

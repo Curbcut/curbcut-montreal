@@ -3,6 +3,7 @@
 # Processing function -----------------------------------------------------
 
 process_rmd <- function(file, path) {
+
   # Error handling
   stopifnot(sum(str_detect(file, "Rmd")) == length(file))
   
@@ -23,12 +24,19 @@ process_rmd <- function(file, path) {
   
   # Write ouput
   # writeLines(x, out)
+  
+  # Take head out, which breaks Sus' CSS
+  x <- readLines(out)
+  x <- 
+  x[-((str_detect(x, "<head") |> which()):(str_detect(x, "</head") |> which()))]
+  
+  writeLines(x, out)
 }
 
 
 # MCP ---------------------------------------------------------------------
 
-mcp_files <- list.files("dev/Rmd/mcp")
+mcp_files <- list.files("dev/Rmd/mcp") |> str_subset(".Rmd$")
 purrr::walk(mcp_files, process_rmd, path = "mcp")
 
 
@@ -40,4 +48,12 @@ process_rmd("crash.Rmd", "crash")
 # Montreal stories --------------------------------------------------------
 
 stories_files <- list.files("dev/Rmd/stories")
+# library(here)
 purrr::walk(stories_files, process_rmd, path = "stories")
+
+
+# Standalone --------------------------------------------------------------
+
+standalone_files <- list.files("dev/Rmd/standalone") |> str_subset(".Rmd$")
+purrr::walk(standalone_files, process_rmd, path = "standalone")
+

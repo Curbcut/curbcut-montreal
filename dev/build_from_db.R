@@ -31,5 +31,5 @@ dl_unzip("dev/data", .sus_links[1])
 # data
 dl_unzip("data", .sus_links[2])
 
-# www_maps
-dl_unzip("www/maps", .sus_links[3])
+# data2
+dl_unzip("data2", .sus_links[3])
