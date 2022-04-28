@@ -38,6 +38,5 @@ RUN Rscript -e 'install.packages("renv")'
 RUN Rscript -e 'renv::consent(provided = TRUE)'
 RUN Rscript -e 'renv::restore()'
 
-
 # run app on container start
 CMD ["R", "-e", "shiny::runApp(host = '0.0.0.0', port = as.numeric(Sys.getenv('PORT')))"]
