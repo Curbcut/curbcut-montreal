@@ -3,7 +3,7 @@
 
 # Load libraries ----------------------------------------------------------
 
-library(tidyverse)
+library(dplyr)
 library(qs)
 
 # From a CSV to code to create tibbles ------------------------------------

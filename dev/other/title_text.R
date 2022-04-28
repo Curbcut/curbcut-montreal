@@ -1,6 +1,6 @@
 #### title_text data setup #####################################################
 
-library(tidyverse)
+library(dplyr)
 library(qs)
 
 
@@ -444,12 +444,14 @@ title_text <-
   add_row(tab = "natural_inf", type = "title", 
           text = "Natural infrastructure") |> 
   add_row(tab = "natural_inf", type = "main", text = paste0(
-    "Natural spaces contribute to well-being, quality of life and public ",
-    "health. In the Montreal region, approximately 25% of the territory is ",
-    "natural infrastructure, but these spaces are threatened by forces ",
-    "including pollution and urban sprawl. This module quantifies the ",
-    "benefits provided by natural infrastructure related to biodiversity ",
-    "conservation, flood prevention, and heat-island reduction.")) |> 
+    "Natural ecosystems contribute to well-being, quality of life and public ",
+    "health. This module quantifies the benefits provided by urban trees and ",
+    "wooded areas to biodiversity conservation, flood prevention, and ",
+    "heat-island reduction. The natural infrastructure included in this study ",
+    "covers approximately 25% of the Montreal region. Montreal's natural ",
+    "infrastructure is threatened by forces including pollution, pests, ",
+    "climate change, and urban sprawl. Increasing the percentage of protected ",
+    "natural infrastructure increases the supply of these ecosystem benefits.")) |> 
   add_row(tab = "natural_inf", type = "extra", text = paste0(
     "<p>Data made available by <a href='https://www.habitat-nature.com/'>",
     "Habitat</a>. For more information on the methods and data used for this ",
