@@ -49,17 +49,17 @@ borough_canale <-
   right_join(borough, by = c("CSDUID" = "ID")) |> 
   select(ID = CSDUID, canale_ind)
 
-grid_canale <-
-  grid |> 
-  select(ID, households) |> 
-  st_transform(32618) |> 
-  st_set_agr("constant") |> 
-  st_intersection(DA_canale) |> 
-  mutate(area_prop = st_area(geometry) / area) |> 
-  mutate(canale_ind = canale_ind * units::drop_units(area_prop)) |> 
-  st_drop_geometry() |> 
-  group_by(ID) |> 
-  summarize(canale_ind = weighted.mean(canale_ind, households, na.rm = TRUE))
+# grid_canale <-
+#   grid |> 
+#   select(ID, households) |> 
+#   st_transform(32618) |> 
+#   st_set_agr("constant") |> 
+#   st_intersection(DA_canale) |> 
+#   mutate(area_prop = st_area(geometry) / area) |> 
+#   mutate(canale_ind = canale_ind * units::drop_units(area_prop)) |> 
+#   st_drop_geometry() |> 
+#   group_by(ID) |> 
+#   summarize(canale_ind = weighted.mean(canale_ind, households, na.rm = TRUE))
 
 DA_canale <- 
   DA_canale |> 
@@ -72,11 +72,11 @@ DA_canale <-
 DA_canale <- add_q3(DA_canale)
 CT_canale <- add_q3(CT_canale)
 borough_canale <- add_q3(borough_canale)
-grid_canale <- add_q3(grid_canale)
+# grid_canale <- add_q3(grid_canale)
 
-canale_q3 <- map(list(DA_canale, CT_canale, borough_canale, grid_canale), 
+canale_q3 <- map(list(DA_canale, CT_canale, borough_canale),#, grid_canale), 
                  get_breaks_q3, "canale_ind")
-canale_q5 <- map(list(DA_canale, CT_canale, borough_canale, grid_canale), 
+canale_q5 <- map(list(DA_canale, CT_canale, borough_canale),#, grid_canale), 
                  get_breaks_q5, "canale_ind")
 
 DA_canale <-
@@ -106,14 +106,14 @@ borough_canale <-
          canale_ind_q3_2016 = canale_ind_q3,
          canale_ind_q5_2016 = canale_ind_q5)
 
-grid_canale <-
-  grid_canale |> 
-  add_q5(canale_q5[[4]]) |> 
-  bind_cols(grid_canale) |> 
-  relocate(canale_ind_q5, .after = last_col()) |> 
-  rename(canale_ind_2016 = canale_ind,
-         canale_ind_q3_2016 = canale_ind_q3,
-         canale_ind_q5_2016 = canale_ind_q5)
+# grid_canale <-
+#   grid_canale |> 
+#   add_q5(canale_q5[[4]]) |> 
+#   bind_cols(grid_canale) |> 
+#   relocate(canale_ind_q5, .after = last_col()) |> 
+#   rename(canale_ind_2016 = canale_ind,
+#          canale_ind_q3_2016 = canale_ind_q3,
+#          canale_ind_q5_2016 = canale_ind_q5)
 
 
 # Add to existing geographies ---------------------------------------------
@@ -136,11 +136,11 @@ borough <-
   relocate(geometry, .after = last_col()) |> 
   st_set_agr("constant")
 
-grid <- 
-  grid |> 
-  left_join(grid_canale, by = "ID") |> 
-  relocate(geometry, .after = last_col()) |> 
-  st_set_agr("constant")
+# grid <- 
+#   grid |> 
+#   left_join(grid_canale, by = "ID") |> 
+#   relocate(geometry, .after = last_col()) |> 
+#   st_set_agr("constant")
 
 building <- 
   building |> 
@@ -164,14 +164,14 @@ street <-
 
 # Get breaks_q3
 breaks_q3_active <-
-  map2_dfr(canale_q3, c("DA", "CT", "borough", "grid"), function(x, scale) {
+  map2_dfr(canale_q3, c("DA", "CT", "borough"), function(x, scale) {#, "grid"), function(x, scale) {
    if (nrow(x) > 0) x |> mutate(scale = scale, date = 2016, rank = 0:3,
                                 .before = canale_ind)}) |> 
   rename(var = canale_ind)
 
 # Get breaks_q5
 breaks_q5_active <- 
-  map2_dfr(canale_q5, c("DA", "CT", "borough", "grid"), function(x, scale) {
+  map2_dfr(canale_q5, c("DA", "CT", "borough"), function(x, scale) {#, "grid"), function(x, scale) {
     if (nrow(x) > 0) x |> mutate(scale = scale, rank = 0:5, 
                                  .before = canale_ind)}) |> 
   rename(var = canale_ind)
@@ -187,7 +187,7 @@ variables <-
     theme = "Urban life",
     private = FALSE,
     dates = c("2016"),
-    scales = c("borough", "building", "CT", "DA", "grid", "street"),
+    scales = c("borough", "building", "CT", "DA", "street"),#, "grid", "street"),
     breaks_q3 = breaks_q3_active,
     breaks_q5 = breaks_q5_active,
     source = "mcgill_geosdh_research_group")
@@ -196,6 +196,6 @@ variables <-
 # Clean up ----------------------------------------------------------------
 
 rm(borough_canale, breaks_q3_active, breaks_q5_active, canale, canale_q3,
-   canale_q5, CT_canale, DA_canale, grid_canale, reserves)
+   canale_q5, CT_canale, DA_canale, reserves)#grid_canale, reserves)
 
 # To save output, run dev/build_data.R, which calls this script

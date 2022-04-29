@@ -22,9 +22,16 @@ module_link <- function(module, zoom = NULL, location = map_loc,
       sus_link$zoom <- 
         if (df == "borough") map_zoom else map_zoom_levels[[df]] + 0.75
       
-      data <- get(df)
-      sus_link$location <- sapply(unlist(data[data$ID == select_id, ]$centroid),
-                                  round, digits = 2)
+      sus_link$location <- if (df == "grid") {
+        sapply(
+          as.numeric(dbGetQuery(db, paste0("SELECT centroid_lat, centroid_lon ",
+                                           "FROM grid WHERE ID = ", select_id))),
+          round, digits = 2)
+      } else {
+        data <- get(df)
+        sapply(unlist(data[data$ID == select_id, ]$centroid),
+               round, digits = 2)
+      }
     }
   }
   

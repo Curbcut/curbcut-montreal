@@ -21,7 +21,8 @@ explore_graph <- function(data, var_type, var_left, var_right, df, select_id,
     
     if (!is.na(select_id)) {
       if (df == "building") select_id <- 
-          building$DAUID[building$ID == select_id]
+          dbGetQuery(db, paste0("SELECT DAUID FROM building WHERE ID = ", 
+                                select_id))$DAUID
       if (df == "street") select_id <- street$DAUID[street$ID == select_id]
       if (sum(!is.na(select_id)) == 0) select_id <- NA
     }
@@ -29,8 +30,7 @@ explore_graph <- function(data, var_type, var_left, var_right, df, select_id,
     df <- "DA"
     
   }
-  
-  
+
   ## Decide on plot type -------------------------------------------------------
   
   if (plot_type == "auto") plot_type <- 

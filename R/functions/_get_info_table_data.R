@@ -18,9 +18,14 @@ get_info_table_data <- function(data, var_type, var_left, var_right, df,
   
   # TKTK THIS IS BROKEN FOR TWO DATES!
   if (build_str_as_DA) {
-    dat_select <- building
+    dat_select <- if (is.na(select_id)) DA else {
+      dbGetQuery(db, paste0("SELECT * FROM building WHERE ID = ", 
+                            select_id))
+    }
     dat_select_id <- select_id
-    if (!is.na(select_id)) select_id <- building$DAUID[building$ID == select_id]
+    if (!is.na(select_id)) select_id <- 
+      dbGetQuery(db, paste0("SELECT DAUID FROM building WHERE ID = ", 
+                            select_id))$DAUID
     if (length(select_id) == 0) select_id <- NA
     
   } else {
