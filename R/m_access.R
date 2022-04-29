@@ -199,13 +199,16 @@ access_server <- function(id) {
       if (!is.na(select_id()) && var_right() == " ") {
         tt_thresh <- slider() * 60
 
-        CTs_to_map <- tt_matrix[c("timing", "destination", select_id())]
-        names(CTs_to_map) <- c("timing", "destination", "travel_time")
-        CTs_to_map <- CTs_to_map[CTs_to_map$timing == var_left_2(), ]
-        CTs_to_map <- CTs_to_map[CTs_to_map$travel_time <= tt_thresh, ]
-        CTs_to_map <- CTs_to_map[CTs_to_map$destination != select_id(),]
+        # SQL retrieval
+        db_call <- 
+          paste0("SELECT timing, destination, `", select_id(), 
+                 "` FROM tt_matrix WHERE timing = '", var_left_2(), "'",
+                 " AND `", select_id(), "` <= ", tt_thresh,
+                 " AND destination != ", select_id())
+        CTs_to_map <- dbGetQuery(db, db_call) |> dplyr::as_tibble()
+        # Further manipultaion
         CTs_to_map$group <- as.character(6 - ceiling((
-          CTs_to_map$travel_time) / tt_thresh * 5))
+          CTs_to_map[[select_id()]]) / tt_thresh * 5))
         CTs_to_map <- CTs_to_map[, c("destination", "group")]
         CTs_to_map <- merge(CTs_to_map, colour_iso, by = "group", 
                             all.x = TRUE)

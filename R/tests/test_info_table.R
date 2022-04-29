@@ -15,8 +15,8 @@ suppressPackageStartupMessages({
   qload("data/colours.qsm")
   
   qload("data/census.qsm")
-  building <- qread("data/building.qs")
-  grid <- qread("data/grid.qs")
+  # building <- qread("data/building.qs")
+  # grid <- qread("data/grid.qs")
 
   source("R/functions/_get_data_table.R")
   source("R/functions/_get_data_type.R")
