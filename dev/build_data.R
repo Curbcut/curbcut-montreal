@@ -193,7 +193,12 @@ grid <-
   grid_full |> 
   rowwise() |> 
   mutate(centroid = list(as.numeric(st_coordinates(st_centroid(geometry))))) |> 
+  # Can't have lists in the SQL db
+  rowwise() |> 
+  mutate(centroid_lat = unlist(centroid)[1],
+                centroid_lon = unlist(centroid)[2]) |> 
   ungroup() |> 
+  select(-centroid) |> 
   st_drop_geometry()
 
 building_full <- building
@@ -244,20 +249,15 @@ library(qs)
 qload("dev/data/natural_inf.qsm")
 tt_matrix <- qread("dev/data/tt_matrix.qs")
 building <- qread("dev/data/building.qs")
-grid <- qread("dev/data/grid.qs") |> 
-  dplyr::rowwise() |> 
-  dplyr::mutate(centroid_lat = unlist(centroid)[1],
-                centroid_lon = unlist(centroid)[2]) |> 
-  dplyr::ungroup() |> 
-  dplyr::select(-centroid)
+grid <- qread("dev/data/grid.qs")
 
-sqlitePath <- "data/sql_db.sqlite"
+sqlite_path <- "data/sql_db.sqlite"
 
 # Overwrite!
-unlink(sqlitePath)
+unlink(sqlite_path)
 
 # Create the db
-db <- dbConnect(SQLite(), sqlitePath)
+db <- dbConnect(SQLite(), sqlite_path)
 
 # natural_inf
 dbWriteTable(db, "natural_inf_custom", natural_inf_custom)
