@@ -1,28 +1,28 @@
 #### LINKS BETWEEN MODULES #####################################################
 
-module_link <- function(module, zoom = NULL, location = map_loc, 
+module_link <- function(r = r, module, zoom = NULL, location = map_loc, 
                         select_id = NULL, var_left = NULL,
                         var_right = NULL, df = NULL, 
                         zoom_auto = NULL, more_args = NULL, 
                         update_view = TRUE) {
   
-  sus_link$mod_ns <- paste(module, module, sep = "-")
+  r$sus_link$mod_ns <- paste(module, module, sep = "-")
   
   # Open the link to the linked moule
   sus_rv$link <- reactive(module)
   # Tweak map namespace
-  sus_link$map_id <- paste(module, module, "map", sep = "-")
+  r$sus_link$map_id <- paste(module, module, "map", sep = "-")
   
   # Update view
-  sus_link$zoom <- NULL
-  sus_link$location <- NULL
+  r$sus_link$zoom <- NULL
+  r$sus_link$location <- NULL
   
   if (update_view) {
     if (!is.null(df) && !is.null(select_id)) {
-      sus_link$zoom <- 
+      r$sus_link$zoom <- 
         if (df == "borough") map_zoom else map_zoom_levels[[df]] + 0.75
       
-      sus_link$location <- if (df == "grid") {
+      r$sus_link$location <- if (df == "grid") {
         sapply(
           as.numeric(dbGetQuery(db, paste0("SELECT centroid_lat, centroid_lon ",
                                            "FROM grid WHERE ID = ", select_id))),
@@ -36,15 +36,15 @@ module_link <- function(module, zoom = NULL, location = map_loc,
   }
   
   # Other values 
-  sus_link$activity <- 
-    if (is.null(sus_link$activity)) 0 else sus_link$activity + 1
-  sus_link$var_left <- var_left
-  sus_link$var_right <- var_right
-  sus_link$df <- df
-  sus_link$zoom_auto <- zoom_auto
-  sus_link$more_args <- more_args
+  r$sus_link$activity <- 
+    if (is.null(r$sus_link$activity)) 0 else r$sus_link$activity + 1
+  r$sus_link$var_left <- var_left
+  r$sus_link$var_right <- var_right
+  r$sus_link$df <- df
+  r$sus_link$zoom_auto <- zoom_auto
+  r$sus_link$more_args <- more_args
   
-  sus_link$select_id <- select_id
+  r$sus_link$select_id <- select_id
   
 }
 

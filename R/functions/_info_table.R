@@ -1,6 +1,6 @@
 #### INFO TABLE ################################################################
 
-info_table <- function(data, var_type, var_left, var_right, df, select_id,
+info_table <- function(r = r, data, var_type, var_left, var_right, df, select_id,
                        build_str_as_DA = TRUE) {
   
   stopifnot(!is.reactive(data))
@@ -16,12 +16,13 @@ info_table <- function(data, var_type, var_left, var_right, df, select_id,
   
   if (var_type %in% c("NA_delta", "NA_delta_bivar")) {
     out <- "No data available."
-    return(HTML(sus_translate(out)))}
+    return(HTML(sus_translate(r = r, out)))}
   
   
   ## Get data list -------------------------------------------------------------
   
   z <- get_info_table_data(
+    r = r,
     data = data, 
     var_type = var_type, 
     var_left = var_left, 
@@ -36,30 +37,30 @@ info_table <- function(data, var_type, var_left, var_right, df, select_id,
   ## Handle NAs ----------------------------------------------------------------
       
   # Special case for Kahnawake
-  if (z$var_type == "kah_na") out <- sus_translate(
+  if (z$var_type == "kah_na") out <- sus_translate(r = r, 
     "<strong>Kahnawake Mohawk Territory</strong>",
     "<p>Statistics Canada does not gather the same ",
     "data for indigenous reserves in the Census as it does ",
     "for other jurisdictions, so we cannot display findings here.")
   
   # Special case for Kanestake
-  if (z$var_type == "kan_na") out <- sus_translate(
+  if (z$var_type == "kan_na") out <- sus_translate(r = r, 
     "<strong>Kanehsatà:ke</strong>",
     "<p>Statistics Canada does not gather the same ",
     "data for indigenous reserves in the Census as it does ",
     "for other jurisdictions, so we cannot display findings here.")
   
   # Univariate, NA selection
-  if (z$var_type == "uni_na") out <- sus_translate(
+  if (z$var_type == "uni_na") out <- sus_translate(r = r, 
     "{z$place_name} has no data available on {z$exp_left}.")
   
   # Bivariate, NA selection
-  if (z$var_type == "bi_na") out <- sus_translate(
+  if (z$var_type == "bi_na") out <- sus_translate(r = r, 
     "{z$place_name} has no data available on {z$exp_left} and ",
     "{z$exp_right}.")
   
   # Univariate multi-date, NA selection
-  if (z$var_type == "uni_na_delta") out <- sus_translate(
+  if (z$var_type == "uni_na_delta") out <- sus_translate(r = r, 
     "{z$place_name} has no data available on the change in {z$exp_left} ",
     "between {z$start_date_left} - {z$end_date_left}.")
   
@@ -68,7 +69,7 @@ info_table <- function(data, var_type, var_left, var_right, df, select_id,
   ## Univariate single-date cases ----------------------------------------------
   
   # Univariate, quantitative, no selection
-  if (z$var_type == "uni_quant_all") out <- sus_translate(
+  if (z$var_type == "uni_quant_all") out <- sus_translate(r = r, 
     "At the {z$scale_sing} scale, {z$exp_left} varies from ",
     "{z$min_val} to {z$max_val}, with an average value of {z$mean_val} ",
     "and a median value of {z$median_val}. ",
@@ -77,7 +78,7 @@ info_table <- function(data, var_type, var_left, var_right, df, select_id,
   
   
   # Univariate, quantitative, valid selection
-  if (z$var_type == "uni_quant_select") out <- sus_translate(
+  if (z$var_type == "uni_quant_select") out <- sus_translate(r = r, 
     "<strong>{z$place_heading}</strong>",
     "<p>{z$place_name} has a population of {z$pop} and a ", 
     "'{z$title_left}' score ({z$exp_left}) of {z$val_left}, which is ", 
@@ -87,14 +88,14 @@ info_table <- function(data, var_type, var_left, var_right, df, select_id,
     "{z$percentile} of {z$scale_plural} in the Montreal region.")
   
   # Univariate, qualitative, no selection
-  if (z$var_type == "uni_qual_all") out <- sus_translate(
+  if (z$var_type == "uni_qual_all") out <- sus_translate(r = r, 
     "At the {z$scale_sing} scale, {z$exp_left} varies from ",
     "'{z$min_val}' to '{z$max_val}'. A {z$majority} of {z$scale_plural} ",
     "({z$mode_prop}) have a value of '{z$mode_val}', while ",
     "{z$mode_prop_2} have a value of '{z$mode_val_2}'.")
   
   # Univariate, qualitative, valid selection
-  if (z$var_type == "uni_qual_select") out <- sus_translate(
+  if (z$var_type == "uni_qual_select") out <- sus_translate(r = r, 
     "<strong>{z$place_heading}</strong>",
     "<p>{z$place_name} has a population of {z$pop} and a ",
     "'{z$title_left}' value of '{z$val_left}', which is shared by ",
@@ -104,7 +105,7 @@ info_table <- function(data, var_type, var_left, var_right, df, select_id,
   ## Univariate multi-date cases -------------------------------------------
   
   # Univariate, quantitative, no selection
-  if (z$var_type == "uni_quant_all_delta") out <- sus_translate(
+  if (z$var_type == "uni_quant_all_delta") out <- sus_translate(r = r, 
     "At the {z$scale_sing} scale, the change in {z$exp_left} ",
     "between {z$start_date_left} and {z$end_date_left} varied from ",
     "{z$min_val} to {z$max_val}, with an average change of {z$mean_val} ",
@@ -114,7 +115,7 @@ info_table <- function(data, var_type, var_left, var_right, df, select_id,
   
   # Univariate, quantitative, valid selection
   sentence <- \(x) paste0(toupper(substr(x, 1, 1)), substr(x, 2, nchar(x)))
-  if (z$var_type == "uni_quant_select_delta") out <- sus_translate(
+  if (z$var_type == "uni_quant_select_delta") out <- sus_translate(r = r, 
     "<strong>{z$place_heading}</strong>",
     "<p>{sentence(z$exp_left)} in {z$place_name} ",
     "{z$increase} by {sub('-', '', z$val_left)} between ",
@@ -125,14 +126,14 @@ info_table <- function(data, var_type, var_left, var_right, df, select_id,
     "{z$percentile} of {z$scale_plural} in the Montreal region.")
   
   # Univariate, qualitative, no selection
-  if (z$var_type == "uni_qual_all_delta") out <- sus_translate(
+  if (z$var_type == "uni_qual_all_delta") out <- sus_translate(r = r, 
     "TKTK At the {z$scale_sing} scale, {z$exp_left} varies from ",
     "'{z$min_val}' to '{z$max_val}'. A {z$majority} of {z$scale_plural} ",
     "({z$mode_prop}) have a value of '{z$mode_val}', while ",
     "{z$mode_prop_2} have a value of '{z$mode_val_2}'.")
   
   # Univariate, qualitative, valid selection
-  if (z$var_type == "uni_qual_select_delta") out <- sus_translate(
+  if (z$var_type == "uni_qual_select_delta") out <- sus_translate(r = r, 
     "<strong>{z$place_heading}</strong>",
     "<p>TKTK {z$place_name} has a population of {z$pop} and a ",
     "'{z$title_left}' value of '{z$val_left}', which is shared by ",
@@ -145,7 +146,7 @@ info_table <- function(data, var_type, var_left, var_right, df, select_id,
   if (z$var_type == "bi_quantxy_all") {
     # If correlation is close to zero
     if (z$correlation < 0.05 && z$correlation > -0.05) {
-      out <- sus_translate(
+      out <- sus_translate(r = r, 
         "<p>'{z$title_left}' has effectively no correlation ",
         "({z$corr_disp}) with '{z$title_right}' at the {z$scale_sing} ",
         "scale.",
@@ -153,9 +154,9 @@ info_table <- function(data, var_type, var_left, var_right, df, select_id,
         "there is no relationship between the two variables.")
     } else {
       out <- paste0(
-        if (z$strong == sus_translate("strong")) 
-          sus_translate("<p><b>STRONG CORRELATION</b></p>"),
-        sus_translate("<p>'{z$title_left}' has a {z$strong} {z$pos} ",
+        if (z$strong == sus_translate(r = r, "strong")) 
+          sus_translate(r = r, "<p><b>STRONG CORRELATION</b></p>"),
+        sus_translate(r = r, "<p>'{z$title_left}' has a {z$strong} {z$pos} ",
         "correlation ({z$corr_disp}) with '{z$title_right}' at ",
         "the {z$scale_sing} scale.",
         "<p>This means that, in general, {z$scale_plural} with a higher ",
@@ -165,7 +166,7 @@ info_table <- function(data, var_type, var_left, var_right, df, select_id,
   }
   
   # Bivariate, quantitative, valid selection
-  if (z$var_type == "bi_quantxy_select") out <- sus_translate(
+  if (z$var_type == "bi_quantxy_select") out <- sus_translate(r = r, 
     "<strong>{z$place_heading}</strong>",
     "<p>{z$place_name} has a population of {z$pop}, ",
     "a '{z$title_left}' value of {z$val_left}, ",
@@ -180,7 +181,7 @@ info_table <- function(data, var_type, var_left, var_right, df, select_id,
   if (z$var_type == "bi_quanty_all") {
     # If correlation is close to zero
     if (z$correlation < 0.05 && z$correlation > -0.05) {
-      out <- sus_translate(
+      out <- sus_translate(r = r, 
         "<p>'{z$title_left}' has effectively no correlation ",
         "(Spearman's rho: {z$corr_disp}) with '{z$title_right}' at the ", 
         "{z$scale_sing} scale.",
@@ -188,9 +189,9 @@ info_table <- function(data, var_type, var_left, var_right, df, select_id,
         "there is no relationship between the two variables.")
     } else {
       out <- paste0(
-        if (z$strong == sus_translate("strong")) 
-          sus_translate("<p><b>STRONG CORRELATION</b></p>"),
-        sus_translate("<p>'{z$title_left}' has a {z$strong} {z$pos} correlation ",
+        if (z$strong == sus_translate(r = r, "strong")) 
+          sus_translate(r = r, "<p><b>STRONG CORRELATION</b></p>"),
+        sus_translate(r = r, "<p>'{z$title_left}' has a {z$strong} {z$pos} correlation ",
         "(Spearman's rho: {z$corr_disp}) with '{z$title_right}' ",
         "at the {z$scale_sing} scale.",
         "<p>This means that, in general, {z$scale_plural} with a higher ",
@@ -200,7 +201,7 @@ info_table <- function(data, var_type, var_left, var_right, df, select_id,
   }
   
   # Bivariate, qualitative x, quantitative y, valid selection
-  if (z$var_type == "bi_quanty_select") out <- sus_translate(
+  if (z$var_type == "bi_quanty_select") out <- sus_translate(r = r, 
     "<strong>{z$place_heading}</strong>",
     "<p>{z$place_name} has a population of {z$pop}, ",
     "a '{z$title_left}' value of '{z$val_left}', and a ",
@@ -214,7 +215,7 @@ info_table <- function(data, var_type, var_left, var_right, df, select_id,
   if (z$var_type == "bi_quantx_all") {
     # If correlation is close to zero
     if (z$correlation < 0.05 && z$correlation > -0.05) {
-      out <- sus_translate(
+      out <- sus_translate(r = r, 
         "<p>'{z$title_left}' has effectively no correlation ",
         "(Spearman's rho: {z$corr_disp}) with '{z$title_right}' at the ", 
         "{z$scale_sing} scale.",
@@ -222,9 +223,9 @@ info_table <- function(data, var_type, var_left, var_right, df, select_id,
         "there is no relationship between the two variables.")
     } else {
       out <- paste0(
-        if (z$strong == sus_translate("strong")) 
-          sus_translate("<p><b>STRONG CORRELATION</b></p>"),
-        sus_translate("<p>'{z$title_left}' has a {z$strong} {z$pos} correlation ",
+        if (z$strong == sus_translate(r = r, "strong")) 
+          sus_translate(r = r, "<p><b>STRONG CORRELATION</b></p>"),
+        sus_translate(r = r, "<p>'{z$title_left}' has a {z$strong} {z$pos} correlation ",
         "(Spearman's rho: {z$corr_disp}) with '{z$title_right}' ",
         "at the {z$scale_sing} scale.",
         "<p>This means that, in general, {z$scale_plural} with a higher ",
@@ -234,7 +235,7 @@ info_table <- function(data, var_type, var_left, var_right, df, select_id,
   }
   
   # Bivariate, quantitative x, qualitative y, valid selection
-  if (z$var_type == "bi_quantx_select") out <- sus_translate(
+  if (z$var_type == "bi_quantx_select") out <- sus_translate(r = r, 
     "<strong>{z$place_heading}</strong>",
     "<p>{z$place_name} has a population of {z$pop}, ",
     "a {z$title_left} value of '{z$val_left}', and a ",
@@ -251,7 +252,7 @@ info_table <- function(data, var_type, var_left, var_right, df, select_id,
   if (z$var_type == "bi_quantxy_all_delta") {
     # If correlation is close to zero
     if (abs(z$correlation) < 0.05) {
-      out <- sus_translate(
+      out <- sus_translate(r = r, 
         "<p>From {z$start_date_left} to {z$end_date_left}, the change in ", 
         "'{z$title_left}' had effectively no correlation ({z$corr_disp}) ", 
         "with the change in '{z$title_right}' at the {z$scale_sing} scale.",
@@ -259,9 +260,9 @@ info_table <- function(data, var_type, var_left, var_right, df, select_id,
         "relationship between the change in the two variables.")
     } else {
       out <- paste0(
-        if (z$strong == sus_translate("strong")) 
-          sus_translate("<p><b>STRONG CORRELATION</b></p>"),
-        sus_translate("<p>From {z$start_date_left} to {z$end_date_left}, the change in ", 
+        if (z$strong == sus_translate(r = r, "strong")) 
+          sus_translate(r = r, "<p><b>STRONG CORRELATION</b></p>"),
+        sus_translate(r = r, "<p>From {z$start_date_left} to {z$end_date_left}, the change in ", 
         "'{z$title_left}' had a {z$strong} {z$pos} ",
         "correlation ({z$corr_disp}) with the change in '{z$title_right}' ", 
         "at the {z$scale_sing} scale.",
@@ -272,7 +273,7 @@ info_table <- function(data, var_type, var_left, var_right, df, select_id,
   }
   
   # Bivariate, quantitative, valid selection
-  if (z$var_type == "bi_quantxy_select_delta") out <- sus_translate(
+  if (z$var_type == "bi_quantxy_select_delta") out <- sus_translate(r = r, 
     "<strong>{z$place_heading}</strong>",
     "<p>From {z$start_date_left} to {z$end_date_left}, {z$place_name} had ",
     "a change in its '{z$title_left}' value of {z$val_left}, ",
@@ -287,7 +288,7 @@ info_table <- function(data, var_type, var_left, var_right, df, select_id,
   if (z$var_type == "bi_quanty_all_delta") {
     # If correlation is close to zero
     if (abs(z$correlation) < 0.05) {
-      out <- sus_translate(
+      out <- sus_translate(r = r, 
         "<p>From {z$start_date_left} to {z$end_date_left}, the change in ", 
         "'{z$title_left}' had effectively no correlation ", 
         "(Spearman's rho: {z$corr_disp}) ", 
@@ -296,9 +297,9 @@ info_table <- function(data, var_type, var_left, var_right, df, select_id,
         "relationship between the change in the two variables.")
     } else {
       out <- paste0(
-        if (z$strong == sus_translate("strong")) 
-          sus_translate("<p><b>STRONG CORRELATION</b></p>"),
-        sus_translate("<p>From {z$start_date_left} to {z$end_date_left}, the change in ", 
+        if (z$strong == sus_translate(r = r, "strong")) 
+          sus_translate(r = r, "<p><b>STRONG CORRELATION</b></p>"),
+        sus_translate(r = r, "<p>From {z$start_date_left} to {z$end_date_left}, the change in ", 
         "'{z$title_left}' had a {z$strong} {z$pos} ",
         "correlation (Spearman's rho: {z$corr_disp}) with the change in ", 
         "'{z$title_right}' at the {z$scale_sing} scale.",
@@ -309,7 +310,7 @@ info_table <- function(data, var_type, var_left, var_right, df, select_id,
   }
   
   # Bivariate, qualitative x, quantitative y, valid selection
-  if (z$var_type == "bi_quanty_select_delta") out <- sus_translate(
+  if (z$var_type == "bi_quanty_select_delta") out <- sus_translate(r = r, 
     "<strong>{z$place_heading}</strong>",
     "<p>TKTK {z$place_name} has a population of {z$pop}, ",
     "a '{z$title_left}' value of '{z$val_left}', and a ",
@@ -326,14 +327,14 @@ info_table <- function(data, var_type, var_left, var_right, df, select_id,
     
     # If correlation is close to zero
     if (abs(z$correlation) < 0.05) {
-      out <- sus_translate(
+      out <- sus_translate(r = r, 
         "<p>During {z$date_left}, {z$exp_left} ",
         "averaged {z$mean_val} per day. ",
         "The maximum value was {z$max_val} on {z$max_date}, and the ",
         "minimum value was {z$min_val} on {z$min_date}. ",
         "There was no growth trend during this time period.")
     } else {
-      out <- sus_translate(
+      out <- sus_translate(r = r, 
         "<p>During {z$date_left}, {z$exp_left} ",
         "averaged {z$mean_val} per day. ",
         "The maximum value was {z$max_val} on {z$max_date}, and the ",
@@ -356,7 +357,7 @@ info_table <- function(data, var_type, var_left, var_right, df, select_id,
   
   if (date_left == date_right && nchar(date_left) == 4 &&
       !grepl("_na", z$var_type)) {
-    out <- paste(out, sus_translate("<i>(Data from {date_left}.)</i>"))
+    out <- paste(out, sus_translate(r = r, "<i>(Data from {date_left}.)</i>"))
   }
   
   

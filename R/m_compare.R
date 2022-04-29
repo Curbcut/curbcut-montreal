@@ -10,11 +10,11 @@ compare_UI <- function(id, var_list) {
     
     conditionalPanel(
       condition = "output.show_panel == true", ns = NS(id),
-      fluidRow(column(width = 7, h4(sus_translate("Compare"))),
+      fluidRow(column(width = 7, h4(sus_translate(r = r, "Compare"))),
                column(width = 5, align = "right", 
                       actionLink(inputId = NS(id, "hide_compare"), 
                                  class = "sus-small-link",
-                                 label = sus_translate("Hide"))))),
+                                 label = sus_translate(r = r, "Hide"))))),
     
     conditionalPanel(
       condition = "output.hide_status == 1", ns = NS(id),
@@ -28,7 +28,7 @@ compare_UI <- function(id, var_list) {
   )
 }
 
-compare_server <- function(id, var_list, df = reactive(NULL), 
+compare_server <- function(id, r = r, var_list, df = reactive(NULL), 
                            disabled = reactive(NULL), 
                            time = reactive(NULL), 
                            show_panel = reactive(TRUE)) {
@@ -41,7 +41,7 @@ compare_server <- function(id, var_list, df = reactive(NULL),
 
   moduleServer(id, function(input, output, session) {
     
-    var_right <- select_var_server("compare", var_list = reactive(var_list), 
+    var_right <- select_var_server("compare", r = r, var_list = reactive(var_list), 
                                    disabled = disabled, time = time, df = df)
     
     # Hide compare status
@@ -53,8 +53,8 @@ compare_server <- function(id, var_list, df = reactive(NULL),
     
     observeEvent(input$hide_compare, {
       if (input$hide_compare %% 2 == 0) {
-        txt <- sus_translate("Hide")
-      } else txt <- sus_translate("Show")
+        txt <- sus_translate(r = r, "Hide")
+      } else txt <- sus_translate(r = r, "Show")
       updateActionButton(session, "hide_compare", label = txt)
     })
     

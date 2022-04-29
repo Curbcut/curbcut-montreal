@@ -11,10 +11,10 @@ gentrification_UI <- function(id) {
       NS(id, ns_id),
       susSidebarWidgets(
         slider_UI(NS(id, ns_id), 
-                  label = sus_translate("Select two years"),
+                  label = sus_translate(r = r, "Select two years"),
                   value = c("2006", "2016")),
         checkbox_UI(NS(id, ns_id),
-                    label = sus_translate("Review a single variable ",
+                    label = sus_translate(r = r, "Review a single variable ",
                                           "part of the index")),
         select_var_UI(NS(id, ns_id), 
                       var_list = var_list_left_gentrification),
@@ -192,27 +192,27 @@ gentrification_server <- function(id) {
     )
 
     # Update click_id() on bookmark
-    observeEvent(sus_bookmark$active, {
+    observeEvent(r$sus_bookmark$active, {
       # Delay of 2000 milliseconds more than the zoom update from bookmark.
       # The map/df/data needs to be updated before we select an ID.
-      if (isTRUE(sus_bookmark$active)) {
+      if (isTRUE(r$sus_bookmark$active)) {
         delay(2000, {
-          if (!is.null(sus_bookmark$select_id)) {
-            if (sus_bookmark$select_id != "NA") click_id(sus_bookmark$select_id)
+          if (!is.null(r$sus_bookmark$select_id)) {
+            if (r$sus_bookmark$select_id != "NA") click_id(r$sus_bookmark$select_id)
           }
         })
       }
       
       # So that bookmarking gets triggered only ONCE
-      delay(1500, {sus_bookmark$active <- FALSE})      
+      delay(1500, {r$sus_bookmark$active <- FALSE})      
     }, priority = -2)
     
     # Update click_id() on module link
-    observeEvent(sus_link$activity, {
+    observeEvent(r$sus_link$activity, {
       # Delay of 2000 milliseconds more than the zoom update from bookmark.
       # The map/df/data needs to be updated before we select an ID.
       delay(2000, {
-        if (!is.null(sus_link$select_id)) click_id(sus_link$select_id)
+        if (!is.null(r$sus_link$select_id)) click_id(r$sus_link$select_id)
       })
     }, priority = -2)
   #   

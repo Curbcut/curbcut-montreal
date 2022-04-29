@@ -1,6 +1,6 @@
 #### GET LEGEND AXIS LABELS ####################################################
 
-get_legend_labels <- function(var_left, var_right, data_type, breaks = NULL) {
+get_legend_labels <- function(r = r, var_left, var_right, data_type, breaks = NULL) {
   
   ## If breaks has non-NULL name, use it ---------------------------------------
   
@@ -14,15 +14,15 @@ get_legend_labels <- function(var_left, var_right, data_type, breaks = NULL) {
   title_left <- 
     variables[variables$var_code == unique(sub("_\\d{4}$", "", var_left)),]
   
-  title_left_short <- sus_translate(title_left$var_short)
-  title_left <- sus_translate(title_left$var_title)
+  title_left_short <- sus_translate(r = r, title_left$var_short)
+  title_left <- sus_translate(r = r, title_left$var_title)
 
   title_right <- 
     variables[variables$var_code == unique(sub("_\\d{4}$", "", var_right)),]
   
   if (data_type %in% c("bivar", "delta_bivar")) {
-    title_right_short <- sus_translate(title_right$var_short)
-    title_right <- sus_translate(title_right$var_title)
+    title_right_short <- sus_translate(r = r, title_right$var_short)
+    title_right <- sus_translate(r = r, title_right$var_title)
     # If axis title is too long, take the short version
     if (nchar(title_right) > 35) title_right <- title_right_short  
     if (nchar(title_left) > 35) title_left <- title_left_short

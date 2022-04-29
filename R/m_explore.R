@@ -18,30 +18,32 @@ explore_UI <- function(id) {
   tagList(
     
     div(id = NS(id, "explore_title"),
-        fluidRow(column(width = 7, h4(sus_translate("Explore"))),
+        fluidRow(column(width = 7, h4(sus_translate(r = r, "Explore"))),
                  column(width = 5, align = "right", 
                         actionLink(inputId = NS(id, "hide_explore"), 
                                    class = "sus-small-link", 
-                                   label = sus_translate("Hide"))))),
+                                   label = sus_translate(r = r, "Hide"))))),
     
     div(id = NS(id, "explore_content"),
         htmlOutput(NS(id, "info_table")),
         plotOutput(NS(id, "explore_graph"), height = 150),
         hidden(actionLink(inputId = NS(id, "clear_selection"),
-                          label = sus_translate("Clear selection"))))
+                          label = sus_translate(r = r, "Clear selection"))))
   )
 }
 
-explore_server <- function(id, data, var_left, var_right, df, select_id, 
+explore_server <- function(id, r = r, data, var_left, var_right, df, select_id, 
                            build_str_as_DA = reactive(TRUE), 
                            graph = reactive(explore_graph), 
                            graph_args = reactive(list(
+                             r = r,
                              data = data(), var_left = var_left(), 
                              var_right = var_right(), df = df(), 
                              select_id = select_id(), 
                              build_str_as_DA = build_str_as_DA())),
                            table = reactive(info_table),
                            table_args = reactive(list(
+                             r = r,
                              data = data(), var_left = var_left(),
                              var_right = var_right(), df = df(),
                              select_id = select_id(),
@@ -96,7 +98,7 @@ explore_server <- function(id, data, var_left, var_right, df, select_id,
     
     # Change show/hide button text
     observeEvent(input$hide_explore, {
-      txt <- sus_translate(switch(input$hide_explore %% 2 + 1, "Hide", "Show"))
+      txt <- sus_translate(r = r, switch(input$hide_explore %% 2 + 1, "Hide", "Show"))
       updateActionButton(session, "hide_explore", label = txt)
     })
 

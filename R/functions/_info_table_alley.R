@@ -1,6 +1,6 @@
 #### GREEN ALLEY EXPLORE INFO TABLE GRAPH ######################################
 
-info_table_alley <- function(data, var_type, var_left, var_right, df, 
+info_table_alley <- function(r = r, data, var_type, var_left, var_right, df, 
                              select_id, build_str_as_DA = TRUE) {
   
   if (is.na(select_id)) {
@@ -9,7 +9,7 @@ info_table_alley <- function(data, var_type, var_left, var_right, df,
       participating_boroughs <- nrow(alley_text)
       nb_alleys <- {nrow(alley)}
       
-      sus_translate("{participating_boroughs} out of 19 Montreal boroughs ",
+      sus_translate(r = r, "{participating_boroughs} out of 19 Montreal boroughs ",
                     "have a green alley program. They collectively have ",
                     "{nb_alleys} green alleys.")
       
@@ -26,7 +26,7 @@ info_table_alley <- function(data, var_type, var_left, var_right, df,
       mixed_per <- scales::percent(mixed/nrow(alley_visited))
       none_per <- scales::percent(none/nrow(alley_visited))
       
-      sus_translate("Our team visited {nrow(alley_visited)} of the ",
+      sus_translate(r = r, "Our team visited {nrow(alley_visited)} of the ",
                     "{nrow(alley)} green alleys in Montreal. We classified ",
                     "{green} ({green_per}) as 'green', {community} ",
                     "({community_per}) as 'community', {mixed} ",
@@ -41,25 +41,25 @@ info_table_alley <- function(data, var_type, var_left, var_right, df,
       data <- alley_text[alley_text$ID == select_id,]
       
       text_to_display <- list()
-      text_to_display$title <- paste0("<p><b>", sus_translate("Borough"), " ", 
+      text_to_display$title <- paste0("<p><b>", sus_translate(r = r, "Borough"), " ", 
                                       data$name, "</b></p>")
       text_to_display$intro <-
         paste0("<p>",
-               sus_translate("The first green alley inauguration was in "),
+               sus_translate(r = r, "The first green alley inauguration was in "),
                data$first_alley, if (!is.na(data$green_alley_sqm)) 
-                 sus_translate(" and there are {data$green_alley_sqm} square",
+                 sus_translate(r = r, " and there are {data$green_alley_sqm} square",
                                " meters of green alley in the borough.") else ".",
                "</p>")
       text_to_display$text <- 
         paste0("<p>",
-               if (!is.na(data$app_process)) sus_translate(data$app_process), " ",
-               if (!is.na(data$management)) sus_translate(data$management), " ",
-               if (!is.na(data$budget)) sus_translate(data$budget),
+               if (!is.na(data$app_process)) sus_translate(r = r, data$app_process), " ",
+               if (!is.na(data$management)) sus_translate(r = r, data$management), " ",
+               if (!is.na(data$budget)) sus_translate(r = r, data$budget),
                "</p>")
       
       text_to_display$guide <- 
         paste0(glue("<p><a href = {data$guide}>"),
-               sus_translate("The green alley guide of {data$name}"),
+               sus_translate(r = r, "The green alley guide of {data$name}"),
                "</a></p>")
       
       text_to_display$contact <- 
@@ -79,18 +79,18 @@ info_table_alley <- function(data, var_type, var_left, var_right, df,
       if (!is.na(data$created)) 
         text_to_display$inauguration <- 
         paste0("<p>",
-               sus_translate("Inauguration date: "), 
+               sus_translate(r = r, "Inauguration date: "), 
                data$created, "</p>")
       text_to_display$text <- 
         if (is.na(data$description)) {
           paste0("<p>",
-                 sus_translate("We do not have information ",
+                 sus_translate(r = r, "We do not have information ",
                                "on this green alley."),
                  "</p>")
         } else {
-          paste0("<p>", sus_translate(data$description), "</p>",
+          paste0("<p>", sus_translate(r = r, data$description), "</p>",
                  if (!is.na(data$circulation)) {
-                   paste0("<p>Circulation: ", sus_translate(data$circulation),
+                   paste0("<p>Circulation: ", sus_translate(r = r, data$circulation),
                           "</p>")
                  })
         }

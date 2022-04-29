@@ -49,12 +49,12 @@ place_explorer_UI <- function(id) {
     sidebar_UI(
       NS(id, "place_explorer"),
       hidden(actionLink(inputId = NS(id, "back_to_map"),
-                        label = sus_translate("Go back to map"),
+                        label = sus_translate(r = r, "Go back to map"),
                         style = "font-size: 1.25rem;")),
       
       susSidebarWidgets(
         # Search box
-        strong(sus_translate("Enter postal code or click on the map")),
+        strong(sus_translate(r = r, "Enter postal code or click on the map")),
         HTML(paste0('
                    <div class="shiny-split-layout">
                      <div style="width: 80%;">',
@@ -70,7 +70,7 @@ place_explorer_UI <- function(id) {
         hr(),
         # Scale slider
         sliderTextInput(inputId = NS(id, "slider"),
-                        label = sus_translate("Choose scale:"),
+                        label = sus_translate(r = r, "Choose scale:"),
                         choices = c("Borough/city", "Census tract", 
                                     "Dissemination area"),
                         selected = "Dissemination area",
@@ -83,7 +83,7 @@ place_explorer_UI <- function(id) {
         # Checkboxes for each theme
         pickerInput(
           inputId = NS(id, "themes_checkbox"),
-          label = sus_translate("Choose themes:"),
+          label = sus_translate(r = r, "Choose themes:"),
           choices = unique(variables$theme),
           selected = unique(variables$theme),
           multiple = TRUE),
@@ -94,7 +94,7 @@ place_explorer_UI <- function(id) {
         select_var_UI(
           id = ns_id,
           select_var_id = NS(id, "comparison_scale"),
-          label = sus_translate("Choose comparison scale:"),
+          label = sus_translate(r = r, "Choose comparison scale:"),
           var_list = list("Island" = "island", "Region" = "region"))
       )))),
     
@@ -125,7 +125,7 @@ place_explorer_UI <- function(id) {
 
 # Server ------------------------------------------------------------------
 
-place_explorer_server <- function(id) {
+place_explorer_server <- function(id, r) {
   moduleServer(id, function(input, output, session) {
     ns_id <- "place_explorer"
     ns_id_map <- paste0(ns_id, "-map")
@@ -139,12 +139,12 @@ place_explorer_server <- function(id) {
     loc_name <- reactiveVal(NA)
 
     # Sidebar
-    sidebar_server(id = "place_explorer", x = "place_explorer")
+    sidebar_server(id = "place_explorer", r = r, x = "place_explorer")
     
     # Translate picker input labels
     observe({
       all_themes <- unique(variables$theme)
-      names(all_themes) <- sapply(all_themes, sus_translate, USE.NAMES = FALSE)
+      names(all_themes) <- sapply(all_themes, sus_translate, r = r, USE.NAMES = FALSE)
       updatePickerInput(
         session = session,
         inputId = "themes_checkbox",
@@ -155,7 +155,7 @@ place_explorer_server <- function(id) {
     # Translate slider labels
     observe(updateSliderTextInput(
       session = session, "slider",
-      choices = get_zoom_label_t(map_zoom_levels[1:3])))
+      choices = get_zoom_label_t(map_zoom_levels[1:3], r = r)))
     
     # df, data and select_id
     df <- reactive(get_zoom_code(input$slider))
@@ -251,14 +251,14 @@ place_explorer_server <- function(id) {
 
     # Show widgets when the location name updates
     observe({
-      lapply(widgets_name, hide, anim = TRUE, animType = "fade", time = 0.5)
-      lapply(widgets_name, show, anim = TRUE, animType = "fade", time = 0.5)
+      lapply(widgets_name, shinyjs::hide, anim = TRUE, animType = "fade", time = 0.5)
+      lapply(widgets_name, shinyjs::show, anim = TRUE, animType = "fade", time = 0.5)
       hide("mapdeck_div", anim = TRUE, animType = "fade", time = 0.5)
     }) |> bindEvent(loc_name(), ignoreInit = TRUE)
 
     # Hide widgets and go back to map when the button is clicked
     observe({
-      lapply(widgets_name, hide, anim = TRUE, animType = "fade", time = 0.5)
+      lapply(widgets_name, shinyjs::hide, anim = TRUE, animType = "fade", time = 0.5)
       show("mapdeck_div", anim = TRUE, animType = "fade", time = 0.5)
     }) |> bindEvent(input$back_to_map)
 
@@ -278,6 +278,7 @@ place_explorer_server <- function(id) {
     # Update dropdown language
     comparison_scale <- select_var_server(
       id = ns_id,
+      r = r,
       select_var_id = "comparison_scale",
       var_list = reactive(list("Island" = "island", "Region" = "region")))
 
@@ -338,20 +339,20 @@ place_explorer_server <- function(id) {
                     ")"),
              "</i></h2>")
       } else HTML("<h2 style = 'display:inline;'>",
-                  paste0(sus_translate("The area around "), loc_name(),
+                  paste0(sus_translate(r = r, "The area around "), loc_name(),
                          "<i style = 'color: var(--c-h2); ",
                          "font-family: var(--ff-h2); ",
                          "font-size: 2.5rem; margin-bottom: 0.75em; ",
                          "display:inline;'>",
                          "&nbsp;  (",
-                         sus_translate(get_zoom_name(df())), " ", select_id(), 
+                         sus_translate(r = r, get_zoom_name(df())), " ", select_id(), 
                          ")"),
                   "</i></h2>")
     })
     
-    title_card_to_grid <- reactive(get_title_card(
+    title_card_to_grid <- reactive(get_title_card(r = r,
       df(), select_id(), island_or_region())) |> 
-      bindCache(df(), select_id(), island_or_region(), sus_rv$lang())
+      bindCache(df(), select_id(), island_or_region(), r$lang)
 
     # Title card contents
     output$title_card <- renderUI({
@@ -368,7 +369,7 @@ place_explorer_server <- function(id) {
             column(width = 2, HTML(paste0(
               "<p style = 'margin:auto; text-align:center;",
               "font-size: medium; font-weight:bold;'>",
-              sus_translate(title_card_to_grid()[[x]][["row_title"]]) |>
+              sus_translate(r = r, title_card_to_grid()[[x]][["row_title"]]) |>
                 str_to_upper(), "</p>"))),
             column(width = 2, HTML(paste0(
               "<p style = 'margin:auto; text-align:center;'>",
@@ -394,14 +395,14 @@ place_explorer_server <- function(id) {
 
       # Prepare themes and text
       themes <- get_pe_themes(df(), select_id(), island_or_region())
-      text_ior <- sus_translate(paste0("the ", island_or_region()))
+      text_ior <- sus_translate(r = r, paste0("the ", island_or_region()))
       stand_def <- c(
-        "Extreme outlier" = sus_translate(
+        "Extreme outlier" = sus_translate(r = r, 
           "`Extreme outlier`: the variables rank in the top/bottom 10% of ",
           "{text_ior}."),
-        "Outlier" = sus_translate(
+        "Outlier" = sus_translate(r = r, 
           "`Outlier`: the variables rank in the top/bottom 20% of {text_ior}."),
-        "Typical" = sus_translate(
+        "Typical" = sus_translate(r = r, 
           "`Typical`: the variables rank in the middle 60% of {text_ior}."))
 
       # The "server" of every block
@@ -413,6 +414,7 @@ place_explorer_server <- function(id) {
 
           # Get the components of the block
           block <- get_pe_block(
+            r = r,
             df = df(), 
             theme = x[1],
             select_id = select_id(), 
@@ -431,10 +433,10 @@ place_explorer_server <- function(id) {
               output[[paste0("ind_", x[1], z, "_row_title")]] <-
                 renderText({
                   paste(p(style = "font-size: 11px;",
-                          sus_translate(text$var_title[z]),
+                          sus_translate(r = r, text$var_title[z]),
                           icon("question"),
                           title = str_to_sentence(
-                            sus_translate(text$explanation[z]))))
+                            sus_translate(r = r, text$explanation[z]))))
                 })
 
               output[[paste0("ind_", x[1],  z, "_percentile")]] <-
@@ -448,8 +450,8 @@ place_explorer_server <- function(id) {
 
             })
             
-            trans_theme <- str_to_upper(sus_translate(x[1]))
-            trans_standout <- str_to_lower(sus_translate(x[2]))
+            trans_theme <- str_to_upper(sus_translate(r = r, x[1]))
+            trans_standout <- str_to_lower(sus_translate(r = r, x[2]))
             trans_stand_def <- stand_def[[which(names(stand_def) == x[2])]]
             
             nb_values_to_show <- min(nrow(text), 5)
@@ -467,25 +469,25 @@ place_explorer_server <- function(id) {
                 tagList(fluidRow(
                   
                   column(width = 4,
-                         if (z == 1) h5(sus_translate("Variable")),
+                         if (z == 1) h5(sus_translate(r = r, "Variable")),
                          htmlOutput(eval(parse(
                            text = paste0("NS(id, 'ind_", x[1], z,
                                          "_row_title')"))))),
                   
                   column(width = 2,
-                         if (z == 1) h5(sus_translate("Rank")),
+                         if (z == 1) h5(sus_translate(r = r, "Rank")),
                          htmlOutput(eval(parse(
                            text = paste0("NS(id, 'ind_", x[1], z,
                                          "_percentile')"))))),
                   
                   column(width = 2,
-                         if (z == 1) h5(sus_translate("Value")),
+                         if (z == 1) h5(sus_translate(r = r, "Value")),
                          htmlOutput(eval(parse(
                            text = paste0("NS(id, 'ind_", x[1], z,
                                          "_value')"))))),
                   
                   column(width = 3,
-                         if (z == 1) h5(sus_translate("Plot")),
+                         if (z == 1) h5(sus_translate(r = r, "Plot")),
                          plotOutput(eval(parse(
                            text = paste0("NS(id, 'ind_", x[1], z,
                                          "_plot')"))),
@@ -496,10 +498,10 @@ place_explorer_server <- function(id) {
               })
             )
             
-          } else tagList(fluidRow(h3(sus_translate(x[1]))),
+          } else tagList(fluidRow(h3(sus_translate(r = r, x[1]))),
                          fluidRow("No data."))
         }) |> bindCache(df(), select_id(), island_or_region(), x,
-                        input$themes_checkbox, sus_rv$lang())
+                        input$themes_checkbox, r$lang)
       })
 
       standout <- sapply(themes, \(x) x[2])
@@ -510,12 +512,12 @@ place_explorer_server <- function(id) {
         tagList(
           if (x == 1 && length(which_standout) != 0) {
             tagList(h2(style = "padding: 10px; margin-bottom:0px",
-                       sus_translate("What makes this area unique?")))
+                       sus_translate(r = r, "What makes this area unique?")))
           } else if ((x == 1 && length(which_standout) == 0) ||
                      (length(which_standout) != 0 &&
                       x - 1 == which_standout[length(which_standout)])) {
             tagList(h2(style = "padding: 10px; margin-bottom:0px",
-                       sus_translate(
+                       sus_translate(r = r, 
                          "What makes this area similar to others?")))
           },
           uiOutput(
@@ -545,7 +547,7 @@ place_explorer_server <- function(id) {
     
     observe({
       z <- title_card_to_grid()[["total_crash_per1k"]]
-      module_link(module = z$link_module,
+      module_link(r = r, module = z$link_module,
                   select_id = select_id(),
                   var_left = z$link_var_left,
                   df = df())
@@ -553,7 +555,7 @@ place_explorer_server <- function(id) {
 
     observe({
       z <- title_card_to_grid()[["single_detached"]]
-      module_link(module = z$link_module,
+      module_link(r = r, module = z$link_module,
                   select_id = select_id(),
                   var_left = z$link_var_left,
                   df = df())
@@ -561,7 +563,7 @@ place_explorer_server <- function(id) {
 
     observe({
       z <- title_card_to_grid()[["green_space_ndvi"]]
-      module_link(module = z$link_module,
+      module_link(r = r, module = z$link_module,
                   select_id = select_id(),
                   var_left = z$link_var_left,
                   df = df())
@@ -569,7 +571,7 @@ place_explorer_server <- function(id) {
 
     observe({
       z <- title_card_to_grid()[["canale_index"]]
-      module_link(module = z$link_module,
+      module_link(r = r, module = z$link_module,
                   select_id = select_id(),
                   var_left = z$link_var_left,
                   df = df())

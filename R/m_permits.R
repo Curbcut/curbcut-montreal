@@ -12,13 +12,13 @@
 #       susSidebarWidgets(
 #         select_var_UI(NS(id, ns_id), select_var_id = "d_1",
 #                       var_list = var_left_list_1_permits,
-#                       label = sus_translate("Grouping")),
+#                       label = sus_translate(r = r, "Grouping")),
 #         select_var_UI(NS(id, ns_id), select_var_id = "d_2",
 #                       var_list = var_left_list_2_permits,
-#                       label = sus_translate("Type of permits")),
+#                       label = sus_translate(r = r, "Type of permits")),
 #         slider_UI(NS(id, ns_id), 
 #                   slider_id = "slu",
-#                   label = sus_translate("Select a year"),
+#                   label = sus_translate(r = r, "Select a year"),
 #                   min = permits_slider$min,
 #                   max = permits_slider$max,
 #                   step = permits_slider$interval, sep = "",
@@ -26,7 +26,7 @@
 #                   width = "95%"),
 #         slider_UI(NS(id, ns_id), 
 #                   slider_id = "slb",
-#                   label = sus_translate("Select two dates"), 
+#                   label = sus_translate(r = r, "Select two dates"), 
 #                   min = permits_slider$min,
 #                   max = permits_slider$max, 
 #                   step = permits_slider$interval, sep = "", 
@@ -34,10 +34,10 @@
 #                   width = "95%"),
 #         checkbox_UI(NS(id, ns_id),
 #                     checkbox_id = "comp_d",
-#                     label = sus_translate("Compare dates")),
+#                     label = sus_translate(r = r, "Compare dates")),
 #         hidden(checkbox_UI(NS(id, ns_id), 
 #                            checkbox_id = "grid",
-#                            label = sus_translate("250-metre grid"))),
+#                            label = sus_translate(r = r, "250-metre grid"))),
 #         year_disclaimer_UI(NS(id, ns_id))
 #       ),
 #       bottom = div(class = "bottom_sidebar", 
@@ -238,10 +238,10 @@
 #     observe({
 #       if (!choropleth()) {
 #         updateSliderInput(session, inputId = "permits-slb",
-#                           label = sus_translate("Total between two dates"))
+#                           label = sus_translate(r = r, "Total between two dates"))
 #       } else if (choropleth()) {
 #         updateSliderInput(session, inputId = "permits-slb",
-#                           label = sus_translate("Compare two dates"))
+#                           label = sus_translate(r = r, "Compare two dates"))
 #       }
 #     })
 #     
@@ -262,27 +262,27 @@
 #     )
 #     
 #     # Update click_id() on bookmark
-#     observeEvent(sus_bookmark$active, {
+#     observeEvent(r$sus_bookmark$active, {
 #       # Delay of 2000 milliseconds more than the zoom update from bookmark.
 #       # The map/df/data needs to be updated before we select an ID.
-#       if (isTRUE(sus_bookmark$active)) {
+#       if (isTRUE(r$sus_bookmark$active)) {
 #         delay(2000, {
-#           if (!is.null(sus_bookmark$select_id)) {
-#             if (sus_bookmark$select_id != "NA") click_id(sus_bookmark$select_id)
+#           if (!is.null(r$sus_bookmark$select_id)) {
+#             if (r$sus_bookmark$select_id != "NA") click_id(r$sus_bookmark$select_id)
 #           }
 #         })
 #       }
 #       
 #       # So that bookmarking gets triggered only ONCE
-#       delay(1500, {sus_bookmark$active <- FALSE})      
+#       delay(1500, {r$sus_bookmark$active <- FALSE})      
 #     }, priority = -2)
 #     
 #     # Update click_id() on module link
-#     observeEvent(sus_link$activity, {
+#     observeEvent(r$sus_link$activity, {
 #       # Delay of 2000 milliseconds more than the zoom update from bookmark.
 #       # The map/df/data needs to be updated before we select an ID.
 #       delay(2000, {
-#         if (!is.null(sus_link$select_id)) click_id(sus_link$select_id)
+#         if (!is.null(r$sus_link$select_id)) click_id(r$sus_link$select_id)
 #       })
 #     }, priority = -2)
 #     

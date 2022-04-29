@@ -22,9 +22,9 @@ alley_UI <- function(id) {
       NS(id, ns_id),
       susSidebarWidgets(
         checkbox_UI(id = NS(id, ns_id),
-                    label = sus_translate("Green alleys visited by our team")),
+                    label = sus_translate(r = r, "Green alleys visited by our team")),
         select_var_UI(NS(id, ns_id), var_list = var_list_left_alley,
-                      label = sus_translate("Grouping"))),
+                      label = sus_translate(r = r, "Grouping"))),
       bottom = div(class = "bottom_sidebar",
                    tagList(legend_UI(NS(id, ns_id)),
                            zoom_UI(NS(id, ns_id), map_zoom_levels)))),
@@ -45,7 +45,7 @@ alley_UI <- function(id) {
 
 # Server ------------------------------------------------------------------
 
-alley_server <- function(id) {
+alley_server <- function(id, r) {
   moduleServer(id, function(input, output, session) {
     ns_id <- "alley"
     ns_id_map <- paste0(ns_id, "-map")
@@ -57,7 +57,7 @@ alley_server <- function(id) {
     poi <- reactiveVal(NULL)
     
     # Sidebar
-    sidebar_server(id = ns_id, x = "alley")
+    sidebar_server(id = ns_id, r = r, x = "alley")
 
     # Enter in choropleth() depending on var_left select_id
     choropleth <- reactive(!(var_left() == " " || visited()))
@@ -79,10 +79,10 @@ alley_server <- function(id) {
     # Zoom and POI reactives
     observeEvent(get_view_state(ns_id_map), {
       zoom({
-        if (!is.null(sus_bookmark$zoom)) {
-          sus_bookmark$zoom
-        } else if (!is.null(sus_link$zoom)) {
-          sus_link$zoom
+        if (!is.null(r$sus_bookmark$zoom)) {
+          r$sus_bookmark$zoom
+        } else if (!is.null(r$sus_link$zoom)) {
+          r$sus_link$zoom
         } else get_zoom(get_view_state(ns_id_map)$zoom)})
       new_poi <- observe_map(get_view_state(ns_id_map))
       if ((is.null(new_poi) && !is.null(poi())) || 
@@ -107,6 +107,7 @@ alley_server <- function(id) {
     # Choose tileset
     tile_choropleth <- zoom_server(
       id = ns_id, 
+      r = r,
       zoom_string = zoom_string, 
       zoom_levels = reactive(map_zoom_levels))
     
@@ -122,7 +123,7 @@ alley_server <- function(id) {
     tile2 <- reactive("")
     
     # Get df for explore/legend/etc
-    df <- reactive(get_df(tile(), zoom_string()))
+    df <- reactive(get_df(tile(), zoom_string(), r = r))
     
     # Focus on visited alleys
     visited <- checkbox_server(id = ns_id)
@@ -131,7 +132,7 @@ alley_server <- function(id) {
     time <- reactive("2016")
 
     # Left variable
-    var_left_1 <- select_var_server(id = ns_id, 
+    var_left_1 <- select_var_server(id = ns_id, r = r,
                                     var_list = reactive(var_list_left_alley))
     
     var_left <- reactive(if (visited()) "alley_qual" else var_left_1())
@@ -139,6 +140,7 @@ alley_server <- function(id) {
     # Compare panel
     var_right <- compare_server(
       id = ns_id,
+      r = r,
       var_list = make_dropdown(compare = TRUE),
       show_panel = choropleth,
       time = time)
@@ -158,6 +160,7 @@ alley_server <- function(id) {
     # Legend
     legend_server(
       id = ns_id,
+      r = r,
       var_left = var_left,
       var_right = var_right,
       df = df,
@@ -180,6 +183,7 @@ alley_server <- function(id) {
     # Explore panel
     explore_content <- explore_server(
       id = ns_id,
+      r = r,
       data = data,
       var_left = var_left,
       var_right = var_right,
@@ -226,7 +230,8 @@ alley_server <- function(id) {
     
     # Did-you-know panel
     dyk_server(
-      id = ns_id, 
+      id = ns_id,
+      r = r,
       var_left = var_left,
       var_right = var_right,
       poi = poi)
@@ -250,6 +255,7 @@ alley_server <- function(id) {
     # Bookmarking
     bookmark_server(
       id = ns_id,
+      r = r,
       map_viewstate = reactive(get_view_state(ns_id_map)),
       var_right = var_right,
       select_id = select_id,
@@ -259,28 +265,28 @@ alley_server <- function(id) {
     )
 
     # Update select_id() on bookmark
-    observeEvent(sus_bookmark$active, {
-      if (isTRUE(sus_bookmark$active)) {
+    observeEvent(r$sus_bookmark$active, {
+      if (isTRUE(r$sus_bookmark$active)) {
         delay(1000, {
-          if (!is.null(sus_bookmark$select_id))
-            if (sus_bookmark$select_id != "NA") 
-              select_id(sus_bookmark$select_id)
+          if (!is.null(r$sus_bookmark$select_id))
+            if (r$sus_bookmark$select_id != "NA") 
+              select_id(r$sus_bookmark$select_id)
         })
       }
       # So that bookmarking gets triggered only ONCE
       delay(1500, {
-        sus_bookmark$active <- FALSE
-        sus_bookmark$df <- NULL
-        sus_bookmark$zoom <- NULL
+        r$sus_bookmark$active <- FALSE
+        r$sus_bookmark$df <- NULL
+        r$sus_bookmark$zoom <- NULL
       })
     }, priority = -2)
     
     # Update select_id() on module link
-    observeEvent(sus_link$activity, {
+    observeEvent(r$sus_link$activity, {
       delay(1000, {
-        if (!is.null(sus_link$select_id)) select_id(sus_link$select_id)
-        sus_link$df <- NULL
-        sus_link$zoom <- NULL
+        if (!is.null(r$sus_link$select_id)) select_id(r$sus_link$select_id)
+        r$sus_link$df <- NULL
+        r$sus_link$zoom <- NULL
       })
     }, priority = -2)
 

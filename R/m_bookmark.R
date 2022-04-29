@@ -18,7 +18,7 @@
 #' @param more_args Named vectors indicating other input that must be updated
 #' following bookmarking.
 
-bookmark_server <- function(id, 
+bookmark_server <- function(id, r = r,
                             map_viewstate = reactive(NULL), 
                             var_left = reactive(NULL),
                             var_right = reactive(NULL), 
@@ -61,9 +61,9 @@ bookmark_server <- function(id,
         more <- 
           paste(widget_type, widget_value, sep = ":", collapse = ";")
       }
-      
+
       # If not supplied, shouldn't appear in the URL:
-      default <- paste0("/?tb=", sus_rv$active_tab(),"&lng=", sus_rv$lang())
+      default <- paste0("/?tb=", r$active_tab,"&lng=", r$lang)
       
       add_arguments <- c("zm", "lat", "lon", "v_l", "v_r", "s_id", "zm_a", 
                          "df", "more")
@@ -83,18 +83,19 @@ bookmark_server <- function(id,
     
     
     # Update from bookmark
-    observeEvent(sus_bookmark$active, {
-      if (isTRUE(sus_bookmark$active)) {
+    observeEvent(r$sus_bookmark$active, {
+      if (isTRUE(r$sus_bookmark$active)) {
         update_module(session = session,
+                      r = r,
                       id = id,
-                      zoom = sus_bookmark$zoom, 
-                      location = sus_bookmark$location, 
+                      zoom = r$sus_bookmark$zoom, 
+                      location = r$sus_bookmark$location, 
                       map_id = map_id, 
-                      df = sus_bookmark$df, 
-                      zoom_auto = sus_bookmark$zoom_auto, 
-                      var_left = sus_bookmark$var_left,
-                      var_right = sus_bookmark$var_right, 
-                      more_args = sus_bookmark$more_args)
+                      df = r$sus_bookmark$df, 
+                      zoom_auto = r$sus_bookmark$zoom_auto, 
+                      var_left = r$sus_bookmark$var_left,
+                      var_right = r$sus_bookmark$var_right, 
+                      more_args = r$sus_bookmark$more_args)
       }
     }, priority = -1, autoDestroy = TRUE, once = TRUE)
     

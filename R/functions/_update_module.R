@@ -7,7 +7,7 @@
 #' bookmarking AND dyk. It is used to correctly identify how to collect and 
 #' recreate var_left. 
 
-update_module <- function(mod_ns = NULL, id = mod_ns, session, zoom, location, 
+update_module <- function(r = r, mod_ns = NULL, id = mod_ns, session, zoom, location, 
                           map_id = "map", df, zoom_auto, var_left, var_right, 
                           more_args) {
   
@@ -39,7 +39,7 @@ update_module <- function(mod_ns = NULL, id = mod_ns, session, zoom, location,
     updateSliderTextInput(
       session = session,
       inputId = construct_namespace("zoom_slider"),
-      selected = sus_translate(get_zoom_name(df))
+      selected = sus_translate(r = r, get_zoom_name(df))
     )
   }
 

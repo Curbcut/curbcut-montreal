@@ -3,7 +3,7 @@
 #' @return A named list with all the data components necessary to power the
 #' info_table module.
 
-get_info_table_data <- function(data, var_type, var_left, var_right, df, 
+get_info_table_data <- function(r = r, data, var_type, var_left, var_right, df, 
                                 select_id, build_str_as_DA = TRUE) {
   
   ## Initialize dat and output list --------------------------------------------
@@ -93,18 +93,18 @@ get_info_table_data <- function(data, var_type, var_left, var_right, df,
     
   } else var_right_label <- NULL
     
-  var_left_label <- sapply(var_left_label, sus_translate)
-  var_right_label <- sapply(var_right_label, sus_translate)
+  var_left_label <- sapply(var_left_label, sus_translate, r = r)
+  var_right_label <- sapply(var_right_label, sus_translate, r = r)
   
   out$title_left <- 
-    sus_translate(variables[variables$var_code == var_left,]$var_title)
+    sus_translate(r = r, variables[variables$var_code == var_left,]$var_title)
   if (var_right != " ") out$title_right <- 
-    sus_translate(variables[variables$var_code == var_right,]$var_title)
+    sus_translate(r = r, variables[variables$var_code == var_right,]$var_title)
   
   out$exp_left <- 
-    sus_translate(variables[variables$var_code == var_left,]$explanation)
+    sus_translate(r = r, variables[variables$var_code == var_left,]$explanation)
   out$exp_right <- 
-    sus_translate(variables[variables$var_code == var_right,]$explanation)
+    sus_translate(r = r, variables[variables$var_code == var_right,]$explanation)
   if (length(out$exp_left) == 0) warning("No exp: ", var_left, call. = FALSE)
   if (var_right != " " && length(out$exp_right) == 0) warning(
     "No exp: ", var_right, call. = FALSE)
@@ -168,8 +168,8 @@ get_info_table_data <- function(data, var_type, var_left, var_right, df,
     "street" = "streets",
     NA_character_)
   
-  out$scale_sing <- sus_translate(scale_sing)
-  out$scale_plural <- sus_translate(scale_plural)
+  out$scale_sing <- sus_translate(r = r, scale_sing)
+  out$scale_plural <- sus_translate(r = r, scale_plural)
   
 
   ## Place names ---------------------------------------------------------------
@@ -181,23 +181,23 @@ get_info_table_data <- function(data, var_type, var_left, var_right, df,
     "building" = glue("{select_name$name}"),
     "street" = glue("{select_name$name}"),
     "borough/city" = glue("{select_name$name}"),
-    "census tract" = sus_translate("Census tract {select_name$name}"),
+    "census tract" = sus_translate(r = r, "Census tract {select_name$name}"),
     "dissemination area" = 
-      sus_translate("Dissemination area {select_name$name}"),
-    "250-m" = sus_translate("The area around {select_name$name}"),
+      sus_translate(r = r, "Dissemination area {select_name$name}"),
+    "250-m" = sus_translate(r = r, "The area around {select_name$name}"),
     NA_character_)
   
   if (grepl("select", out$var_type)) {
     if (df == "borough") select_name$name_2 <- 
-        sus_translate(glue("{select_name$name_2}"))
+        sus_translate(r = r, glue("{select_name$name_2}"))
     
     out$place_heading <- if (df %in% c("building", "street") && 
                              build_str_as_DA) {
-      sus_translate(select_name$name)
+      sus_translate(r = r, select_name$name)
     } else if (scale_sing == "borough/city") {
-      sus_translate("{select_name$name_2} of {out$place_name}")
+      sus_translate(r = r, "{select_name$name_2} of {out$place_name}")
     } else if (scale_sing == "250-m") {
-      sus_translate(select_name$name)
+      sus_translate(r = r, select_name$name)
     } else glue("{out$place_name} ({select_name$name_2})")
   }
   
@@ -227,24 +227,24 @@ get_info_table_data <- function(data, var_type, var_left, var_right, df,
     quintile <- quantile(vec_left, c(0.2, 0.4, 0.6, 0.8))
 
     out$larger <- if (val_left >= quintile[4]) {
-      sus_translate("much larger than")
+      sus_translate(r = r, "much larger than")
     } else if (val_left >= quintile[3]) {
-      sus_translate("larger than")
+      sus_translate(r = r, "larger than")
     } else if (val_left >= quintile[2]) {
-      sus_translate("almost the same as")
+      sus_translate(r = r, "almost the same as")
     } else if (val_left >= quintile[1]) {
-      sus_translate("smaller than")
-    } else sus_translate("much smaller than")
+      sus_translate(r = r, "smaller than")
+    } else sus_translate(r = r, "much smaller than")
 
-    out$high <- if (str_detect(out$larger, paste(sus_translate("much larger than"), 
-                                                  sus_translate("larger than"), 
+    out$high <- if (str_detect(out$larger, paste(sus_translate(r = r, "much larger than"), 
+                                                  sus_translate(r = r, "larger than"), 
                                                   sep = "|"))) {
-      sus_translate("high")
-    } else if (str_detect(out$larger, paste(sus_translate("smaller than"), 
-                                            sus_translate("much smaller than"), 
+      sus_translate(r = r, "high")
+    } else if (str_detect(out$larger, paste(sus_translate(r = r, "smaller than"), 
+                                            sus_translate(r = r, "much smaller than"), 
                                             sep = "|"))) {
-      sus_translate("low")
-    } else sus_translate("moderate")
+      sus_translate(r = r, "low")
+    } else sus_translate(r = r, "moderate")
 
     out$percentile <- convert_unit(length(vec_left[vec_left <= val_left]) / 
                                      length(vec_left), "_pct")
@@ -252,8 +252,8 @@ get_info_table_data <- function(data, var_type, var_left, var_right, df,
     # Translation note: whatever if the explanation (the subject) is masculine 
     # or feminine, on n'accordera pas increased/decreased avec son sujet s'il
     # est employé avec avoir (our case here).
-    out$increase <- if (val_left >= 0) sus_translate("increased") else
-      sus_translate("decreased")
+    out$increase <- if (val_left >= 0) sus_translate(r = r, "increased") else
+      sus_translate(r = r, "decreased")
     
     }
   
@@ -274,8 +274,8 @@ get_info_table_data <- function(data, var_type, var_left, var_right, df,
       {var_left_label[names(var_left_label) == names(.)]} %>%
       tolower()
     mode_prop <- qual_tab[1] / sum(qual_tab)
-    out$majority <- if (mode_prop > 0.5) sus_translate("majority") else 
-      sus_translate("plurality")
+    out$majority <- if (mode_prop > 0.5) sus_translate(r = r, "majority") else 
+      sus_translate(r = r, "plurality")
     out$mode_prop <- convert_unit(mode_prop, "_pct")
     out$mode_prop_2 <- convert_unit(qual_tab[2] / sum(qual_tab), "_pct")
     
@@ -300,24 +300,24 @@ get_info_table_data <- function(data, var_type, var_left, var_right, df,
       corr <- cor(dat$var_left, as.numeric(dat$var_right), use = "complete.obs")
       out$correlation <- corr
       out$corr_disp <- convert_unit(corr)
-      out$pos <- if (corr > 0) sus_translate("positive") else 
-        sus_translate("negative")
+      out$pos <- if (corr > 0) sus_translate(r = r, "positive") else 
+        sus_translate(r = r, "negative")
       
       out$strong <- if (abs(corr) > 0.6) {
-        sus_translate("strong")
+        sus_translate(r = r, "strong")
       } else if (abs(corr) > 0.3) {
-        sus_translate("moderate")
-      } else sus_translate("weak")
+        sus_translate(r = r, "moderate")
+      } else sus_translate(r = r, "weak")
       
-      out$higher <- ifelse(out$pos == sus_translate("positive"),
-                           sus_translate("higher"), sus_translate("lower"))
+      out$higher <- ifelse(out$pos == sus_translate(r = r, "positive"),
+                           sus_translate(r = r, "higher"), sus_translate(r = r, "lower"))
       
-      out$high_low_disclaimer <- if (out$strong == sus_translate("strong")) {
-        sus_translate("with only a few exceptions")
-      } else if (out$strong == sus_translate("moderate")) {
-        sus_translate("although with some exceptions")
-      } else if (out$strong == sus_translate("weak")) {
-        sus_translate("although with many exceptions")
+      out$high_low_disclaimer <- if (out$strong == sus_translate(r = r, "strong")) {
+        sus_translate(r = r, "with only a few exceptions")
+      } else if (out$strong == sus_translate(r = r, "moderate")) {
+        sus_translate(r = r, "although with some exceptions")
+      } else if (out$strong == sus_translate(r = r, "weak")) {
+        sus_translate(r = r, "although with many exceptions")
       }
   }
   
@@ -335,12 +335,12 @@ get_info_table_data <- function(data, var_type, var_left, var_right, df,
     out$perc_right <- convert_unit(perc_right, "_pct")
     
     out$relative_position <- if (abs(perc_left - perc_right) > 0.5) {
-      sus_translate("dramatically different")
+      sus_translate(r = r, "dramatically different")
     } else if (abs(perc_left - perc_right) > 0.3) {
-      sus_translate("substantially different")
+      sus_translate(r = r, "substantially different")
     } else if (abs(perc_left - perc_right) > 0.1) {
-      sus_translate("considerably different")
-    } else sus_translate("similar")
+      sus_translate(r = r, "considerably different")
+    } else sus_translate(r = r, "similar")
     
   }
   
@@ -354,24 +354,24 @@ get_info_table_data <- function(data, var_type, var_left, var_right, df,
     corr <- cor(vec_1, vec_2, use = "complete.obs", method = "spearman")
     out$correlation <- corr
     out$corr_disp <- convert_unit(corr)
-    out$pos <- if (corr > 0) sus_translate("positive") else 
-      sus_translate("negative")
+    out$pos <- if (corr > 0) sus_translate(r = r, "positive") else 
+      sus_translate(r = r, "negative")
     
     out$strong <- if (abs(corr) > 0.6) {
-      sus_translate("strong")
+      sus_translate(r = r, "strong")
     } else if (abs(corr) > 0.3) {
-      sus_translate("moderate")
-    } else sus_translate("weak")
+      sus_translate(r = r, "moderate")
+    } else sus_translate(r = r, "weak")
     
-    out$higher <- ifelse(out$pos == sus_translate("positive"),
-                         sus_translate("higher"), sus_translate("lower"))
+    out$higher <- ifelse(out$pos == sus_translate(r = r, "positive"),
+                         sus_translate(r = r, "higher"), sus_translate(r = r, "lower"))
     
-    out$high_low_disclaimer <- if (out$strong == sus_translate("strong")) {
-      sus_translate("with only a few exceptions")
-    } else if (out$strong == sus_translate("moderate")) {
-      sus_translate("although with some exceptions")
-    } else if (out$strong == sus_translate("weak")) {
-      sus_translate("although with many exceptions")
+    out$high_low_disclaimer <- if (out$strong == sus_translate(r = r, "strong")) {
+      sus_translate(r = r, "with only a few exceptions")
+    } else if (out$strong == sus_translate(r = r, "moderate")) {
+      sus_translate(r = r, "although with some exceptions")
+    } else if (out$strong == sus_translate(r = r, "weak")) {
+      sus_translate(r = r, "although with many exceptions")
     }
 
   }
@@ -415,23 +415,23 @@ get_info_table_data <- function(data, var_type, var_left, var_right, df,
     
     if (length(max_date) %in% 2:3) max_date <- paste(
       paste(max_date[seq_len(length(max_date) - 1)], collapse = ", "),
-      max_date[length(max_date)], sep = sus_translate(" and "))
+      max_date[length(max_date)], sep = sus_translate(r = r, " and "))
     if (length(max_date) > 3) out$max_date <- 
-      sus_translate("several different dates")
+      sus_translate(r = r, "several different dates")
     out$max_date <- max_date
     
     min_date <- dat$var_right[dat$var_left == min(dat$var_left)]
     
     if (length(min_date) %in% 2:3) min_date <- paste(
       paste(min_date[seq_len(length(min_date) - 1)], collapse = ", "),
-      max_date[length(min_date)], sep = sus_translate(" and "))
+      max_date[length(min_date)], sep = sus_translate(r = r, " and "))
     if (length(min_date) > 3) min_date <- 
-      sus_translate("several different dates")
+      sus_translate(r = r, "several different dates")
     out$min_date <- min_date
     
     out$coef <- abs(coef)
-    out$coef_increasing <- if (coef >= 0) sus_translate("increasing") else 
-      sus_translate("decreasing")
+    out$coef_increasing <- if (coef >= 0) sus_translate(r = r, "increasing") else 
+      sus_translate(r = r, "decreasing")
     out$date_left <- paste(date_left, collapse = '-')
   }
   

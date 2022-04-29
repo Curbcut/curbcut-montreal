@@ -35,9 +35,7 @@ sus_translate_list <- function(x) {
 
 # Reactive translation function for text, lists and png -------------------
 
-sus_translate <- function(..., .envir = parent.frame()) {
-  
-  
+sus_translate <- function(..., .envir = parent.frame(), r = r) {
   
   # Error if we provide lists + character vectors unintentionally
   args <- list(...)
@@ -69,7 +67,7 @@ sus_translate <- function(..., .envir = parent.frame()) {
   if (all(x == "")) return("")
   
   # English
-  if (sus_rv$lang() == "en") return({
+  if (r$lang == "en") return({
     if (is.list(x)) return(x)
     x <- sub("<<.>>", "", x)
     glue(x, .envir = .envir)})

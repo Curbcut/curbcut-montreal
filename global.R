@@ -18,7 +18,6 @@ suppressPackageStartupMessages({
   library(RSQLite)
 })
 
-
 # Shiny options -----------------------------------------------------------
 
 options(shiny.trace = FALSE) # Set TRUE for debugging
@@ -124,6 +123,7 @@ sus_rv <- reactiveValues(lang = "fr", active_tab = "home", link = NULL)
 sus_bookmark <- reactiveValues()
 sus_link <- reactiveValues()
 
+# r = NULL
 
 # Map defaults ------------------------------------------------------------
 

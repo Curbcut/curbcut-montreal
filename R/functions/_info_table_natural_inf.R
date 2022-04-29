@@ -1,6 +1,6 @@
 #### NATURAL INFRASTRUCTURE EXPLORE INFO TABLE GRAPH ##########################
 
-info_table_natural_inf <- function(data, var_type, var_left, 
+info_table_natural_inf <- function(data, r = r, var_type, var_left, 
                                    var_right, df, select_id, 
                                    build_str_as_DA = TRUE) {
   
@@ -12,7 +12,7 @@ info_table_natural_inf <- function(data, var_type, var_left,
     biodiversity <- data$c_biodiversity |> scales::percent()
     heat_island <- data$c_heat_island |> scales::percent()
     
-    HTML(sus_translate(
+    HTML(sus_translate(r = r, 
       "<p>Natural infrastructure represents approximately 25% of the ",
       "territory of the Montreal region. Preserving {slider}% of the overall ",
       "territory as natural infrastructure means that {conservation_pct}% ",
@@ -26,19 +26,19 @@ info_table_natural_inf <- function(data, var_type, var_left,
   } else if (var_left %in% c("habitat_qual", "habitat_con", "favorable_cc",
                              "c_bio")) {
     c_bio <- paste0(
-      "<li><i>", sus_translate(variables$var_title[variables$var_code == 'c_bio']), ":</i> ", 
-      sus_translate(variables$explanation[variables$var_code == 'c_bio']))
+      "<li><i>", sus_translate(r = r, variables$var_title[variables$var_code == 'c_bio']), ":</i> ", 
+      sus_translate(r = r, variables$explanation[variables$var_code == 'c_bio']))
     habitat_qual <- paste0(
-      "<li><i>", sus_translate(variables$var_title[variables$var_code == 'habitat_qual']), 
-      ":</i> ", sus_translate(variables$explanation[variables$var_code == 'habitat_qual']))
+      "<li><i>", sus_translate(r = r, variables$var_title[variables$var_code == 'habitat_qual']), 
+      ":</i> ", sus_translate(r = r, variables$explanation[variables$var_code == 'habitat_qual']))
     habitat_con <- paste0(
-      "<li><i>", sus_translate(variables$var_title[variables$var_code == 'habitat_con']), 
-      ":</i> ", sus_translate(variables$explanation[variables$var_code == 'habitat_con']))
+      "<li><i>", sus_translate(r = r, variables$var_title[variables$var_code == 'habitat_con']), 
+      ":</i> ", sus_translate(r = r, variables$explanation[variables$var_code == 'habitat_con']))
     favorable_cc <- paste0(
-      "<li><i>", sus_translate(variables$var_title[variables$var_code == 'favorable_cc']), 
-      ":</i> ", sus_translate(variables$explanation[variables$var_code == 'favorable_cc']))
+      "<li><i>", sus_translate(r = r, variables$var_title[variables$var_code == 'favorable_cc']), 
+      ":</i> ", sus_translate(r = r, variables$explanation[variables$var_code == 'favorable_cc']))
     
-    HTML(sus_translate(
+    HTML(sus_translate(r = r, 
       "<p>Natural infrastructure represents approximately 25% of the ",
       "territory of the Montreal region. Biodiversity-related natural ", 
       "infrastructure functions include:</p><ul>{c_bio}{habitat_qual}",
@@ -46,29 +46,29 @@ info_table_natural_inf <- function(data, var_type, var_left,
     
   } else if (var_left %in% c("c_flood", "flood")) {
     c_flood <- paste0(
-      "<li><i>", sus_translate(variables$var_title[variables$var_code == 'c_flood']), ":</i> ", 
-      sus_translate(variables$explanation[variables$var_code == 'c_flood']))
+      "<li><i>", sus_translate(r = r, variables$var_title[variables$var_code == 'c_flood']), ":</i> ", 
+      sus_translate(r = r, variables$explanation[variables$var_code == 'c_flood']))
     flood <- paste0(
-      "<li><i>", sus_translate(variables$var_title[variables$var_code == 'flood']), ":</i> ", 
-      sus_translate(variables$explanation[variables$var_code == 'flood']))
+      "<li><i>", sus_translate(r = r, variables$var_title[variables$var_code == 'flood']), ":</i> ", 
+      sus_translate(r = r, variables$explanation[variables$var_code == 'flood']))
     
-    HTML(sus_translate(
+    HTML(sus_translate(r = r, 
       "<p>Natural infrastructure represents approximately 25% of the ",
       "territory of the Montreal region. Flood-related natural ", 
       "infrastructure functions include:</p><ul>{c_flood}{flood}</ul>"))
     
   } else if (var_left %in% c("c_heat", "heat", "cool")) {
     c_heat <- paste0(
-      "<li><i>", sus_translate(variables$var_title[variables$var_code == 'c_heat']), ":</i> ", 
-      sus_translate(variables$explanation[variables$var_code == 'c_heat']))
+      "<li><i>", sus_translate(r = r, variables$var_title[variables$var_code == 'c_heat']), ":</i> ", 
+      sus_translate(r = r, variables$explanation[variables$var_code == 'c_heat']))
     heat <- paste0(
-      "<li><i>", sus_translate(variables$var_title[variables$var_code == 'heat']), ":</i> ", 
-      sus_translate(variables$explanation[variables$var_code == 'heat']))
+      "<li><i>", sus_translate(r = r, variables$var_title[variables$var_code == 'heat']), ":</i> ", 
+      sus_translate(r = r, variables$explanation[variables$var_code == 'heat']))
     cool <- paste0(
-      "<li><i>", sus_translate(variables$var_title[variables$var_code == 'cool']), ":</i> ", 
-      sus_translate(variables$explanation[variables$var_code == 'cool']))
+      "<li><i>", sus_translate(r = r, variables$var_title[variables$var_code == 'cool']), ":</i> ", 
+      sus_translate(r = r, variables$explanation[variables$var_code == 'cool']))
     
-    HTML(sus_translate(
+    HTML(sus_translate(r = r, 
       "<p>Natural infrastructure represents approximately 25% of the ",
       "territory of the Montreal region. Heat-related natural ", 
       "infrastructure functions include:</p><ul>{c_heat}{heat}{cool}</ul>"))
