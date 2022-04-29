@@ -244,12 +244,13 @@ qsave(grid, file = "data2/grid.qs")
 
 # Save data to the sql db -------------------------------------------------
 
+library(tidyverse)
 library(RSQLite)
 library(qs)
-qload("dev/data/natural_inf.qsm")
-tt_matrix <- qread("dev/data/tt_matrix.qs")
-building <- qread("dev/data/building.qs")
-grid <- qread("dev/data/grid.qs")
+qload("data2/natural_inf.qsm")
+tt_matrix <- qread("data2/tt_matrix.qs")
+building <- qread("data2/building.qs")
+grid <- qread("data2/grid.qs")
 
 sqlite_path <- "data/sql_db.sqlite"
 
