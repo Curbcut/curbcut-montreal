@@ -205,12 +205,15 @@ building <-
 
 # Save data files ---------------------------------------------------------
 
-qsave(variables, file = "data/variables.qs")
-qsavem(borough, CT, DA, file = "data/census.qsm")
+# data2/
 qsavem(borough_full, CT_full, DA_full, file = "data2/census_full.qsm")
 qsave(grid_full, file = "data2/grid_full.qs")
 qsave(building_full, file = "data2/building_full.qs")
 qsave(street, file = "data2/street.qs")
+
+# data/
+qsave(variables, file = "data/variables.qs")
+qsavem(borough, CT, DA, file = "data/census.qsm")
 qsave(crash, file = "data/crash.qs")
 qsavem(alley, alley_text, file = "data/alley.qsm")
 qsavem(covid, covid_pics, file = "data/covid.qsm")
@@ -226,12 +229,12 @@ qsave(dyk, "data/dyk.qs")
 qsave(title_text, "data/title_text.qs")
 
 
-# Save files we'll save in the SQL to dev/data ----------------------------
+# Save files we'll save in the SQL to data2 -------------------------------
 
-qsavem(natural_inf, natural_inf_custom, file = "dev/data/natural_inf.qsm")
-qsave(tt_matrix, file = "dev/data/tt_matrix.qs")
-qsave(building, file = "dev/data/building.qs")
-qsave(grid, file = "dev/data/grid.qs")
+qsavem(natural_inf, natural_inf_custom, file = "data2/natural_inf.qsm")
+qsave(tt_matrix, file = "data2/tt_matrix.qs")
+qsave(building, file = "data2/building.qs")
+qsave(grid, file = "data2/grid.qs")
 
 
 # Save data to the sql db -------------------------------------------------

@@ -77,8 +77,8 @@ index_fun <- function(df) {
   purrr::reduce(pre_index_fun, left_join, by = "ID")
 }
 
-gen_to_join <- map(list("borough" = borough, "CT" = CT, "DA" = DA, 
-                        "grid" = grid), index_fun)
+gen_to_join <- map(list("borough" = borough, "CT" = CT, "DA" = DA), index_fun)
+                        #"grid" = grid), index_fun)
 
 
 # Add empty q3 and q5 -----------------------------------------------------
@@ -178,7 +178,7 @@ variables <-
     theme = "Housing",
     private = FALSE,
     dates = c("1996", "2001", "2006", "2011", "2016"),
-    scales = c("borough", "building", "CT", "DA", "grid", "street"),
+    scales = c("borough", "building", "CT", "DA", "street"),#, "grid", "street"),
     breaks_q3 = breaks_q3_active,
     breaks_q5 = breaks_q5_active,
     source = "sus_team")

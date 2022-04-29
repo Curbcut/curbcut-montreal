@@ -31,7 +31,7 @@ get_var_type <- function(data, var_left, var_right, df, select_id,
       dbGetQuery(db, paste0("SELECT * FROM building WHERE ID = ", 
                                                         select_id))
     }
-  }
+  } else data
   selection <- if (is.na(select_id)) select_df[0,] else 
     select_df[select_df$ID == select_id,]
   active_left <- if (build_str_as_DA && df == "building") {

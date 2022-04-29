@@ -186,8 +186,8 @@ process_crash <- function(x) {
     st_drop_geometry()
 }
 
-crash_results <- map(list("borough" = borough, "CT" = CT, "DA" = DA, 
-                          "grid" = grid), process_crash)
+crash_results <- map(list("borough" = borough, "CT" = CT, "DA" = DA), 
+                     process_crash)#, "grid" = grid), process_crash)
 
 
 # Add breaks --------------------------------------------------------------
@@ -225,7 +225,7 @@ join_crash <- function(x, join_results) {
 borough <- join_crash(borough, crash_results$borough)
 CT <- join_crash(CT, crash_results$CT)
 DA <- join_crash(DA, crash_results$DA)
-grid <- join_crash(grid, crash_results$grid)
+# grid <- join_crash(grid, crash_results$grid)
 
 building <- 
   building |> 
@@ -309,7 +309,7 @@ variables <-
     theme = "Transport",
     private = FALSE,
     dates = as.character(2012:2019),
-    scales = c("borough", "building", "CT", "DA", "grid", "street"),
+    scales = c("borough", "building", "CT", "DA", "street"),#, "grid", "street"),
     breaks_q3 = breaks_q3_active$crash_cyc_count,
     breaks_q5 = breaks_q5_active$crash_cyc_count,
     source = "spvm_saaq") |>
@@ -322,7 +322,7 @@ variables <-
     theme = "Transport",
     private = FALSE,
     dates = as.character(2012:2019),
-    scales = c("borough", "building", "CT", "DA", "grid", "street"),
+    scales = c("borough", "building", "CT", "DA", "street"),#, "grid", "street"),
     breaks_q3 = breaks_q3_active$crash_other_count,
     breaks_q5 = breaks_q5_active$crash_other_count,
     source = "spvm_saaq") |>
@@ -335,7 +335,7 @@ variables <-
     theme = "Transport",
     private = FALSE,
     dates = as.character(2012:2019),
-    scales = c("borough", "building", "CT", "DA", "grid", "street"),
+    scales = c("borough", "building", "CT", "DA", "street"),#, "grid", "street"),
     breaks_q3 = breaks_q3_active$crash_ped_count,
     breaks_q5 = breaks_q5_active$crash_ped_count,
     source = "spvm_saaq") |>
@@ -348,7 +348,7 @@ variables <-
     theme = "Transport",
     private = FALSE,
     dates = as.character(2012:2019),
-    scales = c("borough", "building", "CT", "DA", "grid", "street"),
+    scales = c("borough", "building", "CT", "DA", "street"),#, "grid", "street"),
     breaks_q3 = breaks_q3_active$crash_total_count,
     breaks_q5 = breaks_q5_active$crash_total_count,
     source = "spvm_saaq") |>
@@ -361,7 +361,7 @@ variables <-
     theme = "Transport",
     private = FALSE,
     dates = as.character(2012:2019),
-    scales = c("borough", "building", "CT", "DA", "grid", "street"),
+    scales = c("borough", "building", "CT", "DA", "street"),#, "grid", "street"),
     breaks_q3 = breaks_q3_active$crash_cyc_per1k,
     breaks_q5 = breaks_q5_active$crash_cyc_per1k,
     source = "spvm_saaq") |>
@@ -374,7 +374,7 @@ variables <-
     theme = "Transport",
     private = FALSE,
     dates = as.character(2012:2019),
-    scales = c("borough", "building", "CT", "DA", "grid", "street"),
+    scales = c("borough", "building", "CT", "DA", "street"),#, "grid", "street"),
     breaks_q3 = breaks_q3_active$crash_other_per1k,
     breaks_q5 = breaks_q5_active$crash_other_per1k,
     source = "spvm_saaq") |>
@@ -387,7 +387,7 @@ variables <-
     theme = "Transport",
     private = FALSE,
     dates = as.character(2012:2019),
-    scales = c("borough", "building", "CT", "DA", "grid", "street"),
+    scales = c("borough", "building", "CT", "DA", "street"),#, "grid", "street"),
     breaks_q3 = breaks_q3_active$crash_ped_per1k,
     breaks_q5 = breaks_q5_active$crash_ped_per1k,
     source = "spvm_saaq") |>
@@ -400,7 +400,7 @@ variables <-
     theme = "Transport",
     private = FALSE,
     dates = as.character(2012:2019),
-    scales = c("borough", "building", "CT", "DA", "grid", "street"),
+    scales = c("borough", "building", "CT", "DA", "street"),#, "grid", "street"),
     breaks_q3 = breaks_q3_active$crash_total_per1k,
     breaks_q5 = breaks_q5_active$crash_total_per1k,
     source = "spvm_saaq") |>
@@ -413,7 +413,7 @@ variables <-
     theme = "Transport",
     private = FALSE,
     dates = as.character(2012:2019),
-    scales = c("borough", "building", "CT", "DA", "grid", "street"),
+    scales = c("borough", "building", "CT", "DA", "street"),#, "grid", "street"),
     breaks_q3 = breaks_q3_active$crash_cyc_sqkm,
     breaks_q5 = breaks_q5_active$crash_cyc_sqkm,
     source = "spvm_saaq") |>
@@ -426,7 +426,7 @@ variables <-
     theme = "Transport",
     private = FALSE,
     dates = as.character(2012:2019),
-    scales = c("borough", "building", "CT", "DA", "grid", "street"),
+    scales = c("borough", "building", "CT", "DA", "street"),#, "grid", "street"),
     breaks_q3 = breaks_q3_active$crash_other_sqkm,
     breaks_q5 = breaks_q5_active$crash_other_sqkm,
     source = "spvm_saaq") |>
@@ -439,7 +439,7 @@ variables <-
     theme = "Transport",
     private = FALSE,
     dates = as.character(2012:2019),
-    scales = c("borough", "building", "CT", "DA", "grid", "street"),
+    scales = c("borough", "building", "CT", "DA", "street"),#, "grid", "street"),
     breaks_q3 = breaks_q3_active$crash_ped_sqkm,
     breaks_q5 = breaks_q5_active$crash_ped_sqkm,
     source = "spvm_saaq") |>
@@ -452,7 +452,7 @@ variables <-
     theme = "Transport",
     private = FALSE,
     dates = as.character(2012:2019),
-    scales = c("borough", "building", "CT", "DA", "grid", "street"),
+    scales = c("borough", "building", "CT", "DA", "street"),#, "grid", "street"),
     breaks_q3 = breaks_q3_active$crash_total_sqkm,
     breaks_q5 = breaks_q5_active$crash_total_sqkm,
     source = "spvm_saaq")
