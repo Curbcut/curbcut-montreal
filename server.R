@@ -377,4 +377,14 @@ shinyServer(function(input, output, session) {
           })
         }
       )
+  
+  ## Heartbeat function to keep app alive --------------------------------------
+  
+  timeout_start <- eventReactive(reactiveValuesToList(input), Sys.time())
+  
+  observe({
+    rerun <- timeout_start() + 1800 > Sys.time()
+    if (rerun) invalidateLater(10000)
+  })
+  
   })
