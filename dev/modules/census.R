@@ -113,7 +113,8 @@ DA <-
 
 grid <-
   grid |>
-  left_join(data_to_add[[1]]$grid, by = "ID") |>
+  left_join(select(data_to_add[[1]]$grid, ID, 
+                   ends_with(as.character(years[[length(years)]]))), by = "ID") |>
   relocate(geometry, .after = last_col())
 
 
