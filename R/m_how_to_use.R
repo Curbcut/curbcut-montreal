@@ -12,12 +12,12 @@ how_to_use_UI <- function(id) {
 }
 
 
-how_to_use_server <- function(id) {
+how_to_use_server <- function(id, r) {
   moduleServer(id, function(input, output, session) {
     
     output$rmd_output <- renderUI(
       HTML(paste0(
-      includeHTML(paste0("www/standalone/how_to_use", "_", sus_rv$lang(), 
+      includeHTML(paste0("www/standalone/how_to_use", "_", r$lang, 
                               ".html"))))
     )
     

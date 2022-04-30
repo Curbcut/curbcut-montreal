@@ -13,11 +13,11 @@ access_UI <- function(id) {
       susSidebarWidgets(
       select_var_UI(NS(id, ns_id), select_var_id = "d_2",
                     var_list = var_left_list_2_access,
-                    label = sus_translate("Timing")),
+                    label = sus_translate(r = r, "Timing")),
       select_var_UI(NS(id, ns_id), select_var_id = "d_1",
                     var_list = var_left_list_1_access,
-                    label = sus_translate("Destination type")),
-      slider_UI(NS(id, ns_id), label = sus_translate("Time threshold"),
+                    label = sus_translate(r = r, "Destination type")),
+      slider_UI(NS(id, ns_id), label = sus_translate(r = r, "Time threshold"),
                   min = 10, max = 60, step = 1, value = 30)),
       bottom = div(class = "bottom_sidebar",
           tagList(legend_UI(NS(id, ns_id)),
@@ -37,13 +37,13 @@ access_UI <- function(id) {
 
 # Server ------------------------------------------------------------------
 
-access_server <- function(id) {
+access_server <- function(id, r) {
   moduleServer(id, function(input, output, session) {
     ns_id <- "access"
     ns_id_map <- paste0(ns_id, "-map")
     
     # Sidebar
-    sidebar_server(id = ns_id, x = "access")
+    sidebar_server(id = ns_id, r = r, x = "access")
     
     # Initial reactives
     zoom <- reactiveVal(get_zoom(map_zoom))
@@ -66,10 +66,10 @@ access_server <- function(id) {
     # Zoom and POI reactives
     observeEvent(get_view_state(ns_id_map), {
       zoom({
-        if (!is.null(sus_bookmark$zoom)) {
-          sus_bookmark$zoom
-        } else if (!is.null(sus_link$zoom)) {
-          sus_link$zoom
+        if (!is.null(r$sus_bookmark$zoom)) {
+          r$sus_bookmark$zoom
+        } else if (!is.null(r$sus_link$zoom)) {
+          r$sus_link$zoom
         } else get_zoom(get_view_state(ns_id_map)$zoom)})
       new_poi <- observe_map(get_view_state(ns_id_map))
       if ((is.null(new_poi) && !is.null(poi())) || 
@@ -90,12 +90,6 @@ access_server <- function(id) {
         select_id(NA)
       } else select_id(selection)
     })
-    
-    # Choose tileset
-    tile <- zoom_server(
-      id = ns_id, 
-      zoom_string = zoom_string, 
-      zoom_levels = reactive(map_zoom_levels))
     
     # Get df for explore/legend/etc
     df <- reactive("CT")
@@ -127,16 +121,16 @@ access_server <- function(id) {
     breaks <- reactive({
       if (!is.na(select_id()) && var_right() == " ") {
         breaks <- slider() / 5 * 5:0
-        attr(breaks, "label") <- sus_translate("Minutes to reach census tract")
+        attr(breaks, "label") <- sus_translate(r = r, "Minutes to reach census tract")
         attr(breaks, "palette") <- legend_iso
         breaks
       } else NULL
     })
     
     # Left variable servers
-    var_left_1 <- select_var_server(ns_id, select_var_id = "d_1",
+    var_left_1 <- select_var_server(ns_id, r = r, select_var_id = "d_1",
                                     var_list = reactive(var_left_list_1_access))
-    var_left_2 <- select_var_server(ns_id, select_var_id = "d_2",
+    var_left_2 <- select_var_server(ns_id, r = r, select_var_id = "d_2",
                                     var_list = reactive(var_left_list_2_access))
 
     # Construct left variable string
@@ -145,6 +139,7 @@ access_server <- function(id) {
     # Compare panel
     var_right <- compare_server(
       id = ns_id,
+      r = r,
       var_list = make_dropdown(compare = TRUE),
       df = df,
       time = time)
@@ -161,7 +156,7 @@ access_server <- function(id) {
       updatePickerInput(
         session,
         inputId = "access-access-var",
-        choices = sus_translate(make_dropdown(compare = TRUE)),
+        choices = sus_translate(r = r, make_dropdown(compare = TRUE)),
         selected = " ")
     }, priority = 1)
 
@@ -174,6 +169,7 @@ access_server <- function(id) {
     # Explore panel
     explore_content <- explore_server(
       id = ns_id,
+      r = r,
       data = data,
       var_left = var_left,
       var_right = var_right,
@@ -183,6 +179,7 @@ access_server <- function(id) {
     # Legend
     legend <- legend_server(
       id = ns_id,
+      r = r,
       var_left = var_left,
       var_right = var_right,
       df = df,
@@ -191,6 +188,7 @@ access_server <- function(id) {
     # Did-you-know panel
     dyk_server(
       id = ns_id,
+      r = r,
       var_left = var_left,
       var_right = var_right,
       poi = poi)
@@ -199,13 +197,16 @@ access_server <- function(id) {
       if (!is.na(select_id()) && var_right() == " ") {
         tt_thresh <- slider() * 60
 
-        CTs_to_map <- tt_matrix[c("timing", "destination", select_id())]
-        names(CTs_to_map) <- c("timing", "destination", "travel_time")
-        CTs_to_map <- CTs_to_map[CTs_to_map$timing == var_left_2(), ]
-        CTs_to_map <- CTs_to_map[CTs_to_map$travel_time <= tt_thresh, ]
-        CTs_to_map <- CTs_to_map[CTs_to_map$destination != select_id(),]
+        # SQL retrieval
+        db_call <- 
+          paste0("SELECT timing, destination, `", select_id(), 
+                 "` FROM tt_matrix WHERE timing = '", var_left_2(), "'",
+                 " AND `", select_id(), "` <= ", tt_thresh,
+                 " AND destination != ", select_id())
+        CTs_to_map <- dbGetQuery(db, db_call) |> dplyr::as_tibble()
+        # Further manipultaion
         CTs_to_map$group <- as.character(6 - ceiling((
-          CTs_to_map$travel_time) / tt_thresh * 5))
+          CTs_to_map[[select_id()]]) / tt_thresh * 5))
         CTs_to_map <- CTs_to_map[, c("destination", "group")]
         CTs_to_map <- merge(CTs_to_map, colour_iso, by = "group", 
                             all.x = TRUE)
@@ -249,6 +250,7 @@ access_server <- function(id) {
     # Bookmarking
     bookmark_server(
       id = ns_id,
+      r = r,
       map_viewstate = reactive(get_view_state(paste0(ns_id, "-map"))),
       var_left = var_left,
       var_right = var_right,
@@ -258,28 +260,28 @@ access_server <- function(id) {
     )
 
     # Update select_id() on bookmark
-    observeEvent(sus_bookmark$active, {
-      if (isTRUE(sus_bookmark$active)) {
+    observeEvent(r$sus_bookmark$active, {
+      if (isTRUE(r$sus_bookmark$active)) {
         delay(1000, {
-          if (!is.null(sus_bookmark$select_id))
-            if (sus_bookmark$select_id != "NA") 
-              select_id(sus_bookmark$select_id)
+          if (!is.null(r$sus_bookmark$select_id))
+            if (r$sus_bookmark$select_id != "NA") 
+              select_id(r$sus_bookmark$select_id)
         })
       }
       # So that bookmarking gets triggered only ONCE
       delay(1500, {
-        sus_bookmark$active <- FALSE
-        sus_bookmark$df <- NULL
-        sus_bookmark$zoom <- NULL
+        r$sus_bookmark$active <- FALSE
+        r$sus_bookmark$df <- NULL
+        r$sus_bookmark$zoom <- NULL
       })
     }, priority = -2)
     
     # Update select_id() on module link
-    observeEvent(sus_link$activity, {
+    observeEvent(r$sus_link$activity, {
       delay(1000, {
-        if (!is.null(sus_link$select_id)) select_id(sus_link$select_id)
-        sus_link$df <- NULL
-        sus_link$zoom <- NULL
+        if (!is.null(r$sus_link$select_id)) select_id(r$sus_link$select_id)
+        r$sus_link$df <- NULL
+        r$sus_link$zoom <- NULL
       })
     }, priority = -2)
 

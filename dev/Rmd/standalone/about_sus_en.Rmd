@@ -1,5 +1,5 @@
 ---
-title: "About Sus"
+title: ""
 output: html_document
 ---
 

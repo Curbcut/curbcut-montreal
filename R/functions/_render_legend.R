@@ -1,6 +1,6 @@
 #### RENDER LEGEND #############################################################
 
-render_legend <- function(data, var_left, var_right, df, data_type, 
+render_legend <- function(r = r, data, var_left, var_right, df, data_type, 
                           build_str_as_DA = TRUE, breaks = NULL) {
   
   ## Clean up data_type and building/street ------------------------------------
@@ -17,8 +17,8 @@ render_legend <- function(data, var_left, var_right, df, data_type,
   
   ## Get axis titles and breaks ------------------------------------------------
   
-  labs_xy <- get_legend_labels(var_left, var_right, data_type, breaks)
-  break_labs <- get_legend_breaks(data, var_left, var_right, df, data_type,
+  labs_xy <- get_legend_labels(r = r, var_left, var_right, data_type, breaks)
+  break_labs <- get_legend_breaks(r = r, data, var_left, var_right, df, data_type,
                                   breaks)
   
   
@@ -87,11 +87,11 @@ render_legend <- function(data, var_left, var_right, df, data_type,
   } else if (data_type == "bivar") {
     
     l <- legend_bivar
-    l$label <- c(sus_translate("Both low"), " ", 
-                 paste0(labs_xy$y_short, "\n", sus_translate("high only")), " ",
+    l$label <- c(sus_translate(r = r, "Both low"), " ", 
+                 paste0(labs_xy$y_short, "\n", sus_translate(r = r, "high only")), " ",
                  " ", " ", 
-                 paste0(labs_xy$x_short, "\n", sus_translate("high only")), " ", 
-                 sus_translate("Both high"))
+                 paste0(labs_xy$x_short, "\n", sus_translate(r = r, "high only")), " ", 
+                 sus_translate(r = r, "Both high"))
     l$label_colour <- c(rep("black", 8), "white")
     l$x <- as.numeric(l$x) - 0.5
     l$y <- as.numeric(l$y) - 0.5
@@ -124,11 +124,11 @@ render_legend <- function(data, var_left, var_right, df, data_type,
   } else if (data_type == "delta_bivar") {
     
     l <- legend_bivar
-    l$label <- c(sus_translate("Both low"), " ", 
-                 paste0(labs_xy$y_short, "\n", sus_translate("high only")), " ",
+    l$label <- c(sus_translate(r = r, "Both low"), " ", 
+                 paste0(labs_xy$y_short, "\n", sus_translate(r = r, "high only")), " ",
                  " ", " ", 
-                 paste0(labs_xy$x_short, "\n", sus_translate("high only")), " ", 
-                 sus_translate("Both high"))
+                 paste0(labs_xy$x_short, "\n", sus_translate(r = r, "high only")), " ", 
+                 sus_translate(r = r, "Both high"))
     l$label_colour <- c(rep("black", 8), "white")
     l$x <- as.numeric(l$x) - 0.5
     l$y <- as.numeric(l$y) - 0.5

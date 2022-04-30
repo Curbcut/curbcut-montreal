@@ -15,7 +15,7 @@ stories_UI <- function(id) {
     sidebar_UI(
       NS(id, "sidebar"),
       # hr(id = NS(id, "hr")),
-      actionLink(NS(id, "back"), sus_translate("Back to the map"))
+      actionLink(NS(id, "back"), sus_translate(r = r, "Back to the map"))
     ),
 
     # Map
@@ -32,7 +32,7 @@ stories_UI <- function(id) {
 
 # Server ------------------------------------------------------------------
 
-stories_server <- function(id) {
+stories_server <- function(id, r) {
   moduleServer(id, function(input, output, session) {
     ns_id <- "stories"
     ns_id_map <- paste0(ns_id, "-map")
@@ -43,6 +43,7 @@ stories_server <- function(id) {
     # Sidebar
     sidebar_server(
       id = "sidebar",
+      r = r,
       x = "stories")
 
     # Map
@@ -78,7 +79,7 @@ stories_server <- function(id) {
         rmd_name <- stories[stories$ID == select_id(),]$name
         bandeau_name <- stories[stories$ID == select_id(),]$img
 
-        story_link <- paste0("www/stories/", rmd_name, "_", sus_rv$lang(),
+        story_link <- paste0("www/stories/", rmd_name, "_", r$lang,
                              ".html")
 
         # Construct story link, serve en if no translation available.
@@ -118,6 +119,7 @@ stories_server <- function(id) {
     # Bookmarking
     bookmark_server(
       id = ns_id,
+      r = r,
       map_viewstate = reactive(
         input[[paste0(ns_id, "-map_viewstate")]]$viewState),
       select_id = select_id,
@@ -125,24 +127,24 @@ stories_server <- function(id) {
     )
 
     # Update select_id() on bookmark
-    observeEvent(sus_bookmark$active, {
-      if (isTRUE(sus_bookmark$active)) {
-        if (!is.null(sus_bookmark$df)) df <- reactiveVal(sus_bookmark$df)
+    observeEvent(r$sus_bookmark$active, {
+      if (isTRUE(r$sus_bookmark$active)) {
+        if (!is.null(r$sus_bookmark$df)) df <- reactiveVal(r$sus_bookmark$df)
         delay(1000, {
-          if (!is.null(sus_bookmark$select_id))
-            if (sus_bookmark$select_id != "NA")
-              select_id(sus_bookmark$select_id)
+          if (!is.null(r$sus_bookmark$select_id))
+            if (r$sus_bookmark$select_id != "NA")
+              select_id(r$sus_bookmark$select_id)
         })
       }
       # So that bookmarking gets triggered only ONCE
-      delay(1500, {sus_bookmark$active <- FALSE})
+      delay(1500, {r$sus_bookmark$active <- FALSE})
     }, priority = -2)
 
     # Update select_id() on module link
-    observeEvent(sus_link$activity, {
-      if (!is.null(sus_bookmark$df)) df <- reactiveVal(sus_bookmark$df)
+    observeEvent(r$sus_link$activity, {
+      if (!is.null(r$sus_bookmark$df)) df <- reactiveVal(r$sus_bookmark$df)
       delay(1000, {
-        if (!is.null(sus_link$select_id)) select_id(sus_link$select_id)
+        if (!is.null(r$sus_link$select_id)) select_id(r$sus_link$select_id)
       })
     }, priority = -2)
 

@@ -7,31 +7,33 @@ dyk_UI <- function(id) {
           uiOutput(NS(id, "dyk_contents")))
   }
 
-dyk_server <- function(id, var_left, var_right, poi = reactive(NULL)) {
+dyk_server <- function(id, r = r, var_left, var_right, poi = reactive(NULL)) {
   stopifnot(is.reactive(var_left))
   stopifnot(is.reactive(var_right))
   
   moduleServer(id, function(input, output, session) {
     
-    dyk_output <- reactive(get_dyk_table(id, var_left(), var_right(), poi()))
+    dyk_output <- reactive(get_dyk_table(id, r, var_left(), var_right(), poi()))
     
     # Observe for clicks
-    observeEvent(input$dyk_1, {
-      do.call(module_link, attr(dyk_output(), "links")[[1]])})
+    observe(do.call(
+      module_link, c(r = list(r), attr(dyk_output(), "links")[[1]]))) |> 
+      bindEvent(input$dyk_1)
     
-    observeEvent(input$dyk_2, {
-      do.call(module_link, attr(dyk_output(), "links")[[2]])})
+    observe(do.call(
+      module_link, c(r = list(r), attr(dyk_output(), "links")[[2]]))) |> 
+      bindEvent(input$dyk_2)
     
     # Only show box if dyk_output isn't empty
     output$dyk_box <- renderUI({
       if (!is.null(dyk_output())) {
         tagList(
           hr(),
-          fluidRow(column(width = 7, h4(sus_translate("Did you know?"))),
+          fluidRow(column(width = 7, h4(sus_translate(r = r, "Did you know?"))),
                    column(width = 5, align = "right",
                           actionLink(inputId = session$ns("hide_dyk"), 
                                      class = "sus-small-link",
-                                     label = sus_translate("Hide")))))
+                                     label = sus_translate(r = r, "Hide")))))
       }
     })
 
@@ -40,7 +42,7 @@ dyk_server <- function(id, var_left, var_right, poi = reactive(NULL)) {
     
     # Change show/hide button text
     observeEvent(dyk_hide_status(), {
-      txt <- sus_translate(switch(input$hide_dyk %% 2 + 1, "Hide", "Show"))
+      txt <- sus_translate(r = r, switch(input$hide_dyk %% 2 + 1, "Hide", "Show"))
       updateActionButton(session, "hide_dyk", label = txt)
     }, ignoreInit = TRUE)
     

@@ -1,6 +1,13 @@
 ##### SUS SERVER SCRIPT ########################################################
 
 shinyServer(function(input, output, session) {
+
+  # Reactive variables ---------------------------------------------------------
+  
+  r <- reactiveValues(sus_bookmark = reactiveValues(active = FALSE),
+                      sus_link = reactiveValues(),
+                      lang = "fr",
+                      active_tab = "home")
   
   # Home page ------------------------------------------------------------------
   
@@ -69,10 +76,9 @@ shinyServer(function(input, output, session) {
     # COOKIE, runs only once at launch !
   }, once = TRUE)
   
-  sus_rv$lang <- 
-    eventReactive(input$language_button, {
-      if (input$language_button[1] %% 2 != 0) "en" else "fr"
-    }, ignoreNULL = FALSE)
+  observeEvent(input$language_button, {
+    r$lang <- if (input$language_button[1] %% 2 != 0) "en" else "fr"
+  }, ignoreNULL = FALSE)
   
   observeEvent(input$language_button,{
     if (input$language_button[1] %% 2 != 0) {
@@ -95,47 +101,45 @@ shinyServer(function(input, output, session) {
   
 
   ## Active tab ----------------------------------------------------------------
-  
-  sus_rv$active_tab <-
-    eventReactive(input$sus_page, input$sus_page, ignoreNULL = FALSE)
+
+  observeEvent(input$sus_page, r$active_tab <- input$sus_page, 
+               ignoreNULL = FALSE)
   
   observeEvent(input$sus_page, {
-    sus_rv$last_module <- unique(c(sus_rv$current_module, sus_rv$last_module))
-    sus_rv$current_module <- c(input$sus_page, sus_rv$last_module)})
+    r$last_module <- unique(c(r$current_module, r$last_module))
+    r$current_module <- c(input$sus_page, r$last_module)})
   
-  sus_rv$previous_tabs <- reactive({
+  r$previous_tabs <- reactive({
     req(input$sus_page)
     input$sus_page
-    sus_rv$last_module})
+    r$last_module})
 
-  observeEvent(sus_rv$link, {
+  observeEvent(r$link, {
     # Switch active tab when link is opened
-    updateTabsetPanel(session, "sus_page", selected = sus_rv$link())
+    updateTabsetPanel(session, "sus_page", selected = r$link)
     # Turn off the link
-    sus_rv$link <- NULL
+    r$link <- NULL
   }, ignoreInit = TRUE, ignoreNULL = TRUE)
   
   # Links between modules
-  observeEvent(sus_link$activity, {
+  observeEvent(r$sus_link$activity, {
       # Delay to make sure the linked module is fully loaded
       delay(500, {
-        update_module(mod_ns = sus_link$mod_ns, 
+        update_module(mod_ns = r$sus_link$mod_ns, 
                       session = session, 
-                      zoom = sus_link$zoom, 
-                      location = sus_link$location, 
-                      map_id = sus_link$map_id,
-                      df = sus_link$df, 
-                      zoom_auto = sus_link$zoom_auto, 
-                      var_left = sus_link$var_left,
-                      var_right = sus_link$var_right, 
-                      more_args = sus_link$more_args)
+                      zoom = r$sus_link$zoom, 
+                      location = r$sus_link$location, 
+                      map_id = r$sus_link$map_id,
+                      df = r$sus_link$df, 
+                      zoom_auto = r$sus_link$zoom_auto, 
+                      var_left = r$sus_link$var_left,
+                      var_right = r$sus_link$var_right, 
+                      more_args = r$sus_link$more_args)
       })
   }, ignoreInit = TRUE)
   
 
   ## Parse URL -----------------------------------------------------------------
-  
-  sus_bookmark$active <- FALSE
   
   observe({
     query <- parseQueryString(session$clientData$url_search)
@@ -143,7 +147,7 @@ shinyServer(function(input, output, session) {
     if (length(query) != 0) {
       
       # MARK THE ACTIVE BOOKMARKED
-      sus_bookmark$active <- TRUE
+      r$sus_bookmark$active <- TRUE
       
       # query returns a named list. If it's named tab, return the right
       # tabPanel. the url example: sus.ca/?tab=housing
@@ -161,36 +165,36 @@ shinyServer(function(input, output, session) {
       # Retrieve important map info
       try({
         if (!is.null(query[["zm"]])) {
-        sus_bookmark$zoom <- as.numeric(query[["zm"]])}
+        r$sus_bookmark$zoom <- as.numeric(query[["zm"]])}
         
         if (!is.null(query[["lon"]])) {
-        sus_bookmark$location <- c(as.numeric(query[["lon"]]), 
+        r$sus_bookmark$location <- c(as.numeric(query[["lon"]]), 
                                    as.numeric(query[["lat"]]))}
       })
       # Retrieve var_left
       try({
         if (!is.null(query[["v_l"]]))
-          sus_bookmark$var_left <- query[["v_l"]]
+          r$sus_bookmark$var_left <- query[["v_l"]]
       })
       # Retrieve var_right
       try({
         if (!is.null(query[["v_r"]]))
-        sus_bookmark$var_right <- query[["v_r"]]
+        r$sus_bookmark$var_right <- query[["v_r"]]
       })
       # Retrieve select_id
       try({
         if (!is.null(query[["s_id"]]))
-        sus_bookmark$select_id <- query[["s_id"]]
+        r$sus_bookmark$select_id <- query[["s_id"]]
       })
       # Retrieve if df is manual
       try({
         if (!is.null(query[["zm_a"]])) {
-        sus_bookmark$zoom_auto <- as.logical(query[["zm_a"]])
-        sus_bookmark$df <- query[["df"]]}
+        r$sus_bookmark$zoom_auto <- as.logical(query[["zm_a"]])
+        r$sus_bookmark$df <- query[["df"]]}
       })
       try({
         if (!is.null(query[["more"]]))
-        sus_bookmark$more_args <- query[["more"]]
+        r$sus_bookmark$more_args <- query[["more"]]
       })
     }
   })
@@ -199,37 +203,37 @@ shinyServer(function(input, output, session) {
   ## Modules -------------------------------------------------------------------
   
   active_mod_server <- function(active_tab = input$sus_page) {
-    if (active_tab == "home") return(home_server("home", session))
-    if (active_tab == "access") return(access_server("access"))
-    if (active_tab == "alley") return(alley_server("alley"))    
-    if (active_tab == "canale") return(active_mod <<- canale_server("canale"))
+    if (active_tab == "home") return(home_server("home", session, r = r))
+    if (active_tab == "access") return(access_server("access", r = r))
+    if (active_tab == "alley") return(alley_server("alley", r = r))    
+    if (active_tab == "canale") return(canale_server("canale", r = r))
     if (active_tab == "climate_risk") 
-      return(climate_risk_server("climate_risk"))
-    if (active_tab == "covid") return(covid_server("covid"))
-    if (active_tab == "crash") return(crash_server("crash"))
+      return(climate_risk_server("climate_risk", r = r))
+    if (active_tab == "covid") return(covid_server("covid", r = r))
+    if (active_tab == "crash") return(crash_server("crash", r = r))
     if (active_tab == "gentrification") 
-      return(active_mod <<- gentrification_server("gentrification"))
-    if (active_tab == "green_space") return(green_space_server("green_space"))
-    if (active_tab == "housing") return(housing_server("housing"))
+      return(gentrification_server("gentrification", r = r))
+    if (active_tab == "green_space") return(green_space_server("green_space", r = r))
+    if (active_tab == "housing") return(housing_server("housing", r = r))
     if (active_tab == "marketed_sustainability") 
-      return(marketed_sustainability_server("marketed_sustainability"))
+      return(marketed_sustainability_server("marketed_sustainability", r = r))
     if (active_tab == "natural_inf") 
-      return(natural_inf_server("natural_inf"))
-    if (active_tab == "mcp") return(mcp_server("mcp"))
-    if (active_tab == "permits") return(permits_server("permits"))
-    if (active_tab == "stories") return(stories_server("stories"))
+      return(natural_inf_server("natural_inf", r = r))
+    if (active_tab == "mcp") return(mcp_server("mcp", r = r))
+    if (active_tab == "permits") return(permits_server("permits", r = r))
+    if (active_tab == "stories") return(stories_server("stories", r = r))
     if (active_tab == "place_explorer") 
-      return(place_explorer_server("place_explorer"))
-    if (active_tab == "about_sus") return(about_sus_server("about_sus"))
-    if (active_tab == "how_to_use") return(how_to_use_server("how_to_use"))
-    if (active_tab == "authors") return(authors_server("authors"))
+      return(place_explorer_server("place_explorer", r = r))
+    if (active_tab == "about_sus") return(about_sus_server("about_sus", r = r))
+    if (active_tab == "how_to_use") return(how_to_use_server("how_to_use", r = r))
+    if (active_tab == "authors") return(authors_server("authors", r = r))
   }
   
   observeEvent(input$sus_page, {
-    bookmark_server("reset")
-    if (!is.null(sus_bookmark$active) && isTRUE(sus_bookmark$active)) 
+    bookmark_server("reset", r = r)
+    if (!is.null(r$sus_bookmark$active) && isTRUE(r$sus_bookmark$active)) 
       active_mod_server()
-    if (!input$sus_page %in% sus_rv$previous_tabs()) active_mod_server()
+    if (!input$sus_page %in% r$previous_tabs()) active_mod_server()
     updateQueryString("?")
   }, ignoreInit = FALSE)
   
@@ -340,7 +344,6 @@ shinyServer(function(input, output, session) {
   #                    duration = 3)
   # })
   
-  
   ## Generating report ---------------------------------------------------------
   
   output$create_report <-
@@ -377,4 +380,14 @@ shinyServer(function(input, output, session) {
           })
         }
       )
+  
+  ## Heartbeat function to keep app alive --------------------------------------
+  
+  timeout_start <- eventReactive(reactiveValuesToList(input), Sys.time())
+  
+  observe({
+    rerun <- timeout_start() + 1800 > Sys.time()
+    if (rerun) invalidateLater(10000)
+  })
+  
   })

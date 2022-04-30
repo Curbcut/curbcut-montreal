@@ -14,33 +14,33 @@ natural_inf_UI <- function(id) {
         select_var_UI(NS(id, ns_id), 
                       select_var_id = "vl_1",
                       var_list = vars_natural_inf_left,
-                      label = sus_translate("Theme")),
+                      label = sus_translate(r = r, "Theme")),
         select_var_UI(NS(id, ns_id), 
                       select_var_id = "vl_2",
                       var_list = list("----" = " "),
-                      label = sus_translate("Indicator")),
+                      label = sus_translate(r = r, "Indicator")),
         slider_UI(NS(id, ns_id),
-                  label = sus_translate("Amount of territory to protect"),
+                  label = sus_translate(r = r, "Amount of territory to protect"),
                   min = 0,
                   max = 25,
                   step = 1,
                   value = 17,
                   post = "%"),
         checkbox_UI(NS(id, ns_id),
-                    label = sus_translate("Custom priorities")),
+                    label = sus_translate(r = r, "Custom priorities")),
         slider_text_UI(NS(id, ns_id),
                        slider_id = "s_bio",
-                       label = sus_translate("Biodiversity conservation"),
+                       label = sus_translate(r = r, "Biodiversity conservation"),
                        choices = custom_slider_choices,
                        selected = "Important"),
         slider_text_UI(NS(id, ns_id),
                        slider_id = "s_hea",
-                       label = sus_translate("Heat island reduction"),
+                       label = sus_translate(r = r, "Heat island reduction"),
                        choices = custom_slider_choices,
                        selected = "Important"),
         slider_text_UI(NS(id, ns_id),
                        slider_id = "s_flo",
-                       label = sus_translate("Flood prevention"),
+                       label = sus_translate(r = r, "Flood prevention"),
                        choices = custom_slider_choices,
                        selected = "Important")
         ),
@@ -61,7 +61,7 @@ natural_inf_UI <- function(id) {
 
 # Server ------------------------------------------------------------------
 
-natural_inf_server <- function(id) {
+natural_inf_server <- function(id, r) {
   moduleServer(id, function(input, output, session) {
     ns_id <- "natural_inf"
     ns_id_map <- paste0(ns_id, "-map")
@@ -100,6 +100,7 @@ natural_inf_server <- function(id) {
     # Left variable
     var_left_1 <- select_var_server(
       id = ns_id,
+      r = r,
       select_var_id = "vl_1",
       var_list = reactive(vars_natural_inf_left))
     
@@ -111,6 +112,7 @@ natural_inf_server <- function(id) {
     
     var_left_2 <- select_var_server(
       id = ns_id,
+      r = r,
       select_var_id = "vl_2",
       var_list = reactive(var_left_2_list()))
     
@@ -132,11 +134,11 @@ natural_inf_server <- function(id) {
     main_slider <- slider_server(id = ns_id)
     
     # Custom priority sliders
-    s_bio <- slider_text_server(id = ns_id, slider_id = "s_bio",
+    s_bio <- slider_text_server(id = ns_id, r = r, slider_id = "s_bio",
                                 choices = reactive(custom_slider_choices))
-    s_hea <- slider_text_server(id = ns_id, slider_id = "s_hea",
+    s_hea <- slider_text_server(id = ns_id, r = r, slider_id = "s_hea",
                                 choices = reactive(custom_slider_choices))
-    s_flo <- slider_text_server(id = ns_id, slider_id = "s_flo",
+    s_flo <- slider_text_server(id = ns_id, r = r, slider_id = "s_flo",
                                 choices = reactive(custom_slider_choices))
     ni_slider <- reactive(process_ni_sliders(s_bio(), s_hea(), s_flo()))
     observe({
@@ -150,7 +152,7 @@ natural_inf_server <- function(id) {
     var_right <- reactive(" ")
 
     # Sidebar
-    sidebar_server(id = ns_id, x = "natural_inf")
+    sidebar_server(id = ns_id, r = r, x = "natural_inf")
     
     # Composite variable for map
     map_var <- reactive(if (custom_priorities()) "ID" else var_left())
@@ -158,23 +160,26 @@ natural_inf_server <- function(id) {
     # Enable or disable the main main_slider
     observe(toggle(NS(id, "slider"), condition = var_left() == "c_priority"))
     
-    # Data
+    # SQL retrieval
     data <- reactive({
-      if (var_left() == "c_priority") {
-        if (!custom_priorities()) {
-          natural_inf$original_priorities[
-            natural_inf$original_priorities$slider == main_slider(), ]
+      db_call <- 
+        if (var_left() == "c_priority") {
+          if (!custom_priorities()) {
+            paste0("SELECT * FROM natural_inf_original_priorities ",
+                   "WHERE slider = ", main_slider())
           } else {
-            custom <- natural_inf$custom_explore
-            custom <- custom[custom$slider == main_slider(), ]
-            custom <- custom[custom$biodiversity == ni_slider()[1], ]
-            custom <- custom[custom$heat_island == ni_slider()[2], ]
-            custom <- custom[custom$flood == ni_slider()[3], ]
-            custom
+            paste0("SELECT * FROM natural_inf_custom_explore ",
+                   "WHERE slider = ", main_slider(), 
+                   " AND biodiversity = ", ni_slider()[1], 
+                   " AND heat_island = ", ni_slider()[2], 
+                   " AND flood = ", ni_slider()[3])
           }
-        } else natural_inf$explore
-        
-      })
+        } else {
+          paste0("SELECT * FROM natural_inf_explore")
+        }
+      
+      dbGetQuery(db, db_call)
+    })
     
     # Map custom colours
     natural_inf_colours <- reactive({
@@ -194,12 +199,11 @@ natural_inf_server <- function(id) {
           if (main_slider() == 0) {
             data.frame(group = "ABCD", value = "#FFFFFF00")
           } else {
-            custom <- natural_inf$custom
-            custom <- custom[[main_slider()]]
-            custom <- custom[custom$biodiversity == ni_slider()[1], ]
-            custom <- custom[custom$heat_island == ni_slider()[2], ]
-            custom <- custom[custom$flood == ni_slider()[3], ]
-            custom[, c("group", "value")] 
+            db_call <- paste0("SELECT * FROM natural_inf_custom_", main_slider(),
+                              " WHERE biodiversity = ", ni_slider()[1], 
+                              " AND heat_island = ", ni_slider()[2], 
+                              " AND flood = ", ni_slider()[3])
+            dbGetQuery(db, db_call)[, c("group", "value")] 
           }
         }
       } else NULL
@@ -213,6 +217,7 @@ natural_inf_server <- function(id) {
     # Legend
     legend <- legend_server(
       id = ns_id,
+      r = r,
       var_left = var_left,
       var_right = var_right,
       df = legend_raster)
@@ -220,6 +225,7 @@ natural_inf_server <- function(id) {
     # Did-you-know panel
     dyk_server(
       id = ns_id,
+      r = r,
       var_left = var_left,
       var_right = var_right,
       poi = poi)
@@ -248,6 +254,7 @@ natural_inf_server <- function(id) {
     # Explore panel
     explore_content <- explore_server(
       id = ns_id,
+      r = r,
       data = data,
       var_left = var_left,
       var_right = var_right,
@@ -259,6 +266,7 @@ natural_inf_server <- function(id) {
     # Bookmarking
     bookmark_server(
       id = ns_id,
+      r = r,
       map_viewstate = reactive(get_view_state(ns_id_map)),
       select_id = reactive(NA),
       map_id = "map",

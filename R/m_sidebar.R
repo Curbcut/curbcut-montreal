@@ -13,7 +13,7 @@ sidebar_UI <- function(id, ..., bottom = NULL) {
                     tags$p(uiOutput(NS(id, "title_main"))),
                     tags$p(actionLink(NS(id, "more_info"), 
                                       class = "sus-small-link", 
-                                      sus_translate("Learn more"))),
+                                      sus_translate(r = r, "Learn more"))),
                     hidden(uiOutput(outputId = NS(id, "title_extra"))),
                     ...
                   )
@@ -25,7 +25,7 @@ sidebar_UI <- function(id, ..., bottom = NULL) {
   ))
 }
 
-sidebar_server <- function(id, x) {
+sidebar_server <- function(id, r = r, x) {
   stopifnot(!is.reactive(x))
   
   moduleServer(id, function(input, output, session) {
@@ -42,14 +42,14 @@ sidebar_server <- function(id, x) {
     # More info
     observeEvent(input$more_info, {
       toggle("title_extra", condition = input$more_info %% 2 == 1)
-      txt <- sus_translate(switch(input$more_info %% 2 + 1, "Learn more", 
+      txt <- sus_translate(r = r, switch(input$more_info %% 2 + 1, "Learn more", 
                                   "Hide"))
       updateActionLink(session, "more_info", label = txt)
       })
     
-    output$title <- renderUI(h3(sus_translate(title_title)))
-    output$title_main <- renderUI(HTML(sus_translate(title_main)))
-    output$title_extra <- renderUI(HTML(sus_translate(title_extra)))
+    output$title <- renderUI(h3(sus_translate(r = r, title_title)))
+    output$title_main <- renderUI(HTML(sus_translate(r = r, title_main)))
+    output$title_extra <- renderUI(HTML(sus_translate(r = r, title_extra)))
     
   })
 }

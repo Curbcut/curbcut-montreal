@@ -2,7 +2,7 @@
 
 #' @param island_or_region A character string, either "region" or "island".
 
-get_title_card <- function(df, select_id, island_or_region) {
+get_title_card <- function(r = r, df, select_id, island_or_region) {
 
   ## Setup ---------------------------------------------------------------------
 
@@ -26,7 +26,7 @@ get_title_card <- function(df, select_id, island_or_region) {
   
   to_grid <- lapply(seq_along(indicators_table$name), \(x) {
     
-    z <- prep_title_card(df, select_id, 
+    z <- prep_title_card(r = r, df, select_id, 
                          ind = indicators_table$name[x],
                          percent = indicators_table$percent[x], 
                          high_is_good = indicators_table$high_is_good[x], 
@@ -42,15 +42,15 @@ get_title_card <- function(df, select_id, island_or_region) {
     
     if (indicators_table$name[x] == "air_quality_no2") higher_than_threshold <-
         if (z$pretty_data_var > 5) {
-          sus_translate(
+          sus_translate(r = r, 
             "Its value is higher than the WHO's guideline value of 5. ")
         } else ""
     
     list(row_title = indicators_table$title[x],
          percentile = z$percentile,
          graph = z$plot,
-         text = if (is.na(z$pretty_data_var)) sus_translate("No data.") else 
-           sus_translate(indicators_table$text[x]),
+         text = if (is.na(z$pretty_data_var)) sus_translate(r = r, "No data.") else 
+           sus_translate(r = r, indicators_table$text[x]),
          link = z$link,
          link_module = z$link_module,
          link_var_left = z$link_var_left)

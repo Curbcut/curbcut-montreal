@@ -275,7 +275,13 @@ info_table_translated <-
                       "ight)} higher than {z$perc} of other {z$scale_plural} w",
                       "ith {sub('^the', 'a', z$exp_left)} of '{z$val_left}' in",
                       " the Montreal region."), 
-          fr = paste0("TKTK")) |> 
+          fr = paste0("<strong>{z$place_heading}</strong><p>{z$place_name} a u",
+                      "ne population de {z$pop}, une valeur '{z$title_left}' d",
+                      "e '{z$val_left}', et une valeur '{z$title_right}' de {z",
+                      "$val_right}. <p>{z$place_name} a {sub('^le', 'un', z$ex",
+                      "p_right)} plus élevé que {z$perc} des autres {z$scale_p",
+                      "lural} avec {sub('^le', 'un', z$exp_left)} de '{z$val_l",
+                      "eft}' dans la région de Montréal.")) |> 
   add_row(en = paste0("<strong>{z$place_heading}</strong><p>{z$place_name} has",
                       " a population of {z$pop}, a {z$title_left} value of '{z",
                       "$val_left}', and a '{z$title_right}' value of '{z$val_r",

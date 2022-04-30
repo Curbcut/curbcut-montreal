@@ -14,8 +14,9 @@ suppressPackageStartupMessages({
   library(qs)
   library(glue)
   library(metathis)
+  
+  library(RSQLite)
 })
-
 
 # Shiny options -----------------------------------------------------------
 
@@ -33,17 +34,11 @@ qload("data/colours.qsm")
 tile_lookup <- qread("data/tile_lookup.qs")
 
 qload("data/census.qsm")
-grid <- qread("data/grid.qs")
-# street <- qread("data/street.qs")
-building <- qread("data/building.qs")
-
 # qload("data/covid.qsm")
 # green_space <- qread("data/green_space.qs")
 qload("data/alley.qsm")
 # crash <- qread("data/crash.qs")
-tt_matrix <- qread("data/tt_matrix.qs")
 # marketed_sustainability <- qread("data/marketed_sustainability.qs")
-qload("data/natural_inf.qsm")
 metro_lines <- qread("data/metro_lines.qs")
 
 qload("data/stories.qsm")
@@ -119,12 +114,9 @@ stand_alone_tabs <- c(
   )
 
 
-# Translation and other global reactive values ----------------------------
+# Translation -------------------------------------------------------------
 
 translation_fr <- qread("data/translation_fr.qs")
-sus_rv <- reactiveValues(lang = "fr", active_tab = "home", link = NULL)
-sus_bookmark <- reactiveValues()
-sus_link <- reactiveValues()
 
 
 # Map defaults ------------------------------------------------------------
@@ -147,3 +139,8 @@ systemfonts::register_font(
   italic = "www/fonts/SourceSansPro-Italic.ttf",
   bold = "www/fonts/SourceSansPro-Bold.ttf",
   bolditalic = "www/fonts/SourceSansPro-BoldItalic.ttf")
+
+
+# Connect to the db -------------------------------------------------------
+
+db <- dbConnect(SQLite(), "data/sql_db.sqlite")

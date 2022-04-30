@@ -1,6 +1,6 @@
 #### GET LEGEND BREAKS #########################################################
 
-get_legend_breaks <- function(data, var_left, var_right, df, data_type, 
+get_legend_breaks <- function(r = r, data, var_left, var_right, df, data_type, 
                               breaks) {
   
   ## Return NULL if no data_type matches ---------------------------------------
@@ -134,8 +134,8 @@ get_legend_breaks <- function(data, var_left, var_right, df, data_type,
   if (data_type == "q100") {
     
     # Create break labels
-    break_labs <- c(sus_translate("Low"), sapply(1:9, \(x) NULL),
-                    sus_translate("High"))
+    break_labs <- c(sus_translate(r = r, "Low"), sapply(1:9, \(x) NULL),
+                    sus_translate(r = r, "High"))
     
   }
   

@@ -1,6 +1,6 @@
 #### EXPLORE GRAPH #############################################################
 
-explore_graph <- function(data, var_type, var_left, var_right, df, select_id, 
+explore_graph <- function(data, r = r, var_type, var_left, var_right, df, select_id, 
                           build_str_as_DA = TRUE, plot_type = "auto") {
   
   ## Check arguments -----------------------------------------------------------
@@ -21,7 +21,8 @@ explore_graph <- function(data, var_type, var_left, var_right, df, select_id,
     
     if (!is.na(select_id)) {
       if (df == "building") select_id <- 
-          building$DAUID[building$ID == select_id]
+          dbGetQuery(db, paste0("SELECT DAUID FROM building WHERE ID = ", 
+                                select_id))$DAUID
       if (df == "street") select_id <- street$DAUID[street$ID == select_id]
       if (sum(!is.na(select_id)) == 0) select_id <- NA
     }
@@ -29,8 +30,7 @@ explore_graph <- function(data, var_type, var_left, var_right, df, select_id,
     df <- "DA"
     
   }
-  
-  
+
   ## Decide on plot type -------------------------------------------------------
   
   if (plot_type == "auto") plot_type <- 
@@ -46,7 +46,7 @@ explore_graph <- function(data, var_type, var_left, var_right, df, select_id,
   y_scale <- get_y_scale(graph_type, data, var_type, var_left, var_right)
   
   # Prepare axis labels
-  labs_xy <- get_axis_labels(graph_type, var_left, var_right)
+  labs_xy <- get_axis_labels(r = r, graph_type, var_left, var_right)
 
   # Prepare default theme
   theme_default <- list(
