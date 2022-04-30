@@ -15,7 +15,7 @@ climate_risk_UI <- function(id) {
         select_var_UI(NS(id, ns_id), var_list = make_dropdown(
           only = list(theme = "Climate risk"))), 
         checkbox_UI(NS(id, ns_id), value = TRUE,
-                    label = sus_translate("250-metre grid"))),
+                    label = sus_translate(r = r, "250-metre grid"))),
       bottom = div(class = "bottom_sidebar",
                    tagList(legend_UI(NS(id, ns_id)),
                            zoom_UI(NS(id, ns_id), map_zoom_levels)))),
@@ -36,7 +36,7 @@ climate_risk_UI <- function(id) {
 
 # Server ------------------------------------------------------------------
 
-climate_risk_server <- function(id) {
+climate_risk_server <- function(id, r) {
   moduleServer(id, function(input, output, session) {
     ns_id <- "climate_risk"
     ns_id_map <- paste0(ns_id, "-map")
@@ -56,10 +56,10 @@ climate_risk_server <- function(id) {
     # Zoom and POI reactives
     observeEvent(get_view_state(ns_id_map), {
       zoom({
-        if (!is.null(sus_bookmark$zoom)) {
-          sus_bookmark$zoom
-        } else if (!is.null(sus_link$zoom)) {
-          sus_link$zoom
+        if (!is.null(r$sus_bookmark$zoom)) {
+          r$sus_bookmark$zoom
+        } else if (!is.null(r$sus_link$zoom)) {
+          r$sus_link$zoom
         } else get_zoom(get_view_state(ns_id_map)$zoom)})
       new_poi <- observe_map(get_view_state(ns_id_map))
       if ((is.null(new_poi) && !is.null(poi())) || 
@@ -87,6 +87,7 @@ climate_risk_server <- function(id) {
     # Zoom level for data
     tile_choropleth <- zoom_server(
       id = ns_id, 
+      r = r,
       zoom_string = zoom_string, 
       zoom_levels = reactive(map_zoom_levels))
     
@@ -94,18 +95,19 @@ climate_risk_server <- function(id) {
     tile <- reactive(if (grid()) "grid" else tile_choropleth())
     
     # Get df for explore/legend/etc
-    df <- reactive(get_df(tile(), zoom_string()))
+    df <- reactive(get_df(tile(), zoom_string(), r = r))
     
     # Time
     time <- reactive("2016")
     
     # Left variable server
-    var_left <- select_var_server(ns_id, var_list = reactive(
+    var_left <- select_var_server(ns_id, r = r, var_list = reactive(
       make_dropdown(only = list(theme = "Climate risk"))))
     
     # Right variable / compare panel
     var_right <- compare_server(
       id = ns_id, 
+      r = r,
       var_list = make_dropdown(compare = TRUE),
       time = time)
     
@@ -120,7 +122,7 @@ climate_risk_server <- function(id) {
       str_remove(paste(var_left(), var_right(), sep = "_"), "_ $"))
     
     # Sidebar
-    sidebar_server(id = ns_id, x = "climate_risk")
+    sidebar_server(id = ns_id, r = r, x = "climate_risk")
     
     # Data
     data <- reactive(get_data(
@@ -132,6 +134,7 @@ climate_risk_server <- function(id) {
     # Legend
     legend <- legend_server(
       id = ns_id,
+      r = r,
       data = data,
       var_left = var_left,
       var_right = var_right,
@@ -140,6 +143,7 @@ climate_risk_server <- function(id) {
     # Did-you-know panel
     dyk_server(
       id = ns_id,
+      r = r,
       var_left = var_left,
       var_right = var_right,
       poi = poi)
@@ -172,6 +176,7 @@ climate_risk_server <- function(id) {
     # Explore panel
     explore_content <- explore_server(
       id = ns_id,
+      r = r,
       data = data,
       var_left = var_left,
       var_right = var_right,
@@ -187,6 +192,7 @@ climate_risk_server <- function(id) {
     # Bookmarking
     bookmark_server(
       id = ns_id,
+      r = r,
       map_viewstate = reactive(get_view_state(ns_id_map)),
       var_left = var_left,
       var_right = var_right,
@@ -197,28 +203,28 @@ climate_risk_server <- function(id) {
     )
     
     # Update select_id() on bookmark
-    observeEvent(sus_bookmark$active, {
-      if (isTRUE(sus_bookmark$active)) {
+    observeEvent(r$sus_bookmark$active, {
+      if (isTRUE(r$sus_bookmark$active)) {
         delay(1000, {
-          if (!is.null(sus_bookmark$select_id))
-            if (sus_bookmark$select_id != "NA") 
-              select_id(sus_bookmark$select_id)
+          if (!is.null(r$sus_bookmark$select_id))
+            if (r$sus_bookmark$select_id != "NA") 
+              select_id(r$sus_bookmark$select_id)
         })
       }
       # So that bookmarking gets triggered only ONCE
       delay(1500, {
-        sus_bookmark$active <- FALSE
-        sus_bookmark$df <- NULL
-        sus_bookmark$zoom <- NULL
+        r$sus_bookmark$active <- FALSE
+        r$sus_bookmark$df <- NULL
+        r$sus_bookmark$zoom <- NULL
       })
     }, priority = -2)
     
     # Update select_id() on module link
-    observeEvent(sus_link$activity, {
+    observeEvent(r$sus_link$activity, {
       delay(1000, {
-        if (!is.null(sus_link$select_id)) select_id(sus_link$select_id)
-        sus_link$df <- NULL
-        sus_link$zoom <- NULL
+        if (!is.null(r$sus_link$select_id)) select_id(r$sus_link$select_id)
+        r$sus_link$df <- NULL
+        r$sus_link$zoom <- NULL
       })
     }, priority = -2)
     

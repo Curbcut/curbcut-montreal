@@ -14,7 +14,7 @@ select_var_UI <- function(id, select_var_id = NULL,
                   selected = selected, width = width))
 }
 
-select_var_server <- function(id, select_var_id = NULL,
+select_var_server <- function(id, r = r, select_var_id = NULL,
                               var_list, disabled = reactive(NULL), 
                               time = reactive(NULL), df = reactive(NULL)) {
   
@@ -31,7 +31,7 @@ select_var_server <- function(id, select_var_id = NULL,
       if (!is.null(disabled())) {
         updatePickerInput(
           session, select_var_id, 
-          choices = sus_translate(var_list()),
+          choices = sus_translate(r = r, var_list()),
           choicesOpt = list(disabled = disabled(),
                             style = ifelse(disabled(), 
                                            "color: rgba(119, 119, 119, 0.5);", 
@@ -39,7 +39,7 @@ select_var_server <- function(id, select_var_id = NULL,
       } else {
         updatePickerInput(
         session, select_var_id, 
-        choices = sus_translate(var_list()))
+        choices = sus_translate(r = r, var_list()))
       }
       })
 

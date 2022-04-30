@@ -3,7 +3,7 @@
 # UI ----------------------------------------------------------------------
 
 slider_UI <- function(id, slider_id = NULL, 
-                      label = sus_translate("Select a year"), min = census_min, 
+                      label = sus_translate(r = r, "Select a year"), min = census_min, 
                       max = census_max, step = 5, sep = "", value = census_max,
                       width = "95%", ...) {
   
@@ -14,7 +14,7 @@ slider_UI <- function(id, slider_id = NULL,
 }
 
 slider_text_UI <- function(id, slider_id = NULL, 
-                           label = sus_translate("Select a year"), 
+                           label = sus_translate(r = r, "Select a year"), 
                            choices, selected = NULL, width = "95%", ...) {
   
   slider_id <- if (is.null(slider_id)) "slider" else slider_id
@@ -54,7 +54,7 @@ slider_server <- function(id, slider_id = NULL, value = reactive(NULL),
   
 }
 
-slider_text_server <- function(id, slider_id = NULL, choices = reactive(NULL),
+slider_text_server <- function(id, r = r, slider_id = NULL, choices = reactive(NULL),
                                selected = reactive(NULL)) {
   
   stopifnot(is.reactive(choices))
@@ -64,7 +64,7 @@ slider_text_server <- function(id, slider_id = NULL, choices = reactive(NULL),
     
     slider_id <- if (is.null(slider_id)) "slider" else slider_id
     
-    choices <- sapply(choices(), sus_translate, USE.NAMES = FALSE)
+    choices <- sapply(choices(), sus_translate, r = r, USE.NAMES = FALSE)
     
     observe({
       if (!is.null(choices()) || !is.null(selected())) {

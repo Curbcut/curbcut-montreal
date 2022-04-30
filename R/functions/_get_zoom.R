@@ -27,9 +27,9 @@ get_zoom_label <- function(zoom_levels) {
   return(zl)
 }
 
-get_zoom_label_t <- function(zoom_levels) {
+get_zoom_label_t <- function(zoom_levels, r = r) {
   zl <- names(sort(zoom_levels))
-  zl <- sapply(get_zoom_name(zl), sus_translate, USE.NAMES = FALSE)
+  zl <- sapply(get_zoom_name(zl), sus_translate, r = r, USE.NAMES = FALSE)
   return(zl)
 }
 

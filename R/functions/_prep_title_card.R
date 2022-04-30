@@ -1,6 +1,6 @@
 #### PREPARE TITLE CARD ROW ####################################################
 
-prep_title_card <- function(df, select_id, ind, percent = TRUE,
+prep_title_card <- function(r = r, df, select_id, ind, percent = TRUE,
                             high_is_good = TRUE, val_digits = 0,
                             link_module = NULL, link_var_left = NULL,
                             link_outside = NULL, island = TRUE,
@@ -10,8 +10,8 @@ prep_title_card <- function(df, select_id, ind, percent = TRUE,
   
   scale <- if (island) "island" else "region"
   
-  geo_area <- sus_translate("The ", geo_area)
-  geo_areas <- sus_translate(geo_areas)
+  geo_area <- sus_translate(r = r, "The ", geo_area)
+  geo_areas <- sus_translate(r = r, geo_areas)
   
   # Prepare list to store all data
   info <- list()
@@ -48,20 +48,20 @@ prep_title_card <- function(df, select_id, ind, percent = TRUE,
     
     text_data_rank <- 
       if (data_borough_rank > 2 / 3 * df_row) {
-        sus_translate("relatively low at {ordinal_form(data_borough_rank)}")
+        sus_translate(r = r, "relatively low at {ordinal_form(data_borough_rank)}")
       } else if (data_borough_rank > 1 / 3 * df_row) {
         ordinal_form(data_borough_rank)
       } else {
-        if (sus_rv$lang() == "fr" && {ordinal_form(data_borough_rank)} == "") {
+        if (r$lang == "fr" && {ordinal_form(data_borough_rank)} == "") {
           "premier"
-        } else sus_translate("{ordinal_form(data_borough_rank)} best")
+        } else sus_translate(r = r, "{ordinal_form(data_borough_rank)} best")
       }
     
-    text_island_region <- if (island) sus_translate(" on the island") else 
-      sus_translate(" in the region")
+    text_island_region <- if (island) sus_translate(r = r, " on the island") else 
+      sus_translate(r = r, " in the region")
     
     info$data_rank <- 
-      sus_translate("It ranks {text_data_rank} {text_island_region}")
+      sus_translate(r = r, "It ranks {text_data_rank} {text_island_region}")
     
   } else {
     
@@ -72,27 +72,27 @@ prep_title_card <- function(df, select_id, ind, percent = TRUE,
         
       } else if (data_rank > 0.75) {
         
-        paste0(sus_translate("{geo_area} ranks in the top "),
+        paste0(sus_translate(r = r, "{geo_area} ranks in the top "),
                if (abs(data_rank - 1) < 0.01) "1%" else 
                  scales::percent(abs(data_rank - 1)))
         
       } else if (data_rank < 0.25) {
         
         paste0(
-          sus_translate("{geo_area} ranks in the bottom "),
+          sus_translate(r = r, "{geo_area} ranks in the bottom "),
           if (data_rank == 0) "1%" else scales::percent(data_rank))
         
       } else {
         
         scale_percent_data_rank <- scales::percent(data_rank)
-        text_island_region <- if (island) sus_translate("on the island") else 
-          sus_translate("in the region")
+        text_island_region <- if (island) sus_translate(r = r, "on the island") else 
+          sus_translate(r = r, "in the region")
         
         if (ind == "air_quality_no2") {
-          sus_translate("Its value is worse than {scale_percent_data_rank} ",
+          sus_translate(r = r, "Its value is worse than {scale_percent_data_rank} ",
                         "of {geo_areas} {text_island_region}")
         } else {
-          sus_translate("Its value is higher than {scale_percent_data_rank} ",
+          sus_translate(r = r, "Its value is higher than {scale_percent_data_rank} ",
                         "of {geo_areas} {text_island_region}")
         }
         
@@ -106,14 +106,14 @@ prep_title_card <- function(df, select_id, ind, percent = TRUE,
     
     info$link <- paste0(" <a id='place_explorer-title_card_", ind, "' href='#'", 
                         " class='action-button shiny-bound-input'>",
-                        sus_translate("[LEARN MORE]"), "</a>")
+                        sus_translate(r = r, "[LEARN MORE]"), "</a>")
     info$link_module <- link_module
     info$link_var_left <- link_var_left
     
   } else if (!is.na(link_outside) && !is.null(link_outside)) {
     
     info$link <- paste0(" <a href='", link_outside, "' target='_blank'>",
-                        sus_translate("[LEARN MORE]"), "</a>")
+                        sus_translate(r = r, "[LEARN MORE]"), "</a>")
     info$link_module <- NULL
     info$link_var_left <- NULL
     
@@ -149,12 +149,12 @@ prep_title_card <- function(df, select_id, ind, percent = TRUE,
       per <- scales::percent(abs(data_rank - 1))
       if (per == "0%") per <- "1%"
       paste0("<p style = 'font-size: small; margin:auto; text-align:center;",
-             "color:", hex_to_plot,"'>", sus_translate("Top {per}"), "</p>")
+             "color:", hex_to_plot,"'>", sus_translate(r = r, "Top {per}"), "</p>")
     } else {
       per <- scales::percent(abs(data_rank))
       if (per == "0%") per <- "1%"
       paste0("<p style = 'font-size: small; margin:auto; text-align:center;",
-             "color:", hex_to_plot,"'>", sus_translate("Bottom {per}"), "</p>")
+             "color:", hex_to_plot,"'>", sus_translate(r = r, "Bottom {per}"), "</p>")
     }
   
   
