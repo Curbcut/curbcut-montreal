@@ -1,6 +1,6 @@
 #### LINKS BETWEEN MODULES #####################################################
 
-module_link <- function(r = r, module, zoom = NULL, location = map_loc, 
+module_link <- function(r, module, zoom = NULL, location = map_loc, 
                         select_id = NULL, var_left = NULL,
                         var_right = NULL, df = NULL, 
                         zoom_auto = NULL, more_args = NULL, 
@@ -8,8 +8,8 @@ module_link <- function(r = r, module, zoom = NULL, location = map_loc,
   
   r$sus_link$mod_ns <- paste(module, module, sep = "-")
   
-  # Open the link to the linked moule
-  sus_rv$link <- reactive(module)
+  # Open the link to the linked module
+  r$link <- module
   # Tweak map namespace
   r$sus_link$map_id <- paste(module, module, "map", sep = "-")
   

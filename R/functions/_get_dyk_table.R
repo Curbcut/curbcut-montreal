@@ -1,6 +1,6 @@
 #### GET DYK TABLE #############################################################
 
-get_dyk_table <- function(id, r = r, var_left, var_right, poi = NULL) {
+get_dyk_table <- function(id, r, var_left, var_right, poi = NULL) {
   
   # Prepare variables ----------------------------------------------------------
   
