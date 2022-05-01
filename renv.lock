@@ -1,6 +1,6 @@
 {
   "R": {
-    "Version": "4.1.1",
+    "Version": "4.2.0",
     "Repositories": [
       {
         "Name": "CRAN",
@@ -27,10 +27,10 @@
     },
     "MASS": {
       "Package": "MASS",
-      "Version": "7.3-57",
+      "Version": "7.3-56",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "71476c1d88d1ebdf31580e5a257d5d31",
+      "Hash": "af0e1955cb80bb36b7988cc657db261e",
       "Requirements": []
     },
     "Matrix": {
@@ -69,10 +69,10 @@
     },
     "RSQLite": {
       "Package": "RSQLite",
-      "Version": "2.2.13",
+      "Version": "2.2.12",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "f713775e6061a35da8300f314f0fdbd2",
+      "Hash": "4bfe20c70c3db354b60adf76e10fc7f6",
       "Requirements": [
         "DBI",
         "Rcpp",
@@ -390,15 +390,10 @@
     },
     "geometries": {
       "Package": "geometries",
-      "Version": "0.2.1",
-      "Source": "GitHub",
-      "RemoteType": "github",
-      "RemoteHost": "api.github.com",
-      "RemoteRepo": "geometries",
-      "RemoteUsername": "dcooley",
-      "RemoteRef": "HEAD",
-      "RemoteSha": "2ffd841a5b4204d2460c278fe1430ac8f309fa01",
-      "Hash": "cf6f85b6a809050c5a04e89b74225920",
+      "Version": "0.2.0",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "be29054e97e756ade56d13a89c6d5243",
       "Requirements": [
         "Rcpp"
       ]
@@ -525,10 +520,10 @@
     },
     "knitr": {
       "Package": "knitr",
-      "Version": "1.39",
+      "Version": "1.38",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "029ab7c4badd3cf8af69016b2ba27493",
+      "Hash": "10b3dc3c6acb925910edda5d0543b3a2",
       "Requirements": [
         "evaluate",
         "highr",
@@ -783,14 +778,14 @@
       "Package": "rdeck",
       "Version": "0.3.0.92200",
       "Source": "GitHub",
-      "Remotes": "anthonynorth/roxyglobals, anthonynorth/stylebox,\n        qfes/tidyassert",
       "RemoteType": "github",
+      "Remotes": "anthonynorth/roxyglobals, anthonynorth/stylebox, qfes/tidyassert",
       "RemoteHost": "api.github.com",
       "RemoteRepo": "rdeck",
       "RemoteUsername": "anthonynorth",
       "RemoteRef": "HEAD",
       "RemoteSha": "8c7cc7e3f27371258a20d54f49f7d46fac752539",
-      "Hash": "f8c84d0c3f0038fc3e56f357e8dc566c",
+      "Hash": "38d27200959a89cb3ecd230101e4e8fe",
       "Requirements": [
         "R6",
         "base64enc",
@@ -833,10 +828,10 @@
     },
     "rmarkdown": {
       "Package": "rmarkdown",
-      "Version": "2.14",
+      "Version": "2.13",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "31b60a882fabfabf6785b8599ffeb8ba",
+      "Hash": "ac78f4d2e0289d4cba73b88af567b8b1",
       "Requirements": [
         "bslib",
         "evaluate",
@@ -933,15 +928,10 @@
     },
     "sfheaders": {
       "Package": "sfheaders",
-      "Version": "0.4.1",
-      "Source": "GitHub",
-      "RemoteType": "github",
-      "RemoteHost": "api.github.com",
-      "RemoteRepo": "sfheaders",
-      "RemoteUsername": "dcooley",
-      "RemoteRef": "HEAD",
-      "RemoteSha": "bab52ea8e4b356b2dd25d9ca5505fff3bcb1460d",
-      "Hash": "59658a14b07c2d0080696dcfea9fe653",
+      "Version": "0.4.0",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "c1bd5fbd6bed3c16a20df15d9bc20c55",
       "Requirements": [
         "Rcpp",
         "geometries"
