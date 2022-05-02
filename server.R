@@ -21,7 +21,7 @@ shinyServer(function(input, output, session) {
   observeEvent(input$cookies$time_last_htu_banner, {
     if (is.null(input$cookies$time_last_htu_banner) ||
         (!is.null(input$cookies$time_last_htu_banner) &&
-         Sys.time() > (as.POSIXct(input$cookies$time_last_htu_banner) + 1))) { #1209600))) {
+         Sys.time() > (as.POSIXct(input$cookies$time_last_htu_banner) + 1209600))) {
       
       #TKTK SHOW BANNER HERE
       insertUI(selector = ".navbar-shadow",
@@ -45,8 +45,9 @@ shinyServer(function(input, output, session) {
     # So that it repeats if there's a gap of 7 days between all visits
     time_last_htu_banner <- list(name = "time_last_htu_banner", 
                                  value = Sys.time())
+
     session$sendCustomMessage("cookie-set", time_last_htu_banner)
-  }, once = TRUE, ignoreNULL = FALSE)
+  }, once = TRUE)
   
   observeEvent(input$go_to_htu_en, {
     removeUI("#htu_footer")
@@ -60,9 +61,6 @@ shinyServer(function(input, output, session) {
   observeEvent(input$go_to_htu_x, {
     removeUI("#htu_footer")
   })
-  observeEvent(input$sus_page, {
-    removeUI("#htu_footer")
-  }, ignoreInit = TRUE)
   
   
   ## Language button -----------------------------------------------------------

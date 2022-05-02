@@ -250,7 +250,9 @@ library(qs)
 qload("data2/natural_inf.qsm")
 tt_matrix <- qread("data2/tt_matrix.qs")
 building <- qread("data2/building.qs")
-grid <- qread("data2/grid.qs")
+grid <- qread("data2/grid.qs") |> 
+  # Until the data gets redrawn!
+  dplyr::select(ID:households, ends_with("_2016"), starts_with("climate"))
 
 sqlite_path <- "data/sql_db.sqlite"
 

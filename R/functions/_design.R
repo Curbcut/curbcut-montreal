@@ -228,15 +228,24 @@ js_links_between_modules <- "
 bookmark_url <- 
   'function copyUrl(text) {
        var inputc = document.body.appendChild(document.createElement("input"));
-       const p = window.location.href;
-       const part_replace = "https://sus-mcgill.shinyapps.io";
-       inputc.value = p.replace(part_replace, "http://www.susmontreal.ca");
+       inputc.value = window.location.href;
        inputc.focus();
        inputc.select();
        document.execCommand("copy");
        inputc.parentNode.removeChild(inputc);
        alert("URL successfully copied.");
 }'
+
+google_analytics <- 
+  "<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src='https://www.googletagmanager.com/gtag/js?id=G-47FXNJ97HZ'></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-47FXNJ97HZ');
+</script>"
 
 styler <- '
 /* the big panel popup when we show an RMD in a map module */
