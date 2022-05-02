@@ -114,7 +114,7 @@ remove_outliers_df <- function(x, var_1, var_2 = NULL) {
 
 # ordinal_form ------------------------------------------------------------
 
-ordinal_form <- function(x) {
+ordinal_form <- function(r, x) {
   # English ordinal form
   if (is.null(getDefaultReactiveDomain()) || r$lang == "en") {
     if (x > 20) {

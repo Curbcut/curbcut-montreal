@@ -48,13 +48,13 @@ prep_title_card <- function(r = r, df, select_id, ind, percent = TRUE,
     
     text_data_rank <- 
       if (data_borough_rank > 2 / 3 * df_row) {
-        sus_translate(r = r, "relatively low at {ordinal_form(data_borough_rank)}")
+        sus_translate(r = r, "relatively low at {ordinal_form(r = r, data_borough_rank)}")
       } else if (data_borough_rank > 1 / 3 * df_row) {
-        ordinal_form(data_borough_rank)
+        ordinal_form(r = r, data_borough_rank)
       } else {
-        if (r$lang == "fr" && {ordinal_form(data_borough_rank)} == "") {
+        if (r$lang == "fr" && {ordinal_form(r = r, data_borough_rank)} == "") {
           "premier"
-        } else sus_translate(r = r, "{ordinal_form(data_borough_rank)} best")
+        } else sus_translate(r = r, "{ordinal_form(r = r, data_borough_rank)} best")
       }
     
     text_island_region <- if (island) sus_translate(r = r, " on the island") else 
