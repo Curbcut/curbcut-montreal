@@ -49,7 +49,7 @@ ui <- function(request) {
   tags$head(tags$script(bookmark_url)),
   tags$head(tags$style(HTML(styler))),
   tags$head(tags$style(HTML(temp_styler))),
-  tags$head(includeHTML("www/google_analytics.html")),
+  # tags$head(includeHTML("www/google_analytics.html")),
   
   # Language switching ---------------------------------------------------------
   
