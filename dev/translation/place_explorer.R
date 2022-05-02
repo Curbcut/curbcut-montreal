@@ -106,8 +106,8 @@ place_explorer_translated <-
           fr = paste0("La zone autour du ")) |> 
   add_row(en = paste0("It ranks {text_data_rank} {text_island_region}"), 
           fr = paste0("Il se classe {text_data_rank} {text_island_region}")) |> 
-  add_row(en = paste0("relatively low at {ordinal_form(data_borough_rank)}"), 
-          fr = paste0("relativement bas au {ordinal_form(data_borough_rank)} rang")) |> 
+  add_row(en = paste0("relatively low at {ordinal_form(r = r, data_borough_rank)}"), 
+          fr = paste0("relativement bas au {ordinal_form(r = r, data_borough_rank)} rang")) |> 
   add_row(en = paste0(" on the island"), 
           fr = paste0(" sur l'île")) |> 
   add_row(en = paste0(" in the region"), 
@@ -120,8 +120,8 @@ place_explorer_translated <-
           fr = paste0("l'île")) |> 
   add_row(en = paste0("the region"), 
           fr = paste0("la région")) |> 
-  add_row(en = paste0("{ordinal_form(data_borough_rank)} best"), 
-          fr = paste0("en {ordinal_form(data_borough_rank)} position")) |> 
+  add_row(en = paste0("{ordinal_form(r = r, data_borough_rank)} best"), 
+          fr = paste0("en {ordinal_form(r = r, data_borough_rank)} position")) |> 
   add_row(en = paste0("Its value is higher than {scale_percent_data_rank} of ",
                       "{geo_areas} {text_island_region}"), 
           fr = paste0("Sa valeur est supérieure à {scale_percent_data_rank} des ",
