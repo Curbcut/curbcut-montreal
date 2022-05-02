@@ -246,10 +246,13 @@ qsave(grid, file = "data2/grid.qs")
 
 library(RSQLite)
 library(qs)
+library(stringr)
 qload("dev/data/natural_inf.qsm")
 tt_matrix <- qread("dev/data/tt_matrix.qs")
 building <- qread("dev/data/building.qs")
-grid <- qread("dev/data/grid.qs")
+grid <- qread("dev/data/grid.qs") |> 
+  # Until the data gets redrawn!
+  dplyr::select(ID:households, ends_with("_2016"), starts_with("climate"))
 
 sqlite_path <- "data/sql_db.sqlite"
 
