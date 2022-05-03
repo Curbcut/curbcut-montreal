@@ -251,14 +251,17 @@ place_explorer_server <- function(id, r) {
 
     # Show widgets when the location name updates
     observe({
-      lapply(widgets_name, shinyjs::hide, anim = TRUE, animType = "fade", time = 0.5)
-      lapply(widgets_name, shinyjs::show, anim = TRUE, animType = "fade", time = 0.5)
+      lapply(widgets_name, shinyjs::hide, anim = TRUE, animType = "fade", 
+             time = 0.5)
+      lapply(widgets_name, shinyjs::show, anim = TRUE, animType = "fade", 
+             time = 0.5)
       shinyjs::hide("mapdeck_div", anim = TRUE, animType = "fade", time = 0.5)
     }) |> bindEvent(loc_name(), ignoreInit = TRUE)
 
     # Hide widgets and go back to map when the button is clicked
     observe({
-      lapply(widgets_name, shinyjs::hide, anim = TRUE, animType = "fade", time = 0.5)
+      lapply(widgets_name, shinyjs::hide, anim = TRUE, animType = "fade", 
+             time = 0.5)
       shinyjs::show("mapdeck_div", anim = TRUE, animType = "fade", time = 0.5)
     }) |> bindEvent(input$back_to_map)
 
