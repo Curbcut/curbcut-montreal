@@ -67,7 +67,7 @@ alley_server <- function(id, r) {
       rdeck(map_style = map_base_style, 
             initial_view_state = view_state(center = map_loc, zoom = 12)) |> 
         add_mvt_layer(id = "alley-alley",
-                      data = mvt_url("sus-mcgill.alley-alley"),
+                      data = tile_json("sus-mcgill.alley-alley"),
                       pickable = FALSE,
                       auto_highlight = FALSE,
                       get_fill_color = paste0(colour_table$value[1], "90"),

@@ -52,7 +52,7 @@ stories_server <- function(id, r) {
         center = map_loc, zoom = map_zoom)) |> 
         add_mvt_layer(
           id = "stories",
-          data = mvt_url("sus-mcgill.stories-stories"),
+          data = tile_json("sus-mcgill.stories-stories"),
           point_type = "icon",
           get_icon = name,
           icon_atlas = "stories/image_atlas.png",

@@ -57,7 +57,7 @@ access_server <- function(id, r) {
         center = map_loc, zoom = map_zoom)) |> 
         add_mvt_layer(id = ns_id) |> 
         add_mvt_layer(id = "metro_lines",
-                      data = mvt_url("sus-mcgill.metro_lines"),
+                      data = tile_json("sus-mcgill.metro_lines"),
                       get_line_color = !!rlang::sym("fill"),
                       get_line_width = 2,
                       line_width_units = "pixels")
