@@ -35,3 +35,6 @@ vignettes/*.pdf
 *.Rproj
 rsconnect/*
 desktop.ini
+.Rprofile
+/renv*
+renv.lock
