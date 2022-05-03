@@ -253,13 +253,13 @@ place_explorer_server <- function(id, r) {
     observe({
       lapply(widgets_name, shinyjs::hide, anim = TRUE, animType = "fade", time = 0.5)
       lapply(widgets_name, shinyjs::show, anim = TRUE, animType = "fade", time = 0.5)
-      hide("mapdeck_div", anim = TRUE, animType = "fade", time = 0.5)
+      shinyjs::hide("mapdeck_div", anim = TRUE, animType = "fade", time = 0.5)
     }) |> bindEvent(loc_name(), ignoreInit = TRUE)
 
     # Hide widgets and go back to map when the button is clicked
     observe({
       lapply(widgets_name, shinyjs::hide, anim = TRUE, animType = "fade", time = 0.5)
-      show("mapdeck_div", anim = TRUE, animType = "fade", time = 0.5)
+      shinyjs::show("mapdeck_div", anim = TRUE, animType = "fade", time = 0.5)
     }) |> bindEvent(input$back_to_map)
 
 
@@ -359,6 +359,7 @@ place_explorer_server <- function(id, r) {
 
       lapply(seq_along(title_card_to_grid()), \(x) {
         output[[paste0("ind_", x, "_plot")]] <- renderPlot({
+          if (x > length(title_card_to_grid())) return(NULL)
           title_card_to_grid()[[x]][["graph"]]
           })
         })
@@ -538,8 +539,8 @@ place_explorer_server <- function(id, r) {
       to_hide <- themes[!themes %in% input$themes_checkbox]
       to_show <- themes[themes %in% input$themes_checkbox]
 
-      lapply(to_hide, \(x) hide(paste0("theme_", x, "_block")))
-      lapply(to_show, \(x) show(paste0("theme_", x, "_block")))
+      lapply(to_hide, \(x) shinyjs::hide(paste0("theme_", x, "_block")))
+      lapply(to_show, \(x) shinyjs::show(paste0("theme_", x, "_block")))
     }) |> bindEvent(input$themes_checkbox, ignoreInit = TRUE)
 
     
