@@ -34,8 +34,6 @@ qload("data/colours.qsm")
 tile_lookup <- qread("data/tile_lookup.qs")
 
 qload("data/census.qsm")
-# street <- qread("data/street.qs")
-
 # qload("data/covid.qsm")
 # green_space <- qread("data/green_space.qs")
 qload("data/alley.qsm")
