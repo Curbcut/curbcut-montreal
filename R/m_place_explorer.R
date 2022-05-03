@@ -176,7 +176,7 @@ place_explorer_server <- function(id, r) {
         center = map_loc, zoom = map_zoom)) |> 
         add_mvt_layer(
         id = "DA",
-        data = mvt_url(paste0("sus-mcgill.DA_empty")),
+        data = tile_json(paste0("sus-mcgill.DA_empty")),
         pickable = TRUE,
         auto_highlight = TRUE,
         highlight_color = "#AAB6CF80",
@@ -310,14 +310,14 @@ place_explorer_server <- function(id, r) {
       rdeck_proxy(id = "title_card_map",
                   initial_view_state = view_state(center = ct, zoom = zoom)) |>
         add_mvt_layer(id = "location",
-                      data = mvt_url(paste0("sus-mcgill.", df(), "_empty")),
+                      data = tile_json(paste0("sus-mcgill.", df(), "_empty")),
                       pickable = TRUE,
                       auto_highlight = TRUE,
                       highlight_color = "#AAB6CF60",
                       get_fill_color = scale_fill_pe(select_id()),
                       get_line_width = 0) |>
         add_mvt_layer(id = "DA_empty",
-                      data = mvt_url(paste0("sus-mcgill.DA_empty")),
+                      data = tile_json(paste0("sus-mcgill.DA_empty")),
                       pickable = TRUE,
                       auto_highlight = TRUE,
                       highlight_color = "#AAB6CF60",
