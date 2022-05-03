@@ -1,6 +1,6 @@
 {
   "R": {
-    "Version": "4.1.1",
+    "Version": "4.2.0",
     "Repositories": [
       {
         "Name": "CRAN",
@@ -69,10 +69,10 @@
     },
     "RSQLite": {
       "Package": "RSQLite",
-      "Version": "2.2.13",
+      "Version": "2.2.12",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "f713775e6061a35da8300f314f0fdbd2",
+      "Hash": "4bfe20c70c3db354b60adf76e10fc7f6",
       "Requirements": [
         "DBI",
         "Rcpp",
@@ -114,16 +114,6 @@
       "Repository": "CRAN",
       "Hash": "4f57884290cc75ab22f4af9e9d4ca862",
       "Requirements": []
-    },
-    "askpass": {
-      "Package": "askpass",
-      "Version": "1.1",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "e8a22846fff485f0be3770c2da758713",
-      "Requirements": [
-        "sys"
-      ]
     },
     "base64enc": {
       "Package": "base64enc",
@@ -211,10 +201,10 @@
     },
     "cli": {
       "Package": "cli",
-      "Version": "3.2.0",
+      "Version": "3.3.0",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "1bdb126893e9ce6aae50ad1d6fc32faf",
+      "Hash": "23abf173c2b783dcc43379ab9bba00ee",
       "Requirements": [
         "glue"
       ]
@@ -249,14 +239,6 @@
       "Source": "Repository",
       "Repository": "CRAN",
       "Hash": "8dc45fd8a1ee067a92b85ef274e66d6a",
-      "Requirements": []
-    },
-    "curl": {
-      "Package": "curl",
-      "Version": "4.3.2",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "022c42d49c28e95d69ca60446dbabf88",
       "Requirements": []
     },
     "dichromat": {
@@ -390,15 +372,10 @@
     },
     "geometries": {
       "Package": "geometries",
-      "Version": "0.2.1",
-      "Source": "GitHub",
-      "RemoteType": "github",
-      "RemoteHost": "api.github.com",
-      "RemoteRepo": "geometries",
-      "RemoteUsername": "dcooley",
-      "RemoteRef": "HEAD",
-      "RemoteSha": "2ffd841a5b4204d2460c278fe1430ac8f309fa01",
-      "Hash": "cf6f85b6a809050c5a04e89b74225920",
+      "Version": "0.2.0",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "be29054e97e756ade56d13a89c6d5243",
       "Requirements": [
         "Rcpp"
       ]
@@ -658,24 +635,6 @@
         "lattice"
       ]
     },
-    "openssl": {
-      "Package": "openssl",
-      "Version": "2.0.0",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "cf4329aac12c2c44089974559c18e446",
-      "Requirements": [
-        "askpass"
-      ]
-    },
-    "packrat": {
-      "Package": "packrat",
-      "Version": "0.7.0",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "95e8c3825efcaad09411799da92c0af9",
-      "Requirements": []
-    },
     "pillar": {
       "Package": "pillar",
       "Version": "1.7.0",
@@ -850,30 +809,6 @@
         "yaml"
       ]
     },
-    "rsconnect": {
-      "Package": "rsconnect",
-      "Version": "0.8.25",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "c78e0acc405a6990475f1f9500ebe66c",
-      "Requirements": [
-        "curl",
-        "digest",
-        "jsonlite",
-        "openssl",
-        "packrat",
-        "rstudioapi",
-        "yaml"
-      ]
-    },
-    "rstudioapi": {
-      "Package": "rstudioapi",
-      "Version": "0.13",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "06c85365a03fdaf699966cc1d3cf53ea",
-      "Requirements": []
-    },
     "s2": {
       "Package": "s2",
       "Version": "1.0.7",
@@ -933,15 +868,10 @@
     },
     "sfheaders": {
       "Package": "sfheaders",
-      "Version": "0.4.1",
-      "Source": "GitHub",
-      "RemoteType": "github",
-      "RemoteHost": "api.github.com",
-      "RemoteRepo": "sfheaders",
-      "RemoteUsername": "dcooley",
-      "RemoteRef": "HEAD",
-      "RemoteSha": "bab52ea8e4b356b2dd25d9ca5505fff3bcb1460d",
-      "Hash": "59658a14b07c2d0080696dcfea9fe653",
+      "Version": "0.4.0",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "c1bd5fbd6bed3c16a20df15d9bc20c55",
       "Requirements": [
         "Rcpp",
         "geometries"
@@ -1091,14 +1021,6 @@
       "RemoteRef": "HEAD",
       "RemoteSha": "f9bd3ffb231952a15dcd9c489f3424f46092db1e",
       "Hash": "24227c2bc5b37be27be2fcf1bf7f9226",
-      "Requirements": []
-    },
-    "sys": {
-      "Package": "sys",
-      "Version": "3.4",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "b227d13e29222b4574486cfcbde077fa",
       "Requirements": []
     },
     "systemfonts": {
