@@ -1,6 +1,17 @@
 ##### SUS SERVER SCRIPT ########################################################
 
 shinyServer(function(input, output, session) {
+  
+
+  # If on Mobile, warning! --------------------------------------------------
+
+  observe({
+    session <- shiny::getDefaultReactiveDomain()$rootScope()
+    shiny::req(session$input$.shinybrowser)
+    if (session$input$.shinybrowser$device != "Desktop") {
+      shinyjs::info("The platform is best suited for use with a desktop computer.")
+    }
+  })
 
   # Reactive variables ---------------------------------------------------------
   

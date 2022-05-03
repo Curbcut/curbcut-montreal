@@ -43,6 +43,7 @@ ui <- function(request) {
                                     "family=Material+Icons"))),
   tags$head(tags$script(src = "sus.js")),
   tags$head(tags$script(src = "cookie.js")),
+  tags$head(tags$script(src = "shinybrowser.js")),
   tags$script(src = paste0("https://cdn.jsdelivr.net/npm/js-cookie@rc/",
                            "dist/js.cookie.min.js")),
   tags$head(tags$script(js_links_between_modules)),
