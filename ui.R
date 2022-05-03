@@ -43,12 +43,15 @@ ui <- function(request) {
                                     "family=Material+Icons"))),
   tags$head(tags$script(src = "sus.js")),
   tags$head(tags$script(src = "cookie.js")),
+  tags$head(tags$script(src = "shinybrowser.js")),
   tags$script(src = paste0("https://cdn.jsdelivr.net/npm/js-cookie@rc/",
                            "dist/js.cookie.min.js")),
   tags$head(tags$script(js_links_between_modules)),
   tags$head(tags$script(bookmark_url)),
   tags$head(tags$style(HTML(styler))),
   tags$head(tags$style(HTML(temp_styler))),
+  tags$script(HTML('Shiny.addCustomMessageHandler("changetitle", function(x) 
+                   {document.title=x});')),
   tags$head(includeHTML("www/google_analytics.html")),
   
   # Language switching ---------------------------------------------------------

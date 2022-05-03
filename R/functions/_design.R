@@ -351,7 +351,6 @@ styler <- '
 '
 
 temp_styler <- '
-
   #stories-back {
     z-index: 1000 !important;
   }

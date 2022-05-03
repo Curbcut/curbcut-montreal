@@ -27,10 +27,10 @@
     },
     "MASS": {
       "Package": "MASS",
-      "Version": "7.3-57",
+      "Version": "7.3-56",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "71476c1d88d1ebdf31580e5a257d5d31",
+      "Hash": "af0e1955cb80bb36b7988cc657db261e",
       "Requirements": []
     },
     "Matrix": {
@@ -502,10 +502,10 @@
     },
     "knitr": {
       "Package": "knitr",
-      "Version": "1.39",
+      "Version": "1.38",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "029ab7c4badd3cf8af69016b2ba27493",
+      "Hash": "10b3dc3c6acb925910edda5d0543b3a2",
       "Requirements": [
         "evaluate",
         "highr",
@@ -742,14 +742,14 @@
       "Package": "rdeck",
       "Version": "0.3.0.92200",
       "Source": "GitHub",
-      "Remotes": "anthonynorth/roxyglobals, anthonynorth/stylebox,\n        qfes/tidyassert",
       "RemoteType": "github",
+      "Remotes": "anthonynorth/roxyglobals, anthonynorth/stylebox, qfes/tidyassert",
       "RemoteHost": "api.github.com",
       "RemoteRepo": "rdeck",
       "RemoteUsername": "anthonynorth",
       "RemoteRef": "HEAD",
       "RemoteSha": "8c7cc7e3f27371258a20d54f49f7d46fac752539",
-      "Hash": "f8c84d0c3f0038fc3e56f357e8dc566c",
+      "Hash": "38d27200959a89cb3ecd230101e4e8fe",
       "Requirements": [
         "R6",
         "base64enc",
@@ -792,10 +792,10 @@
     },
     "rmarkdown": {
       "Package": "rmarkdown",
-      "Version": "2.14",
+      "Version": "2.13",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "31b60a882fabfabf6785b8599ffeb8ba",
+      "Hash": "ac78f4d2e0289d4cba73b88af567b8b1",
       "Requirements": [
         "bslib",
         "evaluate",
