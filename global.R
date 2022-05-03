@@ -143,6 +143,11 @@ systemfonts::register_font(
   bolditalic = "www/fonts/SourceSansPro-BoldItalic.ttf")
 
 
+# Error function ----------------------------------------------------------
+
+options(shiny.fullstacktrace = TRUE)
+
+
 # Connect to the db -------------------------------------------------------
 
 db <- dbConnect(SQLite(), "data/sql_db.sqlite")
