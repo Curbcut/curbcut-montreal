@@ -54,7 +54,7 @@ shinyServer(function(input, output, session) {
     # So that it repeats if there's a gap of 14 days between all visits
     time_last_htu_banner <- list(name = "time_last_htu_banner", 
                                  value = Sys.time())
-    
+
     session$sendCustomMessage("cookie-set", time_last_htu_banner)
   }, once = TRUE)
   
