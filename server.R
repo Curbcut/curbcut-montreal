@@ -5,40 +5,11 @@ shinyServer(function(input, output, session) {
 
   # Page title change, depending on page visited -------------------------------
 
-  observe({
-    added_title <- if (input$sus_page %in% unlist(mods_rdy)) {
-      unlist(unname(mods_rdy))[input$sus_page == unlist(mods_rdy)] |> 
-        names()
-    } else if (input$sus_page %in% c("about_sus", "how_to_use", "authors",
-                                     "place_explorer", "stories")) {
-      switch(input$sus_page,  
-        "about_sus" = "About Sus",
-        "how_to_use" = "How to use",
-        "authors" = "Authors",
-        "place_explorer" = "Place explorer",
-        "stories" = "Montréal stories")
-    }
-    
-    construct_title <- 
-      paste0("SUS", 
-             if (!is.null(added_title)) {
-               paste0(" - ", sus_translate(r = r, added_title))})
-    
-    session$sendCustomMessage("changetitle", construct_title)
-  })
+  observe(title_page_update(r = r, session = session, sus_page = input$sus_page))
   
   # If on Mobile, warning! -----------------------------------------------------
   
-  observe({
-    session <- shiny::getDefaultReactiveDomain()$rootScope()
-    shiny::req(session$input$.shinybrowser)
-    if (session$input$.shinybrowser$device != "Desktop") {
-      shinyjs::info(
-        sus_translate(r = r, 
-                      "Sus does not currently support mobile phones. ",
-                      "Please visit from a computer."))
-    }
-  })
+  observe(mobile_warning(r = r, session = session))
   
   
   # Reactive variables ---------------------------------------------------------

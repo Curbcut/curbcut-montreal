@@ -498,5 +498,5 @@ ui_and_misc_translated <-
   add_row(en = paste0("Comparison requires two different dates."), 
           fr = paste0("Une comparaison nécessite deux dates différentes.")) |> 
   add_row(en = paste0("Sus does not currently support mobile phones. Please visit from a computer."), 
-          fr = paste0("Sus ne fonctionne pas actuellement avec les téléphones mobiles. Veuillez visiter la plateforme avec un ordinateur."))
+          fr = paste0("Sus n'est pas actuellement compatible avec les téléphones mobiles. Veuillez visiter la plateforme avec un ordinateur."))
 
