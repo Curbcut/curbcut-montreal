@@ -2,7 +2,32 @@
 
 shinyServer(function(input, output, session) {
   
-  # If on Mobile, warning! --------------------------------------------------
+
+  # Page title change, depending on page visited -------------------------------
+
+  observe({
+    added_title <- if (input$sus_page %in% unlist(mods_rdy)) {
+      unlist(unname(mods_rdy))[input$sus_page == unlist(mods_rdy)] |> 
+        names()
+    } else if (input$sus_page %in% c("about_sus", "how_to_use", "authors",
+                                     "place_explorer", "stories")) {
+      switch(input$sus_page,  
+        "about_sus" = "About Sus",
+        "how_to_use" = "How to use",
+        "authors" = "Authors",
+        "place_explorer" = "Place explorer",
+        "stories" = "Montréal stories")
+    }
+    
+    construct_title <- 
+      paste0("SUS", 
+             if (!is.null(added_title)) {
+               paste0(" - ", sus_translate(r = r, added_title))})
+    
+    session$sendCustomMessage("changetitle", construct_title)
+  })
+  
+  # If on Mobile, warning! -----------------------------------------------------
   
   observe({
     session <- shiny::getDefaultReactiveDomain()$rootScope()
@@ -15,7 +40,7 @@ shinyServer(function(input, output, session) {
     }
   })
   
-
+  
   # Reactive variables ---------------------------------------------------------
   
   r <- reactiveValues(sus_bookmark = reactiveValues(active = FALSE),
@@ -28,7 +53,7 @@ shinyServer(function(input, output, session) {
   observe(updateNavbarPage(session, "sus_page", "home")) |> 
     bindEvent(input$title)
   
-
+  
   # First visit banner ---------------------------------------------------------
   
   # Reset after 14 days of last time the banner was shown
@@ -37,7 +62,6 @@ shinyServer(function(input, output, session) {
         (!is.null(input$cookies$time_last_htu_banner) &&
          Sys.time() > (as.POSIXct(input$cookies$time_last_htu_banner) + 1209600))) {
       
-      #TKTK SHOW BANNER HERE
       insertUI(selector = ".navbar-shadow",
                where = "beforeBegin",
                ui = HTML(paste0("<div id = 'htu_footer' class='fixed_footer'>",
@@ -56,10 +80,10 @@ shinyServer(function(input, output, session) {
                                 ":#FBFBFB;' class='action-button shiny-bound-input'>X</a>","</div>")))
     }
     
-    # So that it repeats if there's a gap of 7 days between all visits
+    # So that it repeats if there's a gap of 14 days between all visits
     time_last_htu_banner <- list(name = "time_last_htu_banner", 
                                  value = Sys.time())
-
+    
     session$sendCustomMessage("cookie-set", time_last_htu_banner)
   }, once = TRUE)
   
@@ -111,9 +135,9 @@ shinyServer(function(input, output, session) {
     }
   })
   
-
+  
   ## Active tab ----------------------------------------------------------------
-
+  
   observeEvent(input$sus_page, r$active_tab <- input$sus_page, 
                ignoreNULL = FALSE)
   
@@ -125,7 +149,7 @@ shinyServer(function(input, output, session) {
     req(input$sus_page)
     input$sus_page
     r$last_module})
-
+  
   observeEvent(r$link, {
     # Switch active tab when link is opened
     updateTabsetPanel(session, "sus_page", selected = r$link)
@@ -135,27 +159,27 @@ shinyServer(function(input, output, session) {
   
   # Links between modules
   observeEvent(r$sus_link$activity, {
-      # Delay to make sure the linked module is fully loaded
-      delay(500, {
-        update_module(mod_ns = r$sus_link$mod_ns, 
-                      session = session, 
-                      zoom = r$sus_link$zoom, 
-                      location = r$sus_link$location, 
-                      map_id = r$sus_link$map_id,
-                      df = r$sus_link$df, 
-                      zoom_auto = r$sus_link$zoom_auto, 
-                      var_left = r$sus_link$var_left,
-                      var_right = r$sus_link$var_right, 
-                      more_args = r$sus_link$more_args)
-      })
+    # Delay to make sure the linked module is fully loaded
+    delay(500, {
+      update_module(mod_ns = r$sus_link$mod_ns, 
+                    session = session, 
+                    zoom = r$sus_link$zoom, 
+                    location = r$sus_link$location, 
+                    map_id = r$sus_link$map_id,
+                    df = r$sus_link$df, 
+                    zoom_auto = r$sus_link$zoom_auto, 
+                    var_left = r$sus_link$var_left,
+                    var_right = r$sus_link$var_right, 
+                    more_args = r$sus_link$more_args)
+    })
   }, ignoreInit = TRUE)
   
-
+  
   ## Parse URL -----------------------------------------------------------------
   
   observe({
     query <- parseQueryString(session$clientData$url_search)
-
+    
     if (length(query) != 0) {
       
       # MARK THE ACTIVE BOOKMARKED
@@ -177,11 +201,11 @@ shinyServer(function(input, output, session) {
       # Retrieve important map info
       try({
         if (!is.null(query[["zm"]])) {
-        r$sus_bookmark$zoom <- as.numeric(query[["zm"]])}
+          r$sus_bookmark$zoom <- as.numeric(query[["zm"]])}
         
         if (!is.null(query[["lon"]])) {
-        r$sus_bookmark$location <- c(as.numeric(query[["lon"]]), 
-                                   as.numeric(query[["lat"]]))}
+          r$sus_bookmark$location <- c(as.numeric(query[["lon"]]), 
+                                       as.numeric(query[["lat"]]))}
       })
       # Retrieve var_left
       try({
@@ -191,22 +215,22 @@ shinyServer(function(input, output, session) {
       # Retrieve var_right
       try({
         if (!is.null(query[["v_r"]]))
-        r$sus_bookmark$var_right <- query[["v_r"]]
+          r$sus_bookmark$var_right <- query[["v_r"]]
       })
       # Retrieve select_id
       try({
         if (!is.null(query[["s_id"]]))
-        r$sus_bookmark$select_id <- query[["s_id"]]
+          r$sus_bookmark$select_id <- query[["s_id"]]
       })
       # Retrieve if df is manual
       try({
         if (!is.null(query[["zm_a"]])) {
-        r$sus_bookmark$zoom_auto <- as.logical(query[["zm_a"]])
-        r$sus_bookmark$df <- query[["df"]]}
+          r$sus_bookmark$zoom_auto <- as.logical(query[["zm_a"]])
+          r$sus_bookmark$df <- query[["df"]]}
       })
       try({
         if (!is.null(query[["more"]]))
-        r$sus_bookmark$more_args <- query[["more"]]
+          r$sus_bookmark$more_args <- query[["more"]]
       })
     }
   })
@@ -277,7 +301,7 @@ shinyServer(function(input, output, session) {
       content = function(file) {
         data <- active_mod()$data
         write.csv2(data, file)
-        },
+      },
       contentType = "text/csv")
   
   output$download_shp <-
@@ -390,8 +414,8 @@ shinyServer(function(input, output, session) {
                               envir = new.env(parent = globalenv()))
             shiny::incProgress(0.3)
           })
-        }
-      )
+      }
+    )
   
   ## Heartbeat function to keep app alive --------------------------------------
   
@@ -402,4 +426,4 @@ shinyServer(function(input, output, session) {
     if (rerun) invalidateLater(10000)
   })
   
-  })
+})
