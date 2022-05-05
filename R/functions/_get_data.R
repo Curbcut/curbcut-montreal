@@ -11,14 +11,23 @@ get_data <- function(df, var_left, var_right, island = FALSE, point_df = NULL,
 
   # Are var_left and var_right the same column?
   if (all(var_left == var_right)) {
-    stop("`var_left` and `var_right` are the same.")
+    warning(glue("`{var_left}` (var_left) and `{var_right}` (var_right)",
+                 " are the same. Returning NULL."))
+    return(NULL)
   }
   
   
   ## Get data table ------------------------------------------------------------
   
-  data <- get_data_table(df, var_left, var_right, data_type, point_df)
+  data <- tryCatch(
+    get_data_table(df, var_left, var_right, data_type, point_df),
+    error = function(e) {
+      warning(glue("get_data() failed with `{df}` (df), `{var_left}` ",
+                   "(var_left) and `{var_right}` (var_right). Returning NULL."))
+      return(NULL)
+    })
   
+  if (is.null(data)) return(NULL)
   
   ## Filter to island ----------------------------------------------------------
   
