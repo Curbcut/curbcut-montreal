@@ -263,7 +263,7 @@ shinyServer(function(input, output, session) {
           # Prepare data by attaching geometries
           geo <- qread(paste0("data/geometry_export/", 
                               export_data()$data_origin, ".qs"))
-          data <- merge(data_modal()$modal, geo, by = "ID")
+          data <- merge(data_modal()$data, geo, by = "ID")
           rm(geo)
           
           incProgress(0.3)
@@ -276,8 +276,8 @@ shinyServer(function(input, output, session) {
           name.zip  <- paste0(name.base, ".zip")
           
           if (length(Sys.glob(name.glob)) > 0) file.remove(Sys.glob(name.glob))
-          invisible(sf::st_write(data, dsn = name.shp,
-                       driver = "ESRI Shapefile", quiet = TRUE))
+          sf::st_write(data, dsn = name.shp,
+                       driver = "ESRI Shapefile", quiet = TRUE)
           
           zip::zipr(zipfile = name.zip, files = Sys.glob(name.glob))
           req(file.copy(name.zip, file))

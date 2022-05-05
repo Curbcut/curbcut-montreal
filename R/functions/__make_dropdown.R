@@ -15,7 +15,8 @@
 #' @return A named list that can be supplied to `select_var_UI` and 
 #' `select_var_server`.
 
-make_dropdown <- function(multi_year = FALSE, only = list(source = "census"), 
+make_dropdown <- function(multi_year = FALSE, 
+                          only = list(source = "Canadian census"), 
                           exclude = NULL, compare = FALSE) {
 
     vars <- variables

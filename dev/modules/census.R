@@ -73,6 +73,30 @@ census_vec <-
   mutate(source = "Canadian census")
 
 
+# Kepp track of vector and their parents for data explanation -------------
+
+census_dataset <- "CA16"
+raw_vecs <- cancensus::list_census_vectors(census_dataset)
+
+# Already has a parent vector
+other_parent_vec <- 
+  parent_vectors[str_which(parent_vectors, census_dataset)]
+names(other_parent_vec) <- str_remove(names(other_parent_vec), "\\d$")
+  
+census_vec |> 
+  select(var_code, vec_2016) |> 
+  rowwise() |> 
+  mutate(parent_vec_2016 = 
+           if_else(var_code %in% other_parent_vec, 
+                   list(unname(other_parent_vec)),
+           list(
+           map_chr(vec_2016, function(row) {
+             map_chr(row, function(vec) {
+               raw_vecs[raw_vecs$vector == vec, ]$parent_vector
+             })
+           })))) |> View()
+
+
 # Gather data -------------------------------------------------------------
 
 data_to_add <- add_census_data(census_vec, scales, years, parent_vectors)

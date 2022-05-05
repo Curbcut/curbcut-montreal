@@ -53,14 +53,14 @@ postal_codes <- qread("data/postal_codes.qs")
 # Global variables --------------------------------------------------------
 
 census_min <- 
-  variables$dates[variables$source == "census"] |> 
+  variables$dates[variables$source == "Canadian census"] |> 
   unlist() |> 
   unique() |> 
   min() |> 
   as.numeric()
 
 census_max <- 
-  variables$dates[variables$source == "census"] |> 
+  variables$dates[variables$source == "Canadian census"] |> 
   unlist() |> 
   unique() |> 
   max() |> 
