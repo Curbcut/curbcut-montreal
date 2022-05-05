@@ -257,6 +257,7 @@ alley_server <- function(id, r) {
       id = ns_id,
       r = r,
       map_viewstate = reactive(get_view_state(ns_id_map)),
+      var_left = var_left,
       var_right = var_right,
       select_id = select_id,
       df = df,
