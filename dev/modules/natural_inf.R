@@ -599,6 +599,13 @@ variables <-
   )
 
 
+# Add to modules table ----------------------------------------------------
+
+modules <- 
+  modules |> 
+  add_modules(id = "natural_inf",
+              metadata = TRUE)
+
 # Cleanup -----------------------------------------------------------------
 
 rm(datasets)

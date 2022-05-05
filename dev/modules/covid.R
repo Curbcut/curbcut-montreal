@@ -104,6 +104,14 @@ covid <-
   relocate(photo_ID, fill, .before = geometry)
 
 
+# Add to modules table ----------------------------------------------------
+
+modules <- 
+  modules |> 
+  add_modules(id = "covid",
+              metadata = TRUE)
+
+
 # Clean up ----------------------------------------------------------------
 
 rm(photo_join, covid_may_2020, covid_july_2020, covid_oct_2020)

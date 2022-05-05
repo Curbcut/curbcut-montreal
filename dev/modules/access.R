@@ -664,6 +664,14 @@ variables <-
   )
 
 
+# Add to modules table ----------------------------------------------------
+
+modules <- 
+  modules |> 
+  add_modules(id = "access",
+              metadata = TRUE)
+
+
 # Clean up ----------------------------------------------------------------
 
 rm(access, access_q3, access_q5, data_long, points)

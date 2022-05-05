@@ -174,7 +174,7 @@ canale_server <- function(id, r) {
       df = df,
       map_id = "map"
     )
-
+    
     # Update select_id() on bookmark
     observeEvent(r$sus_bookmark$active, {
       if (isTRUE(r$sus_bookmark$active)) {
@@ -187,8 +187,8 @@ canale_server <- function(id, r) {
       # So that bookmarking gets triggered only ONCE
       delay(1500, {
         r$sus_bookmark$active <- FALSE
-      r$sus_bookmark$df <- NULL
-      r$sus_bookmark$zoom <- NULL
+        r$sus_bookmark$df <- NULL
+        r$sus_bookmark$zoom <- NULL
       })
     }, priority = -2)
 
@@ -201,5 +201,21 @@ canale_server <- function(id, r) {
       })
     }, priority = -2)
     
+    # Return for data transprency and export
+    export_data <- reactive(data_export(id = id, 
+                                        data = data(), 
+                                        var_left = var_left(), 
+                                        var_right = var_right(), 
+                                        df = df()))
+    
+    observe({assign("data", data(), pos = 1)})
+    observe({assign("df", df(), pos = 1)})
+    observe({assign("var_left", var_left(), pos = 1)})
+    observe({assign("var_right", var_right(), pos = 1)})
+
+
+    observe({assign("export_data_", export_data(), pos = 1)})
+    
+    return(export_data)
   })
 }

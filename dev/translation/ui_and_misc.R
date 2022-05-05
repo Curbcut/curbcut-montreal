@@ -112,8 +112,8 @@ ui_and_misc_translated <-
           fr = paste0("Contact/commentaires")) |> 
   add_row(en = paste0("Bookmark"), 
           fr = paste0("Signet")) |> 
-  add_row(en = paste0("Data explanation and export"), 
-          fr = paste0("Explication et export des données")) |> 
+  add_row(en = paste0("Metadata and export"), 
+          fr = paste0("Métadonnées et exportation")) |> 
   add_row(en = paste0("Generate a report"), 
           fr = paste0("Générez un rapport")) |> 
   add_row(en = paste0("Active and safe lane circuit"), 

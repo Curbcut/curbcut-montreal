@@ -120,6 +120,19 @@ variables <-
 source("dev/other/add_variables.R")
 
 
+# Build module table ------------------------------------------------------
+
+modules <-
+  tibble(
+    id = character(),
+    metadata = logical(),
+    dataset_info = character(),
+    link = character()
+  )
+
+source("dev/other/add_modules.R")
+
+
 # Add topic variables (modules) -------------------------------------------
 
 source("dev/modules/census.R")
@@ -132,12 +145,18 @@ source("dev/modules/alley.R")
 source("dev/modules/gentrification.R")
 source("dev/modules/green_space.R")
 # source("dev/modules/marketed_sustainability.R")
-# source("dev/modules/natural_inf.R")
+source("dev/modules/natural_inf.R")
 # source("dev/modules/permits.R")
 # source("dev/modules/dmti.R")
 
 source("dev/modules/stories.R", encoding = "utf-8")
 source("dev/modules/place_explorer.R")
+
+# Addition of other modules missing scripts to the modules table
+modules <- 
+  modules |> 
+  add_modules(id = "mcp",
+              metadata = FALSE)
 
 
 # Post-processing ---------------------------------------------------------
@@ -218,6 +237,7 @@ qsave(street, file = "data2/street.qs")
 
 # data/
 qsave(variables, file = "data/variables.qs")
+qsave(modules, file = "data/modules.qs")
 qsavem(borough, CT, DA, file = "data/census.qsm")
 qsave(crash, file = "data/crash.qs")
 qsavem(alley, alley_text, file = "data/alley.qsm")
@@ -233,6 +253,12 @@ qsavem(stories, stories_mapping, file = "data/stories.qsm")
 qsave(dyk, "data/dyk.qs")
 qsave(title_text, "data/title_text.qs")
 
+# data/geometry_export
+qsave(select(borough_full, ID), file = "data/geometry_export/borough.qs")
+qsave(select(CT_full, ID), file = "data/geometry_export/CT.qs")
+qsave(select(DA_full, ID), file = "data/geometry_export/DA.qs")
+qsave(select(grid_full, ID), file = "data/geometry_export/grid.qs")
+
 
 # Save files we'll save in the SQL to data2 -------------------------------
 
@@ -247,10 +273,10 @@ qsave(grid, file = "data2/grid.qs")
 library(RSQLite)
 library(qs)
 library(stringr)
-qload("dev/data/natural_inf.qsm")
-tt_matrix <- qread("dev/data/tt_matrix.qs")
-building <- qread("dev/data/building.qs")
-grid <- qread("dev/data/grid.qs") |> 
+qload("data2/natural_inf.qsm")
+tt_matrix <- qread("data2/tt_matrix.qs")
+building <- qread("data2/building.qs")
+grid <- qread("data2/grid.qs") |> 
   # Until the data gets redrawn!
   dplyr::select(ID:households, ends_with("_2016"), starts_with("climate"))
 

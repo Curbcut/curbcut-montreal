@@ -70,7 +70,7 @@ source("dev/modules/census/census_education.R")
 
 census_vec <- 
   census_vec |> 
-  mutate(source = "census")
+  mutate(source = "Canadian census")
 
 
 # Gather data -------------------------------------------------------------
@@ -157,6 +157,15 @@ variables <- bind_rows(variables, data_to_add[[2]]) |>
                            str_starts(var_code, "lang") ~ "Language",
                            str_starts(var_code, "age") ~ "Age",
                            str_starts(var_code, "edu") ~ "Education"))
+
+
+# Add to modules table ----------------------------------------------------
+
+# Only housing is its own module from the census
+modules <- 
+  modules |> 
+  add_modules(id = "housing",
+              metadata = TRUE)
 
 
 # Clean up ----------------------------------------------------------------

@@ -28,6 +28,7 @@ shinyOptions(cache = cachem::cache_disk(file.path(dirname(tempdir()), "cache")))
 # Data --------------------------------------------------------------------
 
 variables <- qread("data/variables.qs")
+modules <- qread("data/modules.qs")
 title_text <- qread("data/title_text.qs")
 dyk <- qread("data/dyk.qs")
 qload("data/colours.qsm")
