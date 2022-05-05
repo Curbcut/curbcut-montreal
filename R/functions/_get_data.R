@@ -10,11 +10,11 @@ get_data <- function(df, var_left, var_right, island = FALSE, point_df = NULL,
   data_type <- get_data_type(df, var_left, var_right, build_str_as_DA)
 
   # Are var_left and var_right the same column?
-  # if (all(var_left == var_right)) {
-  #   warning(glue("`{var_left}` (var_left) and `{var_right}` (var_right)",
-  #                " are the same. Returning NULL."))
-  #   return(NULL)
-  # }
+  if (all(var_left == var_right)) {
+    warning(glue("`{var_left}` (var_left) and `{var_right}` (var_right)",
+                 " are the same. Returning NULL."))
+    return(NULL)
+  }
   
   
   ## Get data table ------------------------------------------------------------
