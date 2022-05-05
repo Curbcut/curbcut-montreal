@@ -51,6 +51,7 @@ housing_server <- function(id, r) {
     select_id <- reactiveVal(NA)
     poi <- reactiveVal(NULL)
     new_poi <- reactiveVal(NULL)
+    df <- reactiveVal("borough")
     
     # Map
     output[[ns_id_map]] <- renderRdeck({
@@ -103,8 +104,8 @@ housing_server <- function(id, r) {
     })
 
     # Get df for explore/legend/etc
-    df <- reactive(get_df(tile(), zoom_string(), r = r))
-
+    observe(df(get_df(tile(), zoom_string(), r = r)))
+    
     # Time variable depending on which slider is active
     slider_uni <- slider_server(id = ns_id, slider_id = "slu")
     slider_bi <- slider_server(id = ns_id, slider_id = "slb")
@@ -231,29 +232,29 @@ housing_server <- function(id, r) {
         "s-slu" = slider_uni(),
         "s-slb" = paste(slider_bi(), collapse = "-")))
     )
-
+    
     # Update select_id() on bookmark
     observeEvent(r$sus_bookmark$active, {
       if (isTRUE(r$sus_bookmark$active)) {
         delay(1000, {
           if (!is.null(r$sus_bookmark$select_id))
-            if (r$sus_bookmark$select_id != "NA")
+            if (r$sus_bookmark$select_id != "NA") 
               select_id(r$sus_bookmark$select_id)
+          df(r$sus_bookmark$df)
         })
       }
       # So that bookmarking gets triggered only ONCE
       delay(1500, {
         r$sus_bookmark$active <- FALSE
-        r$sus_bookmark$df <- NULL
         r$sus_bookmark$zoom <- NULL
       })
     }, priority = -2)
-
+    
     # Update select_id() on module link
     observeEvent(r$sus_link$activity, {
       delay(1000, {
         if (!is.null(r$sus_link$select_id)) select_id(r$sus_link$select_id)
-        r$sus_link$df <- NULL
+        df(r$sus_link$df)
         r$sus_link$zoom <- NULL
       })
     }, priority = -2)

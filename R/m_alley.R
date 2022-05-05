@@ -55,6 +55,7 @@ alley_server <- function(id, r) {
     zoom_string <- reactiveVal(get_zoom_string(map_zoom, map_zoom_levels))
     select_id <- reactiveVal(NA)
     poi <- reactiveVal(NULL)
+    df <- reactiveVal("borough_empty")
     
     # Sidebar
     sidebar_server(id = ns_id, r = r, x = "alley")
@@ -123,7 +124,7 @@ alley_server <- function(id, r) {
     tile2 <- reactive("")
     
     # Get df for explore/legend/etc
-    df <- reactive(get_df(tile(), zoom_string(), r = r))
+    observe(df(get_df(tile(), zoom_string(), r = r)))
     
     # Focus on visited alleys
     visited <- checkbox_server(id = ns_id)
@@ -272,12 +273,12 @@ alley_server <- function(id, r) {
           if (!is.null(r$sus_bookmark$select_id))
             if (r$sus_bookmark$select_id != "NA") 
               select_id(r$sus_bookmark$select_id)
+          df(r$sus_bookmark$df)
         })
       }
       # So that bookmarking gets triggered only ONCE
       delay(1500, {
         r$sus_bookmark$active <- FALSE
-        r$sus_bookmark$df <- NULL
         r$sus_bookmark$zoom <- NULL
       })
     }, priority = -2)
@@ -286,7 +287,7 @@ alley_server <- function(id, r) {
     observeEvent(r$sus_link$activity, {
       delay(1000, {
         if (!is.null(r$sus_link$select_id)) select_id(r$sus_link$select_id)
-        r$sus_link$df <- NULL
+        df(r$sus_link$df)
         r$sus_link$zoom <- NULL
       })
     }, priority = -2)
