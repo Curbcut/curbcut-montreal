@@ -234,24 +234,31 @@ qsavem(borough_full, CT_full, DA_full, file = "data2/census_full.qsm")
 qsave(grid_full, file = "data2/grid_full.qs")
 qsave(building_full, file = "data2/building_full.qs")
 qsave(street, file = "data2/street.qs")
+qsave(metro_lines, file = "data2/metro_lines.qs")
+qsave(dyk, "data/dyk.qs")
+qsave(title_text, "data/title_text.qs")
 
 # data/
+
+## global data
 qsave(variables, file = "data/variables.qs")
 qsave(modules, file = "data/modules.qs")
+qsave(postal_codes, file = "data/postal_codes.qs")
+
+## census related
 qsavem(borough, CT, DA, file = "data/census.qsm")
+qsave(census_variables, file = "data/census_variables.qs")
+
+## module data
 qsave(crash, file = "data/crash.qs")
 qsavem(alley, alley_text, file = "data/alley.qsm")
 qsavem(covid, covid_pics, file = "data/covid.qsm")
 qsave(green_space, file = "data/green_space.qs")
 # qsave(marketed_sustainability, file = "data/marketed_sustainability.qs")
-qsave(metro_lines, file = "data/metro_lines.qs")
 # qsavem(permits_choropleth, permits, file = "data/permits.qsm")
 qsavem(title_card_indicators, pe_var_hierarchy, pe_theme_order, CSDUID_groups,
        title_card_index, pe_variable_order, file = "data/place_explorer.qsm")
-qsave(postal_codes, file = "data/postal_codes.qs")
 qsavem(stories, stories_mapping, file = "data/stories.qsm")
-qsave(dyk, "data/dyk.qs")
-qsave(title_text, "data/title_text.qs")
 
 # data/geometry_export
 qsave(select(borough_full, ID), file = "data/geometry_export/borough.qs")

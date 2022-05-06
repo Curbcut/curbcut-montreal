@@ -35,6 +35,7 @@ qload("data/colours.qsm")
 tile_lookup <- qread("data/tile_lookup.qs")
 
 qload("data/census.qsm")
+census_variables <- qread("data/census_variables.qs")
 # street <- qread("data/street.qs")
 
 # qload("data/covid.qsm")
@@ -42,7 +43,6 @@ qload("data/census.qsm")
 qload("data/alley.qsm")
 # crash <- qread("data/crash.qs")
 # marketed_sustainability <- qread("data/marketed_sustainability.qs")
-metro_lines <- qread("data/metro_lines.qs")
 
 qload("data/stories.qsm")
 
