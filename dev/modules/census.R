@@ -79,7 +79,6 @@ census_variables <-
   map(years, function(year) {
     
     census_dataset <- paste0("CA", sub("20", "", year))
-    
     raw_vecs <- cancensus::list_census_vectors(census_dataset)
     
     # Already has a parent vector
@@ -91,6 +90,13 @@ census_variables <-
       census_vec |> 
       select(var_code, all_of(paste0("vec_", year))) |> 
       rowwise() |> 
+      mutate(vec_label = list(
+        map_chr(.data[[paste0("vec_", year)]], function(row) {
+          map_chr(row, function(vec) {
+            if (is.na(vec)) return(NA)
+            raw_vecs[raw_vecs$vector == vec, ]$label[1]
+          })
+        }) |> unique())) |> 
       mutate(parent_vec = 
                if_else(var_code %in% names(other_parent_vec), 
                        list(unname(other_parent_vec)[
@@ -123,16 +129,16 @@ census_variables <-
         }) |> unique())) |> 
       ungroup()
     
-    names(out)[3] <- paste0("parent_vec_", year)
-    names(out)[4] <- paste0("aggregation_", year)
-    names(out)[5] <- paste0("parent_vec_label_", year)
+    names(out)[3] <- paste0("vec_label_", year)
+    names(out)[4] <- paste0("parent_vec_", year)
+    names(out)[5] <- paste0("aggregation_", year)
+    names(out)[6] <- paste0("parent_vec_label_", year)
     
     out
     
   }) |> reduce(left_join, by = "var_code")
 
 # Arrange more easily
-
 census_variables <- 
   map_dfr(years, function(year) {
     map_dfr(census_variables$var_code, function(var) {
@@ -144,6 +150,7 @@ census_variables <-
       
       tibble(var_code = paste0(var, "_", year),
              vec = row[[paste0("vec_", year)]],
+             vec_label = row[[paste0("vec_label_", year)]],
              parent_vec = row[[paste0("parent_vec_", year)]],
              aggregation = row[[paste0("aggregation_", year)]],
              parent_vec_label = row[[paste0("parent_vec_label_", year)]])
