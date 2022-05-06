@@ -241,7 +241,13 @@ variables <- bind_rows(variables, data_to_add[[2]]) |>
                            str_starts(var_code, "family") ~ "Household",
                            str_starts(var_code, "lang") ~ "Language",
                            str_starts(var_code, "age") ~ "Age",
-                           str_starts(var_code, "edu") ~ "Education"))
+                           str_starts(var_code, "edu") ~ "Education")) |> 
+  mutate(interpolated = list(c(
+    grid = "dissemination area",
+    DA = FALSE,
+    CT = FALSE,
+    borough = "dissemination area"
+  )))
 
 
 # Add to modules table ----------------------------------------------------

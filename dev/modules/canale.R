@@ -187,10 +187,13 @@ variables <-
     theme = "Urban life",
     private = FALSE,
     dates = c("2016"),
-    scales = c("borough", "building", "CT", "DA", "street"),#, "grid", "street"),
+    scales = c("borough", "CT", "DA"),#, "grid"),
     breaks_q3 = breaks_q3_active,
     breaks_q5 = breaks_q5_active,
-    source = "McGill Geo-Social Determinants of Health Research Group")
+    source = "McGill Geo-Social Determinants of Health Research Group",
+    interpolated = list(c(DA = FALSE,
+                          CT = "dissemination area",
+                          borough = "dissemination area")))
 
 
 # Add to modules table ----------------------------------------------------

@@ -241,9 +241,6 @@ shinyServer(function(input, output, session) {
     showModal(data_modal()$modal)
   })
   
-  # observeEvent(export_data(), {assign("export_data1", export_data(), pos = 1)},
-  #              ignoreNULL = TRUE, ignoreInit = TRUE)
-  
   output$download_csv <-
     downloadHandler(
       filename = paste0(export_data()$id, "_data.csv"),

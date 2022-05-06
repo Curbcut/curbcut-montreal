@@ -43,7 +43,7 @@ data_export <- function(id, data, var_left, var_right, df) {
     }))
     
     # Origin data
-    df <- if (df == "building") "DA" else df
+    data_origin <- if (df == "building") "DA" else df
     
   # Return list
   return(list(id = id, 
@@ -52,6 +52,7 @@ data_export <- function(id, data, var_left, var_right, df) {
               var_right = var_right,
               var_left_code = var_left_code,
               var_right_code = var_right_code,
-              data_origin = df))
+              df = df,
+              data_origin = data_origin))
   
 }

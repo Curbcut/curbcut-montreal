@@ -114,7 +114,8 @@ variables <-
     scales = list(),
     breaks_q3 = list(),
     breaks_q5 = list(),
-    source = character()
+    source = character(),
+    interpolated = list()
   )
 
 source("dev/other/add_variables.R")

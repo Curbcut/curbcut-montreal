@@ -25,7 +25,7 @@ add_vars <- function(data_out, census_vec, breaks_q3, breaks_q5, scales,
     dates_active <- unique(dates_active)
     
     # Get scales
-    scales_active <- c("borough", "building", "CT", "DA", "grid", "street")
+    scales_active <- c("borough", "CT", "DA", "grid")
     scales_active <- scales_active[map_lgl(scales_active, function(df) {
       if (!is.null(data_out[[df]])) {
         data_out[[df]] |>

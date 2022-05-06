@@ -247,10 +247,14 @@ variables <-
     theme = "Climate risk",
     private = FALSE,
     dates = NA,
-    scales = c("borough", "building", "CT", "DA", "grid", "street"),
+    scales = c("borough", "CT", "DA", "grid"),
     breaks_q3 = select(breaks_q3_active, scale:rank, var = climate_drought_ind),
     breaks_q5 = climate_risk_q5$climate_drought_ind,
-    source = "City of Montreal's open data website") |> 
+    source = "City of Montreal's open data website",
+    interpolated = list(c(grid = FALSE,
+                          DA = "250-m grid cells",
+                          CT = "250-m grid cells",
+                          borough = "250-m grid cells"))) |> 
   add_variables(
     var_code = "climate_flood_ind",
     var_title = "Flood vulnerability",
@@ -260,10 +264,14 @@ variables <-
     theme = "Climate risk",
     private = FALSE,
     dates = NA,
-    scales = c("borough", "building", "CT", "DA", "grid", "street"),
+    scales = c("borough", "CT", "DA", "grid"),
     breaks_q3 = select(breaks_q3_active, scale:rank, var = climate_flood_ind),
     breaks_q5 = climate_risk_q5$climate_flood_ind,
-    source = "City of Montreal's open data website") |> 
+    source = "City of Montreal's open data website",
+    interpolated = list(c(grid = FALSE,
+                          DA = "250-m grid cells",
+                          CT = "250-m grid cells",
+                          borough = "250-m grid cells"))) |> 
   add_variables(
     var_code = "climate_heavy_rain_ind",
     var_title = "Heavy rain vulnerability",
@@ -273,11 +281,15 @@ variables <-
     theme = "Climate risk",
     private = FALSE,
     dates = NA,
-    scales = c("borough", "building", "CT", "DA", "grid", "street"),
+    scales = c("borough", "CT", "DA", "grid"),
     breaks_q3 = select(breaks_q3_active, scale:rank, 
                        var = climate_heavy_rain_ind),
     breaks_q5 = climate_risk_q5$climate_heavy_rain_ind,
-    source = "City of Montreal's open data website") |> 
+    source = "City of Montreal's open data website",
+    interpolated = list(c(grid = FALSE,
+                          DA = "250-m grid cells",
+                          CT = "250-m grid cells",
+                          borough = "250-m grid cells"))) |> 
   add_variables(
     var_code = "climate_destructive_storms_ind",
     var_title = "Destructive storm vulnerability",
@@ -288,11 +300,15 @@ variables <-
     theme = "Climate risk",
     private = FALSE,
     dates = NA,
-    scales = c("borough", "building", "CT", "DA", "grid", "street"),
+    scales = c("borough", "CT", "DA", "grid"),
     breaks_q3 = select(breaks_q3_active, scale:rank, 
                        var = climate_destructive_storms_ind),
     breaks_q5 = climate_risk_q5$climate_destructive_storms_ind,
-    source = "City of Montreal's open data website") |> 
+    source = "City of Montreal's open data website",
+    interpolated = list(c(grid = FALSE,
+                          DA = "250-m grid cells",
+                          CT = "250-m grid cells",
+                          borough = "250-m grid cells"))) |> 
   add_variables(
     var_code = "climate_heat_wave_ind",
     var_title = "Heat wave vulnerability",
@@ -302,11 +318,15 @@ variables <-
     theme = "Climate risk",
     private = FALSE,
     dates = NA,
-    scales = c("borough", "building", "CT", "DA", "grid", "street"),
+    scales = c("borough", "CT", "DA", "grid"),
     breaks_q3 = select(breaks_q3_active, scale:rank, 
                        var = climate_heat_wave_ind),
     breaks_q5 = climate_risk_q5$climate_heat_wave_ind,
-    source = "City of Montreal's open data website")
+    source = "City of Montreal's open data website",
+    interpolated = list(c(grid = FALSE,
+                          DA = "250-m grid cells",
+                          CT = "250-m grid cells",
+                          borough = "250-m grid cells")))
 
 
 # Add to modules table ----------------------------------------------------
