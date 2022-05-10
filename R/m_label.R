@@ -29,7 +29,7 @@ label_server <- function(id, map_id, tile, zoom) {
         add_mvt_layer(
           id = paste0(id, "_street_1"),
           data = if (tile() %in% c("borough", "CT", "DA", "grid", "auto_zoom"))
-            tile_json("sus-mcgill.street_1") else "",
+            mvt_url("sus-mcgill.street_1") else "",
           visible = show_street(),
           line_width_units = "meters",
           line_width_min_pixels = 2,
@@ -43,7 +43,7 @@ label_server <- function(id, map_id, tile, zoom) {
         add_mvt_layer(
           id = paste0(id, "_street_2"),
           data = if (tile() %in% c("borough", "CT", "DA", "grid", "auto_zoom")) 
-            tile_json("sus-mcgill.street_2") else "",
+            mvt_url("sus-mcgill.street_2") else "",
           visible = show_street(),
           line_width_units = "meters",
           line_width_min_pixels = 1,
@@ -57,7 +57,7 @@ label_server <- function(id, map_id, tile, zoom) {
         add_mvt_layer(
           id = paste0(id, "_street_3"),
           data = if (tile() %in% c("borough", "CT", "DA", "grid", "auto_zoom")) 
-            tile_json("sus-mcgill.street_3") else "",
+            mvt_url("sus-mcgill.street_3") else "",
           visible = show_street(),
           line_width_units = "meters",
           line_width_min_pixels = 0.5,
@@ -71,7 +71,7 @@ label_server <- function(id, map_id, tile, zoom) {
         add_mvt_layer(
           id = paste0(id, "_building"),
           data = if (tile() %in% c("borough", "CT", "DA", "grid"))
-            tile_json("sus-mcgill.DA_building_empty") else "",
+            mvt_url("sus-mcgill.DA_building_empty") else "",
           pickable = FALSE,
           auto_highlight = FALSE,
           get_fill_color = "#FFFFFF55",
@@ -83,7 +83,7 @@ label_server <- function(id, map_id, tile, zoom) {
         add_mvt_layer(
           id = paste0(id, "_borough_labels"), 
           data = if (tile() %in% c("borough", "CT", "grid", "auto_zoom")) 
-            tile_json("sus-mcgill.borough_label") else "",
+            mvt_url("sus-mcgill.borough_label") else "",
           visible = show_label(),
           point_type = "text", 
           get_text = name,
