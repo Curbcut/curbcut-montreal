@@ -258,7 +258,7 @@ shinyServer(function(input, output, session) {
           incProgress(0.4)
           
           # Prepare data by attaching geometries
-          geo <- qread(paste0("data/geometry_export/", 
+          geo <- qread(paste0("data_temp/geometry_export/", 
                               export_data()$data_origin, ".qs"))
           data <- merge(data_modal()$data, geo, by = "ID")
           rm(geo)
