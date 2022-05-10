@@ -30,6 +30,8 @@ vignettes/*.pdf
 /dev/data*
 # Main data
 /data*
+# Temp main data
+/data_temp*
 # Other
 *DS_Store
 *.Rproj
