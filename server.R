@@ -129,26 +129,25 @@ shinyServer(function(input, output, session) {
   }, ignoreInit = TRUE, ignoreNULL = TRUE)
   
   # Links between modules
-  observeEvent(r$sus_link$activity, {
-    # Delay to make sure the linked module is fully loaded
-    delay(500, {
-      update_module(mod_ns = r$sus_link$mod_ns, 
-                    session = session, 
-                    zoom = r$sus_link$zoom, 
-                    location = r$sus_link$location, 
-                    map_id = r$sus_link$map_id,
-                    df = r$sus_link$df, 
-                    zoom_auto = r$sus_link$zoom_auto, 
-                    var_left = r$sus_link$var_left,
-                    var_right = r$sus_link$var_right, 
-                    more_args = r$sus_link$more_args)
-    })
-  }, ignoreInit = TRUE)
+  # observeEvent(r$sus_link$activity, {
+  #   # Delay to make sure the linked module is fully loaded
+  #   delay(500, {
+  #     update_module(mod_ns = r$sus_link$mod_ns, 
+  #                   session = session, 
+  #                   zoom = r$sus_link$zoom, 
+  #                   location = r$sus_link$location, 
+  #                   map_id = r$sus_link$map_id,
+  #                   zoom_auto = r$sus_link$zoom_auto, 
+  #                   var_left = r$sus_link$var_left,
+  #                   var_right = r$sus_link$var_right, 
+  #                   more_args = r$sus_link$more_args)
+  #   })
+  # }, ignoreInit = TRUE)
   
   
   ## Parse URL -----------------------------------------------------------------
   
-  observe({
+  observeEvent(parseQueryString(session$clientData$url_search), {
     query <- parseQueryString(session$clientData$url_search)
     
     if (length(query) != 0) {
@@ -190,57 +189,45 @@ shinyServer(function(input, output, session) {
       })
       # Retrieve select_id
       try({
-        if (!is.null(query[["s_id"]]))
-          r$sus_bookmark$select_id <- query[["s_id"]]
+        if (!is.null(query[["s_id"]])) 
+          r[[query[["tb"]]]]$select_id <- reactiveVal(query[["s_id"]])
       })
-      # Retrieve if df is manual
+      # Retrieve if zoom is automatic or not
       try({
-        if (!is.null(query[["zm_a"]])) {
+        if (!is.null(query[["zm_a"]]))
           r$sus_bookmark$zoom_auto <- as.logical(query[["zm_a"]])
-          r$sus_bookmark$df <- query[["df"]]}
       })
+      # Retrieve df
+      try({
+        if (!is.null(query[["df"]])) 
+          r[[query[["tb"]]]]$df <- reactiveVal(query[["df"]])
+      })
+      # Additional
       try({
         if (!is.null(query[["more"]]))
           r$sus_bookmark$more_args <- query[["more"]]
       })
     }
-  })
+  }, once = TRUE)
   
   
   ## Modules -------------------------------------------------------------------
   
   active_mod_server <- function(active_tab = input$sus_page) {
-    if (active_tab == "home") return(home_server("home", session, r = r))
-    if (active_tab == "access") return(access_server("access", r = r))
-    if (active_tab == "alley") return(alley_server("alley", r = r))    
-    if (active_tab == "canale") return(canale_server("canale", r = r))
-    if (active_tab == "climate_risk") 
-      return(climate_risk_server("climate_risk", r = r))
-    if (active_tab == "covid") return(covid_server("covid", r = r))
-    if (active_tab == "crash") return(crash_server("crash", r = r))
-    if (active_tab == "gentrification") 
-      return(gentrification_server("gentrification", r = r))
-    if (active_tab == "green_space") return(green_space_server("green_space", r = r))
-    if (active_tab == "housing") return(housing_server("housing", r = r))
-    if (active_tab == "marketed_sustainability") 
-      return(marketed_sustainability_server("marketed_sustainability", r = r))
-    if (active_tab == "natural_inf") 
-      return(natural_inf_server("natural_inf", r = r))
-    if (active_tab == "mcp") return(mcp_server("mcp", r = r))
-    if (active_tab == "permits") return(permits_server("permits", r = r))
-    if (active_tab == "stories") return(stories_server("stories", r = r))
-    if (active_tab == "place_explorer") 
-      return(place_explorer_server("place_explorer", r = r))
-    if (active_tab == "about_sus") return(about_sus_server("about_sus", r = r))
-    if (active_tab == "how_to_use") return(how_to_use_server("how_to_use", r = r))
-    if (active_tab == "authors") return(authors_server("authors", r = r))
+    mod_function <- 
+      paste0(active_tab, "_server('", active_tab, "', r = r)")
+    
+    # Run the function but also catch its output for data exportation
+    assign("export_data", eval(parse(text = mod_function)), 
+           pos = 1)
   }
   
   observeEvent(input$sus_page, {
-    bookmark_server("reset", r = r)
-    if (!is.null(r$sus_bookmark$active) && isTRUE(r$sus_bookmark$active)) 
-      active_mod_server()
+    bookmark_server(input$sus_page, r = r)
+    
+    # Trigger the module server function only if it hasn't been opened already
     if (!input$sus_page %in% r$previous_tabs()) active_mod_server()
+    
     updateQueryString("?")
   }, ignoreInit = FALSE)
   

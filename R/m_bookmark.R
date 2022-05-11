@@ -18,7 +18,7 @@
 #' @param more_args Named vectors indicating other input that must be updated
 #' following bookmarking.
 
-bookmark_server <- function(id, r = r,
+bookmark_server <- function(id, r,
                             map_viewstate = reactive(NULL), 
                             var_left = reactive(NULL),
                             var_right = reactive(NULL), 
@@ -91,7 +91,6 @@ bookmark_server <- function(id, r = r,
                       zoom = r$sus_bookmark$zoom, 
                       location = r$sus_bookmark$location, 
                       map_id = map_id, 
-                      df = r$sus_bookmark$df, 
                       zoom_auto = r$sus_bookmark$zoom_auto, 
                       var_left = r$sus_bookmark$var_left,
                       var_right = r$sus_bookmark$var_right, 

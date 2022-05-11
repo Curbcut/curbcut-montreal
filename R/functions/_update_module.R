@@ -7,9 +7,9 @@
 #' bookmarking AND dyk. It is used to correctly identify how to collect and 
 #' recreate var_left. 
 
-update_module <- function(r = r, mod_ns = NULL, id = mod_ns, session, zoom, location, 
-                          map_id = "map", df, zoom_auto, var_left, var_right, 
-                          more_args) {
+update_module <- function(r, mod_ns = NULL, id = mod_ns, session, zoom, 
+                          location, map_id = "map", zoom_auto, var_left, 
+                          var_right, more_args) {
   
   # Drop down menus should be delayed, as updating other widgets could 
   # have a reset power on them (e.g. housing)
@@ -26,9 +26,9 @@ update_module <- function(r = r, mod_ns = NULL, id = mod_ns, session, zoom, loca
                     view_state(center = location, zoom = zoom)
       )
     }}
-  
+
   # Update df()
-  if (!is.null(df)) {
+  if (!is.null(r[[id]]$df)) {
     if (isFALSE(zoom_auto)) {
       updateCheckboxInput(
         session = session,
@@ -39,7 +39,7 @@ update_module <- function(r = r, mod_ns = NULL, id = mod_ns, session, zoom, loca
     updateSliderTextInput(
       session = session,
       inputId = construct_namespace("zoom_slider"),
-      selected = sus_translate(r = r, get_zoom_name(df))
+      selected = sus_translate(r = r, get_zoom_name(r[[id]]$df()))
     )
   }
 
