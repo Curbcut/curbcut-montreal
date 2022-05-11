@@ -32,31 +32,32 @@ explore_UI <- function(id) {
   )
 }
 
-explore_server <- function(id, r = r, data, var_left, var_right, df, select_id, 
+explore_server <- function(id, r, data, var_left, var_right,
                            build_str_as_DA = reactive(TRUE), 
                            graph = reactive(explore_graph), 
                            graph_args = reactive(list(
                              r = r,
                              data = data(), var_left = var_left(), 
-                             var_right = var_right(), df = df(), 
-                             select_id = select_id(), 
+                             var_right = var_right(), df = r[[id]]$df(), 
+                             select_id = r[[id]]$select_id(), 
                              build_str_as_DA = build_str_as_DA())),
                            table = reactive(info_table),
                            table_args = reactive(list(
                              r = r,
                              data = data(), var_left = var_left(),
-                             var_right = var_right(), df = df(),
-                             select_id = select_id(),
+                             var_right = var_right(), df = r[[id]]$df(),
+                             select_id = r[[id]]$select_id(),
                              build_str_as_DA = build_str_as_DA()))) {
   
   stopifnot(is.reactive(data))
   stopifnot(is.reactive(var_left))
   stopifnot(is.reactive(var_right))
-  stopifnot(is.reactive(df))
-  stopifnot(is.reactive(select_id))
   stopifnot(is.reactive(build_str_as_DA))
 
   moduleServer(id, function(input, output, session) {
+    
+    select_id <- r[[id]]$select_id
+    df <- r[[id]]$df
     
     # Get var_type
     var_type <- reactive(tryCatch(get_var_type(

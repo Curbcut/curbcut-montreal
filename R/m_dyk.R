@@ -7,12 +7,14 @@ dyk_UI <- function(id) {
           uiOutput(NS(id, "dyk_contents")))
   }
 
-dyk_server <- function(id, r = r, var_left, var_right, df, 
+dyk_server <- function(id, r, var_left, var_right, 
                        poi = reactive(NULL)) {
   stopifnot(is.reactive(var_left))
   stopifnot(is.reactive(var_right))
   
   moduleServer(id, function(input, output, session) {
+    
+    df <- r[[id]]$df
     
     dyk_output <- reactive(get_dyk_table(id, r, var_left(), var_right(), 
                                          isolate(df()), poi()))

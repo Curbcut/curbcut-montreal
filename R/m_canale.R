@@ -39,9 +39,9 @@ canale_server <- function(id, r) {
     # Initial reactives
     zoom <- reactiveVal(get_zoom(map_zoom))
     zoom_string <- reactiveVal(get_zoom_string(map_zoom, map_zoom_levels))
-    select_id <- reactiveVal(NA)
+    r[[ns_id]]$select_id <- reactive(NA)
     poi <- reactiveVal(NULL)
-    df <- reactiveVal("borough")
+    r[[ns_id]]$df <- reactive("borough")
 
     # Map
     output[[ns_id_map]] <- renderRdeck({
@@ -70,12 +70,12 @@ canale_server <- function(id, r) {
     })
 
     # Click reactive
-    observe({
+    observeEvent(get_clicked_object(ns_id_map), {
       selection <- get_clicked_object(ns_id_map)$ID
-      if (!is.na(select_id()) && selection == select_id()) {
-        select_id(NA)
-      } else select_id(selection)
-    }) |> bindEvent(get_clicked_object(ns_id_map))
+      if (!is.na(r[[ns_id]]$select_id()) && selection == r[[ns_id]]$select_id()) {
+        r[[ns_id]]$select_id <- reactive(NA)
+      } else r[[ns_id]]$select_id <- reactive(selection)
+    })# |> bindEvent(get_clicked_object(ns_id_map))
 
     # Choose tileset
     tile <- zoom_server(
@@ -85,7 +85,7 @@ canale_server <- function(id, r) {
       zoom_levels = reactive(map_zoom_levels))
 
     # Get df for explore/legend/etc
-    observe(df(get_df(tile(), zoom_string(), r = r)))
+    r[[ns_id]]$df <- reactive(get_df(tile(), zoom_string()))
     
     # Time
     time <- reactive("2016")
@@ -112,7 +112,7 @@ canale_server <- function(id, r) {
 
     # Data
     data <- reactive(get_data(
-      df = df(),
+      df = r[[ns_id]]$df(),
       var_left = var_left(),
       var_right = var_right()))
 
@@ -121,8 +121,7 @@ canale_server <- function(id, r) {
       id = ns_id,
       r = r,
       var_left = var_left,
-      var_right = var_right,
-      df = df)
+      var_right = var_right)
 
     # Did-you-know panel
     dyk_server(
@@ -130,18 +129,17 @@ canale_server <- function(id, r) {
       r = r,
       var_left = var_left,
       var_right = var_right,
-      df = df,
       poi = poi)
 
     # Update map in response to variable changes or zooming
     rdeck_server(
       id = ns_id,
+      r = r,
       map_id = "map",
       tile = tile,
       tile2 =  tile2,
       map_var = map_var,
-      zoom = zoom,
-      select_id = select_id)
+      zoom = zoom)
 
     # Update map labels
     label_server(
@@ -151,21 +149,27 @@ canale_server <- function(id, r) {
       zoom = zoom)
 
     # De-select
-    observeEvent(input[[paste0(ns_id, "-clear_selection")]], select_id(NA))
+    observeEvent(input[[paste0(ns_id, "-clear_selection")]],
+                 r[[ns_id]]$select_id <- reactive(NA))
     # Error check
-    observeEvent(df(), select_id(NA), ignoreInit = TRUE)
-    observeEvent(data(), if (!select_id() %in% data()$ID) select_id(NA),
-                 ignoreInit = TRUE)
-
+    # observeEvent(r[[ns_id]]$df(),
+    #              {r[[ns_id]]$select_id <- reactive(NA)},
+    #              ignoreInit = TRUE)
+    
+    # observeEvent(data(), {
+    #   if (!r[[ns_id]]$select_id() %in% data()$ID)
+    #     r[[ns_id]]$select_id <- reactive(NA)
+    #   }, ignoreInit = TRUE)
+    
+    observe(print(r[[ns_id]]$df()))
+    
     # Explore panel
     explore_content <- explore_server(
       id = ns_id,
       r = r,
       data = data,
       var_left = var_left,
-      var_right = var_right,
-      df = df,
-      select_id = select_id)
+      var_right = var_right)
 
     # Bookmarking
     bookmark_server(
@@ -173,36 +177,36 @@ canale_server <- function(id, r) {
       r = r,
       map_viewstate = reactive(get_view_state(ns_id_map)),
       var_right = var_right,
-      select_id = select_id,
-      df = df,
+      select_id = r[[ns_id]]$select_id,
+      df = r[[ns_id]]$df,
       map_id = "map"
     )
 
-    # Update select_id() on bookmark
-    observeEvent(r$sus_bookmark$active, {
-      if (isTRUE(r$sus_bookmark$active)) {
-        delay(1000, {
-          if (!is.null(r$sus_bookmark$select_id))
-            if (r$sus_bookmark$select_id != "NA") 
-              select_id(r$sus_bookmark$select_id)
-          df(r$sus_bookmark$df)
-        })
-      }
-      # So that bookmarking gets triggered only ONCE
-      delay(1500, {
-        r$sus_bookmark$active <- FALSE
-        r$sus_bookmark$zoom <- NULL
-      })
-    }, priority = -2)
-    
-    # Update select_id() on module link
-    observeEvent(r$sus_link$activity, {
-      delay(1000, {
-        if (!is.null(r$sus_link$select_id)) select_id(r$sus_link$select_id)
-        df(r$sus_link$df)
-        r$sus_link$zoom <- NULL
-      })
-    }, priority = -2)
+    # # Update select_id() and df() on bookmark
+    # observeEvent(r$sus_bookmark$active, {
+    #   if (isTRUE(r$sus_bookmark$active)) {
+    #     delay(1000, {
+    #       if (!is.null(r$sus_bookmark$select_id))
+    #         if (r$sus_bookmark$select_id != "NA") 
+    #           select_id(r$sus_bookmark$select_id)
+    #       if (!is.null(r$sus_bookmark$df)) df(r$sus_bookmark$df)
+    #     })
+    #   }
+    #   # So that bookmarking gets triggered only ONCE
+    #   delay(1500, {
+    #     r$sus_bookmark$active <- FALSE
+    #     r$sus_bookmark$zoom <- NULL
+    #   })
+    # }, priority = -2)
+    # 
+    # # Update select_id() and df() on module link
+    # observeEvent(r$sus_link$activity, {
+    #   delay(1000, {
+    #     if (!is.null(r$sus_link$select_id)) select_id(r$sus_link$select_id)
+    #     if (!is.null(r$sus_link$df)) df(r$sus_link$df)
+    #     r$sus_link$zoom <- NULL
+    #   })
+    # }, priority = -2)
     
   })
 }

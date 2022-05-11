@@ -6,18 +6,19 @@ legend_UI <- function(id) {
       uiOutput(NS(id, "legend_render")))
 }
 
-legend_server <- function(id, r = r, data, var_left, var_right, df, 
+legend_server <- function(id, r, data, var_left, var_right, 
                           hide = reactive(FALSE), 
                           build_str_as_DA = reactive(TRUE),
                           breaks = reactive(NULL)) {
   
   stopifnot(is.reactive(var_left))
   stopifnot(is.reactive(var_right))
-  stopifnot(is.reactive(df))
   stopifnot(is.reactive(build_str_as_DA))
   stopifnot(is.reactive(hide))
   
   moduleServer(id, function(input, output, session) {
+    
+    df <- r[[id]]$df
     
     # Define plot height
     plot_height <- function() {
@@ -46,7 +47,8 @@ legend_server <- function(id, r = r, data, var_left, var_right, df,
         data_type = data_type(),
         build_str_as_DA = build_str_as_DA(),
         breaks = breaks()),
-      error = function(e) NULL))
+      error = function(e) NULL)
+    )
 
     # Output legend
     output$legend_render <- renderUI({
