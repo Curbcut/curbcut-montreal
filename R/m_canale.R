@@ -152,6 +152,7 @@ canale_server <- function(id, r) {
     # De-select
     observeEvent(input[[paste0(ns_id, "-clear_selection")]], select_id(NA))
     # Error check
+    observeEvent(df(), select_id(NA), ignoreInit = TRUE)
     observeEvent(data(), if (!select_id() %in% data()$ID) select_id(NA),
                  ignoreInit = TRUE)
 

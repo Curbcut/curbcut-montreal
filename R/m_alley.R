@@ -252,6 +252,7 @@ alley_server <- function(id, r) {
     observeEvent(choropleth(), select_id(NA))
     observeEvent(visited(), select_id(NA))
     observeEvent(data(), if (choropleth()) select_id(NA))
+    observeEvent(df(), select_id(NA), ignoreInit = TRUE)
 
     # Bookmarking
     bookmark_server(
