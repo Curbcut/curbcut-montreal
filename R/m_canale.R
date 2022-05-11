@@ -71,7 +71,7 @@ canale_server <- function(id, r) {
         r[[ns_id]]$select_id(NA)
       } else 
         r[[ns_id]]$select_id(selection)
-    })# |> bindEvent(get_clicked_object(ns_id_map))
+    })
     
     # Choose tileset
     tile <- zoom_server(
@@ -148,11 +148,11 @@ canale_server <- function(id, r) {
       tile = tile,
       zoom = zoom)
 
-    # De-select
+    # De-selects
     observeEvent(input[[paste0(ns_id, "-clear_selection")]],
                  r[[ns_id]]$select_id <- reactive(NA))
+    observeEvent(r[[ns_id]]$df(), r[[ns_id]]$select_id(NA), ignoreInit = TRUE)    
     # Error check
-    observeEvent(r[[ns_id]]$df(), r[[ns_id]]$select_id(NA), ignoreInit = TRUE)
     observeEvent(data(), {
       if (!r[[ns_id]]$select_id() %in% data()$ID) r[[ns_id]]$select_id(NA)
     }, ignoreInit = TRUE)

@@ -129,20 +129,21 @@ shinyServer(function(input, output, session) {
   }, ignoreInit = TRUE, ignoreNULL = TRUE)
   
   # Links between modules
-  # observeEvent(r$sus_link$activity, {
-  #   # Delay to make sure the linked module is fully loaded
-  #   delay(500, {
-  #     update_module(mod_ns = r$sus_link$mod_ns, 
-  #                   session = session, 
-  #                   zoom = r$sus_link$zoom, 
-  #                   location = r$sus_link$location, 
-  #                   map_id = r$sus_link$map_id,
-  #                   zoom_auto = r$sus_link$zoom_auto, 
-  #                   var_left = r$sus_link$var_left,
-  #                   var_right = r$sus_link$var_right, 
-  #                   more_args = r$sus_link$more_args)
-  #   })
-  # }, ignoreInit = TRUE)
+  observeEvent(r$sus_link$activity, {
+    # Delay to make sure the linked module is fully loaded
+    delay(500, {
+      update_module(mod_ns = r$sus_link$mod_ns,
+                    r = r, 
+                    session = session,
+                    zoom = r$sus_link$zoom,
+                    location = r$sus_link$location,
+                    map_id = r$sus_link$map_id,
+                    zoom_auto = r$sus_link$zoom_auto,
+                    var_left = r$sus_link$var_left,
+                    var_right = r$sus_link$var_right,
+                    more_args = r$sus_link$more_args)
+    })
+  }, ignoreInit = TRUE)
   
   
   ## Parse URL -----------------------------------------------------------------
