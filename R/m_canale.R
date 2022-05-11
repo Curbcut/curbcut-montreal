@@ -130,6 +130,7 @@ canale_server <- function(id, r) {
       r = r,
       var_left = var_left,
       var_right = var_right,
+      df = df,
       poi = poi)
 
     # Update map in response to variable changes or zooming
