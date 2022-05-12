@@ -49,6 +49,9 @@ convert_unit <- function(x, var_name = NULL, compact = FALSE) {
 
 return_closest_year <- function(var, df = "borough", build_str_as_DA = TRUE) {
   
+  # Not to do for grid - always 2016
+  if (df == "grid") return(var)
+  
   dat <- if (build_str_as_DA && df == "building") DA else get(df)
   
   if (!var %in% names(dat)) {

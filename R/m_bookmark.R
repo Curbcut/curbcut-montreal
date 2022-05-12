@@ -18,8 +18,8 @@
 #' following bookmarking.
 
 bookmark_server <- function(id, r, map_viewstate = reactive(NULL), 
-                            s_id = r[[id]]$select_id,
-                            df = r[[id]]$df,
+                            s_id = reactive(NULL),
+                            df = reactive(NULL),
                             var_left = reactive(NULL),
                             var_right = reactive(NULL), 
                             more_args = reactive(NULL)) {
@@ -27,6 +27,8 @@ bookmark_server <- function(id, r, map_viewstate = reactive(NULL),
   stopifnot(is.reactive(map_viewstate))
   stopifnot(is.reactive(var_right))
   stopifnot(is.reactive(more_args))
+  stopifnot(is.reactive(s_id))
+  stopifnot(is.reactive(df))
   
   moduleServer(id, function(input, output, session) {
     

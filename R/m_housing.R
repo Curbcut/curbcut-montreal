@@ -3,36 +3,35 @@
 # UI ----------------------------------------------------------------------
 
 housing_UI <- function(id) {
-  ns_id <- "housing"
-  ns_id_map <- paste0(ns_id, "-map")
+  id_map <- paste0(id, "-map")
   
   tagList(
     
     # Sidebar
     sidebar_UI(
-      NS(id, ns_id),
+      NS(id, id),
       susSidebarWidgets(
-        select_var_UI(NS(id, ns_id), var_list = vars_housing_left), 
-        slider_UI(NS(id, ns_id), slider_id = "slu"), 
-        slider_UI(NS(id, ns_id), slider_id = "slb",
+        select_var_UI(NS(id, id), var_list = vars_housing_left), 
+        slider_UI(NS(id, id), slider_id = "slu"), 
+        slider_UI(NS(id, id), slider_id = "slb",
                   label = sus_translate(r = r, "Select two years"),
                   value = c("2006", "2016")), 
-        checkbox_UI(NS(id, ns_id),
+        checkbox_UI(NS(id, id),
                     label = sus_translate(r = r, "Compare dates")),
-        year_disclaimer_UI(NS(id, ns_id))),
+        year_disclaimer_UI(NS(id, id))),
       bottom = div(class = "bottom_sidebar", 
-                   tagList(legend_UI(NS(id, ns_id)),
-                           zoom_UI(NS(id, ns_id), map_zoom_levels)))),
+                   tagList(legend_UI(NS(id, id)),
+                           zoom_UI(NS(id, id), map_zoom_levels)))),
     
     # Map
-    div(class = "mapdeck_div", rdeckOutput(NS(id, ns_id_map), height = "100%")),
+    div(class = "mapdeck_div", rdeckOutput(NS(id, id_map), height = "100%")),
     
     # Right panel
     right_panel(
       id = id,
-      compare_UI(NS(id, ns_id), vars_housing_right),
-      explore_UI(NS(id, ns_id)), 
-      dyk_UI(NS(id, ns_id)))
+      compare_UI(NS(id, id), vars_housing_right),
+      explore_UI(NS(id, id)), 
+      dyk_UI(NS(id, id)))
     
   )
 }
@@ -42,8 +41,7 @@ housing_UI <- function(id) {
 
 housing_server <- function(id, r) {
   moduleServer(id, function(input, output, session) {
-    ns_id <- "housing"
-    ns_id_map <- paste0(ns_id, "-map")
+    id_map <- paste0(id, "-map")
     
     # Initial reactives
     zoom <- reactiveVal(get_zoom(map_zoom))
@@ -54,44 +52,44 @@ housing_server <- function(id, r) {
     df <- reactiveVal("borough")
     
     # Map
-    output[[ns_id_map]] <- renderRdeck({
+    output[[id_map]] <- renderRdeck({
       rdeck(map_style = map_base_style, initial_view_state = view_state(
-        center = map_loc, zoom = isolate(r[[ns_id]]$zoom())))
+        center = map_loc, zoom = isolate(r[[id]]$zoom())))
     })
     
     # Zoom and POI reactives
     observe({
-      r[[ns_id]]$zoom(get_zoom(get_view_state(ns_id_map)$zoom))
-      new_poi <- observe_map(get_view_state(ns_id_map))
+      r[[id]]$zoom(get_zoom(get_view_state(id_map)$zoom))
+      new_poi <- observe_map(get_view_state(id_map))
       if ((is.null(new_poi) && !is.null(poi())) ||
           (!is.null(new_poi) && (is.null(poi()) || !all(new_poi == poi()))))
         poi(new_poi)
-    }) |> bindEvent(get_view_state(ns_id_map))
+    }) |> bindEvent(get_view_state(id_map))
     
     # Zoom string reactive
     observe({
-      new_zoom_string <- get_zoom_string(r[[ns_id]]$zoom(), map_zoom_levels)
+      new_zoom_string <- get_zoom_string(r[[id]]$zoom(), map_zoom_levels)
       if (new_zoom_string != zoom_string()) zoom_string(new_zoom_string)
-    }) |> bindEvent(r[[ns_id]]$zoom())
+    }) |> bindEvent(r[[id]]$zoom())
     
     # Click reactive
     observe({
-      selection <- get_clicked_object(ns_id_map)$ID
-      if (!is.na(r[[ns_id]]$select_id()) && 
-          selection == r[[ns_id]]$select_id()) {
-        r[[ns_id]]$select_id(NA)
-      } else r[[ns_id]]$select_id(selection)
-    }) |> bindEvent(get_clicked_object(ns_id_map))
+      selection <- get_clicked_object(id_map)$ID
+      if (!is.na(r[[id]]$select_id()) && 
+          selection == r[[id]]$select_id()) {
+        r[[id]]$select_id(NA)
+      } else r[[id]]$select_id(selection)
+    }) |> bindEvent(get_clicked_object(id_map))
 
     # Choose tileset
     tile <- zoom_server(
-      id = ns_id,
+      id = id,
       r = r,
       zoom_string = zoom_string,
       zoom_levels = reactive(map_zoom_levels))
 
     # Checkbox value
-    slider_switch <- checkbox_server(id = ns_id)
+    slider_switch <- checkbox_server(id = id)
 
     # Enable or disable first and second slider
     observeEvent(slider_switch(), {
@@ -100,17 +98,17 @@ housing_server <- function(id, r) {
     })
 
     # Get df for explore/legend/etc
-    observe(r[[ns_id]]$df(get_df(tile(), zoom_string()))) |> 
+    observe(r[[id]]$df(get_df(tile(), zoom_string()))) |> 
       bindEvent(tile(), zoom_string(), ignoreInit = TRUE)
     
     # Time variable depending on which slider is active
-    slider_uni <- slider_server(id = ns_id, slider_id = "slu")
-    slider_bi <- slider_server(id = ns_id, slider_id = "slb")
+    slider_uni <- slider_server(id = id, slider_id = "slu")
+    slider_bi <- slider_server(id = id, slider_id = "slb")
     time <- reactive(if (slider_switch()) slider_bi() else slider_uni())
 
     # Left variable server
     var_left <- select_var_server(
-      id = ns_id,
+      id = id,
       r = r,
       var_list = reactive(vars_housing_left),
       disabled = reactive(if (!slider_switch()) NULL else
@@ -119,7 +117,7 @@ housing_server <- function(id, r) {
 
     # Right variable / compare panel
     var_right <- compare_server(
-      id = ns_id,
+      id = id,
       r = r,
       var_list = vars_housing_right,
       disabled = reactive(if (!slider_switch()) NULL else
@@ -145,17 +143,17 @@ housing_server <- function(id, r) {
     tile2 <- reactive(tile_lookup$suffix[tile_lookup$tile2 == map_var()])
 
     # Sidebar
-    sidebar_server(id = ns_id, r = r, x = "housing")
+    sidebar_server(id = id, r = r, x = "housing")
 
     # Data
     data <- reactive(get_data(
-      df = r[[ns_id]]$df(),
+      df = r[[id]]$df(),
       var_left = var_left(),
       var_right = var_right()))
 
     # Legend
     legend <- legend_server(
-      id = ns_id,
+      id = id,
       r = r,
       data = data,
       var_left = var_left,
@@ -163,7 +161,7 @@ housing_server <- function(id, r) {
 
     # Did-you-know panel
     dyk_server(
-      id = ns_id,
+      id = id,
       r = r,
       var_left = var_left,
       var_right = var_right,
@@ -171,7 +169,7 @@ housing_server <- function(id, r) {
 
     # Year disclaimer
     year_disclaimer_server(
-      id = ns_id,
+      id = id,
       r = r,
       data = data,
       var_left = var_left,
@@ -180,7 +178,7 @@ housing_server <- function(id, r) {
 
     # Update map in response to variable changes or zooming
     rdeck_server(
-      id = ns_id,
+      id = id,
       r = r,
       map_id = "map",
       tile = tile,
@@ -189,14 +187,14 @@ housing_server <- function(id, r) {
 
     # Update map labels
     label_server(
-      id = ns_id,
+      id = id,
       r = r,
       map_id = "map",
       tile = tile)
     
     # Explore panel
     explore_content <- explore_server(
-      id = ns_id,
+      id = id,
       r = r,
       data = data,
       var_left = var_left,
@@ -204,9 +202,11 @@ housing_server <- function(id, r) {
 
     # Bookmarking
     bookmark_server(
-      id = ns_id,
+      id = id,
       r = r,
-      map_viewstate = reactive(get_view_state(ns_id_map)),
+      s_id = r[[id]]$select_id,
+      df = r[[id]]$df,
+      map_viewstate = reactive(get_view_state(id_map)),
       var_left = var_left,
       var_right = var_right,
       more_args = reactive(c(

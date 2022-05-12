@@ -3,58 +3,57 @@
 # UI ----------------------------------------------------------------------
 
 natural_inf_UI <- function(id) {
-  ns_id <- "natural_inf"
-  ns_id_map <- paste0(ns_id, "-map")
+  id_map <- paste0(id, "-map")
 
   tagList(
     # Sidebar
     sidebar_UI(
-      NS(id, ns_id),
+      NS(id, id),
       susSidebarWidgets(
-        select_var_UI(NS(id, ns_id), 
+        select_var_UI(NS(id, id), 
                       select_var_id = "vl_1",
                       var_list = vars_natural_inf_left,
                       label = sus_translate(r = r, "Theme")),
-        select_var_UI(NS(id, ns_id), 
+        select_var_UI(NS(id, id), 
                       select_var_id = "vl_2",
                       var_list = list("----" = " "),
                       label = sus_translate(r = r, "Indicator")),
-        slider_UI(NS(id, ns_id),
+        slider_UI(NS(id, id),
                   label = sus_translate(r = r, "Amount of territory to protect"),
                   min = 0,
                   max = 25,
                   step = 1,
                   value = 17,
                   post = "%"),
-        checkbox_UI(NS(id, ns_id),
+        checkbox_UI(NS(id, id),
                     label = sus_translate(r = r, "Custom priorities")),
-        slider_text_UI(NS(id, ns_id),
+        slider_text_UI(NS(id, id),
                        slider_id = "s_bio",
                        label = sus_translate(r = r, "Biodiversity conservation"),
                        choices = custom_slider_choices,
                        selected = "Important"),
-        slider_text_UI(NS(id, ns_id),
+        slider_text_UI(NS(id, id),
                        slider_id = "s_hea",
                        label = sus_translate(r = r, "Heat island reduction"),
                        choices = custom_slider_choices,
                        selected = "Important"),
-        slider_text_UI(NS(id, ns_id),
+        slider_text_UI(NS(id, id),
                        slider_id = "s_flo",
                        label = sus_translate(r = r, "Flood prevention"),
                        choices = custom_slider_choices,
                        selected = "Important")
         ),
       bottom = div(class = "bottom_sidebar",
-                   tagList(legend_UI(NS(id, ns_id))))),
+                   tagList(legend_UI(NS(id, id))))),
 
     # Map
-    div(class = "mapdeck_div", rdeckOutput(NS(id, ns_id_map), height = "100%")),
+    div(class = "mapdeck_div", rdeckOutput(NS(id, id_map), height = "100%")),
     
     # Right panel
     right_panel(
       id = id,
-      explore_UI(NS(id, ns_id)),
-      dyk_UI(NS(id, ns_id)))
+      explore_UI(NS(id, id)),
+      dyk_UI(NS(id, id)))
   )
 }
 
@@ -63,34 +62,32 @@ natural_inf_UI <- function(id) {
 
 natural_inf_server <- function(id, r) {
   moduleServer(id, function(input, output, session) {
-    ns_id <- "natural_inf"
-    ns_id_map <- paste0(ns_id, "-map")
+    id_map <- paste0(id, "-map")
 
     # Initial reactives
-    zoom <- reactiveVal(get_zoom(map_zoom))
     zoom_string <- reactiveVal(get_zoom_string(9.5, map_zoom_levels))
     poi <- reactiveVal(NULL)
     
     # Map
-    output[[ns_id_map]] <- renderRdeck({
-      rdeck(map_style = map_style_building, initial_view_state = view_state(
-        center = map_loc, zoom = 9.5))
+    output[[id_map]] <- renderRdeck({
+      rdeck(map_style = map_base_style, initial_view_state = view_state(
+        center = map_loc, zoom = isolate(r[[id]]$zoom())))
     })
     
     # Zoom and POI reactives
-    observeEvent(get_view_state(ns_id_map), {
-      zoom(get_zoom(get_view_state(ns_id_map)$zoom))
-      new_poi <- observe_map(get_view_state(ns_id_map))
-      if ((is.null(new_poi) && !is.null(poi())) || 
+    observe({
+      r[[id]]$zoom(get_zoom(get_view_state(id_map)$zoom))
+      new_poi <- observe_map(get_view_state(id_map))
+      if ((is.null(new_poi) && !is.null(poi())) ||
           (!is.null(new_poi) && (is.null(poi()) || !all(new_poi == poi()))))
         poi(new_poi)
-    })
+    }) |> bindEvent(get_view_state(id_map))
     
     # Zoom string reactive
-    observeEvent(zoom(), {
-      new_zoom_string <- get_zoom_string(zoom(), map_zoom_levels)
+    observe({
+      new_zoom_string <- get_zoom_string(r[[id]]$zoom(), map_zoom_levels)
       if (new_zoom_string != zoom_string()) zoom_string(new_zoom_string)
-    })
+    }) |> bindEvent(r[[id]]$zoom())
     
     # Choose tileset
     tile <- reactive(if (var_left() == "c_priority" && custom_priorities()) {
@@ -99,7 +96,7 @@ natural_inf_server <- function(id, r) {
 
     # Left variable
     var_left_1 <- select_var_server(
-      id = ns_id,
+      id = id,
       r = r,
       select_var_id = "vl_1",
       var_list = reactive(vars_natural_inf_left))
@@ -111,7 +108,7 @@ natural_inf_server <- function(id, r) {
     })
     
     var_left_2 <- select_var_server(
-      id = ns_id,
+      id = id,
       r = r,
       select_var_id = "vl_2",
       var_list = reactive(var_left_2_list()))
@@ -123,7 +120,7 @@ natural_inf_server <- function(id, r) {
       bindEvent(var_left_1())
     
     # Checkbox value
-    custom_priorities <- checkbox_server(id = ns_id)
+    custom_priorities <- checkbox_server(id = id)
     observe(updateCheckboxInput(session = session, inputId = NS(id, "cbox"),
                                 value = FALSE)) |> 
       bindEvent(var_left_1())
@@ -131,14 +128,14 @@ natural_inf_server <- function(id, r) {
       bindEvent(var_left_1())
     
     # Main slider value
-    main_slider <- slider_server(id = ns_id)
+    main_slider <- slider_server(id = id)
     
     # Custom priority sliders
-    s_bio <- slider_text_server(id = ns_id, r = r, slider_id = "s_bio",
+    s_bio <- slider_text_server(id = id, r = r, slider_id = "s_bio",
                                 choices = reactive(custom_slider_choices))
-    s_hea <- slider_text_server(id = ns_id, r = r, slider_id = "s_hea",
+    s_hea <- slider_text_server(id = id, r = r, slider_id = "s_hea",
                                 choices = reactive(custom_slider_choices))
-    s_flo <- slider_text_server(id = ns_id, r = r, slider_id = "s_flo",
+    s_flo <- slider_text_server(id = id, r = r, slider_id = "s_flo",
                                 choices = reactive(custom_slider_choices))
     ni_slider <- reactive(process_ni_sliders(s_bio(), s_hea(), s_flo()))
     observe({
@@ -152,7 +149,7 @@ natural_inf_server <- function(id, r) {
     var_right <- reactive(" ")
 
     # Sidebar
-    sidebar_server(id = ns_id, r = r, x = "natural_inf")
+    sidebar_server(id = id, r = r, x = "natural_inf")
     
     # Composite variable for map
     map_var <- reactive(if (custom_priorities()) "ID" else var_left())
@@ -216,7 +213,7 @@ natural_inf_server <- function(id, r) {
 
     # Legend
     legend <- legend_server(
-      id = ns_id,
+      id = id,
       r = r,
       var_left = var_left,
       var_right = var_right,
@@ -224,7 +221,7 @@ natural_inf_server <- function(id, r) {
 
     # Did-you-know panel
     dyk_server(
-      id = ns_id,
+      id = id,
       r = r,
       var_left = var_left,
       var_right = var_right,
@@ -232,12 +229,12 @@ natural_inf_server <- function(id, r) {
 
     # Update map in response to variable changes or zooming
     rdeck_server(
-      id = ns_id,
+      id = id,
+      r = r,
       map_id = "map", 
       tile = tile,
       tile2 =  reactive(""),
       map_var = map_var, 
-      zoom = zoom,
       select_id = reactive(NA),
       lwd = scale_lwd_natural_inf,
       lwd_args = reactive(list()),
@@ -246,14 +243,14 @@ natural_inf_server <- function(id, r) {
     
     # Update map labels
     label_server(
-      id = ns_id, 
+      id = id, 
+      r = r,
       map_id = "map", 
-      tile = tile,
-      zoom = zoom)
+      tile = tile)
 
     # Explore panel
     explore_content <- explore_server(
-      id = ns_id,
+      id = id,
       r = r,
       data = data,
       var_left = var_left,
@@ -265,11 +262,10 @@ natural_inf_server <- function(id, r) {
 
     # Bookmarking
     bookmark_server(
-      id = ns_id,
+      id = id,
       r = r,
-      map_viewstate = reactive(get_view_state(ns_id_map)),
-      select_id = reactive(NA),
-      map_id = "map",
+      map_viewstate = reactive(get_view_state(id_map)),
+      s_id = reactive(NA)
     )
 
   })

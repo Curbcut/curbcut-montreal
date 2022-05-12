@@ -51,8 +51,6 @@ info_table_alley <- function(r = r, data, var_type, var_left, var_right, df,
     
     if (is.na(select_id) || !select_id %in% alley$ID) {
       
-      print("true")
-      
       alley_visited <- alley[alley$visited, ]
       green <- nrow(alley_visited[alley_visited$type == "green", ])
       community <- nrow(alley_visited[alley_visited$type == "community", ])

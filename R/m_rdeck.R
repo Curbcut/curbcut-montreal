@@ -4,6 +4,8 @@
 #' @return An updated version of the rdeck map.
 
 rdeck_server <- function(id, r, map_id, tile, tile2, map_var, 
+                         select_id = r[[id]]$select_id,
+                         zoom = r[[id]]$zoom,
                          fill = scale_fill_sus, 
                          fill_args = reactive(list(map_var())),
                          colour = scale_colour_sus, 
@@ -24,9 +26,6 @@ rdeck_server <- function(id, r, map_id, tile, tile2, map_var,
   ## Module --------------------------------------------------------------------
   
   moduleServer(id, function(input, output, session) {
-    
-    select_id <- r[[id]]$select_id
-    zoom <- r[[id]]$zoom
     
     # Helper variables
     pick <- reactive(

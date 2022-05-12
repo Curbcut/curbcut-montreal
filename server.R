@@ -35,7 +35,8 @@ shinyServer(function(input, output, session) {
                             zoom = reactiveVal(get_zoom(map_zoom))),
     alley = reactiveValues(select_id = reactiveVal(NA),
                            df = reactiveVal("borough_empty"),
-                           zoom = reactiveVal(12))
+                           zoom = reactiveVal(12)),
+    natural_inf = reactiveValues(zoom = reactiveVal(9.5))
   )
   
 
@@ -263,7 +264,7 @@ shinyServer(function(input, output, session) {
   
   observeEvent(input$sus_page, {
     bookmark_server(input$sus_page, r = r)
-    
+
     # Trigger the module server function only if it hasn't been opened already
     if (!input$sus_page %in% r$previous_tabs()) active_mod_server()
     

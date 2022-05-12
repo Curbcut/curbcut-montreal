@@ -43,8 +43,8 @@ module_link <- function(r, module, zoom = NULL, location = map_loc,
   r$sus_link$more_args <- more_args
   
   # Update destination select_id() and df()
-  r[[module]]$df <- reactiveVal(df)
-  r[[module]]$select_id <- reactiveVal(select_id)
+  if (!is.null(df)) r[[module]]$df <- reactiveVal(df)
+  if (!is.null(select_id)) r[[module]]$select_id <- reactiveVal(select_id)
   
 }
 
