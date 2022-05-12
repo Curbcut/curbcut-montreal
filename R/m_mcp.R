@@ -29,7 +29,7 @@ mcp_server <- function(id, r) {
     output$mcp_output <- renderUI(
       HTML('<div class="mcp_module">',
            includeHTML(paste0("www/mcp/", left_var_mcp(), "_",
-                              r$lang, 
+                              r$lang(), 
                               ".html")),
            '</div>'))
     

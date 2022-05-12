@@ -38,7 +38,7 @@ zoom_server <- function(id, r = r, zoom_string, zoom_levels) {
     
     # Update the slider if zoom_levels changes
     observeEvent({zoom_levels()
-      r$lang}, {
+      r$lang()}, {
       updateSliderTextInput(session, "zoom_slider", 
                             selected = sus_translate(r = r, get_zoom_name(zoom_string())),
                             choices = get_zoom_label_t(zoom_levels(), r = r))

@@ -79,7 +79,7 @@ stories_server <- function(id, r) {
         rmd_name <- stories[stories$ID == r[[ns_id]]$select_id(),]$name
         bandeau_name <- stories[stories$ID == r[[ns_id]]$select_id(),]$img
 
-        story_link <- paste0("www/stories/", rmd_name, "_", r$lang,
+        story_link <- paste0("www/stories/", rmd_name, "_", r$lang(),
                              ".html")
 
         # Construct story link, serve en if no translation available.

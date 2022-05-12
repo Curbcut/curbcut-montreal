@@ -19,7 +19,7 @@ shinyServer(function(input, output, session) {
   r <- reactiveValues(
     sus_bookmark = reactiveValues(active = FALSE),
     sus_link = reactiveValues(),
-    lang = "fr",
+    lang = reactiveVal("fr"),
     active_tab = "home",
     canale = reactiveValues(select_id = reactiveVal(NA), 
                             df = reactiveVal("borough"),
@@ -101,16 +101,15 @@ shinyServer(function(input, output, session) {
   
   observeEvent(input$cookies$lang, {
     if (!is.null(input$cookies$lang) && input$cookies$lang == "en")
-      click("language_button")
-    # COOKIE, runs only once at launch !
+      r$lang("en")
   }, once = TRUE)
   
   observeEvent(input$language_button, {
-    r$lang <- if (input$language_button[1] %% 2 != 0) "en" else "fr"
+    r$lang(if (input$language_button[1] %% 2 != 0) "en" else "fr")
   }, ignoreNULL = FALSE)
   
-  observeEvent(input$language_button,{
-    if (input$language_button[1] %% 2 != 0) {
+  observeEvent(r$lang(), {
+    if (r$lang() == "en") {
       js$setLanguage("en")
       updateActionLink(inputId = "language_button", 
                        label = languageButtonLabel("Français"))
@@ -127,6 +126,8 @@ shinyServer(function(input, output, session) {
       session$sendCustomMessage("cookie-set", lang_cookie)
     }
   })
+  
+  
   
   
   ## Active tab ----------------------------------------------------------------
@@ -156,6 +157,7 @@ shinyServer(function(input, output, session) {
     delay(500, {
       update_module(id = r$sus_link$id,
                     r = r, 
+                    map_id = "map",
                     session = session,
                     zoom = r$sus_link$zoom,
                     location = r$sus_link$location,
@@ -189,7 +191,7 @@ shinyServer(function(input, output, session) {
       try({
         lang <- query[["lng"]]
         if (!is.null(lang) && lang == "en")
-          click("language_button")
+          r$lang <- reactiveVal("en")
       })
       # Retrieve important map info
       try({
@@ -241,6 +243,7 @@ shinyServer(function(input, output, session) {
         update_module(session = session,
                       r = r,
                       id = r$sus_bookmark$id,
+                      map_id = "map",
                       location = r$sus_bookmark$location, 
                       zoom_auto = r$sus_bookmark$zoom_auto, 
                       var_left = r$sus_bookmark$var_left,

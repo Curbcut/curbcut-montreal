@@ -52,7 +52,7 @@ prep_title_card <- function(r = r, df, select_id, ind, percent = TRUE,
       } else if (data_borough_rank > 1 / 3 * df_row) {
         ordinal_form(r = r, data_borough_rank)
       } else {
-        if (r$lang == "fr" && {ordinal_form(r = r, data_borough_rank)} == "") {
+        if (r$lang() == "fr" && {ordinal_form(r = r, data_borough_rank)} == "") {
           "premier"
         } else sus_translate(r = r, "{ordinal_form(r = r, data_borough_rank)} best")
       }
