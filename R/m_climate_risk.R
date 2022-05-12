@@ -166,7 +166,12 @@ climate_risk_server <- function(id, r) {
     # De-select on df() change or "Clear selection" button
     observe(r[[ns_id]]$select_id(NA)) |> 
       bindEvent(input[[paste0(ns_id, "-clear_selection")]],
-                r[[ns_id]]$df(), ignoreInit = TRUE) 
+                ignoreInit = TRUE) 
+    
+    observe({
+      print(r$sus_bookmark$active)
+      if (isFALSE(r$sus_bookmark$active)) r[[ns_id]]$select_id(NA)}) |> 
+      bindEvent(r[[ns_id]]$df(), ignoreInit = TRUE)
     
     # De-select on data() change if select_id is no longer valid
     observe(
