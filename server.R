@@ -5,19 +5,29 @@ shinyServer(function(input, output, session) {
 
   # Page title change, depending on page visited -------------------------------
 
-  observe(title_page_update(r = r, session = session, sus_page = input$sus_page))
+  observe(title_page_update(r = r, session = session, 
+                            sus_page = input$sus_page))
   
-  # If on Mobile, warning! -----------------------------------------------------
+  
+  # If on mobile, warning! -----------------------------------------------------
   
   observe(mobile_warning(r = r, session = session))
   
   
   # Reactive variables ---------------------------------------------------------
   
-  r <- reactiveValues(sus_bookmark = reactiveValues(active = FALSE),
-                      sus_link = reactiveValues(),
-                      lang = "fr",
-                      active_tab = "home")
+  r <- reactiveValues(
+    sus_bookmark = reactiveValues(active = FALSE),
+    sus_link = reactiveValues(),
+    lang = "fr",
+    active_tab = "home",
+    canale = reactiveValues(select_id = reactiveVal(NA), 
+                            df = reactiveVal("borough")),
+    climate_risk = reactiveValues(select_id = reactiveVal(NA),
+                                  df = reactiveVal("grid"))
+                      )
+  
+  # r$canale$select_id <- reactiveVal(NA)
   
   # Home page ------------------------------------------------------------------
   
@@ -31,24 +41,25 @@ shinyServer(function(input, output, session) {
   observeEvent(input$cookies$time_last_htu_banner, {
     if (is.null(input$cookies$time_last_htu_banner) ||
         (!is.null(input$cookies$time_last_htu_banner) &&
-         Sys.time() > (as.POSIXct(input$cookies$time_last_htu_banner) + 1209600))) {
+         Sys.time() > (as.POSIXct(input$cookies$time_last_htu_banner) + 
+                       1209600))) {
       
-      insertUI(selector = ".navbar-shadow",
-               where = "beforeBegin",
-               ui = HTML(paste0("<div id = 'htu_footer' class='fixed_footer'>",
-                                "<p style = 'margin-bottom:0px; color:white; display:inline;'>",
-                                "Première fois sur Sus? Visitez la page ",
-                                paste0("<a id='go_to_htu_fr' href='#' style = 'color:white;'",
-                                       "class='action-button shiny-bound-input'>",
-                                       "<b>", "Mode d'emploi", 
-                                       "</b></a> !&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;"),
-                                "First time on Sus? Visit the ",
-                                paste0("<a id='go_to_htu_en' href='#' style = 'color:white;'",
-                                       "class='action-button shiny-bound-input'>",
-                                       "<b>", "How to use", 
-                                       "</b></a> page!"), "</p>",
-                                "<a id='go_to_htu_x' href='#' style = 'float:right;display:inline;color",
-                                ":#FBFBFB;' class='action-button shiny-bound-input'>X</a>","</div>")))
+      insertUI(selector = ".navbar-shadow", where = "beforeBegin", ui = HTML(
+        paste0("<div id = 'htu_footer' class='fixed_footer'>",
+               "<p style = 'margin-bottom:0px; color:white; display:inline;'>",
+               "Première fois sur Sus? Visitez la page ",
+               paste0("<a id='go_to_htu_fr' href='#' style = 'color:white;'",
+                      "class='action-button shiny-bound-input'>",
+                      "<b>", "Mode d'emploi", 
+                      "</b></a> !&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;"),
+               "First time on Sus? Visit the ",
+               paste0("<a id='go_to_htu_en' href='#' style = 'color:white;'",
+                      "class='action-button shiny-bound-input'>",
+                      "<b>", "How to use", "</b></a> page!"), "</p>",
+               "<a id='go_to_htu_x' href='#' ",
+               "style = 'float:right;display:inline;color",
+               ":#FBFBFB;' class='action-button shiny-bound-input'>X</a>",
+               "</div>")))
     }
     
     # So that it repeats if there's a gap of 14 days between all visits
@@ -376,12 +387,13 @@ shinyServer(function(input, output, session) {
       }
     )
   
+  
   ## Heartbeat function to keep app alive --------------------------------------
   
   timeout_start <- eventReactive(reactiveValuesToList(input), Sys.time())
   
   observe({
-    rerun <- timeout_start() + 1800 > Sys.time()
+    rerun <- timeout_start() + 7200 > Sys.time()
     if (rerun) invalidateLater(10000)
   })
   

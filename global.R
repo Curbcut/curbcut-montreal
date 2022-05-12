@@ -21,7 +21,7 @@ suppressPackageStartupMessages({
 
 # Shiny options -----------------------------------------------------------
 
-options(shiny.trace = FALSE) # Set TRUE for debugging
+options(shiny.fullstacktrace = TRUE)
 options(shiny.useragg = TRUE)
 shinyOptions(cache = cachem::cache_disk(file.path(dirname(tempdir()), "cache")))
 
@@ -142,11 +142,6 @@ systemfonts::register_font(
   italic = "www/fonts/SourceSansPro-Italic.ttf",
   bold = "www/fonts/SourceSansPro-Bold.ttf",
   bolditalic = "www/fonts/SourceSansPro-BoldItalic.ttf")
-
-
-# Error function ----------------------------------------------------------
-
-options(shiny.fullstacktrace = TRUE)
 
 
 # Connect to the db -------------------------------------------------------

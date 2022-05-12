@@ -18,22 +18,19 @@
 #' @param more_args Named vectors indicating other input that must be updated
 #' following bookmarking.
 
-bookmark_server <- function(id, r,
-                            map_viewstate = reactive(NULL), 
+bookmark_server <- function(id, r, map_viewstate = reactive(NULL), 
                             var_left = reactive(NULL),
                             var_right = reactive(NULL), 
-                            select_id = reactive(NULL), 
-                            df = reactive(NULL), 
-                            map_id = NULL, 
-                            more_args = reactive(NULL)) {
+                            map_id = NULL, more_args = reactive(NULL)) {
   
   stopifnot(is.reactive(map_viewstate))
   stopifnot(is.reactive(var_right))
-  stopifnot(is.reactive(select_id))
-  stopifnot(is.reactive(df))
   stopifnot(is.reactive(more_args))
   
   moduleServer(id, function(input, output, session) {
+    
+    s_id <- r[[id]]$select_id
+    df <- r[[id]]$df
     
     # Update URL
     observe({
@@ -50,10 +47,8 @@ bookmark_server <- function(id, r,
           get_variables_rowid(unique(str_remove(var_left(), "_\\d{4}$")))
       if (!is.null(var_right())) v_r <- 
           get_variables_rowid(unique(str_remove(var_right(), "_\\d{4}$")))
-      if (!is.null(select_id()) && !is.na(select_id())) s_id <- select_id()
       if (!is.null(input$zoom_auto)) zm_a <- str_extract(input$zoom_auto, "^.")
-      if (!is.null(df())) df <- df()
-      
+
       # More arguments
       if (!is.null(more_args())) {
         widget_type <- names(more_args())

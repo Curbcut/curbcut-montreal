@@ -39,9 +39,7 @@ canale_server <- function(id, r) {
     # Initial reactives
     zoom <- reactiveVal(get_zoom(map_zoom))
     zoom_string <- reactiveVal(get_zoom_string(map_zoom, map_zoom_levels))
-    if (is.null(r[[ns_id]]$select_id)) r[[ns_id]]$select_id <- reactiveVal(NA)
     poi <- reactiveVal(NULL)
-    if (is.null(r[[ns_id]]$df)) r[[ns_id]]$df <- reactiveVal("borough")
 
     # Map
     output[[ns_id_map]] <- renderRdeck({
@@ -50,28 +48,28 @@ canale_server <- function(id, r) {
     })
     
     # Zoom and POI reactives
-    observeEvent(get_view_state(ns_id_map), {
+    observe({
       zoom(get_zoom(get_view_state(ns_id_map)$zoom))
       new_poi <- observe_map(get_view_state(ns_id_map))
       if ((is.null(new_poi) && !is.null(poi())) ||
           (!is.null(new_poi) && (is.null(poi()) || !all(new_poi == poi()))))
         poi(new_poi)
-    })
+    }) |> bindEvent(get_view_state(ns_id_map))
 
     # Zoom string reactive
-    observeEvent(zoom(), {
+    observe({
       new_zoom_string <- get_zoom_string(zoom(), map_zoom_levels)
       if (new_zoom_string != zoom_string()) zoom_string(new_zoom_string)
-    })
+    }) |> bindEvent(zoom())
     
     # Click reactive
-    observeEvent(get_clicked_object(ns_id_map), {
+    observe({
       selection <- get_clicked_object(ns_id_map)$ID
-      if (!is.na(r[[ns_id]]$select_id()) && selection == r[[ns_id]]$select_id()) {
+      if (!is.na(r[[ns_id]]$select_id()) && 
+          selection == r[[ns_id]]$select_id()) {
         r[[ns_id]]$select_id(NA)
-      } else 
-        r[[ns_id]]$select_id(selection)
-    })
+      } else r[[ns_id]]$select_id(selection)
+    }) |> bindEvent(get_clicked_object(ns_id_map))
     
     # Choose tileset
     tile <- zoom_server(
@@ -81,11 +79,9 @@ canale_server <- function(id, r) {
       zoom_levels = reactive(map_zoom_levels))
 
     # Get df for explore/legend/etc
-    # Must be inactive at the init: the bookmark might want to set this value.
-    observeEvent({tile()
-      zoom_string()}, 
-      r[[ns_id]]$df(get_df(tile(), zoom_string())), 
-      ignoreInit = TRUE)
+    # Must be inactive at init: the bookmark might want to set this value
+    observe(r[[ns_id]]$df(get_df(tile(), zoom_string()))) |> 
+      bindEvent(tile(), zoom_string(), ignoreInit = TRUE)
     
     # Time
     time <- reactive("2016")
@@ -148,14 +144,15 @@ canale_server <- function(id, r) {
       tile = tile,
       zoom = zoom)
 
-    # De-selects
-    observeEvent(input[[paste0(ns_id, "-clear_selection")]],
-                 r[[ns_id]]$select_id <- reactive(NA))
-    observeEvent(r[[ns_id]]$df(), r[[ns_id]]$select_id(NA), ignoreInit = TRUE)    
-    # Error check
-    observeEvent(data(), {
-      if (!r[[ns_id]]$select_id() %in% data()$ID) r[[ns_id]]$select_id(NA)
-    }, ignoreInit = TRUE)
+    # De-select on df() change or "Clear selection" button
+    observe(r[[ns_id]]$select_id(NA)) |> 
+      bindEvent(input[[paste0(ns_id, "-clear_selection")]],
+                r[[ns_id]]$df(), ignoreInit = TRUE) 
+    
+    # De-select on data() change if select_id is no longer valid
+    observe(
+      if (!r[[ns_id]]$select_id() %in% data()$ID) r[[ns_id]]$select_id(NA)) |> 
+      bindEvent(data(), ignoreInit = TRUE)
     
     # Explore panel
     explore_content <- explore_server(
@@ -171,8 +168,6 @@ canale_server <- function(id, r) {
       r = r,
       map_viewstate = reactive(get_view_state(ns_id_map)),
       var_right = var_right,
-      select_id = r[[ns_id]]$select_id,
-      df = r[[ns_id]]$df,
       map_id = "map"
     )
 
