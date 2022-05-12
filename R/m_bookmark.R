@@ -90,6 +90,10 @@ bookmark_server <- function(id, r, map_viewstate = reactive(NULL),
                       var_left = r$sus_bookmark$var_left,
                       var_right = r$sus_bookmark$var_right, 
                       more_args = r$sus_bookmark$more_args)
+        
+        # Set r$sus_bookmark$active to FALSE so select_id can finish updating
+        r$sus_bookmark$active <- FALSE
+        
       }
     }, priority = -1, autoDestroy = TRUE, once = TRUE)
     
