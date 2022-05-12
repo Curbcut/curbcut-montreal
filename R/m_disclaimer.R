@@ -12,7 +12,7 @@ year_disclaimer_UI <- function(id) {
   tagList(htmlOutput(NS(id, "year_disclaimer")))
 }
 
-year_disclaimer_server <- function(id, r = r, data, var_left, var_right, time,
+year_disclaimer_server <- function(id, r, data, var_left, var_right, time,
                                    more = reactive(FALSE), 
                                    more_text = reactive(NULL)) {
   

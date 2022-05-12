@@ -352,7 +352,7 @@ place_explorer_server <- function(id, r) {
     
     title_card_to_grid <- reactive(get_title_card(r = r,
       df(), select_id(), island_or_region())) |> 
-      bindCache(df(), select_id(), island_or_region(), r$lang)
+      bindCache(df(), select_id(), island_or_region(), r$lang())
 
     # Title card contents
     output$title_card <- renderUI({
@@ -502,7 +502,7 @@ place_explorer_server <- function(id, r) {
           } else tagList(fluidRow(h3(sus_translate(r = r, x[1]))),
                          fluidRow("No data."))
         }) |> bindCache(df(), select_id(), island_or_region(), x,
-                        input$themes_checkbox, r$lang)
+                        input$themes_checkbox, r$lang())
       })
 
       standout <- sapply(themes, \(x) x[2])

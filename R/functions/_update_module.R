@@ -1,15 +1,13 @@
 #' @param mod_ns A character string representing the module namespace, for 
-#' links between modules. Ex. to call a change in the canale module from a link
-#' in housing (from a housing namespace to a canale). In that case, the link 
-#' would be present in housing and the mod_ns would be "canale". NOT to use for 
-#' bookmarking.
-#' @param id A character string representing the module id, used for 
-#' bookmarking AND dyk. It is used to correctly identify how to collect and 
-#' recreate var_left. 
+#' links between modules. By default it will take id (ex. `canale`) and create
+#' a namespace to tweak its widgets (ex. `canale-canale`)
+#' @param id A character string representing the module id.
 
-update_module <- function(r = r, mod_ns = NULL, id = mod_ns, session, zoom, location, 
-                          map_id = "map", df, zoom_auto, var_left, var_right, 
-                          more_args) {
+update_module <- function(r, id, mod_ns = paste(id, id, sep = "-"), session, 
+                          zoom = r[[id]]$zoom, location, 
+                          map_id = NULL, 
+                          zoom_auto, var_left, 
+                          var_right, more_args) {
   
   # Drop down menus should be delayed, as updating other widgets could 
   # have a reset power on them (e.g. housing)
@@ -21,14 +19,14 @@ update_module <- function(r = r, mod_ns = NULL, id = mod_ns, session, zoom, loca
   # Update mapdeck_view
   if (!all(vapply(c(zoom, location), is.null, TRUE))) {
     if (!is.null(map_id)) {
-      rdeck_proxy(id = map_id,
+      rdeck_proxy(id = paste(id, id, map_id, sep = "-"),
                   initial_view_state = 
-                    view_state(center = location, zoom = zoom)
+                    view_state(center = location, zoom = zoom())
       )
     }}
-  
+
   # Update df()
-  if (!is.null(df)) {
+  if (!is.null(r[[id]]$df)) {
     if (isFALSE(zoom_auto)) {
       updateCheckboxInput(
         session = session,
@@ -39,13 +37,52 @@ update_module <- function(r = r, mod_ns = NULL, id = mod_ns, session, zoom, loca
     updateSliderTextInput(
       session = session,
       inputId = construct_namespace("zoom_slider"),
-      selected = sus_translate(r = r, get_zoom_name(df))
+      selected = sus_translate(r = r, get_zoom_name(r[[id]]$df()))
     )
   }
 
   if (str_detect(id, "-$")) id <- str_extract(id, ".*(?=-)")
-
-    # Update var_left
+  
+  # PARSE more_args from the URL
+  if (!is.null(more_args)) {
+    additional <- str_split(more_args, ";")[[1]]
+    
+    lapply(additional, function(arg) {
+      type_inputId <- str_split(arg, ":")[[1]][1]
+      widget_type <- str_split(type_inputId, "-")[[1]][1]
+      inputId <- str_split(type_inputId, "-")[[1]][2]
+      value <- str_split(arg, ":")[[1]][2] |> 
+        str_split("-")
+      value <- value[[1]]
+      
+      if (widget_type == "c") {
+        updateCheckboxInput(
+          session = session,
+          inputId = construct_namespace(inputId),
+          value = if (str_detect(value, "^\\d$")) value else as.logical(value)
+        )
+      } else if (widget_type == "s") {
+        updateSliderInput(
+          session = session,
+          inputId = construct_namespace(inputId),
+          value = value
+        )
+      } else if (widget_type == "d") {
+        
+        # Does it follow a code from get_variables_rowid ?
+        selected_value <- if (str_detect(value, "^\\d*$")) {
+          get_variables_rowid(value)} else value
+        
+        delayupdatePickerInput(
+          session = session,
+          inputId = construct_namespace(inputId),
+          selected = selected_value
+        )
+      }
+    })
+  }
+  
+  # Update var_left
   if (!is.null(id)) {
     if (id %in% c("canale", "marketed_sustainability")) {
       
@@ -88,46 +125,35 @@ update_module <- function(r = r, mod_ns = NULL, id = mod_ns, session, zoom, loca
           selected = selected_var_2
         )
       }
-    }
-  }
-  
-  # PARSE more_args from the URL
-  if (!is.null(more_args)) {
-    additional <- str_split(more_args, ";")[[1]]
-    
-    lapply(additional, function(arg) {
-      type_inputId <- str_split(arg, ":")[[1]][1]
-      widget_type <- str_split(type_inputId, "-")[[1]][1]
-      inputId <- str_split(type_inputId, "-")[[1]][2]
-      value <- str_split(arg, ":")[[1]][2] |> 
-        str_split("-")
-      value <- value[[1]]
+    } else if (id == "natural_inf") {
       
-      if (widget_type == "c") {
-        updateCheckboxInput(
-          session = session,
-          inputId = construct_namespace(inputId),
-          value = if (str_detect(value, "^\\d$")) value else as.logical(value)
-        )
-      } else if (widget_type == "s") {
-        updateSliderInput(
-          session = session,
-          inputId = construct_namespace(inputId),
-          value = value
-        )
-      } else if (widget_type == "d") {
-        
-        # Does it follow a code from get_variables_rowid ?
-        selected_value <- if (str_detect(value, "^\\d*$")) {
-          get_variables_rowid(value)} else value
-        
+      selected_var <- if (str_detect(var_left, "^\\d*$")) {
+        get_variables_rowid(var_left)} else var_left
+      
+      var_left_list_1 <- get(paste0("var_left_list_1_", id))
+      var_left_list_2 <- get(paste0("var_left_list_2_", id))
+      
+      selected_var_1 <- 
+        if (selected_var %in% var_left_list_1) selected_var else {
+          unlisted <- unlist(var_left_list_2)
+          list_name <- names(unlisted[unlisted == selected_var])
+          str_extract(list_name, "^.*(?=\\.)")
+        }
+
+      updatePickerInput(
+        session = session,
+        inputId = construct_namespace("d_1"),
+        selected = selected_var_1
+      )
+      
+      if (!selected_var %in% var_left_list_1) {
         delayupdatePickerInput(
           session = session,
-          inputId = construct_namespace(inputId),
-          selected = selected_value
+          inputId = construct_namespace("d_2"),
+          selected = selected_var
         )
       }
-    })
+    }
   }
   
   # Update var_right

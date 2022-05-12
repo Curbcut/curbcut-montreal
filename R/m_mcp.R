@@ -3,12 +3,7 @@
 # UI ----------------------------------------------------------------------
 
 mcp_UI <- function(id) {
-  # tagList(
-  #   select_var_UI(NS(id, "left"), var_list = var_list_left_mcp, width = "300px"),
-  #   susPage(class="sus-page-about", footer = susFooter(),susPageSection(
-  #     htmlOutput(NS(id, "mcp_output"))
-  #   ))
-  # )
+
   tagList(
           susPage(class = "sus-page-mcp", footer = susFooter(),
             susPageControls(select_var_UI(NS(id, "left"), var_list = var_list_left_mcp, width = "300px", inline = T)),
@@ -34,7 +29,7 @@ mcp_server <- function(id, r) {
     output$mcp_output <- renderUI(
       HTML('<div class="mcp_module">',
            includeHTML(paste0("www/mcp/", left_var_mcp(), "_",
-                              r$lang, 
+                              r$lang(), 
                               ".html")),
            '</div>'))
     

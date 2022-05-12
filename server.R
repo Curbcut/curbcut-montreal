@@ -5,20 +5,41 @@ shinyServer(function(input, output, session) {
 
   # Page title change, depending on page visited -------------------------------
 
-  observe(title_page_update(r = r, session = session, sus_page = input$sus_page))
+  observe(title_page_update(r = r, session = session, 
+                            sus_page = input$sus_page))
   
-  # If on Mobile, warning! -----------------------------------------------------
+  
+  # If on mobile, warning! -----------------------------------------------------
   
   observe(mobile_warning(r = r, session = session))
   
   
   # Reactive variables ---------------------------------------------------------
   
-  r <- reactiveValues(sus_bookmark = reactiveValues(active = FALSE),
-                      sus_link = reactiveValues(),
-                      lang = "fr",
-                      active_tab = "home")
+  r <- reactiveValues(
+    sus_bookmark = reactiveValues(active = FALSE),
+    sus_link = reactiveValues(),
+    lang = reactiveVal("fr"),
+    active_tab = "home",
+    canale = reactiveValues(select_id = reactiveVal(NA), 
+                            df = reactiveVal("borough"),
+                            zoom = reactiveVal(get_zoom(map_zoom))),
+    climate_risk = reactiveValues(select_id = reactiveVal(NA),
+                                  df = reactiveVal("grid"),
+                                  zoom = reactiveVal(get_zoom(map_zoom))),
+    housing = reactiveValues(select_id = reactiveVal(NA),
+                             df = reactiveVal("borough"),
+                             zoom = reactiveVal(get_zoom(map_zoom))),
+    access = reactiveValues(select_id = reactiveVal(NA),
+                            df = reactiveVal("CT"),
+                            zoom = reactiveVal(get_zoom(map_zoom))),
+    alley = reactiveValues(select_id = reactiveVal(NA),
+                           df = reactiveVal("borough_empty"),
+                           zoom = reactiveVal(12)),
+    natural_inf = reactiveValues(zoom = reactiveVal(9.5))
+  )
   
+
   # Home page ------------------------------------------------------------------
   
   observe(updateNavbarPage(session, "sus_page", "home")) |> 
@@ -31,24 +52,25 @@ shinyServer(function(input, output, session) {
   observeEvent(input$cookies$time_last_htu_banner, {
     if (is.null(input$cookies$time_last_htu_banner) ||
         (!is.null(input$cookies$time_last_htu_banner) &&
-         Sys.time() > (as.POSIXct(input$cookies$time_last_htu_banner) + 1209600))) {
+         Sys.time() > (as.POSIXct(input$cookies$time_last_htu_banner) + 
+                       1209600))) {
       
-      insertUI(selector = ".navbar-shadow",
-               where = "beforeBegin",
-               ui = HTML(paste0("<div id = 'htu_footer' class='fixed_footer'>",
-                                "<p style = 'margin-bottom:0px; color:white; display:inline;'>",
-                                "Première fois sur Sus? Visitez la page ",
-                                paste0("<a id='go_to_htu_fr' href='#' style = 'color:white;'",
-                                       "class='action-button shiny-bound-input'>",
-                                       "<b>", "Mode d'emploi", 
-                                       "</b></a> !&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;"),
-                                "First time on Sus? Visit the ",
-                                paste0("<a id='go_to_htu_en' href='#' style = 'color:white;'",
-                                       "class='action-button shiny-bound-input'>",
-                                       "<b>", "How to use", 
-                                       "</b></a> page!"), "</p>",
-                                "<a id='go_to_htu_x' href='#' style = 'float:right;display:inline;color",
-                                ":#FBFBFB;' class='action-button shiny-bound-input'>X</a>","</div>")))
+      insertUI(selector = ".navbar-shadow", where = "beforeBegin", ui = HTML(
+        paste0("<div id = 'htu_footer' class='fixed_footer'>",
+               "<p style = 'margin-bottom:0px; color:white; display:inline;'>",
+               "Première fois sur Sus? Visitez la page ",
+               paste0("<a id='go_to_htu_fr' href='#' style = 'color:white;'",
+                      "class='action-button shiny-bound-input'>",
+                      "<b>", "Mode d'emploi", 
+                      "</b></a> !&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;"),
+               "First time on Sus? Visit the ",
+               paste0("<a id='go_to_htu_en' href='#' style = 'color:white;'",
+                      "class='action-button shiny-bound-input'>",
+                      "<b>", "How to use", "</b></a> page!"), "</p>",
+               "<a id='go_to_htu_x' href='#' ",
+               "style = 'float:right;display:inline;color",
+               ":#FBFBFB;' class='action-button shiny-bound-input'>X</a>",
+               "</div>")))
     }
     
     # So that it repeats if there's a gap of 14 days between all visits
@@ -79,16 +101,15 @@ shinyServer(function(input, output, session) {
   
   observeEvent(input$cookies$lang, {
     if (!is.null(input$cookies$lang) && input$cookies$lang == "en")
-      click("language_button")
-    # COOKIE, runs only once at launch !
+      r$lang("en")
   }, once = TRUE)
   
   observeEvent(input$language_button, {
-    r$lang <- if (input$language_button[1] %% 2 != 0) "en" else "fr"
-  }, ignoreNULL = FALSE)
+    r$lang(if (r$lang() == "en") "fr" else "en")
+  }, ignoreNULL = FALSE, ignoreInit = TRUE)
   
-  observeEvent(input$language_button,{
-    if (input$language_button[1] %% 2 != 0) {
+  observeEvent(r$lang(), {
+    if (r$lang() == "en") {
       js$setLanguage("en")
       updateActionLink(inputId = "language_button", 
                        label = languageButtonLabel("Français"))
@@ -105,6 +126,8 @@ shinyServer(function(input, output, session) {
       session$sendCustomMessage("cookie-set", lang_cookie)
     }
   })
+  
+  
   
   
   ## Active tab ----------------------------------------------------------------
@@ -132,15 +155,15 @@ shinyServer(function(input, output, session) {
   observeEvent(r$sus_link$activity, {
     # Delay to make sure the linked module is fully loaded
     delay(500, {
-      update_module(mod_ns = r$sus_link$mod_ns, 
-                    session = session, 
-                    zoom = r$sus_link$zoom, 
-                    location = r$sus_link$location, 
-                    map_id = r$sus_link$map_id,
-                    df = r$sus_link$df, 
-                    zoom_auto = r$sus_link$zoom_auto, 
+      update_module(id = r$sus_link$id,
+                    r = r, 
+                    map_id = "map",
+                    session = session,
+                    zoom = r$sus_link$zoom,
+                    location = r$sus_link$location,
+                    zoom_auto = r$sus_link$zoom_auto,
                     var_left = r$sus_link$var_left,
-                    var_right = r$sus_link$var_right, 
+                    var_right = r$sus_link$var_right,
                     more_args = r$sus_link$more_args)
     })
   }, ignoreInit = TRUE)
@@ -148,7 +171,7 @@ shinyServer(function(input, output, session) {
   
   ## Parse URL -----------------------------------------------------------------
   
-  observe({
+  observeEvent(parseQueryString(session$clientData$url_search), {
     query <- parseQueryString(session$clientData$url_search)
     
     if (length(query) != 0) {
@@ -162,17 +185,18 @@ shinyServer(function(input, output, session) {
         tab <- query[["tb"]]
         if (!is.null(tab))
           updateTabsetPanel(session, "sus_page", selected = query[["tb"]])
+        r$sus_bookmark$id <- tab
       })
       # Update language with query.
       try({
         lang <- query[["lng"]]
         if (!is.null(lang) && lang == "en")
-          click("language_button")
+          r$lang <- reactiveVal("en")
       })
       # Retrieve important map info
       try({
         if (!is.null(query[["zm"]])) {
-          r$sus_bookmark$zoom <- as.numeric(query[["zm"]])}
+          r[[query[["tb"]]]]$zoom <- reactiveVal(as.numeric(query[["zm"]]))}
         
         if (!is.null(query[["lon"]])) {
           r$sus_bookmark$location <- c(as.numeric(query[["lon"]]), 
@@ -188,59 +212,65 @@ shinyServer(function(input, output, session) {
         if (!is.null(query[["v_r"]]))
           r$sus_bookmark$var_right <- query[["v_r"]]
       })
-      # Retrieve select_id
+      # Retrieve if zoom is automatic or not
       try({
-        if (!is.null(query[["s_id"]]))
-          r$sus_bookmark$select_id <- query[["s_id"]]
-      })
-      # Retrieve if df is manual
-      try({
-        if (!is.null(query[["zm_a"]])) {
+        if (!is.null(query[["zm_a"]]))
           r$sus_bookmark$zoom_auto <- as.logical(query[["zm_a"]])
-          r$sus_bookmark$df <- query[["df"]]}
       })
+      # Additional
       try({
         if (!is.null(query[["more"]]))
           r$sus_bookmark$more_args <- query[["more"]]
       })
+      # Retrieve df
+      try({
+        if (!is.null(query[["df"]])) 
+          r[[query[["tb"]]]]$df <- reactiveVal(query[["df"]])
+      })
+      # Retrieve select_id
+      try({
+        if (!is.null(query[["s_id"]])) 
+          r[[query[["tb"]]]]$select_id <- reactiveVal(query[["s_id"]])
+      })
     }
-  })
+  }, once = TRUE)
+  
+  # Update from bookmark
+  observeEvent(r$sus_bookmark$active, {
+    if (isTRUE(r$sus_bookmark$active)) {
+      # Delay to make sure the bookmarked module is fully loaded
+      delay(500, {
+        update_module(session = session,
+                      r = r,
+                      id = r$sus_bookmark$id,
+                      map_id = "map",
+                      location = r$sus_bookmark$location, 
+                      zoom_auto = r$sus_bookmark$zoom_auto, 
+                      var_left = r$sus_bookmark$var_left,
+                      var_right = r$sus_bookmark$var_right, 
+                      more_args = r$sus_bookmark$more_args)
+      })
+    }
+  }, priority = -1, once = TRUE)
   
   
   ## Modules -------------------------------------------------------------------
   
   active_mod_server <- function(active_tab = input$sus_page) {
-    if (active_tab == "home") return(home_server("home", session, r = r))
-    if (active_tab == "access") return(access_server("access", r = r))
-    if (active_tab == "alley") return(alley_server("alley", r = r))    
-    if (active_tab == "canale") return(canale_server("canale", r = r))
-    if (active_tab == "climate_risk") 
-      return(climate_risk_server("climate_risk", r = r))
-    if (active_tab == "covid") return(covid_server("covid", r = r))
-    if (active_tab == "crash") return(crash_server("crash", r = r))
-    if (active_tab == "gentrification") 
-      return(gentrification_server("gentrification", r = r))
-    if (active_tab == "green_space") return(green_space_server("green_space", r = r))
-    if (active_tab == "housing") return(housing_server("housing", r = r))
-    if (active_tab == "marketed_sustainability") 
-      return(marketed_sustainability_server("marketed_sustainability", r = r))
-    if (active_tab == "natural_inf") 
-      return(natural_inf_server("natural_inf", r = r))
-    if (active_tab == "mcp") return(mcp_server("mcp", r = r))
-    if (active_tab == "permits") return(permits_server("permits", r = r))
-    if (active_tab == "stories") return(stories_server("stories", r = r))
-    if (active_tab == "place_explorer") 
-      return(place_explorer_server("place_explorer", r = r))
-    if (active_tab == "about_sus") return(about_sus_server("about_sus", r = r))
-    if (active_tab == "how_to_use") return(how_to_use_server("how_to_use", r = r))
-    if (active_tab == "authors") return(authors_server("authors", r = r))
+    mod_function <- 
+      paste0(active_tab, "_server('", active_tab, "', r = r)")
+    
+    # Run the function but also catch its output for data exportation
+    assign("export_data", eval(parse(text = mod_function)), 
+           pos = 1)
   }
   
   observeEvent(input$sus_page, {
-    bookmark_server("reset", r = r)
-    if (!is.null(r$sus_bookmark$active) && isTRUE(r$sus_bookmark$active)) 
-      active_mod_server()
+    bookmark_server(input$sus_page, r = r)
+
+    # Trigger the module server function only if it hasn't been opened already
     if (!input$sus_page %in% r$previous_tabs()) active_mod_server()
+    
     updateQueryString("?")
   }, ignoreInit = FALSE)
   
@@ -388,12 +418,13 @@ shinyServer(function(input, output, session) {
       }
     )
   
+  
   ## Heartbeat function to keep app alive --------------------------------------
   
   timeout_start <- eventReactive(reactiveValuesToList(input), Sys.time())
   
   observe({
-    rerun <- timeout_start() + 1800 > Sys.time()
+    rerun <- timeout_start() + 7200 > Sys.time()
     if (rerun) invalidateLater(10000)
   })
   

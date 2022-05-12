@@ -19,7 +19,7 @@ about_sus_server <- function(id, r) {
     
     output$rmd_output <- renderUI(
       # HTML(paste0(
-        includeHTML(paste0("www/standalone/about_sus", "_", r$lang, 
+        includeHTML(paste0("www/standalone/about_sus", "_", r$lang(), 
                            ".html"))#))
     )
     

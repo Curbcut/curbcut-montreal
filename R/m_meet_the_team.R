@@ -24,10 +24,10 @@ meet_the_team_server <- function(id) {
                  
                  output$meet_the_team_html <- renderUI({
                    
-                   if (r$lang == "en") {
+                   if (r$lang() == "en") {
                      includeHTML("meet_the_team/meet_the_team_en.html")
                      
-                   } else if (r$lang == "fr") {
+                   } else if (r$lang() == "fr") {
                      includeHTML("meet_the_team/meet_the_team_fr.html")
                    }
                  })
