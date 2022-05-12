@@ -105,8 +105,8 @@ shinyServer(function(input, output, session) {
   }, once = TRUE)
   
   observeEvent(input$language_button, {
-    r$lang(if (input$language_button[1] %% 2 != 0) "en" else "fr")
-  }, ignoreNULL = FALSE)
+    r$lang(if (r$lang() == "en") "fr" else "en")
+  }, ignoreNULL = FALSE, ignoreInit = TRUE)
   
   observeEvent(r$lang(), {
     if (r$lang() == "en") {
