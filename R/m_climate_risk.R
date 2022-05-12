@@ -42,19 +42,18 @@ climate_risk_server <- function(id, r) {
     ns_id_map <- paste0(ns_id, "-map")
     
     # Initial reactives
-    zoom <- reactiveVal(get_zoom(map_zoom))
     zoom_string <- reactiveVal(get_zoom_string(map_zoom, map_zoom_levels))
     poi <- reactiveVal(NULL)
 
     # Map
     output[[ns_id_map]] <- renderRdeck({
       rdeck(map_style = map_base_style, initial_view_state = view_state(
-        center = map_loc, zoom = map_zoom))
+        center = map_loc, zoom = isolate(r[[ns_id]]$zoom())))
     })
     
     # Zoom and POI reactives
     observe({
-      zoom(get_zoom(get_view_state(ns_id_map)$zoom))
+      r[[ns_id]]$zoom(get_zoom(get_view_state(ns_id_map)$zoom))
       new_poi <- observe_map(get_view_state(ns_id_map))
       if ((is.null(new_poi) && !is.null(poi())) ||
           (!is.null(new_poi) && (is.null(poi()) || !all(new_poi == poi()))))
@@ -63,10 +62,10 @@ climate_risk_server <- function(id, r) {
     
     # Zoom string reactive
     observe({
-      new_zoom_string <- get_zoom_string(zoom(), map_zoom_levels)
+      new_zoom_string <- get_zoom_string(r[[ns_id]]$zoom(), map_zoom_levels)
       if (new_zoom_string != zoom_string()) zoom_string(new_zoom_string)
-    }) |> bindEvent(zoom())
-    
+    }) |> bindEvent(r[[ns_id]]$zoom())
+
     # Click reactive
     observe({
       selection <- get_clicked_object(ns_id_map)$ID
@@ -90,7 +89,6 @@ climate_risk_server <- function(id, r) {
     tile <- reactive(if (grid()) "grid" else tile_choropleth())
     
     # Get df for explore/legend/etc
-    # Must be inactive at init: the bookmark might want to set this value
     observe(r[[ns_id]]$df(get_df(tile(), zoom_string()))) |> 
       bindEvent(tile(), zoom_string(), ignoreInit = TRUE)
     
@@ -152,32 +150,16 @@ climate_risk_server <- function(id, r) {
       tile = tile, 
       tile2 = tile2,
       map_var = map_var, 
-      zoom = zoom,
       lwd = scale_lwd_climate_risk, 
       lwd_args = reactive(list(r[[ns_id]]$select_id(), tile())))
     
     # Update map labels
     label_server(
       id = ns_id, 
+      r = r,
       map_id = "map", 
-      tile = tile,
-      zoom = zoom)
-    
-    # De-select on df() change or "Clear selection" button
-    observe(r[[ns_id]]$select_id(NA)) |> 
-      bindEvent(input[[paste0(ns_id, "-clear_selection")]],
-                ignoreInit = TRUE) 
-    
-    observe({
-      print(r$sus_bookmark$active)
-      if (isFALSE(r$sus_bookmark$active)) r[[ns_id]]$select_id(NA)}) |> 
-      bindEvent(r[[ns_id]]$df(), ignoreInit = TRUE)
-    
-    # De-select on data() change if select_id is no longer valid
-    observe(
-      if (!r[[ns_id]]$select_id() %in% data()$ID) r[[ns_id]]$select_id(NA)) |> 
-      bindEvent(data(), ignoreInit = TRUE)
-    
+      tile = tile)
+
     # Explore panel
     explore_content <- explore_server(
       id = ns_id,
@@ -198,7 +180,6 @@ climate_risk_server <- function(id, r) {
       r = r,
       map_viewstate = reactive(get_view_state(ns_id_map)),
       var_right = var_right,
-      map_id = "map",
       more_args = reactive(c("c-cbox" = as.logical(grid())))
     )
     

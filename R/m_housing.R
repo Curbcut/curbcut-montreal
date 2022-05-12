@@ -56,36 +56,32 @@ housing_server <- function(id, r) {
     # Map
     output[[ns_id_map]] <- renderRdeck({
       rdeck(map_style = map_base_style, initial_view_state = view_state(
-        center = map_loc, zoom = map_zoom))
+        center = map_loc, zoom = isolate(r[[ns_id]]$zoom())))
     })
     
     # Zoom and POI reactives
-    observeEvent(get_view_state(ns_id_map), {
-      zoom({
-        if (!is.null(r$sus_bookmark$zoom)) {
-          r$sus_bookmark$zoom
-        } else if (!is.null(r$sus_link$zoom)) {
-          r$sus_link$zoom
-        } else get_zoom(get_view_state(ns_id_map)$zoom)})
-      new_poi(observe_map(get_view_state(ns_id_map)))
-      if ((is.null(new_poi()) && !is.null(poi())) ||
-          (!is.null(new_poi()) && (is.null(poi()) || !all(new_poi() == poi()))))
-        poi(new_poi())
-    })
-
+    observe({
+      r[[ns_id]]$zoom(get_zoom(get_view_state(ns_id_map)$zoom))
+      new_poi <- observe_map(get_view_state(ns_id_map))
+      if ((is.null(new_poi) && !is.null(poi())) ||
+          (!is.null(new_poi) && (is.null(poi()) || !all(new_poi == poi()))))
+        poi(new_poi)
+    }) |> bindEvent(get_view_state(ns_id_map))
+    
     # Zoom string reactive
-    observeEvent(zoom(), {
-      new_zoom_string <- get_zoom_string(zoom(), map_zoom_levels)
+    observe({
+      new_zoom_string <- get_zoom_string(r[[ns_id]]$zoom(), map_zoom_levels)
       if (new_zoom_string != zoom_string()) zoom_string(new_zoom_string)
-    })
-
+    }) |> bindEvent(r[[ns_id]]$zoom())
+    
     # Click reactive
-    observeEvent(get_clicked_object(ns_id_map), {
+    observe({
       selection <- get_clicked_object(ns_id_map)$ID
-      if (!is.na(select_id()) && selection == select_id()) return(select_id(NA))
-
-      select_id(selection)
-    })
+      if (!is.na(r[[ns_id]]$select_id()) && 
+          selection == r[[ns_id]]$select_id()) {
+        r[[ns_id]]$select_id(NA)
+      } else r[[ns_id]]$select_id(selection)
+    }) |> bindEvent(get_clicked_object(ns_id_map))
 
     # Choose tileset
     tile <- zoom_server(
@@ -104,7 +100,8 @@ housing_server <- function(id, r) {
     })
 
     # Get df for explore/legend/etc
-    observe(df(get_df(tile(), zoom_string(), r = r)))
+    observe(r[[ns_id]]$df(get_df(tile(), zoom_string()))) |> 
+      bindEvent(tile(), zoom_string(), ignoreInit = TRUE)
     
     # Time variable depending on which slider is active
     slider_uni <- slider_server(id = ns_id, slider_id = "slu")
@@ -118,8 +115,7 @@ housing_server <- function(id, r) {
       var_list = reactive(vars_housing_left),
       disabled = reactive(if (!slider_switch()) NULL else
         vars_housing_left_dis),
-      time = time,
-      df = df)
+      time = time)
 
     # Right variable / compare panel
     var_right <- compare_server(
@@ -128,7 +124,6 @@ housing_server <- function(id, r) {
       var_list = vars_housing_right,
       disabled = reactive(if (!slider_switch()) NULL else
         vars_housing_right_dis),
-      df = df,
       time = time)
 
     # Composite variable for map
@@ -154,7 +149,7 @@ housing_server <- function(id, r) {
 
     # Data
     data <- reactive(get_data(
-      df = df(),
+      df = r[[ns_id]]$df(),
       var_left = var_left(),
       var_right = var_right()))
 
@@ -164,8 +159,7 @@ housing_server <- function(id, r) {
       r = r,
       data = data,
       var_left = var_left,
-      var_right = var_right,
-      df = df)
+      var_right = var_right)
 
     # Did-you-know panel
     dyk_server(
@@ -187,26 +181,18 @@ housing_server <- function(id, r) {
     # Update map in response to variable changes or zooming
     rdeck_server(
       id = ns_id,
+      r = r,
       map_id = "map",
       tile = tile,
       tile2 =  tile2,
-      map_var = map_var,
-      zoom = zoom,
-      select_id = select_id)
+      map_var = map_var)
 
     # Update map labels
     label_server(
       id = ns_id,
+      r = r,
       map_id = "map",
-      tile = tile,
-      zoom = zoom)
-
-    # De-select
-    observeEvent(input[[paste0(ns_id, "-clear_selection")]], select_id(NA))
-    # Error check
-    observeEvent(df(), select_id(NA), ignoreInit = TRUE)
-    observeEvent(data(), if (!select_id() %in% data()$ID) select_id(NA),
-                 ignoreInit = TRUE)
+      tile = tile)
     
     # Explore panel
     explore_content <- explore_server(
@@ -214,9 +200,7 @@ housing_server <- function(id, r) {
       r = r,
       data = data,
       var_left = var_left,
-      var_right = var_right,
-      df = df,
-      select_id = select_id)
+      var_right = var_right)
 
     # Bookmarking
     bookmark_server(
@@ -225,40 +209,10 @@ housing_server <- function(id, r) {
       map_viewstate = reactive(get_view_state(ns_id_map)),
       var_left = var_left,
       var_right = var_right,
-      select_id = select_id,
-      df = df,
-      map_id = "map",
       more_args = reactive(c(
         "c-cbox" = str_extract(slider_switch(), "^."),
         "s-slu" = slider_uni(),
         "s-slb" = paste(slider_bi(), collapse = "-")))
     )
-    
-    # Update select_id() on bookmark
-    observeEvent(r$sus_bookmark$active, {
-      if (isTRUE(r$sus_bookmark$active)) {
-        delay(1000, {
-          if (!is.null(r$sus_bookmark$select_id))
-            if (r$sus_bookmark$select_id != "NA") 
-              select_id(r$sus_bookmark$select_id)
-          df(r$sus_bookmark$df)
-        })
-      }
-      # So that bookmarking gets triggered only ONCE
-      delay(1500, {
-        r$sus_bookmark$active <- FALSE
-        r$sus_bookmark$zoom <- NULL
-      })
-    }, priority = -2)
-    
-    # Update select_id() on module link
-    observeEvent(r$sus_link$activity, {
-      delay(1000, {
-        if (!is.null(r$sus_link$select_id)) select_id(r$sus_link$select_id)
-        df(r$sus_link$df)
-        r$sus_link$zoom <- NULL
-      })
-    }, priority = -2)
-    
   })
 }

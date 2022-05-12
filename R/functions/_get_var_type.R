@@ -72,6 +72,11 @@ get_var_type <- function(data, var_left, var_right, df, select_id,
   } else var_right_label <- NULL
   
   
+  ## Is select_id() not NA but not part of data() ------------------------------
+  
+  absent_id <- !is.na(select_id) && !select_id %in% data$ID
+  
+  
   ## Decide on table type ------------------------------------------------------
   
   comp_type <- if (var_right == " ") "uni" else "bi"
@@ -86,7 +91,7 @@ get_var_type <- function(data, var_left, var_right, df, select_id,
                       all(is.null(var_right_label))) "quanty" else "qual"
   
   select_type <- 
-    if (is.na(select_id)) "all" else
+    if (is.na(select_id) || absent_id) "all" else
       if (comp_type == "uni" && active_left == 0) "na" else
         if (active_right == 0) "na" else "select"
   

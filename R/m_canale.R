@@ -37,30 +37,29 @@ canale_server <- function(id, r) {
     ns_id_map <- paste0(ns_id, "-map")
     
     # Initial reactives
-    zoom <- reactiveVal(get_zoom(map_zoom))
     zoom_string <- reactiveVal(get_zoom_string(map_zoom, map_zoom_levels))
     poi <- reactiveVal(NULL)
 
     # Map
     output[[ns_id_map]] <- renderRdeck({
       rdeck(map_style = map_base_style, initial_view_state = view_state(
-        center = map_loc, zoom = map_zoom))
+        center = map_loc, zoom = isolate(r[[ns_id]]$zoom())))
     })
     
     # Zoom and POI reactives
     observe({
-      zoom(get_zoom(get_view_state(ns_id_map)$zoom))
+      r[[ns_id]]$zoom(get_zoom(get_view_state(ns_id_map)$zoom))
       new_poi <- observe_map(get_view_state(ns_id_map))
       if ((is.null(new_poi) && !is.null(poi())) ||
           (!is.null(new_poi) && (is.null(poi()) || !all(new_poi == poi()))))
         poi(new_poi)
     }) |> bindEvent(get_view_state(ns_id_map))
-
+    
     # Zoom string reactive
     observe({
-      new_zoom_string <- get_zoom_string(zoom(), map_zoom_levels)
+      new_zoom_string <- get_zoom_string(r[[ns_id]]$zoom(), map_zoom_levels)
       if (new_zoom_string != zoom_string()) zoom_string(new_zoom_string)
-    }) |> bindEvent(zoom())
+    }) |> bindEvent(r[[ns_id]]$zoom())
     
     # Click reactive
     observe({
@@ -129,31 +128,22 @@ canale_server <- function(id, r) {
 
     # Update map in response to variable changes or zooming
     rdeck_server(
-      id = ns_id,
-      r = r,
+      id = ns_id, 
+      r = r, 
       map_id = "map",
-      tile = tile,
-      tile2 =  tile2,
-      map_var = map_var,
-      zoom = zoom)
-
+      tile = tile, 
+      tile2 = tile2,
+      map_var = map_var, 
+      lwd = scale_lwd_climate_risk, 
+      lwd_args = reactive(list(r[[ns_id]]$select_id(), tile())))
+    
     # Update map labels
     label_server(
-      id = ns_id,
-      map_id = "map",
-      tile = tile,
-      zoom = zoom)
+      id = ns_id, 
+      r = r,
+      map_id = "map", 
+      tile = tile)
 
-    # De-select on df() change or "Clear selection" button
-    observe(r[[ns_id]]$select_id(NA)) |> 
-      bindEvent(input[[paste0(ns_id, "-clear_selection")]],
-                r[[ns_id]]$df(), ignoreInit = TRUE) 
-    
-    # De-select on data() change if select_id is no longer valid
-    observe(
-      if (!r[[ns_id]]$select_id() %in% data()$ID) r[[ns_id]]$select_id(NA)) |> 
-      bindEvent(data(), ignoreInit = TRUE)
-    
     # Explore panel
     explore_content <- explore_server(
       id = ns_id,
@@ -168,7 +158,6 @@ canale_server <- function(id, r) {
       r = r,
       map_viewstate = reactive(get_view_state(ns_id_map)),
       var_right = var_right,
-      map_id = "map"
     )
 
   })

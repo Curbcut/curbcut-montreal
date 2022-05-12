@@ -14,23 +14,21 @@
 #' @param df A reactive which resolves to a character string representing the
 #' underlying data set that is mapped. Currently available options are 
 #' `c("borough", "building", "CT", "DA", "grid", "street")`.
-#' @param map_id The id of the map that must be updated following bookmarking. 
 #' @param more_args Named vectors indicating other input that must be updated
 #' following bookmarking.
 
 bookmark_server <- function(id, r, map_viewstate = reactive(NULL), 
+                            s_id = r[[id]]$select_id,
+                            df = r[[id]]$df,
                             var_left = reactive(NULL),
                             var_right = reactive(NULL), 
-                            map_id = NULL, more_args = reactive(NULL)) {
+                            more_args = reactive(NULL)) {
   
   stopifnot(is.reactive(map_viewstate))
   stopifnot(is.reactive(var_right))
   stopifnot(is.reactive(more_args))
   
   moduleServer(id, function(input, output, session) {
-    
-    s_id <- r[[id]]$select_id
-    df <- r[[id]]$df
     
     # Update URL
     observe({
@@ -63,39 +61,19 @@ bookmark_server <- function(id, r, map_viewstate = reactive(NULL),
       add_arguments <- c("zm", "lat", "lon", "v_l", "v_r", "s_id", "zm_a", 
                          "df", "more")
       add_arguments <- 
-        lapply(add_arguments, \(x)
-          if (exists(x) && !is.null(x)) {
-            value <- get(x)
-            if (is.reactive(value)) return(NULL)
+        lapply(add_arguments, \(x) {
+          value <- get0(x)
+          if (!is.null(value)) {
+            if (is.reactive(value)) value <- value()
             return(paste0("&", x, "=", value))
-          }) |> (\(x) x[lengths(x) != 0])()
+          }
+        }) |> (\(x) x[lengths(x) != 0])()
       
       url <- Reduce(paste0, c(default, add_arguments))
       
       # Update the URL
       updateQueryString(url)
     })
-    
-    
-    # Update from bookmark
-    observeEvent(r$sus_bookmark$active, {
-      if (isTRUE(r$sus_bookmark$active)) {
-        update_module(session = session,
-                      r = r,
-                      id = id,
-                      zoom = r$sus_bookmark$zoom, 
-                      location = r$sus_bookmark$location, 
-                      map_id = map_id, 
-                      zoom_auto = r$sus_bookmark$zoom_auto, 
-                      var_left = r$sus_bookmark$var_left,
-                      var_right = r$sus_bookmark$var_right, 
-                      more_args = r$sus_bookmark$more_args)
-        
-        # Set r$sus_bookmark$active to FALSE so select_id can finish updating
-        r$sus_bookmark$active <- FALSE
-        
-      }
-    }, priority = -1, autoDestroy = TRUE, once = TRUE)
     
   })
 }

@@ -46,15 +46,13 @@ access_server <- function(id, r) {
     sidebar_server(id = ns_id, r = r, x = "access")
     
     # Initial reactives
-    zoom <- reactiveVal(get_zoom(map_zoom))
     zoom_string <- reactiveVal(get_zoom_string(map_zoom, map_zoom_levels))
-    select_id <- reactiveVal(NA)
     poi <- reactiveVal(NULL)
     
     # Map
     output[[ns_id_map]] <- renderRdeck({
       rdeck(map_style = map_base_style, initial_view_state = view_state(
-        center = map_loc, zoom = map_zoom)) |> 
+        center = map_loc, zoom = isolate(r[[ns_id]]$zoom()))) |> 
         add_mvt_layer(id = ns_id) |> 
         add_mvt_layer(id = "metro_lines",
                       data = mvt_url("sus-mcgill.metro_lines"),
@@ -64,35 +62,28 @@ access_server <- function(id, r) {
     })
     
     # Zoom and POI reactives
-    observeEvent(get_view_state(ns_id_map), {
-      zoom({
-        if (!is.null(r$sus_bookmark$zoom)) {
-          r$sus_bookmark$zoom
-        } else if (!is.null(r$sus_link$zoom)) {
-          r$sus_link$zoom
-        } else get_zoom(get_view_state(ns_id_map)$zoom)})
+    observe({
+      r[[ns_id]]$zoom(get_zoom(get_view_state(ns_id_map)$zoom))
       new_poi <- observe_map(get_view_state(ns_id_map))
-      if ((is.null(new_poi) && !is.null(poi())) || 
+      if ((is.null(new_poi) && !is.null(poi())) ||
           (!is.null(new_poi) && (is.null(poi()) || !all(new_poi == poi()))))
         poi(new_poi)
-    })
+    }) |> bindEvent(get_view_state(ns_id_map))
     
     # Zoom string reactive
-    observeEvent(zoom(), {
-      new_zoom_string <- get_zoom_string(zoom(), map_zoom_levels)
+    observe({
+      new_zoom_string <- get_zoom_string(r[[ns_id]]$zoom(), map_zoom_levels)
       if (new_zoom_string != zoom_string()) zoom_string(new_zoom_string)
-    })
+    }) |> bindEvent(r[[ns_id]]$zoom())
     
     # Click reactive
-    observeEvent(get_clicked_object(ns_id_map), {
+    observe({
       selection <- get_clicked_object(ns_id_map)$ID
-      if (!is.na(select_id()) && selection == select_id()) {
-        select_id(NA)
-      } else select_id(selection)
-    })
-    
-    # Get df for explore/legend/etc
-    df <- reactive("CT")
+      if (!is.na(r[[ns_id]]$select_id()) && 
+          selection == r[[ns_id]]$select_id()) {
+        r[[ns_id]]$select_id(NA)
+      } else r[[ns_id]]$select_id(selection)
+    }) |> bindEvent(get_clicked_object(ns_id_map))
     
     # Time
     time <- reactive("2016")
@@ -106,11 +97,11 @@ access_server <- function(id, r) {
                            tile_lookup$tile2 == var_left()])
 
     # Enable or disable slider + type of destination
-    observeEvent({select_id()
+    observeEvent({r[[ns_id]]$select_id()
       var_right()}, {
-        toggle("access-slider", condition = !is.na(select_id()) && 
+        toggle("access-slider", condition = !is.na(r[[ns_id]]$select_id()) && 
                  var_right() == " ")
-        toggle("access-d_1", condition = is.na(select_id()) || 
+        toggle("access-d_1", condition = is.na(r[[ns_id]]$select_id()) || 
                  var_right() != " ")
       })
 
@@ -119,7 +110,7 @@ access_server <- function(id, r) {
 
     # Manual legend breaks
     breaks <- reactive({
-      if (!is.na(select_id()) && var_right() == " ") {
+      if (!is.na(r[[ns_id]]$select_id()) && var_right() == " ") {
         breaks <- slider() / 5 * 5:0
         attr(breaks, "label") <- sus_translate(r = r, "Minutes to reach census tract")
         attr(breaks, "palette") <- legend_iso
@@ -141,18 +132,17 @@ access_server <- function(id, r) {
       id = ns_id,
       r = r,
       var_list = make_dropdown(compare = TRUE),
-      df = df,
       time = time)
     
     # Composite variable for map
     map_var <- reactive({
-      if (!is.na(select_id()) && var_right() == " ") return("ID")
+      if (!is.na(r[[ns_id]]$select_id()) && var_right() == " ") return("ID")
       
       str_remove(paste(var_left(), var_right(), sep = "_"), "_ $")
       })
 
     # If there's a select_id, update the compare to " "
-    observeEvent(select_id(), {
+    observeEvent(r[[ns_id]]$select_id(), {
       updatePickerInput(
         session,
         inputId = "access-access-var",
@@ -162,7 +152,7 @@ access_server <- function(id, r) {
 
     # Data
     data <- reactive(get_data(
-      df = df(), 
+      df = r[[ns_id]]$df(),
       var_left = var_left(), 
       var_right = var_right()))
     
@@ -172,9 +162,7 @@ access_server <- function(id, r) {
       r = r,
       data = data,
       var_left = var_left,
-      var_right = var_right,
-      df = df,
-      select_id = select_id)
+      var_right = var_right)
 
     # Legend
     legend <- legend_server(
@@ -182,7 +170,6 @@ access_server <- function(id, r) {
       r = r,
       var_left = var_left,
       var_right = var_right,
-      df = df,
       breaks = breaks)
     
     # Did-you-know panel
@@ -194,26 +181,26 @@ access_server <- function(id, r) {
       poi = poi)
     
     access_colors <- reactive({
-      if (!is.na(select_id()) && var_right() == " ") {
+      if (!is.na(r[[ns_id]]$select_id()) && var_right() == " ") {
         tt_thresh <- slider() * 60
 
         # SQL retrieval
         db_call <- 
-          paste0("SELECT timing, destination, `", select_id(), 
+          paste0("SELECT timing, destination, `", r[[ns_id]]$select_id(), 
                  "` FROM tt_matrix WHERE timing = '", var_left_2(), "'",
-                 " AND `", select_id(), "` <= ", tt_thresh,
-                 " AND destination != ", select_id())
+                 " AND `", r[[ns_id]]$select_id(), "` <= ", tt_thresh,
+                 " AND destination != ", r[[ns_id]]$select_id())
         CTs_to_map <- dbGetQuery(db, db_call) |> dplyr::as_tibble()
         # Further manipultaion
         CTs_to_map$group <- as.character(6 - ceiling((
-          CTs_to_map[[select_id()]]) / tt_thresh * 5))
+          CTs_to_map[[r[[ns_id]]$select_id()]]) / tt_thresh * 5))
         CTs_to_map <- CTs_to_map[, c("destination", "group")]
         CTs_to_map <- merge(CTs_to_map, colour_iso, by = "group", 
                             all.x = TRUE)
         names(CTs_to_map) <- c("group", "ID", "fill")
         data_1 <- data()[, "ID"] |> merge(CTs_to_map, by = "ID")
         data_1 <- data_1[, c("ID", "fill")]
-        data_2 <- data()[data()$ID == select_id(), "ID"]
+        data_2 <- data()[data()$ID == r[[ns_id]]$select_id(), "ID"]
         data_2$fill <- "#000000"
         out <- rbind(data_1, data_2)
         names(out) <- c("group", "value")
@@ -224,12 +211,11 @@ access_server <- function(id, r) {
     # Update map in response to variable changes or zooming
     rdeck_server(
       id = ns_id,
+      r = r,
       map_id = "map",
       tile = tile,
       tile2 =  tile2,
       map_var = map_var,
-      zoom = zoom,
-      select_id = select_id,
       fill = scale_fill_access,
       fill_args = reactive(list(map_var(), tile(), access_colors())),
     )
@@ -237,15 +223,9 @@ access_server <- function(id, r) {
     # Update map labels
     label_server(
       id = ns_id, 
+      r = r,
       map_id = "map", 
-      tile = tile,
-      zoom = zoom)
-    
-    # De-select
-    observeEvent(input[[paste0(ns_id, "-clear_selection")]], select_id(NA))
-    # Error check
-    observeEvent(data(), if (!select_id() %in% data()$ID) select_id(NA),
-                 ignoreInit = TRUE)
+      tile = tile)
     
     # Bookmarking
     bookmark_server(
@@ -254,36 +234,8 @@ access_server <- function(id, r) {
       map_viewstate = reactive(get_view_state(paste0(ns_id, "-map"))),
       var_left = var_left,
       var_right = var_right,
-      select_id = select_id,
-      map_id = NS(id, "map"),
       more_args = reactive(c("s-slider" = slider()))
     )
-
-    # Update select_id() on bookmark
-    observeEvent(r$sus_bookmark$active, {
-      if (isTRUE(r$sus_bookmark$active)) {
-        delay(1000, {
-          if (!is.null(r$sus_bookmark$select_id))
-            if (r$sus_bookmark$select_id != "NA") 
-              select_id(r$sus_bookmark$select_id)
-        })
-      }
-      # So that bookmarking gets triggered only ONCE
-      delay(1500, {
-        r$sus_bookmark$active <- FALSE
-        r$sus_bookmark$df <- NULL
-        r$sus_bookmark$zoom <- NULL
-      })
-    }, priority = -2)
-    
-    # Update select_id() on module link
-    observeEvent(r$sus_link$activity, {
-      delay(1000, {
-        if (!is.null(r$sus_link$select_id)) select_id(r$sus_link$select_id)
-        r$sus_link$df <- NULL
-        r$sus_link$zoom <- NULL
-      })
-    }, priority = -2)
 
   })
 }

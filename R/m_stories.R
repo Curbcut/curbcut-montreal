@@ -115,9 +115,7 @@ stories_server <- function(id, r) {
       id = ns_id,
       r = r,
       map_viewstate = reactive(
-        input[[paste0(ns_id, "-map_viewstate")]]$viewState),
-      select_id = r[[ns_id]]$select_id,
-      map_id = "map",
+        input[[paste0(ns_id, "-map_viewstate")]]$viewState)
     )
 
   })

@@ -6,12 +6,10 @@ module_link <- function(r, module, zoom = NULL, location = map_loc,
                         zoom_auto = NULL, more_args = NULL, 
                         update_view = TRUE) {
   
-  r$sus_link$mod_ns <- paste(module, module, sep = "-")
+  r$sus_link$id <- module
   
   # Open the link to the linked module
   r$link <- module
-  # Tweak map namespace
-  r$sus_link$map_id <- paste(module, module, "map", sep = "-")
   
   # Update view
   r$sus_link$zoom <- NULL

@@ -16,12 +16,11 @@ select_var_UI <- function(id, select_var_id = NULL,
 
 select_var_server <- function(id, r = r, select_var_id = NULL,
                               var_list, disabled = reactive(NULL), 
-                              time = reactive(NULL), df = reactive(NULL)) {
+                              time = reactive(NULL), df = r[[id]]$df) {
   
   stopifnot(is.reactive(var_list))
   stopifnot(is.reactive(time))
-  stopifnot(is.reactive(df))
-  
+
   moduleServer(id, function(input, output, session) {
     
     select_var_id <- if (is.null(select_var_id)) "var" else select_var_id
@@ -46,7 +45,7 @@ select_var_server <- function(id, r = r, select_var_id = NULL,
     var <- reactive({
       v1 <- paste(input[[select_var_id]], time(), sep = "_")
       v1 <- sub("_$", "", v1)
-      if (!is.null(df()) && df() %in% c("borough", "CT", "DA", "grid")) {
+      if (!is.null(df) && df() %in% c("borough", "CT", "DA", "grid")) {
         v1 <- sapply(v1, return_closest_year, df(), USE.NAMES = FALSE)
       }
       v1 <- ifelse(str_detect(v1, "^ _\\d{4}$"), " ", v1)

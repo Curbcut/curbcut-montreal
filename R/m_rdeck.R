@@ -3,7 +3,7 @@
 #' @param map_id Namespace id of the map to redraw, likely to be `NS(id, "map")`
 #' @return An updated version of the rdeck map.
 
-rdeck_server <- function(id, r, map_id, tile, tile2, map_var, zoom,
+rdeck_server <- function(id, r, map_id, tile, tile2, map_var, 
                          fill = scale_fill_sus, 
                          fill_args = reactive(list(map_var())),
                          colour = scale_colour_sus, 
@@ -19,14 +19,14 @@ rdeck_server <- function(id, r, map_id, tile, tile2, map_var, zoom,
   stopifnot(is.reactive(tile))
   stopifnot(is.reactive(tile2))
   stopifnot(is.reactive(map_var))
-  stopifnot(is.reactive(zoom))
-  
+
   
   ## Module --------------------------------------------------------------------
   
   moduleServer(id, function(input, output, session) {
     
     select_id <- r[[id]]$select_id
+    zoom <- r[[id]]$zoom
     
     # Helper variables
     pick <- reactive(

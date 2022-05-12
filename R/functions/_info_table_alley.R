@@ -3,40 +3,17 @@
 info_table_alley <- function(r = r, data, var_type, var_left, var_right, df, 
                              select_id, build_str_as_DA = TRUE) {
   
-  if (is.na(select_id)) {
+  if (df == "borough_empty") {
     
-    if (df == "borough_empty") {
+    if (is.na(select_id) || !select_id %in% alley_text$ID) {
+      
       participating_boroughs <- nrow(alley_text)
       nb_alleys <- {nrow(alley)}
       
       sus_translate(r = r, "{participating_boroughs} out of 19 Montreal boroughs ",
                     "have a green alley program. They collectively have ",
                     "{nb_alleys} green alleys.")
-      
-    } else if (df == "alley") {
-      
-      alley_visited <- alley[alley$visited, ]
-      green <- nrow(alley_visited[alley_visited$type == "green", ])
-      community <- nrow(alley_visited[alley_visited$type == "community", ])
-      mixed <- nrow(alley_visited[alley_visited$type == "mixed", ])
-      none <- nrow(alley_visited[alley_visited$type == "none", ])
-      
-      green_per <- scales::percent(green/nrow(alley_visited))
-      community_per <- scales::percent(community/nrow(alley_visited))
-      mixed_per <- scales::percent(mixed/nrow(alley_visited))
-      none_per <- scales::percent(none/nrow(alley_visited))
-      
-      sus_translate(r = r, "Our team visited {nrow(alley_visited)} of the ",
-                    "{nrow(alley)} green alleys in Montreal. We classified ",
-                    "{green} ({green_per}) as 'green', {community} ",
-                    "({community_per}) as 'community', {mixed} ",
-                    "({mixed_per}) as 'mixed' green and community, and ",
-                    "{none} ({none_per}) as 'unmaintained'.")
-    }
-    
-  } else {
-    
-    if (df == "borough_empty") {
+    } else {
       
       data <- alley_text[alley_text$ID == select_id,]
       
@@ -68,8 +45,33 @@ info_table_alley <- function(r = r, data, var_type, var_left, var_right, df,
                "{data$contact}</a></p>")
       
       HTML(unlist(text_to_display))
+    }
+    
+  } else if (df == "alley") {
+    
+    if (is.na(select_id) || !select_id %in% alley$ID) {
       
-    } else if (df == "alley") {
+      print("true")
+      
+      alley_visited <- alley[alley$visited, ]
+      green <- nrow(alley_visited[alley_visited$type == "green", ])
+      community <- nrow(alley_visited[alley_visited$type == "community", ])
+      mixed <- nrow(alley_visited[alley_visited$type == "mixed", ])
+      none <- nrow(alley_visited[alley_visited$type == "none", ])
+      
+      green_per <- scales::percent(green/nrow(alley_visited))
+      community_per <- scales::percent(community/nrow(alley_visited))
+      mixed_per <- scales::percent(mixed/nrow(alley_visited))
+      none_per <- scales::percent(none/nrow(alley_visited))
+      
+      sus_translate(r = r, "Our team visited {nrow(alley_visited)} of the ",
+                    "{nrow(alley)} green alleys in Montreal. We classified ",
+                    "{green} ({green_per}) as 'green', {community} ",
+                    "({community_per}) as 'community', {mixed} ",
+                    "({mixed_per}) as 'mixed' green and community, and ",
+                    "{none} ({none_per}) as 'unmaintained'.")
+      
+    } else {
       
       data <- alley[alley$ID == select_id,]
       
@@ -94,14 +96,16 @@ info_table_alley <- function(r = r, data, var_type, var_left, var_right, df,
                           "</p>")
                  })
         }
-      
-      list(HTML(unlist(text_to_display)),
-           if (!is.na(data$photo_ID)) {
-             div(style = "margin-bottom:20px; cursor:pointer;",
-                 HTML(paste0("<img src = 'alleys/", data$photo_ID, 
-                             "' id = 'alley-alley_img' style = 'width:100%'>")))
-           })
+    
+    list(HTML(unlist(text_to_display)),
+         if (!is.na(data$photo_ID)) {
+           div(style = "margin-bottom:20px; cursor:pointer;",
+               HTML(paste0("<img src = 'alleys/", data$photo_ID, 
+                           "' id = 'alley-alley_img' style = 'width:100%'>")))
+         })
+    
     }
   }
-  
 }
+
+  

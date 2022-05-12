@@ -22,13 +22,23 @@ shinyServer(function(input, output, session) {
     lang = "fr",
     active_tab = "home",
     canale = reactiveValues(select_id = reactiveVal(NA), 
-                            df = reactiveVal("borough")),
+                            df = reactiveVal("borough"),
+                            zoom = reactiveVal(get_zoom(map_zoom))),
     climate_risk = reactiveValues(select_id = reactiveVal(NA),
-                                  df = reactiveVal("grid"))
-                      )
+                                  df = reactiveVal("grid"),
+                                  zoom = reactiveVal(get_zoom(map_zoom))),
+    housing = reactiveValues(select_id = reactiveVal(NA),
+                             df = reactiveVal("borough"),
+                             zoom = reactiveVal(get_zoom(map_zoom))),
+    access = reactiveValues(select_id = reactiveVal(NA),
+                            df = reactiveVal("CT"),
+                            zoom = reactiveVal(get_zoom(map_zoom))),
+    alley = reactiveValues(select_id = reactiveVal(NA),
+                           df = reactiveVal("borough_empty"),
+                           zoom = reactiveVal(12))
+  )
   
-  # r$canale$select_id <- reactiveVal(NA)
-  
+
   # Home page ------------------------------------------------------------------
   
   observe(updateNavbarPage(session, "sus_page", "home")) |> 
@@ -143,12 +153,11 @@ shinyServer(function(input, output, session) {
   observeEvent(r$sus_link$activity, {
     # Delay to make sure the linked module is fully loaded
     delay(500, {
-      update_module(mod_ns = r$sus_link$mod_ns,
+      update_module(id = r$sus_link$id,
                     r = r, 
                     session = session,
                     zoom = r$sus_link$zoom,
                     location = r$sus_link$location,
-                    map_id = r$sus_link$map_id,
                     zoom_auto = r$sus_link$zoom_auto,
                     var_left = r$sus_link$var_left,
                     var_right = r$sus_link$var_right,
@@ -173,6 +182,7 @@ shinyServer(function(input, output, session) {
         tab <- query[["tb"]]
         if (!is.null(tab))
           updateTabsetPanel(session, "sus_page", selected = query[["tb"]])
+        r$sus_bookmark$id <- tab
       })
       # Update language with query.
       try({
@@ -183,7 +193,7 @@ shinyServer(function(input, output, session) {
       # Retrieve important map info
       try({
         if (!is.null(query[["zm"]])) {
-          r$sus_bookmark$zoom <- as.numeric(query[["zm"]])}
+          r[[query[["tb"]]]]$zoom <- reactiveVal(as.numeric(query[["zm"]]))}
         
         if (!is.null(query[["lon"]])) {
           r$sus_bookmark$location <- c(as.numeric(query[["lon"]]), 
@@ -199,28 +209,45 @@ shinyServer(function(input, output, session) {
         if (!is.null(query[["v_r"]]))
           r$sus_bookmark$var_right <- query[["v_r"]]
       })
-      # Retrieve select_id
-      try({
-        if (!is.null(query[["s_id"]])) 
-          r[[query[["tb"]]]]$select_id <- reactiveVal(query[["s_id"]])
-      })
       # Retrieve if zoom is automatic or not
       try({
         if (!is.null(query[["zm_a"]]))
           r$sus_bookmark$zoom_auto <- as.logical(query[["zm_a"]])
-      })
-      # Retrieve df
-      try({
-        if (!is.null(query[["df"]])) 
-          r[[query[["tb"]]]]$df <- reactiveVal(query[["df"]])
       })
       # Additional
       try({
         if (!is.null(query[["more"]]))
           r$sus_bookmark$more_args <- query[["more"]]
       })
+      # Retrieve df
+      try({
+        if (!is.null(query[["df"]])) 
+          r[[query[["tb"]]]]$df <- reactiveVal(query[["df"]])
+      })
+      # Retrieve select_id
+      try({
+        if (!is.null(query[["s_id"]])) 
+          r[[query[["tb"]]]]$select_id <- reactiveVal(query[["s_id"]])
+      })
     }
   }, once = TRUE)
+  
+  # Update from bookmark
+  observeEvent(r$sus_bookmark$active, {
+    if (isTRUE(r$sus_bookmark$active)) {
+      # Delay to make sure the bookmarked module is fully loaded
+      delay(500, {
+        update_module(session = session,
+                      r = r,
+                      id = r$sus_bookmark$id,
+                      location = r$sus_bookmark$location, 
+                      zoom_auto = r$sus_bookmark$zoom_auto, 
+                      var_left = r$sus_bookmark$var_left,
+                      var_right = r$sus_bookmark$var_right, 
+                      more_args = r$sus_bookmark$more_args)
+      })
+    }
+  }, priority = -1, once = TRUE)
   
   
   ## Modules -------------------------------------------------------------------

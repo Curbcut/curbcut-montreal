@@ -1,17 +1,18 @@
 #### RDECK LABEL SERVER ########################################################
 
-label_server <- function(id, map_id, tile, zoom) {
+label_server <- function(id, r, map_id, tile) {
   
   ## Setup ---------------------------------------------------------------------
   
   # Error checking
   stopifnot(is.reactive(tile))
-  stopifnot(is.reactive(zoom))
   
   
   ## Module --------------------------------------------------------------------
   
   moduleServer(id, function(input, output, session) {
+    
+    zoom <- r[[id]]$zoom
     
     # Helper variables
     show_street <- reactive(tile() %in% c("borough", "CT", "DA", "grid") ||

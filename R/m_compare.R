@@ -28,13 +28,12 @@ compare_UI <- function(id, var_list) {
   )
 }
 
-compare_server <- function(id, r = r, var_list, df = reactive(NULL), 
+compare_server <- function(id, r = r, var_list, df = r[[id]]$df, 
                            disabled = reactive(NULL), 
                            time = reactive(NULL), 
                            show_panel = reactive(TRUE)) {
   
   stopifnot(!is.reactive(var_list))
-  stopifnot(is.reactive(df))
   stopifnot(is.reactive(disabled))
   stopifnot(is.reactive(time))
   stopifnot(is.reactive(show_panel))

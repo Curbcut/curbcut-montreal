@@ -33,20 +33,21 @@ explore_UI <- function(id) {
 }
 
 explore_server <- function(id, r, data, var_left, var_right,
+                           df = r[[id]]$df, select_id = r[[id]]$select_id,
                            build_str_as_DA = reactive(TRUE), 
                            graph = reactive(explore_graph), 
                            graph_args = reactive(list(
                              r = r,
                              data = data(), var_left = var_left(), 
-                             var_right = var_right(), df = r[[id]]$df(), 
-                             select_id = r[[id]]$select_id(), 
+                             var_right = var_right(), df = df(), 
+                             select_id = select_id(), 
                              build_str_as_DA = build_str_as_DA())),
                            table = reactive(info_table),
                            table_args = reactive(list(
                              r = r,
                              data = data(), var_left = var_left(),
-                             var_right = var_right(), df = r[[id]]$df(),
-                             select_id = r[[id]]$select_id(),
+                             var_right = var_right(), df = df(), 
+                             select_id = select_id(), 
                              build_str_as_DA = build_str_as_DA()))) {
   
   stopifnot(is.reactive(data))
@@ -55,9 +56,6 @@ explore_server <- function(id, r, data, var_left, var_right,
   stopifnot(is.reactive(build_str_as_DA))
 
   moduleServer(id, function(input, output, session) {
-    
-    select_id <- r[[id]]$select_id
-    df <- r[[id]]$df
     
     # Get var_type
     var_type <- reactive(tryCatch(get_var_type(
@@ -96,6 +94,9 @@ explore_server <- function(id, r, data, var_left, var_right,
       toggle("explore_graph", condition = !is.null(graph_out()))
       toggle("clear_selection", condition = !is.na(select_id()))
     })
+    
+    # Clear selection on button click
+    observeEvent(input$clear_selection, select_id(NA), ignoreInit = TRUE)
     
     # Change show/hide button text
     observeEvent(input$hide_explore, {
