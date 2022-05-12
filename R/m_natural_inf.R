@@ -11,11 +11,11 @@ natural_inf_UI <- function(id) {
       NS(id, id),
       susSidebarWidgets(
         select_var_UI(NS(id, id), 
-                      select_var_id = "vl_1",
-                      var_list = vars_natural_inf_left,
+                      select_var_id = "d_1",
+                      var_list = var_left_list_1_natural_inf,
                       label = sus_translate(r = r, "Theme")),
         select_var_UI(NS(id, id), 
-                      select_var_id = "vl_2",
+                      select_var_id = "d_2",
                       var_list = list("----" = " "),
                       label = sus_translate(r = r, "Indicator")),
         slider_UI(NS(id, id),
@@ -98,25 +98,25 @@ natural_inf_server <- function(id, r) {
     var_left_1 <- select_var_server(
       id = id,
       r = r,
-      select_var_id = "vl_1",
-      var_list = reactive(vars_natural_inf_left))
+      select_var_id = "d_1",
+      var_list = reactive(var_left_list_1_natural_inf))
     
     var_left_2_list <- reactive({
       if (var_left_1() == "c_priority") {
         list("----" = " ")
-      } else eval(parse(text = paste0("vars_natural_inf_left_", var_left_1())))
+      } else var_left_list_2_natural_inf[[var_left_1()]]
     })
     
     var_left_2 <- select_var_server(
       id = id,
       r = r,
-      select_var_id = "vl_2",
+      select_var_id = "d_2",
       var_list = reactive(var_left_2_list()))
     
     var_left <- reactive(if (var_left_2() != " ") var_left_2() else 
       var_left_1())
     
-    observe(toggle(NS(id, "vl_2"), condition = var_left_1() != "c_priority")) |> 
+    observe(toggle(NS(id, "d_2"), condition = var_left_1() != "c_priority")) |> 
       bindEvent(var_left_1())
     
     # Checkbox value
@@ -264,8 +264,11 @@ natural_inf_server <- function(id, r) {
     bookmark_server(
       id = id,
       r = r,
+      var_left = var_left,
       map_viewstate = reactive(get_view_state(id_map)),
-      s_id = reactive(NA)
+      s_id = reactive(NA),
+      more_args = reactive(c(
+        "s-slider" = main_slider()))
     )
 
   })
