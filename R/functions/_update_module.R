@@ -141,4 +141,7 @@ update_module <- function(r, mod_ns = NULL, id = mod_ns, session, zoom,
     )
   }
   
+  # Set r$sus_bookmark$active to FALSE to allow select_id to finish updating
+  r$sus_bookmark$active <- FALSE
+  
 }
