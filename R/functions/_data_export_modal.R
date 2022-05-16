@@ -55,13 +55,14 @@ data_export_modal <- function(r = r, export_data) {
   
   var_left_private <- var_left$private
   
-  about_data$left_parts <- list()
+  about_data$var_left <- list()
   
   if (exist_var_right)
-    about_data$left_parts$title <- 
+    about_data$var_left$title <- 
     paste0("<h4>", sus_translate(r = r, "About left variable"), "</h3>")
   
-  about_data <- get_metadata(export_data = export_data, 
+  about_data <- get_metadata(export_data = export_data,
+                             r = r,
                              about_data = about_data,
                              var = "var_left",
                              variables_row = var_left)
@@ -71,18 +72,21 @@ data_export_modal <- function(r = r, export_data) {
   var_right_private <- FALSE
   
   if (exist_var_right) {
-
-    var_right <- variables[variables$var_code == export_data[[paste0(var, "_code")]], ]
+    
+    var_right <- variables[variables$var_code == export_data$var_right_code, ]
     
     var_right_private <- var_right$private
     
-    about_data$right_parts <- list()
+    about_data$var_right <- list()
     
-    about_data$right_parts$title <- 
+    about_data$var_right$title <- 
       paste0("<h4>", sus_translate(r = r, "About right variable"), "</h3>")
     
-    export_data <- get_metadata(export_data = export_data, var = "var_right",
-                                variables_row = var_right)
+    about_data <- get_metadata(export_data = export_data, 
+                               r = r,
+                               about_data = about_data,
+                               var = "var_right",
+                               variables_row = var_right)
     
   }
   

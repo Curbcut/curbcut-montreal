@@ -228,5 +228,22 @@ climate_risk_server <- function(id, r) {
       })
     }, priority = -2)
     
+    # Return for data transprency and export
+    export_data <- reactive(data_export(id = id, 
+                                        data = data(), 
+                                        var_left = var_left(), 
+                                        var_right = var_right(), 
+                                        df = df()))
+    
+    observe({assign("data", data(), pos = 1)})
+    observe({assign("df", df(), pos = 1)})
+    observe({assign("var_left", var_left(), pos = 1)})
+    observe({assign("var_right", var_right(), pos = 1)})
+    
+    
+    observe({assign("export_data_", export_data(), pos = 1)})
+    
+    return(export_data)
+    
   })
 }

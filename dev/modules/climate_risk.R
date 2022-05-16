@@ -333,8 +333,17 @@ variables <-
 
 modules <- 
   modules |> 
-  add_modules(id = "climate_risk",
-              metadata = TRUE)
+  add_modules(
+    id = "climate_risk",
+    metadata = TRUE,
+    dataset_info = 
+      paste0("<p>The data in this module are cartographic representations of the ",
+             "vulnerability analysis developed as part of the Climate change ",
+             "adaptation plan for the agglomeration of Montréal 2015-2020 for ",
+             "the following climate hazards: heavy rainfall, heat waves, ",
+             "destructive storms, droughts and floods.</p>"),
+    link = "https://donnees.montreal.ca/ville-de-montreal/vulnerabilite-changements-climatiques"
+  )
 
 
 # Clean up ----------------------------------------------------------------

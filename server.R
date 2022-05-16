@@ -19,6 +19,7 @@ shinyServer(function(input, output, session) {
                       lang = "fr",
                       active_tab = "home")
   
+  
   # Home page ------------------------------------------------------------------
   
   observe(updateNavbarPage(session, "sus_page", "home")) |> 

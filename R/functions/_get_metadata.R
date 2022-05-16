@@ -1,20 +1,19 @@
 ### GET METADATA FUNCTION ######################################################
 
-get_metadata <- function(export_data, about_data,
+get_metadata <- function(export_data, r, about_data,
                          var, variables_row) {
   
   # Time
   # Year
-  if (str_detect(export_data[[var]], "_\\d{4}$"))
-    time <- str_extract(export_data[[var]], "\\d{4}$")
+  time <- str_extract(export_data[[var]], "\\d{4}$")
   
   variables_row$explanation <- sus_translate(r = r, variables_row$explanation)
   variables_row$var_title <- sus_translate(r = r, variables_row$var_title)
   
-  about_data$right_parts$details_1 <-
+  about_data[[var]]$details_1 <-
     sus_translate(r = r, "The column `<b>{export_data[[var]]}</b>` contains data on ",
-                  "{variables_row$explanation} ({variables_row$var_title}) for the year ",
-                  "{time}.")
+                  "{variables_row$explanation} ({variables_row$var_title})",
+                  if (!is.na(time)) "for the year {time}." else ".")
   
   # Data type (Qualitative, Quantitative?)
   var_right_quant <- if (str_detect(variables_row$var_code, "_qual$")) FALSE else TRUE
@@ -34,25 +33,37 @@ get_metadata <- function(export_data, about_data,
     quant_info <- lapply(quant_info, convert_unit, 
                          var_name = export_data[[paste0(var, "_code")]])
     
-    about_data$right_parts$details_2 <-
+    about_data[[var]]$details_2 <-
       sus_translate(r = r,
                     "The data range from <b>{quant_info$min}</b> to ",
                     "<b>{quant_info$max}</b>. The mean is <b>{quant_info$mean}",
                     "</b> and the standard deviation is <b>{quant_info$sd}</b>.")
   }
   
-  about_data$right_parts$details <- 
-    glue("<p = style = 'font-size: 1.45rem;'>{about_data$right_parts$details_1}",
-         " {about_data$right_parts$details_2}<p>")
-  about_data$right_parts$details_1 <- NULL
-  about_data$right_parts$details_2 <- NULL
+  # Climate risk special cases (1 = Insignificant, 2 = ...)
+  if (str_starts(variables_row$var_code, "climate_")) {
+    
+    ranks <- variables_row$breaks_q5[[1]][
+      !is.na(variables_row$breaks_q5[[1]]$var_name), ]
+    
+    about_data[[var]]$details_2 <- 
+      paste0(about_data[[var]]$details_2, " (",
+             paste(ranks$var,
+                   sapply(ranks$var_name, sus_translate, r = r, 
+                          USE.NAMES = FALSE),
+                   sep = " = ", collapse = ", "), ")")
+  }
   
-  # Qualitative (Possible values)
   
-  ## TKTK
+  about_data[[var]]$details <- 
+    glue("<p = style = 'font-size: 1.45rem;'>{about_data[[var]]$details_1}",
+         " {about_data[[var]]$details_2}<p>")
+  about_data[[var]]$details_1 <- NULL
+  about_data[[var]]$details_2 <- NULL
+  
   
   # Source with possibly more information.
-  about_data$right_parts$source <- 
+  about_data[[var]]$source <- 
     if (variables_row$source == "Canadian census") {
       
       census_variables_row <- 
@@ -146,10 +157,20 @@ get_metadata <- function(export_data, about_data,
     df <- str_to_lower(sus_translate(r = r, get_zoom_name(export_data$df)))
     from <- right_interpolated_dfs[[export_data$df]]
     
-    about_data$right_parts$interpolated <- 
+    about_data[[var]]$interpolated <- 
       paste0("<p style = 'font-size: 1.45rem;'>",
              sus_translate(r = r, "{variables_row$var_title} at the {df} scale is ",
                            "spatially interpolated from {from}s."),
+             "</p>")
+  }
+  # For census data, for the CSD of Montreal, data comes from DA
+  if (variables_row$source == "Canadian census" && 
+      export_data$df == "borough") {
+    about_data[[var]]$interpolated <- 
+      paste0("<p style = 'font-size: 1.45rem;'>",
+             sus_translate(r = r, "{variables_row$var_title} at the {df} scale, ",
+                           "only for the City of Montreal, is ",
+                           "spatially interpolated from dissemination areas."),
              "</p>")
   }
   
@@ -159,7 +180,7 @@ get_metadata <- function(export_data, about_data,
     data_origin <- 
       str_to_lower(sus_translate(r = r, get_zoom_name(export_data$data_origin)))
     
-    about_data$right_parts$diff_representation <- 
+    about_data[[var]]$diff_representation <- 
       paste0("<p style = 'font-size: 1.45rem;'>",
              sus_translate(r = r, "The data is represented as {df}s, but the ",
                            "underlying dataset is spatially organised as ",
