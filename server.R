@@ -96,38 +96,40 @@ shinyServer(function(input, output, session) {
   
   ## Language button -----------------------------------------------------------
   
-  # Language reactive variable, JS set language, and language cookie. 
-  # The three onclick of the language button.
-  
+  # If the language cookie is "english"
   observeEvent(input$cookies$lang, {
-    if (!is.null(input$cookies$lang) && input$cookies$lang == "en")
+    if (!is.null(input$cookies$lang) && input$cookies$lang == "en") {
+      # Set the reactive to english
       r$lang("en")
+      # Tell to the JS that all the UI must be in english
+      js$setLanguage("en")
+    }
   }, once = TRUE)
   
+  # A click on the button switches the active language
   observeEvent(input$language_button, {
     r$lang(if (r$lang() == "en") "fr" else "en")
   }, ignoreNULL = FALSE, ignoreInit = TRUE)
   
+  # Update the COOKIE
   observeEvent(r$lang(), {
     if (r$lang() == "en") {
+      # Tell to the JS that all the UI must be in english
       js$setLanguage("en")
+      # Update the label of the language button
       updateActionLink(inputId = "language_button", 
                        label = languageButtonLabel("Français"))
-      
+      # Set the cookie to english
       lang_cookie <- list(name = "lang", value = "en")
       session$sendCustomMessage("cookie-set", lang_cookie)
-      
     } else {
       js$setLanguage("fr")
       updateActionLink(inputId = "language_button", 
                        label = languageButtonLabel("English"))
-      
       lang_cookie <- list(name = "lang", value = "fr")
       session$sendCustomMessage("cookie-set", lang_cookie)
     }
-  })
-  
-  
+  }, ignoreInit = TRUE)
   
   
   ## Active tab ----------------------------------------------------------------

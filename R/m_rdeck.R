@@ -77,9 +77,7 @@ rdeck_server <- function(id, r, map_id, tile, tile2, map_var,
           line_width_units = line_units, 
           extruded = extrude(), 
           material = FALSE,
-          get_elevation = 5)) #|> 
-      # bindEvent(map_var(), select_id(), fill_args(), colour_args(), lwd_args(),
-      #           extrude(), pick())
+          get_elevation = 5))
     
   })
 }
