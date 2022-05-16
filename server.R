@@ -232,6 +232,7 @@ shinyServer(function(input, output, session) {
       # Retrieve select_id
       try({
         if (!is.null(query[["s_id"]])) 
+          if (query[["s_id"]] == "") query[["s_id"]] <- NA
           r[[query[["tb"]]]]$select_id <- reactiveVal(query[["s_id"]])
       })
     }

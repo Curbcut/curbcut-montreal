@@ -114,6 +114,7 @@ stories_server <- function(id, r) {
     bookmark_server(
       id = ns_id,
       r = r,
+      s_id = r[[ns_id]]$select_id,
       map_viewstate = reactive(
         input[[paste0(ns_id, "-map_viewstate")]]$viewState)
     )
