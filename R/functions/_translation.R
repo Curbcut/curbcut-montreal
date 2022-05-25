@@ -37,6 +37,10 @@ sus_translate_list <- function(x) {
 
 sus_translate <- function(..., .envir = parent.frame(), r) {
   
+  sus_glue <- function(x) {
+    glue(x, .na = character(1), .null = character(1), .envir = .envir)
+  }
+  
   # Error if we provide lists + character vectors unintentionally
   args <- list(...)
   error_check <- sapply(args, inherits, "list")
@@ -49,7 +53,7 @@ sus_translate <- function(..., .envir = parent.frame(), r) {
   if (!shiny::isRunning()) return({
     if (is.list(x)) return(x)
     x <- sub("<<.>>", "", x)
-    glue(x, .envir = .envir)})
+    sus_glue(x)})
   
   # If not in a reactive shiny context, return 2 spans.
   if (is.null(getDefaultReactiveDomain())) return(
@@ -70,7 +74,7 @@ sus_translate <- function(..., .envir = parent.frame(), r) {
   if (r$lang == "en") return({
     if (is.list(x)) return(x)
     x <- sub("<<.>>", "", x)
-    glue(x, .envir = .envir)})
+    sus_glue(x)})
   
   # French
   if (is.list(x)) return(sus_translate_list(x))
@@ -81,10 +85,10 @@ sus_translate <- function(..., .envir = parent.frame(), r) {
   if (length(translated) == 0 || is.na(translated)) return({
     warning("No translation text found for `", x, "`.", call. = FALSE)
     x <- sub("<<.>>", "", x)
-    glue(x, .envir = .envir)})
+    sus_glue(x)})
   
   # For vectors with names (such as used for x axis of some modules' graph)
   if (!is.null(names(x))) names(translated) <- names(x)
   
-  glue(translated, .envir = .envir)
+  sus_glue(translated)
 }

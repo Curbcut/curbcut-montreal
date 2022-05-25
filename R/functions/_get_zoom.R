@@ -20,6 +20,7 @@ get_zoom_name <- function(x) sapply(
   "street" = "Street",
   "heatmap" = "Heatmap",
   "point" = "Point",
+  x,
   USE.NAMES = FALSE)
 
 get_zoom_label <- function(zoom_levels) {

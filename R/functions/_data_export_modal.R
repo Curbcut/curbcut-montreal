@@ -40,7 +40,7 @@ data_export_modal <- function(r = r, export_data) {
     str_to_lower(sus_translate(r = r, get_zoom_name(export_data$data_origin)))
   
   about_data$general_detail <- 
-    paste0("<p style = 'font-size: 1.45rem; cursor: help;'>",
+    paste0("<p style = 'font-size: 1.45rem'>",
            sus_translate(r = r, "The data is spatially organized as ",
                          "{data_organization}."),
            "</p>")

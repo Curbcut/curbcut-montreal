@@ -604,7 +604,19 @@ variables <-
 modules <- 
   modules |> 
   add_modules(id = "natural_inf",
-              metadata = TRUE)
+              metadata = TRUE,
+              dataset_info = 
+                paste0("<p>Data made available by the firm Habitat. For more ",
+                       "information on the methods and data used for this ",
+                       "module, see Maure et al., 2018, Le rôle des ",
+                       "infrastructures naturelles dans la ",
+                       "prévention des inondations dans la Communauté ",
+                       "métropolitaine de ",
+                       "Montréal, Fondation David Suzuki.</p>"),
+              link = paste0(
+                "https://fr.davidsuzuki.org/publication-scientifique/le-role-",
+                "des-infrastructures-natrelles-dans-la-prevention-des-",
+                "inondations-dans-la-communaute-metropolitaine-de-montreal/"))
 
 # Cleanup -----------------------------------------------------------------
 

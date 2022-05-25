@@ -256,7 +256,11 @@ variables <- bind_rows(variables, data_to_add[[2]]) |>
 modules <- 
   modules |> 
   add_modules(id = "housing",
-              metadata = TRUE)
+              metadata = TRUE,
+              dataset_info = 
+                paste0("<p>This module presents housing data from the 1996 to ",
+                       "present censuses.</p>"),
+              link = "https://www.statcan.gc.ca/en/census/census-engagement/about")
 
 
 # Clean up ----------------------------------------------------------------

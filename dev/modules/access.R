@@ -669,7 +669,13 @@ variables <-
 modules <- 
   modules |> 
   add_modules(id = "access",
-              metadata = TRUE)
+              metadata = TRUE,
+              dataset_info = 
+                paste0("<p>TKTK</p>",
+                       "<p>For more info on how accessibility metrics are ",
+                       "calculated see 'Access Across America'.</p>"),
+              link = paste0("https://conservancy.umn.edu/bitstream/handle/",
+                            "11299/199892/CTS13-20_Access-Across-America.pdf"))
 
 
 # Clean up ----------------------------------------------------------------
