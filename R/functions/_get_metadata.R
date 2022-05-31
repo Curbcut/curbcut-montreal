@@ -28,12 +28,14 @@ get_metadata <- function(export_data, r, about_data,
     }
   
   # Data type (Qualitative, Quantitative?)
-  var_right_quant <- if (str_detect(variables_row$var_code, "_qual$")) FALSE else TRUE
+  var_quant <- 
+    if (str_detect(variables_row$var_code, "_qual$")) FALSE else TRUE
   
   # Quantitative (Range, mean, sd)
-  # Skip for natural_inf. Everything is already pre-computed, there is no possibility
-  # to get min/max/mean/sd, except if we add them to the pre-computation step
-  if (var_right_quant && export_data$id != "natural_inf") {
+  # Skip for natural_inf. Everything is already pre-computed, there is no 
+  # possibility to get min/max/mean/sd, except if we add them to the 
+  # pre-computation step
+  if (var_quant && export_data$id != "natural_inf") {
     
     dat <- if (length(export_data[[var]]) == 1) {
       export_data$data[[export_data[[var]]]]
@@ -85,7 +87,7 @@ get_metadata <- function(export_data, r, about_data,
     if (variables_row$source == "Canadian census") {
       
       census_details <- 
-        map(export_data[[var]], function(var_code_year) {
+        lapply(export_data[[var]], function(var_code_year) {
           census_variables_row <- 
             census_variables[census_variables$var_code == var_code_year, ]
           
@@ -186,28 +188,31 @@ get_metadata <- function(export_data, r, about_data,
     if (!is.null(export_data$df)) export_data$df %in% names(interpolated_dfs) else FALSE
   
   if (interpolated) {
-    # TKTKTKTKTK SPECIAL CASE FOR CANADIAN CENSUS AT BOROUGHS
-    df <- str_to_lower(sus_translate(r = r, get_zoom_name(export_data$df)))
+    
     from <- interpolated_dfs[[export_data$df]]
     
     about_data[[var]]$interpolated <- 
-      paste0("<p style = 'font-size: 1.45rem;'>",
-             sus_translate(r = r, "`{variables_row$var_title}` at the {df} scale is ",
-                           "spatially interpolated from {from}s."),
-             "</p>")
-  }
-  # For census data, for the CSD of Montreal, data comes from DA
-  if (variables_row$source == "Canadian census" && 
-      export_data$df == "borough") {
-    about_data[[var]]$interpolated <- 
-      paste0("<p style = 'font-size: 1.45rem;'>",
-             sus_translate(r = r, "`{variables_row$var_title}` at the {df} scale, ",
-                           "only for the City of Montreal, is ",
-                           "spatially interpolated from dissemination areas."),
-             "</p>")
+      # Special case for the boroughs at the census scale!
+      if (export_data$df == "borough" && source == "Canadian census") {
+        paste0("<p style = 'font-size: 1.45rem;'>",
+               sus_translate(r = r, "For the City of Montreal's boroughs, ",
+                             "`{variables_row$var_title}` is ",
+                             "spatially interpolated from {from}s."),
+               "</p>")
+      } else {
+        df <- str_to_lower(sus_translate(r = r, get_zoom_name(export_data$df)))
+        from <- interpolated_dfs[[export_data$df]]
+        
+        paste0("<p style = 'font-size: 1.45rem;'>",
+               sus_translate(r = r, "`{variables_row$var_title}` at the {df} scale is ",
+                             "spatially interpolated from {from}s."),
+               "</p>")
+      }
+    
   }
   
-  # Is the data represented different from the underlying data?
+  # Is the data represented different from the underlying data? ex. buildings,
+  # we show DAs
   if (!is.null(export_data$df))
     if (export_data$data_origin != export_data$df) {
       df <- str_to_lower(sus_translate(r = r, get_zoom_name(export_data$df)))
