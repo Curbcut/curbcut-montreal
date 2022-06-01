@@ -1,14 +1,24 @@
 :root {
   --padding-carousel: calc(var(--padding-h-md) * 1.5);
+  --size-nav-bttn: 48px;
+  --scale-nav-bttn-hover: 1.05;
+  --tr-nav-bttn-hover: scale(var(--scale-nav-bttn-hover), var(--scale-nav-bttn-hover));
 }
 
 .sus-carousel {
+  position: relative;
   width: 600px;
   height: min-content;
   border-radius: var(--border-radius-md);
   padding: var(--padding-carousel) var(--padding-carousel) var(--padding-carousel) var(--padding-carousel);
   background-color: rgba(255, 255, 255, 0.6);
   box-shadow: var(--box-shadow-lg);
+}
+
+.sus-carousel-slide {
+  display: none;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 @media (max-width: 750px) {
@@ -23,6 +33,7 @@
     width: calc(100% - var(--padding-h-md));
   }
 }
+
 .sus-carousel .sus-button-group {
   margin-top: 30px;
   width: 100%;
@@ -33,4 +44,71 @@
   margin-left: var(--padding-h-md);
   margin-right: var(--padding-h-md);
   text-align: center;
+}
+
+.sus-carousel-nav-bttn {
+  top: calc(50% - var(--size-nav-bttn)/2);
+  width: var(--size-nav-bttn);
+  height: var(--size-nav-bttn);
+  background-size: contain;
+  background-position: center;
+  border-radius: unset !important;
+  background-color: unset !important;
+  box-shadow: unset !important;
+  position: absolute;
+  user-select: none;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.sus-carousel-nav-bttn:hover {
+  transform: var(--tr-nav-bttn-hover);
+}
+
+.sus-carousel-nav-bttn-left {
+  left: calc(0px - (var(--padding-h-md) + var(--size-nav-bttn)));
+  background-image: url('./sus_carousel_nav_bttn_left.png');
+  transform-origin: 100% 50%;
+}
+
+.sus-carousel-nav-bttn-right {
+  right: calc(0px - (var(--padding-h-md) + var(--size-nav-bttn)));
+  background-image: url('./sus_carousel_nav_bttn_right.png');
+  transform-origin: 0% 50%;
+}
+
+.sus-carousel-bullets {
+  position: absolute;
+  bottom: -30px;
+  height: 30px;
+  left: 0px;
+  right: 0px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: nowrap;
+  flex-direction: row;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.sus-carousel-bullet {
+  margin-left: 10px;
+  margin-right: 10px;
+  width: 10px;
+  height: 10px;
+  border-radius: 5px;
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+.sus-carousel-bullet:hover:not(.sus-carousel-bullet-active) {
+  background-color: rgba(255, 255, 255, 0.5);
+}
+
+.sus-carousel-bullet:active:not(.sus-carousel-bullet-active) {
+  background-color: rgba(0, 0, 0, 0.85);
+}
+
+.sus-carousel-bullet-active {
+  background-color: white;
 }

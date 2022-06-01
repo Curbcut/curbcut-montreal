@@ -448,4 +448,74 @@ window.addEventListener('load', (evt) => {
       }
     }
   }
+
+  const carousels = document.querySelectorAll('.sus-carousel');
+  for(var i = 0; i < carousels.length; i++) {
+    const carousel = carousels[i];
+    const slides = carousel.querySelectorAll('.sus-carousel-slide');
+    const navLeft = carousel.querySelector('.sus-carousel-nav-bttn-left');
+    const navRight = carousel.querySelector('.sus-carousel-nav-bttn-right');
+    const bulletsContainer = carousel.querySelector('.sus-carousel-bullets');
+    const bullets = [];
+    var activeIndex = -1;
+    const showSlide = (index) => {
+      if (index < slides.length && index > -1) {
+        for(var j = 0; j < slides.length; j++) {
+          const slide = slides[j];
+          const bullet = bullets[j];
+          slide.style.display = 'none';
+          bullet.classList.remove('sus-carousel-bullet-active');
+        }
+        const slide = slides[index];
+        const bullet = bullets[index];
+        slide.style.display = 'flex';
+        bullet.classList.add('sus-carousel-bullet-active');
+        activeIndex = index;
+      }
+    };
+    var minHeight = 0;
+    for(var j = 0; j < slides.length; j++) {
+      const slide = slides[j];
+      slide.style.display = 'flex';
+      const height = slide.offsetHeight;
+      slide.style.display = 'none';
+      minHeight = Math.max(height, minHeight);
+      const index = j;
+      const bullet = document.createElement('div');
+      bullet.classList.add('sus-carousel-bullet');
+      bullet.addEventListener('click', () => {
+        showSlide(index);
+      });
+      bulletsContainer.appendChild(bullet);
+      bullets.push(bullet);
+    }
+    for(var j = 0; j < slides.length; j++) {
+      const slide = slides[j];
+      slide.style.minHeight = `${minHeight}px`;
+      console.log(`setting slide ${j} style.minHeight to ${minHeight}`);
+      console.log(`${slide.getAttribute('style')}`);
+    }
+    if (slides.length > 0) {
+      showSlide(0);
+    }
+    const cycleSlide = (delta) => {
+      var index = (activeIndex + delta);
+      if (index < 0) {
+        index = slides.length - 1;
+      } else if (index >= slides.length) {
+        index = 0;
+      }
+      showSlide(index);
+    };
+    navLeft.addEventListener('click', () => cycleSlide(-1));
+    navRight.addEventListener('click', () => cycleSlide(1));
+    if (slides.length > 1) {
+      navLeft.style.opacity = '1';
+      navRight.style.opacity = '1';
+      bulletsContainer.style.opacity = '1';
+      console.log('activating nav!');
+    } else {
+      console.log('did not activate nav');
+    }
+  }
   });

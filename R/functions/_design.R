@@ -125,6 +125,22 @@ susBanner <- function() {
   ))
 }
 
+susCarousel <- function(..., id="", class="") {
+  return(
+    tags$div(class = paste("sus-carousel", class),
+      tags$div(class="sus-button sus-carousel-nav-bttn sus-carousel-nav-bttn-left"),
+      tags$div(class="sus-button sus-carousel-nav-bttn sus-carousel-nav-bttn-right"),
+      tags$div(class="sus-carousel-bullets"),       
+      ...)
+  )
+}
+
+susCarouselSlide <- function(..., title="", id="", class="") {
+  return(
+    tags$div(class = paste("sus-carousel-slide", class),...)
+  )
+}
+
 # Make controls for a page
 susPageControls <- function(..., class="") {
   return(
