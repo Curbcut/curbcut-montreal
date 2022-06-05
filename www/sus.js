@@ -418,6 +418,16 @@ window.addEventListener('load', (evt) => {
   //   });
   // }
 
+  const getVisibleText = ( node )=> {
+    if( node.nodeType === Node.TEXT_NODE ) return node.textContent;
+    var style = getComputedStyle( node );
+    if( style && style.display === 'none' ) return '';
+    var text = '';
+    for( var i=0; i<node.childNodes.length; i++ ) 
+        text += getVisibleText( node.childNodes[i] );
+    return text;
+  };
+
   const links = document.querySelectorAll('a');
   // console.log('links: ' + links.length);
   for(var i = 0; i < links.length; i++) {
@@ -455,8 +465,13 @@ window.addEventListener('load', (evt) => {
     const slides = carousel.querySelectorAll('.sus-carousel-slide');
     const navLeft = carousel.querySelector('.sus-carousel-nav-bttn-left');
     const navRight = carousel.querySelector('.sus-carousel-nav-bttn-right');
+    const preNext = carousel.querySelector('.sus-carousel-preview-next');
+    const prePrev = carousel.querySelector('.sus-carousel-preview-prev');
+    const preNextContent = preNext.querySelector('.sus-carousel-preview-content');
+    const prePrevContent = prePrev.querySelector('.sus-carousel-preview-content');
     const bulletsContainer = carousel.querySelector('.sus-carousel-bullets');
     const bullets = [];
+    const previews = [];
     var activeIndex = -1;
     const showSlide = (index) => {
       if (index < slides.length && index > -1) {
@@ -470,9 +485,14 @@ window.addEventListener('load', (evt) => {
         const bullet = bullets[index];
         slide.style.display = 'flex';
         bullet.classList.add('sus-carousel-bullet-active');
+        const nextIndex = index == slides.length - 1 ? 0 : index + 1;
+        const prevIndex = index == 0 ? slides.length - 1 : index - 1;
+        prePrevContent.innerText = previews[prevIndex];
+        preNextContent.innerText = previews[nextIndex];
         activeIndex = index;
       }
     };
+    const maxPreview = 18;
     var minHeight = 0;
     for(var j = 0; j < slides.length; j++) {
       const slide = slides[j];
@@ -488,6 +508,39 @@ window.addEventListener('load', (evt) => {
       });
       bulletsContainer.appendChild(bullet);
       bullets.push(bullet);
+      var preview = slide.getAttribute("data-preview");
+      if (preview == null || preview == undefined || preview.length == 0) {
+        console.log(`slide ${index} missing preview`);
+        preview = getVisibleText(slide.querySelector('h2')).trim().replace('\n', ' ').replace('\r', ' ').replace('\t', ' ');
+        console.log(`slide ${index} h2: \"${preview}\"`);
+        if (preview.length == null || preview == undefined || preview.length == 0) {
+          console.log(`slide ${index} missing h2 fallback, preview = undefined`);
+          preview = undefined;
+        } else if (preview.length > maxPreview) {
+          console.log(`slide ${index} preview too long`);
+          const words = preview.split(' ');
+          console.log(`slide ${index} words: ${words}`);
+          var abbr = []
+          while (words.length > 0) {
+            abbr.push(words.shift());
+            if (abbr.join(' ').length > maxPreview) {
+              console.log(`slide ${index} "${abbr.join(' ')}" too long, popping last`);
+              abbr.pop();
+              break;
+            }
+          }
+          console.log(`slide ${index} abbr: ${words}`);
+          abbr = abbr.join(' ');
+          if (abbr.length == 0) {
+            preview = abbr.substring(0, maxPreview);
+          }
+          preview = `${abbr.substring(0, maxPreview)}...`;
+          console.log(`slide ${index} preview from h2: \"${preview}\"`);
+        }
+      } else {
+        console.log(`slide ${index} preview from data: \"${preview}\"`);
+      }
+      previews.push(preview);
     }
     for(var j = 0; j < slides.length; j++) {
       const slide = slides[j];
@@ -509,9 +562,14 @@ window.addEventListener('load', (evt) => {
     };
     navLeft.addEventListener('click', () => cycleSlide(-1));
     navRight.addEventListener('click', () => cycleSlide(1));
+    prePrev.addEventListener('click', () => cycleSlide(1));
+    preNext.addEventListener('click', () => cycleSlide(-1));
+    preNext.classList.add("whats-good");
     if (slides.length > 1) {
       navLeft.style.opacity = '1';
       navRight.style.opacity = '1';
+      preNext.style.opacity = '1';
+      prePrev.style.opacity = '1';
       bulletsContainer.style.opacity = '1';
       console.log('activating nav!');
     } else {

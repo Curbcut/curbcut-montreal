@@ -32,6 +32,10 @@
   outline: unset;
 }
 
+.sus-button {
+  user-select: none;
+}
+
 .sus-button-default, .tab-content .btn-default, .tab-content .dropdown {
   color: var(--c-primary);
 }

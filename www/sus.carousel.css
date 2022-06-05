@@ -1,8 +1,9 @@
 :root {
   --padding-carousel: calc(var(--padding-h-md) * 1.5);
-  --size-nav-bttn: 48px;
+  --size-nav-bttn: 32px;
   --scale-nav-bttn-hover: 1.05;
   --tr-nav-bttn-hover: scale(var(--scale-nav-bttn-hover), var(--scale-nav-bttn-hover));
+  --h-carousel-bottom-content: 50px;
 }
 
 .sus-carousel {
@@ -12,6 +13,7 @@
   border-radius: var(--border-radius-md);
   padding: var(--padding-carousel) var(--padding-carousel) var(--padding-carousel) var(--padding-carousel);
   background-color: rgba(255, 255, 255, 0.6);
+  background: linear-gradient(0deg, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.4));
   box-shadow: var(--box-shadow-lg);
 }
 
@@ -46,6 +48,45 @@
   text-align: center;
 }
 
+.sus-carousel h1, .sus-carousel h2 {
+  text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.15), 0px 1px 0px rgba(0, 0, 0, 0.075);
+}
+
+.sus-carousel-preview {
+  position: absolute;
+  bottom: calc(var(--h-carousel-bottom-content) * -1);
+  height: var(--h-carousel-bottom-content);
+  max-width: 50%;
+  width: fit-content;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  opacity: 0;
+  transition: opacity 0.2s;
+  user-select: none;
+}
+
+.sus-carousel-preview-prev {
+  left: var(--border-radius-md);
+  justify-content: flex-start;
+}
+
+.sus-carousel-preview-next {
+  right: var(--border-radius-md);
+  justify-content: flex-end;
+}
+
+.sus-carousel-preview * {
+  color: rgba(255, 255, 255, 0.9);
+  text-shadow: 0px 0px 2px rgba(0, 0, 0, 0.5), 0px 1px 1px rgba(0, 0, 0, 0.5);
+  font-size: 1.75rem;
+}
+
+.sus-carousel-preview:hover * {
+  color: rgba(255, 255, 255, 1);
+}
+
 .sus-carousel-nav-bttn {
   top: calc(50% - var(--size-nav-bttn)/2);
   width: var(--size-nav-bttn);
@@ -54,33 +95,55 @@
   background-position: center;
   border-radius: unset !important;
   background-color: unset !important;
+  background-repeat: no-repeat;
   box-shadow: unset !important;
   position: absolute;
   user-select: none;
   opacity: 0;
   transition: opacity 0.2s;
+  text-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25), 0px 1px 2px rgba(0, 0, 0, 0.25);
+  font-size: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.9);
 }
 
 .sus-carousel-nav-bttn:hover {
-  transform: var(--tr-nav-bttn-hover);
+  color: rgba(255, 255, 255, 1);
 }
+
+.sus-carousel-nav-bttn:active {
+  color: rgba(200, 210, 220, 1);
+}
+
+/* .sus-carousel-nav-bttn:hover {
+  transform: var(--tr-nav-bttn-hover);
+} */
 
 .sus-carousel-nav-bttn-left {
   left: calc(0px - (var(--padding-h-md) + var(--size-nav-bttn)));
-  background-image: url('./sus_carousel_nav_bttn_left.png');
-  transform-origin: 100% 50%;
+  /* background-image: url('./sus_carousel_nav_bttn_left.png');
+  transform-origin: 50% 50%; */
 }
 
 .sus-carousel-nav-bttn-right {
   right: calc(0px - (var(--padding-h-md) + var(--size-nav-bttn)));
-  background-image: url('./sus_carousel_nav_bttn_right.png');
-  transform-origin: 0% 50%;
+  /* background-image: url('./sus_carousel_nav_bttn_right.png');
+  transform-origin: 50% 50%; */
+}
+
+.sus-carousel-nav-bttn .material-icons {
+	position: relative;
+	margin: unset !important;
+	padding: unset !important;
+	font-size: inherit;
 }
 
 .sus-carousel-bullets {
   position: absolute;
-  bottom: -30px;
-  height: 30px;
+  bottom: calc(var(--h-carousel-bottom-content) * -1);
+  height: var(--h-carousel-bottom-content);
   left: 0px;
   right: 0px;
   display: flex;
