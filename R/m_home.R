@@ -27,28 +27,24 @@ home_UI <- function(id) {
                          sus_translate(r = r, "Start Exploring Maps"), 
                          span(class = "material-icons", "travel_explore"))
           )
-        ),
-        susCarouselSlide(
-          title = tags$em(nowrap(sus_translate(r = r, "Another slide!"))),
-          # preview = "Another slide",
-          tags$p(sus_translate(r = r, "Sus is a platform for inventing urban ",
-                               "sustainability in the Montreal region across ",
-                               "multiple spatial and temporal scales. Sus ",
-                               "offers a justice- and inclusivity-focused ",
-                               "approach to sustainability which integrates ",
-                               "the widest possible range of data sources to ",
-                               "help researchers, policymakers, communities, ",
-                               "and individuals.")),
-          tags$div(class = "sus-button-group",
-                   tags$a(class = "sus-button sus-icon-button sus-button-secondary",
-                          href = "#learn-more", sus_translate(r = r, "Learn less"),
-                          span(class = "material-icons", "auto_stories")),
-                   tags$a(class = "sus-button sus-icon-button sus-button-primary",
-                          href = "#start-exploring",
-                          sus_translate(r = r, "Start Imagining Maps"),
-                          span(class = "material-icons", "travel_explore"))
-          )
         )
+        # , susCarouselSlide(
+        #   title = tags$em(nowrap(sus_translate(r = r, "Another slide!"))),
+        #   # preview = "Another slide",
+        #   tags$p(sus_translate(r = r, "Sus is a platform for inventing urban ",
+        #                        "sustainability in the Montreal region across ",
+        #                        "multiple spatial and temporal scales. Sus ",
+        #                        "offers a justice- and inclusivity-focused ",
+        #                        "approach to sustainability which integrates ",
+        #                        "the widest possible range of data sources to ",
+        #                        "help researchers, policymakers, communities, ",
+        #                        "and individuals.")),
+        #   tags$div(class = "sus-button-group",
+        #            tags$a(class = "sus-button sus-icon-button sus-button-primary",
+        #                   href = "#learn-more", sus_translate(r = r, "Read more"),
+        #                   span(class = "material-icons", "auto_stories"))
+        #   )
+        # )
       )
     ),
     susPageSection(

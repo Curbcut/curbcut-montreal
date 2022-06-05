@@ -57,7 +57,6 @@
   position: fixed;
   top: var(--h-navbar);
   left: 0px;
-  right: 0px;
 }
 
 .sus-page-controls {
@@ -131,7 +130,19 @@
     border-radius: unset;
     border-top: 1px solid var(--c-default);
   }
+
+  .sus-page-controls-container {
+    right: 0px;
+  }
 }
+
+.sus-page-content img {
+	margin-bottom: 1.5rem;
+}
+
+/* .sus-page-content-section img {
+  border-radius: var(--border-radius-sm);
+} */
 
 .sus-page-content-section > img {
   width: calc(100% + var(--padding-page-section-h-lg) * 2);
@@ -153,7 +164,7 @@
   .sus-page-controls {
     position: absolute;
     top: 0px;
-    left: calc((100% - var(--w-page-text)) / 2 - 350px - var(--padding-h-md));
+    left: calc((100vw - var(--w-page-text)) / 2 - 350px - var(--padding-h-md));
     max-width: 350px;
     width: min-content;
     flex-direction: column;
