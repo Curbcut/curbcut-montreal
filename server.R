@@ -161,7 +161,6 @@ shinyServer(function(input, output, session) {
                     r = r, 
                     map_id = "map",
                     session = session,
-                    zoom = r$sus_link$zoom,
                     location = r$sus_link$location,
                     zoom_auto = r$sus_link$zoom_auto,
                     var_left = r$sus_link$var_left,
