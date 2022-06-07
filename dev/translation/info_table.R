@@ -189,7 +189,7 @@ info_table_translated <-
           fr = paste0("<strong>{z$place_heading}</strong><p>{sentence(z$exp_le",
                       "ft)} à {z$place_name} a {z$increase} de {sub('-', '', z",
                       "$val_left)} entre {z$start_date_left} et {z$end_date_le",
-                      "ft}, ce qui est {z$larger} que la variation médiane à l",
+                      "ft}, ce qui est {z$larger} la variation médiane à l",
                       "'échelle de la région ({z$median_val}).<p>{z$place_name",
                       "} a connu un changement relatif {z$high} pour cet indic",
                       "ateur, avec une variation pour '{z$exp_left}' plus gran",
