@@ -207,6 +207,11 @@ building <-
   select(ID, name, name_2, DAUID) |> 
   sf::st_drop_geometry()
 
+vulnerable_pop_full <- vulnerable_pop
+vulnerable_pop <- 
+vulnerable_pop |> 
+  st_drop_geometry()
+
 
 # Save data files ---------------------------------------------------------
 
@@ -215,6 +220,8 @@ qsavem(borough_full, CT_full, DA_full, file = "data2/census_full.qsm")
 qsave(grid_full, file = "data2/grid_full.qs")
 qsave(building_full, file = "data2/building_full.qs")
 qsave(street, file = "data2/street.qs")
+qsave(vulnerable_pop_full, file = "data2/vulnerable_pop_full.qs")
+
 
 # data/
 qsave(variables, file = "data/variables.qs")
@@ -232,6 +239,7 @@ qsave(postal_codes, file = "data/postal_codes.qs")
 qsavem(stories, stories_mapping, file = "data/stories.qsm")
 qsave(dyk, "data/dyk.qs")
 qsave(title_text, "data/title_text.qs")
+qsave(vulnerable_pop, file = "data2/vulnerable_pop.qs")
 
 
 # Save files we'll save in the SQL to data2 -------------------------------
