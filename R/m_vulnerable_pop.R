@@ -12,12 +12,16 @@ vulnerable_pop_UI <- function(id) {
       NS(id, id),
       susSidebarWidgets(
         select_var_UI(NS(id, id), select_var_id = "d_1",
+                      label = sus_translate(r = r, "Immigration status"),
                       var_list = var_left_list_1_vulnerable_pop), 
         select_var_UI(NS(id, id), select_var_id = "d_2",
+                      label = sus_translate(r = r, "Household status"),
                       var_list = var_left_list_2_vulnerable_pop), 
         select_var_UI(NS(id, id), select_var_id = "d_3",
+                      label = sus_translate(r = r, "Shelter cost"),
                       var_list = var_left_list_3_vulnerable_pop), 
         select_var_UI(NS(id, id), select_var_id = "d_4",
+                      label = sus_translate(r = r, "Gender"),
                       var_list = var_left_list_4_vulnerable_pop)), 
       bottom = div(class = "bottom_sidebar", 
                    tagList(legend_UI(NS(id, id))))),
@@ -75,6 +79,10 @@ vulnerable_pop_server <- function(id, r) {
         r[[id]]$select_id(NA)
       } else r[[id]]$select_id(selection)
     }) |> bindEvent(get_clicked_object(id_map))
+    
+    # Sidebar
+    sidebar_server(id = id, r = r)
+    
 
     # Choose tileset
     tile <- reactive("CT")

@@ -25,7 +25,7 @@ sidebar_UI <- function(id, ..., bottom = NULL) {
   ))
 }
 
-sidebar_server <- function(id, r, x) {
+sidebar_server <- function(id, r, x = id) {
   stopifnot(!is.reactive(x))
   
   moduleServer(id, function(input, output, session) {
