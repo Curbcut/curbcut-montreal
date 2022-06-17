@@ -3,26 +3,26 @@
 library(tidyverse)
 library(sf)
 library(qs)
-vulnerable_pop <- qread("data2/vulnerable_pop_full.qs")
 source("dev/tiles/_tile_functions.R")
 # source("R/functions/_utils.R")
 qload("data/colours.qsm")
+qload("data2/census_full.qsm")
 
+CT <- CT_full
 
-# Calculate q5 ------------------------------------------------------------
+# Univariate tileset source -----------------------------------------------
 
-pen_col <- names(vulnerable_pop)[length(vulnerable_pop) - 1]
-
-vulnerable_pop |> 
-  mutate(across(total_total_total_total:pen_col, ~as.numeric(ntile(.x, 5)))) |> 
-  mutate(across(total_total_total_total:pen_col, ~if_else(is.na(.x), 0, .x))) |> 
+CT |> 
+  select(ID, contains("_q5") & starts_with("vulnerable_pop")) |> 
+  rename_with(~str_remove(.x, ("_q5")), everything()) |> 
+  mutate(across(where(is.numeric), as.character)) |> 
   st_set_agr("constant") |>
-  upload_tile_source(id = "vulnerable_pop-CT",
+  upload_tile_source("vulnerable_pop-CT",
                      username = "maxbdb3",
                      access_token = .sus_token)
 
 
-# Create recipe -----------------------------------------------------------
+# Univariate recipe -------------------------------------------------------
 
 recipe_CT <- 
   create_recipe(
@@ -35,7 +35,7 @@ recipe_CT <-
     recipe_name = "vulnerable_pop-CT")
 
 
-# Create and publish ------------------------------------------------------
+# Create and publish univariate -------------------------------------------
 
 # Create tileset
 create_tileset("vulnerable_pop-CT",

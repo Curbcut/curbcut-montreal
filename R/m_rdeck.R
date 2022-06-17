@@ -51,7 +51,7 @@ rdeck_server <- function(id, r, map_id, tile, tile2, map_var,
       rdeck_proxy(map_id) |>
         add_mvt_layer(
           id = id, 
-          data = mvt_url(paste0("sus-mcgill.", id, "-", tile_string())),
+          data = mvt_url(paste0("maxbdb3.", id, "-", tile_string())),
           pickable = pick(), 
           auto_highlight = highlight(), 
           highlight_color = "#FFFFFF50", 

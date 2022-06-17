@@ -86,7 +86,8 @@ mods_rdy <- list(
   #   "Covid interventions" = "covid"
   #   ),
   "Housing" = c(
-    "Housing system" = "housing"
+    "Housing system" = "housing",
+    "Vulnerable population" = "vulnerable_pop"
   #   "Gentrification" = "gentrification", 
   #   "Permits" = "permits", 
   #   "Marketed Sustainability" = "marketed_sustainability"
@@ -147,3 +148,4 @@ systemfonts::register_font(
 # Connect to the db -------------------------------------------------------
 
 db <- dbConnect(SQLite(), "data/sql_db.sqlite")
+

@@ -97,33 +97,49 @@ update_module <- function(r, id, mod_ns = paste(id, id, sep = "-"), session,
           selected = selected_var
         )
       }
-    } else if (id %in% c("permits", "access", "crash", "green_space")) {
+    } else if (id %in% c("permits", "access", "crash", "green_space",
+                         "vulnerable_pop")) {
       if (!is.null(var_left)) {
         
         selected_var <- if (str_detect(var_left, "^\\d*$")) {
           get_variables_rowid(var_left)} else var_left
         
-        var_left_list_1 <- get(paste0("var_left_list_1_", id))
-        var_left_list_2 <- get(paste0("var_left_list_2_", id))
+        # How many var_left dropdowns
+        var_left_drops_length <- 
+          length(str_subset(ls(envir = environment_created_in_R), 
+                            paste0("var_left_list_\\d*_", id)))
         
-        selected_var_1 <-
-          str_extract(selected_var, paste0(var_left_list_1, collapse = "|")) |> 
-          na.omit()
+        lapply(seq_len(var_left_drops_length), function(num) {
+          
+          var_left_list <- get(paste0("var_left_list_", num, "_", id))
+          
+          # If total, don't include it ~yet
+          if ("total" %in% var_left_list) {
+            var_left_list_no_total <- 
+              var_left_list[-which(var_left_list == "total")]
+            
+            selected_var_num <-
+              str_extract(selected_var, 
+                          paste0(var_left_list_no_total, collapse = "|")) |> 
+              na.omit()
+            
+            if (length(selected_var_num) == 0) selected_var_num <- "total"
+            
+          } else {
+            selected_var_num <-
+              str_extract(selected_var, 
+                          paste0(var_left_list, collapse = "|")) |> 
+              na.omit()
+          }
+          
+          updatePickerInput(
+            session = session,
+            inputId = construct_namespace(paste0("d_", num)),
+            selected = selected_var_num
+          )
+          
+        })
         
-        selected_var_2 <-
-          str_extract(selected_var, paste0(var_left_list_2, collapse = "|")) |> 
-          na.omit()
-        
-        updatePickerInput(
-          session = session,
-          inputId = construct_namespace("d_1"),
-          selected = selected_var_1
-        )
-        updatePickerInput(
-          session = session,
-          inputId = construct_namespace("d_2"),
-          selected = selected_var_2
-        )
       }
     } else if (id == "natural_inf") {
       

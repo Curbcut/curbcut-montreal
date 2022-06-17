@@ -3,11 +3,14 @@
 library(tidyverse)
 library(sf)
 library(qs)
-qload("data/census.qsm")
+qload("data2/census_full.qsm")
 building_full <- qread("data/building_full.qs")
 variables <- qread("data/variables.qs")
 source("dev/tiles/tile_functions.R")
 
+borough <- borough_full
+CT <- CT_full
+DA <- DA_full
 
 # Get variables to add ----------------------------------------------------
 

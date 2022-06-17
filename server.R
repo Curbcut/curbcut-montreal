@@ -2,6 +2,7 @@
 
 shinyServer(function(input, output, session) {
   
+  
 
   # Page title change, depending on page visited -------------------------------
 
@@ -36,7 +37,10 @@ shinyServer(function(input, output, session) {
     alley = reactiveValues(select_id = reactiveVal(NA),
                            df = reactiveVal("borough_empty"),
                            zoom = reactiveVal(12)),
-    natural_inf = reactiveValues(zoom = reactiveVal(9.5))
+    natural_inf = reactiveValues(zoom = reactiveVal(9.5)),
+    vulnerable_pop = reactiveValues(select_id = reactiveVal(NA), 
+                            df = reactiveVal("CT"),
+                            zoom = reactiveVal(get_zoom(map_zoom)))
   )
   
 
@@ -231,7 +235,7 @@ shinyServer(function(input, output, session) {
       # Retrieve select_id
       try({
         if (!is.null(query[["s_id"]])) 
-          if (query[["s_id"]] == "") query[["s_id"]] <- NA
+          if (query[["s_id"]] %in% c("", "NA")) query[["s_id"]] <- NA
           r[[query[["tb"]]]]$select_id <- reactiveVal(query[["s_id"]])
       })
     }
