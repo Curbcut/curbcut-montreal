@@ -464,10 +464,18 @@ title_text <-
     "Montréal, Fondation David Suzuki.")) |> 
   
   
-# Vulnerable population ---------------------------------------------------
+  # Vulnerable population ---------------------------------------------------
 
-  add_row(tab = "vulnerable_pop", type = "title", 
+add_row(tab = "vulnerable_pop", type = "title", 
         text = "Vulnerable population") |> 
   add_row(tab = "vulnerable_pop", type = "main", text = "TKTK") |> 
-  add_row(tab = "vulnerable_pop", type = "extra", text = "TKTK")
+  add_row(tab = "vulnerable_pop", type = "extra", text = "TKTK") |> 
+  
+  
+  # Housing characteristics -------------------------------------------------
+
+add_row(tab = "housing_characteristics", type = "title", 
+        text = "Housing characteristics") |> 
+  add_row(tab = "housing_characteristics", type = "main", text = "TKTK") |> 
+  add_row(tab = "housing_characteristics", type = "extra", text = "TKTK")
   

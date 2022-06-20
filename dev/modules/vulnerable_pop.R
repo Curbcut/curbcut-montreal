@@ -11,6 +11,8 @@ source("dev/other/crosstabs_fun.R")
 library(future)
 library(furrr)
 library(progressr)
+library(sf)
+
 
 # Load data ---------------------------------------------------------------
 
@@ -84,7 +86,7 @@ with_progress({
               
               shelter_cost_sum_rows <- 
                 map(shelter_cost_f, function(shelter_c) {
-                  map_dfc(sexes, function(sex_name) {
+                  map_dfc(names(sexes), function(sex_name) {
                     
                     se <- sexes[[sex_name]]
                     
