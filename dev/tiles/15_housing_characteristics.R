@@ -18,7 +18,6 @@ CT |>
   mutate(across(where(is.numeric), as.character)) |> 
   st_set_agr("constant") |>
   upload_tile_source("housing_characteristics-CT",
-                     username = "maxbdb3",
                      access_token = .sus_token)
 
 
@@ -27,7 +26,7 @@ CT |>
 recipe_CT <- 
   create_recipe(
     layer_names = "CT",
-    source = "mapbox://tileset-source/maxbdb3/housing_characteristics-CT",
+    source = "mapbox://tileset-source/sus-mcgill/housing_characteristics-CT",
     minzoom = 3,
     maxzoom = 12, 
     simp_zoom = 12,
@@ -38,9 +37,7 @@ recipe_CT <-
 # Create and publish univariate -------------------------------------------
 
 # Create tileset
-create_tileset("housing_characteristics-CT",
-               username = "maxbdb3", recipe_CT)
+create_tileset("housing_characteristics-CT", recipe_CT)
 
 # Publish tileset
-publish_tileset("housing_characteristics-CT", 
-                username = "maxbdb3")
+publish_tileset("housing_characteristics-CT")
