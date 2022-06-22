@@ -9,7 +9,7 @@ home_UI <- function(id) {
         susCarouselSlide(
           title = tags$em(nowrap(sus_translate(r = r, "Towards a")), 
                           nowrap(sus_translate(r = r, "sustainable city"))),
-          preview = "Welcome",
+          preview = sus_translate(r = r, "Welcome"),
           tags$p(sus_translate(r = r, "Sus is a platform for exploring urban ",
                               "sustainability in the Montreal region across ",
                               "multiple spatial and temporal scales. Sus ",
@@ -30,7 +30,7 @@ home_UI <- function(id) {
         )
         # , susCarouselSlide(
         #   title = tags$em(nowrap(sus_translate(r = r, "Another slide!"))),
-        #   # preview = "Another slide",
+        #   # preview = sus_translate(r = r, "Another slide"),
         #   tags$p(sus_translate(r = r, "Sus is a platform for inventing urban ",
         #                        "sustainability in the Montreal region across ",
         #                        "multiple spatial and temporal scales. Sus ",
