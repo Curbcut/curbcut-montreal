@@ -49,6 +49,10 @@ navbarPageWithInputs <- function(..., inputs) {
   navbar
 }
 
+# Make a Google fonts Material icon
+# To browse the list of available icons, go to: https://fonts.google.com/icons
+# For exact usage, see the "Inserting the icon" heading on the right hand sidebar,
+# where you should copy the inner text of the <span>...</span> example given.
 materialIcon <- function(icon) {
   span(class = "material-icons", icon)
 }
@@ -105,10 +109,10 @@ susFooter <- function() {
           tags$li(tags$a(href = NULL, HTML("&nbsp;"))),#sus_translate(r = r, "Terms & Conditions"))),
           tags$li(tags$a(href = NULL, style = "cursor:pointer;", 
                          onclick = "openTab('about_sus')", 
-                         sus_translate(r = r, "About"))),
+                         sus_translate(r = r, "About"), materialIcon("info"))),
           tags$li(tags$a(href = NULL, style = "cursor:pointer;", 
                          onclick = "document.getElementById('contact').click();",
-                         sus_translate(r = r, "Contact/feedback"))),
+                         sus_translate(r = r, "Contact/feedback"), materialIcon("mail"))),
           tags$li(tags$a(href = NULL, HTML("&nbsp;")))#sus_translate(r = r, "Privacy Policy"))),
         )
       )
@@ -123,6 +127,30 @@ susBanner <- function() {
     tags$div(class = "sus-banner-bg sus-bg-img-skyline"),
     tags$h1(class = "sus-brand sus-banner-text", "SUS")
   ))
+}
+
+susCarousel <- function(..., id="", class="") {
+  return(
+    tags$div(class = paste("sus-carousel", class),
+      tags$div(class="sus-carousel-bullets"),       
+      tags$div(class="sus-carousel-preview sus-carousel-preview-prev",
+               sus_translate(r = r, "Previous:"), HTML("&nbsp;"), tags$span(class="sus-carousel-preview-content")),
+      tags$div(class="sus-carousel-preview sus-carousel-preview-next",
+               sus_translate(r = r, "Next:"), HTML("&nbsp;"), tags$span(class="sus-carousel-preview-content")),
+      tags$div(class="sus-carousel-nav-bttn sus-carousel-nav-bttn-left", materialIcon("chevron_left")),
+      tags$div(class="sus-carousel-nav-bttn sus-carousel-nav-bttn-right", materialIcon("chevron_right")),
+      ...)
+  )
+}
+
+susCarouselSlide <- function(..., title="", preview="", id="", class="") {
+  return(
+    htmltools::tagAppendAttributes(
+      tags$div(class = paste("sus-carousel-slide", class),
+               tags$h2(title),
+               ...),
+    `data-preview` = preview)
+  )
 }
 
 # Make controls for a page

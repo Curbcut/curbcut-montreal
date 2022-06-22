@@ -2,7 +2,7 @@
   --scale-button-hover: 1.02;
   --scale-button-active: 1;
   --c-button-content: var(--c-primary-complement);
-  --transition-button: transform ease-in-out 0.1s;
+  --transition-button: transform ease-in-out 0.05s;
   --tr-button-hover: scale(var(--scale-button-hover), var(--scale-button-hover));
   --filter-button-hover: brightness(1.05);
   --tr-button-active: scale(var(--scale-button-active), var(--scale-button-active));;
@@ -30,6 +30,10 @@
   color: var(--c-button-content);
   text-shadow: unset;
   outline: unset;
+}
+
+.sus-button {
+  user-select: none;
 }
 
 .sus-button-default, .tab-content .btn-default, .tab-content .dropdown {
