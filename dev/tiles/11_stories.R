@@ -3,11 +3,15 @@
 library(tidyverse)
 library(sf)
 library(qs)
-stories <- qread("data/stories.qs")
+qload("data/stories.qsm")
 source("dev/tiles/_tile_functions.R")
 
 
 # Create and upload tileset -----------------------------------------------
+
+# Table rase first
+delete_tileset_source("stories-stories")
+delete_tileset("stories-stories")
 
 stories |> 
   st_as_sf(coords = c("lon", "lat"), crs = 4326) |> 

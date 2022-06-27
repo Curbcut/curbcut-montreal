@@ -72,7 +72,16 @@ stories <-
     preview = paste0("Griffintown’s social and governance history can be ",
                      "defined through the politics of water management."),
     lon = -73.560739,
-    lat = 45.496812)
+    lat = 45.496812) |> 
+  
+  add_row(
+    name = "champs_possibles",
+    title = paste0("The Champ des Possibles: A Communitarian & Biodiverse ",
+                   "Urban Prairie"),
+    img = "champs_possibles.png",
+    preview = paste0("TKTK"),
+    lon = -73.600377,
+    lat = 45.528423)
 
 
 # Finish table ------------------------------------------------------------
@@ -115,7 +124,10 @@ round_img_shadow <- function(img_name) {
   # Bandeau
   bandeau <- magick::image_resize(img, paste0(
     1000, "x", 1000/img_info$width*img_info$height,"!"))
-  bandeau <- magick::image_crop(img, paste0(1000, "x", 200, "+0+100"))
+  # Get the center of the image
+  bandeau_height <- magick::image_info(bandeau)$height
+  bandeau <- magick::image_crop(bandeau, paste0(1000, "x", 200, "+0+", 
+                                                bandeau_height/2 - 100))
   magick::image_write(bandeau, paste0("www/stories/bandeau_img/", img_name,
                                       ".png"))
   
