@@ -144,7 +144,7 @@ with_progress({
 
 vulnerable_pop <- 
 map2(vulnerable_pop, names(vulnerable_pop), function(df, scale) {
-  bind_cols(get_vulnerable_pop()[[scale]], df) |>
+  bind_cols(get_vulnerable_pop()[[scale]][, "ID"], df) |>
     rename_with(~paste0("vulnerable_pop_", .x, "_2016"), 
                 total_total_total_total:last_col())
   
@@ -164,80 +164,78 @@ vulnerable_pop <- list(
     left_join(vulnerable_pop$centraide, by = c("name" = "ID"))
 )
 
-#### TKTK FOR CENTRAIDE GEOMETRIES UNTIL HERE
-# 
-# 
-# # Calculate breaks --------------------------------------------------------
-# 
-# vulnerable_pop <- map(vulnerable_pop, add_q3)
-# 
-# vulnerable_pop_q3 <- map(vulnerable_pop, get_breaks_q3) 
-# vulnerable_pop_q5 <- map(vulnerable_pop, get_breaks_q5)
-# 
-# vulnerable_pop <-
-#   map2(vulnerable_pop, vulnerable_pop_q5, ~{bind_cols(.x, add_q5(.x, .y))})
-# 
-# 
-#   bind_cols(vulnerable_pop, add_q5(vulnerable_pop, vulnerable_pop_q5))
-# 
-# 
-# # Add to variables table --------------------------------------------------
-# 
-# var_list <- 
-#   vulnerable_pop |> 
-#   select(-ID, -contains(c("q3", "q5"))) |> 
-#   names()
-# 
-# # Get breaks_q3
-# breaks_q3_active <-
-#   map(set_names(var_list), ~{
-#     if (nrow(vulnerable_pop_q3) > 0) 
-#       vulnerable_pop_q3 |> 
-#       mutate(scale = "CT", date = "2016", rank = 0:3,
-#                                   .before = everything()) |> 
-#       select(scale, date, rank, var = all_of(.x))})
-# 
-# # Get breaks_q5
-# breaks_q5_active <-
-#   map(set_names(var_list), ~{
-#     if (nrow(vulnerable_pop_q5) > 0) 
-#       vulnerable_pop_q5 |> mutate(scale = "CT", date = "2016", rank = 0:5,
-#                                   .before = everything()) |> 
-#       select(scale, date, rank, var = all_of(.x))})
-# 
-# new_rows <- 
-#   map_dfr(var_list, function(var) {
-#     
-#     out <- 
-#       add_variables(variables,
-#                     var_code = str_remove(var, "_\\d{4}$"),
-#                     var_title = str_remove(var, "_\\d{4}$"),
-#                     var_short = str_remove(var, "_\\d{4}$"),
-#                     explanation = str_remove(var, "_\\d{4}$"),
-#                     category = NA,
-#                     theme = "Housing",
-#                     private = TRUE,
-#                     dates = "2016",
-#                     scales = "CT",
-#                     breaks_q3 = breaks_q3_active[[var]],
-#                     breaks_q5 = breaks_q5_active[[var]],
-#                     source = "Centraide")
-#     
-#     out[out$var_code == str_remove(var, "_\\d{4}$"), ]
-#     
-#   })
-# 
-# variables <- 
-#   bind_rows(variables, new_rows)
-# 
-# 
-# # Join vulnerable_pop to CT -----------------------------------------------
-# 
-# CT <- 
-#   left_join(CT, vulnerable_pop, by = "ID")
-# 
-# # Clean up ----------------------------------------------------------------
-# 
-# rm(imm_statuses, household_statuses, shelter_costs, sexes, ordered_ID,
-#    var_list, breaks_q3_active, breaks_q5_active, new_rows, vulnerable_pop,
-#    vulnerable_pop_q3, vulnerable_pop_q5)
+
+# Calculate breaks --------------------------------------------------------
+
+vulnerable_pop <- map(vulnerable_pop, add_q3)
+
+vulnerable_pop_q3 <- map(vulnerable_pop, get_breaks_q3)
+vulnerable_pop_q5 <- map(vulnerable_pop, get_breaks_q5)
+
+vulnerable_pop <-
+  map2(vulnerable_pop, vulnerable_pop_q5, ~{bind_cols(.x, add_q5(.x, .y))})
+
+
+  bind_cols(vulnerable_pop, add_q5(vulnerable_pop, vulnerable_pop_q5))
+
+
+# Add to variables table --------------------------------------------------
+
+var_list <-
+  vulnerable_pop |>
+  select(-ID, -contains(c("q3", "q5"))) |>
+  names()
+
+# Get breaks_q3
+breaks_q3_active <-
+  map(set_names(var_list), ~{
+    if (nrow(vulnerable_pop_q3) > 0)
+      vulnerable_pop_q3 |>
+      mutate(scale = "CT", date = "2016", rank = 0:3,
+                                  .before = everything()) |>
+      select(scale, date, rank, var = all_of(.x))})
+
+# Get breaks_q5
+breaks_q5_active <-
+  map(set_names(var_list), ~{
+    if (nrow(vulnerable_pop_q5) > 0)
+      vulnerable_pop_q5 |> mutate(scale = "CT", date = "2016", rank = 0:5,
+                                  .before = everything()) |>
+      select(scale, date, rank, var = all_of(.x))})
+
+new_rows <-
+  map_dfr(var_list, function(var) {
+
+    out <-
+      add_variables(variables,
+                    var_code = str_remove(var, "_\\d{4}$"),
+                    var_title = str_remove(var, "_\\d{4}$"),
+                    var_short = str_remove(var, "_\\d{4}$"),
+                    explanation = str_remove(var, "_\\d{4}$"),
+                    category = NA,
+                    theme = "Housing",
+                    private = TRUE,
+                    dates = "2016",
+                    scales = "CT",
+                    breaks_q3 = breaks_q3_active[[var]],
+                    breaks_q5 = breaks_q5_active[[var]],
+                    source = "Centraide")
+
+    out[out$var_code == str_remove(var, "_\\d{4}$"), ]
+
+  })
+
+variables <-
+  bind_rows(variables, new_rows)
+
+
+# Join vulnerable_pop to CT -----------------------------------------------
+
+CT <-
+  left_join(CT, vulnerable_pop, by = "ID")
+
+# Clean up ----------------------------------------------------------------
+
+rm(imm_statuses, household_statuses, shelter_costs, sexes, ordered_ID,
+   var_list, breaks_q3_active, breaks_q5_active, new_rows, vulnerable_pop,
+   vulnerable_pop_q3, vulnerable_pop_q5)
