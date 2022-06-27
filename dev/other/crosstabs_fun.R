@@ -27,11 +27,13 @@
 #'  "low income before tax"
 #'  "not low income before tax"
 #'  "low income after tax"
+#'  
 
-get_vulnerable_pop <- function(sex = "total", age = "total",
-                                     shelter_cost = "total",
-                                     immigrant_status = "total",
-                                     characteristics = "total") {
+get_vulnerable_pop <- function(sex = "total", 
+                               age = "total",
+                               shelter_cost = "total",
+                               immigrant_status = "total",
+                               characteristics = "total") {
   
   table <- table1
   
@@ -127,14 +129,26 @@ get_vulnerable_pop <- function(sex = "total", age = "total",
   
   table <- 
     table[, characteristics_cols]
-
-  # Add ID and clean table
-  tibble(ID = table1$V1[5:length(table1)],
-         var = table[[1]][5:length(table1)]) |> 
-    mutate(var = as.numeric(var)) |> 
-    suppressWarnings() |> 
-    filter(str_detect(ID, "^\\d{7}\\.\\d{2}")) |> 
-    mutate(ID = str_extract(ID, "^\\d{7}\\.\\d{2}"))
+  
+  Encoding(table1$V1) <- "latin1"
+  
+  return(list(
+    CT = 
+      tibble(ID = table1$V1[5:length(table1)],
+             var = table[[1]][5:length(table1)]) |> 
+      mutate(var = as.numeric(var)) |> 
+      suppressWarnings() |> 
+      filter(str_detect(ID, "^\\d{7}\\.\\d{2}")) |> 
+      mutate(ID = str_extract(ID, "^\\d{7}\\.\\d{2}")),
+    centraide = 
+      tibble(ID = table1$V1[5:nrow(table1)],
+             var = table[[1]][5:nrow(table1)]) |> 
+      mutate(var = as.numeric(var)) |> 
+      suppressWarnings() |> 
+      # 113 Centraide zones
+      (\(x) slice(x, (nrow(x) - 112):nrow(x)))() |> 
+      mutate(ID = str_extract(ID, ".*?(?= \\d{5})"))
+  ))
 }
 
 
@@ -159,7 +173,8 @@ get_vulnerable_pop <- function(sex = "total", age = "total",
 # "other single-attached house"
 # "mobile homes and other movable dwellings "
 
-get_housing_characteristics <- function(tenure = "total", bedrooms = "total",
+get_housing_characteristics <- function(tenure = "total", 
+                                        bedrooms = "total",
                                         shelter_cost = "total",
                                         characteristics = "total") {
   
@@ -241,12 +256,24 @@ get_housing_characteristics <- function(tenure = "total", bedrooms = "total",
   table <- 
     table[, characteristics_cols]
   
-  # Add ID and clean table
-  tibble(ID = table2$V1[5:length(table2)],
-         var = table[[1]][5:length(table2)]) |> 
-    mutate(var = as.numeric(var)) |> 
-    suppressWarnings() |> 
-    filter(str_detect(ID, "^\\d{7}\\.\\d{2}")) |> 
-    mutate(ID = str_extract(ID, "^\\d{7}\\.\\d{2}"))
+  Encoding(table1$V1) <- "latin1"
+  
+  return(list(
+    CT = 
+      tibble(ID = table2$V1[5:length(table2)],
+             var = table[[1]][5:length(table2)]) |> 
+      mutate(var = as.numeric(var)) |> 
+      suppressWarnings() |> 
+      filter(str_detect(ID, "^\\d{7}\\.\\d{2}")) |> 
+      mutate(ID = str_extract(ID, "^\\d{7}\\.\\d{2}")),
+    centraide = 
+      tibble(ID = table2$V1[5:nrow(table2)],
+             var = table[[1]][5:nrow(table2)]) |> 
+      mutate(var = as.numeric(var)) |> 
+      suppressWarnings() |> 
+      # 113 Centraide zones
+      (\(x) slice(x, (nrow(x) - 112):nrow(x)))() |> 
+      mutate(ID = str_extract(ID, ".*?(?= \\d{5})"))
+  ))
   
 }

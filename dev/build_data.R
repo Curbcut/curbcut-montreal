@@ -40,6 +40,9 @@ source("dev/geometries/street.R")
 # Geocode street edges centroids
 source("dev/geometries/street_geocode.R")
 
+# Import centraide geometries
+source("dev/geometries/centraide_geometries.R")
+
 
 # Error checking ----------------------------------------------------------
 
