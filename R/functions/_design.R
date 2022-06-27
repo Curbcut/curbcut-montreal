@@ -345,7 +345,23 @@ styler <- '
    text-align: center;
    font-size: 1.65rem;
    padding:20px;
-   }
+  }
+   
+  tr:nth-child(even) {
+  background-color: #B5C0DA50;
+  }
+  
+  tr {
+  border-bottom: 1px solid #ddd;
+  }
+  
+  tr:hover {
+  background-color: #B5C0DA50;
+  }
+  
+  td {
+  padding:4px;
+  }
 
 
 '

@@ -140,7 +140,8 @@ data_export_modal <- function(r = r, export_data) {
         h3(sus_translate(r = r, "Data preview (first 10 rows)")),
       if (is.data.frame(export_data$data))
         div(style = "width: 100%; overflow-x: auto; height:300px; overflow-y:auto;",
-            tableHTML::tableHTML(export_data$data[1:10, ], collapse = 'separate_shiny', 
+            tableHTML::tableHTML(export_data$data[1:10, ], collapse = 'collapse',
+                                 border = 0,
                                  round = 2, rownames = FALSE)),
       
       footer = tagList(
