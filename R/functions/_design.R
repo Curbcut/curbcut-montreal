@@ -362,6 +362,10 @@ styler <- '
   td {
   padding:4px;
   }
+  
+  th {
+  padding:4px;
+  }
 
 
 '
