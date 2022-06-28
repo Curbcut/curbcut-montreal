@@ -36,7 +36,8 @@ shinyServer(function(input, output, session) {
     alley = reactiveValues(select_id = reactiveVal(NA),
                            df = reactiveVal("borough_empty"),
                            zoom = reactiveVal(12)),
-    natural_inf = reactiveValues(zoom = reactiveVal(9.5))
+    natural_inf = reactiveValues(zoom = reactiveVal(9.5)),
+    news = reactiveValues(select_id = reactiveVal(NA))
   )
   
 

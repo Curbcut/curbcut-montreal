@@ -1,0 +1,84 @@
+---
+title: "Welcome to SUS Montreal"
+output: html_document
+date: 2022-07-04
+runtime: shiny_prerendered
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(here)
+```
+
+<center>
+```{r, echo=FALSE, out.extra='style="width:256px; padding:10px;"',  warning=FALSE}
+knitr::include_graphics(here("www/news/visuals/welcome/sus_logo_256x256.png"))
+```
+</center>
+
+Sus is an urban sustainability platform for the Montreal region. It operates across multiple spatial and temporal scales and offers a justice- and inclusivity-focused approach to sustainability.
+
+<center>
+```{r, echo=FALSE}
+vembedr::embed_youtube("c5QYpmLOlOE", height = 300)
+```
+</center>
+
+<hr>
+### First, a thanks. 
+You're on this mailing list because you attended our launch events in April 2022. Our launch was an enormous success -- and we're thrilled you're interested in what <i><b>Sus</b></i> has to offer.
+
+If you'd link to rewatch the launch or share it, <a target = '_blank' href = 'https://www.youtube.com/watch?v=c5QYpmLOlOE'>click here</a>!
+
+```{r, echo=FALSE, warning=FALSE}
+
+knitr::include_graphics(here("www/news/visuals/welcome/active_living.png"))
+
+```
+
+<hr>
+### Second, a story about active living. 
+<a target = '_blank' href = 'https://www.activeagingcanada.ca/participants/get-active/active-living/what-is-active-living.htm'>Active living</a> refers to people's ability to integrate physical activity into everyday routines, like biking to the grocery store or walking to work.
+
+With a dataset built by McGill professor Nancy Ross and her team, Sus demonstrates which boroughs, neighbourhoods, and streets have the highest and lowest active living potential in the Montreal region. But that's not all.
+
+The beauty of Sus is its ability to put datasets in conversation with each other. In practice that means that on our platform, you can analyze the relationship between neighbourhoods that have the <b>highest active living potential</b> with those <b>that have the highest number of people who drive to work</b>.
+
+Which neighbourhood would you predict would have the best active living potential and the most amount of people driving to work?
+
+Click through to find out. (Hint: it has the word "mount" in it.)
+
+<center><a style = 'display: inline-flex; align-items: center;' class="sus-button sus-icon-button sus-button-primary" href="http://susmontreal.ca/?tb=canale&amp;lng=en&amp;zm=10.72&amp;lat=45.500101&amp;lon=-73.582446&amp;v_r=16&amp;s_id=4620356.00&amp;zm_a=T&amp;df=CT">Discover active living</a></center>
+<br><br>
+```{r, echo=FALSE, warning=FALSE}
+
+knitr::include_graphics(here("www/news/visuals/welcome/natural_inf.png"))
+
+```
+
+<hr>
+### Third, a new feature! 
+Who provided our active living potential data? Where did we source the dataset that informed our driving to work variables? Great questions!
+
+In our brand-new data transparency feature, we tell you exactly where the information powering Sus's maps comes from. Public, private, census, city, province -- it's all available by clicking on top-right button.
+
+What's more? You can download the dataset for your own research purposes!
+
+<hr>
+### Want to keep discovering?
+
+Every month, Sus will be rolling out new features and stories for you to explore. Here's how to keep the good times rolling:
+
+<ul>
+
+<li>
+
+Follow Sus on <a target = '_blank' href = 'https://twitter.com/susmontreal'>Twitter</a> and follow Sus leads <a target = '_blank' href = 'https://twitter.com/dwachsmuth'>David Wachsmuth</a>, <a target = '_blank' href = 'https://twitter.com/KManaugh'>Kevin Manaugh</a>, and <a target = '_blank' href = 'https://twitter.com/bio_diverse'>Andy Gonzalez</a> while you're at it.
+
+<li>
+
+Forward this newsletter with your network and academic colleagues
+
+<li>
+
+Stay updated with <a target = '_blank' href = 'https://www.mcgill.ca/mssi/'>McGill's Sustainability Systems Initiative</a> (MSSI), our primary funder.
