@@ -204,20 +204,12 @@ modules <-
     id = "canale",
     metadata = TRUE,
     dataset_info = 
-      paste0("<p>The Canadian Active Living Environments",
-             " (Can-ALE) dataset is a geographic-based set of measures charac",
+      paste0("<p><a href = 'https://nancyrossresearchgroup.ca/research/can-ale/'>",
+             "The Canadian Active Living Environments (Can-ALE)</a> dataset is ",
+             "a geographic-based set of measures charac",
              "terizing the active living environments (often referred to as '",
              "walkability') of Canadian communities. The data is provided at ",
-             "the dissemination area level.</p>",
-             "<p>By using geography conversion tools such as the Postal Code",
-             " Conversion File (PCCF+), it is possible to link Can-ALE measur",
-             "es to individual-level health data from national-level survey p",
-             "latforms (e.g., National Population Health Survey, Canadian Com",
-             "munity Health Survey) or to local-level data, such as travel su",
-             "rveys (e.g., Transportation Tomorrow Survey, Montreal Origin-De",
-             "stination Survey).</p>"),
-    link = "https://nancyrossresearchgroup.ca/research/can-ale/"
-  )
+             "the dissemination area level.</p>"))
 
 
 # Clean up ----------------------------------------------------------------
