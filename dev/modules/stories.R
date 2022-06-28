@@ -79,9 +79,23 @@ stories <-
     title = paste0("The Champ des Possibles: A Communitarian & Biodiverse ",
                    "Urban Prairie"),
     img = "champs_possibles.png",
-    preview = paste0("TKTK"),
+    preview = paste0("An urban prairie located in the Mile End, the Champ des ",
+                     "Possibles is a biodiverse green space that has a unique ",
+                     "governance structure that was born out of community ",
+                     "actions."),
     lon = -73.600377,
-    lat = 45.528423)
+    lat = 45.528423) |> 
+  
+  add_row(
+    name = "metro_evolution",
+    title = paste0("The Evolution of the Montreal Metro"),
+    img = "champs_possibles.png",
+    preview = paste0("Since its inception in the early 20th century, the ",
+                     "Montreal metro has undergone several major ",
+                     "transformations that mirror the city’s ever-changing ",
+                     "sociopolitical landscape."),
+    lon = -73.628745,
+    lat = 45.542925)
 
 
 # Finish table ------------------------------------------------------------
@@ -96,7 +110,7 @@ stories <-
 # IMAGES MUST BE TRANSFORMED TO PNG FIRST
 round_img_shadow <- function(img_name) {
   
-  path <- paste0("dev/data/stories_raw_images/banner_bubble_raw_img/", 
+  path <- paste0("dev/data/stories/raw_images/banner_bubble_raw_img/", 
                  img_name, ".png")
   img <- magick::image_read(path)
   shadow_right <- magick::image_read("dev/data/dropshadow_right.png")
