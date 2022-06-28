@@ -128,7 +128,6 @@ modules <-
     id = character(),
     metadata = logical(),
     dataset_info = character(),
-    link = character()
   )
 
 source("dev/other/add_modules.R")
@@ -152,12 +151,6 @@ source("dev/modules/natural_inf.R")
 
 source("dev/modules/stories.R", encoding = "utf-8")
 source("dev/modules/place_explorer.R")
-
-# Addition of other modules missing scripts to the modules table
-modules <- 
-  modules |> 
-  add_modules(id = "mcp",
-              metadata = FALSE)
 
 
 # Post-processing ---------------------------------------------------------

@@ -1,8 +1,7 @@
 ### DATA EXPORT MODAL FUNCTION #################################################
 
 data_export_modal <- function(r = r, export_data) {
-  
-  
+
   # About module data -------------------------------------------------------
   
   module <- modules[modules$id == export_data$id, ]
@@ -21,11 +20,11 @@ data_export_modal <- function(r = r, export_data) {
     paste0("<h3>", sus_translate(r = r, "About module data"), "</h3>")
   
   about_module$text_linked <- 
-    paste0("<a href = '", module$link, "' target = '_blank'>", 
-           str_replace_all(
+    paste0(str_replace_all(
              sus_translate(r = r, module$dataset_info), 
-             "<p>", "<p style = 'font-size: 1.45rem; cursor: help;'>"),
-           "</a>")
+             "<p>", "<p style = 'font-size: 1.45rem;'>") |> 
+             str_replace_all("<a href", "<a  target = '_blank' href")
+             )
   
   
   # About the data ----------------------------------------------------------
@@ -126,8 +125,6 @@ data_export_modal <- function(r = r, export_data) {
   
   modal <- 
     modalDialog(
-      title = 
-        sus_translate(r = r, "Data explanation and export on `{modal_title}`"),
       
       size = "l",
       
@@ -154,7 +151,9 @@ data_export_modal <- function(r = r, export_data) {
         downloadButton("download_shp",
                        style = button_style,
                        sus_translate(r = r, "Download SHP"))
-      ))
+      ),
+      
+      easyClose = TRUE)
   
   
   return(list(data = export_data$data, modal = modal))

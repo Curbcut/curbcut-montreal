@@ -123,7 +123,7 @@ ui <- function(request) {
                                 onclick = "copyUrl()"),
                               actionLink(inputId = "download_data",
                                          label = sus_translate(
-                                           "Metadata and export"),
+                                           "Export data"),
                                          icon("download")),
                               # downloadLink("create_report", 
                               #              label = div(icon("file-pdf"), 
