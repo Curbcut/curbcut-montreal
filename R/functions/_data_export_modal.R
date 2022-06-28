@@ -2,6 +2,8 @@
 
 data_export_modal <- function(r = r, export_data) {
   
+  print(export_data)
+  
   
   # About module data -------------------------------------------------------
   
@@ -126,8 +128,6 @@ data_export_modal <- function(r = r, export_data) {
   
   modal <- 
     modalDialog(
-      title = 
-        sus_translate(r = r, "Data explanation and export on `{modal_title}`"),
       
       # About module data
       HTML(unlist(about_module)),
@@ -152,7 +152,9 @@ data_export_modal <- function(r = r, export_data) {
         downloadButton("download_shp",
                        style = button_style,
                        sus_translate(r = r, "Download SHP"))
-      ))
+      ),
+      
+      easyClose = TRUE)
   
   
   return(list(data = export_data$data, modal = modal))

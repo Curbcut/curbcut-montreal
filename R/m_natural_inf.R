@@ -272,13 +272,13 @@ natural_inf_server <- function(id, r) {
       map_id = "map",
     )
     
-    # Return for data transprency and export
-    export_data <- reactive(data_export(id = id, 
-                                        data = data(), 
-                                        var_left = var_left(),
-                                        df = "raster"))
+    # Data transparency and export
+    observe({
+      r[[id]]$export_data(data_export(id = id, 
+                                      data = data(), 
+                                      var_left = var_left(), 
+                                      df = "raster"))
+    })
     
-    return(export_data)
-
   })
 }

@@ -17,7 +17,29 @@ shinyServer(function(input, output, session) {
   r <- reactiveValues(sus_bookmark = reactiveValues(active = FALSE),
                       sus_link = reactiveValues(),
                       lang = "fr",
-                      active_tab = "home")
+                      active_tab = "home",
+                      canale = reactiveValues(select_id = reactiveVal(NA), 
+                                              df = reactiveVal("borough"),
+                                              zoom = reactiveVal(get_zoom(map_zoom)),
+                                              export_data = reactiveVal(list())),
+                      climate_risk = reactiveValues(select_id = reactiveVal(NA),
+                                                    df = reactiveVal("grid"),
+                                                    zoom = reactiveVal(get_zoom(map_zoom)),
+                                                    export_data = reactiveVal(list())),
+                      housing = reactiveValues(select_id = reactiveVal(NA),
+                                               df = reactiveVal("borough"),
+                                               zoom = reactiveVal(get_zoom(map_zoom)),
+                                               export_data = reactiveVal(list())),
+                      access = reactiveValues(select_id = reactiveVal(NA),
+                                              df = reactiveVal("CT"),
+                                              zoom = reactiveVal(get_zoom(map_zoom)),
+                                              export_data = reactiveVal(list())),
+                      alley = reactiveValues(select_id = reactiveVal(NA),
+                                             df = reactiveVal("borough_empty"),
+                                             zoom = reactiveVal(12),
+                                             export_data = reactiveVal(list())),
+                      natural_inf = reactiveValues(zoom = reactiveVal(9.5),
+                                                   export_data = reactiveVal(list())))
   
   
   # Home page ------------------------------------------------------------------
@@ -210,13 +232,13 @@ shinyServer(function(input, output, session) {
   
   ## Modules -------------------------------------------------------------------
   
+  export_data <- list()
+  
   active_mod_server <- function(active_tab = input$sus_page) {
     mod_function <- 
       paste0(active_tab, "_server('", active_tab, "', r = r)")
 
-    # Run the function but also catch its output for data exportation
-    assign("export_data", eval(parse(text = mod_function)), 
-           pos = 1)
+    return(eval(parse(text = mod_function)))
   }
 
   observeEvent(input$sus_page, {
@@ -230,7 +252,8 @@ shinyServer(function(input, output, session) {
   
   ## Data download -------------------------------------------------------------
   
-  data_modal <- reactive(data_export_modal(r = r, export_data = export_data()))
+  data_modal <- reactive(
+    data_export_modal(r = r, export_data = r[[input$sus_page]]$export_data()))
   
   onclick("download_data", {
     if (!input$sus_page %in% modules$id || 
@@ -244,7 +267,7 @@ shinyServer(function(input, output, session) {
   
   output$download_csv <-
     downloadHandler(
-      filename = paste0(export_data()$id, "_data.csv"),
+      filename = paste0(r[[input$sus_page]]$export_data()$id, "_data.csv"),
       content = function(file) {
         data <- data_modal()$data
         write.csv(data, file, row.names = FALSE)
@@ -252,7 +275,7 @@ shinyServer(function(input, output, session) {
   
   output$download_shp <-
     downloadHandler(
-      filename = paste0(export_data()$id, "_shp.zip"),
+      filename = paste0(r[[input$sus_page]]$export_data()$id, "_shp.zip"),
       content = function(file) {
         withProgress(message = "Exporting Data", {
           
