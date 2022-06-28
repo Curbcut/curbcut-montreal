@@ -129,6 +129,8 @@ data_export_modal <- function(r = r, export_data) {
       title = 
         sus_translate(r = r, "Data explanation and export on `{modal_title}`"),
       
+      size = "l",
+      
       # About module data
       HTML(unlist(about_module)),
       
