@@ -7,10 +7,11 @@ source("dev/tiles/_tile_functions.R")
 # source("R/functions/_utils.R")
 qload("data/colours.qsm")
 qload("data2/census_full.qsm")
+centraide <- qread("data2/centraide_full.qs")
 
 CT <- CT_full
 
-# Univariate tileset source -----------------------------------------------
+# Univariate CT tileset source --------------------------------------------
 
 CT |> 
   select(ID, contains("_q5") & starts_with("vulnerable_pop")) |> 
@@ -21,7 +22,7 @@ CT |>
                      access_token = .sus_token)
 
 
-# Univariate recipe -------------------------------------------------------
+# Univariate CT recipe ----------------------------------------------------
 
 recipe_CT <- 
   create_recipe(
@@ -34,10 +35,44 @@ recipe_CT <-
     recipe_name = "vulnerable_pop-CT")
 
 
-# Create and publish univariate -------------------------------------------
+# Create and publish CT univariate ----------------------------------------
 
 # Create tileset
 create_tileset("vulnerable_pop-CT", recipe_CT)
 
 # Publish tileset
 publish_tileset("vulnerable_pop-CT")
+
+
+
+# Univariate centraide tileset source --------------------------------------------
+
+centraide |> 
+  select(ID, contains("_q5") & starts_with("vulnerable_pop")) |> 
+  rename_with(~str_remove(.x, ("_q5")), everything()) |> 
+  mutate(across(where(is.numeric), as.character)) |> 
+  st_set_agr("constant") |>
+  upload_tile_source("vulnerable_pop-centraide",
+                     access_token = .sus_token)
+
+
+# Univariate centraide recipe ----------------------------------------------------
+
+recipe_centraide <- 
+  create_recipe(
+    layer_names = "centraide",
+    source = "mapbox://tileset-source/sus-mcgill/vulnerable_pop-centraide",
+    minzoom = 3,
+    maxzoom = 11, 
+    simp_zoom = 11,
+    layer_size = 2500,
+    recipe_name = "vulnerable_pop-centraide")
+
+
+# Create and publish centraide univariate ----------------------------------------
+
+# Create tileset
+create_tileset("vulnerable_pop-centraide", recipe_centraide)
+
+# Publish tileset
+publish_tileset("vulnerable_pop-centraide")

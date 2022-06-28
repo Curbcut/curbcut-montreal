@@ -19,6 +19,7 @@ get_zoom_name <- function(x) sapply(
   "street" = "Street",
   "heatmap" = "Heatmap",
   "point" = "Point",
+  "centraide" = "Centraide",
   USE.NAMES = FALSE)
 
 get_zoom_label <- function(zoom_levels) {
@@ -41,4 +42,5 @@ get_zoom_code <- function(x) {
   if (x == "Street" || x == "Rue") return("street")
   if (x == "Heatmap") return("heatmap")
   if (x == "Point") return("point")
+  if (x == "Centraide") return("centraide")
 }

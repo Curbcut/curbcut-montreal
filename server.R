@@ -39,7 +39,7 @@ shinyServer(function(input, output, session) {
                            zoom = reactiveVal(12)),
     natural_inf = reactiveValues(zoom = reactiveVal(9.5)),
     vulnerable_pop = reactiveValues(select_id = reactiveVal(NA), 
-                            df = reactiveVal("CT"),
+                            df = reactiveVal("centraide"),
                             zoom = reactiveVal(get_zoom(map_zoom))),
     housing_characteristics = reactiveValues(select_id = reactiveVal(NA), 
                                              df = reactiveVal("CT"),

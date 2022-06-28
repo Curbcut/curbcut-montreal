@@ -156,7 +156,8 @@ get_info_table_data <- function(r = r, data, var_type, var_left, var_right, df,
     "DA" = "dissemination area",
     "grid" = "250-m",
     "building" = if (build_str_as_DA) "dissemination area" else "building",
-    "street" = if (build_str_as_DA) "dissemination area" else "street")
+    "street" = if (build_str_as_DA) "dissemination area" else "street",
+    "centraide" = "centraide zone")
   
   scale_plural <- switch(
     scale_sing,
@@ -166,7 +167,7 @@ get_info_table_data <- function(r = r, data, var_type, var_left, var_right, df,
     "250-m" = "areas",
     "building" = "buildings",
     "street" = "streets",
-    NA_character_)
+    "centraide zone" = "centraide zones")
   
   out$scale_sing <- sus_translate(r = r, scale_sing)
   out$scale_plural <- sus_translate(r = r, scale_plural)
@@ -185,6 +186,7 @@ get_info_table_data <- function(r = r, data, var_type, var_left, var_right, df,
     "dissemination area" = 
       sus_translate(r = r, "Dissemination area {select_name$name}"),
     "250-m" = sus_translate(r = r, "The area around {select_name$name}"),
+    "centraide zone" = sus_translate(r = r, "Centraide zone {select_name$name}"),
     NA_character_)
   
   if (grepl("select", out$var_type)) {

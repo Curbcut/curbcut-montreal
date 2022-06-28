@@ -210,6 +210,13 @@ building <-
   select(ID, name, name_2, DAUID) |> 
   sf::st_drop_geometry()
 
+centraide_full <- centraide
+centraide <- 
+  centraide_full |> 
+  rowwise() |> 
+  mutate(centroid = list(as.numeric(st_coordinates(st_centroid(geometry))))) |> 
+  ungroup() |> 
+  st_drop_geometry()
 
 # Save data files ---------------------------------------------------------
 
@@ -218,11 +225,13 @@ qsavem(borough_full, CT_full, DA_full, file = "data2/census_full.qsm")
 qsave(grid_full, file = "data2/grid_full.qs")
 qsave(building_full, file = "data2/building_full.qs")
 qsave(street, file = "data2/street.qs")
+qsave(centraide_full, file = "data2/centraide_full.qs")
 
 
 # data/
 qsave(variables, file = "data/variables.qs")
 qsavem(borough, CT, DA, file = "data/census.qsm")
+qsave(centraide, file = "data/centraide.qs")
 qsave(crash, file = "data/crash.qs")
 qsavem(alley, alley_text, file = "data/alley.qsm")
 qsavem(covid, covid_pics, file = "data/covid.qsm")

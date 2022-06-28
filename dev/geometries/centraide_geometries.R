@@ -17,7 +17,8 @@ centraide <-
     {read_sf(paste0("dev/data/centraide/StatCan_Recensement2016/_Geographie/",
                     "Centraide_Sous_Territoires_Montreal_RiveSud.shp")) |> 
         transmute(name = SouTerr)}
-  )
+  ) |> 
+  st_transform(4326)
 
 # Add population and households using the two tables
 centraide <- 

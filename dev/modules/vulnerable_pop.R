@@ -60,10 +60,11 @@ progressr::handlers(progressr::handler_progress(
 with_progress({
   
   p <- 
-    progressr::progressor(steps = length(imm_statuses) *
-                            length(household_statuses) *
-                            length(shelter_costs) *
-                            length(sexes) * 2)
+    progressr::progressor(steps = sum(map_int(imm_statuses, length)) *
+                            sum(map_int(household_statuses, length)) *
+                            sum(map_int(shelter_costs, length)) *
+                            sum(map_int(sexes, length)) * 
+                            2)
   
   vulnerable_pop <- 
     map(set_names(c("CT", "centraide")), function(scale) {
@@ -143,12 +144,11 @@ with_progress({
 })
 
 vulnerable_pop <- 
-map2(vulnerable_pop, names(vulnerable_pop), function(df, scale) {
-  bind_cols(get_vulnerable_pop()[[scale]][, "ID"], df) |>
-    rename_with(~paste0("vulnerable_pop_", .x, "_2016"), 
-                total_total_total_total:last_col())
-  
-})
+  map2(vulnerable_pop, names(vulnerable_pop), function(df, scale) {
+    bind_cols(get_vulnerable_pop()[[scale]][, "ID"], df) |>
+      rename_with(~paste0("vulnerable_pop_", .x, "_2016"), 
+                  total_total_total_total:last_col())
+  })
 
 
 # Filter only the CMA -----------------------------------------------------
@@ -164,6 +164,11 @@ vulnerable_pop <- list(
     left_join(vulnerable_pop$centraide, by = c("name" = "ID"))
 )
 
+vulnerable_pop <- 
+map(vulnerable_pop, ~{
+  .x |> 
+    select(-contains("q3"), -contains("q5"))
+})
 
 # Calculate breaks --------------------------------------------------------
 
@@ -176,32 +181,24 @@ vulnerable_pop <-
   map2(vulnerable_pop, vulnerable_pop_q5, ~{bind_cols(.x, add_q5(.x, .y))})
 
 
-  bind_cols(vulnerable_pop, add_q5(vulnerable_pop, vulnerable_pop_q5))
-
-
 # Add to variables table --------------------------------------------------
 
 var_list <-
-  vulnerable_pop |>
+  vulnerable_pop$CT |>
   select(-ID, -contains(c("q3", "q5"))) |>
   names()
 
 # Get breaks_q3
 breaks_q3_active <-
-  map(set_names(var_list), ~{
-    if (nrow(vulnerable_pop_q3) > 0)
-      vulnerable_pop_q3 |>
-      mutate(scale = "CT", date = "2016", rank = 0:3,
-                                  .before = everything()) |>
-      select(scale, date, rank, var = all_of(.x))})
+  map2_dfr(vulnerable_pop_q3, c("CT", "centraide"), \(x, scale) {
+    if (nrow(x) > 0) x |> mutate(scale = scale, date = 2016, rank = 0:3,
+                                 .before = 1)})
 
 # Get breaks_q5
 breaks_q5_active <-
-  map(set_names(var_list), ~{
-    if (nrow(vulnerable_pop_q5) > 0)
-      vulnerable_pop_q5 |> mutate(scale = "CT", date = "2016", rank = 0:5,
-                                  .before = everything()) |>
-      select(scale, date, rank, var = all_of(.x))})
+  map2_dfr(vulnerable_pop_q5, c("CT", "centraide"), \(x, scale) {
+    if (nrow(x) > 0) x |> mutate(scale = scale, date = 2016, rank = 0:5,
+                                 .before = 1)})
 
 new_rows <-
   map_dfr(var_list, function(var) {
@@ -217,8 +214,10 @@ new_rows <-
                     private = TRUE,
                     dates = "2016",
                     scales = "CT",
-                    breaks_q3 = breaks_q3_active[[var]],
-                    breaks_q5 = breaks_q5_active[[var]],
+                    breaks_q3 = select(breaks_q3_active,
+                                       scale, date, rank, var = all_of(var)),
+                    breaks_q5 = select(breaks_q5_active,
+                                       scale, date, rank, var = all_of(var)),
                     source = "Centraide")
 
     out[out$var_code == str_remove(var, "_\\d{4}$"), ]
@@ -232,7 +231,14 @@ variables <-
 # Join vulnerable_pop to CT -----------------------------------------------
 
 CT <-
-  left_join(CT, vulnerable_pop, by = "ID")
+  left_join(CT, vulnerable_pop$CT, by = "ID")
+
+
+# Join vulnerable_pop to centraide ----------------------------------------
+
+centraide <-
+  left_join(centraide, vulnerable_pop$centraide, by = "name") |> 
+  relocate(geometry, .after = last_col())
 
 # Clean up ----------------------------------------------------------------
 

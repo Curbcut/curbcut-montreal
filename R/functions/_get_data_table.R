@@ -29,14 +29,16 @@ get_data_table <- function(df, var_left, var_right, data_type, point_df) {
       } else {
         data <- get(df)
         data <- data[c("ID", "name", "name_2", if (df == "DA") "DAUID", 
-                       if (df %in% c("DA", "CT")) "CTUID", "CSDUID", "population", 
+                       if (df %in% c("DA", "CT")) "CTUID", 
+                       if (df %in% c("DA", "CT", "borough")) "CSDUID", "population", 
                        var_left, l_q3, l_q5)]
       }
     
     data <- 
       data |> 
       setNames(c("ID", "name", "name_2", if (df == "DA") "DAUID", 
-                 if (df %in% c("DA", "CT")) "CTUID", "CSDUID", "population",
+                 if (df %in% c("DA", "CT")) "CTUID", 
+                 if (df %in% c("DA", "CT", "borough")) "CSDUID", "population",
                  "var_left", "var_left_q3", "var_left_q5"))
   }
   

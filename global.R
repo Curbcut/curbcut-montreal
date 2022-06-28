@@ -35,6 +35,7 @@ qload("data/colours.qsm")
 tile_lookup <- qread("data/tile_lookup.qs")
 
 qload("data/census.qsm")
+centraide <- qread("data/centraide.qs")
 # street <- qread("data/street.qs")
 
 # qload("data/covid.qsm")
@@ -53,14 +54,14 @@ postal_codes <- qread("data/postal_codes.qs")
 # Global variables --------------------------------------------------------
 
 census_min <- 
-  variables$dates[variables$source == "census"] |> 
+  variables$dates[variables$source == "Canadian census"] |> 
   unlist() |> 
   unique() |> 
   min() |> 
   as.numeric()
 
 census_max <- 
-  variables$dates[variables$source == "census"] |> 
+  variables$dates[variables$source == "Canadian census"] |> 
   unlist() |> 
   unique() |> 
   max() |> 
@@ -133,6 +134,7 @@ map_base_style <- "mapbox://styles/sus-mcgill/cl0reqoz4000z15pekuh48ld6"
 map_style_building <- "mapbox://styles/sus-mcgill/cl2bwtrsp000516rwyrkt9ior"
 map_zoom <- 10.1
 map_zoom_levels <- c("borough" = 0, "CT" = 10.5, "DA" = 12.5, "building" = 15.5)
+map_zoom_levels_centraide <- c("centraide" = 0, "CT" = 10.5)
 map_loc <- c(-73.58, 45.53)
 
 
