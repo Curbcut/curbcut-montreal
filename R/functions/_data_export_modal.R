@@ -125,9 +125,6 @@ data_export_modal <- function(r = r, export_data) {
   
   modal <- 
     modalDialog(
-      
-      size = "l",
-      
       # About module data
       HTML(unlist(about_module)),
       
@@ -138,7 +135,8 @@ data_export_modal <- function(r = r, export_data) {
       if (is.data.frame(export_data$data))
         h3(sus_translate(r = r, "Data preview (first 10 rows)")),
       if (is.data.frame(export_data$data))
-        div(style = "width: 100%; overflow-x: auto; height:300px; overflow-y:auto;",
+        div(style = paste0("width:80%; margin-left:auto; margin-right:auto; ",
+                           "overflow-x: auto; height:300px; overflow-y:auto;"),
             tableHTML::tableHTML(export_data$data[1:10, ], collapse = 'collapse',
                                  border = 0,
                                  round = 2, rownames = FALSE)),
@@ -152,8 +150,8 @@ data_export_modal <- function(r = r, export_data) {
                        style = button_style,
                        sus_translate(r = r, "Download SHP"))
       ),
-      
-      easyClose = TRUE)
+      easyClose = TRUE,
+      size = "l")
   
   
   return(list(data = export_data$data, modal = modal))
