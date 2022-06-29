@@ -11,6 +11,14 @@ walk(photos, function(photo) {
   final_path <- photo |> str_replace("dev/data/stories/raw_images/", 
                                      "www/stories/visuals/")
   
+  dir <- str_extract(final_path, "(?<=www/stories/visuals/).*(?=/)")
+  
+  if (!dir %in% list.files("www/stories/visuals")) {
+    dir.create(paste0("www/stories/visuals/", dir))
+  }
+  
+  img_info <- magick::image_info(img)
+  
   if (img_info$filesize < 1000000) return(magick::image_write(img, final_path))
   
   img <- magick::image_resize(img, 

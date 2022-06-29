@@ -95,7 +95,19 @@ stories <-
                      "transformations that mirror the city’s ever-changing ",
                      "sociopolitical landscape."),
     lon = -73.628745,
-    lat = 45.542925)
+    lat = 45.542925) |> 
+  
+  add_row(
+    name = "green_alleys_plateau",
+    title = paste0("The Green Alley Program in Le Plateau-Mont-Royal: tensions ",
+                   "between beautification and privatisation of public space"),
+    img = "green_alleys_plateau.png",
+    preview = paste0("Once redeveloped, green alleys often tend to become ",
+                     "ambiguous spaces, a sort of common, between the public ",
+                     "and the private realm. The case of Le Plateau-Mont-Royal ",
+                     "is particularly interesting."),
+    lon = -73.570753,
+    lat = 45.515949)
 
 
 # Finish table ------------------------------------------------------------

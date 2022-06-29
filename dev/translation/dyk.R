@@ -198,7 +198,31 @@ dyk_translated <-
   add_row(en = paste0("Griffintown’s social and governance history can be defi",
                       "ned through the politics of water management."), 
           fr = paste0("L'histoire sociale et de gouvernance de Griffintown peu",
-                      "t être définie par la politique de gestion de l'eau."))
+                      "t être définie par la politique de gestion de l'eau.")) |> 
+  add_row(en = paste0("An urban prairie located in the Mile End, the Champ des",
+                      " Possibles is a biodiverse green space that has a uniqu",
+                      "e governance structure that was born out of community a",
+                      "ctions."), 
+          fr = paste0("Une prairie urbaine située dans le Mile End, le Champ de",
+                      "s Possibles est un espace vert biodiversifié dont sa str",
+                      "ucture de gouvernance unique est née des actions de la c",
+                      "ommunauté.")) |> 
+  add_row(en = paste0("Since its inception in the early 20th century, the Montr",
+                      "eal metro has undergone several major transformations th",
+                      "at mirror the city’s ever-changing sociopolitical landsc",
+                      "ape."), 
+          fr = paste0("Depuis sa création au début du XXe siècle, le métro de M",
+                      "ontréal a subi plusieurs transformations majeures qui re",
+                      "flètent le paysage sociopolitique en constante évolution",
+                      " de la ville.")) |> 
+  add_row(en = paste0("Once redeveloped, green alleys often tend to become ambi",
+                      "guous spaces, a sort of common, between the public and t",
+                      "he private realm. The case of Le Plateau-Mont-Royal is p",
+                      "articularly interesting. "), 
+          fr = paste0("Une fois aménagées, les ruelles vertes tendent à devenir",
+                      " des espaces ambigus, à la frontière entre sphère publiq",
+                      "ue et privée. Le cas du Plateau-Mont-Royal est particuli",
+                      "èrement intéressant. "))
 
 
 
