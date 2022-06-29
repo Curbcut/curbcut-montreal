@@ -61,9 +61,9 @@ purrr::walk(stories_files, process_rmd, path = "stories")
 
 # News --------------------------------------------------------------------
 
-stories_files <- list.files("dev/Rmd/news")
+news_files <- list.files("dev/Rmd/news")
 library(here)
-purrr::walk(stories_files, process_rmd, path = "news")
+purrr::walk(news_files, process_rmd, path = "news")
 
 
 # Standalone --------------------------------------------------------------

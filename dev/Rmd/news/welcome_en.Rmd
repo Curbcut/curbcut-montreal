@@ -26,13 +26,13 @@ vembedr::embed_youtube("c5QYpmLOlOE", height = 300)
 
 <hr>
 ### First, a thanks. 
-You're on this mailing list because you attended our launch events in April 2022. Our launch was an enormous success -- and we're thrilled you're interested in what <i><b>Sus</b></i> has to offer.
+Our launch in April 2022 was an enormous success -- and we're thrilled you're interested in what <i><b>Sus</b></i> has to offer.
 
 If you'd link to rewatch the launch or share it, <a target = '_blank' href = 'https://www.youtube.com/watch?v=c5QYpmLOlOE'>click here</a>!
 
 ```{r, echo=FALSE, warning=FALSE}
 
-knitr::include_graphics(here("www/news/visuals/welcome/active_living.png"))
+knitr::include_graphics(here("www/news/visuals/welcome/active_living_en.png"))
 
 ```
 
@@ -77,7 +77,7 @@ Follow Sus on <a target = '_blank' href = 'https://twitter.com/susmontreal'>Twit
 
 <li>
 
-Forward this newsletter with your network and academic colleagues
+Share this news with your network and academic colleagues.
 
 <li>
 
