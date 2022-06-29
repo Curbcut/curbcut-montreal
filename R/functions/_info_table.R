@@ -33,8 +33,6 @@ info_table <- function(r, data, var_type, var_left, var_right, df, select_id,
   
   if (is.null(z)) return(z)
   
-  print(z)
-  
   ## Handle NAs ----------------------------------------------------------------
       
   # Special case for Kahnawake

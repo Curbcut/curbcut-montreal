@@ -76,3 +76,26 @@ create_tileset("vulnerable_pop-centraide", recipe_centraide)
 
 # Publish tileset
 publish_tileset("vulnerable_pop-centraide")
+
+
+
+
+# Auto-zoom recipes, create and publish -----------------------------------
+
+auto_zoom_recipe <- 
+    create_recipe(
+      layer_names = c("centraide", "CT"),
+      source = c(
+        centraide = "mapbox://tileset-source/sus-mcgill/vulnerable_pop-centraide",
+        CT = "mapbox://tileset-source/sus-mcgill/vulnerable_pop-CT"),
+      minzoom = c(centraide = 2, CT = 11),
+      maxzoom = c(centraide = 10, CT = 12), 
+      layer_size = c(centraide = NA, CT = NA),
+      recipe_name = "vulnerable_pop-auto_zoom")
+
+# Create tileset
+create_tileset("vulnerable_pop-auto_zoom", auto_zoom_recipe)
+
+# Publish tileset
+publish_tileset("vulnerable_pop-auto_zoom")
+

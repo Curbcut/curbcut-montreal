@@ -76,3 +76,25 @@ create_tileset("housing_charact-centraide", recipe_centraide)
 
 # Publish tileset
 publish_tileset("housing_charact-centraide")
+
+
+
+# Auto-zoom recipes, create and publish -----------------------------------
+
+auto_zoom_recipe <- 
+  create_recipe(
+    layer_names = c("centraide", "CT"),
+    source = c(
+      centraide = "mapbox://tileset-source/sus-mcgill/housing_charact-centraide",
+      CT = "mapbox://tileset-source/sus-mcgill/housing_charact-CT"),
+    minzoom = c(centraide = 2, CT = 11),
+    maxzoom = c(centraide = 10, CT = 12), 
+    layer_size = c(centraide = NA, CT = NA),
+    recipe_name = "housing_charact-auto_zoom")
+
+# Create tileset
+create_tileset("housing_charact-auto_zoom", auto_zoom_recipe)
+
+# Publish tileset
+publish_tileset("housing_charact-auto_zoom")
+

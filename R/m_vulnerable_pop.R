@@ -46,15 +46,7 @@ vulnerable_pop_UI <- function(id) {
 vulnerable_pop_server <- function(id, r) {
   moduleServer(id, function(input, output, session) {
     id_map <- paste0(id, "-map")
-    
-    # TKTK For now, no auto-zoom tile
-    observe({
-      updateCheckboxInput(inputId = "vulnerable_pop-zoom_auto", 
-                          value = FALSE)
-      hide(id = "vulnerable_pop-zoom_auto")})
-    
-    
-    
+
     # Initial reactives
     zoom <- reactiveVal(get_zoom(map_zoom))
     zoom_string <- reactiveVal(get_zoom_string(map_zoom, map_zoom_levels_centraide))

@@ -13,13 +13,13 @@ housing_charact_UI <- function(id) {
       susSidebarWidgets(
         select_var_UI(NS(id, id), select_var_id = "d_1",
                       label = sus_translate(r = r, "Tenure status"),
-                      var_list = var_left_list_1_housing_characteristics), 
+                      var_list = var_left_list_1_housing_charact), 
         select_var_UI(NS(id, id), select_var_id = "d_2",
                       label = sus_translate(r = r, "Shelter cost"),
-                      var_list = var_left_list_2_housing_characteristics), 
+                      var_list = var_left_list_2_housing_charact), 
         select_var_UI(NS(id, id), select_var_id = "d_3",
                       label = sus_translate(r = r, "Housing characteristic"),
-                      var_list = var_left_list_3_housing_characteristics)), 
+                      var_list = var_left_list_3_housing_charact)), 
       bottom = div(class = "bottom_sidebar", 
                    tagList(legend_UI(NS(id, id)),
                            zoom_UI(NS(id, id), map_zoom_levels_centraide)))),
@@ -41,14 +41,6 @@ housing_charact_UI <- function(id) {
 housing_charact_server <- function(id, r) {
   moduleServer(id, function(input, output, session) {
     id_map <- paste0(id, "-map")
-    
-    # TKTK For now, no auto-zoom tile
-    observe({
-      updateCheckboxInput(inputId = "housing_charact-zoom_auto", 
-                          value = FALSE)
-      hide(id = "housing_charact-zoom_auto")})
-    
-    
     
     # Initial reactives
     zoom <- reactiveVal(get_zoom(map_zoom))
@@ -108,19 +100,19 @@ housing_charact_server <- function(id, r) {
       id = id,
       r = r,
       select_var_id = "d_1",
-      var_list = reactive(var_left_list_1_housing_characteristics))
+      var_list = reactive(var_left_list_1_housing_charact))
     
     vl_sc <- select_var_server(
       id = id,
       r = r,
       select_var_id = "d_2",
-      var_list = reactive(var_left_list_2_housing_characteristics))
+      var_list = reactive(var_left_list_2_housing_charact))
     
     vl_charact <- select_var_server(
       id = id,
       r = r,
       select_var_id = "d_3",
-      var_list = reactive(var_left_list_3_housing_characteristics))
+      var_list = reactive(var_left_list_3_housing_charact))
     
     var_left <- reactive({
       paste("housing_characteristics",
