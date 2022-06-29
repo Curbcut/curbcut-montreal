@@ -115,8 +115,6 @@ housing_server <- function(id, r) {
         vars_housing_left_dis),
       time = time)
     
-    observe(print(var_left()))
-
     # Right variable / compare panel
     var_right <- compare_server(
       id = id,
