@@ -36,60 +36,61 @@ metro_evolution <-
   list.files("dev/data/stories/shp/metro_evolution/", full.names = TRUE) |> 
   str_subset("\\.shp$")
 
-metro_evolution <- 
+metro_evolution <-
   map(set_names(metro_evolution), read_sf) |> 
   (\(x) map2(x, names(x), ~{mutate(.x, date = .y)}))() |> 
   reduce(rbind) |> 
   mutate(date = as.character(str_extract(date, "\\d{4}"))) |> 
-  rename(type_en = Type) |> 
-  mutate(type_fr = case_when(type_en == "Proposed extensions" ~ 
-                               "Prolongements proposés",
-                             type_en == "Proposed extension" ~ 
-                               "Prolongements proposé",
-                             type_en == "Proposed line" ~ 
-                               "Ligne proposée",
-                             type_en == "Proposed lines" ~ 
-                               "Ligne proposées",
-                             type_en == "Proposed orange and green lines" ~ 
-                               "Lignes orange and verte proposées",
-                             type_en == "Proposed red line" ~ 
-                               "Ligne rouge proposée",
-                             type_en == "Proposed extensions" ~ 
-                               "Prolongements proposés",
-                             type_en == "Green line" ~ 
-                               "Ligne verte",
-                             type_en == "Orange line" ~ 
-                               "Ligne orange",
-                             type_en == "Yellow line" ~ 
-                               "Ligne jaune",
-                             type_en == "Blue line" ~ 
-                               "Ligne bleue",
-                             type_en == "Proposed orange line extension" ~ 
-                               "Prolongement de la ligne orange proposé",
-                             type_en == "Proposed green line extension" ~ 
-                               "Prolongement de la ligne verte proposé",
-                             type_en == "Proposed blue line" ~ 
-                               "Ligne bleue proposée",
-                             type_en == "Proposed blue line extension" ~ 
-                               "Prolongement de la ligne bleue proposé",
-                             type_en == "Proposed line 10" ~ 
-                               "Ligne 10 proposée",
-                             type_en == "Proposed line 11" ~ 
-                               "Ligne 11 proposée",
-                             type_en == "Proposed line 6" ~ 
-                               "Ligne 6 proposée",
-                             type_en == "Proposed line 7" ~ 
-                               "Ligne 7 proposée",
-                             type_en == "Proposed line 8" ~ 
-                               "Ligne 8 proposée",
-                             type_en == "Blue line extension" ~ 
-                               "Prolongement de la ligne bleue",
-                             type_en == "Proposed pink line" ~ 
-                               "Ligne rose proposée",
-                             type_en == "Proposed yellow line extension" ~ 
-                               "Prolongement de la ligne jaune proposé")) |> 
-  relocate(date, type_en, type_fr) |> 
-  rename(`The type` = type_en,
-         `Le type` = type_fr)
+  mutate(fill = case_when(Type == "Proposed extension" ~ "#1263A6",
+                          Type == "Proposed extensions" ~ "#1263A6",
+                          Type == "Proposed line" ~ "#000000",
+                          Type == "Proposed lines" ~ "#000000",
+                          Type == "Proposed orange and green lines" ~ "#000000", 
+                          Type == "Proposed red line" ~ "#8B0000",
+                          Type == "Green line" ~ "#00A650", 
+                          Type == "Orange line" ~ "#F47216", 
+                          Type == "Yellow line" ~ "#FCD300",
+                          Type == "Proposed orange line extension" ~ "#f5D7A4",
+                          Type == "Proposed green line extension" ~ "#76C274",
+                          Type == "Proposed blue line" ~ "#9CC0F0",
+                          Type == "Blue line" ~ "#1082CD",
+                          Type == "Proposed blue line extension" ~ "#9CC0F0",
+                          Type == "Proposed line 10" ~ "#000000",
+                          Type == "Proposed line 11" ~ "#454545",
+                          Type == "Proposed line 6" ~ "#696868",
+                          Type == "Proposed line 7" ~ "#949292",
+                          Type == "Proposed line 8" ~ "#B5B1B1",
+                          Type == "Blue line extension" ~ "#9CC0F0",
+                          Type == "Proposed yellow line extension" ~ "#FAF093",
+                          Type == "Proposed pink line" ~ "#E60E70")) |> 
+  select(date, fill)
 
+metro_evolution <- 
+  map_dfr(unique(metro_evolution$date), ~{
+    out <- 
+      metro_evolution |> 
+      filter(date == .x) |> 
+      mutate(new_fill = fill)
+    
+    names(out)[names(out) == "new_fill"] <- paste0("fill_", .x)
+    
+    out
+  }) |> 
+  relocate(geometry, .after = last_col()) |> 
+  mutate(across(fill_1910:fill_2000, ~{ifelse(is.na(.x), "#FFFFFF00", .x)})) |> 
+  select(-date, -fill)
+
+metro_evolution |> 
+  upload_tile_source("stories-metro_evolution")
+
+stories_recipe <- 
+  create_recipe(
+    layer_names = "stories-metro_evolution",
+    source = "mapbox://tileset-source/sus-mcgill/stories-metro_evolution",
+    minzoom = 3,
+    maxzoom = 13, 
+    recipe_name = "stories-metro_evolution")
+
+create_tileset("stories-metro_evolution", stories_recipe)
+publish_tileset("stories-metro_evolution")
 

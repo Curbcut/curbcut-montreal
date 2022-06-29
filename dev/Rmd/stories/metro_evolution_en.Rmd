@@ -7,26 +7,126 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-library(tmap)
 library(sf)
+library(rdeck)
+library(tidyverse)
+```
+
+```{r, echo=FALSE}
+
+metro_evolution <- 
+  list.files(here("dev/data/stories/shp/metro_evolution/"), full.names = TRUE) |> 
+  str_subset("\\.shp$")
+
+metro_evolution <-
+  map(set_names(metro_evolution), read_sf) |>
+  (\(x) map2(x, names(x), ~{mutate(.x, date = .y)}))() |>
+  reduce(rbind) |>
+  mutate(date = as.character(str_extract(date, "\\d{4}"))) |> 
+  rename(type_en = Type) |> 
+  mutate(fill = case_when(type_en == "Proposed extension" ~ "#1263A6",
+                          type_en == "Proposed extensions" ~ "#1263A6",
+                          type_en == "Proposed line" ~ "#000000",
+                          type_en == "Proposed lines" ~ "#000000",
+                          type_en == "Proposed orange and green lines" ~ "#000000", 
+                          type_en == "Proposed red line" ~ "#8B0000",
+                          type_en == "Green line" ~ "#00A650", 
+                          type_en == "Orange line" ~ "#F47216", 
+                          type_en == "Yellow line" ~ "#FCD300",
+                          type_en == "Proposed orange line extension" ~ "#f5D7A4",
+                          type_en == "Proposed green line extension" ~ "#76C274",
+                          type_en == "Proposed blue line" ~ "#9CC0F0",
+                          type_en == "Blue line" ~ "#1082CD",
+                          type_en == "Proposed blue line extension" ~ "#9CC0F0",
+                          type_en == "Proposed line 10" ~ "#000000",
+                          type_en == "Proposed line 11" ~ "#454545",
+                          type_en == "Proposed line 6" ~ "#696868",
+                          type_en == "Proposed line 7" ~ "#949292",
+                          type_en == "Proposed line 8" ~ "#B5B1B1",
+                          type_en == "Blue line extension" ~ "#9CC0F0",
+                          type_en == "Proposed yellow line extension" ~ "#FAF093",
+                          type_en == "Proposed pink line" ~ "#E60E70"))
+
+metro_evolution <- 
+metro_evolution |> 
+  arrange(type_en)
+
+```
+
+```{r echo = FALSE}
+
+# GET THE RDECK FOR EVERY DATE
+metro_evolution_rdeck <- function(date) {
+  
+rdeck(map_style = map_base_style, 
+      initial_bounds = st_bbox(st_buffer(filter(metro_evolution, date == !!date), 2000))) |> 
+          add_mvt_layer(
+          id = "metro_evolution", 
+          data = mvt_url("sus-mcgill.stories-metro_evolution"),
+          visible = TRUE,
+          get_line_width = 5,
+          get_line_color = !!rlang::sym(paste0("fill_", date)),
+          line_width_units = "pixels")
+
+}
+
+# GET LEGEND FOR EVERY DATE
+metro_evolution_legend <- function(date) {
+  
+values <- 
+    metro_evolution |> 
+    filter(date == !!date) |> 
+    pull(type_en) |> 
+    sort() |> 
+    unique()
+
+legend <- 
+  data.frame(x = seq_along(values),
+             y = 1,
+             fill = 
+               unique(metro_evolution[metro_evolution$type_en %in% values, ]$fill))
+
+out <- 
+legend |> 
+  (\(z) if (nrow(z) > 4) mutate(z, row = if_else(x <= 4, "A", "B")) else z)() |> 
+  (\(z) if (nrow(z) > 8) mutate(z, row = if_else(row == "B" & x > 8, "C", row)) else z)() |> 
+  ggplot(aes(xmin = x - 1, xmax = x, ymin = y - 1, ymax = y, 
+             fill = fill)) +
+  geom_rect() + 
+  {if (nrow(legend) > 4) facet_wrap(~row, 
+                 nrow = 2, 
+                 scales = "free_x", 
+                 labeller = as_labeller(c("A" = "", "B" = "")))} +
+  {if (nrow(legend) > 8) facet_wrap(~row, 
+                 nrow = 3, 
+                 scales = "free_x", 
+                 labeller = as_labeller(c("A" = "", "B" = "", "C" = "")))} +
+  scale_x_continuous(breaks = seq_along(values) - 0.5, labels = values) +
+  scale_y_continuous(labels = NULL) +
+  scale_fill_manual(values = setNames(
+    legend$fill, legend$fill)) +
+  theme_minimal() +
+  theme(text = element_text(family = "SourceSansPro", size = 11),
+        legend.position = "none", 
+        panel.grid = element_blank())
+
+ggsave(plot = out,
+       filename = here(paste0("www/stories/visuals/metro_evolution/legend_", date, "_en.png")),
+       units = "px",
+       height = ceiling(nrow(legend) / 4) * 200)
+
+knitr::include_graphics(here(paste0("www/stories/visuals/metro_evolution/legend_", date, "_en.png")))
+
+}
+
 ```
 
 Public transit in Montreal has undergone a tremendous transformation since the early 20th century, with the metro system forming a central, emblematic part of it. The evolution of the metro has been far from linear, and the decisions that were made often spoke volumes about the city’s priorities and self-perception. This is the history of the Montreal metro, how it arrived at its present state, and what its future holds. 
 
 ```{r, out.extra='style="width:60%"', fig.align = "center", warning=FALSE, fig.cap = "The current metro network. *Credit: Société de transport de Montréal*", echo=FALSE}
-knitr::include_graphics(here("www/stories/visuals/metro_evolution/modern_day_metro.jpeg"))
-```
 
-```{r, echo=FALSE}
-metro1910 <- read_sf(here("dev/data/stories/shp/metro_evolution/metro_1910_plan.shp"))
-metro1944 <- read_sf(here("dev/data/stories/shp/metro_evolution/metro_1944_plan.shp"))
-metro1953 <- read_sf(here("dev/data/stories/shp/metro_evolution/metro_1953.shp"))
-metro1961 <- read_sf(here("dev/data/stories/shp/metro_evolution/metro_1961.shp"))
-metro1967 <- read_sf(here("dev/data/stories/shp/metro_evolution/metro_1967.shp"))
-metro1978 <- read_sf(here("dev/data/stories/shp/metro_evolution/metro_1978.shp"))
-metro1981 <- read_sf(here("dev/data/stories/shp/metro_evolution/metro_1981_plan.shp"))
-metro1970s <- read_sf(here("dev/data/stories/shp/metro_evolution/metro_1970s.shp"))
-metro2000s <- read_sf(here("dev/data/stories/shp/metro_evolution/metro_plans_2000s.shp"))
+knitr::include_graphics(here("www/stories/visuals/metro_evolution/modern_day_metro.jpeg"))
+
 ```
 
 ### Early transit in Montreal and the first metro proposal
@@ -44,15 +144,13 @@ margin:auto;
 }
 </style>
 
-```{r, echo=FALSE, message=FALSE}
-names(metro1910)[1] <- "Legend"
-tmap_mode("view")
-m <- tm_shape(metro1910)+
-  tm_lines("Legend", palette = c(`Proposed extension` = "#1263a6", `Proposed line` = "black"), 
-           lwd = 5)
-tmap_leaflet(m)
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+metro_evolution_rdeck(1910)
+metro_evolution_legend(1910)
 ```
+
 <div align="center">The proposed 1910 metro network.</div>
+<br>
 
 Despite this proposal and several others being put forward in the following years, nothing materialized in the early 20th century. The first world war, followed by the Great Depression, prevented the approval and granting of funding to any metro projects, as the city was plunged into economic crisis, and street crowding was vastly reduced, alleviating the traffic issues necessitating underground transit (Gilbert, 2021). 
 
@@ -61,27 +159,25 @@ Despite this proposal and several others being put forward in the following year
 
 The alleviated traffic did not last. Ramifications from the Second World War in Montreal increased crowding in trams once again, in part due to the rationing of gasoline (Scott, 2016), reigniting the calls for underground transit. These calls were amplified by a metro proposal made by the Montreal Tramways Company in 1944, which consisted of one line running under Sainte-Catherine and another under Saint-Denis, Notre-Dame, and Saint-Jacques (Société de transport de Montréal, n.d.).  
 
-```{r, echo=FALSE, message=FALSE}
-names(metro1944)[1] <- "Legend"
-tmap_mode("view")
-l <- tm_shape(metro1944)+
-  tm_lines("Legend", palette = c(`Proposed extension` = "#1263a6", `Proposed line` = "black"),
-           lwd = 3)
-tmap_leaflet(l)
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+metro_evolution_rdeck(1944)
+metro_evolution_legend(1944)
 ```
+
 <div align="center">The proposed 1944 metro network.</div>
+<br>
 
 Although this proposal never came to fruition, during and after the war, it was becoming clear that a metro was necessary, as car use was rapidly increasing to the detriment of public transit use, worsening the city’s chronic traffic issues. It was also argued that a metro was essential in maintaining Montreal’s status as a major Canadian city, as Toronto was a rapidly rising metropolis that had begun developing its own subway system (Gilbert, 2021). 
 
 In 1953, the Montreal Transportation Commission, a newly formed organization with the primary goal of replacing the streetcar network with a new bus network (Société de Transport de Montréal, 2004), proposed another variation of the metro, building upon the 1944 plan. However, this plan and all others made at this time failed to make it past the planning stage. 
 
-```{r, echo=FALSE, message=FALSE}
-names(metro1953)[1] <- "Legend"
-o <- tm_shape(metro1953)+
-  tm_lines("Legend", palette = "black", lwd = 3)
-tmap_leaflet(o)
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+metro_evolution_rdeck(1953)
+metro_evolution_legend(1953)
 ```
+
 <div align="center">The proposed 1953 metro network.</div>
+<br>
 
 ### Thinking big: the Jean Drapeau administration and a renewal of interest in the metro
 #### *1954-1960*
@@ -105,16 +201,13 @@ With Drapeau’s approval, the Quebec government granted Montreal the right to c
 knitr::include_graphics(here("www/stories/visuals/metro_evolution/drapeau_proposal.jpeg"))
 ```
 
-```{r, echo=FALSE, message=FALSE}
-names(metro1961)[1] <- "Legend"
-p <- tm_shape(metro1961)+
-  tm_lines("Legend", palette = c(`Proposed extensions` = "#1263a6", 
-                               `Proposed orange and green lines` = "black", 
-                               `Proposed red line` = "red"),
-           lwd = 3)
-tmap_leaflet(p)
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+metro_evolution_rdeck(1961)
+metro_evolution_legend(1961)
 ```
+
 <div align="center">The proposed 1962 metro network consisting of three lines: orange, green, and red.</div>
+<br>
 
 Metro construction began on May 23, 1962, south of Berri street and Jarry street. Every station’s design was assigned to a different architect, giving each a unique look, which is one of the defining characteristics of the Montreal metro to this day. 
 
@@ -125,14 +218,13 @@ The red line did not make it to the final metro plan, and was cancelled in June 
 
 The metro was officially inaugurated on the 14th of October, 1966 at the Berri-de-Montigny station (now Berri-UQAM). The first 20 metro stations were opened, and over one million passengers rode the metro on its first weekend (Scott, 2016). The metro service gradually expanded as stations were completed up until April 1967, when the yellow line was completed and the orange and green lines had been expanded. This marked the completion of the initial Montreal metro line.
 
-```{r, echo=FALSE, message=FALSE}
-names(metro1967)[1] <- "Legend"
-q <- tm_shape(metro1967)+
-  tm_lines("Legend", palette = c(`Green line` = "#00A650", `Orange line` = "#F47216", `Yellow line` = "#FCD300"),
-           lwd = 3)
-tmap_leaflet(q)
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+metro_evolution_rdeck(1967)
+metro_evolution_legend(1967)
 ```
+
 <div align="center">The first complete iteration of the Montreal metro.</div>
+<br>
 
 ### Era of optimism
 #### *Late 60s-1975*
@@ -147,19 +239,13 @@ The momentum generated by the major projects of the 1960s led to Jean Drapeau’
 
 The blue line was to run from northeastern Lachine to Montréal Nord, the west branch of the orange line was to be expanded northwards, and the green line to be extended towards the southwest and east (Noakes, 2021). It was hoped that the extensions would promote development in different parts of the city, particularly in less prosperous neighbourhoods (Gilbert, 2021).
 
-```{r, echo=FALSE, message=FALSE}
-names(metro1981)[1] <- "Legend"
-r <- tm_shape(metro1981)+
-  tm_lines("Legend", palette = c(`Orange line` = "#F47216",
-                               `Green line` = "#00A650",
-                               `Yellow line` = "#FCD300",
-                               `Proposed orange line extension` = "#f5d7a4",
-                               `Proposed green line extension` = "#76c274",
-                               `Proposed blue line` = "#9cc0f0"),
-           lwd = 3)
-tmap_leaflet(r)
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+metro_evolution_rdeck(1981)
+metro_evolution_legend(1981)
 ```
+
 <div align="center">The metro expansion plans made following the 1970 re-election of Jean Drapeau.</div>
+<br>
 
 ### Olympic fallout
 #### *1976-1978*
@@ -170,16 +256,13 @@ The cost of excavation for metro expansions shot up as well. Because the rubber 
 
 The explosion of costs prompted the provincial government, headed by Robert Bourassa, to impose a moratorium on metro expansion on May 19th, 1976. This represented a fundamental shift in the way that public transit would be approached in the city going forward. That said, the green line was still expanded, with the eastern portion extended towards Honoré Beaugrand station and the western portion towards Angrignon, which is the current western terminus (Gilbert, 2021). 
 
-```{r, echo=FALSE, message=FALSE}
-names(metro1978)[1] <- "Legend"
-s <- tm_shape(metro1978)+
-  tm_lines("Legend", palette = c(`Green line` = "#00A650",
-                               `Orange line` = "#F47216",
-                               `Yellow line` = "#FCD300"),
-           lwd = 3)
-tmap_leaflet(s)
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+metro_evolution_rdeck(1978)
+metro_evolution_legend(1978)
 ```
+
 <div align="center">The 1978 iteration of the metro network.</div>
+<br>
 
 ### Moratorium lifted
 #### 1979-1988
@@ -188,24 +271,13 @@ The Lévesque administration, which came into office soon after the imposition o
 
 Several new lines, which planners had proposed in the 1970s, never saw the light of day. These included surface lines 6, 8, 10, and 11, which were to boost urban development in underserved areas without the prohibitive cost of building an underground line so far away from the city center (Giansetto, 1982). An underground line, line 7, nicknamed the white line, was also planned to run under Pie IX boulevard, a major artery. However, all of these lines were rejected due to the economic slowdown in Montreal. Many of these lines wound up being replaced by commuter trains at a later date. 
 
-```{r, echo=FALSE, message=FALSE}
-names(metro1970s)[1] <- "Legend"
-n <- tm_shape(metro1970s)+
-  tm_lines("Legend", palette = c(`Blue line` = "#1082CD", 
-                               `Orange line` = "#F47216",
-                               `Green line` = "#00A650",
-                               `Yellow line` = "#FCD300",
-                               `Proposed orange line extension` = "#f5d7a4",
-                               `Proposed blue line extension` = "#9cc0f0",
-                               `Proposed line 10` = "black",
-                               `Proposed line 11` = "#454545",
-                               `Proposed line 6` = "#696868",
-                               `Proposed line 7` = "#949292",
-                               `Proposed line 8` = "#b5b1b1"),
-           lwd = 3)
-tmap_leaflet(n)
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+metro_evolution_rdeck(1970)
+metro_evolution_legend(1970)
 ```
+
 <div align="center">Some extensive proposed underground and surface metro expansions of the early 1970s that never materialized.</div>
+<br>
 
 Changes to existing lines, however, were made. The orange line was extended to Côte-Vertu from 1980 to 1986, with the other planned stations extending up to the Bois-franc train station cut to reduce costs. Similarly, the central portion of the originally-planned blue line was built between 1986 and 1988, with Acadie opening last and remaining the newest metro station on the island of Montreal to this day. Although consideration was given to an extension of the blue line eastward towards Anjou, financial constraints likely ended up being too prohibitive.
 
@@ -227,21 +299,13 @@ Despite the amount of the time that has passed since the last metro expansion, h
 
 The exception, however, to this lack of progress is the blue line extension to Anjou. Since its initial announcement in the 1970s, money was put aside for it in 1998, 2001, 2001, 2010, 2015, 2018, 2019, and 2020 (Noakes, 2021). Only now does construction appear to have truly begun, but the extension has already been fraught with complications. While it was originally scheduled for 2026 at a cost of \$3.9 billion, it is now set to be completed in 2029 at a cost of \$6.4 billion, due to the jump in expropriation costs over the last few years from a jump in the real estate market (CBC News, 2021). Interestingly, despite past frugality with regards to the metro system, the project is still being pushed through regardless of the cost, as citizens in the east end have been waiting for “too long”, and there is a determination to finally deliver on the promise of the extension (The Canadian Press, 2022).
 
-```{r, echo=FALSE, message=FALSE}
-names(metro2000s)[1] <- "Legend"
-t <- tm_shape(metro2000s)+
-  tm_lines("Legend", palette = c(`Orange line` = "#F47216",
-                               `Blue line` = "#1082CD",
-                               `Green line` = "#00A650",
-                               `Yellow line` = "#FCD300",
-                               `Proposed orange line extension` = "#f5d7a4",
-                               `Blue line extension` = "#9cc0f0",
-                               `Proposed yellow line extension` = "#faf093",
-                               `Proposed pink line` = "#E60E70"),
-           lwd = 3)
-tmap_leaflet(t)
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+metro_evolution_rdeck(2000)
+metro_evolution_legend(2000)
 ```
+
 <div align="center">The current network along with the proposed extensions over the years, including the confirmed blue line extension to Anjou.</div>
+<br>
 
 ### A new era for transit?
 

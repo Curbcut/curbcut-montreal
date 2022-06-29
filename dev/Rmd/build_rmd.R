@@ -55,6 +55,10 @@ process_rmd("crash.Rmd", "crash")
 
 stories_files <- list.files("dev/Rmd/stories")
 library(here)
+map_base_style <- "mapbox://styles/sus-mcgill/cl0reqoz4000z15pekuh48ld6"
+map_zoom <- 10.1
+map_loc <- c(-73.58, 45.53)
+
 purrr::walk(stories_files, process_rmd, path = "stories")
 
 
