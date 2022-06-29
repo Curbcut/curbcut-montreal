@@ -98,7 +98,7 @@ update_module <- function(r, id, mod_ns = paste(id, id, sep = "-"), session,
         )
       }
     } else if (id %in% c("permits", "access", "crash", "green_space",
-                         "vulnerable_pop", "housing_characteristics")) {
+                         "vulnerable_pop", "housing_charact")) {
       if (!is.null(var_left)) {
         
         selected_var <- if (str_detect(var_left, "^\\d*$")) {

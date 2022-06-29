@@ -256,7 +256,7 @@ get_housing_characteristics <- function(tenure = "total",
   table <- 
     table[, characteristics_cols]
   
-  Encoding(table1$V1) <- "latin1"
+  Encoding(table2$V1) <- "latin1"
   
   return(list(
     CT = 

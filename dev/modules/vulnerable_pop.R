@@ -242,6 +242,6 @@ centraide <-
 
 # Clean up ----------------------------------------------------------------
 
-rm(imm_statuses, household_statuses, shelter_costs, sexes, ordered_ID,
+rm(imm_statuses, household_statuses, shelter_costs, sexes,
    var_list, breaks_q3_active, breaks_q5_active, new_rows, vulnerable_pop,
    vulnerable_pop_q3, vulnerable_pop_q5)

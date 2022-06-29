@@ -2,7 +2,7 @@
 
 # UI ----------------------------------------------------------------------
 
-housing_characteristics_UI <- function(id) {
+housing_charact_UI <- function(id) {
   id_map <- paste0(id, "-map")
   
   tagList(
@@ -21,7 +21,8 @@ housing_characteristics_UI <- function(id) {
                       label = sus_translate(r = r, "Housing characteristic"),
                       var_list = var_left_list_3_housing_characteristics)), 
       bottom = div(class = "bottom_sidebar", 
-                   tagList(legend_UI(NS(id, id))))),
+                   tagList(legend_UI(NS(id, id)),
+                           zoom_UI(NS(id, id), map_zoom_levels_centraide)))),
     
     # Map
     div(class = "mapdeck_div", rdeckOutput(NS(id, id_map), height = "100%")),
@@ -37,13 +38,21 @@ housing_characteristics_UI <- function(id) {
 
 # Server ------------------------------------------------------------------
 
-housing_characteristics_server <- function(id, r) {
+housing_charact_server <- function(id, r) {
   moduleServer(id, function(input, output, session) {
     id_map <- paste0(id, "-map")
     
+    # TKTK For now, no auto-zoom tile
+    observe({
+      updateCheckboxInput(inputId = "housing_charact-zoom_auto", 
+                          value = FALSE)
+      hide(id = "housing_charact-zoom_auto")})
+    
+    
+    
     # Initial reactives
     zoom <- reactiveVal(get_zoom(map_zoom))
-    zoom_string <- reactiveVal("CT")
+    zoom_string <- reactiveVal(get_zoom_string(map_zoom, map_zoom_levels_centraide))
     poi <- reactiveVal(NULL)
     new_poi <- reactiveVal(NULL)
 
@@ -64,7 +73,7 @@ housing_characteristics_server <- function(id, r) {
     
     # Zoom string reactive
     observe({
-      new_zoom_string <- get_zoom_string(r[[id]]$zoom(), c("CT" = 0))
+      new_zoom_string <- get_zoom_string(r[[id]]$zoom(), map_zoom_levels_centraide)
       if (new_zoom_string != zoom_string()) zoom_string(new_zoom_string)
     }) |> bindEvent(r[[id]]$zoom())
     
@@ -81,7 +90,11 @@ housing_characteristics_server <- function(id, r) {
     sidebar_server(id = id, r = r)
 
     # Choose tileset
-    tile <- reactive("CT")
+    tile <- zoom_server(
+      id = id,
+      r = r,
+      zoom_string = zoom_string,
+      zoom_levels = reactive(map_zoom_levels_centraide))
     
     # Time
     time <- reactive("2016")

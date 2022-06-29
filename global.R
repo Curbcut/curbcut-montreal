@@ -89,7 +89,7 @@ mods_rdy <- list(
   "Housing" = c(
     "Housing system" = "housing",
     "Vulnerable population" = "vulnerable_pop",
-    "Housing characteristics" = "housing_characteristics"
+    "Housing characteristics" = "housing_charact"
   #   "Gentrification" = "gentrification", 
   #   "Permits" = "permits", 
   #   "Marketed Sustainability" = "marketed_sustainability"
