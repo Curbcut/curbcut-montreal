@@ -1,5 +1,8 @@
 ### NEWS MODULE #####################################################
 
+
+# Global functions --------------------------------------------------------
+
 news <- get_news()
 
 # News UI dynamic number of divs
@@ -20,6 +23,7 @@ en_news_ui <-
 fr_news_ui <- 
   mapply(news_divs, names(news$fr), list(news$fr),
          USE.NAMES = FALSE)
+
 
 # UI ----------------------------------------------------------------------
 
@@ -56,8 +60,7 @@ news_UI <- function(id) {
     )
   )
 }
-names(list(title = "Welcome to SUS Montreal", 
-           preview = "Sus is an urban sustainability platform for the Montreal region. Itoperates across multiple spatial and temporal scales and offers ajustice- and inclusivity-focused approach to sustainability.", date = "2022-07-04", img = "news/visuals/welcome/sus_logo_256x256.png"))
+
 
 # Server ------------------------------------------------------------------
 
