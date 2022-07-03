@@ -40,11 +40,13 @@ knitr::include_graphics(here("www/news/visuals/welcome/active_living_en.png"))
 ### Second, a story about active living. 
 <a target = '_blank' href = 'https://www.activeagingcanada.ca/participants/get-active/active-living/what-is-active-living.htm'>Active living</a> refers to people's ability to integrate physical activity into everyday routines, like biking to the grocery store or walking to work.
 
-With a dataset built by McGill professor Nancy Ross and her team, Sus demonstrates which boroughs, neighbourhoods, and streets have the highest and lowest active living potential in the Montreal region. But that's not all.
+With a dataset built by McGill professor Nancy Ross and her team, Sus demonstrates which cities, boroughs and neighbourhoods have the highest and lowest active living potential in the Montreal region. But that's not all.
 
-The beauty of Sus is its ability to put datasets in conversation with each other. In practice that means that on our platform, you can analyze the relationship between neighbourhoods that have the <b>highest active living potential</b> with those <b>that have the highest number of people who drive to work</b>.
+The power of Sus is its ability to put datasets in conversation with each other. For example, you can analyze the relationship between neighbourhoods that have the <b>highest active living potential</b> with those <b>that have the highest number of people who drive to work</b>.
 
-Which neighbourhood would you predict would have the best active living potential and the most amount of people driving to work?
+Sus shows that there is a strong negative relationship between these two variables: neighbourhoods with high active living potential tend to have low amount of people driving to work. That is good news from a sustainability perspective.
+
+In fact, there is only a single neighbourhood in the region that has both high active living potential and a high proportion of people driving to work. Can you guess which it is?
 
 Click through to find out. (Hint: it has the word "mount" in it.)
 
@@ -58,13 +60,23 @@ knitr::include_graphics(here("www/news/visuals/welcome/natural_inf.png"))
 
 <hr>
 ### Third, a new feature! 
+
 Who provided our active living potential data? Where did we source the dataset that informed our driving to work variables? Great questions!
 
-In our brand-new data transparency feature, we tell you exactly where the information powering Sus's maps comes from. Public, private, census, city, province -- it's all available by clicking on top-right button.
+In our brand-new data export feature, we tell you exactly where the information powering Sus's maps comes from. Simply click the top-right button and choose "Export data".
 
-What's more? You can download the dataset for your own research purposes!
+What's more? If we have permission to share the dataset you're looking at, you can download it yourself, either as a CSV spreadsheet or as a GIS shapefile.
 
 <hr>
+
+### Fourth, new Montreal Stories!
+
+This month we have a bunch of new Montreal Stories arriving on Sus:
+
+TKTK
+
+<hr>
+
 ### Want to keep discovering?
 
 Every month, Sus will be rolling out new features and stories for you to explore. Here's how to keep the good times rolling:
