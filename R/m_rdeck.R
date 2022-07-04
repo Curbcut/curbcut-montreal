@@ -3,13 +3,15 @@
 #' @param map_id Namespace id of the map to redraw, likely to be `NS(id, "map")`
 #' @return An updated version of the rdeck map.
 
-rdeck_server <- function(id, map_id, tile, tile2, map_var, zoom, select_id,
+rdeck_server <- function(id, r, map_id, tile, tile2, map_var, 
+                         select_id = r[[id]]$select_id,
+                         zoom = r[[id]]$zoom,
                          fill = scale_fill_sus, 
                          fill_args = reactive(list(map_var())),
                          colour = scale_colour_sus, 
                          colour_args = reactive(list(NULL)),
                          lwd = scale_lwd_sus, 
-                         lwd_args = reactive(list(select_id())),
+                         lwd_args = reactive(list(r[[id]]$select_id())),
                          line_units = "pixels") {
   
   
@@ -19,9 +21,7 @@ rdeck_server <- function(id, map_id, tile, tile2, map_var, zoom, select_id,
   stopifnot(is.reactive(tile))
   stopifnot(is.reactive(tile2))
   stopifnot(is.reactive(map_var))
-  stopifnot(is.reactive(zoom))
-  stopifnot(is.reactive(select_id))
-  
+
   
   ## Module --------------------------------------------------------------------
   
@@ -77,9 +77,7 @@ rdeck_server <- function(id, map_id, tile, tile2, map_var, zoom, select_id,
           line_width_units = line_units, 
           extruded = extrude(), 
           material = FALSE,
-          get_elevation = 5)) |> 
-      bindEvent(map_var(), select_id(), fill_args(), colour_args(), lwd_args(),
-                extrude(), pick())
+          get_elevation = 5))
     
   })
 }

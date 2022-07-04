@@ -38,7 +38,7 @@ stories_server <- function(id, r) {
     ns_id_map <- paste0(ns_id, "-map")
 
     # Initial reactive
-    select_id <- reactiveVal(NA)
+    if (is.null(r[[ns_id]]$select_id)) r[[ns_id]]$select_id <- reactiveVal(NA)
 
     # Sidebar
     sidebar_server(
@@ -66,20 +66,20 @@ stories_server <- function(id, r) {
     # Click reactive
     observe({
       selection <- get_clicked_object(ns_id_map)$ID
-      if (!is.na(select_id()) && selection == select_id()) {
-        select_id(NA)
-      } else select_id(selection)
+      if (!is.na(r[[ns_id]]$select_id()) && selection == r[[ns_id]]$select_id()) {
+        r[[ns_id]]$select_id(NA)
+      } else r[[ns_id]]$select_id(selection)
     }) |> bindEvent(get_clicked_object(ns_id_map))
     
     # Render the story in question, now only in english (_en)
     output$stories <- renderUI({
 
-      if (!is.na(select_id())) {
+      if (!is.na(r[[ns_id]]$select_id())) {
 
-        rmd_name <- stories[stories$ID == select_id(),]$name
-        bandeau_name <- stories[stories$ID == select_id(),]$img
+        rmd_name <- stories[stories$ID == r[[ns_id]]$select_id(),]$name
+        bandeau_name <- stories[stories$ID == r[[ns_id]]$select_id(),]$img
 
-        story_link <- paste0("www/stories/", rmd_name, "_", r$lang,
+        story_link <- paste0("www/stories/", rmd_name, "_", r$lang(),
                              ".html")
 
         # Construct story link, serve en if no translation available.
@@ -102,51 +102,22 @@ stories_server <- function(id, r) {
     })
 
     # Hide map when "Go back to map" button is clicked
-    observe(select_id(NA)) |> bindEvent(input$back)
+    observe(r[[ns_id]]$select_id(NA)) |> bindEvent(input$back)
 
     observe({
-      toggle("hr", condition = !is.na(select_id()))
-      toggle("back", condition = !is.na(select_id()))
-      toggle("stories", condition = !is.na(select_id()))
-    }) |> bindEvent(select_id())
-
-    # If there's an action on the map, the story goes away
-    observe({
-      hide(id = "stories")
-      select_id(NA)
-    }) |> bindEvent(get_view_state(ns_id_map))
+      toggle("hr", condition = !is.na(r[[ns_id]]$select_id()))
+      toggle("back", condition = !is.na(r[[ns_id]]$select_id()))
+      toggle("stories", condition = !is.na(r[[ns_id]]$select_id()))
+    }) |> bindEvent(r[[ns_id]]$select_id())
 
     # Bookmarking
     bookmark_server(
       id = ns_id,
       r = r,
+      s_id = r[[ns_id]]$select_id,
       map_viewstate = reactive(
-        input[[paste0(ns_id, "-map_viewstate")]]$viewState),
-      select_id = select_id,
-      map_id = "map",
+        input[[paste0(ns_id, "-map_viewstate")]]$viewState)
     )
-
-    # Update select_id() on bookmark
-    observeEvent(r$sus_bookmark$active, {
-      if (isTRUE(r$sus_bookmark$active)) {
-        if (!is.null(r$sus_bookmark$df)) df <- reactiveVal(r$sus_bookmark$df)
-        delay(1000, {
-          if (!is.null(r$sus_bookmark$select_id))
-            if (r$sus_bookmark$select_id != "NA")
-              select_id(r$sus_bookmark$select_id)
-        })
-      }
-      # So that bookmarking gets triggered only ONCE
-      delay(1500, {r$sus_bookmark$active <- FALSE})
-    }, priority = -2)
-
-    # Update select_id() on module link
-    observeEvent(r$sus_link$activity, {
-      if (!is.null(r$sus_bookmark$df)) df <- reactiveVal(r$sus_bookmark$df)
-      delay(1000, {
-        if (!is.null(r$sus_link$select_id)) select_id(r$sus_link$select_id)
-      })
-    }, priority = -2)
 
   })
 }

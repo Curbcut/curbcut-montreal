@@ -1,6 +1,6 @@
 #### INFO TABLE ################################################################
 
-info_table <- function(r = r, data, var_type, var_left, var_right, df, select_id,
+info_table <- function(r, data, var_type, var_left, var_right, df, select_id,
                        build_str_as_DA = TRUE) {
   
   stopifnot(!is.reactive(data))
@@ -33,7 +33,7 @@ info_table <- function(r = r, data, var_type, var_left, var_right, df, select_id
   
   if (is.null(z)) return(z)
   
-      
+  
   ## Handle NAs ----------------------------------------------------------------
       
   # Special case for Kahnawake

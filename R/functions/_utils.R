@@ -49,6 +49,9 @@ convert_unit <- function(x, var_name = NULL, compact = FALSE) {
 
 return_closest_year <- function(var, df = "borough", build_str_as_DA = TRUE) {
   
+  # Not to do for grid - always 2016
+  if (df == "grid") return(var)
+  
   dat <- if (build_str_as_DA && df == "building") DA else get(df)
   
   if (!var %in% names(dat)) {
@@ -116,7 +119,7 @@ remove_outliers_df <- function(x, var_1, var_2 = NULL) {
 
 ordinal_form <- function(r, x) {
   # English ordinal form
-  if (is.null(getDefaultReactiveDomain()) || r$lang == "en") {
+  if (is.null(getDefaultReactiveDomain()) || r$lang() == "en") {
     if (x > 20) {
       if (x %% 100 %in% c(11 , 12, 13)) {
         form <- "th "

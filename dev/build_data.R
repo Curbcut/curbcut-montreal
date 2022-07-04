@@ -365,6 +365,12 @@ invisible(file.copy(list.files("data2", full.names = TRUE),
                     "~/Dropbox/sus_sync/data2"))
 
 
+# Add hash ----------------------------------------------------------------
+
+hash <- sapply(list.files("data", full.names = TRUE), digest::digest, 
+               file = TRUE)
+qsave(hash, file = "hash.qs")
+
 
 # Cleanup -----------------------------------------------------------------
 
@@ -375,6 +381,9 @@ rm(add_q3, add_q5, add_variables, data_testing, find_breaks_q5, get_breaks_q3,
 
 # Deploy app --------------------------------------------------------------
 
+hash <- qread(hash)
+stopifnot(all(sapply(list.files("data", full.names = TRUE), digest::digest, 
+                     file = TRUE) == hash))
 source("dev/other/deploy_sus.R")
 deploy_sus("sus-dev") # Development
 deploy_sus() # Production

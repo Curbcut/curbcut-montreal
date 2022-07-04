@@ -1,6 +1,6 @@
 #### GET DYK TABLE #############################################################
 
-get_dyk_table <- function(id, r, var_left, var_right, poi = NULL) {
+get_dyk_table <- function(id, r, var_left, var_right, df, poi = NULL) {
   
   # Prepare variables ----------------------------------------------------------
   
@@ -94,7 +94,7 @@ get_dyk_table <- function(id, r, var_left, var_right, poi = NULL) {
              var_left = out$variable[[x]][1],
              var_right = if (length(out$variable[[x]]) == 1) " " else 
                out$variable[[x]][2],
-             if (!is.na(out$df[x])) df = out$df[x])
+             df = if (!is.na(out$df[x])) out$df[x] else df)
       }
     })
     

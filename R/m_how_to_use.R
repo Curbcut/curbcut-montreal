@@ -17,7 +17,7 @@ how_to_use_server <- function(id, r) {
     
     output$rmd_output <- renderUI(
       HTML(paste0(
-      includeHTML(paste0("www/standalone/how_to_use", "_", r$lang, 
+      includeHTML(paste0("www/standalone/how_to_use", "_", r$lang(), 
                               ".html"))))
     )
     

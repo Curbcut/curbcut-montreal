@@ -62,28 +62,23 @@ get_pe_block <- function(r = r, df, theme, select_id, island_or_region) {
   
   
   ## Get block plots -----------------------------------------------------------
-  
+
   # Plot
-  plots <- lapply(data_var, \(data) {
+  plots <- lapply(names(data_var), \(var) {
     
-    hex_to_plot <- "#A9A9A9"
+    quantile <- 
+      round(data_sel[[var]][, paste0(island_or_region, "_percentile")]*100/5)*5
     
-    data_sel <- data$var[data$ID == select_id]
+    filename <- paste0(paste0("www/place_explorer/", df, "_"),
+                       paste(island_or_region, var, quantile, 
+                             sep = "_"),
+                       ".png")
     
-    if (!is.na(data_sel)) {
-      
-      dat <- data[!is.na(data$var),]
-      outliers <- find_outliers(dat$var)
-      if (length(outliers) > 0 && !data_sel %in% dat$var[outliers]) {
-        dat <- dat[-outliers, ]
-      }
-      
-      ggplot(dat) +
-        geom_density(aes(x = var), size = 1, color = hex_to_plot) +
-        geom_vline(aes(xintercept = data_sel), color = "#000000", size = 1,
-                   alpha = 1) +
-        theme_void()
-    } else ggplot() + theme_void()
+    # Return a list containing the filename and alt text
+    list(src = filename,
+         alt = paste("Plot"),
+         width = "100%",
+         height = "100%")
     
   })
   

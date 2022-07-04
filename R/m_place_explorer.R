@@ -352,7 +352,7 @@ place_explorer_server <- function(id, r) {
     
     title_card_to_grid <- reactive(get_title_card(r = r,
       df(), select_id(), island_or_region())) |> 
-      bindCache(df(), select_id(), island_or_region(), r$lang)
+      bindCache(df(), select_id(), island_or_region(), r$lang())
 
     # Title card contents
     output$title_card <- renderUI({
@@ -447,7 +447,7 @@ place_explorer_server <- function(id, r) {
                 renderText(text$value[z])
 
               output[[paste0("ind_", x[1], z, "_plot")]] <-
-                renderPlot(plots[[z]])
+                renderImage(plots[[z]], deleteFile = FALSE)
 
             })
             
@@ -489,10 +489,10 @@ place_explorer_server <- function(id, r) {
                   
                   column(width = 3,
                          if (z == 1) h5(sus_translate(r = r, "Plot")),
-                         plotOutput(eval(parse(
+                         imageOutput(eval(parse(
                            text = paste0("NS(id, 'ind_", x[1], z,
                                          "_plot')"))),
-                           height = 25))
+                           height = "30px"))
                 ),
                 br()
                 )
@@ -502,7 +502,7 @@ place_explorer_server <- function(id, r) {
           } else tagList(fluidRow(h3(sus_translate(r = r, x[1]))),
                          fluidRow("No data."))
         }) |> bindCache(df(), select_id(), island_or_region(), x,
-                        input$themes_checkbox, r$lang)
+                        input$themes_checkbox, r$lang())
       })
 
       standout <- sapply(themes, \(x) x[2])

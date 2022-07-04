@@ -449,3 +449,158 @@ window.addEventListener('load', (evt) => {
     }
   }
   });
+
+  const getVisibleText = ( node )=> {
+    if( node.nodeType === Node.TEXT_NODE ) return node.textContent;
+    var style = getComputedStyle( node );
+    if( style && style.display === 'none' ) return '';
+    var text = '';
+    for( var i=0; i<node.childNodes.length; i++ ) 
+        text += getVisibleText( node.childNodes[i] );
+    return text;
+  };
+
+  document.fonts.ready.then(() => {
+    const carousels = document.querySelectorAll('.sus-carousel');
+    for(var i = 0; i < carousels.length; i++) {
+      const carousel = carousels[i];
+      const slides = carousel.querySelectorAll('.sus-carousel-slide');
+      const navLeft = carousel.querySelector('.sus-carousel-nav-bttn-left');
+      const navRight = carousel.querySelector('.sus-carousel-nav-bttn-right');
+      const preNext = carousel.querySelector('.sus-carousel-preview-next');
+      const prePrev = carousel.querySelector('.sus-carousel-preview-prev');
+      const preNextContent = preNext.querySelector('.sus-carousel-preview-content');
+      const prePrevContent = prePrev.querySelector('.sus-carousel-preview-content');
+      const bulletsContainer = carousel.querySelector('.sus-carousel-bullets');
+      const bullets = [];
+      const previews = [];
+      var activeIndex = -1;
+      const showSlide = (index) => {
+        if (index < slides.length && index > -1) {
+          for(var j = 0; j < slides.length; j++) {
+            const slide = slides[j];
+            const bullet = bullets[j];
+            slide.style.display = 'none';
+            bullet.classList.remove('sus-carousel-bullet-active');
+          }
+          const slide = slides[index];
+          const bullet = bullets[index];
+          slide.style.display = 'flex';
+          bullet.classList.add('sus-carousel-bullet-active');
+          const nextIndex = index == slides.length - 1 ? 0 : index + 1;
+          const prevIndex = index == 0 ? slides.length - 1 : index - 1;
+          prePrevContent.innerText = previews[prevIndex];
+          preNextContent.innerText = previews[nextIndex];
+          activeIndex = index;
+        }
+      };
+      const maxPreview = 18;
+      var minHeight = 0;
+      for(var j = 0; j < slides.length; j++) {
+        const slide = slides[j];
+        slide.style.display = 'flex';
+        const height = slide.offsetHeight;
+        slide.style.display = 'none';
+        minHeight = Math.max(height, minHeight);
+        const index = j;
+        const bullet = document.createElement('div');
+        bullet.classList.add('sus-carousel-bullet');
+        bullet.addEventListener('click', () => {
+          showSlide(index);
+        });
+        bulletsContainer.appendChild(bullet);
+        bullets.push(bullet);
+        var preview = slide.getAttribute("data-preview");
+        if (preview == null || preview == undefined || preview.length == 0) {
+          console.log(`slide ${index} missing preview`);
+          preview = getVisibleText(slide.querySelector('h2')).trim().replace('\n', ' ').replace('\r', ' ').replace('\t', ' ');
+          console.log(`slide ${index} h2: \"${preview}\"`);
+          if (preview.length == null || preview == undefined || preview.length == 0) {
+            console.log(`slide ${index} missing h2 fallback, preview = undefined`);
+            preview = undefined;
+          } else if (preview.length > maxPreview) {
+            console.log(`slide ${index} preview too long`);
+            const words = preview.split(' ');
+            console.log(`slide ${index} words: ${words}`);
+            var abbr = []
+            while (words.length > 0) {
+              abbr.push(words.shift());
+              if (abbr.join(' ').length > maxPreview) {
+                console.log(`slide ${index} "${abbr.join(' ')}" too long, popping last`);
+                abbr.pop();
+                break;
+              }
+            }
+            console.log(`slide ${index} abbr: ${words}`);
+            abbr = abbr.join(' ');
+            if (abbr.length == 0) {
+              preview = abbr.substring(0, maxPreview);
+            }
+            preview = `${abbr.substring(0, maxPreview)}...`;
+            console.log(`slide ${index} preview from h2: \"${preview}\"`);
+          }
+        } else {
+          console.log(`slide ${index} preview from data: \"${preview}\"`);
+        }
+        previews.push(preview);
+      }
+      for(var j = 0; j < slides.length; j++) {
+        const slide = slides[j];
+        slide.style.minHeight = `${minHeight}px`;
+        console.log(`setting slide ${j} style.minHeight to ${minHeight}`);
+        console.log(`${slide.getAttribute('style')}`);
+      }
+      if (slides.length > 0) {
+        showSlide(0);
+      }
+      const cycleSlide = (delta) => {
+        var index = (activeIndex + delta);
+        if (index < 0) {
+          index = slides.length - 1;
+        } else if (index >= slides.length) {
+          index = 0;
+        }
+        showSlide(index);
+      };
+      navLeft.addEventListener('click', () => cycleSlide(-1));
+      navRight.addEventListener('click', () => cycleSlide(1));
+      prePrev.addEventListener('click', () => cycleSlide(1));
+      preNext.addEventListener('click', () => cycleSlide(-1));
+      preNext.classList.add("whats-good");
+      if (slides.length > 1) {
+        navLeft.style.opacity = '1';
+        navRight.style.opacity = '1';
+        preNext.style.opacity = '1';
+        prePrev.style.opacity = '1';
+        bulletsContainer.style.opacity = '1';
+        console.log('activating nav!');
+      } else {
+        console.log('did not activate nav');
+      }
+      if (slides.length > 0) {
+        carousel.style.opacity = '1';
+      }
+      window.addEventListener("resize", () => {
+        var minHeight = 0;
+        for(var j = 0; j < slides.length; j++) {
+          const slide = slides[j];
+          slide.style.removeProperty('min-height');
+        }
+        for(var j = 0; j < slides.length; j++) {
+          const slide = slides[j];
+          slide.style.display = 'flex';
+          const height = slide.offsetHeight;
+          if(j != activeIndex) {
+            slide.style.display = 'none';
+          }
+          minHeight = Math.max(height, minHeight);
+        }
+        for(var j = 0; j < slides.length; j++) {
+          const slide = slides[j];
+          slide.style.minHeight = `${minHeight}px`;
+          console.log(`setting slide ${j} style.minHeight to ${minHeight}`);
+          console.log(`${slide.getAttribute('style')}`);
+        }
+      });
+    }
+  });

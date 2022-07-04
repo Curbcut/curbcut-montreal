@@ -2,6 +2,12 @@
 
 ui_and_misc_translated <- 
   tibble(en = character(), fr = character()) |>
+  add_row(en = paste0("Previous:"), 
+          fr = paste0("Précédent :")) |> 
+  add_row(en = paste0("Next:"), 
+          fr = paste0("Suivant :")) |> 
+  add_row(en = paste0("Welcome"), 
+          fr = paste0("Bienvenue")) |> 
   add_row(en = paste0("----"), 
           fr = paste0("----")) |> 
   add_row(en = paste0("Learn more"), 

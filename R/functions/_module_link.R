@@ -6,12 +6,10 @@ module_link <- function(r, module, zoom = NULL, location = map_loc,
                         zoom_auto = NULL, more_args = NULL, 
                         update_view = TRUE) {
   
-  r$sus_link$mod_ns <- paste(module, module, sep = "-")
+  r$sus_link$id <- module
   
   # Open the link to the linked module
   r$link <- module
-  # Tweak map namespace
-  r$sus_link$map_id <- paste(module, module, "map", sep = "-")
   
   # Update view
   r$sus_link$zoom <- NULL
@@ -44,7 +42,9 @@ module_link <- function(r, module, zoom = NULL, location = map_loc,
   r$sus_link$zoom_auto <- zoom_auto
   r$sus_link$more_args <- more_args
   
-  r$sus_link$select_id <- select_id
+  # Update destination select_id() and df()
+  if (!is.null(df)) r[[module]]$df <- reactiveVal(df)
+  if (!is.null(select_id)) r[[module]]$select_id <- reactiveVal(select_id)
   
 }
 
