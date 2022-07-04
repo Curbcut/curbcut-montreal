@@ -111,7 +111,7 @@ home_UI <- function(id) {
 
 # Server ------------------------------------------------------------------
 
-home_server <- function(id, session, r) {
+home_server <- function(id, r) {
   moduleServer(id, function(input, output, session) {
     
     bookmark_server(id = "home", r = r)

@@ -70,7 +70,92 @@ source("dev/modules/census/census_education.R")
 
 census_vec <- 
   census_vec |> 
-  mutate(source = "census")
+  mutate(source = "Canadian census")
+
+
+# Kepp track of vector and their parents for data explanation -------------
+
+census_variables <- 
+  map(years, function(year) {
+    
+    census_dataset <- paste0("CA", sub("20", "", year))
+    raw_vecs <- cancensus::list_census_vectors(census_dataset)
+    
+    # Already has a parent vector
+    other_parent_vec <- 
+      parent_vectors[str_which(parent_vectors, census_dataset)]
+    names(other_parent_vec) <- str_remove(names(other_parent_vec), "\\d$")
+    
+    out <- 
+      census_vec |> 
+      select(var_code, all_of(paste0("vec_", year))) |> 
+      rowwise() |> 
+      mutate(vec_label = list(
+        map_chr(.data[[paste0("vec_", year)]], function(row) {
+          map_chr(row, function(vec) {
+            if (is.na(vec)) return(NA)
+            raw_vecs[raw_vecs$vector == vec, ]$label[1]
+          })
+        }) |> unique())) |> 
+      mutate(parent_vec = 
+               if_else(var_code %in% names(other_parent_vec), 
+                       list(unname(other_parent_vec)[
+                         names(other_parent_vec) == var_code]),
+                       list(
+                         map_chr(.data[[paste0("vec_", year)]], function(row) {
+                           map_chr(row, function(vec) {
+                             if (is.na(vec)) return(NA)
+                             raw_vecs[raw_vecs$vector == vec, ]$parent_vector
+                           })
+                         }) |> unique())),
+             aggregation = 
+               map_chr(.data[[paste0("vec_", year)]], function(row) {
+                 map_chr(row, function(vec) {
+                   if (is.na(vec)) return(NA)
+                   raw_vecs[raw_vecs$vector == vec, ]$aggregation
+                 })
+               }) |> unique()) |> 
+      mutate(parent_vec = if_else(length(parent_vec) == 1 &&
+                                    is.na(parent_vec) &&
+                                    !is.na(aggregation), 
+                                  list(str_extract(aggregation, "v_CA.*$")),
+                                  list(parent_vec))) |>
+      mutate(parent_vec_label = list(
+        map_chr(parent_vec, function(row) {
+          map_chr(row, function(vec) {
+            if (is.na(vec)) return(NA)
+            raw_vecs[raw_vecs$vector == vec, ]$label[1]
+          })
+        }) |> unique())) |> 
+      ungroup()
+    
+    names(out)[3] <- paste0("vec_label_", year)
+    names(out)[4] <- paste0("parent_vec_", year)
+    names(out)[5] <- paste0("aggregation_", year)
+    names(out)[6] <- paste0("parent_vec_label_", year)
+    
+    out
+    
+  }) |> reduce(left_join, by = "var_code")
+
+# Arrange more easily
+census_variables <- 
+  map_dfr(years, function(year) {
+    map_dfr(census_variables$var_code, function(var) {
+      
+      row <- 
+        census_variables |> 
+        select(var_code, ends_with(as.character(year))) |> 
+        filter(var_code == var)
+      
+      tibble(var_code = paste0(var, "_", year),
+             vec = row[[paste0("vec_", year)]],
+             vec_label = row[[paste0("vec_label_", year)]],
+             parent_vec = row[[paste0("parent_vec_", year)]],
+             aggregation = row[[paste0("aggregation_", year)]],
+             parent_vec_label = row[[paste0("parent_vec_label_", year)]])
+    })
+  })
 
 
 # Gather data -------------------------------------------------------------
@@ -156,7 +241,27 @@ variables <- bind_rows(variables, data_to_add[[2]]) |>
                            str_starts(var_code, "family") ~ "Household",
                            str_starts(var_code, "lang") ~ "Language",
                            str_starts(var_code, "age") ~ "Age",
-                           str_starts(var_code, "edu") ~ "Education"))
+                           str_starts(var_code, "edu") ~ "Education")) |> 
+  mutate(interpolated = list(c(
+    grid = "dissemination area",
+    DA = FALSE,
+    CT = FALSE,
+    borough = "dissemination area"
+  )))
+
+
+# Add to modules table ----------------------------------------------------
+
+# Only housing is its own module from the census
+modules <- 
+  modules |> 
+  add_modules(id = "housing",
+              metadata = TRUE,
+              dataset_info = 
+                paste0("<p>This module presents <a href = 'https://www.statcan",
+                       ".gc.ca/en/census/census-engagement/about'>housing data",
+                       " from the 1996 to ", years[length(years)], 
+                       " Canadian Censuses</a></p>"))
 
 
 # Clean up ----------------------------------------------------------------

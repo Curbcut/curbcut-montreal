@@ -312,7 +312,7 @@ variables <-
     scales = c("borough", "building", "CT", "DA", "street"),#, "grid", "street"),
     breaks_q3 = breaks_q3_active$crash_cyc_count,
     breaks_q5 = breaks_q5_active$crash_cyc_count,
-    source = "spvm_saaq") |>
+    source = "City of Montreal's open data website") |>
   add_variables(
     var_code = "crash_other_count",
     var_title = "Collisions (other)",
@@ -325,7 +325,7 @@ variables <-
     scales = c("borough", "building", "CT", "DA", "street"),#, "grid", "street"),
     breaks_q3 = breaks_q3_active$crash_other_count,
     breaks_q5 = breaks_q5_active$crash_other_count,
-    source = "spvm_saaq") |>
+    source = "City of Montreal's open data website") |>
   add_variables(
     var_code = "crash_ped_count",
     var_title = "Collisions (pedestrians)",
@@ -338,7 +338,7 @@ variables <-
     scales = c("borough", "building", "CT", "DA", "street"),#, "grid", "street"),
     breaks_q3 = breaks_q3_active$crash_ped_count,
     breaks_q5 = breaks_q5_active$crash_ped_count,
-    source = "spvm_saaq") |>
+    source = "City of Montreal's open data website") |>
   add_variables(
     var_code = "crash_total_count",
     var_title = "Collisions",
@@ -351,7 +351,7 @@ variables <-
     scales = c("borough", "building", "CT", "DA", "street"),#, "grid", "street"),
     breaks_q3 = breaks_q3_active$crash_total_count,
     breaks_q5 = breaks_q5_active$crash_total_count,
-    source = "spvm_saaq") |>
+    source = "City of Montreal's open data website") |>
   add_variables(
     var_code = "crash_cyc_per1k",
     var_title = "Collisions per 1,000 (cyclists)",
@@ -364,7 +364,7 @@ variables <-
     scales = c("borough", "building", "CT", "DA", "street"),#, "grid", "street"),
     breaks_q3 = breaks_q3_active$crash_cyc_per1k,
     breaks_q5 = breaks_q5_active$crash_cyc_per1k,
-    source = "spvm_saaq") |>
+    source = "City of Montreal's open data website") |>
   add_variables(
     var_code = "crash_other_per1k",
     var_title = "Collisions per 1,000 (other)",
@@ -377,7 +377,7 @@ variables <-
     scales = c("borough", "building", "CT", "DA", "street"),#, "grid", "street"),
     breaks_q3 = breaks_q3_active$crash_other_per1k,
     breaks_q5 = breaks_q5_active$crash_other_per1k,
-    source = "spvm_saaq") |>
+    source = "City of Montreal's open data website") |>
   add_variables(
     var_code = "crash_ped_per1k",
     var_title = "Collisions per 1,000 (pedestrians)",
@@ -390,7 +390,7 @@ variables <-
     scales = c("borough", "building", "CT", "DA", "street"),#, "grid", "street"),
     breaks_q3 = breaks_q3_active$crash_ped_per1k,
     breaks_q5 = breaks_q5_active$crash_ped_per1k,
-    source = "spvm_saaq") |>
+    source = "City of Montreal's open data website") |>
   add_variables(
     var_code = "crash_total_per1k",
     var_title = "Collisions per 1,000",
@@ -403,7 +403,7 @@ variables <-
     scales = c("borough", "building", "CT", "DA", "street"),#, "grid", "street"),
     breaks_q3 = breaks_q3_active$crash_total_per1k,
     breaks_q5 = breaks_q5_active$crash_total_per1k,
-    source = "spvm_saaq") |>
+    source = "City of Montreal's open data website") |>
   add_variables(
     var_code = "crash_cyc_sqkm",
     var_title = "Collisions per sq km (cyclists)",
@@ -416,7 +416,7 @@ variables <-
     scales = c("borough", "building", "CT", "DA", "street"),#, "grid", "street"),
     breaks_q3 = breaks_q3_active$crash_cyc_sqkm,
     breaks_q5 = breaks_q5_active$crash_cyc_sqkm,
-    source = "spvm_saaq") |>
+    source = "City of Montreal's open data website") |>
   add_variables(
     var_code = "crash_other_sqkm",
     var_title = "Collisions per sq km (other)",
@@ -429,7 +429,7 @@ variables <-
     scales = c("borough", "building", "CT", "DA", "street"),#, "grid", "street"),
     breaks_q3 = breaks_q3_active$crash_other_sqkm,
     breaks_q5 = breaks_q5_active$crash_other_sqkm,
-    source = "spvm_saaq") |>
+    source = "City of Montreal's open data website") |>
   add_variables(
     var_code = "crash_ped_sqkm",
     var_title = "Collisions per sq km (pedestrians)",
@@ -442,7 +442,7 @@ variables <-
     scales = c("borough", "building", "CT", "DA", "street"),#, "grid", "street"),
     breaks_q3 = breaks_q3_active$crash_ped_sqkm,
     breaks_q5 = breaks_q5_active$crash_ped_sqkm,
-    source = "spvm_saaq") |>
+    source = "City of Montreal's open data website") |>
   add_variables(
     var_code = "crash_total_sqkm",
     var_title = "Collisions per sq km",
@@ -455,7 +455,15 @@ variables <-
     scales = c("borough", "building", "CT", "DA", "street"),#, "grid", "street"),
     breaks_q3 = breaks_q3_active$crash_total_sqkm,
     breaks_q5 = breaks_q5_active$crash_total_sqkm,
-    source = "spvm_saaq")
+    source = "City of Montreal's open data website")
+
+
+# Add to modules table ----------------------------------------------------
+
+modules <- 
+  modules |> 
+  add_modules(id = "crash",
+              metadata = TRUE)
 
 
 # Clean-up ----------------------------------------------------------------

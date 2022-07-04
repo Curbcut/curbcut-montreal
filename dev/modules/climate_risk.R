@@ -247,10 +247,14 @@ variables <-
     theme = "Climate risk",
     private = FALSE,
     dates = NA,
-    scales = c("borough", "building", "CT", "DA", "grid", "street"),
+    scales = c("borough", "CT", "DA", "grid"),
     breaks_q3 = select(breaks_q3_active, scale:rank, var = climate_drought_ind),
     breaks_q5 = climate_risk_q5$climate_drought_ind,
-    source = "VdM") |> 
+    source = "City of Montreal's open data website",
+    interpolated = list(c(grid = FALSE,
+                          DA = "250-m grid cells",
+                          CT = "250-m grid cells",
+                          borough = "250-m grid cells"))) |> 
   add_variables(
     var_code = "climate_flood_ind",
     var_title = "Flood vulnerability",
@@ -260,10 +264,14 @@ variables <-
     theme = "Climate risk",
     private = FALSE,
     dates = NA,
-    scales = c("borough", "building", "CT", "DA", "grid", "street"),
+    scales = c("borough", "CT", "DA", "grid"),
     breaks_q3 = select(breaks_q3_active, scale:rank, var = climate_flood_ind),
     breaks_q5 = climate_risk_q5$climate_flood_ind,
-    source = "VdM") |> 
+    source = "City of Montreal's open data website",
+    interpolated = list(c(grid = FALSE,
+                          DA = "250-m grid cells",
+                          CT = "250-m grid cells",
+                          borough = "250-m grid cells"))) |> 
   add_variables(
     var_code = "climate_heavy_rain_ind",
     var_title = "Heavy rain vulnerability",
@@ -273,11 +281,15 @@ variables <-
     theme = "Climate risk",
     private = FALSE,
     dates = NA,
-    scales = c("borough", "building", "CT", "DA", "grid", "street"),
+    scales = c("borough", "CT", "DA", "grid"),
     breaks_q3 = select(breaks_q3_active, scale:rank, 
                        var = climate_heavy_rain_ind),
     breaks_q5 = climate_risk_q5$climate_heavy_rain_ind,
-    source = "VdM") |> 
+    source = "City of Montreal's open data website",
+    interpolated = list(c(grid = FALSE,
+                          DA = "250-m grid cells",
+                          CT = "250-m grid cells",
+                          borough = "250-m grid cells"))) |> 
   add_variables(
     var_code = "climate_destructive_storms_ind",
     var_title = "Destructive storm vulnerability",
@@ -288,11 +300,15 @@ variables <-
     theme = "Climate risk",
     private = FALSE,
     dates = NA,
-    scales = c("borough", "building", "CT", "DA", "grid", "street"),
+    scales = c("borough", "CT", "DA", "grid"),
     breaks_q3 = select(breaks_q3_active, scale:rank, 
                        var = climate_destructive_storms_ind),
     breaks_q5 = climate_risk_q5$climate_destructive_storms_ind,
-    source = "VdM") |> 
+    source = "City of Montreal's open data website",
+    interpolated = list(c(grid = FALSE,
+                          DA = "250-m grid cells",
+                          CT = "250-m grid cells",
+                          borough = "250-m grid cells"))) |> 
   add_variables(
     var_code = "climate_heat_wave_ind",
     var_title = "Heat wave vulnerability",
@@ -302,11 +318,32 @@ variables <-
     theme = "Climate risk",
     private = FALSE,
     dates = NA,
-    scales = c("borough", "building", "CT", "DA", "grid", "street"),
+    scales = c("borough", "CT", "DA", "grid"),
     breaks_q3 = select(breaks_q3_active, scale:rank, 
                        var = climate_heat_wave_ind),
     breaks_q5 = climate_risk_q5$climate_heat_wave_ind,
-    source = "VdM")
+    source = "City of Montreal's open data website",
+    interpolated = list(c(grid = FALSE,
+                          DA = "250-m grid cells",
+                          CT = "250-m grid cells",
+                          borough = "250-m grid cells")))
+
+
+# Add to modules table ----------------------------------------------------
+
+modules <- 
+  modules |> 
+  add_modules(
+    id = "climate_risk",
+    metadata = TRUE,
+    dataset_info = 
+      paste0("<p><a href = 'https://donnees.montreal.ca/ville-de-montreal/vuln",
+             "erabilite-changements-climatiques'>",
+             "The data in this module are cartographic representations of the ",
+             "vulnerability analysis</a> developed as part of the Climate change ",
+             "adaptation plan for the agglomeration of Montréal 2015-2020 for ",
+             "the following climate hazards: heavy rainfall, heat waves, ",
+             "destructive storms, droughts and floods.</p>"))
 
 
 # Clean up ----------------------------------------------------------------
