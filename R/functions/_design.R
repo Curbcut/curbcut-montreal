@@ -37,7 +37,7 @@ susNewsExploreArticle <- function(id, type, author, date, title, img, preview) {
         )
       ),
       column(3,
-          tags$img(src=img_src, align='right')
+          tags$img(src=img, align='right')
       )
     )
   ))
