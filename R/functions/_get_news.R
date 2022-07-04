@@ -3,7 +3,7 @@
 # Retrieve news info
 get_news_info <- function(link) {
   
-  x <- paste0(readLines(link), collapse = "")
+  x <- paste0(readLines(link), collapse = " ")
   
   title <- 
     str_extract(x, "(?<=<h1).*?(?=</h1>)") |> 
