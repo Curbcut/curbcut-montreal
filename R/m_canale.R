@@ -164,7 +164,7 @@ canale_server <- function(id, r) {
                                       data = data(), 
                                       var_left = var_left(), 
                                       var_right = var_right(), 
-                                      df = df()))
+                                      df = r[[id]]$df()))
     })
 
   })
