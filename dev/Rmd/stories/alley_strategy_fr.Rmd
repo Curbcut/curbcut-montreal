@@ -1,0 +1,136 @@
+---
+title: "Montreal alleys as a climate emergency adaptation strategy"
+output: html_document
+author: "Daniela Rodriguez"
+runtime: shiny_prerendered
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Contextualisation des ruelles vertes
+
+<p>Les ruelles font partie de la morphologie urbaine de Montréal depuis 1800. Elles ont été conçues comme des rues étroites pour accéder à certains logements et cours. À partir de 1890, les ruelles se répandent dans la ville dans des arrondissements comme Le Plateau Mont-Royal, Rosemont-La Petite-Patrie, Villeray, Hochelaga-Maisonneuve et Notre-Dame-de-Grâce (Centre d’histoire de Montréal).</p>
+<p>Vers 1950, les nouveaux quartiers n’incluent plus de ruelles. En outre, l’utilisation des ruelles a changé à mesure qu’elles devenaient des rues de service sombres, principalement inutilisées, sales et, dans certains secteurs, dangereuses en raison du manque de lumière et d’activité.</p>
+<p>Cependant, en 1980, les ruelles ont connu un processus de revitalisation grâce à deux programmes complémentaires: «Opération Tournesol, » un programme de subvention pour la démolition des hangars dans les arrière-cours, et « Place au Soleil » qui a transformé 58 ruelles en petits parcs.<p/>
+<p>La principale caractéristique du programme Place au Soleil était le réaménagement des ruelles en créant des parcs linéaires avec des arbres et arbustes accessibles aux voitures en cas de besoin. Le principe du parc linéaire était de transformer les ruelles en espaces piétonniers. Par conséquent, la vocation piétonnière de ces espaces publics a été clairement définie, éliminant la circulation automobile dans les ruelles. De plus, ce programme a redessiné les ruelles pour en faire un nouvel espace vert afin de combler le manque d’espaces verts  dans certains quartiers densément peuplés de Montréal. Par conséquent, «Opération Tournesol» et «Place au Soleil» ont suscité l’intérêt du public (Taquin et Waltz, 1982).<p/>
+<p>Le réaménagement des ruelles a créé un changement de vision des ruelles comme des endroits dangereux et sales. Toutefois, malgré les efforts de revitalisation des ruelles, le programme a été abandonné en 1988 en raison d’un manque de fonds.</p> 
+
+<p>En 1995, une nouvelle proposition d’amélioration des ruelles a vu le jour avec la création de la première ruelle verte du Plateau-Mont-Royal, située à Napoléon, Roy, Parc La Fontaine et Mentana.</p>
+
+```{r, echo=FALSE, fig.align = 'center', fig.cap="Première ruelle verte du programme Ruelle verte. Plateau-Mont-Royal. Juin 2022", warning=FALSE}
+
+knitr::include_graphics(here("www/stories/visuals/alley_strategy/figure0.jpeg"))
+
+```
+
+<p>Le Programme des ruelles vertes est apparu grâce à la motivation des citoyens pour le réaménagement des ruelles en tant qu’espaces publics verts (Bur et al., 2007). L’engouement pour les ruelles vertes a été encouragé par la création des Éco-quartiers, également en 1995, dont la mission est d’offrir une éducation sur les questions environnementales et de soutenir les citoyens dans leurs initiatives d’écologisation (Ville de Montréal, 2020).</p>
+<p>Le Programme des ruelles vertes est une approche participative qui favorise la participation du public et la gouvernance citoyenne. Les arrondissements et les Éco-quartiers gèrent le programme, qui a été conçu pour appuyer l’initiative citoyenne visant à améliorer les ruelles et à ajouter de la verdure. Par conséquent, le programme vise à offrir des avantages environnementaux et de bien-être en encourageant la réduction des îlots de chaleur et de la pollution, en augmentant la biodiversité et en améliorant la gestion de l’eau.</p>
+<p>Aujourd’hui, 13 des 19 arrondissements de la ville ont mis en œuvre le Programme des Ruelles Vertes, et il y a environ 578 ruelles vertes dans 11 arrondissements. Ce programme s’inscrit dans le cadre de la stratégie visant à réduire les effets causés par le changement climatique et à augmenter l’espace vert dans les quartiers.</p>  
+
+#### Des ruelles aux ruelles vertes
+
+```{r, echo=FALSE, fig.align = 'center', warning=FALSE, fig.cap="Plateau (2017 vs 2022). Mont-Royal/Coloniale/Cérat. Arrondissement du Plateau- Mont-Royal Facebook (Gauche), État actuel de la ruelle. Juin 2022 (Droite)"}
+
+knitr::include_graphics(here("www/stories/visuals/alley_strategy/figure1.jpeg"))
+
+```
+
+```{r, echo=FALSE, fig.align = 'center', warning=FALSE, fig.cap="Plateau (2019 vs 2022). Milton/Parc Ave/Prince-Arthur/Jeanne Mance. Arrondissement du Plateau- Mont-Royal Facebook (Gauche), État actuel de la ruelle. Juin 2022 (Droite)"}
+
+knitr::include_graphics(here("www/stories/visuals/alley_strategy/figure2.jpeg"))
+
+```
+
+### Des ruelles vertes pour s’adapter aux urgences climatiques 
+
+<p>Les ruelles sont caractéristiques de la morphologie de Montréal. Les ruelles forment un réseau d’espaces publics principalement sous-utilisés qui représentent une occasion d’être transformés en ruelles vertes pour intégrer de la végétation et créer un environnement calme et diversifié grâce à la présence de la flore, la faune et différentes activités, loin du bruit des avenues principales et des zones urbaines encombrées. De plus, tout le monde peut profiter de ces avantages sans quitter le quartier, démontrant le potentiel d’adaptation des ruelles en incluant la végétation dans une infrastructure publique déjà existante.<p/>
+<p>Les ruelles vertes peuvent générer plus que des avantages locaux. Elles peuvent représenter une stratégie urbaine pour adapter l’environnement bâti aux divers effets du changement climatique en allouant des infrastructures vertes et en réorientant leur utilisation. Transformer les ruelles en ruelles vertes implique de réaménager l’espace afin qu’elles deviennent des espaces publics de qualité pour les individus au lieu de rues secondaires de circulation automobile.<p/>
+<p>En effet, les ruelles vertes peuvent atténuer l’effet d’îlots de chaleur produit par les surfaces pavées en réaménageant  l’espace pour planter de la végétation, en ajoutant des surfaces perméables et en réduisant ou en éliminant la circulation automobile pour favoriser la possibilité de marcher et l’utilisation d’autres modes de transport actifs. De plus, les ruelles vertes peuvent améliorer la gestion de l’eau et la qualité de l’air avec divers types de végétation.<p/>
+<p>Ces transformations ont été mises en œuvre dans des arrondissements comme le Plateau-Mont-Royal, Sainte-Marie à Ville-Marie, Rosemont, Sud-Ouest, Verdun et Mercier-Hochelaga-Maisonneuve, où certaines entrées des ruelles sont fermées à la circulation automobile et transformées en surfaces vertes avec des jardins et arbres. Ces réaménagements représentent un changement important dans l’utilisation des ruelles puisque la verdure améliore la qualité de ces espaces publics, générant une utilisation active et sécuritaire en raison de la circulation automobile limitée ou restreinte.<p/>
+
+```{r, echo=FALSE, fig.align = 'center', warning=FALSE, fig.cap="Sud-Ouest (Gauche), Plateau-Mont-Royal (Centre), Maisonneuve (Droite)"}
+
+knitr::include_graphics(here("www/stories/visuals/alley_strategy/figure3.jpeg"))
+
+```
+
+<p>La plupart des ruelles vertes permettent de réduire la température ambiante en raison des arbres et des murs avec de la végétation qui fournissent de l’ombre et rendent les ruelles plus fraîches que les rues ordinaires. De plus, plusieurs nouvelles ruelles ajoutent des surfaces perméables avec de l’herbe ou de la végétation. Par conséquent, ces transformations réduisent l’effet d’îlots de chaleur urbains.<p/>
+
+```{r, echo=FALSE, fig.align = 'center', warning=FALSE, fig.cap="Ruelles avec végétation diversifiée"}
+
+knitr::include_graphics(here("www/stories/visuals/alley_strategy/figure4.jpeg"))
+
+```
+
+<p>Des surfaces perméables avec de la verdure sont essentielles pour contribuer à la gestion de l’eau. En particulier, compte tenu des effets négatifs produits par le changement climatique, avec les vagues de chaleur et les périodes de pluie devenant de plus en plus fréquentes et importantes (Vibert et Rouillé, 2018). Par conséquent, les ruelles pourraient davantage contribuer à la résilience de la ville en réduisant les surfaces pavées avec divers types d’infrastructures vertes afin d’atténuer les conditions météorologiques extrêmes.<p/>
+<p>Lorsque les ruelles vertes dépendent uniquement des bénéfices environnementaux apportés par les arbres situés dans les cours privées adjacentes à la ruelle, elles ne peuvent pas réduire les inondations, comme l’illustre la photo suivante prise en juin 2022.<p/>
+
+```{r, echo=FALSE, fig.align = 'center', fig.cap="Photo du Centre d’écologie urbaine de Montréal sur Facebook. 17 juin 2022", warning=FALSE}
+
+knitr::include_graphics(here("www/stories/visuals/alley_strategy/figure5.jpg"))
+
+
+```
+
+<p>En revanche, les ruelles vertes avec des surfaces poreuses peuvent contrôler l’eau de pluie en raison de la surface perméable et la végétation. La ruelle verte Larivière à Sainte-Marie et la nouvelle ruelle du Plateau Mont-Royal dans un espace public appelé «Place des Fleurs-de-Macadam» en sont des exemples. Ce dernier fait partie d’un espace public polyvalent avec des bassins de rétention conçus pour capter l’eau de pluie. Cette caractéristique permettra «de drainer jusqu’à 30 cm d’eau dans le sol en moins de 48 heures»(Le Plateau-Mont-Royal, 2021).<p/>
+
+```{r, echo=FALSE, fig.align = 'center', warning=FALSE, fig.cap="Ruelle Verte Larivière - Sainte-Marie (Gauche), Parc aquatique - Plateau (Droite)"}
+
+knitr::include_graphics(here("www/stories/visuals/alley_strategy/figure6.jpeg"))
+
+```
+
+### Nouvelles initiatives pour le changement climatique : Ruelles Bleues Vertes
+
+<p>En 2017, une nouvelle initiative est apparue, considérant les ruelles vertes comme une opportunité d’améliorer la gestion des eaux pluviales : « Les Ruelles bleues vertes. » Ce projet est piloté par l’Alliance Ruelles bleues-vertes, un partenariat entre acteurs publics et privés impliquant les citoyens et les autorités municipales, visant à tester des solutions de gestion durable des eaux de pluie pour faire face au changement climatique.<p/>
+<p>Le projet débutera par la construction de deux ruelles, la Ruelle Turquoise à Mercier-Hochelaga-Maisonneuve (Viau/Ontario/Saint-Clément/Roue) et la Ruelle Bleue Verte à Pointe-Saint-Charles, à côté du «Bâtiment 7».<p/>
+
+```{r, echo=FALSE, fig.align = 'center', warning=FALSE, fig.cap="Image du site Web www.ruellesbleuesvertes.com/le-processus/projets-pilotes"}
+
+knitr::include_graphics(here("www/stories/visuals/alley_strategy/figure7.jpeg"))
+
+```
+
+<p>Cette initiative repose sur le même principe que les ruelles vertes : l’engagement communautaire. Par conséquent, les voisins sont des acteurs essentiels dans la transformation des ruelles bleues vertes, et le réaménagement suit leurs attentes et leurs besoins. Cependant, les ruelles bleues vertes cherchent à inclure une infrastructure plus étendue pour gérer l’eau de pluie avec des mécanismes de rétention d’eau et d’infiltration, telles que des surfaces perméables et des jardins pluviaux pour réduire le volume d’eau qui s’écoulent dans les égouts. La gestion de l’eau sert à atténuer les inondations, mais aussi à réduire les rejets polluants dans les cours d’eau. En outre, l’infrastructure verte est considérée comme l’élément principal pour diminuer les effets des îlots de chaleur et accroître la biodiversité urbaine lorsqu’elle se produit dans un projet de ruelle verte.</p>
+<p>De plus, les projets de ruelles bleues vertes ont été conçus comme une stratégie visant à promouvoir les espaces publics où les citoyens participent au développement et à l’entretien de leur milieu de vie.<p/>
+<p>Étant donné que les ruelles bleues vertes requièrent d’importantes transformations d’infrastructure, les deux projets ont un partenariat avec divers acteurs. Il s’agit notamment de la ville de Montréal, des arrondissements, des Éco-quartiers, de plusieurs universités, du Conseil régional Environnement Montréal et d’Action-Gardien à Pointe-Saint-Charles, de La Table de Quartier Hochelaga-Maisonneuve et du 7 À NOUS, administrateur du «Bâtiment 7». De plus, le site officiel des ruelles bleues vertes indique que le "Fonds vert" finance le projet dans le cadre d’Action-Climat Québec. Cela a été possible «grâce à la contribution du Fonds d’action québécois pour le développement durable (FAQDD) et de son partenaire financier, le gouvernement du Québec».<p/>
+
+### La ruelle Turquoise
+
+<p>La ruelle bleue verte Turquoise est un projet en cours depuis 2017, situé dans Hochelaga-Maisonneuve. Le but est de relier la ruelle à l’espace public vert d’Antenne Longue-Pointe. La vision du projet est de créer des étangs qui recueilleront l’eau de pluie et l’absorberont dans le sol.<p/>
+<p>Selon le site, le projet comptera 900 m² de surface perméable, 1680 m² de végétation et le potentiel de détourner 9600 m² d’eaux pluviales des égouts, équivalent à 2,6 piscines olympiques.<p/>
+
+```{r, echo=FALSE, fig.align = 'center', warning=FALSE, fig.cap="État actuel de la ruelle. Juin 2022 (Gauche), Vision de la future ruelle Bleu-Vert. Source : www.ruellesbleuesvertes.com/le-processus/projets-pilotes (Droite)"}
+
+knitr::include_graphics(here("www/stories/visuals/alley_strategy/figure8.jpeg"))
+
+```
+
+### Ruelle bleue verte à Pointe-Saint-Charles
+
+<p>La construction de la ruelle située entre les rues Le Ber et Sainte-Madeleine, débutera au printemps 2022. Le projet représente une occasion de souligner l’importance de la gestion de l’eau à travers un processus de participation citoyenne où différents acteurs interviennent pour améliorer la qualité des environnements urbains du point de vue environnemental, social et économique.<p/>
+<p>La ruelle bleue verte sera un espace vert piétonnier entre le «Bâtiment 7» et deux nouveaux parcs conçus avec la participation des citoyens. La ruelle sera reliée à un projet d’agriculture urbaine. Il y aura des zones de biorétention qui utilisent des jardins pluviaux pour recueillir l’eau de pluie des bâtiments adjacents et un espace public qui augmente l’écologisation urbaine et la biodiversité.<p/>
+
+```{r, echo=FALSE, fig.align = 'center', warning=FALSE, fig.cap="Image du site Web https://www.batiment7.org/ruelle-bleue-verte/"}
+
+knitr::include_graphics(here("www/stories/visuals/alley_strategy/figure9.jpg"))
+
+```
+
+<p>En général, le réaménagement des ruelles démontre l’impact positif que les propositions de la communauté peuvent générer en réaménageant les espaces urbains inutilisés. Par conséquent, le réaménagement des ruelles pour améliorer la qualité de vie des individus à l’échelle d’un quartier peut simultanément améliorer la qualité urbaine à plus grande échelle, compte tenu de la croissance que l’initiative des ruelles vertes a connue ces dernières années et l’émergence de propositions dérivées des ruelles vertes comme les ruelles bleues vertes.<p/>
+<p>Par conséquent, le programme Des ruelles vertes et l’initiative ruelle bleue verte peuvent faire partie de la stratégie de la Ville visant à atténuer les effets néfastes des changements climatiques en augmentant les infrastructures verte et, avec elles, la possibilité d’être en contact avec la nature et d’améliorer les conditions climatiques.<p/>
+
+### Bibliographie
+
+<ul>
+<li>Alliance Ruelles bleues-vertes (https://www.ruellesbleuesvertes.com/accueil/le-projet/).</li>
+<li>Aménagement de la ruelle bleue-verte de Pointe-Saint-Charles à Montréal (https://aapq.org/projets/ruelle-bleue-verte/).</li>
+<li>Brasseur, N.(2021). Une ruelle bleue-verte voit le jour dans Pointe-Saint-Charles (https://journalmetro.com/local/sud-ouest/2712865/une-ruelle-bleue-verte-voit-le-jour-dans-pointe-saint-charles/).</li>
+<li>Broch, E.(2020). Environnement : pour des ruelles vertes encore plus écologiques. Métro Média (https://journalmetro.com/local/hochelaga-maisonneuve/2502419/environnement-pour-des-ruelles-vertes-encore-plus-ecologiques/).</li>
+<li>Bur, J, Desjardins, Y, Robert, J-C,  Vallée, B, Wolfe, J. (2017) Dictionnaire historique du Plateau Mont-Royal. Montréal: Écosociété.</li>
+<li>Réseau québécois des groupes écologistes. Les travaux vers la réalisation de la première ruelle bleue-verte au Québec débuteront à la mi-octobre dans Pointe-Saint-Charles (https://rqge.qc.ca/les-travaux-vers-la-realisation-de-la-premiere-ruelle-bleue-verte-au-quebec-debuteront-a-la-mi-octobre-dans-pointe-saint-charles/).</li>
+<li>Ruelle Turquoise (https://www.facebook.com/RBVviauville/photos).</li>
+<li>Taquin, C, Waltz, M. (1982) Le réaménagement des ruelles approche sociale.</li>
+<li>Vibert, J, Rouillé, P. (2018) L’adaptation aux changements climatiques Des toits aux Ruelles bleues-vertes.</li>

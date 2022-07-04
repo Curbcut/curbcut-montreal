@@ -180,7 +180,8 @@ lines_2022 <-
 #   lines_2022[!lines_2022$ID %in% na.omit(lines$ID), ]
 
 lines <- 
-  bind_rows(lines, lines_2022) |> 
+  bind_rows(lines, lines_2022)  |>  
+  st_transform(4326) |> 
   select(-ID) |> 
   relocate(geometry, .after = last_col()) |> 
   mutate(across(where(is.character), ~if_else(is.na(.x), "#FFFFFF00", .x)))
@@ -192,12 +193,8 @@ nested <-
   lines |> 
   group_nest(across(c(-geometry)))
 
-library(future)
-old_plan <- plan()
-plan(multisession, workers = availableCores() - 1)
 joined_geometries <- 
   map_dfr(nested$data, ~{tibble(geometry = st_combine(.x))})
-plan(old_plan)
 
 lines <- 
   bind_cols(select(nested, -data), joined_geometries) |> 
@@ -205,7 +202,7 @@ lines <-
   filter(!st_is_empty(geometry))
 
 lines |> 
-  upload_tile_source("stories-cycling_infrastructure-l")
+  upload_tile_source("stories-last_line", username = "maxbdb3")
 
 
 # Import bixi points
@@ -235,11 +232,33 @@ only_2022 <-
 bixi <- 
 bind_rows(only_2016, only_2022, both_years) |> 
   mutate(across(all_of(c("year2016", "year2022")), ~if_else(is.na(.x), FALSE, TRUE))) |> 
-  mutate(point_2016 = if_else(year2016 == TRUE, as.character(1), as.character(0))) |> 
-  mutate(point_2022 = if_else(year2022 == TRUE, as.character(1), as.character(0))) |> 
-  select(point_2016, point_2022)
-  
-#########TKTK ALWAYS APPEAR. WHY? SHOULD I ADD A FILL_YEAR COLUMN WITH TRANSPARENT?
+  mutate(point_2016 = if_else(year2016 == TRUE, as.character(3), as.character(0))) |> 
+  mutate(point_2022 = if_else(year2022 == TRUE, as.character(3), as.character(0))) |> 
+  mutate(fill_2016 = if_else(year2016 == TRUE, "#000000", "#FFFFFF00")) |> 
+  mutate(fill_2022 = if_else(year2022 == TRUE, "#000000", "#FFFFFF00")) |> 
+  select(fill_2016, fill_2022, point_2016, point_2022)
+
+bixi <- 
+  bind_cols(map_dfc(all_years[1:(length(all_years) - 1)], ~{
+    out <- tibble(col1 = rep("0", nrow(bixi)),
+                  col2 = rep("#FFFFFF00", nrow(bixi)))
+    names(out) <- c(paste0("point_", .x), paste0("fill_", .x))
+    out
+  }), bixi) |> 
+  st_as_sf()
+
+nested_bixi <- 
+  bixi |> 
+  group_nest(across(c(-geometry)))
+
+joined_geometries <- 
+  map_dfr(nested_bixi$data, ~{tibble(geometry = st_combine(.x))})
+
+bixi <- 
+  bind_cols(select(nested_bixi, -data), joined_geometries) |> 
+  st_as_sf() |> 
+  filter(!st_is_empty(geometry))
+
 bixi |> 
   upload_tile_source("stories-cycling_infrastructure-b")
 
@@ -248,15 +267,15 @@ stories_recipe <-
   create_recipe(
     layer_names = c("lines", "bixi"),
     source = c(
-      lines = "mapbox://tileset-source/sus-mcgill/stories-cycling_infrastructure-l",
-      bixi = "mapbox://tileset-source/sus-mcgill/stories-cycling_infrastructure-b"),
+      lines = "mapbox://tileset-source/maxbdb3/stories-last_line",
+      bixi = "mapbox://tileset-source/maxbdb3/stories-cycling_infrastructure-b"),
     minzoom = c(lines = 3, bixi = 12),
     maxzoom = c(lines = 16, bixi = 16), 
     layer_size = c(lines = 2500, bixi = 2500),
     simp_zoom = c(lines = 1, bixi = 1),
     fallback_simp_zoom = c(lines = 1, bixi = 1),
-    recipe_name = "stories-cycling_infrastructure2")
+    recipe_name = "stories-cycling_infrastructure6")
 
-create_tileset("stories-cycling_infrastructure2", stories_recipe)
-publish_tileset("stories-cycling_infrastructure2")
+create_tileset("stories-cycling_infrastructure6", stories_recipe, username = "maxbdb3")
+publish_tileset("stories-cycling_infrastructure6", username = "maxbdb3")
 

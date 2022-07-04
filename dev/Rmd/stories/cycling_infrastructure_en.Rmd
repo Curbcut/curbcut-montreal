@@ -20,46 +20,25 @@ tibble(type = c("New path", "Removed path", "Remained path", "Bixi station"),
 
 # GET THE RDECK FOR EVERY DATE
 cycling_infrastructure_rdeck <- function(date) {
-  
-if (date %in% c(2016, 2022)) return(
-rdeck(map_style = map_base_style, initial_view_state = view_state(
+  rdeck(map_style = map_base_style, initial_view_state = view_state(
       center = map_loc, zoom = as.numeric(map_zoom - 1))) |> 
           add_mvt_layer(
           id = "cycling_infrastructure", 
-          data = mvt_url("sus-mcgill.stories-cycling_infrastructure2"),
+          data = mvt_url("sus-mcgill.stories-cycling_infrastructure4"),
           visible = TRUE,
           get_line_width = 3,
           get_line_color = !!rlang::sym(paste0("fill_", date)),
           line_width_units = "pixels",
+          get_fill_color = !!rlang::sym(paste0("fill_", date)),
           get_point_radius = !!rlang::sym(paste0("point_", date)))
-)
-
-return(
-rdeck(map_style = map_base_style, initial_view_state = view_state(
-      center = map_loc, zoom = as.numeric(map_zoom - 1))) |> 
-          add_mvt_layer(
-          id = "cycling_infrastructure", 
-          data = mvt_url("sus-mcgill.stories-cycling_infrastructure2"),
-          visible = TRUE,
-          get_line_width = 3,
-          get_line_color = !!rlang::sym(paste0("fill_", date)),
-          line_width_units = "pixels",
-          get_point_radius = 0,
-          point_radius_scale = 0,
-          point_radius_max_pixels = 0,
-          get_fill_color = "#00000000",
-          point_radius_units = "pixels")
-)
-  
-
 }
 
 # GET LEGEND FOR EVERY DATE
 cycling_infrastructure_legend <- function(types) {
 
 type_fill <- 
-  data.frame(type = c("New path", "Removed path", "Remained path", "Bixi station"),
-       fill = c("#73AE80", "#CA0020", "#2E4633", "#000000"))
+  data.frame(type = c("Bicycle path", "New path", "Removed path", "Remained path", "Bixi station"),
+       fill = c("#73AE80", "#73AE80", "#CA0020", "#2E4633", "#000000"))
 
 label <- type_fill$type[type_fill$type %in% types]
 
@@ -112,7 +91,7 @@ From the 1970s to the present, Vélo Québec has continued to create successful 
 Vélo Québec’s largest event is the Tour de l’Île de Montréal, an annual cycling tour on a 36 km route through seven boroughs. First run in 1985 after the creation of new bike paths in East Montréal, the Tour de l’Île de Montréal celebrates cycling in Montréal. The first tour drew 3,500 participants, and grew rapidly in subsequent years (Vélo Québec, 2017). The tour has recorded over 45,000 participants in an individual year, and continues to be a popular event for cyclists today. The Tour de l’Île de Montréal also serves as a political message to Montréal’s leaders, signalling the vast number of Montréalers who depend on the city’s cycling infrastructure. 
 
 <div align="center">
-```{r echo=FALSE, fig.align = 'center'}
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
 
 # # updated 1986 map ---------------------------------------
 # `1986` <- lines %>% filter(An1986 == 1) %>% 
@@ -129,11 +108,13 @@ Vélo Québec’s largest event is the Tour de l’Île de Montréal, an annual 
 #   tm_scale_bar() +
 #   tm_view(bbox = `1986`)
   
-  cycling_infrastructure_rdeck("1986")
+cycling_infrastructure_rdeck(1986)
+cycling_infrastructure_legend(types = c("Bicycle path"))
 ```
+
 See Note 1. Data provided by: Houde, M., Apparicio, P., & Séguin, A.-M. (2018). A ride for whom: Has cycling network expansion reduced inequities in accessibility in Montreal, Canada? Journal of Transport Geography, 68, 9–21. https://doi.org/10.1016/j.jtrangeo.2018.02.005 
 
-```{r echo=FALSE, fig.align = 'center'}
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
 # 
 # `New for 1991` <- lines %>% filter(An1991 == 1 & An1986 == 0) 
 # 
@@ -155,7 +136,9 @@ See Note 1. Data provided by: Houde, M., Apparicio, P., & Séguin, A.-M. (2018).
 #   tm_scale_bar() 
 # updated_map_1991
 cycling_infrastructure_rdeck(1991)
+cycling_infrastructure_legend(types = c("New path", "Removed path", "Remained path"))
 ```
+
 (Houde et al., 2018)</div>
 
 ### From activism to policy: the 1995 Bicycle Policy
@@ -164,7 +147,7 @@ After years of activism demonstrating the importance of cycling, Québec acted t
 While it did not transform Québec into a cycling society at the scale of some European nations, the 1995 bicycle policy provided the foundation for decades of subsequent policy, legislation, and research. Most importantly, research demonstrates that, following 1995, Québecers increasingly used cycling for transportation. From 1995 to 2005, the proportion of cyclists using a bicycle for transportation (excluding recreation, tourism, or training) increased 62%, from 21% to 34% (Ministère des Transports du Québec, 2009, 9).
 
 <div align="center">
-```{r echo=FALSE, fig.align = 'center'}
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
 # `New for 1996` <- lines %>% filter(An1996 == 1 & An1991 == 0) 
 # 
 # `Removed for 1996` <- lines %>% filter(An1996 == 0 & An1991 == 1)
@@ -186,14 +169,16 @@ While it did not transform Québec into a cycling society at the scale of some E
 # 
 # updated_map_1996
 cycling_infrastructure_rdeck(1996)
+cycling_infrastructure_legend(types = c("New path", "Removed path", "Remained path"))
 ```
+
 (Houde et al., 2018)</div>
 
 ### 2008 bicycle policy
 The 2008 bicycle policy updated the 1995 policy with more specific objectives for cycling and a new emphasis on cycling in urban areas. First, the 2008 policy aimed to increase the modal share of cycling by 50% per agglomeration, with an increase in the Montréal agglomeration from 1.2 % (2003) to 1.8% in 2020 (Ministère des Transports du Québec, 2008, 15). Second, the policy sought to reduce the number of cyclist accident victims due to motor vehicles by 30% for 2020, compared to the 2002-2006 average. The third and final target was to increase the number of kilometres of bikeways in Québec by 30%, from 6,789 km in 2005 to 8,826 in 2020. All of these targets have successfully been met, or even exceeded. As of 2022, Quebec has 12,000 km of bicycle paths, and by 2018, 3.3% of trips on the Island of Montréal were made by bicycle (Bonjour Québec, n.d). Furthermore, there were 84 incidents of serious injury or fatalities for cyclists in 2020, from an average of 189 in the 2002 to 2006 period (Vélo Québec, 2020, 15) - however, this comparison does not account for the impact of the COVID-19 pandemic on cycling rates, and there are still many improvements to be made before there are zero cycling injuries and fatalities.
 
 <div align="center">
-```{r echo=FALSE, fig.align = 'center'}
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
 # `New for 2001` <- lines %>% filter(An2001 == 1 & An1996 == 0) 
 # 
 # `Removed for 2001` <- lines %>% filter(An2001 == 0 & An1996 == 1)
@@ -216,9 +201,11 @@ The 2008 bicycle policy updated the 1995 policy with more specific objectives fo
 # 
 # updated_map_2001
 cycling_infrastructure_rdeck(2001)
+cycling_infrastructure_legend(types = c("New path", "Removed path", "Remained path"))
 ```
+
 (Houde et al., 2018)
-```{r echo=FALSE, fig.align = 'center'}
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
 # `New for 2006` <- lines %>% filter(An2006 == 1 & An2001 == 0) 
 # 
 # `Removed for 2006` <- lines %>% filter(An2006 == 0 & An2001 == 1)
@@ -238,9 +225,11 @@ cycling_infrastructure_rdeck(2001)
 #             fontfamily = "serif") + 
 #   tm_scale_bar() 
 cycling_infrastructure_rdeck(2006)
+cycling_infrastructure_legend(types = c("New path", "Removed path", "Remained path"))
 ```
+
 (Houde et al., 2018)
-```{r echo=FALSE, fig.align = 'center'}
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
 # `New for 2011` <- lines %>% filter(An2011 == 1 & An2006 == 0) 
 # 
 # `Removed for 2011` <- lines %>% filter(An2011 == 0 & An2006 == 1)
@@ -262,7 +251,9 @@ cycling_infrastructure_rdeck(2006)
 # 
 # updated_map_2011
 cycling_infrastructure_rdeck(2011)
+cycling_infrastructure_legend(types = c("New path", "Removed path", "Remained path"))
 ```
+
 (Houde et al., 2018)
 </div>
 
@@ -293,7 +284,7 @@ Public bike sharing services have existed since the 1960s, and recent years have
 Bike sharing services provide numerous benefits for cities. They lead to higher rates of cycling, decrease traffic congestion, and reduce air and noise pollution, while also increasing rates of physical activity (Fuller et al., 2013). Research on Montréal demonstrates that accessibility to BIXI bikes correlates with a greater likelihood of cycling for individuals (Fuller et al., 2013). However, this increase of cyclists also creates a higher demand for cycling infrastructure. As of May 2022, BIXI is seeing record growth for users and trips, including 227,883 membership or access purchases, and 1,278,560 individual trips in May alone ( BIXI Montréal, 2022). This growth is partially due to the expansion of bike infrastructure projects, which have made using bike sharing services easier to use over the past decade. However, this also demonstrates the need for Montréal to further improve its network. Luckily, the city has an ambitious project currently under construction.
 
 <div align="center">
-```{r echo=FALSE, warning = FALSE, fig.align = 'center'}
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
 # `New for 2016` <- lines %>% filter(An2016 == 1 & An2011 == 0) 
 # 
 # `Removed for 2016` <- lines %>% filter(An2016 == 0 & An2011 == 1)
@@ -317,7 +308,9 @@ Bike sharing services provide numerous benefits for cities. They lead to higher 
 # 
 # updated_map_2016
 cycling_infrastructure_rdeck(2016)
+cycling_infrastructure_legend(types = c("New path", "Removed path", "Remained path", "Bixi station"))
 ```
+
 (Houde et al., 2018)
 </div>
 
@@ -327,7 +320,7 @@ Montréal’s cycling infrastructure has come a long way since the automobile-er
 As part of Montréal’s broader transportation network, a completed REV will double access to public transit access points, defined as points within 50 meters of a metro station and within 25 meters of a bus stop (Lacerte-Gauthier, 2022). The REV will also increase access to public schools by bikes, including schools currently in disadvantaged areas (Lacerte-Gauthier, 2022). While the city has already completed four axes, including Berri / Lajeunesse / Saint-Denis, Souligny, Peel, and De Bellechasse, Velo Québec has called for an acceleration of the project timeline to respond to the continued growth of cycling in Montréal (Couillard, 2019). 
 
 <div align="center">
-```{r echo=FALSE, warning = FALSE, fig.align = 'center'}
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
 # `2022` <- st_read(here("dev/data/stories/shp/history_cycling_infrastructure/Cycling_Lane.shp")) %>% 
 #   st_transform(4326)
 # 
@@ -347,7 +340,9 @@ As part of Montréal’s broader transportation network, a completed REV will do
 # 
 # updated_map_2022
 cycling_infrastructure_rdeck("2022")
+cycling_infrastructure_legend(types = c("Bicycle path", "Bixi station"))
 ```
+
 See Note 2. Data provided by: Winters et al. The Canadian Bikeway Comfort and Safety Metrics (Can-BICS): Measuring the bicycling environment in all communities in Canada – for submission to Health Reports (forthcoming).
 </div>
 

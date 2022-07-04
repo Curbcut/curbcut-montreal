@@ -118,7 +118,17 @@ stories <-
                      "infrastructure has evolved over time in this interactive ",
                      "story."),
     lon = -73.578179,
-    lat = 45.521828)
+    lat = 45.521828) |> 
+  
+  add_row(
+    name = "alley_strategy",
+    title = paste0("Montreal alleys as a climate emergency adaptation strategy"),
+    img = "alley_strategy.png",
+    preview = paste0("Transforming alleys to improve people's quality of life ",
+                     "on a neighbourhood scale can simultaneously enhance ",
+                     "urban quality on a larger scale"),
+    lon = -73.553092,
+    lat = 45.480989)
 
 
 # Finish table ------------------------------------------------------------
