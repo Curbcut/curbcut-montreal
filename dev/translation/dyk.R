@@ -218,11 +218,19 @@ dyk_translated <-
   add_row(en = paste0("Once redeveloped, green alleys often tend to become ambi",
                       "guous spaces, a sort of common, between the public and t",
                       "he private realm. The case of Le Plateau-Mont-Royal is p",
-                      "articularly interesting. "), 
+                      "articularly interesting."), 
           fr = paste0("Une fois aménagées, les ruelles vertes tendent à devenir",
                       " des espaces ambigus, à la frontière entre sphère publiq",
                       "ue et privée. Le cas du Plateau-Mont-Royal est particuli",
-                      "èrement intéressant. "))
+                      "èrement intéressant.")) |> 
+  add_row(en = paste0("Montréal is a world-renowned cycling city, but it hasn’t",
+                      " always been this way. Explore how the city’s cycling in",
+                      "frastructure has evolved over time in this interactive s",
+                      "tory."), 
+          fr = paste0("Montréal est une ville cycliste de renommée mondiale, ma",
+                      "is il n'en a pas toujours été ainsi. Découvrez comment l",
+                      "'infrastructure cyclable de la ville a évolué au fil du ",
+                      "temps dans cette histoire interactive."))
 
 
 

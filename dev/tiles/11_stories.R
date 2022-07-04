@@ -94,3 +94,169 @@ stories_recipe <-
 create_tileset("stories-metro_evolution", stories_recipe)
 publish_tileset("stories-metro_evolution")
 
+
+# Create and upload cycling_infrastructure maps -------------------
+
+# Import paths
+lines <- 
+  st_read("dev/data/stories/shp/cycling_infrastructure/Velo.gdb", 
+          layer = "RESEAU_1991_2016")  %>% 
+  st_transform(4326) |>
+  as_tibble() |> 
+  st_as_sf() |> 
+  select(IdRte, starts_with("An")) |> 
+  mutate(An2016 = if_else(is.na(An2016), as.numeric(0), as.numeric(An2016))) |> 
+  st_zm()
+
+# Don't keep geometries without bike lanes at any year
+lines <- 
+lines[!!rowSums(st_drop_geometry(lines)[
+  str_starts(names(st_drop_geometry(lines)), "An")]), ]
+lines <- lines[, sort(names(lines))]
+lines <- relocate(lines, IdRte) |> rename(geometry = Shape)
+
+# For all the years we have these paths
+all_years <- 
+  names(lines) |> 
+  str_subset("\\d{4}$") |> 
+  str_extract("\\d{4}$")
+
+# Decide colors we want as fill, and create the source with fill_year
+new_color <- "#73AE80"
+removed_color <- "#CA0020"
+remained_color <- "#2E4633"
+
+lines_fill <- 
+map_dfc(all_years, function(year) {
+  
+  actual_year <- as.name(paste0("An", year))
+  previous_year <- as.name(paste0("An", all_years[which(all_years == year) - 1]))
+  
+  out <-
+    lines |> 
+    st_drop_geometry() |> 
+    (\(x) if (year == all_years[1]) {
+      mutate(x, new_fill = case_when(!!actual_year == 1 ~ new_color,
+                                     TRUE ~ "#FFFFFF00")) 
+    } else {
+      mutate(x, new_fill = case_when(!!actual_year == 1 & !!previous_year == 0 ~ 
+                                       new_color,
+                                     !!actual_year == 0 & !!previous_year == 1 ~ 
+                                       removed_color,
+                                     !!actual_year == 1 & !!previous_year == 1 ~ 
+                                       remained_color,
+                                     TRUE ~ "#FFFFFF00"))
+    })() |> 
+    # filter(new_fill != "#FFFFFF00") |> 
+    select(new_fill)
+  
+  
+  names(out) <- paste0("fill_", year)
+  
+  out
+  
+})
+
+lines <- 
+  bind_cols(lines_fill, lines[, c("geometry")]) |> 
+  st_as_sf()
+
+lines <- lines[-81965, ]
+
+# Add 2022 lines on these
+lines_2022 <- 
+  st_read("dev/data/stories/shp/cycling_infrastructure/Cycling_Lane.shp") |>  
+  st_transform(4326) |> 
+  as_tibble() |> 
+  transmute(ID = row_number(), fill_2022 = "#73AE80", geometry) |> 
+  st_as_sf()
+
+# NO LINES FIT
+# lines <- 
+#   st_join(lines, lines_2022, join = st_equals) |>
+#   mutate(fill_2022 = if_else(is.na(fill_2022), "#FFFFFF00", fill_2022))
+# 
+# rest_lines_2022 <- 
+#   lines_2022[!lines_2022$ID %in% na.omit(lines$ID), ]
+
+lines <- 
+  bind_rows(lines, lines_2022) |> 
+  select(-ID) |> 
+  relocate(geometry, .after = last_col()) |> 
+  mutate(across(where(is.character), ~if_else(is.na(.x), "#FFFFFF00", .x)))
+
+
+# Join all lines that share the same combinations of colors
+
+nested <- 
+  lines |> 
+  group_nest(across(c(-geometry)))
+
+library(future)
+old_plan <- plan()
+plan(multisession, workers = availableCores() - 1)
+joined_geometries <- 
+  map_dfr(nested$data, ~{tibble(geometry = st_combine(.x))})
+plan(old_plan)
+
+lines <- 
+  bind_cols(select(nested, -data), joined_geometries) |> 
+  st_as_sf() |> 
+  filter(!st_is_empty(geometry))
+
+lines |> 
+  upload_tile_source("stories-cycling_infrastructure-l")
+
+
+# Import bixi points
+bixi_2016 <- 
+  read_csv("dev/data/stories/shp/cycling_infrastructure/Stations_2016.csv") |> 
+  st_as_sf(coords = c("longitude","latitude"), crs = 4326) |> 
+  transmute(year2016 = TRUE)
+
+bixi_2022 <- read_csv("dev/data/stories/shp/cycling_infrastructure/20220105_stations.csv") |> 
+  st_as_sf(coords = c("longitude","latitude"), crs = 4326) |> 
+  filter(!pk %in% c(856)) |> 
+  transmute(year2022 = TRUE)
+
+# Create dataframe with both 2016 and 2022 data points
+both_years <- 
+st_join(bixi_2016, bixi_2022) |> 
+  filter(year2016 & year2022)
+
+only_2016 <- 
+  st_join(bixi_2016, bixi_2022) |> 
+  filter(year2016 & is.na(year2022))
+
+only_2022 <- 
+  st_join(bixi_2022, bixi_2016) |> 
+  filter(year2022 & is.na(year2016))
+
+bixi <- 
+bind_rows(only_2016, only_2022, both_years) |> 
+  mutate(across(all_of(c("year2016", "year2022")), ~if_else(is.na(.x), FALSE, TRUE))) |> 
+  mutate(point_2016 = if_else(year2016 == TRUE, as.character(1), as.character(0))) |> 
+  mutate(point_2022 = if_else(year2022 == TRUE, as.character(1), as.character(0))) |> 
+  select(point_2016, point_2022)
+  
+#########TKTK ALWAYS APPEAR. WHY? SHOULD I ADD A FILL_YEAR COLUMN WITH TRANSPARENT?
+bixi |> 
+  upload_tile_source("stories-cycling_infrastructure-b")
+
+# Recipe to send both lines and points
+stories_recipe <- 
+  create_recipe(
+    layer_names = c("lines", "bixi"),
+    source = c(
+      lines = "mapbox://tileset-source/sus-mcgill/stories-cycling_infrastructure-l",
+      bixi = "mapbox://tileset-source/sus-mcgill/stories-cycling_infrastructure-b"),
+    minzoom = c(lines = 3, bixi = 12),
+    maxzoom = c(lines = 16, bixi = 16), 
+    layer_size = c(lines = 2500, bixi = 2500),
+    simp_zoom = c(lines = 1, bixi = 1),
+    fallback_simp_zoom = c(lines = 1, bixi = 1),
+    recipe_name = "stories-cycling_infrastructure2")
+
+create_tileset("stories-cycling_infrastructure2", stories_recipe)
+publish_tileset("stories-cycling_infrastructure2")
+

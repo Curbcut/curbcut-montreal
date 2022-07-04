@@ -1,0 +1,393 @@
+---
+title: "A History of Cycling Infrastructure in Montréal"
+author: "Philip Bligh"
+output: html_document
+runtime: shiny_prerendered
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(sf)
+library(rdeck)
+```
+
+```{r echo = FALSE}
+
+legend_legend <- 
+tibble(type = c("New path", "Removed path", "Remained path", "Bixi station"),
+       fill = c("#73AE80", "#CA0020", "#2E4633", "#000000"))
+
+# GET THE RDECK FOR EVERY DATE
+cycling_infrastructure_rdeck <- function(date) {
+  
+if (date %in% c(2016, 2022)) return(
+rdeck(map_style = map_base_style, initial_view_state = view_state(
+      center = map_loc, zoom = as.numeric(map_zoom - 1))) |> 
+          add_mvt_layer(
+          id = "cycling_infrastructure", 
+          data = mvt_url("sus-mcgill.stories-cycling_infrastructure2"),
+          visible = TRUE,
+          get_line_width = 3,
+          get_line_color = !!rlang::sym(paste0("fill_", date)),
+          line_width_units = "pixels",
+          get_point_radius = !!rlang::sym(paste0("point_", date)))
+)
+
+return(
+rdeck(map_style = map_base_style, initial_view_state = view_state(
+      center = map_loc, zoom = as.numeric(map_zoom - 1))) |> 
+          add_mvt_layer(
+          id = "cycling_infrastructure", 
+          data = mvt_url("sus-mcgill.stories-cycling_infrastructure2"),
+          visible = TRUE,
+          get_line_width = 3,
+          get_line_color = !!rlang::sym(paste0("fill_", date)),
+          line_width_units = "pixels",
+          get_point_radius = 0,
+          point_radius_scale = 0,
+          point_radius_max_pixels = 0,
+          get_fill_color = "#00000000",
+          point_radius_units = "pixels")
+)
+  
+
+}
+
+# GET LEGEND FOR EVERY DATE
+cycling_infrastructure_legend <- function(types) {
+
+type_fill <- 
+  data.frame(type = c("New path", "Removed path", "Remained path", "Bixi station"),
+       fill = c("#73AE80", "#CA0020", "#2E4633", "#000000"))
+
+label <- type_fill$type[type_fill$type %in% types]
+
+legend <- 
+  data.frame(x = seq_along(label),
+             y = 1,
+             fill = 
+               unique(type_fill[type_fill$type %in% types, ]$fill))
+
+out <- 
+legend |> 
+  ggplot(aes(xmin = x - 1, xmax = x, ymin = y - 1, ymax = y, 
+             fill = fill)) +
+  geom_rect() + 
+  scale_x_continuous(breaks = seq_along(label) - 0.5, labels = label) +
+  scale_y_continuous(labels = NULL) +
+  scale_fill_manual(values = setNames(
+    legend$fill, legend$fill)) +
+  theme_minimal() +
+  theme(text = element_text(family = "SourceSansPro", size = 11),
+        legend.position = "none", 
+        panel.grid = element_blank())
+
+ggsave(plot = out,
+       filename = here(paste0("www/stories/visuals/cycling_infrastructure/legend_", paste0(str_replace_all(types, " ", ""), collapse = "_")
+, "_en.png")),
+       units = "px",
+       height = 200)
+
+knitr::include_graphics(here(paste0("www/stories/visuals/cycling_infrastructure/legend_", paste0(str_replace_all(types, " ", ""), collapse = "_")
+, "_en.png")))
+
+}
+
+```
+
+### The age of the automobile: early cycling difficulties in Montréal
+In the 1970s, cycling as a mode of transport was almost non-existent in Montréal. City streets were prioritised for automobiles at the expense of pedestrians and cyclists, creating dangerous conditions for active transport modes. A lack of cycling infrastructure proved to be deadly for the few cyclists who braved the streets. Automobiles killed an average of 68 cyclists a year in Montréal from 1966 to 1976, including 86 cycling deaths in just 1974 (Scott, 2022). Unfavourable legislation posed an additional burden to potential cyclists, who were often restricted from popular destinations, such as the Botanical Gardens and Île-Ste-Hélène (Noakes, 2022). Furthermore, an archaic 1874 law criminalised cycling in city parks, and was occasionally used to catch cyclists using trails to avoid automobile traffic. These conditions, along with the global environmental movement, anti-war protests, and the “bike boom” of the 70s, led to the formation of early cycling advocacy organisations, including Le Monde à Bicyclette and Vélo Québec.
+
+### “Vive la vélorution”
+Formed in 1975, Le Monde à Bicyclette (MAB) was an early cycling advocacy group in Montréal, primarily led by Claire Morissette and Robert “Bicycle Bob” Silverman. The group was known for their public tactics, using comedy and theatrics to highlight relevant issues for cyclists. One such tactic was the “die -in,” where dozens of demonstrators would lay on a busy intersection, cover themselves in fake blood, and use mangled bicycles, coffins, crutches, and stretchers to convey the consequences of inadequate cycling infrastructure (Laforge, 2019). To demonstrate against the restriction of bicycles on the metro, members of Le Monde à Bicyclette brought comically large objects on the trains, including ladders, skis,  and cardboard cut-outs of animals (Walker, 2015).  In another demonstration, Silverman dressed as Moses and attempted to part the Saint Lawrence river, a form of protest against the lack of bicycle lanes on the Jacques Cartier Bridge.
+
+Le Monde à Bicyclette raised awareness of critical cycling issues to the public and created a campaign that transformed how Montréalers thought about cycling infrastructure. The organisation has been inactive since 2000, but their actions paved the way for reforms that are progressing today. In 2008, the piste du boulevard de Maisonneuve, a two-lane bike path in downtown Montréal, was named the Claire-Morissette Bike Path in honour of her cycling activism. 
+
+### Vélo Québec
+Vélo Québec is a major cycling advocacy group for the province of Québec and the city of Montréal, first formed in 1967 as a cycle tourism agency known as the Fédération Cyclotouriste Provinciale (Vélo Québec, 2020). Similar to Le Monde à Bicyclette, Vélo Québec’s activism and campaigning efforts arose from the cycling conditions of the 1970s. The two organisations also collaborated, including joint displays of solidarity on International Bicycle Day from 1977 to 1983, where over a thousand cyclists biked from Parc la Fontaine to square Dorchester (Vélo Québec, 2017).
+
+From the 1970s to the present, Vélo Québec has continued to create successful campaigns and events to promote cycling in Montréal. In 1992, they launched Opération Dring Dring as part of the World Cycling Conference, which promoted cycling as a mode of transit for work (Vélo Québec, 2017). This initiative continued with the name Jour V from 2000 to 2002, before it was renamed Operation Bike-to-Work in 2003. More recently in 2015, Vélo Québec created the Cycliste Averti program to teach bicycle safety skills to elementary school students. In fact, the organisation offers around fifty training sessions annually, including a bike touring course, a group outings course, general cycling safety courses, and an urban development course, to assist companies and municipalities in creating safe cities for cyclists and pedestrians (Vélo Québec, 2017).
+
+Vélo Québec’s largest event is the Tour de l’Île de Montréal, an annual cycling tour on a 36 km route through seven boroughs. First run in 1985 after the creation of new bike paths in East Montréal, the Tour de l’Île de Montréal celebrates cycling in Montréal. The first tour drew 3,500 participants, and grew rapidly in subsequent years (Vélo Québec, 2017). The tour has recorded over 45,000 participants in an individual year, and continues to be a popular event for cyclists today. The Tour de l’Île de Montréal also serves as a political message to Montréal’s leaders, signalling the vast number of Montréalers who depend on the city’s cycling infrastructure. 
+
+<div align="center">
+```{r echo=FALSE, fig.align = 'center'}
+
+# # updated 1986 map ---------------------------------------
+# `1986` <- lines %>% filter(An1986 == 1) %>% 
+#   select(c(IdRte, An1986, An1991, An1996, An2001, An2006, An2011,
+#            An2016, Shape_Length, Shape))
+# 
+# # updated_map_1986 <- 
+#   tm_shape(water) + 
+#   tm_polygons(col = "#A4E1FF") + 
+#   tm_shape(`1986`) +
+#   tm_lines(col = "#2E4633") + 
+#   tm_layout(title = "1986 Bike Lanes", 
+#             fontfamily = "serif") + 
+#   tm_scale_bar() +
+#   tm_view(bbox = `1986`)
+  
+  cycling_infrastructure_rdeck("1986")
+```
+See Note 1. Data provided by: Houde, M., Apparicio, P., & Séguin, A.-M. (2018). A ride for whom: Has cycling network expansion reduced inequities in accessibility in Montreal, Canada? Journal of Transport Geography, 68, 9–21. https://doi.org/10.1016/j.jtrangeo.2018.02.005 
+
+```{r echo=FALSE, fig.align = 'center'}
+# 
+# `New for 1991` <- lines %>% filter(An1991 == 1 & An1986 == 0) 
+# 
+# `Removed for 1991` <- lines %>% filter(An1991 == 0 & An1986 == 1)
+# 
+# `Remained in 1991` <- lines %>% filter(An1991 == 1 & An1986 == 1)
+# 
+# updated_map_1991 <- tm_shape(water) +
+#   tm_fill(col = "#A4E1FF") + 
+#   tm_shape(`Remained in 1991`) + 
+#   tm_lines(col = "#2E4633") + 
+#   tm_shape(`New for 1991`) + 
+#   tm_lines(col = "#73AE80") + 
+#   tm_shape(`Removed for 1991`) +
+#   tm_lines(col = "#CA0020") +
+#   tm_view(bbox = `New for 1991`) +
+#   tm_layout(title = "1991 Bike Lanes", 
+#             fontfamily = "serif") + 
+#   tm_scale_bar() 
+# updated_map_1991
+cycling_infrastructure_rdeck(1991)
+```
+(Houde et al., 2018)</div>
+
+### From activism to policy: the 1995 Bicycle Policy
+After years of activism demonstrating the importance of cycling, Québec acted to drastically increase cycling infrastructure. The 1995 Bicycle Policy, adapted by the Ministère des Transports (MTQ) and the Société de l’assurance automobile du Québec (SAAQ), was the first major policy for cycling in the province of Québec. The policy emerged from commitments at the 1992 Montréal Conférence Vélo Mondiale and public input, and addressed “the immediate needs of cyclists in terms of safety and mobility” (Ministère des Transports du Québec, 2008, 7). Furthermore, the bicycle policy addressed the underlying benefits of cycling, reflecting a new effort to promote cycling as a means of active transportation, in addition to being a leisure activity. The plan introduced three broad objectives: gradual encouragement to use the bicycle as a mode of transportation, the promotion of road safety with cyclists and other road users, and the improvement of the transportation system for cyclists (Ministère des Transports du Québec, 15).
+
+While it did not transform Québec into a cycling society at the scale of some European nations, the 1995 bicycle policy provided the foundation for decades of subsequent policy, legislation, and research. Most importantly, research demonstrates that, following 1995, Québecers increasingly used cycling for transportation. From 1995 to 2005, the proportion of cyclists using a bicycle for transportation (excluding recreation, tourism, or training) increased 62%, from 21% to 34% (Ministère des Transports du Québec, 2009, 9).
+
+<div align="center">
+```{r echo=FALSE, fig.align = 'center'}
+# `New for 1996` <- lines %>% filter(An1996 == 1 & An1991 == 0) 
+# 
+# `Removed for 1996` <- lines %>% filter(An1996 == 0 & An1991 == 1)
+# 
+# `Remained in 1996` <- lines %>% filter(An1996 == 1 & An1991 == 1)
+# 
+# updated_map_1996 <- tm_shape(water)+
+#   tm_fill(col = "#A4E1FF") + 
+#   tm_shape(`Remained in 1996`) + 
+#   tm_lines(col = "#2E4633") + 
+#   tm_shape(`New for 1996`) + 
+#   tm_lines(col = "#73AE80") + 
+#   tm_shape(`Removed for 1996`) +
+#   tm_lines(col = "#CA0020") +
+#   tm_view(bbox = `New for 1996`) +
+#   tm_layout(title = "1996 Bike Lanes", 
+#             fontfamily = "serif") + 
+#   tm_scale_bar() 
+# 
+# updated_map_1996
+cycling_infrastructure_rdeck(1996)
+```
+(Houde et al., 2018)</div>
+
+### 2008 bicycle policy
+The 2008 bicycle policy updated the 1995 policy with more specific objectives for cycling and a new emphasis on cycling in urban areas. First, the 2008 policy aimed to increase the modal share of cycling by 50% per agglomeration, with an increase in the Montréal agglomeration from 1.2 % (2003) to 1.8% in 2020 (Ministère des Transports du Québec, 2008, 15). Second, the policy sought to reduce the number of cyclist accident victims due to motor vehicles by 30% for 2020, compared to the 2002-2006 average. The third and final target was to increase the number of kilometres of bikeways in Québec by 30%, from 6,789 km in 2005 to 8,826 in 2020. All of these targets have successfully been met, or even exceeded. As of 2022, Quebec has 12,000 km of bicycle paths, and by 2018, 3.3% of trips on the Island of Montréal were made by bicycle (Bonjour Québec, n.d). Furthermore, there were 84 incidents of serious injury or fatalities for cyclists in 2020, from an average of 189 in the 2002 to 2006 period (Vélo Québec, 2020, 15) - however, this comparison does not account for the impact of the COVID-19 pandemic on cycling rates, and there are still many improvements to be made before there are zero cycling injuries and fatalities.
+
+<div align="center">
+```{r echo=FALSE, fig.align = 'center'}
+# `New for 2001` <- lines %>% filter(An2001 == 1 & An1996 == 0) 
+# 
+# `Removed for 2001` <- lines %>% filter(An2001 == 0 & An1996 == 1)
+# 
+# `Remained in 2001` <- lines %>% filter(An2001 == 1 & An1996 == 1)
+# 
+# updated_map_2001 <- 
+#   tm_shape(water)+
+#   tm_fill(col = "#A4E1FF") + 
+#   tm_shape(`Remained in 2001`) + 
+#   tm_lines(col = "#2E4633") + 
+#   tm_shape(`New for 2001`) + 
+#   tm_lines(col = "#73AE80") + 
+#   tm_shape(`Removed for 2001`) +
+#   tm_lines(col = "#CA0020") +
+#   tm_view(bbox = `New for 2001`) +
+#   tm_layout(title = "2001 Bike Lanes", 
+#             fontfamily = "serif") + 
+#   tm_scale_bar() 
+# 
+# updated_map_2001
+cycling_infrastructure_rdeck(2001)
+```
+(Houde et al., 2018)
+```{r echo=FALSE, fig.align = 'center'}
+# `New for 2006` <- lines %>% filter(An2006 == 1 & An2001 == 0) 
+# 
+# `Removed for 2006` <- lines %>% filter(An2006 == 0 & An2001 == 1)
+# 
+# `Remained in 2006` <- lines %>% filter(An2006 == 1 & An2001 == 1)
+# 
+# updated_map_2006 <- tm_shape(water)+
+#   tm_fill(col = "#A4E1FF") + 
+#   tm_shape(`Remained in 2006`) + 
+#   tm_lines(col = "#2E4633") + 
+#   tm_shape(`New for 2006`) + 
+#   tm_lines(col = "#73AE80") + 
+#   tm_shape(`Removed for 2006`) +
+#   tm_lines(col = "#CA0020") +
+#   tm_view(bbox = `New for 2006`) +
+#   tm_layout(title = "2006 Bike Lanes", 
+#             fontfamily = "serif") + 
+#   tm_scale_bar() 
+cycling_infrastructure_rdeck(2006)
+```
+(Houde et al., 2018)
+```{r echo=FALSE, fig.align = 'center'}
+# `New for 2011` <- lines %>% filter(An2011 == 1 & An2006 == 0) 
+# 
+# `Removed for 2011` <- lines %>% filter(An2011 == 0 & An2006 == 1)
+# 
+# `Remained in 2011` <- lines %>% filter(An2011 == 1 & An2006 == 1)
+# 
+# updated_map_2011 <- tm_shape(water)+
+#   tm_fill(col = "#A4E1FF") + 
+#   tm_shape(`Remained in 2011`) + 
+#   tm_lines(col = "#2E4633") + 
+#   tm_shape(`New for 2011`) + 
+#   tm_lines(col = "#73AE80") + 
+#   tm_shape(`Removed for 2011`) +
+#   tm_lines(col = "#CA0020") +
+#   tm_view(bbox = `New for 2011`) +
+#   tm_layout(title = "2011 Bike Lanes", 
+#             fontfamily = "serif") + 
+#   tm_scale_bar()
+# 
+# updated_map_2011
+cycling_infrastructure_rdeck(2011)
+```
+(Houde et al., 2018)
+</div>
+
+### The current city framework: Montréal’s cycling Master Plan, 2017
+Montreal’s Cycling Master Plan from 2017 (Montréal, City of Cyclists, 2017) is a ten-part plan to increase cycling in Montreal, with the overarching goal to increase the modal share of cycling to 15% in 15 years Unlike the provincial goals, it provides specific information about which Montréal neighborhoods, or even streets, could use improved cycling infrastructure. Below are the ten different goals as listed in the master plan, and how the city plans on achieving them.
+
+1.Deploy Montréal’s bike path network, with a focus on greater connectivity, better access to centres of economic activity, and improved integration with public transit: The city plans on creating more protected bike paths to downtown, as bike paths on Rue Berri, Boulevard Robert-Bourassa, and the Claire Morissette path along Boulevard De Maisonneuve, are often busy at peak travel times.
+2.Make Montréal’s bike path network safe and accessible year-round: A significant portion of this goal is improving winter maintenance for bike paths.
+3.Develop a bicycle accessibility plan for downtown: The city plans on increasing downtown bicycle parking spaces, promoting north-south bike paths in the downtown area, and increasing the accessibility of bike lanes for tourists and visitors.
+4.Implement bold, large-scale cycling programs at the metropolitan level: The city will utilize public and private partnerships for projects, and accelerate large-scale cycling projects.
+5.Improve the quality and supply of bicycle parking across Montréal, particularly in central neighbourhoods: Montreal will have private partners make plans for increasing bicycle parking, and will attempt to match bike parking to the rise in bicycle use.
+6.Integrate the needs of cyclists into the current road network as well as road construction and reconstruction: The city will ensure that bicycle routes are considered during road construction, and will create campaigns for drivers to raise awareness of cardooring, defined as when a parked driver opens their door into a bike lane, which can strike cyclists.
+7.Install infrastructures or equipment that use innovations and new technologies and thus reflect the functionalities proper to a smart and digital city: The city hopes that collecting more data on cyclists will create a better network, using new concepts or technologies. An example of this is the “greenwave” for cyclists, which is a name for synchronizing traffic lights to ensure that cyclists encounter consecutive green lights at intersections.
+8.Implement projects and programs geared to organizations or cultural communities with the goal of supporting and promoting initiatives that encourage cycling: This goal is particularly interesting, as it hopes to use cycling as a “catalyst and social development tool” for recent immigrants to Montreal, while also promoting access to cycling through new programs.
+9.Develop partnerships with sporting associations, schools, leisure groups, etc., with the goal of meeting the needs of all clienteles: The city plans on creating partnerships with organisations to promote cycling. One example of this is partnering with schools to develop safe and child-friendly bike paths for children travelling to and from school.
+10.Promote cycling as a safe, effective and comfortable mode of transport: This goal seeks to promote Montréal as a cyclist-friendly city on an international scale, encourage BIXI bikes with tourists, and promote cycling as transportation for Montréalers (27).
+
+### The current provincial framework: Sustainable Mobility Policy, 2018
+Québec’s Sustainable Mobility Policy from 2018 outlines the province’s current objectives relating to active transport, including cycling infrastructure, safety measures, and trip count targets. The policy notes how separated bicycle paths with “priority at traffic lights, traffic calming measures and the availability of safe bicycle stands” will improve conditions for current cyclists, while also attracting new riders (Sustainable Mobility Policy, 2030, 4). Winter maintenance for bicycle paths is also acknowledged as an important part of a safe and reliable network, demonstrating an effort to promote cycling throughout the year.
+
+Within the Sustainable Mobility Policy, the 2018-2023 Active Transportation Action Plan outlines three targets to achieve by or before 2030. First, the plan seeks to double the number of daily cycling trips by 2028, compared to the number of daily recorded cycling trips from 2013. This would mean increasing the number of daily trips made by bicycle from 165,000 (2013) to 330,000 (Sustainable Mobility Policy 2030, 11). A second goal is to reduce pedestrian and cyclist “accident victims” by 25%, compared to the average number of collisions between 2012 and 2016. The third and final goal is to consolidate and extend the Route Verte (a network of over 5,300 cycling trails) by adding 858 km of bicycle paths by 2030, which will increase connectivity and encourage cycling across the province. 
+
+Overall, policies from 1995 onward have demonstrated a strong commitment to cycling as a means of transportation. The rate of progress has often outpaced projections, which is a promising trend that will hopefully repeat itself with the 2018 mobility policy. While these policies have certainly contributed to this success, other factors outside of policies may also be responsible for driving the growth of cycling infrastructure for Montréal.
+
+### The rise of BIXI
+Public bike sharing services have existed since the 1960s, and recent years have seen their dramatic growth in cities around the world. Montréal’s BIXI bike service is the largest bike sharing program in North America, recording over 50 million individual trips since its inception in 2009 (BIXI Montréal, 2022). With BIXI, users have access to roughly 700 stations located around Montréal, and have the option to purchase yearly, monthly, and daily passes, as well as the option to pay for a single trip. After paying, one enters a code to unlock a bike of their choosing, and can drop it off at any BIXI stop. Essentially, bike sharing services allow users to cycle for transportation, without the liability and hassle of owning their own bike. 
+
+Bike sharing services provide numerous benefits for cities. They lead to higher rates of cycling, decrease traffic congestion, and reduce air and noise pollution, while also increasing rates of physical activity (Fuller et al., 2013). Research on Montréal demonstrates that accessibility to BIXI bikes correlates with a greater likelihood of cycling for individuals (Fuller et al., 2013). However, this increase of cyclists also creates a higher demand for cycling infrastructure. As of May 2022, BIXI is seeing record growth for users and trips, including 227,883 membership or access purchases, and 1,278,560 individual trips in May alone ( BIXI Montréal, 2022). This growth is partially due to the expansion of bike infrastructure projects, which have made using bike sharing services easier to use over the past decade. However, this also demonstrates the need for Montréal to further improve its network. Luckily, the city has an ambitious project currently under construction.
+
+<div align="center">
+```{r echo=FALSE, warning = FALSE, fig.align = 'center'}
+# `New for 2016` <- lines %>% filter(An2016 == 1 & An2011 == 0) 
+# 
+# `Removed for 2016` <- lines %>% filter(An2016 == 0 & An2011 == 1)
+# 
+# `Remained in 2016` <- lines %>% filter(An2016 == 1 & An2011 == 1)
+# 
+# updated_map_2016 <- tm_shape(water) +
+#   tm_fill(col = "#A4E1FF") + 
+#   tm_shape(`Remained in 2016`) + 
+#   tm_lines(col = "#2E4633") + 
+#   tm_shape(`New for 2016`) + 
+#   tm_lines(col = "#73AE80") + 
+#   tm_shape(`Removed for 2016`) +
+#   tm_lines(col = "#CA0020") +
+#   tm_shape(`BIXI Stations 2016`) + 
+#   tm_dots(size = .004) +
+#   tm_view(bbox = `Remained in 2016`) +
+#   tm_layout(title = "2016 Bike Lanes and BIXI Stations", 
+#             fontfamily = "serif") + 
+#   tm_scale_bar()
+# 
+# updated_map_2016
+cycling_infrastructure_rdeck(2016)
+```
+(Houde et al., 2018)
+</div>
+
+### Improving Montréal’s bikeability: The REV
+Montréal’s cycling infrastructure has come a long way since the automobile-era of the 1970s. According to the Copenhagenize Index (2019), Montréal ranks first in Canada and 18th in the world for bicycle-friendly cities. However, the city’s cycling infrastructure still needs improvements, as disjointed bike networks present navigational difficulties, and some major bike lanes are still not separated for cyclist safety. The Réseau express vélo (REV) is a large-scale cycling infrastructure project that seeks to address these issues, and will form the backbone of Montréal’s cycling network. If all 17 of the proposed axes are completed, cyclists will have access to 184 km of mostly protected bike lanes, with year-round maintenance (Ville de Montreal, 2022). Goals of the REV include improving accessibility and safety for cyclists, while concurrently reducing greenhouse gas emissions and improving quality of life. Ultimately, the city plans to have over 15% of commuters travelling by bicycle in the next 10 years (Wurst, 2020).
+
+As part of Montréal’s broader transportation network, a completed REV will double access to public transit access points, defined as points within 50 meters of a metro station and within 25 meters of a bus stop (Lacerte-Gauthier, 2022). The REV will also increase access to public schools by bikes, including schools currently in disadvantaged areas (Lacerte-Gauthier, 2022). While the city has already completed four axes, including Berri / Lajeunesse / Saint-Denis, Souligny, Peel, and De Bellechasse, Velo Québec has called for an acceleration of the project timeline to respond to the continued growth of cycling in Montréal (Couillard, 2019). 
+
+<div align="center">
+```{r echo=FALSE, warning = FALSE, fig.align = 'center'}
+# `2022` <- st_read(here("dev/data/stories/shp/history_cycling_infrastructure/Cycling_Lane.shp")) %>% 
+#   st_transform(4326)
+# 
+# # this clips it by the zones polygons
+# `2022` <- `2022`[zones, ]
+# 
+# updated_map_2022 <- tm_shape(water) + 
+#   tm_polygons(col = "#A4E1FF") +
+#   tm_shape(`2022`) +
+#   tm_lines(col = "#73AE80") + 
+#   tm_shape(`BIXI Stations 2022`) + 
+#   tm_dots(size = .004) +
+#   tm_layout(title = "2022 Bike Lanes and BIXI Stations", 
+#             fontfamily = "serif") + 
+#   tm_scale_bar() + 
+#   tm_view(bbox = `2022`)
+# 
+# updated_map_2022
+cycling_infrastructure_rdeck("2022")
+```
+See Note 2. Data provided by: Winters et al. The Canadian Bikeway Comfort and Safety Metrics (Can-BICS): Measuring the bicycling environment in all communities in Canada – for submission to Health Reports (forthcoming).
+</div>
+
+### From the past to the future of cycling
+It is important to reflect upon the present state of cycling in Montréal, and the vast progress that has been achieved in the past fifty years. Much is owed to early activists in the 1970s and 1980s for their dedication to cycling advocacy, which laid the foundation for projects and policies in the 1990s onwards. While looking back on the past, it is also important to acknowledge that there is still much progress to be made for the future. Today’s road conditions present new dangers that were not present in the 1970s, such as an increase of larger vehicles on the road, including SUVs, pickup trucks, and vans. Studies have shown that larger vehicles are disproportionately deadly in a crash. From 2011 to 2019, 47 percent of cycling deaths in Québec were from drivers in heavy vehicles, despite the fact that they only account for 4 percent of drivers, further demonstrating the need to provide protective infrastructure for cyclists (Nerestant, 2021). To address this, cities around the world have adopted “Vision Zero” policies, which recognize that traffic collisions are preventable with better urban planning, and that zero deaths or serious injuries on roads is achievable. Montréal’s “Vision Zero” policy aims for zero deaths or serious injuries on roads by 2040, and improving the city’s cycling infrastructure will undoubtedly play a critical role in this policy’s success (Ville de Montréal, 2022).
+
+As demonstrated by cycling leaders of the past, community activism can play a vital role in advancing change. Montréalers of today can draw on their successes to accelerate change in our own communities, while holding leaders accountable to their ambitious targets. The “vélorution” still lives on today, and the future of Montréal’s cycling infrastructure is promising.
+
+Note 1: it is unknown what the cause of removal was for each bike lane labelled as “removed.” It is possible that they are represented as removed due to construction, or another temporary measure, as opposed to a full removal of the lane. 
+
+Note 2: The bike lanes in this map come from a different source, without data on what was added and what was removed.
+
+### Bibliography
+
+* Copenhagenize EU Design Co. (2019). 2019 copenhagenize index. Copenhagenize. Retrieved June 21, 2022, from https://copenhagenizeindex.eu/ 
+* Couillard, S. (2019, May 7). Lancement du Rev: Vélo Québec salue l'initiative de Montréal et propose d'accélérer le processus. Vélo Québec. Retrieved June 15, 2022, from https://www.velo.qc.ca/salle-de-presse/lancement-du-rev-velo-quebec-salue-linitiative-de-montreal-et-propose-daccelerer-le-processus/ 
+* Cycling. Bonjour Québec. (n.d.). Retrieved June 15, 2022, from https://www.bonjourquebec.com/en-ca/to-see-and-do/outdoor-activities/cycling 
+* Fuller, D., Gauvin, L., Kestens, Y., Daniel, M., Fournier, M., Morency, P., and Drouin, L. (2013). Impact Evaluation of a Public Bicycle Share Program on Cycling: A Case Example of BIXI in Montreal. Quebec American Journal of Public Health, 103, e85_e92, https://doi.org/10.2105/AJPH.2012.30091  
+* Gouvernement du Québec, ministère des Transports. (2018). Transporting Québec towards Modernity: Sustainable Mobility Policy - 2030. Gouvernement du Québec. Retrieved June 15, 2022, from https://www.transports.gouv.qc.ca/en/Documents/active-transportation-intervention-framework.pdf 
+* Houde, M., Apparicio, P., & Séguin, A.-M. (2018). A ride for whom: Has cycling network expansion reduced inequities in accessibility in Montreal, Canada? Journal of Transport Geography, 68, 9–21. https://doi.org/10.1016/j.jtrangeo.2018.02.005 
+* Lacerte-Gauthier, F. (2022, April 14). Le Rev Cyclable Serait Bénéfique, selon la santé publique. Le Journal de Montréal. Retrieved June 15, 2022, from https://www.journaldemontreal.com/2022/04/14/le-rev-cyclable-serait-benefique-selon-la-sante-publique 
+* Laforge, M. (2019, September 17). Le Monde à bicyclette : Vive la vélorution! Mémoires des Montréalais. Retrieved June 15, 2022, from https://ville-montreal-qc-ca.translate.goog/memoiresdesmontrealais/le-monde-bicyclette-vive-la-velorution?_x_tr_sl=fr&_x_tr_tl=en&_x_tr_hl=en&_x_tr_pto=op%2Csc 
+* Ministère des Transports du Québec. (2008, May). From Fun to Functional: Cycling – A Mode of Transportation in its Own Right. http://www.bv.transports.gouv.qc.ca/mono/0979376.pdf 
+* Montreal bike rental. BIXI Montréal. (2022). Retrieved June 15, 2022, from https://bixi.com/en 
+* Nerestant, A. (2021, November 13). Latest Cycling Death in Montreal puts spotlight back on Truck Safety. CBCnews. Retrieved June 15, 2022, from https://www.cbc.ca/news/canada/montreal/cyclist-killed-advocate-solutions-trucks-safety-1.6244548 
+* Noakes, T. C. (2022, April 20). How bicycle bob "vélorutionized" cycling culture in Montreal. Cult MTL. Retrieved June 15, 2022, from https://cultmtl.com/2022/04/how-robert-bicycle-bob-silverman-velorutionized-cycling-culture-in-montreal/ 
+* Open data. BIXI Montréal. (2022, May). Retrieved June 15, 2022, from https://www.bixi.com/en/open-data 
+* Scott, M. (2022, February 21). 'bicycle Bob' Silverman, a father of Montreal's vélorution, dies at 87 ... Montreal Gazette. Retrieved June 15, 2022, from https://montrealgazette.com/news/local-news/robert-bicycle-bob-silverman-dead-at-87  
+* Ville de Montreal. (2022, June 2). The rev : An express bike network. Montreal. Retrieved June 15, 2022, from https://montreal.ca/en/articles/rev-express-bike-network-4666  
+* Ville de Montréal. (2017). Montréal, City of Cyclists: Cycling Master Plan: Safety, Efficiency, Audacity. Ville de Montréal. Retrieved June 15, 2022, from https://ehq-production-canada.s3.ca-central-1.amazonaws.com/documents/attachments/61d83b9d3318c575d415a3a98656bba4aa4971c7/000/010/701/original/Plan_cadre_vélo_Ang_final_LR.pdf?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAIBJCUKKD4ZO4WUUA%2F20220615%2Fca-central-1%2Fs3%2Faws4_request&X-Amz-Date=20220615T140939Z&X-Amz-Expires=300&X-Amz-SignedHeaders=host&X-Amz-Signature=5865d6af2af14964cbae7a471d243bd241d461d1fcd6287a27b0c791dfbebe46  
+* Ville de Montréal. (2022, June 13). Vision Zero: Zero deaths and serious injuries on the roads. Montréal. Retrieved June 15, 2022, from https://montreal.ca/en/articles/vision-zero-zero-deaths-and-serious-injuries-roads-14584  
+* Vélo Québec. (2017, April 1). Battles of the 70s... victories of the 80s! Vélo Québec. Retrieved June 20, 2022, from https://www.velo.qc.ca/en/the-history-of-cycling/battles-of-the-70s-victories-of-the-80s/ 
+* Vélo Québec. (2017, May 1). Tour de l'île de Montréal: Genesis of a Classic. Vélo Québec. Retrieved June 15, 2022, from https://www.velo.qc.ca/en/the-history-of-cycling/tour-de-lile-de-montreal-genesis-of-a-classic/ 
+* Vélo Québec. (2017, September 1). Transmitting cycling knowledge is part of Vélo Québec's DNA. Vélo Québec. Retrieved June 15, 2022, from https://www.velo.qc.ca/en/the-history-of-cycling/transmitting-cycling-knowledge-is-part-of-velo-quebecs-dna/  
+* Vélo Québec. (2020). Cycling in Québec in 2020. Vélo Québec. Retrieved June 15, 2022, from https://www.velo.qc.ca/wp-content/uploads/2021/06/vq-edv2020-en.pdf  
+* Vélo Québec. (2020, April 28). It all began with "Le bon dieu en vélo"! Vélo Québec. Retrieved June 15, 2022, from https://www.velo.qc.ca/en/the-history-of-cycling/it-all-began-with-le-bon-dieu-en-velo/  
+* Vélo Québec. (2017, October 1). Make biking a mode of Transportation. Vélo Québec. Retrieved June 15, 2022, from https://www.velo.qc.ca/en/the-history-of-cycling/make-biking-a-mode-of-transportation/  
+* Vélo Québec. (2020, December 16). Vélo Québec history. Vélo Québec. Retrieved June 15, 2022, from https://www.velo.qc.ca/en/about-us/velo-quebec-history/  
+* Walker, P. (2015, June 17). People power: The secret to Montreal's success as a bike-friendly city. The Guardian. Retrieved June 15, 2022, from https://www.theguardian.com/cities/2015/jun/17/people-power-montreal-north-america-cycle-city
+* What is Vision Zero? Vision Zero Network. (2022). Retrieved June 15, 2022, from https://visionzeronetwork.org/about/what-is-vision-zero/  
+* Wurst, B. (2020, November 1). Montreal reveals New Rev Bike Path Network. Mtltimes.ca. Retrieved June 15, 2022, from https://mtltimes.ca/life/montreal-reveals-new-rev-bike-path-network/ 
+
+

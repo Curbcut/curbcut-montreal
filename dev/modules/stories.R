@@ -107,7 +107,18 @@ stories <-
                      "and the private realm. The case of Le Plateau-Mont-Royal ",
                      "is particularly interesting."),
     lon = -73.570753,
-    lat = 45.515949)
+    lat = 45.515949) |> 
+  
+  add_row(
+    name = "cycling_infrastructure",
+    title = paste0("A History of Cycling Infrastructure in Montréal"),
+    img = "cycling_infrastructure.png",
+    preview = paste0("Montréal is a world-renowned cycling city, but it hasn’t ",
+                     "always been this way. Explore how the city’s cycling ",
+                     "infrastructure has evolved over time in this interactive ",
+                     "story."),
+    lon = -73.578179,
+    lat = 45.521828)
 
 
 # Finish table ------------------------------------------------------------
