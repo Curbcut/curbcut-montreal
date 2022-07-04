@@ -26,10 +26,10 @@ susNewsExploreArticle <- function(id, type, author, date, title, img, preview) {
       column(9,
         tags$div(class="news-meta-data",
                 tags$span(class="news-meta-data-type", type),
-                tags$span(class="news-meta-data-date", date),
-                tags$span(class="news-meta-data-author",
-                          tagList(sus_translate(r = r, "by"), " ", author)
-                          ),
+                tags$span(class="news-meta-data-date", date)#,
+                # tags$span(class="news-meta-data-author",
+                #           tagList(sus_translate(r = r, "by"), " ", author)
+                #           ),
                 ),
         tags$h1(title),
         tags$div(class="news-preview",

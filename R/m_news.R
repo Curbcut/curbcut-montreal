@@ -7,34 +7,22 @@ news <- get_news()
 
 # News UI dynamic number of divs
 news_divs <- function(id, info_list) {
-  # TODO: somehow using the function
-  return (
-    susNewsExploreArticle(
-      id=id,
-      type='original',
-      author='Bob Loblaw', 
-      date=info_list$date,
-      title=info_list$title,
-      img=info_list$img,
-      preview=info_list$preview
-    )
-  )
-  
-  # paste0("div(id = NS(id, '", id, "'),",
-  #        "class = 'action-button shiny-bound-input',",
-  #        "fluidRow(column(9, tags$h1(", info_list, "$title),",
-  #        "tags$span(", info_list, " $date),",
-  #        "tags$p(", info_list, "$preview)),",
-  #        "column(3, img(src = ", info_list, "$img, ",
-  #        "align = 'right'))))")
+  paste0(
+    "susNewsExploreArticle(",
+      "id = NS(id, '", id, "'),",
+      "type = 'original',",
+      "date = '", info_list$date, "',",
+      "title = '", info_list$title, "',",
+      "img = '", info_list$img, "',",
+      "preview = '", info_list$preview, "')")
 }
 
 en_news_ui <- 
-  mapply(news_divs, names(news$en), list(news$en),
+  mapply(news_divs, names(news$en), news$en,
          USE.NAMES = FALSE)
 
 fr_news_ui <- 
-  mapply(news_divs, names(news$fr), list(news$fr),
+  mapply(news_divs, names(news$fr), news$fr,
          USE.NAMES = FALSE)
 
 
@@ -56,28 +44,11 @@ news_UI <- function(id) {
             susPageSection(
               
               tags$div(
-                id=NS(id, "explore"),
+                id = NS(id, "explore"),
                 
                 # English news
                 tags$span(class = "lang-en",
-                          susNewsExploreArticle(
-                            id=id,
-                            type='original',
-                            author='Bob Loblaw', 
-                            date='2022/07/04',
-                            title='Welcome to SUS, your daily platform for Montreal climate, transit, policy, and active living resources',
-                            img='/www/news/visuals/welcome/sus_logo_256x256.png',
-                            preview='Sus is an urban sustainability platform for the Montreal region. It operates across multiple spatial and temporal scales and offers a justice- and inclusivity-focused approach to sustainability.'
-                          )
-                          
-                          # A first div, a block of news x
-                          # div(id = NS(id, names(news$en)[1]),
-                          #     class = "action-button shiny-bound-input",
-                          #     fluidRow(column(9, tags$h1(news$en[[1]]$title),
-                          #                     tags$span(news$en[[1]]$date),
-                          #                     tags$p(news$en[[1]]$preview)),
-                          #              column(3, img(src = news$en[[1]]$img, 
-                          #                            align = "right"))))
+                          eval(parse(text = en_news_ui))
                 ),
                 
                 # French news
