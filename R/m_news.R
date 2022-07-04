@@ -7,13 +7,26 @@ news <- get_news()
 
 # News UI dynamic number of divs
 news_divs <- function(id, info_list) {
-  paste0("div(id = NS(id, '", id, "'),",
-         "class = 'action-button shiny-bound-input',",
-         "fluidRow(column(9, h3(", info_list, "$title),",
-         "h5(", info_list, " $date),",
-         "h4(", info_list, "$preview)),",
-         "column(3, img(src = ", info_list, "$img, ",
-         "align = 'right'))))")
+  # TODO: somehow using the function
+  return (
+    susNewsExploreArticle(
+      id=id,
+      type='original',
+      author='Bob Loblaw', 
+      date=info_list$date,
+      title=info_list$title,
+      img=info_list$img,
+      preview=info_list$preview
+    )
+  )
+  
+  # paste0("div(id = NS(id, '", id, "'),",
+  #        "class = 'action-button shiny-bound-input',",
+  #        "fluidRow(column(9, tags$h1(", info_list, "$title),",
+  #        "tags$span(", info_list, " $date),",
+  #        "tags$p(", info_list, "$preview)),",
+  #        "column(3, img(src = ", info_list, "$img, ",
+  #        "align = 'right'))))")
 }
 
 en_news_ui <- 
@@ -29,28 +42,49 @@ fr_news_ui <-
 
 news_UI <- function(id) {
   tagList(
-    susPage(class = "sus-page-news", footer = susFooter(), 
+    susPage(class = "sus-page-news", footer = susFooter(),
+            susPageControls(
+                tags$div(
+                  id=NS(id, "explore-controls"),
+                  tags$span(id=id, "Placeholder for explore view controls.")
+                ),
+                tags$div(
+                  id=NS(id, "news-controls"),
+                  actionLink(NS(id, "back"), sus_translate(r = r, "Back to explore"))
+                )
+              ),
             susPageSection(
               
-              # The back to general news button
-              actionLink(NS(id, "back"), sus_translate(r = r, "Back to News")),
-              
-              # English news
-              tags$span(class = "lang-en",
-                        # A first div, a block of news x
-                        div(id = NS(id, names(news$en)[1]),
-                            class = "action-button shiny-bound-input",
-                            fluidRow(column(9, h3(news$en[[1]]$title),
-                                            h5(news$en[[1]]$date),
-                                            h4(news$en[[1]]$preview)),
-                                     column(3, img(src = news$en[[1]]$img, 
-                                                   align = "right"))))
-              ),
-              
-              # French news
-              tags$span(class = "lang-fr",
-                        # FOR LATER, HOW TO DO A DYNAMIC NUMBER OF DIVS.
-                        eval(parse(text = fr_news_ui))
+              tags$div(
+                id=NS(id, "explore"),
+                
+                # English news
+                tags$span(class = "lang-en",
+                          susNewsExploreArticle(
+                            id=id,
+                            type='original',
+                            author='Bob Loblaw', 
+                            date='2022/07/04',
+                            title='Welcome to SUS, your daily platform for Montreal climate, transit, policy, and active living resources',
+                            img='/www/news/visuals/welcome/sus_logo_256x256.png',
+                            preview='Sus is an urban sustainability platform for the Montreal region. It operates across multiple spatial and temporal scales and offers a justice- and inclusivity-focused approach to sustainability.'
+                          )
+                          
+                          # A first div, a block of news x
+                          # div(id = NS(id, names(news$en)[1]),
+                          #     class = "action-button shiny-bound-input",
+                          #     fluidRow(column(9, tags$h1(news$en[[1]]$title),
+                          #                     tags$span(news$en[[1]]$date),
+                          #                     tags$p(news$en[[1]]$preview)),
+                          #              column(3, img(src = news$en[[1]]$img, 
+                          #                            align = "right"))))
+                ),
+                
+                # French news
+                tags$span(class = "lang-fr",
+                          # FOR LATER, HOW TO DO A DYNAMIC NUMBER OF DIVS.
+                          eval(parse(text = fr_news_ui))
+                )
               ),
               
               # A news that pops up
@@ -86,12 +120,15 @@ news_server <- function(id, r) {
              '</div>')
       }
     })
+    
     # Hide active news when "Go back to map" button is clicked
     observe(r[[id]]$select_id(NA)) |> bindEvent(input$back)
     
     observe({
-      toggle("back", condition = !is.na(r[[id]]$select_id()))
+      toggle("news-controls", condition = !is.na(r[[id]]$select_id()))
       toggle("news", condition = !is.na(r[[id]]$select_id()))
+      toggle("explore-controls", condition = is.na(r[[id]]$select_id()))
+      toggle("explore", condition = is.na(r[[id]]$select_id()))
     }) |> bindEvent(r[[id]]$select_id())
     
   })
