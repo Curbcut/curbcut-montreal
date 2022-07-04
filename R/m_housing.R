@@ -267,5 +267,7 @@ housing_server <- function(id, r) {
                                       df = df()))
     })
     
+    observe(assign("export_data_", r[[id]]$export_data(), env = .GlobalEnv))
+    
   })
 }

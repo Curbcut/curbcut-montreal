@@ -277,12 +277,12 @@ shinyServer(function(input, output, session) {
     downloadHandler(
       filename = paste0(r[[input$sus_page]]$export_data()$id, "_shp.zip"),
       content = function(file) {
-        withProgress(message = "Exporting Data", {
+        withProgress(message = sus_translate(r = r, "Exporting Data"), {
           
           incProgress(0.4)
           
           # Prepare data by attaching geometries
-          geo <- qread(paste0("data_temp/geometry_export/", 
+          geo <- qread(paste0("data/geometry_export/", 
                               export_data()$data_origin, ".qs"))
           data <- merge(data_modal()$data, geo, by = "ID")
           rm(geo)

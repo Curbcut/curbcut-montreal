@@ -260,7 +260,8 @@ modules <-
               dataset_info = 
                 paste0("<p>This module presents <a href = 'https://www.statcan",
                        ".gc.ca/en/census/census-engagement/about'>housing data",
-                       " from the 1996 to present censuses.</a></p>"))
+                       " from the 1996 to ", years[length(years)], 
+                       " Canadian Censuses</a></p>"))
 
 
 # Clean up ----------------------------------------------------------------

@@ -10,21 +10,46 @@ get_metadata <- function(export_data, r, about_data,
   variables_row$var_title <- sus_translate(r = r, variables_row$var_title)
   
   time_text <- 
-    if (!is.na(time[1])) 
-      if (length(time) == 1) sus_translate(r = r, " for the year {time}") else 
-        sus_translate(r = r, " for the years {time[1]} and {time[2]}")
+    if (!is.na(time[1])) {
+      paste0(" ",
+      if (length(time) == 1) sus_translate(r = r, "for the year {time}") else 
+        sus_translate(r = r, "for the years {time[1]} and {time[2]}"))
+    } else ""
+  
+  # If private
+  if (variables_row$private)
+    about_data[[var]]$private <- 
+    paste0("<p = style = 'font-size: 1.45rem;'>",
+           sus_translate(r = r, "We do not have permission to make the ", 
+                         "variable <b>'{variables_row$var_title}'</b> ",
+                         "available for public download."),
+           "<p>")
+  
+  
+  # How many columns
+  single_col <- if (export_data$data |> 
+                    names() |> 
+                    str_subset(variables_row$var_code) |> 
+                    length() == 1) TRUE else FALSE
 
   about_data[[var]]$details_1 <-
     if (!variables_row$private) {
-      # As there's not preview or data to download, don't talk about columns
-      sus_translate(r = r, "The column(s) `<b>{paste0(export_data[[var]], ",
-                    "collapse = '</b>` and `<b>')}</b>` contain(s) data on ",
-                    "{variables_row$explanation} ({variables_row$var_title})",
-                    "{time_text}.")
+        if (single_col) {
+          sus_translate(r = r, "The column `<b>{paste0(export_data[[var]], ",
+                        "collapse = '</b>` and `<b>')}</b>` contains data on ",
+                        "{variables_row$explanation} ('{variables_row$var_title}')",
+                        "{time_text}.")        
+        } else {
+          sus_translate(r = r, "The columns `<b>{paste0(export_data[[var]], ",
+                        "collapse = '</b>` and `<b>')}</b>` contain data on ",
+                        "{variables_row$explanation} ('{variables_row$var_title}')",
+                        "{time_text}.")        
+        }
     } else {
+      # As there's not preview or data to download, don't talk about columns
       sus_translate(r = r, "The variable `<b>{variables_row$var_title}</b>` ",
                     "contain(s) data on {variables_row$explanation} ",
-                    "({variables_row$var_title}){time_text}.")
+                    "('{variables_row$var_title}'){time_text}.")
     }
   
   # Data type (Qualitative, Quantitative?)
@@ -55,9 +80,9 @@ get_metadata <- function(export_data, r, about_data,
     
     about_data[[var]]$details_2 <-
       sus_translate(r = r,
-                    "The data range from <b>{quant_info$min}</b> to ",
-                    "<b>{quant_info$max}</b>. The mean is <b>{quant_info$mean}",
-                    "</b> and the standard deviation is <b>{quant_info$sd}</b>.")
+                    "Values range from <b>{quant_info$min}</b> to ",
+                    "<b>{quant_info$max}</b>, with a mean of <b>{quant_info$mean}",
+                    "</b> and a standard deviation is <b>{quant_info$sd}</b>.")
   }
   
   # Climate risk special cases (1 = Insignificant, 2 = ...)
@@ -85,53 +110,53 @@ get_metadata <- function(export_data, r, about_data,
   # Source with possibly more information.
   about_data[[var]]$source <- 
     if (variables_row$source == "Canadian census") {
-      
+
       census_details <- 
         lapply(export_data[[var]], function(var_code_year) {
           census_variables_row <- 
             census_variables[census_variables$var_code == var_code_year, ]
           
           vector_definition <- 
-            paste0("<b>", unlist(census_variables_row$vec), "</b> (", 
+            paste0("<b>", unlist(census_variables_row$vec), "</b> ('", 
                    lapply(unlist(census_variables_row$vec_label), sus_translate, 
-                          r = r), ")",
+                          r = r), "')",
                    collapse = ", ")
           
           parent_vector_definition <- 
-            paste0("<b>", unlist(census_variables_row$parent_vec), "</b> (", 
+            paste0("<b>", unlist(census_variables_row$parent_vec), "</b> ('", 
                    lapply(unlist(census_variables_row$parent_vec_label), sus_translate, 
-                          r = r), ")",
+                          r = r), "')",
                    collapse = ", ")
           
           if (str_detect(export_data[[paste0(var, "_code")]], "_pct$")) {
             
-            # Singular nominator
+            # Singular numerator
             if (length(unlist(census_variables_row$vec)) == 1) {
               # Singular denominator
               if (length(unlist(census_variables_row$parent_vec)) == 1) {
                 sus_translate(r = r,
-                              "The nominator of the percentage is {vector_definition},",
+                              "The numerator of the percentage is {vector_definition},",
                               " and the denominator is {parent_vector_definition}.")
                 # Plural denominator
               } else {
                 sus_translate(r = r,
-                              "The nominator of the percentage is {vector_definition},",
+                              "The numerator of the percentage is {vector_definition},",
                               " and the summed denominators are {parent_vector_definition}.")
               }
-              # Plural nominator
+              # Plural numerator
             } else {
               # Singular denominator
               if (length(unlist(census_variables_row$parent_vec)) == 1) {
                 sus_translate(r = r,
                               "The percentage has been done with the addition of ",
-                              "the following vectors, forming the nominator: ",
+                              "the following vectors, forming the numerator: ",
                               "{vector_definition}. The denominator is ",
                               "{parent_vector_definition}.")
                 # Plural denominator
               } else {
                 sus_translate(r = r,
                               "The percentage has been done with the addition of ",
-                              "the following vectors, forming the nominator: ",
+                              "the following vectors, forming the numerator: ",
                               "{vector_definition}. The summed denominators are ",
                               "{parent_vector_definition}.")
               }
@@ -141,13 +166,13 @@ get_metadata <- function(export_data, r, about_data,
             # If average
             if (str_detect(export_data[[paste0(var, "_code")]], "_avg")) {
               sus_translate(r = r,
-                            "The census vector is ",
+                            "The Canadian Census vector is ",
                             "{vector_definition}. It is the average of ",
                             "{parent_vector_definition}.")
               # If a median
             } else if (str_detect(export_data[[paste0(var, "_code")]], "_median")) {
               sus_translate(r = r,
-                            "The census vector is ",
+                            "The Canadian Census vector is ",
                             "{vector_definition}. It is the median of ",
                             "{parent_vector_definition}.")
             }
@@ -165,17 +190,31 @@ get_metadata <- function(export_data, r, about_data,
           sus_translate(r = r, "For {time}: {census_details}"),
           collapse = " ")
       
-      paste0("<p style = 'font-size: 1.45rem;'>",
-             sus_translate(r = r,
-                           "The data comes from the {time_text} ",
-                           "canadian census(es). {census_details}",
-                           "</p>"))
-        
+      single_year <- if (length(time_text) == 1) TRUE else FALSE
+      
+      out <- 
+        if (single_year) {
+          paste0("<p style = 'font-size: 1.45rem;'>",
+                 sus_translate(r = r,
+                               "The data comes from the {time_text} ",
+                               "Canadian Census. {census_details}"),
+                 "</p>") 
+        } else  {
+          paste0("<p style = 'font-size: 1.45rem;'>",
+                 sus_translate(r = r,
+                               "The data comes from the {time_text} ",
+                               "Canadian Censuses. {census_details}"),
+                 "</p>")
+        }
+      
+      out
+      
       
     } else {
+      source <- sus_translate(r = r, variables_row$source)
       paste0("<p style = 'font-size: 1.45rem;'>",
              sus_translate(r = r,
-                           "The data comes from {variables_row$source}.</p>"),
+                           "The data comes from {source}."),
              "</p>")
     }
   
@@ -189,7 +228,7 @@ get_metadata <- function(export_data, r, about_data,
   
   if (interpolated) {
     
-    from <- interpolated_dfs[[export_data$df]]
+    from <- sus_translate(r = r, interpolated_dfs[[export_data$df]])
     
     about_data[[var]]$interpolated <- 
       # Special case for the boroughs at the census scale!
@@ -201,8 +240,6 @@ get_metadata <- function(export_data, r, about_data,
                "</p>")
       } else {
         df <- str_to_lower(sus_translate(r = r, get_zoom_name(export_data$df)))
-        from <- interpolated_dfs[[export_data$df]]
-        
         paste0("<p style = 'font-size: 1.45rem;'>",
                sus_translate(r = r, "`{variables_row$var_title}` at the {df} scale is ",
                              "spatially interpolated from {from}s."),

@@ -17,7 +17,11 @@ data_export_modal <- function(r = r, export_data) {
   about_module <- list()
   
   about_module$title <- 
-    paste0("<h3>", sus_translate(r = r, "About module data"), "</h3>")
+    paste0("<h3>", 
+           sus_translate(r = r, 
+                         title_text$text[title_text$type == "title" & 
+                                           title_text$tab == module$id]), 
+           "</h3>")
   
   about_module$text_linked <- 
     paste0(str_replace_all(
@@ -32,7 +36,7 @@ data_export_modal <- function(r = r, export_data) {
   about_data <- list()
   
   about_data$title <- 
-    paste0("<h3>", sus_translate(r = r, "About exportable data"), "</h3>")
+    paste0("<h3>", sus_translate(r = r, "About the data"), "</h3>")
   
   # Spatial organization of data
   data_organization <- 
@@ -40,13 +44,13 @@ data_export_modal <- function(r = r, export_data) {
   
   about_data$general_detail <- 
     paste0("<p style = 'font-size: 1.45rem'>",
-           sus_translate(r = r, "The data is spatially organized as ",
-                         "{data_organization}."),
+           sus_translate(r = r, "The data is spatially organized at the ",
+                         "{data_organization} scale."),
            "</p>")
   
   
   exist_var_right <- 
-    !is.null(export_data$var_right) && export_data$var_right != " "
+    !is.null(export_data$var_right[1]) && export_data$var_right[1] != " "
   
   ## Left variable ----------------------------------------------------------
   
@@ -58,7 +62,7 @@ data_export_modal <- function(r = r, export_data) {
   
   if (exist_var_right)
     about_data$var_left$title <- 
-    paste0("<h4>", sus_translate(r = r, "About left variable"), "</h3>")
+    paste0("<h4>", sus_translate(r = r, "About main variable"), "</h3>")
   
   about_data <- get_metadata(export_data = export_data,
                              r = r,
@@ -79,7 +83,7 @@ data_export_modal <- function(r = r, export_data) {
     about_data$var_right <- list()
     
     about_data$var_right$title <- 
-      paste0("<h4>", sus_translate(r = r, "About right variable"), "</h3>")
+      paste0("<h4>", sus_translate(r = r, "About compared variable"), "</h3>")
     
     about_data <- get_metadata(export_data = export_data, 
                                r = r,
@@ -145,10 +149,10 @@ data_export_modal <- function(r = r, export_data) {
         modalButton(sus_translate(r = r, "Dismiss")),
         downloadButton("download_csv", 
                        style = button_style,
-                       sus_translate(r = r, "Download CSV")),
+                       sus_translate(r = r, "Download .csv")),
         downloadButton("download_shp",
                        style = button_style,
-                       sus_translate(r = r, "Download SHP"))
+                       sus_translate(r = r, "Download .shp"))
       ),
       easyClose = TRUE,
       size = "l")
