@@ -71,12 +71,29 @@ What's more? If we have permission to share the dataset you're looking at, you c
 ### Fourth, new Montreal Stories!
 
 This month we have a bunch of new Montreal Stories arriving on Sus:
+
 <ul>
-  <li>Montreal alleys as a climate emergency adaptation strategy</li>
-  <li>The Champ des Possibles: A Communitarian & Biodiverse Urban Prairie</li>
-  <li>A History of Cycling Infrastructure in Montréal</li>
-  <li>The Green Alley Program in Le Plateau-Mont-Royal: tensions between beautification and privatisation of public space</li>
-  <li>The Evolution of the Montreal Metro</li>
+
+  <li>
+  
+  <a href = 'https://susmontreal.ca/?tb=stories&lng=en&s_id=10'>Montreal alleys as a climate emergency adaptation strategy</a><
+  
+  <li>
+  
+  <a href = 'https://susmontreal.ca/?tb=stories&lng=en&s_id=6'>The Champ des Possibles: A Communitarian & Biodiverse Urban Prairie</a>
+  
+  <li>
+  
+  <a href = 'https://susmontreal.ca/?tb=stories&lng=en&s_id=9'>A History of Cycling Infrastructure in Montréal</a>
+  
+  <li>
+  
+  <a href = 'https://susmontreal.ca/?tb=stories&lng=en&s_id=8'>The Green Alley Program in Le Plateau-Mont-Royal: tensions between beautification and privatisation of public space</a>
+  
+  <li>
+  
+  <a href = 'https://susmontreal.ca/?tb=stories&lng=en&s_id=7'>The Evolution of the Montreal Metro</a>
+  
 </ul>
 
 <hr>

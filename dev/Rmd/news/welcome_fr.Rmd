@@ -69,12 +69,29 @@ Et ce n'est pas tout. Vous pouvez télécharger l'ensemble des données pour vos
 ### Quatrièmement, de nouvelles histoires de Montréal !
 
 Ce mois-ci, nous avons un éventail de nouvelles histoires de Montréal qui arrivent sur Sus :
+
 <ul>
-  <li>Les ruelles de Montréal comme stratégie d'adaptation aux urgences climatiques</li>
-  <li>Le Champ des Possibles : Une prairie urbaine communautaire et biodiversifiée</li>
-  <li>Une histoire de l'infrastructure cyclable à Montréal</li>
-  <li>Le programme des ruelles vertes dans Le Plateau-Mont-Royal : tensions entre embellissement et privatisation de l'espace public</li>
-  <li>L'évolution du métro de Montréal</li>
+
+  <li>
+  
+  <a href = 'https://susmontreal.ca/?tb=stories&lng=fr&s_id=10'>Les ruelles de Montréal comme stratégie d'adaptation aux urgences climatiques</a>
+  
+  <li>
+  
+  <a href = 'https://susmontreal.ca/?tb=stories&lng=fr&s_id=6'>Le Champ des Possibles : Une prairie urbaine communautaire et biodiversifiée</a>
+  
+  <li>
+  
+  <a href = 'https://susmontreal.ca/?tb=stories&lng=fr&s_id=9'>Une histoire de l'infrastructure cyclable à Montréal</a>
+  
+  <li>
+  
+  <a href = 'https://susmontreal.ca/?tb=stories&lng=fr&s_id=8'>Le programme des ruelles vertes dans Le Plateau-Mont-Royal : tensions entre embellissement et privatisation de l'espace public</a>
+  
+  <li>
+  
+  <a href = 'https://susmontreal.ca/?tb=stories&lng=fr&s_id=7'>L'évolution du métro de Montréal</a>
+  
 </ul>
 
 <hr>
