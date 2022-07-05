@@ -115,7 +115,7 @@ lines[!!rowSums(st_drop_geometry(lines)[
 lines <- lines[, sort(names(lines))]
 lines <- relocate(lines, IdRte) |> rename(geometry = Shape)
 
-# For all the years we have these paths
+# We have paths for all these years
 all_years <- 
   names(lines) |> 
   str_subset("\\d{4}$") |> 
@@ -161,23 +161,17 @@ lines <-
   bind_cols(lines_fill, lines[, c("geometry")]) |> 
   st_as_sf()
 
+# Cut that invalid geometry
 lines <- lines[-81965, ]
 
-# Add 2022 lines on these
+# Add 2022 lines 
 lines_2022 <- 
   st_read("dev/data/stories/shp/cycling_infrastructure/Cycling_Lane.shp") |>  
   st_transform(4326) |> 
   as_tibble() |> 
   transmute(ID = row_number(), fill_2022 = "#73AE80", geometry) |> 
-  st_as_sf()
-
-# NO LINES FIT
-# lines <- 
-#   st_join(lines, lines_2022, join = st_equals) |>
-#   mutate(fill_2022 = if_else(is.na(fill_2022), "#FFFFFF00", fill_2022))
-# 
-# rest_lines_2022 <- 
-#   lines_2022[!lines_2022$ID %in% na.omit(lines$ID), ]
+  st_as_sf() |> 
+  filter(!st_is_empty(geometry))
 
 lines <- 
   bind_rows(lines, lines_2022)  |>  
@@ -188,7 +182,6 @@ lines <-
 
 
 # Join all lines that share the same combinations of colors
-
 nested <- 
   lines |> 
   group_nest(across(c(-geometry)))
@@ -201,8 +194,12 @@ lines <-
   st_as_sf() |> 
   filter(!st_is_empty(geometry))
 
-lines |> 
-  upload_tile_source("stories-last_line", username = "maxbdb3")
+# Separate the last lines of geometries, as it's too heavy for mapbox
+lines[nrow(lines), ] |> 
+  st_intersection(st_make_grid(borough)) |> 
+  bind_rows(lines[1:(nrow(lines) - 1), ]) |> 
+  # Upload
+  upload_tile_source("stories-cycling_infrastructure-l")
 
 
 # Import bixi points
@@ -238,6 +235,8 @@ bind_rows(only_2016, only_2022, both_years) |>
   mutate(fill_2022 = if_else(year2022 == TRUE, "#000000", "#FFFFFF00")) |> 
   select(fill_2016, fill_2022, point_2016, point_2022)
 
+# Make sure points are transparent for all the years where we do not have bixi
+# info
 bixi <- 
   bind_cols(map_dfc(all_years[1:(length(all_years) - 1)], ~{
     out <- tibble(col1 = rep("0", nrow(bixi)),
@@ -247,6 +246,7 @@ bixi <-
   }), bixi) |> 
   st_as_sf()
 
+# Join all points that share the same combinations of colors
 nested_bixi <- 
   bixi |> 
   group_nest(across(c(-geometry)))
@@ -259,6 +259,7 @@ bixi <-
   st_as_sf() |> 
   filter(!st_is_empty(geometry))
 
+# Upload
 bixi |> 
   upload_tile_source("stories-cycling_infrastructure-b")
 
@@ -267,15 +268,17 @@ stories_recipe <-
   create_recipe(
     layer_names = c("lines", "bixi"),
     source = c(
-      lines = "mapbox://tileset-source/maxbdb3/stories-last_line",
-      bixi = "mapbox://tileset-source/maxbdb3/stories-cycling_infrastructure-b"),
+      lines = "mapbox://tileset-source/sus-mcgill/stories-cycling_infrastructure-l",
+      bixi = "mapbox://tileset-source/sus-mcgill/stories-cycling_infrastructure-b"),
     minzoom = c(lines = 3, bixi = 12),
     maxzoom = c(lines = 16, bixi = 16), 
     layer_size = c(lines = 2500, bixi = 2500),
     simp_zoom = c(lines = 1, bixi = 1),
     fallback_simp_zoom = c(lines = 1, bixi = 1),
-    recipe_name = "stories-cycling_infrastructure6")
+    recipe_name = "stories-cycling_infrastructure")
 
-create_tileset("stories-cycling_infrastructure6", stories_recipe, username = "maxbdb3")
-publish_tileset("stories-cycling_infrastructure6", username = "maxbdb3")
+# Create and publish tileset
+create_tileset("stories-cycling_infrastructure", stories_recipe)
+publish_tileset("stories-cycling_infrastructure")
+
 

@@ -24,7 +24,7 @@ cycling_infrastructure_rdeck <- function(date) {
       center = map_loc, zoom = as.numeric(map_zoom - 1))) |> 
           add_mvt_layer(
           id = "cycling_infrastructure", 
-          data = mvt_url("sus-mcgill.stories-cycling_infrastructure4"),
+          data = mvt_url("sus-mcgill.stories-cycling_infrastructure"),
           visible = TRUE,
           get_line_width = 3,
           get_line_color = !!rlang::sym(paste0("fill_", date)),
