@@ -331,4 +331,16 @@ authors_translation <-
                       "et à l'utilisation de ces dernières pour aborder les qu",
                       "estions de durabilité. Après avoir obtenu son diplôme d",
                       "e McGill, Philip espère poursuivre une carrière en urba",
-                      "nisme."))
+                      "nisme.")) |> 
+  add_row(en = paste0("Lauren is a third-year Environment student specializing",
+                      " in Environmetrics at McGill University. Over the cours",
+                      "e of her undergrad, she has developed a strong interest",
+                      " in sustainable transportation systems and in the role ",
+                      "of technology in the clean energy transition. Her past ",
+                      "work with the McGill Energy Journal, the McGill Office ",
+                      "of Sustainability and the Regroupement des écoquartiers",
+                      " have nurtured her passion for environmental advocacy a",
+                      "nd education and her commitment to making information a",
+                      "ccessible at the community level in order to drive chan",
+                      "ge."), 
+          fr = paste0("TKTK"))
