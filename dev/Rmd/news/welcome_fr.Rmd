@@ -65,6 +65,19 @@ Dans notre toute nouvelle fonction de transparence des données, nous vous indiq
 Et ce n'est pas tout. Vous pouvez télécharger l'ensemble des données pour vos propres recherches !
 
 <hr>
+
+### Quatrièmement, de nouvelles histoires de Montréal !
+
+Ce mois-ci, nous avons un éventail de nouvelles histoires de Montréal qui arrivent sur Sus :
+<ul>
+  <li>Les ruelles de Montréal comme stratégie d'adaptation aux urgences climatiques</li>
+  <li>Le Champ des Possibles : Une prairie urbaine communautaire et biodiversifiée</li>
+  <li>Une histoire de l'infrastructure cyclable à Montréal</li>
+  <li>Le programme des ruelles vertes dans Le Plateau-Mont-Royal : tensions entre embellissement et privatisation de l'espace public</li>
+  <li>L'évolution du métro de Montréal</li>
+</ul>
+
+<hr>
 ### Vous voulez continuer à découvrir ?
 
 Chaque mois, Sus lancera de nouvelles fonctionnalités et de nouvelles histoires que vous pourrez explorer. Voici comment continuer à profiter de ces nouveautés :
