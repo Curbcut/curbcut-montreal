@@ -1,5 +1,5 @@
 ---
-title: "Montreal alleys as a climate emergency adaptation strategy"
+title: "Les ruelles de Montréal comme stratégie d'adaptation aux urgences climatiques"
 output: html_document
 author: "Daniela Rodriguez"
 runtime: shiny_prerendered
