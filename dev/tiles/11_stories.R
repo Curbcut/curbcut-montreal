@@ -195,9 +195,10 @@ lines <-
   filter(!st_is_empty(geometry))
 
 # Separate the last lines of geometries, as it's too heavy for mapbox
-lines[nrow(lines), ] |> 
-  st_intersection(st_make_grid(borough)) |> 
-  bind_rows(lines[1:(nrow(lines) - 1), ]) |> 
+# lines[nrow(lines), ] |> 
+#   st_intersection(st_make_grid(borough)) |> 
+#   bind_rows(lines[1:(nrow(lines) - 1), ]) |> 
+lines |> 
   # Upload
   upload_tile_source("stories-cycling_infrastructure-l")
 
@@ -274,7 +275,7 @@ stories_recipe <-
     maxzoom = c(lines = 16, bixi = 16), 
     layer_size = c(lines = 2500, bixi = 2500),
     simp_zoom = c(lines = 1, bixi = 1),
-    fallback_simp_zoom = c(lines = 1, bixi = 1),
+    fallback_simp_zoom = c(lines = 3, bixi = 3),
     recipe_name = "stories-cycling_infrastructure")
 
 # Create and publish tileset

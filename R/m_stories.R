@@ -4,6 +4,50 @@
 available_stories <- list.files("www/stories", full.names = TRUE) |> 
   str_subset(".html")
 
+# cycling_infrastructure legend function
+cycling_infrastructure_legend <- function(year) {
+  
+  types_df <- 
+  data.frame(year = c(1986, 1991, 1996, 2001, 2006, 2011, 2016, 2022),
+             types = I(list(c("Bicycle path"), 
+                            c("New path", "Removed path", "Remained path"),
+                            c("New path", "Removed path", "Remained path"),
+                            c("New path", "Removed path", "Remained path"),
+                            c("New path", "Removed path", "Remained path"),
+                            c("New path", "Removed path", "Remained path"),
+                            c("New path", "Removed path", "Remained path", "Bixi station"),
+                            c("Bicycle path", "Bixi station"))))
+  
+  types <- 
+    unlist(types_df$types[types_df$year == year])
+  
+  type_fill <- 
+    data.frame(type = c("Bicycle path", "New path", "Removed path", 
+                        "Remained path", "Bixi station"),
+               fill = c("#73AE80", "#73AE80", "#CA0020", "#2E4633", "#000000"))
+  
+  label <- type_fill$type[type_fill$type %in% types]
+  
+  legend <- 
+    data.frame(x = seq_along(label),
+               y = 1,
+               fill = 
+                 unique(type_fill[type_fill$type %in% types, ]$fill))
+  
+  legend |> 
+    ggplot(aes(xmin = x - 1, xmax = x, ymin = y - 1, ymax = y, 
+               fill = fill)) +
+    geom_rect() + 
+    scale_x_continuous(breaks = seq_along(label) - 0.5, labels = label) +
+    scale_y_continuous(labels = NULL) +
+    scale_fill_manual(values = setNames(
+      legend$fill, legend$fill)) +
+    theme_minimal() +
+    theme(text = element_text(family = "SourceSansPro", size = 11),
+          legend.position = "none", 
+          panel.grid = element_blank())
+}
+
 # UI ----------------------------------------------------------------------
 
 stories_UI <- function(id) {
@@ -71,34 +115,139 @@ stories_server <- function(id, r) {
       } else r[[ns_id]]$select_id(selection)
     }) |> bindEvent(get_clicked_object(ns_id_map))
     
+    output$stories_custom_map <-
+      renderRdeck(rdeck(width = "100%", map_style = map_base_style, 
+                        initial_view_state = view_state(
+                          center = map_loc, zoom = as.numeric(map_zoom - 1))))
+    
+    observeEvent(input[["stories-stories_map_slider"]], {
+      rdeck_proxy("stories_custom_map") |>
+      add_mvt_layer(
+        id = "cycling_infrastructure",
+        data = mvt_url("sus-mcgill.stories-cycling_infrastructure"),
+        visible = TRUE,
+        get_line_width = 2,
+        get_line_color = !!rlang::sym(paste0("fill_", input[["stories-stories_map_slider"]])),
+        line_width_units = "pixels",
+        get_fill_color = !!rlang::sym(paste0("fill_", input[["stories-stories_map_slider"]])),
+        get_point_radius = 5)
+
+    }, ignoreInit = TRUE)
+    
+    output$stories_custom_legend <- renderPlot({
+      cycling_infrastructure_legend(input[["stories-stories_map_slider"]])
+    })
+
     # Render the story in question, now only in english (_en)
     output$stories <- renderUI({
-
+      
       if (!is.na(r[[ns_id]]$select_id())) {
-
+        
         rmd_name <- stories[stories$ID == r[[ns_id]]$select_id(),]$name
         bandeau_name <- stories[stories$ID == r[[ns_id]]$select_id(),]$img
-
+        
         story_link <- paste0("www/stories/", rmd_name, "_", r$lang(),
                              ".html")
-
+        
         # Construct story link, serve en if no translation available.
         story_link <- if (story_link %in% available_stories) story_link else {
           paste0("www/stories/", rmd_name, "_", "en",
                  ".html")
         }
-
-        HTML('<div class = "main_panel_text_popup">',
-             # Adding bandeau img after the first div (title)
-             str_replace(
-               includeHTML(story_link),
-               "</div>", paste0("</div><img src =", "stories/bandeau_img/",
-                                bandeau_name,"><br><br>")) |>
-               str_replace_all('<img src="visuals/',
-                               '<img src="stories/visuals/'),
-             '</div>')
+        
+        # images <- 
+        #   list.files(paste0("www/stories/visuals/", rmd_name),
+        #              full.names = TRUE) |> 
+        #   str_subset("png$|jpeg$|jpg$|gif$") |> 
+        #   str_remove("^www/")
+        # 
+        # images_tag <-
+        #   lapply(images, \(x)
+        #          paste0("img(src='", x, "', style='width:45%;margin:2px;')"))
+        
+        # SPECIAL CASES FOR THE Mp
+        if (rmd_name %in% c("cycling_infrastructure")) {
+          div(class = "main_panel_text_popup",
+              div(class = "row-stories-maps",
+                  div(class = "column-stories-maps",
+                      # Main story
+                      HTML(str_replace(
+                        includeHTML(story_link),
+                        # Adding bandeau img after the first div (title)
+                        "</div>", paste0("</div><img src =", "stories/bandeau_img/",
+                                         bandeau_name,"><br><br>")) |>
+                          str_replace_all('<img src="visuals/',
+                                          '<img src="stories/visuals/') |> 
+                          str_replace('max-width: 940px;', 'max-width:100%;'))),
+                  div(class = "column-stories-maps-map",
+                      tagList(
+                        rdeckOutput(NS(id, "stories_custom_map"), height = "100%"),
+                        slider_text_UI(id = id,
+                                       slider_id = NS(id, "stories_map_slider"),
+                                       label = NULL,
+                                       choices = c(1986, 1991, 1996, 2001, 2006, 
+                                                   2011, 2016, 2022),
+                                       width = "250"),
+                        plotOutput(NS(id, "stories_custom_legend"), height = 60)
+                  )
+              )
+          )
+          )
+          # # Right panel
+          # absolutePanel(
+          #   id = NS(id, "right_panel"),
+          #   class = "panel panel-default sus-map-panel sus-scroll",
+          #   style = "margin-top:50px;margin-right:20px;padding:10px;",
+          #   div(class = "sus-map-panel-content sus-scroll-content", 
+          #       div(
+          #         h4(sus_translate(r = r, "Take a walk"))),
+          #       p("To come!"),
+          #       hr(),
+          #       div(
+          #         h4(sus_translate(r = r, "Photos"))),
+          #       lapply(images_tag, \(x) eval(parse(text = x))),
+          #       hr(),
+          #       div(
+          #         h4(sus_translate(r = r, "Watch the video"))),
+          #       hr(),
+          #       "Other Content")
+          # )
+          
+        } else {
+          div(class = "main_panel_text_popup",
+              
+              # Main story
+              div(#style = "margin-right:250px;",
+                HTML(str_replace(
+                  includeHTML(story_link),
+                  # Adding bandeau img after the first div (title)
+                  "</div>", paste0("</div><img src =", "stories/bandeau_img/",
+                                   bandeau_name,"><br><br>")) |>
+                    str_replace_all('<img src="visuals/',
+                                    '<img src="stories/visuals/'))),
+              # # Right panel
+              # absolutePanel(
+              #   id = NS(id, "right_panel"),
+              #   class = "panel panel-default sus-map-panel sus-scroll",
+              #   style = "margin-top:50px;margin-right:20px;padding:10px;",
+              #   div(class = "sus-map-panel-content sus-scroll-content", 
+              #       div(
+              #         h4(sus_translate(r = r, "Take a walk"))),
+              #       p("To come!"),
+              #       hr(),
+              #       div(
+              #         h4(sus_translate(r = r, "Photos"))),
+              #       lapply(images_tag, \(x) eval(parse(text = x))),
+              #       hr(),
+              #       div(
+              #         h4(sus_translate(r = r, "Watch the video"))),
+              #       hr(),
+              #       "Other Content")
+              # )
+          )
+        }
       }
-
+      
     })
 
     # Hide map when "Go back to map" button is clicked

@@ -7,72 +7,6 @@ runtime: shiny_prerendered
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-library(tidyverse)
-library(sf)
-library(rdeck)
-```
-
-```{r echo = FALSE}
-
-legend_legend <- 
-tibble(type = c("New path", "Removed path", "Remained path", "Bixi station"),
-       fill = c("#73AE80", "#CA0020", "#2E4633", "#000000"))
-
-# GET THE RDECK FOR EVERY DATE
-cycling_infrastructure_rdeck <- function(date) {
-  rdeck(map_style = map_base_style, initial_view_state = view_state(
-      center = map_loc, zoom = as.numeric(map_zoom - 1))) |> 
-          add_mvt_layer(
-          id = "cycling_infrastructure", 
-          data = mvt_url("sus-mcgill.stories-cycling_infrastructure"),
-          visible = TRUE,
-          get_line_width = 2,
-          get_line_color = !!rlang::sym(paste0("fill_", date)),
-          line_width_units = "pixels",
-          get_fill_color = !!rlang::sym(paste0("fill_", date)),
-          get_point_radius = !!rlang::sym(paste0("point_", date)))
-}
-
-# GET LEGEND FOR EVERY DATE
-cycling_infrastructure_legend <- function(types) {
-
-type_fill <- 
-  data.frame(type = c("Bicycle path", "New path", "Removed path", "Remained path", "Bixi station"),
-       fill = c("#73AE80", "#73AE80", "#CA0020", "#2E4633", "#000000"))
-
-label <- type_fill$type[type_fill$type %in% types]
-
-legend <- 
-  data.frame(x = seq_along(label),
-             y = 1,
-             fill = 
-               unique(type_fill[type_fill$type %in% types, ]$fill))
-
-out <- 
-legend |> 
-  ggplot(aes(xmin = x - 1, xmax = x, ymin = y - 1, ymax = y, 
-             fill = fill)) +
-  geom_rect() + 
-  scale_x_continuous(breaks = seq_along(label) - 0.5, labels = label) +
-  scale_y_continuous(labels = NULL) +
-  scale_fill_manual(values = setNames(
-    legend$fill, legend$fill)) +
-  theme_minimal() +
-  theme(text = element_text(family = "SourceSansPro", size = 11),
-        legend.position = "none", 
-        panel.grid = element_blank())
-
-ggsave(plot = out,
-       filename = here(paste0("www/stories/visuals/cycling_infrastructure/legend_", paste0(str_replace_all(types, " ", ""), collapse = "_")
-, "_en.png")),
-       units = "px",
-       height = 200)
-
-knitr::include_graphics(here(paste0("www/stories/visuals/cycling_infrastructure/legend_", paste0(str_replace_all(types, " ", ""), collapse = "_")
-, "_en.png")))
-
-}
-
 ```
 
 ### The age of the automobile: early cycling difficulties in Montréal
@@ -92,51 +26,13 @@ Vélo Québec’s largest event is the Tour de l’Île de Montréal, an annual 
 
 <div align="center">
 ```{r, echo = FALSE, message = FALSE, warning = FALSE}
-
-# # updated 1986 map ---------------------------------------
-# `1986` <- lines %>% filter(An1986 == 1) %>% 
-#   select(c(IdRte, An1986, An1991, An1996, An2001, An2006, An2011,
-#            An2016, Shape_Length, Shape))
-# 
-# # updated_map_1986 <- 
-#   tm_shape(water) + 
-#   tm_polygons(col = "#A4E1FF") + 
-#   tm_shape(`1986`) +
-#   tm_lines(col = "#2E4633") + 
-#   tm_layout(title = "1986 Bike Lanes", 
-#             fontfamily = "serif") + 
-#   tm_scale_bar() +
-#   tm_view(bbox = `1986`)
-  
-cycling_infrastructure_rdeck(1986)
-cycling_infrastructure_legend(types = c("Bicycle path"))
+1986
 ```
 
 See Note 1. Data provided by: Houde, M., Apparicio, P., & Séguin, A.-M. (2018). A ride for whom: Has cycling network expansion reduced inequities in accessibility in Montreal, Canada? Journal of Transport Geography, 68, 9–21. https://doi.org/10.1016/j.jtrangeo.2018.02.005 
 
 ```{r, echo = FALSE, message = FALSE, warning = FALSE}
-# 
-# `New for 1991` <- lines %>% filter(An1991 == 1 & An1986 == 0) 
-# 
-# `Removed for 1991` <- lines %>% filter(An1991 == 0 & An1986 == 1)
-# 
-# `Remained in 1991` <- lines %>% filter(An1991 == 1 & An1986 == 1)
-# 
-# updated_map_1991 <- tm_shape(water) +
-#   tm_fill(col = "#A4E1FF") + 
-#   tm_shape(`Remained in 1991`) + 
-#   tm_lines(col = "#2E4633") + 
-#   tm_shape(`New for 1991`) + 
-#   tm_lines(col = "#73AE80") + 
-#   tm_shape(`Removed for 1991`) +
-#   tm_lines(col = "#CA0020") +
-#   tm_view(bbox = `New for 1991`) +
-#   tm_layout(title = "1991 Bike Lanes", 
-#             fontfamily = "serif") + 
-#   tm_scale_bar() 
-# updated_map_1991
-cycling_infrastructure_rdeck(1991)
-cycling_infrastructure_legend(types = c("New path", "Removed path", "Remained path"))
+1991
 ```
 
 (Houde et al., 2018)</div>
@@ -148,28 +44,7 @@ While it did not transform Québec into a cycling society at the scale of some E
 
 <div align="center">
 ```{r, echo = FALSE, message = FALSE, warning = FALSE}
-# `New for 1996` <- lines %>% filter(An1996 == 1 & An1991 == 0) 
-# 
-# `Removed for 1996` <- lines %>% filter(An1996 == 0 & An1991 == 1)
-# 
-# `Remained in 1996` <- lines %>% filter(An1996 == 1 & An1991 == 1)
-# 
-# updated_map_1996 <- tm_shape(water)+
-#   tm_fill(col = "#A4E1FF") + 
-#   tm_shape(`Remained in 1996`) + 
-#   tm_lines(col = "#2E4633") + 
-#   tm_shape(`New for 1996`) + 
-#   tm_lines(col = "#73AE80") + 
-#   tm_shape(`Removed for 1996`) +
-#   tm_lines(col = "#CA0020") +
-#   tm_view(bbox = `New for 1996`) +
-#   tm_layout(title = "1996 Bike Lanes", 
-#             fontfamily = "serif") + 
-#   tm_scale_bar() 
-# 
-# updated_map_1996
-cycling_infrastructure_rdeck(1996)
-cycling_infrastructure_legend(types = c("New path", "Removed path", "Remained path"))
+1996
 ```
 
 (Houde et al., 2018)</div>
@@ -179,79 +54,17 @@ The 2008 bicycle policy updated the 1995 policy with more specific objectives fo
 
 <div align="center">
 ```{r, echo = FALSE, message = FALSE, warning = FALSE}
-# `New for 2001` <- lines %>% filter(An2001 == 1 & An1996 == 0) 
-# 
-# `Removed for 2001` <- lines %>% filter(An2001 == 0 & An1996 == 1)
-# 
-# `Remained in 2001` <- lines %>% filter(An2001 == 1 & An1996 == 1)
-# 
-# updated_map_2001 <- 
-#   tm_shape(water)+
-#   tm_fill(col = "#A4E1FF") + 
-#   tm_shape(`Remained in 2001`) + 
-#   tm_lines(col = "#2E4633") + 
-#   tm_shape(`New for 2001`) + 
-#   tm_lines(col = "#73AE80") + 
-#   tm_shape(`Removed for 2001`) +
-#   tm_lines(col = "#CA0020") +
-#   tm_view(bbox = `New for 2001`) +
-#   tm_layout(title = "2001 Bike Lanes", 
-#             fontfamily = "serif") + 
-#   tm_scale_bar() 
-# 
-# updated_map_2001
-cycling_infrastructure_rdeck(2001)
-cycling_infrastructure_legend(types = c("New path", "Removed path", "Remained path"))
+2011
 ```
 
 (Houde et al., 2018)
 ```{r, echo = FALSE, message = FALSE, warning = FALSE}
-# `New for 2006` <- lines %>% filter(An2006 == 1 & An2001 == 0) 
-# 
-# `Removed for 2006` <- lines %>% filter(An2006 == 0 & An2001 == 1)
-# 
-# `Remained in 2006` <- lines %>% filter(An2006 == 1 & An2001 == 1)
-# 
-# updated_map_2006 <- tm_shape(water)+
-#   tm_fill(col = "#A4E1FF") + 
-#   tm_shape(`Remained in 2006`) + 
-#   tm_lines(col = "#2E4633") + 
-#   tm_shape(`New for 2006`) + 
-#   tm_lines(col = "#73AE80") + 
-#   tm_shape(`Removed for 2006`) +
-#   tm_lines(col = "#CA0020") +
-#   tm_view(bbox = `New for 2006`) +
-#   tm_layout(title = "2006 Bike Lanes", 
-#             fontfamily = "serif") + 
-#   tm_scale_bar() 
-cycling_infrastructure_rdeck(2006)
-cycling_infrastructure_legend(types = c("New path", "Removed path", "Remained path"))
+2006
 ```
 
 (Houde et al., 2018)
 ```{r, echo = FALSE, message = FALSE, warning = FALSE}
-# `New for 2011` <- lines %>% filter(An2011 == 1 & An2006 == 0) 
-# 
-# `Removed for 2011` <- lines %>% filter(An2011 == 0 & An2006 == 1)
-# 
-# `Remained in 2011` <- lines %>% filter(An2011 == 1 & An2006 == 1)
-# 
-# updated_map_2011 <- tm_shape(water)+
-#   tm_fill(col = "#A4E1FF") + 
-#   tm_shape(`Remained in 2011`) + 
-#   tm_lines(col = "#2E4633") + 
-#   tm_shape(`New for 2011`) + 
-#   tm_lines(col = "#73AE80") + 
-#   tm_shape(`Removed for 2011`) +
-#   tm_lines(col = "#CA0020") +
-#   tm_view(bbox = `New for 2011`) +
-#   tm_layout(title = "2011 Bike Lanes", 
-#             fontfamily = "serif") + 
-#   tm_scale_bar()
-# 
-# updated_map_2011
-cycling_infrastructure_rdeck(2011)
-cycling_infrastructure_legend(types = c("New path", "Removed path", "Remained path"))
+2011
 ```
 
 (Houde et al., 2018)
@@ -285,30 +98,7 @@ Bike sharing services provide numerous benefits for cities. They lead to higher 
 
 <div align="center">
 ```{r, echo = FALSE, message = FALSE, warning = FALSE}
-# `New for 2016` <- lines %>% filter(An2016 == 1 & An2011 == 0) 
-# 
-# `Removed for 2016` <- lines %>% filter(An2016 == 0 & An2011 == 1)
-# 
-# `Remained in 2016` <- lines %>% filter(An2016 == 1 & An2011 == 1)
-# 
-# updated_map_2016 <- tm_shape(water) +
-#   tm_fill(col = "#A4E1FF") + 
-#   tm_shape(`Remained in 2016`) + 
-#   tm_lines(col = "#2E4633") + 
-#   tm_shape(`New for 2016`) + 
-#   tm_lines(col = "#73AE80") + 
-#   tm_shape(`Removed for 2016`) +
-#   tm_lines(col = "#CA0020") +
-#   tm_shape(`BIXI Stations 2016`) + 
-#   tm_dots(size = .004) +
-#   tm_view(bbox = `Remained in 2016`) +
-#   tm_layout(title = "2016 Bike Lanes and BIXI Stations", 
-#             fontfamily = "serif") + 
-#   tm_scale_bar()
-# 
-# updated_map_2016
-cycling_infrastructure_rdeck(2016)
-cycling_infrastructure_legend(types = c("New path", "Removed path", "Remained path", "Bixi station"))
+2016
 ```
 
 (Houde et al., 2018)
@@ -321,26 +111,7 @@ As part of Montréal’s broader transportation network, a completed REV will do
 
 <div align="center">
 ```{r, echo = FALSE, message = FALSE, warning = FALSE}
-# `2022` <- st_read(here("dev/data/stories/shp/history_cycling_infrastructure/Cycling_Lane.shp")) %>% 
-#   st_transform(4326)
-# 
-# # this clips it by the zones polygons
-# `2022` <- `2022`[zones, ]
-# 
-# updated_map_2022 <- tm_shape(water) + 
-#   tm_polygons(col = "#A4E1FF") +
-#   tm_shape(`2022`) +
-#   tm_lines(col = "#73AE80") + 
-#   tm_shape(`BIXI Stations 2022`) + 
-#   tm_dots(size = .004) +
-#   tm_layout(title = "2022 Bike Lanes and BIXI Stations", 
-#             fontfamily = "serif") + 
-#   tm_scale_bar() + 
-#   tm_view(bbox = `2022`)
-# 
-# updated_map_2022
-cycling_infrastructure_rdeck("2022")
-cycling_infrastructure_legend(types = c("Bicycle path", "Bixi station"))
+2022
 ```
 
 See Note 2. Data provided by: Winters et al. The Canadian Bikeway Comfort and Safety Metrics (Can-BICS): Measuring the bicycling environment in all communities in Canada – for submission to Health Reports (forthcoming).
@@ -384,5 +155,6 @@ Note 2: The bike lanes in this map come from a different source, without data on
 * Walker, P. (2015, June 17). People power: The secret to Montreal's success as a bike-friendly city. The Guardian. Retrieved June 15, 2022, from https://www.theguardian.com/cities/2015/jun/17/people-power-montreal-north-america-cycle-city
 * What is Vision Zero? Vision Zero Network. (2022). Retrieved June 15, 2022, from https://visionzeronetwork.org/about/what-is-vision-zero/  
 * Wurst, B. (2020, November 1). Montreal reveals New Rev Bike Path Network. Mtltimes.ca. Retrieved June 15, 2022, from https://mtltimes.ca/life/montreal-reveals-new-rev-bike-path-network/ 
-
+<!-- </div> -->
+<!-- </div> -->
 
