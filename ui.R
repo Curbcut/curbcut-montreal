@@ -69,14 +69,14 @@ ui <- function(request) {
     
     meta() |> 
       meta_social(
-        title = "Welcome | SUS | Towards a sustainable city",
-        description = paste0("Sus is a platform for exploring urban ",
-                             "sustainability in the Montreal region across ",
-                             "multiple spatial and temporal scales."),
+        title = "SUS | Vers une ville durable",
+        description = paste0("Sus est une plateforme permettant d'explorer la ",
+                             "durabilité urbaine dans la région de Montréal à ",
+                             "de multiples échelles spatiales et temporelles."),
         url = "https://susmontreal.ca",
         image = "share.jpg",
-        image_alt = paste0("A photo of a winding footpath through a verdant ",
-                           "Montreal alley."),
+        image_alt = paste0("Une photo d'un sentier sinueux dans une ruelle ",
+                           "verdoyante de Montréal."),
         twitter_creator = "@susmontreal",
         twitter_card_type = "summary",
         twitter_site = "@susmontreal"
