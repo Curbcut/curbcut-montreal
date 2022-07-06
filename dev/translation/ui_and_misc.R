@@ -508,5 +508,30 @@ ui_and_misc_translated <-
   add_row(en = paste0("Comparison requires two different dates."), 
           fr = paste0("Une comparaison nécessite deux dates différentes.")) |> 
   add_row(en = paste0("Sus does not currently support mobile phones. Please visit from a computer."), 
-          fr = paste0("Sus n'est pas actuellement compatible avec les téléphones mobiles. Veuillez visiter la plateforme avec un ordinateur."))
-
+          fr = paste0("Sus n'est pas actuellement compatible avec les téléphones mobiles. Veuillez visiter la plateforme avec un ordinateur.")) |> 
+  # Stories
+  add_row(en = paste0("The proposed {year} metro network."), 
+          fr = paste0("Le réseau proposé en {year}.")) |> 
+  add_row(en = paste0("The proposed 1962 metro network consisting of three lines: ",
+                      "orange, green, and red."), 
+          fr = paste0("Le réseau de métro proposé en 1962, qui s'agissait de ",
+                      "trois lignes: orange, verte et rouge.")) |> 
+  add_row(en = paste0("The first complete iteration of the Montreal metro."), 
+          fr = paste0("Le réseau de métro réalisé en 1967.")) |> 
+  add_row(en = paste0("Some extensive proposed underground and surface metro ",
+                      "expansions of the early 1970s that never materialized."), 
+          fr = paste0("Des expansions de surface et souterraines planifiées ",
+                      "dans les années soixante-dix jamais réalisées.")) |> 
+  add_row(en = paste0("The 1978 iteration of the metro network."), 
+          fr = paste0("Le réseau de métro en 1978.")) |> 
+  add_row(en = paste0("The metro expansion plans made following the 1970 ",
+                      "re-election of Jean Drapeau."), 
+          fr = paste0("Les plans pour l'expansion du métro faits à la suite de ",
+                      "la réélection de Jean Drapeau.")) |> 
+  add_row(en = paste0("The current network along with the proposed extensions over ",
+                      "the years, including the confirmed blue line extension to ",
+                      "Anjou."), 
+          fr = paste0("Le réseau moderne avec les changements proposés au fil ",
+                      "des années, parmi eux le prolongement confirmé de la ",
+                      "ligne bleue vers Anjou."))
+  

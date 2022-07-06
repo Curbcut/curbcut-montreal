@@ -32,6 +32,7 @@ process_rmd <- function(file, path) {
                   list.files("dev/Rmd/news"))) {
     x <- 
       str_remove_all(x, "(?<=src=\")../../../www/(?=stories|news)")
+
   } else {
     x <-
       x[-((str_detect(x, "<head") |> which()):(str_detect(x, "</head") |> which()))]
