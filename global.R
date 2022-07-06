@@ -17,6 +17,7 @@ suppressPackageStartupMessages({
   
   library(RSQLite)
   library(curl)
+  library(tableHTML)
 })
 
 # Shiny options -----------------------------------------------------------
