@@ -343,4 +343,14 @@ authors_translation <-
                       "nd education and her commitment to making information a",
                       "ccessible at the community level in order to drive chan",
                       "ge."), 
-          fr = paste0("TKTK"))
+          fr = paste0("Lauren est actuellement étudiante en troisième année en",
+                      " science de l’environnement à McGill spécialisant en en",
+                      "vironnemétrie. Durant son bac, elle a développé un inté",
+                      "rêt pour les systèmes de transport durables et pour le ",
+                      "rôle de la technologie dans la transition énergétique. ",
+                      "Ses travaux antérieurs avec le McGill Energy Journal, l",
+                      "e Bureau du développement durable de McGill et le Regro",
+                      "upement des écoquartiers ont alimenté sa passion pour l",
+                      "a sensibilisation environnementale et son désir de rend",
+                      "re accessible de l’information au niveau communautaire ",
+                      "pour provoquer le changement."))
