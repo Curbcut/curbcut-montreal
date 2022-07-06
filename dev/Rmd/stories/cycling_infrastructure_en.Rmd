@@ -24,51 +24,13 @@ From the 1970s to the present, Vélo Québec has continued to create successful 
 
 Vélo Québec’s largest event is the Tour de l’Île de Montréal, an annual cycling tour on a 36 km route through seven boroughs. First run in 1985 after the creation of new bike paths in East Montréal, the Tour de l’Île de Montréal celebrates cycling in Montréal. The first tour drew 3,500 participants, and grew rapidly in subsequent years (Vélo Québec, 2017). The tour has recorded over 45,000 participants in an individual year, and continues to be a popular event for cyclists today. The Tour de l’Île de Montréal also serves as a political message to Montréal’s leaders, signalling the vast number of Montréalers who depend on the city’s cycling infrastructure. 
 
-<div align="center">
-```{r, echo = FALSE, message = FALSE, warning = FALSE}
-1986
-```
-
-See Note 1. Data provided by: Houde, M., Apparicio, P., & Séguin, A.-M. (2018). A ride for whom: Has cycling network expansion reduced inequities in accessibility in Montreal, Canada? Journal of Transport Geography, 68, 9–21. https://doi.org/10.1016/j.jtrangeo.2018.02.005 
-
-```{r, echo = FALSE, message = FALSE, warning = FALSE}
-1991
-```
-
-(Houde et al., 2018)</div>
-
 ### From activism to policy: the 1995 Bicycle Policy
 After years of activism demonstrating the importance of cycling, Québec acted to drastically increase cycling infrastructure. The 1995 Bicycle Policy, adapted by the Ministère des Transports (MTQ) and the Société de l’assurance automobile du Québec (SAAQ), was the first major policy for cycling in the province of Québec. The policy emerged from commitments at the 1992 Montréal Conférence Vélo Mondiale and public input, and addressed “the immediate needs of cyclists in terms of safety and mobility” (Ministère des Transports du Québec, 2008, 7). Furthermore, the bicycle policy addressed the underlying benefits of cycling, reflecting a new effort to promote cycling as a means of active transportation, in addition to being a leisure activity. The plan introduced three broad objectives: gradual encouragement to use the bicycle as a mode of transportation, the promotion of road safety with cyclists and other road users, and the improvement of the transportation system for cyclists (Ministère des Transports du Québec, 15).
 
 While it did not transform Québec into a cycling society at the scale of some European nations, the 1995 bicycle policy provided the foundation for decades of subsequent policy, legislation, and research. Most importantly, research demonstrates that, following 1995, Québecers increasingly used cycling for transportation. From 1995 to 2005, the proportion of cyclists using a bicycle for transportation (excluding recreation, tourism, or training) increased 62%, from 21% to 34% (Ministère des Transports du Québec, 2009, 9).
 
-<div align="center">
-```{r, echo = FALSE, message = FALSE, warning = FALSE}
-1996
-```
-
-(Houde et al., 2018)</div>
-
 ### 2008 bicycle policy
 The 2008 bicycle policy updated the 1995 policy with more specific objectives for cycling and a new emphasis on cycling in urban areas. First, the 2008 policy aimed to increase the modal share of cycling by 50% per agglomeration, with an increase in the Montréal agglomeration from 1.2 % (2003) to 1.8% in 2020 (Ministère des Transports du Québec, 2008, 15). Second, the policy sought to reduce the number of cyclist accident victims due to motor vehicles by 30% for 2020, compared to the 2002-2006 average. The third and final target was to increase the number of kilometres of bikeways in Québec by 30%, from 6,789 km in 2005 to 8,826 in 2020. All of these targets have successfully been met, or even exceeded. As of 2022, Quebec has 12,000 km of bicycle paths, and by 2018, 3.3% of trips on the Island of Montréal were made by bicycle (Bonjour Québec, n.d). Furthermore, there were 84 incidents of serious injury or fatalities for cyclists in 2020, from an average of 189 in the 2002 to 2006 period (Vélo Québec, 2020, 15) - however, this comparison does not account for the impact of the COVID-19 pandemic on cycling rates, and there are still many improvements to be made before there are zero cycling injuries and fatalities.
-
-<div align="center">
-```{r, echo = FALSE, message = FALSE, warning = FALSE}
-2011
-```
-
-(Houde et al., 2018)
-```{r, echo = FALSE, message = FALSE, warning = FALSE}
-2006
-```
-
-(Houde et al., 2018)
-```{r, echo = FALSE, message = FALSE, warning = FALSE}
-2011
-```
-
-(Houde et al., 2018)
-</div>
 
 ### The current city framework: Montréal’s cycling Master Plan, 2017
 Montreal’s Cycling Master Plan from 2017 (Montréal, City of Cyclists, 2017) is a ten-part plan to increase cycling in Montreal, with the overarching goal to increase the modal share of cycling to 15% in 15 years Unlike the provincial goals, it provides specific information about which Montréal neighborhoods, or even streets, could use improved cycling infrastructure. Below are the ten different goals as listed in the master plan, and how the city plans on achieving them.
@@ -96,26 +58,10 @@ Public bike sharing services have existed since the 1960s, and recent years have
 
 Bike sharing services provide numerous benefits for cities. They lead to higher rates of cycling, decrease traffic congestion, and reduce air and noise pollution, while also increasing rates of physical activity (Fuller et al., 2013). Research on Montréal demonstrates that accessibility to BIXI bikes correlates with a greater likelihood of cycling for individuals (Fuller et al., 2013). However, this increase of cyclists also creates a higher demand for cycling infrastructure. As of May 2022, BIXI is seeing record growth for users and trips, including 227,883 membership or access purchases, and 1,278,560 individual trips in May alone ( BIXI Montréal, 2022). This growth is partially due to the expansion of bike infrastructure projects, which have made using bike sharing services easier to use over the past decade. However, this also demonstrates the need for Montréal to further improve its network. Luckily, the city has an ambitious project currently under construction.
 
-<div align="center">
-```{r, echo = FALSE, message = FALSE, warning = FALSE}
-2016
-```
-
-(Houde et al., 2018)
-</div>
-
 ### Improving Montréal’s bikeability: The REV
 Montréal’s cycling infrastructure has come a long way since the automobile-era of the 1970s. According to the Copenhagenize Index (2019), Montréal ranks first in Canada and 18th in the world for bicycle-friendly cities. However, the city’s cycling infrastructure still needs improvements, as disjointed bike networks present navigational difficulties, and some major bike lanes are still not separated for cyclist safety. The Réseau express vélo (REV) is a large-scale cycling infrastructure project that seeks to address these issues, and will form the backbone of Montréal’s cycling network. If all 17 of the proposed axes are completed, cyclists will have access to 184 km of mostly protected bike lanes, with year-round maintenance (Ville de Montreal, 2022). Goals of the REV include improving accessibility and safety for cyclists, while concurrently reducing greenhouse gas emissions and improving quality of life. Ultimately, the city plans to have over 15% of commuters travelling by bicycle in the next 10 years (Wurst, 2020).
 
 As part of Montréal’s broader transportation network, a completed REV will double access to public transit access points, defined as points within 50 meters of a metro station and within 25 meters of a bus stop (Lacerte-Gauthier, 2022). The REV will also increase access to public schools by bikes, including schools currently in disadvantaged areas (Lacerte-Gauthier, 2022). While the city has already completed four axes, including Berri / Lajeunesse / Saint-Denis, Souligny, Peel, and De Bellechasse, Velo Québec has called for an acceleration of the project timeline to respond to the continued growth of cycling in Montréal (Couillard, 2019). 
-
-<div align="center">
-```{r, echo = FALSE, message = FALSE, warning = FALSE}
-2022
-```
-
-See Note 2. Data provided by: Winters et al. The Canadian Bikeway Comfort and Safety Metrics (Can-BICS): Measuring the bicycling environment in all communities in Canada – for submission to Health Reports (forthcoming).
-</div>
 
 ### From the past to the future of cycling
 It is important to reflect upon the present state of cycling in Montréal, and the vast progress that has been achieved in the past fifty years. Much is owed to early activists in the 1970s and 1980s for their dedication to cycling advocacy, which laid the foundation for projects and policies in the 1990s onwards. While looking back on the past, it is also important to acknowledge that there is still much progress to be made for the future. Today’s road conditions present new dangers that were not present in the 1970s, such as an increase of larger vehicles on the road, including SUVs, pickup trucks, and vans. Studies have shown that larger vehicles are disproportionately deadly in a crash. From 2011 to 2019, 47 percent of cycling deaths in Québec were from drivers in heavy vehicles, despite the fact that they only account for 4 percent of drivers, further demonstrating the need to provide protective infrastructure for cyclists (Nerestant, 2021). To address this, cities around the world have adopted “Vision Zero” policies, which recognize that traffic collisions are preventable with better urban planning, and that zero deaths or serious injuries on roads is achievable. Montréal’s “Vision Zero” policy aims for zero deaths or serious injuries on roads by 2040, and improving the city’s cycling infrastructure will undoubtedly play a critical role in this policy’s success (Ville de Montréal, 2022).

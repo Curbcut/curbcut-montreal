@@ -332,7 +332,7 @@ styler <- '
 
 .column-stories-maps-map {
   width: 50%;
-  height: 60vh;
+  height: 80vh;
   float: left;
   padding: 10px;
   position: sticky;

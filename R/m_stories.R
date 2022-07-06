@@ -10,20 +10,20 @@ cycling_infrastructure_legend <- function(year) {
   types_df <- 
   data.frame(year = c(1986, 1991, 1996, 2001, 2006, 2011, 2016, 2022),
              types = I(list(c("Bicycle path"), 
-                            c("New path", "Removed path", "Remained path"),
-                            c("New path", "Removed path", "Remained path"),
-                            c("New path", "Removed path", "Remained path"),
-                            c("New path", "Removed path", "Remained path"),
-                            c("New path", "Removed path", "Remained path"),
-                            c("New path", "Removed path", "Remained path", "Bixi station"),
+                            c("New bicycle path", "Removed path", "Old path"),
+                            c("New bicycle path", "Removed path", "Old path"),
+                            c("New bicycle path", "Removed path", "Old path"),
+                            c("New bicycle path", "Removed path", "Old path"),
+                            c("New bicycle path", "Removed path", "Old path"),
+                            c("New bicycle path", "Removed path", "Old path", "Bixi station"),
                             c("Bicycle path", "Bixi station"))))
   
   types <- 
     unlist(types_df$types[types_df$year == year])
   
   type_fill <- 
-    data.frame(type = c("Bicycle path", "New path", "Removed path", 
-                        "Remained path", "Bixi station"),
+    data.frame(type = c("Bicycle path", "New bicycle path", "Removed path", 
+                        "Old path", "Bixi station"),
                fill = c("#73AE80", "#73AE80", "#CA0020", "#2E4633", "#000000"))
   
   label <- type_fill$type[type_fill$type %in% types]
@@ -130,12 +130,30 @@ stories_server <- function(id, r) {
         get_line_color = !!rlang::sym(paste0("fill_", input[["stories-stories_map_slider"]])),
         line_width_units = "pixels",
         get_fill_color = !!rlang::sym(paste0("fill_", input[["stories-stories_map_slider"]])),
-        get_point_radius = 5)
+        get_point_radius = 10)
 
     }, ignoreInit = TRUE)
     
     output$stories_custom_legend <- renderPlot({
       cycling_infrastructure_legend(input[["stories-stories_map_slider"]])
+    })
+    
+    output$stories_custom_source <- renderText({
+      # If cycling infrastructure
+      if (r[[ns_id]]$select_id() == 9) {
+        if (input[["stories-stories_map_slider"]] %in% c(1986:2016)) {
+        paste0("See Note 1. Data provided by: Houde, M., Apparicio, P., & Ségu",
+               "in, A.-M. (2018). A ride for whom: Has cycling network expansi",
+               "on reduced inequities in accessibility in Montreal, Canada? Jo",
+               "urnal of Transport Geography, 68, 9–21. https://doi.org/10.101",
+               "6/j.jtrangeo.2018.02.005")
+        } else {
+          paste0("See Note 2. Data provided by: Winters et al. The Canadian Bi",
+                 "keway Comfort and Safety Metrics (Can-BICS): Measuring the b",
+                 "icycling environment in all communities in Canada – for subm",
+                 "ission to Health Reports (forthcoming).")
+        }
+      }
     })
 
     # Render the story in question, now only in english (_en)
@@ -179,16 +197,19 @@ stories_server <- function(id, r) {
                           str_replace_all('<img src="visuals/',
                                           '<img src="stories/visuals/') |> 
                           str_replace('max-width: 940px;', 'max-width:100%;'))),
-                  div(class = "column-stories-maps-map",
+                  div(class = "column-stories-maps-map", 
+                      style = "overflow-y:auto;overflow-x:hidden;",
                       tagList(
-                        rdeckOutput(NS(id, "stories_custom_map"), height = "100%"),
+                        rdeckOutput(NS(id, "stories_custom_map"), height = "65%"),
                         slider_text_UI(id = id,
                                        slider_id = NS(id, "stories_map_slider"),
                                        label = NULL,
                                        choices = c(1986, 1991, 1996, 2001, 2006, 
                                                    2011, 2016, 2022),
                                        width = "250"),
-                        plotOutput(NS(id, "stories_custom_legend"), height = 60)
+                        plotOutput(NS(id, "stories_custom_legend"), height = 60),
+                        br(),
+                        textOutput(NS(id, "stories_custom_source"))
                   )
               )
           )
