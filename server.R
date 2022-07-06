@@ -16,29 +16,33 @@ shinyServer(function(input, output, session) {
   
   # Reactive variables ---------------------------------------------------------
   
-  r <- reactiveValues(
-    sus_bookmark = reactiveValues(active = FALSE),
-    sus_link = reactiveValues(),
-    lang = reactiveVal("fr"),
-    active_tab = "home",
-    canale = reactiveValues(select_id = reactiveVal(NA), 
-                            df = reactiveVal("borough"),
-                            zoom = reactiveVal(get_zoom(map_zoom))),
-    climate_risk = reactiveValues(select_id = reactiveVal(NA),
-                                  df = reactiveVal("grid"),
-                                  zoom = reactiveVal(get_zoom(map_zoom))),
-    housing = reactiveValues(select_id = reactiveVal(NA),
-                             df = reactiveVal("borough"),
-                             zoom = reactiveVal(get_zoom(map_zoom))),
-    access = reactiveValues(select_id = reactiveVal(NA),
-                            df = reactiveVal("CT"),
-                            zoom = reactiveVal(get_zoom(map_zoom))),
-    alley = reactiveValues(select_id = reactiveVal(NA),
-                           df = reactiveVal("borough_empty"),
-                           zoom = reactiveVal(12)),
-    natural_inf = reactiveValues(zoom = reactiveVal(9.5)),
-    news = reactiveValues(select_id = reactiveVal(NA))
-  )
+  r <- reactiveValues(sus_bookmark = reactiveValues(active = FALSE),
+                      sus_link = reactiveValues(),
+                      lang = reactiveVal("fr"),
+                      active_tab = "home",
+                      canale = reactiveValues(select_id = reactiveVal(NA), 
+                                              df = reactiveVal("borough"),
+                                              zoom = reactiveVal(get_zoom(map_zoom)),
+                                              export_data = reactiveVal(list())),
+                      climate_risk = reactiveValues(select_id = reactiveVal(NA),
+                                                    df = reactiveVal("grid"),
+                                                    zoom = reactiveVal(get_zoom(map_zoom)),
+                                                    export_data = reactiveVal(list())),
+                      housing = reactiveValues(select_id = reactiveVal(NA),
+                                               df = reactiveVal("borough"),
+                                               zoom = reactiveVal(get_zoom(map_zoom)),
+                                               export_data = reactiveVal(list())),
+                      access = reactiveValues(select_id = reactiveVal(NA),
+                                              df = reactiveVal("CT"),
+                                              zoom = reactiveVal(get_zoom(map_zoom)),
+                                              export_data = reactiveVal(list())),
+                      alley = reactiveValues(select_id = reactiveVal(NA),
+                                             df = reactiveVal("borough_empty"),
+                                             zoom = reactiveVal(12),
+                                             export_data = reactiveVal(list())),
+                      natural_inf = reactiveValues(zoom = reactiveVal(9.5),
+                                                   export_data = reactiveVal(list())),
+                      news = reactiveValues(select_id = reactiveVal(NA)))
   
 
   # Home page ------------------------------------------------------------------
@@ -259,15 +263,15 @@ shinyServer(function(input, output, session) {
   
   ## Modules -------------------------------------------------------------------
   
+  export_data <- list()
+  
   active_mod_server <- function(active_tab = input$sus_page) {
     mod_function <- 
       paste0(active_tab, "_server('", active_tab, "', r = r)")
-    
-    # Run the function but also catch its output for data exportation
-    assign("export_data", eval(parse(text = mod_function)), 
-           pos = 1)
+
+    return(eval(parse(text = mod_function)))
   }
-  
+
   observeEvent(input$sus_page, {
     bookmark_server(input$sus_page, r = r)
 
@@ -280,56 +284,60 @@ shinyServer(function(input, output, session) {
   
   ## Data download -------------------------------------------------------------
   
-  dataModal <- function() {
-    modalDialog(
-      "PLACEHOLDER",
-      
-      footer = tagList(
-        modalButton("Cancel"),
-        downloadButton("download_csv", "Download csv"),
-        downloadButton("download_shp", "Download shp")
-      ),
-      title = "Data explanation and export"
-    )
-  }
+  data_modal <- reactive(
+    data_export_modal(r = r, export_data = r[[input$sus_page]]$export_data()))
   
   onclick("download_data", {
-    showModal(
-      dataModal()
-    )
+    if (!input$sus_page %in% modules$id || 
+        isFALSE(modules$metadata[modules$id == input$sus_page]))
+      return(showNotification(
+        sus_translate(r = r, "No data/metadata for this location."),
+        duration = 3))
+    
+    showModal(data_modal()$modal)
   })
   
   output$download_csv <-
     downloadHandler(
-      filename = paste0(active_mod()$module_id, "_data.csv"),
+      filename = paste0(r[[input$sus_page]]$export_data()$id, "_data.csv"),
       content = function(file) {
-        data <- active_mod()$data
-        write.csv2(data, file)
-      },
-      contentType = "text/csv")
+        data <- data_modal()$data
+        write.csv(data, file, row.names = FALSE)
+      }, contentType = "text/csv")
   
   output$download_shp <-
     downloadHandler(
-      filename = paste0(active_mod()$module_id, "_shp.zip"),
+      filename = paste0(r[[input$sus_page]]$export_data()$id, "_shp.zip"),
       content = function(file) {
-        withProgress(message = "Exporting Data", {
-          incProgress(0.5)
+        withProgress(message = sus_translate(r = r, "Exporting Data"), {
+          
+          incProgress(0.4)
+          
+          # Prepare data by attaching geometries
+          geo <- qread(paste0("data/geometry_export/", 
+                              export_data()$data_origin, ".qs"))
+          data <- merge(data_modal()$data, geo, by = "ID")
+          rm(geo)
+          
+          incProgress(0.3)
+          
           tmp.path <- dirname(file)
-          name.base <- file.path(tmp.path, 
-                                 paste0(active_mod()$module_id, "_data"))
+          name.base <- file.path(tmp.path,
+                                 paste0(export_data()$id, "_data"))
           name.glob <- paste0(name.base, ".*")
           name.shp  <- paste0(name.base, ".shp")
           name.zip  <- paste0(name.base, ".zip")
           
           if (length(Sys.glob(name.glob)) > 0) file.remove(Sys.glob(name.glob))
-          sf::st_write(active_mod()$data, dsn = name.shp, 
+          sf::st_write(data, dsn = name.shp,
                        driver = "ESRI Shapefile", quiet = TRUE)
           
           zip::zipr(zipfile = name.zip, files = Sys.glob(name.glob))
           req(file.copy(name.zip, file))
           
+          incProgress(0.3)
+          
           if (length(Sys.glob(name.glob)) > 0) file.remove(Sys.glob(name.glob))
-          incProgress(0.5)
         })
       })
   
@@ -386,40 +394,40 @@ shinyServer(function(input, output, session) {
   
   ## Generating report ---------------------------------------------------------
   
-  output$create_report <-
-    downloadHandler(
-      filename = "report.html",
-      content = function(file) {
-        shiny::withProgress(
-          message = sus_translate(paste0("Generating report on ",
-                                         active_mod()$module_short_title)),
-          {
-            shiny::incProgress(0.35)
-            tempReport <- file.path(tempdir(), "report.Rmd")
-            file.copy("www/report.Rmd", tempReport, overwrite = TRUE)
-            params <- list(
-              module_short_title = active_mod()$module_short_title,
-              module = active_mod()$module_id,
-              map_title = title_text$text[
-                title_text$tab == active_mod()$module_id & 
-                  title_text$type == "title"],
-              time = active_mod()$time,
-              data = active_mod()$data,
-              token = active_mod()$token,
-              map_zoom = active_mod()$map_zoom,
-              map_loc = active_mod()$map_loc,
-              df = active_mod()$df,
-              explore_content = active_mod()$explore_content,
-              poly_selected = active_mod()$poly_selected,
-              legend_graph = active_mod()$legend_graph)
-            shiny::incProgress(0.35)
-            rmarkdown::render(tempReport, output_file = file,
-                              params = params,
-                              envir = new.env(parent = globalenv()))
-            shiny::incProgress(0.3)
-          })
-      }
-    )
+  # output$create_report <-
+  #   downloadHandler(
+  #     filename = "report.html",
+  #     content = function(file) {
+  #       shiny::withProgress(
+  #         message = sus_translate(paste0("Generating report on ",
+  #                                        active_mod()$module_short_title)),
+  #         {
+  #           shiny::incProgress(0.35)
+  #           tempReport <- file.path(tempdir(), "report.Rmd")
+  #           file.copy("www/report.Rmd", tempReport, overwrite = TRUE)
+  #           params <- list(
+  #             module_short_title = active_mod()$module_short_title,
+  #             module = active_mod()$module_id,
+  #             map_title = title_text$text[
+  #               title_text$tab == active_mod()$module_id & 
+  #                 title_text$type == "title"],
+  #             time = active_mod()$time,
+  #             data = active_mod()$data,
+  #             token = active_mod()$token,
+  #             map_zoom = active_mod()$map_zoom,
+  #             map_loc = active_mod()$map_loc,
+  #             df = active_mod()$df,
+  #             explore_content = active_mod()$explore_content,
+  #             poly_selected = active_mod()$poly_selected,
+  #             legend_graph = active_mod()$legend_graph)
+  #           shiny::incProgress(0.35)
+  #           rmarkdown::render(tempReport, output_file = file,
+  #                             params = params,
+  #                             envir = new.env(parent = globalenv()))
+  #           shiny::incProgress(0.3)
+  #         })
+  #     }
+  #   )
   
   
   ## Heartbeat function to keep app alive --------------------------------------

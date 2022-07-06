@@ -337,3 +337,19 @@ i.fa {
 .modal-backdrop {
   z-index: var(--depth-ui-over-shadow);
 }
+
+.modal-dialog {
+	width: min(600px, calc(100vw - var(--padding-h-lg)));
+}
+
+.modal-dialog.modal-xl {
+	width: min(1200px, calc(100vw - var(--padding-h-lg)));
+}
+
+.modal-dialog.modal-lg {
+	width: min(900px, calc(100vw - var(--padding-h-lg)));
+}
+
+.modal-dialog.modal-sm {
+	width: min(400px, calc(100vw - var(--padding-h-lg)));
+}

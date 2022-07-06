@@ -134,6 +134,13 @@ marketed_sustainability <-
          fill = paste0(fill, "EE"))
 
 
+# Add to modules table ----------------------------------------------------
+
+modules <- 
+  modules |> 
+  add_modules(id = "marketed_sustainability",
+              metadata = TRUE)
+
 # Cleanup -----------------------------------------------------------------
 
 rm(dict, construction_with_year)

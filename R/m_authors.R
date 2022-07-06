@@ -236,6 +236,41 @@ authors_UI <- function(id) {
                                 " Politics and Governance group in the School ",
                                 "of Urban Planning, as well as for the McGill ",
                                 "Institute for the Study of Canada.")
+                )),
+      susAuthor("Philip Bligh", 
+                sus_translate(r = r, "Contributor"), 
+                "team/photos/philip_bligh.jpg",
+                susAuthorBio(
+                  sus_translate(r = r, "Philip Bligh is a fourth-year undergra",
+                                "duate student at McGill pursuing a Bachelor o",
+                                "f Arts in Urban Studies and History. Through ",
+                                "his Urban Studies major, he has become intere",
+                                "sted in a wide range of urban sustainability ",
+                                "topics, including active transportation and u",
+                                "rban health inequities. Philip is also intere",
+                                "sted in studying historical inequities in cit",
+                                "ies, and using this as a lens to address sust",
+                                "ainability issues. After graduating from McGi",
+                                "ll, Philip hopes to pursue a career in urban ",
+                                "planning.")
+                )),
+      susAuthor("Lauren Rosenthal", 
+                sus_translate(r = r, "Contributor"), 
+                "team/photos/lauren_rosenthal.jpg",
+                susAuthorBio(
+                  sus_translate(r = r, "Lauren is a third-year Environment stu",
+                                "dent specializing in Environmetrics at McGill",
+                                " University. Over the course of her undergrad",
+                                ", she has developed a strong interest in sust",
+                                "ainable transportation systems and in the rol",
+                                "e of technology in the clean energy transitio",
+                                "n. Her past work with the McGill Energy Journ",
+                                "al, the McGill Office of Sustainability and t",
+                                "he Regroupement des écoquartiers have nurture",
+                                "d her passion for environmental advocacy and ",
+                                "education and her commitment to making inform",
+                                "ation accessible at the community level in or",
+                                "der to drive change.")
                 ))
       )))
 }

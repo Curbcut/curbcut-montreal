@@ -1,8 +1,7 @@
 ##### SUS UI SCRIPT ############################################################
 
 ui <- function(request) {
-  tagList(
-  
+  tagList(  
       
   # Styling objects ------------------------------------------------------------
   
@@ -71,20 +70,20 @@ ui <- function(request) {
   
   # Sharing card ---------------------------------------------------------------
   
-  meta() |> 
-    meta_social(
-      title = "Welcome | SUS | Towards a sustainable city",
-      description = paste0("Sus is a platform for exploring urban ",
-                           "sustainability in the Montreal region across ",
-                           "multiple spatial and temporal scales."),
-      url = "https://e978-174-91-206-108.ngrok.io/",
-      image = "https://e978-174-91-206-108.ngrok.io/share.jpg",
-      image_alt = paste0("A photo of a winding footpath through a verdant ",
-                         "Montreal alley."),
-      twitter_creator = "@susmontreal",
-      twitter_card_type = "summary",
-      twitter_site = "@susmontreal"
-    ),
+    meta() |> 
+      meta_social(
+        title = "SUS | Vers une ville durable",
+        description = paste0("Sus est une plateforme permettant d'explorer la ",
+                             "durabilité urbaine dans la région de Montréal à ",
+                             "de multiples échelles spatiales et temporelles."),
+        url = "https://susmontreal.ca",
+        image = "share.jpg",
+        image_alt = paste0("Une photo d'un sentier sinueux dans une ruelle ",
+                           "verdoyante de Montréal."),
+        twitter_creator = "@susmontreal",
+        twitter_card_type = "summary",
+        twitter_site = "@susmontreal"
+      ),
   
   
   # Navigation bar -------------------------------------------------------------
@@ -128,10 +127,10 @@ ui <- function(request) {
                                 href = "#",
                                 icon("link"), sus_translate("Bookmark"), 
                                 onclick = "copyUrl()"),
-                              # actionLink(inputId = "download_data", 
-                              #            label = sus_translate(
-                              #              "Data explanation and export"), 
-                              #            icon("download")),
+                                actionLink(inputId = "download_data",
+                                           label = sus_translate(
+                                             "Export data"),
+                                           icon("download")),
                               # downloadLink("create_report", 
                               #              label = div(icon("file-pdf"), 
                               #                           sus_translate(
@@ -144,5 +143,4 @@ ui <- function(request) {
            )
       ))
   )
-)
 }
