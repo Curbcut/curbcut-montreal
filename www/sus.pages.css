@@ -13,11 +13,19 @@
 
 .sus-page {
   height: 100%;
+  min-height: calc(100vh - var(--h-navbar));
 }
 
 .sus-page-content {
   margin-top: var(--h-navbar);
   margin-bottom: var(--h-navbar);
+  min-height: calc(100vh - var(--h-footer) - 2 * var(--h-navbar));
+}
+
+.sus-page-content:last-child {
+  margin-top: var(--h-navbar);
+  margin-bottom: var(--h-navbar);
+  min-height: calc(100vh - 2 * var(--h-navbar));
 }
 
 .sus-page-content h1,
@@ -154,7 +162,7 @@
 
 @media (min-width: 1350px) {
   .sus-page-controls-spacer {
-    margin-bottom: -70px;
+    margin-bottom: -50px;
   }
 
   .sus-page-controls-container {
@@ -165,8 +173,8 @@
     position: absolute;
     top: 0px;
     left: calc((100vw - var(--w-page-text)) / 2 - 350px - var(--padding-h-md));
-    max-width: 350px;
-    width: min-content;
+    max-width: 320px;
+    min-width: 320px;
     flex-direction: column;
     justify-content: stretch;
   }

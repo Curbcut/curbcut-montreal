@@ -20,6 +20,29 @@ languageButtonLabel <- function(text) {
                          span(text)))
 }
 
+susNewsExploreArticle <- function(id, type, author, date, title, img, preview) {
+  return (div(class='action-button shiny-bound-input', id=id,
+    fluidRow(
+      column(9,
+        tags$div(class="news-meta-data",
+                tags$span(class="news-meta-data-type", type),
+                tags$span(class="news-meta-data-date", date)#,
+                # tags$span(class="news-meta-data-author",
+                #           tagList(sus_translate(r = r, "by"), " ", author)
+                #           ),
+                ),
+        tags$h1(title),
+        tags$div(class="news-preview",
+          tags$p(preview)
+        )
+      ),
+      column(3,
+          tags$img(src=img, align='right')
+      )
+    )
+  ))
+}
+
 susAuthorLink <- function(title, href=NULL, icon=NULL) {
   if (is.null(icon)) {
     icon = materialIcon("link")
@@ -55,6 +78,12 @@ navbarPageWithInputs <- function(..., inputs) {
 # where you should copy the inner text of the <span>...</span> example given.
 materialIcon <- function(icon) {
   span(class = "material-icons", icon)
+}
+
+# Make a custom icon, styled in the same way as the above Material icons
+# To see the list of available icons, check www/icons/custom
+customIcon <- function(icon) {
+  span(class = "custom-icons", data_custom_icon = icon)
 }
 
 # Replace the inner text of a <button> tag with a Material icon span

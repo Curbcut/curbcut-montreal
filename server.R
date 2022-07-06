@@ -41,7 +41,8 @@ shinyServer(function(input, output, session) {
                                              zoom = reactiveVal(12),
                                              export_data = reactiveVal(list())),
                       natural_inf = reactiveValues(zoom = reactiveVal(9.5),
-                                                   export_data = reactiveVal(list())))
+                                                   export_data = reactiveVal(list())),
+                      news = reactiveValues(select_id = reactiveVal(NA)))
   
 
   # Home page ------------------------------------------------------------------
