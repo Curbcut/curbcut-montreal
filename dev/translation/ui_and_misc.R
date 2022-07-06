@@ -6,6 +6,10 @@ ui_and_misc_translated <-
           fr = paste0("Précédent :")) |> 
   add_row(en = paste0("Next:"), 
           fr = paste0("Suivant :")) |> 
+  add_row(en = paste0("Back to explore"), 
+          fr = paste0("Retour à l'exploration")) |> 
+  add_row(en = paste0("News"), 
+          fr = paste0("Actualité")) |> 
   add_row(en = paste0("Welcome"), 
           fr = paste0("Bienvenue")) |> 
   add_row(en = paste0("----"), 

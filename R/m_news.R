@@ -31,16 +31,18 @@ fr_news_ui <-
 news_UI <- function(id) {
   tagList(
     susPage(class = "sus-page-news", footer = susFooter(),
+            # KEEP HIDDEN ONLY UNTIL WE GET CONTROLS!
+            hidden(div(id = NS(id, "controls"), 
             susPageControls(
                 tags$div(
-                  id=NS(id, "explore-controls"),
-                  tags$span(id=id, "Placeholder for explore view controls.")
+                  id = NS(id, "explore-controls"),
+                  "Placeholder for explore view controls."
                 ),
                 tags$div(
-                  id=NS(id, "news-controls"),
+                  id = NS(id, "news-controls"),
                   actionLink(NS(id, "back"), sus_translate(r = r, "Back to explore"))
                 )
-              ),
+              ))),
             susPageSection(
               
               tags$div(
@@ -100,7 +102,16 @@ news_server <- function(id, r) {
       toggle("news", condition = !is.na(r[[id]]$select_id()))
       toggle("explore-controls", condition = is.na(r[[id]]$select_id()))
       toggle("explore", condition = is.na(r[[id]]$select_id()))
+      toggle("sus-page-controls", condition = is.na(r[[id]]$select_id()))
+      toggle("controls", condition = !is.na(r[[id]]$select_id()))
     }) |> bindEvent(r[[id]]$select_id())
+    
+    # Bookmarking
+    bookmark_server(
+      id = id,
+      r = r,
+      s_id = r[[id]]$select_id
+    )
     
   })
 }
