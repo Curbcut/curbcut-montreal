@@ -150,11 +150,9 @@ metro_evolution_legend <- function(date, lang) {
                         '#FCD300', '#FCD300', '#FCD300', '#FCD300', '#FCD300'))
   
   values <- 
-    metro_evolution |> 
-    filter(date == !!date) |> 
-    pull(as.name(paste0("type_", lang))) |> 
+    metro_evolution[metro_evolution$date == date, ][[paste0("type_", lang)]] |> 
     unique()
-  
+
   legend <- 
     data.frame(x = seq_along(values),
                y = 1,
