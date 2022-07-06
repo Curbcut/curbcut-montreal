@@ -7,166 +7,7 @@ runtime: shiny_prerendered
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-library(sf)
-library(rdeck)
-library(tidyverse)
 ```
-
-```{r, echo=FALSE}
-
-metro_evolution <- 
-  list.files(here("dev/data/stories/shp/metro_evolution/"), full.names = TRUE) |> 
-  str_subset("\\.shp$")
-
-metro_evolution <-
-  map(set_names(metro_evolution), read_sf) |>
-  (\(x) map2(x, names(x), ~{mutate(.x, date = .y)}))() |>
-  reduce(rbind) |>
-  mutate(date = as.character(str_extract(date, "\\d{4}"))) |> 
-  rename(type_en = Type) |> 
-   mutate(type_fr = case_when(type_en == "Proposed extensions" ~
-                               "Prolongements proposés",
-                             type_en == "Proposed extension" ~
-                               "Prolongements proposé",
-                             type_en == "Proposed line" ~
-                               "Ligne proposée",
-                             type_en == "Proposed lines" ~
-                               "Lignes proposées",
-                             type_en == "Proposed orange and green lines" ~
-                               "Lignes orange and verte proposées",
-                             type_en == "Proposed red line" ~
-                               "Ligne rouge proposée",
-                             type_en == "Proposed extensions" ~
-                               "Prolongements proposés",
-                             type_en == "Green line" ~
-                               "Ligne verte",
-                             type_en == "Orange line" ~
-                               "Ligne orange",
-                             type_en == "Yellow line" ~
-                               "Ligne jaune",
-                             type_en == "Blue line" ~
-                               "Ligne bleue",
-                             type_en == "Proposed orange line extension" ~
-                               "Prolongement de la \nligne orange proposé",
-                             type_en == "Proposed green line extension" ~
-                               "Prolongement de la \nligne verte proposé",
-                             type_en == "Proposed blue line" ~
-                               "Ligne bleue proposée",
-                             type_en == "Proposed blue line extension" ~
-                               "Prolongement de la \nligne bleue proposé",
-                             type_en == "Proposed line 10" ~
-                               "Ligne 10 proposée",
-                             type_en == "Proposed line 11" ~
-                               "Ligne 11 proposée",
-                             type_en == "Proposed line 6" ~
-                               "Ligne 6 proposée",
-                             type_en == "Proposed line 7" ~
-                               "Ligne 7 proposée",
-                             type_en == "Proposed line 8" ~
-                               "Ligne 8 proposée",
-                             type_en == "Blue line extension" ~
-                               "Prolongement de la \nligne bleue",
-                             type_en == "Proposed pink line" ~
-                               "Ligne rose proposée",
-                             type_en == "Proposed yellow line extension" ~
-                               "Prolongement de la \nligne jaune proposé")) |>
-  mutate(fill = case_when(type_en == "Proposed extension" ~ "#1263A6",
-                          type_en == "Proposed extensions" ~ "#1263A6",
-                          type_en == "Proposed line" ~ "#000000",
-                          type_en == "Proposed lines" ~ "#000000",
-                          type_en == "Proposed orange and green lines" ~ "#000000", 
-                          type_en == "Proposed red line" ~ "#8B0000",
-                          type_en == "Green line" ~ "#00A650", 
-                          type_en == "Orange line" ~ "#F47216", 
-                          type_en == "Yellow line" ~ "#FCD300",
-                          type_en == "Proposed orange line extension" ~ "#f5D7A4",
-                          type_en == "Proposed green line extension" ~ "#76C274",
-                          type_en == "Proposed blue line" ~ "#9CC0F0",
-                          type_en == "Blue line" ~ "#1082CD",
-                          type_en == "Proposed blue line extension" ~ "#9CC0F0",
-                          type_en == "Proposed line 10" ~ "#000000",
-                          type_en == "Proposed line 11" ~ "#454545",
-                          type_en == "Proposed line 6" ~ "#696868",
-                          type_en == "Proposed line 7" ~ "#949292",
-                          type_en == "Proposed line 8" ~ "#B5B1B1",
-                          type_en == "Blue line extension" ~ "#9CC0F0",
-                          type_en == "Proposed yellow line extension" ~ "#FAF093",
-                          type_en == "Proposed pink line" ~ "#E60E70"))
-
-metro_evolution <- 
-metro_evolution |> 
-  arrange(type_fr)
-
-```
-
-```{r echo = FALSE}
-
-# GET THE RDECK FOR EVERY DATE
-metro_evolution_rdeck <- function(date) {
-  
-rdeck(map_style = map_base_style, 
-      initial_bounds = st_bbox(st_buffer(filter(metro_evolution, date == !!date), 2000))) |> 
-          add_mvt_layer(
-          id = "metro_evolution", 
-          data = mvt_url("sus-mcgill.stories-metro_evolution"),
-          visible = TRUE,
-          get_line_width = 5,
-          get_line_color = !!rlang::sym(paste0("fill_", date)),
-          line_width_units = "pixels")
-
-}
-
-# GET LEGEND FOR EVERY DATE
-metro_evolution_legend <- function(date) {
-  
-values <- 
-    metro_evolution |> 
-    filter(date == !!date) |> 
-    pull(type_fr) |> 
-    sort() |> 
-    unique()
-
-legend <- 
-  data.frame(x = seq_along(values),
-             y = 1,
-             fill = 
-               unique(metro_evolution[metro_evolution$type_fr %in% values, ]$fill))
-
-out <- 
-legend |> 
-  (\(z) if (nrow(z) > 4) mutate(z, row = if_else(x <= 4, "A", "B")) else z)() |> 
-  (\(z) if (nrow(z) > 8) mutate(z, row = if_else(row == "B" & x > 8, "C", row)) else z)() |> 
-  ggplot(aes(xmin = x - 1, xmax = x, ymin = y - 1, ymax = y, 
-             fill = fill)) +
-  geom_rect() + 
-  {if (nrow(legend) > 4) facet_wrap(~row, 
-                 nrow = 2, 
-                 scales = "free_x", 
-                 labeller = as_labeller(c("A" = "", "B" = "")))} +
-  {if (nrow(legend) > 8) facet_wrap(~row, 
-                 nrow = 3, 
-                 scales = "free_x", 
-                 labeller = as_labeller(c("A" = "", "B" = "", "C" = "")))} +
-  scale_x_continuous(breaks = seq_along(values) - 0.5, labels = values) +
-  scale_y_continuous(labels = NULL) +
-  scale_fill_manual(values = setNames(
-    legend$fill, legend$fill)) +
-  theme_minimal() +
-  theme(text = element_text(family = "SourceSansPro", size = 11),
-        legend.position = "none", 
-        panel.grid = element_blank())
-
-ggsave(plot = out,
-       filename = here(paste0("www/stories/visuals/metro_evolution/legend_", date, "_fr.png")),
-       units = "px",
-       height = ceiling(nrow(legend) / 4) * 200)
-
-knitr::include_graphics(here(paste0("www/stories/visuals/metro_evolution/legend_", date, "_fr.png")))
-
-}
-
-```
-
 
 Le réseau de transport en commun à Montréal a connu une transformation majeure depuis le début du 20e siècle et le système de métro en est un aspect central et emblématie. Non seulement l'évolution du métro n'a pas été linéaire, mais elle a aussi révélé les priorités de la ville et la perception qu'elle avait d'elle-même. Voici l’histoire du métro de Montréal, comment il est arrivé à son état actuel et ce que lui réserve l’avenir. 
 
@@ -183,20 +24,6 @@ Le Montreal Street Railway Company, responsable du réseau de tramway, a commenc
 
 La première proposition de transport en commun souterrain a été faite en 1910. Elle s’agissait d’une seule ligne qui longeait l’avenue du Parc/de Bleury (Dufour, n.d.-a). Les tunnels étaient davantage conçus pour la circulation de trams que pour un métro (Société de transport de Montréal, n.d.).
 
-<style>
-.html-widget {
-margin:auto;
-}
-</style>
-
-```{r, echo = FALSE, message = FALSE, warning = FALSE}
-metro_evolution_rdeck(1910)
-metro_evolution_legend(1910)
-```
-
-<div align="center">Le réseau proposé en 1910.</div>
-<br>
-
 Plusieurs propositions semblables ont été faites dans les années suivantes, mais rien de concret n’a émergé au début du 20e siècle. La première guerre mondiale suivie de la Grande Dépression ont empêché l’approbation et le financement d’un projet de métro, car la ville a été plongée dans une crise économique et la congestion s’était améliorée, atténuant les problèmes qui nécessitaient le recours au transport souterrain (Gilbert, 2021). 
 
 ### La deuxième guerre mondiale: le début des demandes renouvelées pour un métro
@@ -204,25 +31,9 @@ Plusieurs propositions semblables ont été faites dans les années suivantes, m
 
 L’impact de la deuxième guerre mondiale à Montréal a contribué à augmenter la congestion dans les trams, notamment en raison des rations d'essence (Scott, 2016). Des demandes pour un réseau de transport souterrain ont donc à nouveau émergé, amplifiées par une nouvelle proposition faite par la Montreal Tramways Company en 1944. Elle consistait en deux lignes, une sous la rue Sainte-Catherine et l’autre sous les rues Saint-Denis, Notre-Dame et Saint-Jacques (Société de Montréal, n.d.).  
 
-```{r, echo = FALSE, message = FALSE, warning = FALSE}
-metro_evolution_rdeck(1944)
-metro_evolution_legend(1944)
-```
-
-<div align="center">Le réseau proposé en 1944.</div>
-<br>
-
 Même si cette proposition ne s’est jamais concrétisée, durant et après la guerre, il devenait clair qu'un métro devenait nécessaire. L’utilisation de la voiture augmentait au détriment des transports en commun, aggravant la congestion encore plus. De plus, un métro était considéré essentiel dans le maintien du statut de Montréal comme grande ville canadienne, car Toronto, une métropole en rapide croissance à l’époque, était en train de développer son propre réseau souterrain (Gilbert, 2021).
 
 En 1953, la Commission de transport de Montréal, un nouvel organisme ayant pour but de remplacer le réseau de tramway par un réseau de bus (Société de Transport de Montréal, 2004), a proposé un autre projet de métro inspiré du plan de 1944. Pourtant, ce plan n’a pas réussi non plus dépassé la phase de planification. 
-
-```{r, echo = FALSE, message = FALSE, warning = FALSE}
-metro_evolution_rdeck(1953)
-metro_evolution_legend(1953)
-```
-
-<div align="center">Le réseau proposé en 1953.</div>
-<br>
 
 ### Penser grand: l’administration Jean Drapeau et un intérêt renouvelé pour le métro
 #### *1954-1960*
@@ -246,14 +57,6 @@ knitr::include_graphics(here("www/stories/visuals/metro_evolution/drapeau_propos
 
 ```
 
-```{r, echo = FALSE, message = FALSE, warning = FALSE}
-metro_evolution_rdeck(1961)
-metro_evolution_legend(1961)
-```
-
-<div align="center">Le réseau de métro proposé en 1962, qui s'agissait de trois lignes: orange, verte et rouge.</div>
-<br>
-
 La construction du métro a commencé le 23 mai 1962 au sud des rues Berri et Jarry. La conception de chaque station a été assignée à des architectes différents, ce qui a mené à une série de stations uniques qui rendent distinctif le métro montréalais.
 
 ### Un changement de priorité et l’inauguration du métro
@@ -262,14 +65,6 @@ La construction du métro a commencé le 23 mai 1962 au sud des rues Berri et Ja
 La ligne rouge a fini par être abandonnée définitivement en juin 1963. Plusieurs obstacles empêchaient sa réalisation; par exemple, elle devait passer dehors tandis que ses roues en caoutchouc étaient incapables de subir des températures hivernales extrêmes (Magder, 2018). Malgré ce défi, la raison principale pour son exclusion était l'arrivée de l'Expo 67. L’Exposition Universelle était la façon ultime de présenter une image moderne et innovante de la ville au monde (The Canadian Press, 2017). Ainsi, lorsqu’il a été décidé que Montréealallait accueillir l’événement sur l’île Sainte-Hélène, située au sud de la ville, y donner accès au public par métro est devenue la nouvelle priorité.
 
 Le métro a été inauguré le 14 octobre 1966 à la station Berri-de-Montigny (désormais Berri-UQAM). Vingt stations ont été ouvertes et plus d’un million de passagers ont utilisé le métro durant la fin de semaine suivant sa création (Scott, 2016). Le service du métro s'est progressivement étendu avec la création de stations jusqu'en avril 1967. Avec une nouvelle ligne jaune et des lignes orange et verte prolongées, le réseau initial du métro était complet.
-
-```{r, echo = FALSE, message = FALSE, warning = FALSE}
-metro_evolution_rdeck(1967)
-metro_evolution_legend(1967)
-```
-
-<div align="center">Le réseau de métro réalisé en 1967.</div>
-<br>
 
 ### Ère d’optimisme
 #### *Fin des années 60-1975*
@@ -284,14 +79,6 @@ L’élan positif généré par les projets majeurs des années soixante a mené
 
 La ligne bleue devait parcourir un chemin du nord-est de Lachine jusqu’à Montréeal-Nord, la branche ouest de la ligne orange allait être rallongée vers le nord et la ligne verte allait être rallongée dans les directions sud-ouest et est (Noakes, 2021). On espérait que le réseau élargi allait contribuer au développement économique de certains quartiers plus défavorisés (Gilbert, 2021).
 
-```{r, echo = FALSE, message = FALSE, warning = FALSE}
-metro_evolution_rdeck(1981)
-metro_evolution_legend(1981)
-```
-
-<div align="center">Les plans pour l'expansion du métro faits à la suite de la réélection de Jean Drapeau.</div>
-<br>
-
 ### Les retombées des Jeux Olympiques
 #### *1976-1978*
 
@@ -301,28 +88,12 @@ Les coûts d’excavation pour le métro avaient explosé pareillement, mais com
 
 Les coûts très élevés des projets de métro ont poussé le gouvernement provincial de Robert Bourassa à imposer un moratoire sur le prolongement du réseau dès le 19 mai 1976. Ceci représentait un changement fondamental dans l’approche des gouvernements provincial et municipal concernant les transports en commun. Malgré ceci, la ligne verte fut quand même prolongée avec la création de la branche est vers Honoré Beaugrand et la branche ouest vers Angrignon, où se trouvent les terminus de la ligne verte à ce jour (Gilbert, 2021). 
 
-```{r, echo = FALSE, message = FALSE, warning = FALSE}
-metro_evolution_rdeck(1978)
-metro_evolution_legend(1978)
-```
-
-<div align="center">Le réseau de métro en 1978.</div>
-<br>
-
 ### Moratorium levé
 #### 1979-1988
 
 L’administration Lévesque, élue peu après l’imposition du moratoire, l’a levé temporairement pour prolonger la ligne orange et construire la ligne bleue (Magder, 2017). Pourtant, la situation à Montréal avait beaucoup changé depuis la conception des prolongements en 1971; une récession économique dans les années quatre-vingt aggravée par les tensions politiques et linguistiques des années soixante-dix a entraîné une redéfinition du plan, à plus petite échelle (Wilson-Smith, 1985).
 
 Plusieurs lignes proposées dans les années 70 n’ont jamais vu le jour, dont les lignes de surface 6, 8, 10 et 11, qui avaient le but de stimuler le développement dans des quartiers défavorisés sans le coût exorbitant de construire des lignes sous-terraines si loin du centre-ville (Giansetto, 1982). Une ligne souterraine, la ligne 7, surnommée la ligne blanche, devait passer sous le boulevard Pie IX, une artère majeure de Montréal. Toutes ces lignes ont été annulées en raison de la récession, mais plusieurs ont fini par être remplacées par des trains de banlieue dans les années suivantes.
-
-```{r, echo = FALSE, message = FALSE, warning = FALSE}
-metro_evolution_rdeck(1970)
-metro_evolution_legend(1970)
-```
-
-<div align="center">Des expansions de surface et souterraines planifiées dans les années soixante-dix jamais réalisées.</div>
-<br>
 
 Les lignes existantes, d’autre part, ont vu des changements. La ligne orange a été prolongée jusqu’à Côte-Vertu entre 1980 et 1986 Les autres stations allant jusqu’à Bois-Franc n’ont pas été réalisées afin de réduire les coûts du projet. La partie centrale de la ligne bleue a aussi été construite entre 1986 et 1988, incluant la station Acadie, qui demeure la station la plus récente sur l’île de Montréal. Un prolongement de la ligne bleue vers Anjou avait été envisagé, mais ne s’est pas matérialisé en raison de contraintes financières. 
 
@@ -343,14 +114,6 @@ Depuis la réalisation du réseau de métro, plusieurs prolongements ont été p
 Pourtant, même si la dernière extension du réseau de métro date d'il y a longtemps, le concept continue de susciter beaucoup d’enthousiasme chez les Montréalais. Récemment, cet enthousiasme s’est manifesté très clairement dans l’intérêt exprimé quant à la proposition pour une nouvelle ligne rose  faite par Valérie Plante lors de sa campagne à la mairie en 2017. Son ambition et la promesse qu’elle offrait de soulager la branche est très saturée de la ligne orange ont généré beaucoup de couverture médiatique et de discussions (Barbeau, 2018). Le projet a finalement été jugé trop coûteux, trop semblable aux lignes existantes et incapable de répondre au besoin urgent d’améliorer l’accès au transport en commun dans l’est (Radio-Canada, 2018). Néanmoins, l’attention que la ligne rose a reçue malgré son échelle massive et improbable démontre le pouvoir que détient l’image d’un réseau de métro étendu chez la communauté montréalaise (Tiranti, 2021). Facile à visualiser et continuellement associé à l’essor de Montréal comme métropole moderne, il est logique que le prolongement du métro demeure très attendu malgré le manque de progrès récent. 
 
 La seule exception à ce manque de progrès est le prolongement de la ligne bleue vers Anjou. Depuis son annonce initiale en 1970, des fonds pour sa réalisation ont été mis de côté en 1998, 2001, 2010, 2015, 2018, 2019 et 2020 (Noakes, 2021). Malgré les faux départs, sa construction semble avoir commencé pour vrai, mais pas sans complications. Le prolongement devait être réalisé d’ici 2026 et coûter \$3.9 milliards, mais est maintenant prévu pour 2029 à un prix de \$6.4 milliards à cause des coûts élevés d’expropriation (CBC News, 2021). Plus particulièrement, l’approche frugale du gouvernement vers les projets de transport dans le passé ne semble plus s’appliquer maintenant; il semble que le projet va être réalisé peu importe le coût pour pouvoir finalement répondre aux attentes exprimées par les citoyens de l’est depuis des décennies (The Canadian Press, 2022).
-
-```{r, echo = FALSE, message = FALSE, warning = FALSE}
-metro_evolution_rdeck(2000)
-metro_evolution_legend(2000)
-```
-
-<div align="center">Le réseau moderne avec les changements proposés au fil des années, parmi eux le prolongement confirmé de la ligne bleue vers Anjou.</div>
-<br>
 
 ### Une nouvelle ère pour les transports en commun à Montréal?
 

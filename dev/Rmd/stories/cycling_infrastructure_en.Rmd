@@ -101,6 +101,4 @@ Note 2: The bike lanes in this map come from a different source, without data on
 * Walker, P. (2015, June 17). People power: The secret to Montreal's success as a bike-friendly city. The Guardian. Retrieved June 15, 2022, from https://www.theguardian.com/cities/2015/jun/17/people-power-montreal-north-america-cycle-city
 * What is Vision Zero? Vision Zero Network. (2022). Retrieved June 15, 2022, from https://visionzeronetwork.org/about/what-is-vision-zero/  
 * Wurst, B. (2020, November 1). Montreal reveals New Rev Bike Path Network. Mtltimes.ca. Retrieved June 15, 2022, from https://mtltimes.ca/life/montreal-reveals-new-rev-bike-path-network/ 
-<!-- </div> -->
-<!-- </div> -->
 

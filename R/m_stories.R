@@ -1,75 +1,27 @@
 ### STORIES MODULE ##############################################################
 
-# Temporary non-translated stories:
-available_stories <- list.files("www/stories", full.names = TRUE) |> 
-  str_subset(".html")
-
-# cycling_infrastructure legend function
-cycling_infrastructure_legend <- function(year) {
-  
-  types_df <- 
-  data.frame(year = c(1986, 1991, 1996, 2001, 2006, 2011, 2016, 2022),
-             types = I(list(c("Bicycle path"), 
-                            c("New bicycle path", "Removed path", "Old path"),
-                            c("New bicycle path", "Removed path", "Old path"),
-                            c("New bicycle path", "Removed path", "Old path"),
-                            c("New bicycle path", "Removed path", "Old path"),
-                            c("New bicycle path", "Removed path", "Old path"),
-                            c("New bicycle path", "Removed path", "Old path", "Bixi station"),
-                            c("Bicycle path", "Bixi station"))))
-  
-  types <- 
-    unlist(types_df$types[types_df$year == year])
-  
-  type_fill <- 
-    data.frame(type = c("Bicycle path", "New bicycle path", "Removed path", 
-                        "Old path", "Bixi station"),
-               fill = c("#73AE80", "#73AE80", "#CA0020", "#2E4633", "#000000"))
-  
-  label <- type_fill$type[type_fill$type %in% types]
-  
-  legend <- 
-    data.frame(x = seq_along(label),
-               y = 1,
-               fill = 
-                 unique(type_fill[type_fill$type %in% types, ]$fill))
-  
-  legend |> 
-    ggplot(aes(xmin = x - 1, xmax = x, ymin = y - 1, ymax = y, 
-               fill = fill)) +
-    geom_rect() + 
-    scale_x_continuous(breaks = seq_along(label) - 0.5, labels = label) +
-    scale_y_continuous(labels = NULL) +
-    scale_fill_manual(values = setNames(
-      legend$fill, legend$fill)) +
-    theme_minimal() +
-    theme(text = element_text(family = "SourceSansPro", size = 11),
-          legend.position = "none", 
-          panel.grid = element_blank())
-}
-
 # UI ----------------------------------------------------------------------
 
 stories_UI <- function(id) {
   ns_id <- "stories"
   
   tagList(
-
+    
     # Sidebar
     sidebar_UI(
       NS(id, "sidebar"),
       # hr(id = NS(id, "hr")),
       actionLink(NS(id, "back"), sus_translate(r = r, "Back to the map"))
     ),
-
+    
     # Map
     div(class = "mapdeck_div", rdeckOutput(NS(id, paste0(ns_id, "-map")), 
-                                             height = "100%")),
-
+                                           height = "100%")),
+    
     # Stories
     hidden(htmlOutput(
       NS(id, "stories")))
-
+    
   )
 }
 
@@ -80,16 +32,16 @@ stories_server <- function(id, r) {
   moduleServer(id, function(input, output, session) {
     ns_id <- "stories"
     ns_id_map <- paste0(ns_id, "-map")
-
+    
     # Initial reactive
     if (is.null(r[[ns_id]]$select_id)) r[[ns_id]]$select_id <- reactiveVal(NA)
-
+    
     # Sidebar
     sidebar_server(
       id = "sidebar",
       r = r,
       x = "stories")
-
+    
     # Map
     output[[ns_id_map]] <- renderRdeck({
       rdeck(map_style = map_style_building, initial_view_state = view_state(
@@ -115,54 +67,46 @@ stories_server <- function(id, r) {
       } else r[[ns_id]]$select_id(selection)
     }) |> bindEvent(get_clicked_object(ns_id_map))
     
+    # Custom map, legend and source for cycling infrastructure and metro 
+    # evolution stories
+    selected_story <- reactive({
+      if (is.na(r[[ns_id]]$select_id())) return(NA)
+      stories$name[stories$ID == r[[ns_id]]$select_id()]
+    })
     output$stories_custom_map <-
       renderRdeck(rdeck(width = "100%", map_style = map_base_style, 
                         initial_view_state = view_state(
                           center = map_loc, zoom = as.numeric(map_zoom - 1))))
-    
     observeEvent(input[["stories-stories_map_slider"]], {
-      rdeck_proxy("stories_custom_map") |>
-      add_mvt_layer(
-        id = "cycling_infrastructure",
-        data = mvt_url("sus-mcgill.stories-cycling_infrastructure"),
-        visible = TRUE,
-        get_line_width = 2,
-        get_line_color = !!rlang::sym(paste0("fill_", input[["stories-stories_map_slider"]])),
-        line_width_units = "pixels",
-        get_fill_color = !!rlang::sym(paste0("fill_", input[["stories-stories_map_slider"]])),
-        get_point_radius = 10)
-
+      if (selected_story() %in% c("cycling_infrastructure", "metro_evolution"))
+      do.call(paste0(selected_story(), "_map"), 
+              list(input[["stories-stories_map_slider"]]))
     }, ignoreInit = TRUE)
-    
+    observeEvent(selected_story(), {
+      if (selected_story() %in% c("cycling_infrastructure", "metro_evolution"))
+        shinyWidgets::updateSliderTextInput(
+          session = session,
+          inputId = "stories-stories_map_slider",
+          choices = do.call(paste0(selected_story(), "_choices"), list()))
+    }, ignoreInit = TRUE)
     output$stories_custom_legend <- renderPlot({
-      cycling_infrastructure_legend(input[["stories-stories_map_slider"]])
+      if (selected_story() %in% c("cycling_infrastructure", "metro_evolution"))
+      do.call(paste0(selected_story(), "_legend"), 
+              list(input[["stories-stories_map_slider"]], r$lang()))
+    })
+    output$stories_custom_source <- renderText({
+      if (selected_story() %in% c("cycling_infrastructure", "metro_evolution"))
+      do.call(paste0(selected_story(), "_source"),
+              list(input[["stories-stories_map_slider"]], r))
     })
     
-    output$stories_custom_source <- renderText({
-      # If cycling infrastructure
-      if (r[[ns_id]]$select_id() == 9) {
-        if (input[["stories-stories_map_slider"]] %in% c(1986:2016)) {
-        paste0("See Note 1. Data provided by: Houde, M., Apparicio, P., & Ségu",
-               "in, A.-M. (2018). A ride for whom: Has cycling network expansi",
-               "on reduced inequities in accessibility in Montreal, Canada? Jo",
-               "urnal of Transport Geography, 68, 9–21. https://doi.org/10.101",
-               "6/j.jtrangeo.2018.02.005")
-        } else {
-          paste0("See Note 2. Data provided by: Winters et al. The Canadian Bi",
-                 "keway Comfort and Safety Metrics (Can-BICS): Measuring the b",
-                 "icycling environment in all communities in Canada – for subm",
-                 "ission to Health Reports (forthcoming).")
-        }
-      }
-    })
-
     # Render the story in question, now only in english (_en)
     output$stories <- renderUI({
       
       if (!is.na(r[[ns_id]]$select_id())) {
         
-        rmd_name <- stories[stories$ID == r[[ns_id]]$select_id(),]$name
-        bandeau_name <- stories[stories$ID == r[[ns_id]]$select_id(),]$img
+        rmd_name <- stories$name[stories$ID == r[[ns_id]]$select_id()]
+        bandeau_name <- stories$img[stories$ID == r[[ns_id]]$select_id()]
         
         story_link <- paste0("www/stories/", rmd_name, "_", r$lang(),
                              ".html")
@@ -184,7 +128,7 @@ stories_server <- function(id, r) {
         #          paste0("img(src='", x, "', style='width:45%;margin:2px;')"))
         
         # SPECIAL CASES FOR THE Mp
-        if (rmd_name %in% c("cycling_infrastructure")) {
+        if (rmd_name %in% c("cycling_infrastructure", "metro_evolution")) {
           div(class = "main_panel_text_popup",
               div(class = "row-stories-maps",
                   div(class = "column-stories-maps",
@@ -204,36 +148,17 @@ stories_server <- function(id, r) {
                         slider_text_UI(id = id,
                                        slider_id = NS(id, "stories_map_slider"),
                                        label = NULL,
-                                       choices = c(1986, 1991, 1996, 2001, 2006, 
-                                                   2011, 2016, 2022),
+                                       choices = do.call(paste0(rmd_name, "_choices"), list()),
                                        width = "250"),
-                        plotOutput(NS(id, "stories_custom_legend"), height = 60),
+                        plotOutput(NS(id, "stories_custom_legend"), height = 60,
+                                   width = "auto"),
                         br(),
-                        textOutput(NS(id, "stories_custom_source"))
+                        div(style = "text-align: center;", 
+                            textOutput(NS(id, "stories_custom_source"))),
+                      )
                   )
               )
           )
-          )
-          # # Right panel
-          # absolutePanel(
-          #   id = NS(id, "right_panel"),
-          #   class = "panel panel-default sus-map-panel sus-scroll",
-          #   style = "margin-top:50px;margin-right:20px;padding:10px;",
-          #   div(class = "sus-map-panel-content sus-scroll-content", 
-          #       div(
-          #         h4(sus_translate(r = r, "Take a walk"))),
-          #       p("To come!"),
-          #       hr(),
-          #       div(
-          #         h4(sus_translate(r = r, "Photos"))),
-          #       lapply(images_tag, \(x) eval(parse(text = x))),
-          #       hr(),
-          #       div(
-          #         h4(sus_translate(r = r, "Watch the video"))),
-          #       hr(),
-          #       "Other Content")
-          # )
-          
         } else {
           div(class = "main_panel_text_popup",
               
