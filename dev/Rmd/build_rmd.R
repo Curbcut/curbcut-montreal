@@ -28,9 +28,11 @@ process_rmd <- function(file, path) {
   # Take head out, which breaks Sus' CSS
   x <- readLines(out)
   
-  if (file %in% list.files("dev/Rmd/stories")) {
+  if (file %in% c(list.files("dev/Rmd/stories"),
+                  list.files("dev/Rmd/news"))) {
     x <- 
-      str_remove_all(x, "(?<=src=\")../../../www/(?=stories)")
+      str_remove_all(x, "(?<=src=\")../../../www/(?=stories|news)")
+
   } else {
     x <-
       x[-((str_detect(x, "<head") |> which()):(str_detect(x, "</head") |> which()))]
@@ -55,11 +57,14 @@ process_rmd("crash.Rmd", "crash")
 
 stories_files <- list.files("dev/Rmd/stories")
 library(here)
-map_base_style <- "mapbox://styles/sus-mcgill/cl0reqoz4000z15pekuh48ld6"
-map_zoom <- 10.1
-map_loc <- c(-73.58, 45.53)
-
 purrr::walk(stories_files, process_rmd, path = "stories")
+
+
+# News --------------------------------------------------------------------
+
+news_files <- list.files("dev/Rmd/news")
+library(here)
+purrr::walk(news_files, process_rmd, path = "news")
 
 
 # Standalone --------------------------------------------------------------
