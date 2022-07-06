@@ -323,7 +323,7 @@ styler <- '
    font-size: 1.65rem;
    padding:20px;
   }
-   
+
    .row-stories-maps {
   content: "";
   display: table;
@@ -345,6 +345,25 @@ styler <- '
   padding: 10px;
 }
 
+  tr:nth-child(even) {
+  background-color: #B5C0DA50;
+  }
+
+  tr {
+  border-bottom: 1px solid #ddd;
+  }
+
+  tr:hover {
+  background-color: #B5C0DA50;
+  }
+
+  td {
+  padding:4px;
+  }
+
+  th {
+  padding:4px;
+  }
 
 '
 

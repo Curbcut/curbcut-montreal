@@ -209,6 +209,14 @@ stories_mapping <-
   set_names(stories$name)
 
 
+# Add to modules table ----------------------------------------------------
+
+modules <- 
+  modules |> 
+  add_modules(id = "stories",
+              metadata = FALSE)
+
+
 # Clean up ----------------------------------------------------------------
 
 rm(story_images, round_img_shadow)

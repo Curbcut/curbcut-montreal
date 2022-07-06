@@ -210,13 +210,21 @@ green_space_table <-
       scales = list(c("borough", "CT", "DA", "building", "street")),
       breaks_q3 = list(breaks_q3_active[[.x]]),
       breaks_q5 = list(breaks_q5_active[[.x]]),
-      source = "VdM")
+      source = "City of Montreal's open data website")
   })
 
 # Join green space variable table to variables table
 variables <-
   variables |>
   bind_rows(green_space_table)
+
+
+# Add to modules table ----------------------------------------------------
+
+modules <- 
+  modules |> 
+  add_modules(id = "green_space",
+              metadata = TRUE)
 
 
 # Clean up ----------------------------------------------------------------

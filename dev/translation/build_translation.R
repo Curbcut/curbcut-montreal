@@ -6,7 +6,6 @@ library(dplyr)
 library(qs)
 
 # From a CSV to code to create tibbles ------------------------------------
-
 # form_translation_tibble <- function(df) {
 # 
 #   df <- df[!is.na(df$fr), ]
@@ -32,6 +31,7 @@ source("dev/translation/dyk.R", encoding = "utf-8")
 source("dev/translation/green_alleys.R", encoding = "utf-8")
 source("dev/translation/place_explorer.R", encoding = "utf-8")
 source("dev/translation/authors.R", encoding = "utf-8")
+source("dev/translation/data_export.R", encoding = "utf-8")
 
 # Retrieve and bind translated csvs ---------------------------------------
 
@@ -44,11 +44,11 @@ translation_fr <-
             dyk_translated,
             green_alleys_translated,
             place_explorer_translated,
-            authors_translation) |> 
+            authors_translation,
+            data_export_translated) |> 
   distinct(en, .keep_all = TRUE)
 
 
 # Save to the translation files -------------------------------------------
 
 qsave(translation_fr, "data/translation_fr.qs")
-
