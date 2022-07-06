@@ -61,7 +61,6 @@ map_loc <- c(-73.58, 45.53)
 
 purrr::walk(stories_files, process_rmd, path = "stories")
 
-process_rmd("cycling_infrastructure_en.Rmd", path = "stories")
 
 # Standalone --------------------------------------------------------------
 
