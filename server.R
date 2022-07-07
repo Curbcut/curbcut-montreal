@@ -315,7 +315,7 @@ shinyServer(function(input, output, session) {
           
           # Prepare data by attaching geometries
           geo <- qread(paste0("data/geometry_export/", 
-                              export_data()$data_origin, ".qs"))
+                              r[[input$sus_page]]$export_data()$data_origin, ".qs"))
           data <- merge(data_modal()$data, geo, by = "ID")
           rm(geo)
           
@@ -323,7 +323,7 @@ shinyServer(function(input, output, session) {
           
           tmp.path <- dirname(file)
           name.base <- file.path(tmp.path,
-                                 paste0(export_data()$id, "_data"))
+                                 paste0(r[[input$sus_page]]$export_data()$id, "_data"))
           name.glob <- paste0(name.base, ".*")
           name.shp  <- paste0(name.base, ".shp")
           name.zip  <- paste0(name.base, ".zip")
