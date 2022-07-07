@@ -92,4 +92,5 @@ Samson, F. (2022, March 6). *Montreal's mile end residents fight for pedestrian 
 ```{r, echo=FALSE}
 vembedr::embed_youtube("wypI9_yoHPM", height = 500)
 ```
-<c/enter>
+</center>
+
