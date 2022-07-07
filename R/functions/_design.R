@@ -20,6 +20,29 @@ languageButtonLabel <- function(text) {
                          span(text)))
 }
 
+susNewsExploreArticle <- function(id, type, author, date, title, img, preview) {
+  return (div(class='action-button shiny-bound-input', id=id,
+    fluidRow(
+      column(9,
+        tags$div(class="news-meta-data",
+                tags$span(class="news-meta-data-type", type),
+                tags$span(class="news-meta-data-date", date)#,
+                # tags$span(class="news-meta-data-author",
+                #           tagList(sus_translate(r = r, "by"), " ", author)
+                #           ),
+                ),
+        tags$h1(title),
+        tags$div(class="news-preview",
+          tags$p(preview)
+        )
+      ),
+      column(3,
+          tags$img(src=img, align='right')
+      )
+    )
+  ))
+}
+
 susAuthorLink <- function(title, href=NULL, icon=NULL) {
   if (is.null(icon)) {
     icon = materialIcon("link")
@@ -49,8 +72,18 @@ navbarPageWithInputs <- function(..., inputs) {
   navbar
 }
 
+# Make a Google fonts Material icon
+# To browse the list of available icons, go to: https://fonts.google.com/icons
+# For exact usage, see the "Inserting the icon" heading on the right hand sidebar,
+# where you should copy the inner text of the <span>...</span> example given.
 materialIcon <- function(icon) {
   span(class = "material-icons", icon)
+}
+
+# Make a custom icon, styled in the same way as the above Material icons
+# To see the list of available icons, check www/icons/custom
+customIcon <- function(icon) {
+  span(class = "custom-icons", data_custom_icon = icon)
 }
 
 # Replace the inner text of a <button> tag with a Material icon span
@@ -105,10 +138,10 @@ susFooter <- function() {
           tags$li(tags$a(href = NULL, HTML("&nbsp;"))),#sus_translate(r = r, "Terms & Conditions"))),
           tags$li(tags$a(href = NULL, style = "cursor:pointer;", 
                          onclick = "openTab('about_sus')", 
-                         sus_translate(r = r, "About"))),
+                         sus_translate(r = r, "About"), materialIcon("info"))),
           tags$li(tags$a(href = NULL, style = "cursor:pointer;", 
                          onclick = "document.getElementById('contact').click();",
-                         sus_translate(r = r, "Contact/feedback"))),
+                         sus_translate(r = r, "Contact/feedback"), materialIcon("mail"))),
           tags$li(tags$a(href = NULL, HTML("&nbsp;")))#sus_translate(r = r, "Privacy Policy"))),
         )
       )
@@ -123,6 +156,30 @@ susBanner <- function() {
     tags$div(class = "sus-banner-bg sus-bg-img-skyline"),
     tags$h1(class = "sus-brand sus-banner-text", "SUS")
   ))
+}
+
+susCarousel <- function(..., id="", class="") {
+  return(
+    tags$div(class = paste("sus-carousel", class),
+      tags$div(class="sus-carousel-bullets"),       
+      tags$div(class="sus-carousel-preview sus-carousel-preview-prev",
+               sus_translate(r = r, "Previous:"), HTML("&nbsp;"), tags$span(class="sus-carousel-preview-content")),
+      tags$div(class="sus-carousel-preview sus-carousel-preview-next",
+               sus_translate(r = r, "Next:"), HTML("&nbsp;"), tags$span(class="sus-carousel-preview-content")),
+      tags$div(class="sus-carousel-nav-bttn sus-carousel-nav-bttn-left", materialIcon("chevron_left")),
+      tags$div(class="sus-carousel-nav-bttn sus-carousel-nav-bttn-right", materialIcon("chevron_right")),
+      ...)
+  )
+}
+
+susCarouselSlide <- function(..., title="", preview="", id="", class="") {
+  return(
+    htmltools::tagAppendAttributes(
+      tags$div(class = paste("sus-carousel-slide", class),
+               tags$h2(title),
+               ...),
+    `data-preview` = preview)
+  )
 }
 
 # Make controls for a page
@@ -264,51 +321,6 @@ styler <- '
   height: calc(100vh - 85px);
   }
   
-  .sus_sidebar {
-    font-size: 11px;
-    padding: 0px 5px 0px 0px;
-    margin: 0px 5px 0px 0px;
-    border-width: 0px;
-    height: calc(100vh - 85px);
-    display: block;
-    position: relative;
-  }
-  
-  .sidebar_content {
-    overflow-x: hidden;
-    overflow-y: auto;
-    max-height: calc(100% - 225px);
-  }
-  
-  .sus_sidebar .open> .dropdown-menu {
-  top: auto;
-  bottom: 0;
-  }
-  
-  .sus_sidebar .shiny-input-container {
-    margin-bottom: 10px;
-    margin-top: 10px;
-  }
-  
-  .bottom_sidebar {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    display: block;
-  }
-  
-  .small_map img {
-    max-width: 100%;
-    height: auto;
-  }
-  
-  .compare_dropdown .open> .dropdown-menu {
-  max-height: 250px;
-  font-size: 13px;
-  left: auto;
-  right: 0;
-  }
-  
   #dropdown-menu-settings {
   max-height: 250px;
   font-size: 13px;
@@ -318,12 +330,6 @@ styler <- '
   
   .form-group {
   margin: auto;
-  }
-  
-  .explore_dyk {
-  max-height: calc(100vh - 250px); 
-  overflow-y: auto; 
-  overflow-x: hidden;  
   }
   
   .container {
@@ -345,8 +351,48 @@ styler <- '
    text-align: center;
    font-size: 1.65rem;
    padding:20px;
-   }
+  }
 
+   .row-stories-maps {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.column-stories-maps-map {
+  width: 50%;
+  height: 80vh;
+  float: left;
+  padding: 10px;
+  position: sticky;
+  top:50px;
+}
+
+.column-stories-maps {
+  width: 50%;
+  float: left;
+  padding: 10px;
+}
+
+  tr:nth-child(even) {
+  background-color: #B5C0DA50;
+  }
+
+  tr {
+  border-bottom: 1px solid #ddd;
+  }
+
+  tr:hover {
+  background-color: #B5C0DA50;
+  }
+
+  td {
+  padding:4px;
+  }
+
+  th {
+  padding:4px;
+  }
 
 '
 

@@ -69,7 +69,7 @@ title_text_translation <-
                       "arch)</b></ul><br><p><i>Auteurs principaux du module: D",
                       "avid Wachsmuth, Robin Basalaev-Binder</i>")) |> 
   add_row(en = paste0("Climate change risk"), 
-          fr = paste0("Risque lié aux changements climatiques")) |> 
+          fr = paste0("Vulnérabilité aux changements climatiques")) |> 
   add_row(en = paste0("Climate change will have increasingly negative impacts ",
                       "on communities in Montreal, but these impacts will vary",
                       " significantly by both geography and social factors. Th",

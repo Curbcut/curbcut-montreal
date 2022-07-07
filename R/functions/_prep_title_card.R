@@ -102,7 +102,9 @@ prep_title_card <- function(r = r, df, select_id, ind, percent = TRUE,
   
   # Module link ----------------------------------------------------------------
   
-  if (!is.na(link_module) && !is.null(link_module)) {
+  if (!is.na(link_module) && !is.null(link_module) && 
+      # Is the link module active?
+      link_module %in% unlist(mods_rdy)) {
     
     info$link <- paste0(" <a id='place_explorer-title_card_", ind, "' href='#'", 
                         " class='action-button shiny-bound-input'>",

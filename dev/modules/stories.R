@@ -72,7 +72,63 @@ stories <-
     preview = paste0("Griffintown’s social and governance history can be ",
                      "defined through the politics of water management."),
     lon = -73.560739,
-    lat = 45.496812)
+    lat = 45.496812) |> 
+  
+  add_row(
+    name = "champs_possibles",
+    title = paste0("The Champ des Possibles: A Communitarian & Biodiverse ",
+                   "Urban Prairie"),
+    img = "champs_possibles.png",
+    preview = paste0("An urban prairie located in the Mile End, the Champ des ",
+                     "Possibles is a biodiverse green space that has a unique ",
+                     "governance structure that was born out of community ",
+                     "actions."),
+    lon = -73.600377,
+    lat = 45.528423) |> 
+  
+  add_row(
+    name = "metro_evolution",
+    title = paste0("The Evolution of the Montreal Metro"),
+    img = "champs_possibles.png",
+    preview = paste0("Since its inception in the early 20th century, the ",
+                     "Montreal metro has undergone several major ",
+                     "transformations that mirror the city’s ever-changing ",
+                     "sociopolitical landscape."),
+    lon = -73.628745,
+    lat = 45.542925) |> 
+  
+  add_row(
+    name = "green_alleys_plateau",
+    title = paste0("The Green Alley Program in Le Plateau-Mont-Royal: tensions ",
+                   "between beautification and privatisation of public space"),
+    img = "green_alleys_plateau.png",
+    preview = paste0("Once redeveloped, green alleys often tend to become ",
+                     "ambiguous spaces, a sort of common, between the public ",
+                     "and the private realm. The case of Le Plateau-Mont-Royal ",
+                     "is particularly interesting."),
+    lon = -73.570753,
+    lat = 45.515949) |> 
+  
+  add_row(
+    name = "cycling_infrastructure",
+    title = paste0("A History of Cycling Infrastructure in Montréal"),
+    img = "cycling_infrastructure.png",
+    preview = paste0("Montréal is a world-renowned cycling city, but it hasn’t ",
+                     "always been this way. Explore how the city’s cycling ",
+                     "infrastructure has evolved over time in this interactive ",
+                     "story."),
+    lon = -73.578179,
+    lat = 45.521828) |> 
+  
+  add_row(
+    name = "alley_strategy",
+    title = paste0("Montreal alleys as a climate emergency adaptation strategy"),
+    img = "alley_strategy.png",
+    preview = paste0("Transforming alleys to improve people's quality of life ",
+                     "on a neighbourhood scale can simultaneously enhance ",
+                     "urban quality on a larger scale"),
+    lon = -73.553092,
+    lat = 45.480989)
 
 
 # Finish table ------------------------------------------------------------
@@ -87,7 +143,7 @@ stories <-
 # IMAGES MUST BE TRANSFORMED TO PNG FIRST
 round_img_shadow <- function(img_name) {
   
-  path <- paste0("dev/data/stories_raw_images/banner_bubble_raw_img/", 
+  path <- paste0("dev/data/stories/raw_images/banner_bubble_raw_img/", 
                  img_name, ".png")
   img <- magick::image_read(path)
   shadow_right <- magick::image_read("dev/data/dropshadow_right.png")
@@ -115,7 +171,10 @@ round_img_shadow <- function(img_name) {
   # Bandeau
   bandeau <- magick::image_resize(img, paste0(
     1000, "x", 1000/img_info$width*img_info$height,"!"))
-  bandeau <- magick::image_crop(img, paste0(1000, "x", 200, "+0+100"))
+  # Get the center of the image
+  bandeau_height <- magick::image_info(bandeau)$height
+  bandeau <- magick::image_crop(bandeau, paste0(1000, "x", 200, "+0+", 
+                                                bandeau_height/2 - 100))
   magick::image_write(bandeau, paste0("www/stories/bandeau_img/", img_name,
                                       ".png"))
   
@@ -148,6 +207,14 @@ stories_mapping <-
     height = 100
   )) |> 
   set_names(stories$name)
+
+
+# Add to modules table ----------------------------------------------------
+
+modules <- 
+  modules |> 
+  add_modules(id = "stories",
+              metadata = FALSE)
 
 
 # Clean up ----------------------------------------------------------------

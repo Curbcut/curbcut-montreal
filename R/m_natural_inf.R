@@ -270,6 +270,14 @@ natural_inf_server <- function(id, r) {
       more_args = reactive(c(
         "s-slider" = main_slider()))
     )
-
+    
+    # Data transparency and export
+    observe({
+      r[[id]]$export_data(data_export(id = id, 
+                                      data = data(), 
+                                      var_left = var_left(), 
+                                      df = "raster"))
+    })
+    
   })
 }

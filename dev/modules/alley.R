@@ -273,7 +273,7 @@ variables <-
       var = c("community", "green", "mixed", "unmaintained"),
       var_name = c("Community", "Green", "Mixed", "Unmaintained"),
       var_name_short = c("Commun.", "Green", "Mixed", "Unmain.")),
-    source = "VdM") |> 
+    source = "City of Montreal's open data website") |> 
   add_variables(
     var_code = "green_alley_sqkm",
     var_title = "Green alleys per sq km",
@@ -287,7 +287,7 @@ variables <-
     scales = c("borough", "building", "CT", "DA","street"),
     breaks_q3 = breaks_q3_active$green_alley_sqkm,
     breaks_q5 = breaks_q5_active$green_alley_sqkm,
-    source = "VdM") |> 
+    source = "City of Montreal's open data website") |> 
   add_variables(
     var_code = "green_alley_per1k",
     var_title = "Green alleys per 1,000",
@@ -301,7 +301,15 @@ variables <-
     scales = c("borough", "building", "CT", "DA","street"),
     breaks_q3 = breaks_q3_active$green_alley_per1k,
     breaks_q5 = breaks_q5_active$green_alley_per1k,
-    source = "VdM")
+    source = "City of Montreal's open data website")
+
+
+# Add to modules table ----------------------------------------------------
+
+modules <- 
+  modules |> 
+  add_modules(id = "alley",
+              metadata = TRUE)
 
 
 # Clean up ----------------------------------------------------------------

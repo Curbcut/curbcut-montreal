@@ -40,6 +40,7 @@
 /* define colors */
 :root {
   --c-dark-blue: #4a5c83;
+  --c-dark-dark-blue: #2e3648;
   --c-medium-blue: #6c83b5;
   --c-muted-green: #b8d6be;
   --c-muted-blue: #b5c0da;
@@ -68,7 +69,7 @@
 
 /* define color roles */
 :root {
-  --c-paragraph: var(--c-dark-blue);
+  --c-paragraph: var(--c-dark-dark-blue);
   --c-h1: var(--c-dark-blue);
   --c-h2: var(--c-medium-green-blue);
   --c-h3: var(--c-medium-green-blue);
@@ -335,4 +336,20 @@ i.fa {
 
 .modal-backdrop {
   z-index: var(--depth-ui-over-shadow);
+}
+
+.modal-dialog {
+	width: min(600px, calc(100vw - var(--padding-h-lg)));
+}
+
+.modal-dialog.modal-xl {
+	width: min(1200px, calc(100vw - var(--padding-h-lg)));
+}
+
+.modal-dialog.modal-lg {
+	width: min(900px, calc(100vw - var(--padding-h-lg)));
+}
+
+.modal-dialog.modal-sm {
+	width: min(400px, calc(100vw - var(--padding-h-lg)));
 }

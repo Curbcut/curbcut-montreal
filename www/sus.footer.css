@@ -82,10 +82,19 @@
 .sus-page-footer-links a {
   color: var(--c-footer-content);
   opacity: 0.8;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: end;
 }
 
 .sus-page-footer-links a:hover {
   opacity: 1;
+  text-decoration: none;
+}
+
+.sus-page-footer-links a:hover > span:not(.material-icons) {
+  text-decoration: underline;
 }
 
 .sus-page-footer-logo {

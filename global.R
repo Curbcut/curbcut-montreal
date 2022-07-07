@@ -17,6 +17,7 @@ suppressPackageStartupMessages({
   
   library(RSQLite)
   library(curl)
+  library(tableHTML)
 })
 
 # Shiny options -----------------------------------------------------------
@@ -29,12 +30,14 @@ shinyOptions(cache = cachem::cache_disk(file.path(dirname(tempdir()), "cache")))
 # Data --------------------------------------------------------------------
 
 variables <- qread("data/variables.qs")
+modules <- qread("data/modules.qs")
 title_text <- qread("data/title_text.qs")
 dyk <- qread("data/dyk.qs")
 qload("data/colours.qsm")
 tile_lookup <- qread("data/tile_lookup.qs")
 
 qload("data/census.qsm")
+census_variables <- qread("data/census_variables.qs")
 # street <- qread("data/street.qs")
 
 # qload("data/covid.qsm")
@@ -42,7 +45,6 @@ qload("data/census.qsm")
 qload("data/alley.qsm")
 # crash <- qread("data/crash.qs")
 # marketed_sustainability <- qread("data/marketed_sustainability.qs")
-metro_lines <- qread("data/metro_lines.qs")
 
 qload("data/stories.qsm")
 
@@ -53,14 +55,14 @@ postal_codes <- qread("data/postal_codes.qs")
 # Global variables --------------------------------------------------------
 
 census_min <- 
-  variables$dates[variables$source == "census"] |> 
+  variables$dates[variables$source == "Canadian census"] |> 
   unlist() |> 
   unique() |> 
   min() |> 
   as.numeric()
 
 census_max <- 
-  variables$dates[variables$source == "census"] |> 
+  variables$dates[variables$source == "Canadian census"] |> 
   unlist() |> 
   unique() |> 
   max() |> 

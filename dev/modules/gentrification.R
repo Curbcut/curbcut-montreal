@@ -181,8 +181,15 @@ variables <-
     scales = c("borough", "building", "CT", "DA", "street"),#, "grid", "street"),
     breaks_q3 = breaks_q3_active,
     breaks_q5 = breaks_q5_active,
-    source = "sus_team")
+    source = "Sus team")
 
+
+# Add to modules table ----------------------------------------------------
+
+modules <- 
+  modules |> 
+  add_modules(id = "gentrification",
+              metadata = TRUE)
 
 # Clean-up ----------------------------------------------------------------
 

@@ -114,10 +114,23 @@ variables <-
     scales = list(),
     breaks_q3 = list(),
     breaks_q5 = list(),
-    source = character()
+    source = character(),
+    interpolated = list()
   )
 
 source("dev/other/add_variables.R")
+
+
+# Build module table ------------------------------------------------------
+
+modules <-
+  tibble(
+    id = character(),
+    metadata = logical(),
+    dataset_info = character(),
+  )
+
+source("dev/other/add_modules.R")
 
 
 # Add topic variables (modules) -------------------------------------------
@@ -132,7 +145,7 @@ source("dev/modules/alley.R")
 source("dev/modules/gentrification.R")
 source("dev/modules/green_space.R")
 # source("dev/modules/marketed_sustainability.R")
-# source("dev/modules/natural_inf.R")
+source("dev/modules/natural_inf.R")
 # source("dev/modules/permits.R")
 # source("dev/modules/dmti.R")
 
@@ -215,23 +228,37 @@ qsavem(borough_full, CT_full, DA_full, file = "data2/census_full.qsm")
 qsave(grid_full, file = "data2/grid_full.qs")
 qsave(building_full, file = "data2/building_full.qs")
 qsave(street, file = "data2/street.qs")
+qsave(metro_lines, file = "data2/metro_lines.qs")
+qsave(dyk, "data/dyk.qs")
+qsave(title_text, "data/title_text.qs")
 
 # data/
+
+## global data
 qsave(variables, file = "data/variables.qs")
+qsave(modules, file = "data/modules.qs")
+qsave(postal_codes, file = "data/postal_codes.qs")
+
+## census related
 qsavem(borough, CT, DA, file = "data/census.qsm")
+qsave(census_variables, file = "data/census_variables.qs")
+
+## module data
 qsave(crash, file = "data/crash.qs")
 qsavem(alley, alley_text, file = "data/alley.qsm")
 qsavem(covid, covid_pics, file = "data/covid.qsm")
 qsave(green_space, file = "data/green_space.qs")
 # qsave(marketed_sustainability, file = "data/marketed_sustainability.qs")
-qsave(metro_lines, file = "data/metro_lines.qs")
 # qsavem(permits_choropleth, permits, file = "data/permits.qsm")
 qsavem(title_card_indicators, pe_var_hierarchy, pe_theme_order, CSDUID_groups,
        title_card_index, pe_variable_order, file = "data/place_explorer.qsm")
-qsave(postal_codes, file = "data/postal_codes.qs")
 qsavem(stories, stories_mapping, file = "data/stories.qsm")
-qsave(dyk, "data/dyk.qs")
-qsave(title_text, "data/title_text.qs")
+
+# data/geometry_export
+qsave(select(borough_full, ID), file = "data/geometry_export/borough.qs")
+qsave(select(CT_full, ID), file = "data/geometry_export/CT.qs")
+qsave(select(DA_full, ID), file = "data/geometry_export/DA.qs")
+qsave(select(grid_full, ID), file = "data/geometry_export/grid.qs")
 
 
 # Save files we'll save in the SQL to data2 -------------------------------
@@ -250,9 +277,7 @@ library(stringr)
 qload("data2/natural_inf.qsm")
 tt_matrix <- qread("data2/tt_matrix.qs")
 building <- qread("data2/building.qs")
-grid <- qread("data2/grid.qs") |> 
-  # Until the data gets redrawn!
-  dplyr::select(ID:households, ends_with("_2016"), starts_with("climate"))
+grid <- qread("data2/grid.qs")
 
 sqlite_path <- "data/sql_db.sqlite"
 
