@@ -424,7 +424,7 @@ place_explorer_server <- function(id, r) {
           text <- block[[1]]
           plots <- block[[2]]
           sentence <- block[[3]]
-
+          
           # Only proceed if the block has data
           if (!is.null(block)) {
             
