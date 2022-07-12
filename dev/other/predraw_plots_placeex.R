@@ -10,7 +10,7 @@ library(furrr)
 ## Get data ------------------------------------------------------------------
 
 dfs <- c("borough", "CT", "DA")
-island_or_regions <- c("island", "regions")
+island_or_regions <- c("island", "region")
 
 # Create a multi-distributed plan for nested parallel operations
 old_plan <- plan()

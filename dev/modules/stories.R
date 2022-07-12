@@ -117,8 +117,8 @@ stories <-
                      "always been this way. Explore how the city’s cycling ",
                      "infrastructure has evolved over time in this interactive ",
                      "story."),
-    lon = -73.578179,
-    lat = 45.521828) |> 
+    lon = -73.570810,
+    lat = 45.536313) |> 
   
   add_row(
     name = "alley_strategy",
@@ -207,14 +207,6 @@ stories_mapping <-
     height = 100
   )) |> 
   set_names(stories$name)
-
-
-# Add to modules table ----------------------------------------------------
-
-modules <- 
-  modules |> 
-  add_modules(id = "stories",
-              metadata = FALSE)
 
 
 # Clean up ----------------------------------------------------------------

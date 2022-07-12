@@ -70,6 +70,10 @@ access <-
               access_jobs_total_pwe:access_healthcare_pwd) |> 
   rename(ID = GeoUID)
 
+# Add CTs not part of the access df
+access <- 
+bind_rows(access, map_dfr(CT$ID[!CT$ID %in% access$ID], ~{tibble(ID = .x)}))
+
 
 # Add breaks --------------------------------------------------------------
 
@@ -91,6 +95,7 @@ access <- bind_cols(access, add_q5(access, access_q5))
 data_testing(list("access" = access))
 
 
+c(1:970)[!c(1:970) %in% unique(tt_matrix$origin)]
 # Add to existing geographies ---------------------------------------------
 
 CT <-
@@ -108,6 +113,18 @@ tt_matrix <-
   select(timing, origin = CT, destination, travel_time) |> 
   left_join(points, by = c("destination" = "GeoUID")) |> 
   select(timing, origin, destination = CT, travel_time)
+
+# Make sure that every combination is there
+tt_matrix <- 
+  map_dfr(unique(tt_matrix$timing), function(time) {
+    expand.grid(CT$ID, CT$ID) |> 
+      as_tibble() |> 
+      mutate(timing = time)
+  }) |> 
+  rename(origin = Var1,
+         destination = Var2) |> 
+  relocate(timing, .before = origin) |> 
+  left_join(tt_matrix, by = c("timing", "origin", "destination"))
 
 tt_matrix <- 
   tt_matrix |> 
