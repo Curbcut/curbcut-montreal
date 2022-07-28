@@ -173,7 +173,7 @@ get_vulnerable_pop <- function(sex = "total",
 # "other single-attached house"
 # "mobile homes and other movable dwellings "
 
-get_housing_characteristics <- function(tenure = "total", 
+get_housing_char <- function(tenure = "total", 
                                         bedrooms = "total",
                                         shelter_cost = "total",
                                         characteristics = "total") {

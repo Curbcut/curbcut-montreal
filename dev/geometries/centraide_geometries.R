@@ -25,7 +25,7 @@ centraide <-
   centraide |> 
   mutate(ID = paste0("centraide_", row_number())) |> 
   mutate(name_2 = name) |> 
-  left_join(rename(get_housing_characteristics()$centraide, 
+  left_join(rename(get_housing_char()$centraide, 
                    name = ID, households = var), by = "name") |> 
   left_join(rename(get_vulnerable_pop()$centraide, 
                    name = ID, population = var), by = "name") |> 

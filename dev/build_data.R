@@ -138,6 +138,9 @@ source("dev/modules/green_space.R")
 # source("dev/modules/natural_inf.R")
 # source("dev/modules/permits.R")
 # source("dev/modules/dmti.R")
+source("dev/modules/cent_d.R")
+source("dev/modules/cent_p.R")
+
 
 source("dev/modules/stories.R", encoding = "utf-8")
 source("dev/modules/place_explorer.R")
