@@ -49,7 +49,7 @@ add_characteristics <-
   list("total" = "total",
        # Immigration characteristics
        # Appears and disappears depending if immigrant is selected
-       "before_2011" = "Before 2001",
+       "before_2001" = "Before 2001",
        "2001_to_2010" = "2001 to 2010",
        "2011_to_2016" = "2011 to 2016",
        "eco_imm" = "Economic immigrants",

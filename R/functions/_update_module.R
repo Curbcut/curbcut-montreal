@@ -84,9 +84,9 @@ update_module <- function(r, id, mod_ns = paste(id, id, sep = "-"), session,
   
   # Update var_left
   if (!is.null(id)) {
-    if (id %in% c("canale", "marketed_sustainability")) {
+    if (id %in% c("canale")) {
       
-    } else if (id %in% c("climate_risk", "housing", "gentrification",
+    } else if (id %in% c("climate_risk", "housing",
                          "alley")) {
       if (!is.null(var_left)) {
         selected_var <- if (str_detect(var_left, "^\\d*$")) {
@@ -97,8 +97,8 @@ update_module <- function(r, id, mod_ns = paste(id, id, sep = "-"), session,
           selected = selected_var
         )
       }
-    } else if (id %in% c("permits", "access", "crash", "green_space",
-                         "vulnerable_pop", "housing_charact")) {
+    } else if (id %in% c("access", "crash", "tenure", "dw_types",
+                         "afford", "demographics")) {
       if (!is.null(var_left)) {
         
         selected_var <- if (str_detect(var_left, "^\\d*$")) {
@@ -111,7 +111,7 @@ update_module <- function(r, id, mod_ns = paste(id, id, sep = "-"), session,
         
         lapply(seq_len(var_left_drops_length), function(num) {
           
-          var_left_list <- get(paste0("var_left_list_", num, "_", id))
+          var_left_list <- unlist(get(paste0("var_left_list_", num, "_", id)))
           
           # If total, don't include it ~yet
           if ("total" %in% var_left_list) {

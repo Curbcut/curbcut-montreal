@@ -1,6 +1,6 @@
 #### Get back census dfs with geometries ######################################
 
-qload("data2/census_full.qsm")
+qs::qload("data2/census_full.qsm")
 
 borough <- borough_full
 CT <- CT_full

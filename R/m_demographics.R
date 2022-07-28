@@ -1,8 +1,8 @@
-#### VULNERABLE POPULATION MODULE ##############################################
+#### DEMOGRAPHICS MODULE ######################################################
 
 # UI ----------------------------------------------------------------------
 
-housing_charact_UI <- function(id) {
+demographics_UI <- function(id) {
   id_map <- paste0(id, "-map")
   
   tagList(
@@ -12,17 +12,25 @@ housing_charact_UI <- function(id) {
       NS(id, id),
       susSidebarWidgets(
         select_var_UI(NS(id, id), select_var_id = "d_1",
-                      label = sus_translate(r = r, "Tenure status"),
-                      var_list = var_left_list_1_housing_charact), 
+                      label = sus_translate(r = r, "Grouping"),
+                      var_list = var_left_list_1_demographics), 
         select_var_UI(NS(id, id), select_var_id = "d_2",
-                      label = sus_translate(r = r, "Shelter cost"),
-                      var_list = var_left_list_2_housing_charact), 
+                      label = sus_translate(r = r, "Gender"),
+                      var_list = var_left_list_2_demographics), 
         select_var_UI(NS(id, id), select_var_id = "d_3",
-                      label = sus_translate(r = r, "Housing characteristic"),
-                      var_list = var_left_list_3_housing_charact)), 
+                      label = sus_translate(r = r, "Immigration status"),
+                      var_list = var_left_list_3_demographics), 
+        select_var_UI(NS(id, id), select_var_id = "d_4",
+                      label = sus_translate(r = r, "Shelter cost"),
+                      var_list = var_left_list_4_demographics), 
+        
+        br(),
+        select_var_UI(NS(id, id), select_var_id = "d_5",
+                      label = sus_translate(r = r, "Additional characteristic"),
+                      var_list = var_left_list_5_demographics)), 
       bottom = div(class = "bottom_sidebar", 
                    tagList(legend_UI(NS(id, id)),
-                           zoom_UI(NS(id, id), map_zoom_levels_centraide)))),
+                           zoom_UI(NS(id, id), map_zoom_levels_max_CT)))),
     
     # Map
     div(class = "mapdeck_div", rdeckOutput(NS(id, id_map), height = "100%")),
@@ -38,16 +46,16 @@ housing_charact_UI <- function(id) {
 
 # Server ------------------------------------------------------------------
 
-housing_charact_server <- function(id, r) {
+demographics_server <- function(id, r) {
   moduleServer(id, function(input, output, session) {
     id_map <- paste0(id, "-map")
     
     # Initial reactives
     zoom <- reactiveVal(get_zoom(map_zoom))
-    zoom_string <- reactiveVal(get_zoom_string(map_zoom, map_zoom_levels_centraide))
+    zoom_string <- reactiveVal(get_zoom_string(map_zoom, map_zoom_levels_max_CT))
     poi <- reactiveVal(NULL)
     new_poi <- reactiveVal(NULL)
-
+    
     # Map
     output[[id_map]] <- renderRdeck({
       rdeck(map_style = map_base_style, initial_view_state = view_state(
@@ -65,7 +73,7 @@ housing_charact_server <- function(id, r) {
     
     # Zoom string reactive
     observe({
-      new_zoom_string <- get_zoom_string(r[[id]]$zoom(), map_zoom_levels_centraide)
+      new_zoom_string <- get_zoom_string(r[[id]]$zoom(), map_zoom_levels_max_CT)
       if (new_zoom_string != zoom_string()) zoom_string(new_zoom_string)
     }) |> bindEvent(r[[id]]$zoom())
     
@@ -80,51 +88,70 @@ housing_charact_server <- function(id, r) {
     
     # Sidebar
     sidebar_server(id = id, r = r)
-
+    
     # Choose tileset
     tile <- zoom_server(
       id = id,
       r = r,
       zoom_string = zoom_string,
-      zoom_levels = reactive(map_zoom_levels_centraide))
+      zoom_levels = reactive(map_zoom_levels_max_CT))
     
     # Time
     time <- reactive("2016")
-
+    
     # Get df for explore/legend/etc
     observe(r[[id]]$df(get_df(tile(), zoom_string()))) |> 
       bindEvent(tile(), zoom_string(), ignoreInit = TRUE)
-
+    
+    # Checkbox value
+    as_pct <- checkbox_server(id = id)
+    
     # Left variable server
-    vl_tenant <- select_var_server(
+    vl_gr <- select_var_server(
       id = id,
       r = r,
       select_var_id = "d_1",
-      var_list = reactive(var_left_list_1_housing_charact))
+      var_list = reactive(var_left_list_1_demographics))
+    
+    vl_gn <- select_var_server(
+      id = id,
+      r = r,
+      select_var_id = "d_2",
+      var_list = reactive(var_left_list_2_demographics))
+    
+    vl_im <- select_var_server(
+      id = id,
+      r = r,
+      select_var_id = "d_3",
+      var_list = reactive(var_left_list_3_demographics))
     
     vl_sc <- select_var_server(
       id = id,
       r = r,
-      select_var_id = "d_2",
-      var_list = reactive(var_left_list_2_housing_charact))
+      select_var_id = "d_4",
+      var_list = reactive(var_left_list_4_demographics))
     
-    vl_charact <- select_var_server(
+    vl_add <- select_var_server(
       id = id,
       r = r,
-      select_var_id = "d_3",
-      var_list = reactive(var_left_list_3_housing_charact))
+      select_var_id = "d_5",
+      var_list = reactive(var_left_list_5_demographics),
+      disabled = reactive(if (vl_im() == "immigrants") NULL else
+        vars_demographics_add_dis))
     
+    # Final left variable server creation
     var_left <- reactive({
-      paste("housing_characteristics",
-        vl_tenant(), vl_sc(), vl_charact(), time(), sep = "_")
+      paste("cent_p",
+            vl_im(), vl_add(), vl_sc(), vl_gn(), vl_gr(), 
+            time(), sep = "_")
     })
-
+    
     # Composite variable for map
     map_var <- var_left
     
     # Right var 
     var_right <- reactive(" ")
-
+    
     # Additional tileset identifier
     tile2 <- reactive("")
     
@@ -133,7 +160,7 @@ housing_charact_server <- function(id, r) {
       df = r[[id]]$df(),
       var_left = var_left(),
       var_right = var_right()))
-
+    
     # Legend
     legend <- legend_server(
       id = id,
@@ -141,7 +168,7 @@ housing_charact_server <- function(id, r) {
       data = data,
       var_left = var_left,
       var_right = var_right)
-
+    
     # Update map in response to variable changes or zooming
     rdeck_server(
       id = id,
@@ -150,7 +177,7 @@ housing_charact_server <- function(id, r) {
       tile = tile,
       tile2 =  tile2,
       map_var = map_var)
-
+    
     # Update map labels
     label_server(
       id = id,
@@ -182,8 +209,7 @@ housing_charact_server <- function(id, r) {
       df = r[[id]]$df,
       map_viewstate = reactive(get_view_state(paste0(id, "-map"))),
       var_left = var_left,
-      var_right = var_right
-    )
+      var_right = var_right)
     
   })
 }

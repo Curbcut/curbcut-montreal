@@ -159,8 +159,8 @@ get_vulnerable_pop <- function(sex = "total",
 #' tenure = c("total", "owner", "tenant")
 #' bedrooms = c("total", "0", "1", "2", "3", "4", "5+")
 #' shelter_cost = c("total", "<30%", "30-50%", "50%-80%", ">80%")
-#' characteristics = c("total", "low income before tax",
-#' "not low income before tax", "low income after tax",
+#' characteristics = c("total",
+#' "not low income after tax", "low income after tax",
 #' "unsuitable", "in core need", "major repairs needed", or...)
 #' 
 #' ... characteristics by structural type of dwellings:
@@ -230,28 +230,34 @@ get_housing_char <- function(tenure = "total",
     table[, shelter_cost_cols]
   
   # Characteristics
-  characteristics <- 
-    case_when(characteristics == "low income before tax" ~ 
-                "In low income",
-              characteristics == "not low income before tax" ~ 
-                "Not in low income",
+  # Low income is named the same in before and in after tax. The column number
+  # needs to be specified instead.
+  num_characteristics <- 
+    case_when(characteristics == "not low income after tax" ~ 
+                10,
               characteristics == "low income after tax" ~ 
-                "Low-income status",
+                9,
               characteristics == "unsuitable" ~ 
-                "Not suitable",
+                19,
               characteristics == "in core need" ~ 
-                "In core need",
+                21,
               characteristics == "major repairs needed" ~ 
-                "Major repairs needed",
-              TRUE ~ characteristics) |> 
-    str_to_lower()
+                23,
+              TRUE ~ 9999) 
+  
+  if (num_characteristics == 9999) 
+    num_characteristics <- str_to_lower(characteristics)
   
   characteristics_cols <- 
-    map_lgl(names(table), function(col_name) {
-      str_trim(str_to_lower(table[[col_name]][1])) |> 
-        str_detect(paste0("^", characteristics)) |> 
-        all()
-    }) |> which()
+    if (!is.numeric(num_characteristics)) {
+      map_lgl(names(table), function(col_name) {
+        str_trim(str_to_lower(table[[col_name]][1])) |> 
+          str_detect(paste0("^", num_characteristics)) |> 
+          all()
+      }) |> which()      
+    } else {
+      names(table)[num_characteristics]
+    }
   
   table <- 
     table[, characteristics_cols]

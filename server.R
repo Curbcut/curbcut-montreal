@@ -39,11 +39,20 @@ shinyServer(function(input, output, session) {
                            zoom = reactiveVal(12)),
     natural_inf = reactiveValues(zoom = reactiveVal(9.5)),
     vulnerable_pop = reactiveValues(select_id = reactiveVal(NA), 
-                            df = reactiveVal("centraide"),
+                                    df = reactiveVal("centraide"),
+                                    zoom = reactiveVal(get_zoom(map_zoom))),
+    tenure = reactiveValues(select_id = reactiveVal(NA), 
+                            df = reactiveVal("borough"),
                             zoom = reactiveVal(get_zoom(map_zoom))),
-    housing_charact = reactiveValues(select_id = reactiveVal(NA), 
-                                     df = reactiveVal("centraide"),
-                                     zoom = reactiveVal(get_zoom(map_zoom))),
+    dw_types = reactiveValues(select_id = reactiveVal(NA), 
+                              df = reactiveVal("borough"),
+                              zoom = reactiveVal(get_zoom(map_zoom))),
+    demographics = reactiveValues(select_id = reactiveVal(NA), 
+                              df = reactiveVal("borough"),
+                              zoom = reactiveVal(get_zoom(map_zoom))),
+    afford = reactiveValues(select_id = reactiveVal(NA), 
+                            df = reactiveVal("borough"),
+                            zoom = reactiveVal(get_zoom(map_zoom)))
   )
   
 
