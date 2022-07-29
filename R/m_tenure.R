@@ -151,15 +151,28 @@ tenure_server <- function(id, r) {
       data = data,
       var_left = var_left,
       var_right = var_right)
-
+    
+    tenure_colors <- reactive({
+      if (var_right() == " ") {
+        selected <- data()[, c("ID", "var_left_q5")]
+        out <- merge(selected, colour_table, by.x = "var_left_q5", 
+                     by.y = "group")[, c("ID", "value")]
+        names(out) <- c("group", "value")
+        out
+      }
+    })
+    
     # Update map in response to variable changes or zooming
     rdeck_server(
       id = id,
+      id_override = reactive("cent_d"),
       r = r,
       map_id = "map",
       tile = tile,
       tile2 =  tile2,
-      map_var = map_var)
+      map_var = map_var,
+      fill = scale_fill_cent,
+      fill_args = reactive(list(map_var(), tile(), tenure_colors())))
 
     # Update map labels
     label_server(

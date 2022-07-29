@@ -376,26 +376,26 @@ variables <-
 # Join vulnerable_pop to CT -----------------------------------------------
 
 CT <-
-  left_join(CT, cent_d$CT, by = "ID") |> 
+  left_join(CT, cent_d$CT, by = "ID") |>
   relocate(geometry, .after = last_col())
 
 
 # Join vulnerable_pop to borough ------------------------------------------
 
 borough <-
-  left_join(borough, cent_d$borough, by = "ID") |> 
+  left_join(borough, cent_d$borough, by = "ID") |>
   relocate(geometry, .after = last_col())
 
 
 # Join vulnerable_pop to centraide ----------------------------------------
 
 centraide <-
-  left_join(centraide, cent_d$centraide, by = "ID") |> 
+  left_join(centraide, cent_d$centraide, by = "ID") |>
   relocate(geometry, .after = last_col())
 
 
 # Clean up ----------------------------------------------------------------
 
 rm(tenure_statuses, add_characteristics, shelter_costs,
-   var_list, breaks_q3_active, breaks_q5_active, new_rows, cent_d,
+   var_list, breaks_q3_active, breaks_q5_active, new_rows,
    cent_d_q3, cent_d_q5)

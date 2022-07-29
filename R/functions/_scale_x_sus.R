@@ -123,3 +123,13 @@ scale_fill_natural_inf <- function(var, tile, natural_inf_colours) {
       legend = FALSE)
   
 }
+
+# Cent_d and cent_p fill
+scale_fill_cent <- function(var, tile, cent_colors) {
+  scale_color_category(
+    col = !!rlang::sym("ID"), 
+    palette = cent_colors$value,
+    unmapped_color = colour_table$value[1], 
+    levels = cent_colors$group,
+    legend = FALSE)
+}

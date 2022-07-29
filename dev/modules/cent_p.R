@@ -362,26 +362,26 @@ variables <-
 # Join cent_p to CT -----------------------------------------------
 
 CT <-
-  left_join(CT, cent_p$CT, by = "ID") |> 
+  left_join(CT, cent_p$CT, by = "ID") |>
   relocate(geometry, .after = last_col())
 
 
 # Join cent_p to borough ------------------------------------------
 
 borough <-
-  left_join(borough, cent_p$borough, by = "ID") |> 
+  left_join(borough, cent_p$borough, by = "ID") |>
   relocate(geometry, .after = last_col())
 
 
 # Join cent_p to centraide ----------------------------------------
 
 centraide <-
-  left_join(centraide, cent_p$centraide, by = "ID") |> 
+  left_join(centraide, cent_p$centraide, by = "ID") |>
   relocate(geometry, .after = last_col())
 
 
 # Clean up ----------------------------------------------------------------
 
 rm(imm_statuses, add_characteristics, shelter_costs, sexes,
-   var_list, breaks_q3_active, breaks_q5_active, new_rows, cent_p,
+   var_list, breaks_q3_active, breaks_q5_active, new_rows,
    cent_p_q3, cent_p_q5, table1)

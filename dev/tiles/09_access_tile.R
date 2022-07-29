@@ -52,7 +52,7 @@ vars_to_add <-
   c(paste0(left_vars, "_q5"))
 
 
-# Process borough then upload tile source ---------------------------------
+# Process CT then upload tile source --------------------------------------
 
 CT_data <-
   map(left_vars, function(left_var) {

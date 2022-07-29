@@ -3,7 +3,8 @@
 #' @param map_id Namespace id of the map to redraw, likely to be `NS(id, "map")`
 #' @return An updated version of the rdeck map.
 
-rdeck_server <- function(id, r, map_id, tile, tile2, map_var, 
+rdeck_server <- function(id, r, id_override = reactive(NULL), map_id, tile, 
+                         tile2, map_var, 
                          select_id = r[[id]]$select_id,
                          zoom = r[[id]]$zoom,
                          fill = scale_fill_sus, 
@@ -26,6 +27,9 @@ rdeck_server <- function(id, r, map_id, tile, tile2, map_var,
   ## Module --------------------------------------------------------------------
   
   moduleServer(id, function(input, output, session) {
+    
+    # In case id needs to be replaced
+    if (!is.null(id_override())) id <- id_override()
     
     # Helper variables
     pick <- reactive(
@@ -55,13 +59,13 @@ rdeck_server <- function(id, r, map_id, tile, tile2, map_var,
           pickable = pick(), 
           auto_highlight = highlight(), 
           highlight_color = "#FFFFFF50", 
-          get_fill_color = do.call(fill, fill_args()),
-          get_line_color = do.call(colour, colour_args()),
-          get_line_width = do.call(lwd, lwd_args()),
+          # get_fill_color = do.call(fill, fill_args()),
+          # get_line_color = do.call(colour, colour_args()),
+          # get_line_width = do.call(lwd, lwd_args()),
           line_width_units = line_units, 
           extruded = extrude(), 
           material = FALSE, 
-          get_elevation = 5)) |> bindEvent(tile_string())
+          get_elevation = 5)) #|> bindEvent(tile_string())
     
     # Update data layer on variable change
     observe(

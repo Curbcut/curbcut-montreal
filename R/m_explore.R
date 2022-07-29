@@ -72,13 +72,12 @@ explore_server <- function(id, r, data, var_left, var_right,
     graph_args2 <- reactive(c(graph_args(), var_type = var_type()))
     
     # Make info table
-    table_out <- reactive(#tryCatch(
-      do.call(table(), table_args2()))#, 
-                                   #error = function(e) NULL))
+    table_out <- reactive(tryCatch(do.call(table(), table_args2()), 
+                                   error = function(e) NULL))
     
     # Display info table
     output$info_table <- renderUI(table_out())
-
+    
     # Make graph
     graph_out <- reactive(tryCatch(do.call(graph(), graph_args2()),
                                    error = function(e) NULL))
