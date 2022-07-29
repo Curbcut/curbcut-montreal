@@ -21,6 +21,11 @@ var_left_list_3_afford <-
 var_left_list_4_afford <-
   list("Total" = list(
     "Total" = "total"), 
+    "Family characteristic" = list(
+      "Families with 3+ children" = "kids_3_plus",
+      "Unsuitable housing" = "unsuitable",
+      "Major repairs needed" = "repairs",
+      "Low income" = "low_inc"),
     "Dwelling type" = list(
       "Single-detached house" = "single_detached",
       "Semi-detached house" = "semi_detached",
@@ -29,13 +34,7 @@ var_left_list_4_afford <-
       "Apartment in a building of 5+ storeys" = "in_5plus_storeys",
       "Apartment in a building of <5 storeys" = "in_less5_storeys",
       "Other single-attached house" = "other_single_attached",
-      "Mobile homes and other movable dwellings" = "mobile_homes"),
-    "Family characteristic" = list(
-      "Families with 3+ children" = "kids_3_plus",
-      "Unsuitable housing" = "unsuitable",
-      "Major repairs needed" = "repairs",
-      "Low income" = "low_inc"
-    ))
+      "Mobile homes and other movable dwellings" = "mobile_homes"))
 
 
 # If individuals is selected

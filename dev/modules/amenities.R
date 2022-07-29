@@ -8,28 +8,28 @@ library(sf)
 library(qs)
 library(r5r)
 
-# Get data from open data portals
-dl_unzip <- function(shp_url) {
-  download.file(shp_url, destfile = paste0("dev/data/amenity_access/", "temp",
-                                           ".zip"))
-  
-  unzip(paste0("dev/data/amenity_access/", "temp", ".zip"),
-        exdir = "dev/data/amenity_access/")
-  
-  unlink(paste0("dev/data/amenity_access/", "temp", ".zip"), recursive = TRUE)
-}
-
-# DL Espace_Vert.shp
-dl_unzip(paste0("https://data.montreal.ca/dataset/2e9e4d2f-173a-4c3d-a5e3-565d",
-                "79baa27d/resource/c57baaf4-0fa8-4aa4-9358-61eb7457b650/downlo",
-                "ad/shapefile.zip"))
-
-# DL Enseignement scolaire
-dl_unzip(paste0("https://www.donneesquebec.ca/recherche/dataset/2d3b5cf8-b347-",
-                "49c7-ad3b-bd6a9c15e443/resource/2ae11c05-03b2-4006-bdb2-a49a4",
-                "fa41c23/download/etablissements-meq-mes-esrishp.zip"))
-
-rm(dl_unzip)
+# # Get shapefiles from open data portals
+# dl_unzip <- function(shp_url) {
+#   download.file(shp_url, destfile = paste0("dev/data/amenity_access/", "temp",
+#                                            ".zip"))
+#   
+#   unzip(paste0("dev/data/amenity_access/", "temp", ".zip"),
+#         exdir = "dev/data/amenity_access/")
+#   
+#   unlink(paste0("dev/data/amenity_access/", "temp", ".zip"), recursive = TRUE)
+# }
+# 
+# # DL Espace_Vert.shp
+# dl_unzip(paste0("https://data.montreal.ca/dataset/2e9e4d2f-173a-4c3d-a5e3-565d",
+#                 "79baa27d/resource/c57baaf4-0fa8-4aa4-9358-61eb7457b650/downlo",
+#                 "ad/shapefile.zip"))
+# 
+# # DL Enseignement scolaire
+# dl_unzip(paste0("https://www.donneesquebec.ca/recherche/dataset/2d3b5cf8-b347-",
+#                 "49c7-ad3b-bd6a9c15e443/resource/2ae11c05-03b2-4006-bdb2-a49a4",
+#                 "fa41c23/download/etablissements-meq-mes-esrishp.zip"))
+# 
+# rm(dl_unzip)
 
 # #In this example I am using the supermarkets of Montreal
 # qread("dev/data/amenity_access/ttm_bike.qs") -> ttm_bike
@@ -56,8 +56,6 @@ private_schools <-
 
 dmti <- 
   read.csv("dev/data/amenity_access/dmti_2020.csv")
-
-read.csv("dev/data/amenity_access/logsoc_donneesouvertes_20191231.csv") -> housing
 
 
 

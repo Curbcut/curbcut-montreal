@@ -20,7 +20,8 @@ afford_UI <- function(id) {
                       var_list = var_left_list_2_afford), 
         checkbox_UI(NS(id, id),
                     label = sus_translate(r = r, 
-                                          "Normalized (percent of dwellings)")),
+                                          #### TO CHANGE DYNAMICALLY TO PERCENT OF HOUSEHOLDS VS INDIVIDUALS
+                                          "Normalized (percent of households)")),
         br(),
         div(id = NS(id, "household_dropdowns"), 
             select_var_UI(NS(id, id), select_var_id = "d_3",
