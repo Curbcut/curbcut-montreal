@@ -479,3 +479,6 @@ add_row(tab = "housing_characteristics", type = "title",
   add_row(tab = "housing_characteristics", type = "main", text = "TKTK") |> 
   add_row(tab = "housing_characteristics", type = "extra", text = "TKTK")
   
+
+
+
