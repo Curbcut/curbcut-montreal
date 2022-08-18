@@ -35,10 +35,10 @@ get_breaks_q3 <- function(df, var_list = NULL) {
           ) |>
           set_names(c("v", "q3")) |>
           summarize(
-            ranks = c(min(v, na.rm = TRUE),
+            ranks = as.numeric(c(min(v, na.rm = TRUE),
                       min(v[q3 == 2], na.rm = TRUE),
                       min(v[q3 == 3], na.rm = TRUE),
-                      max(v, na.rm = TRUE))) |>
+                      max(v, na.rm = TRUE)))) |>
           mutate(ranks = if_else(is.infinite(ranks), NA_real_, ranks)) |> 
           set_names(var)
       )

@@ -77,6 +77,8 @@ progressr::with_progress({
 # Go back to old plan
 future::plan(old_plan)
 
+qsave(DA_street_centroid, file = "dev/data/pop_weighted_centroid_DA_street.qs")
+
 
 # Calculate travel time matrix per mode -----------------------------------
 

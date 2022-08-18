@@ -1,407 +1,546 @@
 #### Access to amenities data setup ############################################
 
 
-# Load libraries and get data ---------------------------------------------
+# Load libraries ----------------------------------------------------------
 
 library(tidyverse)
 library(sf)
 library(qs)
-library(r5r)
+
+
+# Download data -----------------------------------------------------------
 
 # # Get shapefiles from open data portals
 # dl_unzip <- function(shp_url) {
 #   download.file(shp_url, destfile = paste0("dev/data/amenity_access/", "temp",
 #                                            ".zip"))
-#   
+# 
 #   unzip(paste0("dev/data/amenity_access/", "temp", ".zip"),
 #         exdir = "dev/data/amenity_access/")
-#   
+# 
 #   unlink(paste0("dev/data/amenity_access/", "temp", ".zip"), recursive = TRUE)
 # }
 # 
-# # DL Espace_Vert.shp
+# # DL Espace_Vert.shp - MTL
 # dl_unzip(paste0("https://data.montreal.ca/dataset/2e9e4d2f-173a-4c3d-a5e3-565d",
 #                 "79baa27d/resource/c57baaf4-0fa8-4aa4-9358-61eb7457b650/downlo",
 #                 "ad/shapefile.zip"))
+#
+# # DL ParcsEspacesVerts.shp - Longueuil
+# dl_unzip(paste0("https://www3.longueuil.quebec/sites/longueuil/files/donnees_o",
+#                 "uvertes/parcsespacesverts.zip"))
 # 
 # # DL Enseignement scolaire
 # dl_unzip(paste0("https://www.donneesquebec.ca/recherche/dataset/2d3b5cf8-b347-",
 #                 "49c7-ad3b-bd6a9c15e443/resource/2ae11c05-03b2-4006-bdb2-a49a4",
 #                 "fa41c23/download/etablissements-meq-mes-esrishp.zip"))
 # 
+# # DL Service de garde
+# download.file(url = paste0("https://www.donneesquebec.ca/recherche/dataset/be36f85e-e419",
+#                 "-4978-9c34-cb5795622595/resource/89af3537-4506-488c-8d0e-6d8",
+#                 "5b4033a0e/download/liste-des-services-de-garde-08.csv"),
+#               destfile = "dev/data/amenity_access/daycare.csv")
+# 
+# # Geolocate daycares
+# daycares <- 
+#   read_csv("dev/data/amenity_access/daycare.csv")
+# 
+# # Must encode to latin1 as it's the right encoding for that file
+# Encoding(daycares$REGION) <- "latin1"
+# Encoding(daycares$ADRESSE) <- "latin1"
+# Encoding(daycares$NOM_MUN_COMPO) <- "latin1"
+# Encoding(daycares$NOM) <- "latin1"
+# 
+# daycares <-
+#   daycares |>
+#   filter(REGION %in% c("6 - Montréal", "15 - Laurentides",
+#                        "14 - Lanaudière", "16 - Montérégie", "13 - Laval")) |> 
+#   mutate(ADRESSE =
+#            str_remove_all(ADRESSE,
+#                           ", (bureau| bureau|rez-de-chaussée|AG-10|local|suite|appartement|porte) .*$") |>
+#            str_remove_all("      \\de étage|, \\de étage") |>
+#            str_remove_all("(?<=\\d)-\\d*|[A-Z](?=,)")) |>
+#   mutate(ADRESSE = paste0(ADRESSE, ", ",NOM_MUN_COMPO, ", QC"))
+# 
+# # Geocode by postal code if geocoding did not work
+# postal_code <- 
+#   read_csv("dev/data/ZipCodeFiles/CanadianPostalCodes202103.csv") |> 
+#   filter(PROVINCE_ABBR == "QC") |>
+#   select(-PROVINCE_ABBR, -TIME_ZONE) |> 
+#   st_as_sf(coords = c("LONGITUDE", "LATITUDE"), crs = 4326) |> 
+#   setNames(c("postal_code", "city", "geometry")) |> 
+#   st_filter(borough) |> 
+#   as_tibble() |> 
+#   st_as_sf()
+# 
+# 
+# daycares$geometry <- NULL
+# 
+# for (i in daycares$ADRESSE) {
+# 
+#   # In the case something in the loop fails and it has to be re-ran
+#   if (!is.null(daycares$geometry[daycares$ADRESSE == i] |> unlist())) next
+# 
+#   new_geo <-
+#     tryCatch(tmaptools::geocode_OSM(daycares$ADRESSE[daycares$ADRESSE == i], as.sf = TRUE,
+#                            return.first.only = TRUE),
+#              # If fails, get postal code's geolocation instead
+#              error = function(e)       postal_code$geometry[
+#                postal_code$postal_code ==
+#                  daycares$CODE_POSTAL_COMPO[daycares$ADRESSE == i][[1]]]) |>
+#     (\(x) if (is.null(x)) {
+#       # If fails, get postal code's geolocation instead
+#       postal_code$geometry[
+#         postal_code$postal_code ==
+#           daycares$CODE_POSTAL_COMPO[daycares$ADRESSE == i][[1]]]
+#     } else x$point)()
+# 
+#   daycares$geometry[daycares$ADRESSE == i] <-
+#     if (length(new_geo) == 0) st_sfc(st_point(), crs = 4326) else new_geo
+# 
+#   qsave(daycares, file = "dev/data/amenity_access/daycare.qs")
+# 
+# }
+# 
+# qsave(st_as_sf(daycares, crs = 4326), 
+#       file = "dev/data/amenity_access/daycare.qs")
+# 
 # rm(dl_unzip)
-
-# #In this example I am using the supermarkets of Montreal
-# qread("dev/data/amenity_access/ttm_bike.qs") -> ttm_bike
-# qread("dev/data/amenity_access/ttm_car.qs") -> ttm_car
-# qread("dev/data/amenity_access/ttm_transit.qs") -> ttm_transit
-# qread("dev/data/amenity_access/ttm_walk.qs") -> ttm_walk
-
-parks <- 
-  read_sf("dev/data/amenity_access/Espace_Vert.shp") |> 
-  st_transform(4326) |> 
-  filter(TYPO1 %in% c("Parc d'arrondissement", "En cours de validation",
-                      "Grand Parc", "Autre espace vert")) |> 
-  select(ID = OBJECTID)
-
-supermarkets <- 
-  read.csv("dev/data/amenity_access/dmti3.csv") 
-#Cleaned before. The cleaning code is in the next section
-
-public_schools <- 
-  read_sf("dev/data/amenity_access/PPS_Public_Ecole.shp") 
-
-private_schools <- 
-  read_sf("dev/data/amenity_access/PPS_Prive_Etablissement.shp") 
-
-dmti <- 
-  read.csv("dev/data/amenity_access/dmti_2020.csv")
-
-
-
-# Check data --------------------------------------------------------------
-#Clean Schools and add new variables for each level of education and language
-myvars<-c("ORDRE_ENS", "COORD_X_LL", "COORD_Y_LL", "OBJECTID")
-private <- private[myvars]
-myvars<-c("ORDRE_ENS", "COORD_X_LL", "COORD_Y_LL", "OBJECTID", "TYPE_CS")
-public <- public[myvars]
-
-public$Kindergarden_Pub[public$ORDRE_ENS== "PrÃ©scolaire"] <- 1
-public$Kindergarden_Pub[public$ORDRE_ENS== "PrÃ©scolaire - Primaire"] <- 1
-public$Kindergarden_Pub[public$ORDRE_ENS== "PrÃ©scolaire - Primaire - Secondaire"] <- 1
-public$Kindergarden_Pub[public$ORDRE_ENS== " - Secondaire"] <- 1
-public$Primary_Pub[public$ORDRE_ENS== "Primaire"] <- 1
-public$Primary_Pub[public$ORDRE_ENS== "PrÃ©scolaire - Primaire"] <- 1
-public$Primary_Pub[public$ORDRE_ENS== " - Primaire - Secondaire"] <- 1
-public$Primary_Pub[public$ORDRE_ENS== "Primaire - Secondaire"] <- 1
-public$Secondary_Pub[public$ORDRE_ENS== "Secondaire"] <- 1
-public$Secondary_Pub[public$ORDRE_ENS== "PrÃ©scolaire - Secondaire"] <- 1
-public$Secondary_Pub[public$ORDRE_ENS== "PrÃ©scolaire - Primaire - Secondaire"] <- 1
-public$Secondary_Pub[public$ORDRE_ENS== "Primaire - Secondaire"] <- 1
-public$Secondary_Pub[public$ORDRE_ENS== "Secondaire - Ã‰ducation aux adultes"] <- 1
-public$Adults_Professional_pub[public$ORDRE_ENS== "Secondaire - Ã‰ducation aux adultes"] <- 1
-public$Adults_Professional_pub[public$ORDRE_ENS== "Formation professionnelle"] <- 1
-public$Adults_Professional_pub[public$ORDRE_ENS== "Ã‰ducation aux adultes"] <- 1
-public$French[public$TYPE_CS== "Franco"] <- 1
-public$English[public$TYPE_CS== "Anglo"] <- 1
-
-public$Kinder_French_Pub[public$Kindergarden_Pub == 1 & public$French == 1] <- 1
-public$Primary_French_Pub[public$Primary_Pub == 1 & public$French == 1] <- 1
-public$Secondary_French_Pub[public$Secondary_Pub == 1 & public$French == 1] <- 1
-public$Adults_Professional_French_Pub[public$Adults_Professional_pub == 1 & public$French == 1] <- 1
-public$Kinder_English_Pub[public$Kindergarden_Pub == 1 & public$English == 1] <- 1
-public$Primary_English_Pub[public$Primary_Pub == 1 & public$English == 1] <- 1
-public$Secondary_English_Pub[public$Secondary_Pub == 1 & public$English == 1] <- 1
-public$Adults_Professional_English_Pub[public$Adults_Professional_pub == 1 & public$English == 1] <- 1
-
-
-
-private$Kindergarden_Priv[private$ORDRE_ENS== "PrÃ©scolaire"] <- 1
-private$Kindergarden_Priv[private$ORDRE_ENS== "PrÃ©scolaire - Primaire"] <- 1
-private$Kindergarden_Priv[private$ORDRE_ENS== "PrÃ©scolaire - Primaire - Secondaire"] <- 1
-private$Kindergarden_Priv[private$ORDRE_ENS== "PrÃ©scolaire - Secondaire"] <- 1
-private$Primary_Priv[private$ORDRE_ENS== "Primaire"] <- 1
-private$Primary_Priv[private$ORDRE_ENS== "PrÃ©scolaire - Primaire"] <- 1
-private$Primary_Priv[private$ORDRE_ENS== "PrÃ©scolaire - Primaire - Secondaire"] <- 1
-private$Primary_Priv[private$ORDRE_ENS== "Primaire - Secondaire"] <- 1
-private$Secondary_Priv[private$ORDRE_ENS== "Secondaire"] <- 1
-private$Secondary_Priv[private$ORDRE_ENS== "PrÃ©scolaire - Secondaire"] <- 1
-private$Secondary_Priv[private$ORDRE_ENS== "PrÃ©scolaire - Primaire - Secondaire"] <- 1
-private$Secondary_Priv[private$ORDRE_ENS== "Primaire - Secondaire"] <- 1
-private$Secondary_Priv[private$ORDRE_ENS== "Secondaire - Ã‰ducation aux adultes"] <- 1
-private$Adults_Professional_Priv[private$ORDRE_ENS== "Secondaire - Ã‰ducation aux adultes"] <- 1
-private$Adults_Professional_Priv[private$ORDRE_ENS== "Formation professionnelle"] <- 1
-private$Adults_Professional_Priv[private$ORDRE_ENS== "Ã‰ducation aux adultes"] <- 1
-
-
-public[is.na(public)] <- 0
-private[is.na(private)] <- 0
-
-#Set as sf
-public2<-public%>%
-  filter(COORD_Y_LL>30)%>%
-  st_as_sf(coords=c("COORD_X_LL", "COORD_Y_LL"), crs=4326)
-private2<-private%>%
-  st_as_sf(coords=c("COORD_X_LL", "COORD_Y_LL"), crs=4326)
-
-
-
-#Clean parks. Keep variables
-myvars <- c("full_id", "lat", "lon")
-parks <- parks[myvars]
-
-parks2<-parks%>%
-  st_as_sf(coords=c("lon", "lat"), crs=4326)
-
-
-
-#Clean daycare from dmti. Daycare code =8351
-
-daycare<- dmti%>%
-  filter(SIC1== 8351)
-myvars <- c("POI_ID", "LONGITUDE", "LATITUDE")
-daycare2 <-daycare[myvars]
-
-daycare2<-daycare2%>%
-  st_as_sf(coords=c("LONGITUDE", "LATITUDE"), crs=4326)
-
-
-
-#Supermarkets. here is the cleaning for the supermarkets. It was done by looking some words. Those are the ones that sell nutritious food with a lot of variety.
-dmti1<-dmti%>%
-  mutate(WALMART = grepl("WALMART", NAME))%>%
-  mutate(costco = grepl("costco", NAME))%>%
-  filter(SIC1== 5411 | SIC1==5421 | SIC1==5431 | 
-           SIC2== 5411 | SIC2==5421 | SIC2==5431 | 
-           SIC3== 5411 | SIC3==5421 | SIC3==5431 | 
-           SIC4== 5411 | SIC4==5421 | SIC4==5431 |
-           SIC5== 5411 | SIC5==5421 | SIC5==5431  )%>%
-  mutate(depanneur = grepl("NNEUR", NAME))%>%
-  mutate(depanneur2 = grepl("DEPAN", NAME))%>%
-  mutate(depanneur3= grepl("D?ëPAN", NAME))%>%
-  mutate(IGA = grepl("IGA", NAME))%>%
-  mutate(IGA2 = grepl("I G A",NAME ))%>%
-  mutate(IGA3 = grepl("SOBEY'S INC",NAME ))%>%
-  mutate(PROVIGO = grepl("PROVIGO", NAME))%>%
-  mutate(METRO = grepl("METRO", NAME))%>%
-  mutate(METRO2 = grepl("M?ëTRO", NAME))%>%
-  mutate(MARCHE = grepl("MARCH", NAME))%>%
-  mutate(SUPERMARCHE = grepl("PERMARCH", NAME))%>%
-  mutate(SUPERMARCHE2 = grepl("PER MARCH", NAME))%>%
-  mutate(couchtard = grepl("CHE-TARD", NAME))%>%
-  mutate(couchtard2 = grepl("CHE TARD", NAME))%>%
-  mutate(dollarama = grepl("DOLLARAMA", NAME))%>%
-  mutate(MAXI = grepl("MAXI", NAME))%>%
-  mutate(BONI = grepl("BONI", NAME))%>%  #type of depanneur
-  mutate(CERTIGARD = grepl("CERTIGARD", NAME))%>%  #type of depanneur in gas stations
-  mutate(FRUITERIE = grepl("FRUIT", NAME))%>%
-  mutate(EPICERIE = grepl ("EPICERIE", NAME))%>%
-  mutate(FROMAGERIE = grepl ("FROMAGERIE", NAME))%>%
-  mutate(FROMAGERIE2 = grepl ("FROMAGEs", NAME))%>%
-  mutate(LOBLAWS = grepl("LOBLAWS", NAME))%>%   #Supermarket chain
-  mutate(RESTAURANT = grepl("RESTAURANT", NAME))%>%  #Some of them sell food?
-  mutate(SUPERC = grepl("SUPER C", NAME))%>%   #Supermarket chain
-  mutate(TABAGIE = grepl("TABAGIE", NAME))%>%  #Sell tobacco
-  mutate(WILLIAMJWALTER = grepl("WILLIAM J WALTER", NAME))%>%  #SAUCISSIER
-  mutate(BOUCHERIE = grepl("BOUCHEr", NAME))%>%
-  mutate(POISSONNERIE =grepl("POISSONNERIE", NAME))%>%
-  mutate(depanneur4 =grepl("CHEZ GABY KIM", NAME))%>%
-  mutate(Final = grepl ("TRADITION DESCH?èNES", NAME))%>%
-  mutate(Final2 = grepl ("TRADITION SUPERMARCH?ë", NAME))
-
-
-dmti1 <- mutate(dmti1, supermarket= if_else (WALMART== TRUE | IGA== TRUE | IGA2 == TRUE | IGA3==TRUE | PROVIGO==TRUE | METRO==TRUE | METRO2== TRUE |
-                                               SUPERMARCHE == TRUE | SUPERMARCHE2 == TRUE | MAXI == TRUE | BONI == TRUE | LOBLAWS == TRUE  |
-                                               SUPERC == TRUE | Final == TRUE | Final2== TRUE 
-                                             , 1,0))
-dmti<-dmti1 %>% 
-  filter(supermarket==1)
-
-myvars <- c("POI_ID", "LONGITUDE", "LATITUDE")
-supermarkets <- dmti1[myvars]
-
-sm<-supermarkets%>%
-  st_as_sf(coords=c("long", "lat"), crs=4326)
-
-
-
-# Joins -------------------------------------------------------------------
-
-head(MTL_DA16)
-#I cleaned this before. In this case I removed all the variables
-
-#MTL_DA16$Population <- NULL
-#MTL_DA16$Households <- NULL
-#MTL_DA16$Type <- NULL
-#MTL_DA16$CD_UID <- NULL
-#MTL_DA16$`Shape Area` <- NULL
-#MTL_DA16$Dwellings <- NULL
-#MTL_DA16$CSD_UID <- NULL
-#MTL_DA16$CMA_UID <- NULL
-#MTL_DA16$CT_UID <-NULL
-#Joins
-
-#Spatial join using st_join. We want to join the MTL_DA16's columns to the points of interest file
-st_join(sm, MTL_DA16) -> sm2
-sm2$n <-1
-st_join(daycare2, MTL_DA16) -> daycare2
-daycare2$n <-1
-st_join(parks2, MTL_DA16) ->parks2
-st_join(public2, MTL_DA16) -> public2
-st_join(private2, MTL_DA16) -> private2
-
-rm(sm, parks, public, private, dmti)
-# Accessibility -----------------------------------------------------------
-#From here we are going to repeat the process for each mode of transportation
-
-#Originally I ran the ttm in a different project. In this part we should be able to run the ttm again. 
-#However, in this case I will only read the ones I had. I will keep the parameters/
-
-#path <- ('~/Housing2') 
-
-#r5r_core <- setup_r5(data_path = path, elevation = "TOBLER",  verbose = FALSE) 
-
-#read.csv("da_centroids_popw2.csv")-> da
-#mode <- c("BICYCLE") #Change mode of interest
-
-#max_walk_dist <-  Inf 
-#max_trip_duration <- 60
-#departure_datetime <- as.POSIXct("19-05-2022 08:00:00",
-                                # format = "%d-%m-%Y %H:%M:%S")
-#time_window <-60
-#draws_per_minute <- 1L
-#max_walk_time <- 60
-#max_bike_time <- 60
-#max_bike_dist <- 60
-#max_car_time = 60
-#ttm_bike <- travel_time_matrix(r5r_core = r5r_core,
-                                #origins = da,
-                                #destinations = da,
-                                #mode = mode,
-                                #departure_datetime = departure_datetime,
-                                #max_trip_duration = max_trip_duration,
-                                #max_walk_time = max_walk_time,
-                                #time_window = time_window, #Only activate this for transit
-                                
-                                #verbose = FALSE)
-
-#qsave(ttm_bike, "ttm_bike.qs")
-
-
-#Lets clean the ttm. 15 minutes threshold
-da15<- ttm_car%>%  #From here, we do this process for all the transportation modes. 
-  filter(travel_time_p50<=15)
-
-da15a <- da15 %>%
-  group_by(from_id, to_id)%>%
-  summarise(avg = mean(travel_time_p50))
-
-
-
-
-#Rename the GeoUID column to to_id to join with the ttm,and delete geometries. 
-names(sm2)[names(sm2) == 'GeoUID'] <- 'to_id'
-sm2$geometry<- NULL
-names(parks2)[names(parks2) == 'GeoUID'] <- 'to_id'
-parks2$geometry<- NULL
-names(private2)[names(private2) == 'GeoUID'] <- 'to_id'
-private2$geometry<- NULL
-names(public2)[names(public2) == 'GeoUID'] <- 'to_id'
-public2$geometry<- NULL
-names(daycare2)[names(daycare2) == 'GeoUID'] <- 'to_id'
-daycare2$geometry <- NULL
-
-
-
-#Coun the number of opportunities in each DA
-sm2<-sm2%>%
-  count(to_id)
-parks2 <- parks2 %>%
-  count(to_id)
-daycare2 <- daycare2%>%
-  count(to_id)
-public2 <- public2%>%
-  group_by(to_id)%>%
-  summarise(Kinder_Pub = sum(Kindergarden_Pub),
-            Primary_Pub = sum(Primary_Pub),
-            Secondary_Pub= sum(Secondary_Pub),
-            Adults_Prof_pub = sum(Adults_Professional_pub),
-            French_pub = sum(French),
-            English_pub = sum(English),
-            Kinder_French_Pub = sum(Kinder_French_Pub),
-            Primary_French_Pub = sum(Primary_French_Pub),
-            Secondary_French_Pub = sum(Secondary_French_Pub),
-            Adults_Professional_French_Pub = sum(Adults_Professional_French_Pub),
-            Kinder_English_Pub = sum(Kinder_English_Pub),
-            Primary_English_Pub = sum(Primary_English_Pub),
-            Secondary_English_Pub = sum(Secondary_English_Pub),
-            Adults_Professional_English_Pub = sum(Adults_Professional_English_Pub),
-  )
-
-
-
-private2 <- private2%>%
-  group_by(to_id)%>%
-  summarise(Kindergarden_Priv = sum(Kindergarden_Priv),
-            Primary_Priv = sum(Primary_Priv),
-            Secondary_Priv = sum(Secondary_Priv),
-            Adults_Professional_Priv = sum(Adults_Professional_Priv),)
-
-
-names(sm2)[names(sm2) == 'n'] <- 'Supermarkets'  
-names(parks2)[names(parks2) == 'n'] <- 'Parks'   
-names(daycare2)[names(daycare2) == 'n'] <- 'Daycares'
-
-
-#Join facilities to time travel matrix
-acc1 = merge(x=da15a,y=sm2,by="to_id",all=TRUE)
-acc1 = merge(x=acc1,y=parks2,by="to_id",all=TRUE)
-acc1 = merge(x=acc1,y=daycare2,by="to_id",all=TRUE)
-acc1 = merge(x=acc1,y=public2,by="to_id",all=TRUE)
-acc1 = merge(x=acc1,y=private2,by="to_id",all=TRUE)
-
-
-acc1<-acc1%>%
-  filter(!is.na(avg))
-
-as.numeric(acc1$to_id)-> acc1$to_id
-as.numeric(acc1$from_id)-> acc1$from_id
-
-acc1<-acc1 %>%
-  mutate_all(~replace_na(., 0))
-
-
-#An now we sum the number of supermarkets within 15 minutes by every origin DA (from_id)
-acc2 <- acc1%>% 
-  group_by(from_id) %>% 
-  summarise(Parks = sum(Parks),
-            Daycare = sum(Daycares),
-            Supermarkets = sum(Supermarkets),
-            Kinder_Pub = sum(Kinder_Pub),
-            Primary_Pub = sum(Primary_Pub),
-            Secondary_Pub= sum(Primary_Pub),
-            Adults_Prof_pub = sum(Adults_Prof_pub),
-            Kinder_French_Pub = sum(Kinder_French_Pub),
-            Primary_French_Pub = sum(Primary_French_Pub),
-            Secondary_French_Pub = sum(Secondary_French_Pub),
-            Adults_Professional_French_Pub = sum(Adults_Professional_French_Pub),
-            Kinder_English_Pub = sum(Kinder_English_Pub),
-            Primary_English_Pub = sum(Primary_English_Pub),
-            Secondary_English_Pub = sum(Secondary_English_Pub),
-            Adults_Professional_English_Pub = sum(Adults_Professional_English_Pub),
-            French_pub = sum(French_pub),
-            English_pub = sum(English_pub),
-            Kindergarden_Priv = sum(Kindergarden_Priv),
-            Primary_Priv = sum(Primary_Priv),
-            Secondary_Priv = sum(Secondary_Priv),
-            Adults_Professional_Priv = sum(Adults_Professional_Priv),
-            Avg_time = mean(avg),
-  )
-
-head(acc2)
-#Rename from_id to join with the MTL_DA16
-names(acc2)[names(acc2) == 'from_id'] <- 'GeoUID'
-
-Housing_car = merge(x=MTL_DA16,y=acc2,by="GeoUID",all=TRUE)
-
-housing<-housing%>%
-  st_as_sf(coords=c("longitude", "latitude"), crs=4326)
-
-#Join with MTL_DA16
-st_join(housing, MTL_DA16) -> housing2
-
-housing2<-housing2%>%
-  group_by(GeoUID)%>%
-  summarise(Buildings = sum (nb_log),
-            No_Buildings = n(),)
-
-housing2$geometry<-NULL
-Housing_car = merge(x=Housing_car,y=housing2,by="GeoUID",all=TRUE)
-Housing_car$Buildings[is.na(Housing_car$Buildings)] <- 0
-Housing_car$No_Buildings[is.na(Housing_car$No_Buildings)] <- 0
-
-
-#And save file. 
-qsave(Housing_car, "Housing_car.qs")
+# 
+# Green spaces from OSM
+# municipal_parks_osm <-
+#   osmdata::opq(c(-74.32797, 45.21754, -73.12856, 45.96849), timeout = 200) |>
+#   osmdata::add_osm_features(features = c("\"leisure\" = \"park\"")) |>
+#   osmdata::osmdata_sf()
+# 
+# municipal_parks_osm <-
+#   municipal_parks_osm$osm_multipolygons |>
+#   st_cast("POLYGON") |>
+#   select(osm_id) |>
+#   rbind(municipal_parks_osm$osm_polygons[, "osm_id"])
+# 
+# municipal_parks_island_longueuil <-
+#   read_sf("dev/data/amenity_access/Espace_Vert.shp") |>
+#   st_transform(4326) |>
+#   filter(TYPO1 %in% c("Parc d'arrondissement", "En cours de validation",
+#                       "Grand parc", "Autre espace vert")) |>
+#   select() |>
+#   rbind(read_sf("dev/data/amenity_access/ParcsEspacesVerts.shp") |>
+#           st_transform(4326) |> select())
+# 
+# municipal_parks_osm <-
+#   parks_osm |>
+#   st_filter(filter(borough, !str_starts(ID, "2466023") & name != "Longueuil"))
+# 
+# municipal_parks <-
+#   rbind(municipal_parks_island_longueuil, select(municipal_parks_osm)) |>
+#   st_cast("MULTIPOLYGON") |>
+#   st_cast("POLYGON") |>
+#   transmute(id = row_number())
+# 
+# qsave(municipal_parks, file = "dev/data/amenity_access/municipal_parks.qs")
+
+
+# Load and clean data -----------------------------------------------------
+
+# Travel time matrix
+tt_matrix_DA <- qread("dev/data/tt_matrix_DA.qs")
+
+# Municipal parks
+municipal_parks <- qread("dev/data/amenity_access/municipal_parks.qs")
+
+# Food distribution
+# Shapefile coming from McGill GéoIndex - Food Distribution
+food_distribution <- 
+  read_sf("dev/data/amenity_access/dmti_fooddistribution/dmti_fooddistribution_2021_p_point.shp") |> 
+  transmute(id = g_objectid,
+            name = str_to_title(g_name),
+            sic = g_sic_1) |> 
+  st_filter(borough)
+
+# Attach food distribution industry
+sm_industry <- 
+  food_distribution |> 
+  distinct(sic)
+
+sm_industry$industry <- 
+  map_chr(sm_industry$sic, ~{
+    rvest::read_html(
+      paste0("https://www.naics.com/sic-industry-description/?code=", 
+             str_extract(.x, "^\\d{4}"))) |> 
+      rvest::html_elements("h6") |> 
+      rvest::html_text() |> 
+      pluck(1) |> 
+      str_extract("(?<=\\d{4}—).*")
+  })
+
+food_distribution <- left_join(food_distribution, sm_industry, by = "sic")
+
+# Filter out unhealthy industry
+food_distribution <- 
+  food_distribution |> 
+  filter(industry != "Candy, Nut, and Confectionery Stores") |> 
+  select(-sic)
+
+
+# Schools
+schools <- 
+  list(public = read_sf("dev/data/amenity_access/PPS_Public_Ecole.shp"),
+       private = read_sf("dev/data/amenity_access/PPS_Prive_Installation.shp") |> 
+         rename(NOM_OFF_O = NOM_OFFCL)) |> 
+  map(st_filter, borough) |> 
+  # The following is an example of a school in two buildings (Pool and gymnasium)
+  # filter(OBJECTID %in% c(1987, 1988))
+  map(~{
+    .x |> 
+      group_by(CD_ORGNS) |> 
+      mutate(across(PRESC:ADULTE, ~sum(.x) |> min(1))) |> 
+      ungroup()
+  }) |> 
+  map(distinct, CD_ORGNS, .keep_all = TRUE)
+
+schools <- 
+  imap_dfr(schools, function(data, z) {
+    transmute(data,
+              id = OBJECTID,
+              name = NOM_OFF_O,
+              preschool = PRESC,
+              primary = PRIM,
+              secondary = SEC,
+              vocational = FORM_PRO,
+              adult = ADULTE,
+              public = if_else(z == "public", TRUE, FALSE))
+  }) |> 
+  arrange(id)
+
+
+# Daycares
+daycares <- 
+  qread("dev/data/amenity_access/daycare.qs") |> 
+  transmute(id = row_number(),
+            spots_total = PLACE_TOTAL,
+            reduced_contribution = if_else(is.na(SUBV), FALSE, TRUE))
+
+
+# Municipal parks are polygons. Get the closest DA instead ----------------
+
+DA_street_centroid <- qread("dev/data/pop_weighted_centroid_DA_street.qs")
+
+municipal_parks$nearest_DA <- st_nearest_feature(municipal_parks, DA_street_centroid)
+
+municipal_parks <-
+  left_join(municipal_parks, DA_street_centroid |> 
+              mutate(row = row_number()) |> 
+              rename(DAUID = ID) |> 
+              st_drop_geometry(),
+            by = c("nearest_DA" = "row")) |> 
+  select(id, DAUID) |> 
+  mutate(sqkm = units::drop_units(st_area(geometry))/1e+6) |> 
+  st_drop_geometry() |> 
+  left_join(DA_street_centroid, by = c("DAUID" = "ID")) |> 
+  st_as_sf() |> 
+  select(id, sqkm)
+
+# Number of amenities per DA ----------------------------------------------
+
+old_plan <- future::plan()
+future::plan(future::multisession)
+
+point_amenities <- 
+  list(food_distribution = food_distribution, 
+       schools = schools)
+
+# Join all amenities to a DA ID
+DA_amenities <- 
+  furrr::future_map(point_amenities, ~st_join(.x, select(DA, ID)))
+
+# Get the amount of amenities reachable per mode in 15 minutes
+DA_amenities <- 
+  map(DA_amenities, function(amenity) {
+    furrr::future_map(tt_matrix_DA, function(mode) {
+      mode[mode$travel_time_p50 <= 15, ] |> 
+        left_join(amenity, by = c("to_id" = "ID")) |> 
+        filter(!st_is_empty(geometry)) |> 
+        group_by(from_id) |> 
+        summarize(amenities = n())
+    })
+  })
+
+# Get amenities in one df
+DA_amenities <- 
+  furrr::future_imap(DA_amenities, function(amenity, n_amenity) {
+    amenity |> 
+      imap(~{
+        names(.x)[2] <- paste0(n_amenity, "_", str_to_lower(.y), "_count")
+        .x}) |> reduce(left_join, by = "from_id")
+  })
+
+# For parks, the amount of amenities reachable per mode in 15 minutes must
+# be in sqkm
+municipal_parks_sqkm <- st_join(municipal_parks, select(DA, ID))
+DA_amenities$municipal_parks_sqkm <-
+  furrr::future_imap(tt_matrix_DA, function(mode, n_mode) {
+    out <- 
+      mode[mode$travel_time_p50 <= 15, ] |> 
+      left_join(municipal_parks_sqkm, by = c("to_id" = "ID")) |> 
+      filter(!st_is_empty(geometry)) |> 
+      group_by(from_id) |> 
+      summarize(amenities = sum(sqkm))
+    names(out)[2] <- paste0("municipal_parks_", str_to_lower(n_mode), "_sqkm")
+    out
+  }) |> reduce(left_join, by = "from_id")
+
+# For daycares, the amount of amenities reachable per mode in 15 minutes must
+# be per spots
+daycares_spot <- st_join(daycares, select(DA, ID))
+DA_amenities$daycares_spot <-
+  furrr::future_imap(tt_matrix_DA, function(mode, n_mode) {
+    out <- 
+      mode[mode$travel_time_p50 <= 15, ] |> 
+      left_join(daycares_spot, by = c("to_id" = "ID")) |> 
+      filter(!st_is_empty(geometry)) |> 
+      group_by(from_id) |> 
+      summarize(amenities = sum(spots_total))
+    names(out)[2] <- paste0("daycare_spots_", str_to_lower(n_mode), "_count")
+    out
+  }) |> reduce(left_join, by = "from_id")
+
+future::plan(old_plan)
+
+# Bind all to one dataframe
+DA_amenities <- 
+  reduce(DA_amenities, left_join, by = "from_id") |> 
+  rename_with(~paste0("amenities_", .x)) |> 
+  rename(ID = amenities_from_id)
+
+
+# Get DA amenities at other scales ----------------------------------------
+# On average, an individual living in this scale can reach X amenity in a 15 
+# minutes trip
+
+# Add all DAs, change NAs for 0s
+DA_amenities <- list(DA = DA_amenities |> 
+                       right_join(st_drop_geometry(select(DA, ID)), 
+                                  by = "ID") |> 
+                       mutate(across(where(is.numeric), ~
+                                       ifelse(is.na(.x), 0, .x))))
+
+# CT
+DA_amenities$CT <-
+  DA |> 
+  st_drop_geometry() |> 
+  select(ID, CTUID, population) |> 
+  left_join(DA_amenities$DA, by = "ID") |> 
+  group_by(CTUID) |>
+  (\(x) summarize(x, across(3:(ncol(x) - 1), ~weighted.mean(.x, population, 
+                                                            na.rm = TRUE))))() |> 
+  rename(ID = CTUID)
+
+# borough
+DA_amenities$borough <-
+  DA |> 
+  st_drop_geometry() |> 
+  select(ID, CSDUID, population) |> 
+  left_join(DA_amenities$DA, by = "ID") |> 
+  group_by(CSDUID) |>
+  (\(x) summarize(x, across(3:(ncol(x) - 1), ~weighted.mean(.x, population, 
+                                                            na.rm = TRUE))))() |> 
+  rename(ID = CSDUID)
+
+# centraide
+DA_amenities$centraide <- 
+  DA |> 
+  select(ID, population) |> 
+  # Some DAs are in more than one centraide neighbourhood. As DAs are very small
+  # compared to centraide neighbourhood, it is good enough.
+  st_join(transmute(centraide, centraide_ID = ID)) |> 
+  st_drop_geometry() |> 
+  select(ID, centraide_ID, population) |> 
+  left_join(DA_amenities$DA, by = "ID") |> 
+  group_by(centraide_ID) |>
+  (\(x) summarize(x, across(3:(ncol(x) - 1), ~weighted.mean(.x, population, 
+                                                            na.rm = TRUE))))() |> 
+  rename(ID = centraide_ID)
+  
+
+# Calculate breaks --------------------------------------------------------
+
+DA_amenities <- map(DA_amenities, add_q3)
+
+DA_amenities_q3 <- map(DA_amenities, get_breaks_q3)
+DA_amenities_q5 <- map(DA_amenities, get_breaks_q5)
+
+DA_amenities <-
+  map2(DA_amenities, DA_amenities_q5, 
+       ~{bind_cols(.x, add_q5(.x, .y))})
+
+
+# Add to variables table --------------------------------------------------
+
+var_list <-
+  DA_amenities$DA |>
+  select(-ID, -contains(c("q3", "q5"))) |>
+  names()
+
+# Get breaks_q3
+breaks_q3_active <-
+  imap_dfr(DA_amenities_q3, \(x, scale) {
+    if (nrow(x) > 0) x |> mutate(scale = scale, date = NA, rank = 0:3,
+                                 .before = 1)})
+
+# Get breaks_q5
+breaks_q5_active <-
+  imap_dfr(DA_amenities_q5, \(x, scale) {
+    if (nrow(x) > 0) x |> mutate(scale = scale, date = NA, rank = 0:5,
+                                 .before = 1)})
+
+# Easily arrange the list of variables
+title <- 
+  c(amenities_food_distribution_walk_count = "" ,
+    amenities_food_distribution_bicycle_count = "" ,
+    amenities_food_distribution_transit_count = "" ,
+    amenities_food_distribution_car_count = "" ,
+    amenities_schools_walk_count = "" ,
+    amenities_schools_bicycle_count = "" ,
+    amenities_schools_transit_count = "" ,
+    amenities_schools_car_count = "" ,
+    amenities_municipal_parks_walk_sqkm = "" ,
+    amenities_municipal_parks_bicycle_sqkm = "" ,
+    amenities_municipal_parks_transit_sqkm = "" ,
+    amenities_municipal_parks_car_sqkm = "" ,
+    amenities_daycare_spots_walk_count = "" ,
+    amenities_daycare_spots_bicycle_count = "" ,
+    amenities_daycare_spots_transit_count = "" ,
+    amenities_daycare_spots_car_count = "")
+
+short <- 
+  c(amenities_food_distribution_walk_count = "" ,
+    amenities_food_distribution_bicycle_count = "" ,
+    amenities_food_distribution_transit_count = "" ,
+    amenities_food_distribution_car_count = "" ,
+    amenities_schools_walk_count = "" ,
+    amenities_schools_bicycle_count = "" ,
+    amenities_schools_transit_count = "" ,
+    amenities_schools_car_count = "" ,
+    amenities_municipal_parks_walk_sqkm = "" ,
+    amenities_municipal_parks_bicycle_sqkm = "" ,
+    amenities_municipal_parks_transit_sqkm = "" ,
+    amenities_municipal_parks_car_sqkm = "" ,
+    amenities_daycare_spots_walk_count = "" ,
+    amenities_daycare_spots_bicycle_count = "" ,
+    amenities_daycare_spots_transit_count = "" ,
+    amenities_daycare_spots_car_count = "")
+
+explanation <- 
+  c(amenities_food_distribution_walk_count = "" ,
+    amenities_food_distribution_bicycle_count = "" ,
+    amenities_food_distribution_transit_count = "" ,
+    amenities_food_distribution_car_count = "" ,
+    amenities_schools_walk_count = "" ,
+    amenities_schools_bicycle_count = "" ,
+    amenities_schools_transit_count = "" ,
+    amenities_schools_car_count = "" ,
+    amenities_municipal_parks_walk_sqkm = "" ,
+    amenities_municipal_parks_bicycle_sqkm = "" ,
+    amenities_municipal_parks_transit_sqkm = "" ,
+    amenities_municipal_parks_car_sqkm = "" ,
+    amenities_daycare_spots_walk_count = "" ,
+    amenities_daycare_spots_bicycle_count = "" ,
+    amenities_daycare_spots_transit_count = "" ,
+    amenities_daycare_spots_car_count = "")
+
+
+
+new_rows <-
+  map_dfr(var_list, function(var) {
+    
+    mode <- 
+      case_when(str_detect(var, "_walk_") ~ "walk",
+                str_detect(var, "_transit_") ~ "transit",
+                str_detect(var, "_bicycle_") ~ "bicycle",
+                str_detect(var, "_car_") ~ "car")
+    
+    amenity <- 
+      case_when(str_detect(var, "_food_distribution_") ~ "food distributors",
+                str_detect(var, "_schools_") ~ "schools",
+                str_detect(var, "_daycare_spots_") ~ "daycare spots",
+                str_detect(var, "_municipal_parks_") ~ 
+                  "square kilometers of municipal parks")
+    
+    amenity_short <- 
+      case_when(str_detect(var, "_food_distribution_") ~ "food",
+                str_detect(var, "_schools_") ~ "schools",
+                str_detect(var, "_daycare_spots_") ~ "daycare",
+                str_detect(var, "_municipal_parks_") ~ "parks")
+    
+    pre <- 
+      case_when(str_ends(var, "_count") ~ "the count",
+                str_ends(var, "_sqkm") ~ "the number")
+    
+    explanation_ <- 
+      if (mode == "walk") {
+        glue::glue("{pre} of {amenity} accessible in a 15 minutes {mode}")
+      } else {
+        glue::glue("{pre} of {amenity} accessible in 15 minutes by {mode}")
+      }
+    
+    # ADDED ROW
+    out <-
+      add_variables(variables,
+                    var_code = var,
+                    var_title = glue::glue("Accessibility to {amenity} by {mode}"),
+                    var_short = glue::glue("Accessibility to {amenity_short} ({mode})"),
+                    explanation = explanation_,
+                    category = NA,
+                    theme = "Accessibility to amenities",
+                    private = TRUE,
+                    dates = NA,
+                    scales = c("DA", "CT", "borough", "centraide"),
+                    breaks_q3 = select(breaks_q3_active,
+                                       scale, date, rank, 
+                                       var = all_of(var)),
+                    breaks_q5 = select(breaks_q5_active,
+                                       scale, date, rank, 
+                                       var = all_of(var)),
+                    source = "Centraide",
+                    interpolated = list(c(DA = FALSE,
+                                          CT = FALSE,
+                                          borough = FALSE,
+                                          centraide = FALSE)))
+    
+    out[out$var_code == var, ]
+    
+  })
+
+variables <-
+  bind_rows(variables, new_rows)
+
+
+# Join amenities to DA ----------------------------------------------------
+DA <-
+  left_join(DA, DA_amenities$DA, by = "ID") |>
+  relocate(geometry, .after = last_col())
+
+# Join amenities to CT ----------------------------------------------------
+CT <-
+  left_join(CT, DA_amenities$CT, by = "ID") |>
+  relocate(geometry, .after = last_col())
+
+# Join amenities to borough -----------------------------------------------
+borough <-
+  left_join(borough, DA_amenities$borough, by = "ID") |>
+  relocate(geometry, .after = last_col())
+
+# Join amenities to centraide ---------------------------------------------
+centraide <-
+  left_join(centraide, DA_amenities$centraide, by = "ID") |>
+  relocate(geometry, .after = last_col())
+
+
+# Clean up ----------------------------------------------------------------
+
+rm(DA_amenities, DA_amenities_q3, DA_amenities_q5, DA_street_centroid, daycares, 
+   daycares_spot, food_distribution, municipal_parks, municipal_parks_sqkm, 
+   new_rows, old_plan, point_amenities, schools, sm_industry, var_list)
 
 

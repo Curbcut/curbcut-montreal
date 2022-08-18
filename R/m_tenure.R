@@ -34,6 +34,10 @@ tenure_UI <- function(id) {
     # Right panel
     right_panel(
       id = id,
+      compare_UI(NS(id, id), 
+                 make_dropdown(only = 
+                                 list(theme = "Accessibility to amenities"),
+                               compare = TRUE)),
       explore_UI(NS(id, id)),
       dyk_UI(NS(id, id)))
   )
@@ -132,8 +136,14 @@ tenure_server <- function(id, r) {
     # Composite variable for map
     map_var <- var_left
     
-    # Right var 
-    var_right <- reactive(" ")
+    # Right variable / compare panel
+    var_right <- compare_server(
+      id = id,
+      r = r,
+      var_list = make_dropdown(only = 
+                                 list(theme = "Accessibility to amenities"),
+                               compare = TRUE),
+      time = time)
 
     # Additional tileset identifier
     tile2 <- reactive("")
@@ -157,6 +167,14 @@ tenure_server <- function(id, r) {
         selected <- data()[, c("ID", "var_left_q5")]
         out <- merge(selected, colour_table, by.x = "var_left_q5", 
                      by.y = "group")[, c("ID", "value")]
+        names(out) <- c("group", "value")
+        out
+      } else {
+        selected <- data()[, c("ID", "var_left_q3", "var_right_q3")]
+        selected$group <- 
+          paste(selected$var_left_q3, selected$var_right_q3, sep = " - ")
+        out <- merge(selected, colour_bivar, by.x = "group", 
+                     by.y = "group")[, c("ID", "fill")]
         names(out) <- c("group", "value")
         out
       }
@@ -196,6 +214,8 @@ tenure_server <- function(id, r) {
       var_left = var_left,
       var_right = var_right,
       poi = poi)
+    
+    assign("data", data(), envir = .GlobalEnv)
     
     # Bookmarking
     bookmark_server(
