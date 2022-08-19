@@ -57,11 +57,8 @@ compare_server <- function(id, r = r, var_list, df = r[[id]]$df,
                                      var_list = reactive(amenities_modes))
     var_right <- reactive({
       if (!grepl("^amenities_", var_right_1())) return(var_right_1())
-      print(grepl("^amenities_", var_right_1()))
       gsub("walk", var_right_2(), var_right_1())
     })
-    
-    observe(print(var_right()))
     
     # Hide compare status
     output$show_panel <- show_panel
