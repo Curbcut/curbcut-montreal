@@ -62,3 +62,11 @@ make_dropdown <- function(multi_year = FALSE,
   
   return(out)
 }
+
+# Amenities' transportation modes' list
+amenities_modes <- 
+  list("Mode of transportation" =
+         list("By walk" = "walk",
+              "By bike" = "bicycle",
+              "By transit" = "transit",
+              "By car" = "car"))

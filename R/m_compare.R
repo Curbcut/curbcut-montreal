@@ -42,8 +42,26 @@ compare_server <- function(id, r = r, var_list, df = r[[id]]$df,
 
   moduleServer(id, function(input, output, session) {
     
-    var_right <- select_var_server("compare", r = r, var_list = reactive(var_list), 
-                                   disabled = disabled, time = time, df = df)
+    var_right_1 <- select_var_server("compare", r = r, 
+                                     var_list = reactive(var_list), 
+                                     disabled = disabled, 
+                                     time = time, 
+                                     df = df)
+    
+    # In the case the selection starts with amenities, second dropdown!
+    observeEvent(var_right_1(), {
+      shinyjs::toggle("compare_2-var", anim = TRUE,
+                      condition = grepl("^amenities_", var_right_1()))
+    })
+    var_right_2 <- select_var_server("compare_2", r = r, 
+                                     var_list = reactive(amenities_modes))
+    var_right <- reactive({
+      if (!grepl("^amenities_", var_right_1())) return(var_right_1())
+      print(grepl("^amenities_", var_right_1()))
+      gsub("walk", var_right_2(), var_right_1())
+    })
+    
+    observe(print(var_right()))
     
     # Hide compare status
     output$show_panel <- show_panel
