@@ -20,7 +20,9 @@ compare_UI <- function(id, var_list) {
       condition = "output.hide_status == 1", ns = NS(id),
       div(class = "compare_dropdown",
           select_var_UI(NS(id, "compare"), var_list = var_list, inline = FALSE,
-                    more_style = "width:100%;"))),
+                        more_style = "width:100%;"),
+            select_var_UI(NS(id, "compare_2"), var_list = list(), inline = FALSE,
+                          more_style = "width:100%;"))),
     
     conditionalPanel(
       condition = "output.show_panel == true", ns = NS(id),

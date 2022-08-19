@@ -47,8 +47,18 @@ make_dropdown <- function(multi_year = FALSE,
                              setNames(cat_vecs$var_title)
                          })
   
+  # Special case for now, double dropdown in compare
+  # Ultimately make_dropdown() could detect presence such as transportation modes
+  # and output a list of length two, indicating which value of the list needs a second
+  # dropdown
+  if ("theme" %in% names(unlist(only)) &&
+    unlist(only)[["theme"]] == "Accessibility to amenities") {
+    out <- out[[1]][grep("_walk_", unlist(out))]
+    names(out) <- gsub(" by walk$", "", names(out))
+    out <- list("Accessibility to amenities" = out)
+  }
+  
   if (compare) out <- c("----" = " ", out)
   
   return(out)
 }
-
