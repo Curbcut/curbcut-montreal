@@ -41,23 +41,45 @@ compare_server <- function(id, r = r, var_list, df = r[[id]]$df,
   stopifnot(is.reactive(show_panel))
 
   moduleServer(id, function(input, output, session) {
-    
+
     var_right_1 <- select_var_server("compare", r = r, 
                                      var_list = reactive(var_list), 
                                      disabled = disabled, 
                                      time = time, 
                                      df = df)
     
-    # In the case the selection starts with amenities, second dropdown!
+    # Is the variable part of a larger group
+    second_drop_group <- reactive({
+      if (var_right_1() == " ") return(NA)
+      var <- sub("_\\d{4}", "", var_right_1())
+      variables$grouping[variables$var_code == var]
+    })
+
+    # In the case the selection is part of a larger group, show second dropdown
     observeEvent(var_right_1(), {
       shinyjs::toggle("compare_2-var", anim = TRUE,
-                      condition = grepl("^amenities_", var_right_1()))
+                      condition = !is.na(second_drop_group()))
     })
+    
+    # Second dropdown values
+    second_drop <- reactive({
+      if (is.na(second_drop_group())) return(list(" "))
+      
+      vars_s_drop <- 
+        variables[!is.na(variables$grouping) & 
+                    variables$grouping == second_drop_group(), ]
+      
+      lapply(vars_s_drop$var_code, paste) |> 
+        setNames(vars_s_drop$group_diff)
+    })
+    
     var_right_2 <- select_var_server("compare_2", r = r, 
-                                     var_list = reactive(amenities_modes))
+                                     var_list = second_drop)
+    
+    # Pick the value of the first or second dropdown
     var_right <- reactive({
-      if (!grepl("^amenities_", var_right_1())) return(var_right_1())
-      gsub("walk", var_right_2(), var_right_1())
+      if (is.na(second_drop_group())) return(var_right_1())
+      var_right_2()
     })
     
     # Hide compare status
@@ -74,6 +96,6 @@ compare_server <- function(id, r = r, var_list, df = r[[id]]$df,
       updateActionButton(session, "hide_compare", label = txt)
     })
     
-    reactive(var_right())
+    var_right
   })
 }

@@ -1,6 +1,7 @@
 add_variables <- function(data, var_code, var_title, var_short, explanation, 
                           category, theme, private, dates, scales, breaks_q3, 
-                          breaks_q5, source, interpolated) {
+                          breaks_q5, source, interpolated, grouping = NA,
+                          group_diff = NA) {
   
   add_row(data,
           var_code = var_code,
@@ -15,6 +16,8 @@ add_variables <- function(data, var_code, var_title, var_short, explanation,
           breaks_q3 = list(breaks_q3),
           breaks_q5 = list(breaks_q5),
           source = source,
-          interpolated = list(interpolated))
+          interpolated = list(interpolated),
+          grouping = grouping,
+          group_diff = group_diff)
   
 }

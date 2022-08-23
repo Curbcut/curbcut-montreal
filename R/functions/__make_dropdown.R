@@ -17,10 +17,10 @@
 
 make_dropdown <- function(multi_year = FALSE, 
                           only = list(source = "Canadian census"), 
-                          exclude = NULL, 
-                          compare = FALSE) {
+                          exclude = NULL, compare = FALSE) {
   
-  vars <- variables
+  vars <- variables[
+    !variables$var_code %in% c("emp_professional_pct", "emp_creative_pct"),]
   
   if (!is.null(only)) {
     vars <- 
@@ -37,36 +37,31 @@ make_dropdown <- function(multi_year = FALSE,
   if (multi_year) 
     vars <- vars[lengths(vars$dates) == max(lengths(vars$dates)), ]
   
-  out <- lapply(setNames(unique(vars$theme),
-                         unique(vars$theme)), \(cat) {
-                           cat_vecs <- 
-                             vars[vars$theme == cat, c("var_code", "var_title")]
-                           
-                           lapply(cat_vecs$var_title, \(name) {
-                             cat_vecs[cat_vecs$var_title == name, ]$var_code}) |> 
-                             setNames(cat_vecs$var_title)
-                         })
-  
-  # Special case for now, double dropdown in compare
-  # Ultimately make_dropdown() could detect presence such as transportation modes
-  # and output a list of length two, indicating which value of the list needs a second
-  # dropdown
-  if ("theme" %in% names(unlist(only)) &&
-    unlist(only)[["theme"]] == "Accessibility to amenities") {
-    out <- out[[1]][grep("_walk_", unlist(out))]
-    names(out) <- gsub(" by walk$", "", names(out))
-    out <- list("Accessibility to amenities" = out)
-  }
+  out <- 
+    lapply(setNames(unique(vars$theme),
+                    unique(vars$theme)), 
+           \(cat) {
+             
+             # In the case the category has multiple dropdowns
+             if (cat %in% variables$theme[!is.na(variables$grouping)]) {
+               cat_vecs <- 
+                 vars[vars$theme == cat, c("var_code", "grouping",
+                                           "group_diff")]
+               
+               lapply(unique(cat_vecs$grouping), \(group) {
+                 cat_vecs$var_code[cat_vecs$grouping == group][1]}) |> 
+                 setNames(unique(cat_vecs$grouping))
+             } else {
+               cat_vecs <- 
+                 vars[vars$theme == cat, c("var_code", "var_title")]
+               
+               lapply(cat_vecs$var_title, \(name) {
+                 cat_vecs[cat_vecs$var_title == name, ]$var_code}) |> 
+                 setNames(cat_vecs$var_title)
+             }
+           })
   
   if (compare) out <- c("----" = " ", out)
   
   return(out)
 }
-
-# Amenities' transportation modes' list
-amenities_modes <- 
-  list("Mode of transportation" =
-         list("By walk" = "walk",
-              "By bike" = "bicycle",
-              "By transit" = "transit",
-              "By car" = "car"))

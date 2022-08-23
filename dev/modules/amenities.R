@@ -63,13 +63,14 @@ library(qs)
 #   mutate(ADRESSE = paste0(ADRESSE, ", ",NOM_MUN_COMPO, ", QC"))
 # 
 # # Geocode by postal code if geocoding did not work
+# susmontreal_bbox <- read_sf("dev/data/susmontreal_bbox_5km.shp")
 # postal_code <- 
 #   read_csv("dev/data/ZipCodeFiles/CanadianPostalCodes202103.csv") |> 
 #   filter(PROVINCE_ABBR == "QC") |>
 #   select(-PROVINCE_ABBR, -TIME_ZONE) |> 
 #   st_as_sf(coords = c("LONGITUDE", "LATITUDE"), crs = 4326) |> 
 #   setNames(c("postal_code", "city", "geometry")) |> 
-#   st_filter(borough) |> 
+#   st_filter(susmontreal_bbox) |> 
 #   as_tibble() |> 
 #   st_as_sf()
 # 
@@ -109,7 +110,7 @@ library(qs)
 # 
 # Green spaces from OSM
 # municipal_parks_osm <-
-#   osmdata::opq(c(-74.32797, 45.21754, -73.12856, 45.96849), timeout = 200) |>
+#   osmdata::opq(st_bbox(susmontreal_bbox), timeout = 200) |>
 #   osmdata::add_osm_features(features = c("\"leisure\" = \"park\"")) |>
 #   osmdata::osmdata_sf()
 # 
@@ -129,7 +130,7 @@ library(qs)
 #           st_transform(4326) |> select())
 # 
 # municipal_parks_osm <-
-#   parks_osm |>
+#   municipal_parks_osm |>
 #   st_filter(filter(borough, !str_starts(ID, "2466023") & name != "Longueuil"))
 # 
 # municipal_parks <-
@@ -143,6 +144,9 @@ library(qs)
 
 # Load and clean data -----------------------------------------------------
 
+# susmontreal 5km bbox
+susmontreal_bbox <- read_sf("dev/data/susmontreal_bbox_5km.shp")
+
 # Travel time matrix
 tt_matrix_DA <- qread("dev/data/tt_matrix_DA.qs")
 
@@ -155,8 +159,7 @@ food_distribution <-
   read_sf("dev/data/amenity_access/dmti_fooddistribution/dmti_fooddistribution_2021_p_point.shp") |> 
   transmute(id = g_objectid,
             name = str_to_title(g_name),
-            sic = g_sic_1) |> 
-  st_filter(borough)
+            sic = g_sic_1)
 
 # Attach food distribution industry
 sm_industry <- 
@@ -182,13 +185,49 @@ food_distribution <-
   filter(industry != "Candy, Nut, and Confectionery Stores") |> 
   select(-sic)
 
+# Health care
+# Shapefile coming from McGill GéoIndex - Health care
+health_care <- 
+  read_sf("dev/data/amenity_access/dmti_healthcare/dmti_healthcare_2021_p_point.shp") |> 
+  transmute(id = g_objectid,
+            name = str_to_title(g_name),
+            sic = g_sic_1) |> 
+  st_transform(4326)
+
+# Attach health care industry
+sm_industry <- 
+  health_care |> 
+  distinct(sic)
+
+sm_industry$industry <- 
+  map_chr(sm_industry$sic, ~{
+    rvest::read_html(
+      paste0("https://www.naics.com/sic-industry-description/?code=", 
+             str_extract(.x, "^\\d{4}"))) |> 
+      rvest::html_elements("h6") |> 
+      rvest::html_text() |> 
+      pluck(1) |> 
+      str_extract("(?<=\\d{4}—).*")
+  })
+
+health_care <- left_join(health_care, sm_industry, by = "sic")
+
+# Filter out unrelated industry
+health_care <- 
+  health_care |> 
+  filter(!industry %in% c("Medical Laboratories", 
+                          "Civic, Social, and Fraternal Associations",
+                          "Educational, Religious, and Charitable Trusts",
+                          "Child Day Care Services")) |> 
+  select(-sic)
+
 
 # Schools
 schools <- 
   list(public = read_sf("dev/data/amenity_access/PPS_Public_Ecole.shp"),
        private = read_sf("dev/data/amenity_access/PPS_Prive_Installation.shp") |> 
          rename(NOM_OFF_O = NOM_OFFCL)) |> 
-  map(st_filter, borough) |> 
+  map(st_filter, susmontreal_bbox) |> 
   # The following is an example of a school in two buildings (Pool and gymnasium)
   # filter(OBJECTID %in% c(1987, 1988))
   map(~{
@@ -248,7 +287,8 @@ future::plan(future::multisession)
 
 point_amenities <- 
   list(food_distribution = food_distribution, 
-       schools = schools)
+       schools = schools,
+       health_care = health_care)
 
 # Join all amenities to a DA ID
 DA_amenities <- 
@@ -394,63 +434,7 @@ breaks_q5_active <-
     if (nrow(x) > 0) x |> mutate(scale = scale, date = NA, rank = 0:5,
                                  .before = 1)})
 
-# Easily arrange the list of variables
-title <- 
-  c(amenities_food_distribution_walk_count = "" ,
-    amenities_food_distribution_bicycle_count = "" ,
-    amenities_food_distribution_transit_count = "" ,
-    amenities_food_distribution_car_count = "" ,
-    amenities_schools_walk_count = "" ,
-    amenities_schools_bicycle_count = "" ,
-    amenities_schools_transit_count = "" ,
-    amenities_schools_car_count = "" ,
-    amenities_municipal_parks_walk_sqkm = "" ,
-    amenities_municipal_parks_bicycle_sqkm = "" ,
-    amenities_municipal_parks_transit_sqkm = "" ,
-    amenities_municipal_parks_car_sqkm = "" ,
-    amenities_daycare_spots_walk_count = "" ,
-    amenities_daycare_spots_bicycle_count = "" ,
-    amenities_daycare_spots_transit_count = "" ,
-    amenities_daycare_spots_car_count = "")
-
-short <- 
-  c(amenities_food_distribution_walk_count = "" ,
-    amenities_food_distribution_bicycle_count = "" ,
-    amenities_food_distribution_transit_count = "" ,
-    amenities_food_distribution_car_count = "" ,
-    amenities_schools_walk_count = "" ,
-    amenities_schools_bicycle_count = "" ,
-    amenities_schools_transit_count = "" ,
-    amenities_schools_car_count = "" ,
-    amenities_municipal_parks_walk_sqkm = "" ,
-    amenities_municipal_parks_bicycle_sqkm = "" ,
-    amenities_municipal_parks_transit_sqkm = "" ,
-    amenities_municipal_parks_car_sqkm = "" ,
-    amenities_daycare_spots_walk_count = "" ,
-    amenities_daycare_spots_bicycle_count = "" ,
-    amenities_daycare_spots_transit_count = "" ,
-    amenities_daycare_spots_car_count = "")
-
-explanation <- 
-  c(amenities_food_distribution_walk_count = "" ,
-    amenities_food_distribution_bicycle_count = "" ,
-    amenities_food_distribution_transit_count = "" ,
-    amenities_food_distribution_car_count = "" ,
-    amenities_schools_walk_count = "" ,
-    amenities_schools_bicycle_count = "" ,
-    amenities_schools_transit_count = "" ,
-    amenities_schools_car_count = "" ,
-    amenities_municipal_parks_walk_sqkm = "" ,
-    amenities_municipal_parks_bicycle_sqkm = "" ,
-    amenities_municipal_parks_transit_sqkm = "" ,
-    amenities_municipal_parks_car_sqkm = "" ,
-    amenities_daycare_spots_walk_count = "" ,
-    amenities_daycare_spots_bicycle_count = "" ,
-    amenities_daycare_spots_transit_count = "" ,
-    amenities_daycare_spots_car_count = "")
-
-
-
+# Add in variables table
 new_rows <-
   map_dfr(var_list, function(var) {
     
@@ -464,6 +448,7 @@ new_rows <-
       case_when(str_detect(var, "_food_distribution_") ~ "food distributors",
                 str_detect(var, "_schools_") ~ "schools",
                 str_detect(var, "_daycare_spots_") ~ "daycare spots",
+                str_detect(var, "_health_care_") ~ "health care facilities",
                 str_detect(var, "_municipal_parks_") ~ 
                   "square kilometers of municipal parks")
     
@@ -471,6 +456,7 @@ new_rows <-
       case_when(str_detect(var, "_food_distribution_") ~ "food",
                 str_detect(var, "_schools_") ~ "schools",
                 str_detect(var, "_daycare_spots_") ~ "daycare",
+                str_detect(var, "_health_care_") ~ "health",
                 str_detect(var, "_municipal_parks_") ~ "parks")
     
     pre <- 
@@ -506,7 +492,9 @@ new_rows <-
                     interpolated = list(c(DA = FALSE,
                                           CT = FALSE,
                                           borough = FALSE,
-                                          centraide = FALSE)))
+                                          centraide = FALSE)),
+                    grouping = as.character(glue::glue("Accessibility to {amenity}")),
+                    group_diff = as.character(glue::glue("By {mode}")))
     
     out[out$var_code == var, ]
     
@@ -541,6 +529,7 @@ centraide <-
 
 rm(DA_amenities, DA_amenities_q3, DA_amenities_q5, DA_street_centroid, daycares, 
    daycares_spot, food_distribution, municipal_parks, municipal_parks_sqkm, 
-   new_rows, old_plan, point_amenities, schools, sm_industry, var_list)
+   new_rows, old_plan, point_amenities, schools, sm_industry, var_list,
+   susmontreal_bbox)
 
 
