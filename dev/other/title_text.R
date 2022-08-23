@@ -481,23 +481,7 @@ title_text <-
     "e-metropolitaine-de-montreal/' target = '_blank'>",
     "Maure et al., 2018, Le rôle des infrastructures naturelles dans la ",
     "prévention des inondations dans la Communauté métropolitaine de ",
-    "Montréal, Fondation David Suzuki.")) |> 
-  
-  
-  # Vulnerable population ---------------------------------------------------
-
-add_row(tab = "vulnerable_pop", type = "title", 
-        text = "Vulnerable population") |> 
-  add_row(tab = "vulnerable_pop", type = "main", text = "TKTK") |> 
-  add_row(tab = "vulnerable_pop", type = "extra", text = "TKTK") |> 
-  
-  
-  # Housing characteristics -------------------------------------------------
-
-add_row(tab = "housing_characteristics", type = "title", 
-        text = "Housing characteristics") |> 
-  add_row(tab = "housing_characteristics", type = "main", text = "TKTK") |> 
-  add_row(tab = "housing_characteristics", type = "extra", text = "TKTK")
+    "Montréal, Fondation David Suzuki."))
   
 
 
