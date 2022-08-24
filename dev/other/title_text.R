@@ -111,8 +111,8 @@ title_text <-
     "Housing: The Politics of Crisis</i>. New York and London: Verso ",
     "Books.</ul>")) |> 
   
-  add_row(tab = "housing", type = "title", text = "Housing Affordability") |> 
-  add_row(tab = "housing", type = "main", text = paste0(
+  add_row(tab = "afford", type = "title", text = "Housing Affordability") |> 
+  add_row(tab = "afford", type = "main", text = paste0(
     "Having access to affordable and equitable shelter is essential. ",
     "Affordable housing is often broadly defined as spending less than 30% of ",
     "household income on shelter costs. The reality of each household ",
@@ -120,18 +120,38 @@ title_text <-
     "people living there, their income, their shelter costs, and their tenure ",
     " status. In this module, explore and compare housing affordability by ",
     " city or borough. ")) |> 
-  add_row(tab = "housing", type = "extra", text = paste0(
+  add_row(tab = "afford", type = "extra", text = paste0(
     "<p> The comparative analysis that you see in this module is based on ",
     "housing data from the 2016 Census. In selecting different options from ",
     "the drop-down menus, insights can be gained on how affordability varies ",
     "by household or individuals, their shelter costs, whether they are ",
-    "renting or owning and various family, immigration, and dwelling ",
+    "tenants or owners and various family, immigration, and dwelling ",
     "characteristics. Using the panel on the right, you can compare these ",
     "housing affordability variables with access to different amenities by ",
     "mode of transportation. It is important to understand the geographic and ",
     "socio-economic patterns associated with housing affordability to inform ",
     "policies and actions to best address housing needs. </ul>")) |> 
 
+  add_row(tab = "tenure", type = "title", text = "Housing Affordability") |> 
+  add_row(tab = "tenure", type = "main", text = paste0(
+    "The categorization of housing by tenure status, tenancy or ownership, ",
+    "helps to gain a clearer picture of the housing landscape in Montreal. ",
+    "This is especially the case when compared with other factors. In this ",
+    "module, tenure status can be explored in relation to shelter costs and ",
+    "additional characteristics such as family characteristics and dwelling ",
+    "types. ")) |> 
+  add_row(tab = "tenure", type = "extra", text = paste0(
+    "<p> The comparative analysis that you see in this module is based on ", 
+    "housing data from the 2016 Census. In selecting different options from ",
+    "the drop-down menus, insights can be gained on how tenure status ", 
+    "interacts with shelter costs, and various family, immigration, and ",
+    "dwelling characteristics. Using the panel on the right, you can compare ",
+    "these tenure status variables with access to different amenities by mode ",
+    "of transportation. Understanding housing needs by tenure status can help ",
+    "to inform what should be improved specifically for tenants or owners; as ",
+    "they might be experiencing different difficulties and ",
+    "advantages.  </ul>")) |> 
+  
 # Place explorer ----------------------------------------------------------
 
   add_row(tab = "place_explorer", type = "title", text = "Place explorer") |> 
@@ -482,7 +502,6 @@ title_text <-
     "Maure et al., 2018, Le rôle des infrastructures naturelles dans la ",
     "prévention des inondations dans la Communauté métropolitaine de ",
     "Montréal, Fondation David Suzuki."))
-  
 
 
 
