@@ -52,13 +52,15 @@ shinyServer(function(input, output, session) {
   
   
   # First visit banner ---------------------------------------------------------
-  
+
   # Reset after 14 days of last time the banner was shown
-  observeEvent(input$cookies$time_last_htu_banner, {
-    if (is.null(input$cookies$time_last_htu_banner) ||
-        (!is.null(input$cookies$time_last_htu_banner) &&
-         Sys.time() > (as.POSIXct(input$cookies$time_last_htu_banner) + 
-                       1209600))) {
+
+  observeEvent(input$cookies$htu_banner, {
+    
+    cookie_last <- input$cookies$htu_banner
+
+    if (is.null(cookie_last) || 
+        (!is.null(cookie_last) && Sys.time() > (as.POSIXct(cookie_last) + 1209600))) {
       
       insertUI(selector = ".navbar-shadow", where = "beforeBegin", ui = HTML(
         paste0("<div id = 'htu_footer' class='fixed_footer'>",
@@ -77,26 +79,34 @@ shinyServer(function(input, output, session) {
                ":#FBFBFB;' class='action-button shiny-bound-input'>X</a>",
                "</div>")))
     }
-    
-    # So that it repeats if there's a gap of 14 days between all visits
-    time_last_htu_banner <- list(name = "time_last_htu_banner", 
-                                 value = Sys.time())
-    
-    session$sendCustomMessage("cookie-set", time_last_htu_banner)
-  }, once = TRUE)
+  }, once = TRUE, ignoreNULL = FALSE, ignoreInit = TRUE)
   
+  # Remove the banner, and log in the cookie
   observeEvent(input$go_to_htu_en, {
     removeUI("#htu_footer")
     updateTabsetPanel(session, "sus_page", selected = "how_to_use")
-  })
+    
+    htu_banner <- list(name = "htu_banner",
+                       value = Sys.time())
+    session$sendCustomMessage("cookie-set", htu_banner)
+  }, ignoreInit = TRUE)
+  
   observeEvent(input$go_to_htu_fr, {
     removeUI("#htu_footer")
     updateTabsetPanel(session, "sus_page", selected = "how_to_use")
-  })
+    
+    htu_banner <- list(name = "htu_banner",
+                       value = Sys.time())
+    session$sendCustomMessage("cookie-set", htu_banner)
+  }, ignoreInit = TRUE)
   
   observeEvent(input$go_to_htu_x, {
     removeUI("#htu_footer")
-  })
+    
+    htu_banner <- list(name = "htu_banner",
+                       value = Sys.time())
+    session$sendCustomMessage("cookie-set", htu_banner)
+  }, ignoreInit = TRUE)
   
   
   ## Language button -----------------------------------------------------------
