@@ -132,7 +132,7 @@ title_text <-
     "socio-economic patterns associated with housing affordability to inform ",
     "policies and actions to best address housing needs. </ul>")) |> 
 
-  add_row(tab = "tenure", type = "title", text = "Housing Affordability") |> 
+  add_row(tab = "tenure", type = "title", text = "Tenure Status") |> 
   add_row(tab = "tenure", type = "main", text = paste0(
     "The categorization of housing by tenure status, tenancy or ownership, ",
     "helps to gain a clearer picture of the housing landscape in Montreal. ",
@@ -151,6 +151,23 @@ title_text <-
     "to inform what should be improved specifically for tenants or owners; as ",
     "they might be experiencing different difficulties and ",
     "advantages.  </ul>")) |> 
+  
+  add_row(tab = "dw_types", type = "title", text = "Dwelling Types") |> 
+  add_row(tab = "dw_types", type = "main", text = paste0(
+    "Whether a household is living in a single-detached house versus an ",
+    "apartment in a building of 5+ stories is an important aspect of ", 
+    "understanding people’s housing realities. In selecting different types ",
+    "of dwellings, you can simply explore and compare them in relation to ",
+    "tenure status and shelter cost. ")) |> 
+  add_row(tab = "tenure", type = "extra", text = paste0(
+    "<p> The comparative analysis that you see in this module is based on ",
+    "housing data from the 2016 Census. In selecting different options from ",
+    "the drop-down menus, insights can be gained on how dwelling types ",
+    "interact with tenure status and shelter costs. Using the panel on the ",
+    "right, you can compare the dwelling type variables with access to ",
+    "different amenities by mode of transportation. Exploring the housing ",
+    "system in Montreal through dwelling types adds a level of understanding ",
+    "to the overall housing situation.  </ul>")) |> 
   
 # Place explorer ----------------------------------------------------------
 
