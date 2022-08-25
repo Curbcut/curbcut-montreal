@@ -263,6 +263,7 @@ daycares <-
 
 # Municipal parks are polygons. Get the closest DA instead ----------------
 
+# The latter is created in dev/other/tt_matrix_DA.R
 DA_street_centroid <- qread("dev/data/pop_weighted_centroid_DA_street.qs")
 
 municipal_parks$nearest_DA <- st_nearest_feature(municipal_parks, DA_street_centroid)
