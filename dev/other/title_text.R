@@ -159,7 +159,7 @@ title_text <-
     "understanding people’s housing realities. In selecting different types ",
     "of dwellings, you can simply explore and compare them in relation to ",
     "tenure status and shelter cost. ")) |> 
-  add_row(tab = "tenure", type = "extra", text = paste0(
+  add_row(tab = "dw_types", type = "extra", text = paste0(
     "<p> The comparative analysis that you see in this module is based on ",
     "housing data from the 2016 Census. In selecting different options from ",
     "the drop-down menus, insights can be gained on how dwelling types ",
