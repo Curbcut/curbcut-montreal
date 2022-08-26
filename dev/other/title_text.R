@@ -518,6 +518,6 @@ title_text <-
     "e-metropolitaine-de-montreal/' target = '_blank'>",
     "Maure et al., 2018, Le rôle des infrastructures naturelles dans la ",
     "prévention des inondations dans la Communauté métropolitaine de ",
-    "Montréal, Fondation David Suzuki.")) |>
+    "Montréal, Fondation David Suzuki."))
 
 
