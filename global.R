@@ -25,7 +25,9 @@ suppressPackageStartupMessages({
 options(shiny.fullstacktrace = TRUE)
 options(shiny.useragg = TRUE)
 shinyOptions(cache = cachem::cache_disk(file.path(dirname(tempdir()), "cache")))
-
+options(shiny.error = function() 
+  browseURL(paste0("https://docs.google.com/forms/d/e/1FAIpQLSfuQquv73dQoXA1U",
+                   "neCh9zREj0NG3E-RCfRpTNyJ1dIBagIeQ/viewform?usp=sf_link")))
 
 # Data --------------------------------------------------------------------
 

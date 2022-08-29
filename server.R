@@ -1,7 +1,6 @@
 ##### SUS SERVER SCRIPT ########################################################
 
 shinyServer(function(input, output, session) {
-  
 
   # Page title change, depending on page visited -------------------------------
 
@@ -401,43 +400,6 @@ shinyServer(function(input, output, session) {
   #   showNotification(sus_translate("Sent and received. Thank you!"), 
   #                    duration = 3)
   # })
-  
-  ## Generating report ---------------------------------------------------------
-  
-  # output$create_report <-
-  #   downloadHandler(
-  #     filename = "report.html",
-  #     content = function(file) {
-  #       shiny::withProgress(
-  #         message = sus_translate(paste0("Generating report on ",
-  #                                        active_mod()$module_short_title)),
-  #         {
-  #           shiny::incProgress(0.35)
-  #           tempReport <- file.path(tempdir(), "report.Rmd")
-  #           file.copy("www/report.Rmd", tempReport, overwrite = TRUE)
-  #           params <- list(
-  #             module_short_title = active_mod()$module_short_title,
-  #             module = active_mod()$module_id,
-  #             map_title = title_text$text[
-  #               title_text$tab == active_mod()$module_id & 
-  #                 title_text$type == "title"],
-  #             time = active_mod()$time,
-  #             data = active_mod()$data,
-  #             token = active_mod()$token,
-  #             map_zoom = active_mod()$map_zoom,
-  #             map_loc = active_mod()$map_loc,
-  #             df = active_mod()$df,
-  #             explore_content = active_mod()$explore_content,
-  #             poly_selected = active_mod()$poly_selected,
-  #             legend_graph = active_mod()$legend_graph)
-  #           shiny::incProgress(0.35)
-  #           rmarkdown::render(tempReport, output_file = file,
-  #                             params = params,
-  #                             envir = new.env(parent = globalenv()))
-  #           shiny::incProgress(0.3)
-  #         })
-  #     }
-  #   )
   
   
   ## Heartbeat function to keep app alive --------------------------------------
