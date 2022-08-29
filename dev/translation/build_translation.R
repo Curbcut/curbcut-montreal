@@ -14,11 +14,22 @@ library(qs)
 #   en <- gsub("(.{55})", '\\1",\n"', df$en)
 #   fr <- gsub("(.{55})", '\\1",\n"', df$fr)
 # 
-#   writeLines(paste0('tibble(en = character(), fr = character()) |>\n',
+#   # If it's too long, not all lines are printed. So save in a file!
+#   if (nrow(df) < 200) {
+#     writeLines(paste0('tibble(en = character(), fr = character()) |>\n',
 # 
-#   paste0('add_row(en = paste0("', en, '"), \nfr = paste0("', fr, '"))',
-#                     collapse = ' |> \n'))
-#   )
+#                       paste0('add_row(en = paste0("', en, '"), \nfr = paste0("', fr, '"))',
+#                              collapse = ' |> \n'))
+#     )
+#   } else {
+#     paste0('tibble(en = character(), fr = character()) |>\n',
+# 
+#            paste0('add_row(en = paste0("', en, '"), \nfr = paste0("', fr, '"))',
+#                   collapse = ' |> \n')) |>
+#       writeLines("translated_tb.txt")
+#     message("File `translated_tb.txt` created in the root of the directory.")
+#   }
+# 
 # }
 
 
@@ -32,6 +43,7 @@ source("dev/translation/dyk.R", encoding = "utf-8")
 source("dev/translation/green_alleys.R", encoding = "utf-8")
 source("dev/translation/place_explorer.R", encoding = "utf-8")
 source("dev/translation/authors.R", encoding = "utf-8")
+source("dev/translation/centraide_vars.R", encoding = "utf-8")
 
 # Retrieve and bind translated csvs ---------------------------------------
 
@@ -44,7 +56,8 @@ translation_fr <-
             dyk_translated,
             green_alleys_translated,
             place_explorer_translated,
-            authors_translation) |> 
+            authors_translation,
+            cent_variables_translated) |> 
   distinct(en, .keep_all = TRUE)
 
 

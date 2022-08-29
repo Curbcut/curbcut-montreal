@@ -216,6 +216,7 @@ health_care <- left_join(health_care, sm_industry, by = "sic")
 health_care <- 
   health_care |> 
   filter(!industry %in% c("Medical Laboratories", 
+                          "Dental Laboratories",
                           "Civic, Social, and Fraternal Associations",
                           "Educational, Religious, and Charitable Trusts",
                           "Child Day Care Services")) |> 

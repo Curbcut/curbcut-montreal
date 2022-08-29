@@ -227,125 +227,164 @@ breaks_q5_active <-
 
 new_rows <-
   map_dfr(var_list, function(var) {
-    
+
     var <- str_remove(var, "_\\d{4}$")
     
-    # # TITLE
-    # post_title <- 
-    #   case_when(str_ends(var, "_count$") ~ "",
-    #             str_ends(var, "_pct$") ~ "%")
-    # 
-    # tenure_title <- 
-    #   case_when(str_detect(var, "tenant") ~ "Tenant",
-    #             str_detect(var, "owner") ~ "Owner",
-    #             TRUE ~ "Household")
-    # 
-    # shelter_title <- 
-    #   case_when(str_detect(var, "more_30_per") ~ 
-    #               ">30% of revenue on shelter",
-    #             str_detect(var, "more_50_per") ~ 
-    #               ">50% of revenue on shelter",
-    #             str_detect(var, "more_80_per") ~ 
-    #               ">80% of revenue on shelter",
-    #             TRUE ~ "")
-    # 
-    # characteristics_title <- 
-    #   case_when(str_detect(var, "kids_3_plus") ~ 
-    #               "Family with 3+ children",
-    #             str_detect(var, "unsuitable") ~ 
-    #               "Unsuitable housing",
-    #             str_detect(var, "core_need") ~ 
-    #               "Core housing need",
-    #             str_detect(var, "repairs") ~ 
-    #               "Major repairs needed",
-    #             TRUE ~ "")
-    # 
-    # title <-
-    #   paste(tenure_title, shelter_title, characteristics_title, 
-    #         post_title, sep = " / ") |> 
-    #   str_remove_all("(/  )|(/ $)") |> 
-    #   str_trim()
-    # 
-    # # SHORT TITLE
-    # post_short <- 
-    #   case_when(str_ends(var, "_count$") ~ "",
-    #             str_ends(var, "_pct$") ~ "%")
-    # 
-    # tenure_short <- 
-    #   case_when(str_detect(var, "tenant") ~ "Ten.",
-    #             str_detect(var, "owner") ~ "Own.",
-    #             TRUE ~ "")
-    # 
-    # shelter_short <- 
-    #   case_when(str_detect(var, "more_30_per") ~ 
-    #               ">30%.",
-    #             str_detect(var, "more_50_per") ~ 
-    #               ">50%.",
-    #             str_detect(var, "more_80_per") ~ 
-    #               ">80%.",
-    #             TRUE ~ "")
-    # 
-    # characteristics_short <- 
-    #   case_when(str_detect(var, "kids_3_plus") ~ 
-    #               "3+ child.",
-    #             str_detect(var, "unsuitable") ~ 
-    #               "Unsuit.",
-    #             str_detect(var, "core_need") ~ 
-    #               "Core need.",
-    #             str_detect(var, "repairs") ~ 
-    #               "Repairs.",
-    #             TRUE ~ "")
-    # 
-    # short <-
-    #   paste(tenure_short, shelter_short, characteristics_short, 
-    #         post_short, sep = " ") |> 
-    #   str_replace("\\s*", " ") |> 
-    #   str_trim()
-    # 
-    # # EXPLANATION
-    # pre_explanation <- 
-    #   case_when(str_ends(var, "_count$") ~ "the count of",
-    #             str_ends(var, "_pct$") ~ "the percentage of")
-    # 
-    # tenure_explanation <- 
-    #   case_when(str_detect(var, "tenant") ~ "tenant households",
-    #             str_detect(var, "owner") ~ "owner households",
-    #             TRUE ~ "households")
-    # 
-    # shelter_explanation <- 
-    #   case_when(str_detect(var, "more_30_per") ~ 
-    #               "spending more than 30% of their revenue on shelter cost",
-    #             str_detect(var, "more_50_per") ~ 
-    #               "spending more than 50% of their revenue on shelter cost",
-    #             str_detect(var, "more_80_per") ~ 
-    #               "spending more than 50% of their revenue on shelter cost",
-    #             TRUE ~ "")
-    # 
-    # characteristics_explanation <- 
-    #   case_when(str_detect(var, "kids_3_plus") ~ 
-    #               "in a family with 3 or more children",
-    #             str_detect(var, "unsuitable") ~ 
-    #               "in unsuitable housing",
-    #             str_detect(var, "core_need") ~ 
-    #               "in core housing need",
-    #             str_detect(var, "repairs") ~ 
-    #               "in housing with major repairs needed",
-    #             TRUE ~ "")
-    # 
-    # exp <- 
-    #   paste(pre_explanation, tenure_explanation,
-    #         shelter_explanation,
-    #         characteristics_explanation) |> 
-    #   str_replace("\\s*", " ") |> 
-    #   str_trim()
+    # TITLE
+    post_title <-
+      case_when(str_ends(var, "_count$") ~ "",
+                str_ends(var, "_pct$") ~ " (%)")
+
+    tenure_title <-
+      case_when(str_detect(var, "tenant") ~ "Tenant households",
+                str_detect(var, "owner") ~ "Owner households",
+                TRUE ~ "Households")
+
+    shelter_title <-
+      case_when(str_detect(var, "more_30_per") ~
+                  " spending >30% of income on shelter",
+                str_detect(var, "more_50_per") ~
+                  " spending >50% of income on shelter",
+                str_detect(var, "more_80_per") ~
+                  " spending >80% of income on shelter",
+                TRUE ~ "")
+    
+    characteristics_title <-
+      case_when(str_detect(var, "kids_3_plus") ~
+                  " with a family of 3+ children",
+                str_detect(var, "unsuitable") ~
+                  " in unsuitable housing",
+                str_detect(var, "repairs") ~
+                  " in housing with major repairs needed",
+                str_detect(var, "low_inc") ~
+                  " with low income",
+                str_detect(var, "single_detached") ~ 
+                  " in single-detached houses",
+                str_detect(var, "semi_detached") ~ 
+                  " in semi-detached houses",
+                str_detect(var, "row_house") ~ 
+                  " in row houses",
+                str_detect(var, "in_duplex") ~ 
+                  " in apartments or flats in a duplex",
+                str_detect(var, "in_5plus_storeys") ~ 
+                  " in apartments in buildings that has five or more storeys",
+                str_detect(var, "in_less5_storeys") ~ 
+                  " in apartments in buildings that has fewer than five storeys",
+                str_detect(var, "other_single_attached") ~ 
+                  " in other single-attached houses",
+                str_detect(var, "mobile_homes") ~ 
+                  " in mobile homes and other movable dwellings",
+                TRUE ~ "")
+    
+    title <- paste0(tenure_title, shelter_title, characteristics_title, 
+                    post_title)
+
+    # SHORT TITLE
+    post_short <-
+      case_when(str_ends(var, "_count$") ~ "",
+                str_ends(var, "_pct$") ~ " (%)")
+    
+    tenure_short <-
+      case_when(str_detect(var, "tenant") ~ "Ten.",
+                str_detect(var, "owner") ~ "Own.",
+                TRUE ~ "Hou.")
+    
+    shelter_short <-
+      case_when(str_detect(var, "more_30_per") ~
+                  " >30%",
+                str_detect(var, "more_50_per") ~
+                  " >50%",
+                str_detect(var, "more_80_per") ~
+                  " >80%",
+                TRUE ~ "")
+    
+    characteristics_short <-
+      case_when(str_detect(var, "kids_3_plus") ~
+                  " 3+ child.",
+                str_detect(var, "unsuitable") ~
+                  " Uns.",
+                str_detect(var, "repairs") ~
+                  " Rep.",
+                str_detect(var, "low_inc") ~
+                  " Low inc.",
+                str_detect(var, "single_detached") ~ 
+                  " Detached",
+                str_detect(var, "semi_detached") ~ 
+                  " Semi",
+                str_detect(var, "row_house") ~ 
+                  " Row",
+                str_detect(var, "in_duplex") ~ 
+                  " Duplex",
+                str_detect(var, "in_5plus_storeys") ~ 
+                  " 5+ storeys",
+                str_detect(var, "in_less5_storeys") ~ 
+                  " -5 storeys",
+                str_detect(var, "other_single_attached") ~ 
+                  " Othr att.",
+                str_detect(var, "mobile_homes") ~ 
+                  " Movable",
+                TRUE ~ "")
+    
+    short <-
+      paste0(tenure_short, shelter_short, characteristics_short,
+             post_short)
+    
+    # EXPLANATION
+    pre_explanation <-
+      case_when(str_ends(var, "_count$") ~ "the count of",
+                str_ends(var, "_pct$") ~ "the percentage of")
+    
+    tenure_explanation <-
+      case_when(str_detect(var, "tenant") ~ " tenant households",
+                str_detect(var, "owner") ~ " owner households",
+                TRUE ~ " households")
+    
+    shelter_explanation <-
+      case_when(str_detect(var, "more_30_per") ~
+                  " spending more than 30% of their income on shelter cost",
+                str_detect(var, "more_50_per") ~
+                  " spending more than 50% of their income on shelter cost",
+                str_detect(var, "more_80_per") ~
+                  " spending more than 80% of their income on shelter cost",
+                TRUE ~ "")
+    
+    characteristics_explanation <-
+      case_when(str_detect(var, "kids_3_plus") ~
+                  " in families with 3 or more children",
+                str_detect(var, "unsuitable") ~
+                  " in unsuitable housing",
+                str_detect(var, "repairs") ~
+                  " in housing with major repairs needed",
+                str_detect(var, "low_inc") ~
+                  " with low income after tax",
+                str_detect(var, "single_detached") ~ 
+                  " in single-detached houses",
+                str_detect(var, "semi_detached") ~ 
+                  " in semi-detached houses",
+                str_detect(var, "row_house") ~ 
+                  " in row houses",
+                str_detect(var, "in_duplex") ~ 
+                  " in apartments or flats in a duplex",
+                str_detect(var, "in_5plus_storeys") ~ 
+                  " in apartments in buildings that has five or more storeys",
+                str_detect(var, "in_less5_storeys") ~ 
+                  " in apartments in buildings that has fewer than five storeys",
+                str_detect(var, "other_single_attached") ~ 
+                  " in other single-attached houses",
+                str_detect(var, "mobile_homes") ~ 
+                  " in mobile homes and other movable dwellings",
+                TRUE ~ "")
+    
+    exp <- paste0(pre_explanation, tenure_explanation, shelter_explanation,
+             characteristics_explanation)
     
     # ADDED ROW
     out <-
       add_variables(variables,
                     var_code = var,
-                    var_title = var,
-                    var_short = var,
-                    explanation = var,
+                    var_title = title,
+                    var_short = short,
+                    explanation = exp,
                     category = NA,
                     theme = "Housing",
                     private = TRUE,
@@ -364,11 +403,11 @@ new_rows <-
     
     out[out$var_code == var, ]
     
-  }) #|> 
-  # mutate(var_short = if_else(var_code == "cent_d_total_total_total_count",
-  #                             "Household", var_short),
-  #        var_short = if_else(var_code == "cent_d_total_total_total_pct",
-  #                            "Household %", var_short))
+  }) |>
+  mutate(var_short = if_else(var_code == "cent_d_total_total_total_count",
+                              "Households", var_short),
+         var_short = if_else(var_code == "cent_d_total_total_total_pct",
+                             "Households (%)", var_short))
 
 variables <-
   bind_rows(variables, new_rows)

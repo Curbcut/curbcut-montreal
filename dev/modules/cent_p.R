@@ -168,6 +168,16 @@ with_progress({
     })
 })
 
+# Filter out impossible combinations
+cent_p <- 
+map(cent_p, function(df) {
+  df[, !names(df) %in% names(df)[{
+    str_detect(names(df), paste0("before_2001|2001_to_2010|2011_to_2016|",
+                                 "eco_imm|sponsored_imm|refugees_imm|",
+                                 "refugees_imm|other_imm")) &
+      str_detect(names(df), "^non_immigrants_")}]]
+})
+
 cent_p <- 
   imap(cent_p, function(df, scale) {
     bind_cols(get_vulnerable_pop()[[scale]][, "ID"], df) |>
@@ -287,50 +297,218 @@ new_rows <-
     
     var <- str_remove(var, "_\\d{4}$")
     
-    # # EXPLANATION
-    # pre_explanation <- 
-    #   case_when(str_ends(var, "_count$") ~ "the count of",
-    #             str_ends(var, "_pct$") ~ "the percentage of")
-    # 
-    # sexes_explanation <- 
-    #   case_when(str_detect(var, "female") ~ "female",
-    #             str_detect(var, "male") ~ "male",
-    #             TRUE ~ "")
-    # 
-    # imm_statuses_explanation <- 
-    #   case_when(str_detect(var, "immigrants") ~ "immigrants",
-    #             str_detect(var, "non_immigrants") ~ "non immigrants",
-    #             TRUE ~ "")
-    # 
-    # add_characteristics_explanation <- 
-    #   case_when(str_detect(var, "lone_parents") ~ 
-    #               "single parents",
-    #             str_detect(var, "living_alone") ~ 
-    #               "living alone",
-    #             TRUE ~ "")
-    # 
-    # shelter_costs_explanation <- 
-    #   case_when(str_detect(var, "more_30_per") ~ 
-    #               "spending more than 30% of their revenue on shelter cost",
-    #             str_detect(var, "more_50_per") ~ 
-    #               "spending more than 50% of their revenue on shelter cost",
-    #             str_detect(var, "more_80_per") ~ 
-    #               "spending more than 50% of their revenue on shelter cost",
-    #             TRUE ~ "")
-    # 
-    # exp <- 
-    #   paste(case_when, add_characteristics_explanation, imm_statuses_explanation,
-    #         shelter_explanation, shelter_costs_explanation) |> 
-    #   str_replace("\\s*", " ") |> 
-    #   str_trim()
+    # TITLE
+    post_title <-
+      case_when(str_ends(var, "_count$") ~ "",
+                str_ends(var, "_pct$") ~ " (%)",
+                str_ends(var, "_sqkm$") ~ " (per sq. km)")
+    
+    sex_imm_title <- 
+      case_when(str_detect(var, "cent_p_immigrants") && str_detect(var, "female") ~ 
+                  "Female immigrants",
+                str_detect(var, "cent_p_immigrants") && str_detect(var, "male") ~ 
+                  "Male immigrants",
+                str_detect(var, "non_immigrants") && str_detect(var, "female") ~ 
+                  "Non-immigrant females",
+                str_detect(var, "non_immigrants") && str_detect(var, "male") ~ 
+                  "Non-immigrant males",
+                !str_detect(var, "cent_p_immigrants|non_immigrants") && str_detect(var, "female") ~ 
+                  "Female population",
+                !str_detect(var, "cent_p_immigrants|non_immigrants") && str_detect(var, "male") ~ 
+                  "Male population",
+                str_detect(var, "cent_p_immigrants") && !str_detect(var, "male|female") ~ 
+                  "Immigrant population",
+                str_detect(var, "non_immigrants") && !str_detect(var, "male|female") ~ 
+                  "Non-immigrant population",
+                TRUE ~ "Population")
+    
+    shelter_title <-
+      case_when(str_detect(var, "more_30_per") ~
+                  " spending >30% of income on shelter",
+                str_detect(var, "more_50_per") ~
+                  " spending >50% of income on shelter",
+                str_detect(var, "more_80_per") ~
+                  " spending >80% of income on shelter",
+                TRUE ~ "")
+    
+    characteristics_title <-
+      case_when(str_detect(var, "before_2001") ~
+                  " who immigrated before 2001",
+                str_detect(var, "2001_to_2010") ~
+                  " who immigrated between 2001 and 2010",
+                str_detect(var, "2011_to_2016") ~
+                  " who immigrated between 2011 and 2016",
+                str_detect(var, "eco_imm") ~
+                  " who are economic immigrants",
+                str_detect(var, "sponsored_imm") ~
+                  " who are immigrants sponsored by family",
+                str_detect(var, "refugees_imm") ~
+                  " who are refugees",
+                str_detect(var, "other_imm") ~
+                  " who are other immigrants",
+                str_detect(var, "visible_min") ~
+                  " who are members of a visible minority group",
+                str_detect(var, "not_visible_min") ~
+                  " who are not members of a visible minority group",
+                str_detect(var, "aboriginal") ~
+                  " who are aboriginals",
+                str_detect(var, "lone_parents") ~
+                  " who are lone parents",
+                str_detect(var, "living_alone") ~
+                  " who are living alone",
+                str_detect(var, "low_inc") ~
+                  " who are in a low income status",
+                TRUE ~ "")
+    
+    
+    title <- paste0(sex_imm_title, shelter_title, characteristics_title, 
+                    post_title)
+    
+    # EXPLANATION
+    pre_exp <-
+      case_when(str_ends(var, "_count$") ~ "the number of",
+                str_ends(var, "_pct$") ~ "the percentage of",
+                str_ends(var, "_sqkm$") ~ "the number of")
+    
+    post_exp <- 
+      case_when(str_ends(var, "_sqkm$") ~ " per square kilometer",
+                TRUE ~ "")
+    
+    sex_imm_exp <- 
+      case_when(str_detect(var, "cent_p_immigrants") && str_detect(var, "female") ~ 
+                  " female immigrants",
+                str_detect(var, "cent_p_immigrants") && str_detect(var, "male") ~ 
+                  " male immigrants",
+                str_detect(var, "non_immigrants") && str_detect(var, "female") ~ 
+                  " non-immigrant females",
+                str_detect(var, "non_immigrants") && str_detect(var, "male") ~ 
+                  " non-immigrant males",
+                !str_detect(var, "cent_p_immigrants|non_immigrants") && str_detect(var, "female") ~ 
+                  " females",
+                !str_detect(var, "cent_p_immigrants|non_immigrants") && str_detect(var, "male") ~ 
+                  " males",
+                str_detect(var, "cent_p_immigrants") && !str_detect(var, "male|female") ~ 
+                  " immigrants",
+                str_detect(var, "non_immigrants") && !str_detect(var, "male|female") ~ 
+                  " non-immigrants",
+                TRUE ~ " individuals")
+    
+    shelter_exp <-
+      case_when(str_detect(var, "more_30_per") ~
+                  " spending >30% of income on shelter",
+                str_detect(var, "more_50_per") ~
+                  " spending >50% of income on shelter",
+                str_detect(var, "more_80_per") ~
+                  " spending >80% of income on shelter",
+                TRUE ~ "")
+    
+    characteristics_exp <-
+      case_when(str_detect(var, "before_2001") ~
+                  " who immigrated before 2001",
+                str_detect(var, "2001_to_2010") ~
+                  " who immigrated between 2001 and 2010",
+                str_detect(var, "2011_to_2016") ~
+                  " who immigrated between 2011 and 2016",
+                str_detect(var, "eco_imm") ~
+                  " who are economic immigrants",
+                str_detect(var, "sponsored_imm") ~
+                  " who are immigrants sponsored by family",
+                str_detect(var, "refugees_imm") ~
+                  " who are refugees",
+                str_detect(var, "other_imm") ~
+                  " who are other immigrants",
+                str_detect(var, "visible_min") ~
+                  " who are members of a visible minority group",
+                str_detect(var, "not_visible_min") ~
+                  " who are not members of a visible minority group",
+                str_detect(var, "aboriginal") ~
+                  " who are aboriginals",
+                str_detect(var, "lone_parents") ~
+                  " who are lone parents",
+                str_detect(var, "living_alone") ~
+                  " who are living alone",
+                str_detect(var, "low_inc") ~
+                  " who are in a low income status",
+                TRUE ~ "")
+    
+    exp <- paste0(pre_exp, sex_imm_exp, shelter_exp, characteristics_exp,
+                  post_exp)
+    
+    # SHORT
+    post_short <-
+      case_when(str_ends(var, "_count$") ~ "",
+                str_ends(var, "_pct$") ~ " (%)",
+                str_ends(var, "_sqkm$") ~ " (sqkm)")
+    
+    sex_imm_short <- 
+      case_when(str_detect(var, "cent_p_immigrants") && str_detect(var, "female") ~ 
+                  "F. Imm.",
+                str_detect(var, "cent_p_immigrants") && str_detect(var, "male") ~ 
+                  "M. Imm.",
+                str_detect(var, "non_immigrants") && str_detect(var, "female") ~ 
+                  "F. N-Imm.",
+                str_detect(var, "non_immigrants") && str_detect(var, "male") ~ 
+                  "M. N-Imm.",
+                !str_detect(var, "cent_p_immigrants|non_immigrants") && str_detect(var, "female") ~ 
+                  "F.",
+                !str_detect(var, "cent_p_immigrants|non_immigrants") && str_detect(var, "male") ~ 
+                  "M.",
+                str_detect(var, "cent_p_immigrants") && !str_detect(var, "male|female") ~ 
+                  "Imm.",
+                str_detect(var, "non_immigrants") && !str_detect(var, "male|female") ~ 
+                  "N-Imm.",
+                TRUE ~ "Pop.")
+    
+    shelter_short <-
+      case_when(str_detect(var, "more_30_per") ~
+                  " >30%",
+                str_detect(var, "more_50_per") ~
+                  " >50%",
+                str_detect(var, "more_80_per") ~
+                  " >80%",
+                TRUE ~ "")
+    
+    characteristics_short <-
+      case_when(str_detect(var, "before_2001") ~
+                  " <2001",
+                str_detect(var, "2001_to_2010") ~
+                  " >2001<2010",
+                str_detect(var, "2011_to_2016") ~
+                  " >2011<2016",
+                str_detect(var, "eco_imm") ~
+                  " Eco.",
+                str_detect(var, "sponsored_imm") ~
+                  " Spon.",
+                str_detect(var, "refugees_imm") ~
+                  " Ref.",
+                str_detect(var, "other_imm") ~
+                  " Oth.",
+                str_detect(var, "visible_min") ~
+                  " Vis.",
+                str_detect(var, "not_visible_min") ~
+                  " Non-V.",
+                str_detect(var, "aboriginal") ~
+                  " Abo.",
+                str_detect(var, "lone_parents") ~
+                  " Lone-P.",
+                str_detect(var, "living_alone") ~
+                  " Living A.",
+                str_detect(var, "low_inc") ~
+                  " Low inc.",
+                TRUE ~ "")
+    
+    
+    short <- paste0(sex_imm_short, shelter_short, characteristics_short, 
+                    post_short)
+    
     
     # ADDED ROW
     out <-
       add_variables(variables,
                     var_code = var,
-                    var_title = var,
-                    var_short = var,
-                    explanation = var,
+                    var_title = title,
+                    var_short = short,
+                    explanation = exp,
                     category = NA,
                     theme = "Housing",
                     private = TRUE,
@@ -349,11 +527,7 @@ new_rows <-
     
     out[out$var_code == var, ]
     
-  }) #|> 
-  # mutate(var_short = if_else(var_code == "housing_char_total_total_total_count",
-  #                            "Household", var_short),
-  #        var_short = if_else(var_code == "housing_char_total_total_total_pct",
-  #                            "Household %", var_short))
+  })
 
 variables <-
   bind_rows(variables, new_rows)
