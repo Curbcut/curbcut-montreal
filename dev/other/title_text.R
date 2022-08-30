@@ -265,7 +265,7 @@ title_text <-
     "rivate garages, without any environmental or social-com",
     "munity benefit.</ul>")) |> 
 
-  # Demographics -------------------------------------------------------------
+# Demographics -------------------------------------------------------------
 
 add_row(tab = "demographics", type = "title",
         text = "Demographics") |> 
