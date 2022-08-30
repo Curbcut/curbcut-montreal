@@ -425,3 +425,37 @@ lang_classes <- "
       visibility: visible !important;
       display: inline !important; 
     }"
+
+
+# Severe HTML -------------------------------------------------------------
+
+sever_subtitle_fr <- 
+  HTML(paste0("Il semble que Sus se soit arrêté de manière inattendue. ",
+              "Aidez-nous à garder l'application exempte de ",
+              "bogues en remplissant un rapport de bug! ",
+              "L'équipe de Sus."))
+
+sever_subtitle_en <- 
+  HTML(paste0("It appears that Sus has shut down unexpectedly. Help us keep the ",
+              "application free of bugs by filing a bug report! ",
+              "The Sus team."))
+
+severe_html <- 
+  tagList(tags$h2("Uh oh..."),
+          tags$p(tags$span(class = "lang-fr", sever_subtitle_fr),
+                 tags$span(class = "lang-en", sever_subtitle_en)),
+          tags$div(class = "sus-button-group",
+                   tags$a(class = "sus-button sus-icon-button sus-button-secondary", 
+                          onClick = "window.location.href='/'", 
+                          tags$span(class = "lang-fr", "Accueil"),
+                          tags$span(class = "lang-en", "Home"), " ",
+                          span(class = "material-icons", "home")),
+                   tags$a(class = "sus-button sus-icon-button sus-button-primary", 
+                          href = paste0("https://docs.google.com/forms/d/e/1FA",
+                                        "IpQLSfuQquv73dQoXA1UneCh9zREj0NG3E-RC",
+                                        "fRpTNyJ1dIBagIeQ/viewform"),
+                          target = "_blank", 
+                          tags$span(class = "lang-fr", "Rapport de bug"),
+                          tags$span(class = "lang-en", "Bug report"), " ",
+                          span(class = "material-icons", "bug_report"))
+          ))

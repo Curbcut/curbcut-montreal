@@ -13,6 +13,11 @@ shinyServer(function(input, output, session) {
   observe(mobile_warning(r = r, session = session))
   
   
+  ## If crash, personnalized error ---------------------------------------------
+  
+  sever(html = severe_html, bg_color = "rgba(0,0,0,.5)", box = TRUE)
+
+  
   ## Reactive variables --------------------------------------------------------
   
   r <- reactiveValues(sus_bookmark = reactiveValues(active = FALSE),
