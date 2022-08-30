@@ -455,11 +455,11 @@ new_rows <-
                   "square kilometers of municipal parks")
     
     amenity_short <- 
-      case_when(str_detect(var, "_food_distribution_") ~ "food",
-                str_detect(var, "_schools_") ~ "schools",
-                str_detect(var, "_daycare_spots_") ~ "daycare",
-                str_detect(var, "_health_care_") ~ "health",
-                str_detect(var, "_municipal_parks_") ~ "parks")
+      case_when(str_detect(var, "_food_distribution_") ~ "Food",
+                str_detect(var, "_schools_") ~ "Schools",
+                str_detect(var, "_daycare_spots_") ~ "Daycare",
+                str_detect(var, "_health_care_") ~ "Health",
+                str_detect(var, "_municipal_parks_") ~ "Parks")
     
     pre <- 
       case_when(str_ends(var, "_count") ~ "the count",
@@ -477,7 +477,7 @@ new_rows <-
       add_variables(variables,
                     var_code = var,
                     var_title = glue::glue("Accessibility to {amenity} by {mode}"),
-                    var_short = glue::glue("Accessibility to {amenity_short} ({mode})"),
+                    var_short = glue::glue("{amenity_short} ({mode})"),
                     explanation = explanation_,
                     category = NA,
                     theme = "Accessibility to amenities",

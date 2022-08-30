@@ -1130,4 +1130,176 @@ variables_translated <-
   add_row(en = paste0("Accessibility to square kilometers of municipal parks"), 
           fr = paste0("Accessibilité à des kilomètres carrés de parcs municipaux")) |> 
   add_row(en = paste0("Accessibility to daycare spots"), 
-          fr = paste0("Accessibilité aux places en garderie"))
+          fr = paste0("Accessibilité aux places en garderie")) |> 
+  add_row(en = paste0("Food (walk)"), 
+          fr = paste0("Alimentation (marche)")) |> 
+  add_row(en = paste0("Food (bicycle)"), 
+          fr = paste0("Alimentation (vélo)")) |> 
+  add_row(en = paste0("Food (transit)"), 
+          fr = paste0("Alimentation (transit)")) |> 
+  add_row(en = paste0("Food (car)"), 
+          fr = paste0("Alimentation (voiture)")) |> 
+  add_row(en = paste0("Schools (walk)"), 
+          fr = paste0("Écoles (à pied)")) |> 
+  add_row(en = paste0("Schools (bicycle)"), 
+          fr = paste0("Écoles (vélo)")) |> 
+  add_row(en = paste0("Schools (transit)"), 
+          fr = paste0("Écoles (transit)")) |> 
+  add_row(en = paste0("Schools (car)"), 
+          fr = paste0("Écoles (voiture)")) |> 
+  add_row(en = paste0("Health (walk)"), 
+          fr = paste0("Santé (marche)")) |> 
+  add_row(en = paste0("Health (bicycle)"), 
+          fr = paste0("Santé (vélo)")) |> 
+  add_row(en = paste0("Health (transit)"), 
+          fr = paste0("Santé (transit)")) |> 
+  add_row(en = paste0("Health (car)"), 
+          fr = paste0("Santé (voiture)")) |> 
+  add_row(en = paste0("Parks (walk)"), 
+          fr = paste0("Parcs (à pied)")) |> 
+  add_row(en = paste0("Parks (bicycle)"), 
+          fr = paste0("Parcs (vélo)")) |> 
+  add_row(en = paste0("Parks (transit)"), 
+          fr = paste0("Parcs (transit)")) |> 
+  add_row(en = paste0("Parks (car)"), 
+          fr = paste0("Parcs (voiture)")) |> 
+  add_row(en = paste0("Daycare (walk)"), 
+          fr = paste0("Garderie (à pied)")) |> 
+  add_row(en = paste0("Daycare (bicycle)"), 
+          fr = paste0("Garderie (vélo)")) |> 
+  add_row(en = paste0("Daycare (transit)"), 
+          fr = paste0("Garderie (transit)")) |> 
+  add_row(en = paste0("Daycare (car)"), 
+          fr = paste0("Garderie (voiture)")) |> 
+  add_row(en = paste0("the count of food distributors accessible in a 15 minut",
+                      "es walk"), 
+          fr = paste0("le nombre de distributeurs alimentaires accessibles dan",
+                      "s un rayon de 15 minutes de marche")) |> 
+  add_row(en = paste0("the count of food distributors accessible in 15 minutes",
+                      " by bicycle"), 
+          fr = paste0("le nombre de distributeurs alimentaires accessibles en ",
+                      "15 minutes à vélo")) |> 
+  add_row(en = paste0("the count of food distributors accessible in 15 minutes",
+                      " by transit"), 
+          fr = paste0("le nombre de distributeurs alimentaires accessibles en ",
+                      "15 minutes en transport en commun")) |> 
+  add_row(en = paste0("the count of food distributors accessible in 15 minutes",
+                      " by car"), 
+          fr = paste0("le nombre de distributeurs alimentaires accessibles en ",
+                      "15 minutes en voiture")) |> 
+  add_row(en = paste0("the count of schools accessible in a 15 minutes walk"), 
+          fr = paste0("le nombre d'écoles accessibles dans un rayon de 15 minu",
+                      "tes à pied")) |> 
+  add_row(en = paste0("the count of schools accessible in 15 minutes by bicycl",
+                      "e"), 
+          fr = paste0("le nombre d'écoles accessibles en 15 minutes à vélo")) |> 
+  add_row(en = paste0("the count of schools accessible in 15 minutes by transi",
+                      "t"), 
+          fr = paste0("le nombre d'écoles accessibles en 15 minutes en transpo",
+                      "rt en commun")) |> 
+  add_row(en = paste0("the count of schools accessible in 15 minutes by car"), 
+          fr = paste0("le nombre d'écoles accessibles en 15 minutes en voiture",
+                      "")) |> 
+  add_row(en = paste0("the count of health care facilities accessible in a 15 ",
+                      "minutes walk"), 
+          fr = paste0("le nombre d'établissements de soins de santé accessible",
+                      "s en 15 minutes de marche")) |> 
+  add_row(en = paste0("the count of health care facilities accessible in 15 mi",
+                      "nutes by bicycle"), 
+          fr = paste0("le nombre d'établissements de soins de santé accessible",
+                      "s en 15 minutes à vélo")) |> 
+  add_row(en = paste0("the count of health care facilities accessible in 15 mi",
+                      "nutes by transit"), 
+          fr = paste0("le nombre d'établissements de soins de santé accessible",
+                      "s en 15 minutes en transport en commun")) |> 
+  add_row(en = paste0("the count of health care facilities accessible in 15 mi",
+                      "nutes by car"), 
+          fr = paste0("le nombre d'établissements de soins de santé accessible",
+                      "s en 15 minutes en voiture")) |> 
+  add_row(en = paste0("the number of square kilometers of municipal parks acce",
+                      "ssible in a 15 minutes walk"), 
+          fr = paste0("le nombre de kilomètres carrés de parcs municipaux acce",
+                      "ssibles en 15 minutes de marche")) |> 
+  add_row(en = paste0("the number of square kilometers of municipal parks acce",
+                      "ssible in 15 minutes by bicycle"), 
+          fr = paste0("le nombre de kilomètres carrés de parcs municipaux acce",
+                      "ssibles en 15 minutes à vélo")) |> 
+  add_row(en = paste0("the number of square kilometers of municipal parks acce",
+                      "ssible in 15 minutes by transit"), 
+          fr = paste0("le nombre de kilomètres carrés de parcs municipaux acce",
+                      "ssibles en 15 minutes en transport en commun")) |> 
+  add_row(en = paste0("the number of square kilometers of municipal parks acce",
+                      "ssible in 15 minutes by car"), 
+          fr = paste0("le nombre de kilomètres carrés de parcs municipaux acce",
+                      "ssibles en 15 minutes en voiture")) |> 
+  add_row(en = paste0("the count of daycare spots accessible in a 15 minutes w",
+                      "alk"), 
+          fr = paste0("le nombre de places en garderie accessibles dans un rayon",
+                      " de 15 minutes à pied")) |> 
+  add_row(en = paste0("the count of daycare spots accessible in 15 minutes by ",
+                      "bicycle"), 
+          fr = paste0("le nombre de places en garderie accessibles en 15 minutes",
+                      " à vélo")) |> 
+  add_row(en = paste0("the count of daycare spots accessible in 15 minutes by ",
+                      "transit"), 
+          fr = paste0("le nombre de places en garderie accessibles en 15 minutes",
+                      " en transport en commun")) |> 
+  add_row(en = paste0("the count of daycare spots accessible in 15 minutes by ",
+                      "car"), 
+          fr = paste0("le nombre de places en garderie accessibles en 15 minutes",
+                      " en voiture")) |> 
+  add_row(en = paste0("Accessibility to food distributors by walk"), 
+          fr = paste0("Accessibilité aux distributeurs alimentaires à pied")) |> 
+  add_row(en = paste0("Accessibility to food distributors by bicycle"), 
+          fr = paste0("Accessibilité aux distributeurs alimentaires à vélo")) |> 
+  add_row(en = paste0("Accessibility to food distributors by transit"), 
+          fr = paste0("Accessibilité aux distributeurs alimentaires par le tra",
+                      "nsport en commun")) |> 
+  add_row(en = paste0("Accessibility to food distributors by car"), 
+          fr = paste0("Accessibilité aux distributeurs alimentaires en voiture",
+                      "")) |> 
+  add_row(en = paste0("Accessibility to schools by walk"), 
+          fr = paste0("Accessibilité aux écoles à pied")) |> 
+  add_row(en = paste0("Accessibility to schools by bicycle"), 
+          fr = paste0("Accessibilité aux écoles à vélo")) |> 
+  add_row(en = paste0("Accessibility to schools by transit"), 
+          fr = paste0("Accessibilité aux écoles en transport en commun")) |> 
+  add_row(en = paste0("Accessibility to schools by car"), 
+          fr = paste0("Accessibilité aux écoles en voiture")) |> 
+  add_row(en = paste0("Accessibility to health care facilities by walk"), 
+          fr = paste0("Accessibilité aux établissements de soins de santé à pi",
+                      "ed")) |> 
+  add_row(en = paste0("Accessibility to health care facilities by bicycle"), 
+          fr = paste0("Accessibilité aux établissements de soins de santé à vé",
+                      "lo")) |> 
+  add_row(en = paste0("Accessibility to health care facilities by transit"), 
+          fr = paste0("Accessibilité aux établissements de soins de santé par ",
+                      "les transports en commun")) |> 
+  add_row(en = paste0("Accessibility to health care facilities by car"), 
+          fr = paste0("Accessibilité aux établissements de soins de santé en v",
+                      "oiture")) |> 
+  add_row(en = paste0("Accessibility to square kilometers of municipal parks b",
+                      "y walk"), 
+          fr = paste0("Accessibilité à pied à des kilomètres carrés de parcs mun",
+                      "icipaux")) |> 
+  add_row(en = paste0("Accessibility to square kilometers of municipal parks b",
+                      "y bicycle"), 
+          fr = paste0("Accessibilité à vélo à des kilomètres carrés de parcs mun",
+                      "icipaux")) |> 
+  add_row(en = paste0("Accessibility to square kilometers of municipal parks b",
+                      "y transit"), 
+          fr = paste0("Accessibilité à des kilomètres carrés de parcs municipaux",
+                      " en transport en commun")) |> 
+  add_row(en = paste0("Accessibility to square kilometers of municipal parks b",
+                      "y car"), 
+          fr = paste0("Accessibilité à des kilomètres carrés de parcs municipaux",
+                      " en voiture")) |> 
+  add_row(en = paste0("Accessibility to daycare spots by walk"), 
+          fr = paste0("Accessibilité aux places en garderie à pied")) |> 
+  add_row(en = paste0("Accessibility to daycare spots by bicycle"), 
+          fr = paste0("Accessibilité aux places en garderie à vélo")) |> 
+  add_row(en = paste0("Accessibility to daycare spots by transit"), 
+          fr = paste0("Accessibilité aux places en garderie en transports ",
+                      "en commun")) |> 
+  add_row(en = paste0("Accessibility to daycare spots by car"), 
+          fr = paste0("Accessibilité aux places en garderie en voiture"))

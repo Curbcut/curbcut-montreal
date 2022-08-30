@@ -615,4 +615,12 @@ ui_and_misc_translated <-
   add_row(en = paste0("Count"), 
           fr = paste0("Compte")) |> 
   add_row(en = paste0("Normalized (percent of population)"), 
-          fr = paste0("Normalisé (pourcentage de la population)"))
+          fr = paste0("Normalisé (pourcentage de la population)")) |> 
+  add_row(en = paste0("By walk"), 
+          fr = paste0("En vélo")) |> 
+  add_row(en = paste0("By bicycle"), 
+          fr = paste0("À pied")) |> 
+  add_row(en = paste0("By transit"), 
+          fr = paste0("En transport en commun")) |> 
+  add_row(en = paste0("By car"), 
+          fr = paste0("En auto"))
