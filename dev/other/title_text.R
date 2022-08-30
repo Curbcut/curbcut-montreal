@@ -264,7 +264,27 @@ title_text <-
     "ndoned or used as parking spaces or as ways to access p",
     "rivate garages, without any environmental or social-com",
     "munity benefit.</ul>")) |> 
-  
+
+  # Demographics -------------------------------------------------------------
+
+add_row(tab = "demographics", type = "title",
+        text = "Demographics") |> 
+  add_row(tab = "demographics", type = "main", text = paste0(
+    "Certain factors about a population can reveal interesting socioeconomic ",
+    "information. In this module, learn and explore different demographics ",
+    "statistically expressed per square kilometre, percentage of population, ",
+    "or simply by count. Choose various factors to examine such as gender, ",
+    "immigration status, shelter cost, and additional immigration, visible ",
+    "minority and family characteristics.")) |> 
+  add_row(tab = "alley", type = "extra", text = paste0(
+    "<p>The comparative analysis that you see in this module is based on ", 
+    "demographic data from the 2016 Census. In selecting different options ",
+    "from the drop-down menus, insights can be gained on the prevalence of ",
+    "different factors by the three types of groupings. Using the panel on ",
+    "the right, you can compare these demographic variables with access to ",
+    "different amenities by mode of transportation. Examining and comparing ",
+    "demographic variables can provide valuable information about the ",
+    "Montreal population. </ul>")) |> 
 
 # Covid -------------------------------------------------------------------
 
