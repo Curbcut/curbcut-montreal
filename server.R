@@ -1,41 +1,19 @@
 ##### SUS SERVER SCRIPT ########################################################
 
 shinyServer(function(input, output, session) {
-  
-  observeEvent(input$cookies$signupform, {
-    
-    cookie_last <- input$cookies$signupform
-    
-    if (is.null(cookie_last) || 
-        (!is.null(cookie_last) && Sys.time() > (as.POSIXct(cookie_last) + 2419200))) {
-      shinyjs::delay(5000, showModal(modalDialog(HTML(readLines("www/sus.signupform.html")),
-                              easyClose = TRUE)))
-    }
-    
-    # After ANY visit, restart the timer
-    signupform <- list(name = "signupform",
-                       value = Sys.time())
-    session$sendCustomMessage("cookie-set", signupform)
 
-  }, once = TRUE, ignoreNULL = FALSE, ignoreInit = TRUE)
-  
-  onclick("subscribe", {
-    showModal(modalDialog(HTML(readLines("www/sus.signupform.html")),
-                          easyClose = TRUE))
-  })
-
-  # Page title change, depending on page visited -------------------------------
+  ## Page title change, depending on page visited ------------------------------
 
   observe(title_page_update(r = r, session = session, 
                             sus_page = input$sus_page))
   
   
-  # If on mobile, warning! -----------------------------------------------------
+  ## If on mobile, warning! ----------------------------------------------------
   
   observe(mobile_warning(r = r, session = session))
   
   
-  # Reactive variables ---------------------------------------------------------
+  ## Reactive variables --------------------------------------------------------
   
   r <- reactiveValues(sus_bookmark = reactiveValues(active = FALSE),
                       sus_link = reactiveValues(),
@@ -66,13 +44,13 @@ shinyServer(function(input, output, session) {
                       news = reactiveValues(select_id = reactiveVal(NA)))
   
 
-  # Home page ------------------------------------------------------------------
+  ## Home page -----------------------------------------------------------------
   
   observe(updateNavbarPage(session, "sus_page", "home")) |> 
     bindEvent(input$title)
   
   
-  # First visit banner ---------------------------------------------------------
+  ## First visit banner --------------------------------------------------------
 
   # Reset after 14 days of last time the banner was shown
 
@@ -123,6 +101,33 @@ shinyServer(function(input, output, session) {
   observeEvent(input$go_to_htu_x, {
     removeUI("#htu_footer")
   }, ignoreInit = TRUE)
+  
+  
+
+  ## Newsletter modal ----------------------------------------------------------
+
+  observeEvent(input$cookies$signupform, {
+    
+    cookie_last <- input$cookies$signupform
+    
+    # 28 days after last visit, popup the newsletter subscription
+    if (is.null(cookie_last) || 
+        (!is.null(cookie_last) && Sys.time() > (as.POSIXct(cookie_last) + 2419200))) {
+      shinyjs::delay(5000, showModal(modalDialog(HTML(readLines("www/sus.signupform.html")),
+                                                 easyClose = TRUE)))
+    }
+    
+    # After ANY visit, restart the timer
+    signupform <- list(name = "signupform",
+                       value = Sys.time())
+    session$sendCustomMessage("cookie-set", signupform)
+    
+  }, once = TRUE, ignoreNULL = FALSE, ignoreInit = TRUE)
+  
+  onclick("subscribe", {
+    showModal(modalDialog(HTML(readLines("www/sus.signupform.html")),
+                          easyClose = TRUE))
+  })  
   
   
   ## Language button -----------------------------------------------------------
@@ -366,57 +371,6 @@ shinyServer(function(input, output, session) {
           if (length(Sys.glob(name.glob)) > 0) file.remove(Sys.glob(name.glob))
         })
       })
-  
-  
-  ## Contact form --------------------------------------------------------------
-  
-  # contactModal <- function() {
-  #   modalDialog(
-  #     selectInput("contact_type", "Reason for contact",
-  #                 choices = c("Contact" = "CONTACT",
-  #                             "Report a bug" = "BUG",
-  #                             "Feedback" = "FEEDBACK",
-  #                             "Other" = "OTHER"), width = "75%"),
-  #     textInput("contact_from_name", "Your name/organization", width = "75%"),
-  #     textInput("contact_from", "Your email adress", "@", width = "75%"),
-  #     textInput("contact_subject", "Subject", width = "75%"),
-  #     textAreaInput("contact_body", "Content", width = "75%", height = "300px"),
-  #     
-  #     footer = tagList(
-  #       modalButton("Cancel"),
-  #       actionButton("send_feedback", "Send")),
-  #     title = "Contact form"
-  #   )
-  # }
-  # 
-  # onclick("contact", {
-  #   showModal(
-  #     contactModal()
-  #   )
-  # })
-  # 
-  # observeEvent(input$send_feedback, {
-  #   # sendmailR::sendmail(from = paste0("<", input$contact_from, ">"),
-  #   #                     to = "<maximebdeblois@gmail.com>",
-  #   #                     subject = paste0(input$contact_type, " - ", 
-  #   #                                     input$contact_subject),
-  #   #                     body = input$contact_body,
-  #   #                     # This is the part not working atm:
-  #   #                     control = list(smtpServer="smtp.gmail.com"))
-  #   
-  #   # Other possibility:
-  #   contact_form <- c(name = input$contact_from_name,
-  #                     email = input$contact_from,
-  #                     subject = paste(input$contact_type, " - ", 
-  #                                     input$contact_subject),
-  #                     body = input$contact_body)
-  #   time_stamp <- str_replace_all(Sys.time(), c(" |:"), "-")
-  #   file_name <- paste0("contacts/",input$contact_type, "-", time_stamp, ".csv")
-  #   write.csv2(contact_form, file = file_name)
-  #   removeModal()
-  #   showNotification(sus_translate("Sent and received. Thank you!"), 
-  #                    duration = 3)
-  # })
   
   
   ## Heartbeat function to keep app alive --------------------------------------
