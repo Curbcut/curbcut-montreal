@@ -58,6 +58,7 @@ ui <- function(request) {
                    {document.title=x});')),
     tags$head(includeHTML("www/google_analytics.html")),
     
+    
     # Language switching ---------------------------------------------------------
     
     # Add a class to the body, to toggle between languages
@@ -131,14 +132,13 @@ ui <- function(request) {
                                            label = sus_translate(
                                              "Export data"),
                                            icon("download")),
-                                # downloadLink("create_report", 
-                                #              label = div(icon("file-pdf"), 
-                                #                           sus_translate(
-                                #                            "Generate a report")))
                                 actionLink(inputId = "contact",
                                            label = sus_translate("Contact/feedback"),
                                            icon("comment"),
-                                           onclick = "window.open('mailto:contact@susmontreal.ca', '_blank')")
+                                           onclick = "window.open('mailto:contact@susmontreal.ca', '_blank')"),
+                                actionLink(inputId = "subscribe",
+                                           label = sus_translate("Newsletter"),
+                                           icon("list-alt"))
                  ), "summarize")
              )
         ))

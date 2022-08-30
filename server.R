@@ -1,6 +1,28 @@
 ##### SUS SERVER SCRIPT ########################################################
 
 shinyServer(function(input, output, session) {
+  
+  observeEvent(input$cookies$signupform, {
+    
+    cookie_last <- input$cookies$signupform
+    
+    if (is.null(cookie_last) || 
+        (!is.null(cookie_last) && Sys.time() > (as.POSIXct(cookie_last) + 2419200))) {
+      shinyjs::delay(5000, showModal(modalDialog(HTML(readLines("www/sus.signupform.html")),
+                              easyClose = TRUE)))
+    }
+    
+    # After ANY visit, restart the timer
+    signupform <- list(name = "signupform",
+                       value = Sys.time())
+    session$sendCustomMessage("cookie-set", signupform)
+
+  }, once = TRUE, ignoreNULL = FALSE, ignoreInit = TRUE)
+  
+  onclick("subscribe", {
+    showModal(modalDialog(HTML(readLines("www/sus.signupform.html")),
+                          easyClose = TRUE))
+  })
 
   # Page title change, depending on page visited -------------------------------
 
@@ -59,6 +81,7 @@ shinyServer(function(input, output, session) {
     cookie_last <- input$cookies$htu_banner
 
     if (is.null(cookie_last) || 
+        # Show back after 2 weeks
         (!is.null(cookie_last) && Sys.time() > (as.POSIXct(cookie_last) + 1209600))) {
       
       insertUI(selector = ".navbar-shadow", where = "beforeBegin", ui = HTML(
@@ -78,33 +101,27 @@ shinyServer(function(input, output, session) {
                ":#FBFBFB;' class='action-button shiny-bound-input'>X</a>",
                "</div>")))
     }
+    
+    # After ANY visit, restart the timer
+    htu_banner <- list(name = "htu_banner",
+                       value = Sys.time())
+    session$sendCustomMessage("cookie-set", htu_banner)
+    
   }, once = TRUE, ignoreNULL = FALSE, ignoreInit = TRUE)
   
   # Remove the banner, and log in the cookie
   observeEvent(input$go_to_htu_en, {
     removeUI("#htu_footer")
     updateTabsetPanel(session, "sus_page", selected = "how_to_use")
-    
-    htu_banner <- list(name = "htu_banner",
-                       value = Sys.time())
-    session$sendCustomMessage("cookie-set", htu_banner)
   }, ignoreInit = TRUE)
   
   observeEvent(input$go_to_htu_fr, {
     removeUI("#htu_footer")
     updateTabsetPanel(session, "sus_page", selected = "how_to_use")
-    
-    htu_banner <- list(name = "htu_banner",
-                       value = Sys.time())
-    session$sendCustomMessage("cookie-set", htu_banner)
   }, ignoreInit = TRUE)
   
   observeEvent(input$go_to_htu_x, {
     removeUI("#htu_footer")
-    
-    htu_banner <- list(name = "htu_banner",
-                       value = Sys.time())
-    session$sendCustomMessage("cookie-set", htu_banner)
   }, ignoreInit = TRUE)
   
   

@@ -122,6 +122,8 @@ ui_and_misc_translated <-
           fr = paste0("Contact/commentaires")) |> 
   add_row(en = paste0("Bookmark"), 
           fr = paste0("Signet")) |> 
+  add_row(en = paste0("Newsletter"), 
+          fr = paste0("Infolettre")) |> 
   add_row(en = paste0("Metadata and export"), 
           fr = paste0("Métadonnées et exportation")) |> 
   add_row(en = paste0("Generate a report"), 
