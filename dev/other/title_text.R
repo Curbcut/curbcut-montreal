@@ -276,7 +276,7 @@ add_row(tab = "demographics", type = "title",
     "or simply by count. Choose various factors to examine such as gender, ",
     "immigration status, shelter cost, and additional immigration, visible ",
     "minority and family characteristics.")) |> 
-  add_row(tab = "alley", type = "extra", text = paste0(
+  add_row(tab = "demographics", type = "extra", text = paste0(
     "<p>The comparative analysis that you see in this module is based on ", 
     "demographic data from the 2016 Census. In selecting different options ",
     "from the drop-down menus, insights can be gained on the prevalence of ",
