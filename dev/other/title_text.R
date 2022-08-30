@@ -111,6 +111,9 @@ title_text <-
     "Housing: The Politics of Crisis</i>. New York and London: Verso ",
     "Books.</ul>")) |> 
   
+
+# Housing affordability ---------------------------------------------------
+
   add_row(tab = "afford", type = "title", text = "Housing Affordability") |> 
   add_row(tab = "afford", type = "main", text = paste0(
     "Having access to affordable and equitable shelter is essential. ",
@@ -132,6 +135,9 @@ title_text <-
     "socio-economic patterns associated with housing affordability to inform ",
     "policies and actions to best address housing needs. </ul>")) |> 
 
+
+# Tenure status -----------------------------------------------------------
+
   add_row(tab = "tenure", type = "title", text = "Tenure Status") |> 
   add_row(tab = "tenure", type = "main", text = paste0(
     "The categorization of housing by tenure status, tenancy or ownership, ",
@@ -152,6 +158,9 @@ title_text <-
     "they might be experiencing different difficulties and ",
     "advantages.  </ul>")) |> 
   
+
+# Dwelling types ----------------------------------------------------------
+
   add_row(tab = "dw_types", type = "title", text = "Dwelling Types") |> 
   add_row(tab = "dw_types", type = "main", text = paste0(
     "Whether a household is living in a single-detached house versus an ",
