@@ -22,7 +22,7 @@ tenure_UI <- function(id) {
                                           "Normalized (percent of households)")),
         br(),
         select_var_UI(NS(id, id), select_var_id = "d_3",
-                      label = sus_translate(r = r, "Additional characteristics"),
+                      label = sus_translate(r = r, "Additional characteristic"),
                       var_list = var_left_list_3_tenure)),
       bottom = div(class = "bottom_sidebar", 
                    tagList(legend_UI(NS(id, id)),

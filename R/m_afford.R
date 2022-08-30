@@ -124,6 +124,16 @@ afford_server <- function(id, r) {
     # Checkbox value
     as_pct <- checkbox_server(id = id)
     
+    # Update checkbox label depending on the grouping
+    observeEvent(vl_gr(), {
+      grp <- if (vl_gr() == "cent_d") "households" else "population"
+      updateCheckboxInput(inputId = "afford-cbox",
+                          label = 
+                            sus_translate(r = r,
+                                          paste0("Normalized (percent of ", 
+                                                 grp, ")")))
+    })
+    
     # Left variable server
     vl_gr <- select_var_server(
       id = id,

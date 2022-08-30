@@ -1117,4 +1117,17 @@ variables_translated <-
                       " than other areas in the same urban environment"), 
           fr = paste0("les zones urbaines dont la température de l'air ou de l",
                       "a surface est inférieure à celle des autres zones du mê",
-                      "me environnement urbain"))
+                      "me environnement urbain")) |> 
+  # Accessibility
+  add_row(en = paste0("Accessibility to amenities"), 
+          fr = paste0("Accessibilité aux commodités")) |> 
+  add_row(en = paste0("Accessibility to food distributors"), 
+          fr = paste0("Accessibilité aux distributeurs alimentaires")) |> 
+  add_row(en = paste0("Accessibility to schools"), 
+          fr = paste0("Accessibilité aux écoles")) |> 
+  add_row(en = paste0("Accessibility to health care facilities"), 
+          fr = paste0("Accessibilité aux établissements de soins de santé")) |> 
+  add_row(en = paste0("Accessibility to square kilometers of municipal parks"), 
+          fr = paste0("Accessibilité à des kilomètres carrés de parcs municipaux")) |> 
+  add_row(en = paste0("Accessibility to daycare spots"), 
+          fr = paste0("Accessibilité aux places en garderie"))

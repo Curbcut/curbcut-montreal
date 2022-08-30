@@ -22,7 +22,7 @@ var_left_list_4_afford <-
   list("Total" = list(
     "Total" = "total"), 
     "Family characteristic" = list(
-      "Families with 3+ children" = "kids_3_plus",
+      "Family with 3+ children" = "kids_3_plus",
       "Unsuitable housing" = "unsuitable",
       "Major repairs needed" = "repairs",
       "Low income" = "low_inc"),
@@ -32,9 +32,9 @@ var_left_list_4_afford <-
       "Row house" = "row_house",
       "Apartment or flat in a duplex" = "in_duplex",
       "Apartment in a building of 5+ storeys" = "in_5plus_storeys",
-      "Apartment in a building of <5 storeys" = "in_less5_storeys",
+      "Apartment in a building of -5 storeys" = "in_less5_storeys",
       "Other single-attached house" = "other_single_attached",
-      "Mobile homes and other movable dwellings" = "mobile_homes"))
+      "Mobile home and other movable dwelling" = "mobile_homes"))
 
 
 # If individuals is selected
@@ -63,8 +63,8 @@ var_left_list_7_afford <-
          "Does not belong to a visible minority group" = "not_visible_min",
          "Aboriginal" = "aboriginal"),
        "Family characteristic" = list(
-         "Lone parents (lone-parent families)" = "lone_parents",
-         "Persons living alone" = "living_alone",
+         "Lone parent (lone-parent family)" = "lone_parents",
+         "Individual living alone" = "living_alone",
          "Low income after tax" = "low_inc"))
 
 # Disabled options

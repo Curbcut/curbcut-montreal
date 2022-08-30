@@ -37,8 +37,8 @@ var_left_list_5_demographics <-
          "Does not belong to a visible minority group" = "not_visible_min",
          "Aboriginal" = "aboriginal"),
        "Family characteristic" = list(
-         "Lone parents (lone-parent families)" = "lone_parents",
-         "Persons living alone" = "living_alone",
+         "Lone parent (lone-parent family)" = "lone_parents",
+         "Individual living alone" = "living_alone",
          "Low income after tax" = "low_inc"))
 
 # Disabled options

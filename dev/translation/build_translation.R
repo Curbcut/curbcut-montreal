@@ -64,4 +64,3 @@ translation_fr <-
 # Save to the translation files -------------------------------------------
 
 qsave(translation_fr, "data/translation_fr.qs")
-

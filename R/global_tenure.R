@@ -16,7 +16,7 @@ var_left_list_3_tenure <-
   list("Total" = list(
     "Total" = "total"), 
     "Family characteristic" = list(
-      "Families with 3+ children" = "kids_3_plus",
+      "Family with 3+ children" = "kids_3_plus",
       "Unsuitable housing" = "unsuitable",
       "Major repairs needed" = "repairs",
       "Low income" = "low_inc"),
@@ -26,7 +26,7 @@ var_left_list_3_tenure <-
       "Row house" = "row_house",
       "Apartment or flat in a duplex" = "in_duplex",
       "Apartment in a building of 5+ storeys" = "in_5plus_storeys",
-      "Apartment in a building of <5 storeys" = "in_less5_storeys",
+      "Apartment in a building of -5 storeys" = "in_less5_storeys",
       "Other single-attached house" = "other_single_attached",
-      "Mobile homes and other movable dwellings" = "mobile_homes"))
+      "Mobile home and other movable dwelling" = "mobile_homes"))
 

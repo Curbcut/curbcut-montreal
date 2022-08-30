@@ -19,6 +19,6 @@ var_left_list_3_dw_types <-
        "Row house" = "row_house",
        "Apartment or flat in a duplex" = "in_duplex",
        "Apartment in a building of 5+ storeys" = "in_5plus_storeys",
-       "Apartment in a building of <5 storeys" = "in_less5_storeys",
+       "Apartment in a building of -5 storeys" = "in_less5_storeys",
        "Other single-attached house" = "other_single_attached",
-       "Mobile homes and other movable dwellings" = "mobile_homes")
+       "Mobile home and other movable dwelling" = "mobile_homes")
