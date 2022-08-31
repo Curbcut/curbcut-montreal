@@ -463,7 +463,7 @@ title_text_translation <-
           fr = paste0("Ces histoires, rédigées par des collaborateurs de Sus, ",
                       "explorent les enjeux de durabilité de Montréal qui ne s",
                       "e prêtent pas forcément à une représentation dans notre",
-                      " format standard de carte interactive."))
+                      " format standard de carte interactive.")) |> 
   add_row(en = paste0("Housing Affordability"), 
           fr = paste0("L'Abordabilité du logement")) |> 
   add_row(en = paste0("Having access to affordable and equitable shelter is ",
