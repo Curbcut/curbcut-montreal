@@ -4,6 +4,8 @@
 #' maximum number of years available in all the wanted variables (after `only` 
 #' and `exclude`), and only keep the variables having this corresponding 
 #' number of years available.
+#' @param only_vars A vector of characters. Var codes can be supplied to form
+#' fully custom dropdown. Evaluated before `only`.
 #' @param only A named list taking multiple vectors. Only the elements 
 #' corresponding are part of the dropdown. The list can take any column of the 
 #' `variables` table, but should probably be used with 3 levels: `theme`, 
@@ -15,12 +17,16 @@
 #' @return A named list that can be supplied to `select_var_UI` and 
 #' `select_var_server`.
 
-make_dropdown <- function(multi_year = FALSE, 
+make_dropdown <- function(multi_year = FALSE, only_vars = NULL, 
                           only = list(source = "Canadian census"), 
                           exclude = NULL, compare = FALSE) {
   
   vars <- variables[
-    !variables$var_code %in% c("emp_professional_pct", "emp_creative_pct"),]
+    !variables$var_code %in% c("emp_professional_pct", "emp_creative_pct"), ]
+  
+  if (!is.null(only_vars)) {
+    vars <- vars[vars$var_code %in% only_vars, ]
+  }
   
   if (!is.null(only)) {
     vars <- 
@@ -65,3 +71,4 @@ make_dropdown <- function(multi_year = FALSE,
   
   return(out)
 }
+              

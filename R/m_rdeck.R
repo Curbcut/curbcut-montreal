@@ -59,13 +59,13 @@ rdeck_server <- function(id, r, id_override = reactive(NULL), map_id, tile,
           pickable = pick(), 
           auto_highlight = highlight(), 
           highlight_color = "#FFFFFF50", 
-          # get_fill_color = do.call(fill, fill_args()),
-          # get_line_color = do.call(colour, colour_args()),
-          # get_line_width = do.call(lwd, lwd_args()),
+          get_fill_color = do.call(fill, fill_args()),
+          get_line_color = do.call(colour, colour_args()),
+          get_line_width = do.call(lwd, lwd_args()),
           line_width_units = line_units, 
           extruded = extrude(), 
           material = FALSE, 
-          get_elevation = 5)) #|> bindEvent(tile_string())
+          get_elevation = 5)) |> bindEvent(tile_string())
     
     # Update data layer on variable change
     observe(

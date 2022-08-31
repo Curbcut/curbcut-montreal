@@ -52,10 +52,7 @@ afford_UI <- function(id) {
     # Right panel
     right_panel(
       id = id,
-      compare_UI(NS(id, id), 
-                 make_dropdown(only = 
-                                 list(theme = "Accessibility to amenities"),
-                               compare = TRUE)),
+      compare_UI(NS(id, id), cent_compare),
       explore_UI(NS(id, id)),
       dyk_UI(NS(id, id)))
   )
@@ -178,8 +175,9 @@ afford_server <- function(id, r) {
       r = r,
       select_var_id = "d_7",
       var_list = reactive(var_left_list_7_afford),
-      disabled = reactive(if (vl_im() == "immigrants") NULL else
-        vars_afford_add_dis))
+      disabled = reactive(if (vl_im() == "immigrants") 
+        vars_afford_add_dis_imm else
+          vars_afford_add_dis_nimm))
     
     # Hide/show dropdown divs depending on the first dropdown
     observeEvent(vl_gr(), {
@@ -213,9 +211,7 @@ afford_server <- function(id, r) {
     var_right <- compare_server(
       id = id,
       r = r,
-      var_list = make_dropdown(only = 
-                                 list(theme = "Accessibility to amenities"),
-                               compare = TRUE),
+      var_list = cent_compare,
       time = time)
     
     # Additional tileset identifier

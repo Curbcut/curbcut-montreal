@@ -67,7 +67,11 @@ var_left_list_7_afford <-
          "Individual living alone" = "living_alone",
          "Low income after tax" = "low_inc"))
 
-# Disabled options
-vars_afford_add_dis <- 
-  unlist(var_left_list_7_afford) %in% 
-  c(var_left_list_7_afford[["Immigration characteristic"]])
+# Disabled options - immigrants not selected
+vars_afford_add_dis_nimm <- 
+  unlist(var_left_list_5_demographics) %in% 
+  c(var_left_list_5_demographics[["Immigration characteristic"]])
+
+# Disabled options - immigrants selected
+vars_afford_add_dis_imm <- 
+  unlist(var_left_list_5_demographics) %in% "aboriginal"

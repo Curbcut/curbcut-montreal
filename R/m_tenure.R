@@ -34,10 +34,7 @@ tenure_UI <- function(id) {
     # Right panel
     right_panel(
       id = id,
-      compare_UI(NS(id, id), 
-                 make_dropdown(only = 
-                                 list(theme = "Accessibility to amenities"),
-                               compare = TRUE)),
+      compare_UI(NS(id, id), cent_compare),
       explore_UI(NS(id, id)),
       dyk_UI(NS(id, id)))
   )
@@ -140,9 +137,7 @@ tenure_server <- function(id, r) {
     var_right <- compare_server(
       id = id,
       r = r,
-      var_list = make_dropdown(only = 
-                                 list(theme = "Accessibility to amenities"),
-                               compare = TRUE),
+      var_list = cent_compare,
       time = time)
 
     # Additional tileset identifier
