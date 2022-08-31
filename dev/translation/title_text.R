@@ -464,8 +464,8 @@ title_text_translation <-
                       "explorent les enjeux de durabilité de Montréal qui ne s",
                       "e prêtent pas forcément à une représentation dans notre",
                       " format standard de carte interactive."))
-add_row(en = paste0("Housing Affordability"), 
-        fr = paste0("L'Abordabilité du logement")) |> 
+  add_row(en = paste0("Housing Affordability"), 
+          fr = paste0("L'Abordabilité du logement")) |> 
   add_row(en = paste0("Having access to affordable and equitable shelter is ",
                       "essential.Affordable housing is often broadly defined ",
                       "as spending less than 30% of household income on ",
@@ -514,4 +514,4 @@ add_row(en = paste0("Housing Affordability"),
                       "comprendre les schémas géographiques et ",
                       "socioéconomiques associés à l'accessibilité au logement ",
                       "afin d'informer les politiques et les actions visant ",
-                      "à mieux répondre aux besoins en matière de logement.")) |>
+                      "à mieux répondre aux besoins en matière de logement."))
