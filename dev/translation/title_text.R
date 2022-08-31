@@ -465,7 +465,7 @@ title_text_translation <-
                       "e prêtent pas forcément à une représentation dans notre",
                       " format standard de carte interactive."))
 add_row(en = paste0("Housing Affordability"), 
-        fr = paste0("L'accessibilité au logement")) |> 
+        fr = paste0("L'Abordabilité du logement")) |> 
   add_row(en = paste0("Having access to affordable and equitable shelter is ",
                       "essential.Affordable housing is often broadly defined ",
                       "as spending less than 30% of household income on ",
