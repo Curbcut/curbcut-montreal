@@ -104,9 +104,6 @@ demographics_server <- function(id, r) {
     observe(r[[id]]$df(get_df(tile(), zoom_string()))) |> 
       bindEvent(tile(), zoom_string(), ignoreInit = TRUE)
     
-    # Checkbox value
-    as_pct <- checkbox_server(id = id)
-    
     # Left variable server
     vl_gr <- select_var_server(
       id = id,

@@ -131,6 +131,19 @@ afford_server <- function(id, r) {
                                                  grp, ")")))
     })
     
+    # Disable the normalized checkbox if variables is percentage of total
+    observeEvent(var_left(), {
+      is_total_count <- var_left() %in%
+        c(paste("cent_d_total_total_total", 
+                c("count", "pct"), time(), sep = "_"),
+          paste("cent_p_total_total_total_total", 
+                c("count", "pct"), time(), sep = "_"))
+      
+      if (is_total_count) updateCheckboxInput(inputId = "afford-cbox",
+                                              value = FALSE)
+      toggleState("afford-cbox", condition = !is_total_count)
+    })
+    
     # Left variable server
     vl_gr <- select_var_server(
       id = id,
@@ -191,17 +204,25 @@ afford_server <- function(id, r) {
     
     # Final left variable server creation
     var_left <- reactive({
-      if (vl_gr() == "cent_d")
+      if (vl_gr() == "cent_d") {
+        # Resort to _count instead of _pct if all is total
+        if (all(c(vl_tn(), vl_sc(), vl_add_h()) == "total"))
+          return(paste("cent_d_total_total_total_count", time(), sep = "_"))
         return(paste(vl_gr(), 
                      vl_tn(), vl_sc(), vl_add_h(), 
                      if (as_pct()) "pct" else "count",
                      time(), sep = "_"))
-        
-      if (vl_gr() == "cent_p")
+      }
+      
+      if (vl_gr() == "cent_p") {
+        # Resort to _count instead of _pct if all is total
+        if (all(c(vl_im(), vl_add_p(), vl_sc(), vl_gn()) == "total"))
+          return(paste("cent_p_total_total_total_total_count", time(), sep = "_"))
         return(paste(vl_gr(), 
                      vl_im(), vl_add_p(), vl_sc(), vl_gn(), 
                      if (as_pct()) "pct" else "count",
                      time(), sep = "_"))
+      }
     })
     
     # Composite variable for map

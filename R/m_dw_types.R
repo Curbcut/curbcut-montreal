@@ -101,6 +101,15 @@ dw_types_server <- function(id, r) {
     
     # Checkbox value
     as_pct <- checkbox_server(id = id)
+    
+    # Disable the normalized checkbox if variables is percentage of total
+    observeEvent(var_left(), {
+      is_total_count <- var_left() %in%
+        paste("cent_d_total_total_total", c("count", "pct"), time(), sep = "_")
+      if (is_total_count) updateCheckboxInput(inputId = "dw_types-cbox",
+                                              value = FALSE)
+      toggleState("dw_types-cbox", condition = !is_total_count)
+    })
 
     # Left variable server
     vl_tn <- select_var_server(
@@ -123,6 +132,10 @@ dw_types_server <- function(id, r) {
     
     # Final left variable server creation
     var_left <- reactive({
+      # Resort to _count instead of _pct if all is total
+      if (all(c(vl_tn(), vl_sc(), vl_dw()) == "total"))
+        return(paste("cent_d_total_total_total_count", time(), sep = "_"))
+      
       paste("cent_d",
             vl_tn(), vl_sc(), vl_dw(), 
             if (as_pct()) "pct" else "count",
