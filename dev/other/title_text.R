@@ -121,8 +121,8 @@ title_text <-
     "household income on shelter costs. The reality of each household ",
     "consists of many different factors and characteristics, such as: the ",
     "people living there, their income, their shelter costs, and their tenure ",
-    " status. In this module, explore and compare housing affordability by ",
-    " city or borough. ")) |> 
+    "status. In this module, explore and compare housing affordability by ",
+    "city or borough. ")) |> 
   add_row(tab = "afford", type = "extra", text = paste0(
     "<p> The comparative analysis that you see in this module is based on ",
     "housing data from the 2016 Census. In selecting different options from ",
