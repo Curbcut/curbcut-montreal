@@ -132,7 +132,7 @@ title_text <-
     "characteristics. Using the panel on the right, you can compare these ",
     "housing affordability variables with access to different amenities by ",
     "mode of transportation. It is important to understand the geographic and ",
-    "socio-economic patterns associated with housing affordability to inform ",
+    "socioeconomic patterns associated with housing affordability to inform ",
     "policies and actions to best address housing needs. </ul>")) |> 
 
 
