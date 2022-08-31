@@ -69,9 +69,9 @@ var_left_list_7_afford <-
 
 # Disabled options - immigrants not selected
 vars_afford_add_dis_nimm <- 
-  unlist(var_left_list_5_demographics) %in% 
-  c(var_left_list_5_demographics[["Immigration characteristic"]])
+  unlist(var_left_list_7_afford) %in% 
+  c(var_left_list_7_afford[["Immigration characteristic"]])
 
 # Disabled options - immigrants selected
 vars_afford_add_dis_imm <- 
-  unlist(var_left_list_5_demographics) %in% "aboriginal"
+  unlist(var_left_list_7_afford) %in% "aboriginal"
