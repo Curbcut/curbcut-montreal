@@ -120,7 +120,7 @@ afford_server <- function(id, r) {
     
     # Checkbox value
     as_pct <- checkbox_server(id = id)
-    
+  
     # Update checkbox label depending on the grouping
     observeEvent(vl_gr(), {
       grp <- if (vl_gr() == "cent_d") "households" else "population"
@@ -130,6 +130,9 @@ afford_server <- function(id, r) {
                                           paste0("Normalized (percent of ", 
                                                  grp, ")")))
     })
+    
+    # Remember if the user wanted normalized data
+    onclick("afford-cbox", expr = r[[id]]$prev_norm(!r[[id]]$prev_norm()))
     
     # Disable the normalized checkbox if variables is percentage of total
     observeEvent(var_left(), {
@@ -141,7 +144,12 @@ afford_server <- function(id, r) {
       
       if (is_total_count) updateCheckboxInput(inputId = "afford-cbox",
                                               value = FALSE)
+      
       toggleState("afford-cbox", condition = !is_total_count)
+      
+      if (!is_total_count && r[[id]]$prev_norm())
+        updateCheckboxInput(inputId = "afford-cbox",
+                            value = TRUE)
     })
     
     # Left variable server
@@ -315,7 +323,8 @@ afford_server <- function(id, r) {
       var_left = var_left,
       var_right = var_right,
       more_args = reactive(c(
-        "c-cbox" = str_extract(as_pct(), "^.")))
+        "c-cbox" = str_extract(as_pct(), "^."),
+        "o-p_n" = str_extract(r[[id]]$prev_norm(), "^.")))
     )
     
   })

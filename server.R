@@ -43,16 +43,19 @@ shinyServer(function(input, output, session) {
                                     zoom = reactiveVal(get_zoom(map_zoom))),
     tenure = reactiveValues(select_id = reactiveVal(NA), 
                             df = reactiveVal("borough"),
-                            zoom = reactiveVal(get_zoom(map_zoom))),
+                            zoom = reactiveVal(get_zoom(map_zoom)),
+                            prev_norm = reactiveVal(FALSE)),
     dw_types = reactiveValues(select_id = reactiveVal(NA), 
                               df = reactiveVal("borough"),
-                              zoom = reactiveVal(get_zoom(map_zoom))),
+                              zoom = reactiveVal(get_zoom(map_zoom)),
+                              prev_norm = reactiveVal(FALSE)),
     demographics = reactiveValues(select_id = reactiveVal(NA), 
                               df = reactiveVal("borough"),
                               zoom = reactiveVal(get_zoom(map_zoom))),
     afford = reactiveValues(select_id = reactiveVal(NA), 
                             df = reactiveVal("borough"),
-                            zoom = reactiveVal(get_zoom(map_zoom)))
+                            zoom = reactiveVal(get_zoom(map_zoom)),
+                            prev_norm = reactiveVal(FALSE))
   )
   
 

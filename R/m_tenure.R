@@ -103,16 +103,23 @@ tenure_server <- function(id, r) {
     # Checkbox value
     as_pct <- checkbox_server(id = id)
     
+    # Remember if the user wanted normalized data
+    onclick("tenure-cbox", expr = r[[id]]$prev_norm(!r[[id]]$prev_norm()))
+    
     # Disable the normalized checkbox if variables is percentage of total
     observeEvent(var_left(), {
       is_total_count <- var_left() %in%
         paste("cent_d_total_total_total", c("count", "pct"), time(), sep = "_")
       if (is_total_count) updateCheckboxInput(inputId = "tenure-cbox",
                                               value = FALSE)
+      
       toggleState("tenure-cbox", condition = !is_total_count)
+      
+      if (!is_total_count && r[[id]]$prev_norm())
+        updateCheckboxInput(inputId = "tenure-cbox",
+                            value = TRUE)
     })
     
-
     # Left variable server
     vl_tn <- select_var_server(
       id = id,
@@ -236,7 +243,8 @@ tenure_server <- function(id, r) {
       var_left = var_left,
       var_right = var_right,
       more_args = reactive(c(
-        "c-cbox" = str_extract(as_pct(), "^.")))
+        "c-cbox" = str_extract(as_pct(), "^."),
+        "o-p_n" = str_extract(r[[id]]$prev_norm(), "^.")))
     )
     
   })

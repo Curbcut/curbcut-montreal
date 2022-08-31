@@ -55,18 +55,23 @@ update_module <- function(r, id, mod_ns = paste(id, id, sep = "-"), session,
         str_split("-")
       value <- value[[1]]
       
+      # Checkboxes
       if (widget_type == "c") {
         updateCheckboxInput(
           session = session,
           inputId = construct_namespace(inputId),
           value = if (str_detect(value, "^\\d$")) value else as.logical(value)
         )
+      
+        # Sliders
       } else if (widget_type == "s") {
         updateSliderInput(
           session = session,
           inputId = construct_namespace(inputId),
           value = value
         )
+        
+        # Dropdowns
       } else if (widget_type == "d") {
         
         # Does it follow a code from get_variables_rowid ?
@@ -78,6 +83,11 @@ update_module <- function(r, id, mod_ns = paste(id, id, sep = "-"), session,
           inputId = construct_namespace(inputId),
           selected = selected_value
         )
+        
+        # Other custom cases
+      } else if (widget_type == "o") {
+        # Previously normalized?, for Centraide modules
+        if (inputId == "p_n") r[[id]]$prev_norm(as.logical(value))
       }
     })
   }
