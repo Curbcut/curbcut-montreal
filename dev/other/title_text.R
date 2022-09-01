@@ -122,7 +122,7 @@ title_text <-
     "consists of many different factors and characteristics, such as: the ",
     "people living there, their income, their shelter costs, and their tenure ",
     "status. In this module, explore and compare housing affordability by ",
-    "city or borough. ")) |> 
+    "city or borough.")) |> 
   add_row(tab = "afford", type = "extra", text = paste0(
     "<p> The comparative analysis that you see in this module is based on ",
     "housing data from the 2016 Census. In selecting different options from ",
@@ -145,7 +145,7 @@ title_text <-
     "This is especially the case when compared with other factors. In this ",
     "module, tenure status can be explored in relation to shelter costs and ",
     "additional characteristics such as family characteristics and dwelling ",
-    "types. ")) |> 
+    "types.")) |> 
   add_row(tab = "tenure", type = "extra", text = paste0(
     "<p> The comparative analysis that you see in this module is based on ", 
     "housing data from the 2016 Census. In selecting different options from ",
@@ -156,7 +156,7 @@ title_text <-
     "of transportation. Understanding housing needs by tenure status can help ",
     "to inform what should be improved specifically for tenants or owners; as ",
     "they might be experiencing different difficulties and ",
-    "advantages.  </ul>")) |> 
+    "advantages. </ul>")) |> 
   
 
 # Dwelling types ----------------------------------------------------------
@@ -167,7 +167,7 @@ title_text <-
     "apartment in a building of 5+ stories is an important aspect of ", 
     "understanding people’s housing realities. In selecting different types ",
     "of dwellings, you can simply explore and compare them in relation to ",
-    "tenure status and shelter cost. ")) |> 
+    "tenure status and shelter cost.")) |> 
   add_row(tab = "dw_types", type = "extra", text = paste0(
     "<p> The comparative analysis that you see in this module is based on ",
     "housing data from the 2016 Census. In selecting different options from ",
@@ -176,7 +176,7 @@ title_text <-
     "right, you can compare the dwelling type variables with access to ",
     "different amenities by mode of transportation. Exploring the housing ",
     "system in Montreal through dwelling types adds a level of understanding ",
-    "to the overall housing situation.  </ul>")) |> 
+    "to the overall housing situation. </ul>")) |> 
   
 # Place explorer ----------------------------------------------------------
 
