@@ -54,7 +54,18 @@ make_dropdown <- function(multi_year = FALSE, only_vars = NULL,
                  vars[vars$theme == cat, c("var_code", "grouping",
                                            "group_diff")]
                
+               # Arrange so that 'total' are higher in the list!
+               cat_vecs$totals <- 
+                 sapply((gregexpr("total", cat_vecs$var_code, fixed = TRUE)),
+                        function(i) sum(i > 0))
+               indices <- match(cat_vecs$totals, 
+                                names(sort(table(cat_vecs$totals), 
+                                           decreasing = TRUE)))
+               cat_vecs <- 
+                 cat_vecs[order(indices, cat_vecs$totals, decreasing = TRUE), ] 
+               
                lapply(unique(cat_vecs$grouping), \(group) {
+                 # Take the first element of the list (the ones with the most `total`)
                  cat_vecs$var_code[cat_vecs$grouping == group][1]}) |> 
                  setNames(unique(cat_vecs$grouping))
              } else {

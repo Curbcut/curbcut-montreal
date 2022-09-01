@@ -345,8 +345,7 @@ styler <- '
    text-align: center;
    font-size: 1.65rem;
    padding:20px;
-   }
-
+  }
 
 '
 

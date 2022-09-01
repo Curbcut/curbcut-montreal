@@ -282,10 +282,67 @@ municipal_parks <-
   st_as_sf() |> 
   select(id, sqkm)
 
+
+# For each point data, in which variable will they belong -----------------
+
+# Food distributors
+food_distribution_vars <- 
+  c(unique(food_distribution$industry) |> 
+      str_to_lower() |> 
+      str_replace_all("\\s", "_")) |> 
+  str_remove("\\_\\(.*") |> 
+  str_remove_all(paste0("_and_fish_stores|_stores|_food|retail_|_products|",
+                        "_and_vegetable_markets|_and_fish"))
+names(food_distribution_vars) <- unique(food_distribution$industry)
+
+food_distribution <- 
+  food_distribution |> 
+  mutate(vars = case_when(
+    industry == "Grocery Stores" ~ list(c("grocery", "total")),
+    industry == "Miscellaneous Food Stores" ~ list(c("miscellaneous", "total")),
+    industry == "Retail Bakeries" ~ list(c("bakeries", "total")),
+    industry == "Fruit and Vegetable Markets" ~ list(c("fruit", "total")),
+    industry == "Meat and Fish (Seafood) Markets, Including Freezer Provisioners" ~ 
+      list(c("meat", "total")),
+    industry == "Dairy Products Stores" ~ list(c("dairy", "total")),
+  ))
+
+# Schools
+schools <- 
+  map_dfr(seq_len(nrow(schools)), function(r) {
+    vars_fit <- 
+      schools[r, ] |> 
+      st_drop_geometry() |> 
+      select(id, preschool, primary, secondary, vocational, adult) |> 
+      pivot_longer(!id) |> 
+      filter(value == 1) |> 
+      pull(name)
+    
+    vars_fit_total <- paste(vars_fit, "total", sep = "_")
+    
+    public_private <- if (schools[r, ]$public) "public" else "private"
+    
+    vars_fit_public_private <- paste(vars_fit, public_private, sep = "_")
+    total_public_pvriate <- paste0("total_", public_private)
+    
+    all_vars <- c(vars_fit_total, vars_fit_public_private, total_public_pvriate,
+                  "total_total")
+    
+    schools[r, ] |> 
+      mutate(vars = list(all_vars))
+  })
+
+# Health care
+
+# TKTK
+
+
 # Number of amenities per DA ----------------------------------------------
 
 old_plan <- future::plan()
 future::plan(future::multisession)
+
+
 
 point_amenities <- 
   list(food_distribution = food_distribution, 
@@ -300,21 +357,51 @@ DA_amenities <-
 DA_amenities <- 
   map(DA_amenities, function(amenity) {
     furrr::future_map(tt_matrix_DA, function(mode) {
-      mode[mode$travel_time_p50 <= 15, ] |> 
-        left_join(amenity, by = c("to_id" = "ID")) |> 
-        filter(!st_is_empty(geometry)) |> 
-        group_by(from_id) |> 
-        summarize(amenities = n())
+      
+      if ("vars" %in% names(amenity)) {
+      vars <- st_drop_geometry(amenity)$vars |> unlist() |> unique()
+
+      map(set_names(vars), function(var) {
+        filtered_am <- amenity |> 
+          st_drop_geometry() |> 
+          unnest(vars) |> 
+          filter(vars == var) |> 
+          left_join(select(amenity, id), by = "id")
+        
+        mode[mode$travel_time_p50 <= 15, ] |> 
+          left_join(filtered_am, by = c("to_id" = "ID")) |> 
+          filter(!st_is_empty(geometry)) |> 
+          group_by(from_id) |> 
+          summarize(amenities = n())
+      })
+      } else {
+        mode[mode$travel_time_p50 <= 15, ] |> 
+          left_join(amenity, by = c("to_id" = "ID")) |> 
+          filter(!st_is_empty(geometry)) |> 
+          group_by(from_id) |> 
+          summarize(amenities = n())
+      }
     })
   })
 
 # Get amenities in one df
-DA_amenities <- 
+DA_amenities <-
   furrr::future_imap(DA_amenities, function(amenity, n_amenity) {
     amenity |> 
-      imap(~{
-        names(.x)[2] <- paste0(n_amenity, "_", str_to_lower(.y), "_count")
-        .x}) |> reduce(left_join, by = "from_id")
+      imap(function(mode, n_mode) {
+        if (!is.data.frame(mode)) {
+          # Gotta go in another level of lists!
+          mode |> 
+            imap(function(var, n_var) {
+              names(var)[2] <- paste(n_amenity, n_var, str_to_lower(n_mode), 
+                                     "count", sep = "_")
+              var
+            }) |> 
+            reduce(left_join, by = "from_id")
+        } else {
+        names(mode)[2] <- paste(n_amenity, str_to_lower(n_mode), "count", sep = "_")
+        mode}}) |> 
+      reduce(left_join, by = "from_id")
   })
 
 # For parks, the amount of amenities reachable per mode in 15 minutes must
@@ -354,7 +441,6 @@ DA_amenities <-
   reduce(DA_amenities, left_join, by = "from_id") |> 
   rename_with(~paste0("amenities_", .x)) |> 
   rename(ID = amenities_from_id)
-
 
 # Get DA amenities at other scales ----------------------------------------
 # On average, an individual living in this scale can reach X amenity in a 15 
@@ -440,13 +526,101 @@ breaks_q5_active <-
 new_rows <-
   map_dfr(var_list, function(var) {
     
+    # Transportation mode
     mode <- 
       case_when(str_detect(var, "_walk_") ~ "walk",
                 str_detect(var, "_transit_") ~ "transit",
                 str_detect(var, "_bicycle_") ~ "bicycle",
                 str_detect(var, "_car_") ~ "car")
     
+    # Amenity
     amenity <- 
+      if (str_detect(var, "_food_distribution_")) {
+        case_when(
+          str_detect(var, "_grocery_") ~ "Grocery Stores",
+          str_detect(var, "_miscellaneous_") ~ "Miscellaneous Food Stores",
+          str_detect(var, "_bakeries_") ~ "Retail Bakeries",
+          str_detect(var, "_fruit_") ~ "Fruit and Vegetable Markets",
+          str_detect(var, "_meat_") ~ "Meat and Fish (Seafood) Markets",
+          str_detect(var, "_dairy_") ~ "Dairy Products Stores",
+          TRUE ~ "food distributors") |> 
+          str_to_lower()
+      } else if (str_detect(var, "_schools_")) {
+        
+        public_or_private <- 
+          case_when(
+            str_detect(var, "_public_") ~ "public ",
+            str_detect(var, "_private_") ~ "private ",
+            TRUE ~ "")
+        
+        school_level <- 
+          case_when(
+            str_detect(var, "_preschool_") ~ "preschools",
+            str_detect(var, "_primary_") ~ "primary schools",
+            str_detect(var, "_secondary_") ~ "secondary schools",
+            str_detect(var, "_vocational_") ~ "vocational schools",
+            str_detect(var, "_adult_") ~ "schools for adults",
+            TRUE ~ "schools")
+        
+        paste0(public_or_private, school_level)
+        
+      } else {
+        case_when(str_detect(var, "_daycare_spots_") ~ "daycare spots",
+                  str_detect(var, "_health_care_") ~ "health care facilities",
+                  str_detect(var, "_municipal_parks_") ~ 
+                    "square kilometers of municipal parks")
+      }
+    
+    # Short version of amenity
+    amenity_short <- 
+      if (str_detect(var, "_food_distribution_")) {
+        case_when(
+          str_detect(var, "_grocery_") ~ "Groceries",
+          str_detect(var, "_miscellaneous_") ~ "Misc. Food",
+          str_detect(var, "_bakeries_") ~ "Bakeries",
+          str_detect(var, "_fruit_") ~ "Fruits",
+          str_detect(var, "_meat_") ~ "Meat",
+          str_detect(var, "_dairy_") ~ "Dairy",
+          TRUE ~ "Food")
+      } else if (str_detect(var, "_schools_")) {
+        
+        public_or_private <- 
+          case_when(
+            str_detect(var, "_public_") ~ "Pub. ",
+            str_detect(var, "_private_") ~ "Pri. ",
+            TRUE ~ "")
+        
+        school_level <- 
+          case_when(
+            str_detect(var, "_preschool_") ~ "Preschools",
+            str_detect(var, "_primary_") ~ "Primary",
+            str_detect(var, "_secondary_") ~ "Secondary",
+            str_detect(var, "_vocational_") ~ "Cocational",
+            str_detect(var, "_adult_") ~ "Adults",
+            TRUE ~ "Schools")
+        
+        paste0(public_or_private, school_level)
+        
+      } else {
+        case_when(str_detect(var, "_daycare_spots_") ~ "Daycare",
+                  str_detect(var, "_health_care_") ~ "Health",
+                  str_detect(var, "_municipal_parks_") ~ 
+                    "Parks")
+      }
+
+    # Explanation
+    pre <- 
+      case_when(str_ends(var, "_count") ~ "the count",
+                str_ends(var, "_sqkm") ~ "the number")
+    explanation_ <- 
+      if (mode == "walk") {
+        glue::glue("{pre} of {amenity} accessible in a 15 minutes {mode}")
+      } else {
+        glue::glue("{pre} of {amenity} accessible in 15 minutes by {mode}")
+      }
+    
+    # Higher level categories
+    amenity_higher_level <- 
       case_when(str_detect(var, "_food_distribution_") ~ "food distributors",
                 str_detect(var, "_schools_") ~ "schools",
                 str_detect(var, "_daycare_spots_") ~ "daycare spots",
@@ -454,22 +628,45 @@ new_rows <-
                 str_detect(var, "_municipal_parks_") ~ 
                   "square kilometers of municipal parks")
     
-    amenity_short <- 
-      case_when(str_detect(var, "_food_distribution_") ~ "Food",
-                str_detect(var, "_schools_") ~ "Schools",
-                str_detect(var, "_daycare_spots_") ~ "Daycare",
-                str_detect(var, "_health_care_") ~ "Health",
-                str_detect(var, "_municipal_parks_") ~ "Parks")
-    
-    pre <- 
-      case_when(str_ends(var, "_count") ~ "the count",
-                str_ends(var, "_sqkm") ~ "the number")
-    
-    explanation_ <- 
-      if (mode == "walk") {
-        glue::glue("{pre} of {amenity} accessible in a 15 minutes {mode}")
+    # Differentation between categories, for multiple dropdowns
+    group_diff <- 
+      if (str_detect(var, "_food_distribution_")) {
+        cat <- 
+          case_when(
+            str_detect(var, "_grocery_") ~ "Grocery stores",
+            str_detect(var, "_miscellaneous_") ~ "Miscellaneous food stores",
+            str_detect(var, "_bakeries_") ~ "Retail bakeries",
+            str_detect(var, "_fruit_") ~ "Fruit and vegetable markets",
+            str_detect(var, "_meat_") ~ "Meat and fish (seafood) markets",
+            str_detect(var, "_dairy_") ~ "Dairy products stores",
+            TRUE ~ "Total") 
+        
+        list("Mode of transport" = as.character(glue::glue("By {mode}")),
+             "Industry" = cat)
+        
+      } else if (str_detect(var, "_schools_")) {
+        
+        public_or_private <- 
+          case_when(
+            str_detect(var, "_public_") ~ "Public",
+            str_detect(var, "_private_") ~ "Private",
+            TRUE ~ "Total")
+        
+        school_level <- 
+          case_when(
+            str_detect(var, "_preschool_") ~ "Preschools",
+            str_detect(var, "_primary_") ~ "Primary",
+            str_detect(var, "_secondary_") ~ "Secondary",
+            str_detect(var, "_vocational_") ~ "Vocational",
+            str_detect(var, "_adult_") ~ "Adults",
+            TRUE ~ "Total")
+        
+        list("Mode of transport" = as.character(glue::glue("By {mode}")),
+             "Educational establishment category" = school_level,
+             "Public/Private" = public_or_private)
+        
       } else {
-        glue::glue("{pre} of {amenity} accessible in 15 minutes by {mode}")
+        list("Mode of transport" = as.character(glue::glue("By {mode}")))
       }
     
     # ADDED ROW
@@ -495,8 +692,8 @@ new_rows <-
                                           CT = FALSE,
                                           borough = FALSE,
                                           centraide = FALSE)),
-                    grouping = as.character(glue::glue("Accessibility to {amenity}")),
-                    group_diff = as.character(glue::glue("By {mode}")))
+                    grouping = as.character(glue::glue("Accessibility to {amenity_higher_level}")),
+                    group_diff = group_diff)
     
     out[out$var_code == var, ]
     

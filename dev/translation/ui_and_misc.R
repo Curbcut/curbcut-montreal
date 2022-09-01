@@ -26,6 +26,8 @@ ui_and_misc_translated <-
           fr = paste0("Auteurs")) |> 
   add_row(en = paste0("Hide"), 
           fr = paste0("En voir moins")) |> 
+  add_row(en = paste0("Show"), 
+          fr = paste0("En voir plus")) |> 
   add_row(en = paste0("Explore"), 
           fr = paste0("Explorez")) |> 
   add_row(en = paste0("Select a year"), 
