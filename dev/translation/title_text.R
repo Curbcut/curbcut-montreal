@@ -622,5 +622,4 @@ title_text_translation <-
                       "l'accès à différentes commodités par mode de transport. ",
                       "L'examen et la comparaison des variables démographiques ",
                       "peuvent fournir des renseignements significatifs sur la ",
-                      "population Montréalaise. ")) 
-  
+                      "population Montréalaise. "))
