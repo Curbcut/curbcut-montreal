@@ -119,7 +119,7 @@ title_text <-
     "Having access to affordable and equitable shelter is essential. ",
     "Affordable housing is often broadly defined as spending less than 30% of ",
     "household income on shelter costs. The reality of each household ",
-    "consists of many different factors and characteristics, such as: the ",
+    "consists of many different factors and characteristics, such as, the ",
     "people living there, their income, their shelter costs, and their tenure ",
     "status. In this module, explore and compare housing affordability by ",
     "city or borough.")) |> 
