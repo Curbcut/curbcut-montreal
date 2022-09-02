@@ -26,4 +26,4 @@ dl_unzip_data <- function(dir = "data", data_url) {
 
 # Data folder -------------------------------------------------------------
 
-dl_unzip_data(.sus_dropbox)
+dl_unzip_data(data_url = .sus_dropbox)
