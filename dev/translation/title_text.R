@@ -469,7 +469,7 @@ title_text_translation <-
   add_row(en = paste0("Having access to affordable and equitable shelter is essential. ",
                       "Affordable housing is often broadly defined as spending less than 30% of ",
                       "household income on shelter costs. The reality of each household ",
-                      "consists of many different factors and characteristics, such as: the ",
+                      "consists of many different factors and characteristics, such as, the ",
                       "people living there, their income, their shelter costs, and their tenure ",
                       "status. In this module, explore and compare housing affordability by ",
                       "city or borough."), 
@@ -478,7 +478,7 @@ title_text_translation <-
                       "de manière générale comme le fait de consacrer moins ",
                       "de 30 % du revenu du ménage aux frais de logement. ",
                       "La réalité de chaque ménage est constituée de nombreux "<
-                      "facteurs et caractéristiques différents, tels que : les ",
+                      "facteurs et caractéristiques différents, tels que les ",
                       "personnes qui y vivent, leurs revenus, leurs frais de ",
                       "logement et leur statut d'occupation. Dans ce module, ",
                       "explorez et comparez l'accessibilité au logement par ",
