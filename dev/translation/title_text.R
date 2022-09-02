@@ -478,7 +478,7 @@ title_text_translation <-
                       "de manière générale comme le fait de consacrer moins ",
                       "de 30 % du revenu du ménage aux frais de logement. ",
                       "La réalité de chaque ménage est constituée de nombreux "<
-                      "facteurs et caractéristiques différents, tels que : les ",
+                      "facteurs et caractéristiques différents, tels que les ",
                       "personnes qui y vivent, leurs revenus, leurs frais de ",
                       "logement et leur statut d'occupation. Dans ce module, ",
                       "explorez et comparez l'accessibilité au logement par ",
