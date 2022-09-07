@@ -31,3 +31,7 @@ centraide <-
                    name = ID, population = var), by = "name") |> 
   relocate(ID, name, name_2, population, households, .before = geometry)
 
+
+# Cleanup -----------------------------------------------------------------
+
+rm(table1, table2)

@@ -167,7 +167,7 @@ interpolate <- function(df_list, scales, years, data_agg) {
 
 # Swap CSD to borough -----------------------------------------------------
 
-swap_csd_to_borough <- function(df_list, years, crs = 32618, data_agg) {
+swap_csd_to_borough <- function(df_list, years, crs = 32618, data_agg, scales) {
 
   # Only proceed if `borough` exists
   if (!exists("borough")) stop("`borough` must be in the global environment.")
@@ -305,7 +305,7 @@ swap_csd_to_borough <- function(df_list, years, crs = 32618, data_agg) {
 interpolate_other <- function(df_list, targets, years, crs = 32618, data_agg) {
   
   # Check if targets exist
-  stopifnot(exists(targets))
+  stopifnot(map_lgl(targets, exists))
 
   pb <- progressr::progressor(steps = sum(sapply(df_list$DA, nrow)) * 
                                 length(targets))
@@ -445,5 +445,5 @@ interpolate_other <- function(df_list, targets, years, crs = 32618, data_agg) {
         })
     })
 
-  c(df_list, new_geos)
+  new_geos
 }

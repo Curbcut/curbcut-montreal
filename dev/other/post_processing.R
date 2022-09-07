@@ -14,13 +14,7 @@ post_process <- function(x) {
 
 # Apply script to all tables ----------------------------------------------
 
-borough <- post_process(borough)
-building <- post_process(building)
-crash <- post_process(crash)
-CT <- post_process(CT)
-DA <- post_process(DA)
-grid <- post_process(grid)
-street <- post_process(street)
+map(all_tables, ~assign(.x, post_process(get(.x)), envir = .GlobalEnv))
 
 
 # Clean up ----------------------------------------------------------------

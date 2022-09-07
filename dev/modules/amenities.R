@@ -442,85 +442,60 @@ DA_amenities <-
   rename_with(~paste0("amenities_", .x)) |> 
   rename(ID = amenities_from_id)
 
+
 # Get DA amenities at other scales ----------------------------------------
 # On average, an individual living in this scale can reach X amenity in a 15 
 # minutes trip
 
 # Add all DAs, change NAs for 0s
-DA_amenities <- list(DA = DA_amenities |> 
-                       right_join(st_drop_geometry(select(DA, ID)), 
-                                  by = "ID") |> 
-                       mutate(across(where(is.numeric), ~
-                                       ifelse(is.na(.x), 0, .x))))
+DA_amenities <- 
+  DA_amenities |> 
+  right_join(st_drop_geometry(select(DA, ID)), 
+             by = "ID") |> 
+  mutate(across(where(is.numeric), ~
+                  ifelse(is.na(.x), 0, .x)))
 
-# CT
-DA_amenities$CT <-
-  DA |> 
-  st_drop_geometry() |> 
-  select(ID, CTUID, population) |> 
-  left_join(DA_amenities$DA, by = "ID") |> 
-  group_by(CTUID) |>
-  (\(x) summarize(x, across(3:(ncol(x) - 1), ~weighted.mean(.x, population, 
-                                                            na.rm = TRUE))))() |> 
-  rename(ID = CTUID)
+DA_amenities <- 
+  interpolate_scales(data = rename(DA_amenities, DAUID = ID),
+                     base_scale = "DA",
+                     all_tables = all_tables,
+                     add_to_grid = FALSE,
+                     weight_by = "population")
 
-# borough
-DA_amenities$borough <-
-  DA |> 
-  st_drop_geometry() |> 
-  select(ID, CSDUID, population) |> 
-  left_join(DA_amenities$DA, by = "ID") |> 
-  group_by(CSDUID) |>
-  (\(x) summarize(x, across(3:(ncol(x) - 1), ~weighted.mean(.x, population, 
-                                                            na.rm = TRUE))))() |> 
-  rename(ID = CSDUID)
-
-# centraide
-DA_amenities$centraide <- 
-  DA |> 
-  select(ID, population) |> 
-  # Some DAs are in more than one centraide neighbourhood. As DAs are very small
-  # compared to centraide neighbourhood, it is good enough.
-  st_join(transmute(centraide, centraide_ID = ID)) |> 
-  st_drop_geometry() |> 
-  select(ID, centraide_ID, population) |> 
-  left_join(DA_amenities$DA, by = "ID") |> 
-  group_by(centraide_ID) |>
-  (\(x) summarize(x, across(3:(ncol(x) - 1), ~weighted.mean(.x, population, 
-                                                            na.rm = TRUE))))() |> 
-  rename(ID = centraide_ID)
-  
 
 # Calculate breaks --------------------------------------------------------
 
-DA_amenities <- map(DA_amenities, add_q3)
+DA_amenities <- calculate_breaks(DA_amenities)
 
-DA_amenities_q3 <- map(DA_amenities, get_breaks_q3)
-DA_amenities_q5 <- map(DA_amenities, get_breaks_q5)
 
-DA_amenities <-
-  map2(DA_amenities, DA_amenities_q5, 
-       ~{bind_cols(.x, add_q5(.x, .y))})
+# Assign to existing geographies ------------------------------------------
+
+assign_tables(module_tables = DA_amenities)
 
 
 # Add to variables table --------------------------------------------------
 
 var_list <-
-  DA_amenities$DA |>
+  DA_amenities$tables_list$DA |>
   select(-ID, -contains(c("q3", "q5"))) |>
   names()
 
 # Get breaks_q3
 breaks_q3_active <-
-  imap_dfr(DA_amenities_q3, \(x, scale) {
+  imap_dfr(DA_amenities$tables_q3, \(x, scale) {
     if (nrow(x) > 0) x |> mutate(scale = scale, date = NA, rank = 0:3,
                                  .before = 1)})
 
 # Get breaks_q5
 breaks_q5_active <-
-  imap_dfr(DA_amenities_q5, \(x, scale) {
+  imap_dfr(DA_amenities$tables_q5, function(x, scale) {
     if (nrow(x) > 0) x |> mutate(scale = scale, date = NA, rank = 0:5,
                                  .before = 1)})
+
+interpolation_keys <- 
+  map(set_names(names(DA_amenities$tables_list)), ~{
+    if (.x == "DA") FALSE else "dissemination area"
+  })
 
 # Add in variables table
 new_rows <-
@@ -680,7 +655,7 @@ new_rows <-
                     theme = "Accessibility to amenities",
                     private = TRUE,
                     dates = NA,
-                    scales = c("DA", "CT", "borough", "centraide"),
+                    scales = names(DA_amenities$tables_list),
                     breaks_q3 = select(breaks_q3_active,
                                        scale, date, rank, 
                                        var = all_of(var)),
@@ -688,10 +663,7 @@ new_rows <-
                                        scale, date, rank, 
                                        var = all_of(var)),
                     source = "Centraide",
-                    interpolated = list(c(DA = FALSE,
-                                          CT = FALSE,
-                                          borough = FALSE,
-                                          centraide = FALSE)),
+                    interpolated = interpolation_keys,
                     grouping = as.character(glue::glue("Accessibility to {amenity_higher_level}")),
                     group_diff = group_diff)
     
@@ -703,32 +675,11 @@ variables <-
   bind_rows(variables, new_rows)
 
 
-# Join amenities to DA ----------------------------------------------------
-DA <-
-  left_join(DA, DA_amenities$DA, by = "ID") |>
-  relocate(geometry, .after = last_col())
-
-# Join amenities to CT ----------------------------------------------------
-CT <-
-  left_join(CT, DA_amenities$CT, by = "ID") |>
-  relocate(geometry, .after = last_col())
-
-# Join amenities to borough -----------------------------------------------
-borough <-
-  left_join(borough, DA_amenities$borough, by = "ID") |>
-  relocate(geometry, .after = last_col())
-
-# Join amenities to centraide ---------------------------------------------
-centraide <-
-  left_join(centraide, DA_amenities$centraide, by = "ID") |>
-  relocate(geometry, .after = last_col())
-
-
 # Clean up ----------------------------------------------------------------
 
-rm(DA_amenities, DA_amenities_q3, DA_amenities_q5, DA_street_centroid, daycares, 
+rm(DA_amenities, DA_street_centroid, daycares, health_care, food_distribution_vars,
    daycares_spot, food_distribution, municipal_parks, municipal_parks_sqkm, 
    new_rows, old_plan, point_amenities, schools, sm_industry, var_list,
-   susmontreal_bbox)
+   susmontreal_bbox, )
 
 

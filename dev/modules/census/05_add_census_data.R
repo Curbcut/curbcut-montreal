@@ -3,37 +3,43 @@
 # Full census data gather function ----------------------------------------
 
 add_census_data <- function(census_vec, scales, years, parent_vectors = NULL,
-                            CMA = "24462", crs = 32618) {
+                            region = "24", crs = 32618) {
   
+  #Overwrite the first few scales to only get the normal census data
+  census_scales <- str_subset(scales, "CSD|CT|DA")
+
   # Get empty geometries
-  geoms <- get_empty_geometries(scales, years, CMA, crs)
+  geoms <- get_empty_geometries(census_scales, years, region, crs)
   
   # Download data
-  data_raw <- get_census_vectors(census_vec, geoms, scales, years,
-                                 parent_vectors, CMA)
+  data_raw <- get_census_vectors(census_vec, geoms, census_scales, years,
+                                 parent_vectors)
   
   # Get aggregation type
-  data_agg <- get_agg_type(data_raw, census_vec, scales, years)
+  data_agg <- get_agg_type(data_raw, census_vec, census_scales, years)
   
   # Interpolate
-  data_inter <- interpolate(data_raw, scales, years, data_agg)
+  data_inter <- interpolate(data_raw, census_scales, years, data_agg)
   
-  # Swap CSD to borough
-  if (CMA == "24462") {
-    data_inter <- swap_csd_to_borough(data_inter, years, crs, data_agg)
+  # Swap CSD to borough if it's Montreal
+  if (region == "24" && crs == 32618) {
+    data_inter <- swap_csd_to_borough(data_inter, years, crs, data_agg,
+                                      scales = census_scales)
     scales[scales == "CSD"] <- "borough"
   }
   
   # Interpolate to building, grid & street
-  data_other_inter <- interpolate_other(data_inter, "grid", years, crs, 
-                                        data_agg)
-  scales <- c(scales, "grid")
+  other_scales <- str_subset(scales, "CSD|borough|CT|DA", negate = TRUE)
+  data_other_inter <-
+        interpolate_other(data_inter, other_scales, years, crs, data_agg)
   
+  data_all_inter <- c(data_inter, data_other_inter)
+
   # Get units type
   data_unit <- get_unit_type(census_vec, scales, years)
   
   # Normalize pct variables
-  data_norm <- normalize(data_other_inter, census_vec, data_unit)
+  data_norm <- normalize(data_all_inter, census_vec, data_unit)
   
   # Drop variables which aren't included in final tables
   data_final <- drop_vars(data_norm, census_vec)

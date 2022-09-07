@@ -5,12 +5,7 @@
 
 # Load libraries and data -------------------------------------------------
 
-library(tidyverse)
-library(qs)
-library(future)
-library(furrr)
 library(progressr)
-library(sf)
 
 source("dev/other/crosstabs_fun.R")
 
@@ -60,14 +55,6 @@ add_characteristics <-
        "low_inc" = "low income after tax",
        "unsuitable" = "unsuitable",
        "repairs" = "major repairs needed")
-
-
-# Compare -----------------------------------------------------------------
-
-# Amenity access: food, parks, healthcare facilities
-# Accessibility to total jobs on peak weekday
-# canale_ind
-# climate_heat_waves
 
 
 # Iteration of the retrieval function -------------------------------------
@@ -139,7 +126,7 @@ with_progress({
 })
 
 cent_d <- 
-  map2(cent_d, names(cent_d), function(df, scale) {
+  imap(cent_d, function(df, scale) {
     bind_cols(get_housing_char()[[scale]][, "ID"], df) |>
       rename_with(~paste0("cent_d_", .x, "_count_2016"), 
                   total_total_total:last_col())
@@ -197,32 +184,31 @@ cent_d <-
 
 # Calculate breaks --------------------------------------------------------
 
-cent_d <- map(cent_d, add_q3)
+cent_d <- calculate_breaks(cent_d)
 
-cent_d_q3 <- map(cent_d, get_breaks_q3)
-cent_d_q5 <- map(cent_d, get_breaks_q5)
 
-cent_d <-
-  map2(cent_d, cent_d_q5, 
-       ~{bind_cols(.x, add_q5(.x, .y))})
+# Assign to existing geographies ------------------------------------------
+
+assign_tables(module_tables = cent_d)
+
 
 # Add to variables table --------------------------------------------------
 
 var_list <-
-  cent_d$CT |>
+  cent_d$tables_list$CT |>
   select(-ID, -contains(c("q3", "q5"))) |>
   names()
 
 # Get breaks_q3
 breaks_q3_active <-
-  map2_dfr(cent_d_q3, c("CT", "centraide", "borough"), \(x, scale) {
+  imap_dfr(cent_d$tables_q3, \(x, scale) {
     if (nrow(x) > 0) x |> mutate(scale = scale, date = 2016, rank = 0:3,
                                  .before = 1)})
 
 # Get breaks_q5
 breaks_q5_active <-
-  map2_dfr(cent_d_q5, c("CT", "centraide", "borough"), \(x, scale) {
-    if (nrow(x) > 0) x |> mutate(scale = scale, date = 2016, rank = 0:5,
+  imap_dfr(cent_d$tables_q5, function(x, scale) {
+    if (nrow(x) > 0) x |> mutate(scale = scale, date = 2016, rank = 0:5, 
                                  .before = 1)})
 
 new_rows <-
@@ -412,29 +398,8 @@ new_rows <-
 variables <-
   bind_rows(variables, new_rows)
 
-# Join vulnerable_pop to CT -----------------------------------------------
-
-CT <-
-  left_join(CT, cent_d$CT, by = "ID") |>
-  relocate(geometry, .after = last_col())
-
-
-# Join vulnerable_pop to borough ------------------------------------------
-
-borough <-
-  left_join(borough, cent_d$borough, by = "ID") |>
-  relocate(geometry, .after = last_col())
-
-
-# Join vulnerable_pop to centraide ----------------------------------------
-
-centraide <-
-  left_join(centraide, cent_d$centraide, by = "ID") |>
-  relocate(geometry, .after = last_col())
-
 
 # Clean up ----------------------------------------------------------------
 
-rm(tenure_statuses, add_characteristics, shelter_costs,
-   var_list, breaks_q3_active, breaks_q5_active, new_rows,
-   cent_d_q3, cent_d_q5)
+rm(tenure_statuses, add_characteristics, shelter_costs, cend_d,
+   var_list, breaks_q3_active, breaks_q5_active, new_rows)

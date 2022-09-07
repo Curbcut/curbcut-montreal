@@ -5,13 +5,6 @@
 
 # Load libraries and data -------------------------------------------------
 
-library(tidyverse)
-library(qs)
-library(future)
-library(furrr)
-library(progressr)
-library(sf)
-
 source("dev/other/crosstabs_fun.R")
 
 # table1 <-
@@ -77,6 +70,7 @@ progressr::handlers(progressr::handler_progress(
 ))
 
 library(future)
+old_plan <- plan()
 plan(list(tweak(multisession, workers = 2), 
           tweak(multisession, workers = 3),
           tweak(multisession, workers = 2),
@@ -92,16 +86,16 @@ with_progress({
                             2)
   
   cent_p <- 
-    future_map(set_names(c("CT", "centraide")), function(scale) {
-      future_map_dfc(names(imm_statuses), function(imm_status_name) {
+    furrr::future_map(set_names(c("CT", "centraide")), function(scale) {
+      furrr::future_map_dfc(names(imm_statuses), function(imm_status_name) {
         
         imm_status <- imm_statuses[[imm_status_name]]
         
         # Non-immigrant includes also non-permanent resident. Get the multiple
         # columns, and sum them later.
         imm_sum_rows <- 
-          future_map(imm_status, function(imm_stat) {
-            future_map_dfc(names(add_characteristics), function(add_characteristics_name) {
+          furrr::future_map(imm_status, function(imm_stat) {
+            furrr::future_map_dfc(names(add_characteristics), function(add_characteristics_name) {
               
               household_status <- add_characteristics[[add_characteristics_name]]
               
@@ -167,6 +161,8 @@ with_progress({
       
     })
 })
+
+plan(old_plan)
 
 # Filter out impossible combinations
 cent_p <- 
@@ -264,32 +260,31 @@ cent_p <-
 
 # Calculate breaks --------------------------------------------------------
 
-cent_p <- map(cent_p, add_q3)
+cent_p <- calculate_breaks(cent_p)
 
-cent_p_q3 <- map(cent_p, get_breaks_q3)
-cent_p_q5 <- map(cent_p, get_breaks_q5)
 
-cent_p <-
-  map2(cent_p, cent_p_q5, ~{bind_cols(.x, add_q5(.x, .y))})
+# Assign to existing geographies ------------------------------------------
+
+assign_tables(module_tables = cent_p)
 
 
 # Add to variables table --------------------------------------------------
 
 var_list <-
-  cent_p$CT |>
+  cent_p$tables_list$CT |>
   select(-ID, -contains(c("q3", "q5"))) |>
   names()
 
 # Get breaks_q3
 breaks_q3_active <-
-  map2_dfr(cent_p_q3, c("CT", "centraide", "borough"), \(x, scale) {
+  imap_dfr(cent_p$tables_q3, \(x, scale) {
     if (nrow(x) > 0) x |> mutate(scale = scale, date = 2016, rank = 0:3,
                                  .before = 1)})
 
 # Get breaks_q5
 breaks_q5_active <-
-  map2_dfr(cent_p_q5, c("CT", "centraide", "borough"), \(x, scale) {
-    if (nrow(x) > 0) x |> mutate(scale = scale, date = 2016, rank = 0:5,
+  imap_dfr(cent_p$tables_q5, function(x, scale) {
+    if (nrow(x) > 0) x |> mutate(scale = scale, date = 2016, rank = 0:5, 
                                  .before = 1)})
 
 new_rows <-
@@ -533,29 +528,8 @@ variables <-
   bind_rows(variables, new_rows)
 
 
-# Join cent_p to CT -----------------------------------------------
-
-CT <-
-  left_join(CT, cent_p$CT, by = "ID") |>
-  relocate(geometry, .after = last_col())
-
-
-# Join cent_p to borough ------------------------------------------
-
-borough <-
-  left_join(borough, cent_p$borough, by = "ID") |>
-  relocate(geometry, .after = last_col())
-
-
-# Join cent_p to centraide ----------------------------------------
-
-centraide <-
-  left_join(centraide, cent_p$centraide, by = "ID") |>
-  relocate(geometry, .after = last_col())
-
-
 # Clean up ----------------------------------------------------------------
 
-rm(imm_statuses, add_characteristics, shelter_costs, sexes,
+rm(imm_statuses, add_characteristics, shelter_costs, sexes, cend_p,
    var_list, breaks_q3_active, breaks_q5_active, new_rows,
-   cent_p_q3, cent_p_q5, table1)
+   table1)

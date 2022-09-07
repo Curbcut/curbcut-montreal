@@ -148,3 +148,25 @@ get_breaks_q5 <- function(df, var_list = NULL) {
         set_names(.y)})
   
 }
+
+
+# Calculate all breaks ----------------------------------------------------
+
+calculate_breaks <- function(tables_list) {
+  
+  # Add q3
+  tables_list <- map(tables_list, add_q3)
+  
+  # Get breaks
+  tables_q3 <- map(tables_list, get_breaks_q3)
+  tables_q5 <- map(tables_list, get_breaks_q5)
+  
+  # Assign breaks 
+  out <- map2(tables_list, tables_q5, ~bind_cols(.x, add_q5(.x, .y)))
+  
+  return(list(tables_list = out,
+              tables_q3 = tables_q3,
+              tables_q5 = tables_q5))
+}
+
+

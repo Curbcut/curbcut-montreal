@@ -13,7 +13,7 @@ suppressPackageStartupMessages(library(future))
 plan(multisession)
 
 # Lists of scales and years
-scales <- c("CSD", "CT", "DA")
+scales <- str_replace(all_tables, "^borough$", "CSD")
 years <- c(1996, 2001, 2006, 2011, 2016)
 
 # Load functions
@@ -70,7 +70,7 @@ source("dev/modules/census/census_education.R")
 
 census_vec <- 
   census_vec |> 
-  mutate(source = "census")
+  mutate(source = "Canadian census")
 
 
 # Gather data -------------------------------------------------------------
@@ -96,20 +96,7 @@ data_testing(data_to_add[[1]])
 
 # Assign data -------------------------------------------------------------
 
-borough <- 
-  borough |> 
-  left_join(data_to_add[[1]]$borough, by = "ID") |> 
-  relocate(geometry, .after = last_col())
-
-CT <- 
-  CT |> 
-  left_join(data_to_add[[1]]$CT, by = "ID") |> 
-  relocate(geometry, .after = last_col())
-
-DA <- 
-  DA |> 
-  left_join(data_to_add[[1]]$DA, by = "ID") |> 
-  relocate(centroid, buffer, building, geometry, .after = last_col())
+assign_tables(data_to_add[[1]][names(data_to_add[[1]]) != "grid"])
 
 grid <-
   grid |>
@@ -117,27 +104,6 @@ grid <-
                    ends_with(as.character(years[[length(years)]]))), by = "ID") |>
   relocate(geometry, .after = last_col())
 
-
-# Assign DA data to building and street -----------------------------------
-
-DA_census <- 
-  DA[, str_detect(names(DA), paste0(census_vec$var_code, collapse = "|"))] |> 
-  mutate(ID = DA$ID) |> 
-  st_drop_geometry()
-
-building <- 
-  building |> 
-  left_join(DA_census, by = c("DAUID" = "ID")) |> 
-  relocate(geometry, .after = last_col())
-
-street <- 
-  street |> 
-  left_join(DA_census, by = c("DAUID" = "ID")) |> 
-  relocate(geometry, .after = last_col())
-
-# Adding building and street scales
-data_to_add[[2]]$scales <- 
-  map(map(data_to_add[[2]]$scales, c, "building", "street"), str_sort)
 
 
 # Meta data testing -------------------------------------------------------
@@ -147,16 +113,7 @@ data_to_add[[2]]$scales <-
 
 # Add to variables table --------------------------------------------------
 
-variables <- bind_rows(variables, data_to_add[[2]]) |> 
-  mutate(theme = case_when(str_starts(var_code, "housing") ~ "Housing",
-                           str_starts(var_code, "inc") ~ "Income",
-                           str_starts(var_code, "iden") ~ "Identity",
-                           str_starts(var_code, "trans") ~ "Transport",
-                           str_starts(var_code, "emp") ~ "Employment",
-                           str_starts(var_code, "family") ~ "Household",
-                           str_starts(var_code, "lang") ~ "Language",
-                           str_starts(var_code, "age") ~ "Age",
-                           str_starts(var_code, "edu") ~ "Education"))
+variables <- bind_rows(variables, data_to_add[[2]])
 
 
 # Clean up ----------------------------------------------------------------
@@ -167,7 +124,7 @@ rm(scales, years, add_census_data, add_q3_list, add_q5_list,
    get_breaks_q5_list, get_categories_q5, get_categories_q5_list, 
    get_census_vectors, get_empty_geometries, get_unit_type, interpolate, 
    interpolate_other, merge_breaks, normalize, reduce_years, 
-   swap_csd_to_borough, weighted_mean, census_vec, parent_vectors, DA_census, 
+   swap_csd_to_borough, weighted_mean, census_vec, parent_vectors,  
    add_row_census_vec, data_to_add)
 
 # To save output, run dev/build_geometries.R, which calls this script

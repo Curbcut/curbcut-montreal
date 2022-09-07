@@ -7,7 +7,7 @@ source("dev/tiles/_tile_functions.R")
 # source("R/functions/_utils.R")
 qload("data/colours.qsm")
 qload("data2/census_full.qsm")
-# centraide <- qread("data2/centraide_full.qs")
+centraide <- qread("data2/centraide_full.qs")
 
 CT <- CT_full
 borough <- borough_full
@@ -79,64 +79,58 @@ auto_zoom_recipe <-
     recipe_name = "cent_p-auto_zoom")
 
 # Create tileset
-create_tileset("cent_p-auto_zoom", auto_zoom_recipe)
+create_tileset("cent_p-census_max_CT-auto_zoom", auto_zoom_recipe)
 
 # Publish tileset
-publish_tileset("cent_p-auto_zoom")
+publish_tileset("cent_p-census_max_CT-auto_zoom")
 
 
-
-
-
-
-
-
-
-# Univariate centraide tileset --------------------------------------------
+# Univariate centraide tileset ----------------------------------------------
 
 centraide |> 
-  select(ID, contains("_q5") & starts_with("housing_char")) |> 
-  rename_with(~str_remove(.x, ("_q5")), everything()) |> 
-  mutate(across(where(is.numeric), as.character)) |> 
+  select(ID) |> 
   st_set_agr("constant") |>
-  upload_tile_source("housing_char-centraide",
+  upload_tile_source("cent_p-centraide",
                      access_token = .sus_token)
 
 # Recipe
 recipe_centraide <- 
   create_recipe(
     layer_names = "centraide",
-    source = "mapbox://tileset-source/sus-mcgill/housing_char-centraide",
+    source = "mapbox://tileset-source/sus-mcgill/cent_p-centraide",
     minzoom = 3,
-    maxzoom = 11, 
-    simp_zoom = 11,
+    maxzoom = 12, 
+    simp_zoom = 12,
     layer_size = 2500,
-    recipe_name = "housing_char-centraide")
+    recipe_name = "cent_p-centraide")
 
 # Create tileset
-create_tileset("housing_char-centraide", recipe_centraide)
+create_tileset("cent_p-centraide", recipe_centraide)
 
 # Publish tileset
-publish_tileset("housing_char-centraide")
+publish_tileset("cent_p-centraide")
 
 
-
-
-# Centraide auto-zoom -----------------------------------------------------
+# Centraide auto-zoom -------------------------------------------------------
 
 auto_zoom_recipe <- 
   create_recipe(
     layer_names = c("centraide", "CT"),
     source = c(
-      centraide = "mapbox://tileset-source/sus-mcgill/housing_char-centraide",
-      CT = "mapbox://tileset-source/sus-mcgill/housing_char-CT"),
+      centraide = "mapbox://tileset-source/sus-mcgill/cent_p-centraide",
+      CT = "mapbox://tileset-source/sus-mcgill/cent_p-CT"),
     minzoom = c(centraide = 2, CT = 11),
     maxzoom = c(centraide = 10, CT = 12), 
     layer_size = c(centraide = NA, CT = NA),
-    recipe_name = "housing_char-auto_zoom")
+    recipe_name = "cent_p-auto_zoom")
 
 # Create tileset
-create_tileset("housing_char-centraide-auto_zoom", auto_zoom_recipe)
+create_tileset("cent_p-centraide-auto_zoom", auto_zoom_recipe)
 
 # Publish tileset
-publish_tileset("housing_char-centraide-auto_zoom")
+publish_tileset("cent_p-centraide-auto_zoom")
+
+
+
+
+

@@ -58,7 +58,7 @@ CSDUID_groups <- map(set_names(c("borough", "CT", "DA")), ~{
 # Max census year
 census_max <- 
   variables |> 
-  filter(source == "census") |> 
+  filter(source == "Canadian census") |> 
   pull(dates) |> 
   unlist() |> 
   unique() |> 
@@ -608,6 +608,5 @@ pe_theme_order <- lapply(pe_theme_order, \(x) split(x, x$group))
 # Cleanup -----------------------------------------------------------------
 
 rm(basic_percentile_retrieval, min_access_var_code,
-   # bixi_stations, 
    census_max, groups, last_crash_data_year, island_CSDUID,
    ndvi, no2, percentile_calc)

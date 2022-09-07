@@ -174,9 +174,9 @@ natural_inf_tiles_2 <- reduce(natural_inf_tiles_2, st_join)
 natural_inf_tiles_2 <- 
   natural_inf_tiles_2 |> 
   st_drop_geometry() |> 
-  left_join(select(natural_inf_tiles[[1]],
+  left_join(dplyr::select(natural_inf_tiles[[1]],
                    -everything(), ID), by = "ID") |> 
-  select(-ID) |> 
+  dplyr::select(-ID) |> 
   mutate(across(where(is.numeric), ~replace(., is.na(.), 0))) |> 
   st_as_sf()
 
@@ -304,7 +304,6 @@ natural_inf_custom <-
 
 # plan(multisession, workers = 10)
 
-qload("data/colours.qsm")
 slider_values <- c(0, 0.5, 1, 1.5, 2)
 top_slider <- 0:25
 all_sliders <-
@@ -416,10 +415,8 @@ natural_inf$custom_explore <- map_dfr(top_slider, function(top_slider) {
   
 })
 
-qload("data2/census_full.qsm")
-
 borough_area <- 
-  borough_full |> 
+  borough |> 
   st_transform(32618) |> 
   st_area() |> 
   units::drop_units() |> 
@@ -601,4 +598,6 @@ variables <-
 
 # Cleanup -----------------------------------------------------------------
 
-rm(datasets)
+rm(datasets, borough_area, total_areas, slider_values, top_slider, all_sliders,
+   natural_inf_tiles, natural_inf_tiles_raw)
+
