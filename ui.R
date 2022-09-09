@@ -112,6 +112,17 @@ ui <- function(request) {
                label = span(span(class = "material-icons", "language"), 
                             span("English"))),
              
+             # Geometry actions dropdown
+             materialIconButton(
+               dropdownButton(inputId = "geo_change",
+                              tags$span(class = "dropdown-header text", 
+                                        sus_translate("Change default scale")),
+                              actionLink(inputId = "geo_CMA",
+                                         label = sus_translate("Metropolitan Area (Default)")),
+                              actionLink(inputId = "geo_centraide",
+                                         label = sus_translate("Centraide"))
+               ), "navigation"),
+             
              # Actions dropdown
              materialIconButton(
                dropdownButton(inputId = "settings",
@@ -121,14 +132,6 @@ ui <- function(request) {
                                 href = "#",
                                 icon("link"), sus_translate("Bookmark"), 
                                 onclick = "copyUrl()"),
-                              # actionLink(inputId = "download_data", 
-                              #            label = sus_translate(
-                              #              "Data explanation and export"), 
-                              #            icon("download")),
-                              # downloadLink("create_report", 
-                              #              label = div(icon("file-pdf"), 
-                              #                           sus_translate(
-                              #                            "Generate a report")))
                               actionLink(inputId = "contact",
                                          label = sus_translate("Contact/feedback"),
                                          icon("comment"),

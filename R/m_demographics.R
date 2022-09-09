@@ -30,7 +30,7 @@ demographics_UI <- function(id) {
                       var_list = var_left_list_5_demographics)), 
       bottom = div(class = "bottom_sidebar", 
                    tagList(legend_UI(NS(id, id)),
-                           zoom_UI(NS(id, id), map_zoom_levels_max_CT)))),
+                           zoom_UI(NS(id, id), map_zoom_levels_CMA_max_CT)))),
     
     # Map
     div(class = "mapdeck_div", rdeckOutput(NS(id, id_map), height = "100%")),
@@ -53,7 +53,7 @@ demographics_server <- function(id, r) {
     
     # Initial reactives
     zoom <- reactiveVal(get_zoom(map_zoom))
-    zoom_string <- reactiveVal(get_zoom_string(map_zoom, map_zoom_levels_max_CT))
+    zoom_string <- reactiveVal(get_zoom_string(map_zoom, map_zoom_levels_CMA_max_CT))
     poi <- reactiveVal(NULL)
     new_poi <- reactiveVal(NULL)
     
@@ -72,11 +72,21 @@ demographics_server <- function(id, r) {
         poi(new_poi)
     }) |> bindEvent(get_view_state(id_map))
     
+    # Map zoom levels change depending on r$geo(). Listening only to the latter
+    # to not have to recalculate everytime var_left() changes.
+    map_zoom_levels <- reactive({
+      out <- get_zoom_levels(default = "CMA_max_CT", 
+                             geo = paste0(r$geo(), "_max_CT"),
+                             var_left = var_left())
+      out$scale <- gsub("_max_CT", "", out$scale)
+      out
+    }) |> bindEvent(r$geo())
+    
     # Zoom string reactive
     observe({
-      new_zoom_string <- get_zoom_string(r[[id]]$zoom(), map_zoom_levels_max_CT)
+      new_zoom_string <- get_zoom_string(r[[id]]$zoom(), map_zoom_levels()$levels)
       if (new_zoom_string != zoom_string()) zoom_string(new_zoom_string)
-    }) |> bindEvent(r[[id]]$zoom())
+    }) |> bindEvent(r[[id]]$zoom(), r$geo())
     
     # Click reactive
     observe({
@@ -91,18 +101,23 @@ demographics_server <- function(id, r) {
     sidebar_server(id = id, r = r)
     
     # Choose tileset
-    tile <- zoom_server(
+    tile_1 <- zoom_server(
       id = id,
       r = r,
       zoom_string = zoom_string,
-      zoom_levels = reactive(map_zoom_levels_max_CT))
+      zoom_levels = map_zoom_levels)
+    
+    tile <- reactive({
+      if (!grepl("auto_zoom", tile_1())) return(tile_1())
+      paste0(tile_1(), "_max_CT")
+    })
     
     # Time
     time <- reactive("2016")
     
     # Get df for explore/legend/etc
     observe(r[[id]]$df(get_df(tile(), zoom_string()))) |> 
-      bindEvent(tile(), zoom_string(), ignoreInit = TRUE)
+      bindEvent(tile(), zoom_string())
     
     # Left variable server
     vl_gr <- select_var_server(
@@ -164,6 +179,13 @@ demographics_server <- function(id, r) {
       var_left = var_left(),
       var_right = var_right()))
     
+    # Data for tile coloring
+    data_color <- reactive(get_data_color(
+      map_zoom_levels = map_zoom_levels()$levels,
+      var_left = var_left(),
+      var_right = var_right()
+    ))
+    
     # Legend
     legend <- legend_server(
       id = id,
@@ -172,35 +194,13 @@ demographics_server <- function(id, r) {
       var_left = var_left,
       var_right = var_right)
     
-    demographics_colors <- reactive({
-      if (var_right() == " ") {
-        selected <- data()[, c("ID", "var_left_q5")]
-        out <- merge(selected, colour_table, by.x = "var_left_q5", 
-                     by.y = "group")[, c("ID", "value")]
-        names(out) <- c("group", "value")
-        out
-      } else {
-        selected <- data()[, c("ID", "var_left_q3", "var_right_q3")]
-        selected$group <- 
-          paste(selected$var_left_q3, selected$var_right_q3, sep = " - ")
-        out <- merge(selected, colour_bivar, by.x = "group", 
-                     by.y = "group")[, c("ID", "fill")]
-        names(out) <- c("group", "value")
-        out
-      }
-    })
-    
     # Update map in response to variable changes or zooming
     rdeck_server(
       id = id,
-      id_override = reactive("cent_p"),
       r = r,
       map_id = "map",
       tile = tile,
-      tile2 =  tile2,
-      map_var = map_var,
-      fill = scale_fill_cent,
-      fill_args = reactive(list(map_var(), tile(), demographics_colors())))
+      data_color = data_color)
     
     # Update map labels
     label_server(

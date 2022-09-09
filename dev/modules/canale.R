@@ -9,15 +9,11 @@ reserves <- c("24670285", "24720184", "24720186", "24720187", "24720188",
               "24720195", "24720196", "24720200", "24720201")
 
 canale <- 
-  read_sf("dev/data/Mtl_DA_CANALE/Mtl_DA_CANALE.shp") |> 
-  st_transform(4326) |> 
-  st_cast("MULTIPOLYGON") |> 
-  st_set_agr("constant") |> 
-  st_drop_geometry() |> 
-  select(DAUID, canale_ind = ale_index) |> 
-  mutate(canale_ind = if_else(DAUID %in% reserves, NA_real_, canale_ind)) |> 
-  rename(canale_ind_2016 = canale_ind)
-
+  read_csv("dev/data/canale/CanALE_Canada.csv") |> 
+  filter(DAUID %in% !!DA$ID) |> 
+  transmute(DAUID = as.character(DAUID), canale_ind_2016 = ale_index) |> 
+  mutate(canale_ind_2016 = if_else(
+    DAUID %in% reserves, NA_real_, canale_ind_2016))
 
 # Data testing ------------------------------------------------------------
 
@@ -46,7 +42,7 @@ assign_tables(module_tables = all_canale)
 
 # Meta testing ------------------------------------------------------------
 
-meta_testing()
+# meta_testing()
 
 
 # Add to variables table --------------------------------------------------

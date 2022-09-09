@@ -12,31 +12,63 @@ suppressPackageStartupMessages({
 var_select <- c("CTUID" = "CT_UID", "CSDUID" = "CSD_UID", "name" = "name",
                 "population" = "Population", "households" = "Households")
 
-# Download DAs
-DA <- 
-  get_census("CA16", list(CMA = "24462"), "DA", geo_format = "sf", 
-             quiet = TRUE) |> 
-  as_tibble() |> 
-  st_as_sf() |> 
-  select(ID = GeoUID, any_of(var_select), geometry) |> 
-  arrange(ID) |> 
-  mutate(name = ID, .after = ID) |> 
-  st_set_agr("constant")
+# Get census function
+get_census <- function(re = list(PR = "24"), sc = scale, format = TRUE) {
+  out <- cancensus::get_census(
+    dataset = "CA16",
+    regions = re,
+    level = sc,
+    geo_format = "sf",
+    quiet = TRUE)  |> 
+    as_tibble() |>
+    st_as_sf() |>
+    select(ID = GeoUID, any_of(var_select), geometry) |>
+    arrange(ID) |>
+    mutate(name = ID, .after = ID) |> 
+    st_set_agr("constant")
+  
+  if (!format) return(out)
+  
+  keep_ids <- 
+    out |>
+    mutate(previous_area = units::drop_units(st_area(geometry))) |>
+    st_intersection(master_polygon) |>
+    st_set_agr("constant") |> 
+    st_make_valid() |> 
+    mutate(new_area = units::drop_units(st_area(geometry))) |>
+    filter({new_area / previous_area} > 0.33) |>
+    pull(ID)
+  
+  out |> 
+    filter(ID %in% keep_ids)
+}
 
-# Download CTs
-CT <-
-  get_census("CA16", list(CMA = "24462"), "CT", geo_format = "sf", 
-             quiet = TRUE) |> 
-  as_tibble() |> 
-  st_as_sf() |> 
-  select(ID = GeoUID, any_of(var_select), geometry) |> 
-  arrange(ID) |> 
-  mutate(name = ID, CTUID = ID, .after = ID) |> 
-  st_set_agr("constant")
+# Download DAs
+CDs <- get_census(sc = "CD", format = FALSE)$ID
+DA <- get_census(re = list(CD = CDs), sc = "DA")
+
+# Download CTs, fill in with CSDs
+CT <- get_census(sc = "CT")
+
+csds <- 
+  get_census(sc = "CSD") |> 
+  st_transform(32618)
+csds_buffered <- 
+  csds |> 
+  mutate(geometry = st_buffer(geometry, -25))
+
+filling_CTs <- csds[-{
+    st_intersects(st_transform(CT, 32618), csds_buffered) |> 
+    unlist() |> 
+    unique()}, ] |> 
+  mutate(CSDUID = ID) |> 
+  st_transform(4326)
+
+CT <- rbind(CT, filling_CTs)
 
 # Download CSDs
 CSD <-
-  get_census("CA16", list(CMA = "24462"), "CSD", geo_format = "sf", 
+  cancensus::get_census("CA16", list(CMA = "24462"), "CSD", geo_format = "sf", 
              quiet = TRUE) |> 
   as_tibble() |> 
   st_as_sf() |> 
@@ -48,7 +80,11 @@ CSD <-
   mutate(name = str_remove(name, " \\(.*\\)")) |> 
   st_set_agr("constant")
 
-rm(var_select)
+rm(var_select, get_census, csds, filling_CTs, CDs)
+
+
+
+# Clip boroughs -----------------------------------------------------------
 
 # Get CMA boundary for clipping boroughs
 CMA <- 
@@ -184,9 +220,10 @@ borough <-
 
 CT <- 
   CT |> 
-  left_join(select(st_drop_geometry(borough), CSDUID = ID, name_2 = name), 
-            by = "CSDUID") |> 
-  relocate(name_2, .after = name) |> 
+  left_join(select(st_drop_geometry(borough), CSDUID = ID, name_2 = name),
+            by = "CSDUID") |>
+  relocate(name_2, .after = name) |>
+  mutate(CTUID = ID, .after = name_2) |>
   st_set_agr("constant")
 
 DA <- 
@@ -194,5 +231,6 @@ DA <-
   left_join(select(st_drop_geometry(borough), CSDUID = ID, name_2 = name), 
             by = "CSDUID") |>
   relocate(name_2, .after = name) |> 
+  mutate(CTUID = if_else(is.na(CTUID), CSDUID, CTUID)) |> 
   mutate(DAUID = ID, .after = name_2) |> 
   st_set_agr("constant")

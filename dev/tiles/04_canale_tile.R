@@ -4,9 +4,10 @@ library(tidyverse)
 library(sf)
 library(qs)
 qload("data2/census_full.qsm")
-building_full <- qread("data/building_full.qs")
+building_full <- qread("data2/building_full.qs")
 variables <- qread("data/variables.qs")
-source("dev/tiles/tile_functions.R")
+source("dev//tiles/_tile_functions.R")
+centraide <- qread("data2/centraide_full.qs")
 
 borough <- borough_full
 CT <- CT_full
@@ -28,6 +29,7 @@ vars_to_add <-
 
 borough |> 
   as_tibble() |> 
+  
   select(ID, name, all_of(vars_to_add), geometry) |> 
   mutate(across(contains("_q3"), 
                 ~paste(canale_ind_q3_2016, .x, sep = " - "))) |> 
@@ -155,6 +157,25 @@ DA |>
   upload_tile_source("canale-DA_building", "sus-mcgill", .sus_token)
 
 
+# Process centraide then upload tile source -------------------------------
+
+centraide |> 
+  as_tibble() |> 
+  select(ID, name, all_of(vars_to_add), geometry) |> 
+  mutate(across(contains("_q3"), 
+                ~paste(canale_ind_q3_2016, .x, sep = " - "))) |> 
+  relocate(canale_ind_q5_2016, .after = name) |> 
+  select(-canale_ind_q3_2016) |> 
+  rename_with(~paste0("canale_ind_2016_", str_remove(.x, "_q3")),
+              contains("_q3")) |> 
+  rename(canale_ind_2016 = canale_ind_q5_2016) |> 
+  mutate(canale_ind_2016 = as.character(canale_ind_2016),
+         across(c(-ID, -name, -canale_ind_2016, -geometry), trans_var)) |> 
+  st_as_sf() |> 
+  st_set_agr("constant") |> 
+  upload_tile_source("canale-centraide", "sus-mcgill", .sus_token)
+
+
 # Add recipes -------------------------------------------------------------
 
 recipe_borough <- '
@@ -254,7 +275,30 @@ recipe_building <- '
 }
 '
 
-recipe_auto_zoom <- '
+recipe_centraide <- '
+{
+  "recipe": {
+    "version": 1,
+    "layers": {
+      "centraide": {
+        "source": "mapbox://tileset-source/sus-mcgill/canale-centraide",
+        "minzoom": 3,
+        "maxzoom": 11,
+        "features": {
+          "simplification": [ "case",
+            [ "==", [ "zoom" ], 11 ], 1, 4 
+          ]
+        }
+      }
+    }
+  },
+  "name": "canale-centraide"
+}
+'
+
+
+# Auto-zoom recipes
+recipe_CMA_auto_zoom <- '
 {
   "recipe": {
     "version": 1,
@@ -285,6 +329,37 @@ recipe_auto_zoom <- '
 }
 '
 
+recipe_centraide_auto_zoom <- '
+{
+  "recipe": {
+    "version": 1,
+    "layers": {
+      "centraide": {
+        "source": "mapbox://tileset-source/sus-mcgill/canale-centraide",
+        "minzoom": 2,
+        "maxzoom": 10
+      },
+      "CT": {
+        "source": "mapbox://tileset-source/sus-mcgill/canale-CT",
+        "minzoom": 11,
+        "maxzoom": 12
+      },
+       "DA": {
+        "source": "mapbox://tileset-source/sus-mcgill/canale-DA",
+        "minzoom": 13,
+        "maxzoom": 15
+      },
+       "building": {
+        "source": "mapbox://tileset-source/sus-mcgill/canale-building",
+        "minzoom": 16,
+        "maxzoom": 16
+      }
+    }
+  },
+  "name": "canale-centraide-auto_zoom"
+}
+'
+
 
 # Create and publish tilesets ---------------------------------------------
 
@@ -300,12 +375,24 @@ publish_tileset("canale-DA")
 create_tileset("canale-building", recipe_building)
 publish_tileset("canale-building")
 
-create_tileset("canale-auto_zoom", recipe_auto_zoom)
+create_tileset("canale-centraide", recipe_centraide)
+publish_tileset("canale-centraide")
+
+create_tileset("canale-auto_zoom", recipe_CMA_auto_zoom)
 publish_tileset("canale-auto_zoom")
 
+# Centraide
+create_tileset("canale-centraide-centraide", recipe_borough)
+publish_tileset("canale-centraide-centraide")
 
+create_tileset("canale-centraide-CT", recipe_CT)
+publish_tileset("canale-centraide-CT")
 
+create_tileset("canale-centraide-DA", recipe_DA)
+publish_tileset("canale-centraide-DA")
 
+create_tileset("canale-centraide-auto_zoom", recipe_centraide_auto_zoom)
+publish_tileset("canale-centraide-auto_zoom")
 
 
 

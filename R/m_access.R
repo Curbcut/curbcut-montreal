@@ -20,7 +20,7 @@ access_UI <- function(id) {
                   min = 10, max = 60, step = 1, value = 30)),
       bottom = div(class = "bottom_sidebar",
           tagList(legend_UI(NS(id, id)),
-                  hidden(zoom_UI(NS(id, id), map_zoom_levels))))),
+                  hidden(zoom_UI(NS(id, id), map_zoom_levels_CMA))))),
     # Map
     div(class = "mapdeck_div", rdeckOutput(NS(id, id_map), height = "100%")),
 
@@ -44,7 +44,7 @@ access_server <- function(id, r) {
     sidebar_server(id = id, r = r, x = "access")
     
     # Initial reactives
-    zoom_string <- reactiveVal(get_zoom_string(map_zoom, map_zoom_levels))
+    zoom_string <- reactiveVal(get_zoom_string(map_zoom, map_zoom_levels_CMA))
     poi <- reactiveVal(NULL)
     
     # Map
@@ -70,7 +70,7 @@ access_server <- function(id, r) {
     
     # Zoom string reactive
     observe({
-      new_zoom_string <- get_zoom_string(r[[id]]$zoom(), map_zoom_levels)
+      new_zoom_string <- get_zoom_string(r[[id]]$zoom(), map_zoom_levels_CMA)
       if (new_zoom_string != zoom_string()) zoom_string(new_zoom_string)
     }) |> bindEvent(r[[id]]$zoom())
     

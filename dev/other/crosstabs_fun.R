@@ -138,7 +138,7 @@ get_vulnerable_pop <- function(sex = "total",
              var = table[[1]][5:length(table1)]) |> 
       mutate(var = as.numeric(var)) |> 
       suppressWarnings() |> 
-      filter(str_detect(ID, "^\\d{7}\\.\\d{2}")) |> 
+      filter(str_detect(ID, paste0(CT$ID, collapse = "|"))) |> 
       mutate(ID = str_extract(ID, "^\\d{7}\\.\\d{2}")),
     centraide = 
       tibble(ID = table1$V1[5:nrow(table1)],
@@ -270,7 +270,7 @@ get_housing_char <- function(tenure = "total",
              var = table[[1]][5:length(table2)]) |> 
       mutate(var = as.numeric(var)) |> 
       suppressWarnings() |> 
-      filter(str_detect(ID, "^\\d{7}\\.\\d{2}")) |> 
+      filter(str_detect(ID, paste0(CT$ID, collapse = "|"))) |> 
       mutate(ID = str_extract(ID, "^\\d{7}\\.\\d{2}")),
     centraide = 
       tibble(ID = table2$V1[5:nrow(table2)],

@@ -49,22 +49,22 @@ get_var_type <- function(data, var_left, var_right, df, select_id,
   
   if (build_str_as_DA && df == "building") df <- "DA"
   
-  breaks_q5_left <- variables$breaks_q5[
-    variables$var_code == unique(sub("_\\d{4}$", "", var_left))]
+  breaks_q5_left <- variables$breaks_q5[[
+    which(variables$var_code == unique(sub("_\\d{4}$", "", var_left)))]]
   
   if (length(breaks_q5_left) > 0) breaks_q5_left <- 
-    breaks_q5_left[[1]][breaks_q5_left[[1]]$scale == df,]
+    breaks_q5_left[breaks_q5_left$scale == df,]
   
   var_left_label <- suppressWarnings(breaks_q5_left$var_name)
   if (all(is.na(var_left_label))) var_left_label <- NULL
   
   if (var_right != " ") {
     
-    breaks_q5_right <- variables$breaks_q5[
-      variables$var_code == unique(sub("_\\d{4}$", "", var_right))]
+    breaks_q5_right <- variables$breaks_q5[[
+      which(variables$var_code == unique(sub("_\\d{4}$", "", var_right)))]]
     
     if (length(breaks_q5_right) > 0) breaks_q5_right <- 
-        breaks_q5_right[[1]][breaks_q5_right[[1]]$scale == df,]
+        breaks_q5_right[breaks_q5_right$scale == df,]
     
     var_right_label <- suppressWarnings(breaks_q5_right$var_name)
     if (all(is.na(var_right_label))) var_right_label <- NULL

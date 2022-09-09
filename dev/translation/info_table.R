@@ -443,4 +443,11 @@ info_table_translated <-
           fr = paste0("<p>Les infrastructures naturelles représentent environ ", 
                       "25 % du territoire de la région de Montréal. Les foncti", 
                       "ons des infrastructures naturelles liées à la températu", 
-                      "re sont les suivantes:</p><ul>{c_heat}{heat}{cool}</ul>"))
+                      "re sont les suivantes:</p><ul>{c_heat}{heat}{cool}</ul>")) |> 
+  # Centraide related
+  add_row(en = paste0("centraide zone"), 
+          fr = paste0("du quartier centraide")) |> 
+  add_row(en = paste0("centraide zones"), 
+          fr = paste0("quartiers Centraide")) |> 
+  add_row(en = paste0("Centraide zone {select_name$name}"), 
+          fr = paste0("Quartier Centraide {select_name$name}"))

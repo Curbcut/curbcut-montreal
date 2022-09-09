@@ -18,7 +18,7 @@ module_link <- function(r, module, zoom = NULL, location = map_loc,
   if (update_view) {
     if (!is.null(df) && !is.null(select_id)) {
       r$sus_link$zoom <- 
-        if (df == "borough") map_zoom else map_zoom_levels[[df]] + 0.75
+        if (df == "borough") map_zoom else map_zoom_levels_CMA[[df]] + 0.75
       
       r$sus_link$location <- if (df == "grid") {
         sapply(

@@ -63,8 +63,8 @@ get_info_table_data <- function(r = r, data, var_type, var_left, var_right, df,
   var_left <- unique(str_remove(var_left, "_\\d{4}$"))
   var_right <- unique(str_remove(var_right, "_\\d{4}$"))
   
-  breaks_q5_left <- variables$breaks_q5[
-    variables$var_code == unique(sub("_\\d{4}$", "", var_left))][[1]]
+  breaks_q5_left <- variables$breaks_q5[[
+    which(variables$var_code == unique(sub("_\\d{4}$", "", var_left)))]]
   breaks_q5_left <- breaks_q5_left[breaks_q5_left$scale == df,]
   
   if (!suppressWarnings(is.null(breaks_q5_left$var_name)) && 
@@ -78,8 +78,8 @@ get_info_table_data <- function(r = r, data, var_type, var_left, var_right, df,
   
   if (var_right != " ") {
     
-    breaks_q5_right <- variables$breaks_q5[
-      variables$var_code == unique(sub("_\\d{4}$", "", var_right))][[1]]
+    breaks_q5_right <- variables$breaks_q5[[
+      which(variables$var_code == unique(sub("_\\d{4}$", "", var_right)))]]
     breaks_q5_right <- breaks_q5_right[breaks_q5_right$scale == df,]
     
     if (!suppressWarnings(is.null(breaks_q5_right$var_name)) && 

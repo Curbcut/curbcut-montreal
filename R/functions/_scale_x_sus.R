@@ -3,12 +3,12 @@
 # Default scales ----------------------------------------------------------
 
 # Default fill
-scale_fill_sus <- function(var) {
+scale_fill_sus <- function(module_colors) {
   scale_color_category(
-    col = !!rlang::sym(var), 
-    palette = colour_table$value,
+    col = !!rlang::sym("ID"), 
+    palette = module_colors$value,
     unmapped_color = colour_table$value[1], 
-    levels = colour_table$group,
+    levels = module_colors$group,
     legend = FALSE)
 }
 
@@ -24,7 +24,6 @@ scale_lwd_sus <- function(select_id) {
     levels = c(select_id, "NA"),
     legend = FALSE) 
 }
-
 
 # Module-specific scales --------------------------------------------------
 
@@ -122,14 +121,4 @@ scale_fill_natural_inf <- function(var, tile, natural_inf_colours) {
       levels = colour_table$group,
       legend = FALSE)
   
-}
-
-# Cent_d and cent_p fill
-scale_fill_cent <- function(var, tile, cent_colors) {
-  scale_color_category(
-    col = !!rlang::sym("ID"), 
-    palette = cent_colors$value,
-    unmapped_color = colour_table$value[1], 
-    levels = cent_colors$group,
-    legend = FALSE)
 }

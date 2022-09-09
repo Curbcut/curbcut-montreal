@@ -42,7 +42,7 @@ select_var_server <- function(id, r = r, select_var_id = "var",
       v1 <- paste(input[[select_var_id]], time(), sep = "_")
       v1 <- sub("_$", "", v1)
       if (!is.null(time()) && !is.null(df) && 
-          df() %in% c("borough", "CT", "DA", "grid")) {
+          df() %in% c("borough", "CT", "DA", "grid", "centraide")) {
         v1 <- sapply(v1, return_closest_year, df(), USE.NAMES = FALSE)
       }
       v1 <- ifelse(str_detect(v1, "^_\\d{4}$"), " ", v1)

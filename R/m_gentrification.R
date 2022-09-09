@@ -22,7 +22,7 @@ gentrification_UI <- function(id) {
       ),
       bottom = div(class = "bottom_sidebar", 
                    tagList(legend_UI(NS(id, ns_id)),
-                           zoom_UI(NS(id, ns_id), map_zoom_levels)))),
+                           zoom_UI(NS(id, ns_id), map_zoom_levels_CMA)))),
     
     # Map
     div(class = "mapdeck_div", mapdeckOutput(NS(id, "map"), height = "100%")),
@@ -44,7 +44,7 @@ gentrification_server <- function(id) {
     ns_id <- "gentrification"
     
     # Initial reactives
-    zoom <- reactiveVal(get_zoom(map_zoom, map_zoom_levels))
+    zoom <- reactiveVal(get_zoom(map_zoom, map_zoom_levels_CMA))
     click_id <- reactiveVal(NULL)
 
     # Map
@@ -56,7 +56,7 @@ gentrification_server <- function(id) {
 
     # Zoom reactive
     observeEvent(input$map_view_change$zoom, {
-      zoom(get_zoom(input$map_view_change$zoom, map_zoom_levels))})
+      zoom(get_zoom(input$map_view_change$zoom, map_zoom_levels_CMA))})
 
     # Click reactive
     observeEvent(input$map_polygon_click, {
@@ -66,7 +66,7 @@ gentrification_server <- function(id) {
     df <- zoom_server(
       id = ns_id,
       zoom = zoom,
-      zoom_levels = reactive(map_zoom_levels))
+      zoom_levels = reactive(map_zoom_levels_CMA))
 
     # Checkbox value
     check_single_var <- checkbox_server(id = ns_id)

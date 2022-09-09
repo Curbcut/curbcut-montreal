@@ -145,7 +145,7 @@ library(qs)
 # Load and clean data -----------------------------------------------------
 
 # susmontreal 5km bbox
-susmontreal_bbox <- read_sf("dev/data/susmontreal_bbox_5km.shp")
+susmontreal_bbox <- st_buffer(master_polygon, 5000)
 
 # Travel time matrix
 tt_matrix_DA <- qread("dev/data/tt_matrix_DA.qs")
@@ -680,6 +680,6 @@ variables <-
 rm(DA_amenities, DA_street_centroid, daycares, health_care, food_distribution_vars,
    daycares_spot, food_distribution, municipal_parks, municipal_parks_sqkm, 
    new_rows, old_plan, point_amenities, schools, sm_industry, var_list,
-   susmontreal_bbox, )
+   susmontreal_bbox)
 
 

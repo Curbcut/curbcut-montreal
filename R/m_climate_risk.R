@@ -17,7 +17,7 @@ climate_risk_UI <- function(id) {
                     label = sus_translate(r = r, "250-metre grid"))),
       bottom = div(class = "bottom_sidebar",
                    tagList(legend_UI(NS(id, id)),
-                           zoom_UI(NS(id, id), map_zoom_levels)))),
+                           zoom_UI(NS(id, id), map_zoom_levels_CMA)))),
     
     # Map
     div(class = "mapdeck_div", rdeckOutput(NS(id, id_map), height = "100%")),
@@ -40,7 +40,7 @@ climate_risk_server <- function(id, r) {
     id_map <- paste0(id, "-map")
     
     # Initial reactives
-    zoom_string <- reactiveVal(get_zoom_string(map_zoom, map_zoom_levels))
+    zoom_string <- reactiveVal(get_zoom_string(map_zoom, map_zoom_levels_CMA))
     poi <- reactiveVal(NULL)
 
     # Map
@@ -60,7 +60,7 @@ climate_risk_server <- function(id, r) {
     
     # Zoom string reactive
     observe({
-      new_zoom_string <- get_zoom_string(r[[id]]$zoom(), map_zoom_levels)
+      new_zoom_string <- get_zoom_string(r[[id]]$zoom(), map_zoom_levels_CMA)
       if (new_zoom_string != zoom_string()) zoom_string(new_zoom_string)
     }) |> bindEvent(r[[id]]$zoom())
 
@@ -81,7 +81,7 @@ climate_risk_server <- function(id, r) {
       id = id, 
       r = r,
       zoom_string = zoom_string, 
-      zoom_levels = reactive(map_zoom_levels))
+      zoom_levels = reactive(map_zoom_levels_CMA))
     
     # Choose tileset
     tile <- reactive(if (grid()) "grid" else tile_choropleth())

@@ -316,6 +316,13 @@ styler <- '
   right: -40px;
   }
   
+  #dropdown-menu-geo_change {
+  max-height: 250px;
+  font-size: 13px;
+  left: auto;
+  right: 0px;
+  }
+  
   .form-group {
   margin: auto;
   }

@@ -34,7 +34,7 @@ streets_for_amenities <-
 # population weighted centroid of the DA
 DA_pop_centroid <-
   read.csv("dev/data/da_centroids_popw.csv") |>
-  filter(CMAuid.RMRidu == "462") |>
+  filter(DAuid.ADidu %in% DA$ID) |>
   distinct(DAuid.ADidu, .keep_all = T) |>
   as_tibble() |>
   st_as_sf(coords = c("DArplong.ADlong", "DArplat.Adlat"),

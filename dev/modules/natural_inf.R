@@ -453,7 +453,8 @@ variables <-
     scales = NA,
     breaks_q3 = NA,
     breaks_q5 = NA,
-    source = "David Suzuki Foundation"
+    source = "David Suzuki Foundation",
+    interpolated = NA
   ) |>
   add_variables(
     var_code = "habitat_con",
@@ -469,7 +470,8 @@ variables <-
     scales = NA,
     breaks_q3 = NA,
     breaks_q5 = NA,
-    source = "David Suzuki Foundation"
+    source = "David Suzuki Foundation",
+    interpolated = NA
   ) |>
   add_variables(
     var_code = "favorable_cc",
@@ -484,7 +486,8 @@ variables <-
     scales = NA,
     breaks_q3 = NA,
     breaks_q5 = NA,
-    source = "David Suzuki Foundation"
+    source = "David Suzuki Foundation",
+    interpolated = NA
   ) |>
   add_variables(
     var_code = "c_flood",
@@ -499,7 +502,8 @@ variables <-
     scales = NA,
     breaks_q3 = NA,
     breaks_q5 = NA,
-    source = "David Suzuki Foundation"
+    source = "David Suzuki Foundation",
+    interpolated = NA
   ) |>
   add_variables(
     var_code = "c_bio",
@@ -514,7 +518,8 @@ variables <-
     scales = NA,
     breaks_q3 = NA,
     breaks_q5 = NA,
-    source = "David Suzuki Foundation"
+    source = "David Suzuki Foundation",
+    interpolated = NA
   ) |>
   add_variables(
     var_code = "c_heat",
@@ -529,7 +534,8 @@ variables <-
     scales = NA,
     breaks_q3 = NA,
     breaks_q5 = NA,
-    source = "David Suzuki Foundation"
+    source = "David Suzuki Foundation",
+    interpolated = NA
   ) |>
   add_variables(
     var_code = "c_priority",
@@ -546,7 +552,8 @@ variables <-
     scales = NA,
     breaks_q3 = NA,
     breaks_q5 = NA,
-    source = "David Suzuki Foundation"
+    source = "David Suzuki Foundation",
+    interpolated = NA
   ) |>
   add_variables(
     var_code = "flood",
@@ -560,7 +567,8 @@ variables <-
     scales = NA,
     breaks_q3 = NA,
     breaks_q5 = NA,
-    source = "David Suzuki Foundation"
+    source = "David Suzuki Foundation",
+    interpolated = NA
   ) |>
   add_variables(
     var_code = "heat",
@@ -576,7 +584,8 @@ variables <-
     scales = NA,
     breaks_q3 = NA,
     breaks_q5 = NA,
-    source = "David Suzuki Foundation"
+    source = "David Suzuki Foundation",
+    interpolated = NA
   ) |>
   add_variables(
     var_code = "cool",
@@ -592,7 +601,8 @@ variables <-
     scales = NA,
     breaks_q3 = NA,
     breaks_q5 = NA,
-    source = "David Suzuki Foundation"
+    source = "David Suzuki Foundation",
+    interpolated = NA
   )
 
 

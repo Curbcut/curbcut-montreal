@@ -3,7 +3,8 @@
 #' a namespace to tweak its widgets (ex. `canale-canale`)
 #' @param id A character string representing the module id.
 
-update_module <- function(r, id, mod_ns = paste(id, id, sep = "-"), session, 
+update_module <- function(r, id, mod_ns = paste(id, id, sep = "-"), 
+                          session, 
                           zoom = r[[id]]$zoom, location, 
                           map_id = NULL, 
                           zoom_auto, var_left, 

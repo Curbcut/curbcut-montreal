@@ -3,12 +3,11 @@
 #' @param map_id Namespace id of the map to redraw, likely to be `NS(id, "map")`
 #' @return An updated version of the rdeck map.
 
-rdeck_server <- function(id, r, id_override = reactive(NULL), map_id, tile, 
-                         tile2, map_var, 
+rdeck_server <- function(id, r, map_id, tile, data_color,
                          select_id = r[[id]]$select_id,
                          zoom = r[[id]]$zoom,
                          fill = scale_fill_sus, 
-                         fill_args = reactive(list(map_var())),
+                         fill_args = reactive(list(data_color())),
                          colour = scale_colour_sus, 
                          colour_args = reactive(list(NULL)),
                          lwd = scale_lwd_sus, 
@@ -20,16 +19,11 @@ rdeck_server <- function(id, r, id_override = reactive(NULL), map_id, tile,
   
   # Error checking
   stopifnot(is.reactive(tile))
-  stopifnot(is.reactive(tile2))
-  stopifnot(is.reactive(map_var))
-
+  
   
   ## Module --------------------------------------------------------------------
   
   moduleServer(id, function(input, output, session) {
-    
-    # In case id needs to be replaced
-    if (!is.null(id_override())) id <- id_override()
     
     # Helper variables
     pick <- reactive(
@@ -47,15 +41,14 @@ rdeck_server <- function(id, r, id_override = reactive(NULL), map_id, tile,
     
     highlight <- reactive(if (id == "natural_inf") FALSE else TRUE)
     
-    # Create final tileset string
-    tile_string <- reactive(paste0(tile(), tile2()))
+    observe(print(tile()))
     
     # Update data layer source on tile change
     observe(
       rdeck_proxy(map_id) |>
         add_mvt_layer(
           id = id, 
-          data = mvt_url(paste0("sus-mcgill.", id, "-", tile_string())),
+          data = mvt_url(paste0("sus-mcgill.", tile())),
           pickable = pick(), 
           auto_highlight = highlight(), 
           highlight_color = "#FFFFFF50", 
@@ -65,7 +58,7 @@ rdeck_server <- function(id, r, id_override = reactive(NULL), map_id, tile,
           line_width_units = line_units, 
           extruded = extrude(), 
           material = FALSE, 
-          get_elevation = 5)) |> bindEvent(tile_string())
+          get_elevation = 5)) |> bindEvent(tile())
     
     # Update data layer on variable change
     observe(

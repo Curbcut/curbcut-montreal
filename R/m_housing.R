@@ -21,7 +21,7 @@ housing_UI <- function(id) {
         year_disclaimer_UI(NS(id, id))),
       bottom = div(class = "bottom_sidebar", 
                    tagList(legend_UI(NS(id, id)),
-                           zoom_UI(NS(id, id), map_zoom_levels)))),
+                           zoom_UI(NS(id, id), map_zoom_levels_CMA)))),
     
     # Map
     div(class = "mapdeck_div", rdeckOutput(NS(id, id_map), height = "100%")),
@@ -45,7 +45,7 @@ housing_server <- function(id, r) {
     
     # Initial reactives
     zoom <- reactiveVal(get_zoom(map_zoom))
-    zoom_string <- reactiveVal(get_zoom_string(map_zoom, map_zoom_levels))
+    zoom_string <- reactiveVal(get_zoom_string(map_zoom, map_zoom_levels_CMA))
     select_id <- reactiveVal(NA)
     poi <- reactiveVal(NULL)
     new_poi <- reactiveVal(NULL)
@@ -66,9 +66,16 @@ housing_server <- function(id, r) {
         poi(new_poi)
     }) |> bindEvent(get_view_state(id_map))
     
+    # Map zoom levels change depending on r$geo()
+    map_zoom_levels <- reactive({
+      get_zoom_levels(default = "CMA", 
+                      geo = r$geo(),
+                      var_left = var_left())
+    }) |> bindEvent(r$geo())
+    
     # Zoom string reactive
     observe({
-      new_zoom_string <- get_zoom_string(r[[id]]$zoom(), map_zoom_levels)
+      new_zoom_string <- get_zoom_string(r[[id]]$zoom(), map_zoom_levels_CMA)
       if (new_zoom_string != zoom_string()) zoom_string(new_zoom_string)
     }) |> bindEvent(r[[id]]$zoom())
     
@@ -86,7 +93,7 @@ housing_server <- function(id, r) {
       id = id,
       r = r,
       zoom_string = zoom_string,
-      zoom_levels = reactive(map_zoom_levels))
+      zoom_levels = map_zoom_levels)
 
     # Checkbox value
     slider_switch <- checkbox_server(id = id)
@@ -124,24 +131,6 @@ housing_server <- function(id, r) {
         vars_housing_right_dis),
       time = time)
 
-    # Composite variable for map
-    map_var <- reactive({
-      if (length(var_left()) == 1) {
-        year <- str_extract(var_left(), "\\d{4}.*$")
-        vl <- str_remove(var_left(), "_\\d{4}.*$")
-        vr <- str_remove(var_right(), "_\\d{4}.*$")
-        paste(str_remove(paste(vl, vr, sep = "_"), "_ $"), year, sep = "_")
-      } else {
-        year <- str_extract(var_left(), "\\d{4}.*$") |> paste(collapse = "_")
-        vl <- str_remove(var_left(), "_\\d{4}.*$") |> unique()
-        vr <- str_remove(var_right(), "_\\d{4}.*$") |> unique()
-        paste(str_remove(paste(vl, vr, sep = "_"), "_ $"), year, sep = "_")
-      }
-    })
-
-    # Additional tileset identifier
-    tile2 <- reactive(tile_lookup$suffix[tile_lookup$tile2 == map_var()])
-
     # Sidebar
     sidebar_server(id = id, r = r, x = "housing")
 
@@ -150,6 +139,13 @@ housing_server <- function(id, r) {
       df = r[[id]]$df(),
       var_left = var_left(),
       var_right = var_right()))
+    
+    # Data for tile coloring
+    data_color <- reactive(get_data_color(
+      map_zoom_levels = map_zoom_levels()$levels,
+      var_left = var_left(),
+      var_right = var_right()
+    ))
 
     # Legend
     legend <- legend_server(
@@ -182,8 +178,7 @@ housing_server <- function(id, r) {
       r = r,
       map_id = "map",
       tile = tile,
-      tile2 =  tile2,
-      map_var = map_var)
+      data_color = data_color)
 
     # Update map labels
     label_server(

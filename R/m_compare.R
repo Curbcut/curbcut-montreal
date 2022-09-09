@@ -49,16 +49,16 @@ compare_server <- function(id, r = r, var_list, df = r[[id]]$df,
                                      disabled = disabled, 
                                      time = time, 
                                      df = df)
-    
+
     # Update the reactiveVal ONLY if var_right_1() faces an actual change.
     observeEvent(var_right_1(), {
-      if (var_right_1() != r[[id]]$var_compare()) 
+      if (var_right_1()[1] != r[[id]]$var_compare()[1]) 
         r[[id]]$var_compare(var_right_1())
     })
 
     # Is the variable part of a larger group ?
     grouped <- eventReactive(r[[id]]$var_compare(), {
-      if (var_right_1() == " ") return(NA)
+      if (var_right_1()[1] == " ") return(NA)
       var <- sub("_\\d{4}", "", var_right_1())
       variables$grouping[variables$var_code == var]
     })
@@ -141,8 +141,7 @@ compare_server <- function(id, r = r, var_list, df = r[[id]]$df,
       which_in_vars_s_drop <- 
         lapply(seq_along(add_dropdowns()), \(x) {
           tib[tib[[x]] == value_keys[[x]], ]}) |> 
-        (\(x) Reduce(rbind, x))() |> 
-        pull(ID) |> 
+        (\(x) Reduce(rbind, x)$ID)() |> 
         table() |> 
         (\(x) which(x == length(add_dropdowns())))()
 

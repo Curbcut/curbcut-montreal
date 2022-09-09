@@ -11,7 +11,39 @@ source("dev/other/meta_testing.R", encoding = "utf-8")
 source("dev/other/breaks.R")
 source("dev/other/char_fix.R", encoding = "utf-8")
 source("dev/other/interpolate_assign.R")
+source("dev/other/is_in_geometry.R")
 
+
+# Create a master polygon covering all our geographies --------------------
+
+# A polygon covering all our geographies
+master_polygon <- 
+  st_union(
+    # CMA
+    st_union(
+      {
+        cancensus::get_census("CA16", list(CMA = "24462"), geo_format = "sf", quiet = TRUE) |> 
+          st_set_agr("constant") |> 
+          st_transform(32618)
+      }
+    ), 
+    # Centraide
+    st_union(
+      {
+        rbind(
+          {read_sf(paste0("dev/data/centraide/StatCan_Recensement2016/_Geographie/",
+                          "Centraide_Quartiers_Laval_Temporaire.shp")) |> 
+              rename(name = Quartier)},
+          {read_sf(paste0("dev/data/centraide/StatCan_Recensement2016/_Geographie/",
+                          "Centraide_Sous_Territoires_Montreal_RiveSud.shp")) |> 
+              transmute(name = SouTerr)}
+        ) |> 
+          st_transform(32618)
+      }
+    )) |> 
+  st_buffer(-0.1) |> 
+  st_transform(4326) |> 
+  st_make_valid()
 
 # Create raw tables --------------------------------------------------------
 
@@ -48,13 +80,13 @@ source("dev/geometries/centraide_geometries.R")
 
 # Vector of tables --------------------------------------------------------
 
-# All tables in which to accumulate all the data
 all_tables <- c("borough", "CT", "DA", "grid", "centraide")
 
-# A polygon covering all our geographies
-master_polygon <- st_union(st_union(borough), 
-                           st_make_valid(st_union(centraide))) |> 
-  st_transform(32618)
+
+# Add logical columns to DA and CT to filter geometries later on ----------
+
+is_in_geometry(all_tables, crs = 32618)
+
 
 # Error checking ----------------------------------------------------------
 
@@ -157,9 +189,6 @@ source("dev/modules/natural_inf.R")
 source("dev/modules/stories.R", encoding = "utf-8")
 source("dev/modules/place_explorer.R")
 
-save.image(file = 'myEnvironment.RData')
-load('myEnvironment.RData')
-
 
 # Post-processing ---------------------------------------------------------
 
@@ -198,7 +227,7 @@ CT <-
 DA_full <- DA
 DA <- 
   DA_full |> 
-  select(-building, -buffer, -centroid) |> 
+  dplyr::select(-building, -buffer, -centroid) |> 
   rowwise() |> 
   mutate(centroid = list(as.numeric(st_coordinates(st_centroid(geometry))))) |> 
   ungroup() |> 
@@ -214,13 +243,13 @@ grid <-
   mutate(centroid_lat = unlist(centroid)[1],
                 centroid_lon = unlist(centroid)[2]) |> 
   ungroup() |> 
-  select(-centroid) |> 
+  dplyr::select(-centroid) |> 
   st_drop_geometry()
 
 building_full <- building
 building <- 
   building_full |> 
-  select(ID, name, name_2, DAUID) |> 
+  dplyr::select(ID, name, name_2, DAUID) |> 
   sf::st_drop_geometry()
 
 centraide_full <- centraide

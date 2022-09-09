@@ -43,7 +43,7 @@ crash_UI <- function(id) {
       ),
       bottom = div(class = "bottom_sidebar", 
                    tagList(legend_UI(NS(id, ns_id)),
-                           zoom_UI(NS(id, ns_id), map_zoom_levels)))),
+                           zoom_UI(NS(id, ns_id), map_zoom_levels_CMA)))),
     
     # Crash analysis
     hidden(htmlOutput(
@@ -95,7 +95,7 @@ crash_server <- function(id) {
     
     # Zoom reactive
     map_zoom_levels_crash <- reactive({
-      if (choropleth()) map_zoom_levels else c("heatmap" = 0, "point" = 12)
+      if (choropleth()) map_zoom_levels_CMA else c("heatmap" = 0, "point" = 12)
     })
     
     observeEvent({input$map_view_change$zoom
