@@ -22,7 +22,7 @@ shinyServer(function(input, output, session) {
     sus_link = reactiveValues(),
     lang = reactiveVal("fr"),
     active_tab = "home",
-    geo = reactiveVal("census"),
+    geo = reactiveVal("CMA"),
     canale = reactiveValues(select_id = reactiveVal(NA), 
                             df = reactiveVal("borough"),
                             zoom = reactiveVal(get_zoom(map_zoom))),
