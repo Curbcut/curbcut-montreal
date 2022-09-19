@@ -108,7 +108,7 @@ grid_q5 <-
 # Consolidate q5 breaks table
 climate_risk_q5 <- 
   imap(grid_q5, \(x, y) {
-    imap_dfr(climate_risk_q5, ~mutate(.x, scale = .y)) |> 
+    imap_dfr(climate_risk_q5[names(climate_risk_q5) != "grid"], ~mutate(.x, scale = .y)) |> 
       select(scale, rank, all_of(y)) |> 
       set_names(c("scale", "rank", "var")) |> 
       bind_rows(x)})
@@ -137,7 +137,6 @@ interpolation_keys <-
   map(set_names(names(all_climate_risk$tables_list)), ~{
     if (.x == "grid") FALSE else "250-m grid cells"
   })
-
 
 variables <- 
   variables |>

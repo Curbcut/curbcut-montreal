@@ -10,7 +10,7 @@ get_data_color <- function(map_zoom_levels, var_left, var_right,
   data_type <- get_data_type(dfs[1], var_left, var_right, 
                              build_str_as_DA)
   
-  
+
   ## Get data table ------------------------------------------------------------
   
   datas <- lapply(dfs, get_data_table, var_left, var_right, data_type)
@@ -34,8 +34,6 @@ get_data_color <- function(map_zoom_levels, var_left, var_right,
       names(out) <- c("group", "value")
       out
     } else if (grepl("bivar", data_type)) {
-      data$group <- 
-        paste(data$var_left_q3, data$var_right_q3, sep = " - ")
       out <- merge(data, colour_bivar, by.x = "group", 
                    by.y = "group")[, c("ID", "fill")]
       names(out) <- c("group", "value")

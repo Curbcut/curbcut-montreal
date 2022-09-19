@@ -34,7 +34,11 @@ info_table <- function(r, data, var_type, var_left, var_right, df, select_id,
   if (is.null(z)) return(z)
   
   ## Handle NAs ----------------------------------------------------------------
-      
+  
+  # ALL NA
+  if (z$var_type == "all_na") out <- sus_translate(r = r, 
+     "We have no data on {z$exp_left} at the {z$scale_sing} scale.")
+
   # Special case for Kahnawake
   if (z$var_type == "kah_na") out <- sus_translate(r = r, 
     "<strong>Kahnawake Mohawk Territory</strong>",

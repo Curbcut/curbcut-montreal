@@ -98,7 +98,7 @@ vulnerable_pop_server <- function(id, r) {
 
     # Get df for explore/legend/etc
     observe(r[[id]]$df(get_df(tile(), zoom_string()))) |> 
-      bindEvent(tile(), zoom_string(), ignoreInit = TRUE)
+      bindEvent(tile(), zoom_string())
 
     # Left variable server
     vl_imm <- select_var_server(

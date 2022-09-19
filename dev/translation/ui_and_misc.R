@@ -6,6 +6,10 @@ ui_and_misc_translated <-
           fr = paste0("----")) |> 
   add_row(en = paste0("Learn more"), 
           fr = paste0("En savoir plus")) |> 
+  add_row(en = paste0("Advanced options"), 
+          fr = paste0("Options avancées")) |> 
+  add_row(en = paste0("Change default geometry"), 
+          fr = paste0("Modifier la géométrie par défaut")) |> 
   add_row(en = paste0("Did you know?"), 
           fr = paste0("Le saviez-vous?")) |> 
   add_row(en = paste0("Borough/city"), 
@@ -625,4 +629,6 @@ ui_and_misc_translated <-
   add_row(en = paste0("By transit"), 
           fr = paste0("En transport en commun")) |> 
   add_row(en = paste0("By car"), 
-          fr = paste0("En auto"))
+          fr = paste0("En auto")) |> 
+  add_row(en = paste0("Centraide"), 
+          fr = paste0("Centraide"))

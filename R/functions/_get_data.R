@@ -38,7 +38,7 @@ get_data <- function(df, var_left, var_right, island = FALSE, point_df = NULL,
   
   
   # Return output ----------------------------------------------------------
-  
+
   return(data)
   
 }

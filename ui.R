@@ -111,18 +111,6 @@ ui <- function(request) {
                style = "min-width: 112px;",
                label = span(span(class = "material-icons", "language"), 
                             span("English"))),
-             
-             # Geometry actions dropdown
-             materialIconButton(
-               dropdownButton(inputId = "geo_change",
-                              tags$span(class = "dropdown-header text", 
-                                        sus_translate("Change default scale")),
-                              actionLink(inputId = "geo_CMA",
-                                         label = sus_translate("Metropolitan Area (Default)")),
-                              actionLink(inputId = "geo_centraide",
-                                         label = sus_translate("Centraide"))
-               ), "navigation"),
-             
              # Actions dropdown
              materialIconButton(
                dropdownButton(inputId = "settings",
@@ -135,7 +123,11 @@ ui <- function(request) {
                               actionLink(inputId = "contact",
                                          label = sus_translate("Contact/feedback"),
                                          icon("comment"),
-                                         onclick = "window.open('mailto:contact@susmontreal.ca', '_blank')")
+                                         onclick = "window.open('mailto:contact@susmontreal.ca', '_blank')"),
+                              actionLink(inputId = "advanced_options",
+                                         label = sus_translate(
+                                           "Advanced options"),
+                                         icon("gear", verify_fa = FALSE))
              ), "summarize")
            )
       ))

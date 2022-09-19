@@ -73,10 +73,8 @@ explore_server <- function(id, r, data, var_left, var_right,
     graph_args2 <- reactive(c(graph_args(), var_type = var_type()))
     
     # Make info table
-    table_out <- reactive(#tryCatch(
-      do.call(table(), table_args2())#, 
-                                   # error = function(e) NULL)
-      )
+    table_out <- reactive(tryCatch(do.call(table(), table_args2()),
+                                  error = function(e) NULL))
     
     # Display info table
     output$info_table <- renderUI(table_out())
@@ -107,7 +105,7 @@ explore_server <- function(id, r, data, var_left, var_right,
       updateActionButton(session, "hide_explore", label = txt)
     })
 
-    # # Return info_table text and graph to export it in report afterwards
+    # Return info_table text and graph to export it in report afterwards
     reactive(list(info = table_out(), graph = graph_out()))
   })
 }

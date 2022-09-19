@@ -135,6 +135,8 @@ map_loc <- c(-73.58, 45.53)
 map_zoom_levels_CMA <- 
   c("borough" = 0, "CT" = 10.5, "DA" = 12.5, "building" = 15.5)
 map_zoom_levels_CMA_max_CT <- c("borough" = 0, "CT" = 10.5)
+map_zoom_levels_island <- 
+  c("borough" = 0, "CT" = 10.5, "DA" = 12.5, "building" = 15.5)
 map_zoom_levels_centraide <- 
   c("centraide" = 0, "CT" = 10.5, "DA" = 12.5, "building" = 15.5)
 map_zoom_levels_centraide_max_CT <- c("centraide" = 0, "CT" = 10.5)

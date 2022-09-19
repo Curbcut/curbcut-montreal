@@ -25,14 +25,15 @@ get_plot_type <- function(data, var_type, var_left, var_right, select_id, df) {
   graph_type <-
     if (df == "date") "date" else
       if (var_type == "NA_delta") "NAdelta" else
-        if (var_type == "NA_delta_bivar") "NAdeltabivar" else
-          if (var_right[1] == " " && grepl("_delta", var_type)) "delta" else
-            if (var_right[1] != " " && 
-                grepl("_delta", var_type)) "deltabivar" else
-              if (var_right[1] == " " && var_left_num > 7) "hist" else
-                if (var_right[1] == " " && var_left_num <= 7) "bar" else
-                  if (var_right[1] != " " && var_left_num > 7) "scatter" else
-                    if (var_right[1] != " " && var_left_num <= 7) "box"
+        if (var_type == "all_na") "all_na" else
+          if (var_type == "NA_delta_bivar") "NAdeltabivar" else
+            if (var_right[1] == " " && grepl("_delta", var_type)) "delta" else
+              if (var_right[1] != " " && 
+                  grepl("_delta", var_type)) "deltabivar" else
+                    if (var_right[1] == " " && var_left_num > 7) "hist" else
+                      if (var_right[1] == " " && var_left_num <= 7) "bar" else
+                        if (var_right[1] != " " && var_left_num > 7) "scatter" else
+                          if (var_right[1] != " " && var_left_num <= 7) "box"
     
   # Get selection status
   select_type <- 

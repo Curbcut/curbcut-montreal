@@ -39,6 +39,7 @@ select_var_server <- function(id, r = r, select_var_id = "var",
       })
 
     var <- reactive({
+      if (input[[select_var_id]] == " ") return(" ")
       v1 <- paste(input[[select_var_id]], time(), sep = "_")
       v1 <- sub("_$", "", v1)
       if (!is.null(time()) && !is.null(df) && 

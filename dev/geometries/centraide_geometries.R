@@ -32,6 +32,37 @@ centraide <-
   relocate(ID, name, name_2, population, households, .before = geometry)
 
 
+
+# Add name_2 to centraide DAs and CTs -------------------------------------
+
+add_name_2 <- function(df, geo) {
+  df_filtered <- 
+    df |> 
+    st_filter(geo) |> 
+    filter(is.na(name_2)) |> 
+    select(ID)
+  
+  df_filtered <- 
+    df_filtered |>
+    mutate(previous_area = units::drop_units(st_area(geometry))) |>
+    st_intersection(select(geo, name_2)) |>
+    st_set_agr("constant") |> 
+    st_make_valid() |> 
+    mutate(new_area = units::drop_units(st_area(geometry))) |>
+    filter({new_area / previous_area} > 0.33) |> 
+    transmute(ID, name_2_centraide = name_2) |> 
+    st_drop_geometry()
+  
+  df |> 
+    left_join(df_filtered, by = "ID") |> 
+    mutate(name_2 = if_else(is.na(name_2), name_2_centraide, name_2)) |> 
+    select(-name_2_centraide)
+}
+
+CT <- add_name_2(CT, centraide)
+DA <- add_name_2(DA, centraide)
+
+
 # Cleanup -----------------------------------------------------------------
 
 rm(table1, table2)

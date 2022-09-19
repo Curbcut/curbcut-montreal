@@ -83,9 +83,8 @@ canale_server <- function(id, r) {
       zoom_levels = map_zoom_levels)
 
     # Get df for explore/legend/etc
-    # Must be inactive at init: the bookmark might want to set this value
     observe(r[[id]]$df(get_df(tile(), zoom_string()))) |> 
-      bindEvent(tile(), zoom_string(), ignoreInit = TRUE)
+      bindEvent(tile(), zoom_string())
     
     # Time
     time <- reactive("2016")

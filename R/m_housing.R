@@ -49,8 +49,7 @@ housing_server <- function(id, r) {
     select_id <- reactiveVal(NA)
     poi <- reactiveVal(NULL)
     new_poi <- reactiveVal(NULL)
-    df <- reactiveVal("borough")
-    
+
     # Map
     output[[id_map]] <- renderRdeck({
       rdeck(map_style = map_base_style, initial_view_state = view_state(
@@ -75,9 +74,9 @@ housing_server <- function(id, r) {
     
     # Zoom string reactive
     observe({
-      new_zoom_string <- get_zoom_string(r[[id]]$zoom(), map_zoom_levels_CMA)
+      new_zoom_string <- get_zoom_string(r[[id]]$zoom(), map_zoom_levels()$levels)
       if (new_zoom_string != zoom_string()) zoom_string(new_zoom_string)
-    }) |> bindEvent(r[[id]]$zoom())
+    }) |> bindEvent(r[[id]]$zoom(), map_zoom_levels()$levels)
     
     # Click reactive
     observe({
@@ -103,10 +102,10 @@ housing_server <- function(id, r) {
       toggle(NS(id, "slu"), condition = !slider_switch())
       toggle(NS(id, "slb"), condition = slider_switch())
     })
-
+    
     # Get df for explore/legend/etc
     observe(r[[id]]$df(get_df(tile(), zoom_string()))) |> 
-      bindEvent(tile(), zoom_string(), ignoreInit = TRUE)
+      bindEvent(tile(), zoom_string())
     
     # Time variable depending on which slider is active
     slider_uni <- slider_server(id = id, slider_id = "slu")
@@ -139,7 +138,7 @@ housing_server <- function(id, r) {
       df = r[[id]]$df(),
       var_left = var_left(),
       var_right = var_right()))
-    
+
     # Data for tile coloring
     data_color <- reactive(get_data_color(
       map_zoom_levels = map_zoom_levels()$levels,
