@@ -623,3 +623,24 @@ title_text_translation <-
                       "L'examen et la comparaison des variables démographiques ",
                       "peuvent fournir des renseignements significatifs sur la ",
                       "population Montréalaise. "))
+  add_row(en = paste0("Montreal stories"), 
+          fr = paste0("Histoires Montréalaises")) |> 
+  add_row(en = paste0("Explore narrative case studies on sustainability issues in Montreal's ",
+                      "neighborhoods. In this module, read text-based stories and view their ",
+                      "adjoining visual media."),   
+          fr = paste0("Explorez des études de cas narratives sur les questions ",
+                       "de durabilité dans les quartiers de Montréal. Dans ce ",
+                       "module, vous pouvez lire des histoires textuelles et ",
+                       "visualiser les médias visuels qui y sont associés. ")) |>
+  add_row(en = paste0("<p>These stories, written by Sus contributors, examine Montreal ",
+    "sustainability issues that aren't well suited to representation in our ",
+    "standard interactive map format. Learn more about stories rooted in ",
+    "specific geographic locations across the city or those that have had ",
+    "an impact on the whole of Montreal. "),
+          fr = paste0("<p>Ces histoires, écrites par des contributeurs à Sus, ",
+                      "explorent les enjeux de durabilité de Montréal qui ne ",
+                      "se prêtent pas à une représentation dans notre format ",
+                      "standard de carte interactive. Apprenez-en davantage sur ",
+                      "les histoires ancrées dans des lieux géographiques ",
+                      "spécifiques de la ville ou sur celles qui ont eu un ",
+                      "impact sur l'ensemble de Montréal. </ul>"))

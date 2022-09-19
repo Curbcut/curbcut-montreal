@@ -395,12 +395,15 @@ add_row(tab = "demographics", type = "title",
   
   add_row(tab = "stories", type = "title", text = "Montreal stories") |> 
   add_row(tab = "stories", type = "main", text = paste0(
-    "Narrative case studies on sustainability issues in Montreal's ",
-    "neighborhoods.")) |> 
+    "Explore narrative case studies on sustainability issues in Montreal's ",
+    "neighborhoods. In this module, read text-based stories and view their ",
+    "adjoining visual media.")) |> 
   add_row(tab = "stories", type = "extra", text = paste0(
-    "These stories, written by Sus contributors, explore Montreal ",
+    "<p>These stories, written by Sus contributors, examine Montreal ",
     "sustainability issues that aren't well suited to representation in our ",
-    "standard interactive map format.")) |> 
+    "standard interactive map format. Learn more about stories rooted in ",
+    "specific geographic locations across the city or those that have had ",
+    "an impact on the whole of Montreal. </ul>")) |> 
   
 
 # Gentrification ----------------------------------------------------------
