@@ -207,6 +207,10 @@ get_data_table <- function(df, var_left, var_right, data_type,
     data$var_right <- replace(data$var_right, is.infinite(data$var_right), NA)
     data$var_right_q3 <- ntile(data$var_right, 3)
     data$group <- paste(data$var_left_q3, "-", data$var_right_q3)
+    data$var_left_1 <- data[[var_left[1]]]
+    data$var_left_2 <- data[[var_left[2]]]
+    data$var_right_1 <- data[[var_right[1]]]
+    data$var_right_2 <- data[[var_right[2]]]
     data <- data[c("ID", "name", "name_2", if (df == "DA") "DAUID",
                    if (df %in% c("DA", "CT")) "CTUID",
                    if (df %in% c("DA", "CT", "borough")) "CSDUID", "population",
@@ -250,6 +254,10 @@ get_data_table <- function(df, var_left, var_right, data_type,
     data$var_right <- replace(data$var_right, is.infinite(data$var_right), NA)
     data$var_right_q3 <- ntile(data$var_right, 3)
     data$group <- paste(data$var_left_q3, "-", data$var_right_q3)
+    data$var_left_1 <- data[[var_left[1]]]
+    data$var_left_2 <- data[[var_left[2]]]
+    data$var_right_1 <- data[[var_right[1]]]
+    data$var_right_2 <- data[[var_right[2]]]
     data <- data[c("ID", "name", "name_2", if (df == "DA") "DAUID",
                    if (df %in% c("DA", "CT")) "CTUID", 
                    if (df %in% c("DA", "CT", "borough")) "CSDUID", "population",

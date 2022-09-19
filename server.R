@@ -1,25 +1,24 @@
 ##### SUS SERVER SCRIPT ########################################################
 
 shinyServer(function(input, output, session) {
-  
-  
 
-  # Page title change, depending on page visited -------------------------------
+  ## Page title change, depending on page visited ------------------------------
 
   observe(title_page_update(r = r, session = session, 
                             sus_page = input$sus_page))
   
   
-  # If on mobile, warning! -----------------------------------------------------
+  ## If on mobile, warning! ----------------------------------------------------
   
   observe(mobile_warning(r = r, session = session))
   
   
-  # Reactive variables ---------------------------------------------------------
+  ## Reactive variables --------------------------------------------------------
   
   r <- reactiveValues(
     sus_bookmark = reactiveValues(active = FALSE),
     sus_link = reactiveValues(),
+    news = reactiveValues(select_id = reactiveVal(NA)),
     lang = reactiveVal("fr"),
     active_tab = "home",
     geo = reactiveVal("CMA"),
@@ -60,20 +59,23 @@ shinyServer(function(input, output, session) {
   )
   
 
-  # Home page ------------------------------------------------------------------
+  ## Home page -----------------------------------------------------------------
   
   observe(updateNavbarPage(session, "sus_page", "home")) |> 
     bindEvent(input$title)
   
   
-  # First visit banner ---------------------------------------------------------
-  
+  ## First visit banner --------------------------------------------------------
+
   # Reset after 14 days of last time the banner was shown
-  observeEvent(input$cookies$time_last_htu_banner, {
-    if (is.null(input$cookies$time_last_htu_banner) ||
-        (!is.null(input$cookies$time_last_htu_banner) &&
-         Sys.time() > (as.POSIXct(input$cookies$time_last_htu_banner) + 
-                       1209600))) {
+
+  observeEvent(input$cookies$htu_banner, {
+    
+    cookie_last <- input$cookies$htu_banner
+
+    if (is.null(cookie_last) || 
+        # Show back after 2 weeks
+        (!is.null(cookie_last) && Sys.time() > (as.POSIXct(cookie_last) + 1209600))) {
       
       insertUI(selector = ".navbar-shadow", where = "beforeBegin", ui = HTML(
         paste0("<div id = 'htu_footer' class='fixed_footer'>",
@@ -93,25 +95,54 @@ shinyServer(function(input, output, session) {
                "</div>")))
     }
     
-    # So that it repeats if there's a gap of 14 days between all visits
-    time_last_htu_banner <- list(name = "time_last_htu_banner", 
-                                 value = Sys.time())
+    # After ANY visit, restart the timer
+    htu_banner <- list(name = "htu_banner",
+                       value = Sys.time())
+    session$sendCustomMessage("cookie-set", htu_banner)
     
-    session$sendCustomMessage("cookie-set", time_last_htu_banner)
-  }, once = TRUE)
+  }, once = TRUE, ignoreNULL = FALSE, ignoreInit = TRUE)
   
+  # Remove the banner, and log in the cookie
   observeEvent(input$go_to_htu_en, {
     removeUI("#htu_footer")
     updateTabsetPanel(session, "sus_page", selected = "how_to_use")
-  })
+  }, ignoreInit = TRUE)
+  
   observeEvent(input$go_to_htu_fr, {
     removeUI("#htu_footer")
     updateTabsetPanel(session, "sus_page", selected = "how_to_use")
-  })
+  }, ignoreInit = TRUE)
   
   observeEvent(input$go_to_htu_x, {
     removeUI("#htu_footer")
-  })
+  }, ignoreInit = TRUE)
+  
+  
+
+  ## Newsletter modal ----------------------------------------------------------
+
+  observeEvent(input$cookies$signupform, {
+    
+    cookie_last <- input$cookies$signupform
+    
+    # 28 days after last visit, popup the newsletter subscription
+    if (is.null(cookie_last) || 
+        (!is.null(cookie_last) && Sys.time() > (as.POSIXct(cookie_last) + 2419200))) {
+      shinyjs::delay(5000, showModal(modalDialog(HTML(readLines("www/sus.signupform.html")),
+                                                 easyClose = TRUE)))
+    }
+    
+    # After ANY visit, restart the timer
+    signupform <- list(name = "signupform",
+                       value = Sys.time())
+    session$sendCustomMessage("cookie-set", signupform)
+    
+  }, once = TRUE, ignoreNULL = FALSE, ignoreInit = TRUE)
+  
+  onclick("subscribe", {
+    showModal(modalDialog(HTML(readLines("www/sus.signupform.html")),
+                          easyClose = TRUE))
+  })  
   
   
   ## Language button -----------------------------------------------------------
@@ -285,15 +316,15 @@ shinyServer(function(input, output, session) {
   
   ## Modules -------------------------------------------------------------------
   
+  export_data <- list()
+  
   active_mod_server <- function(active_tab = input$sus_page) {
     mod_function <- 
       paste0(active_tab, "_server('", active_tab, "', r = r)")
-    
-    # Run the function but also catch its output for data exportation
-    assign("export_data", eval(parse(text = mod_function)), 
-           pos = 1)
+
+    return(eval(parse(text = mod_function)))
   }
-  
+
   observeEvent(input$sus_page, {
     bookmark_server(input$sus_page, r = r)
 
@@ -302,7 +333,6 @@ shinyServer(function(input, output, session) {
     
     updateQueryString("?")
   }, ignoreInit = FALSE)
-  
 
 
   ## Advanced options ----------------------------------------------------------
@@ -332,6 +362,66 @@ shinyServer(function(input, output, session) {
       r$geo(input$cookies$default_geo)
     }
   }, once = TRUE)
+  
+  
+  ## Data download -------------------------------------------------------------
+  
+  data_modal <- reactive(
+    data_export_modal(r = r, export_data = r[[input$sus_page]]$export_data()))
+  
+  onclick("download_data", {
+    if (!input$sus_page %in% modules$id || 
+        isFALSE(modules$metadata[modules$id == input$sus_page]))
+      return(showNotification(
+        sus_translate(r = r, "No data/metadata for this location."),
+        duration = 3))
+    
+    showModal(data_modal()$modal)
+  })
+  
+  output$download_csv <-
+    downloadHandler(
+      filename = paste0(r[[input$sus_page]]$export_data()$id, "_data.csv"),
+      content = function(file) {
+        data <- data_modal()$data
+        write.csv(data, file, row.names = FALSE)
+      }, contentType = "text/csv")
+  
+  output$download_shp <-
+    downloadHandler(
+      filename = paste0(r[[input$sus_page]]$export_data()$id, "_shp.zip"),
+      content = function(file) {
+        withProgress(message = sus_translate(r = r, "Exporting Data"), {
+          
+          incProgress(0.4)
+          
+          # Prepare data by attaching geometries
+          geo <- qread(paste0("data/geometry_export/", 
+                              r[[input$sus_page]]$export_data()$data_origin, ".qs"))
+          data <- merge(data_modal()$data, geo, by = "ID")
+          rm(geo)
+          
+          incProgress(0.3)
+          
+          tmp.path <- dirname(file)
+          name.base <- file.path(tmp.path,
+                                 paste0(r[[input$sus_page]]$export_data()$id, "_data"))
+          name.glob <- paste0(name.base, ".*")
+          name.shp  <- paste0(name.base, ".shp")
+          name.zip  <- paste0(name.base, ".zip")
+          
+          if (length(Sys.glob(name.glob)) > 0) file.remove(Sys.glob(name.glob))
+          sf::st_write(data, dsn = name.shp,
+                       driver = "ESRI Shapefile", quiet = TRUE)
+          
+          zip::zipr(zipfile = name.zip, files = Sys.glob(name.glob))
+          req(file.copy(name.zip, file))
+          
+          incProgress(0.3)
+          
+          if (length(Sys.glob(name.glob)) > 0) file.remove(Sys.glob(name.glob))
+        })
+      })
   
   
   ## Heartbeat function to keep app alive --------------------------------------

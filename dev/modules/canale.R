@@ -83,6 +83,22 @@ variables <-
                           centraide = "dissemination area")))
 
 
+# Add to modules table ----------------------------------------------------
+
+modules <- 
+  modules |> 
+  add_modules(
+    id = "canale",
+    metadata = TRUE,
+    dataset_info = 
+      paste0("<p><a href = 'https://nancyrossresearchgroup.ca/research/can-ale/'>",
+             "The Canadian Active Living Environments (Can-ALE)</a> dataset is ",
+             "a geographic-based set of measures charac",
+             "terizing the active living environments (often referred to as '",
+             "walkability') of Canadian communities. The data is provided at ",
+             "the dissemination area level.</p>"))
+
+
 # Clean up ----------------------------------------------------------------
 
 rm(canale, all_canale, breaks_q3_active, breaks_q5_active, reserves)

@@ -17,6 +17,7 @@ suppressPackageStartupMessages({
   
   library(RSQLite)
   library(curl)
+  library(tableHTML)
 })
 
 # Shiny options -----------------------------------------------------------
@@ -24,11 +25,14 @@ suppressPackageStartupMessages({
 options(shiny.fullstacktrace = TRUE)
 options(shiny.useragg = TRUE)
 shinyOptions(cache = cachem::cache_disk(file.path(dirname(tempdir()), "cache")))
-
+options(shiny.error = function() 
+  browseURL(paste0("https://docs.google.com/forms/d/e/1FAIpQLSfuQquv73dQoXA1U",
+                   "neCh9zREj0NG3E-RCfRpTNyJ1dIBagIeQ/viewform?usp=sf_link")))
 
 # Data --------------------------------------------------------------------
 
 variables <- qread("data/variables.qs")
+modules <- qread("data/modules.qs")
 title_text <- qread("data/title_text.qs")
 dyk <- qread("data/dyk.qs")
 qload("data/colours.qsm")
@@ -36,6 +40,7 @@ tile_lookup <- qread("data/tile_lookup.qs")
 
 qload("data/census.qsm")
 centraide <- qread("data/centraide.qs")
+census_variables <- qread("data/census_variables.qs")
 # street <- qread("data/street.qs")
 
 # qload("data/covid.qsm")
@@ -43,7 +48,6 @@ centraide <- qread("data/centraide.qs")
 qload("data/alley.qsm")
 # crash <- qread("data/crash.qs")
 # marketed_sustainability <- qread("data/marketed_sustainability.qs")
-metro_lines <- qread("data/metro_lines.qs")
 
 qload("data/stories.qsm")
 
@@ -85,9 +89,9 @@ mods_rdy <- list(
   ),
   "Housing" = c(
     "Housing system" = "housing",
-    "Housing affordability" = "afford",
-    "Tenure status" = "tenure",
-    "Dwelling types" = "dw_types"
+    # "Housing affordability" = "afford",
+    # "Tenure status" = "tenure",
+    # "Dwelling types" = "dw_types"
   ),
   "Policy" = c(
     "Montréal climate plans" = "mcp"
@@ -98,8 +102,8 @@ mods_rdy <- list(
   ),
   "Urban life" = c(
     "Active living potential" = "canale", 
-    "Green alleys" = "alley",
-    "Demographics" = "demographics"
+    "Green alleys" = "alley"#,
+    # "Demographics" = "demographics"
   ),
   "Ecology" = c(
     "Natural infrastructure" = "natural_inf"

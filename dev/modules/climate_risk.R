@@ -168,6 +168,7 @@ variables <-
     breaks_q5 = climate_risk_q5$climate_flood_ind,
     source = "City of Montreal's open data website",
     interpolated = interpolation_keys) |> 
+
   add_variables(
     var_code = "climate_heavy_rain_ind",
     var_title = "Heavy rain vulnerability",
@@ -214,6 +215,23 @@ variables <-
     breaks_q5 = climate_risk_q5$climate_heat_wave_ind,
     source = "City of Montreal's open data website",
     interpolated = interpolation_keys)
+
+
+# Add to modules table ----------------------------------------------------
+
+modules <- 
+  modules |> 
+  add_modules(
+    id = "climate_risk",
+    metadata = TRUE,
+    dataset_info = 
+      paste0("<p><a href = 'https://donnees.montreal.ca/ville-de-montreal/vuln",
+             "erabilite-changements-climatiques'>",
+             "The data in this module are cartographic representations of the ",
+             "vulnerability analysis</a> developed as part of the Climate change ",
+             "adaptation plan for the agglomeration of Montréal 2015-2020 for ",
+             "the following climate hazards: heavy rainfall, heat waves, ",
+             "destructive storms, droughts and floods.</p>"))
 
 
 # Clean up ----------------------------------------------------------------

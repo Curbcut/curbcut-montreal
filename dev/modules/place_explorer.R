@@ -605,6 +605,14 @@ pe_variable_order <-
 pe_variable_order <- lapply(pe_variable_order, \(x) split(x, x$group)) 
 pe_theme_order <- lapply(pe_theme_order, \(x) split(x, x$group)) 
 
+
+# Add to modules table ----------------------------------------------------
+
+modules <- 
+  modules |> 
+  add_modules(id = "place_explorer",
+              metadata = FALSE)
+
 # Cleanup -----------------------------------------------------------------
 
 rm(basic_percentile_retrieval, min_access_var_code,
