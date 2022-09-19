@@ -14,6 +14,11 @@ add_vars <- function(data_out, census_vec, breaks_q3, breaks_q5, scales,
   add_vars <- str_remove(add_vars, "_\\d{4}$")
   add_vars <- unique(add_vars)
   
+  interpolation_keys <- 
+    map(set_names(names(data_out)), ~{
+      if (.x %in% c("DA", "CT")) FALSE else "dissemination area"
+    })
+  
   map_dfr(add_vars, ~{
     
     # Get starting var table subset
@@ -47,18 +52,31 @@ add_vars <- function(data_out, census_vec, breaks_q3, breaks_q5, scales,
         mutate(scale = scale)}) |>
       select(scale, rank, var = all_of(.x))
     
-    tibble(
-      var_code = .x,
-      var_title = dat$var_title,
-      var_short = if (is.na(dat$var_short)) var_title else dat$var_short,
-      explanation = dat$explanation,
-      category = dat$category,
-      private = dat$private,
-      dates = list(dates_active),
-      scales = list(scales_active),
-      breaks_q3 = list(breaks_q3_active),
-      breaks_q5 = list(breaks_q5_active),
-      source = dat$source
-    )
+    out <- 
+      add_variables(variables,
+        var_code = .x,
+        var_title = dat$var_title,
+        var_short = if (is.na(dat$var_short)) var_title else dat$var_short,
+        explanation = dat$explanation,
+        theme = case_when(str_starts(.x, "housing") ~ "Housing",
+                          str_starts(.x, "inc") ~ "Income",
+                          str_starts(.x, "iden") ~ "Identity",
+                          str_starts(.x, "trans") ~ "Transport",
+                          str_starts(.x, "emp") ~ "Employment",
+                          str_starts(.x, "family") ~ "Household",
+                          str_starts(.x, "lang") ~ "Language",
+                          str_starts(.x, "age") ~ "Age",
+                          str_starts(.x, "edu") ~ "Education"),
+        category = dat$category,
+        private = dat$private,
+        dates = list(dates_active),
+        scales = list(scales_active),
+        breaks_q3 = breaks_q3_active,
+        breaks_q5 = breaks_q5_active,
+        source = dat$source,
+        interpolated = interpolation_keys
+      )
+    
+    out[out$var_code == .x, ]
   })
 }

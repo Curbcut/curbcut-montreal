@@ -39,6 +39,7 @@ qload("data/colours.qsm")
 tile_lookup <- qread("data/tile_lookup.qs")
 
 qload("data/census.qsm")
+centraide <- qread("data/centraide.qs")
 census_variables <- qread("data/census_variables.qs")
 # street <- qread("data/street.qs")
 
@@ -85,32 +86,29 @@ island_CSDUID <-
 mods_rdy <- list(
   "Climate" = c(
     "Climate risk" = "climate_risk"
-    ),
-  # "Covid" = c(
-  #   "Covid interventions" = "covid"
-  #   ),
+  ),
   "Housing" = c(
-    "Housing system" = "housing"
-  #   "Gentrification" = "gentrification", 
-  #   "Permits" = "permits", 
-  #   "Marketed Sustainability" = "marketed_sustainability"
-    ),
+    "Housing system" = "housing",
+    # "Housing affordability" = "afford",
+    # "Tenure status" = "tenure",
+    # "Dwelling types" = "dw_types"
+  ),
   "Policy" = c(
     "Montréal climate plans" = "mcp"
-    ),
+  ),
   "Transport" = c(
     "Accessibility" = "access"#,
-  #   "Road safety" = "crash"
-    ),
+    #   "Road safety" = "crash"
+  ),
   "Urban life" = c(
     "Active living potential" = "canale", 
     "Green alleys" = "alley"#,
-    # "Green spaces" = "green_space"
-    ),
+    # "Demographics" = "demographics"
+  ),
   "Ecology" = c(
     "Natural infrastructure" = "natural_inf"
-    )
   )
+)
 
 stand_alone_tabs <- c(
   "Montréal stories" = "stories",
@@ -118,7 +116,7 @@ stand_alone_tabs <- c(
   "How to use" = "how_to_use",
   "About" = "about_sus",
   "Authors" = "authors"
-  )
+)
 
 
 # Translation -------------------------------------------------------------
@@ -134,8 +132,18 @@ options(rdeck.mapbox_access_token = map_token)
 map_base_style <- "mapbox://styles/sus-mcgill/cl0reqoz4000z15pekuh48ld6"
 map_style_building <- "mapbox://styles/sus-mcgill/cl2bwtrsp000516rwyrkt9ior"
 map_zoom <- 10.1
-map_zoom_levels <- c("borough" = 0, "CT" = 10.5, "DA" = 12.5, "building" = 15.5)
 map_loc <- c(-73.58, 45.53)
+
+# Naming of the following matters. `census`, `census_max_CT`, `centraide` are
+# keys to get() these map_zoom_levels strings.
+map_zoom_levels_CMA <- 
+  c("borough" = 0, "CT" = 10.5, "DA" = 12.5, "building" = 15.5)
+map_zoom_levels_CMA_max_CT <- c("borough" = 0, "CT" = 10.5)
+map_zoom_levels_island <- 
+  c("borough" = 0, "CT" = 10.5, "DA" = 12.5, "building" = 15.5)
+map_zoom_levels_centraide <- 
+  c("centraide" = 0, "CT" = 10.5, "DA" = 12.5, "building" = 15.5)
+map_zoom_levels_centraide_max_CT <- c("centraide" = 0, "CT" = 10.5)
 
 
 # Set up fonts ------------------------------------------------------------
@@ -151,3 +159,4 @@ systemfonts::register_font(
 # Connect to the db -------------------------------------------------------
 
 db <- dbConnect(SQLite(), "data/sql_db.sqlite")
+

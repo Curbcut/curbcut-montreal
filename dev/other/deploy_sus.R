@@ -1,49 +1,39 @@
-deploy_sus <- function(app_name = "sus-mssi", ...) {
+deploy_sus <- function(app_name) {
   
-  stopifnot(app_name %in% c("sus-mssi", "sus-dev", "sus-dev2", "sus-dev3"))
+  if (Sys.info()["sysname"] != "Windows") 
+    stop("As of now, this function is only adapted for Windows.")
   
-  # Temporarily update server.R
-  server_to_update <- readLines("server.R")
-  which_line_s <- stringr::str_which(server_to_update, 
-                                     'updateQueryString\\("\\?"\\)')
-  server_to_update[which_line_s] <- r"(    # updateQueryString("?"))"
-  writeLines(server_to_update, "server.R")
+  cancel <- readline(prompt = 
+             paste0("Pursuing will open a terminal and terminate this R sessio",
+                    "n. Write 'ok' to proceed:   "))
   
-  # Set on.exit to restore server.R
-  on.exit({
-    server_to_update[which_line_s] <- r"(    updateQueryString("?"))"
-    writeLines(server_to_update, "server.R")
-  })
+  if (cancel != "ok") return(cat("Aborted succesfully."))
   
-  if (app_name != "sus-mssi") { 
-    
-    # Temporarily update m_bookmark.R
-    bookmark_to_update <- readLines("R/m_bookmark.R")
-    which_line_b <- stringr::str_which(bookmark_to_update, 
-                                       'updateQueryString\\(url\\)')
-    if (app_name == "sus-dev") {
-      bookmark_to_update[which_line_b] <- 
-        r"(      updateQueryString(paste0("/sus-dev", url)))" 
-    } else if (app_name == "sus-dev2") {
-      bookmark_to_update[which_line_b] <- 
-        r"(      updateQueryString(paste0("/sus-dev2", url)))" 
-    } else if (app_name == "sus-dev3") {
-      bookmark_to_update[which_line_b] <- 
-        r"(      updateQueryString(paste0("/sus-dev3", url)))" 
-    }
-    writeLines(bookmark_to_update, "R/m_bookmark.R")
-    
-    # Set on.exit to restore server.R and m_bookmark.R
-    on.exit({
-      server_to_update[which_line_s] <- r"(    updateQueryString("?"))"
-      writeLines(server_to_update, "server.R")
-      bookmark_to_update[which_line_b] <- r"(      updateQueryString(url))"
-      writeLines(bookmark_to_update, "R/m_bookmark.R")  
-    })
-  }
+  cmds <- c(paste0("cd ", getwd()),
+                  "heroku login",
+                  "heroku container:login",
+                  paste0("heroku container:push web -a ", app_name),
+                  paste0("heroku container:release web -a ", app_name))
   
+  paste0(cmds, collapse = "\n") |> 
+    writeLines("dev/other/deploy.ps1")
   
-  # Deploy app
-  rsconnect::deployApp(appName = app_name, forceUpdate = TRUE, ...)
+  shell(paste0("start cmd.exe @cmd /k powershell -ExecutionPolicy Bypass -File ", 
+               gsub("/", "\\\\", paste0(getwd(), "/dev/other/deploy.ps1"))))
+  
+  quit(save = "no")
+}
+
+restart_dyno <-  function(app_name, dyno) {
+  
+  cmds <- c(paste0("cd ", getwd()),
+            "heroku login", 
+            paste0("heroku restart ", dyno, " -a ", app_name))
+  
+  paste0(cmds, collapse = "\n") |> 
+    writeLines("dev/other/restart_dyno.ps1")
+  
+  shell(paste0("start cmd.exe @cmd /k powershell -ExecutionPolicy Bypass -File ", 
+               gsub("/", "\\\\", paste0(getwd(), "/dev/other/restart_dyno.ps1"))))
   
 }

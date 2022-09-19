@@ -6,7 +6,7 @@ get_var_type <- function(data, var_left, var_right, df, select_id,
   ## Invalidate if non-standard df() -------------------------------------------
   
   if (!df %in% c("borough", "CT", "DA", "building", "grid",
-                 "street", "heatmap", "point")) return(df)
+                 "street", "heatmap", "point", "centraide")) return(df)
   
   
   ## Identify NA tables --------------------------------------------------------
@@ -45,36 +45,36 @@ get_var_type <- function(data, var_left, var_right, df, select_id,
     } else sum(!is.na(selection$var_left) & !is.na(selection$var_right))
   
   
+  ## Is select_id() not NA but not part of data() ------------------------------
+  
+  absent_id <- !is.na(select_id) && !select_id %in% data$ID && df != "building"
+  
+  
   ## Create var_left_label and var_right_label ---------------------------------
   
-  if (build_str_as_DA && df == "building") df <- "DA"
+  built_df <- if (build_str_as_DA && df == "building") "DA" else df
   
-  breaks_q5_left <- variables$breaks_q5[
-    variables$var_code == unique(sub("_\\d{4}$", "", var_left))]
+  breaks_q5_left <- variables$breaks_q5[[
+    which(variables$var_code == unique(sub("_\\d{4}$", "", var_left)))]]
   
   if (length(breaks_q5_left) > 0) breaks_q5_left <- 
-    breaks_q5_left[[1]][breaks_q5_left[[1]]$scale == df,]
+    breaks_q5_left[breaks_q5_left$scale == built_df,]
   
   var_left_label <- suppressWarnings(breaks_q5_left$var_name)
   if (all(is.na(var_left_label))) var_left_label <- NULL
   
   if (var_right != " ") {
     
-    breaks_q5_right <- variables$breaks_q5[
-      variables$var_code == unique(sub("_\\d{4}$", "", var_right))]
+    breaks_q5_right <- variables$breaks_q5[[
+      which(variables$var_code == unique(sub("_\\d{4}$", "", var_right)))]]
     
     if (length(breaks_q5_right) > 0) breaks_q5_right <- 
-        breaks_q5_right[[1]][breaks_q5_right[[1]]$scale == df,]
+        breaks_q5_right[breaks_q5_right$scale == built_df,]
     
     var_right_label <- suppressWarnings(breaks_q5_right$var_name)
     if (all(is.na(var_right_label))) var_right_label <- NULL
     
   } else var_right_label <- NULL
-  
-  
-  ## Is select_id() not NA but not part of data() ------------------------------
-  
-  absent_id <- !is.na(select_id) && !select_id %in% data$ID
   
   
   ## Decide on table type ------------------------------------------------------
@@ -98,6 +98,13 @@ get_var_type <- function(data, var_left, var_right, df, select_id,
   table_type <- paste(comp_type, var_type, select_type, sep = "_")
   if (select_type == "na") table_type <- paste0(comp_type, "_na")
   if (delta) table_type <- paste0(table_type, "_delta")
+  
+  
+
+  ## Deal with NAs -------------------------------------------------------------
+
+  if (all(is.na(data$var_left))) table_type <- "all_na"
+  
   table_type <- unique(table_type)
   return(table_type)
   

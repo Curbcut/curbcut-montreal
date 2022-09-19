@@ -41,7 +41,12 @@ zoom_server <- function(id, r = r, zoom_string, zoom_levels) {
       r$lang()}, {
       updateSliderTextInput(session, "zoom_slider", 
                             selected = sus_translate(r = r, get_zoom_name(zoom_string())),
-                            choices = get_zoom_label_t(zoom_levels(), r = r))
+                            choices = get_zoom_label_t({
+                              # If the module isn't impacted by a change of r$geo()
+                              if (is.list(zoom_levels())) {
+                                zoom_levels()$levels
+                              } else zoom_levels()}, 
+                              r = r))
     })
     
     # Update the slider when zomo changes, only on auto_zoom
@@ -58,10 +63,17 @@ zoom_server <- function(id, r = r, zoom_string, zoom_levels) {
         selected = get_zoom_name(zoom_string()))
     })
     
-    # Get slider value
     zoom_out <- reactive({
+      out <- 
       if (input$zoom_auto) "auto_zoom" else get_zoom_code(input$zoom_slider)
-      })
+      
+      # If the module isn't impacted by a change of r$geo()
+      if (!is.list(zoom_levels())) return(out)
+        
+      # If the module IS impacted by a change of r$geo()
+      return(paste(zoom_levels()$scale, out, sep = "-"))
+    })
+    
     
     # Return value    
     return(zoom_out)

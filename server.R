@@ -15,33 +15,48 @@ shinyServer(function(input, output, session) {
   
   ## Reactive variables --------------------------------------------------------
   
-  r <- reactiveValues(sus_bookmark = reactiveValues(active = FALSE),
-                      sus_link = reactiveValues(),
-                      lang = reactiveVal("fr"),
-                      active_tab = "home",
-                      canale = reactiveValues(select_id = reactiveVal(NA), 
-                                              df = reactiveVal("borough"),
-                                              zoom = reactiveVal(get_zoom(map_zoom)),
-                                              export_data = reactiveVal(list())),
-                      climate_risk = reactiveValues(select_id = reactiveVal(NA),
-                                                    df = reactiveVal("grid"),
-                                                    zoom = reactiveVal(get_zoom(map_zoom)),
-                                                    export_data = reactiveVal(list())),
-                      housing = reactiveValues(select_id = reactiveVal(NA),
-                                               df = reactiveVal("borough"),
-                                               zoom = reactiveVal(get_zoom(map_zoom)),
-                                               export_data = reactiveVal(list())),
-                      access = reactiveValues(select_id = reactiveVal(NA),
-                                              df = reactiveVal("CT"),
-                                              zoom = reactiveVal(get_zoom(map_zoom)),
-                                              export_data = reactiveVal(list())),
-                      alley = reactiveValues(select_id = reactiveVal(NA),
-                                             df = reactiveVal("borough_empty"),
-                                             zoom = reactiveVal(12),
-                                             export_data = reactiveVal(list())),
-                      natural_inf = reactiveValues(zoom = reactiveVal(9.5),
-                                                   export_data = reactiveVal(list())),
-                      news = reactiveValues(select_id = reactiveVal(NA)))
+  r <- reactiveValues(
+    sus_bookmark = reactiveValues(active = FALSE),
+    sus_link = reactiveValues(),
+    news = reactiveValues(select_id = reactiveVal(NA)),
+    lang = reactiveVal("fr"),
+    active_tab = "home",
+    geo = reactiveVal("CMA"),
+    canale = reactiveValues(select_id = reactiveVal(NA), 
+                            df = reactiveVal("borough"),
+                            zoom = reactiveVal(get_zoom(map_zoom))),
+    climate_risk = reactiveValues(select_id = reactiveVal(NA),
+                                  df = reactiveVal("grid"),
+                                  zoom = reactiveVal(get_zoom(map_zoom))),
+    housing = reactiveValues(select_id = reactiveVal(NA),
+                             df = reactiveVal("borough"),
+                             zoom = reactiveVal(get_zoom(map_zoom))),
+    access = reactiveValues(select_id = reactiveVal(NA),
+                            df = reactiveVal("CT"),
+                            zoom = reactiveVal(get_zoom(map_zoom))),
+    alley = reactiveValues(select_id = reactiveVal(NA),
+                           df = reactiveVal("borough_empty"),
+                           zoom = reactiveVal(12)),
+    natural_inf = reactiveValues(zoom = reactiveVal(9.5)),
+    vulnerable_pop = reactiveValues(select_id = reactiveVal(NA), 
+                                    df = reactiveVal("centraide"),
+                                    zoom = reactiveVal(get_zoom(map_zoom))),
+    tenure = reactiveValues(select_id = reactiveVal(NA), 
+                            df = reactiveVal("borough"),
+                            zoom = reactiveVal(get_zoom(map_zoom)),
+                            prev_norm = reactiveVal(FALSE)),
+    dw_types = reactiveValues(select_id = reactiveVal(NA), 
+                              df = reactiveVal("borough"),
+                              zoom = reactiveVal(get_zoom(map_zoom)),
+                              prev_norm = reactiveVal(FALSE)),
+    demographics = reactiveValues(select_id = reactiveVal(NA), 
+                              df = reactiveVal("borough"),
+                              zoom = reactiveVal(get_zoom(map_zoom))),
+    afford = reactiveValues(select_id = reactiveVal(NA), 
+                            df = reactiveVal("borough"),
+                            zoom = reactiveVal(get_zoom(map_zoom)),
+                            prev_norm = reactiveVal(FALSE))
+  )
   
 
   ## Home page -----------------------------------------------------------------
@@ -210,19 +225,19 @@ shinyServer(function(input, output, session) {
   
   observeEvent(parseQueryString(session$clientData$url_search), {
     query <- parseQueryString(session$clientData$url_search)
-    
+
     if (length(query) != 0) {
-      
+
       # MARK THE ACTIVE BOOKMARKED
       r$sus_bookmark$active <- TRUE
-      
+
       # query returns a named list. If it's named tab, return the right
       # tabPanel. the url example: sus.ca/?tab=housing
       try({
         tab <- query[["tb"]]
-        if (!is.null(tab))
+        if (!is.null(tab)) {
           updateTabsetPanel(session, "sus_page", selected = query[["tb"]])
-        r$sus_bookmark$id <- tab
+          r$sus_bookmark$id <- tab} else r$sus_bookmark$id <- "home"
       })
       # Update language with query.
       try({
@@ -230,13 +245,18 @@ shinyServer(function(input, output, session) {
         if (!is.null(lang) && lang == "en")
           r$lang <- reactiveVal("en")
       })
+      # Update geometries with query.
+      try({
+        geo <- query[["geo"]]
+        if (!is.null(geo)) r$geo(geo)
+      })
       # Retrieve important map info
       try({
         if (!is.null(query[["zm"]])) {
           r[[query[["tb"]]]]$zoom <- reactiveVal(as.numeric(query[["zm"]]))}
-        
+
         if (!is.null(query[["lon"]])) {
-          r$sus_bookmark$location <- c(as.numeric(query[["lon"]]), 
+          r$sus_bookmark$location <- c(as.numeric(query[["lon"]]),
                                        as.numeric(query[["lat"]]))}
       })
       # Retrieve var_left
@@ -261,18 +281,19 @@ shinyServer(function(input, output, session) {
       })
       # Retrieve df
       try({
-        if (!is.null(query[["df"]])) 
+        if (!is.null(query[["df"]]))
           r[[query[["tb"]]]]$df <- reactiveVal(query[["df"]])
       })
       # Retrieve select_id
       try({
-        if (!is.null(query[["s_id"]])) 
-          if (query[["s_id"]] %in% c("", "NA")) query[["s_id"]] <- NA
-          r[[query[["tb"]]]]$select_id <- reactiveVal(query[["s_id"]])
+        s_id <- query[["s_id"]]
+        if (!is.null(s_id)) {
+          if (query[["s_id"]] %in% c("", "NA")) s_id <- NA
+          r[[query[["tb"]]]]$select_id <- reactiveVal(s_id)}
       })
     }
   }, once = TRUE)
-  
+
   # Update from bookmark
   observeEvent(r$sus_bookmark$active, {
     if (isTRUE(r$sus_bookmark$active)) {
@@ -282,12 +303,13 @@ shinyServer(function(input, output, session) {
                       r = r,
                       id = r$sus_bookmark$id,
                       map_id = "map",
-                      location = r$sus_bookmark$location, 
-                      zoom_auto = r$sus_bookmark$zoom_auto, 
+                      location = r$sus_bookmark$location,
+                      zoom_auto = r$sus_bookmark$zoom_auto,
                       var_left = r$sus_bookmark$var_left,
-                      var_right = r$sus_bookmark$var_right, 
+                      var_right = r$sus_bookmark$var_right,
                       more_args = r$sus_bookmark$more_args)
       })
+      r$sus_bookmark$active <- FALSE
     }
   }, priority = -1, once = TRUE)
   
@@ -311,6 +333,35 @@ shinyServer(function(input, output, session) {
     
     updateQueryString("?")
   }, ignoreInit = FALSE)
+
+
+  ## Advanced options ----------------------------------------------------------
+
+
+  onclick("advanced_options", {
+    showModal(modalDialog(
+      radioButtons("geo_change",
+                   label = sus_translate(r = r, "Change default geometry"),
+                   inline = TRUE,
+                   selected = r$geo(),
+                   choiceNames = c("CMA", "Centraide"),
+                   choiceValues = c("CMA", "centraide")),
+      title = sus_translate(r = r, "Advanced options")))
+  })
+  
+  # Change the default geometry and save the cookie
+  observeEvent(input$geo_change, {
+    r$geo(input$geo_change)
+    session$sendCustomMessage("cookie-set", list(name = "default_geo", 
+                                                 value = input$geo_change))
+  })
+  
+  # If the geo cookie is already in
+  observeEvent(input$cookies$default_geo, {
+    if (!is.null(input$cookies$default_geo)) {
+      r$geo(input$cookies$default_geo)
+    }
+  }, once = TRUE)
   
   
   ## Data download -------------------------------------------------------------

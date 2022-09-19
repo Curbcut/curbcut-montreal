@@ -37,8 +37,8 @@ stories <-
     preview = paste0("Residents and government are coming together to shape ",
                      "the future of the Saint-Michel Environmental Complex, ",
                      "located on the site of the former Miron Quarry."),
-    lon = -73.61389,
-    lat = 45.57222) |>
+    lon = -73.62876,
+    lat = 45.56256) |>
   
   add_row(
     name = "parc_ouest",
@@ -132,7 +132,7 @@ stories <-
 
 
 # Finish table ------------------------------------------------------------
-  
+
 stories <- 
   stories |>
   mutate(ID = seq_len(n()), .before = name)

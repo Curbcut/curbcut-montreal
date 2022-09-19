@@ -117,7 +117,7 @@ interpolate <- function(df_list, scales, years, data_agg) {
 
   # Main interpolation function
   map2(df_list, scales, function(df_l, scale) {
-    furrr::future_map2(df_l, years, function(df, year) {
+    map2(df_l, years, function(df, year) {
       pb(amount = nrow(df))
 
       # Don't interpolate the current year
@@ -160,14 +160,14 @@ interpolate <- function(df_list, scales, years, data_agg) {
         across(any_of(data_agg$var_add), agg_add, area_prop, int_area),
         .groups = "drop"
         )
-    }, .options = furrr::furrr_options(seed = TRUE))
+    })
   })
 }
 
 
 # Swap CSD to borough -----------------------------------------------------
 
-swap_csd_to_borough <- function(df_list, years, crs = 32618, data_agg) {
+swap_csd_to_borough <- function(df_list, years, crs = 32618, data_agg, scales) {
 
   # Only proceed if `borough` exists
   if (!exists("borough")) stop("`borough` must be in the global environment.")
@@ -305,7 +305,7 @@ swap_csd_to_borough <- function(df_list, years, crs = 32618, data_agg) {
 interpolate_other <- function(df_list, targets, years, crs = 32618, data_agg) {
   
   # Check if targets exist
-  stopifnot(exists(targets))
+  stopifnot(map_lgl(targets, exists))
 
   pb <- progressr::progressor(steps = sum(sapply(df_list$DA, nrow)) * 
                                 length(targets))
@@ -324,7 +324,8 @@ interpolate_other <- function(df_list, targets, years, crs = 32618, data_agg) {
           st_transform(crs) |>
           mutate(area = st_area(geometry)) |>
           st_set_agr("constant") |>
-          select(-ID)
+          select(-ID) |> 
+          st_make_valid()
         
         DA_na_columns <-
           DA_n |>
@@ -400,7 +401,8 @@ interpolate_other <- function(df_list, targets, years, crs = 32618, data_agg) {
             st_transform(crs) |>
             mutate(area = st_area(geometry)) |>
             st_set_agr("constant") |>
-            select(all_of(DA_na_columns), area)
+            select(all_of(DA_na_columns), area) |> 
+            st_make_valid()
           
           interpolated_ids <-
             get(geo) |>
@@ -445,5 +447,5 @@ interpolate_other <- function(df_list, targets, years, crs = 32618, data_agg) {
         })
     })
 
-  c(df_list, new_geos)
+  new_geos
 }

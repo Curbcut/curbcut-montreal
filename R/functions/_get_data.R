@@ -4,7 +4,8 @@ get_data <- function(df, var_left, var_right, island = FALSE, point_df = NULL,
                      build_str_as_DA = TRUE) {
   
   # Return raw df or NULL if df isn't whitelisted
-  if (!df %in% c("borough", "CT", "DA", "building", "grid")) return(get0(df))
+  if (!df %in% c("borough", "CT", "DA", "building", "grid",
+                 "centraide")) return(get0(df))
 
   # Get data type
   data_type <- get_data_type(df, var_left, var_right, build_str_as_DA)
@@ -37,7 +38,7 @@ get_data <- function(df, var_left, var_right, island = FALSE, point_df = NULL,
   
   
   # Return output ----------------------------------------------------------
-  
+
   return(data)
   
 }

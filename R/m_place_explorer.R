@@ -155,7 +155,7 @@ place_explorer_server <- function(id, r) {
     # Translate slider labels
     observe(updateSliderTextInput(
       session = session, "slider",
-      choices = get_zoom_label_t(map_zoom_levels[1:3], r = r)))
+      choices = get_zoom_label_t(map_zoom_levels_CMA[1:3], r = r)))
     
     # df, data and select_id
     df <- reactive(get_zoom_code(input$slider))
@@ -301,7 +301,7 @@ place_explorer_server <- function(id, r) {
     # Update map on selection
     observe({
       # Get zoom and center
-      zoom <- map_zoom_levels[which(df() == names(map_zoom_levels))] + 1
+      zoom <- map_zoom_levels_CMA[which(df() == names(map_zoom_levels_CMA))] + 1
       if (zoom == 1) zoom <- 10
       ct <- if (is.na(select_id())) c(0, 0) else
         data()$centroid[data()$ID == select_id()][[1]]

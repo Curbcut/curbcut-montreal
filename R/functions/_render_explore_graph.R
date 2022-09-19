@@ -11,8 +11,8 @@ render_explore_graph <- function(plot_type, data, var_left, var_right, df,
   # Histogram
   if (plot_type %in% c("hist_all", "hist_na", "hist_select")) {
     
-    vals <- variables$breaks_q5[
-      variables$var_code == str_remove(var_left, "_\\d{4}$")][[1]]
+    vals <- variables$breaks_q5[[
+      which(variables$var_code == str_remove(var_left, "_\\d{4}$"))]]
     vals <- vals$var[vals$scale == df]
     vals[1] <- -Inf
     vals[length(vals)] <- Inf
@@ -36,8 +36,8 @@ render_explore_graph <- function(plot_type, data, var_left, var_right, df,
   if (plot_type %in% c("bar_all", "bar_na", "bar_select")) {
     
     # Figure out how many values to graph
-    ranks <- variables$breaks_q5[
-      variables$var_code == unique(sub("_\\d{4}$", "", var_left))][[1]]
+    ranks <- variables$breaks_q5[[
+      which(variables$var_code == unique(sub("_\\d{4}$", "", var_left)))]]
     ranks <- ranks$rank[ranks$scale == df]
     
     # Get corresponding colours

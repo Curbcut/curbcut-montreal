@@ -1,5 +1,6 @@
 #### GET DF ####################################################################
 
 get_df <- function(tile, zoom_string) {
-  if (tile == "auto_zoom") zoom_string else tile
+  out <- if (grepl("auto_zoom", tile)) zoom_string else tile
+  gsub("^.*-", "", out)
 }
