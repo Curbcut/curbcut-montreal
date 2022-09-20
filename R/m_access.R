@@ -87,12 +87,7 @@ access_server <- function(id, r) {
     time <- reactive("2016")
     
     # Choose tileset
-    tile <- reactive("CT")
-    
-    # Additional tileset identifier
-    tile2 <- reactive(
-      tile_lookup$suffix[tile_lookup$module == "access" & 
-                           tile_lookup$tile2 == var_left()])
+    tile <- reactive("CMA-CT")
 
     # Enable or disable slider + type of destination
     observeEvent({r[[id]]$select_id()
@@ -131,13 +126,6 @@ access_server <- function(id, r) {
       r = r,
       var_list = make_dropdown(compare = TRUE),
       time = time)
-    
-    # Composite variable for map
-    map_var <- reactive({
-      if (!is.na(r[[id]]$select_id()) && var_right() == " ") return("ID")
-      
-      str_remove(paste(var_left(), var_right(), sep = "_"), "_ $")
-      })
 
     # If there's a select_id, update the compare to " "
     observeEvent(r[[id]]$select_id(), {
@@ -179,7 +167,7 @@ access_server <- function(id, r) {
       var_right = var_right,
       poi = poi)
     
-    access_colors <- reactive({
+    data_color <- reactive({
       if (!is.na(r[[id]]$select_id()) && var_right() == " ") {
         tt_thresh <- slider() * 60
 
@@ -204,7 +192,14 @@ access_server <- function(id, r) {
         out <- rbind(data_1, data_2)
         names(out) <- c("group", "value")
         out
-      } else NULL
+      } else {
+        # Data color
+        get_data_color(
+          map_zoom_levels = rlang::set_names("CT", "CT"),
+          geo = r$geo(),
+          var_left = var_left(), 
+          var_right = var_right())
+      }
     })
 
     # Update map in response to variable changes or zooming
@@ -212,12 +207,8 @@ access_server <- function(id, r) {
       id = id,
       r = r,
       map_id = "map",
-      tile = tile,
-      tile2 =  tile2,
-      map_var = map_var,
-      fill = scale_fill_access,
-      fill_args = reactive(list(map_var(), tile(), access_colors())),
-    )
+      data_color = data_color,
+      tile = tile)
     
     # Update map labels
     label_server(

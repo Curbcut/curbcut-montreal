@@ -86,23 +86,6 @@ scale_lwd_alley <- function(select_id, tile) {
   } else scale_lwd_sus(select_id)
 }
 
-# Access fill
-scale_fill_access <- function(var, tile, access_colors) {
-  if (!is.null(access_colors)) {
-    colour_table <- access_colors
-    unmapped_color <- "#B3B3BB"
-  } else {
-    unmapped_color <- colour_table$value[1]
-  }
-  
-  scale_color_category(
-    col = !!rlang::sym(var), 
-    palette = colour_table$value,
-    unmapped_color = unmapped_color, 
-    levels = colour_table$group,
-    legend = FALSE)
-}
-
 # Place explorer fill
 scale_fill_pe <- function(select_id) {
   scale_color_category(
