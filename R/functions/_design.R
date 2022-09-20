@@ -432,7 +432,7 @@ lang_classes <- "
 sever_subtitle_fr <- 
   HTML(paste0("Il semble que Sus se soit arrêté de manière inattendue. ",
               "Aidez-nous à garder l'application exempte de ",
-              "bogues en remplissant un rapport de bug! ",
+              "bogues en remplissant le rapport suivant! ",
               "L'équipe de Sus."))
 
 sever_subtitle_en <- 
@@ -440,22 +440,21 @@ sever_subtitle_en <-
               "application free of bugs by filing a bug report! ",
               "The Sus team."))
 
-severe_html <- 
-  tagList(tags$h2("Uh oh..."),
+severe_html <- function(module_id) {
+  tagList(tags$h2("Uh oh...", span(class = "material-icons", "bug_report")),
           tags$p(tags$span(class = "lang-fr", sever_subtitle_fr),
                  tags$span(class = "lang-en", sever_subtitle_en)),
           tags$div(class = "sus-button-group",
+                   HTML(paste0('<iframe src="https://docs.google.com/forms/d/e',
+                               '/1FAIpQLSfuQquv73dQoXA1UneCh9zREj0NG3E-RCfRpTN',
+                               'yJ1dIBagIeQ/viewform?embedded=true&usp=pp_url&',
+                               'entry.1645395961=', module_id,
+                               '" width="100%" height="400" frameborder="0" ma',
+                               'rginheight="0" marginwidth="0">Loading…</iframe>')),
                    tags$a(class = "sus-button sus-icon-button sus-button-secondary", 
                           onClick = "window.location.href='/'", 
                           tags$span(class = "lang-fr", "Accueil"),
                           tags$span(class = "lang-en", "Home"), " ",
                           span(class = "material-icons", "home")),
-                   tags$a(class = "sus-button sus-icon-button sus-button-primary", 
-                          href = paste0("https://docs.google.com/forms/d/e/1FA",
-                                        "IpQLSfuQquv73dQoXA1UneCh9zREj0NG3E-RC",
-                                        "fRpTNyJ1dIBagIeQ/viewform"),
-                          target = "_blank", 
-                          tags$span(class = "lang-fr", "Rapport de bug"),
-                          tags$span(class = "lang-en", "Bug report"), " ",
-                          span(class = "material-icons", "bug_report"))
           ))
+}
