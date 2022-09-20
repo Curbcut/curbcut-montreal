@@ -139,19 +139,23 @@ compare_server <- function(id, r = r, var_list, df = r[[id]]$df,
         variables[!is.na(variables$grouping) &
                                variables$grouping == grouped(), ]
       
+      vars_s_drop <- 
+        lapply(seq_len(nrow(vars_s_drop)), \(x) {
+          c(vars_s_drop$group_diff[[x]], var_code = vars_s_drop$var_code[[x]])
+        })
+      
       # Arrange the lists of dropdowns possibilities in a list
-      tib <- do.call(rbind.data.frame, vars_s_drop$group_diff)
-      tib$ID <- seq_len(nrow(tib))
+      tib <- do.call(rbind.data.frame, vars_s_drop)
       
       # Which variable fits with all the dropdowns
-      which_in_vars_s_drop <- 
+      out <- 
         lapply(seq_along(add_dropdowns()), \(x) {
           tib[tib[[x]] == value_keys[[x]], ]}) |> 
-        (\(x) Reduce(rbind, x)$ID)() |> 
+        (\(x) Reduce(rbind, x)$var_code)() |> 
         table() |> 
-        (\(x) which(x == length(add_dropdowns())))()
+        (\(x) which(x == length(add_dropdowns())))() |> 
+        names()
 
-      out <- vars_s_drop$var_code[which_in_vars_s_drop]
       if (length(out) == 0) var_right_1() else out
     })
     

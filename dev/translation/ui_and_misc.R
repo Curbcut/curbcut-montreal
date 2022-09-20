@@ -34,6 +34,8 @@ ui_and_misc_translated <-
           fr = paste0("Légende")) |> 
   add_row(en = paste0("250-metre grid"), 
           fr = paste0("Grille de 250 mètres")) |> 
+  add_row(en = paste0("250-m grid cell"), 
+          fr = paste0("Grille de 250 mètres")) |> 
   add_row(en = paste0("Compare"), 
           fr = paste0("Comparez")) |> 
   add_row(en = paste0("Authors"), 
