@@ -173,6 +173,6 @@ canale_server <- function(id, r) {
                                                   var_right = var_right(),
                                                   df = r[[id]]$df()))
     })
-s
+
   })
 }
