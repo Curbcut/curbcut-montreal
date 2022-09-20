@@ -89,9 +89,9 @@ mods_rdy <- list(
   ),
   "Housing" = c(
     "Housing system" = "housing",
-    # "Housing affordability" = "afford",
-    # "Tenure status" = "tenure",
-    # "Dwelling types" = "dw_types"
+    "Housing affordability" = "afford",
+    "Tenure status" = "tenure",
+    "Dwelling types" = "dw_types"
   ),
   "Policy" = c(
     "Montréal climate plans" = "mcp"
@@ -102,8 +102,8 @@ mods_rdy <- list(
   ),
   "Urban life" = c(
     "Active living potential" = "canale", 
-    "Green alleys" = "alley"#,
-    # "Demographics" = "demographics"
+    "Green alleys" = "alley",
+    "Demographics" = "demographics"
   ),
   "Ecology" = c(
     "Natural infrastructure" = "natural_inf"

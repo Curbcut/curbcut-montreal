@@ -73,6 +73,12 @@ data_export_translated <-
                       ".ca/fr/recensement/sensibilisation-recensement/a-propos",
                       "'>les données sur le logement provenant des recensement",
                       "s canadiens de 1996 à 2016</a></p>")) |> 
+  add_row(en = paste0("<p>The census data (2016) in this module comes from c",
+                      "ustom tabulations ordered by Centraide of Greater Montr",
+                      "eal to Statistics Canada.</p>"), 
+          fr = paste0("<p>Les données du recensement (2016) dans ce module pro",
+                      "viennent de totalisations personnalisées commandées par",
+                      " Centraide du Grand Montréal à Statistique Canada.</p>")) |> 
   add_row(en = paste0("About the data"), 
           fr = paste0("À propos des données")) |> 
   add_row(en = paste0("The data is spatially organized at the {data_organizati",

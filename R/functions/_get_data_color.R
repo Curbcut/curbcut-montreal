@@ -1,6 +1,6 @@
 #### GET DATA ##################################################################
 
-get_data_color <- function(map_zoom_levels, var_left, var_right,
+get_data_color <- function(map_zoom_levels, geo, var_left, var_right,
                            build_str_as_DA = TRUE) {
   
   dfs <- names(map_zoom_levels)
@@ -13,7 +13,7 @@ get_data_color <- function(map_zoom_levels, var_left, var_right,
 
   ## Get data table ------------------------------------------------------------
   
-  datas <- lapply(dfs, get_data_table, var_left, var_right, data_type)
+  datas <- lapply(dfs, get_data_table, geo, var_left, var_right, data_type)
   
   keep_cols <- sapply(datas, names) |> 
     unlist() |>  

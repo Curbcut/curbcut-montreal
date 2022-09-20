@@ -643,7 +643,7 @@ ui_and_misc_translated <-
   add_row(en = paste0("By car"), 
           fr = paste0("En auto")) |> 
   add_row(en = paste0("Centraide"), 
-          fr = paste0("Centraide"))
+          fr = paste0("Centraide")) |> 
   # Stories
   add_row(en = paste0("The proposed {year} metro network."), 
           fr = paste0("Le réseau proposé en {year}.")) |> 

@@ -176,12 +176,14 @@ tenure_server <- function(id, r) {
     # Data
     data <- reactive(get_data(
       df = r[[id]]$df(),
+      geo = r$geo(),
       var_left = var_left(),
       var_right = var_right()))
     
     # Data for tile coloring
     data_color <- reactive(get_data_color(
       map_zoom_levels = map_zoom_levels()$levels,
+      geo = r$geo(),
       var_left = var_left(),
       var_right = var_right()
     ))
@@ -238,6 +240,15 @@ tenure_server <- function(id, r) {
         "c-cbox" = str_extract(as_pct(), "^."),
         "o-p_n" = str_extract(r[[id]]$prev_norm(), "^.")))
     )
+    
+    # Data transparency and export
+    observe({
+      r[[id]]$export_data <- reactive(data_export(id = id,
+                                                  data = data(),
+                                                  var_left = var_left(),
+                                                  var_right = var_right(),
+                                                  df = r[[id]]$df()))
+    })
     
   })
 }

@@ -21,6 +21,7 @@ get_zoom_name <- function(x) sapply(
   "heatmap" = "Heatmap",
   "point" = "Point",
   "centraide" = "Centraide",
+  x,
   USE.NAMES = FALSE)
 
 get_zoom_label <- function(zoom_levels) {

@@ -3,9 +3,9 @@
 # Default scales ----------------------------------------------------------
 
 # Default fill
-scale_fill_sus <- function(module_colors) {
+scale_fill_sus <- function(module_colors, id = "ID_color") {
   scale_color_category(
-    col = !!rlang::sym("ID_color"), 
+    col = !!rlang::sym(id), 
     palette = module_colors$value,
     unmapped_color = "#B3B3BB", 
     levels = module_colors$group,
@@ -31,7 +31,7 @@ scale_lwd_sus <- function(select_id) {
 scale_lwd_climate_risk <- function(select_id, tile) {
   
   scale_category(
-    col = ID,
+    col = ID_color,
     range = c(5, if (tile == "island-grid") 0.3 else 1),
     unmapped_value = if (tile == "island-grid") 0.3 else 1,
     levels = c(select_id, "NA"),
@@ -50,7 +50,7 @@ scale_fill_alley <- function(var, tile, data_color) {
       unmapped_color = colour_table$value[1], 
       levels = colour_table$group,
       legend = FALSE)
-  } else scale_fill_sus(data_color)
+  } else scale_fill_sus(data_color, id = "ID")
 }
 
 # Alley colour

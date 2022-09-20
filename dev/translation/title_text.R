@@ -624,7 +624,7 @@ title_text_translation <-
                       "peuvent fournir des renseignements significatifs sur la ",
                       "population Montréalaise. ")) |> 
   add_row(en = paste0("Montreal stories"), 
-          fr = paste0("Histoires Montréalaises")) |> 
+          fr = paste0("Histoires de Montréal")) |> 
   add_row(en = paste0("Explore narrative case studies on sustainability issues in Montreal's ",
                       "neighborhoods. In this module, read text-based stories and view their ",
                       "adjoining visual media."),   

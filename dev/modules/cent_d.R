@@ -373,7 +373,7 @@ new_rows <-
                     explanation = exp,
                     category = NA,
                     theme = "Housing",
-                    private = TRUE,
+                    private = FALSE,
                     dates = "2016",
                     scales = c("CT", "borough", "centraide"),
                     breaks_q3 = select(breaks_q3_active,
@@ -382,7 +382,7 @@ new_rows <-
                     breaks_q5 = select(breaks_q5_active,
                                        scale, date, rank, 
                                        var = all_of(paste0(var, "_2016"))),
-                    source = "Centraide",
+                    source = "Centraide of Greater Montreal",
                     interpolated = list(c(CT = FALSE,
                                           borough = "census tracts",
                                           centraide = FALSE)))
@@ -397,6 +397,30 @@ new_rows <-
 
 variables <-
   bind_rows(variables, new_rows)
+
+
+# Add to modules table ----------------------------------------------------
+
+modules <- 
+  modules |> 
+  add_modules(id = "afford",
+              metadata = TRUE,
+              dataset_info = 
+                paste0("<p>The census data (2016) in this module comes from custom tabulations ",
+                       "ordered by Centraide of Greater Montreal to Statistics ",
+                       "Canada.</p>")) |> 
+  add_modules(id = "tenure",
+              metadata = TRUE,
+              dataset_info = 
+                paste0("<p>The census data (2016) in this module comes from custom tabulations ",
+                       "ordered by Centraide of Greater Montreal to Statistics ",
+                       "Canada.</p>")) |> 
+  add_modules(id = "dw_types",
+              metadata = TRUE,
+              dataset_info = 
+                paste0("<p>The census data (2016) in this module comes from custom tabulations ",
+                       "ordered by Centraide of Greater Montreal to Statistics ",
+                       "Canada.</p>"))
 
 
 # Clean up ----------------------------------------------------------------

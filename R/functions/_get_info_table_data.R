@@ -194,7 +194,7 @@ get_info_table_data <- function(r = r, data, var_type, var_left, var_right, df,
     
     out$place_heading <- if (df %in% c("building", "street") && 
                              build_str_as_DA) {
-      sus_translate(r = r, select_name$name)
+      select_name$name
     } else if (scale_sing == "borough/city") {
       sus_translate(r = r, "{select_name$name_2} of {out$place_name}")
     } else if (scale_sing == "250-m") {

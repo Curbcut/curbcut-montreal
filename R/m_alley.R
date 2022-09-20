@@ -139,6 +139,7 @@ alley_server <- function(id, r) {
     # Data
     data <- reactive(get_data(
       df = r[[id]]$df(),
+      geo = r$geo(),
       var_left = var_left(), 
       var_right = var_right(), 
       island = TRUE))
@@ -148,6 +149,7 @@ alley_server <- function(id, r) {
       if (!choropleth()) return(NULL)
       get_data_color(
         map_zoom_levels = map_zoom_levels_CMA,
+        geo = r$geo(),
         var_left = var_left(),
         var_right = var_right())
     })

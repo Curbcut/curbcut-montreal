@@ -120,14 +120,16 @@ climate_risk_server <- function(id, r) {
     # Data
     data <- reactive(get_data(
       df = r[[id]]$df(),
+      geo = r$geo(),
       var_left = var_left(), 
       var_right = var_right(), 
       island = TRUE))
     
     # Data for tile coloring
     data_color <- reactive(get_data_color(
-      map_zoom_levels = if (grid()) set_names("grid", "grid") else 
+      map_zoom_levels = if (grid()) rlang::set_names("grid", "grid") else 
         map_zoom_levels()$levels,
+      geo = r$geo(),
       var_left = var_left(),
       var_right = var_right()
     ))
@@ -192,11 +194,11 @@ climate_risk_server <- function(id, r) {
     
     # Data transparency and export
     observe({
-      r[[id]]$export_data(data_export(id = id, 
-                                      data = data(), 
-                                      var_left = var_left(), 
-                                      var_right = var_right(), 
-                                      df = r[[id]]$df()))
+      r[[id]]$export_data <- reactive(data_export(id = id,
+                                                  data = data(),
+                                                  var_left = var_left(),
+                                                  var_right = var_right(),
+                                                  df = r[[id]]$df()))
     })
     
   })
