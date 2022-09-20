@@ -2,6 +2,16 @@
 
 ui_and_misc_translated <- 
   tibble(en = character(), fr = character()) |>
+  add_row(en = paste0("Previous:"), 
+          fr = paste0("Précédent :")) |> 
+  add_row(en = paste0("Next:"), 
+          fr = paste0("Suivant :")) |> 
+  add_row(en = paste0("Back to explore"), 
+          fr = paste0("Retour à l'exploration")) |> 
+  add_row(en = paste0("News"), 
+          fr = paste0("Actualité")) |> 
+  add_row(en = paste0("Welcome"), 
+          fr = paste0("Bienvenue")) |> 
   add_row(en = paste0("----"), 
           fr = paste0("----")) |> 
   add_row(en = paste0("Learn more"), 
@@ -118,8 +128,10 @@ ui_and_misc_translated <-
           fr = paste0("Contact/commentaires")) |> 
   add_row(en = paste0("Bookmark"), 
           fr = paste0("Signet")) |> 
-  add_row(en = paste0("Data explanation and export"), 
-          fr = paste0("Explication et export des données")) |> 
+  add_row(en = paste0("Newsletter"), 
+          fr = paste0("Infolettre")) |> 
+  add_row(en = paste0("Metadata and export"), 
+          fr = paste0("Métadonnées et exportation")) |> 
   add_row(en = paste0("Generate a report"), 
           fr = paste0("Générez un rapport")) |> 
   add_row(en = paste0("Active and safe lane circuit"), 
@@ -632,3 +644,28 @@ ui_and_misc_translated <-
           fr = paste0("En auto")) |> 
   add_row(en = paste0("Centraide"), 
           fr = paste0("Centraide"))
+  # Stories
+  add_row(en = paste0("The proposed {year} metro network."), 
+          fr = paste0("Le réseau proposé en {year}.")) |> 
+  add_row(en = paste0("The proposed 1962 metro network consisting of three lines: ",
+                      "orange, green, and red."), 
+          fr = paste0("Le réseau de métro proposé en 1962, qui s'agissait de ",
+                      "trois lignes: orange, verte et rouge.")) |> 
+  add_row(en = paste0("The first complete iteration of the Montreal metro."), 
+          fr = paste0("Le réseau de métro réalisé en 1967.")) |> 
+  add_row(en = paste0("Some extensive proposed underground and surface metro ",
+                      "expansions of the early 1970s that never materialized."), 
+          fr = paste0("Des expansions de surface et souterraines planifiées ",
+                      "dans les années soixante-dix jamais réalisées.")) |> 
+  add_row(en = paste0("The 1978 iteration of the metro network."), 
+          fr = paste0("Le réseau de métro en 1978.")) |> 
+  add_row(en = paste0("The metro expansion plans made following the 1970 ",
+                      "re-election of Jean Drapeau."), 
+          fr = paste0("Les plans pour l'expansion du métro faits à la suite de ",
+                      "la réélection de Jean Drapeau.")) |> 
+  add_row(en = paste0("The current network along with the proposed extensions over ",
+                      "the years, including the confirmed blue line extension to ",
+                      "Anjou."), 
+          fr = paste0("Le réseau moderne avec les changements proposés au fil ",
+                      "des années, parmi eux le prolongement confirmé de la ",
+                      "ligne bleue vers Anjou."))

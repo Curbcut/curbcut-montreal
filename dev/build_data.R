@@ -177,6 +177,18 @@ source("dev/other/add_variables.R")
 source("dev/other/colours.R")
 
 
+# Build module table ------------------------------------------------------
+
+modules <-
+  tibble(
+    id = character(),
+    metadata = logical(),
+    dataset_info = character(),
+  )
+
+source("dev/other/add_modules.R")
+
+
 # Add topic variables (modules) -------------------------------------------
 
 source("dev/modules/census.R")
@@ -274,22 +286,34 @@ qsave(centraide_full, file = "data2/centraide_full.qs")
 
 
 # data/
+## global data
 qsave(variables, file = "data/variables.qs")
+qsave(modules, file = "data/modules.qs")
+qsave(postal_codes, file = "data/postal_codes.qs")
+qsave(metro_lines, file = "data2/metro_lines.qs")
+qsave(dyk, "data/dyk.qs")
+qsave(title_text, "data/title_text.qs")
+
+## census related
 qsavem(borough, CT, DA, file = "data/census.qsm")
+qsave(census_variables, file = "data/census_variables.qs")
+
+qsavem(alley, alley_text, file = "data/alley.qsm")
 qsave(centraide, file = "data/centraide.qs")
 # qsave(crash, file = "data/crash.qs")
-qsavem(alley, alley_text, file = "data/alley.qsm")
 # qsavem(covid, covid_pics, file = "data/covid.qsm")
 # qsave(green_space, file = "data/green_space.qs")
 # qsave(marketed_sustainability, file = "data/marketed_sustainability.qs")
-qsave(metro_lines, file = "data/metro_lines.qs")
 # qsavem(permits_choropleth, permits, file = "data/permits.qsm")
 qsavem(title_card_indicators, pe_var_hierarchy, pe_theme_order, CSDUID_groups,
        title_card_index, pe_variable_order, file = "data/place_explorer.qsm")
-qsave(postal_codes, file = "data/postal_codes.qs")
 qsavem(stories, stories_mapping, file = "data/stories.qsm")
-qsave(dyk, "data/dyk.qs")
-qsave(title_text, "data/title_text.qs")
+
+# data/geometry_export
+qsave(select(borough_full, ID), file = "data/geometry_export/borough.qs")
+qsave(select(CT_full, ID), file = "data/geometry_export/CT.qs")
+qsave(select(DA_full, ID), file = "data/geometry_export/DA.qs")
+qsave(select(grid_full, ID), file = "data/geometry_export/grid.qs")
 
 
 # Save files we'll save in the SQL to data2 -------------------------------

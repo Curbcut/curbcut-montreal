@@ -15,6 +15,7 @@ get_zoom_name <- function(x) sapply(
   "borough" = "Borough/city",
   "CT" = "Census tract",
   "DA" = "Dissemination area",
+  "grid" = "250-m grid cell",
   "building" = "Building",
   "street" = "Street",
   "heatmap" = "Heatmap",

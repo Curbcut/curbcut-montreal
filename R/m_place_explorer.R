@@ -424,7 +424,7 @@ place_explorer_server <- function(id, r) {
           text <- block[[1]]
           plots <- block[[2]]
           sentence <- block[[3]]
-
+          
           # Only proceed if the block has data
           if (!is.null(block)) {
             
@@ -447,7 +447,7 @@ place_explorer_server <- function(id, r) {
                 renderText(text$value[z])
 
               output[[paste0("ind_", x[1], z, "_plot")]] <-
-                renderPlot(plots[[z]])
+                renderImage(plots[[z]], deleteFile = FALSE)
 
             })
             
@@ -489,10 +489,10 @@ place_explorer_server <- function(id, r) {
                   
                   column(width = 3,
                          if (z == 1) h5(sus_translate(r = r, "Plot")),
-                         plotOutput(eval(parse(
+                         imageOutput(eval(parse(
                            text = paste0("NS(id, 'ind_", x[1], z,
                                          "_plot')"))),
-                           height = 25))
+                           height = "30px"))
                 ),
                 br()
                 )

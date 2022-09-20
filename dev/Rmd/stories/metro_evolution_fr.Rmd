@@ -1,0 +1,188 @@
+---
+title: "L'évolution du métro de Montréal"
+author: "Lauren Rosenthal"
+output: html_document
+runtime: shiny_prerendered
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Le réseau de transport en commun à Montréal a connu une transformation majeure depuis le début du 20e siècle et le système de métro en est un aspect central et emblématie. Non seulement l'évolution du métro n'a pas été linéaire, mais elle a aussi révélé les priorités de la ville et la perception qu'elle avait d'elle-même. Voici l’histoire du métro de Montréal, comment il est arrivé à son état actuel et ce que lui réserve l’avenir. 
+
+```{r, out.extra='style="width:60%"', fig.align = "center", warning=FALSE, fig.cap = "The réseau de métro de Montréal. *Crédit photo: Société de transport de Montréal*", echo=FALSE}
+knitr::include_graphics(here("www/stories/visuals/metro_evolution/modern_day_metro.jpeg"))
+```
+
+### Les débuts du transport en commun à Montréal et la première proposition d’un métro
+#### *1910*
+
+Au début du 20e siècle, le transport en commun à Montréal était composé d’un vaste réseau de tramway qui servait une population croissante au centre-ville. Cependant, cette croissance de population entraînait également une congestion croissante et d'importants problèmes de ponctualité des trams. La considération initiale d’un système de transport souterrain était le résultat d’une demande pour un réseau capable d’opérer malgré la congestion à la surface (Clairoux, 2001).
+
+Le Montreal Street Railway Company, responsable du réseau de tramway, a commencé ses études sur la faisabilité d’un réseau de métro à Montréal en 1910.  À l’époque, d’autres grandes villes européennes et nord-américaines étaient en train d’établir leurs propres métros (Société de transport de Montréal, n.d). Montréal désirait donc faire de même, compte tenu de la croissance rapide de son économie et de sa population. Un réseau souterrain avait le potentiel de servir comme solution aux problèmes de congestion au centre-ville , permettant à Montréal de se moderniser au même rythme que d'autres grandes villes. 
+
+La première proposition de transport en commun souterrain a été faite en 1910. Elle s’agissait d’une seule ligne qui longeait l’avenue du Parc/de Bleury (Dufour, n.d.-a). Les tunnels étaient davantage conçus pour la circulation de trams que pour un métro (Société de transport de Montréal, n.d.).
+
+Plusieurs propositions semblables ont été faites dans les années suivantes, mais rien de concret n’a émergé au début du 20e siècle. La première guerre mondiale suivie de la Grande Dépression ont empêché l’approbation et le financement d’un projet de métro, car la ville a été plongée dans une crise économique et la congestion s’était améliorée, atténuant les problèmes qui nécessitaient le recours au transport souterrain (Gilbert, 2021). 
+
+### La deuxième guerre mondiale: le début des demandes renouvelées pour un métro
+#### *1944-1953*
+
+L’impact de la deuxième guerre mondiale à Montréal a contribué à augmenter la congestion dans les trams, notamment en raison des rations d'essence (Scott, 2016). Des demandes pour un réseau de transport souterrain ont donc à nouveau émergé, amplifiées par une nouvelle proposition faite par la Montreal Tramways Company en 1944. Elle consistait en deux lignes, une sous la rue Sainte-Catherine et l’autre sous les rues Saint-Denis, Notre-Dame et Saint-Jacques (Société de Montréal, n.d.).  
+
+Même si cette proposition ne s’est jamais concrétisée, durant et après la guerre, il devenait clair qu'un métro devenait nécessaire. L’utilisation de la voiture augmentait au détriment des transports en commun, aggravant la congestion encore plus. De plus, un métro était considéré essentiel dans le maintien du statut de Montréal comme grande ville canadienne, car Toronto, une métropole en rapide croissance à l’époque, était en train de développer son propre réseau souterrain (Gilbert, 2021).
+
+En 1953, la Commission de transport de Montréal, un nouvel organisme ayant pour but de remplacer le réseau de tramway par un réseau de bus (Société de Transport de Montréal, 2004), a proposé un autre projet de métro inspiré du plan de 1944. Pourtant, ce plan n’a pas réussi non plus dépassé la phase de planification. 
+
+### Penser grand: l’administration Jean Drapeau et un intérêt renouvelé pour le métro
+#### *1954-1960*
+
+Finalement, c’est l’élection de l’administration Jean Drapeau qui a rendu possible l’arrivée d’un métro à Montréal. Drapeau a été maire de Montréal de 1954 à 1957 et de 1960 à 1986; son mandat a été marqué par son ambition et son but de transformer Montréal en une ville plus grande, moderne et prestigieuse. Cet objectif était en grande partie stimulé par la croissance de Toronto, qui était en train de dépasser Montréal en tant que centre économique du Canada, au début des années soixante (Radio-Canada, 2021). Drapeau a initié plusieurs projets iconiques, le métro parmi eux, avec le but de placer Montréal sur la scène mondiale.
+
+```{r, out.extra='style="width:70%"',fig.align = "center", fig.cap = "Portrait de Jean Drapeau. *Crédit photo: Harry Palmer*", echo=FALSE}
+knitr::include_graphics(here("www/stories/visuals/metro_evolution/jean_drapeau.jpeg"))
+
+```
+
+Au départ, Drapeau était contre la construction d’un métro, car il partageait l’opinion de beaucoup de politiciens à l’époque qu’il s’agissait de l’âge de l’automobile. Cependant, son point de vue a changé avec une visite à Paris en 1960. Le métro de Paris utilisait une nouvelle innovation technologique: des roues en caoutchouc, qui permettaient une accélération du train plus rapide et moins bruyante (Magder, 2018). Comme les trains des systèmes de métro nord-américains utilisaient encore des roues en acier, une nouvelle inspiration est née: un métro avec des roues en caoutchouc pourrait servir de symbole parfait de l’innovation et du progrès à Montréal. 
+
+### Le premier coup de pioche
+#### *1961-1962*
+
+Avec l’approbation de Drapeau, le gouvernement du Québec a accordé le droit de construire le métro à la ville. La première proposition du réseau a été faite par Drapeau quelques mois plus tard et comprenait trois lignes: orange (ligne 1), verte (ligne 2) et rouge (ligne 3). La ligne orange irait dans une direction nord-sud le long de la rue Berri et la ligne verte suivrait une direction est-ouest à travers le centre-ville. La ligne rouge partirait du centre-ville, passerait à travers Mont-Royal vers le nord et se diviserait en deux parties, une allant vers Cartierville et l’autre vers Montréal-Nord. Elle utiliserait des rails de CN déjà existants et passerait en partie au-dessus du sol (Gilbert, 2021).
+
+```{r, out.extra='style="width:70%"', fig.align = "center", fig.cap = "Jean Drapeau et Lucien Saulnier, président du comité exécutif de Montréal, présentent le réseau de métro en 1961. *Crédit photo: Archives de Montréal*", echo=FALSE}
+knitr::include_graphics(here("www/stories/visuals/metro_evolution/drapeau_proposal.jpeg"))
+
+```
+
+La construction du métro a commencé le 23 mai 1962 au sud des rues Berri et Jarry. La conception de chaque station a été assignée à des architectes différents, ce qui a mené à une série de stations uniques qui rendent distinctif le métro montréalais.
+
+### Un changement de priorité et l’inauguration du métro
+#### *1963-1967*
+
+La ligne rouge a fini par être abandonnée définitivement en juin 1963. Plusieurs obstacles empêchaient sa réalisation; par exemple, elle devait passer dehors tandis que ses roues en caoutchouc étaient incapables de subir des températures hivernales extrêmes (Magder, 2018). Malgré ce défi, la raison principale pour son exclusion était l'arrivée de l'Expo 67. L’Exposition Universelle était la façon ultime de présenter une image moderne et innovante de la ville au monde (The Canadian Press, 2017). Ainsi, lorsqu’il a été décidé que Montréealallait accueillir l’événement sur l’île Sainte-Hélène, située au sud de la ville, y donner accès au public par métro est devenue la nouvelle priorité.
+
+Le métro a été inauguré le 14 octobre 1966 à la station Berri-de-Montigny (désormais Berri-UQAM). Vingt stations ont été ouvertes et plus d’un million de passagers ont utilisé le métro durant la fin de semaine suivant sa création (Scott, 2016). Le service du métro s'est progressivement étendu avec la création de stations jusqu'en avril 1967. Avec une nouvelle ligne jaune et des lignes orange et verte prolongées, le réseau initial du métro était complet.
+
+### Ère d’optimisme
+#### *Fin des années 60-1975*
+
+La fin des années soixante a marqué une ère formidable d’optimisme à Montréal après l’inauguration du nouveau métro et l’Expo 67, cette dernière ayant été un succès majeur et l’Exposition Universelle la plus fréquentée du 20e siècle (Musée des beaux-arts de Montréal, 2016). Le sentiment que tout était possible était très répandu et cet optimisme se voit dans l’ambition des plans de métro rédigés à l’époque, qui pouvaient comprendre jusqu’à neuf lignes qui s'étendaient sur 112 km de longueur, à travers toute l'île (Dufour, n.d.-b). Un projet à cette échelle, cependant, n’a jamais été réalisé. 
+
+```{r, out.width = "700px", fig.align = "center", fig.cap = "Une recréation d'un plan ambitieux de l'époque. *Crédit photo: Marc Dufour*", echo=FALSE}
+knitr::include_graphics(here("www/stories/visuals/metro_evolution/MetroMontreal_FuturPasse.png"))
+```
+
+L’élan positif généré par les projets majeurs des années soixante a mené à la réélection de Jean Drapeau en octobre 1970, à laquelle il a remporté une majorité de 92.5%. Avec cette victoire est arrivé un de ses projets les plus ambitieux et controversés de son mandat: la tenue des jeux Olympiques de 1976 à Montréal. En mai 1970, la ville a été désignée comme ville organisatrice des Jeux Olympiques d'été de 1976 et a reçu un prêt de $430 millions pour rallonger les lignes orange et verte du métro ainsi que construire une nouvelle ligne bleue. Comme la province allait payer le métro, des plans plus ambitieux pour l’année 1978 ont été proposés (Magder, 2017).
+
+La ligne bleue devait parcourir un chemin du nord-est de Lachine jusqu’à Montréeal-Nord, la branche ouest de la ligne orange allait être rallongée vers le nord et la ligne verte allait être rallongée dans les directions sud-ouest et est (Noakes, 2021). On espérait que le réseau élargi allait contribuer au développement économique de certains quartiers plus défavorisés (Gilbert, 2021).
+
+### Les retombées des Jeux Olympiques
+#### *1976-1978*
+
+Malgré les plans grandioses, plusieurs facteurs ont empêché leur réalisation. Dans les années soixante-dix, plusieurs mégaprojets québécois étaient en cours, dont l’aéroport Mirabel, la complexe hydroélectrique de la Baie-James et surtout l’infrastructure pour les Jeux olympiques de 1976. Les coûts de construction ont augmenté rapidement, particulièrement pour l’infrastructure olympique, dont le coût a grimpé de \$430 millions en 1972 à \$1.6 milliards en 1975 (Gilbert, 2021). Les coûts extrêmes et la corruption qui sévissait pendant la construction ont sévèrement freiné l’élan généré par la vision grandiose de Drapeau pour la ville (Magder, 2017). 
+
+Les coûts d’excavation pour le métro avaient explosé pareillement, mais comme les roues en caoutchouc étaient incapables de subir le climat extérieur de Montréal, les prolongements du métro n’avaient pas le choix que de demeurer sous-terrain. Étendre le réseau était donc devenu une tâche compliquée et hors de prix, surtout que le métro devait atteindre des régions de banlieue moins denses (Magder, 2017). 
+
+Les coûts très élevés des projets de métro ont poussé le gouvernement provincial de Robert Bourassa à imposer un moratoire sur le prolongement du réseau dès le 19 mai 1976. Ceci représentait un changement fondamental dans l’approche des gouvernements provincial et municipal concernant les transports en commun. Malgré ceci, la ligne verte fut quand même prolongée avec la création de la branche est vers Honoré Beaugrand et la branche ouest vers Angrignon, où se trouvent les terminus de la ligne verte à ce jour (Gilbert, 2021). 
+
+### Moratorium levé
+#### 1979-1988
+
+L’administration Lévesque, élue peu après l’imposition du moratoire, l’a levé temporairement pour prolonger la ligne orange et construire la ligne bleue (Magder, 2017). Pourtant, la situation à Montréal avait beaucoup changé depuis la conception des prolongements en 1971; une récession économique dans les années quatre-vingt aggravée par les tensions politiques et linguistiques des années soixante-dix a entraîné une redéfinition du plan, à plus petite échelle (Wilson-Smith, 1985).
+
+Plusieurs lignes proposées dans les années 70 n’ont jamais vu le jour, dont les lignes de surface 6, 8, 10 et 11, qui avaient le but de stimuler le développement dans des quartiers défavorisés sans le coût exorbitant de construire des lignes sous-terraines si loin du centre-ville (Giansetto, 1982). Une ligne souterraine, la ligne 7, surnommée la ligne blanche, devait passer sous le boulevard Pie IX, une artère majeure de Montréal. Toutes ces lignes ont été annulées en raison de la récession, mais plusieurs ont fini par être remplacées par des trains de banlieue dans les années suivantes.
+
+Les lignes existantes, d’autre part, ont vu des changements. La ligne orange a été prolongée jusqu’à Côte-Vertu entre 1980 et 1986 Les autres stations allant jusqu’à Bois-Franc n’ont pas été réalisées afin de réduire les coûts du projet. La partie centrale de la ligne bleue a aussi été construite entre 1986 et 1988, incluant la station Acadie, qui demeure la station la plus récente sur l’île de Montréal. Un prolongement de la ligne bleue vers Anjou avait été envisagé, mais ne s’est pas matérialisé en raison de contraintes financières. 
+
+### Prolongement vers Laval
+#### *1990-2007*
+
+Le réseau de métro a demeuré identique dans les années quatre-vingt-dix à la suite de la suppression des subventions pour le transport en commun en 1990 en raison de la crise économique que vivait le Canada (Chartrand, 1991; Kabore, 2014). 
+
+Une nouvelle est finalement arrivée après huit ans d’inactivité: la ligne orange allait être prolongée jusqu’à Laval. La population de Laval avait atteint plus de 330.000 habitants et 47% de leurs déplacements avaient pour destination un lieu desservi par le métro. Pour beaucoup de ces déplacements, les Lavallois se rendaient au terminus Henri-Bourassa en voiture et se garaient dans les rues voisines, créant beaucoup de congestion sur le pont et dans ces rues situées près de la station. Un prolongement du métro à Laval était donc jugé nécessaire (Ministères des transports, 1990). 
+
+En 2000, les plans de prolongement ont été finalisés. Ils comprenaient trois nouvelles stations: Cartier, de la Concorde et Montmorency. La construction a commencé en 2002 et s'est terminée le 26 avril 2007 (Radio-Canada, 2022), marquant la réalisation du réseau de métro souterrain qu’on connaît aujourd’hui. 
+
+### Des obstacles au progrès
+#### *Les années 2010-présent*
+
+Depuis la réalisation du réseau de métro, plusieurs prolongements ont été proposés et étudiés, mais ont presque toujours fini par être mis de côté ou remplacés par d’autres projets. Un prolongement de la ligne jaune vers Brossard avait été envisagé pour répondre au besoin d’un corridor de transport est-ouest dans la région (CBC News, 2019), mais il a été remplacé par un projet de tramway servant le même objectif (Corriveau, 2020). Le prolongement de la ligne orange vers la station de train de banlieue Bois-Franc comme prévu dans les années soixante demeure très demandé, mais il n’y a eu aucun engagement du gouvernement provincial malgré le fait que sa faisabilité a été étudiée plusieurs fois (Sargeant, 2022). 
+
+Pourtant, même si la dernière extension du réseau de métro date d'il y a longtemps, le concept continue de susciter beaucoup d’enthousiasme chez les Montréalais. Récemment, cet enthousiasme s’est manifesté très clairement dans l’intérêt exprimé quant à la proposition pour une nouvelle ligne rose  faite par Valérie Plante lors de sa campagne à la mairie en 2017. Son ambition et la promesse qu’elle offrait de soulager la branche est très saturée de la ligne orange ont généré beaucoup de couverture médiatique et de discussions (Barbeau, 2018). Le projet a finalement été jugé trop coûteux, trop semblable aux lignes existantes et incapable de répondre au besoin urgent d’améliorer l’accès au transport en commun dans l’est (Radio-Canada, 2018). Néanmoins, l’attention que la ligne rose a reçue malgré son échelle massive et improbable démontre le pouvoir que détient l’image d’un réseau de métro étendu chez la communauté montréalaise (Tiranti, 2021). Facile à visualiser et continuellement associé à l’essor de Montréal comme métropole moderne, il est logique que le prolongement du métro demeure très attendu malgré le manque de progrès récent. 
+
+La seule exception à ce manque de progrès est le prolongement de la ligne bleue vers Anjou. Depuis son annonce initiale en 1970, des fonds pour sa réalisation ont été mis de côté en 1998, 2001, 2010, 2015, 2018, 2019 et 2020 (Noakes, 2021). Malgré les faux départs, sa construction semble avoir commencé pour vrai, mais pas sans complications. Le prolongement devait être réalisé d’ici 2026 et coûter \$3.9 milliards, mais est maintenant prévu pour 2029 à un prix de \$6.4 milliards à cause des coûts élevés d’expropriation (CBC News, 2021). Plus particulièrement, l’approche frugale du gouvernement vers les projets de transport dans le passé ne semble plus s’appliquer maintenant; il semble que le projet va être réalisé peu importe le coût pour pouvoir finalement répondre aux attentes exprimées par les citoyens de l’est depuis des décennies (The Canadian Press, 2022).
+
+### Une nouvelle ère pour les transports en commun à Montréal?
+
+Même si des nouvelles lignes de métro souterraines demeurent très demandées, le futur du transport en commun à Montréal semble être situé à la surface. En 2016, le Réseau électrique métropolitain (REM) a été annoncé par la Caisse de dépôt et placement du Québec, un partenariat entre le gouvernement provincial et le gérant du régime de rentes du Québec, qui a pris charge du financement des futurs projets d’infrastructure dans la province (CBC News, 2015). Avec sa mission ambitieuse de relier le centre-ville à l’Ouest de l’île, la Rive-Nord et l’aéroport avec une ligne de surface électrique, le REM est le plus grand projet de transport en commun depuis le métro en 1966 (Réseau express métropolitain, 2019). La construction est actuellement en cours et la branche Brossard devrait entrer en service en automne 2022.
+
+```{r, out.width = "600px", fig.align = "center", fig.cap = "Le réseau de métro avec le trajet planifié du REM, présentement en construction. *Crédit photo: Réseau Express Métropolitain*", echo=FALSE}
+knitr::include_graphics(here("www/stories/visuals/metro_evolution/REM_Carte_reseauMtl_EN.jpeg"))
+```
+
+Le REM ainsi que le tramway sur le Rive-Sud qui remplace une extension de la ligne jaune semblent indiquer une transition vers des projets de surface pour les années à venir. Bien que l'image d'un réseau de métro souterrain étendu soit très forte, aux yeux de ceux qui paient la facture, elle ne semble plus en valoir la peine. Ce qui était autrefois un investissement majeur capable de conférer un statut élevé à Montréal sur la scène mondiale est devenu une source de complications et de coûts extrêmes à la place. Il reste à voir comment les plans pour le métro vont évoluer après la réalisation du prolongement de la ligne bleue vers Anjou, mais il est clair que des projets de surface semblent être prioritaires dans l’avenir immédiat.
+
+Malgré le manque de progrès sur le réseau souterrain dans les années récentes, il représente encore un aspect essentiel de l’essor de Montréal et de sa présence sur la scène mondiale. Peu importe si le métro voit un ou de multiples prolongements de plus, il est certain que son image emblématique et son importance aux yeux de millions de passagers vont garantir son importance comme symbole de la ville pour les années à venir. 
+
+### Références
+Barbeau, A. (2018, May 27). Ligne rose: Valérie Plante réplique au refus de la CAQ. iHeartRadio. Retrieved June 14, 2022, from https://www.iheartradio.ca/rouge-fm/rouge-fm-quebec/ligne-rose-valerie-plante-replique-au-refus-de-la-caq-1.3845501
+
+The Canadian Press. (2017, May 1). Montreal’s iconic Expo 67 exhibition left lasting impact on country. National Post. Retrieved June 13, 2022, from https://nationalpost.com/travel/montreals-iconic-expo-67-exhibition-left-lasting-impact-on-country
+
+The Canadian Press. (2022, March 18). Long-awaited extension of Montreal metro’s blue line delayed until 2029. Global News. Retrieved June 14, 2022, from https://globalnews.ca/news/8693474/montreal-metro-blue-line-extension-delay/
+
+CBC News. (2015, January 13). Caisse de dépôt to finance Train de l’Ouest, Champlain Bridge light rail. CBC. Retrieved June 14, 2022, from https://www.cbc.ca/news/canada/montreal/caisse-de-d%C3%A9p%C3%B4t-to-finance-train-de-l-ouest-champlain-bridge-light-rail-1.2898825
+
+CBC News. (2019, November 26). Yellow line extension considered as Quebec looks to develop South Shore’s public transit. CBC. Retrieved June 14, 2022, from https://www.cbc.ca/news/canada/montreal/south-shore-transit-study-investment-1.5372935
+
+CBC News. (2021, May 12). Montreal’s Blue line extension facing major cost overruns, putting project’s future in doubt. CBC. Retrieved June 14, 2022, from https://www.cbc.ca/news/canada/montreal/montreal-metro-blue-line-1.6022980
+
+Chartrand, G. (1991, March 19). Les 25 ans du métro à Montréal. La Presse. Retrieved June 14, 2022, from https://numerique.banq.qc.ca/patrimoine/details/52327/2171053
+
+Clairoux, Benoît (2001). Le Métro de Montréal 35 ans déjà [Already 35 Years of the Montreal Metro]. Éditions Hurtubise HMH. ISBN 978-2-89428-526-8.
+
+Corriveau, J. (2020, February 28). Longueuil privilégie désormais un tramway. Le Devoir. Retrieved June 14, 2022, from https://www.ledevoir.com/politique/regions/573808/longueuil-privilegie-desormais-un-tramway
+
+Dufour, M. (n.d.-a). Histoire du Métro de Montréal. EMDX. Retrieved June 13, 2022, from http://emdx.org/rail/metro/histoire.php
+
+Dufour, M. (n.d.-b). Le futur n’était-il pas magnifique? EDMX. Retrieved June 14, 2022, from http://emdx.org/rail/metro/futur.php
+
+Giansetto, B. (1982, November). Le Québec choisit la prudence: les traditionnels tramways et trolleybuy pourraient refaire surface. Québec Science. Retrieved June 14, 2022, from https://numerique.banq.qc.ca/patrimoine/details/52327/2874038?docsearchtext=1982
+
+Gilbert, D. (2021, September 7). Montreal Metro. The Canadian Encyclopedia. Retrieved June 13, 2022, from https://www.thecanadianencyclopedia.ca/en/article/montreal-metro
+
+Kabore, P. (2014, November). Special study: economic history of Quebec over the past six decades. Desjardins. https://www.desjardins.com/ressources/pdf/pv1411e.pdf
+
+Magder, J. (2017, March 12). The métro at 50: The clash with car culture. Montreal Gazette. Retrieved June 13, 2022, from https://montrealgazette.com/news/local-news/the-metro-at-50-the-clash-with-car-culture
+
+Magder, J. (2018, November 8). The métro at 50: Building the network. Montreal Gazette. Retrieved June 13, 2022, from https://montrealgazette.com/news/local-news/the-metro-at-50-building-the-network
+
+Ministère des transports. (1990, October). Notes pour l’allocution du minister des transports du Québec, monsieur Jacques Brassard lors de l’annonce des investissements pour le prolongement du métro à Laval. Gouvernment du Québec. http://www.bv.transports.gouv.qc.ca/mono/1169443.pdf
+
+Montreal Museum of Fine Arts. (2016, October 16). Relive the heady days of the late 1960s with Revolution. Retrieved June 13, 2022, from https://www.mbam.qc.ca/en/news/relive-the-heady-days-of-the-late-1960s-with-revolution/
+
+Noakes, T. C. (2021, October 11). The Blue Line to nowhere: Montreal metro extension and magical thinking. Cult MTL. Retrieved June 13, 2022, from https://cultmtl.com/2021/06/the-blue-line-to-nowhere-montreal-metro-extension-and-magical-thinking-stm-public-transit-quebec/
+
+Radio-Canada. (2018, May 26). La CAQ ne veut pas d’une ligne rose de métro à Montréal [The CAQ doesn’t want a pink line for the Montreal metro]. Radio-Canada.ca. Retrieved June 14, 2022, from https://ici.radio-canada.ca/nouvelle/1103353/legault-metro-montreal
+
+Radio-Canada. (2021, June 25). L’héritage de Jean Drapeau [Jean Drapeau’s Heritage]. Radio-Canada.ca. Retrieved June 13, 2022, from https://ici.radio-canada.ca/nouvelle/1254335/jean-drapeau-maire-montreal-carriere-biographie-archives
+
+Radio-Canada. (2022, April 25). Il y a 15 ans, on inaugurait le prolongement du métro de Montréal vers Laval [15 Years Ago, we Inaugurated the Montreal Metro Extension to Laval]. Radio-Canada.ca. Retrieved June 13, 2022, from https://ici.radio-canada.ca/nouvelle/1878182/metro-transport-laval-montreal-archives
+
+Réseau express métropolitain. (2019, October 15). CDPQ Infra présente un nouveau réseau intégré reliant le centre-ville de Montréal, la Rive-Sud, l’Ouest de l’île, la Rive-Nord, et l’aéroport. CDPQ Infra | Un modèle novateur pour les projets d’infrastructures. Retrieved June 14, 2022, from https://www.cdpqinfra.com/fr/cdpq-infra-presente-un-nouveau-reseau-integre-reliant-le-centre-ville-de-montreal-la-rive
+
+Sargeant, T. (2022, June 1). Pressure mounting on government to extend metro line to future REM station. Global News. Retrieved June 14, 2022, from https://globalnews.ca/news/8883387/pressure-government-extend-metro-line-future-rem-station/
+
+Scott, M. (2016, November 16). The métro at 50: A trip through the past of Montreal transit. Montreal Gazette. Retrieved June 13, 2022, from https://montrealgazette.com/news/local-news/trip-through-transit-past
+
+Société de transport de Montréal. (2004). The bus network all over Montreal. https://numerique.banq.qc.ca/patrimoine/details/52327/3446611
+
+Société de transport de Montréal. (n.d.). Histoire du métro [History of the Metro]. Retrieved June 13, 2022, from https://www.stm.info/fr/a-propos/decouvrez-la-STM-et-son-histoire/histoire/histoire-du-metro
+
+Tiranti, R. (2021, October 8). La ligne rose mise de côté pour le REM de l’Est [The pink line set aside in favour of the REM de l’Est]. Journal Métro. Retrieved June 14, 2022, from https://journalmetro.com/actualites/politique/2708319/la-ligne-rose-mise-de-cote-pour-le-rem-de-lest/
+
+Wilson-Smith, A. (1985, April 1). Montreal: a city on the move again. Maclean’s | The Complete Archive. Retrieved June 13, 2022, from https://archive.macleans.ca/article/1985/4/1/montreal-a-city-on-the-move-again
+

@@ -5,28 +5,46 @@
 home_UI <- function(id) {
   susPage(class = "sus-page-home", header = susBanner(), footer = susFooter(),
     susPageSectionFeature(
-      tags$div(class = "sus-carousel",
-        tags$div(class = "sus-carousel-slide",
-          tags$h2(tags$em(nowrap(sus_translate(r = r, "Towards a")), 
-                          nowrap(sus_translate(r = r, "sustainable city")))),
+      susCarousel(
+        susCarouselSlide(
+          title = tags$em(nowrap(sus_translate(r = r, "Towards a")), 
+                          nowrap(sus_translate(r = r, "sustainable city"))),
+          preview = sus_translate(r = r, "Welcome"),
           tags$p(sus_translate(r = r, "Sus is a platform for exploring urban ",
-                               "sustainability in the Montreal region across ",
-                               "multiple spatial and temporal scales. Sus ",
-                               "offers a justice- and inclusivity-focused ",
-                               "approach to sustainability which integrates ",
-                               "the widest possible range of data sources to ",
-                               "help researchers, policymakers, communities, ",
-                               "and individuals.")),
+                              "sustainability in the Montreal region across ",
+                              "multiple spatial and temporal scales. Sus ",
+                              "offers a justice- and inclusivity-focused ",
+                              "approach to sustainability which integrates ",
+                              "the widest possible range of data sources to ",
+                              "help researchers, policymakers, communities, ",
+                              "and individuals.")),
           tags$div(class = "sus-button-group",
-            tags$a(class = "sus-button sus-icon-button sus-button-secondary", 
-                   href = "#learn-more", sus_translate(r = r, "Learn more"), 
-                   span(class = "material-icons", "auto_stories")),
-            tags$a(class = "sus-button sus-icon-button sus-button-primary", 
-                   href = "#start-exploring", 
-                   sus_translate(r = r, "Start Exploring Maps"), 
-                   span(class = "material-icons", "travel_explore"))
+                  tags$a(class = "sus-button sus-icon-button sus-button-secondary", 
+                         href = "#learn-more", sus_translate(r = r, "Learn more"), 
+                         span(class = "material-icons", "auto_stories")),
+                  tags$a(class = "sus-button sus-icon-button sus-button-primary", 
+                         href = "#start-exploring", 
+                         sus_translate(r = r, "Start Exploring Maps"), 
+                         span(class = "material-icons", "travel_explore"))
           )
         )
+        # , susCarouselSlide(
+        #   title = tags$em(nowrap(sus_translate(r = r, "Another slide!"))),
+        #   # preview = sus_translate(r = r, "Another slide"),
+        #   tags$p(sus_translate(r = r, "Sus is a platform for inventing urban ",
+        #                        "sustainability in the Montreal region across ",
+        #                        "multiple spatial and temporal scales. Sus ",
+        #                        "offers a justice- and inclusivity-focused ",
+        #                        "approach to sustainability which integrates ",
+        #                        "the widest possible range of data sources to ",
+        #                        "help researchers, policymakers, communities, ",
+        #                        "and individuals.")),
+        #   tags$div(class = "sus-button-group",
+        #            tags$a(class = "sus-button sus-icon-button sus-button-primary",
+        #                   href = "#learn-more", sus_translate(r = r, "Read more"),
+        #                   span(class = "material-icons", "auto_stories"))
+        #   )
+        # )
       )
     ),
     susPageSection(
@@ -93,7 +111,7 @@ home_UI <- function(id) {
 
 # Server ------------------------------------------------------------------
 
-home_server <- function(id, session, r) {
+home_server <- function(id, r) {
   moduleServer(id, function(input, output, session) {
     
     bookmark_server(id = "home", r = r)

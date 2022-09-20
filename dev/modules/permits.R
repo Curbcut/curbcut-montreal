@@ -456,7 +456,7 @@ permits_table <-
       scales = list(c("borough", "building", "CT", "DA", "grid")),
       breaks_q3 = list(breaks_q3_active[[.x]]),
       breaks_q5 = list(breaks_q5_active[[.x]]),
-      source = "VdM")
+      source = "City of Montreal's open data website")
     
   }) |> 
   mutate(explanation = ifelse(str_detect(explanation, "new construction"), 
@@ -468,6 +468,14 @@ permits_table <-
 variables <-
   variables |>
   bind_rows(permits_table)
+
+
+# Add to modules table ----------------------------------------------------
+
+modules <- 
+  modules |> 
+  add_modules(id = "permits",
+              metadata = TRUE)
 
 
 # Cleanup -----------------------------------------------------------------

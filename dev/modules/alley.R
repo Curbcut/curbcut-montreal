@@ -307,6 +307,14 @@ variables <-
     interpolated = list())
 
 
+# Add to modules table ----------------------------------------------------
+
+modules <- 
+  modules |> 
+  add_modules(id = "alley",
+              metadata = TRUE)
+
+
 # Clean up ----------------------------------------------------------------
 
 rm(alleys_mtl, alleys_google, alleys_mn, alleys_visited, alleys_to_filter, 
