@@ -437,15 +437,15 @@ lang_classes <- "
 # Severe HTML -------------------------------------------------------------
 
 sever_subtitle_fr <- 
-  HTML(paste0("Il semble que Sus se soit arrêté de manière inattendue. ",
-              "Aidez-nous à garder l'application exempte de ",
-              "bogues en appuaynt sur le bouton 'Envoyer'! ",
+  HTML(paste0("Il semble que Sus se soit arrêté de manière inattendue! Aidez-n",
+              "ous à garder l'application exempte de bogues en appuyant 'Envo",
+              "yer'! ",
               "<br>L'équipe de Sus."))
 
 sever_subtitle_en <- 
-  HTML(paste0("It appears that Sus has shut down unexpectedly. Help us keep the ",
-              "application free of bugs by clicking on the 'Submit' button! ",
-              "<br>The Sus team."))
+  HTML(paste0("It appears that Sus has shut down unexpectedly! Help us keep ",
+              "the app bug-free by clicking on “Submit”!",
+              "<br>-The Sus team."))
 
 create_form <- function(lang, module_id, select_id, df, zoom) {
   
@@ -476,14 +476,14 @@ create_form <- function(lang, module_id, select_id, df, zoom) {
   
   additional_text <- 
     if (lang == "fr") {
-      paste0("Le rapport contient déjà des informations pertinentes concernant ",
-             "l'état de la session au moment de l'apparition du bogue. Veuillez",
-             " envoyer le rapport, et n'hésitez pas à ajouter des informations ",
-             "supplémentaires dans ce bloc.")      
+      paste0("Le rapport contient déjà des informations pertinentes sur votre ",
+             "session au moment où vous avez rencontré l'erreur. Veuillez envo",
+             "yer le rapport, et n'hésitez pas à ajouter des informations supp",
+             "lémentaires dans ce bloc.")
     } else {
-      paste0("The report already contains relevant information about the state ",
-             "of the session at the time of the bug. Please send the report, an",
-             "d feel free to add additional information in this block.")     
+      paste0("The report already contains relevant information about your sess",
+             "ion at the time you experienced the error. Please send the repor",
+             "t, and feel free to add additional information in this block.")     
     }
 
   
