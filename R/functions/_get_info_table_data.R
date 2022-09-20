@@ -14,17 +14,16 @@ get_info_table_data <- function(r = r, data, var_type, var_left, var_right, df,
   
   ## Get modified df for building/street ---------------------------------------
   
-  if (!df %in% c("building", "street")) build_str_as_DA <- FALSE
+  if (df != "building") build_str_as_DA <- FALSE
   
-  # TKTK THIS IS BROKEN FOR TWO DATES!
   if (build_str_as_DA) {
     dat_select <- if (is.na(select_id)) DA else {
       dbGetQuery(db, paste0("SELECT * FROM building WHERE ID = ", 
                             select_id))
     }
     dat_select_id <- select_id
-    if (!is.na(select_id)) select_id <- 
-      dbGetQuery(db, paste0("SELECT DAUID FROM building WHERE ID = ", 
+    if (!is.na(select_id)) 
+      select_id <- dbGetQuery(db, paste0("SELECT DAUID FROM building WHERE ID = ", 
                             select_id))$DAUID
     if (length(select_id) == 0) select_id <- NA
     
@@ -176,7 +175,7 @@ get_info_table_data <- function(r = r, data, var_type, var_left, var_right, df,
   ## Place names ---------------------------------------------------------------
   
   out$place_name <- if (df %in% c("building", "street") && build_str_as_DA) {
-        glue("The dissemination area around {select_name$name}")
+    sus_translate(r = r, "The dissemination area around {select_name$name}")
   } else switch(
     scale_sing,
     "building" = glue("{select_name$name}"),
@@ -439,7 +438,7 @@ get_info_table_data <- function(r = r, data, var_type, var_left, var_right, df,
   
   
   ## Return output -------------------------------------------------------------
-
+  
   return(out)
   
 }

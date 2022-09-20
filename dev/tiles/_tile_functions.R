@@ -101,7 +101,6 @@ delete_tileset <- function(id, username = "sus-mcgill",
   out <- httr::DELETE(paste0("https://api.mapbox.com/tilesets/v1/", username,
                       ".", id), query = list(access_token = access_token))
   
-  if (is_empty(httr::content(out))) return("Success")
   return(httr::content(out))
 }
 

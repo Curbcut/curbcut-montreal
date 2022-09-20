@@ -445,7 +445,7 @@ title_card_index <-
 # Which variables should have a percentile attached?
 basic_percentile_retrieval <- 
   variables |> 
-  filter(source == "census" |
+  filter(source == "Canadian census" |
            str_starts(var_code, "climate")) |> 
   filter(var_code != "climate_flood_ind")
 

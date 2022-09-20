@@ -58,11 +58,18 @@ climate_risk_server <- function(id, r) {
         poi(new_poi)
     }) |> bindEvent(get_view_state(id_map))
     
+    # Map zoom levels change depending on r$geo()
+    map_zoom_levels <- reactive({
+      get_zoom_levels(default = "island", 
+                      geo = "island",
+                      var_left = isolate(var_left()))
+    })
+    
     # Zoom string reactive
     observe({
-      new_zoom_string <- get_zoom_string(r[[id]]$zoom(), map_zoom_levels_CMA)
+      new_zoom_string <- get_zoom_string(r[[id]]$zoom(), map_zoom_levels()$levels)
       if (new_zoom_string != zoom_string()) zoom_string(new_zoom_string)
-    }) |> bindEvent(r[[id]]$zoom())
+    }) |> bindEvent(r[[id]]$zoom(), map_zoom_levels()$levels)
 
     # Click reactive
     observe({
@@ -78,26 +85,27 @@ climate_risk_server <- function(id, r) {
     
     # Zoom level for data
     tile_choropleth <- zoom_server(
-      id = id, 
+      id = id,
       r = r,
-      zoom_string = zoom_string, 
-      zoom_levels = reactive(map_zoom_levels_CMA))
+      zoom_string = zoom_string,
+      zoom_levels = map_zoom_levels)
     
     # Choose tileset
-    tile <- reactive(if (grid()) "grid" else tile_choropleth())
+    tile <- reactive(if (grid()) "island-grid" else tile_choropleth())
     
     # Get df for explore/legend/etc
     observe(r[[id]]$df(get_df(tile(), zoom_string()))) |> 
-      bindEvent(tile(), zoom_string(), ignoreInit = TRUE)
+      bindEvent(tile(), zoom_string())
     
     # Time
     time <- reactive("2016")
     
     # Left variable server
-    var_left <- select_var_server(id, r = r, var_list = reactive(
-      make_dropdown(only = list(theme = "Climate risk"))))
-    
-    # observe(print(var_right()))
+    var_left <- 
+      select_var_server(id, 
+                        r = r, 
+                        var_list = reactive(
+                          make_dropdown(only = list(theme = "Climate risk"))))
     
     # Right variable / compare panel
     var_right <- compare_server(
@@ -105,16 +113,6 @@ climate_risk_server <- function(id, r) {
       r = r,
       var_list = make_dropdown(compare = TRUE),
       time = time)
-    
-    # Additional tileset identifier
-    tile2 <- reactive({
-      tile_lookup$suffix[tile_lookup$module == "climate_risk" &
-                           tile_lookup$tile2 == var_left()]
-    })
-    
-    # Composite variable for map
-    map_var <- reactive(
-      str_remove(paste(var_left(), var_right(), sep = "_"), "_ $"))
     
     # Sidebar
     sidebar_server(id = id, r = r, x = "climate_risk")
@@ -125,6 +123,14 @@ climate_risk_server <- function(id, r) {
       var_left = var_left(), 
       var_right = var_right(), 
       island = TRUE))
+    
+    # Data for tile coloring
+    data_color <- reactive(get_data_color(
+      map_zoom_levels = if (grid()) set_names("grid", "grid") else 
+        map_zoom_levels()$levels,
+      var_left = var_left(),
+      var_right = var_right()
+    ))
     
     # Legend
     legend <- legend_server(
@@ -147,10 +153,9 @@ climate_risk_server <- function(id, r) {
       id = id, 
       r = r, 
       map_id = "map",
-      tile = tile, 
-      tile2 = tile2,
-      map_var = map_var, 
-      lwd = scale_lwd_climate_risk, 
+      tile = tile,
+      data_color = data_color, 
+      lwd = scale_lwd_climate_risk,
       lwd_args = reactive(list(r[[id]]$select_id(), tile())))
     
     # Update map labels

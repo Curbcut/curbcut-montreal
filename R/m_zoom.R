@@ -42,7 +42,7 @@ zoom_server <- function(id, r = r, zoom_string, zoom_levels) {
       updateSliderTextInput(session, "zoom_slider", 
                             selected = sus_translate(r = r, get_zoom_name(zoom_string())),
                             choices = get_zoom_label_t({
-                              # If the module is up to date:
+                              # If the module isn't impacted by a change of r$geo()
                               if (is.list(zoom_levels())) {
                                 zoom_levels()$levels
                               } else zoom_levels()}, 
@@ -67,10 +67,10 @@ zoom_server <- function(id, r = r, zoom_string, zoom_levels) {
       out <- 
       if (input$zoom_auto) "auto_zoom" else get_zoom_code(input$zoom_slider)
       
-      # If the module is NOT up to date:
+      # If the module isn't impacted by a change of r$geo()
       if (!is.list(zoom_levels())) return(out)
         
-      # If the module IS up to date:
+      # If the module IS impacted by a change of r$geo()
       return(paste(zoom_levels()$scale, out, sep = "-"))
     })
     

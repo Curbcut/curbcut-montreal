@@ -104,9 +104,15 @@ compare_server <- function(id, r = r, var_list, df = r[[id]]$df,
                           lab <- names(vars_list) 
                           id_s <- gsub(" |/", "_", tolower(lab))
                           
+                          # Translation
+                          vars_list <- unlist(vars_list)
+                          names(vars_list) <- vars_list
+                          names(vars_list) <- 
+                            sapply(names(vars_list), sus_translate, r = r)
+                          
                           select_var_UI(NS(id, NS(id, id_s)),
                                         var_list = vars_list,
-                                        label = lab,
+                                        label = sus_translate(r = r, lab),
                                         inline = FALSE,
                                         more_style = "width:100%;")})))
     })

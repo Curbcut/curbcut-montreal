@@ -450,4 +450,8 @@ info_table_translated <-
   add_row(en = paste0("centraide zones"), 
           fr = paste0("quartiers Centraide")) |> 
   add_row(en = paste0("Centraide zone {select_name$name}"), 
-          fr = paste0("Quartier Centraide {select_name$name}"))
+          fr = paste0("Quartier Centraide {select_name$name}")) |> 
+  add_row(en = paste0("We have no data on {z$exp_left} at the {z$scale_sing} sc",
+                      "ale."), 
+          fr = paste0("Nous ne disposons pas de données sur {z$exp_left} à l'éc",
+                      "helle {z$scale_sing}."))

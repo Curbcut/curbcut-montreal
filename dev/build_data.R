@@ -22,7 +22,10 @@ master_polygon <-
     # CMA
     st_union(
       {
-        cancensus::get_census("CA16", list(CMA = "24462"), geo_format = "sf", quiet = TRUE) |> 
+        cancensus::get_census("CA16", 
+                              regions = list(CMA = "24462"), 
+                              geo_format = "sf", 
+                              quiet = TRUE) |> 
           st_set_agr("constant") |> 
           st_transform(32618)
       }
@@ -62,6 +65,9 @@ source("dev/geometries/grid_geocode.R")
 # Add metadata to grid
 source("dev/geometries/grid_process.R")
 
+# Import centraide geometries
+source("dev/geometries/centraide_geometries.R")
+
 # Import building
 source("dev/geometries/building.R")
 
@@ -73,9 +79,6 @@ source("dev/geometries/street.R")
 
 # Geocode street edges centroids
 source("dev/geometries/street_geocode.R")
-
-# Import centraide geometries
-source("dev/geometries/centraide_geometries.R")
 
 
 # Vector of tables --------------------------------------------------------

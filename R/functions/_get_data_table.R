@@ -39,7 +39,7 @@ get_data_table <- function(df, var_left, var_right, data_type,
       data |> 
       setNames(c("ID", "name", "name_2", if (df == "DA") "DAUID", 
                  if (df %in% c("DA", "CT")) "CTUID", 
-                 if (df %in% c("DA", "CT", "borough")) "CSDUID", "population",
+                 if (df %in% c("DA", "CT", "borough", "grid")) "CSDUID", "population",
                  "var_left", "var_left_q3", "var_left_q5"))
   }
   
@@ -71,7 +71,7 @@ get_data_table <- function(df, var_left, var_right, data_type,
     data |> 
       setNames(c("ID", "name", "name_2", if (df == "DA") "DAUID", 
                  if (df %in% c("DA", "CT")) "CTUID", 
-                 if (df %in% c("DA", "CT", "borough")) "CSDUID", "population", 
+                 if (df %in% c("DA", "CT", "borough", "grid")) "CSDUID", "population", 
                  "var_left", "var_left_q3", "var_left_q5", "var_right", 
                  "var_right_q3", "var_right_q5"))
     data$group = paste(data$var_left_q3, data$var_right_q3, sep = " - ")

@@ -7,8 +7,9 @@
 
 post_process <- function(x) {
   x |> 
-  mutate(across(where(is.numeric), ~replace(., is.nan(.), NA)), 
-         across(where(is.numeric), ~replace(., is.infinite(.), NA))) 
+    mutate(across(where(is.numeric), ~replace(., is.nan(.), NA)), 
+           across(where(is.numeric), ~replace(., is.infinite(.), NA))) |> 
+    mutate(ID = as.character(ID))
 }
 
 

@@ -111,13 +111,10 @@ alley_server <- function(id, r) {
         "borough_empty"
       } else "alley"
     })
-
-    # Additional tileset identifier
-    tile2 <- reactive("")
     
     # Get df for explore/legend/etc
     observe(r[[id]]$df(get_df(tile(), zoom_string()))) |> 
-      bindEvent(tile(), zoom_string(), ignoreInit = TRUE)
+      bindEvent(tile(), zoom_string())
     
     # Focus on visited alleys
     visited <- checkbox_server(id = id)
@@ -145,6 +142,15 @@ alley_server <- function(id, r) {
       var_left = var_left(), 
       var_right = var_right(), 
       island = TRUE))
+    
+    # Data for tile coloring
+    data_color <- reactive({
+      if (!choropleth()) return(NULL)
+      get_data_color(
+        map_zoom_levels = map_zoom_levels_CMA,
+        var_left = var_left(),
+        var_right = var_right())
+    })
     
     # Composite variable for map
     map_var <- reactive({
@@ -205,11 +211,10 @@ alley_server <- function(id, r) {
       id = id,
       r = r,
       map_id = "map",
-      tile = tile,
-      tile2 =  tile2,
-      map_var = map_var,
+      data_color = data_color,
+      tile = reactive(paste(id, tile(), sep = "-")),
       fill = scale_fill_alley,
-      fill_args = reactive(list(map_var(), tile())),
+      fill_args = reactive(list(map_var(), tile(), data_color())),
       colour = scale_colour_alley,
       colour_args = reactive(list(map_var(), tile())),
       lwd = scale_lwd_alley,

@@ -278,6 +278,7 @@ shinyServer(function(input, output, session) {
                       var_right = r$sus_bookmark$var_right,
                       more_args = r$sus_bookmark$more_args)
       })
+      r$sus_bookmark$active <- FALSE
     }
   }, priority = -1, once = TRUE)
   
@@ -303,21 +304,29 @@ shinyServer(function(input, output, session) {
   }, ignoreInit = FALSE)
   
 
-  ## Change geometries on button clicked or on cookie --------------------------
-  
-  observeEvent(input$geo_CMA, {
-    r$geo("CMA")
-    session$sendCustomMessage("cookie-set", list(name = "default_geo", 
-                                                 value = "CMA"))
+
+  ## Advanced options ----------------------------------------------------------
+
+
+  onclick("advanced_options", {
+    showModal(modalDialog(
+      radioButtons("geo_change",
+                   label = sus_translate(r = r, "Change default geometry"),
+                   inline = TRUE,
+                   selected = r$geo(),
+                   choiceNames = c("CMA", "Centraide"),
+                   choiceValues = c("CMA", "centraide")),
+      title = sus_translate(r = r, "Advanced options")))
   })
   
-  observeEvent(input$geo_centraide, {
-    r$geo("centraide")
+  # Change the default geometry and save the cookie
+  observeEvent(input$geo_change, {
+    r$geo(input$geo_change)
     session$sendCustomMessage("cookie-set", list(name = "default_geo", 
-                                                 value = "centraide"))
+                                                 value = input$geo_change))
   })
   
-  # If the language cookie is "english"
+  # If the geo cookie is already in
   observeEvent(input$cookies$default_geo, {
     if (!is.null(input$cookies$default_geo)) {
       r$geo(input$cookies$default_geo)
