@@ -439,29 +439,79 @@ lang_classes <- "
 sever_subtitle_fr <- 
   HTML(paste0("Il semble que Sus se soit arrêté de manière inattendue. ",
               "Aidez-nous à garder l'application exempte de ",
-              "bogues en remplissant le rapport suivant! ",
-              "L'équipe de Sus."))
+              "bogues en appuaynt sur le bouton 'Envoyer'! ",
+              "<br>L'équipe de Sus."))
 
 sever_subtitle_en <- 
   HTML(paste0("It appears that Sus has shut down unexpectedly. Help us keep the ",
-              "application free of bugs by filing a bug report! ",
-              "The Sus team."))
+              "application free of bugs by clicking on the 'Submit' button! ",
+              "<br>The Sus team."))
 
-severe_html <- function(module_id) {
-  tagList(tags$h2("Uh oh...", span(class = "material-icons", "bug_report")),
+create_form <- function(lang, module_id, select_id, df, zoom) {
+  
+  pre <- 
+    paste0("<form id='bug_report_form' action='https://docs.google.com/forms/d/",
+         "e/1FAIpQLSfuQquv73dQoXA1UneCh9zREj0NG3E-RCfRpTNyJ1dIBagIeQ/formResp",
+         "onse'>")
+  post <- "<input type='submit' id='bug_report_submit' style = 'display:none;' /></form>"
+    
+  module <- 
+    paste0("<input type='text' name='entry.1645395961' value='", module_id, 
+           "' style = 'display:none;' />")
+  select_id <- 
+    paste0("<input type='text' name='entry.1653725119' value='", select_id, 
+           "' style = 'display:none;' />")
+  df <- 
+    paste0("<input type='text' name='entry.2012971104' value='", df, 
+           "' style = 'display:none;' />")
+  zoom <- 
+    paste0("<input type='text' name='entry.1512788688' value='", zoom, 
+           "' style = 'display:none;' />")
+  
+  additional_style <- 
+    paste0("width: 75%; height: 150px; padding: 12px 20px; ",
+    "box-sizing: border-box; border: 2px solid #ccc; border-radius: 4px;",
+    "background-color: #f8f8f8; resize: none; font-family: ",
+    "var(--ff-body); color: var(--c-paragraph); font-size: 1.65rem;")
+  
+  additional_text <- 
+    if (lang == "fr") {
+      paste0("Le rapport contient déjà des informations pertinentes concernant ",
+             "l'état de la session au moment de l'apparition du bogue. Veuillez",
+             " envoyer le rapport, et n'hésitez pas à ajouter des informations ",
+             "supplémentaires dans ce bloc.")      
+    } else {
+      paste0("The report already contains relevant information about the state ",
+             "of the session at the time of the bug. Please send the report, an",
+             "d feel free to add additional information in this block.")     
+    }
+
+  
+  additional <- 
+    paste0("<textarea name='entry.77284970 form='bug_report_form' style ='",
+           additional_style, "'>", additional_text, "</textarea>")
+  
+  HTML(paste0(pre, module, select_id, df, zoom, additional, post))
+  
+}
+
+severe_html <- function(lang, module_id, select_id, df, zoom) {
+  tagList(tags$h2("Uh oh..."),
           tags$p(tags$span(class = "lang-fr", sever_subtitle_fr),
                  tags$span(class = "lang-en", sever_subtitle_en)),
+          create_form(lang, module_id, select_id, df, zoom),
           tags$div(class = "sus-button-group",
-                   HTML(paste0('<iframe src="https://docs.google.com/forms/d/e',
-                               '/1FAIpQLSfuQquv73dQoXA1UneCh9zREj0NG3E-RCfRpTN',
-                               'yJ1dIBagIeQ/viewform?embedded=true&usp=pp_url&',
-                               'entry.1645395961=', module_id,
-                               '" width="100%" height="400" frameborder="0" ma',
-                               'rginheight="0" marginwidth="0">Loading…</iframe>')),
                    tags$a(class = "sus-button sus-icon-button sus-button-secondary", 
+                          style = "cursor: pointer;",
                           onClick = "window.location.href='/'", 
                           tags$span(class = "lang-fr", "Accueil"),
                           tags$span(class = "lang-en", "Home"), " ",
                           span(class = "material-icons", "home")),
+                   tags$a(class = "sus-button sus-icon-button sus-button-primary", 
+                          style = "cursor: pointer;",
+                          onClick = "document.getElementById('bug_report_submit').click()", 
+                          tags$span(class = "lang-fr", "Envoyer"),
+                          tags$span(class = "lang-en", "Submit"), " ",
+                          span(class = "material-icons", "bug_report")),
           ))
 }

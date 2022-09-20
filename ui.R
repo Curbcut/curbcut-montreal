@@ -60,6 +60,7 @@ ui <- function(request) {
     # change page title JS function
     tags$script(HTML('Shiny.addCustomMessageHandler("changetitle", function(x) 
                    {document.title=x});')),
+    
     tags$head(includeHTML("www/google_analytics.html")),
     
     # Language switching ---------------------------------------------------------
