@@ -432,3 +432,36 @@ lang_classes <- "
       visibility: visible !important;
       display: inline !important; 
     }"
+
+
+# Severe HTML -------------------------------------------------------------
+
+sever_subtitle_fr <- 
+  HTML(paste0("Il semble que Sus se soit arrêté de manière inattendue. ",
+              "Aidez-nous à garder l'application exempte de ",
+              "bogues en remplissant le rapport suivant! ",
+              "L'équipe de Sus."))
+
+sever_subtitle_en <- 
+  HTML(paste0("It appears that Sus has shut down unexpectedly. Help us keep the ",
+              "application free of bugs by filing a bug report! ",
+              "The Sus team."))
+
+severe_html <- function(module_id) {
+  tagList(tags$h2("Uh oh...", span(class = "material-icons", "bug_report")),
+          tags$p(tags$span(class = "lang-fr", sever_subtitle_fr),
+                 tags$span(class = "lang-en", sever_subtitle_en)),
+          tags$div(class = "sus-button-group",
+                   HTML(paste0('<iframe src="https://docs.google.com/forms/d/e',
+                               '/1FAIpQLSfuQquv73dQoXA1UneCh9zREj0NG3E-RCfRpTN',
+                               'yJ1dIBagIeQ/viewform?embedded=true&usp=pp_url&',
+                               'entry.1645395961=', module_id,
+                               '" width="100%" height="400" frameborder="0" ma',
+                               'rginheight="0" marginwidth="0">Loading…</iframe>')),
+                   tags$a(class = "sus-button sus-icon-button sus-button-secondary", 
+                          onClick = "window.location.href='/'", 
+                          tags$span(class = "lang-fr", "Accueil"),
+                          tags$span(class = "lang-en", "Home"), " ",
+                          span(class = "material-icons", "home")),
+          ))
+}

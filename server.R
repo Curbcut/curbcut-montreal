@@ -13,6 +13,18 @@ shinyServer(function(input, output, session) {
   observe(mobile_warning(r = r, session = session))
   
   
+  ## If crash, personnalized error ---------------------------------------------
+  
+  observe({
+    module_title <- title_text[title_text$tab == input$sus_page, ]
+    module_title <- module_title$text[module_title$type == "title"]
+    module_title <- sus_translate(r = r, module_title)
+    
+    sever(html = severe_html(module_title), bg_color = "rgba(0,0,0,.5)", 
+          box = TRUE)
+  })
+
+  
   ## Reactive variables --------------------------------------------------------
   
   r <- reactiveValues(

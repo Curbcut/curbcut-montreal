@@ -3,9 +3,13 @@
 ui <- function(request) {
   tagList(
     
-    # Styling objects ------------------------------------------------------------
+    # Import packages dependencies -----------------------------------------------
     
     useShinyjs(),
+    useSever(),
+    
+    # Styling objects ------------------------------------------------------------
+    
     tags$head(tags$link(rel = "icon", href = "favicon.ico")),
     tags$head(tags$link(rel = "stylesheet", type = "text/css", 
                         href = "bootstrap.min.css")),
