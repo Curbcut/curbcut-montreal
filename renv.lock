@@ -878,6 +878,18 @@
         "viridisLite"
       ]
     },
+    "sever": {
+      "Package": "sever",
+      "Version": "0.0.7",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "ed311815f35a5ef4884ae72ae0f86cca",
+      "Requirements": [
+        "cli",
+        "htmltools",
+        "shiny"
+      ]
+    },
     "sf": {
       "Package": "sf",
       "Version": "1.0-7",
