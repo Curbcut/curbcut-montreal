@@ -83,13 +83,21 @@ shinyServer(function(input, output, session) {
                "Première fois sur Sus? Visitez la page ",
                paste0("<a id='go_to_htu_fr' href='#' style = 'color:white;'",
                       "class='action-button shiny-bound-input'>",
-                      "<b>", "Mode d'emploi", 
-                      "</b></a> !&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;"),
+                      "<b>Mode d'emploi</b></a> "),
+               "et inscrivez-vous à notre ",
+               paste0("<a id='subscribe_fr' href='#' style = 'color:white;'",
+                      "class='action-button shiny-bound-input'>",
+                      "<b>", "Infolettre", "</b></a> !"),
+               "&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;",
                "First time on Sus? Visit the ",
                paste0("<a id='go_to_htu_en' href='#' style = 'color:white;'",
                       "class='action-button shiny-bound-input'>",
-                      "<b>", "How to use", "</b></a> page!"), "</p>",
-               "<a id='go_to_htu_x' href='#' ",
+                      "<b>How to use page</b></a> "),
+               "and subscribe to our ",
+               paste0("<a id='subscribe_en' href='#' style = 'color:white;'",
+                      "class='action-button shiny-bound-input'>",
+                      "<b>", "Newsletter", "</b></a> !"),
+               "</p><a id='go_to_htu_x' href='#' ",
                "style = 'float:right;display:inline;color",
                ":#FBFBFB;' class='action-button shiny-bound-input'>X</a>",
                "</div>")))
@@ -117,32 +125,42 @@ shinyServer(function(input, output, session) {
     removeUI("#htu_footer")
   }, ignoreInit = TRUE)
   
+  onclick("subscribe_fr", {
+    showModal(modalDialog(HTML(readLines("www/sus.signupform.html")),
+                          easyClose = TRUE))
+  })
+  
+  onclick("subscribe_en", {
+    showModal(modalDialog(HTML(readLines("www/sus.signupform.html")),
+                          easyClose = TRUE))
+  })
+  
   
 
   ## Newsletter modal ----------------------------------------------------------
 
-  observeEvent(input$cookies$signupform, {
-    
-    cookie_last <- input$cookies$signupform
-    
-    # 28 days after last visit, popup the newsletter subscription
-    if (is.null(cookie_last) || 
-        (!is.null(cookie_last) && Sys.time() > (as.POSIXct(cookie_last) + 2419200))) {
-      shinyjs::delay(5000, showModal(modalDialog(HTML(readLines("www/sus.signupform.html")),
-                                                 easyClose = TRUE)))
-    }
-    
-    # After ANY visit, restart the timer
-    signupform <- list(name = "signupform",
-                       value = Sys.time())
-    session$sendCustomMessage("cookie-set", signupform)
-    
-  }, once = TRUE, ignoreNULL = FALSE, ignoreInit = TRUE)
-  
+  # observeEvent(input$cookies$signupform, {
+  # 
+  #   cookie_last <- input$cookies$signupform
+  # 
+  #   # 28 days after last visit, popup the newsletter subscription
+  #   if (is.null(cookie_last) ||
+  #       (!is.null(cookie_last) && Sys.time() > (as.POSIXct(cookie_last) + 2419200))) {
+  #     shinyjs::delay(5000, showModal(modalDialog(HTML(readLines("www/sus.signupform.html")),
+  #                                                easyClose = TRUE)))
+  #   }
+  # 
+  #   # After ANY visit, restart the timer
+  #   signupform <- list(name = "signupform",
+  #                      value = Sys.time())
+  #   session$sendCustomMessage("cookie-set", signupform)
+  # 
+  # }, once = TRUE, ignoreNULL = FALSE, ignoreInit = TRUE)
+
   onclick("subscribe", {
     showModal(modalDialog(HTML(readLines("www/sus.signupform.html")),
                           easyClose = TRUE))
-  })  
+  })
   
   
   ## Language button -----------------------------------------------------------

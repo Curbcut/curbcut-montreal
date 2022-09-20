@@ -36,7 +36,6 @@ modules <- qread("data/modules.qs")
 title_text <- qread("data/title_text.qs")
 dyk <- qread("data/dyk.qs")
 qload("data/colours.qsm")
-tile_lookup <- qread("data/tile_lookup.qs")
 
 qload("data/census.qsm")
 centraide <- qread("data/centraide.qs")
