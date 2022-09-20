@@ -190,7 +190,7 @@ building <-
   building |>
   bind_rows(ms_building) |>
   filter(units::drop_units(st_area(geometry)) > 10) |>
-  mutate(ID = seq_along(ID)) |>
+  mutate(ID = as.character(seq_along(ID))) |>
   st_transform(4326) |>
   st_set_agr("constant") |> 
   mutate(geometry = st_make_valid(geometry))

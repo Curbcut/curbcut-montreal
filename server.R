@@ -337,7 +337,6 @@ shinyServer(function(input, output, session) {
 
   ## Advanced options ----------------------------------------------------------
 
-
   onclick("advanced_options", {
     showModal(modalDialog(
       radioButtons("geo_change",

@@ -151,6 +151,7 @@ access_server <- function(id, r) {
     # Data
     data <- reactive(get_data(
       df = r[[id]]$df(),
+      geo = r$geo(),
       var_left = var_left(), 
       var_right = var_right()))
     
@@ -236,14 +237,14 @@ access_server <- function(id, r) {
       var_right = var_right,
       more_args = reactive(c("s-slider" = slider()))
     )
-
+    
     # Data transparency and export
     observe({
-      r[[id]]$export_data(data_export(id = id, 
-                                      data = data(), 
-                                      var_left = var_left(), 
-                                      var_right = var_right(), 
-                                      df = r[[id]]$df()))
+      r[[id]]$export_data <- reactive(data_export(id = id,
+                                                  data = data(),
+                                                  var_left = var_left(),
+                                                  var_right = var_right(),
+                                                  df = r[[id]]$df()))
     })
 
   })

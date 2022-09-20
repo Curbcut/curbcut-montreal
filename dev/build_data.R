@@ -298,13 +298,9 @@ qsave(title_text, "data/title_text.qs")
 qsavem(borough, CT, DA, file = "data/census.qsm")
 qsave(census_variables, file = "data/census_variables.qs")
 
+## other
 qsavem(alley, alley_text, file = "data/alley.qsm")
 qsave(centraide, file = "data/centraide.qs")
-# qsave(crash, file = "data/crash.qs")
-# qsavem(covid, covid_pics, file = "data/covid.qsm")
-# qsave(green_space, file = "data/green_space.qs")
-# qsave(marketed_sustainability, file = "data/marketed_sustainability.qs")
-# qsavem(permits_choropleth, permits, file = "data/permits.qsm")
 qsavem(title_card_indicators, pe_var_hierarchy, pe_theme_order, CSDUID_groups,
        title_card_index, pe_variable_order, file = "data/place_explorer.qsm")
 qsavem(stories, stories_mapping, file = "data/stories.qsm")
@@ -364,7 +360,7 @@ dbExecute(db, paste0("CREATE INDEX index_tt_matrix_destination",
 # building with primary key
 dbWriteTable(db, "pre_pk_building", building)
 dbExecute(db, paste0("CREATE TABLE building ",
-                     "(ID INTEGER, ",
+                     "(ID VARCHAR, ",
                      "name VARCHAR, ",
                      "name_2 VARCHAR, ",
                      "DAUID VARCHAR,

@@ -1,6 +1,6 @@
 #### GET DATA TABLE ############################################################
 
-get_data_table <- function(df, var_left, var_right, data_type, 
+get_data_table <- function(df, geo, var_left, var_right, data_type, 
                            point_df = FALSE) {
   
   # Get time format; eventually this might need to be conditional
@@ -29,6 +29,7 @@ get_data_table <- function(df, var_left, var_right, data_type,
                                    var_left, l_q3, l_q5, sep = ", "), "FROM grid"))
       } else {
         data <- get(df)
+        if (df %in% c("CT", "DA")) data <- data[data[[geo]], ]
         data <- data[c("ID", "name", "name_2", if (df == "DA") "DAUID", 
                        if (df %in% c("DA", "CT")) "CTUID", 
                        if (df %in% c("DA", "CT", "borough")) "CSDUID", "population", 
@@ -46,6 +47,7 @@ get_data_table <- function(df, var_left, var_right, data_type,
   # Building univariate
   if (data_type == "building_q5") {
     data <- DA
+    data <- data[data[[geo]], ]
     data <- data[c("ID", "name", "name_2", "DAUID", "CTUID", "CSDUID", 
                    "population", var_left, l_q3, l_q5)] |> 
       setNames(c("ID", "name", "name_2", "DAUID", "CTUID", "CSDUID", 
@@ -61,6 +63,7 @@ get_data_table <- function(df, var_left, var_right, data_type,
                                    sep = ", "), "FROM grid"))
     } else {
       data <- get(df)
+      if (df %in% c("CT", "DA")) data <- data[data[[geo]], ]
       data <- data[c("ID", "name", "name_2", if (df == "DA") "DAUID", 
                      if (df %in% c("DA", "CT")) "CTUID", 
                      if (df %in% c("DA", "CT", "borough")) "CSDUID", "population", 
@@ -93,6 +96,7 @@ get_data_table <- function(df, var_left, var_right, data_type,
   if (data_type == "delta") {
     
     data <- get(df)
+    if (df %in% c("CT", "DA")) data <- data[data[[geo]], ]
     
     data <- data[c("ID", "name", "name_2", if (df == "DA") "DAUID",
                    if (df %in% c("DA", "CT")) "CTUID", 
@@ -159,6 +163,7 @@ get_data_table <- function(df, var_left, var_right, data_type,
   # NA_delta
   if (data_type == "NA_delta") {
     data <- get(df)
+    if (df %in% c("CT", "DA")) data <- data[data[[geo]], ]
     data <- data[c("ID", "name", "name_2", if (df == "DA") "DAUID",
                    if (df %in% c("DA", "CT")) "CTUID", 
                    if (df %in% c("DA", "CT", "borough")) "CSDUID", "population")]
@@ -192,6 +197,7 @@ get_data_table <- function(df, var_left, var_right, data_type,
   # Delta bivariate
   if (data_type == "delta_bivar") {
     data <- get(df)
+    if (df %in% c("CT", "DA")) data <- data[data[[geo]], ]
     data <- data[c("ID", "name", "name_2", if (df == "DA") "DAUID",
                    if (df %in% c("DA", "CT")) "CTUID", 
                    if (df %in% c("DA", "CT", "borough")) "CSDUID", "population",
@@ -221,6 +227,7 @@ get_data_table <- function(df, var_left, var_right, data_type,
   # NA_delta_bivar
   if (data_type == "NA_delta_bivar") {
     data <- get(df)
+    if (df %in% c("CT", "DA")) data <- data[data[[geo]], ]
     data <- data[c("ID", "name", "name_2", if (df == "DA") "DAUID",
                    if (df %in% c("DA", "CT")) "CTUID", 
                    if (df %in% c("DA", "CT", "borough")) "CSDUID", "population")]
