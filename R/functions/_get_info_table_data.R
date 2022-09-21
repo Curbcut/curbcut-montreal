@@ -185,17 +185,17 @@ get_info_table_data <- function(r = r, data, var_type, var_left, var_right, df,
     "dissemination area" = 
       sus_translate(r = r, "Dissemination area {select_name$name}"),
     "250-m" = sus_translate(r = r, "The area around {select_name$name}"),
-    "centraide zone" = sus_translate(r = r, "Centraide zone {select_name$name}"),
+    "centraide zone" = glue("{select_name$name}"),
     NA_character_)
   
   if (grepl("select", out$var_type)) {
-    if (df == "borough") select_name$name_2 <- 
+    if (df %in% c("borough", "centraide")) select_name$name_2 <- 
         sus_translate(r = r, glue("{select_name$name_2}"))
     
     out$place_heading <- if (df %in% c("building", "street") && 
                              build_str_as_DA) {
       select_name$name
-    } else if (scale_sing == "borough/city") {
+    } else if (scale_sing %in% c("borough/city", "centraide zone")) {
       sus_translate(r = r, "{select_name$name_2} of {out$place_name}")
     } else if (scale_sing == "250-m") {
       sus_translate(r = r, select_name$name)

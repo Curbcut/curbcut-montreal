@@ -13,18 +13,15 @@ shinyServer(function(input, output, session) {
   observe(mobile_warning(r = r, session = session))
   
   
-  ## If crash, personnalized error ---------------------------------------------
+  ## If crash, personalized error ----------------------------------------------
   
   observe({
-    if (input$sus_page != "home")
-    sever(html = severe_html(lang = r$lang(),
-                             module_id = input$sus_page,
-                             select_id = r[[input$sus_page]]$select_id(), 
-                             df = r[[input$sus_page]]$df(), 
-                             zoom = r[[input$sus_page]]$zoom()), 
-          bg_color = "rgba(0,0,0,.5)", box = TRUE)
+      sever(html = severe_html(lang = r$lang(),
+                               module_id = input$sus_page,
+                               geo = r$geo()),
+            bg_color = "rgba(0,0,0,.5)", box = TRUE)
   })
-  
+
   
   ## Reactive variables --------------------------------------------------------
   

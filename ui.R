@@ -138,11 +138,11 @@ ui <- function(request) {
                                            icon("download")),
                                 actionLink(inputId = "subscribe",
                                            label = sus_translate("Newsletter"),
-                                           icon("list-alt")),
-                                actionLink(inputId = "advanced_options",
-                                           label = sus_translate(
-                                             "Advanced options"),
-                                           icon("gear", verify_fa = FALSE))
+                                           icon("list-alt"))#,
+                                # actionLink(inputId = "advanced_options",
+                                #            label = sus_translate(
+                                #              "Advanced options"),
+                                #            icon("gear", verify_fa = FALSE))
                  ), "summarize")
              )
         ))

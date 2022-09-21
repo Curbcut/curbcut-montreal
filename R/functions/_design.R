@@ -447,7 +447,7 @@ sever_subtitle_en <-
               "the app bug-free by clicking on “Submit”!",
               "<br>-The Sus team."))
 
-create_form <- function(lang, module_id, select_id, df, zoom) {
+create_form <- function(lang, module_id, geo) {
   
   pre <- 
     paste0("<form id='bug_report_form' action='https://docs.google.com/forms/d/",
@@ -458,15 +458,13 @@ create_form <- function(lang, module_id, select_id, df, zoom) {
   module <- 
     paste0("<input type='text' name='entry.1645395961' value='", module_id, 
            "' style = 'display:none;' />")
-  select_id <- 
-    paste0("<input type='text' name='entry.1653725119' value='", select_id, 
+  geo <- 
+    paste0("<input type='text' name='entry.1343914403' value='", geo, 
            "' style = 'display:none;' />")
-  df <- 
-    paste0("<input type='text' name='entry.2012971104' value='", df, 
+  lang <- 
+    paste0("<input type='text' name='entry.1443376271' value='", lang, 
            "' style = 'display:none;' />")
-  zoom <- 
-    paste0("<input type='text' name='entry.1512788688' value='", zoom, 
-           "' style = 'display:none;' />")
+  
   
   additional_style <- 
     paste0("width: 75%; height: 150px; padding: 12px 20px; ",
@@ -491,15 +489,15 @@ create_form <- function(lang, module_id, select_id, df, zoom) {
     paste0("<textarea name='entry.77284970 form='bug_report_form' style ='",
            additional_style, "'>", additional_text, "</textarea>")
   
-  HTML(paste0(pre, module, select_id, df, zoom, additional, post))
+  HTML(paste0(pre, module, geo, lang, additional, post))
   
 }
 
-severe_html <- function(lang, module_id, select_id, df, zoom) {
+severe_html <- function(lang, module_id, geo) {
   tagList(tags$h2("Uh oh..."),
           tags$p(tags$span(class = "lang-fr", sever_subtitle_fr),
                  tags$span(class = "lang-en", sever_subtitle_en)),
-          create_form(lang, module_id, select_id, df, zoom),
+          create_form(lang, module_id, geo),
           tags$div(class = "sus-button-group",
                    tags$a(class = "sus-button sus-icon-button sus-button-secondary", 
                           style = "cursor: pointer;",
