@@ -222,13 +222,6 @@ alley_server <- function(id, r) {
       lwd = scale_lwd_alley,
       lwd_args = reactive(list(r[[id]]$select_id(), tile())))
     
-    # Update map labels
-    label_server(
-      id = id, 
-      r = r,
-      map_id = "map", 
-      tile = tile)
-    
     # Did-you-know panel
     dyk_server(
       id = id,

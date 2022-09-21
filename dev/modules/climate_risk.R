@@ -1,5 +1,7 @@
 #### Climate risk data setup ###################################################
 
+# Data from https://donnees.montreal.ca/ville-de-montreal/vulnerabilite-changements-climatiques
+
 # Add climate risk data to grid -------------------------------------------
 
 climate_risk <- 
