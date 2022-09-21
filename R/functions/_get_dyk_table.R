@@ -66,10 +66,10 @@ get_dyk_table <- function(id, r, var_left, var_right, df, poi = NULL) {
   
   # Warn if <2 DYKs ------------------------------------------------------------
   
-  if (nrow(out) < 2) {
-    warning("No DYK matches for variable(s): ", 
-            paste(vars, collapse = ", "), call. = FALSE)
-  }
+  # if (nrow(out) < 2) {
+  #   warning("No DYK matches for variable(s): ", 
+  #           paste(vars, collapse = ", "), call. = FALSE)
+  # }
   
   
   # Process links --------------------------------------------------------------
