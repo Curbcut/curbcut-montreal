@@ -170,12 +170,6 @@ alley_server <- function(id, r) {
       var_left = var_left,
       var_right = var_right,
       hide = reactive(tile() == "borough_empty"))
-    
-    observe(assign("var_left", var_left(), envir = .GlobalEnv))
-    observe(assign("var_right", var_right(), envir = .GlobalEnv))
-    observe(assign("tile", tile(), envir = .GlobalEnv))
-    observe(assign("df", r[[id]]$df(), envir = .GlobalEnv))
-    
         
     # Choose explore graph
     alley_graph <- reactive({
