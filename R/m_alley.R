@@ -170,7 +170,7 @@ alley_server <- function(id, r) {
       var_left = var_left,
       var_right = var_right,
       hide = reactive(tile() == "borough_empty"))
-    
+        
     # Choose explore graph
     alley_graph <- reactive({
       if (r[[id]]$df() %in% c("alley", "borough_empty")) {
@@ -221,13 +221,6 @@ alley_server <- function(id, r) {
       colour_args = reactive(list(map_var(), tile())),
       lwd = scale_lwd_alley,
       lwd_args = reactive(list(r[[id]]$select_id(), tile())))
-    
-    # Update map labels
-    label_server(
-      id = id, 
-      r = r,
-      map_id = "map", 
-      tile = tile)
     
     # Did-you-know panel
     dyk_server(

@@ -62,7 +62,9 @@ get_legend_breaks <- function(r = r, data, var_left, var_right, df, data_type,
     
     if (suppressWarnings(!is.null(break_labs$var_name) && 
                          !any(is.na(break_labs$var_name)))) {
-      break_labs <- break_labs$var_name_short
+      break_labs <- sapply(break_labs$var_name_short, 
+                           \(x) sus_translate(r = r, x),
+                           USE.NAMES = FALSE)
     }
   }
   
