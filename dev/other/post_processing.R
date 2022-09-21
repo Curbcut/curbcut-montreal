@@ -7,20 +7,15 @@
 
 post_process <- function(x) {
   x |> 
-  mutate(across(where(is.numeric), ~replace(., is.nan(.), NA)), 
-         across(where(is.numeric), ~replace(., is.infinite(.), NA))) 
+    mutate(across(where(is.numeric), ~replace(., is.nan(.), NA)), 
+           across(where(is.numeric), ~replace(., is.infinite(.), NA))) |> 
+    mutate(ID = as.character(ID))
 }
 
 
 # Apply script to all tables ----------------------------------------------
 
-borough <- post_process(borough)
-building <- post_process(building)
-crash <- post_process(crash)
-CT <- post_process(CT)
-DA <- post_process(DA)
-grid <- post_process(grid)
-street <- post_process(street)
+map(all_tables, ~assign(.x, post_process(get(.x)), envir = .GlobalEnv))
 
 
 # Clean up ----------------------------------------------------------------

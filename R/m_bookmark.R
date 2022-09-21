@@ -58,17 +58,18 @@ bookmark_server <- function(id, r, map_viewstate = reactive(NULL),
       }
 
       # If not supplied, shouldn't appear in the URL:
-      default <- paste0("/?tb=", r$active_tab,"&lng=", r$lang())
+      default <- paste0("/?geo=", r$geo(), 
+                        "&tb=", r$active_tab,
+                        "&lng=", r$lang())
       
       add_arguments <- c("zm", "lat", "lon", "v_l", "v_r", "s_id", "zm_a", 
                          "df", "more")
       add_arguments <- 
         lapply(add_arguments, \(x) {
           value <- get0(x)
-          if (!is.null(value)) {
-            if (is.reactive(value)) value <- value()
-            return(paste0("&", x, "=", value))
-          }
+          if (is.reactive(value)) value <- value()
+          
+          if (!is.null(value)) return(paste0("&", x, "=", value))
         }) |> (\(x) x[lengths(x) != 0])()
       
       url <- Reduce(paste0, c(default, add_arguments))

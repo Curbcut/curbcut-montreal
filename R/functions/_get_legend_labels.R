@@ -24,9 +24,9 @@ get_legend_labels <- function(r = r, var_left, var_right, data_type, breaks = NU
     title_right_short <- sus_translate(r = r, title_right$var_short)
     title_right <- sus_translate(r = r, title_right$var_title)
     # If axis title is too long, take the short version
-    if (nchar(title_right) > 35) title_right <- title_right_short  
-    if (nchar(title_left) > 35) title_left <- title_left_short
-  } else if (nchar(title_left) > 35) title_left <- title_left_short
+    if (nchar(title_right) > 25) title_right <- title_right_short  
+    if (nchar(title_left) > 25) title_left <- title_left_short
+  } else if (nchar(title_left) > 25) title_left <- title_left_short
   
   
   ## Construct labels ----------------------------------------------------------
@@ -59,6 +59,7 @@ get_legend_labels <- function(r = r, var_left, var_right, data_type, breaks = NU
   
   # Bivar version
   if (data_type == "bivar") {
+    
     labs_xy <- list(labs(x = title_right, y = title_left), 
                     x_short = title_right_short, y_short = title_left_short)
   }

@@ -3,34 +3,44 @@
 # q3 breaks ---------------------------------------------------------------
 
 add_q3 <- function(df) {
-  mutate(df, across(c(-any_of("ID")), ntile, 3, .names = "{.col}_q3")) |> 
-    rename_with(~paste0(str_remove(., "_\\d{4}"),
-                        str_extract(., "_\\d{4}")), matches("_\\d{4}"))
+  
+  out <- 
+    mutate(df, across(c(-any_of(c("ID", "name"))), ntile, 3, .names = "{.col}_q3"))
+  
+  names(out)[str_detect(names(out), "_\\d{4}_q3")] <-
+    paste0(str_remove(names(out)[str_detect(names(out), "_\\d{4}_q3")],
+                      "_\\d{4}_q3"),
+           "_q3", 
+           str_extract(names(out)[str_detect(names(out), "_\\d{4}_q3")],
+                       "_\\d{4}(?=_q3)"))
+  
+  out
 }
 
 get_breaks_q3 <- function(df, var_list = NULL) {
   
   # Automatically retrieve var_list if var_list is NULL
   if (is.null(var_list)) {
-    var_list <- names(dplyr::select(df, -contains(c("q3", "q5")), -any_of("ID")))
+    var_list <- names(dplyr::select(df, -contains(c("q3", "q5")), 
+                                    -any_of(c("ID", "name"))))
   }
   
-  map_dfc(var_list, ~{
-    if (.x %in% names(df)) {
+  map_dfc(var_list, function(var) {
+    if (var %in% names(df)) {
       suppressWarnings(
         df |>
-          dplyr::select(any_of(.x), any_of(paste0(.x, "_q3")) |
-                   any_of(paste0(str_remove(.x, "_\\d{4}"), 
-                                 paste0("_q3", str_extract(.x, "_\\d{4}"))))
+          dplyr::select(any_of(var), any_of(paste0(var, "_q3")) |
+                   any_of(paste0(str_remove(var, "_\\d{4}$"), 
+                                 paste0("_q3", str_extract(var, "_\\d{4}$"))))
           ) |>
           set_names(c("v", "q3")) |>
           summarize(
-            ranks = c(min(v, na.rm = TRUE),
+            ranks = as.numeric(c(min(v, na.rm = TRUE),
                       min(v[q3 == 2], na.rm = TRUE),
                       min(v[q3 == 3], na.rm = TRUE),
-                      max(v, na.rm = TRUE))) |>
+                      max(v, na.rm = TRUE)))) |>
           mutate(ranks = if_else(is.infinite(ranks), NA_real_, ranks)) |> 
-          set_names(.x)
+          set_names(var)
       )
     }
   })
@@ -47,12 +57,21 @@ add_q5 <- function(df, breaks) {
     # Check any possible year suffixes
     var_names <- c(x, paste(x, 1900:2100, sep = "_"))
     
+    out <- 
     df |> 
       dplyr::transmute(across(any_of(var_names),
                        ~ as.numeric(cut(.x, y, include.lowest = TRUE)),
-                       .names = "{.col}_q5")) |> 
-      rename_with(~paste0(str_remove(., "_\\d{4}"),
-                          str_extract(., "_\\d{4}")), matches("_\\d{4}"))
+                       .names = "{.col}_q5"))
+    
+    names(out)[str_detect(names(out), "_\\d{4}_q5")] <-
+      paste0(str_remove(names(out)[str_detect(names(out), "_\\d{4}_q5")],
+                        "_\\d{4}_q5"),
+             "_q5", 
+             str_extract(names(out)[str_detect(names(out), "_\\d{4}_q5")],
+                         "_\\d{4}(?=_q5)"))
+    
+    out
+    
   })
 }
 
@@ -76,7 +95,7 @@ get_breaks_q5 <- function(df, var_list = NULL) {
   if (is.null(var_list)) {
     var_list <- 
       df |> 
-      dplyr::select(-contains(c("q3", "q5")), -any_of("ID")) |> 
+      dplyr::select(-contains(c("q3", "q5")), -any_of(c("ID", "name"))) |> 
       names()
   }
   
@@ -129,3 +148,25 @@ get_breaks_q5 <- function(df, var_list = NULL) {
         set_names(.y)})
   
 }
+
+
+# Calculate all breaks ----------------------------------------------------
+
+calculate_breaks <- function(tables_list) {
+  
+  # Add q3
+  tables_list <- map(tables_list, add_q3)
+  
+  # Get breaks
+  tables_q3 <- map(tables_list, get_breaks_q3)
+  tables_q5 <- map(tables_list, get_breaks_q5)
+  
+  # Assign breaks 
+  out <- map2(tables_list, tables_q5, ~bind_cols(.x, add_q5(.x, .y)))
+  
+  return(list(tables_list = out,
+              tables_q3 = tables_q3,
+              tables_q5 = tables_q5))
+}
+
+

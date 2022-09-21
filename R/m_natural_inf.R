@@ -65,7 +65,7 @@ natural_inf_server <- function(id, r) {
     id_map <- paste0(id, "-map")
 
     # Initial reactives
-    zoom_string <- reactiveVal(get_zoom_string(9.5, map_zoom_levels))
+    zoom_string <- reactiveVal(get_zoom_string(9.5, map_zoom_levels_CMA))
     poi <- reactiveVal(NULL)
     
     # Map
@@ -85,7 +85,7 @@ natural_inf_server <- function(id, r) {
     
     # Zoom string reactive
     observe({
-      new_zoom_string <- get_zoom_string(r[[id]]$zoom(), map_zoom_levels)
+      new_zoom_string <- get_zoom_string(r[[id]]$zoom(), map_zoom_levels_CMA)
       if (new_zoom_string != zoom_string()) zoom_string(new_zoom_string)
     }) |> bindEvent(r[[id]]$zoom())
     
@@ -232,9 +232,8 @@ natural_inf_server <- function(id, r) {
       id = id,
       r = r,
       map_id = "map", 
-      tile = tile,
-      tile2 =  reactive(""),
-      map_var = map_var, 
+      tile = reactive(paste0(id, "-", tile())),
+      data_color = reactive(data.frame()),
       select_id = reactive(NA),
       lwd = scale_lwd_natural_inf,
       lwd_args = reactive(list()),
@@ -273,7 +272,7 @@ natural_inf_server <- function(id, r) {
     
     # Data transparency and export
     observe({
-      r[[id]]$export_data(data_export(id = id, 
+      r[[id]]$export_data <- reactive(data_export(id = id, 
                                       data = data(), 
                                       var_left = var_left(), 
                                       df = "raster"))

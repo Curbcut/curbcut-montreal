@@ -22,10 +22,10 @@ get_legend_breaks <- function(r = r, data, var_left, var_right, df, data_type,
   if (data_type == "q5") {
     
     # Get break labels
-    break_labs <- variables$breaks_q5[
-      variables$var_code == unique(sub("_\\d{4}$", "", var_left))]
+    break_labs <- variables$breaks_q5[[
+      which(variables$var_code == unique(sub("_\\d{4}$", "", var_left)))]]
     if (length(break_labs) > 0) break_labs <- 
-        break_labs[[1]][break_labs[[1]]$scale == df,]
+        break_labs[break_labs$scale == df,]
     
     if (suppressWarnings(!is.null(break_labs$var_name) && 
                          !any(is.na(break_labs$var_name)))) {
@@ -55,10 +55,10 @@ get_legend_breaks <- function(r = r, data, var_left, var_right, df, data_type,
   if (data_type == "qual") {
     
     # Get break labels
-    break_labs <- variables$breaks_q5[
-      variables$var_code == unique(sub("_\\d{4}$", "", var_left))]
+    break_labs <- variables$breaks_q5[[
+      which(variables$var_code == unique(sub("_\\d{4}$", "", var_left)))]]
     if (length(break_labs) > 0) break_labs <- 
-        break_labs[[1]][break_labs[[1]]$scale == df,]
+        break_labs[break_labs$scale == df,]
     
     if (suppressWarnings(!is.null(break_labs$var_name) && 
                          !any(is.na(break_labs$var_name)))) {
@@ -75,21 +75,21 @@ get_legend_breaks <- function(r = r, data, var_left, var_right, df, data_type,
     date_right <- str_extract(var_right, "(?<=_)\\d{4}$")
     
     # Get breaks
-    break_labs_y <- variables$breaks_q3[
-      variables$var_code == unique(sub("_\\d{4}$", "", var_left))]
+    break_labs_y <- variables$breaks_q3[[
+      which(variables$var_code == unique(sub("_\\d{4}$", "", var_left)))]]
     if (length(break_labs_y) > 0) break_labs_y <- 
-      break_labs_y[[1]]$var[
-        (break_labs_y[[1]]$date == date_left | 
-           is.na(break_labs_y[[1]]$date)) &
-          break_labs_y[[1]]$scale == df]
+      break_labs_y$var[
+        (break_labs_y$date == date_left | 
+           is.na(break_labs_y$date)) &
+          break_labs_y$scale == df]
     
-    break_labs_x <- variables$breaks_q3[
-      variables$var_code == unique(sub("_\\d{4}$", "", var_right))]
+    break_labs_x <- variables$breaks_q3[[
+      which(variables$var_code == unique(sub("_\\d{4}$", "", var_right)))]]
     if (length(break_labs_x) > 0) break_labs_x <- 
-      break_labs_x[[1]]$var[
-        (break_labs_x[[1]]$date == date_right | 
-           is.na(break_labs_x[[1]]$date)) &
-          break_labs_x[[1]]$scale == df]
+      break_labs_x$var[
+        (break_labs_x$date == date_right | 
+           is.na(break_labs_x$date)) &
+          break_labs_x$scale == df]
     
     # Format breaks
     break_labs_y <- convert_unit(break_labs_y, var_left, TRUE)

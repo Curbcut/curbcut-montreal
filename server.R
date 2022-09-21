@@ -1,64 +1,91 @@
 ##### SUS SERVER SCRIPT ########################################################
 
 shinyServer(function(input, output, session) {
-  
 
-  # Page title change, depending on page visited -------------------------------
+  ## Page title change, depending on page visited ------------------------------
 
   observe(title_page_update(r = r, session = session, 
                             sus_page = input$sus_page))
   
   
-  # If on mobile, warning! -----------------------------------------------------
+  ## If on mobile, warning! ----------------------------------------------------
   
   observe(mobile_warning(r = r, session = session))
   
   
-  # Reactive variables ---------------------------------------------------------
+  ## If crash, personalized error ----------------------------------------------
   
-  r <- reactiveValues(sus_bookmark = reactiveValues(active = FALSE),
-                      sus_link = reactiveValues(),
-                      lang = reactiveVal("fr"),
-                      active_tab = "home",
-                      canale = reactiveValues(select_id = reactiveVal(NA), 
-                                              df = reactiveVal("borough"),
-                                              zoom = reactiveVal(get_zoom(map_zoom)),
-                                              export_data = reactiveVal(list())),
-                      climate_risk = reactiveValues(select_id = reactiveVal(NA),
-                                                    df = reactiveVal("grid"),
-                                                    zoom = reactiveVal(get_zoom(map_zoom)),
-                                                    export_data = reactiveVal(list())),
-                      housing = reactiveValues(select_id = reactiveVal(NA),
-                                               df = reactiveVal("borough"),
-                                               zoom = reactiveVal(get_zoom(map_zoom)),
-                                               export_data = reactiveVal(list())),
-                      access = reactiveValues(select_id = reactiveVal(NA),
-                                              df = reactiveVal("CT"),
-                                              zoom = reactiveVal(get_zoom(map_zoom)),
-                                              export_data = reactiveVal(list())),
-                      alley = reactiveValues(select_id = reactiveVal(NA),
-                                             df = reactiveVal("borough_empty"),
-                                             zoom = reactiveVal(12),
-                                             export_data = reactiveVal(list())),
-                      natural_inf = reactiveValues(zoom = reactiveVal(9.5),
-                                                   export_data = reactiveVal(list())),
-                      news = reactiveValues(select_id = reactiveVal(NA)))
+  observe({
+      sever(html = severe_html(lang = r$lang(),
+                               module_id = input$sus_page,
+                               geo = r$geo()),
+            bg_color = "rgba(0,0,0,.5)", box = TRUE)
+  })
+
+  
+  ## Reactive variables --------------------------------------------------------
+  
+  r <- reactiveValues(
+    sus_bookmark = reactiveValues(active = FALSE),
+    sus_link = reactiveValues(),
+    news = reactiveValues(select_id = reactiveVal(NA)),
+    lang = reactiveVal("fr"),
+    active_tab = "home",
+    geo = reactiveVal("CMA"),
+    canale = reactiveValues(select_id = reactiveVal(NA), 
+                            df = reactiveVal("borough"),
+                            zoom = reactiveVal(get_zoom(map_zoom))),
+    climate_risk = reactiveValues(select_id = reactiveVal(NA),
+                                  df = reactiveVal("grid"),
+                                  zoom = reactiveVal(get_zoom(map_zoom))),
+    housing = reactiveValues(select_id = reactiveVal(NA),
+                             df = reactiveVal("borough"),
+                             zoom = reactiveVal(get_zoom(map_zoom))),
+    access = reactiveValues(select_id = reactiveVal(NA),
+                            df = reactiveVal("CT"),
+                            zoom = reactiveVal(get_zoom(map_zoom))),
+    alley = reactiveValues(select_id = reactiveVal(NA),
+                           df = reactiveVal("borough_empty"),
+                           zoom = reactiveVal(12)),
+    natural_inf = reactiveValues(zoom = reactiveVal(9.5)),
+    vulnerable_pop = reactiveValues(select_id = reactiveVal(NA), 
+                                    df = reactiveVal("centraide"),
+                                    zoom = reactiveVal(get_zoom(map_zoom))),
+    tenure = reactiveValues(select_id = reactiveVal(NA), 
+                            df = reactiveVal("borough"),
+                            zoom = reactiveVal(get_zoom(map_zoom)),
+                            prev_norm = reactiveVal(FALSE)),
+    dw_types = reactiveValues(select_id = reactiveVal(NA), 
+                              df = reactiveVal("borough"),
+                              zoom = reactiveVal(get_zoom(map_zoom)),
+                              prev_norm = reactiveVal(FALSE)),
+    demographics = reactiveValues(select_id = reactiveVal(NA), 
+                              df = reactiveVal("borough"),
+                              zoom = reactiveVal(get_zoom(map_zoom))),
+    afford = reactiveValues(select_id = reactiveVal(NA), 
+                            df = reactiveVal("borough"),
+                            zoom = reactiveVal(get_zoom(map_zoom)),
+                            prev_norm = reactiveVal(FALSE))
+  )
   
 
-  # Home page ------------------------------------------------------------------
+  ## Home page -----------------------------------------------------------------
   
   observe(updateNavbarPage(session, "sus_page", "home")) |> 
     bindEvent(input$title)
   
   
-  # First visit banner ---------------------------------------------------------
-  
+  ## First visit banner --------------------------------------------------------
+
   # Reset after 14 days of last time the banner was shown
-  observeEvent(input$cookies$time_last_htu_banner, {
-    if (is.null(input$cookies$time_last_htu_banner) ||
-        (!is.null(input$cookies$time_last_htu_banner) &&
-         Sys.time() > (as.POSIXct(input$cookies$time_last_htu_banner) + 
-                       1209600))) {
+
+  observeEvent(input$cookies$htu_banner, {
+    
+    cookie_last <- input$cookies$htu_banner
+
+    if (is.null(cookie_last) || 
+        # Show back after 2 weeks
+        (!is.null(cookie_last) && Sys.time() > (as.POSIXct(cookie_last) + 1209600))) {
       
       insertUI(selector = ".navbar-shadow", where = "beforeBegin", ui = HTML(
         paste0("<div id = 'htu_footer' class='fixed_footer'>",
@@ -66,36 +93,83 @@ shinyServer(function(input, output, session) {
                "Première fois sur Sus? Visitez la page ",
                paste0("<a id='go_to_htu_fr' href='#' style = 'color:white;'",
                       "class='action-button shiny-bound-input'>",
-                      "<b>", "Mode d'emploi", 
-                      "</b></a> !&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;"),
+                      "<b>Mode d'emploi</b></a> "),
+               "et inscrivez-vous à notre ",
+               paste0("<a id='subscribe_fr' href='#' style = 'color:white;'",
+                      "class='action-button shiny-bound-input'>",
+                      "<b>", "Infolettre", "</b></a> !"),
+               "&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;",
                "First time on Sus? Visit the ",
                paste0("<a id='go_to_htu_en' href='#' style = 'color:white;'",
                       "class='action-button shiny-bound-input'>",
-                      "<b>", "How to use", "</b></a> page!"), "</p>",
-               "<a id='go_to_htu_x' href='#' ",
+                      "<b>How to use page</b></a> "),
+               "and subscribe to our ",
+               paste0("<a id='subscribe_en' href='#' style = 'color:white;'",
+                      "class='action-button shiny-bound-input'>",
+                      "<b>", "Newsletter", "</b></a> !"),
+               "</p><a id='go_to_htu_x' href='#' ",
                "style = 'float:right;display:inline;color",
                ":#FBFBFB;' class='action-button shiny-bound-input'>X</a>",
                "</div>")))
     }
     
-    # So that it repeats if there's a gap of 14 days between all visits
-    time_last_htu_banner <- list(name = "time_last_htu_banner", 
-                                 value = Sys.time())
+    # After ANY visit, restart the timer
+    htu_banner <- list(name = "htu_banner",
+                       value = Sys.time())
+    session$sendCustomMessage("cookie-set", htu_banner)
     
-    session$sendCustomMessage("cookie-set", time_last_htu_banner)
-  }, once = TRUE)
+  }, once = TRUE, ignoreNULL = FALSE, ignoreInit = TRUE)
   
+  # Remove the banner, and log in the cookie
   observeEvent(input$go_to_htu_en, {
     removeUI("#htu_footer")
     updateTabsetPanel(session, "sus_page", selected = "how_to_use")
-  })
+  }, ignoreInit = TRUE)
+  
   observeEvent(input$go_to_htu_fr, {
     removeUI("#htu_footer")
     updateTabsetPanel(session, "sus_page", selected = "how_to_use")
-  })
+  }, ignoreInit = TRUE)
   
   observeEvent(input$go_to_htu_x, {
     removeUI("#htu_footer")
+  }, ignoreInit = TRUE)
+  
+  onclick("subscribe_fr", {
+    showModal(modalDialog(HTML(readLines("www/sus.signupform.html")),
+                          easyClose = TRUE))
+  })
+  
+  onclick("subscribe_en", {
+    showModal(modalDialog(HTML(readLines("www/sus.signupform.html")),
+                          easyClose = TRUE))
+  })
+  
+  
+
+  ## Newsletter modal ----------------------------------------------------------
+
+  # observeEvent(input$cookies$signupform, {
+  # 
+  #   cookie_last <- input$cookies$signupform
+  # 
+  #   # 28 days after last visit, popup the newsletter subscription
+  #   if (is.null(cookie_last) ||
+  #       (!is.null(cookie_last) && Sys.time() > (as.POSIXct(cookie_last) + 2419200))) {
+  #     shinyjs::delay(5000, showModal(modalDialog(HTML(readLines("www/sus.signupform.html")),
+  #                                                easyClose = TRUE)))
+  #   }
+  # 
+  #   # After ANY visit, restart the timer
+  #   signupform <- list(name = "signupform",
+  #                      value = Sys.time())
+  #   session$sendCustomMessage("cookie-set", signupform)
+  # 
+  # }, once = TRUE, ignoreNULL = FALSE, ignoreInit = TRUE)
+
+  onclick("subscribe", {
+    showModal(modalDialog(HTML(readLines("www/sus.signupform.html")),
+                          easyClose = TRUE))
   })
   
   
@@ -179,19 +253,19 @@ shinyServer(function(input, output, session) {
   
   observeEvent(parseQueryString(session$clientData$url_search), {
     query <- parseQueryString(session$clientData$url_search)
-    
+
     if (length(query) != 0) {
-      
+
       # MARK THE ACTIVE BOOKMARKED
       r$sus_bookmark$active <- TRUE
-      
+
       # query returns a named list. If it's named tab, return the right
       # tabPanel. the url example: sus.ca/?tab=housing
       try({
         tab <- query[["tb"]]
-        if (!is.null(tab))
+        if (!is.null(tab)) {
           updateTabsetPanel(session, "sus_page", selected = query[["tb"]])
-        r$sus_bookmark$id <- tab
+          r$sus_bookmark$id <- tab} else r$sus_bookmark$id <- "home"
       })
       # Update language with query.
       try({
@@ -199,13 +273,18 @@ shinyServer(function(input, output, session) {
         if (!is.null(lang) && lang == "en")
           r$lang <- reactiveVal("en")
       })
+      # Update geometries with query.
+      try({
+        geo <- query[["geo"]]
+        if (!is.null(geo)) r$geo(geo)
+      })
       # Retrieve important map info
       try({
         if (!is.null(query[["zm"]])) {
           r[[query[["tb"]]]]$zoom <- reactiveVal(as.numeric(query[["zm"]]))}
-        
+
         if (!is.null(query[["lon"]])) {
-          r$sus_bookmark$location <- c(as.numeric(query[["lon"]]), 
+          r$sus_bookmark$location <- c(as.numeric(query[["lon"]]),
                                        as.numeric(query[["lat"]]))}
       })
       # Retrieve var_left
@@ -230,18 +309,19 @@ shinyServer(function(input, output, session) {
       })
       # Retrieve df
       try({
-        if (!is.null(query[["df"]])) 
+        if (!is.null(query[["df"]]))
           r[[query[["tb"]]]]$df <- reactiveVal(query[["df"]])
       })
       # Retrieve select_id
       try({
-        if (!is.null(query[["s_id"]])) 
-          if (query[["s_id"]] %in% c("", "NA")) query[["s_id"]] <- NA
-          r[[query[["tb"]]]]$select_id <- reactiveVal(query[["s_id"]])
+        s_id <- query[["s_id"]]
+        if (!is.null(s_id)) {
+          if (query[["s_id"]] %in% c("", "NA")) s_id <- NA
+          r[[query[["tb"]]]]$select_id <- reactiveVal(s_id)}
       })
     }
   }, once = TRUE)
-  
+
   # Update from bookmark
   observeEvent(r$sus_bookmark$active, {
     if (isTRUE(r$sus_bookmark$active)) {
@@ -251,12 +331,13 @@ shinyServer(function(input, output, session) {
                       r = r,
                       id = r$sus_bookmark$id,
                       map_id = "map",
-                      location = r$sus_bookmark$location, 
-                      zoom_auto = r$sus_bookmark$zoom_auto, 
+                      location = r$sus_bookmark$location,
+                      zoom_auto = r$sus_bookmark$zoom_auto,
                       var_left = r$sus_bookmark$var_left,
-                      var_right = r$sus_bookmark$var_right, 
+                      var_right = r$sus_bookmark$var_right,
                       more_args = r$sus_bookmark$more_args)
       })
+      r$sus_bookmark$active <- FALSE
     }
   }, priority = -1, once = TRUE)
   
@@ -280,6 +361,35 @@ shinyServer(function(input, output, session) {
     
     updateQueryString("?")
   }, ignoreInit = FALSE)
+
+
+  ## Advanced options ----------------------------------------------------------
+
+  onclick("advanced_options", {
+    showModal(modalDialog(
+      radioButtons("geo_change",
+                   label = sus_translate(r = r, "Change default geometry"),
+                   inline = TRUE,
+                   selected = r$geo(),
+                   choiceNames = c("CMA", "Centraide"),
+                   choiceValues = c("CMA", "centraide")),
+      title = sus_translate(r = r, "Advanced options")))
+  })
+
+  # Change the default geometry and save the cookie
+  observeEvent(input$geo_change, {
+    r$geo(input$geo_change)
+    session$sendCustomMessage("cookie-set", list(name = "default_geo",
+                                                 value = input$geo_change))
+  })
+
+  # If the geo cookie is already in and it differs from default
+  observeEvent(input$cookies$default_geo, {
+    if (!is.null(input$cookies$default_geo) &&
+        input$cookies$default_geo != "CMA") {
+      r$geo(input$cookies$default_geo)
+    }
+  }, once = TRUE)
   
   
   ## Data download -------------------------------------------------------------
@@ -340,94 +450,6 @@ shinyServer(function(input, output, session) {
           if (length(Sys.glob(name.glob)) > 0) file.remove(Sys.glob(name.glob))
         })
       })
-  
-  
-  ## Contact form --------------------------------------------------------------
-  
-  # contactModal <- function() {
-  #   modalDialog(
-  #     selectInput("contact_type", "Reason for contact",
-  #                 choices = c("Contact" = "CONTACT",
-  #                             "Report a bug" = "BUG",
-  #                             "Feedback" = "FEEDBACK",
-  #                             "Other" = "OTHER"), width = "75%"),
-  #     textInput("contact_from_name", "Your name/organization", width = "75%"),
-  #     textInput("contact_from", "Your email adress", "@", width = "75%"),
-  #     textInput("contact_subject", "Subject", width = "75%"),
-  #     textAreaInput("contact_body", "Content", width = "75%", height = "300px"),
-  #     
-  #     footer = tagList(
-  #       modalButton("Cancel"),
-  #       actionButton("send_feedback", "Send")),
-  #     title = "Contact form"
-  #   )
-  # }
-  # 
-  # onclick("contact", {
-  #   showModal(
-  #     contactModal()
-  #   )
-  # })
-  # 
-  # observeEvent(input$send_feedback, {
-  #   # sendmailR::sendmail(from = paste0("<", input$contact_from, ">"),
-  #   #                     to = "<maximebdeblois@gmail.com>",
-  #   #                     subject = paste0(input$contact_type, " - ", 
-  #   #                                     input$contact_subject),
-  #   #                     body = input$contact_body,
-  #   #                     # This is the part not working atm:
-  #   #                     control = list(smtpServer="smtp.gmail.com"))
-  #   
-  #   # Other possibility:
-  #   contact_form <- c(name = input$contact_from_name,
-  #                     email = input$contact_from,
-  #                     subject = paste(input$contact_type, " - ", 
-  #                                     input$contact_subject),
-  #                     body = input$contact_body)
-  #   time_stamp <- str_replace_all(Sys.time(), c(" |:"), "-")
-  #   file_name <- paste0("contacts/",input$contact_type, "-", time_stamp, ".csv")
-  #   write.csv2(contact_form, file = file_name)
-  #   removeModal()
-  #   showNotification(sus_translate("Sent and received. Thank you!"), 
-  #                    duration = 3)
-  # })
-  
-  ## Generating report ---------------------------------------------------------
-  
-  # output$create_report <-
-  #   downloadHandler(
-  #     filename = "report.html",
-  #     content = function(file) {
-  #       shiny::withProgress(
-  #         message = sus_translate(paste0("Generating report on ",
-  #                                        active_mod()$module_short_title)),
-  #         {
-  #           shiny::incProgress(0.35)
-  #           tempReport <- file.path(tempdir(), "report.Rmd")
-  #           file.copy("www/report.Rmd", tempReport, overwrite = TRUE)
-  #           params <- list(
-  #             module_short_title = active_mod()$module_short_title,
-  #             module = active_mod()$module_id,
-  #             map_title = title_text$text[
-  #               title_text$tab == active_mod()$module_id & 
-  #                 title_text$type == "title"],
-  #             time = active_mod()$time,
-  #             data = active_mod()$data,
-  #             token = active_mod()$token,
-  #             map_zoom = active_mod()$map_zoom,
-  #             map_loc = active_mod()$map_loc,
-  #             df = active_mod()$df,
-  #             explore_content = active_mod()$explore_content,
-  #             poly_selected = active_mod()$poly_selected,
-  #             legend_graph = active_mod()$legend_graph)
-  #           shiny::incProgress(0.35)
-  #           rmarkdown::render(tempReport, output_file = file,
-  #                             params = params,
-  #                             envir = new.env(parent = globalenv()))
-  #           shiny::incProgress(0.3)
-  #         })
-  #     }
-  #   )
   
   
   ## Heartbeat function to keep app alive --------------------------------------

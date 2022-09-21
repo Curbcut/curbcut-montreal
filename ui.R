@@ -3,9 +3,13 @@
 ui <- function(request) {
   tagList(
     
-    # Styling objects ------------------------------------------------------------
+    # Import packages dependencies -----------------------------------------------
     
     useShinyjs(),
+    useSever(),
+    
+    # Styling objects ------------------------------------------------------------
+    
     tags$head(tags$link(rel = "icon", href = "favicon.ico")),
     tags$head(tags$link(rel = "stylesheet", type = "text/css", 
                         href = "bootstrap.min.css")),
@@ -56,6 +60,7 @@ ui <- function(request) {
     # change page title JS function
     tags$script(HTML('Shiny.addCustomMessageHandler("changetitle", function(x) 
                    {document.title=x});')),
+    
     tags$head(includeHTML("www/google_analytics.html")),
     
     # Language switching ---------------------------------------------------------
@@ -72,14 +77,14 @@ ui <- function(request) {
     
     meta() |> 
       meta_social(
-        title = "SUS | Vers une ville durable",
-        description = paste0("Sus est une plateforme permettant d'explorer la ",
-                             "durabilité urbaine dans la région de Montréal à ",
-                             "de multiples échelles spatiales et temporelles."),
+        title = "Welcome | SUS | Towards a sustainable city",
+        description = paste0("Sus is a platform for exploring urban ",
+                             "sustainability in the Montreal region across ",
+                             "multiple spatial and temporal scales."),
         url = "https://susmontreal.ca",
         image = "share.jpg",
-        image_alt = paste0("Une photo d'un sentier sinueux dans une ruelle ",
-                           "verdoyante de Montréal."),
+        image_alt = paste0("A photo of a winding footpath through a verdant ",
+                           "Montreal alley."),
         twitter_creator = "@susmontreal",
         twitter_card_type = "summary",
         twitter_site = "@susmontreal"
@@ -101,9 +106,6 @@ ui <- function(request) {
                       place_explorer_UI("place_explorer"),
                       value = "place_explorer"),
              navbarMenu(sus_translate("About"),
-                        tabPanel(sus_translate("News"), 
-                                 news_UI("news"),
-                                 value = "news"),
                         tabPanel(sus_translate("About Sus"), 
                                  about_sus_UI("about_sus"), value = "about_sus"),
                         tabPanel(sus_translate("How to use"), how_to_use_UI("how_to_use"), 
@@ -117,7 +119,6 @@ ui <- function(request) {
                  style = "min-width: 112px;",
                  label = span(span(class = "material-icons", "language"), 
                               span("English"))),
-               
                # Actions dropdown
                materialIconButton(
                  dropdownButton(inputId = "settings",
@@ -127,18 +128,21 @@ ui <- function(request) {
                                   href = "#",
                                   icon("link"), sus_translate("Bookmark"), 
                                   onclick = "copyUrl()"),
+                                actionLink(inputId = "contact",
+                                           label = sus_translate("Contact/feedback"),
+                                           icon("comment"),
+                                           onclick = "window.open('mailto:contact@susmontreal.ca', '_blank')"),
                                 actionLink(inputId = "download_data",
                                            label = sus_translate(
                                              "Export data"),
                                            icon("download")),
-                                # downloadLink("create_report", 
-                                #              label = div(icon("file-pdf"), 
-                                #                           sus_translate(
-                                #                            "Generate a report")))
-                                actionLink(inputId = "contact",
-                                           label = sus_translate("Contact/feedback"),
-                                           icon("comment"),
-                                           onclick = "window.open('mailto:contact@susmontreal.ca', '_blank')")
+                                actionLink(inputId = "subscribe",
+                                           label = sus_translate("Newsletter"),
+                                           icon("list-alt"))#,
+                                # actionLink(inputId = "advanced_options",
+                                #            label = sus_translate(
+                                #              "Advanced options"),
+                                #            icon("gear", verify_fa = FALSE))
                  ), "summarize")
              )
         ))

@@ -20,7 +20,7 @@ access_UI <- function(id) {
                   min = 10, max = 60, step = 1, value = 30)),
       bottom = div(class = "bottom_sidebar",
           tagList(legend_UI(NS(id, id)),
-                  hidden(zoom_UI(NS(id, id), map_zoom_levels))))),
+                  hidden(zoom_UI(NS(id, id), map_zoom_levels_CMA))))),
     # Map
     div(class = "mapdeck_div", rdeckOutput(NS(id, id_map), height = "100%")),
 
@@ -44,7 +44,7 @@ access_server <- function(id, r) {
     sidebar_server(id = id, r = r, x = "access")
     
     # Initial reactives
-    zoom_string <- reactiveVal(get_zoom_string(map_zoom, map_zoom_levels))
+    zoom_string <- reactiveVal(get_zoom_string(map_zoom, map_zoom_levels_CMA))
     poi <- reactiveVal(NULL)
     
     # Map
@@ -70,7 +70,7 @@ access_server <- function(id, r) {
     
     # Zoom string reactive
     observe({
-      new_zoom_string <- get_zoom_string(r[[id]]$zoom(), map_zoom_levels)
+      new_zoom_string <- get_zoom_string(r[[id]]$zoom(), map_zoom_levels_CMA)
       if (new_zoom_string != zoom_string()) zoom_string(new_zoom_string)
     }) |> bindEvent(r[[id]]$zoom())
     
@@ -87,12 +87,7 @@ access_server <- function(id, r) {
     time <- reactive("2016")
     
     # Choose tileset
-    tile <- reactive("CT")
-    
-    # Additional tileset identifier
-    tile2 <- reactive(
-      tile_lookup$suffix[tile_lookup$module == "access" & 
-                           tile_lookup$tile2 == var_left()])
+    tile <- reactive("CMA-CT")
 
     # Enable or disable slider + type of destination
     observeEvent({r[[id]]$select_id()
@@ -131,13 +126,6 @@ access_server <- function(id, r) {
       r = r,
       var_list = make_dropdown(compare = TRUE),
       time = time)
-    
-    # Composite variable for map
-    map_var <- reactive({
-      if (!is.na(r[[id]]$select_id()) && var_right() == " ") return("ID")
-      
-      str_remove(paste(var_left(), var_right(), sep = "_"), "_ $")
-      })
 
     # If there's a select_id, update the compare to " "
     observeEvent(r[[id]]$select_id(), {
@@ -151,6 +139,7 @@ access_server <- function(id, r) {
     # Data
     data <- reactive(get_data(
       df = r[[id]]$df(),
+      geo = r$geo(),
       var_left = var_left(), 
       var_right = var_right()))
     
@@ -178,7 +167,7 @@ access_server <- function(id, r) {
       var_right = var_right,
       poi = poi)
     
-    access_colors <- reactive({
+    data_color <- reactive({
       if (!is.na(r[[id]]$select_id()) && var_right() == " ") {
         tt_thresh <- slider() * 60
 
@@ -203,7 +192,14 @@ access_server <- function(id, r) {
         out <- rbind(data_1, data_2)
         names(out) <- c("group", "value")
         out
-      } else NULL
+      } else {
+        # Data color
+        get_data_color(
+          map_zoom_levels = rlang::set_names("CT", "CT"),
+          geo = r$geo(),
+          var_left = var_left(), 
+          var_right = var_right())
+      }
     })
 
     # Update map in response to variable changes or zooming
@@ -211,12 +207,8 @@ access_server <- function(id, r) {
       id = id,
       r = r,
       map_id = "map",
-      tile = tile,
-      tile2 =  tile2,
-      map_var = map_var,
-      fill = scale_fill_access,
-      fill_args = reactive(list(map_var(), tile(), access_colors())),
-    )
+      data_color = data_color,
+      tile = tile)
     
     # Update map labels
     label_server(
@@ -236,14 +228,14 @@ access_server <- function(id, r) {
       var_right = var_right,
       more_args = reactive(c("s-slider" = slider()))
     )
-
+    
     # Data transparency and export
     observe({
-      r[[id]]$export_data(data_export(id = id, 
-                                      data = data(), 
-                                      var_left = var_left(), 
-                                      var_right = var_right(), 
-                                      df = r[[id]]$df()))
+      r[[id]]$export_data <- reactive(data_export(id = id,
+                                                  data = data(),
+                                                  var_left = var_left(),
+                                                  var_right = var_right(),
+                                                  df = r[[id]]$df()))
     })
 
   })

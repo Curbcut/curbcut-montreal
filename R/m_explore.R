@@ -58,26 +58,27 @@ explore_server <- function(id, r, data, var_left, var_right,
   moduleServer(id, function(input, output, session) {
     
     # Get var_type
-    var_type <- reactive(tryCatch(get_var_type(
+    var_type <- reactive(tryCatch(
+      get_var_type(
       data = data(),
       var_left = var_left(),
       var_right = var_right(),
       df = df(),
       select_id = select_id(),
-      build_str_as_DA = build_str_as_DA()),
+      build_str_as_DA = build_str_as_DA()), 
       error = function(e) NULL))
-
+    
     # Reconstruct variable args
     table_args2 <- reactive(c(table_args(), var_type = var_type()))
     graph_args2 <- reactive(c(graph_args(), var_type = var_type()))
     
     # Make info table
-    table_out <- reactive(tryCatch(do.call(table(), table_args2()), 
-                                   error = function(e) NULL))
+    table_out <- reactive(tryCatch(do.call(table(), table_args2()),
+                                  error = function(e) NULL))
     
     # Display info table
     output$info_table <- renderUI(table_out())
-
+    
     # Make graph
     graph_out <- reactive(tryCatch(do.call(graph(), graph_args2()),
                                    error = function(e) NULL))
@@ -104,7 +105,7 @@ explore_server <- function(id, r, data, var_left, var_right,
       updateActionButton(session, "hide_explore", label = txt)
     })
 
-    # # Return info_table text and graph to export it in report afterwards
+    # Return info_table text and graph to export it in report afterwards
     reactive(list(info = table_out(), graph = graph_out()))
   })
 }

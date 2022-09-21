@@ -5,13 +5,50 @@
 
 library(tidyverse)
 library(sf)
+library(qs)
 source("dev/other/data_testing.R")
 source("dev/other/meta_testing.R", encoding = "utf-8")
 source("dev/other/breaks.R")
 source("dev/other/char_fix.R", encoding = "utf-8")
+source("dev/other/interpolate_assign.R")
+source("dev/other/is_in_geometry.R")
 
 
-# Create raw borough/CT/DA/grid tables ------------------------------------
+# Create a master polygon covering all our geographies --------------------
+
+# A polygon covering all our geographies
+master_polygon <- 
+  st_union(
+    # CMA
+    st_union(
+      {
+        cancensus::get_census("CA16", 
+                              regions = list(CMA = "24462"), 
+                              geo_format = "sf", 
+                              quiet = TRUE) |> 
+          st_set_agr("constant") |> 
+          st_transform(32618)
+      }
+    ), 
+    # Centraide
+    st_union(
+      {
+        rbind(
+          {read_sf(paste0("dev/data/centraide/StatCan_Recensement2016/_Geographie/",
+                          "Centraide_Quartiers_Laval_Temporaire.shp")) |> 
+              rename(name = Quartier)},
+          {read_sf(paste0("dev/data/centraide/StatCan_Recensement2016/_Geographie/",
+                          "Centraide_Sous_Territoires_Montreal_RiveSud.shp")) |> 
+              transmute(name = SouTerr)}
+        ) |> 
+          st_transform(32618)
+      }
+    )) |> 
+  st_buffer(-0.1) |> 
+  st_transform(4326) |> 
+  st_make_valid()
+
+# Create raw tables --------------------------------------------------------
 
 # Import DA, CT and borough geometries
 source("dev/geometries/census_geometries.R")
@@ -28,6 +65,9 @@ source("dev/geometries/grid_geocode.R")
 # Add metadata to grid
 source("dev/geometries/grid_process.R")
 
+# Import centraide geometries
+source("dev/geometries/centraide_geometries.R")
+
 # Import building
 source("dev/geometries/building.R")
 
@@ -41,62 +81,72 @@ source("dev/geometries/street.R")
 source("dev/geometries/street_geocode.R")
 
 
+# Vector of tables --------------------------------------------------------
+
+all_tables <- c("borough", "CT", "DA", "grid", "centraide")
+
+
+# Add logical columns to DA and CT to filter geometries later on ----------
+
+is_in_geometry(all_tables, crs = 32618)
+
+
 # Error checking ----------------------------------------------------------
 
-stopifnot(
-  
-  # Check field names
-  names(borough) == c("ID", "name", "name_2", "CSDUID", "population", 
-                      "households", "geometry"),
-  names(building) == c("ID", "name", "name_2", "DAUID", "CTUID", "CSDUID", 
-                       "osm_ID", "grid_ID", "geometry"),
-  names(CT) == c("ID", "name", "name_2", "CTUID", "CSDUID", "population", 
-                 "households", "geometry"),
-  names(DA) == c("ID", "name", "name_2", "DAUID", "CTUID", "CSDUID", 
-                 "population", "households", "centroid", "buffer", "building",
-                 "geometry"),
-  names(grid) == c("ID", "name", "name_2", "CSDUID", "population", "households", 
-                   "geometry"),
-  names(street) == c("ID", "name", "name_2", "street_type", "DAUID", "CTUID", 
-                     "CSDUID", "osm_ID", "grid_ID", "population", "households",
-                     "geometry"),
-  
-  # Check row numbers
-  nrow(borough) == 111,
-  nrow(building) == 860499,
-  nrow(CT) == 970,
-  nrow(DA) == 6469,
-  nrow(grid) == 9923,
-  nrow(street) == 88538,
-  
-  # Check geometry columns,
-  inherits(borough$geometry, "sfc"),
-  inherits(building$geometry, "sfc"),
-  inherits(CT$geometry, "sfc"),
-  inherits(DA$buffer, "sfc"),
-  inherits(DA$centroid, "sfc"),
-  inherits(DA$building, "sfc"),
-  inherits(DA$geometry, "sfc"),
-  inherits(grid$geometry, "sfc"),
-  inherits(street$geometry, "sfc"),
-  mean(st_is(borough$geometry, "MULTIPOLYGON")) == 1,
-  mean(st_is(building$geometry, "MULTIPOLYGON")) == 1,
-  mean(st_is(CT$geometry, "MULTIPOLYGON")) == 1,
-  mean(st_is(DA$buffer, "POLYGON")) == 1,
-  mean(st_is(DA$centroid, "POINT")) == 1,
-  mean(st_is(DA$building, "MULTIPOLYGON")) == 1,
-  mean(st_is(DA$geometry, "MULTIPOLYGON")) == 1,
-  mean(st_is(grid$geometry, "MULTIPOLYGON")) == 1,
-  mean(st_is(street$geometry, "LINESTRING")) == 1,
-  
-  # Check geometry relations 
-  sum(st_agr(borough) != "constant") == 0,
-  sum(st_agr(building) != "constant") == 0,
-  sum(st_agr(CT) != "constant") == 0,
-  sum(st_agr(DA) != "constant") == 0,
-  sum(st_agr(grid) != "constant") == 0,
-  sum(st_agr(street) != "constant") == 0
-)
+# stopifnot(
+#   
+#   # Check field names
+#   names(borough) == c("ID", "name", "name_2", "CSDUID", "population", 
+#                       "households", "geometry"),
+#   names(building) == c("ID", "name", "name_2", "DAUID", "CTUID", "CSDUID", 
+#                        "osm_ID", "grid_ID", "geometry"),
+#   names(CT) == c("ID", "name", "name_2", "CTUID", "CSDUID", "population", 
+#                  "households", "geometry"),
+#   names(DA) == c("ID", "name", "name_2", "DAUID", "CTUID", "CSDUID", 
+#                  "population", "households", "centroid", "buffer", "building",
+#                  "geometry"),
+#   names(grid) == c("ID", "name", "name_2", "CSDUID", "population", "households", 
+#                    "geometry"),
+#   names(street) == c("ID", "name", "name_2", "street_type", "DAUID", "CTUID", 
+#                      "CSDUID", "osm_ID", "grid_ID", "population", "households",
+#                      "geometry"),
+#   
+#   # Check row numbers
+#   nrow(borough) == 111,
+#   nrow(building) == 860499,
+#   nrow(CT) == 970,
+#   nrow(DA) == 6469,
+#   nrow(grid) == 9923,
+#   nrow(street) == 88538,
+#   
+#   # Check geometry columns,
+#   inherits(borough$geometry, "sfc"),
+#   inherits(building$geometry, "sfc"),
+#   inherits(CT$geometry, "sfc"),
+#   inherits(DA$buffer, "sfc"),
+#   inherits(DA$centroid, "sfc"),
+#   inherits(DA$building, "sfc"),
+#   inherits(DA$geometry, "sfc"),
+#   inherits(grid$geometry, "sfc"),
+#   inherits(street$geometry, "sfc"),
+#   mean(st_is(borough$geometry, "MULTIPOLYGON")) == 1,
+#   mean(st_is(building$geometry, "MULTIPOLYGON")) == 1,
+#   mean(st_is(CT$geometry, "MULTIPOLYGON")) == 1,
+#   mean(st_is(DA$buffer, "POLYGON")) == 1,
+#   mean(st_is(DA$centroid, "POINT")) == 1,
+#   mean(st_is(DA$building, "MULTIPOLYGON")) == 1,
+#   mean(st_is(DA$geometry, "MULTIPOLYGON")) == 1,
+#   mean(st_is(grid$geometry, "MULTIPOLYGON")) == 1,
+#   mean(st_is(street$geometry, "LINESTRING")) == 1,
+#   
+#   # Check geometry relations 
+#   sum(st_agr(borough) != "constant") == 0,
+#   sum(st_agr(building) != "constant") == 0,
+#   sum(st_agr(CT) != "constant") == 0,
+#   sum(st_agr(DA) != "constant") == 0,
+#   sum(st_agr(grid) != "constant") == 0,
+#   sum(st_agr(street) != "constant") == 0
+# )
 
 
 # Build variable table ----------------------------------------------------
@@ -115,10 +165,16 @@ variables <-
     breaks_q3 = list(),
     breaks_q5 = list(),
     source = character(),
-    interpolated = list()
+    interpolated = list(),
+    grouping = character(),
+    group_diff = list()
   )
 
 source("dev/other/add_variables.R")
+
+# Produce colours ---------------------------------------------------------
+
+source("dev/other/colours.R")
 
 
 # Build module table ------------------------------------------------------
@@ -138,16 +194,12 @@ source("dev/other/add_modules.R")
 source("dev/modules/census.R")
 source("dev/modules/canale.R")
 source("dev/modules/climate_risk.R")
-source("dev/modules/covid.R", encoding = "utf-8")
-source("dev/modules/crash.R")
 source("dev/modules/access.R")
 source("dev/modules/alley.R")
-source("dev/modules/gentrification.R")
-source("dev/modules/green_space.R")
-# source("dev/modules/marketed_sustainability.R")
+source("dev/modules/cent_d.R")
+source("dev/modules/cent_p.R")
+source("dev/modules/amenities.R")
 source("dev/modules/natural_inf.R")
-# source("dev/modules/permits.R")
-# source("dev/modules/dmti.R")
 
 source("dev/modules/stories.R", encoding = "utf-8")
 source("dev/modules/place_explorer.R")
@@ -162,11 +214,6 @@ source("dev/other/post_processing.R")
 
 source("dev/other/dyk.R")
 source("dev/other/title_text.R")
-
-
-# Produce colours ---------------------------------------------------------
-
-source("dev/other/colours.R")
 
 
 # Build translation qs ----------------------------------------------------
@@ -195,7 +242,7 @@ CT <-
 DA_full <- DA
 DA <- 
   DA_full |> 
-  select(-building, -buffer, -centroid) |> 
+  dplyr::select(-building, -buffer, -centroid) |> 
   rowwise() |> 
   mutate(centroid = list(as.numeric(st_coordinates(st_centroid(geometry))))) |> 
   ungroup() |> 
@@ -211,15 +258,22 @@ grid <-
   mutate(centroid_lat = unlist(centroid)[1],
                 centroid_lon = unlist(centroid)[2]) |> 
   ungroup() |> 
-  select(-centroid) |> 
+  dplyr::select(-centroid) |> 
   st_drop_geometry()
 
 building_full <- building
 building <- 
   building_full |> 
-  select(ID, name, name_2, DAUID) |> 
+  dplyr::select(ID, name, name_2, DAUID) |> 
   sf::st_drop_geometry()
 
+centraide_full <- centraide
+centraide <- 
+  centraide_full |> 
+  rowwise() |> 
+  mutate(centroid = list(as.numeric(st_coordinates(st_centroid(geometry))))) |> 
+  ungroup() |> 
+  st_drop_geometry()
 
 # Save data files ---------------------------------------------------------
 
@@ -228,28 +282,25 @@ qsavem(borough_full, CT_full, DA_full, file = "data2/census_full.qsm")
 qsave(grid_full, file = "data2/grid_full.qs")
 qsave(building_full, file = "data2/building_full.qs")
 qsave(street, file = "data2/street.qs")
-qsave(metro_lines, file = "data2/metro_lines.qs")
-qsave(dyk, "data/dyk.qs")
-qsave(title_text, "data/title_text.qs")
+qsave(centraide_full, file = "data2/centraide_full.qs")
+
 
 # data/
-
 ## global data
 qsave(variables, file = "data/variables.qs")
 qsave(modules, file = "data/modules.qs")
 qsave(postal_codes, file = "data/postal_codes.qs")
+qsave(metro_lines, file = "data2/metro_lines.qs")
+qsave(dyk, "data/dyk.qs")
+qsave(title_text, "data/title_text.qs")
 
 ## census related
 qsavem(borough, CT, DA, file = "data/census.qsm")
 qsave(census_variables, file = "data/census_variables.qs")
 
-## module data
-qsave(crash, file = "data/crash.qs")
+## other
 qsavem(alley, alley_text, file = "data/alley.qsm")
-qsavem(covid, covid_pics, file = "data/covid.qsm")
-qsave(green_space, file = "data/green_space.qs")
-# qsave(marketed_sustainability, file = "data/marketed_sustainability.qs")
-# qsavem(permits_choropleth, permits, file = "data/permits.qsm")
+qsave(centraide, file = "data/centraide.qs")
 qsavem(title_card_indicators, pe_var_hierarchy, pe_theme_order, CSDUID_groups,
        title_card_index, pe_variable_order, file = "data/place_explorer.qsm")
 qsavem(stories, stories_mapping, file = "data/stories.qsm")
@@ -259,6 +310,7 @@ qsave(select(borough_full, ID), file = "data/geometry_export/borough.qs")
 qsave(select(CT_full, ID), file = "data/geometry_export/CT.qs")
 qsave(select(DA_full, ID), file = "data/geometry_export/DA.qs")
 qsave(select(grid_full, ID), file = "data/geometry_export/grid.qs")
+qsave(select(centraide, ID), file = "data/geometry_export/centraide.qs")
 
 
 # Save files we'll save in the SQL to data2 -------------------------------
@@ -272,13 +324,6 @@ qsave(grid, file = "data2/grid.qs")
 # Save data to the sql db -------------------------------------------------
 
 library(RSQLite)
-library(qs)
-library(stringr)
-qload("data2/natural_inf.qsm")
-tt_matrix <- qread("data2/tt_matrix.qs")
-building <- qread("data2/building.qs")
-grid <- qread("data2/grid.qs")
-
 sqlite_path <- "data/sql_db.sqlite"
 
 # Overwrite!
@@ -316,7 +361,7 @@ dbExecute(db, paste0("CREATE INDEX index_tt_matrix_destination",
 # building with primary key
 dbWriteTable(db, "pre_pk_building", building)
 dbExecute(db, paste0("CREATE TABLE building ",
-                     "(ID INTEGER, ",
+                     "(ID VARCHAR, ",
                      "name VARCHAR, ",
                      "name_2 VARCHAR, ",
                      "DAUID VARCHAR,
@@ -347,26 +392,13 @@ dbDisconnect(db)
 
 # Copy large data files to Dropbox ----------------------------------------
 
-unlink(list.files("~/Dropbox/sus_sync/dev_data", full.names = TRUE),
-       recursive = TRUE)
-unlink(list.files("~/Dropbox/sus_sync/data", full.names = TRUE),
-       recursive = TRUE)
-unlink(list.files("~/Dropbox/sus_sync/data2", full.names = TRUE),
-       recursive = TRUE)
-
-
-invisible(file.copy(list.files("dev/data", full.names = TRUE),
-                    "~/Dropbox/sus_sync/dev_data", recursive = TRUE))
-invisible(file.copy(list.files("data", full.names = TRUE),
-                    "~/Dropbox/sus_sync/data"))
-invisible(file.copy(list.files("data2", full.names = TRUE),
-                    "~/Dropbox/sus_sync/data2"))
+source("dev/dropb_automation/01_zip_and_export.R")
 
 
 # Add hash ----------------------------------------------------------------
 
-hash <- sapply(list.files("data", full.names = TRUE), digest::digest, 
-               file = TRUE)
+hash <- sapply(list.files("data", full.names = TRUE, recursive = TRUE), 
+               digest::digest, file = TRUE)
 qsave(hash, file = "hash.qs")
 
 
@@ -376,12 +408,14 @@ rm(add_q3, add_q5, add_variables, data_testing, find_breaks_q5, get_breaks_q3,
    get_breaks_q5, meta_testing, natural_infrastructure)
 
 
-
 # Deploy app --------------------------------------------------------------
 
-hash <- qread(hash)
-stopifnot(all(sapply(list.files("data", full.names = TRUE), digest::digest, 
+hash <- qread("hash.qs")
+stopifnot(all(sapply(list.files("data", full.names = TRUE, recursive = TRUE), 
+                     digest::digest, 
                      file = TRUE) == hash))
 source("dev/other/deploy_sus.R")
-deploy_sus("sus-dev") # Development
-deploy_sus() # Production
+
+deploy_sus("sus-mcgill-centraide") # Centraide
+deploy_sus("sus-mcgill-test") # Development
+deploy_sus("sus-mcgill") # Production

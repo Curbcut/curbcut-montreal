@@ -53,9 +53,9 @@ render_legend <- function(r, data, var_left, var_right, df, data_type,
     # q5 ordinal
   } else if (data_type == "q5" && attr(break_labs, "qual")) {
     
-    ranks <- variables$breaks_q5[
-      variables$var_code == unique(sub("_\\d{4}$", "", var_left))]
-    if (length(ranks) > 0) ranks <- ranks[[1]]$rank[ranks[[1]]$scale == df]
+    ranks <- variables$breaks_q5[[
+      which(variables$var_code == unique(sub("_\\d{4}$", "", var_left)))]]
+    if (length(ranks) > 0) ranks <- ranks$rank[ranks$scale == df]
     
     legend_left_5[legend_left_5$x %in% ranks,] |> 
       ggplot(aes(xmin = x - 1, xmax = x, ymin = y - 1, ymax = y, 
@@ -70,9 +70,9 @@ render_legend <- function(r, data, var_left, var_right, df, data_type,
     # Qualitative  
   } else if (data_type == "qual") {
     
-    ranks <- variables$breaks_q5[
-      variables$var_code == unique(sub("_\\d{4}$", "", var_left))]
-    if (length(ranks) > 0) ranks <- ranks[[1]]$rank[ranks[[1]]$scale == df]
+    ranks <- variables$breaks_q5[[
+      which(variables$var_code == unique(sub("_\\d{4}$", "", var_left)))]]
+    if (length(ranks) > 0) ranks <- ranks$rank[ranks$scale == df]
     
     legend_qual[legend_qual$x %in% ranks,] |> 
       ggplot(aes(xmin = x - 1, xmax = x, ymin = y - 1, ymax = y, 

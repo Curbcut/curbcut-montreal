@@ -2,32 +2,80 @@
 
 # Get empty geometries ----------------------------------------------------
 
-get_empty_geometries <- function(scales, years, CMA = "24462", crs = 32618) {
-  map(scales, function(scale) {
-    map(years, function(year) {
-      
+get_empty_geometries <- function(scales, years, region = "24", crs = 32618) {
+  
+  get_c <- function(census_dataset, re = list(PR = region), sc) {
+    out <- 
       cancensus::get_census(
-        dataset = paste0("CA", sub("20", "", year)),
-        regions = list(CMA = CMA),
-        level = scale,
+        dataset = census_dataset,
+        regions = re,
+        level = sc,
         geo_format = "sf",
         quiet = TRUE) |> 
-        select(GeoUID, geometry) |> 
-        st_transform(crs) |> 
-        mutate(area = st_area(geometry), .before = geometry)
-      
+      select(GeoUID, geometry) |> 
+      st_transform(crs) |> 
+      mutate(area = st_area(geometry), .before = geometry) |> 
+      st_set_agr("constant")
+    
+    GeoUIDs <- 
+      out |> 
+      st_make_valid() |> 
+      st_intersection(st_make_valid(st_transform(master_polygon, crs))) |> 
+      pull(GeoUID)
+    
+    out |> filter(GeoUID %in% GeoUIDs)
+  }
+  
+  out <- 
+    map(set_names(scales), function(scale) {
+      map(set_names(years), function(year) {
+        
+        census_dataset <- paste0("CA", sub("20", "", year))
+        
+        # CTs must be filled with CSDs
+        if (scale == "CT") return({
+          CT <- get_c(census_dataset = census_dataset, sc = "CT")
+          
+          csds <- 
+            get_c(census_dataset = census_dataset, sc = "CSD") |> 
+            st_transform(crs)
+          csds_buffered <- 
+            csds |> 
+            mutate(geometry = st_buffer(geometry, -25))
+          
+          filling_CTs <- csds[-{
+            st_intersects(st_transform(CT, crs), csds_buffered) |> 
+              unlist() |> 
+              unique()}, ] |> 
+            st_transform(32618)
+          
+          rbind(CT, filling_CTs)
+        })
+        
+        if (scale == "DA") return({
+          CDs <- get_c(census_dataset = census_dataset, sc = "CD")$GeoUID
+          get_c(census_dataset = census_dataset, 
+                re = list(CD = CDs), 
+                sc = scale)
+        })
+        
+        return(get_c(census_dataset = census_dataset, sc = scale))
+      })
     })
-  })
+  
+  out
 }
 
 
 # Download variables ------------------------------------------------------
 
 get_census_vectors <- function(census_vec, geoms, scales, years, 
-                               parent_vectors = NULL, CMA = "24462") {
+                               parent_vectors = NULL) {
+  
+  out <- 
   map2(set_names(scales), geoms, function(scale, geom) {
     map2(set_names(years), geom, function(year, df) {
-  
+      
       census_dataset <- paste0("CA", sub("20", "", year))
       
       # Get named versions of vectors
@@ -38,16 +86,58 @@ get_census_vectors <- function(census_vec, geoms, scales, years,
         unlist() |> 
         na.omit()
       
-      # Get original vectors
-      vec_retrieved <- cancensus::get_census(
-        dataset = census_dataset,
-        regions = list(CMA = CMA),
-        level = scale,
-        vectors = vec_named,
-        geo_format = NA,
-        quiet = TRUE) |> 
-        select(GeoUID, starts_with(census_vec$var_code))
-
+      # Get original vectors. Different for CT, as there are not always CTs
+      # in all geometries and they get filled with CSDs.
+      vec_retrieved <- 
+        if (scale == "CT") {
+          # First retrieveal, for CTs
+          sep <- 
+            df |> 
+            mutate(CT_id = if_else(str_detect(GeoUID, "\\.\\d{2}$"), 
+                                   TRUE, FALSE))
+          
+          list_regions <- list(df$GeoUID[sep$CT_id])
+          names(list_regions) <- scale
+          
+          vec_retrieved_CT <- 
+            cancensus::get_census(
+              dataset = census_dataset,
+              regions = list_regions,
+              level = "CT",
+              vectors = vec_named,
+              geo_format = NA,
+              quiet = TRUE) |> 
+            select(GeoUID, starts_with(census_vec$var_code))
+          # Second retrieval, for CSDs
+          list_regions <- list(df$GeoUID[!sep$CT_id])
+          names(list_regions) <- scale
+          
+          vec_retrieved_CSD <- 
+            cancensus::get_census(
+              dataset = census_dataset,
+              regions = list_regions,
+              level = "CSD",
+              vectors = vec_named,
+              geo_format = NA,
+              quiet = TRUE) |> 
+            select(GeoUID, starts_with(census_vec$var_code))
+          
+          # Bind!
+          rbind(vec_retrieved_CT, vec_retrieved_CSD)
+          
+        } else {
+          list_regions <- list(df$GeoUID)
+          names(list_regions) <- scale
+          
+          cancensus::get_census(
+            dataset = census_dataset,
+            regions = list_regions,
+            level = scale,
+            vectors = vec_named,
+            geo_format = NA,
+            quiet = TRUE) |> 
+            select(GeoUID, starts_with(census_vec$var_code))
+        }
       
       # Add up vectors that were retrieved through the same var_code
       vec_to_sum <- 
@@ -86,7 +176,7 @@ get_census_vectors <- function(census_vec, geoms, scales, years,
             ungroup()
         }
       }
-
+      
       # Some vectors share denominators, so use map to get them multiple times
       parent_vec <-
         cancensus::list_census_vectors(census_dataset) |>
@@ -103,36 +193,36 @@ get_census_vectors <- function(census_vec, geoms, scales, years,
           parent_vec |> 
           set_names(paste0(str_remove(names(vec_named), "\\d*$"), "_parent"))
       }
-
+      
       # Replace here the parent_vec with the parent_vectors
       if (!is.null(parent_vectors)) {
         parent_vectors_which <- str_which(parent_vectors, census_dataset)
         parent_vectors <- parent_vectors[parent_vectors_which]
         if (length(parent_vectors) > 0) {
-        # renaming fed parent_vectors with _parent
-        names(parent_vectors) <- paste0(str_remove(names(parent_vectors), "\\d*$"), "_parent")
+          # renaming fed parent_vectors with _parent
+          names(parent_vectors) <- paste0(str_remove(names(parent_vectors), "\\d*$"), "_parent")
           parent_vec <- map(names(parent_vec), ~{
             if (.x %in% names(parent_vectors)) {
               parent_vectors[.x == names(parent_vectors)]
             } else set_names(parent_vec[.x], .x)
           }) |> unique() |> unlist()
-        parent_vec <- with(stack(parent_vec), split(values, ind)) |> unlist()
+          parent_vec <- with(stack(parent_vec), split(values, ind)) |> unlist()
         }}
       
       # Parents should be retrieved only once
       parent_vec <-
-      parent_vec |> 
+        parent_vec |> 
         names() |> 
         unique() |> 
         map(~{
           value <- unique(parent_vec[names(parent_vec) == .x])
           name <- unique(names(parent_vec)[names(parent_vec) == .x])
           if (length(value) > 1) {
-              stop(paste0(
-                "Parent vectors of `", name, "` in ", year, " aren't unique. A var_code ",
-                "sharing multiple numerators should have a unique parent."))}
-            set_names(value, name)}) |> 
-      unlist()
+            stop(paste0(
+              "Parent vectors of `", name, "` in ", year, " aren't unique. A var_code ",
+              "sharing multiple numerators should have a unique parent."))}
+          set_names(value, name)}) |> 
+        unlist()
       
       # Check for non-additive parent vectors
       non_add_parent_vec <- 
@@ -146,22 +236,67 @@ get_census_vectors <- function(census_vec, geoms, scales, years,
       }
       
       # Retrieve the values of all parent vectors
-      parent_vec_values <- map(names(parent_vec), ~{
+      parent_vec_values <- map(names(parent_vec), function(v) {
         
-        vec <- set_names(parent_vec[.x], .x)
+        vec <- set_names(parent_vec[v], v)
         
-        retrieved_parent <- cancensus::get_census(
-          dataset = census_dataset,
-          regions = list(CMA = CMA),
-          level = scale,
-          vectors = vec[!is.na(vec)],
-          geo_format = NA,
-          quiet = TRUE) |> 
-          select(GeoUID, any_of(.x))
+        retrieved_parent <- 
+          if (scale == "CT") {
+            # First retrieveal, for CTs
+            sep <- 
+              df |> 
+              mutate(CT_id = if_else(str_detect(GeoUID, "\\.\\d{2}$"), 
+                                     TRUE, FALSE))
+            
+            list_regions <- list(df$GeoUID[sep$CT_id])
+            names(list_regions) <- scale
+            
+            vec_retrieved_CT <- 
+              cancensus::get_census(
+                dataset = census_dataset,
+                regions = list_regions,
+                level = "CT",
+                vectors = vec[!is.na(vec)],
+                geo_format = NA,
+                quiet = TRUE) |> 
+              select(GeoUID, any_of(v)) |> 
+              filter(GeoUID %in% df$GeoUID)
+            # Second retrieval, for CSDs
+            list_regions <- list(df$GeoUID[!sep$CT_id])
+            names(list_regions) <- scale
+            
+            vec_retrieved_CSD <- 
+              cancensus::get_census(
+                dataset = census_dataset,
+                regions = list_regions,
+                level = "CSD",
+                vectors = vec[!is.na(vec)],
+                geo_format = NA,
+                quiet = TRUE) |> 
+              select(GeoUID, any_of(v)) |> 
+              filter(GeoUID %in% df$GeoUID)
+            
+            # Bind!
+            rbind(vec_retrieved_CT, vec_retrieved_CSD)
+            
+          } else {
+            list_regions <- list(df$GeoUID)
+            names(list_regions) <- scale
+            
+            cancensus::get_census(
+              dataset = census_dataset,
+              regions = list_regions,
+              level = scale,
+              vectors = vec[!is.na(vec)],
+              geo_format = NA,
+              quiet = TRUE) |> 
+              select(GeoUID, any_of(v)) |> 
+              filter(GeoUID %in% df$GeoUID)
+          }
         
         # Throw error for missing parent vectors
         if (ncol(retrieved_parent) != 2) {
-          stop(paste0(year, ", ", scale, ", no parent vector for ", .x))
+          stop(paste0(year, ", ", scale, ", no parent vector for ", v))
         }
         
         retrieved_parent
@@ -214,7 +349,6 @@ get_census_vectors <- function(census_vec, geoms, scales, years,
         }
       }
       
-      
       vec_retrieved |> 
         right_join(df, by = "GeoUID") |>
         st_as_sf() |>
@@ -222,5 +356,7 @@ get_census_vectors <- function(census_vec, geoms, scales, years,
       
     })
   })
+  
+  out
   
 }

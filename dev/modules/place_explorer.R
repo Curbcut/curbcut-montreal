@@ -58,7 +58,7 @@ CSDUID_groups <- map(set_names(c("borough", "CT", "DA")), ~{
 # Max census year
 census_max <- 
   variables |> 
-  filter(source == "census") |> 
+  filter(source == "Canadian census") |> 
   pull(dates) |> 
   unlist() |> 
   unique() |> 
@@ -254,39 +254,39 @@ title_card_index <-
 
 
 ## Number of crashes - Mtl data portal ------------------------------------
-last_crash_data_year <- 
-  names(borough) |>
-  str_subset("crash_total_per1k") |> 
-  str_extract("\\d{4}") |> 
-  as.numeric() |> 
-  max()
-
-title_card_indicators <- 
-  append(title_card_indicators, 
-         list("total_crash_per1k" =
-                map(set_names(c("borough", "CT", "DA")), ~{
-                  get(.x) |> 
-                    st_drop_geometry() |> 
-                    select(ID, CSDUID, paste0("crash_total_per1k_", 
-                                              last_crash_data_year)) |> 
-                    percentile_calc()
-                })
-         ))
-
-title_card_index <- 
-  title_card_index |> 
-  add_row(name = "total_crash_per1k",
-          title = "Road collisions",
-          island_only = TRUE,
-          date = last_crash_data_year,
-          percent = FALSE,
-          high_is_good = FALSE, 
-          val_digits = 0,
-          text = paste0("There were {z$pretty_data_var} total crashes ",
-                        "per 1,000 residents in {z$data_date}. ", 
-                        "{z$data_rank}."),
-          link_module = "crash",
-          link_var_left = "crash_total_per1k")
+# last_crash_data_year <- 
+#   names(borough) |>
+#   str_subset("crash_total_per1k") |> 
+#   str_extract("\\d{4}") |> 
+#   as.numeric() |> 
+#   max()
+# 
+# title_card_indicators <- 
+#   append(title_card_indicators, 
+#          list("total_crash_per1k" =
+#                 map(set_names(c("borough", "CT", "DA")), ~{
+#                   get(.x) |> 
+#                     st_drop_geometry() |> 
+#                     select(ID, CSDUID, paste0("crash_total_per1k_", 
+#                                               last_crash_data_year)) |> 
+#                     percentile_calc()
+#                 })
+#          ))
+# 
+# title_card_index <- 
+#   title_card_index |> 
+#   add_row(name = "total_crash_per1k",
+#           title = "Road collisions",
+#           island_only = TRUE,
+#           date = last_crash_data_year,
+#           percent = FALSE,
+#           high_is_good = FALSE, 
+#           val_digits = 0,
+#           text = paste0("There were {z$pretty_data_var} total crashes ",
+#                         "per 1,000 residents in {z$data_date}. ", 
+#                         "{z$data_rank}."),
+#           link_module = "crash",
+#           link_var_left = "crash_total_per1k")
 
 ## Air quality - PM2.5 - CANUE --------------------------------------------
 
@@ -445,7 +445,7 @@ title_card_index <-
 # Which variables should have a percentile attached?
 basic_percentile_retrieval <- 
   variables |> 
-  filter(source == "census" |
+  filter(source == "Canadian census" |
            str_starts(var_code, "climate")) |> 
   filter(var_code != "climate_flood_ind")
 
@@ -616,6 +616,5 @@ modules <-
 # Cleanup -----------------------------------------------------------------
 
 rm(basic_percentile_retrieval, min_access_var_code,
-   # bixi_stations, 
    census_max, groups, last_crash_data_year, island_CSDUID,
    ndvi, no2, percentile_calc)

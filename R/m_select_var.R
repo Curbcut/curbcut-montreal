@@ -1,20 +1,18 @@
 #### SELECT VARIABLE MODULE ####################################################
 
-select_var_UI <- function(id, select_var_id = NULL, 
+select_var_UI <- function(id, select_var_id = "var", 
                           var_list, label = NULL, width = "100%", 
                           inline = FALSE, more_style = NULL, selected = NULL) {
   style <- ""
   if (inline) style <- paste("display: inline-block;", style)
   if (!is.null(more_style)) style <- paste(style, more_style)
   
-  select_var_id <- if (is.null(select_var_id)) "var" else select_var_id
-  
   div(style = style,
       pickerInput(NS(id, select_var_id), label = label, choices = var_list, 
                   selected = selected, width = width))
 }
 
-select_var_server <- function(id, r = r, select_var_id = NULL,
+select_var_server <- function(id, r = r, select_var_id = "var",
                               var_list, disabled = reactive(NULL), 
                               time = reactive(NULL), df = r[[id]]$df) {
   
@@ -22,8 +20,6 @@ select_var_server <- function(id, r = r, select_var_id = NULL,
   stopifnot(is.reactive(time))
 
   moduleServer(id, function(input, output, session) {
-    
-    select_var_id <- if (is.null(select_var_id)) "var" else select_var_id
     
     # Update dropdown menu if there are disabled choices
     observe({
@@ -43,12 +39,14 @@ select_var_server <- function(id, r = r, select_var_id = NULL,
       })
 
     var <- reactive({
+      if (input[[select_var_id]] == " ") return(" ")
       v1 <- paste(input[[select_var_id]], time(), sep = "_")
       v1 <- sub("_$", "", v1)
-      if (!is.null(df) && df() %in% c("borough", "CT", "DA", "grid")) {
+      if (!is.null(time()) && !is.null(df) && 
+          df() %in% c("borough", "CT", "DA", "grid", "centraide")) {
         v1 <- sapply(v1, return_closest_year, df(), USE.NAMES = FALSE)
       }
-      v1 <- ifelse(str_detect(v1, "^ _\\d{4}$"), " ", v1)
+      v1 <- ifelse(str_detect(v1, "^_\\d{4}$"), " ", v1)
       if (all(v1 == " ")) v1 <- " "
       v1
       })

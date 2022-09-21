@@ -38,6 +38,9 @@ explore_graph <- function(data, r = r, var_type, var_left, var_right, df, select
   graph_type <- sub("_.*$", "", plot_type)
   select_type <- sub("^.*_", "", plot_type)
 
+  ## Deal with NA --------------------------------------------------------------
+  
+  if (plot_type == "all_na") return(NULL)
   
   ## Set up plotting variables -------------------------------------------------
   

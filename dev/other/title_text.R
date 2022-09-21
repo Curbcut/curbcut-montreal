@@ -112,6 +112,72 @@ title_text <-
     "Books.</ul>")) |> 
   
 
+# Housing affordability ---------------------------------------------------
+
+  add_row(tab = "afford", type = "title", text = "Housing Affordability") |> 
+  add_row(tab = "afford", type = "main", text = paste0(
+    "Having access to affordable and equitable shelter is essential. ",
+    "Affordable housing is often broadly defined as spending less than 30% of ",
+    "household income on shelter costs. The reality of each household ",
+    "consists of many different factors and characteristics, such as, the ",
+    "people living there, their income, their shelter costs, and their tenure ",
+    "status. In this module, explore and compare housing affordability by ",
+    "city or borough.")) |> 
+  add_row(tab = "afford", type = "extra", text = paste0(
+    "<p> The comparative analysis that you see in this module is based on ",
+    "housing data from the 2016 Census. In selecting different options from ",
+    "the drop-down menus, insights can be gained on how affordability varies ",
+    "by household or individuals, their shelter costs, whether they are ",
+    "tenants or owners and various family, immigration, and dwelling ",
+    "characteristics. Using the panel on the right, you can compare these ",
+    "housing affordability variables with access to different amenities by ",
+    "mode of transportation. It is important to understand the geographic and ",
+    "socioeconomic patterns associated with housing affordability to inform ",
+    "policies and actions to best address housing needs. </ul>")) |> 
+
+
+# Tenure status -----------------------------------------------------------
+
+  add_row(tab = "tenure", type = "title", text = "Tenure Status") |> 
+  add_row(tab = "tenure", type = "main", text = paste0(
+    "The categorization of housing by tenure status, tenancy or ownership, ",
+    "helps to gain a clearer picture of the housing landscape in Montreal. ",
+    "This is especially the case when compared with other factors. In this ",
+    "module, tenure status can be explored in relation to shelter costs and ",
+    "additional characteristics such as family characteristics and dwelling ",
+    "types.")) |> 
+  add_row(tab = "tenure", type = "extra", text = paste0(
+    "<p> The comparative analysis that you see in this module is based on ", 
+    "housing data from the 2016 Census. In selecting different options from ",
+    "the drop-down menus, insights can be gained on how tenure status ", 
+    "interacts with shelter costs, and various family, immigration, and ",
+    "dwelling characteristics. Using the panel on the right, you can compare ",
+    "these tenure status variables with access to different amenities by mode ",
+    "of transportation. Understanding housing needs by tenure status can help ",
+    "to inform what should be improved specifically for tenants or owners; as ",
+    "they might be experiencing different difficulties and ",
+    "advantages. </ul>")) |> 
+  
+
+# Dwelling types ----------------------------------------------------------
+
+  add_row(tab = "dw_types", type = "title", text = "Dwelling Types") |> 
+  add_row(tab = "dw_types", type = "main", text = paste0(
+    "Whether a household is living in a single-detached house versus an ",
+    "apartment in a building of 5+ stories is an important aspect of ", 
+    "understanding people’s housing realities. In selecting different types ",
+    "of dwellings, you can simply explore and compare them in relation to ",
+    "tenure status and shelter cost.")) |> 
+  add_row(tab = "dw_types", type = "extra", text = paste0(
+    "<p> The comparative analysis that you see in this module is based on ",
+    "housing data from the 2016 Census. In selecting different options from ",
+    "the drop-down menus, insights can be gained on how dwelling types ",
+    "interact with tenure status and shelter costs. Using the panel on the ",
+    "right, you can compare the dwelling type variables with access to ",
+    "different amenities by mode of transportation. Exploring the housing ",
+    "system in Montreal through dwelling types adds a level of understanding ",
+    "to the overall housing situation. </ul>")) |> 
+  
 # Place explorer ----------------------------------------------------------
 
   add_row(tab = "place_explorer", type = "title", text = "Place explorer") |> 
@@ -207,7 +273,27 @@ title_text <-
     "ndoned or used as parking spaces or as ways to access p",
     "rivate garages, without any environmental or social-com",
     "munity benefit.</ul>")) |> 
-  
+
+# Demographics -------------------------------------------------------------
+
+add_row(tab = "demographics", type = "title",
+        text = "Demographics") |> 
+  add_row(tab = "demographics", type = "main", text = paste0(
+    "Certain factors about a population can reveal interesting socioeconomic ",
+    "information. In this module, learn and explore different demographics ",
+    "statistically expressed per square kilometre, percentage of population, ",
+    "or simply by count. Choose various factors to examine such as gender, ",
+    "immigration status, shelter cost, and additional immigration, visible ",
+    "minority and family characteristics.")) |> 
+  add_row(tab = "demographics", type = "extra", text = paste0(
+    "<p>The comparative analysis that you see in this module is based on ", 
+    "demographic data from the 2016 Census. In selecting different options ",
+    "from the drop-down menus, insights can be gained on the prevalence of ",
+    "different factors by the three types of groupings. Using the panel on ",
+    "the right, you can compare these demographic variables with access to ",
+    "different amenities by mode of transportation. Examining and comparing ",
+    "demographic variables can provide valuable information about the ",
+    "Montreal population. </ul>")) |> 
 
 # Covid -------------------------------------------------------------------
 
@@ -309,12 +395,15 @@ title_text <-
   
   add_row(tab = "stories", type = "title", text = "Montreal stories") |> 
   add_row(tab = "stories", type = "main", text = paste0(
-    "Narrative case studies on sustainability issues in Montreal's ",
-    "neighborhoods.")) |> 
+    "Explore narrative case studies on sustainability issues in Montreal's ",
+    "neighborhoods. In this module, read text-based stories and view their ",
+    "adjoining visual media.")) |> 
   add_row(tab = "stories", type = "extra", text = paste0(
-    "These stories, written by Sus contributors, explore Montreal ",
+    "<p>These stories, written by Sus contributors, examine Montreal ",
     "sustainability issues that aren't well suited to representation in our ",
-    "standard interactive map format.")) |> 
+    "standard interactive map format. Learn more about stories rooted in ",
+    "specific geographic locations across the city or those that have had ",
+    "an impact on the whole of Montreal. </ul>")) |> 
   
 
 # Gentrification ----------------------------------------------------------
@@ -462,4 +551,5 @@ title_text <-
     "Maure et al., 2018, Le rôle des infrastructures naturelles dans la ",
     "prévention des inondations dans la Communauté métropolitaine de ",
     "Montréal, Fondation David Suzuki."))
-  
+
+

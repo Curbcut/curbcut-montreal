@@ -15,12 +15,12 @@ label_server <- function(id, r, map_id, tile) {
     zoom <- r[[id]]$zoom
     
     # Helper variables
-    show_street <- reactive(tile() %in% c("borough", "CT", "DA", "grid") ||
-                              (tile() == "auto_zoom" && zoom() < 15.5))
+    show_street <- reactive(grepl("borough|CT|DA|grid", tile()) ||
+                              (grepl("auto_zoom", tile()) && zoom() < 15.5))
     
     show_label <- reactive(
-      tile() %in% c("borough") || 
-        (tile() %in% c("auto_zoom", "CT", "DA", "grid") && zoom() < 12.5))
+      grepl("borough", tile()) || 
+        (grepl("auto_zoom|CT|DA|grid", tile()) && zoom() < 12.5))
     
     # Update label layer sources on tile change
     observeEvent(tile(), {
@@ -29,7 +29,7 @@ label_server <- function(id, r, map_id, tile) {
         # Update street layer 1
         add_mvt_layer(
           id = paste0(id, "_street_1"),
-          data = if (tile() %in% c("borough", "CT", "DA", "grid", "auto_zoom"))
+          data = if (grepl("borough|CT|DA|grid|auto_zoom", tile()))
             mvt_url("sus-mcgill.street_1") else "",
           visible = show_street(),
           line_width_units = "meters",
@@ -43,7 +43,7 @@ label_server <- function(id, r, map_id, tile) {
         # Update street layer 2
         add_mvt_layer(
           id = paste0(id, "_street_2"),
-          data = if (tile() %in% c("borough", "CT", "DA", "grid", "auto_zoom")) 
+          data = if (grepl("borough|CT|DA|grid|auto_zoom", tile())) 
             mvt_url("sus-mcgill.street_2") else "",
           visible = show_street(),
           line_width_units = "meters",
@@ -57,7 +57,7 @@ label_server <- function(id, r, map_id, tile) {
         # Update street layer 3
         add_mvt_layer(
           id = paste0(id, "_street_3"),
-          data = if (tile() %in% c("borough", "CT", "DA", "grid", "auto_zoom")) 
+          data = if (grepl("borough|CT|DA|grid|auto_zoom", tile())) 
             mvt_url("sus-mcgill.street_3") else "",
           visible = show_street(),
           line_width_units = "meters",
@@ -71,7 +71,7 @@ label_server <- function(id, r, map_id, tile) {
         # Update building layer
         add_mvt_layer(
           id = paste0(id, "_building"),
-          data = if (tile() %in% c("borough", "CT", "DA", "grid"))
+          data = if (grepl("borough|CT|DA|grid", tile()))
             mvt_url("sus-mcgill.DA_building_empty") else "",
           pickable = FALSE,
           auto_highlight = FALSE,
@@ -83,7 +83,7 @@ label_server <- function(id, r, map_id, tile) {
         # Update label layer
         add_mvt_layer(
           id = paste0(id, "_borough_labels"), 
-          data = if (tile() %in% c("borough", "CT", "grid", "auto_zoom")) 
+          data = if (grepl("borough|CT|grid|auto_zoom", tile())) 
             mvt_url("sus-mcgill.borough_label") else "",
           visible = show_label(),
           point_type = "text", 

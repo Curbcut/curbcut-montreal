@@ -14,17 +14,16 @@ get_info_table_data <- function(r = r, data, var_type, var_left, var_right, df,
   
   ## Get modified df for building/street ---------------------------------------
   
-  if (!df %in% c("building", "street")) build_str_as_DA <- FALSE
+  if (df != "building") build_str_as_DA <- FALSE
   
-  # TKTK THIS IS BROKEN FOR TWO DATES!
   if (build_str_as_DA) {
     dat_select <- if (is.na(select_id)) DA else {
       dbGetQuery(db, paste0("SELECT * FROM building WHERE ID = ", 
                             select_id))
     }
     dat_select_id <- select_id
-    if (!is.na(select_id)) select_id <- 
-      dbGetQuery(db, paste0("SELECT DAUID FROM building WHERE ID = ", 
+    if (!is.na(select_id)) 
+      select_id <- dbGetQuery(db, paste0("SELECT DAUID FROM building WHERE ID = ", 
                             select_id))$DAUID
     if (length(select_id) == 0) select_id <- NA
     
@@ -63,8 +62,8 @@ get_info_table_data <- function(r = r, data, var_type, var_left, var_right, df,
   var_left <- unique(str_remove(var_left, "_\\d{4}$"))
   var_right <- unique(str_remove(var_right, "_\\d{4}$"))
   
-  breaks_q5_left <- variables$breaks_q5[
-    variables$var_code == unique(sub("_\\d{4}$", "", var_left))][[1]]
+  breaks_q5_left <- variables$breaks_q5[[
+    which(variables$var_code == unique(sub("_\\d{4}$", "", var_left)))]]
   breaks_q5_left <- breaks_q5_left[breaks_q5_left$scale == df,]
   
   if (!suppressWarnings(is.null(breaks_q5_left$var_name)) && 
@@ -78,8 +77,8 @@ get_info_table_data <- function(r = r, data, var_type, var_left, var_right, df,
   
   if (var_right != " ") {
     
-    breaks_q5_right <- variables$breaks_q5[
-      variables$var_code == unique(sub("_\\d{4}$", "", var_right))][[1]]
+    breaks_q5_right <- variables$breaks_q5[[
+      which(variables$var_code == unique(sub("_\\d{4}$", "", var_right)))]]
     breaks_q5_right <- breaks_q5_right[breaks_q5_right$scale == df,]
     
     if (!suppressWarnings(is.null(breaks_q5_right$var_name)) && 
@@ -156,7 +155,8 @@ get_info_table_data <- function(r = r, data, var_type, var_left, var_right, df,
     "DA" = "dissemination area",
     "grid" = "250-m",
     "building" = if (build_str_as_DA) "dissemination area" else "building",
-    "street" = if (build_str_as_DA) "dissemination area" else "street")
+    "street" = if (build_str_as_DA) "dissemination area" else "street",
+    "centraide" = "centraide zone")
   
   scale_plural <- switch(
     scale_sing,
@@ -166,7 +166,7 @@ get_info_table_data <- function(r = r, data, var_type, var_left, var_right, df,
     "250-m" = "areas",
     "building" = "buildings",
     "street" = "streets",
-    NA_character_)
+    "centraide zone" = "centraide zones")
   
   out$scale_sing <- sus_translate(r = r, scale_sing)
   out$scale_plural <- sus_translate(r = r, scale_plural)
@@ -175,7 +175,7 @@ get_info_table_data <- function(r = r, data, var_type, var_left, var_right, df,
   ## Place names ---------------------------------------------------------------
   
   out$place_name <- if (df %in% c("building", "street") && build_str_as_DA) {
-        glue("The dissemination area around {select_name$name}")
+    sus_translate(r = r, "The dissemination area around {select_name$name}")
   } else switch(
     scale_sing,
     "building" = glue("{select_name$name}"),
@@ -185,16 +185,17 @@ get_info_table_data <- function(r = r, data, var_type, var_left, var_right, df,
     "dissemination area" = 
       sus_translate(r = r, "Dissemination area {select_name$name}"),
     "250-m" = sus_translate(r = r, "The area around {select_name$name}"),
+    "centraide zone" = glue("{select_name$name}"),
     NA_character_)
   
   if (grepl("select", out$var_type)) {
-    if (df == "borough") select_name$name_2 <- 
+    if (df %in% c("borough", "centraide")) select_name$name_2 <- 
         sus_translate(r = r, glue("{select_name$name_2}"))
     
     out$place_heading <- if (df %in% c("building", "street") && 
                              build_str_as_DA) {
-      sus_translate(r = r, select_name$name)
-    } else if (scale_sing == "borough/city") {
+      select_name$name
+    } else if (scale_sing %in% c("borough/city", "centraide zone")) {
       sus_translate(r = r, "{select_name$name_2} of {out$place_name}")
     } else if (scale_sing == "250-m") {
       sus_translate(r = r, select_name$name)
@@ -437,7 +438,7 @@ get_info_table_data <- function(r = r, data, var_type, var_left, var_right, df,
   
   
   ## Return output -------------------------------------------------------------
-
+  
   return(out)
   
 }

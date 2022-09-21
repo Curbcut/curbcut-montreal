@@ -22,14 +22,14 @@ explore_graph_alley <- function(r = r, data, var_type, var_left, var_right, df,
   } else if (df == "alley") {
     if (is.na(select_id)) {
       
-      labels <- variables$breaks_q5[
-        variables$var_code == "alley_qual"][[1]]$var_name_short
+      labels <- variables$breaks_q5[[
+        which(variables$var_code == "alley_qual")]]$var_name_short
       
       labels <- sapply(labels, sus_translate, r = r, USE.NAMES = FALSE)
       
-      ranks <- variables$breaks_q5[
-        variables$var_code == unique(sub("_\\d{4}$", "", var_left))]
-      if (length(ranks) > 0) ranks <- ranks[[1]]$rank[ranks[[1]]$scale == df]
+      ranks <- variables$breaks_q5[[
+        which(variables$var_code == unique(sub("_\\d{4}$", "", var_left)))]]
+      if (length(ranks) > 0) ranks <- ranks$rank[ranks$scale == df]
 
       alley[!is.na(alley$created),] |> 
         ggplot(aes(type)) +

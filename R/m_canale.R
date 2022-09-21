@@ -12,7 +12,7 @@ canale_UI <- function(id) {
       NS(id, id), 
       bottom = div(class = "bottom_sidebar", 
                    tagList(legend_UI(NS(id, id)),
-                           zoom_UI(NS(id, id), map_zoom_levels)))),
+                           zoom_UI(NS(id, id), map_zoom_levels_CMA)))),
     
     # Map
     div(class = "mapdeck_div", rdeckOutput(NS(id, id_map), height = "100%")),
@@ -35,7 +35,7 @@ canale_server <- function(id, r) {
     id_map <- paste0(id, "-map")
     
     # Initial reactives
-    zoom_string <- reactiveVal(get_zoom_string(map_zoom, map_zoom_levels))
+    zoom_string <- reactiveVal(get_zoom_string(map_zoom, map_zoom_levels_CMA))
     poi <- reactiveVal(NULL)
 
     # Map
@@ -53,11 +53,18 @@ canale_server <- function(id, r) {
         poi(new_poi)
     }) |> bindEvent(get_view_state(id_map))
     
+    # Map zoom levels change depending on r$geo()
+    map_zoom_levels <- reactive({
+      get_zoom_levels(default = "CMA", 
+                      geo = r$geo(),
+                      var_left = var_left())
+    }) |> bindEvent(r$geo())
+    
     # Zoom string reactive
     observe({
-      new_zoom_string <- get_zoom_string(r[[id]]$zoom(), map_zoom_levels)
+      new_zoom_string <- get_zoom_string(r[[id]]$zoom(), map_zoom_levels()$levels)
       if (new_zoom_string != zoom_string()) zoom_string(new_zoom_string)
-    }) |> bindEvent(r[[id]]$zoom())
+    }) |> bindEvent(r[[id]]$zoom(), map_zoom_levels()$levels)
     
     # Click reactive
     observe({
@@ -73,12 +80,11 @@ canale_server <- function(id, r) {
       id = id,
       r = r,
       zoom_string = zoom_string,
-      zoom_levels = reactive(map_zoom_levels))
+      zoom_levels = map_zoom_levels)
 
     # Get df for explore/legend/etc
-    # Must be inactive at init: the bookmark might want to set this value
     observe(r[[id]]$df(get_df(tile(), zoom_string()))) |> 
-      bindEvent(tile(), zoom_string(), ignoreInit = TRUE)
+      bindEvent(tile(), zoom_string())
     
     # Time
     time <- reactive("2016")
@@ -93,21 +99,23 @@ canale_server <- function(id, r) {
       var_list = make_dropdown(compare = TRUE),
       time = time)
 
-    # Additional tileset identifier
-    tile2 <- reactive("")
-
-    # Composite variable for map
-    map_var <- reactive(
-      str_remove(paste(var_left(), var_right(), sep = "_"), "_ $"))
-
     # Sidebar
     sidebar_server(id = id, r = r, x = "canale")
 
     # Data
     data <- reactive(get_data(
       df = r[[id]]$df(),
+      geo = r$geo(),
       var_left = var_left(),
       var_right = var_right()))
+    
+    # Data for tile coloring
+    data_color <- reactive(get_data_color(
+      map_zoom_levels = map_zoom_levels()$levels,
+      geo = r$geo(),
+      var_left = var_left(),
+      var_right = var_right()
+    ))
 
     # Legend
     legend <- legend_server(
@@ -129,9 +137,8 @@ canale_server <- function(id, r) {
       id = id, 
       r = r, 
       map_id = "map",
-      tile = tile, 
-      tile2 = tile2,
-      map_var = map_var)
+      tile = tile,
+      data_color = data_color)
     
     # Update map labels
     label_server(
@@ -147,7 +154,7 @@ canale_server <- function(id, r) {
       data = data,
       var_left = var_left,
       var_right = var_right)
-
+    
     # Bookmarking
     bookmark_server(
       id = id,
@@ -160,11 +167,11 @@ canale_server <- function(id, r) {
 
     # Data transparency and export
     observe({
-      r[[id]]$export_data(data_export(id = id, 
-                                      data = data(), 
-                                      var_left = var_left(), 
-                                      var_right = var_right(), 
-                                      df = r[[id]]$df()))
+      r[[id]]$export_data <- reactive(data_export(id = id,
+                                                  data = data(),
+                                                  var_left = var_left(),
+                                                  var_right = var_right(),
+                                                  df = r[[id]]$df()))
     })
 
   })

@@ -46,151 +46,41 @@ climate_risk <-
       mutate(across(starts_with("climate"), ~replace(., is.na(.), 0)))
     })
 
-grid <-
+climate_risk <-
   climate_risk |>  
-  reduce(left_join, by = "ID", .init = grid) |> 
+  reduce(left_join, by = "ID", .init = select(grid, ID)) |> 
   relocate(geometry, .after = last_col()) |>
-  mutate(across(climate_flood_ind:climate_heat_wave_ind, 
-                ~pmax(pmin(.x, 3), 1), .names = "{.col}_q3"),
-         across(climate_flood_ind:climate_heat_wave_ind,
-                ~pmax(.x, 1), .names = "{.col}_q5")) |> 
-  relocate(geometry, .after = last_col()) |> 
   st_set_agr("constant")
 
 
 # Add climate risk data to census tables ----------------------------------
 
-climate_census_fun <- function(x) {
-  
-  x_int <- 
-    x |> 
-    st_transform(32618) |> 
-    mutate(area_x = units::drop_units(st_area(geometry))) |> 
-    st_set_agr("constant")
-  
-  grid |> 
-    select(grid_ID = ID) |> 
-    st_transform(32618) |> 
-    st_set_agr("constant") |> 
-    st_intersection(x_int) |> 
-    st_drop_geometry() |> 
-    select(grid_ID, ID, area_x) |>
-    inner_join(select(grid, grid_ID = ID,
-                      climate_flood_ind:climate_heat_wave_ind),
-               by = "grid_ID") |>
-    mutate(area_int = units::drop_units(st_area(geometry))) |> 
-    group_by(ID) |>
-    summarize(
-      across(climate_flood_ind:climate_heat_wave_ind, ~{
-      if (sum(area_int[!is.na(.x)]) >= 0.5 * max(area_x)) {
-        weighted.mean(.x, area_int, na.rm = TRUE)
-        } else NA_real_}), .groups = "drop") |> 
-    right_join(x, by = "ID") |> 
-    relocate(climate_flood_ind:climate_heat_wave_ind, .before = geometry) |>
-    mutate(across(c(climate_flood_ind:climate_heat_wave_ind), ntile, 3,
-                  .names = "{.col}_q3")) |>
-    relocate(any_of(c("buffer", "centroid", "building", "geometry")), 
-             .after = last_col()) |>
-    st_as_sf(sf_column_name = "geometry") |>
-    st_set_agr("constant")
-}
-
-borough <- climate_census_fun(borough)
-CT <- climate_census_fun(CT)
-DA <- climate_census_fun(DA)
-
-rm(climate_risk, climate_census_fun)
-
-
-# Add climate data risk to building and street ----------------------------
-
-building <- 
-  building |> 
-  left_join(select(st_drop_geometry(grid), grid_ID = ID, 
-                   climate_flood_ind:climate_heat_wave_ind_q3), 
-            by = "grid_ID") |> 
-  relocate(geometry, .after = last_col()) |> 
-  st_set_agr("constant")
-
-street <- 
-  street |> 
-  left_join(select(st_drop_geometry(grid), grid_ID = ID, 
-                   climate_flood_ind:climate_heat_wave_ind_q3), 
-            by = "grid_ID") |> 
-  relocate(geometry, .after = last_col()) |> 
-  st_set_agr("constant")
+all_climate_risk <- 
+  interpolate_scales(data = climate_risk, 
+                     base_scale = "grid", 
+                     all_tables = all_tables, 
+                     add_to_grid = TRUE)
 
 
 # Add breaks --------------------------------------------------------------
 
-# Do q3 breaks for all scales
-climate_risk_q3 <- 
-  map(list(DA, CT, borough, grid), ~{
-    .x |> 
-      st_drop_geometry() |>
-      get_breaks_q3(c("climate_flood_ind", "climate_heavy_rain_ind", 
-                      "climate_drought_ind", "climate_destructive_storms_ind",
-                      "climate_heat_wave_ind"))
-    })
+all_climate_risk <- 
+  calculate_breaks(tables_list = all_climate_risk)
 
-# Do q5 breaks for census scales
-climate_risk_q5 <- 
-  map(list("DA" = DA, "CT" = CT, "borough" = borough), ~{
-    .x |> 
-      st_drop_geometry() |>
-      get_breaks_q5(c("climate_flood_ind", "climate_heavy_rain_ind", 
-                      "climate_drought_ind", "climate_destructive_storms_ind",
-                      "climate_heat_wave_ind"))
-  })
-
-# Add q5 values to census scales
-DA <-
-  DA |> 
+# Adjust breaks for grid
+all_climate_risk$tables_list$grid <- 
+  climate_risk |>
   st_drop_geometry() |> 
-  add_q5(climate_risk_q5[[1]]) |> 
-  bind_cols(DA) |> 
-  relocate(climate_flood_ind_q5:climate_heat_wave_ind_q5, .before = buffer) |> 
-  st_as_sf(sf_column_name = "geometry") |> 
-  st_set_agr("constant")
+  mutate(across(climate_flood_ind:climate_heat_wave_ind,
+                ~pmax(pmin(.x, 3), 1), .names = "{.col}_q3"),
+         across(climate_flood_ind:climate_heat_wave_ind,
+                ~pmax(.x, 1), .names = "{.col}_q5"))
 
-CT <-
-  CT |> 
-  st_drop_geometry() |> 
-  add_q5(climate_risk_q5[[2]]) |> 
-  bind_cols(CT) |> 
-  relocate(climate_flood_ind_q5:climate_heat_wave_ind_q5, .before = geometry) |> 
-  st_as_sf(sf_column_name = "geometry") |> 
-  st_set_agr("constant")
 
-borough <-
-  borough |> 
-  st_drop_geometry() |> 
-  add_q5(climate_risk_q5[[3]]) |> 
-  bind_cols(borough) |> 
-  relocate(climate_flood_ind_q5:climate_heat_wave_ind_q5, .before = geometry) |> 
-  st_as_sf(sf_column_name = "geometry") |> 
-  st_set_agr("constant")
-
-building <- 
-  building |> 
-  left_join(DA |> 
-              st_drop_geometry() |> 
-              select(DAUID = ID, climate_flood_ind_q5:climate_heat_wave_ind_q5),
-            by = "DAUID") |> 
-  relocate(geometry, .after = last_col()) |> 
-  st_set_agr("constant")
-
-street <- 
-  street |> 
-  left_join(DA |> 
-              st_drop_geometry() |> 
-              select(DAUID = ID, climate_flood_ind_q5:climate_heat_wave_ind_q5),
-            by = "DAUID") |> 
-  relocate(geometry, .after = last_col()) |> 
-  st_set_agr("constant")
+# Calculate qualitative q5 ------------------------------------------------
 
 climate_risk_q5 <-
-  map2(climate_risk_q5, c("DA", "CT", "borough"), \(x, scale) {
+  imap(all_climate_risk$tables_q5, function(x, scale) {
     if (nrow(x) > 0) x |> mutate(scale = scale, rank = seq_len(nrow(x)) - 1, 
                                  .before = 1)})
 
@@ -204,7 +94,7 @@ climate_join <-
 
 # Join each variable in grid to climate_join
 grid_q5 <- 
-  grid |> 
+  climate_risk |> 
   st_drop_geometry() |> 
   select(climate_flood_ind:climate_heat_wave_ind) |> 
   map(unique) |> 
@@ -216,11 +106,18 @@ grid_q5 <-
   map(relocate, rank, .after = scale)
 
 # Consolidate q5 breaks table
-climate_risk_q5 <- map2(grid_q5, names(grid_q5), \(x, y) {
-  map2_dfr(climate_risk_q5, names(climate_risk_q5), ~mutate(.x, scale = .y)) |> 
-    select(scale, rank, all_of(y)) |> 
-    set_names(c("scale", "rank", "var")) |> 
-    bind_rows(x)})
+climate_risk_q5 <- 
+  imap(grid_q5, \(x, y) {
+    imap_dfr(climate_risk_q5[names(climate_risk_q5) != "grid"], ~mutate(.x, scale = .y)) |> 
+      select(scale, rank, all_of(y)) |> 
+      set_names(c("scale", "rank", "var")) |> 
+      bind_rows(x)})
+
+
+
+# Assign all --------------------------------------------------------------
+
+assign_tables(module_tables = all_climate_risk)
 
 
 # Meta testing ------------------------------------------------------------
@@ -230,11 +127,16 @@ climate_risk_q5 <- map2(grid_q5, names(grid_q5), \(x, y) {
 
 # Add variable explanations -----------------------------------------------
 
-# Get breaks_q3
+# Breaks q3
 breaks_q3_active <-
-  map2_dfr(climate_risk_q3, c("DA", "CT", "borough", "grid"), \(x, scale) {
+  imap_dfr(all_climate_risk$tables_q3, \(x, scale) {
     if (nrow(x) > 0) x |> mutate(scale = scale, date = NA, rank = 0:3,
                                  .before = 1)})
+
+interpolation_keys <- 
+  map(set_names(names(all_climate_risk$tables_list)), ~{
+    if (.x == "grid") FALSE else "250-m grid cells"
+  })
 
 variables <- 
   variables |>
@@ -247,14 +149,11 @@ variables <-
     theme = "Climate risk",
     private = FALSE,
     dates = NA,
-    scales = c("borough", "CT", "DA", "grid"),
+    scales = names(all_climate_risk$tables_list),
     breaks_q3 = select(breaks_q3_active, scale:rank, var = climate_drought_ind),
     breaks_q5 = climate_risk_q5$climate_drought_ind,
     source = "City of Montreal's open data website",
-    interpolated = list(c(grid = FALSE,
-                          DA = "250-m grid cells",
-                          CT = "250-m grid cells",
-                          borough = "250-m grid cells"))) |> 
+    interpolated = interpolation_keys) |> 
   add_variables(
     var_code = "climate_flood_ind",
     var_title = "Flood vulnerability",
@@ -264,14 +163,12 @@ variables <-
     theme = "Climate risk",
     private = FALSE,
     dates = NA,
-    scales = c("borough", "CT", "DA", "grid"),
+    scales = names(all_climate_risk$tables_list),
     breaks_q3 = select(breaks_q3_active, scale:rank, var = climate_flood_ind),
     breaks_q5 = climate_risk_q5$climate_flood_ind,
     source = "City of Montreal's open data website",
-    interpolated = list(c(grid = FALSE,
-                          DA = "250-m grid cells",
-                          CT = "250-m grid cells",
-                          borough = "250-m grid cells"))) |> 
+    interpolated = interpolation_keys) |> 
+
   add_variables(
     var_code = "climate_heavy_rain_ind",
     var_title = "Heavy rain vulnerability",
@@ -281,15 +178,12 @@ variables <-
     theme = "Climate risk",
     private = FALSE,
     dates = NA,
-    scales = c("borough", "CT", "DA", "grid"),
+    scales = names(all_climate_risk$tables_list),
     breaks_q3 = select(breaks_q3_active, scale:rank, 
                        var = climate_heavy_rain_ind),
     breaks_q5 = climate_risk_q5$climate_heavy_rain_ind,
     source = "City of Montreal's open data website",
-    interpolated = list(c(grid = FALSE,
-                          DA = "250-m grid cells",
-                          CT = "250-m grid cells",
-                          borough = "250-m grid cells"))) |> 
+    interpolated = interpolation_keys) |> 
   add_variables(
     var_code = "climate_destructive_storms_ind",
     var_title = "Destructive storm vulnerability",
@@ -300,15 +194,12 @@ variables <-
     theme = "Climate risk",
     private = FALSE,
     dates = NA,
-    scales = c("borough", "CT", "DA", "grid"),
+    scales = names(all_climate_risk$tables_list),
     breaks_q3 = select(breaks_q3_active, scale:rank, 
                        var = climate_destructive_storms_ind),
     breaks_q5 = climate_risk_q5$climate_destructive_storms_ind,
     source = "City of Montreal's open data website",
-    interpolated = list(c(grid = FALSE,
-                          DA = "250-m grid cells",
-                          CT = "250-m grid cells",
-                          borough = "250-m grid cells"))) |> 
+    interpolated = interpolation_keys) |> 
   add_variables(
     var_code = "climate_heat_wave_ind",
     var_title = "Heat wave vulnerability",
@@ -318,15 +209,12 @@ variables <-
     theme = "Climate risk",
     private = FALSE,
     dates = NA,
-    scales = c("borough", "CT", "DA", "grid"),
+    scales = names(all_climate_risk$tables_list),
     breaks_q3 = select(breaks_q3_active, scale:rank, 
                        var = climate_heat_wave_ind),
     breaks_q5 = climate_risk_q5$climate_heat_wave_ind,
     source = "City of Montreal's open data website",
-    interpolated = list(c(grid = FALSE,
-                          DA = "250-m grid cells",
-                          CT = "250-m grid cells",
-                          borough = "250-m grid cells")))
+    interpolated = interpolation_keys)
 
 
 # Add to modules table ----------------------------------------------------
@@ -348,4 +236,5 @@ modules <-
 
 # Clean up ----------------------------------------------------------------
 
-rm(breaks_q3_active, climate_join, climate_risk_q3, climate_risk_q5, grid_q5)
+rm(climate_risk, all_climate_risk, interpolation_keys,
+   breaks_q3_active, climate_join, climate_risk_q5, grid_q5)

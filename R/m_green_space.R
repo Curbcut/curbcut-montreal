@@ -19,7 +19,7 @@
 #       ),
 #       bottom = div(class = "bottom_sidebar",
 #                    tagList(legend_UI(NS(id, ns_id)),
-#                            zoom_UI(NS(id, ns_id), map_zoom_levels)))),
+#                            zoom_UI(NS(id, ns_id), map_zoom_levels_cma)))),
 #     
 #     # Map
 #     div(class = "mapdeck_div", 
@@ -39,7 +39,7 @@
 #     ns_id <- "green_space"
 #     
 #     # Initial reactives
-#     zoom <- reactiveVal(get_zoom(map_zoom, map_zoom_levels))
+#     zoom <- reactiveVal(get_zoom(map_zoom, map_zoom_levels_cma))
 #     click_id <- reactiveVal(NULL)
 # 
 #     # Sidebar
@@ -57,7 +57,7 @@
 #     
 #     # Zoom reactive
 #     observeEvent(input$map_view_change$zoom, {
-#       zoom(get_zoom(input$map_view_change$zoom, map_zoom_levels))})
+#       zoom(get_zoom(input$map_view_change$zoom, map_zoom_levels_cma))})
 #     
 #     # Click reactive
 #     observeEvent(input$map_polygon_click, {
@@ -67,7 +67,7 @@
 #     df <- zoom_server(
 #       id = ns_id, 
 #       zoom = zoom, 
-#       zoom_levels = reactive(map_zoom_levels))
+#       zoom_levels = reactive(map_zoom_levels_cma))
 #     
 #     # Left variable servers
 #     var_left_groupings <- select_var_server(ns_id, select_var_id = "d_1",

@@ -3,12 +3,12 @@
 # Default scales ----------------------------------------------------------
 
 # Default fill
-scale_fill_sus <- function(var) {
+scale_fill_sus <- function(module_colors, id = "ID_color") {
   scale_color_category(
-    col = !!rlang::sym(var), 
-    palette = colour_table$value,
-    unmapped_color = colour_table$value[1], 
-    levels = colour_table$group,
+    col = !!rlang::sym(id), 
+    palette = module_colors$value,
+    unmapped_color = "#B3B3BB", 
+    levels = module_colors$group,
     legend = FALSE)
 }
 
@@ -18,13 +18,12 @@ scale_colour_sus <- function(...) "#FFFFFF"
 # Default line width
 scale_lwd_sus <- function(select_id) {
   scale_category(
-    col = ID,
+    col = !!rlang::sym("ID_color"),
     range = c(5, 1),
     unmapped_value = 1,
     levels = c(select_id, "NA"),
     legend = FALSE) 
 }
-
 
 # Module-specific scales --------------------------------------------------
 
@@ -32,19 +31,26 @@ scale_lwd_sus <- function(select_id) {
 scale_lwd_climate_risk <- function(select_id, tile) {
   
   scale_category(
-    col = ID,
-    range = c(5, if (tile == "grid") 0.3 else 1),
-    unmapped_value = if (tile == "grid") 0.3 else 1,
+    col = ID_color,
+    range = c(5, if (tile == "island-grid") 0.3 else 1),
+    unmapped_value = if (tile == "island-grid") 0.3 else 1,
     levels = c(select_id, "NA"),
     legend = FALSE) 
   
 }
 
 # Alley fill
-scale_fill_alley <- function(var, tile) {
+scale_fill_alley <- function(var, tile, data_color) {
   if (tile == "borough_empty") {
     "#FFFFFF00"
-  } else scale_fill_sus(var)
+  } else if (tile == "alley") {
+    scale_color_category(
+      col = !!rlang::sym(var), 
+      palette = colour_table$value,
+      unmapped_color = colour_table$value[1], 
+      levels = colour_table$group,
+      legend = FALSE)
+  } else scale_fill_sus(data_color, id = "ID")
 }
 
 # Alley colour
@@ -78,23 +84,6 @@ scale_lwd_alley <- function(select_id, tile) {
       levels = c(select_id, "NA"),
       legend = FALSE) 
   } else scale_lwd_sus(select_id)
-}
-
-# Access fill
-scale_fill_access <- function(var, tile, access_colors) {
-  if (!is.null(access_colors)) {
-    colour_table <- access_colors
-    unmapped_color <- "#B3B3BB"
-  } else {
-    unmapped_color <- colour_table$value[1]
-  }
-  
-  scale_color_category(
-    col = !!rlang::sym(var), 
-    palette = colour_table$value,
-    unmapped_color = unmapped_color, 
-    levels = colour_table$group,
-    legend = FALSE)
 }
 
 # Place explorer fill
