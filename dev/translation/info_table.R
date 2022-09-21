@@ -447,6 +447,8 @@ info_table_translated <-
   # Centraide related
   add_row(en = paste0("centraide zone"), 
           fr = paste0("du quartier centraide")) |> 
+  add_row(en = paste0("Centraide zone"), 
+          fr = paste0("Quartier centraide")) |> 
   add_row(en = paste0("centraide zones"), 
           fr = paste0("quartiers Centraide")) |> 
   add_row(en = paste0("Centraide zone {select_name$name}"), 

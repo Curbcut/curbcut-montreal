@@ -310,6 +310,7 @@ qsave(select(borough_full, ID), file = "data/geometry_export/borough.qs")
 qsave(select(CT_full, ID), file = "data/geometry_export/CT.qs")
 qsave(select(DA_full, ID), file = "data/geometry_export/DA.qs")
 qsave(select(grid_full, ID), file = "data/geometry_export/grid.qs")
+qsave(select(centraide, ID), file = "data/geometry_export/centraide.qs")
 
 
 # Save files we'll save in the SQL to data2 -------------------------------
@@ -416,5 +417,5 @@ stopifnot(all(sapply(list.files("data", full.names = TRUE, recursive = TRUE),
 source("dev/other/deploy_sus.R")
 
 deploy_sus("sus-mcgill-centraide") # Centraide
-deploy_sus("sus-dev") # Development
+deploy_sus("sus-mcgill-test") # Development
 deploy_sus("sus-mcgill") # Production

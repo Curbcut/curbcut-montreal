@@ -188,6 +188,7 @@ climate_risk_server <- function(id, r) {
       s_id = r[[id]]$select_id,
       df = r[[id]]$df,
       map_viewstate = reactive(get_view_state(id_map)),
+      var_left = var_left,
       var_right = var_right,
       more_args = reactive(c("c-cbox" = as.logical(grid())))
     )

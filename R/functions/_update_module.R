@@ -12,12 +12,15 @@ update_module <- function(r, id, mod_ns = paste(id, id, sep = "-"),
   
   # Drop down menus should be delayed, as updating other widgets could 
   # have a reset power on them (e.g. housing)
-  delayupdatePickerInput <- function(...) delay(100, updatePickerInput(...))
+  delayupdatePickerInput <- function(time = 100, ...) 
+    delay(time, updatePickerInput(...))
   construct_namespace <- function(inputId) {
     paste(mod_ns, inputId, sep = "-") |> str_remove("^-")
   }
 
-  # Update mapdeck_view
+
+  ## Update mapview ----------------------------------------------------------
+
   if (!all(vapply(c(zoom, location), is.null, TRUE))) {
     if (!is.null(map_id)) {
       rdeck_proxy(id = paste(id, id, map_id, sep = "-"),
@@ -26,7 +29,9 @@ update_module <- function(r, id, mod_ns = paste(id, id, sep = "-"),
       )
     }}
 
-  # Update df()
+
+  ## Update df ---------------------------------------------------------------
+  
   if (!is.null(r[[id]]$df)) {
     if (isFALSE(zoom_auto)) {
       updateCheckboxInput(
@@ -44,7 +49,8 @@ update_module <- function(r, id, mod_ns = paste(id, id, sep = "-"),
 
   if (str_detect(id, "-$")) id <- str_extract(id, ".*(?=-)")
   
-  # PARSE more_args from the URL
+  ## Parse and update more_args from the URL ---------------------------------
+  
   if (!is.null(more_args)) {
     additional <- str_split(more_args, ";")[[1]]
     
@@ -93,7 +99,9 @@ update_module <- function(r, id, mod_ns = paste(id, id, sep = "-"),
     })
   }
   
-  # Update var_left
+
+  ## Update var_left ---------------------------------------------------------
+  
   if (!is.null(id)) {
     if (id %in% c("canale")) {
       
@@ -183,15 +191,56 @@ update_module <- function(r, id, mod_ns = paste(id, id, sep = "-"),
     }
   }
   
-  # Update var_right
+
+  ## Update var_right --------------------------------------------------------
+  
   if (!is.null(var_right)) {
     selected_var <- if (str_detect(var_right, "^\\d*$")) {
       get_variables_rowid(var_right)} else var_right
-    delayupdatePickerInput(
-      session = session,
-      inputId = construct_namespace("compare-var"),
-      selected = selected_var
-    )
+    
+    if (!selected_var %in% variables$var_code[!is.na(variables$grouping)]) {
+      delayupdatePickerInput(
+        session = session,
+        inputId = construct_namespace("compare-var"),
+        selected = selected_var
+      )
+      # In the case the var_right is part of a bigger group
+    } else {
+      
+      group <- variables[variables$var_code == selected_var, ]$grouping
+      # Same process that's in make_dropdown() to decide which variable is
+      # the one to select in the compare-var dropdown.
+      cat_vecs <- 
+        variables[!is.na(variables$grouping) & variables$grouping == group, ]
+      higher_level_var <- choose_first_data_compare_group(cat_vecs)
+      
+      # The compare-var picker update
+      delayupdatePickerInput(
+        session = session,
+        inputId = construct_namespace("compare-var"),
+        selected = higher_level_var
+      )
+      
+      # Other dropdowns update
+      update_drops <- 
+        variables$group_diff[variables$var_code == selected_var][[1]]
+      
+      lapply(seq_along(update_drops), \(x) {
+        var_named <- update_drops[x]
+        lab <- names(var_named) 
+        id_s <- gsub(" |/", "_", tolower(lab))
+      
+        delayupdatePickerInput(
+          time = 1000,
+          session = session,
+          inputId = construct_namespace(paste0(id_s, "-var")),
+          selected = var_named
+        )
+      })
+      
+    }
   }
   
 }
+
+

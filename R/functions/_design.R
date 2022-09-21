@@ -432,3 +432,83 @@ lang_classes <- "
       visibility: visible !important;
       display: inline !important; 
     }"
+
+
+# Severe HTML -------------------------------------------------------------
+
+sever_subtitle_fr <- 
+  HTML(paste0("Il semble que Sus se soit arrêté de manière inattendue! Aidez-n",
+              "ous à garder l'application exempte de bogues en appuyant 'Envo",
+              "yer'! ",
+              "<br>L'équipe de Sus."))
+
+sever_subtitle_en <- 
+  HTML(paste0("It appears that Sus has shut down unexpectedly! Help us keep ",
+              "the app bug-free by clicking on “Submit”!",
+              "<br>-The Sus team."))
+
+create_form <- function(lang, module_id, geo) {
+  
+  pre <- 
+    paste0("<form id='bug_report_form' action='https://docs.google.com/forms/d/",
+         "e/1FAIpQLSfuQquv73dQoXA1UneCh9zREj0NG3E-RCfRpTNyJ1dIBagIeQ/formResp",
+         "onse'>")
+  post <- "<input type='submit' id='bug_report_submit' style = 'display:none;' /></form>"
+    
+  module <- 
+    paste0("<input type='text' name='entry.1645395961' value='", module_id, 
+           "' style = 'display:none;' />")
+  geo <- 
+    paste0("<input type='text' name='entry.1343914403' value='", geo, 
+           "' style = 'display:none;' />")
+  lang_input <- 
+    paste0("<input type='text' name='entry.1443376271' value='", lang, 
+           "' style = 'display:none;' />")
+  
+  
+  additional_style <- 
+    paste0("width: 75%; height: 150px; padding: 12px 20px; ",
+    "box-sizing: border-box; border: 2px solid #ccc; border-radius: 4px;",
+    "background-color: #f8f8f8; resize: none; font-family: ",
+    "var(--ff-body); color: var(--c-paragraph); font-size: 1.65rem;")
+  
+  additional_text <- 
+    if (lang == "fr") {
+      paste0("Le rapport contient déjà des informations pertinentes sur votre ",
+             "session au moment où vous avez rencontré l'erreur. Veuillez envo",
+             "yer le rapport, et n'hésitez pas à ajouter des informations supp",
+             "lémentaires dans ce bloc.")
+    } else {
+      paste0("The report already contains relevant information about your sess",
+             "ion at the time you experienced the error. Please send the repor",
+             "t, and feel free to add additional information in this block.")     
+    }
+  
+  additional <- 
+    paste0("<textarea name='entry.77284970 form='bug_report_form' style ='",
+           additional_style, "'>", additional_text, "</textarea>")
+  
+  HTML(paste0(pre, module, geo, lang_input, additional, post))
+  
+}
+
+severe_html <- function(lang, module_id, geo) {
+  tagList(tags$h2("Uh oh..."),
+          tags$p(tags$span(class = "lang-fr", sever_subtitle_fr),
+                 tags$span(class = "lang-en", sever_subtitle_en)),
+          create_form(lang, module_id, geo),
+          tags$div(class = "sus-button-group",
+                   tags$a(class = "sus-button sus-icon-button sus-button-secondary", 
+                          style = "cursor: pointer;",
+                          onClick = "window.location.href='/'", 
+                          tags$span(class = "lang-fr", "Accueil"),
+                          tags$span(class = "lang-en", "Home"), " ",
+                          span(class = "material-icons", "home")),
+                   tags$a(class = "sus-button sus-icon-button sus-button-primary", 
+                          style = "cursor: pointer;",
+                          onClick = "document.getElementById('bug_report_submit').click()", 
+                          tags$span(class = "lang-fr", "Envoyer"),
+                          tags$span(class = "lang-en", "Submit"), " ",
+                          span(class = "material-icons", "bug_report")),
+          ))
+}

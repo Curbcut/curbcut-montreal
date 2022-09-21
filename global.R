@@ -18,6 +18,8 @@ suppressPackageStartupMessages({
   library(RSQLite)
   library(curl)
   library(tableHTML)
+  
+  library(sever)
 })
 
 # Shiny options -----------------------------------------------------------
@@ -25,9 +27,6 @@ suppressPackageStartupMessages({
 options(shiny.fullstacktrace = TRUE)
 options(shiny.useragg = TRUE)
 shinyOptions(cache = cachem::cache_disk(file.path(dirname(tempdir()), "cache")))
-options(shiny.error = function() 
-  browseURL(paste0("https://docs.google.com/forms/d/e/1FAIpQLSfuQquv73dQoXA1U",
-                   "neCh9zREj0NG3E-RCfRpTNyJ1dIBagIeQ/viewform?usp=sf_link")))
 
 # Data --------------------------------------------------------------------
 
@@ -87,10 +86,10 @@ mods_rdy <- list(
     "Climate risk" = "climate_risk"
   ),
   "Housing" = c(
-    "Housing system" = "housing",
-    "Housing affordability" = "afford",
-    "Tenure status" = "tenure",
-    "Dwelling types" = "dw_types"
+    "Housing system" = "housing"#,
+    # "Housing affordability" = "afford",
+    # "Tenure status" = "tenure",
+    # "Dwelling types" = "dw_types"
   ),
   "Policy" = c(
     "Montréal climate plans" = "mcp"
@@ -101,8 +100,8 @@ mods_rdy <- list(
   ),
   "Urban life" = c(
     "Active living potential" = "canale", 
-    "Green alleys" = "alley",
-    "Demographics" = "demographics"
+    "Green alleys" = "alley"#,
+    # "Demographics" = "demographics"
   ),
   "Ecology" = c(
     "Natural infrastructure" = "natural_inf"
