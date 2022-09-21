@@ -375,17 +375,18 @@ shinyServer(function(input, output, session) {
                    choiceValues = c("CMA", "centraide")),
       title = sus_translate(r = r, "Advanced options")))
   })
-  
+
   # Change the default geometry and save the cookie
   observeEvent(input$geo_change, {
     r$geo(input$geo_change)
-    session$sendCustomMessage("cookie-set", list(name = "default_geo", 
+    session$sendCustomMessage("cookie-set", list(name = "default_geo",
                                                  value = input$geo_change))
   })
-  
-  # If the geo cookie is already in
+
+  # If the geo cookie is already in and it differs from default
   observeEvent(input$cookies$default_geo, {
-    if (!is.null(input$cookies$default_geo)) {
+    if (!is.null(input$cookies$default_geo) &&
+        input$cookies$default_geo != "CMA") {
       r$geo(input$cookies$default_geo)
     }
   }, once = TRUE)
