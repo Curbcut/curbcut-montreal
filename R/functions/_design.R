@@ -461,7 +461,7 @@ create_form <- function(lang, module_id, geo) {
   geo <- 
     paste0("<input type='text' name='entry.1343914403' value='", geo, 
            "' style = 'display:none;' />")
-  lang <- 
+  lang_input <- 
     paste0("<input type='text' name='entry.1443376271' value='", lang, 
            "' style = 'display:none;' />")
   
@@ -483,13 +483,12 @@ create_form <- function(lang, module_id, geo) {
              "ion at the time you experienced the error. Please send the repor",
              "t, and feel free to add additional information in this block.")     
     }
-
   
   additional <- 
     paste0("<textarea name='entry.77284970 form='bug_report_form' style ='",
            additional_style, "'>", additional_text, "</textarea>")
   
-  HTML(paste0(pre, module, geo, lang, additional, post))
+  HTML(paste0(pre, module, geo, lang_input, additional, post))
   
 }
 
