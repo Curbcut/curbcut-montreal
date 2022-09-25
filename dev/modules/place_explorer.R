@@ -461,7 +461,7 @@ pe_var_hierarchy <-
       } else var <- variable_code
       
       out <- 
-        get(scale) |> 
+        get(paste0("CMA_", scale)) |> 
         st_drop_geometry() |> 
         select(ID, CSDUID, all_of(var)) |> 
         percentile_calc()
@@ -486,7 +486,7 @@ pe_var_hierarchy[["CT"]] <-
             map(set_names(min_access_var_code), function(access_code) {
               
               out <-
-                CT |>
+                CMA_CT |>
                 st_drop_geometry() |>
                 select(ID, CSDUID, starts_with(access_code)) |>
                 pivot_longer(-c(ID, CSDUID)) |>

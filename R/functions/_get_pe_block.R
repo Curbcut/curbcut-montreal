@@ -13,7 +13,7 @@ get_pe_block <- function(r = r, df, theme, select_id, island_or_region) {
   # Exit early if there is no data
   if (length(data_order$var_code) == 0) return(NULL)
   
-  vars <- if (df == "CT" && theme == "Transport") {
+  vars <- if (is_scale_in_df("CT", df) && theme == "Transport") {
     get_CT_access_vars(variables)
   } else variables
   

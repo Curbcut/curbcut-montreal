@@ -13,11 +13,12 @@ var_select <- c("CTUID" = "CT_UID", "CSDUID" = "CSD_UID", "name" = "name",
                 "population" = "Population", "households" = "Households")
 
 # Get census function
-get_census <- function(re = list(PR = "24"), sc = scale, format = TRUE) {
+get_census <- function(region = list(PR = "24"), scale, format = TRUE, 
+                       crs = 32618) {
   out <- cancensus::get_census(
     dataset = "CA16",
-    regions = re,
-    level = sc,
+    regions = region,
+    level = scale,
     geo_format = "sf",
     quiet = TRUE)  |> 
     as_tibble() |>
@@ -31,12 +32,9 @@ get_census <- function(re = list(PR = "24"), sc = scale, format = TRUE) {
   
   keep_ids <- 
     out |>
-    mutate(previous_area = units::drop_units(st_area(geometry))) |>
-    st_intersection(master_polygon) |>
-    st_set_agr("constant") |> 
-    st_make_valid() |> 
-    mutate(new_area = units::drop_units(st_area(geometry))) |>
-    filter({new_area / previous_area} > 0.33) |>
+    st_transform(crs) |> 
+    st_point_on_surface() |> 
+    st_filter(st_transform(master_polygon, crs)) |> 
     pull(ID)
   
   out |> 
@@ -44,14 +42,14 @@ get_census <- function(re = list(PR = "24"), sc = scale, format = TRUE) {
 }
 
 # Download DAs
-CDs <- get_census(sc = "CD", format = FALSE)$ID
-DA <- get_census(re = list(CD = CDs), sc = "DA")
+CDs <- get_census(scale = "CD", format = FALSE)$ID
+DA <- get_census(region = list(CD = CDs), scale = "DA")
 
 # Download CTs, fill in with CSDs
-CT <- get_census(sc = "CT")
+CT <- get_census(scale = "CT")
 
 csds <- 
-  get_census(sc = "CSD") |> 
+  get_census(scale = "CSD") |> 
   st_transform(32618)
 csds_buffered <- 
   csds |> 
@@ -80,14 +78,13 @@ CSD <-
   mutate(name = str_remove(name, " \\(.*\\)")) |> 
   st_set_agr("constant")
 
-rm(var_select, get_census, csds, filling_CTs, CDs)
-
+rm(var_select, get_census, csds, filling_CTs, CDs, csds_buffered)
 
 
 # Clip boroughs -----------------------------------------------------------
 
 # Get CMA boundary for clipping boroughs
-CMA <- 
+CMA_boundaries <- 
   get_census("CA16", list(CMA = "24462"), geo_format = "sf", quiet = TRUE) |> 
   st_set_agr("constant")
 
@@ -96,7 +93,7 @@ borough <-
   read_sf("dev/data/montreal_boroughs_2019.shp") |> 
   st_set_agr("constant") |> 
   st_transform(32618) |> 
-  st_intersection(st_transform(CMA, 32618)) |> 
+  st_intersection(st_transform(CMA_boundaries, 32618)) |> 
   st_transform(4326) |> 
   select(name = NOM, type = TYPE, geometry) |> 
   mutate(type = if_else(type == "Arrondissement", "Borough", "City")) |> 
@@ -128,7 +125,7 @@ borough <-
   borough  |>  
   filter(!name %in% replacements$name)
 
-rm(CMA, replacements)
+rm(CMA_boundaries, replacements)
 
 # Join DAs to remaining boroughs by centroid
 borough_join <-

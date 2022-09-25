@@ -47,12 +47,12 @@ convert_unit <- function(x, var_name = NULL, compact = FALSE) {
 
 # return_closest_year -----------------------------------------------------
 
-return_closest_year <- function(var, df = "borough", build_str_as_DA = TRUE) {
+return_closest_year <- function(var, df = "CMA_borough", build_str_as_DA = TRUE) {
   
   # Not to do for grid - always 2016
-  if (df == "grid") return(var)
+  if (is_scale_in_df("grid", df)) return(var)
   
-  dat <- if (build_str_as_DA && df == "building") DA else get(df)
+  dat <- if (build_str_as_DA && is_scale_in_df("building", df)) DA else get(df)
   
   if (!var %in% names(dat)) {
     
@@ -204,4 +204,12 @@ get_dist <- function(x, y) {
     cos(lat_2_r) * sin(delta_lon / 2) * sin(delta_lon / 2)
   c_dist <- 2 * atan2(sqrt(a_dist), sqrt(1 - a_dist))
   6371e3 * c_dist
+}
+
+
+# Logical if scale is in df -----------------------------------------------
+
+is_scale_in_df <- function(scales, df) {
+  scls <- paste0(scales, "$", collapse = "|")
+  grepl(scls, df)
 }

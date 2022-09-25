@@ -36,7 +36,7 @@ prep_title_card <- function(r = r, df, select_id, ind, percent = TRUE,
   
   data_rank <- data[data$ID == select_id, ][[paste0(scale, "_percentile")]]
   
-  if (df == "borough") {
+  if (is_scale_in_df("borough", df)) {
     
     rank <- data[data$ID == select_id, ][[paste0(scale, "_rank")]]
     df_row <- if (island) {

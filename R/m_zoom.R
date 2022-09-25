@@ -71,9 +71,8 @@ zoom_server <- function(id, r = r, zoom_string, zoom_levels) {
       if (!is.list(zoom_levels())) return(out)
         
       # If the module IS impacted by a change of r$geo()
-      return(paste(zoom_levels()$scale, out, sep = "-"))
+      return(paste(zoom_levels()$scale, out, sep = "_"))
     })
-    
     
     # Return value    
     return(zoom_out)

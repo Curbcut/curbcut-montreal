@@ -9,13 +9,21 @@ post_process <- function(x) {
   x |> 
     mutate(across(where(is.numeric), ~replace(., is.nan(.), NA)), 
            across(where(is.numeric), ~replace(., is.infinite(.), NA))) |> 
-    mutate(ID = as.character(ID))
+    mutate(ID = as.character(ID)) |> 
+    st_transform(4326)
 }
 
 
 # Apply script to all tables ----------------------------------------------
 
-map(all_tables, ~assign(.x, post_process(get(.x)), envir = .GlobalEnv))
+iwalk(all_tables, function(scales, geo) {
+  walk(scales, function(scale) {
+    geo_scale <- paste(geo, scale, sep = "_")
+    processed <- post_process(get(paste(geo, scale, sep = "_")))
+    
+    assign(geo_scale, processed, envir = .GlobalEnv)
+  })
+})
 
 
 # Clean up ----------------------------------------------------------------

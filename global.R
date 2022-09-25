@@ -30,27 +30,15 @@ shinyOptions(cache = cachem::cache_disk(file.path(dirname(tempdir()), "cache")))
 
 # Data --------------------------------------------------------------------
 
-variables <- qread("data/variables.qs")
-modules <- qread("data/modules.qs")
-title_text <- qread("data/title_text.qs")
-dyk <- qread("data/dyk.qs")
-qload("data/colours.qsm")
-
-qload("data/census.qsm")
-centraide <- qread("data/centraide.qs")
-census_variables <- qread("data/census_variables.qs")
-# street <- qread("data/street.qs")
-
-# qload("data/covid.qsm")
-# green_space <- qread("data/green_space.qs")
-qload("data/alley.qsm")
-# crash <- qread("data/crash.qs")
-# marketed_sustainability <- qread("data/marketed_sustainability.qs")
-
-qload("data/stories.qsm")
-
-qload("data/place_explorer.qsm")
-postal_codes <- qread("data/postal_codes.qs")
+# Load all what is in the root of the data folder
+data_files <- list.files("data", full.names = TRUE)
+invisible(lapply(data_files[grepl("qsm$", data_files)], 
+                 qload, env = .GlobalEnv))
+invisible(lapply(data_files[grepl("qs$", data_files)], 
+                 \(x) {
+                   object_name <- gsub("(data/)|(\\.qs)", "", x)
+                   assign(object_name, qread(x), envir = .GlobalEnv)
+                   }))
 
 
 # Global variables --------------------------------------------------------
@@ -86,10 +74,10 @@ mods_rdy <- list(
     "Climate risk" = "climate_risk"
   ),
   "Housing" = c(
-    "Housing system" = "housing"#,
-    # "Housing affordability" = "afford",
-    # "Tenure status" = "tenure",
-    # "Dwelling types" = "dw_types"
+    "Housing system" = "housing",
+    "Housing affordability" = "afford",
+    "Tenure status" = "tenure",
+    "Dwelling types" = "dw_types"
   ),
   "Policy" = c(
     "Montréal climate plans" = "mcp"
@@ -100,8 +88,8 @@ mods_rdy <- list(
   ),
   "Urban life" = c(
     "Active living potential" = "canale", 
-    "Green alleys" = "alley"#,
-    # "Demographics" = "demographics"
+    "Green alleys" = "alley",
+    "Demographics" = "demographics"
   ),
   "Ecology" = c(
     "Natural infrastructure" = "natural_inf"
@@ -132,13 +120,18 @@ map_style_building <- "mapbox://styles/sus-mcgill/cl2bwtrsp000516rwyrkt9ior"
 map_zoom <- 10.1
 map_loc <- c(-73.58, 45.53)
 
-# Naming of the following matters. `census`, `census_max_CT`, `centraide` are
-# keys to get() these map_zoom_levels strings.
 map_zoom_levels_CMA <- 
   c("borough" = 0, "CT" = 10.5, "DA" = 12.5, "building" = 15.5)
 map_zoom_levels_CMA_max_CT <- c("borough" = 0, "CT" = 10.5)
+
 map_zoom_levels_island <- 
   c("borough" = 0, "CT" = 10.5, "DA" = 12.5, "building" = 15.5)
+map_zoom_levels_island_max_CT <- c("borough" = 0, "CT" = 10.5)
+
+map_zoom_levels_city <- 
+  c("borough" = 0, "CT" = 10.5, "DA" = 12.5, "building" = 15.5)
+map_zoom_levels_city_max_CT <- c("borough" = 0, "CT" = 10.5)
+
 map_zoom_levels_centraide <- 
   c("centraide" = 0, "CT" = 10.5, "DA" = 12.5, "building" = 15.5)
 map_zoom_levels_centraide_max_CT <- c("centraide" = 0, "CT" = 10.5)

@@ -3,7 +3,7 @@
 info_table_alley <- function(r = r, data, var_type, var_left, var_right, df, 
                              select_id, build_str_as_DA = TRUE) {
   
-  if (df == "borough_empty") {
+  if (is_scale_in_df("borough_empty", df)) {
     
     if (is.na(select_id) || !select_id %in% alley_text$ID) {
       
@@ -47,7 +47,7 @@ info_table_alley <- function(r = r, data, var_type, var_left, var_right, df,
       HTML(unlist(text_to_display))
     }
     
-  } else if (df == "alley") {
+  } else if (is_scale_in_df("alley", df)) {
     
     if (is.na(select_id) || !select_id %in% alley$ID) {
       

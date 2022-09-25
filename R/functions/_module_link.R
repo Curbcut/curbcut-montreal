@@ -18,14 +18,9 @@ module_link <- function(r, module, zoom = NULL, location = map_loc,
   if (update_view) {
     if (!is.null(df) && !is.null(select_id)) {
       r$sus_link$zoom <- 
-        if (df == "borough") map_zoom else map_zoom_levels_CMA[[df]] + 0.75
+        if (is_scale_in_df("borough", df)) map_zoom else map_zoom_levels_CMA[[df]] + 0.75
       
-      r$sus_link$location <- if (df == "grid") {
-        sapply(
-          as.numeric(dbGetQuery(db, paste0("SELECT centroid_lat, centroid_lon ",
-                                           "FROM grid WHERE ID = ", select_id))),
-          round, digits = 2)
-      } else {
+      r$sus_link$location <- {
         data <- get(df)
         sapply(unlist(data[data$ID == select_id, ]$centroid),
                round, digits = 2)

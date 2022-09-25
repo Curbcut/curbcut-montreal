@@ -144,9 +144,6 @@ library(qs)
 
 # Load and clean data -----------------------------------------------------
 
-# susmontreal 5km bbox
-susmontreal_bbox <- st_buffer(master_polygon, 5000)
-
 # Travel time matrix
 tt_matrix_DA <- qread("dev/data/tt_matrix_DA.qs")
 
@@ -228,7 +225,7 @@ schools <-
   list(public = read_sf("dev/data/amenity_access/PPS_Public_Ecole.shp"),
        private = read_sf("dev/data/amenity_access/PPS_Prive_Installation.shp") |> 
          rename(NOM_OFF_O = NOM_OFFCL)) |> 
-  map(st_filter, susmontreal_bbox) |> 
+  map(st_filter, DA) |> 
   # The following is an example of a school in two buildings (Pool and gymnasium)
   # filter(OBJECTID %in% c(1987, 1988))
   map(~{
@@ -339,50 +336,64 @@ schools <-
 
 # Number of amenities per DA ----------------------------------------------
 
+library(future)
 old_plan <- future::plan()
-future::plan(future::multisession)
-
-
+plan(multisession)
 
 point_amenities <- 
   list(food_distribution = food_distribution, 
        schools = schools,
        health_care = health_care)
 
+time_thresholds <- which(1:60 %% 5 == 0)
+
 # Join all amenities to a DA ID
 DA_amenities <- 
   furrr::future_map(point_amenities, ~st_join(.x, select(DA, ID)))
 
 # Get the amount of amenities reachable per mode in 15 minutes
-DA_amenities <- 
-  map(DA_amenities, function(amenity) {
-    furrr::future_map(tt_matrix_DA, function(mode) {
-      
-      if ("vars" %in% names(amenity)) {
-      vars <- st_drop_geometry(amenity)$vars |> unlist() |> unique()
-
-      map(set_names(vars), function(var) {
-        filtered_am <- amenity |> 
-          st_drop_geometry() |> 
-          unnest(vars) |> 
-          filter(vars == var) |> 
-          left_join(select(amenity, id), by = "id")
-        
-        mode[mode$travel_time_p50 <= 15, ] |> 
-          left_join(filtered_am, by = c("to_id" = "ID")) |> 
-          filter(!st_is_empty(geometry)) |> 
-          group_by(from_id) |> 
-          summarize(amenities = n())
+progressr::with_progress({
+  
+  p <- 
+    progressr::progressor(length(DA_amenities) *
+                            length(tt_matrix_DA) *
+                            length(tt_matrix_DA[[1]]) *
+                            length(time_thresholds))
+  DA_amenities <- 
+    map(DA_amenities, function(amenity) {
+      map(tt_matrix_DA, function(mode) {
+        map(mode, function(timing) {
+          furrr::future_map(set_names(time_thresholds), function(time_threshold) {
+            p()
+            
+            if ("vars" %in% names(amenity)) {
+              vars <- st_drop_geometry(amenity)$vars |> unlist() |> unique()
+              
+              map(set_names(vars), function(var) {
+                filtered_am <- amenity |> 
+                  st_drop_geometry() |> 
+                  unnest(vars) |> 
+                  filter(vars == var) |> 
+                  left_join(select(amenity, id), by = "id")
+                
+                timing[timing$travel_time_p50 <= time_threshold, ] |> 
+                  left_join(filtered_am, by = c("to_id" = "ID")) |> 
+                  filter(!st_is_empty(geometry)) |> 
+                  group_by(from_id) |> 
+                  summarize(amenities = n())
+              })
+            } else {
+              timing[timing$travel_time_p50 <= time_threshold, ] |> 
+                left_join(amenity, by = c("to_id" = "ID")) |> 
+                filter(!st_is_empty(geometry)) |> 
+                group_by(from_id) |> 
+                summarize(amenities = n())
+            }
+          })
+        })
       })
-      } else {
-        mode[mode$travel_time_p50 <= 15, ] |> 
-          left_join(amenity, by = c("to_id" = "ID")) |> 
-          filter(!st_is_empty(geometry)) |> 
-          group_by(from_id) |> 
-          summarize(amenities = n())
-      }
     })
-  })
+})
 
 # Get amenities in one df
 DA_amenities <-
@@ -456,10 +467,9 @@ DA_amenities <-
                   ifelse(is.na(.x), 0, .x)))
 
 DA_amenities <- 
-  interpolate_scales(data = rename(DA_amenities, DAUID = ID),
+  interpolate_scales(data = DA_amenities,
                      base_scale = "DA",
                      all_tables = all_tables,
-                     add_to_grid = FALSE,
                      weight_by = "population")
 
 
@@ -476,7 +486,7 @@ assign_tables(module_tables = DA_amenities)
 # Add to variables table --------------------------------------------------
 
 var_list <-
-  DA_amenities$tables_list$DA |>
+  DA_amenities$tables_list[[1]] |>
   select(-ID, -contains(c("q3", "q5"))) |>
   names()
 
@@ -679,7 +689,6 @@ variables <-
 
 rm(DA_amenities, DA_street_centroid, daycares, health_care, food_distribution_vars,
    daycares_spot, food_distribution, municipal_parks, municipal_parks_sqkm, 
-   new_rows, old_plan, point_amenities, schools, sm_industry, var_list,
-   susmontreal_bbox)
+   new_rows, old_plan, point_amenities, schools, sm_industry, var_list)
 
 

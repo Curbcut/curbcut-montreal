@@ -224,7 +224,8 @@ get_metadata <- function(export_data, r, about_data,
       -str_which(unlist(variables_row$interpolated), "FALSE")]
   
   interpolated <- 
-    if (!is.null(export_data$df)) export_data$df %in% names(interpolated_dfs) else FALSE
+    if (!is.null(export_data$df)) 
+      is_scale_in_df(names(interpolated_dfs), export_data$df) else FALSE
   
   if (interpolated) {
     
@@ -232,7 +233,8 @@ get_metadata <- function(export_data, r, about_data,
     
     about_data[[var]]$interpolated <- 
       # Special case for the boroughs at the census scale!
-      if (export_data$df == "borough" && variables_row$source == "Canadian census") {
+      if (is_scale_in_df("borough", export_data$df) && 
+          variables_row$source == "Canadian census") {
         paste0("<p style = 'font-size: 1.45rem;'>",
                sus_translate(r = r, "For the City of Montreal's boroughs, ",
                              "`{variables_row$var_title}` is ",
