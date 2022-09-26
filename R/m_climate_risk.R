@@ -199,13 +199,11 @@ climate_risk_server <- function(id, r) {
     )
     
     # Data transparency and export
-    observe({
-      r[[id]]$export_data <- reactive(data_export(id = id,
-                                                  data = data(),
-                                                  var_left = var_left(),
-                                                  var_right = var_right(),
-                                                  df = r[[id]]$df()))
-    })
+    r[[id]]$export_data <- reactive(data_export(id = id,
+                                                data = data(),
+                                                var_left = var_left(),
+                                                var_right = var_right(),
+                                                df = r[[id]]$df()))
     
   })
 }

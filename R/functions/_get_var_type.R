@@ -1,6 +1,6 @@
 # GET EXPLORE VARIABLE TYPE ####################################################
 
-get_var_type <- function(data, var_left, var_right, df, select_id, 
+get_var_type <- function(data, geo, var_left, var_right, df, select_id, 
                          build_str_as_DA = TRUE) {
   
   ## Invalidate if non-standard df() -------------------------------------------
@@ -54,7 +54,8 @@ get_var_type <- function(data, var_left, var_right, df, select_id,
   
   ## Create var_left_label and var_right_label ---------------------------------
   
-  built_df <- if (build_str_as_DA && is_scale_in_df("building", df)) "DA" else df
+  built_df <- if (build_str_as_DA && is_scale_in_df("building", df)) 
+    paste0(geo, "_DA") else df
   
   breaks_q5_left <- variables$breaks_q5[[
     which(variables$var_code == unique(sub("_\\d{4}$", "", var_left)))]]

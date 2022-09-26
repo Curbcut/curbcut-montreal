@@ -5,7 +5,7 @@
 
 update_module <- function(r, id, mod_ns = paste(id, id, sep = "-"), 
                           session, 
-                          zoom = r[[id]]$zoom, location, 
+                          zoom = r[[id]]$zoom(), location, 
                           map_id = NULL, 
                           zoom_auto, var_left, 
                           var_right, more_args) {
@@ -21,11 +21,11 @@ update_module <- function(r, id, mod_ns = paste(id, id, sep = "-"),
 
   ## Update mapview ----------------------------------------------------------
 
-  if (!all(vapply(c(zoom, location), is.null, TRUE))) {
+  if (all(sapply(c(zoom, location), is.null))) {
     if (!is.null(map_id)) {
       rdeck_proxy(id = paste(id, id, map_id, sep = "-"),
                   initial_view_state = 
-                    view_state(center = location, zoom = zoom())
+                    view_state(center = location, zoom = zoom)
       )
     }}
 

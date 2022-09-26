@@ -9,11 +9,11 @@ list_tile_sources <- function(username = "sus-mcgill",
   res <- httr::GET(paste0("https://api.mapbox.com/tilesets/v1/sources/", 
                           username),
                    query = list(access_token = access_token, limit = 500))
-  resDF <- fromJSON(httr::content(res, as = "text"))
+  resDF <- jsonlite::fromJSON(httr::content(res, as = "text"))
   while (isTRUE(grepl("next", res$headers$link))) {
-    res <- GET(str_extract(res$headers$link, "(?<=\\<).*(?=>)"),
+    res <- httr::GET(str_extract(res$headers$link, "(?<=\\<).*(?=>)"),
                query = list(access_token = access_token, limit = 500))
-    resDF <- rbind(resDF, fromJSON(httr::content(res, as = "text")))
+    resDF <- rbind(resDF, jsonlite::fromJSON(httr::content(res, as = "text")))
   }
   
   resDF |> 
@@ -72,12 +72,12 @@ list_tilesets <- function(username = "sus-mcgill", access_token = .sus_token) {
   res <- httr::GET(paste0("https://api.mapbox.com/tilesets/v1/", 
                           username),
                    query = list(access_token = access_token, limit = 500))
-  resDF <- fromJSON(httr::content(res, as = "text")) |> 
+  resDF <- jsonlite::fromJSON(httr::content(res, as = "text")) |> 
     select(id, filesize, starts_with("tileset_precisions"))
   while (isTRUE(grepl("next", res$headers$link))) {
-    res <- GET(str_extract(res$headers$link, "(?<=\\<).*(?=>)"),
+    res <- httr::GET(str_extract(res$headers$link, "(?<=\\<).*(?=>)"),
                query = list(access_token = access_token, limit = 500))
-    resDF <- bind_rows(resDF, fromJSON(httr::content(res, as = "text"))) |> 
+    resDF <- bind_rows(resDF, jsonlite::fromJSON(httr::content(res, as = "text"))) |> 
       select(id, filesize, starts_with("tileset_precisions"))
   }
   

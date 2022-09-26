@@ -144,25 +144,7 @@ shinyServer(function(input, output, session) {
   
   
 
-  ## Newsletter modal ----------------------------------------------------------
-
-  # observeEvent(input$cookies$signupform, {
-  # 
-  #   cookie_last <- input$cookies$signupform
-  # 
-  #   # 28 days after last visit, popup the newsletter subscription
-  #   if (is.null(cookie_last) ||
-  #       (!is.null(cookie_last) && Sys.time() > (as.POSIXct(cookie_last) + 2419200))) {
-  #     shinyjs::delay(5000, showModal(modalDialog(HTML(readLines("www/sus.signupform.html")),
-  #                                                easyClose = TRUE)))
-  #   }
-  # 
-  #   # After ANY visit, restart the timer
-  #   signupform <- list(name = "signupform",
-  #                      value = Sys.time())
-  #   session$sendCustomMessage("cookie-set", signupform)
-  # 
-  # }, once = TRUE, ignoreNULL = FALSE, ignoreInit = TRUE)
+  ## Newsletter ----------------------------------------------------------------
 
   onclick("subscribe", {
     showModal(modalDialog(HTML(readLines("www/sus.signupform.html")),
@@ -341,13 +323,8 @@ shinyServer(function(input, output, session) {
   
   ## Modules -------------------------------------------------------------------
   
-  export_data <- list()
-  
   active_mod_server <- function(active_tab = input$sus_page) {
-    mod_function <- 
-      paste0(active_tab, "_server('", active_tab, "', r = r)")
-
-    return(eval(parse(text = mod_function)))
+    do.call(paste0(active_tab, "_server"), list(active_tab, r = r))
   }
 
   observeEvent(input$sus_page, {
