@@ -55,9 +55,9 @@ canale_server <- function(id, r) {
     
     # Map zoom levels change depending on r$geo()
     map_zoom_levels <- reactive({
-      out <- get_zoom_levels(default = "CMA", 
-                             geo = r$geo(),
-                             var_left = isolate(var_left()))
+      get_zoom_levels(default = "CMA", 
+                      geo = r$geo(),
+                      var_left = isolate(var_left()))
     }) |> bindEvent(r$geo())
     
     # Zoom string reactive
@@ -167,13 +167,11 @@ canale_server <- function(id, r) {
     )
 
     # Data transparency and export
-    observe({
-      r[[id]]$export_data <- reactive(data_export(id = id,
-                                                  data = data(),
-                                                  var_left = var_left(),
-                                                  var_right = var_right(),
-                                                  df = r[[id]]$df()))
-    })
-
+    r[[id]]$export_data <- reactive(data_export(id = id,
+                                                data = data(),
+                                                var_left = var_left(),
+                                                var_right = var_right(),
+                                                df = r[[id]]$df()))
+    
   })
 }
