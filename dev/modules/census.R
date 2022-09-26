@@ -163,9 +163,9 @@ census_variables <-
 
 # Gather data -------------------------------------------------------------
 
-data_to_add <-
-  add_census_data(census_vec, scales,  all_tables, years, parent_vectors)
-qsave(data_to_add, file = "dev/data/modules_raw_data/census.qs")
+# data_to_add <-
+#   add_census_data(census_vec, scales,  all_tables, years, parent_vectors)
+# qsave(data_to_add, file = "dev/data/modules_raw_data/census.qs")
 
 data_to_add <- qread("dev/data/modules_raw_data/census.qs")
 

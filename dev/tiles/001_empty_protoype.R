@@ -249,6 +249,7 @@ walk(created, ~map(.x, ~map(.x, ~{
 
 rm(created)
 
+
 # Publish tilesets --------------------------------------------------------
 
 published <- 
@@ -263,3 +264,6 @@ walk(published, ~map(.x, ~{
     stop(paste0("One or more tileset hasn't succesfully published. Look at ",
                 "the `published` object."))
 }))
+
+rm(published)
+
