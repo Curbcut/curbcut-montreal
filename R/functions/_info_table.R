@@ -1,7 +1,7 @@
 #### INFO TABLE ################################################################
 
 info_table <- function(r, data, var_type, var_left, var_right, df, select_id,
-                       build_str_as_DA = TRUE) {
+                       geo, build_str_as_DA = TRUE) {
   
   stopifnot(!is.reactive(data))
   stopifnot(!is.reactive(var_type))
@@ -29,6 +29,7 @@ info_table <- function(r, data, var_type, var_left, var_right, df, select_id,
     var_right = var_right, 
     df = df,
     select_id = select_id,
+    geo = geo,
     build_str_as_DA = build_str_as_DA)
   
   if (is.null(z)) return(z)

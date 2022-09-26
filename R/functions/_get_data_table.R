@@ -38,7 +38,7 @@ get_data_table <- function(df, geo, var_left, var_right, data_type,
   
   # Building univariate
   if (data_type == "building_q5") {
-    data <- DA
+    data <- get(paste(geo, "DA", sep = "_"))
     data <- data[c("ID", "name", "name_2", "DAUID", "CTUID", "CSDUID", 
                    "population", var_left, l_q3, l_q5)] |> 
       setNames(c("ID", "name", "name_2", "DAUID", "CTUID", "CSDUID", 
@@ -68,7 +68,7 @@ get_data_table <- function(df, geo, var_left, var_right, data_type,
   
   # Building bivariate
   if (data_type == "building_bivar") {
-    data <- DA
+    data <- get(paste(geo, "DA", sep = "_"))
     data <- data[c("ID", "name", "name_2", "DAUID", "CTUID", "CSDUID", 
                    "population", var_left, l_q3, l_q5, var_right, r_q3, 
                    r_q5)] |> 
@@ -117,7 +117,7 @@ get_data_table <- function(df, geo, var_left, var_right, data_type,
   # Building delta
   if (data_type == "building_delta") {
 
-    data <- DA
+    data <- get(paste(geo, "DA", sep = "_"))
     
     data <- data[c("ID", "name", "name_2", "DAUID", "CTUID", "CSDUID", 
                    "population", var_left)]
@@ -165,7 +165,7 @@ get_data_table <- function(df, geo, var_left, var_right, data_type,
   
   # building_NA_delta
   if (data_type == "building_NA_delta") {
-    data <- DA
+    data <- get(paste(geo, "DA", sep = "_"))
     data <- data[c("ID", "name", "name_2", "DAUID", "CTUID", "CSDUID", 
                    "population")]
     data$group <- "NA"
@@ -228,7 +228,7 @@ get_data_table <- function(df, geo, var_left, var_right, data_type,
   
   # Building delta bivariate
   if (data_type == "building_delta_bivar") {
-    data <- DA
+    data <- get(paste(geo, "DA", sep = "_"))
     data <- data[c("ID", "name", "name_2", if (is_scale_in_df("DA", df)) "DAUID",
                    if (is_scale_in_df(c("DA", "CT"), df)) "CTUID",
                    if (is_scale_in_df(c("DA", "CT", "borough"), df)) "CSDUID", 
@@ -257,7 +257,7 @@ get_data_table <- function(df, geo, var_left, var_right, data_type,
     
   # building_NA_delta_bivar
   if (data_type == "building_NA_delta_bivar") {
-    data <- DA
+    data <- get(paste(geo, "DA", sep = "_"))
     data <- data[c("ID", "name", "name_2", if (is_scale_in_df("DA", df)) "DAUID",
                    if (is_scale_in_df(c("DA", "CT"), df)) "CTUID", 
                    if (is_scale_in_df(c("DA", "CT", "borough"), df)) "CSDUID", 

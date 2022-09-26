@@ -27,9 +27,11 @@ get_var_type <- function(data, var_left, var_right, df, select_id,
   ## Selections ----------------------------------------------------------------
   
   select_df <- if (build_str_as_DA && is_scale_in_df("building", df)) {
-    if (is.na(select_id)) DA else {
-      dbGetQuery(db, paste0("SELECT * FROM building WHERE ID = ", 
-                                                        select_id))
+    if (is.na(select_id)) get(paste(geo, "DA", sep = "_")) else {
+      dbGetQuery(db, paste0("SELECT * FROM ", 
+                            paste(geo, "building", sep = "_"), 
+                            " WHERE ID = ", 
+                            select_id))
     }
   } else data
   selection <- if (is.na(select_id)) select_df[0,] else 

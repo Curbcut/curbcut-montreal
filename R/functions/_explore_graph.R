@@ -1,7 +1,7 @@
 #### EXPLORE GRAPH #############################################################
 
 explore_graph <- function(data, r = r, var_type, var_left, var_right, df, select_id, 
-                          build_str_as_DA = TRUE, plot_type = "auto") {
+                          geo, build_str_as_DA = TRUE, plot_type = "auto") {
   
   ## Check arguments -----------------------------------------------------------
   
@@ -21,13 +21,15 @@ explore_graph <- function(data, r = r, var_type, var_left, var_right, df, select
     
     if (!is.na(select_id)) {
       if (is_scale_in_df("building", df)) select_id <- 
-          dbGetQuery(db, paste0("SELECT DAUID FROM building WHERE ID = ", 
+          dbGetQuery(db, paste0("SELECT DAUID FROM ", 
+                                paste(geo, "building", sep = "_"), 
+                                " WHERE ID = ", 
                                 select_id))$DAUID
       if (is_scale_in_df("street", df)) select_id <- street$DAUID[street$ID == select_id]
       if (sum(!is.na(select_id)) == 0) select_id <- NA
     }
     
-    df <- "DA"
+    df <- paste(geo, "DA", sep = "_")
     
   }
 

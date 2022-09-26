@@ -4,7 +4,7 @@
 #' info_table module.
 
 get_info_table_data <- function(r = r, data, var_type, var_left, var_right, df, 
-                                select_id, build_str_as_DA = TRUE) {
+                                select_id, geo, build_str_as_DA = TRUE) {
   
   ## Initialize dat and output list --------------------------------------------
   
@@ -14,16 +14,18 @@ get_info_table_data <- function(r = r, data, var_type, var_left, var_right, df,
   
   ## Get modified df for building/street ---------------------------------------
   
-  if (df != "building") build_str_as_DA <- FALSE
+  if (!is_scale_in_df("building", df)) build_str_as_DA <- FALSE
   
   if (build_str_as_DA) {
-    dat_select <- if (is.na(select_id)) DA else {
-      dbGetQuery(db, paste0("SELECT * FROM building WHERE ID = ", 
-                            select_id))
+    dat_select <- if (is.na(select_id)) get(paste(geo, "DA", sep = "_")) else {
+      dbGetQuery(db, paste0("SELECT * FROM ", paste(geo, "building", sep = "_"), 
+                            " WHERE ID = ", select_id))
     }
     dat_select_id <- select_id
     if (!is.na(select_id)) 
-      select_id <- dbGetQuery(db, paste0("SELECT DAUID FROM building WHERE ID = ", 
+      select_id <- dbGetQuery(db, paste0("SELECT DAUID FROM ", 
+                                         paste(geo, "building", sep = "_"), 
+                                         " WHERE ID = ", 
                             select_id))$DAUID
     if (length(select_id) == 0) select_id <- NA
     

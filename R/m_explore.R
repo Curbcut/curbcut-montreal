@@ -40,14 +40,14 @@ explore_server <- function(id, r, data, var_left, var_right,
                              r = r,
                              data = data(), var_left = var_left(), 
                              var_right = var_right(), df = df(), 
-                             select_id = select_id(), 
+                             select_id = select_id(), geo = r$geo(),
                              build_str_as_DA = build_str_as_DA())),
                            table = reactive(info_table),
                            table_args = reactive(list(
                              r = r,
                              data = data(), var_left = var_left(),
                              var_right = var_right(), df = df(), 
-                             select_id = select_id(), 
+                             select_id = select_id(), geo = r$geo(),
                              build_str_as_DA = build_str_as_DA()))) {
   
   stopifnot(is.reactive(data))
