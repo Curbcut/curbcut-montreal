@@ -15,8 +15,8 @@ add_vars <- function(data_out, census_vec, breaks_q3, breaks_q5, scales,
   add_vars <- unique(add_vars)
   
   interpolation_keys <- 
-    map(set_names(names(data_out)), ~{
-      if (.x %in% c("DA", "CT")) FALSE else "dissemination area"
+    map_chr(set_names(names(data_out)), ~{
+      if (str_detect(.x, "_DA$|_CT$")) FALSE else "dissemination area"
     })
   
   map_dfr(add_vars, function(var) {

@@ -365,7 +365,7 @@ new_rows <-
              characteristics_explanation)
     
     interpolated_key <- 
-      map_chr(set_names(names(all_cent_d)), function(x) {
+      map_chr(set_names(names(all_cent_d$tables_list)), function(x) {
         if (str_detect(x, "_CT$")) return(FALSE)
         return("census tracts")
       })

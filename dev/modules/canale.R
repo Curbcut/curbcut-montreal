@@ -59,6 +59,10 @@ breaks_q5_active <-
                                  .before = canale_ind_2016)}) |> 
   rename(var = canale_ind_2016)
 
+interpolation_keys <- 
+  map_chr(set_names(names(all_canale$tables_list)), ~{
+    if (str_detect(.x, "_DA$")) FALSE else "dissemination area"
+  })
 
 variables <- 
   variables |>
@@ -75,10 +79,7 @@ variables <-
     breaks_q3 = breaks_q3_active,
     breaks_q5 = breaks_q5_active,
     source = "McGill Geo-Social Determinants of Health Research Group",
-    interpolated = list(c(DA = FALSE,
-                          CT = "dissemination area",
-                          borough = "dissemination area",
-                          centraide = "dissemination area")))
+    interpolated = interpolation_keys)
 
 
 # Add to modules table ----------------------------------------------------

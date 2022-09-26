@@ -34,7 +34,7 @@ shp_present <-
 if (!all(names(all_tables) %in% shp_present)) {
   missing_shp <- names(all_tables)[which(!names(all_tables) %in% shp_present)]
   stop(paste0("The shapefile for `", missing_shp, 
-              "` is missing in 'dev/data/geometry'."))
+              "` is missing in 'dev/data/geometry/'."))
 }
 
 # A polygon covering all our geographies

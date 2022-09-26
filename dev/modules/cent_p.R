@@ -496,7 +496,7 @@ new_rows <-
                     post_short)
     
     interpolated_key <- 
-      map_chr(set_names(names(all_cent_p)), function(x) {
+      map_chr(set_names(names(all_cent_p$tables_list)), function(x) {
         if (str_detect(x, "_CT$")) return(FALSE)
         return("census tracts")
       })

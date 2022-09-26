@@ -87,7 +87,7 @@ access_server <- function(id, r) {
     time <- reactive("2016")
     
     # Choose tileset
-    tile <- reactive("CMA-CT")
+    tile <- reactive("CMA_CT")
 
     # Enable or disable slider + type of destination
     observeEvent({r[[id]]$select_id()

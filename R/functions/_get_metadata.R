@@ -91,6 +91,8 @@ get_metadata <- function(export_data, r, about_data,
     ranks <- variables_row$breaks_q5[[1]][
       !is.na(variables_row$breaks_q5[[1]]$var_name), ]
     
+    ranks <- ranks[ranks$scale == export_data$df, ]
+    
     about_data[[var]]$details_2 <- 
       paste0(about_data[[var]]$details_2, " (",
              paste(ranks$var,
@@ -228,7 +230,7 @@ get_metadata <- function(export_data, r, about_data,
       is_scale_in_df(names(interpolated_dfs), export_data$df) else FALSE
   
   if (interpolated) {
-    
+
     from <- sus_translate(r = r, interpolated_dfs[[export_data$df]])
     
     about_data[[var]]$interpolated <- 

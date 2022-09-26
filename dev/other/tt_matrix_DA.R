@@ -6,24 +6,18 @@
 library(tidyverse)
 library(sf)
 library(qs)
-old_plan <- future::plan()
-future::plan(future::multisession)
 
 
 # Get the population weighted centroid of DA on street network ------------
-
-progressr::handlers(progressr::handler_progress(
-  format =
-    ":spin :current/:total (:message) [:bar] :percent in :elapsed ETA: :eta",
-  width = 60,
-  complete = "+"
-))
 
 library(r5r)
 options(java.parameters = '-Xmx16G')
 r5r_core <- setup_r5(data_path = "dev/data/routing",  elevation = "TOBLER",
                      verbose = FALSE)
 
+# old_plan <- future::plan()
+# future::plan(future::multisession)
+# 
 # # Get the closest street point of the centroid
 # streets_for_amenities <-
 #   qread("dev/data/street.qs") |>
@@ -198,4 +192,4 @@ qsave(tt_matrix, file = "dev/data/tt_matrix_DA.qs")
 # Clean -------------------------------------------------------------------
 
 rm(r5r_core, streets_for_amenities, DA_pop_centroid, DA_street_centroid, 
-   destinations, groups, old_plan, p)
+   destinations, groups, old_plan)

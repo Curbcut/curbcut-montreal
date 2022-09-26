@@ -148,8 +148,8 @@ breaks_q3_active <-
                                  .before = 1)})
 
 interpolation_keys <- 
-  map(set_names(names(all_climate_risk$tables_list)), ~{
-    if (.x == "grid") FALSE else "250-m grid cells"
+  map_chr(set_names(names(all_climate_risk$tables_list)), ~{
+    if (str_detect(.x, "_grid$")) FALSE else "250-m grid cells"
   })
 
 variables <- 

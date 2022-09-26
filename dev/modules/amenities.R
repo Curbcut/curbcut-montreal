@@ -336,10 +336,6 @@ schools <-
 
 # Number of amenities per DA ----------------------------------------------
 
-library(future)
-old_plan <- future::plan()
-plan(multisession)
-
 point_amenities <- 
   list(food_distribution = food_distribution, 
        schools = schools,
@@ -363,7 +359,7 @@ progressr::with_progress({
     map(DA_amenities, function(amenity) {
       map(tt_matrix_DA, function(mode) {
         map(mode, function(timing) {
-          furrr::future_map(set_names(time_thresholds), function(time_threshold) {
+          map(set_names(time_thresholds), function(time_threshold) {
             p()
             
             if ("vars" %in% names(amenity)) {
@@ -396,56 +392,68 @@ progressr::with_progress({
 })
 
 # Get amenities in one df
-DA_amenities <-
-  furrr::future_imap(DA_amenities, function(amenity, n_amenity) {
-    amenity |> 
-      imap(function(mode, n_mode) {
-        if (!is.data.frame(mode)) {
-          # Gotta go in another level of lists!
-          mode |> 
-            imap(function(var, n_var) {
-              names(var)[2] <- paste(n_amenity, n_var, str_to_lower(n_mode), 
-                                     "count", sep = "_")
-              var
-            }) |> 
-            reduce(left_join, by = "from_id")
+DA_amenities <- 
+furrr::future_imap(DA_amenities, function(amenity, n_amenity) {
+  imap(amenity, function(mode, n_mode) {
+    imap(mode, function(timing, n_timing) {
+      imap(timing, function(time_threshold, n_time_threshold) {
+        if (is.data.frame(time_threshold)) {
+          names(time_threshold)[2] <- paste(n_amenity, str_to_lower(n_mode),
+                                            n_timing, n_time_threshold,
+                                            "count", sep = "_")
+          time_threshold
         } else {
-        names(mode)[2] <- paste(n_amenity, str_to_lower(n_mode), "count", sep = "_")
-        mode}}) |> 
-      reduce(left_join, by = "from_id")
-  })
+          imap(time_threshold, function(var, n_var) {
+            names(var)[2] <- 
+              paste(n_amenity, n_var, str_to_lower(n_mode),
+                    n_timing, n_time_threshold, "count", sep = "_")
+            var
+          })
+        } |> reduce(left_join, by = "from_id")
+      }) |> reduce(left_join, by = "from_id")
+    }) |> reduce(left_join, by = "from_id")
+  }) |> reduce(left_join, by = "from_id")
+})
 
 # For parks, the amount of amenities reachable per mode in 15 minutes must
 # be in sqkm
 municipal_parks_sqkm <- st_join(municipal_parks, select(DA, ID))
 DA_amenities$municipal_parks_sqkm <-
-  furrr::future_imap(tt_matrix_DA, function(mode, n_mode) {
-    out <- 
-      mode[mode$travel_time_p50 <= 15, ] |> 
-      left_join(municipal_parks_sqkm, by = c("to_id" = "ID")) |> 
-      filter(!st_is_empty(geometry)) |> 
-      group_by(from_id) |> 
-      summarize(amenities = sum(sqkm))
-    names(out)[2] <- paste0("municipal_parks_", str_to_lower(n_mode), "_sqkm")
-    out
+  imap(tt_matrix_DA, function(mode, n_mode) {
+    imap(mode, function(timing, n_timing) {
+      imap(set_names(time_thresholds), function(time_threshold, n_time_threshold) {
+        out <-
+          timing[timing$travel_time_p50 <= time_threshold, ] |>
+          left_join(municipal_parks_sqkm, by = c("to_id" = "ID")) |>
+          filter(!st_is_empty(geometry)) |>
+          group_by(from_id) |>
+          summarize(amenities = sum(sqkm))
+        names(out)[2] <- paste("municipal_parks", str_to_lower(n_mode),
+                                n_timing, n_time_threshold, "sqkm", sep = "_")
+        out
+      }) |> reduce(left_join, by = "from_id")
+    }) |> reduce(left_join, by = "from_id")
   }) |> reduce(left_join, by = "from_id")
 
 # For daycares, the amount of amenities reachable per mode in 15 minutes must
 # be per spots
 daycares_spot <- st_join(daycares, select(DA, ID))
 DA_amenities$daycares_spot <-
-  furrr::future_imap(tt_matrix_DA, function(mode, n_mode) {
-    out <- 
-      mode[mode$travel_time_p50 <= 15, ] |> 
-      left_join(daycares_spot, by = c("to_id" = "ID")) |> 
-      filter(!st_is_empty(geometry)) |> 
-      group_by(from_id) |> 
-      summarize(amenities = sum(spots_total))
-    names(out)[2] <- paste0("daycare_spots_", str_to_lower(n_mode), "_count")
-    out
+  imap(tt_matrix_DA, function(mode, n_mode) {
+    imap(mode, function(timing, n_timing) {
+      imap(set_names(time_thresholds), function(time_threshold, n_time_threshold) {
+        out <- 
+          timing[timing$travel_time_p50 <= time_threshold, ] |> 
+          left_join(daycares_spot, by = c("to_id" = "ID")) |> 
+          filter(!st_is_empty(geometry)) |> 
+          group_by(from_id) |> 
+          summarize(amenities = sum(spots_total))
+        names(out)[2] <- paste("daycare_spots", str_to_lower(n_mode),
+                                n_timing, n_time_threshold, "count", sep = "_")
+        out
+      }) |> reduce(left_join, by = "from_id")
+    }) |> reduce(left_join, by = "from_id")
   }) |> reduce(left_join, by = "from_id")
-
-future::plan(old_plan)
 
 # Bind all to one dataframe
 DA_amenities <- 
@@ -455,7 +463,7 @@ DA_amenities <-
 
 
 # Get DA amenities at other scales ----------------------------------------
-# On average, an individual living in this scale can reach X amenity in a 15 
+# On average, an individual living in this scale can reach X amenity in a Y 
 # minutes trip
 
 # Add all DAs, change NAs for 0s
