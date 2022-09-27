@@ -5,8 +5,7 @@ get_var_type <- function(data, geo, var_left, var_right, df, select_id,
   
   ## Invalidate if non-standard df() -------------------------------------------
   
-  if (!is_scale_in_df(c("borough", "CT", "DA", "building", "grid",
-                 "street", "heatmap", "point", "centraide"), df)) return(df)
+  if (!is_scale_in_df(c(all_choropleth, "grid"), df)) return(df)
   
   
   ## Identify NA tables --------------------------------------------------------

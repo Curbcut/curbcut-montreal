@@ -47,7 +47,7 @@ convert_unit <- function(x, var_name = NULL, compact = FALSE) {
 
 # return_closest_year -----------------------------------------------------
 
-return_closest_year <- function(var, df = "CMA_borough", build_str_as_DA = TRUE) {
+return_closest_year <- function(var, df = "CMA_CSD", build_str_as_DA = TRUE) {
   
   # Not to do for grid - always 2016
   if (is_scale_in_df("grid", df)) return(var)

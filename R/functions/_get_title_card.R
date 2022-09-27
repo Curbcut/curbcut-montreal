@@ -14,13 +14,13 @@ get_title_card <- function(r = r, df, select_id) {
 
   # Get scale names
   geo_area <- switch(gsub(".*_", "", df), 
-                     "borough" = "borough/city",
+                     "CSD" = "borough/city",
                      "CT" = "census tract",
                      "DA" = "dissemination area",
                      "centraide" = "centraide zone",
                      "zone")
   geo_areas <-  switch(gsub(".*_", "", df), 
-                       "borough" = "boroughs or cities",
+                       "CSD" = "boroughs or cities",
                        "CT" = "census tracts", 
                        "DA" = "dissemination areas",
                        "centraide" = "centraide zones",

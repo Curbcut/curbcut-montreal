@@ -244,7 +244,8 @@ no2 <- read_csv("dev/data/place_explorer/no2lur_a_16.csv") |>
   st_as_sf(coords = c("longitude", "latitude"),crs = 4326) |> 
   select(-postalcode16, -province) |> 
   st_filter(master_polygon) |> 
-  rename(NO2 = 1)
+  rename(NO2 = 1) |> 
+  st_transform(st_crs(CMA_CSD))
 
 # pm25 <- read_csv("dev/data/place_explorer/pm25dalc_a_18.csv") |> 
 #   st_as_sf(coords = c("longitude", "latitude"),crs = 4326) |> 
@@ -321,9 +322,10 @@ title_card_index <-
 ndvi <- read_csv("dev/data/place_explorer/grlan_amn_19.csv") |> 
   st_as_sf(coords = c("longitude", "latitude"),crs = 4326) |> 
   select(-postalcode19, -province) |> 
-  st_filter(borough) |> 
+  st_filter(master_polygon) |> 
   # I believe the first value is Annual value, Mean of Means 100m.
-  select(NDVI = 1)
+  select(NDVI = 1) |> 
+  st_transform(st_crs(CMA_CSD))
 
 title_card_indicators <- 
   append(title_card_indicators, 
@@ -582,7 +584,8 @@ pe_theme_order <- lapply(pe_theme_order, \(x) split(x, x$ID))
 modules <- 
   modules |> 
   add_modules(id = "place_explorer",
-              metadata = FALSE)
+              metadata = FALSE,
+              dataset_info = "TKTK")
 
 # Cleanup -----------------------------------------------------------------
 

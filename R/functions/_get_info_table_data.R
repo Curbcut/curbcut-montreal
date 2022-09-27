@@ -152,7 +152,7 @@ get_info_table_data <- function(r = r, data, var_type, var_left, var_right, df,
   scale_sing <- switch(
     gsub(".*_", "", df),  
     "date" = NA_character_,
-    "borough" = "borough/city",
+    "CSD" = "borough/city",
     "CT" = "census tract",
     "DA" = "dissemination area",
     "grid" = "250-m",
@@ -191,7 +191,7 @@ get_info_table_data <- function(r = r, data, var_type, var_left, var_right, df,
     NA_character_)
   
   if (grepl("select", out$var_type)) {
-    if (is_scale_in_df(c("borough", "centraide"), df)) select_name$name_2 <- 
+    if (is_scale_in_df(first_level_choropleth, df)) select_name$name_2 <- 
         sus_translate(r = r, glue("{select_name$name_2}"))
     
     out$place_heading <- if (is_scale_in_df(c("building", "street"), df) && 

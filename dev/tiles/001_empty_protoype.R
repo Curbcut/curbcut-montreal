@@ -9,14 +9,14 @@ source("dev/tiles/_tile_functions.R")
 # All combinations --------------------------------------------------------
 
 all_tables <- 
-  list("CMA" = c("borough", "CT", "DA", "grid", "building"),
-       "island" = c("borough", "CT", "DA", "grid", "building"),
-       "city" = c("borough", "CT", "DA", "grid", "building"),
+  list("CMA" = c("CSD", "CT", "DA", "grid", "building"),
+       "island" = c("CSD", "CT", "DA", "grid", "building"),
+       "city" = c("CSD", "CT", "DA", "grid", "building"),
        "centraide" = c("centraide", "CT", "DA", "grid", "building"))
 
 combinations <- 
   imap(all_tables, function(scales, geo) {
-    if (geo %in% c("CMA", "island", "city")) geo <- "borough"
+    if (geo %in% c("CMA", "island", "city")) geo <- "CSD"
     
     c(setNames(scales, scales),
       list("auto_zoom" = c(geo, "CT", "DA", "building"),
@@ -195,14 +195,14 @@ auto_zoom_recipe_fun <- function(name, scales) {
     map_dbl(set_names(scales), ~case_when(str_detect(.x, "_CT$") ~ 11,
                                           str_detect(.x, "_DA$") ~ 13,
                                           str_detect(.x, "_building$") ~ 16,
-                                          # borough, centraide... First level
+                                          # CSD, centraide... First level
                                           TRUE ~ 2))
   
   maxzooms <- 
     map_dbl(set_names(scales), ~case_when(str_detect(.x, "_CT$") ~ 12,
                                           str_detect(.x, "_DA$") ~ 15,
                                           str_detect(.x, "_building$") ~ 16,
-                                          # borough, centraide... First level
+                                          # CSD, centraide... First level
                                           TRUE ~ 10))
   layer_sizes <- 
     set_names(rep(NA, length(scales)), scales)

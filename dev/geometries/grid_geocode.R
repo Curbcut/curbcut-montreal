@@ -1,5 +1,5 @@
 #### Reverse geocode grid centroids ############################################
-# Dependent script: needs 'borough' object
+# Dependent script: needs 'CSD' object
 
 # This script makes thousands of expensive calls to Google's geocoding API, so
 # the geocoding portion should only be run a single time!
@@ -40,7 +40,7 @@ addresses <- qread("dev/data/grid_geocode.qs")
 # Parse results -----------------------------------------------------------
 
 # Use municipality names to detect end of street address
-city_list <- c(borough$name, "Montréal", "Montreal", "Baie-D'Urfe", 
+city_list <- c(CSD$name, "Montréal", "Montreal", "Baie-D'Urfe", 
                "Pointe-aux-Trembles", "Lasalle", "Pierrefonds", "L'Île-Bizard",
                "Côte Saint-Luc", "Mount Royal", "Roxboro", "Sainte-Geneviève",
                "Riviere-des-Prairies—Pointe-aux-Trembles", "Montreal West",

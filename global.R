@@ -107,21 +107,29 @@ map_zoom <- 10.1
 map_loc <- c(-73.58, 45.53)
 
 map_zoom_levels_CMA <- 
-  c("borough" = 0, "CT" = 10.5, "DA" = 12.5, "building" = 15.5)
-map_zoom_levels_CMA_max_CT <- c("borough" = 0, "CT" = 10.5)
+  c("CSD" = 0, "CT" = 10.5, "DA" = 12.5, "building" = 15.5)
+map_zoom_levels_CMA_max_CT <- c("CSD" = 0, "CT" = 10.5)
 
 map_zoom_levels_island <- 
-  c("borough" = 0, "CT" = 10.5, "DA" = 12.5, "building" = 15.5)
-map_zoom_levels_island_max_CT <- c("borough" = 0, "CT" = 10.5)
+  c("CSD" = 0, "CT" = 10.5, "DA" = 12.5, "building" = 15.5)
+map_zoom_levels_island_max_CT <- c("CSD" = 0, "CT" = 10.5)
 
 map_zoom_levels_city <- 
-  c("borough" = 0, "CT" = 10.5, "DA" = 12.5, "building" = 15.5)
-map_zoom_levels_city_max_CT <- c("borough" = 0, "CT" = 10.5)
+  c("CSD" = 0, "CT" = 10.5, "DA" = 12.5, "building" = 15.5)
+map_zoom_levels_city_max_CT <- c("CSD" = 0, "CT" = 10.5)
 
 map_zoom_levels_centraide <- 
   c("centraide" = 0, "CT" = 10.5, "DA" = 12.5, "building" = 15.5)
 map_zoom_levels_centraide_max_CT <- c("centraide" = 0, "CT" = 10.5)
 
+first_level_choropleth <- 
+  sapply(ls()[grepl("map_zoom_levels_", ls())], \(x) names(get(x)[1]),
+         USE.NAMES = FALSE) |> unique()
+  
+all_choropleth <- 
+  sapply(sapply(ls()[grepl("map_zoom_levels_", ls())], get,
+                USE.NAMES = FALSE), names,
+         USE.NAMES = FALSE) |> unlist() |> unique()
 
 # Set up fonts ------------------------------------------------------------
 

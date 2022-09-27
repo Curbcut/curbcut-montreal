@@ -13,7 +13,7 @@ get_zoom_string <- function(zoom, zoom_levels, geo = "CMA") {
 get_zoom_name <- function(x) sapply(
   gsub(".*_", "", x), 
   switch, 
-  "borough" = "Borough/city",
+  "CSD" = "Borough/city",
   "CT" = "Census tract",
   "DA" = "Dissemination area",
   "grid" = "250-m grid cell",
@@ -38,7 +38,7 @@ get_zoom_label_t <- function(zoom_levels, r) {
 }
 
 get_zoom_code <- function(x) {
-  if (x == "Borough/city" || x == "Arrondissement/ville") return("borough")
+  if (x == "Borough/city" || x == "Arrondissement/ville") return("CSD")
   if (x == "Census tract" || x == "Secteur de recensement") return("CT")
   if (x == "Dissemination area" || x == "Aire de diffusion") return("DA")
   if (x == "Building" || x == "Bâtiment") return("building")

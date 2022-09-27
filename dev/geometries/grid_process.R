@@ -1,5 +1,5 @@
 #### Reverse geocode grid centroids ############################################
-# Dependent script: needs 'borough', 'CT', 'DA' and 'grid' objects
+# Dependent script: needs 'CSD', 'CT', 'DA' and 'grid' objects
 
 DA_data <- 
   DA |> 
@@ -29,22 +29,22 @@ grid <-
   relocate(geometry, .after = last_col()) |> 
   st_set_agr("constant")
 
-borough_index <- 
+CSD_index <- 
   grid |> 
   st_transform(32618) |> 
   st_centroid() |> 
-  st_nearest_feature(st_transform(borough, 32618))
+  st_nearest_feature(st_transform(CSD, 32618))
 
 grid <- 
   grid |> 
-  mutate(CSDUID = map_chr(borough_index, ~borough$ID[.x]), .after = name) |> 
+  mutate(CSDUID = map_chr(CSD_index, ~CSD$ID[.x]), .after = name) |> 
   st_set_agr("constant")
 
 grid <- 
   grid |> 
-  left_join(select(st_drop_geometry(borough), CSDUID = ID, name_2 = name), 
+  left_join(select(st_drop_geometry(CSD), CSDUID = ID, name_2 = name), 
             by = "CSDUID") |> 
   relocate(name_2, .after = name) |> 
   st_set_agr("constant")
 
-rm(borough_index, DA_data, grid_census)
+rm(CSD_index, DA_data, grid_census)

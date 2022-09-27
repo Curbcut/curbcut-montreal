@@ -17,9 +17,9 @@ source("dev/other/is_in_geometry.R")
 # Vector of tables --------------------------------------------------------
 
 all_tables <- 
-  list("CMA" = c("borough", "CT", "DA", "grid", "building"),
-       "island" = c("borough", "CT", "DA", "grid", "building"),
-       "city" = c("borough", "CT", "DA", "grid", "building"),
+  list("CMA" = c("CSD", "CT", "DA", "grid", "building"),
+       "island" = c("CSD", "CT", "DA", "grid", "building"),
+       "city" = c("CSD", "CT", "DA", "grid", "building"),
        "centraide" = c("centraide", "CT", "DA", "grid", "building"))
 
 

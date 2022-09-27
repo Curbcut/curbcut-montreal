@@ -186,7 +186,7 @@ process_crash <- function(x) {
     st_drop_geometry()
 }
 
-crash_results <- map(list("borough" = borough, "CT" = CT, "DA" = DA), 
+crash_results <- map(list("CSD" = CSD, "CT" = CT, "DA" = DA), 
                      process_crash)#, "grid" = grid), process_crash)
 
 
@@ -222,7 +222,7 @@ join_crash <- function(x, join_results) {
     st_set_agr("constant")
 }
 
-borough <- join_crash(borough, crash_results$borough)
+CSD <- join_crash(CSD, crash_results$CSD)
 CT <- join_crash(CT, crash_results$CT)
 DA <- join_crash(DA, crash_results$DA)
 # grid <- join_crash(grid, crash_results$grid)
@@ -309,7 +309,7 @@ variables <-
     theme = "Transport",
     private = FALSE,
     dates = as.character(2012:2019),
-    scales = c("borough", "building", "CT", "DA", "street"),#, "grid", "street"),
+    scales = c("CSD", "building", "CT", "DA", "street"),#, "grid", "street"),
     breaks_q3 = breaks_q3_active$crash_cyc_count,
     breaks_q5 = breaks_q5_active$crash_cyc_count,
     source = "City of Montreal's open data website") |>
@@ -322,7 +322,7 @@ variables <-
     theme = "Transport",
     private = FALSE,
     dates = as.character(2012:2019),
-    scales = c("borough", "building", "CT", "DA", "street"),#, "grid", "street"),
+    scales = c("CSD", "building", "CT", "DA", "street"),#, "grid", "street"),
     breaks_q3 = breaks_q3_active$crash_other_count,
     breaks_q5 = breaks_q5_active$crash_other_count,
     source = "City of Montreal's open data website") |>
@@ -335,7 +335,7 @@ variables <-
     theme = "Transport",
     private = FALSE,
     dates = as.character(2012:2019),
-    scales = c("borough", "building", "CT", "DA", "street"),#, "grid", "street"),
+    scales = c("CSD", "building", "CT", "DA", "street"),#, "grid", "street"),
     breaks_q3 = breaks_q3_active$crash_ped_count,
     breaks_q5 = breaks_q5_active$crash_ped_count,
     source = "City of Montreal's open data website") |>
@@ -348,7 +348,7 @@ variables <-
     theme = "Transport",
     private = FALSE,
     dates = as.character(2012:2019),
-    scales = c("borough", "building", "CT", "DA", "street"),#, "grid", "street"),
+    scales = c("CSD", "building", "CT", "DA", "street"),#, "grid", "street"),
     breaks_q3 = breaks_q3_active$crash_total_count,
     breaks_q5 = breaks_q5_active$crash_total_count,
     source = "City of Montreal's open data website") |>
@@ -361,7 +361,7 @@ variables <-
     theme = "Transport",
     private = FALSE,
     dates = as.character(2012:2019),
-    scales = c("borough", "building", "CT", "DA", "street"),#, "grid", "street"),
+    scales = c("CSD", "building", "CT", "DA", "street"),#, "grid", "street"),
     breaks_q3 = breaks_q3_active$crash_cyc_per1k,
     breaks_q5 = breaks_q5_active$crash_cyc_per1k,
     source = "City of Montreal's open data website") |>
@@ -374,7 +374,7 @@ variables <-
     theme = "Transport",
     private = FALSE,
     dates = as.character(2012:2019),
-    scales = c("borough", "building", "CT", "DA", "street"),#, "grid", "street"),
+    scales = c("CSD", "building", "CT", "DA", "street"),#, "grid", "street"),
     breaks_q3 = breaks_q3_active$crash_other_per1k,
     breaks_q5 = breaks_q5_active$crash_other_per1k,
     source = "City of Montreal's open data website") |>
@@ -387,7 +387,7 @@ variables <-
     theme = "Transport",
     private = FALSE,
     dates = as.character(2012:2019),
-    scales = c("borough", "building", "CT", "DA", "street"),#, "grid", "street"),
+    scales = c("CSD", "building", "CT", "DA", "street"),#, "grid", "street"),
     breaks_q3 = breaks_q3_active$crash_ped_per1k,
     breaks_q5 = breaks_q5_active$crash_ped_per1k,
     source = "City of Montreal's open data website") |>
@@ -400,7 +400,7 @@ variables <-
     theme = "Transport",
     private = FALSE,
     dates = as.character(2012:2019),
-    scales = c("borough", "building", "CT", "DA", "street"),#, "grid", "street"),
+    scales = c("CSD", "building", "CT", "DA", "street"),#, "grid", "street"),
     breaks_q3 = breaks_q3_active$crash_total_per1k,
     breaks_q5 = breaks_q5_active$crash_total_per1k,
     source = "City of Montreal's open data website") |>
@@ -413,7 +413,7 @@ variables <-
     theme = "Transport",
     private = FALSE,
     dates = as.character(2012:2019),
-    scales = c("borough", "building", "CT", "DA", "street"),#, "grid", "street"),
+    scales = c("CSD", "building", "CT", "DA", "street"),#, "grid", "street"),
     breaks_q3 = breaks_q3_active$crash_cyc_sqkm,
     breaks_q5 = breaks_q5_active$crash_cyc_sqkm,
     source = "City of Montreal's open data website") |>
@@ -426,7 +426,7 @@ variables <-
     theme = "Transport",
     private = FALSE,
     dates = as.character(2012:2019),
-    scales = c("borough", "building", "CT", "DA", "street"),#, "grid", "street"),
+    scales = c("CSD", "building", "CT", "DA", "street"),#, "grid", "street"),
     breaks_q3 = breaks_q3_active$crash_other_sqkm,
     breaks_q5 = breaks_q5_active$crash_other_sqkm,
     source = "City of Montreal's open data website") |>
@@ -439,7 +439,7 @@ variables <-
     theme = "Transport",
     private = FALSE,
     dates = as.character(2012:2019),
-    scales = c("borough", "building", "CT", "DA", "street"),#, "grid", "street"),
+    scales = c("CSD", "building", "CT", "DA", "street"),#, "grid", "street"),
     breaks_q3 = breaks_q3_active$crash_ped_sqkm,
     breaks_q5 = breaks_q5_active$crash_ped_sqkm,
     source = "City of Montreal's open data website") |>
@@ -452,7 +452,7 @@ variables <-
     theme = "Transport",
     private = FALSE,
     dates = as.character(2012:2019),
-    scales = c("borough", "building", "CT", "DA", "street"),#, "grid", "street"),
+    scales = c("CSD", "building", "CT", "DA", "street"),#, "grid", "street"),
     breaks_q3 = breaks_q3_active$crash_total_sqkm,
     breaks_q5 = breaks_q5_active$crash_total_sqkm,
     source = "City of Montreal's open data website")

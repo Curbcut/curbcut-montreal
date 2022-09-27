@@ -22,14 +22,12 @@ add_census_data <- function(census_vec, scales, all_tables, years,
   data_inter <- interpolate(data_raw, census_scales, years, data_agg)
   
   # Swap CSD to borough if it's Montreal
-  if (region == "24" && crs == 32618) {
+  if (region == "24" && crs == 32618) 
     data_inter <- swap_csd_to_borough(data_inter, years, crs, data_agg,
                                       scales = census_scales)
-    scales[scales == "CSD"] <- "borough"
-  }
   
   # Interpolate to building, grid & street
-  other_scales <- str_subset(scales, "CSD|borough|CT|DA", negate = TRUE)
+  other_scales <- str_subset(scales, "CSD|CT|DA", negate = TRUE)
   data_other_inter <-
         interpolate_other(data_inter, other_scales, years, crs, data_agg)
   

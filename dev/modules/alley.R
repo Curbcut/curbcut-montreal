@@ -127,14 +127,14 @@ alley$name <- paste(toupper(substr(alley$name, 1, 1)),
 # Join borough name and CSDUID
 alley <- 
   alley |>
-  st_join(rename(select(borough, ID, name), CSDUID = ID, name_2 = name)) |>
+  st_join(rename(select(CSD, ID, name), CSDUID = ID, name_2 = name)) |>
   relocate(CSDUID, name_2, .after = name)
 
 
 # Get borough text --------------------------------------------------------
 
 mtl_ids <- 
-  borough |> 
+  CSD |> 
   st_drop_geometry() |> 
   select(ID, name) |> 
   filter(str_starts(ID, "2466023"))
@@ -198,7 +198,7 @@ lengths_alleys_fun <- function(data) {
 }
 
 join_alleys <- 
-  map(list("city_borough" = city_borough, 
+  map(list("city_CSD" = city_CSD, 
            "city_CT" = city_CT, 
            "city_DA" = city_DA), lengths_alleys_fun)
 

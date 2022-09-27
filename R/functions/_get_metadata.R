@@ -235,7 +235,7 @@ get_metadata <- function(export_data, r, about_data,
     
     about_data[[var]]$interpolated <- 
       # Special case for the boroughs at the census scale!
-      if (is_scale_in_df("borough", export_data$df) && 
+      if (is_scale_in_df("CSD", export_data$df) && 
           variables_row$source == "Canadian census") {
         paste0("<p style = 'font-size: 1.45rem;'>",
                sus_translate(r = r, "For the City of Montreal's boroughs, ",

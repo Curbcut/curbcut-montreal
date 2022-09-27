@@ -13,8 +13,7 @@ suppressPackageStartupMessages(library(future))
 # plan(multisession)
 
 # Lists of scales and years
-scales <- str_replace(unique(unlist(all_tables, use.names = FALSE)), 
-                      "^borough$", "CSD")
+scales <- unique(unlist(all_tables, use.names = FALSE))
 scales <- scales[!scales %in% c("building")]
 
 years <- c(1996, 2001, 2006, 2011, 2016)
@@ -168,6 +167,7 @@ census_variables <-
 # qsave(data_to_add, file = "dev/data/modules_raw_data/census.qs")
 
 data_to_add <- qread("dev/data/modules_raw_data/census.qs")
+
 
 # Data testing ------------------------------------------------------------
 

@@ -18,7 +18,8 @@ module_link <- function(r, module, zoom = NULL, location = map_loc,
   if (update_view) {
     if (!is.null(df) && !is.null(select_id)) {
       r$sus_link$zoom <- 
-        if (is_scale_in_df("borough", df)) map_zoom else map_zoom_levels_CMA[[df]] + 0.75
+        if (is_scale_in_df("CSD", df)) map_zoom else 
+          get(paste("map_zoom_levels", r$geo(), sep = "_"))[[df]] + 0.75
       
       r$sus_link$location <- {
         data <- get(df)

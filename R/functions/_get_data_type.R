@@ -26,8 +26,7 @@ get_data_type <- function(df, var_left, var_right, build_str_as_DA = TRUE) {
   if (is_scale_in_df("raster", df)) return("q100")  
   if (is_scale_in_df(c("heatmap", "point"), df)) return("point")
   if (is_scale_in_df("qual", var_left[1])) return("qual")
-  if (!is_scale_in_df(c("borough", "CT", "DA", "building", "grid", 
-                      "centraide"), df)) return(df)
+  if (!is_scale_in_df(c(all_choropleth, "grid"), df)) return(df)
   if (length(var_right) == 2 && var_right[1] == var_right[2]) return(
     "NA_delta_bivar")
   if (length(var_left) == 2 && var_left[1] == var_left[2]) return("NA_delta")

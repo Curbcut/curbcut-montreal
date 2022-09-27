@@ -25,14 +25,14 @@ get_data_table <- function(df, geo, var_left, var_right, data_type,
     
     data <- get(df)[c("ID", "name", "name_2", if (is_scale_in_df("DA", df)) "DAUID", 
                        if (is_scale_in_df(c("DA", "CT"), df)) "CTUID", 
-                       if (is_scale_in_df(c("DA", "CT", "borough", "grid"), df)) "CSDUID", 
+                       if (is_scale_in_df(c("DA", "CT", "CSD", "grid"), df)) "CSDUID", 
                        "population",  var_left, l_q3, l_q5)]
     
     data <- 
       data |> 
       setNames(c("ID", "name", "name_2", if (is_scale_in_df("DA", df)) "DAUID", 
                  if (is_scale_in_df(c("DA", "CT"), df)) "CTUID", 
-                 if (is_scale_in_df(c("DA", "CT", "borough", "grid"), df)) "CSDUID", 
+                 if (is_scale_in_df(c("DA", "CT", "CSD", "grid"), df)) "CSDUID", 
                  "population", "var_left", "var_left_q3", "var_left_q5"))
   }
   
@@ -52,7 +52,7 @@ get_data_table <- function(df, geo, var_left, var_right, data_type,
       data <- get(df)
       data <- data[c("ID", "name", "name_2", if (is_scale_in_df("DA", df)) "DAUID", 
                      if (is_scale_in_df(c("DA", "CT"), df)) "CTUID", 
-                     if (is_scale_in_df(c("DA", "CT", "borough", "grid"), df)) "CSDUID", 
+                     if (is_scale_in_df(c("DA", "CT", "CSD", "grid"), df)) "CSDUID", 
                      "population", var_left, l_q3, l_q5, var_right, r_q3, r_q5)]
     }
     
@@ -60,7 +60,7 @@ get_data_table <- function(df, geo, var_left, var_right, data_type,
     data |> 
       setNames(c("ID", "name", "name_2", if (is_scale_in_df("DA", df)) "DAUID", 
                  if (is_scale_in_df(c("DA", "CT"), df)) "CTUID", 
-                 if (is_scale_in_df(c("DA", "CT", "borough", "grid"), df)) "CSDUID", 
+                 if (is_scale_in_df(c("DA", "CT", "CSD", "grid"), df)) "CSDUID", 
                  "population", "var_left", "var_left_q3", "var_left_q5", "var_right", 
                  "var_right_q3", "var_right_q5"))
     data$group = paste(data$var_left_q3, data$var_right_q3, sep = " - ")
@@ -84,7 +84,7 @@ get_data_table <- function(df, geo, var_left, var_right, data_type,
     data <- get(df)
     data <- data[c("ID", "name", "name_2", if (is_scale_in_df("DA", df)) "DAUID",
                    if (is_scale_in_df(c("DA", "CT"), df)) "CTUID", 
-                   if (is_scale_in_df(c("DA", "CT", "borough"), df)) "CSDUID", 
+                   if (is_scale_in_df(c("DA", "CT", "CSD"), df)) "CSDUID", 
                    "population", var_left)]
     
     data$var_left <- (data[[var_left[2]]] - data[[var_left[1]]]) / 
@@ -104,11 +104,11 @@ get_data_table <- function(df, geo, var_left, var_right, data_type,
     
     data <- data[c("ID", "name", "name_2", if (is_scale_in_df("DA", df)) "DAUID",
                    if (is_scale_in_df(c("DA", "CT"), df)) "CTUID", 
-                   if (is_scale_in_df(c("DA", "CT", "borough"), df)) "CSDUID", 
+                   if (is_scale_in_df(c("DA", "CT", "CSD"), df)) "CSDUID", 
                    "population", "var_left", "var_left_q3", var_left, "group")]
     names(data) <- c("ID", "name", "name_2", if (is_scale_in_df("DA", df)) "DAUID",
                      if (is_scale_in_df(c("DA", "CT"), df)) "CTUID", 
-                     if (is_scale_in_df(c("DA", "CT", "borough"), df)) "CSDUID", 
+                     if (is_scale_in_df(c("DA", "CT", "CSD"), df)) "CSDUID", 
                      "population", "var_left", "var_left_q3", "var_left_1", 
                      "var_left_2", "group")
     
@@ -149,7 +149,7 @@ get_data_table <- function(df, geo, var_left, var_right, data_type,
     data <- get(df)
     data <- data[c("ID", "name", "name_2", if (is_scale_in_df("DA", df)) "DAUID",
                    if (is_scale_in_df(c("DA", "CT"), df)) "CTUID", 
-                   if (is_scale_in_df(c("DA", "CT", "borough"), df)) "CSDUID", 
+                   if (is_scale_in_df(c("DA", "CT", "CSD"), df)) "CSDUID", 
                    "population")]
     data$group <- "NA"
     data$var_left <- NA
@@ -158,7 +158,7 @@ get_data_table <- function(df, geo, var_left, var_right, data_type,
     data$var_left_2 <- NA
     data <- data[c("ID", "name", "name_2", if (is_scale_in_df("DA", df)) "DAUID",
                    if (is_scale_in_df(c("DA", "CT"), df)) "CTUID",
-                   if (is_scale_in_df(c("DA", "CT", "borough"), df)) "CSDUID", 
+                   if (is_scale_in_df(c("DA", "CT", "CSD"), df)) "CSDUID", 
                    "population", "var_left", "var_left_q3", "var_left_1", 
                    "var_left_2", "group")]
   }
@@ -183,7 +183,7 @@ get_data_table <- function(df, geo, var_left, var_right, data_type,
     data <- get(df)
     data <- data[c("ID", "name", "name_2", if (is_scale_in_df("DA", df)) "DAUID",
                    if (is_scale_in_df(c("DA", "CT"), df)) "CTUID", 
-                   if (is_scale_in_df(c("DA", "CT", "borough"), df)) "CSDUID", 
+                   if (is_scale_in_df(c("DA", "CT", "CSD"), df)) "CSDUID", 
                    "population", var_left, var_right)]
     data$var_left <- (data[[var_left[2]]] - data[[var_left[1]]]) /
       abs(data[[var_left[1]]])
@@ -202,7 +202,7 @@ get_data_table <- function(df, geo, var_left, var_right, data_type,
     data$var_right_2 <- data[[var_right[2]]]
     data <- data[c("ID", "name", "name_2", if (is_scale_in_df("DA", df)) "DAUID",
                    if (is_scale_in_df(c("DA", "CT"), df)) "CTUID",
-                   if (is_scale_in_df(c("DA", "CT", "borough"), df)) "CSDUID", 
+                   if (is_scale_in_df(c("DA", "CT", "CSD"), df)) "CSDUID", 
                    "population", "var_left", "var_right", "var_left_q3", 
                    "var_right_q3", "group")]
   }
@@ -212,7 +212,7 @@ get_data_table <- function(df, geo, var_left, var_right, data_type,
     data <- get(df)
     data <- data[c("ID", "name", "name_2", if (is_scale_in_df("DA", df)) "DAUID",
                    if (is_scale_in_df(c("DA", "CT"), df)) "CTUID", 
-                   if (is_scale_in_df(c("DA", "CT", "borough"), df)) "CSDUID", 
+                   if (is_scale_in_df(c("DA", "CT", "CSD"), df)) "CSDUID", 
                    "population")]
     data$group <- "NA - NA"
     data$var_left <- NA
@@ -221,7 +221,7 @@ get_data_table <- function(df, geo, var_left, var_right, data_type,
     data$var_right_q3 <- NA
     data <- data[c("ID", "name", "name_2", if (is_scale_in_df("DA", df)) "DAUID",
                    if (is_scale_in_df(c("DA", "CT"), df)) "CTUID", 
-                   if (is_scale_in_df(c("DA", "CT", "borough"), df)) "CSDUID", 
+                   if (is_scale_in_df(c("DA", "CT", "CSD"), df)) "CSDUID", 
                    "population", "var_left", "var_left_q3", "var_right", 
                    "var_right_q3", "group")]
   }
@@ -231,7 +231,7 @@ get_data_table <- function(df, geo, var_left, var_right, data_type,
     data <- get(paste(geo, "DA", sep = "_"))
     data <- data[c("ID", "name", "name_2", if (is_scale_in_df("DA", df)) "DAUID",
                    if (is_scale_in_df(c("DA", "CT"), df)) "CTUID",
-                   if (is_scale_in_df(c("DA", "CT", "borough"), df)) "CSDUID", 
+                   if (is_scale_in_df(c("DA", "CT", "CSD"), df)) "CSDUID", 
                    "population", var_left, var_right)]
     data$var_left <- (data[[var_left[2]]] - data[[var_left[1]]]) /
       abs(data[[var_left[1]]])
@@ -250,7 +250,7 @@ get_data_table <- function(df, geo, var_left, var_right, data_type,
     data$var_right_2 <- data[[var_right[2]]]
     data <- data[c("ID", "name", "name_2", if (is_scale_in_df("DA", df)) "DAUID",
                    if (is_scale_in_df(c("DA", "CT"), df)) "CTUID", 
-                   if (is_scale_in_df(c("DA", "CT", "borough"), df)) "CSDUID", 
+                   if (is_scale_in_df(c("DA", "CT", "CSD"), df)) "CSDUID", 
                    "population", "var_left", "var_right", "var_left_q3", 
                    "var_right_q3", "group")]
   }
@@ -260,7 +260,7 @@ get_data_table <- function(df, geo, var_left, var_right, data_type,
     data <- get(paste(geo, "DA", sep = "_"))
     data <- data[c("ID", "name", "name_2", if (is_scale_in_df("DA", df)) "DAUID",
                    if (is_scale_in_df(c("DA", "CT"), df)) "CTUID", 
-                   if (is_scale_in_df(c("DA", "CT", "borough"), df)) "CSDUID", 
+                   if (is_scale_in_df(c("DA", "CT", "CSD"), df)) "CSDUID", 
                    "population")]
     data$group <- "NA - NA"
     data$var_left <- NA
@@ -269,7 +269,7 @@ get_data_table <- function(df, geo, var_left, var_right, data_type,
     data$var_right_q3 <- NA
     data <- data[c("ID", "name", "name_2", if (is_scale_in_df("DA", df)) "DAUID",
                    if (is_scale_in_df(c("DA", "CT"), df)) "CTUID", 
-                   if (is_scale_in_df(c("DA", "CT", "borough"), df)) "CSDUID", 
+                   if (is_scale_in_df(c("DA", "CT", "CSD"), df)) "CSDUID", 
                    "population", "var_left", "var_left_q3", "var_right", 
                    "var_right_q3", "group")]
   }

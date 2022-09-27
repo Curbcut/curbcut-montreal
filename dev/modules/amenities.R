@@ -131,7 +131,7 @@ library(qs)
 # 
 # municipal_parks_osm <-
 #   municipal_parks_osm |>
-#   st_filter(filter(borough, !str_starts(ID, "2466023") & name != "Longueuil"))
+#   st_filter(filter(CSD, !str_starts(ID, "2466023") & name != "Longueuil"))
 # 
 # municipal_parks <-
 #   rbind(municipal_parks_island_longueuil, select(municipal_parks_osm)) |>

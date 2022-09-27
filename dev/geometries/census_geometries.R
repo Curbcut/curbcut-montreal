@@ -210,7 +210,7 @@ rm(borough_join, CSD, leftovers)
 
 # Add borough/CSD names ---------------------------------------------------
 
-borough <- 
+CSD <- 
   borough |> 
   rename(name_2 = type) |> 
   st_set_agr("constant")
@@ -231,3 +231,5 @@ DA <-
   mutate(CTUID = if_else(is.na(CTUID), CSDUID, CTUID)) |> 
   mutate(DAUID = ID, .after = name_2) |> 
   st_set_agr("constant")
+
+rm(borough)
