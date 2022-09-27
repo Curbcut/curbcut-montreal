@@ -1,17 +1,5 @@
 #### Place explorer data setup #################################################
 
-# This script relies on objects created in dev/census.R
-
-island_CSDUID <- 
-  c("2466007", "2466023_1",  "2466023_10", "2466023_11", "2466023_12", 
-    "2466023_13", "2466023_14", "2466023_15", "2466023_16", "2466023_17", 
-    "2466023_18", "2466023_19", "2466023_2", "2466023_3", "2466023_4", 
-    "2466023_5",  "2466023_6", "2466023_7", "2466023_8", "2466023_9",
-    "2466032", "2466047", "2466058", "2466062", "2466087", "2466092", 
-    "2466097", "2466102", "2466107", "2466112", "2466117", "2466127", 
-    "2466142", "2466072", "2466023")
-
-
 # Import postal codes -----------------------------------------------------
 
 postal_codes <- 
@@ -23,37 +11,13 @@ postal_codes <-
   select(-PROVINCE_ABBR, -TIME_ZONE) |> 
   st_as_sf(coords = c("LONGITUDE", "LATITUDE"), crs = 4326) |> 
   setNames(c("postal_code", "city", "geometry")) |> 
-  st_filter(borough) |> 
+  st_filter(master_polygon) |> 
   as_tibble() |> 
   st_as_sf() |> 
   mutate(postal_code = str_remove(str_to_lower(postal_code), "\\s")) |> 
   st_join(select(DA, DAUID), left = FALSE)
 
 # Title text highlights ---------------------------------------------------
-
-# Groupings
-groups <- 
-  bind_rows(
-  tibble(CSDUID = 
-  c("2466007", "2466023_1",  "2466023_10", "2466023_11", "2466023_12", 
-    "2466023_13", "2466023_14", "2466023_15", "2466023_16", "2466023_17", 
-    "2466023_18", "2466023_19", "2466023_2", "2466023_3", "2466023_4", 
-    "2466023_5",  "2466023_6", "2466023_7", "2466023_8", "2466023_9",
-    "2466032", "2466047", "2466058", "2466062", "2466087", "2466092", 
-    "2466097", "2466102", "2466107", "2466112", "2466117", "2466127", 
-    "2466142", "2466072"),
-  island = TRUE)) |> 
-  (\(x) rbind(x, tibble(CSDUID = borough$CSDUID[!borough$CSDUID %in% 
-                                                  pull(x, CSDUID)],
-                     island = FALSE)))()
-   
-   
-CSDUID_groups <- map(set_names(c("borough", "CT", "DA")), ~{
-  get(.x) |> 
-    st_drop_geometry() |> 
-    select(ID, CSDUID) |> 
-    left_join(groups, by = "CSDUID")
-})
 
 # Max census year
 census_max <- 
@@ -65,42 +29,12 @@ census_max <-
   max() |> 
   as.numeric()
 
-# DA 1000m buffers with ID and CSDUID
-# DA_buffer <-
-#   DA |>
-#   select(ID, CSDUID) |>
-#   rowwise() |>
-#   mutate(buffer = st_buffer(st_centroid(geometry), 1000)) |>
-#   ungroup() |>
-#   st_set_geometry("buffer") |>
-#   select(-geometry)
-# 
-# qsave(DA_buffer, file = "data/DA_1000m_buffer.qs")
-# DA_buffer <- qread("data/DA_1000m_buffer.qs")
-
-# Function taking a df of 3 columns: ID, CSDUID and the column to calculate on.
+# Function taking a df of 3 columns: ID, geo_ID and the column to calculate on.
 percentile_calc <- function(x) {
-  
-  var <- NULL
-  
-  island_ranks <- 
     x |> 
-    left_join(groups, by = "CSDUID") |> 
-    filter(island) |> 
-    (\(x) mutate(x, island_percentile = percent_rank(x[[3]])) |> 
-       mutate(x, island_rank = rank(x[[3]])))()
-  
-  region_ranks <- 
-    x |> 
-    left_join(groups, by = "CSDUID") |> 
-    (\(x) mutate(x, region_percentile = percent_rank(x[[3]])) |> 
-       mutate(x, region_rank = rank(x[[3]])))() |> 
-    rename(var = 3)
-  
-  left_join(region_ranks, island_ranks, by = c("ID", "CSDUID")) |> 
-    select(ID, CSDUID, var, island_percentile, island_rank, region_percentile, 
-           region_rank)
-  
+    rename(var = 3) |> 
+    mutate(percentile = percent_rank(var),
+           rank = rank(var))
 }
 
 # Prepare list to store pre-computed title card indicators.
@@ -119,17 +53,31 @@ title_card_index <- tibble(name = as.character(),
                            link_var_left = as.character(),
                            link_outside = as.character())
 
+all_tables_DA_max <- map(all_tables, ~.x[seq_len(which(.x == "DA"))])
+
+# Map over all tables function
+map_all_tables <- function(all_tables_DA_max, fun) {
+  imap(all_tables_DA_max, function(scales, geo) {
+    map(set_names(scales), function(scale) {
+      geo_scale <- paste(geo, scale, sep = "_")
+      df <- get(geo_scale)
+      fun(df)
+    })
+  })
+}
+
+
 ## Driving mode share - census --------------------------------------------
 title_card_indicators <- 
   append(title_card_indicators, 
          list("transit_walk_cycle_share" =
-                map(set_names(c("borough", "CT", "DA")), ~{
-                  get(.x) |> 
-                    st_drop_geometry() |> 
-                    select(ID, CSDUID, paste0("trans_walk_or_bike_pct_", 
-                                              census_max),
-                           paste0("trans_transit_pct_", census_max)) |> 
+                map_all_tables(all_tables_DA_max, fun = \(x) {
+                  st_drop_geometry(x) |> 
+                    select(ID, geo_ID, any_of(c(
+                      paste0("trans_walk_or_bike_pct_", census_max),
+                      paste0("trans_transit_pct_", census_max)))) |> 
                     (\(x) mutate(x, transit_walk_cycle = x[[3]] + x[[4]]))() |> 
+                    select(ID, geo_ID, transit_walk_cycle) |> 
                     percentile_calc()
                 })
          ))
@@ -295,7 +243,7 @@ title_card_index <-
 no2 <- read_csv("dev/data/place_explorer/no2lur_a_16.csv") |> 
   st_as_sf(coords = c("longitude", "latitude"),crs = 4326) |> 
   select(-postalcode16, -province) |> 
-  st_filter(borough) |> 
+  st_filter(master_polygon) |> 
   rename(NO2 = 1)
 
 # pm25 <- read_csv("dev/data/place_explorer/pm25dalc_a_18.csv") |> 
@@ -307,13 +255,13 @@ no2 <- read_csv("dev/data/place_explorer/no2lur_a_16.csv") |>
 title_card_indicators <- 
   append(title_card_indicators, 
          list("air_quality_no2" =
-                map(set_names(c("borough", "CT", "DA")), ~{
-                  get(.x) |> 
-                    select(ID, CSDUID) |> 
+                map_all_tables(all_tables_DA_max, fun = \(x) {
+                  x |> 
+                    select(ID, geo_ID) |> 
                     st_join(no2) |> 
                     st_drop_geometry() |> 
                     filter(NO2 != -9999) |> 
-                    group_by(ID, CSDUID) |> 
+                    group_by(ID, geo_ID) |> 
                     summarize(NO2 = mean(NO2), .groups = "drop") |> 
                     percentile_calc()
                 })
@@ -339,10 +287,10 @@ title_card_index <-
 title_card_indicators <-
   append(title_card_indicators,
          list("single_detached" =
-                map(set_names(c("borough", "CT", "DA")), ~{
-                  get(.x) |>
+                map_all_tables(all_tables_DA_max, fun = \(x) {
+                  x |>
                     st_drop_geometry() |>
-                    select(ID, CSDUID, paste0("housing_single_detached_pct_", 
+                    select(ID, geo_ID, paste0("housing_single_detached_pct_", 
                                               census_max)) |>
                     percentile_calc()
                 })
@@ -380,13 +328,13 @@ ndvi <- read_csv("dev/data/place_explorer/grlan_amn_19.csv") |>
 title_card_indicators <- 
   append(title_card_indicators, 
          list("green_space_ndvi" =
-                map(set_names(c("borough", "CT", "DA")), ~{
-                  get(.x) |> 
-                    select(ID, CSDUID) |> 
+                map_all_tables(all_tables_DA_max, fun = \(x) {
+                  x |> 
+                    select(ID, geo_ID) |> 
                     st_join(ndvi) |> 
                     st_drop_geometry() |> 
                     filter(NDVI != -9999) |> 
-                    group_by(ID, CSDUID) |> 
+                    group_by(ID, geo_ID) |> 
                     summarize(NDVI = mean(NDVI), .groups = "drop") |> 
                     percentile_calc()
                 })
@@ -415,10 +363,10 @@ title_card_index <-
 title_card_indicators <-
   append(title_card_indicators,
          list("canale_index" =
-                map(set_names(c("borough", "CT", "DA")), ~{
-                  get(.x) |>
+                map_all_tables(all_tables_DA_max, fun = \(x) {
+                  x |>
                     st_drop_geometry() |>
-                    select(ID, CSDUID, paste0("canale_ind_", census_max)) |>
+                    select(ID, geo_ID, paste0("canale_ind_", census_max)) |>
                     percentile_calc()
                 })
          ))
@@ -439,6 +387,27 @@ title_card_index <-
 
 
 
+# Bring title cards in smaller lists of dfs -------------------------------
+
+out_primero <- title_card_indicators
+out_final <- map(set_names(names(out_primero)), ~NULL)
+
+for (z in names(out_primero)) {
+  out <- out_primero[[z]]
+  for (a in seq_len(length(out))) {
+    geo <- names(out)[[a]]
+    for (b in seq_len(length(out[[geo]]))) {
+      scale <- names(out[[geo]])[[b]]
+      df_name <- paste(geo, scale, sep = "_")
+
+      out_final[[z]][[df_name]] <- out_primero[[z]][[geo]][[scale]]
+    }
+  }
+}
+
+title_card_indicators <- out_final
+rm(out_primero, out_final, out, geo, scale, df_name)
+
 # Get percentile of variables, to order in place ex -----------------------
 
 # Percentile retrieval
@@ -449,8 +418,26 @@ basic_percentile_retrieval <-
            str_starts(var_code, "climate")) |> 
   filter(var_code != "climate_flood_ind")
 
+# Map over all tables function
+map_all_tables <- function(all_tables_DA_max, fun) {
+  imap(all_tables_DA_max, function(scales, geo) {
+    map(set_names(scales), function(scale) {
+      geo_scale <- paste(geo, scale, sep = "_")
+      df <- get(geo_scale)
+      fun(df)
+    })
+  })
+}
+
+all_tables_to_get <- 
+  imap(all_tables_DA_max, function(scales, geo) {
+    map_chr(set_names(scales), function(scale) {
+      paste(geo, scale, sep = "_")
+    })
+  }) |> unlist() |> unname()
+
 pe_var_hierarchy <- 
-  map(set_names(c("borough", "CT", "DA")), \(scale) {
+  map(set_names(all_tables_to_get), \(df) {
     map(set_names(basic_percentile_retrieval$var_code), \(variable_code) {
       
       var_row <- variables[variables$var_code == variable_code, ]
@@ -460,15 +447,12 @@ pe_var_hierarchy <-
         var <- paste(variable_code, max_date, sep = "_")
       } else var <- variable_code
       
-      out <- 
-        get(paste0("CMA_", scale)) |> 
+      get(df) |> 
         st_drop_geometry() |> 
-        select(ID, CSDUID, all_of(var)) |> 
+        select(ID, geo_ID, all_of(var)) |> 
         percentile_calc()
       
-      out
-      
-    }) 
+    })
   })
 
 # Retrieve access average values
@@ -481,30 +465,27 @@ min_access_var_code <-
   pull(var_code) |>
   unique()
 
-pe_var_hierarchy[["CT"]] <-
-  append(pe_var_hierarchy[["CT"]],
+pe_var_hierarchy[["CMA_CT"]] <-
+  append(pe_var_hierarchy[["CMA_CT"]],
             map(set_names(min_access_var_code), function(access_code) {
-              
-              out <-
                 CMA_CT |>
                 st_drop_geometry() |>
-                select(ID, CSDUID, starts_with(access_code)) |>
-                pivot_longer(-c(ID, CSDUID)) |>
-                group_by(ID, CSDUID) |>
+                select(ID, geo_ID, starts_with(access_code)) |>
+                pivot_longer(-c(ID, geo_ID)) |>
+                group_by(ID, geo_ID) |>
                 summarize(value = mean(value), .groups = "drop") |>
                 ungroup() |> 
                 percentile_calc()
-
-              out
             })
   )
+
 
 # Put hierarchy in place --------------------------------------------------
 
 # For each geometry, each ID will have to order both THEMES together to know
 # which theme to show up first, + intra-theme which VARIBLES to show first
 pe_theme_order <-
-  map(set_names(names(pe_var_hierarchy)), ~{
+  map(set_names(names(pe_var_hierarchy)), \(x) {
     
     # Fix access, which is an average in this case
     place_ex_variables <- 
@@ -517,34 +498,29 @@ pe_theme_order <-
                 TRUE ~ str_extract(var_code, "access_[^_]*")))
       )
     
-    data <- pe_var_hierarchy[[.x]]
+    data <- pe_var_hierarchy[[x]]
     
     data <- 
-    map(names(data), function(var_code) {
-      names(data[[var_code]]) <- c("ID", "CSDUID", var_code, 
-                                   paste0(var_code, "_island_percentile"),
-                                   "island_rank",
-                                   paste0(var_code, "_region_percentile"), 
-                                   "region_rank")
-      data[[var_code]][, c(1:4, 6)]
-    }) |> reduce(left_join, by = c("ID", "CSDUID"))
+      map(names(data), function(var_code) {
+        names(data[[var_code]]) <- c("ID", "geo_ID", var_code, 
+                                     paste0(var_code, "_percentile"),
+                                     paste0(var_code, "_rank"))
+        data[[var_code]]
+      }) |> reduce(left_join, by = c("ID", "geo_ID"))
     
     data |>
       select(ID, contains("percentile")) |> 
       pivot_longer(-ID) |>
       transmute(ID, 
-                group = ifelse(str_detect(name, "island_percentile"), 
-                               "island", "region"),
-             var_code = str_remove(name, 
-                                   "_island_percentile|_region_percentile"),
+             var_code = str_remove(name, "_percentile"),
              percentile = value) |> 
       filter(!is.na(percentile)) |> 
       mutate(max_or_min = abs(0.5 - percentile)) |> 
       left_join(select(place_ex_variables, var_code, theme), 
                 by = c("var_code")) |> 
-      group_by(ID, theme, group) |> 
+      group_by(ID, theme) |> 
       summarize(standout_score = mean(max_or_min), .groups = "drop") |> 
-      group_by(ID, group) |> 
+      group_by(ID) |> 
       arrange(-standout_score) |> 
       mutate(theme_order = row_number()) |> 
       ungroup() |> 
@@ -554,7 +530,7 @@ pe_theme_order <-
   })
 
 pe_variable_order <- 
-  map(set_names(names(pe_var_hierarchy)), ~{
+  map(set_names(names(pe_var_hierarchy)), \(x) {
     
     # Fix access, which is an average in this case
     place_ex_variables <- 
@@ -567,43 +543,38 @@ pe_variable_order <-
                 TRUE ~ str_extract(var_code, "access_[^_]*")))
       )
     
-    data <- pe_var_hierarchy[[.x]]
+    data <- pe_var_hierarchy[[x]]
     
     data <- 
       map(names(data), function(var_code) {
-        names(data[[var_code]]) <- c("ID", "CSDUID", var_code, 
-                                     paste0(var_code, "_island_percentile"),
-                                     "island_rank",
-                                     paste0(var_code, "_region_percentile"), 
-                                     "region_rank")
-        data[[var_code]][, c(1:4, 6)]
-      }) |> reduce(left_join, by = c("ID", "CSDUID"))
+        names(data[[var_code]]) <- c("ID", "geo_ID", var_code, 
+                                     paste0(var_code, "_percentile"),
+                                     paste0(var_code, "_rank"))
+        data[[var_code]]
+      }) |> reduce(left_join, by = c("ID", "geo_ID"))
     
     data |>
       select(ID, contains("percentile")) |> 
       pivot_longer(-ID) |>
       transmute(ID, 
-                group = ifelse(str_detect(name, "island_percentile"), 
-                               "island", "region"),
-                var_code = str_remove(name, 
-                                      "_island_percentile|_region_percentile"),
+                var_code = str_remove(name, "_percentile"),
                 percentile = value) |> 
       filter(!is.na(percentile)) |> 
       mutate(max_or_min = abs(0.5 - percentile)) |> 
       left_join(select(place_ex_variables, var_code, theme), 
                 by = c("var_code")) |> 
-      group_by(ID, theme, group) |> 
+      group_by(ID, theme) |> 
       arrange(-max_or_min) |> 
       mutate(variable_order = row_number()) |> 
       ungroup() |> 
-      select(ID, theme, group, var_code, variable_order, theme)
+      select(ID, theme, var_code, variable_order, theme)
   })
 
 
 # Split tables by group ---------------------------------------------------
 
-pe_variable_order <- lapply(pe_variable_order, \(x) split(x, x$group)) 
-pe_theme_order <- lapply(pe_theme_order, \(x) split(x, x$group)) 
+pe_variable_order <- lapply(pe_variable_order, \(x) split(x, x$ID)) 
+pe_theme_order <- lapply(pe_theme_order, \(x) split(x, x$ID)) 
 
 
 # Add to modules table ----------------------------------------------------
@@ -616,5 +587,5 @@ modules <-
 # Cleanup -----------------------------------------------------------------
 
 rm(basic_percentile_retrieval, min_access_var_code,
-   census_max, groups, last_crash_data_year, island_CSDUID,
+   census_max, all_tables_DA_max, all_tables_to_get, 
    ndvi, no2, percentile_calc)

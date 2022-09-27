@@ -34,7 +34,7 @@ prep_title_card <- function(r = r, df, select_id, ind, percent = TRUE,
   
   # Data rank ------------------------------------------------------------------
   
-  data_rank <- data[data$ID == select_id, ][[paste0(scale, "_percentile")]]
+  data_rank <- data[data$ID == select_id, ]$percentile
   
   if (is_scale_in_df("borough", df)) {
     
@@ -134,8 +134,7 @@ prep_title_card <- function(r = r, df, select_id, ind, percent = TRUE,
   if (!high_is_good) colours_which <- rev(colours_which)
   
   hex_to_plot <- col_pe[which.min(abs(
-    colours_which - data[data$ID == select_id, ][[paste0(
-      scale, "_percentile")]]))]
+    colours_which - data[data$ID == select_id, ]$percentile))]
   
   # In case it's higher than the threshold of 5
   if (ind == "air_quality_no2" && data_var >= 5) hex_to_plot <- col_pe[1]

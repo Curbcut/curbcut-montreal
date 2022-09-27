@@ -88,14 +88,7 @@ place_explorer_UI <- function(id) {
           selected = unique(variables$theme),
           multiple = TRUE),
         
-        br(),
-        
-        # Island-only or region-wide comparison
-        select_var_UI(
-          id = ns_id,
-          select_var_id = NS(id, "comparison_scale"),
-          label = sus_translate(r = r, "Choose comparison scale:"),
-          var_list = list("Island" = "island", "Region" = "region"))
+        br()
       )))),
     
     # Main panel as a uiOutput. The number of themes displayed is reactive
@@ -135,7 +128,7 @@ place_explorer_server <- function(id, r) {
     ## Inputs and reactives ----------------------------------------------------
     
     # Initial reactives
-    loc_DAUID <- reactiveVal(NA)
+    select_id <- reactiveVal(NA)
     loc_name <- reactiveVal(NA)
 
     # Sidebar
@@ -152,22 +145,33 @@ place_explorer_server <- function(id, r) {
         selected = all_themes)
     })
     
+    map_zoom_levels <- reactive({
+      levels <- get(paste("map_zoom_levels", r$geo(), sep = "_"))
+      return(levels[seq_len(which(names(levels) == "DA"))])
+    })
+      
+    
     # Translate slider labels
     observe(updateSliderTextInput(
       session = session, "slider",
-      choices = get_zoom_label_t(map_zoom_levels_CMA[1:3], r = r)))
+      choices = get_zoom_label_t(map_zoom_levels(), r = r)))
     
-    # df, data and select_id
-    df <- reactive(get_zoom_code(input$slider))
+    # df, data
+    df <- reactive(paste(r$geo(), get_zoom_code(input$slider), sep = "_"))
     data <- reactive(get(df()))
-    select_id <- reactive({
-      if (is.na(loc_DAUID())) NA else {
-        to_retrieve <- switch(df(), borough = "CSDUID", CT = "CTUID", 
-                              DA = "DAUID")
-        DA[[to_retrieve]][DA$DAUID == loc_DAUID()]
-      }
-    })
     
+    # Update select_id if df() changes!
+    observe({
+      if (!is.na(select_id())) {
+      DA_df <- get(paste(r$geo(), "DA", sep = "_"))
+      DA_df <- DA_df[, c("DAUID", "CTUID", "CSDUID", "geo_ID")]
+      IDs <- DA_df[DA_df$DAUID == select_id() | 
+                     DA_df$CTUID == select_id() | 
+                     DA_df$CSDUID == select_id() | 
+                     DA_df$geo_ID == select_id(), ] |> 
+        unlist()
+      select_id(data()$ID[data()$ID %in% IDs])}
+    })
     
     ## Main map ----------------------------------------------------------------
     
@@ -175,14 +179,24 @@ place_explorer_server <- function(id, r) {
       rdeck(map_style = map_style_building, initial_view_state = view_state(
         center = map_loc, zoom = map_zoom)) |> 
         add_mvt_layer(
-        id = "DA",
-        data = mvt_url(paste0("sus-mcgill.DA_empty")),
+        id = "df",
+        data = mvt_url(paste0("sus-mcgill.", df())),
         pickable = TRUE,
         auto_highlight = TRUE,
         highlight_color = "#AAB6CF80",
         get_fill_color = "#AAB6CF20",
         get_line_color = "#FFFFFF00")
       )
+    
+    # Update main map when the chosen scale changes
+    rdeck_proxy(id = ns_id_map) |>
+      add_mvt_layer(id = "df",
+                    data = mvt_url(paste0("sus-mcgill.", df())),
+                    pickable = TRUE,
+                    auto_highlight = TRUE,
+                    highlight_color = "#AAB6CF80",
+                    get_fill_color = "#AAB6CF20",
+                    get_line_color = "#FFFFFF00")
     
     
     ## Retrieve location -------------------------------------------------------
@@ -199,7 +213,13 @@ place_explorer_server <- function(id, r) {
       pcs <- postal_codes$postal_code == postal_c
 
       if (sum(pcs) > 0) {
-        loc_DAUID(postal_codes$DAUID[pcs])
+        DAUID_of_pc <- postal_codes$DAUID[pcs]
+        DA_data <- get(r$geo(), "DA", sep = "_")
+        IDs <- DA_data[DA_data$ID == DAUID_of_pc, 
+                       c("CSDUID", "CTUID", "DAUID", "geo_ID")] |> 
+          unlist()
+        actual_df <- get(r$geo(), df(), sep = "_")
+        select_id(actual_df$ID[actual_df$ID %in% IDs])
 
         loc_name(postal_codes$postal_code[pcs] |>
                    str_to_upper() |>
@@ -216,7 +236,7 @@ place_explorer_server <- function(id, r) {
     # Map click
     observe({
 
-      loc_DAUID(input[[ns_id_map_click]]$object$ID)
+      select_id(input[[ns_id_map_click]]$object$ID)
 
       lon <- input[[ns_id_map_click]]$coordinate[[1]]
       lat <- input[[ns_id_map_click]]$coordinate[[2]]
@@ -231,7 +251,7 @@ place_explorer_server <- function(id, r) {
 
     # Title card map click
     observe({
-      loc_DAUID(input[["title_card_map_click"]]$object$ID)
+      select_id(input[["title_card_map_click"]]$object$ID)
 
       lon <- input[["title_card_map_click"]]$coordinate[[1]]
       lat <- input[["title_card_map_click"]]$coordinate[[2]]
@@ -263,30 +283,6 @@ place_explorer_server <- function(id, r) {
     }) |> bindEvent(input$back_to_map)
 
 
-    # Island or region comparison ----------------------------------------------
-
-    # Reactive to toggle on or off the presence of the island_region widget
-    loc_on_island <- reactive({
-      !is.na(select_id()) &&
-        data()$CSDUID[data()$ID == select_id()] %in% island_CSDUID
-      })
-
-    # Should we show the widget, or not? Only if select_id() is on island
-    observe(toggle(id = paste0(ns_id, "-comparison_scale"),
-                   condition = loc_on_island()))
-
-    # Update dropdown language
-    comparison_scale <- select_var_server(
-      id = ns_id,
-      r = r,
-      select_var_id = "comparison_scale",
-      var_list = reactive(list("Island" = "island", "Region" = "region")))
-
-    # When select_id changes, check island/region again
-    island_or_region <- reactive(if (!loc_on_island()) "region" else
-      comparison_scale())
-    
-
     ## Title card --------------------------------------------------------------
 
     # Draw title card map
@@ -300,24 +296,26 @@ place_explorer_server <- function(id, r) {
 
     # Update map on selection
     observe({
+      scale <- gsub(".*_", "", df())
       # Get zoom and center
-      zoom <- map_zoom_levels_CMA[which(df() == names(map_zoom_levels_CMA))] + 1
+      zoom <- map_zoom_levels()[grepl(scale, names(map_zoom_levels()))] + 1
       if (zoom == 1) zoom <- 10
-      ct <- if (is.na(select_id())) c(0, 0) else
+      
+      ct <- if (is.na(select_id())) c(0, 0) else 
         data()$centroid[data()$ID == select_id()][[1]]
 
       # Update map
       rdeck_proxy(id = "title_card_map",
                   initial_view_state = view_state(center = ct, zoom = zoom)) |>
         add_mvt_layer(id = "location",
-                      data = mvt_url(paste0("sus-mcgill.", df(), "_empty")),
+                      data = mvt_url(paste0("sus-mcgill.", df())),
                       pickable = TRUE,
                       auto_highlight = TRUE,
                       highlight_color = "#AAB6CF60",
                       get_fill_color = scale_fill_pe(select_id()),
                       get_line_width = 0) |>
         add_mvt_layer(id = "DA_empty",
-                      data = mvt_url(paste0("sus-mcgill.DA_empty")),
+                      data = mvt_url(paste0("sus-mcgill.", df())),
                       pickable = TRUE,
                       auto_highlight = TRUE,
                       highlight_color = "#AAB6CF60",
@@ -351,8 +349,8 @@ place_explorer_server <- function(id, r) {
     })
     
     title_card_to_grid <- reactive(get_title_card(r = r,
-      df(), select_id(), island_or_region())) |> 
-      bindCache(df(), select_id(), island_or_region(), r$lang())
+      df(), select_id())) |> 
+      bindCache(df(), select_id(), r$lang())
 
     # Title card contents
     output$title_card <- renderUI({
@@ -395,8 +393,8 @@ place_explorer_server <- function(id, r) {
     output$themes_grid <- renderUI({
 
       # Prepare themes and text
-      themes <- get_pe_themes(df(), select_id(), island_or_region())
-      text_ior <- sus_translate(r = r, paste0("the ", island_or_region()))
+      themes <- get_pe_themes(df(), select_id())
+      text_ior <- sus_translate(r = r, paste0("the ", "TKTK"))
       stand_def <- c(
         "Extreme outlier" = sus_translate(r = r, 
           "`Extreme outlier`: the variables rank in the top/bottom 10% of ",
@@ -418,8 +416,7 @@ place_explorer_server <- function(id, r) {
             r = r,
             df = df(), 
             theme = x[1],
-            select_id = select_id(), 
-            island_or_region = island_or_region())
+            select_id = select_id())
           
           text <- block[[1]]
           plots <- block[[2]]
@@ -501,7 +498,7 @@ place_explorer_server <- function(id, r) {
             
           } else tagList(fluidRow(h3(sus_translate(r = r, x[1]))),
                          fluidRow("No data."))
-        }) |> bindCache(df(), select_id(), island_or_region(), x,
+        }) |> bindCache(df(), select_id(), x,
                         input$themes_checkbox, r$lang())
       })
 
@@ -532,7 +529,7 @@ place_explorer_server <- function(id, r) {
 
     # Update grid based on checkbox
     observe({
-      themes <- pe_theme_order[[df()]][[island_or_region()]]
+      themes <- pe_theme_order[[df()]]
       themes <- themes[themes$ID == select_id(), ]
       themes <- themes$theme
 

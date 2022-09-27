@@ -1,13 +1,13 @@
 #### GET PLACE EXPLORER BLOCK ##################################################
 
-get_pe_block <- function(r = r, df, theme, select_id, island_or_region) {
+get_pe_block <- function(r = r, df, theme, select_id) {
   
   ## Get data ------------------------------------------------------------------
   
   data_order <- pe_variable_order[[df]]
-  data_order <- data_order[[island_or_region]]
-  data_order <- data_order[data_order$theme == theme,]
-  data_order <- data_order[data_order$ID == select_id, "var_code"]
+  data_order <- data_order[[as.character(select_id)]]
+  data_order <- data_order[data_order$theme == theme, ]
+  data_order <- data_order[, "var_code"]
   data_order <- unique(data_order)
   
   # Exit early if there is no data
@@ -32,9 +32,8 @@ get_pe_block <- function(r = r, df, theme, select_id, island_or_region) {
   
   data_sel <- lapply(data_var, \(x) x[x$ID == select_id, ])
   
-  col <- paste0(island_or_region, "_percentile")
   block_text <- data.frame(
-    percentile = sapply(data_sel, \(x) x[[col]], USE.NAMES = FALSE),
+    percentile = sapply(data_sel, \(x) x$percentile, USE.NAMES = FALSE),
     var_code = names(data_sel),
     value = sapply(data_sel, \(x) x$var, USE.NAMES = FALSE),
     row.names = NULL)
@@ -67,11 +66,10 @@ get_pe_block <- function(r = r, df, theme, select_id, island_or_region) {
   plots <- lapply(names(data_var), \(var) {
     
     quantile <- 
-      round(data_sel[[var]][, paste0(island_or_region, "_percentile")]*100/5)*5
+      round(data_sel[[var]]$percentile*100/5)*5
     
-    filename <- paste0(paste0("www/place_explorer/", df, "_"),
-                       paste(island_or_region, var, quantile, 
-                             sep = "_"),
+    filename <- paste0(paste0("www/place_explorer/"),
+                       paste(df, var, quantile, sep = "_"),
                        ".png")
 
     # Return a list containing the filename and alt text
@@ -85,16 +83,15 @@ get_pe_block <- function(r = r, df, theme, select_id, island_or_region) {
   
   ## Get sentence --------------------------------------------------------------
   
-  col <- paste0(island_or_region, "_percentile")
   out <- data.frame(
-    percentile = sapply(data_sel, \(x) x[[col]], USE.NAMES = FALSE),
+    percentile = sapply(data_sel, \(x) x$percentile, USE.NAMES = FALSE),
     var_code = names(data_sel),
     value = sapply(data_sel, \(x) x$var, USE.NAMES = FALSE),
     row.names = NULL)
   
   out <- cbind(data_order, out)
   out <- out[!is.na(out$value), ]
-  ior <- sus_translate(r = r, "the ", island_or_region)
+  ior <- "TKTK" #sus_translate(r = r, "the ", island_or_region)
   
   # Age
   sentence <- if (theme == "Age") {
