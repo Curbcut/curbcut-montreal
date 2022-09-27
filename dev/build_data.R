@@ -1,7 +1,14 @@
 #### BUILD ALL SUS DATA ########################################################
 
+# Notes -------------------------------------------------------------------
 
-# Load funtions -----------------------------------------------------------
+# Need to run renv::deactivate() before running this script, so we have
+# access to non-production packages that we use to build the datasets
+
+renv::deactivate()
+
+
+# Load functions ----------------------------------------------------------
 
 library(tidyverse)
 library(sf)
@@ -10,23 +17,31 @@ source("dev/other/data_testing.R")
 source("dev/other/meta_testing.R", encoding = "utf-8")
 source("dev/other/breaks.R")
 source("dev/other/char_fix.R", encoding = "utf-8")
+source("dev/other/get_census.R")
 source("dev/other/interpolate_assign.R")
 source("dev/other/is_in_geometry.R")
+
+
+# Declare parameters ------------------------------------------------------
+
+region <- list(PR = "35")
+cma <- "35535"
+crs <- 32617
+
 
 
 # Vector of tables --------------------------------------------------------
 
 all_tables <- 
-  list("CMA" = c("borough", "CT", "DA", "grid", "building"),
-       "island" = c("borough", "CT", "DA", "grid", "building"),
-       "city" = c("borough", "CT", "DA", "grid", "building"),
-       "centraide" = c("centraide", "CT", "DA", "grid", "building"))
+  # list("CMA" = c("CSD", "CT", "DA", "building"),
+  #      "city" = c("nbhd", "CT", "DA", "building"))
+  list("CMA" = c("CSD", "CT", "DA", "building")) # Just work with CMA to get up and running quickly
 
 
 # Import all geometries, and create master polygon ------------------------
 
 shp_present <- 
-  list.files("dev/data/geometries/") |> 
+  list.files("dev/data_toronto/geometry/") |> 
   str_subset("\\.shp$") |> 
   str_remove("\\.shp$")
 
@@ -34,12 +49,12 @@ shp_present <-
 if (!all(names(all_tables) %in% shp_present)) {
   missing_shp <- names(all_tables)[which(!names(all_tables) %in% shp_present)]
   stop(paste0("The shapefile for `", missing_shp, 
-              "` is missing in 'dev/data/geometry/'."))
+              "` is missing in 'dev/data_toronto/geometry/'."))
 }
 
 # A polygon covering all our geographies
 walk(names(all_tables), function(shp_file) {
-  out <- paste0("dev/data/geometries/", shp_file, ".shp") |> 
+  out <- paste0("dev/data_toronto/geometry/", shp_file, ".shp") |> 
     read_sf() |> 
     st_transform(32618) |> 
     st_union() |> 
@@ -62,32 +77,11 @@ rm(shp_present)
 # Import DA, CT and borough geometries
 source("dev/geometries/census_geometries.R")
 
-# Import centraide geometries
-source("dev/geometries/centraide_geometries.R")
-
-# Add centroids and buffers to DA
-source("dev/geometries/DA_centroids.R")
-
-# Import grid geometries
-source("dev/geometries/grid_geometries.R")
-
-# Geocode grid centroids
-source("dev/geometries/grid_geocode.R")
-
-# Add metadata to grid
-source("dev/geometries/grid_process.R")
-
 # Import building
 source("dev/geometries/building.R")
 
 # Geocode building centroids
 source("dev/geometries/building_geocode.R")
-
-# Import street edges
-source("dev/geometries/street.R")
-
-# Geocode street edges centroids
-source("dev/geometries/street_geocode.R")
 
 
 # Separate DA, CT and borough in their macro scale ------------------------
@@ -420,3 +414,6 @@ source("dev/other/deploy_sus.R")
 deploy_sus("sus-mcgill-centraide") # Centraide
 deploy_sus("sus-mcgill-test") # Development
 deploy_sus("sus-mcgill") # Production
+
+renv::activate()
+
