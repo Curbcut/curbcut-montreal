@@ -65,8 +65,8 @@ mods_rdy <- list(
     "Climate risk" = "climate_risk"
   ),
   "Housing" = c(
-    "Housing system" = "housing",
-    "Housing affordability" = "afford"#,
+    "Housing system" = "housing"#,
+    # "Housing affordability" = "afford",
     # "Tenure status" = "tenure",
     # "Dwelling types" = "dw_types"
   ),

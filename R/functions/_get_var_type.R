@@ -81,7 +81,7 @@ get_var_type <- function(data, geo, var_left, var_right, df, select_id,
   
   ## Decide on table type ------------------------------------------------------
   
-  comp_type <- if (var_right == " ") "uni" else "bi"
+  comp_type <- if (var_right[1] == " ") "uni" else "bi"
   
   var_type <- 
     if (comp_type == "uni" && all(is.null(var_left_label))) "quant" else

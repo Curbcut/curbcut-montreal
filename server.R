@@ -296,9 +296,8 @@ shinyServer(function(input, output, session) {
       try({
         if (!is.null(query[["df"]])) {
           r[[query[["tb"]]]]$df <- reactiveVal(query[["df"]])
-          r$sus_bookmark$df
+          r$sus_bookmark$df <- reactiveVal(query[["df"]])
         }
-          
       })
       # Retrieve select_id
       try({

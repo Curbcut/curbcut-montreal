@@ -37,10 +37,10 @@ info_table <- function(r, data, var_type, var_left, var_right, df, select_id,
   ## Handle NAs ----------------------------------------------------------------
   
   # ALL NA
-  if (var_right != " " && z$var_type == "all_na") out <- sus_translate(r = r, 
+  if (var_right[1] != " " && z$var_type == "all_na") out <- sus_translate(r = r, 
      "We have no data on {z$exp_left} at the {z$scale_sing} scale.")
   
-  if (var_right == " " && z$var_type == "all_na") out <- sus_translate(r = r, 
+  if (var_right[1] == " " && z$var_type == "all_na") out <- sus_translate(r = r, 
       "We have no data on {z$exp_left} or on {z$exp_right} at",
       " the {z$scale_sing} scale.")
 

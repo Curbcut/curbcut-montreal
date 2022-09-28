@@ -1,7 +1,7 @@
 #### LINKS BETWEEN MODULES #####################################################
 
 module_link <- function(r, module, zoom = NULL, location = map_loc, 
-                        select_id = NULL, var_left = NULL,
+                        select_id = NA, var_left = NULL,
                         var_right = NULL, df = NULL, 
                         zoom_auto = NULL, more_args = NULL, 
                         update_view = TRUE) {
@@ -28,9 +28,6 @@ module_link <- function(r, module, zoom = NULL, location = map_loc,
       }
     }
   }
-  
-  print(r$sus_link$zoom)
-  print(r$sus_link$location)
   
   # Other values 
   r$sus_link$activity <- 
