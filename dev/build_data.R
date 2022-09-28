@@ -14,44 +14,56 @@ source("dev/other/interpolate_assign.R")
 source("dev/other/is_in_geometry.R")
 
 
-# Create a master polygon covering all our geographies --------------------
+# Vector of tables --------------------------------------------------------
+
+all_tables <- 
+  list("CMA" = c("CSD", "CT", "DA", "grid", "building"),
+       "island" = c("CSD", "CT", "DA", "grid", "building"),
+       "city" = c("CSD", "CT", "DA", "grid", "building"),
+       "centraide" = c("centraide", "CT", "DA", "grid", "building"))
+
+
+# Import all geometries, and create master polygon ------------------------
+
+shp_present <- 
+  list.files("dev/data/geometries/") |> 
+  str_subset("\\.shp$") |> 
+  str_remove("\\.shp$")
+
+# Error check
+if (!all(names(all_tables) %in% shp_present)) {
+  missing_shp <- names(all_tables)[which(!names(all_tables) %in% shp_present)]
+  stop(paste0("The shapefile for `", missing_shp, 
+              "` is missing in 'dev/data/geometry/'."))
+}
 
 # A polygon covering all our geographies
+walk(names(all_tables), function(shp_file) {
+  out <- paste0("dev/data/geometries/", shp_file, ".shp") |> 
+    read_sf() |> 
+    st_transform(32618) |> 
+    st_union() |> 
+    st_make_valid()
+  
+  assign(paste0(shp_file, "_shp"), out, envir = .GlobalEnv)
+})
+
+# Master polygon creation
 master_polygon <- 
-  st_union(
-    # CMA
-    st_union(
-      {
-        cancensus::get_census("CA16", 
-                              regions = list(CMA = "24462"), 
-                              geo_format = "sf", 
-                              quiet = TRUE) |> 
-          st_set_agr("constant") |> 
-          st_transform(32618)
-      }
-    ), 
-    # Centraide
-    st_union(
-      {
-        rbind(
-          {read_sf(paste0("dev/data/centraide/StatCan_Recensement2016/_Geographie/",
-                          "Centraide_Quartiers_Laval_Temporaire.shp")) |> 
-              rename(name = Quartier)},
-          {read_sf(paste0("dev/data/centraide/StatCan_Recensement2016/_Geographie/",
-                          "Centraide_Sous_Territoires_Montreal_RiveSud.shp")) |> 
-              transmute(name = SouTerr)}
-        ) |> 
-          st_transform(32618)
-      }
-    )) |> 
-  st_buffer(-0.1) |> 
-  st_transform(4326) |> 
-  st_make_valid()
+  map(paste0(names(all_tables), "_shp"), get) |> 
+  reduce(st_union) |> 
+  st_transform(4326)
+
+rm(shp_present)
+
 
 # Create raw tables --------------------------------------------------------
 
 # Import DA, CT and borough geometries
 source("dev/geometries/census_geometries.R")
+
+# Import centraide geometries
+source("dev/geometries/centraide_geometries.R")
 
 # Add centroids and buffers to DA
 source("dev/geometries/DA_centroids.R")
@@ -64,9 +76,6 @@ source("dev/geometries/grid_geocode.R")
 
 # Add metadata to grid
 source("dev/geometries/grid_process.R")
-
-# Import centraide geometries
-source("dev/geometries/centraide_geometries.R")
 
 # Import building
 source("dev/geometries/building.R")
@@ -81,14 +90,10 @@ source("dev/geometries/street.R")
 source("dev/geometries/street_geocode.R")
 
 
-# Vector of tables --------------------------------------------------------
+# Separate DA, CT and borough in their macro scale ------------------------
 
-all_tables <- c("borough", "CT", "DA", "grid", "centraide")
-
-
-# Add logical columns to DA and CT to filter geometries later on ----------
-
-is_in_geometry(all_tables, crs = 32618)
+is_in_geometry(all_tables, crs = 32618, 
+               update_name_2_for = c("centraide"))
 
 
 # Error checking ----------------------------------------------------------
@@ -222,70 +227,56 @@ source("dev/translation/build_translation.R", encoding = "utf-8")
 
 
 # Remove geometries -------------------------------------------------------
+progressr::with_progress({
+  p <- progressr::progressor(steps = sum(map_int(all_tables, length)))
+  
+  iwalk(all_tables, function(scales, geo) {
+    walk(scales, function(scale) {
+      geo_scale <- paste(geo, scale, sep = "_")
+      
+      # Assign the df _full with the geometry
+      assign(paste0(geo_scale, "_full"), get(geo_scale), envir = .GlobalEnv)
+      
+      # Assign the non geometry df
+      if (scale == "building") {
+        assign(geo_scale, st_drop_geometry(get(geo_scale)), envir = .GlobalEnv)
+      } else {
+        assign(geo_scale,
+               get(paste0(geo_scale, "_full")) |> 
+                 select(-any_of(c("building", "buffer", "centroid"))) |> 
+                 rowwise() |> 
+                 mutate(centroid = 
+                          list(as.numeric(st_coordinates(st_centroid(geometry))))) |> 
+                 ungroup() |> 
+                 st_drop_geometry(), 
+               envir = .GlobalEnv)
+      }
 
-borough_full <- borough
-borough <-
-  borough_full |> 
-  rowwise() |> 
-  mutate(centroid = list(as.numeric(st_coordinates(st_centroid(geometry))))) |> 
-  ungroup() |> 
-  st_drop_geometry()
+      p()
 
-CT_full <- CT
-CT <- 
-  CT_full |> 
-  rowwise() |> 
-  mutate(centroid = list(as.numeric(st_coordinates(st_centroid(geometry))))) |> 
-  ungroup() |> 
-  st_drop_geometry()
-
-DA_full <- DA
-DA <- 
-  DA_full |> 
-  dplyr::select(-building, -buffer, -centroid) |> 
-  rowwise() |> 
-  mutate(centroid = list(as.numeric(st_coordinates(st_centroid(geometry))))) |> 
-  ungroup() |> 
-  st_drop_geometry()
-
-grid_full <- grid
-grid <- 
-  grid_full |> 
-  rowwise() |> 
-  mutate(centroid = list(as.numeric(st_coordinates(st_centroid(geometry))))) |> 
-  # Can't have lists in the SQL db
-  rowwise() |> 
-  mutate(centroid_lat = unlist(centroid)[1],
-                centroid_lon = unlist(centroid)[2]) |> 
-  ungroup() |> 
-  dplyr::select(-centroid) |> 
-  st_drop_geometry()
-
-building_full <- building
-building <- 
-  building_full |> 
-  dplyr::select(ID, name, name_2, DAUID) |> 
-  sf::st_drop_geometry()
-
-centraide_full <- centraide
-centraide <- 
-  centraide_full |> 
-  rowwise() |> 
-  mutate(centroid = list(as.numeric(st_coordinates(st_centroid(geometry))))) |> 
-  ungroup() |> 
-  st_drop_geometry()
+    })
+  })
+})
 
 # Save data files ---------------------------------------------------------
 
-# data2/
-qsavem(borough_full, CT_full, DA_full, file = "data2/census_full.qsm")
-qsave(grid_full, file = "data2/grid_full.qs")
-qsave(building_full, file = "data2/building_full.qs")
-qsave(street, file = "data2/street.qs")
-qsave(centraide_full, file = "data2/centraide_full.qs")
+# Save the tables in data and data2, except buildings
+iwalk(all_tables, function(scales, geo) {
+  
+  scales_no_full <- scales[scales != "building"]
+  geo_scales <- paste(geo, scales_no_full, sep = "_")
+  geo_scales_full <- paste(geo, scales, "full", sep = "_")
+  
+  do.call(qsavem, c(map(geo_scales, rlang::sym),
+                    file = paste0("data/", geo, ".qsm"),
+                    nthreads = length(scales)))
+  
+  do.call(qsavem, c(map(geo_scales_full, rlang::sym),
+                    file = paste0("data2/", geo, "_full.qsm"),
+                    nthreads = length(scales)))
+  
+})
 
-
-# data/
 ## global data
 qsave(variables, file = "data/variables.qs")
 qsave(modules, file = "data/modules.qs")
@@ -295,30 +286,32 @@ qsave(dyk, "data/dyk.qs")
 qsave(title_text, "data/title_text.qs")
 
 ## census related
-qsavem(borough, CT, DA, file = "data/census.qsm")
 qsave(census_variables, file = "data/census_variables.qs")
 
 ## other
 qsavem(alley, alley_text, file = "data/alley.qsm")
-qsave(centraide, file = "data/centraide.qs")
-qsavem(title_card_indicators, pe_var_hierarchy, pe_theme_order, CSDUID_groups,
+qsavem(title_card_indicators, pe_var_hierarchy, pe_theme_order,
        title_card_index, pe_variable_order, file = "data/place_explorer.qsm")
 qsavem(stories, stories_mapping, file = "data/stories.qsm")
 
 # data/geometry_export
-qsave(select(borough_full, ID), file = "data/geometry_export/borough.qs")
-qsave(select(CT_full, ID), file = "data/geometry_export/CT.qs")
-qsave(select(DA_full, ID), file = "data/geometry_export/DA.qs")
-qsave(select(grid_full, ID), file = "data/geometry_export/grid.qs")
-qsave(select(centraide, ID), file = "data/geometry_export/centraide.qs")
+iwalk(all_tables, function(scales, geo) {
+  walk(scales, function(scale) {
+    geo_scale <- paste(geo, scale, sep = "_")
+    out <- select(get(geo_scale), ID)
+    file_link <- paste0("data/geometry_export/", geo_scale, ".qs")
+    
+    qsave(out, file = file_link)
+  })
+})
 
 
 # Save files we'll save in the SQL to data2 -------------------------------
 
 qsavem(natural_inf, natural_inf_custom, file = "data2/natural_inf.qsm")
 qsave(tt_matrix, file = "data2/tt_matrix.qs")
-qsave(building, file = "data2/building.qs")
-qsave(grid, file = "data2/grid.qs")
+# qsave(building, file = "data2/building.qs")
+# qsave(grid, file = "data2/grid.qs")
 
 
 # Save data to the sql db -------------------------------------------------
@@ -359,30 +352,38 @@ dbExecute(db, paste0("CREATE INDEX index_tt_matrix_destination",
                      " ON tt_matrix (destination)"))
 
 # building with primary key
-dbWriteTable(db, "pre_pk_building", building)
-dbExecute(db, paste0("CREATE TABLE building ",
-                     "(ID VARCHAR, ",
-                     "name VARCHAR, ",
-                     "name_2 VARCHAR, ",
-                     "DAUID VARCHAR,
+iwalk(all_tables, function(scales, geo) {
+  if ("building" %in% scales) {
+    geo_scale <- paste0(geo, "_building")
+    # dbExecute(db, paste0("DROP TABLE ", geo_scale))
+    df <- select(get(geo_scale), ID, name, name_2, DAUID)
+    dbWriteTable(db, "pre_pk_building", df)
+    dbExecute(db, paste0("CREATE TABLE ", geo_scale,
+                         " (ID VARCHAR, ",
+                         "name VARCHAR, ",
+                         "name_2 VARCHAR, ",
+                         "DAUID VARCHAR,
                      CONSTRAINT building_pk PRIMARY KEY (ID))"))
-dbExecute(db, "INSERT INTO building SELECT * FROM pre_pk_building")
-dbExecute(db, "DROP TABLE pre_pk_building")
+    dbExecute(db, paste0("INSERT INTO ", geo_scale, " SELECT * FROM pre_pk_building"))
+    dbExecute(db, "DROP TABLE pre_pk_building")
+    
+  }
+})
 
-# grid with primary key
-dbWriteTable(db, "pre_pk_grid", grid)
-# Construct column names and type to
-col_names_types <- 
-  paste0(names(grid), " ", purrr::map_chr(names(grid), ~{class(grid[[.x]])}) |> 
-         str_replace_all("character", "VARCHAR") |> 
-         str_replace_all("integer", "INTEGER") |> 
-         str_replace_all("numeric", "DOUBLE")) |> 
-  paste0(collapse = ", ")
-dbExecute(db, paste0("CREATE TABLE grid ",
-                     "(", col_names_types, ", ",
-                     "CONSTRAINT grid_pk PRIMARY KEY (ID))"))
-dbExecute(db, "INSERT INTO grid SELECT * FROM pre_pk_grid")
-dbExecute(db, "DROP TABLE pre_pk_grid")
+# # grid with primary key
+# dbWriteTable(db, "pre_pk_grid", grid)
+# # Construct column names and type to
+# col_names_types <- 
+#   paste0(names(grid), " ", purrr::map_chr(names(grid), ~{class(grid[[.x]])}) |> 
+#          str_replace_all("character", "VARCHAR") |> 
+#          str_replace_all("integer", "INTEGER") |> 
+#          str_replace_all("numeric", "DOUBLE")) |> 
+#   paste0(collapse = ", ")
+# dbExecute(db, paste0("CREATE TABLE grid ",
+#                      "(", col_names_types, ", ",
+#                      "CONSTRAINT grid_pk PRIMARY KEY (ID))"))
+# dbExecute(db, "INSERT INTO grid SELECT * FROM pre_pk_grid")
+# dbExecute(db, "DROP TABLE pre_pk_grid")
 
 # List active dataframes in the db
 dbListTables(db)

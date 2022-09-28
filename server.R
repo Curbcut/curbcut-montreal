@@ -33,13 +33,13 @@ shinyServer(function(input, output, session) {
     active_tab = "home",
     geo = reactiveVal("CMA"),
     canale = reactiveValues(select_id = reactiveVal(NA), 
-                            df = reactiveVal("borough"),
+                            df = reactiveVal("CMA_borough"),
                             zoom = reactiveVal(get_zoom(map_zoom))),
     climate_risk = reactiveValues(select_id = reactiveVal(NA),
-                                  df = reactiveVal("grid"),
+                                  df = reactiveVal("CMA_grid"),
                                   zoom = reactiveVal(get_zoom(map_zoom))),
     housing = reactiveValues(select_id = reactiveVal(NA),
-                             df = reactiveVal("borough"),
+                             df = reactiveVal("CMA_borough"),
                              zoom = reactiveVal(get_zoom(map_zoom))),
     access = reactiveValues(select_id = reactiveVal(NA),
                             df = reactiveVal("CT"),
@@ -48,22 +48,19 @@ shinyServer(function(input, output, session) {
                            df = reactiveVal("borough_empty"),
                            zoom = reactiveVal(12)),
     natural_inf = reactiveValues(zoom = reactiveVal(9.5)),
-    vulnerable_pop = reactiveValues(select_id = reactiveVal(NA), 
-                                    df = reactiveVal("centraide"),
-                                    zoom = reactiveVal(get_zoom(map_zoom))),
     tenure = reactiveValues(select_id = reactiveVal(NA), 
-                            df = reactiveVal("borough"),
+                            df = reactiveVal("CMA_borough"),
                             zoom = reactiveVal(get_zoom(map_zoom)),
                             prev_norm = reactiveVal(FALSE)),
     dw_types = reactiveValues(select_id = reactiveVal(NA), 
-                              df = reactiveVal("borough"),
+                              df = reactiveVal("CMA_borough"),
                               zoom = reactiveVal(get_zoom(map_zoom)),
                               prev_norm = reactiveVal(FALSE)),
     demographics = reactiveValues(select_id = reactiveVal(NA), 
-                              df = reactiveVal("borough"),
+                              df = reactiveVal("CMA_borough"),
                               zoom = reactiveVal(get_zoom(map_zoom))),
     afford = reactiveValues(select_id = reactiveVal(NA), 
-                            df = reactiveVal("borough"),
+                            df = reactiveVal("CMA_borough"),
                             zoom = reactiveVal(get_zoom(map_zoom)),
                             prev_norm = reactiveVal(FALSE))
   )
@@ -147,25 +144,7 @@ shinyServer(function(input, output, session) {
   
   
 
-  ## Newsletter modal ----------------------------------------------------------
-
-  # observeEvent(input$cookies$signupform, {
-  # 
-  #   cookie_last <- input$cookies$signupform
-  # 
-  #   # 28 days after last visit, popup the newsletter subscription
-  #   if (is.null(cookie_last) ||
-  #       (!is.null(cookie_last) && Sys.time() > (as.POSIXct(cookie_last) + 2419200))) {
-  #     shinyjs::delay(5000, showModal(modalDialog(HTML(readLines("www/sus.signupform.html")),
-  #                                                easyClose = TRUE)))
-  #   }
-  # 
-  #   # After ANY visit, restart the timer
-  #   signupform <- list(name = "signupform",
-  #                      value = Sys.time())
-  #   session$sendCustomMessage("cookie-set", signupform)
-  # 
-  # }, once = TRUE, ignoreNULL = FALSE, ignoreInit = TRUE)
+  ## Newsletter ----------------------------------------------------------------
 
   onclick("subscribe", {
     showModal(modalDialog(HTML(readLines("www/sus.signupform.html")),
@@ -240,10 +219,13 @@ shinyServer(function(input, output, session) {
                     r = r, 
                     map_id = "map",
                     session = session,
+                    zoom = r$sus_link$zoom, 
                     location = r$sus_link$location,
                     zoom_auto = r$sus_link$zoom_auto,
                     var_left = r$sus_link$var_left,
                     var_right = r$sus_link$var_right,
+                    select_id = r$sus_link$select_id,
+                    df = r$sus_link$df,
                     more_args = r$sus_link$more_args)
     })
   }, ignoreInit = TRUE)
@@ -309,15 +291,19 @@ shinyServer(function(input, output, session) {
       })
       # Retrieve df
       try({
-        if (!is.null(query[["df"]]))
+        if (!is.null(query[["df"]])) {
           r[[query[["tb"]]]]$df <- reactiveVal(query[["df"]])
+          r$sus_bookmark$df
+        }
+          
       })
       # Retrieve select_id
       try({
         s_id <- query[["s_id"]]
         if (!is.null(s_id)) {
           if (query[["s_id"]] %in% c("", "NA")) s_id <- NA
-          r[[query[["tb"]]]]$select_id <- reactiveVal(s_id)}
+          r[[query[["tb"]]]]$select_id <- reactiveVal(s_id)
+          r$sus_bookmark$select_id <- reactiveVal(s_id)}
       })
     }
   }, once = TRUE)
@@ -344,13 +330,8 @@ shinyServer(function(input, output, session) {
   
   ## Modules -------------------------------------------------------------------
   
-  export_data <- list()
-  
   active_mod_server <- function(active_tab = input$sus_page) {
-    mod_function <- 
-      paste0(active_tab, "_server('", active_tab, "', r = r)")
-
-    return(eval(parse(text = mod_function)))
+    do.call(paste0(active_tab, "_server"), list(active_tab, r = r))
   }
 
   observeEvent(input$sus_page, {
@@ -371,8 +352,11 @@ shinyServer(function(input, output, session) {
                    label = sus_translate(r = r, "Change default geometry"),
                    inline = TRUE,
                    selected = r$geo(),
-                   choiceNames = c("CMA", "Centraide"),
-                   choiceValues = c("CMA", "centraide")),
+                   choiceNames = 
+                     sapply(c("Metropolitan Area", "City of Montreal", 
+                              "Island of Montreal"),
+                            sus_translate, r = r, USE.NAMES = FALSE),#, "Centraide"),
+                   choiceValues = c("CMA", "city", "island")),#, "centraide")),
       title = sus_translate(r = r, "Advanced options")))
   })
 

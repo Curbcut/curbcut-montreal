@@ -63,7 +63,7 @@
 # 
 # street_network <-
 #   street_network |>
-#   st_filter(borough)
+#   st_filter(CSD)
 # 
 # street_network <-
 #   street_network |>

@@ -5,10 +5,10 @@
 
 update_module <- function(r, id, mod_ns = paste(id, id, sep = "-"), 
                           session, 
-                          zoom = r[[id]]$zoom, location, 
+                          zoom = r[[id]]$zoom(), location, 
                           map_id = NULL, 
                           zoom_auto, var_left, 
-                          var_right, more_args) {
+                          var_right, select_id = NA, df = NULL, more_args) {
   
   # Drop down menus should be delayed, as updating other widgets could 
   # have a reset power on them (e.g. housing)
@@ -21,18 +21,18 @@ update_module <- function(r, id, mod_ns = paste(id, id, sep = "-"),
 
   ## Update mapview ----------------------------------------------------------
 
-  if (!all(vapply(c(zoom, location), is.null, TRUE))) {
+  if (!all(sapply(c(zoom, location), is.null))) {
     if (!is.null(map_id)) {
       rdeck_proxy(id = paste(id, id, map_id, sep = "-"),
                   initial_view_state = 
-                    view_state(center = location, zoom = zoom())
+                    view_state(center = location, zoom = zoom)
       )
     }}
 
 
   ## Update df ---------------------------------------------------------------
   
-  if (!is.null(r[[id]]$df)) {
+  if (!is.null(df)) {
     if (isFALSE(zoom_auto)) {
       updateCheckboxInput(
         session = session,
@@ -43,11 +43,16 @@ update_module <- function(r, id, mod_ns = paste(id, id, sep = "-"),
     updateSliderTextInput(
       session = session,
       inputId = construct_namespace("zoom_slider"),
-      selected = sus_translate(r = r, get_zoom_name(r[[id]]$df()))
+      selected = sus_translate(r = r, get_zoom_name(df))
     )
+    r[[id]]$df(df)
   }
 
   if (str_detect(id, "-$")) id <- str_extract(id, ".*(?=-)")
+  
+  ## Update select_id --------------------------------------------------------
+  
+  if (!is.na(select_id)) r[[id]]$select_id(select_id)
   
   ## Parse and update more_args from the URL ---------------------------------
   

@@ -34,20 +34,21 @@ explore_UI <- function(id) {
 
 explore_server <- function(id, r, data, var_left, var_right,
                            df = r[[id]]$df, select_id = r[[id]]$select_id,
+                           geo = r$geo,
                            build_str_as_DA = reactive(TRUE), 
                            graph = reactive(explore_graph), 
                            graph_args = reactive(list(
                              r = r,
                              data = data(), var_left = var_left(), 
                              var_right = var_right(), df = df(), 
-                             select_id = select_id(), 
+                             select_id = select_id(), geo = geo,
                              build_str_as_DA = build_str_as_DA())),
                            table = reactive(info_table),
                            table_args = reactive(list(
                              r = r,
                              data = data(), var_left = var_left(),
                              var_right = var_right(), df = df(), 
-                             select_id = select_id(), 
+                             select_id = select_id(), geo = r$geo(),
                              build_str_as_DA = build_str_as_DA()))) {
   
   stopifnot(is.reactive(data))
@@ -64,6 +65,7 @@ explore_server <- function(id, r, data, var_left, var_right,
       var_left = var_left(),
       var_right = var_right(),
       df = df(),
+      geo = geo(),
       select_id = select_id(),
       build_str_as_DA = build_str_as_DA()), 
       error = function(e) NULL))
@@ -73,8 +75,9 @@ explore_server <- function(id, r, data, var_left, var_right,
     graph_args2 <- reactive(c(graph_args(), var_type = var_type()))
     
     # Make info table
-    table_out <- reactive(tryCatch(do.call(table(), table_args2()),
-                                  error = function(e) NULL))
+    table_out <- reactive(#tryCatch(
+      do.call(table(), table_args2()))#,
+                                  #error = function(e) NULL))
     
     # Display info table
     output$info_table <- renderUI(table_out())

@@ -11,9 +11,8 @@ reserves <- c("24670285", "24720184", "24720186", "24720187", "24720188",
 canale <- 
   read_csv("dev/data/canale/CanALE_Canada.csv") |> 
   filter(DAUID %in% !!DA$ID) |> 
-  transmute(DAUID = as.character(DAUID), canale_ind_2016 = ale_index) |> 
-  mutate(canale_ind_2016 = if_else(
-    DAUID %in% reserves, NA_real_, canale_ind_2016))
+  transmute(ID = as.character(DAUID), canale_ind_2016 = ale_index) |> 
+  mutate(canale_ind_2016 = if_else(ID %in% reserves, NA_real_, canale_ind_2016))
 
 # Data testing ------------------------------------------------------------
 
@@ -25,14 +24,13 @@ data_testing(data = list("canale" = canale))
 all_canale <- 
   interpolate_scales(data = canale, 
                      base_scale = "DA", 
-                     all_tables = all_tables, 
-                     add_to_grid = FALSE)
+                     all_tables = all_tables,
+                     crs = 32618)
 
 
 # Calculate breaks --------------------------------------------------------
 
-all_canale <- 
-  calculate_breaks(all_canale)
+all_canale <- calculate_breaks(all_canale)
 
 
 # Assign to existing geographies ------------------------------------------
@@ -61,6 +59,10 @@ breaks_q5_active <-
                                  .before = canale_ind_2016)}) |> 
   rename(var = canale_ind_2016)
 
+interpolation_keys <- 
+  map_chr(set_names(names(all_canale$tables_list)), ~{
+    if (str_detect(.x, "_DA$")) FALSE else "dissemination area"
+  })
 
 variables <- 
   variables |>
@@ -77,10 +79,7 @@ variables <-
     breaks_q3 = breaks_q3_active,
     breaks_q5 = breaks_q5_active,
     source = "McGill Geo-Social Determinants of Health Research Group",
-    interpolated = list(c(DA = FALSE,
-                          CT = "dissemination area",
-                          borough = "dissemination area",
-                          centraide = "dissemination area")))
+    interpolated = interpolation_keys)
 
 
 # Add to modules table ----------------------------------------------------

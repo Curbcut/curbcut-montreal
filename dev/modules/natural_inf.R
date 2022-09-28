@@ -415,8 +415,8 @@ natural_inf$custom_explore <- map_dfr(top_slider, function(top_slider) {
   
 })
 
-borough_area <- 
-  borough |> 
+CSD_area <- 
+  CSD |> 
   st_transform(32618) |> 
   st_area() |> 
   units::drop_units() |> 
@@ -430,7 +430,7 @@ natural_inf$explore <- map(natural_inf_tiles_raw, ~{
     sum()}) |> 
   enframe() |> 
   mutate(value = unlist(value)) |> 
-  mutate(value_pct = value / borough_area) |> 
+  mutate(value_pct = value / CSD_area) |> 
   filter(name != "c_priority")
 
   
@@ -627,6 +627,6 @@ modules <-
 
 # Cleanup -----------------------------------------------------------------
 
-rm(datasets, borough_area, total_areas, slider_values, top_slider, all_sliders,
+rm(datasets, CSD_area, total_areas, slider_values, top_slider, all_sliders,
    natural_inf_tiles, natural_inf_tiles_raw)
 

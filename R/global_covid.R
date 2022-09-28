@@ -9,7 +9,7 @@ map_zoom_covid <- 11
 
 # Initialize reactive values
 rv_covid <- reactiveValues(path_selected = NA, point_selected = NA, 
-                           zoom = "borough")
+                           zoom = "CSD")
 
 # Dropdown menu
 var_list_covid <- 

@@ -87,7 +87,7 @@ access_server <- function(id, r) {
     time <- reactive("2016")
     
     # Choose tileset
-    tile <- reactive("CMA-CT")
+    tile <- reactive("CMA_CT")
 
     # Enable or disable slider + type of destination
     observeEvent({r[[id]]$select_id()
@@ -230,13 +230,11 @@ access_server <- function(id, r) {
     )
     
     # Data transparency and export
-    observe({
-      r[[id]]$export_data <- reactive(data_export(id = id,
-                                                  data = data(),
-                                                  var_left = var_left(),
-                                                  var_right = var_right(),
-                                                  df = r[[id]]$df()))
-    })
+    r[[id]]$export_data <- reactive(data_export(id = id,
+                                                data = data(),
+                                                var_left = var_left(),
+                                                var_right = var_right(),
+                                                df = r[[id]]$df()))
 
   })
 }

@@ -91,6 +91,8 @@ get_metadata <- function(export_data, r, about_data,
     ranks <- variables_row$breaks_q5[[1]][
       !is.na(variables_row$breaks_q5[[1]]$var_name), ]
     
+    ranks <- ranks[ranks$scale == export_data$df, ]
+    
     about_data[[var]]$details_2 <- 
       paste0(about_data[[var]]$details_2, " (",
              paste(ranks$var,
@@ -224,15 +226,17 @@ get_metadata <- function(export_data, r, about_data,
       -str_which(unlist(variables_row$interpolated), "FALSE")]
   
   interpolated <- 
-    if (!is.null(export_data$df)) export_data$df %in% names(interpolated_dfs) else FALSE
+    if (!is.null(export_data$df)) 
+      is_scale_in_df(names(interpolated_dfs), export_data$df) else FALSE
   
   if (interpolated) {
-    
+
     from <- sus_translate(r = r, interpolated_dfs[[export_data$df]])
     
     about_data[[var]]$interpolated <- 
       # Special case for the boroughs at the census scale!
-      if (export_data$df == "borough" && variables_row$source == "Canadian census") {
+      if (is_scale_in_df("CSD", export_data$df) && 
+          variables_row$source == "Canadian census") {
         paste0("<p style = 'font-size: 1.45rem;'>",
                sus_translate(r = r, "For the City of Montreal's boroughs, ",
                              "`{variables_row$var_title}` is ",

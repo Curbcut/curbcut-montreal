@@ -1,13 +1,10 @@
 #### GET TITLE CARD ############################################################
 
-#' @param island_or_region A character string, either "region" or "island".
-
-get_title_card <- function(r = r, df, select_id, island_or_region) {
+get_title_card <- function(r = r, df, select_id) {
 
   ## Setup ---------------------------------------------------------------------
-
-  # Test if comparison will be only on island
-  on_island <- if (island_or_region == "island") TRUE else FALSE
+  
+  on_island <- select_id %in% c(island_DA$DAUID, island_CT$ID, island_CSD$ID)
 
   # Choose indicators based on data availability
   indicators_table <-
@@ -16,10 +13,18 @@ get_title_card <- function(r = r, df, select_id, island_or_region) {
     }
 
   # Get scale names
-  geo_area <- switch(df, "borough" = "borough/city", "CT" = "census tract",
-                     "DA" = "dissemination area")
-  geo_areas <- switch(df, "borough" = "boroughs or cities",
-                      "CT" = "census tracts", "DA" = "dissemination areas")
+  geo_area <- switch(gsub(".*_", "", df), 
+                     "CSD" = "borough/city",
+                     "CT" = "census tract",
+                     "DA" = "dissemination area",
+                     "centraide" = "centraide zone",
+                     "zone")
+  geo_areas <-  switch(gsub(".*_", "", df), 
+                       "CSD" = "boroughs or cities",
+                       "CT" = "census tracts", 
+                       "DA" = "dissemination areas",
+                       "centraide" = "centraide zones",
+                       "zones")
 
   
   ## Generate output grid ------------------------------------------------------

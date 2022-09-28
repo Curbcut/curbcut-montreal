@@ -69,12 +69,13 @@ housing_server <- function(id, r) {
     map_zoom_levels <- reactive({
       get_zoom_levels(default = "CMA", 
                       geo = r$geo(),
-                      var_left = var_left())
+                      var_left = isolate(var_left()))
     }) |> bindEvent(r$geo())
     
     # Zoom string reactive
     observe({
-      new_zoom_string <- get_zoom_string(r[[id]]$zoom(), map_zoom_levels()$levels)
+      new_zoom_string <- get_zoom_string(r[[id]]$zoom(), map_zoom_levels()$levels,
+                                         r$geo())
       if (new_zoom_string != zoom_string()) zoom_string(new_zoom_string)
     }) |> bindEvent(r[[id]]$zoom(), map_zoom_levels()$levels)
     
@@ -139,7 +140,7 @@ housing_server <- function(id, r) {
       geo = r$geo(),
       var_left = var_left(),
       var_right = var_right()))
-    
+
     # Data for tile coloring
     data_color <- reactive(get_data_color(
       map_zoom_levels = map_zoom_levels()$levels,
@@ -187,7 +188,7 @@ housing_server <- function(id, r) {
       r = r,
       map_id = "map",
       tile = tile)
-    
+
     # Explore panel
     explore_content <- explore_server(
       id = id,
@@ -212,13 +213,11 @@ housing_server <- function(id, r) {
     )
 
     # Data transparency and export
-    observe({
-      r[[id]]$export_data <- reactive(data_export(id = id,
-                                                  data = data(),
-                                                  var_left = var_left(),
-                                                  var_right = var_right(),
-                                                  df = r[[id]]$df()))
-    })
+    r[[id]]$export_data <- reactive(data_export(id = id,
+                                                data = data(),
+                                                var_left = var_left(),
+                                                var_right = var_right(),
+                                                df = r[[id]]$df()))
 
   })
 }

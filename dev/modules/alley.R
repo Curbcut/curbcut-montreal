@@ -127,14 +127,14 @@ alley$name <- paste(toupper(substr(alley$name, 1, 1)),
 # Join borough name and CSDUID
 alley <- 
   alley |>
-  st_join(rename(select(borough, ID, name), CSDUID = ID, name_2 = name)) |>
+  st_join(rename(select(CSD, ID, name), CSDUID = ID, name_2 = name)) |>
   relocate(CSDUID, name_2, .after = name)
 
 
 # Get borough text --------------------------------------------------------
 
 mtl_ids <- 
-  borough |> 
+  CSD |> 
   st_drop_geometry() |> 
   select(ID, name) |> 
   filter(str_starts(ID, "2466023"))
@@ -174,6 +174,7 @@ lengths_alleys_fun <- function(data) {
   
   sqm_per_id <- 
     alleys_length |> 
+    st_transform(32618) |> 
     rename(alley_ID = ID) |> 
     st_join(select(data, ID)) |> 
     st_drop_geometry() |> 
@@ -197,7 +198,9 @@ lengths_alleys_fun <- function(data) {
 }
 
 join_alleys <- 
-  map(list("borough" = borough, "CT" = CT, "DA" = DA), lengths_alleys_fun)
+  map(list("city_CSD" = city_CSD, 
+           "city_CT" = city_CT, 
+           "city_DA" = city_DA), lengths_alleys_fun)
 
 
 # Add breaks --------------------------------------------------------------
@@ -215,14 +218,8 @@ data_testing(join_alleys)
 
 # Joining data to geometries ----------------------------------------------
 
-borough <- left_join(borough, join_alleys$borough, by = "ID") |> 
-  relocate(geometry, .after = last_col())
+assign_tables(join_alleys)
 
-CT <- left_join(CT, join_alleys$CT, by = "ID") |> 
-  relocate(geometry, .after = last_col())
-
-DA <- left_join(DA, join_alleys$DA, by = "ID") |> 
-  relocate(buffer, centroid, building, geometry, .after = last_col())
 
 # Meta testing ------------------------------------------------------------
 
@@ -285,7 +282,7 @@ variables <-
     theme = "Urban life",
     private = FALSE,
     dates = NA,
-    scales = c("borough", "building", "CT", "DA","street"),
+    scales = names(join_alleys),
     breaks_q3 = breaks_q3_active$green_alley_sqkm,
     breaks_q5 = breaks_q5_active$green_alley_sqkm,
     source = "City of Montreal's open data website",
@@ -300,7 +297,7 @@ variables <-
     theme = "Urban life",
     private = FALSE,
     dates = NA,
-    scales = c("borough", "building", "CT", "DA","street"),
+    scales = names(join_alleys),
     breaks_q3 = breaks_q3_active$green_alley_per1k,
     breaks_q5 = breaks_q5_active$green_alley_per1k,
     source = "City of Montreal's open data website",
@@ -312,7 +309,8 @@ variables <-
 modules <- 
   modules |> 
   add_modules(id = "alley",
-              metadata = TRUE)
+              metadata = TRUE,
+              dataset_info = "TKTK")
 
 
 # Clean up ----------------------------------------------------------------

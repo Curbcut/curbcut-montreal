@@ -67,100 +67,100 @@ progressr::handlers(progressr::handler_progress(
   complete = "+"
 ))
 
-with_progress({
-  
-  p <- 
-    progressr::progressor(sum(map_int(tenure_statuses, length)) *
-                            sum(map_int(shelter_costs, length)) *
-                            sum(map_int(add_characteristics, length)) * 
-                            2)
-  
-  cent_d <- 
-    map(set_names(c("CT", "centraide")), function(scale) {
-      map_dfc(names(tenure_statuses), function(tenure_status_name) {
-        
-        tenure_status <- tenure_statuses[[tenure_status_name]]
-        
-        map_dfc(names(shelter_costs), function(shelter_cost_name) {
-          
-          shelter_cost_f <- shelter_costs[[shelter_cost_name]]
-          
-          shelter_cost_sum_rows <- 
-            map(shelter_cost_f, function(shelter_c) {
-              map_dfc(names(add_characteristics), function(characteristic_name) {
-                
-                add_characteristics <- add_characteristics[[characteristic_name]]
-                
-                out <- 
-                  get_housing_char(tenure = tenure_status, 
-                                              shelter_cost = shelter_c,
-                                              characteristics = add_characteristics)[[
-                                                scale]][, "var"]
-                
-                p()
-                
-                names(out) <- paste(tenure_status_name,
-                                    shelter_cost_name,
-                                    characteristic_name, 
-                                    sep = "_")
-                
-                out
-                
-              })
-            })
-          
-          if (length(shelter_cost_sum_rows) > 1) {
-            shelter_cost_sum_rows <- 
-              map(shelter_cost_sum_rows, mutate, row_n = row_number()) |> 
-              reduce(bind_rows) |> 
-              group_by(row_n) |> 
-              summarize_all(sum) |> 
-              select(-row_n)
-          }
-          
-          shelter_cost_sum_rows
-          
-        })
-      })
-    })
-})
+# with_progress({
+#   
+#   p <- 
+#     progressr::progressor(sum(map_int(tenure_statuses, length)) *
+#                             sum(map_int(shelter_costs, length)) *
+#                             sum(map_int(add_characteristics, length)) * 
+#                             2)
+#   
+#   cent_d <- 
+#     map(set_names(c("CT", "centraide")), function(scale) {
+#       map_dfc(names(tenure_statuses), function(tenure_status_name) {
+#         
+#         tenure_status <- tenure_statuses[[tenure_status_name]]
+#         
+#         map_dfc(names(shelter_costs), function(shelter_cost_name) {
+#           
+#           shelter_cost_f <- shelter_costs[[shelter_cost_name]]
+#           
+#           shelter_cost_sum_rows <- 
+#             map(shelter_cost_f, function(shelter_c) {
+#               map_dfc(names(add_characteristics), function(characteristic_name) {
+#                 
+#                 add_characteristics <- add_characteristics[[characteristic_name]]
+#                 
+#                 out <- 
+#                   get_housing_char(tenure = tenure_status, 
+#                                               shelter_cost = shelter_c,
+#                                               characteristics = add_characteristics)[[
+#                                                 scale]][, "var"]
+#                 
+#                 p()
+#                 
+#                 names(out) <- paste(tenure_status_name,
+#                                     shelter_cost_name,
+#                                     characteristic_name, 
+#                                     sep = "_")
+#                 
+#                 out
+#                 
+#               })
+#             })
+#           
+#           if (length(shelter_cost_sum_rows) > 1) {
+#             shelter_cost_sum_rows <- 
+#               map(shelter_cost_sum_rows, mutate, row_n = row_number()) |> 
+#               reduce(bind_rows) |> 
+#               group_by(row_n) |> 
+#               summarize_all(sum) |> 
+#               select(-row_n)
+#           }
+#           
+#           shelter_cost_sum_rows
+#           
+#         })
+#       })
+#     })
+# })
+# 
+# cent_d <- 
+#   imap(cent_d, function(df, scale) {
+#     bind_cols(get_housing_char()[[scale]][, "ID"], df) |>
+#       rename_with(~paste0("cent_d_", .x, "_count_2016"), 
+#                   total_total_total:last_col())
+#   })
+# qsave(cent_d, file = "dev/data/modules_raw_data/cent_d.qs")
 
-cent_d <- 
-  imap(cent_d, function(df, scale) {
-    bind_cols(get_housing_char()[[scale]][, "ID"], df) |>
-      rename_with(~paste0("cent_d_", .x, "_count_2016"), 
-                  total_total_total:last_col())
-  })
+cent_d <- qread("dev/data/modules_raw_data/cent_d.qs")
 
 
-# Filter only the CMA -----------------------------------------------------
+# Filter and interpolate --------------------------------------------------
 
-cent_d <- list(
-  CT = 
-    select(CT, ID) |> 
-    st_drop_geometry() |> 
-    left_join(cent_d$CT, by = "ID"),
-  centraide = 
-    select(centraide, name) |> 
-    st_drop_geometry() |> 
-    left_join(cent_d$centraide, by = c("name" = "ID"))
-)
+all_cent_d <- 
+  interpolate_scales(data = cent_d$CT, 
+                     base_scale = "CT", 
+                     all_tables = all_tables,
+                     weight_by = "households",
+                     crs = 32618)
 
-# Add interpolated boroughs
-cent_d$borough <-
-  cent_d$CT |> 
-  (\(x) left_join(select(st_drop_geometry(CT), ID, CSDUID), x, 
-                  by = "ID"))()  |> 
-  group_by(CSDUID) |>
-  summarize(across(starts_with("cent_d"), ~sum(.x, na.rm = T))) |> 
-  (\(x) left_join(select(st_drop_geometry(borough), ID), x, 
-                  by = c("ID" = "CSDUID")))()
+# Use Centraide coming from the real data, no interpolation needed
+all_cent_d$centraide_centraide <- 
+  left_join(cent_d$centraide |> 
+              rename(name = ID),
+            centraide_centraide |> 
+              st_drop_geometry() |> 
+              select(ID, name),
+            by = "name") |> 
+  relocate(ID, .before = name) |> 
+  select(-name)
 
 
 # Count and percentage ----------------------------------------------------
 
-cent_d <- 
-  imap(cent_d, function(scale, df) {
+all_cent_d <- 
+  imap(all_cent_d, function(scale, df) {
     
     # Switch centraide name to ID
     if (df == "centraide") 
@@ -184,30 +184,30 @@ cent_d <-
 
 # Calculate breaks --------------------------------------------------------
 
-cent_d <- calculate_breaks(cent_d)
+all_cent_d <- calculate_breaks(all_cent_d)
 
 
 # Assign to existing geographies ------------------------------------------
 
-assign_tables(module_tables = cent_d)
+assign_tables(module_tables = all_cent_d)
 
 
 # Add to variables table --------------------------------------------------
 
 var_list <-
-  cent_d$tables_list$CT |>
+  all_cent_d$tables_list[[1]] |>
   select(-ID, -contains(c("q3", "q5"))) |>
   names()
 
 # Get breaks_q3
 breaks_q3_active <-
-  imap_dfr(cent_d$tables_q3, \(x, scale) {
+  imap_dfr(all_cent_d$tables_q3, \(x, scale) {
     if (nrow(x) > 0) x |> mutate(scale = scale, date = 2016, rank = 0:3,
                                  .before = 1)})
 
 # Get breaks_q5
 breaks_q5_active <-
-  imap_dfr(cent_d$tables_q5, function(x, scale) {
+  imap_dfr(all_cent_d$tables_q5, function(x, scale) {
     if (nrow(x) > 0) x |> mutate(scale = scale, date = 2016, rank = 0:5, 
                                  .before = 1)})
 
@@ -364,6 +364,12 @@ new_rows <-
     exp <- paste0(pre_explanation, tenure_explanation, shelter_explanation,
              characteristics_explanation)
     
+    interpolated_key <- 
+      map_chr(set_names(names(all_cent_d$tables_list)), function(x) {
+        if (str_detect(x, "_CT$")) return(FALSE)
+        return("census tracts")
+      })
+    
     # ADDED ROW
     out <-
       add_variables(variables,
@@ -375,7 +381,7 @@ new_rows <-
                     theme = "Housing",
                     private = FALSE,
                     dates = "2016",
-                    scales = c("CT", "borough", "centraide"),
+                    scales = names(all_cent_d$tables_list),
                     breaks_q3 = select(breaks_q3_active,
                                        scale, date, rank, 
                                        var = all_of(paste0(var, "_2016"))),
@@ -383,9 +389,7 @@ new_rows <-
                                        scale, date, rank, 
                                        var = all_of(paste0(var, "_2016"))),
                     source = "Centraide of Greater Montreal",
-                    interpolated = list(c(CT = FALSE,
-                                          borough = "census tracts",
-                                          centraide = FALSE)))
+                    interpolated = list(interpolated_key))
     
     out[out$var_code == var, ]
     
@@ -425,5 +429,5 @@ modules <-
 
 # Clean up ----------------------------------------------------------------
 
-rm(tenure_statuses, add_characteristics, shelter_costs, cend_d,
-   var_list, breaks_q3_active, breaks_q5_active, new_rows)
+rm(tenure_statuses, add_characteristics, shelter_costs, cent_d, all_cent_d,
+   var_list, breaks_q3_active, breaks_q5_active, new_rows, table2)

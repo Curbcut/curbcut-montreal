@@ -110,75 +110,80 @@
 # unlink("dev/data/building_geocode_lists")
 
 
-# Open data and arrange it in a df ----------------------------------------
+# # Open data and arrange it in a df ----------------------------------------
+# 
+# all_buildings <- qread("dev/data/building_geocode.qs")
+# all_buildings <- all_buildings[!map_lgl(all_buildings, ~all(is.na(.x)))]
+# 
+# buildings_parsed <-
+#   imap_dfr(all_buildings, function(li, id) {
+#     tibble(ID = id,
+#            house_number = li$house_number,
+#            road = li$road,
+#            city = li$city,
+#            town = li$town,
+#            village = li$village,
+#            suburb = li$suburb,
+#            neighbourhood = li$neighbourhood,
+#            region = li$region)
+#   }) |>
+#   group_by(ID) |>
+#   slice(1) |>
+#   ungroup()
+# 
+# 
+# # Parse building names ----------------------------------------------------
+# 
+# buildings_parsed <-
+#   buildings_parsed |>
+#   mutate(city = str_remove(city, " \\(\\d{2}\\)$")) |>
+#   mutate(third = case_when(!is.na(city) ~ city,
+#                            !is.na(town) ~ town,
+#                            !is.na(village) ~ village,
+#                            !is.na(suburb) ~ suburb,
+#                            TRUE ~ region)) |>
+#   mutate(second = if_else(!is.na(road), paste0(road, ", ", third),
+#                           third)) |>
+#   mutate(name = if_else(!is.na(house_number), paste(house_number, second),
+#                         second)) |>
+#   select(ID, name)
+# 
+# 
+# # Join building to geocode results -----------------------------------------
+# 
+# building <-
+#   building |>
+#   left_join(buildings_parsed, by = "ID") |>
+#   relocate(name, .before = name_2) |>
+#   st_set_agr("constant")
+# 
+# rm(buildings_parsed, all_buildings)
+# 
+# 
+# # Create DA geometries and join to DA -------------------------------------
+# 
+# # Union by DA
+# building_DA <-
+#   building |>
+#   st_transform(32618) |>
+#   group_by(DAUID) |>
+#   summarize() |>
+#   st_transform(4326)
+# 
+# DA <-
+#   building_DA |>
+#   as_tibble() |>
+#   rename(ID = DAUID, building = geometry) |>
+#   right_join(DA, by = "ID") |>
+#   st_as_sf(crs = 4326) |>
+#   relocate(building, .before = geometry) |>
+#   st_set_geometry("geometry") |>
+#   arrange(ID) |>
+#   st_set_agr("constant")
+# 
+# rm(building_DA)
+# 
+# qsave(building, "dev/data/building_geocoded.qs")
 
-all_buildings <- qread("dev/data/building_geocode.qs")
-all_buildings <- all_buildings[!map_lgl(all_buildings, ~all(is.na(.x)))]
+building <- qread("dev/data/building_geocoded.qs")
 
-buildings_parsed <- 
-  future_imap_dfr(all_buildings, function(li, id) {
-    tibble(ID = id,
-           house_number = li$house_number,
-           road = li$road,
-           city = li$city,
-           town = li$town,
-           village = li$village,
-           suburb = li$suburb,
-           neighbourhood = li$neighbourhood,
-           region = li$region)
-  }) |> 
-  group_by(ID) |> 
-  slice(1) |> 
-  ungroup()
-
-
-# Parse building names ----------------------------------------------------
-
-buildings_parsed <- 
-  buildings_parsed |> 
-  mutate(city = str_remove(city, " \\(\\d{2}\\)$")) |> 
-  mutate(third = case_when(!is.na(city) ~ city,
-                           !is.na(town) ~ town,
-                           !is.na(village) ~ village,
-                           !is.na(suburb) ~ suburb,
-                           TRUE ~ region)) |> 
-  mutate(second = if_else(!is.na(road), paste0(road, ", ", third),
-                          third)) |> 
-  mutate(name = if_else(!is.na(house_number), paste(house_number, second),
-                        second)) |> 
-  select(ID, name)
-
-
-# Join building to geocode results -----------------------------------------
-
-building <- 
-  building |> 
-  left_join(buildings_parsed, by = "ID") |> 
-  relocate(name, .before = name_2) |> 
-  st_set_agr("constant")
-
-rm(buildings_parsed, all_buildings, )
-
-
-# Create DA geometries and join to DA -------------------------------------
-
-# Union by DA
-building_DA <- 
-  building |> 
-  st_transform(32618) |> 
-  group_by(DAUID) |> 
-  summarize() |> 
-  st_transform(4326)
-
-DA <- 
-  building_DA |> 
-  as_tibble() |> 
-  rename(ID = DAUID, building = geometry) |> 
-  right_join(DA, by = "ID") |> 
-  st_as_sf(crs = 4326) |> 
-  relocate(building, .before = geometry) |>
-  st_set_geometry("geometry") |> 
-  arrange(ID) |> 
-  st_set_agr("constant")
-
-rm(building_DA)

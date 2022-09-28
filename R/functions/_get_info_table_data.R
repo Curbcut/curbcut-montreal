@@ -4,7 +4,7 @@
 #' info_table module.
 
 get_info_table_data <- function(r = r, data, var_type, var_left, var_right, df, 
-                                select_id, build_str_as_DA = TRUE) {
+                                select_id, geo, build_str_as_DA = TRUE) {
   
   ## Initialize dat and output list --------------------------------------------
   
@@ -14,16 +14,18 @@ get_info_table_data <- function(r = r, data, var_type, var_left, var_right, df,
   
   ## Get modified df for building/street ---------------------------------------
   
-  if (df != "building") build_str_as_DA <- FALSE
+  if (!is_scale_in_df("building", df)) build_str_as_DA <- FALSE
   
   if (build_str_as_DA) {
-    dat_select <- if (is.na(select_id)) DA else {
-      dbGetQuery(db, paste0("SELECT * FROM building WHERE ID = ", 
-                            select_id))
+    dat_select <- if (is.na(select_id)) get(paste(geo, "DA", sep = "_")) else {
+      dbGetQuery(db, paste0("SELECT * FROM ", paste(geo, "building", sep = "_"), 
+                            " WHERE ID = ", select_id))
     }
     dat_select_id <- select_id
     if (!is.na(select_id)) 
-      select_id <- dbGetQuery(db, paste0("SELECT DAUID FROM building WHERE ID = ", 
+      select_id <- dbGetQuery(db, paste0("SELECT DAUID FROM ", 
+                                         paste(geo, "building", sep = "_"), 
+                                         " WHERE ID = ", 
                             select_id))$DAUID
     if (length(select_id) == 0) select_id <- NA
     
@@ -50,7 +52,7 @@ get_info_table_data <- function(r = r, data, var_type, var_left, var_right, df,
   
   ## Special case for date-type data -------------------------------------------
   
-  if (df == "date") {
+  if (is_scale_in_df("date", df)) {
     out$var_type <- "date_all"
     dat$name <- NA_character_
     dat$population <- NA_real_
@@ -148,9 +150,9 @@ get_info_table_data <- function(r = r, data, var_type, var_left, var_right, df,
   ## Scale ---------------------------------------------------------------------
   
   scale_sing <- switch(
-    df,  
+    gsub(".*_", "", df),  
     "date" = NA_character_,
-    "borough" = "borough/city",
+    "CSD" = "borough/city",
     "CT" = "census tract",
     "DA" = "dissemination area",
     "grid" = "250-m",
@@ -159,7 +161,7 @@ get_info_table_data <- function(r = r, data, var_type, var_left, var_right, df,
     "centraide" = "centraide zone")
   
   scale_plural <- switch(
-    scale_sing,
+    gsub(".*_", "", scale_sing),
     "borough/city" = "boroughs or cities",
     "census tract" = "census tracts",
     "dissemination area" = "dissemination areas",
@@ -174,7 +176,7 @@ get_info_table_data <- function(r = r, data, var_type, var_left, var_right, df,
 
   ## Place names ---------------------------------------------------------------
   
-  out$place_name <- if (df %in% c("building", "street") && build_str_as_DA) {
+  out$place_name <- if (is_scale_in_df(c("building", "street"), df) && build_str_as_DA) {
     sus_translate(r = r, "The dissemination area around {select_name$name}")
   } else switch(
     scale_sing,
@@ -189,10 +191,10 @@ get_info_table_data <- function(r = r, data, var_type, var_left, var_right, df,
     NA_character_)
   
   if (grepl("select", out$var_type)) {
-    if (df %in% c("borough", "centraide")) select_name$name_2 <- 
+    if (is_scale_in_df(first_level_choropleth, df)) select_name$name_2 <- 
         sus_translate(r = r, glue("{select_name$name_2}"))
     
-    out$place_heading <- if (df %in% c("building", "street") && 
+    out$place_heading <- if (is_scale_in_df(c("building", "street"), df) && 
                              build_str_as_DA) {
       select_name$name
     } else if (scale_sing %in% c("borough/city", "centraide zone")) {

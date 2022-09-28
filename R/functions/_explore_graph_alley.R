@@ -5,7 +5,7 @@ explore_graph_alley <- function(r = r, data, var_type, var_left, var_right, df,
                                 select_id, build_str_as_DA = TRUE) {
   
   # Show histogram in borough summary mode
-  if (df == "borough_empty") {
+  if (is_scale_in_df("borough_empty", df)) {
     alley[!is.na(alley$created),] |> 
       ggplot(aes(created)) +
       geom_histogram(fill = colour_left_5$fill[3], bins = 30) +
@@ -19,7 +19,7 @@ explore_graph_alley <- function(r = r, data, var_type, var_left, var_right, df,
             panel.grid.minor.y = element_blank())
     
   # Show type-summary histogram or NULL in alley mode
-  } else if (df == "alley") {
+  } else if (is_scale_in_df("alley", df)) {
     if (is.na(select_id)) {
       
       labels <- variables$breaks_q5[[

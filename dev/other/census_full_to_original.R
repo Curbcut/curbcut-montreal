@@ -1,14 +1,24 @@
-#### Get back census dfs with geometries ######################################
+library(tidyverse)
+library(qs)
+library(qs)
 
-qs::qload("data2/census_full.qsm")
-centraide <- qs::qread("data2/centraide_full.qs")
-grid <- qs::qread("data2/grid_full.qs")
+all_tables <- 
+  list("CMA" = c("borough", "CT", "DA", "grid", "building"),
+       "island" = c("borough", "CT", "DA", "grid", "building"),
+       "city" = c("borough", "CT", "DA", "grid", "building"),
+       "centraide" = c("centraide", "CT", "DA", "grid", "building"))
 
-borough <- borough_full
-CT <- CT_full
-DA <- DA_full
+walk(names(all_tables), ~{
+  dat <- paste0(.x, "_full")
+  qload(paste0("data2/", dat, ".qsm"), env = .GlobalEnv)
+})
 
-
-# Cleanup -----------------------------------------------------------------
-
-rm(borough_full, CT_full, DA_full)
+iwalk(all_tables, function(scales, geo) {
+  walk(scales, function(scale) {
+    now <- paste(geo, scale, "full", sep = "_")
+    wanted <- paste(geo, scale, sep = "_")
+    
+    assign(wanted, get(now), envir = .GlobalEnv)
+    rm(list = now, envir = .GlobalEnv)
+  })
+})

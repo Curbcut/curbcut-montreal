@@ -6,7 +6,7 @@ render_legend <- function(r, data, var_left, var_right, df, data_type,
   ## Clean up data_type and building/street ------------------------------------
 
   data_type <- sub("building_", "", data_type)
-  if (build_str_as_DA && df %in% c("building", "street")) df <- "DA"
+  if (build_str_as_DA && is_scale_in_df(c("building", "street"), df)) df <- "DA"
   
   
   ## Get date ------------------------------------------------------------------

@@ -60,23 +60,27 @@ climate_risk <-
 all_climate_risk <- 
   interpolate_scales(data = climate_risk, 
                      base_scale = "grid", 
-                     all_tables = all_tables, 
-                     add_to_grid = TRUE)
+                     all_tables = all_tables,
+                     crs = 32618)
 
 
 # Add breaks --------------------------------------------------------------
 
-all_climate_risk <- 
-  calculate_breaks(tables_list = all_climate_risk)
+all_climate_risk <- calculate_breaks(tables_list = all_climate_risk)
 
 # Adjust breaks for grid
-all_climate_risk$tables_list$grid <- 
-  climate_risk |>
-  st_drop_geometry() |> 
-  mutate(across(climate_flood_ind:climate_heat_wave_ind,
-                ~pmax(pmin(.x, 3), 1), .names = "{.col}_q3"),
-         across(climate_flood_ind:climate_heat_wave_ind,
-                ~pmax(.x, 1), .names = "{.col}_q5"))
+all_climate_risk$tables_list <- 
+  imap(all_climate_risk$tables_list, function(df, df_name) {
+    if (!str_detect(df_name, "_grid$")) return(df)
+    
+    climate_risk |>
+      st_drop_geometry() |> 
+      filter(ID %in% df$ID) |> 
+      mutate(across(climate_flood_ind:climate_heat_wave_ind,
+                    ~pmax(pmin(.x, 3), 1), .names = "{.col}_q3"),
+             across(climate_flood_ind:climate_heat_wave_ind,
+                    ~pmax(.x, 1), .names = "{.col}_q5"))
+  })
 
 
 # Calculate qualitative q5 ------------------------------------------------
@@ -107,14 +111,22 @@ grid_q5 <-
   map(left_join, climate_join, by = "var") |> 
   map(relocate, rank, .after = scale)
 
+grid_q5 <- 
+map(grid_q5, function(df) {
+  map_dfr(names(climate_risk_q5[str_detect(names(climate_risk_q5), "_grid$")]), 
+          \(df_name) {
+              mutate(df, scale = !!df_name)
+          })
+})
+
 # Consolidate q5 breaks table
 climate_risk_q5 <- 
   imap(grid_q5, \(x, y) {
-    imap_dfr(climate_risk_q5[names(climate_risk_q5) != "grid"], ~mutate(.x, scale = .y)) |> 
+    imap_dfr(climate_risk_q5[!str_detect(names(climate_risk_q5), "_grid$")], 
+             ~mutate(.x, scale = .y)) |> 
       select(scale, rank, all_of(y)) |> 
       set_names(c("scale", "rank", "var")) |> 
       bind_rows(x)})
-
 
 
 # Assign all --------------------------------------------------------------
@@ -136,8 +148,8 @@ breaks_q3_active <-
                                  .before = 1)})
 
 interpolation_keys <- 
-  map(set_names(names(all_climate_risk$tables_list)), ~{
-    if (.x == "grid") FALSE else "250-m grid cells"
+  map_chr(set_names(names(all_climate_risk$tables_list)), ~{
+    if (str_detect(.x, "_grid$")) FALSE else "250-m grid cells"
   })
 
 variables <- 

@@ -32,8 +32,8 @@ scale_lwd_climate_risk <- function(select_id, tile) {
   
   scale_category(
     col = ID_color,
-    range = c(5, if (tile == "island-grid") 0.3 else 1),
-    unmapped_value = if (tile == "island-grid") 0.3 else 1,
+    range = c(5, if (is_scale_in_df("grid", tile)) 0.3 else 1),
+    unmapped_value = if (is_scale_in_df("grid", tile)) 0.3 else 1,
     levels = c(select_id, "NA"),
     legend = FALSE) 
   

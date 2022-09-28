@@ -70,39 +70,20 @@ access <-
               access_jobs_total_pwe:access_healthcare_pwd) |> 
   rename(ID = GeoUID)
 
-# Add CTs not part of the access df
+# Add CTs not part of the access df and add it to a list
 access <- 
-bind_rows(access, map_dfr(CT$ID[!CT$ID %in% access$ID], ~{tibble(ID = .x)}))
+  list(CMA_CT = bind_rows(access, map_dfr(CMA_CT$ID[!CMA_CT$ID %in% access$ID], 
+                          ~{tibble(ID = .x)})))
 
 
 # Add breaks --------------------------------------------------------------
 
-var_list <- list("total" = str_subset(names(access), "total"),
-                 "low" = str_subset(names(access), "low"),
-                 "high" = str_subset(names(access), "high"),
-                 "30k" = str_subset(names(access), "30k"),
-                 "schools" = str_subset(names(access), "schools"),
-                 "healthcare" = str_subset(names(access), "healthcare"))
-
-access <- add_q3(access)
-access_q3 <- get_breaks_q3(access)
-access_q5 <- get_breaks_q5(access, var_list)
-access <- bind_cols(access, add_q5(access, access_q5))
+access <- calculate_breaks(access)
 
 
-# Data testing ------------------------------------------------------------
-
-data_testing(list("access" = access))
-
-
-c(1:970)[!c(1:970) %in% unique(tt_matrix$origin)]
 # Add to existing geographies ---------------------------------------------
 
-CT <-
-  CT |> 
-  left_join(access, by = "ID") |> 
-  relocate(geometry, .after = last_col()) |> 
-  st_set_agr("constant")
+assign_tables(access)
   
 
 # Process travel time matrix ----------------------------------------------
@@ -138,26 +119,17 @@ tt_matrix <-
 
 # Add variable explanations -----------------------------------------------
 
-var_list <- 
-  names(select(access, -ID, -contains(c("q3", "q5")))) |> 
-  unlist() |> 
-  unique()
-
 # Get breaks_q3
-breaks_q3_active <-
-  map(set_names(var_list), ~{
-      access_q3 |> 
-      mutate(scale = "CT", date = NA, rank = 0:3, .before = everything()) |> 
-      select(scale, date, rank, var = all_of(.x))
-    })
+breaks_q3_access <-
+  imap_dfr(access$tables_q3, \(x, scale) {
+    if (nrow(x) > 0) x |> mutate(scale = scale, rank = 0:3,
+                                 .before = 1)})
 
 # Get breaks_q5
-breaks_q5_active <-
-  map(set_names(var_list), ~{
-    access_q5 |> 
-      mutate(scale = "CT", rank = 0:5, .before = everything()) |> 
-      select(scale, rank, var = all_of(.x))
-  })
+breaks_q5_access <-
+  imap_dfr(access$tables_q5, \(x, scale) {
+    if (nrow(x) > 0) x |> mutate(scale = scale, rank = 0:5,
+                                 .before = 1)})
 
 variables <- 
   variables |>
@@ -171,12 +143,12 @@ variables <-
     theme = "Transport",
     private = FALSE,
     dates = NA,
-    scales = "CT",
-    breaks_q3 = breaks_q3_active$access_jobs_total_pwd_count,
-    breaks_q5 = breaks_q5_active$access_jobs_total_pwd_count,
+    scales = names(access$tables_q3),
+    breaks_q3 = select(breaks_q3_access, scale, rank, access_jobs_total_pwd_count),
+    breaks_q5 = select(breaks_q5_access, scale, rank, access_jobs_total_pwd_count),
     source = paste0("Job and population data from Statistics Canada. Travel ",
                     "time calculations from OSM and GTFS."),
-    interpolated = list(CT = FALSE)
+    interpolated = list(c(CMA_CT = FALSE))
   ) |>
   add_variables(
     var_code = "access_jobs_total_opwd_count",
@@ -188,12 +160,12 @@ variables <-
     theme = "Transport",
     private = FALSE,
     dates = NA,
-    scales = "CT",
-    breaks_q3 = breaks_q3_active$access_jobs_total_opwd_count,
-    breaks_q5 = breaks_q5_active$access_jobs_total_opwd_count,
+    scales = names(access$tables_q3),
+    breaks_q3 = select(breaks_q3_access, scale, rank, access_jobs_total_opwd_count),
+    breaks_q5 = select(breaks_q5_access, scale, rank, access_jobs_total_opwd_count),
     source = paste0("Job and population data from Statistics Canada. Travel ",
                     "time calculations from OSM and GTFS."),
-    interpolated = list(CT = FALSE)
+    interpolated = list(c(CMA_CT = FALSE))
   ) |>
   add_variables(
     var_code = "access_jobs_total_nwd_count",
@@ -205,12 +177,12 @@ variables <-
     theme = "Transport",
     private = FALSE,
     dates = NA,
-    scales = "CT",
-    breaks_q3 = breaks_q3_active$access_jobs_total_nwd_count,
-    breaks_q5 = breaks_q5_active$access_jobs_total_nwd_count,
+    scales = names(access$tables_q3),
+    breaks_q3 = select(breaks_q3_access, scale, rank, access_jobs_total_nwd_count),
+    breaks_q5 = select(breaks_q5_access, scale, rank, access_jobs_total_nwd_count),
     source = paste0("Job and population data from Statistics Canada. Travel ",
                     "time calculations from OSM and GTFS."),
-    interpolated = list(CT = FALSE)
+    interpolated = list(c(CMA_CT = FALSE))
     ) |>
   add_variables(
     var_code = "access_jobs_total_pwe_count",
@@ -222,12 +194,12 @@ variables <-
     theme = "Transport",
     private = FALSE,
     dates = NA,
-    scales = "CT",
-    breaks_q3 = breaks_q3_active$access_jobs_total_pwe_count,
-    breaks_q5 = breaks_q5_active$access_jobs_total_pwe_count,
+    scales = names(access$tables_q3),
+    breaks_q3 = select(breaks_q3_access, scale, rank, access_jobs_total_pwe_count),
+    breaks_q5 = select(breaks_q5_access, scale, rank, access_jobs_total_pwe_count),
     source = paste0("Job and population data from Statistics Canada. Travel ",
                     "time calculations from OSM and GTFS."),
-    interpolated = list(CT = FALSE)
+    interpolated = list(c(CMA_CT = FALSE))
   ) |>
   add_variables(
     var_code = "access_jobs_total_opwe_count",
@@ -239,12 +211,12 @@ variables <-
     theme = "Transport",
     private = FALSE,
     dates = NA,
-    scales = "CT",
-    breaks_q3 = breaks_q3_active$access_jobs_total_opwe_count,
-    breaks_q5 = breaks_q5_active$access_jobs_total_opwe_count,
+    scales = names(access$tables_q3),
+    breaks_q3 = select(breaks_q3_access, scale, rank, access_jobs_total_opwe_count),
+    breaks_q5 = select(breaks_q5_access, scale, rank, access_jobs_total_opwe_count),
     source = paste0("Job and population data from Statistics Canada. Travel ",
                     "time calculations from OSM and GTFS."),
-    interpolated = list(CT = FALSE)
+    interpolated = list(c(CMA_CT = FALSE))
   ) |>
   add_variables(
     var_code = "access_jobs_total_nwe_count",
@@ -256,12 +228,12 @@ variables <-
     theme = "Transport",
     private = FALSE,
     dates = NA,
-    scales = "CT",
-    breaks_q3 = breaks_q3_active$access_jobs_total_nwe_count,
-    breaks_q5 = breaks_q5_active$access_jobs_total_nwe_count,
+    scales = names(access$tables_q3),
+    breaks_q3 = select(breaks_q3_access, scale, rank, access_jobs_total_nwe_count),
+    breaks_q5 = select(breaks_q5_access, scale, rank, access_jobs_total_nwe_count),
     source = paste0("Job and population data from Statistics Canada. Travel ",
                     "time calculations from OSM and GTFS."),
-    interpolated = list(CT = FALSE)
+    interpolated = list(c(CMA_CT = FALSE))
   ) |>
   add_variables(
     var_code = "access_jobs_low_pwd_count",
@@ -273,12 +245,12 @@ variables <-
     theme = "Transport",
     private = FALSE,
     dates = NA,
-    scales = "CT",
-    breaks_q3 = breaks_q3_active$access_jobs_low_pwd_count,
-    breaks_q5 = breaks_q5_active$access_jobs_low_pwd_count,
+    scales = names(access$tables_q3),
+    breaks_q3 = select(breaks_q3_access, scale, rank, access_jobs_low_pwd_count),
+    breaks_q5 = select(breaks_q5_access, scale, rank, access_jobs_low_pwd_count),
     source = paste0("Job and population data from Statistics Canada. Travel ",
                     "time calculations from OSM and GTFS."),
-    interpolated = list(CT = FALSE)
+    interpolated = list(c(CMA_CT = FALSE))
     ) |>
   add_variables(
     var_code = "access_jobs_low_opwd_count",
@@ -290,13 +262,13 @@ variables <-
     theme = "Transport",
     private = FALSE,
     dates = NA,
-    scales = "CT",
-    breaks_q3 = breaks_q3_active$access_jobs_low_opwd_count,
-    breaks_q5 = breaks_q5_active$access_jobs_low_opwd_count,
+    scales = names(access$tables_q3),
+    breaks_q3 = select(breaks_q3_access, scale, rank, access_jobs_low_opwd_count),
+    breaks_q5 = select(breaks_q5_access, scale, rank, access_jobs_low_opwd_count),
 
     source = paste0("Job and population data from Statistics Canada. Travel ",
                     "time calculations from OSM and GTFS."),
-    interpolated = list(CT = FALSE)  ) |>
+    interpolated = list(c(CMA_CT = FALSE))  ) |>
   add_variables(
     var_code = "access_jobs_low_nwd_count",
     var_title = "Low-skill jobs (weekday night)",
@@ -307,13 +279,13 @@ variables <-
     theme = "Transport",
     private = FALSE,
     dates = NA,
-    scales = "CT",
-    breaks_q3 = breaks_q3_active$access_jobs_low_nwd_count,
-    breaks_q5 = breaks_q5_active$access_jobs_low_nwd_count,
+    scales = names(access$tables_q3),
+    breaks_q3 = select(breaks_q3_access, scale, rank, access_jobs_low_nwd_count),
+    breaks_q5 = select(breaks_q5_access, scale, rank, access_jobs_low_nwd_count),
 
     source = paste0("Job and population data from Statistics Canada. Travel ",
                     "time calculations from OSM and GTFS."),
-    interpolated = list(CT = FALSE)  ) |>
+    interpolated = list(c(CMA_CT = FALSE))  ) |>
   add_variables(
     var_code = "access_jobs_low_pwe_count",
     var_title = "Low-skill jobs (weekend peak)",
@@ -324,13 +296,13 @@ variables <-
     theme = "Transport",
     private = FALSE,
     dates = NA,
-    scales = "CT",
-    breaks_q3 = breaks_q3_active$access_jobs_low_pwe_count,
-    breaks_q5 = breaks_q5_active$access_jobs_low_pwe_count,
+    scales = names(access$tables_q3),
+    breaks_q3 = select(breaks_q3_access, scale, rank, access_jobs_low_pwe_count),
+    breaks_q5 = select(breaks_q5_access, scale, rank, access_jobs_low_pwe_count),
 
     source = paste0("Job and population data from Statistics Canada. Travel ",
                     "time calculations from OSM and GTFS."),
-    interpolated = list(CT = FALSE)  ) |>
+    interpolated = list(c(CMA_CT = FALSE))  ) |>
   add_variables(
     var_code = "access_jobs_low_opwe_count",
     var_title = "Low-skill jobs (weekend off-peak)",
@@ -341,13 +313,13 @@ variables <-
     theme = "Transport",
     private = FALSE,
     dates = NA,
-    scales = "CT",
-    breaks_q3 = breaks_q3_active$access_jobs_low_opwe_count,
-    breaks_q5 = breaks_q5_active$access_jobs_low_opwe_count,
+    scales = names(access$tables_q3),
+    breaks_q3 = select(breaks_q3_access, scale, rank, access_jobs_low_opwe_count),
+    breaks_q5 = select(breaks_q5_access, scale, rank, access_jobs_low_opwe_count),
 
     source = paste0("Job and population data from Statistics Canada. Travel ",
                     "time calculations from OSM and GTFS."),
-    interpolated = list(CT = FALSE)  ) |>
+    interpolated = list(c(CMA_CT = FALSE))  ) |>
   add_variables(
     var_code = "access_jobs_low_nwe_count",
     var_title = "Low-skill jobs (weekend night)",
@@ -358,13 +330,13 @@ variables <-
     theme = "Transport",
     private = FALSE,
     dates = NA,
-    scales = "CT",
-    breaks_q3 = breaks_q3_active$access_jobs_low_nwe_count,
-    breaks_q5 = breaks_q5_active$access_jobs_low_nwe_count,
+    scales = names(access$tables_q3),
+    breaks_q3 = select(breaks_q3_access, scale, rank, access_jobs_low_nwe_count),
+    breaks_q5 = select(breaks_q5_access, scale, rank, access_jobs_low_nwe_count),
 
     source = paste0("Job and population data from Statistics Canada. Travel ",
                     "time calculations from OSM and GTFS."),
-    interpolated = list(CT = FALSE)  ) |>
+    interpolated = list(c(CMA_CT = FALSE))  ) |>
   add_variables(
     var_code = "access_jobs_high_pwd_count",
     var_title = "High-skill jobs (weekday peak)",
@@ -375,13 +347,13 @@ variables <-
     theme = "Transport",
     private = FALSE,
     dates = NA,
-    scales = "CT",
-    breaks_q3 = breaks_q3_active$access_jobs_high_pwd_count,
-    breaks_q5 = breaks_q5_active$access_jobs_high_pwd_count,
+    scales = names(access$tables_q3),
+    breaks_q3 = select(breaks_q3_access, scale, rank, access_jobs_high_pwd_count),
+    breaks_q5 = select(breaks_q5_access, scale, rank, access_jobs_high_pwd_count),
 
     source = paste0("Job and population data from Statistics Canada. Travel ",
                     "time calculations from OSM and GTFS."),
-    interpolated = list(CT = FALSE)  ) |>
+    interpolated = list(c(CMA_CT = FALSE))  ) |>
   add_variables(
     var_code = "access_jobs_high_opwd_count",
     var_title = "High-skill jobs (weekday off-peak)",
@@ -392,13 +364,13 @@ variables <-
     theme = "Transport",
     private = FALSE,
     dates = NA,
-    scales = "CT",
-    breaks_q3 = breaks_q3_active$access_jobs_high_opwd_count,
-    breaks_q5 = breaks_q5_active$access_jobs_high_opwd_count,
+    scales = names(access$tables_q3),
+    breaks_q3 = select(breaks_q3_access, scale, rank, access_jobs_high_opwd_count),
+    breaks_q5 = select(breaks_q5_access, scale, rank, access_jobs_high_opwd_count),
 
     source = paste0("Job and population data from Statistics Canada. Travel ",
                     "time calculations from OSM and GTFS."),
-    interpolated = list(CT = FALSE)  ) |>
+    interpolated = list(c(CMA_CT = FALSE))  ) |>
   add_variables(
     var_code = "access_jobs_high_nwd_count",
     var_title = "High-skill jobs (weekday night)",
@@ -408,13 +380,13 @@ variables <-
     theme = "Transport",
     private = FALSE,
     dates = NA,
-    scales = "CT",
-    breaks_q3 = breaks_q3_active$access_jobs_high_nwd_count,
-    breaks_q5 = breaks_q5_active$access_jobs_high_nwd_count,
+    scales = names(access$tables_q3),
+    breaks_q3 = select(breaks_q3_access, scale, rank, access_jobs_high_nwd_count),
+    breaks_q5 = select(breaks_q5_access, scale, rank, access_jobs_high_nwd_count),
 
     source = paste0("Job and population data from Statistics Canada. Travel ",
                     "time calculations from OSM and GTFS."),
-    interpolated = list(CT = FALSE)  ) |>
+    interpolated = list(c(CMA_CT = FALSE))  ) |>
   add_variables(
     var_code = "access_jobs_high_pwe_count",
     var_title = "High-skill jobs (weekend peak)",
@@ -424,13 +396,13 @@ variables <-
     theme = "Transport",
     private = FALSE,
     dates = NA,
-    scales = "CT",
-    breaks_q3 = breaks_q3_active$access_jobs_high_pwe_count,
-    breaks_q5 = breaks_q5_active$access_jobs_high_pwe_count,
+    scales = names(access$tables_q3),
+    breaks_q3 = select(breaks_q3_access, scale, rank, access_jobs_high_pwe_count),
+    breaks_q5 = select(breaks_q5_access, scale, rank, access_jobs_high_pwe_count),
 
     source = paste0("Job and population data from Statistics Canada. Travel ",
                     "time calculations from OSM and GTFS."),
-    interpolated = list(CT = FALSE)  ) |>
+    interpolated = list(c(CMA_CT = FALSE))  ) |>
   add_variables(
     var_code = "access_jobs_high_opwe_count",
     var_title = "High-skill jobs (weekend off-peak)",
@@ -440,13 +412,13 @@ variables <-
     theme = "Transport",
     private = FALSE,
     dates = NA,
-    scales = "CT",
-    breaks_q3 = breaks_q3_active$access_jobs_high_opwe_count,
-    breaks_q5 = breaks_q5_active$access_jobs_high_opwe_count,
+    scales = names(access$tables_q3),
+    breaks_q3 = select(breaks_q3_access, scale, rank, access_jobs_high_opwe_count),
+    breaks_q5 = select(breaks_q5_access, scale, rank, access_jobs_high_opwe_count),
 
     source = paste0("Job and population data from Statistics Canada. Travel ",
                     "time calculations from OSM and GTFS."),
-    interpolated = list(CT = FALSE)  ) |>
+    interpolated = list(c(CMA_CT = FALSE))  ) |>
   add_variables(
     var_code = "access_jobs_high_nwe_count",
     var_title = "High-skill jobs (weekend night)",
@@ -456,13 +428,13 @@ variables <-
     theme = "Transport",
     private = FALSE,
     dates = NA,
-    scales = "CT",
-    breaks_q3 = breaks_q3_active$access_jobs_high_nwe_count,
-    breaks_q5 = breaks_q5_active$access_jobs_high_nwe_count,
+    scales = names(access$tables_q3),
+    breaks_q3 = select(breaks_q3_access, scale, rank, access_jobs_high_nwe_count),
+    breaks_q5 = select(breaks_q5_access, scale, rank, access_jobs_high_nwe_count),
 
     source = paste0("Job and population data from Statistics Canada. Travel ",
                     "time calculations from OSM and GTFS."),
-    interpolated = list(CT = FALSE)  ) |>
+    interpolated = list(c(CMA_CT = FALSE))  ) |>
   add_variables(
     var_code = "access_jobs_30k_pwd_count",
     var_title = "Low-income jobs (weekday peak)",
@@ -472,13 +444,13 @@ variables <-
     theme = "Transport",
     private = FALSE,
     dates = NA,
-    scales = "CT",
-    breaks_q3 = breaks_q3_active$access_jobs_30k_pwd_count,
-    breaks_q5 = breaks_q5_active$access_jobs_30k_pwd_count,
+    scales = names(access$tables_q3),
+    breaks_q3 = select(breaks_q3_access, scale, rank, access_jobs_30k_pwd_count),
+    breaks_q5 = select(breaks_q5_access, scale, rank, access_jobs_30k_pwd_count),
 
     source = paste0("Job and population data from Statistics Canada. Travel ",
                     "time calculations from OSM and GTFS."),
-    interpolated = list(CT = FALSE)  ) |>
+    interpolated = list(c(CMA_CT = FALSE))  ) |>
   add_variables(
     var_code = "access_jobs_30k_opwd_count",
     var_title = "Low-income jobs (weekday off-peak)",
@@ -488,13 +460,13 @@ variables <-
     theme = "Transport",
     private = FALSE,
     dates = NA,
-    scales = "CT",
-    breaks_q3 = breaks_q3_active$access_jobs_30k_opwd_count,
-    breaks_q5 = breaks_q5_active$access_jobs_30k_opwd_count,
+    scales = names(access$tables_q3),
+    breaks_q3 = select(breaks_q3_access, scale, rank, access_jobs_30k_opwd_count),
+    breaks_q5 = select(breaks_q5_access, scale, rank, access_jobs_30k_opwd_count),
 
     source = paste0("Job and population data from Statistics Canada. Travel ",
                     "time calculations from OSM and GTFS."),
-    interpolated = list(CT = FALSE)  ) |>
+    interpolated = list(c(CMA_CT = FALSE))  ) |>
   add_variables(
     var_code = "access_jobs_30k_nwd_count",
     var_title = "Low-income jobs (weekday night)",
@@ -504,13 +476,13 @@ variables <-
     theme = "Transport",
     private = FALSE,
     dates = NA,
-    scales = "CT",
-    breaks_q3 = breaks_q3_active$access_jobs_30k_nwd_count,
-    breaks_q5 = breaks_q5_active$access_jobs_30k_nwd_count,
+    scales = names(access$tables_q3),
+    breaks_q3 = select(breaks_q3_access, scale, rank, access_jobs_30k_nwd_count),
+    breaks_q5 = select(breaks_q5_access, scale, rank, access_jobs_30k_nwd_count),
 
     source = paste0("Job and population data from Statistics Canada. Travel ",
                     "time calculations from OSM and GTFS."),
-    interpolated = list(CT = FALSE)  ) |>
+    interpolated = list(c(CMA_CT = FALSE))  ) |>
   add_variables(
     var_code = "access_jobs_30k_pwe_count",
     var_title = "Low-income jobs (weekend peak)",
@@ -520,13 +492,13 @@ variables <-
     theme = "Transport",
     private = FALSE,
     dates = NA,
-    scales = "CT",
-    breaks_q3 = breaks_q3_active$access_jobs_30k_pwe_count,
-    breaks_q5 = breaks_q5_active$access_jobs_30k_pwe_count,
+    scales = names(access$tables_q3),
+    breaks_q3 = select(breaks_q3_access, scale, rank, access_jobs_30k_pwe_count),
+    breaks_q5 = select(breaks_q5_access, scale, rank, access_jobs_30k_pwe_count),
 
     source = paste0("Job and population data from Statistics Canada. Travel ",
                     "time calculations from OSM and GTFS."),
-    interpolated = list(CT = FALSE)  ) |>
+    interpolated = list(c(CMA_CT = FALSE))  ) |>
   add_variables(
     var_code = "access_jobs_30k_opwe_count",
     var_title = "Low-income jobs (weekend off-peak)",
@@ -536,13 +508,13 @@ variables <-
     theme = "Transport",
     private = FALSE,
     dates = NA,
-    scales = "CT",
-    breaks_q3 = breaks_q3_active$access_jobs_30k_opwe_count,
-    breaks_q5 = breaks_q5_active$access_jobs_30k_opwe_count,
+    scales = names(access$tables_q3),
+    breaks_q3 = select(breaks_q3_access, scale, rank, access_jobs_30k_opwe_count),
+    breaks_q5 = select(breaks_q5_access, scale, rank, access_jobs_30k_opwe_count),
 
     source = paste0("Job and population data from Statistics Canada. Travel ",
                     "time calculations from OSM and GTFS."),
-    interpolated = list(CT = FALSE)  ) |>
+    interpolated = list(c(CMA_CT = FALSE))  ) |>
   add_variables(
     var_code = "access_jobs_30k_nwe_count",
     var_title = "Low-income jobs (weekend night)",
@@ -552,13 +524,13 @@ variables <-
     theme = "Transport",
     private = FALSE,
     dates = NA,
-    scales = "CT",
-    breaks_q3 = breaks_q3_active$access_jobs_30k_nwe_count,
-    breaks_q5 = breaks_q5_active$access_jobs_30k_nwe_count,
+    scales = names(access$tables_q3),
+    breaks_q3 = select(breaks_q3_access, scale, rank, access_jobs_30k_nwe_count),
+    breaks_q5 = select(breaks_q5_access, scale, rank, access_jobs_30k_nwe_count),
 
     source = paste0("Job and population data from Statistics Canada. Travel ",
                     "time calculations from OSM and GTFS."),
-    interpolated = list(CT = FALSE)  ) |>
+    interpolated = list(c(CMA_CT = FALSE))  ) |>
   add_variables(
     var_code = "access_schools_pwd_count",
     var_title = "Schools (weekday peak)",
@@ -568,13 +540,13 @@ variables <-
     theme = "Transport",
     private = FALSE,
     dates = NA,
-    scales = "CT",
-    breaks_q3 = breaks_q3_active$access_schools_pwd_count,
-    breaks_q5 = breaks_q5_active$access_schools_pwd_count,
+    scales = names(access$tables_q3),
+    breaks_q3 = select(breaks_q3_access, scale, rank, access_schools_pwd_count),
+    breaks_q5 = select(breaks_q5_access, scale, rank, access_schools_pwd_count),
 
     source = paste0("Job and population data from Statistics Canada. Travel ",
                     "time calculations from OSM and GTFS."),
-    interpolated = list(CT = FALSE)  ) |>
+    interpolated = list(c(CMA_CT = FALSE))  ) |>
   add_variables(
     var_code = "access_schools_opwd_count",
     var_title = "Schools (weekday off-peak)",
@@ -584,13 +556,12 @@ variables <-
     theme = "Transport",
     private = FALSE,
     dates = NA,
-    scales = "CT",
-    breaks_q3 = breaks_q3_active$access_schools_opwd_count,
-    breaks_q5 = breaks_q5_active$access_schools_opwd_count,
-
+    scales = names(access$tables_q3),
+    breaks_q3 = select(breaks_q3_access, scale, rank, access_schools_opwd_count),
+    breaks_q5 = select(breaks_q5_access, scale, rank, access_schools_opwd_count),
     source = paste0("Job and population data from Statistics Canada. Travel ",
                     "time calculations from OSM and GTFS."),
-    interpolated = list(CT = FALSE)  ) |>
+    interpolated = list(c(CMA_CT = FALSE))  ) |>
   add_variables(
     var_code = "access_schools_nwd_count",
     var_title = "Schools (weekday night)",
@@ -600,13 +571,12 @@ variables <-
     theme = "Transport",
     private = FALSE,
     dates = NA,
-    scales = "CT",
-    breaks_q3 = breaks_q3_active$access_schools_nwd_count,
-    breaks_q5 = breaks_q5_active$access_schools_nwd_count,
-
+    scales = names(access$tables_q3),
+    breaks_q3 = select(breaks_q3_access, scale, rank, access_schools_nwd_count),
+    breaks_q5 = select(breaks_q5_access, scale, rank, access_schools_nwd_count),
     source = paste0("Job and population data from Statistics Canada. Travel ",
                     "time calculations from OSM and GTFS."),
-    interpolated = list(CT = FALSE)  ) |>
+    interpolated = list(c(CMA_CT = FALSE))  ) |>
   add_variables(
     var_code = "access_schools_pwe_count",
     var_title = "Schools (weekend peak)",
@@ -616,13 +586,12 @@ variables <-
     theme = "Transport",
     private = FALSE,
     dates = NA,
-    scales = "CT",
-    breaks_q3 = breaks_q3_active$access_schools_pwe_count,
-    breaks_q5 = breaks_q5_active$access_schools_pwe_count,
-
+    scales = names(access$tables_q3),
+    breaks_q3 = select(breaks_q3_access, scale, rank, access_schools_pwe_count),
+    breaks_q5 = select(breaks_q5_access, scale, rank, access_schools_pwe_count),
     source = paste0("Job and population data from Statistics Canada. Travel ",
                     "time calculations from OSM and GTFS."),
-    interpolated = list(CT = FALSE)  ) |>
+    interpolated = list(c(CMA_CT = FALSE))  ) |>
   add_variables(
     var_code = "access_schools_opwe_count",
     var_title = "Schools (weekend off-peak)",
@@ -632,13 +601,12 @@ variables <-
     theme = "Transport",
     private = FALSE,
     dates = NA,
-    scales = "CT",
-    breaks_q3 = breaks_q3_active$access_schools_opwe_count,
-    breaks_q5 = breaks_q5_active$access_schools_opwe_count,
-
+    scales = names(access$tables_q3),
+    breaks_q3 = select(breaks_q3_access, scale, rank, access_schools_opwe_count),
+    breaks_q5 = select(breaks_q5_access, scale, rank, access_schools_opwe_count),
     source = paste0("Job and population data from Statistics Canada. Travel ",
                     "time calculations from OSM and GTFS."),
-    interpolated = list(CT = FALSE)  ) |>
+    interpolated = list(c(CMA_CT = FALSE))  ) |>
   add_variables(
     var_code = "access_schools_nwe_count",
     var_title = "Schools (weekend night)",
@@ -648,13 +616,12 @@ variables <-
     theme = "Transport",
     private = FALSE,
     dates = NA,
-    scales = "CT",
-    breaks_q3 = breaks_q3_active$access_schools_nwe_count,
-    breaks_q5 = breaks_q5_active$access_schools_nwe_count,
-
+    scales = names(access$tables_q3),
+    breaks_q3 = select(breaks_q3_access, scale, rank, access_schools_nwe_count),
+    breaks_q5 = select(breaks_q5_access, scale, rank, access_schools_nwe_count),
     source = paste0("Job and population data from Statistics Canada. Travel ",
                     "time calculations from OSM and GTFS."),
-    interpolated = list(CT = FALSE)  ) |>
+    interpolated = list(c(CMA_CT = FALSE))  ) |>
   add_variables(
     var_code = "access_healthcare_pwd_count",
     var_title = "Healthcare (weekday peak)",
@@ -664,13 +631,13 @@ variables <-
     theme = "Transport",
     private = FALSE,
     dates = NA,
-    scales = "CT",
-    breaks_q3 = breaks_q3_active$access_healthcare_pwd_count,
-    breaks_q5 = breaks_q5_active$access_healthcare_pwd_count,
+    scales = names(access$tables_q3),
+    breaks_q3 = select(breaks_q3_access, scale, rank, access_healthcare_pwd_count),
+    breaks_q5 = select(breaks_q5_access, scale, rank, access_healthcare_pwd_count),
 
     source = paste0("Job and population data from Statistics Canada. Travel ",
                     "time calculations from OSM and GTFS."),
-    interpolated = list(CT = FALSE)  ) |>
+    interpolated = list(c(CMA_CT = FALSE))  ) |>
   add_variables(
     var_code = "access_healthcare_opwd_count",
     var_title = "Healthcare (weekday off-peak)",
@@ -680,13 +647,12 @@ variables <-
     theme = "Transport",
     private = FALSE,
     dates = NA,
-    scales = "CT",
-    breaks_q3 = breaks_q3_active$access_healthcare_opwd_count,
-    breaks_q5 = breaks_q5_active$access_healthcare_opwd_count,
-
+    scales = names(access$tables_q3),
+    breaks_q3 = select(breaks_q3_access, scale, rank, access_healthcare_opwd_count),
+    breaks_q5 = select(breaks_q5_access, scale, rank, access_healthcare_opwd_count),
     source = paste0("Job and population data from Statistics Canada. Travel ",
                     "time calculations from OSM and GTFS."),
-    interpolated = list(CT = FALSE)  ) |>
+    interpolated = list(c(CMA_CT = FALSE))  ) |>
   add_variables(
     var_code = "access_healthcare_nwd_count",
     var_title = "Healthcare (weekday night)",
@@ -696,13 +662,12 @@ variables <-
     theme = "Transport",
     private = FALSE,
     dates = NA,
-    scales = "CT",
-    breaks_q3 = breaks_q3_active$access_healthcare_nwd_count,
-    breaks_q5 = breaks_q5_active$access_healthcare_nwd_count,
-
+    scales = names(access$tables_q3),
+    breaks_q3 = select(breaks_q3_access, scale, rank, access_healthcare_nwd_count),
+    breaks_q5 = select(breaks_q5_access, scale, rank, access_healthcare_nwd_count),
     source = paste0("Job and population data from Statistics Canada. Travel ",
                     "time calculations from OSM and GTFS."),
-    interpolated = list(CT = FALSE)  ) |>
+    interpolated = list(c(CMA_CT = FALSE))  ) |>
   add_variables(
     var_code = "access_healthcare_pwe_count",
     var_title = "Healthcare (weekend peak)",
@@ -712,13 +677,12 @@ variables <-
     theme = "Transport",
     private = FALSE,
     dates = NA,
-    scales = "CT",
-    breaks_q3 = breaks_q3_active$access_healthcare_pwe_count,
-    breaks_q5 = breaks_q5_active$access_healthcare_pwe_count,
-
+    scales = names(access$tables_q3),
+    breaks_q3 = select(breaks_q3_access, scale, rank, access_healthcare_pwe_count),
+    breaks_q5 = select(breaks_q5_access, scale, rank, access_healthcare_pwe_count),
     source = paste0("Job and population data from Statistics Canada. Travel ",
                     "time calculations from OSM and GTFS."),
-    interpolated = list(CT = FALSE)  ) |>
+    interpolated = list(c(CMA_CT = FALSE))  ) |>
   add_variables(
     var_code = "access_healthcare_opwe_count",
     var_title = "Healthcare (weekend off-peak)",
@@ -728,13 +692,12 @@ variables <-
     theme = "Transport",
     private = FALSE,
     dates = NA,
-    scales = "CT",
-    breaks_q3 = breaks_q3_active$access_healthcare_opwe_count,
-    breaks_q5 = breaks_q5_active$access_healthcare_opwe_count,
-
+    scales = names(access$tables_q3),
+    breaks_q3 = select(breaks_q3_access, scale, rank, access_healthcare_opwe_count),
+    breaks_q5 = select(breaks_q5_access, scale, rank, access_healthcare_opwe_count),
     source = paste0("Job and population data from Statistics Canada. Travel ",
                     "time calculations from OSM and GTFS."),
-    interpolated = list(CT = FALSE)  ) |>
+    interpolated = list(c(CMA_CT = FALSE))  ) |>
   add_variables(
     var_code = "access_healthcare_nwe_count",
     var_title = "Healthcare (weekend night)",
@@ -744,13 +707,12 @@ variables <-
     theme = "Transport",
     private = FALSE,
     dates = NA,
-    scales = "CT",
-    breaks_q3 = breaks_q3_active$access_healthcare_nwe_count,
-    breaks_q5 = breaks_q5_active$access_healthcare_nwe_count,
-
+    scales = names(access$tables_q3),
+    breaks_q3 = select(breaks_q3_access, scale, rank, access_healthcare_nwe_count),
+    breaks_q5 = select(breaks_q5_access, scale, rank, access_healthcare_nwe_count),
     source = paste0("Job and population data from Statistics Canada. Travel ",
                     "time calculations from OSM and GTFS."),
-    interpolated = list(CT = FALSE)
+    interpolated = list(c(CMA_CT = FALSE))
     )
 
 
@@ -769,4 +731,4 @@ modules <-
 
 # Clean up ----------------------------------------------------------------
 
-rm(access, access_q3, access_q5, data_long, points)
+rm(access, breaks_q3_access, breaks_q5_access, data_long, points)

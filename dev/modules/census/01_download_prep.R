@@ -1,26 +1,38 @@
 #### CENSUS DOWNLOAD FUNCTIONS ##################################
 
+
+# Get census function update ----------------------------------------------
+
+# Sometimes, cancensus is not able to access a particular data in the cache.
+# If it does happen, just re-download it!
+get_census_timeout <- function(...) {
+  tryCatch(R.utils::withTimeout(
+    cancensus::get_census(..., use_cache = TRUE, quiet = TRUE), timeout = 2), 
+    error = function(e) {cancensus::get_census(..., use_cache = FALSE,
+                                               quiet = FALSE)})
+}
+
 # Get empty geometries ----------------------------------------------------
 
 get_empty_geometries <- function(scales, years, region = "24", crs = 32618) {
   
   get_c <- function(census_dataset, re = list(PR = region), sc) {
     out <- 
-      cancensus::get_census(
+      get_census_timeout(
         dataset = census_dataset,
         regions = re,
         level = sc,
-        geo_format = "sf",
-        quiet = TRUE) |> 
+        geo_format = "sf") |> 
       select(GeoUID, geometry) |> 
       st_transform(crs) |> 
       mutate(area = st_area(geometry), .before = geometry) |> 
       st_set_agr("constant")
     
     GeoUIDs <- 
-      out |> 
-      st_make_valid() |> 
-      st_intersection(st_make_valid(st_transform(master_polygon, crs))) |> 
+      out |>
+      st_transform(crs) |> 
+      st_point_on_surface() |> 
+      st_filter(st_transform(master_polygon, crs)) |> 
       pull(GeoUID)
     
     out |> filter(GeoUID %in% GeoUIDs)
@@ -39,15 +51,14 @@ get_empty_geometries <- function(scales, years, region = "24", crs = 32618) {
           csds <- 
             get_c(census_dataset = census_dataset, sc = "CSD") |> 
             st_transform(crs)
-          csds_buffered <- 
+          csds_in_CT <- 
             csds |> 
-            mutate(geometry = st_buffer(geometry, -25))
+            st_point_on_surface() |> 
+            st_filter(CT, crs) |> 
+            pull(GeoUID)
           
-          filling_CTs <- csds[-{
-            st_intersects(st_transform(CT, crs), csds_buffered) |> 
-              unlist() |> 
-              unique()}, ] |> 
-            st_transform(32618)
+          filling_CTs <- csds[!csds$GeoUID %in% csds_in_CT, ] |> 
+            st_transform(crs)
           
           rbind(CT, filling_CTs)
         })
@@ -100,26 +111,24 @@ get_census_vectors <- function(census_vec, geoms, scales, years,
           names(list_regions) <- scale
           
           vec_retrieved_CT <- 
-            cancensus::get_census(
+            get_census_timeout(
               dataset = census_dataset,
               regions = list_regions,
               level = "CT",
               vectors = vec_named,
-              geo_format = NA,
-              quiet = TRUE) |> 
+              geo_format = NA) |> 
             select(GeoUID, starts_with(census_vec$var_code))
           # Second retrieval, for CSDs
           list_regions <- list(df$GeoUID[!sep$CT_id])
           names(list_regions) <- scale
           
           vec_retrieved_CSD <- 
-            cancensus::get_census(
+            get_census_timeout(
               dataset = census_dataset,
               regions = list_regions,
               level = "CSD",
               vectors = vec_named,
-              geo_format = NA,
-              quiet = TRUE) |> 
+              geo_format = NA) |> 
             select(GeoUID, starts_with(census_vec$var_code))
           
           # Bind!
@@ -129,13 +138,12 @@ get_census_vectors <- function(census_vec, geoms, scales, years,
           list_regions <- list(df$GeoUID)
           names(list_regions) <- scale
           
-          cancensus::get_census(
+          get_census_timeout(
             dataset = census_dataset,
             regions = list_regions,
             level = scale,
             vectors = vec_named,
-            geo_format = NA,
-            quiet = TRUE) |> 
+            geo_format = NA) |> 
             select(GeoUID, starts_with(census_vec$var_code))
         }
       
@@ -237,7 +245,7 @@ get_census_vectors <- function(census_vec, geoms, scales, years,
       
       # Retrieve the values of all parent vectors
       parent_vec_values <- map(names(parent_vec), function(v) {
-        
+
         vec <- set_names(parent_vec[v], v)
         
         retrieved_parent <- 
@@ -252,13 +260,12 @@ get_census_vectors <- function(census_vec, geoms, scales, years,
             names(list_regions) <- scale
             
             vec_retrieved_CT <- 
-              cancensus::get_census(
+              get_census_timeout(
                 dataset = census_dataset,
                 regions = list_regions,
                 level = "CT",
                 vectors = vec[!is.na(vec)],
-                geo_format = NA,
-                quiet = TRUE) |> 
+                geo_format = NA) |> 
               select(GeoUID, any_of(v)) |> 
               filter(GeoUID %in% df$GeoUID)
             # Second retrieval, for CSDs
@@ -266,13 +273,12 @@ get_census_vectors <- function(census_vec, geoms, scales, years,
             names(list_regions) <- scale
             
             vec_retrieved_CSD <- 
-              cancensus::get_census(
+              get_census_timeout(
                 dataset = census_dataset,
                 regions = list_regions,
                 level = "CSD",
                 vectors = vec[!is.na(vec)],
-                geo_format = NA,
-                quiet = TRUE) |> 
+                geo_format = NA) |> 
               select(GeoUID, any_of(v)) |> 
               filter(GeoUID %in% df$GeoUID)
             
@@ -283,15 +289,15 @@ get_census_vectors <- function(census_vec, geoms, scales, years,
             list_regions <- list(df$GeoUID)
             names(list_regions) <- scale
             
-            cancensus::get_census(
+            get_census_timeout(
               dataset = census_dataset,
               regions = list_regions,
               level = scale,
               vectors = vec[!is.na(vec)],
-              geo_format = NA,
-              quiet = TRUE) |> 
+              geo_format = NA) |> 
               select(GeoUID, any_of(v)) |> 
               filter(GeoUID %in% df$GeoUID)
+            
           }
         
         # Throw error for missing parent vectors

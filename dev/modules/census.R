@@ -10,10 +10,12 @@ progressr::handlers(global = TRUE)
 
 # Turn on parallel processing
 suppressPackageStartupMessages(library(future))
-plan(multisession)
+# plan(multisession)
 
 # Lists of scales and years
-scales <- str_replace(all_tables, "^borough$", "CSD")
+scales <- unique(unlist(all_tables, use.names = FALSE))
+scales <- scales[!scales %in% c("building")]
+
 years <- c(1996, 2001, 2006, 2011, 2016)
 
 # Load functions
@@ -160,45 +162,26 @@ census_variables <-
 
 # Gather data -------------------------------------------------------------
 
-data_to_add <- add_census_data(census_vec, scales, years, parent_vectors)
+# data_to_add <-
+#   add_census_data(census_vec, scales,  all_tables, years, parent_vectors)
+# qsave(data_to_add, file = "dev/data/modules_raw_data/census.qs")
 
-# Remove a few DA/grid columns, because of NHS errors
-# data_to_add[[1]]$DA <- 
-#   data_to_add[[1]]$DA |>
-#   select(!(starts_with("iden_aboriginal_pct") & ends_with("_2011"))) |>
-#   select(!(starts_with("emp_creative_pct") & ends_with("_2011")))
-# 
-# data_to_add[[1]]$grid <- 
-#   data_to_add[[1]]$grid |>
-#   select(!(starts_with("iden_aboriginal_pct") & ends_with("_2011"))) |>
-#   select(!(starts_with("emp_creative_pct") & ends_with("_2011")))
+data_to_add <- qread("dev/data/modules_raw_data/census.qs")
 
 
 # Data testing ------------------------------------------------------------
 
-data_testing(data_to_add[[1]])
+data_testing(data_to_add$scales)
 
 
 # Assign data -------------------------------------------------------------
 
-assign_tables(data_to_add[[1]][names(data_to_add[[1]]) != "grid"])
-
-grid <-
-  grid |>
-  left_join(select(data_to_add[[1]]$grid, ID, 
-                   ends_with(as.character(years[[length(years)]]))), by = "ID") |>
-  relocate(geometry, .after = last_col())
-
-
-
-# Meta data testing -------------------------------------------------------
-
-# meta_testing() Temporarily disabled
+assign_tables(data_to_add$scales)
 
 
 # Add to variables table --------------------------------------------------
 
-variables <- bind_rows(variables, data_to_add[[2]])
+variables <- bind_rows(variables, data_to_add$variables)
 
 
 # Add to modules table ----------------------------------------------------

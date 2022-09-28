@@ -70,16 +70,18 @@ dw_types_server <- function(id, r) {
     # Map zoom levels change depending on r$geo(). Listening only to the latter
     # to not have to recalculate everytime var_left() changes.
     map_zoom_levels <- reactive({
-      out <- get_zoom_levels(default = "CMA_max_CT", 
-                             geo = paste0(r$geo(), "_max_CT"),
-                             var_left = var_left())
+      out <- get_zoom_levels(default = "CMA", 
+                             geo = r$geo(),
+                             var_left = isolate(var_left()),
+                             suffix_zoom_levels = "_max_CT")
       out$scale <- gsub("_max_CT", "", out$scale)
       out
     }) |> bindEvent(r$geo())
     
     # Zoom string reactive
     observe({
-      new_zoom_string <- get_zoom_string(r[[id]]$zoom(), map_zoom_levels()$levels)
+      new_zoom_string <- get_zoom_string(r[[id]]$zoom(), map_zoom_levels()$levels,
+                                         r$geo())
       if (new_zoom_string != zoom_string()) zoom_string(new_zoom_string)
     }) |> bindEvent(r[[id]]$zoom(), r$geo())
     
@@ -241,13 +243,11 @@ dw_types_server <- function(id, r) {
     )
     
     # Data transparency and export
-    observe({
-      r[[id]]$export_data <- reactive(data_export(id = id,
-                                                  data = data(),
-                                                  var_left = var_left(),
-                                                  var_right = var_right(),
-                                                  df = r[[id]]$df()))
-    })
+    r[[id]]$export_data <- reactive(data_export(id = id,
+                                                data = data(),
+                                                var_left = var_left(),
+                                                var_right = var_right(),
+                                                df = r[[id]]$df()))
     
   })
 }

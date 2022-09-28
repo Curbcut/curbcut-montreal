@@ -34,27 +34,25 @@ prep_title_card <- function(r = r, df, select_id, ind, percent = TRUE,
   
   # Data rank ------------------------------------------------------------------
   
-  data_rank <- data[data$ID == select_id, ][[paste0(scale, "_percentile")]]
+  data_rank <- data[data$ID == select_id, ]$percentile
   
-  if (df == "borough") {
+  if (is_scale_in_df("CSD", df)) {
     
-    rank <- data[data$ID == select_id, ][[paste0(scale, "_rank")]]
-    df_row <- if (island) {
-      sum(!is.na(data$var[!is.na(data$island_rank)]))
-    } else sum(!is.na(data$var))
+    rank <- data[data$ID == select_id, ]$rank
+    df_row <- sum(!is.na(data$var))
     
     # If high is good, then last rank means 1st. Inverse!
-    data_borough_rank <- if (high_is_good) df_row - rank + 1 else rank
+    data_CSD_rank <- if (high_is_good) df_row - rank + 1 else rank
     
     text_data_rank <- 
-      if (data_borough_rank > 2 / 3 * df_row) {
-        sus_translate(r = r, "relatively low at {ordinal_form(r = r, data_borough_rank)}")
-      } else if (data_borough_rank > 1 / 3 * df_row) {
-        ordinal_form(r = r, data_borough_rank)
+      if (data_CSD_rank > 2 / 3 * df_row) {
+        sus_translate(r = r, "relatively low at {ordinal_form(r = r, data_CSD_rank)}")
+      } else if (data_CSD_rank > 1 / 3 * df_row) {
+        ordinal_form(r = r, data_CSD_rank)
       } else {
-        if (r$lang() == "fr" && {ordinal_form(r = r, data_borough_rank)} == "") {
+        if (r$lang() == "fr" && {ordinal_form(r = r, data_CSD_rank)} == "") {
           "premier"
-        } else sus_translate(r = r, "{ordinal_form(r = r, data_borough_rank)} best")
+        } else sus_translate(r = r, "{ordinal_form(r = r, data_CSD_rank)} best")
       }
     
     text_island_region <- if (island) sus_translate(r = r, " on the island") else 
@@ -134,8 +132,7 @@ prep_title_card <- function(r = r, df, select_id, ind, percent = TRUE,
   if (!high_is_good) colours_which <- rev(colours_which)
   
   hex_to_plot <- col_pe[which.min(abs(
-    colours_which - data[data$ID == select_id, ][[paste0(
-      scale, "_percentile")]]))]
+    colours_which - data[data$ID == select_id, ]$percentile))]
   
   # In case it's higher than the threshold of 5
   if (ind == "air_quality_no2" && data_var >= 5) hex_to_plot <- col_pe[1]

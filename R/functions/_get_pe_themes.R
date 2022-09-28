@@ -1,7 +1,7 @@
 #### GET PLACE EXPLORER THEMES #################################################
 
-get_pe_themes <- function(df, select_id, island_or_region) {
-  themes <- pe_theme_order[[df]][[island_or_region]]
-  themes <- themes[themes$ID == select_id, ]
+get_pe_themes <- function(df, select_id) {
+  themes <- pe_theme_order[[df]]
+  themes <- themes[[as.character(select_id)]]
   mapply(c, themes$theme, themes$standout, SIMPLIFY = FALSE)
   }
