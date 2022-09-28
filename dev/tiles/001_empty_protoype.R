@@ -11,16 +11,23 @@ source("dev/tiles/_tile_functions.R")
 all_tables <- 
   list("CMA" = c("CSD", "CT", "DA", "grid", "building"),
        "island" = c("CSD", "CT", "DA", "grid", "building"),
-       "city" = c("CSD", "CT", "DA", "grid", "building"),
+       "city" = c("CSD", "CT", "DA", "DB", "grid", "building"),
        "centraide" = c("centraide", "CT", "DA", "grid", "building"))
 
 combinations <- 
   imap(all_tables, function(scales, geo) {
-    if (geo %in% c("CMA", "island", "city")) geo <- "CSD"
+    top_of_geo <- geo
+    if (geo %in% c("CMA", "island", "city")) top_of_geo <- "CSD"
     
-    c(setNames(scales, scales),
-      list("auto_zoom" = c(geo, "CT", "DA", "building"),
-           "auto_zoom_max_CT" = c(geo, "CT")))
+    out <- 
+      c(setNames(scales, scales),
+        list("auto_zoom" = c(top_of_geo, "CT", "DA", "building"),
+             "auto_zoom_max_CT" = c(top_of_geo, "CT")))
+    
+    if (geo == "city")
+      out <- c(out, list("auto_zoom_max_DB" = c(top_of_geo, "CT", "DA", "DB")))
+    
+    out
   })
 
 
@@ -30,8 +37,8 @@ invisible(lapply(paste0("data2/", names(all_tables), "_full.qsm"),
                  qload, env = .GlobalEnv))
 
 
-imap(combinations, function(scales, geo) {
-  map(scales, function(scale) {
+iwalk(combinations, function(scales, geo) {
+  walk(scales, function(scale) {
     
     if (length(scale) != 1) return()
     geo_scale <- paste(geo, scale, sep = "_")
@@ -167,6 +174,17 @@ DA_recipe_fun <- function(name, scales) {
     recipe_name = name)
 }
 
+DB_recipe_fun <- function(name, scales) {
+  create_recipe(
+    layer_names = name,
+    source = paste0("mapbox://tileset-source/sus-mcgill/", name),
+    minzoom = 3,
+    maxzoom = 14, 
+    simp_zoom = 14,
+    layer_size = 2500,
+    recipe_name = name)
+}
+
 grid_recipe_fun <- function(name, scales) {
   create_recipe(
     layer_names = name,
@@ -204,6 +222,23 @@ auto_zoom_recipe_fun <- function(name, scales) {
                                           str_detect(.x, "_building$") ~ 16,
                                           # CSD, centraide... First level
                                           TRUE ~ 10))
+  
+  if (sum(str_detect(scales, "DB")) == 1) {
+    minzooms <- 
+      map_dbl(set_names(scales), ~case_when(str_detect(.x, "_CT$") ~ 11,
+                                            str_detect(.x, "_DA$") ~ 13,
+                                            str_detect(.x, "_DB$") ~ 15,
+                                            # CSD, centraide... First level
+                                            TRUE ~ 2))
+    
+    maxzooms <- 
+      map_dbl(set_names(scales), ~case_when(str_detect(.x, "_CT$") ~ 12,
+                                            str_detect(.x, "_DA$") ~ 14,
+                                            str_detect(.x, "_DB$") ~ 16,
+                                            # CSD, centraide... First level
+                                            TRUE ~ 10))
+  }
+  
   layer_sizes <- 
     set_names(rep(NA, length(scales)), scales)
   
@@ -230,7 +265,7 @@ all_recipes <-
                                   scales = paste(geo, scale, sep = "_")))
     })
   })
-
+  
 
 # Create tilesets ---------------------------------------------------------
 

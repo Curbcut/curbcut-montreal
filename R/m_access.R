@@ -44,7 +44,6 @@ access_server <- function(id, r) {
     sidebar_server(id = id, r = r, x = "access")
     
     # Initial reactives
-    zoom_string <- reactiveVal(get_zoom_string(map_zoom, map_zoom_levels_CMA))
     poi <- reactiveVal(NULL)
     
     # Map
@@ -67,12 +66,6 @@ access_server <- function(id, r) {
           (!is.null(new_poi) && (is.null(poi()) || !all(new_poi == poi()))))
         poi(new_poi)
     }) |> bindEvent(get_view_state(id_map))
-    
-    # Zoom string reactive
-    observe({
-      new_zoom_string <- get_zoom_string(r[[id]]$zoom(), map_zoom_levels_CMA)
-      if (new_zoom_string != zoom_string()) zoom_string(new_zoom_string)
-    }) |> bindEvent(r[[id]]$zoom())
     
     # Click reactive
     observe({
@@ -139,7 +132,7 @@ access_server <- function(id, r) {
     # Data
     data <- reactive(get_data(
       df = r[[id]]$df(),
-      geo = r$geo(),
+      geo = reactive("CMA"),
       var_left = var_left(), 
       var_right = var_right()))
     
@@ -148,6 +141,7 @@ access_server <- function(id, r) {
       id = id,
       r = r,
       data = data,
+      geo = reactive("CMA"),
       var_left = var_left,
       var_right = var_right)
 
@@ -196,7 +190,7 @@ access_server <- function(id, r) {
         # Data color
         get_data_color(
           map_zoom_levels = rlang::set_names("CT", "CT"),
-          geo = r$geo(),
+          geo = "CMA",
           var_left = var_left(), 
           var_right = var_right())
       }

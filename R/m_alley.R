@@ -197,6 +197,7 @@ alley_server <- function(id, r) {
       id = id,
       r = r,
       data = data,
+      geo = reactive(map_zoom_levels()$scale),
       var_left = var_left,
       var_right = var_right,
       graph = alley_graph,

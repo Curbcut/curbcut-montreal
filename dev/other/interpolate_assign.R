@@ -13,7 +13,7 @@ interpolate_scales <- function(data, base_scale, all_tables,
   
   out <- 
     ## Manage the census cases first -------------------------------------------
-  if (base_scale %in% c("DA", "CT")) {
+  if (base_scale %in% c("DB", "DA", "CT")) {
     
     imap(construct_for, function(scales, geo) {
       
@@ -25,8 +25,8 @@ interpolate_scales <- function(data, base_scale, all_tables,
         st_transform(crs) |> 
         mutate(area = st_area(geometry)) |>
         st_set_agr("constant") |> 
-        select(any_of(c("ID", "CTUID", "CSDUID", "geo_ID", "area", "households", 
-                        "population", names(data))))
+        select(any_of(c("ID", "DAUID", "CTUID", "CSDUID", "geo_ID", "area", 
+                        "households", "population", names(data))))
       
       # Remove any IDs
       data <- data[, names(data)[!names(data) |> str_detect("ID$")]]
@@ -35,7 +35,8 @@ interpolate_scales <- function(data, base_scale, all_tables,
         map(set_names(scales), function(scale) {
           geo_scale <- paste(geo, scale, sep = "_")
           
-          re_identifier <- case_when(scale == "DA" ~ "DAUID",
+          re_identifier <- case_when(scale == "DB" ~ "DBUID",
+                                     scale == "DA" ~ "DAUID",
                                      scale == "CT" ~ "CTUID",
                                      scale == "borough" ~ "CSDUID",
                                      TRUE ~ "geo_ID")

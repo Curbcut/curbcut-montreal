@@ -4,7 +4,9 @@ get_data_color <- function(map_zoom_levels, geo, var_left, var_right,
                            build_str_as_DA = TRUE) {
 
   dfs <- names(map_zoom_levels)
-  dfs <- dfs[dfs != "building"]
+  dfs <- dfs[!dfs %in% c("building")]
+  if (var_right != " ") dfs <- dfs[!dfs %in% c("DB")]
+  
   dfs <- paste(geo, dfs, sep = "_")
   
   # Get data type

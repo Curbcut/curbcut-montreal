@@ -16,6 +16,7 @@ get_zoom_name <- function(x) sapply(
   "CSD" = "Borough/city",
   "CT" = "Census tract",
   "DA" = "Dissemination area",
+  "DB" = "Dissemination block",
   "grid" = "250-m grid cell",
   "building" = "Building",
   "street" = "Street",
@@ -41,6 +42,7 @@ get_zoom_code <- function(x) {
   if (x == "Borough/city" || x == "Arrondissement/ville") return("CSD")
   if (x == "Census tract" || x == "Secteur de recensement") return("CT")
   if (x == "Dissemination area" || x == "Aire de diffusion") return("DA")
+  if (x == "Dissemination block" || x == "Îlot de diffusion") return("DB")
   if (x == "Building" || x == "Bâtiment") return("building")
   if (x == "Street" || x == "Rue") return("street")
   if (x == "Heatmap") return("heatmap")
@@ -70,5 +72,5 @@ get_zoom_levels <- function(default = "CMA", geo, var_left,
   if (var_left[1] %in% names(get0(paste(geo, names(zooms_geo[1]), sep = "_")))) 
     return(list(levels = zooms_geo, scale = geo))
   
-  return(list(levels = zooms_default, scale = geo))
+  return(list(levels = zooms_default, scale = default))
 }

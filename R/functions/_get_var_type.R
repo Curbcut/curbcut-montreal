@@ -105,6 +105,7 @@ get_var_type <- function(data, geo, var_left, var_right, df, select_id,
   ## Deal with NAs -------------------------------------------------------------
 
   if (all(is.na(data$var_left))) table_type <- "all_na"
+  if (var_right != " " && all(is.na(data$var_right))) table_type <- "all_na"
   
   table_type <- unique(table_type)
   return(table_type)

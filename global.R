@@ -65,8 +65,8 @@ mods_rdy <- list(
     "Climate risk" = "climate_risk"
   ),
   "Housing" = c(
-    "Housing system" = "housing"#,
-    # "Housing affordability" = "afford",
+    "Housing system" = "housing",
+    "Housing affordability" = "afford"#,
     # "Tenure status" = "tenure",
     # "Dwelling types" = "dw_types"
   ),
@@ -74,7 +74,8 @@ mods_rdy <- list(
     "Montréal climate plans" = "mcp"
   ),
   "Transport" = c(
-    "Accessibility" = "access"#,
+    "Accessibility" = "access",
+    "City amenities" = "city_amenities"#,
     #   "Road safety" = "crash"
   ),
   "Urban life" = c(
@@ -117,6 +118,8 @@ map_zoom_levels_island_max_CT <- c("CSD" = 0, "CT" = 10.5)
 map_zoom_levels_city <- 
   c("CSD" = 0, "CT" = 10.5, "DA" = 12.5, "building" = 15.5)
 map_zoom_levels_city_max_CT <- c("CSD" = 0, "CT" = 10.5)
+map_zoom_levels_city_max_DB <- 
+  c("CSD" = 0, "CT" = 10.5, "DA" = 12.5, "DB" = 14.5)
 
 map_zoom_levels_centraide <- 
   c("centraide" = 0, "CT" = 10.5, "DA" = 12.5, "building" = 15.5)
