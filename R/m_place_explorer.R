@@ -164,11 +164,16 @@ place_explorer_server <- function(id, r) {
     observe({
       if (!is.null(loc_DAUID()) && !is.na(loc_DAUID())) {
       DA_df <- get(paste(r$geo(), "DA", sep = "_"))
+      if (sum(DA_df$ID %in% loc_DAUID()) == 0) return(select_id(NA))
       IDs <- DA_df[DA_df$ID == loc_DAUID(), c("ID", "CTUID", "geo_ID")] |> 
         unlist()
       
       select_id(data()$ID[data()$ID %in% IDs])}
     })
+    
+    # Update select_id() to NA if back to map 
+    observe(select_id(NA)) |> 
+      bindEvent(input$back_to_map)
     
     ## Main map ----------------------------------------------------------------
     
@@ -223,7 +228,9 @@ place_explorer_server <- function(id, r) {
 
       } else {
         showNotification(
-          paste0("No postal code found for `", input$address_searched, "`"),
+          sus_translate(r = r,
+                        paste0("No postal code found for `", 
+                               input$address_searched, "`")),
           type = "error")
       }
 
@@ -267,17 +274,20 @@ place_explorer_server <- function(id, r) {
 
     # Show widgets when the location name updates
     observe({
+      if (!is.na(select_id())) {
       lapply(widgets_name, shinyjs::hide, anim = TRUE, animType = "fade", time = 0.5)
       lapply(widgets_name, shinyjs::show, anim = TRUE, animType = "fade", time = 0.5)
       shinyjs::hide("mapdeck_div", anim = TRUE, animType = "fade", time = 0.5)
+      }
     }) |> bindEvent(select_id(), ignoreInit = TRUE)
-
+    
     # Hide widgets and go back to map when the button is clicked
     observe({
+      if (is.na(select_id())) {
       lapply(widgets_name, shinyjs::hide, anim = TRUE, animType = "fade", time = 0.5)
       shinyjs::show("mapdeck_div", anim = TRUE, animType = "fade", time = 0.5)
-    }) |> bindEvent(input$back_to_map)
-
+      }
+    }) |> bindEvent(select_id())
 
     ## Title card --------------------------------------------------------------
 
@@ -292,13 +302,15 @@ place_explorer_server <- function(id, r) {
 
     # Update map on selection
     observe({
+
       scale <- gsub(".*_", "", df())
       # Get zoom and center
       zoom <- map_zoom_levels()[grepl(scale, names(map_zoom_levels()))] + 1
       if (zoom == 1) zoom <- 10
-      
-      ct <- if (is.na(select_id())) c(0, 0) else
-        data()$centroid[data()$ID == select_id()][[1]]
+
+      ct <- if (is.na(select_id()) || sum(data()$ID %in% select_id()) == 0) 
+        c(0, 0) else
+          data()$centroid[data()$ID == select_id()][[1]]
 
       # Update map
       rdeck_proxy(id = "title_card_map",
@@ -344,12 +356,17 @@ place_explorer_server <- function(id, r) {
                   "</i></h2>")
     })
     
-    title_card_to_grid <- reactive(get_title_card(r = r,
-      df(), select_id())) |> 
+    title_card_to_grid <- reactive({
+      if (is.na(select_id())) return(NULL)
+      
+      get_title_card(r = r,
+      df(), select_id())}) |> 
        bindEvent(df(), select_id(), r$lang())
 
     # Title card contents
     output$title_card <- renderUI({
+      if (is.na(select_id())) return(NULL)
+      
       lapply(seq_along(title_card_to_grid()), \(x) {
         output[[paste0("ind_", x, "_plot")]] <- renderPlot({
           if (x > length(title_card_to_grid())) return(NULL)
@@ -386,7 +403,8 @@ place_explorer_server <- function(id, r) {
     ## Place explorer data -----------------------------------------------------
 
     output$themes_grid <- renderUI({
-
+      if (is.na(select_id())) return(NULL)
+      
       # Prepare themes and text
       themes <- get_pe_themes(df(), select_id())
 
