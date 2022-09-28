@@ -14,7 +14,7 @@ suppressPackageStartupMessages(library(future))
 
 # Lists of scales and years
 scales <- unique(unlist(all_tables, use.names = FALSE))
-scales <- scales[!scales %in% c("building")]
+scales <- scales[!scales %in% c("building", "DB")]
 
 years <- c(1996, 2001, 2006, 2011, 2016)
 

@@ -24,7 +24,7 @@ get_data <- function(geo, df, var_left, var_right,
     error = function(e) {
       warning(glue("get_data() failed with `{df}` (df), `{var_left}` ",
                    "(var_left) and `{var_right}` (var_right). Returning NULL."))
-      return(NULL)
+      return(data.frame())
     })
   
   if (is.null(data)) return(NULL)

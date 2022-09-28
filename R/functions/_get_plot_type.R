@@ -10,6 +10,9 @@ get_plot_type <- function(data, var_type, var_left, var_right, select_id, df) {
   stopifnot(!is.reactive(select_id))
   stopifnot(!is.reactive(df))
   
+  # If all_na, return all_na
+  if (var_type == "all_na") return("all_na")
+  
   # Convenience variables
   var_left_num <- length(unique(data$var_left))
   na_select <- if (is.na(select_id)) {

@@ -55,7 +55,7 @@ breaks_q3_active <-
 # Get breaks_q5
 breaks_q5_active <- 
   imap_dfr(all_canale$tables_q5, function(x, scale) {
-    if (nrow(x) > 0) x |> mutate(scale = scale, rank = 0:5, 
+    if (nrow(x) > 0) x |> mutate(scale = scale, date = 2016, rank = 0:5, 
                                  .before = canale_ind_2016)}) |> 
   rename(var = canale_ind_2016)
 

@@ -19,7 +19,7 @@ source("dev/other/is_in_geometry.R")
 all_tables <- 
   list("CMA" = c("CSD", "CT", "DA", "grid", "building"),
        "island" = c("CSD", "CT", "DA", "grid", "building"),
-       "city" = c("CSD", "CT", "DA", "grid", "building"),
+       "city" = c("CSD", "CT", "DA", "DB", "grid", "building"),
        "centraide" = c("centraide", "CT", "DA", "grid", "building"))
 
 

@@ -72,9 +72,9 @@ climate_risk_server <- function(id, r) {
     # Zoom string reactive
     observe({
       new_zoom_string <- get_zoom_string(r[[id]]$zoom(), map_zoom_levels()$levels,
-                                         tweaked_geo())
+                                         map_zoom_levels()$scale)
       if (new_zoom_string != zoom_string()) zoom_string(new_zoom_string)
-    }) |> bindEvent(r[[id]]$zoom(), map_zoom_levels()$levels, tweaked_geo())
+    }) |> bindEvent(r[[id]]$zoom(), map_zoom_levels()$levels, map_zoom_levels()$scale)
 
     # Click reactive
     observe({
@@ -96,7 +96,7 @@ climate_risk_server <- function(id, r) {
       zoom_levels = map_zoom_levels)
     
     # Choose tileset
-    tile <- reactive({if (grid()) paste(tweaked_geo(), "grid", sep = "_") else
+    tile <- reactive({if (grid()) paste(map_zoom_levels()$scale, "grid", sep = "_") else
        tile_choropleth()})
     
     # Get df for explore/legend/etc
@@ -126,7 +126,7 @@ climate_risk_server <- function(id, r) {
     # Data
     data <- reactive(get_data(
       df = r[[id]]$df(),
-      geo = tweaked_geo(),
+      geo = map_zoom_levels()$scale,
       var_left = var_left(),
       var_right = var_right()))
 
@@ -134,7 +134,7 @@ climate_risk_server <- function(id, r) {
     data_color <- reactive(get_data_color(
       map_zoom_levels = if (grid()) rlang::set_names("grid", "grid") else
         map_zoom_levels()$levels,
-      geo = tweaked_geo(),
+      geo = map_zoom_levels()$scale,
       var_left = var_left(),
       var_right = var_right()
     ))
@@ -177,6 +177,7 @@ climate_risk_server <- function(id, r) {
       id = id,
       r = r,
       data = data,
+      geo = reactive(map_zoom_levels()$scale),
       var_left = var_left,
       var_right = var_right)
 
