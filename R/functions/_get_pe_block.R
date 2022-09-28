@@ -71,6 +71,8 @@ get_pe_block <- function(r = r, df, theme, select_id) {
     filename <- paste0(paste0("www/place_explorer/"),
                        paste(df, var, quantile, sep = "_"),
                        ".png")
+    
+    print(filename)
 
     # Return a list containing the filename and alt text
     list(src = filename,
@@ -91,7 +93,12 @@ get_pe_block <- function(r = r, df, theme, select_id) {
   
   out <- cbind(data_order, out)
   out <- out[!is.na(out$value), ]
-  ior <- "TKTK" #sus_translate(r = r, "the ", island_or_region)
+  ior <- sus_translate(r = r, switch(gsub(".*_", "", df), 
+                                     "CSD" = "boroughs or cities",
+                                     "CT" = "census tracts", 
+                                     "DA" = "dissemination areas",
+                                     "centraide" = "centraide zones",
+                                     "zones"))
   
   # Age
   sentence <- if (theme == "Age") {
@@ -106,7 +113,7 @@ get_pe_block <- function(r = r, df, theme, select_id) {
       "65+"
     }
     sus_translate(r = r, "The area's residents are disproportionately in the {age} ",
-                  "age range, compared to the rest of {ior}.")
+                  "age range, compared to the rest of the {ior}.")
 
   # Climate risk  
   } else if (theme == "Climate risk") {
@@ -124,7 +131,7 @@ get_pe_block <- function(r = r, df, theme, select_id) {
       sus_translate(r = r, "lower")
     } else sus_translate(r = r, "much lower")
     sus_translate(r = r, "The area has a {more_less} level of climate risk than ",
-                  "average for {ior}.")
+                  "average for the {ior}.")
     
   # Education
   } else if (theme == "Education") {
@@ -142,7 +149,7 @@ get_pe_block <- function(r = r, df, theme, select_id) {
       sus_translate(r = r, "less")
     } else sus_translate(r = r, "much less")
     sus_translate(r = r, "Residents of the area are {more_less} likely than the rest ",
-                  "of {ior} to have a university degree.")
+                  "of the {ior} to have a university degree.")
 
   # Employment
   } else if (theme == "Employment") {
@@ -161,7 +168,7 @@ get_pe_block <- function(r = r, df, theme, select_id) {
     } else sus_translate(r = r, "much lower")
     sus_translate(r = r, "A {more_less} than average share of the area's residents ",
                   "work in creative and professional occupations compared to ",
-                  "the rest of {ior}.")
+                  "the rest of the {ior}.")
     
   # Household
   } else if (theme == "Household") {
@@ -179,7 +186,7 @@ get_pe_block <- function(r = r, df, theme, select_id) {
     } else if (z >= 0.2) {
       sus_translate(r = r, "smaller")
     } else sus_translate(r = r, "much smaller")
-    sus_translate(r = r, "The area's families are {more_less} than average for {ior}.")
+    sus_translate(r = r, "The area's families are {more_less} than average for the {ior}.")
     
   # Housing
   } else if (theme == "Housing") {
@@ -200,7 +207,7 @@ get_pe_block <- function(r = r, df, theme, select_id) {
       sus_translate(r = r, "cheaper")
     } else sus_translate(r = r, "much cheaper")
     sus_translate(r = r, "Housing costs in the area are {more_less} than average ",
-                  "for {ior}.")
+                  "for the {ior}.")
 
   # Identity
   } else if (theme == "Identity") {
@@ -218,7 +225,7 @@ get_pe_block <- function(r = r, df, theme, select_id) {
       sus_translate(r = r, "fewer")
     } else sus_translate(r = r, "much fewer")
     sus_translate(r = r, "The area has {more_less} foreign-born residents than ",
-                  "average for {ior}.")
+                  "average for the {ior}.")
     
   # Income
   } else if (theme == "Income") {
@@ -235,7 +242,7 @@ get_pe_block <- function(r = r, df, theme, select_id) {
     } else if (z >= 0.2) {
       sus_translate(r = r, "lower")
     } else sus_translate(r = r, "much lower")
-    sus_translate(r = r, "Incomes in the area are {more_less} than average for {ior}.")
+    sus_translate(r = r, "Incomes in the area are {more_less} than average for the {ior}.")
 
   # Language
   } else if (theme == "Language") {
@@ -264,7 +271,7 @@ get_pe_block <- function(r = r, df, theme, select_id) {
       sus_translate(r = r, "speak neither French nor English")
     }
     sus_translate(r = r, "The area's residents are {more_less} likely to {lang} ",
-                  "than average for {ior}.")
+                  "than average for the {ior}.")
 
   # Transport
   } else if (theme == "Transport") {
@@ -285,7 +292,7 @@ get_pe_block <- function(r = r, df, theme, select_id) {
       } else sus_translate(r = r, "much less")
       
       sus_translate(r = r, "Residents in the area drive to work {more_less} than ",
-                    "average compared to the rest of {ior}.")
+                    "average compared to the rest of the {ior}.")
     } else {
       z <- out$percentile[out$var_code == "access_jobs_total"]
       more_less <- if (z >= 0.8) {
@@ -301,7 +308,7 @@ get_pe_block <- function(r = r, df, theme, select_id) {
       } else sus_translate(r = r, "much less")
       
       sus_translate(r = r, "The area has {more_less} public transit access to jobs ",
-                    "than the rest of {ior}.")
+                    "than the rest of the {ior}.")
       
     }
   } else NULL

@@ -130,6 +130,7 @@ place_explorer_server <- function(id, r) {
     # Initial reactives
     select_id <- reactiveVal(NA)
     loc_name <- reactiveVal(NA)
+    loc_DAUID <- reactiveVal(NA)
 
     # Sidebar
     sidebar_server(id = "place_explorer", r = r, x = "place_explorer")
@@ -149,7 +150,6 @@ place_explorer_server <- function(id, r) {
       levels <- get(paste("map_zoom_levels", r$geo(), sep = "_"))
       return(levels[seq_len(which(names(levels) == "DA"))])
     })
-      
     
     # Translate slider labels
     observe(updateSliderTextInput(
@@ -160,16 +160,13 @@ place_explorer_server <- function(id, r) {
     df <- reactive(paste(r$geo(), get_zoom_code(input$slider), sep = "_"))
     data <- reactive(get(df()))
     
-    # Update select_id if df() changes!
+    # Update select_id() if df() changes!
     observe({
-      if (!is.na(select_id())) {
+      if (!is.na(loc_DAUID())) {
       DA_df <- get(paste(r$geo(), "DA", sep = "_"))
-      DA_df <- DA_df[, c("DAUID", "CTUID", "CSDUID", "geo_ID")]
-      IDs <- DA_df[DA_df$DAUID == select_id() | 
-                     DA_df$CTUID == select_id() | 
-                     DA_df$CSDUID == select_id() | 
-                     DA_df$geo_ID == select_id(), ] |> 
+      IDs <- DA_df[DA_df$ID == loc_DAUID(), c("ID", "CTUID", "geo_ID")] |> 
         unlist()
+      
       select_id(data()$ID[data()$ID %in% IDs])}
     })
     
@@ -179,13 +176,14 @@ place_explorer_server <- function(id, r) {
       rdeck(map_style = map_style_building, initial_view_state = view_state(
         center = map_loc, zoom = map_zoom)) |> 
         add_mvt_layer(
-        id = "df",
-        data = mvt_url(paste0("sus-mcgill.", df())),
-        pickable = TRUE,
-        auto_highlight = TRUE,
-        highlight_color = "#AAB6CF80",
-        get_fill_color = "#AAB6CF20",
-        get_line_color = "#FFFFFF00")
+          id = "df",
+          name = "df",
+          data = mvt_url(paste0("sus-mcgill.", r$geo(), "_DA")),
+          pickable = TRUE,
+          auto_highlight = TRUE,
+          highlight_color = "#AAB6CF80",
+          get_fill_color = "#AAB6CF20",
+          get_line_color = "#FFFFFF00")
       )
     
     # Update main map when the chosen scale changes
@@ -216,10 +214,8 @@ place_explorer_server <- function(id, r) {
         DAUID_of_pc <- postal_codes$DAUID[pcs]
         DA_data <- get(r$geo(), "DA", sep = "_")
         IDs <- DA_data[DA_data$ID == DAUID_of_pc, 
-                       c("CSDUID", "CTUID", "DAUID", "geo_ID")] |> 
-          unlist()
-        actual_df <- get(r$geo(), df(), sep = "_")
-        select_id(actual_df$ID[actual_df$ID %in% IDs])
+                       c("ID", "CTUID", "geo_ID")] |> unlist()
+        select_id(data()$ID[data()$ID %in% IDs])
 
         loc_name(postal_codes$postal_code[pcs] |>
                    str_to_upper() |>
@@ -235,8 +231,8 @@ place_explorer_server <- function(id, r) {
 
     # Map click
     observe({
-
-      select_id(input[[ns_id_map_click]]$object$ID)
+      
+      loc_DAUID(input[[ns_id_map_click]]$object$ID)
 
       lon <- input[[ns_id_map_click]]$coordinate[[1]]
       lat <- input[[ns_id_map_click]]$coordinate[[2]]
@@ -251,7 +247,7 @@ place_explorer_server <- function(id, r) {
 
     # Title card map click
     observe({
-      select_id(input[["title_card_map_click"]]$object$ID)
+      loc_DAUID(input[["title_card_map_click"]]$object$ID)
 
       lon <- input[["title_card_map_click"]]$coordinate[[1]]
       lat <- input[["title_card_map_click"]]$coordinate[[2]]
@@ -290,7 +286,7 @@ place_explorer_server <- function(id, r) {
       rdeck(map_style = map_base_style,
             initial_view_state = view_state(center = map_loc, zoom = 14))
     })
-
+    
     # Make sure the map draws in the background, so it can respond to select_id
     outputOptions(output, "title_card_map", suspendWhenHidden = FALSE)
 
@@ -301,7 +297,7 @@ place_explorer_server <- function(id, r) {
       zoom <- map_zoom_levels()[grepl(scale, names(map_zoom_levels()))] + 1
       if (zoom == 1) zoom <- 10
       
-      ct <- if (is.na(select_id())) c(0, 0) else 
+      ct <- if (is.na(select_id())) c(0, 0) else
         data()$centroid[data()$ID == select_id()][[1]]
 
       # Update map
@@ -309,18 +305,18 @@ place_explorer_server <- function(id, r) {
                   initial_view_state = view_state(center = ct, zoom = zoom)) |>
         add_mvt_layer(id = "location",
                       data = mvt_url(paste0("sus-mcgill.", df())),
-                      pickable = TRUE,
-                      auto_highlight = TRUE,
+                      pickable = FALSE,
+                      auto_highlight = FALSE,
                       highlight_color = "#AAB6CF60",
                       get_fill_color = scale_fill_pe(select_id()),
                       get_line_width = 0) |>
         add_mvt_layer(id = "DA_empty",
-                      data = mvt_url(paste0("sus-mcgill.", df())),
+                      data = mvt_url(paste0("sus-mcgill.", r$geo(), "_DA")),
                       pickable = TRUE,
                       auto_highlight = TRUE,
-                      highlight_color = "#AAB6CF60",
-                      get_fill_color = scale_fill_pe(select_id()),
-                      get_line_width = 0)
+                      highlight_color = "#AAB6CF80",
+                      get_fill_color = "#AAB6CF20",
+                      get_line_color = "#FFFFFF00")
       })
 
     # Title card title
@@ -350,11 +346,10 @@ place_explorer_server <- function(id, r) {
     
     title_card_to_grid <- reactive(get_title_card(r = r,
       df(), select_id())) |> 
-      bindCache(df(), select_id(), r$lang())
+       bindEvent(df(), select_id(), r$lang())
 
     # Title card contents
     output$title_card <- renderUI({
-
       lapply(seq_along(title_card_to_grid()), \(x) {
         output[[paste0("ind_", x, "_plot")]] <- renderPlot({
           if (x > length(title_card_to_grid())) return(NULL)
@@ -394,15 +389,21 @@ place_explorer_server <- function(id, r) {
 
       # Prepare themes and text
       themes <- get_pe_themes(df(), select_id())
-      text_ior <- sus_translate(r = r, paste0("the ", "TKTK"))
+
+      text_ior <- sus_translate(r = r, switch(gsub(".*_", "", df()), 
+                                              "CSD" = "boroughs or cities",
+                                              "CT" = "census tracts", 
+                                              "DA" = "dissemination areas",
+                                              "centraide" = "centraide zones",
+                                              "zones"))
       stand_def <- c(
         "Extreme outlier" = sus_translate(r = r, 
-          "`Extreme outlier`: the variables rank in the top/bottom 10% of ",
+          "`Extreme outlier`: the variables rank in the top/bottom 10% of the ",
           "{text_ior}."),
         "Outlier" = sus_translate(r = r, 
-          "`Outlier`: the variables rank in the top/bottom 20% of {text_ior}."),
+          "`Outlier`: the variables rank in the top/bottom 20% of the {text_ior}."),
         "Typical" = sus_translate(r = r, 
-          "`Typical`: the variables rank in the middle 60% of {text_ior}."))
+          "`Typical`: the variables rank in the middle 60% of the {text_ior}."))
 
       # The "server" of every block
       lapply(themes, \(x) {
@@ -498,7 +499,7 @@ place_explorer_server <- function(id, r) {
             
           } else tagList(fluidRow(h3(sus_translate(r = r, x[1]))),
                          fluidRow("No data."))
-        }) |> bindCache(df(), select_id(), x,
+        }) |> bindEvent(df(), select_id(), x,
                         input$themes_checkbox, r$lang())
       })
 

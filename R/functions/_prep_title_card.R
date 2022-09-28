@@ -38,10 +38,8 @@ prep_title_card <- function(r = r, df, select_id, ind, percent = TRUE,
   
   if (is_scale_in_df("CSD", df)) {
     
-    rank <- data[data$ID == select_id, ][[paste0(scale, "_rank")]]
-    df_row <- if (island) {
-      sum(!is.na(data$var[!is.na(data$island_rank)]))
-    } else sum(!is.na(data$var))
+    rank <- data[data$ID == select_id, ]$rank
+    df_row <- sum(!is.na(data$var))
     
     # If high is good, then last rank means 1st. Inverse!
     data_CSD_rank <- if (high_is_good) df_row - rank + 1 else rank

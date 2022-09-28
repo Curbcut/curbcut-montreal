@@ -10,10 +10,10 @@ library(furrr)
 ## Get data ------------------------------------------------------------------
 
 all_tables <- 
-  list("CMA" = c("borough", "CT", "DA", "grid", "building"),
-       "island" = c("borough", "CT", "DA", "grid", "building"),
-       "city" = c("borough", "CT", "DA", "grid", "building"),
-       "centraide" = c("centraide", "CT", "DA", "grid", "building"))
+  list("CMA" = c("CSD", "CT", "DA", "grid", "building"),
+       "island" = c("CSD", "CT", "DA", "grid", "building"),
+       "city" = c("CSD", "CT", "DA", "grid", "building"),
+       "centraide" = c("CSD", "CT", "DA", "grid", "building"))
 
 all_tables <- map(all_tables, ~.x[seq_len(which(.x == "DA"))])
 
@@ -24,6 +24,16 @@ all_tables <-
     })
   }) |> unlist() |> unname()
 
+
+borough_imgs <- 
+  list.files("www/place_explorer/", full.names = TRUE) |> 
+  str_subset("_borough_")
+
+boroughs_imgs_renamed <- 
+  str_replace(borough_imgs, "_borough_", "_CSD_")
+
+walk2(borough_imgs, boroughs_imgs_renamed, file.rename)
+file.rename()
 
 # Do this operation in parallel
 old_plan <- plan()

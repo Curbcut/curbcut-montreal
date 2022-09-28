@@ -345,9 +345,11 @@ shinyServer(function(input, output, session) {
                    label = sus_translate(r = r, "Change default geometry"),
                    inline = TRUE,
                    selected = r$geo(),
-                   choiceNames = c("CMA", "City of Montreal", 
-                                   "Island of Montreal", "Centraide"),
-                   choiceValues = c("CMA", "city", "island", "centraide")),
+                   choiceNames = 
+                     sapply(c("Metropolitan Area", "City of Montreal", 
+                              "Island of Montreal"),
+                            sus_translate, r = r, USE.NAMES = FALSE),#, "Centraide"),
+                   choiceValues = c("CMA", "city", "island")),#, "centraide")),
       title = sus_translate(r = r, "Advanced options")))
   })
 

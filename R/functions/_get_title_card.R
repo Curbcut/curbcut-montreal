@@ -4,7 +4,7 @@ get_title_card <- function(r = r, df, select_id) {
 
   ## Setup ---------------------------------------------------------------------
   
-  on_island <- select_id %in% c(island_DA$DAUID, island_CT$ID, island_borough$ID)
+  on_island <- select_id %in% c(island_DA$DAUID, island_CT$ID, island_CSD$ID)
 
   # Choose indicators based on data availability
   indicators_table <-
