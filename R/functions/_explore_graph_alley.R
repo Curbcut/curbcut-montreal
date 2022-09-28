@@ -2,7 +2,7 @@
 
 
 explore_graph_alley <- function(r = r, data, var_type, var_left, var_right, df, 
-                                select_id, build_str_as_DA = TRUE) {
+                                select_id, geo, build_str_as_DA = TRUE) {
   
   # Show histogram in borough summary mode
   if (is_scale_in_df("borough_empty", df)) {

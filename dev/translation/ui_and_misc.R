@@ -34,6 +34,8 @@ ui_and_misc_translated <-
           fr = paste0("Secteur de recensement")) |> 
   add_row(en = paste0("Dissemination area"), 
           fr = paste0("Aire de diffusion")) |> 
+  add_row(en = paste0("Dissemination block"), 
+          fr = paste0("Îlot de diffusion")) |> 
   add_row(en = paste0("Building"), 
           fr = paste0("Bâtiment")) |> 
   add_row(en = paste0("Legend"), 

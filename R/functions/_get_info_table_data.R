@@ -155,20 +155,24 @@ get_info_table_data <- function(r = r, data, var_type, var_left, var_right, df,
     "CSD" = "borough/city",
     "CT" = "census tract",
     "DA" = "dissemination area",
+    "DB" = "dissemination block",
     "grid" = "250-m",
     "building" = if (build_str_as_DA) "dissemination area" else "building",
     "street" = if (build_str_as_DA) "dissemination area" else "street",
-    "centraide" = "centraide zone")
+    "centraide" = "centraide zone",
+    "zone")
   
   scale_plural <- switch(
     gsub(".*_", "", scale_sing),
     "borough/city" = "boroughs or cities",
     "census tract" = "census tracts",
     "dissemination area" = "dissemination areas",
+    "dissemination block" = "dissemination blocks",
     "250-m" = "areas",
     "building" = "buildings",
     "street" = "streets",
-    "centraide zone" = "centraide zones")
+    "centraide zone" = "centraide zones",
+    "zones")
   
   out$scale_sing <- sus_translate(r = r, scale_sing)
   out$scale_plural <- sus_translate(r = r, scale_plural)
@@ -186,6 +190,8 @@ get_info_table_data <- function(r = r, data, var_type, var_left, var_right, df,
     "census tract" = sus_translate(r = r, "Census tract {select_name$name}"),
     "dissemination area" = 
       sus_translate(r = r, "Dissemination area {select_name$name}"),
+    "dissemination block" = 
+      sus_translate(r = r, "Dissemination block {select_name$name}"),
     "250-m" = sus_translate(r = r, "The area around {select_name$name}"),
     "centraide zone" = glue("{select_name$name}"),
     NA_character_)
@@ -203,6 +209,18 @@ get_info_table_data <- function(r = r, data, var_type, var_left, var_right, df,
       sus_translate(r = r, select_name$name)
     } else glue("{out$place_name} ({select_name$name_2})")
   }
+  
+  
+  ## Geo name ------------------------------------------------------------------
+  
+  out$geo <- 
+    sus_translate(r = r, 
+                  switch(
+                    geo, 
+                    "CMA" = "in the Montreal region",
+                    "city" = "in the City of Montreal",
+                    "island" = "on the island of Montreal",
+                    "centraide" = "in the Centraide of Greater Montreal territory"))
   
   
   ## Descriptive statistics for var_left ---------------------------------------

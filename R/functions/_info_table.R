@@ -37,8 +37,12 @@ info_table <- function(r, data, var_type, var_left, var_right, df, select_id,
   ## Handle NAs ----------------------------------------------------------------
   
   # ALL NA
-  if (z$var_type == "all_na") out <- sus_translate(r = r, 
+  if (var_right != " " && z$var_type == "all_na") out <- sus_translate(r = r, 
      "We have no data on {z$exp_left} at the {z$scale_sing} scale.")
+  
+  if (var_right == " " && z$var_type == "all_na") out <- sus_translate(r = r, 
+      "We have no data on {z$exp_left} or on {z$exp_right} at",
+      " the {z$scale_sing} scale.")
 
   # Special case for Kahnawake
   if (z$var_type == "kah_na") out <- sus_translate(r = r, 
@@ -86,10 +90,10 @@ info_table <- function(r, data, var_type, var_left, var_right, df, select_id,
     "<strong>{z$place_heading}</strong>",
     "<p>{z$place_name} has a population of {z$pop} and a ", 
     "'{z$title_left}' score ({z$exp_left}) of {z$val_left}, which is ", 
-    "{z$larger} the region-wide median of {z$median_val}.",
+    "{z$larger} the territory-wide median of {z$median_val}.",
     "<p>{z$place_name} has a {z$high} relative score for this ", 
     "indicator, with '{z$exp_left}' higher than ", 
-    "{z$percentile} of {z$scale_plural} in the Montreal region.")
+    "{z$percentile} of {z$scale_plural} {z$geo}.")
   
   # Univariate, qualitative, no selection
   if (z$var_type == "uni_qual_all") out <- sus_translate(r = r, 
@@ -103,7 +107,7 @@ info_table <- function(r, data, var_type, var_left, var_right, df, select_id,
     "<strong>{z$place_heading}</strong>",
     "<p>{z$place_name} has a population of {z$pop} and a ",
     "'{z$title_left}' value of '{z$val_left}', which is shared by ",
-    "{z$other_with_val} of {z$scale_plural} in the Montreal region.")
+    "{z$other_with_val} of {z$scale_plural} {z$geo}.")
   
   
   ## Univariate multi-date cases -------------------------------------------
@@ -124,10 +128,10 @@ info_table <- function(r, data, var_type, var_left, var_right, df, select_id,
     "<p>{sentence(z$exp_left)} in {z$place_name} ",
     "{z$increase} by {sub('-', '', z$val_left)} between ",
     "{z$start_date_left} and {z$end_date_left}, which is {z$larger} ",
-    "the region-wide median change of {z$median_val}.",
+    "the territory-wide median change of {z$median_val}.",
     "<p>{z$place_name} had a {z$high} relative change for this ",
     "indicator, with a change in {z$exp_left} larger than ",
-    "{z$percentile} of {z$scale_plural} in the Montreal region.")
+    "{z$percentile} of {z$scale_plural} {z$geo}.")
   
   # Univariate, qualitative, no selection
   if (z$var_type == "uni_qual_all_delta") out <- sus_translate(r = r, 
@@ -141,7 +145,7 @@ info_table <- function(r, data, var_type, var_left, var_right, df, select_id,
     "<strong>{z$place_heading}</strong>",
     "<p>TKTK {z$place_name} has a population of {z$pop} and a ",
     "'{z$title_left}' value of '{z$val_left}', which is shared by ",
-    "{z$other_with_val} of {z$scale_plural} in the Montreal region.")
+    "{z$other_with_val} of {z$scale_plural} {z$geo}.")
   
   
   ## Bivariate cases -----------------------------------------------------------
@@ -179,7 +183,7 @@ info_table <- function(r, data, var_type, var_left, var_right, df, select_id,
     "terms. {z$place_name} has {sub('^the', 'a', z$exp_left)} higher ",
     "than {z$perc_left} of {z$scale_plural} and ",
     "{sub('^the', 'a', z$exp_right)} higher than {z$perc_right} ",
-    "of {z$scale_plural} in the Montreal region.")
+    "of {z$scale_plural} {z$geo}.")
   
   # Bivariate, qualitative x, quantitative y, no selection
   if (z$var_type == "bi_quanty_all") {
@@ -212,8 +216,7 @@ info_table <- function(r, data, var_type, var_left, var_right, df, select_id,
     "'{z$title_right}' value of {z$val_right}. ",
     "<p>{z$place_name} has {sub('^the', 'a', z$exp_right)} ",
     "higher than {z$perc} of other {z$scale_plural} with ",
-    "{sub('^the', 'a', z$exp_left)} of '{z$val_left}' in the ",
-    "Montreal region.")
+    "{sub('^the', 'a', z$exp_left)} of '{z$val_left}' {z$out}.")
   
   # Bivariate, quantitative x, qualitative y, no selection
   if (z$var_type == "bi_quantx_all") {
@@ -246,8 +249,7 @@ info_table <- function(r, data, var_type, var_left, var_right, df, select_id,
     "'{z$title_right}' value of '{z$val_right}'. ",
     "<p>{z$place_name} has {sub('^the', 'a', z$exp_left)} ",
     "higher than {z$perc} of other {z$scale_plural} with ",
-    "{sub('^the', 'a', z$exp_right)} of '{z$val_right}' in the ",
-    "Montreal region.")
+    "{sub('^the', 'a', z$exp_right)} of '{z$val_right}' {z$out}.")
   
   
   ## Bivariate multi-date cases ------------------------------------------------
@@ -286,7 +288,7 @@ info_table <- function(r, data, var_type, var_left, var_right, df, select_id,
     "terms. {z$place_name} had a change in {z$exp_left} higher ",
     "than {z$perc_left} of {z$scale_plural} and ",
     "a change in {z$exp_right} higher than {z$perc_right} ",
-    "of {z$scale_plural} in the Montreal region.")
+    "of {z$scale_plural} {z$geo}.")
   
   # Bivariate, qualitative x, quantitative y, no selection
   if (z$var_type == "bi_quanty_all_delta") {
@@ -321,8 +323,7 @@ info_table <- function(r, data, var_type, var_left, var_right, df, select_id,
     "'{z$title_right}' value of {z$val_right}. ",
     "<p>{z$place_name} has {sub('^the', 'a', z$exp_right)} ",
     "higher than {z$perc} of other {z$scale_plural} with ",
-    "{sub('^the', 'a', z$exp_left)} of '{z$val_left}' in the ",
-    "Montreal region.")
+    "{sub('^the', 'a', z$exp_left)} of '{z$val_left}' {z$out}.")
   
   
   ## Special cases -------------------------------------------------------------

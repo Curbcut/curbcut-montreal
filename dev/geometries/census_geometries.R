@@ -45,6 +45,9 @@ get_census <- function(region = list(PR = "24"), scale, format = TRUE,
 CDs <- get_census(scale = "CD", format = FALSE)$ID
 DA <- get_census(region = list(CD = CDs), scale = "DA")
 
+# Download DB for the city
+DB <- get_census(region = list(CSD = 2466023), scale = "DB")
+
 # Download CTs, fill in with CSDs
 CT <- get_census(scale = "CT")
 
@@ -205,6 +208,7 @@ CT <-
   select(-CSDUID_new) |> 
   st_as_sf()
 
+
 rm(borough_join, CSD, leftovers)
 
 
@@ -217,7 +221,7 @@ CSD <-
 
 CT <- 
   CT |> 
-  left_join(select(st_drop_geometry(borough), CSDUID = ID, name_2 = name),
+  left_join(select(st_drop_geometry(CSD), CSDUID = ID, name_2 = name),
             by = "CSDUID") |>
   relocate(name_2, .after = name) |>
   mutate(CTUID = ID, .after = name_2) |>
@@ -225,11 +229,28 @@ CT <-
 
 DA <- 
   DA |> 
-  left_join(select(st_drop_geometry(borough), CSDUID = ID, name_2 = name), 
+  left_join(select(st_drop_geometry(CSD), CSDUID = ID, name_2 = name), 
             by = "CSDUID") |>
   relocate(name_2, .after = name) |> 
   mutate(CTUID = if_else(is.na(CTUID), CSDUID, CTUID)) |> 
   mutate(DAUID = ID, .after = name_2) |> 
   st_set_agr("constant")
 
-rm(borough)
+# + add DAUID to DB
+DB_intersects_DA <- st_intersects(st_centroid(DB), DA)
+DB$DAUID <- map_chr(seq_len(nrow(DB)), ~{DA[unlist(DB_intersects_DA)[.x], ]$ID})
+DB <- 
+  DB |> 
+  select(-CSDUID) |> 
+  left_join(select(st_drop_geometry(DA), CSDUID, DAUID), by = "DAUID") |> 
+  left_join(st_drop_geometry(borough) |> 
+              select(CSDUID, name_2 = name), 
+            by = "CSDUID") |> 
+  relocate(name_2, .after = name) |> 
+  relocate(DAUID, .after = name_2) |> 
+  relocate(CSDUID, .after = CTUID) |> 
+  mutate(DBUID = ID, .after = name_2) |> 
+  st_set_agr("constant")
+
+
+rm(borough, DB_intersects_DA)
