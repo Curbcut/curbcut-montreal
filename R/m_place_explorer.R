@@ -162,7 +162,7 @@ place_explorer_server <- function(id, r) {
     
     # Update select_id() if df() changes!
     observe({
-      if (!is.na(loc_DAUID())) {
+      if (!is.null(loc_DAUID()) && !is.na(loc_DAUID())) {
       DA_df <- get(paste(r$geo(), "DA", sep = "_"))
       IDs <- DA_df[DA_df$ID == loc_DAUID(), c("ID", "CTUID", "geo_ID")] |> 
         unlist()
@@ -270,7 +270,7 @@ place_explorer_server <- function(id, r) {
       lapply(widgets_name, shinyjs::hide, anim = TRUE, animType = "fade", time = 0.5)
       lapply(widgets_name, shinyjs::show, anim = TRUE, animType = "fade", time = 0.5)
       shinyjs::hide("mapdeck_div", anim = TRUE, animType = "fade", time = 0.5)
-    }) |> bindEvent(loc_name(), ignoreInit = TRUE)
+    }) |> bindEvent(select_id(), ignoreInit = TRUE)
 
     # Hide widgets and go back to map when the button is clicked
     observe({
@@ -570,9 +570,10 @@ place_explorer_server <- function(id, r) {
 
     observe({
       z <- title_card_to_grid()[["canale_index"]]
-      module_link(r = r, module = z$link_module,
+      module_link(r = r,
+                  module = z$link_module,
                   select_id = select_id(),
-                  var_left = z$link_var_left,
+                  var_left = "canal_ind_2016",
                   df = df())
     }) |> bindEvent(input$title_card_canale_index)
   })

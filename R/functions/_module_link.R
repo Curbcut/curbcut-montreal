@@ -18,8 +18,8 @@ module_link <- function(r, module, zoom = NULL, location = map_loc,
   if (update_view) {
     if (!is.null(df) && !is.null(select_id)) {
       r$sus_link$zoom <- 
-        if (is_scale_in_df("CSD", df)) map_zoom else 
-          get(paste("map_zoom_levels", r$geo(), sep = "_"))[[df]] + 0.75
+        get(paste("map_zoom_levels", r$geo(), sep = "_"))[[
+          gsub(".*_", "", df)]] + 0.75
       
       r$sus_link$location <- {
         data <- get(df)
@@ -28,6 +28,9 @@ module_link <- function(r, module, zoom = NULL, location = map_loc,
       }
     }
   }
+  
+  print(r$sus_link$zoom)
+  print(r$sus_link$location)
   
   # Other values 
   r$sus_link$activity <- 
@@ -39,8 +42,14 @@ module_link <- function(r, module, zoom = NULL, location = map_loc,
   r$sus_link$more_args <- more_args
   
   # Update destination select_id() and df()
-  if (!is.null(df)) r[[module]]$df <- reactiveVal(df)
-  if (!is.null(select_id)) r[[module]]$select_id <- reactiveVal(select_id)
+  if (!is.null(df)) {
+    r$sus_link$df <- df
+    r[[module]]$df(df)
+  }
+  if (!is.null(select_id)) {
+    r$sus_link$select_id <- select_id
+    r[[module]]$select_id(select_id)
+  }
   
 }
 

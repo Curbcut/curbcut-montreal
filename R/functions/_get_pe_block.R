@@ -72,8 +72,6 @@ get_pe_block <- function(r = r, df, theme, select_id) {
                        paste(df, var, quantile, sep = "_"),
                        ".png")
     
-    print(filename)
-
     # Return a list containing the filename and alt text
     list(src = filename,
          alt = paste("Plot"),

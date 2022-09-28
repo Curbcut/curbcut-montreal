@@ -219,10 +219,13 @@ shinyServer(function(input, output, session) {
                     r = r, 
                     map_id = "map",
                     session = session,
+                    zoom = r$sus_link$zoom, 
                     location = r$sus_link$location,
                     zoom_auto = r$sus_link$zoom_auto,
                     var_left = r$sus_link$var_left,
                     var_right = r$sus_link$var_right,
+                    select_id = r$sus_link$select_id,
+                    df = r$sus_link$df,
                     more_args = r$sus_link$more_args)
     })
   }, ignoreInit = TRUE)
@@ -288,15 +291,19 @@ shinyServer(function(input, output, session) {
       })
       # Retrieve df
       try({
-        if (!is.null(query[["df"]]))
+        if (!is.null(query[["df"]])) {
           r[[query[["tb"]]]]$df <- reactiveVal(query[["df"]])
+          r$sus_bookmark$df
+        }
+          
       })
       # Retrieve select_id
       try({
         s_id <- query[["s_id"]]
         if (!is.null(s_id)) {
           if (query[["s_id"]] %in% c("", "NA")) s_id <- NA
-          r[[query[["tb"]]]]$select_id <- reactiveVal(s_id)}
+          r[[query[["tb"]]]]$select_id <- reactiveVal(s_id)
+          r$sus_bookmark$select_id <- reactiveVal(s_id)}
       })
     }
   }, once = TRUE)
