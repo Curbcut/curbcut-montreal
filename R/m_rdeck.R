@@ -27,7 +27,7 @@ rdeck_server <- function(id, r, map_id, tile, data_color,
   moduleServer(id, function(input, output, session) {
     
     # Helper variables
-    extrude <- reactive((grepl("auto_zoom", tile()) && zoom() >= 15.5) | 
+    extrude <- reactive((grepl("auto_zoom$", tile()) && zoom() >= 15.5) | 
                           grepl("building", tile()))
     highlight <- reactive(if (id == "natural_inf") FALSE else TRUE)
     
