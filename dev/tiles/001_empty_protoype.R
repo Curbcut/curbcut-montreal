@@ -5,14 +5,13 @@ library(sf)
 library(qs)
 source("dev/tiles/_tile_functions.R")
 
+mvt_prefix <- "to-"
+
 
 # All combinations --------------------------------------------------------
 
 all_tables <- 
-  list("CMA" = c("CSD", "CT", "DA", "grid", "building"),
-       "island" = c("CSD", "CT", "DA", "grid", "building"),
-       "city" = c("CSD", "CT", "DA", "DB", "grid", "building"),
-       "centraide" = c("centraide", "CT", "DA", "grid", "building"))
+  list("CMA" = c("CSD", "CT", "DA", "building"))
 
 combinations <- 
   imap(all_tables, function(scales, geo) {
@@ -21,11 +20,7 @@ combinations <-
     
     out <- 
       c(setNames(scales, scales),
-        list("auto_zoom" = c(top_of_geo, "CT", "DA", "building"),
-             "auto_zoom_max_CT" = c(top_of_geo, "CT")))
-    
-    if (geo == "city")
-      out <- c(out, list("auto_zoom_max_DB" = c(top_of_geo, "CT", "DA", "DB")))
+        list("auto_zoom" = c(top_of_geo, "CT", "DA", "building")))
     
     out
   })
@@ -33,7 +28,7 @@ combinations <-
 
 # Load the data -----------------------------------------------------------
 
-invisible(lapply(paste0("data2/", names(all_tables), "_full.qsm"), 
+invisible(lapply(paste0("data2_toronto/", names(all_tables), "_full.qsm"), 
                  qload, env = .GlobalEnv))
 
 
@@ -126,17 +121,23 @@ imap(combinations, function(scales, geo) {
         transmute(ID, ID_color = DAUID) |>
         st_transform(4326)
 
-      create_building_tileset(name = geo_scale,
+      create_building_tileset(name = paste0(mvt_prefix, geo_scale),
                               building_to_process = building_to_process)
     } else {
       get(geo_scale) |>
         transmute(ID, ID_color = ID) |>
         st_transform(4326) |> 
         st_set_agr("constant") |>
-        upload_tile_source(id = geo_scale, access_token = .sus_token)
+        upload_tile_source(id = paste0(mvt_prefix, geo_scale), 
+                           access_token = .sus_token)
     }
   })
 })
+
+
+# Refer to geo with the prefix for the tileset ----------------------------
+
+names(combinations) <- paste0(mvt_prefix, names(combinations))
 
 
 # Tileset recipes ---------------------------------------------------------
