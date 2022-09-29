@@ -1,12 +1,5 @@
 #### BUILD ALL SUS DATA ########################################################
 
-# Notes -------------------------------------------------------------------
-
-# Need to run renv::deactivate() before running this script, so we have
-# access to non-production packages that we use to build the datasets
-
-renv::deactivate()
-
 
 # Load functions ----------------------------------------------------------
 
@@ -22,26 +15,19 @@ source("dev/other/interpolate_assign.R")
 source("dev/other/is_in_geometry.R")
 
 
-# Declare parameters ------------------------------------------------------
-
-region <- list(PR = "35")
-cma <- "35535"
-crs <- 32617
-
-
-
 # Vector of tables --------------------------------------------------------
 
 all_tables <- 
-  # list("CMA" = c("CSD", "CT", "DA", "building"),
-  #      "city" = c("nbhd", "CT", "DA", "building"))
-  list("CMA" = c("CSD", "CT", "DA", "building")) # Just work with CMA to get up and running quickly
+  list("CMA" = c("borough", "CT", "DA", "grid", "building"),
+       "island" = c("borough", "CT", "DA", "grid", "building"),
+       "city" = c("borough", "CT", "DA", "grid", "building"),
+       "centraide" = c("centraide", "CT", "DA", "grid", "building"))
 
 
 # Import all geometries, and create master polygon ------------------------
 
 shp_present <- 
-  list.files("dev/data_toronto/geometry/") |> 
+  list.files("dev/data/geometry/") |> 
   str_subset("\\.shp$") |> 
   str_remove("\\.shp$")
 
@@ -49,12 +35,12 @@ shp_present <-
 if (!all(names(all_tables) %in% shp_present)) {
   missing_shp <- names(all_tables)[which(!names(all_tables) %in% shp_present)]
   stop(paste0("The shapefile for `", missing_shp, 
-              "` is missing in 'dev/data_toronto/geometry/'."))
+              "` is missing in 'dev/data/geometry/'."))
 }
 
 # A polygon covering all our geographies
 walk(names(all_tables), function(shp_file) {
-  out <- paste0("dev/data_toronto/geometry/", shp_file, ".shp") |> 
+  out <- paste0("dev/data/geometry/", shp_file, ".shp") |> 
     read_sf() |> 
     st_transform(32618) |> 
     st_union() |> 
@@ -82,6 +68,33 @@ source("dev/geometries/building.R")
 
 # Geocode building centroids
 source("dev/geometries/building_geocode.R")
+
+# Import centraide geometries
+source("dev/geometries/centraide_geometries.R")
+
+# Add centroids and buffers to DA
+source("dev/geometries/DA_centroids.R")
+
+# Import grid geometries
+source("dev/geometries/grid_geometries.R")
+
+# Geocode grid centroids
+source("dev/geometries/grid_geocode.R")
+
+# Add metadata to grid
+source("dev/geometries/grid_process.R")
+
+# Import building
+source("dev/geometries/building.R")
+
+# Geocode building centroids
+source("dev/geometries/building_geocode.R")
+
+# Import street edges
+source("dev/geometries/street.R")
+
+# Geocode street edges centroids
+source("dev/geometries/street_geocode.R")
 
 
 # Separate DA, CT and borough in their macro scale ------------------------
