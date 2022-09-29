@@ -22,3 +22,22 @@ iwalk(all_tables, function(scales, geo) {
     rm(list = now, envir = .GlobalEnv)
   })
 })
+
+
+# # Purge a theme of all dfs ------------------------------------------------
+# 
+# prefix_id <- "city_amenities"
+# 
+# iwalk(all_tables, function(scales, geo) {
+#   walk(scales, function(scale) {
+#     geo_scale <- paste(geo, scale, sep = "_")
+#     
+#     out <- get(geo_scale) |> 
+#       select(!starts_with(prefix_id))
+#     
+#     assign(geo_scale, out, envir = .GlobalEnv)
+#   })
+# })
+# 
+# variables <- qread("data/variables.qs")
+# variables <- variables |> filter(str_starts(var_code, prefix_id))

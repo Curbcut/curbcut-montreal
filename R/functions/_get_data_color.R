@@ -5,7 +5,7 @@ get_data_color <- function(map_zoom_levels, geo, var_left, var_right,
 
   dfs <- names(map_zoom_levels)
   dfs <- dfs[!dfs %in% c("building")]
-  if (var_right != " ") dfs <- dfs[!dfs %in% c("DB")]
+  if (var_right[1] != " ") dfs <- dfs[!dfs %in% c("DB")]
   
   dfs <- paste(geo, dfs, sep = "_")
   

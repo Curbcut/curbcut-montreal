@@ -21,13 +21,12 @@ update_module <- function(r, id, mod_ns = paste(id, id, sep = "-"),
 
   ## Update mapview ----------------------------------------------------------
 
-  if (!all(sapply(c(zoom, location), is.null))) {
-    if (!is.null(map_id)) {
-      rdeck_proxy(id = paste(id, id, map_id, sep = "-"),
-                  initial_view_state = 
-                    view_state(center = location, zoom = zoom)
-      )
-    }}
+  if (!all(sapply(c(zoom, location), is.null)))
+    if (!is.null(map_id))
+      if (length(location) == 2)
+        rdeck_proxy(id = paste(id, id, map_id, sep = "-"),
+                    initial_view_state = 
+                      view_state(center = location, zoom = zoom))
 
 
   ## Update df ---------------------------------------------------------------

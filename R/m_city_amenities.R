@@ -115,7 +115,7 @@ city_amenities_server <- function(id, r) {
                         select_var_id = "d_2",
                         var_list = reactive(var_left_list_2_city_amenities))
     
-    var_left <- reactive(gsub("_bike_|_walk_", var_left_2(), var_left_1()))
+    var_left <- reactive(paste(var_left_1(), var_left_2(), "avg", sep = "_"))
 
     # Right variable / compare panel
     var_right <- compare_server(

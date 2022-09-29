@@ -52,7 +52,8 @@ return_closest_year <- function(var, df = "CMA_CSD", build_str_as_DA = TRUE) {
   # Not to do for grid - always 2016
   if (is_scale_in_df("grid", df)) return(var)
   
-  dat <- if (build_str_as_DA && is_scale_in_df("building", df)) DA else get(df)
+  dat <- if (build_str_as_DA && is_scale_in_df("building", df)) 
+    get(paste0(gsub("building", "DA", df))) else get(df)
   
   if (!var %in% names(dat)) {
     
