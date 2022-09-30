@@ -2,403 +2,403 @@
 
 # Creating df used to add translations to the script ----------------------
 
-# # Variables needed translation
-# variables_cent_d <- variables[str_starts(variables$var_code, "cent_d_"), ]
-# 
-# cent_d_variables_translated <-
-#   map_dfr(variables_cent_d$var_code, function(var) {
-# 
-#     # TITLE
-#     post_title <-
-#       case_when(str_ends(var, "_count$") ~ "",
-#                 str_ends(var, "_pct$") ~ " (%)")
-# 
-#     tenure_title <-
-#       case_when(str_detect(var, "tenant") ~ "Ménages locataires",
-#                 str_detect(var, "owner") ~ "Ménages propriétaires",
-#                 TRUE ~ "Ménages")
-# 
-#     shelter_title <-
-#       case_when(str_detect(var, "more_30_per") ~
-#                   " consacrant >30% du revenu au logement",
-#                 str_detect(var, "more_50_per") ~
-#                   " consacrant >50% du revenu au logement",
-#                 str_detect(var, "more_80_per") ~
-#                   " consacrant >80% du revenu au logement",
-#                 TRUE ~ "")
-# 
-#     characteristics_title <-
-#       case_when(str_detect(var, "kids_3_plus") ~
-#                   " avec une famille de 3+ enfants",
-#                 str_detect(var, "unsuitable") ~
-#                   " dans des logements de taille insuffisante",
-#                 str_detect(var, "repairs") ~
-#                   " dans des logements requérant des réparations majeures",
-#                 str_detect(var, "low_inc") ~
-#                   " dans une situation de faible revenu",
-#                 str_detect(var, "single_detached") ~
-#                   " dans des maisons idnividuelles non attenantes",
-#                 str_detect(var, "semi_detached") ~
-#                   " dans des maisons jumelées",
-#                 str_detect(var, "row_house") ~
-#                   " dans des maisons en rangée",
-#                 str_detect(var, "in_duplex") ~
-#                   " dans des appartements ou plain-pieds dans un duplex",
-#                 str_detect(var, "in_5plus_storeys") ~
-#                   " dans des appartement dans un immeuble de 5+ étages",
-#                 str_detect(var, "in_less5_storeys") ~
-#                   " dans des appartement dans un immeuble de -5 étages",
-#                 str_detect(var, "other_single_attached") ~
-#                   " dans d'autres maisons individuelles attenantes",
-#                 str_detect(var, "mobile_homes") ~
-#                   " dans des habitations mobiles",
-#                 TRUE ~ "")
-# 
-#     title <- paste0(tenure_title, shelter_title, characteristics_title,
-#                     post_title)
-# 
-#     # SHORT TITLE
-#     post_short <-
-#       case_when(str_ends(var, "_count$") ~ "",
-#                 str_ends(var, "_pct$") ~ " (%)")
-# 
-#     tenure_short <-
-#       case_when(str_detect(var, "tenant") ~ "Loc.",
-#                 str_detect(var, "owner") ~ "Prop.",
-#                 TRUE ~ "Mén.")
-# 
-#     shelter_short <-
-#       case_when(str_detect(var, "more_30_per") ~
-#                   " >30%",
-#                 str_detect(var, "more_50_per") ~
-#                   " >50%",
-#                 str_detect(var, "more_80_per") ~
-#                   " >80%",
-#                 TRUE ~ "")
-# 
-#     characteristics_short <-
-#       case_when(str_detect(var, "kids_3_plus") ~
-#                   " 3+ enf.",
-#                 str_detect(var, "unsuitable") ~
-#                   " Ins.",
-#                 str_detect(var, "repairs") ~
-#                   " Rép.",
-#                 str_detect(var, "low_inc") ~
-#                   " Faible rev.",
-#                 str_detect(var, "single_detached") ~
-#                   " Ind.",
-#                 str_detect(var, "semi_detached") ~
-#                   " Jum.",
-#                 str_detect(var, "row_house") ~
-#                   " Rangée",
-#                 str_detect(var, "in_duplex") ~
-#                   " Duplex",
-#                 str_detect(var, "in_5plus_storeys") ~
-#                   " 5+ étages",
-#                 str_detect(var, "in_less5_storeys") ~
-#                   " -5 étages",
-#                 str_detect(var, "other_single_attached") ~
-#                   " Autres att.",
-#                 str_detect(var, "mobile_homes") ~
-#                   " Mobile",
-#                 TRUE ~ "")
-# 
-#     short <-
-#       paste0(tenure_short, shelter_short, characteristics_short,
-#              post_short)
-# 
-#     # EXPLANATION
-#     pre_explanation <-
-#       case_when(str_ends(var, "_count$") ~ "le nombre de",
-#                 str_ends(var, "_pct$") ~ "le pourcentage de")
-# 
-#     tenure_explanation <-
-#       case_when(str_detect(var, "tenant") ~ " ménages locataires",
-#                 str_detect(var, "owner") ~ " ménages propriétaires",
-#                 TRUE ~ " ménages")
-# 
-#     shelter_explanation <-
-#       case_when(str_detect(var, "more_30_per") ~
-#                   " consacrant plus de 30% du revenu aux frais de logement",
-#                 str_detect(var, "more_50_per") ~
-#                   " consacrant plus de 50% du revenu aux frais de logement",
-#                 str_detect(var, "more_80_per") ~
-#                   " consacrant plus de 80% du revenu aux frais de logement",
-#                 TRUE ~ "")
-# 
-#     characteristics_explanation <-
-#       case_when(str_detect(var, "kids_3_plus") ~
-#                   " avec une famille de 3+ enfants",
-#                 str_detect(var, "unsuitable") ~
-#                   " dans des logements de taille insuffisante",
-#                 str_detect(var, "repairs") ~
-#                   " dans des logements requérant des réparations majeures",
-#                 str_detect(var, "low_inc") ~
-# " dans une situation de faible revenu",
-#                 str_detect(var, "single_detached") ~
-#                   " dans des maisons idnividuelles non attenantes",
-#                 str_detect(var, "semi_detached") ~
-#                   " dans des maisons jumelées",
-#                 str_detect(var, "row_house") ~
-#                   " dans des maisons en rangée",
-#                 str_detect(var, "in_duplex") ~
-#                   " dans des appartements ou plain-pieds dans un duplex",
-#                 str_detect(var, "in_5plus_storeys") ~
-#                   " dans des appartement dans un immeuble de 5+ étages",
-#                 str_detect(var, "in_less5_storeys") ~
-#                   " dans des appartement dans un immeuble de -5 étages",
-#                 str_detect(var, "other_single_attached") ~
-#                   " dans d'autres maisons individuelles attenantes",
-#                 str_detect(var, "mobile_homes") ~
-#                   " dans des habitations mobiles",
-#                 TRUE ~ "")
-# 
-#     exp <- paste0(pre_explanation, tenure_explanation, shelter_explanation,
-#                   characteristics_explanation)
-# 
-#     tibble(var = var,
-#            group = c("title", "short", "explanation"),
-#            en = c(
-#              # Title
-#              variables_cent_d$var_title[variables_cent_d$var_code == var],
-#              # Short
-#              variables_cent_d$var_short[variables_cent_d$var_code == var],
-#              # Exp
-#              variables_cent_d$explanation[variables_cent_d$var_code == var]),
-#            fr = c(title, short, exp))
-#   })
+# Variables needed translation
+variables_cent_d <- variables[str_starts(variables$var_code, "cent_d_"), ]
 
-# # Variables needed translation
-# variables_cent_p <- variables[str_starts(variables$var_code, "cent_p_"), ]
-# 
-# cent_p_variables_translated <-
-#   map_dfr(variables_cent_p$var_code, function(var) {
-# 
-#     # TITLE
-#     post_title <-
-#       case_when(str_ends(var, "_count$") ~ "",
-#                 str_ends(var, "_pct$") ~ " (%)",
-#                 str_ends(var, "_sqkm$") ~ " (par km^2)")
-# 
-#     sex_imm_title <-
-#       case_when(str_detect(var, "cent_p_immigrants") && str_detect(var, "female") ~
-#                   "Femmes immigrantes",
-#                 str_detect(var, "cent_p_immigrants") && str_detect(var, "male") ~
-#                   "Hommes immigrants",
-#                 str_detect(var, "non_immigrants") && str_detect(var, "female") ~
-#                   "Femmes non-immigrantes",
-#                 str_detect(var, "non_immigrants") && str_detect(var, "male") ~
-#                   "Hommes non-immigrants",
-#                 !str_detect(var, "cent_p_immigrants|non_immigrants") && str_detect(var, "female") ~
-#                   "Femmes",
-#                 !str_detect(var, "cent_p_immigrants|non_immigrants") && str_detect(var, "male") ~
-#                   "Hommes",
-#                 str_detect(var, "cent_p_immigrants") && !str_detect(var, "male|female") ~
-#                   "Immigrants",
-#                 str_detect(var, "non_immigrants") && !str_detect(var, "male|female") ~
-#                   "Non-immigrants",
-#                 TRUE ~ "Population")
-# 
-#     shelter_title <-
-#       case_when(str_detect(var, "more_30_per") ~
-#                   " consacrant >30% du revenu au logement",
-#                 str_detect(var, "more_50_per") ~
-#                   " consacrant >50% du revenu au logement",
-#                 str_detect(var, "more_80_per") ~
-#                   " consacrant >80% du revenu au logement",
-#                 TRUE ~ "")
-# 
-#     characteristics_title <-
-#       case_when(str_detect(var, "before_2001") ~
-#                   " ayant immigré avant 2001",
-#                 str_detect(var, "2001_to_2010") ~
-#                   " ayant immigré entre 2001 et 2010",
-#                 str_detect(var, "2011_to_2016") ~
-#                   " ayant immigré entre 2011 et 2016",
-#                 str_detect(var, "eco_imm") ~
-#                   " qui sont des immigrants économiques",
-#                 str_detect(var, "sponsored_imm") ~
-#                   " qui sont des immigrants parrainés par la famille",
-#                 str_detect(var, "refugees_imm") ~
-#                   " qui sont des réfugiés",
-#                 str_detect(var, "other_imm") ~
-#                   " qui sont d'autres immigrants",
-#                 str_detect(var, "visible_min") ~
-#                   " qui sont membres d'une minorité visible",
-#                 str_detect(var, "not_visible_min") ~
-#                   " qui ne sont pas membres d'une minorité visible",
-#                 str_detect(var, "aboriginal") ~
-#                   " qui sont autochtones",
-#                 str_detect(var, "lone_parents") ~
-#                   " qui sont des parents seuls",
-#                 str_detect(var, "living_alone") ~
-#                   " vivant seul(e)s",
-#                 str_detect(var, "low_inc") ~
-#                   " qui sont dans une situation de faible revenu",
-#                 TRUE ~ "")
-# 
-# 
-#     title <- paste0(sex_imm_title, shelter_title, characteristics_title,
-#                     post_title)
-# 
-#     # EXPLANATION
-#     pre_exp <-
-#       case_when(str_ends(var, "_count$") ~ "le nombre de/d'",
-#                 str_ends(var, "_pct$") ~ "le pourcentage de/d'",
-#                 str_ends(var, "_sqkm$") ~ "le nombre de/d'")
-# 
-#     post_exp <-
-#       case_when(str_ends(var, "_sqkm$") ~ " par kilomètre carré",
-#                 TRUE ~ "")
-# 
-#     sex_imm_exp <-
-#       case_when(str_detect(var, "cent_p_immigrants") && str_detect(var, "female") ~
-#                   " femmes immigrantes",
-#                 str_detect(var, "cent_p_immigrants") && str_detect(var, "male") ~
-#                   " hommes immigrants",
-#                 str_detect(var, "non_immigrants") && str_detect(var, "female") ~
-#                   " femmes non-immigrantes",
-#                 str_detect(var, "non_immigrants") && str_detect(var, "male") ~
-#                   " hommes non-immigrants",
-#                 !str_detect(var, "cent_p_immigrants|non_immigrants") && str_detect(var, "female") ~
-#                   " femmes",
-#                 !str_detect(var, "cent_p_immigrants|non_immigrants") && str_detect(var, "male") ~
-#                   " hommes",
-#                 str_detect(var, "cent_p_immigrants") && !str_detect(var, "male|female") ~
-#                   " immigrants",
-#                 str_detect(var, "non_immigrants") && !str_detect(var, "male|female") ~
-#                   " non-immigrants",
-#                 TRUE ~ " individus")
-# 
-#     shelter_exp <-
-#       case_when(str_detect(var, "more_30_per") ~
-#                   " consacrant >30% du revenu aux frais de logement",
-#                 str_detect(var, "more_50_per") ~
-#                   " consacrant >50% du revenu aux frais de logement",
-#                 str_detect(var, "more_80_per") ~
-#                   " consacrant >80% du revenu aux frais de logement",
-#                 TRUE ~ "")
-# 
-#     characteristics_exp <-
-#       case_when(str_detect(var, "before_2001") ~
-#                   " ayant immigré avant 2001",
-#                 str_detect(var, "2001_to_2010") ~
-#                   " ayant immigré entre 2001 et 2010",
-#                 str_detect(var, "2011_to_2016") ~
-#                   " ayant immigré entre 2011 et 2016",
-#                 str_detect(var, "eco_imm") ~
-#                   " qui sont des immigrants économiques",
-#                 str_detect(var, "sponsored_imm") ~
-#                   " qui sont des immigrants parrainés par la famille",
-#                 str_detect(var, "refugees_imm") ~
-#                   " qui sont des réfugiés",
-#                 str_detect(var, "other_imm") ~
-#                   " qui sont d'autres immigrants",
-#                 str_detect(var, "visible_min") ~
-#                   " qui sont membres d'une minorité visible",
-#                 str_detect(var, "not_visible_min") ~
-#                   " qui ne sont pas membres d'une minorité visible",
-#                 str_detect(var, "aboriginal") ~
-#                   " qui sont autochtones",
-#                 str_detect(var, "lone_parents") ~
-#                   " qui sont des parents seuls (famille monoparentale)",
-#                 str_detect(var, "living_alone") ~
-#                   " vivant seul(e)s",
-#                 str_detect(var, "low_inc") ~
-#                   " qui sont dans une situation de faible revenu",
-#                 TRUE ~ "")
-# 
-#     exp <- paste0(pre_exp, sex_imm_exp, shelter_exp, characteristics_exp,
-#                   post_exp)
-# 
-#     # SHORT
-#     post_short <-
-#       case_when(str_ends(var, "_count$") ~ "",
-#                 str_ends(var, "_pct$") ~ " (%)",
-#                 str_ends(var, "_sqkm$") ~ " (km^2)")
-# 
-#     sex_imm_short <-
-#       case_when(str_detect(var, "cent_p_immigrants") && str_detect(var, "female") ~
-#                   "F. Imm.",
-#                 str_detect(var, "cent_p_immigrants") && str_detect(var, "male") ~
-#                   "H. Imm.",
-#                 str_detect(var, "non_immigrants") && str_detect(var, "female") ~
-#                   "F. N-Imm.",
-#                 str_detect(var, "non_immigrants") && str_detect(var, "male") ~
-#                   "H. N-Imm.",
-#                 !str_detect(var, "cent_p_immigrants|non_immigrants") && str_detect(var, "female") ~
-#                   "F.",
-#                 !str_detect(var, "cent_p_immigrants|non_immigrants") && str_detect(var, "male") ~
-#                   "H.",
-#                 str_detect(var, "cent_p_immigrants") && !str_detect(var, "male|female") ~
-#                   "Imm.",
-#                 str_detect(var, "non_immigrants") && !str_detect(var, "male|female") ~
-#                   "N-Imm.",
-#                 TRUE ~ "Pop.")
-# 
-#     shelter_short <-
-#       case_when(str_detect(var, "more_30_per") ~
-#                   " >30%",
-#                 str_detect(var, "more_50_per") ~
-#                   " >50%",
-#                 str_detect(var, "more_80_per") ~
-#                   " >80%",
-#                 TRUE ~ "")
-# 
-#     characteristics_short <-
-#       case_when(str_detect(var, "before_2001") ~
-#                   " <2001",
-#                 str_detect(var, "2001_to_2010") ~
-#                   " >2001<2010",
-#                 str_detect(var, "2011_to_2016") ~
-#                   " >2011<2016",
-#                 str_detect(var, "eco_imm") ~
-#                   " Éco.",
-#                 str_detect(var, "sponsored_imm") ~
-#                   " Parr.",
-#                 str_detect(var, "refugees_imm") ~
-#                   " Réf.",
-#                 str_detect(var, "other_imm") ~
-#                   " Autre",
-#                 str_detect(var, "visible_min") ~
-#                   " Min. Vis.",
-#                 str_detect(var, "not_visible_min") ~
-#                   " Non-Min. Vis.",
-#                 str_detect(var, "aboriginal") ~
-#                   " Aut.",
-#                 str_detect(var, "lone_parents") ~
-#                   " Monopar.",
-#                 str_detect(var, "living_alone") ~
-#                   " Vivant seul",
-#                 str_detect(var, "low_inc") ~
-#                   " Faible rev.",
-#                 TRUE ~ "")
-# 
-# 
-#     short <- paste0(sex_imm_short, shelter_short, characteristics_short,
-#                     post_short)
-# 
-#     tibble(var = c(var,var,var),
-#            group = c("title", "short", "explanation"),
-#            en = c(
-#              # Title
-#              variables_cent_p$var_title[variables_cent_p$var_code == var],
-#              # Short
-#              variables_cent_p$var_short[variables_cent_p$var_code == var],
-#              # Exp
-#              variables_cent_p$explanation[variables_cent_p$var_code == var]),
-#            fr = c(title, short, exp))
-#   }) |>
-#   mutate(fr = if_else(str_detect(fr, "de/d' hommes"),
-#                       str_replace(fr, "de/d' hommes", "d'hommes"), fr),
-#          fr = if_else(str_detect(fr, "de/d' individus"),
-#                       str_replace(fr, "de/d' individus", "d'individus"), fr),
-#          fr = if_else(str_detect(fr, "de/d' femmes"),
-#                       str_replace(fr, "de/d' femmes", "de femmes"), fr),
-#          fr = if_else(str_detect(fr, "de/d' immigrants"),
-#                       str_replace(fr, "de/d' immigrants", "d'immigrants"), fr),
-#          fr = if_else(str_detect(fr, "de/d' non-immigrants"),
-#                       str_replace(fr, "de/d' non-immigrants", "d'individus non-immigrants"), fr))
+cent_d_variables_translated <-
+  map_dfr(variables_cent_d$var_code, function(var) {
+
+    # TITLE
+    post_title <-
+      case_when(str_ends(var, "_count$") ~ "",
+                str_ends(var, "_pct$") ~ " (%)")
+
+    tenure_title <-
+      case_when(str_detect(var, "tenant") ~ "Ménages locataires",
+                str_detect(var, "owner") ~ "Ménages propriétaires",
+                TRUE ~ "Ménages")
+
+    shelter_title <-
+      case_when(str_detect(var, "more_30_per") ~
+                  " consacrant >30% du revenu aux frais de logement",
+                str_detect(var, "more_50_per") ~
+                  " consacrant >50% du revenu aux frais de logement",
+                str_detect(var, "more_80_per") ~
+                  " consacrant >80% du revenu aux frais de logement",
+                TRUE ~ "")
+
+    characteristics_title <-
+      case_when(str_detect(var, "kids_3_plus") ~
+                  " avec une famille de 3+ enfants",
+                str_detect(var, "unsuitable") ~
+                  " dans des logements de taille insuffisante",
+                str_detect(var, "repairs") ~
+                  " dans des logements requérant des réparations majeures",
+                str_detect(var, "low_inc") ~
+                  " dans une situation de faible revenu",
+                str_detect(var, "single_detached") ~
+                  " dans des maisons idnividuelles non attenantes",
+                str_detect(var, "semi_detached") ~
+                  " dans des maisons jumelées",
+                str_detect(var, "row_house") ~
+                  " dans des maisons en rangée",
+                str_detect(var, "in_duplex") ~
+                  " dans des appartements ou plain-pieds dans un duplex",
+                str_detect(var, "in_5plus_storeys") ~
+                  " dans des appartement dans un immeuble de 5+ étages",
+                str_detect(var, "in_less5_storeys") ~
+                  " dans des appartement dans un immeuble de -5 étages",
+                str_detect(var, "other_single_attached") ~
+                  " dans d'autres maisons individuelles attenantes",
+                str_detect(var, "mobile_homes") ~
+                  " dans des habitations mobiles",
+                TRUE ~ "")
+
+    title <- paste0(tenure_title, shelter_title, characteristics_title,
+                    post_title)
+
+    # SHORT TITLE
+    post_short <-
+      case_when(str_ends(var, "_count$") ~ "",
+                str_ends(var, "_pct$") ~ " (%)")
+
+    tenure_short <-
+      case_when(str_detect(var, "tenant") ~ "Loc.",
+                str_detect(var, "owner") ~ "Prop.",
+                TRUE ~ "Mén.")
+
+    shelter_short <-
+      case_when(str_detect(var, "more_30_per") ~
+                  " >30%",
+                str_detect(var, "more_50_per") ~
+                  " >50%",
+                str_detect(var, "more_80_per") ~
+                  " >80%",
+                TRUE ~ "")
+
+    characteristics_short <-
+      case_when(str_detect(var, "kids_3_plus") ~
+                  " 3+ enf.",
+                str_detect(var, "unsuitable") ~
+                  " Ins.",
+                str_detect(var, "repairs") ~
+                  " Rép.",
+                str_detect(var, "low_inc") ~
+                  " Faible rev.",
+                str_detect(var, "single_detached") ~
+                  " Ind.",
+                str_detect(var, "semi_detached") ~
+                  " Jum.",
+                str_detect(var, "row_house") ~
+                  " Rangée",
+                str_detect(var, "in_duplex") ~
+                  " Duplex",
+                str_detect(var, "in_5plus_storeys") ~
+                  " 5+ étages",
+                str_detect(var, "in_less5_storeys") ~
+                  " -5 étages",
+                str_detect(var, "other_single_attached") ~
+                  " Autres att.",
+                str_detect(var, "mobile_homes") ~
+                  " Mobile",
+                TRUE ~ "")
+
+    short <-
+      paste0(tenure_short, shelter_short, characteristics_short,
+             post_short)
+
+    # EXPLANATION
+    pre_explanation <-
+      case_when(str_ends(var, "_count$") ~ "le nombre de",
+                str_ends(var, "_pct$") ~ "le pourcentage de")
+
+    tenure_explanation <-
+      case_when(str_detect(var, "tenant") ~ " ménages locataires",
+                str_detect(var, "owner") ~ " ménages propriétaires",
+                TRUE ~ " ménages")
+
+    shelter_explanation <-
+      case_when(str_detect(var, "more_30_per") ~
+                  " consacrant plus de 30% du revenu aux frais de logement",
+                str_detect(var, "more_50_per") ~
+                  " consacrant plus de 50% du revenu aux frais de logement",
+                str_detect(var, "more_80_per") ~
+                  " consacrant plus de 80% du revenu aux frais de logement",
+                TRUE ~ "")
+
+    characteristics_explanation <-
+      case_when(str_detect(var, "kids_3_plus") ~
+                  " avec une famille de 3+ enfants",
+                str_detect(var, "unsuitable") ~
+                  " dans des logements de taille insuffisante",
+                str_detect(var, "repairs") ~
+                  " dans des logements requérant des réparations majeures",
+                str_detect(var, "low_inc") ~
+" dans une situation de faible revenu",
+                str_detect(var, "single_detached") ~
+                  " dans des maisons idnividuelles non attenantes",
+                str_detect(var, "semi_detached") ~
+                  " dans des maisons jumelées",
+                str_detect(var, "row_house") ~
+                  " dans des maisons en rangée",
+                str_detect(var, "in_duplex") ~
+                  " dans des appartements ou plain-pieds dans un duplex",
+                str_detect(var, "in_5plus_storeys") ~
+                  " dans des appartement dans un immeuble de 5+ étages",
+                str_detect(var, "in_less5_storeys") ~
+                  " dans des appartement dans un immeuble de -5 étages",
+                str_detect(var, "other_single_attached") ~
+                  " dans d'autres maisons individuelles attenantes",
+                str_detect(var, "mobile_homes") ~
+                  " dans des habitations mobiles",
+                TRUE ~ "")
+
+    exp <- paste0(pre_explanation, tenure_explanation, shelter_explanation,
+                  characteristics_explanation)
+
+    tibble(var = var,
+           group = c("title", "short", "explanation"),
+           en = c(
+             # Title
+             variables_cent_d$var_title[variables_cent_d$var_code == var],
+             # Short
+             variables_cent_d$var_short[variables_cent_d$var_code == var],
+             # Exp
+             variables_cent_d$explanation[variables_cent_d$var_code == var]),
+           fr = c(title, short, exp))
+  })
+
+# Variables needed translation
+variables_cent_p <- variables[str_starts(variables$var_code, "cent_p_"), ]
+
+cent_p_variables_translated <-
+  map_dfr(variables_cent_p$var_code, function(var) {
+
+    # TITLE
+    post_title <-
+      case_when(str_ends(var, "_count$") ~ "",
+                str_ends(var, "_pct$") ~ " (%)",
+                str_ends(var, "_sqkm$") ~ " (par km^2)")
+
+    sex_imm_title <-
+      case_when(str_detect(var, "cent_p_immigrants") && str_detect(var, "female") ~
+                  "Femmes immigrantes",
+                str_detect(var, "cent_p_immigrants") && str_detect(var, "male") ~
+                  "Hommes immigrants",
+                str_detect(var, "non_immigrants") && str_detect(var, "female") ~
+                  "Femmes non-immigrantes",
+                str_detect(var, "non_immigrants") && str_detect(var, "male") ~
+                  "Hommes non-immigrants",
+                !str_detect(var, "cent_p_immigrants|non_immigrants") && str_detect(var, "female") ~
+                  "Femmes",
+                !str_detect(var, "cent_p_immigrants|non_immigrants") && str_detect(var, "male") ~
+                  "Hommes",
+                str_detect(var, "cent_p_immigrants") && !str_detect(var, "male|female") ~
+                  "Immigrants",
+                str_detect(var, "non_immigrants") && !str_detect(var, "male|female") ~
+                  "Non-immigrants",
+                TRUE ~ "Personnes")
+
+    shelter_title <-
+      case_when(str_detect(var, "more_30_per") ~
+                  " consacrant >30% du revenu aux frais de logement",
+                str_detect(var, "more_50_per") ~
+                  " consacrant >50% du revenu aux frais de logement",
+                str_detect(var, "more_80_per") ~
+                  " consacrant >80% du revenu aux frais de logement",
+                TRUE ~ "")
+
+    characteristics_title <-
+      case_when(str_detect(var, "before_2001") ~
+                  " ayant immigré avant 2001",
+                str_detect(var, "2001_to_2010") ~
+                  " ayant immigré entre 2001 et 2010",
+                str_detect(var, "2011_to_2016") ~
+                  " ayant immigré entre 2011 et 2016",
+                str_detect(var, "eco_imm") ~
+                  " ayant le statut d'immigrant économique",
+                str_detect(var, "sponsored_imm") ~
+                  " qui sont des immigrants parrainés par la famille",
+                str_detect(var, "refugees_imm") ~
+                  " ayant le statut de réfugié",
+                str_detect(var, "other_imm") ~
+                  " étant dans la catégorie 'autres immigrants'",
+                str_detect(var, "visible_min") ~
+                  " qui sont membres d'une minorité visible",
+                str_detect(var, "not_visible_min") ~
+                  " issu(e)s de groupes de minorités visibles",
+                str_detect(var, "aboriginal") ~
+                  " autochtones",
+                str_detect(var, "lone_parents") ~
+                  " qui sont des parents seuls",
+                str_detect(var, "living_alone") ~
+                  " vivant seul(e)s",
+                str_detect(var, "low_inc") ~
+                  " qui sont dans une situation de faible revenu",
+                TRUE ~ "")
+
+
+    title <- paste0(sex_imm_title, characteristics_title, shelter_title,
+                    post_title)
+
+    # EXPLANATION
+    pre_exp <-
+      case_when(str_ends(var, "_count$") ~ "le nombre de/d'",
+                str_ends(var, "_pct$") ~ "le pourcentage de/d'",
+                str_ends(var, "_sqkm$") ~ "le nombre de/d'")
+
+    post_exp <-
+      case_when(str_ends(var, "_sqkm$") ~ " par kilomètre carré",
+                TRUE ~ "")
+
+    sex_imm_exp <-
+      case_when(str_detect(var, "cent_p_immigrants") && str_detect(var, "female") ~
+                  " femmes immigrantes",
+                str_detect(var, "cent_p_immigrants") && str_detect(var, "male") ~
+                  " hommes immigrants",
+                str_detect(var, "non_immigrants") && str_detect(var, "female") ~
+                  " femmes non-immigrantes",
+                str_detect(var, "non_immigrants") && str_detect(var, "male") ~
+                  " hommes non-immigrants",
+                !str_detect(var, "cent_p_immigrants|non_immigrants") && str_detect(var, "female") ~
+                  " femmes",
+                !str_detect(var, "cent_p_immigrants|non_immigrants") && str_detect(var, "male") ~
+                  " hommes",
+                str_detect(var, "cent_p_immigrants") && !str_detect(var, "male|female") ~
+                  " immigrants",
+                str_detect(var, "non_immigrants") && !str_detect(var, "male|female") ~
+                  " non-immigrants",
+                TRUE ~ " individus")
+
+    shelter_exp <-
+      case_when(str_detect(var, "more_30_per") ~
+                  " consacrant >30% du revenu aux frais de logement",
+                str_detect(var, "more_50_per") ~
+                  " consacrant >50% du revenu aux frais de logement",
+                str_detect(var, "more_80_per") ~
+                  " consacrant >80% du revenu aux frais de logement",
+                TRUE ~ "")
+
+    characteristics_exp <-
+      case_when(str_detect(var, "before_2001") ~
+                  " ayant immigré avant 2001",
+                str_detect(var, "2001_to_2010") ~
+                  " ayant immigré entre 2001 et 2010",
+                str_detect(var, "2011_to_2016") ~
+                  " ayant immigré entre 2011 et 2016",
+                str_detect(var, "eco_imm") ~
+                  " ayant le statut d'immigrant économique",
+                str_detect(var, "sponsored_imm") ~
+                  " qui sont des immigrants parrainés par la famille",
+                str_detect(var, "refugees_imm") ~
+                  " ayant le statut de réfugié",
+                str_detect(var, "other_imm") ~
+                  " étant dans la catégorie 'autres immigrants'",
+                str_detect(var, "visible_min") ~
+                  " qui sont membres d'une minorité visible",
+                str_detect(var, "not_visible_min") ~
+                  " issu(e)s de groupes de minorités visibles",
+                str_detect(var, "aboriginal") ~
+                  " autochtones",
+                str_detect(var, "lone_parents") ~
+                  " qui sont des parents seuls",
+                str_detect(var, "living_alone") ~
+                  " vivant seul(e)s",
+                str_detect(var, "low_inc") ~
+                  " qui sont dans une situation de faible revenu",
+                TRUE ~ "")
+
+    exp <- paste0(pre_exp, sex_imm_exp, characteristics_exp, shelter_exp,
+                  post_exp)
+
+    # SHORT
+    post_short <-
+      case_when(str_ends(var, "_count$") ~ "",
+                str_ends(var, "_pct$") ~ " (%)",
+                str_ends(var, "_sqkm$") ~ " (km^2)")
+
+    sex_imm_short <-
+      case_when(str_detect(var, "cent_p_immigrants") && str_detect(var, "female") ~
+                  "F. Imm.",
+                str_detect(var, "cent_p_immigrants") && str_detect(var, "male") ~
+                  "H. Imm.",
+                str_detect(var, "non_immigrants") && str_detect(var, "female") ~
+                  "F. N-Imm.",
+                str_detect(var, "non_immigrants") && str_detect(var, "male") ~
+                  "H. N-Imm.",
+                !str_detect(var, "cent_p_immigrants|non_immigrants") && str_detect(var, "female") ~
+                  "F.",
+                !str_detect(var, "cent_p_immigrants|non_immigrants") && str_detect(var, "male") ~
+                  "H.",
+                str_detect(var, "cent_p_immigrants") && !str_detect(var, "male|female") ~
+                  "Imm.",
+                str_detect(var, "non_immigrants") && !str_detect(var, "male|female") ~
+                  "N-Imm.",
+                TRUE ~ "Pop.")
+
+    shelter_short <-
+      case_when(str_detect(var, "more_30_per") ~
+                  " >30%",
+                str_detect(var, "more_50_per") ~
+                  " >50%",
+                str_detect(var, "more_80_per") ~
+                  " >80%",
+                TRUE ~ "")
+
+    characteristics_short <-
+      case_when(str_detect(var, "before_2001") ~
+                  " <2001",
+                str_detect(var, "2001_to_2010") ~
+                  " >2001<2010",
+                str_detect(var, "2011_to_2016") ~
+                  " >2011<2016",
+                str_detect(var, "eco_imm") ~
+                  " Éco.",
+                str_detect(var, "sponsored_imm") ~
+                  " Parr.",
+                str_detect(var, "refugees_imm") ~
+                  " Réf.",
+                str_detect(var, "other_imm") ~
+                  " Autre",
+                str_detect(var, "visible_min") ~
+                  " Min. Vis.",
+                str_detect(var, "not_visible_min") ~
+                  " Non-Min. Vis.",
+                str_detect(var, "aboriginal") ~
+                  " Aut.",
+                str_detect(var, "lone_parents") ~
+                  " Monopar.",
+                str_detect(var, "living_alone") ~
+                  " Vivant seul",
+                str_detect(var, "low_inc") ~
+                  " Faible rev.",
+                TRUE ~ "")
+
+
+    short <- paste0(sex_imm_short, characteristics_short, shelter_short,
+                    post_short)
+
+    tibble(var = c(var,var,var),
+           group = c("title", "short", "explanation"),
+           en = c(
+             # Title
+             variables_cent_p$var_title[variables_cent_p$var_code == var],
+             # Short
+             variables_cent_p$var_short[variables_cent_p$var_code == var],
+             # Exp
+             variables_cent_p$explanation[variables_cent_p$var_code == var]),
+           fr = c(title, short, exp))
+  }) |>
+  mutate(fr = if_else(str_detect(fr, "de/d' hommes"),
+                      str_replace(fr, "de/d' hommes", "d'hommes"), fr),
+         fr = if_else(str_detect(fr, "de/d' individus"),
+                      str_replace(fr, "de/d' individus", "d'individus"), fr),
+         fr = if_else(str_detect(fr, "de/d' femmes"),
+                      str_replace(fr, "de/d' femmes", "de femmes"), fr),
+         fr = if_else(str_detect(fr, "de/d' immigrants"),
+                      str_replace(fr, "de/d' immigrants", "d'immigrants"), fr),
+         fr = if_else(str_detect(fr, "de/d' non-immigrants"),
+                      str_replace(fr, "de/d' non-immigrants", "d'individus non-immigrants"), fr))
 
 
 # Dataframe creation ------------------------------------------------------
