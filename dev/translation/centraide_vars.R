@@ -400,6 +400,7 @@ cent_p_variables_translated <-
          fr = if_else(str_detect(fr, "de/d' non-immigrants"),
                       str_replace(fr, "de/d' non-immigrants", "d'individus non-immigrants"), fr))
 
+warning("The text for Centraide isn't updated. Only before line 403 is updated.")
 
 # Dataframe creation ------------------------------------------------------
 
