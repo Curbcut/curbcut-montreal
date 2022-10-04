@@ -343,11 +343,16 @@ point_amenities <-
 
 time_thresholds <- which(1:60 %% 5 == 0)
 
-# Join all amenities to a DA ID
+# Join all amenities to a DA ID, unnest vars (Even as it leads to duplicates IDs,
+# there is only one combination of unique ID - vars) and drop geometry.
 DA_amenities <- 
-  furrr::future_map(point_amenities, ~st_join(.x, select(DA, ID)))
+  furrr::future_map(point_amenities, function(df) {
+    out <- st_join(df, select(DA, ID)) 
+    if ("vars" %in% names(out)) out <- unnest(out, vars)
+    st_drop_geometry(out)
+  })
 
-# Get the amount of amenities reachable per mode in 15 minutes
+# Get the amount of amenities reachable per mode
 progressr::with_progress({
   
   p <- 
@@ -356,34 +361,31 @@ progressr::with_progress({
                             length(tt_matrix_DA[[1]]) *
                             length(time_thresholds))
   DA_amenities <- 
-    map(DA_amenities, function(amenity) {
-      map(tt_matrix_DA, function(mode) {
-        map(mode, function(timing) {
-          map(set_names(time_thresholds), function(time_threshold) {
+    imap(DA_amenities, function(amenity, n_amenity) {
+      imap(tt_matrix_DA, function(mode, n_mode) {
+        imap(mode, function(timing, n_timing) {
+          imap(set_names(time_thresholds), function(threshold, n_time_threshold) {
             p()
             
             if ("vars" %in% names(amenity)) {
-              vars <- st_drop_geometry(amenity)$vars |> unlist() |> unique()
+              vars <- unique(amenity$vars)
               
-              map(set_names(vars), function(var) {
-                filtered_am <- amenity |> 
-                  st_drop_geometry() |> 
-                  unnest(vars) |> 
-                  filter(vars == var) |> 
-                  left_join(select(amenity, id), by = "id")
-                
-                timing[timing$travel_time_p50 <= time_threshold, ] |> 
-                  left_join(filtered_am, by = c("to_id" = "ID")) |> 
-                  filter(!st_is_empty(geometry)) |> 
-                  group_by(from_id) |> 
-                  summarize(amenities = n())
+              imap(set_names(vars), function(var, n_var) {
+                filtered_am <- amenity[amenity$vars == var, ]
+
+                filtered_am |>  
+                  left_join(timing[timing$travel_time_p50 <= threshold, ], 
+                            by = c("ID" = "to_id")) |> 
+                  count(from_id, name = paste(n_amenity, n_var, str_to_lower(n_mode),
+                                              n_timing, n_time_threshold,
+                                              "count", sep = "_"))
               })
             } else {
-              timing[timing$travel_time_p50 <= time_threshold, ] |> 
-                left_join(amenity, by = c("to_id" = "ID")) |> 
-                filter(!st_is_empty(geometry)) |> 
-                group_by(from_id) |> 
-                summarize(amenities = n())
+              amenity |> 
+                left_join(timing[timing$travel_time_p50 <= threshold, ], 
+                          by = c("ID" = "to_id")) |> 
+                count(from_id, name = paste(n_amenity, str_to_lower(n_mode),
+                                            n_timing, n_time_threshold, "count", sep = "_"))
             }
           })
         })
@@ -391,45 +393,42 @@ progressr::with_progress({
     })
 })
 
-# Get amenities in one df
-DA_amenities <- 
-furrr::future_imap(DA_amenities, function(amenity, n_amenity) {
-  imap(amenity, function(mode, n_mode) {
-    imap(mode, function(timing, n_timing) {
-      imap(timing, function(time_threshold, n_time_threshold) {
-        if (is.data.frame(time_threshold)) {
-          names(time_threshold)[2] <- paste(n_amenity, str_to_lower(n_mode),
-                                            n_timing, n_time_threshold,
-                                            "count", sep = "_")
-          time_threshold
-        } else {
-          imap(time_threshold, function(var, n_var) {
-            names(var)[2] <- 
-              paste(n_amenity, n_var, str_to_lower(n_mode),
-                    n_timing, n_time_threshold, "count", sep = "_")
-            var
-          })
-        } |> reduce(left_join, by = "from_id")
+DA_amenities <-
+  map(DA_amenities, function(amenity) {
+    map(amenity, function(mode) {
+      map(mode, function(timing) {
+        map(timing, function(threshold) {
+          if (!is.data.frame(threshold)) {
+            reduce(threshold, left_join, by = "from_id")
+          } else threshold
+        }) |> reduce(left_join, by = "from_id")
       }) |> reduce(left_join, by = "from_id")
     }) |> reduce(left_join, by = "from_id")
-  }) |> reduce(left_join, by = "from_id")
-})
+  })
+
+sus_map <- function(x) {
+  z <- 
+  if (vec_depth(x) > 3) map(x, sus_map) else reduce(x, left_join, by = "from_id")
+  
+  if (!is.data.frame(z)) map(x, sus_map) else return(z)
+}
 
 # For parks, the amount of amenities reachable per mode in 15 minutes must
 # be in sqkm
-municipal_parks_sqkm <- st_join(municipal_parks, select(DA, ID))
+municipal_parks_sqkm <- st_join(municipal_parks, select(DA, ID)) |> 
+  st_drop_geometry()
 DA_amenities$municipal_parks_sqkm <-
   imap(tt_matrix_DA, function(mode, n_mode) {
     imap(mode, function(timing, n_timing) {
-      imap(set_names(time_thresholds), function(time_threshold, n_time_threshold) {
+      imap(set_names(time_thresholds), function(threshold, n_time_threshold) {
         out <-
-          timing[timing$travel_time_p50 <= time_threshold, ] |>
-          left_join(municipal_parks_sqkm, by = c("to_id" = "ID")) |>
-          filter(!st_is_empty(geometry)) |>
+          municipal_parks_sqkm |> 
+          left_join(timing[timing$travel_time_p50 <= threshold, ],
+                    by = c("ID" = "to_id")) |>
           group_by(from_id) |>
-          summarize(amenities = sum(sqkm))
+          summarize(amenities = sum(sqkm),)
         names(out)[2] <- paste("municipal_parks", str_to_lower(n_mode),
-                                n_timing, n_time_threshold, "sqkm", sep = "_")
+                               n_timing, n_time_threshold, "sqkm", sep = "_")
         out
       }) |> reduce(left_join, by = "from_id")
     }) |> reduce(left_join, by = "from_id")
