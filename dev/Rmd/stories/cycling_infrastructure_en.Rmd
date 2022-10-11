@@ -72,7 +72,7 @@ Note 1: it is unknown what the cause of removal was for each bike lane labelled 
 
 Note 2: The bike lanes in this map come from a different source, without data on what was added and what was removed.
 
-### Bibliography
+### References
 
 * Copenhagenize EU Design Co. (2019). 2019 copenhagenize index. Copenhagenize. Retrieved June 21, 2022, from https://copenhagenizeindex.eu/ 
 * Couillard, S. (2019, May 7). Lancement du Rev: Vélo Québec salue l'initiative de Montréal et propose d'accélérer le processus. Vélo Québec. Retrieved June 15, 2022, from https://www.velo.qc.ca/salle-de-presse/lancement-du-rev-velo-quebec-salue-linitiative-de-montreal-et-propose-daccelerer-le-processus/ 
