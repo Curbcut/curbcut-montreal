@@ -11,7 +11,6 @@ afford_UI <- function(id) {
     sidebar_UI(
       NS(id, id),
       susSidebarWidgets(
-        
         select_var_UI(NS(id, id), select_var_id = "d_1",
                       label = sus_translate(r = r, "Grouping"),
                       var_list = var_left_list_1_afford), 
@@ -113,6 +112,13 @@ afford_server <- function(id, r) {
     
     # Sidebar
     sidebar_server(id = id, r = r)
+    # Centraide logo
+    observe({
+      insertUI(selector = paste0("#", paste(id, id, "title", sep = "-")),
+               where = "beforeEnd",
+               img(src = paste0("centraide_logo/centraide_logo_", r$lang(), ".png"), 
+                   style = 'width:100%;'))
+    })
     
     # Choose tileset
     tile_1 <- zoom_server(

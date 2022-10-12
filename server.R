@@ -356,9 +356,9 @@ shinyServer(function(input, output, session) {
                    selected = r$geo(),
                    choiceNames = 
                      sapply(c("Metropolitan Area", "City of Montreal", 
-                              "Island of Montreal"),
-                            sus_translate, r = r, USE.NAMES = FALSE),#, "Centraide"),
-                   choiceValues = c("CMA", "city", "island")),#, "centraide")),
+                              "Island of Montreal", "Centraide"),
+                            sus_translate, r = r, USE.NAMES = FALSE),
+                   choiceValues = c("CMA", "city", "island", "centraide")),
       title = sus_translate(r = r, "Advanced options")))
   })
 
