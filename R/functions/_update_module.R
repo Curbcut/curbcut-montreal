@@ -121,7 +121,8 @@ update_module <- function(r, id, mod_ns = paste(id, id, sep = "-"),
         )
       }
     } else if (id %in% c("access", "crash", "tenure", "dw_types",
-                         "afford", "demographics", "city_amenities")) {
+                         "afford", "demographics", "city_amenities",
+                         "vac_rate")) {
       if (!is.null(var_left)) {
         
         selected_var <- if (str_detect(var_left, "^\\d*$")) {

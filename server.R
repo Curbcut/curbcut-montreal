@@ -65,7 +65,10 @@ shinyServer(function(input, output, session) {
     afford = reactiveValues(select_id = reactiveVal(NA), 
                             df = reactiveVal("CMA_CSD"),
                             zoom = reactiveVal(get_zoom(map_zoom)),
-                            prev_norm = reactiveVal(FALSE))
+                            prev_norm = reactiveVal(FALSE)),
+    vac_rate = reactiveValues(select_id = reactiveVal(NA), 
+                            df = reactiveVal("cmhc_cmhczone"),
+                            zoom = reactiveVal(get_zoom(map_zoom)))
   )
   
 

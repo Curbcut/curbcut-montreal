@@ -12,8 +12,10 @@ all_tables <-
   list("CMA" = c("CSD", "CT", "DA", "grid", "building"),
        "island" = c("CSD", "CT", "DA", "grid", "building"),
        "city" = c("CSD", "CT", "DA", "DB", "grid", "building"),
-       "centraide" = c("centraide", "CT", "DA", "grid", "building"))
+       "centraide" = c("centraide", "CT", "DA", "grid", "building"),
+       "cmhc" = "cmhc_zone")
 
+# TKTK REVIEW FOR CMHC ZONES, THEY GET AN AUTOZOOM ATTACHED!
 combinations <- 
   imap(all_tables, function(scales, geo) {
     top_of_geo <- geo

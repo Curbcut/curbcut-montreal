@@ -66,6 +66,7 @@ mods_rdy <- list(
   ),
   "Housing" = c(
     "Housing system" = "housing",
+    "Vacancy rate" = "vac_rate",
     "Housing affordability" = "afford",
     "Tenure status" = "tenure",
     "Dwelling types" = "dw_types"
@@ -124,6 +125,9 @@ map_zoom_levels_city_max_DB <-
 map_zoom_levels_centraide <- 
   c("centraide" = 0, "CT" = 10.5, "DA" = 12.5, "building" = 15.5)
 map_zoom_levels_centraide_max_CT <- c("centraide" = 0, "CT" = 10.5)
+
+map_zoom_levels_cmhc <- 
+  c("cmhczone" = 0)
 
 first_level_choropleth <- 
   sapply(ls()[grepl("map_zoom_levels_", ls())], \(x) names(get(x)[1]),

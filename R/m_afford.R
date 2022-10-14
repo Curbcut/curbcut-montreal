@@ -27,7 +27,7 @@ afford_UI <- function(id) {
                           label = sus_translate(r = r, "Tenure status"),
                           var_list = var_left_list_3_afford),
             select_var_UI(NS(id, id), select_var_id = "d_4",
-                          label = sus_translate(r = r, "Additional characteristic"),
+                          label = sus_translate(r = r, "Family characteristic"),
                           var_list = var_left_list_3_afford)),
         
           div(id = NS(id, "population_dropdowns"),

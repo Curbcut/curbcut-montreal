@@ -20,13 +20,14 @@ all_tables <-
   list("CMA" = c("CSD", "CT", "DA", "grid", "building"),
        "island" = c("CSD", "CT", "DA", "grid", "building"),
        "city" = c("CSD", "CT", "DA", "DB", "grid", "building"),
-       "centraide" = c("centraide", "CT", "DA", "grid", "building"))
+       "centraide" = c("centraide", "CT", "DA", "grid", "building"),
+       "cmhc" = "cmhczone")
 
 
 # Import all geometries, and create master polygon ------------------------
 
 shp_present <- 
-  list.files("dev/data/geometries/") |> 
+  list.files("dev/data/geometry/") |> 
   str_subset("\\.shp$") |> 
   str_remove("\\.shp$")
 
@@ -39,7 +40,7 @@ if (!all(names(all_tables) %in% shp_present)) {
 
 # A polygon covering all our geographies
 walk(names(all_tables), function(shp_file) {
-  out <- paste0("dev/data/geometries/", shp_file, ".shp") |> 
+  out <- paste0("dev/data/geometry/", shp_file, ".shp") |> 
     read_sf() |> 
     st_transform(32618) |> 
     st_union() |> 
@@ -64,6 +65,9 @@ source("dev/geometries/census_geometries.R")
 
 # Import centraide geometries
 source("dev/geometries/centraide_geometries.R")
+
+# Import CMHC zones
+cmhczone <- read_sf("dev/data/geometry/cmhc.shp")
 
 # Add centroids and buffers to DA
 source("dev/geometries/DA_centroids.R")
@@ -93,7 +97,7 @@ source("dev/geometries/street_geocode.R")
 # Separate DA, CT and borough in their macro scale ------------------------
 
 is_in_geometry(all_tables, crs = 32618, 
-               update_name_2_for = c("centraide"))
+               update_name_2_for = c("centraide", "cmhc"))
 
 
 # Error checking ----------------------------------------------------------
@@ -203,6 +207,7 @@ source("dev/modules/access.R")
 source("dev/modules/alley.R")
 source("dev/modules/cent_d.R")
 source("dev/modules/cent_p.R")
+source("dev/modules/vac_rate.R")
 source("dev/modules/amenities.R")
 source("dev/modules/natural_inf.R")
 

@@ -160,6 +160,7 @@ get_info_table_data <- function(r = r, data, var_type, var_left, var_right, df,
     "building" = if (build_str_as_DA) "dissemination area" else "building",
     "street" = if (build_str_as_DA) "dissemination area" else "street",
     "centraide" = "centraide zone",
+    "cmhczone" = "CMHC zone",
     "zone")
   
   scale_plural <- switch(
@@ -172,6 +173,7 @@ get_info_table_data <- function(r = r, data, var_type, var_left, var_right, df,
     "building" = "buildings",
     "street" = "streets",
     "centraide zone" = "centraide zones",
+    "cmhczone" = "CMHC zones",
     "zones")
   
   out$scale_sing <- sus_translate(r = r, scale_sing)
@@ -194,6 +196,7 @@ get_info_table_data <- function(r = r, data, var_type, var_left, var_right, df,
       sus_translate(r = r, "Dissemination block {select_name$name}"),
     "250-m" = sus_translate(r = r, "The area around {select_name$name}"),
     "centraide zone" = glue("{select_name$name}"),
+    "CMHC zone" = glue("{select_name$name}"),
     NA_character_)
   
   if (grepl("select", out$var_type)) {
@@ -203,7 +206,7 @@ get_info_table_data <- function(r = r, data, var_type, var_left, var_right, df,
     out$place_heading <- if (is_scale_in_df(c("building", "street"), df) && 
                              build_str_as_DA) {
       select_name$name
-    } else if (scale_sing %in% c("borough/city", "centraide zone")) {
+    } else if (scale_sing %in% c("borough/city", "centraide zone", "CMHC zone")) {
       sus_translate(r = r, "{select_name$name_2} of {out$place_name}")
     } else if (scale_sing == "250-m") {
       sus_translate(r = r, select_name$name)
@@ -220,7 +223,8 @@ get_info_table_data <- function(r = r, data, var_type, var_left, var_right, df,
                     "CMA" = "in the Montreal region",
                     "city" = "in the City of Montreal",
                     "island" = "on the island of Montreal",
-                    "centraide" = "in the Centraide of Greater Montreal territory"))
+                    "centraide" = "in the Centraide of Greater Montreal territory",
+                    "CMHC" = "in the Montreal region"))
   
   
   ## Descriptive statistics for var_left ---------------------------------------
