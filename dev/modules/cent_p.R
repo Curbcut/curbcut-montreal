@@ -351,12 +351,17 @@ new_rows <-
                 str_detect(var, "living_alone") ~
                   " who are living alone",
                 str_detect(var, "low_inc") ~
-                  " who are in a low income status",
+                  "Low income ",
                 TRUE ~ "")
     
     
-    title <- paste0(sex_imm_title, shelter_title, characteristics_title, 
+    title <- if (!str_detect(var, "low_inc")) {
+      paste0(sex_imm_title, shelter_title, characteristics_title, 
                     post_title)
+    } else {
+      paste0(characteristics_title, tolower(sex_imm_title), shelter_title, 
+             post_title)
+    }
     
     # EXPLANATION
     pre_exp <-
@@ -422,11 +427,16 @@ new_rows <-
                 str_detect(var, "living_alone") ~
                   " who are living alone",
                 str_detect(var, "low_inc") ~
-                  " who are in a low income status",
+                  "low income",
                 TRUE ~ "")
     
-    exp <- paste0(pre_exp, sex_imm_exp, shelter_exp, characteristics_exp,
+    exp <- if (!str_detect(var, "low_inc")) {
+      paste0(pre_exp, sex_imm_exp, shelter_exp, characteristics_exp,
                   post_exp)
+    } else {
+      paste0(pre_exp, characteristics_exp, sex_imm_exp, shelter_exp,
+             post_exp)      
+    }
     
     # SHORT
     post_short <-

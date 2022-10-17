@@ -12,7 +12,7 @@ library(qs)
 
 library(r5r)
 options(java.parameters = '-Xmx16G')
-r5r_core <- setup_r5(data_path = "dev/data/routing",  elevation = "TOBLER",
+r5r_core <- setup_r5(data_path = "dev/data/routing", elevation = "TOBLER",
                      verbose = FALSE)
 
 # old_plan <- future::plan()
@@ -90,15 +90,16 @@ destinations <- DA_street_centroid |> rename(id = ID)
 
 # Walk tt_matrix
 tt_matrix$WALK <- 
-  map(timings, function(date_time) {
+  # map(timings, function(date_time) {
     travel_time_matrix(r5r_core = r5r_core,
                        origins = rename(DA_street_centroid, id = ID),
                        destinations = destinations,
                        mode = "WALK",
-                       max_trip_duration = 120,
-                       departure_datetime = date_time) |> 
+                       max_trip_duration = 120#,
+                       # departure_datetime = date_time
+                       ) |> 
       suppressMessages()    
-  })
+  # })
 
 
 # Bicycle tt_matrix
@@ -106,10 +107,10 @@ groups <-
   cut(seq_len(nrow(DA_street_centroid)), ceiling(nrow(DA_street_centroid)/50))
 
 progressr::with_progress({
-  p <- progressr::progressor(steps = length(unique(groups)) * length(timings))
+  p <- progressr::progressor(steps = length(unique(groups)))# * length(timings))
   
   tt_matrix$BICYCLE <- 
-    map(timings, function(date_time) {
+    # map(timings, function(date_time) {
       map_dfr(unique(groups), function(gr) {
         p()
         
@@ -121,11 +122,12 @@ progressr::with_progress({
                            origins = origins,
                            destinations = destinations,
                            mode = "BICYCLE",
-                           max_trip_duration = 120,
-                           departure_datetime = date_time) |> 
+                           max_trip_duration = 120#,
+                           # departure_datetime = date_time
+                           ) |> 
           suppressMessages()
       })
-    })
+    # })
 })
 
 # Transit tt_matrix
@@ -161,10 +163,10 @@ groups <-
   cut(seq_len(nrow(DA_street_centroid)), ceiling(nrow(DA_street_centroid)/25))
 
 progressr::with_progress({
-  p <- progressr::progressor(steps = length(unique(groups)) * length(timings))
+  p <- progressr::progressor(steps = length(unique(groups)))# * length(timings))
   
   tt_matrix$CAR <- 
-    map(timings, function(date_time) {
+    # map(timings, function(date_time) {
       map_dfr(unique(groups), function(gr) {
         p()
         
@@ -176,11 +178,12 @@ progressr::with_progress({
                            origins = origins,
                            destinations = destinations,
                            mode = "CAR",
-                           max_trip_duration = 120,
-                           departure_datetime = date_time) |> 
+                           max_trip_duration = 120#,
+                           # departure_datetime = date_time
+                           ) |> 
           suppressMessages()
       })
-    })
+    # })
 })
 
 

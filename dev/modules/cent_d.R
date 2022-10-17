@@ -243,7 +243,7 @@ new_rows <-
                 str_detect(var, "repairs") ~
                   " in housing with major repairs needed",
                 str_detect(var, "low_inc") ~
-                  " with low income",
+                  "Low income ",
                 str_detect(var, "single_detached") ~ 
                   " in single-detached houses",
                 str_detect(var, "semi_detached") ~ 
@@ -262,8 +262,13 @@ new_rows <-
                   " in mobile homes and other movable dwellings",
                 TRUE ~ "")
     
-    title <- paste0(tenure_title, shelter_title, characteristics_title, 
+    title <- if (!str_detect(var, "low_inc")) {
+      paste0(tenure_title, shelter_title, characteristics_title, 
                     post_title)
+    } else {
+      paste0(characteristics_title, tolower(tenure_title), shelter_title, 
+             post_title)
+    }
 
     # SHORT TITLE
     post_short <-
@@ -342,7 +347,7 @@ new_rows <-
                 str_detect(var, "repairs") ~
                   " in housing with major repairs needed",
                 str_detect(var, "low_inc") ~
-                  " with low income after tax",
+                  " low income",
                 str_detect(var, "single_detached") ~ 
                   " in single-detached houses",
                 str_detect(var, "semi_detached") ~ 
@@ -361,8 +366,13 @@ new_rows <-
                   " in mobile homes and other movable dwellings",
                 TRUE ~ "")
     
-    exp <- paste0(pre_explanation, tenure_explanation, shelter_explanation,
+    exp <- if (!str_detect(var, "low_inc")) {
+      paste0(pre_explanation, tenure_explanation, shelter_explanation,
              characteristics_explanation)
+    } else {
+      paste0(pre_explanation, characteristics_explanation, tenure_explanation, 
+             shelter_explanation)
+    }
     
     interpolated_key <- 
       map_chr(set_names(names(all_cent_d$tables_list)), function(x) {

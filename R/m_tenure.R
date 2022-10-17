@@ -100,7 +100,7 @@ tenure_server <- function(id, r) {
       insertUI(selector = paste0("#", paste(id, id, "title", sep = "-")),
                where = "beforeEnd",
                img(src = paste0("centraide_logo/centraide_logo_", r$lang(), ".png"), 
-                   style = 'width:100%;'))
+                   style = 'width:65%;'))
     })
     
     # Choose tileset
