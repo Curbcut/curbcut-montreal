@@ -528,10 +528,10 @@ add_row(tab = "demographics", type = "title",
     "units in a development and the average score per year.")) |> 
   
 
-# Natural infrastructure --------------------------------------------------
+  # Natural infrastructure --------------------------------------------------
 
-  add_row(tab = "natural_inf", type = "title", 
-          text = "Natural infrastructure") |> 
+add_row(tab = "natural_inf", type = "title", 
+        text = "Natural infrastructure") |> 
   add_row(tab = "natural_inf", type = "main", text = paste0(
     "Natural ecosystems contribute to well-being, quality of life and public ",
     "health. This module quantifies the benefits provided by urban trees and ",
@@ -550,6 +550,17 @@ add_row(tab = "demographics", type = "title",
     "e-metropolitaine-de-montreal/' target = '_blank'>",
     "Maure et al., 2018, Le rôle des infrastructures naturelles dans la ",
     "prévention des inondations dans la Communauté métropolitaine de ",
-    "Montréal, Fondation David Suzuki."))
+    "Montréal, Fondation David Suzuki.")) |> 
+
+# Natural infrastructure --------------------------------------------------
+
+add_row(tab = "city_amenities", type = "title", 
+        text = "Short distance city") |> 
+  add_row(tab = "city_amenities", type = "main", text = paste0(
+    "This module presents accessibility indicators for walking and cycling, calculated on the City of Montreal's territory. This project is led by Polytechnique Montréal, McGill University and the Institut national de la recherche scientifique (INRS) and funded by the City of Montreal and Mitacs. This module is a preliminary version and will be the subject of future developments.")) |> 
+  add_row(tab = "city_amenities", type = "extra", text = paste0(
+    "In an urban planning context, accessibility refers to the ease with which individuals can reach opportunities dispersed throughout the territory. High walking and cycling accessibility is associated with high quality of life and social equity. A good access to destinations by walk and by bike also promotes active travel and thus, leads to greenhouse gases (GHG) emissions reductions, savings in transportation costs and improved population health. Therefore, accessibility indicators contribute to the integration of transportation and land-use in planning for sustainable mobility.",
+    "<br><br><p>Further resources: <ul><li><a href='https://github.com/VilledeMontreal/MontrealEnCommun'>Montréal En Commun</a>.</ul>",
+    "<p><i>Module lead authors: Geneviève Boisjoly, Kevin Manaugh, Owen Waygood, Philippe Apparicio, José Arturo Jasso Chávez, Julien Verdier, Karl El-Murr</i>"))
 
 

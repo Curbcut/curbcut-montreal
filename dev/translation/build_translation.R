@@ -59,6 +59,7 @@ source("dev/translation/place_explorer.R", encoding = "utf-8")
 source("dev/translation/authors.R", encoding = "utf-8")
 source("dev/translation/centraide_vars.R", encoding = "utf-8")
 source("dev/translation/data_export.R", encoding = "utf-8")
+source("dev/translation/city_amenities.R", encoding = "utf-8")
 
 # Retrieve and bind translated csvs ---------------------------------------
 
@@ -73,7 +74,8 @@ translation_fr <-
             place_explorer_translated,
             authors_translation,
             cent_variables_translated,
-            data_export_translated) |> 
+            data_export_translated,
+            city_amenities_translation) |> 
   distinct(en, .keep_all = TRUE)
 
 

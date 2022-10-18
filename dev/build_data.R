@@ -209,6 +209,7 @@ source("dev/modules/cent_d.R")
 source("dev/modules/cent_p.R")
 source("dev/modules/vac_rate.R")
 source("dev/modules/amenities.R")
+source("dev/modules/city_amenities.R")
 source("dev/modules/natural_inf.R")
 
 source("dev/modules/stories.R", encoding = "utf-8")

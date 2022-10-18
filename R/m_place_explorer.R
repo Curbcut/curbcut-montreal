@@ -63,7 +63,7 @@ place_explorer_UI <- function(id) {
                     '</div>
                      <div style="width: 20%;">',
                     actionButton(inputId = NS(id, "search_button"),
-                                 label = icon("search"),
+                                 label = icon("search", verify_fa = FALSE),
                                  style = "margin-top: var(--padding-v-md);"),
                     '</div>
                      </div>')),
@@ -451,7 +451,7 @@ place_explorer_server <- function(id, r) {
                 renderText({
                   paste(p(style = "font-size: 11px;",
                           sus_translate(r = r, text$var_title[z]),
-                          icon("question"),
+                          icon("question", verify_fa = FALSE),
                           title = str_to_sentence(
                             sus_translate(r = r, text$explanation[z]))))
                 })

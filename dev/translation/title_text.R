@@ -643,4 +643,16 @@ title_text_translation <-
                       "standard de carte interactive. Apprenez-en davantage sur ",
                       "les histoires ancrées dans des lieux géographiques ",
                       "spécifiques de la ville ou sur celles qui ont eu un ",
-                      "impact sur l'ensemble de Montréal. </ul>"))
+                      "impact sur l'ensemble de Montréal. </ul>")) |> 
+
+  
+  add_row(en = paste0("Short distance city"),
+          fr = paste0("Ville de courtes distances")) |> 
+  add_row(en = paste0(
+    "This module presents accessibility indicators for walking and cycling, calculated on the City of Montreal's territory. This project is led by Polytechnique Montréal, McGill University and the Institut national de la recherche scientifique (INRS) and funded by the City of Montreal and Mitacs. This module is a preliminary version and will be the subject of future developments."),
+    fr = paste0("Ce module présente des indicateurs d'accessibilité aux destinations à la marche et à vélo sur le territoire de la Ville de Montréal. Ce projet est mené par Polytechnique Montréal, l'Université McGill et l'Institut national de la recherche scientifique (INRS) et financé par la Ville de Montréal et Mitacs. Ce module constitue une version préliminaire et fera l'objet de futurs développements. ")) |> 
+  add_row(en = paste0(
+    "In an urban planning context, accessibility refers to the ease with which individuals can reach opportunities dispersed throughout the territory. High walking and cycling accessibility is associated with high quality of life and social equity. A good access to destinations by walk and by bike also promotes active travel and thus, leads to greenhouse gases (GHG) emissions reductions, savings in transportation costs and improved population health. Therefore, accessibility indicators contribute to the integration of transportation and land-use in planning for sustainable mobility.",
+    "<br><br><p>Further resources: <ul><li><a href='https://github.com/VilledeMontreal/MontrealEnCommun'>Montréal En Commun</a>.</ul>",
+    "<p><i>Module lead authors: Geneviève Boisjoly, Kevin Manaugh, Owen Waygood, Philippe Apparicio, José Arturo Jasso Chávez, Julien Verdier, Karl El-Murr</i>"),
+    fr = paste0("Dans un contexte de planification urbaine, l’accessibilité fait référence à la facilité avec laquelle les individus peuvent accéder aux opportunités dispersées sur le territoire. Une grande accessibilité en transports actifs est souvent synonyme de bonne qualité de vie et d'équité sociale. Des destinations accessibles à la marche et à vélo encouragent également les déplacements actifs et ainsi, mènent à la réduction des émissions de gaz à effet de serre et des coûts associés au transport et à l’amélioration de la santé de la population. Ainsi, les indicateurs d'accessibilité aux destinations supportent la planification intégrée des transports et de l’aménagement du territoire dans une optique de mobilité durable.<br><br><p>Autres ressources: <ul><li><a href='https://github.com/VilledeMontreal/MontrealEnCommun'>Montréal En Commun</a>.</ul><p><i>Auteurs principaux du module : Geneviève Boisjoly, Kevin Manaugh, Owen Waygood, Philippe Apparicio, José Arturo Jasso Chávez, Julien Verdier, Karl El-Murr</i>"))

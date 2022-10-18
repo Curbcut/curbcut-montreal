@@ -42,6 +42,34 @@ dyk <-
   ungroup()
 
 
+
+# Short distance city addition --------------------------------------------
+
+city_amenities_walk <- 
+  read.csv("dev/data/city_accessibility/short_distance_city.csv",
+                                            encoding = "latin1") |>
+  mutate(var_code = paste0("city_amenities_", tolower(var_code),
+                           "_walk_avg")) |> 
+  rowwise() |> 
+  transmute(variable = list(var_code), text = str_trim(dyk_walk)) |> 
+  mutate(theme = list("Transport"),
+         module = "city_amenities") |> 
+  filter(text != "")
+
+city_amenities_bike <- 
+  read.csv("dev/data/city_accessibility/short_distance_city.csv",
+           encoding = "latin1") |> 
+  mutate(var_code = paste0("city_amenities_", tolower(var_code),
+                           "_bike_avg")) |> 
+  rowwise() |> 
+  transmute(variable = list(var_code), text = str_trim(dyk_bike)) |> 
+  mutate(theme = list("Transport"),
+         module = "city_amenities") |> 
+  filter(text != "")
+
+dyk <- bind_rows(dyk, city_amenities_walk, city_amenities_bike)
+
+
 # Temporarily add manual DYKs ---------------------------------------------
 # 
 # dyk <- 

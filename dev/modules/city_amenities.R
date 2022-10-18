@@ -29,6 +29,7 @@ walk <-
               where(is.numeric))
 
 city_amenities <- left_join(bike, walk, by = "ID")
+city_amenities <- city_amenities |> select(!contains(c("library", "communita")))
 
 rm(bike, walk)
 
@@ -96,7 +97,7 @@ new_rows <-
                           str_detect(var, "_cultural_") ~
                             "cultural facilities",
                           str_detect(var, "_communita_") ~
-                            "Communita",
+                            "community facilities",
                           str_detect(var, "_daycare_") ~
                             "daycares",
                           str_detect(var, "_preschool_") ~ 
@@ -108,19 +109,19 @@ new_rows <-
                           str_detect(var, "_postsecondary_") ~ 
                             "postsecondary schools",
                           str_detect(var, "_sport_inte_") ~ 
-                            "Sport_inte",
+                            "indoor sports activities",
                           str_detect(var, "_equi_sante_") ~ 
-                            "Equi_Sante",
+                            "health and social services facilities",
                           str_detect(var, "_commercial_zone_") ~ 
                             "commercial zones",
                           str_detect(var, "_alimentation_") ~ 
-                            "food distributors",
+                            "food stores",
                           str_detect(var, "_pharmacy_") ~ 
                             "pharmacies",
                           str_detect(var, "_laundromat_") ~ 
                             "laundromats",
                           str_detect(var, "_p_quartier_") ~ 
-                            "P_quartier",
+                            "neighbourhood parks",
                           str_detect(var, "_big_park_") ~ 
                             "big parks",
                           str_detect(var, "_playground_") ~ 
@@ -130,11 +131,11 @@ new_rows <-
                           str_detect(var, "_nature_") ~ 
                             "nature facilities",
                           str_detect(var, "_aquatic_") ~ 
-                            "aquatic facilities",
+                            "outdoor water activities",
                           str_detect(var, "_winter_") ~ 
-                            "winter",
+                            "outdoor winter activities",
                           str_detect(var, "_summer_") ~ 
-                            "summer")
+                            "outdoor summer activities")
     
     mode_title <- case_when(str_detect(var, "_walk_") ~
                             "(Walk)",
@@ -142,14 +143,12 @@ new_rows <-
                             "(Cycling)")
     
     mode_exp <- case_when(str_detect(var, "_walk_") ~
-                        "in a 15 minutes walk",
+                        "within a 15 minutes walk",
                       str_detect(var, "_bike_") ~
-                        "in a 20 minutes cycling time")
+                        "within a 20 minutes cycling time")
     
-    title <- str_to_sentence(category) |> 
-      paste0(" ", mode_title)
-    short <- str_remove(title, " .*")
-    if (short == "Big") short <- "Parks"
+    title <- paste0("Accessibility to ", category, " ", mode_title)
+    short <- str_to_sentence(category)
     exp <- paste0("the average number of ", category, 
                     " a resident of the area can reach ", mode_exp)
     
@@ -178,7 +177,7 @@ new_rows <-
                     breaks_q5 = select(breaks_q5_active,
                                        scale, date, rank, 
                                        var = all_of(var)),
-                    source = "Mitacs",
+                    source = "Open data from the City of Montreal, DMTI data, and OpenStreetMap data",
                     interpolated = list(interpolation_keys),
                     grouping = paste0("Accessibility to ", category),
                     group_diff = group_diff)
@@ -198,7 +197,36 @@ modules <-
   add_modules(
     id = "city_amenities",
     metadata = TRUE,
-    dataset_info = paste0("TKTK"))
+    dataset_info = 
+      paste0("The indicators of this module represent the number of ",
+             "destinations accessible by walking and cycling from a ",
+             "specified origin within a given time (cumulative-opportunities ",
+             "method).",
+             "<p>Each indicator is calculed at the dissemination blocks level, the smallest geographic area defined by Statistics Canada.",
+             "<p>The defined cutoff times (15-minute walk ; 20-minute bike ride) do not vary throughout the study area, i.e., the City of Montreal. ",
+             "<p>The characteristics and quality of the destinations are not taken into account.",
+             "<p>Travel times are calculated using the r5r ('Rapid Realistic Routing with R5') package in R.",
+             "<p>Calculations take into consideration walking and cycling infrastructures as well as streets' slopes.",
+             "<p>The costs of turning and crossing an intersection are not considered.",
+             "<p>The data used to calculate the indicators includes open data from the City of Montreal, DMTI data, and OpenStreetMap data."
+             ))
+
+
+# Additional disclaimer they want -----------------------------------------
+
+city_amenities_disclaimer <- 
+read_csv("dev/data/city_accessibility/disclaimer.csv") |> 
+  mutate(var_code_walk = paste0("city_amenities_", tolower(var_code),
+                                "_walk_avg"),
+         var_code_bike = paste0("city_amenities_", tolower(var_code),
+                                "_bike_avg")) |> 
+  rowwise() |> 
+  transmute(var_code = list(list(var_code_walk, var_code_bike)),
+            disclaimer) |> 
+  filter(!is.na(disclaimer)) |> 
+  ungroup()
+
+qs::qsave(city_amenities_disclaimer, "data/city_amenities_disclaimer.qs")
 
 
 # Clean up ----------------------------------------------------------------
