@@ -60,6 +60,15 @@ get_legend_labels <- function(r = r, var_left, var_right, data_type, breaks = NU
   # Bivar version
   if (data_type == "bivar") {
     
+    if (nchar(title_left) > 16) title_left <- title_left_short
+    if (nchar(title_right) > 16) title_right <- title_right_short
+    date_left <- str_extract(var_left, "(?<=_)\\d{4}$")
+    date_right <- str_extract(var_right, "(?<=_)\\d{4}$")
+    if (date_left != date_right) {
+      title_left <- paste0(title_left, " (", date_left, ")")
+      title_right <- paste0(title_right, " (", date_right, ")")
+    }
+    
     labs_xy <- list(labs(x = title_right, y = title_left), 
                     x_short = title_right_short, y_short = title_left_short)
   }

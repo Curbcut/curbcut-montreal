@@ -409,6 +409,11 @@ info_table_translated <-
                       "n moyenne de {z$coef} chaque jour.")) |> 
   add_row(en = paste0("<p><b>STRONG CORRELATION</b></p>"), 
           fr = paste0("<p><b>FORTE CORRÉLATION</b></p>")) |> 
+  add_row(en = paste0("<p><i>Data from {date_left} for '{z$title_left}' and ", 
+                      "{date_right} for '{z$title_right}'.</i></p>"), 
+          fr = paste0("<p><i>Données de {date_left} pour '{z$title_left}' et ", 
+                      "de {date_right} pour '{z$title_right}'.</i></p>")) |> 
+  
   # Natural infrastructure
   add_row(en = paste0("<p>Natural infrastructure represents approximately 25% ",
                       "of the territory of the Montreal region. Preserving {sl",

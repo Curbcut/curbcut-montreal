@@ -364,7 +364,12 @@ info_table <- function(r, data, var_type, var_left, var_right, df, select_id,
       !grepl("_na", z$var_type)) {
     out <- paste(out, sus_translate(r = r, "<i>(Data from {date_left}.)</i>"))
   }
-  
+  if (date_left != date_right && nchar(date_left) == 4 &&
+      !grepl("_na", z$var_type)) {
+    out <- paste(out, sus_translate(r = r, 
+                                    "<p><i>Data from {date_left} for '{z$title_left}' and ",
+                                    "{date_right} for '{z$title_right}'.</i></p>"))
+  }
   
   ## Return output -------------------------------------------------------------
   

@@ -10,31 +10,27 @@ get_axis_labels <- function(r = r, graph_type, var_left, var_right) {
   var_right_title <- sus_translate(r = r, variables$var_short[
     variables$var_code == unique(sub("_\\d{4}$", "", var_right))])
   
-  # var_left_title <- {
-  #   x <- variables[
-  #     variables$var_code == unique(sub("_\\d{4}$", "", var_left)), ]
-  #   out <- 
-  #     if (nchar(sus_translate(r = r, x$var_title)) > 16) x$var_short else x$var_title
-  #   sus_translate(r = r, out)
-  # }
-  # 
-  # var_right_title <- {
-  #   x <- variables[
-  #     variables$var_code == unique(sub("_\\d{4}$", "", var_right)), ]
-  #   if (length(x$var_title) == 0) return(NULL)
-  #   out <- 
-  #     if (nchar(sus_translate(r = r, x$var_title)) > 16) x$var_short else x$var_title
-  #   sus_translate(r = r, out)
-  # }
-  
   
   ## Construct labs_xy based on graph_type -------------------------------------
   
   if (graph_type %in% c("hist", "bar")) labs_xy <- 
     list(labs(x = var_left_title, y = NULL))
   
-  if (graph_type == "scatter") labs_xy <- 
-    list(labs(x = var_right_title, y = var_left_title))
+  if (graph_type == "scatter") {
+    
+    if (str_extract(var_left, "(?<=_)\\d{4}$") !=
+        str_extract(var_right, "(?<=_)\\d{4}$")) {
+      var_left_title <-
+        paste0(var_left_title, " (", 
+               str_extract(var_left, "(?<=_)\\d{4}$"), ")")
+      var_right_title <-
+        paste0(var_right_title, " (", 
+               str_extract(var_right, "(?<=_)\\d{4}$"), ")")
+    }
+    
+    labs_xy <-
+      list(labs(x = var_right_title, y = var_left_title))
+  }
   
   if (graph_type == "box") labs_xy <- 
     list(labs(x = var_left_title, y = var_right_title))
