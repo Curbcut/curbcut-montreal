@@ -124,8 +124,10 @@ get_breaks_q5 <- function(df, var_list = NULL, time_regex = "_\\d{4}$") {
         dplyr::select(starts_with(x), -contains(c("q3", "q5"))) |>
         as.matrix()
 
-      out <- out[out > quantile(out, .01, na.rm = TRUE)]
-      out <- out[out < quantile(out, .99, na.rm = TRUE)]
+      # If there's not enough unique values, we do not filter out outliers
+      out_nolier <- out[out > quantile(out, .01, na.rm = TRUE)]
+      out_nolier <- out_nolier[out_nolier < quantile(out_nolier, .99, na.rm = TRUE)]
+      out <- if (length(unique(out_nolier)) < 5) out else out_nolier
 
       mean(out, na.rm = TRUE)
     }))
@@ -136,8 +138,10 @@ get_breaks_q5 <- function(df, var_list = NULL, time_regex = "_\\d{4}$") {
         dplyr::select(starts_with(x), -contains(c("q3", "q5"))) |>
         as.matrix()
 
-      out <- out[out > quantile(out, .01, na.rm = TRUE)]
-      out <- out[out < quantile(out, .99, na.rm = TRUE)]
+      # If there's not enough unique values, we do not filter out outliers
+      out_nolier <- out[out > quantile(out, .01, na.rm = TRUE)]
+      out_nolier <- out_nolier[out_nolier < quantile(out_nolier, .99, na.rm = TRUE)]
+      out <- if (length(unique(out_nolier)) < 5) out else out_nolier
 
       sd(out, na.rm = TRUE)
     }))

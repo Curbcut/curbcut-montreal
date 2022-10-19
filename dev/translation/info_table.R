@@ -311,7 +311,7 @@ info_table_translated <-
                       "tion de la valeur '{z$title_left}' n'a effectivement au",
                       "cune corrélation avec la variation de la valeur '{z$tit",
                       "le_right}' à l'échelle {z$scale_sing}.<p>Cela signifie ",
-                      "qu'à l'échelle {z$scale_sing}, il n'y avait pas re rela",
+                      "qu'à l'échelle {z$scale_sing}, il n'y avait pas de rela",
                       "tion entre la variation des deux variables.")) |> 
   add_row(en = paste0("<p>From {z$start_date_left} to {z$end_date_left}, the c",
                       "hange in '{z$title_left}' had a {z$strong} {z$pos} corr",

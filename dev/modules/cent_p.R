@@ -299,22 +299,22 @@ new_rows <-
     
     sex_imm_title <- 
       case_when(str_detect(var, "cent_p_immigrants") && str_detect(var, "female") ~ 
-                  "Female immigrants",
+                  "Immigrant women",
                 str_detect(var, "cent_p_immigrants") && str_detect(var, "male") ~ 
-                  "Male immigrants",
+                  "Immigrant men",
                 str_detect(var, "non_immigrants") && str_detect(var, "female") ~ 
-                  "Non-immigrant females",
+                  "Non-immigrant women",
                 str_detect(var, "non_immigrants") && str_detect(var, "male") ~ 
-                  "Non-immigrant males",
+                  "Non-immigrant men",
                 !str_detect(var, "cent_p_immigrants|non_immigrants") && str_detect(var, "female") ~ 
-                  "Female population",
+                  "Women",
                 !str_detect(var, "cent_p_immigrants|non_immigrants") && str_detect(var, "male") ~ 
-                  "Male population",
+                  "Men",
                 str_detect(var, "cent_p_immigrants") && !str_detect(var, "male|female") ~ 
-                  "Immigrant population",
+                  "Immigrants",
                 str_detect(var, "non_immigrants") && !str_detect(var, "male|female") ~ 
-                  "Non-immigrant population",
-                TRUE ~ "Population")
+                  "Non-immigrants",
+                TRUE ~ "People")
     
     shelter_title <-
       case_when(str_detect(var, "more_30_per") ~
@@ -339,7 +339,7 @@ new_rows <-
                 str_detect(var, "refugees_imm") ~
                   " who are refugees",
                 str_detect(var, "other_imm") ~
-                  " who are other immigrants",
+                  " who are classified as 'other immigrants'",
                 str_detect(var, "visible_min") ~
                   " who are members of a visible minority group",
                 str_detect(var, "not_visible_min") ~
@@ -347,7 +347,7 @@ new_rows <-
                 str_detect(var, "aboriginal") ~
                   " who are aboriginals",
                 str_detect(var, "lone_parents") ~
-                  " who are lone parents",
+                  " lone parents",
                 str_detect(var, "living_alone") ~
                   " who are living alone",
                 str_detect(var, "low_inc") ~
@@ -355,11 +355,14 @@ new_rows <-
                 TRUE ~ "")
     
     
-    title <- if (!str_detect(var, "low_inc")) {
-      paste0(sex_imm_title, shelter_title, characteristics_title, 
-                    post_title)
-    } else {
+    title <- if (str_detect(var, "low_inc")) {
       paste0(characteristics_title, tolower(sex_imm_title), shelter_title, 
+             post_title)
+    } else if (str_detect(var, "lone_parents")) {
+      paste0(gsub("s$", "", sex_imm_title), characteristics_title, shelter_title, 
+             post_title)
+    } else {
+      paste0(sex_imm_title, shelter_title, characteristics_title, 
              post_title)
     }
     
@@ -375,22 +378,22 @@ new_rows <-
     
     sex_imm_exp <- 
       case_when(str_detect(var, "cent_p_immigrants") && str_detect(var, "female") ~ 
-                  " female immigrants",
+                  " immigrant women",
                 str_detect(var, "cent_p_immigrants") && str_detect(var, "male") ~ 
-                  " male immigrants",
+                  " immigrant men",
                 str_detect(var, "non_immigrants") && str_detect(var, "female") ~ 
-                  " non-immigrant females",
+                  " non-immigrant women",
                 str_detect(var, "non_immigrants") && str_detect(var, "male") ~ 
-                  " non-immigrant males",
+                  " non-immigrant men",
                 !str_detect(var, "cent_p_immigrants|non_immigrants") && str_detect(var, "female") ~ 
-                  " females",
+                  " women",
                 !str_detect(var, "cent_p_immigrants|non_immigrants") && str_detect(var, "male") ~ 
-                  " males",
+                  " men",
                 str_detect(var, "cent_p_immigrants") && !str_detect(var, "male|female") ~ 
                   " immigrants",
                 str_detect(var, "non_immigrants") && !str_detect(var, "male|female") ~ 
                   " non-immigrants",
-                TRUE ~ " individuals")
+                TRUE ~ " people")
     
     shelter_exp <-
       case_when(str_detect(var, "more_30_per") ~
@@ -423,19 +426,22 @@ new_rows <-
                 str_detect(var, "aboriginal") ~
                   " who are aboriginals",
                 str_detect(var, "lone_parents") ~
-                  " who are lone parents",
+                  " lone parents",
                 str_detect(var, "living_alone") ~
                   " who are living alone",
                 str_detect(var, "low_inc") ~
                   "low income",
                 TRUE ~ "")
     
-    exp <- if (!str_detect(var, "low_inc")) {
-      paste0(pre_exp, sex_imm_exp, shelter_exp, characteristics_exp,
-                  post_exp)
-    } else {
+    exp <- if (str_detect(var, "low_inc")) {
       paste0(pre_exp, characteristics_exp, sex_imm_exp, shelter_exp,
-             post_exp)      
+             post_exp)  
+    } else if (str_detect(var, "lone_parents")) {
+      paste0(pre_exp, gsub("s$", "", sex_imm_exp), characteristics_exp, shelter_exp,
+             post_exp)  
+    } else {
+      paste0(pre_exp, sex_imm_exp, shelter_exp, characteristics_exp,
+             post_exp)
     }
     
     # SHORT
@@ -446,22 +452,22 @@ new_rows <-
     
     sex_imm_short <- 
       case_when(str_detect(var, "cent_p_immigrants") && str_detect(var, "female") ~ 
-                  "F. Imm.",
+                  "W. Imm.",
                 str_detect(var, "cent_p_immigrants") && str_detect(var, "male") ~ 
                   "M. Imm.",
                 str_detect(var, "non_immigrants") && str_detect(var, "female") ~ 
-                  "F. N-Imm.",
+                  "W. N-Imm.",
                 str_detect(var, "non_immigrants") && str_detect(var, "male") ~ 
                   "M. N-Imm.",
                 !str_detect(var, "cent_p_immigrants|non_immigrants") && str_detect(var, "female") ~ 
-                  "F.",
+                  "W.",
                 !str_detect(var, "cent_p_immigrants|non_immigrants") && str_detect(var, "male") ~ 
                   "M.",
                 str_detect(var, "cent_p_immigrants") && !str_detect(var, "male|female") ~ 
                   "Imm.",
                 str_detect(var, "non_immigrants") && !str_detect(var, "male|female") ~ 
                   "N-Imm.",
-                TRUE ~ "Pop.")
+                TRUE ~ "Peo.")
     
     shelter_short <-
       case_when(str_detect(var, "more_30_per") ~

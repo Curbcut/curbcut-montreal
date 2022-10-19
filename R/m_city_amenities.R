@@ -206,6 +206,12 @@ city_amenities_server <- function(id, r) {
       var_left = var_left,
       var_right = var_right
     )
+    
+    observe({
+      assign("data", data(), envir = .GlobalEnv)
+      assign("var_left", var_left(), envir = .GlobalEnv)
+      assign("var_right", var_left(), envir = .GlobalEnv)      
+    })
 
     # Data transparency and export
     r[[id]]$export_data <- reactive(data_export(id = id,

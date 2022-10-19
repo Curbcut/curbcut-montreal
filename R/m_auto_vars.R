@@ -1,12 +1,21 @@
 #### AUTO-WIDGET CREATION MODULE ###############################################
+#' This module creates the number of widgets necessary to create a variable, using
+#' the `grouping` and `group_diff` column of the `variables` table.
+
+# Module UI ---------------------------------------------------------------
 
 auto_vars_UI <- function(id, var_list, label) {
   tagList(
     div(id = NS(id, "main_drop"),
+        hr(),
         select_var_UI(NS(id, "auto_var"), var_list = var_list,
-        label = label))
+                      label = label),
+        hr())
   )
 }
+
+
+# Module server -----------------------------------------------------------
 
 auto_vars_server <- function(id, r = r, var_list, df = r[[id]]$df) {
   
@@ -14,20 +23,10 @@ auto_vars_server <- function(id, r = r, var_list, df = r[[id]]$df) {
   
   moduleServer(id, function(input, output, session) {
     
-    # Get the first level dropdown
-    r[[id]]$auto_var <- reactiveVal(" ")
-    
-    auto_var <- select_var_server("auto_var", r = r,
-                                  var_list = reactive(var_list),
-                                  df = df)
-    
-    # Update the reactiveVal ONLY if auto_var() faces an actual change.
-    observeEvent(auto_var(), {
-      if (auto_var()[1] != r[[id]]$auto_var()[1]) r[[id]]$auto_var(auto_var())
-    })
-    
-    # Widgets that are alike in ALL the variables of the module, and that 
-    # shouldn't move ever.
+    #### WIDGETS THAT SAY ON THE MODULE NO MATTER WHAT #########################
+    # Widgets that are alike in ALL the variables of the module (defined through 
+    # `var_list`), and that  shouldn't move ever (we don't want them to be 
+    # reactive by a change in the selected variable).
     staying_widgets <- reactive({
       groupings <- variables$grouping[variables$var_code %in% unlist(var_list)]
       if (all(is.na(groupings))) return()
@@ -45,16 +44,19 @@ auto_vars_server <- function(id, r = r, var_list, df = r[[id]]$df) {
           }) |> unique()
         }, simplify = FALSE)
       
-      # If the choices are numeric, change to numeric
+      # If the choices are numeric, change to numeric to inform a slider
       numeric <- sapply(widgets, \(x) all(grepl("[0-9]+", x)))
-      widgets <- 
-        mapply(\(x, y) {
-          if (!numeric[y]) return(x)
-          return(as.numeric(x))
-        }, widgets, seq_along(widgets), SIMPLIFY = FALSE, USE.NAMES = TRUE)
+      mapply(\(x, y) {
+        if (!numeric[y]) return(x)
+        return(as.numeric(x))
+      }, widgets, seq_along(widgets), SIMPLIFY = FALSE, USE.NAMES = TRUE)
       
-      lapply(seq_along(widgets), \(x) {
-        vars_list <- widgets[x]
+    })
+    
+    # Insert the widgets that are supposed to stay
+    observeEvent(staying_widgets(), {
+      lapply(seq_along(staying_widgets()), \(x) {
+        vars_list <- staying_widgets()[x]
         lab <- names(vars_list)
         id_s <- gsub(" |/", "_", tolower(lab))
         vars_list <- unlist(vars_list)
@@ -65,12 +67,13 @@ auto_vars_server <- function(id, r = r, var_list, df = r[[id]]$df) {
                           if (is.numeric(vars_list)) {
                             step <- {vars_list[length(vars_list)] - 
                                 vars_list[length(vars_list) - 1]}
+                            def <- vars_list[ceiling(length(vars_list)/2)]
                             slider_UI(NS(id, NS(id, id_s)),
                                       label = sus_translate(r = r, lab),
                                       min = min(vars_list),
                                       max = max(vars_list),
                                       step = step,
-                                      value = max(vars_list))
+                                      value = def)
                           } else {
                             # Translation
                             names(vars_list) <- vars_list
@@ -84,24 +87,58 @@ auto_vars_server <- function(id, r = r, var_list, df = r[[id]]$df) {
                           }
                  ))
       })
-      
-      return(names(widgets))
-      
     })
     
+    #### CREATE THE FIRST DROPDOWN USING VAR_LIST ##############################
+    # Get the first level dropdown
+    r[[id]]$auto_var <- reactiveVal(" ")
+    auto_var <- select_var_server("auto_var", r = r,
+                                  var_list = reactive(var_list),
+                                  df = df)
+    # Update the reactiveVal ONLY if auto_var() faces an actual change.
+    observeEvent(auto_var(), {
+      if (auto_var()[1] != r[[id]]$auto_var()[1]) r[[id]]$auto_var(auto_var())
+    })
     # Get the variables table that fit with the auto_var() selection
     variables_possibilities <- eventReactive(r[[id]]$auto_var(), {
       group <- variables$grouping[variables$var_code == auto_var()]
       variables[!is.na(variables$grouping) & variables$grouping == group, ]
     })
     
-    # Additional dropdown values
-    widget_lists <- eventReactive(r[[id]]$auto_var(), {
-      drop_names <- names(unlist(variables_possibilities()$group_diff[1]))
+    #### ALL OTHER WIDGETS WHICH ###############################################
+    # These widgets can change depending on auto_var() or on change in the 
+    # staying widgets.
+    
+    # Subset of the variables table that fit with the staying widgets
+    new_widget_possibilities <- 
+      reactive({
+        staying_widgets_values <- 
+          mapply(\(x, y) {
+            vars_list <- staying_widgets()[y]
+            lab <- names(vars_list)
+            id_s <- gsub(" |/", "_", tolower(lab))
+            
+            if (is.numeric(unlist(vars_list)))
+              return(as.character(input[[paste0(id_s, "-slider")]]))
+            return(as.character(input[[paste0(id_s, "-var")]]))
+          }, staying_widgets(), seq_along(staying_widgets()), SIMPLIFY = FALSE,
+          USE.NAMES = TRUE)
+        
+        new_group <- sapply(variables_possibilities()$group_diff, \(x) {
+          identical(x[which(names(x) %in% names(staying_widgets_values))],
+                    staying_widgets_values)
+        })
+        
+        variables_possibilities()[new_group, ]
+      })
+    
+    # Additional widget values
+    widget_lists <- eventReactive(new_widget_possibilities(), {
+      drop_names <- names(unlist(new_widget_possibilities()$group_diff[1]))
       
       widgets <-
         sapply(drop_names, \(x) {
-          all_options <- sapply(variables_possibilities()$group_diff, \(y) y[[x]],
+          all_options <- sapply(new_widget_possibilities()$group_diff, \(y) y[[x]],
                                 USE.NAMES = TRUE) |> unique()
           # If there is a total, put it first!
           if (sum(grepl("Total", all_options)) == 0) return(all_options)
@@ -117,14 +154,14 @@ auto_vars_server <- function(id, r = r, var_list, df = r[[id]]$df) {
       
     })
     
-    # Create and remove the added dropdowns
+    # Create and remove the reactive widgets
     observe({
       removeUI(selector = "#auto_additional_drops")
       
       widgets_to_add <- 
-        widget_lists()[!names(widget_lists()) %in% staying_widgets()]
-
-      # The UI
+        widget_lists()[!names(widget_lists()) %in% names(staying_widgets())]
+      
+      # Reactive widgets' UI
       insertUI(paste0("#", id, "-", id, "-main_drop"),
                where = "afterEnd",
                tags$div(id = "auto_additional_drops",      
@@ -133,17 +170,17 @@ auto_vars_server <- function(id, r = r, var_list, df = r[[id]]$df) {
                           lab <- names(vars_list)
                           id_s <- gsub(" |/", "_", tolower(lab))
                           vars_list <- unlist(vars_list)
-                          
-                          
+
                           if (is.numeric(vars_list)) {
                             step <- {vars_list[length(vars_list)] - 
                                 vars_list[length(vars_list) - 1]}
+                            def <- vars_list[ceiling(length(vars_list)/2)]
                             slider_UI(NS(id, NS(id, id_s)),
                                       label = sus_translate(r = r, lab),
                                       min = min(vars_list),
                                       max = max(vars_list),
                                       step = step,
-                                      value = max(vars_list))
+                                      value = def)
                           } else {
                             # Translation
                             names(vars_list) <- vars_list
@@ -159,16 +196,17 @@ auto_vars_server <- function(id, r = r, var_list, df = r[[id]]$df) {
       )
     })
     
+    
+    #### OUTPUT VARIABLE #######################################################
     # The actual reacreated variable
     recreated_var <- reactive({
-      
       # Result of all dropdowns in a named list
       value_keys <-
         mapply(\(x, y) {
           vars_list <- widget_lists()[y]
           lab <- names(vars_list)
           id_s <- gsub(" |/", "_", tolower(lab))
-
+          
           if (is.numeric(unlist(vars_list))) 
             return(as.character(input[[paste0(id_s, "-slider")]]))
           return(as.character(input[[paste0(id_s, "-var")]]))
@@ -177,9 +215,6 @@ auto_vars_server <- function(id, r = r, var_list, df = r[[id]]$df) {
       
       which_match <- which(sapply(variables_possibilities()$group_diff, 
                                   \(x) identical(x, value_keys)))
-      
-      assign("value_keys", value_keys, envir = .GlobalEnv)
-      assign("x", variables_possibilities()$group_diff[[1]], envir = .GlobalEnv)
       
       # Return
       out <- variables_possibilities()$var_code[which_match]

@@ -43,9 +43,15 @@ render_explore_graph <- function(plot_type, data, var_left, var_right, df,
     # Get corresponding colours
     cols <- colour_left_5$fill[ranks + 1]
     
+    # Factor for 'non-continuous' variables (like qualitative)
+    sus_aes_bar <- function(x_scale, var_left) {
+      if ("ScaleContinuous" %in% class(x_scale[[1]])) return(var_left)
+      return(as.factor(var_left))
+    }
+    
     out <-
       data[!is.na(data$var_left),] |> 
-      ggplot(aes(as.factor(var_left))) +
+      ggplot(aes(sus_aes_bar(x_scale, var_left))) +
       geom_bar(aes(fill = as.factor(var_left)), width = 1) +
       {if (plot_type == "bar_select") geom_vline(
         xintercept = data$var_left[data$ID == select_id], colour = "black", 

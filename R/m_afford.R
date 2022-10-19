@@ -21,7 +21,7 @@ afford_UI <- function(id) {
                     label = sus_translate(r = r, 
                                           #### TO CHANGE DYNAMICALLY TO PERCENT OF HOUSEHOLDS VS INDIVIDUALS
                                           "Normalized (percent of households)")),
-        br(),
+        hr(),
         div(id = NS(id, "household_dropdowns"), 
             select_var_UI(NS(id, id), select_var_id = "d_3",
                           label = sus_translate(r = r, "Tenure status"),
