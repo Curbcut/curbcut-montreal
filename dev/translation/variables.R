@@ -42,6 +42,8 @@ variables_translated <-
           fr = paste0("Se rend au travail en transport en commun (%)")) |> 
   add_row(en = paste0("Living alone"), 
           fr = paste0("Habite seul")) |> 
+  add_row(en = paste0("Living alone (%)"), 
+          fr = paste0("Habite seul (%)")) |> 
   add_row(en = paste0("French only (%)"), 
           fr = paste0("Français seulement (%)")) |> 
   add_row(en = paste0("English only (%)"), 

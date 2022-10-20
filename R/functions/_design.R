@@ -433,6 +433,28 @@ lang_classes <- "
       display: inline !important; 
     }"
 
+# # Screenshot
+# screenshot_js <- "shinyjs.takeShot = function(params) {
+# 
+#   var defaultParams = {
+#     to_sh_id : null,
+#     output_id : null
+#   };
+#   params = shinyjs.getParams(params, defaultParams);
+# 
+#   let div = document.getElementById(params.to_sh_id);
+# 
+#   html2canvas(div).then(
+#     function (canvas) {
+#       document.
+#       getElementById(params.output_id).
+#       appendChild(canvas).
+#       setAttribute('id', 'map_sh');
+#       
+#     })
+# }"
+
+# WILL NEED THIS https://codepen.io/nathansouza/pen/OXdJbo TO DOWNLOAD
 
 # Severe HTML -------------------------------------------------------------
 
@@ -512,3 +534,5 @@ severe_html <- function(lang, module_id, geo) {
                           span(class = "material-icons", "bug_report")),
           ))
 }
+
+

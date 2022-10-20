@@ -44,7 +44,7 @@ title_text_translation <-
                       " fortement influencé par des facteurs socio-économiques",
                       ". Le risque de blessures et de décès chez les piétons s",
                       "ont plus élevés dans les communautés à faible revenu et",
-                      " radicalisées, où les résidents doivent souvent se dépl",
+                      " racialisées, où les résidents doivent souvent se dépl",
                       "acer à pied par nécessité, mais où l'environnement loca",
                       "l n'est pas nécessairement invitant et sécuritaire.<p>O",
                       "utre les preuves démontrant de grandes disparités dans ",

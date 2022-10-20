@@ -345,7 +345,7 @@ library(qs)
 # 
 # # tt_matrix is a list only for transit. To not break the map over the list,
 # # nest all other modes in a list
-# tt_matrix_DA <- 
+# tt_matrix_DA <-
 #   lapply(tt_matrix_DA, \(x) if (is.data.frame(x)) list(x) else return(x))
 # 
 # # Join all amenities to a DA ID, unnest vars (Even as it leads to duplicates IDs,
@@ -382,7 +382,7 @@ library(qs)
 #                   left_join(timing[timing$travel_time <= threshold, ],
 #                             by = c("ID" = "toId")) |>
 #                   count(fromId, name = paste(n_amenity, n_var, str_to_lower(n_mode),
-#                                               if (n_mode == "TRANSIT") n_timing, 
+#                                               if (n_mode == "TRANSIT") n_timing,
 #                                               n_time_threshold,
 #                                               "count", sep = "_"))
 #               })
@@ -392,7 +392,7 @@ library(qs)
 #                           by = c("ID" = "toId")) |>
 #                 count(fromId, name =
 #                         paste(n_amenity, str_to_lower(n_mode),
-#                               if (n_mode == "TRANSIT") n_timing, 
+#                               if (n_mode == "TRANSIT") n_timing,
 #                               n_time_threshold, "count", sep = "_"))
 #             }
 #           })
@@ -435,7 +435,7 @@ library(qs)
 #           group_by(fromId) |>
 #           summarize(amenities = sum(sqkm))
 #         names(out)[2] <- paste("municipal_parks", str_to_lower(n_mode),
-#                                if (n_mode == "TRANSIT") n_timing, 
+#                                if (n_mode == "TRANSIT") n_timing,
 #                                n_time_threshold, "sqkm", sep = "_")
 #         out
 #       }) |> reduce(left_join, by = "fromId")
@@ -456,7 +456,7 @@ library(qs)
 #           group_by(fromId) |>
 #           summarize(amenities = sum(spots_total))
 #         names(out)[2] <- paste("daycare_spots", str_to_lower(n_mode),
-#                                if (n_mode == "TRANSIT") n_timing, 
+#                                if (n_mode == "TRANSIT") n_timing,
 #                                n_time_threshold, "count", sep = "_")
 #         out
 #       }) |> reduce(left_join, by = "fromId")
@@ -474,7 +474,7 @@ library(qs)
 # qsave(DA_amenities, "dev/data/modules_raw_data/DA_amenities.qs")
 # DA_amenities <- qread("dev/data/modules_raw_data/DA_amenities.qs")
 # 
-# Get DA amenities at other scales ----------------------------------------
+# # Get DA amenities at other scales ----------------------------------------
 # On average, an individual living in this scale can reach X amenity in a Y
 # minutes trip
 # 
@@ -501,9 +501,9 @@ library(qs)
 # DA_amenities <- calculate_breaks(DA_amenities)
 # 
 # qsave(DA_amenities, "dev/data/modules_raw_data/DA_amenities_breaks.qs")
-DA_amenities <- qread("dev/data/modules_raw_data/DA_amenities_breaks.qs")
-
-# Assign to existing geographies ------------------------------------------
+# DA_amenities <- qread("dev/data/modules_raw_data/DA_amenities_breaks.qs")
+# 
+# # Assign to existing geographies ------------------------------------------
 
 assign_tables(module_tables = DA_amenities)
 

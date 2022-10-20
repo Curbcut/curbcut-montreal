@@ -444,6 +444,17 @@ shinyServer(function(input, output, session) {
       })
   
   
+  # ## Screenshot ----------------------------------------------------------------
+  # 
+  # onclick("save_image", {
+  #   js$takeShot(to_sh_id = "housing-housing-map", output_id = "screenshot_container")
+  #   showModal(modalDialog(
+  #     div(id = "screenshot_container"),
+  #     title = sus_translate(r = r, "Save as image"),
+  #     size = "l"
+  #   ))
+  # })
+  
   ## Heartbeat function to keep app alive --------------------------------------
   
   timeout_start <- eventReactive(reactiveValuesToList(input), Sys.time())

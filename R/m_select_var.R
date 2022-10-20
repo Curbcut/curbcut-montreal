@@ -37,7 +37,7 @@ select_var_server <- function(id, r = r, select_var_id = "var",
         choices = sus_translate(r = r, var_list()))
       }
       })
-
+    
     var <- reactive({
       if (input[[select_var_id]] == " ") return(" ")
       v1 <- paste(input[[select_var_id]], time(), sep = "_")

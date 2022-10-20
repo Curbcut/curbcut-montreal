@@ -18,15 +18,16 @@ get_axis_labels <- function(r = r, graph_type, var_left, var_right) {
   
   if (graph_type == "scatter") {
     
-    if (str_extract(var_left, "(?<=_)\\d{4}$") !=
-        str_extract(var_right, "(?<=_)\\d{4}$")) {
+    date_left <- str_extract(var_left, "(?<=_)\\d{4}$")
+    date_right <- str_extract(var_right, "(?<=_)\\d{4}$")
+    
+    if (!is.na(date_left))
       var_left_title <-
-        paste0(var_left_title, " (", 
-               str_extract(var_left, "(?<=_)\\d{4}$"), ")")
+      paste0(var_left_title, " (", date_left, ")")
+    
+    if (!is.na(date_right))
       var_right_title <-
-        paste0(var_right_title, " (", 
-               str_extract(var_right, "(?<=_)\\d{4}$"), ")")
-    }
+      paste0(var_right_title, " (", date_right, ")")
     
     labs_xy <-
       list(labs(x = var_right_title, y = var_left_title))
