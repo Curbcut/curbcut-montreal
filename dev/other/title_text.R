@@ -110,7 +110,26 @@ title_text <-
     "règlement.</a><li>Madden, D., & Marcuse, P. (2016). <i>In Defense of ",
     "Housing: The Politics of Crisis</i>. New York and London: Verso ",
     "Books.</ul>")) |> 
-  
+
+# Vacancy rate ---------------------------------------------------
+
+add_row(tab = "vac_rate", type = "title", text = "Vacancy rate") |> 
+  add_row(tab = "vac_rate", type = "main", text = paste0(
+    "Examining residential rental vacancy rates is an important part of ",
+    "understanding the housing landscape in Montreal. In this module, explore ",
+    "and compare information about vacancy rates for specific types of units, ",
+    "the year of construction, or within a rent range. Select a year, ",
+    "two years, or compare dates for which to view the spatialized data.")) |> 
+  add_row(tab = "afford", type = "extra", text = paste0(
+    "<p> The comparative analysis seen in this module is based on data from ",
+    "the CMHC. In selecting different options from the drop-down menus, ",
+    "insights can be gained on how vacancy rates vary over time and spatially ",
+    "by type of unit, year of construction, and rent range. Using the panel ",
+    "on the right, you can compare these options to variables linked to ",
+    "housing, income, identity, transport, households, language, age, and ",
+    "education. Information about vacancy rates and its related variables ",
+    "can help define past and current trends in the housing market and what ",
+    "is needed to better provide adequate rental housing. </ul>")) |> 
 
 # Housing affordability ---------------------------------------------------
 
@@ -389,6 +408,28 @@ add_row(tab = "demographics", type = "title",
     "time). For more info on how accessibility metrics are calculated see ",
     "<a href = 'https://conservancy.umn.edu/bitstream/handle/11299/199892/",
     "CTS13-20_Access-Across-America.pdf'>'Access Across America'</a>.")) |> 
+  
+# Access to amenities ------------------------------------------------------------------
+
+add_row(tab = "amenities", type = "title", 
+        text = "Access to amenities") |> 
+  add_row(tab = "amenities", type = "main", text = paste0(
+    "Being able to access amenities and services in our nearby urban ",
+    "environment can greatly impact our daily experiences and quality of ",
+    "life. The time and mode of transportation needed to reach these amenities ",
+    "plays a large role in this. In this module, explore information about ",
+    "access to schools, food distributors, health care facilities, ",
+    "municipal parks, and daycare spots by walk, transit, or car. ")) |> 
+  add_row(tab = "access", type = "extra", text = paste0(
+    "<p>The spatialized analysis seen in this module is based on data from ",
+    "Données Québec and DMTI. In selecting different options from the ",
+    "drop-down menus, insights can be gained about access to different types ",
+    "of amenities by a certain mode of transportation within a given amount ",
+    "of time. Using the panel on the right, you can compare these options to ",
+    "variables linked to housing, income, identity, transport, households, ",
+    "language, age, and education. Understanding access to amenities by mode ",
+    "of transportation gives a glimpse into how different areas are serviced ",
+    "and what that might imply for residents. </a>.")) |> 
   
 
 # Montreal stories --------------------------------------------------------
