@@ -120,7 +120,7 @@ add_row(tab = "vac_rate", type = "title", text = "Vacancy rate") |>
     "and compare information about vacancy rates for specific types of units, ",
     "the year of construction, or within a rent range. Select a year, ",
     "two years, or compare dates for which to view the spatialized data.")) |> 
-  add_row(tab = "afford", type = "extra", text = paste0(
+  add_row(tab = "vac_rate", type = "extra", text = paste0(
     "<p> The comparative analysis seen in this module is based on data from ",
     "the CMHC. In selecting different options from the drop-down menus, ",
     "insights can be gained on how vacancy rates vary over time and spatially ",

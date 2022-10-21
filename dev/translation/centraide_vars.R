@@ -410,7 +410,7 @@
 #                       str_replace(fr, "de/d' immigrants", "d'immigrants"), fr),
 #          fr = if_else(str_detect(fr, "de/d' non-immigrants"),
 #                       str_replace(fr, "de/d' non-immigrants", "d'individus non-immigrants"), fr))
-# 
+
 
 # Dataframe creation ------------------------------------------------------
 
