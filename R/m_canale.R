@@ -82,7 +82,7 @@ canale_server <- function(id, r) {
       r = r,
       zoom_string = zoom_string,
       zoom_levels = map_zoom_levels)
-
+    
     # Get df for explore/legend/etc
     observe(r[[id]]$df(get_df(tile(), zoom_string()))) |> 
       bindEvent(tile(), zoom_string())

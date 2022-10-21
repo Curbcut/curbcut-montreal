@@ -419,8 +419,8 @@ add_row(tab = "amenities", type = "title",
     "life. The time and mode of transportation needed to reach these amenities ",
     "plays a large role in this. In this module, explore information about ",
     "access to schools, food distributors, health care facilities, ",
-    "municipal parks, and daycare spots by walk, transit, or car. ")) |> 
-  add_row(tab = "access", type = "extra", text = paste0(
+    "municipal parks, and daycare spots by walk, bike, transit, or car.")) |> 
+  add_row(tab = "amenities", type = "extra", text = paste0(
     "<p>The spatialized analysis seen in this module is based on data from ",
     "Données Québec and DMTI. In selecting different options from the ",
     "drop-down menus, insights can be gained about access to different types ",

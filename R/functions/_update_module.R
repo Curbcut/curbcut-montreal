@@ -193,6 +193,48 @@ update_module <- function(r, id, mod_ns = paste(id, id, sep = "-"),
           selected = selected_var
         )
       }
+    } else if (id == "amenities") {
+      
+      selected_var <- if (str_detect(var_left, "^\\d*$")) {
+        get_variables_rowid(var_left)} else var_left
+      
+      group <- variables[variables$var_code == selected_var, ]$grouping
+      # Same process that's in make_dropdown() to decide which variable is
+      # the one to select in the compare-var dropdown.
+      cat_vecs <- 
+        variables[!is.na(variables$grouping) & variables$grouping == group, ]
+      higher_level_var <- choose_first_data_compare_group(cat_vecs)
+      
+      # The compare-var picker update
+      updatePickerInput(
+        session = session,
+        inputId = construct_namespace("auto_var-var"),
+        selected = higher_level_var
+      )
+      
+      # Other dropdowns update
+      update_drops <- 
+        variables$group_diff[variables$var_code == selected_var][[1]]
+      
+      # If the choices are numeric, change to numeric
+      update_drops <- change_inlist_numeric(update_drops)
+      
+      lapply(seq_along(update_drops), \(x) {
+        var_named <- update_drops[x]
+        id_s <- create_id_s(var_named)$key
+
+        if (is.numeric(var_named[[1]])) {
+          delay(1000, {
+          updateSliderInput(session = session,
+                            inputId = construct_namespace(paste0(id_s, "-slider")),
+                            value = var_named[[1]])})
+        } else {
+          delayupdatePickerInput(
+            time = 1000,
+            session = session,
+            inputId = construct_namespace(paste0(id_s, "-var")),
+            selected = var_named)
+        }})
     }
   }
   
@@ -222,7 +264,7 @@ update_module <- function(r, id, mod_ns = paste(id, id, sep = "-"),
       # The compare-var picker update
       delayupdatePickerInput(
         session = session,
-        inputId = construct_namespace("compare-var"),
+        inputId = construct_namespace("compare-auto_var-var"),
         selected = higher_level_var
       )
       
@@ -230,18 +272,25 @@ update_module <- function(r, id, mod_ns = paste(id, id, sep = "-"),
       update_drops <- 
         variables$group_diff[variables$var_code == selected_var][[1]]
       
+      # If the choices are numeric, change to numeric
+      update_drops <- change_inlist_numeric(update_drops)
+      
       lapply(seq_along(update_drops), \(x) {
         var_named <- update_drops[x]
-        lab <- names(var_named) 
-        id_s <- gsub(" |/", "_", tolower(lab))
-      
-        delayupdatePickerInput(
-          time = 1000,
-          session = session,
-          inputId = construct_namespace(paste0(id_s, "-var")),
-          selected = var_named
-        )
-      })
+        id_s <- create_id_s(var_named)$key
+        
+        if (is.numeric(var_named[[1]])) {
+          delay(1000, {
+            updateSliderInput(session = session,
+                              inputId = construct_namespace(paste0("compare-", id_s, "-slider")),
+                              value = var_named[[1]])})
+        } else {
+          delayupdatePickerInput(
+            time = 1000,
+            session = session,
+            inputId = construct_namespace(paste0("compare-", id_s, "-var")),
+            selected = var_named)
+        }})
       
     }
   }

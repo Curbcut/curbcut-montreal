@@ -26,11 +26,8 @@ auto_vars_server <- function(id, r = r, module_id = NULL, var_list,
     
     #### Name spacing gets pretty complicated from a module or the compare #####
     input_namespace <- reactive({
-      if (is.null(module_id)) {
-        function(id_s) NS(id, NS(id, id_s))
-      } else {
-        function(id_s) paste0(module_id, "-", module_id, "-", NS(id, id_s))
-      }
+      if (is.null(module_id)) return(function(id_s) NS(id, NS(id, id_s)))
+      return(function(id_s) NS(module_id, NS(module_id, NS(id, id_s))))
       })
     ui_selector <- reactive({
       if (is.null(module_id)) return(paste0("#", id, "-", id, "-main_drop"))
@@ -50,35 +47,14 @@ auto_vars_server <- function(id, r = r, module_id = NULL, var_list,
     staying_widgets <- reactive({
       groupings <- variables$grouping[variables$var_code %in% unlist(var_list)]
       if (all(is.na(groupings))) return()
-      
-      all_group_diffs <- 
-        variables$group_diff[variables$grouping %in% groupings]
-      
-      amount <- table(unlist(sapply(all_group_diffs, names)))
-      staying_widgets <- names(amount)[amount == length(all_group_diffs)]
-      
-      widgets <- 
-        sapply(staying_widgets, \(x) {
-          sapply(all_group_diffs, \(y) {
-            y[[x]]
-          }) |> unique()
-        }, simplify = FALSE)
-      
-      # If the choices are numeric, change to numeric to inform a slider
-      numeric <- sapply(widgets, \(x) all(grepl("[0-9]+", x)))
-      mapply(\(x, y) {
-        if (!numeric[y]) return(x)
-        return(as.numeric(x))
-      }, widgets, seq_along(widgets), SIMPLIFY = FALSE, USE.NAMES = TRUE)
-      
+      get_shared_group_diffs(groupings)
     })
     
     # Insert the widgets that are supposed to stay
     observeEvent(staying_widgets(), {
       lapply(seq_along(staying_widgets()), \(x) {
         vars_list <- staying_widgets()[x]
-        lab <- names(vars_list)
-        id_s <- gsub(" |/", "_", tolower(lab))
+        id_s <- create_id_s(staying_widgets()[x])
         vars_list <- unlist(vars_list)
         
         insertUI(ui_selector(),
@@ -88,8 +64,8 @@ auto_vars_server <- function(id, r = r, module_id = NULL, var_list,
                             step <- {vars_list[length(vars_list)] - 
                                 vars_list[length(vars_list) - 1]}
                             def <- vars_list[ceiling(length(vars_list)/2)]
-                            slider_UI(input_namespace()(id_s),
-                                      label = sus_translate(r = r, lab),
+                            slider_UI(input_namespace()(id_s$key),
+                                      label = sus_translate(r = r, id_s$lab),
                                       min = min(vars_list),
                                       max = max(vars_list),
                                       step = step,
@@ -99,9 +75,9 @@ auto_vars_server <- function(id, r = r, module_id = NULL, var_list,
                             names(vars_list) <- vars_list
                             names(vars_list) <- 
                               sapply(names(vars_list), sus_translate, r = r)
-                            select_var_UI(input_namespace()(id_s),
+                            select_var_UI(input_namespace()(id_s$key),
                                           var_list = vars_list,
-                                          label = sus_translate(r = r, lab),
+                                          label = sus_translate(r = r, id_s$lab),
                                           inline = FALSE,
                                           more_style = "width:100%;")
                           }
@@ -132,7 +108,7 @@ auto_vars_server <- function(id, r = r, module_id = NULL, var_list,
       variables[!is.na(variables$grouping) & variables$grouping == group, ]
     })
     
-    #### ALL OTHER WIDGETS WHICH ###############################################
+    #### ALL OTHER WIDGETS #####################################################
     # These widgets can change depending on auto_var() or on change in the 
     # staying widgets.
     
@@ -143,12 +119,10 @@ auto_vars_server <- function(id, r = r, module_id = NULL, var_list,
         staying_widgets_values <- 
           mapply(\(x, y) {
             vars_list <- staying_widgets()[y]
-            lab <- names(vars_list)
-            id_s <- gsub(" |/", "_", tolower(lab))
-            
-            if (is.numeric(unlist(vars_list)))
-              return(as.character(input[[paste0(id_s, "-slider")]]))
-            return(as.character(input[[paste0(id_s, "-var")]]))
+            id_s <- create_id_s(vars_list)$key
+            type <- if (is.numeric(unlist(vars_list))) "-slider" else "-var"
+            key <- paste0(id_s, type)
+            return(as.character(input[[key]]))
           }, staying_widgets(), seq_along(staying_widgets()), SIMPLIFY = FALSE,
           USE.NAMES = TRUE)
         
@@ -163,24 +137,7 @@ auto_vars_server <- function(id, r = r, module_id = NULL, var_list,
     # Additional widget values
     widget_lists <- eventReactive(new_widget_possibilities(), {
       if (is.null(variables_possibilities())) return(NULL)
-      drop_names <- names(unlist(new_widget_possibilities()$group_diff[1]))
-      
-      widgets <-
-        sapply(drop_names, \(x) {
-          all_options <- sapply(new_widget_possibilities()$group_diff, \(y) y[[x]],
-                                USE.NAMES = TRUE) |> unique()
-          # If there is a total, put it first!
-          if (sum(grepl("Total", all_options)) == 0) return(all_options)
-          c("Total", all_options[!grepl("Total", all_options)])
-        })
-      
-      # If the choices are numeric, change to numeric
-      numeric <- sapply(widgets, \(x) all(grepl("[0-9]+", x)))
-      mapply(\(x, y) {
-        if (!numeric[y]) return(x)
-        return(as.numeric(x))
-      }, widgets, seq_along(widgets), SIMPLIFY = FALSE, USE.NAMES = TRUE)
-      
+      get_group_diffs(new_widget_possibilities())
     })
     
     # Create and remove the reactive widgets
@@ -197,16 +154,15 @@ auto_vars_server <- function(id, r = r, module_id = NULL, var_list,
                tags$div(id = "auto_additional_drops",      
                         lapply(seq_along(widgets_to_add), \(x) {
                           vars_list <- widgets_to_add[x]
-                          lab <- names(vars_list)
-                          id_s <- gsub(" |/", "_", tolower(lab))
+                          id_s <- create_id_s(vars_list)
                           vars_list <- unlist(vars_list)
 
                           if (is.numeric(vars_list)) {
                             step <- {vars_list[length(vars_list)] - 
                                 vars_list[length(vars_list) - 1]}
                             def <- vars_list[ceiling(length(vars_list)/2)]
-                            slider_UI(input_namespace()(id_s),
-                                      label = sus_translate(r = r, lab),
+                            slider_UI(input_namespace()(id_s$key),
+                                      label = sus_translate(r = r, id_s$lab),
                                       min = min(vars_list),
                                       max = max(vars_list),
                                       step = step,
@@ -216,9 +172,9 @@ auto_vars_server <- function(id, r = r, module_id = NULL, var_list,
                             names(vars_list) <- vars_list
                             names(vars_list) <- 
                               sapply(names(vars_list), sus_translate, r = r)
-                            select_var_UI(input_namespace()(id_s),
+                            select_var_UI(input_namespace()(id_s$key),
                                           var_list = vars_list,
-                                          label = sus_translate(r = r, lab),
+                                          label = sus_translate(r = r, id_s$lab),
                                           inline = FALSE,
                                           more_style = "width:100%;")
                           }
@@ -235,12 +191,10 @@ auto_vars_server <- function(id, r = r, module_id = NULL, var_list,
       value_keys <-
         mapply(\(x, y) {
           vars_list <- widget_lists()[y]
-          lab <- names(vars_list)
-          id_s <- gsub(" |/", "_", tolower(lab))
-          
-          if (is.numeric(unlist(vars_list))) 
-            return(as.character(input[[paste0(id_s, "-slider")]]))
-          return(as.character(input[[paste0(id_s, "-var")]]))
+          id_s <- create_id_s(vars_list)$key
+          type <- if (is.numeric(unlist(vars_list))) "-slider" else "-var"
+          key <- paste0(id_s, type)
+          return(as.character(input[[key]]))
         }, widget_lists(), seq_along(widget_lists()), SIMPLIFY = FALSE,
         USE.NAMES = TRUE)
       

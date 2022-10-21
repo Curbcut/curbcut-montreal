@@ -1,148 +1,148 @@
-#### Access to amenities data setup ############################################
-
-
-# Load libraries ----------------------------------------------------------
-
-library(tidyverse)
-library(sf)
-library(qs)
-
-
-# Download data -----------------------------------------------------------
-
-# # Get shapefiles from open data portals
-# dl_unzip <- function(shp_url) {
-#   download.file(shp_url, destfile = paste0("dev/data/amenity_access/", "temp",
-#                                            ".zip"))
-# 
-#   unzip(paste0("dev/data/amenity_access/", "temp", ".zip"),
-#         exdir = "dev/data/amenity_access/")
-# 
-#   unlink(paste0("dev/data/amenity_access/", "temp", ".zip"), recursive = TRUE)
-# }
-# 
-# # DL Espace_Vert.shp - MTL
-# dl_unzip(paste0("https://data.montreal.ca/dataset/2e9e4d2f-173a-4c3d-a5e3-565d",
-#                 "79baa27d/resource/c57baaf4-0fa8-4aa4-9358-61eb7457b650/downlo",
-#                 "ad/shapefile.zip"))
-#
-# # DL ParcsEspacesVerts.shp - Longueuil
-# dl_unzip(paste0("https://www3.longueuil.quebec/sites/longueuil/files/donnees_o",
-#                 "uvertes/parcsespacesverts.zip"))
-# 
-# # DL Enseignement scolaire
-# dl_unzip(paste0("https://www.donneesquebec.ca/recherche/dataset/2d3b5cf8-b347-",
-#                 "49c7-ad3b-bd6a9c15e443/resource/2ae11c05-03b2-4006-bdb2-a49a4",
-#                 "fa41c23/download/etablissements-meq-mes-esrishp.zip"))
-# 
-# # DL Service de garde
-# download.file(url = paste0("https://www.donneesquebec.ca/recherche/dataset/be36f85e-e419",
-#                 "-4978-9c34-cb5795622595/resource/89af3537-4506-488c-8d0e-6d8",
-#                 "5b4033a0e/download/liste-des-services-de-garde-08.csv"),
-#               destfile = "dev/data/amenity_access/daycare.csv")
-# 
-# # Geolocate daycares
-# daycares <- 
-#   read_csv("dev/data/amenity_access/daycare.csv")
-# 
-# # Must encode to latin1 as it's the right encoding for that file
-# Encoding(daycares$REGION) <- "latin1"
-# Encoding(daycares$ADRESSE) <- "latin1"
-# Encoding(daycares$NOM_MUN_COMPO) <- "latin1"
-# Encoding(daycares$NOM) <- "latin1"
-# 
-# daycares <-
-#   daycares |>
-#   filter(REGION %in% c("6 - Montréal", "15 - Laurentides",
-#                        "14 - Lanaudière", "16 - Montérégie", "13 - Laval")) |> 
-#   mutate(ADRESSE =
-#            str_remove_all(ADRESSE,
-#                           ", (bureau| bureau|rez-de-chaussée|AG-10|local|suite|appartement|porte) .*$") |>
-#            str_remove_all("      \\de étage|, \\de étage") |>
-#            str_remove_all("(?<=\\d)-\\d*|[A-Z](?=,)")) |>
-#   mutate(ADRESSE = paste0(ADRESSE, ", ",NOM_MUN_COMPO, ", QC"))
-# 
-# # Geocode by postal code if geocoding did not work
-# susmontreal_bbox <- read_sf("dev/data/susmontreal_bbox_5km.shp")
-# postal_code <- 
-#   read_csv("dev/data/ZipCodeFiles/CanadianPostalCodes202103.csv") |> 
-#   filter(PROVINCE_ABBR == "QC") |>
-#   select(-PROVINCE_ABBR, -TIME_ZONE) |> 
-#   st_as_sf(coords = c("LONGITUDE", "LATITUDE"), crs = 4326) |> 
-#   setNames(c("postal_code", "city", "geometry")) |> 
-#   st_filter(susmontreal_bbox) |> 
-#   as_tibble() |> 
-#   st_as_sf()
+# #### Access to amenities data setup ############################################
 # 
 # 
-# daycares$geometry <- NULL
+# # Load libraries ----------------------------------------------------------
 # 
-# for (i in daycares$ADRESSE) {
-# 
-#   # In the case something in the loop fails and it has to be re-ran
-#   if (!is.null(daycares$geometry[daycares$ADRESSE == i] |> unlist())) next
-# 
-#   new_geo <-
-#     tryCatch(tmaptools::geocode_OSM(daycares$ADRESSE[daycares$ADRESSE == i], as.sf = TRUE,
-#                            return.first.only = TRUE),
-#              # If fails, get postal code's geolocation instead
-#              error = function(e)       postal_code$geometry[
-#                postal_code$postal_code ==
-#                  daycares$CODE_POSTAL_COMPO[daycares$ADRESSE == i][[1]]]) |>
-#     (\(x) if (is.null(x)) {
-#       # If fails, get postal code's geolocation instead
-#       postal_code$geometry[
-#         postal_code$postal_code ==
-#           daycares$CODE_POSTAL_COMPO[daycares$ADRESSE == i][[1]]]
-#     } else x$point)()
-# 
-#   daycares$geometry[daycares$ADRESSE == i] <-
-#     if (length(new_geo) == 0) st_sfc(st_point(), crs = 4326) else new_geo
-# 
-#   qsave(daycares, file = "dev/data/amenity_access/daycare.qs")
-# 
-# }
-# 
-# qsave(st_as_sf(daycares, crs = 4326), 
-#       file = "dev/data/amenity_access/daycare.qs")
-# 
-# rm(dl_unzip)
-# 
-# Green spaces from OSM
-# municipal_parks_osm <-
-#   osmdata::opq(st_bbox(susmontreal_bbox), timeout = 200) |>
-#   osmdata::add_osm_features(features = c("\"leisure\" = \"park\"")) |>
-#   osmdata::osmdata_sf()
-# 
-# municipal_parks_osm <-
-#   municipal_parks_osm$osm_multipolygons |>
-#   st_cast("POLYGON") |>
-#   select(osm_id) |>
-#   rbind(municipal_parks_osm$osm_polygons[, "osm_id"])
-# 
-# municipal_parks_island_longueuil <-
-#   read_sf("dev/data/amenity_access/Espace_Vert.shp") |>
-#   st_transform(4326) |>
-#   filter(TYPO1 %in% c("Parc d'arrondissement", "En cours de validation",
-#                       "Grand parc", "Autre espace vert")) |>
-#   select() |>
-#   rbind(read_sf("dev/data/amenity_access/ParcsEspacesVerts.shp") |>
-#           st_transform(4326) |> select())
-# 
-# municipal_parks_osm <-
-#   municipal_parks_osm |>
-#   st_filter(filter(CSD, !str_starts(ID, "2466023") & name != "Longueuil"))
-# 
-# municipal_parks <-
-#   rbind(municipal_parks_island_longueuil, select(municipal_parks_osm)) |>
-#   st_cast("MULTIPOLYGON") |>
-#   st_cast("POLYGON") |>
-#   transmute(id = row_number())
-# 
-# qsave(municipal_parks, file = "dev/data/amenity_access/municipal_parks.qs")
+# library(tidyverse)
+# library(sf)
+# library(qs)
 # 
 # 
-# # Load and clean data -----------------------------------------------------
+# # Download data -----------------------------------------------------------
+# 
+# # # Get shapefiles from open data portals
+# # dl_unzip <- function(shp_url) {
+# #   download.file(shp_url, destfile = paste0("dev/data/amenity_access/", "temp",
+# #                                            ".zip"))
+# #
+# #   unzip(paste0("dev/data/amenity_access/", "temp", ".zip"),
+# #         exdir = "dev/data/amenity_access/")
+# #
+# #   unlink(paste0("dev/data/amenity_access/", "temp", ".zip"), recursive = TRUE)
+# # }
+# #
+# # # DL Espace_Vert.shp - MTL
+# # dl_unzip(paste0("https://data.montreal.ca/dataset/2e9e4d2f-173a-4c3d-a5e3-565d",
+# #                 "79baa27d/resource/c57baaf4-0fa8-4aa4-9358-61eb7457b650/downlo",
+# #                 "ad/shapefile.zip"))
+# #
+# # # DL ParcsEspacesVerts.shp - Longueuil
+# # dl_unzip(paste0("https://www3.longueuil.quebec/sites/longueuil/files/donnees_o",
+# #                 "uvertes/parcsespacesverts.zip"))
+# #
+# # # DL Enseignement scolaire
+# # dl_unzip(paste0("https://www.donneesquebec.ca/recherche/dataset/2d3b5cf8-b347-",
+# #                 "49c7-ad3b-bd6a9c15e443/resource/2ae11c05-03b2-4006-bdb2-a49a4",
+# #                 "fa41c23/download/etablissements-meq-mes-esrishp.zip"))
+# #
+# # # DL Service de garde
+# # download.file(url = paste0("https://www.donneesquebec.ca/recherche/dataset/be36f85e-e419",
+# #                 "-4978-9c34-cb5795622595/resource/89af3537-4506-488c-8d0e-6d8",
+# #                 "5b4033a0e/download/liste-des-services-de-garde-08.csv"),
+# #               destfile = "dev/data/amenity_access/daycare.csv")
+# #
+# # # Geolocate daycares
+# # daycares <-
+# #   read_csv("dev/data/amenity_access/daycare.csv")
+# #
+# # # Must encode to latin1 as it's the right encoding for that file
+# # Encoding(daycares$REGION) <- "latin1"
+# # Encoding(daycares$ADRESSE) <- "latin1"
+# # Encoding(daycares$NOM_MUN_COMPO) <- "latin1"
+# # Encoding(daycares$NOM) <- "latin1"
+# #
+# # daycares <-
+# #   daycares |>
+# #   filter(REGION %in% c("6 - Montréal", "15 - Laurentides",
+# #                        "14 - Lanaudière", "16 - Montérégie", "13 - Laval")) |>
+# #   mutate(ADRESSE =
+# #            str_remove_all(ADRESSE,
+# #                           ", (bureau| bureau|rez-de-chaussée|AG-10|local|suite|appartement|porte) .*$") |>
+# #            str_remove_all("      \\de étage|, \\de étage") |>
+# #            str_remove_all("(?<=\\d)-\\d*|[A-Z](?=,)")) |>
+# #   mutate(ADRESSE = paste0(ADRESSE, ", ",NOM_MUN_COMPO, ", QC"))
+# #
+# # # Geocode by postal code if geocoding did not work
+# # susmontreal_bbox <- read_sf("dev/data/susmontreal_bbox_5km.shp")
+# # postal_code <-
+# #   read_csv("dev/data/ZipCodeFiles/CanadianPostalCodes202103.csv") |>
+# #   filter(PROVINCE_ABBR == "QC") |>
+# #   select(-PROVINCE_ABBR, -TIME_ZONE) |>
+# #   st_as_sf(coords = c("LONGITUDE", "LATITUDE"), crs = 4326) |>
+# #   setNames(c("postal_code", "city", "geometry")) |>
+# #   st_filter(susmontreal_bbox) |>
+# #   as_tibble() |>
+# #   st_as_sf()
+# #
+# #
+# # daycares$geometry <- NULL
+# #
+# # for (i in daycares$ADRESSE) {
+# #
+# #   # In the case something in the loop fails and it has to be re-ran
+# #   if (!is.null(daycares$geometry[daycares$ADRESSE == i] |> unlist())) next
+# #
+# #   new_geo <-
+# #     tryCatch(tmaptools::geocode_OSM(daycares$ADRESSE[daycares$ADRESSE == i], as.sf = TRUE,
+# #                            return.first.only = TRUE),
+# #              # If fails, get postal code's geolocation instead
+# #              error = function(e)       postal_code$geometry[
+# #                postal_code$postal_code ==
+# #                  daycares$CODE_POSTAL_COMPO[daycares$ADRESSE == i][[1]]]) |>
+# #     (\(x) if (is.null(x)) {
+# #       # If fails, get postal code's geolocation instead
+# #       postal_code$geometry[
+# #         postal_code$postal_code ==
+# #           daycares$CODE_POSTAL_COMPO[daycares$ADRESSE == i][[1]]]
+# #     } else x$point)()
+# #
+# #   daycares$geometry[daycares$ADRESSE == i] <-
+# #     if (length(new_geo) == 0) st_sfc(st_point(), crs = 4326) else new_geo
+# #
+# #   qsave(daycares, file = "dev/data/amenity_access/daycare.qs")
+# #
+# # }
+# #
+# # qsave(st_as_sf(daycares, crs = 4326),
+# #       file = "dev/data/amenity_access/daycare.qs")
+# #
+# # rm(dl_unzip)
+# #
+# # Green spaces from OSM
+# # municipal_parks_osm <-
+# #   osmdata::opq(st_bbox(susmontreal_bbox), timeout = 200) |>
+# #   osmdata::add_osm_features(features = c("\"leisure\" = \"park\"")) |>
+# #   osmdata::osmdata_sf()
+# #
+# # municipal_parks_osm <-
+# #   municipal_parks_osm$osm_multipolygons |>
+# #   st_cast("POLYGON") |>
+# #   select(osm_id) |>
+# #   rbind(municipal_parks_osm$osm_polygons[, "osm_id"])
+# #
+# # municipal_parks_island_longueuil <-
+# #   read_sf("dev/data/amenity_access/Espace_Vert.shp") |>
+# #   st_transform(4326) |>
+# #   filter(TYPO1 %in% c("Parc d'arrondissement", "En cours de validation",
+# #                       "Grand parc", "Autre espace vert")) |>
+# #   select() |>
+# #   rbind(read_sf("dev/data/amenity_access/ParcsEspacesVerts.shp") |>
+# #           st_transform(4326) |> select())
+# #
+# # municipal_parks_osm <-
+# #   municipal_parks_osm |>
+# #   st_filter(filter(CSD, !str_starts(ID, "2466023") & name != "Longueuil"))
+# #
+# # municipal_parks <-
+# #   rbind(municipal_parks_island_longueuil, select(municipal_parks_osm)) |>
+# #   st_cast("MULTIPOLYGON") |>
+# #   st_cast("POLYGON") |>
+# #   transmute(id = row_number())
+# #
+# # qsave(municipal_parks, file = "dev/data/amenity_access/municipal_parks.qs")
+# #
+# #
+# # # Load and clean data -----------------------------------------------------
 # 
 # # Travel time matrix
 # tt_matrix_DA <- qread("dev/data/tt_matrix_DA.qs")
@@ -189,6 +189,7 @@ library(qs)
 #   transmute(id = g_objectid,
 #             name = str_to_title(g_name),
 #             sic = g_sic_1) |>
+#   filter(str_starts(sic, "801|805|806")) |>
 #   st_transform(4326)
 # 
 # # Attach health care industry
@@ -207,18 +208,11 @@ library(qs)
 #       str_extract("(?<=\\d{4}—).*")
 #   })
 # 
-# health_care <- left_join(health_care, sm_industry, by = "sic")
-# 
-# # Filter out unrelated industry
-# health_care <-
-#   health_care |>
-#   filter(!industry %in% c("Medical Laboratories",
-#                           "Dental Laboratories",
-#                           "Civic, Social, and Fraternal Associations",
-#                           "Educational, Religious, and Charitable Trusts",
-#                           "Child Day Care Services")) |>
-#   select(-sic)
-# 
+# health_care <- left_join(health_care, sm_industry, by = "sic") |>
+#   mutate(industry =
+#            case_when(str_starts(sic, "801") ~ "Physicians' offices and clinics",
+#                      str_starts(sic, "805") ~ "Nursing and personal care facilities",
+#                      str_starts(sic, "806") ~ "Hospitals"))
 # 
 # # Schools
 # schools <-
@@ -330,9 +324,13 @@ library(qs)
 #   })
 # 
 # # Health care
-# 
-# # TKTK
-# 
+# health_care <-
+#   health_care |>
+#   mutate(vars = case_when(
+#     industry == "Physicians' offices and clinics" ~ list(c("physician", "total")),
+#     industry == "Nursing and personal care facilities" ~ list(c("nursing", "total")),
+#     industry == "Hospitals" ~ list(c("hospital", "total"))
+#   ))
 # 
 # # Number of amenities per DA ----------------------------------------------
 # 
@@ -414,13 +412,6 @@ library(qs)
 #     }) |> reduce(left_join, by = "fromId")
 #   })
 # 
-# # sus_map <- function(x) {
-# #   z <-
-# #     if (vec_depth(x) > 3) map(x, sus_map) else reduce(x, left_join, by = "fromId")
-# #
-# #   if (!is.data.frame(z)) map(x, sus_map) else return(z)
-# # }
-# 
 # # For parks, the amount of amenities reachable per mode must be in sqkm
 # municipal_parks_sqkm <- st_join(municipal_parks, select(DA, ID)) |>
 #   st_drop_geometry()
@@ -475,8 +466,8 @@ library(qs)
 # DA_amenities <- qread("dev/data/modules_raw_data/DA_amenities.qs")
 # 
 # # Get DA amenities at other scales ----------------------------------------
-# On average, an individual living in this scale can reach X amenity in a Y
-# minutes trip
+# # On average, an individual living in this scale can reach X amenity in a Y
+# # minutes trip
 # 
 # # Add all DAs, change NAs for 0s
 # DA_amenities <-
@@ -501,9 +492,9 @@ library(qs)
 # DA_amenities <- calculate_breaks(DA_amenities)
 # 
 # qsave(DA_amenities, "dev/data/modules_raw_data/DA_amenities_breaks.qs")
-# DA_amenities <- qread("dev/data/modules_raw_data/DA_amenities_breaks.qs")
-# 
-# # Assign to existing geographies ------------------------------------------
+DA_amenities <- qread("dev/data/modules_raw_data/DA_amenities_breaks.qs")
+
+# Assign to existing geographies ------------------------------------------
 
 assign_tables(module_tables = DA_amenities)
 
@@ -574,9 +565,16 @@ new_rows <-
         
         paste0(public_or_private, school_level)
         
+      } else if (str_detect(var, "_health_care_")) {
+
+          case_when(
+            str_detect(var, "_physician_") ~ "physicians' offices and clinics",
+            str_detect(var, "_nursing_") ~ "nursing and personal care facilities",
+            str_detect(var, "_hospital_") ~ "hospitals",
+            TRUE ~ "health care facilities")
+        
       } else {
         case_when(str_detect(var, "_daycare_spots_") ~ "daycare spots",
-                  str_detect(var, "_health_care_") ~ "health care facilities",
                   str_detect(var, "_municipal_parks_") ~ 
                     "square kilometers of municipal parks")
       }
@@ -611,9 +609,16 @@ new_rows <-
         
         paste0(public_or_private, school_level)
         
+      } else if (str_detect(var, "_health_care_")) {
+        
+        case_when(
+          str_detect(var, "_physician_") ~ "Physician",
+          str_detect(var, "_nursing_") ~ "Nursing",
+          str_detect(var, "_hospital_") ~ "Hospital",
+          TRUE ~ "health care facilities")
+        
       } else {
         case_when(str_detect(var, "_daycare_spots_") ~ "Daycare",
-                  str_detect(var, "_health_care_") ~ "Health",
                   str_detect(var, "_municipal_parks_") ~ 
                     "Parks")
       }
@@ -693,6 +698,24 @@ new_rows <-
              "Transportation time" = time,
              "Educational establishment category" = school_level,
              "Public/Private" = public_or_private)
+        
+        if (mode == "transit") 
+          out <- append(out, list("Timing" = timing), after = 1)
+        
+        out
+        
+      } else if (str_detect(var, "_health_care_")) {
+        
+        health <- 
+          case_when(
+            str_detect(var, "_physician_") ~ "Physicians' offices and clinics",
+            str_detect(var, "_nursing_") ~ "Nursing and personal care facilities",
+            str_detect(var, "_hospital_") ~ "Hospitals",
+            TRUE ~ "Total")
+        
+        out <- list("Mode of transport" = as.character(glue::glue("By {mode}")),
+                    "Transportation time" = time,
+                    "Health care facility" = health)
         
         if (mode == "transit") 
           out <- append(out, list("Timing" = timing), after = 1)

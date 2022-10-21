@@ -3,132 +3,132 @@
 # This script relies on objects created in dev/census.R
 
 
-# Load libraries and data -------------------------------------------------
-
-library(progressr)
-
-source("dev/other/crosstabs_fun.R")
-
-# table1 <-
-#   read.csv("dev/data/centraide/StatCan_Recensement2016/Fichiers_Sources/tableau1.csv",
-#            header = FALSE) |> as_tibble()
+# # Load libraries and data -------------------------------------------------
 # 
-# table2 <-
-#   read.csv("dev/data/centraide/StatCan_Recensement2016/Fichiers_Sources/tableau2_amend.csv",
-#            header = FALSE) |> as_tibble()
+# library(progressr)
 # 
-# qsavem(table1, table2,
-#        file = "data/StatCan_Recensement2016/Fichiers_Sources/tables.qsm")
-
-qload("dev/data/centraide/StatCan_Recensement2016/Fichiers_Sources/tables.qsm")
-
-rm(table1)
-
-
-# Prepare variables --------------------------------------------------------
-
-# Tenure status
-tenure_statuses <- list("total" = "total", 
-                        "tenant" = "tenant",
-                        "owner" = "owner")
-
-# Shelter cost burden
-shelter_costs <- list("total" = "total", 
-                      "more_30_per" = c("30-50%", "50%-80%", ">80%"),
-                      "more_50_per" = c("50%-80%", ">80%"),
-                      "more_80_per" = ">80%")
-
-add_characteristics <- 
-  # Dwelling characteristics
-  list("total" = "total", 
-       "single_detached" = "single-detached house",
-       "semi_detached" = "semi-detached house",
-       "row_house" = "row house",
-       "in_duplex" = "apartment or flat in a duplex",
-       "in_5plus_storeys" = "apartment in a building that has five or more storeys",
-       "in_less5_storeys" = "apartment in a building that has fewer than five storeys",
-       "other_single_attached" = "other single-attached house",
-       "mobile_homes" = "mobile homes and other movable dwellings",
-       # OR
-       # Family characteristics
-       "kids_3_plus" = "Families with 3 or more children",
-       "low_inc" = "low income after tax",
-       "unsuitable" = "unsuitable",
-       "repairs" = "major repairs needed")
-
-
-# Iteration of the retrieval function -------------------------------------
-
-# With progress!
-progressr::handlers(progressr::handler_progress(
-  format = 
-    ":spin :current/:total (:message) [:bar] :percent in :elapsed ETA: :eta",
-  width = 60,
-  complete = "+"
-))
-
+# source("dev/other/crosstabs_fun.R")
+# 
+# # table1 <-
+# #   read.csv("dev/data/centraide/StatCan_Recensement2016/Fichiers_Sources/tableau1.csv",
+# #            header = FALSE) |> as_tibble()
+# # 
+# # table2 <-
+# #   read.csv("dev/data/centraide/StatCan_Recensement2016/Fichiers_Sources/tableau2_amend.csv",
+# #            header = FALSE) |> as_tibble()
+# # 
+# # qsavem(table1, table2,
+# #        file = "dev/data/centraide/StatCan_Recensement2016/Fichiers_Sources/tables.qsm")
+# 
+# qload("dev/data/centraide/StatCan_Recensement2016/Fichiers_Sources/tables.qsm")
+# 
+# rm(table1)
+# 
+# 
+# # Prepare variables --------------------------------------------------------
+# 
+# # Tenure status
+# tenure_statuses <- list("total" = "total", 
+#                         "tenant" = "tenant",
+#                         "owner" = "owner")
+# 
+# # Shelter cost burden
+# shelter_costs <- list("total" = "total", 
+#                       "more_30_per" = c("30-50%", "50%-80%", ">80%"),
+#                       "more_50_per" = c("50%-80%", ">80%"),
+#                       "more_80_per" = ">80%")
+# 
+# add_characteristics <- 
+#   # Dwelling characteristics
+#   list("total" = "total", 
+#        "single_detached" = "single-detached house",
+#        "semi_detached" = "semi-detached house",
+#        "row_house" = "row house",
+#        "in_duplex" = "apartment or flat in a duplex",
+#        "in_5plus_storeys" = "apartment in a building that has five or more storeys",
+#        "in_less5_storeys" = "apartment in a building that has fewer than five storeys",
+#        "other_single_attached" = "other single-attached house",
+#        "mobile_homes" = "movable dwelling",
+#        # OR
+#        # Family characteristics
+#        "kids_3_plus" = "Families with 3 or more children",
+#        "low_inc" = "low income after tax",
+#        "unsuitable" = "unsuitable",
+#        "repairs" = "major repairs needed")
+# 
+# 
+# # Iteration of the retrieval function -------------------------------------
+# 
+# # With progress!
+# progressr::handlers(progressr::handler_progress(
+#   format = 
+#     ":spin :current/:total (:message) [:bar] :percent in :elapsed ETA: :eta",
+#   width = 60,
+#   complete = "+"
+# ))
+# 
 # with_progress({
-#   
-#   p <- 
+# 
+#   p <-
 #     progressr::progressor(sum(map_int(tenure_statuses, length)) *
 #                             sum(map_int(shelter_costs, length)) *
-#                             sum(map_int(add_characteristics, length)) * 
+#                             sum(map_int(add_characteristics, length)) *
 #                             2)
-#   
-#   cent_d <- 
+# 
+#   cent_d <-
 #     map(set_names(c("CT", "centraide")), function(scale) {
 #       map_dfc(names(tenure_statuses), function(tenure_status_name) {
-#         
+# 
 #         tenure_status <- tenure_statuses[[tenure_status_name]]
-#         
+# 
 #         map_dfc(names(shelter_costs), function(shelter_cost_name) {
-#           
+# 
 #           shelter_cost_f <- shelter_costs[[shelter_cost_name]]
-#           
-#           shelter_cost_sum_rows <- 
+# 
+#           shelter_cost_sum_rows <-
 #             map(shelter_cost_f, function(shelter_c) {
 #               map_dfc(names(add_characteristics), function(characteristic_name) {
-#                 
+# 
 #                 add_characteristics <- add_characteristics[[characteristic_name]]
-#                 
-#                 out <- 
-#                   get_housing_char(tenure = tenure_status, 
+# 
+#                 out <-
+#                   get_housing_char(tenure = tenure_status,
 #                                               shelter_cost = shelter_c,
 #                                               characteristics = add_characteristics)[[
 #                                                 scale]][, "var"]
-#                 
+# 
 #                 p()
-#                 
+# 
 #                 names(out) <- paste(tenure_status_name,
 #                                     shelter_cost_name,
-#                                     characteristic_name, 
+#                                     characteristic_name,
 #                                     sep = "_")
-#                 
+# 
 #                 out
-#                 
+# 
 #               })
 #             })
-#           
+# 
 #           if (length(shelter_cost_sum_rows) > 1) {
-#             shelter_cost_sum_rows <- 
-#               map(shelter_cost_sum_rows, mutate, row_n = row_number()) |> 
-#               reduce(bind_rows) |> 
-#               group_by(row_n) |> 
-#               summarize_all(sum) |> 
+#             shelter_cost_sum_rows <-
+#               map(shelter_cost_sum_rows, mutate, row_n = row_number()) |>
+#               reduce(bind_rows) |>
+#               group_by(row_n) |>
+#               summarize_all(sum) |>
 #               select(-row_n)
 #           }
-#           
+# 
 #           shelter_cost_sum_rows
-#           
+# 
 #         })
 #       })
 #     })
 # })
 # 
-# cent_d <- 
+# cent_d <-
 #   imap(cent_d, function(df, scale) {
 #     bind_cols(get_housing_char()[[scale]][, "ID"], df) |>
-#       rename_with(~paste0("cent_d_", .x, "_count_2016"), 
+#       rename_with(~paste0("cent_d_", .x, "_count_2016"),
 #                   total_total_total:last_col())
 #   })
 # qsave(cent_d, file = "dev/data/modules_raw_data/cent_d.qs")

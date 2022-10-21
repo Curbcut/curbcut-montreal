@@ -59,113 +59,113 @@ add_characteristics <-
        "low_inc" = "low income after tax")
 
 
-# Iteration of the retrieval function -------------------------------------
-
-# With progress!
-progressr::handlers(progressr::handler_progress(
-  format = 
-    ":spin :current/:total (:message) [:bar] :percent in :elapsed ETA: :eta",
-  width = 60,
-  complete = "+"
-))
-
+# # Iteration of the retrieval function -------------------------------------
+# 
+# # With progress!
+# progressr::handlers(progressr::handler_progress(
+#   format = 
+#     ":spin :current/:total (:message) [:bar] :percent in :elapsed ETA: :eta",
+#   width = 60,
+#   complete = "+"
+# ))
+# 
 # library(future)
 # old_plan <- plan()
-# plan(list(tweak(multisession, workers = 2), 
+# plan(list(tweak(multisession, workers = 2),
 #           tweak(multisession, workers = 3),
 #           tweak(multisession, workers = 2),
 #           tweak(multisession, workers = 2)))
 # 
 # with_progress({
-#   
-#   p <- 
+# 
+#   p <-
 #     progressr::progressor(steps = sum(map_int(imm_statuses, length)) *
 #                             sum(map_int(add_characteristics, length)) *
 #                             sum(map_int(shelter_costs, length)) *
-#                             sum(map_int(sexes, length)) * 
+#                             sum(map_int(sexes, length)) *
 #                             2)
-#   
-#   cent_p <- 
+# 
+#   cent_p <-
 #     furrr::future_map(set_names(c("CT", "centraide")), function(scale) {
 #       furrr::future_map_dfc(names(imm_statuses), function(imm_status_name) {
-#         
+# 
 #         imm_status <- imm_statuses[[imm_status_name]]
-#         
+# 
 #         # Non-immigrant includes also non-permanent resident. Get the multiple
 #         # columns, and sum them later.
-#         imm_sum_rows <- 
+#         imm_sum_rows <-
 #           furrr::future_map(imm_status, function(imm_stat) {
 #             furrr::future_map_dfc(names(add_characteristics), function(add_characteristics_name) {
-#               
+# 
 #               household_status <- add_characteristics[[add_characteristics_name]]
-#               
+# 
 #               map_dfc(names(shelter_costs), function(shelter_cost_name) {
-#                 
+# 
 #                 shelter_cost_f <- shelter_costs[[shelter_cost_name]]
-#                 
-#                 shelter_cost_sum_rows <- 
+# 
+#                 shelter_cost_sum_rows <-
 #                   map(shelter_cost_f, function(shelter_c) {
 #                     map_dfc(names(sexes), function(sex_name) {
-#                       
+# 
 #                       se <- sexes[[sex_name]]
-#                       
-#                       out <- 
-#                         get_vulnerable_pop(sex = se, 
+# 
+#                       out <-
+#                         get_vulnerable_pop(sex = se,
 #                                            shelter_cost = shelter_c,
 #                                            immigrant_status = imm_stat,
 #                                            characteristics = household_status)[[
 #                                              scale]][, "var"]
-#                       
+# 
 #                       p()
-#                       
+# 
 #                       names(out) <- paste(imm_status_name,
 #                                           add_characteristics_name,
 #                                           shelter_cost_name,
-#                                           sex_name, 
+#                                           sex_name,
 #                                           sep = "_")
-#                       
+# 
 #                       out
-#                       
+# 
 #                     })
 #                   })
-#                 
+# 
 #                 if (length(shelter_cost_sum_rows) > 1) {
-#                   shelter_cost_sum_rows <- 
-#                     map(shelter_cost_sum_rows, mutate, row_n = row_number()) |> 
-#                     reduce(bind_rows) |> 
-#                     group_by(row_n) |> 
-#                     summarize_all(sum) |> 
+#                   shelter_cost_sum_rows <-
+#                     map(shelter_cost_sum_rows, mutate, row_n = row_number()) |>
+#                     reduce(bind_rows) |>
+#                     group_by(row_n) |>
+#                     summarize_all(sum) |>
 #                     select(-row_n)
 #                 }
-#                 
+# 
 #                 shelter_cost_sum_rows
-#                 
+# 
 #               })
 #             })
 #           })
-#         
+# 
 #         # In the case of Non-immigrant including two columns (non-immigrant
 #         # and non-permanent resident), sum the two columns.
 #         if (length(imm_sum_rows) > 1) {
-#           imm_sum_rows <- 
-#             map(imm_sum_rows, mutate, row_n = row_number()) |> 
-#             reduce(bind_rows) |> 
-#             group_by(row_n) |> 
-#             summarize_all(sum) |> 
+#           imm_sum_rows <-
+#             map(imm_sum_rows, mutate, row_n = row_number()) |>
+#             reduce(bind_rows) |>
+#             group_by(row_n) |>
+#             summarize_all(sum) |>
 #             select(-row_n)
 #         }
-#         
+# 
 #         imm_sum_rows
-#         
+# 
 #       })
-#       
+# 
 #     })
 # })
 # 
 # plan(old_plan)
 # 
 # # Filter out impossible combinations
-# cent_p <- 
+# cent_p <-
 # map(cent_p, function(df) {
 #   df[, !names(df) %in% names(df)[{
 #     str_detect(names(df), paste0("before_2001|2001_to_2010|2011_to_2016|",
@@ -174,10 +174,10 @@ progressr::handlers(progressr::handler_progress(
 #       str_detect(names(df), "^non_immigrants_")}]]
 # })
 # 
-# cent_p <- 
+# cent_p <-
 #   imap(cent_p, function(df, scale) {
 #     bind_cols(get_vulnerable_pop()[[scale]][, "ID"], df) |>
-#       rename_with(~paste0("cent_p_", .x, "_count_2016"), 
+#       rename_with(~paste0("cent_p_", .x, "_count_2016"),
 #                   total_total_total_total:last_col())
 #   })
 # 

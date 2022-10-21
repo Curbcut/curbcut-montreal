@@ -261,11 +261,5 @@ alley_server <- function(id, r) {
       more_args = reactive(c("c-cbox" = visited()))
     )
     
-    observe(assign("data", data(), envir = .GlobalEnv))
-    observe(assign("var_left", var_left(), envir = .GlobalEnv))
-    observe(assign("var_right", var_right(), envir = .GlobalEnv))
-    observe(assign("df", r[[id]]$df(), envir = .GlobalEnv))
-    
-    
   })
 }

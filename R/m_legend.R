@@ -36,7 +36,7 @@ legend_server <- function(id, r, data, var_left, var_right,
       error = function(e) NULL))
     
     # Make legend
-    legend <- reactive(#tryCatch(
+    legend <- reactive(tryCatch(
       render_legend(
         r = r,
         data = data(),
@@ -45,8 +45,8 @@ legend_server <- function(id, r, data, var_left, var_right,
         df = df(),
         data_type = data_type(),
         build_str_as_DA = build_str_as_DA(),
-        breaks = breaks())#,
-      #error = function(e) NULL)
+        breaks = breaks()),
+      error = function(e) NULL)
     )
 
     # Output legend

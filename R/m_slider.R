@@ -2,22 +2,18 @@
 
 # UI ----------------------------------------------------------------------
 
-slider_UI <- function(id, slider_id = NULL, 
+slider_UI <- function(id, slider_id = "slider", 
                       label = sus_translate(r = r, "Select a year"), min = census_min, 
                       max = census_max, step = 5, sep = "", value = census_max,
                       width = "95%", ...) {
-  
-  slider_id <- if (is.null(slider_id)) "slider" else slider_id
   
   sliderInput(NS(id, slider_id), label, min = min, max = max, step = step,
               sep = sep, value = value, width = width,  ...)
 }
 
-slider_text_UI <- function(id, slider_id = NULL, 
+slider_text_UI <- function(id, slider_id = "slider", 
                            label = sus_translate(r = r, "Select a year"), 
                            choices, selected = NULL, width = "95%", ...) {
-  
-  slider_id <- if (is.null(slider_id)) "slider" else slider_id
   
   shinyWidgets::sliderTextInput(NS(id, slider_id), label, choices = choices,
                                 selected = selected, width = width,  ...)
