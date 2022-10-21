@@ -110,7 +110,26 @@ title_text <-
     "règlement.</a><li>Madden, D., & Marcuse, P. (2016). <i>In Defense of ",
     "Housing: The Politics of Crisis</i>. New York and London: Verso ",
     "Books.</ul>")) |> 
-  
+
+# Vacancy rate ---------------------------------------------------
+
+add_row(tab = "vac_rate", type = "title", text = "Vacancy rate") |> 
+  add_row(tab = "vac_rate", type = "main", text = paste0(
+    "Examining residential rental vacancy rates is an important part of ",
+    "understanding the housing landscape in Montreal. In this module, explore ",
+    "and compare information about vacancy rates for specific types of units, ",
+    "the year of construction, or within a rent range. Select a year, ",
+    "two years, or compare dates for which to view the spatialized data. .")) |> 
+  add_row(tab = "afford", type = "extra", text = paste0(
+    "<p> The comparative analysis seen in this module is based on data from ",
+    "the CMHC. In selecting different options from the drop-down menus, ",
+    "insights can be gained on how vacancy rates vary over time and spatially ",
+    "by type of unit, year of construction, and rent range. Using the panel ",
+    "on the right, you can compare these options to variables linked to ",
+    "housing, income, identity, transport, households, language, age, and ",
+    "education. Information about vacancy rates and its related variables ",
+    "can help define past and current trends in the housing market and what ",
+    "is needed to better provide adequate rental housing.  </ul>")) |> 
 
 # Housing affordability ---------------------------------------------------
 
