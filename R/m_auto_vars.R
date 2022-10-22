@@ -134,26 +134,35 @@ auto_vars_server <- function(id, r = r, module_id = NULL, var_list,
         variables_possibilities()[new_group, ]
       })
     
-    # Additional widget values
+    # All widget values
     widget_lists <- eventReactive(new_widget_possibilities(), {
       if (is.null(variables_possibilities())) return(NULL)
       get_group_diffs(new_widget_possibilities())
     })
     
+    # Additional widget values
+    r[[id]]$widgets_to_add <- reactiveVal(" ")
+    widgets_to_add <- reactive({
+      widget_lists()[!names(widget_lists()) %in% names(staying_widgets())]
+    })
+    
+    # Update the reactiveVal ONLY if auto_var() faces an actual change.
+    observeEvent(widgets_to_add(), {
+      if (!identical(widgets_to_add(), r[[id]]$widgets_to_add()))
+        r[[id]]$widgets_to_add(widgets_to_add())
+    })
+    
     # Create and remove the reactive widgets
-    observe({
+    observeEvent(r[[id]]$widgets_to_add(), {
       removeUI(selector = "#auto_additional_drops")
       if (is.null(variables_possibilities())) return(NULL)
-      
-      widgets_to_add <- 
-        widget_lists()[!names(widget_lists()) %in% names(staying_widgets())]
       
       # Reactive widgets' UI
       insertUI(ui_selector(),
                where = "afterEnd",
                tags$div(id = "auto_additional_drops",      
-                        lapply(seq_along(widgets_to_add), \(x) {
-                          vars_list <- widgets_to_add[x]
+                        lapply(seq_along(widgets_to_add()), \(x) {
+                          vars_list <- widgets_to_add()[x]
                           id_s <- create_id_s(vars_list)
                           vars_list <- unlist(vars_list)
 

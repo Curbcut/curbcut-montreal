@@ -67,8 +67,6 @@ climate_risk_server <- function(id, r) {
                       var_left = var_left())
     }) |> bindEvent(tweaked_geo())
     
-    # observe(print(map_zoom_levels()$levels))
-    
     # Zoom string reactive
     observe({
       new_zoom_string <- get_zoom_string(r[[id]]$zoom(), map_zoom_levels()$levels,
