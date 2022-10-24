@@ -167,6 +167,25 @@ get_data_table <- function(df, geo, var_left, var_right, data_type,
                    "var_left_2", "group")]
   }
   
+  # Delta x & q3 y version
+  if (data_type == "bivar_xdelta_yq3") {
+    data <- get(df)
+    data <- data[c("ID", "name", "name_2", cols_to_retrieve, "population",
+                   var_left, var_right, r_q3, r_q5)]
+    data$var_left <- (data[[var_left[2]]] - data[[var_left[1]]]) /
+      abs(data[[var_left[1]]])
+    data$var_left <- replace(data$var_left, is.nan(data$var_left), NA)
+    data$var_left <- replace(data$var_left, is.infinite(data$var_left), NA)
+    data$var_left_q3 <- ntile(data$var_left, 3)
+    data$var_right <- data[[var_right[1]]]
+    data$var_right_q3 <- data[[r_q3[1]]]
+    data$group <- paste(data$var_left_q3, "-", data$var_right_q3)
+    data <- data[c("ID", "name", "name_2", cols_to_retrieve, "population",
+                   "var_left", "var_right", "var_left_q3", "var_right_q3",
+                   "group")]
+  }
+  
+  
   # Delta bivariate
   if (data_type == "delta_bivar") {
     data <- get(df)

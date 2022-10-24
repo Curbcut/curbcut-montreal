@@ -16,13 +16,29 @@ get_x_scale <- function(graph_type, data, var_type, var_left, var_right, df) {
   } else var_left_label <- NULL
   
   
+  ## Additional info -----------------------------------------------------------
+  
+  bivar_unmatched_years <- 
+    length(var_left) == 2 && length(unique(var_right)) == 1
+
+  
   ## Get scale type ------------------------------------------------------------
+  
+  print(graph_type)
+  print(bivar_unmatched_years)
   
   scale_type <- 
     if (graph_type == "date") {
       "date"
-    } else if (graph_type %in% c("deltabi", "NAdeltabi")) {
-      "deltabi"
+    } else if (graph_type %in% c("deltabivar", "NAdeltabivar") && 
+               bivar_unmatched_years) {
+      if (str_detect(var_right[1], "_pct")) {
+        "cont_pct"
+      } else if (str_detect(var_right[1], "_dollar")) {
+        "cont_dollar"
+      } else "cont_comma"
+    } else if (graph_type %in% c("deltabivar", "NAdeltabivar")) {
+      "deltabivar"
     } else if (graph_type %in% c("delta", "NAdelta") && 
                str_detect(var_left[1], "_pct")) {
       "delta_pct"
@@ -50,7 +66,7 @@ get_x_scale <- function(graph_type, data, var_type, var_left, var_right, df) {
   
   ## Compress dollar values ----------------------------------------------------
   
-  if (str_detect(scale_type, "dollar")) {
+  if (str_detect(scale_type, "dollar") && !bivar_unmatched_years) {
     
     if (str_detect(var_type, "NA")) lab_dl <- scales::label_dollar() else {
       
@@ -80,12 +96,42 @@ get_x_scale <- function(graph_type, data, var_type, var_left, var_right, df) {
     }
   }
   
+  if (str_detect(scale_type, "dollar") && bivar_unmatched_years) {
+    
+    if (str_detect(var_type, "NA")) lab_dl <- scales::label_dollar() else {
+      
+      if (str_detect(scale_type, "delta_")) {
+        min_dig <- data$var_right_1
+      } else {
+        min_dig <- if (str_detect(var_left[1], "_dollar")) data$var_left else
+          data$var_right
+      }
+      
+      min_dig <- 
+        min_dig |> 
+        setdiff(0) |> 
+        abs() |> 
+        min(na.rm = TRUE) |> 
+        log10() |> 
+        ceiling()
+      
+      if (min_dig >= 10) {
+        lab_dl <- scales::label_dollar(scale = 1 / 1e+09, suffix = "B")  
+      } else if (min_dig >= 7) {
+        lab_dl <- scales::label_dollar(scale = 1 / 1e+06, suffix = "M")  
+      } else if (min_dig >= 4) {
+        lab_dl <- scales::label_dollar(scale = 1 / 1e+03, suffix = "K")  
+      } else lab_dl <- scales::label_dollar()
+      
+    }
+  }
+  
   
   ## Get scale -----------------------------------------------------------------
   
   if (scale_type == "date") out <- list(scale_x_date())
   
-  if (scale_type == "deltabi") out <- 
+  if (scale_type == "deltabivar") out <- 
     list(scale_x_continuous(labels = scales::percent))
   
   if (scale_type == "delta") out <- 
@@ -114,6 +160,8 @@ get_x_scale <- function(graph_type, data, var_type, var_left, var_right, df) {
   
   if (scale_type == "cont_comma") out <- 
     list(scale_x_continuous(labels = scales::comma))
+  
+  print(scale_type)
   
   return(out)
   

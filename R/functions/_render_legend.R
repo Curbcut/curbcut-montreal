@@ -138,7 +138,7 @@ render_legend <- function(r, data, var_left, var_right, df, data_type,
       labs_xy + theme_default + theme(axis.text.y = element_blank())
     
     # Bivariate, multi-date
-  } else if (data_type == "delta_bivar") {
+  } else if (data_type %in% c("delta_bivar", "bivar_xdelta_yq3")) {
     
     l <- legend_bivar
     l$label <- c(sus_translate(r = r, "Both low"), " ", 

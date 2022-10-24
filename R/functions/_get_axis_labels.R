@@ -44,16 +44,18 @@ get_axis_labels <- function(r = r, graph_type, var_left, var_right) {
   
   if (graph_type %in% c("deltabivar", "NAdeltabivar")) {
     
-    var_left_title <- sus_translate(r = r, variables$var_short[
-      variables$var_code == unique(sub("_\\d{4}$", "", var_left))])
-    
-    var_right_title <- sus_translate(r = r, variables$var_short[
-      variables$var_code == unique(sub("_\\d{4}$", "", var_right))])
+    var_right_lab <- 
+      if (length(unique(var_right)) == 2) {
+        paste0(var_right_title, " (\u0394 ", 
+               str_extract(var_right, "(?<=_)\\d{4}$")[1], "-",
+               str_extract(var_right, "(?<=_)\\d{4}$")[2], ")")
+      } else {
+        paste0(var_right_title, " (", 
+               str_extract(var_right[1], "(?<=_)\\d{4}$"), ")")
+      }
     
     labs_xy <- list(labs(
-      x = paste0(var_right_title, " (\u0394 ", 
-                 str_extract(var_right, "(?<=_)\\d{4}$")[1], "-",
-                 str_extract(var_right, "(?<=_)\\d{4}$")[2], ")"),
+      x = var_right_lab,
       y = paste0(var_left_title, " (\u0394 ", 
                  str_extract(var_left, "(?<=_)\\d{4}$")[1], "-",
                  str_extract(var_left, "(?<=_)\\d{4}$")[2], ")")))

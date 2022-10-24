@@ -326,6 +326,48 @@ info_table <- function(r, data, var_type, var_left, var_right, df, select_id,
     "{sub('^the', 'a', z$exp_left)} of '{z$val_left}' {z$out}.")
   
   
+  ## Bivariate non-matching multi-date cases -----------------------------------
+  
+  # Bivariate, quantitative, no selection
+  if (z$var_type == "bi_quantxy_all_deltax") {
+    # If correlation is close to zero
+    if (abs(z$correlation) < 0.05) {
+      out <- sus_translate(r = r, 
+                           "<p>From {z$start_date_left} to {z$end_date_left}, the change in ", 
+                           "'{z$title_left}' had effectively no correlation ({z$corr_disp}) ", 
+                           "with {z$date_right}'s '{z$title_right}' at the {z$scale_sing} scale.",
+                           "<p>This means that, at the {z$scale_sing} scale, there was no ",
+                           "relationship between the change in {z$exp_left} with {z$exp_right}.")
+    } else {
+      out <- paste0(
+        if (z$strong == sus_translate(r = r, "strong")) 
+          sus_translate(r = r, "<p><b>STRONG CORRELATION</b></p>"),
+        sus_translate(r = r, 
+                      "<p>From {z$start_date_left} to {z$end_date_left}, the change in ", 
+                      "'{z$title_left}' had a {z$strong} {z$pos} ",
+                      "correlation ({z$corr_disp}) with {z$date_right}'s '{z$title_right}' ", 
+                      "at the {z$scale_sing} scale.",
+                      "<p>This means that, in general, {z$scale_plural} with a higher ",
+                      "change in {z$exp_left} tended to have a {z$higher} value in ",
+                      "{z$exp_right}, {z$high_low_disclaimer}."))
+    }
+  }
+  
+  # Bivariate, quantitative, valid selection
+  if (z$var_type == "bi_quantxy_select_deltax") 
+    out <- sus_translate(r = r, 
+                         "<strong>{z$place_heading}</strong>",
+                         "<p>From {z$start_date_left} to {z$end_date_left}, {z$place_name} had ",
+                         "a change in its '{z$title_left}' value of {z$val_left}. ",
+                         "In {z$date_right}, '{z$title_right}' had a value of {z$val_right}. ",
+                         "<p>These two scores are {z$relative_position}, in relative ",
+                         "terms. {z$place_name} had a change in {z$exp_left} higher ",
+                         "than {z$perc_left} of {z$scale_plural}. It also had ",
+                         "{sub('^the', 'a', z$exp_right)} higher than {z$perc_right} ",
+                         "of {z$scale_plural} {z$geo}.")
+  
+  
+  
   ## Special cases -------------------------------------------------------------
   
   if (z$var_type == "date_all") {

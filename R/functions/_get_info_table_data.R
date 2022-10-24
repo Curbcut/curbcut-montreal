@@ -49,6 +49,11 @@ get_info_table_data <- function(r = r, data, var_type, var_left, var_right, df,
     out$end_date_right <- str_extract(var_right, "(?<=_)\\d{4}$")[2]
   }
   
+  if (length(unique(var_right)) == 1) {
+    out$date_right <- str_extract(var_right[1], "(?<=_)\\d{4}$")
+  }
+  
+  
   
   ## Special case for date-type data -------------------------------------------
   
@@ -129,7 +134,7 @@ get_info_table_data <- function(r = r, data, var_type, var_left, var_right, df,
   if (var_right != " ") {
     val_right <- selection$var_right
     out$val_right <- convert_unit(val_right, var_right)
-    if (grepl("_delta", out$var_type)) out$val_right <- 
+    if (grepl("_delta$", out$var_type)) out$val_right <- 
       convert_unit(val_right, "_pct")
   }
   

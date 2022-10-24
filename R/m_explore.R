@@ -62,7 +62,7 @@ explore_server <- function(id, r, data, var_left, var_right, geo,
       get_var_type(
       data = data(),
       var_left = var_left(),
-      var_right = var_right(),
+      var_right = unique(var_right()),
       df = df(),
       geo = geo(),
       select_id = select_id(),

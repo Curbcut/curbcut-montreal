@@ -537,8 +537,8 @@ variables_translated <-
                       "ingle-detached houses"), 
           fr = paste0("le pourcentage de logements privés occupés qui sont des",
                       " maisons individuelles non attenantes")) |> 
-  add_row(en = paste0("median before-tax household income"), 
-          fr = paste0("revenu médian des ménages avant impôt")) |> 
+  add_row(en = paste0("the median before-tax household income"), 
+          fr = paste0("le revenu médian des ménages avant impôt")) |> 
   add_row(en = paste0("the percentage of households with an income less then $",
                       "50,000"), 
           fr = paste0("le pourcentage de ménages dont le revenu est inférieur ",

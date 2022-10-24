@@ -20,7 +20,7 @@ get_legend_labels <- function(r = r, var_left, var_right, data_type, breaks = NU
   title_right <- 
     variables[variables$var_code == unique(sub("_\\d{4}$", "", var_right)),]
   
-  if (data_type %in% c("bivar", "delta_bivar")) {
+  if (data_type %in% c("bivar", "delta_bivar", "bivar_xdelta_yq3")) {
     title_right_short <- sus_translate(r = r, title_right$var_short)
     title_right <- sus_translate(r = r, title_right$var_title)
     # If axis title is too long, take the short version
@@ -48,6 +48,20 @@ get_legend_labels <- function(r = r, var_left, var_right, data_type, breaks = NU
   if (data_type == "qual") {
     labs_xy <- list(labs(x = title_left, y = NULL))
   }
+  
+  # Delta x & q3 y version
+  if (data_type == "bivar_xdelta_yq3") {
+    if (nchar(title_left) > 16) title_left <- title_left_short
+    if (nchar(title_right) > 16) title_right <- title_right_short
+    date_left <- str_extract(var_left, "(?<=_)\\d{4}$")
+    date_left <- paste(date_left, collapse = " - ")
+    title_left <- paste0(title_left, " (\u0394 ", date_left, ")")
+    date_right <- str_extract(var_right[1], "(?<=_)\\d{4}$")
+    title_right <- paste0(title_right, " (", date_right, ")")
+    labs_xy <- list(labs(x = title_right, y = title_left),
+                    x_short = title_right_short, y_short = title_left_short)
+  }
+  
   
   # Delta version
   if (data_type == "delta") {

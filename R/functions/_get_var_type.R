@@ -18,7 +18,11 @@ get_var_type <- function(data, geo, var_left, var_right, df, select_id,
   
   ## Handle multiple dates then strip dates ------------------------------------
   
-  delta <- length(var_left) == 2 || length(var_right) == 2
+  delta <- 
+    length(var_left) == 2 && (length(var_right) == 2 || var_right[1] == " ")
+  deltax <- 
+    length(var_left) == 2 && (length(var_right) == 1 && var_right[1] != " ")
+  
   var_left <- unique(str_remove(var_left, "_\\d{4}$"))
   var_right <- unique(str_remove(var_right, "_\\d{4}$"))
   
@@ -100,6 +104,7 @@ get_var_type <- function(data, geo, var_left, var_right, df, select_id,
   table_type <- paste(comp_type, var_type, select_type, sep = "_")
   if (select_type == "na") table_type <- paste0(comp_type, "_na")
   if (delta) table_type <- paste0(table_type, "_delta")
+  if (deltax) table_type <- paste0(table_type, "_deltax")
   
 
   ## Deal with NAs -------------------------------------------------------------
