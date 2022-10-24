@@ -63,7 +63,7 @@ info_table <- function(r, data, var_type, var_left, var_right, df, select_id,
     "{z$place_name} has no data available on {z$exp_left}.")
   
   # Bivariate, NA selection
-  if (z$var_type == "bi_na") out <- sus_translate(r = r, 
+  if (grepl("^bi_na", z$var_type)) out <- sus_translate(r = r, 
     "{z$place_name} has no data available on {z$exp_left} and ",
     "{z$exp_right}.")
   

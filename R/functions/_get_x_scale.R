@@ -24,9 +24,6 @@ get_x_scale <- function(graph_type, data, var_type, var_left, var_right, df) {
   
   ## Get scale type ------------------------------------------------------------
   
-  print(graph_type)
-  print(bivar_unmatched_years)
-  
   scale_type <- 
     if (graph_type == "date") {
       "date"
@@ -160,8 +157,6 @@ get_x_scale <- function(graph_type, data, var_type, var_left, var_right, df) {
   
   if (scale_type == "cont_comma") out <- 
     list(scale_x_continuous(labels = scales::comma))
-  
-  print(scale_type)
   
   return(out)
   
