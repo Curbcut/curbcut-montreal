@@ -4,18 +4,18 @@
 
 # Load libraries and data -------------------------------------------------
 
-source("dev/other/crosstabs_fun.R")
-
-# table1 <-
-#   read.csv("dev/data/centraide/StatCan_Recensement2016/Fichiers_Sources/tableau1.csv",
-#            header = FALSE) |> as_tibble()
+# source("dev/other/crosstabs_fun.R")
 # 
-# table2 <-
-#   read.csv("dev/data/centraide/StatCan_Recensement2016/Fichiers_Sources/tableau2_amend.csv",
-#            header = FALSE) |> as_tibble()
-# 
-# qsavem(table1, table2,
-#        file = "data/StatCan_Recensement2016/Fichiers_Sources/tables.qsm")
+# # table1 <-
+# #   read.csv("dev/data/centraide/StatCan_Recensement2016/Fichiers_Sources/tableau1.csv",
+# #            header = FALSE) |> as_tibble()
+# # 
+# # table2 <-
+# #   read.csv("dev/data/centraide/StatCan_Recensement2016/Fichiers_Sources/tableau2_amend.csv",
+# #            header = FALSE) |> as_tibble()
+# # 
+# # qsavem(table1, table2,
+# #        file = "dev/data/StatCan_Recensement2016/Fichiers_Sources/tables.qsm")
 # 
 # qload("dev/data/centraide/StatCan_Recensement2016/Fichiers_Sources/tables.qsm")
 # 
@@ -62,7 +62,7 @@ source("dev/other/crosstabs_fun.R")
 # 
 # # With progress!
 # progressr::handlers(progressr::handler_progress(
-#   format = 
+#   format =
 #     ":spin :current/:total (:message) [:bar] :percent in :elapsed ETA: :eta",
 #   width = 60,
 #   complete = "+"

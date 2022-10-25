@@ -12,7 +12,7 @@ amenities_UI <- function(id) {
       NS(id, id),
       susSidebarWidgets(
         auto_vars_UI(NS(id, id), var_list = var_left_list_1_amenities,
-        label = cc_t(r = r, "Access to"))),
+                     label = cc_t(r = r, "Access"))),
       bottom = div(class = "bottom_sidebar", 
                    tagList(legend_UI(NS(id, id)),
                            zoom_UI(NS(id, id), map_zoom_levels_CMA)))),

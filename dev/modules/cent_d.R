@@ -12,11 +12,11 @@
 # # table1 <-
 # #   read.csv("dev/data/centraide/StatCan_Recensement2016/Fichiers_Sources/tableau1.csv",
 # #            header = FALSE) |> as_tibble()
-# # 
+# #
 # # table2 <-
 # #   read.csv("dev/data/centraide/StatCan_Recensement2016/Fichiers_Sources/tableau2_amend.csv",
 # #            header = FALSE) |> as_tibble()
-# # 
+# #
 # # qsavem(table1, table2,
 # #        file = "dev/data/centraide/StatCan_Recensement2016/Fichiers_Sources/tables.qsm")
 # # 
@@ -28,19 +28,19 @@
 # # Prepare variables --------------------------------------------------------
 # 
 # # Tenure status
-# tenure_statuses <- list("total" = "total", 
+# tenure_statuses <- list("total" = "total",
 #                         "tenant" = "tenant",
 #                         "owner" = "owner")
 # 
 # # Shelter cost burden
-# shelter_costs <- list("total" = "total", 
+# shelter_costs <- list("total" = "total",
 #                       "more_30_per" = c("30-50%", "50%-80%", ">80%"),
 #                       "more_50_per" = c("50%-80%", ">80%"),
 #                       "more_80_per" = ">80%")
 # 
-# add_characteristics <- 
+# add_characteristics <-
 #   # Dwelling characteristics
-#   list("total" = "total", 
+#   list("total" = "total",
 #        "single_detached" = "single-detached house",
 #        "semi_detached" = "semi-detached house",
 #        "row_house" = "row house",
@@ -61,7 +61,7 @@
 # 
 # # With progress!
 # progressr::handlers(progressr::handler_progress(
-#   format = 
+#   format =
 #     ":spin :current/:total (:message) [:bar] :percent in :elapsed ETA: :eta",
 #   width = 60,
 #   complete = "+"

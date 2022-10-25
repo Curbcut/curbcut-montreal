@@ -122,7 +122,7 @@ variables <-
       }
       # Year of construction
       if (grepl("_year_", var)) {
-        pre <- "housing built"
+        pre <- "housing units built"
         if (grepl("before_1960", var)) return(paste(pre, "before 1960"))
         if (grepl("1960_1979", var)) return(paste(pre, "between 1960 and 1979"))
         if (grepl("1980_1999", var)) return(paste(pre, "between 1980 and 1999"))
@@ -131,7 +131,7 @@ variables <-
       }
       # Rent ranges
       if (grepl("_rent_range_", var)) {
-        pre <- "housing with a rent"
+        pre <- "housing units with a rent"
         if (grepl("less_750", var)) return(paste(pre, "below $750"))
         if (grepl("750_999", var)) return(paste(pre, "between $750 and $999"))
         if (grepl("1000_1249", var)) return(paste(pre, "between $1,000 and $1,249"))

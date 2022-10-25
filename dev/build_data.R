@@ -485,7 +485,7 @@ iwalk(all_tables, function(scales, geo) {
 
 # Save the shorter tables in data except buildings. 
 # Start by dropping all variables.
-future_imap(all_tables, function(scales, geo) {
+imap(all_tables, function(scales, geo) {
   scales_no_full <- scales[scales != "building"]
   map(scales_no_full, function(scale) {
     geo_scale <- paste(geo, scale, sep = "_")

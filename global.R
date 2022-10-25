@@ -78,7 +78,8 @@ mods_rdy <- list(
     "Accessibility" = "access",
     "Access to amenities" = "amenities",
     "Short distance city" = "city_amenities",
-    "Bikeway comfort and safety" = "canbics"
+    "Bikeway comfort and safety" = "canbics"#,
+    #   "Road safety" = "crash"
   ),
   "Urban life" = c(
     "Active living potential" = "canale",

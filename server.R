@@ -377,7 +377,7 @@ shinyServer(function(input, output, session) {
                               "Island of Montreal", "Centraide"),
                             cc_t, r = r, USE.NAMES = FALSE),
                    choiceValues = c("CMA", "city", "island", "centraide")),
-      
+
       hr(),
       
       # Lock in address of zone for select_ids
@@ -403,7 +403,7 @@ shinyServer(function(input, output, session) {
                                style = "margin-top: var(--padding-v-md);"))),
       title = cc_t(r = r, "Advanced options"),
       footer = modalButton(cc_t(r = r, "Dismiss"))))
-  })
+    })
 
   # Change the default geometry and save the cookie
   observeEvent(input$geo_change, {
