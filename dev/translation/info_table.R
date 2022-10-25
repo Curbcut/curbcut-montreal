@@ -517,6 +517,17 @@ info_table_translated <-
           fr = paste0("quartiers Centraide")) |> 
   add_row(en = paste0("Centraide zone {select_name$name}"), 
           fr = paste0("Quartier Centraide {select_name$name}")) |> 
+  # CMHC
+  add_row(en = paste0("cmhc zone"), 
+          fr = paste0("des zones SCHL")) |> 
+  add_row(en = paste0("CMHC zone"), 
+          fr = paste0("de la zone SCHL")) |> 
+  add_row(en = paste0("CMHC Zone"), 
+          fr = paste0("Zone SCHL")) |> 
+  add_row(en = paste0("CMHC zones"), 
+          fr = paste0("zones SCHL")) |> 
+  add_row(en = paste0("CMHC zone {select_name$name}"), 
+          fr = paste0("Zone SCHL {select_name$name}")) |> 
   
   add_row(en = paste0("We have no data on {z$exp_left} at the {z$scale_sing} sc",
                       "ale."), 

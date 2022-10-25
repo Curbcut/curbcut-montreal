@@ -603,7 +603,7 @@ new_rows <-
             str_detect(var, "_preschool_") ~ "Preschools",
             str_detect(var, "_primary_") ~ "Primary",
             str_detect(var, "_secondary_") ~ "Secondary",
-            str_detect(var, "_vocational_") ~ "Cocational",
+            str_detect(var, "_vocational_") ~ "Vocational",
             str_detect(var, "_adult_") ~ "Adults",
             TRUE ~ "Schools")
         
@@ -630,10 +630,10 @@ new_rows <-
     timing <- 
       case_when(str_detect(var, "_pwd_") ~ "Weekday traffic peak",
                 str_detect(var, "_opwd_") ~ "Weekday traffic off-peak",
-                str_detect(var, "_nwd_") ~ "Weekday traffic night",
+                str_detect(var, "_nwd_") ~ "Weekday night",
                 str_detect(var, "_pwe_") ~ "Weekend traffic peak",
                 str_detect(var, "_opwe_") ~ "Weekend traffic off-peak",
-                str_detect(var, "_nwe_") ~ "Weekend traffic night")
+                str_detect(var, "_nwe_") ~ "Weekend night")
     time <- str_extract(var, "[0-9]+")
     explanation_ <- 
       if (mode == "walk") {
@@ -736,11 +736,11 @@ new_rows <-
     out <-
       add_variables(variables,
                     var_code = var,
-                    var_title = glue::glue("Accessibility to {amenity} by {mode}"),
+                    var_title = glue::glue("Access to {amenity} by {mode}"),
                     var_short = glue::glue("{amenity_short} ({mode})"),
                     explanation = explanation_,
                     category = NA,
-                    theme = "Accessibility to amenities",
+                    theme = "Access to amenities",
                     private = TRUE,
                     dates = NA,
                     scales = names(DA_amenities$tables_list),
@@ -752,7 +752,7 @@ new_rows <-
                                        var = all_of(var)),
                     source = "Centraide",
                     interpolated = interpolation_keys,
-                    grouping = as.character(glue::glue("Accessibility to {amenity_higher_level}")),
+                    grouping = as.character(glue::glue("Access to {amenity_higher_level}")),
                     group_diff = group_diff)
     
     out[out$var_code == var, ]

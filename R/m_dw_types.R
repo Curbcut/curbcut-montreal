@@ -22,7 +22,7 @@ dw_types_UI <- function(id) {
                       var_list = var_left_list_2_dw_types), 
         checkbox_UI(NS(id, id),
                     label = sus_translate(r = r, 
-                                          "Normalized (percent of dwellings)"))),
+                                          "Normalized data (percent of dwellings)"))),
       bottom = div(class = "bottom_sidebar", 
                    tagList(legend_UI(NS(id, id)),
                            zoom_UI(NS(id, id), map_zoom_levels_CMA_max_CT)))),

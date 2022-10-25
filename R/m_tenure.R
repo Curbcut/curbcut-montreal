@@ -19,7 +19,7 @@ tenure_UI <- function(id) {
                       var_list = var_left_list_2_tenure), 
         checkbox_UI(NS(id, id),
                     label = sus_translate(r = r, 
-                                          "Normalized (percent of households)")),
+                                          "Normalized data (percent of households)")),
         br(),
         select_var_UI(NS(id, id), select_var_id = "d_3",
                       label = sus_translate(r = r, "Family characteristic"),

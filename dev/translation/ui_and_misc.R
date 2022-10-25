@@ -36,6 +36,8 @@ ui_and_misc_translated <-
           fr = paste0("Aire de diffusion")) |> 
   add_row(en = paste0("Dissemination block"), 
           fr = paste0("Îlot de diffusion")) |> 
+  add_row(en = paste0("zones"), 
+          fr = paste0("zones")) |> 
   add_row(en = paste0("Building"), 
           fr = paste0("Bâtiment")) |> 
   add_row(en = paste0("Legend"), 
@@ -538,10 +540,10 @@ ui_and_misc_translated <-
           fr = paste0("Démographie")) |> 
   add_row(en = paste0("Shelter cost"), 
           fr = paste0("Frais de logement")) |> 
-  add_row(en = paste0("Normalized (percent of households)"), 
-          fr = paste0("Normalisé (pourcentage des ménages)")) |> 
-  add_row(en = paste0("Normalized (percent of dwellings)"), 
-          fr = paste0("Normalisé (pourcentage des logements)")) |> 
+  add_row(en = paste0("Normalized data (percent of households)"), 
+          fr = paste0("Données normalisés (pourcentage des ménages)")) |> 
+  add_row(en = paste0("Normalized data (percent of dwellings)"), 
+          fr = paste0("Données normalisés (pourcentage des logements)")) |> 
   add_row(en = paste0("Additional characteristic"), 
           fr = paste0("Caractéristique supplémentaire")) |> 
   add_row(en = paste0("Gender"), 
@@ -642,8 +644,8 @@ ui_and_misc_translated <-
           fr = paste0("Types de logements")) |> 
   add_row(en = paste0("Count"), 
           fr = paste0("Compte")) |> 
-  add_row(en = paste0("Normalized (percent of population)"), 
-          fr = paste0("Normalisé (pourcentage de la population)")) |> 
+  add_row(en = paste0("Normalized data (percent of population)"), 
+          fr = paste0("Données normalisés (pourcentage de la population)")) |> 
   add_row(en = paste0("By walk"), 
           fr = paste0("À pied")) |> 
   add_row(en = paste0("By bicycle"), 

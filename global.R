@@ -76,7 +76,7 @@ mods_rdy <- list(
   ),
   "Transport" = c(
     "Accessibility" = "access",
-    "Accessibility to amenities" = "amenities",
+    "Access to amenities" = "amenities",
     "Short distance city" = "city_amenities"#,
     #   "Road safety" = "crash"
   ),

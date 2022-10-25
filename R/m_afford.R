@@ -20,7 +20,7 @@ afford_UI <- function(id) {
         checkbox_UI(NS(id, id),
                     label = sus_translate(r = r, 
                                           #### TO CHANGE DYNAMICALLY TO PERCENT OF HOUSEHOLDS VS INDIVIDUALS
-                                          "Normalized (percent of households)")),
+                                          "Normalized data (percent of households)")),
         hr(),
         div(id = NS(id, "household_dropdowns"), 
             select_var_UI(NS(id, id), select_var_id = "d_3",
@@ -148,7 +148,7 @@ afford_server <- function(id, r) {
       updateCheckboxInput(inputId = "afford-cbox",
                           label = 
                             sus_translate(r = r,
-                                          paste0("Normalized (percent of ", 
+                                          paste0("Normalized data (percent of ", 
                                                  grp, ")")))
     })
     

@@ -67,7 +67,8 @@ source("dev/geometries/census_geometries.R")
 source("dev/geometries/centraide_geometries.R")
 
 # Import CMHC zones
-cmhczone <- read_sf("dev/data/geometry/cmhc.shp")
+cmhczone <- read_sf("dev/data/geometry/cmhc.shp") |> 
+  mutate(zone_2 = "CMHC Zone")
 
 # Add centroids and buffers to DA
 source("dev/geometries/DA_centroids.R")

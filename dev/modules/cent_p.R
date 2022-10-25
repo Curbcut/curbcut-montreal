@@ -5,65 +5,65 @@
 
 # Load libraries and data -------------------------------------------------
 
-source("dev/other/crosstabs_fun.R")
-
-# table1 <-
-#   read.csv("dev/data/centraide/StatCan_Recensement2016/Fichiers_Sources/tableau1.csv",
-#            header = FALSE) |> as_tibble()
+# source("dev/other/crosstabs_fun.R")
 # 
-# table2 <-
-#   read.csv("dev/data/centraide/StatCan_Recensement2016/Fichiers_Sources/tableau2_amend.csv",
-#            header = FALSE) |> as_tibble()
+# # table1 <-
+# #   read.csv("dev/data/centraide/StatCan_Recensement2016/Fichiers_Sources/tableau1.csv",
+# #            header = FALSE) |> as_tibble()
+# # 
+# # table2 <-
+# #   read.csv("dev/data/centraide/StatCan_Recensement2016/Fichiers_Sources/tableau2_amend.csv",
+# #            header = FALSE) |> as_tibble()
+# # 
+# # qsavem(table1, table2,
+# #        file = "data/StatCan_Recensement2016/Fichiers_Sources/tables.qsm")
 # 
-# qsavem(table1, table2,
-#        file = "data/StatCan_Recensement2016/Fichiers_Sources/tables.qsm")
-
-qload("dev/data/centraide/StatCan_Recensement2016/Fichiers_Sources/tables.qsm")
-
-rm(table2)
-
-
-# Prepare variables --------------------------------------------------------
-
-sexes <- list("total" = "total", 
-              "female" = "female", 
-              "male" = "male")
-
-imm_statuses <- list("total" = "total", 
-                     "immigrants" = "immigrants",
-                     "non_immigrants" = c("non-immigrants", "non-permanent"))
-
-shelter_costs <- list("total" = "total", 
-                      "more_30_per" = c("30-50%", "50%-80%", ">80%"),
-                      "more_50_per" = c("50%-80%", ">80%"),
-                      "more_80_per" = ">80%")
-
-add_characteristics <- 
-  list("total" = "total",
-       # Immigration characteristics
-       # Appears and disappears depending if immigrant is selected
-       "before_2001" = "Before 2001",
-       "2001_to_2010" = "2001 to 2010",
-       "2011_to_2016" = "2011 to 2016",
-       "eco_imm" = "Economic immigrants",
-       "sponsored_imm" = "Immigrants sponsored by family",
-       "refugees_imm" = "Refugees",
-       "other_imm" = "Other immigrants",
-       # Visible minority / Indigenous
-       "visible_min" = "Visible minority",
-       "not_visible_min" = "Does not belong to a visible minority group",
-       "aboriginal" = "Aboriginal",
-       # Family characteristics
-       "lone_parents" = "Lone parents (lone-parent families)",
-       "living_alone" = "Persons living alone",
-       "low_inc" = "low income after tax")
-
-
+# qload("dev/data/centraide/StatCan_Recensement2016/Fichiers_Sources/tables.qsm")
+# 
+# rm(table2)
+# 
+# 
+# # Prepare variables --------------------------------------------------------
+# 
+# sexes <- list("total" = "total", 
+#               "female" = "female", 
+#               "male" = "male")
+# 
+# imm_statuses <- list("total" = "total", 
+#                      "immigrants" = "immigrants",
+#                      "non_immigrants" = c("non-immigrants", "non-permanent"))
+# 
+# shelter_costs <- list("total" = "total", 
+#                       "more_30_per" = c("30-50%", "50%-80%", ">80%"),
+#                       "more_50_per" = c("50%-80%", ">80%"),
+#                       "more_80_per" = ">80%")
+# 
+# add_characteristics <- 
+#   list("total" = "total",
+#        # Immigration characteristics
+#        # Appears and disappears depending if immigrant is selected
+#        "before_2001" = "Before 2001",
+#        "2001_to_2010" = "2001 to 2010",
+#        "2011_to_2016" = "2011 to 2016",
+#        "eco_imm" = "Economic immigrants",
+#        "sponsored_imm" = "Immigrants sponsored by family",
+#        "refugees_imm" = "Refugees",
+#        "other_imm" = "Other immigrants",
+#        # Visible minority / Indigenous
+#        "visible_min" = "Visible minority",
+#        "not_visible_min" = "Does not belong to a visible minority group",
+#        "aboriginal" = "Aboriginal",
+#        # Family characteristics
+#        "lone_parents" = "Lone parents (lone-parent families)",
+#        "living_alone" = "Persons living alone",
+#        "low_inc" = "low income after tax")
+# 
+# 
 # # Iteration of the retrieval function -------------------------------------
 # 
 # # With progress!
 # progressr::handlers(progressr::handler_progress(
-#   format = 
+#   format =
 #     ":spin :current/:total (:message) [:bar] :percent in :elapsed ETA: :eta",
 #   width = 60,
 #   complete = "+"

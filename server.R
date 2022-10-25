@@ -365,7 +365,8 @@ shinyServer(function(input, output, session) {
                               "Island of Montreal", "Centraide"),
                             sus_translate, r = r, USE.NAMES = FALSE),
                    choiceValues = c("CMA", "city", "island", "centraide")),
-      title = sus_translate(r = r, "Advanced options")))
+      title = sus_translate(r = r, "Advanced options"),
+      footer = modalButton(sus_translate(r = r, "Dismiss"))))
   })
 
   # Change the default geometry and save the cookie

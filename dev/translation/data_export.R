@@ -254,6 +254,8 @@ data_export_translated <-
           fr = paste0("Fondation David Suzuki")) |> 
   add_row(en = paste0("Centraide of Greater Montreal"), 
           fr = paste0("Centraide du Grand Montréal")) |> 
+  add_row(en = paste0("Canada Mortgage and Housing Corporation"), 
+          fr = paste0("Société canadienne d'hypothèques et de logement")) |> 
   add_row(en = paste0("Job and population data from Statistics Canada. Travel time calculations from OSM and GTFS."), 
           fr = paste0("Données sur les emplois et la population provenant de Statistique Canada. Calculs des temps de trajet à partir d'OSM et de GTFS.")) |> 
   
