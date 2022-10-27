@@ -166,7 +166,7 @@ add_row(tab = "vac_rate", type = "title", text = "Vacancy rate") |>
     "consists of many different factors and characteristics, such as, the ",
     "people living there, their income, their shelter costs, and their tenure ",
     "status. In this module, explore and compare housing affordability by ",
-    "city or borough.")) |> 
+    "city or borough, or census tract.")) |> 
   add_row(tab = "afford", type = "extra", text = paste0(
     "<p> The comparative analysis that you see in this module is based on ",
     "housing data from the 2016 Census. In selecting different options from ",

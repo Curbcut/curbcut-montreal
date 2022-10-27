@@ -472,7 +472,7 @@ title_text_translation <-
                       "consists of many different factors and characteristics, such as, the ",
                       "people living there, their income, their shelter costs, and their tenure ",
                       "status. In this module, explore and compare housing affordability by ",
-                      "city or borough."), 
+                      "city or borough, or census tract."), 
           fr = paste0("Il est essentiel d'avoir accès à un logement abordable ",
                       "et équitable. Un logement abordable est souvent défini ",
                       "de manière générale comme le fait de consacrer moins ",
@@ -482,7 +482,7 @@ title_text_translation <-
                       "personnes qui y vivent, leurs revenus, leurs frais de ",
                       "logement et leur statut d'occupation. Dans ce module, ",
                       "explorez et comparez l'accessibilité au logement par ",
-                      "ville ou arrondissement.")) |>
+                      "ville ou arrondissement, ou par secteur de recensement.")) |>
   add_row(en = paste0( "<p> The comparative analysis that you see in this module is based on ",
                        "housing data from the 2016 Census. In selecting different options from ",
                        "the drop-down menus, insights can be gained on how affordability varies ",
