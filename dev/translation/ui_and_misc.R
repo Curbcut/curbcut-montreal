@@ -656,6 +656,8 @@ ui_and_misc_translated <-
           fr = paste0("En auto")) |> 
   add_row(en = paste0("Centraide"), 
           fr = paste0("Centraide")) |> 
+  add_row(en = paste0("Access to"), 
+          fr = paste0("Accès à")) |> 
   # Stories
   add_row(en = paste0("The proposed {year} metro network."), 
           fr = paste0("Le réseau proposé en {year}.")) |> 
