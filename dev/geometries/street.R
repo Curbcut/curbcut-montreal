@@ -2,7 +2,7 @@
 # 
 # # This script loads street data from OSM and separates streets in edges.
 # # We should load data from OSM once in a while for updates, but this script
-# # is very computing intensive.
+# # is very computing intensive. 
 # 
 # suppressPackageStartupMessages({
 #   library(osmdata)
@@ -62,7 +62,7 @@
 # 
 # street_network <-
 #   street_network |>
-#   st_filter(master_polygon)
+#   st_filter(CSD)
 # 
 # street_network <-
 #   street_network |>
@@ -202,4 +202,21 @@
 
 street <- qread("dev/data/street.qs")
 
+
+# # Temporarily trim to island ----------------------------------------------
+# 
+# island_CSDUID <- 
+#   c("2466007", "2466023_1",  "2466023_10", "2466023_11", "2466023_12", 
+#     "2466023_13", "2466023_14", "2466023_15", "2466023_16", "2466023_17", 
+#     "2466023_18", "2466023_19", "2466023_2", "2466023_3", "2466023_4", 
+#     "2466023_5",  "2466023_6", "2466023_7", "2466023_8", "2466023_9",
+#     "2466032", "2466047", "2466058", "2466062", "2466087", "2466092", 
+#     "2466097", "2466102", "2466107", "2466112", "2466117", "2466127", 
+#     "2466142", "2466072", "2466023")
+# 
+# street <- 
+#   street |> 
+#   filter(CSDUID %in% island_CSDUID)
+# 
+# rm(island_CSDUID)
 

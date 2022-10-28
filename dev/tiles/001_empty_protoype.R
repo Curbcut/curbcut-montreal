@@ -9,7 +9,11 @@ source("dev/tiles/_tile_functions.R")
 # All combinations --------------------------------------------------------
 
 all_tables <- 
-  list("CMA" = c("CSD", "CT", "DA", "grid", "building"))
+  list("CMA" = c("CSD", "CT", "DA", "grid", "building"),
+       "island" = c("CSD", "CT", "DA", "grid", "building"),
+       "city" = c("CSD", "CT", "DA", "DB", "grid", "building"),
+       "centraide" = c("centraide", "CT", "DA", "grid", "building"),
+       "cmhc" = "cmhc_zone")
 
 # TKTK REVIEW FOR CMHC ZONES, THEY GET AN AUTOZOOM ATTACHED!
 combinations <- 

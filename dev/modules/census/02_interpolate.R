@@ -206,7 +206,7 @@ swap_csd_to_borough <- function(df_list, years, crs = 32618, data_agg, scales) {
     interpolated_ids <-
       CSD |>
       select(ID) |>
-      filter(str_detect(ID, "_")) |>
+      filter(str_starts(ID, "2466023")) |>
       st_transform(32618) |>
       st_set_agr("constant") |>
       st_intersection(DA_n, .) |>
@@ -233,7 +233,7 @@ swap_csd_to_borough <- function(df_list, years, crs = 32618, data_agg, scales) {
       across(any_of(data_agg$var_add), agg_add, area_prop, int_area),
       .groups = "drop"
       ) |>
-      filter(str_detect(ID, "_"))
+      filter(str_starts(ID, "2466023"))
     
     if (length(DA_na_columns) > 0) {
       # Get geometry and areas of already-interpolated DAs.
@@ -249,7 +249,7 @@ swap_csd_to_borough <- function(df_list, years, crs = 32618, data_agg, scales) {
       interpolated_ids <-
         CSD |>
         select(ID) |>
-        filter(str_detect(ID, "_")) |>
+        filter(str_starts(ID, "2466023")) |>
         st_transform(crs) |>
         st_set_agr("constant") |>
         st_intersection(CT_n, .) |>
@@ -276,7 +276,7 @@ swap_csd_to_borough <- function(df_list, years, crs = 32618, data_agg, scales) {
         across(any_of(data_agg$var_add), agg_add, area_prop, int_area),
         .groups = "drop"
         ) |>
-        filter(str_detect(ID, "_"))
+        filter(str_starts(ID, "2466023"))
       
       left_join(DA_out, CT_out, by = "ID")
     } else {
@@ -288,7 +288,7 @@ swap_csd_to_borough <- function(df_list, years, crs = 32618, data_agg, scales) {
     # Get geometry and areas of interpolated DAs.
     CSD_n <- df_list$CSD[[as.character(year)]]
     borough_n <- borough_data[[as.character(year)]]
-    bind_rows(filter(CSD_n, !str_detect(ID, "_")), borough_n)
+    bind_rows(filter(CSD_n, !str_starts(ID, "2466023")), borough_n)
   })
   
   df_list$CSD <- borough_data

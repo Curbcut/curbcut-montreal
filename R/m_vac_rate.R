@@ -27,7 +27,7 @@ vac_rate_UI <- function(id) {
                   min = 2010, max = 2021, step = 1, value = 2021), 
         slider_UI(NS(id, id), slider_id = "slb",
                   label = sus_translate(r = r, "Select two years"),
-                  value = c("2011", "2020"),
+                  value = c("2017", "2021"),
                   min = 2010, max = 2021, step = 1), 
         checkbox_UI(NS(id, id),
                     label = sus_translate(r = r, "Compare dates")),

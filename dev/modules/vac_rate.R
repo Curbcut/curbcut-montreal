@@ -114,7 +114,7 @@ variables <-
       # Bedroom types
       if (grepl("_bed_", var)) {
         if (grepl("bachelor", var)) return("studio apartments")
-        suff <- "housing units"
+        suff <- "units"
         if (grepl("1_bed", var)) return(paste("one-bedroom", suff))
         if (grepl("2_bed", var)) return(paste("two-bedroom", suff))
         if (grepl("3_bed_plus", var)) return(paste("three-bedroom and larger", suff))
@@ -122,23 +122,23 @@ variables <-
       }
       # Year of construction
       if (grepl("_year_", var)) {
-        pre <- "housing units built"
+        pre <- "housing built"
         if (grepl("before_1960", var)) return(paste(pre, "before 1960"))
         if (grepl("1960_1979", var)) return(paste(pre, "between 1960 and 1979"))
         if (grepl("1980_1999", var)) return(paste(pre, "between 1980 and 1999"))
         if (grepl("2000_or_later", var)) return(paste(pre, "after 2000"))
-        if (grepl("year_total", var)) return(paste("all housing units"))
+        if (grepl("year_total", var)) return(paste("all housing"))
       }
       # Rent ranges
       if (grepl("_rent_range_", var)) {
-        pre <- "housing units with a rent"
+        pre <- "housing with a rent"
         if (grepl("less_750", var)) return(paste(pre, "below $750"))
         if (grepl("750_999", var)) return(paste(pre, "between $750 and $999"))
         if (grepl("1000_1249", var)) return(paste(pre, "between $1,000 and $1,249"))
         if (grepl("1250_1499", var)) return(paste(pre, "between $1,250 and $1,499"))
         if (grepl("1500_plus", var)) return(paste(pre, "higher than $1,500"))
         if (grepl("non_market", var)) return(paste("units with an unknown rent"))
-        if (grepl("rent_range_total", var)) return(paste("all housing units"))
+        if (grepl("rent_range_total", var)) return(paste("all housing"))
       }
     })(var)
     title <- paste("Vacancy rate in", cat_title)

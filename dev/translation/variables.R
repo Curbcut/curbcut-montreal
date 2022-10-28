@@ -1348,7 +1348,7 @@ variables_translated <-
   add_row(en = paste0("Adults"), 
           fr = paste0("Adultes")) |> 
   add_row(en = paste0("Public"), 
-          fr = paste0("Public")) |> 
+          fr = paste0("Public"))
 
 # ## Add vacancy rate
 # # Variables needed translation
@@ -20855,5 +20855,4 @@ variables_translated <-
   add_row(en = paste0("the count of daycare spots accessible in 60 minutes by ",
                       "car by the average resident"), 
           fr = paste0("le nombre de places en garderie accessible en 60 minute",
-                      "s en auto par un résident moyen de la zone")) |> 
-  mutate(fr = gsub("  ", " ", fr))
+                      "s en auto par un résident moyen de la zone"))

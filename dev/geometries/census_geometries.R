@@ -187,56 +187,54 @@ borough <-
   borough |> 
   mutate(CSDUID = ID, .after = name)
 
+DA <- 
+  DA |> 
+  left_join(borough_join, by = "ID") |> 
+  mutate(CSDUID = coalesce(CSDUID_new, CSDUID)) |> 
+  select(-CSDUID_new)
+
+CT <-
+  DA |> 
+  st_drop_geometry() |> 
+  select(ID = CTUID, CSDUID_new = CSDUID) |> 
+  distinct() |> 
+  filter(str_detect(CSDUID_new, "_")) |> 
+  group_by(ID) |> 
+  # Manual fix for Pierrefonds
+  slice(1) |> 
+  ungroup() |> 
+  right_join(CT, by = "ID") |> 
+  mutate(CSDUID = coalesce(CSDUID_new, CSDUID)) |> 
+  select(-CSDUID_new) |> 
+  st_as_sf()
+
+
 rm(borough_join, CSD, leftovers)
+
+
+# Add borough/CSD names ---------------------------------------------------
 
 CSD <- 
   borough |> 
   rename(name_2 = type) |> 
   st_set_agr("constant")
 
-
-# Adding Laval ------------------------------------------------------------
-
-# Adding Laval
-laval <- st_read(paste0("dev/data/centraide/StatCan_Recensement2016/_Geograph",
-                        "ie/Secteurs_damenagement_Ville_de_Laval.shp")) |> 
-  sf::st_transform(4326) |> 
-  transmute(name = gsub("Secteur \\d - ", "", Secteur), type = "Sector")
-
-CSD <- susbuildr::split_scale(destination = CSD, 
-                              cutting_layer = laval,
-                              DA_table = DA,
-                              crs = 32618)
-
-CSD <- CSD |> 
-  mutate(CSDUID = ID)
-
-# Add borough/CSD names ---------------------------------------------------
-
-CT_surface <- st_point_on_surface(st_transform(CT, 32618))
-
-CT_index <- 
-  CT_surface |> 
-  select(-CSDUID) |> 
-  st_intersection(select(st_transform(CSD, 32618), CSDUID, name) |> 
-                    rename(name_2 = name)) |> 
-  st_drop_geometry() |> 
-  select(ID, CSDUID, name_2)
-
 CT <- 
   CT |> 
-  select(-CSDUID) |> 
-  left_join(CT_index) |> 
-  mutate(CTUID = ID) |> 
-  relocate(name_2, CSDUID, CTUID, .after = name)
+  left_join(select(st_drop_geometry(CSD), CSDUID = ID, name_2 = name),
+            by = "CSDUID") |>
+  relocate(name_2, .after = name) |>
+  mutate(CTUID = ID, .after = name_2) |>
+  st_set_agr("constant")
 
 DA <- 
-DA |> 
-  select(-CSDUID) |> 
-  left_join(st_drop_geometry(CT) |> 
-              transmute(CTUID, CSDUID, name_2), by = "CTUID") |> 
-  mutate(DAUID = ID) |> 
-  relocate(name_2, CSDUID, CTUID, DAUID, .after = name)
+  DA |> 
+  left_join(select(st_drop_geometry(CSD), CSDUID = ID, name_2 = name), 
+            by = "CSDUID") |>
+  relocate(name_2, .after = name) |> 
+  mutate(CTUID = if_else(is.na(CTUID), CSDUID, CTUID)) |> 
+  mutate(DAUID = ID, .after = name_2) |> 
+  st_set_agr("constant")
 
 # + add DAUID to DB
 DB_intersects_DA <- st_intersects(st_centroid(DB), DA)

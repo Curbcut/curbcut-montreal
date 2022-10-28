@@ -45,6 +45,31 @@ title_text <-
     "<b>(MSSI research)</b></ul><br><p><i>Module lead ",
     "authors: David Wachsmuth, Robin Basalaev-Binder</i>")) |> 
 
+# CanBICS -----------------------------------------------------------------
+
+  add_row(tab = "canbics", type = "title", text = "Bikeway Comfort and Safety") |> 
+  add_row(tab = "canbics", type = "main", text = paste0(
+    "Can-BICS, or Canadian Bikeway Comfort and Safety, is a classification ",
+    "system for cycling infrastructure in Canada. This system is based on ",
+    "three tiers that considers safety and user comfort: high-comfort bikeways, ",
+    "medium-comfort bikeways, and low-comfort bikeways. In this module, explore ",
+    "how areas in the Montreal region rank in accordance with the Can-BICS index. ")) |> 
+  add_row(tab = "canbics", type = "extra", text = paste0(
+    "<p>The information seen in this module is based on data from CANUE. ",
+    "Can-BICS was developed by Meghan Winters, PhD, Moreno Zanotto, MSc, ",
+    "and Gregory Butler, MSc. In selecting different areas on the map, ",
+    "insights can be gained about the type and quality of cycling infrastructure. ",
+    "Using the panel on the right, you can compare the Can-BICS index to ",
+    "variables linked to housing, income, identity, transport, households, ",
+    "language, age, and education. Understanding the spatialization of cycling ",
+    "infrastructure as classified by Can-BICS can help to highlight the ",
+    "availability and infrastructure types across the Montreal region and ",
+    "support efforts in improving bikeways. <p>For more information about ",
+    "Can-BICS visit: <a href='https://www.canada.ca/en/public-health/services/",
+    "reports-publications/health-promotion-chronic-disease-prevention-canada-",
+    "research-policy-practice/vol-40-no-9-2020/canbics-classification-system-",
+    "naming-convention-cycling-infrastructure.html'></a> </ul>")) |> 
+
   
 # Climate risk ------------------------------------------------------------
 
@@ -118,10 +143,10 @@ add_row(tab = "vac_rate", type = "title", text = "Vacancy rate") |>
     "Examining residential rental vacancy rates is an important part of ",
     "understanding the housing landscape in Montreal. In this module, explore ",
     "and compare information about vacancy rates for specific types of units, ",
-    "the year of construction, or within a rent range. Select one or two years ",
-    "to compare the dates for which you wish to view the spatialized data.")) |> 
+    "the year of construction, or within a rent range. Select a year, ",
+    "two years, or compare dates for which to view the spatialized data.")) |> 
   add_row(tab = "vac_rate", type = "extra", text = paste0(
-    "The comparative analysis seen in this module is based on data from ",
+    "<p> The comparative analysis seen in this module is based on data from ",
     "the CMHC. In selecting different options from the drop-down menus, ",
     "insights can be gained on how vacancy rates vary over time and spatially ",
     "by type of unit, year of construction, and rent range. Using the panel ",
@@ -129,8 +154,8 @@ add_row(tab = "vac_rate", type = "title", text = "Vacancy rate") |>
     "housing, income, identity, transport, households, language, age, and ",
     "education. Information about vacancy rates and its related variables ",
     "can help define past and current trends in the housing market and what ",
-    "is needed to better provide adequate rental housing.")) |> 
-  
+    "is needed to better provide adequate rental housing. </ul>")) |> 
+
 # Housing affordability ---------------------------------------------------
 
   add_row(tab = "afford", type = "title", text = "Housing Affordability") |> 
@@ -141,7 +166,7 @@ add_row(tab = "vac_rate", type = "title", text = "Vacancy rate") |>
     "consists of many different factors and characteristics, such as, the ",
     "people living there, their income, their shelter costs, and their tenure ",
     "status. In this module, explore and compare housing affordability by ",
-    "city or borough.")) |> 
+    "city or borough, or census tract.")) |> 
   add_row(tab = "afford", type = "extra", text = paste0(
     "<p> The comparative analysis that you see in this module is based on ",
     "housing data from the 2016 Census. In selecting different options from ",
@@ -421,7 +446,7 @@ add_row(tab = "amenities", type = "title",
     "access to schools, food distributors, health care facilities, ",
     "municipal parks, and daycare spots by walk, bike, transit, or car.")) |> 
   add_row(tab = "amenities", type = "extra", text = paste0(
-    "The spatialized analysis seen in this module is based on data from ",
+    "<p>The spatialized analysis seen in this module is based on data from ",
     "Données Québec and DMTI. In selecting different options from the ",
     "drop-down menus, insights can be gained about access to different types ",
     "of amenities by a certain mode of transportation within a given amount ",
@@ -429,7 +454,7 @@ add_row(tab = "amenities", type = "title",
     "variables linked to housing, income, identity, transport, households, ",
     "language, age, and education. Understanding access to amenities by mode ",
     "of transportation gives a glimpse into how different areas are serviced ",
-    "and what that might imply for residents.")) |> 
+    "and what that might imply for residents. </a>.")) |> 
   
 
 # Montreal stories --------------------------------------------------------
