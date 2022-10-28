@@ -1348,7 +1348,7 @@ variables_translated <-
   add_row(en = paste0("Adults"), 
           fr = paste0("Adultes")) |> 
   add_row(en = paste0("Public"), 
-          fr = paste0("Public"))
+          fr = paste0("Public")) |> 
 
 # ## Add vacancy rate
 # # Variables needed translation
