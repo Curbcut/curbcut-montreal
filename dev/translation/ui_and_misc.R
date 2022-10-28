@@ -20,6 +20,8 @@ ui_and_misc_translated <-
           fr = paste0("Bienvenue")) |> 
   add_row(en = paste0("----"), 
           fr = paste0("----")) |> 
+  add_row(en = paste0(" "), 
+          fr = paste0(" ")) |> 
   add_row(en = paste0("Learn more"), 
           fr = paste0("En savoir plus")) |> 
   add_row(en = paste0("Advanced options"), 

@@ -3,20 +3,22 @@
 # This script relies on objects created in dev/census.R
 
 
-# Load libraries and data -------------------------------------------------
-
+# # Load libraries and data -------------------------------------------------
+# 
+# library(progressr)
+# 
 # source("dev/other/crosstabs_fun.R")
 # 
 # # table1 <-
 # #   read.csv("dev/data/centraide/StatCan_Recensement2016/Fichiers_Sources/tableau1.csv",
 # #            header = FALSE) |> as_tibble()
-# # 
+# #
 # # table2 <-
 # #   read.csv("dev/data/centraide/StatCan_Recensement2016/Fichiers_Sources/tableau2_amend.csv",
 # #            header = FALSE) |> as_tibble()
-# # 
+# #
 # # qsavem(table1, table2,
-# #        file = "data/StatCan_Recensement2016/Fichiers_Sources/tables.qsm")
+# #        file = "dev/data/centraide/StatCan_Recensement2016/Fichiers_Sources/tables.qsm")
 # 
 # qload("dev/data/centraide/StatCan_Recensement2016/Fichiers_Sources/tables.qsm")
 # 
@@ -25,20 +27,20 @@
 # 
 # # Prepare variables --------------------------------------------------------
 # 
-# sexes <- list("total" = "total", 
-#               "female" = "female", 
+# sexes <- list("total" = "total",
+#               "female" = "female",
 #               "male" = "male")
 # 
-# imm_statuses <- list("total" = "total", 
+# imm_statuses <- list("total" = "total",
 #                      "immigrants" = "immigrants",
 #                      "non_immigrants" = c("non-immigrants", "non-permanent"))
 # 
-# shelter_costs <- list("total" = "total", 
+# shelter_costs <- list("total" = "total",
 #                       "more_30_per" = c("30-50%", "50%-80%", ">80%"),
 #                       "more_50_per" = c("50%-80%", ">80%"),
 #                       "more_80_per" = ">80%")
 # 
-# add_characteristics <- 
+# add_characteristics <-
 #   list("total" = "total",
 #        # Immigration characteristics
 #        # Appears and disappears depending if immigrant is selected
@@ -287,8 +289,8 @@ breaks_q5_active <-
                                  .before = 1)})
 
 new_rows <-
-  map_dfr(var_list, function(var) {
-    
+  future_map_dfr(var_list, function(var) {
+
     var <- str_remove(var, "_\\d{4}$")
     
     # TITLE
@@ -318,11 +320,11 @@ new_rows <-
     
     shelter_title <-
       case_when(str_detect(var, "more_30_per") ~
-                  " spending >30% of income on shelter",
+                  " who are spending >30% of income on shelter",
                 str_detect(var, "more_50_per") ~
-                  " spending >50% of income on shelter",
+                  " who are spending >50% of income on shelter",
                 str_detect(var, "more_80_per") ~
-                  " spending >80% of income on shelter",
+                  " who are spending >80% of income on shelter",
                 TRUE ~ "")
     
     characteristics_title <-
@@ -362,8 +364,9 @@ new_rows <-
       paste0(gsub("s$", "", sex_imm_title), characteristics_title, shelter_title, 
              post_title)
     } else {
-      paste0(sex_imm_title, shelter_title, characteristics_title, 
-             post_title)
+      paste0(sex_imm_title, shelter_title, 
+             characteristics_title, 
+             if (characteristics_title == "") post_title else gsub(" who ", " and ", post_title))
     }
     
     # EXPLANATION
@@ -397,11 +400,11 @@ new_rows <-
     
     shelter_exp <-
       case_when(str_detect(var, "more_30_per") ~
-                  " spending >30% of income on shelter",
+                  " who are spending >30% of income on shelter",
                 str_detect(var, "more_50_per") ~
-                  " spending >50% of income on shelter",
+                  " who are spending >50% of income on shelter",
                 str_detect(var, "more_80_per") ~
-                  " spending >80% of income on shelter",
+                  " who are spending >80% of income on shelter",
                 TRUE ~ "")
     
     characteristics_exp <-
@@ -430,17 +433,18 @@ new_rows <-
                 str_detect(var, "living_alone") ~
                   " who are living alone",
                 str_detect(var, "low_inc") ~
-                  "low income",
+                  " low income",
                 TRUE ~ "")
     
-    exp <- if (str_detect(var, "low_inc")) {
-      paste0(pre_exp, characteristics_exp, sex_imm_exp, shelter_exp,
-             post_exp)  
-    } else if (str_detect(var, "lone_parents")) {
+    exp <- if (str_detect(var, "lone_parents")) {
       paste0(pre_exp, gsub("s$", "", sex_imm_exp), characteristics_exp, shelter_exp,
-             post_exp)  
+             post_exp)
+    } else if (str_detect(var, "low_inc")) {
+      paste0(pre_exp, characteristics_exp, sex_imm_exp, shelter_exp,
+             post_exp)
     } else {
-      paste0(pre_exp, sex_imm_exp, shelter_exp, characteristics_exp,
+      paste0(pre_exp, sex_imm_exp, characteristics_exp, 
+             if (characteristics_exp == "") shelter_exp else gsub(" who ", " and ", shelter_exp),
              post_exp)
     }
     

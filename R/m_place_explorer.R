@@ -309,8 +309,12 @@ place_explorer_server <- function(id, r) {
       if (zoom == 1) zoom <- 10
 
       ct <- if (is.na(select_id()) || sum(data()$ID %in% select_id()) == 0) 
-        c(0, 0) else
-          data()$centroid[data()$ID == select_id()][[1]]
+        c(0, 0) else {
+          do.call("dbGetQuery", list(rlang::sym(paste0(df(), "_conn")),
+                                            paste0("SELECT lat, lon FROM centroid ",
+                                                   "WHERE ID = '", select_id(), "'"))) |> 
+                   unlist()
+        }
 
       # Update map
       rdeck_proxy(id = "title_card_map",

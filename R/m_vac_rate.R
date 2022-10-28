@@ -253,12 +253,6 @@ vac_rate_server <- function(id, r) {
                                                 var_left = var_left(),
                                                 var_right = var_right(),
                                                 df = r[[id]]$df()))
-    
-    
-    observe(assign("data", data(), envir = .GlobalEnv))
-    observe(assign("var_left", var_left(), envir = .GlobalEnv))
-    observe(assign("var_right", var_right(), envir = .GlobalEnv))
-    observe(assign("df", r[[id]]$df(), envir = .GlobalEnv))
 
   })
 }

@@ -175,7 +175,7 @@ natural_inf_server <- function(id, r) {
           paste0("SELECT * FROM natural_inf_explore")
         }
       
-      dbGetQuery(db, db_call)
+      do.call("dbGetQuery", list(rlang::sym("natural_inf_conn"), db_call))
     })
     
     # Map custom colours
@@ -200,7 +200,7 @@ natural_inf_server <- function(id, r) {
                               " WHERE biodiversity = ", ni_slider()[1], 
                               " AND heat_island = ", ni_slider()[2], 
                               " AND flood = ", ni_slider()[3])
-            dbGetQuery(db, db_call)[, c("group", "value")] 
+            do.call("dbGetQuery", list(rlang::sym("natural_inf_conn"), db_call))[, c("group", "value")] 
           }
         }
       } else NULL
@@ -254,6 +254,7 @@ natural_inf_server <- function(id, r) {
       data = data,
       var_left = var_left,
       var_right = var_right,
+      geo = r$geo,
       df = reactive(NULL),
       select_id = reactive(NA),
       graph = reactive(explore_graph_natural_inf),

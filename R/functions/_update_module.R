@@ -248,7 +248,7 @@ update_module <- function(r, id, mod_ns = paste(id, id, sep = "-"),
     if (!selected_var %in% variables$var_code[!is.na(variables$grouping)]) {
       delayupdatePickerInput(
         session = session,
-        inputId = construct_namespace("compare-var"),
+        inputId = construct_namespace("compare-auto_var-var"),
         selected = selected_var
       )
       # In the case the var_right is part of a bigger group
@@ -278,7 +278,7 @@ update_module <- function(r, id, mod_ns = paste(id, id, sep = "-"),
       lapply(seq_along(update_drops), \(x) {
         var_named <- update_drops[x]
         id_s <- create_id_s(var_named)$key
-        
+
         if (is.numeric(var_named[[1]])) {
           delay(1000, {
             updateSliderInput(session = session,

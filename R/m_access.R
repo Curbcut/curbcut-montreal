@@ -171,7 +171,8 @@ access_server <- function(id, r) {
                  "` FROM tt_matrix WHERE timing = '", var_left_2(), "'",
                  " AND `", r[[id]]$select_id(), "` <= ", tt_thresh,
                  " AND destination != ", r[[id]]$select_id())
-        CTs_to_map <- dbGetQuery(db, db_call) |> dplyr::as_tibble()
+        CTs_to_map <- do.call("dbGetQuery", list(rlang::sym("tt_matrix_conn"), 
+                                                 db_call))
         # Further manipultaion
         CTs_to_map$group <- as.character(6 - ceiling((
           CTs_to_map[[r[[id]]$select_id()]]) / tt_thresh * 5))

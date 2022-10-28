@@ -1,7 +1,7 @@
 #### NATURAL INFRASTRUCTURE EXPLORE INFO TABLE GRAPH ##########################
 
 info_table_natural_inf <- function(data, r = r, var_type, var_left, 
-                                   var_right, df, select_id, 
+                                   var_right, df, select_id, geo,
                                    build_str_as_DA = TRUE) {
   
   if (var_left == "c_priority") {

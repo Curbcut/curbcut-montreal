@@ -18,7 +18,7 @@ scale_colour_sus <- function(...) "#FFFFFF"
 # Default line width
 scale_lwd_sus <- function(select_id, tile = NULL, zoom = NULL) {
 
-  if (!is.null(tile) && !is.null(zoom)) {
+  if (!is.null(tile) && !is.null(zoom) && !grepl("auto_zoom", tile)) {
     late_range <- if (is_scale_in_df("DA", tile) && zoom < 11) 0 else 1
     late_range <- if (is_scale_in_df("CT", tile) && zoom < 10) 0 else late_range
   } else {

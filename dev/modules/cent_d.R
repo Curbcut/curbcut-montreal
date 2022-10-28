@@ -19,7 +19,7 @@
 # #
 # # qsavem(table1, table2,
 # #        file = "dev/data/centraide/StatCan_Recensement2016/Fichiers_Sources/tables.qsm")
-# 
+# # 
 # qload("dev/data/centraide/StatCan_Recensement2016/Fichiers_Sources/tables.qsm")
 # 
 # rm(table1)
@@ -212,7 +212,7 @@ breaks_q5_active <-
                                  .before = 1)})
 
 new_rows <-
-  map_dfr(var_list, function(var) {
+  future_map_dfr(var_list, function(var) {
 
     var <- str_remove(var, "_\\d{4}$")
     
@@ -239,27 +239,27 @@ new_rows <-
       case_when(str_detect(var, "kids_3_plus") ~
                   " with a family of 3+ children",
                 str_detect(var, "unsuitable") ~
-                  " in unsuitable housing",
+                  " living in unsuitable housing",
                 str_detect(var, "repairs") ~
-                  " in housing with major repairs needed",
+                  " living in housing with major repairs needed",
                 str_detect(var, "low_inc") ~
                   "Low income ",
                 str_detect(var, "single_detached") ~ 
-                  " in single-detached houses",
+                  " living in single-detached houses",
                 str_detect(var, "semi_detached") ~ 
-                  " in semi-detached houses",
+                  " living in semi-detached houses",
                 str_detect(var, "row_house") ~ 
-                  " in row houses",
+                  " living in row houses",
                 str_detect(var, "in_duplex") ~ 
-                  " in apartments or flats in a duplex",
+                  " living in apartments or flats in a duplex",
                 str_detect(var, "in_5plus_storeys") ~ 
-                  " in apartments in buildings that has five or more storeys",
+                  " living in apartments in buildings that has five or more storeys",
                 str_detect(var, "in_less5_storeys") ~ 
-                  " in apartments in buildings that has fewer than five storeys",
+                  " living in apartments in buildings that has fewer than five storeys",
                 str_detect(var, "other_single_attached") ~ 
-                  " in other single-attached houses",
+                  " living in other single-attached houses",
                 str_detect(var, "mobile_homes") ~ 
-                  " in mobile homes and other movable dwellings",
+                  " living in mobile homes and other movable dwellings",
                 TRUE ~ "")
     
     title <- if (!str_detect(var, "low_inc")) {
@@ -343,27 +343,27 @@ new_rows <-
       case_when(str_detect(var, "kids_3_plus") ~
                   " in families with 3 or more children",
                 str_detect(var, "unsuitable") ~
-                  " in unsuitable housing",
+                  " living in unsuitable housing",
                 str_detect(var, "repairs") ~
-                  " in housing with major repairs needed",
+                  " living in housing with major repairs needed",
                 str_detect(var, "low_inc") ~
                   " low income",
                 str_detect(var, "single_detached") ~ 
-                  " in single-detached houses",
+                  " living in single-detached houses",
                 str_detect(var, "semi_detached") ~ 
-                  " in semi-detached houses",
+                  " living in semi-detached houses",
                 str_detect(var, "row_house") ~ 
-                  " in row houses",
+                  " living in row houses",
                 str_detect(var, "in_duplex") ~ 
-                  " in apartments or flats in a duplex",
+                  " living in apartments or flats in a duplex",
                 str_detect(var, "in_5plus_storeys") ~ 
-                  " in apartments in buildings that has five or more storeys",
+                  " living in apartments in buildings that has five or more storeys",
                 str_detect(var, "in_less5_storeys") ~ 
-                  " in apartments in buildings that has fewer than five storeys",
+                  " living in apartments in buildings that has fewer than five storeys",
                 str_detect(var, "other_single_attached") ~ 
-                  " in other single-attached houses",
+                  " living in other single-attached houses",
                 str_detect(var, "mobile_homes") ~ 
-                  " in mobile homes and other movable dwellings",
+                  " living in mobile homes and other movable dwellings",
                 TRUE ~ "")
     
     exp <- if (!str_detect(var, "low_inc")) {

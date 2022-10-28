@@ -81,7 +81,7 @@ mods_rdy <- list(
     #   "Road safety" = "crash"
   ),
   "Urban life" = c(
-    "Active living potential" = "canale", 
+    "Active living potential" = "canale",
     "Green alleys" = "alley",
     "Demographics" = "demographics"
   ),
@@ -149,7 +149,12 @@ systemfonts::register_font(
   bolditalic = "www/fonts/SourceSansPro-BoldItalic.ttf")
 
 
-# Connect to the db -------------------------------------------------------
+# Connect to the dbs ------------------------------------------------------
 
-db <- dbConnect(SQLite(), "data/sql_db.sqlite")
+dbs <- list.files("data", full.names = TRUE)
+dbs <- subset(dbs, grepl(".sqlite$", dbs))
 
+lapply(dbs, \(x) {
+  connection_name <- paste0(stringr::str_extract(x, "(?<=/).*?(?=\\.)"), "_conn")
+  assign(connection_name, dbConnect(SQLite(), x), envir = .GlobalEnv)
+}) |> invisible()

@@ -10,7 +10,8 @@ post_process <- function(x) {
     mutate(across(where(is.numeric), ~replace(., is.nan(.), NA)), 
            across(where(is.numeric), ~replace(., is.infinite(.), NA))) |> 
     mutate(ID = as.character(ID)) |> 
-    st_transform(4326)
+    st_transform(4326) |> 
+    arrange(ID)
 }
 
 

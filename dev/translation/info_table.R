@@ -12,6 +12,8 @@ info_table_translated <-
           fr = paste0("de l'îlot de diffusion")) |> 
   add_row(en = paste0("250-m"), 
           fr = paste0("de 250-m")) |> 
+  add_row(en = paste0("Sector"), 
+          fr = paste0("Secteur")) |> 
   add_row(en = paste0("building"), 
           fr = paste0("du bâtiment")) |> 
   add_row(en = paste0("street"), 

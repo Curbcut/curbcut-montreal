@@ -525,7 +525,7 @@ interpolation_keys <-
 
 # Add in variables table
 new_rows <-
-  map_dfr(var_list, function(var) {
+  future_map_dfr(var_list, function(var) {
     
     # Transportation mode
     mode <- 
@@ -750,7 +750,7 @@ new_rows <-
                     breaks_q5 = select(breaks_q5_active,
                                        scale, date, rank, 
                                        var = all_of(var)),
-                    source = "Centraide",
+                    source = "Données Québec and DMTI",
                     interpolated = interpolation_keys,
                     grouping = as.character(glue::glue("Access to {amenity_higher_level}")),
                     group_diff = group_diff)

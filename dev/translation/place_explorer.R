@@ -6,6 +6,8 @@ place_explorer_translated <-
           fr = paste0("L'île")) |>
   add_row(en = paste0("Region"), 
           fr = paste0("Grande région")) |>
+  add_row(en = paste0("The centraide zone"), 
+          fr = paste0("La zone centraide")) |>
   add_row(en = paste0("What makes this area unique?"), 
           fr = paste0("Qu'est-ce qui rend cette zone unique ?")) |>
   add_row(en = paste0("What makes this area similar to others?"), 

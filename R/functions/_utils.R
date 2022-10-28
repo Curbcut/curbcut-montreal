@@ -47,21 +47,23 @@ convert_unit <- function(x, var_name = NULL, compact = FALSE) {
 
 # return_closest_year -----------------------------------------------------
 
-return_closest_year <- function(var, df = "CMA_CSD", build_str_as_DA = TRUE) {
+return_closest_year <- function(var, df, build_str_as_DA = TRUE) {
   
   # Not to do for grid - always 2016
   if (is_scale_in_df("grid", df)) return(var)
   
-  dat <- if (build_str_as_DA && is_scale_in_df("building", df)) 
-    get(paste0(gsub("building", "DA", df))) else get(df)
+  if (build_str_as_DA && is_scale_in_df("building", df)) 
+    df <- paste0(gsub("building", "DA", df))
   
-  if (!var %in% names(dat)) {
+  avail <- tables_in_sql[[df]][grepl(gsub("_\\d{4}$", "", var), 
+                                     tables_in_sql[[df]])]
+  
+  if (!var %in% avail) {
     
     time <- as.numeric(str_extract(var, "\\d{4}"))
     
     x <-
-      dat |> 
-      names() |> 
+      avail |> 
       str_subset(str_remove(var, "_\\d{4}$")) |> 
       str_extract("\\d{4}$") |> 
       as.numeric() |> 
@@ -214,3 +216,5 @@ is_scale_in_df <- function(scales, df) {
   scls <- paste0(scales, "$", collapse = "|")
   grepl(scls, df)
 }
+
+

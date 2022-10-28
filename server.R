@@ -32,6 +32,7 @@ shinyServer(function(input, output, session) {
     lang = reactiveVal("fr"),
     active_tab = "home",
     geo = reactiveVal("CMA"),
+    stories = reactiveValues(select_id = reactiveVal(NA)),
     canale = reactiveValues(select_id = reactiveVal(NA), 
                             df = reactiveVal("CMA_CSD"),
                             zoom = reactiveVal(get_zoom(map_zoom))),

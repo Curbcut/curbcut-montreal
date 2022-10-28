@@ -74,7 +74,8 @@ zoom_server <- function(id, r = r, zoom_string, zoom_levels) {
         # Go back to auto_zoom if the constructed df() does not exist, which
         # happen when r$geo() is changed on a manual auto-zoom. The output will
         # be changed for a split second.
-      if (is.null(get0(paste(zoom_levels()$scale, out, sep = "_")))) 
+      if (is.null(get0(paste(zoom_levels()$scale, out, sep = "_"))) && 
+          !grepl("building", paste(zoom_levels()$scale, out, sep = "_"))) 
         out <- "auto_zoom"
       return(paste(zoom_levels()$scale, out, sep = "_"))
     })

@@ -4,7 +4,7 @@ module_link <- function(r, module, zoom = NULL, location = map_loc,
                         select_id = NA, var_left = NULL,
                         var_right = NULL, df = NULL, 
                         zoom_auto = NULL, more_args = NULL, 
-                        update_view = TRUE) {
+                        update_view = if (is.na(select_id)) FALSE else TRUE) {
   
   r$sus_link$id <- module
   
@@ -21,9 +21,11 @@ module_link <- function(r, module, zoom = NULL, location = map_loc,
         get(paste("map_zoom_levels", r$geo(), sep = "_"))[[
           gsub(".*_", "", df)]] + 0.75
       
-      r$sus_link$location <- {
-        data <- get(df)
-        sapply(unlist(data[data$ID == select_id, ]$centroid),
+      r$sus_link$location <- if (is.na(select_id)) location else {
+        sapply(do.call("dbGetQuery", list(rlang::sym(paste0(df, "_conn")),
+                                          paste0("SELECT lat, lon FROM centroid ",
+                                                 "WHERE ID = ", select_id))) |> 
+                 unlist(),
                round, digits = 2)
       }
     }

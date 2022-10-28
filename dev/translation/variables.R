@@ -1831,6 +1831,7 @@ add_row(en = paste0("Vacancy rate in studio apartments"),
 #   explanation <- gsub("^le nombre de é", "le nombre d'é", explanation)
 #   explanation <- gsub("^le nombre de h", "le nombre d'h", explanation)
 #   explanation <- gsub("à la marche", "de marche", explanation)
+#   explanation <- gsub("  ", " ", explanation)
 #   if (mode != "En transport en commun") explanation <- gsub(" pendant .*", "", explanation)
 # 
 #   timing <- gsub("(le |la |le |les )", "", timing)
@@ -6333,7 +6334,7 @@ variables_translated <-
           fr = paste0("Primaire  (Marche)")) |> 
   add_row(en = paste0("the count of primary schools accessible in a 5 minutes ",
                       "walk by the average resident"), 
-          fr = paste0("le nombre d'écoles primaires  accessible en 5 minutes d",
+          fr = paste0("le nombre d'écoles primaires accessible en 5 minutes d",
                       "e marche par un résident moyen de la zone")) |> 
   add_row(en = paste0("Primary"), 
           fr = paste0("Primaire")) |> 
@@ -6343,7 +6344,7 @@ variables_translated <-
           fr = paste0("Secondaire  (Marche)")) |> 
   add_row(en = paste0("the count of secondary schools accessible in a 5 minute",
                       "s walk by the average resident"), 
-          fr = paste0("le nombre d'écoles secondaires  accessible en 5 minutes",
+          fr = paste0("le nombre d'écoles secondaires accessible en 5 minutes",
                       " de marche par un résident moyen de la zone")) |> 
   add_row(en = paste0("Secondary"), 
           fr = paste0("Secondaire")) |> 
@@ -6395,7 +6396,7 @@ variables_translated <-
           fr = paste0("Vocationel  (Marche)")) |> 
   add_row(en = paste0("the count of vocational schools accessible in a 5 minut",
                       "es walk by the average resident"), 
-          fr = paste0("le nombre d'écoles professionnelles  accessible en 5 mi",
+          fr = paste0("le nombre d'écoles professionnelles accessible en 5 mi",
                       "nutes de marche par un résident moyen de la zone")) |> 
   add_row(en = paste0("Vocational"), 
           fr = paste0("Vocationel")) |> 
@@ -6414,7 +6415,7 @@ variables_translated <-
           fr = paste0("Adulte  (Marche)")) |> 
   add_row(en = paste0("the count of schools for adults accessible in a 5 minut",
                       "es walk by the average resident"), 
-          fr = paste0("le nombre d'écoles pour adultes  accessible en 5 minute",
+          fr = paste0("le nombre d'écoles pour adultes accessible en 5 minute",
                       "s de marche par un résident moyen de la zone")) |> 
   add_row(en = paste0("Adults"), 
           fr = paste0("Adulte")) |> 
@@ -6484,11 +6485,11 @@ variables_translated <-
                       "s de marche par un résident moyen de la zone")) |> 
   add_row(en = paste0("the count of primary schools accessible in a 10 minutes",
                       " walk by the average resident"), 
-          fr = paste0("le nombre d'écoles primaires  accessible en 10 minutes ",
+          fr = paste0("le nombre d'écoles primaires accessible en 10 minutes ",
                       "de marche par un résident moyen de la zone")) |> 
   add_row(en = paste0("the count of secondary schools accessible in a 10 minut",
                       "es walk by the average resident"), 
-          fr = paste0("le nombre d'écoles secondaires  accessible en 10 minute",
+          fr = paste0("le nombre d'écoles secondaires accessible en 10 minute",
                       "s de marche par un résident moyen de la zone")) |> 
   add_row(en = paste0("the count of private preschools accessible in a 10 minu",
                       "tes walk by the average resident"), 
@@ -6512,7 +6513,7 @@ variables_translated <-
                       "par un résident moyen de la zone")) |> 
   add_row(en = paste0("the count of vocational schools accessible in a 10 minu",
                       "tes walk by the average resident"), 
-          fr = paste0("le nombre d'écoles professionnelles  accessible en 10 m",
+          fr = paste0("le nombre d'écoles professionnelles accessible en 10 m",
                       "inutes de marche par un résident moyen de la zone")) |> 
   add_row(en = paste0("the count of private vocational schools accessible in a",
                       " 10 minutes walk by the average resident"), 
@@ -6521,7 +6522,7 @@ variables_translated <-
                       "e")) |> 
   add_row(en = paste0("the count of schools for adults accessible in a 10 minu",
                       "tes walk by the average resident"), 
-          fr = paste0("le nombre d'écoles pour adultes  accessible en 10 minut",
+          fr = paste0("le nombre d'écoles pour adultes accessible en 10 minut",
                       "es de marche par un résident moyen de la zone")) |> 
   add_row(en = paste0("the count of private schools for adults accessible in a",
                       " 10 minutes walk by the average resident"), 
@@ -16739,7 +16740,7 @@ variables_translated <-
                       "en auto par un résident moyen de la zone")) |> 
   add_row(en = paste0("the count of secondary schools accessible in 45 minutes",
                       " by car by the average resident"), 
-          fr = paste0("le nombre d'écoles secondaires  accessible en 45 minute",
+          fr = paste0("le nombre d'écoles secondaires accessible en 45 minute",
                       "s en auto par un résident moyen de la zone")) |> 
   add_row(en = paste0("the count of private preschools accessible in 45 minute",
                       "s by car by the average resident"), 
@@ -16771,7 +16772,7 @@ variables_translated <-
                       "en 45 minutes en auto par un résident moyen de la zone")) |> 
   add_row(en = paste0("the count of schools for adults accessible in 45 minute",
                       "s by car by the average resident"), 
-          fr = paste0("le nombre d'écoles pour adultes  accessible en 45 minut",
+          fr = paste0("le nombre d'écoles pour adultes accessible en 45 minut",
                       "es en auto par un résident moyen de la zone")) |> 
   add_row(en = paste0("the count of private schools for adults accessible in 4",
                       "5 minutes by car by the average resident"), 
@@ -16808,11 +16809,11 @@ variables_translated <-
                       "s en auto par un résident moyen de la zone")) |> 
   add_row(en = paste0("the count of primary schools accessible in 50 minutes b",
                       "y car by the average resident"), 
-          fr = paste0("le nombre d'écoles primaires  accessible en 50 minutes ",
+          fr = paste0("le nombre d'écoles primaires accessible en 50 minutes ",
                       "en auto par un résident moyen de la zone")) |> 
   add_row(en = paste0("the count of secondary schools accessible in 50 minutes",
                       " by car by the average resident"), 
-          fr = paste0("le nombre d'écoles secondaires  accessible en 50 minute",
+          fr = paste0("le nombre d'écoles secondaires accessible en 50 minute",
                       "s en auto par un résident moyen de la zone")) |> 
   add_row(en = paste0("the count of private preschools accessible in 50 minute",
                       "s by car by the average resident"), 
@@ -16836,7 +16837,7 @@ variables_translated <-
                       "r un résident moyen de la zone")) |> 
   add_row(en = paste0("the count of vocational schools accessible in 50 minute",
                       "s by car by the average resident"), 
-          fr = paste0("le nombre d'écoles professionnelles  accessible en 50 m",
+          fr = paste0("le nombre d'écoles professionnelles accessible en 50 m",
                       "inutes en auto par un résident moyen de la zone")) |> 
   add_row(en = paste0("the count of private vocational schools accessible in 5",
                       "0 minutes by car by the average resident"), 
@@ -16844,7 +16845,7 @@ variables_translated <-
                       "en 50 minutes en auto par un résident moyen de la zone")) |> 
   add_row(en = paste0("the count of schools for adults accessible in 50 minute",
                       "s by car by the average resident"), 
-          fr = paste0("le nombre d'écoles pour adultes  accessible en 50 minut",
+          fr = paste0("le nombre d'écoles pour adultes accessible en 50 minut",
                       "es en auto par un résident moyen de la zone")) |> 
   add_row(en = paste0("the count of private schools for adults accessible in 5",
                       "0 minutes by car by the average resident"), 
@@ -16881,11 +16882,11 @@ variables_translated <-
                       "s en auto par un résident moyen de la zone")) |> 
   add_row(en = paste0("the count of primary schools accessible in 55 minutes b",
                       "y car by the average resident"), 
-          fr = paste0("le nombre d'écoles primaires  accessible en 55 minutes ",
+          fr = paste0("le nombre d'écoles primaires accessible en 55 minutes ",
                       "en auto par un résident moyen de la zone")) |> 
   add_row(en = paste0("the count of secondary schools accessible in 55 minutes",
                       " by car by the average resident"), 
-          fr = paste0("le nombre d'écoles secondaires  accessible en 55 minute",
+          fr = paste0("le nombre d'écoles secondaires accessible en 55 minute",
                       "s en auto par un résident moyen de la zone")) |> 
   add_row(en = paste0("the count of private preschools accessible in 55 minute",
                       "s by car by the average resident"), 
@@ -16909,7 +16910,7 @@ variables_translated <-
                       "r un résident moyen de la zone")) |> 
   add_row(en = paste0("the count of vocational schools accessible in 55 minute",
                       "s by car by the average resident"), 
-          fr = paste0("le nombre d'écoles professionnelles  accessible en 55 m",
+          fr = paste0("le nombre d'écoles professionnelles accessible en 55 m",
                       "inutes en auto par un résident moyen de la zone")) |> 
   add_row(en = paste0("the count of private vocational schools accessible in 5",
                       "5 minutes by car by the average resident"), 
@@ -16917,7 +16918,7 @@ variables_translated <-
                       "en 55 minutes en auto par un résident moyen de la zone")) |> 
   add_row(en = paste0("the count of schools for adults accessible in 55 minute",
                       "s by car by the average resident"), 
-          fr = paste0("le nombre d'écoles pour adultes  accessible en 55 minut",
+          fr = paste0("le nombre d'écoles pour adultes accessible en 55 minut",
                       "es en auto par un résident moyen de la zone")) |> 
   add_row(en = paste0("the count of private schools for adults accessible in 5",
                       "5 minutes by car by the average resident"), 
@@ -16957,11 +16958,11 @@ variables_translated <-
                       "s en auto par un résident moyen de la zone")) |> 
   add_row(en = paste0("the count of primary schools accessible in 60 minutes b",
                       "y car by the average resident"), 
-          fr = paste0("le nombre d'écoles primaires  accessible en 60 minutes ",
+          fr = paste0("le nombre d'écoles primaires accessible en 60 minutes ",
                       "en auto par un résident moyen de la zone")) |> 
   add_row(en = paste0("the count of secondary schools accessible in 60 minutes",
                       " by car by the average resident"), 
-          fr = paste0("le nombre d'écoles secondaires  accessible en 60 minute",
+          fr = paste0("le nombre d'écoles secondaires accessible en 60 minute",
                       "s en auto par un résident moyen de la zone")) |> 
   add_row(en = paste0("the count of private preschools accessible in 60 minute",
                       "s by car by the average resident"), 
@@ -16985,7 +16986,7 @@ variables_translated <-
                       "r un résident moyen de la zone")) |> 
   add_row(en = paste0("the count of vocational schools accessible in 60 minute",
                       "s by car by the average resident"), 
-          fr = paste0("le nombre d'écoles professionnelles  accessible en 60 m",
+          fr = paste0("le nombre d'écoles professionnelles accessible en 60 m",
                       "inutes en auto par un résident moyen de la zone")) |> 
   add_row(en = paste0("the count of private vocational schools accessible in 6",
                       "0 minutes by car by the average resident"), 
@@ -16993,7 +16994,7 @@ variables_translated <-
                       "en 60 minutes en auto par un résident moyen de la zone")) |> 
   add_row(en = paste0("the count of schools for adults accessible in 60 minute",
                       "s by car by the average resident"), 
-          fr = paste0("le nombre d'écoles pour adultes  accessible en 60 minut",
+          fr = paste0("le nombre d'écoles pour adultes accessible en 60 minut",
                       "es en auto par un résident moyen de la zone")) |> 
   add_row(en = paste0("the count of private schools for adults accessible in 6",
                       "0 minutes by car by the average resident"), 
@@ -20854,4 +20855,5 @@ variables_translated <-
   add_row(en = paste0("the count of daycare spots accessible in 60 minutes by ",
                       "car by the average resident"), 
           fr = paste0("le nombre de places en garderie accessible en 60 minute",
-                      "s en auto par un résident moyen de la zone"))
+                      "s en auto par un résident moyen de la zone")) |> 
+  mutate(fr = gsub("  ", " ", fr))

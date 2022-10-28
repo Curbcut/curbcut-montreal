@@ -74,6 +74,11 @@ ui <- function(request) {
     tags$script(HTML('Shiny.addCustomMessageHandler("changetitle", function(x) 
                    {document.title=x});')),
     
+    # To allow div elements with title attribute, for dropdown text on hover
+    tags$script(
+      "var myDefaultWhiteList = $.fn.selectpicker.Constructor.DEFAULTS.whiteList;
+    myDefaultWhiteList.div = ['title'];"
+    ),
     tags$head(includeHTML("www/google_analytics.html")),
     
     # Language switching ---------------------------------------------------------

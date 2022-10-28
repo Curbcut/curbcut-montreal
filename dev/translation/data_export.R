@@ -258,6 +258,8 @@ data_export_translated <-
           fr = paste0("Société canadienne d'hypothèques et de logement")) |> 
   add_row(en = paste0("Job and population data from Statistics Canada. Travel time calculations from OSM and GTFS."), 
           fr = paste0("Données sur les emplois et la population provenant de Statistique Canada. Calculs des temps de trajet à partir d'OSM et de GTFS.")) |> 
+  add_row(en = paste0("<p>The vacancy rate data in this module comes from the Canada Mortgage and Housing Corporation.</p>"), 
+          fr = paste0("<p>Les données sur le taux d'inoccupation dans ce module proviennent de la Société canadienne d'hypothèques et de logement.</p>")) |> 
   
 # Auto translated a few vectors -------------------------------------------
 # 

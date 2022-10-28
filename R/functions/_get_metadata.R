@@ -229,7 +229,7 @@ get_metadata <- function(export_data, r, about_data,
     if (!is.null(export_data$df)) 
       is_scale_in_df(names(interpolated_dfs), export_data$df) else FALSE
   
-  if (interpolated) {
+  if (interpolated && length(interpolated_dfs) > 0) {
 
     from <- sus_translate(r = r, interpolated_dfs[[export_data$df]])
     
