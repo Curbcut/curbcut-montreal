@@ -328,6 +328,10 @@ styler <- '
   right: -40px;
   }
   
+  .dropdown-menu > .inner.open {
+  max-height:50vh !important;
+  }
+  
   #dropdown-menu-geo_change {
   max-height: 250px;
   font-size: 13px;
