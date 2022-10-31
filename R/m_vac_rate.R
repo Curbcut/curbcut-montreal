@@ -13,16 +13,16 @@ vac_rate_UI <- function(id) {
       susSidebarWidgets(
         select_var_UI(NS(id, id), select_var_id = "d_1", 
                       var_list = var_left_list_1_vac_rate,
-                      label = "Vacancy rate distribution"), 
+                      label = sus_translate(r = r, "Vacancy rate distribution")), 
         select_var_UI(NS(id, id), select_var_id = "d_2", 
                       var_list = var_left_list_2_vac_rate,
-                      label = "Bedroom type"), 
+                      label = sus_translate(r = r, "Bedroom type")), 
         select_var_UI(NS(id, id), select_var_id = "d_3", 
                       var_list = var_left_list_3_vac_rate,
-                      label = "Year of construction"), 
+                      label = sus_translate(r = r, "Year of construction")), 
         select_var_UI(NS(id, id), select_var_id = "d_4", 
                       var_list = var_left_list_4_vac_rate,
-                      label = "Rent ranges"), 
+                      label = sus_translate(r = r, "Rent ranges")), 
         slider_UI(NS(id, id), slider_id = "slu",
                   min = 2010, max = 2021, step = 1, value = 2021), 
         slider_UI(NS(id, id), slider_id = "slb",
@@ -99,6 +99,17 @@ vac_rate_server <- function(id, r) {
         r[[id]]$select_id(NA)
       } else r[[id]]$select_id(selection)
     }) |> bindEvent(get_clicked_object(id_map))
+    
+    # Default location
+    observe({
+      if (is.null(r$default_select_id())) return(NULL)
+      
+      new_id <- data()$ID[data()$ID %in% 
+                            r$default_select_id()[[gsub("_.*", "", r[[id]]$df())]]]
+      if (length(new_id) == 0) return(NULL)
+      
+      r[[id]]$select_id(new_id)
+    }) |> bindEvent(r$default_select_id(), r[[id]]$df())
 
     # Choose tileset
     tile <- reactive("cmhc_cmhczone")

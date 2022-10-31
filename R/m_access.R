@@ -76,6 +76,17 @@ access_server <- function(id, r) {
       } else r[[id]]$select_id(selection)
     }) |> bindEvent(get_clicked_object(id_map))
     
+    # Default location
+    observe({
+      if (is.null(r$default_select_id())) return(NULL)
+      
+      new_id <- data()$ID[data()$ID %in% 
+                            r$default_select_id()[[gsub("_.*", "", r[[id]]$df())]]]
+      if (length(new_id) == 0) return(NULL)
+      
+      r[[id]]$select_id(new_id)
+    }) |> bindEvent(r$default_select_id(), r[[id]]$df())
+    
     # Time
     time <- reactive("2016")
     

@@ -1698,7 +1698,7 @@ add_row(en = paste0("Vacancy rate in studio apartments"),
                       "ou inoccupées dans un immeuble locatif")) |> 
   add_row(en = paste0("Vacancy rate by rent range"), 
           fr = paste0("Taux d'inoccupation par tranche de loyer")) |> 
-  add_row(en = paste0("For units with an unknown rent"), 
+  add_row(en = paste0("For housing units with an unknown rent"), 
           fr = paste0("inconnu")) |> 
   add_row(en = paste0("Vacancy rate in all housing units"), 
           fr = paste0("Taux d'inoccupation de toutes les unités de logements")) |> 

@@ -217,7 +217,7 @@ place_explorer_server <- function(id, r) {
 
       if (sum(pcs) > 0) {
         DAUID_of_pc <- postal_codes$DAUID[pcs]
-        DA_data <- get(r$geo(), "DA", sep = "_")
+        DA_data <- get(paste(r$geo(), "DA", sep = "_"))
         IDs <- DA_data[DA_data$ID == DAUID_of_pc, 
                        c("ID", "CTUID", "geo_ID")] |> unlist()
         select_id(data()$ID[data()$ID %in% IDs])

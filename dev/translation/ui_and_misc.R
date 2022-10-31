@@ -38,6 +38,12 @@ ui_and_misc_translated <-
           fr = paste0("Aire de diffusion")) |> 
   add_row(en = paste0("Dissemination block"), 
           fr = paste0("Îlot de diffusion")) |> 
+  add_row(en = paste0("CMHC zone"), 
+          fr = paste0("de la zone SCHL")) |> 
+  add_row(en = paste0("CMHC Zone"), 
+          fr = paste0("Zone SCHL")) |> 
+  add_row(en = paste0("zones"), 
+          fr = paste0("zones")) |> 
   add_row(en = paste0("Building"), 
           fr = paste0("Bâtiment")) |> 
   add_row(en = paste0("Legend"), 
@@ -658,6 +664,15 @@ ui_and_misc_translated <-
           fr = paste0("Centraide")) |> 
   add_row(en = paste0("Access to"), 
           fr = paste0("Accès à")) |> 
+  add_row(en = paste0("Vacancy rate distribution"), 
+          fr = paste0("Distribution du taux d'inoccupation")) |> 
+  add_row(en = paste0("Bedroom type"), 
+          fr = paste0("Nombre de chambres à coucher")) |> 
+  add_row(en = paste0("Year of construction"), 
+          fr = paste0("Année de construction")) |> 
+  add_row(en = paste0("Rent ranges"), 
+          fr = paste0("Tranche de loyer")) |> 
+
   # Stories
   add_row(en = paste0("The proposed {year} metro network."), 
           fr = paste0("Le réseau proposé en {year}.")) |> 
