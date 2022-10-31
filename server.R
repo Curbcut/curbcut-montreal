@@ -412,6 +412,7 @@ shinyServer(function(input, output, session) {
     }
   }, once = TRUE)
   
+  # Location lock in
   observeEvent(input$lock_search_button, {
     postal_c <-
       input$lock_address_searched |>
@@ -421,13 +422,20 @@ shinyServer(function(input, output, session) {
     pcs <- postal_codes$postal_code == postal_c
     
     out <- 
-      if (sum(pcs) > 0) {
+      if (sum(pcs) > 0 || grepl("[a-z][0-9][a-z][0-9][a-z][0-9]", postal_c)) {
+        # Postal code detected, but not in our database
+        if (sum(pcs) == 0) {
+          showNotification(
+            sus_translate(r = r, "Postal code `{postal_c}` can't be found."),
+            type = "error")
+          return(NULL)
+        }
+        
         showNotification(
           sus_translate(r = r,
                         paste0("Postal code `{postal_codes$postal_code[pcs]}` ",
                                "saved as default.")),
           type = "default")
-        # Go with the `geo` dictionary when it's available
         sapply(c("CMA", "city", "island", "centraide"), \(x) {
           dat <- get(paste0(x, "_DA"))
           dat <- dat[dat$ID == postal_codes$DAUID[pcs], ]
@@ -439,6 +447,7 @@ shinyServer(function(input, output, session) {
           }
           unique(unlist(dat[grepl("ID$", names(dat))]))
         }, simplify = FALSE, USE.NAMES = TRUE)
+        
       } else {
         ad <- input$lock_address_searched
         add <- ad
@@ -458,23 +467,34 @@ shinyServer(function(input, output, session) {
         val <- val[[1]]
         coords <- val$geometry$coordinates
         
-        showNotification(
-          sus_translate(r = r,
-                        paste0("Address `{val$title}` saved as default.")),
-          type = "default")
+        out <- 
+          sapply(c("CMA", "city", "island", "centraide"), \(x) {
+            da_vals <- do.call("dbGetQuery", list(rlang::sym(paste0(x, "_DA_conn")),
+                                                  paste0("SELECT * FROM centroid")))
+            distance_sum <- 
+              mapply(sum, abs(coords[[1]] - da_vals$lat), abs(coords[[2]] - da_vals$lon))
+            # If too far.
+            if (min(distance_sum) > 0.1) return(NULL)
+            DA_ID <- da_vals$ID[which(distance_sum == min(distance_sum))]
+            dat <- get(paste0(x, "_DA"))
+            dat <- dat[dat$ID == DA_ID, ]
+            na.omit(unique(unlist(dat[grepl("ID$", names(dat))])))
+          }, simplify = FALSE, USE.NAMES = TRUE)
         
-        sapply(c("CMA", "city", "island", "centraide"), \(x) {
-          da_vals <- do.call("dbGetQuery", list(rlang::sym(paste0(x, "_DA_conn")),
-                                                paste0("SELECT * FROM centroid")))
-          distance_sum <- 
-            mapply(sum, abs(coords[[1]] - da_vals$lat), abs(coords[[2]] - da_vals$lon))
-          # If too far.
-          if (min(distance_sum) > 0.1) return(NULL)
-          DA_ID <- da_vals$ID[which(distance_sum == min(distance_sum))]
-          dat <- get(paste0(x, "_DA"))
-          dat <- dat[dat$ID == DA_ID, ]
-          na.omit(unique(unlist(dat[grepl("ID$", names(dat))])))
-        }, simplify = FALSE, USE.NAMES = TRUE)
+        if (all(sapply(out, is.null))) {
+          showNotification(
+            sus_translate(r = r,
+                          paste0("Address `{input$lock_address_searched}` can't be found.")),
+            type = "error")
+          out <- NULL
+        } else {
+          showNotification(
+            sus_translate(r = r,
+                          paste0("Address `{val$title}` saved as default.")),
+            type = "default")          
+        }
+        
+        out
       }
     
     r$default_select_id(out)

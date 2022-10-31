@@ -672,7 +672,20 @@ ui_and_misc_translated <-
           fr = paste0("Année de construction")) |> 
   add_row(en = paste0("Rent ranges"), 
           fr = paste0("Tranche de loyer")) |> 
-
+  add_row(en = paste0("Enter and save a default location (postal code or address)"), 
+          fr = paste0("Saisir et enregistrer un emplacement par défaut (code postal ou adresse)")) |> 
+  add_row(en = paste0("Default location will be saved until manually cleared from advanced options"), 
+          fr = paste0("L'emplacement par défaut sera enregistré jusqu'à ce qu'il soit effacé manuellement dans les options avancées.")) |> 
+  add_row(en = paste0("Clear default location"), 
+          fr = paste0("Effacer l'emplacement par défaut")) |> 
+  add_row(en = paste0("Address `{val$title}` saved as default."), 
+          fr = paste0("Adresse `{val$title}` enregistrée comme défaut.")) |> 
+  add_row(en = paste0("Address `{val$title}` can't be found."), 
+          fr = paste0("L'adresse `{val$title}` est introuvable.")) |> 
+  add_row(en = paste0("Postal code `{postal_codes$postal_code[pcs]}` saved as default."), 
+          fr = paste0("Code postal `{postal_codes$postal_code[pcs]}` enregistré comme défaut.")) |> 
+  add_row(en = paste0("Postal code `{postal_c}` can't be found."), 
+          fr = paste0("Code postal `{postal_c}` introuvable.")) |> 
   # Stories
   add_row(en = paste0("The proposed {year} metro network."), 
           fr = paste0("Le réseau proposé en {year}.")) |> 
