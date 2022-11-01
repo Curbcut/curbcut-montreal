@@ -33,9 +33,10 @@ get_var_type <- function(data, geo, var_left, var_right, df, select_id,
     if (is.na(select_id)) get(paste(geo, "DA", sep = "_")) else {
       dbGetQuery(building_conn, 
                  paste0("SELECT * FROM ", paste(geo, "building", sep = "_"), 
-                        " WHERE ID = ", select_id))
+                        " WHERE ID = '", select_id, "'"))
     }
   } else data
+  if (nrow(select_df) == 0) select_id <- NA
   selection <- if (is.na(select_id)) select_df[0,] else 
     select_df[select_df$ID == select_id,]
   active_left <- if (build_str_as_DA && is_scale_in_df("building", df)) {

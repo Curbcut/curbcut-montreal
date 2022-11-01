@@ -21,13 +21,13 @@ get_info_table_data <- function(r = r, data, var_type, var_left, var_right, df,
     dat_select <- if (is.na(select_id)) get(paste(geo, "DA", sep = "_")) else {
       dbGetQuery(building_conn, 
                  paste0("SELECT * FROM ", paste(geo, "building", sep = "_"), 
-                        " WHERE ID = ", select_id))
+                        " WHERE ID = '", select_id, "'"))
     }
     dat_select_id <- select_id
-    if (!is.na(select_id))
+    if (!is.na(select_id)) 
       select_id <- dbGetQuery(building_conn, 
                               paste0("SELECT DAUID FROM ", paste(geo, "building", sep = "_"), 
-                                     " WHERE ID = ", select_id))$DAUID
+                                     " WHERE ID = '", select_id, "'"))$DAUID
     if (length(select_id) == 0) select_id <- NA
     
   } else {

@@ -680,12 +680,12 @@ ui_and_misc_translated <-
           fr = paste0("Effacer l'emplacement par défaut")) |> 
   add_row(en = paste0("Address `{val$title}` saved as default."), 
           fr = paste0("Adresse `{val$title}` enregistrée comme défaut.")) |> 
-  add_row(en = paste0("Address `{val$title}` can't be found."), 
-          fr = paste0("L'adresse `{val$title}` est introuvable.")) |> 
+  add_row(en = paste0("Address `{val$title}` isn't within an available geography"), 
+          fr = paste0("L'adresse `{val$title}` ne fait pas partie d'une zone géographique disponible.")) |> 
   add_row(en = paste0("Postal code `{postal_codes$postal_code[pcs]}` saved as default."), 
           fr = paste0("Code postal `{postal_codes$postal_code[pcs]}` enregistré comme défaut.")) |> 
-  add_row(en = paste0("Postal code `{postal_c}` can't be found."), 
-          fr = paste0("Code postal `{postal_c}` introuvable.")) |> 
+  add_row(en = paste0("Postal code `{postal_c}` isn't within an available geography"), 
+          fr = paste0("Code postal `{postal_c}` ne fait pas partie d'une zone géographique disponible.")) |> 
   # Stories
   add_row(en = paste0("The proposed {year} metro network."), 
           fr = paste0("Le réseau proposé en {year}.")) |> 

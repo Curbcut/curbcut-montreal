@@ -426,7 +426,7 @@ shinyServer(function(input, output, session) {
         # Postal code detected, but not in our database
         if (sum(pcs) == 0) {
           showNotification(
-            sus_translate(r = r, "Postal code `{postal_c}` can't be found."),
+            sus_translate(r = r, "Postal code `{postal_c}` isn't within an available geography."),
             type = "error")
           return(NULL)
         }
@@ -484,7 +484,7 @@ shinyServer(function(input, output, session) {
         if (all(sapply(out, is.null))) {
           showNotification(
             sus_translate(r = r,
-                          paste0("Address `{input$lock_address_searched}` can't be found.")),
+                          paste0("Address `{input$lock_address_searched}` isn't within an available geography.")),
             type = "error")
           out <- NULL
         } else {
