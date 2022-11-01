@@ -9,7 +9,7 @@ runtime: shiny_prerendered
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-Le réseau de transport en commun à Montréal a connu une transformation majeure depuis le début du 20e siècle et le système de métro en est un aspect central et emblématie. Non seulement l'évolution du métro n'a pas été linéaire, mais elle a aussi révélé les priorités de la ville et la perception qu'elle avait d'elle-même. Voici l’histoire du métro de Montréal, comment il est arrivé à son état actuel et ce que lui réserve l’avenir. 
+Le réseau de transport en commun à Montréal a connu une énorme transformation depuis le début du 20e siècle, et le système de métro étant central et emblématique. Non seulement l'évolution du métro n'a pas été linéaire, mais elle a aussi révélé les priorités de la ville et la perception qu'elle avait d'elle-même. Voici l’histoire du métro de Montréal, comment il est arrivé à son état actuel et ce que l'avernir lui réserve. 
 
 ```{r, out.extra='style="width:60%"', fig.align = "center", warning=FALSE, fig.cap = "The réseau de métro de Montréal. *Crédit photo: Société de transport de Montréal*", echo=FALSE}
 knitr::include_graphics(here("www/stories/visuals/metro_evolution/modern_day_metro.jpeg"))
@@ -20,11 +20,9 @@ knitr::include_graphics(here("www/stories/visuals/metro_evolution/modern_day_met
 
 Au début du 20e siècle, le transport en commun à Montréal était composé d’un vaste réseau de tramway qui servait une population croissante au centre-ville. Cependant, cette croissance de population entraînait également une congestion croissante et d'importants problèmes de ponctualité des trams. La considération initiale d’un système de transport souterrain était le résultat d’une demande pour un réseau capable d’opérer malgré la congestion à la surface (Clairoux, 2001).
 
-Le Montreal Street Railway Company, responsable du réseau de tramway, a commencé ses études sur la faisabilité d’un réseau de métro à Montréal en 1910.  À l’époque, d’autres grandes villes européennes et nord-américaines étaient en train d’établir leurs propres métros (Société de transport de Montréal, n.d). Montréal désirait donc faire de même, compte tenu de la croissance rapide de son économie et de sa population. Un réseau souterrain avait le potentiel de servir comme solution aux problèmes de congestion au centre-ville , permettant à Montréal de se moderniser au même rythme que d'autres grandes villes. 
+La Montreal Street Railway Company, responsable du réseau de tramway, a commencé ses études sur la faisabilité d’un réseau de métro à Montréal en 1910.  À l’époque, d’autres grandes villes européennes et nord-américaines étaient en train d’établir leurs propres métros (Société de transport de Montréal, n.d). Montréal désirait donc faire de même, compte tenu de la croissance rapide de son économie et de sa population. Un réseau souterrain avait le potentiel de servir comme solution aux problèmes de congestion au centre-ville, permettant à Montréal de se moderniser au même rythme que d'autres grandes villes. 
 
-La première proposition de transport en commun souterrain a été faite en 1910. Elle s’agissait d’une seule ligne qui longeait l’avenue du Parc/de Bleury (Dufour, n.d.-a). Les tunnels étaient davantage conçus pour la circulation de trams que pour un métro (Société de transport de Montréal, n.d.).
-
-Plusieurs propositions semblables ont été faites dans les années suivantes, mais rien de concret n’a émergé au début du 20e siècle. La première guerre mondiale suivie de la Grande Dépression ont empêché l’approbation et le financement d’un projet de métro, car la ville a été plongée dans une crise économique et la congestion s’était améliorée, atténuant les problèmes qui nécessitaient le recours au transport souterrain (Gilbert, 2021). 
+La première proposition de transport en commun souterrain a été faite en 1910. Elle s’agissait d’une seule ligne qui longeait l’avenue du Parc/rue de Bleury (Dufour, n.d.-a). Les tunnels étaient davantage conçus pour la circulation de trams que pour un métro (Société de transport de Montréal, n.d.). Plusieurs propositions semblables ont été faites dans les années suivantes, mais rien de concret n’a émergé au début du 20e siècle. La première guerre mondiale suivie de la Grande Dépression ont empêché l’approbation et le financement d’un projet de métro, car la ville a été plongée dans une crise économique et la congestion s’était améliorée, atténuant les problèmes qui nécessitaient le recours au transport souterrain (Gilbert, 2021). 
 
 ### La deuxième guerre mondiale: le début des demandes renouvelées pour un métro
 #### *1944-1953*
@@ -33,7 +31,7 @@ L’impact de la deuxième guerre mondiale à Montréal a contribué à augmente
 
 Même si cette proposition ne s’est jamais concrétisée, durant et après la guerre, il devenait clair qu'un métro devenait nécessaire. L’utilisation de la voiture augmentait au détriment des transports en commun, aggravant la congestion encore plus. De plus, un métro était considéré essentiel dans le maintien du statut de Montréal comme grande ville canadienne, car Toronto, une métropole en rapide croissance à l’époque, était en train de développer son propre réseau souterrain (Gilbert, 2021).
 
-En 1953, la Commission de transport de Montréal, un nouvel organisme ayant pour but de remplacer le réseau de tramway par un réseau de bus (Société de Transport de Montréal, 2004), a proposé un autre projet de métro inspiré du plan de 1944. Pourtant, ce plan n’a pas réussi non plus dépassé la phase de planification. 
+En 1953, la Commission de transport de Montréal, un nouvel organisme ayant pour but de remplacer le réseau de tramway par un réseau de bus, a proposé un autre projet de métro inspiré du plan de 1944 (Société de Transport de Montréal, 2004). Pourtant, ce plan n’a pas réussi non plus a dépassé la phase de planification. 
 
 ### Penser grand: l’administration Jean Drapeau et un intérêt renouvelé pour le métro
 #### *1954-1960*
