@@ -241,13 +241,6 @@ housing_server <- function(id, r) {
                                                 var_left = var_left(),
                                                 var_right = var_right(),
                                                 df = r[[id]]$df()))
-    
-    # observe({
-    #   print(data())
-    #   print(var_left())
-    #   print(var_right())
-    #   print(r[[id]]$df())
-    # })
 
   })
 }
