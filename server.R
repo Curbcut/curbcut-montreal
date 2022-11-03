@@ -380,8 +380,7 @@ shinyServer(function(input, output, session) {
                      <div style="width: 80%; margin-top: var(--padding-v-md); width:auto;">',
                   textInput(inputId = "lock_address_searched", 
                             label = NULL, 
-                            placeholder = "845 Sherbrooke Ouest, Montréal, Quebec",
-                            value = "845 Sherbrooke Ouest, Montréal, Quebec"),
+                            placeholder = "845 Sherbrooke Ouest, Montréal, Quebec"),
                   '</div>
                      <div style="width: 20%">',
                   actionButton(inputId = "lock_search_button",
