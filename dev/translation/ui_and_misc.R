@@ -601,11 +601,11 @@ ui_and_misc_translated <-
   add_row(en = paste0("Mobile home and other movable dwelling"), 
           fr = paste0("Habitation mobile")) |> 
   add_row(en = paste0("Family characteristic"), 
-          fr = paste0("Charactéristique familiale")) |> 
+          fr = paste0("Caractéristique familiale")) |> 
   add_row(en = paste0("Dwelling type"), 
           fr = paste0("Type de logement")) |> 
   add_row(en = paste0("Immigration characteristic"), 
-          fr = paste0("Charactéristique d'immigration")) |> 
+          fr = paste0("Caractéristique d'immigration")) |> 
   add_row(en = paste0("Visible minority / Indigenous"), 
           fr = paste0("Minorité visible / Autochtone")) |>
   add_row(en = paste0("Total"), 
@@ -686,6 +686,8 @@ ui_and_misc_translated <-
           fr = paste0("Code postal `{postal_codes$postal_code[pcs]}` enregistré comme défaut.")) |> 
   add_row(en = paste0("Postal code `{postal_c}` isn't within an available geography"), 
           fr = paste0("Code postal `{postal_c}` ne fait pas partie d'une zone géographique disponible.")) |> 
+  add_row(en = paste0("Address `{input$lock_address_searched}` isn't within an available geography."), 
+          fr = paste0("L'adresse `{input$lock_address_searched}` ne fait pas partie d'une zone géographique disponible.")) |> 
   # Stories
   add_row(en = paste0("The proposed {year} metro network."), 
           fr = paste0("Le réseau proposé en {year}.")) |> 
