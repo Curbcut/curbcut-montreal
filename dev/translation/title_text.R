@@ -562,7 +562,7 @@ title_text_translation <-
                       "appartement situé dans un immeuble de plus de 5 étages ",
                       "est un aspect important pour comprendre la réalité du ",
                       "logement des gens. En sélectionnant différents types ",
-                      "d’habitation, vous pouvez simplement les explorer et ",
+                      "d’habitations, vous pouvez simplement les explorer et ",
                       "les comparer en fonction du statut d'occupation et des frais du logement.")) |>
   add_row(en = paste0("<p> The comparative analysis that you see in this module is based on ",
                       "housing data from the 2016 Census. In selecting different options from ",
