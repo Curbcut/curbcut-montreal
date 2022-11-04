@@ -552,7 +552,7 @@ title_text_translation <-
                       "spécifiquement pour les locataires ou les propriétaires, ",
                       "car ils peuvent rencontrer des difficultés et des avantages différents..")) |> 
   add_row(en = paste0("Dwelling Types"), 
-          fr = paste0("Types de logements")) |> 
+          fr = paste0("Types d'habitations")) |> 
   add_row(en = paste0("Whether a household is living in a single-detached house or an ",
                       "apartment in a building of 5+ stories is an important aspect of ", 
                       "understanding people’s housing realities. In selecting different types ",
@@ -561,9 +561,9 @@ title_text_translation <-
           fr = paste0("Si un ménage vie dans une maison individuelle ou dans un ",
                       "appartement situé dans un immeuble de plus de 5 étages ",
                       "est un aspect important pour comprendre la réalité du ",
-                      "logement des gens. En sélectionnant différents types de ",
-                      "logements, vous pouvez simplement les explorer et les ",
-                      "comparer en fonction du statut d'occupation et des frais du logement. ")) |>
+                      "logement des gens. En sélectionnant différents types ",
+                      "d’habitation, vous pouvez simplement les explorer et ",
+                      "les comparer en fonction du statut d'occupation et des frais du logement.")) |>
   add_row(en = paste0("<p> The comparative analysis that you see in this module is based on ",
                       "housing data from the 2016 Census. In selecting different options from ",
                       "the drop-down menus, insights can be gained on how dwelling types ",
@@ -573,17 +573,17 @@ title_text_translation <-
                       "system in Montreal through dwelling types adds a level of understanding ",
                       "to the overall housing situation. </ul>"),
           fr = paste0("<p> L'analyse comparative que vous voyez dans ce module ",
-                      "est basée sur les données de logement du recensement de ",
-                      "2016. En sélectionnant différentes options dans les ",
-                      "menus déroulants, on peut avoir un aperçu de la façon ",
-                      "dont les types de logements interagissent avec le ",
-                      "statut d'occupation et les frais de logement. En ",
-                      "utilisant le panneau de droite, vous pouvez comparer ",
-                      "les variables de types de logements avec l'accès à ",
-                      "différents infrastructures et services par mode de transport. ",
-                      "L'exploration du système de logement à Montréal par ",
-                      "le biais des types de logements ajoute un niveau de ",
-                      "compréhension à la situation globale du logement.")) |>
+                      "est basée sur les données de logement du recensement ",
+                      "de 2016. En sélectionnant différentes options dans ",
+                      "les menus déroulants, on peut avoir un aperçu de la ",
+                      "façon dont les types d’habitations interagissent avec ",
+                      "le statut d'occupation et les frais de logement. ",
+                      "En utilisant le panneau de droite, vous pouvez ",
+                      "comparer les variables de types d’habitations avec ",
+                      "l'accès à différents infrastructures et services ",
+                      "par mode de transport. L'exploration du système de ",
+                      "logement à Montréal par le biais des types d’habitations ",
+                      "ajoute un niveau de compréhension à la situation globale du logement.")) |>
   add_row(en = paste0("Demographics"), 
           fr = paste0("Démographie")) |> 
   add_row(en = paste0( "Certain factors about a population can reveal interesting socioeconomic ",
