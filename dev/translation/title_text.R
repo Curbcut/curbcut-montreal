@@ -577,13 +577,13 @@ title_text_translation <-
                       "de 2016. En sélectionnant différentes options dans ",
                       "les menus déroulants, on peut avoir un aperçu de la ",
                       "façon dont les types d’habitations interagissent avec ",
-                      "le statut d'occupation et les frais de logement. ",
-                      "En utilisant le panneau de droite, vous pouvez ",
-                      "comparer les variables de types d’habitations avec ",
-                      "l'accès à différents infrastructures et services ",
-                      "par mode de transport. L'exploration du système de ",
-                      "logement à Montréal par le biais des types d’habitations ",
-                      "ajoute un niveau de compréhension à la situation globale du logement.")) |>
+                      "le statut d'occupation et les frais de logement. En ",
+                      "utilisant le panneau de droite, vous pouvez comparer ",
+                      "les variables de types d’habitations avec l'accès à ",
+                      "différents infrastructures et services par mode de ",
+                      "transport. L'exploration du système de logement à ",
+                      "Montréal par le biais des types d’habitations ajoute ",
+                      "un niveau de compréhension à la situation globale du logement.")) |>
   add_row(en = paste0("Demographics"), 
           fr = paste0("Démographie")) |> 
   add_row(en = paste0( "Certain factors about a population can reveal interesting socioeconomic ",
