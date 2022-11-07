@@ -555,7 +555,7 @@ ui_and_misc_translated <-
   add_row(en = paste0("Gender"), 
           fr = paste0("Genre")) |> 
   add_row(en = paste0("Dwelling type"), 
-          fr = paste0("Type de d'habitation")) |> 
+          fr = paste0("Type d'habitation")) |> 
   add_row(en = paste0("Immigration status"), 
           fr = paste0("Statut d'immigration")) |> 
   add_row(en = paste0("Households"), 
