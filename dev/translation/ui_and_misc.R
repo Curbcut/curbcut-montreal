@@ -647,7 +647,7 @@ ui_and_misc_translated <-
   add_row(en = paste0("Tenure Status"), 
           fr = paste0("Statut d'occupation")) |> 
   add_row(en = paste0("Dwelling Types"), 
-          fr = paste0("Types de logements")) |> 
+          fr = paste0("Types d'habitations")) |> 
   add_row(en = paste0("Count"), 
           fr = paste0("Compte")) |> 
   add_row(en = paste0("Normalized (percent of population)"), 
