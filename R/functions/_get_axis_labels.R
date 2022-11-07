@@ -10,31 +10,28 @@ get_axis_labels <- function(r = r, graph_type, var_left, var_right) {
   var_right_title <- sus_translate(r = r, variables$var_short[
     variables$var_code == unique(sub("_\\d{4}$", "", var_right))])
   
-  # var_left_title <- {
-  #   x <- variables[
-  #     variables$var_code == unique(sub("_\\d{4}$", "", var_left)), ]
-  #   out <- 
-  #     if (nchar(sus_translate(r = r, x$var_title)) > 16) x$var_short else x$var_title
-  #   sus_translate(r = r, out)
-  # }
-  # 
-  # var_right_title <- {
-  #   x <- variables[
-  #     variables$var_code == unique(sub("_\\d{4}$", "", var_right)), ]
-  #   if (length(x$var_title) == 0) return(NULL)
-  #   out <- 
-  #     if (nchar(sus_translate(r = r, x$var_title)) > 16) x$var_short else x$var_title
-  #   sus_translate(r = r, out)
-  # }
-  
   
   ## Construct labs_xy based on graph_type -------------------------------------
   
   if (graph_type %in% c("hist", "bar")) labs_xy <- 
     list(labs(x = var_left_title, y = NULL))
   
-  if (graph_type == "scatter") labs_xy <- 
-    list(labs(x = var_right_title, y = var_left_title))
+  if (graph_type == "scatter") {
+    
+    date_left <- str_extract(var_left, "(?<=_)\\d{4}$")
+    date_right <- str_extract(var_right, "(?<=_)\\d{4}$")
+    
+    if (!is.na(date_left))
+      var_left_title <-
+      paste0(var_left_title, " (", date_left, ")")
+    
+    if (!is.na(date_right))
+      var_right_title <-
+      paste0(var_right_title, " (", date_right, ")")
+    
+    labs_xy <-
+      list(labs(x = var_right_title, y = var_left_title))
+  }
   
   if (graph_type == "box") labs_xy <- 
     list(labs(x = var_left_title, y = var_right_title))
@@ -47,16 +44,18 @@ get_axis_labels <- function(r = r, graph_type, var_left, var_right) {
   
   if (graph_type %in% c("deltabivar", "NAdeltabivar")) {
     
-    var_left_title <- sus_translate(r = r, variables$var_short[
-      variables$var_code == unique(sub("_\\d{4}$", "", var_left))])
-    
-    var_right_title <- sus_translate(r = r, variables$var_short[
-      variables$var_code == unique(sub("_\\d{4}$", "", var_right))])
+    var_right_lab <- 
+      if (length(unique(var_right)) == 2) {
+        paste0(var_right_title, " (\u0394 ", 
+               str_extract(var_right, "(?<=_)\\d{4}$")[1], "-",
+               str_extract(var_right, "(?<=_)\\d{4}$")[2], ")")
+      } else {
+        paste0(var_right_title, " (", 
+               str_extract(var_right[1], "(?<=_)\\d{4}$"), ")")
+      }
     
     labs_xy <- list(labs(
-      x = paste0(var_right_title, " (\u0394 ", 
-                 str_extract(var_right, "(?<=_)\\d{4}$")[1], "-",
-                 str_extract(var_right, "(?<=_)\\d{4}$")[2], ")"),
+      x = var_right_lab,
       y = paste0(var_left_title, " (\u0394 ", 
                  str_extract(var_left, "(?<=_)\\d{4}$")[1], "-",
                  str_extract(var_left, "(?<=_)\\d{4}$")[2], ")")))

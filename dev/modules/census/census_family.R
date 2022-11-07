@@ -26,8 +26,8 @@ census_vec <-
     vec_2006 = "v_CA06_89",
     vec_2001 = "v_CA01_87",
     vec_1996 = "v_CA1996_98",
-    var_title = "Living alone",
-    var_short = "TKTK",
+    var_title = "Living alone (%)",
+    var_short = "Living alone",
     explanation = "the percentage of one person households out of total households",
     private = FALSE)
   

@@ -67,8 +67,6 @@ climate_risk_server <- function(id, r) {
                       var_left = var_left())
     }) |> bindEvent(tweaked_geo())
     
-    # observe(print(map_zoom_levels()$levels))
-    
     # Zoom string reactive
     observe({
       new_zoom_string <- get_zoom_string(r[[id]]$zoom(), map_zoom_levels()$levels,
@@ -84,6 +82,17 @@ climate_risk_server <- function(id, r) {
         r[[id]]$select_id(NA)
       } else r[[id]]$select_id(selection)
     }) |> bindEvent(get_clicked_object(id_map))
+    
+    # Default location
+    observe({
+      if (is.null(r$default_select_id())) return(NULL)
+      
+      new_id <- data()$ID[data()$ID %in% 
+                            r$default_select_id()[[gsub("_.*", "", r[[id]]$df())]]]
+      if (length(new_id) == 0) return(NULL)
+      
+      r[[id]]$select_id(new_id)
+    }) |> bindEvent(r$default_select_id(), r[[id]]$df())
     
     # Grid value
     grid <- checkbox_server(id = id)

@@ -76,6 +76,17 @@ access_server <- function(id, r) {
       } else r[[id]]$select_id(selection)
     }) |> bindEvent(get_clicked_object(id_map))
     
+    # Default location
+    observe({
+      if (is.null(r$default_select_id())) return(NULL)
+      
+      new_id <- data()$ID[data()$ID %in% 
+                            r$default_select_id()[[gsub("_.*", "", r[[id]]$df())]]]
+      if (length(new_id) == 0) return(NULL)
+      
+      r[[id]]$select_id(new_id)
+    }) |> bindEvent(r$default_select_id(), r[[id]]$df())
+    
     # Time
     time <- reactive("2016")
     
@@ -171,13 +182,13 @@ access_server <- function(id, r) {
                  "` FROM tt_matrix WHERE timing = '", var_left_2(), "'",
                  " AND `", r[[id]]$select_id(), "` <= ", tt_thresh,
                  " AND destination != ", r[[id]]$select_id())
-        CTs_to_map <- dbGetQuery(db, db_call) |> dplyr::as_tibble()
+        CTs_to_map <- do.call("dbGetQuery", list(rlang::sym("tt_matrix_conn"), 
+                                                 db_call))
         # Further manipultaion
         CTs_to_map$group <- as.character(6 - ceiling((
           CTs_to_map[[r[[id]]$select_id()]]) / tt_thresh * 5))
         CTs_to_map <- CTs_to_map[, c("destination", "group")]
-        CTs_to_map <- merge(CTs_to_map, colour_iso, by = "group", 
-                            all.x = TRUE)
+        CTs_to_map <- merge(CTs_to_map, colour_iso, by = "group")
         names(CTs_to_map) <- c("group", "ID", "fill")
         data_1 <- data()[, "ID"] |> merge(CTs_to_map, by = "ID")
         data_1 <- data_1[, c("ID", "fill")]

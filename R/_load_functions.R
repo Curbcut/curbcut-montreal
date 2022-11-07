@@ -17,13 +17,9 @@ envir <- rlang::get_env(\(x) x)
 lapply(list.files("R/functions/"), \(x) 
        source(paste0("R/functions/", x), local = envir, encoding = "utf-8"))
 
-# # Load locally in R
+# # # Load locally in R
 # source("R/functions/__make_dropdown.R")
-# source("R/functions/_get_news.R")
-# purrr::walk(list.files("R/")[
-#   !list.files("R/") %in% c("functions", "tests", "_load_functions.R")], ~{
-#     source(paste0("R/", .x), local = envir, encoding = "utf-8")
-#   })
-# list.files("R/", full.names = TRUE) |> 
-#   str_subset(".R$") |> 
-#   purrr::walk(source)
+# lapply(list.files("R/")[
+#   !list.files("R/") %in% c("functions", "tests", "_load_functions.R")], \(x)
+#     source(paste0("R/", x), local = envir, encoding = "utf-8")
+# })

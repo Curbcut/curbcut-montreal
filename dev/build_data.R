@@ -6,6 +6,8 @@
 library(tidyverse)
 library(sf)
 library(qs)
+library(furrr)
+warning("Don't forget to set a `future::plan()` for faster data building.")
 source("dev/other/data_testing.R")
 source("dev/other/meta_testing.R", encoding = "utf-8")
 source("dev/other/breaks.R")
@@ -20,8 +22,9 @@ source("dev/other/is_in_geometry.R")
 all_tables <- 
   list("CMA" = c("CSD", "CT", "DA", "grid", "building"),
        "island" = c("CSD", "CT", "DA", "grid", "building"),
-       "city" = c("CSD", "CT", "DA", "grid", "building"),
-       "centraide" = c("centraide", "CT", "DA", "grid", "building"))
+       "city" = c("CSD", "CT", "DA", "DB", "grid", "building"),
+       "centraide" = c("centraide", "CT", "DA", "grid", "building"),
+       "cmhc" = "cmhczone")
 
 
 # Import all geometries, and create master polygon ------------------------
@@ -72,6 +75,10 @@ source("dev/geometries/building_geocode.R")
 # Import centraide geometries
 source("dev/geometries/centraide_geometries.R")
 
+# Import CMHC zones
+cmhczone <- read_sf("dev/data/geometry/cmhc.shp") |> 
+  mutate(name_2 = "CMHC Zone")
+
 # Add centroids and buffers to DA
 source("dev/geometries/DA_centroids.R")
 
@@ -100,7 +107,7 @@ source("dev/geometries/street_geocode.R")
 # Separate DA, CT and borough in their macro scale ------------------------
 
 is_in_geometry(all_tables, crs = 32618, 
-               update_name_2_for = c("centraide"))
+               update_name_2_for = c("centraide", "cmhc"))
 
 
 # Error checking ----------------------------------------------------------
@@ -210,7 +217,9 @@ source("dev/modules/access.R")
 source("dev/modules/alley.R")
 source("dev/modules/cent_d.R")
 source("dev/modules/cent_p.R")
+source("dev/modules/vac_rate.R")
 source("dev/modules/amenities.R")
+source("dev/modules/city_amenities.R")
 source("dev/modules/natural_inf.R")
 
 source("dev/modules/stories.R", encoding = "utf-8")
@@ -233,56 +242,292 @@ source("dev/other/title_text.R")
 source("dev/translation/build_translation.R", encoding = "utf-8")
 
 
-# Remove geometries -------------------------------------------------------
+save.image("dat.Rdata")
+load("dat.Rdata")
+
+# # Remove geometries -------------------------------------------------------
+# progressr::with_progress({
+#   p <- progressr::progressor(steps = sum(map_int(all_tables, length)))
+#   
+#   iwalk(all_tables, function(scales, geo) {
+#     walk(scales, function(scale) {
+#       geo_scale <- paste(geo, scale, sep = "_")
+#       
+#       # Assign the df _full with the geometry
+#       assign(paste0(geo_scale, "_full"), get(geo_scale), envir = .GlobalEnv)
+#       
+#       # Assign the non geometry df
+#       if (scale == "building") {
+#         assign(geo_scale, st_drop_geometry(get(geo_scale)), envir = .GlobalEnv)
+#       } else {
+#         assign(geo_scale,
+#                get(paste0(geo_scale, "_full")) |> 
+#                  select(-any_of(c("building", "buffer", "centroid"))) |> 
+#                  rowwise() |> 
+#                  mutate(centroid = 
+#                           list(as.numeric(st_coordinates(st_centroid(geometry))))) |> 
+#                  ungroup() |> 
+#                  st_drop_geometry(), 
+#                envir = .GlobalEnv)
+#       }
+# 
+#       p()
+# 
+#     })
+#   })
+# })
+
+# Save data to the sql db -------------------------------------------------
+
+library(RSQLite)
+
+# Save natural infrastructure in its own database
+natural_inf_path <- "data/natural_inf.sqlite"
+if (natural_inf_path %in% list.files("data", full.names = TRUE)) 
+  unlink(natural_inf_path)
+natural_inf_sql <- dbConnect(SQLite(), natural_inf_path)
+
+dbWriteTable(natural_inf_sql, "natural_inf_custom", natural_inf_custom)
+purrr::walk2(names(natural_inf), natural_inf, function(name, df) {
+  if (!is.data.frame(df)) {
+    purrr::walk2(df, seq_along(df), function(x, y) {
+      dbWriteTable(natural_inf_sql, paste("natural_inf", name, y, sep = "_"), x)
+      dbExecute(natural_inf_sql, paste0("CREATE INDEX index_biodiversity_", y, 
+                           " ON natural_inf_custom_", y, " (biodiversity)"))
+    })
+  }
+  else {
+    dbWriteTable(natural_inf_sql, paste("natural_inf", name, sep = "_"), df)
+  }
+  
+  if (name == "custom_explore") {
+    dbExecute(natural_inf_sql, paste0("CREATE INDEX index_natural_inf_custom_explore_slider",
+                         " ON natural_inf_custom_explore (slider)"))
+  }
+})
+
+dbListTables(natural_inf_sql)
+dbDisconnect(natural_inf_sql)
+
+
+# Save tt_matrix in its own database
+tt_matrix_path <- "data/tt_matrix.sqlite"
+if (tt_matrix_path %in% list.files("data", full.names = TRUE)) 
+  unlink(tt_matrix_path)
+tt_matrix_sql <- dbConnect(SQLite(), tt_matrix_path)
+
+dbWriteTable(tt_matrix_sql, "tt_matrix", tt_matrix)
+dbExecute(tt_matrix_sql, paste0("CREATE INDEX index_tt_matrix_destination",
+                     " ON tt_matrix (destination)"))
+
+dbListTables(tt_matrix_sql)
+dbDisconnect(tt_matrix_sql)
+
+# Save all buildings in the same database
+building_path <- "data/building.sqlite"
+if (building_path %in% list.files("data", full.names = TRUE)) 
+  unlink(building_path)
+building_sql <- dbConnect(SQLite(), building_path)
+
+iwalk(all_tables, function(scales, geo) {
+  if ("building" %in% scales) {
+    geo_scale <- paste0(geo, "_building")
+    # dbExecute(building_sql, paste0("DROP TABLE ", geo_scale))
+    df <- select(st_drop_geometry(get(geo_scale)), ID, name, name_2, DAUID)
+    dbWriteTable(building_sql, "pre_pk_building", df)
+    dbExecute(building_sql, paste0("CREATE TABLE ", geo_scale,
+                         " (ID VARCHAR, ",
+                         "name VARCHAR, ",
+                         "name_2 VARCHAR, ",
+                         "DAUID VARCHAR,
+                     CONSTRAINT building_pk PRIMARY KEY (ID))"))
+    dbExecute(building_sql, paste0("INSERT INTO ", geo_scale, " SELECT * FROM pre_pk_building"))
+    dbExecute(building_sql, "DROP TABLE pre_pk_building")
+    
+  }
+})
+
+dbListTables(building_sql)
+dbDisconnect(building_sql)
+
+
+# Save all_tables in each their database. Each region/scale combination is a db.
+
+# Make use of parallelization to create the lists of tables
+plan(list(tweak(multisession, workers = 5),
+          tweak(multisession, workers = 4)))
+
+all_d <- imap(all_tables, function(scales, geo) {
+  scales_no_full <- scales[scales != "building"]
+  map(set_names(scales_no_full), function(scale) {
+    st_drop_geometry(get(paste(geo, scale, sep = "_")))
+  })
+})
+
 progressr::with_progress({
-  p <- progressr::progressor(steps = sum(map_int(all_tables, length)))
+  p <- progressr::progressor(steps = sum(map_int(map(all_tables, ~.x[.x != "building"]), 
+                                                 length)))
+  sql_table_list <- 
+    future_imap(all_tables, function(scales, geo) {
+      scales_no_full <- scales[scales != "building"]
+      future_map(set_names(scales_no_full), function(scale) {
+        
+        geo_scale <- paste(geo, scale, sep = "_")
+        geo_scale_data <- all_d[[geo]][[scale]]
+        
+        var_combinations <- 
+          lapply(variables$var_code, \(y) {
+            vars <- names(geo_scale_data)[grepl(y, names(geo_scale_data))]
+            vars <- str_subset(vars, "_q5|_q3", negate = TRUE)
+            
+            sapply(vars, \(x) {
+              time_format <- "\\d{4}$"
+              q3 <- paste0(str_remove(x, time_format), 
+                           if (str_detect(x, time_format)) "q3_" else "_q3", 
+                           na.omit(str_extract(x, time_format)))
+              q5 <- paste0(str_remove(x, time_format), 
+                           if (str_detect(x, time_format)) "q5_" else "_q5", 
+                           na.omit(str_extract(x, time_format)))
+              
+              c(x, q3, q5)
+            }, simplify = FALSE, USE.NAMES = TRUE)
+          }) |> reduce(c)
+        
+        p()
+        
+        lapply(var_combinations, \(x) geo_scale_data[, c("ID", x)])
+        
+      })
+    })
+})
+
+progressr::with_progress({
+  p <- progressr::progressor(steps = sum(map_int(map(all_tables, ~.x[.x != "building"]), 
+                                                 length)))
   
   iwalk(all_tables, function(scales, geo) {
-    walk(scales, function(scale) {
+    scales_no_full <- scales[scales != "building"]
+    walk(scales_no_full, function(scale) {
+      
       geo_scale <- paste(geo, scale, sep = "_")
       
-      # Assign the df _full with the geometry
-      assign(paste0(geo_scale, "_full"), get(geo_scale), envir = .GlobalEnv)
+      geo_scale_table_list <- sql_table_list[[geo]][[scale]]
       
-      # Assign the non geometry df
-      if (scale == "building") {
-        assign(geo_scale, st_drop_geometry(get(geo_scale)), envir = .GlobalEnv)
-      } else {
-        assign(geo_scale,
-               get(paste0(geo_scale, "_full")) |> 
-                 select(-any_of(c("building", "buffer", "centroid"))) |> 
-                 rowwise() |> 
-                 mutate(centroid = 
-                          list(as.numeric(st_coordinates(st_centroid(geometry))))) |> 
-                 ungroup() |> 
-                 st_drop_geometry(), 
-               envir = .GlobalEnv)
-      }
-
+      sqlite_path <- paste0("data/", geo_scale, ".sqlite")
+      
+      db <- dbConnect(SQLite(), sqlite_path)
+      iwalk(geo_scale_table_list, \(df, y) dbWriteTable(db, y, df, overwrite = TRUE))
+      dbDisconnect(db)
+      
       p()
-
     })
   })
 })
 
+# Add centroid
+progressr::with_progress({
+  p <- progressr::progressor(steps = sum(map_int(map(all_tables, ~.x[.x != "building"]), 
+                                                 length)))
+  
+  iwalk(all_tables, function(scales, geo) {
+    scales_no_full <- scales[scales != "building"]
+    walk(scales_no_full, function(scale) {
+      
+      geo_scale <- paste(geo, scale, sep = "_")
+      
+      df <- get(geo_scale)[, "ID"]
+      centroids <- lapply(df$geometry, st_centroid)
+      lat <- sapply(centroids, `[[`, 1)
+      lon <- sapply(centroids, `[[`, 2)
+      
+      df <- st_drop_geometry(df)
+      
+      df$lat <- lat
+      df$lon <- lon
+      
+      sqlite_path <- paste0("data/", geo_scale, ".sqlite")
+
+      db <- dbConnect(SQLite(), sqlite_path)
+      dbWriteTable(db, "centroid", df, overwrite = TRUE)
+      dbDisconnect(db)
+      
+      p()
+    })
+  })
+})
+
+
+# Save data files to data2 ------------------------------------------------
+
+# Keep all_tables in data2/
+iwalk(all_tables, function(scales, geo) {
+  geo_scales <- paste(geo, scales, sep = "_")
+  do.call(qsavem, c(map(geo_scales, rlang::sym),
+                    file = paste0("data2/", geo, ".qsm"),
+                    nthreads = length(scales)))
+})
+
+# Other data which will be in the SQL databases. Keep versions in data2/
+qsavem(natural_inf, natural_inf_custom, file = "data2/natural_inf.qsm")
+qsave(tt_matrix, file = "data2/tt_matrix.qs")
+
 # Save data files ---------------------------------------------------------
 
-# Save the tables in data and data2, except buildings
+# data/geometry_export before dropping geometries
 iwalk(all_tables, function(scales, geo) {
-  
+  walk(scales, function(scale) {
+    geo_scale <- paste(geo, scale, sep = "_")
+    out <- select(get(geo_scale), ID)
+    file_link <- paste0("data/geometry_export/", geo_scale, ".qs")
+    
+    qsave(out, file = file_link)
+  })
+})
+
+
+# Save the shorter tables in data except buildings. 
+# Start by dropping all variables.
+future_imap(all_tables, function(scales, geo) {
+  scales_no_full <- scales[scales != "building"]
+  map(scales_no_full, function(scale) {
+    geo_scale <- paste(geo, scale, sep = "_")
+    assign(geo_scale,
+           get(geo_scale) |>
+             st_drop_geometry() |>
+             select(ID:households),
+           envir = .GlobalEnv)
+  })
+})
+
+# Save all the tables
+iwalk(all_tables, function(scales, geo) {
   scales_no_full <- scales[scales != "building"]
   geo_scales <- paste(geo, scales_no_full, sep = "_")
-  geo_scales_full <- paste(geo, scales, "full", sep = "_")
   
   do.call(qsavem, c(map(geo_scales, rlang::sym),
                     file = paste0("data/", geo, ".qsm"),
                     nthreads = length(scales)))
-  
-  do.call(qsavem, c(map(geo_scales_full, rlang::sym),
-                    file = paste0("data2/", geo, "_full.qsm"),
-                    nthreads = length(scales)))
-  
 })
+
+# Keep strings of all available tables in each db
+geos_scales <- 
+  imap(all_tables, function(scales, geo) {
+    scales_no_full <- scales[scales != "building"]
+    map(scales_no_full, function(scale) {
+      paste(geo, scale, sep = "_")
+    })
+  }) |> unlist() |> unname()
+tables_in_sql <- 
+map(set_names(geos_scales), \(x) {
+  db <- dbConnect(SQLite(), paste0("data/", x, ".sqlite"))
+  out <- dbListTables(db)
+  dbDisconnect(db)
+  
+  out
+})
+
+# Save list of tables in db
+qsave(tables_in_sql, file = "data/tables_in_sql.qs")
 
 ## global data
 qsave(variables, file = "data/variables.qs")
@@ -300,102 +545,6 @@ qsavem(alley, alley_text, file = "data/alley.qsm")
 qsavem(title_card_indicators, pe_var_hierarchy, pe_theme_order,
        title_card_index, pe_variable_order, file = "data/place_explorer.qsm")
 qsavem(stories, stories_mapping, file = "data/stories.qsm")
-
-# data/geometry_export
-iwalk(all_tables, function(scales, geo) {
-  walk(scales, function(scale) {
-    geo_scale <- paste(geo, scale, sep = "_")
-    out <- select(get(geo_scale), ID)
-    file_link <- paste0("data/geometry_export/", geo_scale, ".qs")
-    
-    qsave(out, file = file_link)
-  })
-})
-
-
-# Save files we'll save in the SQL to data2 -------------------------------
-
-qsavem(natural_inf, natural_inf_custom, file = "data2/natural_inf.qsm")
-qsave(tt_matrix, file = "data2/tt_matrix.qs")
-# qsave(building, file = "data2/building.qs")
-# qsave(grid, file = "data2/grid.qs")
-
-
-# Save data to the sql db -------------------------------------------------
-
-library(RSQLite)
-sqlite_path <- "data/sql_db.sqlite"
-
-# Overwrite!
-unlink(sqlite_path)
-
-# Create the db
-db <- dbConnect(SQLite(), sqlite_path)
-
-# natural_inf
-dbWriteTable(db, "natural_inf_custom", natural_inf_custom)
-
-purrr::walk2(names(natural_inf), natural_inf, function(name, df) {
-  if (!is.data.frame(df)) {
-    purrr::walk2(df, seq_along(df), function(x, y) {
-      dbWriteTable(db, paste("natural_inf", name, y, sep = "_"), x)
-      dbExecute(db, paste0("CREATE INDEX index_biodiversity_", y, 
-                            " ON natural_inf_custom_", y, " (biodiversity)"))
-    })
-  }
-  else {
-    dbWriteTable(db, paste("natural_inf", name, sep = "_"), df)
-  }
-  
-  if (name == "custom_explore") {
-    dbExecute(db, paste0("CREATE INDEX index_natural_inf_custom_explore_slider",
-                         " ON natural_inf_custom_explore (slider)"))
-  }
-})
-
-# tt_matrix
-dbWriteTable(db, "tt_matrix", tt_matrix)
-dbExecute(db, paste0("CREATE INDEX index_tt_matrix_destination",
-                     " ON tt_matrix (destination)"))
-
-# building with primary key
-iwalk(all_tables, function(scales, geo) {
-  if ("building" %in% scales) {
-    geo_scale <- paste0(geo, "_building")
-    # dbExecute(db, paste0("DROP TABLE ", geo_scale))
-    df <- select(get(geo_scale), ID, name, name_2, DAUID)
-    dbWriteTable(db, "pre_pk_building", df)
-    dbExecute(db, paste0("CREATE TABLE ", geo_scale,
-                         " (ID VARCHAR, ",
-                         "name VARCHAR, ",
-                         "name_2 VARCHAR, ",
-                         "DAUID VARCHAR,
-                     CONSTRAINT building_pk PRIMARY KEY (ID))"))
-    dbExecute(db, paste0("INSERT INTO ", geo_scale, " SELECT * FROM pre_pk_building"))
-    dbExecute(db, "DROP TABLE pre_pk_building")
-    
-  }
-})
-
-# # grid with primary key
-# dbWriteTable(db, "pre_pk_grid", grid)
-# # Construct column names and type to
-# col_names_types <- 
-#   paste0(names(grid), " ", purrr::map_chr(names(grid), ~{class(grid[[.x]])}) |> 
-#          str_replace_all("character", "VARCHAR") |> 
-#          str_replace_all("integer", "INTEGER") |> 
-#          str_replace_all("numeric", "DOUBLE")) |> 
-#   paste0(collapse = ", ")
-# dbExecute(db, paste0("CREATE TABLE grid ",
-#                      "(", col_names_types, ", ",
-#                      "CONSTRAINT grid_pk PRIMARY KEY (ID))"))
-# dbExecute(db, "INSERT INTO grid SELECT * FROM pre_pk_grid")
-# dbExecute(db, "DROP TABLE pre_pk_grid")
-
-# List active dataframes in the db
-dbListTables(db)
-# Close the connection
-dbDisconnect(db)
 
 
 # Copy large data files to Dropbox ----------------------------------------

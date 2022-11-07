@@ -43,7 +43,7 @@ add_census_data <- function(census_vec, scales, all_tables, years,
   data_final <- drop_vars(data_norm, census_vec)
   
   # Create tables per geo (CMA, island, etc.)
-  all_tables_no_buildings <- map(all_tables, ~{.x[.x != "building"]})
+  all_tables_no_buildings <- map(all_tables, ~{.x[!.x %in% c("building", "DB")]})
   data_final_complete <- list()
   for (a in seq_len(length(all_tables_no_buildings))) {
     geo <- names(all_tables_no_buildings)[[a]]

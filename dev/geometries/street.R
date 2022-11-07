@@ -1,9 +1,9 @@
-#### Import street network #####################################################
-
-# This script loads street data from OSM and separates streets in edges.
-# We should load data from OSM once in a while for updates, but this script
-# is very computing intensive. 
-
+# #### Import street network #####################################################
+# 
+# # This script loads street data from OSM and separates streets in edges.
+# # We should load data from OSM once in a while for updates, but this script
+# # is very computing intensive. 
+# 
 # suppressPackageStartupMessages({
 #   library(osmdata)
 #   library(tidyverse)
@@ -13,9 +13,6 @@
 # 
 # 
 # # Bounding Box, Highway Key Values -----------------------------------------
-# 
-# # Bounding box of CMA Montreal
-# CMA_mtl_bb <- c(-74.32797, 45.21754, -73.12856, 45.96849)
 # 
 # # Highway key values for cars
 # kv_highway_cars <-
@@ -31,9 +28,11 @@
 # 
 # # Load and Save OSM Road ---------------------------------------------------
 # 
+# master_polygon_bbox <- st_bbox(master_polygon)
+# 
 # # Retrieve ALL OSM road features for Montreal
 # street_network <-
-#   CMA_mtl_bb %>%
+#   master_polygon_bbox %>%
 #   opq(timeout = 200) %>%
 #   # Retrieve features with the key "highway" which means street
 #   add_osm_feature(key = "highway") %>%
@@ -197,27 +196,27 @@
 # 
 # rm(DA_to_add, new_street, nodes, street_grid, street_grid_edges, street_list,
 #    street_network, edges_to_check, street_DA)
-
+# 
 
 # Load data after processing ----------------------------------------------
 
 street <- qread("dev/data/street.qs")
 
 
-# Temporarily trim to island ----------------------------------------------
-
-island_CSDUID <- 
-  c("2466007", "2466023_1",  "2466023_10", "2466023_11", "2466023_12", 
-    "2466023_13", "2466023_14", "2466023_15", "2466023_16", "2466023_17", 
-    "2466023_18", "2466023_19", "2466023_2", "2466023_3", "2466023_4", 
-    "2466023_5",  "2466023_6", "2466023_7", "2466023_8", "2466023_9",
-    "2466032", "2466047", "2466058", "2466062", "2466087", "2466092", 
-    "2466097", "2466102", "2466107", "2466112", "2466117", "2466127", 
-    "2466142", "2466072", "2466023")
-
-street <- 
-  street |> 
-  filter(CSDUID %in% island_CSDUID)
-
-rm(island_CSDUID)
+# # Temporarily trim to island ----------------------------------------------
+# 
+# island_CSDUID <- 
+#   c("2466007", "2466023_1",  "2466023_10", "2466023_11", "2466023_12", 
+#     "2466023_13", "2466023_14", "2466023_15", "2466023_16", "2466023_17", 
+#     "2466023_18", "2466023_19", "2466023_2", "2466023_3", "2466023_4", 
+#     "2466023_5",  "2466023_6", "2466023_7", "2466023_8", "2466023_9",
+#     "2466032", "2466047", "2466058", "2466062", "2466087", "2466092", 
+#     "2466097", "2466102", "2466107", "2466112", "2466117", "2466127", 
+#     "2466142", "2466072", "2466023")
+# 
+# street <- 
+#   street |> 
+#   filter(CSDUID %in% island_CSDUID)
+# 
+# rm(island_CSDUID)
 

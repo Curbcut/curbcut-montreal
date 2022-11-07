@@ -47,10 +47,10 @@ is_in_geometry <- function(all_tables, crs, update_name_2_for) {
           st_transform(crs) |> 
           st_set_agr("constant") |> 
           st_point_on_surface() |> 
-          st_intersection(get(geo) |> 
+          st_intersection(get(if (exists(geo)) geo else all_tables[[geo]][[1]]) |> 
                             st_transform(crs) |> 
                             st_set_agr("constant") |>
-                            select(geo_ID = ID)) |> 
+                            dplyr::select(geo_ID = ID)) |> 
           select(ID, geo_ID) |> 
           st_drop_geometry()
         
@@ -64,12 +64,12 @@ is_in_geometry <- function(all_tables, crs, update_name_2_for) {
             })()
         
         # Update name_2
-        if (geo != scale) {
+        if (scale != all_tables[[geo]][[1]]) {
           out <- 
             out |> 
             select(-name_2) |> 
             left_join({
-              get(geo) |> 
+              get(if (exists(geo)) geo else all_tables[[geo]][[1]]) |> 
                 st_drop_geometry() |> 
                 select(geo_ID = ID, name_2 = name)},
               by = "geo_ID") |> 

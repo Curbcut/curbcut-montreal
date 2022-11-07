@@ -17,7 +17,7 @@ census_vec <-
     vec_1996 = "v_CA1996_1627",
     var_title = "Median household income ($)",
     var_short = "Med. inc.",
-    explanation = "median before-tax household income",
+    explanation = "the median before-tax household income",
     private = FALSE) |>
   add_row_census_vec(
     var_code = "inc_50_pct",

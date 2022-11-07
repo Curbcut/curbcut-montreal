@@ -76,13 +76,24 @@ canale_server <- function(id, r) {
       } else r[[id]]$select_id(selection)
     }) |> bindEvent(get_clicked_object(id_map))
     
+    # Default location
+    observe({
+      if (is.null(r$default_select_id())) return(NULL)
+      
+      new_id <- data()$ID[data()$ID %in% 
+                            r$default_select_id()[[gsub("_.*", "", r[[id]]$df())]]]
+      if (length(new_id) == 0) return(NULL)
+      
+      r[[id]]$select_id(new_id)
+    }) |> bindEvent(r$default_select_id(), r[[id]]$df())
+    
     # Choose tileset
     tile <- zoom_server(
       id = id,
       r = r,
       zoom_string = zoom_string,
       zoom_levels = map_zoom_levels)
-
+    
     # Get df for explore/legend/etc
     observe(r[[id]]$df(get_df(tile(), zoom_string()))) |> 
       bindEvent(tile(), zoom_string())

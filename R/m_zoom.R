@@ -62,15 +62,21 @@ zoom_server <- function(id, r = r, zoom_string, zoom_levels) {
         session, "zoom_slider", 
         selected = get_zoom_name(zoom_string()))
     })
-    
+
     zoom_out <- reactive({
       out <- 
-      if (input$zoom_auto) "auto_zoom" else get_zoom_code(input$zoom_slider)
+        if (input$zoom_auto) "auto_zoom" else get_zoom_code(input$zoom_slider)
       
       # If the module isn't impacted by a change of r$geo()
       if (!is.list(zoom_levels())) return(out)
-        
+      
       # If the module IS impacted by a change of r$geo()
+        # Go back to auto_zoom if the constructed df() does not exist, which
+        # happen when r$geo() is changed on a manual auto-zoom. The output will
+        # be changed for a split second.
+      if (is.null(get0(paste(zoom_levels()$scale, out, sep = "_"))) && 
+          !grepl("building", paste(zoom_levels()$scale, out, sep = "_"))) 
+        out <- "auto_zoom"
       return(paste(zoom_levels()$scale, out, sep = "_"))
     })
     

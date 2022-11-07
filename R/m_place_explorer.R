@@ -63,7 +63,7 @@ place_explorer_UI <- function(id) {
                     '</div>
                      <div style="width: 20%;">',
                     actionButton(inputId = NS(id, "search_button"),
-                                 label = icon("search"),
+                                 label = icon("search", verify_fa = FALSE),
                                  style = "margin-top: var(--padding-v-md);"),
                     '</div>
                      </div>')),
@@ -217,7 +217,7 @@ place_explorer_server <- function(id, r) {
 
       if (sum(pcs) > 0) {
         DAUID_of_pc <- postal_codes$DAUID[pcs]
-        DA_data <- get(r$geo(), "DA", sep = "_")
+        DA_data <- get(paste(r$geo(), "DA", sep = "_"))
         IDs <- DA_data[DA_data$ID == DAUID_of_pc, 
                        c("ID", "CTUID", "geo_ID")] |> unlist()
         select_id(data()$ID[data()$ID %in% IDs])
@@ -309,8 +309,12 @@ place_explorer_server <- function(id, r) {
       if (zoom == 1) zoom <- 10
 
       ct <- if (is.na(select_id()) || sum(data()$ID %in% select_id()) == 0) 
-        c(0, 0) else
-          data()$centroid[data()$ID == select_id()][[1]]
+        c(0, 0) else {
+          do.call("dbGetQuery", list(rlang::sym(paste0(df(), "_conn")),
+                                            paste0("SELECT lat, lon FROM centroid ",
+                                                   "WHERE ID = '", select_id(), "'"))) |> 
+                   unlist()
+        }
 
       # Update map
       rdeck_proxy(id = "title_card_map",
@@ -451,7 +455,7 @@ place_explorer_server <- function(id, r) {
                 renderText({
                   paste(p(style = "font-size: 11px;",
                           sus_translate(r = r, text$var_title[z]),
-                          icon("question"),
+                          icon("question", verify_fa = FALSE),
                           title = str_to_sentence(
                             sus_translate(r = r, text$explanation[z]))))
                 })

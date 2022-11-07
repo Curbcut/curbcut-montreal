@@ -45,6 +45,31 @@ title_text <-
     "<b>(MSSI research)</b></ul><br><p><i>Module lead ",
     "authors: David Wachsmuth, Robin Basalaev-Binder</i>")) |> 
 
+# CanBICS -----------------------------------------------------------------
+
+  add_row(tab = "canbics", type = "title", text = "Bikeway Comfort and Safety") |> 
+  add_row(tab = "canbics", type = "main", text = paste0(
+    "Can-BICS, or Canadian Bikeway Comfort and Safety, is a classification ",
+    "system for cycling infrastructure in Canada. This system is based on ",
+    "three tiers that considers safety and user comfort: high-comfort bikeways, ",
+    "medium-comfort bikeways, and low-comfort bikeways. In this module, explore ",
+    "how areas in the Montreal region rank in accordance with the Can-BICS index. ")) |> 
+  add_row(tab = "canbics", type = "extra", text = paste0(
+    "<p>The information seen in this module is based on data from CANUE. ",
+    "Can-BICS was developed by Meghan Winters, PhD, Moreno Zanotto, MSc, ",
+    "and Gregory Butler, MSc. In selecting different areas on the map, ",
+    "insights can be gained about the type and quality of cycling infrastructure. ",
+    "Using the panel on the right, you can compare the Can-BICS index to ",
+    "variables linked to housing, income, identity, transport, households, ",
+    "language, age, and education. Understanding the spatialization of cycling ",
+    "infrastructure as classified by Can-BICS can help to highlight the ",
+    "availability and infrastructure types across the Montreal region and ",
+    "support efforts in improving bikeways. <p>For more information about ",
+    "Can-BICS visit: <a href='https://www.canada.ca/en/public-health/services/",
+    "reports-publications/health-promotion-chronic-disease-prevention-canada-",
+    "research-policy-practice/vol-40-no-9-2020/canbics-classification-system-",
+    "naming-convention-cycling-infrastructure.html'></a> </ul>")) |> 
+
   
 # Climate risk ------------------------------------------------------------
 
@@ -110,7 +135,26 @@ title_text <-
     "règlement.</a><li>Madden, D., & Marcuse, P. (2016). <i>In Defense of ",
     "Housing: The Politics of Crisis</i>. New York and London: Verso ",
     "Books.</ul>")) |> 
-  
+
+# Vacancy rate ---------------------------------------------------
+
+add_row(tab = "vac_rate", type = "title", text = "Vacancy rate") |> 
+  add_row(tab = "vac_rate", type = "main", text = paste0(
+    "Examining residential rental vacancy rates is an important part of ",
+    "understanding the housing landscape in Montreal. In this module, explore ",
+    "and compare information about vacancy rates for specific types of units, ",
+    "the year of construction, or within a rent range. Select a year, ",
+    "two years, or compare dates for which to view the spatialized data.")) |> 
+  add_row(tab = "vac_rate", type = "extra", text = paste0(
+    "<p> The comparative analysis seen in this module is based on data from ",
+    "the CMHC. In selecting different options from the drop-down menus, ",
+    "insights can be gained on how vacancy rates vary over time and spatially ",
+    "by type of unit, year of construction, and rent range. Using the panel ",
+    "on the right, you can compare these options to variables linked to ",
+    "housing, income, identity, transport, households, language, age, and ",
+    "education. Information about vacancy rates and its related variables ",
+    "can help define past and current trends in the housing market and what ",
+    "is needed to better provide adequate rental housing. </ul>")) |> 
 
 # Housing affordability ---------------------------------------------------
 
@@ -122,7 +166,7 @@ title_text <-
     "consists of many different factors and characteristics, such as, the ",
     "people living there, their income, their shelter costs, and their tenure ",
     "status. In this module, explore and compare housing affordability by ",
-    "city or borough.")) |> 
+    "city or borough, or census tract.")) |> 
   add_row(tab = "afford", type = "extra", text = paste0(
     "<p> The comparative analysis that you see in this module is based on ",
     "housing data from the 2016 Census. In selecting different options from ",
@@ -144,7 +188,7 @@ title_text <-
     "helps to gain a clearer picture of the housing landscape in Montreal. ",
     "This is especially the case when compared with other factors. In this ",
     "module, tenure status can be explored in relation to shelter costs and ",
-    "additional characteristics such as family characteristics and dwelling ",
+    "additional variables such as family characteristics and dwelling ",
     "types.")) |> 
   add_row(tab = "tenure", type = "extra", text = paste0(
     "<p> The comparative analysis that you see in this module is based on ", 
@@ -154,7 +198,7 @@ title_text <-
     "dwelling characteristics. Using the panel on the right, you can compare ",
     "these tenure status variables with access to different amenities by mode ",
     "of transportation. Understanding housing needs by tenure status can help ",
-    "to inform what should be improved specifically for tenants or owners; as ",
+    "to inform what is to be improved specifically for tenants or owners as ",
     "they might be experiencing different difficulties and ",
     "advantages. </ul>")) |> 
   
@@ -163,7 +207,7 @@ title_text <-
 
   add_row(tab = "dw_types", type = "title", text = "Dwelling Types") |> 
   add_row(tab = "dw_types", type = "main", text = paste0(
-    "Whether a household is living in a single-detached house versus an ",
+    "Whether a household is living in a single-detached house or an ",
     "apartment in a building of 5+ stories is an important aspect of ", 
     "understanding people’s housing realities. In selecting different types ",
     "of dwellings, you can simply explore and compare them in relation to ",
@@ -390,6 +434,28 @@ add_row(tab = "demographics", type = "title",
     "<a href = 'https://conservancy.umn.edu/bitstream/handle/11299/199892/",
     "CTS13-20_Access-Across-America.pdf'>'Access Across America'</a>.")) |> 
   
+# Access to amenities ------------------------------------------------------------------
+
+add_row(tab = "amenities", type = "title", 
+        text = "Access to amenities") |> 
+  add_row(tab = "amenities", type = "main", text = paste0(
+    "Being able to access amenities and services in our nearby urban ",
+    "environment can greatly impact our daily experiences and quality of ",
+    "life. The time and mode of transportation needed to reach these amenities ",
+    "plays a large role in this. In this module, explore information about ",
+    "access to schools, food distributors, health care facilities, ",
+    "municipal parks, and daycare spots by walk, bike, transit, or car.")) |> 
+  add_row(tab = "amenities", type = "extra", text = paste0(
+    "<p>The spatialized analysis seen in this module is based on data from ",
+    "Données Québec and DMTI. In selecting different options from the ",
+    "drop-down menus, insights can be gained about access to different types ",
+    "of amenities by a certain mode of transportation within a given amount ",
+    "of time. Using the panel on the right, you can compare these options to ",
+    "variables linked to housing, income, identity, transport, households, ",
+    "language, age, and education. Understanding access to amenities by mode ",
+    "of transportation gives a glimpse into how different areas are serviced ",
+    "and what that might imply for residents. </a>.")) |> 
+  
 
 # Montreal stories --------------------------------------------------------
   
@@ -528,10 +594,10 @@ add_row(tab = "demographics", type = "title",
     "units in a development and the average score per year.")) |> 
   
 
-# Natural infrastructure --------------------------------------------------
+  # Natural infrastructure --------------------------------------------------
 
-  add_row(tab = "natural_inf", type = "title", 
-          text = "Natural infrastructure") |> 
+add_row(tab = "natural_inf", type = "title", 
+        text = "Natural infrastructure") |> 
   add_row(tab = "natural_inf", type = "main", text = paste0(
     "Natural ecosystems contribute to well-being, quality of life and public ",
     "health. This module quantifies the benefits provided by urban trees and ",
@@ -550,6 +616,17 @@ add_row(tab = "demographics", type = "title",
     "e-metropolitaine-de-montreal/' target = '_blank'>",
     "Maure et al., 2018, Le rôle des infrastructures naturelles dans la ",
     "prévention des inondations dans la Communauté métropolitaine de ",
-    "Montréal, Fondation David Suzuki."))
+    "Montréal, Fondation David Suzuki.")) |> 
+
+# Natural infrastructure --------------------------------------------------
+
+add_row(tab = "city_amenities", type = "title", 
+        text = "Short distance city") |> 
+  add_row(tab = "city_amenities", type = "main", text = paste0(
+    "This module presents accessibility indicators for walking and cycling, calculated on the City of Montreal's territory. This project is led by Polytechnique Montréal, McGill University and the Institut national de la recherche scientifique (INRS) and funded by the City of Montreal and Mitacs. This module is a preliminary version and will be the subject of future developments.")) |> 
+  add_row(tab = "city_amenities", type = "extra", text = paste0(
+    "In an urban planning context, accessibility refers to the ease with which individuals can reach opportunities dispersed throughout the territory. High walking and cycling accessibility is associated with high quality of life and social equity. A good access to destinations by walk and by bike also promotes active travel and thus, leads to greenhouse gases (GHG) emissions reductions, savings in transportation costs and improved population health. Therefore, accessibility indicators contribute to the integration of transportation and land-use in planning for sustainable mobility.",
+    "<br><br><p>Further resources: <ul><li><a href='https://github.com/VilledeMontreal/MontrealEnCommun'>Montréal En Commun</a>.</ul>",
+    "<p><i>Module lead authors: Geneviève Boisjoly, Kevin Manaugh, Owen Waygood, Philippe Apparicio, José Arturo Jasso Chávez, Julien Verdier, Karl El-Murr</i>"))
 
 

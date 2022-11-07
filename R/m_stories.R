@@ -32,9 +32,9 @@ stories_server <- function(id, r) {
   moduleServer(id, function(input, output, session) {
     ns_id <- "stories"
     ns_id_map <- paste0(ns_id, "-map")
-    
-    # Initial reactive
-    if (is.null(r[[ns_id]]$select_id)) r[[ns_id]]$select_id <- reactiveVal(NA)
+    # 
+    # # Initial reactive
+    # if (is.null(r[[ns_id]]$select_id)) r[[ns_id]]$select_id <- reactiveVal(NA)
     
     # Sidebar
     sidebar_server(

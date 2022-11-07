@@ -11,7 +11,6 @@ afford_UI <- function(id) {
     sidebar_UI(
       NS(id, id),
       susSidebarWidgets(
-        
         select_var_UI(NS(id, id), select_var_id = "d_1",
                       label = sus_translate(r = r, "Grouping"),
                       var_list = var_left_list_1_afford), 
@@ -22,13 +21,13 @@ afford_UI <- function(id) {
                     label = sus_translate(r = r, 
                                           #### TO CHANGE DYNAMICALLY TO PERCENT OF HOUSEHOLDS VS INDIVIDUALS
                                           "Normalized (percent of households)")),
-        br(),
+        hr(),
         div(id = NS(id, "household_dropdowns"), 
             select_var_UI(NS(id, id), select_var_id = "d_3",
                           label = sus_translate(r = r, "Tenure status"),
                           var_list = var_left_list_3_afford),
             select_var_UI(NS(id, id), select_var_id = "d_4",
-                          label = sus_translate(r = r, "Additional characteristic"),
+                          label = sus_translate(r = r, "Family characteristic"),
                           var_list = var_left_list_3_afford)),
         
           div(id = NS(id, "population_dropdowns"),
@@ -111,8 +110,26 @@ afford_server <- function(id, r) {
       } else r[[id]]$select_id(selection)
     }) |> bindEvent(get_clicked_object(id_map))
     
+    # Default location
+    observe({
+      if (is.null(r$default_select_id())) return(NULL)
+      
+      new_id <- data()$ID[data()$ID %in% 
+                            r$default_select_id()[[gsub("_.*", "", r[[id]]$df())]]]
+      if (length(new_id) == 0) return(NULL)
+      
+      r[[id]]$select_id(new_id)
+    }) |> bindEvent(r$default_select_id(), r[[id]]$df())
+    
     # Sidebar
     sidebar_server(id = id, r = r)
+    # Centraide logo
+    observe({
+      insertUI(selector = paste0("#", paste(id, id, "title", sep = "-")),
+               where = "beforeEnd",
+               img(src = paste0("centraide_logo/centraide_logo_", r$lang(), ".png"), 
+                   style = 'width:70%; display:block; margin:auto; margin-top:15px; margin-bottom:15px;'))
+    })
     
     # Choose tileset
     tile_1 <- zoom_server(

@@ -15,7 +15,8 @@ city_amenities_UI <- function(id) {
                       var_list = var_left_list_1_city_amenities), 
         select_var_UI(NS(id, id), select_var_id = "d_2",
                       label = sus_translate(r = r, "Mode of transport"),
-                      var_list = var_left_list_2_city_amenities)),
+                      var_list = var_left_list_2_city_amenities),
+        htmlOutput(NS(id, "disclaimer"))),
       bottom = div(class = "bottom_sidebar", 
                    tagList(legend_UI(NS(id, id)),
                            zoom_UI(NS(id, id), map_zoom_levels_city_max_DB)))),
@@ -29,7 +30,6 @@ city_amenities_UI <- function(id) {
       compare_UI(NS(id, id), make_dropdown(compare = TRUE)),
       explore_UI(NS(id, id)),
       dyk_UI(NS(id, id)))
-    
   )
 }
 
@@ -84,6 +84,17 @@ city_amenities_server <- function(id, r) {
       } else r[[id]]$select_id(selection)
     }) |> bindEvent(get_clicked_object(id_map))
     
+    # Default location
+    observe({
+      if (is.null(r$default_select_id())) return(NULL)
+      
+      new_id <- data()$ID[data()$ID %in% 
+                            r$default_select_id()[[gsub("_.*", "", r[[id]]$df())]]]
+      if (length(new_id) == 0) return(NULL)
+      
+      r[[id]]$select_id(new_id)
+    }) |> bindEvent(r$default_select_id(), r[[id]]$df())
+    
     # Choose tileset
     tile_1 <- zoom_server(
       id = id,
@@ -126,7 +137,7 @@ city_amenities_server <- function(id, r) {
 
     # Sidebar
     sidebar_server(id = id, r = r, x = "city_amenities")
-
+    
     # Data
     data <- reactive(get_data(
       df = r[[id]]$df(),
@@ -141,7 +152,22 @@ city_amenities_server <- function(id, r) {
       var_left = var_left(),
       var_right = var_right()
     ))
-
+    
+    # Disclaimer text
+    output$disclaimer <- renderText({
+      if (!var_left() %in% unlist(city_amenities_disclaimer$var_code))
+        return("")
+      
+      which_disc <- which(sapply(city_amenities_disclaimer$var_code, \(x)
+                                 var_left() %in% x))
+      
+      paste0("<br><p style='font-size:12px'><i>", 
+             sus_translate(r = r,
+                           city_amenities_disclaimer$disclaimer[[which_disc]]), 
+             "</p></i>")
+      
+    })
+    
     # Legend
     legend <- legend_server(
       id = id,
@@ -159,17 +185,17 @@ city_amenities_server <- function(id, r) {
 
     # Update map in response to variable changes or zooming
     rdeck_server(
-      id = id, 
-      r = r, 
+      id = id,
+      r = r,
       map_id = "map",
       tile = tile,
       data_color = data_color)
-    
+
     # Update map labels
     label_server(
-      id = id, 
+      id = id,
       r = r,
-      map_id = "map", 
+      map_id = "map",
       tile = tile)
 
     # Explore panel
@@ -180,7 +206,7 @@ city_amenities_server <- function(id, r) {
       geo = reactive(map_zoom_levels()$scale),
       var_left = var_left,
       var_right = var_right)
-    
+
     # Bookmarking
     bookmark_server(
       id = id,

@@ -51,16 +51,34 @@ ui <- function(request) {
     tags$head(tags$script(src = "sus.js")),
     tags$head(tags$script(src = "cookie.js")),
     tags$head(tags$script(src = "shinybrowser.js")),
+    # Cookie js script
     tags$script(src = paste0("https://cdn.jsdelivr.net/npm/js-cookie@rc/",
                              "dist/js.cookie.min.js")),
     tags$head(tags$script(js_links_between_modules)),
     tags$head(tags$script(bookmark_url)),
     tags$head(tags$style(HTML(styler))),
     tags$head(tags$style(HTML(temp_styler))),
+    # # To allow screenshot
+    # tags$script(src = paste0("https://cdn.jsdelivr.net/npm/html2canvas@1.0.0-",
+    #                          "rc.5/dist/html2canvas.min.js")),
+    # extendShinyjs(text = screenshot_js, functions = "takeShot"),
+    # tags$script(HTML('HTMLCanvasElement.prototype.getContext = function(origFn) {
+    #   return function(type, attribs) {
+    #     attribs = attribs || {};
+    #     attribs.preserveDrawingBuffer = true;
+    #     return origFn.call(this, type, attribs);
+    #   };
+    # }(HTMLCanvasElement.prototype.getContext);')),
+    
     # change page title JS function
     tags$script(HTML('Shiny.addCustomMessageHandler("changetitle", function(x) 
                    {document.title=x});')),
     
+    # To allow div elements with title attribute, for dropdown text on hover
+    tags$script(
+      "var myDefaultWhiteList = $.fn.selectpicker.Constructor.DEFAULTS.whiteList;
+    myDefaultWhiteList.div = ['title'];"
+    ),
     tags$head(includeHTML("www/google_analytics.html")),
     
     # Language switching ---------------------------------------------------------
@@ -126,19 +144,23 @@ ui <- function(request) {
                                   class = "action-button shiny-bound-input",
                                   role = "menuitem",
                                   href = "#",
-                                  icon("link"), sus_translate("Bookmark"), 
+                                  icon("link", verify_fa = FALSE), sus_translate("Bookmark"), 
                                   onclick = "copyUrl()"),
                                 actionLink(inputId = "contact",
                                            label = sus_translate("Contact/feedback"),
-                                           icon("comment"),
+                                           icon("comment", verify_fa = FALSE),
                                            onclick = "window.open('mailto:contact@susmontreal.ca', '_blank')"),
                                 actionLink(inputId = "download_data",
                                            label = sus_translate(
                                              "Export data"),
-                                           icon("download")),
+                                           icon("download", verify_fa = FALSE)),
+                                # actionLink(inputId = "save_image",
+                                #            label = sus_translate(
+                                #              "Save as image"),
+                                #            icon("image", verify_fa = FALSE)),
                                 actionLink(inputId = "subscribe",
                                            label = sus_translate("Newsletter"),
-                                           icon("list-alt")),
+                                           icon("rectangle-list", verify_fa = FALSE)),
                                 actionLink(inputId = "advanced_options",
                                            label = sus_translate(
                                              "Advanced options"),

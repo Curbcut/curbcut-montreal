@@ -65,23 +65,25 @@ mods_rdy <- list(
     "Climate risk" = "climate_risk"
   ),
   "Housing" = c(
-    "Housing system" = "housing"#,
-    # "Housing affordability" = "afford",
-    # "Tenure status" = "tenure",
-    # "Dwelling types" = "dw_types"
+    "Housing system" = "housing",
+    "Vacancy rate" = "vac_rate",
+    "Housing affordability" = "afford",
+    "Tenure status" = "tenure",
+    "Dwelling types" = "dw_types"
   ),
   "Policy" = c(
     "Montréal climate plans" = "mcp"
   ),
   "Transport" = c(
-    "Accessibility" = "access"#,
-    # "City amenities" = "city_amenities",
+    "Accessibility" = "access",
+    "Accessibility to amenities" = "amenities",
+    "Short distance city" = "city_amenities"#,
     #   "Road safety" = "crash"
   ),
   "Urban life" = c(
-    "Active living potential" = "canale", 
-    "Green alleys" = "alley"#,
-    #"Demographics" = "demographics"
+    "Active living potential" = "canale",
+    "Green alleys" = "alley",
+    "Demographics" = "demographics"
   ),
   "Ecology" = c(
     "Natural infrastructure" = "natural_inf"
@@ -125,6 +127,9 @@ map_zoom_levels_centraide <-
   c("centraide" = 0, "CT" = 10.5, "DA" = 12.5, "building" = 15.5)
 map_zoom_levels_centraide_max_CT <- c("centraide" = 0, "CT" = 10.5)
 
+map_zoom_levels_cmhc <- 
+  c("cmhczone" = 0)
+
 first_level_choropleth <- 
   sapply(ls()[grepl("map_zoom_levels_", ls())], \(x) names(get(x)[1]),
          USE.NAMES = FALSE) |> unique()
@@ -144,7 +149,12 @@ systemfonts::register_font(
   bolditalic = "www/fonts/SourceSansPro-BoldItalic.ttf")
 
 
-# Connect to the db -------------------------------------------------------
+# Connect to the dbs ------------------------------------------------------
 
-db <- dbConnect(SQLite(), "data/sql_db.sqlite")
+dbs <- list.files("data", full.names = TRUE)
+dbs <- subset(dbs, grepl(".sqlite$", dbs))
 
+lapply(dbs, \(x) {
+  connection_name <- paste0(stringr::str_extract(x, "(?<=/).*?(?=\\.)"), "_conn")
+  assign(connection_name, dbConnect(SQLite(), x), envir = .GlobalEnv)
+}) |> invisible()

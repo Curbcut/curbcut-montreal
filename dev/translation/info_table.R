@@ -12,6 +12,8 @@ info_table_translated <-
           fr = paste0("de l'îlot de diffusion")) |> 
   add_row(en = paste0("250-m"), 
           fr = paste0("de 250-m")) |> 
+  add_row(en = paste0("Sector"), 
+          fr = paste0("Secteur")) |> 
   add_row(en = paste0("building"), 
           fr = paste0("du bâtiment")) |> 
   add_row(en = paste0("street"), 
@@ -311,7 +313,7 @@ info_table_translated <-
                       "tion de la valeur '{z$title_left}' n'a effectivement au",
                       "cune corrélation avec la variation de la valeur '{z$tit",
                       "le_right}' à l'échelle {z$scale_sing}.<p>Cela signifie ",
-                      "qu'à l'échelle {z$scale_sing}, il n'y avait pas re rela",
+                      "qu'à l'échelle {z$scale_sing}, il n'y avait pas de rela",
                       "tion entre la variation des deux variables.")) |> 
   add_row(en = paste0("<p>From {z$start_date_left} to {z$end_date_left}, the c",
                       "hange in '{z$title_left}' had a {z$strong} {z$pos} corr",
@@ -409,6 +411,60 @@ info_table_translated <-
                       "n moyenne de {z$coef} chaque jour.")) |> 
   add_row(en = paste0("<p><b>STRONG CORRELATION</b></p>"), 
           fr = paste0("<p><b>FORTE CORRÉLATION</b></p>")) |> 
+  add_row(en = paste0("<p><i>Data from {date_left} for '{z$title_left}' and ", 
+                      "{date_right} for '{z$title_right}'.</i></p>"), 
+          fr = paste0("<p><i>Données de {date_left} pour '{z$title_left}' et ", 
+                      "de {date_right} pour '{z$title_right}'.</i></p>")) |> 
+  
+  add_row(en = paste0("<p>From {z$start_date_left} to {z$end_date_left}, the change in ", 
+                      "'{z$title_left}' had effectively no correlation ({z$corr_disp}) ", 
+                      "with {z$date_right}'s '{z$title_right}' at the {z$scale_sing} scale.",
+                      "<p>This means that, at the {z$scale_sing} scale, there was no ",
+                      "relationship between the change in {z$exp_left} with {z$exp_right}."), 
+          fr = paste0("<p>De {z$start_date_left} à {z$end_date_left}, la ", 
+                      "variation de la valeur '{z$title_left}' ne présente aucune ", 
+                      "corrélation ({z$corr_disp}) avec ", 
+                      "la valeur '{z$title_right}' de {z$date_right} à ", 
+                      "l'échelle {z$scale_sing}. <p>Cela signifie qu'à l'échelle des",
+                      " {z$scale_plural}, il n'y avait aucune relation entre ",
+                      "la variation de/du {sub('^le |^la", " ', '', ", 
+                      "z$exp_left)} et {z$exp_right}, {z$high_low_disclaimer}.")) |> 
+  add_row(en = paste0("<p>From {z$start_date_left} to {z$end_date_left}, the ", 
+                      "change in '{z$title_left}' had a {z$strong} {z$pos} ", 
+                      "correlation ({z$corr_disp}) with {z$date_right}'s ", 
+                      "'{z$title_right}' at the {z$scale_sing} scale.<p>This ", 
+                      "means that, in general, {z$scale_plural} with a higher ", 
+                      "change in {z$exp_left} tended to have a {z$higher} ", 
+                      "value in {z$exp_right}, {z$high_low_disclaimer}."), 
+          fr = paste0("<p>De {z$start_date_left} à {z$end_date_left}, la ", 
+                      "variation de la valeur '{z$title_left}' présente une ", 
+                      "corrélation {z$strong} et {z$pos} ({z$corr_disp}) avec ", 
+                      "la valeur '{z$title_right}' de {z$date_right} à ", 
+                      "l'échelle {z$scale_sing}. <p>Cela signifie qu'en ", 
+                      "général, les {z$scale_plural} présentant une variation ", 
+                      "plus importante de/du {sub('^le |^la", " ', '', ", 
+                      "z$exp_left)} ont tendance à avoir une valeur {z$higher} ", 
+                      "avec {z$exp_right}, {z$high_low_disclaimer}.")) |> 
+  add_row(en = paste0("<strong>{z$place_heading}</strong>",
+                      "<p>From {z$start_date_left} to {z$end_date_left}, {z$place_name} had ",
+                      "a change in its '{z$title_left}' value of {z$val_left}. ",
+                      "In {z$date_right}, '{z$title_right}' had a value of {z$val_right}. ",
+                      "<p>These two scores are {z$relative_position}, in relative ",
+                      "terms. {z$place_name} had a change in {z$exp_left} higher ",
+                      "than {z$perc_left} of {z$scale_plural}. It also had ",
+                      "{sub('^the', 'a', z$exp_right)} higher than {z$perc_right} ",
+                      "of {z$scale_plural} {z$geo}."),
+          fr = paste0("<strong>{z$place_heading}</strong><p>De {z$start_date_left} à ",
+                      "{z$end_date_left}, {z$place_name} a connu une variation de sa valeur ",
+                      "'{z$title_left}' de {z$val_left}. En {z$date_right}, ",
+                      "‘{z$title_right}' avait une valeur de {z$val_right}.<p>",
+                      "Ces deux scores sont {z$relative_position} en termes ",
+                      "relatifs. {z$place_name} avait une variation pour ",
+                      "{z$exp_left} supérieure à {z$perc_left} des {z$scale_plural}. ",
+                      "Elle avait également {sub('^le', 'un', z$exp_right)} ",
+                      "supérieur à celui de {z$perc_right} des {z$scale_plural} ",
+                      "{z$geo}.")) |> 
+          
   # Natural infrastructure
   add_row(en = paste0("<p>Natural infrastructure represents approximately 25% ",
                       "of the territory of the Montreal region. Preserving {sl",

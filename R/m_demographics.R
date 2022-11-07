@@ -97,8 +97,26 @@ demographics_server <- function(id, r) {
       } else r[[id]]$select_id(selection)
     }) |> bindEvent(get_clicked_object(id_map))
     
+    # Default location
+    observe({
+      if (is.null(r$default_select_id())) return(NULL)
+      
+      new_id <- data()$ID[data()$ID %in% 
+                            r$default_select_id()[[gsub("_.*", "", r[[id]]$df())]]]
+      if (length(new_id) == 0) return(NULL)
+      
+      r[[id]]$select_id(new_id)
+    }) |> bindEvent(r$default_select_id(), r[[id]]$df())
+    
     # Sidebar
     sidebar_server(id = id, r = r)
+    # Centraide logo
+    observe({
+      insertUI(selector = paste0("#", paste(id, id, "title", sep = "-")),
+               where = "beforeEnd",
+               img(src = paste0("centraide_logo/centraide_logo_", r$lang(), ".png"), 
+                   style = 'width:70%; display:block; margin:auto; margin-top:15px; margin-bottom:15px;'))
+    })
     
     # Choose tileset
     tile_1 <- zoom_server(

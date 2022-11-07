@@ -1,9 +1,8 @@
 #### NATURAL INFRASTRUCTURE EXPLORE GRAPH ######################################
 
-
-explore_graph_natural_inf <- function(data, r = r, var_type, var_left, var_right, df, 
-                                      select_id, geo, build_str_as_DA = TRUE) {
-
+explore_graph_natural_inf <- function(data, r = r, var_type, var_left, var_right, 
+                                      df, select_id, geo, build_str_as_DA = TRUE) {
+                                      
   if (var_left == "c_priority") {
     
     labels <- sapply(c("Flood", "Biodiversity", 

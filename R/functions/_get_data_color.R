@@ -41,7 +41,7 @@ get_data_color <- function(map_zoom_levels, geo, var_left, var_right,
                    by.y = "group")[, c("ID", "fill")]
       names(out) <- c("group", "value")
       out
-    } else if (data_type == "delta") {
+    } else if (grepl("delta", data_type)) {
       
       val_delta <- rep("#0571B0", length(data$var_left))
       val_delta[data$var_left < 0.1] <- "#92C5DE"

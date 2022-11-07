@@ -6,8 +6,9 @@ interpolate_scales <- function(data, base_scale, all_tables,
   if ("sf" %in% class(data)) geom_type <- unique(st_geometry_type(data))
   
   # Only interpolate for bigger geometries than the base one
+  construct_for <- all_tables[sapply(all_tables, \(x) base_scale %in% x)]
   construct_for <- 
-    map(all_tables, function(scales) {
+    map(construct_for, function(scales) {
       scales[seq_len(which(scales == base_scale))]
     })
   

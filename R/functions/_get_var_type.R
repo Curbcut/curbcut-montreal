@@ -5,7 +5,7 @@ get_var_type <- function(data, geo, var_left, var_right, df, select_id,
   
   ## Invalidate if non-standard df() -------------------------------------------
   
-  if (!is_scale_in_df(c(all_choropleth, "grid"), df)) return(df)
+  if (is.null(df) || !is_scale_in_df(c(all_choropleth, "grid"), df)) return(df)
   
   
   ## Identify NA tables --------------------------------------------------------
@@ -18,7 +18,11 @@ get_var_type <- function(data, geo, var_left, var_right, df, select_id,
   
   ## Handle multiple dates then strip dates ------------------------------------
   
-  delta <- length(var_left) == 2 || length(var_right) == 2
+  delta <- 
+    length(var_left) == 2 && (length(var_right) == 2 || var_right[1] == " ")
+  deltax <- 
+    length(var_left) == 2 && (length(var_right) == 1 && var_right[1] != " ")
+  
   var_left <- unique(str_remove(var_left, "_\\d{4}$"))
   var_right <- unique(str_remove(var_right, "_\\d{4}$"))
   
@@ -27,12 +31,12 @@ get_var_type <- function(data, geo, var_left, var_right, df, select_id,
   
   select_df <- if (build_str_as_DA && is_scale_in_df("building", df)) {
     if (is.na(select_id)) get(paste(geo, "DA", sep = "_")) else {
-      dbGetQuery(db, paste0("SELECT * FROM ", 
-                            paste(geo, "building", sep = "_"), 
-                            " WHERE ID = ", 
-                            select_id))
+      dbGetQuery(building_conn, 
+                 paste0("SELECT * FROM ", paste(geo, "building", sep = "_"), 
+                        " WHERE ID = '", select_id, "'"))
     }
   } else data
+  if (nrow(select_df) == 0) select_id <- NA
   selection <- if (is.na(select_id)) select_df[0,] else 
     select_df[select_df$ID == select_id,]
   active_left <- if (build_str_as_DA && is_scale_in_df("building", df)) {
@@ -100,6 +104,7 @@ get_var_type <- function(data, geo, var_left, var_right, df, select_id,
   table_type <- paste(comp_type, var_type, select_type, sep = "_")
   if (select_type == "na") table_type <- paste0(comp_type, "_na")
   if (delta) table_type <- paste0(table_type, "_delta")
+  if (deltax) table_type <- paste0(table_type, "_deltax")
   
 
   ## Deal with NAs -------------------------------------------------------------

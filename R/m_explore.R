@@ -62,7 +62,7 @@ explore_server <- function(id, r, data, var_left, var_right, geo = r$geo,
       get_var_type(
       data = data(),
       var_left = var_left(),
-      var_right = var_right(),
+      var_right = unique(var_right()),
       df = df(),
       geo = geo(),
       select_id = select_id(),
@@ -77,11 +77,14 @@ explore_server <- function(id, r, data, var_left, var_right, geo = r$geo,
     graph_args2 <- reactive(c(graph_args(), var_type = var_type()))
     
     # Make info table
-    table_out <- reactive(tryCatch(do.call(table(), table_args2()), 
-                                   error = function(e) {
-                                     print(e)
-                                     return(NULL)
-                                   }))
+    table_out <- reactive(
+      tryCatch(
+        do.call(table(), table_args2())
+        , error = function(e) {
+          print(e)
+          return(NULL)
+        })
+      )
     
     # Display info table
     output$info_table <- renderUI(table_out())

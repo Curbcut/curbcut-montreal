@@ -21,12 +21,27 @@ library(qs)
 #                              collapse = ' |> \n'))
 #     )
 #   } else {
-#     paste0('tibble(en = character(), fr = character()) |>\n',
 # 
-#            paste0('add_row(en = paste0("', en, '"), \nfr = paste0("', fr, '"))',
-#                   collapse = ' |> \n')) |>
+#     iter_size <- ceiling(length(en) / ceiling(length(en)/250))
+#     translation_tibbles_list <-
+#       lapply(seq_len(round(length(en)/250)), \(x) {
+#         en1 <- en[((x - 1) * iter_size + 1):(x * iter_size)]
+#         fr1 <- fr[((x - 1) * iter_size + 1):(x * iter_size)]
+#         en1 <- en1[!is.na(en1) & !is.na(fr1)]
+#         fr1 <- fr1[!is.na(en1) & !is.na(fr1)]
+# 
+#         paste0('RENAME_TKTK <- \n',
+#                if (x != 1) 'RENAME_TKTK |>\n',
+#                if (x == 1) 'tibble(en = character(), fr = character()) |>\n',
+#                paste0('add_row(en = paste0("', en1, '"), \nfr = paste0("', fr1, '"))',
+#                       collapse = ' |> \n')) |> paste0("\n\n")
+#       })
+# 
+#     reduce(translation_tibbles_list, paste0) |>
 #       writeLines("translated_tb.txt")
-#     message("File `translated_tb.txt` created in the root of the directory.")
+#     message(
+#       paste0("File `translated_tb.txt` created in the root of the directory. ",
+#              "Rename RENAME_TKTK"))
 #   }
 # 
 # }
@@ -44,6 +59,7 @@ source("dev/translation/place_explorer.R", encoding = "utf-8")
 source("dev/translation/authors.R", encoding = "utf-8")
 source("dev/translation/centraide_vars.R", encoding = "utf-8")
 source("dev/translation/data_export.R", encoding = "utf-8")
+source("dev/translation/city_amenities.R", encoding = "utf-8")
 
 # Retrieve and bind translated csvs ---------------------------------------
 
@@ -58,7 +74,8 @@ translation_fr <-
             place_explorer_translated,
             authors_translation,
             cent_variables_translated,
-            data_export_translated) |> 
+            data_export_translated,
+            city_amenities_translation) |> 
   distinct(en, .keep_all = TRUE)
 
 

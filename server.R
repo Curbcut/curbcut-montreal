@@ -32,6 +32,8 @@ shinyServer(function(input, output, session) {
     lang = reactiveVal("fr"),
     active_tab = "home",
     geo = reactiveVal("CMA"),
+    default_select_id = reactiveVal(NULL),
+    stories = reactiveValues(select_id = reactiveVal(NA)),
     canale = reactiveValues(select_id = reactiveVal(NA), 
                             df = reactiveVal("CMA_CSD"),
                             zoom = reactiveVal(get_zoom(map_zoom))),
@@ -65,7 +67,13 @@ shinyServer(function(input, output, session) {
     afford = reactiveValues(select_id = reactiveVal(NA), 
                             df = reactiveVal("CMA_CSD"),
                             zoom = reactiveVal(get_zoom(map_zoom)),
-                            prev_norm = reactiveVal(FALSE))
+                            prev_norm = reactiveVal(FALSE)),
+    vac_rate = reactiveValues(select_id = reactiveVal(NA), 
+                            df = reactiveVal("cmhc_cmhczone"),
+                            zoom = reactiveVal(get_zoom(map_zoom))),
+    amenities = reactiveValues(select_id = reactiveVal(NA), 
+                              df = reactiveVal("CMA_CSD"),
+                              zoom = reactiveVal(get_zoom(map_zoom)))
   )
   
 
@@ -350,16 +358,42 @@ shinyServer(function(input, output, session) {
 
   onclick("advanced_options", {
     showModal(modalDialog(
+      # Change 'geo' (region)
       radioButtons("geo_change",
                    label = sus_translate(r = r, "Change default geometry"),
                    inline = TRUE,
                    selected = r$geo(),
                    choiceNames = 
                      sapply(c("Metropolitan Area", "City of Montreal", 
-                              "Island of Montreal"),
-                            sus_translate, r = r, USE.NAMES = FALSE),#, "Centraide"),
-                   choiceValues = c("CMA", "city", "island")),#, "centraide")),
-      title = sus_translate(r = r, "Advanced options")))
+                              "Island of Montreal", "Centraide"),
+                            sus_translate, r = r, USE.NAMES = FALSE),
+                   choiceValues = c("CMA", "city", "island", "centraide")),
+      
+      hr(),
+      
+      # Lock in address of zone for select_ids
+      strong(sus_translate(r = r, "Enter and save a default location (postal code or address)")),
+      HTML("<br><i>", sus_translate(r = r, "Default location will be saved until ",
+                    "manually cleared from advanced options"), "</i>"),
+      HTML(paste0('
+                   <div class="shiny-split-layout">
+                     <div style="width: 80%; margin-top: var(--padding-v-md); width:auto;">',
+                  textInput(inputId = "lock_address_searched", 
+                            label = NULL, 
+                            placeholder = "845 Sherbrooke Ouest, Montréal, Quebec"),
+                  '</div>
+                     <div style="width: 20%">',
+                  actionButton(inputId = "lock_search_button",
+                               label = icon("check", verify_fa = FALSE),
+                               style = "margin-top: var(--padding-v-md);"),
+                  '</div>
+                  </div>',
+                  actionButton(inputId = "cancel_lock_location",
+                               label = sus_translate(r = r, "Clear default location"), 
+                               icon = icon("xmark", verify_fa = FALSE),
+                               style = "margin-top: var(--padding-v-md);"))),
+      title = sus_translate(r = r, "Advanced options"),
+      footer = modalButton(sus_translate(r = r, "Dismiss"))))
   })
 
   # Change the default geometry and save the cookie
@@ -376,6 +410,103 @@ shinyServer(function(input, output, session) {
       r$geo(input$cookies$default_geo)
     }
   }, once = TRUE)
+  
+  # Location lock in
+  observeEvent(input$lock_search_button, {
+    postal_c <-
+      input$lock_address_searched |>
+      str_to_lower() |>
+      str_extract_all("\\w|\\d", simplify = TRUE) |>
+      paste(collapse = "")
+    pcs <- postal_codes$postal_code == postal_c
+    
+    out <- 
+      if (sum(pcs) > 0 || grepl("[a-z][0-9][a-z][0-9][a-z][0-9]", postal_c)) {
+        # Postal code detected, but not in our database
+        if (sum(pcs) == 0) {
+          showNotification(
+            sus_translate(r = r, "Postal code `{postal_c}` isn't within an available geography."),
+            type = "error")
+          return(NULL)
+        }
+        
+        showNotification(
+          sus_translate(r = r,
+                        paste0("Postal code `{postal_codes$postal_code[pcs]}` ",
+                               "saved as default.")),
+          type = "default")
+        sapply(c("CMA", "city", "island", "centraide"), \(x) {
+          dat <- get(paste0(x, "_DA"))
+          dat <- dat[dat$ID == postal_codes$DAUID[pcs], ]
+          if (length(data) == 0) {
+            showNotification(
+              sus_translate(r = r, paste0("No addresses found.")),
+              type = "error")
+            return(NULL)
+          }
+          unique(unlist(dat[grepl("ID$", names(dat))]))
+        }, simplify = FALSE, USE.NAMES = TRUE)
+        
+      } else {
+        ad <- input$lock_address_searched
+        add <- ad
+        # Convert to ASCII
+        add <- paste0("%", charToRaw(add), collapse = "")
+        add <- paste0("http://geogratis.gc.ca/services/geolocation/en/locate?q=",
+                      add)
+        
+        get <- httr::GET(add)
+        val <- httr::content(get)
+        if (length(val) == 0) {
+          showNotification(
+            sus_translate(r = r, paste0("No addresses found.")),
+            type = "error")
+          return(NULL)
+        }
+        val <- val[[1]]
+        coords <- val$geometry$coordinates
+        
+        out <- 
+          sapply(c("CMA", "city", "island", "centraide"), \(x) {
+            da_vals <- do.call("dbGetQuery", list(rlang::sym(paste0(x, "_DA_conn")),
+                                                  paste0("SELECT * FROM centroid")))
+            distance_sum <- 
+              mapply(sum, abs(coords[[1]] - da_vals$lat), abs(coords[[2]] - da_vals$lon))
+            # If too far.
+            if (min(distance_sum) > 0.1) return(NULL)
+            DA_ID <- da_vals$ID[which(distance_sum == min(distance_sum))]
+            dat <- get(paste0(x, "_DA"))
+            dat <- dat[dat$ID == DA_ID, ]
+            na.omit(unique(unlist(dat[grepl("ID$", names(dat))])))
+          }, simplify = FALSE, USE.NAMES = TRUE)
+        
+        if (all(sapply(out, is.null))) {
+          showNotification(
+            sus_translate(r = r,
+                          paste0("Address `{input$lock_address_searched}` isn't within an available geography.")),
+            type = "error")
+          out <- NULL
+        } else {
+          showNotification(
+            sus_translate(r = r,
+                          paste0("Address `{val$title}` saved as default.")),
+            type = "default")          
+        }
+        
+        out
+      }
+    
+    r$default_select_id(out)
+  })
+  
+  observeEvent(input$cancel_lock_location, {
+    r$default_select_id(NULL)
+    
+    showNotification(
+      sus_translate(r = r,
+                    paste0("Default location successfully cleared")),
+      type = "default")
+  })
   
   
   ## Data download -------------------------------------------------------------
@@ -437,6 +568,17 @@ shinyServer(function(input, output, session) {
         })
       })
   
+  
+  # ## Screenshot ----------------------------------------------------------------
+  # 
+  # onclick("save_image", {
+  #   js$takeShot(to_sh_id = "housing-housing-map", output_id = "screenshot_container")
+  #   showModal(modalDialog(
+  #     div(id = "screenshot_container"),
+  #     title = sus_translate(r = r, "Save as image"),
+  #     size = "l"
+  #   ))
+  # })
   
   ## Heartbeat function to keep app alive --------------------------------------
   

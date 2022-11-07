@@ -28,7 +28,9 @@ get_data_type <- function(df, var_left, var_right, build_str_as_DA = TRUE) {
   if (is_scale_in_df("qual", var_left[1])) return("qual")
   if (!is_scale_in_df(c(all_choropleth, "grid"), df)) return(df)
   if (length(var_right) == 2 && var_right[1] == var_right[2]) return(
-    "NA_delta_bivar")
+    "bivar_xdelta_yq3")
+  # if (length(var_left) == 2 && length(unique(var_right)) == 1 && var_right[1] != " ") return(
+  #   "bivar_xdelta_yq3")
   if (length(var_left) == 2 && var_left[1] == var_left[2]) return("NA_delta")
   if (length(var_left) == 1 && var_right[1] == " ") return("q5")
   if (length(var_left) == 1 && length(var_right) == 1 && var_right != " ")
@@ -38,7 +40,7 @@ get_data_type <- function(df, var_left, var_right, build_str_as_DA = TRUE) {
   
   
   # Fall back if no other types are detected -----------------------------------
-  
+
   return("other")
   
 }
