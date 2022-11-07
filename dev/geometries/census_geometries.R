@@ -6,7 +6,7 @@ suppressPackageStartupMessages({
   library(sf)
   library(qs)
   library(cancensus)
-  })
+})
 
 # Variables to be selected from get_census
 var_select <- c("CTUID" = "CT_UID", "CSDUID" = "CSD_UID", "name" = "name",
@@ -59,7 +59,7 @@ csds_buffered <-
   mutate(geometry = st_buffer(geometry, -25))
 
 filling_CTs <- csds[-{
-    st_intersects(st_transform(CT, 32618), csds_buffered) |> 
+  st_intersects(st_transform(CT, 32618), csds_buffered) |> 
     unlist() |> 
     unique()}, ] |> 
   mutate(CSDUID = ID) |> 
@@ -70,7 +70,7 @@ CT <- rbind(CT, filling_CTs)
 # Download CSDs
 CSD <-
   cancensus::get_census("CA16", list(CMA = "24462"), "CSD", geo_format = "sf", 
-             quiet = TRUE) |> 
+                        quiet = TRUE) |> 
   as_tibble() |> 
   st_as_sf() |> 
   select(ID = GeoUID, any_of(var_select), geometry) |> 

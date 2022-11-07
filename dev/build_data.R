@@ -1,7 +1,7 @@
 #### BUILD ALL SUS DATA ########################################################
 
 
-# Load funtions -----------------------------------------------------------
+# Load functions ----------------------------------------------------------
 
 library(tidyverse)
 library(sf)
@@ -12,6 +12,7 @@ source("dev/other/data_testing.R")
 source("dev/other/meta_testing.R", encoding = "utf-8")
 source("dev/other/breaks.R")
 source("dev/other/char_fix.R", encoding = "utf-8")
+source("dev/other/get_census.R")
 source("dev/other/interpolate_assign.R")
 source("dev/other/is_in_geometry.R")
 
@@ -64,6 +65,12 @@ rm(shp_present)
 
 # Import DA, CT and borough geometries
 source("dev/geometries/census_geometries.R")
+
+# Import building
+source("dev/geometries/building.R")
+
+# Geocode building centroids
+source("dev/geometries/building_geocode.R")
 
 # Import centraide geometries
 source("dev/geometries/centraide_geometries.R")
@@ -569,3 +576,6 @@ source("dev/other/deploy_sus.R")
 deploy_sus("sus-mcgill-centraide") # Centraide
 deploy_sus("sus-mcgill-test") # Development
 deploy_sus("sus-mcgill") # Production
+
+renv::activate()
+

@@ -32,7 +32,7 @@ explore_UI <- function(id) {
   )
 }
 
-explore_server <- function(id, r, data, var_left, var_right, geo,
+explore_server <- function(id, r, data, var_left, var_right, geo = r$geo,
                            df = r[[id]]$df, select_id = r[[id]]$select_id,
                            build_str_as_DA = reactive(TRUE), 
                            graph = reactive(explore_graph), 

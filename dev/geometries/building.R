@@ -5,21 +5,22 @@
 # 
 # suppressPackageStartupMessages({library(osmdata)})
 # 
-# # Bounding box of CMA Montreal
+# # Bounding box
 # master_polygon_bbox <- st_bbox(master_polygon)
 # 
-# # Retrieve ALL OSM building features for Montreal
+# # Retrieve ALL OSM building features within bounding box
 # building_osm <-
-#   master_polygon_bbox |> 
-#   opq(timeout = 200) |> 
-#   add_osm_feature(key = "building") |> 
+#   master_polygon_bbox |>
+#   opq(timeout = 200) |>
+#   add_osm_feature(key = "building") |>
 #   osmdata_sf()
 # 
 # rm(master_polygon_bbox)
-# qsave(building_osm, file = "dev/data/building_osm.qs")
+# qsave(building_osm, file = "dev/data/building_osm.qs",
+#       nthreads = future::availableCores())
 # 
-# building_osm <- qread("dev/data/building_osm.qs",
-#                       nthreads = future::availableCores())
+# # building_osm <- qread("dev/data_toronto/building_osm.qs",
+# #                       nthreads = future::availableCores())
 # 
 # building <-
 #   map_dfr(list(building_osm$osm_polygons, building_osm$osm_multipolygons,
@@ -28,6 +29,7 @@
 #                    as_tibble() |>
 #                    st_as_sf() |>
 #                    select(osm_ID = osm_id, geometry) |>
+#                    st_make_valid() |> 
 #                    st_cast("MULTIPOLYGON") |>
 #                    st_make_valid()})) |>
 #   st_transform(32618) |>
@@ -192,7 +194,7 @@
 #   filter(units::drop_units(st_area(geometry)) > 10) |>
 #   mutate(ID = as.character(seq_along(ID))) |>
 #   st_transform(4326) |>
-#   st_set_agr("constant") |> 
+#   st_set_agr("constant") |>
 #   mutate(geometry = st_make_valid(geometry))
 # 
 # 
