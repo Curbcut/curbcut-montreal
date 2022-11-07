@@ -188,7 +188,7 @@ add_row(tab = "vac_rate", type = "title", text = "Vacancy rate") |>
     "helps to gain a clearer picture of the housing landscape in Montreal. ",
     "This is especially the case when compared with other factors. In this ",
     "module, tenure status can be explored in relation to shelter costs and ",
-    "additional characteristics such as family characteristics and dwelling ",
+    "additional variables such as family characteristics and dwelling ",
     "types.")) |> 
   add_row(tab = "tenure", type = "extra", text = paste0(
     "<p> The comparative analysis that you see in this module is based on ", 
@@ -198,7 +198,7 @@ add_row(tab = "vac_rate", type = "title", text = "Vacancy rate") |>
     "dwelling characteristics. Using the panel on the right, you can compare ",
     "these tenure status variables with access to different amenities by mode ",
     "of transportation. Understanding housing needs by tenure status can help ",
-    "to inform what should be improved specifically for tenants or owners as ",
+    "to inform what is to be improved specifically for tenants or owners as ",
     "they might be experiencing different difficulties and ",
     "advantages. </ul>")) |> 
   
