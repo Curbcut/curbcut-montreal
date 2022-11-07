@@ -188,8 +188,7 @@ access_server <- function(id, r) {
         CTs_to_map$group <- as.character(6 - ceiling((
           CTs_to_map[[r[[id]]$select_id()]]) / tt_thresh * 5))
         CTs_to_map <- CTs_to_map[, c("destination", "group")]
-        CTs_to_map <- merge(CTs_to_map, colour_iso, by = "group", 
-                            all.x = TRUE)
+        CTs_to_map <- merge(CTs_to_map, colour_iso, by = "group")
         names(CTs_to_map) <- c("group", "ID", "fill")
         data_1 <- data()[, "ID"] |> merge(CTs_to_map, by = "ID")
         data_1 <- data_1[, c("ID", "fill")]
