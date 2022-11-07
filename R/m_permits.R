@@ -12,13 +12,13 @@
 #       susSidebarWidgets(
 #         select_var_UI(NS(id, ns_id), select_var_id = "d_1",
 #                       var_list = var_left_list_1_permits,
-#                       label = sus_translate(r = r, "Grouping")),
+#                       label = cc_t(r = r, "Grouping")),
 #         select_var_UI(NS(id, ns_id), select_var_id = "d_2",
 #                       var_list = var_left_list_2_permits,
-#                       label = sus_translate(r = r, "Type of permits")),
+#                       label = cc_t(r = r, "Type of permits")),
 #         slider_UI(NS(id, ns_id), 
 #                   slider_id = "slu",
-#                   label = sus_translate(r = r, "Select a year"),
+#                   label = cc_t(r = r, "Select a year"),
 #                   min = permits_slider$min,
 #                   max = permits_slider$max,
 #                   step = permits_slider$interval, sep = "",
@@ -26,7 +26,7 @@
 #                   width = "95%"),
 #         slider_UI(NS(id, ns_id), 
 #                   slider_id = "slb",
-#                   label = sus_translate(r = r, "Select two dates"), 
+#                   label = cc_t(r = r, "Select two dates"), 
 #                   min = permits_slider$min,
 #                   max = permits_slider$max, 
 #                   step = permits_slider$interval, sep = "", 
@@ -34,10 +34,10 @@
 #                   width = "95%"),
 #         checkbox_UI(NS(id, ns_id),
 #                     checkbox_id = "comp_d",
-#                     label = sus_translate(r = r, "Compare dates")),
+#                     label = cc_t(r = r, "Compare dates")),
 #         hidden(checkbox_UI(NS(id, ns_id), 
 #                            checkbox_id = "grid",
-#                            label = sus_translate(r = r, "250-metre grid"))),
+#                            label = cc_t(r = r, "250-metre grid"))),
 #         year_disclaimer_UI(NS(id, ns_id))
 #       ),
 #       bottom = div(class = "bottom_sidebar", 
@@ -238,10 +238,10 @@
 #     observe({
 #       if (!choropleth()) {
 #         updateSliderInput(session, inputId = "permits-slb",
-#                           label = sus_translate(r = r, "Total between two dates"))
+#                           label = cc_t(r = r, "Total between two dates"))
 #       } else if (choropleth()) {
 #         updateSliderInput(session, inputId = "permits-slb",
-#                           label = sus_translate(r = r, "Compare two dates"))
+#                           label = cc_t(r = r, "Compare two dates"))
 #       }
 #     })
 #     

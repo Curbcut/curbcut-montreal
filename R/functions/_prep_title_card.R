@@ -10,8 +10,8 @@ prep_title_card <- function(r = r, df, select_id, ind, percent = TRUE,
   
   scale <- if (island) "island" else "region"
   
-  geo_area <- sus_translate(r = r, "The ", geo_area)
-  geo_areas <- sus_translate(r = r, geo_areas)
+  geo_area <- cc_t(r = r, "The ", geo_area)
+  geo_areas <- cc_t(r = r, geo_areas)
   
   # Prepare list to store all data
   info <- list()
@@ -46,20 +46,20 @@ prep_title_card <- function(r = r, df, select_id, ind, percent = TRUE,
     
     text_data_rank <- 
       if (data_CSD_rank > 2 / 3 * df_row) {
-        sus_translate(r = r, "relatively low at {ordinal_form(r = r, data_CSD_rank)}")
+        cc_t(r = r, "relatively low at {ordinal_form(r = r, data_CSD_rank)}")
       } else if (data_CSD_rank > 1 / 3 * df_row) {
         ordinal_form(r = r, data_CSD_rank)
       } else {
         if (r$lang() == "fr" && {ordinal_form(r = r, data_CSD_rank)} == "") {
           "premier"
-        } else sus_translate(r = r, "{ordinal_form(r = r, data_CSD_rank)} best")
+        } else cc_t(r = r, "{ordinal_form(r = r, data_CSD_rank)} best")
       }
     
-    text_island_region <- if (island) sus_translate(r = r, " on the island") else 
-      sus_translate(r = r, " in the region")
+    text_island_region <- if (island) cc_t(r = r, " on the island") else 
+      cc_t(r = r, " in the region")
     
     info$data_rank <- 
-      sus_translate(r = r, "It ranks {text_data_rank} {text_island_region}")
+      cc_t(r = r, "It ranks {text_data_rank} {text_island_region}")
     
   } else {
     
@@ -70,27 +70,27 @@ prep_title_card <- function(r = r, df, select_id, ind, percent = TRUE,
         
       } else if (data_rank > 0.75) {
         
-        paste0(sus_translate(r = r, "{geo_area} ranks in the top "),
+        paste0(cc_t(r = r, "{geo_area} ranks in the top "),
                if (abs(data_rank - 1) < 0.01) "1%" else 
                  scales::percent(abs(data_rank - 1)))
         
       } else if (data_rank < 0.25) {
         
         paste0(
-          sus_translate(r = r, "{geo_area} ranks in the bottom "),
+          cc_t(r = r, "{geo_area} ranks in the bottom "),
           if (data_rank == 0) "1%" else scales::percent(data_rank))
         
       } else {
         
         scale_percent_data_rank <- scales::percent(data_rank)
-        text_island_region <- if (island) sus_translate(r = r, "on the island") else 
-          sus_translate(r = r, "in the region")
+        text_island_region <- if (island) cc_t(r = r, "on the island") else 
+          cc_t(r = r, "in the region")
         
         if (ind == "air_quality_no2") {
-          sus_translate(r = r, "Its value is worse than {scale_percent_data_rank} ",
+          cc_t(r = r, "Its value is worse than {scale_percent_data_rank} ",
                         "of {geo_areas} {text_island_region}")
         } else {
-          sus_translate(r = r, "Its value is higher than {scale_percent_data_rank} ",
+          cc_t(r = r, "Its value is higher than {scale_percent_data_rank} ",
                         "of {geo_areas} {text_island_region}")
         }
         
@@ -106,14 +106,14 @@ prep_title_card <- function(r = r, df, select_id, ind, percent = TRUE,
     
     info$link <- paste0(" <a id='place_explorer-title_card_", ind, "' href='#'", 
                         " class='action-button shiny-bound-input'>",
-                        sus_translate(r = r, "[LEARN MORE]"), "</a>")
+                        cc_t(r = r, "[LEARN MORE]"), "</a>")
     info$link_module <- link_module
     info$link_var_left <- link_var_left
     
   } else if (!is.na(link_outside) && !is.null(link_outside)) {
     
     info$link <- paste0(" <a href='", link_outside, "' target='_blank'>",
-                        sus_translate(r = r, "[LEARN MORE]"), "</a>")
+                        cc_t(r = r, "[LEARN MORE]"), "</a>")
     info$link_module <- NULL
     info$link_var_left <- NULL
     
@@ -148,12 +148,12 @@ prep_title_card <- function(r = r, df, select_id, ind, percent = TRUE,
       per <- scales::percent(abs(data_rank - 1))
       if (per == "0%") per <- "1%"
       paste0("<p style = 'font-size: small; margin:auto; text-align:center;",
-             "color:", hex_to_plot,"'>", sus_translate(r = r, "Top {per}"), "</p>")
+             "color:", hex_to_plot,"'>", cc_t(r = r, "Top {per}"), "</p>")
     } else {
       per <- scales::percent(abs(data_rank))
       if (per == "0%") per <- "1%"
       paste0("<p style = 'font-size: small; margin:auto; text-align:center;",
-             "color:", hex_to_plot,"'>", sus_translate(r = r, "Bottom {per}"), "</p>")
+             "color:", hex_to_plot,"'>", cc_t(r = r, "Bottom {per}"), "</p>")
     }
   
   

@@ -14,7 +14,7 @@ climate_risk_UI <- function(id) {
         select_var_UI(NS(id, id), var_list = make_dropdown(
           only = list(theme = "Climate risk"))), 
         checkbox_UI(NS(id, id), value = TRUE,
-                    label = sus_translate(r = r, "250-metre grid"))),
+                    label = cc_t(r = r, "250-metre grid"))),
       bottom = div(class = "bottom_sidebar",
                    tagList(legend_UI(NS(id, id)),
                            zoom_UI(NS(id, id), map_zoom_levels_CMA)))),

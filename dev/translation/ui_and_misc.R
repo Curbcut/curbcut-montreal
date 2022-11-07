@@ -406,8 +406,8 @@ ui_and_misc_translated <-
           fr = paste0("Par km2")) |> 
   add_row(en = paste0("Per 1,000 residents"), 
           fr = paste0("Par 1,000 résidents")) |> 
-  add_row(en = paste0("About Sus"), 
-          fr = paste0("À propos de Sus")) |> 
+  add_row(en = paste0("About Curbcut"), 
+          fr = paste0("À propos de Curbcut")) |> 
   add_row(en = paste0("How to use"), 
           fr = paste0("Mode d'emploi")) |>
   add_row(en = paste0("All jobs"), 
@@ -533,8 +533,8 @@ ui_and_misc_translated <-
           fr = paste0("Les données présentées pour `<b>{var_right_title}</b>` sont celles de l'année disponible la plus proche <b>({right_year})</b>.")) |> 
   add_row(en = paste0("Comparison requires two different dates."), 
           fr = paste0("Une comparaison nécessite deux dates différentes.")) |> 
-  add_row(en = paste0("Sus does not currently support mobile phones. Please visit from a computer."), 
-          fr = paste0("Sus n'est pas actuellement compatible avec les téléphones mobiles. Veuillez visiter la plateforme avec un ordinateur.")) |> 
+  add_row(en = paste0("Curbcut does not currently support mobile phones. Please visit from a computer."), 
+          fr = paste0("Curbcut n'est pas actuellement compatible avec les téléphones mobiles. Veuillez visiter la plateforme avec un ordinateur.")) |> 
   # Centraide modules dropdowns
   add_row(en = paste0("Housing affordability"), 
           fr = paste0("Abordabilité du logement")) |> 

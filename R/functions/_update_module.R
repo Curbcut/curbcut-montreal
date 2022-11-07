@@ -42,7 +42,7 @@ update_module <- function(r, id, mod_ns = paste(id, id, sep = "-"),
     updateSliderTextInput(
       session = session,
       inputId = construct_namespace("zoom_slider"),
-      selected = sus_translate(r = r, get_zoom_name(df))
+      selected = cc_t(r = r, get_zoom_name(df))
     )
     r[[id]]$df(df)
   }

@@ -55,7 +55,7 @@
 #                           "Local circulation",
 #                           "Shared street")
 #         
-#         names(legend_hex) <- map_chr(legend_names, sus_translate)
+#         names(legend_hex) <- map_chr(legend_names, cc_t)
 #         
 #         covid_legend_plot <- 
 #           covid |> 
@@ -93,7 +93,7 @@
 #     # Data 
 #     data <- reactive({
 #       out <- filter(covid, timeframe == var_left())
-#       out$type <- map_chr(out$type, sus_translate)
+#       out$type <- map_chr(out$type, cc_t)
 #       out
 #     })
 #     

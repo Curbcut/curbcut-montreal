@@ -12,11 +12,11 @@ access_UI <- function(id) {
       susSidebarWidgets(
       select_var_UI(NS(id, id), select_var_id = "d_2",
                     var_list = var_left_list_2_access,
-                    label = sus_translate(r = r, "Timing")),
+                    label = cc_t(r = r, "Timing")),
       select_var_UI(NS(id, id), select_var_id = "d_1",
                     var_list = var_left_list_1_access,
-                    label = sus_translate(r = r, "Destination type")),
-      slider_UI(NS(id, id), label = sus_translate(r = r, "Time threshold"),
+                    label = cc_t(r = r, "Destination type")),
+      slider_UI(NS(id, id), label = cc_t(r = r, "Time threshold"),
                   min = 10, max = 60, step = 1, value = 30)),
       bottom = div(class = "bottom_sidebar",
           tagList(legend_UI(NS(id, id)),
@@ -109,7 +109,7 @@ access_server <- function(id, r) {
     breaks <- reactive({
       if (!is.na(r[[id]]$select_id()) && var_right() == " ") {
         breaks <- slider() / 5 * 5:0
-        attr(breaks, "label") <- sus_translate(r = r, "Minutes to reach census tract")
+        attr(breaks, "label") <- cc_t(r = r, "Minutes to reach census tract")
         attr(breaks, "palette") <- legend_iso
         breaks
       } else NULL
@@ -136,7 +136,7 @@ access_server <- function(id, r) {
       updatePickerInput(
         session,
         inputId = "access-access-var",
-        choices = sus_translate(r = r, make_dropdown(compare = TRUE)),
+        choices = cc_t(r = r, make_dropdown(compare = TRUE)),
         selected = " ")
     }, priority = 1)
 

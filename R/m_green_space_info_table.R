@@ -9,12 +9,12 @@
 #       
 #       if (is.na(select_id())) {
 #         type <- if (nrow(x()) == nrow(green_space)) {
-#           sus_translate(r = r, "a total of {nrow(x())} green spaces")
+#           cc_t(r = r, "a total of {nrow(x())} green spaces")
 #         } else {
-#           sus_translate(r = r, "{nrow(x())} `{unique(x()$type)}`")
+#           cc_t(r = r, "{nrow(x())} `{unique(x()$type)}`")
 #         }
 #         
-#         HTML(sus_translate(r = r, 
+#         HTML(cc_t(r = r, 
 #           "At the scale of the City of Montreal, there are {type}, ",
 #           "combining {pnr(sum(x()$area))} km^2. Their area range from ",
 #           "{pnr(min(x()$area))} and {pnr(max(x()$area))} km^2, with ",
@@ -27,9 +27,9 @@
 #           mutate(borough_rank = rank(-area))
 #         
 #         type <- if (nrow(x()) == nrow(green_space)) {
-#           sus_translate(r = r, "green space")
+#           cc_t(r = r, "green space")
 #         } else {
-#           sus_translate(r = r, "`{unique(x()$type)}`")
+#           cc_t(r = r, "`{unique(x()$type)}`")
 #         }
 #         
 #         z <- x[x$ID == select_id(), ]
@@ -40,7 +40,7 @@
 #         total_rank <- ordinal_form(total_rank)
 #         borough_rank <- ordinal_form(borough_rank)
 #         
-#         HTML(sus_translate(r = r, 
+#         HTML(cc_t(r = r, 
 #           "<p><b>{z$name}</b><p>",
 #           "<p>The green space {z$name} is a `{z$type}` of ",
 #           "{prettyNum(z$area, big.mark = ',')} m^2. It is ",

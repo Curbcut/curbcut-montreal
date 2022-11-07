@@ -12,10 +12,10 @@
 #       susSidebarWidgets(
 #         select_var_UI(NS(id, ns_id), select_var_id = "d_1",
 #                       var_list = var_left_list_1_green_space,
-#                       label = sus_translate(r = r, "Grouping")),
+#                       label = cc_t(r = r, "Grouping")),
 #         select_var_UI(NS(id, ns_id), select_var_id = "d_2",
 #                       var_list = var_left_list_2_green_space,
-#                       label = sus_translate(r = r, "Type of green space"))
+#                       label = cc_t(r = r, "Type of green space"))
 #       ),
 #       bottom = div(class = "bottom_sidebar",
 #                    tagList(legend_UI(NS(id, ns_id)),

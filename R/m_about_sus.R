@@ -7,7 +7,7 @@ about_sus_UI <- function(id) {
       '#why_title_bar {border-width: 10px; border-color: rgb(255, 255, 255);}'))
     ),
     susPage(class = "sus-page-about", footer = susFooter(), susPageSection(
-      h2(sus_translate(r = r, "About Sus")),
+      h2(cc_t(r = r, "About Curbcut")),
       img(src = "glamour_shot.png", height = 300),
       htmlOutput(NS(id, "rmd_output"))
     )))

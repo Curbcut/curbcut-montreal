@@ -14,7 +14,7 @@ city_amenities_UI <- function(id) {
         select_var_UI(NS(id, id), select_var_id = "d_1",
                       var_list = var_left_list_1_city_amenities), 
         select_var_UI(NS(id, id), select_var_id = "d_2",
-                      label = sus_translate(r = r, "Mode of transport"),
+                      label = cc_t(r = r, "Mode of transport"),
                       var_list = var_left_list_2_city_amenities),
         htmlOutput(NS(id, "disclaimer"))),
       bottom = div(class = "bottom_sidebar", 
@@ -162,7 +162,7 @@ city_amenities_server <- function(id, r) {
                                  var_left() %in% x))
       
       paste0("<br><p style='font-size:12px'><i>", 
-             sus_translate(r = r,
+             cc_t(r = r,
                            city_amenities_disclaimer$disclaimer[[which_disc]]), 
              "</p></i>")
       

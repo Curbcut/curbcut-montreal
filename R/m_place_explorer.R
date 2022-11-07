@@ -49,12 +49,12 @@ place_explorer_UI <- function(id) {
     sidebar_UI(
       NS(id, "place_explorer"),
       hidden(actionLink(inputId = NS(id, "back_to_map"),
-                        label = sus_translate(r = r, "Go back to map"),
+                        label = cc_t(r = r, "Go back to map"),
                         style = "font-size: 1.25rem;")),
       
       susSidebarWidgets(
         # Search box
-        strong(sus_translate(r = r, "Enter postal code or click on the map")),
+        strong(cc_t(r = r, "Enter postal code or click on the map")),
         HTML(paste0('
                    <div class="shiny-split-layout">
                      <div style="width: 80%;">',
@@ -70,7 +70,7 @@ place_explorer_UI <- function(id) {
         hr(),
         # Scale slider
         sliderTextInput(inputId = NS(id, "slider"),
-                        label = sus_translate(r = r, "Choose scale:"),
+                        label = cc_t(r = r, "Choose scale:"),
                         choices = c("Borough/city", "Census tract", 
                                     "Dissemination area"),
                         selected = "Dissemination area",
@@ -83,7 +83,7 @@ place_explorer_UI <- function(id) {
         # Checkboxes for each theme
         pickerInput(
           inputId = NS(id, "themes_checkbox"),
-          label = sus_translate(r = r, "Choose themes:"),
+          label = cc_t(r = r, "Choose themes:"),
           choices = unique(variables$theme),
           selected = unique(variables$theme),
           multiple = TRUE),
@@ -138,7 +138,7 @@ place_explorer_server <- function(id, r) {
     # Translate picker input labels
     observe({
       all_themes <- unique(variables$theme)
-      names(all_themes) <- sapply(all_themes, sus_translate, r = r, USE.NAMES = FALSE)
+      names(all_themes) <- sapply(all_themes, cc_t, r = r, USE.NAMES = FALSE)
       updatePickerInput(
         session = session,
         inputId = "themes_checkbox",
@@ -228,7 +228,7 @@ place_explorer_server <- function(id, r) {
 
       } else {
         showNotification(
-          sus_translate(r = r,
+          cc_t(r = r,
                         paste0("No postal code found for `", 
                                input$address_searched, "`")),
           type = "error")
@@ -349,13 +349,13 @@ place_explorer_server <- function(id, r) {
                     ")"),
              "</i></h2>")
       } else HTML("<h2 style = 'display:inline;'>",
-                  paste0(sus_translate(r = r, "The area around "), loc_name(),
+                  paste0(cc_t(r = r, "The area around "), loc_name(),
                          "<i style = 'color: var(--c-h2); ",
                          "font-family: var(--ff-h2); ",
                          "font-size: 2.5rem; margin-bottom: 0.75em; ",
                          "display:inline;'>",
                          "&nbsp;  (",
-                         sus_translate(r = r, get_zoom_name(df())), " ", select_id(), 
+                         cc_t(r = r, get_zoom_name(df())), " ", select_id(), 
                          ")"),
                   "</i></h2>")
     })
@@ -384,7 +384,7 @@ place_explorer_server <- function(id, r) {
             column(width = 2, HTML(paste0(
               "<p style = 'margin:auto; text-align:center;",
               "font-size: medium; font-weight:bold;'>",
-              sus_translate(r = r, title_card_to_grid()[[x]][["row_title"]]) |>
+              cc_t(r = r, title_card_to_grid()[[x]][["row_title"]]) |>
                 str_to_upper(), "</p>"))),
             column(width = 2, HTML(paste0(
               "<p style = 'margin:auto; text-align:center;'>",
@@ -412,19 +412,19 @@ place_explorer_server <- function(id, r) {
       # Prepare themes and text
       themes <- get_pe_themes(df(), select_id())
 
-      text_ior <- sus_translate(r = r, switch(gsub(".*_", "", df()), 
+      text_ior <- cc_t(r = r, switch(gsub(".*_", "", df()), 
                                               "CSD" = "boroughs or cities",
                                               "CT" = "census tracts", 
                                               "DA" = "dissemination areas",
                                               "centraide" = "centraide zones",
                                               "zones"))
       stand_def <- c(
-        "Extreme outlier" = sus_translate(r = r, 
+        "Extreme outlier" = cc_t(r = r, 
           "`Extreme outlier`: the variables rank in the top/bottom 10% of the ",
           "{text_ior}."),
-        "Outlier" = sus_translate(r = r, 
+        "Outlier" = cc_t(r = r, 
           "`Outlier`: the variables rank in the top/bottom 20% of the {text_ior}."),
-        "Typical" = sus_translate(r = r, 
+        "Typical" = cc_t(r = r, 
           "`Typical`: the variables rank in the middle 60% of the {text_ior}."))
 
       # The "server" of every block
@@ -454,10 +454,10 @@ place_explorer_server <- function(id, r) {
               output[[paste0("ind_", x[1], z, "_row_title")]] <-
                 renderText({
                   paste(p(style = "font-size: 11px;",
-                          sus_translate(r = r, text$var_title[z]),
+                          cc_t(r = r, text$var_title[z]),
                           icon("question", verify_fa = FALSE),
                           title = str_to_sentence(
-                            sus_translate(r = r, text$explanation[z]))))
+                            cc_t(r = r, text$explanation[z]))))
                 })
 
               output[[paste0("ind_", x[1],  z, "_percentile")]] <-
@@ -471,8 +471,8 @@ place_explorer_server <- function(id, r) {
 
             })
             
-            trans_theme <- str_to_upper(sus_translate(r = r, x[1]))
-            trans_standout <- str_to_lower(sus_translate(r = r, x[2]))
+            trans_theme <- str_to_upper(cc_t(r = r, x[1]))
+            trans_standout <- str_to_lower(cc_t(r = r, x[2]))
             trans_stand_def <- stand_def[[which(names(stand_def) == x[2])]]
             
             nb_values_to_show <- min(nrow(text), 5)
@@ -490,25 +490,25 @@ place_explorer_server <- function(id, r) {
                 tagList(fluidRow(
                   
                   column(width = 4,
-                         if (z == 1) h5(sus_translate(r = r, "Variable")),
+                         if (z == 1) h5(cc_t(r = r, "Variable")),
                          htmlOutput(eval(parse(
                            text = paste0("NS(id, 'ind_", x[1], z,
                                          "_row_title')"))))),
                   
                   column(width = 2,
-                         if (z == 1) h5(sus_translate(r = r, "Rank")),
+                         if (z == 1) h5(cc_t(r = r, "Rank")),
                          htmlOutput(eval(parse(
                            text = paste0("NS(id, 'ind_", x[1], z,
                                          "_percentile')"))))),
                   
                   column(width = 2,
-                         if (z == 1) h5(sus_translate(r = r, "Value")),
+                         if (z == 1) h5(cc_t(r = r, "Value")),
                          htmlOutput(eval(parse(
                            text = paste0("NS(id, 'ind_", x[1], z,
                                          "_value')"))))),
                   
                   column(width = 3,
-                         if (z == 1) h5(sus_translate(r = r, "Plot")),
+                         if (z == 1) h5(cc_t(r = r, "Plot")),
                          imageOutput(eval(parse(
                            text = paste0("NS(id, 'ind_", x[1], z,
                                          "_plot')"))),
@@ -519,7 +519,7 @@ place_explorer_server <- function(id, r) {
               })
             )
             
-          } else tagList(fluidRow(h3(sus_translate(r = r, x[1]))),
+          } else tagList(fluidRow(h3(cc_t(r = r, x[1]))),
                          fluidRow("No data."))
         }) |> bindEvent(df(), select_id(), x,
                         input$themes_checkbox, r$lang())
@@ -533,12 +533,12 @@ place_explorer_server <- function(id, r) {
         tagList(
           if (x == 1 && length(which_standout) != 0) {
             tagList(h2(style = "padding: 10px; margin-bottom:0px",
-                       sus_translate(r = r, "What makes this area unique?")))
+                       cc_t(r = r, "What makes this area unique?")))
           } else if ((x == 1 && length(which_standout) == 0) ||
                      (length(which_standout) != 0 &&
                       x - 1 == which_standout[length(which_standout)])) {
             tagList(h2(style = "padding: 10px; margin-bottom:0px",
-                       sus_translate(r = r, 
+                       cc_t(r = r, 
                          "What makes this area similar to others?")))
           },
           uiOutput(

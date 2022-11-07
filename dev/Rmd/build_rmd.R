@@ -25,7 +25,7 @@ process_rmd <- function(file, path) {
   # Write ouput
   # writeLines(x, out)
   
-  # Take head out, which breaks Sus' CSS
+  # Take head out, which breaks Curbcut' CSS
   x <- readLines(out)
   
   if (file %in% c(list.files("dev/Rmd/stories"),

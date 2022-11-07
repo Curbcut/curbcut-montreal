@@ -47,15 +47,15 @@ get_title_card <- function(r = r, df, select_id) {
     
     if (indicators_table$name[x] == "air_quality_no2") higher_than_threshold <-
         if (z$pretty_data_var > 5) {
-          sus_translate(r = r, 
+          cc_t(r = r, 
             "Its value is higher than the WHO's guideline value of 5. ")
         } else ""
     
     list(row_title = indicators_table$title[x],
          percentile = z$percentile,
          graph = z$plot,
-         text = if (is.na(z$pretty_data_var)) sus_translate(r = r, "No data.") else 
-           sus_translate(r = r, indicators_table$text[x]),
+         text = if (is.na(z$pretty_data_var)) cc_t(r = r, "No data.") else 
+           cc_t(r = r, indicators_table$text[x]),
          link = z$link,
          link_module = z$link_module,
          link_var_left = z$link_var_left)

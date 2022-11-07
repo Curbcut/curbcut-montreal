@@ -7,12 +7,12 @@ home_UI <- function(id) {
     susPageSectionFeature(
       susCarousel(
         susCarouselSlide(
-          title = tags$em(nowrap(sus_translate(r = r, "Towards a")), 
-                          nowrap(sus_translate(r = r, "sustainable city"))),
-          preview = sus_translate(r = r, "Welcome"),
-          tags$p(sus_translate(r = r, "Sus is a platform for exploring urban ",
+          title = tags$em(nowrap(cc_t(r = r, "Towards a")), 
+                          nowrap(cc_t(r = r, "sustainable city"))),
+          preview = cc_t(r = r, "Welcome"),
+          tags$p(cc_t(r = r, "Curbcut is a platform for exploring urban ",
                               "sustainability in the Montreal region across ",
-                              "multiple spatial and temporal scales. Sus ",
+                              "multiple spatial and temporal scales. Curbcut ",
                               "offers a justice- and inclusivity-focused ",
                               "approach to sustainability which integrates ",
                               "the widest possible range of data sources to ",
@@ -20,18 +20,18 @@ home_UI <- function(id) {
                               "and individuals.")),
           tags$div(class = "sus-button-group",
                   tags$a(class = "sus-button sus-icon-button sus-button-secondary", 
-                         href = "#learn-more", sus_translate(r = r, "Learn more"), 
+                         href = "#learn-more", cc_t(r = r, "Learn more"), 
                          span(class = "material-icons", "auto_stories")),
                   tags$a(class = "sus-button sus-icon-button sus-button-primary", 
                          href = "#start-exploring", 
-                         sus_translate(r = r, "Start Exploring Maps"), 
+                         cc_t(r = r, "Start Exploring Maps"), 
                          span(class = "material-icons", "travel_explore"))
           )
         )
         # , susCarouselSlide(
-        #   title = tags$em(nowrap(sus_translate(r = r, "Another slide!"))),
-        #   # preview = sus_translate(r = r, "Another slide"),
-        #   tags$p(sus_translate(r = r, "Sus is a platform for inventing urban ",
+        #   title = tags$em(nowrap(cc_t(r = r, "Another slide!"))),
+        #   # preview = cc_t(r = r, "Another slide"),
+        #   tags$p(cc_t(r = r, "Curbcut is a platform for inventing urban ",
         #                        "sustainability in the Montreal region across ",
         #                        "multiple spatial and temporal scales. Sus ",
         #                        "offers a justice- and inclusivity-focused ",
@@ -41,17 +41,17 @@ home_UI <- function(id) {
         #                        "and individuals.")),
         #   tags$div(class = "sus-button-group",
         #            tags$a(class = "sus-button sus-icon-button sus-button-primary",
-        #                   href = "#learn-more", sus_translate(r = r, "Read more"),
+        #                   href = "#learn-more", cc_t(r = r, "Read more"),
         #                   span(class = "material-icons", "auto_stories"))
         #   )
         # )
       )
     ),
     susPageSection(
-      tags$h2(sus_translate(r = r, "About Sus"), 
+      tags$h2(cc_t(r = r, "About Curbcut"), 
               scrollAnchor(id = "learn-more")),
-      tags$p(sus_translate(
-        r = r, "Sus embraces an inclusive vision of urban ",
+      tags$p(cc_t(
+        r = r, "Curbcut embraces an inclusive vision of urban ",
         "sustainability, allowing users to pose questions ",
         "about environmental issues and contextualize them ",
         "within larger frameworks of equity and ",
@@ -60,8 +60,8 @@ home_UI <- function(id) {
         "resource, designed to encourage greater reflection ",
         "on urban sustainability challenges, and on the ",
         "communities which are most affected by them.")),
-      tags$p(sus_translate(
-        r = r, "Sus is organized into thematic and place-based ",
+      tags$p(cc_t(
+        r = r, "Curbcut is organized into thematic and place-based ",
         "“modules”, each of which takes a narrow slice of ",
         "our data and presents it in a way designed to ",
         "answer existing questions and provoke new ones. ",
@@ -74,34 +74,34 @@ home_UI <- function(id) {
         "we will be adding more tools for users to export ",
         "the data and use it themselves.")),
       tags$p(HTML(paste0(
-        sus_translate(r = r, "See the "),
+        cc_t(r = r, "See the "),
         "<a style ='cursor:pointer;' onclick = openTab('how_to_use')>",
-        sus_translate(r = r, "“How to use”"),"</a>",
-        sus_translate(r = r, "page for more information on ",
-        "how Sus works. And see the "),
+        cc_t(r = r, "“How to use”"),"</a>",
+        cc_t(r = r, "page for more information on ",
+        "how Curbcut works. And see the "),
         "<a style ='cursor:pointer;' onclick = openTab('authors')>",
-        sus_translate(r = r, "“Authors”"), "</a>", 
-        sus_translate(r = r, " page to learn more about our team.")))),
+        cc_t(r = r, "“Authors”"), "</a>", 
+        cc_t(r = r, " page to learn more about our team.")))),
       tags$p(class = "text-center", tags$em(
-        sus_translate(r = r, "An initiative of the "),
+        cc_t(r = r, "An initiative of the "),
         HTML(paste0("<a href = 'https://www.mcgill.ca/mssi/'>",
-                    sus_translate(r = r, 
+                    cc_t(r = r, 
                                   "McGill Sustainability Systems Initiative"), 
                     "</a>."))
       ))
     ),
     susPageSection(
-      tags$h2(sus_translate(r = r, "Maps"), 
+      tags$h2(cc_t(r = r, "Maps"), 
               scrollAnchor(id = "start-exploring")),
       tags$div(
         class = "text-width", 
         do.call(linkList, c(
           ready_modules_home(mods_rdy), 
           list(linkListGroup(
-            name = sus_translate(r = r, "More"), 
-            list(name = sus_translate(r = r, "Montréal stories"), 
+            name = cc_t(r = r, "More"), 
+            list(name = cc_t(r = r, "Montréal stories"), 
                  onclick = "openTab('stories')"),
-            list(name = sus_translate(r = r, "Place explorer"), 
+            list(name = cc_t(r = r, "Place explorer"), 
                  onclick = "openTab('place_explorer')"))))
       ))
     ), tags$div(style = "width: 250px; height: 50px;", hidden = "", susLegend())

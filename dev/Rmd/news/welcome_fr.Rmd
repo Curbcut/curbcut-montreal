@@ -16,7 +16,7 @@ knitr::include_graphics(here("www/news/visuals/welcome/sus_logo_256x256.png"))
 ```
 </center>
 
-Sus est une plateforme de durabilité urbaine pour la région de Montréal. Elle opère à plusieurs échelles spatiales et temporelles et propose une approche de la durabilité axée sur la justice et l'inclusion.
+Curbcut est une plateforme de durabilité urbaine pour la région de Montréal. Elle opère à plusieurs échelles spatiales et temporelles et propose une approche de la durabilité axée sur la justice et l'inclusion.
 
 <center>
 ```{r, echo=FALSE}
@@ -26,7 +26,7 @@ vembedr::embed_youtube("baGUK9PE1HE", height = 300)
 
 <hr>
 ### Premièrement, un remerciement.
-Notre lancement en avril 2022 a été un énorme succès -- et nous sommes ravis que vous vous intéressiez à ce que <i><b>Sus</i></b> a à offrir.
+Notre lancement en avril 2022 a été un énorme succès -- et nous sommes ravis que vous vous intéressiez à ce que <i><b>Curbcut</i></b> a à offrir.
 
 Si vous souhaitez revoir le lancement ou le partager, <a target = '_blank' href = 'https://www.youtube.com/watch?v=c5QYpmLOlOE'>cliquez ici</a> !
 
@@ -40,9 +40,9 @@ knitr::include_graphics(here("www/news/visuals/welcome/active_living_fr.png"))
 ### Deuxièmement, une histoire sur la vie active. 
 <a target = '_blank' href = 'https://www.activeagingcanada.ca/fr/participants/soyez-actifs-et-actives/vie-active/qu-est-ce-qu-une-vie-active.htm'>Le potentiel de vie active</a> fait référence à la capacité des gens à intégrer l'activité physique dans leurs habitudes quotidiennes, comme se rendre à l'épicerie à vélo ou au travail à pied.
 
-Grâce à un ensemble de données construit par Nancy Ross, professeure à McGill, et son équipe, Sus démontre quels arrondissements, quartiers et rues ont le potentiel de vie active le plus élevé et le plus faible dans la région de Montréal. Mais ce n'est pas tout.
+Grâce à un ensemble de données construit par Nancy Ross, professeure à McGill, et son équipe, Curbcut démontre quels arrondissements, quartiers et rues ont le potentiel de vie active le plus élevé et le plus faible dans la région de Montréal. Mais ce n'est pas tout.
 
-La beauté de Sus réside dans sa capacité à mettre les ensembles de données en conversation les uns avec les autres. En pratique, cela signifie que sur notre plateforme, vous pouvez analyser la relation entre les quartiers qui ont le <b>plus fort potentiel de vie active</b> et ceux qui comptent le <b>plus grand nombre de personnes qui se rendent au travail en voiture</b>.
+La beauté de Curbcut réside dans sa capacité à mettre les ensembles de données en conversation les uns avec les autres. En pratique, cela signifie que sur notre plateforme, vous pouvez analyser la relation entre les quartiers qui ont le <b>plus fort potentiel de vie active</b> et ceux qui comptent le <b>plus grand nombre de personnes qui se rendent au travail en voiture</b>.
 
 Selon vous, quel quartier aurait le meilleur potentiel de vie active et le plus grand nombre de personnes se rendant au travail en voiture ?
 
@@ -60,7 +60,7 @@ knitr::include_graphics(here("www/news/visuals/welcome/natural_inf.png"))
 ### Troisièmement, une nouvelle fonctionnalité ! 
 Qui a fourni nos données sur le potentiel de vie active ? Où avons-nous trouvé les données qui ont servi de base à nos variables sur le trajet domicile-travail ? Voilà de bonnes questions !
 
-Dans notre toute nouvelle fonction de transparence des données, nous vous indiquons exactement d'où proviennent les informations qui alimentent les cartes de Sus. Publique, privée, recensement, ville, province - tout est disponible en cliquant sur le bouton en haut à droite.
+Dans notre toute nouvelle fonction de transparence des données, nous vous indiquons exactement d'où proviennent les informations qui alimentent les cartes de Curbcut. Publique, privée, recensement, ville, province - tout est disponible en cliquant sur le bouton en haut à droite.
 
 Et ce n'est pas tout. Vous pouvez télécharger l'ensemble des données pour vos propres recherches !
 
@@ -68,7 +68,7 @@ Et ce n'est pas tout. Vous pouvez télécharger l'ensemble des données pour vos
 
 ### Quatrièmement, de nouvelles histoires de Montréal !
 
-Ce mois-ci, nous avons un éventail de nouvelles histoires de Montréal qui arrivent sur Sus :
+Ce mois-ci, nous avons un éventail de nouvelles histoires de Montréal qui arrivent sur Curbcut :
 
 <ul>
 
@@ -97,13 +97,13 @@ Ce mois-ci, nous avons un éventail de nouvelles histoires de Montréal qui arri
 <hr>
 ### Vous voulez continuer à découvrir ?
 
-Chaque mois, Sus lancera de nouvelles fonctionnalités et de nouvelles histoires que vous pourrez explorer. Voici comment continuer à profiter de ces nouveautés :
+Chaque mois, Curbcut lancera de nouvelles fonctionnalités et de nouvelles histoires que vous pourrez explorer. Voici comment continuer à profiter de ces nouveautés :
 
 <ul>
 
 <li>
 
-Suivez Sus sur <a target = '_blank' href = 'https://twitter.com/susmontreal'>Twitter</a> et suivez les chercheurs principaux de Sus <a target = '_blank' href = 'https://twitter.com/dwachsmuth'>David Wachsmuth</a>, <a target = '_blank' href = 'https://twitter.com/KManaugh'>Kevin Manaugh</a>, et <a target = '_blank' href = 'https://twitter.com/bio_diverse'>Andy Gonzalez</a> pendant que vous y êtes.
+Suivez Curbcut sur <a target = '_blank' href = 'https://twitter.com/susmontreal'>Twitter</a> et suivez les chercheurs principaux de Curbcut <a target = '_blank' href = 'https://twitter.com/dwachsmuth'>David Wachsmuth</a>, <a target = '_blank' href = 'https://twitter.com/KManaugh'>Kevin Manaugh</a>, et <a target = '_blank' href = 'https://twitter.com/bio_diverse'>Andy Gonzalez</a> pendant que vous y êtes.
 
 <li>
 

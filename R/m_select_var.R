@@ -11,7 +11,7 @@ hover_divs <- function(var_list, r = NULL) {
       return(exp)}))
   
   if (!is.null(r)) 
-    text_hover <- sapply(text_hover, sus_translate, r = r, USE.NAMES = FALSE)
+    text_hover <- sapply(text_hover, cc_t, r = r, USE.NAMES = FALSE)
   
   var_list_label <- if (vec_dep(var_list) == 3) {
     c(if ("----" %in% names(var_list)) "----",
@@ -59,7 +59,7 @@ select_var_server <- function(id, r, select_var_id = "var",
 
   moduleServer(id, function(input, output, session) {
     
-    t_var_list <- reactive(sus_translate(r = r, var_list()))
+    t_var_list <- reactive(cc_t(r = r, var_list()))
     
     # Update dropdown menu if there are disabled choices
     observe({
