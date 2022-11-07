@@ -683,7 +683,7 @@ title_text_translation <-
                       "dont les différentes zones sont desservies et de ce que ",
                       "cela peut impliquer pour les résidents. </ul>")) |> 
   add_row(en = paste0("Vacancy rate"), 
-          fr = paste0("Taux d'inccupation")) |> 
+          fr = paste0("Taux d'inoccupation")) |> 
   add_row(en = paste0("Examining residential rental vacancy rates is an important part of ",
                       "understanding the housing landscape in Montreal. In this module, explore ",
                       "and compare information about vacancy rates for specific types of units, ",

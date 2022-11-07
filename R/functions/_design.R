@@ -105,7 +105,10 @@ right_panel <- function(id, ...) {
 
 # Make a link button styled to go inside of a link list group
 linkListGroupElement <- function(link) {
-  return(tags$li(tags$a(class = "noselect", href = NULL, onclick = link$onclick, link$name)))
+  return(tags$li(tags$a(class = "noselect", href = NULL, onclick = link$onclick, link$name,
+                        img(src = link$img, 
+                            style = paste0("display:inline; height:20px; float:right; ",
+                                           "margin-top:auto; margin-bottom:auto;")))))
 }
 
 # Make a link list group that can have link list group elements
