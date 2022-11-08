@@ -308,7 +308,6 @@ shinyServer(function(input, output, session) {
       try({
         if (!is.null(query[["df"]])) {
           r[[query[["tb"]]]]$df <- reactiveVal(query[["df"]])
-          r$sus_bookmark$df <- reactiveVal(query[["df"]])
         }
       })
       # Retrieve select_id
@@ -317,7 +316,7 @@ shinyServer(function(input, output, session) {
         if (!is.null(s_id)) {
           if (query[["s_id"]] %in% c("", "NA")) s_id <- NA
           r[[query[["tb"]]]]$select_id <- reactiveVal(s_id)
-          r$sus_bookmark$select_id <- reactiveVal(s_id)}
+          }
       })
     }
   }, once = TRUE)
@@ -327,10 +326,13 @@ shinyServer(function(input, output, session) {
     if (isTRUE(r$sus_bookmark$active)) {
       # Delay to make sure the bookmarked module is fully loaded
       delay(500, {
+        zz <- if (!is.null(r[[input$sus_page]]$zoom)) 
+          r[[input$sus_page]]$zoom() else NULL
         update_module(session = session,
                       r = r,
                       id = r$sus_bookmark$id,
                       map_id = "map",
+                      zoom = zz,
                       location = r$sus_bookmark$location,
                       zoom_auto = r$sus_bookmark$zoom_auto,
                       var_left = r$sus_bookmark$var_left,

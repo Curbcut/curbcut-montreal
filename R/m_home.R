@@ -85,8 +85,7 @@ home_UI <- function(id) {
       tags$p(class = "text-center", tags$em(
         cc_t(r = r, "An initiative of the "),
         HTML(paste0("<a href = 'https://www.mcgill.ca/mssi/'>",
-                    cc_t(r = r, 
-                                  "McGill Sustainability Systems Initiative"), 
+                    cc_t(r = r, "McGill Sustainability Systems Initiative"), 
                     "</a>."))
       ))
     ),

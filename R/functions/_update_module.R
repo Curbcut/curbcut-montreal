@@ -5,7 +5,7 @@
 
 update_module <- function(r, id, mod_ns = paste(id, id, sep = "-"), 
                           session, 
-                          zoom = r[[id]]$zoom(), location, 
+                          zoom = NULL, location, 
                           map_id = NULL, 
                           zoom_auto, var_left, 
                           var_right, select_id = NA, df = NULL, more_args) {
@@ -20,7 +20,6 @@ update_module <- function(r, id, mod_ns = paste(id, id, sep = "-"),
 
 
   ## Update mapview ----------------------------------------------------------
-
   if (!all(sapply(c(zoom, location), is.null)))
     if (!is.null(map_id))
       if (length(location) == 2)
