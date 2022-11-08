@@ -164,13 +164,25 @@ susBanner <- function() {
 susCarousel <- function(..., id="", class="") {
   return(
     tags$div(class = paste("sus-carousel", class),
-      tags$div(class="sus-carousel-bullets"),       
+      tags$div(class="sus-carousel-bullets", style = "cursor: pointer;"),       
       tags$div(class="sus-carousel-preview sus-carousel-preview-prev",
-               cc_t(r = r, "Previous:"), HTML("&nbsp;"), tags$span(class="sus-carousel-preview-content")),
+               # Previous and next have been turned off, as the preview does 
+               # not translate correctly
+               # style = "cursor: pointer;",
+               # cc_t(r = r, "Previous:"),
+               # HTML("&nbsp;"),
+               tags$span(class="sus-carousel-preview-content")),
       tags$div(class="sus-carousel-preview sus-carousel-preview-next",
-               cc_t(r = r, "Next:"), HTML("&nbsp;"), tags$span(class="sus-carousel-preview-content")),
-      tags$div(class="sus-carousel-nav-bttn sus-carousel-nav-bttn-left", materialIcon("chevron_left")),
-      tags$div(class="sus-carousel-nav-bttn sus-carousel-nav-bttn-right", materialIcon("chevron_right")),
+               # style = "cursor: pointer;",
+               # cc_t(r = r, "Next:"),
+               # HTML("&nbsp;"),
+               tags$span(class="sus-carousel-preview-content")),
+      tags$div(class="sus-carousel-nav-bttn sus-carousel-nav-bttn-left", 
+               style = "cursor: pointer;",
+               materialIcon("chevron_left")),
+      tags$div(class="sus-carousel-nav-bttn sus-carousel-nav-bttn-right", 
+               style = "cursor: pointer;",
+               materialIcon("chevron_right")),
       ...)
   )
 }
@@ -181,7 +193,7 @@ susCarouselSlide <- function(..., title="", preview="", id="", class="") {
       tags$div(class = paste("sus-carousel-slide", class),
                tags$h2(title),
                ...),
-    `data-preview` = preview)
+    `data-preview` = " ")#preview)
   )
 }
 

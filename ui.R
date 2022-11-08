@@ -27,7 +27,7 @@ ui <- function(request) {
                         href = "sus.footer.css")),
     tags$head(tags$link(rel = "stylesheet", type = "text/css", 
                         href = "sus.button.css")),
-    tags$head(tags$link(rel = "stylesheet", type = "text/css", 
+    tags$head(tags$link(rel = "stylesheet", type = "text/css",
                         href = "sus.carousel.css")),
     tags$head(tags$link(rel = "stylesheet", type = "text/css", 
                         href = "sus.pages.css")),

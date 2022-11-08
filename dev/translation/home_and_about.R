@@ -66,6 +66,30 @@ home_and_about_translated <-
                       "tant aux utilisateurs d'exporter les données et de les ",
                       "utiliser eux-mêmes.")) |> 
   
+  # Get notified about the 2021 census
+  add_row(en = paste0("Get notified about"),
+          fr = paste0("Soyez informé du")) |>
+  add_row(en = paste0("the 2021 Census"),
+          fr = paste0("recensement de 2021")) |>
+  add_row(en = paste0("Many of the topics that can be explored on Curbcut draw on data ",
+                      "from the Canadian Census. The Census of Population is ",
+                      "conducted every five years and provides statistical ",
+                      "information about demographic, social and economic ",
+                      "characteristics."),
+          fr = paste0("Plusieurs des sujets qui peuvent être explorés sur ",
+                      "Curbcut s’appuient sur des données provenant du Recensement ",
+                      "canadien. Le Recensement de la population est effectué ",
+                      "tous les cinq ans et fournit des informations statistiques ",
+                      "sur les caractéristiques démographiques, sociales et ",
+                      "économiques.")) |>
+  add_row(en = paste0("Sign up to our newsletter to get notified when the 2021 ",
+                      "Census data is available on Curbcut!"),
+          fr = paste0("Inscrivez-vous à notre infolettre pour être informé ",
+                      "lorsque les données du Recensement de 2021 seront ",
+                      "disponibles sur Curbcut !")) |>
+  add_row(en = paste0("Sign up!"),
+          fr = paste0("Inscrivez-vous !")) |>
+  
   # add_row(en = paste0("See the “How to use” page for more information on how S",
   #                     "us works. And see the “Authors” page to learn more abou",
   #                     "t our team."), 

@@ -162,6 +162,10 @@ shinyServer(function(input, output, session) {
                           easyClose = TRUE))
   })
   
+  onclick("sign_up_from_carousel", {
+    showModal(modalDialog(HTML(readLines("www/sus.signupform.html")),
+                          easyClose = TRUE))
+  })
   
   ## Language button -----------------------------------------------------------
   

@@ -27,24 +27,24 @@ home_UI <- function(id) {
                          cc_t(r = r, "Start Exploring Maps"), 
                          span(class = "material-icons", "travel_explore"))
           )
+        ), susCarouselSlide(
+          title = tags$em(tags$em(nowrap(cc_t(r = r, "Get notified about")), 
+                                  nowrap(cc_t(r = r, "the 2021 Census")))),
+          preview = cc_t(r = r, "2021 Census data"),
+          tags$p(cc_t(r = r, "Many of the topics that can be explored on Curbcut draw on data from ",
+                      "the Canadian Census. The Census of Population is conducted ",
+                      "every five years and provides statistical information ",
+                      "about demographic, social and economic characteristics.")),
+          tags$p(cc_t(r = r, "Sign up to our newsletter to get notified when ",
+                      "the 2021 Census data is available on Curbcut!")),
+          tags$div(class = "sus-button-group",
+                   tags$a(class = "sus-button sus-icon-button sus-button-primary",
+                          style = "cursor: pointer;",
+                          id = "sign_up_from_carousel", 
+                          cc_t(r = r, "Sign up!"),
+                          span(class = "material-icons", "email"))
+          )
         )
-        # , susCarouselSlide(
-        #   title = tags$em(nowrap(cc_t(r = r, "Another slide!"))),
-        #   # preview = cc_t(r = r, "Another slide"),
-        #   tags$p(cc_t(r = r, "Curbcut is a platform for inventing urban ",
-        #                        "sustainability in the Montreal region across ",
-        #                        "multiple spatial and temporal scales. Sus ",
-        #                        "offers a justice- and inclusivity-focused ",
-        #                        "approach to sustainability which integrates ",
-        #                        "the widest possible range of data sources to ",
-        #                        "help researchers, policymakers, communities, ",
-        #                        "and individuals.")),
-        #   tags$div(class = "sus-button-group",
-        #            tags$a(class = "sus-button sus-icon-button sus-button-primary",
-        #                   href = "#learn-more", cc_t(r = r, "Read more"),
-        #                   span(class = "material-icons", "auto_stories"))
-        #   )
-        # )
       )
     ),
     susPageSection(
