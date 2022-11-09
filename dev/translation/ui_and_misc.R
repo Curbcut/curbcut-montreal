@@ -4,6 +4,8 @@ ui_and_misc_translated <-
   tibble(en = character(), fr = character()) |>
   add_row(en = paste0("Metropolitan Area"), 
           fr = paste0("Région métropolitaine")) |> 
+  add_row(en = paste0("Montreal"), 
+          fr = paste0("Montréal")) |> 
   add_row(en = paste0("City of Montreal"), 
           fr = paste0("Ville de Montréal")) |> 
   add_row(en = paste0("Island of Montreal"), 
