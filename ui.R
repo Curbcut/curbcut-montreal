@@ -149,7 +149,7 @@ ui <- function(request) {
                                 actionLink(inputId = "contact",
                                            label = cc_t("Contact/feedback"),
                                            icon("comment", verify_fa = FALSE),
-                                           onclick = "window.open('mailto:contact@susmontreal.ca', '_blank')"),
+                                           onclick = "window.open('mailto:contact@curbcut.ca', '_blank')"),
                                 actionLink(inputId = "download_data",
                                            label = cc_t(
                                              "Export data"),
