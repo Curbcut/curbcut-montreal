@@ -90,6 +90,20 @@ home_and_about_translated <-
   add_row(en = paste0("Sign up!"),
           fr = paste0("Inscrivez-vous !")) |>
   
+  # Centraide
+  add_row(en = paste0("In a novel collaboration, Centraide of Greater Montreal ",
+                      "is partnering with Curbcut on a series of housing maps. ",
+                      "Centraide is using its social expertise and data to help ",
+                      "target and interpret housing issues, a decisive factor ",
+                      "in poverty and social exclusion."),
+          fr = paste0("Dans une collaboration inédite, Centraide du Grand ",
+                      "Montréal s’associe à Curbcut à travers une série de ",
+                      "cartes dédiées au logement. Centraide met son expertise ",
+                      "sociale et ses données au profit de la plateforme pour ",
+                      "mieux cibler et interpréter les enjeux liés au logement, ",
+                      "qui est un facteur déterminant sur la pauvreté et ",
+                      "l’exclusion sociale.  ")) |>
+  
   # add_row(en = paste0("See the “How to use” page for more information on how S",
   #                     "us works. And see the “Authors” page to learn more abou",
   #                     "t our team."), 

@@ -7,6 +7,29 @@ home_UI <- function(id) {
     susPageSectionFeature(
       susCarousel(
         susCarouselSlide(
+          title = tags$em(nowrap("Centraide x"), 
+                          nowrap("Curbcut")),
+          preview = cc_t(r = r, "Centraide"),
+          tags$p(cc_t(r = r, "In a novel collaboration, Centraide of Greater ",
+                      "Montreal is partnering with Curbcut on a series of ",
+                      "housing maps. Centraide is using its social expertise ",
+                      "and data to help target and interpret housing issues, ",
+                      "a decisive factor in poverty and social exclusion.")),
+          tags$div(class = "sus-button-group",
+                   tags$a(class = "sus-button sus-icon-button sus-button-secondary", 
+                          href = "#", onclick = "openTab('afford')",
+                          cc_t(r = r, "Housing affordability"), 
+                          span(class = "material-icons", "location_city")),
+                   tags$a(class = "sus-button sus-icon-button sus-button-primary", 
+                          href = "https://www.centraide-mtl.org/", 
+                          cc_t(r = r, "Centraide"), target = "_blank",
+                          img(src = "centraide_logo/centraide_sm.png",
+                              style = paste0("display:inline; height:20px; ",
+                                             "float:right; margin-top:auto; ",
+                                             "margin-bottom:auto; margin-left:10px")))
+          )
+        ),
+        susCarouselSlide(
           title = tags$em(nowrap(cc_t(r = r, "Towards a")), 
                           nowrap(cc_t(r = r, "sustainable city"))),
           preview = cc_t(r = r, "Welcome"),
