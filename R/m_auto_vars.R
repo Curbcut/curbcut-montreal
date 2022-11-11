@@ -65,7 +65,7 @@ auto_vars_server <- function(id, r = r, module_id = NULL, var_list,
                                 vars_list[length(vars_list) - 1]}
                             def <- vars_list[ceiling(length(vars_list)/2)]
                             slider_UI(input_namespace()(id_s$key),
-                                      label = sus_translate(r = r, id_s$lab),
+                                      label = cc_t(r = r, id_s$lab),
                                       min = min(vars_list),
                                       max = max(vars_list),
                                       step = step,
@@ -74,10 +74,10 @@ auto_vars_server <- function(id, r = r, module_id = NULL, var_list,
                             # Translation
                             names(vars_list) <- vars_list
                             names(vars_list) <- 
-                              sapply(names(vars_list), sus_translate, r = r)
+                              sapply(names(vars_list), cc_t, r = r)
                             select_var_UI(input_namespace()(id_s$key),
                                           var_list = vars_list,
-                                          label = sus_translate(r = r, id_s$lab),
+                                          label = cc_t(r = r, id_s$lab),
                                           inline = FALSE,
                                           more_style = "width:100%;")
                           }
@@ -171,7 +171,7 @@ auto_vars_server <- function(id, r = r, module_id = NULL, var_list,
                                 vars_list[length(vars_list) - 1]}
                             def <- vars_list[ceiling(length(vars_list)/2)]
                             slider_UI(input_namespace()(id_s$key),
-                                      label = sus_translate(r = r, id_s$lab),
+                                      label = cc_t(r = r, id_s$lab),
                                       min = min(vars_list),
                                       max = max(vars_list),
                                       step = step,
@@ -180,10 +180,10 @@ auto_vars_server <- function(id, r = r, module_id = NULL, var_list,
                             # Translation
                             names(vars_list) <- vars_list
                             names(vars_list) <- 
-                              sapply(names(vars_list), sus_translate, r = r)
+                              sapply(names(vars_list), cc_t, r = r)
                             select_var_UI(input_namespace()(id_s$key),
                                           var_list = vars_list,
-                                          label = sus_translate(r = r, id_s$lab),
+                                          label = cc_t(r = r, id_s$lab),
                                           inline = FALSE,
                                           more_style = "width:100%;")
                           }

@@ -28,7 +28,7 @@ susNewsExploreArticle <- function(id, type, author, date, title, img, preview) {
                 tags$span(class="news-meta-data-type", type),
                 tags$span(class="news-meta-data-date", date)#,
                 # tags$span(class="news-meta-data-author",
-                #           tagList(sus_translate(r = r, "by"), " ", author)
+                #           tagList(cc_t(r = r, "by"), " ", author)
                 #           ),
                 ),
         tags$h1(title),
@@ -105,7 +105,10 @@ right_panel <- function(id, ...) {
 
 # Make a link button styled to go inside of a link list group
 linkListGroupElement <- function(link) {
-  return(tags$li(tags$a(class = "noselect", href = NULL, onclick = link$onclick, link$name)))
+  return(tags$li(tags$a(class = "noselect", href = NULL, onclick = link$onclick, link$name,
+                        img(src = link$img, 
+                            style = paste0("display:inline; height:20px; float:right; ",
+                                           "margin-top:auto; margin-bottom:auto;")))))
 }
 
 # Make a link list group that can have link list group elements
@@ -135,14 +138,14 @@ susFooter <- function() {
       ),
       tags$div(class = "sus-page-footer-links",
         tags$ul(
-          tags$li(tags$a(href = NULL, HTML("&nbsp;"))),#sus_translate(r = r, "Terms & Conditions"))),
+          tags$li(tags$a(href = NULL, HTML("&nbsp;"))),#cc_t(r = r, "Terms & Conditions"))),
           tags$li(tags$a(href = NULL, style = "cursor:pointer;", 
                          onclick = "openTab('about_sus')", 
-                         sus_translate(r = r, "About"), materialIcon("info"))),
+                         cc_t(r = r, "About"), materialIcon("info"))),
           tags$li(tags$a(href = NULL, style = "cursor:pointer;", 
                          onclick = "document.getElementById('contact').click();",
-                         sus_translate(r = r, "Contact/feedback"), materialIcon("mail"))),
-          tags$li(tags$a(href = NULL, HTML("&nbsp;")))#sus_translate(r = r, "Privacy Policy"))),
+                         cc_t(r = r, "Contact/feedback"), materialIcon("mail"))),
+          tags$li(tags$a(href = NULL, HTML("&nbsp;")))#cc_t(r = r, "Privacy Policy"))),
         )
       )
     )
@@ -154,20 +157,33 @@ susBanner <- function() {
   return(tags$div(class = "sus-banner noselect",
     tags$div(class = "sus-banner-bg sus-bg-img-map"),
     tags$div(class = "sus-banner-bg sus-bg-img-skyline"),
-    tags$h1(class = "sus-brand sus-banner-text", "SUS")
+    tags$h1(class = "sus-brand sus-banner-text", "Curbcut"),
+    tags$h4(class = "sus-brand sus-banner-text-city", cc_t("Montreal"))
   ))
 }
 
 susCarousel <- function(..., id="", class="") {
   return(
     tags$div(class = paste("sus-carousel", class),
-      tags$div(class="sus-carousel-bullets"),       
+      tags$div(class="sus-carousel-bullets", style = "cursor: pointer;"),       
       tags$div(class="sus-carousel-preview sus-carousel-preview-prev",
-               sus_translate(r = r, "Previous:"), HTML("&nbsp;"), tags$span(class="sus-carousel-preview-content")),
+               # Previous and next have been turned off, as the preview does 
+               # not translate correctly
+               # style = "cursor: pointer;",
+               # cc_t(r = r, "Previous:"),
+               # HTML("&nbsp;"),
+               tags$span(class="sus-carousel-preview-content")),
       tags$div(class="sus-carousel-preview sus-carousel-preview-next",
-               sus_translate(r = r, "Next:"), HTML("&nbsp;"), tags$span(class="sus-carousel-preview-content")),
-      tags$div(class="sus-carousel-nav-bttn sus-carousel-nav-bttn-left", materialIcon("chevron_left")),
-      tags$div(class="sus-carousel-nav-bttn sus-carousel-nav-bttn-right", materialIcon("chevron_right")),
+               # style = "cursor: pointer;",
+               # cc_t(r = r, "Next:"),
+               # HTML("&nbsp;"),
+               tags$span(class="sus-carousel-preview-content")),
+      tags$div(class="sus-carousel-nav-bttn sus-carousel-nav-bttn-left", 
+               style = "cursor: pointer;",
+               materialIcon("chevron_left")),
+      tags$div(class="sus-carousel-nav-bttn sus-carousel-nav-bttn-right", 
+               style = "cursor: pointer;",
+               materialIcon("chevron_right")),
       ...)
   )
 }
@@ -178,7 +194,7 @@ susCarouselSlide <- function(..., title="", preview="", id="", class="") {
       tags$div(class = paste("sus-carousel-slide", class),
                tags$h2(title),
                ...),
-    `data-preview` = preview)
+    `data-preview` = " ")#preview)
   )
 }
 
@@ -463,15 +479,15 @@ lang_classes <- "
 # Severe HTML -------------------------------------------------------------
 
 sever_subtitle_fr <- 
-  HTML(paste0("Il semble que Sus se soit arrêté de manière inattendue! Aidez-n",
+  HTML(paste0("Il semble que Curbcut se soit arrêté de manière inattendue! Aidez-n",
               "ous à garder l'application exempte de bogues en appuyant 'Envo",
               "yer'! ",
-              "<br>L'équipe de Sus."))
+              "<br>L'équipe de Curbcut."))
 
 sever_subtitle_en <- 
-  HTML(paste0("It appears that Sus has shut down unexpectedly! Help us keep ",
+  HTML(paste0("It appears that Curbcut has shut down unexpectedly! Help us keep ",
               "the app bug-free by clicking on “Submit”!",
-              "<br>-The Sus team."))
+              "<br>-The Curbcut team."))
 
 create_form <- function(lang, module_id, geo) {
   

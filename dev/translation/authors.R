@@ -90,7 +90,7 @@ authors_translation <-
                       "Habitat.")) |> 
   add_row(en = paste0("Maxime graduated from McGill University in 2021 with a ",
                       "Master's degree in Urban Planning and is now Senior Des",
-                      "igner at Sus. In pursuing urban sustainability goals, M",
+                      "igner at Curbcut. In pursuing urban sustainability goals, M",
                       "axime believes that data analysis and visualization tec",
                       "hniques are essential. He also conducts research with t",
                       "he Urban Policy and Governance research group (UPGo), w",
@@ -101,7 +101,7 @@ authors_translation <-
                       " Corporation."), 
           fr = paste0("Maxime a obtenu une maîtrise en urbanisme de l'Universi",
                       "té McGill en 2021 et est maintenant concepteur senior",
-                      " chez Sus. Dans la poursuite des objectifs de durabili",
+                      " chez Curbcut. Dans la poursuite des objectifs de durabili",
                       "té urbaine, Maxime estime que l'analyse des données et ",
                       "les techniques de visualisation sont essentielles. Il m",
                       "ène également des recherches avec le groupe de recherch",
@@ -276,7 +276,7 @@ authors_translation <-
                       "erche au sein du groupe de recherche Urban Politics and",
                       " Governance (UPGo) de McGill et a contribué aux section",
                       "s sur les récents plans climats de Montréal de la plate",
-                      "forme SUS.")) |> 
+                      "forme Curbcut.")) |> 
   add_row(en = paste0("Josh Medicoff is a master’s candidate in the Department",
                       " of Political Science at McGill University. Josh previo",
                       "usly completed a BA in Human Geography and Political Sc",
@@ -358,7 +358,7 @@ authors_translation <-
           fr = paste0("Responsable de recherche qualitative")) |> 
   add_row(en = paste0("Dominique graduated from McGill University in 2022 with",
                       " a master’s degree in Urban Planning and is now Qualita",
-                      "tive Research Lead at Sus. Her recent research has focu",
+                      "tive Research Lead at Curbcut. Her recent research has focu",
                       "sed on how to implement qualitative methods in active t",
                       "ransport planning and the importance of embodied knowle",
                       "dge through walking. She also holds a master’s degree i",
@@ -370,7 +370,7 @@ authors_translation <-
                       "atory walks."), 
           fr = paste0("Dominique a obtenu une maîtrise en urbanisme de l'Unive",
                       "rsité McGill en 2022 et est maintenant responsable de l",
-                      "a recherche qualitative à Sus. Ses recherches récentes ",
+                      "a recherche qualitative à Curbcut. Ses recherches récentes ",
                       "ont porté sur la façon de mettre en œuvre des méthodes ",
                       "qualitatives dans la planification des transports actif",
                       "s et sur l'importance de la connaissance intrinsèque pa",

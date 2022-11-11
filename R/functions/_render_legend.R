@@ -93,11 +93,11 @@ render_legend <- function(r, data, var_left, var_right, df, data_type,
   } else if (data_type == "bivar") {
     
     l <- legend_bivar
-    l$label <- c(sus_translate(r = r, "Both low"), " ", 
-                 paste0(labs_xy$y_short, "\n", sus_translate(r = r, "high only")), " ",
+    l$label <- c(cc_t(r = r, "Both low"), " ", 
+                 paste0(labs_xy$y_short, "\n", cc_t(r = r, "high only")), " ",
                  " ", " ", 
-                 paste0(labs_xy$x_short, "\n", sus_translate(r = r, "high only")), " ", 
-                 sus_translate(r = r, "Both high"))
+                 paste0(labs_xy$x_short, "\n", cc_t(r = r, "high only")), " ", 
+                 cc_t(r = r, "Both high"))
     l$label_colour <- c(rep("black", 8), "white")
     l$x <- as.numeric(l$x) - 0.5
     l$y <- as.numeric(l$y) - 0.5
@@ -141,11 +141,11 @@ render_legend <- function(r, data, var_left, var_right, df, data_type,
   } else if (data_type %in% c("delta_bivar", "bivar_xdelta_yq3")) {
     
     l <- legend_bivar
-    l$label <- c(sus_translate(r = r, "Both low"), " ", 
-                 paste0(labs_xy$y_short, "\n", sus_translate(r = r, "high only")), " ",
+    l$label <- c(cc_t(r = r, "Both low"), " ", 
+                 paste0(labs_xy$y_short, "\n", cc_t(r = r, "high only")), " ",
                  " ", " ", 
-                 paste0(labs_xy$x_short, "\n", sus_translate(r = r, "high only")), " ", 
-                 sus_translate(r = r, "Both high"))
+                 paste0(labs_xy$x_short, "\n", cc_t(r = r, "high only")), " ", 
+                 cc_t(r = r, "Both high"))
     l$label_colour <- c(rep("black", 8), "white")
     l$x <- as.numeric(l$x) - 0.5
     l$y <- as.numeric(l$y) - 0.5

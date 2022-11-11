@@ -11,10 +11,10 @@ gentrification_UI <- function(id) {
       NS(id, ns_id),
       susSidebarWidgets(
         slider_UI(NS(id, ns_id), 
-                  label = sus_translate(r = r, "Select two years"),
+                  label = cc_t(r = r, "Select two years"),
                   value = c("2006", "2016")),
         checkbox_UI(NS(id, ns_id),
-                    label = sus_translate(r = r, "Review a single variable ",
+                    label = cc_t(r = r, "Review a single variable ",
                                           "part of the index")),
         select_var_UI(NS(id, ns_id), 
                       var_list = var_list_left_gentrification),

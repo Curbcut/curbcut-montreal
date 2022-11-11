@@ -12,17 +12,17 @@ tenure_UI <- function(id) {
       NS(id, id),
       susSidebarWidgets(
         select_var_UI(NS(id, id), select_var_id = "d_1",
-                      label = sus_translate(r = r, "Tenure status"),
+                      label = cc_t(r = r, "Tenure status"),
                       var_list = var_left_list_1_tenure), 
         select_var_UI(NS(id, id), select_var_id = "d_2",
-                      label = sus_translate(r = r, "Shelter cost"),
+                      label = cc_t(r = r, "Shelter cost"),
                       var_list = var_left_list_2_tenure), 
         checkbox_UI(NS(id, id),
-                    label = sus_translate(r = r, 
+                    label = cc_t(r = r, 
                                           "Normalized (percent of households)")),
         br(),
         select_var_UI(NS(id, id), select_var_id = "d_3",
-                      label = sus_translate(r = r, "Family characteristic"),
+                      label = cc_t(r = r, "Family characteristic"),
                       var_list = var_left_list_3_tenure)),
       bottom = div(class = "bottom_sidebar", 
                    tagList(legend_UI(NS(id, id)),
@@ -110,8 +110,9 @@ tenure_server <- function(id, r) {
     observe({
       insertUI(selector = paste0("#", paste(id, id, "title", sep = "-")),
                where = "beforeEnd",
-               img(src = paste0("centraide_logo/centraide_logo_", r$lang(), ".png"), 
-                   style = 'width:70%; display:block; margin:auto; margin-top:15px; margin-bottom:15px;'))
+               tags$a(href = "https://www.centraide-mtl.org/", target = "_blank",
+                      img(src = paste0("centraide_logo/centraide_logo_", r$lang(), ".png"), 
+                          style = 'width:70%; display:block; margin:auto; margin-top:15px; margin-bottom:15px;')))
     })
     
     # Choose tileset

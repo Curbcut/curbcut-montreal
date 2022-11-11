@@ -230,7 +230,7 @@ add_row(tab = "vac_rate", type = "title", text = "Vacancy rate") |>
     "and see how it compares to the rest of the Montreal region or island ",
     "across a variety of sustainability indicators.")) |> 
   add_row(tab = "place_explorer", type = "extra", text = paste0(
-    "The data in the Place Explorer is taken from other Sus modules, ",
+    "The data in the Place Explorer is taken from other Curbcut modules, ",
     "with two exceptions: <a href = 'https://www.canuedata.ca/tmp/",
     "CANUE_METADATA_NO2LUR_A_YY.pdf'>Air pollution</a> and ",
     "<a href = 'https://www.canuedata.ca/tmp/CANUE_METADATA_GRAVH_AMN_YY.pdf'>",
@@ -465,7 +465,7 @@ add_row(tab = "amenities", type = "title",
     "neighborhoods. In this module, read text-based stories and view their ",
     "adjoining visual media.")) |> 
   add_row(tab = "stories", type = "extra", text = paste0(
-    "<p>These stories, written by Sus contributors, examine Montreal ",
+    "<p>These stories, written by Curbcut contributors, examine Montreal ",
     "sustainability issues that aren't well suited to representation in our ",
     "standard interactive map format. Learn more about stories rooted in ",
     "specific geographic locations across the city or those that have had ",

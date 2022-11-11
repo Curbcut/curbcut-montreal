@@ -226,7 +226,7 @@ title_text_translation <-
                       "iquant sur la carte, et voyez comment il se compare au ",
                       "reste de la région ou de l'île de Montréal pour une var",
                       "iété d'indicateurs de durabilité.")) |> 
-  add_row(en = paste0("The data in the Place Explorer is taken from other Sus",
+  add_row(en = paste0("The data in the Place Explorer is taken from other Curbcut",
                       " modules, with two exceptions: <a href = 'https://www.c",
                       "anuedata.ca/tmp/CANUE_METADATA_NO2LUR_A_YY.pdf'>Air pol",
                       "lution</a> and <a href = 'https://www.canuedata.ca/tmp/",
@@ -457,10 +457,10 @@ title_text_translation <-
                       "real's neighborhoods."), 
           fr = paste0("Études de cas narratives sur les enjeux de durabilité d",
                       "ans les quartiers de Montréal.")) |> 
-  add_row(en = paste0("These stories, written by Sus contributors, explore Mon",
+  add_row(en = paste0("These stories, written by Curbcut contributors, explore Mon",
                       "treal sustainability issues that aren't well suited to ",
                       "representation in our standard interactive map format."), 
-          fr = paste0("Ces histoires, rédigées par des collaborateurs de Sus, ",
+          fr = paste0("Ces histoires, rédigées par des collaborateurs de Curbcut, ",
                       "explorent les enjeux de durabilité de Montréal qui ne s",
                       "e prêtent pas forcément à une représentation dans notre",
                       " format standard de carte interactive.")) |> 
@@ -630,12 +630,12 @@ title_text_translation <-
                        "de durabilité dans les quartiers de Montréal. Dans ce ",
                        "module, vous pouvez lire des histoires textuelles et ",
                        "visualiser les médias visuels qui y sont associés. ")) |>
-  add_row(en = paste0("<p>These stories, written by Sus contributors, examine Montreal ",
+  add_row(en = paste0("<p>These stories, written by Curbcut contributors, examine Montreal ",
     "sustainability issues that aren't well suited to representation in our ",
     "standard interactive map format. Learn more about stories rooted in ",
     "specific geographic locations across the city or those that have had ",
     "an impact on the whole of Montreal. "),
-          fr = paste0("<p>Ces histoires, écrites par des contributeurs à Sus, ",
+          fr = paste0("<p>Ces histoires, écrites par des contributeurs à Curbcut, ",
                       "explorent les enjeux de durabilité de Montréal qui ne ",
                       "se prêtent pas à une représentation dans notre format ",
                       "standard de carte interactive. Apprenez-en davantage sur ",
@@ -683,7 +683,7 @@ title_text_translation <-
                       "dont les différentes zones sont desservies et de ce que ",
                       "cela peut impliquer pour les résidents. </ul>")) |> 
   add_row(en = paste0("Vacancy rate"), 
-          fr = paste0("Taux d'inccupation")) |> 
+          fr = paste0("Taux d'inoccupation")) |> 
   add_row(en = paste0("Examining residential rental vacancy rates is an important part of ",
                       "understanding the housing landscape in Montreal. In this module, explore ",
                       "and compare information about vacancy rates for specific types of units, ",

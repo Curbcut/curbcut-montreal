@@ -1,5 +1,5 @@
 ---
-title: "How to use Sus"
+title: "How to use Curbcut"
 output: html_document
 ---
 
@@ -12,7 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 knitr::include_graphics("visuals/how_to_use/zoom_en.png")
 
 ```
-Sus is designed as a series of modules that explore a given theme. The upper menu allows you to see all of the modules within Sus. You can click on one you would like to learn more about. All of the maps within Sus are interactive and let users scroll, zoom in and out, and click into areas for more information. The level of zoom determines the spatial scale of what you see or you can click off ‘autozoom’ and choose the spatial scale with the slider. You can therefore examine the data at the borough/CSD level first and then, as you zoom in, see smaller census geographies such as Census Tracts, and Dissemination areas. Some modules allow
+Curbcut is designed as a series of modules that explore a given theme. The upper menu allows you to see all of the modules within Curbcut. You can click on one you would like to learn more about. All of the maps within Curbcut are interactive and let users scroll, zoom in and out, and click into areas for more information. The level of zoom determines the spatial scale of what you see or you can click off ‘autozoom’ and choose the spatial scale with the slider. You can therefore examine the data at the borough/CSD level first and then, as you zoom in, see smaller census geographies such as Census Tracts, and Dissemination areas. Some modules allow
 ```{r, echo=FALSE, fig.align = 'left', warning=FALSE, out.width="auto", out.extra='style="float:left; padding:10px; padding-bottom:20px"'}
 
 knitr::include_graphics("visuals/how_to_use/sidebar_en.png")
@@ -41,8 +41,8 @@ By clicking on a polygon displayed on the map, you can learn more about that spe
 ### Learn more about places with <span style="color:#a64d79">pop-ups</span>
 Certain modules allow you to learn more about specific themes in Montreal. By clicking on the lines or points displayed on the map, you can learn more from each individual location, and even see pictures when they are available.
 
-### Up for some reading? Go look at the Sus <span style="color:#e69138">blog posts!</span>
-Not all information can be displayed on a map. This is why certain modules, in the “Learn More” section of their title box, will bring you to a blog post (or article) about the specific module you are exploring. Written by Sus contributors, these blog posts accompany the interactive format that is the dashboard with analyses as they relate to urban sustainability.
+### Up for some reading? Go look at the Curbcut <span style="color:#e69138">blog posts!</span>
+Not all information can be displayed on a map. This is why certain modules, in the “Learn More” section of their title box, will bring you to a blog post (or article) about the specific module you are exploring. Written by Curbcut contributors, these blog posts accompany the interactive format that is the dashboard with analyses as they relate to urban sustainability.
 
 ### About our data and metrics
 ```{r, echo=FALSE, fig.align = 'left', warning=FALSE, out.width="auto", out.extra='style="float:left; padding:10px"'}
@@ -50,15 +50,15 @@ Not all information can be displayed on a map. This is why certain modules, in t
 knitr::include_graphics("visuals/how_to_use/boxplot_en.png")
 
 ```
-Sus relies on a unified data structure and various metrics. Such metrics include quantiles, z-scores, correlations and plots (histograms, boxplots and scatterplots). <b>Quantiles</b> break a range of data into groups, e.g.tertiles (3 groups), quartiles (4 groups), or deciles (10 groups). This allows you to see where each point or value in the dataset is situated in comparison to others. <b>Z-scores</b> are used to assign a value to each data point as it relates to the mean. It is measured in terms of number of standard deviations above or below the mean. In contrast to quantiles, Z-scores permits a better outlook on the distribution of variables and outlier values. <b>Correlations</b> establish a relationship between two (or multiple) variables. The strength of this correlation is usually measured with a correlation coefficient r or r2. The closer it is to 1 or -1, the stronger the correlation between the two variables.
+Curbcut relies on a unified data structure and various metrics. Such metrics include quantiles, z-scores, correlations and plots (histograms, boxplots and scatterplots). <b>Quantiles</b> break a range of data into groups, e.g.tertiles (3 groups), quartiles (4 groups), or deciles (10 groups). This allows you to see where each point or value in the dataset is situated in comparison to others. <b>Z-scores</b> are used to assign a value to each data point as it relates to the mean. It is measured in terms of number of standard deviations above or below the mean. In contrast to quantiles, Z-scores permits a better outlook on the distribution of variables and outlier values. <b>Correlations</b> establish a relationship between two (or multiple) variables. The strength of this correlation is usually measured with a correlation coefficient r or r2. The closer it is to 1 or -1, the stronger the correlation between the two variables.
 
-<b>Histograms</b> split data in groups, with each group giving the count of the number of observations within that group, communicating the overall distribution of the dataset. <b>Boxplots</b> use categories, often quartiles in Sus, to display the distribution of a variable across groups (e.g. income groups),
+<b>Histograms</b> split data in groups, with each group giving the count of the number of observations within that group, communicating the overall distribution of the dataset. <b>Boxplots</b> use categories, often quartiles in Curbcut, to display the distribution of a variable across groups (e.g. income groups),
 ```{r, echo=FALSE, fig.align = 'right', warning=FALSE, out.width="auto", out.extra='style="float:right; padding:10px"'}
 
 knitr::include_graphics("visuals/how_to_use/histogram_en.png")
 
 ```
- providing an easy visualization of the distribution of the dataset, including the maximum, minimum, median and interquartile ranges. <b>Scatterplots</b> are useful for visualizing the relationship between two continuous variables. In Sus, a color is usually given to each point in the scatterplot, providing a third level of analysis.
+ providing an easy visualization of the distribution of the dataset, including the maximum, minimum, median and interquartile ranges. <b>Scatterplots</b> are useful for visualizing the relationship between two continuous variables. In Curbcut, a color is usually given to each point in the scatterplot, providing a third level of analysis.
 
 ### Data availability, transparency and usability
-At Sus, we acknowledge that data can be incomplete, fragmented and biased. Whether it be missing values or sampling strategies, data never provides the entirety of the picture. Data is usually collected over short periods of time or at given time intervals (such as the Canadian census), making it impossible to capture information on a continual basis. This can cause groups of people to be over or underrepresented. Sus recognizes the importance of questioning data, methods and analyses to not perpetuate inequalities or omissions.
+At Curbcut, we acknowledge that data can be incomplete, fragmented and biased. Whether it be missing values or sampling strategies, data never provides the entirety of the picture. Data is usually collected over short periods of time or at given time intervals (such as the Canadian census), making it impossible to capture information on a continual basis. This can cause groups of people to be over or underrepresented. Curbcut recognizes the importance of questioning data, methods and analyses to not perpetuate inequalities or omissions.

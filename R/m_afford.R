@@ -12,33 +12,33 @@ afford_UI <- function(id) {
       NS(id, id),
       susSidebarWidgets(
         select_var_UI(NS(id, id), select_var_id = "d_1",
-                      label = sus_translate(r = r, "Grouping"),
+                      label = cc_t(r = r, "Grouping"),
                       var_list = var_left_list_1_afford), 
         select_var_UI(NS(id, id), select_var_id = "d_2",
-                      label = sus_translate(r = r, "Shelter cost"),
+                      label = cc_t(r = r, "Shelter cost"),
                       var_list = var_left_list_2_afford), 
         checkbox_UI(NS(id, id),
-                    label = sus_translate(r = r, 
+                    label = cc_t(r = r, 
                                           #### TO CHANGE DYNAMICALLY TO PERCENT OF HOUSEHOLDS VS INDIVIDUALS
                                           "Normalized (percent of households)")),
         hr(),
         div(id = NS(id, "household_dropdowns"), 
             select_var_UI(NS(id, id), select_var_id = "d_3",
-                          label = sus_translate(r = r, "Tenure status"),
+                          label = cc_t(r = r, "Tenure status"),
                           var_list = var_left_list_3_afford),
             select_var_UI(NS(id, id), select_var_id = "d_4",
-                          label = sus_translate(r = r, "Family characteristic"),
+                          label = cc_t(r = r, "Family characteristic"),
                           var_list = var_left_list_3_afford)),
         
           div(id = NS(id, "population_dropdowns"),
               select_var_UI(NS(id, id), select_var_id = "d_5",
-                            label = sus_translate(r = r, "Gender"),
+                            label = cc_t(r = r, "Gender"),
                             var_list = var_left_list_3_afford),
               select_var_UI(NS(id, id), select_var_id = "d_6",
-                            label = sus_translate(r = r, "Immigration status"),
+                            label = cc_t(r = r, "Immigration status"),
                             var_list = var_left_list_3_afford),
               select_var_UI(NS(id, id), select_var_id = "d_7",
-                            label = sus_translate(r = r, "Additional characteristic"),
+                            label = cc_t(r = r, "Additional characteristic"),
                             var_list = var_left_list_3_afford))),
       
       bottom = div(class = "bottom_sidebar", 
@@ -127,8 +127,9 @@ afford_server <- function(id, r) {
     observe({
       insertUI(selector = paste0("#", paste(id, id, "title", sep = "-")),
                where = "beforeEnd",
+               tags$a(href = "https://www.centraide-mtl.org/", target = "_blank",
                img(src = paste0("centraide_logo/centraide_logo_", r$lang(), ".png"), 
-                   style = 'width:70%; display:block; margin:auto; margin-top:15px; margin-bottom:15px;'))
+                   style = 'width:70%; display:block; margin:auto; margin-top:15px; margin-bottom:15px;')))
     })
     
     # Choose tileset
@@ -158,7 +159,7 @@ afford_server <- function(id, r) {
       grp <- if (vl_gr() == "cent_d") "households" else "population"
       updateCheckboxInput(inputId = "afford-cbox",
                           label = 
-                            sus_translate(r = r,
+                            cc_t(r = r,
                                           paste0("Normalized (percent of ", 
                                                  grp, ")")))
     })

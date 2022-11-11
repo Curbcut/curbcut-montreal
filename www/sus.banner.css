@@ -31,7 +31,20 @@
   text-align: center;
   left: 0px;
   right: 0px;
-  bottom: -0.28em;
+
+  margin: 0px 0px 0px 0px;
+}
+
+.sus-banner-text-city {
+  font-size: 0.25em !important;
+  font-family: var(--ff-banner) !important;
+  color: #6c83b5 !important;
+  position: absolute;
+  display: block;
+  text-align: center;
+  left: 0px;
+  right: 0px;
+  bottom: -0.29em;
   margin: 0px 0px 0px 0px;
 }
 

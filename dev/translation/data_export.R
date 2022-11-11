@@ -248,8 +248,8 @@ data_export_translated <-
           fr = paste0("Groupe de recherche sur les déterminants géosociaux de la santé de McGill")) |> 
   add_row(en = paste0("City of Montreal's open data website"), 
           fr = paste0("Site de données ouvertes de la ville de Montréal")) |> 
-  add_row(en = paste0("Sus team"), 
-          fr = paste0("L'équipe Sus")) |> 
+  add_row(en = paste0("Curbcut team"), 
+          fr = paste0("L'équipe Curbcut")) |> 
   add_row(en = paste0("David Suzuki Foundation"), 
           fr = paste0("Fondation David Suzuki")) |> 
   add_row(en = paste0("Centraide of Greater Montreal"), 
