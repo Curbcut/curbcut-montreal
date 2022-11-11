@@ -212,6 +212,7 @@ source("dev/other/add_modules.R")
 
 source("dev/modules/census.R")
 source("dev/modules/canale.R")
+source("dev/modules/canbics.R")
 source("dev/modules/climate_risk.R")
 source("dev/modules/access.R")
 source("dev/modules/alley.R")
@@ -241,9 +242,6 @@ source("dev/other/title_text.R")
 
 source("dev/translation/build_translation.R", encoding = "utf-8")
 
-
-save.image("dat.Rdata")
-load("dat.Rdata")
 
 # # Remove geometries -------------------------------------------------------
 # progressr::with_progress({
@@ -492,7 +490,7 @@ future_imap(all_tables, function(scales, geo) {
   map(scales_no_full, function(scale) {
     geo_scale <- paste(geo, scale, sep = "_")
     assign(geo_scale,
-           get(geo_scale) |>
+           get(geo_scale, envir = .GlobalEnv) |>
              st_drop_geometry() |>
              select(ID:households),
            envir = .GlobalEnv)
@@ -547,9 +545,9 @@ qsavem(title_card_indicators, pe_var_hierarchy, pe_theme_order,
 qsavem(stories, stories_mapping, file = "data/stories.qsm")
 
 
-# Copy large data files to Dropbox ----------------------------------------
+# Copy data files to a AWS bucket -----------------------------------------
 
-source("dev/dropb_automation/01_zip_and_export.R")
+cc.data::bucket_write_folder(folder = "data", bucket = "curbcut.montreal.data")
 
 
 # Add hash ----------------------------------------------------------------

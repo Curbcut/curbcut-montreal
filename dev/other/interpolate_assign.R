@@ -30,7 +30,7 @@ interpolate_scales <- function(data, base_scale, all_tables,
                         "households", "population", names(data))))
       
       # Remove any IDs
-      data <- data[, names(data)[!names(data) |> str_detect("ID$")]]
+      data <- data[names(data)[!names(data) |> str_detect("ID$")]]
       
       z <- 
         map(set_names(scales), function(scale) {

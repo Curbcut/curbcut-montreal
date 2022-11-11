@@ -460,6 +460,8 @@ ui_and_misc_translated <-
           fr = paste0("Minutes pour atteindre le secteur de recensement")) |> 
   add_row(en = paste0("Clear selection"), 
           fr = paste0("Effacer la selection")) |> 
+  add_row(en = paste0("Bikeway comfort and safety"), 
+          fr = paste0("Confort et sécurité des voies cyclables")) |> 
   # Natural infrastructure
   add_row(en = paste0("Ecology"), 
           fr = paste0("Écologie")) |> 
