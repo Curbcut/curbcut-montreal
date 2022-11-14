@@ -2,6 +2,10 @@
 
 variables_translated <- 
   tibble(en = character(), fr = character()) |>
+  
+  add_row(en = paste0("the bikeway comfort and safety classification system"), 
+          fr = paste0("la mesure du système de classification du confort et ",
+                      "de la sécurité des pistes cyclables")) |> 
   add_row(en = paste0("Tenant-occupied (%)"), 
           fr = paste0("Occupé par un locataire (%)")) |> 
   add_row(en = paste0("Average rent ($)"), 
@@ -1349,17 +1353,17 @@ variables_translated <-
           fr = paste0("Adultes")) |> 
   add_row(en = paste0("Public"), 
           fr = paste0("Public")) |> 
-
-# ## Add vacancy rate
-# # Variables needed translation
-# variables_vac_rate <- variables[str_starts(variables$var_code, "vac_rate_"), ]
-# 
-# map_dfr(variables_vac_rate$var_code, function(var) {
-# 
-#   # Create title and explanation
-#   cat_title <- (\(x) {
-#     # Bedroom types
-#     if (grepl("_bed_", var)) {
+  
+  # ## Add vacancy rate
+  # # Variables needed translation
+  # variables_vac_rate <- variables[str_starts(variables$var_code, "vac_rate_"), ]
+  # 
+  # map_dfr(variables_vac_rate$var_code, function(var) {
+  # 
+  #   # Create title and explanation
+  #   cat_title <- (\(x) {
+  #     # Bedroom types
+  #     if (grepl("_bed_", var)) {
 #       suff <- "des unités de logement"
 #       if (grepl("bachelor", var)) return(paste(suff, "de type studio"))
 #       if (grepl("1_bed", var)) return(paste(suff, "d'une chambre à coucher"))
@@ -1712,7 +1716,7 @@ add_row(en = paste0("Vacancy rate in studio apartments"),
           fr = paste0("Taux d'inoccupation par tranche de loyer")) |> 
   add_row(en = paste0("For all housing units"), 
           fr = paste0("Toutes les unités de logements"))
-  
+
 
 # ### Add amenities
 # variables_amenities <- variables[str_starts(variables$var_code, "amenities_"), ]

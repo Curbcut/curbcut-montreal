@@ -53,7 +53,7 @@ title_text <-
     "system for cycling infrastructure in Canada. This system is based on ",
     "three tiers that considers safety and user comfort: high-comfort bikeways, ",
     "medium-comfort bikeways, and low-comfort bikeways. In this module, explore ",
-    "how areas in the Montreal region rank in accordance with the Can-BICS index. ")) |> 
+    "how areas in the Montreal region rank in accordance with the Can-BICS index.")) |> 
   add_row(tab = "canbics", type = "extra", text = paste0(
     "<p>The information seen in this module is based on data from CANUE. ",
     "Can-BICS was developed by Meghan Winters, PhD, Moreno Zanotto, MSc, ",
@@ -68,7 +68,7 @@ title_text <-
     "Can-BICS visit: <a href='https://www.canada.ca/en/public-health/services/",
     "reports-publications/health-promotion-chronic-disease-prevention-canada-",
     "research-policy-practice/vol-40-no-9-2020/canbics-classification-system-",
-    "naming-convention-cycling-infrastructure.html'></a> </ul>")) |> 
+    "naming-convention-cycling-infrastructure.html'>At-a-glance – The Canadian Bikeway Comfort and Safety (Can-BICS) Classification System: a common naming convention for cycling infrastructure</a>")) |> 
 
   
 # Climate risk ------------------------------------------------------------

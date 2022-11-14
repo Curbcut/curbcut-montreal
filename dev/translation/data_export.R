@@ -209,6 +209,32 @@ data_export_translated <-
           fr = paste0("Le vecteur du recensement canadien est {vector_definiti",
                       "on}. Il s'agit de la médiane de {parent_vector_definiti",
                       "on}.")) |> 
+  
+  add_row(en = paste0("<a href = 'https://www.canada.ca/en/public-health/servi",
+                      "ces/reports-publications/health-promotion-chronic-disea",
+                      "se-prevention-canada-research-policy-practice/vol-40-no",
+                      "-9-2020/canbics-classification-system-naming-convention",
+                      "-cycling-infrastructure.html'>Can-BICS, or Canadian Bik",
+                      "eway Comfort and Safety,</a> is a classification system",
+                      " for cycling infrastructure in Canada. This system is b",
+                      "ased on three tiers that considers safety and user comf",
+                      "ort: high-comfort bikeways, medium-comfort bikeways, an",
+                      "d low-comfort bikeways."), 
+          fr = paste0("<a target = '_blank' href = 'https://www.canada.ca/fr/s",
+                      "ante-publique/services/rapports-publications/promotion-",
+                      "sante-prevention-maladies-chroniques-canada-recherche-p",
+                      "olitiques-pratiques/vol-40-no-9-2020/systeme-classifica",
+                      "tion-canbics-convention-appellation-amenagements-cyclab",
+                      "les.html'>Can-BICS, ou système de classification du con",
+                      "fort et de la sécurité des voies cyclables canadiennes,",
+                      "</a> est un système de classification des infrastructur",
+                      "es cyclables au Canada. Ce système est basé sur trois n",
+                      "iveaux qui prennent en compte la sécurité et le confort",
+                      " des usagers : les voies cyclables à confort élevé, les",
+                      " voies cyclables à confort moyen et les voies cyclables",
+                      " à faible confort.")) |> 
+  
+  
   add_row(en = paste0("{time[1]} and {time[2]}"), 
           fr = paste0("{time[1]} et {time[2]}")) |> 
   add_row(en = paste0("For {time}: {census_details}"), 
@@ -260,6 +286,9 @@ data_export_translated <-
           fr = paste0("Données sur les emplois et la population provenant de Statistique Canada. Calculs des temps de trajet à partir d'OSM et de GTFS.")) |> 
   add_row(en = paste0("<p>The vacancy rate data in this module comes from the Canada Mortgage and Housing Corporation.</p>"), 
           fr = paste0("<p>Les données sur le taux d'inoccupation dans ce module proviennent de la Société canadienne d'hypothèques et de logement.</p>")) |> 
+  add_row(en = paste0("Meghan Winters at Faculty of Health Sciences, Simon Fraser University"), 
+          fr = paste0("Meghan Winters à la Faculté des sciences de la santé, Université Simon Fraser")) |> 
+  
   
 # Auto translated a few vectors -------------------------------------------
 # 

@@ -110,6 +110,12 @@ ui_and_misc_translated <-
           fr = paste0("Vie urbaine")) |> 
   add_row(en = paste0("Active living potential"), 
           fr = paste0("Potentiel de vie active")) |> 
+  add_row(en = paste0("Bikeway Comfort and Safety"), 
+          fr = paste0("Confort et sécurité des voies cyclables")) |> 
+  add_row(en = paste0("Can-BICS"), 
+          fr = paste0("Can-BICS")) |> 
+  add_row(en = paste0("Can-BICS metric"), 
+          fr = paste0("Mesure Can-BICS")) |> 
   add_row(en = paste0("Green alleys"), 
           fr = paste0("Ruelles vertes")) |> 
   add_row(en = paste0("Green spaces"), 
