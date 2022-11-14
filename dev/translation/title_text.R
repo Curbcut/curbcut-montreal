@@ -457,13 +457,7 @@ title_text_translation <-
                       "real's neighborhoods."), 
           fr = paste0("Études de cas narratives sur les enjeux de durabilité d",
                       "ans les quartiers de Montréal.")) |> 
-  add_row(en = paste0("These stories, written by Curbcut contributors, explore Mon",
-                      "treal sustainability issues that aren't well suited to ",
-                      "representation in our standard interactive map format."), 
-          fr = paste0("Ces histoires, rédigées par des collaborateurs de Curbcut, ",
-                      "explorent les enjeux de durabilité de Montréal qui ne s",
-                      "e prêtent pas forcément à une représentation dans notre",
-                      " format standard de carte interactive.")) |> 
+  
   add_row(en = paste0("Housing Affordability"), 
           fr = paste0("L'Abordabilité du logement")) |> 
   add_row(en = paste0("Having access to affordable and equitable shelter is essential. ",
@@ -630,17 +624,19 @@ title_text_translation <-
                       "de durabilité dans les quartiers de Montréal. Dans ce ",
                       "module, vous pouvez lire des histoires textuelles et ",
                       "visualiser les médias visuels qui y sont associés. ")) |>
-  add_row(en = paste0("<p>These stories, written by Curbcut contributors, examine Montreal ",
-                      "sustainability issues that aren't well suited to representation in our ",
-                      "standard interactive map format. Learn more about stories rooted in ",
-                      "specific geographic locations across the city or those that have had ",
-                      "an impact on the whole of Montreal. "),
-          fr = paste0("<p>Ces histoires, écrites par des contributeurs à Curbcut, ",                      "explorent les enjeux de durabilité de Montréal qui ne ",
+  add_row(en = paste0("These stories, written by Curbcut contributors, examine",
+                      " Montreal sustainability issues that aren't well suited",
+                      " to representation in our standard interactive map form",
+                      "at. Learn more about stories rooted in specific geograph",
+                      "ic locations across the city or those that have had an ",
+                      "impact on the whole of Montreal."),
+          fr = paste0("Ces histoires, écrites par des contributeurs à Curbcut, ",
+                      "explorent les enjeux de durabilité de Montréal qui ne ",
                       "se prêtent pas à une représentation dans notre format ",
                       "standard de carte interactive. Apprenez-en davantage sur ",
                       "les histoires ancrées dans des lieux géographiques ",
                       "spécifiques de la ville ou sur celles qui ont eu un ",
-                      "impact sur l'ensemble de Montréal. </ul>")) |> 
+                      "impact sur l'ensemble de Montréal.")) |> 
   add_row(en = paste0("Access to amenities"), 
           fr = paste0("Accès aux services et commodités")) |> 
   add_row(en = paste0("Being able to access amenities and services in our nearby urban ",
@@ -659,7 +655,7 @@ title_text_translation <-
                       "aux distributeurs alimentaires, aux établissements de santé, ",
                       "aux parcs municipaux et aux lieux de garde d’enfants par ",
                       "marche, en transport en commun ou en voiture. ")) |>
-  add_row(en = paste0("<p>The spatialized analysis seen in this module is based on data from ",
+  add_row(en = paste0("The spatialized analysis seen in this module is based on data from ",
                       "Données Québec and DMTI. In selecting different options from the ",
                       "drop-down menus, insights can be gained about access to different types ",
                       "of amenities by a certain mode of transportation within a given amount ",
@@ -667,7 +663,7 @@ title_text_translation <-
                       "variables linked to housing, income, identity, transport, households, ",
                       "language, age, and education. Understanding access to amenities by mode ",
                       "of transportation gives a glimpse into how different areas are serviced ",
-                      "and what that might imply for residents. </a>."),
+                      "and what that might imply for residents."),
           fr = paste0("<p>L'analyse spatialisée présentée dans ce module est ",
                       "basée sur les données de Données Québec et de DMTI. En ",
                       "sélectionnant différentes options dans les menus déroulants, ",
@@ -686,8 +682,8 @@ title_text_translation <-
   add_row(en = paste0("Examining residential rental vacancy rates is an important part of ",
                       "understanding the housing landscape in Montreal. In this module, explore ",
                       "and compare information about vacancy rates for specific types of units, ",
-                      "the year of construction, or within a rent range. Select a year, ",
-                      "two years, or compare dates for which to view the spatialized data."),   
+                      "the year of construction, or within a rent range. Select one or two years ",
+                      "to compare the dates for which you wish to view the spatialized data."),   
           fr = paste0("L'examen des taux d'inoccupation des logements locatifs ",
                       "résidentiels est une partie importante de la compréhension ",
                       "du paysage du logement à Montréal. Dans ce module, explorez ",
@@ -696,7 +692,7 @@ title_text_translation <-
                       "construction, ou dans une fourchette de loyer. ",
                       "Sélectionnez une année, deux années ou comparez les dates ",
                       "pour lesquelles vous souhaitez visualiser les données spatialisées. ")) |>
-  add_row(en = paste0("<p> The comparative analysis seen in this module is based on data from ",
+  add_row(en = paste0("The comparative analysis seen in this module is based on data from ",
                       "the CMHC. In selecting different options from the drop-down menus, ",
                       "insights can be gained on how vacancy rates vary over time and spatially ",
                       "by type of unit, year of construction, and rent range. Using the panel ",
@@ -704,8 +700,8 @@ title_text_translation <-
                       "housing, income, identity, transport, households, language, age, and ",
                       "education. Information about vacancy rates and its related variables ",
                       "can help define past and current trends in the housing market and what ",
-                      "is needed to better provide adequate rental housing. </ul>"),
-          fr = paste0("<p>L'analyse comparative présentée dans ce module est ",
+                      "is needed to better provide adequate rental housing."),
+          fr = paste0("L'analyse comparative présentée dans ce module est ",
                       "basée sur les données de la SCHL. En sélectionnant ",
                       "différentes options dans les menus déroulants, on peut ",
                       "voir comment les taux d'inoccupation varient dans le ",
@@ -717,7 +713,7 @@ title_text_translation <-
                       "Les informations sur les taux d'inoccupation et les variables ",
                       "qui y sont liées peuvent aider à définir les tendances ",
                       "passées et actuelles du marché du logement et à déterminer ",
-                      "ce qui est nécessaire pour mieux fournir des logements locatifs adéquats.  </ul>")) |> 
+                      "ce qui est nécessaire pour mieux fournir des logements locatifs adéquats.")) |> 
   add_row(en = paste0(
     "Can-BICS, or Canadian Bikeway Comfort and Safety, is a classification ",
     "system for cycling infrastructure in Canada. This system is based on ",

@@ -20859,4 +20859,28 @@ variables_translated <-
   add_row(en = paste0("the count of daycare spots accessible in 60 minutes by ",
                       "car by the average resident"), 
           fr = paste0("le nombre de places en garderie accessible en 60 minute",
-                      "s en auto par un résident moyen de la zone"))
+                      "s en auto par un résident moyen de la zone")) |> 
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+# MISSING TRANLSATIONS ----------------------------------------------------
+
+add_row(en = paste0("Vacancy rate in housing units with an unknown rent"), 
+        fr = paste0("Taux d'innocupation dans les unités de logement dont le loy",
+                    "er est inconnu")) |> 
+  add_row(en = paste0("the type of green alley"), 
+          fr = paste0("le type de ruelle verte")) |> 
+  add_row(en = paste0("the percentage of all available housing units with an u",
+                      "nknown rent in a rental property that are vacant or uno",
+                      "ccupied"), 
+          fr = paste0("le pourcentage de toutes les unités de logement disponi",
+                      "bles à loyer inconnu dans un immeuble locatif qui sont ",
+                      "vacantes ou inoccupées"))  

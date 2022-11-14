@@ -741,7 +741,7 @@ new_rows <-
                     explanation = explanation_,
                     category = NA,
                     theme = "Access to amenities",
-                    private = TRUE,
+                    private = FALSE,
                     dates = NA,
                     scales = names(DA_amenities$tables_list),
                     breaks_q3 = select(breaks_q3_active,
@@ -761,6 +761,20 @@ new_rows <-
 
 variables <-
   bind_rows(variables, new_rows)
+
+
+# Add to modules table ----------------------------------------------------
+
+modules <- 
+  modules |> 
+  add_modules(
+    id = "amenities",
+    metadata = TRUE,
+    dataset_info = 
+      paste0("Travel time matrices in this module have been calculated with the",
+             "'r5r' R package (with the use of an Open Street Map network file ",
+             "and a GTFS public transport feed). Locations have been extracted ",
+             "from DMTI and Données Québec."))
 
 
 # Clean up ----------------------------------------------------------------

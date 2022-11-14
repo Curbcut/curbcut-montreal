@@ -79,6 +79,44 @@ translation_fr <-
   distinct(en, .keep_all = TRUE)
 
 
+
+# Test --------------------------------------------------------------------
+
+if (!exists("title_text")) title_text <- qs::qread("data/title_text.qs")
+missing_title_text <- 
+  title_text$text[
+    !sapply(title_text$text, \(x) x %in% translation_fr$en, USE.NAMES = FALSE)]
+if (length(missing_title_text) > 0) warning("Missing title text translations")
+
+if (!exists("variables")) title_text <- qs::qread("data/variables.qs")
+missing_variables <- 
+  c(variables$var_title[
+    !sapply(variables$var_title, \(x) x %in% translation_fr$en, USE.NAMES = FALSE)],
+    variables$var_short[
+      !sapply(variables$var_short, \(x) x %in% translation_fr$en, USE.NAMES = FALSE)],
+    variables$explanation[
+      !sapply(variables$explanation, \(x) x %in% translation_fr$en, USE.NAMES = FALSE)],
+    variables$source[
+      !sapply(variables$source, \(x) x %in% translation_fr$en, USE.NAMES = FALSE)]) |> 
+  unique()
+if (length(missing_variables) > 0) warning("Missing variables translations")
+
+if (!exists("modules")) title_text <- qs::qread("data/modules.qs")
+missing_modules <- 
+  modules$dataset_info[
+    !sapply(modules$dataset_info, \(x) x %in% translation_fr$en, USE.NAMES = FALSE)]
+if (length(missing_modules) > 0) warning("Missing modules translations")
+
+# # .t <- function (x) deeplr::toFrench2(x, auth_key = .deepl_key)
+# purrr::map_dfr(missing_variables, \(x) {
+#     tibble(en = x,
+#            fr = .t(x))
+# }) |> form_translation_tibble()
+
+
+
+
+
 # Save to the translation files -------------------------------------------
 
 qsave(translation_fr, "data/translation_fr.qs")

@@ -49,7 +49,17 @@ data_export_translated <-
           fr = paste0("Données ouvertes de la Ville de Montréal, des données D",
                       "MTI et du réseau de rues OpenStreetMap.")) |> 
   
-  
+  add_row(en = paste0("Données Québec and DMTI"), 
+          fr = paste0("Données Québec et DMTI")) |> 
+  add_row(en = paste0("Travel time matrices in this module have been calculated with the",
+                      "'r5r' R package (with the use of an Open Street Map network file ",
+                      "and a GTFS public transport feed). Locations have been extracted ",
+                      "from DMTI and Données Québec."), 
+          fr = paste0("Les matrices de temps de parcours de ce module ont été ",
+                      "calculées avec le package R 'r5r' (avec l'utilisation d",
+                      "'un fichier réseau Open Street Map et d'un flux de tran",
+                      "sport public GTFS). Les localisations ont été extraites",
+                      " de DMTI et de Données Québec.")) |> 
   
   add_row(en = paste0("<p>Data made available by the firm Habitat. For more in",
                       "formation on the methods and data used for this module,",

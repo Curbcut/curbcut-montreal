@@ -23,6 +23,7 @@ get_zoom_name <- function(x) sapply(
   "heatmap" = "Heatmap",
   "point" = "Point",
   "centraide" = "Centraide",
+  "cmhczone" = "CMHC Zone",
   x,
   USE.NAMES = FALSE)
 
