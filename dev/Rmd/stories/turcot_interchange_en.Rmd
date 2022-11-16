@@ -12,7 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 <center>
 ```{r, echo=FALSE}
-vembedr::embed_youtube("QWZ9wbDMDO0&t=3s", height = 500)
+vembedr::embed_youtube("QWZ9wbDMDO0", height = 500)
 ```
 </center>
 
