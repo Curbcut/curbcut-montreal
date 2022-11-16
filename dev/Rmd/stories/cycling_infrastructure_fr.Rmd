@@ -1,6 +1,7 @@
 ---
 title: "Histoire de l'infrastructure cycliste à Montréal"
 author: "Philip Bligh"
+date: "07.2022"
 output: html_document
 runtime: shiny_prerendered
 ---

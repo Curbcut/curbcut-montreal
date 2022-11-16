@@ -2,12 +2,19 @@
 title: "The reconstruction of the Turcot Interchange: The intersection of community desires and government priorities"
 output: html_document
 author: "Jennah Landgraf"
+date: "05.2022"
 runtime: shiny_prerendered
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+
+<center>
+```{r, echo=FALSE}
+vembedr::embed_youtube("QWZ9wbDMDO0&t=3s", height = 500)
+```
+</center>
 
 <p>(Adapted from Manaugh &amp; Dreszer (2022), <em>Mobilisons-Nous: &ldquo;Violent Infrastructure&rdquo;&nbsp;</em><em>and Pedestrian Space in Montreal </em>in Sustainability, Citizen Participation, and City Governance: Multidisciplinary Perspectives. Edited by Hoi L. Kong and Tanya Monforte. University of Toronto Press)</p>
 ### Contextualizing Montreal&rsquo;s history of urban planning

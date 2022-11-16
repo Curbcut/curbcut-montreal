@@ -2,12 +2,19 @@
 title: "La reconstruction de l'échangeur Turcot : Le croisement des désirs de la communauté et des priorités du gouvernement"
 output: html_document
 author: "Jennah Landgraf"
+date: "05.2022"
 runtime: shiny_prerendered
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+
+<center>
+```{r, echo=FALSE}
+vembedr::embed_youtube("5Dv91F0xguc", height = 500)
+```
+</center>
 
 <p>(Adapt&eacute; de Manaugh &amp; Dreszer (2022), <em>Mobilisons-Nous: &ldquo;Violent Infrastructure&rdquo;&nbsp;</em><em>and Pedestrian Space in Montreal </em>in Sustainability, Citizen Participation, and City Governance: Multidisciplinary Perspectives. Edited by Hoi L. Kong and Tanya Monforte. University of Toronto Press)</p>
 ### Contextualisation de l'histoire de la planification urbaine &agrave; Montr&eacute;al&nbsp;
