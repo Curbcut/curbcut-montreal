@@ -3,12 +3,20 @@ title: "La carrière Miron : La transformation d'une carrière de calcaire indus
 subtitle: "Un exemple révélateur des possibilités de changement à Saint-Michel"  
 output: html_document
 author: "Jennah Landgraf"
+date: "04.2022"
 runtime: shiny_prerendered
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+
+<center>
+```{r, echo=FALSE}
+vembedr::embed_youtube("F8BSNEmxm_w", height = 500)
+```
+</center>
+
 <p>Au cours des dix derni&egrave;res ann&eacute;es, les r&eacute;sidents et le gouvernement municipal se sont r&eacute;unis pour fa&ccedil;onner l'avenir du Complexe environnemental de Saint-Michel, situ&eacute; sur le site de l'ancienne carri&egrave;re Miron. Le Complexe environnemental est un vaste site de 192 hectares qui comprend le parc Frédéric-Back, des installations de compostage et de recyclage, ainsi que le si&egrave;ge du Cirque du Soleil et de la TOHU, un organisme sans but lucratif qui organise des spectacles et des activit&eacute;s culturelles. Ce qui peut &ecirc;tre d&eacute;crit aujourd'hui comme un espace de s&eacute;r&eacute;nit&eacute; et de paix &eacute;tait autrefois synonyme d'odeurs naus&eacute;abondes et de pollution sonore et atmosph&eacute;rique insupportable. Situ&eacute;e entre les arrondissements p&eacute;ri-centraux de Saint-Michel et d'Ahuntsic, au nord de Montr&eacute;al, cette ancienne carri&egrave;re de calcaire a connu d'&eacute;normes changements au cours du dernier si&egrave;cle.&nbsp;</p>
 <p>Dans le <a href="https://montreal.ca/articles/le-parc-frederic-back-une-metamorphose-unique-18997">parc Frederic-Back</a>, une œuvre d’art comm&eacute;more la mobilisation citoyenne qui a joué un role important dans la création de ce site. Les habitants de Saint-Michel avaient une longue histoire de probl&egrave;mes et de complications avec cet espace li&eacute; &agrave; la carri&egrave;re Miron et aux sites d'enfouissement sanitaire. La mobilisation citoyenne pour le parc Fr&eacute;d&eacute;ric-Back fait d&eacute;sormais partie int&eacute;grante de l'histoire de cet arrondissement en transformation.&nbsp;</p>
 ### La carri&egrave;re Miron
