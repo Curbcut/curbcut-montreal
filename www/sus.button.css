@@ -187,7 +187,6 @@
 .tab-content .dropdown-menu,
 .tab-content .dropdown-menu.open {
   border: 0.5px solid rgba(0, 0, 0, 0.05);
-  overflow: scroll;
   overflow-x: hidden;
   padding-top: 0px;
   padding-bottom: 0px;
@@ -197,6 +196,18 @@
   position: fixed;
   top: 0px;
   right: 0px;
+}
+ /* FOR M_AUTO_VARS, FOR SOME REASON THEY ARE BROKEN WITH THOSE ATTRIBUTES */
+#staying_widgets .dropdown-menu.open {
+  position: absolute !important;
+  top: auto !important;
+  right: auto !important;
+}
+
+#auto_additional_drops .dropdown-menu.open {
+  position: absolute !important;
+  top: auto !important;
+  right: auto !important;
 }
 
 .tab-content .dropdown-menu > li > a {

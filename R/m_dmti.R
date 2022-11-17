@@ -47,7 +47,7 @@
 #       rv_dmti$zoom <- case_when(input$map_view_change$zoom >= 14 ~ "DA_2",
 #                                  input$map_view_change$zoom >= 12 ~ "DA",
 #                                  input$map_view_change$zoom >= 10.5 ~ "CT",
-#                                  TRUE ~ "borough")
+#                                  TRUE ~ "CSD")
 #     })
 #     
 #     # Compare panel
@@ -118,7 +118,7 @@
 #       var_left_dmti()
 #       var_right_dmti()
 #       rv_dmti$zoom}, {
-#         width <- switch(rv_dmti$zoom, "borough" = 100, "CT" = 10, 2)
+#         width <- switch(rv_dmti$zoom, "CSD" = 100, "CT" = 10, 2)
 #         mapdeck_update(map_id = NS(id, "map")) %>%
 #           add_polygon(
 #             data = data_dmti(), stroke_width = width,
@@ -142,7 +142,7 @@
 #     # Update map in response to poly_selected change
 #     observeEvent(rv_dmti$poly_selected, {
 #       if (!is.na(rv_dmti$poly_selected)) {
-#         width <- switch(rv_dmti$zoom, "borough" = 100, "CT" = 10, 2)
+#         width <- switch(rv_dmti$zoom, "CSD" = 100, "CT" = 10, 2)
 #         data_to_add <-
 #           data_dmti() %>%
 #           filter(ID == rv_dmti$poly_selected)

@@ -18,14 +18,14 @@ data_export_modal <- function(r = r, export_data) {
   
   about_module$title <- 
     paste0("<h3>", 
-           sus_translate(r = r, 
+           cc_t(r = r, 
                          title_text$text[title_text$type == "title" & 
                                            title_text$tab == module$id]), 
            "</h3>")
   
   about_module$text_linked <- 
     paste0(str_replace_all(
-             sus_translate(r = r, module$dataset_info), 
+             cc_t(r = r, module$dataset_info), 
              "<p>", "<p style = 'font-size: 1.45rem;'>") |> 
              str_replace_all("<a href", "<a  target = '_blank' href")
              )
@@ -36,15 +36,15 @@ data_export_modal <- function(r = r, export_data) {
   about_data <- list()
   
   about_data$title <- 
-    paste0("<h3>", sus_translate(r = r, "About the data"), "</h3>")
+    paste0("<h3>", cc_t(r = r, "About the data"), "</h3>")
   
   # Spatial organization of data
   data_organization <- 
-    str_to_lower(sus_translate(r = r, get_zoom_name(export_data$data_origin)))
+    str_to_lower(cc_t(r = r, get_zoom_name(export_data$data_origin)))
   
   about_data$general_detail <- 
     paste0("<p style = 'font-size: 1.45rem'>",
-           sus_translate(r = r, "The data is spatially organized at the ",
+           cc_t(r = r, "The data is spatially organized at the ",
                          "{data_organization} scale."),
            "</p>")
   
@@ -62,7 +62,7 @@ data_export_modal <- function(r = r, export_data) {
   
   if (exist_var_right)
     about_data$var_left$title <- 
-    paste0("<h4>", sus_translate(r = r, "About main variable"), "</h3>")
+    paste0("<h4>", cc_t(r = r, "About main variable"), "</h3>")
   
   about_data <- get_metadata(export_data = export_data,
                              r = r,
@@ -83,7 +83,7 @@ data_export_modal <- function(r = r, export_data) {
     about_data$var_right <- list()
     
     about_data$var_right$title <- 
-      paste0("<h4>", sus_translate(r = r, "About compared variable"), "</h3>")
+      paste0("<h4>", cc_t(r = r, "About compared variable"), "</h3>")
     
     about_data <- get_metadata(export_data = export_data, 
                                r = r,
@@ -124,7 +124,7 @@ data_export_modal <- function(r = r, export_data) {
     } else NULL
   
   modal_title <- 
-    sus_translate(r = r, names(unlist(unname(mods_rdy))[
+    cc_t(r = r, names(unlist(unname(mods_rdy))[
       export_data$id == unlist(mods_rdy)]))
   
   modal <- 
@@ -137,7 +137,7 @@ data_export_modal <- function(r = r, export_data) {
       
       # Preview table 
       if (is.data.frame(export_data$data))
-        h3(sus_translate(r = r, "Data preview (first 10 rows)")),
+        h3(cc_t(r = r, "Data preview (first 10 rows)")),
       if (is.data.frame(export_data$data))
         div(style = paste0("width:80%; margin-left:auto; margin-right:auto; ",
                            "overflow-x: auto; height:300px; overflow-y:auto;"),
@@ -146,13 +146,13 @@ data_export_modal <- function(r = r, export_data) {
                                  round = 2, rownames = FALSE)),
       
       footer = tagList(
-        modalButton(sus_translate(r = r, "Dismiss")),
+        modalButton(cc_t(r = r, "Dismiss")),
         downloadButton("download_csv", 
                        style = button_style,
-                       sus_translate(r = r, "Download .csv")),
+                       cc_t(r = r, "Download .csv")),
         downloadButton("download_shp",
                        style = button_style,
-                       sus_translate(r = r, "Download .shp"))
+                       cc_t(r = r, "Download .shp"))
       ),
       easyClose = TRUE,
       size = "l")

@@ -89,65 +89,141 @@ find_breaks_q5 <- function(min_val, max_val) {
   return(c(new_min + 0:5 * break_val))
 }
 
-get_breaks_q5 <- function(df, var_list = NULL) {
-  
+get_breaks_q5 <- function(df, var_list = NULL, time_regex = "_\\d{4}$") {
+
   # Automatically retrieve var_list if var_list is NULL
   if (is.null(var_list)) {
-    var_list <- 
-      df |> 
-      dplyr::select(-contains(c("q3", "q5")), -any_of(c("ID", "name"))) |> 
+    var_list <-
+      df |>
+      dplyr::select(-contains(c("q3", "q5")), -any_of(c("ID", "name"))) |>
       names()
   }
-  
+
+  # Get ONE q5 break for all the years
+  unique_var_list <- unique(str_remove(var_list, time_regex))
+
   cat_min <- suppressWarnings(
-    map(var_list, ~{
+    map(unique_var_list, \(x) {
       df |>
-        dplyr::select(all_of(.x)) |>
+        dplyr::select(starts_with(x), -contains(c("q3", "q5"))) |>
         as.matrix() |>
         min(na.rm = TRUE)
     }))
 
   cat_max <- suppressWarnings(
-    map(var_list, ~{
+    map(unique_var_list, \(x) {
       df |>
-        dplyr::select(all_of(.x)) |>
+        dplyr::select(starts_with(x), -contains(c("q3", "q5"))) |>
         as.matrix() |>
         max(na.rm = TRUE)
     }))
-  
+
   var_mean <- suppressWarnings(
-    map(var_list, ~{
-      df |>
-        dplyr::select(all_of(.x)) |>
-        filter(if_all(everything(), 
-                      ~between(.x, quantile(.x, .01, na.rm = TRUE), 
-                               quantile(.x, .99, na.rm = TRUE)))) |> 
-        as.matrix() |>
-        mean(na.rm = TRUE)
+    map(unique_var_list, \(x) {
+      out <- df |>
+        dplyr::select(starts_with(x), -contains(c("q3", "q5"))) |>
+        as.matrix()
+
+      # If there's not enough unique values, we do not filter out outliers
+      out_nolier <- out[out > quantile(out, .01, na.rm = TRUE)]
+      out_nolier <- out_nolier[out_nolier < quantile(out_nolier, .99, na.rm = TRUE)]
+      out <- if (length(unique(out_nolier)) < 5) out else out_nolier
+
+      mean(out, na.rm = TRUE)
     }))
 
   standard_d <- suppressWarnings(
-    map(var_list, ~{
-      df |>
-        dplyr::select(all_of(.x)) |>
-        filter(if_all(everything(), 
-                      ~between(.x, quantile(.x, .01, na.rm = TRUE), 
-                               quantile(.x, .99, na.rm = TRUE)))) |> 
-        as.matrix() |>
-        sd(na.rm = TRUE)
+    map(unique_var_list, \(x) {
+      out <- df |>
+        dplyr::select(starts_with(x), -contains(c("q3", "q5"))) |>
+        as.matrix()
+
+      # If there's not enough unique values, we do not filter out outliers
+      out_nolier <- out[out > quantile(out, .01, na.rm = TRUE)]
+      out_nolier <- out_nolier[out_nolier < quantile(out_nolier, .99, na.rm = TRUE)]
+      out <- if (length(unique(out_nolier)) < 5) out else out_nolier
+
+      sd(out, na.rm = TRUE)
     }))
-  
+
   breaks <- pmap(
     list(cat_min, cat_max, var_mean, standard_d), \(x, y, a, b) {
       breaks <- find_breaks_q5(max(a - (4 * b), x), min(a + (4 * b), y))
-      tibble(v = breaks, .name_repair = "minimal")}) |> 
-    bind_cols(.name_repair = "minimal") |> 
-    map2_dfc(var_list, ~{
-      map(.y, \(z) tibble(z = .x)) |> 
-        bind_cols(.name_repair = "minimal") |> 
+      tibble(v = breaks, .name_repair = "minimal")}) |>
+    bind_cols(.name_repair = "minimal") |>
+    map2_dfc(unique_var_list, ~{
+      map(.y, \(z) tibble(z = .x)) |>
+        bind_cols(.name_repair = "minimal") |>
         set_names(.y)})
-  
+
+  map(var_list, \(x) {
+    group <- unique(str_remove(x, time_regex))
+    out <- tibble(val = breaks[[group]])
+    names(out) <- x
+    out
+  }) |> reduce(bind_cols)
+
 }
+
+# get_breaks_q5 <- function(df, var_list = NULL) {
+#   
+#   # Automatically retrieve var_list if var_list is NULL
+#   if (is.null(var_list)) {
+#     var_list <- 
+#       df |> 
+#       dplyr::select(-contains(c("q3", "q5")), -any_of(c("ID", "name"))) |> 
+#       names()
+#   }
+#   
+#   cat_min <- suppressWarnings(
+#     map(var_list, ~{
+#       df |>
+#         dplyr::select(all_of(.x)) |>
+#         as.matrix() |>
+#         min(na.rm = TRUE)
+#     }))
+#   
+#   cat_max <- suppressWarnings(
+#     map(var_list, ~{
+#       df |>
+#         dplyr::select(all_of(.x)) |>
+#         as.matrix() |>
+#         max(na.rm = TRUE)
+#     }))
+#   
+#   var_mean <- suppressWarnings(
+#     map(var_list, ~{
+#       df |>
+#         dplyr::select(all_of(.x)) |>
+#         filter(if_all(everything(), 
+#                       ~between(.x, quantile(.x, .01, na.rm = TRUE), 
+#                                quantile(.x, .99, na.rm = TRUE)))) |> 
+#         as.matrix() |>
+#         mean(na.rm = TRUE)
+#     }))
+#   
+#   standard_d <- suppressWarnings(
+#     map(var_list, ~{
+#       df |>
+#         dplyr::select(all_of(.x)) |>
+#         filter(if_all(everything(), 
+#                       ~between(.x, quantile(.x, .01, na.rm = TRUE), 
+#                                quantile(.x, .99, na.rm = TRUE)))) |> 
+#         as.matrix() |>
+#         sd(na.rm = TRUE)
+#     }))
+#   
+#   breaks <- pmap(
+#     list(cat_min, cat_max, var_mean, standard_d), \(x, y, a, b) {
+#       breaks <- find_breaks_q5(max(a - (4 * b), x), min(a + (4 * b), y))
+#       tibble(v = breaks, .name_repair = "minimal")}) |> 
+#     bind_cols(.name_repair = "minimal") |> 
+#     map2_dfc(var_list, ~{
+#       map(.y, \(z) tibble(z = .x)) |> 
+#         bind_cols(.name_repair = "minimal") |> 
+#         set_names(.y)})
+#   
+# }
 
 
 # Calculate all breaks ----------------------------------------------------
@@ -168,5 +244,4 @@ calculate_breaks <- function(tables_list) {
               tables_q3 = tables_q3,
               tables_q5 = tables_q5))
 }
-
 

@@ -21,9 +21,9 @@ alley_UI <- function(id) {
       NS(id, id),
       susSidebarWidgets(
         checkbox_UI(id = NS(id, id),
-                    label = sus_translate(r = r, "Green alleys visited by our team")),
+                    label = cc_t(r = r, "Green alleys visited by our team")),
         select_var_UI(NS(id, id), var_list = var_list_left_alley,
-                      label = sus_translate(r = r, "Grouping"))),
+                      label = cc_t(r = r, "Grouping"))),
       bottom = div(class = "bottom_sidebar",
                    tagList(legend_UI(NS(id, id)),
                            zoom_UI(NS(id, id), map_zoom_levels_CMA)))),
@@ -82,9 +82,17 @@ alley_server <- function(id, r) {
         poi(new_poi)
     }) |> bindEvent(get_view_state(id_map))
     
+    # Map zoom levels change depending on "city"
+    map_zoom_levels <- reactive({
+      out <- get_zoom_levels(default = "city", 
+                             geo = "city",
+                             var_left = isolate(var_left()))
+    })
+    
     # Zoom string reactive
     observe({
-      new_zoom_string <- get_zoom_string(r[[id]]$zoom(), map_zoom_levels_CMA)
+      new_zoom_string <- get_zoom_string(r[[id]]$zoom(), map_zoom_levels()$levels,
+                                         "city")
       if (new_zoom_string != zoom_string()) zoom_string(new_zoom_string)
     }) |> bindEvent(r[[id]]$zoom())
     
@@ -96,13 +104,24 @@ alley_server <- function(id, r) {
         r[[id]]$select_id(NA)
       } else r[[id]]$select_id(selection)
     }) |> bindEvent(get_clicked_object(id_map))
+    
+    # Default location
+    observe({
+      if (is.null(r$default_select_id())) return(NULL)
+      
+      new_id <- data()$ID[data()$ID %in% 
+                            r$default_select_id()[[gsub("_.*", "", r[[id]]$df())]]]
+      if (length(new_id) == 0) return(NULL)
+      
+      r[[id]]$select_id(new_id)
+    }) |> bindEvent(r$default_select_id(), r[[id]]$df())
 
     # Choose tileset
     tile_choropleth <- zoom_server(
       id = id, 
       r = r,
       zoom_string = zoom_string, 
-      zoom_levels = reactive(map_zoom_levels_CMA))
+      zoom_levels = map_zoom_levels)
     
     tile <- reactive({
       if (choropleth()) {
@@ -139,17 +158,16 @@ alley_server <- function(id, r) {
     # Data
     data <- reactive(get_data(
       df = r[[id]]$df(),
-      geo = r$geo(),
+      geo = "city",
       var_left = var_left(), 
-      var_right = var_right(), 
-      island = TRUE))
+      var_right = var_right()))
     
     # Data for tile coloring
     data_color <- reactive({
       if (!choropleth()) return(NULL)
       get_data_color(
-        map_zoom_levels = map_zoom_levels_CMA,
-        geo = r$geo(),
+        map_zoom_levels = map_zoom_levels()$levels,
+        geo = "city",
         var_left = var_left(),
         var_right = var_right())
     })
@@ -162,7 +180,7 @@ alley_server <- function(id, r) {
         ""
       } else "type"
     })
-
+    
     # Legend
     legend_server(
       id = id,
@@ -173,14 +191,14 @@ alley_server <- function(id, r) {
         
     # Choose explore graph
     alley_graph <- reactive({
-      if (r[[id]]$df() %in% c("alley", "borough_empty")) {
+      if (is_scale_in_df(c("alley", "borough_empty"), r[[id]]$df())) {
         explore_graph_alley
       } else explore_graph
     })
     
     # Choose explore graph
     alley_table <- reactive({
-      if (r[[id]]$df() %in% c("alley", "borough_empty")) {
+      if (is_scale_in_df(c("alley", "borough_empty"), r[[id]]$df())) {
         info_table_alley
       } else info_table
     })
@@ -190,6 +208,7 @@ alley_server <- function(id, r) {
       id = id,
       r = r,
       data = data,
+      geo = reactive(map_zoom_levels()$scale),
       var_left = var_left,
       var_right = var_right,
       graph = alley_graph,
@@ -214,7 +233,8 @@ alley_server <- function(id, r) {
       r = r,
       map_id = "map",
       data_color = data_color,
-      tile = reactive(paste(id, tile(), sep = "-")),
+      tile = reactive(if (tile() %in% c("borough_empty", "alley")) 
+        paste(id, tile(), sep = "-") else tile()),
       fill = scale_fill_alley,
       fill_args = reactive(list(map_var(), tile(), data_color())),
       colour = scale_colour_alley,
@@ -251,6 +271,6 @@ alley_server <- function(id, r) {
       var_right = var_right,
       more_args = reactive(c("c-cbox" = visited()))
     )
-
+    
   })
 }

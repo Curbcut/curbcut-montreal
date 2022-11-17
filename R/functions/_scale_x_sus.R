@@ -16,11 +16,19 @@ scale_fill_sus <- function(module_colors, id = "ID_color") {
 scale_colour_sus <- function(...) "#FFFFFF"
 
 # Default line width
-scale_lwd_sus <- function(select_id) {
+scale_lwd_sus <- function(select_id, tile = NULL, zoom = NULL) {
+
+  if (!is.null(tile) && !is.null(zoom) && !grepl("auto_zoom", tile)) {
+    late_range <- if (is_scale_in_df("DA", tile) && zoom < 11) 0 else 1
+    late_range <- if (is_scale_in_df("CT", tile) && zoom < 10) 0 else late_range
+  } else {
+    late_range <- 1
+  }
+    
   scale_category(
     col = !!rlang::sym("ID_color"),
-    range = c(5, 1),
-    unmapped_value = 1,
+    range = c(5, late_range),
+    unmapped_value = late_range,
     levels = c(select_id, "NA"),
     legend = FALSE) 
 }
@@ -32,8 +40,8 @@ scale_lwd_climate_risk <- function(select_id, tile) {
   
   scale_category(
     col = ID_color,
-    range = c(5, if (tile == "island-grid") 0.3 else 1),
-    unmapped_value = if (tile == "island-grid") 0.3 else 1,
+    range = c(5, if (is_scale_in_df("grid", tile)) 0.3 else 1),
+    unmapped_value = if (is_scale_in_df("grid", tile)) 0.3 else 1,
     levels = c(select_id, "NA"),
     legend = FALSE) 
   

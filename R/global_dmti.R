@@ -7,7 +7,7 @@ token_dmti <- paste0("pk.eyJ1IjoiZHdhY2hzbXV0aCIsImEiOiJja2g2Y2JpbDc",
 
 
 # Initialize reactive values
-rv_dmti <- reactiveValues(poly_selected = NA, zoom = "borough")
+rv_dmti <- reactiveValues(poly_selected = NA, zoom = "CSD")
 
 
 # Time slider values

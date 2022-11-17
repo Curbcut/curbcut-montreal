@@ -11,7 +11,7 @@ stories_UI <- function(id) {
     sidebar_UI(
       NS(id, "sidebar"),
       # hr(id = NS(id, "hr")),
-      actionLink(NS(id, "back"), sus_translate(r = r, "Back to the map"))
+      actionLink(NS(id, "back"), cc_t(r = r, "Back to the map"))
     ),
     
     # Map
@@ -32,9 +32,9 @@ stories_server <- function(id, r) {
   moduleServer(id, function(input, output, session) {
     ns_id <- "stories"
     ns_id_map <- paste0(ns_id, "-map")
-    
-    # Initial reactive
-    if (is.null(r[[ns_id]]$select_id)) r[[ns_id]]$select_id <- reactiveVal(NA)
+    # 
+    # # Initial reactive
+    # if (is.null(r[[ns_id]]$select_id)) r[[ns_id]]$select_id <- reactiveVal(NA)
     
     # Sidebar
     sidebar_server(
@@ -178,15 +178,15 @@ stories_server <- function(id, r) {
               #   style = "margin-top:50px;margin-right:20px;padding:10px;",
               #   div(class = "sus-map-panel-content sus-scroll-content", 
               #       div(
-              #         h4(sus_translate(r = r, "Take a walk"))),
+              #         h4(cc_t(r = r, "Take a walk"))),
               #       p("To come!"),
               #       hr(),
               #       div(
-              #         h4(sus_translate(r = r, "Photos"))),
+              #         h4(cc_t(r = r, "Photos"))),
               #       lapply(images_tag, \(x) eval(parse(text = x))),
               #       hr(),
               #       div(
-              #         h4(sus_translate(r = r, "Watch the video"))),
+              #         h4(cc_t(r = r, "Watch the video"))),
               #       hr(),
               #       "Other Content")
               # )

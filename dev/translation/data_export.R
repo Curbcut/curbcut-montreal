@@ -8,6 +8,59 @@ data_export_translated <-
           fr = paste0("Aucune donnée/métadonnée pour cet emplacement.")) |> 
   add_row(en = paste0("Exporting Data"), 
           fr = paste0("Exportation des données")) |> 
+  
+  # city amenities
+  add_row(en = paste0("The indicators of this module represent the number of d",
+                      "estinations accessible by walking and cycling from a sp",
+                      "ecified origin within a given time (cumulative-opportun",
+                      "ities method).<p>Each indicator is calculed at the diss",
+                      "emination blocks level, the smallest geographic area de",
+                      "fined by Statistics Canada.<p>The defined cutoff times ",
+                      "(15-minute walk ; 20-minute bike ride) do not vary thro",
+                      "ughout the study area, i.e., the City of Montreal. <p>T",
+                      "he characteristics and quality of the destinations are ",
+                      "not taken into account.<p>Travel times are calculated u",
+                      "sing the r5r ('Rapid Realistic Routing with R5') packag",
+                      "e in R.<p>Calculations take into consideration walking ",
+                      "and cycling infrastructures as well as streets' slopes.",
+                      "<p>The costs of turning and crossing an intersection ar",
+                      "e not considered.<p>The data used to calculate the indi",
+                      "cators includes open data from the City of Montreal, DM",
+                      "TI data, and OpenStreetMap data."), 
+          fr = paste0("Les indicateurs de ce module représentent le nombre de d",
+                      "estinations accessibles à la marche et à vélo à partir ",
+                      "d'une origine spécifiée à l'intérieur d'un seuil de tem",
+                      "ps donnée (méthode d’opportunités cumulatives). <p>Chaq",
+                      "ue indicateur est calculé au niveau des îlots de diffus",
+                      "ion, soit les plus petites unités spatiales définies pa",
+                      "r Statistique Canada.<p>Les seuils de temps choisis (ma",
+                      "rche : 15 minutes ; vélo : 20 minutes) sont homogènes s",
+                      "ur tout le territoire à l'étude, soit celui de la Ville",
+                      " de  Montréal. <p>Les caractéristiques et la qualité de",
+                      "s destinations ne sont pas prises en compte. <p>Les tem",
+                      "ps de déplacement sont calculés avec le r5r package (« ",
+                      "itinéraires rapides et réalistes ») dans R. <p>Les calc",
+                      "uls prennent en considération les infrastructures piéto",
+                      "nnes et cyclistes ainsi que l'élévation.<p>Les coûts de",
+                      " virage et de traversée d'une intersection ne sont pas ",
+                      "considérés.")) |> 
+  add_row(en = paste0("Open data from the City of Montreal, DMTI data, and Ope",
+                      "nStreetMap data"), 
+          fr = paste0("Données ouvertes de la Ville de Montréal, des données D",
+                      "MTI et du réseau de rues OpenStreetMap.")) |> 
+  
+  add_row(en = paste0("Données Québec and DMTI"), 
+          fr = paste0("Données Québec et DMTI")) |> 
+  add_row(en = paste0("Travel time matrices in this module have been calculated with the",
+                      "'r5r' R package (with the use of an Open Street Map network file ",
+                      "and a GTFS public transport feed). Locations have been extracted ",
+                      "from DMTI and Données Québec."), 
+          fr = paste0("Les matrices de temps de parcours de ce module ont été ",
+                      "calculées avec le package R 'r5r' (avec l'utilisation d",
+                      "'un fichier réseau Open Street Map et d'un flux de tran",
+                      "sport public GTFS). Les localisations ont été extraites",
+                      " de DMTI et de Données Québec.")) |> 
+  
   add_row(en = paste0("<p>Data made available by the firm Habitat. For more in",
                       "formation on the methods and data used for this module,",
                       " see <a href = 'https://fr.davidsuzuki.org/publication-",
@@ -166,6 +219,32 @@ data_export_translated <-
           fr = paste0("Le vecteur du recensement canadien est {vector_definiti",
                       "on}. Il s'agit de la médiane de {parent_vector_definiti",
                       "on}.")) |> 
+  
+  add_row(en = paste0("<a href = 'https://www.canada.ca/en/public-health/servi",
+                      "ces/reports-publications/health-promotion-chronic-disea",
+                      "se-prevention-canada-research-policy-practice/vol-40-no",
+                      "-9-2020/canbics-classification-system-naming-convention",
+                      "-cycling-infrastructure.html'>Can-BICS, or Canadian Bik",
+                      "eway Comfort and Safety,</a> is a classification system",
+                      " for cycling infrastructure in Canada. This system is b",
+                      "ased on three tiers that considers safety and user comf",
+                      "ort: high-comfort bikeways, medium-comfort bikeways, an",
+                      "d low-comfort bikeways."), 
+          fr = paste0("<a target = '_blank' href = 'https://www.canada.ca/fr/s",
+                      "ante-publique/services/rapports-publications/promotion-",
+                      "sante-prevention-maladies-chroniques-canada-recherche-p",
+                      "olitiques-pratiques/vol-40-no-9-2020/systeme-classifica",
+                      "tion-canbics-convention-appellation-amenagements-cyclab",
+                      "les.html'>Can-BICS, ou système de classification du con",
+                      "fort et de la sécurité des voies cyclables canadiennes,",
+                      "</a> est un système de classification des infrastructur",
+                      "es cyclables au Canada. Ce système est basé sur trois n",
+                      "iveaux qui prennent en compte la sécurité et le confort",
+                      " des usagers : les voies cyclables à confort élevé, les",
+                      " voies cyclables à confort moyen et les voies cyclables",
+                      " à faible confort.")) |> 
+  
+  
   add_row(en = paste0("{time[1]} and {time[2]}"), 
           fr = paste0("{time[1]} et {time[2]}")) |> 
   add_row(en = paste0("For {time}: {census_details}"), 
@@ -205,14 +284,21 @@ data_export_translated <-
           fr = paste0("Groupe de recherche sur les déterminants géosociaux de la santé de McGill")) |> 
   add_row(en = paste0("City of Montreal's open data website"), 
           fr = paste0("Site de données ouvertes de la ville de Montréal")) |> 
-  add_row(en = paste0("Sus team"), 
-          fr = paste0("L'équipe Sus")) |> 
+  add_row(en = paste0("Curbcut team"), 
+          fr = paste0("L'équipe Curbcut")) |> 
   add_row(en = paste0("David Suzuki Foundation"), 
           fr = paste0("Fondation David Suzuki")) |> 
   add_row(en = paste0("Centraide of Greater Montreal"), 
           fr = paste0("Centraide du Grand Montréal")) |> 
+  add_row(en = paste0("Canada Mortgage and Housing Corporation"), 
+          fr = paste0("Société canadienne d'hypothèques et de logement")) |> 
   add_row(en = paste0("Job and population data from Statistics Canada. Travel time calculations from OSM and GTFS."), 
           fr = paste0("Données sur les emplois et la population provenant de Statistique Canada. Calculs des temps de trajet à partir d'OSM et de GTFS.")) |> 
+  add_row(en = paste0("<p>The vacancy rate data in this module comes from the Canada Mortgage and Housing Corporation.</p>"), 
+          fr = paste0("<p>Les données sur le taux d'inoccupation dans ce module proviennent de la Société canadienne d'hypothèques et de logement.</p>")) |> 
+  add_row(en = paste0("Meghan Winters at Faculty of Health Sciences, Simon Fraser University"), 
+          fr = paste0("Meghan Winters à la Faculté des sciences de la santé, Université Simon Fraser")) |> 
+  
   
 # Auto translated a few vectors -------------------------------------------
 # 

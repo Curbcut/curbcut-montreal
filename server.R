@@ -32,40 +32,51 @@ shinyServer(function(input, output, session) {
     lang = reactiveVal("fr"),
     active_tab = "home",
     geo = reactiveVal("CMA"),
+    default_select_id = reactiveVal(NULL),
+    stories = reactiveValues(select_id = reactiveVal(NA)),
     canale = reactiveValues(select_id = reactiveVal(NA), 
-                            df = reactiveVal("borough"),
+                            df = reactiveVal("CMA_CSD"),
+                            zoom = reactiveVal(get_zoom(map_zoom))),
+    canbics = reactiveValues(select_id = reactiveVal(NA), 
+                            df = reactiveVal("CMA_CSD"),
                             zoom = reactiveVal(get_zoom(map_zoom))),
     climate_risk = reactiveValues(select_id = reactiveVal(NA),
-                                  df = reactiveVal("grid"),
+                                  df = reactiveVal("CMA_grid"),
                                   zoom = reactiveVal(get_zoom(map_zoom))),
     housing = reactiveValues(select_id = reactiveVal(NA),
-                             df = reactiveVal("borough"),
+                             df = reactiveVal("CMA_CSD"),
                              zoom = reactiveVal(get_zoom(map_zoom))),
     access = reactiveValues(select_id = reactiveVal(NA),
-                            df = reactiveVal("CT"),
+                            df = reactiveVal("CMA_CT"),
+                            zoom = reactiveVal(get_zoom(map_zoom))),
+    city_amenities = reactiveValues(select_id = reactiveVal(NA), 
+                            df = reactiveVal("city_CSD"),
                             zoom = reactiveVal(get_zoom(map_zoom))),
     alley = reactiveValues(select_id = reactiveVal(NA),
                            df = reactiveVal("borough_empty"),
                            zoom = reactiveVal(12)),
     natural_inf = reactiveValues(zoom = reactiveVal(9.5)),
-    vulnerable_pop = reactiveValues(select_id = reactiveVal(NA), 
-                                    df = reactiveVal("centraide"),
-                                    zoom = reactiveVal(get_zoom(map_zoom))),
     tenure = reactiveValues(select_id = reactiveVal(NA), 
-                            df = reactiveVal("borough"),
+                            df = reactiveVal("CMA_CSD"),
                             zoom = reactiveVal(get_zoom(map_zoom)),
                             prev_norm = reactiveVal(FALSE)),
     dw_types = reactiveValues(select_id = reactiveVal(NA), 
-                              df = reactiveVal("borough"),
+                              df = reactiveVal("CMA_CSD"),
                               zoom = reactiveVal(get_zoom(map_zoom)),
                               prev_norm = reactiveVal(FALSE)),
     demographics = reactiveValues(select_id = reactiveVal(NA), 
-                              df = reactiveVal("borough"),
+                              df = reactiveVal("CMA_CSD"),
                               zoom = reactiveVal(get_zoom(map_zoom))),
     afford = reactiveValues(select_id = reactiveVal(NA), 
-                            df = reactiveVal("borough"),
+                            df = reactiveVal("CMA_CSD"),
                             zoom = reactiveVal(get_zoom(map_zoom)),
-                            prev_norm = reactiveVal(FALSE))
+                            prev_norm = reactiveVal(FALSE)),
+    vac_rate = reactiveValues(select_id = reactiveVal(NA), 
+                            df = reactiveVal("cmhc_cmhczone"),
+                            zoom = reactiveVal(get_zoom(map_zoom))),
+    amenities = reactiveValues(select_id = reactiveVal(NA), 
+                              df = reactiveVal("CMA_CSD"),
+                              zoom = reactiveVal(get_zoom(map_zoom)))
   )
   
 
@@ -90,7 +101,7 @@ shinyServer(function(input, output, session) {
       insertUI(selector = ".navbar-shadow", where = "beforeBegin", ui = HTML(
         paste0("<div id = 'htu_footer' class='fixed_footer'>",
                "<p style = 'margin-bottom:0px; color:white; display:inline;'>",
-               "Première fois sur Sus? Visitez la page ",
+               "Première fois sur Curbcut? Visitez la page ",
                paste0("<a id='go_to_htu_fr' href='#' style = 'color:white;'",
                       "class='action-button shiny-bound-input'>",
                       "<b>Mode d'emploi</b></a> "),
@@ -99,7 +110,7 @@ shinyServer(function(input, output, session) {
                       "class='action-button shiny-bound-input'>",
                       "<b>", "Infolettre", "</b></a> !"),
                "&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;",
-               "First time on Sus? Visit the ",
+               "First time on Curbcut? Visit the ",
                paste0("<a id='go_to_htu_en' href='#' style = 'color:white;'",
                       "class='action-button shiny-bound-input'>",
                       "<b>How to use page</b></a> "),
@@ -147,31 +158,17 @@ shinyServer(function(input, output, session) {
   
   
 
-  ## Newsletter modal ----------------------------------------------------------
-
-  # observeEvent(input$cookies$signupform, {
-  # 
-  #   cookie_last <- input$cookies$signupform
-  # 
-  #   # 28 days after last visit, popup the newsletter subscription
-  #   if (is.null(cookie_last) ||
-  #       (!is.null(cookie_last) && Sys.time() > (as.POSIXct(cookie_last) + 2419200))) {
-  #     shinyjs::delay(5000, showModal(modalDialog(HTML(readLines("www/sus.signupform.html")),
-  #                                                easyClose = TRUE)))
-  #   }
-  # 
-  #   # After ANY visit, restart the timer
-  #   signupform <- list(name = "signupform",
-  #                      value = Sys.time())
-  #   session$sendCustomMessage("cookie-set", signupform)
-  # 
-  # }, once = TRUE, ignoreNULL = FALSE, ignoreInit = TRUE)
+  ## Newsletter ----------------------------------------------------------------
 
   onclick("subscribe", {
     showModal(modalDialog(HTML(readLines("www/sus.signupform.html")),
                           easyClose = TRUE))
   })
   
+  onclick("sign_up_from_carousel", {
+    showModal(modalDialog(HTML(readLines("www/sus.signupform.html")),
+                          easyClose = TRUE))
+  })
   
   ## Language button -----------------------------------------------------------
   
@@ -240,10 +237,13 @@ shinyServer(function(input, output, session) {
                     r = r, 
                     map_id = "map",
                     session = session,
+                    zoom = r$sus_link$zoom, 
                     location = r$sus_link$location,
                     zoom_auto = r$sus_link$zoom_auto,
                     var_left = r$sus_link$var_left,
                     var_right = r$sus_link$var_right,
+                    select_id = r$sus_link$select_id,
+                    df = r$sus_link$df,
                     more_args = r$sus_link$more_args)
     })
   }, ignoreInit = TRUE)
@@ -309,15 +309,17 @@ shinyServer(function(input, output, session) {
       })
       # Retrieve df
       try({
-        if (!is.null(query[["df"]]))
+        if (!is.null(query[["df"]])) {
           r[[query[["tb"]]]]$df <- reactiveVal(query[["df"]])
+        }
       })
       # Retrieve select_id
       try({
         s_id <- query[["s_id"]]
         if (!is.null(s_id)) {
           if (query[["s_id"]] %in% c("", "NA")) s_id <- NA
-          r[[query[["tb"]]]]$select_id <- reactiveVal(s_id)}
+          r[[query[["tb"]]]]$select_id <- reactiveVal(s_id)
+          }
       })
     }
   }, once = TRUE)
@@ -327,10 +329,13 @@ shinyServer(function(input, output, session) {
     if (isTRUE(r$sus_bookmark$active)) {
       # Delay to make sure the bookmarked module is fully loaded
       delay(500, {
+        zz <- if (!is.null(r[[input$sus_page]]$zoom)) 
+          r[[input$sus_page]]$zoom() else NULL
         update_module(session = session,
                       r = r,
                       id = r$sus_bookmark$id,
                       map_id = "map",
+                      zoom = zz,
                       location = r$sus_bookmark$location,
                       zoom_auto = r$sus_bookmark$zoom_auto,
                       var_left = r$sus_bookmark$var_left,
@@ -344,13 +349,8 @@ shinyServer(function(input, output, session) {
   
   ## Modules -------------------------------------------------------------------
   
-  export_data <- list()
-  
   active_mod_server <- function(active_tab = input$sus_page) {
-    mod_function <- 
-      paste0(active_tab, "_server('", active_tab, "', r = r)")
-
-    return(eval(parse(text = mod_function)))
+    do.call(paste0(active_tab, "_server"), list(active_tab, r = r))
   }
 
   observeEvent(input$sus_page, {
@@ -367,14 +367,43 @@ shinyServer(function(input, output, session) {
 
   onclick("advanced_options", {
     showModal(modalDialog(
+      # Change 'geo' (region)
       radioButtons("geo_change",
-                   label = sus_translate(r = r, "Change default geometry"),
+                   label = cc_t(r = r, "Change default geometry"),
                    inline = TRUE,
                    selected = r$geo(),
-                   choiceNames = c("CMA", "Centraide"),
-                   choiceValues = c("CMA", "centraide")),
-      title = sus_translate(r = r, "Advanced options")))
-  })
+                   choiceNames = 
+                     sapply(c("Metropolitan Area", "City of Montreal", 
+                              "Island of Montreal", "Centraide"),
+                            cc_t, r = r, USE.NAMES = FALSE),
+                   choiceValues = c("CMA", "city", "island", "centraide")),
+
+      hr(),
+      
+      # Lock in address of zone for select_ids
+      strong(cc_t(r = r, "Enter and save a default location (postal code or address)")),
+      HTML("<br><i>", cc_t(r = r, "Default location will be saved until ",
+                    "manually cleared from advanced options"), "</i>"),
+      HTML(paste0('
+                   <div class="shiny-split-layout">
+                     <div style="width: 80%; margin-top: var(--padding-v-md); width:auto;">',
+                  textInput(inputId = "lock_address_searched", 
+                            label = NULL, 
+                            placeholder = "845 Sherbrooke Ouest, Montréal, Quebec"),
+                  '</div>
+                     <div style="width: 20%">',
+                  actionButton(inputId = "lock_search_button",
+                               label = icon("check", verify_fa = FALSE),
+                               style = "margin-top: var(--padding-v-md);"),
+                  '</div>
+                  </div>',
+                  actionButton(inputId = "cancel_lock_location",
+                               label = cc_t(r = r, "Clear default location"), 
+                               icon = icon("xmark", verify_fa = FALSE),
+                               style = "margin-top: var(--padding-v-md);"))),
+      title = cc_t(r = r, "Advanced options"),
+      footer = modalButton(cc_t(r = r, "Dismiss"))))
+    })
 
   # Change the default geometry and save the cookie
   observeEvent(input$geo_change, {
@@ -391,6 +420,103 @@ shinyServer(function(input, output, session) {
     }
   }, once = TRUE)
   
+  # Location lock in
+  observeEvent(input$lock_search_button, {
+    postal_c <-
+      input$lock_address_searched |>
+      str_to_lower() |>
+      str_extract_all("\\w|\\d", simplify = TRUE) |>
+      paste(collapse = "")
+    pcs <- postal_codes$postal_code == postal_c
+    
+    out <- 
+      if (sum(pcs) > 0 || grepl("[a-z][0-9][a-z][0-9][a-z][0-9]", postal_c)) {
+        # Postal code detected, but not in our database
+        if (sum(pcs) == 0) {
+          showNotification(
+            cc_t(r = r, "Postal code `{postal_c}` isn't within an available geography."),
+            type = "error")
+          return(NULL)
+        }
+        
+        showNotification(
+          cc_t(r = r,
+                        paste0("Postal code `{postal_codes$postal_code[pcs]}` ",
+                               "saved as default.")),
+          type = "default")
+        sapply(c("CMA", "city", "island", "centraide"), \(x) {
+          dat <- get(paste0(x, "_DA"))
+          dat <- dat[dat$ID == postal_codes$DAUID[pcs], ]
+          if (length(data) == 0) {
+            showNotification(
+              cc_t(r = r, paste0("No addresses found.")),
+              type = "error")
+            return(NULL)
+          }
+          unique(unlist(dat[grepl("ID$", names(dat))]))
+        }, simplify = FALSE, USE.NAMES = TRUE)
+        
+      } else {
+        ad <- input$lock_address_searched
+        add <- ad
+        # Convert to ASCII
+        add <- paste0("%", charToRaw(add), collapse = "")
+        add <- paste0("http://geogratis.gc.ca/services/geolocation/en/locate?q=",
+                      add)
+        
+        get <- httr::GET(add)
+        val <- httr::content(get)
+        if (length(val) == 0) {
+          showNotification(
+            cc_t(r = r, paste0("No addresses found.")),
+            type = "error")
+          return(NULL)
+        }
+        val <- val[[1]]
+        coords <- val$geometry$coordinates
+        
+        out <- 
+          sapply(c("CMA", "city", "island", "centraide"), \(x) {
+            da_vals <- do.call("dbGetQuery", list(rlang::sym(paste0(x, "_DA_conn")),
+                                                  paste0("SELECT * FROM centroid")))
+            distance_sum <- 
+              mapply(sum, abs(coords[[1]] - da_vals$lat), abs(coords[[2]] - da_vals$lon))
+            # If too far.
+            if (min(distance_sum) > 0.1) return(NULL)
+            DA_ID <- da_vals$ID[which(distance_sum == min(distance_sum))]
+            dat <- get(paste0(x, "_DA"))
+            dat <- dat[dat$ID == DA_ID, ]
+            na.omit(unique(unlist(dat[grepl("ID$", names(dat))])))
+          }, simplify = FALSE, USE.NAMES = TRUE)
+        
+        if (all(sapply(out, is.null))) {
+          showNotification(
+            cc_t(r = r,
+                          paste0("Address `{input$lock_address_searched}` isn't within an available geography.")),
+            type = "error")
+          out <- NULL
+        } else {
+          showNotification(
+            cc_t(r = r,
+                          paste0("Address `{val$title}` saved as default.")),
+            type = "default")          
+        }
+        
+        out
+      }
+    
+    r$default_select_id(out)
+  })
+  
+  observeEvent(input$cancel_lock_location, {
+    r$default_select_id(NULL)
+    
+    showNotification(
+      cc_t(r = r,
+                    paste0("Default location successfully cleared")),
+      type = "default")
+  })
+  
   
   ## Data download -------------------------------------------------------------
   
@@ -401,7 +527,7 @@ shinyServer(function(input, output, session) {
     if (!input$sus_page %in% modules$id || 
         isFALSE(modules$metadata[modules$id == input$sus_page]))
       return(showNotification(
-        sus_translate(r = r, "No data/metadata for this location."),
+        cc_t(r = r, "No data/metadata for this location."),
         duration = 3))
     
     showModal(data_modal()$modal)
@@ -419,7 +545,7 @@ shinyServer(function(input, output, session) {
     downloadHandler(
       filename = paste0(r[[input$sus_page]]$export_data()$id, "_shp.zip"),
       content = function(file) {
-        withProgress(message = sus_translate(r = r, "Exporting Data"), {
+        withProgress(message = cc_t(r = r, "Exporting Data"), {
           
           incProgress(0.4)
           
@@ -451,6 +577,17 @@ shinyServer(function(input, output, session) {
         })
       })
   
+  
+  # ## Screenshot ----------------------------------------------------------------
+  # 
+  # onclick("save_image", {
+  #   js$takeShot(to_sh_id = "housing-housing-map", output_id = "screenshot_container")
+  #   showModal(modalDialog(
+  #     div(id = "screenshot_container"),
+  #     title = cc_t(r = r, "Save as image"),
+  #     size = "l"
+  #   ))
+  # })
   
   ## Heartbeat function to keep app alive --------------------------------------
   

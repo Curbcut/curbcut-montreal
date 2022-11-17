@@ -2,9 +2,12 @@
 
 get_data_color <- function(map_zoom_levels, geo, var_left, var_right,
                            build_str_as_DA = TRUE) {
-  
+
   dfs <- names(map_zoom_levels)
-  dfs <- dfs[dfs != "building"]
+  dfs <- dfs[!dfs %in% c("building")]
+  if (var_right[1] != " ") dfs <- dfs[!dfs %in% c("DB")]
+  
+  dfs <- paste(geo, dfs, sep = "_")
   
   # Get data type
   data_type <- get_data_type(dfs[1], var_left, var_right, 
@@ -38,7 +41,7 @@ get_data_color <- function(map_zoom_levels, geo, var_left, var_right,
                    by.y = "group")[, c("ID", "fill")]
       names(out) <- c("group", "value")
       out
-    } else if (data_type == "delta") {
+    } else if (grepl("delta", data_type)) {
       
       val_delta <- rep("#0571B0", length(data$var_left))
       val_delta[data$var_left < 0.1] <- "#92C5DE"
@@ -52,7 +55,7 @@ get_data_color <- function(map_zoom_levels, geo, var_left, var_right,
     }
   
   ## Return output -------------------------------------------------------------
-  
+
   return(data_color)
   
 }

@@ -28,6 +28,8 @@
 #'  "not low income before tax"
 #'  "low income after tax"
 #'  
+#'  
+#'  
 
 get_vulnerable_pop <- function(sex = "total", 
                                age = "total",

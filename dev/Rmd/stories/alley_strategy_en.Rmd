@@ -1,7 +1,8 @@
 ---
-title: "Montreal alleys as a climate emergency adaptation strategy"
+title: "Montreal's Alleys as a Climate Emergency Adaptation Strategy"
 output: html_document
 author: "Daniela Rodriguez"
+date: "07.2022"
 runtime: shiny_prerendered
 ---
 
@@ -9,20 +10,19 @@ runtime: shiny_prerendered
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-### Context of the green alleys
-<p>Alleys have been part of the urban morphology of Montreal since 1800 when they were conceived as narrow streets to access some dwellings and courtyards. From 1890, back alleys became widespread in the city's configuration in boroughs like Le Plateau Mont-Royal, Rosemont-La Petite-Patrie, Villeray, Hochelaga-Maisonneuve, and Notre-Dame-de-Grâce (Centre d'histoire de Montréal). However, around 1950, alleys were eliminated as part of the city morphology in the new neighbourhoods. Furthermore, the use of the alleys changed as they became dark service streets, mainly unused, filthy and, in some areas, dangerous due to the lack of light and activity.</p>
-<p>However, in 1980 the alleys experienced a revitalization process thanks to two complementary programs: "Opération Tournesol," a subsidy program for demolishing sheds in backyards, and "Place au Soleil" program that transformed 58 back alleys into small parks.<p/>
-<p>The main feature of the Place au Soleil program was the recovery of the alleys by creating a linear park with trees and shrubs while leaving it accessible to car users when needed it. The principle of the linear park was to transform alleys into pedestrian spaces. Therefore, the pedestrian vocation of these public areas was clearly defined, eliminating car traffic in the back alleys. Furthermore, this Program redesigned the alleys to become a new green space to solve the lack of park space in some of Montreal's densely populated neighbourhoods. Consequently, "Opération Tournesol and  Place au Soleil" generated public interest (Taquin and Waltz, 1982).<p/>
-<p>The redevelopment of the alleys created a change of vision of the back alleys as unsafe and dirty places. However, despite the effort to revitalize alleys, the Program was abandoned in 1988 because of insufficient funds.</p>
-<p>In 1995, a new proposal for enhancing alleys emerged with the creation of the first green alley in Plateau-Mont-Royal, located in Napoleon, Roy, Parc La Fontaine and Mentana.</p>
+### The Context of the green alleys
+<p>Alleys have been part of the urban morphology of Montreal since the 1800s when they were conceived as narrow streets to access some dwellings and courtyards. As of 1890, back alleys became widespread in the city's configuration in boroughs like Le Plateau Mont-Royal, Rosemont-La-Petite-Patrie, Villeray, Hochelaga-Maisonneuve, and Notre-Dame-de-Grâce (Centre d'histoire de Montréal). However, around 1950, alleys were eliminated as part of the city's morphology in the new neighbourhoods. Furthermore, the use of the alleys changed as they became dark service streets, mainly unused, filthy and, in some areas, dangerous due to the lack of light and activity.</p>
+<p>However, in 1980 the alleys experienced a revitalization process thanks to two complementary programs: "Opération Tournesol," a subsidy program for demolishing sheds in backyards, and the "Place au Soleil" program that transformed 58 back alleys into small parks.<p/>
+<p>The main feature of the "Place au Soleil" program was the recovery of the alleys by creating a linear park with trees and shrubs while leaving it accessible to car users when they needed it. The principle of the linear park was to transform alleys into pedestrian spaces. Therefore, the pedestrian vocation of these public areas was clearly defined, eliminating car traffic in the back alleys. Furthermore, this program redesigned the alleys to become a new green space to solve the lack of park space in some of Montreal's densely populated neighbourhoods. Consequently, "Opération Tournesol" and  "Place au Soleil" generated public interest (Taquin and Waltz, 1982). The redevelopment of the alleys created a change of vision of the back alleys as unsafe and dirty places. However, despite the effort to revitalize alleys, the programs were abandoned in 1988 because of insufficient funds.</p>
+<p>In 1995, a new proposal for enhancing alleys emerged with the creation of the first green alley in Plateau-Mont-Royal, located in Napoleon, Roy, Parc La Fontaine and Mentana streets.</p>
 
 ```{r, echo=FALSE, fig.align = 'center', fig.cap="First green alley from the Green Alley Program. Plateau-Mont-Royal. June 2022", warning=FALSE}
 
 knitr::include_graphics(here("www/stories/visuals/alley_strategy/figure0.jpeg"))
 ```
 
-<p>The current Green Alley Program appeared due to the citizens' motivation for redeveloping alleys as green public spaces (Bur et al., 2007). The enthusiasm for green alleys was encouraged by the creation of the Éco-quartiers, also in 1995, whose mission is to provide environmental education and support citizens in their greening initiatives (Ville de Montréal, 2020).</p>
-<p>The Green Alley Program is a bottom-up approach that promotes public participation and citizen governance. The boroughs and Éco-quartiers manage the Program, which was conceived to support the citizens' initiative to enhance back alleys and add greenery. Consequently, the Program aims to provide environmental and well-being benefits by encouraging the reduction of the heat island effect and pollution, increasing biodiversity and improving water management by including vegetation.</p>
+<p>The current Green Alley Program appeared due to the citizens' motivation for redeveloping alleys as public green spaces (Bur et al., 2007). The enthusiasm for green alleys was encouraged by the creation of the Éco-quartiers, also in 1995, whose mission is to provide environmental education and support citizens in their greening initiatives (Ville de Montréal, 2020).</p>
+<p>The Green Alley Program is a bottom-up approach that promotes public participation and citizen governance. The boroughs and Éco-quartiers manage the Program, which was conceived to support the citizens' initiative to enhance back alleys and add greenery. Consequently, the Program aims to provide environmental and well-being benefits by encouraging the reduction of the heat island effect and pollution, increasing biodiversity, and improving water management by including vegetation.</p>
 <p>Today, 13 of the 19 boroughs of the city have implemented the Green Alley Program, and there are around 578 green alleys in 11 boroughs as part of the strategy to reduce some of the adverse effects of the climate emergency and to expand green space through the neighbourhoods.</p>  
 
 #### From back alleys to green alleys
@@ -41,9 +41,9 @@ knitr::include_graphics(here("www/stories/visuals/alley_strategy/figure2.jpeg"))
 
 ### Green alleys as a climate emergency adaptation 
 
-<p>Back alleys represent one of the main features of Montreal's spatial configuration since they define the morphology of many neighbourhoods in the different boroughs. Alleys form a network of primarily underused public spaces that represent an opportunity to be transformed into green alleys to incorporate vegetation and experience a calm and diverse environment in flora, fauna and activities, far from the noise of main avenues and congested city areas. Moreover, everyone can enjoy these benefits without leaving the neighbourhood, demonstrating the potential of adapting alleys by including vegetation in an already existing public infrastructure.<p/>
-<p>Green alleys can generate more than local benefits. They can constitute a city strategy to adapt the built environment to diverse climate change effects by allocating green infrastructure and repurposing their use. Transforming back alleys into green alleys implies rearranging the space so they become quality public spaces for people instead of secondary car transit streets.<p/>
-<p>Indeed, green alleys can mitigate the heat island effect produced by the paved surfaces by reassigning space for planting vegetation, adding permeable surfaces and reducing or eliminating car transit to favour walkability and other active modes of transport. Furthermore, green alleys can improve water management and air quality with diverse vegetation types.<p/>
+<p>Back alleys represent one of the main features of Montreal's spatial configuration since they define the morphology of many neighbourhoods in the different boroughs. Alleys form a network of primarily underused public spaces that represent an opportunity to be transformed into green alleys to incorporate vegetation and experience a calm and diverse environment in flora, fauna, and activities, far from the noise of main avenues and congested city areas. Moreover, everyone can enjoy these benefits without leaving the neighbourhood, demonstrating the potential of adapting alleys by including vegetation in an already existing public infrastructure.<p/>
+<p>Green alleys can generate more than just local benefits. They can also become part of a city's strategy to adapt the built environment to diverse climate change effects by allocating green infrastructure and repurposing their use. Transforming back alleys into green alleys implies rearranging the space so they become quality public spaces for people instead of secondary streets for vehicular traffic.<p/>
+<p>Indeed, green alleys can mitigate the heat island effect produced by the paved surfaces by reassigning space for planting vegetation, adding permeable surfaces, and reducing or eliminating car transit to favour walkability and other active modes of transport. Furthermore, green alleys can improve water management and air quality with diverse vegetation types.<p/>
 <p>These transformations have been implemented in boroughs like Plateau-Mont-Royal, Sainte-Marie in Ville-Marie, Rosemont, Sud-Ouest, Verdun, and Mercier-Hochelaga-Maisonneuve, where some of the alley entrances are closed to car circulation and transformed with green surfaces, gardens, and trees. These rearrangements represent a significant change in the usage of alleys since greenery enhances the quality of these public spaces, generating an active and safe use due to the limited or restricted car transit.<p/>
 
 ```{r, echo=FALSE, fig.align = 'center', warning=FALSE, fig.cap="Sud-Ouest (Left), Plateau-Mont-Royal (Center), Maisonneuve (Right)."}
@@ -69,7 +69,7 @@ knitr::include_graphics(here("www/stories/visuals/alley_strategy/figure5.jpg"))
 
 ```
 
-<p>In contrast, green alleys with porous surfaces can control rainwater due to the permeable surface and the vegetation. Some example of these interventions are Ruelle Verte Larivière in Sainte-Marie, and a new alley in Plateau-Mont-Royal part of a public space called "Water Square" (Place des Fleurs-de-Macadam). The latter is part of a multi-purpose square with retention ponds designed to capture rainwater. This feature will "allow up to 30 cm of water to be drained into the soil in less than 48 hours" (Le Plateau-Mont-Royal, 2021).<p/>
+<p>In contrast, green alleys with porous surfaces can control rainwater due to the permeable surface and the vegetation. Some examples of these interventions are Ruelle Verte Larivière in Sainte-Marie, and a new alley in Plateau-Mont-Royal part of a public space called "Water Square" (Place des Fleurs-de-Macadam). The latter is part of a multi-purpose square with retention ponds designed to capture rainwater. This feature will "allow up to 30 cm of water to be drained into the soil in less than 48 hours" (Le Plateau-Mont-Royal, 2021).<p/>
 
 ```{r, echo=FALSE, fig.align = 'center', warning=FALSE, fig.cap="Ruelle Verte Larivière - Sainte-Marie (Left), Water Park - Plateau (Right)."}
 
@@ -105,8 +105,8 @@ knitr::include_graphics(here("www/stories/visuals/alley_strategy/figure8.jpeg"))
 
 ### Ruelle bleue-verte in Pointe-Saint-Charles
 
-<p>The construction of the alley, located between Le Ber and Sainte-Madeleine streets, will begin in spring 2022. The project represents an opportunity to highlight the importance of water management through a citizen participation process where different actors intervene to enhance the quality of urban environments from the environmental, social and economic perspectives.<p/>
-<p>The blue-green alley will be a pedestrian green space between "Bâtiment 7" and two new parks designed with the participation of citizens. The alley will be linked to an urban agriculture project. It will have Bioretention areas that use rain gardens to collect the rainwater from the adjacent buildings and a public space that increases urban greening and biodiversity.<p/>
+<p>The construction of the alley, located between Le Ber and Sainte-Madeleine streets, will begin in spring 2022. The project represents an opportunity to highlight the importance of water management through a citizen participation process where different actors intervene to enhance the quality of urban environments from the environmental, social, and economic perspectives.<p/>
+<p>The blue-green alley will be a pedestrian green space between "Bâtiment 7", and two new parks designed with the participation of citizens. The alley will be linked to an urban agriculture project. It will have Bioretention areas that use rain gardens to collect the rainwater from the adjacent buildings and a public space that increases urban greening and biodiversity.<p/>
 
 ```{r, echo=FALSE, fig.align = 'center', out.width="70%", warning=FALSE, fig.cal = "Image from https://www.batiment7.org/ruelle-bleue-verte/"}
 
@@ -115,7 +115,7 @@ knitr::include_graphics(here("www/stories/visuals/alley_strategy/figure9.jpg"))
 ```
 
 <p>Overall, adapting alleys demonstrates the positive impact that proposals from the community can generate in repurposing unused urban spaces. Therefore, adapting alleys to improve people's quality of life on a neighbourhood scale can simultaneously enhance urban quality on a larger scale, considering the growth that the green alleys initiative has experienced in the last years and the emergence of proposals derived from the green alleys like the Blue-Green Alleys.<p/>
-<p>Consequently, the Green Alley program and the Blue-Green Alleys can be part of the city's strategy to mitigate adverse climate change effects by increasing green infrastructure and, with it, the opportunity to be in contact with nature and improve climate conditions.<p/>
+<p>Consequently, the Green Alley Program and the Blue-Green Alleys can be part of the city's strategy to mitigate adverse climate change effects by increasing green infrastructure and, with it, the opportunity to be in contact with nature and improve climate conditions.<p/>
 
 ### Bibliography
 

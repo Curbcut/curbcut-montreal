@@ -12,8 +12,7 @@
 #' @param zoom_auto A reactive which resolves to a logical string
 #' indicating if the user is an auto-zoom.
 #' @param df A reactive which resolves to a character string representing the
-#' underlying data set that is mapped. Currently available options are 
-#' `c("borough", "building", "CT", "DA", "grid", "street")`.
+#' underlying data set that is mapped. 
 #' @param more_args Named vectors indicating other input that must be updated
 #' following bookmarking.
 

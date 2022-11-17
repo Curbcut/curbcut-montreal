@@ -1,50 +1,95 @@
-### FUNCTION TO ADD COLUMNS IF POLYGON IS PART OF A GREATER GEOMETRY ###########
+### FUNCTION TO RECREATE CT, DA, building FOR ALL GEOMETRIES ###################
 
-is_in_geometry <- function(all_tables, add_to = c("DA", "CT"), crs) {
+is_in_geometry <- function(all_tables, crs, update_name_2_for) {
   
-  add_from <- all_tables[!all_tables %in% c("DA", "CT", "grid")]
-  
-  walk(add_from, function(from) {
-    walk(add_to, function(to) {
-
-      from_df <- get(from) |> 
+  walk(names(all_tables), function(geo) {
+    
+    new_tables <- 
+      unlist(all_tables[names(all_tables) == geo], use.names = FALSE)
+    
+    geo_shp <- paste0(geo, "_shp")
+    
+    walk(new_tables, function(scale) {
+      
+      from_df <- 
+        get(geo_shp) |> 
         st_transform(crs) |> 
         st_union()
-      to_df <- get(to) |> 
-        st_transform(crs)
+      to_df <- 
+        if (scale == "building") {
+          get("DA") |> 
+            st_transform(crs)            
+        } else {
+          get(scale) |> 
+            st_transform(crs)
+        }
       
-      part_of_from <-
+      part_of_from <- 
         to_df |>
-        mutate(previous_area = units::drop_units(st_area(geometry))) |>
-        st_intersection(from_df) |>
+        st_transform(crs) |> 
         st_set_agr("constant") |> 
-        mutate(new_area = units::drop_units(st_area(geometry))) |>
-        filter({new_area / previous_area} > 0.33) |> 
+        st_point_on_surface() |> 
+        st_filter(st_transform(from_df, crs)) |> 
         pull(ID)
       
-      out <- to_df |> 
-        mutate(new_col = if_else(ID %in% part_of_from,
-                                 TRUE, FALSE)) |> 
-        relocate(new_col, .after = "CSDUID")
+      df_name <- paste(geo, scale, sep = "_")
       
-      if (from == "borough") from <- "CMA"
-      names(out) <- str_replace(names(out), "^new_col$", from)
+      out <- if (scale == "building") {
+        building[building$DAUID %in% part_of_from, ]
+      } else {
+        to_df[to_df$ID %in% part_of_from, ]
+      }
       
-      out <- out |> 
-        st_transform(4326)
+      if (geo %in% update_name_2_for) {
+        # Add new geo_ID
+        geo_for_ID <- 
+          out |> 
+          st_transform(crs) |> 
+          st_set_agr("constant") |> 
+          st_point_on_surface() |> 
+          st_intersection(get(if (exists(geo)) geo else all_tables[[geo]][[1]]) |> 
+                            st_transform(crs) |> 
+                            st_set_agr("constant") |>
+                            dplyr::select(geo_ID = ID)) |> 
+          select(ID, geo_ID) |> 
+          st_drop_geometry()
+        
+        out <- 
+          out |> 
+          left_join(geo_for_ID, by = "ID") |> 
+            (\(x) if ("CSDUID" %in% names(x)) {
+              relocate(x, geo_ID, .after = CSDUID)
+            } else {
+              relocate(x, geo_ID, .after = name_2)
+            })()
+        
+        # Update name_2
+        if (scale != all_tables[[geo]][[1]]) {
+          out <- 
+            out |> 
+            select(-name_2) |> 
+            left_join({
+              get(if (exists(geo)) geo else all_tables[[geo]][[1]]) |> 
+                st_drop_geometry() |> 
+                select(geo_ID = ID, name_2 = name)},
+              by = "geo_ID") |> 
+            relocate(name_2, .after = name)          
+        }
+        
+      } else {
+        out <- 
+          out |> 
+          (\(x) if ("CSDUID" %in% names(x)) {
+            mutate(x, geo_ID = CSDUID)
+          } else {
+            mutate(x, geo_ID = ID)
+          })() |> 
+          relocate(geo_ID, .after = CSDUID)
+      }
       
-      assign(to, out, envir = .GlobalEnv)
-      
+      assign(df_name, out, envir = .GlobalEnv)
     })
+    
   })
-  
-  # Also add to buildings!
-  add_from[which(add_from == "borough")] <- "CMA"
-  building <- 
-    building |> 
-    left_join(select(st_drop_geometry(DA), ID, all_of(add_from)),
-              by = c("DAUID" = "ID")) |> 
-    relocate(geometry, .after = last_col())
-  assign("building", building, envir = .GlobalEnv)
   
 }

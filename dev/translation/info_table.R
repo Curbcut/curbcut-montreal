@@ -8,8 +8,12 @@ info_table_translated <-
           fr = paste0("du secteur de recensement")) |> 
   add_row(en = paste0("dissemination area"), 
           fr = paste0("de l'aire de diffusion")) |> 
+  add_row(en = paste0("dissemination block"), 
+          fr = paste0("de l'îlot de diffusion")) |> 
   add_row(en = paste0("250-m"), 
           fr = paste0("de 250-m")) |> 
+  add_row(en = paste0("Sector"), 
+          fr = paste0("Secteur")) |> 
   add_row(en = paste0("building"), 
           fr = paste0("du bâtiment")) |> 
   add_row(en = paste0("street"), 
@@ -20,8 +24,10 @@ info_table_translated <-
           fr = paste0("secteurs de recensement")) |> 
   add_row(en = paste0("dissemination areas"), 
           fr = paste0("aires de diffusion")) |> 
+  add_row(en = paste0("dissemination blocks"), 
+          fr = paste0("îlots de diffusion")) |> 
   add_row(en = paste0("areas"), 
-          fr = paste0("aires")) |> 
+          fr = paste0("zones")) |> 
   add_row(en = paste0("buildings"), 
           fr = paste0("bâtiments")) |> 
   add_row(en = paste0("streets"), 
@@ -32,6 +38,8 @@ info_table_translated <-
           fr = paste0("Secteur de recensement {select_name$name} ")) |> 
   add_row(en = paste0("Dissemination area {select_name$name}"), 
           fr = paste0("Aire de diffusion {select_name$name} ")) |> 
+  add_row(en = paste0("Dissemination block {select_name$name}"), 
+          fr = paste0("Îlot de diffusion {select_name$name} ")) |> 
   add_row(en = paste0("The area around {select_name$name}"), 
           fr = paste0("La zone autour de {select_name$name} ")) |> 
   add_row(en = paste0("{select_name$name_2} of {out$place_name}"), 
@@ -98,6 +106,15 @@ info_table_translated <-
           fr = paste0("Aucune donnée disponible.")) |> 
   add_row(en = paste0("<i>(Data from {date_left}.)</i>"), 
           fr = paste0("<i>(Données de {date_left}.)</i>")) |> 
+  
+  add_row(en = paste0("in the Montreal region"), 
+          fr = paste0("de la région de Montréal")) |> 
+  add_row(en = paste0("in the City of Montreal"), 
+          fr = paste0("de la Ville de Montréal")) |> 
+  add_row(en = paste0("on the island of Montreal"), 
+          fr = paste0("de l'île de Montréal")) |> 
+  add_row(en = paste0("in the Centraide of Greater Montreal territory"), 
+          fr = paste0("du territoire de Centraide Grand Montréal")) |> 
   add_row(en = paste0("<strong>Kahnawake Mohawk Territory</strong><p>Statistic",
                       "s Canada does not gather the same data for indigenous r",
                       "eserves in the Census as it does for other jurisdiction",
@@ -136,17 +153,17 @@ info_table_translated <-
   add_row(en = paste0("<strong>{z$place_heading}</strong><p>{z$place_name} has",
                       " a population of {z$pop} and a '{z$title_left}' score (",
                       "{z$exp_left}) of {z$val_left}, which is {z$larger} the ",
-                      "region-wide median of {z$median_val}.<p>{z$place_name} ",
+                      "territory-wide median of {z$median_val}.<p>{z$place_name} ",
                       "has a {z$high} relative score for this indicator, with ",
                       "'{z$exp_left}' higher than {z$percentile} of {z$scale_p",
-                      "lural} in the Montreal region."), 
+                      "lural} {z$geo}."), 
           fr = paste0("<strong>{z$place_heading}</strong><p> {z$place_name} a ",
                       "une population de {z$pop} et un score pour '{z$title_le",
                       "ft}' ({z$exp_left}) de {z$val_left}, ce qui est {z$larg",
-                      "er} la médiane régionale de {z$median_val}.<p>{z$place_",
+                      "er} la médiane territoriale de {z$median_val}.<p>{z$place_",
                       "name} a une valeur relativement {z$high} pour cet indic",
                       "ateur, avec '{z$exp_left}' plus élevé/e que {z$percenti",
-                      "le} des {z$scale_plural} de la région de Montréal.")) |> 
+                      "le} des {z$scale_plural} {z$geo}.")) |> 
   add_row(en = paste0("At the {z$scale_sing} scale, {z$exp_left} varies from '",
                       "{z$min_val}' to '{z$max_val}'. A {z$majority} of {z$sca",
                       "le_plural} ({z$mode_prop}) have a value of '{z$mode_val",
@@ -160,11 +177,11 @@ info_table_translated <-
   add_row(en = paste0("<strong>{z$place_heading}</strong><p>{z$place_name} has",
                       " a population of {z$pop} and a '{z$title_left}' value o",
                       "f '{z$val_left}', which is shared by {z$other_with_val}",
-                      " of {z$scale_plural} in the Montreal region."), 
+                      " of {z$scale_plural} {z$geo}."), 
           fr = paste0("<strong>{z$place_heading}</strong><p> {z$place_name} a ",
                       "une population de {z$pop} et une valeur '{z$title_left}",
                       "' de ' {z$val_left}, ce qui est partagé par {z$other_wi",
-                      "th_val} des {z$scale_plural} de la région de Montréal.")) |> 
+                      "th_val} des {z$scale_plural} {z$geo}.")) |> 
   add_row(en = paste0("At the {z$scale_sing} scale, the change in {z$exp_left}",
                       " between {z$start_date_left} and {z$end_date_left} vari",
                       "ed from {z$min_val} to {z$max_val}, with an average cha",
@@ -181,20 +198,19 @@ info_table_translated <-
   add_row(en = paste0("<strong>{z$place_heading}</strong><p>{sentence(z$exp_le",
                       "ft)} in {z$place_name} {z$increase} by {sub('-', '', z$",
                       "val_left)} between {z$start_date_left} and {z$end_date_",
-                      "left}, which is {z$larger} the region-wide median chang",
+                      "left}, which is {z$larger} the territory-wide median chang",
                       "e of {z$median_val}.<p>{z$place_name} had a {z$high} re",
                       "lative change for this indicator, with a change in {z$e",
                       "xp_left} larger than {z$percentile} of {z$scale_plural}",
-                      " in the Montreal region."), 
+                      " {z$geo}."), 
           fr = paste0("<strong>{z$place_heading}</strong><p>{sentence(z$exp_le",
                       "ft)} à {z$place_name} a {z$increase} de {sub('-', '', z",
                       "$val_left)} entre {z$start_date_left} et {z$end_date_le",
                       "ft}, ce qui est {z$larger} la variation médiane à l",
-                      "'échelle de la région ({z$median_val}).<p>{z$place_name",
+                      "'échelle du territoire ({z$median_val}).<p>{z$place_name",
                       "} a connu un changement relatif {z$high} pour cet indic",
                       "ateur, avec une variation pour '{z$exp_left}' plus gran",
-                      "d que {z$percentile} des {z$scale_plural} de la région ",
-                      "de Montréal.")) |> 
+                      "d que {z$percentile} des {z$scale_plural} {z$geo}.")) |> 
   add_row(en = paste0("TKTK At the {z$scale_sing} scale, {z$exp_left} varies f",
                       "rom '{z$min_val}' to '{z$max_val}'. A {z$majority} of {",
                       "z$scale_plural} ({z$mode_prop}) have a value of '{z$mod",
@@ -204,7 +220,7 @@ info_table_translated <-
   add_row(en = paste0("<strong>{z$place_heading}</strong><p>TKTK {z$place_name",
                       "} has a population of {z$pop} and a '{z$title_left}' va",
                       "lue of '{z$val_left}', which is shared by {z$other_with",
-                      "_val} of {z$scale_plural} in the Montreal region."), 
+                      "_val} of {z$scale_plural} {z$geo}."), 
           fr = paste0("TKTK")) |> 
   add_row(en = paste0("<p>'{z$title_left}' has effectively no correlation ({z$",
                       "corr_disp}) with '{z$title_right}' at the {z$scale_sing",
@@ -235,7 +251,7 @@ info_table_translated <-
                       " relative terms. {z$place_name} has {sub('^the', 'a', z",
                       "$exp_left)} higher than {z$perc_left} of {z$scale_plura",
                       "l} and {sub('^the', 'a', z$exp_right)} higher than {z$p",
-                      "erc_right} of {z$scale_plural} in the Montreal region."), 
+                      "erc_right} of {z$scale_plural} {z$geo}."), 
           fr = paste0("<strong>{z$place_heading}</strong><p> {z$place_name} a ",
                       "une population de {z$pop}, une valeur  '{z$title_left}'",
                       " de {z$val_left} et une valeur  '{z$title_right}' de {z",
@@ -243,8 +259,7 @@ info_table_translated <-
                       "on}, en termes relatifs. {z$place_name} a {sub('^le', '",
                       "un', z$exp_left)} supérieur à {z$perc_left} des {z$scal",
                       "e_plural} et {sub('^le', 'un', z$exp_right)} supérieur ",
-                      "à {z$perc_right} des {z$scale_plural} de la région de M",
-                      "ontréal.")) |> 
+                      "à {z$perc_right} des {z$scale_plural} {z$geo}.")) |> 
   add_row(en = paste0("<p>'{z$title_left}' has effectively no correlation (Spe",
                       "arman's rho: {z$corr_disp}) with '{z$title_right}' at t",
                       "he {z$scale_sing} scale.<p>This means that, at the {z$s",
@@ -273,22 +288,20 @@ info_table_translated <-
                       "{z$val_left}', and a '{z$title_right}' value of {z$val_",
                       "right}. <p>{z$place_name} has {sub('^the', 'a', z$exp_r",
                       "ight)} higher than {z$perc} of other {z$scale_plural} w",
-                      "ith {sub('^the', 'a', z$exp_left)} of '{z$val_left}' in",
-                      " the Montreal region."), 
+                      "ith {sub('^the', 'a', z$exp_left)} of '{z$val_left}' {z$geo}."), 
           fr = paste0("<strong>{z$place_heading}</strong><p>{z$place_name} a u",
                       "ne population de {z$pop}, une valeur '{z$title_left}' d",
                       "e '{z$val_left}', et une valeur '{z$title_right}' de {z",
                       "$val_right}. <p>{z$place_name} a {sub('^le', 'un', z$ex",
                       "p_right)} plus élevé que {z$perc} des autres {z$scale_p",
                       "lural} avec {sub('^le', 'un', z$exp_left)} de '{z$val_l",
-                      "eft}' dans la région de Montréal.")) |> 
+                      "eft}' {z$geo}.")) |> 
   add_row(en = paste0("<strong>{z$place_heading}</strong><p>{z$place_name} has",
                       " a population of {z$pop}, a {z$title_left} value of '{z",
                       "$val_left}', and a '{z$title_right}' value of '{z$val_r",
                       "ight}'. <p>{z$place_name} has {sub('^the', 'a', z$exp_l",
                       "eft)} higher than {z$perc} of other {z$scale_plural} wi",
-                      "th {sub('^the', 'a', z$exp_right)} of '{z$val_right}' i",
-                      "n the Montreal region."), 
+                      "th {sub('^the', 'a', z$exp_right)} of '{z$val_right}' {z$geo}."), 
           fr = paste0("TKTK")) |> 
   add_row(en = paste0("<p>From {z$start_date_left} to {z$end_date_left}, the c",
                       "hange in '{z$title_left}' had effectively no correlatio",
@@ -300,7 +313,7 @@ info_table_translated <-
                       "tion de la valeur '{z$title_left}' n'a effectivement au",
                       "cune corrélation avec la variation de la valeur '{z$tit",
                       "le_right}' à l'échelle {z$scale_sing}.<p>Cela signifie ",
-                      "qu'à l'échelle {z$scale_sing}, il n'y avait pas re rela",
+                      "qu'à l'échelle {z$scale_sing}, il n'y avait pas de rela",
                       "tion entre la variation des deux variables.")) |> 
   add_row(en = paste0("<p>From {z$start_date_left} to {z$end_date_left}, the c",
                       "hange in '{z$title_left}' had a {z$strong} {z$pos} corr",
@@ -325,7 +338,7 @@ info_table_translated <-
                       "tive terms. {z$place_name} had a change in {z$exp_left}",
                       " higher than {z$perc_left} of {z$scale_plural} and a ch",
                       "ange in {z$exp_right} higher than {z$perc_right} of {z$",
-                      "scale_plural} in the Montreal region."), 
+                      "scale_plural} {z$geo}."), 
           fr = paste0("<strong>{z$place_heading}</strong><p>De {z$start_date_l",
                       "eft} à {z$end_date_left}, {z$place_name} a connu une va",
                       "riation de sa valeur '{z$title_left}' de {z$val_left}, ",
@@ -334,8 +347,7 @@ info_table_translated <-
                       "ion}, en termes relatifs. {z$place_name} a eu une varia",
                       "tion pour '{z$exp_left}' supérieure à {z$perc_left} des",
                       " {z$scale_plural} et une variation pour '{z$exp_right}'",
-                      " supérieure à {z$perc_right} des {z$scale_plural} de la",
-                      " région de Montréal.")) |> 
+                      " supérieure à {z$perc_right} des {z$scale_plural} {z$geo}.")) |> 
   add_row(en = paste0("<p>From {z$start_date_left} to {z$end_date_left}, the c",
                       "hange in '{z$title_left}' had effectively no correlatio",
                       "n (Spearman's rho: {z$corr_disp}) with the change in '{",
@@ -371,7 +383,7 @@ info_table_translated <-
                       "$val_right}. <p>{z$place_name} has {sub('^the', 'a', z$",
                       "exp_right)} higher than {z$perc} of other {z$scale_plur",
                       "al} with {sub('^the', 'a', z$exp_left)} of '{z$val_left",
-                      "}' in the Montreal region."), 
+                      "}' {z$geo}."), 
           fr = paste0("TKTK")) |> 
   add_row(en = paste0("<p>During {z$date_left}, {z$exp_left} averaged {z$mean_",
                       "val} per day. The maximum value was {z$max_val} on {z$m",
@@ -399,6 +411,60 @@ info_table_translated <-
                       "n moyenne de {z$coef} chaque jour.")) |> 
   add_row(en = paste0("<p><b>STRONG CORRELATION</b></p>"), 
           fr = paste0("<p><b>FORTE CORRÉLATION</b></p>")) |> 
+  add_row(en = paste0("<p><i>Data from {date_left} for '{z$title_left}' and ", 
+                      "{date_right} for '{z$title_right}'.</i></p>"), 
+          fr = paste0("<p><i>Données de {date_left} pour '{z$title_left}' et ", 
+                      "de {date_right} pour '{z$title_right}'.</i></p>")) |> 
+  
+  add_row(en = paste0("<p>From {z$start_date_left} to {z$end_date_left}, the change in ", 
+                      "'{z$title_left}' had effectively no correlation ({z$corr_disp}) ", 
+                      "with {z$date_right}'s '{z$title_right}' at the {z$scale_sing} scale.",
+                      "<p>This means that, at the {z$scale_sing} scale, there was no ",
+                      "relationship between the change in {z$exp_left} with {z$exp_right}."), 
+          fr = paste0("<p>De {z$start_date_left} à {z$end_date_left}, la ", 
+                      "variation de la valeur '{z$title_left}' ne présente aucune ", 
+                      "corrélation ({z$corr_disp}) avec ", 
+                      "la valeur '{z$title_right}' de {z$date_right} à ", 
+                      "l'échelle {z$scale_sing}. <p>Cela signifie qu'à l'échelle des",
+                      " {z$scale_plural}, il n'y avait aucune relation entre ",
+                      "la variation de/du {sub('^le |^la", " ', '', ", 
+                      "z$exp_left)} et {z$exp_right}, {z$high_low_disclaimer}.")) |> 
+  add_row(en = paste0("<p>From {z$start_date_left} to {z$end_date_left}, the ", 
+                      "change in '{z$title_left}' had a {z$strong} {z$pos} ", 
+                      "correlation ({z$corr_disp}) with {z$date_right}'s ", 
+                      "'{z$title_right}' at the {z$scale_sing} scale.<p>This ", 
+                      "means that, in general, {z$scale_plural} with a higher ", 
+                      "change in {z$exp_left} tended to have a {z$higher} ", 
+                      "value in {z$exp_right}, {z$high_low_disclaimer}."), 
+          fr = paste0("<p>De {z$start_date_left} à {z$end_date_left}, la ", 
+                      "variation de la valeur '{z$title_left}' présente une ", 
+                      "corrélation {z$strong} et {z$pos} ({z$corr_disp}) avec ", 
+                      "la valeur '{z$title_right}' de {z$date_right} à ", 
+                      "l'échelle {z$scale_sing}. <p>Cela signifie qu'en ", 
+                      "général, les {z$scale_plural} présentant une variation ", 
+                      "plus importante de/du {sub('^le |^la", " ', '', ", 
+                      "z$exp_left)} ont tendance à avoir une valeur {z$higher} ", 
+                      "avec {z$exp_right}, {z$high_low_disclaimer}.")) |> 
+  add_row(en = paste0("<strong>{z$place_heading}</strong>",
+                      "<p>From {z$start_date_left} to {z$end_date_left}, {z$place_name} had ",
+                      "a change in its '{z$title_left}' value of {z$val_left}. ",
+                      "In {z$date_right}, '{z$title_right}' had a value of {z$val_right}. ",
+                      "<p>These two scores are {z$relative_position}, in relative ",
+                      "terms. {z$place_name} had a change in {z$exp_left} higher ",
+                      "than {z$perc_left} of {z$scale_plural}. It also had ",
+                      "{sub('^the', 'a', z$exp_right)} higher than {z$perc_right} ",
+                      "of {z$scale_plural} {z$geo}."),
+          fr = paste0("<strong>{z$place_heading}</strong><p>De {z$start_date_left} à ",
+                      "{z$end_date_left}, {z$place_name} a connu une variation de sa valeur ",
+                      "'{z$title_left}' de {z$val_left}. En {z$date_right}, ",
+                      "‘{z$title_right}' avait une valeur de {z$val_right}.<p>",
+                      "Ces deux scores sont {z$relative_position} en termes ",
+                      "relatifs. {z$place_name} avait une variation pour ",
+                      "{z$exp_left} supérieure à {z$perc_left} des {z$scale_plural}. ",
+                      "Elle avait également {sub('^le', 'un', z$exp_right)} ",
+                      "supérieur à celui de {z$perc_right} des {z$scale_plural} ",
+                      "{z$geo}.")) |> 
+          
   # Natural infrastructure
   add_row(en = paste0("<p>Natural infrastructure represents approximately 25% ",
                       "of the territory of the Montreal region. Preserving {sl",
@@ -453,7 +519,24 @@ info_table_translated <-
           fr = paste0("quartiers Centraide")) |> 
   add_row(en = paste0("Centraide zone {select_name$name}"), 
           fr = paste0("Quartier Centraide {select_name$name}")) |> 
+  # CMHC
+  add_row(en = paste0("cmhc zone"), 
+          fr = paste0("des zones SCHL")) |> 
+  add_row(en = paste0("CMHC zone"), 
+          fr = paste0("de la zone SCHL")) |> 
+  add_row(en = paste0("CMHC Zone"), 
+          fr = paste0("Zone SCHL")) |> 
+  add_row(en = paste0("CMHC zones"), 
+          fr = paste0("zones SCHL")) |> 
+  add_row(en = paste0("CMHC zone {select_name$name}"), 
+          fr = paste0("Zone SCHL {select_name$name}")) |> 
+  
   add_row(en = paste0("We have no data on {z$exp_left} at the {z$scale_sing} sc",
                       "ale."), 
           fr = paste0("Nous ne disposons pas de données sur {z$exp_left} à l'éc",
-                      "helle {z$scale_sing}."))
+                      "helle {z$scale_sing}.")) |> 
+  add_row(en = paste0("We have no data on {z$exp_left} or on {z$exp_right} at the",
+                      " {z$scale_sing} scale."), 
+          fr = paste0("Nous ne disposons pas de données sur {z$exp_left} ou sur ",
+                      "{z$exp_right} à l'échelle {z$scale_sing}."))
+

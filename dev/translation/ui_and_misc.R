@@ -2,6 +2,14 @@
 
 ui_and_misc_translated <- 
   tibble(en = character(), fr = character()) |>
+  add_row(en = paste0("Metropolitan Area"), 
+          fr = paste0("Région métropolitaine")) |> 
+  add_row(en = paste0("Montreal"), 
+          fr = paste0("Montréal")) |> 
+  add_row(en = paste0("City of Montreal"), 
+          fr = paste0("Ville de Montréal")) |> 
+  add_row(en = paste0("Island of Montreal"), 
+          fr = paste0("Île de Montréal")) |> 
   add_row(en = paste0("Previous:"), 
           fr = paste0("Précédent :")) |> 
   add_row(en = paste0("Next:"), 
@@ -14,6 +22,8 @@ ui_and_misc_translated <-
           fr = paste0("Bienvenue")) |> 
   add_row(en = paste0("----"), 
           fr = paste0("----")) |> 
+  add_row(en = paste0(" "), 
+          fr = paste0(" ")) |> 
   add_row(en = paste0("Learn more"), 
           fr = paste0("En savoir plus")) |> 
   add_row(en = paste0("Advanced options"), 
@@ -28,6 +38,14 @@ ui_and_misc_translated <-
           fr = paste0("Secteur de recensement")) |> 
   add_row(en = paste0("Dissemination area"), 
           fr = paste0("Aire de diffusion")) |> 
+  add_row(en = paste0("Dissemination block"), 
+          fr = paste0("Îlot de diffusion")) |> 
+  add_row(en = paste0("CMHC zone"), 
+          fr = paste0("de la zone SCHL")) |> 
+  add_row(en = paste0("CMHC Zone"), 
+          fr = paste0("Zone SCHL")) |> 
+  add_row(en = paste0("zones"), 
+          fr = paste0("zones")) |> 
   add_row(en = paste0("Building"), 
           fr = paste0("Bâtiment")) |> 
   add_row(en = paste0("Legend"), 
@@ -92,6 +110,12 @@ ui_and_misc_translated <-
           fr = paste0("Vie urbaine")) |> 
   add_row(en = paste0("Active living potential"), 
           fr = paste0("Potentiel de vie active")) |> 
+  add_row(en = paste0("Bikeway Comfort and Safety"), 
+          fr = paste0("Confort et sécurité des voies cyclables")) |> 
+  add_row(en = paste0("Can-BICS"), 
+          fr = paste0("Can-BICS")) |> 
+  add_row(en = paste0("Can-BICS metric"), 
+          fr = paste0("Mesure Can-BICS")) |> 
   add_row(en = paste0("Green alleys"), 
           fr = paste0("Ruelles vertes")) |> 
   add_row(en = paste0("Green spaces"), 
@@ -390,8 +414,8 @@ ui_and_misc_translated <-
           fr = paste0("Par km2")) |> 
   add_row(en = paste0("Per 1,000 residents"), 
           fr = paste0("Par 1,000 résidents")) |> 
-  add_row(en = paste0("About Sus"), 
-          fr = paste0("À propos de Sus")) |> 
+  add_row(en = paste0("About Curbcut"), 
+          fr = paste0("À propos de Curbcut")) |> 
   add_row(en = paste0("How to use"), 
           fr = paste0("Mode d'emploi")) |>
   add_row(en = paste0("All jobs"), 
@@ -442,6 +466,11 @@ ui_and_misc_translated <-
           fr = paste0("Minutes pour atteindre le secteur de recensement")) |> 
   add_row(en = paste0("Clear selection"), 
           fr = paste0("Effacer la selection")) |> 
+  add_row(en = paste0("Bikeway comfort and safety"), 
+          fr = paste0("Confort et sécurité des voies cyclables")) |> 
+  add_row(en = paste0("Access"), 
+          fr = paste0("Accessibilité")) |> 
+  
   # Natural infrastructure
   add_row(en = paste0("Ecology"), 
           fr = paste0("Écologie")) |> 
@@ -517,8 +546,8 @@ ui_and_misc_translated <-
           fr = paste0("Les données présentées pour `<b>{var_right_title}</b>` sont celles de l'année disponible la plus proche <b>({right_year})</b>.")) |> 
   add_row(en = paste0("Comparison requires two different dates."), 
           fr = paste0("Une comparaison nécessite deux dates différentes.")) |> 
-  add_row(en = paste0("Sus does not currently support mobile phones. Please visit from a computer."), 
-          fr = paste0("Sus n'est pas actuellement compatible avec les téléphones mobiles. Veuillez visiter la plateforme avec un ordinateur.")) |> 
+  add_row(en = paste0("Curbcut does not currently support mobile phones. Please visit from a computer."), 
+          fr = paste0("Curbcut n'est pas actuellement compatible avec les téléphones mobiles. Veuillez visiter la plateforme avec un ordinateur.")) |> 
   # Centraide modules dropdowns
   add_row(en = paste0("Housing affordability"), 
           fr = paste0("Abordabilité du logement")) |> 
@@ -530,16 +559,16 @@ ui_and_misc_translated <-
           fr = paste0("Démographie")) |> 
   add_row(en = paste0("Shelter cost"), 
           fr = paste0("Frais de logement")) |> 
-  add_row(en = paste0("Normalized (percent of households)"), 
-          fr = paste0("Normalisé (pourcentage des ménages)")) |> 
-  add_row(en = paste0("Normalized (percent of dwellings)"), 
-          fr = paste0("Normalisé (pourcentage des logements)")) |> 
+  add_row(en = paste0("Normalized data (percent of households)"), 
+          fr = paste0("Données normalisés (pourcentage des ménages)")) |> 
+  add_row(en = paste0("Normalized data (percent of dwellings)"), 
+          fr = paste0("Données normalisés (pourcentage des logements)")) |> 
   add_row(en = paste0("Additional characteristic"), 
           fr = paste0("Caractéristique supplémentaire")) |> 
   add_row(en = paste0("Gender"), 
           fr = paste0("Genre")) |> 
   add_row(en = paste0("Dwelling type"), 
-          fr = paste0("Type de d'habitation")) |> 
+          fr = paste0("Type d'habitation")) |> 
   add_row(en = paste0("Immigration status"), 
           fr = paste0("Statut d'immigration")) |> 
   add_row(en = paste0("Households"), 
@@ -585,11 +614,11 @@ ui_and_misc_translated <-
   add_row(en = paste0("Mobile home and other movable dwelling"), 
           fr = paste0("Habitation mobile")) |> 
   add_row(en = paste0("Family characteristic"), 
-          fr = paste0("Charactéristique familiale")) |> 
+          fr = paste0("Caractéristique familiale")) |> 
   add_row(en = paste0("Dwelling type"), 
           fr = paste0("Type de logement")) |> 
   add_row(en = paste0("Immigration characteristic"), 
-          fr = paste0("Charactéristique d'immigration")) |> 
+          fr = paste0("Caractéristique d'immigration")) |> 
   add_row(en = paste0("Visible minority / Indigenous"), 
           fr = paste0("Minorité visible / Autochtone")) |>
   add_row(en = paste0("Total"), 
@@ -631,11 +660,11 @@ ui_and_misc_translated <-
   add_row(en = paste0("Tenure Status"), 
           fr = paste0("Statut d'occupation")) |> 
   add_row(en = paste0("Dwelling Types"), 
-          fr = paste0("Types de logements")) |> 
+          fr = paste0("Types d'habitations")) |> 
   add_row(en = paste0("Count"), 
           fr = paste0("Compte")) |> 
-  add_row(en = paste0("Normalized (percent of population)"), 
-          fr = paste0("Normalisé (pourcentage de la population)")) |> 
+  add_row(en = paste0("Normalized data (percent of population)"), 
+          fr = paste0("Données normalisés (pourcentage de la population)")) |> 
   add_row(en = paste0("By walk"), 
           fr = paste0("À pied")) |> 
   add_row(en = paste0("By bicycle"), 
@@ -646,6 +675,32 @@ ui_and_misc_translated <-
           fr = paste0("En auto")) |> 
   add_row(en = paste0("Centraide"), 
           fr = paste0("Centraide")) |> 
+  add_row(en = paste0("Access to"), 
+          fr = paste0("Accès à")) |> 
+  add_row(en = paste0("Vacancy rate distribution"), 
+          fr = paste0("Distribution du taux d'inoccupation")) |> 
+  add_row(en = paste0("Bedroom type"), 
+          fr = paste0("Nombre de chambres à coucher")) |> 
+  add_row(en = paste0("Year of construction"), 
+          fr = paste0("Année de construction")) |> 
+  add_row(en = paste0("Rent ranges"), 
+          fr = paste0("Tranche de loyer")) |> 
+  add_row(en = paste0("Enter and save a default location (postal code or address)"), 
+          fr = paste0("Saisir et enregistrer un emplacement par défaut (code postal ou adresse)")) |> 
+  add_row(en = paste0("Default location will be saved until manually cleared from advanced options"), 
+          fr = paste0("L'emplacement par défaut sera enregistré jusqu'à ce qu'il soit effacé manuellement dans les options avancées.")) |> 
+  add_row(en = paste0("Clear default location"), 
+          fr = paste0("Effacer l'emplacement par défaut")) |> 
+  add_row(en = paste0("Address `{val$title}` saved as default."), 
+          fr = paste0("Adresse `{val$title}` enregistrée comme défaut.")) |> 
+  add_row(en = paste0("Address `{val$title}` isn't within an available geography"), 
+          fr = paste0("L'adresse `{val$title}` ne fait pas partie d'une zone géographique disponible.")) |> 
+  add_row(en = paste0("Postal code `{postal_codes$postal_code[pcs]}` saved as default."), 
+          fr = paste0("Code postal `{postal_codes$postal_code[pcs]}` enregistré comme défaut.")) |> 
+  add_row(en = paste0("Postal code `{postal_c}` isn't within an available geography"), 
+          fr = paste0("Code postal `{postal_c}` ne fait pas partie d'une zone géographique disponible.")) |> 
+  add_row(en = paste0("Address `{input$lock_address_searched}` isn't within an available geography."), 
+          fr = paste0("L'adresse `{input$lock_address_searched}` ne fait pas partie d'une zone géographique disponible.")) |> 
   # Stories
   add_row(en = paste0("The proposed {year} metro network."), 
           fr = paste0("Le réseau proposé en {year}.")) |> 

@@ -6,7 +6,7 @@ render_explore_graph <- function(plot_type, data, var_left, var_right, df,
   
   # Set convenience variables
   var_left_num <- length(unique(data$var_left))
-  bin_number <- min(25, var_left_num)
+  bin_number <- max(15, min(25, var_left_num))
   
   # Histogram
   if (plot_type %in% c("hist_all", "hist_na", "hist_select")) {

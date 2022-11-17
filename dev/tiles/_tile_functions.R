@@ -6,15 +6,22 @@
 list_tile_sources <- function(username = "sus-mcgill", 
                               access_token = .sus_token) {
   
-  httr::GET(paste0("https://api.mapbox.com/tilesets/v1/sources/", username),
-            query = list(access_token = access_token, limit = 500)) |> 
-    httr::content() |> 
-    map_dfr(~tibble(
-      id = str_remove(.x$id, "mapbox://tileset-source/sus-mcgill/"),
-      size = .x$size / 1024 ^ 2,
-      files = .x$files))
+  res <- httr::GET(paste0("https://api.mapbox.com/tilesets/v1/sources/", 
+                          username),
+                   query = list(access_token = access_token, limit = 500))
+  resDF <- jsonlite::fromJSON(httr::content(res, as = "text"))
+  while (isTRUE(grepl("next", res$headers$link))) {
+    res <- httr::GET(str_extract(res$headers$link, "(?<=\\<).*(?=>)"),
+               query = list(access_token = access_token, limit = 500))
+    resDF <- rbind(resDF, jsonlite::fromJSON(httr::content(res, as = "text")))
+  }
   
+  resDF |> 
+    as_tibble() |> 
+    mutate(id = str_remove(id, "mapbox://tileset-source/sus-mcgill/"),
+           size = size / 1024 ^ 2)
 }
+
 
 # Upload tile source ------------------------------------------------------
 
@@ -62,14 +69,24 @@ delete_tileset_source <- function(id, username = "sus-mcgill",
 
 list_tilesets <- function(username = "sus-mcgill", access_token = .sus_token) {
   
-  httr::GET(paste0("https://api.mapbox.com/tilesets/v1/", username),
-            query = list(access_token = access_token, limit = 500)) |> 
-    httr::content() |> 
-    map_dfr(~tibble(
-      id = str_remove(.x$id, "sus-mcgill."),
-      size = .x$filesize / 1024 ^ 2,
-      precisions = paste(names(.x$tileset_precisions), collapse = ", ")
-    ))
+  res <- httr::GET(paste0("https://api.mapbox.com/tilesets/v1/", 
+                          username),
+                   query = list(access_token = access_token, limit = 500))
+  resDF <- jsonlite::fromJSON(httr::content(res, as = "text")) |> 
+    select(id, filesize, starts_with("tileset_precisions"))
+  while (isTRUE(grepl("next", res$headers$link))) {
+    res <- httr::GET(str_extract(res$headers$link, "(?<=\\<).*(?=>)"),
+               query = list(access_token = access_token, limit = 500))
+    resDF <- bind_rows(resDF, jsonlite::fromJSON(httr::content(res, as = "text"))) |> 
+      select(id, filesize, starts_with("tileset_precisions"))
+  }
+  
+  resDF |> 
+    as_tibble() |> 
+    transmute(id = str_remove(id, "sus-mcgill."),
+              size = filesize / 1024 ^ 2,
+              precisions = paste(names(resDF$tileset_precisions), 
+                                 collapse = ", "))
   
 }
 

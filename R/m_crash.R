@@ -11,13 +11,13 @@ crash_UI <- function(id) {
       NS(id, ns_id),
       susSidebarWidgets(
         actionLink(NS(id, "analysis"), 
-                   sus_translate(r = r, "Road safety analysis")),
+                   cc_t(r = r, "Road safety analysis")),
         select_var_UI(NS(id, ns_id), select_var_id = "d_2",
                       var_list = var_left_list_2_crash,
-                      label = sus_translate(r = r, "Grouping")),
+                      label = cc_t(r = r, "Grouping")),
         select_var_UI(NS(id, ns_id), select_var_id = "d_1",
                       var_list = var_left_list_1_crash,
-                      label = sus_translate(r = r, "Type of crash")),
+                      label = cc_t(r = r, "Type of crash")),
         
         slider_UI(NS(id, ns_id), 
                   slider_id = "slu",
@@ -27,7 +27,7 @@ crash_UI <- function(id) {
                   value = max(crash$year)),
         slider_UI(NS(id, ns_id), 
                   slider_id = "slb",
-                  label = sus_translate(r = r, "Select two years (data aggregate)"), 
+                  label = cc_t(r = r, "Select two years (data aggregate)"), 
                   min = min(crash$year),
                   max = max(crash$year), 
                   step = 1, sep = "", 
@@ -35,10 +35,10 @@ crash_UI <- function(id) {
         
         checkbox_UI(NS(id, ns_id),
                     checkbox_id = "comp_d",
-                    label = sus_translate(r = r, "Compare dates")),
+                    label = cc_t(r = r, "Compare dates")),
         hidden(checkbox_UI(NS(id, ns_id),
                            checkbox_id = "grid",
-                           label = sus_translate(r = r, "250-metre grid"))),
+                           label = cc_t(r = r, "250-metre grid"))),
         year_disclaimer_UI(NS(id, ns_id))
       ),
       bottom = div(class = "bottom_sidebar", 
@@ -225,10 +225,10 @@ crash_server <- function(id) {
     observe({
       if (!choropleth()) {
         updateSliderInput(session, inputId = "crash-slb",
-                          label = sus_translate(r = r, "Total between two dates"))
+                          label = cc_t(r = r, "Total between two dates"))
       } else if (choropleth()) {
         updateSliderInput(session, inputId = "crash-slb",
-                          label = sus_translate(r = r, "Compare two dates"))
+                          label = cc_t(r = r, "Compare two dates"))
       }
     })
 
@@ -244,8 +244,8 @@ crash_server <- function(id) {
     observeEvent(input$analysis, {
 
       if (input$analysis %% 2 == 1) {
-        txt <- sus_translate(r = r, "Road safety map")
-      } else txt <- sus_translate(r = r, "Road safety analysis")
+        txt <- cc_t(r = r, "Road safety map")
+      } else txt <- cc_t(r = r, "Road safety analysis")
 
       updateActionLink(session, "analysis", label = txt)
 

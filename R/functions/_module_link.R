@@ -1,10 +1,10 @@
 #### LINKS BETWEEN MODULES #####################################################
 
 module_link <- function(r, module, zoom = NULL, location = map_loc, 
-                        select_id = NULL, var_left = NULL,
+                        select_id = NA, var_left = NULL,
                         var_right = NULL, df = NULL, 
                         zoom_auto = NULL, more_args = NULL, 
-                        update_view = TRUE) {
+                        update_view = if (is.na(select_id)) FALSE else TRUE) {
   
   r$sus_link$id <- module
   
@@ -18,16 +18,14 @@ module_link <- function(r, module, zoom = NULL, location = map_loc,
   if (update_view) {
     if (!is.null(df) && !is.null(select_id)) {
       r$sus_link$zoom <- 
-        if (df == "borough") map_zoom else map_zoom_levels_CMA[[df]] + 0.75
+        get(paste("map_zoom_levels", r$geo(), sep = "_"))[[
+          gsub(".*_", "", df)]] + 0.75
       
-      r$sus_link$location <- if (df == "grid") {
-        sapply(
-          as.numeric(dbGetQuery(db, paste0("SELECT centroid_lat, centroid_lon ",
-                                           "FROM grid WHERE ID = ", select_id))),
-          round, digits = 2)
-      } else {
-        data <- get(df)
-        sapply(unlist(data[data$ID == select_id, ]$centroid),
+      r$sus_link$location <- if (is.na(select_id)) location else {
+        sapply(do.call("dbGetQuery", list(rlang::sym(paste0(df, "_conn")),
+                                          paste0("SELECT lat, lon FROM centroid ",
+                                                 "WHERE ID = ", select_id))) |> 
+                 unlist(),
                round, digits = 2)
       }
     }
@@ -43,8 +41,14 @@ module_link <- function(r, module, zoom = NULL, location = map_loc,
   r$sus_link$more_args <- more_args
   
   # Update destination select_id() and df()
-  if (!is.null(df)) r[[module]]$df <- reactiveVal(df)
-  if (!is.null(select_id)) r[[module]]$select_id <- reactiveVal(select_id)
+  if (!is.null(df)) {
+    r$sus_link$df <- df
+    r[[module]]$df(df)
+  }
+  if (!is.null(select_id)) {
+    r$sus_link$select_id <- select_id
+    r[[module]]$select_id(select_id)
+  }
   
 }
 

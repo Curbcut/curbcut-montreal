@@ -251,7 +251,7 @@ interpolate_dmti <- function(x) {
   
 }
 
-borough <- interpolate_dmti(borough)
+borough <- interpolate_dmti(CSD)
 CT <- interpolate_dmti(CT)
 
 rm(dmti, DA_data, interpolate_dmti)

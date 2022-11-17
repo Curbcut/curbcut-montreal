@@ -6,7 +6,8 @@ render_legend <- function(r, data, var_left, var_right, df, data_type,
   ## Clean up data_type and building/street ------------------------------------
 
   data_type <- sub("building_", "", data_type)
-  if (build_str_as_DA && df %in% c("building", "street")) df <- "DA"
+  if (build_str_as_DA && is_scale_in_df(c("building", "street"), df)) 
+    df <- paste0(gsub("building", "DA", df))
   
   
   ## Get date ------------------------------------------------------------------
@@ -38,13 +39,18 @@ render_legend <- function(r, data, var_left, var_right, df, data_type,
     
     leg <- if (!is.null(breaks) && !is.null(attr(breaks, "palette"))) {
       attr(breaks, "palette")
-    } else legend_left_5[2:6,]
+    } else legend_left_5[1:6,]
     
+    leg$x <- as.double(leg$x)
+    leg[1,]$x <- 0.5
+    leg[seq(2 + 1,nrow(leg) + 1),] <- leg[seq(2,nrow(leg)),]
+    leg[2,] <- list(x =  0.75, y = 1, fill = "#FFFFFFFF")
+
     leg |> 
       ggplot(aes(xmin = x - 1, xmax = x, ymin = y - 1, ymax = y, 
                  fill = fill)) +
       geom_rect() + 
-      scale_x_continuous(breaks = 0:5, labels = as.character(break_labs)) +
+      scale_x_continuous(breaks = c(-0.375, 0:5), labels = as.character(c("NA", break_labs))) +
       scale_y_continuous(labels = NULL) +
       scale_fill_manual(values = setNames(
         leg$fill, leg$fill)) +
@@ -87,11 +93,11 @@ render_legend <- function(r, data, var_left, var_right, df, data_type,
   } else if (data_type == "bivar") {
     
     l <- legend_bivar
-    l$label <- c(sus_translate(r = r, "Both low"), " ", 
-                 paste0(labs_xy$y_short, "\n", sus_translate(r = r, "high only")), " ",
+    l$label <- c(cc_t(r = r, "Both low"), " ", 
+                 paste0(labs_xy$y_short, "\n", cc_t(r = r, "high only")), " ",
                  " ", " ", 
-                 paste0(labs_xy$x_short, "\n", sus_translate(r = r, "high only")), " ", 
-                 sus_translate(r = r, "Both high"))
+                 paste0(labs_xy$x_short, "\n", cc_t(r = r, "high only")), " ", 
+                 cc_t(r = r, "Both high"))
     l$label_colour <- c(rep("black", 8), "white")
     l$x <- as.numeric(l$x) - 0.5
     l$y <- as.numeric(l$y) - 0.5
@@ -110,25 +116,36 @@ render_legend <- function(r, data, var_left, var_right, df, data_type,
     # Delta, one date
   } else if (data_type == "delta") {
     
-    legend_delta_5 |> 
-      ggplot(aes(x, y, fill = fill)) +
-      geom_tile() +
-      scale_x_continuous(breaks = c(1.5, 2.5, 3.5, 4.5),
-                         labels = c("-10%", "-2%", "+2%", "+10%")) +
-      scale_fill_manual(values = setNames(
-        legend_delta_5$fill, legend_delta_5$fill)) +
+    leg <- legend_delta_5
+    leg$x <- leg$x
+    
+    leg$x <- as.double(leg$x)
+    leg[seq(1 + 1,nrow(leg) + 1),] <- leg[seq(1,nrow(leg)),]
+    leg[1,]$x <- 0.6
+    leg[1,]$fill <- "#B3B3BB"
+    
+    leg[seq(2 + 1,nrow(leg) + 1),] <- leg[seq(2,nrow(leg)),]
+    leg[2,] <- list(x =  0.85, y = 1, fill = "#FFFFFFFF")
+    
+    leg |> 
+      ggplot(aes(xmin = x - 1, xmax = x, ymin = y - 1, ymax = y, 
+                 fill = fill)) +
+      geom_rect() + 
+      scale_x_continuous(breaks = c(-0.28, 1:4), 
+                         labels = as.character( c("NA", "-10%", "-2%", "+2%", "+10%"))) +
+      scale_y_continuous(labels = NULL) +
+      scale_fill_manual(values = setNames(leg$fill, leg$fill)) + 
       labs_xy + theme_default + theme(axis.text.y = element_blank())
     
-    
     # Bivariate, multi-date
-  } else if (data_type == "delta_bivar") {
+  } else if (data_type %in% c("delta_bivar", "bivar_xdelta_yq3")) {
     
     l <- legend_bivar
-    l$label <- c(sus_translate(r = r, "Both low"), " ", 
-                 paste0(labs_xy$y_short, "\n", sus_translate(r = r, "high only")), " ",
+    l$label <- c(cc_t(r = r, "Both low"), " ", 
+                 paste0(labs_xy$y_short, "\n", cc_t(r = r, "high only")), " ",
                  " ", " ", 
-                 paste0(labs_xy$x_short, "\n", sus_translate(r = r, "high only")), " ", 
-                 sus_translate(r = r, "Both high"))
+                 paste0(labs_xy$x_short, "\n", cc_t(r = r, "high only")), " ", 
+                 cc_t(r = r, "Both high"))
     l$label_colour <- c(rep("black", 8), "white")
     l$x <- as.numeric(l$x) - 0.5
     l$y <- as.numeric(l$y) - 0.5

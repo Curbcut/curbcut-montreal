@@ -27,7 +27,7 @@ ui <- function(request) {
                         href = "sus.footer.css")),
     tags$head(tags$link(rel = "stylesheet", type = "text/css", 
                         href = "sus.button.css")),
-    tags$head(tags$link(rel = "stylesheet", type = "text/css", 
+    tags$head(tags$link(rel = "stylesheet", type = "text/css",
                         href = "sus.carousel.css")),
     tags$head(tags$link(rel = "stylesheet", type = "text/css", 
                         href = "sus.pages.css")),
@@ -51,16 +51,37 @@ ui <- function(request) {
     tags$head(tags$script(src = "sus.js")),
     tags$head(tags$script(src = "cookie.js")),
     tags$head(tags$script(src = "shinybrowser.js")),
+    # Cookie js script
     tags$script(src = paste0("https://cdn.jsdelivr.net/npm/js-cookie@rc/",
                              "dist/js.cookie.min.js")),
     tags$head(tags$script(js_links_between_modules)),
     tags$head(tags$script(bookmark_url)),
     tags$head(tags$style(HTML(styler))),
     tags$head(tags$style(HTML(temp_styler))),
+    # # To allow screenshot
+    # tags$script(src = paste0("https://cdn.jsdelivr.net/npm/html2canvas@1.0.0-",
+    #                          "rc.5/dist/html2canvas.min.js")),
+    # extendShinyjs(text = screenshot_js, functions = "takeShot"),
+    # tags$script(HTML('HTMLCanvasElement.prototype.getContext = function(origFn) {
+    #   return function(type, attribs) {
+    #     attribs = attribs || {};
+    #     attribs.preserveDrawingBuffer = true;
+    #     return origFn.call(this, type, attribs);
+    #   };
+    # }(HTMLCanvasElement.prototype.getContext);')),
+    
     # change page title JS function
     tags$script(HTML('Shiny.addCustomMessageHandler("changetitle", function(x) 
                    {document.title=x});')),
     
+    # To allow div elements with title attribute, for dropdown text on hover
+    tags$script(
+      "var myDefaultWhiteList = $.fn.selectpicker.Constructor.DEFAULTS.whiteList;
+    myDefaultWhiteList.div = ['title'];"
+    ),
+    tags$head(tags$style("span.text {display: block !important;}")),
+    
+    # Google analytics
     tags$head(includeHTML("www/google_analytics.html")),
     
     # Language switching ---------------------------------------------------------
@@ -77,11 +98,11 @@ ui <- function(request) {
     
     meta() |> 
       meta_social(
-        title = "Welcome | SUS | Towards a sustainable city",
-        description = paste0("Sus is a platform for exploring urban ",
+        title = "Welcome | Curbcut | Towards a sustainable city",
+        description = paste0("Curbcut is a platform for exploring urban ",
                              "sustainability in the Montreal region across ",
                              "multiple spatial and temporal scales."),
-        url = "https://susmontreal.ca",
+        url = "https://curbcut.ca",
         image = "share.jpg",
         image_alt = paste0("A photo of a winding footpath through a verdant ",
                            "Montreal alley."),
@@ -96,21 +117,21 @@ ui <- function(request) {
     do.call(
       navbarPageWithInputs, 
       c(list(id = "sus_page", 
-             windowTitle = "SUS", 
-             title = actionLink("title", "SUS"),
-             tabPanel(sus_translate("Home"), home_UI("home"), value = "home")),
+             windowTitle = "Curbcut", 
+             title = actionLink("title", "Curbcut"),
+             tabPanel(cc_t("Home"), home_UI("home"), value = "home")),
         ready_modules_ui(mods_rdy),
-        list(tabPanel(sus_translate("Montréal stories"), stories_UI("stories"),
+        list(tabPanel(cc_t("Montréal stories"), stories_UI("stories"),
                       value = "stories"),
-             tabPanel(sus_translate("Place explorer"), 
+             tabPanel(cc_t("Place explorer"), 
                       place_explorer_UI("place_explorer"),
                       value = "place_explorer"),
-             navbarMenu(sus_translate("About"),
-                        tabPanel(sus_translate("About Sus"), 
+             navbarMenu(cc_t("About"),
+                        tabPanel(cc_t("About Curbcut"), 
                                  about_sus_UI("about_sus"), value = "about_sus"),
-                        tabPanel(sus_translate("How to use"), how_to_use_UI("how_to_use"), 
+                        tabPanel(cc_t("How to use"), how_to_use_UI("how_to_use"), 
                                  value = "how_to_use"),
-                        tabPanel(sus_translate("Authors"), authors_UI("authors"), value = "authors")),
+                        tabPanel(cc_t("Authors"), authors_UI("authors"), value = "authors")),
              collapsible = TRUE,
              inputs = list(
                # Language toggle
@@ -126,23 +147,27 @@ ui <- function(request) {
                                   class = "action-button shiny-bound-input",
                                   role = "menuitem",
                                   href = "#",
-                                  icon("link"), sus_translate("Bookmark"), 
+                                  icon("link", verify_fa = FALSE), cc_t("Bookmark"), 
                                   onclick = "copyUrl()"),
                                 actionLink(inputId = "contact",
-                                           label = sus_translate("Contact/feedback"),
-                                           icon("comment"),
-                                           onclick = "window.open('mailto:contact@susmontreal.ca', '_blank')"),
+                                           label = cc_t("Contact/feedback"),
+                                           icon("comment", verify_fa = FALSE),
+                                           onclick = "window.open('mailto:contact@curbcut.ca', '_blank')"),
                                 actionLink(inputId = "download_data",
-                                           label = sus_translate(
+                                           label = cc_t(
                                              "Export data"),
-                                           icon("download")),
+                                           icon("download", verify_fa = FALSE)),
+                                # actionLink(inputId = "save_image",
+                                #            label = cc_t(
+                                #              "Save as image"),
+                                #            icon("image", verify_fa = FALSE)),
                                 actionLink(inputId = "subscribe",
-                                           label = sus_translate("Newsletter"),
-                                           icon("list-alt"))#,
-                                # actionLink(inputId = "advanced_options",
-                                #            label = sus_translate(
-                                #              "Advanced options"),
-                                #            icon("gear", verify_fa = FALSE))
+                                           label = cc_t("Newsletter"),
+                                           icon("rectangle-list", verify_fa = FALSE)),
+                                actionLink(inputId = "advanced_options",
+                                           label = cc_t(
+                                             "Advanced options"),
+                                           icon("gear", verify_fa = FALSE))
                  ), "summarize")
              )
         ))

@@ -41,13 +41,13 @@
 #     # Translate drop-down lists
 #     observe({
 #       updateSelectInput(session = session, inputId = "var_right",
-#                         choices = sus_translate(r = r, var_list_ped))
+#                         choices = cc_t(r = r, var_list_ped))
 #     })
 #     
 #     observe({
 #       updateSelectInput(session = session,
 #                         inputId = "var_slider",
-#                         choices = sus_translate(r = r, var_list_ped_slider))
+#                         choices = cc_t(r = r, var_list_ped_slider))
 #     })
 #     
 #     

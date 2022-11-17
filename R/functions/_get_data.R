@@ -1,11 +1,10 @@
 #### GET DATA ##################################################################
 
-get_data <- function(geo, df, var_left, var_right, island = FALSE, 
+get_data <- function(geo, df, var_left, var_right, 
                      point_df = NULL, build_str_as_DA = TRUE) {
   
   # Return raw df or NULL if df isn't whitelisted
-  if (!df %in% c("borough", "CT", "DA", "building", "grid",
-                 "centraide")) return(get0(df))
+  if (!is_scale_in_df(c(all_choropleth, "grid"), df)) return(get0(df))
 
   # Get data type
   data_type <- get_data_type(df, var_left, var_right, build_str_as_DA)
@@ -25,19 +24,14 @@ get_data <- function(geo, df, var_left, var_right, island = FALSE,
     error = function(e) {
       warning(glue("get_data() failed with `{df}` (df), `{var_left}` ",
                    "(var_left) and `{var_right}` (var_right). Returning NULL."))
-      return(NULL)
+      return(data.frame())
     })
   
   if (is.null(data)) return(NULL)
   
-  ## Filter to island ----------------------------------------------------------
-  
-  if (island && df %in% c("borough", "CT", "DA", "grid", "street", "building"))
-    data <- data[data$CSDUID %in% island_CSDUID,]
-  
   
   # Return output ----------------------------------------------------------
-
+  
   return(data)
   
 }

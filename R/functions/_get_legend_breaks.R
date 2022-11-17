@@ -63,7 +63,7 @@ get_legend_breaks <- function(r = r, data, var_left, var_right, df, data_type,
     if (suppressWarnings(!is.null(break_labs$var_name) && 
                          !any(is.na(break_labs$var_name)))) {
       break_labs <- sapply(break_labs$var_name_short, 
-                           \(x) sus_translate(r = r, x),
+                           \(x) cc_t(r = r, x),
                            USE.NAMES = FALSE)
     }
   }
@@ -81,16 +81,14 @@ get_legend_breaks <- function(r = r, data, var_left, var_right, df, data_type,
       which(variables$var_code == unique(sub("_\\d{4}$", "", var_left)))]]
     if (length(break_labs_y) > 0) break_labs_y <- 
       break_labs_y$var[
-        (break_labs_y$date == date_left | 
-           is.na(break_labs_y$date)) &
+        (break_labs_y$date == date_left | is.na(break_labs_y$date)) &
           break_labs_y$scale == df]
     
     break_labs_x <- variables$breaks_q3[[
       which(variables$var_code == unique(sub("_\\d{4}$", "", var_right)))]]
     if (length(break_labs_x) > 0) break_labs_x <- 
       break_labs_x$var[
-        (break_labs_x$date == date_right | 
-           is.na(break_labs_x$date)) &
+        (break_labs_x$date == date_right | is.na(break_labs_x$date)) &
           break_labs_x$scale == df]
     
     # Format breaks
@@ -102,6 +100,34 @@ get_legend_breaks <- function(r = r, data, var_left, var_right, df, data_type,
     attr(break_labs, "qual") <- FALSE
      
   }
+  
+  ## Delta x & q3 y version ----------------------------------------------------
+  
+  if (data_type == "bivar_xdelta_yq3") {
+    
+    # Get breaks
+    break_labs_y <- c(
+      min(data$var_left, na.rm = TRUE),
+      max(data$var_left[data$var_left_q3 == 1], na.rm = TRUE),
+      max(data$var_left[data$var_left_q3 == 2], na.rm = TRUE),
+      max(data$var_left, na.rm = TRUE))
+    
+    break_labs_x <- c(
+      min(data$var_right, na.rm = TRUE),
+      max(data$var_right[data$var_right_q3 == 1], na.rm = TRUE),
+      max(data$var_right[data$var_right_q3 == 2], na.rm = TRUE),
+      max(data$var_right, na.rm = TRUE))
+    
+    # Format breaks
+    break_labs_y <- convert_unit(break_labs_y, var_name = "_pct", TRUE)
+    break_labs_x <- convert_unit(break_labs_x, var_name = var_right, TRUE)
+    
+    # Construct result
+    break_labs <- list(x = break_labs_x, y = break_labs_y)
+    attr(break_labs, "qual") <- FALSE
+    
+  }
+  
   
   
   ## Delta bivariate version ---------------------------------------------------
@@ -136,8 +162,8 @@ get_legend_breaks <- function(r = r, data, var_left, var_right, df, data_type,
   if (data_type == "q100") {
     
     # Create break labels
-    break_labs <- c(sus_translate(r = r, "Low"), sapply(1:9, \(x) NULL),
-                    sus_translate(r = r, "High"))
+    break_labs <- c(cc_t(r = r, "Low"), sapply(1:9, \(x) NULL),
+                    cc_t(r = r, "High"))
     
   }
   

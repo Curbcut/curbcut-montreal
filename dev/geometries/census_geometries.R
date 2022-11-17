@@ -6,18 +6,19 @@ suppressPackageStartupMessages({
   library(sf)
   library(qs)
   library(cancensus)
-  })
+})
 
 # Variables to be selected from get_census
 var_select <- c("CTUID" = "CT_UID", "CSDUID" = "CSD_UID", "name" = "name",
                 "population" = "Population", "households" = "Households")
 
 # Get census function
-get_census <- function(re = list(PR = "24"), sc = scale, format = TRUE) {
+get_census <- function(region = list(PR = "24"), scale, format = TRUE, 
+                       crs = 32618) {
   out <- cancensus::get_census(
     dataset = "CA16",
-    regions = re,
-    level = sc,
+    regions = region,
+    level = scale,
     geo_format = "sf",
     quiet = TRUE)  |> 
     as_tibble() |>
@@ -31,12 +32,9 @@ get_census <- function(re = list(PR = "24"), sc = scale, format = TRUE) {
   
   keep_ids <- 
     out |>
-    mutate(previous_area = units::drop_units(st_area(geometry))) |>
-    st_intersection(master_polygon) |>
-    st_set_agr("constant") |> 
-    st_make_valid() |> 
-    mutate(new_area = units::drop_units(st_area(geometry))) |>
-    filter({new_area / previous_area} > 0.33) |>
+    st_transform(crs) |> 
+    st_point_on_surface() |> 
+    st_filter(st_transform(master_polygon, crs)) |> 
     pull(ID)
   
   out |> 
@@ -44,21 +42,24 @@ get_census <- function(re = list(PR = "24"), sc = scale, format = TRUE) {
 }
 
 # Download DAs
-CDs <- get_census(sc = "CD", format = FALSE)$ID
-DA <- get_census(re = list(CD = CDs), sc = "DA")
+CDs <- get_census(scale = "CD", format = FALSE)$ID
+DA <- get_census(region = list(CD = CDs), scale = "DA")
+
+# Download DB for the city
+DB <- get_census(region = list(CSD = 2466023), scale = "DB")
 
 # Download CTs, fill in with CSDs
-CT <- get_census(sc = "CT")
+CT <- get_census(scale = "CT")
 
 csds <- 
-  get_census(sc = "CSD") |> 
+  get_census(scale = "CSD") |> 
   st_transform(32618)
 csds_buffered <- 
   csds |> 
   mutate(geometry = st_buffer(geometry, -25))
 
 filling_CTs <- csds[-{
-    st_intersects(st_transform(CT, 32618), csds_buffered) |> 
+  st_intersects(st_transform(CT, 32618), csds_buffered) |> 
     unlist() |> 
     unique()}, ] |> 
   mutate(CSDUID = ID) |> 
@@ -69,7 +70,7 @@ CT <- rbind(CT, filling_CTs)
 # Download CSDs
 CSD <-
   cancensus::get_census("CA16", list(CMA = "24462"), "CSD", geo_format = "sf", 
-             quiet = TRUE) |> 
+                        quiet = TRUE) |> 
   as_tibble() |> 
   st_as_sf() |> 
   select(ID = GeoUID, any_of(var_select), geometry) |> 
@@ -80,14 +81,13 @@ CSD <-
   mutate(name = str_remove(name, " \\(.*\\)")) |> 
   st_set_agr("constant")
 
-rm(var_select, get_census, csds, filling_CTs, CDs)
-
+rm(var_select, get_census, csds, filling_CTs, CDs, csds_buffered)
 
 
 # Clip boroughs -----------------------------------------------------------
 
 # Get CMA boundary for clipping boroughs
-CMA <- 
+CMA_boundaries <- 
   get_census("CA16", list(CMA = "24462"), geo_format = "sf", quiet = TRUE) |> 
   st_set_agr("constant")
 
@@ -96,7 +96,7 @@ borough <-
   read_sf("dev/data/montreal_boroughs_2019.shp") |> 
   st_set_agr("constant") |> 
   st_transform(32618) |> 
-  st_intersection(st_transform(CMA, 32618)) |> 
+  st_intersection(st_transform(CMA_boundaries, 32618)) |> 
   st_transform(4326) |> 
   select(name = NOM, type = TYPE, geometry) |> 
   mutate(type = if_else(type == "Arrondissement", "Borough", "City")) |> 
@@ -128,7 +128,7 @@ borough <-
   borough  |>  
   filter(!name %in% replacements$name)
 
-rm(CMA, replacements)
+rm(CMA_boundaries, replacements)
 
 # Join DAs to remaining boroughs by centroid
 borough_join <-
@@ -187,50 +187,72 @@ borough <-
   borough |> 
   mutate(CSDUID = ID, .after = name)
 
-DA <- 
-  DA |> 
-  left_join(borough_join, by = "ID") |> 
-  mutate(CSDUID = coalesce(CSDUID_new, CSDUID)) |> 
-  select(-CSDUID_new)
-
-CT <-
-  DA |> 
-  st_drop_geometry() |> 
-  select(ID = CTUID, CSDUID_new = CSDUID) |> 
-  distinct() |> 
-  filter(str_detect(CSDUID_new, "_")) |> 
-  group_by(ID) |> 
-  # Manual fix for Pierrefonds
-  slice(1) |> 
-  ungroup() |> 
-  right_join(CT, by = "ID") |> 
-  mutate(CSDUID = coalesce(CSDUID_new, CSDUID)) |> 
-  select(-CSDUID_new) |> 
-  st_as_sf()
-
 rm(borough_join, CSD, leftovers)
 
-
-# Add borough/CSD names ---------------------------------------------------
-
-borough <- 
+CSD <- 
   borough |> 
   rename(name_2 = type) |> 
   st_set_agr("constant")
 
+
+# Adding Laval ------------------------------------------------------------
+
+# Adding Laval
+laval <- st_read(paste0("dev/data/centraide/StatCan_Recensement2016/_Geograph",
+                        "ie/Secteurs_damenagement_Ville_de_Laval.shp")) |> 
+  sf::st_transform(4326) |> 
+  transmute(name = gsub("Secteur \\d - ", "", Secteur), type = "Sector")
+
+CSD <- susbuildr::split_scale(destination = CSD, 
+                              cutting_layer = laval,
+                              DA_table = DA,
+                              crs = 32618)
+
+CSD <- CSD |> 
+  mutate(CSDUID = ID)
+
+# Add borough/CSD names ---------------------------------------------------
+
+CT_surface <- st_point_on_surface(st_transform(CT, 32618))
+
+CT_index <- 
+  CT_surface |> 
+  select(-CSDUID) |> 
+  st_intersection(select(st_transform(CSD, 32618), CSDUID, name) |> 
+                    rename(name_2 = name)) |> 
+  st_drop_geometry() |> 
+  select(ID, CSDUID, name_2)
+
 CT <- 
   CT |> 
-  left_join(select(st_drop_geometry(borough), CSDUID = ID, name_2 = name),
-            by = "CSDUID") |>
-  relocate(name_2, .after = name) |>
-  mutate(CTUID = ID, .after = name_2) |>
-  st_set_agr("constant")
+  select(-CSDUID) |> 
+  left_join(CT_index) |> 
+  mutate(CTUID = ID) |> 
+  relocate(name_2, CSDUID, CTUID, .after = name)
 
 DA <- 
-  DA |> 
-  left_join(select(st_drop_geometry(borough), CSDUID = ID, name_2 = name), 
-            by = "CSDUID") |>
+DA |> 
+  select(-CSDUID) |> 
+  left_join(st_drop_geometry(CT) |> 
+              transmute(CTUID, CSDUID, name_2), by = "CTUID") |> 
+  mutate(DAUID = ID) |> 
+  relocate(name_2, CSDUID, CTUID, DAUID, .after = name)
+
+# + add DAUID to DB
+DB_intersects_DA <- st_intersects(st_centroid(DB), DA)
+DB$DAUID <- map_chr(seq_len(nrow(DB)), ~{DA[unlist(DB_intersects_DA)[.x], ]$ID})
+DB <- 
+  DB |> 
+  select(-CSDUID) |> 
+  left_join(select(st_drop_geometry(DA), CSDUID, DAUID), by = "DAUID") |> 
+  left_join(st_drop_geometry(borough) |> 
+              select(CSDUID, name_2 = name), 
+            by = "CSDUID") |> 
   relocate(name_2, .after = name) |> 
-  mutate(CTUID = if_else(is.na(CTUID), CSDUID, CTUID)) |> 
-  mutate(DAUID = ID, .after = name_2) |> 
+  relocate(DAUID, .after = name_2) |> 
+  relocate(CSDUID, .after = CTUID) |> 
+  mutate(DBUID = ID, .after = name_2) |> 
   st_set_agr("constant")
+
+
+rm(borough, DB_intersects_DA)

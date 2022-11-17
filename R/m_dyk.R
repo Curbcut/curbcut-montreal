@@ -33,11 +33,11 @@ dyk_server <- function(id, r, var_left, var_right,
       if (!is.null(dyk_output())) {
         tagList(
           hr(),
-          fluidRow(column(width = 7, h4(sus_translate(r = r, "Did you know?"))),
+          fluidRow(column(width = 7, h4(cc_t(r = r, "Did you know?"))),
                    column(width = 5, align = "right",
                           actionLink(inputId = session$ns("hide_dyk"), 
                                      class = "sus-small-link",
-                                     label = sus_translate(r = r, "Hide")))))
+                                     label = cc_t(r = r, "Hide")))))
       }
     })
 
@@ -46,7 +46,7 @@ dyk_server <- function(id, r, var_left, var_right,
     
     # Change show/hide button text
     observeEvent(dyk_hide_status(), {
-      txt <- sus_translate(r = r, switch(input$hide_dyk %% 2 + 1, "Hide", "Show"))
+      txt <- cc_t(r = r, switch(input$hide_dyk %% 2 + 1, "Hide", "Show"))
       updateActionButton(session, "hide_dyk", label = txt)
     }, ignoreInit = TRUE)
     

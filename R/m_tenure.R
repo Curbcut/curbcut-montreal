@@ -12,17 +12,16 @@ tenure_UI <- function(id) {
       NS(id, id),
       susSidebarWidgets(
         select_var_UI(NS(id, id), select_var_id = "d_1",
-                      label = sus_translate(r = r, "Tenure status"),
+                      label = cc_t(r = r, "Tenure status"),
                       var_list = var_left_list_1_tenure), 
         select_var_UI(NS(id, id), select_var_id = "d_2",
-                      label = sus_translate(r = r, "Shelter cost"),
+                      label = cc_t(r = r, "Shelter cost"),
                       var_list = var_left_list_2_tenure), 
         checkbox_UI(NS(id, id),
-                    label = sus_translate(r = r, 
-                                          "Normalized (percent of households)")),
+                    label = cc_t(r = r, "Normalized data (percent of households)")),
         br(),
         select_var_UI(NS(id, id), select_var_id = "d_3",
-                      label = sus_translate(r = r, "Additional characteristic"),
+                      label = cc_t(r = r, "Family characteristic"),
                       var_list = var_left_list_3_tenure)),
       bottom = div(class = "bottom_sidebar", 
                    tagList(legend_UI(NS(id, id)),
@@ -71,18 +70,18 @@ tenure_server <- function(id, r) {
     # Map zoom levels change depending on r$geo(). Listening only to the latter
     # to not have to recalculate everytime var_left() changes.
     map_zoom_levels <- reactive({
-      out <- get_zoom_levels(default = "CMA_max_CT", 
-                             geo = paste0(r$geo(), "_max_CT"),
-                             var_left = var_left())
-      out$scale <- gsub("_max_CT", "", out$scale)
-      out
+      get_zoom_levels(default = "CMA", 
+                      geo = r$geo(),
+                      var_left = isolate(var_left()),
+                      suffix_zoom_levels = "_max_CT")
     }) |> bindEvent(r$geo())
     
     # Zoom string reactive
     observe({
-      new_zoom_string <- get_zoom_string(r[[id]]$zoom(), map_zoom_levels()$levels)
+      new_zoom_string <- get_zoom_string(r[[id]]$zoom(), map_zoom_levels()$levels,
+                                         map_zoom_levels()$scale)
       if (new_zoom_string != zoom_string()) zoom_string(new_zoom_string)
-    }) |> bindEvent(r[[id]]$zoom(), r$geo())
+    }) |> bindEvent(r[[id]]$zoom(), map_zoom_levels()$scale)
     
     # Click reactive
     observe({
@@ -93,8 +92,27 @@ tenure_server <- function(id, r) {
       } else r[[id]]$select_id(selection)
     }) |> bindEvent(get_clicked_object(id_map))
     
+    # Default location
+    observe({
+      if (is.null(r$default_select_id())) return(NULL)
+      
+      new_id <- data()$ID[data()$ID %in% 
+                            r$default_select_id()[[gsub("_.*", "", r[[id]]$df())]]]
+      if (length(new_id) == 0) return(NULL)
+      
+      r[[id]]$select_id(new_id)
+    }) |> bindEvent(r$default_select_id(), r[[id]]$df())
+    
     # Sidebar
     sidebar_server(id = id, r = r)
+    # Centraide logo
+    observe({
+      insertUI(selector = paste0("#", paste(id, id, "title", sep = "-")),
+               where = "beforeEnd",
+               tags$a(href = "https://www.centraide-mtl.org/", target = "_blank",
+                      img(src = paste0("centraide_logo/centraide_logo_", r$lang(), ".png"), 
+                          style = 'width:70%; display:block; margin:auto; margin-top:15px; margin-bottom:15px;')))
+    })
     
     # Choose tileset
     tile_1 <- zoom_server(
@@ -176,14 +194,14 @@ tenure_server <- function(id, r) {
     # Data
     data <- reactive(get_data(
       df = r[[id]]$df(),
-      geo = r$geo(),
+      geo = map_zoom_levels()$scale,
       var_left = var_left(),
       var_right = var_right()))
     
     # Data for tile coloring
     data_color <- reactive(get_data_color(
       map_zoom_levels = map_zoom_levels()$levels,
-      geo = r$geo(),
+      geo = map_zoom_levels()$scale,
       var_left = var_left(),
       var_right = var_right()
     ))
@@ -216,6 +234,7 @@ tenure_server <- function(id, r) {
       id = id,
       r = r,
       data = data,
+      geo = reactive(map_zoom_levels()$scale),
       var_left = var_left,
       var_right = var_right)
     
@@ -242,13 +261,11 @@ tenure_server <- function(id, r) {
     )
     
     # Data transparency and export
-    observe({
-      r[[id]]$export_data <- reactive(data_export(id = id,
-                                                  data = data(),
-                                                  var_left = var_left(),
-                                                  var_right = var_right(),
-                                                  df = r[[id]]$df()))
-    })
+    r[[id]]$export_data <- reactive(data_export(id = id,
+                                                data = data(),
+                                                var_left = var_left(),
+                                                var_right = var_right(),
+                                                df = r[[id]]$df()))
     
   })
 }

@@ -111,7 +111,6 @@
 #     # Update select_id on click
 #     observeEvent(input$map_scatterplot_click, {
 #       lst <- fromJSON(input$map_scatterplot_click)$index
-#       print(lst)
 #       if (lst == 0) selection(NA) else {
 #         # This is a hack because of a mapdeck bug
 #         selection(marketed_sustainability[lst + 1,]$ID)

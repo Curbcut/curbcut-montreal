@@ -2,25 +2,28 @@
 
 get_zoom <- function(zoom) floor(zoom * 2) / 2
 
-get_zoom_string <- function(zoom, zoom_levels) {
+get_zoom_string <- function(zoom, zoom_levels, geo = "CMA") {
   zoom_levels <- sort(zoom_levels)
   out <- names(zoom_levels)[zoom >= zoom_levels]
   out <- out[length(out)]
+  out <- paste(geo, out, sep = "_")
   return(out)
 }
 
 get_zoom_name <- function(x) sapply(
-  x, 
+  gsub(".*_", "", x), 
   switch, 
-  "borough" = "Borough/city",
+  "CSD" = "Borough/city",
   "CT" = "Census tract",
   "DA" = "Dissemination area",
+  "DB" = "Dissemination block",
   "grid" = "250-m grid cell",
   "building" = "Building",
   "street" = "Street",
   "heatmap" = "Heatmap",
   "point" = "Point",
   "centraide" = "Centraide",
+  "cmhczone" = "CMHC Zone",
   x,
   USE.NAMES = FALSE)
 
@@ -32,14 +35,15 @@ get_zoom_label <- function(zoom_levels) {
 
 get_zoom_label_t <- function(zoom_levels, r) {
   zl <- names(sort(zoom_levels))
-  zl <- sapply(get_zoom_name(zl), sus_translate, r = r, USE.NAMES = FALSE)
+  zl <- sapply(get_zoom_name(zl), cc_t, r = r, USE.NAMES = FALSE)
   return(zl)
 }
 
 get_zoom_code <- function(x) {
-  if (x == "Borough/city" || x == "Arrondissement/ville") return("borough")
+  if (x == "Borough/city" || x == "Arrondissement/ville") return("CSD")
   if (x == "Census tract" || x == "Secteur de recensement") return("CT")
   if (x == "Dissemination area" || x == "Aire de diffusion") return("DA")
+  if (x == "Dissemination block" || x == "Îlot de diffusion") return("DB")
   if (x == "Building" || x == "Bâtiment") return("building")
   if (x == "Street" || x == "Rue") return("street")
   if (x == "Heatmap") return("heatmap")
@@ -52,21 +56,26 @@ get_zoom_code <- function(x) {
 #' initiated in global.R. The default is `CMA`, for `map_zoom_levels_CMA`
 #' @param geo is a string corresponding to `r$geo()`, user decides what zoom
 #' levels they desire.
-get_zoom_levels <- function(default = "CMA", geo, var_left) {
+get_zoom_levels <- function(default = "CMA", geo, var_left, 
+                            suffix_zoom_levels = "") {
   get_z <- function(z) {
     out <- get0(paste0("map_zoom_levels_", z))
     if (!is.null(out)) return(out)
     stop(paste0("`map_zoom_levels_", z, "` does not exist as a zoom level"))
   }
-  zooms_default <- get_z(default)
-  zooms_geo <- get_z(geo)
+  zooms_default <- get_z(paste0(default, suffix_zoom_levels))
+  zooms_geo <- get_z(paste0(geo, suffix_zoom_levels))
   
   if (default == geo) return(list(levels = zooms_default, scale = geo))
   
   # Check if the main variable is part of the set of variables in the
-  # prefered zoom levels. If it is, return the wanted map_zoom_levels_CMA
-  if (var_left[1] %in% names(get0(names(zooms_geo[1])))) 
-    return(list(levels = zooms_geo, scale = geo))
+  # prefered zoom levels. If it is, return the wanted map_zoom_levels
+  geo_scale <- paste(geo, names(zooms_geo[1]), sep = "_")
   
-  return(list(levels = zooms_default, scale = geo))
+  vl_in_sql <- var_left[1] %in% tables_in_sql[[geo_scale]]
+    
+  exists_at_geo_scale <- var_left[1] %in% names(get0(geo_scale)) || vl_in_sql
+  if (exists_at_geo_scale) return(list(levels = zooms_geo, scale = geo))
+  
+  return(list(levels = zooms_default, scale = default))
 }

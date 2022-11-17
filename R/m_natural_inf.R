@@ -13,33 +13,33 @@ natural_inf_UI <- function(id) {
         select_var_UI(NS(id, id), 
                       select_var_id = "d_1",
                       var_list = var_left_list_1_natural_inf,
-                      label = sus_translate(r = r, "Theme")),
+                      label = cc_t(r = r, "Theme")),
         select_var_UI(NS(id, id), 
                       select_var_id = "d_2",
                       var_list = list("----" = " "),
-                      label = sus_translate(r = r, "Indicator")),
+                      label = cc_t(r = r, "Indicator")),
         slider_UI(NS(id, id),
-                  label = sus_translate(r = r, "Amount of territory to protect"),
+                  label = cc_t(r = r, "Amount of territory to protect"),
                   min = 0,
                   max = 25,
                   step = 1,
                   value = 17,
                   post = "%"),
         checkbox_UI(NS(id, id),
-                    label = sus_translate(r = r, "Custom priorities")),
+                    label = cc_t(r = r, "Custom priorities")),
         slider_text_UI(NS(id, id),
                        slider_id = "s_bio",
-                       label = sus_translate(r = r, "Biodiversity conservation"),
+                       label = cc_t(r = r, "Biodiversity conservation"),
                        choices = custom_slider_choices,
                        selected = "Important"),
         slider_text_UI(NS(id, id),
                        slider_id = "s_hea",
-                       label = sus_translate(r = r, "Heat island reduction"),
+                       label = cc_t(r = r, "Heat island reduction"),
                        choices = custom_slider_choices,
                        selected = "Important"),
         slider_text_UI(NS(id, id),
                        slider_id = "s_flo",
-                       label = sus_translate(r = r, "Flood prevention"),
+                       label = cc_t(r = r, "Flood prevention"),
                        choices = custom_slider_choices,
                        selected = "Important")
         ),
@@ -175,7 +175,7 @@ natural_inf_server <- function(id, r) {
           paste0("SELECT * FROM natural_inf_explore")
         }
       
-      dbGetQuery(db, db_call)
+      do.call("dbGetQuery", list(rlang::sym("natural_inf_conn"), db_call))
     })
     
     # Map custom colours
@@ -200,7 +200,7 @@ natural_inf_server <- function(id, r) {
                               " WHERE biodiversity = ", ni_slider()[1], 
                               " AND heat_island = ", ni_slider()[2], 
                               " AND flood = ", ni_slider()[3])
-            dbGetQuery(db, db_call)[, c("group", "value")] 
+            do.call("dbGetQuery", list(rlang::sym("natural_inf_conn"), db_call))[, c("group", "value")] 
           }
         }
       } else NULL
@@ -254,6 +254,7 @@ natural_inf_server <- function(id, r) {
       data = data,
       var_left = var_left,
       var_right = var_right,
+      geo = r$geo,
       df = reactive(NULL),
       select_id = reactive(NA),
       graph = reactive(explore_graph_natural_inf),

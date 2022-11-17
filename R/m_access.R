@@ -12,11 +12,11 @@ access_UI <- function(id) {
       susSidebarWidgets(
       select_var_UI(NS(id, id), select_var_id = "d_2",
                     var_list = var_left_list_2_access,
-                    label = sus_translate(r = r, "Timing")),
+                    label = cc_t(r = r, "Timing")),
       select_var_UI(NS(id, id), select_var_id = "d_1",
                     var_list = var_left_list_1_access,
-                    label = sus_translate(r = r, "Destination type")),
-      slider_UI(NS(id, id), label = sus_translate(r = r, "Time threshold"),
+                    label = cc_t(r = r, "Destination type")),
+      slider_UI(NS(id, id), label = cc_t(r = r, "Time threshold"),
                   min = 10, max = 60, step = 1, value = 30)),
       bottom = div(class = "bottom_sidebar",
           tagList(legend_UI(NS(id, id)),
@@ -44,7 +44,6 @@ access_server <- function(id, r) {
     sidebar_server(id = id, r = r, x = "access")
     
     # Initial reactives
-    zoom_string <- reactiveVal(get_zoom_string(map_zoom, map_zoom_levels_CMA))
     poi <- reactiveVal(NULL)
     
     # Map
@@ -68,12 +67,6 @@ access_server <- function(id, r) {
         poi(new_poi)
     }) |> bindEvent(get_view_state(id_map))
     
-    # Zoom string reactive
-    observe({
-      new_zoom_string <- get_zoom_string(r[[id]]$zoom(), map_zoom_levels_CMA)
-      if (new_zoom_string != zoom_string()) zoom_string(new_zoom_string)
-    }) |> bindEvent(r[[id]]$zoom())
-    
     # Click reactive
     observe({
       selection <- get_clicked_object(id_map)$ID
@@ -83,11 +76,22 @@ access_server <- function(id, r) {
       } else r[[id]]$select_id(selection)
     }) |> bindEvent(get_clicked_object(id_map))
     
+    # Default location
+    observe({
+      if (is.null(r$default_select_id())) return(NULL)
+      
+      new_id <- data()$ID[data()$ID %in% 
+                            r$default_select_id()[[gsub("_.*", "", r[[id]]$df())]]]
+      if (length(new_id) == 0) return(NULL)
+      
+      r[[id]]$select_id(new_id)
+    }) |> bindEvent(r$default_select_id(), r[[id]]$df())
+    
     # Time
     time <- reactive("2016")
     
     # Choose tileset
-    tile <- reactive("CMA-CT")
+    tile <- reactive("CMA_CT")
 
     # Enable or disable slider + type of destination
     observeEvent({r[[id]]$select_id()
@@ -105,7 +109,7 @@ access_server <- function(id, r) {
     breaks <- reactive({
       if (!is.na(r[[id]]$select_id()) && var_right() == " ") {
         breaks <- slider() / 5 * 5:0
-        attr(breaks, "label") <- sus_translate(r = r, "Minutes to reach census tract")
+        attr(breaks, "label") <- cc_t(r = r, "Minutes to reach census tract")
         attr(breaks, "palette") <- legend_iso
         breaks
       } else NULL
@@ -132,14 +136,14 @@ access_server <- function(id, r) {
       updatePickerInput(
         session,
         inputId = "access-access-var",
-        choices = sus_translate(r = r, make_dropdown(compare = TRUE)),
+        choices = cc_t(r = r, make_dropdown(compare = TRUE)),
         selected = " ")
     }, priority = 1)
 
     # Data
     data <- reactive(get_data(
       df = r[[id]]$df(),
-      geo = r$geo(),
+      geo = reactive("CMA"),
       var_left = var_left(), 
       var_right = var_right()))
     
@@ -148,6 +152,7 @@ access_server <- function(id, r) {
       id = id,
       r = r,
       data = data,
+      geo = reactive("CMA"),
       var_left = var_left,
       var_right = var_right)
 
@@ -177,13 +182,13 @@ access_server <- function(id, r) {
                  "` FROM tt_matrix WHERE timing = '", var_left_2(), "'",
                  " AND `", r[[id]]$select_id(), "` <= ", tt_thresh,
                  " AND destination != ", r[[id]]$select_id())
-        CTs_to_map <- dbGetQuery(db, db_call) |> dplyr::as_tibble()
+        CTs_to_map <- do.call("dbGetQuery", list(rlang::sym("tt_matrix_conn"), 
+                                                 db_call))
         # Further manipultaion
         CTs_to_map$group <- as.character(6 - ceiling((
           CTs_to_map[[r[[id]]$select_id()]]) / tt_thresh * 5))
         CTs_to_map <- CTs_to_map[, c("destination", "group")]
-        CTs_to_map <- merge(CTs_to_map, colour_iso, by = "group", 
-                            all.x = TRUE)
+        CTs_to_map <- merge(CTs_to_map, colour_iso, by = "group")
         names(CTs_to_map) <- c("group", "ID", "fill")
         data_1 <- data()[, "ID"] |> merge(CTs_to_map, by = "ID")
         data_1 <- data_1[, c("ID", "fill")]
@@ -196,7 +201,7 @@ access_server <- function(id, r) {
         # Data color
         get_data_color(
           map_zoom_levels = rlang::set_names("CT", "CT"),
-          geo = r$geo(),
+          geo = "CMA",
           var_left = var_left(), 
           var_right = var_right())
       }
@@ -230,13 +235,11 @@ access_server <- function(id, r) {
     )
     
     # Data transparency and export
-    observe({
-      r[[id]]$export_data <- reactive(data_export(id = id,
-                                                  data = data(),
-                                                  var_left = var_left(),
-                                                  var_right = var_right(),
-                                                  df = r[[id]]$df()))
-    })
+    r[[id]]$export_data <- reactive(data_export(id = id,
+                                                data = data(),
+                                                var_left = var_left(),
+                                                var_right = var_right(),
+                                                df = r[[id]]$df()))
 
   })
 }

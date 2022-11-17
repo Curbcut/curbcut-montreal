@@ -4,7 +4,7 @@
 #' info_table module.
 
 get_info_table_data <- function(r = r, data, var_type, var_left, var_right, df, 
-                                select_id, build_str_as_DA = TRUE) {
+                                select_id, geo, build_str_as_DA = TRUE) {
   
   ## Initialize dat and output list --------------------------------------------
   
@@ -14,17 +14,20 @@ get_info_table_data <- function(r = r, data, var_type, var_left, var_right, df,
   
   ## Get modified df for building/street ---------------------------------------
   
-  if (df != "building") build_str_as_DA <- FALSE
+  if (!is_scale_in_df("building", df)) build_str_as_DA <- FALSE
   
   if (build_str_as_DA) {
-    dat_select <- if (is.na(select_id)) DA else {
-      dbGetQuery(db, paste0("SELECT * FROM building WHERE ID = ", 
-                            select_id))
+    
+    dat_select <- if (is.na(select_id)) get(paste(geo, "DA", sep = "_")) else {
+      dbGetQuery(building_conn, 
+                 paste0("SELECT * FROM ", paste(geo, "building", sep = "_"), 
+                        " WHERE ID = '", select_id, "'"))
     }
     dat_select_id <- select_id
     if (!is.na(select_id)) 
-      select_id <- dbGetQuery(db, paste0("SELECT DAUID FROM building WHERE ID = ", 
-                            select_id))$DAUID
+      select_id <- dbGetQuery(building_conn, 
+                              paste0("SELECT DAUID FROM ", paste(geo, "building", sep = "_"), 
+                                     " WHERE ID = '", select_id, "'"))$DAUID
     if (length(select_id) == 0) select_id <- NA
     
   } else {
@@ -47,10 +50,15 @@ get_info_table_data <- function(r = r, data, var_type, var_left, var_right, df,
     out$end_date_right <- str_extract(var_right, "(?<=_)\\d{4}$")[2]
   }
   
+  if (length(unique(var_right)) == 1) {
+    out$date_right <- str_extract(var_right[1], "(?<=_)\\d{4}$")
+  }
+  
+  
   
   ## Special case for date-type data -------------------------------------------
   
-  if (df == "date") {
+  if (is_scale_in_df("date", df)) {
     out$var_type <- "date_all"
     dat$name <- NA_character_
     dat$population <- NA_real_
@@ -92,18 +100,18 @@ get_info_table_data <- function(r = r, data, var_type, var_left, var_right, df,
     
   } else var_right_label <- NULL
     
-  var_left_label <- sapply(var_left_label, sus_translate, r = r)
-  var_right_label <- sapply(var_right_label, sus_translate, r = r)
+  var_left_label <- sapply(var_left_label, cc_t, r = r)
+  var_right_label <- sapply(var_right_label, cc_t, r = r)
   
   out$title_left <- 
-    sus_translate(r = r, variables[variables$var_code == var_left,]$var_title)
+    cc_t(r = r, variables[variables$var_code == var_left,]$var_title)
   if (var_right != " ") out$title_right <- 
-    sus_translate(r = r, variables[variables$var_code == var_right,]$var_title)
+    cc_t(r = r, variables[variables$var_code == var_right,]$var_title)
   
   out$exp_left <- 
-    sus_translate(r = r, variables[variables$var_code == var_left,]$explanation)
+    cc_t(r = r, variables[variables$var_code == var_left,]$explanation)
   out$exp_right <- 
-    sus_translate(r = r, variables[variables$var_code == var_right,]$explanation)
+    cc_t(r = r, variables[variables$var_code == var_right,]$explanation)
   if (length(out$exp_left) == 0) warning("No exp: ", var_left, call. = FALSE)
   if (var_right != " " && length(out$exp_right) == 0) warning(
     "No exp: ", var_right, call. = FALSE)
@@ -127,7 +135,7 @@ get_info_table_data <- function(r = r, data, var_type, var_left, var_right, df,
   if (var_right != " ") {
     val_right <- selection$var_right
     out$val_right <- convert_unit(val_right, var_right)
-    if (grepl("_delta", out$var_type)) out$val_right <- 
+    if (grepl("_delta$", out$var_type)) out$val_right <- 
       convert_unit(val_right, "_pct")
   }
   
@@ -148,59 +156,81 @@ get_info_table_data <- function(r = r, data, var_type, var_left, var_right, df,
   ## Scale ---------------------------------------------------------------------
   
   scale_sing <- switch(
-    df,  
+    gsub(".*_", "", df),  
     "date" = NA_character_,
-    "borough" = "borough/city",
+    "CSD" = "borough/city",
     "CT" = "census tract",
     "DA" = "dissemination area",
+    "DB" = "dissemination block",
     "grid" = "250-m",
     "building" = if (build_str_as_DA) "dissemination area" else "building",
     "street" = if (build_str_as_DA) "dissemination area" else "street",
-    "centraide" = "centraide zone")
+    "centraide" = "centraide zone",
+    "cmhczone" = "CMHC zone",
+    "zone")
   
   scale_plural <- switch(
-    scale_sing,
+    gsub(".*_", "", scale_sing),
     "borough/city" = "boroughs or cities",
     "census tract" = "census tracts",
     "dissemination area" = "dissemination areas",
+    "dissemination block" = "dissemination blocks",
     "250-m" = "areas",
     "building" = "buildings",
     "street" = "streets",
-    "centraide zone" = "centraide zones")
+    "centraide zone" = "centraide zones",
+    "cmhczone" = "CMHC zones",
+    "zones")
   
-  out$scale_sing <- sus_translate(r = r, scale_sing)
-  out$scale_plural <- sus_translate(r = r, scale_plural)
+  out$scale_sing <- cc_t(r = r, scale_sing)
+  out$scale_plural <- cc_t(r = r, scale_plural)
   
 
   ## Place names ---------------------------------------------------------------
   
-  out$place_name <- if (df %in% c("building", "street") && build_str_as_DA) {
-    sus_translate(r = r, "The dissemination area around {select_name$name}")
+  out$place_name <- if (is_scale_in_df(c("building", "street"), df) && build_str_as_DA) {
+    cc_t(r = r, "The dissemination area around {select_name$name}")
   } else switch(
     scale_sing,
     "building" = glue("{select_name$name}"),
     "street" = glue("{select_name$name}"),
     "borough/city" = glue("{select_name$name}"),
-    "census tract" = sus_translate(r = r, "Census tract {select_name$name}"),
+    "census tract" = cc_t(r = r, "Census tract {select_name$name}"),
     "dissemination area" = 
-      sus_translate(r = r, "Dissemination area {select_name$name}"),
-    "250-m" = sus_translate(r = r, "The area around {select_name$name}"),
+      cc_t(r = r, "Dissemination area {select_name$name}"),
+    "dissemination block" = 
+      cc_t(r = r, "Dissemination block {select_name$name}"),
+    "250-m" = cc_t(r = r, "The area around {select_name$name}"),
     "centraide zone" = glue("{select_name$name}"),
+    "CMHC zone" = glue("{select_name$name}"),
     NA_character_)
   
   if (grepl("select", out$var_type)) {
-    if (df %in% c("borough", "centraide")) select_name$name_2 <- 
-        sus_translate(r = r, glue("{select_name$name_2}"))
+    if (is_scale_in_df(first_level_choropleth, df)) select_name$name_2 <- 
+        cc_t(r = r, glue("{select_name$name_2}"))
     
-    out$place_heading <- if (df %in% c("building", "street") && 
+    out$place_heading <- if (is_scale_in_df(c("building", "street"), df) && 
                              build_str_as_DA) {
       select_name$name
-    } else if (scale_sing %in% c("borough/city", "centraide zone")) {
-      sus_translate(r = r, "{select_name$name_2} of {out$place_name}")
+    } else if (scale_sing %in% c("borough/city", "centraide zone", "CMHC zone")) {
+      cc_t(r = r, "{select_name$name_2} of {out$place_name}")
     } else if (scale_sing == "250-m") {
-      sus_translate(r = r, select_name$name)
+      cc_t(r = r, select_name$name)
     } else glue("{out$place_name} ({select_name$name_2})")
   }
+  
+  
+  ## Geo name ------------------------------------------------------------------
+  
+  out$geo <- 
+    cc_t(r = r, 
+                  switch(
+                    geo, 
+                    "CMA" = "in the Montreal region",
+                    "city" = "in the City of Montreal",
+                    "island" = "on the island of Montreal",
+                    "centraide" = "in the Centraide of Greater Montreal territory",
+                    "CMHC" = "in the Montreal region"))
   
   
   ## Descriptive statistics for var_left ---------------------------------------
@@ -228,24 +258,24 @@ get_info_table_data <- function(r = r, data, var_type, var_left, var_right, df,
     quintile <- quantile(vec_left, c(0.2, 0.4, 0.6, 0.8))
 
     out$larger <- if (val_left >= quintile[4]) {
-      sus_translate(r = r, "much larger than")
+      cc_t(r = r, "much larger than")
     } else if (val_left >= quintile[3]) {
-      sus_translate(r = r, "larger than")
+      cc_t(r = r, "larger than")
     } else if (val_left >= quintile[2]) {
-      sus_translate(r = r, "almost the same as")
+      cc_t(r = r, "almost the same as")
     } else if (val_left >= quintile[1]) {
-      sus_translate(r = r, "smaller than")
-    } else sus_translate(r = r, "much smaller than")
+      cc_t(r = r, "smaller than")
+    } else cc_t(r = r, "much smaller than")
 
-    out$high <- if (str_detect(out$larger, paste(sus_translate(r = r, "much larger than"), 
-                                                  sus_translate(r = r, "larger than"), 
+    out$high <- if (str_detect(out$larger, paste(cc_t(r = r, "much larger than"), 
+                                                  cc_t(r = r, "larger than"), 
                                                   sep = "|"))) {
-      sus_translate(r = r, "high")
-    } else if (str_detect(out$larger, paste(sus_translate(r = r, "smaller than"), 
-                                            sus_translate(r = r, "much smaller than"), 
+      cc_t(r = r, "high")
+    } else if (str_detect(out$larger, paste(cc_t(r = r, "smaller than"), 
+                                            cc_t(r = r, "much smaller than"), 
                                             sep = "|"))) {
-      sus_translate(r = r, "low")
-    } else sus_translate(r = r, "moderate")
+      cc_t(r = r, "low")
+    } else cc_t(r = r, "moderate")
 
     out$percentile <- convert_unit(length(vec_left[vec_left <= val_left]) / 
                                      length(vec_left), "_pct")
@@ -253,8 +283,8 @@ get_info_table_data <- function(r = r, data, var_type, var_left, var_right, df,
     # Translation note: whatever if the explanation (the subject) is masculine 
     # or feminine, on n'accordera pas increased/decreased avec son sujet s'il
     # est employé avec avoir (our case here).
-    out$increase <- if (val_left >= 0) sus_translate(r = r, "increased") else
-      sus_translate(r = r, "decreased")
+    out$increase <- if (val_left >= 0) cc_t(r = r, "increased") else
+      cc_t(r = r, "decreased")
     
     }
   
@@ -275,8 +305,8 @@ get_info_table_data <- function(r = r, data, var_type, var_left, var_right, df,
       {var_left_label[names(var_left_label) == names(.)]} %>%
       tolower()
     mode_prop <- qual_tab[1] / sum(qual_tab)
-    out$majority <- if (mode_prop > 0.5) sus_translate(r = r, "majority") else 
-      sus_translate(r = r, "plurality")
+    out$majority <- if (mode_prop > 0.5) cc_t(r = r, "majority") else 
+      cc_t(r = r, "plurality")
     out$mode_prop <- convert_unit(mode_prop, "_pct")
     out$mode_prop_2 <- convert_unit(qual_tab[2] / sum(qual_tab), "_pct")
     
@@ -301,24 +331,24 @@ get_info_table_data <- function(r = r, data, var_type, var_left, var_right, df,
       corr <- cor(dat$var_left, as.numeric(dat$var_right), use = "complete.obs")
       out$correlation <- corr
       out$corr_disp <- convert_unit(corr)
-      out$pos <- if (corr > 0) sus_translate(r = r, "positive") else 
-        sus_translate(r = r, "negative")
+      out$pos <- if (corr > 0) cc_t(r = r, "positive") else 
+        cc_t(r = r, "negative")
       
       out$strong <- if (abs(corr) > 0.6) {
-        sus_translate(r = r, "strong")
+        cc_t(r = r, "strong")
       } else if (abs(corr) > 0.3) {
-        sus_translate(r = r, "moderate")
-      } else sus_translate(r = r, "weak")
+        cc_t(r = r, "moderate")
+      } else cc_t(r = r, "weak")
       
-      out$higher <- ifelse(out$pos == sus_translate(r = r, "positive"),
-                           sus_translate(r = r, "higher"), sus_translate(r = r, "lower"))
+      out$higher <- ifelse(out$pos == cc_t(r = r, "positive"),
+                           cc_t(r = r, "higher"), cc_t(r = r, "lower"))
       
-      out$high_low_disclaimer <- if (out$strong == sus_translate(r = r, "strong")) {
-        sus_translate(r = r, "with only a few exceptions")
-      } else if (out$strong == sus_translate(r = r, "moderate")) {
-        sus_translate(r = r, "although with some exceptions")
-      } else if (out$strong == sus_translate(r = r, "weak")) {
-        sus_translate(r = r, "although with many exceptions")
+      out$high_low_disclaimer <- if (out$strong == cc_t(r = r, "strong")) {
+        cc_t(r = r, "with only a few exceptions")
+      } else if (out$strong == cc_t(r = r, "moderate")) {
+        cc_t(r = r, "although with some exceptions")
+      } else if (out$strong == cc_t(r = r, "weak")) {
+        cc_t(r = r, "although with many exceptions")
       }
   }
   
@@ -336,12 +366,12 @@ get_info_table_data <- function(r = r, data, var_type, var_left, var_right, df,
     out$perc_right <- convert_unit(perc_right, "_pct")
     
     out$relative_position <- if (abs(perc_left - perc_right) > 0.5) {
-      sus_translate(r = r, "dramatically different")
+      cc_t(r = r, "dramatically different")
     } else if (abs(perc_left - perc_right) > 0.3) {
-      sus_translate(r = r, "substantially different")
+      cc_t(r = r, "substantially different")
     } else if (abs(perc_left - perc_right) > 0.1) {
-      sus_translate(r = r, "considerably different")
-    } else sus_translate(r = r, "similar")
+      cc_t(r = r, "considerably different")
+    } else cc_t(r = r, "similar")
     
   }
   
@@ -355,24 +385,24 @@ get_info_table_data <- function(r = r, data, var_type, var_left, var_right, df,
     corr <- cor(vec_1, vec_2, use = "complete.obs", method = "spearman")
     out$correlation <- corr
     out$corr_disp <- convert_unit(corr)
-    out$pos <- if (corr > 0) sus_translate(r = r, "positive") else 
-      sus_translate(r = r, "negative")
+    out$pos <- if (corr > 0) cc_t(r = r, "positive") else 
+      cc_t(r = r, "negative")
     
     out$strong <- if (abs(corr) > 0.6) {
-      sus_translate(r = r, "strong")
+      cc_t(r = r, "strong")
     } else if (abs(corr) > 0.3) {
-      sus_translate(r = r, "moderate")
-    } else sus_translate(r = r, "weak")
+      cc_t(r = r, "moderate")
+    } else cc_t(r = r, "weak")
     
-    out$higher <- ifelse(out$pos == sus_translate(r = r, "positive"),
-                         sus_translate(r = r, "higher"), sus_translate(r = r, "lower"))
+    out$higher <- ifelse(out$pos == cc_t(r = r, "positive"),
+                         cc_t(r = r, "higher"), cc_t(r = r, "lower"))
     
-    out$high_low_disclaimer <- if (out$strong == sus_translate(r = r, "strong")) {
-      sus_translate(r = r, "with only a few exceptions")
-    } else if (out$strong == sus_translate(r = r, "moderate")) {
-      sus_translate(r = r, "although with some exceptions")
-    } else if (out$strong == sus_translate(r = r, "weak")) {
-      sus_translate(r = r, "although with many exceptions")
+    out$high_low_disclaimer <- if (out$strong == cc_t(r = r, "strong")) {
+      cc_t(r = r, "with only a few exceptions")
+    } else if (out$strong == cc_t(r = r, "moderate")) {
+      cc_t(r = r, "although with some exceptions")
+    } else if (out$strong == cc_t(r = r, "weak")) {
+      cc_t(r = r, "although with many exceptions")
     }
 
   }
@@ -416,23 +446,23 @@ get_info_table_data <- function(r = r, data, var_type, var_left, var_right, df,
     
     if (length(max_date) %in% 2:3) max_date <- paste(
       paste(max_date[seq_len(length(max_date) - 1)], collapse = ", "),
-      max_date[length(max_date)], sep = sus_translate(r = r, " and "))
+      max_date[length(max_date)], sep = cc_t(r = r, " and "))
     if (length(max_date) > 3) out$max_date <- 
-      sus_translate(r = r, "several different dates")
+      cc_t(r = r, "several different dates")
     out$max_date <- max_date
     
     min_date <- dat$var_right[dat$var_left == min(dat$var_left)]
     
     if (length(min_date) %in% 2:3) min_date <- paste(
       paste(min_date[seq_len(length(min_date) - 1)], collapse = ", "),
-      max_date[length(min_date)], sep = sus_translate(r = r, " and "))
+      max_date[length(min_date)], sep = cc_t(r = r, " and "))
     if (length(min_date) > 3) min_date <- 
-      sus_translate(r = r, "several different dates")
+      cc_t(r = r, "several different dates")
     out$min_date <- min_date
     
     out$coef <- abs(coef)
-    out$coef_increasing <- if (coef >= 0) sus_translate(r = r, "increasing") else 
-      sus_translate(r = r, "decreasing")
+    out$coef_increasing <- if (coef >= 0) cc_t(r = r, "increasing") else 
+      cc_t(r = r, "decreasing")
     out$date_left <- paste(date_left, collapse = '-')
   }
   

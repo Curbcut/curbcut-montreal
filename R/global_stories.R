@@ -177,22 +177,22 @@ metro_evolution_legend <- function(date, lang) {
 
 metro_evolution_source <- function(year, r) {
   if (year %in% c(1910, 1944, 1953)) {
-    sus_translate(r = r, "The proposed {year} metro network.")
+    cc_t(r = r, "The proposed {year} metro network.")
   } else if (year == 1961) {
-    sus_translate(r = r, "The proposed 1962 metro network consisting of three lines: ",
+    cc_t(r = r, "The proposed 1962 metro network consisting of three lines: ",
                   "orange, green, and red.")
   } else if (year == 1967) {
-    sus_translate(r = r, "The first complete iteration of the Montreal metro.")
+    cc_t(r = r, "The first complete iteration of the Montreal metro.")
   } else if (year == 1970) {
-    sus_translate(r = r, "Some extensive proposed underground and surface metro ",
+    cc_t(r = r, "Some extensive proposed underground and surface metro ",
                   "expansions of the early 1970s that never materialized.")
   } else if (year == 1978) {
-    sus_translate(r = r, "The 1978 iteration of the metro network.")
+    cc_t(r = r, "The 1978 iteration of the metro network.")
   } else if (year == 1981) {
-    sus_translate(r = r, "The metro expansion plans made following the 1970 ",
+    cc_t(r = r, "The metro expansion plans made following the 1970 ",
                   "re-election of Jean Drapeau.")
   } else if (year == 2000) {
-    sus_translate(r = r, "The current network along with the proposed extensions over ",
+    cc_t(r = r, "The current network along with the proposed extensions over ",
                   "the years, including the confirmed blue line extension to ",
                   "Anjou.")
   }
