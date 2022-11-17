@@ -35,7 +35,7 @@ convert_unit <- function(x, var_name = NULL, compact = FALSE) {
     } else if (min_dig >= 4) {
       x <- scales::comma(x, 1, scale = 1 / 1e+03, suffix = "K")  
     }
-  } else if (max(abs(x)) >= 100) {
+  } else if (max(abs(x)) >= 100 || all(round(x) == x)) {
     x <- scales::comma(x, 1)
   } else if (max(abs(x)) >= 10) {
     x <- scales::comma(x, 0.1)

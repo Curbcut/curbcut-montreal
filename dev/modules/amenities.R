@@ -529,7 +529,7 @@ new_rows <-
     
     # Transportation mode
     mode <- 
-      case_when(str_detect(var, "_walk_") ~ "walk",
+      case_when(str_detect(var, "_walk_") ~ "walking",
                 str_detect(var, "_transit_") ~ "transit",
                 str_detect(var, "_bicycle_") ~ "bicycle",
                 str_detect(var, "_car_") ~ "car")
@@ -625,8 +625,8 @@ new_rows <-
     
     # Explanation
     pre <- 
-      case_when(str_ends(var, "_count") ~ "the count",
-                str_ends(var, "_sqkm") ~ "the number")
+      case_when(str_ends(var, "_count") ~ "the average count",
+                str_ends(var, "_sqkm") ~ "the average number")
     timing <- 
       case_when(str_detect(var, "_pwd_") ~ "Weekday traffic peak",
                 str_detect(var, "_opwd_") ~ "Weekday traffic off-peak",
@@ -636,13 +636,8 @@ new_rows <-
                 str_detect(var, "_nwe_") ~ "Weekend night")
     time <- str_extract(var, "[0-9]+")
     explanation_ <- 
-      if (mode == "walk") {
-        glue::glue(paste0("{pre} of {amenity} accessible in a {time} minutes ",
-                          "{mode} by the average resident at {tolower(timing)}"))
-      } else {
         glue::glue(paste0("{pre} of {amenity} accessible in {time} minutes by ",
-                          "{mode} by the average resident at {tolower(timing)}"))
-      }
+                          "{mode} at {tolower(timing)}"))
     
     if (mode != "transit") explanation_ <- gsub(" at .*", "", explanation_)
     
@@ -736,7 +731,8 @@ new_rows <-
     out <-
       add_variables(variables,
                     var_code = var,
-                    var_title = glue::glue("Access to {amenity} by {mode}"),
+                    var_title = stringr::str_to_sentence(
+                      glue::glue("{amenity} accessible by {mode}")),
                     var_short = glue::glue("{amenity_short} ({mode})"),
                     explanation = explanation_,
                     category = NA,

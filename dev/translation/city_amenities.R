@@ -425,7 +425,7 @@ city_amenities_translation <-
   add_row(en = paste0("Cultural facilities"), 
           fr = paste0("Activités culturelles")) |> 
   add_row(en = paste0("the average number of cultural facilities a resident of",
-                      " the area can reach within a 20 minutes cycling time"), 
+                      " the area can reach within a 20-minute cycling time"), 
           fr = paste0("le nombre moyen d'activités culturelles accessibles par",
                       " un résident moyen de la zone en moins de 20 minutes à ",
                       "vélo")) |> 
@@ -436,7 +436,7 @@ city_amenities_translation <-
   add_row(en = paste0("Daycares"), 
           fr = paste0("Garderies et cpe")) |> 
   add_row(en = paste0("the average number of daycares a resident of the area c",
-                      "an reach within a 20 minutes cycling time"), 
+                      "an reach within a 20-minute cycling time"), 
           fr = paste0("le nombre moyen de garderies et CPE accessibles par un ",
                       "résident moyen de la zone en moins de 20 minutes à vélo",
                       "")) |> 
@@ -447,7 +447,7 @@ city_amenities_translation <-
   add_row(en = paste0("Preschools"), 
           fr = paste0("Services de maternelle 4 ans")) |> 
   add_row(en = paste0("the average number of preschools a resident of the area",
-                      " can reach within a 20 minutes cycling time"), 
+                      " can reach within a 20-minute cycling time"), 
           fr = paste0("le nombre moyen de services de maternelle 4 ans accessi",
                       "bles par un résident moyen de la zone en moins de 20 mi",
                       "nutes à vélo")) |> 
@@ -459,7 +459,7 @@ city_amenities_translation <-
   add_row(en = paste0("Primary scools"), 
           fr = paste0("Établissements scolaires primaires")) |> 
   add_row(en = paste0("the average number of primary scools a resident of the ",
-                      "area can reach within a 20 minutes cycling time"), 
+                      "area can reach within a 20-minute cycling time"), 
           fr = paste0("le nombre moyen d'établissements scolaires primaires ac",
                       "cessibles par un résident moyen de la zone en moins de ",
                       "20 minutes à vélo")) |> 
@@ -471,7 +471,7 @@ city_amenities_translation <-
   add_row(en = paste0("Secondary schools"), 
           fr = paste0("Établissements scolaires secondaires")) |> 
   add_row(en = paste0("the average number of secondary schools a resident of t",
-                      "he area can reach within a 20 minutes cycling time"), 
+                      "he area can reach within a 20-minute cycling time"), 
           fr = paste0("le nombre moyen d'établissements scolaires secondaires ",
                       "accessibles par un résident moyen de la zone en moins d",
                       "e 20 minutes à vélo")) |> 
@@ -483,7 +483,7 @@ city_amenities_translation <-
   add_row(en = paste0("Postsecondary schools"), 
           fr = paste0("Établissements postsecondaires")) |> 
   add_row(en = paste0("the average number of postsecondary schools a resident ",
-                      "of the area can reach within a 20 minutes cycling time"), 
+                      "of the area can reach within a 20-minute cycling time"), 
           fr = paste0("le nombre moyen d'établissements postsecondaires access",
                       "ibles par un résident moyen de la zone en moins de 20 m",
                       "inutes à vélo")) |> 
@@ -495,7 +495,7 @@ city_amenities_translation <-
   add_row(en = paste0("Indoor sports activities"), 
           fr = paste0("Activités sportives intérieures")) |> 
   add_row(en = paste0("the average number of indoor sports activities a reside",
-                      "nt of the area can reach within a 20 minutes cycling ti",
+                      "nt of the area can reach within a 20-minute cycling ti",
                       "me"), 
           fr = paste0("le nombre moyen d'activités sportives intérieures acces",
                       "sibles par un résident moyen de la zone en moins de 20 ",
@@ -509,8 +509,8 @@ city_amenities_translation <-
   add_row(en = paste0("Health and social services facilities"), 
           fr = paste0("Équipements de santé et de services sociaux")) |> 
   add_row(en = paste0("the average number of health and social services facili",
-                      "ties a resident of the area can reach within a 20 minut",
-                      "es cycling time"), 
+                      "ties a resident of the area can reach within a 20-minut",
+                      "e cycling time"), 
           fr = paste0("le nombre moyen d'équipements de santé et de services s",
                       "ociaux accessibles par un résident moyen de la zone en ",
                       "moins de 20 minutes à vélo")) |> 
@@ -522,7 +522,7 @@ city_amenities_translation <-
   add_row(en = paste0("Commercial zones"), 
           fr = paste0("Zones commerciales")) |> 
   add_row(en = paste0("the average number of commercial zones a resident of th",
-                      "e area can reach within a 20 minutes cycling time"), 
+                      "e area can reach within a 20-minute cycling time"), 
           fr = paste0("le nombre moyen de zones commerciales accessibles par u",
                       "n résident moyen de la zone en moins de 20 minutes à vé",
                       "lo")) |> 
@@ -533,7 +533,7 @@ city_amenities_translation <-
   add_row(en = paste0("Food stores"), 
           fr = paste0("Commerces alimentaires")) |> 
   add_row(en = paste0("the average number of food stores a resident of the are",
-                      "a can reach within a 20 minutes cycling time"), 
+                      "a can reach within a 20-minute cycling time"), 
           fr = paste0("le nombre moyen de commerces alimentaires accessibles p",
                       "ar un résident moyen de la zone en moins de 20 minutes ",
                       "à vélo")) |> 
@@ -544,7 +544,7 @@ city_amenities_translation <-
   add_row(en = paste0("Pharmacies"), 
           fr = paste0("Pharmacies")) |> 
   add_row(en = paste0("the average number of pharmacies a resident of the area",
-                      " can reach within a 20 minutes cycling time"), 
+                      " can reach within a 20-minute cycling time"), 
           fr = paste0("le nombre moyen de pharmacies accessibles par un réside",
                       "nt moyen de la zone en moins de 20 minutes à vélo")) |> 
   add_row(en = paste0("Accessibility to pharmacies"), 
@@ -554,7 +554,7 @@ city_amenities_translation <-
   add_row(en = paste0("Laundromats"), 
           fr = paste0("Buanderies")) |> 
   add_row(en = paste0("the average number of laundromats a resident of the are",
-                      "a can reach within a 20 minutes cycling time"), 
+                      "a can reach within a 20-minute cycling time"), 
           fr = paste0("le nombre moyen de buanderies accessibles par un réside",
                       "nt moyen de la zone en moins de 20 minutes à vélo")) |> 
   add_row(en = paste0("Accessibility to laundromats"), 
@@ -564,7 +564,7 @@ city_amenities_translation <-
   add_row(en = paste0("Neighbourhood parks"), 
           fr = paste0("Parcs de quartier")) |> 
   add_row(en = paste0("the average number of neighbourhood parks a resident of",
-                      " the area can reach within a 20 minutes cycling time"), 
+                      " the area can reach within a 20-minute cycling time"), 
           fr = paste0("le nombre moyen de parcs de quartier accessibles par un",
                       " résident moyen de la zone en moins de 20 minutes à vél",
                       "o")) |> 
@@ -575,7 +575,7 @@ city_amenities_translation <-
   add_row(en = paste0("Big parks"), 
           fr = paste0("Grands parcs")) |> 
   add_row(en = paste0("the average number of big parks a resident of the area ",
-                      "can reach within a 20 minutes cycling time"), 
+                      "can reach within a 20-minute cycling time"), 
           fr = paste0("le nombre moyen de grands parcs accessibles par un rési",
                       "dent moyen de la zone en moins de 20 minutes à vélo")) |> 
   add_row(en = paste0("Accessibility to big parks"), 
@@ -585,7 +585,7 @@ city_amenities_translation <-
   add_row(en = paste0("Playgrounds"), 
           fr = paste0("Aires de jeux")) |> 
   add_row(en = paste0("the average number of playgrounds a resident of the are",
-                      "a can reach within a 20 minutes cycling time"), 
+                      "a can reach within a 20-minute cycling time"), 
           fr = paste0("le nombre moyen d'aires de jeux accessibles par un rési",
                       "dent moyen de la zone en moins de 20 minutes à vélo")) |> 
   add_row(en = paste0("Accessibility to playgrounds"), 
@@ -595,7 +595,7 @@ city_amenities_translation <-
   add_row(en = paste0("Cemeteries"), 
           fr = paste0("Cimetières")) |> 
   add_row(en = paste0("the average number of cemeteries a resident of the area",
-                      " can reach within a 20 minutes cycling time"), 
+                      " can reach within a 20-minute cycling time"), 
           fr = paste0("le nombre moyen de cimetières accessibles par un réside",
                       "nt moyen de la zone en moins de 20 minutes à vélo")) |> 
   add_row(en = paste0("Accessibility to cemeteries"), 
@@ -605,7 +605,7 @@ city_amenities_translation <-
   add_row(en = paste0("Nature facilities"), 
           fr = paste0("Activités nature")) |> 
   add_row(en = paste0("the average number of nature facilities a resident of t",
-                      "he area can reach within a 20 minutes cycling time"), 
+                      "he area can reach within a 20-minute cycling time"), 
           fr = paste0("le nombre moyen d'activités nature accessibles par un r",
                       "ésident moyen de la zone en moins de 20 minutes à vélo")) |> 
   add_row(en = paste0("Accessibility to nature facilities"), 
@@ -616,7 +616,7 @@ city_amenities_translation <-
   add_row(en = paste0("Outdoor water activities"), 
           fr = paste0("Activités extérieures aquatiques")) |> 
   add_row(en = paste0("the average number of outdoor water activities a reside",
-                      "nt of the area can reach within a 20 minutes cycling ti",
+                      "nt of the area can reach within a 20-minute cycling ti",
                       "me"), 
           fr = paste0("le nombre moyen d'activités extérieures aquatiques acce",
                       "ssibles par un résident moyen de la zone en moins de 20",
@@ -628,7 +628,7 @@ city_amenities_translation <-
   add_row(en = paste0("Outdoor winter activities"), 
           fr = paste0("Activités extérieures d'hiver")) |> 
   add_row(en = paste0("the average number of outdoor winter activities a resid",
-                      "ent of the area can reach within a 20 minutes cycling t",
+                      "ent of the area can reach within a 20-minute cycling t",
                       "ime"), 
           fr = paste0("le nombre moyen d'activités extérieures d'hiver accessi",
                       "bles par un résident moyen de la zone en moins de 20 mi",
@@ -640,7 +640,7 @@ city_amenities_translation <-
   add_row(en = paste0("Outdoor summer activities"), 
           fr = paste0("Activités extérieures d'été")) |> 
   add_row(en = paste0("the average number of outdoor summer activities a resid",
-                      "ent of the area can reach within a 20 minutes cycling t",
+                      "ent of the area can reach within a 20-minute cycling t",
                       "ime"), 
           fr = paste0("le nombre moyen d'activités extérieures d'été accessibl",
                       "es par un résident moyen de la zone en moins de 20 minu",
@@ -652,7 +652,7 @@ city_amenities_translation <-
   add_row(en = paste0("Cultural facilities"), 
           fr = paste0("Activités culturelles")) |> 
   add_row(en = paste0("the average number of cultural facilities a resident of",
-                      " the area can reach within a 15 minutes walk"), 
+                      " the area can reach within a 15-minute walk"), 
           fr = paste0("le nombre moyen d'activités culturelles accessibles par",
                       " un résident moyen de la zone en moins de 15 minutes à ",
                       "la marche")) |> 
@@ -663,7 +663,7 @@ city_amenities_translation <-
   add_row(en = paste0("Daycares"), 
           fr = paste0("Garderies et cpe")) |> 
   add_row(en = paste0("the average number of daycares a resident of the area c",
-                      "an reach within a 15 minutes walk"), 
+                      "an reach within a 15-minute walk"), 
           fr = paste0("le nombre moyen de garderies et CPE accessibles par un ",
                       "résident moyen de la zone en moins de 15 minutes à la m",
                       "arche")) |> 
@@ -675,7 +675,7 @@ city_amenities_translation <-
   add_row(en = paste0("Preschools"), 
           fr = paste0("Services de maternelle 4 ans")) |> 
   add_row(en = paste0("the average number of preschools a resident of the area",
-                      " can reach within a 15 minutes walk"), 
+                      " can reach within a 15-minute walk"), 
           fr = paste0("le nombre moyen de services de maternelle 4 ans accessi",
                       "bles par un résident moyen de la zone en moins de 15 mi",
                       "nutes à la marche")) |> 
@@ -687,7 +687,7 @@ city_amenities_translation <-
   add_row(en = paste0("Primary scools"), 
           fr = paste0("Établissements scolaires primaires")) |> 
   add_row(en = paste0("the average number of primary scools a resident of the ",
-                      "area can reach within a 15 minutes walk"), 
+                      "area can reach within a 15-minute walk"), 
           fr = paste0("le nombre moyen d'établissements scolaires primaires ac",
                       "cessibles par un résident moyen de la zone en moins de ",
                       "15 minutes à la marche")) |> 
@@ -699,7 +699,7 @@ city_amenities_translation <-
   add_row(en = paste0("Secondary schools"), 
           fr = paste0("Établissements scolaires secondaires")) |> 
   add_row(en = paste0("the average number of secondary schools a resident of t",
-                      "he area can reach within a 15 minutes walk"), 
+                      "he area can reach within a 15-minute walk"), 
           fr = paste0("le nombre moyen d'établissements scolaires secondaires ",
                       "accessibles par un résident moyen de la zone en moins d",
                       "e 15 minutes à la marche")) |> 
@@ -711,7 +711,7 @@ city_amenities_translation <-
   add_row(en = paste0("Postsecondary schools"), 
           fr = paste0("Établissements postsecondaires")) |> 
   add_row(en = paste0("the average number of postsecondary schools a resident ",
-                      "of the area can reach within a 15 minutes walk"), 
+                      "of the area can reach within a 15-minute walk"), 
           fr = paste0("le nombre moyen d'établissements postsecondaires access",
                       "ibles par un résident moyen de la zone en moins de 15 m",
                       "inutes à la marche")) |> 
@@ -723,7 +723,7 @@ city_amenities_translation <-
   add_row(en = paste0("Indoor sports activities"), 
           fr = paste0("Activités sportives intérieures")) |> 
   add_row(en = paste0("the average number of indoor sports activities a reside",
-                      "nt of the area can reach within a 15 minutes walk"), 
+                      "nt of the area can reach within a 15-minute walk"), 
           fr = paste0("le nombre moyen d'activités sportives intérieures acces",
                       "sibles par un résident moyen de la zone en moins de 15 ",
                       "minutes à la marche")) |> 
@@ -736,8 +736,8 @@ city_amenities_translation <-
   add_row(en = paste0("Health and social services facilities"), 
           fr = paste0("Équipements de santé et de services sociaux")) |> 
   add_row(en = paste0("the average number of health and social services facili",
-                      "ties a resident of the area can reach within a 15 minut",
-                      "es walk"), 
+                      "ties a resident of the area can reach within a 15-minut",
+                      "e walk"), 
           fr = paste0("le nombre moyen d'équipements de santé et de services s",
                       "ociaux accessibles par un résident moyen de la zone en ",
                       "moins de 15 minutes à la marche")) |> 
@@ -749,7 +749,7 @@ city_amenities_translation <-
   add_row(en = paste0("Commercial zones"), 
           fr = paste0("Zones commerciales")) |> 
   add_row(en = paste0("the average number of commercial zones a resident of th",
-                      "e area can reach within a 15 minutes walk"), 
+                      "e area can reach within a 15-minute walk"), 
           fr = paste0("le nombre moyen de zones commerciales accessibles par u",
                       "n résident moyen de la zone en moins de 15 minutes à la",
                       " marche")) |> 
@@ -760,7 +760,7 @@ city_amenities_translation <-
   add_row(en = paste0("Food stores"), 
           fr = paste0("Commerces alimentaires")) |> 
   add_row(en = paste0("the average number of food stores a resident of the are",
-                      "a can reach within a 15 minutes walk"), 
+                      "a can reach within a 15-minute walk"), 
           fr = paste0("le nombre moyen de commerces alimentaires accessibles p",
                       "ar un résident moyen de la zone en moins de 15 minutes ",
                       "à la marche")) |> 
@@ -771,7 +771,7 @@ city_amenities_translation <-
   add_row(en = paste0("Pharmacies"), 
           fr = paste0("Pharmacies")) |> 
   add_row(en = paste0("the average number of pharmacies a resident of the area",
-                      " can reach within a 15 minutes walk"), 
+                      " can reach within a 15-minute walk"), 
           fr = paste0("le nombre moyen de pharmacies accessibles par un réside",
                       "nt moyen de la zone en moins de 15 minutes à la marche")) |> 
   add_row(en = paste0("Accessibility to pharmacies"), 
@@ -781,7 +781,7 @@ city_amenities_translation <-
   add_row(en = paste0("Laundromats"), 
           fr = paste0("Buanderies")) |> 
   add_row(en = paste0("the average number of laundromats a resident of the are",
-                      "a can reach within a 15 minutes walk"), 
+                      "a can reach within a 15-minute walk"), 
           fr = paste0("le nombre moyen de buanderies accessibles par un réside",
                       "nt moyen de la zone en moins de 15 minutes à la marche")) |> 
   add_row(en = paste0("Accessibility to laundromats"), 
@@ -791,7 +791,7 @@ city_amenities_translation <-
   add_row(en = paste0("Neighbourhood parks"), 
           fr = paste0("Parcs de quartier")) |> 
   add_row(en = paste0("the average number of neighbourhood parks a resident of",
-                      " the area can reach within a 15 minutes walk"), 
+                      " the area can reach within a 15-minute walk"), 
           fr = paste0("le nombre moyen de parcs de quartier accessibles par un",
                       " résident moyen de la zone en moins de 15 minutes à la ",
                       "marche")) |> 
@@ -802,7 +802,7 @@ city_amenities_translation <-
   add_row(en = paste0("Big parks"), 
           fr = paste0("Grands parcs")) |> 
   add_row(en = paste0("the average number of big parks a resident of the area ",
-                      "can reach within a 15 minutes walk"), 
+                      "can reach within a 15-minute walk"), 
           fr = paste0("le nombre moyen de grands parcs accessibles par un rési",
                       "dent moyen de la zone en moins de 15 minutes à la march",
                       "e")) |> 
@@ -813,7 +813,7 @@ city_amenities_translation <-
   add_row(en = paste0("Playgrounds"), 
           fr = paste0("Aires de jeux")) |> 
   add_row(en = paste0("the average number of playgrounds a resident of the are",
-                      "a can reach within a 15 minutes walk"), 
+                      "a can reach within a 15-minute walk"), 
           fr = paste0("le nombre moyen d'aires de jeux accessibles par un rési",
                       "dent moyen de la zone en moins de 15 minutes à la march",
                       "e")) |> 
@@ -824,7 +824,7 @@ city_amenities_translation <-
   add_row(en = paste0("Cemeteries"), 
           fr = paste0("Cimetières")) |> 
   add_row(en = paste0("the average number of cemeteries a resident of the area",
-                      " can reach within a 15 minutes walk"), 
+                      " can reach within a 15-minute walk"), 
           fr = paste0("le nombre moyen de cimetières accessibles par un réside",
                       "nt moyen de la zone en moins de 15 minutes à la marche")) |> 
   add_row(en = paste0("Accessibility to cemeteries"), 
@@ -834,7 +834,7 @@ city_amenities_translation <-
   add_row(en = paste0("Nature facilities"), 
           fr = paste0("Activités nature")) |> 
   add_row(en = paste0("the average number of nature facilities a resident of t",
-                      "he area can reach within a 15 minutes walk"), 
+                      "he area can reach within a 15-minute walk"), 
           fr = paste0("le nombre moyen d'activités nature accessibles par un r",
                       "ésident moyen de la zone en moins de 15 minutes à la ma",
                       "rche")) |> 
@@ -846,7 +846,7 @@ city_amenities_translation <-
   add_row(en = paste0("Outdoor water activities"), 
           fr = paste0("Activités extérieures aquatiques")) |> 
   add_row(en = paste0("the average number of outdoor water activities a reside",
-                      "nt of the area can reach within a 15 minutes walk"), 
+                      "nt of the area can reach within a 15-minute walk"), 
           fr = paste0("le nombre moyen d'activités extérieures aquatiques acce",
                       "ssibles par un résident moyen de la zone en moins de 15",
                       " minutes à la marche")) |> 
@@ -858,7 +858,7 @@ city_amenities_translation <-
   add_row(en = paste0("Outdoor winter activities"), 
           fr = paste0("Activités extérieures d'hiver")) |> 
   add_row(en = paste0("the average number of outdoor winter activities a resid",
-                      "ent of the area can reach within a 15 minutes walk"), 
+                      "ent of the area can reach within a 15-minute walk"), 
           fr = paste0("le nombre moyen d'activités extérieures d'hiver accessi",
                       "bles par un résident moyen de la zone en moins de 15 mi",
                       "nutes à la marche")) |> 
@@ -869,15 +869,15 @@ city_amenities_translation <-
   add_row(en = paste0("Outdoor summer activities"), 
           fr = paste0("Activités extérieures d'été")) |> 
   add_row(en = paste0("the average number of outdoor summer activities a resid",
-                      "ent of the area can reach within a 15 minutes walk"), 
+                      "ent of the area can reach within a 15-minute walk"), 
           fr = paste0("le nombre moyen d'activités extérieures d'été accessibl",
                       "es par un résident moyen de la zone en moins de 15 minu",
                       "tes à la marche")) |> 
   add_row(en = paste0("Accessibility to outdoor summer activities"), 
           fr = paste0("Accessibilité aux activités extérieures d'été")) |> 
-  add_row(en = paste0("15 minutes walking time"), 
+  add_row(en = paste0("15-minute walking time"), 
           fr = paste0("15 minutes à la marche")) |> 
-  add_row(en = paste0("20 minutes cycling time"), 
+  add_row(en = paste0("20-minute cycling time"), 
           fr = paste0("20 minutes à vélo"))
 
 

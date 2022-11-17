@@ -143,9 +143,9 @@ new_rows <-
                             "(Cycling)")
     
     mode_exp <- case_when(str_detect(var, "_walk_") ~
-                        "within a 15 minutes walk",
+                        "within a 15-minute walk",
                       str_detect(var, "_bike_") ~
-                        "within a 20 minutes cycling time")
+                        "within a 20-minute cycling time")
     
     title <- paste0("Accessibility to ", category, " ", mode_title)
     short <- str_to_sentence(category)
@@ -154,8 +154,8 @@ new_rows <-
     
     mode_group <- 
       case_when(
-        str_detect(var, "_walk_") ~ "15 minutes walking time",
-        str_detect(var, "_bike_") ~ "20 minutes cycling time")
+        str_detect(var, "_walk_") ~ "15-minute walking time",
+        str_detect(var, "_bike_") ~ "20-minute cycling time")
     
     group_diff <- list("Mode of transport" = mode_group)
     

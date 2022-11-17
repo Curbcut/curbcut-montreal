@@ -766,7 +766,7 @@ title_text_translation <-
                 "ppellation-amenagements-cyclables.html'>Aperçu – Système de classification du confort et de la sécurité des voies cyclables canadiennes (Can-BICS) : convention d’appellation commune des aménagements cyclables</a>")) |> 
 
 
-  add_row(en = paste0("Short distance city"),
+  add_row(en = paste0("Short-distance city"),
           fr = paste0("Ville de courtes distances")) |> 
   add_row(en = paste0(
     "This module presents accessibility indicators for walking and cycling, ",

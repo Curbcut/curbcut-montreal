@@ -468,6 +468,9 @@ ui_and_misc_translated <-
           fr = paste0("Effacer la selection")) |> 
   add_row(en = paste0("Bikeway comfort and safety"), 
           fr = paste0("Confort et sécurité des voies cyclables")) |> 
+  add_row(en = paste0("Access"), 
+          fr = paste0("Accessibilité")) |> 
+  
   # Natural infrastructure
   add_row(en = paste0("Ecology"), 
           fr = paste0("Écologie")) |> 

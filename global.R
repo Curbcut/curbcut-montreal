@@ -75,9 +75,9 @@ mods_rdy <- list(
     "Montréal climate plans" = "mcp"
   ),
   "Transport" = c(
-    "Accessibility" = "access",
+    # "Accessibility" = "access",
     "Access to amenities" = "amenities",
-    "Short distance city" = "city_amenities",
+    "Short-distance city" = "city_amenities",
     "Bikeway comfort and safety" = "canbics"#,
     #   "Road safety" = "crash"
   ),

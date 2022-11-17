@@ -8,6 +8,6 @@ var_left_list_1_city_amenities <-
 # Mode of transport
 var_left_list_2_city_amenities <- 
   list("Mode of transport" = list(
-    "15 minutes walking time" = "walk",
-    "20 minutes cycling time" = "bike"
+    "15-minute walking time" = "walk",
+    "20-minute cycling time" = "bike"
   ))

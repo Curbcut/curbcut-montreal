@@ -571,9 +571,9 @@ stopifnot(all(sapply(list.files("data", full.names = TRUE, recursive = TRUE),
                      file = TRUE) == hash))
 source("dev/other/deploy_sus.R")
 
-deploy_sus("sus-mcgill-centraide") # Centraide
-deploy_sus("sus-mcgill-test") # Development
-deploy_sus("sus-mcgill") # Production
+deploy_sus("cc-montreal-centraide") # Centraide
+deploy_sus("cc-montreal-dev") # Development
+deploy_sus("cc-montreal") # Production
 
 renv::activate()
 
