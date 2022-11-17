@@ -197,6 +197,18 @@
   top: 0px;
   right: 0px;
 }
+ /* FOR M_AUTO_VARS, FOR SOME REASON THEY ARE BROKEN WITH THOSE ATTRIBUTES */
+#staying_widgets .dropdown-menu.open {
+  position: absolute !important;
+  top: auto !important;
+  right: auto !important;
+}
+
+#auto_additional_drops .dropdown-menu.open {
+  position: absolute !important;
+  top: auto !important;
+  right: auto !important;
+}
 
 .tab-content .dropdown-menu > li > a {
   font-family: var(--ff-button);

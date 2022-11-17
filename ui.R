@@ -79,6 +79,9 @@ ui <- function(request) {
       "var myDefaultWhiteList = $.fn.selectpicker.Constructor.DEFAULTS.whiteList;
     myDefaultWhiteList.div = ['title'];"
     ),
+    tags$head(tags$style("span.text {display: block !important;}")),
+    
+    # Google analytics
     tags$head(includeHTML("www/google_analytics.html")),
     
     # Language switching ---------------------------------------------------------

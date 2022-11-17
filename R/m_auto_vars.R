@@ -77,9 +77,7 @@ auto_vars_server <- function(id, r = r, module_id = NULL, var_list,
                               sapply(names(vars_list), cc_t, r = r)
                             select_var_UI(input_namespace()(id_s$key),
                                           var_list = vars_list,
-                                          label = cc_t(r = r, id_s$lab),
-                                          inline = FALSE,
-                                          more_style = "width:100%;")
+                                          label = cc_t(r = r, id_s$lab))
                           }
                  ))
       })
@@ -183,9 +181,7 @@ auto_vars_server <- function(id, r = r, module_id = NULL, var_list,
                               sapply(names(vars_list), cc_t, r = r)
                             select_var_UI(input_namespace()(id_s$key),
                                           var_list = vars_list,
-                                          label = cc_t(r = r, id_s$lab),
-                                          inline = FALSE,
-                                          more_style = "width:100%;")
+                                          label = cc_t(r = r, id_s$lab))
                           }
                         }))
       )
