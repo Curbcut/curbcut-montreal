@@ -540,8 +540,7 @@ qsave(census_variables, file = "data/census_variables.qs")
 
 ## other
 qsavem(alley, alley_text, file = "data/alley.qsm")
-qsavem(title_card_indicators, pe_var_hierarchy, pe_theme_order,
-       title_card_index, pe_variable_order, file = "data/place_explorer.qsm")
+qsavem(title_card_indicators, title_card_index, file = "data/place_explorer.qsm")
 qsavem(stories, stories_mapping, file = "data/stories.qsm")
 
 

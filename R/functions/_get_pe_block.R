@@ -4,10 +4,11 @@ get_pe_block <- function(r = r, df, theme, select_id) {
   
   ## Get data ------------------------------------------------------------------
   
-  data_order <- pe_variable_order[[df]]
-  data_order <- data_order[[as.character(select_id)]]
-  data_order <- data_order[data_order$theme == theme, ]
-  data_order <- data_order[, "var_code"]
+  data_order <- 
+    do.call("dbGetQuery", list(rlang::sym("pe_variable_order_conn"),
+                               paste0("SELECT var_code FROM '", 
+                                      paste(df, select_id, sep = "_"), 
+                                      "' WHERE theme = '", theme, "'")))
   data_order <- unique(data_order)
   
   # Exit early if there is no data
@@ -23,8 +24,13 @@ get_pe_block <- function(r = r, df, theme, select_id) {
   
   data_order <- cbind(data_order, vars_theme)
   
-  data_var <- pe_var_hierarchy[[df]]
-  data_var <- data_var[names(data_var) %in% data_order$var_code]
+  data_var <- 
+    sapply(paste(df, data_order$var_code, sep = "_"), \(x) {
+      do.call("dbGetQuery", list(rlang::sym("pe_var_hierarchy_conn"),
+                                 paste0("SELECT * FROM '", x, "'")))      
+    }, simplify = FALSE, USE.NAMES = TRUE)
+
+  
   data_var <- data_var[order(match(names(data_var), data_order$var_code))]
   
   
@@ -69,7 +75,7 @@ get_pe_block <- function(r = r, df, theme, select_id) {
       round(data_sel[[var]]$percentile*100/5)*5
     
     filename <- paste0(paste0("www/place_explorer/"),
-                       paste(df, var, quantile, sep = "_"),
+                       paste(var, quantile, sep = "_"),
                        ".png")
     
     # Return a list containing the filename and alt text

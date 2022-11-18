@@ -701,6 +701,8 @@ ui_and_misc_translated <-
           fr = paste0("Code postal `{postal_c}` ne fait pas partie d'une zone géographique disponible.")) |> 
   add_row(en = paste0("Address `{input$lock_address_searched}` isn't within an available geography."), 
           fr = paste0("L'adresse `{input$lock_address_searched}` ne fait pas partie d'une zone géographique disponible.")) |> 
+  add_row(en = paste0("Transportation time"), 
+          fr = paste0("Temps de transport")) |> 
   # Stories
   add_row(en = paste0("The proposed {year} metro network."), 
           fr = paste0("Le réseau proposé en {year}.")) |> 

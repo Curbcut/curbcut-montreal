@@ -53,7 +53,8 @@ title_card_index <- tibble(name = as.character(),
                            link_var_left = as.character(),
                            link_outside = as.character())
 
-all_tables_DA_max <- map(all_tables, ~.x[seq_len(which(.x == "DA"))])
+all_tables_DA_max <- map(all_tables[sapply(all_tables, \(x) sum(x == "DA") > 0)], 
+                         \(x) x[seq_len(which(x == "DA"))])
 
 # Map over all tables function
 map_all_tables <- function(all_tables_DA_max, fun) {
@@ -578,6 +579,59 @@ pe_variable_order <-
 pe_variable_order <- lapply(pe_variable_order, \(x) split(x, x$ID)) 
 pe_theme_order <- lapply(pe_theme_order, \(x) split(x, x$ID)) 
 
+
+# Save in its own SQLite --------------------------------------------------
+
+pe_variable_order_conn <- dbConnect(SQLite(), "data/pe_variable_order.sqlite")
+
+progressr::with_progress({
+  p <- progressr::progressor(steps = length(pe_variable_order))
+  
+  iwalk(pe_variable_order, function(ids, geo) {
+    iwalk(ids, function(df, id) {
+      dbWriteTable(conn = pe_variable_order_conn, 
+                   name = paste(geo, id, sep = "_"), 
+                   value = df, 
+                   overwrite = TRUE)
+    })
+    p()
+  })
+})
+
+pe_theme_order_conn <- dbConnect(SQLite(), "data/pe_theme_order.sqlite")
+
+progressr::with_progress({
+  p <- progressr::progressor(steps = length(pe_theme_order))
+  
+  iwalk(pe_theme_order, function(ids, geo) {
+    iwalk(ids, function(df, id) {
+      dbWriteTable(conn = pe_theme_order_conn, 
+                   name = paste(geo, id, sep = "_"), 
+                   value = df, 
+                   overwrite = TRUE)
+    })
+    p()
+  })
+})
+
+pe_var_hierarchy_conn <- dbConnect(SQLite(), "data/pe_var_hierarchy.sqlite")
+
+progressr::with_progress({
+  p <- progressr::progressor(steps = length(pe_var_hierarchy))
+  
+  iwalk(pe_var_hierarchy, function(ids, geo) {
+    iwalk(ids, function(df, id) {
+      dbWriteTable(conn = pe_var_hierarchy_conn, 
+                   name = paste(geo, id, sep = "_"), 
+                   value = df, 
+                   overwrite = TRUE)
+    })
+    p()
+  })
+})
+
+qs::qsavem(title_card_index, title_card_indicators, 
+           file = "data/place_explorer.qsm")
 
 # Add to modules table ----------------------------------------------------
 

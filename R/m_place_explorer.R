@@ -80,13 +80,13 @@ place_explorer_UI <- function(id) {
       
       hidden(div(id = NS(id, "sidebar_widgets"), susSidebarWidgets(
         
-        # Checkboxes for each theme
-        pickerInput(
-          inputId = NS(id, "themes_checkbox"),
-          label = cc_t(r = r, "Choose themes:"),
-          choices = unique(variables$theme),
-          selected = unique(variables$theme),
-          multiple = TRUE),
+        # # Checkboxes for each theme
+        # pickerInput(
+        #   inputId = NS(id, "themes_checkbox"),
+        #   label = cc_t(r = r, "Choose themes:"),
+        #   choices = unique(variables$theme),
+        #   selected = unique(variables$theme),
+        #   multiple = TRUE),
         
         br()
       )))),
@@ -550,18 +550,18 @@ place_explorer_server <- function(id, r) {
       })
     })
 
-    # Update grid based on checkbox
-    observe({
-      themes <- pe_theme_order[[df()]]
-      themes <- themes[themes$ID == select_id(), ]
-      themes <- themes$theme
-
-      to_hide <- themes[!themes %in% input$themes_checkbox]
-      to_show <- themes[themes %in% input$themes_checkbox]
-
-      lapply(to_hide, \(x) shinyjs::hide(paste0("theme_", x, "_block")))
-      lapply(to_show, \(x) shinyjs::show(paste0("theme_", x, "_block")))
-    }) |> bindEvent(input$themes_checkbox, ignoreInit = TRUE)
+    # # Update grid based on checkbox
+    # observe({
+    #   themes <- pe_theme_order[[df()]]
+    #   themes <- themes[themes$ID == select_id(), ]
+    #   themes <- themes$theme
+    # 
+    #   to_hide <- themes[!themes %in% input$themes_checkbox]
+    #   to_show <- themes[themes %in% input$themes_checkbox]
+    # 
+    #   lapply(to_hide, \(x) shinyjs::hide(paste0("theme_", x, "_block")))
+    #   lapply(to_show, \(x) shinyjs::show(paste0("theme_", x, "_block")))
+    # }) |> bindEvent(input$themes_checkbox, ignoreInit = TRUE)
 
     
     ## Links to other modules --------------------------------------------------

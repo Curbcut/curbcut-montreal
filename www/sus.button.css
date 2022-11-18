@@ -210,6 +210,14 @@
   right: auto !important;
 }
 
+/* ONLY TO IMPACT SAFARI 11+ AS THE OTHER CSS DOESN'T WORK CORRECTLY ON THE BRWOSER */
+@media not all and (min-resolution:.001dpcm) { 
+  @supports (-webkit-appearance:none) and (stroke-color:transparent) {
+    .tab-content .dropdown-menu, .tab-content .dropdown-menu.open { 
+        position:sticky
+  }
+}}
+
 .tab-content .dropdown-menu > li > a {
   font-family: var(--ff-button);
   text-transform: none;
