@@ -621,7 +621,7 @@ add_row(tab = "natural_inf", type = "title",
 # Short distance city -------------------------------------------------------
 
 add_row(tab = "city_amenities", type = "title", 
-        text = "Short distance city") |> 
+        text = "Short-distance city") |> 
   add_row(tab = "city_amenities", type = "main", text = paste0(
     "This module presents accessibility indicators for walking and cycling, calculated on the City of Montreal's territory. This project is led by Polytechnique Montréal, McGill University and the Institut national de la recherche scientifique (INRS) and funded by the City of Montreal and Mitacs. This module is a preliminary version and will be the subject of future developments.")) |> 
   add_row(tab = "city_amenities", type = "extra", text = paste0(

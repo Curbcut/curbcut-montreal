@@ -217,6 +217,9 @@
         position:sticky
   }
 }}
+_::-webkit-full-page-media, _:future, :root .tab-content .dropdown-menu, .tab-content .dropdown-menu.open { 
+        position:sticky
+  }
 
 .tab-content .dropdown-menu > li > a {
   font-family: var(--ff-button);
