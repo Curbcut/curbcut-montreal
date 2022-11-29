@@ -31,53 +31,71 @@ shinyServer(function(input, output, session) {
     news = reactiveValues(select_id = reactiveVal(NA)),
     lang = reactiveVal("fr"),
     active_tab = "home",
-    geo = reactiveVal("CMA"),
+    geo = reactiveVal(default_region),
     default_select_id = reactiveVal(NULL),
-    stories = reactiveValues(select_id = reactiveVal(NA)),
-    canale = reactiveValues(select_id = reactiveVal(NA), 
-                            df = reactiveVal("CMA_CSD"),
-                            zoom = reactiveVal(get_zoom(map_zoom))),
-    canbics = reactiveValues(select_id = reactiveVal(NA), 
-                            df = reactiveVal("CMA_CSD"),
-                            zoom = reactiveVal(get_zoom(map_zoom))),
-    climate_risk = reactiveValues(select_id = reactiveVal(NA),
-                                  df = reactiveVal("CMA_grid"),
-                                  zoom = reactiveVal(get_zoom(map_zoom))),
-    housing = reactiveValues(select_id = reactiveVal(NA),
-                             df = reactiveVal("CMA_CSD"),
-                             zoom = reactiveVal(get_zoom(map_zoom))),
-    access = reactiveValues(select_id = reactiveVal(NA),
-                            df = reactiveVal("CMA_CT"),
-                            zoom = reactiveVal(get_zoom(map_zoom))),
-    city_amenities = reactiveValues(select_id = reactiveVal(NA), 
-                            df = reactiveVal("city_CSD"),
-                            zoom = reactiveVal(get_zoom(map_zoom))),
-    alley = reactiveValues(select_id = reactiveVal(NA),
-                           df = reactiveVal("borough_empty"),
-                           zoom = reactiveVal(12)),
-    natural_inf = reactiveValues(zoom = reactiveVal(9.5)),
-    tenure = reactiveValues(select_id = reactiveVal(NA), 
-                            df = reactiveVal("CMA_CSD"),
-                            zoom = reactiveVal(get_zoom(map_zoom)),
-                            prev_norm = reactiveVal(FALSE)),
-    dw_types = reactiveValues(select_id = reactiveVal(NA), 
-                              df = reactiveVal("CMA_CSD"),
-                              zoom = reactiveVal(get_zoom(map_zoom)),
-                              prev_norm = reactiveVal(FALSE)),
-    demographics = reactiveValues(select_id = reactiveVal(NA), 
-                              df = reactiveVal("CMA_CSD"),
-                              zoom = reactiveVal(get_zoom(map_zoom))),
-    afford = reactiveValues(select_id = reactiveVal(NA), 
-                            df = reactiveVal("CMA_CSD"),
-                            zoom = reactiveVal(get_zoom(map_zoom)),
-                            prev_norm = reactiveVal(FALSE)),
-    vac_rate = reactiveValues(select_id = reactiveVal(NA), 
-                            df = reactiveVal("cmhc_cmhczone"),
-                            zoom = reactiveVal(get_zoom(map_zoom))),
-    amenities = reactiveValues(select_id = reactiveVal(NA), 
-                              df = reactiveVal("CMA_CSD"),
-                              zoom = reactiveVal(get_zoom(map_zoom)))
-  )
+    stories = reactiveValues(select_id = reactiveVal(NA)))
+  
+  lapply(modules$id, \(id) {
+    df <- modules$regions[modules$id == id]
+    df <- unlist(df)[[1]]
+    df <- if (is.null(df)) default_region else df
+    df <- paste(df, get(paste0("map_zoom_levels_", df))[[1]], sep = "_")
+    
+    assign(r[[id]],
+           reactiveValues(select_id = reactiveVal(NA),
+                          df = reactiveVal(df),
+                          zoom = reactiveVal(get_zoom(map_zoom)),
+                          prev_norm = reactiveVal(FALSE)),
+           envir = parent.env())
+  })
+    
+    # 
+    # 
+    # 
+    # 
+    # canale = reactiveValues(select_id = reactiveVal(NA), 
+    #                         df = reactiveVal("CMA_CSD"),
+    #                         zoom = reactiveVal(get_zoom(map_zoom))),
+    # canbics = reactiveValues(select_id = reactiveVal(NA), 
+    #                         df = reactiveVal("CMA_CSD"),
+    #                         zoom = reactiveVal(get_zoom(map_zoom))),
+    # climate_risk = reactiveValues(select_id = reactiveVal(NA),
+    #                               df = reactiveVal("CMA_grid"),
+    #                               zoom = reactiveVal(get_zoom(map_zoom))),
+    # housing = reactiveValues(select_id = reactiveVal(NA),
+    #                          df = reactiveVal("CMA_CSD"),
+    #                          zoom = reactiveVal(get_zoom(map_zoom))),
+    # access = reactiveValues(select_id = reactiveVal(NA),
+    #                         df = reactiveVal("CMA_CT"),
+    #                         zoom = reactiveVal(get_zoom(map_zoom))),
+    # city_amenities = reactiveValues(select_id = reactiveVal(NA), 
+    #                         df = reactiveVal("city_CSD"),
+    #                         zoom = reactiveVal(get_zoom(map_zoom))),
+    # alley = reactiveValues(select_id = reactiveVal(NA),
+    #                        df = reactiveVal("borough_empty"),
+    #                        zoom = reactiveVal(12)),
+    # natural_inf = reactiveValues(zoom = reactiveVal(9.5)),
+    # tenure = reactiveValues(select_id = reactiveVal(NA), 
+    #                         df = reactiveVal("CMA_CSD"),
+    #                         zoom = reactiveVal(get_zoom(map_zoom)),
+    #                         prev_norm = reactiveVal(FALSE)),
+    # dw_types = reactiveValues(select_id = reactiveVal(NA), 
+    #                           df = reactiveVal("CMA_CSD"),
+    #                           zoom = reactiveVal(get_zoom(map_zoom)),
+    #                           prev_norm = reactiveVal(FALSE)),
+    # demographics = reactiveValues(select_id = reactiveVal(NA), 
+    #                           df = reactiveVal("CMA_CSD"),
+    #                           zoom = reactiveVal(get_zoom(map_zoom))),
+    # afford = reactiveValues(select_id = reactiveVal(NA), 
+    #                         df = reactiveVal("CMA_CSD"),
+    #                         zoom = reactiveVal(get_zoom(map_zoom)),
+    #                         prev_norm = reactiveVal(FALSE)),
+    # vac_rate = reactiveValues(select_id = reactiveVal(NA), 
+    #                         df = reactiveVal("cmhc_cmhczone"),
+    #                         zoom = reactiveVal(get_zoom(map_zoom))),
+    # amenities = reactiveValues(select_id = reactiveVal(NA), 
+    #                           df = reactiveVal("CMA_CSD"),
+    #                           zoom = reactiveVal(get_zoom(map_zoom)))
   
 
   ## Home page -----------------------------------------------------------------
@@ -373,10 +391,9 @@ shinyServer(function(input, output, session) {
                    inline = TRUE,
                    selected = r$geo(),
                    choiceNames = 
-                     sapply(c("Metropolitan Area", "City of Montreal", 
-                              "Island of Montreal", "Centraide"),
+                     sapply(regions_dictionary$name[regions_dictionary$pickable],
                             cc_t, r = r, USE.NAMES = FALSE),
-                   choiceValues = c("CMA", "city", "island", "centraide")),
+                   choiceValues = regions_dictionary$geo[regions_dictionary$pickable]),
 
       hr(),
       
@@ -389,7 +406,7 @@ shinyServer(function(input, output, session) {
                      <div style="width: 80%; margin-top: var(--padding-v-md); width:auto;">',
                   textInput(inputId = "lock_address_searched", 
                             label = NULL, 
-                            placeholder = "845 Sherbrooke Ouest, Montréal, Quebec"),
+                            placeholder = default_random_address),
                   '</div>
                      <div style="width: 20%">',
                   actionButton(inputId = "lock_search_button",
@@ -415,7 +432,7 @@ shinyServer(function(input, output, session) {
   # If the geo cookie is already in and it differs from default
   observeEvent(input$cookies$default_geo, {
     if (!is.null(input$cookies$default_geo) &&
-        input$cookies$default_geo != "CMA") {
+        input$cookies$default_geo != default_region) {
       r$geo(input$cookies$default_geo)
     }
   }, once = TRUE)
@@ -441,18 +458,20 @@ shinyServer(function(input, output, session) {
         
         showNotification(
           cc_t(r = r,
-                        paste0("Postal code `{postal_codes$postal_code[pcs]}` ",
-                               "saved as default.")),
+               paste0("Postal code `{postal_codes$postal_code[pcs]}` ",
+                      "saved as default.")),
           type = "default")
-        sapply(c("CMA", "city", "island", "centraide"), \(x) {
-          dat <- get(paste0(x, "_DA"))
+        
+        sapply(regions_dictionary$geo, \(x) {
+          dat <- get0(paste0(x, "_DA"))
+          if (is.null(dat)) return("")
           dat <- dat[dat$ID == postal_codes$DAUID[pcs], ]
-          if (length(data) == 0) {
-            showNotification(
-              cc_t(r = r, paste0("No addresses found.")),
-              type = "error")
-            return(NULL)
-          }
+          # if (length(dat) == 0) {
+          #   showNotification(
+          #     cc_t(r = r, paste0("No addresses found.")),
+          #     type = "error")
+          #   return(NULL)
+          # }
           unique(unlist(dat[grepl("ID$", names(dat))]))
         }, simplify = FALSE, USE.NAMES = TRUE)
         
@@ -476,7 +495,7 @@ shinyServer(function(input, output, session) {
         coords <- val$geometry$coordinates
         
         out <- 
-          sapply(c("CMA", "city", "island", "centraide"), \(x) {
+          sapply(regions_dictionary$geo, \(x) {
             da_vals <- do.call("dbGetQuery", list(rlang::sym(paste0(x, "_DA_conn")),
                                                   paste0("SELECT * FROM centroid")))
             distance_sum <- 

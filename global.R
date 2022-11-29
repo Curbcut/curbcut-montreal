@@ -1,5 +1,16 @@
 #### SUS GLOBALS ###############################################################
 
+
+# Platform dependant ------------------------------------------------------
+
+site_name <- "Curbcut Montreal"
+site_url <- "https://montreal.curbcut.ca"
+stories_page <- "Montréal stories"
+
+default_region <- "CMA"
+# For a location lock placeholder in advanced options
+default_random_address <- "845 Sherbrooke Ouest, Montréal, Quebec"
+
 # Packages ----------------------------------------------------------------
 
 suppressPackageStartupMessages({
@@ -30,7 +41,7 @@ shinyOptions(cache = cachem::cache_disk(file.path(dirname(tempdir()), "cache")))
 
 # Data --------------------------------------------------------------------
 
-# Load all what is in the root of the data folder
+# Load all .qs and .qsm files that are in the root of the data folder
 data_files <- list.files("data", full.names = TRUE)
 invisible(lapply(data_files[grepl("qsm$", data_files)], 
                  qload, env = .GlobalEnv))
@@ -39,6 +50,14 @@ invisible(lapply(data_files[grepl("qs$", data_files)],
                    object_name <- gsub("(data/)|(\\.qs)", "", x)
                    assign(object_name, qread(x), envir = .GlobalEnv)
                    }))
+
+# Connect to the SQLite databases
+dbs <- list.files("data", full.names = TRUE)
+dbs <- subset(dbs, grepl(".sqlite$", dbs))
+lapply(dbs, \(x) {
+  connection_name <- paste0(stringr::str_extract(x, "(?<=/).*?(?=\\.)"), "_conn")
+  assign(connection_name, dbConnect(SQLite(), x), envir = .GlobalEnv)
+}) |> invisible()
 
 
 # Global variables --------------------------------------------------------
@@ -60,44 +79,53 @@ census_max <-
 
 # Modules ready -----------------------------------------------------------
 
-mods_rdy <- list(
-  "Climate" = c(
-    "Climate risk" = "climate_risk"
-  ),
-  "Housing" = c(
-    "Housing system" = "housing",
-    "Vacancy rate" = "vac_rate",
-    "Housing affordability" = "afford",
-    "Tenure status" = "tenure",
-    "Dwelling types" = "dw_types"
-  ),
-  "Policy" = c(
-    "Montréal climate plans" = "mcp"
-  ),
-  "Transport" = c(
-    # "Accessibility" = "access",
-    "Access to amenities" = "amenities",
-    "Short-distance city" = "city_amenities",
-    "Bikeway comfort and safety" = "canbics"#,
-    #   "Road safety" = "crash"
-  ),
-  "Urban life" = c(
-    "Active living potential" = "canale",
-    "Green alleys" = "alley",
-    "Demographics" = "demographics"
-  ),
-  "Ecology" = c(
-    "Natural infrastructure" = "natural_inf"
-  )
-)
+mods_rdy <- 
+  unique(modules$theme) |> 
+  sapply(\(x) {
+    thm <- modules[modules$theme == x, ]
+    ids <- thm$id
+    names(ids) <- thm$nav_title
+    ids
+  }, simplify = FALSE, USE.NAMES = TRUE)
 
-stand_alone_tabs <- c(
-  "Montréal stories" = "stories",
-  "Place explorer" = "place_explorer",
-  "How to use" = "how_to_use",
-  "About" = "about_sus",
-  "Authors" = "authors"
-)
+# mods_rdy <- list(
+#   "Climate" = c(
+#     "Climate risk" = "climate_risk"
+#   ),
+#   "Housing" = c(
+#     "Housing system" = "housing",
+#     "Vacancy rate" = "vac_rate",
+#     "Housing affordability" = "afford",
+#     "Tenure status" = "tenure",
+#     "Dwelling types" = "dw_types"
+#   ),
+#   "Policy" = c(
+#     "Montréal climate plans" = "mcp"
+#   ),
+#   "Transport" = c(
+#     # "Accessibility" = "access",
+#     "Access to amenities" = "amenities",
+#     "Short-distance city" = "city_amenities",
+#     "Bikeway comfort and safety" = "canbics"#,
+#     #   "Road safety" = "crash"
+#   ),
+#   "Urban life" = c(
+#     "Active living potential" = "canale",
+#     "Green alleys" = "alley",
+#     "Demographics" = "demographics"
+#   ),
+#   "Ecology" = c(
+#     "Natural infrastructure" = "natural_inf"
+#   )
+# )
+# 
+# stand_alone_tabs <- c(
+#   "Montréal stories" = "stories",
+#   "Place explorer" = "place_explorer",
+#   "How to use" = "how_to_use",
+#   "About" = "about_sus",
+#   "Authors" = "authors"
+# )
 
 
 # Map defaults ------------------------------------------------------------
@@ -148,14 +176,3 @@ systemfonts::register_font(
   italic = "www/fonts/SourceSansPro-Italic.ttf",
   bold = "www/fonts/SourceSansPro-Bold.ttf",
   bolditalic = "www/fonts/SourceSansPro-BoldItalic.ttf")
-
-
-# Connect to the dbs ------------------------------------------------------
-
-dbs <- list.files("data", full.names = TRUE)
-dbs <- subset(dbs, grepl(".sqlite$", dbs))
-
-lapply(dbs, \(x) {
-  connection_name <- paste0(stringr::str_extract(x, "(?<=/).*?(?=\\.)"), "_conn")
-  assign(connection_name, dbConnect(SQLite(), x), envir = .GlobalEnv)
-}) |> invisible()

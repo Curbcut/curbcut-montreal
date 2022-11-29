@@ -98,11 +98,11 @@ ui <- function(request) {
     
     meta() |> 
       meta_social(
-        title = "Welcome | Curbcut | Towards a sustainable city",
-        description = paste0("Curbcut is a platform for exploring urban ",
-                             "sustainability in the Montreal region across ",
+        title = paste0("Welcome | ", site_name, " | Towards a sustainable city"),
+        description = paste0(site_name, " is a platform for exploring ",
+                             "urban sustainability across ",
                              "multiple spatial and temporal scales."),
-        url = "https://curbcut.ca",
+        url = "https://montreal.curbcut.ca",
         image = "share.jpg",
         image_alt = paste0("A photo of a winding footpath through a verdant ",
                            "Montreal alley."),
@@ -117,11 +117,11 @@ ui <- function(request) {
     do.call(
       navbarPageWithInputs, 
       c(list(id = "sus_page", 
-             windowTitle = "Curbcut", 
+             windowTitle = site_name, 
              title = actionLink("title", "Curbcut"),
              tabPanel(cc_t("Home"), home_UI("home"), value = "home")),
         ready_modules_ui(mods_rdy),
-        list(tabPanel(cc_t("Montréal stories"), stories_UI("stories"),
+        list(tabPanel(cc_t(stories_page), stories_UI("stories"),
                       value = "stories"),
              tabPanel(cc_t("Place explorer"), 
                       place_explorer_UI("place_explorer"),

@@ -6,7 +6,6 @@ canale_UI <- function(id) {
   id_map <- paste0(id, "-map")
   
   tagList(
-    
     # Sidebar
     sidebar_UI(
       NS(id, id), 
