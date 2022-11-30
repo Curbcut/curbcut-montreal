@@ -151,6 +151,11 @@ auto_vars_server <- function(id, r = r, module_id = NULL, var_list,
     })
     
     # Create and remove the reactive widgets
+    observe({
+      if (auto_var_1()[1] == " ") removeUI(selector = "#auto_additional_drops") 
+      shinyjs::hide("staying_widgets_hr")
+      shinyjs::hide("widgets_hr")
+    })
     observeEvent(r[[id]]$widgets_to_add(), {
       removeUI(selector = "#auto_additional_drops")
       if (is.null(variables_possibilities())) return(NULL)
