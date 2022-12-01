@@ -22,9 +22,9 @@ explore_graph <- function(data, r = r, var_type, var_left, var_right, df, select
     if (!is.na(select_id)) {
       if (is_scale_in_df("building", df)) select_id <- 
           dbGetQuery(building_conn, 
-                     paste0("SELECT DAUID FROM ", paste(geo, "building", sep = "_"), 
-                            " WHERE ID = '", select_id, "'"))$DAUID
-      if (is_scale_in_df("street", df)) select_id <- street$DAUID[street$ID == select_id]
+                     paste0("SELECT DA_ID FROM ", paste(geo, "building", sep = "_"), 
+                            " WHERE ID = '", select_id, "'"))$DA_ID
+      if (is_scale_in_df("street", df)) select_id <- street$DA_ID[street$ID == select_id]
       if (sum(!is.na(select_id)) == 0) select_id <- NA
     }
     

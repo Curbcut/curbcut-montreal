@@ -130,7 +130,7 @@ place_explorer_server <- function(id, r) {
     # Initial reactives
     select_id <- reactiveVal(NA)
     loc_name <- reactiveVal(NA)
-    loc_DAUID <- reactiveVal(NA)
+    loc_DA_ID <- reactiveVal(NA)
 
     # Sidebar
     sidebar_server(id = "place_explorer", r = r, x = "place_explorer")
@@ -146,7 +146,7 @@ place_explorer_server <- function(id, r) {
         selected = all_themes)
     })
     
-    map_zoom_levels <- reactive({
+    map_zoom_levels <- eventReactive(r$geo(), {
       levels <- get(paste("map_zoom_levels", r$geo(), sep = "_"))
       return(levels[seq_len(which(names(levels) == "DA"))])
     })
@@ -162,10 +162,10 @@ place_explorer_server <- function(id, r) {
     
     # Update select_id() if df() changes!
     observe({
-      if (!is.null(loc_DAUID()) && !is.na(loc_DAUID())) {
+      if (!is.null(loc_DA_ID()) && !is.na(loc_DA_ID())) {
       DA_df <- get(paste(r$geo(), "DA", sep = "_"))
-      if (sum(DA_df$ID %in% loc_DAUID()) == 0) return(select_id(NA))
-      IDs <- DA_df[DA_df$ID == loc_DAUID(), c("ID", "CTUID", "geo_ID")] |> 
+      if (sum(DA_df$ID %in% loc_DA_ID()) == 0) return(select_id(NA))
+      IDs <- DA_df[DA_df$ID == loc_DA_ID(), c("ID", "CTUID", "geo_ID")] |> 
         unlist()
       
       select_id(data()$ID[data()$ID %in% IDs])}
@@ -216,9 +216,9 @@ place_explorer_server <- function(id, r) {
       pcs <- postal_codes$postal_code == postal_c
 
       if (sum(pcs) > 0) {
-        DAUID_of_pc <- postal_codes$DAUID[pcs]
+        DA_ID_of_pc <- postal_codes$DA_ID[pcs]
         DA_data <- get(paste(r$geo(), "DA", sep = "_"))
-        IDs <- DA_data[DA_data$ID == DAUID_of_pc, 
+        IDs <- DA_data[DA_data$ID == DA_ID_of_pc, 
                        c("ID", "CTUID", "geo_ID")] |> unlist()
         select_id(data()$ID[data()$ID %in% IDs])
 
@@ -239,7 +239,7 @@ place_explorer_server <- function(id, r) {
     # Map click
     observe({
       
-      loc_DAUID(input[[ns_id_map_click]]$object$ID)
+      loc_DA_ID(input[[ns_id_map_click]]$object$ID)
 
       lon <- input[[ns_id_map_click]]$coordinate[[1]]
       lat <- input[[ns_id_map_click]]$coordinate[[2]]
@@ -254,7 +254,7 @@ place_explorer_server <- function(id, r) {
 
     # Title card map click
     observe({
-      loc_DAUID(input[["title_card_map_click"]]$object$ID)
+      loc_DA_ID(input[["title_card_map_click"]]$object$ID)
 
       lon <- input[["title_card_map_click"]]$coordinate[[1]]
       lat <- input[["title_card_map_click"]]$coordinate[[2]]

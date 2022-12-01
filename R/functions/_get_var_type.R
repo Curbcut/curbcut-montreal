@@ -40,13 +40,13 @@ get_var_type <- function(data, geo, var_left, var_right, df, select_id,
   selection <- if (is.na(select_id)) select_df[0,] else 
     select_df[select_df$ID == select_id,]
   active_left <- if (build_str_as_DA && is_scale_in_df("building", df)) {
-    sum(!is.na(data$var_left[data$ID == selection$DAUID]))
+    sum(!is.na(data$var_left[data$ID == selection$DA_ID]))
   } else sum(!is.na(selection$var_left))
   active_right <- active_left
   if (length(var_right) != 1 || var_right != " ") 
     active_right <- if (build_str_as_DA && is_scale_in_df("building", df)) {
-      sum(!is.na(data$var_left[data$ID == selection$DAUID]) &
-            !is.na(data$var_right[data$ID == selection$DAUID])) 
+      sum(!is.na(data$var_left[data$ID == selection$DA_ID]) &
+            !is.na(data$var_right[data$ID == selection$DA_ID])) 
     } else sum(!is.na(selection$var_left) & !is.na(selection$var_right))
   
   

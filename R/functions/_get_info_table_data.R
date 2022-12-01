@@ -26,8 +26,8 @@ get_info_table_data <- function(r = r, data, var_type, var_left, var_right, df,
     dat_select_id <- select_id
     if (!is.na(select_id)) 
       select_id <- dbGetQuery(building_conn, 
-                              paste0("SELECT DAUID FROM ", paste(geo, "building", sep = "_"), 
-                                     " WHERE ID = '", select_id, "'"))$DAUID
+                              paste0("SELECT DA_ID FROM ", paste(geo, "building", sep = "_"), 
+                                     " WHERE ID = '", select_id, "'"))$DA_ID
     if (length(select_id) == 0) select_id <- NA
     
   } else {
@@ -155,32 +155,11 @@ get_info_table_data <- function(r = r, data, var_type, var_left, var_right, df,
 
   ## Scale ---------------------------------------------------------------------
   
-  scale_sing <- switch(
-    gsub(".*_", "", df),  
-    "date" = NA_character_,
-    "CSD" = "borough/city",
-    "CT" = "census tract",
-    "DA" = "dissemination area",
-    "DB" = "dissemination block",
-    "grid" = "250-m",
-    "building" = if (build_str_as_DA) "dissemination area" else "building",
-    "street" = if (build_str_as_DA) "dissemination area" else "street",
-    "centraide" = "centraide zone",
-    "cmhczone" = "CMHC zone",
-    "zone")
+  scale_sing <- 
+    scales_dictionary$sing[scales_dictionary$scale == gsub(".*_", "", df)]
   
-  scale_plural <- switch(
-    gsub(".*_", "", scale_sing),
-    "borough/city" = "boroughs or cities",
-    "census tract" = "census tracts",
-    "dissemination area" = "dissemination areas",
-    "dissemination block" = "dissemination blocks",
-    "250-m" = "areas",
-    "building" = "buildings",
-    "street" = "streets",
-    "centraide zone" = "centraide zones",
-    "cmhczone" = "CMHC zones",
-    "zones")
+  scale_plural <- 
+    scales_dictionary$plur[scales_dictionary$scale == gsub(".*_", "", df)]
   
   out$scale_sing <- cc_t(r = r, scale_sing)
   out$scale_plural <- cc_t(r = r, scale_plural)
@@ -188,50 +167,22 @@ get_info_table_data <- function(r = r, data, var_type, var_left, var_right, df,
 
   ## Place names ---------------------------------------------------------------
   
-  out$place_name <- if (is_scale_in_df(c("building", "street"), df) && build_str_as_DA) {
-    cc_t(r = r, "The dissemination area around {select_name$name}")
-  } else switch(
-    scale_sing,
-    "building" = glue("{select_name$name}"),
-    "street" = glue("{select_name$name}"),
-    "borough/city" = glue("{select_name$name}"),
-    "census tract" = cc_t(r = r, "Census tract {select_name$name}"),
-    "dissemination area" = 
-      cc_t(r = r, "Dissemination area {select_name$name}"),
-    "dissemination block" = 
-      cc_t(r = r, "Dissemination block {select_name$name}"),
-    "250-m" = cc_t(r = r, "The area around {select_name$name}"),
-    "centraide zone" = glue("{select_name$name}"),
-    "CMHC zone" = glue("{select_name$name}"),
-    NA_character_)
+  name <- select_name$name
+  out$place_name <- 
+    scales_dictionary$place_name[scales_dictionary$scale == gsub(".*_", "", df)]
+  out$place_name <- cc_t(r = r, out$place_name)
   
-  if (grepl("select", out$var_type)) {
-    if (is_scale_in_df(first_level_choropleth, df)) select_name$name_2 <- 
-        cc_t(r = r, glue("{select_name$name_2}"))
-    
-    out$place_heading <- if (is_scale_in_df(c("building", "street"), df) && 
-                             build_str_as_DA) {
-      select_name$name
-    } else if (scale_sing %in% c("borough/city", "centraide zone", "CMHC zone")) {
-      cc_t(r = r, "{select_name$name_2} of {out$place_name}")
-    } else if (scale_sing == "250-m") {
-      cc_t(r = r, select_name$name)
-    } else glue("{out$place_name} ({select_name$name_2})")
-  }
+  name_2 <- cc_t(r = r, select_name$name_2)
+  out$place_heading <- 
+    scales_dictionary$place_heading[scales_dictionary$scale == gsub(".*_", "", df)]
+  out$place_heading <- cc_t(r = r, out$place_heading)
   
   
   ## Geo name ------------------------------------------------------------------
   
   out$geo <- 
-    cc_t(r = r, 
-                  switch(
-                    geo, 
-                    "CMA" = "in the Montreal region",
-                    "city" = "in the City of Montreal",
-                    "island" = "on the island of Montreal",
-                    "centraide" = "in the Centraide of Greater Montreal territory",
-                    "CMHC" = "in the Montreal region"))
-  
+    cc_t(r = r, regions_dictionary$to_compare[regions_dictionary == geo])
+
   
   ## Descriptive statistics for var_left ---------------------------------------
   

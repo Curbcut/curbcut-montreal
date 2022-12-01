@@ -39,64 +39,18 @@ shinyServer(function(input, output, session) {
     df <- modules$regions[modules$id == id]
     df <- unlist(df)[[1]]
     df <- if (is.null(df)) default_region else df
-    df <- paste(df, get(paste0("map_zoom_levels_", df))[[1]], sep = "_")
+    df <- paste(df, names(get(paste0("map_zoom_levels_", df)))[[1]], sep = "_")
     
-    assign(r[[id]],
-           reactiveValues(select_id = reactiveVal(NA),
-                          df = reactiveVal(df),
-                          zoom = reactiveVal(get_zoom(map_zoom)),
-                          prev_norm = reactiveVal(FALSE)),
-           envir = parent.env())
+    assign_rvs <- sprintf(
+      paste0("r$%s <- ",
+             "reactiveValues(select_id = reactiveVal(NA),",
+             "df = reactiveVal('%s'),",
+             "zoom = reactiveVal(%f),",
+             "prev_norm = reactiveVal(FALSE))"),
+      id, df, get_zoom(map_zoom))
+    
+    eval(parse(text = assign_rvs))
   })
-    
-    # 
-    # 
-    # 
-    # 
-    # canale = reactiveValues(select_id = reactiveVal(NA), 
-    #                         df = reactiveVal("CMA_CSD"),
-    #                         zoom = reactiveVal(get_zoom(map_zoom))),
-    # canbics = reactiveValues(select_id = reactiveVal(NA), 
-    #                         df = reactiveVal("CMA_CSD"),
-    #                         zoom = reactiveVal(get_zoom(map_zoom))),
-    # climate_risk = reactiveValues(select_id = reactiveVal(NA),
-    #                               df = reactiveVal("CMA_grid"),
-    #                               zoom = reactiveVal(get_zoom(map_zoom))),
-    # housing = reactiveValues(select_id = reactiveVal(NA),
-    #                          df = reactiveVal("CMA_CSD"),
-    #                          zoom = reactiveVal(get_zoom(map_zoom))),
-    # access = reactiveValues(select_id = reactiveVal(NA),
-    #                         df = reactiveVal("CMA_CT"),
-    #                         zoom = reactiveVal(get_zoom(map_zoom))),
-    # city_amenities = reactiveValues(select_id = reactiveVal(NA), 
-    #                         df = reactiveVal("city_CSD"),
-    #                         zoom = reactiveVal(get_zoom(map_zoom))),
-    # alley = reactiveValues(select_id = reactiveVal(NA),
-    #                        df = reactiveVal("borough_empty"),
-    #                        zoom = reactiveVal(12)),
-    # natural_inf = reactiveValues(zoom = reactiveVal(9.5)),
-    # tenure = reactiveValues(select_id = reactiveVal(NA), 
-    #                         df = reactiveVal("CMA_CSD"),
-    #                         zoom = reactiveVal(get_zoom(map_zoom)),
-    #                         prev_norm = reactiveVal(FALSE)),
-    # dw_types = reactiveValues(select_id = reactiveVal(NA), 
-    #                           df = reactiveVal("CMA_CSD"),
-    #                           zoom = reactiveVal(get_zoom(map_zoom)),
-    #                           prev_norm = reactiveVal(FALSE)),
-    # demographics = reactiveValues(select_id = reactiveVal(NA), 
-    #                           df = reactiveVal("CMA_CSD"),
-    #                           zoom = reactiveVal(get_zoom(map_zoom))),
-    # afford = reactiveValues(select_id = reactiveVal(NA), 
-    #                         df = reactiveVal("CMA_CSD"),
-    #                         zoom = reactiveVal(get_zoom(map_zoom)),
-    #                         prev_norm = reactiveVal(FALSE)),
-    # vac_rate = reactiveValues(select_id = reactiveVal(NA), 
-    #                         df = reactiveVal("cmhc_cmhczone"),
-    #                         zoom = reactiveVal(get_zoom(map_zoom))),
-    # amenities = reactiveValues(select_id = reactiveVal(NA), 
-    #                           df = reactiveVal("CMA_CSD"),
-    #                           zoom = reactiveVal(get_zoom(map_zoom)))
-  
 
   ## Home page -----------------------------------------------------------------
   
@@ -392,28 +346,27 @@ shinyServer(function(input, output, session) {
                    selected = r$geo(),
                    choiceNames = 
                      sapply(regions_dictionary$name[regions_dictionary$pickable],
-                            cc_t, r = r, USE.NAMES = FALSE),
+                            cc_t, r = r) |> unname(),
                    choiceValues = regions_dictionary$geo[regions_dictionary$pickable]),
 
       hr(),
       
       # Lock in address of zone for select_ids
-      strong(cc_t(r = r, "Enter and save a default location (postal code or address)")),
+      strong(cc_t(r = r, "Enter and save a default location (postal code or ",
+                  "address)")),
       HTML("<br><i>", cc_t(r = r, "Default location will be saved until ",
                     "manually cleared from advanced options"), "</i>"),
-      HTML(paste0('
-                   <div class="shiny-split-layout">
-                     <div style="width: 80%; margin-top: var(--padding-v-md); width:auto;">',
+      HTML(paste0('<div class="shiny-split-layout">',
+                  '<div style="width: 80%; margin-top: var(--padding-v-md); ',
+                  'width:auto;">',
                   textInput(inputId = "lock_address_searched", 
                             label = NULL, 
                             placeholder = default_random_address),
-                  '</div>
-                     <div style="width: 20%">',
+                  '</div><div style="width: 20%">',
                   actionButton(inputId = "lock_search_button",
                                label = icon("check", verify_fa = FALSE),
                                style = "margin-top: var(--padding-v-md);"),
-                  '</div>
-                  </div>',
+                  '</div></div>',
                   actionButton(inputId = "cancel_lock_location",
                                label = cc_t(r = r, "Clear default location"), 
                                icon = icon("xmark", verify_fa = FALSE),
@@ -451,7 +404,8 @@ shinyServer(function(input, output, session) {
         # Postal code detected, but not in our database
         if (sum(pcs) == 0) {
           showNotification(
-            cc_t(r = r, "Postal code `{postal_c}` isn't within an available geography."),
+            cc_t(r = r, "Postal code `{postal_c}` isn't within an ",
+                 "available geography."),
             type = "error")
           return(NULL)
         }
@@ -465,13 +419,13 @@ shinyServer(function(input, output, session) {
         sapply(regions_dictionary$geo, \(x) {
           dat <- get0(paste0(x, "_DA"))
           if (is.null(dat)) return("")
-          dat <- dat[dat$ID == postal_codes$DAUID[pcs], ]
-          # if (length(dat) == 0) {
-          #   showNotification(
-          #     cc_t(r = r, paste0("No addresses found.")),
-          #     type = "error")
-          #   return(NULL)
-          # }
+          dat <- dat[dat$ID == postal_codes$DA_ID[pcs], ]
+          if (length(dat) == 0) {
+            showNotification(
+              cc_t(r = r, paste0("No addresses found.")),
+              type = "error")
+            return(NULL)
+          }
           unique(unlist(dat[grepl("ID$", names(dat))]))
         }, simplify = FALSE, USE.NAMES = TRUE)
         
@@ -496,28 +450,34 @@ shinyServer(function(input, output, session) {
         
         out <- 
           sapply(regions_dictionary$geo, \(x) {
-            da_vals <- do.call("dbGetQuery", list(rlang::sym(paste0(x, "_DA_conn")),
+            scales <- names(get(paste0("map_zoom_levels_", x)))
+            if (length(which("DA" == scales)) > 0) {
+              scales <- scales[seq_len(which("DA" == scales))]
+            }
+            last_scales <- scales[length(scales)]
+            da_vals <- do.call("dbGetQuery", list(rlang::sym(paste0(x, "_", 
+                                                                    last_scales, 
+                                                                    "_conn")),
                                                   paste0("SELECT * FROM centroid")))
             distance_sum <- 
               mapply(sum, abs(coords[[1]] - da_vals$lat), abs(coords[[2]] - da_vals$lon))
             # If too far.
             if (min(distance_sum) > 0.1) return(NULL)
-            DA_ID <- da_vals$ID[which(distance_sum == min(distance_sum))]
-            dat <- get(paste0(x, "_DA"))
-            dat <- dat[dat$ID == DA_ID, ]
+            dat_ID <- da_vals$ID[which(distance_sum == min(distance_sum))]
+            dat <- get(paste(x, last_scales, sep = "_"))
+            dat <- dat[dat$ID == dat_ID, ]
             na.omit(unique(unlist(dat[grepl("ID$", names(dat))])))
           }, simplify = FALSE, USE.NAMES = TRUE)
         
         if (all(sapply(out, is.null))) {
           showNotification(
-            cc_t(r = r,
-                          paste0("Address `{input$lock_address_searched}` isn't within an available geography.")),
+            cc_t(r = r, "Address `{input$lock_address_searched}` isn't",
+                 " within an available geography."),
             type = "error")
           out <- NULL
         } else {
           showNotification(
-            cc_t(r = r,
-                          paste0("Address `{val$title}` saved as default.")),
+            cc_t(r = r, "Address `{val$title}` saved as default."),
             type = "default")          
         }
         

@@ -9,9 +9,9 @@ change_inlist_numeric <- function(widgets) {
   }, widgets, seq_along(widgets), SIMPLIFY = FALSE, USE.NAMES = TRUE)
 }
 
-get_shared_group_diffs <- function(grouping) {
+get_shared_group_diffs <- function(group_name) {
   all_group_diffs <- 
-    variables$group_diff[variables$grouping %in% grouping]
+    variables$group_diff[variables$group_name %in% group_name]
   
   amount <- table(unlist(sapply(all_group_diffs, names)))
   staying_widgets <- names(amount)[amount == length(all_group_diffs)]

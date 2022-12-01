@@ -1,6 +1,6 @@
 #### RENDER LEGEND #############################################################
 
-render_legend <- function(r, data, var_left, var_right, df, data_type, 
+render_legend <- function(r, data, var_left, var_right, df, geo, data_type, 
                           build_str_as_DA = TRUE, breaks = NULL) {
   
   ## Clean up data_type and building/street ------------------------------------
@@ -8,6 +8,7 @@ render_legend <- function(r, data, var_left, var_right, df, data_type,
   data_type <- sub("building_", "", data_type)
   if (build_str_as_DA && is_scale_in_df(c("building", "street"), df)) 
     df <- paste0(gsub("building", "DA", df))
+  df <- gsub(".*_", "", df)
   
   
   ## Get date ------------------------------------------------------------------
@@ -19,8 +20,8 @@ render_legend <- function(r, data, var_left, var_right, df, data_type,
   ## Get axis titles and breaks ------------------------------------------------
   
   labs_xy <- get_legend_labels(r = r, var_left, var_right, data_type, breaks)
-  break_labs <- get_legend_breaks(r = r, data, var_left, var_right, df, data_type,
-                                  breaks)
+  break_labs <- get_legend_breaks(r = r, data, var_left, var_right, df, geo, 
+                                  data_type, breaks)
   
   
   ## Prepare default theme -----------------------------------------------------
@@ -50,7 +51,8 @@ render_legend <- function(r, data, var_left, var_right, df, data_type,
       ggplot(aes(xmin = x - 1, xmax = x, ymin = y - 1, ymax = y, 
                  fill = fill)) +
       geom_rect() + 
-      scale_x_continuous(breaks = c(-0.375, 0:5), labels = as.character(c("NA", break_labs))) +
+      scale_x_continuous(breaks = c(-0.375, 0:5), 
+                         labels = as.character(c("NA", break_labs))) +
       scale_y_continuous(labels = NULL) +
       scale_fill_manual(values = setNames(
         leg$fill, leg$fill)) +

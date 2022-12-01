@@ -1,6 +1,6 @@
 #### AUTO-WIDGET CREATION MODULE ###############################################
 #' This module creates the number of widgets necessary to create a variable, using
-#' the `grouping` and `group_diff` column of the `variables` table.
+#' the `group_name` and `group_diff` column of the `variables` table.
 
 # Module UI ---------------------------------------------------------------
 
@@ -45,7 +45,7 @@ auto_vars_server <- function(id, r = r, module_id = NULL, var_list,
     # `var_list`), and that  shouldn't move ever (we don't want them to be 
     # reactive by a change in the selected variable).
     staying_widgets <- reactive({
-      groupings <- variables$grouping[variables$var_code %in% unlist(var_list)]
+      groupings <- variables$group_name[variables$var_code %in% unlist(var_list)]
       if (all(is.na(groupings))) return()
       get_shared_group_diffs(groupings)
     })
@@ -102,8 +102,8 @@ auto_vars_server <- function(id, r = r, module_id = NULL, var_list,
     # Get the variables table that fit with the auto_var() selection
     variables_possibilities <- eventReactive(r[[id]]$auto_var(), {
       if (auto_var() == " ") return(NULL)
-      group <- variables$grouping[variables$var_code == auto_var()]
-      variables[!is.na(variables$grouping) & variables$grouping == group, ]
+      group <- variables$group_name[variables$var_code == auto_var()]
+      variables[!is.na(variables$group_name) & variables$group_name == group, ]
     })
     
     #### ALL OTHER WIDGETS #####################################################

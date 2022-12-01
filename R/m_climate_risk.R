@@ -61,7 +61,7 @@ climate_risk_server <- function(id, r) {
     }) |> bindEvent(get_view_state(id_map))
     
     # Map zoom levels change depending on r$geo()
-    map_zoom_levels <- reactive({
+    map_zoom_levels <- eventReactive(r$geo(), {
       get_zoom_levels(default = "island", 
                       geo = tweaked_geo(),
                       var_left = var_left())
@@ -70,9 +70,9 @@ climate_risk_server <- function(id, r) {
     # Zoom string reactive
     observe({
       new_zoom_string <- get_zoom_string(r[[id]]$zoom(), map_zoom_levels()$levels,
-                                         map_zoom_levels()$scale)
+                                         map_zoom_levels()$region)
       if (new_zoom_string != zoom_string()) zoom_string(new_zoom_string)
-    }) |> bindEvent(r[[id]]$zoom(), map_zoom_levels()$levels, map_zoom_levels()$scale)
+    }) |> bindEvent(r[[id]]$zoom(), map_zoom_levels()$levels, map_zoom_levels()$region)
 
     # Click reactive
     observe({
@@ -105,7 +105,7 @@ climate_risk_server <- function(id, r) {
       zoom_levels = map_zoom_levels)
     
     # Choose tileset
-    tile <- reactive({if (grid()) paste(map_zoom_levels()$scale, "grid", sep = "_") else
+    tile <- reactive({if (grid()) paste(map_zoom_levels()$region, "grid", sep = "_") else
        tile_choropleth()})
     
     # Get df for explore/legend/etc
@@ -135,7 +135,7 @@ climate_risk_server <- function(id, r) {
     # Data
     data <- reactive(get_data(
       df = r[[id]]$df(),
-      geo = map_zoom_levels()$scale,
+      geo = map_zoom_levels()$region,
       var_left = var_left(),
       var_right = var_right()))
 
@@ -143,7 +143,7 @@ climate_risk_server <- function(id, r) {
     data_color <- reactive(get_data_color(
       map_zoom_levels = if (grid()) rlang::set_names("grid", "grid") else
         map_zoom_levels()$levels,
-      geo = map_zoom_levels()$scale,
+      geo = map_zoom_levels()$region,
       var_left = var_left(),
       var_right = var_right()
     ))
@@ -186,7 +186,7 @@ climate_risk_server <- function(id, r) {
       id = id,
       r = r,
       data = data,
-      geo = reactive(map_zoom_levels()$scale),
+      geo = reactive(map_zoom_levels()$region),
       var_left = var_left,
       var_right = var_right)
 

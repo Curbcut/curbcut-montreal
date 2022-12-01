@@ -6,9 +6,8 @@ legend_UI <- function(id) {
       uiOutput(NS(id, "legend_render")))
 }
 
-legend_server <- function(id, r, data, var_left, var_right, 
-                          df = r[[id]]$df,
-                          hide = reactive(FALSE), 
+legend_server <- function(id, r, data, var_left, var_right, geo,
+                          df = r[[id]]$df, hide = reactive(FALSE), 
                           build_str_as_DA = reactive(TRUE),
                           breaks = reactive(NULL)) {
   
@@ -43,6 +42,7 @@ legend_server <- function(id, r, data, var_left, var_right,
         var_left = var_left(),
         var_right = var_right(),
         df = df(),
+        geo = geo(),
         data_type = data_type(),
         build_str_as_DA = build_str_as_DA(),
         breaks = breaks()),

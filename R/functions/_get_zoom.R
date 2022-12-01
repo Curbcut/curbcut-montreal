@@ -66,7 +66,7 @@ get_zoom_levels <- function(default = "CMA", geo, var_left,
   zooms_default <- get_z(paste0(default, suffix_zoom_levels))
   zooms_geo <- get_z(paste0(geo, suffix_zoom_levels))
   
-  if (default == geo) return(list(levels = zooms_default, scale = geo))
+  if (default == geo) return(list(levels = zooms_default, region = geo))
   
   # Check if the main variable is part of the set of variables in the
   # prefered zoom levels. If it is, return the wanted map_zoom_levels
@@ -75,7 +75,7 @@ get_zoom_levels <- function(default = "CMA", geo, var_left,
   vl_in_sql <- var_left[1] %in% tables_in_sql[[geo_scale]]
     
   exists_at_geo_scale <- var_left[1] %in% names(get0(geo_scale)) || vl_in_sql
-  if (exists_at_geo_scale) return(list(levels = zooms_geo, scale = geo))
+  if (exists_at_geo_scale) return(list(levels = zooms_geo, region = geo))
   
-  return(list(levels = zooms_default, scale = default))
+  return(list(levels = zooms_default, region = default))
 }

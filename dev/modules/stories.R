@@ -1,6 +1,8 @@
 #### Stories data setup ########################################################
 
 # This script is totally independent
+library(tidyverse)
+library(magick)
 
 # Create key tibble -------------------------------------------------------
 
@@ -146,7 +148,7 @@ round_img_shadow <- function(img_name) {
   path <- paste0("dev/data/stories/raw_images/banner_bubble_raw_img/", 
                  img_name, ".png")
   img <- magick::image_read(path)
-  shadow_right <- magick::image_read("dev/data/dropshadow_right.png")
+  shadow_right <- magick::image_read("dev/data/stories/dropshadow_right.png")
   
   # Get height, width and crop longer side to match shorter side
   img_info <- magick::image_info(img)

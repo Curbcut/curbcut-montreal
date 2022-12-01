@@ -1,7 +1,7 @@
 #### GET LEGEND BREAKS #########################################################
 
-get_legend_breaks <- function(r = r, data, var_left, var_right, df, data_type, 
-                              breaks) {
+get_legend_breaks <- function(r = r, data, var_left, var_right, df, geo, 
+                              data_type, breaks) {
   
   ## Return NULL if no data_type matches ---------------------------------------
   
@@ -25,7 +25,7 @@ get_legend_breaks <- function(r = r, data, var_left, var_right, df, data_type,
     break_labs <- variables$breaks_q5[[
       which(variables$var_code == unique(sub("_\\d{4}$", "", var_left)))]]
     if (length(break_labs) > 0) break_labs <- 
-        break_labs[break_labs$scale == df,]
+        break_labs[break_labs$scale == df & break_labs$geo == geo, ]
     
     if (suppressWarnings(!is.null(break_labs$var_name) && 
                          !any(is.na(break_labs$var_name)))) {
@@ -58,7 +58,7 @@ get_legend_breaks <- function(r = r, data, var_left, var_right, df, data_type,
     break_labs <- variables$breaks_q5[[
       which(variables$var_code == unique(sub("_\\d{4}$", "", var_left)))]]
     if (length(break_labs) > 0) break_labs <- 
-        break_labs[break_labs$scale == df,]
+        break_labs[break_labs$scale == df & breaks_labs$geo == geo,]
     
     if (suppressWarnings(!is.null(break_labs$var_name) && 
                          !any(is.na(break_labs$var_name)))) {
@@ -82,14 +82,14 @@ get_legend_breaks <- function(r = r, data, var_left, var_right, df, data_type,
     if (length(break_labs_y) > 0) break_labs_y <- 
       break_labs_y$var[
         (break_labs_y$date == date_left | is.na(break_labs_y$date)) &
-          break_labs_y$scale == df]
+          break_labs_y$scale == df & break_labs_y$geo == geo]
     
     break_labs_x <- variables$breaks_q3[[
       which(variables$var_code == unique(sub("_\\d{4}$", "", var_right)))]]
     if (length(break_labs_x) > 0) break_labs_x <- 
       break_labs_x$var[
         (break_labs_x$date == date_right | is.na(break_labs_x$date)) &
-          break_labs_x$scale == df]
+          break_labs_x$scale == df & break_labs_x$geo == geo]
     
     # Format breaks
     break_labs_y <- convert_unit(break_labs_y, var_left, TRUE)

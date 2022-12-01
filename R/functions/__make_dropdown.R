@@ -33,10 +33,10 @@ choose_first_data_compare_group <- function(cat_vecs) {
   cat_vecs <- 
     cat_vecs[order(indices, cat_vecs$totals, decreasing = TRUE), ] 
   
-  lapply(unique(cat_vecs$grouping), \(group) {
+  lapply(unique(cat_vecs$group_name), \(group) {
     # Take the first element of the list (the ones with the most `total`)
-    cat_vecs$var_code[cat_vecs$grouping == group][1]}) |> 
-    setNames(unique(cat_vecs$grouping))
+    cat_vecs$var_code[cat_vecs$group_name == group][1]}) |> 
+    setNames(unique(cat_vecs$group_name))
 }
 
 
@@ -74,9 +74,9 @@ make_dropdown <- function(multi_year = FALSE, only_vars = NULL,
            \(cat) {
              
              # In the case the category has multiple dropdowns
-             if (cat %in% variables$theme[!is.na(variables$grouping)]) {
+             if (cat %in% vars$theme[!is.na(variables$group_name)]) {
                cat_vecs <- 
-                 vars[vars$theme == cat, c("var_code", "grouping",
+                 vars[vars$theme == cat, c("var_code", "group_name",
                                            "group_diff")]
                
                choose_first_data_compare_group(cat_vecs)

@@ -61,7 +61,7 @@ city_amenities_server <- function(id, r) {
     }) |> bindEvent(get_view_state(id_map))
     
     # Map zoom levels change depending on "city"
-    map_zoom_levels <- reactive({
+    map_zoom_levels <- eventReactive(r$geo(), {
       get_zoom_levels(default = "city", 
                       geo = "city",
                       var_left = isolate(var_left()),
@@ -71,7 +71,7 @@ city_amenities_server <- function(id, r) {
     # Zoom string reactive
     observe({
       new_zoom_string <- get_zoom_string(r[[id]]$zoom(), map_zoom_levels()$levels,
-                                         map_zoom_levels()$scale)
+                                         map_zoom_levels()$region)
       if (new_zoom_string != zoom_string()) zoom_string(new_zoom_string)
     }) |> bindEvent(r[[id]]$zoom(), map_zoom_levels()$levels)
     
@@ -141,14 +141,14 @@ city_amenities_server <- function(id, r) {
     # Data
     data <- reactive(get_data(
       df = r[[id]]$df(),
-      geo = map_zoom_levels()$scale,
+      geo = map_zoom_levels()$region,
       var_left = var_left(),
       var_right = var_right()))
     
     # Data for tile coloring
     data_color <- reactive(get_data_color(
       map_zoom_levels = map_zoom_levels()$levels,
-      geo = map_zoom_levels()$scale,
+      geo = map_zoom_levels()$region,
       var_left = var_left(),
       var_right = var_right()
     ))
@@ -203,7 +203,7 @@ city_amenities_server <- function(id, r) {
       id = id,
       r = r,
       data = data,
-      geo = reactive(map_zoom_levels()$scale),
+      geo = reactive(map_zoom_levels()$region),
       var_left = var_left,
       var_right = var_right)
 

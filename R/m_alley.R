@@ -83,7 +83,7 @@ alley_server <- function(id, r) {
     }) |> bindEvent(get_view_state(id_map))
     
     # Map zoom levels change depending on "city"
-    map_zoom_levels <- reactive({
+    map_zoom_levels <- eventReactive(r$geo(), {
       out <- get_zoom_levels(default = "city", 
                              geo = "city",
                              var_left = isolate(var_left()))
@@ -208,7 +208,7 @@ alley_server <- function(id, r) {
       id = id,
       r = r,
       data = data,
-      geo = reactive(map_zoom_levels()$scale),
+      geo = reactive(map_zoom_levels()$region),
       var_left = var_left,
       var_right = var_right,
       graph = alley_graph,

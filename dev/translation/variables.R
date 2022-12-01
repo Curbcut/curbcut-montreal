@@ -90,7 +90,7 @@ variables_translated <-
           fr = paste0("Trajet entre 15 et 45 minutes (%)")) |> 
   add_row(en = paste0("Commute more than 45 minutes (%)"), 
           fr = paste0("Trajet de plus de 45 minutes (%)")) |> 
-  add_row(en = paste0("CanALE index"), 
+  add_row(en = paste0("Can-ALE index"), 
           fr = paste0("Indice AVA-Can")) |> 
   add_row(en = paste0("Drought vulnerability"), 
           fr = paste0("Vulnérabilité aux sécheresses")) |> 
@@ -346,7 +346,7 @@ variables_translated <-
           fr = paste0("Trajet 14-45min")) |> 
   add_row(en = paste0("Commute >45m"), 
           fr = paste0("Trajet >45min")) |> 
-  add_row(en = paste0("CanALE"), 
+  add_row(en = paste0("Can-ALE"), 
           fr = paste0("AVA-Can")) |> 
   add_row(en = paste0("Drought"), 
           fr = paste0("Sécheresses")) |> 

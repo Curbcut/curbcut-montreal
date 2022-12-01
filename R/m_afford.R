@@ -86,19 +86,19 @@ afford_server <- function(id, r) {
     
     # Map zoom levels change depending on r$geo(). Listening only to the latter
     # to not have to recalculate everytime var_left() changes.
-    map_zoom_levels <- reactive({
+    map_zoom_levels <- eventReactive(r$geo(), {
       get_zoom_levels(default = "CMA", 
                       geo = r$geo(),
                       var_left = isolate(var_left()),
                       suffix_zoom_levels = "_max_CT")
-    }) |> bindEvent(r$geo())
+    })
     
     # Zoom string reactive
     observe({
       new_zoom_string <- get_zoom_string(r[[id]]$zoom(), map_zoom_levels()$levels,
-                                         map_zoom_levels()$scale)
+                                         map_zoom_levels()$region)
       if (new_zoom_string != zoom_string()) zoom_string(new_zoom_string)
-    }) |> bindEvent(r[[id]]$zoom(), map_zoom_levels()$scale)
+    }) |> bindEvent(r[[id]]$zoom(), map_zoom_levels()$region)
     
     # Click reactive
     observe({
@@ -153,7 +153,7 @@ afford_server <- function(id, r) {
     # Checkbox value
     as_pct <- checkbox_server(id = id)
   
-    # Update checkbox label depending on the grouping
+    # Update checkbox label depending on the group_name
     observeEvent(vl_gr(), {
       grp <- if (vl_gr() == "cent_d") "households" else "population"
       updateCheckboxInput(inputId = "afford-cbox",
@@ -273,14 +273,14 @@ afford_server <- function(id, r) {
     # Data
     data <- reactive(get_data(
       df = r[[id]]$df(),
-      geo = map_zoom_levels()$scale,
+      geo = map_zoom_levels()$region,
       var_left = var_left(),
       var_right = var_right()))
     
     # Data for tile coloring
     data_color <- reactive(get_data_color(
       map_zoom_levels = map_zoom_levels()$levels,
-      geo = map_zoom_levels()$scale,
+      geo = map_zoom_levels()$region,
       var_left = var_left(),
       var_right = var_right()
     ))
@@ -313,7 +313,7 @@ afford_server <- function(id, r) {
       id = id,
       r = r,
       data = data,
-      geo = reactive(map_zoom_levels()$scale),
+      geo = reactive(map_zoom_levels()$region),
       var_left = var_left,
       var_right = var_right)
     

@@ -197,11 +197,11 @@ update_module <- function(r, id, mod_ns = paste(id, id, sep = "-"),
       selected_var <- if (str_detect(var_left, "^\\d*$")) {
         get_variables_rowid(var_left)} else var_left
       
-      group <- variables[variables$var_code == selected_var, ]$grouping
+      group <- variables[variables$var_code == selected_var, ]$group_name
       # Same process that's in make_dropdown() to decide which variable is
       # the one to select in the compare-var dropdown.
       cat_vecs <- 
-        variables[!is.na(variables$grouping) & variables$grouping == group, ]
+        variables[!is.na(variables$group_name) & variables$group_name == group, ]
       higher_level_var <- choose_first_data_compare_group(cat_vecs)
       
       # The compare-var picker update
@@ -244,7 +244,7 @@ update_module <- function(r, id, mod_ns = paste(id, id, sep = "-"),
     selected_var <- if (str_detect(var_right, "^\\d*$")) {
       get_variables_rowid(var_right)} else var_right
     
-    if (!selected_var %in% variables$var_code[!is.na(variables$grouping)]) {
+    if (!selected_var %in% variables$var_code[!is.na(variables$group_name)]) {
       delayupdatePickerInput(
         session = session,
         inputId = construct_namespace("compare-auto_var-var"),
@@ -253,11 +253,11 @@ update_module <- function(r, id, mod_ns = paste(id, id, sep = "-"),
       # In the case the var_right is part of a bigger group
     } else {
       
-      group <- variables[variables$var_code == selected_var, ]$grouping
+      group <- variables[variables$var_code == selected_var, ]$group_name
       # Same process that's in make_dropdown() to decide which variable is
       # the one to select in the compare-var dropdown.
       cat_vecs <- 
-        variables[!is.na(variables$grouping) & variables$grouping == group, ]
+        variables[!is.na(variables$group_name) & variables$group_name == group, ]
       higher_level_var <- choose_first_data_compare_group(cat_vecs)
       
       # The compare-var picker update

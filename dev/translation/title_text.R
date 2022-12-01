@@ -2,9 +2,9 @@
 
 title_text_translation <- 
   tibble(en = character(), fr = character()) |>
-  add_row(en = paste0("Active living potential: the CanALE index"), 
+  add_row(en = paste0("Active living potential: the Can-ALE index"), 
           fr = paste0("Accessibilité à la vie active : l'index AVA-Can")) |> 
-  add_row(en = paste0("The CanALE dataset (developed by Prof. Nancy Ross and h",
+  add_row(en = paste0("The Can-ALE dataset (developed by Prof. Nancy Ross and h",
                       "er team) captures four key elements related to active l",
                       "iving environments: population density, points of inter",
                       "est, street grid, and proximity of transit service."), 
@@ -552,10 +552,10 @@ title_text_translation <-
                       "understanding people’s housing realities. In selecting different types ",
                       "of dwellings, you can simply explore and compare them in relation to ",
                       "tenure status and shelter cost."), 
-          fr = paste0("Si un ménage vie dans une maison individuelle ou dans un ",
-                      "appartement situé dans un immeuble de plus de 5 étages ",
-                      "est un aspect important pour comprendre la réalité du ",
-                      "logement des gens. En sélectionnant différents types ",
+          fr = paste0("Le fait qu'un ménage vive dans une maison individuelle ou ",
+                      "dans un appartement situé dans un immeuble de plus de 5 ",
+                      "étages est un aspect important pour comprendre la réalité ",
+                      "du logement des gens. En sélectionnant différents types ",
                       "d’habitations, vous pouvez simplement les explorer et ",
                       "les comparer en fonction du statut d'occupation et des frais du logement.")) |>
   add_row(en = paste0("<p> The comparative analysis that you see in this module is based on ",

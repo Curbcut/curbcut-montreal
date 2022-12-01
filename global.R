@@ -88,37 +88,7 @@ mods_rdy <-
     ids
   }, simplify = FALSE, USE.NAMES = TRUE)
 
-# mods_rdy <- list(
-#   "Climate" = c(
-#     "Climate risk" = "climate_risk"
-#   ),
-#   "Housing" = c(
-#     "Housing system" = "housing",
-#     "Vacancy rate" = "vac_rate",
-#     "Housing affordability" = "afford",
-#     "Tenure status" = "tenure",
-#     "Dwelling types" = "dw_types"
-#   ),
-#   "Policy" = c(
-#     "Montréal climate plans" = "mcp"
-#   ),
-#   "Transport" = c(
-#     # "Accessibility" = "access",
-#     "Access to amenities" = "amenities",
-#     "Short-distance city" = "city_amenities",
-#     "Bikeway comfort and safety" = "canbics"#,
-#     #   "Road safety" = "crash"
-#   ),
-#   "Urban life" = c(
-#     "Active living potential" = "canale",
-#     "Green alleys" = "alley",
-#     "Demographics" = "demographics"
-#   ),
-#   "Ecology" = c(
-#     "Natural infrastructure" = "natural_inf"
-#   )
-# )
-# 
+ 
 # stand_alone_tabs <- c(
 #   "Montréal stories" = "stories",
 #   "Place explorer" = "place_explorer",
@@ -158,6 +128,9 @@ map_zoom_levels_centraide_max_CT <- c("centraide" = 0, "CT" = 10.5)
 
 map_zoom_levels_cmhc <- 
   c("cmhczone" = 0)
+
+map_zoom_levels_grid <- 
+  c("grid" = 0)
 
 first_level_choropleth <- 
   sapply(ls()[grepl("map_zoom_levels_", ls())], \(x) names(get(x)[1]),
