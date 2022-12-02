@@ -177,15 +177,6 @@ canale_server <- function(id, r) {
       map_viewstate = reactive(get_view_state(id_map)),
       var_right = var_right,
     )
-    
-    observe({
-      assign("var_left", var_left(), envir = .GlobalEnv)
-      assign("var_right", var_right(), envir = .GlobalEnv)
-      assign("data", data(), envir = .GlobalEnv)
-      assign("select_id", r[[id]]$select_id(), envir = .GlobalEnv)
-      assign("df", r[[id]]$df(), envir = .GlobalEnv)
-      assign("geo", map_zoom_levels()$region, envir = .GlobalEnv)
-    })
 
     # Data transparency and export
     r[[id]]$export_data <- reactive(data_export(id = id,

@@ -12,8 +12,8 @@ get_metadata <- function(export_data, r, about_data,
   time_text <- 
     if (!is.na(time[1])) {
       paste0(" ",
-      if (length(time) == 1) cc_t(r = r, "for the year {time}") else 
-        cc_t(r = r, "for the years {time[1]} and {time[2]}"))
+             if (length(time) == 1) cc_t(r = r, "for the year {time}") else 
+               cc_t(r = r, "for the years {time[1]} and {time[2]}"))
     } else ""
   
   # If private
@@ -21,8 +21,8 @@ get_metadata <- function(export_data, r, about_data,
     about_data[[var]]$private <- 
     paste0("<p = style = 'font-size: 1.45rem;'>",
            cc_t(r = r, "We do not have permission to make the ", 
-                         "variable <b>'{variables_row$var_title}'</b> ",
-                         "available for public download."),
+                "variable <b>'{variables_row$var_title}'</b> ",
+                "available for public download."),
            "<p>")
   
   
@@ -31,25 +31,25 @@ get_metadata <- function(export_data, r, about_data,
                     names() |> 
                     str_subset(variables_row$var_code) |> 
                     length() == 1) TRUE else FALSE
-
+  
   about_data[[var]]$details_1 <-
     if (!variables_row$private) {
-        if (single_col) {
-          cc_t(r = r, "The column `<b>{paste0(export_data[[var]], ",
-                        "collapse = '</b>` and `<b>')}</b>` contains data on ",
-                        "{variables_row$explanation} ('{variables_row$var_title}')",
-                        "{time_text}.")        
-        } else {
-          cc_t(r = r, "The columns `<b>{paste0(export_data[[var]], ",
-                        "collapse = '</b>` and `<b>')}</b>` contain data on ",
-                        "{variables_row$explanation} ('{variables_row$var_title}')",
-                        "{time_text}.")        
-        }
+      if (single_col) {
+        cc_t(r = r, "The column `<b>{paste0(export_data[[var]], ",
+             "collapse = '</b>` and `<b>')}</b>` contains data on ",
+             "{variables_row$explanation} ('{variables_row$var_title}')",
+             "{time_text}.")        
+      } else {
+        cc_t(r = r, "The columns `<b>{paste0(export_data[[var]], ",
+             "collapse = '</b>` and `<b>')}</b>` contain data on ",
+             "{variables_row$explanation} ('{variables_row$var_title}')",
+             "{time_text}.")        
+      }
     } else {
       # As there's not preview or data to download, don't talk about columns
       cc_t(r = r, "The variable `<b>{variables_row$var_title}</b>` ",
-                    "contain(s) data on {variables_row$explanation} ",
-                    "('{variables_row$var_title}'){time_text}.")
+           "contain(s) data on {variables_row$explanation} ",
+           "('{variables_row$var_title}'){time_text}.")
     }
   
   # Data type (Qualitative, Quantitative?)
@@ -79,10 +79,9 @@ get_metadata <- function(export_data, r, about_data,
                          var_name = export_data[[paste0(var, "_code")]])
     
     about_data[[var]]$details_2 <-
-      cc_t(r = r,
-                    "Values range from <b>{quant_info$min}</b> to ",
-                    "<b>{quant_info$max}</b>, with a mean of <b>{quant_info$mean}",
-                    "</b> and a standard deviation is <b>{quant_info$sd}</b>.")
+      cc_t(r = r, "Values range from <b>{quant_info$min}</b> to ",
+           "<b>{quant_info$max}</b>, with a mean of <b>{quant_info$mean}",
+           "</b> and a standard deviation is <b>{quant_info$sd}</b>.")
   }
   
   # Climate risk special cases (1 = Insignificant, 2 = ...)
@@ -112,7 +111,7 @@ get_metadata <- function(export_data, r, about_data,
   # Source with possibly more information.
   about_data[[var]]$source <- 
     if (variables_row$source == "Canadian census") {
-
+      
       census_details <- 
         lapply(export_data[[var]], function(var_code_year) {
           census_variables_row <- 
@@ -130,53 +129,47 @@ get_metadata <- function(export_data, r, about_data,
                           r = r), "')",
                    collapse = ", ")
           
-          if (str_detect(export_data[[paste0(var, "_code")]], "_pct$")) {
+          if ("pct" %in% variables_row$type) {
             
             # Singular numerator
             if (length(unlist(census_variables_row$vec)) == 1) {
               # Singular denominator
               if (length(unlist(census_variables_row$parent_vec)) == 1) {
-                cc_t(r = r,
-                              "The numerator of the percentage is {vector_definition},",
-                              " and the denominator is {parent_vector_definition}.")
+                cc_t(r = r, "The numerator of the percentage is {vector_definition},",
+                     " and the denominator is {parent_vector_definition}.")
                 # Plural denominator
               } else {
-                cc_t(r = r,
-                              "The numerator of the percentage is {vector_definition},",
-                              " and the summed denominators are {parent_vector_definition}.")
+                cc_t(r = r, "The numerator of the percentage is {vector_definition},",
+                     " and the summed denominators are {parent_vector_definition}.")
               }
               # Plural numerator
             } else {
               # Singular denominator
               if (length(unlist(census_variables_row$parent_vec)) == 1) {
-                cc_t(r = r,
-                              "The percentage has been done with the addition of ",
-                              "the following vectors, forming the numerator: ",
-                              "{vector_definition}. The denominator is ",
-                              "{parent_vector_definition}.")
+                cc_t(r = r, "The percentage has been done with the addition of ",
+                     "the following vectors, forming the numerator: ",
+                     "{vector_definition}. The denominator is ",
+                     "{parent_vector_definition}.")
                 # Plural denominator
               } else {
-                cc_t(r = r,
-                              "The percentage has been done with the addition of ",
-                              "the following vectors, forming the numerator: ",
-                              "{vector_definition}. The summed denominators are ",
-                              "{parent_vector_definition}.")
+                cc_t(r = r, "The percentage has been done with the addition of ",
+                     "the following vectors, forming the numerator: ",
+                     "{vector_definition}. The summed denominators are ",
+                     "{parent_vector_definition}.")
               }
             }
             
-          } else if (str_detect(export_data[[paste0(var, "_code")]], "_dollar$")) {
+          } else if ("dollar" %in% variables_row$type) {
             # If average
             if (str_detect(export_data[[paste0(var, "_code")]], "_avg")) {
-              cc_t(r = r,
-                            "The Canadian Census vector is ",
-                            "{vector_definition}. It is the average of ",
-                            "{parent_vector_definition}.")
+              cc_t(r = r, "The Canadian Census vector is ",
+                   "{vector_definition}. It is the average of ",
+                   "{parent_vector_definition}.")
               # If a median
-            } else if (str_detect(export_data[[paste0(var, "_code")]], "_median")) {
-              cc_t(r = r,
-                            "The Canadian Census vector is ",
-                            "{vector_definition}. It is the median of ",
-                            "{parent_vector_definition}.")
+            } else if ("median" %in% variables_row$type) {
+              cc_t(r = r, "The Canadian Census vector is ",
+                   "{vector_definition}. It is the median of ",
+                   "{parent_vector_definition}.")
             }
             
           }
@@ -195,28 +188,18 @@ get_metadata <- function(export_data, r, about_data,
       single_year <- if (length(time_text) == 1) TRUE else FALSE
       
       out <- 
-        if (single_year) {
-          paste0("<p style = 'font-size: 1.45rem;'>",
-                 cc_t(r = r,
-                               "The data comes from the {time_text} ",
-                               "Canadian Census. {census_details}"),
-                 "</p>") 
-        } else  {
-          paste0("<p style = 'font-size: 1.45rem;'>",
-                 cc_t(r = r,
-                               "The data comes from the {time_text} ",
-                               "Canadian Censuses. {census_details}"),
-                 "</p>")
-        }
+        paste0("<p style = 'font-size: 1.45rem;'>",
+               cc_t(r = r,
+                    "The data comes from the {time_text} ",
+                    "Canadian Census. {census_details}"),
+               "</p>") 
       
       out
-      
       
     } else {
       source <- cc_t(r = r, variables_row$source)
       paste0("<p style = 'font-size: 1.45rem;'>",
-             cc_t(r = r,
-                           "The data comes from {source}."),
+             cc_t(r = r, "The data comes from {source}."),
              "</p>")
     }
   
@@ -230,7 +213,7 @@ get_metadata <- function(export_data, r, about_data,
       is_scale_in_df(names(interpolated_dfs), export_data$df) else FALSE
   
   if (interpolated && length(interpolated_dfs) > 0) {
-
+    
     from <- cc_t(r = r, interpolated_dfs[[export_data$df]])
     
     about_data[[var]]$interpolated <- 
@@ -239,14 +222,14 @@ get_metadata <- function(export_data, r, about_data,
           variables_row$source == "Canadian census") {
         paste0("<p style = 'font-size: 1.45rem;'>",
                cc_t(r = r, "For the City of Montreal's boroughs, ",
-                             "`{variables_row$var_title}` is ",
-                             "spatially interpolated from {from}s."),
+                    "`{variables_row$var_title}` is ",
+                    "spatially interpolated from {from}s."),
                "</p>")
       } else {
         df <- str_to_lower(cc_t(r = r, get_zoom_name(export_data$df)))
         paste0("<p style = 'font-size: 1.45rem;'>",
                cc_t(r = r, "`{variables_row$var_title}` at the {df} scale is ",
-                             "spatially interpolated from {from}s."),
+                    "spatially interpolated from {from}s."),
                "</p>")
       }
     
@@ -263,8 +246,8 @@ get_metadata <- function(export_data, r, about_data,
       about_data[[var]]$diff_representation <- 
         paste0("<p style = 'font-size: 1.45rem;'>",
                cc_t(r = r, "The data is represented as {df}s, but the ",
-                             "underlying dataset is spatially organised as ",
-                             "{data_origin}s."),
+                    "underlying dataset is spatially organised as ",
+                    "{data_origin}s."),
                "</p>")
     }
   

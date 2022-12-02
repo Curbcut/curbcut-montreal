@@ -16,31 +16,25 @@ data_export_modal <- function(r = r, export_data) {
   
   about_module <- list()
   
-  about_module$title <- 
-    paste0("<h3>", 
-           cc_t(r = r, 
-                         title_text$text[title_text$type == "title" & 
-                                           title_text$tab == module$id]), 
-           "</h3>")
+  about_module$title <- paste0("<h3>", cc_t(r = r, module$nav_title), "</h3>")
   
   about_module$text_linked <- 
-    paste0(str_replace_all(
-             cc_t(r = r, module$dataset_info), 
-             "<p>", "<p style = 'font-size: 1.45rem;'>") |> 
-             str_replace_all("<a href", "<a  target = '_blank' href")
-             )
+    paste0(stringr::str_replace_all(
+      cc_t(r = r, module$dataset_info), 
+      "<p>", "<p style = 'font-size: 1.45rem;'>") |> 
+        stringr::str_replace_all("<a href", "<a  target = '_blank' href")
+    )
   
   
   # About the data ----------------------------------------------------------
   
   about_data <- list()
   
-  about_data$title <- 
-    paste0("<h3>", cc_t(r = r, "About the data"), "</h3>")
+  about_data$title <- paste0("<h3>", cc_t(r = r, "About the data"), "</h3>")
   
   # Spatial organization of data
   data_organization <- 
-    str_to_lower(cc_t(r = r, get_zoom_name(export_data$data_origin)))
+    tolower(cc_t(r = r, get_zoom_name(export_data$data_origin)))
   
   about_data$general_detail <- 
     paste0("<p style = 'font-size: 1.45rem'>",

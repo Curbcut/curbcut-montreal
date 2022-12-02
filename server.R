@@ -514,7 +514,7 @@ shinyServer(function(input, output, session) {
   
   output$download_csv <-
     downloadHandler(
-      filename = paste0(r[[input$sus_page]]$export_data()$id, "_data.csv"),
+      filename = reactive(paste0(r[[input$sus_page]]$export_data()$id, "_data.csv")),
       content = function(file) {
         data <- data_modal()$data
         write.csv(data, file, row.names = FALSE)
@@ -522,7 +522,7 @@ shinyServer(function(input, output, session) {
   
   output$download_shp <-
     downloadHandler(
-      filename = paste0(r[[input$sus_page]]$export_data()$id, "_shp.zip"),
+      filename = reactive(paste0(r[[input$sus_page]]$export_data()$id, "_shp.zip")),
       content = function(file) {
         withProgress(message = cc_t(r = r, "Exporting Data"), {
           

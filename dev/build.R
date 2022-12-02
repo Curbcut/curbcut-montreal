@@ -4,8 +4,6 @@
 # Load libraries ----------------------------------------------------------
 
 library(cc.buildr)
-library(DBI)
-library(RSQLite)
 future::plan(future::multisession())
 
 
@@ -73,8 +71,10 @@ census_scales$CSD <- split_scale(destination = census_scales$CSD,
 # Switch the City of Laval for the Sector
 laval <- sf::st_read(paste0("dev/data/centraide/StatCan_Recensement2016/_Geograph",
                             "ie/Secteurs_damenagement_Ville_de_Laval.shp")) |> 
-  sf::st_transform(4326) |> 
-  transmute(name = gsub("Secteur \\d - ", "", Secteur), type = "Sector")
+  sf::st_transform(4326) 
+laval$name <- gsub("Secteur \\d - ", "", laval$Secteur)
+laval$type <- "Sector"
+laval <- laval[c("name", "type")]
 
 census_scales$CSD <- cc.buildr::split_scale(destination = census_scales$CSD,
                                             cutting_layer = laval,
@@ -120,10 +120,10 @@ scales_dictionary <-
 ### Build CMHC scale
 cmhczone <- get_cmhc_zones(list(CMA = cancensus_cma_code))
 cmhczone <- additional_scale(additional_table = cmhczone,
-                              DA_table = census_scales$DA,
-                              ID_prefix = "cmhc",
-                              name_2 = "CMHC zone",
-                              crs = crs)
+                             DA_table = census_scales$DA,
+                             ID_prefix = "cmhc",
+                             name_2 = "CMHC zone",
+                             crs = crs)
 scales_dictionary <-
   append_scale_to_dictionary(scales_dictionary,
                              scale = "cmhczone",
@@ -218,22 +218,31 @@ scales_variables_modules <-
                  region_DA_IDs = census_scales$DA$ID,
                  crs = crs,
                  housing_module = TRUE)
+census_variables <- get_census_vectors_details()
 
 scales_variables_modules <-
   ru_vac_rate(scales_variables_modules = scales_variables_modules,
               crs = crs, geo_uid = cancensus_cma_code)
 scales_variables_modules <-
   ru_canale(scales_variables_modules = scales_variables_modules,
-            crs = crs)
+            crs = crs,
+            region_DA_IDs = census_scales$DA$ID)
 scales_variables_modules <-
   ru_canbics(scales_variables_modules = scales_variables_modules,
-             crs = crs)
+             crs = crs,
+             region_DA_IDs = census_scales$DA$ID)
 
 scales_variables_modules$scales <- 
   cc.buildr::reorder_columns(scales_variables_modules$scales)
 
-qs::qsave(scales_variables_modules, 
-          file = "dev/data/built/scales_variables_modules.qs")
+qs::qsavem(census_scales, scales_variables_modules, 
+          file = "dev/data/built/scales_variables_modules.qsm")
+qs::qload("dev/data/built/scales_variables_modules.qsm")
+
+# Postal codes ------------------------------------------------------------
+
+# postal_codes <- build_postal_codes(census_scales$DA$ID)
+# qs::qsave(postal_codes, "data/postal_codes.qs")
 
 
 # Did you know ------------------------------------------------------------
@@ -253,200 +262,34 @@ source("dev/translation/build_translation.R", encoding = "utf-8")
 source("dev/other/colours.R")
 
 
-# Postal codes ------------------------------------------------------------
-
-#### POSTAL CODES
-
-
 # Write stories -----------------------------------------------------------
 
 source("dev/modules/stories.R", encoding = "utf-8")
 qs::qsavem(stories, stories_mapping, file = "data/stories.qsm")
 
 
-# Save data ---------------------------------------------------------------
+# Save SQLite data --------------------------------------------------------
 
-# Building
-# Save all buildings in the same database
-building_path <- "data/building.sqlite"
-if (building_path %in% list.files("data", full.names = TRUE)) unlink(building_path)
-building_sql <- dbConnect(SQLite(), building_path)
+save_buildings_sqlite(all_scales = scales_variables_modules$scales)
 
-map_over_scales(
-  all_scales = scales_variables_modules$scales,
-  fun = \(geo = geo, scales = scales, scale_name = scale_name,
-          scale_df = scale_df) {
-    if (scale_name != "building") return()
-    geo_scale <- paste0(geo, "_building")
-    df <- sf::st_drop_geometry(scale_df)[, c("ID", "name", "name_2", "DA_ID")]
-    
-    if (geo_scale %in% dbListTables(building_sql)) 
-      dbRemoveTable(building_sql, geo_scale)
-    
-    dbWriteTable(building_sql, "pre_pk_building", df)
-    dbExecute(building_sql, paste0("CREATE TABLE ", geo_scale,
-                                   " (ID VARCHAR, ",
-                                   "name VARCHAR, ",
-                                   "name_2 VARCHAR, ",
-                                   "DA_ID VARCHAR,
-                     CONSTRAINT building_pk PRIMARY KEY (ID))"))
-    dbExecute(building_sql, 
-              paste0("INSERT INTO ", geo_scale, " SELECT * FROM pre_pk_building"))
-    dbExecute(building_sql, "DROP TABLE pre_pk_building")
-  })
-
-# Drop geometry of other scales
-all_scales <- 
-  map_over_scales(
-    all_scales = scales_variables_modules$scales,
-    fun = \(geo = geo, scales = scales, scale_name = scale_name,
-            scale_df = scale_df) {
-      if (scale_name == "building") return()
-      sf::st_drop_geometry(scale_df)
-    })
-all_scales <- lapply(all_scales, \(x) x[!sapply(x, is.null)])
-variables <- scales_variables_modules$variables
-
-# List all the future tables insite each database
-progressr::with_progress({
-  pb <- progressr::progressor(steps = sum(sapply(all_scales, length)))
-  
-  sql_table_list <- 
-    map_over_scales(
-      all_scales = all_scales,
-      fun = \(geo = geo, scales = scales, scale_name = scale_name,
-              scale_df = scale_df) {
-        
-        var_combinations <- 
-          lapply(variables$var_code, \(y) {
-            vars <- names(scale_df)[grepl(y, names(scale_df))]
-            vars <- str_subset(vars, "_q5|_q3", negate = TRUE)
-            
-            sapply(vars, \(x) {
-              time_format <- "\\d{4}$"
-              q3 <- paste0(str_remove(x, time_format), 
-                           if (str_detect(x, time_format)) "q3_" else "_q3", 
-                           na.omit(str_extract(x, time_format)))
-              q5 <- paste0(str_remove(x, time_format), 
-                           if (str_detect(x, time_format)) "q5_" else "_q5", 
-                           na.omit(str_extract(x, time_format)))
-              
-              c(x, q3, q5)
-            }, simplify = FALSE, USE.NAMES = TRUE)
-          }) |> reduce(c)
-        
-        pb()
-        lapply(var_combinations, \(x) scale_df[, c("ID", x)])
-        
-      })
-})
-
-progressr::with_progress({
-  pb <- progressr::progressor(steps = sum(sapply(all_scales, length)))
-  
-  map_over_scales(
-    all_scales = all_scales,
-    fun = \(geo = geo, scales = scales, scale_name = scale_name,
-            scale_df = scale_df) {
-      
-      geo_scale <- paste(geo, scale_name, sep = "_")
-      
-      geo_scale_table_list <- sql_table_list[[geo]][[scale_name]]
-      
-      sqlite_path <- paste0("data/", geo_scale, ".sqlite")
-      
-      db <- dbConnect(SQLite(), sqlite_path)
-      mapply(\(df, y) 
-             dbWriteTable(db, y, df, overwrite = TRUE),
-             geo_scale_table_list, names(geo_scale_table_list))
-      dbDisconnect(db)
-      
-      pb()
-    }) |> invisible()
-})
-
-# Add centroid
-progressr::with_progress({
-  pb <- progressr::progressor(steps = sum(sapply(all_scales, length)))
-  
-  map_over_scales(
-    all_scales = all_scales,
-    fun = \(geo = geo, scales = scales, scale_name = scale_name,
-            scale_df = scale_df) {
-      
-      geo_scale <- paste(geo, scale_name, sep = "_")
-      with_geo <- scales_variables_modules$scales[[geo]][[scale_name]][, "ID"]
-      
-      centroids <- lapply(with_geo$geometry, sf::st_centroid)
-      lat <- sapply(centroids, `[[`, 1)
-      lon <- sapply(centroids, `[[`, 2)
-      
-      df <- sf::st_drop_geometry(with_geo)
-      
-      df$lat <- lat
-      df$lon <- lon
-      
-      sqlite_path <- paste0("data/", geo_scale, ".sqlite")
-      
-      db <- dbConnect(SQLite(), sqlite_path)
-      dbWriteTable(db, "centroid", df, overwrite = TRUE)
-      dbDisconnect(db)
-      
-      pb()
-    }) |> invisible()
-})
+save_all_scales_sqlite(data_folder = "data/", 
+                       all_scales = scales_variables_modules$scales,
+                       variables = scales_variables_modules$variables)
 
 
-# Save data files to data2 ------------------------------------------------
+# Save .qsm ---------------------------------------------------------------
 
-# Keep all_tables in data2/
-qs::qsave(scales_variables_modules, file = "data2/scales_variables_modules.qs")
+save_short_tables_qs(data_folder = "data/", 
+                     all_scales = scales_variables_modules$scales)
+save_geometry_export(data_folder = "data/", 
+                     all_scales = scales_variables_modules$scales)
 
 
-# Save data files ---------------------------------------------------------
+# Save other global data --------------------------------------------------
 
-# data/geometry_export before dropping geometries
-map_over_scales(
-  all_scales = all_scales,
-  fun = \(geo = geo, scales = scales, scale_name = scale_name,
-          scale_df = scale_df) {
-    geo_scale <- paste(geo, scale_name, sep = "_")
-    out <- scale_df[, "ID"]
-    file_link <- paste0("data/geometry_export/", geo_scale, ".qs")
-    qs::qsave(out, file = file_link)
-  }) |> invisible()
+qs::qsave(scales_variables_modules$variables, file = "data/variables.qs")
+qs::qsave(census_variables, file = "data/census_variables.qs")
+qs::qsave(scales_variables_modules$modules, file = "data/modules.qs")
+qs::qsave(scales_dictionary, file = "data/scales_dictionary.qs")
+qs::qsave(regions_dictionary, file = "data/regions_dictionary.qs")
 
-# Save the shorter tables in data/
-iwalk(all_scales, function(scls, geo) {
-  
-  scls <- lapply(scls, \(x) {
-    x |> 
-      sf::st_drop_geometry() |>
-      dplyr::select(ID:households)
-  })
-  names(scls) <- paste(geo, names(scls), sep = "_")
-  
-  purrr::imap(scls, \(s, n) {
-    assign(n, s, envir = .GlobalEnv)
-  })
-  
-  do.call(qsavem, c(map(names(scls), rlang::sym),
-                    file = paste0("data/", geo, ".qsm")))
-})
-
-# Keep strings of all available tables in each db
-tables_in_sql <- map_over_scales(
-  all_scales = sql_table_list,
-  fun = \(geo = geo, scales = scales, scale_name = scale_name,
-          scale_df = scale_df) {
-    names(scale_df)
-  })
-tables_in_sql <- unlist(tables_in_sql, recursive = FALSE)
-names(tables_in_sql) <- gsub("\\.", "_", names(tables_in_sql))
-qsave(tables_in_sql, file = "data/tables_in_sql.qs")
-
-## global data
-qsave(scales_variables_modules$variables, file = "data/variables.qs")
-qsave(scales_variables_modules$modules, file = "data/modules.qs")
-qsave(scales_dictionary, file = "data/scales_dictionary.qs")
-qsave(regions_dictionary, file = "data/regions_dictionary.qs")

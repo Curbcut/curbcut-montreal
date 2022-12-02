@@ -32,7 +32,7 @@ ui_and_misc_translated <-
           fr = paste0("Modifier la géométrie par défaut")) |> 
   add_row(en = paste0("Did you know?"), 
           fr = paste0("Le saviez-vous?")) |> 
-  add_row(en = paste0("Borough/city"), 
+  add_row(en = paste0("Borough/City"), 
           fr = paste0("Arrondissement/ville")) |> 
   add_row(en = paste0("Census tract"), 
           fr = paste0("Secteur de recensement")) |> 

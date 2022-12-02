@@ -8,6 +8,7 @@
 #' @return A list containing a dataframe with the data ready to get exported,
 #' and other information related to the module or data.
 
+
 data_export <- function(id, data, var_left, var_right = " ", df = NULL) {
   
   # Drop columns

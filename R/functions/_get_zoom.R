@@ -10,22 +10,11 @@ get_zoom_string <- function(zoom, zoom_levels, geo = "CMA") {
   return(out)
 }
 
-get_zoom_name <- function(x) sapply(
-  gsub(".*_", "", x), 
-  switch, 
-  "CSD" = "Borough/city",
-  "CT" = "Census tract",
-  "DA" = "Dissemination area",
-  "DB" = "Dissemination block",
-  "grid" = "250-m grid cell",
-  "building" = "Building",
-  "street" = "Street",
-  "heatmap" = "Heatmap",
-  "point" = "Point",
-  "centraide" = "Centraide",
-  "cmhczone" = "CMHC Zone",
-  x,
-  USE.NAMES = FALSE)
+get_zoom_name <- function(x) {
+  sapply(gsub(".*_", "", x), \(z) {
+    scales_dictionary$slider_title[scales_dictionary$scale == z]
+  }, USE.NAMES = FALSE)
+}
 
 get_zoom_label <- function(zoom_levels) {
   zl <- names(sort(zoom_levels))
@@ -40,15 +29,12 @@ get_zoom_label_t <- function(zoom_levels, r) {
 }
 
 get_zoom_code <- function(x) {
-  if (x == "Borough/city" || x == "Arrondissement/ville") return("CSD")
-  if (x == "Census tract" || x == "Secteur de recensement") return("CT")
-  if (x == "Dissemination area" || x == "Aire de diffusion") return("DA")
-  if (x == "Dissemination block" || x == "Îlot de diffusion") return("DB")
-  if (x == "Building" || x == "Bâtiment") return("building")
-  if (x == "Street" || x == "Rue") return("street")
-  if (x == "Heatmap") return("heatmap")
-  if (x == "Point") return("point")
-  if (x == "Centraide") return("centraide")
+  translated <- na.omit(translation_fr$en[translation_fr$fr == x])
+  if (length(translated) == 0) stop(paste0("No translation for `", x ,"`"))
+  
+  scales_dictionary$scale[scales_dictionary$slider_title == x |
+                            scales_dictionary$slider_title == 
+                            na.omit(translation_fr$en[translation_fr$fr == x])]
 }
 
 # Get the right `map_zoom_levels_x`.
