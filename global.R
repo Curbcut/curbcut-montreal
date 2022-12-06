@@ -3,9 +3,11 @@
 
 # Platform dependant ------------------------------------------------------
 
-site_name <- "Curbcut Montreal"
+site_name <- "Curbcut Montréal"
 site_url <- "https://montreal.curbcut.ca"
 stories_page <- "Montréal stories"
+tileset_prefix <- "mtl"
+mapbox_username <- "sus-mcgill"
 
 default_region <- "CMA"
 # For a location lock placeholder in advanced options

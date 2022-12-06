@@ -118,7 +118,7 @@ ui <- function(request) {
       navbarPageWithInputs, 
       c(list(id = "sus_page", 
              windowTitle = site_name, 
-             title = actionLink("title", "Curbcut"),
+             title = actionLink("title", site_name),
              tabPanel(cc_t("Home"), home_UI("home"), value = "home")),
         ready_modules_ui(mods_rdy),
         list(tabPanel(cc_t(stories_page), stories_UI("stories"),

@@ -15,7 +15,7 @@ title_page_update <- function(r, session, sus_page) {
   }
   
   construct_title <- 
-    paste0("Curbcut", 
+    paste0(site_name, 
            if (!is.null(added_title)) {
              paste0(" - ", cc_t(r = r, added_title))})
   

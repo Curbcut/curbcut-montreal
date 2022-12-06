@@ -36,7 +36,7 @@ rdeck_server <- function(id, r, map_id, tile, data_color,
       rdeck_proxy(map_id) |>
         add_mvt_layer(
           id = id, 
-          data = mvt_url(paste0("sus-mcgill.", tile())),
+          data = mvt_url(paste0(mapbox_username, ".", tileset_prefix, "_", tile())),
           pickable = TRUE, 
           auto_highlight = highlight(), 
           highlight_color = "#FFFFFF50", 

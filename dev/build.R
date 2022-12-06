@@ -4,7 +4,12 @@
 # Load libraries ----------------------------------------------------------
 
 library(cc.buildr)
+library(stringr)
+library(dplyr)
+library(purrr)
+library(sf)
 future::plan(future::multisession())
+invisible(lapply(list.files("dev/pages", full.names = TRUE), source))
 
 
 # Base of the study region and dictionaries -------------------------------
@@ -151,6 +156,7 @@ scales_dictionary <-
 
 ### Build 250-m grid scale
 # grid <- sf::st_read("dev/data/climate_risk/Vulnerabilité_secheresses_2016.shp")
+# grid <- sf::st_zm(grid)
 # grid <- grid[, "geometry"]
 # grid$ID <- seq_len(nrow(grid))
 # grid <- rev_geocode_sf(master_polygon = grid,
@@ -159,8 +165,7 @@ scales_dictionary <-
 #                        crs = crs)
 # grid <- grid[, c("name", "geometry")]
 # qs::qsave(grid, file = "dev/data/built/grid.qs")
-grid <- qs::qread("dev/data/built/grid.qs") |> 
-  sf::st_zm()
+grid <- qs::qread("dev/data/built/grid.qs")
 
 grid <- additional_scale(additional_table = grid,
                          DA_table = census_scales$DA,
@@ -232,11 +237,36 @@ scales_variables_modules <-
              crs = crs,
              region_DA_IDs = census_scales$DA$ID)
 
+# Montreal specific modules
+future::plan(future::multisession())
+
+scales_variables_modules <-
+  build_and_append_centraide_pop(
+    scales_variables_modules = scales_variables_modules,
+    crs = crs,
+    CT_table = census_scales$CT,
+    region_CT_IDs = census_scales$CT$ID)
+
+scales_variables_modules <-
+  build_and_append_centraide_hou(
+    scales_variables_modules = scales_variables_modules,
+    crs = crs,
+    CT_table = census_scales$CT,
+    region_CT_IDs = census_scales$CT$ID)
+
+scales_variables_modules <-
+  build_and_append_climate_risk(
+    scales_variables_modules = scales_variables_modules,
+    crs = crs)
+
+
+
 scales_variables_modules$scales <- 
   cc.buildr::reorder_columns(scales_variables_modules$scales)
 
-qs::qsavem(census_scales, scales_variables_modules, 
-          file = "dev/data/built/scales_variables_modules.qsm")
+qs::qsavem(census_scales, scales_variables_modules, crs, census_variables,
+           scales_dictionary, 
+           file = "dev/data/built/scales_variables_modules.qsm")
 qs::qload("dev/data/built/scales_variables_modules.qsm")
 
 # Postal codes ------------------------------------------------------------
@@ -245,11 +275,19 @@ qs::qload("dev/data/built/scales_variables_modules.qsm")
 # qs::qsave(postal_codes, "data/postal_codes.qs")
 
 
+# Tilesets ----------------------------------------------------------------
+
+tileset_upload_all(all_scales = scales_variables_modules$scales,
+                   prefix = "mtl",
+                   username = "sus-mcgill",
+                   access_token = .cc_mb_token)
+
+
 # Did you know ------------------------------------------------------------
 
-variables <- scales_variables_modules$variables
-source("dev/other/dyk.R")
-qs::qsave(dyk, "data/dyk.qs")
+# variables <- scales_variables_modules$variables
+# source("dev/other/dyk.R")
+# qs::qsave(dyk, "data/dyk.qs")
 
 
 # Translation -------------------------------------------------------------
@@ -259,13 +297,13 @@ source("dev/translation/build_translation.R", encoding = "utf-8")
 
 # Produce colours ---------------------------------------------------------
 
-source("dev/other/colours.R")
+# source("dev/other/colours.R")
 
 
 # Write stories -----------------------------------------------------------
 
-source("dev/modules/stories.R", encoding = "utf-8")
-qs::qsavem(stories, stories_mapping, file = "data/stories.qsm")
+# source("dev/pages/stories.R", encoding = "utf-8")
+# qs::qsavem(stories, stories_mapping, file = "data/stories.qsm")
 
 
 # Save SQLite data --------------------------------------------------------
@@ -293,3 +331,13 @@ qs::qsave(scales_variables_modules$modules, file = "data/modules.qs")
 qs::qsave(scales_dictionary, file = "data/scales_dictionary.qs")
 qs::qsave(regions_dictionary, file = "data/regions_dictionary.qs")
 
+
+# Deploy app --------------------------------------------------------------
+
+source("dev/other/deploy_sus.R")
+
+deploy_sus("cc-montreal-centraide") # Centraide
+deploy_sus("cc-montreal-dev") # Development
+deploy_sus("cc-montreal") # Production
+
+renv::activate()
