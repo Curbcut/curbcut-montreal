@@ -88,8 +88,9 @@ build_and_append_climate_risk <- function(scales_variables_modules, crs) {
       time_regex = ""
     )
 
+  ### ADJUST THE BASE DATA
   
-  # Update grid q5 to be the same as the indicator
+  # Update grid q5 to be the same value as the indicator
   with_breaks$scales$grid$grid$climate_drought_q5 <- 
     with_breaks$scales$grid$grid$climate_drought
   with_breaks$scales$grid$grid$climate_flood_q5 <- 
@@ -121,6 +122,113 @@ build_and_append_climate_risk <- function(scales_variables_modules, crs) {
     with_breaks$q5_breaks_table$climate_heat_wave$geo == "grid" &
       with_breaks$q5_breaks_table$climate_heat_wave$scale == "grid"
   ] <- 0:5
+  
+  # Update grid q3 to be closer to value of the indicator (0 = 0, 1-2 = 1,
+  # 3-4 = 2, 5 = 3)
+  to_q3 <- function(x) {
+    switch(as.character(x),
+           "0" = 0,
+           "1" = 1,
+           "2" = 1,
+           "3" = 2,
+           "4" = 2,
+           "5" = 3)
+  }
+  
+  with_breaks$scales$grid$grid$climate_drought_q3 <- 
+    sapply(with_breaks$scales$grid$grid$climate_drought, to_q3)
+  with_breaks$scales$grid$grid$climate_flood_q3 <- 
+    sapply(with_breaks$scales$grid$grid$climate_flood, to_q3)
+  with_breaks$scales$grid$grid$climate_heavy_rain_q3 <- 
+    sapply(with_breaks$scales$grid$grid$climate_heavy_rain, to_q3)
+  with_breaks$scales$grid$grid$climate_destructive_storms_q3 <- 
+    sapply(with_breaks$scales$grid$grid$climate_destructive_storms, to_q3)
+  with_breaks$scales$grid$grid$climate_heat_wave_q3 <- 
+    sapply(with_breaks$scales$grid$grid$climate_heat_wave, to_q3)
+  
+  with_breaks$q3_breaks_table$climate_drought$var[
+    with_breaks$q3_breaks_table$climate_drought$geo == "grid" &
+      with_breaks$q3_breaks_table$climate_drought$scale == "grid"
+  ] <- c(0,1,3,5)
+  with_breaks$q3_breaks_table$climate_flood$var[
+    with_breaks$q3_breaks_table$climate_flood$geo == "grid" &
+      with_breaks$q3_breaks_table$climate_flood$scale == "grid"
+  ] <- c(0,1,3,5)
+  with_breaks$q3_breaks_table$climate_heavy_rain$var[
+    with_breaks$q3_breaks_table$climate_heavy_rain$geo == "grid" &
+      with_breaks$q3_breaks_table$climate_heavy_rain$scale == "grid"
+  ] <- c(0,1,3,5)
+  with_breaks$q3_breaks_table$climate_destructive_storms$var[
+    with_breaks$q3_breaks_table$climate_destructive_storms$geo == "grid" &
+      with_breaks$q3_breaks_table$climate_destructive_storms$scale == "grid"
+  ] <- c(0,1,3,5)
+  with_breaks$q3_breaks_table$climate_heat_wave$var[
+    with_breaks$q3_breaks_table$climate_heat_wave$geo == "grid" &
+      with_breaks$q3_breaks_table$climate_heat_wave$scale == "grid"
+  ] <- c(0,1,3,5)
+  
+  # Add qualitative var_name
+  with_breaks$q5_breaks_table$climate_drought$var_name <- NA
+  suppressWarnings(with_breaks$q5_breaks_table$climate_drought$var_name[
+    with_breaks$q5_breaks_table$climate_drought$geo == "grid" &
+      with_breaks$q5_breaks_table$climate_drought$scale == "grid"
+  ] <- c("Insignificant", "Minor", "Moderate", "Elevated", "Major"))
+  
+  with_breaks$q5_breaks_table$climate_flood$var_name <- NA
+  suppressWarnings(with_breaks$q5_breaks_table$climate_flood$var_name[
+    with_breaks$q5_breaks_table$climate_flood$geo == "grid" &
+      with_breaks$q5_breaks_table$climate_flood$scale == "grid"
+  ] <- c("Insignificant", "Minor", "Moderate", "Elevated", "Major"))
+  
+  with_breaks$q5_breaks_table$climate_heavy_rain$var_name <- NA
+  suppressWarnings(with_breaks$q5_breaks_table$climate_heavy_rain$var_name[
+    with_breaks$q5_breaks_table$climate_heavy_rain$geo == "grid" &
+      with_breaks$q5_breaks_table$climate_heavy_rain$scale == "grid"
+  ] <- c("Insignificant", "Minor", "Moderate", "Elevated", "Major"))
+  
+  with_breaks$q5_breaks_table$climate_destructive_storms$var_name <- NA
+  suppressWarnings(with_breaks$q5_breaks_table$climate_destructive_storms$var_name[
+    with_breaks$q5_breaks_table$climate_destructive_storms$geo == "grid" &
+      with_breaks$q5_breaks_table$climate_destructive_storms$scale == "grid"
+  ] <- c("Insignificant", "Minor", "Moderate", "Elevated", "Major"))
+  
+  with_breaks$q5_breaks_table$climate_heat_wave$var_name <- NA
+  suppressWarnings(with_breaks$q5_breaks_table$climate_heat_wave$var_name[
+    with_breaks$q5_breaks_table$climate_heat_wave$geo == "grid" &
+      with_breaks$q5_breaks_table$climate_heat_wave$scale == "grid"
+  ] <- c("Insignificant", "Minor", "Moderate", "Elevated", "Major"))
+  
+  # Add qualitative var_name_short
+  with_breaks$q5_breaks_table$climate_drought$var_name_short <- NA
+  suppressWarnings(with_breaks$q5_breaks_table$climate_drought$var_name_short[
+    with_breaks$q5_breaks_table$climate_drought$geo == "grid" &
+      with_breaks$q5_breaks_table$climate_drought$scale == "grid"
+  ] <- c("Insig.", "Minor", "Mod.", "Elev.", "Major"))
+  
+  with_breaks$q5_breaks_table$climate_flood$var_name_short <- NA
+  suppressWarnings(with_breaks$q5_breaks_table$climate_flood$var_name_short[
+    with_breaks$q5_breaks_table$climate_flood$geo == "grid" &
+      with_breaks$q5_breaks_table$climate_flood$scale == "grid"
+  ] <- c("Insig.", "Minor", "Mod.", "Elev.", "Major"))
+  
+  with_breaks$q5_breaks_table$climate_heavy_rain$var_name_short <- NA
+  suppressWarnings(with_breaks$q5_breaks_table$climate_heavy_rain$var_name_short[
+    with_breaks$q5_breaks_table$climate_heavy_rain$geo == "grid" &
+      with_breaks$q5_breaks_table$climate_heavy_rain$scale == "grid"
+  ] <- c("Insig.", "Minor", "Mod.", "Elev.", "Major"))
+  
+  with_breaks$q5_breaks_table$climate_destructive_storms$var_name_short <- NA
+  suppressWarnings(with_breaks$q5_breaks_table$climate_destructive_storms$var_name_short[
+    with_breaks$q5_breaks_table$climate_destructive_storms$geo == "grid" &
+      with_breaks$q5_breaks_table$climate_destructive_storms$scale == "grid"
+  ] <- c("Insig.", "Minor", "Mod.", "Elev.", "Major"))
+  
+  with_breaks$q5_breaks_table$climate_heat_wave$var_name_short <- NA
+  suppressWarnings(with_breaks$q5_breaks_table$climate_heat_wave$var_name_short[
+    with_breaks$q5_breaks_table$climate_heat_wave$geo == "grid" &
+      with_breaks$q5_breaks_table$climate_heat_wave$scale == "grid"
+  ] <- c("Insig.", "Minor", "Mod.", "Elev.", "Major"))
+  
 
   # Variables table ---------------------------------------------------------
 
@@ -149,10 +257,10 @@ build_and_append_climate_risk <- function(scales_variables_modules, crs) {
       explanation = "the vulnerability to climate-change related flooding",
       theme = "Climate risk",
       private = FALSE,
-      dates = with_breaks$avail_dates[["climate_drought"]],
+      dates = with_breaks$avail_dates[["climate_flood"]],
       scales = data_interpolated$avail_scales,
-      breaks_q3 = with_breaks$q3_breaks_table[["climate_drought"]],
-      breaks_q5 = with_breaks$q5_breaks_table[["climate_drought"]],
+      breaks_q3 = with_breaks$q3_breaks_table[["climate_flood"]],
+      breaks_q5 = with_breaks$q5_breaks_table[["climate_flood"]],
       source = "City of Montreal's open data website",
       interpolated = data_interpolated$interpolated_ref
     ) |> 
@@ -164,10 +272,10 @@ build_and_append_climate_risk <- function(scales_variables_modules, crs) {
       explanation = "the vulnerability to climate-change related heavy rain",
       theme = "Climate risk",
       private = FALSE,
-      dates = with_breaks$avail_dates[["climate_drought"]],
+      dates = with_breaks$avail_dates[["climate_heavy_rain"]],
       scales = data_interpolated$avail_scales,
-      breaks_q3 = with_breaks$q3_breaks_table[["climate_drought"]],
-      breaks_q5 = with_breaks$q5_breaks_table[["climate_drought"]],
+      breaks_q3 = with_breaks$q3_breaks_table[["climate_heavy_rain"]],
+      breaks_q5 = with_breaks$q5_breaks_table[["climate_heavy_rain"]],
       source = "City of Montreal's open data website",
       interpolated = data_interpolated$interpolated_ref
     ) |> 
@@ -180,10 +288,10 @@ build_and_append_climate_risk <- function(scales_variables_modules, crs) {
                            "destructive storms"),
       theme = "Climate risk",
       private = FALSE,
-      dates = with_breaks$avail_dates[["climate_drought"]],
+      dates = with_breaks$avail_dates[["climate_destructive_storms"]],
       scales = data_interpolated$avail_scales,
-      breaks_q3 = with_breaks$q3_breaks_table[["climate_drought"]],
-      breaks_q5 = with_breaks$q5_breaks_table[["climate_drought"]],
+      breaks_q3 = with_breaks$q3_breaks_table[["climate_destructive_storms"]],
+      breaks_q5 = with_breaks$q5_breaks_table[["climate_destructive_storms"]],
       source = "City of Montreal's open data website",
       interpolated = data_interpolated$interpolated_ref
     ) |> 
@@ -195,10 +303,10 @@ build_and_append_climate_risk <- function(scales_variables_modules, crs) {
       explanation = "the vulnerability to climate-change related heat waves",
       theme = "Climate risk",
       private = FALSE,
-      dates = with_breaks$avail_dates[["climate_drought"]],
+      dates = with_breaks$avail_dates[["climate_heat_wave"]],
       scales = data_interpolated$avail_scales,
-      breaks_q3 = with_breaks$q3_breaks_table[["climate_drought"]],
-      breaks_q5 = with_breaks$q5_breaks_table[["climate_drought"]],
+      breaks_q3 = with_breaks$q3_breaks_table[["climate_heat_wave"]],
+      breaks_q5 = with_breaks$q5_breaks_table[["climate_heat_wave"]],
       source = "City of Montreal's open data website",
       interpolated = data_interpolated$interpolated_ref
     )
@@ -210,8 +318,8 @@ build_and_append_climate_risk <- function(scales_variables_modules, crs) {
         add_module(
           id = "climate_risk",
           theme = "Climate",
-          nav_title = "Climate change risk",
-          title_text_title = "Active living potential: the CanALE index",
+          nav_title = "Climate risk",
+          title_text_title = "Climate change risk",
           title_text_main = paste0(
             "Climate change will have increasingly negative ",
             "impacts on communities in Montreal, but these ",

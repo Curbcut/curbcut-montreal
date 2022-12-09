@@ -35,23 +35,27 @@ shinyServer(function(input, output, session) {
     default_select_id = reactiveVal(NULL),
     stories = reactiveValues(select_id = reactiveVal(NA)))
   
-  lapply(modules$id, \(id) {
-    df <- modules$regions[modules$id == id]
+  
+  for (i in modules$id) {
+    df <- modules$regions[modules$id == i]
     df <- unlist(df)[[1]]
-    df <- if (is.null(df)) default_region else df
-    df <- paste(df, names(get(paste0("map_zoom_levels_", df)))[[1]], sep = "_")
-    
-    assign_rvs <- sprintf(
-      paste0("r$%s <- ",
-             "reactiveValues(select_id = reactiveVal(NA),",
-             "df = reactiveVal('%s'),",
-             "zoom = reactiveVal(%f),",
-             "prev_norm = reactiveVal(FALSE))"),
-      id, df, get_zoom(map_zoom))
-    
-    eval(parse(text = assign_rvs))
-  })
+    if (is.null(df)) {
+      r[[i]] <- reactiveValues(
+        select_id = reactiveVal(NA),
+        zoom = reactiveVal(get_zoom(map_zoom)),
+        prev_norm = reactiveVal(FALSE))
+    } else {
+      df <- if (is.null(df)) default_region else df
+      df <- paste(df, names(get(paste0("map_zoom_levels_", df)))[[1]], sep = "_")
+      r[[i]] <- reactiveValues(
+        select_id = reactiveVal(NA),
+        df = reactiveVal(df),
+        zoom = reactiveVal(get_zoom(map_zoom)),
+        prev_norm = reactiveVal(FALSE))
+    }
+  }
 
+  
   ## Home page -----------------------------------------------------------------
   
   observe(updateNavbarPage(session, "sus_page", "home")) |> 

@@ -3,8 +3,8 @@
 library(tidyverse)
 library(sf)
 library(qs)
-natural_inf_tiles_raw <- qread("dev/data/natural_inf_tiles_raw.qs")
-natural_inf_tiles <- qread("dev/data/natural_inf_tiles.qs")
+natural_inf_tiles_raw <- qread("dev/data/built/natural_inf_tiles_raw.qs")
+natural_inf_tiles <- qread("dev/data/built/natural_inf_tiles.qs")
 source("dev/tiles/_tile_functions.R")
 
 
@@ -17,7 +17,7 @@ for (i in seq_len(length(natural_inf_tiles_raw))) {
     mutate(across(where(is.numeric), as.character)) |>
     st_set_agr("constant") |>
     upload_tile_source(paste0(
-      "natural_inf-", names(natural_inf_tiles_raw)[[i]]))
+      "mtl_natural_inf-", names(natural_inf_tiles_raw)[[i]]))
 }
 
 
@@ -63,7 +63,7 @@ natural_inf_recipe <- imap(natural_inf_tiles_raw, \(cat_data, cat) {
 
 
 for (i in seq_len(length(natural_inf_tiles_raw))) {
-  create_tileset(paste0("natural_inf-", names(natural_inf_tiles_raw)[[i]]), 
+  create_tileset(paste0("mtl_natural_inf-", names(natural_inf_tiles_raw)[[i]]), 
                  natural_inf_recipe[[i]])
   Sys.sleep(1)
 }
@@ -72,7 +72,7 @@ for (i in seq_len(length(natural_inf_tiles_raw))) {
 # Publish tilesets --------------------------------------------------------
 
 for (i in seq_len(length(natural_inf_tiles_raw))) {
-  publish_tileset(paste0("natural_inf-", names(natural_inf_tiles_raw)[[i]]))
+  publish_tileset(paste0("mtl_natural_inf-", names(natural_inf_tiles_raw)[[i]]))
   Sys.sleep(30)
 }
 
@@ -113,7 +113,7 @@ map(1:10, ~{
 
   # Upload to MTS
   out <- paste0('curl -X POST "https://api.mapbox.com/tilesets/v1/sources/',
-                'sus-mcgill/natural_inf-custom?access_token=', .sus_token,
+                'sus-mcgill/mtl_natural_inf-custom?access_token=', .cc_mb_token,
                 '" -F file=@', tmp,
                 ' --header "Content-Type: multipart/form-data"')
   system(out)
@@ -122,14 +122,14 @@ map(1:10, ~{
 
 natural_inf_recipe <-
   create_recipe(
-    layer_names = "natural_inf-custom",
-    source = paste0("mapbox://tileset-source/sus-mcgill/natural_inf-custom"),
+    layer_names = "mtl_natural_inf-custom",
+    source = paste0("mapbox://tileset-source/sus-mcgill/mtl_natural_inf-custom"),
     minzoom = 3,
     maxzoom = 15,
     simp_zoom = 15,
     simp_value = 1,
     layer_size = 2500,
-    recipe_name = "natural_inf-custom")
+    recipe_name = "mtl_natural_inf-custom")
 
-create_tileset("natural_inf-custom", natural_inf_recipe)
-publish_tileset("natural_inf-custom")
+create_tileset("mtl_natural_inf-custom", natural_inf_recipe)
+publish_tileset("mtl_natural_inf-custom")

@@ -35,7 +35,7 @@ explore_graph <- function(data, r = r, var_type, var_left, var_right, df, select
   ## Decide on plot type -------------------------------------------------------
   
   if (plot_type == "auto") plot_type <- 
-    get_plot_type(data, var_type, var_left, var_right, select_id, df)
+    get_plot_type(data, var_type, var_left, var_right, select_id, df, geo)
   graph_type <- sub("_.*$", "", plot_type)
   select_type <- sub("^.*_", "", plot_type)
 
@@ -46,7 +46,7 @@ explore_graph <- function(data, r = r, var_type, var_left, var_right, df, select
   ## Set up plotting variables -------------------------------------------------
   
   # Prepare x and y scales
-  x_scale <- get_x_scale(graph_type, data, var_type, var_left, var_right, df)
+  x_scale <- get_x_scale(graph_type, data, var_type, var_left, var_right, df, geo)
   y_scale <- get_y_scale(graph_type, data, var_type, var_left, var_right)
   
   # Prepare axis labels
@@ -64,7 +64,7 @@ explore_graph <- function(data, r = r, var_type, var_left, var_right, df, select
   
   ## Render and return plot ----------------------------------------------------
   
-  render_explore_graph(plot_type, data, var_left, var_right, df, select_id, 
+  render_explore_graph(plot_type, data, var_left, var_right, df, geo, select_id, 
                        x_scale, y_scale, labs_xy, theme_default)
   
 }

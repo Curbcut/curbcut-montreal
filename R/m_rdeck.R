@@ -4,14 +4,15 @@
 #' @return An updated version of the rdeck map.
 
 rdeck_server <- function(id, r, map_id, tile, data_color,
-                         select_id = r[[id]]$select_id,
+                         select_id = r[[id]]$select_id, zoom_levels,
                          zoom = r[[id]]$zoom,
                          fill = scale_fill_sus, 
                          fill_args = reactive(list(data_color())),
                          colour = scale_colour_sus, 
                          colour_args = reactive(list(NULL)),
                          lwd = scale_lwd_sus, 
-                         lwd_args = reactive(list(select_id(), tile(), zoom())),
+                         lwd_args = reactive(list(select_id(), tile(), zoom(),
+                                                  zoom_levels())),
                          line_units = "pixels") {
   
   

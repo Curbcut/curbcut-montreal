@@ -41,9 +41,9 @@ climate_risk_server <- function(id, r) {
     
     # Initial reactives
     zoom_string <- reactiveVal(get_zoom_string(map_zoom, map_zoom_levels_island,
-                                               "grid"))
+                                               "CSD"))
     poi <- reactiveVal(NULL)
-    tweaked_geo <- reactive(if (r$geo() == "CMA") "grid" else r$geo())
+    tweaked_geo <- reactive(if (r$geo() == "CMA") "island" else r$geo())
 
     # Map
     output[[id_map]] <- renderRdeck({
@@ -62,7 +62,7 @@ climate_risk_server <- function(id, r) {
     
     # Map zoom levels change depending on r$geo()
     map_zoom_levels <- eventReactive(tweaked_geo(), {
-      get_zoom_levels(default = "grid", 
+      get_zoom_levels(default = "island", 
                       geo = tweaked_geo(),
                       var_left = var_left())
     })
@@ -105,8 +105,7 @@ climate_risk_server <- function(id, r) {
       zoom_levels = map_zoom_levels)
     
     # Choose tileset
-    tile <- reactive({if (grid()) paste(map_zoom_levels()$region, "grid", sep = "_") else
-       tile_choropleth()})
+    tile <- reactive({if (grid()) "grid_grid" else tile_choropleth()})
     
     # Get df for explore/legend/etc
     observe(r[[id]]$df(get_df(tile(), zoom_string()))) |> 
@@ -132,10 +131,13 @@ climate_risk_server <- function(id, r) {
     # Sidebar
     sidebar_server(id = id, r = r, x = "climate_risk")
     
+    # Update region depending on if grid is selected
+    region <- reactive(if (grid()) "grid" else map_zoom_levels()$region)
+    
     # Data
     data <- reactive(get_data(
       df = r[[id]]$df(),
-      geo = map_zoom_levels()$region,
+      geo = region(),
       var_left = var_left(),
       var_right = var_right()))
 
@@ -143,7 +145,7 @@ climate_risk_server <- function(id, r) {
     data_color <- reactive(get_data_color(
       map_zoom_levels = if (grid()) rlang::set_names("grid", "grid") else
         map_zoom_levels()$levels,
-      geo = map_zoom_levels()$region,
+      geo = region(),
       var_left = var_left(),
       var_right = var_right()
     ))
@@ -153,6 +155,7 @@ climate_risk_server <- function(id, r) {
       id = id,
       r = r,
       data = data,
+      geo = region,
       var_left = var_left,
       var_right = var_right)
 
@@ -186,7 +189,7 @@ climate_risk_server <- function(id, r) {
       id = id,
       r = r,
       data = data,
-      geo = reactive(map_zoom_levels()$region),
+      geo = region,
       var_left = var_left,
       var_right = var_right)
 
@@ -207,6 +210,14 @@ climate_risk_server <- function(id, r) {
       var_right = var_right,
       more_args = reactive(c("c-cbox" = as.logical(grid())))
     )
+    
+    observe({
+      assign("data", data(), envir = .GlobalEnv)
+      assign("df", r[[id]]$df(), envir = .GlobalEnv)
+      assign("var_right", var_right(), envir = .GlobalEnv)
+      assign("var_left", var_left(), envir = .GlobalEnv)
+      assign("geo", region(), envir = .GlobalEnv)
+    })
     
     # Data transparency and export
     r[[id]]$export_data <- reactive(data_export(id = id,

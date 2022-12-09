@@ -1,6 +1,7 @@
 #### GET EXPLORE GRAPH X SCALE #################################################
 
-get_x_scale <- function(graph_type, data, var_type, var_left, var_right, df) {
+get_x_scale <- function(graph_type, data, var_type, var_left, var_right, df, 
+                        geo) {
   
   ## Get labels ----------------------------------------------------------------
   
@@ -8,7 +9,8 @@ get_x_scale <- function(graph_type, data, var_type, var_left, var_right, df) {
     which(variables$var_code == unique(sub("_\\d{4}$", "", var_left)))]]
   
   if (length(breaks_q5_left) > 0) breaks_q5_left <- 
-      breaks_q5_left[breaks_q5_left$scale == df,]
+      breaks_q5_left[breaks_q5_left$scale == gsub(".*_", "", df) &
+                       breaks_q5_left$geo == geo, ]
 
   if (suppressWarnings(!is.null(breaks_q5_left$var_name)) && 
       sum(!is.na(breaks_q5_left$var_name)) > 0) {

@@ -30,11 +30,14 @@ get_zoom_label_t <- function(zoom_levels, r) {
 
 get_zoom_code <- function(x) {
   translated <- na.omit(translation_fr$en[translation_fr$fr == x])
-  if (length(translated) == 0) stop(paste0("No translation for `", x ,"`"))
   
-  scales_dictionary$scale[scales_dictionary$slider_title == x |
-                            scales_dictionary$slider_title == 
-                            na.omit(translation_fr$en[translation_fr$fr == x])]
+  sub_vec <- 
+    if (length(translated) > 0) {
+      scales_dictionary$slider_title == x | 
+        scales_dictionary$slider_title == translated
+    } else scales_dictionary$slider_title == x
+
+  scales_dictionary$scale[sub_vec]
 }
 
 # Get the right `map_zoom_levels_x`.

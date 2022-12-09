@@ -1,6 +1,7 @@
 #### GET EXPLORE PLOT TYPE #####################################################
 
-get_plot_type <- function(data, var_type, var_left, var_right, select_id, df) {
+get_plot_type <- function(data, var_type, var_left, var_right, select_id, df, 
+                          geo) {
   
   # Check arguments
   stopifnot(!is.reactive(data))
@@ -27,8 +28,10 @@ get_plot_type <- function(data, var_type, var_left, var_right, select_id, df) {
   # Is qualitative to decide between histogram and bar
   v_l <- gsub("_\\d{4}$", "", var_left[1])
   breaks_q5 <- variables$breaks_q5[[which(variables$var_code == v_l)]]
-  quali <- !is.null(breaks_q5[breaks_q5$scale == df, ][["var_name"]]) &&
-    !all(is.na(breaks_q5[breaks_q5$scale == df, ][["var_name"]]))
+  quali <- !is.null(breaks_q5[breaks_q5$scale == gsub(".*_", "", df) &
+                                breaks_q5$geo == geo, ][["var_name"]]) &&
+    !all(is.na(breaks_q5[breaks_q5$scale == gsub(".*_", "", df) &
+                           breaks_q5$geo == geo, ][["var_name"]]))
 
   # Get main graph type
   graph_type <-

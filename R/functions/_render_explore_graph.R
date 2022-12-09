@@ -1,6 +1,6 @@
 #### RENDER EXPLORE GRAPH ######################################################
 
-render_explore_graph <- function(plot_type, data, var_left, var_right, df,
+render_explore_graph <- function(plot_type, data, var_left, var_right, df, geo,
                                  select_id, x_scale, y_scale, labs_xy, 
                                  theme_default) {
   
@@ -13,7 +13,8 @@ render_explore_graph <- function(plot_type, data, var_left, var_right, df,
     
     vals <- variables$breaks_q5[[
       which(variables$var_code == str_remove(var_left, "_\\d{4}$"))]]
-    vals <- vals$var[vals$scale == gsub(".*_", "", df)]
+    vals <- vals$var[vals$scale == gsub(".*_", "", df) &
+                       vals$geo == geo]
     vals[1] <- -Inf
     vals[length(vals)] <- Inf
 
@@ -38,7 +39,8 @@ render_explore_graph <- function(plot_type, data, var_left, var_right, df,
     # Figure out how many values to graph
     ranks <- variables$breaks_q5[[
       which(variables$var_code == unique(sub("_\\d{4}$", "", var_left)))]]
-    ranks <- ranks$rank[ranks$scale == gsub(".*_", "", df)]
+    ranks <- ranks$rank[ranks$scale == gsub(".*_", "", df) &
+                          ranks$geo == geo]
     
     # Get corresponding colours
     cols <- colour_left_5$fill[ranks + 1]

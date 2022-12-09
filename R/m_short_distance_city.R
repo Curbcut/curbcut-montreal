@@ -2,7 +2,7 @@
 
 # UI ----------------------------------------------------------------------
 
-city_amenities_UI <- function(id) {
+short_distance_city_UI <- function(id) {
   id_map <- paste0(id, "-map")
   
   tagList(
@@ -36,7 +36,7 @@ city_amenities_UI <- function(id) {
 
 # Server ------------------------------------------------------------------
 
-city_amenities_server <- function(id, r) {
+short_distance_city_server <- function(id, r) {
   moduleServer(id, function(input, output, session) {
     id_map <- paste0(id, "-map")
     
@@ -126,7 +126,7 @@ city_amenities_server <- function(id, r) {
                         select_var_id = "d_2",
                         var_list = reactive(var_left_list_2_city_amenities))
     
-    var_left <- reactive(paste(var_left_1(), var_left_2(), "avg", sep = "_"))
+    var_left <- reactive(paste(var_left_1(), var_left_2(), sep = "_"))
 
     # Right variable / compare panel
     var_right <- compare_server(
@@ -136,7 +136,7 @@ city_amenities_server <- function(id, r) {
       time = time)
 
     # Sidebar
-    sidebar_server(id = id, r = r, x = "city_amenities")
+    sidebar_server(id = id, r = r, x = "short_distance_city")
     
     # Data
     data <- reactive(get_data(
@@ -173,7 +173,8 @@ city_amenities_server <- function(id, r) {
       id = id,
       r = r,
       var_left = var_left,
-      var_right = var_right)
+      var_right = var_right,
+      geo = reactive(map_zoom_levels()$region))
 
     # Did-you-know panel
     dyk_server(
@@ -189,8 +190,9 @@ city_amenities_server <- function(id, r) {
       r = r,
       map_id = "map",
       tile = tile,
-      data_color = data_color)
-
+      data_color = data_color,
+      zoom_levels = reactive(map_zoom_levels()$levels))
+    
     # Update map labels
     label_server(
       id = id,

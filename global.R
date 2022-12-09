@@ -81,23 +81,15 @@ census_max <-
 
 # Modules ready -----------------------------------------------------------
 
+unique_themes <- unique(modules$theme)[unique(modules$theme) != ""]
+display_mods <- modules[modules$theme != "", ]
 mods_rdy <- 
-  unique(modules$theme) |> 
-  sapply(\(x) {
-    thm <- modules[modules$theme == x, ]
+  sapply(unique_themes, \(x) {
+    thm <- display_mods[display_mods$theme == x, ]
     ids <- thm$id
     names(ids) <- thm$nav_title
     ids
   }, simplify = FALSE, USE.NAMES = TRUE)
-
- 
-# stand_alone_tabs <- c(
-#   "Montréal stories" = "stories",
-#   "Place explorer" = "place_explorer",
-#   "How to use" = "how_to_use",
-#   "About" = "about_sus",
-#   "Authors" = "authors"
-# )
 
 
 # Map defaults ------------------------------------------------------------
@@ -109,30 +101,6 @@ map_base_style <- "mapbox://styles/sus-mcgill/cl0reqoz4000z15pekuh48ld6"
 map_style_building <- "mapbox://styles/sus-mcgill/cl2bwtrsp000516rwyrkt9ior"
 map_zoom <- 10.1
 map_loc <- c(-73.58, 45.53)
-
-map_zoom_levels_CMA <- 
-  c("CSD" = 0, "CT" = 10.5, "DA" = 12.5, "building" = 15.5)
-map_zoom_levels_CMA_max_CT <- c("CSD" = 0, "CT" = 10.5)
-
-map_zoom_levels_island <- 
-  c("CSD" = 0, "CT" = 10.5, "DA" = 12.5, "building" = 15.5)
-map_zoom_levels_island_max_CT <- c("CSD" = 0, "CT" = 10.5)
-
-map_zoom_levels_city <- 
-  c("CSD" = 0, "CT" = 10.5, "DA" = 12.5, "building" = 15.5)
-map_zoom_levels_city_max_CT <- c("CSD" = 0, "CT" = 10.5)
-map_zoom_levels_city_max_DB <- 
-  c("CSD" = 0, "CT" = 10.5, "DA" = 12.5, "DB" = 14.5)
-
-map_zoom_levels_centraide <- 
-  c("centraide" = 0, "CT" = 10.5, "DA" = 12.5, "building" = 15.5)
-map_zoom_levels_centraide_max_CT <- c("centraide" = 0, "CT" = 10.5)
-
-map_zoom_levels_cmhc <- 
-  c("cmhczone" = 0)
-
-map_zoom_levels_grid <- 
-  c("grid" = 0)
 
 first_level_choropleth <- 
   sapply(ls()[grepl("map_zoom_levels_", ls())], \(x) names(get(x)[1]),

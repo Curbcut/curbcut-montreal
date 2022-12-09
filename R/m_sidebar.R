@@ -35,7 +35,7 @@ sidebar_server <- function(id, r, x = id) {
     title_title <- title$title_text_title
     title_main <- title$title_text_main
     title_extra <- title$title_text_extra
-
+    
     # More info
     observeEvent(input$more_info, {
       toggle("title_extra", condition = input$more_info %% 2 == 1)

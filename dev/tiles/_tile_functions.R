@@ -4,7 +4,7 @@
 # List tile sources -------------------------------------------------------
 
 list_tile_sources <- function(username = "sus-mcgill", 
-                              access_token = .sus_token) {
+                              access_token = .cc_mb_token) {
   
   res <- httr::GET(paste0("https://api.mapbox.com/tilesets/v1/sources/", 
                           username),
@@ -26,7 +26,7 @@ list_tile_sources <- function(username = "sus-mcgill",
 # Upload tile source ------------------------------------------------------
 
 upload_tile_source <- function(df, id, username = "sus-mcgill", 
-                               access_token = .sus_token) {
+                               access_token = .cc_mb_token) {
   
   # Initialize tempfile
   tmp1 <- tempfile(fileext = ".json")
@@ -55,7 +55,7 @@ upload_tile_source <- function(df, id, username = "sus-mcgill",
 # Delete tileset source ---------------------------------------------------
 
 delete_tileset_source <- function(id, username = "sus-mcgill", 
-                                  access_token = .sus_token) {
+                                  access_token = .cc_mb_token) {
   
   out <- httr::DELETE(paste0("https://api.mapbox.com/tilesets/v1/sources/", 
                              username, "/", id), 
@@ -67,7 +67,7 @@ delete_tileset_source <- function(id, username = "sus-mcgill",
 
 # List tilesets -----------------------------------------------------------
 
-list_tilesets <- function(username = "sus-mcgill", access_token = .sus_token) {
+list_tilesets <- function(username = "sus-mcgill", access_token = .cc_mb_token) {
   
   res <- httr::GET(paste0("https://api.mapbox.com/tilesets/v1/", 
                           username),
@@ -93,7 +93,7 @@ list_tilesets <- function(username = "sus-mcgill", access_token = .sus_token) {
 # Create tileset ----------------------------------------------------------
 
 create_tileset <- function(tileset, recipe, username = "sus-mcgill", 
-                           access_token = .sus_token) {
+                           access_token = .cc_mb_token) {
   
   # More complex httr::RETRY
   out <- httr::POST(
@@ -113,7 +113,7 @@ create_tileset <- function(tileset, recipe, username = "sus-mcgill",
 # Delete tileset ----------------------------------------------------------
 
 delete_tileset <- function(id, username = "sus-mcgill", 
-                           access_token = .sus_token) {
+                           access_token = .cc_mb_token) {
   
   out <- httr::DELETE(paste0("https://api.mapbox.com/tilesets/v1/", username,
                       ".", id), query = list(access_token = access_token))
@@ -141,7 +141,7 @@ update_tileset <- function(tileset, recipe, username, access_token) {
 # Publish tileset ---------------------------------------------------------
 
 publish_tileset <- function(tileset, username = "sus-mcgill", 
-                            access_token = .sus_token) {
+                            access_token = .cc_mb_token) {
   
   out <- httr::RETRY("POST",
                      url = paste0("https://api.mapbox.com/tilesets/v1/", username, ".", tileset,

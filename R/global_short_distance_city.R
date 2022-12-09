@@ -3,7 +3,7 @@
 # Main dropdown list
 var_left_list_1_city_amenities <- 
   make_dropdown(only = list(theme = "City amenities")) |> 
-  lapply(\(x) lapply(x, \(y) gsub("_bike_avg", "", y)))
+  lapply(\(x) lapply(x, \(y) gsub("_bike", "", y)))
 
 # Mode of transport
 var_left_list_2_city_amenities <- 

@@ -9,7 +9,7 @@ stories_UI <- function(id) {
     
     # Sidebar
     sidebar_UI(
-      NS(id, "sidebar"),
+      NS(id, id),
       # hr(id = NS(id, "hr")),
       actionLink(NS(id, "back"), cc_t(r = r, "Back to the map"))
     ),
@@ -32,15 +32,9 @@ stories_server <- function(id, r) {
   moduleServer(id, function(input, output, session) {
     ns_id <- "stories"
     ns_id_map <- paste0(ns_id, "-map")
-    # 
-    # # Initial reactive
-    # if (is.null(r[[ns_id]]$select_id)) r[[ns_id]]$select_id <- reactiveVal(NA)
     
     # Sidebar
-    sidebar_server(
-      id = "sidebar",
-      r = r,
-      x = "stories")
+    sidebar_server(id = id, r = r, x = "stories")
     
     # Map
     output[[ns_id_map]] <- renderRdeck({

@@ -226,7 +226,8 @@ vac_rate_server <- function(id, r) {
       r = r,
       map_id = "map",
       tile = tile,
-      data_color = data_color)
+      data_color = data_color,
+      zoom_levels = reactive(map_zoom_levels()$levels))
 
     # Update map labels
     label_server(

@@ -2,7 +2,7 @@
 
 
 # Load libraries ----------------------------------------------------------
-
+tictoc::tic()
 library(cc.buildr)
 library(stringr)
 library(dplyr)
@@ -18,10 +18,11 @@ invisible(lapply(list.files("dev/pages", full.names = TRUE), source))
 all_tables <-
   list("CMA" = c("CSD", "CT", "DA", "building"),
        "island" = c("CSD", "CT", "DA", "building"),
-       "city" = c("CSD", "CT", "DA", "building"),
+       "city" = c("CSD", "CT", "DA", "DB", "building"),
        "centraide" = c("centraide", "CT", "DA", "building"),
        "cmhc" = c("cmhczone"),
        "grid" = c("grid"))
+
 
 # List all the regions geometries to create the master polygon
 cancensus_cma_code <- 24462
@@ -66,6 +67,7 @@ regions_dictionary <-
 census_scales <-
   build_census_scales(master_polygon = base_polygons$master_polygon,
                       regions = base_polygons$province_cancensus_code,
+                      levels = c("CSD", "CT", "DA", "DB"),
                       crs = crs)
 # Switch the City of Montreal for the boroughs
 boroughs <- sf::st_read("dev/data/geometry/arrondissements_mtl.shp")
@@ -246,26 +248,72 @@ scales_variables_modules <-
     crs = crs,
     CT_table = census_scales$CT,
     region_CT_IDs = census_scales$CT$ID)
-
 scales_variables_modules <-
   build_and_append_centraide_hou(
     scales_variables_modules = scales_variables_modules,
     crs = crs,
     CT_table = census_scales$CT,
     region_CT_IDs = census_scales$CT$ID)
-
 scales_variables_modules <-
   build_and_append_climate_risk(
     scales_variables_modules = scales_variables_modules,
     crs = crs)
+scales_variables_modules <-
+  build_and_append_short_distance_city(
+    scales_variables_modules = scales_variables_modules,
+    crs = crs)
+
+save.image()
+load(".RData")
 
 
+
+scales_variables_modules <-
+  build_and_append_natural_inf(
+    scales_variables_modules = scales_variables_modules,
+    crs = crs)
+
+# Add MCP
+scales_variables_modules$modules <-
+  scales_variables_modules$modules |>
+  add_module(
+    id = "mcp",
+    theme = "Policy",
+    nav_title = "Montréal climate plans",
+    title_text_title = "",
+    title_text_main = "",
+    title_text_extra = "",
+    metadata = FALSE,
+    dataset_info = ""
+  )
+
+# Add Montréal stories
+scales_variables_modules$modules <-
+  scales_variables_modules$modules |>
+  add_module(
+    id = "stories",
+    theme = "",
+    nav_title = "Montréal stories",
+    title_text_title = "Montréal stories",
+    title_text_main = paste0(
+      "Explore narrative case studies on sustainability issues in Montreal's ",
+      "neighborhoods. In this module, read text-based stories and view their ",
+      "adjoining visual media."),
+    title_text_extra = paste0(
+      "These stories, written by Curbcut contributors, examine Montreal ",
+      "sustainability issues that aren't well suited to representation in our ",
+      "standard interactive map format. Learn more about stories rooted in ",
+      "specific geographic locations across the city or those that have had ",
+      "an impact on the whole of Montreal."),
+    metadata = FALSE,
+    dataset_info = ""
+  )
 
 scales_variables_modules$scales <- 
   cc.buildr::reorder_columns(scales_variables_modules$scales)
 
 qs::qsavem(census_scales, scales_variables_modules, crs, census_variables,
-           scales_dictionary, 
+           scales_dictionary, regions_dictionary, all_tables,
            file = "dev/data/built/scales_variables_modules.qsm")
 qs::qload("dev/data/built/scales_variables_modules.qsm")
 
@@ -275,9 +323,58 @@ qs::qload("dev/data/built/scales_variables_modules.qsm")
 # qs::qsave(postal_codes, "data/postal_codes.qs")
 
 
+
+# Map zoom levels ---------------------------------------------------------
+
+map_zoom_levels <- map_zoom_levels_create_all(all_tables = all_tables)
+
+map_zoom_levels <- 
+  map_zoom_levels_create_custom(
+    map_zoom_levels = map_zoom_levels,
+    all_tables = all_tables,
+    region = "CMA",
+    suffix = "max_CT",
+    content = c("CSD" = 0, "CT" = 10.5))
+
+map_zoom_levels <- 
+  map_zoom_levels_create_custom(
+    map_zoom_levels = map_zoom_levels,
+    all_tables = all_tables,
+    region = "city",
+    suffix = "max_CT",
+    content = c("CSD" = 0, "CT" = 10.5))
+
+map_zoom_levels <- 
+  map_zoom_levels_create_custom(
+    map_zoom_levels = map_zoom_levels,
+    all_tables = all_tables,
+    region = "island",
+    suffix = "max_CT",
+    content = c("CSD" = 0, "CT" = 10.5))
+
+map_zoom_levels <- 
+  map_zoom_levels_create_custom(
+    map_zoom_levels = map_zoom_levels,
+    all_tables = all_tables,
+    region = "centraide",
+    suffix = "max_CT",
+    content = c("centraide" = 0, "CT" = 10.5))
+
+map_zoom_levels <- 
+  map_zoom_levels_create_custom(
+    map_zoom_levels = map_zoom_levels,
+    all_tables = all_tables,
+    region = "city",
+    suffix = "max_DB",
+    content = c("CSD" = 0, "CT" = 10.5, "DA" = 12.5, "DB" = 14.5))
+
+map_zoom_levels_save(data_folder = "data/", map_zoom_levels = map_zoom_levels)
+
+
 # Tilesets ----------------------------------------------------------------
 
 tileset_upload_all(all_scales = scales_variables_modules$scales,
+                   map_zoom_levels = map_zoom_levels,
                    prefix = "mtl",
                    username = "sus-mcgill",
                    access_token = .cc_mb_token)
@@ -330,14 +427,14 @@ qs::qsave(census_variables, file = "data/census_variables.qs")
 qs::qsave(scales_variables_modules$modules, file = "data/modules.qs")
 qs::qsave(scales_dictionary, file = "data/scales_dictionary.qs")
 qs::qsave(regions_dictionary, file = "data/regions_dictionary.qs")
+tictoc::toc()
 
-
-# Deploy app --------------------------------------------------------------
-
-source("dev/other/deploy_sus.R")
-
-deploy_sus("cc-montreal-centraide") # Centraide
-deploy_sus("cc-montreal-dev") # Development
-deploy_sus("cc-montreal") # Production
-
-renv::activate()
+# # Deploy app --------------------------------------------------------------
+# 
+# source("dev/other/deploy_sus.R")
+# 
+# deploy_sus("cc-montreal-centraide") # Centraide
+# deploy_sus("cc-montreal-dev") # Development
+# deploy_sus("cc-montreal") # Production
+# 
+# renv::activate()

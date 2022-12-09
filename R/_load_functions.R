@@ -19,8 +19,9 @@ lapply(list.files("R/functions/"), \(x)
 
 # # Load locally in R
 # source("R/functions/__make_dropdown.R")
+# source("R/functions/_get_news.R")
 # envir <- rlang::get_env(\(x) x)
 # lapply(list.files("R/")[
 #   !list.files("R/") %in% c("functions", "tests", "_load_functions.R")], \(x)
 #     source(paste0("R/", x), local = envir, encoding = "utf-8")
-# )
+# ) |> invisible()

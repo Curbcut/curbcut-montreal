@@ -64,7 +64,7 @@ natural_inf_server <- function(id, r) {
   moduleServer(id, function(input, output, session) {
     id_map <- paste0(id, "-map")
 
-    # Initial reactives
+    # # Initial reactives
     zoom_string <- reactiveVal(get_zoom_string(9.5, map_zoom_levels_CMA))
     poi <- reactiveVal(NULL)
     
@@ -73,7 +73,7 @@ natural_inf_server <- function(id, r) {
       rdeck(map_style = map_base_style, initial_view_state = view_state(
         center = map_loc, zoom = isolate(r[[id]]$zoom())))
     })
-    
+
     # Zoom and POI reactives
     observe({
       r[[id]]$zoom(get_zoom(get_view_state(id_map)$zoom))
@@ -82,7 +82,7 @@ natural_inf_server <- function(id, r) {
           (!is.null(new_poi) && (is.null(poi()) || !all(new_poi == poi()))))
         poi(new_poi)
     }) |> bindEvent(get_view_state(id_map))
-    
+
     # Zoom string reactive
     observe({
       new_zoom_string <- get_zoom_string(r[[id]]$zoom(), map_zoom_levels_CMA)
@@ -224,14 +224,14 @@ natural_inf_server <- function(id, r) {
       id = id,
       r = r,
       var_left = var_left,
-      var_right = var_right,
-      poi = poi)
+      var_right = var_right)#,
+      #poi = poi)
 
     # Update map in response to variable changes or zooming
     rdeck_server(
       id = id,
       r = r,
-      map_id = "map", 
+      map_id = "map",
       tile = reactive(paste0(id, "-", tile())),
       data_color = reactive(data.frame()),
       select_id = reactive(NA),
