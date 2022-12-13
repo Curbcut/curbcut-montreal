@@ -41,7 +41,7 @@ vac_rate_UI <- function(id) {
     # Right panel
     right_panel(
       id = id,
-      compare_UI(NS(id, id), vars_housing_right),
+      compare_UI(NS(id, id), make_dropdown(compare = TRUE)),
       explore_UI(NS(id, id)), 
       dyk_UI(NS(id, id)))
     
@@ -171,7 +171,7 @@ vac_rate_server <- function(id, r) {
     var_right <- compare_server(
       id = id,
       r = r,
-      var_list = vars_housing_right,
+      var_list = make_dropdown(compare = TRUE),
       disabled = reactive(if (!slider_switch()) NULL else
         vars_housing_right_dis),
       time = time)

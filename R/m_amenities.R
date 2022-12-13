@@ -23,7 +23,7 @@ amenities_UI <- function(id) {
     # Right panel
     right_panel(
       id = id,
-      compare_UI(NS(id, id), vars_housing_right),
+      compare_UI(NS(id, id), make_dropdown(compare = TRUE)),
       explore_UI(NS(id, id)), 
       dyk_UI(NS(id, id)))
     

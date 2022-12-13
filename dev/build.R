@@ -9,7 +9,7 @@ library(dplyr)
 library(purrr)
 library(sf)
 future::plan(future::multisession())
-invisible(lapply(list.files("dev/pages", full.names = TRUE), source))
+invisible(lapply(list.files("dev/data_import", full.names = TRUE), source))
 
 
 # Base of the study region and dictionaries -------------------------------
@@ -323,7 +323,6 @@ qs::qload("dev/data/built/scales_variables_modules.qsm")
 # qs::qsave(postal_codes, "data/postal_codes.qs")
 
 
-
 # Map zoom levels ---------------------------------------------------------
 
 map_zoom_levels <- map_zoom_levels_create_all(all_tables = all_tables)
@@ -401,6 +400,13 @@ source("dev/translation/build_translation.R", encoding = "utf-8")
 
 # source("dev/pages/stories.R", encoding = "utf-8")
 # qs::qsavem(stories, stories_mapping, file = "data/stories.qsm")
+
+
+# Build data scripts ------------------------------------------------------
+
+lapply(list.files("dev/pages", full.names = TRUE), 
+       create_page_script, overwrite = TRUE) |> 
+  invisible()
 
 
 # Save SQLite data --------------------------------------------------------
