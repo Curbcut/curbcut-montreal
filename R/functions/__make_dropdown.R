@@ -74,7 +74,7 @@ make_dropdown <- function(multi_year = FALSE, only_vars = NULL,
            \(cat) {
              
              # In the case the category has multiple dropdowns
-             if (cat %in% vars$theme[!is.na(variables$group_name)]) {
+             if (cat %in% vars$theme[!is.na(vars$group_name)]) {
                cat_vecs <- 
                  vars[vars$theme == cat, c("var_code", "group_name",
                                            "group_diff")]

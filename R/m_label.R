@@ -37,7 +37,7 @@ label_server <- function(id, r, map_id, tile) {
         add_mvt_layer(
           id = paste0(id, "_street_1"),
           data = if (show_street_base)
-            mvt_url("sus-mcgill.street_1") else "",
+            mvt_url(paste0(mapbox_username, ".", tileset_prefix, "_", "street_1")) else "",
           visible = show_street(),
           line_width_units = "meters",
           line_width_min_pixels = 2,
@@ -51,7 +51,7 @@ label_server <- function(id, r, map_id, tile) {
         add_mvt_layer(
           id = paste0(id, "_street_2"),
           data = if (show_street_base) 
-            mvt_url("sus-mcgill.street_2") else "",
+            mvt_url(paste0(mapbox_username, ".", tileset_prefix, "_", "street_2")) else "",
           visible = show_street(),
           line_width_units = "meters",
           line_width_min_pixels = 1,
@@ -65,7 +65,7 @@ label_server <- function(id, r, map_id, tile) {
         add_mvt_layer(
           id = paste0(id, "_street_3"),
           data = if (show_street_base) 
-            mvt_url("sus-mcgill.street_3") else "",
+            mvt_url(paste0(mapbox_username, ".", tileset_prefix, "_", "street_3")) else "",
           visible = show_street(),
           line_width_units = "meters",
           line_width_min_pixels = 0.5,
@@ -93,7 +93,7 @@ label_server <- function(id, r, map_id, tile) {
           id = paste0(id, "_CSD_labels"), 
           data = if (is_scale_in_df(c("auto_zoom", "CT", "DA", "DB", "grid"), 
                                     tile())) 
-            mvt_url("sus-mcgill.borough_label") else "",
+            mvt_url(paste0(mapbox_username, ".", tileset_prefix, "_", "CSD_label")) else "",
           visible = show_label(),
           point_type = "text", 
           get_text = name,
@@ -107,12 +107,12 @@ label_server <- function(id, r, map_id, tile) {
           get_text_border_color = "#00000000",
           get_text_border_width = 0
         )
-      })
+    })
     
     # Update street visibility on zoom
     observeEvent(show_street(), {
       rdeck_proxy(map_id) |>
-
+        
         # Update street layer 1
         add_mvt_layer(
           id = paste0(id, "_street_1"),
@@ -124,7 +124,7 @@ label_server <- function(id, r, map_id, tile) {
           line_cap_rounded = TRUE,
           get_line_color = "#FFFFFFBB",
           get_fill_color = "#A9A9A94D") |>
-
+        
         # Update street layer 2
         add_mvt_layer(
           id = paste0(id, "_street_2"),
@@ -136,7 +136,7 @@ label_server <- function(id, r, map_id, tile) {
           get_line_width = 8,
           get_line_color = "#FFFFFFBB",
           get_fill_color = "#A9A9A94D") |>
-
+        
         # Update street layer 3
         add_mvt_layer(
           id = paste0(id, "_street_3"),
@@ -149,7 +149,7 @@ label_server <- function(id, r, map_id, tile) {
           get_line_color = "#FFFFFFBB",
           get_fill_color = "#A9A9A94D")
     })
-
+    
     # Update label visibility on zoom
     observeEvent(show_label(), {
       rdeck_proxy(map_id) |>
@@ -169,6 +169,6 @@ label_server <- function(id, r, map_id, tile) {
           get_text_border_width = 0
         )
     })
-
+    
   })
 }

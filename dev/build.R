@@ -378,6 +378,12 @@ tileset_upload_all(all_scales = scales_variables_modules$scales,
                    username = "sus-mcgill",
                    access_token = .cc_mb_token)
 
+tileset_labels(CSD_table = scales_variables_modules$scales$CMA$CSD,
+               crs = crs,
+               prefix = "mtl",
+               username = "sus-mcgill",
+               access_token = .cc_mb_token)
+
 
 # Did you know ------------------------------------------------------------
 
@@ -400,6 +406,11 @@ source("dev/translation/build_translation.R", encoding = "utf-8")
 
 # source("dev/pages/stories.R", encoding = "utf-8")
 # qs::qsavem(stories, stories_mapping, file = "data/stories.qsm")
+
+
+# Save variables ----------------------------------------------------------
+
+qs::qsave(scales_variables_modules$variables, file = "data/variables.qs")
 
 
 # Build data scripts ------------------------------------------------------
@@ -428,11 +439,15 @@ save_geometry_export(data_folder = "data/",
 
 # Save other global data --------------------------------------------------
 
-qs::qsave(scales_variables_modules$variables, file = "data/variables.qs")
 qs::qsave(census_variables, file = "data/census_variables.qs")
 qs::qsave(scales_variables_modules$modules, file = "data/modules.qs")
 qs::qsave(scales_dictionary, file = "data/scales_dictionary.qs")
 qs::qsave(regions_dictionary, file = "data/regions_dictionary.qs")
+qs::qsave(scales_variables_modules$scales[[1]][[1]] |> 
+            sf::st_union() |> 
+            sf::st_centroid() |> 
+            sf::st_coordinates() |> 
+            as.numeric(), file = "data/map_loc.qs")
 tictoc::toc()
 
 # # Deploy app --------------------------------------------------------------

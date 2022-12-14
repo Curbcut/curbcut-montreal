@@ -13,6 +13,9 @@ default_region <- "CMA"
 # For a location lock placeholder in advanced options
 default_random_address <- "845 Sherbrooke Ouest, Montréal, Quebec"
 
+map_zoom <- 10.1
+
+
 # Packages ----------------------------------------------------------------
 
 suppressPackageStartupMessages({
@@ -99,8 +102,6 @@ map_token <- paste0("pk.eyJ1Ijoic3VzLW1jZ2lsbCIsImEiOiJjbDBxMTcyNWwyNTl0M2",
 options(rdeck.mapbox_access_token = map_token)
 map_base_style <- "mapbox://styles/sus-mcgill/cl0reqoz4000z15pekuh48ld6"
 map_style_building <- "mapbox://styles/sus-mcgill/cl2bwtrsp000516rwyrkt9ior"
-map_zoom <- 10.1
-map_loc <- c(-73.58, 45.53)
 
 first_level_choropleth <- 
   sapply(ls()[grepl("map_zoom_levels_", ls())], \(x) names(get(x)[1]),
