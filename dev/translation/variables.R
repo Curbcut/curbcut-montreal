@@ -1830,7 +1830,7 @@ add_row(en = paste0("Vacancy rate in studio apartments"),
 #               str_detect(var, "_nwe_") ~ "la Nuit de week-end")
 #   time <- str_extract(var, "[0-9]+")
 #   explanation <-
-#     glue::glue(paste0("{pre} {amenity} accessible en {time} minutes ",
+#     glue::glue(paste0("{pre} {amenity} accessibles en {time} minutes ",
 #                       "{tolower(mode)} par un résident moyen de la zone pendant {tolower(timing)}"))
 #   explanation <- gsub("^le nombre moyen de de é", "le nombre moyen de d'é", explanation)
 #   explanation <- gsub("^le nombre moyen de de h", "le nombre moyen de d'h", explanation)

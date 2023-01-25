@@ -512,9 +512,9 @@ info_table_translated <-
                       "re sont les suivantes:</p><ul>{c_heat}{heat}{cool}</ul>")) |> 
   # Centraide related
   add_row(en = paste0("centraide zone"), 
-          fr = paste0("du quartier centraide")) |> 
+          fr = paste0("du quartier Centraide")) |> 
   add_row(en = paste0("Centraide zone"), 
-          fr = paste0("Quartier centraide")) |> 
+          fr = paste0("Quartier Centraide")) |> 
   add_row(en = paste0("centraide zones"), 
           fr = paste0("quartiers Centraide")) |> 
   add_row(en = paste0("Centraide zone {select_name$name}"), 

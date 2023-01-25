@@ -8,7 +8,6 @@ library(stringr)
 library(dplyr)
 library(purrr)
 library(sf)
-future::plan(future::multisession())
 invisible(lapply(list.files("dev/data_import", full.names = TRUE), source))
 
 
@@ -263,11 +262,6 @@ scales_variables_modules <-
     scales_variables_modules = scales_variables_modules,
     crs = crs)
 
-save.image()
-load(".RData")
-
-
-
 scales_variables_modules <-
   build_and_append_natural_inf(
     scales_variables_modules = scales_variables_modules,
@@ -309,11 +303,29 @@ scales_variables_modules$modules <-
     dataset_info = ""
   )
 
+# Add access to amenities module
+# traveltimes <-
+#   accessibility_get_travel_times(region_DA_IDs = census_scales$DA$ID)
+# qs::qsave(traveltimes, "dev/data/built/traveltimes.qs")
+traveltimes <- qs::qread("dev/data/built/traveltimes.qs")
+scales_variables_modules <- 
+  ba_accessibility_points(scales_variables_modules = scales_variables_modules,
+                          region_DA_IDs = census_scales$DA$ID,
+                          traveltimes = traveltimes,
+                          crs = crs)
+# Additional access variables
+scales_variables_modules <- 
+  build_and_append_access(scales_variables_modules = scales_variables_modules,
+                          DA_table = census_scales$DA,
+                          traveltimes = traveltimes,
+                          crs = crs)
+
+
 scales_variables_modules$scales <- 
   cc.buildr::reorder_columns(scales_variables_modules$scales)
 
 qs::qsavem(census_scales, scales_variables_modules, crs, census_variables,
-           scales_dictionary, regions_dictionary, all_tables,
+           scales_dictionary, regions_dictionary, all_tables, base_polygons,
            file = "dev/data/built/scales_variables_modules.qsm")
 qs::qload("dev/data/built/scales_variables_modules.qsm")
 
@@ -384,6 +396,18 @@ tileset_labels(CSD_table = scales_variables_modules$scales$CMA$CSD,
                username = "sus-mcgill",
                access_token = .cc_mb_token)
 
+# street <- cc.data::db_read_data(table = "streets", 
+#                                 column_to_select = "DA_ID", 
+#                                 IDs = census_scales$DA$ID)
+# qs::qsave(street, "dev/data/built/street.qs")
+street <- qs::qread("dev/data/built/street.qs")
+
+tileset_streets(master_polygon = base_polygons$master_polygon,
+                street = street,
+                crs = crs,
+                prefix = "mtl",
+                username = "sus-mcgill",
+                access_token = .cc_mb_token)
 
 # Did you know ------------------------------------------------------------
 
@@ -443,19 +467,18 @@ qs::qsave(census_variables, file = "data/census_variables.qs")
 qs::qsave(scales_variables_modules$modules, file = "data/modules.qs")
 qs::qsave(scales_dictionary, file = "data/scales_dictionary.qs")
 qs::qsave(regions_dictionary, file = "data/regions_dictionary.qs")
-qs::qsave(scales_variables_modules$scales[[1]][[1]] |> 
-            sf::st_union() |> 
-            sf::st_centroid() |> 
-            sf::st_coordinates() |> 
-            as.numeric(), file = "data/map_loc.qs")
+# qs::qsave(scales_variables_modules$scales[[1]][[1]] |> 
+#             sf::st_transform(crs) |> 
+#             sf::st_union() |> 
+#             sf::st_centroid() |> 
+#             sf::st_transform(4326) |> 
+#             sf::st_coordinates() |> 
+#             as.numeric(), file = "data/map_loc.qs")
 tictoc::toc()
 
-# # Deploy app --------------------------------------------------------------
-# 
-# source("dev/other/deploy_sus.R")
-# 
-# deploy_sus("cc-montreal-centraide") # Centraide
-# deploy_sus("cc-montreal-dev") # Development
-# deploy_sus("cc-montreal") # Production
-# 
-# renv::activate()
+# Deploy app --------------------------------------------------------------
+
+renv::activate()
+heroku_deploy("cc-montreal-centraide") # Centraide
+heroku_deploy("cc-montreal-dev") # Development
+heroku_deploy("cc-montreal") # Production

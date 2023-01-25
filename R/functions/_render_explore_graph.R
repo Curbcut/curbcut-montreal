@@ -24,7 +24,7 @@ render_explore_graph <- function(plot_type, data, var_left, var_right, df, geo,
       geom_histogram(aes(fill = after_stat(x)), bins = bin_number) +
       {if (plot_type == "hist_select") geom_vline(
         xintercept = data$var_left[data$ID == select_id], colour = "black", 
-        lwd = 1.5)} +
+        linewidth = 1.5)} +
       binned_scale(aesthetics = "fill",
                    scale_name = "stepsn",
                    palette = \(x) colour_left_5$fill[2:6],

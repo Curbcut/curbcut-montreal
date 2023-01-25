@@ -14,6 +14,7 @@ default_region <- "CMA"
 default_random_address <- "845 Sherbrooke Ouest, Montréal, Quebec"
 
 map_zoom <- 10.1
+map_loc <- c(-73.58, 45.53)
 
 
 # Packages ----------------------------------------------------------------

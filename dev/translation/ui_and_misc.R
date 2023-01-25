@@ -560,9 +560,9 @@ ui_and_misc_translated <-
   add_row(en = paste0("Shelter cost"), 
           fr = paste0("Frais de logement")) |> 
   add_row(en = paste0("Normalized data (percent of households)"), 
-          fr = paste0("Données normalisés (pourcentage des ménages)")) |> 
+          fr = paste0("Données normalisées (pourcentage des ménages)")) |> 
   add_row(en = paste0("Normalized data (percent of dwellings)"), 
-          fr = paste0("Données normalisés (pourcentage des logements)")) |> 
+          fr = paste0("Données normalisées (pourcentage des logements)")) |> 
   add_row(en = paste0("Additional characteristic"), 
           fr = paste0("Caractéristique supplémentaire")) |> 
   add_row(en = paste0("Gender"), 
