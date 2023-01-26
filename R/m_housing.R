@@ -24,14 +24,8 @@
           "housing_mobility_five", "housing_single_detached"
         )),
         slider_UI(NS(id, id), slider_id = "slu"),
-        slider_UI(NS(id, id),
-          slider_id = "slb", ,
-          label = cc_t(r = r, "Select two years"), ,
-          value = c("2006", "2016")
-        ),
-        checkbox_UI(NS(id, id), ,
-          label = cc_t(r = r, "Compare dates")
-        ),
+        slider_UI(NS(id, id), slider_id = "slb", label = cc_t(r = r, "Select two years"), value = c("2006", "2016")),
+        checkbox_UI(NS(id, id), label = cc_t(r = r, "Compare dates")),
         year_disclaimer_UI(NS(id, id))
       ),
       bottom = div(
@@ -154,12 +148,15 @@
     var_left <- select_var_server(
       id = id,
       r = r,
-      var_list = reactive(make_dropdown(only_vars = c(
-        "housing_tenant", "housing_rent", "housing_repairs",
-        "housing_value", "housing_unafford", "housing_unsuit",
-        "housing_stress_renter", "housing_stress_owner", "housing_mobility_one",
-        "housing_mobility_five", "housing_single_detached"
-      ))),
+      var_list = reactive(make_dropdown(
+        only_vars = c(
+          "housing_tenant", "housing_rent", "housing_repairs",
+          "housing_value", "housing_unafford", "housing_unsuit",
+          "housing_stress_renter", "housing_stress_owner", "housing_mobility_one",
+          "housing_mobility_five", "housing_single_detached"
+        ),
+        only = NULL
+      )),
       time = time
     )
 
@@ -182,7 +179,8 @@
           "edu_no_degree"
         ),
         only = NULL,
-        exclude = NULL, compare = TRUE
+        exclude = NULL,
+        compare = TRUE
       ),
       time = time
     )

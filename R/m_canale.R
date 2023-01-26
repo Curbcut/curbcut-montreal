@@ -149,7 +149,8 @@
           "age_65_plus", "edu_bachelor_above", "edu_no_degree"
         ),
         only = NULL,
-        exclude = NULL, compare = TRUE
+        exclude = NULL,
+        compare = TRUE
       ),
       time = time
     )

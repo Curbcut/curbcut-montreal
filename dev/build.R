@@ -214,10 +214,10 @@ scales_variables_modules <-
 
 # Build the datasets ------------------------------------------------------
 
-future::plan(list(future::tweak(future::multisession,
-                                workers = 4),
-                  future::tweak(future::multisession,
-                                workers = length(cc.data::census_years))))
+# future::plan(list(future::tweak(future::multisession,
+#                                 workers = 4),
+#                   future::tweak(future::multisession,
+#                                 workers = length(cc.data::census_years))))
 
 scales_variables_modules <-
   ba_census_data(scales_variables_modules = scales_variables_modules,
@@ -304,9 +304,9 @@ scales_variables_modules$modules <-
   )
 
 # Add access to amenities module
-# traveltimes <-
-#   accessibility_get_travel_times(region_DA_IDs = census_scales$DA$ID)
-# qs::qsave(traveltimes, "dev/data/built/traveltimes.qs")
+ traveltimes <-
+   accessibility_get_travel_times(region_DA_IDs = census_scales$DA$ID)
+ qs::qsave(traveltimes, "dev/data/built/traveltimes.qs")
 traveltimes <- qs::qread("dev/data/built/traveltimes.qs")
 scales_variables_modules <- 
   ba_accessibility_points(scales_variables_modules = scales_variables_modules,
@@ -337,77 +337,77 @@ qs::qload("dev/data/built/scales_variables_modules.qsm")
 
 # Map zoom levels ---------------------------------------------------------
 
-map_zoom_levels <- map_zoom_levels_create_all(all_tables = all_tables)
-
-map_zoom_levels <- 
-  map_zoom_levels_create_custom(
-    map_zoom_levels = map_zoom_levels,
-    all_tables = all_tables,
-    region = "CMA",
-    suffix = "max_CT",
-    content = c("CSD" = 0, "CT" = 10.5))
-
-map_zoom_levels <- 
-  map_zoom_levels_create_custom(
-    map_zoom_levels = map_zoom_levels,
-    all_tables = all_tables,
-    region = "city",
-    suffix = "max_CT",
-    content = c("CSD" = 0, "CT" = 10.5))
-
-map_zoom_levels <- 
-  map_zoom_levels_create_custom(
-    map_zoom_levels = map_zoom_levels,
-    all_tables = all_tables,
-    region = "island",
-    suffix = "max_CT",
-    content = c("CSD" = 0, "CT" = 10.5))
-
-map_zoom_levels <- 
-  map_zoom_levels_create_custom(
-    map_zoom_levels = map_zoom_levels,
-    all_tables = all_tables,
-    region = "centraide",
-    suffix = "max_CT",
-    content = c("centraide" = 0, "CT" = 10.5))
-
-map_zoom_levels <- 
-  map_zoom_levels_create_custom(
-    map_zoom_levels = map_zoom_levels,
-    all_tables = all_tables,
-    region = "city",
-    suffix = "max_DB",
-    content = c("CSD" = 0, "CT" = 10.5, "DA" = 12.5, "DB" = 14.5))
-
-map_zoom_levels_save(data_folder = "data/", map_zoom_levels = map_zoom_levels)
+# map_zoom_levels <- map_zoom_levels_create_all(all_tables = all_tables)
+# 
+# map_zoom_levels <- 
+#   map_zoom_levels_create_custom(
+#     map_zoom_levels = map_zoom_levels,
+#     all_tables = all_tables,
+#     region = "CMA",
+#     suffix = "max_CT",
+#     content = c("CSD" = 0, "CT" = 10.5))
+# 
+# map_zoom_levels <- 
+#   map_zoom_levels_create_custom(
+#     map_zoom_levels = map_zoom_levels,
+#     all_tables = all_tables,
+#     region = "city",
+#     suffix = "max_CT",
+#     content = c("CSD" = 0, "CT" = 10.5))
+# 
+# map_zoom_levels <- 
+#   map_zoom_levels_create_custom(
+#     map_zoom_levels = map_zoom_levels,
+#     all_tables = all_tables,
+#     region = "island",
+#     suffix = "max_CT",
+#     content = c("CSD" = 0, "CT" = 10.5))
+# 
+# map_zoom_levels <- 
+#   map_zoom_levels_create_custom(
+#     map_zoom_levels = map_zoom_levels,
+#     all_tables = all_tables,
+#     region = "centraide",
+#     suffix = "max_CT",
+#     content = c("centraide" = 0, "CT" = 10.5))
+# 
+# map_zoom_levels <- 
+#   map_zoom_levels_create_custom(
+#     map_zoom_levels = map_zoom_levels,
+#     all_tables = all_tables,
+#     region = "city",
+#     suffix = "max_DB",
+#     content = c("CSD" = 0, "CT" = 10.5, "DA" = 12.5, "DB" = 14.5))
+# 
+# map_zoom_levels_save(data_folder = "data/", map_zoom_levels = map_zoom_levels)
 
 
 # Tilesets ----------------------------------------------------------------
 
-tileset_upload_all(all_scales = scales_variables_modules$scales,
-                   map_zoom_levels = map_zoom_levels,
-                   prefix = "mtl",
-                   username = "sus-mcgill",
-                   access_token = .cc_mb_token)
-
-tileset_labels(CSD_table = scales_variables_modules$scales$CMA$CSD,
-               crs = crs,
-               prefix = "mtl",
-               username = "sus-mcgill",
-               access_token = .cc_mb_token)
-
-# street <- cc.data::db_read_data(table = "streets", 
-#                                 column_to_select = "DA_ID", 
-#                                 IDs = census_scales$DA$ID)
-# qs::qsave(street, "dev/data/built/street.qs")
-street <- qs::qread("dev/data/built/street.qs")
-
-tileset_streets(master_polygon = base_polygons$master_polygon,
-                street = street,
-                crs = crs,
-                prefix = "mtl",
-                username = "sus-mcgill",
-                access_token = .cc_mb_token)
+# tileset_upload_all(all_scales = scales_variables_modules$scales,
+#                    map_zoom_levels = map_zoom_levels,
+#                    prefix = "mtl",
+#                    username = "sus-mcgill",
+#                    access_token = .cc_mb_token)
+# 
+# tileset_labels(CSD_table = scales_variables_modules$scales$CMA$CSD,
+#                crs = crs,
+#                prefix = "mtl",
+#                username = "sus-mcgill",
+#                access_token = .cc_mb_token)
+# 
+# # street <- cc.data::db_read_data(table = "streets", 
+# #                                 column_to_select = "DA_ID", 
+# #                                 IDs = census_scales$DA$ID)
+# # qs::qsave(street, "dev/data/built/street.qs")
+# street <- qs::qread("dev/data/built/street.qs")
+# 
+# tileset_streets(master_polygon = base_polygons$master_polygon,
+#                 street = street,
+#                 crs = crs,
+#                 prefix = "mtl",
+#                 username = "sus-mcgill",
+#                 access_token = .cc_mb_token)
 
 # Did you know ------------------------------------------------------------
 
@@ -478,7 +478,8 @@ tictoc::toc()
 
 # Deploy app --------------------------------------------------------------
 
-renv::activate()
-heroku_deploy("cc-montreal-centraide") # Centraide
-heroku_deploy("cc-montreal-dev") # Development
-heroku_deploy("cc-montreal") # Production
+# renv::activate()
+# heroku_deploy("cc-montreal-centraide") # Centraide
+# heroku_deploy("cc-montreal-dev") # Development
+# heroku_deploy("cc-montreal") # Production
+
