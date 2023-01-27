@@ -1,0 +1,58 @@
+---
+title: "Story Title"
+subtitle: "Story subtitle" #only if applicable
+output: html_document
+author: "Author's name"
+date: "MM.YYYY"
+runtime: shiny_prerendered 
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+<!--Titles and hierarchy of headings -->
+### Heading 1
+#### Heading 2 (sub-heading)
+##### Heading 3 (sub-sub-heading)
+
+<!--Example -->
+
+The first thing to include is a link to the corresponding video, if there is one. This should appear under the title and before the text portion of the story. This is the code chunk for linking to the YouTube video, you'll need the video ID: 
+
+<center>
+```{r, echo=FALSE}
+vembedr::embed_youtube("xSVZ8wHa0i8", height = 500)
+```
+</center>
+
+Broadly speaking, the stories are about urban sustainability and planning in the city of Montreal. They can be about a specific place, a park with an interesting sustainability history for example, or about something that has had an impact on the city as a whole, like the metro system. The story should be somewhere in between a journalistic article and an academic essay. It should be engaging and easy to read but at the same time the research efforts behind the scenes should match academic standards. Although, this doesn't mean you should limit yourself to academic sources! In most cases references will come from varied types of sources. 
+
+You'll want to break up your text with images, graphics, maps etc. You need to include the alignment, caption and location of the image. Here is an example of the code chunk you'll need to do this: 
+
+```{r, echo=FALSE, fig.align = 'left', out.width="100%", fig.cap="Your caption here", warning=FALSE}
+knitr::include_graphics(here("www/stories/visuals/champs_possibles/Image1_IMG_0648.jpeg"))
+```
+
+###This is heading 1
+Follow the basics: you need to have a beginning, middle, and end to your story. As you structure your story, you'll maybe want to use headings to guide the reader through different sections. 
+
+###A few other useful things
+You might want to include a link in the text, an example of how to do this: 
+
+<a href="https://montreal.ca/articles/le-parc-frederic-back-une-metamorphose-unique-18997">Frederic-Back Park</a>
+
+You might want to include a block quote from a reference or an interview, an example of how to do this: 
+
+<blockquote><q>In the Plateau we prioritize the environmental dimension. (...) There are boroughs that have less of a budget that will focus more on social things, but our vision in the borough is that the citizens can do it by themselves. The borough does not have to be involved in the social aspect of the alley… organizing a neighbours’ party… there is no cost to that, or the costs are minimal. So we’re not going to finance the neighbours’ parties every year. So the neighbours are able to organize potlucks or things like that. But they can’t remove concrete. Our priority is to do what they can’t do and what is expensive.</q> -Green Alley Program manager in Le Plateau-Mont-Royal</blockquote>
+
+<!-- Make sure to include a reference list at the very end of the story -->
+
+###References 
+You can list your references in APA format, and include links where appropriate.
+
+<ul>
+<li>Title (Link).</li>
+<li>Title (Link).</li>
+<li>Title (Link).</li>
+<li>Author (year) publication.</li>

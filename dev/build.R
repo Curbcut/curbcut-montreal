@@ -11,206 +11,208 @@ library(sf)
 invisible(lapply(list.files("dev/data_import", full.names = TRUE), source))
 
 
-# Base of the study region and dictionaries -------------------------------
-
-# All regions
-all_tables <-
-  list("CMA" = c("CSD", "CT", "DA", "building"),
-       "island" = c("CSD", "CT", "DA", "building"),
-       "city" = c("CSD", "CT", "DA", "DB", "building"),
-       "centraide" = c("centraide", "CT", "DA", "building"),
-       "cmhc" = c("cmhczone"),
-       "grid" = c("grid"))
-
-
-# List all the regions geometries to create the master polygon
-cancensus_cma_code <- 24462
-all_regions <- list(CMA = list(CMA = cancensus_cma_code),
-                    city = list(CSD = 2466023),
-                    island = "dev/data/geometry/island.shp",
-                    centraide = "dev/data/geometry/centraide.shp",
-                    cmhc = get_cmhc_zones(list(CMA = cancensus_cma_code)),
-                    grid = "dev/data/climate_risk/Vulnerabilité_secheresses_2016.shp")
-
-base_polygons <- create_master_polygon(all_regions = all_regions)
-crs <- base_polygons$crs
-
-# Create the region dictionary
-regions_dictionary <-
-  regions_dictionary(
-    all_tables = all_tables,
-    geo = c("CMA", "island", "city", "centraide", "cmhc", "grid"),
-    name = c(CMA = "Metropolitan Area",
-             island = "Island of Montreal",
-             city = "City of Montreal",
-             centraide = "Centraide of Greater Montreal",
-             cmhc = "Canada Mortgage and Housing Corporation zones",
-             grid = "250-m"),
-    to_compare = c(CMA = "in the Montreal region",
-                   island = "on the island of Montreal",
-                   city = "in the City of Montreal",
-                   centraide = "in the Centraide of Greater Montreal territory",
-                   cmhc = "in the Montreal region",
-                   grid = "on the island of Montreal"),
-    pickable = c(CMA = TRUE,
-                 island = TRUE,
-                 city = TRUE,
-                 centraide = TRUE,
-                 cmhc = FALSE,
-                 grid = FALSE))
-
-
-# Build scales ------------------------------------------------------------
-
-### Build census scales
-census_scales <-
-  build_census_scales(master_polygon = base_polygons$master_polygon,
-                      regions = base_polygons$province_cancensus_code,
-                      levels = c("CSD", "CT", "DA", "DB"),
-                      crs = crs)
-# Switch the City of Montreal for the boroughs
-boroughs <- sf::st_read("dev/data/geometry/arrondissements_mtl.shp")
-census_scales$CSD <- split_scale(destination = census_scales$CSD,
-                                 cutting_layer = boroughs,
-                                 DA_table = census_scales$DA,
-                                 crs = crs)
-# Switch the City of Laval for the Sector
-laval <- sf::st_read(paste0("dev/data/centraide/StatCan_Recensement2016/_Geograph",
-                            "ie/Secteurs_damenagement_Ville_de_Laval.shp")) |> 
-  sf::st_transform(4326) 
-laval$name <- gsub("Secteur \\d - ", "", laval$Secteur)
-laval$type <- "Sector"
-laval <- laval[c("name", "type")]
-
-census_scales$CSD <- cc.buildr::split_scale(destination = census_scales$CSD,
-                                            cutting_layer = laval,
-                                            DA_table = census_scales$DA,
-                                            crs = crs)
-# Create the census scales dictionary
-scales_dictionary <- census_scales_dictionary(census_scales)
-# Switch the CSD scale for borough/city
-scales_dictionary[1, ] <- list(scale = "CSD",
-                               sing = "borough/city",
-                               plur = "boroughs or cities",
-                               slider_title = "Borough/City",
-                               place_heading = "{name_2} of {name}",
-                               place_name = "{name}")
-
-
-### Build building scale
-# # # From MySQL
-# # building <- cc.data::db_read_long_table(table = "buildings",
-# #                                          DA_ID = census_scales$DA$ID)
-# # qs::qsave(building, file = "dev/data/built/building.qs")
-# # # From Local
-# building <- qs::qread("dev/data/canada_buildings.qs")
-# building_ids <- cc.data::db_read_data(table = "buildings_DA_dict",
-#                                       column_to_select = "DA_ID",
-#                                       IDs = census_scales$DA$ID)
-# building_ids <-
-#   unlist(sapply(building_ids$IDs, jsonlite::fromJSON, USE.NAMES = FALSE))
-# building <- building[building$ID %in% building_ids, ]
-# building <- qs::qsave(building, "dev/data/built/building.qs")
-building <- qs::qread("dev/data/built/building.qs")
-
-# Add building scale to the dictionary
-scales_dictionary <-
-  append_scale_to_dictionary(scales_dictionary,
-                             scale = "building",
-                             sing = "dissemination area",
-                             plur = "dissemination areas",
-                             slider_title = "Building",
-                             place_heading = "{name}",
-                             place_name = "The dissemination area around {name}")
-
-### Build CMHC scale
-cmhczone <- get_cmhc_zones(list(CMA = cancensus_cma_code))
-cmhczone <- additional_scale(additional_table = cmhczone,
-                             DA_table = census_scales$DA,
-                             ID_prefix = "cmhc",
-                             name_2 = "CMHC zone",
-                             crs = crs)
-scales_dictionary <-
-  append_scale_to_dictionary(scales_dictionary,
-                             scale = "cmhczone",
-                             sing = "CMHC zone",
-                             plur = "CMHC zones",
-                             slider_title = "CMHC zone",
-                             place_heading = "CMHC zone of {name}",
-                             place_name = "{name}")
-
-### Build Centraide scale
-centraide <- sf::st_read("dev/data/geometry/centraide.shp")
-centraide <- additional_scale(additional_table = centraide,
-                              DA_table = census_scales$DA,
-                              ID_prefix = "centraide",
-                              name_2 = "Centraide zone",
-                              crs = crs)
-scales_dictionary <-
-  append_scale_to_dictionary(scales_dictionary,
-                             scale = "centraide",
-                             sing = "centraide zone",
-                             plur = "centraide zones",
-                             slider_title = "Centraide zone",
-                             place_heading = "Centraide zone of {name}",
-                             place_name = "{name}")
-
-### Build 250-m grid scale
-# grid <- sf::st_read("dev/data/climate_risk/Vulnerabilité_secheresses_2016.shp")
-# grid <- sf::st_zm(grid)
-# grid <- grid[, "geometry"]
-# grid$ID <- seq_len(nrow(grid))
-# grid <- rev_geocode_sf(master_polygon = grid,
-#                        sf_df = grid,
-#                        province_code = "QC",
-#                        crs = crs)
-# grid <- grid[, c("name", "geometry")]
-# qs::qsave(grid, file = "dev/data/built/grid.qs")
-grid <- qs::qread("dev/data/built/grid.qs")
-
-grid <- additional_scale(additional_table = grid,
-                         DA_table = census_scales$DA,
-                         ID_prefix = "grid",
-                         name_2 = "250-m",
-                         crs = crs)
-scales_dictionary <-
-  append_scale_to_dictionary(scales_dictionary,
-                             scale = "grid",
-                             sing = "250-m grid cell",
-                             plur = "250-m grid cells",
-                             slider_title = "250-m",
-                             place_heading = "{name}",
-                             place_name = "250-m grid cell around {name}")
-
-
-# Consolidate scales ------------------------------------------------------
-
-all_scales <- c(census_scales,
-                list(building = building),
-                list(centraide = centraide),
-                list(cmhczone = cmhczone),
-                list(grid = grid))
-
-scales_consolidated <- consolidate_scales(all_tables = all_tables,
-                                          all_scales = all_scales,
-                                          regions = base_polygons$regions,
-                                          crs = crs)
-
-
-# Verify conformity -------------------------------------------------------
-
-verify_dictionaries(all_tables = all_tables,
-                    regions_dictionary = regions_dictionary,
-                    scales_dictionary = scales_dictionary)
-
-
-# Create the modules and variables tables ---------------------------------
-
-scales_variables_modules <-
-  append_empty_variables_table(scales_consolidated = scales_consolidated)
-scales_variables_modules <-
-  append_empty_modules_table(scales = scales_variables_modules)
-
+# # Base of the study region and dictionaries -------------------------------
+# 
+# # All regions
+# all_tables <-
+#   list("CMA" = c("CSD", "CT", "DA", "building"),
+#        "island" = c("CSD", "CT", "DA", "building"),
+#        "city" = c("CSD", "CT", "DA", "DB", "building"),
+#        "centraide" = c("centraide", "CT", "DA", "building"),
+#        "cmhc" = c("cmhczone"),
+#        "grid" = c("grid"))
+# 
+# 
+# # List all the regions geometries to create the master polygon
+# cancensus_cma_code <- 24462
+# all_regions <- list(CMA = list(CMA = cancensus_cma_code),
+#                     city = list(CSD = 2466023),
+#                     island = "dev/data/geometry/island.shp",
+#                     centraide = "dev/data/geometry/centraide.shp",
+#                     cmhc = get_cmhc_zones(list(CMA = cancensus_cma_code)),
+#                     grid = "dev/data/climate_risk/Vulnerabilité_secheresses_2016.shp")
+# 
+# base_polygons <- create_master_polygon(all_regions = all_regions)
+# crs <- base_polygons$crs
+# 
+# # Create the region dictionary
+# regions_dictionary <-
+#   regions_dictionary(
+#     all_tables = all_tables,
+#     geo = c("CMA", "island", "city", "centraide", "cmhc", "grid"),
+#     name = c(CMA = "Metropolitan Area",
+#              island = "Island of Montreal",
+#              city = "City of Montreal",
+#              centraide = "Centraide of Greater Montreal",
+#              cmhc = "Canada Mortgage and Housing Corporation zones",
+#              grid = "250-m"),
+#     to_compare = c(CMA = "in the Montreal region",
+#                    island = "on the island of Montreal",
+#                    city = "in the City of Montreal",
+#                    centraide = "in the Centraide of Greater Montreal territory",
+#                    cmhc = "in the Montreal region",
+#                    grid = "on the island of Montreal"),
+#     pickable = c(CMA = TRUE,
+#                  island = TRUE,
+#                  city = TRUE,
+#                  centraide = TRUE,
+#                  cmhc = FALSE,
+#                  grid = FALSE))
+# 
+# 
+# # Build scales ------------------------------------------------------------
+# 
+# ### Build census scales
+# census_scales <-
+#   build_census_scales(master_polygon = base_polygons$master_polygon,
+#                       regions = base_polygons$province_cancensus_code,
+#                       levels = c("CSD", "CT", "DA", "DB"),
+#                       crs = crs)
+# # Switch the City of Montreal for the boroughs
+# boroughs <- sf::st_read("dev/data/geometry/arrondissements_mtl.shp")
+# census_scales$CSD <- split_scale(destination = census_scales$CSD,
+#                                  cutting_layer = boroughs,
+#                                  DA_table = census_scales$DA,
+#                                  crs = crs)
+# # Switch the City of Laval for the Sector
+# laval <- sf::st_read(paste0("dev/data/centraide/StatCan_Recensement2016/_Geograph",
+#                             "ie/Secteurs_damenagement_Ville_de_Laval.shp")) |> 
+#   sf::st_transform(4326) 
+# laval$name <- gsub("Secteur \\d - ", "", laval$Secteur)
+# laval$type <- "Sector"
+# laval <- laval[c("name", "type")]
+# 
+# census_scales$CSD <- cc.buildr::split_scale(destination = census_scales$CSD,
+#                                             cutting_layer = laval,
+#                                             DA_table = census_scales$DA,
+#                                             crs = crs)
+# # Create the census scales dictionary
+# scales_dictionary <- census_scales_dictionary(census_scales)
+# # Switch the CSD scale for borough/city
+# scales_dictionary[1, ] <- list(scale = "CSD",
+#                                sing = "borough/city",
+#                                plur = "boroughs or cities",
+#                                slider_title = "Borough/City",
+#                                place_heading = "{name_2} of {name}",
+#                                place_name = "{name}")
+# 
+# 
+# ### Build building scale
+# # # # From MySQL
+# # # building <- cc.data::db_read_long_table(table = "buildings",
+# # #                                          DA_ID = census_scales$DA$ID)
+# # # qs::qsave(building, file = "dev/data/built/building.qs")
+# # # # From Local
+# # building <- qs::qread("dev/data/canada_buildings.qs")
+# # building_ids <- cc.data::db_read_data(table = "buildings_DA_dict",
+# #                                       column_to_select = "DA_ID",
+# #                                       IDs = census_scales$DA$ID)
+# # building_ids <-
+# #   unlist(sapply(building_ids$IDs, jsonlite::fromJSON, USE.NAMES = FALSE))
+# # building <- building[building$ID %in% building_ids, ]
+# # building <- qs::qsave(building, "dev/data/built/building.qs")
+# building <- qs::qread("dev/data/built/building.qs")
+# 
+# # Add building scale to the dictionary
+# scales_dictionary <-
+#   append_scale_to_dictionary(scales_dictionary,
+#                              scale = "building",
+#                              sing = "dissemination area",
+#                              plur = "dissemination areas",
+#                              slider_title = "Building",
+#                              place_heading = "{name}",
+#                              place_name = "The dissemination area around {name}")
+# 
+# ### Build CMHC scale
+# cmhczone <- get_cmhc_zones(list(CMA = cancensus_cma_code))
+# cmhczone <- additional_scale(additional_table = cmhczone,
+#                              DA_table = census_scales$DA,
+#                              ID_prefix = "cmhc",
+#                              name_2 = "CMHC zone",
+#                              crs = crs)
+# scales_dictionary <-
+#   append_scale_to_dictionary(scales_dictionary,
+#                              scale = "cmhczone",
+#                              sing = "CMHC zone",
+#                              plur = "CMHC zones",
+#                              slider_title = "CMHC zone",
+#                              place_heading = "CMHC zone of {name}",
+#                              place_name = "{name}")
+# 
+# ### Build Centraide scale
+# centraide <- sf::st_read("dev/data/geometry/centraide.shp")
+# centraide <- additional_scale(additional_table = centraide,
+#                               DA_table = census_scales$DA,
+#                               ID_prefix = "centraide",
+#                               name_2 = "Centraide zone",
+#                               crs = crs)
+# scales_dictionary <-
+#   append_scale_to_dictionary(scales_dictionary,
+#                              scale = "centraide",
+#                              sing = "centraide zone",
+#                              plur = "centraide zones",
+#                              slider_title = "Centraide zone",
+#                              place_heading = "Centraide zone of {name}",
+#                              place_name = "{name}")
+# 
+# ### Build 250-m grid scale
+# # grid <- sf::st_read("dev/data/climate_risk/Vulnerabilité_secheresses_2016.shp")
+# # grid <- sf::st_zm(grid)
+# # grid <- grid[, "geometry"]
+# # grid$ID <- seq_len(nrow(grid))
+# # grid <- rev_geocode_sf(master_polygon = grid,
+# #                        sf_df = grid,
+# #                        province_code = "QC",
+# #                        crs = crs)
+# # grid <- grid[, c("name", "geometry")]
+# # qs::qsave(grid, file = "dev/data/built/grid.qs")
+# grid <- qs::qread("dev/data/built/grid.qs")
+# 
+# grid <- additional_scale(additional_table = grid,
+#                          DA_table = census_scales$DA,
+#                          ID_prefix = "grid",
+#                          name_2 = "250-m",
+#                          crs = crs)
+# scales_dictionary <-
+#   append_scale_to_dictionary(scales_dictionary,
+#                              scale = "grid",
+#                              sing = "250-m grid cell",
+#                              plur = "250-m grid cells",
+#                              slider_title = "250-m",
+#                              place_heading = "{name}",
+#                              place_name = "250-m grid cell around {name}")
+# 
+# 
+# # Consolidate scales ------------------------------------------------------
+# 
+# all_scales <- c(census_scales,
+#                 list(building = building),
+#                 list(centraide = centraide),
+#                 list(cmhczone = cmhczone),
+#                 list(grid = grid))
+# 
+# scales_consolidated <- consolidate_scales(all_tables = all_tables,
+#                                           all_scales = all_scales,
+#                                           regions = base_polygons$regions,
+#                                           crs = crs)
+# 
+# 
+# # Verify conformity -------------------------------------------------------
+# 
+# verify_dictionaries(all_tables = all_tables,
+#                     regions_dictionary = regions_dictionary,
+#                     scales_dictionary = scales_dictionary)
+# 
+# 
+# # Create the modules and variables tables ---------------------------------
+# 
+# scales_variables_modules <-
+#   append_empty_variables_table(scales_consolidated = scales_consolidated)
+# scales_variables_modules <-
+#   append_empty_modules_table(scales = scales_variables_modules)
+# 
+# qs::qsave(scales_variables_modules, "dev/built/empty_scales_variables_modules.qs")
+scales_variables_modules <- qs::qread("dev/built/empty_scales_variables_modules.qs")
 
 # Build the datasets ------------------------------------------------------
 
@@ -427,8 +429,14 @@ source("dev/translation/build_translation.R", encoding = "utf-8")
 
 # Write stories -----------------------------------------------------------
 
-# source("dev/pages/stories.R", encoding = "utf-8")
-# qs::qsavem(stories, stories_mapping, file = "data/stories.qsm")
+stories <- build_stories()
+stories_mapping <- stories$stories_mapping
+stories <- stories$stories
+qs::qsavem(stories, stories_mapping, file = "data/stories.qsm")
+stories_create_tileset(stories = stories, 
+                       prefix = "mtl", 
+                       username = "sus-mcgill", 
+                       access_token = .cc_mb_token)
 
 
 # Save variables ----------------------------------------------------------
@@ -437,10 +445,15 @@ qs::qsave(scales_variables_modules$variables, file = "data/variables.qs")
 
 
 # Build data scripts ------------------------------------------------------
+new_pages <- list.files("dev/pages", full.names = TRUE)
+new_pages <- new_pages[!grepl("/access.R", new_pages)]
 
 lapply(list.files("dev/pages", full.names = TRUE), 
        create_page_script, overwrite = TRUE) |> 
   invisible()
+
+create_page_script("dev/pages/access.R", overwrite = TRUE,
+                   auto_left_vars = TRUE)
 
 
 # Save SQLite data --------------------------------------------------------
