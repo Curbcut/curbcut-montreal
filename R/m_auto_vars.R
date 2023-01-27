@@ -18,7 +18,8 @@ auto_vars_UI <- function(id, var_list, label = NULL) {
 # Module server -----------------------------------------------------------
 
 auto_vars_server <- function(id, r = r, module_id = NULL, var_list, 
-                             df = r[[id]]$df, time = reactive(NULL)) {
+                             df = r[[id]]$df, time = reactive(NULL),
+                             auto_disable = TRUE) {
   
   stopifnot(!is.reactive(var_list))
   
@@ -89,6 +90,7 @@ auto_vars_server <- function(id, r = r, module_id = NULL, var_list,
     auto_var_1 <- select_var_server("auto_var", r = r,
                                   var_list = reactive(var_list),
                                   df = df,
+                                  auto_disable = auto_disable,
                                   time = time)
     
     var_time <- reactive(regmatches(auto_var_1(), regexec("_\\d{4}", auto_var_1())) |> 

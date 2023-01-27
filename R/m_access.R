@@ -128,14 +128,24 @@ access_server <- function(id, r) {
       bindEvent(tile(), zoom_string())
     
     # Time variable
-    time <- reactive("2021")
+    time <- eventReactive(var_left_1(), {
+      tb <- tables_in_sql[[r[[id]]$df()]]
+      # Get the available table
+      avl_table <- tb[grepl(var_left_1(), tb)]
+      # Flag if there's more than one time
+      if (length(avl_table) != 1)
+        stop(paste0("There are 0 or more than 1 table corresponding to `",
+                    var_left_1(), "`. The assumption is that there is only one ",
+                    "possible time()."))
+      # Return the time
+      return(gsub(paste0(var_left_1(), "_"), "", avl_table))
+    })
     
     # Left variable server
-    time_threshold <- slider_server(id = id)
-    
     var_left_1 <- auto_vars_server(id = id,
                                    r = r,
-                                   var_list = var_left_list_1_access)
+                                   var_list = var_left_list_1_access,
+                                   auto_disable = FALSE)
     var_left <- reactive(paste(var_left_1(), time(), sep = "_"))
     
     

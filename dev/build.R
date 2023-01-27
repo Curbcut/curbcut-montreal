@@ -304,9 +304,9 @@ scales_variables_modules$modules <-
   )
 
 # Add access to amenities module
- traveltimes <-
-   accessibility_get_travel_times(region_DA_IDs = census_scales$DA$ID)
- qs::qsave(traveltimes, "dev/data/built/traveltimes.qs")
+ # traveltimes <-
+ #   accessibility_get_travel_times(region_DA_IDs = census_scales$DA$ID)
+ # qs::qsave(traveltimes, "dev/data/built/traveltimes.qs")
 traveltimes <- qs::qread("dev/data/built/traveltimes.qs")
 scales_variables_modules <- 
   ba_accessibility_points(scales_variables_modules = scales_variables_modules,
@@ -320,9 +320,8 @@ scales_variables_modules <-
                           traveltimes = traveltimes,
                           crs = crs)
 
-
-scales_variables_modules$scales <- 
-  cc.buildr::reorder_columns(scales_variables_modules$scales)
+# Post process
+scales_variables_modules <- cc.buildr::post_processing(scales_variables_modules)
 
 qs::qsavem(census_scales, scales_variables_modules, crs, census_variables,
            scales_dictionary, regions_dictionary, all_tables, base_polygons,

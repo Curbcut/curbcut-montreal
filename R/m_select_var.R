@@ -52,6 +52,7 @@ select_var_UI <- function(id, select_var_id = "var",
 
 select_var_server <- function(id, r, select_var_id = "var",
                               var_list, disabled = reactive(NULL), 
+                              auto_disable = TRUE,
                               time = reactive(NULL), df = r[[id]]$df) {
   
   stopifnot(is.reactive(var_list))
@@ -77,7 +78,8 @@ select_var_server <- function(id, r, select_var_id = "var",
 
         # Disable in the case variable isn't available at all years
         v <- variables[variables$var_code %in% unlist(var_list()),]
-        add_disabled <- if (!all(is.na(unlist(v$dates))) && length(time()) != 1) {
+        add_disabled <- if (auto_disable && !all(is.na(unlist(v$dates))) && 
+                            length(time()) != 1) {
           unlist(var_list()) %in% 
             v$var_code[!sapply(v$dates, length) == max(sapply(v$dates, length))]
         } else NULL
