@@ -16,15 +16,15 @@ get_dyk_table <- function(id, r, var_left, var_right, df, poi = NULL) {
   if (!is.null(poi)) {
     return({
       
-      out <- stories[stories$name %in% poi,]
+      out <- stories[stories$name_id %in% poi,]
       out <- out[min(1, nrow(out)):min(2, nrow(out)),]
 
-      links <- sapply(seq_along(out$name), \(x) {
+      links <- sapply(seq_along(out$name_id), \(x) {
         paste0("<a id='", id, "-", id, "-dyk_", x, "' href='#' ",
                "class='action-button shiny-bound-input'>", 
                cc_t(r = r, "[LEARN MORE]"), "</a>")})
       
-      link_attrs <- lapply(seq_along(out$name), 
+      link_attrs <- lapply(seq_along(out$name_id), 
                            \(x) list(module = "stories", select_id = out$ID[x]))
       
       previews <- sapply(out$preview, cc_t, r = r, USE.NAMES = FALSE)

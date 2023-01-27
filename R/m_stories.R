@@ -66,7 +66,7 @@ stories_server <- function(id, r) {
     # evolution stories
     selected_story <- reactive({
       if (is.na(r[[ns_id]]$select_id())) return(NA)
-      stories$name[stories$ID == r[[ns_id]]$select_id()]
+      stories$name_id[stories$ID == r[[ns_id]]$select_id()]
     })
     output$stories_custom_map <-
       renderRdeck(rdeck(width = "100%", map_style = map_base_style, 
@@ -100,9 +100,10 @@ stories_server <- function(id, r) {
       
       if (!is.na(r[[ns_id]]$select_id())) {
         
-        rmd_name <- stories$name[stories$ID == r[[ns_id]]$select_id()]
-        bandeau_name <- stories$img[stories$ID == r[[ns_id]]$select_id()]
-        
+        rmd_name <- stories$name_id[stories$ID == r[[ns_id]]$select_id()]
+        bandeau_name <- 
+          paste0(stories$name_id[stories$ID == r[[ns_id]]$select_id()], ".png")
+
         story_link <- paste0("www/stories/", rmd_name, "_", r$lang(),
                              ".html")
         
