@@ -52,8 +52,7 @@
 
     # Map
     output[[id_map]] <- renderRdeck({
-      rdeck(map_style = map_base_style, layer_selector = FALSE,
-            initial_view_state = view_state(
+      rdeck(map_style = map_base_style, initial_view_state = view_state(
         center = map_loc, zoom = isolate(r[[id]]$zoom())
       ))
     })

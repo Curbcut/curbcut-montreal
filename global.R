@@ -21,6 +21,7 @@ map_loc <- c(-73.58, 45.53)
 
 suppressPackageStartupMessages({
   library(shiny)
+  library(bslib)
   library(shinyjs)
   library(shinyWidgets)
 

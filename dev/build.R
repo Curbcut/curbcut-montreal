@@ -76,8 +76,8 @@ invisible(lapply(list.files("dev/data_import", full.names = TRUE), source))
 #                                  crs = crs)
 # # Switch the City of Laval for the Sector
 # laval <- sf::st_read(paste0("dev/data/centraide/StatCan_Recensement2016/_Geograph",
-#                             "ie/Secteurs_damenagement_Ville_de_Laval.shp")) |> 
-#   sf::st_transform(4326) 
+#                             "ie/Secteurs_damenagement_Ville_de_Laval.shp")) |>
+#   sf::st_transform(4326)
 # laval$name <- gsub("Secteur \\d - ", "", laval$Secteur)
 # laval$type <- "Sector"
 # laval <- laval[c("name", "type")]
@@ -211,8 +211,10 @@ invisible(lapply(list.files("dev/data_import", full.names = TRUE), source))
 # scales_variables_modules <-
 #   append_empty_modules_table(scales = scales_variables_modules)
 # 
-# qs::qsave(scales_variables_modules, "dev/built/empty_scales_variables_modules.qs")
-scales_variables_modules <- qs::qread("dev/built/empty_scales_variables_modules.qs")
+# qs::qsavem(census_scales, scales_variables_modules, crs,
+#           scales_dictionary, regions_dictionary, all_tables, base_polygons, 
+#           file = "dev/data/built/empty_scales_variables_modules.qsm")
+qs::qload("dev/data/built/empty_scales_variables_modules.qsm")
 
 # Build the datasets ------------------------------------------------------
 
@@ -429,14 +431,14 @@ source("dev/translation/build_translation.R", encoding = "utf-8")
 
 # Write stories -----------------------------------------------------------
 
-stories <- build_stories()
-stories_mapping <- stories$stories_mapping
-stories <- stories$stories
-qs::qsavem(stories, stories_mapping, file = "data/stories.qsm")
-stories_create_tileset(stories = stories, 
-                       prefix = "mtl", 
-                       username = "sus-mcgill", 
-                       access_token = .cc_mb_token)
+# stories <- build_stories()
+# stories_mapping <- stories$stories_mapping
+# stories <- stories$stories
+# qs::qsavem(stories, stories_mapping, file = "data/stories.qsm")
+# stories_create_tileset(stories = stories, 
+#                        prefix = "mtl", 
+#                        username = "sus-mcgill", 
+#                        access_token = .cc_mb_token)
 
 
 # Save variables ----------------------------------------------------------

@@ -150,6 +150,10 @@
     observe(r[[id]]$df(get_df(tile(), zoom_string()))) |>
       bindEvent(tile(), zoom_string())
 
+
+
+
+
     # Time variable
     time <- eventReactive(var_left_1(), {
       tb <- tables_in_sql[[r[[id]]$df()]]

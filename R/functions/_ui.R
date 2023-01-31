@@ -50,3 +50,31 @@ ready_modules_home <- function(mods_rdy) {
   lapply(list_args, \(x) do.call(linkListGroup, x))
   
 }
+
+
+# Stories -----------------------------------------------------------------
+
+
+stories_dropdown_ui <- function(stories) {
+  
+  ind_stories <- lapply(stories$ID, \(x) {
+    bslib::nav_item(tags$a(cc_t(stories$short_title[stories$ID == x]), 
+                           onclick = paste0("openTab('stories');",
+                                            "Shiny.setInputValue(`",
+                                            "stories-select_nav`, '", x, "');"),
+                           style = "cursor: pointer"))
+  })
+  
+  do.call(bslib::nav_menu, c(
+    # The title
+    list(title = cc_t(stories_page)),
+    # The first element, see map
+    list(tabPanel(cc_t("SEE MAP"), stories_UI("stories"),
+             value = "stories")),
+    # Divider and header
+    list(HTML("<li class='divider' style = 'padding:0px;margin:0px'></li>")),
+    list(HTML(paste0("<li class='dropdown-header'>", cc_t("Stories"), "</li>"))),
+    # Individual stories
+    ind_stories
+  ))
+}

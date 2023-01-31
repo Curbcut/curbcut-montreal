@@ -3,19 +3,27 @@
 # UI ----------------------------------------------------------------------
 
 stories_UI <- function(id) {
-  ns_id <- "stories"
+  id <- "stories"
   
   tagList(
     
     # Sidebar
     sidebar_UI(
       NS(id, id),
-      # hr(id = NS(id, "hr")),
-      actionLink(NS(id, "back"), cc_t(r = r, "Back to the map"))
+      susSidebarWidgets(
+        actionLink(NS(id, "back"), cc_t(r = r, "Back to the map")),
+        pickerInput(
+          inputId = NS(id, "themes_checkbox"),
+          label = cc_t(r = r, "Choose themes:"),
+          choices = unique(unlist(stories$themes)),
+          selected = unique(unlist(stories$themes)),
+          multiple = TRUE),
+        hr(id = NS(id, "hr"))
+        )
     ),
     
     # Map
-    div(class = "mapdeck_div", rdeckOutput(NS(id, paste0(ns_id, "-map")), 
+    div(class = "mapdeck_div", rdeckOutput(NS(id, paste0(id, "-map")), 
                                            height = "100%")),
     
     # Stories
@@ -30,14 +38,13 @@ stories_UI <- function(id) {
 
 stories_server <- function(id, r) {
   moduleServer(id, function(input, output, session) {
-    ns_id <- "stories"
-    ns_id_map <- paste0(ns_id, "-map")
+    id_map <- paste0(id, "-map")
     
     # Sidebar
     sidebar_server(id = id, r = r, x = "stories")
     
     # Map
-    output[[ns_id_map]] <- renderRdeck({
+    output[[id_map]] <- renderRdeck({
       rdeck(map_style = map_style_building, initial_view_state = view_state(
         center = map_loc, zoom = map_zoom)) |> 
         add_mvt_layer(
@@ -56,17 +63,17 @@ stories_server <- function(id, r) {
     
     # Click reactive
     observe({
-      selection <- get_clicked_object(ns_id_map)$ID
-      if (!is.na(r[[ns_id]]$select_id()) && selection == r[[ns_id]]$select_id()) {
-        r[[ns_id]]$select_id(NA)
-      } else r[[ns_id]]$select_id(selection)
-    }) |> bindEvent(get_clicked_object(ns_id_map))
+      selection <- get_clicked_object(id_map)$ID
+      if (!is.na(r[[id]]$select_id()) && selection == r[[id]]$select_id()) {
+        r[[id]]$select_id(NA)
+      } else r[[id]]$select_id(selection)
+    }) |> bindEvent(get_clicked_object(id_map))
     
     # Custom map, legend and source for cycling infrastructure and metro 
     # evolution stories
     selected_story <- reactive({
-      if (is.na(r[[ns_id]]$select_id())) return(NA)
-      stories$name_id[stories$ID == r[[ns_id]]$select_id()]
+      if (is.na(r[[id]]$select_id())) return(NA)
+      stories$name_id[stories$ID == r[[id]]$select_id()]
     })
     output$stories_custom_map <-
       renderRdeck(rdeck(width = "100%", map_style = map_base_style, 
@@ -98,11 +105,11 @@ stories_server <- function(id, r) {
     # Render the story in question, now only in english (_en)
     output$stories <- renderUI({
       
-      if (!is.na(r[[ns_id]]$select_id())) {
+      if (!is.na(r[[id]]$select_id())) {
         
-        rmd_name <- stories$name_id[stories$ID == r[[ns_id]]$select_id()]
+        rmd_name <- stories$name_id[stories$ID == r[[id]]$select_id()]
         bandeau_name <- 
-          paste0(stories$name_id[stories$ID == r[[ns_id]]$select_id()], ".png")
+          paste0(stories$name_id[stories$ID == r[[id]]$select_id()], ".png")
 
         story_link <- paste0("www/stories/", rmd_name, "_", r$lang(),
                              ".html")
@@ -191,23 +198,62 @@ stories_server <- function(id, r) {
       }
       
     })
-
+    
+    # Add stories on the left-hand panel and react on a click
+    observeEvent(input$themes_checkbox, {
+      in_theme <- 
+        stories$ID[which(
+          sapply(sapply(stories$themes, `%in%`, input$themes_checkbox), sum) > 0)]
+      
+      removeUI(selector = "#bullet_points")
+      insertUI(paste0("#stories-hr"),
+               where = "afterEnd",
+               tags$ul(
+                 id = "bullet_points",
+                 lapply(stories$short_title[stories$ID %in% in_theme], \(x) {
+                   tags$li(
+                     cc_t(x, r = r), 
+                     style = "cursor: pointer; text-decoration: none;",
+                     title = cc_t(stories$preview[stories$short_title == x],
+                                  r = r),
+                     onclick = paste0("Shiny.setInputValue(`", 
+                                      NS(id, "clicked_linked"), 
+                                      "`, '",
+                                      cc_t(stories$ID[stories$short_title == x],
+                                           r = r),
+                                      "');"),
+                     onmouseover = "$(this).css('text-decoration', 'underline');",
+                     onmouseout = "$(this).css('text-decoration', 'none');"
+                   )
+                 })
+               )
+      )
+      
+    })
+    observeEvent(input$clicked_linked, {
+      r[[id]]$select_id(input$clicked_linked)
+    })
+    
+    # Update the select_id if clicked on a story title in the top navigation panel
+    observe({
+      r[[id]]$select_id(input$select_nav)
+    })
+    
     # Hide map when "Go back to map" button is clicked
-    observe(r[[ns_id]]$select_id(NA)) |> bindEvent(input$back)
+    observe(r[[id]]$select_id(NA)) |> bindEvent(input$back)
 
     observe({
-      toggle("hr", condition = !is.na(r[[ns_id]]$select_id()))
-      toggle("back", condition = !is.na(r[[ns_id]]$select_id()))
-      toggle("stories", condition = !is.na(r[[ns_id]]$select_id()))
-    }) |> bindEvent(r[[ns_id]]$select_id())
+      toggle("back", condition = !is.na(r[[id]]$select_id()))
+      toggle("stories", condition = !is.na(r[[id]]$select_id()))
+    }) |> bindEvent(r[[id]]$select_id())
 
     # Bookmarking
     bookmark_server(
-      id = ns_id,
+      id = id,
       r = r,
-      s_id = r[[ns_id]]$select_id,
+      s_id = r[[id]]$select_id,
       map_viewstate = reactive(
-        input[[paste0(ns_id, "-map_viewstate")]]$viewState)
+        input[[paste0(id, "-map_viewstate")]]$viewState)
     )
 
   })
