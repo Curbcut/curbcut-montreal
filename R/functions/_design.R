@@ -347,6 +347,11 @@ styler <- '
   .dropdown-menu > .inner.open {
   max-height:50vh !important;
   }
+
+  .navbar-nav>li>.dropdown-menu {
+  max-height:345px;
+  overflow-y:auto;
+  }
   
   #dropdown-menu-geo_change {
   max-height: 250px;

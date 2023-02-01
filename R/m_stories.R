@@ -60,7 +60,7 @@ stories_server <- function(id, r) {
           auto_highlight = TRUE,
           highlight_color = "#FFFFFF50")
     })
-    
+
     # Click reactive
     observe({
       selection <- get_clicked_object(id_map)$ID
@@ -68,20 +68,20 @@ stories_server <- function(id, r) {
         r[[id]]$select_id(NA)
       } else r[[id]]$select_id(selection)
     }) |> bindEvent(get_clicked_object(id_map))
-    
-    # Custom map, legend and source for cycling infrastructure and metro 
+
+    # Custom map, legend and source for cycling infrastructure and metro
     # evolution stories
     selected_story <- reactive({
       if (is.na(r[[id]]$select_id())) return(NA)
       stories$name_id[stories$ID == r[[id]]$select_id()]
     })
     output$stories_custom_map <-
-      renderRdeck(rdeck(width = "100%", map_style = map_base_style, 
+      renderRdeck(rdeck(width = "100%", map_style = map_base_style,
                         initial_view_state = view_state(
                           center = map_loc, zoom = as.numeric(map_zoom - 1))))
     observeEvent(input[["stories-stories_map_slider"]], {
       if (selected_story() %in% c("cycling_infrastructure", "metro_evolution"))
-      do.call(paste0(selected_story(), "_map"), 
+      do.call(paste0(selected_story(), "_map"),
               list(input[["stories-stories_map_slider"]]))
     }, ignoreInit = TRUE)
     observeEvent(selected_story(), {
@@ -93,7 +93,7 @@ stories_server <- function(id, r) {
     }, ignoreInit = TRUE)
     output$stories_custom_legend <- renderPlot({
       if (selected_story() %in% c("cycling_infrastructure", "metro_evolution"))
-      do.call(paste0(selected_story(), "_legend"), 
+      do.call(paste0(selected_story(), "_legend"),
               list(input[["stories-stories_map_slider"]], r$lang()))
     })
     output$stories_custom_source <- renderText({
@@ -101,35 +101,35 @@ stories_server <- function(id, r) {
       do.call(paste0(selected_story(), "_source"),
               list(input[["stories-stories_map_slider"]], r))
     })
-    
+
     # Render the story in question, now only in english (_en)
     output$stories <- renderUI({
-      
+
       if (!is.na(r[[id]]$select_id())) {
-        
+
         rmd_name <- stories$name_id[stories$ID == r[[id]]$select_id()]
-        bandeau_name <- 
+        bandeau_name <-
           paste0(stories$name_id[stories$ID == r[[id]]$select_id()], ".png")
 
         story_link <- paste0("www/stories/", rmd_name, "_", r$lang(),
                              ".html")
-        
+
         # Construct story link, serve en if no translation available.
         story_link <- if (story_link %in% available_stories) story_link else {
           paste0("www/stories/", rmd_name, "_", "en",
                  ".html")
         }
-        
-        # images <- 
+
+        # images <-
         #   list.files(paste0("www/stories/visuals/", rmd_name),
-        #              full.names = TRUE) |> 
-        #   str_subset("png$|jpeg$|jpg$|gif$") |> 
+        #              full.names = TRUE) |>
+        #   str_subset("png$|jpeg$|jpg$|gif$") |>
         #   str_remove("^www/")
-        # 
+        #
         # images_tag <-
         #   lapply(images, \(x)
         #          paste0("img(src='", x, "', style='width:45%;margin:2px;')"))
-        
+
         # SPECIAL CASES FOR THE Mp
         if (rmd_name %in% c("cycling_infrastructure", "metro_evolution")) {
           div(class = "main_panel_text_popup",
@@ -142,9 +142,9 @@ stories_server <- function(id, r) {
                         "</div>", paste0("</div><img src =", "stories/bandeau_img/",
                                          bandeau_name,"><br><br>")) |>
                           str_replace_all('<img src="visuals/',
-                                          '<img src="stories/visuals/') |> 
+                                          '<img src="stories/visuals/') |>
                           str_replace('max-width: 940px;', 'max-width:100%;'))),
-                  div(class = "column-stories-maps-map", 
+                  div(class = "column-stories-maps-map",
                       style = "overflow-y:auto;overflow-x:hidden;",
                       tagList(
                         rdeckOutput(NS(id, "stories_custom_map"), height = "65%"),
@@ -156,7 +156,7 @@ stories_server <- function(id, r) {
                         plotOutput(NS(id, "stories_custom_legend"), height = 60,
                                    width = "auto"),
                         br(),
-                        div(style = "text-align: center;", 
+                        div(style = "text-align: center;",
                             textOutput(NS(id, "stories_custom_source"))),
                       )
                   )
@@ -164,7 +164,7 @@ stories_server <- function(id, r) {
           )
         } else {
           div(class = "main_panel_text_popup",
-              
+
               # Main story
               div(#style = "margin-right:250px;",
                 HTML(str_replace(
@@ -179,7 +179,7 @@ stories_server <- function(id, r) {
               #   id = NS(id, "right_panel"),
               #   class = "panel panel-default sus-map-panel sus-scroll",
               #   style = "margin-top:50px;margin-right:20px;padding:10px;",
-              #   div(class = "sus-map-panel-content sus-scroll-content", 
+              #   div(class = "sus-map-panel-content sus-scroll-content",
               #       div(
               #         h4(cc_t(r = r, "Take a walk"))),
               #       p("To come!"),
@@ -196,15 +196,15 @@ stories_server <- function(id, r) {
           )
         }
       }
-      
+
     })
-    
+
     # Add stories on the left-hand panel and react on a click
     observeEvent(input$themes_checkbox, {
-      in_theme <- 
+      in_theme <-
         stories$ID[which(
           sapply(sapply(stories$themes, `%in%`, input$themes_checkbox), sum) > 0)]
-      
+
       removeUI(selector = "#bullet_points")
       insertUI(paste0("#stories-hr"),
                where = "afterEnd",
@@ -212,12 +212,12 @@ stories_server <- function(id, r) {
                  id = "bullet_points",
                  lapply(stories$short_title[stories$ID %in% in_theme], \(x) {
                    tags$li(
-                     cc_t(x, r = r), 
+                     cc_t(x, r = r),
                      style = "cursor: pointer; text-decoration: none;",
                      title = cc_t(stories$preview[stories$short_title == x],
                                   r = r),
-                     onclick = paste0("Shiny.setInputValue(`", 
-                                      NS(id, "clicked_linked"), 
+                     onclick = paste0("Shiny.setInputValue(`",
+                                      NS(id, "clicked_linked"),
                                       "`, '",
                                       cc_t(stories$ID[stories$short_title == x],
                                            r = r),
@@ -228,17 +228,17 @@ stories_server <- function(id, r) {
                  })
                )
       )
-      
+
     })
     observeEvent(input$clicked_linked, {
       r[[id]]$select_id(input$clicked_linked)
     })
-    
+
     # Update the select_id if clicked on a story title in the top navigation panel
-    observe({
+    observeEvent(input$select_nav, {
       r[[id]]$select_id(input$select_nav)
     })
-    
+
     # Hide map when "Go back to map" button is clicked
     observe(r[[id]]$select_id(NA)) |> bindEvent(input$back)
 
