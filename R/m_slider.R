@@ -3,7 +3,7 @@
 # UI ----------------------------------------------------------------------
 
 slider_UI <- function(id, slider_id = "slider", 
-                      label = cc_t(r = r, "Select a year"), min = census_min, 
+                      label = curbcut::cc_t(lang = r$lang(), translation = translation, "Select a year"), min = census_min, 
                       max = census_max, step = 5, sep = "", value = census_max,
                       width = "95%", ...) {
   
@@ -12,7 +12,7 @@ slider_UI <- function(id, slider_id = "slider",
 }
 
 slider_text_UI <- function(id, slider_id = "slider", 
-                           label = cc_t(r = r, "Select a year"), 
+                           label = curbcut::cc_t(lang = r$lang(), translation = translation, "Select a year"), 
                            choices, selected = NULL, width = "95%", ...) {
   
   shinyWidgets::sliderTextInput(NS(id, slider_id), label, choices = choices,

@@ -24,7 +24,8 @@ get_zoom_label <- function(zoom_levels) {
 
 get_zoom_label_t <- function(zoom_levels, r) {
   zl <- names(sort(zoom_levels))
-  zl <- sapply(get_zoom_name(zl), cc_t, r = r, USE.NAMES = FALSE)
+  zl <- sapply(get_zoom_name(zl), curbcut::cc_t, lang = r$lang(), 
+               translation = translation, USE.NAMES = FALSE)
   return(zl)
 }
 

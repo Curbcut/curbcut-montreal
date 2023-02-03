@@ -104,14 +104,14 @@ get_info_table_data <- function(r = r, data, var_type, var_left, var_right, df,
   var_right_label <- sapply(var_right_label, cc_t, r = r)
   
   out$title_left <- 
-    cc_t(r = r, variables[variables$var_code == var_left,]$var_title)
+    curbcut::cc_t(lang = r$lang(), translation = translation, variables[variables$var_code == var_left,]$var_title)
   if (var_right != " ") out$title_right <- 
-    cc_t(r = r, variables[variables$var_code == var_right,]$var_title)
+    curbcut::cc_t(lang = r$lang(), translation = translation, variables[variables$var_code == var_right,]$var_title)
   
   out$exp_left <- 
-    cc_t(r = r, variables[variables$var_code == var_left,]$explanation)
+    curbcut::cc_t(lang = r$lang(), translation = translation, variables[variables$var_code == var_left,]$explanation)
   out$exp_right <- 
-    cc_t(r = r, variables[variables$var_code == var_right,]$explanation)
+    curbcut::cc_t(lang = r$lang(), translation = translation, variables[variables$var_code == var_right,]$explanation)
   if (length(out$exp_left) == 0) warning("No exp: ", var_left, call. = FALSE)
   if (var_right != " " && length(out$exp_right) == 0) warning(
     "No exp: ", var_right, call. = FALSE)
@@ -161,8 +161,8 @@ get_info_table_data <- function(r = r, data, var_type, var_left, var_right, df,
   scale_plural <- 
     scales_dictionary$plur[scales_dictionary$scale == gsub(".*_", "", df)]
   
-  out$scale_sing <- cc_t(r = r, scale_sing)
-  out$scale_plural <- cc_t(r = r, scale_plural)
+  out$scale_sing <- curbcut::cc_t(lang = r$lang(), translation = translation, scale_sing)
+  out$scale_plural <- curbcut::cc_t(lang = r$lang(), translation = translation, scale_plural)
   
 
   ## Place names ---------------------------------------------------------------
@@ -170,18 +170,18 @@ get_info_table_data <- function(r = r, data, var_type, var_left, var_right, df,
   name <- select_name$name
   out$place_name <- 
     scales_dictionary$place_name[scales_dictionary$scale == gsub(".*_", "", df)]
-  out$place_name <- cc_t(r = r, out$place_name)
+  out$place_name <- curbcut::cc_t(lang = r$lang(), translation = translation, out$place_name)
   
-  name_2 <- cc_t(r = r, select_name$name_2)
+  name_2 <- curbcut::cc_t(lang = r$lang(), translation = translation, select_name$name_2)
   out$place_heading <- 
     scales_dictionary$place_heading[scales_dictionary$scale == gsub(".*_", "", df)]
-  out$place_heading <- cc_t(r = r, out$place_heading)
+  out$place_heading <- curbcut::cc_t(lang = r$lang(), translation = translation, out$place_heading)
   
   
   ## Geo name ------------------------------------------------------------------
   
   out$geo <- 
-    cc_t(r = r, regions_dictionary$to_compare[regions_dictionary == geo])
+    curbcut::cc_t(lang = r$lang(), translation = translation, regions_dictionary$to_compare[regions_dictionary == geo])
 
   
   ## Descriptive statistics for var_left ---------------------------------------
@@ -209,24 +209,24 @@ get_info_table_data <- function(r = r, data, var_type, var_left, var_right, df,
     quintile <- quantile(vec_left, c(0.2, 0.4, 0.6, 0.8))
 
     out$larger <- if (val_left >= quintile[4]) {
-      cc_t(r = r, "much larger than")
+      curbcut::cc_t(lang = r$lang(), translation = translation, "much larger than")
     } else if (val_left >= quintile[3]) {
-      cc_t(r = r, "larger than")
+      curbcut::cc_t(lang = r$lang(), translation = translation, "larger than")
     } else if (val_left >= quintile[2]) {
-      cc_t(r = r, "almost the same as")
+      curbcut::cc_t(lang = r$lang(), translation = translation, "almost the same as")
     } else if (val_left >= quintile[1]) {
-      cc_t(r = r, "smaller than")
-    } else cc_t(r = r, "much smaller than")
+      curbcut::cc_t(lang = r$lang(), translation = translation, "smaller than")
+    } else curbcut::cc_t(lang = r$lang(), translation = translation, "much smaller than")
 
-    out$high <- if (str_detect(out$larger, paste(cc_t(r = r, "much larger than"), 
-                                                  cc_t(r = r, "larger than"), 
+    out$high <- if (str_detect(out$larger, paste(curbcut::cc_t(lang = r$lang(), translation = translation, "much larger than"), 
+                                                  curbcut::cc_t(lang = r$lang(), translation = translation, "larger than"), 
                                                   sep = "|"))) {
-      cc_t(r = r, "high")
-    } else if (str_detect(out$larger, paste(cc_t(r = r, "smaller than"), 
-                                            cc_t(r = r, "much smaller than"), 
+      curbcut::cc_t(lang = r$lang(), translation = translation, "high")
+    } else if (str_detect(out$larger, paste(curbcut::cc_t(lang = r$lang(), translation = translation, "smaller than"), 
+                                            curbcut::cc_t(lang = r$lang(), translation = translation, "much smaller than"), 
                                             sep = "|"))) {
-      cc_t(r = r, "low")
-    } else cc_t(r = r, "moderate")
+      curbcut::cc_t(lang = r$lang(), translation = translation, "low")
+    } else curbcut::cc_t(lang = r$lang(), translation = translation, "moderate")
 
     out$percentile <- convert_unit(length(vec_left[vec_left <= val_left]) / 
                                      length(vec_left), "_pct")
@@ -234,8 +234,8 @@ get_info_table_data <- function(r = r, data, var_type, var_left, var_right, df,
     # Translation note: whatever if the explanation (the subject) is masculine 
     # or feminine, on n'accordera pas increased/decreased avec son sujet s'il
     # est employé avec avoir (our case here).
-    out$increase <- if (val_left >= 0) cc_t(r = r, "increased") else
-      cc_t(r = r, "decreased")
+    out$increase <- if (val_left >= 0) curbcut::cc_t(lang = r$lang(), translation = translation, "increased") else
+      curbcut::cc_t(lang = r$lang(), translation = translation, "decreased")
     
     }
   
@@ -256,8 +256,8 @@ get_info_table_data <- function(r = r, data, var_type, var_left, var_right, df,
       {var_left_label[names(var_left_label) == names(.)]} %>%
       tolower()
     mode_prop <- qual_tab[1] / sum(qual_tab)
-    out$majority <- if (mode_prop > 0.5) cc_t(r = r, "majority") else 
-      cc_t(r = r, "plurality")
+    out$majority <- if (mode_prop > 0.5) curbcut::cc_t(lang = r$lang(), translation = translation, "majority") else 
+      curbcut::cc_t(lang = r$lang(), translation = translation, "plurality")
     out$mode_prop <- convert_unit(mode_prop, "_pct")
     out$mode_prop_2 <- convert_unit(qual_tab[2] / sum(qual_tab), "_pct")
     
@@ -282,24 +282,24 @@ get_info_table_data <- function(r = r, data, var_type, var_left, var_right, df,
       corr <- cor(dat$var_left, as.numeric(dat$var_right), use = "complete.obs")
       out$correlation <- corr
       out$corr_disp <- convert_unit(corr)
-      out$pos <- if (corr > 0) cc_t(r = r, "positive") else 
-        cc_t(r = r, "negative")
+      out$pos <- if (corr > 0) curbcut::cc_t(lang = r$lang(), translation = translation, "positive") else 
+        curbcut::cc_t(lang = r$lang(), translation = translation, "negative")
       
       out$strong <- if (abs(corr) > 0.6) {
-        cc_t(r = r, "strong")
+        curbcut::cc_t(lang = r$lang(), translation = translation, "strong")
       } else if (abs(corr) > 0.3) {
-        cc_t(r = r, "moderate")
-      } else cc_t(r = r, "weak")
+        curbcut::cc_t(lang = r$lang(), translation = translation, "moderate")
+      } else curbcut::cc_t(lang = r$lang(), translation = translation, "weak")
       
-      out$higher <- ifelse(out$pos == cc_t(r = r, "positive"),
-                           cc_t(r = r, "higher"), cc_t(r = r, "lower"))
+      out$higher <- ifelse(out$pos == curbcut::cc_t(lang = r$lang(), translation = translation, "positive"),
+                           curbcut::cc_t(lang = r$lang(), translation = translation, "higher"), curbcut::cc_t(lang = r$lang(), translation = translation, "lower"))
       
-      out$high_low_disclaimer <- if (out$strong == cc_t(r = r, "strong")) {
-        cc_t(r = r, "with only a few exceptions")
-      } else if (out$strong == cc_t(r = r, "moderate")) {
-        cc_t(r = r, "although with some exceptions")
-      } else if (out$strong == cc_t(r = r, "weak")) {
-        cc_t(r = r, "although with many exceptions")
+      out$high_low_disclaimer <- if (out$strong == curbcut::cc_t(lang = r$lang(), translation = translation, "strong")) {
+        curbcut::cc_t(lang = r$lang(), translation = translation, "with only a few exceptions")
+      } else if (out$strong == curbcut::cc_t(lang = r$lang(), translation = translation, "moderate")) {
+        curbcut::cc_t(lang = r$lang(), translation = translation, "although with some exceptions")
+      } else if (out$strong == curbcut::cc_t(lang = r$lang(), translation = translation, "weak")) {
+        curbcut::cc_t(lang = r$lang(), translation = translation, "although with many exceptions")
       }
   }
   
@@ -317,12 +317,12 @@ get_info_table_data <- function(r = r, data, var_type, var_left, var_right, df,
     out$perc_right <- convert_unit(perc_right, "_pct")
     
     out$relative_position <- if (abs(perc_left - perc_right) > 0.5) {
-      cc_t(r = r, "dramatically different")
+      curbcut::cc_t(lang = r$lang(), translation = translation, "dramatically different")
     } else if (abs(perc_left - perc_right) > 0.3) {
-      cc_t(r = r, "substantially different")
+      curbcut::cc_t(lang = r$lang(), translation = translation, "substantially different")
     } else if (abs(perc_left - perc_right) > 0.1) {
-      cc_t(r = r, "considerably different")
-    } else cc_t(r = r, "similar")
+      curbcut::cc_t(lang = r$lang(), translation = translation, "considerably different")
+    } else curbcut::cc_t(lang = r$lang(), translation = translation, "similar")
     
   }
   
@@ -336,24 +336,24 @@ get_info_table_data <- function(r = r, data, var_type, var_left, var_right, df,
     corr <- cor(vec_1, vec_2, use = "complete.obs", method = "spearman")
     out$correlation <- corr
     out$corr_disp <- convert_unit(corr)
-    out$pos <- if (corr > 0) cc_t(r = r, "positive") else 
-      cc_t(r = r, "negative")
+    out$pos <- if (corr > 0) curbcut::cc_t(lang = r$lang(), translation = translation, "positive") else 
+      curbcut::cc_t(lang = r$lang(), translation = translation, "negative")
     
     out$strong <- if (abs(corr) > 0.6) {
-      cc_t(r = r, "strong")
+      curbcut::cc_t(lang = r$lang(), translation = translation, "strong")
     } else if (abs(corr) > 0.3) {
-      cc_t(r = r, "moderate")
-    } else cc_t(r = r, "weak")
+      curbcut::cc_t(lang = r$lang(), translation = translation, "moderate")
+    } else curbcut::cc_t(lang = r$lang(), translation = translation, "weak")
     
-    out$higher <- ifelse(out$pos == cc_t(r = r, "positive"),
-                         cc_t(r = r, "higher"), cc_t(r = r, "lower"))
+    out$higher <- ifelse(out$pos == curbcut::cc_t(lang = r$lang(), translation = translation, "positive"),
+                         curbcut::cc_t(lang = r$lang(), translation = translation, "higher"), curbcut::cc_t(lang = r$lang(), translation = translation, "lower"))
     
-    out$high_low_disclaimer <- if (out$strong == cc_t(r = r, "strong")) {
-      cc_t(r = r, "with only a few exceptions")
-    } else if (out$strong == cc_t(r = r, "moderate")) {
-      cc_t(r = r, "although with some exceptions")
-    } else if (out$strong == cc_t(r = r, "weak")) {
-      cc_t(r = r, "although with many exceptions")
+    out$high_low_disclaimer <- if (out$strong == curbcut::cc_t(lang = r$lang(), translation = translation, "strong")) {
+      curbcut::cc_t(lang = r$lang(), translation = translation, "with only a few exceptions")
+    } else if (out$strong == curbcut::cc_t(lang = r$lang(), translation = translation, "moderate")) {
+      curbcut::cc_t(lang = r$lang(), translation = translation, "although with some exceptions")
+    } else if (out$strong == curbcut::cc_t(lang = r$lang(), translation = translation, "weak")) {
+      curbcut::cc_t(lang = r$lang(), translation = translation, "although with many exceptions")
     }
 
   }
@@ -397,23 +397,23 @@ get_info_table_data <- function(r = r, data, var_type, var_left, var_right, df,
     
     if (length(max_date) %in% 2:3) max_date <- paste(
       paste(max_date[seq_len(length(max_date) - 1)], collapse = ", "),
-      max_date[length(max_date)], sep = cc_t(r = r, " and "))
+      max_date[length(max_date)], sep = curbcut::cc_t(lang = r$lang(), translation = translation, " and "))
     if (length(max_date) > 3) out$max_date <- 
-      cc_t(r = r, "several different dates")
+      curbcut::cc_t(lang = r$lang(), translation = translation, "several different dates")
     out$max_date <- max_date
     
     min_date <- dat$var_right[dat$var_left == min(dat$var_left)]
     
     if (length(min_date) %in% 2:3) min_date <- paste(
       paste(min_date[seq_len(length(min_date) - 1)], collapse = ", "),
-      max_date[length(min_date)], sep = cc_t(r = r, " and "))
+      max_date[length(min_date)], sep = curbcut::cc_t(lang = r$lang(), translation = translation, " and "))
     if (length(min_date) > 3) min_date <- 
-      cc_t(r = r, "several different dates")
+      curbcut::cc_t(lang = r$lang(), translation = translation, "several different dates")
     out$min_date <- min_date
     
     out$coef <- abs(coef)
-    out$coef_increasing <- if (coef >= 0) cc_t(r = r, "increasing") else 
-      cc_t(r = r, "decreasing")
+    out$coef_increasing <- if (coef >= 0) curbcut::cc_t(lang = r$lang(), translation = translation, "increasing") else 
+      curbcut::cc_t(lang = r$lang(), translation = translation, "decreasing")
     out$date_left <- paste(date_left, collapse = '-')
   }
   

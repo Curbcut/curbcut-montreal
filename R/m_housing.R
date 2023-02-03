@@ -24,8 +24,8 @@
           "housing_mobility_five", "housing_single_detached"
         )),
         slider_UI(NS(id, id), slider_id = "slu"),
-        slider_UI(NS(id, id), slider_id = "slb", label = cc_t(r = r, "Select two years"), value = c("2006", "2016")),
-        checkbox_UI(NS(id, id), label = cc_t(r = r, "Compare dates")),
+        slider_UI(NS(id, id), slider_id = "slb", label = curbcut::cc_t(translation = translation, "Select two years"), value = c("2006", "2016")),
+        checkbox_UI(NS(id, id), label = curbcut::cc_t(translation = translation, "Compare dates")),
         year_disclaimer_UI(NS(id, id))
       ),
       bottom = div(

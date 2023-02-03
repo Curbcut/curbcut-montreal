@@ -13,7 +13,8 @@ sidebar_UI <- function(id, ..., bottom = NULL) {
                     tags$p(uiOutput(NS(id, "title_main"))),
                     tags$p(actionLink(NS(id, "more_info"), 
                                       class = "sus-small-link", 
-                                      cc_t(r = r, "Learn more"))),
+                                      curbcut::cc_t(translation = translation, 
+                                                    "Learn more"))),
                     hidden(uiOutput(outputId = NS(id, "title_extra"))),
                     ...
                   )
@@ -39,15 +40,15 @@ sidebar_server <- function(id, r, x = id) {
     # More info
     observeEvent(input$more_info, {
       toggle("title_extra", condition = input$more_info %% 2 == 1)
-      txt <- cc_t(r = r, switch(input$more_info %% 2 + 1, "Learn more",
+      txt <- curbcut::cc_t(lang = r$lang(), translation = translation, switch(input$more_info %% 2 + 1, "Learn more",
                                   "Hide"))
       updateActionLink(session, "more_info", label = txt)
       })
     
     
-    output$title <- renderUI(h3(cc_t(r = r, title_title)))
-    output$title_main <- renderUI(HTML(cc_t(r = r, title_main)))
-    output$title_extra <- renderUI(HTML(cc_t(r = r, title_extra)))
+    output$title <- renderUI(h3(curbcut::cc_t(lang = r$lang(), translation = translation, title_title)))
+    output$title_main <- renderUI(HTML(curbcut::cc_t(lang = r$lang(), translation = translation, title_main)))
+    output$title_extra <- renderUI(HTML(curbcut::cc_t(lang = r$lang(), translation = translation, title_extra)))
     
   })
 }

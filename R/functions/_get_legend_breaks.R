@@ -63,7 +63,7 @@ get_legend_breaks <- function(r = r, data, var_left, var_right, df, geo,
     if (suppressWarnings(!is.null(break_labs$var_name) && 
                          !any(is.na(break_labs$var_name)))) {
       break_labs <- sapply(break_labs$var_name_short, 
-                           \(x) cc_t(r = r, x),
+                           \(x) curbcut::cc_t(lang = r$lang(), translation = translation, x),
                            USE.NAMES = FALSE)
     }
   }
@@ -162,8 +162,8 @@ get_legend_breaks <- function(r = r, data, var_left, var_right, df, geo,
   if (data_type == "q100") {
     
     # Create break labels
-    break_labs <- c(cc_t(r = r, "Low"), sapply(1:9, \(x) NULL),
-                    cc_t(r = r, "High"))
+    break_labs <- c(curbcut::cc_t(lang = r$lang(), translation = translation, "Low"), sapply(1:9, \(x) NULL),
+                    curbcut::cc_t(lang = r$lang(), translation = translation, "High"))
     
   }
   

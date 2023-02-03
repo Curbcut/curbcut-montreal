@@ -10,7 +10,7 @@ explore_graph_alley <- function(r = r, data, var_type, var_left, var_right, df,
       ggplot(aes(created)) +
       geom_histogram(fill = colour_left_5$fill[3], bins = 30) +
       scale_y_continuous(name = NULL) +
-      scale_x_continuous(name = cc_t(r = r, "Green alley start date")) +
+      scale_x_continuous(name = curbcut::cc_t(lang = r$lang(), translation = translation, "Green alley start date")) +
       theme_minimal() +
       theme(text = element_text(family = "SourceSansPro", size = 12),
             legend.position = "none", 
@@ -36,7 +36,7 @@ explore_graph_alley <- function(r = r, data, var_type, var_left, var_right, df,
         geom_bar(fill = legend_qual[legend_qual$x %in% ranks,]$fill[1:4]) +
         scale_y_continuous(name = NULL) +
         scale_x_discrete(labels = labels,
-                         name = cc_t(r = r, "Visited green alleys type")) +
+                         name = curbcut::cc_t(lang = r$lang(), translation = translation, "Visited green alleys type")) +
         theme_minimal() +
         theme(text = element_text(family = "SourceSansPro", size = 12),
               legend.position = "none", 

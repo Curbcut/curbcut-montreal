@@ -51,11 +51,11 @@ get_pe_block <- function(r = r, df, theme, select_id) {
     if (percentiles > 0.50) {
       per <- scales::percent(abs(percentiles - 1))
       if (per == "0%") per <- "1%"
-      cc_t(r = r, "Top {per}")
+      curbcut::cc_t(lang = r$lang(), translation = translation, "Top {per}")
     } else {
       per <- scales::percent(abs(percentiles))
       if (per == "0%") per <- "1%"
-      cc_t(r = r, "Bottom {per}")
+      curbcut::cc_t(lang = r$lang(), translation = translation, "Bottom {per}")
     }
   })
   
@@ -97,7 +97,7 @@ get_pe_block <- function(r = r, df, theme, select_id) {
   
   out <- cbind(data_order, out)
   out <- out[!is.na(out$value), ]
-  ior <- cc_t(r = r, switch(gsub(".*_", "", df), 
+  ior <- curbcut::cc_t(lang = r$lang(), translation = translation, switch(gsub(".*_", "", df), 
                                      "CSD" = "boroughs or cities",
                                      "CT" = "census tracts", 
                                      "DA" = "dissemination areas",
@@ -116,7 +116,7 @@ get_pe_block <- function(r = r, df, theme, select_id) {
     } else if (z_var == "age_65_plus_pct") {
       "65+"
     }
-    cc_t(r = r, "The area's residents are disproportionately in the {age} ",
+    curbcut::cc_t(lang = r$lang(), translation = translation, "The area's residents are disproportionately in the {age} ",
                   "age range, compared to the rest of the {ior}.")
 
   # Climate risk  
@@ -124,17 +124,17 @@ get_pe_block <- function(r = r, df, theme, select_id) {
     
     z <- mean(out$percentile)
     more_less <- if (z >= 0.8) {
-      cc_t(r = r, "much higher")
+      curbcut::cc_t(lang = r$lang(), translation = translation, "much higher")
     } else if (z >= 0.6) {
-      cc_t(r = r, "higher")
+      curbcut::cc_t(lang = r$lang(), translation = translation, "higher")
     } else if (z >= 0.5) {
-      cc_t(r = r, "slightly higher")
+      curbcut::cc_t(lang = r$lang(), translation = translation, "slightly higher")
     } else if (z >= 0.4) {
-      cc_t(r = r, "slightly lower")
+      curbcut::cc_t(lang = r$lang(), translation = translation, "slightly lower")
     } else if (z >= 0.2) {
-      cc_t(r = r, "lower")
-    } else cc_t(r = r, "much lower")
-    cc_t(r = r, "The area has a {more_less} level of climate risk than ",
+      curbcut::cc_t(lang = r$lang(), translation = translation, "lower")
+    } else curbcut::cc_t(lang = r$lang(), translation = translation, "much lower")
+    curbcut::cc_t(lang = r$lang(), translation = translation, "The area has a {more_less} level of climate risk than ",
                   "average for the {ior}.")
     
   # Education
@@ -142,17 +142,17 @@ get_pe_block <- function(r = r, df, theme, select_id) {
     
     z <- out$percentile[out$var_code == "edu_bachelor_above_pct"]
     more_less <- if (z >= 0.8) {
-      cc_t(r = r, "much more")
+      curbcut::cc_t(lang = r$lang(), translation = translation, "much more")
     } else if (z >= 0.6) {
-      cc_t(r = r, "more")
+      curbcut::cc_t(lang = r$lang(), translation = translation, "more")
     } else if (z >= 0.5) {
-      cc_t(r = r, "slightly more")
+      curbcut::cc_t(lang = r$lang(), translation = translation, "slightly more")
     } else if (z >= 0.4) {
-      cc_t(r = r, "slightly less")
+      curbcut::cc_t(lang = r$lang(), translation = translation, "slightly less")
     } else if (z >= 0.2) {
-      cc_t(r = r, "less")
-    } else cc_t(r = r, "much less")
-    cc_t(r = r, "Residents of the area are {more_less} likely than the rest ",
+      curbcut::cc_t(lang = r$lang(), translation = translation, "less")
+    } else curbcut::cc_t(lang = r$lang(), translation = translation, "much less")
+    curbcut::cc_t(lang = r$lang(), translation = translation, "Residents of the area are {more_less} likely than the rest ",
                   "of the {ior} to have a university degree.")
 
   # Employment
@@ -160,17 +160,17 @@ get_pe_block <- function(r = r, df, theme, select_id) {
     
     z <- mean(out$percentile)
     more_less <- if (z >= 0.8) {
-      cc_t(r = r, "much higher")
+      curbcut::cc_t(lang = r$lang(), translation = translation, "much higher")
     } else if (z >= 0.6) {
-      cc_t(r = r, "higher")
+      curbcut::cc_t(lang = r$lang(), translation = translation, "higher")
     } else if (z >= 0.5) {
-      cc_t(r = r, "slightly higher")
+      curbcut::cc_t(lang = r$lang(), translation = translation, "slightly higher")
     } else if (z >= 0.4) {
-      cc_t(r = r, "slightly lower")
+      curbcut::cc_t(lang = r$lang(), translation = translation, "slightly lower")
     } else if (z >= 0.2) {
-      cc_t(r = r, "lower")
-    } else cc_t(r = r, "much lower")
-    cc_t(r = r, "A {more_less} than average share of the area's residents ",
+      curbcut::cc_t(lang = r$lang(), translation = translation, "lower")
+    } else curbcut::cc_t(lang = r$lang(), translation = translation, "much lower")
+    curbcut::cc_t(lang = r$lang(), translation = translation, "A {more_less} than average share of the area's residents ",
                   "work in creative and professional occupations compared to ",
                   "the rest of the {ior}.")
     
@@ -180,17 +180,17 @@ get_pe_block <- function(r = r, df, theme, select_id) {
     z <- mean(c(1 - out$percentile[out$var_code == "family_one_person_pct"],
                 out$percentile[out$var_code == "family_children_pct"]))
     more_less <- if (z >= 0.8) {
-      cc_t(r = r, "much larger")
+      curbcut::cc_t(lang = r$lang(), translation = translation, "much larger")
     } else if (z >= 0.6) {
-      cc_t(r = r, "larger")
+      curbcut::cc_t(lang = r$lang(), translation = translation, "larger")
     } else if (z >= 0.5) {
-      cc_t(r = r, "slightly larger")
+      curbcut::cc_t(lang = r$lang(), translation = translation, "slightly larger")
     } else if (z >= 0.4) {
-      cc_t(r = r, "slightly smaller")
+      curbcut::cc_t(lang = r$lang(), translation = translation, "slightly smaller")
     } else if (z >= 0.2) {
-      cc_t(r = r, "smaller")
-    } else cc_t(r = r, "much smaller")
-    cc_t(r = r, "The area's families are {more_less} than average for the {ior}.")
+      curbcut::cc_t(lang = r$lang(), translation = translation, "smaller")
+    } else curbcut::cc_t(lang = r$lang(), translation = translation, "much smaller")
+    curbcut::cc_t(lang = r$lang(), translation = translation, "The area's families are {more_less} than average for the {ior}.")
     
   # Housing
   } else if (theme == "Housing") {
@@ -200,17 +200,17 @@ get_pe_block <- function(r = r, df, theme, select_id) {
       out$percentile[out$var_code == "housing_value_avg_dollar"] *
       (1 - out$percentile[out$var_code == "housing_tenant_pct"])
     more_less <- if (z >= 0.8) {
-      cc_t(r = r, "much more expensive")
+      curbcut::cc_t(lang = r$lang(), translation = translation, "much more expensive")
     } else if (z >= 0.6) {
-      cc_t(r = r, "more expensive")
+      curbcut::cc_t(lang = r$lang(), translation = translation, "more expensive")
     } else if (z >= 0.5) {
-      cc_t(r = r, "slightly more expensive")
+      curbcut::cc_t(lang = r$lang(), translation = translation, "slightly more expensive")
     } else if (z >= 0.4) {
-      cc_t(r = r, "slightly cheaper")
+      curbcut::cc_t(lang = r$lang(), translation = translation, "slightly cheaper")
     } else if (z >= 0.2) {
-      cc_t(r = r, "cheaper")
-    } else cc_t(r = r, "much cheaper")
-    cc_t(r = r, "Housing costs in the area are {more_less} than average ",
+      curbcut::cc_t(lang = r$lang(), translation = translation, "cheaper")
+    } else curbcut::cc_t(lang = r$lang(), translation = translation, "much cheaper")
+    curbcut::cc_t(lang = r$lang(), translation = translation, "Housing costs in the area are {more_less} than average ",
                   "for the {ior}.")
 
   # Identity
@@ -218,17 +218,17 @@ get_pe_block <- function(r = r, df, theme, select_id) {
     
     z <- out$percentile[out$var_code == "iden_imm_pct"]
     more_less <- if (z >= 0.8) {
-      cc_t(r = r,  "much more")
+      curbcut::cc_t(lang = r$lang(), translation = translation,  "much more")
     } else if (z >= 0.6) {
-      cc_t(r = r, "more")
+      curbcut::cc_t(lang = r$lang(), translation = translation, "more")
     } else if (z >= 0.5) {
-      cc_t(r = r, "slightly more")
+      curbcut::cc_t(lang = r$lang(), translation = translation, "slightly more")
     } else if (z >= 0.4) {
-      cc_t(r = r, "slightly fewer")
+      curbcut::cc_t(lang = r$lang(), translation = translation, "slightly fewer")
     } else if (z >= 0.2) {
-      cc_t(r = r, "fewer")
-    } else cc_t(r = r, "much fewer")
-    cc_t(r = r, "The area has {more_less} foreign-born residents than ",
+      curbcut::cc_t(lang = r$lang(), translation = translation, "fewer")
+    } else curbcut::cc_t(lang = r$lang(), translation = translation, "much fewer")
+    curbcut::cc_t(lang = r$lang(), translation = translation, "The area has {more_less} foreign-born residents than ",
                   "average for the {ior}.")
     
   # Income
@@ -236,17 +236,17 @@ get_pe_block <- function(r = r, df, theme, select_id) {
     
     z <- out$percentile[out$var_code == "inc_median_dollar"]
     more_less <- if (z >= 0.8) {
-      cc_t(r = r, "much higher")
+      curbcut::cc_t(lang = r$lang(), translation = translation, "much higher")
     } else if (z >= 0.6) {
-      cc_t(r = r, "higher")
+      curbcut::cc_t(lang = r$lang(), translation = translation, "higher")
     } else if (z >= 0.5) {
-      cc_t(r = r, "slightly higher")
+      curbcut::cc_t(lang = r$lang(), translation = translation, "slightly higher")
     } else if (z >= 0.4) {
-      cc_t(r = r, "slightly lower")
+      curbcut::cc_t(lang = r$lang(), translation = translation, "slightly lower")
     } else if (z >= 0.2) {
-      cc_t(r = r, "lower")
-    } else cc_t(r = r, "much lower")
-    cc_t(r = r, "Incomes in the area are {more_less} than average for the {ior}.")
+      curbcut::cc_t(lang = r$lang(), translation = translation, "lower")
+    } else curbcut::cc_t(lang = r$lang(), translation = translation, "much lower")
+    curbcut::cc_t(lang = r$lang(), translation = translation, "Incomes in the area are {more_less} than average for the {ior}.")
 
   # Language
   } else if (theme == "Language") {
@@ -255,26 +255,26 @@ get_pe_block <- function(r = r, df, theme, select_id) {
     z <- z_table$percentile
     z_var <- z_table$var_code
     more_less <- if (z >= 0.8) {
-      cc_t(r = r, "much more")
+      curbcut::cc_t(lang = r$lang(), translation = translation, "much more")
     } else if (z >= 0.6) {
-      cc_t(r = r, "more")
+      curbcut::cc_t(lang = r$lang(), translation = translation, "more")
     } else if (z >= 0.5) {
-      cc_t(r = r, "slightly more")
+      curbcut::cc_t(lang = r$lang(), translation = translation, "slightly more")
     } else if (z >= 0.4) {
-      cc_t(r = r, "slightly less")
+      curbcut::cc_t(lang = r$lang(), translation = translation, "slightly less")
     } else if (z >= 0.2) {
-      cc_t(r = r, "less")
-    } else cc_t(r = r, "much less")
+      curbcut::cc_t(lang = r$lang(), translation = translation, "less")
+    } else curbcut::cc_t(lang = r$lang(), translation = translation, "much less")
     lang <- if (z_var == "lang_eng_only_pct") {
-      cc_t(r = r, "speak English")
+      curbcut::cc_t(lang = r$lang(), translation = translation, "speak English")
     } else if (z_var == "lang_french_only_pct") {
-      cc_t(r = r, "speak French")
+      curbcut::cc_t(lang = r$lang(), translation = translation, "speak French")
     } else if (z_var == "lang_french_eng_pct") {
-      cc_t(r = r, "be bilingual (French and English)")
+      curbcut::cc_t(lang = r$lang(), translation = translation, "be bilingual (French and English)")
     } else if (z_var == "lang_no_official_pct") {
-      cc_t(r = r, "speak neither French nor English")
+      curbcut::cc_t(lang = r$lang(), translation = translation, "speak neither French nor English")
     }
-    cc_t(r = r, "The area's residents are {more_less} likely to {lang} ",
+    curbcut::cc_t(lang = r$lang(), translation = translation, "The area's residents are {more_less} likely to {lang} ",
                   "than average for the {ior}.")
 
   # Transport
@@ -284,34 +284,34 @@ get_pe_block <- function(r = r, df, theme, select_id) {
 
     if (length(z) > 0) {
       more_less <- if (z >= 0.8) {
-        cc_t(r = r, "much more")
+        curbcut::cc_t(lang = r$lang(), translation = translation, "much more")
       } else if (z >= 0.6) {
-        cc_t(r = r, "more")
+        curbcut::cc_t(lang = r$lang(), translation = translation, "more")
       } else if (z >= 0.5) {
-        cc_t(r = r, "slightly more")
+        curbcut::cc_t(lang = r$lang(), translation = translation, "slightly more")
       } else if (z >= 0.4) {
-        cc_t(r = r, "slightly less")
+        curbcut::cc_t(lang = r$lang(), translation = translation, "slightly less")
       } else if (z >= 0.2) {
-        cc_t(r = r, "less")
-      } else cc_t(r = r, "much less")
+        curbcut::cc_t(lang = r$lang(), translation = translation, "less")
+      } else curbcut::cc_t(lang = r$lang(), translation = translation, "much less")
       
-      cc_t(r = r, "Residents in the area drive to work {more_less} than ",
+      curbcut::cc_t(lang = r$lang(), translation = translation, "Residents in the area drive to work {more_less} than ",
                     "average compared to the rest of the {ior}.")
     } else {
       z <- out$percentile[out$var_code == "access_jobs_total"]
       more_less <- if (z >= 0.8) {
-        cc_t(r = r, "much more")
+        curbcut::cc_t(lang = r$lang(), translation = translation, "much more")
       } else if (z >= 0.6) {
-        cc_t(r = r, "more")
+        curbcut::cc_t(lang = r$lang(), translation = translation, "more")
       } else if (z >= 0.5) {
-        cc_t(r = r, "slightly more")
+        curbcut::cc_t(lang = r$lang(), translation = translation, "slightly more")
       } else if (z >= 0.4) {
-        cc_t(r = r, "slightly less")
+        curbcut::cc_t(lang = r$lang(), translation = translation, "slightly less")
       } else if (z >= 0.2) {
-        cc_t(r = r, "less")
-      } else cc_t(r = r, "much less")
+        curbcut::cc_t(lang = r$lang(), translation = translation, "less")
+      } else curbcut::cc_t(lang = r$lang(), translation = translation, "much less")
       
-      cc_t(r = r, "The area has {more_less} public transit access to jobs ",
+      curbcut::cc_t(lang = r$lang(), translation = translation, "The area has {more_less} public transit access to jobs ",
                     "than the rest of the {ior}.")
       
     }

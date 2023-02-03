@@ -49,12 +49,12 @@ place_explorer_old_UI <- function(id) {
     sidebar_UI(
       NS(id, "place_explorer"),
       hidden(actionLink(inputId = NS(id, "back_to_map"),
-                        label = cc_t(r = r, "Go back to map"),
+                        label = curbcut::cc_t(lang = r$lang(), translation = translation, "Go back to map"),
                         style = "font-size: 1.25rem;")),
       
       susSidebarWidgets(
         # Search box
-        strong(cc_t(r = r, "Enter postal code or click on the map")),
+        strong(curbcut::cc_t(lang = r$lang(), translation = translation, "Enter postal code or click on the map")),
         HTML(paste0('
                    <div class="shiny-split-layout">
                      <div style="width: 80%;">',
@@ -70,7 +70,7 @@ place_explorer_old_UI <- function(id) {
         hr(),
         # Scale slider
         sliderTextInput(inputId = NS(id, "slider"),
-                        label = cc_t(r = r, "Choose scale:"),
+                        label = curbcut::cc_t(lang = r$lang(), translation = translation, "Choose scale:"),
                         choices = c("Borough/city", "Census tract", 
                                     "Dissemination area"),
                         selected = "Dissemination area",
@@ -83,7 +83,7 @@ place_explorer_old_UI <- function(id) {
         # # Checkboxes for each theme
         # pickerInput(
         #   inputId = NS(id, "themes_checkbox"),
-        #   label = cc_t(r = r, "Choose themes:"),
+        #   label = curbcut::cc_t(lang = r$lang(), translation = translation, "Choose themes:"),
         #   choices = unique(variables$theme),
         #   selected = unique(variables$theme),
         #   multiple = TRUE),
@@ -228,7 +228,7 @@ place_explorer_old_server <- function(id, r) {
 
       } else {
         showNotification(
-          cc_t(r = r,
+          curbcut::cc_t(lang = r$lang(), translation = translation,
                         paste0("No postal code found for `", 
                                input$address_searched, "`")),
           type = "error")
@@ -349,13 +349,13 @@ place_explorer_old_server <- function(id, r) {
                     ")"),
              "</i></h2>")
       } else HTML("<h2 style = 'display:inline;'>",
-                  paste0(cc_t(r = r, "The area around "), loc_name(),
+                  paste0(curbcut::cc_t(lang = r$lang(), translation = translation, "The area around "), loc_name(),
                          "<i style = 'color: var(--c-h2); ",
                          "font-family: var(--ff-h2); ",
                          "font-size: 2.5rem; margin-bottom: 0.75em; ",
                          "display:inline;'>",
                          "&nbsp;  (",
-                         cc_t(r = r, get_zoom_name(df())), " ", select_id(), 
+                         curbcut::cc_t(lang = r$lang(), translation = translation, get_zoom_name(df())), " ", select_id(), 
                          ")"),
                   "</i></h2>")
     })
@@ -384,7 +384,7 @@ place_explorer_old_server <- function(id, r) {
             column(width = 2, HTML(paste0(
               "<p style = 'margin:auto; text-align:center;",
               "font-size: medium; font-weight:bold;'>",
-              cc_t(r = r, title_card_to_grid()[[x]][["row_title"]]) |>
+              curbcut::cc_t(lang = r$lang(), translation = translation, title_card_to_grid()[[x]][["row_title"]]) |>
                 str_to_upper(), "</p>"))),
             column(width = 2, HTML(paste0(
               "<p style = 'margin:auto; text-align:center;'>",
@@ -412,19 +412,19 @@ place_explorer_old_server <- function(id, r) {
       # Prepare themes and text
       themes <- get_pe_themes(df(), select_id())
 
-      text_ior <- cc_t(r = r, switch(gsub(".*_", "", df()), 
+      text_ior <- curbcut::cc_t(lang = r$lang(), translation = translation, switch(gsub(".*_", "", df()), 
                                               "CSD" = "boroughs or cities",
                                               "CT" = "census tracts", 
                                               "DA" = "dissemination areas",
                                               "centraide" = "centraide zones",
                                               "zones"))
       stand_def <- c(
-        "Extreme outlier" = cc_t(r = r, 
+        "Extreme outlier" = curbcut::cc_t(lang = r$lang(), translation = translation, 
           "`Extreme outlier`: the variables rank in the top/bottom 10% of the ",
           "{text_ior}."),
-        "Outlier" = cc_t(r = r, 
+        "Outlier" = curbcut::cc_t(lang = r$lang(), translation = translation, 
           "`Outlier`: the variables rank in the top/bottom 20% of the {text_ior}."),
-        "Typical" = cc_t(r = r, 
+        "Typical" = curbcut::cc_t(lang = r$lang(), translation = translation, 
           "`Typical`: the variables rank in the middle 60% of the {text_ior}."))
 
       # The "server" of every block
@@ -454,10 +454,10 @@ place_explorer_old_server <- function(id, r) {
               output[[paste0("ind_", x[1], z, "_row_title")]] <-
                 renderText({
                   paste(p(style = "font-size: 11px;",
-                          cc_t(r = r, text$var_title[z]),
+                          curbcut::cc_t(lang = r$lang(), translation = translation, text$var_title[z]),
                           icon("question", verify_fa = FALSE),
                           title = str_to_sentence(
-                            cc_t(r = r, text$explanation[z]))))
+                            curbcut::cc_t(lang = r$lang(), translation = translation, text$explanation[z]))))
                 })
 
               output[[paste0("ind_", x[1],  z, "_percentile")]] <-
@@ -471,8 +471,8 @@ place_explorer_old_server <- function(id, r) {
 
             })
             
-            trans_theme <- str_to_upper(cc_t(r = r, x[1]))
-            trans_standout <- str_to_lower(cc_t(r = r, x[2]))
+            trans_theme <- str_to_upper(curbcut::cc_t(lang = r$lang(), translation = translation, x[1]))
+            trans_standout <- str_to_lower(curbcut::cc_t(lang = r$lang(), translation = translation, x[2]))
             trans_stand_def <- stand_def[[which(names(stand_def) == x[2])]]
             
             nb_values_to_show <- min(nrow(text), 5)
@@ -490,25 +490,25 @@ place_explorer_old_server <- function(id, r) {
                 tagList(fluidRow(
                   
                   column(width = 4,
-                         if (z == 1) h5(cc_t(r = r, "Variable")),
+                         if (z == 1) h5(curbcut::cc_t(lang = r$lang(), translation = translation, "Variable")),
                          htmlOutput(eval(parse(
                            text = paste0("NS(id, 'ind_", x[1], z,
                                          "_row_title')"))))),
                   
                   column(width = 2,
-                         if (z == 1) h5(cc_t(r = r, "Rank")),
+                         if (z == 1) h5(curbcut::cc_t(lang = r$lang(), translation = translation, "Rank")),
                          htmlOutput(eval(parse(
                            text = paste0("NS(id, 'ind_", x[1], z,
                                          "_percentile')"))))),
                   
                   column(width = 2,
-                         if (z == 1) h5(cc_t(r = r, "Value")),
+                         if (z == 1) h5(curbcut::cc_t(lang = r$lang(), translation = translation, "Value")),
                          htmlOutput(eval(parse(
                            text = paste0("NS(id, 'ind_", x[1], z,
                                          "_value')"))))),
                   
                   column(width = 3,
-                         if (z == 1) h5(cc_t(r = r, "Plot")),
+                         if (z == 1) h5(curbcut::cc_t(lang = r$lang(), translation = translation, "Plot")),
                          imageOutput(eval(parse(
                            text = paste0("NS(id, 'ind_", x[1], z,
                                          "_plot')"))),
@@ -519,7 +519,7 @@ place_explorer_old_server <- function(id, r) {
               })
             )
             
-          } else tagList(fluidRow(h3(cc_t(r = r, x[1]))),
+          } else tagList(fluidRow(h3(curbcut::cc_t(lang = r$lang(), translation = translation, x[1]))),
                          fluidRow("No data."))
         }) |> bindEvent(df(), select_id(), x,
                         input$themes_checkbox, r$lang())
@@ -533,12 +533,12 @@ place_explorer_old_server <- function(id, r) {
         tagList(
           if (x == 1 && length(which_standout) != 0) {
             tagList(h2(style = "padding: 10px; margin-bottom:0px",
-                       cc_t(r = r, "What makes this area unique?")))
+                       curbcut::cc_t(lang = r$lang(), translation = translation, "What makes this area unique?")))
           } else if ((x == 1 && length(which_standout) == 0) ||
                      (length(which_standout) != 0 &&
                       x - 1 == which_standout[length(which_standout)])) {
             tagList(h2(style = "padding: 10px; margin-bottom:0px",
-                       cc_t(r = r, 
+                       curbcut::cc_t(lang = r$lang(), translation = translation, 
                          "What makes this area similar to others?")))
           },
           uiOutput(

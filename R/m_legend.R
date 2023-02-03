@@ -1,7 +1,8 @@
 #### LEGEND MODULE #############################################################
 
 legend_UI <- function(id) {
-  div(id = NS(id, "legend_div"), h5(cc_t(r = r, "Legend"), 
+  div(id = NS(id, "legend_div"), h5(curbcut::cc_t(translation = translation, 
+                                                  "Legend"), 
                                     style = "font-size: 12px;"),
       uiOutput(NS(id, "legend_render")))
 }

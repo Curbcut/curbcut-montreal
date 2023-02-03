@@ -40,7 +40,9 @@ zoom_server <- function(id, r = r, zoom_string, zoom_levels) {
     observeEvent({zoom_levels()
       r$lang()}, {
       updateSliderTextInput(session, "zoom_slider", 
-                            selected = cc_t(r = r, get_zoom_name(zoom_string())),
+                            selected = curbcut::cc_t(lang = r$lang(), 
+                                                     translation = translation, 
+                                                     get_zoom_name(zoom_string())),
                             choices = get_zoom_label_t({
                               # If the module isn't impacted by a change of r$geo()
                               if (is.list(zoom_levels())) {
@@ -53,7 +55,9 @@ zoom_server <- function(id, r = r, zoom_string, zoom_levels) {
     observeEvent(zoom_string(), {
       if (input$zoom_auto)
         updateSliderTextInput(session, "zoom_slider", 
-                              selected = cc_t(r = r, get_zoom_name(zoom_string())))
+                              selected = curbcut::cc_t(lang = r$lang(), 
+                                                       translation = translation, 
+                                                       get_zoom_name(zoom_string())))
     }, priority = -1)
     
     # Update the slider if in auto mode

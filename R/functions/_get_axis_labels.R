@@ -4,10 +4,10 @@ get_axis_labels <- function(r = r, graph_type, var_left, var_right) {
   
   ## Get basic axis labels -----------------------------------------------------
   
-  var_left_title <- cc_t(r = r, variables$var_short[
+  var_left_title <- curbcut::cc_t(lang = r$lang(), translation = translation, variables$var_short[
     variables$var_code == unique(sub("_\\d{4}$", "", var_left))])
 
-  var_right_title <- cc_t(r = r, variables$var_short[
+  var_right_title <- curbcut::cc_t(lang = r$lang(), translation = translation, variables$var_short[
     variables$var_code == unique(sub("_\\d{4}$", "", var_right))])
   
   

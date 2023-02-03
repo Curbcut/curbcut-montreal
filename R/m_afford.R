@@ -12,32 +12,32 @@ afford_UI <- function(id) {
       NS(id, id),
       susSidebarWidgets(
         select_var_UI(NS(id, id), select_var_id = "d_1",
-                      label = cc_t(r = r, "Grouping"),
+                      label = curbcut::cc_t(translation = translation, "Grouping"),
                       var_list = var_left_list_1_afford), 
         select_var_UI(NS(id, id), select_var_id = "d_2",
-                      label = cc_t(r = r, "Shelter cost"),
+                      label = curbcut::cc_t(translation = translation, "Shelter cost"),
                       var_list = var_left_list_2_afford), 
         checkbox_UI(NS(id, id),
-                    label = cc_t(r = r, #### TO CHANGE DYNAMICALLY TO PERCENT OF HOUSEHOLDS VS INDIVIDUALS
+                    label = curbcut::cc_t(translation = translation, #### TO CHANGE DYNAMICALLY TO PERCENT OF HOUSEHOLDS VS INDIVIDUALS
                                  "Normalized data (percent of households)")),
         hr(),
         div(id = NS(id, "household_dropdowns"), 
             select_var_UI(NS(id, id), select_var_id = "d_3",
-                          label = cc_t(r = r, "Tenure status"),
+                          label = curbcut::cc_t(translation = translation, "Tenure status"),
                           var_list = var_left_list_3_afford),
             select_var_UI(NS(id, id), select_var_id = "d_4",
-                          label = cc_t(r = r, "Family characteristic"),
+                          label = curbcut::cc_t(translation = translation, "Family characteristic"),
                           var_list = var_left_list_3_afford)),
         
           div(id = NS(id, "population_dropdowns"),
               select_var_UI(NS(id, id), select_var_id = "d_5",
-                            label = cc_t(r = r, "Gender"),
+                            label = curbcut::cc_t(translation = translation, "Gender"),
                             var_list = var_left_list_3_afford),
               select_var_UI(NS(id, id), select_var_id = "d_6",
-                            label = cc_t(r = r, "Immigration status"),
+                            label = curbcut::cc_t(translation = translation, "Immigration status"),
                             var_list = var_left_list_3_afford),
               select_var_UI(NS(id, id), select_var_id = "d_7",
-                            label = cc_t(r = r, "Additional characteristic"),
+                            label = curbcut::cc_t(translation = translation, "Additional characteristic"),
                             var_list = var_left_list_3_afford))),
       
       bottom = div(class = "bottom_sidebar", 
@@ -157,7 +157,9 @@ afford_server <- function(id, r) {
     observeEvent(vl_gr(), {
       grp <- if (vl_gr() == "cent_d") "households" else "population"
       updateCheckboxInput(inputId = "afford-cbox",
-                          label = cc_t(r = r,paste0("Normalized data (percent of ", 
+                          label = curbcut::cc_t(lang = r$lang(), 
+                                                translation = translation,
+                                                paste0("Normalized data (percent of ", 
                                                     grp, ")")))
     })
     

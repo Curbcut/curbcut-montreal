@@ -7,12 +7,12 @@ prep_title_card <- function(r = r, geo, df, select_id, ind, percent = TRUE,
   
   # Setup ----------------------------------------------------------------------
   
-  geo_area <- cc_t(r = r, "The ", scales_dictionary$sing[scales_dictionary$scale == df])
-  geo_areas <- cc_t(r = r, scales_dictionary$plur[scales_dictionary$scale == df])
+  geo_area <- curbcut::cc_t(lang = r$lang(), translation = translation, "The ", scales_dictionary$sing[scales_dictionary$scale == df])
+  geo_areas <- curbcut::cc_t(lang = r$lang(), translation = translation, scales_dictionary$plur[scales_dictionary$scale == df])
   
   # To what it compares
   to_compare <- 
-    cc_t(r = r, regions_dictionary$to_compare[regions_dictionary$geo == geo])
+    curbcut::cc_t(lang = r$lang(), translation = translation, regions_dictionary$to_compare[regions_dictionary$geo == geo])
   
   # Prepare list to store all data
   info <- list()
@@ -48,17 +48,17 @@ prep_title_card <- function(r = r, geo, df, select_id, ind, percent = TRUE,
     
     text_data_rank <- 
       if (data_CSD_rank > 2 / 3 * df_row) {
-        cc_t(r = r, "relatively low at {ordinal_form(r = r, data_CSD_rank)}")
+        curbcut::cc_t(lang = r$lang(), translation = translation, "relatively low at {ordinal_form(r = r, data_CSD_rank)}")
       } else if (data_CSD_rank > 1 / 3 * df_row) {
         ordinal_form(r = r, data_CSD_rank)
       } else {
         if (r$lang() == "fr" && {ordinal_form(r = r, data_CSD_rank)} == "") {
           "premier"
-        } else cc_t(r = r, "{ordinal_form(r = r, data_CSD_rank)} best")
+        } else curbcut::cc_t(lang = r$lang(), translation = translation, "{ordinal_form(r = r, data_CSD_rank)} best")
       }
     
     info$data_rank <- 
-      cc_t(r = r, "It ranks {text_data_rank} {to_compare}")
+      curbcut::cc_t(lang = r$lang(), translation = translation, "It ranks {text_data_rank} {to_compare}")
     
   } else {
     
@@ -69,14 +69,14 @@ prep_title_card <- function(r = r, geo, df, select_id, ind, percent = TRUE,
         
       } else if (data_rank > 0.75) {
         
-        paste0(cc_t(r = r, "{geo_area} ranks in the top "),
+        paste0(curbcut::cc_t(lang = r$lang(), translation = translation, "{geo_area} ranks in the top "),
                if (abs(data_rank - 1) < 0.01) "1%" else 
                  scales::percent(abs(data_rank - 1)))
         
       } else if (data_rank < 0.25) {
         
         paste0(
-          cc_t(r = r, "{geo_area} ranks in the bottom "),
+          curbcut::cc_t(lang = r$lang(), translation = translation, "{geo_area} ranks in the bottom "),
           if (data_rank == 0) "1%" else scales::percent(data_rank))
         
       } else {
@@ -84,10 +84,10 @@ prep_title_card <- function(r = r, geo, df, select_id, ind, percent = TRUE,
         scale_percent_data_rank <- scales::percent(data_rank)
         
         if (ind == "air_quality_no2") {
-          cc_t(r = r, "Its value is worse than {scale_percent_data_rank} ",
+          curbcut::cc_t(lang = r$lang(), translation = translation, "Its value is worse than {scale_percent_data_rank} ",
                         "of {geo_areas} {to_compare}")
         } else {
-          cc_t(r = r, "Its value is higher than {scale_percent_data_rank} ",
+          curbcut::cc_t(lang = r$lang(), translation = translation, "Its value is higher than {scale_percent_data_rank} ",
                         "of {geo_areas} {to_compare}")
         }
         
@@ -115,11 +115,11 @@ prep_title_card <- function(r = r, geo, df, select_id, ind, percent = TRUE,
     } else if (data_rank > 0.50) {
       per <- scales::percent(abs(data_rank - 1))
       if (per == "0%") per <- "1%"
-      paste0(cc_t(r = r, "Top {per}"))
+      paste0(curbcut::cc_t(lang = r$lang(), translation = translation, "Top {per}"))
     } else {
       per <- scales::percent(abs(data_rank))
       if (per == "0%") per <- "1%"
-      paste0(cc_t(r = r, "Bottom {per}"))
+      paste0(curbcut::cc_t(lang = r$lang(), translation = translation, "Bottom {per}"))
     }
   
   return(info)

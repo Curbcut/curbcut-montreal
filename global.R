@@ -20,6 +20,8 @@ map_loc <- c(-73.58, 45.53)
 # Packages ----------------------------------------------------------------
 
 suppressPackageStartupMessages({
+  library(curbcut)
+  
   library(shiny)
   library(bslib)
   library(shinyjs)

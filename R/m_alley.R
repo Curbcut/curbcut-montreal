@@ -21,9 +21,9 @@ alley_UI <- function(id) {
       NS(id, id),
       susSidebarWidgets(
         checkbox_UI(id = NS(id, id),
-                    label = cc_t(r = r, "Green alleys visited by our team")),
+                    label = curbcut::cc_t(translation = translation, "Green alleys visited by our team")),
         select_var_UI(NS(id, id), var_list = var_list_left_alley,
-                      label = cc_t(r = r, "Grouping"))),
+                      label = curbcut::cc_t(translation = translation, "Grouping"))),
       bottom = div(class = "bottom_sidebar",
                    tagList(legend_UI(NS(id, id)),
                            zoom_UI(NS(id, id), map_zoom_levels_CMA)))),

@@ -28,14 +28,14 @@ get_title_card <- function(r = r, geo, df, select_id) {
     
     if (indicators_table$name[x] == "air_quality_no2") higher_than_threshold <-
         if (z$pretty_data_var > 53) {
-          cc_t(r = r, 
+          curbcut::cc_t(lang = r$lang(), translation = translation, 
             "Its value is higher than the WHO's guideline value of 53. ")
         } else ""
     
     list(row_title = indicators_table$title[x],
          percentile = z$percentile,
-         text = if (is.na(z$pretty_data_var)) cc_t(r = r, "No data.") else 
-           cc_t(r = r, indicators_table$text[x]),
+         text = if (is.na(z$pretty_data_var)) curbcut::cc_t(lang = r$lang(), translation = translation, "No data.") else 
+           curbcut::cc_t(lang = r$lang(), translation = translation, indicators_table$text[x]),
          link = z$link,
          link_module = z$link_module,
          link_var_left = z$link_var_left,

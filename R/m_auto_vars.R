@@ -66,7 +66,7 @@ auto_vars_server <- function(id, r = r, module_id = NULL, var_list,
                                 vars_list[length(vars_list) - 1]}
                             def <- vars_list[ceiling(length(vars_list)/2)]
                             slider_UI(input_namespace()(id_s$key),
-                                      label = cc_t(r = r, id_s$lab),
+                                      label = curbcut::cc_t(lang = r$lang(), translation = translation, id_s$lab),
                                       min = min(vars_list),
                                       max = max(vars_list),
                                       step = step,
@@ -78,7 +78,7 @@ auto_vars_server <- function(id, r = r, module_id = NULL, var_list,
                               sapply(names(vars_list), cc_t, r = r)
                             select_var_UI(input_namespace()(id_s$key),
                                           var_list = vars_list,
-                                          label = cc_t(r = r, id_s$lab))
+                                          label = curbcut::cc_t(lang = r$lang(), translation = translation, id_s$lab))
                           }
                  ))
       })
@@ -171,7 +171,7 @@ auto_vars_server <- function(id, r = r, module_id = NULL, var_list,
                                 vars_list[length(vars_list) - 1]}
                             def <- vars_list[ceiling(length(vars_list)/2)]
                             slider_UI(input_namespace()(id_s$key),
-                                      label = cc_t(r = r, id_s$lab),
+                                      label = curbcut::cc_t(lang = r$lang(), translation = translation, id_s$lab),
                                       min = min(vars_list),
                                       max = max(vars_list),
                                       step = step,
@@ -183,7 +183,7 @@ auto_vars_server <- function(id, r = r, module_id = NULL, var_list,
                               sapply(names(vars_list), cc_t, r = r)
                             select_var_UI(input_namespace()(id_s$key),
                                           var_list = vars_list,
-                                          label = cc_t(r = r, id_s$lab))
+                                          label = curbcut::cc_t(lang = r$lang(), translation = translation, id_s$lab))
                           }
                         }))
       )

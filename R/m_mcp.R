@@ -6,7 +6,10 @@ mcp_UI <- function(id) {
 
   tagList(
           susPage(class = "sus-page-mcp", footer = susFooter(),
-            susPageControls(select_var_UI(NS(id, "left"), var_list = var_list_left_mcp, width = "300px", inline = T)),
+            susPageControls(select_var_UI(NS(id, "left"), 
+                                          var_list = var_list_left_mcp, 
+                                          width = "300px", 
+                                          inline = T)),
             susPageSection(
               htmlOutput(NS(id, "mcp_output"))
             )

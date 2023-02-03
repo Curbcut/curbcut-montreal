@@ -16,11 +16,11 @@ data_export_modal <- function(r = r, export_data) {
   
   about_module <- list()
   
-  about_module$title <- paste0("<h3>", cc_t(r = r, module$nav_title), "</h3>")
+  about_module$title <- paste0("<h3>", curbcut::cc_t(lang = r$lang(), translation = translation, module$nav_title), "</h3>")
   
   about_module$text_linked <- 
     paste0(stringr::str_replace_all(
-      cc_t(r = r, module$dataset_info), 
+      curbcut::cc_t(lang = r$lang(), translation = translation, module$dataset_info), 
       "<p>", "<p style = 'font-size: 1.45rem;'>") |> 
         stringr::str_replace_all("<a href", "<a  target = '_blank' href")
     )
@@ -30,15 +30,15 @@ data_export_modal <- function(r = r, export_data) {
   
   about_data <- list()
   
-  about_data$title <- paste0("<h3>", cc_t(r = r, "About the data"), "</h3>")
+  about_data$title <- paste0("<h3>", curbcut::cc_t(lang = r$lang(), translation = translation, "About the data"), "</h3>")
   
   # Spatial organization of data
   data_organization <- 
-    tolower(cc_t(r = r, get_zoom_name(export_data$data_origin)))
+    tolower(curbcut::cc_t(lang = r$lang(), translation = translation, get_zoom_name(export_data$data_origin)))
   
   about_data$general_detail <- 
     paste0("<p style = 'font-size: 1.45rem'>",
-           cc_t(r = r, "The data is spatially organized at the ",
+           curbcut::cc_t(lang = r$lang(), translation = translation, "The data is spatially organized at the ",
                          "{data_organization} scale."),
            "</p>")
   
@@ -56,7 +56,7 @@ data_export_modal <- function(r = r, export_data) {
   
   if (exist_var_right)
     about_data$var_left$title <- 
-    paste0("<h4>", cc_t(r = r, "About main variable"), "</h3>")
+    paste0("<h4>", curbcut::cc_t(lang = r$lang(), translation = translation, "About main variable"), "</h3>")
   
   about_data <- get_metadata(export_data = export_data,
                              r = r,
@@ -77,7 +77,7 @@ data_export_modal <- function(r = r, export_data) {
     about_data$var_right <- list()
     
     about_data$var_right$title <- 
-      paste0("<h4>", cc_t(r = r, "About compared variable"), "</h3>")
+      paste0("<h4>", curbcut::cc_t(lang = r$lang(), translation = translation, "About compared variable"), "</h3>")
     
     about_data <- get_metadata(export_data = export_data, 
                                r = r,
@@ -118,7 +118,7 @@ data_export_modal <- function(r = r, export_data) {
     } else NULL
   
   modal_title <- 
-    cc_t(r = r, names(unlist(unname(mods_rdy))[
+    curbcut::cc_t(lang = r$lang(), translation = translation, names(unlist(unname(mods_rdy))[
       export_data$id == unlist(mods_rdy)]))
   
   modal <- 
@@ -131,7 +131,7 @@ data_export_modal <- function(r = r, export_data) {
       
       # Preview table 
       if (is.data.frame(export_data$data))
-        h3(cc_t(r = r, "Data preview (first 10 rows)")),
+        h3(curbcut::cc_t(lang = r$lang(), translation = translation, "Data preview (first 10 rows)")),
       if (is.data.frame(export_data$data))
         div(style = paste0("width:80%; margin-left:auto; margin-right:auto; ",
                            "overflow-x: auto; height:300px; overflow-y:auto;"),
@@ -140,13 +140,13 @@ data_export_modal <- function(r = r, export_data) {
                                  round = 2, rownames = FALSE)),
       
       footer = tagList(
-        modalButton(cc_t(r = r, "Dismiss")),
+        modalButton(curbcut::cc_t(lang = r$lang(), translation = translation, "Dismiss")),
         downloadButton("download_csv", 
                        style = button_style,
-                       cc_t(r = r, "Download .csv")),
+                       curbcut::cc_t(lang = r$lang(), translation = translation, "Download .csv")),
         downloadButton("download_shp",
                        style = button_style,
-                       cc_t(r = r, "Download .shp"))
+                       curbcut::cc_t(lang = r$lang(), translation = translation, "Download .shp"))
       ),
       easyClose = TRUE,
       size = "l")

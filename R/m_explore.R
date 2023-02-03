@@ -18,17 +18,17 @@ explore_UI <- function(id) {
   tagList(
     
     div(id = NS(id, "explore_title"),
-        fluidRow(column(width = 7, h4(cc_t(r = r, "Explore"))),
+        fluidRow(column(width = 7, h4(curbcut::cc_t(translation = translation, "Explore"))),
                  column(width = 5, align = "right", 
                         actionLink(inputId = NS(id, "hide_explore"), 
                                    class = "sus-small-link", 
-                                   label = cc_t(r = r, "Hide"))))),
+                                   label = curbcut::cc_t(translation = translation, "Hide"))))),
     
     div(id = NS(id, "explore_content"),
         htmlOutput(NS(id, "info_table")),
         plotOutput(NS(id, "explore_graph"), height = 150),
         hidden(actionLink(inputId = NS(id, "clear_selection"),
-                          label = cc_t(r = r, "Clear selection"))))
+                          label = curbcut::cc_t(translation = translation, "Clear selection"))))
   )
 }
 
@@ -114,7 +114,7 @@ explore_server <- function(id, r, data, var_left, var_right, geo = r$geo,
     
     # Change show/hide button text
     observeEvent(input$hide_explore, {
-      txt <- cc_t(r = r, switch(input$hide_explore %% 2 + 1, "Hide", "Show"))
+      txt <- curbcut::cc_t(lang = r$lang(), translation = translation, switch(input$hide_explore %% 2 + 1, "Hide", "Show"))
       updateActionButton(session, "hide_explore", label = txt)
     })
 

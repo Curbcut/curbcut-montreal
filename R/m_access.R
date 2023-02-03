@@ -44,7 +44,7 @@
           "access_car_30_healthcare_hospitals", "access_car_30_healthcare_other", "access_car_30_education_total",
           "access_car_30_fooddistribution_total", "access_car_30_healthcare_total", "access_car_30_retail_total",
           "access_foot_30_daycarespots", "access_bicycle_30_daycarespots", "access_car_30_daycarespots"
-        )), label = cc_t(r = r, "Access"))
+        )), label = curbcut::cc_t(translation = translation, "Access"))
       ),
       bottom = div(
         class = "bottom_sidebar",

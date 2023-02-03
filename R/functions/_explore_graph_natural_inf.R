@@ -21,7 +21,7 @@ explore_graph_natural_inf <- function(data, r = r, var_type, var_left, var_right
                fill = legend_qual$fill[c(3, 2, 4)]) +
       scale_y_continuous(name = NULL, 
                          labels = scales::percent) +
-      scale_x_discrete(name = cc_t(r = r, "Amount protected")) +
+      scale_x_discrete(name = curbcut::cc_t(lang = r$lang(), translation = translation, "Amount protected")) +
       theme_minimal() +
       theme(text = element_text(family = "SourceSansPro", size = 12),
             legend.position = "none", 
@@ -50,7 +50,7 @@ explore_graph_natural_inf <- function(data, r = r, var_type, var_left, var_right
       geom_col() +
       geom_hline(yintercept = dat$var_short[dat$name == var_left], 
                  colour = "black", lwd = 1) +
-      scale_x_continuous(name = cc_t(r = r, "Share of Montreal area"), 
+      scale_x_continuous(name = curbcut::cc_t(lang = r$lang(), translation = translation, "Share of Montreal area"), 
                          labels = scales::label_percent(1)) +
       scale_y_discrete(name = NULL) +
       scale_fill_manual(values = pal) +

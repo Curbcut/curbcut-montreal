@@ -5,7 +5,7 @@ mobile_warning <- function(r, session) {
   shiny::req(session$input$.shinybrowser)
   if (session$input$.shinybrowser$device != "Desktop") {
     shinyjs::info(
-      cc_t(r = r, 
+      curbcut::cc_t(lang = r$lang(), translation = translation, 
            "Curbcut does not currently support mobile phones. ",
            "Please visit from a computer."))
   }

@@ -10,7 +10,7 @@ info_table_alley <- function(r = r, data, var_type, var_left, var_right, df,
       participating_boroughs <- nrow(alley_text)
       nb_alleys <- {nrow(alley)}
       
-      cc_t(r = r, "{participating_boroughs} out of 19 Montreal boroughs ",
+      curbcut::cc_t(lang = r$lang(), translation = translation, "{participating_boroughs} out of 19 Montreal boroughs ",
                     "have a green alley program. They collectively have ",
                     "{nb_alleys} green alleys.")
     } else {
@@ -18,25 +18,25 @@ info_table_alley <- function(r = r, data, var_type, var_left, var_right, df,
       data <- alley_text[alley_text$ID == select_id,]
       
       text_to_display <- list()
-      text_to_display$title <- paste0("<p><b>", cc_t(r = r, "Borough"), " ", 
+      text_to_display$title <- paste0("<p><b>", curbcut::cc_t(lang = r$lang(), translation = translation, "Borough"), " ", 
                                       data$name, "</b></p>")
       text_to_display$intro <-
         paste0("<p>",
-               cc_t(r = r, "The first green alley inauguration was in "),
+               curbcut::cc_t(lang = r$lang(), translation = translation, "The first green alley inauguration was in "),
                data$first_alley, if (!is.na(data$green_alley_sqm)) 
-                 cc_t(r = r, " and there are {data$green_alley_sqm} square",
+                 curbcut::cc_t(lang = r$lang(), translation = translation, " and there are {data$green_alley_sqm} square",
                                " meters of green alley in the borough.") else ".",
                "</p>")
       text_to_display$text <- 
         paste0("<p>",
-               if (!is.na(data$app_process)) cc_t(r = r, data$app_process), " ",
-               if (!is.na(data$management)) cc_t(r = r, data$management), " ",
-               if (!is.na(data$budget)) cc_t(r = r, data$budget),
+               if (!is.na(data$app_process)) curbcut::cc_t(lang = r$lang(), translation = translation, data$app_process), " ",
+               if (!is.na(data$management)) curbcut::cc_t(lang = r$lang(), translation = translation, data$management), " ",
+               if (!is.na(data$budget)) curbcut::cc_t(lang = r$lang(), translation = translation, data$budget),
                "</p>")
       
       text_to_display$guide <- 
         paste0(glue("<p><a href = {data$guide}>"),
-               cc_t(r = r, "The green alley guide of {data$name}"),
+               curbcut::cc_t(lang = r$lang(), translation = translation, "The green alley guide of {data$name}"),
                "</a></p>")
       
       text_to_display$contact <- 
@@ -62,7 +62,7 @@ info_table_alley <- function(r = r, data, var_type, var_left, var_right, df,
       mixed_per <- scales::percent(mixed/nrow(alley_visited))
       none_per <- scales::percent(none/nrow(alley_visited))
       
-      cc_t(r = r, "Our team visited {nrow(alley_visited)} of the ",
+      curbcut::cc_t(lang = r$lang(), translation = translation, "Our team visited {nrow(alley_visited)} of the ",
                     "{nrow(alley)} green alleys in Montreal. We classified ",
                     "{green} ({green_per}) as 'green', {community} ",
                     "({community_per}) as 'community', {mixed} ",
@@ -79,18 +79,18 @@ info_table_alley <- function(r = r, data, var_type, var_left, var_right, df,
       if (!is.na(data$created)) 
         text_to_display$inauguration <- 
         paste0("<p>",
-               cc_t(r = r, "Inauguration date: "), 
+               curbcut::cc_t(lang = r$lang(), translation = translation, "Inauguration date: "), 
                data$created, "</p>")
       text_to_display$text <- 
         if (is.na(data$description)) {
           paste0("<p>",
-                 cc_t(r = r, "We do not have information ",
+                 curbcut::cc_t(lang = r$lang(), translation = translation, "We do not have information ",
                                "on this green alley."),
                  "</p>")
         } else {
-          paste0("<p>", cc_t(r = r, data$description), "</p>",
+          paste0("<p>", curbcut::cc_t(lang = r$lang(), translation = translation, data$description), "</p>",
                  if (!is.na(data$circulation)) {
-                   paste0("<p>Circulation: ", cc_t(r = r, data$circulation),
+                   paste0("<p>Circulation: ", curbcut::cc_t(lang = r$lang(), translation = translation, data$circulation),
                           "</p>")
                  })
         }

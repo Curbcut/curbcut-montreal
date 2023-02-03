@@ -11,7 +11,8 @@ place_explorer_UI <- function(id) {
       NS(id, id),
       susSidebarWidgets(
         # Search box
-        strong(cc_t(r = r, "Enter postal code or click on the map")),
+        strong(curbcut::cc_t(translation = translation, 
+                             "Enter postal code or click on the map")),
         HTML(paste0('
                    <div class="shiny-split-layout">
                      <div style="width: 80%;">',
@@ -27,14 +28,16 @@ place_explorer_UI <- function(id) {
         hr(),
         # Scale slider
         sliderTextInput(inputId = NS(id, "slider"),
-                        label = cc_t(r = r, "Choose scale:"),
+                        label = curbcut::cc_t(translation = translation, 
+                                              "Choose scale:"),
                         choices = c("Borough/city", "Census tract", 
                                     "Dissemination area"),
                         selected = "Dissemination area",
                         hide_min_max = TRUE, 
                         force_edges = TRUE),
         # Back button
-        actionLink(NS(id, "back"), cc_t(r = r, "Back to the map"))
+        actionLink(NS(id, "back"), curbcut::cc_t(translation = translation, 
+                                                 "Back to the map"))
       )
     ),
     
@@ -174,9 +177,9 @@ place_explorer_server <- function(id, r) {
             if (is.null(name)) return(NA_character_)
             
             scale <- 
-              cc_t(r = r, scales_dictionary$sing[scales_dictionary$scale == df()])
+              curbcut::cc_t(lang = r$lang(), translation = translation, scales_dictionary$sing[scales_dictionary$scale == df()])
             
-            cc_t(r = r, "The {scale} around '{name}'")
+            curbcut::cc_t(lang = r$lang(), translation = translation, "The {scale} around '{name}'")
           } else {
             data()$name[data()$ID == r[[id]]$select_id()]
           }

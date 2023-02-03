@@ -346,20 +346,23 @@ shinyServer(function(input, output, session) {
     showModal(modalDialog(
       # Change 'geo' (region)
       radioButtons("geo_change",
-                   label = cc_t(r = r, "Change default geometry"),
+                   label = curbcut::cc_t(lang = r$lang(), translation = translation,
+                                         "Change default geometry"),
                    inline = TRUE,
                    selected = r$geo(),
                    choiceNames = 
                      sapply(regions_dictionary$name[regions_dictionary$pickable],
-                            cc_t, r = r) |> unname(),
+                            curbcut::cc_t, lang = r$lang(), translation = translation) |> unname(),
                    choiceValues = regions_dictionary$geo[regions_dictionary$pickable]),
 
       hr(),
       
       # Lock in address of zone for select_ids
-      strong(cc_t(r = r, "Enter and save a default location (postal code or ",
+      strong(curbcut::cc_t(lang = r$lang(), translation = translation,
+                           "Enter and save a default location (postal code or ",
                   "address)")),
-      HTML("<br><i>", cc_t(r = r, "Default location will be saved until ",
+      HTML("<br><i>", curbcut::cc_t(lang = r$lang(), translation = translation,
+                                    "Default location will be saved until ",
                     "manually cleared from advanced options"), "</i>"),
       HTML(paste0('<div class="shiny-split-layout">',
                   '<div style="width: 80%; margin-top: var(--padding-v-md); ',
@@ -373,11 +376,14 @@ shinyServer(function(input, output, session) {
                                style = "margin-top: var(--padding-v-md);"),
                   '</div></div>',
                   actionButton(inputId = "cancel_lock_location",
-                               label = cc_t(r = r, "Clear default location"), 
+                               label = curbcut::cc_t(lang = r$lang(), translation = translation,
+                                                     "Clear default location"), 
                                icon = icon("xmark", verify_fa = FALSE),
                                style = "margin-top: var(--padding-v-md);"))),
-      title = cc_t(r = r, "Advanced options"),
-      footer = modalButton(cc_t(r = r, "Dismiss"))))
+      title = curbcut::cc_t(lang = r$lang(), translation = translation,
+                            "Advanced options"),
+      footer = modalButton(curbcut::cc_t(lang = r$lang(), translation = translation,
+                                         "Dismiss"))))
     })
 
   # Change the default geometry and save the cookie
@@ -409,14 +415,15 @@ shinyServer(function(input, output, session) {
         # Postal code detected, but not in our database
         if (sum(pcs) == 0) {
           showNotification(
-            cc_t(r = r, "Postal code `{postal_c}` isn't within an ",
+            curbcut::cc_t(lang = r$lang(), translation = translation,
+                          "Postal code `{postal_c}` isn't within an ",
                  "available geography."),
             type = "error")
           return(NULL)
         }
         
         showNotification(
-          cc_t(r = r,
+          curbcut::cc_t(lang = r$lang(), translation = translation,
                paste0("Postal code `{postal_codes$postal_code[pcs]}` ",
                       "saved as default.")),
           type = "default")
@@ -427,7 +434,8 @@ shinyServer(function(input, output, session) {
           dat <- dat[dat$ID == postal_codes$DA_ID[pcs], ]
           if (length(dat) == 0) {
             showNotification(
-              cc_t(r = r, paste0("No addresses found.")),
+              curbcut::cc_t(lang = r$lang(), translation = translation,
+                            paste0("No addresses found.")),
               type = "error")
             return(NULL)
           }
@@ -446,7 +454,8 @@ shinyServer(function(input, output, session) {
         val <- httr::content(get)
         if (length(val) == 0) {
           showNotification(
-            cc_t(r = r, paste0("No addresses found.")),
+            curbcut::cc_t(lang = r$lang(), translation = translation,
+                          paste0("No addresses found.")),
             type = "error")
           return(NULL)
         }
@@ -476,13 +485,15 @@ shinyServer(function(input, output, session) {
         
         if (all(sapply(out, is.null))) {
           showNotification(
-            cc_t(r = r, "Address `{input$lock_address_searched}` isn't",
+            curbcut::cc_t(lang = r$lang(), translation = translation,
+                          "Address `{input$lock_address_searched}` isn't",
                  " within an available geography."),
             type = "error")
           out <- NULL
         } else {
           showNotification(
-            cc_t(r = r, "Address `{val$title}` saved as default."),
+            curbcut::cc_t(lang = r$lang(), translation = translation,
+                          "Address `{val$title}` saved as default."),
             type = "default")          
         }
         
@@ -496,7 +507,7 @@ shinyServer(function(input, output, session) {
     r$default_select_id(NULL)
     
     showNotification(
-      cc_t(r = r,
+      curbcut::cc_t(lang = r$lang(), translation = translation,
                     paste0("Default location successfully cleared")),
       type = "default")
   })
@@ -511,7 +522,8 @@ shinyServer(function(input, output, session) {
     if (!input$sus_page %in% modules$id || 
         isFALSE(modules$metadata[modules$id == input$sus_page]))
       return(showNotification(
-        cc_t(r = r, "No data/metadata for this location."),
+        curbcut::cc_t(lang = r$lang(), translation = translation,
+                      "No data/metadata for this location."),
         duration = 3))
     
     showModal(data_modal()$modal)
@@ -529,7 +541,8 @@ shinyServer(function(input, output, session) {
     downloadHandler(
       filename = reactive(paste0(r[[input$sus_page]]$export_data()$id, "_shp.zip")),
       content = function(file) {
-        withProgress(message = cc_t(r = r, "Exporting Data"), {
+        withProgress(message = curbcut::cc_t(lang = r$lang(), translation = translation,
+                                             "Exporting Data"), {
           
           incProgress(0.4)
           
@@ -568,7 +581,8 @@ shinyServer(function(input, output, session) {
   #   js$takeShot(to_sh_id = "housing-housing-map", output_id = "screenshot_container")
   #   showModal(modalDialog(
   #     div(id = "screenshot_container"),
-  #     title = cc_t(r = r, "Save as image"),
+  #     title = curbcut::cc_t(lang = r$lang(), translation = translation,
+  #"Save as image"),
   #     size = "l"
   #   ))
   # })

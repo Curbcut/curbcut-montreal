@@ -117,24 +117,6 @@ remove_outliers_df <- function(x, var_1, var_2 = NULL) {
   
 }
   
-
-# vec_dep -----------------------------------------------------------------
-
-# Reimplemntation of purrr::vec_depth in base R
-vec_dep <- function(x) {
-  if (is.null(x)) {
-    0L
-  } else if (is.atomic(x)) {
-    1L
-  } else if (is.list(x)) {
-    depths <- vapply(x, vec_dep, vector("integer", 1))
-    1L + max(depths, 0L)
-  } else {
-    abort("`x` must be a vector")
-  }
-}
-
-
 # ntile -------------------------------------------------------------------
 
 ntile <- function(x, n) {

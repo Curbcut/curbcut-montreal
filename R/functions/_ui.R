@@ -6,7 +6,7 @@ ready_modules_ui <- function(mods_rdy, stand_alone_tabs) {
     lapply(names(mods_rdy), function(theme) {
       c(theme,
         lapply(names(mods_rdy[[theme]]), function(module) {
-          name <- cc_t(r = r, module)
+          name <- curbcut::cc_t(translation = translation, module)
           key <- unname(mods_rdy[[theme]][module])
           tabPanel(name,
                    do.call(paste0(key, "_UI"), list(key)),
@@ -20,8 +20,8 @@ ready_modules_ui <- function(mods_rdy, stand_alone_tabs) {
   
   # Translate and return
   lapply(out, function(x) {
-    x$title <- cc_t(r = r, x$title)
-    x$menuName <- cc_t(r = r, x$menuName)
+    x$title <- curbcut::cc_t(translation = translation, x$title)
+    x$menuName <- curbcut::cc_t(translation = translation, x$menuName)
     x
   })
 }
@@ -37,9 +37,9 @@ ready_modules_home <- function(mods_rdy) {
   
   list_args <- 
     lapply(names(mods_rdy), function(theme) {
-      c(list(name = cc_t(r = r, theme)),
+      c(list(name = curbcut::cc_t(translation = translation, theme)),
         lapply(names(mods_rdy[[theme]]), function(module) {
-          list(name = cc_t(r = r, module), 
+          list(name = curbcut::cc_t(translation = translation, module), 
                onclick = paste0(
                  "openTab('", unname(mods_rdy[[theme]][module]), "')"),
                img = mods_rdy_img[[theme]][[module]])
@@ -58,7 +58,8 @@ ready_modules_home <- function(mods_rdy) {
 stories_dropdown_ui <- function(stories) {
   
   ind_stories <- lapply(stories$ID, \(x) {
-    bslib::nav_item(tags$a(cc_t(stories$short_title[stories$ID == x]), 
+    bslib::nav_item(tags$a(curbcut::cc_t(translation = translation, 
+                                stories$short_title[stories$ID == x]), 
                            onclick = paste0("openTab('stories');",
                                             "Shiny.setInputValue(`",
                                             "stories-select_nav`, '", x, "');"),
@@ -67,13 +68,15 @@ stories_dropdown_ui <- function(stories) {
   
   do.call(bslib::nav_menu, c(
     # The title
-    list(title = cc_t(stories_page)),
+    list(title = curbcut::cc_t(translation = translation, stories_page)),
     # The first element, see map
-    list(tabPanel(cc_t("SEE MAP"), stories_UI("stories"),
+    list(tabPanel(curbcut::cc_t(translation = translation, "SEE MAP"), 
+                  stories_UI("stories"),
              value = "stories")),
     # Divider and header
     list(HTML("<li class='divider' style = 'padding:0px;margin:0px'></li>")),
-    list(HTML(paste0("<li class='dropdown-header'>", cc_t("Stories"), "</li>"))),
+    list(HTML(paste0("<li class='dropdown-header'>", 
+                     curbcut::cc_t(translation = translation, "Stories"), "</li>"))),
     # Individual stories
     ind_stories
   ))

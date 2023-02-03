@@ -11,10 +11,11 @@ stories_UI <- function(id) {
     sidebar_UI(
       NS(id, id),
       susSidebarWidgets(
-        actionLink(NS(id, "back"), cc_t(r = r, "Back to the map")),
+        actionLink(NS(id, "back"), curbcut::cc_t(translation = translation, 
+                                                 "Back to the map")),
         pickerInput(
           inputId = NS(id, "themes_checkbox"),
-          label = cc_t(r = r, "Choose themes:"),
+          label = curbcut::cc_t(translation = translation, "Choose themes:"),
           choices = unique(unlist(stories$themes)),
           selected = unique(unlist(stories$themes)),
           multiple = TRUE),
@@ -181,15 +182,15 @@ stories_server <- function(id, r) {
               #   style = "margin-top:50px;margin-right:20px;padding:10px;",
               #   div(class = "sus-map-panel-content sus-scroll-content",
               #       div(
-              #         h4(cc_t(r = r, "Take a walk"))),
+              #         h4(curbcut::cc_t(lang = r$lang(), translation = translation, "Take a walk"))),
               #       p("To come!"),
               #       hr(),
               #       div(
-              #         h4(cc_t(r = r, "Photos"))),
+              #         h4(curbcut::cc_t(lang = r$lang(), translation = translation, "Photos"))),
               #       lapply(images_tag, \(x) eval(parse(text = x))),
               #       hr(),
               #       div(
-              #         h4(cc_t(r = r, "Watch the video"))),
+              #         h4(curbcut::cc_t(lang = r$lang(), translation = translation, "Watch the video"))),
               #       hr(),
               #       "Other Content")
               # )
@@ -212,15 +213,16 @@ stories_server <- function(id, r) {
                  id = "bullet_points",
                  lapply(stories$short_title[stories$ID %in% in_theme], \(x) {
                    tags$li(
-                     cc_t(x, r = r),
+                     curbcut::cc_t(lang = r$lang(), translation = translation,
+                                   x),
                      style = "cursor: pointer; text-decoration: none;",
-                     title = cc_t(stories$preview[stories$short_title == x],
-                                  r = r),
+                     title = curbcut::cc_t(lang = r$lang(), translation = translation,
+                                           stories$preview[stories$short_title == x]),
                      onclick = paste0("Shiny.setInputValue(`",
                                       NS(id, "clicked_linked"),
                                       "`, '",
-                                      cc_t(stories$ID[stories$short_title == x],
-                                           r = r),
+                                      curbcut::cc_t(lang = r$lang(), translation = translation,
+                                                    stories$ID[stories$short_title == x]),
                                       "');"),
                      onmouseover = "$(this).css('text-decoration', 'underline');",
                      onmouseout = "$(this).css('text-decoration', 'none');"
