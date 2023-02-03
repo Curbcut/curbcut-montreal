@@ -33,7 +33,8 @@ shinyServer(function(input, output, session) {
     active_tab = "home",
     geo = reactiveVal(default_region),
     default_select_id = reactiveVal(NULL),
-    stories = reactiveValues(select_id = reactiveVal(NA)))
+    stories = reactiveValues(select_id = reactiveVal(NA)),
+    place_explorer = reactiveValues(select_id = reactiveVal(NA)))
   
   
   for (i in modules$id) {

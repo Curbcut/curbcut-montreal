@@ -106,8 +106,8 @@ place_explorer_translated <-
           fr = paste0("Vie active")) |> 
   add_row(en = paste0("The area around "), 
           fr = paste0("La zone autour du ")) |> 
-  add_row(en = paste0("It ranks {text_data_rank} {text_island_region}"), 
-          fr = paste0("Il se classe {text_data_rank} {text_island_region}")) |> 
+  add_row(en = paste0("It ranks {text_data_rank} {to_compare}"), 
+          fr = paste0("Il se classe {text_data_rank} {to_compare}")) |> 
   add_row(en = paste0("relatively low at {ordinal_form(r = r, data_CSD_rank)}"), 
           fr = paste0("relativement bas au {ordinal_form(r = r, data_CSD_rank)} rang")) |> 
   add_row(en = paste0(" on the island"), 
@@ -125,13 +125,13 @@ place_explorer_translated <-
   add_row(en = paste0("{ordinal_form(r = r, data_CSD_rank)} best"), 
           fr = paste0("en {ordinal_form(r = r, data_CSD_rank)} position")) |> 
   add_row(en = paste0("Its value is higher than {scale_percent_data_rank} of ",
-                      "{geo_areas} {text_island_region}"), 
+                      "{geo_areas} {to_compare}"), 
           fr = paste0("Sa valeur est supérieure à {scale_percent_data_rank} des ",
-                      "{geo_areas} {text_island_region}")) |> 
+                      "{geo_areas} {to_compare}")) |> 
   add_row(en = paste0("Its value is worse than {scale_percent_data_rank} of ",
-                      "{geo_areas} {text_island_region}"), 
+                      "{geo_areas} {to_compare}"), 
           fr = paste0("Sa valeur est pire que celle de {scale_percent_data_rank} des ",
-                      "{geo_areas} {text_island_region}")) |> 
+                      "{geo_areas} {to_compare}")) |> 
   add_row(en = paste0("the total number of jobs accessible within 30 minutes on average"), 
           fr = paste0("le nombre total d'emplois accessibles en 30 minutes et moins en moyenne")) |> 
   add_row(en = paste0("the number of low-skill jobs accessible within 30 minutes on average"), 

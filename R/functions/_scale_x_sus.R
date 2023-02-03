@@ -101,16 +101,6 @@ scale_lwd_alley <- function(select_id, tile) {
   } else scale_lwd_sus(select_id)
 }
 
-# Place explorer fill
-scale_fill_pe <- function(select_id) {
-  scale_color_category(
-    col = ID,
-    palette = c("#BAE4B3BB", "#BAE4B300"),
-    unmapped_color = "#BAE4B300",
-    levels = c(select_id, "NA"),
-    legend = FALSE) 
-}
-
 # Natural infrastructure lws
 scale_lwd_natural_inf <- function() 0
 

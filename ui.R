@@ -8,6 +8,7 @@ ui <- function(request) {
     useShinyjs(),
     useSever(),
     
+
     # Styling objects ------------------------------------------------------------
     
     tags$head(tags$link(rel = "icon", href = "favicon.ico")),
@@ -45,6 +46,8 @@ ui <- function(request) {
                         href = "sus.stories.css")),
     tags$head(tags$link(rel = "stylesheet", type = "text/css", 
                         href = "sus.news.css")),
+    tags$head(tags$link(rel = "stylesheet", type = "text/css",
+                        href = "sus.place_explorer.css")),
     tags$head(tags$link(rel = "stylesheet", type = "text/css", 
                         href = paste0("https://fonts.googleapis.com/icon?",
                                       "family=Material+Icons"))),
@@ -57,7 +60,6 @@ ui <- function(request) {
     tags$head(tags$script(js_links_between_modules)),
     tags$head(tags$script(bookmark_url)),
     tags$head(tags$style(HTML(styler))),
-    tags$head(tags$style(HTML(temp_styler))),
     # # To allow screenshot
     # tags$script(src = paste0("https://cdn.jsdelivr.net/npm/html2canvas@1.0.0-",
     #                          "rc.5/dist/html2canvas.min.js")),
@@ -111,7 +113,6 @@ ui <- function(request) {
         twitter_site = "@susmontreal"
       ),
     
-    
     # Navigation bar -------------------------------------------------------------
     
     do.call(
@@ -122,6 +123,9 @@ ui <- function(request) {
              tabPanel(cc_t("Home"), home_UI("home"), value = "home")),
         ready_modules_ui(mods_rdy),
         list(stories_dropdown_ui(stories),
+             tabPanel(cc_t("Place explorer"), 
+                      place_explorer_old_UI("place_explorer_old"),
+                      value = "place_explorer_old"),
              tabPanel(cc_t("Place explorer"), 
                       place_explorer_UI("place_explorer"),
                       value = "place_explorer"),

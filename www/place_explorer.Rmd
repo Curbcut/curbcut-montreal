@@ -1,0 +1,287 @@
+---
+title: "`r params$title`"
+output:
+  html_document:
+    theme: 
+      bg: "#ffffff" 
+      fg: "#7f7f7f"
+      primary: "#4a5c83"
+      base_font: !expr bslib::font_google("Outfit")
+      heading_font: !expr bslib::font_google("Source Sans Pro")
+      code_font: !expr bslib::font_google("Outfit")
+      code-color: skyblue
+      font-base-size: 1.25rem
+params: 
+    title: "Main indicators"
+    select_id: "24663185"
+    geo: "CMA"
+    df: "DA"
+    map_zoom: 13.75
+    mapbox_username: "sus-mcgill"
+    transit_walk_cycle_share_val: "Top x%"
+    transit_walk_cycle_share_text: "The DA ranks x"
+    transit_walk_cycle_share_colgroup: 1
+    air_quality_no2_val: "Top x%"
+    air_quality_no2_text: "The DA ranks x"
+    air_quality_no2_colgroup: 2
+    single_detached_val: "Top x%"
+    single_detached_text: "The DA ranks x"
+    single_detached_colgroup: 3
+    green_space_ndvi_val: "Top x%"
+    green_space_ndvi_text: "The DA ranks x"
+    green_space_ndvi_colgroup: 4
+    canale_index_val: "Top x%"
+    canale_index_text: "The DA ranks x"
+    canale_index_colgroup: 5
+---
+
+
+```{r libraries, echo = FALSE, include = FALSE}
+library(bslib)
+library(bsicons)
+library(shiny)
+library(rdeck)
+library(sf)
+library(here)
+library(tidyverse)
+library(plotly)
+```
+
+```{css, echo=FALSE}
+.bg-col_pe_1 {
+  background-color:#CA002095;
+  color:#ffffff
+}
+
+.bg-col_pe_2 {
+  background-color:#F4A58295;
+  color:#222222
+}
+
+.bg-col_pe_3 {
+  background-color:#A9A9A995;
+  color:#222222
+}
+
+.bg-col_pe_4 {
+  background-color:#BAE4B395;
+  color:#222222
+}
+
+.bg-col_pe_5 {
+  background-color:#31A35495;
+  color:#ffffff
+}
+
+```
+
+
+```{r map, echo = FALSE}
+# 
+# # Retrieve the selected ID centroid
+# geo_df <- paste(params$geo, params$df, sep = "_")
+# df_geo <- qs::qread(here("data", "geometry_export", paste0(geo_df, ".qs")))
+# id_sf <- df_geo$geometry[df_geo$ID == params$select_id]
+# map_loc <- as.vector(sf::st_coordinates(sf::st_centroid(id_sf)))
+# 
+# # Decide which color for the map
+# hexes <- c("#CA002095", "#F4A58295", "#A9A9A995", "#BAE4B395", "#31A35495")
+# map_col <- hexes[round(c(as.numeric(params$transit_walk_cycle_share_colgroup,
+# params$air_quality_no2_colgroup,
+# params$single_detached_colgroup,
+# params$green_space_ndvi_colgroup,
+# params$canale_index_colgroup)))]
+# 
+# map_col_light <- gsub("95$", "20", map_col)
+# 
+# # Necessary for the mapdeck
+# map_token <- paste0("pk.eyJ1Ijoic3VzLW1jZ2lsbCIsImEiOiJjbDBxMTcyNWwyNTl0M2",
+#                     "RtZzRremNxOHA3In0.V2Ah5lxy-3RZlF2QKOvIjg")
+# options(rdeck.mapbox_access_token = map_token)
+# map_style_building <- "mapbox://styles/sus-mcgill/cl2bwtrsp000516rwyrkt9ior"
+# 
+# rdeck(map_style = map_style_building, initial_view_state = view_state(
+#     center = map_loc, zoom = params$map_zoom), width = "100%", height = "200px",
+#     controller = FALSE) |>
+#     add_mvt_layer(
+#         id = "study",
+#         data = mvt_url(paste0(params$mapbox_username, ".", geo_df)),
+#         pickable = FALSE,
+#         auto_highlight = FALSE,
+#         get_fill_color = scale_color_category(
+#             col = ID,
+#             palette = c(map_col_light, "#BAE4B300"),
+#             unmapped_color = "#BAE4B300",
+#             levels = c(params$select_id, "NA"),
+#             legend = FALSE),
+#         get_line_color = scale_color_category(
+#             col = ID,
+#             palette = c(map_col, "#BAE4B300"),
+#             unmapped_color = "#BAE4B300",
+#             levels = c(params$select_id, "NA"),
+#             legend = FALSE),
+#         line_width_units = "pixels",
+#         get_line_width = 5) |> suppressWarnings()
+
+```
+
+```{r no2, echo = FALSE}
+# 
+# no2 <- suppressMessages(read_csv(here("dev", "data", "place_explorer", "no2lur_a_16.csv"))) |>
+#   st_as_sf(coords = c("longitude", "latitude"),crs = 4326) |>
+#   select(-postalcode16, -province) |>
+#   st_filter(df_geo) |>
+#   rename(NO2 = 1)
+# 
+# no2 <- df_geo |>
+#   select(ID) |>
+#   st_join(no2) |>
+#   sf::st_drop_geometry() |>
+#   filter(NO2 != -9999) |>
+#   group_by(ID) |>
+#   summarize(NO2 = mean(NO2), .groups = "drop")
+# 
+# this_no2_val <- no2$NO2[no2$ID == params$select_id]
+# 
+# vline <- function(x = 0) {
+#   list(
+#     type = "line",
+#     y0 = 0,
+#     y1 = 1,
+#     yref = "paper",
+#     x0 = x,
+#     x1 = x,
+#     line = list(color = "#222222")
+#   )
+# }
+# 
+# no2_plotly <- 
+#   plot_ly(no2) %>%
+#   add_histogram(x = ~NO2,
+#                 color = I("white"),
+#                 alpha = 0.75,
+#                 hoverinfo = "x") %>%
+#   layout(
+#     xaxis = list(visible = F, showgrid = F, title = "Nitrogen dioxide (ppb)"),
+#     yaxis = list(visible = F, showgrid = F, title = "Dissemination area (count)"),
+#     hovermode = "x",
+#     margin = list(t = 0, r = 0, l = 0, b = 0),
+#     font = list(color = "white"),
+#     paper_bgcolor = "transparent",
+#     plot_bgcolor = "transparent",
+#     shapes = list(vline(this_no2_val))
+#   ) %>%
+#   config(displayModeBar = F) %>%
+#   htmlwidgets::onRender(
+#     "function(el) {
+#       var ro = new ResizeObserver(function() {
+#          var visible = el.offsetHeight > 200;
+#          Plotly.relayout(el, {'xaxis.visible': visible});
+#          Plotly.relayout(el, {'yaxis.visible': visible});
+#       });
+#       ro.observe(el);
+#     }"
+#   )
+
+```
+
+```{r greenspace, echo = FALSE}
+# greenspace <- suppressMessages(read_csv(here("dev", "data", "place_explorer", "grlan_amn_19.csv"))) |> 
+#   st_as_sf(coords = c("longitude", "latitude"),crs = 4326) |> 
+#   select(-postalcode19, -province) |> 
+#   st_filter(df_geo) |> 
+#   # I believe the first value is Annual value, Mean of Means 100m.
+#   select(NDVI = 1)
+# 
+# greenspace <- df_geo |> 
+#     select(ID) |> 
+#     st_join(greenspace) |> 
+#     st_drop_geometry() |> 
+#     filter(NDVI != -9999) |> 
+#     group_by(ID) |> 
+#     summarize(NDVI = mean(NDVI), .groups = "drop")
+# 
+# this_no2_val <- greenspace$NDVI[greenspace$ID == params$select_id]
+# 
+# greenspace_plotly <- 
+#   plot_ly(greenspace) %>%
+#   add_histogram(x = ~NDVI,
+#                 color = I("white"),
+#                 alpha = 0.75,
+#                 hoverinfo = "x") %>%
+#   layout(
+#     xaxis = list(visible = F, showgrid = F, title = "Normalized Difference Vegetation Index"),
+#     yaxis = list(visible = F, showgrid = F, title = "Dissemination area (count)"),
+#     hovermode = "x",
+#     margin = list(t = 0, r = 0, l = 0, b = 0),
+#     font = list(color = "white"),
+#     paper_bgcolor = "transparent",
+#     plot_bgcolor = "transparent",
+#     shapes = list(vline(this_no2_val))
+#   ) %>%
+#   config(displayModeBar = F) %>%
+#   htmlwidgets::onRender(
+#     "function(el) {
+#       var ro = new ResizeObserver(function() {
+#          var visible = el.offsetHeight > 200;
+#          Plotly.relayout(el, {'xaxis.visible': visible});
+#          Plotly.relayout(el, {'yaxis.visible': visible});
+#       });
+#       ro.observe(el);
+#     }"
+#   )
+```
+
+```{r valueboxes, echo = FALSE}
+
+layout_column_wrap(
+  width = 1/2,
+  
+  value_box(
+  title = p("Sustainable transport", bsicons::bs_icon("bus-front")),
+  value = params$transit_walk_cycle_share_val,
+  showcase = bs_icon("bus-front"),
+  p(HTML(params$transit_walk_cycle_share_text)),
+  full_screen = TRUE,
+  theme_color = paste0("col_pe_", params$transit_walk_cycle_share_colgroup)
+),
+
+value_box(
+  title = p("Air pollution", bs_icon("wind")),
+  value = params$air_quality_no2_val,
+  showcase = bs_icon("wind"),
+  p(HTML(params$air_quality_no2_text)),
+  full_screen = TRUE,
+  theme_color = paste0("col_pe_", params$air_quality_no2_colgroup)
+),
+
+value_box(
+  title = p("Housing", bs_icon("houses")),
+  value = params$single_detached_val,
+  showcase = bs_icon("houses"),
+  p(HTML(params$single_detached_text)),
+  full_screen = TRUE,
+  theme_color = paste0("col_pe_", params$single_detached_colgroup)
+),
+
+value_box(
+  title = p("Vegetation", bs_icon("tree")),
+  value = params$green_space_ndvi_val,
+  showcase = bs_icon("tree"),
+  p(HTML(params$green_space_ndvi_text)),
+  full_screen = TRUE,
+  theme_color = paste0("col_pe_", params$green_space_ndvi_colgroup)
+),
+
+value_box(
+  title = p("Active living", bs_icon("activity")),
+  value = params$canale_index_val,
+  showcase = bs_icon("activity"),
+  p(HTML(params$canale_index_text)),
+  full_screen = TRUE,
+  theme_color = paste0("col_pe_", params$canale_index_colgroup)
+)
+)
+
+```
+

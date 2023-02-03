@@ -118,34 +118,6 @@ remove_outliers_df <- function(x, var_1, var_2 = NULL) {
 }
   
 
-# ordinal_form ------------------------------------------------------------
-
-ordinal_form <- function(r, x) {
-  # English ordinal form
-  if (is.null(getDefaultReactiveDomain()) || r$lang() == "en") {
-    if (x > 20) {
-      if (x %% 100 %in% c(11 , 12, 13)) {
-        form <- "th "
-      } else {
-        form <- switch(as.character(x %% 10), "1" = "st ", "2" = "nd ",
-                       "3" = "rd ", "th ")
-      }
-      paste0(x, form)
-    } else {
-      switch(as.character(x), "1" = "", "2" = "second ",
-             "3" = "third ", "4" = "fourth ", "5" = "fifth ", 
-             "6" = "sixth ",  "7" = "seventh ", "8" = "eighth ", 
-             "9" = "ninth ", "10" = "tenth ",
-             paste0(as.character(x), "th "))
-    }
-  } else {
-    # French ordinal form
-    switch(as.character(x), "1" = "", "2" = "deuxième ",
-           "3" = "troisième ", paste0(as.character(x), "ième "))
-  }
-}
-
-
 # vec_dep -----------------------------------------------------------------
 
 # Reimplemntation of purrr::vec_depth in base R

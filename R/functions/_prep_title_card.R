@@ -1,24 +1,26 @@
 #### PREPARE TITLE CARD ROW ####################################################
 
-prep_title_card <- function(r = r, df, select_id, ind, percent = TRUE,
+prep_title_card <- function(r = r, geo, df, select_id, ind, percent = TRUE,
                             high_is_good = TRUE, val_digits = 0,
                             link_module = NULL, link_var_left = NULL,
-                            link_outside = NULL, island = TRUE,
-                            geo_area = geo_area, geo_areas = geo_areas) {
+                            link_outside = NULL) {
   
   # Setup ----------------------------------------------------------------------
   
-  scale <- if (island) "island" else "region"
+  geo_area <- cc_t(r = r, "The ", scales_dictionary$sing[scales_dictionary$scale == df])
+  geo_areas <- cc_t(r = r, scales_dictionary$plur[scales_dictionary$scale == df])
   
-  geo_area <- cc_t(r = r, "The ", geo_area)
-  geo_areas <- cc_t(r = r, geo_areas)
+  # To what it compares
+  to_compare <- 
+    cc_t(r = r, regions_dictionary$to_compare[regions_dictionary$geo == geo])
   
   # Prepare list to store all data
   info <- list()
   
-  data <- title_card_indicators[[ind]][[df]]
+  data <- title_card_indicators[[ind]][[paste(geo, df, sep = "_")]]
   data_var <- data$var[data$ID == select_id]
   if (length(data_var) == 0) return(NULL)
+  
   
   # pretty_data_var ------------------------------------------------------------
   
@@ -36,7 +38,7 @@ prep_title_card <- function(r = r, df, select_id, ind, percent = TRUE,
   
   data_rank <- data[data$ID == select_id, ]$percentile
   
-  if (is_scale_in_df("CSD", df)) {
+  if (nrow(get(paste(geo, df, sep = "_"))) < 40) {
     
     rank <- data[data$ID == select_id, ]$rank
     df_row <- sum(!is.na(data$var))
@@ -55,11 +57,8 @@ prep_title_card <- function(r = r, df, select_id, ind, percent = TRUE,
         } else cc_t(r = r, "{ordinal_form(r = r, data_CSD_rank)} best")
       }
     
-    text_island_region <- if (island) cc_t(r = r, " on the island") else 
-      cc_t(r = r, " in the region")
-    
     info$data_rank <- 
-      cc_t(r = r, "It ranks {text_data_rank} {text_island_region}")
+      cc_t(r = r, "It ranks {text_data_rank} {to_compare}")
     
   } else {
     
@@ -83,46 +82,16 @@ prep_title_card <- function(r = r, df, select_id, ind, percent = TRUE,
       } else {
         
         scale_percent_data_rank <- scales::percent(data_rank)
-        text_island_region <- if (island) cc_t(r = r, "on the island") else 
-          cc_t(r = r, "in the region")
         
         if (ind == "air_quality_no2") {
           cc_t(r = r, "Its value is worse than {scale_percent_data_rank} ",
-                        "of {geo_areas} {text_island_region}")
+                        "of {geo_areas} {to_compare}")
         } else {
           cc_t(r = r, "Its value is higher than {scale_percent_data_rank} ",
-                        "of {geo_areas} {text_island_region}")
+                        "of {geo_areas} {to_compare}")
         }
         
       }
-  }
-  
-  
-  # Module link ----------------------------------------------------------------
-  
-  if (!is.na(link_module) && !is.null(link_module) && 
-      # Is the link module active?
-      link_module %in% unlist(mods_rdy)) {
-    
-    info$link <- paste0(" <a id='place_explorer-title_card_", ind, "' href='#'", 
-                        " class='action-button shiny-bound-input'>",
-                        cc_t(r = r, "[LEARN MORE]"), "</a>")
-    info$link_module <- link_module
-    info$link_var_left <- link_var_left
-    
-  } else if (!is.na(link_outside) && !is.null(link_outside)) {
-    
-    info$link <- paste0(" <a href='", link_outside, "' target='_blank'>",
-                        cc_t(r = r, "[LEARN MORE]"), "</a>")
-    info$link_module <- NULL
-    info$link_var_left <- NULL
-    
-  } else {
-    
-    info$link <- NULL
-    info$link_module <- NULL
-    info$link_var_left <- NULL
-    
   }
   
   
@@ -131,55 +100,27 @@ prep_title_card <- function(r = r, df, select_id, ind, percent = TRUE,
   colours_which <- c(0.1, 0.3, 0.5, 0.7, 0.9)
   if (!high_is_good) colours_which <- rev(colours_which)
   
-  hex_to_plot <- col_pe[which.min(abs(
-    colours_which - data[data$ID == select_id, ]$percentile))]
+  info$hex_cat <- which.min(abs(
+    colours_which - data[data$ID == select_id, ]$percentile))
   
-  # In case it's higher than the threshold of 5
-  if (ind == "air_quality_no2" && data_var >= 5) hex_to_plot <- col_pe[1]
+  # In case it's higher than the threshold of 5 for Air Quality
+  if (ind == "air_quality_no2" && data_var >= 53) info$hex_cat <- 1
   
   
   # Percentile -----------------------------------------------------------------
 
   info$percentile <- 
     if (is.na(data_rank)) {
-      paste0("<p style = 'font-size: small; margin:auto; text-align:center;",
-             "color:", "#999999","'></p>")
+      paste0("")
     } else if (data_rank > 0.50) {
       per <- scales::percent(abs(data_rank - 1))
       if (per == "0%") per <- "1%"
-      paste0("<p style = 'font-size: small; margin:auto; text-align:center;",
-             "color:", hex_to_plot,"'>", cc_t(r = r, "Top {per}"), "</p>")
+      paste0(cc_t(r = r, "Top {per}"))
     } else {
       per <- scales::percent(abs(data_rank))
       if (per == "0%") per <- "1%"
-      paste0("<p style = 'font-size: small; margin:auto; text-align:center;",
-             "color:", hex_to_plot,"'>", cc_t(r = r, "Bottom {per}"), "</p>")
+      paste0(cc_t(r = r, "Bottom {per}"))
     }
-  
-  
-  # Plot -----------------------------------------------------------------------
-  
-  info$plot <-
-    if (length(hex_to_plot) > 0) {
-      
-      dat <- data[!is.na(data$var),]
-      outliers <- find_outliers(dat$var)
-      if (length(outliers) > 0 && !data_var %in% dat$var[outliers]) {
-          dat <- dat[-outliers, ]
-      }
-      
-      dat |> 
-        ggplot() +
-        geom_density(aes(x = var), size = 1, color = hex_to_plot) +
-        geom_vline(aes(xintercept = data_var), color = "#000000", size = 1) +
-        theme_void() +
-        theme(panel.background = element_rect(fill = "#fbfbfb", colour = NA),
-              plot.background = element_rect(fill = "#fbfbfb", colour = NA))
-      
-    } else ggplot() +
-    theme(panel.background = element_rect(fill = "#fbfbfb", colour = NA),
-          plot.background = element_rect(fill = "#fbfbfb", colour = NA))
-  
   
   return(info)
   

@@ -428,13 +428,6 @@ styler <- '
 
 '
 
-temp_styler <- '
-  #stories-back {
-    z-index: 1000 !important;
-  }
-
-'
-
 set_ui_lang <- "shinyjs.setLanguage = function(language) {
     document.querySelector('body').className = `user-lang-${language}`;
   };"

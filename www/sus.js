@@ -215,6 +215,32 @@ window.addEventListener('load', (evt) => {
 
   storiesContainer.parentElement.appendChild(storiesTopBar);
   
+  
+  
+  // PLACE EXPLORER START
+  const placeExBack = document.querySelector('#place_explorer-back');
+  const placeExContainer = document.querySelector('#place_explorer-main_panel');
+  const placeExTopBar = document.createElement('div');
+  const placeExBackButton = document.createElement('button');
+  const placeExCloseButton = document.createElement('button');
+
+  placeExBackButton.appendChild(backIcon);
+  placeExCloseButton.appendChild(closeIcon);
+
+  placeExBackButton.addEventListener('click', () => placeExBack.click());
+  placeExCloseButton.addEventListener('click', () => placeExBack.click());
+  
+  placeExTopBar.appendChild(placeExBackButton);
+  placeExTopBar.appendChild(placeExBack);
+  placeExTopBar.appendChild(placeExCloseButton);
+  placeExTopBar.id = 'place_explorer-back';
+  placeExTopBar.style.display = 'none';
+
+  placeExContainer.parentElement.appendChild(placeExTopBar);
+  // PLACEE EXPLORER END
+  
+  
+  
   const navbarHeight = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--h-navbar'));
 
   // console.log('navbarHeight:' + navbarHeight);
