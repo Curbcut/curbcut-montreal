@@ -66,7 +66,7 @@ place_explorer_server <- function(id, r) {
     
     # df/data reactives
     df <- reactive(get_zoom_code(input$slider))
-    data <- reactive(get(paste(r$geo(), df(), sep = "_")))
+    data <- reactive(get(paste(r$region(), df(), sep = "_")))
     
     # Map ---------------------------------------------------------------------
 
@@ -77,7 +77,7 @@ place_explorer_server <- function(id, r) {
         add_mvt_layer(
           id = "place_explorer",
           name = "place_explorer",
-          data = mvt_url(paste0(mapbox_username, ".", r$geo(), "_DA")),
+          data = mvt_url(paste0(mapbox_username, ".", r$region(), "_DA")),
           pickable = TRUE,
           auto_highlight = TRUE,
           highlight_color = "#AAB6CF80",
@@ -88,7 +88,7 @@ place_explorer_server <- function(id, r) {
     # Update main map when the chosen scale changes
     rdeck_proxy(id = id_map) |>
       add_mvt_layer(id = "place_explorer",
-                    data = mvt_url(paste0("sus-mcgill.", r$geo(), "_", df())),
+                    data = mvt_url(paste0("sus-mcgill.", r$region(), "_", df())),
                     pickable = TRUE,
                     auto_highlight = TRUE,
                     highlight_color = "#AAB6CF80",
@@ -128,102 +128,67 @@ place_explorer_server <- function(id, r) {
           if (all(is.na(stringr::str_extract(data()$name, "[a-z|A-Z]")))) {
             lon <- input[[paste0(id_map, "_click")]]$coordinate[[1]]
             lat <- input[[paste0(id_map, "_click")]]$coordinate[[2]]
-            link <- paste0("photon.komoot.io/reverse?lon=", lon, "&lat=", 
-                           lat)
-            out <- tryCatch(httr::content(httr::GET(link, httr::timeout(2))), 
-                            error = function(e) NULL)
-            if (is.null(out$features) || length(out$features) == 0) {
-              return(NA_character_)
-            }
-            out <- out$features[[1]]$properties
-            third <- (function(out) {
-              if (!is.null(out$city)) {
-                return(gsub(" \\(\\d{2}\\)$", "", out$city))
-              }
-              if (!is.null(out$locality)) {
-                return(out$locality)
-              }
-              if (!is.null(out$district)) {
-                return(out$district)
-              }
-              if (!is.null(out$town)) {
-                return(out$town)
-              }
-              if (!is.null(out$village)) {
-                return(out$village)
-              }
-              if (!is.null(out$suburb)) {
-                return(out$suburb)
-              }
-              if (!is.null(out$region)) {
-                return(out$region)
-              }
-              if (!is.null(out$county)) {
-                return(out$county)
-              }
-            })(out)
-            second <- (function(out) {
-              if (is.null(out$street)) {
-                return(third)
-              }
-              return(paste(out$street, third, sep = ", "))
-            })(out)
-            name <- (function(out) {
-              if (is.null(out$housenumber)) {
-                return(second)
-              }
-              return(paste(out$housenumber, second, sep = " "))
-            })(out)
-            if (is.null(name)) return(NA_character_)
+            name <- curbcut::rev_geocode(lon = lon, lat = lat)
             
             scale <- 
-              curbcut::cc_t(lang = r$lang(), translation = translation, scales_dictionary$sing[scales_dictionary$scale == df()])
+              curbcut::cc_t(lang = r$lang(), translation = translation, 
+                            scales_dictionary$sing[scales_dictionary$scale == df()])
             
-            curbcut::cc_t(lang = r$lang(), translation = translation, "The {scale} around '{name}'")
+            curbcut::cc_t(lang = r$lang(), translation = translation, 
+                          "The {scale} around '{name}'")
           } else {
             data()$name[data()$ID == r[[id]]$select_id()]
           }
-
         
-        title_card <- get_title_card(r = r, 
-                                     geo = r$geo(),
-                                     df = df(), 
-                                     r[[id]]$select_id())
+        title_card_data <- curbcut::placeex_main_card(pe_main_card = pe_main_card,
+                                                      region = r$region(),
+                                                      df = df(),
+                                                      select_id = r[[id]]$select_id(),
+                                                      lang = r$lang(),
+                                                      translation = translation)
+        # title_card_data <- curbcut::placeex_main_card(pe_main_card = pe_main_card,
+        #                                               region = "CMA",
+        #                                               df = "DA",
+        #                                               select_id = "24520101",
+        #                                               lang = "en",
+        #                                               translation = translation)
         
         map_zoom <- 
-          get(paste("map_zoom_levels", r$geo(), sep = "_"))[[
+          get(paste("map_zoom_levels", r$region(), sep = "_"))[[
             gsub(".*_", "", df())]] + 0.75
+        scale_sing <- scales_dictionary$slider_title[
+          scales_dictionary$scale == df()]
+        map_loc <- data()$centroid[data()$ID == r[[id]]$select_id()][[1]]
         
         ## Create the curbcut:: package and start with the place_explorer stuff
-
-        rmarkdown::render("www/place_explorer.Rmd", params = list(
+          rmarkdown::render("www/place_explorer.Rmd", params = list(
           select_id = r[[id]]$select_id(),
           title = title,
-          geo = r$geo(),
+          region = r$region(),
           df = df(),
+          scale_sing = curbcut::cc_t("{scale_sing} (count)", lang = r$lang(),
+                                     translation = translation),
+          map_loc = map_loc,
           map_zoom = map_zoom,
           mapbox_username = mapbox_username,
-          transit_walk_cycle_share_val = title_card$transit_walk_cycle_share$percentile,
-          transit_walk_cycle_share_text = title_card$transit_walk_cycle_share$text,
-          transit_walk_cycle_share_colgroup = title_card$transit_walk_cycle_share$hex_cat,
-          air_quality_no2_val = title_card$air_quality_no2$percentile,
-          air_quality_no2_text = title_card$air_quality_no2$text,
-          air_quality_no2_colgroup = title_card$air_quality_no2$hex_cat,
-          single_detached_val = title_card$single_detached$percentile,
-          single_detached_text = title_card$single_detached$text,
-          single_detached_colgroup = title_card$single_detached$hex_cat,
-          green_space_ndvi_val = title_card$green_space_ndvi$percentile,
-          green_space_ndvi_text = title_card$green_space_ndvi$text,
-          green_space_ndvi_colgroup = title_card$green_space_ndvi$hex_cat,
-          canale_index_val = title_card$canale_index$percentile,
-          canale_index_text = title_card$canale_index$text,
-          canale_index_colgroup = title_card$canale_index$hex_cat
-        ))
+          title_card_data = title_card_data
+        ), envir = new.env())
+       
+          x <- readLines("www/place_explorer.html")
+          x <-
+            x[-((str_detect(x, "<head") |> which()):(str_detect(x, "</head") |> which()))]
+          writeLines(x, "www/place_explorer.html")
+          
+          head <- readLines("www/place_explorer_head.html")
+          x <- c(head, x)
+          
+          writeLines(x, "www/place_explorer_temp.html")
+          
 
         div(class = "main_panel_popup", 
             style = "height:100%;overflow:hidden;",
             tags$iframe(style = "width:100%;height:100%;", 
-                        src = "place_explorer.html", 
+                        src = "place_explorer_temp.html", 
                         frameborder = 0)
         )
       }

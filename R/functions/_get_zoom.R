@@ -44,7 +44,7 @@ get_zoom_code <- function(x) {
 # Get the right `map_zoom_levels_x`.
 #' @param default is a string corresponding to an available `map_zoom_levels_x`
 #' initiated in global.R. The default is `CMA`, for `map_zoom_levels_CMA`
-#' @param geo is a string corresponding to `r$geo()`, user decides what zoom
+#' @param geo is a string corresponding to `r$region()`, user decides what zoom
 #' levels they desire.
 get_zoom_levels <- function(default = "CMA", geo, var_left, 
                             suffix_zoom_levels = "") {

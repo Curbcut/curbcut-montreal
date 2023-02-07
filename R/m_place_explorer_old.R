@@ -146,8 +146,8 @@ place_explorer_old_server <- function(id, r) {
         selected = all_themes)
     })
     
-    map_zoom_levels <- eventReactive(r$geo(), {
-      levels <- get(paste("map_zoom_levels", r$geo(), sep = "_"))
+    map_zoom_levels <- eventReactive(r$region(), {
+      levels <- get(paste("map_zoom_levels", r$region(), sep = "_"))
       return(levels[seq_len(which(names(levels) == "DA"))])
     })
     
@@ -157,13 +157,13 @@ place_explorer_old_server <- function(id, r) {
       choices = get_zoom_label_t(map_zoom_levels(), r = r)))
     
     # df, data
-    df <- reactive(paste(r$geo(), get_zoom_code(input$slider), sep = "_"))
+    df <- reactive(paste(r$region(), get_zoom_code(input$slider), sep = "_"))
     data <- reactive(get(df()))
     
     # Update select_id() if df() changes!
     observe({
       if (!is.null(loc_DA_ID()) && !is.na(loc_DA_ID())) {
-      DA_df <- get(paste(r$geo(), "DA", sep = "_"))
+      DA_df <- get(paste(r$region(), "DA", sep = "_"))
       if (sum(DA_df$ID %in% loc_DA_ID()) == 0) return(select_id(NA))
       IDs <- DA_df[DA_df$ID == loc_DA_ID(), c("ID", "CTUID", "geo_ID")] |> 
         unlist()
@@ -183,7 +183,7 @@ place_explorer_old_server <- function(id, r) {
         add_mvt_layer(
           id = "df",
           name = "df",
-          data = mvt_url(paste0("sus-mcgill.", r$geo(), "_DA")),
+          data = mvt_url(paste0("sus-mcgill.", r$region(), "_DA")),
           pickable = TRUE,
           auto_highlight = TRUE,
           highlight_color = "#AAB6CF80",
@@ -217,7 +217,7 @@ place_explorer_old_server <- function(id, r) {
 
       if (sum(pcs) > 0) {
         DA_ID_of_pc <- postal_codes$DA_ID[pcs]
-        DA_data <- get(paste(r$geo(), "DA", sep = "_"))
+        DA_data <- get(paste(r$region(), "DA", sep = "_"))
         IDs <- DA_data[DA_data$ID == DA_ID_of_pc, 
                        c("ID", "CTUID", "geo_ID")] |> unlist()
         select_id(data()$ID[data()$ID %in% IDs])
@@ -327,7 +327,7 @@ place_explorer_old_server <- function(id, r) {
                       get_fill_color = scale_fill_pe(select_id()),
                       get_line_width = 0) |>
         add_mvt_layer(id = "DA_empty",
-                      data = mvt_url(paste0("sus-mcgill.", r$geo(), "_DA")),
+                      data = mvt_url(paste0("sus-mcgill.", r$region(), "_DA")),
                       pickable = TRUE,
                       auto_highlight = TRUE,
                       highlight_color = "#AAB6CF80",

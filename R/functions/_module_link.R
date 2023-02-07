@@ -18,7 +18,7 @@ module_link <- function(r, module, zoom = NULL, location = map_loc,
   if (update_view) {
     if (!is.null(df) && !is.null(select_id)) {
       r$sus_link$zoom <- 
-        get(paste("map_zoom_levels", r$geo(), sep = "_"))[[
+        get(paste("map_zoom_levels", r$region(), sep = "_"))[[
           gsub(".*_", "", df)]] + 0.75
       
       r$sus_link$location <- if (is.na(select_id)) location else {

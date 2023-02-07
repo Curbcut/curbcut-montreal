@@ -72,11 +72,11 @@ demographics_server <- function(id, r) {
         poi(new_poi)
     }) |> bindEvent(get_view_state(id_map))
     
-    # Map zoom levels change depending on r$geo(). Listening only to the latter
+    # Map zoom levels change depending on r$region(). Listening only to the latter
     # to not have to recalculate everytime var_left() changes.
-    map_zoom_levels <- eventReactive(r$geo(), {
+    map_zoom_levels <- eventReactive(r$region(), {
       get_zoom_levels(default = "CMA", 
-                      geo = r$geo(),
+                      geo = r$region(),
                       var_left = isolate(var_left()),
                       suffix_zoom_levels = "_max_CT")
     })

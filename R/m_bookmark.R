@@ -57,7 +57,7 @@ bookmark_server <- function(id, r, map_viewstate = reactive(NULL),
       }
 
       # If not supplied, shouldn't appear in the URL:
-      default <- paste0("/?geo=", r$geo(), 
+      default <- paste0("/?region=", r$region(), 
                         "&tb=", r$active_tab,
                         "&lng=", r$lang())
       

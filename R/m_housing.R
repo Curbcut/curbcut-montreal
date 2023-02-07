@@ -78,11 +78,11 @@
       }
     }) |> bindEvent(get_view_state(id_map))
 
-    # Map zoom levels change depending on r$geo()
-    map_zoom_levels <- eventReactive(r$geo(), {
+    # Map zoom levels change depending on r$region()
+    map_zoom_levels <- eventReactive(r$region(), {
       get_zoom_levels(
         default = `housing_default_region`,
-        geo = r$geo(),
+        geo = r$region(),
         var_left = isolate(var_left())
       )
     })

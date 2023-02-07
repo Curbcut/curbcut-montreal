@@ -18,7 +18,7 @@ shinyServer(function(input, output, session) {
   observe({
       sever(html = severe_html(lang = r$lang(),
                                module_id = input$sus_page,
-                               geo = r$geo()),
+                               region = r$region()),
             bg_color = "rgba(0,0,0,.5)", box = TRUE)
   })
 
@@ -31,7 +31,7 @@ shinyServer(function(input, output, session) {
     news = reactiveValues(select_id = reactiveVal(NA)),
     lang = reactiveVal("fr"),
     active_tab = "home",
-    geo = reactiveVal(default_region),
+    region = reactiveVal(default_region),
     default_select_id = reactiveVal(NULL),
     stories = reactiveValues(select_id = reactiveVal(NA)),
     place_explorer = reactiveValues(select_id = reactiveVal(NA)))
@@ -252,8 +252,8 @@ shinyServer(function(input, output, session) {
       })
       # Update geometries with query.
       try({
-        geo <- query[["geo"]]
-        if (!is.null(geo)) r$geo(geo)
+        region <- query[["region"]]
+        if (!is.null(region)) r$region(region)
       })
       # Retrieve important map info
       try({
@@ -344,12 +344,12 @@ shinyServer(function(input, output, session) {
 
   onclick("advanced_options", {
     showModal(modalDialog(
-      # Change 'geo' (region)
-      radioButtons("geo_change",
+      # Change 'region'
+      radioButtons("region_change",
                    label = curbcut::cc_t(lang = r$lang(), translation = translation,
                                          "Change default geometry"),
                    inline = TRUE,
-                   selected = r$geo(),
+                   selected = r$region(),
                    choiceNames = 
                      sapply(regions_dictionary$name[regions_dictionary$pickable],
                             curbcut::cc_t, lang = r$lang(), translation = translation) |> unname(),
@@ -387,17 +387,17 @@ shinyServer(function(input, output, session) {
     })
 
   # Change the default geometry and save the cookie
-  observeEvent(input$geo_change, {
-    r$geo(input$geo_change)
-    session$sendCustomMessage("cookie-set", list(name = "default_geo",
-                                                 value = input$geo_change))
+  observeEvent(input$region_change, {
+    r$region(input$region_change)
+    session$sendCustomMessage("cookie-set", list(name = "default_region",
+                                                 value = input$region_change))
   })
 
   # If the geo cookie is already in and it differs from default
-  observeEvent(input$cookies$default_geo, {
-    if (!is.null(input$cookies$default_geo) &&
-        input$cookies$default_geo != default_region) {
-      r$geo(input$cookies$default_geo)
+  observeEvent(input$cookies$default_region, {
+    if (!is.null(input$cookies$default_region) &&
+        input$cookies$default_region != default_region) {
+      r$region(input$cookies$default_region)
     }
   }, once = TRUE)
   

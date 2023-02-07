@@ -44,7 +44,7 @@ climate_risk_server <- function(id, r) {
     zoom_string <- reactiveVal(get_zoom_string(map_zoom, map_zoom_levels_island,
                                                "CSD"))
     poi <- reactiveVal(NULL)
-    tweaked_geo <- reactive(if (r$geo() == "CMA") "island" else r$geo())
+    tweaked_geo <- reactive(if (r$region() == "CMA") "island" else r$region())
 
     # Map
     output[[id_map]] <- renderRdeck({
@@ -61,7 +61,7 @@ climate_risk_server <- function(id, r) {
         poi(new_poi)
     }) |> bindEvent(get_view_state(id_map))
     
-    # Map zoom levels change depending on r$geo()
+    # Map zoom levels change depending on r$region()
     map_zoom_levels <- eventReactive(tweaked_geo(), {
       get_zoom_levels(default = "island", 
                       geo = tweaked_geo(),

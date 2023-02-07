@@ -488,7 +488,7 @@ sever_subtitle_en <-
               "the app bug-free by clicking on “Submit”!",
               "<br>-The Curbcut team."))
 
-create_form <- function(lang, module_id, geo) {
+create_form <- function(lang, module_id, region) {
   
   pre <- 
     paste0("<form id='bug_report_form' action='https://docs.google.com/forms/d/",
@@ -499,8 +499,8 @@ create_form <- function(lang, module_id, geo) {
   module <- 
     paste0("<input type='text' name='entry.1645395961' value='", module_id, 
            "' style = 'display:none;' />")
-  geo <- 
-    paste0("<input type='text' name='entry.1343914403' value='", geo, 
+  region <- 
+    paste0("<input type='text' name='entry.1343914403' value='", region, 
            "' style = 'display:none;' />")
   lang_input <- 
     paste0("<input type='text' name='entry.1443376271' value='", lang, 
@@ -529,15 +529,15 @@ create_form <- function(lang, module_id, geo) {
     paste0("<textarea name='entry.77284970 form='bug_report_form' style ='",
            additional_style, "'>", additional_text, "</textarea>")
   
-  HTML(paste0(pre, module, geo, lang_input, additional, post))
+  HTML(paste0(pre, module, region, lang_input, additional, post))
   
 }
 
-severe_html <- function(lang, module_id, geo) {
+severe_html <- function(lang, module_id, region) {
   tagList(tags$h2("Uh oh..."),
           tags$p(tags$span(class = "lang-fr", sever_subtitle_fr),
                  tags$span(class = "lang-en", sever_subtitle_en)),
-          create_form(lang, module_id, geo),
+          create_form(lang, module_id, region),
           tags$div(class = "sus-button-group",
                    tags$a(class = "sus-button sus-icon-button sus-button-secondary", 
                           style = "cursor: pointer;",

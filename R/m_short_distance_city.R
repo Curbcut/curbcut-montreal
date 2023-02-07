@@ -62,7 +62,7 @@ short_distance_city_server <- function(id, r) {
     }) |> bindEvent(get_view_state(id_map))
     
     # Map zoom levels change depending on "city"
-    map_zoom_levels <- eventReactive(r$geo(), {
+    map_zoom_levels <- eventReactive(r$region(), {
       get_zoom_levels(default = "city", 
                       geo = "city",
                       var_left = isolate(var_left()),

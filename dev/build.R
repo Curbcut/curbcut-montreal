@@ -412,6 +412,16 @@ qs::qload("dev/data/built/scales_variables_modules.qsm")
 #                 username = "sus-mcgill",
 #                 access_token = .cc_mb_token)
 
+
+# Place explorer ----------------------------------------------------------
+
+pe_main_card <- placeex_main_card(scales = scales_variables_modules$scales,
+                                  DA_table = census_scales$DA,
+                                  region_DA_IDs = census_scales$DA$ID,
+                                  crs = crs,
+                                  regions_dictionary = regions_dictionary)
+qs::qsavem(pe_main_card, file = "data/place_explorer.qsm")
+
 # Did you know ------------------------------------------------------------
 
 # variables <- scales_variables_modules$variables
