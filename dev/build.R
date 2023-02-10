@@ -213,6 +213,7 @@ scales_variables_modules <-
 
 qs::qsavem(census_scales, scales_variables_modules, crs,
           scales_dictionary, regions_dictionary, all_tables, base_polygons,
+          cancensus_cma_code,
           file = "dev/data/built/empty_scales_variables_modules.qsm")
 qs::qload("dev/data/built/empty_scales_variables_modules.qsm")
 
@@ -262,10 +263,10 @@ scales_variables_modules <-
   build_and_append_climate_risk(
     scales_variables_modules = scales_variables_modules,
     crs = crs)
-scales_variables_modules <-
-  build_and_append_short_distance_city(
-    scales_variables_modules = scales_variables_modules,
-    crs = crs)
+# scales_variables_modules <-
+#   build_and_append_short_distance_city(
+#     scales_variables_modules = scales_variables_modules,
+#     crs = crs)
 
 scales_variables_modules <-
   build_and_append_natural_inf(
@@ -286,32 +287,11 @@ scales_variables_modules$modules <-
     dataset_info = ""
   )
 
-# Add Montréal stories
-scales_variables_modules$modules <-
-  scales_variables_modules$modules |>
-  add_module(
-    id = "stories",
-    theme = "",
-    nav_title = "Montréal stories",
-    title_text_title = "Montréal stories",
-    title_text_main = paste0(
-      "Explore narrative case studies on sustainability issues in Montreal's ",
-      "neighborhoods. In this module, read text-based stories and view their ",
-      "adjoining visual media."),
-    title_text_extra = paste0(
-      "These stories, written by Curbcut contributors, examine Montreal ",
-      "sustainability issues that aren't well suited to representation in our ",
-      "standard interactive map format. Learn more about stories rooted in ",
-      "specific geographic locations across the city or those that have had ",
-      "an impact on the whole of Montreal."),
-    metadata = FALSE,
-    dataset_info = ""
-  )
 
 # Add access to amenities module
- # traveltimes <-
- #   accessibility_get_travel_times(region_DA_IDs = census_scales$DA$ID)
- # qs::qsave(traveltimes, "dev/data/built/traveltimes.qs")
+# traveltimes <-
+#   accessibility_get_travel_times(region_DA_IDs = census_scales$DA$ID)
+# qs::qsave(traveltimes, "dev/data/built/traveltimes.qs")
 future::plan(future::multisession(), workers = 8)
 
 traveltimes <- qs::qread("dev/data/built/traveltimes.qs")
@@ -419,12 +399,21 @@ qs::qload("dev/data/built/scales_variables_modules.qsm")
 
 # Place explorer ----------------------------------------------------------
 
-pe_main_card <- placeex_main_card(scales = scales_variables_modules$scales,
-                                  DA_table = census_scales$DA,
-                                  region_DA_IDs = census_scales$DA$ID,
-                                  crs = crs,
-                                  regions_dictionary = regions_dictionary)
-qs::qsavem(pe_main_card, file = "data/place_explorer.qsm")
+future::plan(future::multisession())
+
+pe_main_card_data <- placeex_main_card_data(scales = scales_variables_modules$scales,
+                                       DA_table = census_scales$DA,
+                                       region_DA_IDs = census_scales$DA$ID,
+                                       crs = crs,
+                                       regions_dictionary = regions_dictionary)
+placeex_main_card_rmd(scales = scales_variables_modules$scales,
+                      pe_main_card_data = pe_main_card_data,
+                      regions_dictionary = regions_dictionary,
+                      scales_dictionary = scales_dictionary,
+                      lang = "en",
+                      tileset_prefix = "mtl",
+                      mapbox_username = "sus-mcgill",
+                      rev_geocode_from_localhost = FALSE)
 
 # Did you know ------------------------------------------------------------
 
@@ -453,6 +442,28 @@ source("dev/translation/build_translation.R", encoding = "utf-8")
 #                        prefix = "mtl", 
 #                        username = "sus-mcgill", 
 #                        access_token = .cc_mb_token)
+
+# Add Montréal stories
+scales_variables_modules$modules <-
+  scales_variables_modules$modules |>
+  add_module(
+    id = "stories",
+    theme = "",
+    nav_title = "Montréal stories",
+    title_text_title = "Montréal stories",
+    title_text_main = paste0(
+      "Explore narrative case studies on sustainability issues in Montreal's ",
+      "neighborhoods. In this module, read text-based stories and view their ",
+      "adjoining visual media."),
+    title_text_extra = paste0(
+      "These stories, written by Curbcut contributors, examine Montreal ",
+      "sustainability issues that aren't well suited to representation in our ",
+      "standard interactive map format. Learn more about stories rooted in ",
+      "specific geographic locations across the city or those that have had ",
+      "an impact on the whole of Montreal."),
+    metadata = FALSE,
+    dataset_info = ""
+  )
 
 
 # Save variables ----------------------------------------------------------

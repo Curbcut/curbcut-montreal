@@ -124,3 +124,9 @@ systemfonts::register_font(
   italic = "www/fonts/SourceSansPro-Italic.ttf",
   bold = "www/fonts/SourceSansPro-Bold.ttf",
   bolditalic = "www/fonts/SourceSansPro-BoldItalic.ttf")
+
+
+# Declare temporary folder ------------------------------------------------
+
+temp_folder <- tempdir()
+addResourcePath("temp_folder_shortcut", temp_folder)
