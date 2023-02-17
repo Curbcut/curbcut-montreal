@@ -111,7 +111,7 @@ first_level_choropleth <-
   sapply(ls()[grepl("map_zoom_levels_", ls())], \(x) names(get(x)[1]),
          USE.NAMES = FALSE) |> unique()
   
-all_choropleth <- 
+all_choropleths <- 
   sapply(sapply(ls()[grepl("map_zoom_levels_", ls())], get,
                 USE.NAMES = FALSE), names,
          USE.NAMES = FALSE) |> unlist() |> unique()

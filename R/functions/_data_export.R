@@ -46,7 +46,7 @@ data_export <- function(id, data, var_left, var_right = " ", df = NULL) {
   
   # Origin data
   data_origin <- if (!is.null(df)) {
-    if (is_scale_in_df("building", df)) paste0(gsub("building", "DA", df)) else 
+    if (curbcut::is_scale_df("building", df)) paste0(gsub("building", "DA", df)) else 
       df}
 
   # Return list

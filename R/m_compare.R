@@ -6,12 +6,12 @@ compare_UI <- function(id, var_list) {
     
     conditionalPanel(
       condition = "output.show_panel == true", ns = NS(id),
-      fluidRow(column(width = 7, h4(curbcut::cc_t(translation = translation, 
+      fluidRow(column(width = 7, h4(curbcut::cc_t(
                                                   "Compare"))),
                column(width = 5, align = "right", 
                       actionLink(inputId = NS(id, "hide_compare"), 
                                  class = "sus-small-link",
-                                 label = curbcut::cc_t(translation = translation, 
+                                 label = curbcut::cc_t(
                                                        "Hide"))))),
     
     conditionalPanel(
@@ -25,7 +25,7 @@ compare_UI <- function(id, var_list) {
   )
 }
 
-compare_server <- function(id, r = r, var_list, df = r[[id]]$df, 
+compare_server <- function(id, r, var_list, df = r[[id]]$df, 
                            disabled = reactive(NULL), 
                            time = reactive(NULL), 
                            show_panel = reactive(TRUE)) {
@@ -52,8 +52,8 @@ compare_server <- function(id, r = r, var_list, df = r[[id]]$df,
     
     observeEvent(input$hide_compare, {
       if (input$hide_compare %% 2 == 0) {
-        txt <- curbcut::cc_t(lang = r$lang(), translation = translation, "Hide")
-      } else txt <- curbcut::cc_t(lang = r$lang(), translation = translation, "Show")
+        txt <- curbcut::cc_t(lang = r$lang(), "Hide")
+      } else txt <- curbcut::cc_t(lang = r$lang(), "Show")
       updateActionButton(session, "hide_compare", label = txt)
     })
     

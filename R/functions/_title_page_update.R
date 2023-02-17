@@ -17,7 +17,7 @@ title_page_update <- function(r, session, sus_page) {
   construct_title <- 
     paste0(site_name, 
            if (!is.null(added_title)) {
-             paste0(" - ", curbcut::cc_t(lang = r$lang(), translation = translation, added_title))})
+             paste0(" - ", curbcut::cc_t(lang = r$lang(), added_title))})
   
   session$sendCustomMessage("changetitle", construct_title)
 }

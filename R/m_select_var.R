@@ -2,7 +2,7 @@
 
 # Create divs for var_list (text on hover) --------------------------------
 
-hover_divs <- function(var_list, r = NULL) {
+hover_divs <- function(var_list, lang = NULL) {
   
   text_hover <- 
     unname(sapply(unlist(var_list), \(x) {
@@ -10,9 +10,9 @@ hover_divs <- function(var_list, r = NULL) {
       if (length(exp) == 0) return(" ")
       return(exp)}))
   
-  if (!is.null(r)) 
-    text_hover <- sapply(text_hover, curbcut::cc_t, lang = r$lang(), 
-                         translation = translation, USE.NAMES = FALSE)
+  if (!is.null(lang))
+    text_hover <- sapply(text_hover, curbcut::cc_t, lang = lang, 
+                         USE.NAMES = FALSE)
   
   var_list_label <- if (curbcut::vec_dep(var_list) == 3) {
     c(if ("----" %in% names(var_list)) "----",
@@ -62,7 +62,6 @@ select_var_server <- function(id, r, select_var_id = "var",
   moduleServer(id, function(input, output, session) {
     
     t_var_list <- reactive(curbcut::cc_t(lang = r$lang(), 
-                                         translation = translation, 
                                          var_list()))
     
     # Update dropdown menu if there are disabled choices
@@ -72,7 +71,7 @@ select_var_server <- function(id, r, select_var_id = "var",
         updatePickerInput(
           session, select_var_id,
           choices = t_var_list(),
-          choicesOpt = c(hover_divs(t_var_list(), r = r),
+          choicesOpt = c(hover_divs(t_var_list(), lang = r$lang()),
                          list(disabled = disabled(),
                             style = ifelse(disabled(),
                                            "color: rgba(119, 119, 119, 0.5);",
@@ -88,12 +87,12 @@ select_var_server <- function(id, r, select_var_id = "var",
         } else NULL
         
         choicesOpt <- if (!is.null(add_disabled)) {
-          choicesOpt <-  c(hover_divs(t_var_list(), r = r),
+          choicesOpt <-  c(hover_divs(t_var_list(), lang = r$lang()),
                            list(disabled = add_disabled,
                                 style = ifelse(add_disabled,
                                                "color: rgba(119, 119, 119, 0.5);",
                                                "")))
-        } else hover_divs(t_var_list(), r = r)
+        } else hover_divs(t_var_list(), lang = r$lang())
 
         updatePickerInput(
           session, select_var_id,
@@ -107,7 +106,7 @@ select_var_server <- function(id, r, select_var_id = "var",
       v1 <- paste(input[[select_var_id]], time(), sep = "_")
       v1 <- sub("_$", "", v1)
       if (!is.null(time()) && !is.null(df) && 
-          is_scale_in_df(c(all_choropleth, "grid"), 
+          curbcut::is_scale_df(c(all_choropleths, "grid"), 
                          df())) {
         v1 <- sapply(v1, return_closest_year, df(), USE.NAMES = FALSE)
       }

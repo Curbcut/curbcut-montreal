@@ -14,7 +14,7 @@ short_distance_city_UI <- function(id) {
         select_var_UI(NS(id, id), select_var_id = "d_1",
                       var_list = var_left_list_1_city_amenities), 
         select_var_UI(NS(id, id), select_var_id = "d_2",
-                      label = curbcut::cc_t(translation = translation, 
+                      label = curbcut::cc_t(
                                             "Mode of transport"),
                       var_list = var_left_list_2_city_amenities),
         htmlOutput(NS(id, "disclaimer"))),
@@ -163,7 +163,7 @@ short_distance_city_server <- function(id, r) {
                                  var_left() %in% x))
       
       paste0("<br><p style='font-size:12px'><i>", 
-             curbcut::cc_t(lang = r$lang(), translation = translation,
+             curbcut::cc_t(lang = r$lang(),
                            city_amenities_disclaimer$disclaimer[[which_disc]]), 
              "</p></i>")
       

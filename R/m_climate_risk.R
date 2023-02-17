@@ -14,7 +14,7 @@ climate_risk_UI <- function(id) {
         select_var_UI(NS(id, id), var_list = make_dropdown(
           only = list(theme = "Climate risk"))), 
         checkbox_UI(NS(id, id), value = TRUE,
-                    label = curbcut::cc_t(translation = translation, 
+                    label = curbcut::cc_t(
                                           "250-metre grid"))),
       bottom = div(class = "bottom_sidebar",
                    tagList(legend_UI(NS(id, id)),

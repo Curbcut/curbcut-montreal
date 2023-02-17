@@ -43,12 +43,14 @@ get_data_color <- function(map_zoom_levels, geo, var_left, var_right,
       out
     } else if (grepl("delta", data_type)) {
       
-      val_delta <- rep("#0571B0", length(data$var_left))
-      val_delta[data$var_left < 0.1] <- "#92C5DE"
-      val_delta[data$var_left < 0.02] <- "#E8E8E8"
-      val_delta[data$var_left < -0.02] <- "#F4A582"
-      val_delta[data$var_left < -0.1] <- "#CA0020"
-      val_delta[is.na(data$var_left)] <- "#B3B3BB"
+      val_delta <- rep(colour_delta$fill[5], length(data$var_left))
+      val_delta[data$var_left < 0.1] <- colour_delta$fill[4]
+      val_delta[data$var_left < 0.02] <- colour_delta$fill[3]
+      val_delta[data$var_left < -0.02] <- colour_delta$fill[2]
+      val_delta[data$var_left < -0.1] <- colour_delta$fill[1]
+      val_delta[is.na(data$var_left)] <- colour_delta$fill[6]
+        
+      colour_delta$fill[5]
       
       data.frame(group = data$ID, value = val_delta)
       

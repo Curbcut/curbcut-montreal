@@ -5,7 +5,7 @@ get_var_type <- function(data, geo, var_left, var_right, df, select_id,
   
   ## Invalidate if non-standard df() -------------------------------------------
   
-  if (is.null(df) || !is_scale_in_df(c(all_choropleth, "grid"), df)) return(df)
+  if (is.null(df) || !curbcut::is_scale_df(c(all_choropleths, "grid"), df)) return(df)
   
   
   ## Identify NA tables --------------------------------------------------------
@@ -29,7 +29,7 @@ get_var_type <- function(data, geo, var_left, var_right, df, select_id,
   
   ## Selections ----------------------------------------------------------------
   
-  select_df <- if (build_str_as_DA && is_scale_in_df("building", df)) {
+  select_df <- if (build_str_as_DA && curbcut::is_scale_df("building", df)) {
     if (is.na(select_id)) get(paste(geo, "DA", sep = "_")) else {
       dbGetQuery(building_conn, 
                  paste0("SELECT * FROM ", paste(geo, "building", sep = "_"), 
@@ -39,12 +39,12 @@ get_var_type <- function(data, geo, var_left, var_right, df, select_id,
   if (nrow(select_df) == 0) select_id <- NA
   selection <- if (is.na(select_id)) select_df[0,] else 
     select_df[select_df$ID == select_id,]
-  active_left <- if (build_str_as_DA && is_scale_in_df("building", df)) {
+  active_left <- if (build_str_as_DA && curbcut::is_scale_df("building", df)) {
     sum(!is.na(data$var_left[data$ID == selection$DA_ID]))
   } else sum(!is.na(selection$var_left))
   active_right <- active_left
   if (length(var_right) != 1 || var_right != " ") 
-    active_right <- if (build_str_as_DA && is_scale_in_df("building", df)) {
+    active_right <- if (build_str_as_DA && curbcut::is_scale_df("building", df)) {
       sum(!is.na(data$var_left[data$ID == selection$DA_ID]) &
             !is.na(data$var_right[data$ID == selection$DA_ID])) 
     } else sum(!is.na(selection$var_left) & !is.na(selection$var_right))
@@ -52,12 +52,12 @@ get_var_type <- function(data, geo, var_left, var_right, df, select_id,
   
   ## Is select_id() not NA but not part of data() ------------------------------
   
-  absent_id <- !is.na(select_id) && !select_id %in% data$ID && !is_scale_in_df("building", df)
+  absent_id <- !is.na(select_id) && !select_id %in% data$ID && !curbcut::is_scale_df("building", df)
   
   
   ## Create var_left_label and var_right_label ---------------------------------
   
-  built_df <- if (build_str_as_DA && is_scale_in_df("building", df)) 
+  built_df <- if (build_str_as_DA && curbcut::is_scale_df("building", df)) 
     paste0(geo, "_DA") else df
   
   breaks_q5_left <- variables$breaks_q5[[

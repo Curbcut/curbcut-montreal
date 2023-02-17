@@ -29,7 +29,6 @@ update_module <- function(r, id, mod_ns = paste(id, id, sep = "-"),
 
 
   ## Update df ---------------------------------------------------------------
-  
   if (!is.null(df)) {
     if (isFALSE(zoom_auto)) {
       updateCheckboxInput(
@@ -41,7 +40,8 @@ update_module <- function(r, id, mod_ns = paste(id, id, sep = "-"),
     updateSliderTextInput(
       session = session,
       inputId = construct_namespace("zoom_slider"),
-      selected = curbcut::cc_t(lang = r$lang(), translation = translation, get_zoom_name(df))
+      selected = curbcut::cc_t(lang = r$lang(), 
+                               get_zoom_name(df))
     )
     r[[id]]$df(df)
   }

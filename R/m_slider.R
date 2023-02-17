@@ -3,7 +3,7 @@
 # UI ----------------------------------------------------------------------
 
 slider_UI <- function(id, slider_id = "slider", 
-                      label = curbcut::cc_t(lang = r$lang(), translation = translation, "Select a year"), min = census_min, 
+                      label = curbcut::cc_t("Select a year"), min = census_min, 
                       max = census_max, step = 5, sep = "", value = census_max,
                       width = "95%", ...) {
   
@@ -12,7 +12,7 @@ slider_UI <- function(id, slider_id = "slider",
 }
 
 slider_text_UI <- function(id, slider_id = "slider", 
-                           label = curbcut::cc_t(lang = r$lang(), translation = translation, "Select a year"), 
+                           label = curbcut::cc_t("Select a year"), 
                            choices, selected = NULL, width = "95%", ...) {
   
   shinyWidgets::sliderTextInput(NS(id, slider_id), label, choices = choices,
@@ -50,7 +50,7 @@ slider_server <- function(id, slider_id = NULL, value = reactive(NULL),
   
 }
 
-slider_text_server <- function(id, r = r, slider_id = NULL, choices = reactive(NULL),
+slider_text_server <- function(id, r, slider_id = NULL, choices = reactive(NULL),
                                selected = reactive(NULL)) {
   
   stopifnot(is.reactive(choices))
@@ -60,7 +60,7 @@ slider_text_server <- function(id, r = r, slider_id = NULL, choices = reactive(N
     
     slider_id <- if (is.null(slider_id)) "slider" else slider_id
     
-    choices <- sapply(choices(), cc_t, r = r, USE.NAMES = FALSE)
+    choices <- sapply(choices(), cc_t, lang = r$lang(), USE.NAMES = FALSE)
     
     observe({
       if (!is.null(choices()) || !is.null(selected())) {

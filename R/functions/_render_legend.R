@@ -6,7 +6,7 @@ render_legend <- function(r, data, var_left, var_right, df, geo, data_type,
   ## Clean up data_type and building/street ------------------------------------
 
   data_type <- sub("building_", "", data_type)
-  if (build_str_as_DA && is_scale_in_df(c("building", "street"), df)) 
+  if (build_str_as_DA && curbcut::is_scale_df(c("building", "street"), df)) 
     df <- paste0(gsub("building", "DA", df))
   df <- gsub(".*_", "", df)
   
@@ -95,11 +95,11 @@ render_legend <- function(r, data, var_left, var_right, df, geo, data_type,
   } else if (data_type == "bivar") {
     
     l <- legend_bivar
-    l$label <- c(curbcut::cc_t(lang = r$lang(), translation = translation, "Both low"), " ", 
-                 paste0(labs_xy$y_short, "\n", curbcut::cc_t(lang = r$lang(), translation = translation, "high only")), " ",
+    l$label <- c(curbcut::cc_t(lang = r$lang(), "Both low"), " ", 
+                 paste0(labs_xy$y_short, "\n", curbcut::cc_t(lang = r$lang(), "high only")), " ",
                  " ", " ", 
-                 paste0(labs_xy$x_short, "\n", curbcut::cc_t(lang = r$lang(), translation = translation, "high only")), " ", 
-                 curbcut::cc_t(lang = r$lang(), translation = translation, "Both high"))
+                 paste0(labs_xy$x_short, "\n", curbcut::cc_t(lang = r$lang(), "high only")), " ", 
+                 curbcut::cc_t(lang = r$lang(), "Both high"))
     l$label_colour <- c(rep("black", 8), "white")
     l$x <- as.numeric(l$x) - 0.5
     l$y <- as.numeric(l$y) - 0.5
@@ -143,11 +143,11 @@ render_legend <- function(r, data, var_left, var_right, df, geo, data_type,
   } else if (data_type %in% c("delta_bivar", "bivar_xdelta_yq3")) {
     
     l <- legend_bivar
-    l$label <- c(curbcut::cc_t(lang = r$lang(), translation = translation, "Both low"), " ", 
-                 paste0(labs_xy$y_short, "\n", curbcut::cc_t(lang = r$lang(), translation = translation, "high only")), " ",
+    l$label <- c(curbcut::cc_t(lang = r$lang(), "Both low"), " ", 
+                 paste0(labs_xy$y_short, "\n", curbcut::cc_t(lang = r$lang(), "high only")), " ",
                  " ", " ", 
-                 paste0(labs_xy$x_short, "\n", curbcut::cc_t(lang = r$lang(), translation = translation, "high only")), " ", 
-                 curbcut::cc_t(lang = r$lang(), translation = translation, "Both high"))
+                 paste0(labs_xy$x_short, "\n", curbcut::cc_t(lang = r$lang(), "high only")), " ", 
+                 curbcut::cc_t(lang = r$lang(), "Both high"))
     l$label_colour <- c(rep("black", 8), "white")
     l$x <- as.numeric(l$x) - 0.5
     l$y <- as.numeric(l$y) - 0.5

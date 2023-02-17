@@ -33,11 +33,11 @@ dyk_server <- function(id, r, var_left, var_right,
       if (!is.null(dyk_output())) {
         tagList(
           hr(),
-          fluidRow(column(width = 7, h4(curbcut::cc_t(lang = r$lang(), translation = translation, "Did you know?"))),
+          fluidRow(column(width = 7, h4(curbcut::cc_t(lang = r$lang(), "Did you know?"))),
                    column(width = 5, align = "right",
                           actionLink(inputId = session$ns("hide_dyk"), 
                                      class = "sus-small-link",
-                                     label = curbcut::cc_t(lang = r$lang(), translation = translation, "Hide")))))
+                                     label = curbcut::cc_t(lang = r$lang(), "Hide")))))
       }
     })
 
@@ -46,7 +46,7 @@ dyk_server <- function(id, r, var_left, var_right,
     
     # Change show/hide button text
     observeEvent(dyk_hide_status(), {
-      txt <- curbcut::cc_t(lang = r$lang(), translation = translation, 
+      txt <- curbcut::cc_t(lang = r$lang(), 
                            switch(input$hide_dyk %% 2 + 1, "Hide", "Show"))
       updateActionButton(session, "hide_dyk", label = txt)
     }, ignoreInit = TRUE)

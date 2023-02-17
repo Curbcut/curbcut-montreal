@@ -24,8 +24,8 @@
           "housing_mobility_five", "housing_single_detached"
         )),
         slider_UI(NS(id, id), slider_id = "slu"),
-        slider_UI(NS(id, id), slider_id = "slb", label = curbcut::cc_t(translation = translation, "Select two years"), value = c("2006", "2016")),
-        checkbox_UI(NS(id, id), label = curbcut::cc_t(translation = translation, "Compare dates")),
+        slider_UI(NS(id, id), slider_id = "slb", label = curbcut::cc_t("Select two years"), value = c("2006", "2016")),
+        checkbox_UI(NS(id, id), label = curbcut::cc_t("Compare dates")),
         year_disclaimer_UI(NS(id, id))
       ),
       bottom = div(
@@ -187,6 +187,10 @@
       ),
       time = time
     )
+    
+    vars <- reactive(curbcut::build_vars(var_left = var_left(),
+                                         var_right = var_right(),
+                                         df = r[[id]]$df()))
 
     # Sidebar
     sidebar_server(id = id, r = r)
@@ -218,13 +222,14 @@
     )
 
     # Legend
-    legend <- legend_server(
+    legend <- curbcut::legend_server(
       id = id,
       r = r,
-      var_left = var_left,
-      var_right = var_right,
-      geo = reactive(map_zoom_levels()$region)
+      vars,
+      data = data,
+      df = r[[id]]$df
     )
+    
 
     # Did-you-know panel
     dyk_server(
@@ -252,16 +257,18 @@
       map_id = "map",
       tile = tile
     )
+    
+    observe(print(curbcut::is_running()))
 
-    # Explore panel
-    explore_content <- explore_server(
-      id = id,
-      r = r,
-      data = data,
-      geo = reactive(map_zoom_levels()$region),
-      var_left = var_left,
-      var_right = var_right
-    )
+    # # Explore panel
+    # explore_content <- explore_server(
+    #   id = id,
+    #   r = r,
+    #   data = data,
+    #   geo = reactive(map_zoom_levels()$region),
+    #   var_left = var_left,
+    #   var_right = var_right
+    # )
 
     # Bookmarking
     bookmark_server(

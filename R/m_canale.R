@@ -20,7 +20,7 @@
       bottom = div(
         class = "bottom_sidebar",
         tagList(
-          legend_UI(NS(id, id)),
+          curbcut::legend_UI(NS(id, id)),
           zoom_UI(NS(id, id), `canale_mzp`)
         )
       )
@@ -157,7 +157,11 @@
       ),
       time = time
     )
-
+    
+    vars <- reactive(curbcut::build_vars(var_left = var_left(),
+                                         var_right = var_right(),
+                                         df = r[[id]]$df()))
+    
     # Sidebar
     sidebar_server(id = id, r = r)
 
@@ -188,12 +192,12 @@
     )
 
     # Legend
-    legend <- legend_server(
+    legend <- curbcut::legend_server(
       id = id,
       r = r,
-      var_left = var_left,
-      var_right = var_right,
-      geo = reactive(map_zoom_levels()$region)
+      vars,
+      data = data,
+      df = r[[id]]$df
     )
 
     # Did-you-know panel
@@ -223,15 +227,15 @@
       tile = tile
     )
 
-    # Explore panel
-    explore_content <- explore_server(
-      id = id,
-      r = r,
-      data = data,
-      geo = reactive(map_zoom_levels()$region),
-      var_left = var_left,
-      var_right = var_right
-    )
+    # # Explore panel
+    # explore_content <- explore_server(
+    #   id = id,
+    #   r = r,
+    #   data = data,
+    #   geo = reactive(map_zoom_levels()$region),
+    #   var_left = var_left,
+    #   var_right = var_right
+    # )
 
     # Bookmarking
     bookmark_server(

@@ -4,7 +4,7 @@ get_data <- function(geo, df, var_left, var_right,
                      point_df = NULL, build_str_as_DA = TRUE) {
   
   # Return raw df or NULL if df isn't whitelisted
-  if (!is_scale_in_df(c(all_choropleth, "grid"), df)) return(get0(df))
+  if (!curbcut::is_scale_df(c(all_choropleths, "grid"), df)) return(get0(df))
 
   # Get data type
   data_type <- get_data_type(df, var_left, var_right, build_str_as_DA)

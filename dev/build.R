@@ -39,7 +39,7 @@ crs <- base_polygons$crs
 regions_dictionary <-
   regions_dictionary(
     all_tables = all_tables,
-    geo = c("CMA", "island", "city", "centraide", "cmhc", "grid"),
+    region = c("CMA", "island", "city", "centraide", "cmhc", "grid"),
     name = c(CMA = "Metropolitan Area",
              island = "Island of Montreal",
              city = "City of Montreal",
@@ -227,6 +227,7 @@ future::plan(list(future::tweak(future::multisession,
 scales_variables_modules <-
   ba_census_data(scales_variables_modules = scales_variables_modules,
                  region_DA_IDs = census_scales$DA$ID,
+                 # census_years = cc.data::census_years[1:5],
                  crs = crs,
                  housing_module = TRUE)
 census_variables <- get_census_vectors_details()
@@ -292,20 +293,20 @@ scales_variables_modules$modules <-
 # traveltimes <-
 #   accessibility_get_travel_times(region_DA_IDs = census_scales$DA$ID)
 # qs::qsave(traveltimes, "dev/data/built/traveltimes.qs")
-future::plan(future::multisession(), workers = 8)
+# future::plan(future::multisession(), workers = 8)
 
-traveltimes <- qs::qread("dev/data/built/traveltimes.qs")
-scales_variables_modules <- 
-  ba_accessibility_points(scales_variables_modules = scales_variables_modules,
-                          region_DA_IDs = census_scales$DA$ID,
-                          traveltimes = traveltimes,
-                          crs = crs)
-# Additional access variables
-scales_variables_modules <- 
-  build_and_append_access(scales_variables_modules = scales_variables_modules,
-                          DA_table = census_scales$DA,
-                          traveltimes = traveltimes,
-                          crs = crs)
+# traveltimes <- qs::qread("dev/data/built/traveltimes.qs")
+# scales_variables_modules <- 
+#   ba_accessibility_points(scales_variables_modules = scales_variables_modules,
+#                           region_DA_IDs = census_scales$DA$ID,
+#                           traveltimes = traveltimes,
+#                           crs = crs)
+# # Additional access variables
+# scales_variables_modules <- 
+#   build_and_append_access(scales_variables_modules = scales_variables_modules,
+#                           DA_table = census_scales$DA,
+#                           traveltimes = traveltimes,
+#                           crs = crs)
 
 # Post process
 scales_variables_modules$scales <- 
@@ -399,21 +400,26 @@ qs::qload("dev/data/built/scales_variables_modules.qsm")
 
 # Place explorer ----------------------------------------------------------
 
-future::plan(future::multisession())
+future::plan(future::multisession(), workers = 18)
 
 pe_main_card_data <- placeex_main_card_data(scales = scales_variables_modules$scales,
                                        DA_table = census_scales$DA,
                                        region_DA_IDs = census_scales$DA$ID,
                                        crs = crs,
                                        regions_dictionary = regions_dictionary)
-placeex_main_card_rmd(scales = scales_variables_modules$scales,
+
+scales_variables_modules$scales <- 
+  scales_variables_modules$scales[1]
+
+placeex_main_card_rmd(scales_variables_modules = scales_variables_modules,
                       pe_main_card_data = pe_main_card_data,
                       regions_dictionary = regions_dictionary,
                       scales_dictionary = scales_dictionary,
                       lang = "en",
                       tileset_prefix = "mtl",
                       mapbox_username = "sus-mcgill",
-                      rev_geocode_from_localhost = FALSE)
+                      rev_geocode_from_localhost = TRUE,
+                      overwrite = TRUE)
 
 # Did you know ------------------------------------------------------------
 
@@ -429,7 +435,8 @@ source("dev/translation/build_translation.R", encoding = "utf-8")
 
 # Produce colours ---------------------------------------------------------
 
-# source("dev/other/colours.R")
+colours_dfs <- cc.buildr::build_colours()
+qs::qsave(colours_dfs, "data/colours_dfs.qs")
 
 
 # Write stories -----------------------------------------------------------
@@ -478,9 +485,6 @@ new_pages <- new_pages[!grepl("/access.R", new_pages)]
 lapply(list.files("dev/pages", full.names = TRUE), 
        create_page_script, overwrite = TRUE) |> 
   invisible()
-
-create_page_script("dev/pages/access.R", overwrite = TRUE,
-                   auto_left_vars = TRUE)
 
 
 # Save SQLite data --------------------------------------------------------

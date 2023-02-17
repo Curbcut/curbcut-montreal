@@ -9,8 +9,8 @@ home_UI <- function(id) {
         susCarouselSlide(
           title = tags$em(nowrap("Centraide x"), 
                           nowrap("Curbcut")),
-          preview = curbcut::cc_t(translation = translation, "Centraide"),
-          tags$p(curbcut::cc_t(translation = translation, "In a novel collaboration, Centraide of Greater ",
+          preview = curbcut::cc_t("Centraide"),
+          tags$p(curbcut::cc_t("In a novel collaboration, Centraide of Greater ",
                       "Montreal is partnering with Curbcut on a series of ",
                       "housing maps. Centraide is using its social expertise ",
                       "and data to help target and interpret housing issues, ",
@@ -18,11 +18,11 @@ home_UI <- function(id) {
           tags$div(class = "sus-button-group",
                    tags$a(class = "sus-button sus-icon-button sus-button-secondary", 
                           href = "#", onclick = "openTab('afford')",
-                          curbcut::cc_t(translation = translation, "Housing affordability"), 
+                          curbcut::cc_t("Housing affordability"), 
                           span(class = "material-icons", "location_city")),
                    tags$a(class = "sus-button sus-icon-button sus-button-primary", 
                           href = "https://www.centraide-mtl.org/", 
-                          curbcut::cc_t(translation = translation, "Centraide"), target = "_blank",
+                          curbcut::cc_t("Centraide"), target = "_blank",
                           img(src = "centraide_logo/centraide_sm.png",
                               style = paste0("display:inline; height:20px; ",
                                              "float:right; margin-top:auto; ",
@@ -30,10 +30,10 @@ home_UI <- function(id) {
           )
         ),
         susCarouselSlide(
-          title = tags$em(nowrap(curbcut::cc_t(translation = translation, "Towards a")), 
-                          nowrap(curbcut::cc_t(translation = translation, "sustainable city"))),
-          preview = curbcut::cc_t(translation = translation, "Welcome"),
-          tags$p(curbcut::cc_t(translation = translation, "Curbcut is a platform for exploring urban ",
+          title = tags$em(nowrap(curbcut::cc_t("Towards a")), 
+                          nowrap(curbcut::cc_t("sustainable city"))),
+          preview = curbcut::cc_t("Welcome"),
+          tags$p(curbcut::cc_t("Curbcut is a platform for exploring urban ",
                               "sustainability in the Montreal region across ",
                               "multiple spatial and temporal scales. Curbcut ",
                               "offers a justice- and inclusivity-focused ",
@@ -43,37 +43,37 @@ home_UI <- function(id) {
                               "and individuals.")),
           tags$div(class = "sus-button-group",
                   tags$a(class = "sus-button sus-icon-button sus-button-secondary", 
-                         href = "#learn-more", curbcut::cc_t(translation = translation, "Learn more"), 
+                         href = "#learn-more", curbcut::cc_t("Learn more"), 
                          span(class = "material-icons", "auto_stories")),
                   tags$a(class = "sus-button sus-icon-button sus-button-primary", 
                          href = "#start-exploring", 
-                         curbcut::cc_t(translation = translation, "Start Exploring Maps"), 
+                         curbcut::cc_t("Start Exploring Maps"), 
                          span(class = "material-icons", "travel_explore"))
           )
         ), susCarouselSlide(
-          title = tags$em(tags$em(nowrap(curbcut::cc_t(translation = translation, "Get notified about")), 
-                                  nowrap(curbcut::cc_t(translation = translation, "the 2021 Census")))),
-          preview = curbcut::cc_t(translation = translation, "2021 Census data"),
-          tags$p(curbcut::cc_t(translation = translation, "Many of the topics that can be explored on Curbcut draw on data from ",
+          title = tags$em(tags$em(nowrap(curbcut::cc_t("Get notified about")), 
+                                  nowrap(curbcut::cc_t("the 2021 Census")))),
+          preview = curbcut::cc_t("2021 Census data"),
+          tags$p(curbcut::cc_t("Many of the topics that can be explored on Curbcut draw on data from ",
                       "the Canadian Census. The Census of Population is conducted ",
                       "every five years and provides statistical information ",
                       "about demographic, social and economic characteristics.")),
-          tags$p(curbcut::cc_t(translation = translation, "Sign up to our newsletter to get notified when ",
+          tags$p(curbcut::cc_t("Sign up to our newsletter to get notified when ",
                       "the 2021 Census data is available on Curbcut!")),
           tags$div(class = "sus-button-group",
                    tags$a(class = "sus-button sus-icon-button sus-button-primary",
                           style = "cursor: pointer;",
                           id = "sign_up_from_carousel", 
-                          curbcut::cc_t(translation = translation, "Sign up!"),
+                          curbcut::cc_t("Sign up!"),
                           span(class = "material-icons", "email"))
           )
         )
       )
     ),
     susPageSection(
-      tags$h2(curbcut::cc_t(translation = translation, "About Curbcut"), 
+      tags$h2(curbcut::cc_t("About Curbcut"), 
               scrollAnchor(id = "learn-more")),
-      tags$p(cc_t(translation = translation, 
+      tags$p(cc_t( 
                   "Curbcut embraces an inclusive vision of urban ",
         "sustainability, allowing users to pose questions ",
         "about environmental issues and contextualize them ",
@@ -83,7 +83,7 @@ home_UI <- function(id) {
         "resource, designed to encourage greater reflection ",
         "on urban sustainability challenges, and on the ",
         "communities which are most affected by them.")),
-      tags$p(cc_t(translation = translation, 
+      tags$p(cc_t( 
                   "Curbcut is organized into thematic and place-based ",
         "“modules”, each of which takes a narrow slice of ",
         "our data and presents it in a way designed to ",
@@ -97,33 +97,33 @@ home_UI <- function(id) {
         "we will be adding more tools for users to export ",
         "the data and use it themselves.")),
       tags$p(HTML(paste0(
-        curbcut::cc_t(translation = translation, "See the "),
+        curbcut::cc_t("See the "),
         "<a style ='cursor:pointer;' onclick = openTab('how_to_use')>",
-        curbcut::cc_t(translation = translation, "“How to use”"),"</a>",
-        curbcut::cc_t(translation = translation, "page for more information on ",
+        curbcut::cc_t("“How to use”"),"</a>",
+        curbcut::cc_t("page for more information on ",
         "how Curbcut works. And see the "),
         "<a style ='cursor:pointer;' onclick = openTab('authors')>",
-        curbcut::cc_t(translation = translation, "“Authors”"), "</a>", 
-        curbcut::cc_t(translation = translation, " page to learn more about our team.")))),
+        curbcut::cc_t("“Authors”"), "</a>", 
+        curbcut::cc_t(" page to learn more about our team.")))),
       tags$p(class = "text-center", tags$em(
-        curbcut::cc_t(translation = translation, "An initiative of the "),
+        curbcut::cc_t("An initiative of the "),
         HTML(paste0("<a href = 'https://www.mcgill.ca/mssi/'>",
-                    curbcut::cc_t(translation = translation, "McGill Sustainability Systems Initiative"), 
+                    curbcut::cc_t("McGill Sustainability Systems Initiative"), 
                     "</a>."))
       ))
     ),
     susPageSection(
-      tags$h2(curbcut::cc_t(translation = translation, "Maps"), 
+      tags$h2(curbcut::cc_t("Maps"), 
               scrollAnchor(id = "start-exploring")),
       tags$div(
         class = "text-width", 
         do.call(linkList, c(
           ready_modules_home(mods_rdy), 
           list(linkListGroup(
-            name = curbcut::cc_t(translation = translation, "More"), 
-            list(name = curbcut::cc_t(translation = translation, "Montréal stories"), 
+            name = curbcut::cc_t("More"), 
+            list(name = curbcut::cc_t("Montréal stories"), 
                  onclick = "openTab('stories')"),
-            list(name = curbcut::cc_t(translation = translation, "Place explorer"), 
+            list(name = curbcut::cc_t("Place explorer"), 
                  onclick = "openTab('place_explorer')"))))
       ))
     ), tags$div(style = "width: 250px; height: 50px;", hidden = "", susLegend())

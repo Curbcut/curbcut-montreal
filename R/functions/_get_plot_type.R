@@ -35,7 +35,7 @@ get_plot_type <- function(data, var_type, var_left, var_right, select_id, df,
 
   # Get main graph type
   graph_type <-
-    if (is_scale_in_df("date", df)) "date" else
+    if (curbcut::is_scale_df("date", df)) "date" else
       if (var_type == "NA_delta") "NAdelta" else
         if (var_type == "all_na") "all_na" else
           if (var_type == "NA_delta_bivar") "NAdeltabivar" else

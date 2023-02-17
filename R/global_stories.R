@@ -177,22 +177,22 @@ metro_evolution_legend <- function(date, lang) {
 
 metro_evolution_source <- function(year, r) {
   if (year %in% c(1910, 1944, 1953)) {
-    curbcut::cc_t(lang = r$lang(), translation = translation, "The proposed {year} metro network.")
+    curbcut::cc_t(lang = r$lang(), "The proposed {year} metro network.")
   } else if (year == 1961) {
-    curbcut::cc_t(lang = r$lang(), translation = translation, "The proposed 1962 metro network consisting of three lines: ",
+    curbcut::cc_t(lang = r$lang(), "The proposed 1962 metro network consisting of three lines: ",
                   "orange, green, and red.")
   } else if (year == 1967) {
-    curbcut::cc_t(lang = r$lang(), translation = translation, "The first complete iteration of the Montreal metro.")
+    curbcut::cc_t(lang = r$lang(), "The first complete iteration of the Montreal metro.")
   } else if (year == 1970) {
-    curbcut::cc_t(lang = r$lang(), translation = translation, "Some extensive proposed underground and surface metro ",
+    curbcut::cc_t(lang = r$lang(), "Some extensive proposed underground and surface metro ",
                   "expansions of the early 1970s that never materialized.")
   } else if (year == 1978) {
-    curbcut::cc_t(lang = r$lang(), translation = translation, "The 1978 iteration of the metro network.")
+    curbcut::cc_t(lang = r$lang(), "The 1978 iteration of the metro network.")
   } else if (year == 1981) {
-    curbcut::cc_t(lang = r$lang(), translation = translation, "The metro expansion plans made following the 1970 ",
+    curbcut::cc_t(lang = r$lang(), "The metro expansion plans made following the 1970 ",
                   "re-election of Jean Drapeau.")
   } else if (year == 2000) {
-    curbcut::cc_t(lang = r$lang(), translation = translation, "The current network along with the proposed extensions over ",
+    curbcut::cc_t(lang = r$lang(), "The current network along with the proposed extensions over ",
                   "the years, including the confirmed blue line extension to ",
                   "Anjou.")
   }

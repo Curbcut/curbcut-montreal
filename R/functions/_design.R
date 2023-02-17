@@ -28,7 +28,7 @@ susNewsExploreArticle <- function(id, type, author, date, title, img, preview) {
                 tags$span(class="news-meta-data-type", type),
                 tags$span(class="news-meta-data-date", date)#,
                 # tags$span(class="news-meta-data-author",
-                #           tagList(curbcut::cc_t(translation = translation, "by"), " ", author)
+                #           tagList(curbcut::cc_t("by"), " ", author)
                 #           ),
                 ),
         tags$h1(title),
@@ -138,14 +138,14 @@ susFooter <- function() {
       ),
       tags$div(class = "sus-page-footer-links",
         tags$ul(
-          tags$li(tags$a(href = NULL, HTML("&nbsp;"))),#curbcut::cc_t(translation = translation, "Terms & Conditions"))),
+          tags$li(tags$a(href = NULL, HTML("&nbsp;"))),#curbcut::cc_t("Terms & Conditions"))),
           tags$li(tags$a(href = NULL, style = "cursor:pointer;", 
                          onclick = "openTab('about_sus')", 
-                         curbcut::cc_t(translation = translation, "About"), materialIcon("info"))),
+                         curbcut::cc_t("About"), materialIcon("info"))),
           tags$li(tags$a(href = NULL, style = "cursor:pointer;", 
                          onclick = "document.getElementById('contact').click();",
-                         curbcut::cc_t(translation = translation, "Contact/feedback"), materialIcon("mail"))),
-          tags$li(tags$a(href = NULL, HTML("&nbsp;")))#curbcut::cc_t(translation = translation, "Privacy Policy"))),
+                         curbcut::cc_t("Contact/feedback"), materialIcon("mail"))),
+          tags$li(tags$a(href = NULL, HTML("&nbsp;")))#curbcut::cc_t("Privacy Policy"))),
         )
       )
     )
@@ -159,7 +159,7 @@ susBanner <- function() {
     tags$div(class = "sus-banner-bg sus-bg-img-skyline"),
     tags$h1(class = "sus-brand sus-banner-text", "Curbcut"),
     tags$h4(class = "sus-brand sus-banner-text-city", 
-            cc_t(translation = translation, "Montreal"))
+            cc_t("Montreal"))
   ))
 }
 
@@ -171,12 +171,12 @@ susCarousel <- function(..., id="", class="") {
                # Previous and next have been turned off, as the preview does 
                # not translate correctly
                # style = "cursor: pointer;",
-               # curbcut::cc_t(translation = translation, "Previous:"),
+               # curbcut::cc_t("Previous:"),
                # HTML("&nbsp;"),
                tags$span(class="sus-carousel-preview-content")),
       tags$div(class="sus-carousel-preview sus-carousel-preview-next",
                # style = "cursor: pointer;",
-               # curbcut::cc_t(translation = translation, "Next:"),
+               # curbcut::cc_t("Next:"),
                # HTML("&nbsp;"),
                tags$span(class="sus-carousel-preview-content")),
       tags$div(class="sus-carousel-nav-bttn sus-carousel-nav-bttn-left", 
@@ -426,6 +426,20 @@ styler <- '
   th {
   padding:4px;
   }
+
+.loader-page {
+  opacity: 0;
+  animation: loader-page 2s ease forwards;
+}
+
+@keyframes loader-page {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
 
 '
 

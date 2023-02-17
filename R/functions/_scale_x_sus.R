@@ -21,8 +21,8 @@ scale_lwd_sus <- function(select_id, tile = NULL, zoom = NULL,
   
   if (!is.null(tile) && !is.null(zoom) && !grepl("auto_zoom", tile) &&
       !is.null(zoom_levels)) {
-    if (is_scale_in_df(names(zoom_levels), tile)) {
-      normal_zoom <- zoom_levels[sapply(names(zoom_levels), is_scale_in_df, tile)]
+    if (curbcut::is_scale_df(names(zoom_levels), tile)) {
+      normal_zoom <- zoom_levels[sapply(names(zoom_levels), curbcut::is_scale_df, tile)]
       # print(normal_zoom)
       if (zoom < (normal_zoom - 1)) late_range <- 0 else late_range <- 1
     } else {
@@ -47,8 +47,8 @@ scale_lwd_climate_risk <- function(select_id, tile) {
   
   scale_category(
     col = ID_color,
-    range = c(5, if (is_scale_in_df("grid", tile)) 0.3 else 1),
-    unmapped_value = if (is_scale_in_df("grid", tile)) 0.3 else 1,
+    range = c(5, if (curbcut::is_scale_df("grid", tile)) 0.3 else 1),
+    unmapped_value = if (curbcut::is_scale_df("grid", tile)) 0.3 else 1,
     levels = c(select_id, "NA"),
     legend = FALSE) 
   

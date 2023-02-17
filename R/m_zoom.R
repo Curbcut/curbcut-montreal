@@ -41,7 +41,7 @@ zoom_server <- function(id, r = r, zoom_string, zoom_levels) {
       r$lang()}, {
       updateSliderTextInput(session, "zoom_slider", 
                             selected = curbcut::cc_t(lang = r$lang(), 
-                                                     translation = translation, 
+                                                     
                                                      get_zoom_name(zoom_string())),
                             choices = get_zoom_label_t({
                               # If the module isn't impacted by a change of r$region()
@@ -56,7 +56,7 @@ zoom_server <- function(id, r = r, zoom_string, zoom_levels) {
       if (input$zoom_auto)
         updateSliderTextInput(session, "zoom_slider", 
                               selected = curbcut::cc_t(lang = r$lang(), 
-                                                       translation = translation, 
+                                                       
                                                        get_zoom_name(zoom_string())))
     }, priority = -1)
     

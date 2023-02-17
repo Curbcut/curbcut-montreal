@@ -1,12 +1,12 @@
 #### NATURAL INFRASTRUCTURE EXPLORE GRAPH ######################################
 
-explore_graph_natural_inf <- function(data, r = r, var_type, var_left, var_right, 
+explore_graph_natural_inf <- function(data, r, var_type, var_left, var_right, 
                                       df, select_id, geo, build_str_as_DA = TRUE) {
                                       
   if (var_left == "c_priority") {
     
     labels <- sapply(c("Flood", "Biodiversity", 
-                       "Heat island"), cc_t, r = r,
+                       "Heat island"), cc_t, lang = r$lang(),
                      USE.NAMES = FALSE)
     
     data.frame(labels = labels, 
@@ -21,7 +21,7 @@ explore_graph_natural_inf <- function(data, r = r, var_type, var_left, var_right
                fill = legend_qual$fill[c(3, 2, 4)]) +
       scale_y_continuous(name = NULL, 
                          labels = scales::percent) +
-      scale_x_discrete(name = curbcut::cc_t(lang = r$lang(), translation = translation, "Amount protected")) +
+      scale_x_discrete(name = curbcut::cc_t(lang = r$lang(), "Amount protected")) +
       theme_minimal() +
       theme(text = element_text(family = "SourceSansPro", size = 12),
             legend.position = "none", 
@@ -36,7 +36,7 @@ explore_graph_natural_inf <- function(data, r = r, var_type, var_left, var_right
     dat <- merge(data, variables[c("var_code", "var_short")], by.x = "name", 
                  by.y = "var_code")
     
-    dat$var_short <- sapply(dat$var_short, cc_t, r = r, 
+    dat$var_short <- sapply(dat$var_short, cc_t, lang = r$lang(), 
                             USE.NAMES = FALSE)
     
     var_names <- dat$var_short[c(4, 9, 3, 6, 2, 5, 7, 8, 1)]
@@ -50,7 +50,7 @@ explore_graph_natural_inf <- function(data, r = r, var_type, var_left, var_right
       geom_col() +
       geom_hline(yintercept = dat$var_short[dat$name == var_left], 
                  colour = "black", lwd = 1) +
-      scale_x_continuous(name = curbcut::cc_t(lang = r$lang(), translation = translation, "Share of Montreal area"), 
+      scale_x_continuous(name = curbcut::cc_t(lang = r$lang(), "Share of Montreal area"), 
                          labels = scales::label_percent(1)) +
       scale_y_discrete(name = NULL) +
       scale_fill_manual(values = pal) +

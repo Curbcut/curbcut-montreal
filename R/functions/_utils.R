@@ -1,58 +1,13 @@
 #### UTILS #####################################################################
 
-# convert_unit ------------------------------------------------------------
-
-convert_unit <- function(x, var_name = NULL, compact = FALSE) {
-  
-  if (length(x) == 0) return(x)
-  if (length(x) == 1 && is.na(x)) return(x)
-  # TKTK SHOULD THIS BE MAX DIGIT INSTEAD??
-  if (compact) min_dig <- 
-      x |> 
-      setdiff(0) |> 
-      abs() |> 
-      min(na.rm = TRUE) |> 
-      log10() |> 
-      ceiling()
-  
-  if (!missing(var_name) && grepl("_pct", var_name)) {
-    x <- paste0(round(x * 100, 1), "%")
-  } else if (!missing(var_name) && grepl("_dollar", var_name) && compact) {
-    if (min_dig >= 10) {
-      x <- scales::dollar(x, 1, scale = 1 / 1e+09, suffix = "B")  
-    } else if (min_dig >= 7) {
-      x <- scales::dollar(x, 1, scale = 1 / 1e+06, suffix = "M")  
-    } else if (min_dig >= 4) {
-      x <- scales::dollar(x, 1, scale = 1 / 1e+03, suffix = "K")  
-    } else x <- scales::dollar(x, 1)
-  } else if (!missing(var_name) && grepl("_dollar", var_name)) {
-    x <- scales::dollar(x, 1)
-  } else if (compact && min_dig >= 4) {
-    if (min_dig >= 10) {
-      x <- scales::comma(x, 1, scale = 1 / 1e+09, suffix = "B")  
-    } else if (min_dig >= 7) {
-      x <- scales::comma(x, 1, scale = 1 / 1e+06, suffix = "M")  
-    } else if (min_dig >= 4) {
-      x <- scales::comma(x, 1, scale = 1 / 1e+03, suffix = "K")  
-    }
-  } else if (max(abs(x)) >= 100 || all(round(x) == x)) {
-    x <- scales::comma(x, 1)
-  } else if (max(abs(x)) >= 10) {
-    x <- scales::comma(x, 0.1)
-  } else x <- scales::comma(x, 0.01)
-  
-  x
-}
-
-
 # return_closest_year -----------------------------------------------------
 
 return_closest_year <- function(var, df, build_str_as_DA = TRUE) {
   
   # Not to do for grid - always 2016
-  if (is_scale_in_df("grid", df)) return(var)
+  if (curbcut::is_scale_df("grid", df)) return(var)
   
-  if (build_str_as_DA && is_scale_in_df("building", df)) 
+  if (build_str_as_DA && curbcut::is_scale_df("building", df)) 
     df <- paste0(gsub("building", "DA", df))
   
   avail <- tables_in_sql[[df]][grepl(gsub("_\\d{4}$", "", var), 
@@ -163,12 +118,5 @@ get_dist <- function(x, y) {
   6371e3 * c_dist
 }
 
-
-# Logical if scale is in df -----------------------------------------------
-
-is_scale_in_df <- function(scales, df) {
-  scls <- paste0(scales, "$", collapse = "|")
-  grepl(scls, df)
-}
 
 

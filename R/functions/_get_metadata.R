@@ -6,21 +6,21 @@ get_metadata <- function(export_data, r, about_data,
   # Time
   time <- str_extract(export_data[[var]], "\\d{4}$")
   
-  variables_row$explanation <- curbcut::cc_t(lang = r$lang(), translation = translation, variables_row$explanation)
-  variables_row$var_title <- curbcut::cc_t(lang = r$lang(), translation = translation, variables_row$var_title)
+  variables_row$explanation <- curbcut::cc_t(lang = r$lang(), variables_row$explanation)
+  variables_row$var_title <- curbcut::cc_t(lang = r$lang(), variables_row$var_title)
   
   time_text <- 
     if (!is.na(time[1])) {
       paste0(" ",
-             if (length(time) == 1) curbcut::cc_t(lang = r$lang(), translation = translation, "for the year {time}") else 
-               curbcut::cc_t(lang = r$lang(), translation = translation, "for the years {time[1]} and {time[2]}"))
+             if (length(time) == 1) curbcut::cc_t(lang = r$lang(), "for the year {time}") else 
+               curbcut::cc_t(lang = r$lang(), "for the years {time[1]} and {time[2]}"))
     } else ""
   
   # If private
   if (variables_row$private)
     about_data[[var]]$private <- 
     paste0("<p = style = 'font-size: 1.45rem;'>",
-           curbcut::cc_t(lang = r$lang(), translation = translation, "We do not have permission to make the ", 
+           curbcut::cc_t(lang = r$lang(), "We do not have permission to make the ", 
                 "variable <b>'{variables_row$var_title}'</b> ",
                 "available for public download."),
            "<p>")
@@ -35,19 +35,19 @@ get_metadata <- function(export_data, r, about_data,
   about_data[[var]]$details_1 <-
     if (!variables_row$private) {
       if (single_col) {
-        curbcut::cc_t(lang = r$lang(), translation = translation, "The column `<b>{paste0(export_data[[var]], ",
+        curbcut::cc_t(lang = r$lang(), "The column `<b>{paste0(export_data[[var]], ",
              "collapse = '</b>` and `<b>')}</b>` contains data on ",
              "{variables_row$explanation} ('{variables_row$var_title}')",
              "{time_text}.")        
       } else {
-        curbcut::cc_t(lang = r$lang(), translation = translation, "The columns `<b>{paste0(export_data[[var]], ",
+        curbcut::cc_t(lang = r$lang(), "The columns `<b>{paste0(export_data[[var]], ",
              "collapse = '</b>` and `<b>')}</b>` contain data on ",
              "{variables_row$explanation} ('{variables_row$var_title}')",
              "{time_text}.")        
       }
     } else {
       # As there's not preview or data to download, don't talk about columns
-      curbcut::cc_t(lang = r$lang(), translation = translation, "The variable `<b>{variables_row$var_title}</b>` ",
+      curbcut::cc_t(lang = r$lang(), "The variable `<b>{variables_row$var_title}</b>` ",
            "contain(s) data on {variables_row$explanation} ",
            "('{variables_row$var_title}'){time_text}.")
     }
@@ -79,7 +79,7 @@ get_metadata <- function(export_data, r, about_data,
                          var_name = export_data[[paste0(var, "_code")]])
     
     about_data[[var]]$details_2 <-
-      curbcut::cc_t(lang = r$lang(), translation = translation, "Values range from <b>{quant_info$min}</b> to ",
+      curbcut::cc_t(lang = r$lang(), "Values range from <b>{quant_info$min}</b> to ",
            "<b>{quant_info$max}</b>, with a mean of <b>{quant_info$mean}",
            "</b> and a standard deviation is <b>{quant_info$sd}</b>.")
   }
@@ -95,7 +95,7 @@ get_metadata <- function(export_data, r, about_data,
     about_data[[var]]$details_2 <- 
       paste0(about_data[[var]]$details_2, " (",
              paste(ranks$var,
-                   sapply(ranks$var_name, cc_t, r = r, 
+                   sapply(ranks$var_name, cc_t, lang = r$lang(), 
                           USE.NAMES = FALSE),
                    sep = " = ", collapse = ", "), ")")
   }
@@ -135,24 +135,24 @@ get_metadata <- function(export_data, r, about_data,
             if (length(unlist(census_variables_row$vec)) == 1) {
               # Singular denominator
               if (length(unlist(census_variables_row$parent_vec)) == 1) {
-                curbcut::cc_t(lang = r$lang(), translation = translation, "The numerator of the percentage is {vector_definition},",
+                curbcut::cc_t(lang = r$lang(), "The numerator of the percentage is {vector_definition},",
                      " and the denominator is {parent_vector_definition}.")
                 # Plural denominator
               } else {
-                curbcut::cc_t(lang = r$lang(), translation = translation, "The numerator of the percentage is {vector_definition},",
+                curbcut::cc_t(lang = r$lang(), "The numerator of the percentage is {vector_definition},",
                      " and the summed denominators are {parent_vector_definition}.")
               }
               # Plural numerator
             } else {
               # Singular denominator
               if (length(unlist(census_variables_row$parent_vec)) == 1) {
-                curbcut::cc_t(lang = r$lang(), translation = translation, "The percentage has been done with the addition of ",
+                curbcut::cc_t(lang = r$lang(), "The percentage has been done with the addition of ",
                      "the following vectors, forming the numerator: ",
                      "{vector_definition}. The denominator is ",
                      "{parent_vector_definition}.")
                 # Plural denominator
               } else {
-                curbcut::cc_t(lang = r$lang(), translation = translation, "The percentage has been done with the addition of ",
+                curbcut::cc_t(lang = r$lang(), "The percentage has been done with the addition of ",
                      "the following vectors, forming the numerator: ",
                      "{vector_definition}. The summed denominators are ",
                      "{parent_vector_definition}.")
@@ -162,12 +162,12 @@ get_metadata <- function(export_data, r, about_data,
           } else if ("dollar" %in% variables_row$type) {
             # If average
             if (str_detect(export_data[[paste0(var, "_code")]], "_avg")) {
-              curbcut::cc_t(lang = r$lang(), translation = translation, "The Canadian Census vector is ",
+              curbcut::cc_t(lang = r$lang(), "The Canadian Census vector is ",
                    "{vector_definition}. It is the average of ",
                    "{parent_vector_definition}.")
               # If a median
             } else if ("median" %in% variables_row$type) {
-              curbcut::cc_t(lang = r$lang(), translation = translation, "The Canadian Census vector is ",
+              curbcut::cc_t(lang = r$lang(), "The Canadian Census vector is ",
                    "{vector_definition}. It is the median of ",
                    "{parent_vector_definition}.")
             }
@@ -178,18 +178,18 @@ get_metadata <- function(export_data, r, about_data,
       time_text <- 
         if (!is.na(time[1])) 
           if (length(time) == 1) glue("{time}") else 
-            curbcut::cc_t(lang = r$lang(), translation = translation, "{time[1]} and {time[2]}")
+            curbcut::cc_t(lang = r$lang(), "{time[1]} and {time[2]}")
       
       if (length(time) == 2)
         census_details <- paste0(
-          curbcut::cc_t(lang = r$lang(), translation = translation, "For {time}: {census_details}"),
+          curbcut::cc_t(lang = r$lang(), "For {time}: {census_details}"),
           collapse = " ")
       
       single_year <- if (length(time_text) == 1) TRUE else FALSE
       
       out <- 
         paste0("<p style = 'font-size: 1.45rem;'>",
-               curbcut::cc_t(lang = r$lang(), translation = translation,
+               curbcut::cc_t(lang = r$lang(),
                     "The data comes from the {time_text} ",
                     "Canadian Census. {census_details}"),
                "</p>") 
@@ -197,9 +197,9 @@ get_metadata <- function(export_data, r, about_data,
       out
       
     } else {
-      source <- curbcut::cc_t(lang = r$lang(), translation = translation, variables_row$source)
+      source <- curbcut::cc_t(lang = r$lang(), variables_row$source)
       paste0("<p style = 'font-size: 1.45rem;'>",
-             curbcut::cc_t(lang = r$lang(), translation = translation, "The data comes from {source}."),
+             curbcut::cc_t(lang = r$lang(), "The data comes from {source}."),
              "</p>")
     }
   
@@ -210,25 +210,25 @@ get_metadata <- function(export_data, r, about_data,
   
   interpolated <- 
     if (!is.null(export_data$df)) 
-      is_scale_in_df(names(interpolated_dfs), export_data$df) else FALSE
+      curbcut::is_scale_df(names(interpolated_dfs), export_data$df) else FALSE
   
   if (interpolated && length(interpolated_dfs) > 0) {
     
-    from <- curbcut::cc_t(lang = r$lang(), translation = translation, interpolated_dfs[[export_data$df]])
+    from <- curbcut::cc_t(lang = r$lang(), interpolated_dfs[[export_data$df]])
     
     about_data[[var]]$interpolated <- 
       # Special case for the boroughs at the census scale!
-      if (is_scale_in_df("CSD", export_data$df) && 
+      if (curbcut::is_scale_df("CSD", export_data$df) && 
           variables_row$source == "Canadian census") {
         paste0("<p style = 'font-size: 1.45rem;'>",
-               curbcut::cc_t(lang = r$lang(), translation = translation, "For the City of Montreal's boroughs, ",
+               curbcut::cc_t(lang = r$lang(), "For the City of Montreal's boroughs, ",
                     "`{variables_row$var_title}` is ",
                     "spatially interpolated from {from}s."),
                "</p>")
       } else {
-        df <- str_to_lower(curbcut::cc_t(lang = r$lang(), translation = translation, get_zoom_name(export_data$df)))
+        df <- str_to_lower(curbcut::cc_t(lang = r$lang(), get_zoom_name(export_data$df)))
         paste0("<p style = 'font-size: 1.45rem;'>",
-               curbcut::cc_t(lang = r$lang(), translation = translation, "`{variables_row$var_title}` at the {df} scale is ",
+               curbcut::cc_t(lang = r$lang(), "`{variables_row$var_title}` at the {df} scale is ",
                     "spatially interpolated from {from}s."),
                "</p>")
       }
@@ -239,13 +239,13 @@ get_metadata <- function(export_data, r, about_data,
   # we show DAs
   if (!is.null(export_data$df))
     if (export_data$data_origin != export_data$df) {
-      df <- str_to_lower(curbcut::cc_t(lang = r$lang(), translation = translation, get_zoom_name(export_data$df)))
+      df <- str_to_lower(curbcut::cc_t(lang = r$lang(), get_zoom_name(export_data$df)))
       data_origin <- 
-        str_to_lower(curbcut::cc_t(lang = r$lang(), translation = translation, get_zoom_name(export_data$data_origin)))
+        str_to_lower(curbcut::cc_t(lang = r$lang(), get_zoom_name(export_data$data_origin)))
       
       about_data[[var]]$diff_representation <- 
         paste0("<p style = 'font-size: 1.45rem;'>",
-               curbcut::cc_t(lang = r$lang(), translation = translation, "The data is represented as {df}s, but the ",
+               curbcut::cc_t(lang = r$lang(), "The data is represented as {df}s, but the ",
                     "underlying dataset is spatially organised as ",
                     "{data_origin}s."),
                "</p>")

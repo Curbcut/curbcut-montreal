@@ -63,7 +63,7 @@ source("dev/translation/city_amenities.R", encoding = "utf-8")
 
 # Retrieve and bind translated csvs ---------------------------------------
 
-translation_fr <- 
+translation_df <- 
   bind_rows(home_and_about_translated,
             info_table_translated,
             ui_and_misc_translated,
@@ -119,4 +119,4 @@ translation_fr <-
 
 # Save to the translation files -------------------------------------------
 
-qsave(translation_fr, "data/translation.qs")
+qsave(translation_df, "data/translation_df.qs")

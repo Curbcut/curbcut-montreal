@@ -18,17 +18,17 @@ get_disclaimer <- function(r = r, data, var_left, var_right, time, more, more_te
   # Vars title
   var_left_title <- variables[
     variables$var_code == str_remove(left_var_code, "_\\d{4}$"),]$var_title
-  var_left_title <- curbcut::cc_t(lang = r$lang(), translation = translation, var_left_title)
+  var_left_title <- curbcut::cc_t(lang = r$lang(), var_left_title)
   
   var_right_title <- variables[
     variables$var_code == str_remove(right_var_code, "_\\d{4}$"),]$var_title
-  var_right_title <- curbcut::cc_t(lang = r$lang(), translation = translation, var_right_title)
+  var_right_title <- curbcut::cc_t(lang = r$lang(), var_right_title)
   
   
   # Same year selected ------------------------------------------------------
   
   if (length(left_year) == 2 && left_year[1] == left_year[2]) {
-    out <- c(out, list(curbcut::cc_t(lang = r$lang(), translation = translation, 
+    out <- c(out, list(curbcut::cc_t(lang = r$lang(), 
       "Comparison requires two different dates.")))
   }
   
@@ -44,7 +44,7 @@ get_disclaimer <- function(r = r, data, var_left, var_right, time, more, more_te
   #     all()
   #   
   #   if (is_values) {
-  #     out <- c(out, list(str_glue(curbcut::cc_t(lang = r$lang(), translation = translation, 
+  #     out <- c(out, list(str_glue(curbcut::cc_t(lang = r$lang(), 
   #       "There is no data for '{var_left_title}' to report for ",
   #       "{left_year}."))
   #     ))
@@ -57,7 +57,7 @@ get_disclaimer <- function(r = r, data, var_left, var_right, time, more, more_te
   # Year displayed LEFT
   if (length(left_year) == 1) {
     if (left_year != unique(time)) {
-      out <- c(out, list(curbcut::cc_t(lang = r$lang(), translation = translation, 
+      out <- c(out, list(curbcut::cc_t(lang = r$lang(), 
         "Displayed data for <b>{var_left_title}</b> is for the ",
         "closest available year <b>({left_year})</b>.")
       ))
@@ -67,7 +67,7 @@ get_disclaimer <- function(r = r, data, var_left, var_right, time, more, more_te
   # Year displayed RIGHT
   if (length(right_year) == 1) {
     if (var_right != " " && right_year != unique(time)) {
-      out <- c(out, list(curbcut::cc_t(lang = r$lang(), translation = translation, 
+      out <- c(out, list(curbcut::cc_t(lang = r$lang(), 
         "Displayed data for <b>{var_right_title}</b> is for the ",
         "closest available year <b>({right_year})</b>.")
       ))
@@ -77,7 +77,7 @@ get_disclaimer <- function(r = r, data, var_left, var_right, time, more, more_te
   
   # More condition for more disclaimers -------------------------------------
   
-  if (more) out <- c(out, list(curbcut::cc_t(lang = r$lang(), translation = translation, more_text)))
+  if (more) out <- c(out, list(curbcut::cc_t(lang = r$lang(), more_text)))
   
   
   # Return ------------------------------------------------------------------

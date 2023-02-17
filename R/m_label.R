@@ -16,17 +16,17 @@ label_server <- function(id, r, map_id, tile) {
     
     # Helper variables
     show_street <- reactive({
-      is_scale_in_df(all_choropleth[all_choropleth != "building"], tile()) ||
+      curbcut::is_scale_df(all_choropleths[all_choropleths != "building"], tile()) ||
         (grepl("auto_zoom$", tile()) && zoom() < 15.5)
     })
     
     show_label <- reactive({
-      is_scale_in_df("CSD", tile()) || 
-        (is_scale_in_df(c("auto_zoom", "CT", "DA", "DB", "grid"), tile()) && 
+      curbcut::is_scale_df("CSD", tile()) || 
+        (curbcut::is_scale_df(c("auto_zoom", "CT", "DA", "DB", "grid"), tile()) && 
            zoom() < 12.5)})
     
     show_street_base <- 
-      is_scale_in_df(c("auto_zoom", all_choropleth[all_choropleth != "building"]), 
+      curbcut::is_scale_df(c("auto_zoom", all_choropleths[all_choropleths != "building"]), 
                      tile())
     
     # Update label layer sources on tile change
@@ -78,7 +78,7 @@ label_server <- function(id, r, map_id, tile) {
         # Update building layer
         add_mvt_layer(
           id = paste0(id, "_building"),
-          data = if (is_scale_in_df(all_choropleth[all_choropleth != "building"], 
+          data = if (curbcut::is_scale_df(all_choropleths[all_choropleths != "building"], 
                                     tile()))
             mvt_url("sus-mcgill.DA_building_empty") else "",
           pickable = FALSE,
@@ -91,7 +91,7 @@ label_server <- function(id, r, map_id, tile) {
         # Update label layer
         add_mvt_layer(
           id = paste0(id, "_CSD_labels"), 
-          data = if (is_scale_in_df(c("auto_zoom", "CT", "DA", "DB", "grid"), 
+          data = if (curbcut::is_scale_df(c("auto_zoom", "CT", "DA", "DB", "grid"), 
                                     tile())) 
             mvt_url(paste0(mapbox_username, ".", tileset_prefix, "_", "CSD_label")) else "",
           visible = show_label(),

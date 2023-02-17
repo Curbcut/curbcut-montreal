@@ -22,14 +22,14 @@ get_dyk_table <- function(id, r, var_left, var_right, df, poi = NULL) {
       links <- sapply(seq_along(out$name_id), \(x) {
         paste0("<a id='", id, "-", id, "-dyk_", x, "' href='#' ",
                "class='action-button shiny-bound-input'>", 
-               curbcut::cc_t(lang = r$lang(), translation = translation, "[LEARN MORE]"), "</a>")})
+               curbcut::cc_t(lang = r$lang(), "[LEARN MORE]"), "</a>")})
       
       link_attrs <- lapply(seq_along(out$name_id), 
                            \(x) list(module = "stories", select_id = out$ID[x]))
       
       previews <- sapply(out$preview, curbcut::cc_t, 
                          lang = r$lang(), 
-                         translation = translation, 
+                         
                          USE.NAMES = FALSE)
       out <- paste(previews, links)
       out <- paste("<li> ", out, collapse = "")
@@ -87,7 +87,7 @@ get_dyk_table <- function(id, r, var_left, var_right, df, poi = NULL) {
                                                 "_\\d{4}$"))) "" else {
         paste0(" <a id='", id, "-", id, "-dyk_", x, "' href='#' ",
                "class='action-button shiny-bound-input'>", 
-               curbcut::cc_t(lang = r$lang(), translation = translation, "[LEARN MORE]"), "</a>")
+               curbcut::cc_t(lang = r$lang(), "[LEARN MORE]"), "</a>")
       }
     })
     
@@ -107,7 +107,7 @@ get_dyk_table <- function(id, r, var_left, var_right, df, poi = NULL) {
   
   if (nrow(out) > 0) {
     out <- 
-      sapply(out$text, curbcut::cc_t, lang = r$lang(), translation = translation) |> 
+      sapply(out$text, curbcut::cc_t, lang = r$lang()) |> 
       paste0(links) |> 
       (\(x) paste("<li> ", x, collapse = ""))() |> 
       (\(x) paste0("<ul>", x, "</ul>"))() |> 

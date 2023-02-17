@@ -1,5 +1,11 @@
 ### PLACE EXPLORER MODULE ######################################################
 
+pe_scales <- stats::setNames(c("CSD", "CT", "DA"), c("CSD", "CT", "DA"))
+pe_zoom_levels <- 
+  scales_dictionary$slider_title[scales_dictionary$scale %in% pe_scales]
+pe_zoom_levels <- stats::setNames(pe_zoom_levels, pe_zoom_levels)
+
+
 # UI ----------------------------------------------------------------------
 
 place_explorer_UI <- function(id) {
@@ -11,7 +17,7 @@ place_explorer_UI <- function(id) {
       NS(id, id),
       susSidebarWidgets(
         # Search box
-        strong(curbcut::cc_t(translation = translation, 
+        strong(curbcut::cc_t(
                              "Enter postal code or click on the map")),
         HTML(paste0('
                    <div class="shiny-split-layout">
@@ -27,16 +33,15 @@ place_explorer_UI <- function(id) {
                      </div>')),
         hr(),
         # Scale slider
-        sliderTextInput(inputId = NS(id, "slider"),
-                        label = curbcut::cc_t(translation = translation, 
-                                              "Choose scale:"),
-                        choices = c("Borough/City", "Census tract", 
-                                    "Dissemination area"),
-                        selected = "Dissemination area",
-                        hide_min_max = TRUE, 
+        sliderTextInput(inputId = NS(id, "zoom_slider"),
+                        label = curbcut::cc_t("Choose scale:"),
+                        choices = pe_zoom_levels,
+                        selected = pe_zoom_levels[length(pe_zoom_levels)],
+                        hide_min_max = TRUE,
                         force_edges = TRUE),
+        
         # Back button
-        actionLink(NS(id, "back"), curbcut::cc_t(translation = translation, 
+        actionLink(NS(id, "back"), curbcut::cc_t(
                                                  "Back to the map"))
       )
     ),
@@ -45,6 +50,8 @@ place_explorer_UI <- function(id) {
     div(class = "mapdeck_div", rdeckOutput(NS(id, id_map), height = "100%")),
     
     # Main panel
+    hidden(htmlOutput(
+      NS(id, "loader"))),
     hidden(htmlOutput(
       NS(id, "main_panel")))
 
@@ -65,8 +72,56 @@ place_explorer_server <- function(id, r) {
     sidebar_server(id = "place_explorer", r = r, x = "place_explorer")
     
     # df/data reactives
-    df <- reactive(get_zoom_code(input$slider))
-    data <- reactive(get(paste(r$region(), df(), sep = "_")))
+    observeEvent(input$zoom_slider, {
+      r[[id]]$df(get_zoom_code(input$zoom_slider))
+    })
+    data <- reactive(get(paste(r$region(), r[[id]]$df(), sep = "_")))
+    
+    
+    # Translate slider --------------------------------------------------------
+    
+    observe(updateSliderTextInput(
+      session = session, "zoom_slider",
+      choices = get_zoom_label_t(pe_scales, r = r)))
+    
+    # Tweak for bookmark
+    observeEvent(parseQueryString(session$clientData$url_search)$tb, {
+      if (parseQueryString(session$clientData$url_search)$tb == "place_explorer") {
+        df <- parseQueryString(session$clientData$url_search)$df
+        df <- stats::setNames(df, df)
+        updateSliderTextInput(
+          session = session, "zoom_slider",
+          choices = get_zoom_label_t(pe_scales, r = r),
+          selected = get_zoom_label_t(df, r = r))
+      }
+    }, once = TRUE)
+    
+    
+    # Postal code search ------------------------------------------------------
+    
+    observeEvent(input$search_button, {
+      postal_c <-
+        tolower(input$address_searched) |>
+        stringr::str_extract_all("\\w|\\d", simplify = TRUE) |>
+        paste(collapse = "")
+      print(postal_c)
+      
+      DA_id <- postal_codes$DA_ID[postal_codes$postal_code == postal_c]
+      
+      if (length(DA_id) == 0) {
+        showNotification(
+          cc_t(lang = r$lang(),
+               paste0("No postal code found for `", 
+                      input$address_searched, "`")),
+          type = "error")
+      } else {
+        DA_table <- get0(paste0(r$region(), "_DA"))
+        if (is.null(DA_table)) return(NULL)
+        right_id <- DA_table[[paste0(r[[id]]$df(), "_ID")]][DA_table$ID == DA_id]
+        r[[id]]$select_id(right_id)
+      }
+    })
+    
     
     # Map ---------------------------------------------------------------------
 
@@ -78,7 +133,7 @@ place_explorer_server <- function(id, r) {
           id = "place_explorer",
           name = "place_explorer",
           data = mvt_url(paste0("sus-mcgill.", tileset_prefix, "_", 
-                                r$region(), "_", df())),
+                                r$region(), "_", r[[id]]$df())),
           pickable = TRUE,
           auto_highlight = TRUE,
           highlight_color = "#AAB6CF80",
@@ -104,48 +159,77 @@ place_explorer_server <- function(id, r) {
     observeEvent(input$back, r[[id]]$select_id(NA))
     observeEvent(r[[id]]$select_id(), {
       toggle("back", condition = !is.na(r[[id]]$select_id()))
+      toggle("loader", condition = !is.na(r[[id]]$select_id()))
       toggle("main_panel", condition = !is.na(r[[id]]$select_id()))
+      toggle("zoom_slider", condition = is.na(r[[id]]$select_id()))
     })
     
     
     # Main panel --------------------------------------------------------------
     
+    output$loader <- renderUI({
+      if (!is.na(r[[id]]$select_id())) {
+        div(
+          class = "main_panel_popup loader-page", 
+          style = "height:calc(100vh - 100px);overflow:hidden;",
+          tags$iframe(
+            style = "width:100%;height:100%;",
+            title = "place_ex",
+            srcdoc = paste0("<!DOCTYPE html><html><head><title></title><style",
+                            ">body {background-color: white;}</style></head><",
+                            "body><body></html>"),
+            frameborder = 0)
+        )
+      }
+    })
+    
     output$main_panel <- renderUI({
       
       if (!is.na(r[[id]]$select_id())) {
         
+
         # Add the head to the place explorer file
         pe_file <- paste0("www/place_explorer/",
-                          r$region(), "_", df(), "_", r[[id]]$select_id(),
+                          r$region(), "_", r[[id]]$df(), "_", r[[id]]$select_id(),
                           "_", r$lang(), ".html")
 
-        tmpfile <- tempfile(pattern = "placeex_tmp", 
-                            tmpdir = temp_folder, 
+        tmpfile <- tempfile(pattern = "placeex_tmp",
+                            tmpdir = temp_folder,
                             fileext = ".html")
 
         head <- normalizePath("www/place_explorer/header.html")
         head <- gsub("/", "\\\\", head)
         pef <- normalizePath(pe_file)
         pef <- gsub("/", "\\\\", pef)
-        
+
         fun <- if (Sys.info()[["sysname"]] == "Windows") "type" else "cat"
         shell(glue::glue("{fun} {head} {pef} > {tmpfile}"))
-        
-        print(tmpfile)
-        
+
         tmpfile <- stringr::str_extract(tmpfile, "placeex_tmp.*$")
 
         # Show the file
-        div(class = "main_panel_popup", 
+        div(class = "main_panel_popup",
             style = "height:100%;overflow:hidden;",
             tags$iframe(style = "width:100%;height:100%;",
                         title = "place_ex",
                         src = file.path("temp_folder_shortcut", tmpfile),
                         frameborder = 0)
         )
-
+        
       }
     })
+    
+    
+    # Bookmarking -------------------------------------------------------------
+    
+    bookmark_server(
+      id = id,
+      r = r,
+      s_id = r[[id]]$select_id,
+      df = r[[id]]$df,
+      map_viewstate = reactive(
+        input[[paste0(id, "-map_viewstate")]]$viewState)
+    )
     
   })
 }
