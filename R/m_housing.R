@@ -38,7 +38,7 @@
     ),
 
     # Map
-    div(class = "mapdeck_div", rdeckOutput(NS(id, id_map), height = "100%")),
+    div(class = "map_div", rdeckOutput(NS(id, id_map), height = "100%")),
 
     # Right panel
     right_panel(

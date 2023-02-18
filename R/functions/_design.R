@@ -334,7 +334,7 @@ styler <- '
   font-size: 13px;
   }
     
-  .mapdeck_div {
+  .map_div {
   height: calc(100vh - 85px);
   }
   

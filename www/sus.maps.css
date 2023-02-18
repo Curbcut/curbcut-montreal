@@ -3,7 +3,7 @@
   --w-panel: 300px;
 }
 
-.mapdeck_div {
+.map_div {
   height: calc(100vh - var(--h-navbar)) !important;
   position: fixed;
   top: var(--h-navbar);
@@ -14,7 +14,7 @@
   border: unset !important;
 }
 
-.mapdeck_div:first-child {
+.map_div:first-child {
   left: 0px;
 }
 

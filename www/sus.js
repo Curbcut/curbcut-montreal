@@ -170,7 +170,7 @@ window.addEventListener('load', (evt) => {
 
   head.appendChild(style);
 
-  const mapdeckDivs = document.querySelectorAll('.mapdeck_div');
+  const mapdeckDivs = document.querySelectorAll('.map_div');
 
   for (var i = 0; i < mapdeckDivs.length; i++) {
     const mapdeckDiv = mapdeckDivs[i];
@@ -181,7 +181,7 @@ window.addEventListener('load', (evt) => {
     mapdeckDiv.appendChild(shadow);
   }
 
-  const storiesMapdeckDiv = document.querySelector('.tab-pane[data-value="stories"] .mapdeck_div');
+  const storiesMapdeckDiv = document.querySelector('.tab-pane[data-value="stories"] .map_div');
 
   storiesMapdeckDiv.addEventListener('click', () => {
 

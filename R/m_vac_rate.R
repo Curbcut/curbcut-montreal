@@ -36,7 +36,7 @@ vac_rate_UI <- function(id) {
                    tagList(legend_UI(NS(id, id))))),
     
     # Map
-    div(class = "mapdeck_div", rdeckOutput(NS(id, id_map), height = "100%")),
+    div(class = "map_div", rdeckOutput(NS(id, id_map), height = "100%")),
     
     # Right panel
     right_panel(

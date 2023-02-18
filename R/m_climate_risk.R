@@ -21,7 +21,7 @@ climate_risk_UI <- function(id) {
                            zoom_UI(NS(id, id), map_zoom_levels_CMA)))),
     
     # Map
-    div(class = "mapdeck_div", rdeckOutput(NS(id, id_map), height = "100%")),
+    div(class = "map_div", rdeckOutput(NS(id, id_map), height = "100%")),
     
     # Right panel
     right_panel(

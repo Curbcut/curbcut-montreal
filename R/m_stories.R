@@ -24,7 +24,7 @@ stories_UI <- function(id) {
     ),
     
     # Map
-    div(class = "mapdeck_div", rdeckOutput(NS(id, paste0(id, "-map")), 
+    div(class = "map_div", rdeckOutput(NS(id, paste0(id, "-map")), 
                                            height = "100%")),
     
     # Stories

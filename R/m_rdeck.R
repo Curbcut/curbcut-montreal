@@ -2,8 +2,12 @@
 
 #' @param map_id Namespace id of the map to redraw, likely to be `NS(id, "map")`
 #' @return An updated version of the rdeck map.
+#' 
+rdeck_UI <- function(id) {
+  div(class = "map_div", rdeckOutput(NS(id, "map"), height = "100%"))
+}
 
-rdeck_server <- function(id, r, map_id, tile, data_color,
+rdeck_server <- function(id, r, tile, data_color,
                          select_id = r[[id]]$select_id, zoom_levels,
                          zoom = r[[id]]$zoom,
                          fill = scale_fill_sus, 
@@ -15,17 +19,19 @@ rdeck_server <- function(id, r, map_id, tile, data_color,
                                                   zoom_levels())),
                          line_units = "pixels") {
   
-  
-  ## Setup ---------------------------------------------------------------------
-  
-  # Error checking
-  stopifnot(is.reactive(tile))
-  stopifnot(is.reactive(data_color))
-  
-  
   ## Module --------------------------------------------------------------------
   
   moduleServer(id, function(input, output, session) {
+    
+    # Map
+    output$map <- renderRdeck({
+      rdeck(
+        map_style = map_base_style, layer_selector = FALSE,
+        initial_view_state = view_state(
+          center = map_loc, zoom = isolate(r[[id]]$zoom())
+        )
+      )
+    })
     
     # Helper variables
     extrude <- reactive((grepl("auto_zoom$", tile()) && zoom() >= 15.5) | 
@@ -34,7 +40,7 @@ rdeck_server <- function(id, r, map_id, tile, data_color,
     
     # Update data layer source on tile change
     observe(
-      rdeck_proxy(map_id) |>
+      rdeck_proxy("map") |>
         add_mvt_layer(
           id = id, 
           data = mvt_url(paste0(mapbox_username, ".", tileset_prefix, "_", tile())),
@@ -51,7 +57,7 @@ rdeck_server <- function(id, r, map_id, tile, data_color,
     
     # Update data layer on variable change
     observe(
-      rdeck_proxy(map_id) |>
+      rdeck_proxy("map") |>
         add_mvt_layer(
           id = id, 
           pickable = TRUE,

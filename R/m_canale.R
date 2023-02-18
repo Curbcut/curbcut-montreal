@@ -27,7 +27,7 @@
     ),
 
     # Map
-    div(class = "mapdeck_div", rdeckOutput(NS(id, id_map), height = "100%")),
+    rdeck_UI(NS(id, id)),
 
     # Right panel
     right_panel(
@@ -50,15 +50,15 @@
     zoom_string <- reactiveVal(get_zoom_string(map_zoom, `canale_mzp`))
     poi <- reactiveVal(NULL)
 
-    # Map
-    output[[id_map]] <- renderRdeck({
-      rdeck(
-        map_style = map_base_style, layer_selector = FALSE,
-        initial_view_state = view_state(
-          center = map_loc, zoom = isolate(r[[id]]$zoom())
-        )
-      )
-    })
+    # # Map
+    # output[[id_map]] <- renderRdeck({
+    #   rdeck(
+    #     map_style = map_base_style, layer_selector = FALSE,
+    #     initial_view_state = view_state(
+    #       center = map_loc, zoom = isolate(r[[id]]$zoom())
+    #     )
+    #   )
+    # })
 
     # Zoom and POI reactives
     observe({
@@ -213,7 +213,6 @@
     rdeck_server(
       id = id,
       r = r,
-      map_id = "map",
       tile = tile,
       data_color = data_color,
       zoom_levels = reactive(map_zoom_levels()$levels)

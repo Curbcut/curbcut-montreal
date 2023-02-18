@@ -47,7 +47,7 @@ place_explorer_UI <- function(id) {
     ),
     
     # Map
-    div(class = "mapdeck_div", rdeckOutput(NS(id, id_map), height = "100%")),
+    div(class = "map_div", rdeckOutput(NS(id, id_map), height = "100%")),
     
     # Main panel
     hidden(htmlOutput(
