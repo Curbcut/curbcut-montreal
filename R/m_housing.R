@@ -188,7 +188,7 @@
       time = time
     )
     
-    vars <- reactive(curbcut::build_vars(var_left = var_left(),
+    vars <- reactive(curbcut::vars_build(var_left = var_left(),
                                          var_right = var_right(),
                                          df = r[[id]]$df()))
 
@@ -258,8 +258,6 @@
       tile = tile
     )
     
-    observe(print(curbcut::is_running()))
-
     # # Explore panel
     # explore_content <- explore_server(
     #   id = id,

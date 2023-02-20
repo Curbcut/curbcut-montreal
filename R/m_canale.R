@@ -27,7 +27,7 @@
     ),
 
     # Map
-    rdeck_UI(NS(id, id)),
+    map_UI(NS(id, id)),
 
     # Right panel
     right_panel(
@@ -123,7 +123,7 @@
     # Get df for explore/legend/etc
     observe(r[[id]]$df(get_df(tile(), zoom_string()))) |>
       bindEvent(tile(), zoom_string())
-
+    
     # Time
     time <- reactive("2016")
 
@@ -158,7 +158,7 @@
       time = time
     )
     
-    vars <- reactive(curbcut::build_vars(var_left = var_left(),
+    vars <- reactive(curbcut::vars_build(var_left = var_left(),
                                          var_right = var_right(),
                                          df = r[[id]]$df()))
     
@@ -166,21 +166,18 @@
     sidebar_server(id = id, r = r)
 
     # Data
-    data <- reactive(get_data(
-      df = r[[id]]$df(),
-      geo = map_zoom_levels()$region,
-      var_left = var_left(),
-      var_right = var_right()
+    data <- reactive(curbcut::data_get(
+      vars = vars(),
+      df = r[[id]]$df()
     ))
 
     # Data for tile coloring
-    data_color <- reactive(get_data_color(
-      map_zoom_levels = map_zoom_levels()$levels,
-      geo = map_zoom_levels()$region,
-      var_left = var_left(),
-      var_right = var_right()
+    data_colours <- reactive(curbcut::data_get_colours(
+      vars = vars(),
+      region = map_zoom_levels()$region,
+      zoom_levels = map_zoom_levels()$levels
     ))
-
+    
     # Year disclaimer
     year_disclaimer_server(
       id = id,
@@ -210,21 +207,20 @@
     )
 
     # Update map in response to variable changes or zooming
-    rdeck_server(
-      id = id,
-      r = r,
-      tile = tile,
-      data_color = data_color,
-      zoom_levels = reactive(map_zoom_levels()$levels)
-    )
+    curbcut::map_server(id = id,
+                        tile = tile,
+                        data_colours = data_colours,
+                        select_id = r[[id]]$select_id,
+                        zoom_levels = reactive(map_zoom_levels()$levels),
+                        zoom = r[[id]]$zoom)
 
-    # Update map labels
-    label_server(
-      id = id,
-      r = r,
-      map_id = "map",
-      tile = tile
-    )
+    # # Update map labels
+    # label_server(
+    #   id = id,
+    #   r = r,
+    #   map_id = "map",
+    #   tile = tile
+    # )
 
     # # Explore panel
     # explore_content <- explore_server(
