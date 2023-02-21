@@ -42,7 +42,7 @@ short_distance_city_server <- function(id, r) {
     id_map <- paste0(id, "-map")
     
     # Initial reactives
-    zoom_string <- reactiveVal(get_zoom_string(map_zoom,
+    zoom_string <- reactiveVal(zoom_get_string(map_zoom,
                                                map_zoom_levels_city_max_DB))
     poi <- reactiveVal(NULL)
 
@@ -71,7 +71,7 @@ short_distance_city_server <- function(id, r) {
     
     # Zoom string reactive
     observe({
-      new_zoom_string <- get_zoom_string(r[[id]]$zoom(), map_zoom_levels()$zoom_levels,
+      new_zoom_string <- zoom_get_string(r[[id]]$zoom(), map_zoom_levels()$zoom_levels,
                                          map_zoom_levels()$region)
       if (new_zoom_string != zoom_string()) zoom_string(new_zoom_string)
     }) |> bindEvent(r[[id]]$zoom(), map_zoom_levels()$zoom_levels)

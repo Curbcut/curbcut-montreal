@@ -49,7 +49,7 @@
 #     id_map <- paste0(id, "-map")
 # 
 #     # Initial reactives
-#     zoom_string <- reactiveVal(get_zoom_string(map_zoom, `access_mzp`))
+#     zoom_string <- reactiveVal(zoom_get_string(map_zoom, `access_mzp`))
 #     poi <- reactiveVal(NULL)
 # 
 #     # Map
@@ -83,7 +83,7 @@
 # 
 #     # Zoom string reactive
 #     observe({
-#       new_zoom_string <- get_zoom_string(
+#       new_zoom_string <- zoom_get_string(
 #         r[[id]]$zoom(), map_zoom_levels()$zoom_levels,
 #         map_zoom_levels()$region
 #       )

@@ -65,7 +65,7 @@ afford_server <- function(id, r) {
     
     # Initial reactives
     zoom <- reactiveVal(get_zoom(map_zoom))
-    zoom_string <- reactiveVal(get_zoom_string(map_zoom, map_zoom_levels_CMA_max_CT))
+    zoom_string <- reactiveVal(zoom_get_string(map_zoom, map_zoom_levels_CMA_max_CT))
     poi <- reactiveVal(NULL)
     new_poi <- reactiveVal(NULL)
     
@@ -95,7 +95,7 @@ afford_server <- function(id, r) {
     
     # Zoom string reactive
     observe({
-      new_zoom_string <- get_zoom_string(r[[id]]$zoom(), map_zoom_levels()$zoom_levels,
+      new_zoom_string <- zoom_get_string(r[[id]]$zoom(), map_zoom_levels()$zoom_levels,
                                          map_zoom_levels()$region)
       if (new_zoom_string != zoom_string()) zoom_string(new_zoom_string)
     }) |> bindEvent(r[[id]]$zoom(), map_zoom_levels()$region)

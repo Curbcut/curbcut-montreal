@@ -325,9 +325,10 @@ qs::qload("dev/data/built/scales_variables_modules.qsm")
 
 # Map zoom levels ---------------------------------------------------------
 
+stop("MISSING mtl_city_auto_zoom. why?")
 # map_zoom_levels <- map_zoom_levels_create_all(all_tables = all_tables)
 # 
-# map_zoom_levels <- 
+# map_zoom_levels <-
 #   map_zoom_levels_create_custom(
 #     map_zoom_levels = map_zoom_levels,
 #     all_tables = all_tables,
@@ -335,7 +336,7 @@ qs::qload("dev/data/built/scales_variables_modules.qsm")
 #     suffix = "max_CT",
 #     content = c("CSD" = 0, "CT" = 10.5))
 # 
-# map_zoom_levels <- 
+# map_zoom_levels <-
 #   map_zoom_levels_create_custom(
 #     map_zoom_levels = map_zoom_levels,
 #     all_tables = all_tables,
@@ -343,7 +344,7 @@ qs::qload("dev/data/built/scales_variables_modules.qsm")
 #     suffix = "max_CT",
 #     content = c("CSD" = 0, "CT" = 10.5))
 # 
-# map_zoom_levels <- 
+# map_zoom_levels <-
 #   map_zoom_levels_create_custom(
 #     map_zoom_levels = map_zoom_levels,
 #     all_tables = all_tables,
@@ -351,7 +352,7 @@ qs::qload("dev/data/built/scales_variables_modules.qsm")
 #     suffix = "max_CT",
 #     content = c("CSD" = 0, "CT" = 10.5))
 # 
-# map_zoom_levels <- 
+# map_zoom_levels <-
 #   map_zoom_levels_create_custom(
 #     map_zoom_levels = map_zoom_levels,
 #     all_tables = all_tables,
@@ -359,7 +360,7 @@ qs::qload("dev/data/built/scales_variables_modules.qsm")
 #     suffix = "max_CT",
 #     content = c("centraide" = 0, "CT" = 10.5))
 # 
-# map_zoom_levels <- 
+# map_zoom_levels <-
 #   map_zoom_levels_create_custom(
 #     map_zoom_levels = map_zoom_levels,
 #     all_tables = all_tables,
@@ -368,7 +369,7 @@ qs::qload("dev/data/built/scales_variables_modules.qsm")
 #     content = c("CSD" = 0, "CT" = 10.5, "DA" = 12.5, "DB" = 14.5))
 # 
 # map_zoom_levels_save(data_folder = "data/", map_zoom_levels = map_zoom_levels)
-
+# 
 
 # Tilesets ----------------------------------------------------------------
 

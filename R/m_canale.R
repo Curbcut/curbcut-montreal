@@ -5,6 +5,7 @@
 `canale_default_region` <- unlist(modules$regions[modules$id == "canale"])[1]
 `canale_mzp` <-
   eval(parse(text = paste0("map_zoom_levels_", `canale_default_region`)))
+default_region <- modules$regions[modules$id == "canale"][[1]][1]
 
 
 # UI ----------------------------------------------------------------------
@@ -45,42 +46,30 @@
     id_map <- paste0(id, "-map")
 
     # Initial reactives
-    zoom_string <- reactiveVal(get_zoom_string(map_zoom, `canale_mzp`))
-    poi <- reactiveVal(NULL)
-
-    # # Map
-    # output[[id_map]] <- renderRdeck({
-    #   rdeck(
-    #     map_style = map_base_style, layer_selector = FALSE,
-    #     initial_view_state = view_state(
-    #       center = map_loc, zoom = isolate(r[[id]]$zoom())
-    #     )
-    #   )
-    # })
+    zoom_string <- reactiveVal(zoom_get_string(map_zoom, `canale_mzp`,
+                                               region = default_region))
 
     # Zoom and POI reactives
     observe({
       r[[id]]$zoom(get_zoom(get_view_state(id_map)$zoom))
       new_poi <- observe_map(get_view_state(id_map))
-      if ((is.null(new_poi) && !is.null(poi())) ||
-        (!is.null(new_poi) && (is.null(poi()) || !all(new_poi == poi())))) {
-        poi(new_poi)
+      if ((is.null(new_poi) && !is.null(r[[id]]$poi())) ||
+        (!is.null(new_poi) && (is.null(r[[id]]$poi()) || !all(new_poi == r[[id]]$poi())))) {
+        r[[id]]$poi(new_poi)
       }
     }) |> bindEvent(get_view_state(id_map))
 
     # Map zoom levels change depending on r$region()
-    map_zoom_levels <- reactive(
-      zoom_get_levels(id = id, region = r$region())
-    )
+    zoom_levels <- reactive(zoom_get_levels(id = id, region = r$region()))
 
     # Zoom string reactive
     observe({
-      new_zoom_string <- get_zoom_string(
-        r[[id]]$zoom(), map_zoom_levels()$zoom_levels,
-        map_zoom_levels()$region
+      new_zoom_string <- zoom_get_string(
+        r[[id]]$zoom(), zoom_levels()$zoom_levels,
+        zoom_levels()$region
       )
       if (new_zoom_string != zoom_string()) zoom_string(new_zoom_string)
-    }) |> bindEvent(r[[id]]$zoom(), map_zoom_levels()$zoom_levels)
+    }) |> bindEvent(r[[id]]$zoom(), zoom_levels()$zoom_levels)
 
     # Click reactive
     observe({
@@ -107,13 +96,13 @@
     }) |> bindEvent(r$default_select_id(), r[[id]]$df())
 
     # Choose tileset
-    tile <- zoom_server(
+    tile <- curbcut::zoom_server(
       id = id,
       r = r,
       zoom_string = zoom_string,
-      zoom_levels = map_zoom_levels
+      zoom_levels = zoom_levels
     )
-
+    
     # Get df for explore/legend/etc
     observe(r[[id]]$df(get_df(tile(), zoom_string()))) |>
       bindEvent(tile(), zoom_string())
@@ -168,8 +157,8 @@
     # Data for tile coloring
     data_colours <- reactive(curbcut::data_get_colours(
       vars = vars(),
-      region = map_zoom_levels()$region,
-      zoom_levels = map_zoom_levels()$zoom_levels
+      region = zoom_levels()$region,
+      zoom_levels = zoom_levels()$zoom_levels
     ))
     
     # Year disclaimer
@@ -197,7 +186,7 @@
       r = r,
       var_left = var_left,
       var_right = var_right,
-      poi = poi
+      poi = r[[id]]$poi
     )
 
     # Update map in response to variable changes or zooming
@@ -205,7 +194,7 @@
                         tile = tile,
                         data_colours = data_colours,
                         select_id = r[[id]]$select_id,
-                        zoom_levels = reactive(map_zoom_levels()$zoom_levels),
+                        zoom_levels = reactive(zoom_levels()$zoom_levels),
                         zoom = r[[id]]$zoom)
 
     # # Update map labels
@@ -221,7 +210,7 @@
     #   id = id,
     #   r = r,
     #   data = data,
-    #   geo = reactive(map_zoom_levels()$region),
+    #   geo = reactive(zoom_levels()$region),
     #   var_left = var_left,
     #   var_right = var_right
     # )

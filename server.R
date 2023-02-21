@@ -45,6 +45,7 @@ shinyServer(function(input, output, session) {
       r[[i]] <- reactiveValues(
         select_id = reactiveVal(NA),
         zoom = reactiveVal(get_zoom(map_zoom)),
+        poi = reactiveVal(NULL),
         prev_norm = reactiveVal(FALSE))
     } else {
       df <- if (is.null(df)) default_region else df
@@ -53,6 +54,7 @@ shinyServer(function(input, output, session) {
         select_id = reactiveVal(NA),
         df = reactiveVal(df),
         zoom = reactiveVal(get_zoom(map_zoom)),
+        poi = reactiveVal(NULL),
         prev_norm = reactiveVal(FALSE))
     }
   }
@@ -347,22 +349,22 @@ shinyServer(function(input, output, session) {
     showModal(modalDialog(
       # Change 'region'
       radioButtons("region_change",
-                   label = curbcut::cc_t(lang = r$lang(), translation = translation,
+                   label = curbcut::cc_t(lang = r$lang(), 
                                          "Change default geometry"),
                    inline = TRUE,
                    selected = r$region(),
                    choiceNames = 
                      sapply(regions_dictionary$name[regions_dictionary$pickable],
-                            curbcut::cc_t, lang = r$lang(), translation = translation) |> unname(),
-                   choiceValues = regions_dictionary$geo[regions_dictionary$pickable]),
+                            curbcut::cc_t, lang = r$lang()) |> unname(),
+                   choiceValues = regions_dictionary$region[regions_dictionary$pickable]),
 
       hr(),
       
       # Lock in address of zone for select_ids
-      strong(curbcut::cc_t(lang = r$lang(), translation = translation,
+      strong(curbcut::cc_t(lang = r$lang(), 
                            "Enter and save a default location (postal code or ",
                   "address)")),
-      HTML("<br><i>", curbcut::cc_t(lang = r$lang(), translation = translation,
+      HTML("<br><i>", curbcut::cc_t(lang = r$lang(), 
                                     "Default location will be saved until ",
                     "manually cleared from advanced options"), "</i>"),
       HTML(paste0('<div class="shiny-split-layout">',
@@ -377,13 +379,13 @@ shinyServer(function(input, output, session) {
                                style = "margin-top: var(--padding-v-md);"),
                   '</div></div>',
                   actionButton(inputId = "cancel_lock_location",
-                               label = curbcut::cc_t(lang = r$lang(), translation = translation,
+                               label = curbcut::cc_t(lang = r$lang(), 
                                                      "Clear default location"), 
                                icon = icon("xmark", verify_fa = FALSE),
                                style = "margin-top: var(--padding-v-md);"))),
-      title = curbcut::cc_t(lang = r$lang(), translation = translation,
+      title = curbcut::cc_t(lang = r$lang(), 
                             "Advanced options"),
-      footer = modalButton(curbcut::cc_t(lang = r$lang(), translation = translation,
+      footer = modalButton(curbcut::cc_t(lang = r$lang(), 
                                          "Dismiss"))))
     })
 
@@ -416,7 +418,7 @@ shinyServer(function(input, output, session) {
         # Postal code detected, but not in our database
         if (sum(pcs) == 0) {
           showNotification(
-            curbcut::cc_t(lang = r$lang(), translation = translation,
+            curbcut::cc_t(lang = r$lang(), 
                           "Postal code `{postal_c}` isn't within an ",
                  "available geography."),
             type = "error")
@@ -424,18 +426,18 @@ shinyServer(function(input, output, session) {
         }
         
         showNotification(
-          curbcut::cc_t(lang = r$lang(), translation = translation,
+          curbcut::cc_t(lang = r$lang(), 
                paste0("Postal code `{postal_codes$postal_code[pcs]}` ",
                       "saved as default.")),
           type = "default")
         
-        sapply(regions_dictionary$geo, \(x) {
+        sapply(regions_dictionary$region, \(x) {
           dat <- get0(paste0(x, "_DA"))
           if (is.null(dat)) return("")
           dat <- dat[dat$ID == postal_codes$DA_ID[pcs], ]
           if (length(dat) == 0) {
             showNotification(
-              curbcut::cc_t(lang = r$lang(), translation = translation,
+              curbcut::cc_t(lang = r$lang(), 
                             paste0("No addresses found.")),
               type = "error")
             return(NULL)
@@ -455,7 +457,7 @@ shinyServer(function(input, output, session) {
         val <- httr::content(get)
         if (length(val) == 0) {
           showNotification(
-            curbcut::cc_t(lang = r$lang(), translation = translation,
+            curbcut::cc_t(lang = r$lang(), 
                           paste0("No addresses found.")),
             type = "error")
           return(NULL)
@@ -464,7 +466,7 @@ shinyServer(function(input, output, session) {
         coords <- val$geometry$coordinates
         
         out <- 
-          sapply(regions_dictionary$geo, \(x) {
+          sapply(regions_dictionary$region, \(x) {
             scales <- names(get(paste0("map_zoom_levels_", x)))
             if (length(which("DA" == scales)) > 0) {
               scales <- scales[seq_len(which("DA" == scales))]
@@ -486,14 +488,14 @@ shinyServer(function(input, output, session) {
         
         if (all(sapply(out, is.null))) {
           showNotification(
-            curbcut::cc_t(lang = r$lang(), translation = translation,
+            curbcut::cc_t(lang = r$lang(), 
                           "Address `{input$lock_address_searched}` isn't",
                  " within an available geography."),
             type = "error")
           out <- NULL
         } else {
           showNotification(
-            curbcut::cc_t(lang = r$lang(), translation = translation,
+            curbcut::cc_t(lang = r$lang(), 
                           "Address `{val$title}` saved as default."),
             type = "default")          
         }
@@ -508,7 +510,7 @@ shinyServer(function(input, output, session) {
     r$default_select_id(NULL)
     
     showNotification(
-      curbcut::cc_t(lang = r$lang(), translation = translation,
+      curbcut::cc_t(lang = r$lang(), 
                     paste0("Default location successfully cleared")),
       type = "default")
   })
@@ -523,7 +525,7 @@ shinyServer(function(input, output, session) {
     if (!input$sus_page %in% modules$id || 
         isFALSE(modules$metadata[modules$id == input$sus_page]))
       return(showNotification(
-        curbcut::cc_t(lang = r$lang(), translation = translation,
+        curbcut::cc_t(lang = r$lang(), 
                       "No data/metadata for this location."),
         duration = 3))
     
@@ -542,7 +544,7 @@ shinyServer(function(input, output, session) {
     downloadHandler(
       filename = reactive(paste0(r[[input$sus_page]]$export_data()$id, "_shp.zip")),
       content = function(file) {
-        withProgress(message = curbcut::cc_t(lang = r$lang(), translation = translation,
+        withProgress(message = curbcut::cc_t(lang = r$lang(), 
                                              "Exporting Data"), {
           
           incProgress(0.4)
@@ -582,7 +584,7 @@ shinyServer(function(input, output, session) {
   #   js$takeShot(to_sh_id = "housing-housing-map", output_id = "screenshot_container")
   #   showModal(modalDialog(
   #     div(id = "screenshot_container"),
-  #     title = curbcut::cc_t(lang = r$lang(), translation = translation,
+  #     title = curbcut::cc_t(lang = r$lang(), 
   #"Save as image"),
   #     size = "l"
   #   ))

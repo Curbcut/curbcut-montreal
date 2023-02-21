@@ -65,7 +65,7 @@ natural_inf_server <- function(id, r) {
     id_map <- paste0(id, "-map")
 
     # # Initial reactives
-    zoom_string <- reactiveVal(get_zoom_string(9.5, map_zoom_levels_CMA))
+    zoom_string <- reactiveVal(zoom_get_string(9.5, map_zoom_levels_CMA))
     poi <- reactiveVal(NULL)
     
     # Map
@@ -85,7 +85,7 @@ natural_inf_server <- function(id, r) {
 
     # Zoom string reactive
     observe({
-      new_zoom_string <- get_zoom_string(r[[id]]$zoom(), map_zoom_levels_CMA)
+      new_zoom_string <- zoom_get_string(r[[id]]$zoom(), map_zoom_levels_CMA)
       if (new_zoom_string != zoom_string()) zoom_string(new_zoom_string)
     }) |> bindEvent(r[[id]]$zoom())
     
