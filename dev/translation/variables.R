@@ -234,42 +234,6 @@ variables_translated <-
           fr = paste0("Total d'espaces verts pour 1 000")) |> 
   add_row(en = paste0("Gentrification index"), 
           fr = paste0("Indice de gentrification")) |> 
-  add_row(en = paste0("Dwellings combination permits count"), 
-          fr = NA) |> 
-  add_row(en = paste0("Condo conversion permits count"), 
-          fr = NA) |> 
-  add_row(en = paste0("Demolition permits count"), 
-          fr = NA) |> 
-  add_row(en = paste0("New construction permits count"), 
-          fr = NA) |> 
-  add_row(en = paste0("Renovation permits count"), 
-          fr = NA) |> 
-  add_row(en = paste0("Total permits count"), 
-          fr = NA) |> 
-  add_row(en = paste0("Dwellings combination permits per sq km"), 
-          fr = NA) |> 
-  add_row(en = paste0("Dwellings combination permits per 1,000"), 
-          fr = NA) |> 
-  add_row(en = paste0("Condo conversion permits per sq km"), 
-          fr = NA) |> 
-  add_row(en = paste0("Condo conversion permits per 1,000"), 
-          fr = NA) |> 
-  add_row(en = paste0("Demolition permits per sq km"), 
-          fr = NA) |> 
-  add_row(en = paste0("Demolition permits per 1,000"), 
-          fr = NA) |> 
-  add_row(en = paste0("New construction permits per sq km"), 
-          fr = NA) |> 
-  add_row(en = paste0("New construction permits per 1,000"), 
-          fr = NA) |> 
-  add_row(en = paste0("Renovation permits per sq km"), 
-          fr = NA) |> 
-  add_row(en = paste0("Renovation permits per 1,000"), 
-          fr = NA) |> 
-  add_row(en = paste0("Total permits per sq km"), 
-          fr = NA) |> 
-  add_row(en = paste0("Total permits per 1,000"), 
-          fr = NA) |> 
   add_row(en = paste0("Tenant"), 
           fr = paste0("Locataire")) |> 
   add_row(en = paste0("Avg. rent"), 
@@ -458,64 +422,6 @@ variables_translated <-
           fr = paste0("Ruelles/sqkm")) |> 
   add_row(en = paste0("Alleys/1,000"), 
           fr = paste0("Ruelles/1,000")) |> 
-  add_row(en = paste0("Borough park sqkm"), 
-          fr = NA) |> 
-  add_row(en = paste0("Borough park 1,000"), 
-          fr = NA) |> 
-  add_row(en = paste0("Large park sqkm"), 
-          fr = NA) |> 
-  add_row(en = paste0("Large park 1,000"), 
-          fr = NA) |> 
-  add_row(en = paste0("Other park sqkm"), 
-          fr = NA) |> 
-  add_row(en = paste0("Other park 1,000"), 
-          fr = NA) |> 
-  add_row(en = paste0("Road space sqkm"), 
-          fr = NA) |> 
-  add_row(en = paste0("Road space 1,000"), 
-          fr = NA) |> 
-  add_row(en = paste0("Under validation sqkm"), 
-          fr = NA) |> 
-  add_row(en = paste0("Under validation 1,000"), 
-          fr = NA) |> 
-  add_row(en = paste0("Total sqkm"), 
-          fr = NA) |> 
-  add_row(en = paste0("Total 1,000"), 
-          fr = NA) |> 
-  add_row(en = paste0("Gentrification"), 
-          fr = paste0("Gentrification")) |> 
-  add_row(en = paste0("Combination "), 
-          fr = NA) |> 
-  add_row(en = paste0("Condo conversion "), 
-          fr = NA) |> 
-  add_row(en = paste0("Demolition "), 
-          fr = NA) |> 
-  add_row(en = paste0("New construction "), 
-          fr = NA) |> 
-  add_row(en = paste0("Renovation "), 
-          fr = NA) |> 
-  add_row(en = paste0("Total "), 
-          fr = NA) |> 
-  add_row(en = paste0("Combination sqkm"), 
-          fr = NA) |> 
-  add_row(en = paste0("Combination 1,000"), 
-          fr = NA) |> 
-  add_row(en = paste0("Condo conversion sqkm"), 
-          fr = NA) |> 
-  add_row(en = paste0("Condo conversion 1,000"), 
-          fr = NA) |> 
-  add_row(en = paste0("Demolition sqkm"), 
-          fr = NA) |> 
-  add_row(en = paste0("Demolition 1,000"), 
-          fr = NA) |> 
-  add_row(en = paste0("New construction sqkm"), 
-          fr = NA) |> 
-  add_row(en = paste0("New construction 1,000"), 
-          fr = NA) |> 
-  add_row(en = paste0("Renovation sqkm"), 
-          fr = NA) |> 
-  add_row(en = paste0("Renovation 1,000"), 
-          fr = NA) |> 
   add_row(en = paste0("the percentage of private dwellings occupied by tenants",
                       ""), 
           fr = paste0("le pourcentage de logements privés occupés par des loca",
@@ -933,55 +839,6 @@ variables_translated <-
                       "s")) |> 
   add_row(en = paste0("the gentrification pressure an area is experiencing"), 
           fr = paste0("la pression de gentrification que subit un secteur")) |> 
-  add_row(en = paste0("the number of dwellings combination permits emitted "), 
-          fr = NA) |> 
-  add_row(en = paste0("the number of condo conversion permits emitted "), 
-          fr = NA) |> 
-  add_row(en = paste0("the number of demolition permits emitted "), 
-          fr = NA) |> 
-  add_row(en = paste0("the number of owner and renter residential buildings bu",
-                      "ilt "), 
-          fr = NA) |> 
-  add_row(en = paste0("the number of renovation permits emitted "), 
-          fr = NA) |> 
-  add_row(en = paste0("the number of total permits emitted "), 
-          fr = NA) |> 
-  add_row(en = paste0("the number of dwellings combination permits emitted per",
-                      " square kilometre"), 
-          fr = NA) |> 
-  add_row(en = paste0("the number of dwellings combination permits emitted per",
-                      " 1,000 residents"), 
-          fr = NA) |> 
-  add_row(en = paste0("the number of condo conversion permits emitted per squa",
-                      "re kilometre"), 
-          fr = NA) |> 
-  add_row(en = paste0("the number of condo conversion permits emitted per 1,00",
-                      "0 residents"), 
-          fr = NA) |> 
-  add_row(en = paste0("the number of demolition permits emitted per square kil",
-                      "ometre"), 
-          fr = NA) |> 
-  add_row(en = paste0("the number of demolition permits emitted per 1,000 resi",
-                      "dents"), 
-          fr = NA) |> 
-  add_row(en = paste0("the number of owner and renter residential buildings bu",
-                      "ilt per square kilometre"), 
-          fr = NA) |> 
-  add_row(en = paste0("the number of owner and renter residential buildings bu",
-                      "ilt per 1,000 residents"), 
-          fr = NA) |> 
-  add_row(en = paste0("the number of renovation permits emitted per square kil",
-                      "ometre"), 
-          fr = NA) |> 
-  add_row(en = paste0("the number of renovation permits emitted per 1,000 resi",
-                      "dents"), 
-          fr = NA) |> 
-  add_row(en = paste0("the number of total permits emitted per square kilometr",
-                      "e"), 
-          fr = NA) |> 
-  add_row(en = paste0("the number of total permits emitted per 1,000 residents",
-                      ""), 
-          fr = NA) |> 
   add_row(en = paste0("Housing"), 
           fr = paste0("Logement")) |> 
   add_row(en = paste0("Income"), 

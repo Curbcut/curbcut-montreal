@@ -84,14 +84,14 @@ alley_server <- function(id, r) {
     
     # Map zoom levels change depending on "city"
     map_zoom_levels <- eventReactive(r$region(), {
-      out <- get_zoom_levels(default = "city", 
+      out <- zoom_get_levels(default = "city", 
                              geo = "city",
                              var_left = isolate(var_left()))
     })
     
     # Zoom string reactive
     observe({
-      new_zoom_string <- get_zoom_string(r[[id]]$zoom(), map_zoom_levels()$levels,
+      new_zoom_string <- get_zoom_string(r[[id]]$zoom(), map_zoom_levels()$zoom_levels,
                                          "city")
       if (new_zoom_string != zoom_string()) zoom_string(new_zoom_string)
     }) |> bindEvent(r[[id]]$zoom())
@@ -166,7 +166,7 @@ alley_server <- function(id, r) {
     data_color <- reactive({
       if (!choropleth()) return(NULL)
       get_data_color(
-        map_zoom_levels = map_zoom_levels()$levels,
+        map_zoom_levels = map_zoom_levels()$zoom_levels,
         geo = "city",
         var_left = var_left(),
         var_right = var_right())

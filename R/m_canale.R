@@ -14,23 +14,21 @@
 
   tagList(
     # Sidebar
-    sidebar_UI(
-      NS(id, id),
+    curbcut::sidebar_UI(
+      id = NS(id, id),
       susSidebarWidgets(),
-      bottom = div(
-        class = "bottom_sidebar",
+      bottom = 
         tagList(
           curbcut::legend_UI(NS(id, id)),
           zoom_UI(NS(id, id), `canale_mzp`)
         )
-      )
     ),
 
     # Map
-    map_UI(NS(id, id)),
+    curbcut::map_UI(NS(id, id)),
 
     # Right panel
-    right_panel(
+    curbcut::right_panel(
       id = id,
       compare_UI(NS(id, id), make_dropdown(compare = TRUE)),
       explore_UI(NS(id, id)),
@@ -71,22 +69,18 @@
     }) |> bindEvent(get_view_state(id_map))
 
     # Map zoom levels change depending on r$region()
-    map_zoom_levels <- eventReactive(r$region(), {
-      get_zoom_levels(
-        default = `canale_default_region`,
-        geo = r$region(),
-        var_left = isolate(var_left())
-      )
-    })
+    map_zoom_levels <- reactive(
+      zoom_get_levels(id = id, region = r$region())
+    )
 
     # Zoom string reactive
     observe({
       new_zoom_string <- get_zoom_string(
-        r[[id]]$zoom(), map_zoom_levels()$levels,
+        r[[id]]$zoom(), map_zoom_levels()$zoom_levels,
         map_zoom_levels()$region
       )
       if (new_zoom_string != zoom_string()) zoom_string(new_zoom_string)
-    }) |> bindEvent(r[[id]]$zoom(), map_zoom_levels()$levels)
+    }) |> bindEvent(r[[id]]$zoom(), map_zoom_levels()$zoom_levels)
 
     # Click reactive
     observe({
@@ -163,7 +157,7 @@
                                          df = r[[id]]$df()))
     
     # Sidebar
-    sidebar_server(id = id, r = r)
+    curbcut::sidebar_server(id = id, r = r)
 
     # Data
     data <- reactive(curbcut::data_get(
@@ -175,7 +169,7 @@
     data_colours <- reactive(curbcut::data_get_colours(
       vars = vars(),
       region = map_zoom_levels()$region,
-      zoom_levels = map_zoom_levels()$levels
+      zoom_levels = map_zoom_levels()$zoom_levels
     ))
     
     # Year disclaimer
@@ -189,14 +183,14 @@
     )
 
     # Legend
-    legend <- curbcut::legend_server(
+    curbcut::legend_server(
       id = id,
       r = r,
       vars,
       data = data,
       df = r[[id]]$df
     )
-
+    
     # Did-you-know panel
     dyk_server(
       id = id,
@@ -211,7 +205,7 @@
                         tile = tile,
                         data_colours = data_colours,
                         select_id = r[[id]]$select_id,
-                        zoom_levels = reactive(map_zoom_levels()$levels),
+                        zoom_levels = reactive(map_zoom_levels()$zoom_levels),
                         zoom = r[[id]]$zoom)
 
     # # Update map labels

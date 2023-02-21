@@ -17,7 +17,7 @@ zoom_UI <- function(id, zoom_levels) {
       div(class = "sus-sidebar-control", sliderTextInput(
         inputId = NS(id, "zoom_slider"), 
         label = NULL, 
-        choices = get_zoom_label(zoom_levels), 
+        choices = zoom_get_label(zoom_levels), 
         hide_min_max = TRUE, 
         force_edges = TRUE))
   )
@@ -40,36 +40,32 @@ zoom_server <- function(id, r = r, zoom_string, zoom_levels) {
     observeEvent({zoom_levels()
       r$lang()}, {
       updateSliderTextInput(session, "zoom_slider", 
-                            selected = curbcut::cc_t(lang = r$lang(), 
-                                                     
-                                                     get_zoom_name(zoom_string())),
-                            choices = get_zoom_label_t({
+                            selected = zoom_get_name(zoom_string(), lang = r$lang()),
+                            choices = zoom_get_label({
                               # If the module isn't impacted by a change of r$region()
                               if (is.list(zoom_levels())) {
-                                zoom_levels()$levels
+                                zoom_levels()$zoom_levels
                               } else zoom_levels()}, 
-                              r = r))
+                              lang = r$lang()))
     })
     
     # Update the slider when zomo changes, only on auto_zoom
     observeEvent(zoom_string(), {
       if (input$zoom_auto)
         updateSliderTextInput(session, "zoom_slider", 
-                              selected = curbcut::cc_t(lang = r$lang(), 
-                                                       
-                                                       get_zoom_name(zoom_string())))
+                              selected = zoom_get_name(zoom_string(), lang = r$lang()))
     }, priority = -1)
     
     # Update the slider if in auto mode
     observeEvent(zoom_string(), {
       if (input$zoom_auto) updateSliderTextInput(
         session, "zoom_slider", 
-        selected = get_zoom_name(zoom_string()))
+        selected = zoom_get_name(zoom_string(), lang = r$lang()))
     })
 
     zoom_out <- reactive({
       out <- 
-        if (input$zoom_auto) "auto_zoom" else get_zoom_code(input$zoom_slider)
+        if (input$zoom_auto) "auto_zoom" else zoom_get_code(input$zoom_slider)
       
       # If the module isn't impacted by a change of r$region()
       if (!is.list(zoom_levels())) return(out)

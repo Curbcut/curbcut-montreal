@@ -78,6 +78,8 @@ translation_df <-
             city_amenities_translation) |> 
   distinct(en, .keep_all = TRUE)
 
+if (translation_df$fr |> is.na() |> sum() > 0)
+  stop("`NA` translations are forbidden (will break some translations), e.g. `get_zoom_code`")
 
 
 # Test --------------------------------------------------------------------

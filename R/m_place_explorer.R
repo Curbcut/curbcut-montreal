@@ -73,7 +73,7 @@ place_explorer_server <- function(id, r) {
     
     # df/data reactives
     observeEvent(input$zoom_slider, {
-      r[[id]]$df(get_zoom_code(input$zoom_slider))
+      r[[id]]$df(zoom_get_code(input$zoom_slider))
     })
     data <- reactive(get(paste(r$region(), r[[id]]$df(), sep = "_")))
     
@@ -82,7 +82,7 @@ place_explorer_server <- function(id, r) {
     
     observe(updateSliderTextInput(
       session = session, "zoom_slider",
-      choices = get_zoom_label_t(pe_scales, r = r)))
+      choices = zoom_get_label(pe_scales, lang = r$lang())))
     
     # Tweak for bookmark
     observeEvent(parseQueryString(session$clientData$url_search)$tb, {
@@ -91,8 +91,8 @@ place_explorer_server <- function(id, r) {
         df <- stats::setNames(df, df)
         updateSliderTextInput(
           session = session, "zoom_slider",
-          choices = get_zoom_label_t(pe_scales, r = r),
-          selected = get_zoom_label_t(df, r = r))
+          choices = zoom_get_label(pe_scales, lang = r$lang()),
+          selected = zoom_get_label(df, lang = r$lang()))
       }
     }, once = TRUE)
     

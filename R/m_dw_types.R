@@ -70,7 +70,7 @@ dw_types_server <- function(id, r) {
     # Map zoom levels change depending on r$region(). Listening only to the latter
     # to not have to recalculate everytime var_left() changes.
     map_zoom_levels <- eventReactive(r$region(), {
-      get_zoom_levels(default = "CMA", 
+      zoom_get_levels(default = "CMA", 
                       geo = r$region(),
                       var_left = isolate(var_left()),
                       suffix_zoom_levels = "_max_CT")
@@ -78,7 +78,7 @@ dw_types_server <- function(id, r) {
     
     # Zoom string reactive
     observe({
-      new_zoom_string <- get_zoom_string(r[[id]]$zoom(), map_zoom_levels()$levels,
+      new_zoom_string <- get_zoom_string(r[[id]]$zoom(), map_zoom_levels()$zoom_levels,
                                          map_zoom_levels()$region)
       if (new_zoom_string != zoom_string()) zoom_string(new_zoom_string)
     }) |> bindEvent(r[[id]]$zoom(), map_zoom_levels()$region)
@@ -200,7 +200,7 @@ dw_types_server <- function(id, r) {
     
     # Data for tile coloring
     data_color <- reactive(get_data_color(
-      map_zoom_levels = map_zoom_levels()$levels,
+      map_zoom_levels = map_zoom_levels()$zoom_levels,
       geo = map_zoom_levels()$region,
       var_left = var_left(),
       var_right = var_right()
@@ -221,7 +221,7 @@ dw_types_server <- function(id, r) {
       map_id = "map",
       tile = tile,
       data_color = data_color,
-      zoom_levels = reactive(map_zoom_levels()$levels))
+      zoom_levels = reactive(map_zoom_levels()$zoom_levels))
 
     # Update map labels
     label_server(

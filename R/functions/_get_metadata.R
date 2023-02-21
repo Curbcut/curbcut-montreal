@@ -226,7 +226,7 @@ get_metadata <- function(export_data, r, about_data,
                     "spatially interpolated from {from}s."),
                "</p>")
       } else {
-        df <- str_to_lower(curbcut::cc_t(lang = r$lang(), get_zoom_name(export_data$df)))
+        df <- str_to_lower(curbcut::cc_t(lang = r$lang(), zoom_get_name(export_data$df)))
         paste0("<p style = 'font-size: 1.45rem;'>",
                curbcut::cc_t(lang = r$lang(), "`{variables_row$var_title}` at the {df} scale is ",
                     "spatially interpolated from {from}s."),
@@ -239,9 +239,9 @@ get_metadata <- function(export_data, r, about_data,
   # we show DAs
   if (!is.null(export_data$df))
     if (export_data$data_origin != export_data$df) {
-      df <- str_to_lower(curbcut::cc_t(lang = r$lang(), get_zoom_name(export_data$df)))
+      df <- str_to_lower(curbcut::cc_t(lang = r$lang(), zoom_get_name(export_data$df)))
       data_origin <- 
-        str_to_lower(curbcut::cc_t(lang = r$lang(), get_zoom_name(export_data$data_origin)))
+        str_to_lower(curbcut::cc_t(lang = r$lang(), zoom_get_name(export_data$data_origin)))
       
       about_data[[var]]$diff_representation <- 
         paste0("<p style = 'font-size: 1.45rem;'>",

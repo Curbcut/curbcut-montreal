@@ -41,7 +41,7 @@ update_module <- function(r, id, mod_ns = paste(id, id, sep = "-"),
       session = session,
       inputId = construct_namespace("zoom_slider"),
       selected = curbcut::cc_t(lang = r$lang(), 
-                               get_zoom_name(df))
+                               zoom_get_name(df))
     )
     r[[id]]$df(df)
   }

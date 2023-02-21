@@ -34,7 +34,7 @@ data_export_modal <- function(r = r, export_data) {
   
   # Spatial organization of data
   data_organization <- 
-    tolower(curbcut::cc_t(lang = r$lang(), get_zoom_name(export_data$data_origin)))
+    tolower(curbcut::cc_t(lang = r$lang(), zoom_get_name(export_data$data_origin)))
   
   about_data$general_detail <- 
     paste0("<p style = 'font-size: 1.45rem'>",

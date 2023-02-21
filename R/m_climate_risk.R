@@ -63,17 +63,17 @@ climate_risk_server <- function(id, r) {
     
     # Map zoom levels change depending on r$region()
     map_zoom_levels <- eventReactive(tweaked_geo(), {
-      get_zoom_levels(default = "island", 
+      zoom_get_levels(default = "island", 
                       geo = tweaked_geo(),
                       var_left = var_left())
     })
     
     # Zoom string reactive
     observe({
-      new_zoom_string <- get_zoom_string(r[[id]]$zoom(), map_zoom_levels()$levels,
+      new_zoom_string <- get_zoom_string(r[[id]]$zoom(), map_zoom_levels()$zoom_levels,
                                          map_zoom_levels()$region)
       if (new_zoom_string != zoom_string()) zoom_string(new_zoom_string)
-    }) |> bindEvent(r[[id]]$zoom(), map_zoom_levels()$levels, map_zoom_levels()$region)
+    }) |> bindEvent(r[[id]]$zoom(), map_zoom_levels()$zoom_levels, map_zoom_levels()$region)
 
     # Click reactive
     observe({
@@ -145,7 +145,7 @@ climate_risk_server <- function(id, r) {
     # Data for tile coloring
     data_color <- reactive(get_data_color(
       map_zoom_levels = if (grid()) rlang::set_names("grid", "grid") else
-        map_zoom_levels()$levels,
+        map_zoom_levels()$zoom_levels,
       geo = region(),
       var_left = var_left(),
       var_right = var_right()

@@ -93,16 +93,6 @@ materialIconButton <- function(tag, icon) {
   tag
 }
 
-# Map module right panel
-right_panel <- function(id, ...) {
-  
-  absolutePanel(
-    id = NS(id, "right_panel"),
-    class = "panel panel-default sus-map-panel sus-scroll",
-    tags$div(class = "sus-map-panel-content sus-scroll-content", ...)
-  )
-}
-
 # Make a link button styled to go inside of a link list group
 linkListGroupElement <- function(link) {
   return(tags$li(tags$a(class = "noselect", href = NULL, onclick = link$onclick, link$name,
