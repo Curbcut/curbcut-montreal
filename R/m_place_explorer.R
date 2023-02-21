@@ -15,7 +15,7 @@ place_explorer_UI <- function(id) {
     # Sidebar
     sidebar_UI(
       NS(id, id),
-      susSidebarWidgets(
+      shiny::div(class = "sus-sidebar-widgets",
         # Search box
         strong(curbcut::cc_t(
                              "Enter postal code or click on the map")),

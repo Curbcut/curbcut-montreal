@@ -10,7 +10,7 @@ afford_UI <- function(id) {
     # Sidebar
     sidebar_UI(
       NS(id, id),
-      susSidebarWidgets(
+      shiny::div(class = "sus-sidebar-widgets",
         select_var_UI(NS(id, id), select_var_id = "d_1",
                       label = curbcut::cc_t("Grouping"),
                       var_list = var_left_list_1_afford), 
@@ -64,7 +64,7 @@ afford_server <- function(id, r) {
     id_map <- paste0(id, "-map")
     
     # Initial reactives
-    zoom <- reactiveVal(get_zoom(map_zoom))
+    zoom <- reactiveVal(curbcut::zoom_get(map_zoom))
     zoom_string <- reactiveVal(zoom_get_string(map_zoom, map_zoom_levels_CMA_max_CT))
     poi <- reactiveVal(NULL)
     new_poi <- reactiveVal(NULL)
@@ -77,7 +77,7 @@ afford_server <- function(id, r) {
     
     # Zoom and POI reactives
     observe({
-      r[[id]]$zoom(get_zoom(get_view_state(id_map)$zoom))
+      r[[id]]$zoom(curbcut::zoom_get(get_view_state(id_map)$zoom))
       new_poi <- observe_map(get_view_state(id_map))
       if ((is.null(new_poi) && !is.null(poi())) ||
           (!is.null(new_poi) && (is.null(poi()) || !all(new_poi == poi()))))

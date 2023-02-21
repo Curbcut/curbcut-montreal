@@ -44,7 +44,7 @@ shinyServer(function(input, output, session) {
     if (is.null(df)) {
       r[[i]] <- reactiveValues(
         select_id = reactiveVal(NA),
-        zoom = reactiveVal(get_zoom(map_zoom)),
+        zoom = reactiveVal(curbcut::zoom_get(map_zoom)),
         poi = reactiveVal(NULL),
         prev_norm = reactiveVal(FALSE))
     } else {
@@ -53,7 +53,7 @@ shinyServer(function(input, output, session) {
       r[[i]] <- reactiveValues(
         select_id = reactiveVal(NA),
         df = reactiveVal(df),
-        zoom = reactiveVal(get_zoom(map_zoom)),
+        zoom = reactiveVal(curbcut::zoom_get(map_zoom)),
         poi = reactiveVal(NULL),
         prev_norm = reactiveVal(FALSE))
     }
@@ -347,47 +347,14 @@ shinyServer(function(input, output, session) {
 
   onclick("advanced_options", {
     showModal(modalDialog(
-      # Change 'region'
-      radioButtons("region_change",
-                   label = curbcut::cc_t(lang = r$lang(), 
-                                         "Change default geometry"),
-                   inline = TRUE,
-                   selected = r$region(),
-                   choiceNames = 
-                     sapply(regions_dictionary$name[regions_dictionary$pickable],
-                            curbcut::cc_t, lang = r$lang()) |> unname(),
-                   choiceValues = regions_dictionary$region[regions_dictionary$pickable]),
-
+      # Change the region
+      curbcut::adv_opt_region(region = r$region(), lang = r$lang()),
       hr(),
-      
-      # Lock in address of zone for select_ids
-      strong(curbcut::cc_t(lang = r$lang(), 
-                           "Enter and save a default location (postal code or ",
-                  "address)")),
-      HTML("<br><i>", curbcut::cc_t(lang = r$lang(), 
-                                    "Default location will be saved until ",
-                    "manually cleared from advanced options"), "</i>"),
-      HTML(paste0('<div class="shiny-split-layout">',
-                  '<div style="width: 80%; margin-top: var(--padding-v-md); ',
-                  'width:auto;">',
-                  textInput(inputId = "lock_address_searched", 
-                            label = NULL, 
-                            placeholder = default_random_address),
-                  '</div><div style="width: 20%">',
-                  actionButton(inputId = "lock_search_button",
-                               label = icon("check", verify_fa = FALSE),
-                               style = "margin-top: var(--padding-v-md);"),
-                  '</div></div>',
-                  actionButton(inputId = "cancel_lock_location",
-                               label = curbcut::cc_t(lang = r$lang(), 
-                                                     "Clear default location"), 
-                               icon = icon("xmark", verify_fa = FALSE),
-                               style = "margin-top: var(--padding-v-md);"))),
-      title = curbcut::cc_t(lang = r$lang(), 
-                            "Advanced options"),
-      footer = modalButton(curbcut::cc_t(lang = r$lang(), 
-                                         "Dismiss"))))
-    })
+      curbcut::adv_opt_lock_selection(lang = r$lang()),
+      title = cc_t(lang = r$lang(), "Advanced options"),
+      footer = modalButton(cc_t(lang = r$lang(), "Dismiss"))
+    ))
+  })
 
   # Change the default geometry and save the cookie
   observeEvent(input$region_change, {

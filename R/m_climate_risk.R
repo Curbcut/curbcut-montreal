@@ -10,7 +10,7 @@ climate_risk_UI <- function(id) {
     # Sidebar
     sidebar_UI(
       NS(id, id),
-      susSidebarWidgets(
+      shiny::div(class = "sus-sidebar-widgets",
         select_var_UI(NS(id, id), var_list = make_dropdown(
           only = list(theme = "Climate risk"))), 
         checkbox_UI(NS(id, id), value = TRUE,
@@ -54,7 +54,7 @@ climate_risk_server <- function(id, r) {
     
     # Zoom and POI reactives
     observe({
-      r[[id]]$zoom(get_zoom(get_view_state(id_map)$zoom))
+      r[[id]]$zoom(curbcut::zoom_get(get_view_state(id_map)$zoom))
       new_poi <- observe_map(get_view_state(id_map))
       if ((is.null(new_poi) && !is.null(poi())) ||
           (!is.null(new_poi) && (is.null(poi()) || !all(new_poi == poi()))))

@@ -7,22 +7,32 @@
   eval(parse(text = paste0("map_zoom_levels_", `canale_default_region`)))
 default_region <- modules$regions[modules$id == "canale"][[1]][1]
 
+update_select_id <- function(id, select_id, id_map = paste0(id, "-map")) {
+  
+  # Get the new selected ID
+  new <- rdeck::get_clicked_object(id_map)$ID
+  
+  # If the same ID gets selected twice, deactivate selection
+  if (!is.na(select_id) && new == select_id)
+    return(NA)
+  
+  # Return new ID
+  return(new)
+}
 
 # UI ----------------------------------------------------------------------
 
 `canale_UI` <- function(id) {
   id_map <- paste0(id, "-map")
 
-  tagList(
+  shiny::tagList(
     # Sidebar
     curbcut::sidebar_UI(
       id = NS(id, id),
-      susSidebarWidgets(),
-      bottom = 
-        tagList(
-          curbcut::legend_UI(NS(id, id)),
-          zoom_UI(NS(id, id), `canale_mzp`)
-        )
+      bottom =  shiny::tagList(
+        curbcut::legend_UI(shiny::NS(id, id)),
+        curbcut::zoom_UI(shiny::NS(id, id), `canale_mzp`)
+      )
     ),
 
     # Map
@@ -46,41 +56,35 @@ default_region <- modules$regions[modules$id == "canale"][[1]][1]
     id_map <- paste0(id, "-map")
 
     # Initial reactives
-    zoom_string <- reactiveVal(zoom_get_string(map_zoom, `canale_mzp`,
-                                               region = default_region))
+    rv_zoom_string <- reactiveVal(zoom_get_string(map_zoom, `canale_mzp`,
+                                                  region = default_region))
 
-    # Zoom and POI reactives
-    observe({
-      r[[id]]$zoom(get_zoom(get_view_state(id_map)$zoom))
-      new_poi <- observe_map(get_view_state(id_map))
-      if ((is.null(new_poi) && !is.null(r[[id]]$poi())) ||
-        (!is.null(new_poi) && (is.null(r[[id]]$poi()) || !all(new_poi == r[[id]]$poi())))) {
-        r[[id]]$poi(new_poi)
-      }
-    }) |> bindEvent(get_view_state(id_map))
+    # Zoom and POI reactives when the view state of the map changes.
+    observeEvent(rdeck::get_view_state(id_map), {
+      r[[id]]$zoom(curbcut::zoom_get(rdeck::get_view_state(id_map)$zoom))
+      r[[id]]$poi(curbcut::update_poi(id = id, poi = r[[id]]$poi()))
+    })
 
     # Map zoom levels change depending on r$region()
-    zoom_levels <- reactive(zoom_get_levels(id = id, region = r$region()))
+    zoom_levels <- 
+      reactive(curbcut::zoom_get_levels(id = id, region = r$region()))
 
     # Zoom string reactive
     observe({
-      new_zoom_string <- zoom_get_string(
-        r[[id]]$zoom(), zoom_levels()$zoom_levels,
-        zoom_levels()$region
-      )
-      if (new_zoom_string != zoom_string()) zoom_string(new_zoom_string)
-    }) |> bindEvent(r[[id]]$zoom(), zoom_levels()$zoom_levels)
+      rv_zoom_string({
+        curbcut::zoom_get_string(
+          zoom = r[[id]]$zoom(), 
+          zoom_levels = zoom_levels()$zoom_levels, 
+          region = zoom_levels()$region)
+      })
+    })
 
     # Click reactive
-    observe({
-      selection <- get_clicked_object(id_map)$ID
-      if (!is.na(r[[id]]$select_id()) &&
-        selection == r[[id]]$select_id()) {
-        r[[id]]$select_id(NA)
-      } else {
-        r[[id]]$select_id(selection)
-      }
-    }) |> bindEvent(get_clicked_object(id_map))
+    observeEvent(get_clicked_object(id_map)$ID, {
+      r[[id]]$select_id({
+        update_select_id(id = id, select_id = r[[id]]$select_id())
+      })
+    })
 
     # Default location
     observe({
@@ -99,13 +103,13 @@ default_region <- modules$regions[modules$id == "canale"][[1]][1]
     tile <- curbcut::zoom_server(
       id = id,
       r = r,
-      zoom_string = zoom_string,
+      zoom_string = rv_zoom_string,
       zoom_levels = zoom_levels
     )
     
     # Get df for explore/legend/etc
-    observe(r[[id]]$df(get_df(tile(), zoom_string()))) |>
-      bindEvent(tile(), zoom_string())
+    observe(r[[id]]$df(get_df(tile(), rv_zoom_string()))) |>
+      bindEvent(tile(), rv_zoom_string())
     
     # Time
     time <- reactive("2016")

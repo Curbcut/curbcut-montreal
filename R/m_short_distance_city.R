@@ -10,7 +10,7 @@ short_distance_city_UI <- function(id) {
     # Sidebar
     sidebar_UI(
       NS(id, id), 
-      susSidebarWidgets(
+      shiny::div(class = "sus-sidebar-widgets",
         select_var_UI(NS(id, id), select_var_id = "d_1",
                       var_list = var_left_list_1_city_amenities), 
         select_var_UI(NS(id, id), select_var_id = "d_2",
@@ -54,7 +54,7 @@ short_distance_city_server <- function(id, r) {
     
     # Zoom and POI reactives
     observe({
-      r[[id]]$zoom(get_zoom(get_view_state(id_map)$zoom))
+      r[[id]]$zoom(curbcut::zoom_get(get_view_state(id_map)$zoom))
       new_poi <- observe_map(get_view_state(id_map))
       if ((is.null(new_poi) && !is.null(poi())) ||
           (!is.null(new_poi) && (is.null(poi()) || !all(new_poi == poi()))))

@@ -16,7 +16,7 @@
 #     # Sidebar
 #     sidebar_UI(
 #       NS(id, id),
-#       susSidebarWidgets(
+#       shiny::div(class = "sus-sidebar-widgets",
 #         auto_vars_UI(NS(id, id), var_list = make_dropdown(only = NULL, only_vars = c()), label = curbcut::cc_t("Access"))
 #       ),
 #       bottom = div(
@@ -64,7 +64,7 @@
 # 
 #     # Zoom and POI reactives
 #     observe({
-#       r[[id]]$zoom(get_zoom(get_view_state(id_map)$zoom))
+#       r[[id]]$zoom(curbcut::zoom_get(get_view_state(id_map)$zoom))
 #       new_poi <- observe_map(get_view_state(id_map))
 #       if ((is.null(new_poi) && !is.null(poi())) ||
 #         (!is.null(new_poi) && (is.null(poi()) || !all(new_poi == poi())))) {

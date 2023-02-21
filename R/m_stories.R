@@ -10,7 +10,7 @@ stories_UI <- function(id) {
     # Sidebar
     sidebar_UI(
       NS(id, id),
-      susSidebarWidgets(
+      shiny::div(class = "sus-sidebar-widgets",
         actionLink(NS(id, "back"), curbcut::cc_t(
                                                  "Back to the map")),
         pickerInput(
