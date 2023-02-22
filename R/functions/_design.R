@@ -41,7 +41,7 @@ susNewsExploreArticle <- function(id, type, author, date, title, img, preview) {
 
 susAuthorLink <- function(title, href=NULL, icon=NULL) {
   if (is.null(icon)) {
-    icon = materialIcon("link")
+    icon = curbcut::icon_material("link")
   }
   return(tags$a(class="sus-author-link", href=href, target="_blank", span(class="sus-author-link-icon", icon), title)) 
 }
@@ -66,27 +66,6 @@ navbarPageWithInputs <- function(..., inputs) {
     htmltools::tagAppendChild(
     navbar[[4]][[1]][[1]]$children[[1]], container)
   navbar
-}
-
-# Make a Google fonts Material icon
-# To browse the list of available icons, go to: https://fonts.google.com/icons
-# For exact usage, see the "Inserting the icon" heading on the right hand sidebar,
-# where you should copy the inner text of the <span>...</span> example given.
-materialIcon <- function(icon) {
-  span(class = "material-icons", icon)
-}
-
-# Make a custom icon, styled in the same way as the above Material icons
-# To see the list of available icons, check www/icons/custom
-customIcon <- function(icon) {
-  span(class = "custom-icons", data_custom_icon = icon)
-}
-
-# Replace the inner text of a <button> tag with a Material icon span
-materialIconButton <- function(tag, icon) {
-  tag <- tagSetChildren(tag, .cssSelector = "button", 
-                        materialIcon(icon))
-  tag
 }
 
 # Make a link button styled to go inside of a link list group
@@ -127,10 +106,10 @@ susFooter <- function() {
           tags$li(tags$a(href = NULL, HTML("&nbsp;"))),#curbcut::cc_t("Terms & Conditions"))),
           tags$li(tags$a(href = NULL, style = "cursor:pointer;", 
                          onclick = "openTab('about_sus')", 
-                         curbcut::cc_t("About"), materialIcon("info"))),
+                         curbcut::cc_t("About"), curbcut::icon_material("info"))),
           tags$li(tags$a(href = NULL, style = "cursor:pointer;", 
                          onclick = "document.getElementById('contact').click();",
-                         curbcut::cc_t("Contact/feedback"), materialIcon("mail"))),
+                         curbcut::cc_t("Contact/feedback"), curbcut::icon_material("mail"))),
           tags$li(tags$a(href = NULL, HTML("&nbsp;")))#curbcut::cc_t("Privacy Policy"))),
         )
       )
@@ -167,10 +146,10 @@ susCarousel <- function(..., id="", class="") {
                tags$span(class="sus-carousel-preview-content")),
       tags$div(class="sus-carousel-nav-bttn sus-carousel-nav-bttn-left", 
                style = "cursor: pointer;",
-               materialIcon("chevron_left")),
+               curbcut::icon_material("chevron_left")),
       tags$div(class="sus-carousel-nav-bttn sus-carousel-nav-bttn-right", 
                style = "cursor: pointer;",
-               materialIcon("chevron_right")),
+               curbcut::icon_material("chevron_right")),
       ...)
   )
 }
@@ -285,16 +264,6 @@ js_links_between_modules <- "
           });
         }
       "
-bookmark_url <- 
-  'function copyUrl(text) {
-       var inputc = document.body.appendChild(document.createElement("input"));
-       inputc.value = window.location.href;
-       inputc.focus();
-       inputc.select();
-       document.execCommand("copy");
-       inputc.parentNode.removeChild(inputc);
-       alert("URL successfully copied.");
-}'
 
 styler <- '
 /* the big panel popup when we show an RMD in a map module */

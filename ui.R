@@ -52,13 +52,12 @@ ui <- function(request) {
                         href = paste0("https://fonts.googleapis.com/icon?",
                                       "family=Material+Icons"))),
     tags$head(tags$script(src = "sus.js")),
-    tags$head(tags$script(src = "cookie.js")),
     tags$head(tags$script(src = "shinybrowser.js")),
     # Cookie js script
-    tags$script(src = paste0("https://cdn.jsdelivr.net/npm/js-cookie@rc/",
-                             "dist/js.cookie.min.js")),
+    curbcut::use_curbut_cookie(),
     tags$head(tags$script(js_links_between_modules)),
-    tags$head(tags$script(bookmark_url)),
+    curbcut::use_curbcut_js(),
+    # tags$head(tags$script(curbcut::js_copy_current_url())),
     tags$head(tags$style(HTML(styler))),
     # # To allow screenshot
     # tags$script(src = paste0("https://cdn.jsdelivr.net/npm/html2canvas@1.0.0-",
@@ -138,37 +137,10 @@ ui <- function(request) {
                actionLink(
                  inputId = "language_button",
                  style = "min-width: 112px;",
-                 label = span(span(class = "material-icons", "language"), 
+                 label = span(curbcut::icon_material("language"), 
                               span("English"))),
                # Actions dropdown
-               materialIconButton(
-                 dropdownButton(inputId = "settings",
-                                a(id = "bookmark",
-                                  class = "action-button shiny-bound-input",
-                                  role = "menuitem",
-                                  href = "#",
-                                  icon("link", verify_fa = FALSE), curbcut::cc_t("Bookmark"), 
-                                  onclick = "copyUrl()"),
-                                actionLink(inputId = "contact",
-                                           label = curbcut::cc_t("Contact/feedback"),
-                                           icon("comment", verify_fa = FALSE),
-                                           onclick = "window.open('mailto:contact@curbcut.ca', '_blank')"),
-                                actionLink(inputId = "download_data",
-                                           label = curbcut::cc_t(
-                                             "Export data"),
-                                           icon("download", verify_fa = FALSE)),
-                                # actionLink(inputId = "save_image",
-                                #            label = curbcut::cc_t(
-                                #              "Save as image"),
-                                #            icon("image", verify_fa = FALSE)),
-                                actionLink(inputId = "subscribe",
-                                           label = curbcut::cc_t("Newsletter"),
-                                           icon("rectangle-list", verify_fa = FALSE)),
-                                actionLink(inputId = "advanced_options",
-                                           label = curbcut::cc_t(
-                                             "Advanced options"),
-                                           icon("gear", verify_fa = FALSE))
-                 ), "summarize")
+               curbcut::settings_UI()
              )
         ))
     )

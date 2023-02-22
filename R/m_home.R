@@ -19,7 +19,7 @@ home_UI <- function(id) {
                    tags$a(class = "sus-button sus-icon-button sus-button-secondary", 
                           href = "#", onclick = "openTab('afford')",
                           curbcut::cc_t("Housing affordability"), 
-                          span(class = "material-icons", "location_city")),
+                          curbcut::icon_material("location_city")),
                    tags$a(class = "sus-button sus-icon-button sus-button-primary", 
                           href = "https://www.centraide-mtl.org/", 
                           curbcut::cc_t("Centraide"), target = "_blank",
@@ -44,11 +44,11 @@ home_UI <- function(id) {
           tags$div(class = "sus-button-group",
                   tags$a(class = "sus-button sus-icon-button sus-button-secondary", 
                          href = "#learn-more", curbcut::cc_t("Learn more"), 
-                         span(class = "material-icons", "auto_stories")),
+                         curbcut::icon_material("auto_stories")),
                   tags$a(class = "sus-button sus-icon-button sus-button-primary", 
                          href = "#start-exploring", 
                          curbcut::cc_t("Start Exploring Maps"), 
-                         span(class = "material-icons", "travel_explore"))
+                         curbcut::icon_material("travel_explore"))
           )
         ), susCarouselSlide(
           title = tags$em(tags$em(nowrap(curbcut::cc_t("Get notified about")), 
@@ -65,7 +65,7 @@ home_UI <- function(id) {
                           style = "cursor: pointer;",
                           id = "sign_up_from_carousel", 
                           curbcut::cc_t("Sign up!"),
-                          span(class = "material-icons", "email"))
+                          curbcut::icon_material("email"))
           )
         )
       )

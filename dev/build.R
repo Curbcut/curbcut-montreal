@@ -320,6 +320,7 @@ qs::qload("dev/data/built/scales_variables_modules.qsm")
 # Postal codes ------------------------------------------------------------
 
 # postal_codes <- build_postal_codes(census_scales$DA$ID)
+# postal_codes <- sf::st_drop_geometry(postal_codes)
 # qs::qsave(postal_codes, "data/postal_codes.qs")
 
 

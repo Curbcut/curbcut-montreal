@@ -32,7 +32,7 @@ shinyServer(function(input, output, session) {
     lang = reactiveVal("fr"),
     active_tab = "home",
     region = reactiveVal(default_region),
-    default_select_id = reactiveVal(NULL),
+    default_select_ids = reactiveVal(NULL),
     stories = reactiveValues(select_id = reactiveVal(NA)),
     place_explorer = reactiveValues(select_id = reactiveVal(NA),
                                     df = reactiveVal("DA")))
@@ -140,7 +140,7 @@ shinyServer(function(input, output, session) {
 
   ## Newsletter ----------------------------------------------------------------
 
-  onclick("subscribe", {
+  onclick("settings-subscribe", {
     showModal(modalDialog(HTML(readLines("www/sus.signupform.html")),
                           easyClose = TRUE))
   })
@@ -345,150 +345,14 @@ shinyServer(function(input, output, session) {
 
   ## Advanced options ----------------------------------------------------------
 
-  onclick("advanced_options", {
-    showModal(modalDialog(
-      # Change the region
-      curbcut::adv_opt_region(region = r$region(), lang = r$lang()),
-      hr(),
-      curbcut::adv_opt_lock_selection(lang = r$lang()),
-      title = cc_t(lang = r$lang(), "Advanced options"),
-      footer = modalButton(cc_t(lang = r$lang(), "Dismiss"))
-    ))
-  })
-
-  # Change the default geometry and save the cookie
-  observeEvent(input$region_change, {
-    r$region(input$region_change)
-    session$sendCustomMessage("cookie-set", list(name = "default_region",
-                                                 value = input$region_change))
-  })
-
-  # If the geo cookie is already in and it differs from default
-  observeEvent(input$cookies$default_region, {
-    if (!is.null(input$cookies$default_region) &&
-        input$cookies$default_region != default_region) {
-      r$region(input$cookies$default_region)
-    }
-  }, once = TRUE)
-  
-  # Location lock in
-  observeEvent(input$lock_search_button, {
-    postal_c <-
-      input$lock_address_searched |>
-      str_to_lower() |>
-      str_extract_all("\\w|\\d", simplify = TRUE) |>
-      paste(collapse = "")
-    pcs <- postal_codes$postal_code == postal_c
-    
-    out <- 
-      if (sum(pcs) > 0 || grepl("[a-z][0-9][a-z][0-9][a-z][0-9]", postal_c)) {
-        # Postal code detected, but not in our database
-        if (sum(pcs) == 0) {
-          showNotification(
-            curbcut::cc_t(lang = r$lang(), 
-                          "Postal code `{postal_c}` isn't within an ",
-                 "available geography."),
-            type = "error")
-          return(NULL)
-        }
-        
-        showNotification(
-          curbcut::cc_t(lang = r$lang(), 
-               paste0("Postal code `{postal_codes$postal_code[pcs]}` ",
-                      "saved as default.")),
-          type = "default")
-        
-        sapply(regions_dictionary$region, \(x) {
-          dat <- get0(paste0(x, "_DA"))
-          if (is.null(dat)) return("")
-          dat <- dat[dat$ID == postal_codes$DA_ID[pcs], ]
-          if (length(dat) == 0) {
-            showNotification(
-              curbcut::cc_t(lang = r$lang(), 
-                            paste0("No addresses found.")),
-              type = "error")
-            return(NULL)
-          }
-          unique(unlist(dat[grepl("ID$", names(dat))]))
-        }, simplify = FALSE, USE.NAMES = TRUE)
-        
-      } else {
-        ad <- input$lock_address_searched
-        add <- ad
-        # Convert to ASCII
-        add <- paste0("%", charToRaw(add), collapse = "")
-        add <- paste0("http://geogratis.gc.ca/services/geolocation/en/locate?q=",
-                      add)
-        
-        get <- httr::GET(add)
-        val <- httr::content(get)
-        if (length(val) == 0) {
-          showNotification(
-            curbcut::cc_t(lang = r$lang(), 
-                          paste0("No addresses found.")),
-            type = "error")
-          return(NULL)
-        }
-        val <- val[[1]]
-        coords <- val$geometry$coordinates
-        
-        out <- 
-          sapply(regions_dictionary$region, \(x) {
-            scales <- names(get(paste0("map_zoom_levels_", x)))
-            if (length(which("DA" == scales)) > 0) {
-              scales <- scales[seq_len(which("DA" == scales))]
-            }
-            last_scales <- scales[length(scales)]
-            da_vals <- do.call("dbGetQuery", list(rlang::sym(paste0(x, "_", 
-                                                                    last_scales, 
-                                                                    "_conn")),
-                                                  paste0("SELECT * FROM centroid")))
-            distance_sum <- 
-              mapply(sum, abs(coords[[1]] - da_vals$lat), abs(coords[[2]] - da_vals$lon))
-            # If too far.
-            if (min(distance_sum) > 0.1) return(NULL)
-            dat_ID <- da_vals$ID[which(distance_sum == min(distance_sum))]
-            dat <- get(paste(x, last_scales, sep = "_"))
-            dat <- dat[dat$ID == dat_ID, ]
-            na.omit(unique(unlist(dat[grepl("ID$", names(dat))])))
-          }, simplify = FALSE, USE.NAMES = TRUE)
-        
-        if (all(sapply(out, is.null))) {
-          showNotification(
-            curbcut::cc_t(lang = r$lang(), 
-                          "Address `{input$lock_address_searched}` isn't",
-                 " within an available geography."),
-            type = "error")
-          out <- NULL
-        } else {
-          showNotification(
-            curbcut::cc_t(lang = r$lang(), 
-                          "Address `{val$title}` saved as default."),
-            type = "default")          
-        }
-        
-        out
-      }
-    
-    r$default_select_id(out)
-  })
-  
-  observeEvent(input$cancel_lock_location, {
-    r$default_select_id(NULL)
-    
-    showNotification(
-      curbcut::cc_t(lang = r$lang(), 
-                    paste0("Default location successfully cleared")),
-      type = "default")
-  })
-  
+  curbcut::settings_server(r = r)
   
   ## Data download -------------------------------------------------------------
   
   data_modal <- reactive(
     data_export_modal(r = r, export_data = r[[input$sus_page]]$export_data()))
   
-  onclick("download_data", {
+  onclick("settings-download_data", {
     if (!input$sus_page %in% modules$id || 
         isFALSE(modules$metadata[modules$id == input$sus_page]))
       return(showNotification(
@@ -543,19 +407,7 @@ shinyServer(function(input, output, session) {
           if (length(Sys.glob(name.glob)) > 0) file.remove(Sys.glob(name.glob))
         })
       })
-  
-  
-  # ## Screenshot ----------------------------------------------------------------
-  # 
-  # onclick("save_image", {
-  #   js$takeShot(to_sh_id = "housing-housing-map", output_id = "screenshot_container")
-  #   showModal(modalDialog(
-  #     div(id = "screenshot_container"),
-  #     title = curbcut::cc_t(lang = r$lang(), 
-  #"Save as image"),
-  #     size = "l"
-  #   ))
-  # })
+
   
   ## Heartbeat function to keep app alive --------------------------------------
   

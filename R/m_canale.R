@@ -7,18 +7,6 @@
   eval(parse(text = paste0("map_zoom_levels_", `canale_default_region`)))
 default_region <- modules$regions[modules$id == "canale"][[1]][1]
 
-update_select_id <- function(id, select_id, id_map = paste0(id, "-map")) {
-  
-  # Get the new selected ID
-  new <- rdeck::get_clicked_object(id_map)$ID
-  
-  # If the same ID gets selected twice, deactivate selection
-  if (!is.na(select_id) && new == select_id)
-    return(NA)
-  
-  # Return new ID
-  return(new)
-}
 
 # UI ----------------------------------------------------------------------
 
@@ -54,11 +42,13 @@ update_select_id <- function(id, select_id, id_map = paste0(id, "-map")) {
 `canale_server` <- function(id, r) {
   moduleServer(id, function(input, output, session) {
     id_map <- paste0(id, "-map")
-
+    
     # Initial reactives
-    rv_zoom_string <- reactiveVal(zoom_get_string(map_zoom, `canale_mzp`,
-                                                  region = default_region))
-
+    rv_zoom_string <- reactiveVal(
+      curbcut::zoom_get_string(zoom = map_zoom, 
+                               zoom_levels = `canale_mzp`, 
+                               region = default_region))
+    
     # Zoom and POI reactives when the view state of the map changes.
     observeEvent(rdeck::get_view_state(id_map), {
       r[[id]]$zoom(curbcut::zoom_get(rdeck::get_view_state(id_map)$zoom))
@@ -82,22 +72,19 @@ update_select_id <- function(id, select_id, id_map = paste0(id, "-map")) {
     # Click reactive
     observeEvent(get_clicked_object(id_map)$ID, {
       r[[id]]$select_id({
-        update_select_id(id = id, select_id = r[[id]]$select_id())
+        curbcut::update_select_id(id = id, select_id = r[[id]]$select_id())
       })
     })
 
     # Default location
     observe({
-      if (is.null(r$default_select_id())) {
-        return(NULL)
-      }
-      new_id <- data()$ID[data()$ID %in%
-        r$default_select_id()[[gsub("_.*", "", r[[id]]$df())]]]
-      if (length(new_id) == 0) {
-        return(NULL)
-      }
-      r[[id]]$select_id(new_id)
-    }) |> bindEvent(r$default_select_id(), r[[id]]$df())
+      r[[id]]$select_id({
+        curbcut::update_select_id_from_default(
+          data = data(),
+          default_select_ids = r$default_select_ids(),
+          select_id = isolate(r[[id]]$select_id()))
+      })
+    })
 
     # Choose tileset
     tile <- curbcut::zoom_server(
@@ -107,9 +94,13 @@ update_select_id <- function(id, select_id, id_map = paste0(id, "-map")) {
       zoom_levels = zoom_levels
     )
     
-    # Get df for explore/legend/etc
-    observe(r[[id]]$df(get_df(tile(), rv_zoom_string()))) |>
-      bindEvent(tile(), rv_zoom_string())
+    # Get df 
+    observeEvent({
+      tile()
+      rv_zoom_string()}, {
+        r[[id]]$df(curbcut::update_df(tile = tile(), 
+                                      zoom_string = rv_zoom_string()))
+      })
     
     # Time
     time <- reactive("2016")
