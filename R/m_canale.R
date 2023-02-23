@@ -192,13 +192,12 @@ default_region <- modules$regions[modules$id == "canale"][[1]][1]
                         zoom_levels = reactive(zoom_levels()$zoom_levels),
                         zoom = r[[id]]$zoom)
 
-    # # Update map labels
-    # label_server(
-    #   id = id,
-    #   r = r,
-    #   map_id = "map",
-    #   tile = tile
-    # )
+    # Update map labels
+    curbcut::label_server(id = id,
+                          tile = tile,
+                          zoom = r[[id]]$zoom,
+                          zoom_levels = reactive(zoom_levels()$zoom_levels),
+                          region = reactive(zoom_levels()$region))
 
     # # Explore panel
     # explore_content <- explore_server(
