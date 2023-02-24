@@ -50,9 +50,10 @@ default_region <- modules$regions[modules$id == "canale"][[1]][1]
                                region = default_region))
     
     # Zoom and POI reactives when the view state of the map changes.
-    observeEvent(rdeck::get_view_state(id_map), {
-      r[[id]]$zoom(curbcut::zoom_get(rdeck::get_view_state(id_map)$zoom))
-      r[[id]]$poi(curbcut::update_poi(id = id, poi = r[[id]]$poi()))
+    observeEvent(map_viewstate(), {
+      r[[id]]$zoom(curbcut::zoom_get(zoom = map_viewstate()$zoom))
+      r[[id]]$poi(curbcut::update_poi(id = id, poi = r[[id]]$poi(),
+                                      map_viewstate = map_viewstate()))
     })
 
     # Map zoom levels change depending on r$region()
@@ -182,12 +183,12 @@ default_region <- modules$regions[modules$id == "canale"][[1]][1]
     )
 
     # Update map in response to variable changes or zooming
-    curbcut::map_server(id = id,
-                        tile = tile,
-                        data_colours = data_colours,
-                        select_id = r[[id]]$select_id,
-                        zoom_levels = reactive(zoom_levels()$zoom_levels),
-                        zoom = r[[id]]$zoom)
+    map_viewstate <- curbcut::map_server(id = id,
+                                     tile = tile,
+                                     data_colours = data_colours,
+                                     select_id = r[[id]]$select_id,
+                                     zoom_levels = reactive(zoom_levels()$zoom_levels),
+                                     zoom = r[[id]]$zoom)
 
     # Update map labels
     curbcut::label_server(id = id,
@@ -207,7 +208,8 @@ default_region <- modules$regions[modules$id == "canale"][[1]][1]
     # )
 
     # Bookmarking
-    curbcut::bookmark_server(id = id, r = r, select_id = r[[id]]$select_id)
+    curbcut::bookmark_server(id = id, r = r, select_id = r[[id]]$select_id,
+                             map_viewstate = map_viewstate)
 
     # Data transparency and export
     r[[id]]$export_data <- reactive(data_export(
