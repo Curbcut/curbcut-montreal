@@ -44,7 +44,7 @@ suppressPackageStartupMessages({
 
 # Shiny options -----------------------------------------------------------
 
-options(shiny.fullstacktrace = TRUE)
+options(shiny.fullstacktrace = T)
 options(shiny.useragg = TRUE)
 shinyOptions(cache = cachem::cache_disk(file.path(dirname(tempdir()), "cache")))
 

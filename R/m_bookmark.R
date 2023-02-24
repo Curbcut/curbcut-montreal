@@ -36,9 +36,9 @@ bookmark_server <- function(id, r, map_viewstate = reactive(NULL),
       
       # Map arguments
       if (!is.null(map_viewstate())) {
-        zm <- floor(map_viewstate()$zoom * 100) / 100
-        lon <- round(as.numeric(map_viewstate()$longitude), digits = 6)
-        lat <- round(as.numeric(map_viewstate()$latitude), digits = 6)
+        zm <- curbcut::zoom_get(map_viewstate()$zoom)
+        lon <- round(as.numeric(map_viewstate()$longitude), digits = 2)
+        lat <- round(as.numeric(map_viewstate()$latitude), digits = 2)
       }
       
       # Right variable

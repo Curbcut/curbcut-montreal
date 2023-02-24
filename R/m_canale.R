@@ -29,7 +29,7 @@ default_region <- modules$regions[modules$id == "canale"][[1]][1]
     # Right panel
     curbcut::right_panel(
       id = id,
-      compare_UI(NS(id, id), make_dropdown(compare = TRUE)),
+      compare_UI(NS(id, id), curbcut::dropdown_make(vars = " ", compare = TRUE)),
       explore_UI(NS(id, id)),
       dyk_UI(NS(id, id))
     )
@@ -70,12 +70,12 @@ default_region <- modules$regions[modules$id == "canale"][[1]][1]
     })
 
     # Click reactive
-    observeEvent(get_clicked_object(id_map)$ID, {
+    observeEvent(rdeck::get_clicked_object(id_map)$ID, {
       r[[id]]$select_id({
         curbcut::update_select_id(id = id, select_id = r[[id]]$select_id())
       })
     })
-
+    
     # Default location
     observe({
       r[[id]]$select_id({
@@ -112,9 +112,8 @@ default_region <- modules$regions[modules$id == "canale"][[1]][1]
     var_right <- compare_server(
       id = id,
       r = r,
-      var_list = make_dropdown(
-        multi_year = FALSE,
-        only_vars = c(
+      var_list = curbcut::dropdown_make(vars = 
+        c(
           "housing_tenant", "housing_rent", "housing_repairs",
           "housing_value", "housing_unafford", "housing_unsuit",
           "housing_stress_renter", "housing_stress_owner", "housing_mobility_one",
@@ -129,8 +128,6 @@ default_region <- modules$regions[modules$id == "canale"][[1]][1]
           "lang_no_official", "age_0_14", "age_15_64",
           "age_65_plus", "edu_bachelor_above", "edu_no_degree"
         ),
-        only = NULL,
-        exclude = NULL,
         compare = TRUE
       ),
       time = time
@@ -209,17 +206,17 @@ default_region <- modules$regions[modules$id == "canale"][[1]][1]
     #   var_right = var_right
     # )
 
-    # Bookmarking
-    bookmark_server(
-      id = id,
-      r = r,
-      s_id = r[[id]]$select_id,
-      df = r[[id]]$df,
-      map_viewstate = reactive(get_view_state(id_map)),
-      var_left = var_left,
-      var_right = var_right,
-      more_args = reactive(c())
-    )
+    # # Bookmarking
+    # bookmark_server(
+    #   id = id,
+    #   r = r,
+    #   s_id = r[[id]]$select_id,
+    #   df = r[[id]]$df,
+    #   map_viewstate = reactive(get_view_state(id_map)),
+    #   var_left = var_left,
+    #   var_right = var_right,
+    #   more_args = reactive(c())
+    # )
 
     # Data transparency and export
     r[[id]]$export_data <- reactive(data_export(

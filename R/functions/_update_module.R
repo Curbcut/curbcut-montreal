@@ -198,7 +198,7 @@ update_module <- function(r, id, mod_ns = paste(id, id, sep = "-"),
         get_variables_rowid(var_left)} else var_left
       
       group <- variables[variables$var_code == selected_var, ]$group_name
-      # Same process that's in make_dropdown() to decide which variable is
+      # Same process that's in dropdown_make() to decide which variable is
       # the one to select in the compare-var dropdown.
       cat_vecs <- 
         variables[!is.na(variables$group_name) & variables$group_name == group, ]
@@ -254,7 +254,7 @@ update_module <- function(r, id, mod_ns = paste(id, id, sep = "-"),
     } else {
       
       group <- variables[variables$var_code == selected_var, ]$group_name
-      # Same process that's in make_dropdown() to decide which variable is
+      # Same process that's in dropdown_make() to decide which variable is
       # the one to select in the compare-var dropdown.
       cat_vecs <- 
         variables[!is.na(variables$group_name) & variables$group_name == group, ]

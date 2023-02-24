@@ -8,7 +8,7 @@ auto_vars_UI <- function(id, var_list, label = NULL) {
   tagList(
     div(id = NS(id, "main_drop"),
         div(id = NS(id, "staying_widgets_hr"), hr()),
-        select_var_UI(NS(id, "auto_var"), var_list = var_list,
+        curbcut::picker_UI(NS(id, "auto_var"), var_list = var_list,
                       label = label),
         hidden(div(id = NS(id, "widgets_hr"), hr())))
   )
@@ -76,7 +76,7 @@ auto_vars_server <- function(id, r, module_id = NULL, var_list,
                             names(vars_list) <- vars_list
                             names(vars_list) <- 
                               sapply(names(vars_list), cc_t, lang = r$lang())
-                            select_var_UI(input_namespace()(id_s$key),
+                            curbcut::picker_UI(input_namespace()(id_s$key),
                                           var_list = vars_list,
                                           label = curbcut::cc_t(lang = r$lang(), id_s$lab))
                           }
@@ -181,7 +181,7 @@ auto_vars_server <- function(id, r, module_id = NULL, var_list,
                             names(vars_list) <- vars_list
                             names(vars_list) <- 
                               sapply(names(vars_list), cc_t, lang = r$lang())
-                            select_var_UI(input_namespace()(id_s$key),
+                            curbcut::picker_UI(input_namespace()(id_s$key),
                                           var_list = vars_list,
                                           label = curbcut::cc_t(lang = r$lang(), id_s$lab))
                           }

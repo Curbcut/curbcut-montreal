@@ -116,7 +116,7 @@ ui <- function(request) {
     
     do.call(
       navbarPageWithInputs, 
-      c(list(id = "sus_page", 
+      c(list(id = "cc_page", 
              windowTitle = site_name, 
              title = actionLink("title", "Curbcut"),
              tabPanel(curbcut::cc_t("Home"), home_UI("home"), value = "home")),

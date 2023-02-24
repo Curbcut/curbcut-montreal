@@ -5,7 +5,7 @@ shinyServer(function(input, output, session) {
   ## Page title change, depending on page visited ------------------------------
 
   observe(title_page_update(r = r, session = session, 
-                            sus_page = input$sus_page))
+                            cc_page = input$cc_page))
   
   
   ## If on mobile, warning! ----------------------------------------------------
@@ -17,7 +17,7 @@ shinyServer(function(input, output, session) {
   
   observe({
       sever(html = severe_html(lang = r$lang(),
-                               module_id = input$sus_page,
+                               module_id = input$cc_page,
                                region = r$region()),
             bg_color = "rgba(0,0,0,.5)", box = TRUE)
   })
@@ -62,7 +62,7 @@ shinyServer(function(input, output, session) {
   
   ## Home page -----------------------------------------------------------------
   
-  observe(updateNavbarPage(session, "sus_page", "home")) |> 
+  observe(updateNavbarPage(session, "cc_page", "home")) |> 
     bindEvent(input$title)
   
   
@@ -114,12 +114,12 @@ shinyServer(function(input, output, session) {
   # Remove the banner, and log in the cookie
   observeEvent(input$go_to_htu_en, {
     removeUI("#htu_footer")
-    updateTabsetPanel(session, "sus_page", selected = "how_to_use")
+    updateTabsetPanel(session, "cc_page", selected = "how_to_use")
   }, ignoreInit = TRUE)
   
   observeEvent(input$go_to_htu_fr, {
     removeUI("#htu_footer")
-    updateTabsetPanel(session, "sus_page", selected = "how_to_use")
+    updateTabsetPanel(session, "cc_page", selected = "how_to_use")
   }, ignoreInit = TRUE)
   
   observeEvent(input$go_to_htu_x, {
@@ -190,46 +190,47 @@ shinyServer(function(input, output, session) {
   
   ## Active tab ----------------------------------------------------------------
   
-  observeEvent(input$sus_page, r$active_tab <- input$sus_page, 
+  observeEvent(input$cc_page, r$active_tab <- input$cc_page, 
                ignoreNULL = FALSE)
   
-  observeEvent(input$sus_page, {
+  observeEvent(input$cc_page, {
     r$last_module <- unique(c(r$current_module, r$last_module))
-    r$current_module <- c(input$sus_page, r$last_module)})
+    r$current_module <- c(input$cc_page, r$last_module)})
   
   r$previous_tabs <- reactive({
-    req(input$sus_page)
-    input$sus_page
+    req(input$cc_page)
+    input$cc_page
     r$last_module})
   
   observeEvent(r$link, {
     # Switch active tab when link is opened
-    updateTabsetPanel(session, "sus_page", selected = r$link)
+    updateTabsetPanel(session, "cc_page", selected = r$link)
     # Turn off the link
     r$link <- NULL
   }, ignoreInit = TRUE, ignoreNULL = TRUE)
   
-  # Links between modules
-  observeEvent(r$sus_link$activity, {
-    # Delay to make sure the linked module is fully loaded
-    delay(500, {
-      update_module(id = r$sus_link$id,
-                    r = r, 
-                    map_id = "map",
-                    session = session,
-                    zoom = r$sus_link$zoom, 
-                    location = r$sus_link$location,
-                    zoom_auto = r$sus_link$zoom_auto,
-                    var_left = r$sus_link$var_left,
-                    var_right = r$sus_link$var_right,
-                    select_id = r$sus_link$select_id,
-                    df = r$sus_link$df,
-                    more_args = r$sus_link$more_args)
-    })
-  }, ignoreInit = TRUE)
+  # # Links between modules
+  # observeEvent(r$sus_link$activity, {
+  #   # Delay to make sure the linked module is fully loaded
+  #   delay(500, {
+  #     update_module(id = r$sus_link$id,
+  #                   r = r, 
+  #                   map_id = "map",
+  #                   session = session,
+  #                   zoom = r$sus_link$zoom, 
+  #                   location = r$sus_link$location,
+  #                   zoom_auto = r$sus_link$zoom_auto,
+  #                   var_left = r$sus_link$var_left,
+  #                   var_right = r$sus_link$var_right,
+  #                   select_id = r$sus_link$select_id,
+  #                   df = r$sus_link$df,
+  #                   more_args = r$sus_link$more_args)
+  #   })
+  # }, ignoreInit = TRUE)
   
   
   ## Parse URL -----------------------------------------------------------------
+
   
   observeEvent(parseQueryString(session$clientData$url_search), {
     query <- parseQueryString(session$clientData$url_search)
@@ -239,30 +240,7 @@ shinyServer(function(input, output, session) {
       # MARK THE ACTIVE BOOKMARKED
       r$sus_bookmark$active <- TRUE
 
-      # query returns a named list. If it's named tab, return the right
-      # tabPanel. the url example: sus.ca/?tab=housing
       try({
-        tab <- query[["tb"]]
-        if (!is.null(tab)) {
-          updateTabsetPanel(session, "sus_page", selected = query[["tb"]])
-          r$sus_bookmark$id <- tab} else r$sus_bookmark$id <- "home"
-      })
-      # Update language with query.
-      try({
-        lang <- query[["lng"]]
-        if (!is.null(lang) && lang == "en")
-          r$lang <- reactiveVal("en")
-      })
-      # Update geometries with query.
-      try({
-        region <- query[["region"]]
-        if (!is.null(region)) r$region(region)
-      })
-      # Retrieve important map info
-      try({
-        if (!is.null(query[["zm"]])) {
-          r[[query[["tb"]]]]$zoom <- reactiveVal(as.numeric(query[["zm"]]))}
-
         if (!is.null(query[["lon"]])) {
           r$sus_bookmark$location <- c(as.numeric(query[["lon"]]),
                                        as.numeric(query[["lat"]]))}
@@ -287,57 +265,46 @@ shinyServer(function(input, output, session) {
         if (!is.null(query[["more"]]))
           r$sus_bookmark$more_args <- query[["more"]]
       })
-      # Retrieve df
-      try({
-        if (!is.null(query[["df"]])) {
-          r[[query[["tb"]]]]$df <- reactiveVal(query[["df"]])
-        }
-      })
-      # Retrieve select_id
-      try({
-        s_id <- query[["s_id"]]
-        if (!is.null(s_id)) {
-          if (query[["s_id"]] %in% c("", "NA")) s_id <- NA
-          r[[query[["tb"]]]]$select_id <- reactiveVal(s_id)
-          }
-      })
+
     }
   }, once = TRUE)
+  
+  curbcut::use_bookmark(r = r, parent_session = session)
 
-  # Update from bookmark
-  observeEvent(r$sus_bookmark$active, {
-    if (isTRUE(r$sus_bookmark$active)) {
-      # Delay to make sure the bookmarked module is fully loaded
-      delay(500, {
-        zz <- if (!is.null(r[[input$sus_page]]$zoom)) 
-          r[[input$sus_page]]$zoom() else NULL
-        update_module(session = session,
-                      r = r,
-                      id = r$sus_bookmark$id,
-                      map_id = "map",
-                      zoom = zz,
-                      location = r$sus_bookmark$location,
-                      zoom_auto = r$sus_bookmark$zoom_auto,
-                      var_left = r$sus_bookmark$var_left,
-                      var_right = r$sus_bookmark$var_right,
-                      more_args = r$sus_bookmark$more_args)
-      })
-      r$sus_bookmark$active <- FALSE
-    }
-  }, priority = -1, once = TRUE)
+  # # Update from bookmark
+  # observeEvent(r$sus_bookmark$active, {
+  #   if (isTRUE(r$sus_bookmark$active)) {
+  #     # Delay to make sure the bookmarked module is fully loaded
+  #     delay(500, {
+  #       zz <- if (!is.null(r[[input$cc_page]]$zoom)) 
+  #         r[[input$cc_page]]$zoom() else NULL
+  #       update_module(session = session,
+  #                     r = r,
+  #                     id = r$sus_bookmark$id,
+  #                     map_id = "map",
+  #                     zoom = zz,
+  #                     location = r$sus_bookmark$location,
+  #                     zoom_auto = r$sus_bookmark$zoom_auto,
+  #                     var_left = r$sus_bookmark$var_left,
+  #                     var_right = r$sus_bookmark$var_right,
+  #                     more_args = r$sus_bookmark$more_args)
+  #     })
+  #     r$sus_bookmark$active <- FALSE
+  #   }
+  # }, priority = -1, once = TRUE)
   
   
   ## Modules -------------------------------------------------------------------
   
-  active_mod_server <- function(active_tab = input$sus_page) {
+  active_mod_server <- function(active_tab = input$cc_page) {
     do.call(paste0(active_tab, "_server"), list(active_tab, r = r))
   }
 
-  observeEvent(input$sus_page, {
-    bookmark_server(input$sus_page, r = r)
+  observeEvent(input$cc_page, {
+    bookmark_server(input$cc_page, r = r)
 
     # Trigger the module server function only if it hasn't been opened already
-    if (!input$sus_page %in% r$previous_tabs()) active_mod_server()
+    if (!input$cc_page %in% r$previous_tabs()) active_mod_server()
     
     updateQueryString("?")
   }, ignoreInit = FALSE)
@@ -350,11 +317,11 @@ shinyServer(function(input, output, session) {
   ## Data download -------------------------------------------------------------
   
   data_modal <- reactive(
-    data_export_modal(r = r, export_data = r[[input$sus_page]]$export_data()))
+    data_export_modal(r = r, export_data = r[[input$cc_page]]$export_data()))
   
   onclick("settings-download_data", {
-    if (!input$sus_page %in% modules$id || 
-        isFALSE(modules$metadata[modules$id == input$sus_page]))
+    if (!input$cc_page %in% modules$id || 
+        isFALSE(modules$metadata[modules$id == input$cc_page]))
       return(showNotification(
         curbcut::cc_t(lang = r$lang(), 
                       "No data/metadata for this location."),
@@ -365,7 +332,7 @@ shinyServer(function(input, output, session) {
   
   output$download_csv <-
     downloadHandler(
-      filename = reactive(paste0(r[[input$sus_page]]$export_data()$id, "_data.csv")),
+      filename = reactive(paste0(r[[input$cc_page]]$export_data()$id, "_data.csv")),
       content = function(file) {
         data <- data_modal()$data
         write.csv(data, file, row.names = FALSE)
@@ -373,7 +340,7 @@ shinyServer(function(input, output, session) {
   
   output$download_shp <-
     downloadHandler(
-      filename = reactive(paste0(r[[input$sus_page]]$export_data()$id, "_shp.zip")),
+      filename = reactive(paste0(r[[input$cc_page]]$export_data()$id, "_shp.zip")),
       content = function(file) {
         withProgress(message = curbcut::cc_t(lang = r$lang(), 
                                              "Exporting Data"), {
@@ -382,7 +349,7 @@ shinyServer(function(input, output, session) {
           
           # Prepare data by attaching geometries
           geo <- qread(paste0("data/geometry_export/", 
-                              r[[input$sus_page]]$export_data()$data_origin, ".qs"))
+                              r[[input$cc_page]]$export_data()$data_origin, ".qs"))
           data <- merge(data_modal()$data, geo, by = "ID")
           rm(geo)
           
@@ -390,7 +357,7 @@ shinyServer(function(input, output, session) {
           
           tmp.path <- dirname(file)
           name.base <- file.path(tmp.path,
-                                 paste0(r[[input$sus_page]]$export_data()$id, "_data"))
+                                 paste0(r[[input$cc_page]]$export_data()$id, "_data"))
           name.glob <- paste0(name.base, ".*")
           name.shp  <- paste0(name.base, ".shp")
           name.zip  <- paste0(name.base, ".zip")

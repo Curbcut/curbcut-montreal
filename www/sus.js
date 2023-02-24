@@ -36,7 +36,7 @@ window.addEventListener('load', (evt) => {
 
   const navbar = document.querySelector('.navbar-default');
   const navbarBrand = document.querySelector('.navbar-static-top span.navbar-brand');
-  const navbarLinks = document.querySelector('.navbar-static-top ul#sus_page');
+  const navbarLinks = document.querySelector('.navbar-static-top ul#cc_page');
   const navbarFixed = document.querySelector('.navbar-static-top div.navbar-fixed');
   const navbarCollapse = document.querySelector('.navbar-static-top div.navbar-collapse');
   const mainContainer = document.querySelector('body > .container-fluid');
@@ -155,7 +155,7 @@ window.addEventListener('load', (evt) => {
   .navbar-fixed {
     margin-right: 52px
   }
-  .navbar-collapse > ul#sus_page {
+  .navbar-collapse > ul#cc_page {
     box-shadow: var(--box-shadow-md);
     clip-path: inset(0px 0px -500px 0px);
   }

@@ -277,7 +277,7 @@ styler <- '
     margin-left: 300px;
   }
 
-  #sus_page > li:first-child { 
+  #cc_page > li:first-child { 
     display:none;
   }
   

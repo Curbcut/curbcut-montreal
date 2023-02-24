@@ -1,39 +1,5 @@
 #### UTILS #####################################################################
 
-# return_closest_year -----------------------------------------------------
-
-return_closest_year <- function(var, df, build_str_as_DA = TRUE) {
-  
-  # Not to do for grid - always 2016
-  if (curbcut::is_scale_df("grid", df)) return(var)
-  
-  if (build_str_as_DA && curbcut::is_scale_df("building", df)) 
-    df <- paste0(gsub("building", "DA", df))
-  
-  avail <- tables_in_sql[[df]][grepl(gsub("_\\d{4}$", "", var), 
-                                     tables_in_sql[[df]])]
-  
-  if (!var %in% avail) {
-    
-    time <- as.numeric(str_extract(var, "\\d{4}"))
-    
-    x <-
-      avail |> 
-      str_subset(str_remove(var, "_\\d{4}$")) |> 
-      str_extract("\\d{4}$") |> 
-      as.numeric() |> 
-      na.omit()
-    
-    closest_year <- x[which.min(abs(x - time))]
-    out <- paste0(str_remove(var, "_\\d{4}$"), "_", closest_year)
-    out <- sub("_$", "", out)
-    
-  } else out <- var
-  
-  return(out)
-  
-}
-
 
 # find_outliers -----------------------------------------------------------
 

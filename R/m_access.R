@@ -17,7 +17,7 @@
 #     sidebar_UI(
 #       NS(id, id),
 #       shiny::div(class = "sus-sidebar-widgets",
-#         auto_vars_UI(NS(id, id), var_list = make_dropdown(only = NULL, only_vars = c()), label = curbcut::cc_t("Access"))
+#         auto_vars_UI(NS(id, id), var_list = dropdown_make(only = NULL, only_vars = c()), label = curbcut::cc_t("Access"))
 #       ),
 #       bottom = div(
 #         class = "bottom_sidebar",
@@ -34,7 +34,7 @@
 #     # Right panel
 #     right_panel(
 #       id = id,
-#       compare_UI(NS(id, id), make_dropdown(compare = TRUE)),
+#       compare_UI(NS(id, id), dropdown_make(compare = TRUE)),
 #       explore_UI(NS(id, id)),
 #       dyk_UI(NS(id, id))
 #     )
@@ -151,7 +151,7 @@
 #     var_left_1 <- auto_vars_server(
 #       id = id,
 #       r = r,
-#       var_list = make_dropdown(
+#       var_list = dropdown_make(
 #         only = NULL,
 #         only_vars = c()
 #       ),
@@ -163,7 +163,7 @@
 #     var_right <- compare_server(
 #       id = id,
 #       r = r,
-#       var_list = make_dropdown(
+#       var_list = dropdown_make(
 #         multi_year = FALSE,
 #         only_vars = c(
 #           "housing_tenant", "housing_rent", "housing_repairs",

@@ -17,7 +17,7 @@ compare_UI <- function(id, var_list) {
     conditionalPanel(
       condition = "output.hide_status == 1", ns = NS(id),
       div(id = NS(id, "compare"), 
-          auto_vars_UI(NS(id, "compare"), var_list = var_list))),
+          curbcut::picker_UI(id = shiny::NS(id, "compare"), var_list = var_list))),
     
     conditionalPanel(
       condition = "output.show_panel == true", ns = NS(id),
@@ -36,12 +36,11 @@ compare_server <- function(id, r, var_list, df = r[[id]]$df,
   stopifnot(is.reactive(show_panel))
 
   moduleServer(id, function(input, output, session) {
-    
-    var_right <- auto_vars_server("compare", r = r,
-                                  module_id = id,
-                                  var_list = var_list,
-                                  df = df,
-                                  time)
+
+    var_right <- curbcut::picker_server(id = "compare", 
+                                        r = r,
+                                        var_list = var_list,
+                                        time = time)
 
     # Hide compare status
     output$show_panel <- show_panel
