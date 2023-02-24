@@ -206,17 +206,8 @@ default_region <- modules$regions[modules$id == "canale"][[1]][1]
     #   var_right = var_right
     # )
 
-    # # Bookmarking
-    # bookmark_server(
-    #   id = id,
-    #   r = r,
-    #   s_id = r[[id]]$select_id,
-    #   df = r[[id]]$df,
-    #   map_viewstate = reactive(get_view_state(id_map)),
-    #   var_left = var_left,
-    #   var_right = var_right,
-    #   more_args = reactive(c())
-    # )
+    # Bookmarking
+    curbcut::bookmark_server(id = id, r = r, select_id = r[[id]]$select_id)
 
     # Data transparency and export
     r[[id]]$export_data <- reactive(data_export(

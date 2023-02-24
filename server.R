@@ -301,7 +301,6 @@ shinyServer(function(input, output, session) {
   }
 
   observeEvent(input$cc_page, {
-    bookmark_server(input$cc_page, r = r)
 
     # Trigger the module server function only if it hasn't been opened already
     if (!input$cc_page %in% r$previous_tabs()) active_mod_server()
