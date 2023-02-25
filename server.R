@@ -7,7 +7,6 @@ shinyServer(function(input, output, session) {
   observe(title_page_update(r = r, session = session, 
                             cc_page = input$cc_page))
   
-  
   ## If on mobile, warning! ----------------------------------------------------
   
   observe(mobile_warning(r = r, session = session))
@@ -45,6 +44,7 @@ shinyServer(function(input, output, session) {
       r[[i]] <- reactiveValues(
         select_id = reactiveVal(NA),
         zoom = reactiveVal(curbcut::zoom_get(map_zoom)),
+        coords = reactiveVal(map_loc),
         poi = reactiveVal(NULL),
         prev_norm = reactiveVal(FALSE))
     } else {
@@ -54,6 +54,7 @@ shinyServer(function(input, output, session) {
         select_id = reactiveVal(NA),
         df = reactiveVal(df),
         zoom = reactiveVal(curbcut::zoom_get(map_zoom)),
+        coords = reactiveVal(map_loc),
         poi = reactiveVal(NULL),
         prev_norm = reactiveVal(FALSE))
     }

@@ -11,7 +11,6 @@ default_region <- modules$regions[modules$id == "canale"][[1]][1]
 # UI ----------------------------------------------------------------------
 
 `canale_UI` <- function(id) {
-  id_map <- paste0(id, "-map")
 
   shiny::tagList(
     # Sidebar
@@ -41,7 +40,6 @@ default_region <- modules$regions[modules$id == "canale"][[1]][1]
 
 `canale_server` <- function(id, r) {
   moduleServer(id, function(input, output, session) {
-    id_map <- paste0(id, "-map")
     
     # Initial reactives
     rv_zoom_string <- reactiveVal(
@@ -71,7 +69,7 @@ default_region <- modules$regions[modules$id == "canale"][[1]][1]
     })
 
     # Click reactive
-    observeEvent(rdeck::get_clicked_object(id_map)$ID, {
+    observeEvent(rdeck::get_clicked_object(paste0("canale-map"))$ID, {
       r[[id]]$select_id({
         curbcut::update_select_id(id = id, select_id = r[[id]]$select_id())
       })
@@ -188,7 +186,8 @@ default_region <- modules$regions[modules$id == "canale"][[1]][1]
                                      data_colours = data_colours,
                                      select_id = r[[id]]$select_id,
                                      zoom_levels = reactive(zoom_levels()$zoom_levels),
-                                     zoom = r[[id]]$zoom)
+                                     zoom = r[[id]]$zoom,
+                                     coords = r[[id]]$coords)
 
     # Update map labels
     curbcut::label_server(id = id,
