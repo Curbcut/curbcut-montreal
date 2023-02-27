@@ -11,10 +11,6 @@ scrollAnchor <- function(id) {
          tags$span(id = id, style = "display: block;position: absolute;top: calc(var(--h-navbar) * -2);")))
 }
 
-languageButtonLabel <- function(text) {
-  as.character(tags$span(tags$span(class = "material-icons", "language"), 
-                         span(text)))
-}
 
 susNewsExploreArticle <- function(id, type, author, date, title, img, preview) {
   return (div(class='action-button shiny-bound-input', id=id,
@@ -397,10 +393,6 @@ styler <- '
 }
 
 '
-
-set_ui_lang <- "shinyjs.setLanguage = function(language) {
-    document.querySelector('body').className = `user-lang-${language}`;
-  };"
 
 lang_classes <- "
     .lang-en {

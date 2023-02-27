@@ -53,6 +53,7 @@ ui <- function(request) {
                                       "family=Material+Icons"))),
     tags$head(tags$script(src = "sus.js")),
     tags$head(tags$script(src = "shinybrowser.js")),
+    tags$head(tags$script(src = "cookies.js")),
     # Cookie js script
     curbcut::use_curbut_cookie(),
     tags$head(tags$script(js_links_between_modules)),
@@ -84,15 +85,13 @@ ui <- function(request) {
     
     # Google analytics
     tags$head(includeHTML("www/google_analytics.html")),
-    
+
     # Language switching ---------------------------------------------------------
     
     # Add a class to the body, to toggle between languages
     tags$body(class = "user-lang-fr"),
     # Add visible and hidden to classes, to switch between active language
     tags$head(tags$style(HTML(lang_classes))),
-    # JS function to change body class when button is clicked
-    extendShinyjs(text = set_ui_lang, functions = "setLanguage"),
     
     
     # Sharing card ---------------------------------------------------------------
@@ -134,11 +133,7 @@ ui <- function(request) {
              collapsible = TRUE,
              inputs = list(
                # Language toggle
-               actionLink(
-                 inputId = "language_button",
-                 style = "min-width: 112px;",
-                 label = span(curbcut::icon_material("language"), 
-                              span("English"))),
+               curbcut::language_UI(),
                # Actions dropdown
                curbcut::settings_UI()
              )

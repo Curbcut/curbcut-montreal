@@ -203,7 +203,7 @@ place_explorer_server <- function(id, r) {
         pef <- gsub("/", "\\\\", pef)
 
         fun <- if (Sys.info()[["sysname"]] == "Windows") "type" else "cat"
-        shell(glue::glue("{fun} {head} {pef} > {tmpfile}"))
+        shell(sprintf("%s %s %s > %s", fun, head, pef, tmpfile))
 
         tmpfile <- stringr::str_extract(tmpfile, "placeex_tmp.*$")
 
@@ -222,13 +222,10 @@ place_explorer_server <- function(id, r) {
     
     # Bookmarking -------------------------------------------------------------
     
-    bookmark_server(
+    curbcut::bookmark_server(
       id = id,
       r = r,
-      s_id = r[[id]]$select_id,
-      df = r[[id]]$df,
-      map_viewstate = reactive(
-        input[[paste0(id, "-map_viewstate")]]$viewState)
+      select_id = r[[id]]$select_id
     )
     
   })

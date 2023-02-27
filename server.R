@@ -3,13 +3,14 @@
 shinyServer(function(input, output, session) {
 
   ## Page title change, depending on page visited ------------------------------
-
-  observe(title_page_update(r = r, session = session, 
-                            cc_page = input$cc_page))
+  
+  curbcut::title_page_update(r = r, parent_session = session, 
+                             active_page = shiny::reactive(input$cc_page), 
+                             site_name = site_name)
   
   ## If on mobile, warning! ----------------------------------------------------
   
-  observe(mobile_warning(r = r, session = session))
+  curbcut::mobile_warning(r = r, parent_session = session)
   
   
   ## If crash, personalized error ----------------------------------------------
@@ -63,8 +64,8 @@ shinyServer(function(input, output, session) {
   
   ## Home page -----------------------------------------------------------------
   
-  observe(updateNavbarPage(session, "cc_page", "home")) |> 
-    bindEvent(input$title)
+  # When the Curbcut title on the left corner is clicked on
+  shiny::observeEvent(input$title, updateNavbarPage(session, "cc_page", "home"))
   
   
   ## First visit banner --------------------------------------------------------
@@ -153,40 +154,7 @@ shinyServer(function(input, output, session) {
   
   ## Language button -----------------------------------------------------------
   
-  # If the language cookie is "english"
-  observeEvent(input$cookies$lang, {
-    if (!is.null(input$cookies$lang) && input$cookies$lang == "en") {
-      # Set the reactive to english
-      r$lang("en")
-      # Tell to the JS that all the UI must be in english
-      js$setLanguage("en")
-    }
-  }, once = TRUE)
-  
-  # A click on the button switches the active language
-  observeEvent(input$language_button, {
-    r$lang(if (r$lang() == "en") "fr" else "en")
-  }, ignoreNULL = FALSE, ignoreInit = TRUE)
-  
-  # Update the COOKIE
-  observeEvent(r$lang(), {
-    if (r$lang() == "en") {
-      # Tell to the JS that all the UI must be in english
-      js$setLanguage("en")
-      # Update the label of the language button
-      updateActionLink(inputId = "language_button", 
-                       label = languageButtonLabel("Français"))
-      # Set the cookie to english
-      lang_cookie <- list(name = "lang", value = "en")
-      session$sendCustomMessage("cookie-set", lang_cookie)
-    } else {
-      js$setLanguage("fr")
-      updateActionLink(inputId = "language_button", 
-                       label = languageButtonLabel("English"))
-      lang_cookie <- list(name = "lang", value = "fr")
-      session$sendCustomMessage("cookie-set", lang_cookie)
-    }
-  }, ignoreInit = TRUE)
+  curbcut::language_server(r = r, parent_session = session)
   
   
   ## Active tab ----------------------------------------------------------------
@@ -210,89 +178,10 @@ shinyServer(function(input, output, session) {
     r$link <- NULL
   }, ignoreInit = TRUE, ignoreNULL = TRUE)
   
-  # # Links between modules
-  # observeEvent(r$sus_link$activity, {
-  #   # Delay to make sure the linked module is fully loaded
-  #   delay(500, {
-  #     update_module(id = r$sus_link$id,
-  #                   r = r, 
-  #                   map_id = "map",
-  #                   session = session,
-  #                   zoom = r$sus_link$zoom, 
-  #                   location = r$sus_link$location,
-  #                   zoom_auto = r$sus_link$zoom_auto,
-  #                   var_left = r$sus_link$var_left,
-  #                   var_right = r$sus_link$var_right,
-  #                   select_id = r$sus_link$select_id,
-  #                   df = r$sus_link$df,
-  #                   more_args = r$sus_link$more_args)
-  #   })
-  # }, ignoreInit = TRUE)
   
-  
-  ## Parse URL -----------------------------------------------------------------
-
-  
-  observeEvent(parseQueryString(session$clientData$url_search), {
-    query <- parseQueryString(session$clientData$url_search)
-
-    if (length(query) != 0) {
-
-      # MARK THE ACTIVE BOOKMARKED
-      r$sus_bookmark$active <- TRUE
-
-      try({
-        if (!is.null(query[["lon"]])) {
-          r$sus_bookmark$location <- c(as.numeric(query[["lon"]]),
-                                       as.numeric(query[["lat"]]))}
-      })
-      # Retrieve var_left
-      try({
-        if (!is.null(query[["v_l"]]))
-          r$sus_bookmark$var_left <- query[["v_l"]]
-      })
-      # Retrieve var_right
-      try({
-        if (!is.null(query[["v_r"]]))
-          r$sus_bookmark$var_right <- query[["v_r"]]
-      })
-      # Retrieve if zoom is automatic or not
-      try({
-        if (!is.null(query[["zm_a"]]))
-          r$sus_bookmark$zoom_auto <- as.logical(query[["zm_a"]])
-      })
-      # Additional
-      try({
-        if (!is.null(query[["more"]]))
-          r$sus_bookmark$more_args <- query[["more"]]
-      })
-
-    }
-  }, once = TRUE)
+  ## Bookmark ------------------------------------------------------------------
   
   curbcut::use_bookmark(r = r, parent_session = session)
-
-  # # Update from bookmark
-  # observeEvent(r$sus_bookmark$active, {
-  #   if (isTRUE(r$sus_bookmark$active)) {
-  #     # Delay to make sure the bookmarked module is fully loaded
-  #     delay(500, {
-  #       zz <- if (!is.null(r[[input$cc_page]]$zoom)) 
-  #         r[[input$cc_page]]$zoom() else NULL
-  #       update_module(session = session,
-  #                     r = r,
-  #                     id = r$sus_bookmark$id,
-  #                     map_id = "map",
-  #                     zoom = zz,
-  #                     location = r$sus_bookmark$location,
-  #                     zoom_auto = r$sus_bookmark$zoom_auto,
-  #                     var_left = r$sus_bookmark$var_left,
-  #                     var_right = r$sus_bookmark$var_right,
-  #                     more_args = r$sus_bookmark$more_args)
-  #     })
-  #     r$sus_bookmark$active <- FALSE
-  #   }
-  # }, priority = -1, once = TRUE)
   
   
   ## Modules -------------------------------------------------------------------
@@ -312,7 +201,7 @@ shinyServer(function(input, output, session) {
 
   ## Advanced options ----------------------------------------------------------
 
-  curbcut::settings_server(r = r)
+  curbcut::settings_server(r = r, parent_session = session)
   
   ## Data download -------------------------------------------------------------
   

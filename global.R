@@ -29,22 +29,21 @@ suppressPackageStartupMessages({
 
   library(rdeck)
   library(ggplot2)
-  library(stringr)
 
   library(qs)
   library(glue)
   library(metathis)
   
   library(RSQLite)
-  library(curl)
   library(tableHTML)
+  library(stringr)
   
   library(sever)
 })
 
 # Shiny options -----------------------------------------------------------
 
-options(shiny.fullstacktrace = T)
+options(shiny.fullstacktrace = TRUE)
 options(shiny.useragg = TRUE)
 shinyOptions(cache = cachem::cache_disk(file.path(dirname(tempdir()), "cache")))
 
