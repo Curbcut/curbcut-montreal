@@ -1,32 +1,33 @@
 ### STORIES MODULE ##############################################################
 
+themes <- unique(unlist(stories$themes))
+themes <- list(Themes = setNames(themes, themes))
+
 # UI ----------------------------------------------------------------------
 
 stories_UI <- function(id) {
   id <- "stories"
   
-  tagList(
+  shiny::tagList(
     
     # Sidebar
-    sidebar_UI(
-      NS(id, id),
-      shiny::div(class = "sus-sidebar-widgets",
-        actionLink(NS(id, "back"), curbcut::cc_t(
-                                                 "Back to the map")),
-        pickerInput(
-          inputId = NS(id, "themes_checkbox"),
-          label = curbcut::cc_t("Choose themes:"),
-          choices = unique(unlist(stories$themes)),
-          selected = unique(unlist(stories$themes)),
-          multiple = TRUE),
-        hr(id = NS(id, "hr"))
-        )
+    curbcut::sidebar_UI(
+      id = NS(id, id),
+      actionLink(NS(id, "back"), curbcut::cc_t("Back to the map")),
+      curbcut::picker_UI(
+        id = NS(id, id),
+        picker_id = "var",
+        label = curbcut::cc_t("Choose themes:"),
+        var_list = themes,
+        selected = unlist(themes),
+        multiple = TRUE),
+      hr(id = NS(id, "hr"))
     ),
     
     # Map
-    div(class = "map_div", rdeckOutput(NS(id, paste0(id, "-map")), 
+    div(class = "map_div", rdeckOutput(NS(id, paste0(id, "-map")),
                                            height = "100%")),
-    
+
     # Stories
     hidden(htmlOutput(
       NS(id, "stories")))
@@ -42,12 +43,12 @@ stories_server <- function(id, r) {
     id_map <- paste0(id, "-map")
     
     # Sidebar
-    sidebar_server(id = id, r = r, x = "stories")
+    curbcut::sidebar_server(id = id, r = r)
     
     # Map
     output[[id_map]] <- renderRdeck({
       rdeck(map_style = map_style_building, initial_view_state = view_state(
-        center = map_loc, zoom = map_zoom)) |> 
+        center = map_loc, zoom = map_zoom), layer_selector = FALSE) |> 
         add_mvt_layer(
           id = "stories",
           data = mvt_url(paste0(mapbox_username, ".", tileset_prefix, "_", 
@@ -63,12 +64,7 @@ stories_server <- function(id, r) {
     })
 
     # Click reactive
-    observe({
-      selection <- get_clicked_object(id_map)$ID
-      if (!is.na(r[[id]]$select_id()) && selection == r[[id]]$select_id()) {
-        r[[id]]$select_id(NA)
-      } else r[[id]]$select_id(selection)
-    }) |> bindEvent(get_clicked_object(id_map))
+    curbcut::update_select_id(id = id, r = r)
 
     # Custom map, legend and source for cycling infrastructure and metro
     # evolution stories
@@ -201,10 +197,16 @@ stories_server <- function(id, r) {
     })
 
     # Add stories on the left-hand panel and react on a click
-    observeEvent(input$themes_checkbox, {
+    themes_c <- curbcut::picker_server(id = id,
+                                       picker_id = "var",
+                                       r = r,
+                                       var_list = themes,
+                                       selected = unlist(themes))
+    
+    observeEvent(themes_c(), {
       in_theme <-
         stories$ID[which(
-          sapply(sapply(stories$themes, `%in%`, input$themes_checkbox), sum) > 0)]
+          sapply(sapply(stories$themes, `%in%`, themes_c()), sum) > 0)]
 
       removeUI(selector = "#bullet_points")
       insertUI(paste0("#stories-hr"),
@@ -213,8 +215,7 @@ stories_server <- function(id, r) {
                  id = "bullet_points",
                  lapply(stories$short_title[stories$ID %in% in_theme], \(x) {
                    tags$li(
-                     curbcut::cc_t(lang = r$lang(),
-                                   x),
+                     curbcut::cc_t(lang = r$lang(), x),
                      style = "cursor: pointer; text-decoration: none;",
                      title = curbcut::cc_t(lang = r$lang(),
                                            stories$preview[stories$short_title == x]),
@@ -253,9 +254,8 @@ stories_server <- function(id, r) {
     bookmark_server(
       id = id,
       r = r,
-      s_id = r[[id]]$select_id,
-      map_viewstate = reactive(
-        input[[paste0(id, "-map_viewstate")]]$viewState)
+      select_id = r[[id]]$select_id,
+      exclude_input = "ccpicker_var"
     )
 
   })
