@@ -33,12 +33,10 @@ place_explorer_UI <- function(id) {
                      </div>')),
         hr(),
         # Scale slider
-        sliderTextInput(inputId = NS(id, "zoom_slider"),
-                        label = curbcut::cc_t("Choose scale:"),
-                        choices = pe_zoom_levels,
-                        selected = pe_zoom_levels[length(pe_zoom_levels)],
-                        hide_min_max = TRUE,
-                        force_edges = TRUE),
+        curbcut::slider_text_UI(id = NS(id, "slider"),
+                                label = "Choose scale:",
+                                choices = pe_zoom_levels,
+                                selected = pe_zoom_levels[length(pe_zoom_levels)]),
         
         # Back button
         actionLink(NS(id, "back"), curbcut::cc_t(
@@ -69,32 +67,38 @@ place_explorer_server <- function(id, r) {
     # Misc --------------------------------------------------------------------
     
     # Sidebar
-    sidebar_server(id = "place_explorer", r = r, x = "place_explorer")
+    sidebar_server(id = "place_explorer", r = r)
+    
+    # Get the output of the slider
+    slider <- curbcut::slider_text_server(id = "slider",
+                                          r = r,
+                                          choices = shiny::reactive(pe_zoom_levels))
     
     # df/data reactives
-    observeEvent(input$zoom_slider, {
-      r[[id]]$df(zoom_get_code(input$zoom_slider))
+    observeEvent(slider(), {
+      r[[id]]$df(zoom_get_code(slider()))
     })
     data <- reactive(get(paste(r$region(), r[[id]]$df(), sep = "_")))
     
     
     # Translate slider --------------------------------------------------------
     
-    observe(updateSliderTextInput(
-      session = session, "zoom_slider",
-      choices = zoom_get_label(pe_scales, lang = r$lang())))
-    
-    # Tweak for bookmark
-    observeEvent(parseQueryString(session$clientData$url_search)$tb, {
-      if (parseQueryString(session$clientData$url_search)$tb == "place_explorer") {
-        df <- parseQueryString(session$clientData$url_search)$df
-        df <- stats::setNames(df, df)
-        updateSliderTextInput(
-          session = session, "zoom_slider",
-          choices = zoom_get_label(pe_scales, lang = r$lang()),
-          selected = zoom_get_label(df, lang = r$lang()))
-      }
-    }, once = TRUE)
+    # 
+    # observe(updateSliderTextInput(
+    #   session = session, "zoom_slider",
+    #   choices = zoom_get_label(pe_scales, lang = r$lang())))
+    # 
+    # # Tweak for bookmark
+    # observeEvent(parseQueryString(session$clientData$url_search)$tb, {
+    #   if (parseQueryString(session$clientData$url_search)$tb == "place_explorer") {
+    #     df <- parseQueryString(session$clientData$url_search)$df
+    #     df <- stats::setNames(df, df)
+    #     updateSliderTextInput(
+    #       session = session, "zoom_slider",
+    #       choices = zoom_get_label(pe_scales, lang = r$lang()),
+    #       selected = zoom_get_label(df, lang = r$lang()))
+    #   }
+    # }, once = TRUE)
     
     
     # Postal code search ------------------------------------------------------
@@ -142,15 +146,7 @@ place_explorer_server <- function(id, r) {
     )
     
     # Map click
-    observeEvent(get_clicked_object(id_map), {
-      selection <- get_clicked_object(id_map)$ID
-      if (!is.na(r[[id]]$select_id()) &&
-          selection == r[[id]]$select_id()) {
-        r[[id]]$select_id(NA)
-      } else {
-        r[[id]]$select_id(selection)
-      }
-    })
+    curbcut::update_select_id(id = id, r = r)
     
     
     # Select ID behavior ------------------------------------------------------

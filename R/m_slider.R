@@ -11,14 +11,6 @@ slider_UI <- function(id, slider_id = "slider",
               sep = sep, value = value, width = width,  ...)
 }
 
-slider_text_UI <- function(id, slider_id = "slider", 
-                           label = curbcut::cc_t("Select a year"), 
-                           choices, selected = NULL, width = "95%", ...) {
-  
-  shinyWidgets::sliderTextInput(NS(id, slider_id), label, choices = choices,
-                                selected = selected, width = width,  ...)
-}
-
 
 # Server ------------------------------------------------------------------
 
@@ -50,30 +42,3 @@ slider_server <- function(id, slider_id = NULL, value = reactive(NULL),
   
 }
 
-slider_text_server <- function(id, r, slider_id = NULL, choices = reactive(NULL),
-                               selected = reactive(NULL)) {
-  
-  stopifnot(is.reactive(choices))
-  stopifnot(is.reactive(selected))
-  
-  moduleServer(id, function(input, output, session) {
-    
-    slider_id <- if (is.null(slider_id)) "slider" else slider_id
-    
-    choices <- sapply(choices(), cc_t, lang = r$lang(), USE.NAMES = FALSE)
-    
-    observe({
-      if (!is.null(choices()) || !is.null(selected())) {
-        shinyWidgets::updateSliderTextInput(
-          session,
-          inputId = slider_id,
-          selected = selected(),
-          choices = choices)
-      }
-    })
-    
-    reactive(input[[slider_id]])
-    
-  })
-  
-}

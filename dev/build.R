@@ -484,8 +484,7 @@ qs::qsave(scales_variables_modules$variables, file = "data/variables.qs")
 new_pages <- list.files("dev/pages", full.names = TRUE)
 new_pages <- new_pages[!grepl("/access.R", new_pages)]
 
-lapply(list.files("dev/pages", full.names = TRUE), 
-       create_page_script, overwrite = TRUE) |> 
+lapply(new_pages, create_page_script, overwrite = TRUE) |> 
   invisible()
 
 

@@ -53,9 +53,8 @@ ui <- function(request) {
                                       "family=Material+Icons"))),
     tags$head(tags$script(src = "sus.js")),
     tags$head(tags$script(src = "shinybrowser.js")),
-    tags$head(tags$script(src = "cookies.js")),
     # Cookie js script
-    curbcut::use_curbut_cookie(),
+    curbcut::use_curbcut_cookie(),
     tags$head(tags$script(js_links_between_modules)),
     curbcut::use_curbcut_js(),
     # tags$head(tags$script(curbcut::js_copy_current_url())),

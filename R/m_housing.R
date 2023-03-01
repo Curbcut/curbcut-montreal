@@ -1,296 +1,262 @@
-# ### HOUSING PAGE ###############################################################
-# 
-# # GLOBAL ------------------------------------------------------------------
-# 
-# `housing_default_region` <- unlist(modules$regions[modules$id == "housing"])[1]
-# `housing_mzp` <-
-#   eval(parse(text = paste0("map_zoom_levels_", `housing_default_region`)))
-# 
-# 
-# # UI ----------------------------------------------------------------------
-# 
-# `housing_UI` <- function(id) {
-#   id_map <- paste0(id, "-map")
-# 
-#   tagList(
-#     # Sidebar
-#     sidebar_UI(
-#       NS(id, id),
-#       shiny::div(class = "sus-sidebar-widgets",
-#         curbcut::picker_UI(NS(id, id), var_list = c(
-#           "housing_tenant", "housing_rent", "housing_repairs",
-#           "housing_value", "housing_unafford", "housing_unsuit",
-#           "housing_stress_renter", "housing_stress_owner", "housing_mobility_one",
-#           "housing_mobility_five", "housing_single_detached"
-#         )),
-#         slider_UI(NS(id, id), slider_id = "slu"),
-#         slider_UI(NS(id, id), slider_id = "slb", label = curbcut::cc_t("Select two years"), value = c("2006", "2016")),
-#         checkbox_UI(NS(id, id), label = curbcut::cc_t("Compare dates")),
-#         year_disclaimer_UI(NS(id, id))
-#       ),
-#       bottom = div(
-#         class = "bottom_sidebar",
-#         tagList(
-#           legend_UI(NS(id, id)),
-#           zoom_UI(NS(id, id), `housing_mzp`)
-#         )
-#       )
-#     ),
-# 
-#     # Map
-#     div(class = "map_div", rdeckOutput(NS(id, id_map), height = "100%")),
-# 
-#     # Right panel
-#     right_panel(
-#       id = id,
-#       compare_UI(NS(id, id), dropdown_make(compare = TRUE)),
-#       explore_UI(NS(id, id)),
-#       dyk_UI(NS(id, id))
-#     )
-#   )
-# }
-# 
-# 
-# # Server ------------------------------------------------------------------
-# 
-# `housing_server` <- function(id, r) {
-#   moduleServer(id, function(input, output, session) {
-#     id_map <- paste0(id, "-map")
-# 
-#     # Initial reactives
-#     zoom_string <- reactiveVal(zoom_get_string(map_zoom, `housing_mzp`))
-#     poi <- reactiveVal(NULL)
-# 
-#     # Map
-#     output[[id_map]] <- renderRdeck({
-#       rdeck(
-#         map_style = map_base_style, layer_selector = FALSE,
-#         initial_view_state = view_state(
-#           center = map_loc, zoom = isolate(r[[id]]$zoom())
-#         )
-#       )
-#     })
-# 
-#     # Zoom and POI reactives
-#     observe({
-#       r[[id]]$zoom(curbcut::zoom_get(get_view_state(id_map)$zoom))
-#       new_poi <- observe_map(get_view_state(id_map))
-#       if ((is.null(new_poi) && !is.null(poi())) ||
-#         (!is.null(new_poi) && (is.null(poi()) || !all(new_poi == poi())))) {
-#         poi(new_poi)
-#       }
-#     }) |> bindEvent(get_view_state(id_map))
-# 
-#     # Map zoom levels change depending on r$region()
-#     map_zoom_levels <- eventReactive(r$region(), {
-#       zoom_get_levels(
-#         default = `housing_default_region`,
-#         geo = r$region(),
-#         var_left = isolate(var_left())
-#       )
-#     })
-# 
-#     # Zoom string reactive
-#     observe({
-#       new_zoom_string <- zoom_get_string(
-#         r[[id]]$zoom(), map_zoom_levels()$zoom_levels,
-#         map_zoom_levels()$region
-#       )
-#       if (new_zoom_string != zoom_string()) zoom_string(new_zoom_string)
-#     }) |> bindEvent(r[[id]]$zoom(), map_zoom_levels()$zoom_levels)
-# 
-#     # Click reactive
-#     observe({
-#       selection <- get_clicked_object(id_map)$ID
-#       if (!is.na(r[[id]]$select_id()) &&
-#         selection == r[[id]]$select_id()) {
-#         r[[id]]$select_id(NA)
-#       } else {
-#         r[[id]]$select_id(selection)
-#       }
-#     }) |> bindEvent(get_clicked_object(id_map))
-# 
-#     # Default location
-#     observe({
-#       if (is.null(r$default_select_id())) {
-#         return(NULL)
-#       }
-#       new_id <- data()$ID[data()$ID %in%
-#         r$default_select_id()[[gsub("_.*", "", r[[id]]$df())]]]
-#       if (length(new_id) == 0) {
-#         return(NULL)
-#       }
-#       r[[id]]$select_id(new_id)
-#     }) |> bindEvent(r$default_select_id(), r[[id]]$df())
-# 
-#     # Choose tileset
-#     tile <- zoom_server(
-#       id = id,
-#       r = r,
-#       zoom_string = zoom_string,
-#       zoom_levels = map_zoom_levels
-#     )
-# 
-#     # Get df for explore/legend/etc
-#     observe(r[[id]]$df(get_df(tile(), zoom_string()))) |>
-#       bindEvent(tile(), zoom_string())
-# 
-#     # Time
-#     slider_uni <- slider_server(id = id, slider_id = "slu")
-#     slider_bi <- slider_server(id = id, slider_id = "slb")
-#     slider_switch <- checkbox_server(id = id)
-#     time <- reactive(if (slider_switch()) slider_bi() else slider_uni())
-# 
-#     # Enable or disable first and second slider
-#     observeEvent(slider_switch(), {
-#       toggle(NS(id, "slu"), condition = !slider_switch())
-#       toggle(NS(id, "slb"), condition = slider_switch())
-#     })
-# 
-#     # Left variable
-#     var_left <- select_var_server(
-#       id = id,
-#       r = r,
-#       var_list = reactive(dropdown_make(
-#         only_vars = c(
-#           "housing_tenant", "housing_rent", "housing_repairs",
-#           "housing_value", "housing_unafford", "housing_unsuit",
-#           "housing_stress_renter", "housing_stress_owner", "housing_mobility_one",
-#           "housing_mobility_five", "housing_single_detached"
-#         ),
-#         only = NULL
-#       )),
-#       time = time
-#     )
-# 
-#     # Right variable / compare panel
-#     var_right <- compare_server(
-#       id = id,
-#       r = r,
-#       var_list = dropdown_make(
-#         multi_year = FALSE,
-#         only_vars = c(
-#           "inc_median_income", "inc_50", "inc_100",
-#           "inc_high", "inc_limat", "iden_imm",
-#           "iden_imm_new", "iden_vm", "iden_aboriginal",
-#           "trans_car", "trans_walk_or_bike", "trans_transit",
-#           "trans_t_15", "trans_t_45", "trans_t_45_plus",
-#           "emp_professional", "emp_creative", "family_children",
-#           "family_one_person", "lang_french_only", "lang_eng_only",
-#           "lang_french_eng", "lang_no_official", "age_0_14",
-#           "age_15_64", "age_65_plus", "edu_bachelor_above",
-#           "edu_no_degree"
-#         ),
-#         only = NULL,
-#         exclude = NULL,
-#         compare = TRUE
-#       ),
-#       time = time
-#     )
-#     
-#     vars <- reactive(curbcut::vars_build(var_left = var_left(),
-#                                          var_right = var_right(),
-#                                          df = r[[id]]$df()))
-# 
-#     # Sidebar
-#     sidebar_server(id = id, r = r)
-# 
-#     # Data
-#     data <- reactive(get_data(
-#       df = r[[id]]$df(),
-#       geo = map_zoom_levels()$region,
-#       var_left = var_left(),
-#       var_right = var_right()
-#     ))
-# 
-#     # Data for tile coloring
-#     data_color <- reactive(get_data_color(
-#       map_zoom_levels = map_zoom_levels()$zoom_levels,
-#       geo = map_zoom_levels()$region,
-#       var_left = var_left(),
-#       var_right = var_right()
-#     ))
-# 
-#     # Year disclaimer
-#     year_disclaimer_server(
-#       id = id,
-#       r = r,
-#       data = data,
-#       var_left = var_left,
-#       var_right = var_right,
-#       time = time
-#     )
-# 
-#     # Legend
-#     legend <- curbcut::legend_server(
-#       id = id,
-#       r = r,
-#       vars,
-#       data = data,
-#       df = r[[id]]$df
-#     )
-#     
-# 
-#     # Did-you-know panel
-#     dyk_server(
-#       id = id,
-#       r = r,
-#       var_left = var_left,
-#       var_right = var_right,
-#       poi = poi
-#     )
-# 
-#     # Update map in response to variable changes or zooming
-#     rdeck_server(
-#       id = id,
-#       r = r,
-#       map_id = "map",
-#       tile = tile,
-#       data_color = data_color,
-#       zoom_levels = reactive(map_zoom_levels()$zoom_levels)
-#     )
-# 
-#     # Update map labels
-#     label_server(
-#       id = id,
-#       r = r,
-#       map_id = "map",
-#       tile = tile
-#     )
-#     
-#     # # Explore panel
-#     # explore_content <- explore_server(
-#     #   id = id,
-#     #   r = r,
-#     #   data = data,
-#     #   geo = reactive(map_zoom_levels()$region),
-#     #   var_left = var_left,
-#     #   var_right = var_right
-#     # )
-# 
-#     # Bookmarking
-#     bookmark_server(
-#       id = id,
-#       r = r,
-#       s_id = r[[id]]$select_id,
-#       df = r[[id]]$df,
-#       map_viewstate = reactive(get_view_state(id_map)),
-#       var_left = var_left,
-#       var_right = var_right,
-#       more_args = reactive(c(
-#         "c-cbox" = str_extract(slider_switch(), "^."),
-#         "s-slu" = slider_uni(),
-#         "s-slb" = paste(slider_bi(), collapse = "-")
-#       ))
-#     )
-# 
-#     # Data transparency and export
-#     r[[id]]$export_data <- reactive(data_export(
-#       id = id,
-#       data = data(),
-#       var_left = var_left(),
-#       var_right = var_right(),
-#       df = r[[id]]$df()
-#     ))
-#   })
-# }
+### HOUSING PAGE ###############################################################
+
+# GLOBAL ------------------------------------------------------------------
+
+`housing_default_region` <- unlist(modules$regions[modules$id == "housing"])[1]
+`housing_mzp` <-
+  eval(parse(text = paste0("map_zoom_levels_", `housing_default_region`)))
+default_region <- modules$regions[modules$id == "housing"][[1]][1]
+
+# UI ----------------------------------------------------------------------
+
+`housing_UI` <- function(id) {
+  shiny::tagList(
+    # Sidebar
+    curbcut::sidebar_UI(
+      id = shiny::NS(id, id),
+      curbcut::picker_UI(id = NS(id, id), var_list = c(
+        "housing_tenant", "housing_rent", "housing_repairs",
+        "housing_value", "housing_unafford", "housing_unsuit",
+        "housing_stress_renter", "housing_stress_owner", "housing_mobility_one",
+        "housing_mobility_five", "housing_single_detached"
+      )),
+      curbcut::slider_UI(id = NS(id, id), slider_id = "slu", min = 1996, max = 2016),
+      curbcut::slider_UI(id = NS(id, id), slider_id = "slb", min = 1996, max = 2016, label = curbcut::cc_t("Select two years"), value = c(2006, 2016)),
+      curbcut::checkbox_UI(id = NS(id, id), label = curbcut::cc_t("Compare dates"), value = FALSE),
+      year_disclaimer_UI(NS(id, id)),
+      bottom = shiny::tagList(
+        curbcut::legend_UI(shiny::NS(id, id)),
+        curbcut::zoom_UI(shiny::NS(id, id), `canale_mzp`)
+      )
+    ),
+
+    # Map
+    curbcut::map_UI(NS(id, id)),
+
+    # Right panel
+    curbcut::right_panel(
+      id = id,
+      curbcut::compare_UI(
+        id = NS(id, id),
+        var_list = curbcut::dropdown_make(vars = " ", compare = TRUE)
+      ),
+      explore_UI(NS(id, id)),
+      dyk_UI(NS(id, id))
+    )
+  )
+}
+
+
+# Server ------------------------------------------------------------------
+
+`housing_server` <- function(id, r) {
+  shiny::moduleServer(id, function(input, output, session) {
+    # Initial reactives
+    rv_zoom_string <- reactiveVal(
+      curbcut::zoom_get_string(
+        zoom = map_zoom,
+        zoom_levels = `canale_mzp`,
+        region = default_region
+      )
+    )
+
+    # Zoom and POI reactives when the view state of the map changes.
+    observeEvent(map_viewstate(), {
+      r[[id]]$zoom(curbcut::zoom_get(zoom = map_viewstate()$zoom))
+      r[[id]]$poi(curbcut::update_poi(
+        id = id, poi = r[[id]]$poi(),
+        map_viewstate = map_viewstate()
+      ))
+    })
+
+    # Map zoom levels change depending on r$region()
+    zoom_levels <-
+      reactive(curbcut::zoom_get_levels(id = id, region = r$region()))
+
+    # Zoom string reactive
+    observe({
+      rv_zoom_string({
+        curbcut::zoom_get_string(
+          zoom = r[[id]]$zoom(),
+          zoom_levels = zoom_levels()$zoom_levels,
+          region = zoom_levels()$region
+        )
+      })
+    })
+
+    # Update selected ID
+    curbcut::update_select_id(id = id, r = r, data = data)
+
+    # Choose tileset
+    tile <- curbcut::zoom_server(
+      id = id,
+      r = r,
+      zoom_string = rv_zoom_string,
+      zoom_levels = zoom_levels
+    )
+
+    # Get df
+    observeEvent(
+      {
+        tile()
+        rv_zoom_string()
+      },
+      {
+        r[[id]]$df(curbcut::update_df(
+          tile = tile(),
+          zoom_string = rv_zoom_string()
+        ))
+      }
+    )
+
+    # Time
+    slider_uni <- curbcut::slider_server(id = id, slider_id = "slu")
+    slider_bi <- curbcut::slider_server(id = id, slider_id = "slb")
+    slider_switch <- curbcut::checkbox_server(id = id, r = r, label = shiny::reactive("Compare dates"))
+    time <- shiny::reactive(if (slider_switch()) slider_bi() else slider_uni())
+
+    # Enable or disable first and second slider
+    shiny::observeEvent(slider_switch(), {
+      shinyjs::toggle(NS(id, "ccslider_slu"), condition = !slider_switch())
+      shinyjs::toggle(NS(id, "ccslider_slb"), condition = slider_switch())
+    })
+
+    # Left variable
+    var_left <- curbcut::picker_server(
+      id = id,
+      r = r,
+      var_list = curbcut::dropdown_make(
+        vars = c(
+          "housing_tenant", "housing_rent", "housing_repairs",
+          "housing_value", "housing_unafford", "housing_unsuit",
+          "housing_stress_renter", "housing_stress_owner", "housing_mobility_one",
+          "housing_mobility_five", "housing_single_detached"
+        ),
+        compare = FALSE
+      ),
+      time = time
+    )
+
+    # Right variable / compare panel
+    var_right <- curbcut::compare_server(
+      id = id,
+      r = r,
+      var_list = curbcut::dropdown_make(
+        vars = c(
+          "inc_median_income", "inc_50", "inc_100",
+          "inc_high", "inc_limat", "iden_imm",
+          "iden_imm_new", "iden_vm", "iden_aboriginal",
+          "trans_car", "trans_walk_or_bike", "trans_transit",
+          "trans_t_15", "trans_t_45", "trans_t_45_plus",
+          "emp_professional", "emp_creative", "family_children",
+          "family_one_person", "lang_french_only", "lang_eng_only",
+          "lang_french_eng", "lang_no_official", "age_0_14",
+          "age_15_64", "age_65_plus", "edu_bachelor_above",
+          "edu_no_degree"
+        ),
+        compare = TRUE
+      ),
+      time = time
+    )
+
+    # The `vars` reactive
+    vars <- reactive(curbcut::vars_build(
+      var_left = var_left(),
+      var_right = var_right(),
+      df = r[[id]]$df()
+    ))
+
+    # Sidebar
+    sidebar_server(id = id, r = r)
+
+    # Sidebar
+    curbcut::sidebar_server(id = id, r = r)
+
+    # Data
+    data <- reactive(curbcut::data_get(
+      vars = vars(),
+      df = r[[id]]$df()
+    ))
+
+    # Data for tile coloring
+    data_colours <- reactive(curbcut::data_get_colours(
+      vars = vars(),
+      region = zoom_levels()$region,
+      zoom_levels = zoom_levels()$zoom_levels
+    ))
+
+    # Year disclaimer
+    year_disclaimer_server(
+      id = id,
+      r = r,
+      data = data,
+      var_left = var_left,
+      var_right = var_right,
+      time = time
+    )
+
+    # Legend
+    curbcut::legend_server(
+      id = id,
+      r = r,
+      vars,
+      data = data,
+      df = r[[id]]$df
+    )
+
+    # Did-you-know panel
+    dyk_server(
+      id = id,
+      r = r,
+      var_left = var_left,
+      var_right = var_right,
+      poi = r[[id]]$poi
+    )
+
+    # Update map in response to variable changes or zooming
+    map_viewstate <- curbcut::map_server(
+      id = id,
+      tile = tile,
+      data_colours = data_colours,
+      select_id = r[[id]]$select_id,
+      zoom_levels = reactive(zoom_levels()$zoom_levels),
+      zoom = r[[id]]$zoom,
+      coords = r[[id]]$coords
+    )
+
+    # Update map labels
+    curbcut::label_server(
+      id = id,
+      tile = tile,
+      zoom = r[[id]]$zoom,
+      zoom_levels = reactive(zoom_levels()$zoom_levels),
+      region = reactive(zoom_levels()$region)
+    )
+
+    # # Explore panel
+    # explore_content <- explore_server(
+    #   id = id,
+    #   r = r,
+    #   data = data,
+    #   geo = reactive(map_zoom_levels()$region),
+    #   var_left = var_left,
+    #   var_right = var_right)
+
+    # Bookmarking
+    curbcut::bookmark_server(
+      id = id,
+      r = r,
+      select_id = r[[id]]$select_id,
+      map_viewstate = map_viewstate
+    )
+
+    # Data transparency and export
+    r[[id]]$export_data <- reactive(data_export(
+      id = id,
+      data = data(),
+      var_left = var_left(),
+      var_right = var_right(),
+      df = r[[id]]$df()
+    ))
+  })
+}

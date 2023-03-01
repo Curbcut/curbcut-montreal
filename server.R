@@ -4,13 +4,13 @@ shinyServer(function(input, output, session) {
 
   ## Page title change, depending on page visited ------------------------------
   
-  curbcut::title_page_update(r = r, parent_session = session, 
+  curbcut::title_page_update(r = r, session = session, 
                              active_page = shiny::reactive(input$cc_page), 
                              site_name = site_name)
   
   ## If on mobile, warning! ----------------------------------------------------
   
-  curbcut::mobile_warning(r = r, parent_session = session)
+  curbcut::mobile_warning(r = r, session = session)
   
   
   ## If crash, personalized error ----------------------------------------------
@@ -25,41 +25,7 @@ shinyServer(function(input, output, session) {
   
   ## Reactive variables --------------------------------------------------------
   
-  r <- reactiveValues(
-    sus_bookmark = reactiveValues(active = FALSE),
-    sus_link = reactiveValues(),
-    news = reactiveValues(select_id = reactiveVal(NA)),
-    lang = reactiveVal("fr"),
-    active_tab = "home",
-    region = reactiveVal(default_region),
-    default_select_ids = reactiveVal(NULL),
-    stories = reactiveValues(select_id = reactiveVal(NA)),
-    place_explorer = reactiveValues(select_id = reactiveVal(NA),
-                                    df = reactiveVal("DA")))
-  
-  
-  for (i in modules$id) {
-    df <- modules$regions[modules$id == i]
-    df <- unlist(df)[[1]]
-    if (is.null(df)) {
-      r[[i]] <- reactiveValues(
-        select_id = reactiveVal(NA),
-        zoom = reactiveVal(curbcut::zoom_get(map_zoom)),
-        coords = reactiveVal(map_loc),
-        poi = reactiveVal(NULL),
-        prev_norm = reactiveVal(FALSE))
-    } else {
-      df <- if (is.null(df)) default_region else df
-      df <- paste(df, names(get(paste0("map_zoom_levels_", df)))[[1]], sep = "_")
-      r[[i]] <- reactiveValues(
-        select_id = reactiveVal(NA),
-        df = reactiveVal(df),
-        zoom = reactiveVal(curbcut::zoom_get(map_zoom)),
-        coords = reactiveVal(map_loc),
-        poi = reactiveVal(NULL),
-        prev_norm = reactiveVal(FALSE))
-    }
-  }
+  r <- r_init(lang_init = "fr", prev_norm = shiny::reactiveVal(FALSE))
 
   
   ## Home page -----------------------------------------------------------------
@@ -157,46 +123,15 @@ shinyServer(function(input, output, session) {
   curbcut::language_server(r = r, parent_session = session)
   
   
-  ## Active tab ----------------------------------------------------------------
-  
-  observeEvent(input$cc_page, r$active_tab <- input$cc_page, 
-               ignoreNULL = FALSE)
-  
-  observeEvent(input$cc_page, {
-    r$last_module <- unique(c(r$current_module, r$last_module))
-    r$current_module <- c(input$cc_page, r$last_module)})
-  
-  r$previous_tabs <- reactive({
-    req(input$cc_page)
-    input$cc_page
-    r$last_module})
-  
-  observeEvent(r$link, {
-    # Switch active tab when link is opened
-    updateTabsetPanel(session, "cc_page", selected = r$link)
-    # Turn off the link
-    r$link <- NULL
-  }, ignoreInit = TRUE, ignoreNULL = TRUE)
-  
-  
   ## Bookmark ------------------------------------------------------------------
   
-  curbcut::use_bookmark(r = r, parent_session = session)
+  curbcut::use_bookmark(r = r, session = session)
   
   
   ## Modules -------------------------------------------------------------------
   
-  active_mod_server <- function(active_tab = input$cc_page) {
-    do.call(paste0(active_tab, "_server"), list(active_tab, r = r))
-  }
-
-  observeEvent(input$cc_page, {
-
-    # Trigger the module server function only if it hasn't been opened already
-    if (!input$cc_page %in% r$previous_tabs()) active_mod_server()
-    
-    updateQueryString("?")
-  }, ignoreInit = FALSE)
+  curbcut::trigger_pages_server(shiny::reactive(input$cc_page), r = r,
+                                r_folder_envir = r_folder_envir)
 
 
   ## Advanced options ----------------------------------------------------------
@@ -267,11 +202,6 @@ shinyServer(function(input, output, session) {
   
   ## Heartbeat function to keep app alive --------------------------------------
   
-  timeout_start <- eventReactive(reactiveValuesToList(input), Sys.time())
-  
-  observe({
-    rerun <- timeout_start() + 7200 > Sys.time()
-    if (rerun) invalidateLater(10000)
-  })
+  curbcut::heartbeat(input)
   
 })
