@@ -187,21 +187,35 @@
 .tab-content .dropdown-menu,
 .tab-content .dropdown-menu.open {
   border: 0.5px solid rgba(0, 0, 0, 0.05);
-  overflow-x: hidden;
+  /* overflow-x: hidden; */
   padding-top: 0px;
   padding-bottom: 0px;
   box-shadow: var(--box-shadow-md);
   min-width: unset !important;
   width: fit-content;
-  position: fixed;
-  top: 0px;
-  right: 0px;
 }
+
+/* Giovanni - fixing dropdown menu postioning issue */
+.tab-content .dropdown-menu,
+.tab-content .dropdown-menu.open {
+  position: absolute;
+  top: 50%;
+  right: 50%;
+  background-color:rgba(229, 232, 241,.8);  /*background transparency */
+  z-index: 2000;
+}
+
+.tab-content .dropdown-menu.open:hover {
+  overflow-y:scroll;
+}
+
+
  /* FOR M_AUTO_VARS, FOR SOME REASON THEY ARE BROKEN WITH THOSE ATTRIBUTES */
 #staying_widgets .dropdown-menu.open {
   position: absolute !important;
   top: auto !important;
   right: auto !important;
+  z-index:1000;
 }
 
 #auto_additional_drops .dropdown-menu.open {
