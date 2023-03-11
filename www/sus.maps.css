@@ -85,11 +85,13 @@
   padding-bottom: var(--padding-v-md);
 }
 
+
 .sus-map-panel {
   position: absolute;
   /* overflow: hidden; */
   overflow: scroll;
   overflow-x: hidden;
+  overflow-y: hidden;
   top: var(--padding-v-md);
   right: var(--padding-h-md);
   min-width: var(--w-panel);
@@ -97,11 +99,25 @@
   width: 20vw;
   min-height: min-content;
   max-height: calc(100vh - var(--h-navbar) - 30px);
-  height: fit-content;
+  height:100px;
   border: 0.5px solid rgba(0, 0, 0, 0.05);
   box-shadow: var(--box-shadow-md);
   transition: margin-right 0.5s ease-in-out;
   border: 0.4px solid rgba(0, 0, 0, 0.05);
+  transition: width 2s ease-in-out, height 2s ease-in-out;
+  opacity:90%;
+}
+
+/* Giovanni - Resizeable right panel */
+.sus-map-panel:hover {
+  width:300px;
+  right: var(--padding-h-md);
+  min-width: 100px;   
+  min-height: min-content;                                  
+  opacity: 100%;              
+  height: fit-content;                             
+  transition: width 2s ease-in-out, height 2s ease-in-out;
+  overflow-y: auto;
 }
 
 @media (max-width: 650px) {
@@ -151,6 +167,7 @@
   padding-top: var(--padding-v-md);
   padding-bottom: var(--padding-v-md);
 }
+
 
 .sus-map-panel p, .sus-map-sidebar p {
   font-size: 1.45rem;
