@@ -205,6 +205,17 @@
   z-index: 2000;
 }
 
+#cc-right-panel{      /* test */
+    right: 0;
+  left: auto;
+  max-width: fit-content; /* adjust as necessary */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  z-index:9999;
+  
+}
+
 .tab-content .dropdown-menu.open:hover {
   overflow-y:scroll;
 }
