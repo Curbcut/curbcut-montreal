@@ -20,13 +20,14 @@ default_region <- modules$regions[modules$id == "housing"][[1]][1]
         "housing_stress_renter", "housing_stress_owner", "housing_mobility_one",
         "housing_mobility_five", "housing_single_detached"
       )),
-      curbcut::slider_UI(id = NS(id, id), slider_id = "slu", min = 1996, max = 2016),
-      curbcut::slider_UI(id = NS(id, id), slider_id = "slb", min = 1996, max = 2016, label = curbcut::cc_t("Select two years"), value = c(2006, 2016)),
+      curbcut::slider_UI(id = NS(id, id), slider_id = "slu", min = 1996, max = 2021),
+      curbcut::slider_UI(id = NS(id, id), slider_id = "slb", min = 1996, max = 2021, 
+                         label = curbcut::cc_t("Select two years"), value = c(2016, 2021)),
       curbcut::checkbox_UI(id = NS(id, id), label = curbcut::cc_t("Compare dates"), value = FALSE),
       year_disclaimer_UI(NS(id, id)),
       bottom = shiny::tagList(
         curbcut::legend_UI(shiny::NS(id, id)),
-        curbcut::zoom_UI(shiny::NS(id, id), `canale_mzp`)
+        curbcut::zoom_UI(shiny::NS(id, id), `housing_mzp`)
       )
     ),
 
@@ -40,7 +41,7 @@ default_region <- modules$regions[modules$id == "housing"][[1]][1]
         id = NS(id, id),
         var_list = curbcut::dropdown_make(vars = " ", compare = TRUE)
       ),
-      explore_UI(NS(id, id)),
+      curbcut::explore_UI(NS(id, id)),
       dyk_UI(NS(id, id))
     )
   )
@@ -55,7 +56,7 @@ default_region <- modules$regions[modules$id == "housing"][[1]][1]
     rv_zoom_string <- reactiveVal(
       curbcut::zoom_get_string(
         zoom = map_zoom,
-        zoom_levels = `canale_mzp`,
+        zoom_levels = `housing_mzp`,
         region = default_region
       )
     )
@@ -233,15 +234,16 @@ default_region <- modules$regions[modules$id == "housing"][[1]][1]
       region = reactive(zoom_levels()$region)
     )
 
-    # # Explore panel
-    # explore_content <- explore_server(
-    #   id = id,
-    #   r = r,
-    #   data = data,
-    #   geo = reactive(map_zoom_levels()$region),
-    #   var_left = var_left,
-    #   var_right = var_right)
-
+    # Explore panel
+    curbcut::explore_server(
+      id = id,
+      r = r,
+      data = data,
+      region = reactive(zoom_levels()$region),
+      vars = vars,
+      df = r[[id]]$df,
+      select_id = r[[id]]$select_id)
+    
     # Bookmarking
     curbcut::bookmark_server(
       id = id,
