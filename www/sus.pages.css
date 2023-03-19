@@ -47,6 +47,10 @@
   margin-right: auto;
 }
 
+.sus-page-content p{
+  line-height: 2em;
+}
+
 .sus-page-content-section {
   max-width: 900px;
   margin-top: 0px;

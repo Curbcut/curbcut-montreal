@@ -278,3 +278,18 @@ _::-webkit-full-page-media, _:future, :root .tab-content .dropdown-menu, .tab-co
 button {
   outline: none !important;
 }
+
+/* temporary fix for the drowdown menu */
+.bs3.open {
+  position: fixed;
+  top: 5vh;
+  left:0;
+  z-index: 9999;
+}
+
+.bs3.open *{
+  background-color: #d8dfee;
+  color:#2e3648;
+  z-Index:99999;
+  padding:.09rem;
+}

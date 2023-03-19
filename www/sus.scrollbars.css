@@ -1,7 +1,7 @@
 /* CHANGE SCROLLBARS */
 
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 10px;
   background-color: #f5f5f5;
 }
 
@@ -27,6 +27,5 @@
 
 ::-webkit-scrollbar-thumb:active {
   background-color: #6c83b5;
-        width: 30px;
+  width: 30px;
 }
-

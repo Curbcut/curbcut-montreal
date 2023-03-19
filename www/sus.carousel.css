@@ -22,7 +22,7 @@
 .sus-carousel-slide {
   display: none;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content:flex-start;
 }
 
 @media (max-width: 750px) {

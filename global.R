@@ -1,7 +1,7 @@
 #### SUS GLOBALS ###############################################################
 
 
-# Platform dependant ------------------------------------------------------
+# Platform dependent ------------------------------------------------------
 
 site_name <- "Curbcut Montréal"
 site_url <- "https://montreal.curbcut.ca"

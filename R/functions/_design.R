@@ -297,7 +297,7 @@ styler <- '
   }
   
   .dropdown-menu > .inner.open {
-  max-height:50vh !important;
+  max-height:80vh !important;
   }
 
   .navbar-nav>li>.dropdown-menu {

@@ -144,10 +144,10 @@ h1, .h1 {
 }
 
 h2, .h2 {
-  color: var(--c-h2);
+  color: var(--c-h2) !important;
   font-family: var(--ff-h2);
   font-size: 4rem;
-  margin-bottom: 0.75em;
+  margin-bottom: 0.35em;
 }
 
 h3, .h3 {

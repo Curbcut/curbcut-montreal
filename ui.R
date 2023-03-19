@@ -18,8 +18,10 @@ ui <- function(request) {
     tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "stevens.greenblue.css")),
     tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "sus.palette.css")),
     tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "sus.css")),
+    tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "sus.tooltip.css")),
     tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "sus.floatingcontrols.css")), #ADDED STYLING FOR FLOATING CONTROLS #
     tags$head(tags$link(rel = "stylesheet", type = "text/css",href = "sus.scrollbars.css")),        #SCROLL BARS STYLING
+    tags$head(tags$link(rel = "stylesheet", type = "text/css",href = "sus.modal-help.css")),        #Help- modal styling
     tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "sus.icons.css")),
     tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "sus.navbar.css")),
     tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "sus.footer.css")),
@@ -37,6 +39,8 @@ ui <- function(request) {
     tags$head(tags$link(rel = "stylesheet", type = "text/css", href = paste0("https://fonts.googleapis.com/icon?", "family=Material+Icons"))),
     tags$head(tags$script(src = "sus.js")),
     tags$head(tags$script(src = "shinybrowser.js")),
+    tags$head(tags$script(src = "modal-help.js")),
+    tags$head(tags$script(src = "tooltip.js")),
     tags$head(tags$script(src = "movemenu")),
     # Cookie js script
     curbcut::use_curbcut_cookie(),
@@ -128,15 +132,15 @@ ui <- function(request) {
         <div class="hidden-icons">
           <div class="icon help">
             <img class="icon" src="magnifying-glass-icon.png">
-            <span class="help-text">Map</span>
+            <span class="help-text" style="color:white">Explore</span>
           </div>
           <div class="icon help">
             <img class="icon" src="map-icon.png">
-            <span class="help-text">Data</span>
+            <span class="help-text" style="color:white">Map</span>
           </div>
           <div class="icon help">
             <img class="icon" src="export-icon.png">
-            <span class="help-text">Export</span>
+            <span class="help-text" style="color:white">Export data</span>
           </div>
         </div>
       </div>

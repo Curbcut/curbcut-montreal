@@ -1,0 +1,49 @@
+#housing-housing-legend_div {
+    position: relative;
+  }
+  
+  #housing-housing-legend_div:hover::before {
+    content: attr(data-tooltip);
+    display: block;
+    position: absolute;
+    top: calc(100% + 10px);
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 5px 10px;
+    border-radius: 5px;
+    background-color: #ffffff;
+    /* color: #1087ff; */
+    /* border: 2px solid #1087ff; */
+    font-size: 14px;
+    line-height: 1.2;
+    z-index: 999;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease-in-out;
+  }
+  
+  #housing-housing-legend_div:hover::after {
+    content: "This is the legend explaination. Lorem ipsum lorem ipsum lorem ipsum";
+    display: block;
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    line-height: 1.2;
+    background-color: #fff;
+    color: #0d47a1;
+    border: 1px solid #0d47a1;
+    z-index: 999;
+    transition: all 0.3s ease-in-out;
+  }
+  
+  
+  #housing-housing-legend_div:hover::before,
+  #housing-housing-legend_div:hover::after {
+    opacity: 1;
+    visibility: visible;
+  }
+  

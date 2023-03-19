@@ -300,48 +300,69 @@ window.addEventListener('load', (evt) => {
       }
     }
   };
-
-  // Create an observer instance linked to the callback function
-  const activeTabObserver = new MutationObserver(activeTabCallback);
-
-  // Start observing the target node for configured mutations
-  activeTabObserver.observe(targetNode, config);
-
-  const dropdowns = document.querySelectorAll('.tab-content .dropdown');
-
-  for(var i = 0; i < dropdowns.length; i++) {
+  const configDrop = { attributes: false, childList: true, subtree: true };
+  const targetNodeDrop = document.querySelector('.dropdown-menu.open');
+  
+  const dropdownObserver = new MutationObserver(function (mutationsList, observer) {
+    for (let mutation of mutationsList) {
+      if (mutation.type === 'childList') {
+        const dropdown = document.querySelector('.btn.dropdown-toggle .btn-default');
+        if (dropdown.getAttribute('aria-expanded') == 'true') {
+          const menu = dropdown.querySelector('.dropdown-menu.open');
+          menu.style.backgroundColor = "red";
+          if (menu) {
+            menu.style.left = 'auto';
+            menu.style.right = '0';
+          }
+        }
+      }
+    }
+  });
+  
+  dropdownObserver.observe(targetNodeDrop, configDrop);
+  
+  const dropdowns = document.querySelectorAll('.dropdown .bootstrap-select .form-control .shinyjs-resettable .shiny-bound-input .bs3 .open');
+  
+  for (let i = 0; i < dropdowns.length; i++) {
     const dropdown = dropdowns[i];
+    console.log(dropdown);
     const menu = dropdown.querySelector('.dropdown-menu');
-    dropdowns[i].addEventListener('click', () => {
-      const opening = !dropdown.classList.contains('open');
-      if (opening) {
+    dropdown.addEventListener('click', (event) => {
+      console.log(event.target.getAttribute('aria-expanded'));
+      if (event.target.getAttribute('aria-expanded') === 'true') {
         const parent = menu.parentElement;
         const rect = parent.getBoundingClientRect();
         console.log(rect);
         const x = (rect.left + rect.right) / 2;
         const y = (rect.bottom + rect.top) / 2;
         var top = undefined;
-        var left  = undefined;
+        var left = undefined;
         var bottom = undefined;
         var right = undefined;
         if (x > window.innerWidth / 2) {
           left = 'unset';
-          right = `${Math.ceil( window.innerWidth - rect.right )}px`;
+          right = `${Math.ceil(window.innerWidth - rect.right)}px`;
+          debugger;
         } else {
-          left = `${Math.ceil( rect.left )}px`;
+          left = `${Math.ceil(rect.left)}px`;
           right = 'unset';
+          debugger;
         }
         if (y > window.innerHeight / 2) {
           top = 'unset';
-          bottom = `${Math.ceil( window.innerHeight - rect.top )}px`;
+          bottom = `${Math.ceil(window.innerHeight - rect.top)}px`;
+          debugger;
         } else {
-          top = `${Math.ceil( rect.bottom )}px`;
+          top = `${Math.ceil(rect.bottom)}px`;
           bottom = 'unset';
+          debugger;
         }
-        menu.style = `top: ${top}; left: ${left}; bottom: ${bottom}; right: ${right};`;
+        menu.style.cssText = `top: ${top}; left: ${left}; bottom: ${bottom}; right: ${right}; position: fixed;`;
       }
     });
   }
+  
+  
 
   // const scrolls = document.querySelectorAll('.sus-scroll');
 

@@ -3,79 +3,66 @@
 /* FLOATING PANEL */
 
 .floating-panel {
-position: fixed;
-bottom: 5vw;
-left: 50%;
-transform: translate(-50%, -50%); */
-width: 50px;
-height: 50px;
-border-radius: 25px;
-background-color: rgba(108, 131, 181, 1);
-transition: all 0.3s ease-in-out;
-z-index: 9999;
-color: 0;
-font-size: 2rem;
-padding: 0;
-margin: 0;
+  position: absolute;
+  bottom: .5vw;
+  left: 50%;
+  transform: translateX(-50%);
+  border-radius: 25px;
+  background-color: rgba(108, 131, 181, .3);
+  border:rgba(108, 131, 181, 1);
+  transition: all 0.3s ease-in-out; /* added transition */
+  z-index: 9999;
+  color: 0;
+  font-size: 2rem;
+  padding: 0;
+  margin: 0;
+  width: 150px;
+  height: 50px;
+  border-radius: 25px;
+  opacity: 1;
+  display: flex;
+  flex-wrap: nowrap;
+  background-color: rgba(108, 131, 181, 0.8);
+  justify-content: space-evenly;
+  align-items: flex-end;
 }
 
-.floating-panel:hover {
-width: 250px;
-height: 50px;
-border-radius: 25px;
-opacity: 1;
-display: flex;
-flex-wrap: nowrap;
-background-color: rgba(108, 131, 181, 0.5);
-}
+.floating-panel:hover{
+  background-color: rgba(108, 131, 181, 1);
+  border:rgba(108, 131, 181, 1);
 
-.floating-panel:hover .hidden-icons {
-display: flex;
-flex-wrap: wrap;
 }
 
 /* ICONS */
-
 .icon {
-position: relative;
 display: inline-flex;
-align-items: center;
-justify-content: center;
 color: #ffffff;
 font-size: 24px;
-width: 2rem;
-height: 2rem;
+width: 1.5rem;
+height: 1.5rem;
 color: white;
+}
+
+.icon:hover{
+  width: 2.5rem;
+  height: 2.5rem;
+  transition: ease-in-out .2s;
 }
 
 .icon:hover::before {
 content: attr(data-tooltip);
 display: block;
 position: absolute;
-bottom: calc(100% + 8px);
+bottom: calc(100% + 10px);
 left: 50%;
 transform: translateX(-50%);
 padding: 4px 8px;
 border-radius: 4px;
 font-size: 12px;
 line-height: 1.2;
-background-color: rgba(0, 0, 0, 0.8);
+background-color: rgba(255, 255, 255, 0);
 color: #fff;
 z-index: 999;
-}
-
-.hidden-icons {
-display: none;
-position: absolute;
-top: 50%;
-left: 50%;
-transform: translate(-50%, -50%);
-}
-
-.hidden-icons .icon {
-display: block;
-margin: 10px;
-transition: all ease-in 0.3s;
 }
 
 .icon.help {
@@ -103,15 +90,21 @@ transform: translateX(-50%);
 
 .icon.help:hover .help-text {
 visibility: visible;
-color: black;
+color: #323d57;
 }
 
 .icon-container {
 display: flex;
 flex-direction: row;
 font-size: 1rem
+}
 
 .icon{
   width:30px;
   height:30px;
+}
+
+.help-text{
+  color:white;
+  text-shadow: 0px 2px black;
 }
