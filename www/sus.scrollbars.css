@@ -1,0 +1,32 @@
+/* CHANGE SCROLLBARS */
+
+::-webkit-scrollbar {
+  width: 8px;
+  background-color: #f5f5f5;
+}
+
+/* Change the color of the scrollbar thumb */
+::-webkit-scrollbar-thumb {
+  background-color: rbg(135, 147, 176);
+}
+
+/* Hide the scrollbar when not hovered */
+::-webkit-scrollbar-track {
+  background-color: #f5f5f5;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #4a5c83;
+
+}
+
+::-webkit-scrollbar-track:hover {
+  background-color: #dadfec;
+
+}
+
+::-webkit-scrollbar-thumb:active {
+  background-color: #6c83b5;
+        width: 30px;
+}
+

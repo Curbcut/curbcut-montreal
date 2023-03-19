@@ -1,0 +1,117 @@
+/* CREATED 2023-03-18 */
+
+/* FLOATING PANEL */
+
+.floating-panel {
+position: absolute;
+top: 95vw;
+left: 50%;
+transform: translate(-50%, -50%); */
+width: 50px;
+height: 50px;
+border-radius: 25px;
+background-color: rgba(108, 131, 181, 0.3);
+transition: all 0.3s ease-in-out;
+z-index: 9999;
+color: 0;
+font-size: 2rem;
+padding: 0;
+margin: 0;
+}
+
+.floating-panel:hover {
+width: 250px;
+height: 50px;
+border-radius: 25px;
+opacity: 1;
+display: flex;
+flex-wrap: nowrap;
+background-color: rgba(108, 131, 181, 0.5);
+}
+
+.floating-panel:hover .hidden-icons {
+display: flex;
+flex-wrap: wrap;
+}
+
+/* ICONS */
+
+.icon {
+position: relative;
+display: inline-flex;
+align-items: center;
+justify-content: center;
+color: #ffffff;
+font-size: 24px;
+width: 2rem;
+height: 2rem;
+color: white;
+}
+
+.icon:hover::before {
+content: attr(data-tooltip);
+display: block;
+position: absolute;
+bottom: calc(100% + 8px);
+left: 50%;
+transform: translateX(-50%);
+padding: 4px 8px;
+border-radius: 4px;
+font-size: 12px;
+line-height: 1.2;
+background-color: rgba(0, 0, 0, 0.8);
+color: #fff;
+z-index: 999;
+}
+
+.hidden-icons {
+display: none;
+position: absolute;
+top: 50%;
+left: 50%;
+transform: translate(-50%, -50%);
+}
+
+.hidden-icons .icon {
+display: block;
+margin: 10px;
+transition: all ease-in 0.3s;
+}
+
+.icon.help {
+position: relative;
+}
+
+.icon.help .help-text {
+visibility: hidden;
+display: inline-flex;
+align-items: center;
+justify-content: center;
+font-size: 24px;
+color: white;
+tooltip: "";
+position: absolute;
+color: #fff;
+text-align: center;
+border-radius: 6px;
+padding: 5px;
+z-index: 1;
+bottom: 3rem;
+left: 50%;
+transform: translateX(-50%);
+}
+
+.icon.help:hover .help-text {
+visibility: visible;
+color: black;
+}
+
+.icon-container {
+display: flex;
+flex-direction: row;
+font-size: 1rem
+
+.icon{
+  width:30px;
+  height:30px;
+}
