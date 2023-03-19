@@ -33,6 +33,7 @@
 }
 
 .sus-map-sidebar {
+  margin-right:1rem;
   background: var(--c-primary-complement);
   min-width: var(--w-sidebar);
   max-width: var(--w-sidebar);
@@ -201,30 +202,6 @@
   font-weight: unset;
 }
 
-/* preoblematic */
-.my-dropdown.dropdown.bootstrap-select.form-control.shinyjs-resettable.shiny-bound-input.bs3.open {
-  display:fixed !important;
-  
-  left:-200px;
-}
-/*
-.dropdown-menu inner:hover{
-  display:absolute;
-  right:+300px;
-  transition: ease-in-out;
-}
-
-.dropdown-menu>open>dropdown-menu-right{
-  display:absolute;
-  height: 100vw !important; 
-}
- .dropdown-menu inner *{
-  display:absolute;
-  height: 100vw !important; 
-}
-
-/* TEST **/
-
 .dropdown.bootstrap-select.form-control.shinyjs-resettable.shiny-bound-input.bs3.open .dropdown-toggle {
   background-color: #fff;
   color: #000;
@@ -234,17 +211,7 @@
        width:200px;;
 }
 
-.dropdown.bootstrap-select.form-control.shinyjs-resettable.shiny-bound-input.bs3.open .dropdown-menu {
-  background-color: #fff;
-  color: #000;
-  border: 1px solid #000;
-  top:10vh;
-  left: 20vw;
-  z-index:9999;
-      position: fixed;
-      width:200px;
-}
-
+/*
 .dropdown-menu-right{
     background-color: #fff;
   color: #000;
@@ -255,23 +222,7 @@
       position: fixed;
       width:200px;
 }
-/*
-.dropdown.bootstrap-select.form-control.shinyjs-resettable.shiny-bound-input.bs3.open .dropdown-toggle .filter-option {
-  color: #000;
-    z-index:9999;
-      left: -100px;
-            width:20vw;
-}
-
-
-.dropdown.bootstrap-select.form-control.shinyjs-resettable.shiny-bound-input.bs3.open .dropdown-menu li a {
-  color: #000;
-    z-index:9999;
-}
-
- END TEST */
-
-
+*/
 
 .mapboxgl-map .mapboxgl-ctrl a {
   font-family: var(--ff-body);

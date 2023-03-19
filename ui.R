@@ -15,26 +15,27 @@ ui <- function(request) {
     
     tags$head(tags$link(rel = "icon", href = "favicon.ico")),    tags$head(tags$link(rel = "stylesheet", type = "text/css", 
                         href = "bootstrap.min.css")),
-    tags$head(tags$link(rel = "stylesheet", type = "text/css",                         href = "stevens.greenblue.css")),
-    tags$head(tags$link(rel = "stylesheet", type = "text/css",                         href = "sus.palette.css")),
-    
-    tags$head(tags$link(rel = "stylesheet", type = "text/css",                         href = "sus.css")),
-    
-    tags$head(tags$link(rel = "stylesheet", type = "text/css",                         href = "sus.icons.css")),
-    tags$head(tags$link(rel = "stylesheet", type = "text/css",                         href = "sus.navbar.css")),
-    tags$head(tags$link(rel = "stylesheet", type = "text/css",                         href = "sus.footer.css")),
-    tags$head(tags$link(rel = "stylesheet", type = "text/css",                         href = "sus.button.css")),
-    tags$head(tags$link(rel = "stylesheet", type = "text/css",                        href = "sus.carousel.css")),
-    tags$head(tags$link(rel = "stylesheet", type = "text/css",                        href = "sus.pages.css")),
-    tags$head(tags$link(rel = "stylesheet", type = "text/css",                        href = "sus.banner.css")),
-    tags$head(tags$link(rel = "stylesheet", type = "text/css",                        href = "sus.linklist.css")),
-    tags$head(tags$link(rel = "stylesheet", type = "text/css",                        href = "sus.home.css")),
-    tags$head(tags$link(rel = "stylesheet", type = "text/css",                        href = "sus.maps.css")),
-    tags$head(tags$link(rel = "stylesheet", type = "text/css",                        href = "sus.authors.css")),
-    tags$head(tags$link(rel = "stylesheet", type = "text/css",                        href = "sus.stories.css")),
-    tags$head(tags$link(rel = "stylesheet", type = "text/css",                        href = "sus.news.css")),
-    tags$head(tags$link(rel = "stylesheet", type = "text/css",                        href = "sus.place_explorer.css")),
-    tags$head(tags$link(rel = "stylesheet", type = "text/css",                          href = paste0("https://fonts.googleapis.com/icon?",                  "family=Material+Icons"))),    tags$head(tags$script(src = "sus.js")),
+    tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "stevens.greenblue.css")),
+    tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "sus.palette.css")),
+    tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "sus.css")),
+    tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "sus.floatingcontrols.css")), #ADDED STYLING FOR FLOATING CONTROLS #
+    tags$head(tags$link(rel = "stylesheet", type = "text/css",href = "sus.scrollbars.css")),        #SCROLL BARS STYLING
+    tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "sus.icons.css")),
+    tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "sus.navbar.css")),
+    tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "sus.footer.css")),
+    tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "sus.button.css")),
+    tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "sus.carousel.css")),
+    tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "sus.pages.css")),
+    tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "sus.banner.css")),
+    tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "sus.linklist.css")),
+    tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "sus.home.css")),
+    tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "sus.maps.css")),
+    tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "sus.authors.css")),
+    tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "sus.stories.css")),
+    tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "sus.news.css")),
+    tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "sus.place_explorer.css")),
+    tags$head(tags$link(rel = "stylesheet", type = "text/css", href = paste0("https://fonts.googleapis.com/icon?", "family=Material+Icons"))),
+    tags$head(tags$script(src = "sus.js")),
     tags$head(tags$script(src = "shinybrowser.js")),
     tags$head(tags$script(src = "movemenu")),
     # Cookie js script
@@ -121,6 +122,24 @@ ui <- function(request) {
                curbcut::settings_UI()
              )
         ))
-    )
+    ),
+    # Floating controls Giovanni
+    shiny::HTML('<div class="floating-panel">
+        <div class="hidden-icons">
+          <div class="icon help">
+            <img class="icon" src="magnifying-glass-icon.png">
+            <span class="help-text">Map</span>
+          </div>
+          <div class="icon help">
+            <img class="icon" src="map-icon.png">
+            <span class="help-text">Data</span>
+          </div>
+          <div class="icon help">
+            <img class="icon" src="export-icon.png">
+            <span class="help-text">Export</span>
+          </div>
+        </div>
+      </div>
+     ')
   )
 }

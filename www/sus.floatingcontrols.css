@@ -3,14 +3,14 @@
 /* FLOATING PANEL */
 
 .floating-panel {
-position: absolute;
-top: 95vw;
+position: fixed;
+bottom: 5vw;
 left: 50%;
 transform: translate(-50%, -50%); */
 width: 50px;
 height: 50px;
 border-radius: 25px;
-background-color: rgba(108, 131, 181, 0.3);
+background-color: rgba(108, 131, 181, 1);
 transition: all 0.3s ease-in-out;
 z-index: 9999;
 color: 0;
