@@ -125,13 +125,17 @@ build_and_append_climate_risk <- function(scales_variables_modules, crs) {
 
   # Get the region values ---------------------------------------------------
   
-  # `vars` must not contain the dates
+  parent_strings <- list(climate_drought = "households",
+                climate_flood = "households",
+                climate_heavy_rain = "households",
+                climate_destructive_storms = "households",
+                climate_heat_wave = "households")
   
   region_vals <- 
     variables_get_region_vals(scales = data_interpolated$scales,
-                              vars = gsub("_\\d{4}$", "", vars),
+                              vars = gsub("_\\d{4}$", "", avg_vars),
                               types = types,
-                              parent_strings = "households",
+                              parent_strings = parent_strings,
                               breaks = with_breaks$q5_breaks_table,
                               time_regex = "_\\d{4}$")
   
