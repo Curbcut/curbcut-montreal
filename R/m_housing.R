@@ -21,8 +21,7 @@ default_region <- modules$regions[modules$id == "housing"][[1]][1]
         "housing_mobility_five", "housing_single_detached"
       )),
       curbcut::slider_UI(id = NS(id, id), slider_id = "slu", min = 1996, max = 2021),
-      curbcut::slider_UI(id = NS(id, id), slider_id = "slb", min = 1996, max = 2021, 
-                         label = curbcut::cc_t("Select two years"), value = c(2016, 2021)),
+      curbcut::slider_UI(id = NS(id, id), slider_id = "slb", min = 1996, max = 2021, label = curbcut::cc_t("Select two years"), value = c(2006, 2021)),
       curbcut::checkbox_UI(id = NS(id, id), label = curbcut::cc_t("Compare dates"), value = FALSE),
       year_disclaimer_UI(NS(id, id)),
       bottom = shiny::tagList(
@@ -41,7 +40,7 @@ default_region <- modules$regions[modules$id == "housing"][[1]][1]
         id = NS(id, id),
         var_list = curbcut::dropdown_make(vars = " ", compare = TRUE)
       ),
-      curbcut::explore_UI(NS(id, id)),
+      explore_UI(NS(id, id)),
       dyk_UI(NS(id, id))
     )
   )
@@ -149,11 +148,10 @@ default_region <- modules$regions[modules$id == "housing"][[1]][1]
           "iden_imm_new", "iden_vm", "iden_aboriginal",
           "trans_car", "trans_walk_or_bike", "trans_transit",
           "trans_t_15", "trans_t_45", "trans_t_45_plus",
-          "emp_professional", "emp_creative", "family_children",
-          "family_one_person", "lang_french_only", "lang_eng_only",
-          "lang_french_eng", "lang_no_official", "age_0_14",
-          "age_15_64", "age_65_plus", "edu_bachelor_above",
-          "edu_no_degree"
+          "family_children", "family_one_person", "lang_french_only",
+          "lang_eng_only", "lang_french_eng", "lang_no_official",
+          "age_0_14", "age_15_64", "age_65_plus",
+          "edu_bachelor_above", "edu_no_degree"
         ),
         compare = TRUE
       ),
@@ -234,16 +232,15 @@ default_region <- modules$regions[modules$id == "housing"][[1]][1]
       region = reactive(zoom_levels()$region)
     )
 
-    # Explore panel
-    curbcut::explore_server(
-      id = id,
-      r = r,
-      data = data,
-      region = reactive(zoom_levels()$region),
-      vars = vars,
-      df = r[[id]]$df,
-      select_id = r[[id]]$select_id)
-    
+    # # Explore panel
+    # explore_content <- explore_server(
+    #   id = id,
+    #   r = r,
+    #   data = data,
+    #   geo = reactive(map_zoom_levels()$region),
+    #   var_left = var_left,
+    #   var_right = var_right)
+
     # Bookmarking
     curbcut::bookmark_server(
       id = id,

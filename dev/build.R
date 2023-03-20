@@ -17,7 +17,7 @@ invisible(lapply(list.files("dev/data_import", full.names = TRUE), source))
 all_tables <-
   list("CMA" = c("CSD", "CT", "DA", "building"),
        "island" = c("CSD", "CT", "DA", "building"),
-       "city" = c("CSD", "CT", "DA", "DB", "building"),
+       "city" = c("CSD", "CT", "DA", "building"),
        "centraide" = c("centraide", "CT", "DA", "building"),
        "cmhc" = c("cmhczone"),
        "grid" = c("grid"))
@@ -52,6 +52,18 @@ regions_dictionary <-
                    centraide = "in the Centraide of Greater Montreal territory",
                    cmhc = "in the Montreal region",
                    grid = "on the island of Montreal"),
+    to_compare_determ = c(CMA = "the Montreal region",
+                   island = "the island of Montreal",
+                   city = "the City of Montreal",
+                   centraide = "the Centraide of Greater Montreal territory",
+                   cmhc = "the Montreal region",
+                   grid = "the island of Montreal"),
+    to_compare_short = c(CMA = "in the region",
+                   island = "on the island",
+                   city = "in the City",
+                   centraide = "in the territory",
+                   cmhc = "in the region",
+                   grid = "on the island"),
     pickable = c(CMA = TRUE,
                  island = TRUE,
                  city = TRUE,
@@ -66,10 +78,11 @@ regions_dictionary <-
 census_scales <-
   build_census_scales(master_polygon = base_polygons$master_polygon,
                       regions = base_polygons$province_cancensus_code,
-                      levels = c("CSD", "CT", "DA", "DB"),
+                      levels = c("CSD", "CT", "DA"),
                       crs = crs)
 # Switch the City of Montreal for the boroughs
 boroughs <- sf::st_read("dev/data/geometry/arrondissements_mtl.shp")
+boroughs$type <- "Borough"
 census_scales$CSD <- split_scale(destination = census_scales$CSD,
                                  cutting_layer = boroughs,
                                  DA_table = census_scales$DA,
@@ -98,18 +111,13 @@ scales_dictionary[1, ] <- list(scale = "CSD",
 
 
 ### Build building scale
-# # # From MySQL
-# # building <- cc.data::db_read_long_table(table = "buildings",
-# #                                          DA_ID = census_scales$DA$ID)
-# # qs::qsave(building, file = "dev/data/built/building.qs")
-# # # From Local
+# # From MySQL
+# building <- cc.data::db_read_long_table(table = "buildings",
+#                                          DA_ID = census_scales$DA$ID)
+# qs::qsave(building, file = "dev/data/built/building.qs")
+# # From Local
 # building <- qs::qread("dev/data/canada_buildings.qs")
-# building_ids <- cc.data::db_read_data(table = "buildings_DA_dict",
-#                                       column_to_select = "DA_ID",
-#                                       IDs = census_scales$DA$ID)
-# building_ids <-
-#   unlist(sapply(building_ids$IDs, jsonlite::fromJSON, USE.NAMES = FALSE))
-# building <- building[building$ID %in% building_ids, ]
+# building <- building[building$DA_ID %in% census_scales$DA$ID, ]
 # building <- qs::qsave(building, "dev/data/built/building.qs")
 building <- qs::qread("dev/data/built/building.qs")
 
@@ -136,7 +144,7 @@ scales_dictionary <-
                              sing = "CMHC zone",
                              plur = "CMHC zones",
                              slider_title = "CMHC zone",
-                             place_heading = "CMHC zone of {name}",
+                             place_heading = "{name}",
                              place_name = "{name}")
 
 ### Build Centraide scale
@@ -227,10 +235,12 @@ future::plan(list(future::tweak(future::multisession,
 scales_variables_modules <-
   ba_census_data(scales_variables_modules = scales_variables_modules,
                  region_DA_IDs = census_scales$DA$ID,
-                 # census_years = cc.data::census_years[1:5],
                  crs = crs,
                  housing_module = TRUE)
 census_variables <- get_census_vectors_details()
+
+save.image()
+
 
 future::plan(future::multisession())
 
@@ -326,7 +336,7 @@ qs::qload("dev/data/built/scales_variables_modules.qsm")
 
 # Map zoom levels ---------------------------------------------------------
 
-stop("MISSING mtl_city_auto_zoom. why?")
+# stop("MISSING mtl_city_auto_zoom. why?")
 # map_zoom_levels <- map_zoom_levels_create_all(all_tables = all_tables)
 # 
 # map_zoom_levels <-
@@ -371,25 +381,25 @@ stop("MISSING mtl_city_auto_zoom. why?")
 # 
 # map_zoom_levels_save(data_folder = "data/", map_zoom_levels = map_zoom_levels)
 # 
-
-# Tilesets ----------------------------------------------------------------
-
+# 
+# # Tilesets ----------------------------------------------------------------
+# 
 # tileset_upload_all(all_scales = scales_variables_modules$scales,
 #                    map_zoom_levels = map_zoom_levels,
 #                    prefix = "mtl",
 #                    username = "sus-mcgill",
 #                    access_token = .cc_mb_token)
 # 
-# tileset_labels(CSD_table = scales_variables_modules$scales$CMA$CSD,
+# tileset_labels(scales = scales_variables_modules$scales,
 #                crs = crs,
 #                prefix = "mtl",
 #                username = "sus-mcgill",
 #                access_token = .cc_mb_token)
 # 
-# # street <- cc.data::db_read_data(table = "streets", 
-# #                                 column_to_select = "DA_ID", 
-# #                                 IDs = census_scales$DA$ID)
-# # qs::qsave(street, "dev/data/built/street.qs")
+# #street <- cc.data::db_read_data(table = "streets",
+# #                                column_to_select = "DA_ID",
+# #                                IDs = census_scales$DA$ID)
+# qs::qsave(street, "dev/data/built/street.qs")
 # street <- qs::qread("dev/data/built/street.qs")
 # 
 # tileset_streets(master_polygon = base_polygons$master_polygon,
