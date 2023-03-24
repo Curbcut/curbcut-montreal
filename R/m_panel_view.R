@@ -68,7 +68,7 @@ panel_view_server <- function(id, r, vars, data) {
       if (private_data()) return(data.frame())
       
       # Prepare the pretty table and the download table
-      dat <- curbcut::table_view_prep_table(vars = vars(),
+      dat <- curbcut:::table_view_prep_table(vars = vars(),
                                             data = data(),
                                             df = r[[id]]$df(),
                                             lang = r$lang())
@@ -180,10 +180,13 @@ panel_view_UI <- function(id) {
       )
     ),
     
+    shiny::tags$head(tags$script(".download_csv {display:inline;margin-right:10px;}")),
+    
     # To accompany the panel data button, create the div
     shinyjs::hidden(
       shiny::div(
         class = "panel_view",
+        style = "margin-right:500px;margin-left:500px",
         id = shiny::NS(id, "view_data"),
         shiny::htmlOutput(
           outputId = shiny::NS(id, "data_info"),
@@ -193,8 +196,7 @@ panel_view_UI <- function(id) {
                      outputId = shiny::NS(id, "data_table"))),
         shiny::div(
           style = "text-align:right",
-          shiny::div(style = "display:inline;margin-right:10px;",
-                     shiny::downloadButton("download_csv", "Download '.csv'")),
+          shiny::downloadButton(class = "download_csv", outputId = "download_csv", "Download '.csv'"),
           shiny::div(style = "display:inline;",
                      shiny::downloadButton("download_shp", "Download '.shp'")))))
   )
