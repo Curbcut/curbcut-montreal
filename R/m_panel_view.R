@@ -152,7 +152,7 @@ panel_view_UI <- function(id) {
         class = "hidden-icons",
         # Map
         shiny::tags$button(
-          class = "action-button",
+          class = "action-button btn1",
           style = "background-color:transparent;border:none;",
           id = shiny::NS(id, "panel_map"),
           icon_material("map", style = "color:white;font-size:40px;"),
@@ -161,7 +161,7 @@ panel_view_UI <- function(id) {
                            cc_t("View map"))),
         # Data
         shiny::tags$button(
-          class = "action-button",
+          class = "action-button btn2",
           style = "background-color:transparent;border:none;",
           id = shiny::NS(id, "panel_data"),
           icon_material("table_view", style = "color:white;font-size:40px;"),
@@ -170,7 +170,7 @@ panel_view_UI <- function(id) {
                            cc_t("View/export data"))),
         # Explore data link
         shinyjs::hidden(shiny::tags$button(
-          class = "action-button",
+          class = "action-button btn3",
           style = "background-color:transparent;border:none;",
           id = shiny::NS(id, "panel_selection"),
           icon_material("search", style = "color:white;font-size:40px;"),
