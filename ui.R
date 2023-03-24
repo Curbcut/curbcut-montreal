@@ -11,6 +11,9 @@ ui <- function(request) {
     useSever(),
     
 
+
+    
+
     # Styling objects ------------------------------------------------------------
     
     tags$head(tags$link(rel = "icon", href = "favicon.ico")),    tags$head(tags$link(rel = "stylesheet", type = "text/css", 
@@ -42,6 +45,7 @@ ui <- function(request) {
     tags$head(tags$script(src = "modal-help.js")),
     tags$head(tags$script(src = "tooltip.js")),
     tags$head(tags$script(src = "movemenu")),
+    tags$head(tags$script(src = "font.js")),
     # Cookie js script
     curbcut::use_curbcut_cookie(),
     tags$head(tags$script(js_links_between_modules)),
@@ -144,6 +148,25 @@ ui <- function(request) {
           </div>
         </div>
       </div>
-     ')
+     '),
+    tags$div(                            #FONT SIZE AND HIGH VISIBILITY PANEL
+      id = "accessibility-panel",
+      
+      # Add button to increase font size
+      tags$button(
+        id = "font_increase",
+        onClick = "changeFontSize()",
+        "F+"
+      ),
+      
+      # Add button to toggle dark mode
+      tags$button(
+        id = "dark-mode",
+        onClick = "toggleDarkMode()",
+        "B/W"
+      )
+    )
   )
 }
+
+
