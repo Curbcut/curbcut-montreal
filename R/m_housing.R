@@ -21,7 +21,8 @@ default_region <- modules$regions[modules$id == "housing"][[1]][1]
         "housing_mobility_five", "housing_single_detached"
       )),
       curbcut::slider_UI(id = NS(id, id), slider_id = "slu", min = 1996, max = 2021),
-      curbcut::slider_UI(id = NS(id, id), slider_id = "slb", min = 1996, max = 2021, label = curbcut::cc_t("Select two years"), value = c(2006, 2021)),
+      curbcut::slider_UI(id = NS(id, id), slider_id = "slb", min = 1996, max = 2021, 
+                         label = cc_t("Select two years"), value = c(2006, 2021)),
       curbcut::checkbox_UI(id = NS(id, id), label = curbcut::cc_t("Compare dates"), value = FALSE),
       year_disclaimer_UI(NS(id, id)),
       bottom = shiny::tagList(
@@ -29,10 +30,13 @@ default_region <- modules$regions[modules$id == "housing"][[1]][1]
         curbcut::zoom_UI(shiny::NS(id, id), `housing_mzp`)
       )
     ),
-
+    
     # Map
     curbcut::map_UI(NS(id, id)),
-
+    
+    # Change view (Map/Data/Place explorer)
+    panel_view_UI(id = NS(id, id)),
+    
     # Right panel
     curbcut::right_panel(
       id = id,
@@ -51,6 +55,7 @@ default_region <- modules$regions[modules$id == "housing"][[1]][1]
 
 `housing_server` <- function(id, r) {
   shiny::moduleServer(id, function(input, output, session) {
+    
     # Initial reactives
     rv_zoom_string <- reactiveVal(
       curbcut::zoom_get_string(
@@ -59,7 +64,7 @@ default_region <- modules$regions[modules$id == "housing"][[1]][1]
         region = default_region
       )
     )
-
+    
     # Zoom and POI reactives when the view state of the map changes.
     observeEvent(map_viewstate(), {
       r[[id]]$zoom(curbcut::zoom_get(zoom = map_viewstate()$zoom))
@@ -68,11 +73,11 @@ default_region <- modules$regions[modules$id == "housing"][[1]][1]
         map_viewstate = map_viewstate()
       ))
     })
-
+    
     # Map zoom levels change depending on r$region()
     zoom_levels <-
       reactive(curbcut::zoom_get_levels(id = id, region = r$region()))
-
+    
     # Zoom string reactive
     observe({
       rv_zoom_string({
@@ -83,10 +88,10 @@ default_region <- modules$regions[modules$id == "housing"][[1]][1]
         )
       })
     })
-
+    
     # Update selected ID
     curbcut::update_select_id(id = id, r = r, data = data)
-
+    
     # Choose tileset
     tile <- curbcut::zoom_server(
       id = id,
@@ -94,7 +99,7 @@ default_region <- modules$regions[modules$id == "housing"][[1]][1]
       zoom_string = rv_zoom_string,
       zoom_levels = zoom_levels
     )
-
+    
     # Get df
     observeEvent(
       {
@@ -108,19 +113,19 @@ default_region <- modules$regions[modules$id == "housing"][[1]][1]
         ))
       }
     )
-
+    
     # Time
     slider_uni <- curbcut::slider_server(id = id, slider_id = "slu")
     slider_bi <- curbcut::slider_server(id = id, slider_id = "slb")
     slider_switch <- curbcut::checkbox_server(id = id, r = r, label = shiny::reactive("Compare dates"))
     time <- shiny::reactive(if (slider_switch()) slider_bi() else slider_uni())
-
+    
     # Enable or disable first and second slider
     shiny::observeEvent(slider_switch(), {
       shinyjs::toggle(NS(id, "ccslider_slu"), condition = !slider_switch())
       shinyjs::toggle(NS(id, "ccslider_slb"), condition = slider_switch())
     })
-
+    
     # Left variable
     var_left <- curbcut::picker_server(
       id = id,
@@ -136,7 +141,7 @@ default_region <- modules$regions[modules$id == "housing"][[1]][1]
       ),
       time = time
     )
-
+    
     # Right variable / compare panel
     var_right <- curbcut::compare_server(
       id = id,
@@ -157,33 +162,33 @@ default_region <- modules$regions[modules$id == "housing"][[1]][1]
       ),
       time = time
     )
-
+    
     # The `vars` reactive
     vars <- reactive(curbcut::vars_build(
       var_left = var_left(),
       var_right = var_right(),
       df = r[[id]]$df()
     ))
-
+    
     # Sidebar
     sidebar_server(id = id, r = r)
-
+    
     # Sidebar
     curbcut::sidebar_server(id = id, r = r)
-
+    
     # Data
     data <- reactive(curbcut::data_get(
       vars = vars(),
       df = r[[id]]$df()
     ))
-
+    
     # Data for tile coloring
     data_colours <- reactive(curbcut::data_get_colours(
       vars = vars(),
       region = zoom_levels()$region,
       zoom_levels = zoom_levels()$zoom_levels
     ))
-
+    
     # Year disclaimer
     year_disclaimer_server(
       id = id,
@@ -193,7 +198,7 @@ default_region <- modules$regions[modules$id == "housing"][[1]][1]
       var_right = var_right,
       time = time
     )
-
+    
     # Legend
     curbcut::legend_server(
       id = id,
@@ -202,7 +207,7 @@ default_region <- modules$regions[modules$id == "housing"][[1]][1]
       data = data,
       df = r[[id]]$df
     )
-
+    
     # Did-you-know panel
     dyk_server(
       id = id,
@@ -211,7 +216,7 @@ default_region <- modules$regions[modules$id == "housing"][[1]][1]
       var_right = var_right,
       poi = r[[id]]$poi
     )
-
+    
     # Update map in response to variable changes or zooming
     map_viewstate <- curbcut::map_server(
       id = id,
@@ -222,7 +227,7 @@ default_region <- modules$regions[modules$id == "housing"][[1]][1]
       zoom = r[[id]]$zoom,
       coords = r[[id]]$coords
     )
-
+    
     # Update map labels
     curbcut::label_server(
       id = id,
@@ -231,16 +236,17 @@ default_region <- modules$regions[modules$id == "housing"][[1]][1]
       zoom_levels = reactive(zoom_levels()$zoom_levels),
       region = reactive(zoom_levels()$region)
     )
-
-    # # Explore panel
-    # explore_content <- explore_server(
-    #   id = id,
-    #   r = r,
-    #   data = data,
-    #   geo = reactive(map_zoom_levels()$region),
-    #   var_left = var_left,
-    #   var_right = var_right)
-
+    
+    # Explore panel
+    curbcut::explore_server(
+      id = id,
+      r = r,
+      data = data,
+      region = reactive(zoom_levels()$region),
+      vars = vars,
+      df = r[[id]]$df,
+      select_id = r[[id]]$select_id)
+    
     # Bookmarking
     curbcut::bookmark_server(
       id = id,
@@ -248,14 +254,11 @@ default_region <- modules$regions[modules$id == "housing"][[1]][1]
       select_id = r[[id]]$select_id,
       map_viewstate = map_viewstate
     )
-
-    # Data transparency and export
-    r[[id]]$export_data <- reactive(data_export(
-      id = id,
-      data = data(),
-      var_left = var_left(),
-      var_right = var_right(),
-      df = r[[id]]$df()
-    ))
+    
+    # Change view
+    panel_view_server(id = id,
+                      r = r,
+                      vars = vars,
+                      data = data)
   })
 }

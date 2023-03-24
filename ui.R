@@ -8,6 +8,46 @@ ui <- function(request) {
     useShinyjs(),
     useSever(),
     
+    
+    
+    
+    
+    
+    
+    
+    
+
+# TEMPORARY ---------------------------------------------------------------
+
+tags$head(tags$style(HTML('
+.floating-panel {
+  position: absolute;
+  top: calc(93vh - var(--h-navbar));
+  left: 50%;
+  transform: translateX(-50%);
+  border-radius: 25px;
+  background-color: rgba(108, 131, 181, .3);
+  border:rgba(108, 131, 181, 1);
+  transition: all 0.3s ease-in-out; /* added transition */
+  z-index: 9999;
+  color: 0;
+  font-size: 2rem;
+  padding: 0;
+  margin: 0;
+  border-radius: 25px;
+  opacity: 1;
+  display: flex;
+  flex-wrap: nowrap;
+  background-color: rgba(108, 131, 181, 0.8);
+  justify-content: space-evenly;
+  align-items: flex-end;
+}
+
+.floating-panel:hover{
+  background-color: rgba(108, 131, 181, 1);
+  border:rgba(108, 131, 181, 1);
+}'))),
+    
 
     # Styling objects ------------------------------------------------------------
     

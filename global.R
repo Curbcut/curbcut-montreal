@@ -11,7 +11,7 @@ mapbox_username <- "sus-mcgill"
 
 default_region <- "CMA"
 # For a location lock placeholder in advanced options
-default_random_address <- "845 Sherbrooke Ouest, Montréal, Quebec"
+default_random_address <- "845 Sherbrooke Ouest, Montréal, Quebec "
 
 map_zoom <- 10.1
 map_loc <- c(-73.58, 45.53)

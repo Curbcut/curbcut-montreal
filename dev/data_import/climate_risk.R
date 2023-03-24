@@ -140,6 +140,14 @@ build_and_append_climate_risk <- function(scales_variables_modules, crs) {
                               time_regex = "_\\d{4}$")
   
 
+  # Prepare the variable measurements ---------------------------------------
+  
+  var_measurement <- data.frame(
+    df = data_interpolated$avail_df,
+    measurement = rep("scalar", length(data_interpolated$avail_df)))
+  var_measurement$measurement[var_measurement$df == "grid_grid"] <- "ordinal"
+  
+
   # Variables table ---------------------------------------------------------
 
   variables <-
@@ -164,7 +172,8 @@ build_and_append_climate_risk <- function(scales_variables_modules, crs) {
       interpolated = data_interpolated$interpolated_ref,
       rankings_chr = c("exceptionally unsusceptable", "unusually unsusceptable", 
                        "just about average vulnerability", "unusually vulnerable", 
-                       "exceptionally vulnerable")
+                       "exceptionally vulnerable"),
+      var_measurement = var_measurement
     ) |> 
     add_variable(
       var_code = "climate_flood",
@@ -186,7 +195,8 @@ build_and_append_climate_risk <- function(scales_variables_modules, crs) {
       interpolated = data_interpolated$interpolated_ref,
       rankings_chr = c("exceptionally unsusceptable", "unusually unsusceptable", 
                        "just about average vulnerability", "unusually vulnerable", 
-                       "exceptionally vulnerable")
+                       "exceptionally vulnerable"),
+      var_measurement = var_measurement
     ) |> 
     add_variable(
       var_code = "climate_heavy_rain",
@@ -208,7 +218,8 @@ build_and_append_climate_risk <- function(scales_variables_modules, crs) {
       interpolated = data_interpolated$interpolated_ref,
       rankings_chr = c("exceptionally unsusceptable", "unusually unsusceptable", 
                        "just about average vulnerability", "unusually vulnerable", 
-                       "exceptionally vulnerable")
+                       "exceptionally vulnerable"),
+      var_measurement = var_measurement
     ) |> 
     add_variable(
       var_code = "climate_destructive_storms",
@@ -231,7 +242,8 @@ build_and_append_climate_risk <- function(scales_variables_modules, crs) {
       interpolated = data_interpolated$interpolated_ref,
       rankings_chr = c("exceptionally unsusceptable", "unusually unsusceptable", 
                        "just about average vulnerability", "unusually vulnerable", 
-                       "exceptionally vulnerable")
+                       "exceptionally vulnerable"),
+      var_measurement = var_measurement
     ) |> 
     add_variable(
       var_code = "climate_heat_wave",
@@ -253,7 +265,8 @@ build_and_append_climate_risk <- function(scales_variables_modules, crs) {
       interpolated = data_interpolated$interpolated_ref,
       rankings_chr = c("exceptionally unsusceptable", "unusually unsusceptable", 
                        "just about average vulnerability", "unusually vulnerable", 
-                       "exceptionally vulnerable")
+                       "exceptionally vulnerable"),
+      var_measurement = var_measurement
     )
 
   # Modules table -----------------------------------------------------------

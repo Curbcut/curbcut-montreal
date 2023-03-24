@@ -184,11 +184,11 @@ grid <- additional_scale(additional_table = grid,
 scales_dictionary <-
   append_scale_to_dictionary(scales_dictionary,
                              scale = "grid",
-                             sing = "250-m grid cell",
-                             plur = "250-m grid cells",
-                             slider_title = "250-m",
+                             sing = "area at the 250m scale",
+                             plur = "areas at the 250m scale",
+                             slider_title = "250m",
                              place_heading = "{name}",
-                             place_name = "250-m grid cell around {name}")
+                             place_name = "250m grid area around {name}")
 
 
 # Consolidate scales ------------------------------------------------------
