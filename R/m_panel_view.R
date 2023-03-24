@@ -129,10 +129,12 @@ panel_view_server <- function(id, r, vars, data) {
       r[[id]]$select_id(new_id)
     }, ignoreNULL = FALSE, ignoreInit = TRUE)
     
+    observe(print(datas()$data |> class()))
+    
     # When the user clicks to download the .csv
     output$download_csv <-
       shiny::downloadHandler(
-        filename = sprintf("%s_data.csv", id),
+        filename = paste0(id, "_data.csv"),
         content = function(file) {
           data <- datas()$data
           utils::write.csv(data, file, row.names = FALSE)
@@ -180,7 +182,8 @@ panel_view_UI <- function(id) {
       )
     ),
     
-    shiny::tags$head(tags$script(".download_csv {display:inline;margin-right:10px;}")),
+    shiny::tags$head(tags$style(shiny::HTML(".download_csv {display:inline;margin-right:10px;}"))),
+    shiny::tags$head(tags$style(shiny::HTML(".download_shp {display:inline;}"))),
     
     # To accompany the panel data button, create the div
     shinyjs::hidden(
@@ -196,8 +199,11 @@ panel_view_UI <- function(id) {
                      outputId = shiny::NS(id, "data_table"))),
         shiny::div(
           style = "text-align:right",
-          shiny::downloadButton(class = "download_csv", outputId = "download_csv", "Download '.csv'"),
-          shiny::div(style = "display:inline;",
-                     shiny::downloadButton("download_shp", "Download '.shp'")))))
+          shiny::downloadButton(class = "download_csv",
+                                outputId = shiny::NS(id, "download_csv"), 
+                                label = cc_t("Download '.csv'")),
+          shiny::downloadButton(class = "download_shp",
+                                outputId = shiny::NS(id, "download_shp"), 
+                                label = cc_t("Download '.shp'")))))
   )
 }
