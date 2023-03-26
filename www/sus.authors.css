@@ -1,3 +1,4 @@
+:root {
   --sus-author-img-size: 100px;
 }
 
@@ -75,7 +76,7 @@
     top: 0px;
     font-size: 2rem;
   }
-
+  
   .sus-author > h4 {
     top: 5rem;
     font-size: 1.5rem;
