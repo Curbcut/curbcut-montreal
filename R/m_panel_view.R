@@ -146,64 +146,76 @@ panel_view_server <- function(id, r, vars, data) {
 #' @describeIn panel_view_server Create the UI for the legend module
 #' @export
 panel_view_UI <- function(id) {
-  
+
   shiny::tagList(
     shiny::tags$div(
       class = "floating-panel",
       shiny::tags$div(
-        class = "hidden-icons",
+        class = "floating-panel-content",
+        id = "floating-panel-content",
         # Map
         shiny::tags$button(
-          class = "action-button btn1",
-          style = "background-color:transparent;border:none;",
+          class = "action-button floating-bar btn1",
+          onclick = "document.getElementById('housing-housing-panel_data').style.backgroundColor = '#68748f';
+                     document.getElementById('housing-housing-panel_map').style.backgroundColor = '#859ac7';
+                     document.getElementById('housing-housing-panel_selection').style.backgroundColor = '#68748f';",
           id = shiny::NS(id, "panel_map"),
-          icon_material("map", style = "color:white;font-size:40px;"),
-          shiny::tags$span(class = "help-text",
-                           style = "color:white;padding:20px;",
-                           cc_t("View map"))),
+          icon_material("map", style = "color:white;font-size:2rem;"),
+          shiny::tags$div(
+            class = "help-text",
+            cc_t("Map")
+          )
+        ),
         # Data
         shiny::tags$button(
-          class = "action-button btn2",
-          style = "background-color:transparent;border:none;",
+          class = "action-button floating-bar btn2",
+          onclick = "document.getElementById('housing-housing-panel_data').style.backgroundColor = '#859ac7';
+                     document.getElementById('housing-housing-panel_map').style.backgroundColor = '#68748f';
+                     document.getElementById('housing-housing-panel_selection').style.backgroundColor = '#68748f';",
           id = shiny::NS(id, "panel_data"),
-          icon_material("table_view", style = "color:white;font-size:40px;"),
-          shiny::tags$span(class = "help-text",
-                           style = "color:white;padding:20px;",
-                           cc_t("View/export data"))),
+          icon_material("table_view", style = "color:white;font-size:2rem;"),
+          shiny::tags$div(
+            class = "help-text",
+            cc_t("Data")
+          )
+        ),
         # Explore data link
-        shinyjs::hidden(shiny::tags$button(
-          class = "action-button btn3",
-          style = "background-color:transparent;border:none;",
+        shiny::tags$button(
+          class = "action-button floating-bar btn3",
+           onclick = "document.getElementById('housing-housing-panel_data').style.backgroundColor = '#68748f';
+                     document.getElementById('housing-housing-panel_map').style.backgroundColor = '#68748f';
+                     document.getElementById('housing-housing-panel_selection').style.backgroundColor = '#859ac7';",
           id = shiny::NS(id, "panel_selection"),
-          icon_material("search", style = "color:white;font-size:40px;"),
-          shiny::tags$span(class = "help-text",
-                           style = "color:white;padding:20px;",
-                           cc_t("Regional portrait"))))
+          icon_material("search", style = "color:white;font-size:2rem;"),
+          shiny::tags$div(
+            class = "help-text",
+            cc_t("Regional portrait")
+          )
+        )
       )
-    ),
+  ),
     
     shiny::tags$head(tags$style(shiny::HTML(".download_csv {display:inline;margin-right:10px;}"))),
     shiny::tags$head(tags$style(shiny::HTML(".download_shp {display:inline;}"))),
     
-    # To accompany the panel data button, create the div
-    shinyjs::hidden(
+  # To accompany the panel data button, create the div
+  shinyjs::hidden(
+    shiny::div(
+      class = "panel_view",
+      id = shiny::NS(id, "view_data"),
+      shiny::htmlOutput(
+        outputId = shiny::NS(id, "data_info"),
+        fill = TRUE),
+      shiny::div(style = "margin-bottom:20px;",
+                 DT::DTOutput(
+                   outputId = shiny::NS(id, "data_table"))),
       shiny::div(
-        class = "panel_view",
-        style = "margin-right:500px;margin-left:500px",
-        id = shiny::NS(id, "view_data"),
-        shiny::htmlOutput(
-          outputId = shiny::NS(id, "data_info"),
-          fill = TRUE),
-        shiny::div(style = "margin-bottom:20px;",
-                   DT::DTOutput(
-                     outputId = shiny::NS(id, "data_table"))),
-        shiny::div(
-          style = "text-align:right",
-          shiny::downloadButton(class = "download_csv",
-                                outputId = shiny::NS(id, "download_csv"), 
-                                label = cc_t("Download '.csv'")),
-          shiny::downloadButton(class = "download_shp",
-                                outputId = shiny::NS(id, "download_shp"), 
-                                label = cc_t("Download '.shp'")))))
+        style = "text-align:right",
+        shiny::downloadButton(class = "download_csv",
+                              outputId = shiny::NS(id, "download_csv"), 
+                              label = cc_t("Download '.csv'")),
+        shiny::downloadButton(class = "download_shp",
+                              outputId = shiny::NS(id, "download_shp"), 
+                              label = cc_t("Download '.shp'")))))
   )
 }
