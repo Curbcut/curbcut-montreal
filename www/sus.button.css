@@ -194,28 +194,6 @@
   /* min-width: unset !important; */
 }
 
-/* Giovanni - fixing dropdown menu postioning issue 
-.tab-content .dropdown-menu,
-.tab-content .dropdown-menu.open {
-  position: absolute;
-  top: 50%;
-  left:0;
-  background-color:rgba(229, 232, 241,.8);
-  z-index: 2000;
-}
-*/
-/*
-#cc-right-panel{      
-    right: 0;
-  left: auto;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  z-index:9999;
-  
-}
-*/
-
 .tab-content .dropdown-menu.open:hover {
   overflow-y:scroll;
 }
@@ -230,13 +208,6 @@
   z-index:1000;
   height:85vw;
 }
-/*
-#auto_additional_drops .dropdown-menu.open {
-  position: absolute !important;
-  top: auto !important;
-  right: auto !important;
-}
-*/
 
 /* ONLY TO IMPACT SAFARI 11+ AS THE OTHER CSS DOESN'T WORK CORRECTLY ON THE BRWOSER */
 @media not all and (min-resolution:.001dpcm) { 
