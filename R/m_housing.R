@@ -35,7 +35,7 @@ default_region <- modules$regions[modules$id == "housing"][[1]][1]
     curbcut::map_UI(NS(id, id)),
     
     # Change view (Map/Data/Place explorer)
-    panel_view_UI(id = NS(id, id)),
+    curbcut::panel_view_UI(id = NS(id, id)),
     
     # Right panel
     curbcut::right_panel(
@@ -256,9 +256,9 @@ default_region <- modules$regions[modules$id == "housing"][[1]][1]
     )
     
     # Change view
-    panel_view_server(id = id,
-                      r = r,
-                      vars = vars,
-                      data = data)
+    curbcut::panel_view_server(id = id,
+                               r = r,
+                               vars = vars,
+                               data = data)
   })
 }

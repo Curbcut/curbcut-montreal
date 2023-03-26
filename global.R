@@ -21,6 +21,8 @@ map_loc <- c(-73.58, 45.53)
 
 suppressPackageStartupMessages({
   library(curbcut)
+  # temporary fix? necessary for tile_json
+  library(urltools)
   
   library(shiny)
   library(bslib)
