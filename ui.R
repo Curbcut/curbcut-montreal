@@ -149,17 +149,25 @@ ui <- function(request) {
         </div>
       </div>
      '),
-    tags$div(                            #FONT SIZE AND HIGH VISIBILITY PANEL
+    
+    # ---------------- FONT SIZE AND HIGH VISIBILITY MODE
+    tags$div(                            
       id = "accessibility-panel",
       
-      # Add button to increase font size
+      # Button to increase font size
       tags$button(
         id = "font_increase",
         onClick = "changeFontSize()",
         "F+"
       ),
+      # Button to decrease font size
+      tags$button(
+        id = "font_decrease",
+        onClick = "changeFontSize()",
+        "F+"
+      ),
       
-      # Add button to toggle dark mode
+      # Button to toggle dark mode
       tags$button(
         id = "dark-mode",
         onClick = "toggleDarkMode()",
