@@ -56,7 +56,6 @@ ui <- function(request) {
                         href = paste0("https://fonts.googleapis.com/icon?",
                                       "family=Material+Icons"))),
     tags$head(tags$script(src = "sus.js")),
-    tags$head(tags$script(src = "sus.floating-panel.js")),
     tags$head(tags$script(src = "shinybrowser.js")),
     # Cookie js script
     curbcut::use_curbcut_cookie(),
