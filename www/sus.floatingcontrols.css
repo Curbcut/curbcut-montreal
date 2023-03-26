@@ -1,5 +1,3 @@
-/* CREATED 2023-03-18 */
-
 /* FLOATING PANEL */
 
 .floating-panel {
@@ -10,7 +8,7 @@
   border-radius: 25px;
   background-color: rgba(108, 131, 181, .3);
   border:rgba(108, 131, 181, 1);
-  transition: all 0.3s ease-in-out; /* added transition */
+  transition: all 0.3s ease-in-out;
   z-index: 9999;
   color: 0;
   font-size: 2rem;
