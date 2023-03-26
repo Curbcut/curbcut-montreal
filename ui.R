@@ -48,43 +48,16 @@ ui <- function(request) {
                         href = "sus.news.css")),
     tags$head(tags$link(rel = "stylesheet", type = "text/css",
                         href = "sus.place_explorer.css")),
-    tags$head(tags$link(rel = "stylesheet", type = "text/css",
-                        href = "sus.floating-panel.css")),
-    tags$head(tags$link(rel = "stylesheet", type = "text/css",
-                        href = "sus.panel-view.css")),
-    tags$head(tags$link(rel = "stylesheet", type = "text/css", 
-                        href = paste0("https://fonts.googleapis.com/icon?",
-                                      "family=Material+Icons"))),
     tags$head(tags$script(src = "sus.js")),
-    tags$head(tags$script(src = "sus.floating-panel.js")),
     tags$head(tags$script(src = "shinybrowser.js")),
-    # Cookie js script
-    curbcut::use_curbcut_cookie(),
     tags$head(tags$script(js_links_between_modules)),
-    curbcut::use_curbcut_js(),
-    # tags$head(tags$script(curbcut::js_copy_current_url())),
     tags$head(tags$style(HTML(styler))),
-    # # To allow screenshot
-    # tags$script(src = paste0("https://cdn.jsdelivr.net/npm/html2canvas@1.0.0-",
-    #                          "rc.5/dist/html2canvas.min.js")),
-    # extendShinyjs(text = screenshot_js, functions = "takeShot"),
-    # tags$script(HTML('HTMLCanvasElement.prototype.getContext = function(origFn) {
-    #   return function(type, attribs) {
-    #     attribs = attribs || {};
-    #     attribs.preserveDrawingBuffer = true;
-    #     return origFn.call(this, type, attribs);
-    #   };
-    # }(HTMLCanvasElement.prototype.getContext);')),
     
-    # change page title JS function
-    tags$script(HTML('Shiny.addCustomMessageHandler("changetitle", function(x) 
-                   {document.title=x});')),
+    # Curbcut scripts
+    curbcut::use_curbcut_cookie(),
+    curbcut::use_curbcut_js(),
+    curbcut::use_curbcut_css(),
     
-    # To allow div elements with title attribute, for dropdown text on hover
-    tags$script(
-      "var myDefaultWhiteList = $.fn.selectpicker.Constructor.DEFAULTS.whiteList;
-    myDefaultWhiteList.div = ['title'];"
-    ),
     tags$head(tags$style("span.text {display: block !important;}")),
     
     # Google analytics
