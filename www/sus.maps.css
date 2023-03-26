@@ -108,7 +108,7 @@
   height: 85vw;  
 }
 
-@media(max-width: 1800px) {
+@media(max-width: 1979px) {
   .sus-map-panel {
     height: 100px;
   }
@@ -126,8 +126,6 @@
 }
 
 /* Resizeable right panel */
-
-
 @media (max-width: 650px) {
   .sus-map-panel {
     margin-right: calc(-1 * 100% - 2 * var(--padding-h-md));
