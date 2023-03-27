@@ -56,20 +56,12 @@ ui <- function(request) {
     # Curbcut scripts
     curbcut::use_curbcut_cookie(),
     curbcut::use_curbcut_js(),
-    curbcut::use_curbcut_css(),
+    curbcut::use_curbcut_css(lang_init = TRUE),
     
     tags$head(tags$style("span.text {display: block !important;}")),
     
     # Google analytics
     tags$head(includeHTML("www/google_analytics.html")),
-
-    # Language switching ---------------------------------------------------------
-    
-    # Add a class to the body, to toggle between languages
-    tags$body(class = "user-lang-fr"),
-    # Add visible and hidden to classes, to switch between active language
-    tags$head(tags$style(HTML(lang_classes))),
-    
     
     # Sharing card ---------------------------------------------------------------
     
