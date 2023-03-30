@@ -414,14 +414,13 @@ qs::qload("dev/data/built/scales_variables_modules.qsm")
 
 future::plan(future::multisession(), workers = 18)
 
-pe_main_card_data <- placeex_main_card_data(scales = scales_variables_modules$scales,
-                                       DA_table = census_scales$DA,
-                                       region_DA_IDs = census_scales$DA$ID,
-                                       crs = crs,
-                                       regions_dictionary = regions_dictionary)
+scales_variables_modules$scales <- scales_variables_modules$scales[1]
 
-scales_variables_modules$scales <- 
-  scales_variables_modules$scales[1]
+pe_main_card_data <- placeex_main_card_data(scales = scales_variables_modules$scales,
+                                            DA_table = census_scales$DA,
+                                            region_DA_IDs = census_scales$DA$ID,
+                                            crs = crs,
+                                            regions_dictionary = regions_dictionary)
 
 placeex_main_card_rmd(scales_variables_modules = scales_variables_modules,
                       pe_main_card_data = pe_main_card_data,
@@ -432,6 +431,19 @@ placeex_main_card_rmd(scales_variables_modules = scales_variables_modules,
                       mapbox_username = "sus-mcgill",
                       rev_geocode_from_localhost = TRUE,
                       overwrite = TRUE)
+
+# Add the place explorer in the modules dataframe
+scales_variables_modules$module <- 
+  add_module(modules = scales_variables_modules$module,
+             id = "place_explorer",
+             theme = "Place explorer",
+             nav_title = "TKTK",
+             title_text_title = "TKTK",
+             title_text_main = "TKTK",
+             title_text_extra = "TKTK",
+             metadata = FALSE,
+             dataset_info = "TKTK",
+             regions = regions_dictionary$region[regions_dictionary$pickable])
 
 # Did you know ------------------------------------------------------------
 

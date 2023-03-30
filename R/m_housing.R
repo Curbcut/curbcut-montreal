@@ -259,6 +259,8 @@ default_region <- modules$regions[modules$id == "housing"][[1]][1]
     curbcut::panel_view_server(id = id,
                                r = r,
                                vars = vars,
-                               data = data)
+                               data = data,
+                               zoom_levels = reactive(zoom_levels()$zoom_levels))
+    
   })
 }

@@ -2,6 +2,8 @@
 
 ready_modules_ui <- function(mods_rdy, stand_alone_tabs) {
   
+  mods_rdy <- mods_rdy[names(mods_rdy) != "Place explorer"]
+  
   list_args <- 
     lapply(names(mods_rdy), function(theme) {
       c(theme,

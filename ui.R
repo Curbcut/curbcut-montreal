@@ -91,7 +91,7 @@ ui <- function(request) {
         ready_modules_ui(mods_rdy),
         list(stories_dropdown_ui(stories),
              tabPanel(curbcut::cc_t("Place explorer"), 
-                      place_explorer_UI("place_explorer"),
+                      curbcut::place_explorer_UI("place_explorer"),
                       value = "place_explorer"),
              navbarMenu(curbcut::cc_t("About"),
                         tabPanel(curbcut::cc_t("About Curbcut"), 
