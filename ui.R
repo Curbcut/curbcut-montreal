@@ -23,8 +23,8 @@ ui <- function(request) {
     tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "sus.css")),
     tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "sus.tooltip.css")),
     tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "sus.floatingcontrols.css")), #ADDED STYLING FOR FLOATING CONTROLS #
-    tags$head(tags$link(rel = "stylesheet", type = "text/css",href = "sus.scrollbars.css")),        #SCROLL BARS STYLING
-    tags$head(tags$link(rel = "stylesheet", type = "text/css",href = "sus.modal-help.css")),        #Help- modal styling
+    tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "sus.scrollbars.css")),        #SCROLL BARS STYLING
+    tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "sus.modal-help.css")),        #Help- modal styling
     tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "sus.icons.css")),
     tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "sus.navbar.css")),
     tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "sus.footer.css")),
@@ -40,6 +40,8 @@ ui <- function(request) {
     tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "sus.news.css")),
     tags$head(tags$link(rel = "stylesheet", type = "text/css", href = "sus.place_explorer.css")),
     tags$head(tags$link(rel = "stylesheet", type = "text/css", href = paste0("https://fonts.googleapis.com/icon?", "family=Material+Icons"))),
+    tags$head(tags$link(rel = "stylesheet", type = "text/css", href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200")), #chevron icon
+
     tags$head(tags$script(src = "sus.js")),
     tags$head(tags$script(src = "shinybrowser.js")),
     tags$head(tags$script(src = "modal-help.js")),
@@ -131,24 +133,6 @@ ui <- function(request) {
              )
         ))
     ),
-    # Floating controls Giovanni
-    shiny::HTML('<div class="floating-panel">
-        <div class="hidden-icons">
-          <div class="icon help">
-            <img class="icon" src="magnifying-glass-icon.png">
-            <span class="help-text" style="color:white">Explore</span>
-          </div>
-          <div class="icon help">
-            <img class="icon" src="map-icon.png">
-            <span class="help-text" style="color:white">Map</span>
-          </div>
-          <div class="icon help">
-            <img class="icon" src="export-icon.png">
-            <span class="help-text" style="color:white">Export data</span>
-          </div>
-        </div>
-      </div>
-     '),
     
     # ---------------- FONT SIZE AND HIGH VISIBILITY MODE
     tags$div(                            
