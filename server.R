@@ -1,16 +1,6 @@
 ##### SUS SERVER SCRIPT ########################################################
 
 shinyServer(function(input, output, session) {
-
-  ## Page title change, depending on page visited ------------------------------
-  
-  curbcut::title_page_update(r = r, session = session, 
-                             active_page = shiny::reactive(input$cc_page), 
-                             site_name = site_name)
-  
-  ## If on mobile, warning! ----------------------------------------------------
-  
-  curbcut::mobile_warning(r = r, session = session)
   
   
   ## If crash, personalized error ----------------------------------------------
@@ -25,7 +15,19 @@ shinyServer(function(input, output, session) {
   
   ## Reactive variables --------------------------------------------------------
   
-  r <- r_init(lang_init = "fr", prev_norm = shiny::reactiveVal(FALSE))
+  r <- r_init(server_session = session,
+              lang_init = "fr", 
+              prev_norm = shiny::reactiveVal(FALSE))
+  
+  ## Page title change, depending on page visited ------------------------------
+  
+  curbcut::title_page_update(r = r, 
+                             active_page = shiny::reactive(input$cc_page), 
+                             site_name = site_name)
+  
+  ## If on mobile, warning! ----------------------------------------------------
+  
+  curbcut::mobile_warning(r = r)
 
   
   ## Home page -----------------------------------------------------------------
@@ -120,12 +122,12 @@ shinyServer(function(input, output, session) {
   
   ## Language button -----------------------------------------------------------
   
-  curbcut::language_server(r = r, parent_session = session)
+  curbcut::language_server(r = r)
   
   
   ## Bookmark ------------------------------------------------------------------
   
-  curbcut::use_bookmark(r = r, session = session)
+  curbcut::use_bookmark(r = r)
   
   
   ## Modules -------------------------------------------------------------------
@@ -136,7 +138,7 @@ shinyServer(function(input, output, session) {
 
   ## Advanced options ----------------------------------------------------------
 
-  curbcut::settings_server(r = r, parent_session = session)
+  curbcut::settings_server(r = r)
   
   ## Data download -------------------------------------------------------------
   

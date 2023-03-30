@@ -6,14 +6,6 @@ data_export_modal <- function(r = r, export_data) {
   
   module <- modules[modules$id == export_data$id, ]
   
-  # Check for lack of data
-  if (sum(modules$id == export_data$id) != 1) 
-    warning(paste0("No entry in `variables` for `", export_data$id, 
-                   "` module."))
-  if (length(module$dataset_info) == 0)
-    warning(paste0("No `datataset_info` entry in `modules` for `", 
-                   export_data$id, "` module."))
-  
   about_module <- list()
   
   about_module$title <- paste0("<h3>", curbcut::cc_t(lang = r$lang(), module$nav_title), "</h3>")

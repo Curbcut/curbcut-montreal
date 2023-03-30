@@ -263,15 +263,6 @@ js_links_between_modules <- "
 
 styler <- '
 /* the big panel popup when we show an RMD in a map module */
-  .main_panel_text_popup {
-    max-height: calc(100vh - 155px);
-    overflow: auto;
-    background-color: #fff;
-    border: 1px solid transparent;
-    border-radius: 4px;
-    box-shadow: 0 50px 50px rgba(0,0,0,.6);
-    margin-left: 300px;
-  }
 
   #cc_page > li:first-child { 
     display:none;
@@ -358,83 +349,7 @@ styler <- '
   padding: 10px;
 }
 
-  tr:nth-child(even) {
-  background-color: #B5C0DA50;
-  }
-
-  tr {
-  border-bottom: 1px solid #ddd;
-  }
-
-  tr:hover {
-  background-color: #B5C0DA50;
-  }
-
-  td {
-  padding:4px;
-  }
-
-  th {
-  padding:4px;
-  }
-
-.loader-page {
-  opacity: 0;
-  animation: loader-page 2s ease forwards;
-}
-
-@keyframes loader-page {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
 '
-
-lang_classes <- "
-    .lang-en {
-      visibility: hidden;
-      display: none !important;
-    }
-    .lang-fr {
-      visibility: hidden;
-      display: none !important;
-    }
-    
-    .user-lang-en .lang-en {
-      visibility: visible !important;
-      display: inline !important; 
-    }
-    .user-lang-fr .lang-fr {
-      visibility: visible !important;
-      display: inline !important; 
-    }"
-
-# # Screenshot
-# screenshot_js <- "shinyjs.takeShot = function(params) {
-# 
-#   var defaultParams = {
-#     to_sh_id : null,
-#     output_id : null
-#   };
-#   params = shinyjs.getParams(params, defaultParams);
-# 
-#   let div = document.getElementById(params.to_sh_id);
-# 
-#   html2canvas(div).then(
-#     function (canvas) {
-#       document.
-#       getElementById(params.output_id).
-#       appendChild(canvas).
-#       setAttribute('id', 'map_sh');
-#       
-#     })
-# }"
-
-# WILL NEED THIS https://codepen.io/nathansouza/pen/OXdJbo TO DOWNLOAD
 
 # Severe HTML -------------------------------------------------------------
 

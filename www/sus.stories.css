@@ -66,6 +66,7 @@ div#stories-back button:last-child {
   border-right: unset !important;
   border-bottom: unset !important;
   border-top: 1px solid var(--c-default) !important;
+  background-color: #ffffff;
 }
 
 .main_panel_text_popup img {
