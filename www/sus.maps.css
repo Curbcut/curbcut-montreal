@@ -152,7 +152,7 @@
   padding-bottom: var(--padding-v-md);
 }
 
-.sus-map-panel p, .sus-map-sidebar p {
+.sus-map-panel p, .sus-map-sidebar p, .panel_view p  {
   font-size: 1.45rem;
 }
 
