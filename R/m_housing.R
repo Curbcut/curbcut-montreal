@@ -11,6 +11,7 @@ default_region <- modules$regions[modules$id == "housing"][[1]][1]
 
 `housing_UI` <- function(id) {
   shiny::tagList(
+    tags$head(tags$script(src = "../../rightmenu.js")),
     # Sidebar
     curbcut::sidebar_UI(
       id = shiny::NS(id, id),

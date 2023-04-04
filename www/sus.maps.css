@@ -3,6 +3,7 @@
   --w-panel: 300px;
 }
 
+
 .map_div {
   height: calc(100vh - var(--h-navbar)) !important;
   position: fixed;
@@ -25,7 +26,8 @@
   padding-bottom: var(--padding-v-md);
 }
 
-.sus-map-sidebar, .sus-map-sidebar-shadow {
+.sus-map-sidebar,
+.sus-map-sidebar-shadow {
   position: fixed;
   top: var(--h-navbar);
   left: 0px;
@@ -76,7 +78,7 @@
   flex-shrink: 1;
 }
 
-.sus-map-sidebar-content > div {
+.sus-map-sidebar-content>div {
   height: fit-content;
   width: 100%;
   padding-left: var(--padding-h-md);
@@ -85,203 +87,163 @@
   padding-bottom: var(--padding-v-md);
 }
 
-
-  /* START 2023-04-02 */
-  /* right collapsible menu */
-
-  
-  .sus-map-panel {
-    position: absolute;
-    overflow: scroll;
-    overflow-x: hidden;
-    overflow-y: scroll;
-    top: var(--padding-v-md);
-    right: var(--padding-h-md);
-    width: var(--w-panel);
-    box-shadow: var(--box-shadow-md);
-    max-height: calc(100vh - var(--h-navbar) - 30px);
-    border: 0.4px solid rgba(0, 0, 0, 0.05);
-  }
-
-.sus-map-panel:hover {    /* big screen */
-      opacity:1;      
-    }
-    
-  /* Styling horizontal line */
-  hr {
-    margin: .7rem 0 .7rem 0;
-  }
-  
-  #housing-housing-compare_panel:hover #housing-housing-widgets,  /*Note: try to change*/
-  #cc-right-panel:hover #housing-housing-dyk_contents>ul { 
-    visibility: visible !important;
-    display: block !important;
-  }
-
-  
-  /* Styling right panel collapse for small screen only <1600px width*/
-  @media(max-width: 1600px) {
-    #housing-housing-compare_panel #housing-housing-widgets, /*essayer d'enlever id ext */
-    #housing-housing-hide_compare .action-button .sus-small-link .shiny-bound-input,
-    #housing-housing-dyk_contents>ul{
-      display: none;
-    }
-    
-  .sus-map-panel {
-    opacity:.9;
-    }
-  
-    #housing-right_panel:hover #housing-housing-widgets,
-    #housing-right_panel:hover #housing-housing-dyk_contents>ul,
-    #housinf-right_panel:hover>dropdown>bootstrap-select>form-control>*{ 
-      visibility: visible !important;
-      display: block !important;
-      opacity:1 !important;
-    }
-    
-    .sus-map-panel {
-    max-height: calc(100vh - var(--h-navbar) - 30px);
-    }
-  }
-  
-  /* animation */
-  #housing-housing-compare_panel::before {
-  content: ' \00a0 Map settings / Param. de la carte';
+/* Right collapsible menu */
+.sus-map-panel {
+  /*panel dimensions*/
   position: absolute;
-  color:red;
-  font-weight: bolder;
-  top: 0;
-  right: 0;
-  width: 100%;
-  height: 100%;
-  border: 3px dotted red;
-  z-index: 1;
-  animation: fade-out 6s ease-out forwards;
-  pointer-events: none;
+  overflow: scroll hidden;
+  top: var(--padding-v-md);
+  right: var(--padding-h-md);
+  width: var(--w-panel);
+  max-height: calc(100vh - var(--h-navbar) - 30px);
+  border: 0.4px solid rgba(0, 0, 0, 0.05);
+  box-shadow: var(--box-shadow-md);
+  overflow-x: hidden;
 }
 
-@keyframes fade-out {
-  from {
-    opacity: 1;
-  }
-    50% {
-    opacity: 1;
-  }
-    66% {
-    opacity: 0;
-  }
-      83% {
-    opacity: 1;
-  }
-  to {
-    opacity: 0;
-  }
-
+.dropdown-menu.open {
+  overflow-y: visible;
+  width: calc(var(--w-panel)-10px);
+  right: -30px;
+  max-height: calc(100vh-(--h-navbar));
+  height: fit-content;
 }
-  /* END 2023-04-02 */
-  
-  /* Right panel icons */
-  .sus-map-panel #housing-housing-compare_panel .row .col-sm-7::before {
-    content: "\eaf6";
-    font-family: "Material Icons";
-    font-size: 20px;
-    color: var(--c-dark-blue);
-    vertical-align: middle;
-    margin-right: .3rem;
-  }
-  
-  .sus-map-panel #housing-housing-explore_title .row .col-sm-7::before {
-    content: "\e55f";
-    font-family: "Material Icons";
-    font-size: 20px;
-    color: var(--c-dark-blue);
-    vertical-align: sub;
-    margin-right: .3rem;
-  }
-  
-  .sus-map-panel #housing-housing-dyk_box .row .col-sm-7::before {
-    content: "\e88f";
-    font-family: "Material Icons";
-    font-size: 20px;
-    color: -var(--c-dark-blue);
-    vertical-align: -.3em;
-    margin-right: .3rem;
-  }
-  /* END Right panel icons */
 
-  
-  
-  
-  /* Resizeable right panel*/
-  @media (max-width: 650px) {
-    .sus-map-panel {
-      margin-right: calc(-1 * 100% - 2 * var(--padding-h-md));
-    } 
+/* Right panel for small screen only <1400px width*/
+@media (max-width: 1400px) {
+
+  #housing-right_panel,
+  #cc-right-panel {
+    overflow-y: hidden;
   }
-  
-  .sus-map-panel-content {
-    position: relative;
-    z-index: calc(20 + var(--depth-ui));
-    width: 100%;
-    padding-left: var(--padding-h-md);
-    padding-right: var(--padding-h-md);
-    padding-top: var(--padding-v-md);
-    padding-bottom: var(--padding-v-md);
+
+  .sus-map-panel {
+    transition: opacity 0.5s ease-out, visibility 1s ease-out;
+    max-height: calc(100vh - var(--h-navbar) - 30px);
+    overflow-x: hidden;
+    transition-delay: visibility 4s;
   }
-  
-  .sus-map-panel-content sus-scroll-content {
-    height: 100vw !important;
-  }
-  
-  .sus-map-panel-content a.sus-small-link,
-  .sus-map-panel-content h4 {
-    margin-top: var(--padding-v-md);
-    display: inline-block;
-  }
-  
-  .sus-map-sidebar ul,
-  .sus-map-panel ul {
-    padding-left: var(--padding-h-md);
-  }
-  
-  .sus-map-sidebar #legend>img {
-    width: 100% !important;
-    height: auto;
-  }
-  
-  .bottom_sidebar {
-    flex-shrink: 0;
-    flex-grow: 0;
-    position: relative !important;
-    top: unset !important;
-    bottom: unset !important;
-    left: unset !important;
-    right: unset !important;
+
+  .dropdown-menu.open {
+    overflow-y: visible;
+    width: calc(var(--w-panel)-10px);
+    right: -30px;
+    max-height: calc(100vh-(--h-navbar));
     height: fit-content;
-    margin: unset !important;
-    background: var(--c-primary-complement);
-    border-top: 1px solid var(--c-default);
-    padding-left: var(--padding-h-md);
-    padding-right: var(--padding-h-md);
-    padding-top: var(--padding-v-md);
-    padding-bottom: var(--padding-v-md);
   }
-  
-  
-  .sus-map-panel p,
-  .sus-map-sidebar p {
-    font-size: 1.45rem;
+}
+
+.dropdown-menu .inner {
+  overflow-y: visibile;
+  right: 10px;
+  width: calc(var(--w-panel)-20px);
+}
+
+/* Styling horizontal line */
+hr {
+  margin: .7rem 0 .7rem 0;
+}
+
+/* Right panel icons */
+.sus-map-panel #housing-housing-compare_panel .row .col-sm-7::before {
+  content: "\eaf6";
+  font-family: "Material Icons";
+  font-size: 20px;
+  color: var(--c-dark-blue);
+  vertical-align: middle;
+  margin-right: .3rem;
+}
+
+.sus-map-panel #housing-housing-explore_title .row .col-sm-7::before {
+  content: "\e55f";
+  font-family: "Material Icons";
+  font-size: 20px;
+  color: var(--c-dark-blue);
+  vertical-align: sub;
+  margin-right: .3rem;
+}
+
+.sus-map-panel #housing-housing-dyk_box .row .col-sm-7::before {
+  content: "\e88f";
+  font-family: "Material Icons";
+  font-size: 20px;
+  color: -var(--c-dark-blue);
+  vertical-align: -.3em;
+  margin-right: .3rem;
+}
+
+/* END Right panel icons */
+
+/* Right panel tablet*/
+@media (max-width: 650px) {
+  .sus-map-panel {
+    margin-right: calc(-1 * 100% - 2 * var(--padding-h-md));
   }
-  
-  .sus-map-sidebar div.form-group,
-  .sus-map-panel div.form-group {
-    margin-top: var(--padding-v-md);
-  }
+}
+
+.sus-map-panel-content {
+  position: relative;
+  z-index: calc(20 + var(--depth-ui));
+  width: 100%;
+  padding-left: var(--padding-h-md);
+  padding-right: var(--padding-h-md);
+  padding-top: var(--padding-v-md);
+  padding-bottom: var(--padding-v-md);
+}
+
+.sus-map-panel-content sus-scroll-content {
+  height: 100vw !important;
+}
+
+.sus-map-panel-content a.sus-small-link,
+.sus-map-panel-content h4 {
+  margin-top: var(--padding-v-md);
+  display: inline-block;
+}
+
+.sus-map-sidebar ul,
+.sus-map-panel ul {
+  padding-left: var(--padding-h-md);
+}
+
+.sus-map-sidebar #legend>img {
+  width: 100% !important;
+  height: auto;
+}
+
+.bottom_sidebar {
+  flex-shrink: 0;
+  flex-grow: 0;
+  position: relative !important;
+  top: unset !important;
+  bottom: unset !important;
+  left: unset !important;
+  right: unset !important;
+  height: fit-content;
+  margin: unset !important;
+  background: var(--c-primary-complement);
+  border-top: 1px solid var(--c-default);
+  padding-left: var(--padding-h-md);
+  padding-right: var(--padding-h-md);
+  padding-top: var(--padding-v-md);
+  padding-bottom: var(--padding-v-md);
+}
+
+
+.sus-map-panel p,
+.sus-map-sidebar p {
+  font-size: 1.45rem;
+}
+
+.sus-map-sidebar div.form-group,
+.sus-map-panel div.form-group {
+  margin-top: var(--padding-v-md);
+}
 
 .sus-map-sidebar button.dropdown-toggle,
 .sus-map-panel button.dropdown-toggle,
 .compare_dropdown .btn,
-.compare_dropdown .dropdown-menu > li > a {
+.compare_dropdown .dropdown-menu>li>a {
   font-family: var(--ff-button);
   text-transform: none;
   font-size: 1.25rem;
@@ -311,11 +273,11 @@
   box-shadow: var(--box-shadow-md);
 }
 
-#place_explorer-search_bar > *:not(:first-child) {
+#place_explorer-search_bar>*:not(:first-child) {
   margin-top: var(--padding-v-md);
 }
 
-#place_explorer-search_bar > strong {
+#place_explorer-search_bar>strong {
   font-family: var(--ff-h2);
   color: var(--c-primary);
 }
@@ -338,7 +300,7 @@
   border-top: 1px solid var(--c-default);
 }
 
-.sus-sidebar-widgets > *:first-child {
+.sus-sidebar-widgets>*:first-child {
   margin-top: var(--padding-v-md);
 }
 
@@ -349,5 +311,5 @@
 }
 
 .mapboxgl-ctrl-attrib-button {
-	display: none;
+  display: none;
 }
