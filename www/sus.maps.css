@@ -3,6 +3,7 @@
   --w-panel: 300px;
 }
 
+ 
 .map_div {
   height: calc(100vh - var(--h-navbar)) !important;
   position: fixed;
@@ -25,7 +26,8 @@
   padding-bottom: var(--padding-v-md);
 }
 
-.sus-map-sidebar, .sus-map-sidebar-shadow {
+.sus-map-sidebar,
+.sus-map-sidebar-shadow {
   position: fixed;
   top: var(--h-navbar);
   left: 0px;
@@ -76,7 +78,7 @@
   flex-shrink: 1;
 }
 
-.sus-map-sidebar-content > div {
+.sus-map-sidebar-content>div {
   height: fit-content;
   width: 100%;
   padding-left: var(--padding-h-md);
@@ -85,23 +87,88 @@
   padding-bottom: var(--padding-v-md);
 }
 
+/* Right collapsible menu */
 .sus-map-panel {
+  /*panel dimensions*/
   position: absolute;
-  /* overflow: hidden; */
-  overflow: scroll;
-  overflow-x: hidden;
+  overflow: scroll hidden;
   top: var(--padding-v-md);
   right: var(--padding-h-md);
-  min-width: var(--w-panel);
-  max-width: var(--w-panel);
-  width: 20vw;
-  min-height: min-content;
+  width: var(--w-panel);
   max-height: calc(100vh - var(--h-navbar) - 30px);
-  height: fit-content;
-  border: 0.5px solid rgba(0, 0, 0, 0.05);
-  box-shadow: var(--box-shadow-md);
-  transition: margin-right 0.5s ease-in-out;
   border: 0.4px solid rgba(0, 0, 0, 0.05);
+  box-shadow: var(--box-shadow-md);
+  overflow-x: hidden;
+}
+
+.dropdown-menu.open {
+  overflow-y: visible;
+  width: calc(var(--w-panel)-10px);
+  right: -30px;
+  max-height: calc(100vh-(--h-navbar));
+  height: fit-content;
+}
+
+/* Right panel for small screen only <1400px width*/
+@media (max-width: 1400px) {
+
+  #housing-right_panel,
+  #cc-right-panel {
+    overflow-y: hidden;
+  }
+
+  .sus-map-panel {
+    transition: opacity 0.5s ease-out, visibility 1s ease-out;
+    max-height: calc(100vh - var(--h-navbar) - 30px);
+    overflow-x: hidden;
+    transition-delay: visibility 4s;
+  }
+
+  .dropdown-menu.open {
+    overflow-y: visible;
+    width: calc(var(--w-panel)-10px);
+    right: -30px;
+    max-height: calc(100vh-(--h-navbar));
+    height: fit-content;
+  }
+}
+
+.dropdown-menu .inner {
+  overflow-y: visibile;
+  right: 10px;
+  width: calc(var(--w-panel)-20px);
+}
+
+/* Styling horizontal line */
+hr {
+  margin: .7rem 0 .7rem 0;
+}
+/* Right panel icons */
+.sus-map-panel #housing-housing-compare_panel .row .col-sm-7::before {
+  content: "\eaf6";
+  font-family: "Material Icons";
+  font-size: 20px;
+  color: var(--c-dark-blue);
+  vertical-align: middle;
+  margin-right: .3rem;
+}
+
+.sus-map-panel #housing-housing-explore_title .row .col-sm-7::before {
+  content: "\e55f";
+  font-family: "Material Icons";
+  font-size: 20px;
+  color: var(--c-dark-blue);
+  vertical-align: sub;
+  margin-right: .3rem;
+}
+
+.sus-map-panel #housing-housing-dyk_box .row .col-sm-7::before {
+  content: "\e88f";
+  font-family: "Material Icons";
+  font-size: 20px;
+  color: -var(--c-dark-blue);
+  vertical-align: -.3em;
+  margin-right: .3rem;
 }
 
 @media (max-width: 650px) {
@@ -120,16 +187,22 @@
   padding-bottom: var(--padding-v-md);
 }
 
-.sus-map-panel-content a.sus-small-link, .sus-map-panel-content h4 {
+.sus-map-panel-content sus-scroll-content {
+  height: 100vw !important;
+}
+
+.sus-map-panel-content a.sus-small-link,
+.sus-map-panel-content h4 {
   margin-top: var(--padding-v-md);
   display: inline-block;
 }
 
-.sus-map-sidebar ul, .sus-map-panel ul {
+.sus-map-sidebar ul,
+.sus-map-panel ul {
   padding-left: var(--padding-h-md);
 }
 
-.sus-map-sidebar #legend > img {
+.sus-map-sidebar #legend>img {
   width: 100% !important;
   height: auto;
 }
@@ -152,7 +225,9 @@
   padding-bottom: var(--padding-v-md);
 }
 
-.sus-map-panel p, .sus-map-sidebar p {
+
+.sus-map-panel p,
+.sus-map-sidebar p {
   font-size: 1.45rem;
 }
 
@@ -163,15 +238,8 @@
 
 .sus-map-sidebar button.dropdown-toggle,
 .sus-map-panel button.dropdown-toggle,
-.compare_dropdown .btn {
-  min-height: 30px;
-  max-height: 30px;
-}
-
-.sus-map-sidebar button.dropdown-toggle,
-.sus-map-panel button.dropdown-toggle,
 .compare_dropdown .btn,
-.compare_dropdown .dropdown-menu > li > a {
+.compare_dropdown .dropdown-menu>li>a {
   font-family: var(--ff-button);
   text-transform: none;
   font-size: 1.25rem;
@@ -201,11 +269,11 @@
   box-shadow: var(--box-shadow-md);
 }
 
-#place_explorer-search_bar > *:not(:first-child) {
+#place_explorer-search_bar>*:not(:first-child) {
   margin-top: var(--padding-v-md);
 }
 
-#place_explorer-search_bar > strong {
+#place_explorer-search_bar>strong {
   font-family: var(--ff-h2);
   color: var(--c-primary);
 }
@@ -228,7 +296,7 @@
   border-top: 1px solid var(--c-default);
 }
 
-.sus-sidebar-widgets > *:first-child {
+.sus-sidebar-widgets>*:first-child {
   margin-top: var(--padding-v-md);
 }
 
@@ -239,5 +307,5 @@
 }
 
 .mapboxgl-ctrl-attrib-button {
-	display: none;
+  display: none;
 }
