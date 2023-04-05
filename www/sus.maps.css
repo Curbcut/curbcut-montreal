@@ -91,7 +91,7 @@
 .sus-map-panel {
   /*panel dimensions*/
   position: absolute;
-  overflow: scroll hidden;
+  overflow: scroll;
   top: var(--padding-v-md);
   right: var(--padding-h-md);
   width: var(--w-panel);
@@ -101,79 +101,18 @@
   overflow-x: hidden;
 }
 
-.dropdown-menu.open {
-  overflow-y: visible;
-  width: calc(var(--w-panel)-10px);
-  right: -30px;
-  max-height: calc(100vh-(--h-navbar));
-  height: fit-content;
-}
-
 /* Right panel for small screen only <1400px width*/
 @media (max-width: 1400px) {
 
-  #housing-right_panel,
-  #cc-right-panel {
-    overflow-y: hidden;
-  }
-
   .sus-map-panel {
-    transition: opacity 0.5s ease-out, visibility 1s ease-out;
-    max-height: calc(100vh - var(--h-navbar) - 30px);
-    overflow-x: hidden;
+    opacity: 0.95;
+    transition: opacity 0.95s ease-out, visibility 1s ease-out;
     transition-delay: visibility 4s;
   }
-
-  .dropdown-menu.open {
-    overflow-y: visible;
-    width: calc(var(--w-panel)-10px);
-    right: -30px;
-    max-height: calc(100vh-(--h-navbar));
-    height: fit-content;
-  }
-}
-
-.dropdown-menu .inner {
-  overflow-y: visibile;
-  right: 10px;
-  width: calc(var(--w-panel)-20px);
-}
-
-/* Styling horizontal line */
-hr {
-  margin: .7rem 0 .7rem 0;
-}
-/* Right panel icons */
-.sus-map-panel #housing-housing-compare_panel .row .col-sm-7::before {
-  content: "\eaf6";
-  font-family: "Material Icons";
-  font-size: 20px;
-  color: var(--c-dark-blue);
-  vertical-align: middle;
-  margin-right: .3rem;
-}
-
-.sus-map-panel #housing-housing-explore_title .row .col-sm-7::before {
-  content: "\e55f";
-  font-family: "Material Icons";
-  font-size: 20px;
-  color: var(--c-dark-blue);
-  vertical-align: sub;
-  margin-right: .3rem;
-}
-
-.sus-map-panel #housing-housing-dyk_box .row .col-sm-7::before {
-  content: "\e88f";
-  font-family: "Material Icons";
-  font-size: 20px;
-  color: -var(--c-dark-blue);
-  vertical-align: -.3em;
-  margin-right: .3rem;
-}
-
-@media (max-width: 650px) {
-  .sus-map-panel {
-    margin-right: calc(-1 * 100% - 2 * var(--padding-h-md));
+  
+    /* Not working... why? */
+  .sus-map-panel hr {
+    margin: .7rem 0 .7rem 0 !important;
   }
 }
 
@@ -191,10 +130,11 @@ hr {
   height: 100vw !important;
 }
 
-.sus-map-panel-content a.sus-small-link,
-.sus-map-panel-content h4 {
-  margin-top: var(--padding-v-md);
-  display: inline-block;
+.sus-map-sidebar button.dropdown-toggle,
+.sus-map-panel button.dropdown-toggle,
+.compare_dropdown .btn {
+  min-height: 30px;
+  max-height: 30px;
 }
 
 .sus-map-sidebar ul,
