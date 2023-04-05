@@ -4,7 +4,7 @@
 }
 
  
-.map_div { 
+.map_div {
   height: calc(100vh - var(--h-navbar)) !important;
   position: fixed;
   top: var(--h-navbar);

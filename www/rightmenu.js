@@ -3,7 +3,7 @@
 
 function handleWindowResize() {
   handleDOMContentLoaded();
-}  
+} 
 
 window.addEventListener('resize', handleWindowResize);
 
