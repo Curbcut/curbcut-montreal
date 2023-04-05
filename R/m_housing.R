@@ -44,8 +44,8 @@ default_region <- modules$regions[modules$id == "housing"][[1]][1]
         id = NS(id, id),
         var_list = curbcut::dropdown_make(vars = " ", compare = TRUE)
       ),
-      explore_UI(NS(id, id)),
-      dyk_UI(NS(id, id))
+      curbcut::explore_UI(NS(id, id)),
+      curbcut::dyk_UI(NS(id, id))
     )
   )
 }
@@ -209,12 +209,12 @@ default_region <- modules$regions[modules$id == "housing"][[1]][1]
     )
     
     # Did-you-know panel
-    dyk_server(
+    curbcut::dyk_server(
       id = id,
       r = r,
-      var_left = var_left,
-      var_right = var_right,
-      poi = r[[id]]$poi
+      vars = vars,
+      poi = r[[id]]$poi,
+      df = r[[id]]$df
     )
     
     # Update map in response to variable changes or zooming
