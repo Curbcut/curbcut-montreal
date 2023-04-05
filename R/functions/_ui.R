@@ -3,6 +3,8 @@
 ready_modules_ui <- function(mods_rdy, stand_alone_tabs) {
   
   mods_rdy <- mods_rdy[names(mods_rdy) != "Place explorer"]
+  # Alphabetical order
+  mods_rdy <- mods_rdy[names(mods_rdy)[order(names(mods_rdy))]]
   
   list_args <- 
     lapply(names(mods_rdy), function(theme) {
