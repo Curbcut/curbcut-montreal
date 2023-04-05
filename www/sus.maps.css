@@ -143,7 +143,6 @@
 hr {
   margin: .7rem 0 .7rem 0;
 }
-
 /* Right panel icons */
 .sus-map-panel #housing-housing-compare_panel .row .col-sm-7::before {
   content: "\eaf6";
@@ -172,9 +171,6 @@ hr {
   margin-right: .3rem;
 }
 
-/* END Right panel icons */
-
-/* Right panel tablet*/
 @media (max-width: 650px) {
   .sus-map-panel {
     margin-right: calc(-1 * 100% - 2 * var(--padding-h-md));
@@ -313,5 +309,3 @@ hr {
 .mapboxgl-ctrl-attrib-button {
   display: none;
 }
-
-
