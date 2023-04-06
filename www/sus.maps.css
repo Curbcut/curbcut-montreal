@@ -110,6 +110,27 @@
   }
 }
 
+@media (max-width: 1400px) {
+  .sus-map-panel {
+    opacity: 0.95;
+    transition: opacity 0.95s ease-out, visibility 1s ease-out;
+    transition-delay: visibility 4s;
+  }
+  
+  .sus-map-panel:hover .right-panel-hidden {
+    display: block !important;
+  }
+      
+  .sus-map-panel hr {
+    margin: .7rem 0 .7rem 0 !important;
+  }
+    
+  .sus-map-panel:hover hr {
+    margin-top: 20px !important;
+    margin-bottom: 20px !important;
+  }
+}
+
 .sus-map-panel-content {
   position: relative;
   z-index: calc(20 + var(--depth-ui));
