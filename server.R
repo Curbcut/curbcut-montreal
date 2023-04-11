@@ -1,7 +1,7 @@
 ##### SUS SERVER SCRIPT ########################################################
 
 shinyServer(function(input, output, session) {
-  
+
   ## If crash, personalized error ----------------------------------------------
   
   observe({

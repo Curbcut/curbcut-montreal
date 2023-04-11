@@ -24,7 +24,7 @@ default_region <- modules$regions[modules$id == "housing"][[1]][1]
       curbcut::slider_UI(id = NS(id, id), slider_id = "slb", min = 1996, max = 2021, 
                          label = cc_t("Select two years"), value = c(2006, 2021)),
       curbcut::checkbox_UI(id = NS(id, id), label = curbcut::cc_t("Compare dates"), value = FALSE),
-      year_disclaimer_UI(NS(id, id)),
+      curbcut::warnuser_UI(NS(id, id)),
       bottom = shiny::tagList(
         curbcut::legend_UI(shiny::NS(id, id)),
         curbcut::zoom_UI(shiny::NS(id, id), `housing_mzp`)
@@ -164,38 +164,34 @@ default_region <- modules$regions[modules$id == "housing"][[1]][1]
     )
     
     # The `vars` reactive
-    vars <- reactive(curbcut::vars_build(
+    vars <- shiny::reactive(curbcut::vars_build(
       var_left = var_left(),
       var_right = var_right(),
       df = r[[id]]$df()
     ))
     
     # Sidebar
-    sidebar_server(id = id, r = r)
-    
-    # Sidebar
     curbcut::sidebar_server(id = id, r = r)
     
     # Data
-    data <- reactive(curbcut::data_get(
+    data <- shiny::reactive(curbcut::data_get(
       vars = vars(),
       df = r[[id]]$df()
     ))
     
     # Data for tile coloring
-    data_colours <- reactive(curbcut::data_get_colours(
+    data_colours <- shiny::reactive(curbcut::data_get_colours(
       vars = vars(),
       region = zoom_levels()$region,
       zoom_levels = zoom_levels()$zoom_levels
     ))
     
     # Year disclaimer
-    year_disclaimer_server(
+    curbcut::warnuser_server(
       id = id,
       r = r,
       data = data,
-      var_left = var_left,
-      var_right = var_right,
+      vars = vars,
       time = time
     )
     

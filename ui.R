@@ -58,8 +58,6 @@ ui <- function(request) {
     curbcut::use_curbcut_js(),
     curbcut::use_curbcut_css(lang_init = TRUE),
     
-    tags$head(tags$style("span.text {display: block !important;}")),
-    
     # Google analytics
     tags$head(includeHTML("www/google_analytics.html")),
     
@@ -81,6 +79,7 @@ ui <- function(request) {
       ),
     
     tags$head(tags$script(src = "about_contact.js")),
+
     
     # Navigation bar -------------------------------------------------------------
     
