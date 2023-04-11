@@ -2,7 +2,6 @@
 
 shinyServer(function(input, output, session) {
   
-  
   ## If crash, personalized error ----------------------------------------------
   
   observe({
@@ -110,7 +109,9 @@ shinyServer(function(input, output, session) {
 
   ## Newsletter ----------------------------------------------------------------
 
-  onclick("settings-subscribe", {
+  # Click here comes from a JS script which appends the Newsletter option
+  # in the `About` navbarMenu (www/acount_contact.js).
+  observeEvent(input$newsletter_click, {
     showModal(modalDialog(HTML(readLines("www/sus.signupform.html")),
                           easyClose = TRUE))
   })
@@ -139,69 +140,8 @@ shinyServer(function(input, output, session) {
   ## Advanced options ----------------------------------------------------------
 
   curbcut::settings_server(r = r)
-  
-  ## Data download -------------------------------------------------------------
-  
-  data_modal <- reactive(
-    data_export_modal(r = r, export_data = r[[input$cc_page]]$export_data()))
-  
-  onclick("settings-download_data", {
-    if (!input$cc_page %in% modules$id || 
-        isFALSE(modules$metadata[modules$id == input$cc_page]))
-      return(showNotification(
-        curbcut::cc_t(lang = r$lang(), 
-                      "No data/metadata for this location."),
-        duration = 3))
-    
-    showModal(data_modal()$modal)
-  })
-  
-  output$download_csv <-
-    downloadHandler(
-      filename = reactive(paste0(r[[input$cc_page]]$export_data()$id, "_data.csv")),
-      content = function(file) {
-        data <- data_modal()$data
-        write.csv(data, file, row.names = FALSE)
-      }, contentType = "text/csv")
-  
-  output$download_shp <-
-    downloadHandler(
-      filename = reactive(paste0(r[[input$cc_page]]$export_data()$id, "_shp.zip")),
-      content = function(file) {
-        withProgress(message = curbcut::cc_t(lang = r$lang(), 
-                                             "Exporting Data"), {
-          
-          incProgress(0.4)
-          
-          # Prepare data by attaching geometries
-          geo <- qread(paste0("data/geometry_export/", 
-                              r[[input$cc_page]]$export_data()$data_origin, ".qs"))
-          data <- merge(data_modal()$data, geo, by = "ID")
-          rm(geo)
-          
-          incProgress(0.3)
-          
-          tmp.path <- dirname(file)
-          name.base <- file.path(tmp.path,
-                                 paste0(r[[input$cc_page]]$export_data()$id, "_data"))
-          name.glob <- paste0(name.base, ".*")
-          name.shp  <- paste0(name.base, ".shp")
-          name.zip  <- paste0(name.base, ".zip")
-          
-          if (length(Sys.glob(name.glob)) > 0) file.remove(Sys.glob(name.glob))
-          sf::st_write(data, dsn = name.shp,
-                       driver = "ESRI Shapefile", quiet = TRUE)
-          
-          zip::zipr(zipfile = name.zip, files = Sys.glob(name.glob))
-          req(file.copy(name.zip, file))
-          
-          incProgress(0.3)
-          
-          if (length(Sys.glob(name.glob)) > 0) file.remove(Sys.glob(name.glob))
-        })
-      })
 
-  
+
   ## Heartbeat function to keep app alive --------------------------------------
   
   curbcut::heartbeat(input)

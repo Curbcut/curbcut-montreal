@@ -80,6 +80,8 @@ ui <- function(request) {
         twitter_site = "@susmontreal"
       ),
     
+    tags$head(tags$script(src = "about_contact.js")),
+    
     # Navigation bar -------------------------------------------------------------
     
     do.call(
