@@ -1,26 +1,31 @@
-### CANALE PAGE ################################################################
+### CLIMATERISK PAGE ###########################################################
 
 # GLOBAL ------------------------------------------------------------------
 
-`canale_default_region` <- unlist(modules$regions[modules$id == "canale"])[1]
-`canale_mzp` <-
-  eval(parse(text = paste0("map_zoom_levels_", `canale_default_region`)))
-default_region <- modules$regions[modules$id == "canale"][[1]][1]
+`climaterisk_default_region` <- unlist(modules$regions[modules$id == "climaterisk"])[1]
+`climaterisk_mzp` <-
+  eval(parse(text = paste0("map_zoom_levels_", `climaterisk_default_region`)))
+default_region <- modules$regions[modules$id == "climaterisk"][[1]][1]
 
 # UI ----------------------------------------------------------------------
 
-`canale_UI` <- function(id) {
+`climaterisk_UI` <- function(id) {
   shiny::tagList(
     # Sidebar
     curbcut::sidebar_UI(
       id = shiny::NS(id, id),
-      curbcut::slider_UI(id = NS(id, id), slider_id = "slu", min = 2001, max = 2021),
-      curbcut::slider_UI(id = NS(id, id), slider_id = "slb", min = 2001, max = 2021, label = curbcut::cc_t("Select two years"), value = c(2011, 2021)),
-      curbcut::checkbox_UI(id = NS(id, id), label = curbcut::cc_t("Compare dates"), value = FALSE),
+      curbcut::picker_UI(id = NS(id, id), var_list = c(
+        "climate_drought", "climate_flood", "climate_heavy_rain",
+        "climate_destructive_storms", "climate_heat_wave"
+      )),
+      curbcut::checkbox_UI(id = NS(id, id), label = cc_t("250-metre grid"),
+                           value = TRUE),
       curbcut::warnuser_UI(shiny::NS(id, id)),
       bottom = shiny::tagList(
         curbcut::legend_UI(shiny::NS(id, id)),
-        curbcut::zoom_UI(shiny::NS(id, id), `canale_mzp`)
+        shinyjs::hidden(
+          shiny::div(id = NS(id, "changezoom"),
+                     curbcut::zoom_UI(shiny::NS(id, id), `climaterisk_mzp`)))
       )
     ),
 
@@ -46,13 +51,13 @@ default_region <- modules$regions[modules$id == "canale"][[1]][1]
 
 # Server ------------------------------------------------------------------
 
-`canale_server` <- function(id, r) {
+`climaterisk_server` <- function(id, r) {
   shiny::moduleServer(id, function(input, output, session) {
     # Initial reactives
     rv_zoom_string <- reactiveVal(
       curbcut::zoom_get_string(
         zoom = map_zoom,
-        zoom_levels = `canale_mzp`,
+        zoom_levels = `climaterisk_mzp`,
         region = default_region
       )
     )
@@ -65,10 +70,21 @@ default_region <- modules$regions[modules$id == "canale"][[1]][1]
         map_viewstate = map_viewstate()
       ))
     })
-
+    
+    # When in grid mode, do not show the zoom widgets
+    shiny::observe({
+      shinyjs::toggle(id = "changezoom", condition = !grid())
+    })
+    
+    # Switch the region depending on inputs
+    region <- shiny::reactive({
+      if (grid()) return("grid")
+      r$region()
+    })
+    
     # Map zoom levels change depending on r$region()
     zoom_levels <-
-      reactive(curbcut::zoom_get_levels(id = id, region = r$region()))
+      shiny::reactive(curbcut::zoom_get_levels(id = id, region = region()))
 
     # Zoom string reactive
     observe({
@@ -89,7 +105,8 @@ default_region <- modules$regions[modules$id == "canale"][[1]][1]
       id = id,
       r = r,
       zoom_string = rv_zoom_string,
-      zoom_levels = zoom_levels
+      zoom_levels = zoom_levels,
+      no_autozoom = shiny::reactive(if (grid()) TRUE else FALSE)
     )
 
     # Get df
@@ -107,19 +124,27 @@ default_region <- modules$regions[modules$id == "canale"][[1]][1]
     )
 
     # Time
-    slider_uni <- curbcut::slider_server(id = id, slider_id = "slu")
-    slider_bi <- curbcut::slider_server(id = id, slider_id = "slb")
-    slider_switch <- curbcut::checkbox_server(id = id, r = r, label = shiny::reactive("Compare dates"))
-    time <- shiny::reactive(if (slider_switch()) slider_bi() else slider_uni())
-
-    # Enable or disable first and second slider
-    shiny::observeEvent(slider_switch(), {
-      shinyjs::toggle(NS(id, "ccslider_slu"), condition = !slider_switch())
-      shinyjs::toggle(NS(id, "ccslider_slb"), condition = slider_switch())
-    })
+    time <- reactive("2017")
 
     # Left variable
-    var_left <- reactive(paste("canale", time(), sep = "_"))
+    var_left <- curbcut::picker_server(
+      id = id,
+      r = r,
+      var_list = curbcut::dropdown_make(
+        vars = c(
+          "climate_drought", "climate_flood", "climate_heavy_rain",
+          "climate_destructive_storms", "climate_heat_wave"
+        ),
+        compare = FALSE
+      ),
+      time = time
+    )
+
+    # 250-m grid checkbox
+    grid <- curbcut::checkbox_server(
+      id = id,
+      r = r,
+      label = shiny::reactive(cc_t("250-metre grid", lang = r$lang())))
 
     # Right variable / compare panel
     var_right <- curbcut::compare_server(
@@ -196,6 +221,12 @@ default_region <- modules$regions[modules$id == "canale"][[1]][1]
       df = r[[id]]$df
     )
 
+    # Control the `lwd` of the polygon borders. No borders on grid + high zoom.
+    lwd <- shiny::reactive({
+      if (tile() == "grid_grid" & r[[id]]$zoom() < 12) return(0)
+      return(1)
+    })
+
     # Update map in response to variable changes or zooming
     map_viewstate <- curbcut::map_server(
       id = id,
@@ -204,7 +235,12 @@ default_region <- modules$regions[modules$id == "canale"][[1]][1]
       select_id = r[[id]]$select_id,
       zoom_levels = reactive(zoom_levels()$zoom_levels),
       zoom = r[[id]]$zoom,
-      coords = r[[id]]$coords
+      coords = r[[id]]$coords,
+      lwd_args = shiny::reactive(list(select_id = r[[id]]$select_id(),
+                                      tile = tile(),
+                                      zoom = r[[id]]$zoom(),
+                                      zoom_levels = zoom_levels()$zoom_levels,
+                                      lwd = lwd()))
     )
 
     # Update map labels

@@ -240,7 +240,7 @@ scales_variables_modules <-
 census_variables <- get_census_vectors_details()
 
 save.image()
-
+load(".RData")
 
 future::plan(future::multisession())
 
@@ -251,25 +251,25 @@ scales_variables_modules <-
   ru_canale(scales_variables_modules = scales_variables_modules,
             crs = crs,
             region_DA_IDs = census_scales$DA$ID)
-scales_variables_modules <-
-  ru_canbics(scales_variables_modules = scales_variables_modules,
-             crs = crs,
-             region_DA_IDs = census_scales$DA$ID)
+# scales_variables_modules <-
+#   ru_canbics(scales_variables_modules = scales_variables_modules,
+#              crs = crs,
+#              region_DA_IDs = census_scales$DA$ID)
 
 # Montreal specific modules
 
-scales_variables_modules <-
-  build_and_append_centraide_pop(
-    scales_variables_modules = scales_variables_modules,
-    crs = crs,
-    CT_table = census_scales$CT,
-    region_CT_IDs = census_scales$CT$ID)
-scales_variables_modules <-
-  build_and_append_centraide_hou(
-    scales_variables_modules = scales_variables_modules,
-    crs = crs,
-    CT_table = census_scales$CT,
-    region_CT_IDs = census_scales$CT$ID)
+# scales_variables_modules <-
+#   build_and_append_centraide_pop(
+#     scales_variables_modules = scales_variables_modules,
+#     crs = crs,
+#     CT_table = census_scales$CT,
+#     region_CT_IDs = census_scales$CT$ID)
+# scales_variables_modules <-
+#   build_and_append_centraide_hou(
+#     scales_variables_modules = scales_variables_modules,
+#     crs = crs,
+#     CT_table = census_scales$CT,
+#     region_CT_IDs = census_scales$CT$ID)
 scales_variables_modules <-
   build_and_append_climate_risk(
     scales_variables_modules = scales_variables_modules,
@@ -279,10 +279,10 @@ scales_variables_modules <-
 #     scales_variables_modules = scales_variables_modules,
 #     crs = crs)
 
-scales_variables_modules <-
-  build_and_append_natural_inf(
-    scales_variables_modules = scales_variables_modules,
-    crs = crs)
+# scales_variables_modules <-
+#   build_and_append_natural_inf(
+#     scales_variables_modules = scales_variables_modules,
+#     crs = crs)
 
 # Add MCP
 scales_variables_modules$modules <-
@@ -336,52 +336,52 @@ qs::qload("dev/data/built/scales_variables_modules.qsm")
 
 # Map zoom levels ---------------------------------------------------------
 
-# stop("MISSING mtl_city_auto_zoom. why?")
-# map_zoom_levels <- map_zoom_levels_create_all(all_tables = all_tables)
-# 
-# map_zoom_levels <-
-#   map_zoom_levels_create_custom(
-#     map_zoom_levels = map_zoom_levels,
-#     all_tables = all_tables,
-#     region = "CMA",
-#     suffix = "max_CT",
-#     content = c("CSD" = 0, "CT" = 10.5))
-# 
-# map_zoom_levels <-
-#   map_zoom_levels_create_custom(
-#     map_zoom_levels = map_zoom_levels,
-#     all_tables = all_tables,
-#     region = "city",
-#     suffix = "max_CT",
-#     content = c("CSD" = 0, "CT" = 10.5))
-# 
-# map_zoom_levels <-
-#   map_zoom_levels_create_custom(
-#     map_zoom_levels = map_zoom_levels,
-#     all_tables = all_tables,
-#     region = "island",
-#     suffix = "max_CT",
-#     content = c("CSD" = 0, "CT" = 10.5))
-# 
-# map_zoom_levels <-
-#   map_zoom_levels_create_custom(
-#     map_zoom_levels = map_zoom_levels,
-#     all_tables = all_tables,
-#     region = "centraide",
-#     suffix = "max_CT",
-#     content = c("centraide" = 0, "CT" = 10.5))
-# 
-# map_zoom_levels <-
-#   map_zoom_levels_create_custom(
-#     map_zoom_levels = map_zoom_levels,
-#     all_tables = all_tables,
-#     region = "city",
-#     suffix = "max_DB",
-#     content = c("CSD" = 0, "CT" = 10.5, "DA" = 12.5, "DB" = 14.5))
-# 
-# map_zoom_levels_save(data_folder = "data/", map_zoom_levels = map_zoom_levels)
-# 
-# 
+stop("MISSING mtl_city_auto_zoom. why?")
+map_zoom_levels <- map_zoom_levels_create_all(all_tables = all_tables)
+
+map_zoom_levels <-
+  map_zoom_levels_create_custom(
+    map_zoom_levels = map_zoom_levels,
+    all_tables = all_tables,
+    region = "CMA",
+    suffix = "max_CT",
+    content = c("CSD" = 0, "CT" = 10.5))
+
+map_zoom_levels <-
+  map_zoom_levels_create_custom(
+    map_zoom_levels = map_zoom_levels,
+    all_tables = all_tables,
+    region = "city",
+    suffix = "max_CT",
+    content = c("CSD" = 0, "CT" = 10.5))
+
+map_zoom_levels <-
+  map_zoom_levels_create_custom(
+    map_zoom_levels = map_zoom_levels,
+    all_tables = all_tables,
+    region = "island",
+    suffix = "max_CT",
+    content = c("CSD" = 0, "CT" = 10.5))
+
+map_zoom_levels <-
+  map_zoom_levels_create_custom(
+    map_zoom_levels = map_zoom_levels,
+    all_tables = all_tables,
+    region = "centraide",
+    suffix = "max_CT",
+    content = c("centraide" = 0, "CT" = 10.5))
+
+map_zoom_levels <-
+  map_zoom_levels_create_custom(
+    map_zoom_levels = map_zoom_levels,
+    all_tables = all_tables,
+    region = "city",
+    suffix = "max_DB",
+    content = c("CSD" = 0, "CT" = 10.5, "DA" = 12.5, "DB" = 14.5))
+
+map_zoom_levels_save(data_folder = "data/", map_zoom_levels = map_zoom_levels)
+
+
 # # Tilesets ----------------------------------------------------------------
 # 
 # tileset_upload_all(all_scales = scales_variables_modules$scales,
@@ -412,28 +412,28 @@ qs::qload("dev/data/built/scales_variables_modules.qsm")
 
 # Place explorer ----------------------------------------------------------
 
-future::plan(future::multisession(), workers = 18)
-
-scales_variables_modules$scales <- scales_variables_modules$scales[1]
-
-pe_main_card_data <- placeex_main_card_data(scales = scales_variables_modules$scales,
-                                            DA_table = census_scales$DA,
-                                            region_DA_IDs = census_scales$DA$ID,
-                                            crs = crs,
-                                            regions_dictionary = regions_dictionary)
-
-placeex_main_card_rmd(scales_variables_modules = scales_variables_modules,
-                      pe_main_card_data = pe_main_card_data,
-                      regions_dictionary = regions_dictionary,
-                      scales_dictionary = scales_dictionary,
-                      lang = "en",
-                      tileset_prefix = "mtl",
-                      mapbox_username = "sus-mcgill",
-                      rev_geocode_from_localhost = TRUE,
-                      overwrite = TRUE)
-
+# future::plan(future::multisession(), workers = 18)
+# 
+# scales_variables_modules$scales <- scales_variables_modules$scales[1]
+# 
+# pe_main_card_data <- placeex_main_card_data(scales = scales_variables_modules$scales,
+#                                             DA_table = census_scales$DA,
+#                                             region_DA_IDs = census_scales$DA$ID,
+#                                             crs = crs,
+#                                             regions_dictionary = regions_dictionary)
+# 
+# placeex_main_card_rmd(scales_variables_modules = scales_variables_modules,
+#                       pe_main_card_data = pe_main_card_data,
+#                       regions_dictionary = regions_dictionary,
+#                       scales_dictionary = scales_dictionary,
+#                       lang = "en",
+#                       tileset_prefix = "mtl",
+#                       mapbox_username = "sus-mcgill",
+#                       rev_geocode_from_localhost = TRUE,
+#                       overwrite = TRUE)
+# 
 # Add the place explorer in the modules dataframe
-scales_variables_modules$module <- 
+scales_variables_modules$module <-
   add_module(modules = scales_variables_modules$module,
              id = "place_explorer",
              theme = "Place explorer",

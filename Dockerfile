@@ -28,7 +28,7 @@ RUN apt-get update && \
     apt-get clean
 
 # copy necessary files
-## copy all Sus folder to the root
+## copy all Curbcut folder to the root
 COPY . .
 ## renv.lock file
 COPY ./renv.lock ./renv.lock
