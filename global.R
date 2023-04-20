@@ -23,21 +23,18 @@ suppressPackageStartupMessages({
   library(curbcut)
   # temporary fix? necessary for tile_json
   library(urltools)
+  library(rdeck)
   
   library(shiny)
   library(bslib)
   library(shinyjs)
   library(shinyWidgets)
 
-  library(rdeck)
-  library(ggplot2)
-
   library(qs)
   library(glue)
   library(metathis)
   
   library(RSQLite)
-  library(tableHTML)
   library(stringr)
   
   library(sever)
@@ -131,3 +128,8 @@ systemfonts::register_font(
 
 temp_folder <- tempdir()
 addResourcePath("temp_folder_shortcut", temp_folder)
+
+
+# Create the UI and server functions for basic modules --------------------
+
+curbcut::create_ui_server_mods(modules = modules)

@@ -2,7 +2,7 @@
 # 
 # # UI ----------------------------------------------------------------------
 # 
-# mcp_UI <- function(id) {
+mcp_UI <- function(id) {
 # 
 #   tagList(
 #           susPage(class = "sus-page-mcp", footer = susFooter(),
@@ -14,13 +14,13 @@
 #             )
 #           )
 #         )
-# }
+}
 # 
 # 
 # # Server ------------------------------------------------------------------
 # 
-# mcp_server <- function(id, r) {
-#   moduleServer(id, function(input, output, session) {
+mcp_server <- function(id, r) {
+  moduleServer(id, function(input, output, session) {
 # 
 #     left_var_mcp <- select_var_server(
 #       id = "left",
@@ -35,5 +35,5 @@
 #                               ".html")),
 #            '</div>'))
 # 
-#   })
-# }
+  })
+}

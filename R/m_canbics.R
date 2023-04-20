@@ -142,9 +142,6 @@
 #     ))
 # 
 #     # Sidebar
-#     sidebar_server(id = id, r = r)
-# 
-#     # Sidebar
 #     curbcut::sidebar_server(id = id, r = r)
 # 
 #     # Data

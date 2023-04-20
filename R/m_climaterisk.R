@@ -14,18 +14,13 @@ default_region <- modules$regions[modules$id == "climaterisk"][[1]][1]
     # Sidebar
     curbcut::sidebar_UI(
       id = shiny::NS(id, id),
-      curbcut::picker_UI(id = NS(id, id), var_list = c(
-        "climate_drought", "climate_flood", "climate_heavy_rain",
-        "climate_destructive_storms", "climate_heat_wave"
-      )),
-      curbcut::checkbox_UI(id = NS(id, id), label = cc_t("250-metre grid"),
+      curbcut::autovars_UI(NS(id, id)),
+      curbcut::checkbox_UI(id = NS(id, id), label = cc_t("Grids"),
                            value = TRUE),
       curbcut::warnuser_UI(shiny::NS(id, id)),
       bottom = shiny::tagList(
         curbcut::legend_UI(shiny::NS(id, id)),
-        shinyjs::hidden(
-          shiny::div(id = NS(id, "changezoom"),
-                     curbcut::zoom_UI(shiny::NS(id, id), `climaterisk_mzp`)))
+        curbcut::zoom_UI(shiny::NS(id, id), `climaterisk_mzp`)
       )
     ),
 
@@ -61,7 +56,7 @@ default_region <- modules$regions[modules$id == "climaterisk"][[1]][1]
         region = default_region
       )
     )
-
+    
     # Zoom and POI reactives when the view state of the map changes.
     observeEvent(map_viewstate(), {
       r[[id]]$zoom(curbcut::zoom_get(zoom = map_viewstate()$zoom))
@@ -69,11 +64,6 @@ default_region <- modules$regions[modules$id == "climaterisk"][[1]][1]
         id = id, poi = r[[id]]$poi(),
         map_viewstate = map_viewstate()
       ))
-    })
-    
-    # When in grid mode, do not show the zoom widgets
-    shiny::observe({
-      shinyjs::toggle(id = "changezoom", condition = !grid())
     })
     
     # Switch the region depending on inputs
@@ -105,8 +95,7 @@ default_region <- modules$regions[modules$id == "climaterisk"][[1]][1]
       id = id,
       r = r,
       zoom_string = rv_zoom_string,
-      zoom_levels = zoom_levels,
-      no_autozoom = shiny::reactive(if (grid()) TRUE else FALSE)
+      zoom_levels = zoom_levels
     )
 
     # Get df
@@ -123,28 +112,22 @@ default_region <- modules$regions[modules$id == "climaterisk"][[1]][1]
       }
     )
 
-    # Time
-    time <- reactive("2017")
-
-    # Left variable
-    var_left <- curbcut::picker_server(
-      id = id,
-      r = r,
-      var_list = curbcut::dropdown_make(
-        vars = c(
-          "climate_drought", "climate_flood", "climate_heavy_rain",
-          "climate_destructive_storms", "climate_heat_wave"
-        ),
-        compare = FALSE
-      ),
-      time = time
-    )
+    # Construct the left-hand UIs / servers automatically
+    autovars <- 
+      curbcut::autovars_server(
+        id = id, 
+        r = r, 
+        main_dropdown_title = "Climate vulnerability indicator",
+        default_year = 2022)
+    
+    var_left <- shiny::reactive(autovars()$var)
+    time <- shiny::reactive(autovars()$time)
 
     # 250-m grid checkbox
     grid <- curbcut::checkbox_server(
       id = id,
       r = r,
-      label = shiny::reactive(cc_t("250-metre grid", lang = r$lang())))
+      label = shiny::reactive(cc_t("Grids", lang = r$lang())))
 
     # Right variable / compare panel
     var_right <- curbcut::compare_server(
@@ -171,34 +154,36 @@ default_region <- modules$regions[modules$id == "climaterisk"][[1]][1]
       time = time
     )
 
-    # The `vars` reactive
-    vars <- reactive(curbcut::vars_build(
-      var_left = var_left(),
-      var_right = var_right(),
-      df = r[[id]]$df()
-    ))
+    # Update the `r[[id]]$vars` reactive
+    curbcut::update_vars(id = id, r = r, var_left = var_left, 
+                         var_right = var_right)
 
     # Sidebar
     curbcut::sidebar_server(id = id, r = r)
 
     # Data
     data <- reactive(curbcut::data_get(
-      vars = vars(),
+      vars = r[[id]]$vars(),
       df = r[[id]]$df()
     ))
 
     # Data for tile coloring
-    data_colours <- reactive(curbcut::data_get_colours(
-      vars = vars(),
+    data_colours <- shiny::eventReactive({
+      r[[id]]$vars()
+      zoom_levels()$region
+      zoom_levels()$zoom_levels
+    }, {
+      curbcut::data_get_colours(
+      vars = r[[id]]$vars(),
       region = zoom_levels()$region,
       zoom_levels = zoom_levels()$zoom_levels
-    ))
+    )})
 
     # Warn user
     curbcut::warnuser_server(
       id = id,
       r = r,
-      vars = vars,
+      vars = r[[id]]$vars,
       time = time,
       data = data
     )
@@ -207,7 +192,7 @@ default_region <- modules$regions[modules$id == "climaterisk"][[1]][1]
     curbcut::legend_server(
       id = id,
       r = r,
-      vars,
+      vars = r[[id]]$vars,
       data = data,
       df = r[[id]]$df
     )
@@ -216,14 +201,14 @@ default_region <- modules$regions[modules$id == "climaterisk"][[1]][1]
     curbcut::dyk_server(
       id = id,
       r = r,
-      vars = vars,
+      vars = r[[id]]$vars,
       poi = r[[id]]$poi,
       df = r[[id]]$df
     )
 
     # Control the `lwd` of the polygon borders. No borders on grid + high zoom.
     lwd <- shiny::reactive({
-      if (tile() == "grid_grid" & r[[id]]$zoom() < 12) return(0)
+      if (zoom_levels()$region == "grid") return(0)
       return(1)
     })
 
@@ -236,6 +221,7 @@ default_region <- modules$regions[modules$id == "climaterisk"][[1]][1]
       zoom_levels = reactive(zoom_levels()$zoom_levels),
       zoom = r[[id]]$zoom,
       coords = r[[id]]$coords,
+      tileset_ID_color = if (grid()) "ID" else "ID_color",
       lwd_args = shiny::reactive(list(select_id = r[[id]]$select_id(),
                                       tile = tile(),
                                       zoom = r[[id]]$zoom(),
@@ -258,7 +244,7 @@ default_region <- modules$regions[modules$id == "climaterisk"][[1]][1]
       r = r,
       data = data,
       region = reactive(zoom_levels()$region),
-      vars = vars,
+      vars = r[[id]]$vars,
       df = r[[id]]$df,
       select_id = r[[id]]$select_id
     )
@@ -275,7 +261,7 @@ default_region <- modules$regions[modules$id == "climaterisk"][[1]][1]
     curbcut::panel_view_server(
       id = id,
       r = r,
-      vars = vars,
+      vars = r[[id]]$vars,
       data = data,
       zoom_levels = reactive(zoom_levels()$zoom_levels)
     )

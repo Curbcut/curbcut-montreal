@@ -1,6 +1,6 @@
 {
   "R": {
-    "Version": "4.2.2",
+    "Version": "4.2.3",
     "Repositories": [
       {
         "Name": "CRAN",
@@ -114,7 +114,7 @@
     },
     "RSQLite": {
       "Package": "RSQLite",
-      "Version": "2.3.0",
+      "Version": "2.3.1",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -128,7 +128,7 @@
         "pkgconfig",
         "plogr"
       ],
-      "Hash": "264c1861d7ac1dc71ecb5ac5c4c1318a"
+      "Hash": "207c90cd5438a1f596da2cd54c606fee"
     },
     "Rcpp": {
       "Package": "Rcpp",
@@ -294,14 +294,14 @@
     },
     "cli": {
       "Package": "cli",
-      "Version": "3.6.0",
+      "Version": "3.6.1",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
         "R",
         "utils"
       ],
-      "Hash": "3177a5a16c243adc199ba33117bd9657"
+      "Hash": "89e6d8219950eac806ae0c489052048a"
     },
     "colorspace": {
       "Package": "colorspace",
@@ -365,7 +365,7 @@
       "RemoteRepo": "curbcut",
       "RemoteUsername": "MSSI-urban",
       "RemoteRef": "HEAD",
-      "RemoteSha": "ea0b4609980113cb44441a0989515e6014e4550e",
+      "RemoteSha": "25e1a7c8d51bd74c9d44becd6e87b0232abef37a",
       "Requirements": [
         "DBI",
         "DT",
@@ -373,14 +373,17 @@
         "ggplot2",
         "glue",
         "httr",
+        "qs",
         "rdeck",
         "scales",
+        "sf",
         "shiny",
         "shinyWidgets",
         "shinyjs",
-        "stats"
+        "stats",
+        "utils"
       ],
-      "Hash": "0a4b84c998e90c1543fd9d8581476a78"
+      "Hash": "9753cc1dd0c6f1b41de11d3aaed8a047"
     },
     "curl": {
       "Package": "curl",
@@ -526,7 +529,7 @@
     },
     "ggplot2": {
       "Package": "ggplot2",
-      "Version": "3.4.1",
+      "Version": "3.4.2",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -547,7 +550,7 @@
         "vctrs",
         "withr"
       ],
-      "Hash": "d494daf77c4aa7f084dbbe6ca5dcaca7"
+      "Hash": "3a147ee02e85a8941aad9909f1b43b7b"
     },
     "glue": {
       "Package": "glue",
@@ -947,14 +950,14 @@
     },
     "ps": {
       "Package": "ps",
-      "Version": "1.7.3",
+      "Version": "1.7.4",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
         "R",
         "utils"
       ],
-      "Hash": "ebaacc87f539b1100e285e9e5d6496ad"
+      "Hash": "d88be14c6790aa6fd7b27a2079a45a85"
     },
     "purrr": {
       "Package": "purrr",
@@ -998,7 +1001,7 @@
       "Package": "rdeck",
       "Version": "0.5.2",
       "Source": "GitHub",
-      "Remotes": "anthonynorth/roxyglobals, anthonynorth/stylebox, qfes/tidyassert",
+      "Remotes": "anthonynorth/roxyglobals, anthonynorth/stylebox,\r qfes/tidyassert",
       "RemoteType": "github",
       "RemoteHost": "api.github.com",
       "RemoteRepo": "rdeck",
@@ -1027,13 +1030,13 @@
     },
     "renv": {
       "Package": "renv",
-      "Version": "0.17.2",
+      "Version": "0.17.3",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
         "utils"
       ],
-      "Hash": "aaf3c7f769695266a2113db67a25148b"
+      "Hash": "4543b8cd233ae25c6aba8548be9e747e"
     },
     "rlang": {
       "Package": "rlang",
@@ -1048,13 +1051,14 @@
     },
     "rmarkdown": {
       "Package": "rmarkdown",
-      "Version": "2.20",
+      "Version": "2.21",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
         "R",
         "bslib",
         "evaluate",
+        "fontawesome",
         "htmltools",
         "jquerylib",
         "jsonlite",
@@ -1067,7 +1071,7 @@
         "xfun",
         "yaml"
       ],
-      "Hash": "716fde5382293cc94a71f68c85b78d19"
+      "Hash": "493df4ae51e2e984952ea4d5c75786a3"
     },
     "s2": {
       "Package": "s2",
@@ -1520,13 +1524,6 @@
       "Source": "Repository",
       "Repository": "CRAN",
       "Hash": "0d0056cc5383fbc240ccd0cb584bf436"
-    },
-    "zip": {
-      "Package": "zip",
-      "Version": "2.2.2",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "c42bfcec3fa6a0cce17ce1f8bc684f88"
     }
   }
 }

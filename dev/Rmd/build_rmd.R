@@ -2,43 +2,23 @@
 
 # Processing function -----------------------------------------------------
 
-process_rmd <- function(file, path) {
+process_rmd <- function(file, path, css_path = here::here("www/sus.css")) {
   
   # Error handling
   stopifnot(sum(str_detect(file, "Rmd")) == length(file))
   
   # Prep locations
-  out_file <- str_replace(file, "Rmd", "html")
+  out_file <- gsub("Rmd", "html", file)
   out <- paste0("www/", path, "/", out_file)
+  
+  # Custom output format with the CSS file
+  custom_html_output_format <- rmarkdown::html_document(css = css_path)
   
   # Render document
   rmarkdown::render(paste0("dev/Rmd/", path, "/", file), 
+                    output_format = custom_html_output_format,
                     output_dir = paste0("www/", path),
                     quiet = TRUE)
-  
-  # Remove long script tag
-  # x <- readLines(out)
-  # long_script <- str_which(x, "<script")
-  # long_script <- long_script[nchar(x[long_script]) > 100000]
-  # x <- x[-long_script]
-  
-  # Write ouput
-  # writeLines(x, out)
-  
-  # Take head out, which breaks Curbcut' CSS
-  x <- readLines(out)
-  
-  if (file %in% c(list.files("dev/Rmd/stories"),
-                  list.files("dev/Rmd/news"))) {
-    x <- 
-      str_remove_all(x, "(?<=src=\")../../../www/(?=stories|news)")
-
-  } else {
-    x <-
-      x[-((str_detect(x, "<head") |> which()):(str_detect(x, "</head") |> which()))]
-  }
-  
-  writeLines(x, out)
 }
 
 

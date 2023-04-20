@@ -1,220 +1,165 @@
-#### AUTO-WIDGET CREATION MODULE ###############################################
-#' This module creates the number of widgets necessary to create a variable, using
-#' the `group_name` and `group_diff` column of the `variables` table.
-
-# Module UI ---------------------------------------------------------------
-
-auto_vars_UI <- function(id, var_list, label = NULL) {
-  tagList(
-    div(id = NS(id, "main_drop"),
-        div(id = NS(id, "staying_widgets_hr"), hr()),
-        curbcut::picker_UI(NS(id, "auto_var"), var_list = var_list,
-                      label = label),
-        hidden(div(id = NS(id, "widgets_hr"), hr())))
-  )
-}
-
-
-# Module server -----------------------------------------------------------
-
-auto_vars_server <- function(id, r, module_id = NULL, var_list, 
-                             df = r[[id]]$df, time = reactive(NULL),
-                             auto_disable = TRUE) {
-  
-  stopifnot(!is.reactive(var_list))
-  
-  moduleServer(id, function(input, output, session) {
-    
-    #### Name spacing gets pretty complicated from a module or the compare #####
-    input_namespace <- reactive({
-      if (is.null(module_id)) return(function(id_s) NS(id, NS(id, id_s)))
-      return(function(id_s) NS(module_id, NS(module_id, NS(id, id_s))))
-      })
-    ui_selector <- reactive({
-      if (is.null(module_id)) return(paste0("#", id, "-", id, "-main_drop"))
-      return(paste0("#", module_id, "-", module_id, "-compare-main_drop"))
-    })
-    
-    #### Toggle on and off the hr ##############################################
-    observe({
-      toggle("staying_widgets_hr", condition = length(staying_widgets()) != 0)
-      toggle("widgets_hr", condition = length(widget_lists()) != 0)
-      })
-
-    #### WIDGETS THAT STAY ON THE MODULE NO MATTER WHAT ########################
-    # Widgets that are alike in ALL the variables of the module (defined through 
-    # `var_list`), and that  shouldn't move ever (we don't want them to be 
-    # reactive by a change in the selected variable).
-    staying_widgets <- reactive({
-      groupings <- variables$group_name[variables$var_code %in% unlist(var_list)]
-      if (all(is.na(groupings))) return()
-      get_shared_group_diffs(groupings)
-    })
-    
-    # Insert the widgets that are supposed to stay
-    observeEvent(staying_widgets(), {
-      lapply(seq_along(staying_widgets()), \(x) {
-        vars_list <- staying_widgets()[x]
-        id_s <- create_id_s(staying_widgets()[x])
-        vars_list <- unlist(vars_list)
-        
-        insertUI(ui_selector(),
-                 where = "beforeBegin",
-                 tags$div(id = "staying_widgets",
-                          if (is.numeric(vars_list)) {
-                            step <- {vars_list[length(vars_list)] - 
-                                vars_list[length(vars_list) - 1]}
-                            def <- vars_list[ceiling(length(vars_list)/2)]
-                            slider_UI(input_namespace()(id_s$key),
-                                      label = curbcut::cc_t(lang = r$lang(), id_s$lab),
-                                      min = min(vars_list),
-                                      max = max(vars_list),
-                                      step = step,
-                                      value = def)
-                          } else {
-                            # Translation
-                            names(vars_list) <- vars_list
-                            names(vars_list) <- 
-                              sapply(names(vars_list), cc_t, lang = r$lang())
-                            curbcut::picker_UI(input_namespace()(id_s$key),
-                                          var_list = vars_list,
-                                          label = curbcut::cc_t(lang = r$lang(), id_s$lab))
-                          }
-                 ))
-      })
-    })
-    
-    #### CREATE THE FIRST DROPDOWN USING VAR_LIST ##############################
-    # Get the first level dropdown
-    r[[id]]$auto_var <- reactiveVal(" ")
-    auto_var_1 <- select_var_server("auto_var", r = r,
-                                  var_list = reactive(var_list),
-                                  df = df,
-                                  auto_disable = auto_disable,
-                                  time = time)
-    
-    var_time <- reactive(regmatches(auto_var_1(), regexec("_\\d{4}", auto_var_1())) |> 
-                           unlist())
-    auto_var <- reactive(unique(gsub("_\\d{4}$", "", auto_var_1())))
-    
-    # Update the reactiveVal ONLY if auto_var() faces an actual change.
-    observeEvent(auto_var(), {
-      if (auto_var()[1] != r[[id]]$auto_var()[1]) r[[id]]$auto_var(auto_var())
-    })
-    # Get the variables table that fit with the auto_var() selection
-    variables_possibilities <- eventReactive(r[[id]]$auto_var(), {
-      if (auto_var() == " ") return(NULL)
-      group <- variables$group_name[variables$var_code == auto_var()]
-      variables[!is.na(variables$group_name) & variables$group_name == group, ]
-    })
-    
-    #### ALL OTHER WIDGETS #####################################################
-    # These widgets can change depending on auto_var() or on change in the 
-    # staying widgets.
-    
-    # Subset of the variables table that fit with the staying widgets
-    new_widget_possibilities <- 
-      reactive({
-        if (is.null(variables_possibilities())) return(NULL)
-        staying_widgets_values <- 
-          mapply(\(x, y) {
-            vars_list <- staying_widgets()[y]
-            id_s <- create_id_s(vars_list)$key
-            type <- if (is.numeric(unlist(vars_list))) "-slider" else "-var"
-            key <- paste0(id_s, type)
-            return(as.character(input[[key]]))
-          }, staying_widgets(), seq_along(staying_widgets()), SIMPLIFY = FALSE,
-          USE.NAMES = TRUE)
-        
-        new_group <- sapply(variables_possibilities()$group_diff, \(x) {
-          identical(x[which(names(x) %in% names(staying_widgets_values))],
-                    staying_widgets_values)
-        })
-        
-        variables_possibilities()[new_group, ]
-      })
-    
-    # All widget values
-    widget_lists <- eventReactive(new_widget_possibilities(), {
-      if (is.null(variables_possibilities())) return(NULL)
-      get_group_diffs(new_widget_possibilities())
-    })
-    
-    # Additional widget values
-    r[[id]]$widgets_to_add <- reactiveVal(" ")
-    widgets_to_add <- reactive({
-      widget_lists()[!names(widget_lists()) %in% names(staying_widgets())]
-    })
-    
-    # Update the reactiveVal ONLY if auto_var() faces an actual change.
-    observeEvent(widgets_to_add(), {
-      if (!identical(widgets_to_add(), r[[id]]$widgets_to_add()))
-        r[[id]]$widgets_to_add(widgets_to_add())
-    })
-    
-    # Create and remove the reactive widgets
-    observeEvent(r[[id]]$widgets_to_add(), {
-      removeUI(selector = "#auto_additional_drops")
-      if (is.null(variables_possibilities())) return(NULL)
-      
-      # Reactive widgets' UI
-      insertUI(ui_selector(),
-               where = "afterEnd",
-               tags$div(id = "auto_additional_drops",      
-                        lapply(seq_along(widgets_to_add()), \(x) {
-                          vars_list <- widgets_to_add()[x]
-                          id_s <- create_id_s(vars_list)
-                          vars_list <- unlist(vars_list)
-
-                          if (is.numeric(vars_list)) {
-                            step <- {vars_list[length(vars_list)] - 
-                                vars_list[length(vars_list) - 1]}
-                            def <- vars_list[ceiling(length(vars_list)/2)]
-                            slider_UI(input_namespace()(id_s$key),
-                                      label = curbcut::cc_t(lang = r$lang(), id_s$lab),
-                                      min = min(vars_list),
-                                      max = max(vars_list),
-                                      step = step,
-                                      value = def)
-                          } else {
-                            # Translation
-                            names(vars_list) <- vars_list
-                            names(vars_list) <- 
-                              sapply(names(vars_list), cc_t, lang = r$lang())
-                            curbcut::picker_UI(input_namespace()(id_s$key),
-                                          var_list = vars_list,
-                                          label = curbcut::cc_t(lang = r$lang(), id_s$lab))
-                          }
-                        }))
-      )
-    })
-    
-    
-    #### OUTPUT VARIABLE #######################################################
-    # The actual reacreated variable
-    recreated_var <- reactive({
-      if (is.null(variables_possibilities())) return(" ")
-      # Result of all dropdowns in a named list
-      value_keys <-
-        mapply(\(x, y) {
-          vars_list <- widget_lists()[y]
-          id_s <- create_id_s(vars_list)$key
-          type <- if (is.numeric(unlist(vars_list))) "-slider" else "-var"
-          key <- paste0(id_s, type)
-          return(as.character(input[[key]]))
-        }, widget_lists(), seq_along(widget_lists()), SIMPLIFY = FALSE,
-        USE.NAMES = TRUE)
-      
-      which_match <- which(sapply(variables_possibilities()$group_diff, 
-                                  \(x) identical(x, value_keys)))
-      
-      # Return
-      out <- variables_possibilities()$var_code[which_match]
-      out <- if (length(out) == 0) auto_var() else out
-      paste0(out, var_time())
-    })
-    
-    return(recreated_var)
-    
-  })
-}
+# 
+# autovars_UI <- function(id) {
+#   shiny::tagList(
+#     shiny::div(
+#       id = shiny::NS(id, "autovars"),
+#       shiny::hr(id = shiny::NS(id, "common_widgets")),
+#       shinyjs::hidden(shiny::hr(id = shiny::NS(id, "hr_additional_widgets")))
+#     )
+#   )
+# }
+# 
+# autovars_server <- function(id, r, main_dropdown_title, default_year) {
+#   shiny::moduleServer(id, function(input, output, session) {
+#     # Global preparation ------------------------------------------------------
+# 
+#     # Selector function. Retrieve the namespace function associated with the
+#     # current module's session. Add a '#' to use it as a selector
+#     html_ns <- function(css_id) {
+#       sprintf("#%s", session$ns(css_id))
+#     }
+#     widget_ns <- session$ns
+#     additional_picker_count <- shiny::reactiveVal(0)
+#     out_var <- shiny::reactiveVal(autovars_placeholder_var(id = id))
+# 
+#     # Common widgets ----------------------------------------------------------
+# 
+#     # If some widgets are alike in all the variables to be picked through,
+#     # make these widgets in top in priority. e.g. `time`
+#     observe({
+#       common_widgets <- autovars_common_widgets(id = id)
+#       # Time widgets
+#       shiny::insertUI(
+#         selector = html_ns("common_widgets"),
+#         where = "beforeBegin",
+#         ui = {
+#           min_ <- common_widgets$time |> min()
+#           max_ <- common_widgets$time |> max()
+#           step_ <- unique(diff(common_widgets$time))[1]
+#           double_value_ <- common_widgets$time[ceiling(length(common_widgets$time) / 2)]
+#           double_value_ <- c(double_value_, max_)
+#           shiny::tagList(
+#             slider_UI(id = widget_ns(id), slider_id = "slu", min = min_, max = max_,
+#                       step = step_, label = cc_t("Select a year")),
+#             slider_UI(id = widget_ns(id), slider_id = "slb", min = min_, max = max_,
+#                       step = step_, label = cc_t("Select two years"), value = double_value_),
+#             checkbox_UI(id = widget_ns(id), label = cc_t("Compare dates"), value = FALSE)
+#           )
+#         })
+#       # Other widgets
+#       if (length(common_widgets$widgets) > 0)
+#         lapply(widgets, \(w) {
+#           shiny::insertUI(selector = html_ns("additional_widgets"),
+#                           where = "afterEnd",
+#                           ui = {
+#                             curbcut::picker_UI(id = widget_ns(id),
+#                                                ...)
+#                           })
+#         })
+#     })
+#     # Grab the time values
+#     slider_uni <- slider_server(id = id, slider_id = "slu")
+#     slider_bi <- slider_server(id = id, slider_id = "slb")
+#     slider_switch <- checkbox_server(id = id, r = r,
+#                                      label = shiny::reactive("Compare dates"))
+#     # Enable or disable first and second slider
+#     shiny::observeEvent(slider_switch(), {
+#       shinyjs::toggle(shiny::NS(id, "ccslider_slu"), condition = !slider_switch())
+#       shinyjs::toggle(shiny::NS(id, "ccslider_slb"), condition = slider_switch())
+#     })
+#     # Grab the right time
+#     time <- shiny::reactive({
+#       # In the case the UIs are not initiated.
+#       if (is.null(slider_switch())) return(default_year)
+#       if (slider_switch()) slider_bi() else slider_uni()
+#     })
+# 
+#     # Main dropdown -----------------------------------------------------------
+# 
+#     # Draw and get value from the first dropdown
+#     observe({
+#       shiny::insertUI(selector = html_ns("common_widgets"),
+#                       where = "afterEnd",
+#                       ui = {
+#                         if (is.na(main_dropdown_title)) main_dropdown_title <- NULL
+#                         curbcut::picker_UI(id = widget_ns(id),
+#                                            picker_id = "mnd",
+#                                            var_list = autovars_groupnames(id = id),
+#                                            label = main_dropdown_title)
+#                       })
+#     })
+# 
+#     # Grab the main dropdown's info
+#     mnd_list <- autovars_groupnames(id = id)
+#     # If it's a list already formated using `dropdown_make(), use it as is. If
+#     # not, format it for the picker updates.
+#     mnd_list <- if (is.list(mnd_list)) mnd_list else {
+#       mnd_list <- list(mnd_list)
+#       names(mnd_list) <- main_dropdown_title
+#       mnd_list
+#     }
+#     mnd <- curbcut::picker_server(id = id, r = r, picker_id = "mnd",
+#                                   var_list = mnd_list)
+# 
+#     # Detect the variables that are under the main dropdown value
+#     widgets <- shiny::reactive(autovars_widgets(id = id, group_name = mnd()))
+# 
+# 
+#     # Additional widgets ------------------------------------------------------
+# 
+#     shiny::observe({
+#       # Remove the content of the previous div
+#       shiny::removeUI(selector = "#additional_widgets")
+# 
+#       # If there are additional widgets only, show the hr
+#       shinyjs::toggle("hr_additional_widgets", condition = length(widgets()) > 0)
+# 
+#       # Other widgets (dropdowns)
+#       shiny::insertUI(
+#         selector = html_ns("hr_additional_widgets"),
+#         where = "afterEnd",
+#         ui = {
+#           shiny::tags$div(
+#             id = "additional_widgets",
+#             do.call(shiny::tagList, mapply(function(w, l, n) {
+#               w <- list(w)
+#               names(w) <- n
+#               curbcut::picker_UI(id = widget_ns(id),
+#                                  picker_id = sprintf("d%s", l),
+#                                  var_list = w,
+#                                  label = n)
+#             }, widgets(), seq_along(widgets()), names(widgets()), SIMPLIFY = FALSE))
+#           )
+#         })
+#       # Update the number of picker values to be retrieved
+#       additional_picker_count(length(widgets()))
+#     })
+# 
+# 
+#     # Make the final variable -------------------------------------------------
+# 
+#     picker_vals <- shiny::reactive({
+#       picker_vals <- list()
+#       for (i in seq_along(additional_picker_count())) {
+#         picker_id <- sprintf("ccpicker_d%s", i)
+#         picker_vals[[i]] <- input[[shiny::NS(id, picker_id)]]
+#       }
+#       return(unlist(picker_vals))
+#     })
+# 
+#     shiny::observe({
+#       z <- autovars_final_value(id = id, group_name = mnd(),
+#                                 picker_vals = picker_vals(),
+#                                 previous_var = out_var())
+#       out_var(z[[1]])
+#     })
+# 
+#     final_var <- shiny::reactive({
+#       sprintf("%s_%s", out_var(), time())
+#     })
+# 
+#     return(shiny::reactive(list(var = final_var(), time = time())))
+#   })
+# }
+# 
+# 
