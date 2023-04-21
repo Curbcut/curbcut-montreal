@@ -145,6 +145,12 @@ build_stories <- function() {
   
   stories_mapping <- stories_atlas_mapping(stories = stories)
   
+  
+  # Knit all stories Rmds ---------------------------------------------------
+  
+  stories_knit_all()
+  
+  
   # Return ------------------------------------------------------------------
   
   return(list(stories = stories,

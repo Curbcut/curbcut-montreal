@@ -361,7 +361,7 @@ scales_variables_modules <-
 
 qs::qsavem(census_scales, scales_variables_modules, crs,
           scales_dictionary, regions_dictionary, all_tables, base_polygons,
-          cancensus_cma_code,
+          cancensus_cma_code, scales_consolidated,
           file = "dev/data/built/empty_scales_variables_modules.qsm")
 qs::qload("dev/data/built/empty_scales_variables_modules.qsm")
 
@@ -529,13 +529,13 @@ map_zoom_levels_save(data_folder = "data/", map_zoom_levels = map_zoom_levels)
 
 # # Tilesets ----------------------------------------------------------------
 
-tileset_upload_all(all_scales = scales_variables_modules$scales,
-                   map_zoom_levels = map_zoom_levels, 
-                   tweak_max_zoom = list(grid250 = 11, grid100 = 12, grid50 = 13),
-                   prefix = "mtl",
-                   username = "sus-mcgill",
-                   access_token = .cc_mb_token)
-
+# tileset_upload_all(all_scales = scales_variables_modules$scales,
+#                    map_zoom_levels = map_zoom_levels, 
+#                    tweak_max_zoom = list(grid250 = 11, grid100 = 12, grid50 = 13),
+#                    prefix = "mtl",
+#                    username = "sus-mcgill",
+#                    access_token = .cc_mb_token)
+# 
 # tileset_labels(scales = scales_variables_modules$scales,
 #                crs = crs,
 #                prefix = "mtl",
@@ -667,6 +667,10 @@ lapply(new_pages, create_page_script, overwrite = TRUE) |>
 
 
 # Save SQLite data --------------------------------------------------------
+
+save_buildings_sqlite(all_scales = scales_variables_modules$scales)
+save_bslike_sqlite(all_scales = scales_variables_modules$scales, scale_chr = "grid50")
+save_bslike_sqlite(all_scales = scales_variables_modules$scales, scale_chr = "grid100")
 
 save_all_scales_sqlite(data_folder = "data/", 
                        all_scales = scales_variables_modules$scales,

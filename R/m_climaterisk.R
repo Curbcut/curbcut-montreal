@@ -6,6 +6,7 @@
 `climaterisk_mzp` <-
   eval(parse(text = paste0("map_zoom_levels_", `climaterisk_default_region`)))
 default_region <- modules$regions[modules$id == "climaterisk"][[1]][1]
+vars_right <- modules$var_right[modules$id == "climaterisk"][[1]]
 
 # UI ----------------------------------------------------------------------
 
@@ -15,8 +16,8 @@ default_region <- modules$regions[modules$id == "climaterisk"][[1]][1]
     curbcut::sidebar_UI(
       id = shiny::NS(id, id),
       curbcut::autovars_UI(NS(id, id)),
-      curbcut::checkbox_UI(id = NS(id, id), label = cc_t("Grids"),
-                           value = TRUE),
+      curbcut::checkbox_UI(id = NS(id, id), label = cc_t("View with grids"),
+                           value = FALSE),
       curbcut::warnuser_UI(shiny::NS(id, id)),
       bottom = shiny::tagList(
         curbcut::legend_UI(shiny::NS(id, id)),
@@ -134,21 +135,7 @@ default_region <- modules$regions[modules$id == "climaterisk"][[1]][1]
       id = id,
       r = r,
       var_list = curbcut::dropdown_make(
-        vars = c(
-          "housing_tenant", "housing_rent", "housing_repairs",
-          "housing_value", "housing_unafford", "housing_unsuit",
-          "housing_stress_renter", "housing_stress_owner", "housing_mobility_one",
-          "housing_mobility_five", "housing_single_detached", "inc_median_income",
-          "inc_50", "inc_100", "inc_high",
-          "inc_limat", "iden_imm", "iden_imm_new",
-          "iden_vm", "iden_aboriginal", "trans_car",
-          "trans_walk_or_bike", "trans_transit", "trans_t_15",
-          "trans_t_45", "trans_t_45_plus", "family_children",
-          "family_one_person", "lang_french_only", "lang_eng_only",
-          "lang_french_eng", "lang_no_official", "age_0_14",
-          "age_15_64", "age_65_plus", "edu_bachelor_above",
-          "edu_no_degree"
-        ),
+        vars = vars_right,
         compare = TRUE
       ),
       time = time
@@ -168,11 +155,7 @@ default_region <- modules$regions[modules$id == "climaterisk"][[1]][1]
     ))
 
     # Data for tile coloring
-    data_colours <- shiny::eventReactive({
-      r[[id]]$vars()
-      zoom_levels()$region
-      zoom_levels()$zoom_levels
-    }, {
+    data_colours <- shiny::reactive({
       curbcut::data_get_colours(
       vars = r[[id]]$vars(),
       region = zoom_levels()$region,

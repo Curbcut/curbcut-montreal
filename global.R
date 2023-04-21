@@ -86,8 +86,8 @@ census_max <-
 
 # Modules ready -----------------------------------------------------------
 
-unique_themes <- unique(modules$theme)[unique(modules$theme) != ""]
-display_mods <- modules[modules$theme != "", ]
+unique_themes <- unique(modules$theme)[!is.na(unique(modules$theme))]
+display_mods <- modules[!is.na(modules$theme), ]
 mods_rdy <- 
   sapply(unique_themes, \(x) {
     thm <- display_mods[display_mods$theme == x, ]
