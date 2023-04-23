@@ -472,9 +472,9 @@ qs::qload("dev/data/built/scales_variables_modules.qsm")
 
 # Postal codes ------------------------------------------------------------
 
-# postal_codes <- build_postal_codes(census_scales$DA$ID)
-# postal_codes <- sf::st_drop_geometry(postal_codes)
-# qs::qsave(postal_codes, "data/postal_codes.qs")
+postal_codes <- build_postal_codes(census_scales$DA$ID)
+postal_codes <- sf::st_drop_geometry(postal_codes)
+qs::qsave(postal_codes, "data/postal_codes.qs")
 
 
 # Map zoom levels ---------------------------------------------------------
@@ -530,7 +530,7 @@ map_zoom_levels_save(data_folder = "data/", map_zoom_levels = map_zoom_levels)
 # # Tilesets ----------------------------------------------------------------
 
 # tileset_upload_all(all_scales = scales_variables_modules$scales,
-#                    map_zoom_levels = map_zoom_levels, 
+#                    map_zoom_levels = map_zoom_levels,
 #                    tweak_max_zoom = list(grid250 = 11, grid100 = 12, grid50 = 13),
 #                    prefix = "mtl",
 #                    username = "sus-mcgill",
@@ -621,14 +621,14 @@ qs::qsave(colours_dfs, "data/colours_dfs.qs")
 
 # Write stories -----------------------------------------------------------
 
-# stories <- build_stories()
-# stories_mapping <- stories$stories_mapping
-# stories <- stories$stories
-# qs::qsavem(stories, stories_mapping, file = "data/stories.qsm")
-# stories_create_tileset(stories = stories, 
-#                        prefix = "mtl", 
-#                        username = "sus-mcgill", 
-#                        access_token = .cc_mb_token)
+stories <- build_stories()
+stories_mapping <- stories$stories_mapping
+stories <- stories$stories
+qs::qsavem(stories, stories_mapping, file = "data/stories.qsm")
+stories_create_tileset(stories = stories,
+                       prefix = "mtl",
+                       username = "sus-mcgill",
+                       access_token = .cc_mb_token)
 
 # Add Montréal stories
 scales_variables_modules$modules <-
@@ -658,12 +658,12 @@ scales_variables_modules$modules <-
 qs::qsave(scales_variables_modules$variables, file = "data/variables.qs")
 
 
-# Build data scripts ------------------------------------------------------
-new_pages <- list.files("dev/pages", full.names = TRUE)
-new_pages <- new_pages[!grepl("/access.R|/climaterisk.R", new_pages)]
-
-lapply(new_pages, create_page_script, overwrite = TRUE) |> 
-  invisible()
+# # Build data scripts ------------------------------------------------------
+# new_pages <- list.files("dev/pages", full.names = TRUE)
+# new_pages <- new_pages[!grepl("/access.R|/climaterisk.R", new_pages)]
+# 
+# lapply(new_pages, create_page_script, overwrite = TRUE) |> 
+#   invisible()
 
 
 # Save SQLite data --------------------------------------------------------

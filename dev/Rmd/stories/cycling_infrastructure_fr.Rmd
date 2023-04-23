@@ -3,7 +3,7 @@ title: "Histoire de l'infrastructure cycliste à Montréal"
 author: "Philip Bligh"
 date: "07.2022"
 output: html_document
-runtime: shiny_prerendered
+runtime: shiny
 ---
 
 ```{r setup, include=FALSE}
@@ -72,6 +72,98 @@ Comme l'ont démontré les leaders du cyclisme du passé, l'activisme communauta
 Note 1 : on ne connaît pas la cause de la suppression de chaque bande cyclable étiquetée comme "supprimée". Il est possible qu'elles soient représentées comme ayant été enlevées en raison de la construction, ou d'une autre mesure temporaire, par opposition à l'enlèvement complet de la voie.
 
 Note 2 : Les pistes cyclables de cette carte proviennent d'une source différente, sans données sur ce qui a été ajouté et ce qui a été retiré.
+
+```{r echo=FALSE}
+shiny::fluidPage(
+  shiny::fluidRow(
+    shiny::column(width = 12, align = "center", rdeck::rdeckOutput("stories_custom_map"))
+  ),
+  shiny::fluidRow(
+    shiny::column(width = 12, align = "center", 
+      shinyWidgets::sliderTextInput(inputId = "year", label = "Sélectionner l'année:", 
+            choices = c(1986, 1991, 1996, 2001, 2006, 2011, 2016, 2022), selected = 1986)
+    )
+  ),
+  shiny::fluidRow(
+     shiny::column(width = 12, align = "center", 
+       plotOutput("stories_custom_legend", height = 60, width = "auto")
+     )
+  )
+)
+```
+
+```{r echo=FALSE}
+
+map_token <- paste0("pk.eyJ1Ijoic3VzLW1jZ2lsbCIsImEiOiJjbDBxMTcyNWwyNTl0M2",
+                    "RtZzRremNxOHA3In0.V2Ah5lxy-3RZlF2QKOvIjg")
+options(rdeck.mapbox_access_token = map_token)
+
+output$stories_custom_map <- rdeck::renderRdeck({
+  rdeck::rdeck(width = "100%", map_style = "mapbox://styles/sus-mcgill/cl0reqoz4000z15pekuh48ld6", 
+                    initial_view_state = rdeck::view_state(
+                        center = c(-73.58, 45.53), zoom = as.numeric(9.1)),
+               layer_selector = FALSE)
+})
+shiny::observeEvent(input$year, {
+  rdeck::rdeck_proxy("stories_custom_map") |> 
+    rdeck::add_mvt_layer(
+        id = "stories_custom_map",
+        data = rdeck::tile_json("sus-mcgill.stories-cycling_infrastructure"),
+      visible = TRUE,
+      get_line_width = 2,
+      get_line_color = !!rlang::sym(paste0("fill_", input$year)),
+      line_width_units = "pixels",
+      get_fill_color = !!rlang::sym(paste0("fill_", input$year)),
+      get_point_radius = 10)
+})
+cycling_infrastructure_legend <- function(year, ...) {
+  
+  types_df <- 
+    data.frame(year = c(1986, 1991, 1996, 2001, 2006, 2011, 2016, 2022),
+               types = I(list(c("Piste cyclable"), 
+                              c("Nouvelle piste cyclable", "Piste retirée", "Ancienne piste cyclable"),
+                              c("Nouvelle piste cyclable", "Piste retirée", "Ancienne piste cyclable"),
+                              c("Nouvelle piste cyclable", "Piste retirée", "Ancienne piste cyclable"),
+                              c("Nouvelle piste cyclable", "Piste retirée", "Ancienne piste cyclable"),
+                              c("Nouvelle piste cyclable", "Piste retirée", "Ancienne piste cyclable"),
+                              c("Nouvelle piste cyclable", "Piste retirée", "Ancienne piste cyclable", "Station Bixi"),
+                              c("Piste cyclable", "Station Bixi"))))
+  
+  types <- 
+    unlist(types_df$types[types_df$year == year])
+  
+  type_fill <- 
+    data.frame(type = c("Piste cyclable", "Nouvelle piste cyclable", "Piste retirée", 
+                        "Ancienne piste cyclable", "Station Bixi"),
+               fill = c("#73AE80", "#73AE80", "#CA0020", "#2E4633", "#000000"))
+  
+  label <- type_fill$type[type_fill$type %in% types]
+  
+  legend <- 
+    data.frame(x = seq_along(label),
+               y = 1,
+               fill = 
+                 unique(type_fill[type_fill$type %in% types, ]$fill))
+  
+  legend |> 
+    ggplot2::ggplot(ggplot2::aes(xmin = x - 1, xmax = x, ymin = y - 1, ymax = y, 
+               fill = fill)) +
+    ggplot2::geom_rect() + 
+    ggplot2::scale_x_continuous(breaks = seq_along(label) - 0.5, labels = label) +
+    ggplot2::scale_y_continuous(labels = NULL) +
+    ggplot2::scale_fill_manual(values = stats::setNames(
+      legend$fill, legend$fill)) +
+    ggplot2::theme_minimal() +
+    ggplot2::theme(text = ggplot2::element_text(family = "SourceSansPro", size = 12),
+          legend.position = "none", 
+          panel.grid = ggplot2::element_blank())
+}
+
+output$stories_custom_legend <- shiny::renderPlot({
+  cycling_infrastructure_legend(input$year)
+})
+
+```
 
 ### Références
 

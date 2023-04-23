@@ -74,7 +74,7 @@ stories_server <- function(id, r) {
         
         shiny::div(
           class = "main_panel_popup",
-          style = "height:100%;overflow:hidden;background-color:rgba(255, 255, 255, 0.95)",
+          style = "height:100%;overflow:hidden;background-color:rgba(255, 255, 255, 0.975)",
           shiny::tags$iframe(
             style = "width:100%;height:100%;",
             title = "stories",
