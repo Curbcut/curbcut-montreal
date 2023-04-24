@@ -1,0 +1,123 @@
+---
+title: "Montréal climate plans"
+author: "Connor Cordingley"
+date: "07.2021"
+output: html_document
+---
+
+```{r, echo = FALSE, include = FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(crosstalk)
+library(DT)
+library(htmltools)
+```
+
+```{r, include = FALSE}
+mcp_dict <-
+  list("Introduction" = "intro",
+       "Community and participation" = "community",
+       "Greening" = "greening",
+       "Food and agriculture" = "food",
+       "Land use" = "landuse",
+       "Mobility" = "mobility",
+       "Equity" = "equity",
+       "Adaptation and resilience" = "adaptation",
+       "Economy" = "economy",
+       "Innovation" = "innovation",
+       "Regionalism, internationalism and networks" = "regionalism",
+       "Sustainability" = "sustainability"
+  )
+
+mcp_theme <-
+  c("Introduction",
+       "Community and participation",
+       "Greening",
+       "Food and agriculture",
+       "Land use",
+       "Mobility",
+       "Equity",
+       "Adaptation and resilience",
+       "Economy",
+       "Innovation",
+       "Regionalism, internationalism and networks",
+       "Sustainability"
+  )
+
+mcp_df <- data.frame(id = seq_along(mcp_theme),
+                     theme = as.factor(mcp_theme))
+
+shared_mcp <- SharedData$new(mcp_df)
+```
+
+```{r}
+filter_select("th", "Theme", shared_mcp, group = ~theme, multiple = FALSE, allLevels = FALSE)
+```
+
+```{r}
+# Create sample data
+sample_data <- data.frame(
+  category = c("A", "A", "B", "B", "C", "C"),
+  value = c(10, 20, 30, 40, 50, 60),
+  id = c(1, 2, 3, 4, 5, 6)
+)
+
+# Create shared data object
+sd <- SharedData$new(sample_data)
+
+# Create sample data
+sample_data <- data.frame(
+  category = c("A", "A", "B", "B", "C", "C"),
+  value = c(10, 20, 30, 40, 50, 60),
+  id = c(1, 2, 3, 4, 5, 6)
+)
+
+# Create shared data object
+sd <- SharedData$new(sample_data)
+
+# Define the filter_select
+category_filter <- filter_select(
+  id = "category_filter",
+  label = "Select Category",
+  sharedData = sd,
+  group = ~category,
+  multiple = FALSE
+)
+
+# Define the HTML elements
+html_elements <- tags$script(HTML("
+$(document).ready(function() {
+  $('#category_filter').on('change', function() {
+    var selected_category = $(this).val();
+
+    $('.html-element').hide();
+
+    if (selected_category === 'A') {
+      $('#elementA').show();
+    } else if (selected_category === 'B') {
+      $('#elementB').show();
+    } else if (selected_category === 'C') {
+      $('#elementC').show();
+    }
+  });
+});
+"))
+```
+
+<!-- Render the filter and HTML elements -->
+<div>
+  `r category_filter`
+</div>
+<div id="elementA" class="html-element" style="display:none;">
+  <h2>Element A</h2>
+  <p>Content for element A</p>
+</div>
+<div id="elementB" class="html-element" style="display:none;">
+  <h2>Element B</h2>
+  <p>Content for element B</p>
+</div>
+<div id="elementC" class="html-element" style="display:none;">
+  <h2>Element C</h2>
+  <p>Content for element C</p>
+</div>
+`r html_elements`
+

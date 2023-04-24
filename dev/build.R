@@ -106,7 +106,6 @@ scales_dictionary[1, ] <- list(scale = "CSD",
                                place_heading = "{name_2} of {name}",
                                place_name = "{name}")
 
-
 ### Build building scale
 # # From MySQL
 # building <- cc.data::db_read_long_table(table = "buildings",
@@ -368,7 +367,7 @@ qs::qload("dev/data/built/empty_scales_variables_modules.qsm")
 # Build the datasets ------------------------------------------------------
 
 future::plan(list(future::tweak(future::multisession,
-                                workers = 4),
+                                workers = 3),
                   future::tweak(future::multisession,
                                 workers = length(cc.data::census_years))))
 
@@ -426,20 +425,6 @@ scales_variables_modules <-
 #   build_and_append_natural_inf(
 #     scales_variables_modules = scales_variables_modules,
 #     crs = crs)
-
-# Add MCP
-scales_variables_modules$modules <-
-  scales_variables_modules$modules |>
-  add_module(
-    id = "mcp",
-    theme = "Policy",
-    nav_title = "Montréal climate plans",
-    title_text_title = "",
-    title_text_main = "",
-    title_text_extra = "",
-    metadata = FALSE,
-    dataset_info = ""
-  )
 
 
 # Add access to amenities module
@@ -621,6 +606,9 @@ qs::qsave(colours_dfs, "data/colours_dfs.qs")
 
 # Write stories -----------------------------------------------------------
 
+# TKTK MAKE SURE YOU HAVE THIS VERSION OF LEAFLET, IF NOT THE MAPS IN THE HTML
+# DOCUMENTS WON'T BE INTERACTIVES:
+# devtools::install_github("dmurdoch/leaflet@crosstalk4")
 stories <- build_stories()
 stories_mapping <- stories$stories_mapping
 stories <- stories$stories

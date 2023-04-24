@@ -73,96 +73,165 @@ Note 1 : on ne connaît pas la cause de la suppression de chaque bande cyclable 
 
 Note 2 : Les pistes cyclables de cette carte proviennent d'une source différente, sans données sur ce qui a été ajouté et ce qui a été retiré.
 
-```{r echo=FALSE}
-shiny::fluidPage(
-  shiny::fluidRow(
-    shiny::column(width = 12, align = "center", rdeck::rdeckOutput("stories_custom_map"))
-  ),
-  shiny::fluidRow(
-    shiny::column(width = 12, align = "center", 
-      shinyWidgets::sliderTextInput(inputId = "year", label = "Sélectionner l'année:", 
-            choices = c(1986, 1991, 1996, 2001, 2006, 2011, 2016, 2022), selected = 1986)
-    )
-  ),
-  shiny::fluidRow(
-     shiny::column(width = 12, align = "center", 
-       plotOutput("stories_custom_legend", height = 60, width = "auto")
-     )
-  )
-)
+```{r, echo=FALSE, include = FALSE}
+
+library(tidyverse)
+library(sf)
+library(crosstalk)
+library(htmltools)
+library(leaflet)
+library(plotly)
+
+# MUST HAVE THIS VESRION OF LEAFLET
+# devtools::install_github("dmurdoch/leaflet@crosstalk4")
+
+
+# Import paths
+lines <- 
+  st_read(here::here("dev/data/stories/shp/cycling_infrastructure/Velo.gdb"), 
+          layer = "RESEAU_1991_2016")  %>% 
+  st_transform(4326) |>
+  as_tibble() |> 
+  st_as_sf() |> 
+  select(IdRte, starts_with("An")) |> 
+  mutate(An2016 = if_else(is.na(An2016), as.numeric(0), as.numeric(An2016))) |> 
+  st_zm()
+
+# Don't keep geometries without bike lanes at any year
+lines <- 
+lines[!!rowSums(st_drop_geometry(lines)[
+  str_starts(names(st_drop_geometry(lines)), "An")]), ]
+lines <- lines[, sort(names(lines))]
+lines <- relocate(lines, IdRte) |> rename(geometry = Shape)
+
+# We have paths for all these years
+all_years <- 
+  names(lines) |> 
+  str_subset("\\d{4}$") |> 
+  str_extract("\\d{4}$")
+
+# Decide colors we want as fill, and create the source with fill_year
+new_color <- "#73AE80"
+removed_color <- "#CA0020"
+remained_color <- "#2E4633"
+
+lines_fill <- 
+map_dfc(all_years, function(year) {
+  
+  actual_year <- as.name(paste0("An", year))
+  previous_year <- as.name(paste0("An", all_years[which(all_years == year) - 1]))
+  
+  out <-
+    lines |> 
+    st_drop_geometry() |> 
+    (\(x) if (year == all_years[1]) {
+      mutate(x, new_fill = case_when(!!actual_year == 1 ~ new_color,
+                                     TRUE ~ "#FFFFFF00")) 
+    } else {
+      mutate(x, new_fill = case_when(!!actual_year == 1 & !!previous_year == 0 ~ 
+                                       new_color,
+                                     !!actual_year == 0 & !!previous_year == 1 ~ 
+                                       removed_color,
+                                     !!actual_year == 1 & !!previous_year == 1 ~ 
+                                       remained_color,
+                                     TRUE ~ "#FFFFFF00"))
+    })() |> 
+    # filter(new_fill != "#FFFFFF00") |> 
+    select(new_fill)
+  
+  
+  names(out) <- paste0("fill_", year)
+  
+  out
+  
+})
+
+lines <- 
+  bind_cols(lines_fill, lines[, c("geometry")]) |> 
+  st_as_sf()
+
+# Cut that invalid geometry
+lines <- lines[-81965, ]
+
+# Add 2022 lines 
+lines_2022 <- 
+  st_read(here::here("dev/data/stories/shp/cycling_infrastructure/Cycling_Lane.shp")) |>  
+  st_transform(4326) |> 
+  as_tibble() |> 
+  transmute(ID = row_number(), fill_2022 = "#73AE80", geometry) |> 
+  st_as_sf() |> 
+  filter(!st_is_empty(geometry))
+
+lines <- 
+  bind_rows(lines, lines_2022)  |>  
+  st_transform(4326) |> 
+  select(-ID) |> 
+  relocate(geometry, .after = last_col()) |> 
+  mutate(across(where(is.character), ~if_else(is.na(.x), "#FFFFFF00", .x)))
+
+
+# Join all lines that share the same combinations of colors
+nested <- 
+  lines |> 
+  group_nest(across(c(-geometry)))
+
+joined_geometries <- 
+  map_dfr(nested$data, ~{tibble(geometry = st_combine(.x))})
+
+lines <- 
+  bind_cols(select(nested, -data), joined_geometries) |> 
+  st_as_sf() |> 
+  filter(!st_is_empty(geometry))
+
+lines_2 <- lapply(c(all_years, "2022"), \(z) {
+    tibble::tibble(date = z, fill = lines[[paste0("fill_", z)]]) |> 
+        cbind(lines["geometry"]) |> 
+        sf::st_as_sf() |> 
+        sf::st_cast("LINESTRING")
+})
+
+lines_2 <- Reduce(rbind, lines_2) |> tibble::as_tibble() |> sf::st_as_sf()
+
+key <- plotly::highlight_key(lines_2)
+
+map <-
+  leaflet(key) %>%
+  addTiles() %>%
+  addPolylines(color = ~fill, opacity = 1, weight = 5)
+```
+
+```{r, echo = FALSE}
+bscols(map)
+y <- crosstalk::filter_select("metro_date", "Sélectionnez une année", nc, ~date, multiple = FALSE)
+bscols(y)
+```
+
+```{js, echo = FALSE}
+function filter_default() {
+    document.getElementById("metro_date").getElementsByClassName("selectized")
+[0].selectize.setValue("1986", false);
+ }
+window.onload = filter_default;
 ```
 
 ```{r echo=FALSE}
-
-map_token <- paste0("pk.eyJ1Ijoic3VzLW1jZ2lsbCIsImEiOiJjbDBxMTcyNWwyNTl0M2",
-                    "RtZzRremNxOHA3In0.V2Ah5lxy-3RZlF2QKOvIjg")
-options(rdeck.mapbox_access_token = map_token)
-
-output$stories_custom_map <- rdeck::renderRdeck({
-  rdeck::rdeck(width = "100%", map_style = "mapbox://styles/sus-mcgill/cl0reqoz4000z15pekuh48ld6", 
-                    initial_view_state = rdeck::view_state(
-                        center = c(-73.58, 45.53), zoom = as.numeric(9.1)),
-               layer_selector = FALSE)
-})
-shiny::observeEvent(input$year, {
-  rdeck::rdeck_proxy("stories_custom_map") |> 
-    rdeck::add_mvt_layer(
-        id = "stories_custom_map",
-        data = rdeck::tile_json("sus-mcgill.stories-cycling_infrastructure"),
-      visible = TRUE,
-      get_line_width = 2,
-      get_line_color = !!rlang::sym(paste0("fill_", input$year)),
-      line_width_units = "pixels",
-      get_fill_color = !!rlang::sym(paste0("fill_", input$year)),
-      get_point_radius = 10)
-})
-cycling_infrastructure_legend <- function(year, ...) {
-  
-  types_df <- 
-    data.frame(year = c(1986, 1991, 1996, 2001, 2006, 2011, 2016, 2022),
-               types = I(list(c("Piste cyclable"), 
-                              c("Nouvelle piste cyclable", "Piste retirée", "Ancienne piste cyclable"),
-                              c("Nouvelle piste cyclable", "Piste retirée", "Ancienne piste cyclable"),
-                              c("Nouvelle piste cyclable", "Piste retirée", "Ancienne piste cyclable"),
-                              c("Nouvelle piste cyclable", "Piste retirée", "Ancienne piste cyclable"),
-                              c("Nouvelle piste cyclable", "Piste retirée", "Ancienne piste cyclable"),
-                              c("Nouvelle piste cyclable", "Piste retirée", "Ancienne piste cyclable", "Station Bixi"),
-                              c("Piste cyclable", "Station Bixi"))))
-  
-  types <- 
-    unlist(types_df$types[types_df$year == year])
-  
   type_fill <- 
     data.frame(type = c("Piste cyclable", "Nouvelle piste cyclable", "Piste retirée", 
                         "Ancienne piste cyclable", "Station Bixi"),
                fill = c("#73AE80", "#73AE80", "#CA0020", "#2E4633", "#000000"))
   
-  label <- type_fill$type[type_fill$type %in% types]
-  
-  legend <- 
-    data.frame(x = seq_along(label),
-               y = 1,
-               fill = 
-                 unique(type_fill[type_fill$type %in% types, ]$fill))
-  
-  legend |> 
+  type_fill |> 
     ggplot2::ggplot(ggplot2::aes(xmin = x - 1, xmax = x, ymin = y - 1, ymax = y, 
                fill = fill)) +
     ggplot2::geom_rect() + 
-    ggplot2::scale_x_continuous(breaks = seq_along(label) - 0.5, labels = label) +
+    ggplot2::scale_x_continuous(breaks = seq_along(type_fill$type) - 0.5, labels = type_fill$type) +
     ggplot2::scale_y_continuous(labels = NULL) +
     ggplot2::scale_fill_manual(values = stats::setNames(
-      legend$fill, legend$fill)) +
+      type_fill$fill, type_fill$fill)) +
     ggplot2::theme_minimal() +
     ggplot2::theme(text = ggplot2::element_text(family = "SourceSansPro", size = 12),
           legend.position = "none", 
           panel.grid = ggplot2::element_blank())
-}
-
-output$stories_custom_legend <- shiny::renderPlot({
-  cycling_infrastructure_legend(input$year)
-})
-
 ```
 
 ### Références

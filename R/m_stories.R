@@ -45,8 +45,9 @@ stories_server <- function(id, r) {
     
     # Map
     output[[id_map]] <- rdeck::renderRdeck({
-      rdeck(map_style = map_style_building, initial_view_state = view_state(
-        center = map_loc, zoom = map_zoom), layer_selector = FALSE) |> 
+      rdeck::rdeck(map_style = map_style_building, initial_view_state = 
+                     rdeck::view_state(center = map_loc, zoom = map_zoom), 
+                   layer_selector = FALSE) |> 
         rdeck::add_mvt_layer(
           id = "stories",
           data = mvt_url(paste0(mapbox_username, ".", tileset_prefix, "_", 
