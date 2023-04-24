@@ -51,21 +51,12 @@ shinyOptions(cache = cachem::cache_disk(file.path(dirname(tempdir()), "cache")))
 # Load all .qs and .qsm files that are in the root of the data folder
 data_files <- list.files("data", full.names = TRUE)
 invisible(lapply(data_files[grepl("qsm$", data_files)], 
-                 qload, env = .GlobalEnv))
+                 qs::qload, env = .GlobalEnv))
 invisible(lapply(data_files[grepl("qs$", data_files)], 
                  \(x) {
                    object_name <- gsub("(data/)|(\\.qs)", "", x)
-                   assign(object_name, qread(x), envir = .GlobalEnv)
+                   assign(object_name, qs::qread(x), envir = .GlobalEnv)
                    }))
-
-# Connect to the SQLite databases
-dbs <- list.files("data", full.names = TRUE)
-dbs <- subset(dbs, grepl(".sqlite$", dbs))
-lapply(dbs, \(x) {
-  connection_name <- paste0(stringr::str_extract(x, "(?<=/).*?(?=\\.)"), "_conn")
-  assign(connection_name, dbConnect(SQLite(), x), envir = .GlobalEnv)
-}) |> invisible()
-
 
 # Global variables --------------------------------------------------------
 

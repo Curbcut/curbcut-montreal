@@ -668,11 +668,7 @@ qs::qsave(scales_variables_modules$variables, file = "data/variables.qs")
 
 # Save SQLite data --------------------------------------------------------
 
-save_buildings_sqlite(all_scales = scales_variables_modules$scales)
-save_bslike_sqlite(all_scales = scales_variables_modules$scales, scale_chr = "grid50")
-save_bslike_sqlite(all_scales = scales_variables_modules$scales, scale_chr = "grid100")
-
-save_all_scales_sqlite(data_folder = "data/", 
+save_all_scales_qs(data_folder = "data/", 
                        all_scales = scales_variables_modules$scales,
                        variables = scales_variables_modules$variables)
 

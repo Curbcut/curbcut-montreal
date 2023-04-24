@@ -156,6 +156,7 @@ vars_right <- modules$var_right[modules$id == "climaterisk"][[1]]
 
     # Data for tile coloring
     data_colours <- shiny::reactive({
+      print(zoom_levels()$zoom_levels)
       curbcut::data_get_colours(
       vars = r[[id]]$vars(),
       region = zoom_levels()$region,
