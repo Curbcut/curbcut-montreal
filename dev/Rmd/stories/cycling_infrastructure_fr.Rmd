@@ -202,13 +202,13 @@ map <-
 
 ```{r, echo = FALSE}
 bscols(map)
-y <- crosstalk::filter_select("metro_date", "Sélectionnez une année", nc, ~date, multiple = FALSE)
+y <- crosstalk::filter_select("cycl_date", "Sélectionnez une année", nc, ~date, multiple = FALSE)
 bscols(y)
 ```
 
 ```{js, echo = FALSE}
 function filter_default() {
-    document.getElementById("metro_date").getElementsByClassName("selectized")
+    document.getElementById("cycl_date").getElementsByClassName("selectized")
 [0].selectize.setValue("1986", false);
  }
 window.onload = filter_default;
@@ -220,7 +220,12 @@ window.onload = filter_default;
                         "Ancienne piste cyclable", "Station Bixi"),
                fill = c("#73AE80", "#73AE80", "#CA0020", "#2E4633", "#000000"))
   
-  type_fill |> 
+  legend <- 
+    data.frame(x = seq_along(type_fill$type),
+               y = 1,
+               fill = type_fill$fill)
+  
+  legend |> 
     ggplot2::ggplot(ggplot2::aes(xmin = x - 1, xmax = x, ymin = y - 1, ymax = y, 
                fill = fill)) +
     ggplot2::geom_rect() + 
