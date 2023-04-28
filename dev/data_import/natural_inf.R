@@ -634,39 +634,35 @@ build_and_append_natural_inf <- function(scales_variables_modules, crs) {
           nav_title = "Natural infrastructure",
           title_text_title = "Natural infrastructure",
           title_text_main = paste0(
-            "Natural ecosystems contribute to well-being, quality of life and public ",
-            "health. This module quantifies the benefits provided by urban trees and ",
-            "wooded areas to biodiversity conservation, flood prevention, and ",
-            "heat-island reduction. The natural infrastructure included in this study ",
-            "covers approximately 25% of the Montreal region. Montreal's natural ",
-            "infrastructure is threatened by forces including pollution, pests, ",
-            "climate change, and urban sprawl. Increasing the percentage of protected ",
-            "natural infrastructure increases the supply of these ecosystem benefits."),
+            "Natural ecosystems are necessary for our cities, they help contribute ",
+            "to well-being, quality of life and public health. This page quantifies",
+            " the benefits provided by urban trees and wooded areas to biodiversity",
+            " conservation, flood prevention, and heat-island reduction. "
+          ),
           title_text_extra = paste0(
-            "<p>Data made available by <a href='https://www.habitat-nature.com/'>",
-            "Habitat</a>. For more information on the methods and data used for this ",
-            "module, see <a href = 'https://fr.davidsuzuki.or",
-            "g/publication-scientifique/le-role-des-infrastructures-natu",
-            "relles-dans-la-prevention-des-inondations-dans-la-communaut",
-            "e-metropolitaine-de-montreal/' target = '_blank'>",
-            "Maure et al., 2018, Le rôle des infrastructures naturelles dans la ",
-            "prévention des inondations dans la Communauté métropolitaine de ",
-            "Montréal, Fondation David Suzuki."),
+            "The datasets visualized on this page come from Habitat Montreal. ",
+            "Note that the natural infrastructure included in the study that ",
+            "generated this data only covers approximately 25% of the Montreal ",
+            "region. For more information on the methods and data used for this ",
+            "page visit: https://fr.davidsuzuki.org/publication-scientifique/le",
+            "-role-des-infrastructures-naturelles-dans-la-prevention-des-inonda",
+            "tions-dans-la-communaute-metropolitaine-de-montreal/'"),
           regions = NULL,
           metadata = TRUE,
-          dataset_info = paste0("<p>Data made available by the firm Habitat. For more ",
-                                "information on the methods and data used for this ",
-                                "module, see <a href = 'https://fr.davidsuzuki.org/",
-                                "publication-scientifique/le-role-des-infrastructures-",
-                                "natrelles-dans-la-prevention-des-inondations-dans-la-",
-                                "communaute-metropolitaine-de-montreal/'>Maure et al.,",
-                                " 2018, Le rôle des ",
-                                "infrastructures naturelles dans la ",
-                                "prévention des inondations dans la Communauté ",
-                                "métropolitaine de ",
-                                "Montréal, Fondation David Suzuki.</a></p>")
+          dataset_info = paste0(
+            "<p>Data made available by the firm Habitat. For more ",
+            "information on the methods and data used for this ",
+            "module, see <a href = 'https://fr.davidsuzuki.org/",
+            "publication-scientifique/le-role-des-infrastructures-",
+            "natrelles-dans-la-prevention-des-inondations-dans-la-",
+            "communaute-metropolitaine-de-montreal/'>Maure et al.,",
+            " 2018, Le rôle des ",
+            "infrastructures naturelles dans la ",
+            "prévention des inondations dans la Communauté ",
+            "métropolitaine de ",
+            "Montréal, Fondation David Suzuki.</a></p>")
         )
-
+  
   
   # Save natural inf in its own sqlite db -----------------------------------
   

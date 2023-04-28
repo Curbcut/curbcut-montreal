@@ -347,12 +347,13 @@
       "Package": "curbcut",
       "Version": "0.0.0.9000",
       "Source": "GitHub",
+      "Remotes": "qfes/rdeck",
       "RemoteType": "github",
       "RemoteHost": "api.github.com",
       "RemoteRepo": "curbcut",
       "RemoteUsername": "MSSI-urban",
       "RemoteRef": "HEAD",
-      "RemoteSha": "cddc6e9e797538a266e87b5ebadca0f9e9116080",
+      "RemoteSha": "ee8efd3ba3f9b742a0712edb5f319bdcfd5333ae",
       "Requirements": [
         "DBI",
         "DT",
@@ -370,7 +371,7 @@
         "stats",
         "utils"
       ],
-      "Hash": "20d6288031dded37d704a87c564f7ee2"
+      "Hash": "dd0867d41856ed4ddd55bb413b178eec"
     },
     "curl": {
       "Package": "curl",

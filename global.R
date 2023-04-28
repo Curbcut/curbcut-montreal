@@ -21,20 +21,15 @@ map_loc <- c(-73.58, 45.53)
 
 suppressPackageStartupMessages({
   library(curbcut)
-  # temporary fix? necessary for tile_json
-  library(urltools)
-  library(rdeck)
-  
+
   library(shiny)
   library(bslib)
   library(shinyjs)
-  library(shinyWidgets)
 
   library(qs)
   library(glue)
   library(metathis)
   
-  library(RSQLite)
   library(stringr)
   
   library(sever)
@@ -57,23 +52,6 @@ invisible(lapply(data_files[grepl("qs$", data_files)],
                    object_name <- gsub("(data/)|(\\.qs)", "", x)
                    assign(object_name, qs::qread(x), envir = .GlobalEnv)
                    }))
-
-# Global variables --------------------------------------------------------
-
-census_min <- 
-  variables$dates[variables$source == "Canadian census"] |> 
-  unlist() |> 
-  unique() |> 
-  min() |> 
-  as.numeric()
-
-census_max <- 
-  variables$dates[variables$source == "Canadian census"] |> 
-  unlist() |> 
-  unique() |> 
-  max() |> 
-  as.numeric()
-
 
 # Modules ready -----------------------------------------------------------
 
@@ -101,9 +79,8 @@ first_level_choropleth <-
          USE.NAMES = FALSE) |> unique()
   
 all_choropleths <- 
-  sapply(sapply(ls()[grepl("map_zoom_levels_", ls())], get,
-                USE.NAMES = FALSE), names,
-         USE.NAMES = FALSE) |> unlist() |> unique()
+  sapply(sapply(ls()[grepl("map_zoom_levels_", ls())], get, USE.NAMES = FALSE), 
+         names, USE.NAMES = FALSE) |> unlist() |> unique()
 
 # Set up fonts ------------------------------------------------------------
 

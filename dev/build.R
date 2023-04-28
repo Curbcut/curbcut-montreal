@@ -4,7 +4,6 @@
 # Load libraries ----------------------------------------------------------
 tictoc::tic()
 library(cc.buildr)
-library(sf)
 invisible(lapply(list.files("dev/data_import", full.names = TRUE), source))
 
 
@@ -17,7 +16,7 @@ all_tables <-
        "city" = c("CSD", "CT", "DA", "building"),
        "centraide" = c("centraide", "CT", "DA", "building"),
        "cmhc" = c("cmhczone"),
-       "grid" = c("grid250", "grid100", "grid50"))
+       "grid" = c("grid250", "grid100", "grid50", "grid25"))
 
 
 # List all the regions geometries to create the master polygon
@@ -164,7 +163,7 @@ scales_dictionary <-
 #   sf::st_read("dev/data/climate_risk/vulnerabilite-changements-climatiques-mailles-2022.shp")
 # grid <- grid[, c("PageName", "geometry")]
 # names(grid)[1] <- "ID"
-# grid$ID <- paste0("grid_", grid$ID)
+# grid$ID <- paste0("grid25_", grid$ID)
 # grid <- rev_geocode_sf(master_polygon = grid,
 #                        sf_df = grid,
 #                        province_code = "QC",
@@ -336,7 +335,8 @@ all_scales <- c(census_scales,
                 list(cmhczone = cmhczone),
                 list(grid250 = grid250),
                 list(grid100 = grid100),
-                list(grid50 = grid50))
+                list(grid50 = grid50),
+                list(grid25 = grid25))
 
 scales_consolidated <- consolidate_scales(all_tables = all_tables,
                                           all_scales = all_scales,
@@ -376,7 +376,7 @@ scales_variables_modules <-
                  region_DA_IDs = census_scales$DA$ID,
                  crs = crs,
                  housing_module = TRUE,
-                 skip_scale_interpolation = c("grid50", "grid100"))
+                 skip_scale_interpolation = c("grid25", "grid50", "grid100"))
 census_variables <- get_census_vectors_details()
 
 save.image()
@@ -427,18 +427,18 @@ scales_variables_modules <-
 #     crs = crs)
 
 
-# Add access to amenities module
+# # Add access to amenities module
 # traveltimes <-
 #   accessibility_get_travel_times(region_DA_IDs = census_scales$DA$ID)
 # qs::qsave(traveltimes, "dev/data/built/traveltimes.qs")
-# future::plan(future::multisession(), workers = 8)
+traveltimes <- qs::qread("dev/data/built/traveltimes.qs")
 
-# traveltimes <- qs::qread("dev/data/built/traveltimes.qs")
-# scales_variables_modules <- 
-#   ba_accessibility_points(scales_variables_modules = scales_variables_modules,
-#                           region_DA_IDs = census_scales$DA$ID,
-#                           traveltimes = traveltimes,
-#                           crs = crs)
+future::plan(future::multisession(), workers = 4)
+scales_variables_modules <-
+  ba_accessibility_points(scales_variables_modules = scales_variables_modules,
+                          region_DA_IDs = census_scales$DA$ID,
+                          traveltimes = traveltimes,
+                          crs = crs)
 # # Additional access variables
 # scales_variables_modules <- 
 #   build_and_append_access(scales_variables_modules = scales_variables_modules,
@@ -467,7 +467,7 @@ qs::qsave(postal_codes, "data/postal_codes.qs")
 map_zoom_levels <- map_zoom_levels_create_all(
   all_tables = all_tables,
   zoom_levels = list(first = 0, CT = 10.5, DA = 12.5, building = 15.5, 
-                     grid100 = 10.5, grid50 = 12.5))
+                     grid100 = 10.5, grid50 = 12.5, grid25 = 13.5))
 
 map_zoom_levels <-
   map_zoom_levels_create_custom(
@@ -517,9 +517,22 @@ map_zoom_levels_save(data_folder = "data/", map_zoom_levels = map_zoom_levels)
 # tileset_upload_all(all_scales = scales_variables_modules$scales,
 #                    map_zoom_levels = map_zoom_levels,
 #                    tweak_max_zoom = list(grid250 = 11, grid100 = 12, grid50 = 13),
-#                    prefix = "mtl",
-#                    username = "sus-mcgill",
-#                    access_token = .cc_mb_token)
+                   # prefix = "mtl",
+                   # username = "sus-mcgill",
+                   # access_token = .cc_mb_token)
+
+source("dev/tiles/grid_tiles.R")
+tileset_upload_grid(region = "grid",
+                    all_scales = scales_variables_modules$scales,
+                    map_zoom_levels = map_zoom_levels,
+                    max_zoom = list(grid250 = 11, grid100 = 12, grid50 = 13, grid25 = 14),
+                    vars = c("climate_drought", "climate_flood", "climate_destructive_storms",
+                             "climate_heat_wave", "climate_heavy_rain"),
+                    prefix = "mtl",
+                    username = "sus-mcgill",
+                    access_token = .cc_mb_token)
+
+
 # 
 # tileset_labels(scales = scales_variables_modules$scales,
 #                crs = crs,
@@ -583,7 +596,7 @@ scales_variables_modules$modules <-
                "ken from <a href = 'https://www.canuedata.ca'>CANUE</a>."
              ),
              metadata = FALSE,
-             dataset_info = "TKTK",
+             dataset_info = "",
              regions = regions_dictionary$region[regions_dictionary$pickable])
 
 # Did you know ------------------------------------------------------------
@@ -613,10 +626,10 @@ stories <- build_stories()
 stories_mapping <- stories$stories_mapping
 stories <- stories$stories
 qs::qsavem(stories, stories_mapping, file = "data/stories.qsm")
-stories_create_tileset(stories = stories,
-                       prefix = "mtl",
-                       username = "sus-mcgill",
-                       access_token = .cc_mb_token)
+# stories_create_tileset(stories = stories,
+#                        prefix = "mtl",
+#                        username = "sus-mcgill",
+#                        access_token = .cc_mb_token)
 
 # Add Montréal stories
 scales_variables_modules$modules <-
@@ -627,15 +640,11 @@ scales_variables_modules$modules <-
     nav_title = "Montréal stories",
     title_text_title = "Montréal stories",
     title_text_main = paste0(
-      "Explore narrative case studies on sustainability issues in Montreal's ",
-      "neighborhoods. In this module, read text-based stories and view their ",
-      "adjoining visual media."),
+      "Explore stories about urban sustainability and planning in Montreal. Learn ",
+      "about stories rooted in specific geographic locations or those that ",
+      "have an impact on the whole city."),
     title_text_extra = paste0(
-      "These stories, written by Curbcut contributors, examine Montreal ",
-      "sustainability issues that aren't well suited to representation in our ",
-      "standard interactive map format. Learn more about stories rooted in ",
-      "specific geographic locations across the city or those that have had ",
-      "an impact on the whole of Montreal."),
+      "These narrative case studies are written by Curbcut contributors.."),
     metadata = FALSE,
     dataset_info = ""
   )

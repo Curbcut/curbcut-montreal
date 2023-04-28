@@ -39,7 +39,7 @@ stories_server <- function(id, r) {
     id_map <- paste0(id, "-map")
     themes <- unique(unlist(stories$themes))
     themes <- list(Themes = setNames(themes, themes))
-    
+
     # Sidebar
     curbcut::sidebar_server(id = id, r = r)
     
