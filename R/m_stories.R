@@ -50,7 +50,7 @@ stories_server <- function(id, r) {
                    layer_selector = FALSE) |> 
         rdeck::add_mvt_layer(
           id = "stories",
-          data = mvt_url(paste0(mapbox_username, ".", tileset_prefix, "_", 
+          data = rdeck::tile_json(paste0(mapbox_username, ".", tileset_prefix, "_", 
                                 "stories")),
           point_type = "icon",
           get_icon = name,
