@@ -21,7 +21,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r, echo=FALSE, fig.align = 'center', fig.cap="Première ruelle verte du programme Ruelle verte. Plateau-Mont-Royal. Juin 2022", warning=FALSE}
 
-knitr::include_graphics(here("www/stories/visuals/alley_strategy/figure0.jpeg"))
+knitr::include_graphics(here::here("dev/data/stories/raw_images/alley_strategy/figure0.jpeg"))
 
 ```
 
@@ -33,13 +33,13 @@ knitr::include_graphics(here("www/stories/visuals/alley_strategy/figure0.jpeg"))
 
 ```{r, echo=FALSE, fig.align = 'center', warning=FALSE, fig.cap="Plateau (2017 vs 2022). Mont-Royal/Coloniale/Cérat. Arrondissement du Plateau- Mont-Royal Facebook (Gauche), État actuel de la ruelle. Juin 2022 (Droite)"}
 
-knitr::include_graphics(here("www/stories/visuals/alley_strategy/figure1.jpeg"))
+knitr::include_graphics(here::here("dev/data/stories/raw_images/alley_strategy/figure1.jpeg"))
 
 ```
 
 ```{r, echo=FALSE, fig.align = 'center', warning=FALSE, fig.cap="Plateau (2019 vs 2022). Milton/Parc Ave/Prince-Arthur/Jeanne Mance. Arrondissement du Plateau- Mont-Royal Facebook (Gauche), État actuel de la ruelle. Juin 2022 (Droite)"}
 
-knitr::include_graphics(here("www/stories/visuals/alley_strategy/figure2.jpeg"))
+knitr::include_graphics(here::here("dev/data/stories/raw_images/alley_strategy/figure2.jpeg"))
 
 ```
 
@@ -52,7 +52,7 @@ knitr::include_graphics(here("www/stories/visuals/alley_strategy/figure2.jpeg"))
 
 ```{r, echo=FALSE, fig.align = 'center', warning=FALSE, fig.cap="Sud-Ouest (Gauche), Plateau-Mont-Royal (Centre), Maisonneuve (Droite)"}
 
-knitr::include_graphics(here("www/stories/visuals/alley_strategy/figure3.jpeg"))
+knitr::include_graphics(here::here("dev/data/stories/raw_images/alley_strategy/figure3.jpeg"))
 
 ```
 
@@ -60,7 +60,7 @@ knitr::include_graphics(here("www/stories/visuals/alley_strategy/figure3.jpeg"))
 
 ```{r, echo=FALSE, fig.align = 'center', warning=FALSE, fig.cap="Ruelles avec végétation diversifiée"}
 
-knitr::include_graphics(here("www/stories/visuals/alley_strategy/figure4.jpeg"))
+knitr::include_graphics(here::here("dev/data/stories/raw_images/alley_strategy/figure4.jpeg"))
 
 ```
 
@@ -69,7 +69,7 @@ knitr::include_graphics(here("www/stories/visuals/alley_strategy/figure4.jpeg"))
 
 ```{r, echo=FALSE, fig.align = 'center', fig.cap="Photo du Centre d’écologie urbaine de Montréal sur Facebook. 17 juin 2022", warning=FALSE}
 
-knitr::include_graphics(here("www/stories/visuals/alley_strategy/figure5.jpg"))
+knitr::include_graphics(here::here("dev/data/stories/raw_images/alley_strategy/figure5.jpg"))
 
 
 ```
@@ -78,7 +78,7 @@ knitr::include_graphics(here("www/stories/visuals/alley_strategy/figure5.jpg"))
 
 ```{r, echo=FALSE, fig.align = 'center', warning=FALSE, fig.cap="Ruelle Verte Larivière - Sainte-Marie (Gauche), Parc aquatique - Plateau (Droite)"}
 
-knitr::include_graphics(here("www/stories/visuals/alley_strategy/figure6.jpeg"))
+knitr::include_graphics(here::here("dev/data/stories/raw_images/alley_strategy/figure6.jpeg"))
 
 ```
 
@@ -89,7 +89,7 @@ knitr::include_graphics(here("www/stories/visuals/alley_strategy/figure6.jpeg"))
 
 ```{r, echo=FALSE, fig.align = 'center', warning=FALSE, fig.cap="Image du site Web www.ruellesbleuesvertes.com/le-processus/projets-pilotes"}
 
-knitr::include_graphics(here("www/stories/visuals/alley_strategy/figure7.jpeg"))
+knitr::include_graphics(here::here("dev/data/stories/raw_images/alley_strategy/figure7.jpeg"))
 
 ```
 
@@ -104,7 +104,7 @@ knitr::include_graphics(here("www/stories/visuals/alley_strategy/figure7.jpeg"))
 
 ```{r, echo=FALSE, fig.align = 'center', warning=FALSE, fig.cap="État actuel de la ruelle. Juin 2022 (Gauche), Vision de la future ruelle Bleu-Vert. Source : www.ruellesbleuesvertes.com/le-processus/projets-pilotes (Droite)"}
 
-knitr::include_graphics(here("www/stories/visuals/alley_strategy/figure8.jpeg"))
+knitr::include_graphics(here::here("dev/data/stories/raw_images/alley_strategy/figure8.jpeg"))
 
 ```
 
@@ -115,7 +115,7 @@ knitr::include_graphics(here("www/stories/visuals/alley_strategy/figure8.jpeg"))
 
 ```{r, echo=FALSE, fig.align = 'center', warning=FALSE, fig.cap="Image du site Web https://www.batiment7.org/ruelle-bleue-verte/"}
 
-knitr::include_graphics(here("www/stories/visuals/alley_strategy/figure9.jpg"))
+knitr::include_graphics(here::here("dev/data/stories/raw_images/alley_strategy/figure9.jpg"))
 
 ```
 

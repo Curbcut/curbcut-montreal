@@ -17,7 +17,7 @@ knitr::opts_chunk$set(echo = TRUE)
 <p>La collaboration est inscrite dans l'ADN du Grand Parc de l'Ouest. Elle implique la Ville de Montr&eacute;al, deux arrondissements de la ville (l'&Icirc;le-Bizard-Sainte-Genevi&egrave;ve et Pierrefonds-Roxboro), deux villes non fusionn&eacute;es de l'Ouest de l'&icirc;le de Montr&eacute;al (Saint-Anne-de-Bellevue et Beaconsfield) et un village (Senneville). Il r&eacute;unit cinq parcs existants entre l'Ouest-de-l'&Icirc;le et l'&Icirc;le-Bizard, soit l'Anse-&agrave;-l'Orme, le Bois-de-L'&icirc;le-Bizard, le Cap-Saint-Jacques, les Rapides-du-Cheval-Blanc et le parc agricole du Bois-de-la-Roche. La ville ach&egrave;te &eacute;galement des terrains &agrave; des propri&eacute;taires priv&eacute;s et &eacute;tend les limites de l'Anse-&agrave;-l'Orme. Ce faisant, elle pr&eacute;serve certains des derniers espaces verts non prot&eacute;g&eacute;s de l'&icirc;le de Montr&eacute;al.</p>
 # ```{r, echo=FALSE, out.extra='style="float:right; padding:10px;"', warning=FALSE}
 # 
-# knitr::include_graphics(here("www/stories/visuals/parc_ouest/flowers_bees.gif"))
+# knitr::include_graphics(here::here("dev/data/stories/raw_images/parc_ouest/flowers_bees.gif"))
 # 
 # ```
 <p>Parce que la conservation de la biodiversit&eacute; est toujours plus efficace &agrave; grande &eacute;chelle, le GPO a l'opportunit&eacute; de faire une perc&eacute;e dans le domaine de la conservation urbaine. Et la biodiversit&eacute; est au c&oelig;ur de la vision de la GPO. Le parc abritera une vari&eacute;t&eacute; d'habitats existants, notamment des zones humides, des for&ecirc;ts anciennes, des mar&eacute;cages, des jach&egrave;res et des espaces verts anthropiques.</p>
@@ -36,7 +36,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ### Construire le Grand-parc-de-l&rsquo;Ouest
 ```{r, echo=FALSE, fig.align = 'center', out.width="100%", warning=FALSE, out.extra='style=""'}
 
-knitr::include_graphics(here("www/stories/visuals/parc_ouest/water.jpg"))
+knitr::include_graphics(here::here("dev/data/stories/raw_images/parc_ouest/water.jpg"))
 
 ```
 <br>

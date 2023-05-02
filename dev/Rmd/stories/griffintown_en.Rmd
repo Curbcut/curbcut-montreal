@@ -23,7 +23,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r, echo=FALSE, fig.align = 'center', out.width="50%", fig.cap="Figure 1. Flood, Bonaventure Depot, Montreal, QC, 1886. by George Charles Arless. Source: the McCord Museum.", warning=FALSE}
 
-knitr::include_graphics(here("www/stories/visuals/griffintown/figure1.jpg"))
+knitr::include_graphics(here::here("dev/data/stories/raw_images/griffintown/figure1.jpg"))
 
 ```
 
@@ -39,9 +39,9 @@ knitr::include_graphics(here("www/stories/visuals/griffintown/figure1.jpg"))
 
 ```{r, echo=FALSE, fig.show='hold', fig.align = 'center', out.width="30%", fig.cap="Figure 2.&nbsp; Flash flood in Milton-Parc neighbourhood of Montreal, 2012. This flooding of storm water with nowhere to go in a network of impervious surfaces is expected to increase with climate change (IPCC, 2019), and the planning of Griffintown. Source: Montreal in Pictures, 2012 (https://montrealinpictures.com/montreal-image-photo-gallery/may-2012/)", warning=FALSE}
 
-knitr::include_graphics(c(here("www/stories/visuals/griffintown/figure2_1.jpg"),
-                         here("www/stories/visuals/griffintown/figure2_2.jpg"),
-                         here("www/stories/visuals/griffintown/figure2_3.jpg")))
+knitr::include_graphics(c(here::here("dev/data/stories/raw_images/griffintown/figure2_1.jpg"),
+                         here::here("dev/data/stories/raw_images/griffintown/figure2_2.jpg"),
+                         here::here("dev/data/stories/raw_images/griffintown/figure2_3.jpg")))
 
 ```
 
@@ -51,8 +51,8 @@ knitr::include_graphics(c(here("www/stories/visuals/griffintown/figure2_1.jpg"),
 <p>However, the initial lack of comprehensive planning has hindered the city&rsquo;s ability to plan for water in the neighbourhood in some key ways. It is now much more expensive for the city to acquire land for public greenspace and therefore their ability to plan a connective network of green urban infrastructure to optimise the hydrology of the area has been significantly hindered.</p>
 ```{r, echo=FALSE, fig.show='hold', fig.align = 'center', out.width="48%", fig.cap="Figure 3. Left: Initial flood map released by the Province of Quebec on July 10th 2019. Right: Updated map of flood risk zones released on July 15th 2019.", warning=FALSE}
 
-knitr::include_graphics(c(here("www/stories/visuals/griffintown/figure3_1.jpg"),
-                          here("www/stories/visuals/griffintown/figure3_2.jpg")))
+knitr::include_graphics(c(here::here("dev/data/stories/raw_images/griffintown/figure3_1.jpg"),
+                         here::here("dev/data/stories/raw_images/griffintown/figure3_2.jpg")))
 
 ```
 <p>&nbsp;The recent emergence of water management as a top priority for Montreal and Quebec planners is likely because of the increasing cost of flooding to urban infrastructure. This is a direct threat to a neoliberal, profit-driven logic that requires growth of the physical and economic city. In 2019, devastating flooding hit the West Island and Laval, prompting the Province of Quebec to ban reconstruction of homes damaged by the flood and new developments within the most recent flood line (Anhoury, 2019).</p>

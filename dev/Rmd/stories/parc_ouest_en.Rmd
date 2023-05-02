@@ -17,7 +17,7 @@ knitr::opts_chunk$set(echo = TRUE)
 <p>Collaboration is baked into the Grand Parc de L&rsquo;Ouest&rsquo;s DNA. It involves the City of Montreal, two boroughs within the city (l&rsquo;&Icirc;le-Bizard-Sainte-Genevi&egrave;ve and Pierrefonds-Roxboro), two non-amalgamated towns on the West Island of Montreal (Saint-Anne-de-Bellevue and Beaconsfield), and one village (Senneville). It weaves together five existing parks between the West Island and l&rsquo;&Icirc;le-Bizard, including l'Anse-&agrave;-l'Orme, Bois-de-L&rsquo;&icirc;le-Bizard, Cap-Saint-Jacques, Rapides-du-Cheval-Blanc, and the agricultural park Bois-de-la-Roche. The city is also buying land from private owners and expanding the boundaries of l&rsquo;Anse-&agrave;-l&rsquo;Orme. In the process, it is conserving some of the last unprotected greenspace on the Island of Montreal.</p>
 ```{r, echo=FALSE, out.extra='style="float:right; padding:10px;"', warning=FALSE}
  
- # knitr::include_graphics(here("www/stories/visuals/parc_ouest/flowers_bees.gif"))
+ # knitr::include_graphics(here::here("dev/data/stories/raw_images/parc_ouest/flowers_bees.gif"))
  
 ```
 <p>Because biodiversity conservation is always more effective at a larger scale, the GPO has the opportunity to make a dent in the urban conservation sphere; and biodiversity is at the centre of the GPO&rsquo;s vision. The park will support a variety of existing habitats, including wetlands, old-growth forests, swamps, fallows, and anthropogenic green spaces.</p>
@@ -36,7 +36,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ### Building the Grand-parc-de-l&rsquo;Ouest
 ```{r, echo=FALSE, fig.align = 'center', out.width="100%", warning=FALSE, out.extra='style=""'}
 
-knitr::include_graphics(here("www/stories/visuals/parc_ouest/water.jpg"))
+knitr::include_graphics(here::here("dev/data/stories/raw_images/parc_ouest/water.jpg"))
 
 ```
 <br>

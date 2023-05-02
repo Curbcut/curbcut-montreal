@@ -153,19 +153,19 @@ lines <-
 # Cut that invalid geometry
 lines <- lines[-81965, ]
 
-# Add 2022 lines 
-lines_2022 <- 
-  st_read(here::here("dev/data/stories/shp/cycling_infrastructure/Cycling_Lane.shp")) |>  
-  st_transform(4326) |> 
-  as_tibble() |> 
-  transmute(ID = row_number(), fill_2022 = "#73AE80", geometry) |> 
-  st_as_sf() |> 
-  filter(!st_is_empty(geometry))
+# # Add 2022 lines 
+# lines_2022 <- 
+#   st_read(here::here("dev/data/stories/shp/cycling_infrastructure/Cycling_Lane.shp")) |>  
+#   st_transform(4326) |> 
+#   as_tibble() |> 
+#   transmute(ID = row_number(), fill_2022 = "#73AE80", geometry) |> 
+#   st_as_sf() |> 
+#   filter(!st_is_empty(geometry))
 
 lines <- 
-  bind_rows(lines, lines_2022)  |>  
+  lines |> # bind_rows(lines, lines_2022)  |>  
   st_transform(4326) |> 
-  select(-ID) |> 
+  # select(-ID) |> 
   relocate(geometry, .after = last_col()) |> 
   mutate(across(where(is.character), ~if_else(is.na(.x), "#FFFFFF00", .x)))
 
@@ -183,7 +183,7 @@ lines <-
   st_as_sf() |> 
   filter(!st_is_empty(geometry))
 
-lines_2 <- lapply(c(all_years, "2022"), \(z) {
+lines_2 <- lapply(all_years, \(z) {#c(all_years, "2022"), \(z) {
     tibble::tibble(date = z, fill = lines[[paste0("fill_", z)]]) |> 
         cbind(lines["geometry"]) |> 
         sf::st_as_sf() |> 
@@ -198,11 +198,9 @@ map <-
   leaflet(key) %>%
   addTiles() %>%
   addPolylines(color = ~fill, opacity = 1, weight = 5)
-```
 
-```{r, echo = FALSE}
 bscols(map)
-y <- crosstalk::filter_select("cycl_date", "Sélectionnez une année", nc, ~date, multiple = FALSE)
+y <- crosstalk::filter_select("cycl_date", "Sélectionnez une année", key, ~date, multiple = FALSE)
 bscols(y)
 ```
 

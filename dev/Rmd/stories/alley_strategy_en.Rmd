@@ -18,7 +18,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r, echo=FALSE, fig.align = 'center', fig.cap="First green alley from the Green Alley Program. Plateau-Mont-Royal. June 2022", warning=FALSE}
 
-knitr::include_graphics(here("www/stories/visuals/alley_strategy/figure0.jpeg"))
+knitr::include_graphics(here::here("dev/data/stories/raw_images/alley_strategy/figure0.jpeg"))
 ```
 
 <p>The current Green Alley Program appeared due to the citizens' motivation for redeveloping alleys as public green spaces (Bur et al., 2007). The enthusiasm for green alleys was encouraged by the creation of the Éco-quartiers, also in 1995, whose mission is to provide environmental education and support citizens in their greening initiatives (Ville de Montréal, 2020).</p>
@@ -29,13 +29,13 @@ knitr::include_graphics(here("www/stories/visuals/alley_strategy/figure0.jpeg"))
 
 ```{r, echo=FALSE, fig.align = 'center', warning=FALSE, fig.cap="Plateau (2017 vs 2022). Mont-Royal/Coloniale/Cérat. Arrondissement du Plateau- Mont-Royal Facebook (Left), Current condition of the alley. June 2022 (Right)."}
 
-knitr::include_graphics(here("www/stories/visuals/alley_strategy/figure1.jpeg"))
+knitr::include_graphics(here::here("dev/data/stories/raw_images/alley_strategy/figure1.jpeg"))
 
 ```
 
 ```{r, echo=FALSE, fig.align = 'center', warning=FALSE, fig.cap="Plateau (2019 vs 2022) Milton/Parc Ave/Prince-Arthur/Jeanne Mance. Arrondissement du Plateau- Mont-Royal Facebook (Left), Current condition of the alley. June 2022 (Right)."}
 
-knitr::include_graphics(here("www/stories/visuals/alley_strategy/figure2.jpeg"))
+knitr::include_graphics(here::here("dev/data/stories/raw_images/alley_strategy/figure2.jpeg"))
 
 ```
 
@@ -48,7 +48,7 @@ knitr::include_graphics(here("www/stories/visuals/alley_strategy/figure2.jpeg"))
 
 ```{r, echo=FALSE, fig.align = 'center', warning=FALSE, fig.cap="Sud-Ouest (Left), Plateau-Mont-Royal (Center), Maisonneuve (Right)."}
 
-knitr::include_graphics(here("www/stories/visuals/alley_strategy/figure3.jpeg"))
+knitr::include_graphics(here::here("dev/data/stories/raw_images/alley_strategy/figure3.jpeg"))
 
 ```
 
@@ -56,7 +56,7 @@ knitr::include_graphics(here("www/stories/visuals/alley_strategy/figure3.jpeg"))
 
 ```{r, echo=FALSE, fig.align = 'center', warning=FALSE, fig.cap = "Alleys with diverse greenery"}
 
-knitr::include_graphics(here("www/stories/visuals/alley_strategy/figure4.jpeg"))
+knitr::include_graphics(here::here("dev/data/stories/raw_images/alley_strategy/figure4.jpeg"))
 
 ```
 
@@ -65,7 +65,7 @@ knitr::include_graphics(here("www/stories/visuals/alley_strategy/figure4.jpeg"))
 
 ```{r, echo=FALSE, fig.align = 'center', out.width="60%", fig.cap="Photo from Centre d'écologie urbaine de Montréal Facebook. June 17, 2022.", warning=FALSE}
 
-knitr::include_graphics(here("www/stories/visuals/alley_strategy/figure5.jpg"))
+knitr::include_graphics(here::here("dev/data/stories/raw_images/alley_strategy/figure5.jpg"))
 
 ```
 
@@ -73,7 +73,7 @@ knitr::include_graphics(here("www/stories/visuals/alley_strategy/figure5.jpg"))
 
 ```{r, echo=FALSE, fig.align = 'center', warning=FALSE, fig.cap="Ruelle Verte Larivière - Sainte-Marie (Left), Water Park - Plateau (Right)."}
 
-knitr::include_graphics(here("www/stories/visuals/alley_strategy/figure6.jpeg"))
+knitr::include_graphics(here::here("dev/data/stories/raw_images/alley_strategy/figure6.jpeg"))
 
 ```
 
@@ -84,7 +84,7 @@ knitr::include_graphics(here("www/stories/visuals/alley_strategy/figure6.jpeg"))
 
 ```{r, echo=FALSE, fig.align = 'center', warning=FALSE, fig.cap="Image from www.ruellesbleuesvertes.com/le-processus/projets-pilotes"}
 
-knitr::include_graphics(here("www/stories/visuals/alley_strategy/figure7.jpeg"))
+knitr::include_graphics(here::here("dev/data/stories/raw_images/alley_strategy/figure7.jpeg"))
 
 ```
 
@@ -99,7 +99,7 @@ Additionally, the blue-green alley projects were conceived as a strategy to prom
 
 ```{r, echo=FALSE, fig.align = 'center', warning=FALSE, fig.cap = "Current condition of the alley. June 2022 (Left), Vision of the future Blue-Green alley. Source: www.ruellesbleuesvertes.com/le-processus/projets-pilotes (Right)"}
 
-knitr::include_graphics(here("www/stories/visuals/alley_strategy/figure8.jpeg"))
+knitr::include_graphics(here::here("dev/data/stories/raw_images/alley_strategy/figure8.jpeg"))
 
 ```
 
@@ -110,7 +110,7 @@ knitr::include_graphics(here("www/stories/visuals/alley_strategy/figure8.jpeg"))
 
 ```{r, echo=FALSE, fig.align = 'center', out.width="70%", warning=FALSE, fig.cal = "Image from https://www.batiment7.org/ruelle-bleue-verte/"}
 
-knitr::include_graphics(here("www/stories/visuals/alley_strategy/figure9.jpg"))
+knitr::include_graphics(here::here("dev/data/stories/raw_images/alley_strategy/figure9.jpg"))
 
 ```
 

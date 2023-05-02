@@ -614,6 +614,11 @@ source("dev/translation/build_translation.R", encoding = "utf-8")
 # Produce colours ---------------------------------------------------------
 
 colours_dfs <- cc.buildr::build_colours()
+
+# Add natural inf data colours
+colours_dfs$viridis_25 <- 
+  tibble::tibble(group = as.character(26:50),
+                 fill = scales::viridis_pal()(25))
 qs::qsave(colours_dfs, "data/colours_dfs.qs")
 
 

@@ -12,7 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 Le réseau de transport en commun à Montréal a connu une énorme transformation depuis le début du 20e siècle, et le système de métro étant central et emblématique. Non seulement l'évolution du métro n'a pas été linéaire, mais elle a aussi révélé les priorités de la ville et la perception qu'elle avait d'elle-même. Voici l’histoire du métro de Montréal, comment il est arrivé à son état actuel et ce que l'avernir lui réserve. 
 
 ```{r, out.extra='style="width:60%"', fig.align = "center", warning=FALSE, fig.cap = "The réseau de métro de Montréal. *Crédit photo: Société de transport de Montréal*", echo=FALSE}
-knitr::include_graphics(here::here("www/stories/visuals/metro_evolution/modern_day_metro.jpeg"))
+knitr::include_graphics(here::here("dev/data/stories/raw_images/metro_evolution/modern_day_metro.jpeg"))
 ```
 
 ### Les débuts du transport en commun à Montréal et la première proposition d’un métro
@@ -39,7 +39,7 @@ En 1953, la Commission de transport de Montréal, un nouvel organisme ayant pour
 Finalement, c’est l’élection de l’administration Jean Drapeau qui a rendu possible l’arrivée d’un métro à Montréal. Drapeau a été maire de Montréal de 1954 à 1957 et de 1960 à 1986; son mandat a été marqué par son ambition et son but de transformer Montréal en une ville plus grande, moderne et prestigieuse. Cet objectif était en grande partie stimulé par la croissance de Toronto, qui était en train de dépasser Montréal en tant que centre économique du Canada, au début des années soixante (Radio-Canada, 2021). Drapeau a initié plusieurs projets iconiques, le métro parmi eux, avec le but de placer Montréal sur la scène mondiale.
 
 ```{r, out.extra='style="width:70%"',fig.align = "center", fig.cap = "Portrait de Jean Drapeau. *Crédit photo: Harry Palmer*", echo=FALSE}
-knitr::include_graphics(here::here("www/stories/visuals/metro_evolution/jean_drapeau.jpeg"))
+knitr::include_graphics(here::here("dev/data/stories/raw_images/metro_evolution/jean_drapeau.jpeg"))
 ```
 
 Au départ, Drapeau était contre la construction d’un métro, car il partageait l’opinion de beaucoup de politiciens à l’époque qu’il s’agissait de l’âge de l’automobile. Cependant, son point de vue a changé avec une visite à Paris en 1960. Le métro de Paris utilisait une nouvelle innovation technologique: des roues en caoutchouc, qui permettaient une accélération du train plus rapide et moins bruyante (Magder, 2018). Comme les trains des systèmes de métro nord-américains utilisaient encore des roues en acier, une nouvelle inspiration est née: un métro avec des roues en caoutchouc pourrait servir de symbole parfait de l’innovation et du progrès à Montréal. 
@@ -50,7 +50,7 @@ Au départ, Drapeau était contre la construction d’un métro, car il partagea
 Avec l’approbation de Drapeau, le gouvernement du Québec a accordé le droit de construire le métro à la ville. La première proposition du réseau a été faite par Drapeau quelques mois plus tard et comprenait trois lignes: orange (ligne 1), verte (ligne 2) et rouge (ligne 3). La ligne orange irait dans une direction nord-sud le long de la rue Berri et la ligne verte suivrait une direction est-ouest à travers le centre-ville. La ligne rouge partirait du centre-ville, passerait à travers Mont-Royal vers le nord et se diviserait en deux parties, une allant vers Cartierville et l’autre vers Montréal-Nord. Elle utiliserait des rails de CN déjà existants et passerait en partie au-dessus du sol (Gilbert, 2021).
 
 ```{r, out.extra='style="width:70%"', fig.align = "center", fig.cap = "Jean Drapeau et Lucien Saulnier, président du comité exécutif de Montréal, présentent le réseau de métro en 1961. *Crédit photo: Archives de Montréal*", echo=FALSE}
-knitr::include_graphics(here::here("www/stories/visuals/metro_evolution/drapeau_proposal.jpeg"))
+knitr::include_graphics(here::here("dev/data/stories/raw_images/metro_evolution/drapeau_proposal.jpeg"))
 
 ```
 
@@ -69,7 +69,7 @@ Le métro a été inauguré le 14 octobre 1966 à la station Berri-de-Montigny (
 La fin des années soixante a marqué une ère formidable d’optimisme à Montréal après l’inauguration du nouveau métro et l’Expo 67, cette dernière ayant été un succès majeur et l’Exposition Universelle la plus fréquentée du 20e siècle (Musée des beaux-arts de Montréal, 2016). Le sentiment que tout était possible était très répandu et cet optimisme se voit dans l’ambition des plans de métro rédigés à l’époque, qui pouvaient comprendre jusqu’à neuf lignes qui s'étendaient sur 112 km de longueur, à travers toute l'île (Dufour, n.d.-b). Un projet à cette échelle, cependant, n’a jamais été réalisé. 
 
 ```{r, out.width = "700px", fig.align = "center", fig.cap = "Une recréation d'un plan ambitieux de l'époque. *Crédit photo: Marc Dufour*", echo=FALSE}
-knitr::include_graphics(here::here("www/stories/visuals/metro_evolution/MetroMontreal_FuturPasse.png"))
+knitr::include_graphics(here::here("dev/data/stories/raw_images/metro_evolution/MetroMontreal_FuturPasse.png"))
 ```
 
 L’élan positif généré par les projets majeurs des années soixante a mené à la réélection de Jean Drapeau en octobre 1970, à laquelle il a remporté une majorité de 92.5%. Avec cette victoire est arrivé un de ses projets les plus ambitieux et controversés de son mandat: la tenue des jeux Olympiques de 1976 à Montréal. En mai 1970, la ville a été désignée comme ville organisatrice des Jeux Olympiques d'été de 1976 et a reçu un prêt de $430 millions pour rallonger les lignes orange et verte du métro ainsi que construire une nouvelle ligne bleue. Comme la province allait payer le métro, des plans plus ambitieux pour l’année 1978 ont été proposés (Magder, 2017).
@@ -117,7 +117,7 @@ La seule exception à ce manque de progrès est le prolongement de la ligne bleu
 Même si des nouvelles lignes de métro souterraines demeurent très demandées, le futur du transport en commun à Montréal semble être situé à la surface. En 2016, le Réseau électrique métropolitain (REM) a été annoncé par la Caisse de dépôt et placement du Québec, un partenariat entre le gouvernement provincial et le gérant du régime de rentes du Québec, qui a pris charge du financement des futurs projets d’infrastructure dans la province (CBC News, 2015). Avec sa mission ambitieuse de relier le centre-ville à l’Ouest de l’île, la Rive-Nord et l’aéroport avec une ligne de surface électrique, le REM est le plus grand projet de transport en commun depuis le métro en 1966 (Réseau express métropolitain, 2019). La construction est actuellement en cours et la branche Brossard devrait entrer en service en automne 2022.
 
 ```{r, out.width = "600px", fig.align = "center", fig.cap = "Le réseau de métro avec le trajet planifié du REM, présentement en construction. *Crédit photo: Réseau Express Métropolitain*", echo=FALSE}
-knitr::include_graphics(here::here("www/stories/visuals/metro_evolution/REM_Carte_reseauMtl_EN.jpeg"))
+knitr::include_graphics(here::here("dev/data/stories/raw_images/metro_evolution/REM_Carte_reseauMtl_EN.jpeg"))
 ```
 
 Le REM ainsi que le tramway sur le Rive-Sud qui remplace une extension de la ligne jaune semblent indiquer une transition vers des projets de surface pour les années à venir. Bien que l'image d'un réseau de métro souterrain étendu soit très forte, aux yeux de ceux qui paient la facture, elle ne semble plus en valoir la peine. Ce qui était autrefois un investissement majeur capable de conférer un statut élevé à Montréal sur la scène mondiale est devenu une source de complications et de coûts extrêmes à la place. Il reste à voir comment les plans pour le métro vont évoluer après la réalisation du prolongement de la ligne bleue vers Anjou, mais il est clair que des projets de surface semblent être prioritaires dans l’avenir immédiat.
