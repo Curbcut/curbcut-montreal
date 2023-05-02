@@ -90,7 +90,7 @@ stories_server <- function(id, r) {
     themes_c <- curbcut::picker_server(id = id,
                                        picker_id = "var",
                                        r = r,
-                                       var_list = themes,
+                                       var_list = shiny::reactive(themes),
                                        selected = unlist(themes))
     
     shiny::observeEvent(themes_c(), {

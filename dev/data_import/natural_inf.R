@@ -455,6 +455,8 @@ build_and_append_natural_inf <- function(scales_variables_modules, crs) {
       explanation = paste0("the ability of an ecosystem to provide conditions ",
                            "appropriate for individual and population ",
                            "persistence"),
+      exp_q5 = NA,
+      parent_vec = NA,
       theme = "Ecology",
       private = TRUE,
       pe_include = FALSE,
@@ -473,6 +475,8 @@ build_and_append_natural_inf <- function(scales_variables_modules, crs) {
       explanation = paste0("the degree to which a landscape facilitates or ",
                            "impedes animal movement and other ecological ",
                            "processes"),
+      exp_q5 = NA,
+      parent_vec = NA,
       theme = "Ecology",
       private = TRUE,
       pe_include = FALSE,
@@ -490,6 +494,8 @@ build_and_append_natural_inf <- function(scales_variables_modules, crs) {
       var_short = "Favourable CC",
       explanation = paste0("the degree to which past and future climatic ",
                            "conditions are favourable to species life"),
+      exp_q5 = NA,
+      parent_vec = NA,
       theme = "Ecology",
       private = TRUE,
       pe_include = FALSE,
@@ -507,6 +513,8 @@ build_and_append_natural_inf <- function(scales_variables_modules, crs) {
       var_short = "Flood prev.",
       explanation = paste0("the contribution of natural infrastructure to flood ",
                            "prevention"),
+      exp_q5 = NA,
+      parent_vec = NA,
       theme = "Ecology",
       private = TRUE,
       pe_include = FALSE,
@@ -524,6 +532,8 @@ build_and_append_natural_inf <- function(scales_variables_modules, crs) {
       var_short = "Biodiversity cons.",
       explanation = paste0("the contribution of natural infrastructure to ",
                            "biodiversity conservation"),
+      exp_q5 = NA,
+      parent_vec = NA,
       theme = "Ecology",
       private = TRUE,
       pe_include = FALSE,
@@ -541,6 +551,8 @@ build_and_append_natural_inf <- function(scales_variables_modules, crs) {
       var_short = "Heat island reduct.",
       explanation = paste0("the contribution of natural infrastructure to ",
                            "heat-island reduction"),
+      exp_q5 = NA,
+      parent_vec = NA,
       theme = "Ecology",
       private = TRUE,
       pe_include = FALSE,
@@ -560,6 +572,8 @@ build_and_append_natural_inf <- function(scales_variables_modules, crs) {
                            "infrastructure, based on its total contribution to ",
                            "biodiversity conservation, heat-island reduction, ",
                            "and flood protection"),
+      exp_q5 = NA,
+      parent_vec = NA,
       theme = "Ecology",
       private = TRUE,
       pe_include = FALSE,
@@ -576,6 +590,8 @@ build_and_append_natural_inf <- function(scales_variables_modules, crs) {
       var_title = "Flood risks",
       var_short = "Flood risks",
       explanation = paste0("the land areas at risk of flooding"),
+      exp_q5 = NA,
+      parent_vec = NA,
       theme = "Ecology",
       private = TRUE,
       pe_include = FALSE,
@@ -594,6 +610,8 @@ build_and_append_natural_inf <- function(scales_variables_modules, crs) {
       explanation = paste0("the urban areas with a higher air or surface ",
                            "temperature than other areas in the same urban ",
                            "environment"),
+      exp_q5 = NA,
+      parent_vec = NA,
       theme = "Ecology",
       private = TRUE,
       pe_include = FALSE,
@@ -612,6 +630,8 @@ build_and_append_natural_inf <- function(scales_variables_modules, crs) {
       explanation = paste0("the urban areas with a lower air or surface ",
                            "temperature than other areas in the same urban ",
                            "environment"),
+      exp_q5 = NA,
+      parent_vec = NA,
       theme = "Ecology",
       private = TRUE,
       pe_include = FALSE,
@@ -627,46 +647,46 @@ build_and_append_natural_inf <- function(scales_variables_modules, crs) {
   # Modules table -----------------------------------------------------------
   
   modules <-
-      scales_variables_modules$modules |>
-        add_module(
-          id = "natural_inf",
-          theme = "Ecology",
-          nav_title = "Natural infrastructure",
-          title_text_title = "Natural infrastructure",
-          title_text_main = paste0(
-            "Natural ecosystems are necessary for our cities, they help contribute ",
-            "to well-being, quality of life and public health. This page quantifies",
-            " the benefits provided by urban trees and wooded areas to biodiversity",
-            " conservation, flood prevention, and heat-island reduction. "
-          ),
-          title_text_extra = paste0(
-            "The datasets visualized on this page come from Habitat Montreal. ",
-            "Note that the natural infrastructure included in the study that ",
-            "generated this data only covers approximately 25% of the Montreal ",
-            "region. For more information on the methods and data used for this ",
-            "page visit: https://fr.davidsuzuki.org/publication-scientifique/le",
-            "-role-des-infrastructures-naturelles-dans-la-prevention-des-inonda",
-            "tions-dans-la-communaute-metropolitaine-de-montreal/'"),
-          regions = NULL,
-          metadata = TRUE,
-          dataset_info = paste0(
-            "<p>Data made available by the firm Habitat. For more ",
-            "information on the methods and data used for this ",
-            "module, see <a href = 'https://fr.davidsuzuki.org/",
-            "publication-scientifique/le-role-des-infrastructures-",
-            "natrelles-dans-la-prevention-des-inondations-dans-la-",
-            "communaute-metropolitaine-de-montreal/'>Maure et al.,",
-            " 2018, Le rôle des ",
-            "infrastructures naturelles dans la ",
-            "prévention des inondations dans la Communauté ",
-            "métropolitaine de ",
-            "Montréal, Fondation David Suzuki.</a></p>")
-        )
+    scales_variables_modules$modules |>
+    add_module(
+      id = "naturalinf",
+      theme = "Ecology",
+      nav_title = "Natural infrastructure",
+      title_text_title = "Natural infrastructure",
+      title_text_main = paste0(
+        "Natural ecosystems are necessary for our cities, they help contribute ",
+        "to well-being, quality of life and public health. This page quantifies",
+        " the benefits provided by urban trees and wooded areas to biodiversity",
+        " conservation, flood prevention, and heat-island reduction. "
+      ),
+      title_text_extra = paste0(
+        "The datasets visualized on this page come from Habitat Montreal. Note ",
+        "that the natural infrastructure included in the study that generated t",
+        "his data only covers approximately 25% of the Montreal region. For mor",
+        "e information on the methods and data used for this page, visit the pu",
+        "blication <a href = ‘https://fr.davidsuzuki.org/publication-scientifiq",
+        "ue/le-role-des-infrastructures-naturelles-dans-la-prevention-des-inond",
+        "ations-dans-la-communaute-metropolitaine-de-montreal/ ‘ target = ‘_bla",
+        "nk’>“Le rôle des infrastructures naturelles dans la prévention des ino",
+        "ndations dans la Communauté métropolitaine de Montréal”</a>."
+      ),
+      regions = NULL,
+      metadata = TRUE,
+      dataset_info = paste0(
+        "<p>Data made available by the firm Habitat. For more information on th",
+        "e methods and data used for this module, see <a href = 'https://fr.dav",
+        "idsuzuki.org/publication-scientifique/le-role-des-infrastructures-natr",
+        "elles-dans-la-prevention-des-inondations-dans-la-communaute-metropolit",
+        "aine-de-montreal/'>Maure et al., 2018, Le rôle des infrastructures nat",
+        "urelles dans la prévention des inondations dans la Communauté métropol",
+        "itaine de Montréal, Fondation David Suzuki.</a></p>"
+      )
+    )
   
   
   # Save natural inf in its own sqlite db -----------------------------------
   
-  natural_inf_path <- "data/natural_inf.sqlite"
+  natural_inf_path <- "data/naturalinf.sqlite"
   if (natural_inf_path %in% list.files("data", full.names = TRUE)) 
     unlink(natural_inf_path)
   natural_inf_sql <- DBI::dbConnect(RSQLite::SQLite(), natural_inf_path,

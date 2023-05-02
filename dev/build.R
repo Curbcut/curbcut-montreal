@@ -421,10 +421,10 @@ scales_variables_modules <-
 #     scales_variables_modules = scales_variables_modules,
 #     crs = crs)
 
-# scales_variables_modules <-
-#   build_and_append_natural_inf(
-#     scales_variables_modules = scales_variables_modules,
-#     crs = crs)
+scales_variables_modules <-
+  build_and_append_natural_inf(
+    scales_variables_modules = scales_variables_modules,
+    crs = crs)
 
 
 # # Add access to amenities module
@@ -439,12 +439,12 @@ scales_variables_modules <-
                           region_DA_IDs = census_scales$DA$ID,
                           traveltimes = traveltimes,
                           crs = crs)
-# # Additional access variables
-# scales_variables_modules <- 
-#   build_and_append_access(scales_variables_modules = scales_variables_modules,
-#                           DA_table = census_scales$DA,
-#                           traveltimes = traveltimes,
-#                           crs = crs)
+# Additional access variables
+scales_variables_modules <-
+  build_and_append_access(scales_variables_modules = scales_variables_modules,
+                          DA_table = census_scales$DA,
+                          traveltimes = traveltimes,
+                          crs = crs)
 
 # Post process
 scales_variables_modules$scales <- 
@@ -457,9 +457,9 @@ qs::qload("dev/data/built/scales_variables_modules.qsm")
 
 # Postal codes ------------------------------------------------------------
 
-postal_codes <- build_postal_codes(census_scales$DA$ID)
-postal_codes <- sf::st_drop_geometry(postal_codes)
-qs::qsave(postal_codes, "data/postal_codes.qs")
+# postal_codes <- build_postal_codes(census_scales$DA$ID)
+# postal_codes <- sf::st_drop_geometry(postal_codes)
+# qs::qsave(postal_codes, "data/postal_codes.qs")
 
 
 # Map zoom levels ---------------------------------------------------------
@@ -520,19 +520,19 @@ map_zoom_levels_save(data_folder = "data/", map_zoom_levels = map_zoom_levels)
                    # prefix = "mtl",
                    # username = "sus-mcgill",
                    # access_token = .cc_mb_token)
-
-source("dev/tiles/grid_tiles.R")
-tileset_upload_grid(region = "grid",
-                    all_scales = scales_variables_modules$scales,
-                    map_zoom_levels = map_zoom_levels,
-                    max_zoom = list(grid250 = 11, grid100 = 12, grid50 = 13, grid25 = 14),
-                    vars = c("climate_drought", "climate_flood", "climate_destructive_storms",
-                             "climate_heat_wave", "climate_heavy_rain"),
-                    prefix = "mtl",
-                    username = "sus-mcgill",
-                    access_token = .cc_mb_token)
-
-
+# 
+# source("dev/tiles/grid_tiles.R")
+# tileset_upload_grid(region = "grid",
+#                     all_scales = scales_variables_modules$scales,
+#                     map_zoom_levels = map_zoom_levels,
+#                     max_zoom = list(grid250 = 11, grid100 = 12, grid50 = 13, grid25 = 14),
+#                     vars = c("climate_drought", "climate_flood", "climate_destructive_storms",
+#                              "climate_heat_wave", "climate_heavy_rain"),
+#                     prefix = "mtl",
+#                     username = "sus-mcgill",
+#                     access_token = .cc_mb_token)
+# 
+# 
 # 
 # tileset_labels(scales = scales_variables_modules$scales,
 #                crs = crs,
@@ -581,7 +581,6 @@ scales_variables_modules$modules <-
   add_module(modules = scales_variables_modules$modules,
              id = "place_explorer",
              theme = NA,
-             regions = list(NULL),
              nav_title = "Place explorer",
              title_text_title = "Place explorer",
              title_text_main = paste0(

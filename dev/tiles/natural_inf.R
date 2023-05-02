@@ -5,19 +5,19 @@ library(sf)
 library(qs)
 natural_inf_tiles_raw <- qread("dev/data/built/natural_inf_tiles_raw.qs")
 natural_inf_tiles <- qread("dev/data/built/natural_inf_tiles.qs")
-source("dev/tiles/_tile_functions.R")
-
 
 
 # Upload tile sources -----------------------------------------------------
 
 for (i in seq_len(length(natural_inf_tiles_raw))) {
   
-  natural_inf_tiles_raw[[i]] |>
+  df <- natural_inf_tiles_raw[[i]] |>
     mutate(across(where(is.numeric), as.character)) |>
-    st_set_agr("constant") |>
-    upload_tile_source(paste0(
-      "mtl_natural_inf-", names(natural_inf_tiles_raw)[[i]]))
+    st_set_agr("constant")
+  
+  cc.buildr::tileset_upload_tile_source(id = paste0(
+    "mtl_natural_inf-", names(natural_inf_tiles_raw)[[i]]),
+    df = df, username = "sus-mcgill", access_token = .cc_mb_token)
 }
 
 
@@ -25,17 +25,17 @@ for (i in seq_len(length(natural_inf_tiles_raw))) {
 
 natural_inf_recipe <- imap(natural_inf_tiles_raw, \(cat_data, cat) {
   
-  create_recipe(
+  cc.buildr::tileset_create_recipe(
     layer_names = c(paste0(cat, "_a"),
                     paste0(cat, "_b"),
                     paste0(cat, "_c")),
     source = c(
       setNames(nm = paste0(cat, "_a"), paste0(
-        "mapbox://tileset-source/sus-mcgill/natural_inf-", cat)),
+        "mapbox://tileset-source/sus-mcgill/mtl_natural_inf-", cat)),
       setNames(nm = paste0(cat, "_b"), paste0(
-        "mapbox://tileset-source/sus-mcgill/natural_inf-", cat)),
+        "mapbox://tileset-source/sus-mcgill/mtl_natural_inf-", cat)),
       setNames(nm = paste0(cat, "_c"), paste0(
-        "mapbox://tileset-source/sus-mcgill/natural_inf-", cat))),
+        "mapbox://tileset-source/sus-mcgill/mtl_natural_inf-", cat))),
     minzoom = c(setNames(nm = paste0(cat, "_a"), 3),
                 setNames(nm = paste0(cat, "_b"), 9),
                 setNames(nm = paste0(cat, "_c"), 11)),
@@ -54,7 +54,7 @@ natural_inf_recipe <- imap(natural_inf_tiles_raw, \(cat_data, cat) {
     fallback_simp_zoom = c(setNames(nm = paste0(cat, "_a"), NA),
                            setNames(nm = paste0(cat, "_b"), 1),
                            setNames(nm = paste0(cat, "_c"), 4)),
-    recipe_name = paste0("natural_inf-", cat))
+    recipe_name = paste0("mtl_natural_inf-", cat))
   
 })
   
@@ -63,17 +63,25 @@ natural_inf_recipe <- imap(natural_inf_tiles_raw, \(cat_data, cat) {
 
 
 for (i in seq_len(length(natural_inf_tiles_raw))) {
-  create_tileset(paste0("mtl_natural_inf-", names(natural_inf_tiles_raw)[[i]]), 
-                 natural_inf_recipe[[i]])
-  Sys.sleep(1)
+  print(i)
+  cc.buildr::tileset_create_tileset(
+    tileset = paste0("mtl_natural_inf-", names(natural_inf_tiles_raw)[[i]]), 
+    recipe = natural_inf_recipe[[i]],
+    username = "sus-mcgill", 
+    access_token = .cc_mb_token)
+  Sys.sleep(5)
 }
   
 
 # Publish tilesets --------------------------------------------------------
 
 for (i in seq_len(length(natural_inf_tiles_raw))) {
-  publish_tileset(paste0("mtl_natural_inf-", names(natural_inf_tiles_raw)[[i]]))
-  Sys.sleep(30)
+  print(i)
+  cc.buildr::tileset_publish_tileset(
+    tileset = paste0("mtl_natural_inf-", names(natural_inf_tiles_raw)[[i]]),
+    username = "sus-mcgill", 
+    access_token = .cc_mb_token)
+  Sys.sleep(35)
 }
 
 
@@ -120,8 +128,12 @@ map(1:10, ~{
   
 })
 
+
+
+
+
 natural_inf_recipe <-
-  create_recipe(
+  cc.buildr::tileset_create_recipe(
     layer_names = "mtl_natural_inf-custom",
     source = paste0("mapbox://tileset-source/sus-mcgill/mtl_natural_inf-custom"),
     minzoom = 3,
@@ -131,5 +143,9 @@ natural_inf_recipe <-
     layer_size = 2500,
     recipe_name = "mtl_natural_inf-custom")
 
-create_tileset("mtl_natural_inf-custom", natural_inf_recipe)
-publish_tileset("mtl_natural_inf-custom")
+cc.buildr::tileset_create_tileset("mtl_natural_inf-custom", natural_inf_recipe,
+                                username = "sus-mcgill", 
+                                access_token = .cc_mb_token)
+cc.buildr::tileset_publish_tileset("mtl_natural_inf-custom",
+                                 username = "sus-mcgill", 
+                                 access_token = .cc_mb_token)

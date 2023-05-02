@@ -194,10 +194,10 @@ vars_right <- modules$var_right[modules$id == "climaterisk"][[1]]
     var_right <- curbcut::compare_server(
       id = id,
       r = r,
-      var_list = curbcut::dropdown_make(
+      var_list = shiny::reactive(curbcut::dropdown_make(
         vars = vars_right,
         compare = TRUE
-      ),
+      )),
       time = time
     )
 

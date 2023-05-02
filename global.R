@@ -31,6 +31,8 @@ suppressPackageStartupMessages({
   library(metathis)
   
   library(stringr)
+  library(DBI)
+  library(RSQLite)
   
   library(sever)
 })
@@ -52,6 +54,18 @@ invisible(lapply(data_files[grepl("qs$", data_files)],
                    object_name <- gsub("(data/)|(\\.qs)", "", x)
                    assign(object_name, qs::qread(x), envir = .GlobalEnv)
                    }))
+
+
+# Connect to the dbs ------------------------------------------------------
+
+dbs <- list.files("data", full.names = TRUE)
+dbs <- subset(dbs, grepl(".sqlite$", dbs))
+
+lapply(dbs, \(x) {
+  connection_name <- paste0(stringr::str_extract(x, "(?<=/).*?(?=\\.)"), "_conn")
+  assign(connection_name, dbConnect(SQLite(), x), envir = .GlobalEnv)
+}) |> invisible()
+
 
 # Modules ready -----------------------------------------------------------
 
