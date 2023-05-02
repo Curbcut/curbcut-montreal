@@ -3,7 +3,7 @@ title: "The Green Alley Program in Le Plateau-Mont-Royal: tensions between beaut
 output: html_document
 author: "Emma Ezvan"
 date: "07.2022"
-runtime: shiny_prerendered 
+ 
 ---
 
 ```{r setup, include=FALSE}

@@ -2,7 +2,7 @@
 title: "Les dessous du Grand Parc de l'Ouest à Montréal"
 output: html_document
 author: "Josh Medicoff"
-runtime: shiny_prerendered
+
 ---
 
 ```{r setup, include=FALSE}

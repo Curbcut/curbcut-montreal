@@ -3,7 +3,6 @@ title: "Histoire de l'infrastructure cycliste à Montréal"
 author: "Philip Bligh"
 date: "07.2022"
 output: html_document
-runtime: shiny
 ---
 
 ```{r setup, include=FALSE}
@@ -184,10 +183,15 @@ lines <-
   filter(!st_is_empty(geometry))
 
 lines_2 <- lapply(all_years, \(z) {#c(all_years, "2022"), \(z) {
-    tibble::tibble(date = z, fill = lines[[paste0("fill_", z)]]) |> 
+    out <- tibble::tibble(date = z, fill = lines[[paste0("fill_", z)]]) |> 
         cbind(lines["geometry"]) |> 
         sf::st_as_sf() |> 
-        sf::st_cast("LINESTRING")
+        rmapshaper::ms_simplify() |> 
+        sf::st_cast("MULTILINESTRING") |> 
+        sf::st_cast("LINESTRING") |> 
+  sf::st_make_valid()
+    
+    out[out$fill != "#FFFFFF00", ]
 })
 
 lines_2 <- Reduce(rbind, lines_2) |> tibble::as_tibble() |> sf::st_as_sf()
@@ -198,7 +202,9 @@ map <-
   leaflet(key) %>%
   addTiles() %>%
   addPolylines(color = ~fill, opacity = 1, weight = 5)
+```
 
+```{r, echo=FALSE}
 bscols(map)
 y <- crosstalk::filter_select("cycl_date", "Sélectionnez une année", key, ~date, multiple = FALSE)
 bscols(y)
@@ -212,11 +218,11 @@ function filter_default() {
 window.onload = filter_default;
 ```
 
-```{r echo=FALSE}
+```{r echo=FALSE, fig.height=1, fig.align='center'}
   type_fill <- 
-    data.frame(type = c("Piste cyclable", "Nouvelle piste cyclable", "Piste retirée", 
+    data.frame(type = c("Nouvelle piste cyclable", "Piste retirée", 
                         "Ancienne piste cyclable", "Station Bixi"),
-               fill = c("#73AE80", "#73AE80", "#CA0020", "#2E4633", "#000000"))
+               fill = c("#73AE80", "#CA0020", "#2E4633", "#000000"))
   
   legend <- 
     data.frame(x = seq_along(type_fill$type),

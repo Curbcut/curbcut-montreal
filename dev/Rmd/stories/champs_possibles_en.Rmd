@@ -3,7 +3,7 @@ title: "The Champ des Possibles: A Communitarian & Biodiverse Urban Prairie"
 author: "Dominique Boulet"
 date: "07.2022"
 output: html_document
-runtime: shiny_prerendered
+
 ---
 
 ```{r setup, include=FALSE}

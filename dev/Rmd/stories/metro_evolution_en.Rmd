@@ -187,6 +187,9 @@ map <-
   addTiles() %>%
   addPolylines(color = ~fill, opacity = 1, weight = 5, label = ~Type,
                labelOptions = labelOptions(noHide = TRUE))
+```
+
+```{r, echo=FALSE}
 bscols(map)
 y <- crosstalk::filter_select("metro_date", "Select year", metro_evolution, ~date, multiple = FALSE)
 bscols(y)

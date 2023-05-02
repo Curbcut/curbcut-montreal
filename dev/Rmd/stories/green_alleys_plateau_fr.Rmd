@@ -3,7 +3,7 @@ title: "Le programme des ruelles vertes dans Le Plateau-Mont-Royal : tensions en
 output: html_document
 author: "Emma Ezvan"
 date: "07.2022"
-runtime: shiny_prerendered 
+ 
 ---
 
 ```{r setup, include=FALSE}

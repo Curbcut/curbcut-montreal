@@ -3,7 +3,7 @@ title: 'Le Champ des Possibles : Une prairie urbaine communautaire et biodiversi
 author: "Dominique Boulet"
 date: "07.2022"
 output: html_document
-runtime: shiny_prerendered
+
 ---
 
 ```{r setup, include=FALSE}

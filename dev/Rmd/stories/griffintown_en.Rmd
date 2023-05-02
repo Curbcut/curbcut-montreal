@@ -2,7 +2,7 @@
 title: "Griffintown, from a gift of the machine age to a water wheel in the growth machine"
 output: html_document
 author: "Camille Forest"
-runtime: shiny_prerendered
+
 ---
 
 ```{r setup, include=FALSE}

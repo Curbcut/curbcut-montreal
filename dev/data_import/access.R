@@ -108,6 +108,9 @@ build_and_append_access <- function(scales_variables_modules,
   parent_strings <- rep(list("population"), length(vars))
   names(parent_strings) <- vars
   
+  types <- rep(list("avg"), length(vars))
+  names(types) <- vars
+  
   # Region values
   region_values <- variables_get_region_vals(
     scales = with_breaks$scales,

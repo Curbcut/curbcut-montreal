@@ -688,7 +688,7 @@ build_and_append_natural_inf <- function(scales_variables_modules, crs) {
   
   natural_inf_path <- "data/naturalinf.sqlite"
   if (natural_inf_path %in% list.files("data", full.names = TRUE)) 
-    unlink(natural_inf_path)
+    unlink(natural_inf_path, force = TRUE)
   natural_inf_sql <- DBI::dbConnect(RSQLite::SQLite(), natural_inf_path,
                                     overwrite = TRUE)
   

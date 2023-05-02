@@ -4,7 +4,7 @@ subtitle: "An informative example of the possibilities of change in Saint-Michel
 output: html_document
 author: "Jennah Landgraf"
 date: "04.2022"
-runtime: shiny_prerendered
+
 ---
 
 ```{r setup, include=FALSE}

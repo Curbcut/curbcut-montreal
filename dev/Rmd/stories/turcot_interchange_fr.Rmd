@@ -3,7 +3,7 @@ title: "La reconstruction de l'échangeur Turcot : Le croisement des désirs de 
 output: html_document
 author: "Jennah Landgraf"
 date: "05.2022"
-runtime: shiny_prerendered
+
 ---
 
 ```{r setup, include=FALSE}
