@@ -3,7 +3,7 @@ title: "The Champ des Possibles: A Communitarian & Biodiverse Urban Prairie"
 author: "Dominique Boulet"
 date: "07.2022"
 output: html_document
-runtime: shiny_prerendered
+
 ---
 
 ```{r setup, include=FALSE}
@@ -20,7 +20,7 @@ Located in the Mile End neighbourhood along the Canadian Pacific Railroad tracks
 
 ```{r, echo=FALSE, fig.align = 'left', out.width="100%", fig.cap="Image 1.Champ des Possibles", warning=FALSE}
 
-knitr::include_graphics(here("www/stories/visuals/champs_possibles/Image1_IMG_0648.jpeg"))
+knitr::include_graphics(here::here("dev/data/stories/raw_images/champs_possibles/Image1_IMG_0648.jpeg"))
 
 ```
 
@@ -32,7 +32,7 @@ In 2005, following citizen mobilization, the nearby Carmelite monastery was deem
 
 ```{r, echo=FALSE, fig.align = 'left', out.extra='style="float:left; padding:50px; width:30%"', fig.cap="Image 2.The Roerich Garden Project, photo taken from http://emilyrosemichaud.com/portfolio-item/roerich-garden-project", warning=FALSE}
 
-knitr::include_graphics(here("www/stories/visuals/champs_possibles/Image2_Roerich_4_KevinBrown-1.jpeg"))
+knitr::include_graphics(here::here("dev/data/stories/raw_images/champs_possibles/Image2_Roerich_4_KevinBrown-1.jpeg"))
 
 ```
 
@@ -46,7 +46,7 @@ Since 2013, ACDP has had a formal co-management agreement with the Plateau-Mont-
 
 ```{r, echo=FALSE, fig.align = 'left', out.width="100%", fig.cap="Image 3.The Pedestrian and cycling pathway between de Gaspé Avenue and Henri-Julien Street", warning=FALSE}
 
-knitr::include_graphics(here("www/stories/visuals/champs_possibles/Image3_IMG_0687.jpeg"))
+knitr::include_graphics(here::here("dev/data/stories/raw_images/champs_possibles/Image3_IMG_0687.jpeg"))
 
 ```
 
@@ -58,7 +58,7 @@ The removal of physical barriers to the site is an ongoing issue in the Champ de
 
 ```{r, echo=FALSE, fig.align = 'left', out.width="100%", fig.cap="Image 4.Informal Crossing Through CP Rail Fence", warning=FALSE}
 
-knitr::include_graphics(here("www/stories/visuals/champs_possibles/Image4_IMG_0664.jpeg"))
+knitr::include_graphics(here::here("dev/data/stories/raw_images/champs_possibles/Image4_IMG_0664.jpeg"))
 
 ```
 
@@ -68,7 +68,7 @@ For many of the respondents of Poteete et al.’s (2021) research, access to gre
 
 ```{r, echo=FALSE, fig.align = 'left', out.width="100%", fig.cap="Image 5.A Fire Pit and Art Installation in the Champ des Possibles", warning=FALSE}
 
-knitr::include_graphics(here("www/stories/visuals/champs_possibles/Image5_IMG_0670.jpeg"))
+knitr::include_graphics(here::here("dev/data/stories/raw_images/champs_possibles/Image5_IMG_0670.jpeg"))
 
 ```
 

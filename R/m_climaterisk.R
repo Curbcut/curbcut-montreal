@@ -1,11 +1,58 @@
 ### CLIMATERISK PAGE ###########################################################
 
+map_scale_fill_grid <- function(vars) {
+  var <- vars$var_left
+  
+  clr <- if (length(var) == 1) colours_dfs$left_5 else colours_dfs$delta
+  
+  if (length(var) == 2) {
+    var <- curbcut::var_remove_time(var)
+    var <- sprintf("%s_delta", var)
+  }
+
+  rdeck::scale_color_category(col = !!as.name(var), 
+                              palette = clr$fill, 
+                              unmapped_color = "#B3B3BB", 
+                              levels = clr$group, 
+                              legend = FALSE)
+}
+
+explore_graph_grid <- function(vars, lang, data, select_id) {
+  plot <- curbcut:::explore_graph(vars = vars,
+                                  select_id = NA,
+                                  df = "grid_grid250",
+                                  data = data_get(vars, df = "grid_grid250"),
+                                  scales_as_DA = c(),
+                                  lang)
+  
+  if (!is.na(select_id)) {
+    if ("q5_ind" %in% class(vars)) {
+      plot <-
+        plot +
+        ggplot2::geom_vline(
+          xintercept = data$var_left[data$ID == select_id] + 1,
+          colour = "black", linewidth = 1.5)
+    }
+
+    if ("delta_ind" %in% class(vars)) {
+      plot <-
+        plot +
+        ggplot2::geom_tile(data = data[data$ID == select_id, ],
+                           color = "white", fill = "transparent", size = 1.5)
+    }
+  }
+  
+  return(plot)
+  
+}
+
 # GLOBAL ------------------------------------------------------------------
 
 `climaterisk_default_region` <- unlist(modules$regions[modules$id == "climaterisk"])[1]
 `climaterisk_mzp` <-
   eval(parse(text = paste0("map_zoom_levels_", `climaterisk_default_region`)))
 default_region <- modules$regions[modules$id == "climaterisk"][[1]][1]
+vars_right <- modules$var_right[modules$id == "climaterisk"][[1]]
 
 # UI ----------------------------------------------------------------------
 
@@ -14,18 +61,16 @@ default_region <- modules$regions[modules$id == "climaterisk"][[1]][1]
     # Sidebar
     curbcut::sidebar_UI(
       id = shiny::NS(id, id),
-      curbcut::picker_UI(id = NS(id, id), var_list = c(
-        "climate_drought", "climate_flood", "climate_heavy_rain",
-        "climate_destructive_storms", "climate_heat_wave"
-      )),
-      curbcut::checkbox_UI(id = NS(id, id), label = cc_t("250-metre grid"),
+      curbcut::autovars_UI(NS(id, id)),
+      curbcut::checkbox_UI(id = NS(id, id), label = cc_t("View with grids"),
                            value = TRUE),
       curbcut::warnuser_UI(shiny::NS(id, id)),
       bottom = shiny::tagList(
         curbcut::legend_UI(shiny::NS(id, id)),
-        shinyjs::hidden(
-          shiny::div(id = NS(id, "changezoom"),
-                     curbcut::zoom_UI(shiny::NS(id, id), `climaterisk_mzp`)))
+        shinyjs::hidden(shiny::tags$div(
+          id = shiny::NS(id, "zoom_div"),
+          curbcut::zoom_UI(shiny::NS(id, id), `climaterisk_mzp`))
+        )
       )
     ),
 
@@ -61,7 +106,7 @@ default_region <- modules$regions[modules$id == "climaterisk"][[1]][1]
         region = default_region
       )
     )
-
+    
     # Zoom and POI reactives when the view state of the map changes.
     observeEvent(map_viewstate(), {
       r[[id]]$zoom(curbcut::zoom_get(zoom = map_viewstate()$zoom))
@@ -71,9 +116,9 @@ default_region <- modules$regions[modules$id == "climaterisk"][[1]][1]
       ))
     })
     
-    # When in grid mode, do not show the zoom widgets
+    # Hide the zoom slider when on 'grid()'
     shiny::observe({
-      shinyjs::toggle(id = "changezoom", condition = !grid())
+      shinyjs::toggle(id = "zoom_div", condition = !grid())
     })
     
     # Switch the region depending on inputs
@@ -98,17 +143,21 @@ default_region <- modules$regions[modules$id == "climaterisk"][[1]][1]
     })
 
     # Update selected ID
-    curbcut::update_select_id(id = id, r = r, data = data)
+    update_select_id(id = id, r = r, data = data)
+    
+    
+    # Default to tileset values
+    grid_compare <- shiny::reactive(grid() && var_right()[1] != " ")
 
     # Choose tileset
-    tile <- curbcut::zoom_server(
+    tile_1 <- curbcut::zoom_server(
       id = id,
       r = r,
       zoom_string = rv_zoom_string,
-      zoom_levels = zoom_levels,
-      no_autozoom = shiny::reactive(if (grid()) TRUE else FALSE)
+      zoom_levels = zoom_levels
     )
-
+    tile <- shiny::reactive(if (grid_compare()) "grid_grid250" else tile_1())
+    
     # Get df
     observeEvent(
       {
@@ -116,6 +165,7 @@ default_region <- modules$regions[modules$id == "climaterisk"][[1]][1]
         rv_zoom_string()
       },
       {
+        if (grid_compare()) return(r[[id]]$df("grid_grid250"))
         r[[id]]$df(curbcut::update_df(
           tile = tile(),
           zoom_string = rv_zoom_string()
@@ -123,82 +173,73 @@ default_region <- modules$regions[modules$id == "climaterisk"][[1]][1]
       }
     )
 
-    # Time
-    time <- reactive("2017")
-
-    # Left variable
-    var_left <- curbcut::picker_server(
-      id = id,
-      r = r,
-      var_list = curbcut::dropdown_make(
-        vars = c(
-          "climate_drought", "climate_flood", "climate_heavy_rain",
-          "climate_destructive_storms", "climate_heat_wave"
-        ),
-        compare = FALSE
-      ),
-      time = time
-    )
+    # Construct the left-hand UIs / servers automatically
+    autovars <- 
+      curbcut::autovars_server(
+        id = id, 
+        r = r, 
+        main_dropdown_title = "Climate vulnerability indicator",
+        default_year = 2022)
+    
+    var_left <- shiny::reactive(autovars()$var)
+    time <- shiny::reactive(autovars()$time)
 
     # 250-m grid checkbox
     grid <- curbcut::checkbox_server(
       id = id,
       r = r,
-      label = shiny::reactive(cc_t("250-metre grid", lang = r$lang())))
+      label = shiny::reactive(cc_t("View with grids", lang = r$lang())))
 
     # Right variable / compare panel
     var_right <- curbcut::compare_server(
       id = id,
       r = r,
-      var_list = curbcut::dropdown_make(
-        vars = c(
-          "housing_tenant", "housing_rent", "housing_repairs",
-          "housing_value", "housing_unafford", "housing_unsuit",
-          "housing_stress_renter", "housing_stress_owner", "housing_mobility_one",
-          "housing_mobility_five", "housing_single_detached", "inc_median_income",
-          "inc_50", "inc_100", "inc_high",
-          "inc_limat", "iden_imm", "iden_imm_new",
-          "iden_vm", "iden_aboriginal", "trans_car",
-          "trans_walk_or_bike", "trans_transit", "trans_t_15",
-          "trans_t_45", "trans_t_45_plus", "family_children",
-          "family_one_person", "lang_french_only", "lang_eng_only",
-          "lang_french_eng", "lang_no_official", "age_0_14",
-          "age_15_64", "age_65_plus", "edu_bachelor_above",
-          "edu_no_degree"
-        ),
+      var_list = shiny::reactive(curbcut::dropdown_make(
+        vars = vars_right,
         compare = TRUE
-      ),
+      )),
       time = time
     )
 
-    # The `vars` reactive
-    vars <- reactive(curbcut::vars_build(
-      var_left = var_left(),
-      var_right = var_right(),
-      df = r[[id]]$df()
-    ))
+    # Update the `r[[id]]$vars` reactive
+    curbcut::update_vars(
+      id = id, 
+      r = r, 
+      var_left = var_left, 
+      # Force an empty var_right when on `grid`
+      var_right = var_right)
 
     # Sidebar
     curbcut::sidebar_server(id = id, r = r)
 
     # Data
     data <- reactive(curbcut::data_get(
-      vars = vars(),
+      vars = r[[id]]$vars(),
       df = r[[id]]$df()
     ))
-
+    
     # Data for tile coloring
-    data_colours <- reactive(curbcut::data_get_colours(
-      vars = vars(),
-      region = zoom_levels()$region,
-      zoom_levels = zoom_levels()$zoom_levels
-    ))
+    data_colours <- shiny::reactive({
+      # If the color shown is extracted from the tileset, do not calculate
+      if (grid() & !grid_compare()) return(data.frame())
+      zoom_levels <- if (grid_compare()) {
+        stats::setNames("grid250", "grid250") 
+      } else {
+        zoom_levels()$zoom_levels
+      }
+      
+      curbcut::data_get_colours(
+        vars = r[[id]]$vars(),
+        region = zoom_levels()$region,
+        zoom_levels = zoom_levels
+      )
+    })
 
     # Warn user
     curbcut::warnuser_server(
       id = id,
       r = r,
-      vars = vars,
+      vars = r[[id]]$vars,
       time = time,
       data = data
     )
@@ -207,7 +248,7 @@ default_region <- modules$regions[modules$id == "climaterisk"][[1]][1]
     curbcut::legend_server(
       id = id,
       r = r,
-      vars,
+      vars = r[[id]]$vars,
       data = data,
       df = r[[id]]$df
     )
@@ -216,17 +257,28 @@ default_region <- modules$regions[modules$id == "climaterisk"][[1]][1]
     curbcut::dyk_server(
       id = id,
       r = r,
-      vars = vars,
+      vars = r[[id]]$vars,
       poi = r[[id]]$poi,
       df = r[[id]]$df
     )
 
     # Control the `lwd` of the polygon borders. No borders on grid + high zoom.
     lwd <- shiny::reactive({
-      if (tile() == "grid_grid" & r[[id]]$zoom() < 12) return(0)
+      if (grid()) return(0)
       return(1)
     })
-
+    
+    # Switch the fill function of the map server when on grid
+    fill_fun_args <- shiny::reactive({
+      if (grid() & !grid_compare()) {
+        return(list(fun = map_scale_fill_grid,
+                    args = list(vars = r[[id]]$vars())))
+      } else {
+        return(list(fun = curbcut::map_scale_fill,
+                    args = list(data_colours(), tileset_ID_color = "ID_color")))
+      }
+    })
+    
     # Update map in response to variable changes or zooming
     map_viewstate <- curbcut::map_server(
       id = id,
@@ -240,7 +292,9 @@ default_region <- modules$regions[modules$id == "climaterisk"][[1]][1]
                                       tile = tile(),
                                       zoom = r[[id]]$zoom(),
                                       zoom_levels = zoom_levels()$zoom_levels,
-                                      lwd = lwd()))
+                                      lwd = lwd())),
+      fill_fun = shiny::reactive(fill_fun_args()$fun),
+      fill_args = shiny::reactive(fill_fun_args()$args)
     )
 
     # Update map labels
@@ -251,6 +305,32 @@ default_region <- modules$regions[modules$id == "climaterisk"][[1]][1]
       zoom_levels = reactive(zoom_levels()$zoom_levels),
       region = reactive(zoom_levels()$region)
     )
+    
+    # Switch the graph to a static one when on grid q5
+    explore_graph_fun_args <- shiny::reactive({
+      if (grid() & !grid_compare()) {
+        return(list(fun = explore_graph_grid,
+                    args = list(vars = r[[id]]$vars(), 
+                                lang = r$lang(), 
+                                data = shiny::isolate(data()), 
+                                select_id = r[[id]]$select_id())))
+      } else {
+        return(list(fun = curbcut::explore_graph,
+                    args = list(r = r, 
+                                data = data(), 
+                                vars = r[[id]]$vars(), 
+                                df = r[[id]]$df(),
+                                select_id = r[[id]]$select_id(), 
+                                region = zoom_levels()$region, 
+                                scales_as_DA = c("building", "street"), 
+                                lang = r$lang())))
+      }
+    })
+    
+    # Update the selection when on grid() and the `df` changes (to redraw the graph)
+    shiny::observeEvent(r[[id]]$df(), {
+      if (grid() & !is.na(r[[id]]$select_id())) r[[id]]$select_id(NA)
+    })
 
     # Explore panel
     curbcut::explore_server(
@@ -258,9 +338,11 @@ default_region <- modules$regions[modules$id == "climaterisk"][[1]][1]
       r = r,
       data = data,
       region = reactive(zoom_levels()$region),
-      vars = vars,
+      vars = r[[id]]$vars,
       df = r[[id]]$df,
-      select_id = r[[id]]$select_id
+      select_id = r[[id]]$select_id, 
+      graph = shiny::reactive(explore_graph_fun_args()$fun), 
+      graph_args = shiny::reactive(explore_graph_fun_args()$args)
     )
 
     # Bookmarking
@@ -275,7 +357,7 @@ default_region <- modules$regions[modules$id == "climaterisk"][[1]][1]
     curbcut::panel_view_server(
       id = id,
       r = r,
-      vars = vars,
+      vars = r[[id]]$vars,
       data = data,
       zoom_levels = reactive(zoom_levels()$zoom_levels)
     )

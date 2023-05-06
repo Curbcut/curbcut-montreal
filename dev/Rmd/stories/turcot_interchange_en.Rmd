@@ -3,7 +3,7 @@ title: "The reconstruction of the Turcot Interchange: The intersection of commun
 output: html_document
 author: "Jennah Landgraf"
 date: "05.2022"
-runtime: shiny_prerendered
+
 ---
 
 ```{r setup, include=FALSE}

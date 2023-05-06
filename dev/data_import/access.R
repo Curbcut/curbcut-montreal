@@ -51,9 +51,9 @@ build_and_append_access <- function(scales_variables_modules,
   # 
   # qs::qsave(daycares, "dev/data/built/daycares.qs")
   # daycares <- qs::qread("dev/data/built/daycares.qs")
-  
-  # Add point data to DA ----------------------------------------------------
-  
+  # 
+  # # Add point data to DA ----------------------------------------------------
+  # 
   # point_DA <- accessibility_point_per_DA(point_data = list(daycarespots_2023 = daycares),
   #                                        DA_table = census_scales$DA,
   #                                        crs = crs)
@@ -90,42 +90,97 @@ build_and_append_access <- function(scales_variables_modules,
 
 
   # Calculate breaks --------------------------------------------------------
-
-  # Calculate breaks using the `calculate_breaks` function.
+  
+  types <- rep(list("avg"), length(average_vars))
+  names(types) <- average_vars
+  
   with_breaks <-
     calculate_breaks(
       all_scales = data_interpolated$scales,
-      vars = vars
+      vars = average_vars,
+      types = types
     )
-
+  
+  # Calculate region values -------------------------------------------------
+  
+  # Parent strings
+  vars <- gsub("_2023$", "", average_vars)
+  parent_strings <- rep(list("population"), length(vars))
+  names(parent_strings) <- vars
+  
+  types <- rep(list("avg"), length(vars))
+  names(types) <- vars
+  
+  # Region values
+  region_values <- variables_get_region_vals(
+    scales = with_breaks$scales,
+    vars = vars,
+    types = types,
+    parent_strings = parent_strings,
+    breaks = with_breaks$q5_breaks_table,
+    round_closest_5 = FALSE)
+  
+  
+  # Variable measurements ----------------------------------------------------
+  
+  var_measurement <- data.frame(
+    df = data_interpolated$avail_df,
+    measurement = rep("scalar", length(data_interpolated$avail_df)))
+  
+  var_measurement$measurement[grepl("_DA$", var_measurement$df)] <-
+    rep("ordinal", length(var_measurement$measurement[grepl("_DA$", var_measurement$df)]))
 
   # Variables table ---------------------------------------------------------
   
-  vars <- unique(gsub("_\\d{4}$", "", vars))
-  
   new_variables <- lapply(vars, \(var) {
     
-    theme <-
-      if (grepl("daycarespots", var)) "daycare spots" else
-        if (grepl("", var)) ""
+    theme <- "daycare spots"
     
-    mode <-
-      if (grepl("_car_", var)) "car" else
-        if (grepl("_foot_", var)) "walking" else
-          if (grepl("_bicycle_", var)) "bicycle" else
-            if (grepl("_transit_", var)) "public transit"
+    mode <- (\(x) {
+      if (grepl("_car_", var)) return("car")
+      if (grepl("_foot_", var)) return("walking")
+      if (grepl("_bicycle_", var)) return("bicycle")
+      if (grepl("_transit_opwe_", var)) return("public transit on off-peak weekend days")
+      if (grepl("_transit_pwe_", var)) return("public transit on peak weekend days")
+      if (grepl("_transit_nwd_", var)) return("public transit on weekdays at night")
+      if (grepl("_transit_nwe_", var)) return("public transit on weekends at night")
+      if (grepl("_transit_opwd_", var)) return("public transit on off-peak weekdays")
+      if (grepl("_transit_pwd_", var)) return("public transit on peak weekdays")
+    })()
     
     time <- gsub("_", "", stringr::str_extract(var, "_\\d*_"))
     
     var_title <- stringr::str_to_sentence(paste0(theme, " accessible by ", mode))
     var_short <- stringr::str_to_sentence(theme)
-    explanation <- paste0("the average count of ", tolower(theme),
-                          " accessible in ", time," minutes by ", mode)
     
+    
+    explanation <- paste0(
+      "the number of ", tolower(theme),
+      " an average resident can reach within ", time, " minutes by ", mode
+    )
+    exp_q5 <- paste0(
+      "the average resident has access to _X_ ", tolower(theme), " within ", time,
+      " minutes by ", mode
+    )
+    
+    # Cut timing out of the mode
+    mode <- stringr::str_extract(mode, "(^car$)|(^walking$)|(^bicycle$)|(^public transit)")
     
     group_name <- paste("Access to", theme)
     group_diff <- list("Mode of transport" = stringr::str_to_sentence(mode),
                        "Transportation time" = time)
+    
+    if (grepl("_transit_", var)) {
+      timing <- (\(x) {
+        if (grepl("_transit_opwe_", var)) return("Weekend traffic off-peak")
+        if (grepl("_transit_pwe_", var)) return("Weekend traffic peak")
+        if (grepl("_transit_nwd_", var)) return("Weekday night")
+        if (grepl("_transit_nwe_", var)) return("Weekend night")
+        if (grepl("_transit_opwd_", var)) return("Weekday traffic off-peak")
+        if (grepl("_transit_pwd_", var)) return("Weekday traffic peak")
+      })()
+      group_diff <- c(group_diff, list("Timing" = timing))
+    }
     
     add_variable(
       variables = scales_variables_modules$variables,
@@ -134,18 +189,26 @@ build_and_append_access <- function(scales_variables_modules,
       var_title = var_title,
       var_short = var_short,
       explanation = explanation,
+      exp_q5 = exp_q5,
       group_name = group_name,
       group_diff = group_diff,
+      parent_vec = "population",
       theme = "Transport",
       private = FALSE,
-      pe_include = {var == "access_foot_20_daycarespots"},
+      pe_include = var == "access_foot_20_daycarespots_2023",
+      region_values = region_values[[var]],
       dates = with_breaks$avail_dates[[var]],
       avail_df = data_interpolated$avail_df,
       breaks_q3 = with_breaks$q3_breaks_table[[var]],
       breaks_q5 = with_breaks$q5_breaks_table[[var]],
       source = "Données Québec",
-      interpolated = data_interpolated$interpolated_ref
-    ) |> (\(x) x[nrow(x), ])()
+      interpolated = data_interpolated$interpolated_ref,
+      rankings_chr = c("exceptionally sparse", "unusually sparse",
+                       "just about average", "unusually dense",
+                       "exceptionally dense"),
+      var_measurement = var_measurement
+    ) |>
+      (\(x) x[nrow(x), ])()
   })
   
   variables <- rbind(scales_variables_modules$variables, Reduce(rbind, new_variables))
@@ -154,8 +217,15 @@ build_and_append_access <- function(scales_variables_modules,
   # Modules table -----------------------------------------------------------
 
   # Module already added with the `ba_accessibility_points` function
-
-
+  # We however need to make sure the new access points are available in it
+  scales_variables_modules$modules$var_left[
+    scales_variables_modules$modules$id == "access"
+  ] <- list(variables[grepl("^access_", variables$var_code),
+                      c("var_code", "group_name", "group_diff")])
+  
+  modules <- scales_variables_modules$modules
+  
+  
   # Return ------------------------------------------------------------------
 
   return(list(

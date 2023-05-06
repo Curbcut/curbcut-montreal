@@ -2,7 +2,7 @@
 title: "Les dessous du Grand Parc de l'Ouest à Montréal"
 output: html_document
 author: "Josh Medicoff"
-runtime: shiny_prerendered
+
 ---
 
 ```{r setup, include=FALSE}
@@ -17,7 +17,7 @@ knitr::opts_chunk$set(echo = TRUE)
 <p>La collaboration est inscrite dans l'ADN du Grand Parc de l'Ouest. Elle implique la Ville de Montr&eacute;al, deux arrondissements de la ville (l'&Icirc;le-Bizard-Sainte-Genevi&egrave;ve et Pierrefonds-Roxboro), deux villes non fusionn&eacute;es de l'Ouest de l'&icirc;le de Montr&eacute;al (Saint-Anne-de-Bellevue et Beaconsfield) et un village (Senneville). Il r&eacute;unit cinq parcs existants entre l'Ouest-de-l'&Icirc;le et l'&Icirc;le-Bizard, soit l'Anse-&agrave;-l'Orme, le Bois-de-L'&icirc;le-Bizard, le Cap-Saint-Jacques, les Rapides-du-Cheval-Blanc et le parc agricole du Bois-de-la-Roche. La ville ach&egrave;te &eacute;galement des terrains &agrave; des propri&eacute;taires priv&eacute;s et &eacute;tend les limites de l'Anse-&agrave;-l'Orme. Ce faisant, elle pr&eacute;serve certains des derniers espaces verts non prot&eacute;g&eacute;s de l'&icirc;le de Montr&eacute;al.</p>
 # ```{r, echo=FALSE, out.extra='style="float:right; padding:10px;"', warning=FALSE}
 # 
-# knitr::include_graphics(here("www/stories/visuals/parc_ouest/flowers_bees.gif"))
+# knitr::include_graphics(here::here("dev/data/stories/raw_images/parc_ouest/flowers_bees.gif"))
 # 
 # ```
 <p>Parce que la conservation de la biodiversit&eacute; est toujours plus efficace &agrave; grande &eacute;chelle, le GPO a l'opportunit&eacute; de faire une perc&eacute;e dans le domaine de la conservation urbaine. Et la biodiversit&eacute; est au c&oelig;ur de la vision de la GPO. Le parc abritera une vari&eacute;t&eacute; d'habitats existants, notamment des zones humides, des for&ecirc;ts anciennes, des mar&eacute;cages, des jach&egrave;res et des espaces verts anthropiques.</p>
@@ -34,9 +34,9 @@ knitr::opts_chunk$set(echo = TRUE)
 <p>Depuis 2013, Montr&eacute;al a adopt&eacute; des objectifs plus agressifs en mati&egrave;re de protection du climat et de la biodiversit&eacute;. Le <em>Rapport sur la biodiversit&eacute;</em> 2013 de la ville a expos&eacute; une strat&eacute;gie et un plan d'action en mati&egrave;re de biodiversit&eacute;, reconnaissant les risques qui menacent le fleuve Saint-Laurent et ses affluents en raison de la croissance urbaine. De plus, le <em>Plan m&eacute;tropolitain d'am&eacute;nagement et de d&eacute;veloppement</em> (PMAD) de la Communaut&eacute; m&eacute;tropolitaine de Montr&eacute;al (CMM), mis en &oelig;uvre en 2012, vise 17 % du territoire du Grand Montr&eacute;al (contre 12 % auparavant).</p>
 <p>Le GPO a &eacute;galement re&ccedil;u des investissements et une r&eacute;glementation de la part du gouvernement f&eacute;d&eacute;ral et provincial. En 2019, le gouvernement f&eacute;d&eacute;ral de Justin Trudeau a promis 50 millions de dollars canadiens au projet, visant surtout &agrave; acqu&eacute;rir des terrains priv&eacute;s dans l'expansion de l'Anse-&agrave;-l'Orme, &agrave; prot&eacute;ger les plaines inondables et &agrave; cartographier la zone. En 2021, le gouvernement du Qu&eacute;bec a d&eacute;sign&eacute; l'extr&eacute;mit&eacute; ouest de l'&Icirc;le-Bizard comme un " paysage humanis&eacute; ", reconnaissant les terres transform&eacute;es par l'activit&eacute; humaine mais qui " demeurent en harmonie avec la nature. "</p>
 ### Construire le Grand-parc-de-l&rsquo;Ouest
-```{r, echo=FALSE, fig.align = 'center', out.width="100%", warning=FALSE, out.extra='style="padding:10px;"'}
+```{r, echo=FALSE, fig.align = 'center', out.width="100%", warning=FALSE, out.extra='style=""'}
 
-knitr::include_graphics(here("www/stories/visuals/parc_ouest/water.jpg"))
+knitr::include_graphics(here::here("dev/data/stories/raw_images/parc_ouest/water.jpg"))
 
 ```
 <br>

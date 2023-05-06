@@ -138,12 +138,31 @@ build_stories <- function() {
       themes = c("Green space", "Urban transformation", "Community activism", 
                  "Biodiversity", "Climate change"),
       lon = -73.553092,
-      lat = 45.480989)
+      lat = 45.480989) |> 
+    
+    stories_add_story(
+      name_id = "mcp",
+      title = paste0("Montreal climate plans"),
+      short_title = "Montreal climate plans",
+      preview = paste0("Climate action in Montreal: exploring two ",
+                       "administrations' strategies for a greener future"),
+      themes = c("Transportation infrastructure", "Community activism", 
+                 "Municipal governance", "Sustainable mobility", "Climate change",
+                 "Green space", "Active transit", "Governmental powers"),
+      lon = -73.617951,
+      lat = 45.499533)
   
   
   # Create images and mapping -----------------------------------------------
   
   stories_mapping <- stories_atlas_mapping(stories = stories)
+  
+  
+  # Knit all stories Rmds ---------------------------------------------------
+
+  library(here)
+  cc.buildr::stories_knit_all()
+  
   
   # Return ------------------------------------------------------------------
   

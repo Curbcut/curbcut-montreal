@@ -21,24 +21,18 @@ map_loc <- c(-73.58, 45.53)
 
 suppressPackageStartupMessages({
   library(curbcut)
-  # temporary fix? necessary for tile_json
-  library(urltools)
-  
+
   library(shiny)
   library(bslib)
   library(shinyjs)
-  library(shinyWidgets)
-
-  library(rdeck)
-  library(ggplot2)
 
   library(qs)
   library(glue)
   library(metathis)
   
-  library(RSQLite)
-  library(tableHTML)
   library(stringr)
+  library(DBI)
+  library(RSQLite)
   
   library(sever)
 })
@@ -54,43 +48,29 @@ shinyOptions(cache = cachem::cache_disk(file.path(dirname(tempdir()), "cache")))
 # Load all .qs and .qsm files that are in the root of the data folder
 data_files <- list.files("data", full.names = TRUE)
 invisible(lapply(data_files[grepl("qsm$", data_files)], 
-                 qload, env = .GlobalEnv))
+                 qs::qload, env = .GlobalEnv))
 invisible(lapply(data_files[grepl("qs$", data_files)], 
                  \(x) {
                    object_name <- gsub("(data/)|(\\.qs)", "", x)
-                   assign(object_name, qread(x), envir = .GlobalEnv)
+                   assign(object_name, qs::qread(x), envir = .GlobalEnv)
                    }))
 
-# Connect to the SQLite databases
+
+# Connect to the dbs ------------------------------------------------------
+
 dbs <- list.files("data", full.names = TRUE)
 dbs <- subset(dbs, grepl(".sqlite$", dbs))
+
 lapply(dbs, \(x) {
   connection_name <- paste0(stringr::str_extract(x, "(?<=/).*?(?=\\.)"), "_conn")
   assign(connection_name, dbConnect(SQLite(), x), envir = .GlobalEnv)
 }) |> invisible()
 
 
-# Global variables --------------------------------------------------------
-
-census_min <- 
-  variables$dates[variables$source == "Canadian census"] |> 
-  unlist() |> 
-  unique() |> 
-  min() |> 
-  as.numeric()
-
-census_max <- 
-  variables$dates[variables$source == "Canadian census"] |> 
-  unlist() |> 
-  unique() |> 
-  max() |> 
-  as.numeric()
-
-
 # Modules ready -----------------------------------------------------------
 
-unique_themes <- unique(modules$theme)[unique(modules$theme) != ""]
-display_mods <- modules[modules$theme != "", ]
+unique_themes <- unique(modules$theme)[!is.na(unique(modules$theme))]
+display_mods <- modules[!is.na(modules$theme), ]
 mods_rdy <- 
   sapply(unique_themes, \(x) {
     thm <- display_mods[display_mods$theme == x, ]
@@ -113,9 +93,8 @@ first_level_choropleth <-
          USE.NAMES = FALSE) |> unique()
   
 all_choropleths <- 
-  sapply(sapply(ls()[grepl("map_zoom_levels_", ls())], get,
-                USE.NAMES = FALSE), names,
-         USE.NAMES = FALSE) |> unlist() |> unique()
+  sapply(sapply(ls()[grepl("map_zoom_levels_", ls())], get, USE.NAMES = FALSE), 
+         names, USE.NAMES = FALSE) |> unlist() |> unique()
 
 # Set up fonts ------------------------------------------------------------
 
@@ -131,3 +110,8 @@ systemfonts::register_font(
 
 temp_folder <- tempdir()
 addResourcePath("temp_folder_shortcut", temp_folder)
+
+
+# Create the UI and server functions for basic modules --------------------
+
+curbcut::create_ui_server_mods(modules = modules)

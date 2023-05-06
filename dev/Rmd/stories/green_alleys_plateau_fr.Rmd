@@ -3,7 +3,7 @@ title: "Le programme des ruelles vertes dans Le Plateau-Mont-Royal : tensions en
 output: html_document
 author: "Emma Ezvan"
 date: "07.2022"
-runtime: shiny_prerendered 
+ 
 ---
 
 ```{r setup, include=FALSE}
@@ -16,13 +16,13 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r, echo=FALSE, fig.align='center', out.extra='style="width:60%"', fig.cap="Figure 1. Les ruelles vertes du Plateau-Mont-Royal", warning=FALSE}
 
-knitr::include_graphics(here("www/stories/visuals/green_alleys_plateau/Fig.1.png"))
+knitr::include_graphics(here::here("dev/data/stories/raw_images/green_alleys_plateau/Fig.1.png"))
 
 ```
 
 ```{r, echo=FALSE, fig.align='center', out.extra='style="width:60%"', fig.cap="Figure 2. Ruelles et ruelles vertes", warning=FALSE}
 
-knitr::include_graphics(here("www/stories/visuals/green_alleys_plateau/Fig.2.png"))
+knitr::include_graphics(here::here("dev/data/stories/raw_images/green_alleys_plateau/Fig.2.png"))
 
 ```
 
@@ -32,7 +32,7 @@ knitr::include_graphics(here("www/stories/visuals/green_alleys_plateau/Fig.2.png
 
 ```{r, echo=FALSE, fig.align='center', out.extra='style="width:60%"', fig.cap="Figure 3. Exemples de “tronçons champêtres”: Ruelle Cartier-Chabot, Napoléon/Saint-Christophe/Roy/Saint-Hubert, Laurier/Marquette/Saint-Joseph/Fabre, ruelle de Lorimier/des Érables", warning=FALSE}
 
-knitr::include_graphics(here("www/stories/visuals/green_alleys_plateau/Fig.3.png"))
+knitr::include_graphics(here::here("dev/data/stories/raw_images/green_alleys_plateau/Fig.3.png"))
 
 ```
 
@@ -42,7 +42,7 @@ knitr::include_graphics(here("www/stories/visuals/green_alleys_plateau/Fig.3.png
 
 ```{r, echo=FALSE, fig.align='center', out.extra='style="width:60%"', fig.cap="Figure 4. Ruelle champêtre Henri-Julien/Drolet, Ma ruelle Marquette, ruelle Cachalot, Masson/de Bordeaux/Laurier/Chabot, rue Demers, Jeanne-Mance/Saint-Viateur/Esplanade/Fairmount", warning=FALSE}
 
-knitr::include_graphics(here("www/stories/visuals/green_alleys_plateau/Fig.4.png"))
+knitr::include_graphics(here::here("dev/data/stories/raw_images/green_alleys_plateau/Fig.4.png"))
 
 ```
 
@@ -57,7 +57,7 @@ knitr::include_graphics(here("www/stories/visuals/green_alleys_plateau/Fig.4.png
 
 ```{r, echo=FALSE, fig.align='center', out.extra='style="width:60%"', fig.cap="Figure 5. Ruelle Milton", warning=FALSE}
 
-knitr::include_graphics(here("www/stories/visuals/green_alleys_plateau/Fig.5.png"))
+knitr::include_graphics(here::here("dev/data/stories/raw_images/green_alleys_plateau/Fig.5.png"))
 
 ```
 

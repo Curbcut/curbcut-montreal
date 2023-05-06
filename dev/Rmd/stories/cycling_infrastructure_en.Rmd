@@ -3,7 +3,6 @@ title: "A History of Cycling Infrastructure in Montreal"
 author: "Philip Bligh"
 date: "07.2022"
 output: html_document
-runtime: shiny_prerendered
 ---
 
 ```{r setup, include=FALSE}
@@ -72,6 +71,177 @@ As demonstrated by cycling leaders of the past, community activism can play a vi
 Note 1: it is unknown what the cause of removal was for each bike lane labelled as “removed.” It is possible that they are represented as removed due to construction, or another temporary measure, as opposed to a full removal of the lane. 
 
 Note 2: The bike lanes in this map come from a different source, without data on what was added and what was removed.
+
+```{r, echo=FALSE, include = FALSE}
+
+library(tidyverse)
+library(sf)
+library(crosstalk)
+library(htmltools)
+library(leaflet)
+library(plotly)
+
+# MUST HAVE THIS VESRION OF LEAFLET
+# devtools::install_github("dmurdoch/leaflet@crosstalk4")
+
+
+# Import paths
+lines <- 
+  st_read(here::here("dev/data/stories/shp/cycling_infrastructure/Velo.gdb"), 
+          layer = "RESEAU_1991_2016")  %>% 
+  st_transform(4326) |>
+  as_tibble() |> 
+  st_as_sf() |> 
+  select(IdRte, starts_with("An")) |> 
+  mutate(An2016 = if_else(is.na(An2016), as.numeric(0), as.numeric(An2016))) |> 
+  st_zm()
+
+# Don't keep geometries without bike lanes at any year
+lines <- 
+lines[!!rowSums(st_drop_geometry(lines)[
+  str_starts(names(st_drop_geometry(lines)), "An")]), ]
+lines <- lines[, sort(names(lines))]
+lines <- relocate(lines, IdRte) |> rename(geometry = Shape)
+
+# We have paths for all these years
+all_years <- 
+  names(lines) |> 
+  str_subset("\\d{4}$") |> 
+  str_extract("\\d{4}$")
+
+# Decide colors we want as fill, and create the source with fill_year
+new_color <- "#73AE80"
+removed_color <- "#CA0020"
+remained_color <- "#2E4633"
+
+lines_fill <- 
+map_dfc(all_years, function(year) {
+  
+  actual_year <- as.name(paste0("An", year))
+  previous_year <- as.name(paste0("An", all_years[which(all_years == year) - 1]))
+  
+  out <-
+    lines |> 
+    st_drop_geometry() |> 
+    (\(x) if (year == all_years[1]) {
+      mutate(x, new_fill = case_when(!!actual_year == 1 ~ new_color,
+                                     TRUE ~ "#FFFFFF00")) 
+    } else {
+      mutate(x, new_fill = case_when(!!actual_year == 1 & !!previous_year == 0 ~ 
+                                       new_color,
+                                     !!actual_year == 0 & !!previous_year == 1 ~ 
+                                       removed_color,
+                                     !!actual_year == 1 & !!previous_year == 1 ~ 
+                                       remained_color,
+                                     TRUE ~ "#FFFFFF00"))
+    })() |> 
+    # filter(new_fill != "#FFFFFF00") |> 
+    select(new_fill)
+  
+  
+  names(out) <- paste0("fill_", year)
+  
+  out
+  
+})
+
+lines <- 
+  bind_cols(lines_fill, lines[, c("geometry")]) |> 
+  st_as_sf()
+
+# Cut that invalid geometry
+lines <- lines[-81965, ]
+
+# # Add 2022 lines 
+# lines_2022 <- 
+#   st_read(here::here("dev/data/stories/shp/cycling_infrastructure/Cycling_Lane.shp")) |>  
+#   st_transform(4326) |> 
+#   as_tibble() |> 
+#   transmute(ID = row_number(), fill_2022 = "#73AE80", geometry) |> 
+#   st_as_sf() |> 
+#   filter(!st_is_empty(geometry))
+
+lines <- 
+  lines  |>  
+  st_transform(4326) |> 
+  # select(-ID) |> 
+  relocate(geometry, .after = last_col()) |> 
+  mutate(across(where(is.character), ~if_else(is.na(.x), "#FFFFFF00", .x)))
+
+
+# Join all lines that share the same combinations of colors
+nested <- 
+  lines |> 
+  group_nest(across(c(-geometry)))
+
+joined_geometries <- 
+  map_dfr(nested$data, ~{tibble(geometry = st_combine(.x))})
+
+lines <- 
+  bind_cols(select(nested, -data), joined_geometries) |> 
+  st_as_sf() |> 
+  filter(!st_is_empty(geometry))
+
+lines_2 <- lapply(all_years, \(z) {#c(all_years, "2022"), \(z) {
+    out <- tibble::tibble(date = z, fill = lines[[paste0("fill_", z)]]) |> 
+        cbind(lines["geometry"]) |> 
+        sf::st_as_sf() |> 
+        rmapshaper::ms_simplify() |> 
+        sf::st_cast("MULTILINESTRING") |> 
+        sf::st_cast("LINESTRING") |> 
+  sf::st_make_valid()
+    
+    out[out$fill != "#FFFFFF00", ]
+})
+
+lines_2 <- Reduce(rbind, lines_2) |> tibble::as_tibble() |> sf::st_as_sf()
+
+key <- plotly::highlight_key(lines_2)
+
+map <-
+  leaflet(key) %>%
+  addTiles() %>%
+  addPolylines(color = ~fill, opacity = 1, weight = 5)
+```
+
+```{r, echo=FALSE}
+bscols(map)
+y <- crosstalk::filter_select("cycl_date", "Select year", key, ~date, multiple = FALSE)
+bscols(y)
+```
+
+```{js, echo = FALSE}
+function filter_default() {
+    document.getElementById("cycl_date").getElementsByClassName("selectized")
+[0].selectize.setValue("1986", false);
+ }
+window.onload = filter_default;
+```
+
+```{r echo=FALSE, fig.height=1, fig.align='center'}
+  type_fill <- 
+    data.frame(type = c("New bicycle path", "Removed path", 
+                        "Old path", "Bixi station"),
+               fill = c("#73AE80", "#CA0020", "#2E4633", "#000000"))
+
+  legend <- 
+    data.frame(x = seq_along(type_fill$type),
+               y = 1,
+               fill = type_fill$fill)
+  
+  legend |> 
+    ggplot2::ggplot(ggplot2::aes(xmin = x - 1, xmax = x, ymin = y - 1, ymax = y, 
+               fill = fill)) +
+    ggplot2::geom_rect() + 
+    ggplot2::scale_x_continuous(breaks = seq_along(type_fill$type) - 0.5, labels = type_fill$type) +
+    ggplot2::scale_y_continuous(labels = NULL) +
+    ggplot2::scale_fill_manual(values = stats::setNames(
+      type_fill$fill, type_fill$fill)) +
+    ggplot2::theme_minimal() +
+    ggplot2::theme(text = ggplot2::element_text(family = "SourceSansPro", size = 12),
+          legend.position = "none", 
+          panel.grid = ggplot2::element_blank())
+```
 
 ### References
 
