@@ -408,7 +408,9 @@ naturalinf_server <- function(id, r) {
       coords = r[[id]]$coords,
       lwd_fun = shiny::reactive(\(...) 0),
       fill_fun = shiny::reactive(scale_fill_natural_inf),
-      fill_args = shiny::reactive(list(map_var(), natural_inf_colours()))
+      fill_args = shiny::reactive(list(map_var(), natural_inf_colours())),
+      auto_highlight = shiny::reactive(FALSE),
+      pickable = shiny::reactive(FALSE)
     )
     
     # Explore panel

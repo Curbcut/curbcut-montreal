@@ -654,13 +654,13 @@ build_and_append_natural_inf <- function(scales_variables_modules, crs) {
       nav_title = "Natural infrastructure",
       title_text_title = "Natural infrastructure",
       title_text_main = paste0(
-        "Natural ecosystems are necessary for our cities, they help contribute ",
+        "<p>Natural ecosystems are necessary for our cities, they help contribute ",
         "to well-being, quality of life and public health. This page quantifies",
         " the benefits provided by urban trees and wooded areas to biodiversity",
         " conservation, flood prevention, and heat-island reduction. "
       ),
       title_text_extra = paste0(
-        "The datasets visualized on this page come from Habitat Montreal. Note ",
+        "<p>The datasets visualized on this page come from Habitat Montreal. Note ",
         "that the natural infrastructure included in the study that generated t",
         "his data only covers approximately 25% of the Montreal region. For mor",
         "e information on the methods and data used for this page, visit the pu",
@@ -722,6 +722,7 @@ build_and_append_natural_inf <- function(scales_variables_modules, crs) {
   DBI::dbListTables(natural_inf_sql)
   DBI::dbDisconnect(natural_inf_sql)
 
+  
   # Return ------------------------------------------------------------------
 
   return(list(

@@ -396,6 +396,25 @@ scales_variables_modules <-
 #              crs = crs,
 #              region_DA_IDs = census_scales$DA$ID)
 
+# # Add access to amenities module
+# traveltimes <-
+#   accessibility_get_travel_times(region_DA_IDs = census_scales$DA$ID)
+# qs::qsave(traveltimes, "dev/data/built/traveltimes.qs")
+traveltimes <- qs::qread("dev/data/built/traveltimes.qs")
+
+future::plan(future::multisession(), workers = 4)
+scales_variables_modules <-
+  ba_accessibility_points(scales_variables_modules = scales_variables_modules,
+                          region_DA_IDs = census_scales$DA$ID,
+                          traveltimes = traveltimes,
+                          crs = crs)
+# Additional access variables
+scales_variables_modules <-
+  build_and_append_access(scales_variables_modules = scales_variables_modules,
+                          DA_table = census_scales$DA,
+                          traveltimes = traveltimes,
+                          crs = crs)
+
 # Montreal specific modules
 save.image("before_mtl.RData")
 load("before_mtl.RData")
@@ -426,25 +445,13 @@ scales_variables_modules <-
     scales_variables_modules = scales_variables_modules,
     crs = crs)
 
-
-# # Add access to amenities module
-# traveltimes <-
-#   accessibility_get_travel_times(region_DA_IDs = census_scales$DA$ID)
-# qs::qsave(traveltimes, "dev/data/built/traveltimes.qs")
-traveltimes <- qs::qread("dev/data/built/traveltimes.qs")
-
-future::plan(future::multisession(), workers = 4)
 scales_variables_modules <-
-  ba_accessibility_points(scales_variables_modules = scales_variables_modules,
-                          region_DA_IDs = census_scales$DA$ID,
-                          traveltimes = traveltimes,
-                          crs = crs)
-# Additional access variables
-scales_variables_modules <-
-  build_and_append_access(scales_variables_modules = scales_variables_modules,
-                          DA_table = census_scales$DA,
-                          traveltimes = traveltimes,
-                          crs = crs)
+  build_and_append_alley(
+    scales_variables_modules = scales_variables_modules,
+    crs = crs)
+# source("dev/tiles/alley_tile.R")
+
+
 
 # Post process
 scales_variables_modules$scales <- 
@@ -554,28 +561,8 @@ map_zoom_levels_save(data_folder = "data/", map_zoom_levels = map_zoom_levels)
 #                 access_token = .cc_mb_token)
 
 
-# Place explorer ----------------------------------------------------------
+# Place explorer page ----------------------------------------------------
 
-# future::plan(future::multisession(), workers = 18)
-# 
-# scales_variables_modules$scales <- scales_variables_modules$scales[1]
-# 
-# pe_main_card_data <- placeex_main_card_data(scales = scales_variables_modules$scales,
-#                                             DA_table = census_scales$DA,
-#                                             region_DA_IDs = census_scales$DA$ID,
-#                                             crs = crs,
-#                                             regions_dictionary = regions_dictionary)
-# 
-# placeex_main_card_rmd(scales_variables_modules = scales_variables_modules,
-#                       pe_main_card_data = pe_main_card_data,
-#                       regions_dictionary = regions_dictionary,
-#                       scales_dictionary = scales_dictionary,
-#                       lang = "en",
-#                       tileset_prefix = "mtl",
-#                       mapbox_username = "sus-mcgill",
-#                       rev_geocode_from_localhost = TRUE,
-#                       overwrite = TRUE)
-# 
 # Add the place explorer in the modules dataframe
 scales_variables_modules$modules <-
   add_module(modules = scales_variables_modules$modules,
@@ -584,12 +571,12 @@ scales_variables_modules$modules <-
              nav_title = "Place explorer",
              title_text_title = "Place explorer",
              title_text_main = paste0(
-               "Select a location by entering a postal code or clicking on the ",
+               "<p>Select a location by entering a postal code or clicking on the ",
                "map and see how it compares to the rest of the Montreal region ",
                "or island across a variety of sustainability indicators."
              ),
              title_text_extra = paste0(
-               "The data in the Place Explorer is taken from other Curbcut pages with ",
+               "<p>The data in the Place Explorer is taken from other Curbcut pages with ",
                "two exceptions: <a href = 'https://www.canuedata.ca/tmp/CANUE_METADATA",
                "_NO2LUR_A_YY.pdf'>Air pollution</a> and <a href = 'https://www.canueda",
                "ta.ca/tmp/CANUE_METADATA_GRAVH_AMN_YY.pdf'>green space</a> data are ta",
@@ -627,10 +614,10 @@ qs::qsave(colours_dfs, "data/colours_dfs.qs")
 # TKTK MAKE SURE YOU HAVE THIS VERSION OF LEAFLET, IF NOT THE MAPS IN THE HTML
 # DOCUMENTS WON'T BE INTERACTIVES:
 # devtools::install_github("dmurdoch/leaflet@crosstalk4")
-stories <- build_stories()
-stories_mapping <- stories$stories_mapping
-stories <- stories$stories
-qs::qsavem(stories, stories_mapping, file = "data/stories.qsm")
+# stories <- build_stories()
+# stories_mapping <- stories$stories_mapping
+# stories <- stories$stories
+# qs::qsavem(stories, stories_mapping, file = "data/stories.qsm")
 # stories_create_tileset(stories = stories,
 #                        prefix = "mtl",
 #                        username = "sus-mcgill",
@@ -645,11 +632,11 @@ scales_variables_modules$modules <-
     nav_title = "Montréal stories",
     title_text_title = "Montréal stories",
     title_text_main = paste0(
-      "Explore stories about urban sustainability and planning in Montreal. Learn ",
+      "<p>Explore stories about urban sustainability and planning in Montreal. Learn ",
       "about stories rooted in specific geographic locations or those that ",
       "have an impact on the whole city."),
     title_text_extra = paste0(
-      "These narrative case studies are written by Curbcut contributors.."),
+      "<p>These narrative case studies are written by Curbcut contributors.."),
     metadata = FALSE,
     dataset_info = ""
   )
@@ -697,6 +684,29 @@ qs::qsave(regions_dictionary, file = "data/regions_dictionary.qs")
 #             sf::st_coordinates() |> 
 #             as.numeric(), file = "data/map_loc.qs")
 tictoc::toc()
+
+
+# Place explorer content creation -----------------------------------------
+
+# Should be done once the data is saved
+
+future::plan(future::multisession(), workers = 8)
+
+pe_main_card_data <- placeex_main_card_data(scales = scales_variables_modules$scales,
+                                            DA_table = census_scales$DA,
+                                            region_DA_IDs = census_scales$DA$ID,
+                                            crs = crs,
+                                            regions_dictionary = regions_dictionary)
+
+placeex_main_card_rmd(scales_variables_modules = scales_variables_modules,
+                      pe_main_card_data = pe_main_card_data,
+                      regions_dictionary = regions_dictionary,
+                      scales_dictionary = scales_dictionary,
+                      lang = "en",
+                      tileset_prefix = "mtl",
+                      mapbox_username = "sus-mcgill",
+                      rev_geocode_from_localhost = TRUE,
+                      overwrite = FALSE)
 
 # Deploy app --------------------------------------------------------------
 

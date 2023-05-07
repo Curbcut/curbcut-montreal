@@ -43,6 +43,7 @@ options(shiny.fullstacktrace = TRUE)
 options(shiny.useragg = TRUE)
 shinyOptions(cache = cachem::cache_disk(file.path(dirname(tempdir()), "cache")))
 
+
 # Data --------------------------------------------------------------------
 
 # Load all .qs and .qsm files that are in the root of the data folder
@@ -78,6 +79,11 @@ mods_rdy <-
     names(ids) <- thm$nav_title
     ids
   }, simplify = FALSE, USE.NAMES = TRUE)
+
+
+# Grab all place explorer documents ---------------------------------------
+
+pe_docs <- list.files("www/place_explorer/")
 
 
 # Map defaults ------------------------------------------------------------
