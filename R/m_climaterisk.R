@@ -18,12 +18,11 @@ map_scale_fill_grid <- function(vars) {
 }
 
 explore_graph_grid <- function(vars, lang, data, select_id) {
-  plot <- curbcut:::explore_graph(vars = vars,
-                                  select_id = NA,
-                                  df = "grid_grid250",
-                                  data = data_get(vars, df = "grid_grid250"),
-                                  scales_as_DA = c(),
-                                  lang)
+  plot <- curbcut::explore_graph(vars = vars,
+                                 select_id = NA,
+                                 df = "grid_grid250",
+                                 data = data_get(vars, df = "grid_grid250"),
+                                 lang)
   
   if (!is.na(select_id)) {
     if ("q5_ind" %in% class(vars)) {
@@ -53,6 +52,7 @@ explore_graph_grid <- function(vars, lang, data, select_id) {
   eval(parse(text = paste0("map_zoom_levels_", `climaterisk_default_region`)))
 default_region <- modules$regions[modules$id == "climaterisk"][[1]][1]
 vars_right <- modules$var_right[modules$id == "climaterisk"][[1]]
+
 
 # UI ----------------------------------------------------------------------
 
@@ -322,7 +322,6 @@ vars_right <- modules$var_right[modules$id == "climaterisk"][[1]]
                                 df = r[[id]]$df(),
                                 select_id = r[[id]]$select_id(), 
                                 region = zoom_levels()$region, 
-                                scales_as_DA = c("building", "street"), 
                                 lang = r$lang())))
       }
     })

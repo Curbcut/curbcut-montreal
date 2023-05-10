@@ -24,7 +24,7 @@ cancensus_cma_code <- 24462
 all_regions <- list(CMA = list(CMA = cancensus_cma_code),
                     city = list(CSD = 2466023),
                     island = "dev/data/geometry/island.shp",
-                    centraide = "dev/data/geometry/centraide.shp",
+                    centraide = "dev/data/geometry/centraide_2023.shp",
                     cmhc = get_cmhc_zones(list(CMA = cancensus_cma_code)),
                     grid = "dev/data/climate_risk/vulnerabilite-changements-climatiques-mailles-2022.shp")
 
@@ -84,8 +84,8 @@ census_scales$CSD <- split_scale(destination = census_scales$CSD,
                                  DA_table = census_scales$DA,
                                  crs = crs)
 # Switch the City of Laval for the Sector
-laval <- sf::st_read(paste0("dev/data/centraide/StatCan_Recensement2016/_Geograph",
-                            "ie/Secteurs_damenagement_Ville_de_Laval.shp")) |>
+laval <- sf::st_read(paste0("dev/data/centraide/shapefiles/", 
+                            "Secteurs_damenagement_Ville_de_Laval.shp")) |>
   sf::st_transform(4326)
 laval$name <- gsub("Secteur \\d - ", "", laval$Secteur)
 laval$type <- "Sector"
@@ -143,7 +143,7 @@ scales_dictionary <-
                              place_name = "{name}")
 
 ### Build Centraide scale
-centraide <- sf::st_read("dev/data/geometry/centraide.shp")
+centraide <- sf::st_read("dev/data/geometry/centraide_2023.shp")
 centraide <- additional_scale(additional_table = centraide,
                               DA_table = census_scales$DA,
                               ID_prefix = "centraide",
@@ -367,7 +367,7 @@ qs::qload("dev/data/built/empty_scales_variables_modules.qsm")
 # Build the datasets ------------------------------------------------------
 
 future::plan(list(future::tweak(future::multisession,
-                                workers = 3),
+                                workers = 2),
                   future::tweak(future::multisession,
                                 workers = length(cc.data::census_years))))
 
@@ -419,26 +419,10 @@ scales_variables_modules <-
 save.image("before_mtl.RData")
 load("before_mtl.RData")
 
-# scales_variables_modules <-
-#   build_and_append_centraide_pop(
-#     scales_variables_modules = scales_variables_modules,
-#     crs = crs,
-#     CT_table = census_scales$CT,
-#     region_CT_IDs = census_scales$CT$ID)
-# scales_variables_modules <-
-#   build_and_append_centraide_hou(
-#     scales_variables_modules = scales_variables_modules,
-#     crs = crs,
-#     CT_table = census_scales$CT,
-#     region_CT_IDs = census_scales$CT$ID)
 scales_variables_modules <-
   build_and_append_climate_risk(
     scales_variables_modules = scales_variables_modules,
     crs = crs)
-# scales_variables_modules <-
-#   build_and_append_short_distance_city(
-#     scales_variables_modules = scales_variables_modules,
-#     crs = crs)
 
 scales_variables_modules <-
   build_and_append_natural_inf(
@@ -451,6 +435,8 @@ scales_variables_modules <-
     crs = crs)
 # source("dev/tiles/alley_tile.R")
 
+save.image("before_centraide.RData")
+load("before_centraide.RData")
 
 
 # Post process
@@ -690,7 +676,7 @@ tictoc::toc()
 
 # Should be done once the data is saved
 
-future::plan(future::multisession(), workers = 8)
+future::plan(future::multisession(), workers = 4)
 
 pe_main_card_data <- placeex_main_card_data(scales = scales_variables_modules$scales,
                                             DA_table = census_scales$DA,
