@@ -67,15 +67,17 @@ vars_right <- modules$var_right[modules$id == "climaterisk"][[1]]
       curbcut::warnuser_UI(shiny::NS(id, id)),
       bottom = shiny::tagList(
         curbcut::legend_UI(shiny::NS(id, id)),
-        shinyjs::hidden(shiny::tags$div(
-          id = shiny::NS(id, "zoom_div"),
-          curbcut::zoom_UI(shiny::NS(id, id), `climaterisk_mzp`))
+        shinyjs::hidden(
+          curbcut::zoom_UI(shiny::NS(id, id), `climaterisk_mzp`)
         )
       )
     ),
 
     # Map
-    curbcut::map_UI(NS(id, id)),
+    curbcut::map_UI(shiny::NS(id, id)),
+    
+    # Tutorial
+    curbcut::tutorial_UI(id = shiny::NS(id, id)),
 
     # Change view (Map/Data/Place explorer)
     curbcut::panel_view_UI(id = NS(id, id)),
@@ -118,7 +120,7 @@ vars_right <- modules$var_right[modules$id == "climaterisk"][[1]]
     
     # Hide the zoom slider when on 'grid()'
     shiny::observe({
-      shinyjs::toggle(id = "zoom_div", condition = !grid())
+      shinyjs::toggle(id = shiny::NS(id, "zoom_div"), condition = !grid())
     })
     
     # Switch the region depending on inputs
@@ -242,6 +244,13 @@ vars_right <- modules$var_right[modules$id == "climaterisk"][[1]]
       vars = r[[id]]$vars,
       time = time,
       data = data
+    )
+    
+    # Tutorial
+    curbcut::tutorial_server(
+      id = id,
+      r = r,
+      skip_elements = shiny::reactive(if (grid()) "zoom_div" else NULL)
     )
 
     # Legend

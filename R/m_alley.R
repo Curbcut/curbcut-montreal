@@ -190,9 +190,8 @@ alley_UI <- function(id) {
                          var_list = var_left_dropdown),
       bottom = shiny::tagList(
         curbcut::legend_UI(shiny::NS(id, id)),
-        shinyjs::hidden(shiny::tags$div(
-          id = shiny::NS(id, "zoom_div"),
-          curbcut::zoom_UI(shiny::NS(id, id), zoom_levels = mzp)))
+        shinyjs::hidden(
+          curbcut::zoom_UI(shiny::NS(id, id), zoom_levels = mzp))
       )
     ),
     
@@ -273,7 +272,7 @@ alley_server <- function(id, r) {
     
     # Hide the zoom server when on var_left
     shiny::observeEvent(mode(), {
-      shinyjs::toggle(id = "zoom_div", condition = mode() == "choropleth")
+      shinyjs::toggle(id = shiny::NS(id, "zoom_div"), condition = mode() == "choropleth")
     })
     
     # Get df

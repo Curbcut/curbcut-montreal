@@ -419,6 +419,8 @@ scales_variables_modules <-
 save.image("before_mtl.RData")
 load("before_mtl.RData")
 
+future::plan(future::multisession(), workers = 4)
+
 scales_variables_modules <-
   build_and_append_climate_risk(
     scales_variables_modules = scales_variables_modules,
@@ -437,6 +439,11 @@ scales_variables_modules <-
 
 save.image("before_centraide.RData")
 load("before_centraide.RData")
+
+scales_variables_modules <-
+  build_and_append_afford(
+    scales_variables_modules = scales_variables_modules,
+    crs = crs)
 
 
 # Post process
@@ -506,13 +513,12 @@ map_zoom_levels_save(data_folder = "data/", map_zoom_levels = map_zoom_levels)
 
 
 # # Tilesets ----------------------------------------------------------------
-
 # tileset_upload_all(all_scales = scales_variables_modules$scales,
 #                    map_zoom_levels = map_zoom_levels,
 #                    tweak_max_zoom = list(grid250 = 11, grid100 = 12, grid50 = 13),
-                   # prefix = "mtl",
-                   # username = "sus-mcgill",
-                   # access_token = .cc_mb_token)
+#                    prefix = "mtl",
+#                    username = "sus-mcgill",
+#                    access_token = .cc_mb_token)
 # 
 # source("dev/tiles/grid_tiles.R")
 # tileset_upload_grid(region = "grid",
@@ -632,16 +638,7 @@ scales_variables_modules$modules <-
 
 qs::qsave(scales_variables_modules$variables, file = "data/variables.qs")
 
-
-# # Build data scripts ------------------------------------------------------
-# new_pages <- list.files("dev/pages", full.names = TRUE)
-# new_pages <- new_pages[!grepl("/access.R|/climaterisk.R", new_pages)]
-# 
-# lapply(new_pages, create_page_script, overwrite = TRUE) |> 
-#   invisible()
-
-
-# Save SQLite data --------------------------------------------------------
+# Save QS data ------------------------------------------------------------
 
 save_all_scales_qs(data_folder = "data/", 
                        all_scales = scales_variables_modules$scales,
@@ -662,13 +659,6 @@ qs::qsave(census_variables, file = "data/census_variables.qs")
 qs::qsave(scales_variables_modules$modules, file = "data/modules.qs")
 qs::qsave(scales_dictionary, file = "data/scales_dictionary.qs")
 qs::qsave(regions_dictionary, file = "data/regions_dictionary.qs")
-# qs::qsave(scales_variables_modules$scales[[1]][[1]] |> 
-#             sf::st_transform(crs) |> 
-#             sf::st_union() |> 
-#             sf::st_centroid() |> 
-#             sf::st_transform(4326) |> 
-#             sf::st_coordinates() |> 
-#             as.numeric(), file = "data/map_loc.qs")
 tictoc::toc()
 
 

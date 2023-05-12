@@ -48,6 +48,8 @@ ui <- function(request) {
                         href = "sus.news.css")),
     tags$head(tags$link(rel = "stylesheet", type = "text/css",
                         href = "sus.place_explorer.css")),
+    tags$head(tags$link(rel = "stylesheet", type = "text/css",
+                        href = "tutorial.css")),
     tags$head(tags$script(src = "sus.js")),
     tags$head(tags$script(src = "shinybrowser.js")),
     tags$head(tags$script(js_links_between_modules)),
