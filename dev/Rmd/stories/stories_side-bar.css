@@ -1,0 +1,254 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+h1 {
+  font-family: Apparat;
+}
+
+h2,
+h3,
+h4,
+h5,
+h6,
+body {
+  font-family: Folch Acid Grotesk, sans-serif;
+}
+
+body-copy {
+  font-family: "Catamaran", sans-serif;
+}
+
+main-frame {
+  background-color: lightslategray;
+  padding: 5em;
+}
+
+aside {
+  float: right;
+  background-color: #e9ecef;
+  border: solid black 2px;
+  border-radius: 15px;
+  padding: 1em;
+  width: 300px;
+  margin-right: 1em;
+  padding: 2em;
+  height: 85vh;
+}
+
+aside-element {
+  border-bottom: black solid 2px;
+  margin: 2em;
+}
+
+#aside-right-gallery {
+  background-color: #adb033;
+  display: flex;
+  overflow: hidden;
+  border-radius: 15px;
+  max-height: 90%;
+  padding: 0.3em;
+  flex-direction: row;
+}
+
+#aside-right-gallery img {
+  width: 90px;
+  object-fit: cover;
+  border-radius: 15px;
+  margin-right: 1em;
+}
+
+.caption {
+  font-family: "Catamaran", sans-serif;
+  font-style: italic;
+  line-height: 1.5;
+}
+
+aside {
+  float: right;
+  background-color: #e9ecef;
+  border: solid black 2px;
+  border-radius: 15px;
+  padding: 2em;
+  width: 300px; /* to be changed to the constant */
+  margin-right: 2em;
+  padding: 2em;
+  transition: width 0.5s;
+}
+
+.gallery-container img {
+  width: 100px;
+  object-fit: cover;
+}
+
+#gallery-controls {
+  bottom: 0;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.5em;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5em;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+#gallery-prev,
+#gallery-next {
+  font-size: 1.5em;
+  color: white;
+  background-color: transparent;
+  border: none;
+  outline: none;
+  cursor: pointer;
+}
+
+#gallery-dots {
+  display: flex;
+}
+
+.gallery-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.5);
+  margin-right: 0.5em;
+  cursor: pointer;
+}
+
+.gallery-dot.active {
+  background-color: white;
+}
+
+.bibliography-toggle{
+
+}
+
+.bibliography-text{
+  display: none;
+}
+
+.footer {
+  background-color: #2d3436;
+  color: #fff;
+  padding: 2em;
+  text-align: center;
+}
+
+.footer a {
+  color: #fff;
+}
+
+@media screen and (max-width: 600px) {
+  aside {
+    float: none;
+    width: 100%;
+    margin: 0;
+    overflow-x: hidden;
+    overflow-y: hidden;
+  }
+
+  #aside-right-gallery {
+    width: 100%;
+    height: auto;
+  }
+
+  #aside-right-gallery img {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    margin-right: 0.5em;
+  }
+
+  main-frame {
+    padding: 2em;
+  }
+
+  .bibliography-wrapper {
+    margin-top: 1em;
+  }
+}
+
+@keyframes slide-next {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+@keyframes slide-prev {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+.gallery-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  max-height: 80vh;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(40px, 2fr));
+  grid-gap: 10px;
+}
+
+.gallery-img active {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  border-radius: 15px;
+}
+
+.gallery-item:hover {
+  transform: scale(1.05);
+  transition: all 0.2s ease-in-out;
+}
+
+#gallery-container img {
+
+  object-fit: cover;
+}
+
+#gallery-controls {
+  bottom: 0;
+  transform: translateY(-50%);
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 1;
+}
+
+#gallery-controls button {
+  background-color: transparent;
+  border: none;
+  max-width: 100%;
+  font-size: 2em;
+  cursor: pointer;
+  color: white;
+}
+
+#gallery-dots {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.gallery-dot {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background-color: white;
+  margin: 0 0.5em;
+  cursor: pointer;
+}
+
+.gallery-dot.active {
+  background-color: #008080;
+}

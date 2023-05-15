@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Montreal stories</title>
+    <link type="text/css" rel="stylesheet" href="./stories_side-bar.css" />
+
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Catamaran:wght@300&display=swap");
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <!-- <script src="./montrealstories.js"></script> -->
+  </head>
+  <body>
+    <main>
+      <div id="main-frame">something</div>
+      <div class="bibliography-wrapper">
+        <div class="bibliography-toggle">Bibliography</div>
+        <div class="biography-text hidden">
+          Pham, T.-T.-H., Lachapelle, U., & Rocheleau, A. (2022). Greening the alleys: socio-spatial distribution and characteristics of green alleys in Montréal. Landscape and Urban Planning, 226.Le Plateau-Mont-Royal (2022). Guide d’aménagement d’une ruelle verte.
+        </div>
+      </div>
+    </main>
+    <aside id="aside-right">
+      <div id="aside-right-map">
+        <div id="map-element">
+      </div>
+      <div id="aside-right-gallery">
+        <div class="gallery-container">
+          <div class="gallery-item">
+            <img
+              class="gallery-img active"
+              src="./tempImagesRep/Fig.png"
+              alt="Image 1"
+            />
+          </div>
+          <div class="gallery-item active">
+            <img src="./tempImagesRep/Fig1.png" alt="Image 2" />
+          </div>
+          <div class="gallery-item active">
+            <img src="./tempImagesRep/Fig2.png" alt="Image 3" />
+          </div>
+          <div class="gallery-item active">
+            <img src="./tempImagesRep/Fig3.png" alt="Image 4" />
+          </div>
+          <div class="gallery-item">
+            <img src="./tempImagesRep/Fig4.png" alt="Image 5" />
+          </div>
+          <div class="gallery-item">
+            <img src="./tempImagesRep/Fig1.png" alt="Image 2" />
+          </div>
+          <div class="gallery-item">
+            <img src="./tempImagesRep/Fig2.png" alt="Image 3" />
+          </div>
+          <div class="gallery-item">
+            <img src="./tempImagesRep/Fig3.png" alt="Image 4" />
+          </div>
+          <div class="gallery-item">
+            <img src="./tempImagesRep/Fig4.png" alt="Image 5" />
+          </div>
+          <div id="gallery-controls">
+            <button id="gallery-prev">&#8249;</button>
+            <button id="gallery-next">&#8250;</button>
+            <div id="gallery-dots">
+              <span class="gallery-dot active"></span>
+              <span class="gallery-dot"></span>
+              <span class="gallery-dot"></span>
+              <span class="gallery-dot"></span>
+              <span class="gallery-dot"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </aside>
+    <script src="./montrealstories.js"></script>
+
+  </body>
+</html>
