@@ -29,7 +29,7 @@ vignettes/*.pdf
 # Dev data
 /dev/data/*
 # Main data
-data*
+data/*
 # Temp main data
 /data_temp*
 # Other

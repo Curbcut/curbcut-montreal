@@ -440,6 +440,7 @@ scales_variables_modules <-
 save.image("before_centraide.RData")
 load("before_centraide.RData")
 
+future::plan(future::multisession(), workers = 4)
 scales_variables_modules <-
   build_and_append_afford(
     scales_variables_modules = scales_variables_modules,

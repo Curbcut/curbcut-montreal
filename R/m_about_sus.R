@@ -1,7 +1,7 @@
 ### WHY A DASHBOARD MODULE #####################################################
 
 about_sus_UI <- function(id) {
-
+  
   tagList(
     tags$head(tags$style(HTML(
       '#why_title_bar {border-width: 10px; border-color: rgb(255, 255, 255);}'))
@@ -19,9 +19,9 @@ about_sus_server <- function(id, r) {
     
     output$rmd_output <- renderUI(
       # HTML(paste0(
-        includeHTML(paste0("www/standalone/about_sus", "_", r$lang(), 
-                           ".html"))#))
+      includeHTML(paste0("www/standalone/about_sus", "_", r$lang(), 
+                         ".html"))#))
     )
     
   })
-  }
+}
