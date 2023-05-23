@@ -29,7 +29,7 @@
     },
     "DT": {
       "Package": "DT",
-      "Version": "0.27",
+      "Version": "0.28",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -41,7 +41,7 @@
         "magrittr",
         "promises"
       ],
-      "Hash": "3444e6ed78763f9f13aaa39f2481eb34"
+      "Hash": "ab745834dfae7eaf71dd0b90f3b66759"
     },
     "KernSmooth": {
       "Package": "KernSmooth",
@@ -352,13 +352,13 @@
       "Package": "curbcut",
       "Version": "0.0.0.9000",
       "Source": "GitHub",
-      "Remotes": "qfes/rdeck",
       "RemoteType": "github",
       "RemoteHost": "api.github.com",
-      "RemoteRepo": "curbcut",
       "RemoteUsername": "MSSI-urban",
-      "RemoteRef": "HEAD",
-      "RemoteSha": "b2a4dc538345f56ec2fddb84ffa3135bfb13221f",
+      "RemoteRepo": "curbcut",
+      "RemoteRef": "main",
+      "RemoteSha": "c8291cfdeaa8fa1a4a00020cde1ee069f83259cd",
+      "Remotes": "qfes/rdeck",
       "Requirements": [
         "DBI",
         "DT",
@@ -368,6 +368,7 @@
         "httr",
         "qs",
         "rdeck",
+        "rintrojs",
         "scales",
         "sf",
         "shiny",
@@ -375,9 +376,10 @@
         "shinyjs",
         "stats",
         "urltools",
-        "utils"
+        "utils",
+        "zip"
       ],
-      "Hash": "2f0d072526bc98129fe28cb42779fa87"
+      "Hash": "4c206acbcc7b27d87c5b5c6130abfb05"
     },
     "curl": {
       "Package": "curl",
@@ -452,14 +454,14 @@
     },
     "evaluate": {
       "Package": "evaluate",
-      "Version": "0.20",
+      "Version": "0.21",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
         "R",
         "methods"
       ],
-      "Hash": "4b68aa51edd89a0e044a66e75ae3cc6c"
+      "Hash": "d59f3b464e8da1aef82dc04b588b8dfb"
     },
     "fansi": {
       "Package": "fansi",
@@ -632,7 +634,7 @@
     },
     "httr": {
       "Package": "httr",
-      "Version": "1.4.5",
+      "Version": "1.4.6",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -643,7 +645,7 @@
         "mime",
         "openssl"
       ],
-      "Hash": "f6844033201269bec3ca0097bc6c97b3"
+      "Hash": "7e5e3cbd2a7bc07880c94e22348fb661"
     },
     "isoband": {
       "Package": "isoband",
@@ -988,6 +990,18 @@
       ],
       "Hash": "4543b8cd233ae25c6aba8548be9e747e"
     },
+    "rintrojs": {
+      "Package": "rintrojs",
+      "Version": "0.3.2",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "jsonlite",
+        "shiny"
+      ],
+      "Hash": "c7542d0e29c0cf0a04eb9dc898be5a15"
+    },
     "rlang": {
       "Package": "rlang",
       "Version": "1.1.0",
@@ -1025,7 +1039,7 @@
     },
     "s2": {
       "Package": "s2",
-      "Version": "1.1.3",
+      "Version": "1.1.4",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -1033,7 +1047,7 @@
         "Rcpp",
         "wk"
       ],
-      "Hash": "e162ffd6ff4bde5264584be359a06f88"
+      "Hash": "f1cbe03bb3346f8e817518ffa20f9f5a"
     },
     "sass": {
       "Package": "sass",
@@ -1407,13 +1421,13 @@
     },
     "wk": {
       "Package": "wk",
-      "Version": "0.7.2",
+      "Version": "0.7.3",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
         "R"
       ],
-      "Hash": "d090e79291f852c4da96b036500d449f"
+      "Hash": "68a7ab6ec1afb5f076172b983c069313"
     },
     "xfun": {
       "Package": "xfun",
@@ -1444,6 +1458,13 @@
       "Source": "Repository",
       "Repository": "CRAN",
       "Hash": "0d0056cc5383fbc240ccd0cb584bf436"
+    },
+    "zip": {
+      "Package": "zip",
+      "Version": "2.3.0",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "d98c94dacb7e0efcf83b0a133a705504"
     }
   }
 }

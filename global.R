@@ -64,7 +64,7 @@ dbs <- subset(dbs, grepl(".sqlite$", dbs))
 
 lapply(dbs, \(x) {
   connection_name <- paste0(stringr::str_extract(x, "(?<=/).*?(?=\\.)"), "_conn")
-  assign(connection_name, dbConnect(SQLite(), x), envir = .GlobalEnv)
+  assign(connection_name, DBI::dbConnect(RSQLite::SQLite(), x), envir = .GlobalEnv)
 }) |> invisible()
 
 
@@ -79,11 +79,6 @@ mods_rdy <-
     names(ids) <- thm$nav_title
     ids
   }, simplify = FALSE, USE.NAMES = TRUE)
-
-
-# Grab all place explorer documents ---------------------------------------
-
-pe_docs <- list.files("www/place_explorer/")
 
 
 # Map defaults ------------------------------------------------------------

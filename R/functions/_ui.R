@@ -41,9 +41,9 @@ ready_modules_home <- function(mods_rdy) {
   
   list_args <- 
     lapply(names(mods_rdy), function(theme) {
-      c(list(name = curbcut::cc_t(theme)),
+      c(list(name = cc_t(theme)),
         lapply(names(mods_rdy[[theme]]), function(module) {
-          list(name = curbcut::cc_t(module), 
+          list(name = cc_t(module), 
                onclick = paste0(
                  "openTab('", unname(mods_rdy[[theme]][module]), "')"),
                img = mods_rdy_img[[theme]][[module]])

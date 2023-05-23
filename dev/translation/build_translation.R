@@ -49,34 +49,18 @@ library(qs)
 
 # Run all the translation preparation -------------------------------------
 source("dev/translation/variables.R", encoding = "utf-8")
-source("dev/translation/info_table.R", encoding = "utf-8")
-source("dev/translation/ui_and_misc.R", encoding = "utf-8")
-source("dev/translation/home_and_about.R", encoding = "utf-8")
-source("dev/translation/title_text.R", encoding = "utf-8")
-source("dev/translation/dyk.R", encoding = "utf-8")
-source("dev/translation/green_alleys.R", encoding = "utf-8")
-source("dev/translation/place_explorer.R", encoding = "utf-8")
-source("dev/translation/authors.R", encoding = "utf-8")
-source("dev/translation/centraide_vars.R", encoding = "utf-8")
-source("dev/translation/data_export.R", encoding = "utf-8")
-source("dev/translation/city_amenities.R", encoding = "utf-8")
+source("dev/translation/dictionaries.R", encoding = "utf-8")
+source("dev/translation/custom_pages.R", encoding = "utf-8")
+
 
 # Retrieve and bind translated csvs ---------------------------------------
 
 translation_df <- 
-  bind_rows(home_and_about_translated,
-            info_table_translated,
-            ui_and_misc_translated,
-            variables_translated,
-            title_text_translation,
-            dyk_translated,
-            green_alleys_translated,
-            place_explorer_translated,
-            authors_translation,
-            cent_variables_translated,
-            data_export_translated,
-            city_amenities_translation) |> 
-  distinct(en, .keep_all = TRUE)
+  dplyr::bind_rows(curbcut::cc_translation_df,
+            translation_variables,
+            translation_dictionaries,
+            translation_custom_pages) |> 
+  dplyr::distinct(en, .keep_all = TRUE)
 
 if (translation_df$fr |> is.na() |> sum() > 0)
   stop("`NA` translations are forbidden (will break some translations), e.g. `get_zoom_code`")
@@ -121,4 +105,4 @@ if (translation_df$fr |> is.na() |> sum() > 0)
 
 # Save to the translation files -------------------------------------------
 
-qsave(translation_df, "data/translation_df.qs")
+qs::qsave(translation_df, "data/translation_df.qs")

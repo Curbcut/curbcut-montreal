@@ -685,9 +685,9 @@ build_and_append_natural_inf <- function(scales_variables_modules, crs) {
   
   
   # Save natural inf in its own sqlite db -----------------------------------
-
+  
   # natural_inf_path <- "data/naturalinf.sqlite"
-  # if (natural_inf_path %in% list.files("data", full.names = TRUE)) 
+  # if (natural_inf_path %in% list.files("data", full.names = TRUE))
   #   unlink(natural_inf_path, force = TRUE)
   # natural_inf_sql <- DBI::dbConnect(RSQLite::SQLite(), natural_inf_path,
   #                                   overwrite = TRUE)
@@ -696,12 +696,12 @@ build_and_append_natural_inf <- function(scales_variables_modules, crs) {
   # purrr::walk2(names(natural_inf), natural_inf, function(name, df) {
   #   if (!is.data.frame(df)) {
   #     purrr::walk2(df, seq_along(df), function(x, y) {
-  #       DBI::dbWriteTable(natural_inf_sql, 
+  #       DBI::dbWriteTable(natural_inf_sql,
   #                         paste("natural_inf", name, y, sep = "_"), x,
   #                         overwrite = TRUE)
-  #       DBI::dbExecute(natural_inf_sql, 
-  #                      paste0("CREATE INDEX index_biodiversity_", y, 
-  #                             " ON natural_inf_custom_", y, 
+  #       DBI::dbExecute(natural_inf_sql,
+  #                      paste0("CREATE INDEX index_biodiversity_", y,
+  #                             " ON natural_inf_custom_", y,
   #                             " (biodiversity)"))
   #     })
   #   }
@@ -710,10 +710,10 @@ build_and_append_natural_inf <- function(scales_variables_modules, crs) {
   #                       paste("natural_inf", name, sep = "_"), df,
   #                       overwrite = TRUE)
   #   }
-  #   
+  # 
   #   if (name == "custom_explore") {
   #     DBI::dbExecute(
-  #       natural_inf_sql, 
+  #       natural_inf_sql,
   #       paste0("CREATE INDEX index_natural_inf_custom_explore_slider",
   #              " ON natural_inf_custom_explore (slider)"))
   #   }

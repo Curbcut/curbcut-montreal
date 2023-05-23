@@ -379,11 +379,10 @@ scales_variables_modules <-
                  skip_scale_interpolation = c("grid25", "grid50", "grid100"))
 census_variables <- get_census_vectors_details()
 
-save.image()
-load(".RData")
+save.image("dev/data/built/pre_census.RData")
+load("dev/data/built/pre_census.RData")
 
-future::plan(future::multisession())
-
+future::plan(future::multisession(), workers = 6)
 scales_variables_modules <-
   ru_vac_rate(scales_variables_modules = scales_variables_modules,
               crs = crs, geo_uid = cancensus_cma_code)
@@ -402,7 +401,7 @@ scales_variables_modules <-
 # qs::qsave(traveltimes, "dev/data/built/traveltimes.qs")
 traveltimes <- qs::qread("dev/data/built/traveltimes.qs")
 
-future::plan(future::multisession(), workers = 4)
+future::plan(future::multisession(), workers = 2)
 scales_variables_modules <-
   ba_accessibility_points(scales_variables_modules = scales_variables_modules,
                           region_DA_IDs = census_scales$DA$ID,
@@ -416,8 +415,8 @@ scales_variables_modules <-
                           crs = crs)
 
 # Montreal specific modules
-save.image("before_mtl.RData")
-load("before_mtl.RData")
+save.image("dev/data/built/before_mtl.RData")
+load("dev/data/built/before_mtl.RData")
 
 future::plan(future::multisession(), workers = 4)
 
@@ -437,8 +436,8 @@ scales_variables_modules <-
     crs = crs)
 # source("dev/tiles/alley_tile.R")
 
-save.image("before_centraide.RData")
-load("before_centraide.RData")
+save.image("dev/data/built/before_centraide.RData")
+load("dev/data/built/before_centraide.RData")
 
 future::plan(future::multisession(), workers = 4)
 scales_variables_modules <-
@@ -649,9 +648,18 @@ save_all_scales_qs(data_folder = "data/",
 # Save .qsm ---------------------------------------------------------------
 
 save_short_tables_qs(data_folder = "data/", 
-                     all_scales = scales_variables_modules$scales)
+                     all_scales = scales_variables_modules$scales,
+                     skip_scales = c("building", "grid25", "grid50", "grid100"))
 save_geometry_export(data_folder = "data/", 
                      all_scales = scales_variables_modules$scales)
+
+
+# Save large dfs as sqlite ------------------------------------------------
+
+save_bslike_sqlite("building", all_scales = scales_variables_modules$scales)
+
+lapply(c("grid25", "grid50", "grid100"), save_bslike_sqlite,
+       all_scales = scales_variables_modules$scales)
 
 
 # Save other global data --------------------------------------------------
@@ -684,6 +692,11 @@ placeex_main_card_rmd(scales_variables_modules = scales_variables_modules,
                       mapbox_username = "sus-mcgill",
                       rev_geocode_from_localhost = TRUE,
                       overwrite = FALSE)
+
+# Save the place explorer files, which serves as a 'does it exist' for `curbcut`
+pe_docs <- list.files("www/place_explorer/")
+qs::qsave(pe_docs, "data/pe_docs.qs")
+
 
 # Deploy app --------------------------------------------------------------
 

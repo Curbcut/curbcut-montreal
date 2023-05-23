@@ -344,22 +344,26 @@ naturalinf_server <- function(id, r) {
         value = FALSE)
     })
     
+    custom_sl_ch <- shiny::reactive({
+      sapply(custom_slider_choices, cc_t, lang = r$lang(), USE.NAMES = FALSE)
+    })
+    
     # Custom priority sliders
     s_bio <- curbcut::slider_text_server(
       id = id, 
       r = r, 
       slider_text_id = "bio",
-      choices = shiny::reactive(custom_slider_choices))
+      choices = custom_sl_ch)
     s_hea <- curbcut::slider_text_server(
       id = id, 
       r = r, 
       slider_text_id = "hea",
-      choices = shiny::reactive(custom_slider_choices))
+      choices = custom_sl_ch)
     s_flo <- curbcut::slider_text_server(
       id = id, 
       r = r, 
       slider_text_id = "flo",
-      choices = shiny::reactive(custom_slider_choices))
+      choices = custom_sl_ch)
     ni_slider <- shiny::reactive(process_ni_sliders(s_bio(), s_hea(), s_flo()))
     
     # Sidebar
@@ -422,7 +426,7 @@ naturalinf_server <- function(id, r) {
     
     # Choose tileset
     tile <- shiny::reactive({
-      if (var_left() == "natural_inf-c_priority" && custom_priorities()) {
+      if (var_left() == "c_priority" & custom_priorities()) {
         return("natural_inf-custom")
       }
       return(paste0("natural_inf-", var_left()))})
