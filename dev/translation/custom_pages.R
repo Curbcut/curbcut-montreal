@@ -79,5 +79,32 @@ translation_custom_pages <-
   add_row(en = "Amount protected",
           fr = "Montant protégé") |> 
   add_row(en = "Share of MOntreal area",
-          fr = "Part de la région de Montréal")
-
+          fr = "Part de la région de Montréal") |> 
+  
+  # Green alley
+  add_row(en = "Borough summary",
+          fr = "Résumé de l'arrondissement") |> 
+  add_row(en = "Green alleys per square kilometer",
+          fr = "Ruelles vertes par kilomètre carré") |>
+  add_row(en = "Green alleys per 1,000 residents",
+          fr = "Ruelles vertes pour 1 000 habitants") |>
+  add_row(en = "{participate} out of 19 Montreal boroughs have a green alley program.",
+          fr = "{participate} des 19 arrondissements de Montréal ont un programme de ruelles vertes.") |>
+  add_row(en = "{borough} does not have a green alley program.",
+          fr = "{borough} n'a pas de programme de ruelles vertes.") |>
+  add_row(en = "Our team visited {visited} of the {all_nb} green alleys in Montreal. We classified {green} ({green_per}) as 'green', {community} ({community_per}) as 'community', {mixed} ({mixed_per}) as 'mixed' green and community, and {unmaintained} ({unmaintained_per}) as 'unmaintained'.",
+          fr = "Notre équipe a visité {visited} des {all_nb} ruelles vertes de Montréal. Nous avons classé {green} ({green_per}) comme 'verte', {community} ({community_per}) comme 'communautaire', {mixed} ({mixed_per}) comme 'mixte' verte et communautaire, et {unmaintained} ({unmaintained_per}) comme 'non-entretenue'.") |>
+  add_row(en = "Green alley inaugurations",
+          fr = "Inaugurations de la ruelle verte") |>
+  add_row(en = "Green",
+          fr = "Verte") |>
+  add_row(en = "Community",
+          fr = "Communautaire") |>
+  add_row(en = "Mixed",
+          fr = "Mixte") |>
+  add_row(en = "Unmaintained",
+          fr = "Non-entretenue") |>
+  add_row(en = "Visited green alleys type",
+          fr = "Type de ruelles vertes visitées") |>
+  add_row(en = "Curbcut’s observational data",
+          fr = "Les données d'observation de Curbcut")

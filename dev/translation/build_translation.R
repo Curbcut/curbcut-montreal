@@ -100,9 +100,6 @@ if (translation_df$fr |> is.na() |> sum() > 0)
 # }) |> form_translation_tibble()
 
 
-
-
-
 # Save to the translation files -------------------------------------------
 
 qs::qsave(translation_df, "data/translation_df.qs")
