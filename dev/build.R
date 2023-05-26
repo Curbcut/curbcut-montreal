@@ -446,6 +446,13 @@ scales_variables_modules <-
     crs = crs)
 
 
+# Crash
+scales_variables_modules <-build_and_append_crash(
+  scales_variables_modules = scales_variables_modules,
+  crs = crs
+)
+
+
 # Post process
 scales_variables_modules$scales <- 
   cc.buildr::post_processing(scales = scales_variables_modules$scales)
@@ -513,8 +520,16 @@ map_zoom_levels_save(data_folder = "data/", map_zoom_levels = map_zoom_levels)
 
 
 # # Tilesets ----------------------------------------------------------------
+#
+# #street <- cc.data::db_read_data(table = "streets",
+# #                                column_to_select = "DA_ID",
+# #                                IDs = census_scales$DA$ID)
+# qs::qsave(street, "dev/data/built/street.qs")
+# street <- qs::qread("dev/data/built/street.qs")
+# 
 # tileset_upload_all(all_scales = scales_variables_modules$scales,
 #                    map_zoom_levels = map_zoom_levels,
+#                    street = street,
 #                    tweak_max_zoom = list(grid250 = 11, grid100 = 12, grid50 = 13),
 #                    prefix = "mtl",
 #                    username = "sus-mcgill",
@@ -538,12 +553,6 @@ map_zoom_levels_save(data_folder = "data/", map_zoom_levels = map_zoom_levels)
 #                prefix = "mtl",
 #                username = "sus-mcgill",
 #                access_token = .cc_mb_token)
-# 
-# #street <- cc.data::db_read_data(table = "streets",
-# #                                column_to_select = "DA_ID",
-# #                                IDs = census_scales$DA$ID)
-# qs::qsave(street, "dev/data/built/street.qs")
-# street <- qs::qread("dev/data/built/street.qs")
 # 
 # tileset_streets(master_polygon = base_polygons$master_polygon,
 #                 street = street,
@@ -669,7 +678,7 @@ qs::qsave(scales_variables_modules$modules, file = "data/modules.qs")
 qs::qsave(scales_dictionary, file = "data/scales_dictionary.qs")
 qs::qsave(regions_dictionary, file = "data/regions_dictionary.qs")
 tictoc::toc()
-
+cc.data::bucket_write_folder("data", "curbcut.montreal.data")
 
 # Place explorer content creation -----------------------------------------
 
@@ -692,6 +701,16 @@ placeex_main_card_rmd(scales_variables_modules = scales_variables_modules,
                       mapbox_username = "sus-mcgill",
                       rev_geocode_from_localhost = TRUE,
                       overwrite = FALSE)
+
+# placeex_main_card_rmd(scales_variables_modules = scales_variables_modules,
+#                       pe_main_card_data = pe_main_card_data,
+#                       regions_dictionary = regions_dictionary,
+#                       scales_dictionary = scales_dictionary,
+#                       lang = "en",
+#                       tileset_prefix = "mtl",
+#                       mapbox_username = "sus-mcgill",
+#                       rev_geocode_from_localhost = TRUE,
+#                       overwrite = FALSE)
 
 # Save the place explorer files, which serves as a 'does it exist' for `curbcut`
 pe_docs <- list.files("www/place_explorer/")

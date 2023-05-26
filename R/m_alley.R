@@ -427,6 +427,7 @@ alley_server <- function(id, r) {
     # Update map in response to variable changes or zooming
     map_viewstate <- curbcut::map_server(
       id = id,
+      r = r,
       tile = tile,
       data_colours = data_colours,
       select_id = r[[id]]$select_id,

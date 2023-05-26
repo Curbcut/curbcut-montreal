@@ -434,6 +434,7 @@ naturalinf_server <- function(id, r) {
     # Map
     map_viewstate <- curbcut::map_server(
       id = id,
+      r = r,
       tile = tile,
       data_colours = data,
       zoom_levels = shiny::reactive(NULL),
