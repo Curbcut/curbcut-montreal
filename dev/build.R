@@ -520,17 +520,20 @@ map_zoom_levels_save(data_folder = "data/", map_zoom_levels = map_zoom_levels)
 
 
 # # Tilesets ----------------------------------------------------------------
-#
+# 
 # #street <- cc.data::db_read_data(table = "streets",
 # #                                column_to_select = "DA_ID",
 # #                                IDs = census_scales$DA$ID)
-# qs::qsave(street, "dev/data/built/street.qs")
+# # qs::qsave(street, "dev/data/built/street.qs")
 # street <- qs::qread("dev/data/built/street.qs")
+
+# # Do not upload grids, as there is a function just for it.
+# all_scales_t <- scales_variables_modules$scales[names(scales_variables_modules$scales) != "grid"]
+# map_zoom_levels_t <- map_zoom_levels[names(map_zoom_levels) != "grid"]
 # 
-# tileset_upload_all(all_scales = scales_variables_modules$scales,
-#                    map_zoom_levels = map_zoom_levels,
+# tileset_upload_all(all_scales = all_scales_t,
+#                    map_zoom_levels = map_zoom_levels_t,
 #                    street = street,
-#                    tweak_max_zoom = list(grid250 = 11, grid100 = 12, grid50 = 13),
 #                    prefix = "mtl",
 #                    username = "sus-mcgill",
 #                    access_token = .cc_mb_token)
@@ -538,6 +541,7 @@ map_zoom_levels_save(data_folder = "data/", map_zoom_levels = map_zoom_levels)
 # source("dev/tiles/grid_tiles.R")
 # tileset_upload_grid(region = "grid",
 #                     all_scales = scales_variables_modules$scales,
+#                     street = street,
 #                     map_zoom_levels = map_zoom_levels,
 #                     max_zoom = list(grid250 = 11, grid100 = 12, grid50 = 13, grid25 = 14),
 #                     vars = c("climate_drought", "climate_flood", "climate_destructive_storms",
@@ -554,12 +558,12 @@ map_zoom_levels_save(data_folder = "data/", map_zoom_levels = map_zoom_levels)
 #                username = "sus-mcgill",
 #                access_token = .cc_mb_token)
 # 
-# tileset_streets(master_polygon = base_polygons$master_polygon,
-#                 street = street,
-#                 crs = crs,
-#                 prefix = "mtl",
-#                 username = "sus-mcgill",
-#                 access_token = .cc_mb_token)
+tileset_streets(master_polygon = base_polygons$master_polygon,
+                street = street,
+                crs = crs,
+                prefix = "mtl",
+                username = "sus-mcgill",
+                access_token = .cc_mb_token)
 
 
 # Place explorer page ----------------------------------------------------

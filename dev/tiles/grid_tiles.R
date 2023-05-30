@@ -1,4 +1,4 @@
-tileset_upload_grid <- function(region, all_scales, map_zoom_levels, max_zoom,
+tileset_upload_grid <- function(region, all_scales, street, map_zoom_levels, max_zoom,
                                   vars, prefix, username, access_token) {
   tn <- function(geo, scale_name) paste(prefix, geo, scale_name, sep = "_")
   
@@ -25,6 +25,20 @@ tileset_upload_grid <- function(region, all_scales, map_zoom_levels, max_zoom,
       )
     })
   }, names(all_tables), all_tables, SIMPLIFY = FALSE)
+  
+  # Create a street SF to use as a difference with the choropleth
+  street$width <- ifelse(street$rank == 5, 4,
+                         ifelse(street$rank == 4, 8,
+                                15))
+  
+  streets_layers <- split(street, street$width)
+  streets_layers <-
+    mapply(sf::st_buffer, streets_layers, as.numeric(names(streets_layers)),
+           SIMPLIFY = FALSE)
+  streets_layers <- Reduce(rbind, streets_layers)
+  streets_layers <- sf::st_union(streets_layers)
+  streets_layers <- sf::st_transform(streets_layers, 4326)
+  streets_layers <- sf::st_make_valid(streets_layers)
   
   # Tileset sources
   mapply(function(scales, geo) {
@@ -72,6 +86,19 @@ tileset_upload_grid <- function(region, all_scales, map_zoom_levels, max_zoom,
         access_token = access_token
       )
       
+      # Addition of the clipped polygons
+      df <- sf::st_difference(df, streets_layers)
+      
+      tileset_delete_tileset_source(paste0(geo_scale, "_clipped"),
+                                    username = username,
+                                    access_token = access_token
+      )
+      tileset_upload_tile_source_large(df,
+                                 id = paste0(geo_scale, "_clipped"),
+                                 username = username,
+                                 access_token = access_token
+      )
+      
     })
   }, all_tables, names(all_tables))
   
@@ -86,15 +113,26 @@ tileset_upload_grid <- function(region, all_scales, map_zoom_levels, max_zoom,
       mapply(function(scale, level) {
         name <- tn(geo, scale)
         
-        recipe <-
-          tileset_create_recipe(
-            layer_names = name,
-            source = paste0("mapbox://tileset-source/", username, "/", name),
-            minzoom = 3,
-            maxzoom = maxzooms$maxzoom[maxzooms$scale == scale],
-            layer_size = 2500,
-            recipe_name = name
-          )
+        source_names <- c(name, paste0(name, "_clipped"))
+        sources <- paste0("mapbox://tileset-source/", username, "/", source_names)
+        names(sources) <- source_names
+        minzooms <- c(3, 14)
+        names(minzooms) <- source_names
+        
+        default_maxzoom <- maxzooms$maxzoom[maxzooms$scale == scale]
+        new_maxzoom <- max(default_maxzoom, 14)
+        maxzooms_ <- c(13, new_maxzoom)
+        names(maxzooms_) <- source_names
+        layer_sizes <- c(2500, 2500)
+        names(layer_sizes) <- source_names
+        
+        recipe <- tileset_create_recipe(
+          layer_names = source_names,
+          source = sources,
+          minzoom = minzooms,
+          maxzoom = maxzooms_,
+          recipe_name = name
+        )
         
         tileset_create_tileset(name,
                                recipe = recipe,
@@ -153,13 +191,18 @@ tileset_upload_grid <- function(region, all_scales, map_zoom_levels, max_zoom,
     return(result)
   }
   
-  
+  all_sources <- tileset_list_tile_sources(username = username,
+                                           access_token = access_token)
+  all_clipped <- all_sources$id[grepl("_clipped$", all_sources$id)]
+
   auto_zoom_recipes <-
     mapply(\(geo, zoom_levels) {
       mapply(\(mzl_name, mzl) {
         suffix <- gsub(paste0(".*_", geo), "", mzl_name)
         suffix <- if (grepl("_", suffix)) suffix else ""
         name <- tn(geo, scale_name = paste0("auto_zoom", suffix))
+        
+        names(mzl)[length(names(mzl))] <- paste0(names(mzl)[length(names(mzl))], "_clipped")
         scale_names <- tn(geo, names(mzl))
         
         sources <- stats::setNames(paste0(
@@ -175,7 +218,7 @@ tileset_upload_grid <- function(region, all_scales, map_zoom_levels, max_zoom,
         
         layer_sizes <-
           stats::setNames(rep(NA, length(scale_names)), scale_names)
-        
+       
         recipe <-
           tileset_create_recipe(
             layer_names = scale_names,

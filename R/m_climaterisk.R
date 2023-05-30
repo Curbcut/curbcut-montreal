@@ -287,6 +287,15 @@ vars_right <- modules$var_right[modules$id == "climaterisk"][[1]]
                     args = list(data_colours(), tileset_ID_color = "ID_color")))
       }
     })
+    color_fun_args <- shiny::reactive({
+      if (grid() & !grid_compare()) {
+        return(list(fun = map_scale_fill_grid,
+                    args = list(vars = r[[id]]$vars())))
+      } else {
+        return(list(fun = curbcut::map_scale_colour,
+                    args = list(r[[id]]$select_id(), data_colours(), tileset_ID_color = "ID_color")))
+      }
+    })
     
     # Update map in response to variable changes or zooming
     map_viewstate <- curbcut::map_server(
@@ -304,7 +313,9 @@ vars_right <- modules$var_right[modules$id == "climaterisk"][[1]]
                                       zoom_levels = zoom_levels()$zoom_levels,
                                       lwd = lwd())),
       fill_fun = shiny::reactive(fill_fun_args()$fun),
-      fill_args = shiny::reactive(fill_fun_args()$args)
+      fill_args = shiny::reactive(fill_fun_args()$args),
+      colour_fun = shiny::reactive(color_fun_args()$fun),
+      colour_args = shiny::reactive(color_fun_args()$args)
     )
 
     # Update map labels
