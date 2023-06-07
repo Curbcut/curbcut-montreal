@@ -390,10 +390,10 @@ scales_variables_modules <-
   ru_canale(scales_variables_modules = scales_variables_modules,
             crs = crs,
             region_DA_IDs = census_scales$DA$ID)
-# scales_variables_modules <-
-#   ru_canbics(scales_variables_modules = scales_variables_modules,
-#              crs = crs,
-#              region_DA_IDs = census_scales$DA$ID)
+scales_variables_modules <-
+  ru_canbics(scales_variables_modules = scales_variables_modules,
+             crs = crs,
+             region_DA_IDs = census_scales$DA$ID)
 
 # # Add access to amenities module
 # traveltimes <-
@@ -690,11 +690,13 @@ cc.data::bucket_write_folder("data", "curbcut.montreal.data")
 
 future::plan(future::multisession(), workers = 4)
 
-pe_main_card_data <- placeex_main_card_data(scales = scales_variables_modules$scales,
-                                            DA_table = census_scales$DA,
-                                            region_DA_IDs = census_scales$DA$ID,
-                                            crs = crs,
-                                            regions_dictionary = regions_dictionary)
+# pe_main_card_data <- placeex_main_card_data(scales = scales_variables_modules$scales,
+#                                             DA_table = census_scales$DA,
+#                                             region_DA_IDs = census_scales$DA$ID,
+#                                             crs = crs,
+#                                             regions_dictionary = regions_dictionary)
+# qs::qsave(pe_main_card_data, file = "data/pe_main_card_data.qs")
+pe_main_card_data <- qs::qread("data/pe_main_card_data.qs")
 
 placeex_main_card_rmd(scales_variables_modules = scales_variables_modules,
                       pe_main_card_data = pe_main_card_data,

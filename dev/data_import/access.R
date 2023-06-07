@@ -7,63 +7,63 @@ build_and_append_access <- function(scales_variables_modules,
 
   # Read and prepare data ---------------------------------------------------
 
-  # ## DAYCARE
-  # daycares <- tempfile(fileext = ".csv")
-  # download.file("https://www.donneesquebec.ca/recherche/dataset/be36f85e-e419-4978-9c34-cb5795622595/resource/89af3537-4506-488c-8d0e-6d85b4033a0e/download/repertoire-installation.csv",
-  #               daycares)
-  # daycares <- tibble::as_tibble(read.csv(daycares))
-  # Encoding(daycares$REGION) <- "latin1"
-  # Encoding(daycares$ADRESSE) <- "latin1"
-  # Encoding(daycares$NOM_MUN_COMPO) <- "latin1"
-  # Encoding(daycares$NOM) <- "latin1"
-  # daycares <-
-  #   daycares |>
-  #   dplyr::filter(REGION %in% c("6 - Montréal", "15 - Laurentides",
-  #                               "14 - Lanaudière", "16 - Montérégie", "13 - Laval")) |>
-  #   dplyr::mutate(ADRESSE =
-  #                   stringr::str_remove_all(ADRESSE,
-  #                                           ", (bureau| bureau|rez-de-chaussée|AG-10|local|suite|appartement|porte) .*$") |>
-  #                   stringr::str_remove_all("      \\de étage|, \\de étage") |>
-  #                   stringr::str_remove_all("(?<=\\d)-\\d*|[A-Z](?=,)")) |>
-  #   dplyr::mutate(ADRESSE = paste0(ADRESSE, ", ",NOM_MUN_COMPO, ", QC"))
-  # daycares <- daycares[c("ADRESSE", "PLACE_TOTAL")]
-  # # Geolocate with addresses
-  # daycares$geometry <- future.apply::future_sapply(
-  #   daycares$ADRESSE, cc.data::geocode_localhost,
-  #   simplify = FALSE, USE.NAMES = FALSE, future.seed = NULL)
-  # daycares <- sf::st_as_sf(daycares, crs = 4326)
-  # # One daycare spot = one point
-  # progressr::with_progress({
-  #   pb <- progressr::progressor(steps = nrow(daycares))
-  #   daycares <-
-  #     future.apply::future_lapply(seq_len(nrow(daycares)), \(r) {
-  #       pb()
-  #       row <- daycares[r, ]
-  #       Reduce(rbind, lapply(seq_len(row$PLACE_TOTAL), \(x) row))["geometry"]
-  #     })
-  #   pb <- progressr::progressor(steps = length(daycares))
-  #   daycares <-
-  #     Reduce(\(a, b) {
-  #       pb()
-  #       rbind(a, b)
-  #     }, daycares)
-  # })
-  # 
-  # qs::qsave(daycares, "dev/data/built/daycares.qs")
-  # daycares <- qs::qread("dev/data/built/daycares.qs")
-  # 
-  # # Add point data to DA ----------------------------------------------------
-  # 
-  # point_DA <- accessibility_point_per_DA(point_data = list(daycarespots_2023 = daycares),
-  #                                        DA_table = census_scales$DA,
-  #                                        crs = crs)
-  # 
-  # 
-  # # Add access to point data by time intervals ------------------------------
-  # 
-  # data <- accessibility_add_intervals(point_per_DA = point_DA,
-  #                                     traveltimes = traveltimes)
-  # qs::qsave(data, "dev/data/built/access_data.qs")
+  ## DAYCARE
+  daycares <- tempfile(fileext = ".csv")
+  download.file("https://www.donneesquebec.ca/recherche/dataset/be36f85e-e419-4978-9c34-cb5795622595/resource/89af3537-4506-488c-8d0e-6d85b4033a0e/download/repertoire-installation.csv",
+                daycares)
+  daycares <- tibble::as_tibble(read.csv(daycares))
+  Encoding(daycares$REGION) <- "latin1"
+  Encoding(daycares$ADRESSE) <- "latin1"
+  Encoding(daycares$NOM_MUN_COMPO) <- "latin1"
+  Encoding(daycares$NOM) <- "latin1"
+  daycares <-
+    daycares |>
+    dplyr::filter(REGION %in% c("6 - Montréal", "15 - Laurentides",
+                                "14 - Lanaudière", "16 - Montérégie", "13 - Laval")) |>
+    dplyr::mutate(ADRESSE =
+                    stringr::str_remove_all(ADRESSE,
+                                            ", (bureau| bureau|rez-de-chaussée|AG-10|local|suite|appartement|porte) .*$") |>
+                    stringr::str_remove_all("      \\de étage|, \\de étage") |>
+                    stringr::str_remove_all("(?<=\\d)-\\d*|[A-Z](?=,)")) |>
+    dplyr::mutate(ADRESSE = paste0(ADRESSE, ", ",NOM_MUN_COMPO, ", QC"))
+  daycares <- daycares[c("ADRESSE", "PLACE_TOTAL")]
+  # Geolocate with addresses
+  daycares$geometry <- future.apply::future_sapply(
+    daycares$ADRESSE, cc.data::geocode_localhost,
+    simplify = FALSE, USE.NAMES = FALSE, future.seed = NULL)
+  daycares <- sf::st_as_sf(daycares, crs = 4326)
+  # One daycare spot = one point
+  progressr::with_progress({
+    pb <- progressr::progressor(steps = nrow(daycares))
+    daycares <-
+      future.apply::future_lapply(seq_len(nrow(daycares)), \(r) {
+        pb()
+        row <- daycares[r, ]
+        Reduce(rbind, lapply(seq_len(row$PLACE_TOTAL), \(x) row))["geometry"]
+      })
+    pb <- progressr::progressor(steps = length(daycares))
+    daycares <-
+      Reduce(\(a, b) {
+        pb()
+        rbind(a, b)
+      }, daycares)
+  })
+
+  qs::qsave(daycares, "dev/data/built/daycares.qs")
+  daycares <- qs::qread("dev/data/built/daycares.qs")
+
+  # Add point data to DA ----------------------------------------------------
+
+  point_DA <- accessibility_point_per_DA(point_data = list(daycarespots_2023 = daycares),
+                                         DA_table = census_scales$DA,
+                                         crs = crs)
+
+
+  # Add access to point data by time intervals ------------------------------
+
+  data <- accessibility_add_intervals(point_per_DA = point_DA,
+                                      traveltimes = traveltimes)
+  qs::qsave(data, "dev/data/built/access_data.qs")
   data <- qs::qread("dev/data/built/access_data.qs")
 
   # Get list of data variables ----------------------------------------------
