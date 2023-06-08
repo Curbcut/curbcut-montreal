@@ -18,8 +18,7 @@ build_stories <- function() {
       preview = paste0("Little Burgundy has been the site of nearly 100 years ",
                        "of social and environmental transformation, and is ",
                        "currently undergoing a wave of green gentrification."),
-      themes = c("Environmental racism", "Green gentrification", 
-                 "Community activism", "Urban renewal", "Neighbourhood history"),
+      themes = c("Gentrification", "Community activism", "Urban renewal"),
       lon = -73.574962, 
       lat = 45.479311) |> 
     
@@ -42,7 +41,7 @@ build_stories <- function() {
       preview = paste0("In the Grand Parc de L’Ouest, a renewed drive to ",
                        "protect biodiversity and create greenspace illustrates ",
                        "the changing politics of development on the island."),
-      themes = c("Biodiversity", "Green space", "Municipal governance"),
+      themes = c("Biodiversity", "Green space", "Urban governance"),
       lon = -73.93723394534209,
       lat = 45.45384833740566) |> 
     
@@ -57,8 +56,8 @@ build_stories <- function() {
                        "sustainable mobility, but contradictions in the ",
                        "implementation stage of the Turcot Interchange suggest ",
                        "otherwise."),
-      themes = c("Transportation infrastructure", "Community activism", 
-                 "Municipal governance", "Sustainable mobility"),
+      themes = c("Transportation", "Community activism", 
+                 "Urban governance"),
       lon = -73.600007,
       lat = 45.468355) |>
     
@@ -69,7 +68,7 @@ build_stories <- function() {
       short_title = "Griffintown's water management history",
       preview = paste0("Griffintown’s social and governance history can be ",
                        "defined through the politics of water management."),
-      themes = c("Neighbourhood history", "Water management", "Governmental powers"),
+      themes = c("Urban governance ", "Urban transformation"),
       lon = -73.560739,
       lat = 45.496812) |> 
     
@@ -95,8 +94,7 @@ build_stories <- function() {
                        "Montreal metro has undergone several major ",
                        "transformations that mirror the city’s ever-changing ",
                        "sociopolitical landscape."),
-      themes = c("Public transit", "Municipal governance", 
-                 "Sustainable mobility"),
+      themes = c("Transportation", "Urban governance"),
       lon = -73.628745,
       lat = 45.542925) |> 
     
@@ -109,8 +107,7 @@ build_stories <- function() {
                        "ambiguous spaces, a sort of common, between the public ",
                        "and the private realm. The case of Le Plateau-Mont-Royal ",
                        "is particularly interesting."),
-      themes = c("Green space", "Urban transformation", "Community activism", 
-                 "Neighbourhood history"),
+      themes = c("Green space", "Urban transformation", "Community activism"),
       lon = -73.570753,
       lat = 45.515949) |> 
     
@@ -122,9 +119,7 @@ build_stories <- function() {
                        "always been this way. Explore how the city’s cycling ",
                        "infrastructure has evolved over time in this interactive ",
                        "story."),
-      themes = c("Active transit", "Transportation infrastructure", 
-                 "Municipal governance", "Governmental powers", 
-                 "Community activism", "Sustainable mobility"),
+      themes = c("Transportation", "Urban governance", "Community activism"),
       lon = -73.570810,
       lat = 45.536313) |> 
     
@@ -146,9 +141,9 @@ build_stories <- function() {
       short_title = "Montreal climate plans",
       preview = paste0("Climate action in Montreal: exploring two ",
                        "administrations' strategies for a greener future"),
-      themes = c("Transportation infrastructure", "Community activism", 
-                 "Municipal governance", "Sustainable mobility", "Climate change",
-                 "Green space", "Active transit", "Governmental powers"),
+      themes = c("Transportation", "Community activism", 
+                 "Urban governance", "Climate change",
+                 "Green space"),
       lon = -73.617951,
       lat = 45.499533)
   
