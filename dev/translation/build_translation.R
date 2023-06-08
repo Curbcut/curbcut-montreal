@@ -51,6 +51,8 @@ library(qs)
 source("dev/translation/variables.R", encoding = "utf-8")
 source("dev/translation/dictionaries.R", encoding = "utf-8")
 source("dev/translation/custom_pages.R", encoding = "utf-8")
+source("dev/translation/authors.R", encoding = "utf-8")
+source("dev/translation/access.R", encoding = "utf-8")
 
 
 # Retrieve and bind translated csvs ---------------------------------------
@@ -59,7 +61,9 @@ translation_df <-
   dplyr::bind_rows(curbcut::cc_translation_df,
             translation_variables,
             translation_dictionaries,
-            translation_custom_pages) |> 
+            translation_custom_pages,
+            translation_authors,
+            translation_access) |> 
   dplyr::distinct(en, .keep_all = TRUE)
 
 if (translation_df$fr |> is.na() |> sum() > 0)

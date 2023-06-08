@@ -525,7 +525,7 @@ map_zoom_levels_save(data_folder = "data/", map_zoom_levels = map_zoom_levels)
 # #                                column_to_select = "DA_ID",
 # #                                IDs = census_scales$DA$ID)
 # # qs::qsave(street, "dev/data/built/street.qs")
-# street <- qs::qread("dev/data/built/street.qs")
+street <- qs::qread("dev/data/built/street.qs")
 
 # # Do not upload grids, as there is a function just for it.
 # all_scales_t <- scales_variables_modules$scales[names(scales_variables_modules$scales) != "grid"]
@@ -538,32 +538,33 @@ map_zoom_levels_save(data_folder = "data/", map_zoom_levels = map_zoom_levels)
 #                    username = "sus-mcgill",
 #                    access_token = .cc_mb_token)
 # 
-# source("dev/tiles/grid_tiles.R")
-# tileset_upload_grid(region = "grid",
-#                     all_scales = scales_variables_modules$scales,
-#                     street = street,
-#                     map_zoom_levels = map_zoom_levels,
-#                     max_zoom = list(grid250 = 11, grid100 = 12, grid50 = 13, grid25 = 14),
-#                     vars = c("climate_drought", "climate_flood", "climate_destructive_storms",
-#                              "climate_heat_wave", "climate_heavy_rain"),
-#                     prefix = "mtl",
-#                     username = "sus-mcgill",
-#                     access_token = .cc_mb_token)
+source("dev/tiles/grid_tiles.R")
+tileset_upload_grid(region = "grid",
+                    all_scales = scales_variables_modules$scales,
+                    street = street,
+                    map_zoom_levels = map_zoom_levels,
+                    max_zoom = list(grid250 = 13, grid100 = 14, grid50 = 15, grid25 = 16),
+                    vars = c("climate_drought", "climate_flood", "climate_destructive_storms",
+                             "climate_heat_wave", "climate_heavy_rain"),
+                    prefix = "mtl",
+                    username = "sus-mcgill",
+                    access_token = .cc_mb_token)
+
+
+scales_with_labels <- 
+  scales_variables_modules$scales[names(scales_variables_modules$scales) != "grid"]
+tileset_labels(scales = scales_with_labels,
+               crs = crs, 
+               prefix = "mtl",
+               username = "sus-mcgill",
+               access_token = .cc_mb_token)
 # 
-# 
-# 
-# tileset_labels(scales = scales_variables_modules$scales,
-#                crs = crs,
-#                prefix = "mtl",
-#                username = "sus-mcgill",
-#                access_token = .cc_mb_token)
-# 
-tileset_streets(master_polygon = base_polygons$master_polygon,
-                street = street,
-                crs = crs,
-                prefix = "mtl",
-                username = "sus-mcgill",
-                access_token = .cc_mb_token)
+# tileset_streets(master_polygon = base_polygons$master_polygon,
+#                 street = street,
+#                 crs = crs,
+#                 prefix = "mtl",
+#                 username = "sus-mcgill",
+#                 access_token = .cc_mb_token)
 
 
 # Place explorer page ----------------------------------------------------
@@ -706,20 +707,20 @@ placeex_main_card_rmd(scales_variables_modules = scales_variables_modules,
                       tileset_prefix = "mtl",
                       mapbox_username = "sus-mcgill",
                       rev_geocode_from_localhost = TRUE,
-                      overwrite = FALSE)
+                      overwrite = TRUE)
 
-# placeex_main_card_rmd(scales_variables_modules = scales_variables_modules,
-#                       pe_main_card_data = pe_main_card_data,
-#                       regions_dictionary = regions_dictionary,
-#                       scales_dictionary = scales_dictionary,
-#                       lang = "en",
-#                       tileset_prefix = "mtl",
-#                       mapbox_username = "sus-mcgill",
-#                       rev_geocode_from_localhost = TRUE,
-#                       overwrite = FALSE)
+placeex_main_card_rmd(scales_variables_modules = scales_variables_modules,
+                      pe_main_card_data = pe_main_card_data,
+                      regions_dictionary = regions_dictionary,
+                      scales_dictionary = scales_dictionary,
+                      lang = "fr",
+                      tileset_prefix = "mtl",
+                      mapbox_username = "sus-mcgill",
+                      rev_geocode_from_localhost = TRUE,
+                      overwrite = TRUE)
 
 # Save the place explorer files, which serves as a 'does it exist' for `curbcut`
-pe_docs <- list.files("www/place_explorer/")
+pe_docs <- list.files("www/place_explorer/", full.names = TRUE)
 qs::qsave(pe_docs, "data/pe_docs.qs")
 
 

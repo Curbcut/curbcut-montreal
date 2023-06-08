@@ -377,6 +377,7 @@ vars_right <- modules$var_right[modules$id == "climaterisk"][[1]]
     curbcut::panel_view_server(
       id = id,
       r = r,
+      region = reactive(zoom_levels()$region),
       vars = r[[id]]$vars,
       data = data,
       zoom_levels = reactive(zoom_levels()$zoom_levels)
