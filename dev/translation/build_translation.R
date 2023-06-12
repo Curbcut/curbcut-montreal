@@ -53,6 +53,8 @@ source("dev/translation/dictionaries.R", encoding = "utf-8")
 source("dev/translation/custom_pages.R", encoding = "utf-8")
 source("dev/translation/authors.R", encoding = "utf-8")
 source("dev/translation/access.R", encoding = "utf-8")
+source("dev/translation/afford.R", encoding = "utf-8")
+source("dev/translation/modules.R", encoding = "utf-8")
 
 
 # Retrieve and bind translated csvs ---------------------------------------
@@ -63,7 +65,9 @@ translation_df <-
             translation_dictionaries,
             translation_custom_pages,
             translation_authors,
-            translation_access) |> 
+            translation_access,
+            translation_afford,
+            translation_pages) |> 
   dplyr::distinct(en, .keep_all = TRUE)
 
 if (translation_df$fr |> is.na() |> sum() > 0)
