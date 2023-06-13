@@ -55,6 +55,7 @@ source("dev/translation/authors.R", encoding = "utf-8")
 source("dev/translation/access.R", encoding = "utf-8")
 source("dev/translation/afford.R", encoding = "utf-8")
 source("dev/translation/modules.R", encoding = "utf-8")
+source("dev/translation/tenure.R", encoding = "utf-8")
 
 
 # Retrieve and bind translated csvs ---------------------------------------
@@ -67,6 +68,7 @@ translation_df <-
             translation_authors,
             translation_access,
             translation_afford,
+            translation_tenure,
             translation_pages) |> 
   dplyr::distinct(en, .keep_all = TRUE)
 
@@ -77,13 +79,13 @@ if (translation_df$fr |> is.na() |> sum() > 0)
 # Test --------------------------------------------------------------------
 
 # if (!exists("title_text")) title_text <- qs::qread("data/title_text.qs")
-# missing_title_text <- 
+# missing_title_text <-
 #   title_text$text[
 #     !sapply(title_text$text, \(x) x %in% translation_fr$en, USE.NAMES = FALSE)]
 # if (length(missing_title_text) > 0) warning("Missing title text translations")
-# 
+#
 # if (!exists("variables")) title_text <- qs::qread("data/variables.qs")
-# missing_variables <- 
+# missing_variables <-
 #   c(variables$var_title[
 #     !sapply(variables$var_title, \(x) x %in% translation_fr$en, USE.NAMES = FALSE)],
 #     variables$var_short[
@@ -91,12 +93,12 @@ if (translation_df$fr |> is.na() |> sum() > 0)
 #     variables$explanation[
 #       !sapply(variables$explanation, \(x) x %in% translation_fr$en, USE.NAMES = FALSE)],
 #     variables$source[
-#       !sapply(variables$source, \(x) x %in% translation_fr$en, USE.NAMES = FALSE)]) |> 
+#       !sapply(variables$source, \(x) x %in% translation_fr$en, USE.NAMES = FALSE)]) |>
 #   unique()
 # if (length(missing_variables) > 0) warning("Missing variables translations")
-# 
+#
 # if (!exists("modules")) title_text <- qs::qread("data/modules.qs")
-# missing_modules <- 
+# missing_modules <-
 #   modules$dataset_info[
 #     !sapply(modules$dataset_info, \(x) x %in% translation_fr$en, USE.NAMES = FALSE)]
 # if (length(missing_modules) > 0) warning("Missing modules translations")

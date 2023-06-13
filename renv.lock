@@ -112,6 +112,18 @@
       ],
       "Hash": "45f0398006e83a5b10b72a90663d8d8c"
     },
+    "RCurl": {
+      "Package": "RCurl",
+      "Version": "1.98-1.12",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "bitops",
+        "methods"
+      ],
+      "Hash": "1d6ed2d006d483f31c6d5531f3a39923"
+    },
     "RSQLite": {
       "Package": "RSQLite",
       "Version": "2.3.1",
@@ -207,6 +219,13 @@
       ],
       "Hash": "9fe98599ca456d6552421db0d6772d8f"
     },
+    "bitops": {
+      "Package": "bitops",
+      "Version": "1.0-7",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "b7d8d8ee39869c18d8846a184dd8a1af"
+    },
     "blob": {
       "Package": "blob",
       "Version": "1.2.4",
@@ -218,6 +237,17 @@
         "vctrs"
       ],
       "Hash": "40415719b5a479b87949f3aa0aee737c"
+    },
+    "bsicons": {
+      "Package": "bsicons",
+      "Version": "0.1",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "htmltools"
+      ],
+      "Hash": "6d1f170155965ab16b429a76e1d7dbc1"
     },
     "bslib": {
       "Package": "bslib",
@@ -357,15 +387,19 @@
       "RemoteUsername": "MSSI-urban",
       "RemoteRepo": "curbcut",
       "RemoteRef": "main",
-      "RemoteSha": "e8c3ed5fd7f262f280731f1348becd7181688413",
-      "Remotes": "qfes/rdeck",
+      "RemoteSha": "00850f84799c83267242cee0ed7867ad62713ceb",
+      "Remotes": "qfes/rdeck, bdbmax/bslib",
       "Requirements": [
         "DBI",
         "DT",
         "R",
+        "RCurl",
+        "bsicons",
         "ggplot2",
         "glue",
+        "htmlwidgets",
         "httr",
+        "plotly",
         "qs",
         "rdeck",
         "rintrojs",
@@ -380,7 +414,7 @@
         "utils",
         "zip"
       ],
-      "Hash": "3c8f785f143b694b6321f5cc76091db8"
+      "Hash": "c6baccd63bf4e771cb473c3527bc8d23"
     },
     "curl": {
       "Package": "curl",
@@ -391,6 +425,17 @@
         "R"
       ],
       "Hash": "2118af9cb164c8d2dddc7b89eaf732d9"
+    },
+    "data.table": {
+      "Package": "data.table",
+      "Version": "1.14.8",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "methods"
+      ],
+      "Hash": "b4c06e554f33344e044ccd7fdca750a9"
     },
     "digest": {
       "Package": "digest",
@@ -885,6 +930,38 @@
       "Repository": "CRAN",
       "Hash": "09eb987710984fc2905c7129c7d85e65"
     },
+    "plotly": {
+      "Package": "plotly",
+      "Version": "4.10.2",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "RColorBrewer",
+        "base64enc",
+        "crosstalk",
+        "data.table",
+        "digest",
+        "dplyr",
+        "ggplot2",
+        "htmltools",
+        "htmlwidgets",
+        "httr",
+        "jsonlite",
+        "lazyeval",
+        "magrittr",
+        "promises",
+        "purrr",
+        "rlang",
+        "scales",
+        "tibble",
+        "tidyr",
+        "tools",
+        "vctrs",
+        "viridisLite"
+      ],
+      "Hash": "6c00a09ba7d34917d9a3e28b15dd74e3"
+    },
     "promises": {
       "Package": "promises",
       "Version": "1.2.0.1",
@@ -1302,6 +1379,29 @@
         "rlang"
       ],
       "Hash": "bb20304c57ee6175e78353882b2cffc8"
+    },
+    "tidyr": {
+      "Package": "tidyr",
+      "Version": "1.3.0",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "cli",
+        "cpp11",
+        "dplyr",
+        "glue",
+        "lifecycle",
+        "magrittr",
+        "purrr",
+        "rlang",
+        "stringr",
+        "tibble",
+        "tidyselect",
+        "utils",
+        "vctrs"
+      ],
+      "Hash": "e47debdc7ce599b070c8e78e8ac0cfcf"
     },
     "tidyselect": {
       "Package": "tidyselect",

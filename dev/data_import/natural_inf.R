@@ -660,7 +660,7 @@ build_and_append_natural_inf <- function(scales_variables_modules, crs) {
         " conservation, flood prevention, and heat-island reduction. "
       ),
       title_text_extra = paste0(
-        "<p>The datasets visualized on this page come from Habitat Montreal. Note ",
+        "<p>The datasets visualized on this page come from Habitat. Note ",
         "that the natural infrastructure included in the study that generated t",
         "his data only covers approximately 25% of the Montreal region. For mor",
         "e information on the methods and data used for this page, visit the pu",

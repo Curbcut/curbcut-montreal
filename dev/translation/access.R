@@ -2,7 +2,7 @@
 
 translation_access <- 
   tibble(en = character(),
-                 fr = character()) |> 
+         fr = character()) |> 
   add_row(en = "Total",
           fr = "Total") |>
   add_row(en = "Amenity",
@@ -151,6 +151,12 @@ translation_access <-
           fr = "Divers") |>
   add_row(en = "Cultural",
           fr = "Culturel") |>
+  add_row(en = "places en garderie",
+          fr = "daycare spots") |> 
+  add_row(en = "Daycare spots",
+          fr = "Places en garderie") |> 
+  add_row(en = "Daycare",
+          fr = "Garderie") |> 
   
   add_row(en = "Mode of transport",
           fr = "Mode de transport") |> 
@@ -184,6 +190,8 @@ translation_access <-
           fr = "Accès aux écoles") |> 
   add_row(en = "Access to cultural facilities",
           fr = "Accès aux établissements culturels") |> 
+  add_row(en = "Access to daycare spots",
+          fr = "Accès aux places en garderie") |> 
   
   add_row(en = "Walking",
           fr = "À pieds") |> 
@@ -199,11 +207,19 @@ translation_access <-
 vars <- variables$var_code[grepl("^access", variables$var_code)]
 
 additional_vars <- lapply(vars, \(var) {
-  
+
   dict <- cc.data::accessibility_point_dict
   dict <- dict[sapply(dict$var, grepl, var), ]
-  title <- translation_access$fr[translation_access$en == dict$title]
-  short <- translation_access$fr[translation_access$en == dict$short]
+  if (nrow(dict) == 0) {
+    if (grepl("daycarespots", var)) {
+      dict <- tibble::tibble(title = "Daycare spots",
+                             short = "Daycare")
+    }
+  }
+  title <- translation_access$fr[tolower(translation_access$en) == tolower(dict$title)]
+  title <- unique(title)
+  short <- translation_access$fr[tolower(translation_access$en) == tolower(dict$short)]
+  short <- unique(short)
   
   mode <- (\(x) {
     if (grepl("_car_", var)) return("en auto")
@@ -219,12 +235,20 @@ additional_vars <- lapply(vars, \(var) {
   
   time <- gsub("_", "", stringr::str_extract(var, "_\\d*_"))
   
-  var_title <- stringr::str_to_sentence(paste0(title, " accessible ", mode))
+  var_title <- stringr::str_to_sentence(paste0(title, " accessibles ", mode))
   var_short <- stringr::str_to_sentence(short)
   explanation <- paste0(
     "le nombre de/d' ", tolower(title),
     " qu'un habitant moyen peut atteindre en ", time, " minutes ", mode
   )
+  
+  explanation <- if (grepl("^(a|e|i|o|u|h)", tolower(title))) {
+    gsub("de/d' ", "d'", explanation)
+  } else {
+    gsub("de/d' ", "de ", explanation)
+  }
+  
+  explanation_nodet <- gsub("^le ", "", explanation)
   
   exp_q5 <- paste0(
     "le résident moyen a accès à _X_ ", tolower(title), " en ", time,
@@ -239,7 +263,9 @@ additional_vars <- lapply(vars, \(var) {
     add_row(en = variables$explanation[variables$var_code == var],
             fr = explanation) |> 
     add_row(en = variables$exp_q5[variables$var_code == var],
-            fr = exp_q5)
+            fr = exp_q5) |> 
+    add_row(en = variables$explanation_nodet[variables$var_code == var],
+            fr = explanation_nodet)
   
 }) |> (\(x) Reduce(rbind, x))()
 

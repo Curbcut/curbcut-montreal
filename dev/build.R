@@ -445,6 +445,11 @@ scales_variables_modules <-
     scales_variables_modules = scales_variables_modules,
     crs = crs)
 
+scales_variables_modules <-
+  build_and_append_tenure(
+    scales_variables_modules = scales_variables_modules,
+    crs = crs)
+
 
 # Crash
 scales_variables_modules <-build_and_append_crash(
@@ -525,7 +530,7 @@ map_zoom_levels_save(data_folder = "data/", map_zoom_levels = map_zoom_levels)
 # #                                column_to_select = "DA_ID",
 # #                                IDs = census_scales$DA$ID)
 # # qs::qsave(street, "dev/data/built/street.qs")
-street <- qs::qread("dev/data/built/street.qs")
+# street <- qs::qread("dev/data/built/street.qs")
 
 # # Do not upload grids, as there is a function just for it.
 # all_scales_t <- scales_variables_modules$scales[names(scales_variables_modules$scales) != "grid"]
@@ -538,26 +543,26 @@ street <- qs::qread("dev/data/built/street.qs")
 #                    username = "sus-mcgill",
 #                    access_token = .cc_mb_token)
 # 
-source("dev/tiles/grid_tiles.R")
-tileset_upload_grid(region = "grid",
-                    all_scales = scales_variables_modules$scales,
-                    street = street,
-                    map_zoom_levels = map_zoom_levels,
-                    max_zoom = list(grid250 = 13, grid100 = 14, grid50 = 15, grid25 = 16),
-                    vars = c("climate_drought", "climate_flood", "climate_destructive_storms",
-                             "climate_heat_wave", "climate_heavy_rain"),
-                    prefix = "mtl",
-                    username = "sus-mcgill",
-                    access_token = .cc_mb_token)
-
-
-scales_with_labels <- 
-  scales_variables_modules$scales[names(scales_variables_modules$scales) != "grid"]
-tileset_labels(scales = scales_with_labels,
-               crs = crs, 
-               prefix = "mtl",
-               username = "sus-mcgill",
-               access_token = .cc_mb_token)
+# source("dev/tiles/grid_tiles.R")
+# tileset_upload_grid(region = "grid",
+#                     all_scales = scales_variables_modules$scales,
+#                     street = street,
+#                     map_zoom_levels = map_zoom_levels,
+#                     max_zoom = list(grid250 = 13, grid100 = 14, grid50 = 15, grid25 = 16),
+#                     vars = c("climate_drought", "climate_flood", "climate_destructive_storms",
+#                              "climate_heat_wave", "climate_heavy_rain"),
+#                     prefix = "mtl",
+#                     username = "sus-mcgill",
+#                     access_token = .cc_mb_token)
+# 
+# 
+# scales_with_labels <- 
+#   scales_variables_modules$scales[names(scales_variables_modules$scales) != "grid"]
+# tileset_labels(scales = scales_with_labels,
+#                crs = crs, 
+#                prefix = "mtl",
+#                username = "sus-mcgill",
+#                access_token = .cc_mb_token)
 # 
 # tileset_streets(master_polygon = base_polygons$master_polygon,
 #                 street = street,
@@ -635,14 +640,14 @@ scales_variables_modules$modules <-
   add_module(
     id = "stories",
     theme = NA,
-    nav_title = "Montréal stories",
-    title_text_title = "Montréal stories",
+    nav_title = "Montreal stories",
+    title_text_title = "Montreal stories",
     title_text_main = paste0(
       "<p>Explore stories about urban sustainability and planning in Montreal. Learn ",
       "about stories rooted in specific geographic locations or those that ",
       "have an impact on the whole city."),
     title_text_extra = paste0(
-      "<p>These narrative case studies are written by Curbcut contributors.."),
+      "<p>These narrative case studies are written by Curbcut contributors."),
     metadata = FALSE,
     dataset_info = ""
   )
@@ -688,6 +693,9 @@ cc.data::bucket_write_folder("data", "curbcut.montreal.data")
 # Place explorer content creation -----------------------------------------
 
 # Should be done once the data is saved
+
+library(cc.buildr)
+qs::qload("dev/data/built/scales_variables_modules.qsm")
 
 future::plan(future::multisession(), workers = 4)
 

@@ -174,7 +174,7 @@ build_and_append_crash <- function(scales_variables_modules, crs) {
       title_text_title = "Road safety: Car crashes",
       title_text_main = paste0(
         "Road safety is an important consideration for wellbeing ",
-        "and safety in cities. This module ",
+        "and safety in cities. This page ",
         "provides an overview and analysis of road collisions ",
         "in the City of Montreal, ranging from 2012 to today."),
       title_text_extra = paste0(

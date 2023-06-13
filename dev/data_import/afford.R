@@ -499,6 +499,7 @@ build_and_append_afford <- function(scales_variables_modules, crs) {
         })
       stringr::str_to_sentence(paste0(out, collapse = ", "))
     })()
+    
     short_title <- (\(x) {
       out <- list()
       

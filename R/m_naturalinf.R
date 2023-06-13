@@ -376,13 +376,13 @@ naturalinf_server <- function(id, r) {
                   main_slider = main_slider(),
                   ni_slider = ni_slider())
     })
-    
+
     # Map custom colours
     natural_inf_colours <- reactive({
       if (var_left() == "c_priority") {
-        
+
         if (!custom_priorities()) {
-          
+
           remove <- 50 - main_slider()
           ni_colour_table <- colours_dfs$viridis_25
           # ni_colour_table$fill <- gsub("FF$", "", ni_colour_table$fill)
@@ -390,9 +390,9 @@ naturalinf_server <- function(id, r) {
             paste0(substr(ni_colour_table$fill[
               ni_colour_table$group <= remove], 1, 7), "00")
           ni_colour_table
-          
+
         } else {
-          
+
           if (main_slider() == 0) {
             data.frame(group = "ABCD", fill = "#FFFFFF00")
           } else {
@@ -406,12 +406,17 @@ naturalinf_server <- function(id, r) {
           }
         }
       } else colours_dfs$viridis_25
-      
+
     })
-    
+
     # Update the `r[[id]]$vars` reactive
     vars <- shiny::reactive(vars_build(var_left = var_left(), df = "raster"))
     
+    # Update the `r[[id]]$df` reactive as some module want it to not bel NULL
+    shiny::observe({
+      r[[id]]$df <- shiny::reactiveVal("CMA_raster")
+    })
+
     # Legend
     curbcut::legend_server(
       id = id,
@@ -420,17 +425,17 @@ naturalinf_server <- function(id, r) {
       data = data,
       df = shiny::reactive("raster")
     )
-    
+
     # Composite variable for map
     map_var <- shiny::reactive(if (custom_priorities()) "ID" else var_left())
-    
+
     # Choose tileset
     tile <- shiny::reactive({
       if (var_left() == "c_priority" & custom_priorities()) {
         return("natural_inf-custom")
       }
       return(paste0("natural_inf-", var_left()))})
-    
+
     # Map
     map_viewstate <- curbcut::map_server(
       id = id,
@@ -444,10 +449,11 @@ naturalinf_server <- function(id, r) {
       lwd_fun = shiny::reactive(\(...) 0),
       fill_fun = shiny::reactive(scale_fill_natural_inf),
       fill_args = shiny::reactive(list(map_var(), natural_inf_colours())),
+      colour_fun = shiny::reactive(\(...) "#FFFFFFFF"),
       auto_highlight = shiny::reactive(FALSE),
       pickable = shiny::reactive(FALSE)
     )
-    
+
     # Explore panel
     curbcut::explore_server(
       id = id,
@@ -456,13 +462,13 @@ naturalinf_server <- function(id, r) {
       region = shiny::reactive(NULL),
       vars = vars,
       df = shiny::reactive(NULL),
-      select_id = shiny::reactive(NA), 
+      select_id = shiny::reactive(NA),
       table_fun = shiny::reactive(info_table_natural_inf),
       table_args = shiny::reactive(list(data = data(), vars = vars(), lang = r$lang())),
       graph_fun = shiny::reactive(explore_graph_natural_inf),
       graph_args = shiny::reactive(list(data = data(), vars = vars(), lang = r$lang()))
     )
-    
+
     # Bookmarking
     curbcut::bookmark_server(
       id = id,
