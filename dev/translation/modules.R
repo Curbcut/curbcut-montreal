@@ -1,25 +1,25 @@
-library(tibble)
-
-# Translation function
-.deepl_key <- "42c0646a-5ebd-ada0-07a0-d27c8eb37613:fx"
-.t <- function(x) deeplr::toFrench2(x, auth_key = .deepl_key)
-translation_fun <- function(strings) {
-  z <- lapply(strings, \(x) {
-    fr <- .t(x)
-    sprintf('add_row(en = "%s", 
-          fr = "%s")', x, fr)
-  })
-  paste0(z, collapse = " |>\n") |> 
-    writeLines()
-}
-
-# Load modules
-modules <- qs::qread("data/modules.qs")
-
-# Change which column is subset
-strings <- modules$title_text_extra
-
-translation_fun(strings)
+# library(tibble)
+# 
+# # Translation function
+# .deepl_key <- "42c0646a-5ebd-ada0-07a0-d27c8eb37613:fx"
+# .t <- function(x) deeplr::toFrench2(x, auth_key = .deepl_key)
+# translation_fun <- function(strings) {
+#   z <- lapply(strings, \(x) {
+#     fr <- .t(x)
+#     sprintf('add_row(en = "%s", 
+#           fr = "%s")', x, fr)
+#   })
+#   paste0(z, collapse = " |>\n") |> 
+#     writeLines()
+# }
+# 
+# # Load modules
+# modules <- qs::qread("data/modules.qs")
+# 
+# # Change which column is subset
+# strings <- modules$title_text_extra
+# 
+# translation_fun(strings)
 
 #TITLES
 
@@ -49,7 +49,9 @@ translation_pages <-
   add_row(en = "Place explorer", 
           fr = "Explorez un lieu") |>
   add_row(en = "Montreal stories", 
-          fr = "Histoires de Montréal")
+          fr = "Histoires de Montréal") |> 
+  add_row(en = "Tenure status", 
+          fr = "Statut d'occupation") |> 
 
 #TEXT
 
@@ -74,7 +76,12 @@ add_row(en = "<p>Housing is at the centre of our lives. Our ability to find affo
   add_row(en = "<p>Select a location by entering a postal code or clicking on the map and see how it compares to the rest of the Montreal region or island across a variety of sustainability indicators.", 
           fr = "<p>Sélectionnez un lieu en entrant un code postal ou en cliquant sur la carte et voyez comment il se compare au reste de la région ou de l'île de Montréal selon divers indicateurs de durabilité.") |>
   add_row(en = "<p>Explore stories about urban sustainability and planning in Montreal. Learn about stories rooted in specific geographic locations or those that have an impact on the whole city.", 
-          fr = "<p>Explorez les histoires sur la durabilité et la planification urbaine à Montréal. Découvrez des histoires enracinées dans des lieux géographiques spécifiques ou celles qui ont un impact sur l'ensemble de la ville.")
+          fr = "<p>Explorez les histoires sur la durabilité et la planification urbaine à Montréal. Découvrez des histoires enracinées dans des lieux géographiques spécifiques ou celles qui ont un impact sur l'ensemble de la ville.") |> 
+  add_row(en = paste0(
+    "<p>Understanding housing needs by tenure status can help to inform ",
+    "what is to be improved specifically for tenants or owners as they ",
+    "might be experiencing different difficulties and advantages."
+  ), fr = "<p>La compréhension des besoins en matière de logement en fonction du statut d'occupation peut aider à déterminer ce qui doit être amélioré spécifiquement pour les locataires ou les propriétaires, étant donné qu'ils peuvent rencontrer des difficultés et des avantages différents.")
 
 #LEARN MORE 
 
@@ -100,5 +107,3 @@ add_row(en = "<p>The datasets visualized on this page come from the Canadian Cen
           fr = "<p>Les données de l'explorateur de lieux proviennent d'autres pages de Curbcut, à deux exceptions près : <a href = 'https://www.canuedata.ca/tmp/CANUE_METADATA_NO2LUR_A_YY.pdf'>Pollution de l'air</a> et <a href = 'https://www.canuedata.ca/tmp/CANUE_METADATA_GRAVH_AMN_YY.pdf'>espace vert</a> proviennent de <a href = 'https://www.canuedata.ca'>CANUE</a>.") |>
   add_row(en = "<p>These narrative case studies are written by the Curbcut team and its contributors.", 
           fr = "<p>Ces études de cas narratives sont rédigées par l'équipe de Curbcut et ses contributeurs.")
-
-translation_pages |> View()
