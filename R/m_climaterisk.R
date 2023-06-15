@@ -324,7 +324,8 @@ vars_right <- modules$var_right[modules$id == "climaterisk"][[1]]
       tile = tile,
       zoom = r[[id]]$zoom,
       zoom_levels = reactive(zoom_levels()$zoom_levels),
-      region = reactive(zoom_levels()$region)
+      region = reactive(zoom_levels()$region),
+      show_buildings = shiny::reactive(!grid())
     )
     
     # Switch the graph to a static one when on grid q5

@@ -660,7 +660,7 @@ build_and_append_afford <- function(scales_variables_modules, crs) {
       regions = c("CMA", "island", "city", "centraide"),
       metadata = TRUE,
       dataset_info = paste0(
-        "<p>The census data (2016-2021) in this page comes from custom tabulations",
+        "<p>The census data (2016-2021) on this page comes from custom tabulations",
         " ordered by Centraide of Greater Montreal to Statistics Canada.</p>"
       ),
       var_left = variables[grepl("^afford_", variables$var_code), 

@@ -447,7 +447,7 @@ build_and_append_alley <- function(scales_variables_modules, crs) {
       regions = c("city"),
       metadata = TRUE,
       dataset_info = paste0(
-        "<p>We built an extensive set of green alleys across Montreal, which we",
+        "<p>We built an extensive dataset of green alleys across Montreal, which we",
         "re categorized as either green or community alleys. Our data was caref",
         "ully collected and validated, using various resources both public and ",
         "private. Here are our key data sources:</p><ul><li><a href=’https://do",

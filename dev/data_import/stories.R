@@ -137,15 +137,27 @@ build_stories <- function() {
     
     stories_add_story(
       name_id = "mcp",
-      title = paste0("Montreal climate plans"),
-      short_title = "Montreal climate plans",
+      title = paste0("Montreal Climate Plans"),
+      short_title = "Montreal Climate Plans",
       preview = paste0("Climate action in Montreal: exploring two ",
                        "administrations' strategies for a greener future"),
       themes = c("Transportation", "Community activism", 
                  "Urban governance", "Climate change",
-                 "Green space"),
+                 "Green space", "Policy"),
       lon = -73.617951,
-      lat = 45.499533)
+      lat = 45.499533) |> 
+    
+    stories_add_story(
+      name_id = "mount_royal",
+      title = paste0("Mount-Royal: One Consistent Beautiful Mountain"),
+      short_title = "The Mount-Royal",
+      preview = paste0("Throughout its evolution, Mount-Royal has played an ",
+                       "important role in the city of Montreal’s history and ",
+                       "development"),
+      themes = c("Green space", "Urban transformation", 
+                 "Biodiversity", "Climate change"),
+      lon = -73.593526,
+      lat = 45.502604)
   
   
   # Create images and mapping -----------------------------------------------

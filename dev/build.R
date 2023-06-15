@@ -625,14 +625,14 @@ qs::qsave(colours_dfs, "data/colours_dfs.qs")
 # TKTK MAKE SURE YOU HAVE THIS VERSION OF LEAFLET, IF NOT THE MAPS IN THE HTML
 # DOCUMENTS WON'T BE INTERACTIVES:
 # devtools::install_github("dmurdoch/leaflet@crosstalk4")
-# stories <- build_stories()
-# stories_mapping <- stories$stories_mapping
-# stories <- stories$stories
-# qs::qsavem(stories, stories_mapping, file = "data/stories.qsm")
-# stories_create_tileset(stories = stories,
-#                        prefix = "mtl",
-#                        username = "sus-mcgill",
-#                        access_token = .cc_mb_token)
+stories <- build_stories()
+stories_mapping <- stories$stories_mapping
+stories <- stories$stories
+qs::qsavem(stories, stories_mapping, file = "data/stories.qsm")
+stories_create_tileset(stories = stories,
+                       prefix = "mtl",
+                       username = "sus-mcgill",
+                       access_token = .cc_mb_token)
 
 # Add Montréal stories
 scales_variables_modules$modules <-

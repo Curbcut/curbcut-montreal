@@ -674,7 +674,7 @@ build_and_append_natural_inf <- function(scales_variables_modules, crs) {
       metadata = TRUE,
       dataset_info = paste0(
         "<p>Data made available by the firm Habitat. For more information on th",
-        "e methods and data used for this module, see <a href = 'https://fr.dav",
+        "e methods and data used for this page, see <a href = 'https://fr.dav",
         "idsuzuki.org/publication-scientifique/le-role-des-infrastructures-natr",
         "elles-dans-la-prevention-des-inondations-dans-la-communaute-metropolit",
         "aine-de-montreal/'>Maure et al., 2018, Le rôle des infrastructures nat",

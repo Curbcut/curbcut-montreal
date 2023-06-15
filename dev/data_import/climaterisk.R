@@ -537,7 +537,7 @@ build_and_append_climate_risk <- function(scales_variables_modules, crs) {
           dataset_info = paste0(
             "<p><a href = 'https://donnees.montreal.ca/ville-de-montreal/vuln",
             "erabilite-changements-climatiques'>",
-            "The data in this module are cartographic representations of the ",
+            "The data presented on this page are cartographic representations of the ",
             "vulnerability analysis</a> developed as part of the Climate change ",
             "adaptation plan for the agglomeration of Montréal 2015-2020 for ",
             "the following climate hazards: heavy rainfall, heat waves, ",

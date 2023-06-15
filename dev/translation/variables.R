@@ -69,7 +69,7 @@ translation_variables <-
           fr = "le pourcentage d'individus ayant immigré au cours des cinq dernières années") |>
   add_row(en = "the percentage of individuals who identify as part of one or more visible minority groups",
           fr = "le pourcentage d'individus qui s'identifient comme faisant partie d'une ou de plusieurs minorités visibles") |>
-  add_row(en = "the percentage of individuals who are of Autochtones identity",
+  add_row(en = "the percentage of individuals who are of indigenous identity",
           fr = "le pourcentage d'individus ayant une identité autochtone") |>
   add_row(en = "the percentage of individuals who drive a privately owned car or truck to work",
           fr = "le pourcentage d'individus qui conduisent une voiture ou un camion privé pour se rendre au travail") |>
