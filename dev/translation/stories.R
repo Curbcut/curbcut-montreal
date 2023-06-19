@@ -20,14 +20,91 @@ qs::qload("data/stories.qsm")
 strings <- stories$title
 translation_fun(strings)
 
+add_row(en = "Environmental racism and green gentrification in Montreal’s Little Burgundy", 
+        fr = "Racisme environnemental et êco-embourgeoisement dans le quartier de la Petite Bourgogne à Montréal") |>
+  add_row(en = "The Miron Quarry: The transformation of an industrial limestone quarry into a flourishing environmental complex", 
+          fr = "La carrière Miron : La transformation d'une carrière de calcaire industrielle en un complexe environnemental florissant") |>
+  add_row(en = "Understanding what lies beneath Montreal’s Grand Parc de L’Ouest", 
+          fr = "Comprendre ce qui se cache sous le Grand Parc de l'Ouest de Montréal") |>
+  add_row(en = "The reconstruction of the Turcot Interchange: The intersection of community desires and government priorities", 
+          fr = "La reconstruction de l'échangeur Turcot : L'intersection des souhaits de la communauté et des priorités du gouvernement") |>
+  add_row(en = "Griffintown, From a gift of the machine age to a water wheel in the growth machine", 
+          fr = "Griffintown, d'un cadeau de l'ère des machines à une roue à aubes dans la machine à croissance") |>
+  add_row(en = "The Champ des Possibles: A Communitarian & Biodiverse Urban Prairie", 
+          fr = "Le Champ des Possibles : Une prairie urbaine communautaire et biodiversifiée") |>
+  add_row(en = "The Evolution of the Montreal Metro", 
+          fr = "L'évolution du métro de Montréal") |>
+  add_row(en = "The Green Alley Program in Le Plateau-Mont-Royal: tensions between beautification and privatisation of public space", 
+          fr = "Le programme des ruelles vertes du Plateau-Mont-Royal : tensions entre embellissement et privatisation de l'espace public") |>
+  add_row(en = "A History of Cycling Infrastructure in Montréal", 
+          fr = "Un historique des infrastructures cyclables à Montréal") |>
+  add_row(en = "Montreal alleys as a climate emergency adaptation strategy", 
+          fr = "Les ruelles de Montréal comme stratégie d'adaptation aux urgences climatiques")
+
 strings <- stories$short_title
 translation_fun(strings)
+
+add_row(en = "Little burgundy's transformation", 
+        fr = "La transformation de la Petit Bourgogne") |>
+  add_row(en = "The Miron Quarry", 
+          fr = "La carrière Miron") |>
+  add_row(en = "Grand Parc de l'Ouest", 
+          fr = "Grand Parc de l'Ouest") |>
+  add_row(en = "The Turcot Interchange", 
+          fr = "L'échangeur Turcot") |>
+  add_row(en = "Griffintown's water management history", 
+          fr = "L'histoire de la gestion de l'eau à Griffintown") |>
+  add_row(en = "The Champ des Possibles", 
+          fr = "Le Champ des Possibles") |>
+  add_row(en = "Evolution of the Metro", 
+          fr = "L'évolution du métro") |>
+  add_row(en = "Green Alley Program in Plateau-Mont-Royal", 
+          fr = "Programme de ruelle verte au Plateau-Mont-Royal") |>
+  add_row(en = "Cycling infrastructure", 
+          fr = "Infrastructures cyclables") |>
+  add_row(en = "Climate Emergency Adaptation Strategy", 
+          fr = "Stratégie d'adaptation aux urgences climatiques") |>
+  add_row(en = "Montreal climate plans", 
+          fr = "Les plans climat de Montréal")
 
 strings <- stories$preview
 translation_fun(strings)
 
+add_row(en = "Little Burgundy has been the site of nearly 100 years of social and environmental transformation, and is currently undergoing a wave of green gentrification.", 
+        fr = "Depuis près de 100 ans, la Petite Bourgogne est le lieu d'une transformation sociale et environnementale et connaît actuellement une vague d'éco-gentrification.") |>
+  add_row(en = "Residents and government are coming together to shape the future of the Saint-Michel Environmental Complex, located on the site of the former Miron Quarry.", 
+          fr = "Les résidents et le gouvernement se réunissent pour façonner l'avenir du Complexe environnemental de Saint-Michel, situé sur le site de l'ancienne carrière Miron.") |>
+  add_row(en = "In the Grand Parc de L’Ouest, a renewed drive to protect biodiversity and create greenspace illustrates the changing politics of development on the island.", 
+          fr = "Dans le Grand Parc de l'Ouest, la volonté renouvelée de protéger la biodiversité et de créer des espaces verts illustre l'évolution des politiques de développement sur l'île.") |>
+  add_row(en = "The City of Montreal claims it is looking to support pedestrian-oriented projects as a pathway towards sustainable mobility, but contradictions in the implementation stage of the Turcot Interchange suggest otherwise.", 
+          fr = "La ville de Montréal affirme qu'elle cherche à soutenir les projets axés sur les piétons comme une voie vers la mobilité durable, mais des contradictions dans la phase de mise en œuvre de l'échangeur Turcot suggèrent le contraire.") |>
+  add_row(en = "Griffintown’s social and governance history can be defined through the politics of water management.", 
+          fr = "L'histoire sociale et de gouvernance de Griffintown peut être définie par la politique de gestion de l'eau.") |>
+  add_row(en = "An urban prairie located in the Mile End, the Champ des Possibles is a biodiverse green space that has a unique governance structure that was born out of community actions.", 
+          fr = "Prairie urbaine située dans le Mile End, le Champ des Possibles est un espace vert biodiversifié doté d'une structure de gouvernance unique née des actions de la communauté.") |>
+  add_row(en = "Since its inception in the early 20th century, the Montreal metro has undergone several major transformations that mirror the city’s ever-changing sociopolitical landscape.", 
+          fr = "Depuis sa création au début du XXe siècle, le métro de Montréal a subi plusieurs transformations majeures qui reflètent l'évolution constante du paysage sociopolitique de la ville.") |>
+  add_row(en = "Once redeveloped, green alleys often tend to become ambiguous spaces, a sort of common, between the public and the private realm. The case of Le Plateau-Mont-Royal is particularly interesting.", 
+          fr = "Une fois réaménagées, les ruelles vertes tendent souvent à devenir des espaces ambigus, des sortes de communs entre le domaine public et le domaine privé. Le cas du Plateau-Mont-Royal est particulièrement intéressant.") |>
+  add_row(en = "Montréal is a world-renowned cycling city, but it hasn’t always been this way. Explore how the city’s cycling infrastructure has evolved over time in this interactive story.", 
+          fr = "Montréal est une ville cyclable de renommée mondiale, mais il n'en a pas toujours été ainsi. Découvrez comment les infrastructures cyclables de la ville ont évolué au fil du temps dans ce récit interactif.") |>
+  add_row(en = "Transforming alleys to improve people's quality of life on a neighbourhood scale can simultaneously enhance urban quality on a larger scale", 
+          fr = "Transformer les ruelles pour améliorer la qualité de vie des habitants à l'échelle d'un quartier peut simultanément améliorer la qualité urbaine à plus grande échelle.")
+
 strings <- unique(unlist(stories$themes))
 translation_fun(strings)
+
+
+  add_row(en = "Community activism", 
+          fr = "Activisme communautaire") |>
+  add_row(en = "Green space", 
+          fr = "Espace vert") |>
+  add_row(en = "Urban transformation", 
+          fr = "Transformation urbaine") |>
+  add_row(en = "Biodiversity", 
+          fr = "Biodiversité") |>
+  add_row(en = "Climate change", 
+          fr = "Changement climatique")
 
 #nav_title
 translation_pages <- 
