@@ -4,7 +4,6 @@
 # Load libraries ----------------------------------------------------------
 tictoc::tic()
 library(cc.buildr)
-invisible(lapply(list.files("dev/data_import", full.names = TRUE), source))
 
 
 # Base of the study region and dictionaries -------------------------------
@@ -417,6 +416,7 @@ scales_variables_modules <-
 # Montreal specific modules
 save.image("dev/data/built/before_mtl.RData")
 load("dev/data/built/before_mtl.RData")
+invisible(lapply(list.files("dev/data_import", full.names = TRUE), source))
 
 future::plan(future::multisession(), workers = 4)
 
@@ -452,7 +452,7 @@ scales_variables_modules <-
 
 
 # Crash
-scales_variables_modules <-build_and_append_crash(
+scales_variables_modules <- build_and_append_crash(
   scales_variables_modules = scales_variables_modules,
   crs = crs
 )
@@ -622,17 +622,17 @@ qs::qsave(colours_dfs, "data/colours_dfs.qs")
 
 # Write stories -----------------------------------------------------------
 
-# TKTK MAKE SURE YOU HAVE THIS VERSION OF LEAFLET, IF NOT THE MAPS IN THE HTML
-# DOCUMENTS WON'T BE INTERACTIVES:
-# devtools::install_github("dmurdoch/leaflet@crosstalk4")
-stories <- build_stories()
-stories_mapping <- stories$stories_mapping
-stories <- stories$stories
-qs::qsavem(stories, stories_mapping, file = "data/stories.qsm")
-stories_create_tileset(stories = stories,
-                       prefix = "mtl",
-                       username = "sus-mcgill",
-                       access_token = .cc_mb_token)
+# # TKTK MAKE SURE YOU HAVE THIS VERSION OF LEAFLET, IF NOT THE MAPS IN THE HTML
+# # DOCUMENTS WON'T BE INTERACTIVES:
+# # devtools::install_github("dmurdoch/leaflet@crosstalk4")
+# stories <- build_stories()
+# stories_mapping <- stories$stories_mapping
+# stories <- stories$stories
+# qs::qsavem(stories, stories_mapping, file = "data/stories.qsm")
+# stories_create_tileset(stories = stories,
+#                        prefix = "mtl",
+#                        username = "sus-mcgill",
+#                        access_token = .cc_mb_token)
 
 # Add Montréal stories
 scales_variables_modules$modules <-
@@ -688,6 +688,8 @@ qs::qsave(scales_variables_modules$modules, file = "data/modules.qs")
 qs::qsave(scales_dictionary, file = "data/scales_dictionary.qs")
 qs::qsave(regions_dictionary, file = "data/regions_dictionary.qs")
 tictoc::toc()
+
+# Write fresh data to the bucket
 cc.data::bucket_write_folder("data", "curbcut.montreal.data")
 
 # Place explorer content creation -----------------------------------------

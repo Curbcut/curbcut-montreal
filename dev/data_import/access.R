@@ -91,8 +91,15 @@ build_and_append_access <- function(scales_variables_modules,
 
   # Calculate breaks --------------------------------------------------------
   
-  types <- rep(list("avg"), length(average_vars))
-  names(types) <- average_vars
+  unique_vars <- gsub("_\\d{4}$", "", average_vars)
+  
+  # Calculate breaks ONCE for 30 minutes. Use those breaks on all variables
+  breaks_base <- sapply(unique_vars, paste, simplify = FALSE, USE.NAMES = TRUE)
+  middle_val <- time_intervals[round(length(time_intervals)/2)]
+  breaks_base <- lapply(breaks_base, \(x) gsub("_\\d{2}_", sprintf("_%s_", middle_val), x))
+  
+  types <- rep(list("avg"), length(unique_vars))
+  names(types) <- unique_vars
   
   with_breaks <-
     calculate_breaks(

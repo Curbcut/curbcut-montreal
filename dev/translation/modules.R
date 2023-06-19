@@ -1,7 +1,6 @@
 # library(tibble)
 # 
 # # Translation function
-# .deepl_key <- "42c0646a-5ebd-ada0-07a0-d27c8eb37613:fx"
 # .t <- function(x) deeplr::toFrench2(x, auth_key = .deepl_key)
 # translation_fun <- function(strings) {
 #   z <- lapply(strings, \(x) {

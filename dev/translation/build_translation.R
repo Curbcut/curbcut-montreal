@@ -56,6 +56,8 @@ source("dev/translation/access.R", encoding = "utf-8")
 source("dev/translation/afford.R", encoding = "utf-8")
 source("dev/translation/modules.R", encoding = "utf-8")
 source("dev/translation/tenure.R", encoding = "utf-8")
+source("dev/translation/home_and_about.R", encoding = "utf-8")
+source("dev/translation/predesign_translation.R", encoding = "utf-8")
 
 
 # Retrieve and bind translated csvs ---------------------------------------
@@ -69,7 +71,10 @@ translation_df <-
             translation_access,
             translation_afford,
             translation_tenure,
-            translation_pages) |> 
+            translation_pages,
+            translation_home_and_about,
+            
+            translation_temp) |> 
   dplyr::distinct(en, .keep_all = TRUE)
 
 if (translation_df$fr |> is.na() |> sum() > 0)

@@ -14,7 +14,7 @@ build_stories <- function() {
       name_id = "little_burgundy",
       title = paste0("Environmental racism and green gentrification in ",
                      "Montreal’s Little Burgundy"),
-      short_title = "Little burgundy's transformation",
+      short_title = "Little Burgundy's Transformation",
       preview = paste0("Little Burgundy has been the site of nearly 100 years ",
                        "of social and environmental transformation, and is ",
                        "currently undergoing a wave of green gentrification."),
@@ -158,7 +158,7 @@ build_stories <- function() {
                  "Biodiversity", "Climate change"),
       lon = -73.593526,
       lat = 45.502604)
-  
+
   
   # Create images and mapping -----------------------------------------------
   
