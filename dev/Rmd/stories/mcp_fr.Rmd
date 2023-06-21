@@ -1,0 +1,361 @@
+---
+title: "Montréal Climate Plans"
+author: "Connor Cordingley"
+date: "07.2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# {.tabset} 
+
+## Introduction
+
+La nécessité de faire face au changement climatique se faisant de plus en plus pressante, les villes ont publié des plans qui tentent d'organiser les efforts pour atténuer les émissions de gaz à effet de serre, s'adapter aux effets du réchauffement et rendre leurs institutions, leurs entreprises et leurs populations plus résilientes. Ce module explore les deux derniers plans climats de la ville de Montréal: le Plan Montréal durable 2016 (PMD) de l'administration de Denis Coderre, et le Plan climat 2020-2030 (Plan climat) de l'administration de Valérie Plante. 
+
+```{r, echo=FALSE, warning=FALSE, out.width="47%"}
+
+knitr::include_graphics(here::here("dev/data/stories/raw_images/mcp/intro/pmd.png"))
+
+```
+```{r, echo=FALSE, warning=FALSE, out.width="49%"}
+
+knitr::include_graphics(here::here("dev/data/stories/raw_images/mcp/intro/pc.png"))
+
+```
+
+Ce module permet d'explorer les politiques climatiques de ces deux plans classés selon des catégories pouvant être accédés ci-dessous :
+
+• Communauté et implication collective: aperçu des politiques des plans climat pour mobiliser les citoyens, les organismes et les différents acteurs de Montréal.
+
+• Verdissement: les politiques agissant sur les espaces verts, les arbres et le couvert végétal, et les jardins communautaires.
+
+• Alimentation et agriculture: les politiques agissant sur la disponibilité et la qualité de l'alimentation saine, ainsi que le jardinage communautaire.
+
+• Utilisation du sol: politiques visant à promouvoir des formes urbaines susceptibles d'atténuer le changement climatique et de s'y adapter.
+
+• Mobilité: les politiques relatives au transport en commun, au transport actif, à la mobilité électrique et aux actifs de la ville en matière de transport.
+
+• Équité: les politiques visant à promouvoir l'équité et la solidarité par l'accessibilité, la disponibilité de logements, de services et d'aides aux groupes marginalisés.
+
+• Adaptation et résilience: les politiques visant à freiner les impacts négatifs d'un climat déjà changeant. *La section de l'administration Coderre concerne principalement le Plan d'adaptation aux changements climatiques (PACCAM) au lieu du Plan Montréal durable..
+
+• Économie: les politiques visant la transition vers une économie durable, surtout localement.
+
+• Innovation: les politiques pour la promotion et le déploiement des secteurs innovants de l'économie montréalaise, particulièrement l'énergie renouvelable et la mobilité électrique.
+
+• Régionalisme, internationalisme et réseaux : description des engagements de Montréal et de ses liens avec les réseaux et accords régionaux et internationaux au cours de ses deux derniers plans climatiques.
+
+• Développement durable: les politiques de développement durable en lien à la réglementation de la construction et des bâtiments, les services et la gouvernance.
+
+## Adaptation et résilience
+
+### PMD (Administration Coderre): 
+
+Tandis que le contenu du PMD s'addresse surtout à l'atténuation des changements climatiques par la réduction des émissions de la communauté par des changements aux habitudes des citoyens, des entreprises, et de la ville, le Plan d'adaptation aux changements climatiques de l'agglomération de Montréal (PACCAM) de l'administration Coderre vise exclusivement l'adaptation. Le PACCAM décrit les actions que devront être entreprises à court et moyen-terme par l'administration municipale et des arrondissements pour assurer l'adaptation aux crises résultant des changements climatiques, tels que des tempêtes fréquentes, des sécheresses, des températures extrêmes, des pluies abondantes, et des inondations. Les actions de l'administration municipale sont présentés comme étant des engagements, tandis que les arrondissements peuvent adopterou non ces politiques sur une base purement volontaire. Il n'y a aucun méchanisme en place pour s'assurer de la mise en place de ce plan dans les arrondissements. Le PACCAM a été mis à jour en 2017 et les progrès du plan ont été évalués en 2019.
+
+Les objectifs du PACCAM se superposent parfois à ceux du PMD. Les deux document prévoient une expension de la canopée urbaine à 25% de la superficie de l'agglomération, et une augmentation des lieux protégés à 10% de la superficie. Le PACCAM inclut également des objectifs non-spécifiés, tels que la préservation des berges et des milieux humides, la protection de la biodiversité, et la réduction des îlots de chaleur. Les politiques de la ville et les mesures volontaires que peuvent adopter les arrondissements et les villes de l'agglomération sont généralement d'envergure limitée. Par exemple, la ville promet d'essayer des alternatives aux surfaces minéralisées, et promet de maximiser l'infrastructure verte. Les arrondissements sont invités à augmenter leur offre d'activités hivernales et estivales, à tondre plus régulièrement le gazon dans les lieux publics, et à inspecter régulièrement leurs bâtiments et les systèmes d'égoûts. Il va sans le dire que ce document de 246 pages est gonflé par plusieurs mesures qui forment la base d'une bonne gouvernance, et qui délaissent une grande partie des responsabilités de la ville en matière d'adaptation aux arrondissements qui adopteront ou non ces mesures à des rythmes variables et en proie à leurs contraintes budgétaires.
+
+### Plan climat (Administration Plante): 
+
+Accorder de 10 à 15% du budget décennal d'immobilisations aux mesures d'adaptation. Encourager l'émergence de pôles de résilience communautaires. Adapter les règlements de la ville en matière de construction et de rénovation afin de prioriser la transition écologique en adoptant des critères d'efficacité énergétique  des des critères architecturaux favorisant la résilience. Accroître la résilience at l'efficacité énergétique des bâtiments du programme AccèsLogis.
+
+### Discussion
+
+Le PACCAM et le Plan climat présentent des approches trèes différentes envers la gestion de l'adaptation et de la résilience. Le PACCAM prend une approche basé sur l'adoption de mesures d'adaptation sur une base volontaire, préférant une prise de responsabilité par les arrondissements, avec un minimum d'encadrement par l'administration municipale. Le Plan climat prévoit une approche directe par des subventions, des règlements et de l'investissement. Il semblerait que nous vivons un important changement dans l'élaboration des plans climats. Dans les premiers plans de la ville de Montréal dans les années 2000, l'idée de l'adaptation était entièrement absente. Dans le PACCAM et le PMD, rédigés en 2015 et 2016, l'adaptation est présente, mais ne constitue pas une des grandes priorités. En 2020, l'adaptation est une des premières priorités, à laquelle la ville est prête à dévouer entre 10 et 15% de son budget sur 10 ans, ayant le potentiel d'un énorme impact matériel. Possiblement en raison de l'implication de Montréal dans le réseau des 100 Resilient Cities (100 RC), et son plan de résilience de 2018, le Plan climat 2020-2030 inclut plus de stratégies d'adaptation que tout autre plan climat de la ville, excluant le PACCAM. Cela est peu surprenant, car le département de la ville qui a émergé de sa participation au 100 RC, l'office minicipal de la résilience a été rebaptisé l'office municipal de de la transition écologique et de la résilience, et a joué un rôle important dans l'élaboration du Plan climat. Le directeur municipal de la transition écologique et de la résilience, Sidney Ribaux a été un contributeur important. L'adaptation et le résilience reçoivent maintenant un financement direct et sont directement appliqués sur le cadre bâti et le développement communautaire, au lieu d'être des mesures volontaires entreprises en majorité par les arrondissements.
+
+```{r, echo=FALSE, fig.align = 'center', warning=FALSE, out.width="75%", fig.cap="Les îlots de chaleur représentent l'un des plus importants défis d'adaptation auxquels Montréal devra faire face."}
+
+knitr::include_graphics(here::here("dev/data/stories/raw_images/mcp/adaptation/heat_island.jpg"))
+
+```
+
+## Communauté et implication collective
+
+### PMD (Administration Coderre): 
+Fortement dépendante sur l'implication des entreprises Montréalaises, ce plan tente de mobiliser le monde des affaires, et les OBNL en leur demandant d'entreprendre un ou plusieurs d'une vingtaine d'actions environnementales suggérées dans son plan d'action des organisations partenaires. Le PMD a été élaboré en partenariat avec un grand nombre de ces organisations, incluant des grandes et petites OBNL, des entreprises multinationales et locales, des coopératives, des groupes de citoyens et des groupes environnementaux. Ni le PMD ni le Plan d'adaptation aux changements climatiques (PACCAM) met l'accent sur l'engagement communautaire à grande échelle, sauf pour des projets collaboratifs élaborés sur la plateforme Faire Montréal, qui semble désormais désaffectée. Le PMD et le PACCAM contiennent des appels à l'action à l'intention de la communauté, mais ne proposent aucun méchanisme pour engager les citoyens, et la communication avec le public se fait largement à travers des initiatives de sensibilisation aux habitudes individuelles. 
+
+### Plan climat (Plante administration): 
+
+Le Plan climat adopte un cadre communautaire insistant sur le partage des responsabilités dans la lutte contre les changement climatiques. Il favorise la consultation publique, le capital social des citoyens, et l'émergence d'une résilience communautaire basée dans la collaboration avec des acteurs issus de la communauté. Le public sont décrits comme étant des parties prenantes pouvant prendre action collectivement ou en tant qu'individus. Ce plan se fie aussi à des mesures de sensibilisation envers le public et les groupes vulnérables, qui doivent être informés des avantages d'une transition écologique. Le contenu du Plan climat a été façonné en grande partie par un comité consultatif sur le climat formé de 19 membres du secteur des OBNL, le secteur privé, et le milieu académique. Ce comité devait servir de liaison à la communauté Montréalaise, et former un plan qui répondrait aux attented de toutes les parties prenantes. La formation d'un comité consultatif représente un changement de procédure par rapport aux plans précédents de la ville, où l'administration municipale jouait un plus grand rôle et les secteur privé et les OBNL étaient consultés, mais n'avaient pas un rôle central dans l'élaboration du contenu.
+
+### Discussion
+
+Le PMD et le Plan climat citent les deux un désir de mobiliser la communauté et les parties prenantes, avec une emphase sur la solidarité, la coopération et la sensibilisation, mais en adoptant des approches différentes. Le PMD cherche à catalyser l'action des citoyens et des organisations en leur proposant des plateformes pour promouvoir des projets de développement durable à l'échelle locale, et en encourageant les entreprises à modifier leurs pratiques - une approche centrée sur les parties prenantes. Le Plan climat cherche plus souvent à encourager l'autonomie locale et à se lier aux acteurs communautaires pouvant accroître le capital social dans leur milieu. La plus grande emphase sur la consultation publique préconisée par le Plan climat peut également encourager l'émergence d'une plus grande autonomie communautaire, dépendant de la structure de ces consultations. Les deux plans reflètent des processus de consultation et de participation et il est important de déterminer quels groupes ont pu influencer le contenu des plans climats. Dans le cas du PMD, l'administration Coderre représentait une continuité avec l'administration de Gérald Tremblay. Ces deux administration ont consulté des groupes de parties prenantes très similaires, composés de représentants du gouvernement municipal et des arrondissements, le secteur privé, les coopératives locales, les plans de pension, les gorupes communautaires et autres. Le comité consultatif du Plan climat de l'administration plante représente donc une réduction majeure du nombre de parties prenantes impliqués dans la production d'un plan climat.
+
+## Économie
+
+### PMD (Administration Coderre): 
+
+#### L'Économie circulaire
+
+Dresser un portrait du développement de l'économie circulaire à Montréal. Encourager les organisations partenaires à adopter les principes de l'économie circulaire et de faire affaire avec des compagnies intégrées à l'économie sociale et solidaire. 
+
+#### Autres politiques économiques
+
+Adopter l'initiative TM21 pour favoriser une transition écologique de l'économie (l'initiative TM21 a été renommée ou n'a jamais été adoptée, car il y a peu de traces d'elle en dehors de ce document). Étudier les synergies industrielles potentielles dans l'est de l'île. Adopter des critères d'achat socialement responsables. Encourager les entreprises à se départir des combustibles fossiles. Dresser un inventaire des investissements de Montréal dans les combustibles fossiles et examiner les possibilités de désinvestissement en coordination avec les parties prenantes. Utiliser les grands projets (campus de l'Université de Montréal) pour stimuler l'activité économique dans les zones environnantes.
+
+### Plan climat (Administration Plante): 
+
+#### L'économie circulaire
+
+Inciter les entreprises à adhérer à l'économie circulaire. Créer un réseau d'économie circulaire pour permettre la coopération dans la transition vers ce nouveau modèle économique.
+
+#### Autres politiques économiques
+
+Modifier la budgétisation municipale, l'allocation des capitaux et rendre les marchés plus transparents pour les citoyens, les investisseurs, les assureurs et les autres parties prenantes.
+
+## Discussion
+
+Les deux plans se concentrent sur la transition vers une économie circulaire (les plans précédents se concentraient sur l'«économie verte» et l'«économie sociale»). Le PMD ne fournit pas de définition du terme ni des exemples concrets d'une économie circulaire. Le Plan climat propose une brève définition, axée sur l'économie circulaire comme étant «un système de production, d'échange et de consommation qui vise à optimiser l'utilisation des ressources à chaque étape du cycle d'un bien ou d'un service, par une logique circulaire». Le manque d'exemples concrets et de politiques spécifiques proposées, ainsi que le statut du terme «économie circulaire» comme mot à la mode, font qu'il est difficile de savoir exactement ce que les deux plans prévoient pour l'économie. Il est également difficile de suivre l'évolution du modèle économique montréalais ou les progrès vers une intégration généralisée des entreprises dans l'économie circulaire. Cette transition est en cours depuis au moins 2016 - il est donc surprenant qu'il n'y ait pas d'exemples de réussites à souligner ou de données permettant de suivre la mise en œuvre des pratiques commerciales souhaitées. Parallèlement à cette focalisation sur un changement de modèle économique, il est notable qu'aucun des deux plans n'aborde directement l'emploi. De nombreux plans climatiques comprennent des sections sur la création et le maintien des emplois ou l'écologisation des emplois, mais cette discussion est largement absente des plans climats de Montréal. Dans la mesure où le Plan climat aborde l'emploi, la discussion est peu spécifique la croissance de l'emploi présenté comme un sous-produit des projets ou d'un changement de modèle économique.
+
+## Équité
+
+### PMD (Administration Coderre): 
+
+#### Général
+
+Adopter une politique de développement social qui tienne compte de la durabilité. Encourager l'activité physique par des politiques. Soutenir le développement de la culture locale. Entre 2016 et 2020, offrir 5000 stages et emplois à des jeunes en difficulté sur le marché du travail, en leur offrant des opportunités d'insertion socioprofessionnelle [COULD CO dans la catégorie AT-RISK]. Initier le programme Quartier Intégré dans trois zones cibles : Hochelaga, Sainte-Marie et Montréal-Nord.  
+
+#### Groupes vulnérables
+
+Mettre à jour le plan d'action municipal pour les aînés. Adopter une politique de l'enfance pour les 0-17 ans. S'engager auprès de la communauté des sans-abri pour favoriser une citoyenneté active et fournir une assistance juridique et une représentation devant les tribunaux municipaux.
+
+#### Accessibilité
+
+Augmenter le budget d'accessibilité universelle de $5.25M à $10.5M. Améliorer l'accès aux services pour les personnes vulnérables.
+
+#### Logement
+
+Créer un indicateur de risques d'insalubrité pour mieux cibler l'inspection des logements. Construction de 1300 unités de logement, dont 30% seront sociaux ou abordables, dans le cadre du projet du campus MIL de l'Université de Montréal.
+ 
+### Plan climat (Administration Plante): 
+
+#### Général
+
+Améliorer la mobilité et l'accès au transport en commun dans les zones mal desservies et défavorisées. Amélioration des analyses de vulnérabilité réalisées en 2015 dans le cadre du PACCAM dans le but de localiser les zones de vulnérabilité et d'appliquer de nouveaux règlements pour freiner les impacts négatifs et définir les priorités. Soutenir les projets d'innovation sociale visant à accroître le capital social local.
+
+#### Groupes vulnérables
+
+Ajuster les tarifs du transport en commun pour les enfants et les aînés.
+
+#### Accessibilité
+
+-
+
+#### Logement
+
+Améliorer le parc de logements locatifs par des subventions aux propriétaires, la ville contribuant de 30 à 45 % du coût des améliorations - une expansion du programme Réno logement abordable existant. Fournir des prêts abordables et des conseils techniques aux propriétaires qui souhaitent effectuer des rénovations et des améliorations. Adopter des mesures pour s'assurer que les améliorations durables apportées aux logements n'ont pas d'incidence sur la capacité de payer des locataires et s'efforcer d'informer les propriétaires et les locataires du cadre juridique provincial. S'engager à établir des plans de logement quinquennaux dont une section portera spécifiquement sur la préservation des logements abordables.
+
+### Discussion
+
+Au fil du temps, les questions d'équité ont pris une place de plus en plus importante dans la pratique de la planification climatique, et les plans climats de Montréal ne font pas exception à cette tendance. Les deux plans se réclament de l'équité et de la solidarité, et promettent tous deux de rendre la ville plus juste et plus inclusive. On pouvait s'attendre à ce que le Plan climat, élaboré sous l'administration de Valérie Plante, dotée d'une importante orientation communautaire, présente un engagement plus fort en faveur du développement équitable. Outre le doublement de la contribution de la ville à l'accessibilité universelle (une décision louable, certes), le PMD n'a rien de plus concret à offrir en termes d'équité. Il se concentre sur les plans pour les jeunes, les plans pour les personnes âgées, l'efficacité de la prestation de services et l'intégration sociale par le biais de la sensibilisation et de l'emploi. Le Plan climat, dans un curieux revirement, s'appuie davantage sur le PACCAM de l'administration Coderre que ne l'a fait l'administration Coderre, en utilisant ses analyses de vulnérabilité pour cibler ses interventions et trouver les domaines où les besoins sont les plus grands, bien qu'aucune intervention spécifique ne soit proposée.
+
+Bien que le Plan climat contienne plus de propositions de politiques d'équité et soit probablement plus complet, les deux plans ont des angles morts. Alors que le PMD s'intéresse peu au logement, le Plan climat n'a rien à dire sur la lutte contre l'itinérance, alors que les sans-abri constituent sans doute le groupe le plus vulnérable aux risques climatiques.
+
+## Alimentation et agriculture
+
+```{r, echo=FALSE, fig.align = 'left', out.width="50%", out.extra='style="float:right; padding:10px"'}
+
+knitr::include_graphics(here::here("dev/data/stories/raw_images/mcp/food/market_2.jpeg"))
+
+```
+
+### PMD (Administration Coderre): 
+
+Orienter près d'un million de dollars des envelopes destinées aux organismes communautaires vers des programmes favorisant des saines habitudes de vie (alimentation saine et activité physique). Créer une politique alimentaire municipale pour les installations culturelles, sportives et administratives.
+
+### Plan climat (Administration Plante): 
+
+Créer une grappe d'innovation agroalimentaire basée sur l'économie circulaire pour assurer la transition alimentaire de Montréal. Soutenir les jardins communautaires dans le cadre des zones de résilience. En collaboration avec les acteurs du milieu, élaborer une vision complète de l'agriculture urbaine à Montréal. Créer une stratégie pour réduire le gaspillage alimentaire de 50% d'ici 2025, avec une consultation publique prévue pour 2021.
+
+## Discussion
+
+```{r, echo=FALSE, fig.align = 'left', out.width="50%", out.extra='style="float:right; padding:10px"'}
+
+knitr::include_graphics(here::here("dev/data/stories/raw_images/mcp/food/market_1.jpeg"))
+
+```
+
+L'approche de la planification de l'alimentation et de la santé adoptée par le PMD est axée sur la promotion d'habitudes de vie saines par le biais de la politique alimentaire et du financement d'initiatives locales. L'un des objectifs déclarés du plan est d'intégrer l'agriculture urbaine et les modes de vie sains dans l'«ADN des quartiers», bien qu'il ne contienne pas de propositions spécifiques pour y parvenir et ne discute pas des critères de distribution des fonds promis. Le Plan climat va plus en profondeur, reliant la politique alimentaire et d'agriculture urbaine à ses autres initiatives, en l'associant à l'organisation communautaire, à la croissance du capital social, au verdissement et à l'innovation. En fin de compte, cependant, les deux plans sont peu précis et il reste à voir quelles seront les stratégies du Plan climat en matière d'agriculture urbaine et de gaspillage alimentaire lorsqu'elles seront publiées.
+
+## Verdissement
+
+### PMD (Administration Coderre): 
+
+Planter 300 000 arbres d'ici 2050. Ajouter 1 000 hectares d'espaces protégés. Doubler le nombre de toits verts sur les bâtiments municipaux. «Verdir» les règlements municipaux. Entamer un projet de recherche sur la phytoremédiation couvrant quatre hectares afin de réduire la toxicité des sols, en négociant avec les autres niveaux de gouvernement pour obtenir des fonds. Encourager les organisations partenaires à contribuer aux projets de verdissement. Encourager les organisations partenaires à lutter contre les espèces envahissantes et à prévenir leur introduction. Ajouter quatre hectares de parcs et autres espaces publics au projet de campus de l'Université de Montréal.
+
+### Plan climat (Administration Plante): 
+
+Planter, préserver et protéger 500 000 arbres, en priorisant les zones vulnérables aux vagues de chaleur, financés à 50 % par le budget d'investissement décennal (l'autre moitié du financement n'est pas spécifié). Augmenter la superficie des aires protégées de 6,1 % à 10 %. Restaurer de plusieurs berges. Resserrer la réglementation sur les pesticides tout en envisageant d'autres méthodes de contrôle. Soutenir le verdissement et le jardinage communautaire en tant que partie intégrante des pôles de résilience, ce qui permettra de développer le capital social local. 
+
+### Discussion
+
+```{r, echo=FALSE, fig.align = 'left', warning=FALSE, out.width="50%", out.extra='style="float:right; padding:10px"'}
+
+knitr::include_graphics(here::here("dev/data/stories/raw_images/mcp/greening/canopy_2015.jpg"))
+
+```
+
+Les programmes de verdissement des deux plans sont simples et presque identiques. Ils visent à rendre la ville plus verte de la manière la plus simple possible : plus d'arbres, davantage d'espaces protégés pour les parcs et les forêts, et l'implication de la communauté dans des projets locaux pour ajouter de la verdure dans leurs quartiers. Bien qu'il n'y ait pas eu de progrès en ce qui concerne l'extension de la superficie des terres protégées (au cours des cinq années séparant les plans, l'objectif de protéger 10% de la superficie de l'île n'a pas changé), certains projets sont en cours de réalisation, comme le Grand parc de l'Ouest. Un suivi plus approfondi des changements dans les espaces verts et la canopée pourrait aider à déterminer comment la plantation d'arbres et la croissance des espaces verts ont été distribuées, car aucun plan ne spécifie exactement où la plantation d'arbres et l'expansion des espaces verts auront lieu, bien que le Plan climat fasse allusion au ciblage des zones vulnérables à la chaleur pour la plantation d'arbres.
+
+## Innovation
+
+### PMD (Administration Coderre): 
+
+Malgré que le PMD mentionne l'innovation à quelques reprises, aucune intervention n'est suggérée pour encourager l'innovation ou le déploiement de technologies novatrices.
+
+### Plan climat (Administration Plante): 
+Création de zones laboratoires où la vie en ville sera «redéfinie» . Création d'un pôle d'innovation en agroalimentaire. Utiliser les marchés publics pour promouvoir l'émergence et la croissance locales d'industries innovantes. Utiliser la ville comme catalyseur de l'innovation, en rassemblant les acteurs de l'économie circulaire et en encourageant l'écologisation du secteur de la construction. 
+
+### Discussion
+
+Des mentions de l'innovation sont présentes tout au long du Plan climat. Le terme «Innov*» apparaît près de trois fois plus dans ce plan (31 occurrences) que dans tout autre plan climat montréalais (bien que le terme «technologie verte» ait été utilisé à l'occasion dans les premiers plans de la ville). Le Plan climat mentionne également une variété de projets pilotes en mobilité durable et en technologies vertes - des secteurs clés de l'innovation que ce plan vise à attirer et à exploiter. Contrastant avec la présence de la rhétorique de l'innovation et le manque d'action sur le sujet dans le PMD, l'importance croissante de l'innovation dans la planification climatique de Montréal peut indiquer un changement d'approche de la part de la ville, dans un mouvement global vers les technologies innovantes pour lutter contre le changement climatique. En cinq ans, Montréal est passée de l'innovation en tant que rhétorique à la désignation de zones spécifiques pour produire et déployer l'innovation. La ville semble vouloir atteindre cet objectif en se rendant plus attrayante pour les industries innovantes et en allouant des ressources pour développer les secteurs innovants déjà actifs dans l'économie de la ville. Il est intéressant de noter que le Plan climat est le premier plan municipal à faire référence à l'émergence de nouvelles technologies pour contrôler les émissions, en l'occurrence la capture du carbone qui permettrait d'éliminer les émissions provenant du transport aérien et de l'industrie.
+
+## Utilisation du sol
+
+### PMD (Administration Coderre): 
+
+```{r, echo=FALSE, fig.align = 'left', out.width="50%", out.extra='style="float:right; padding:10px"'}
+
+knitr::include_graphics(here::here("dev/data/stories/raw_images/mcp/landuse/neighbourhood_2.jpeg"))
+
+```
+
+Le PMD ne comprend pas de politiques spécifiques à l'utilisation du sol. Il est axé sur l'introduction d'infrastructures vertes et d'une mobilité à faibles émissions dans les quartiers existants. Bien que les quartiers à "«échelle humaine» soient abordés et fassent partie des objectifs centraux du plan, aucun mécanisme n'est proposé pour modifier l'utilisation du sol afin de créer ou de préserver de telles zones.
+
+### Plan climat (Administration Plante): 
+
+Améliorer les outils de planification de la ville pour favoriser la construction de quartiers à l'échelle humaine adaptés au changement climatique en tenant compte des usages mixtes, de la résilience, de la verdure, du transport actif et l'accès aux services. Convertir les parkings à ciel ouvert en logements denses ou en espaces verts. Créer des écoquartiers carboneutres, en s'inspirant de l'aménagement en cours de l'Hippodrome.
+
+### Discussion
+
+```{r, echo=FALSE, fig.align = 'left', out.width="50%", out.extra='style="float:right; padding:10px"'}
+
+knitr::include_graphics(here::here("dev/data/stories/raw_images/mcp/landuse/neighbourhood_1.jpeg"))
+
+```
+
+Bien qu'aucun des deux plans n'aborde en profondeur la question de l'utilisation du sol, le PMD l'évite complètement. Le Plan climat, quant à lui, aborde des changements non spécifiques aux pratiques d'utilisation du sol de la ville en encourageant une trame urbaine plus dense, la réduction de l'utilisation de l'automobile, l'utilisation des transports publics et la prise en compte des risques climatiques. Le Plan climat est plus enclin à discuter de la réécriture des règlements d'urbanisme, à expérimenter de nouvelles formes urbaines et à s'appuyer sur celles qui ont fait leurs preuves. La liste de souhaits pour les quartiers montréalais de l'avenir (usages mixtes, résilients, verts, actifs et à proximité des services) pourrait finir par avoir une influence au-delà des simples notions d'utilisation du sol et de zonage, en ayant un impact sur les autres catégories de politiques de ce document (verdissement, économie, équité, etc.). C'est encourageant, mais en l'absence de suivi, il sera difficile de déterminer quels changements ont été effectués.
+
+### PMD (Administration Coderre): 
+
+```{r, echo=FALSE, fig.align = 'left', warning=FALSE, out.width="50%", out.extra='style="float:right; padding:10px"'}
+
+knitr::include_graphics(here::here("dev/data/stories/raw_images/mcp/mobility/bicycle_1.jpg"))
+
+```
+
+#### Transport en commun
+
+Bonifier de 100 millions de dollars la contribution de la ville aux transport en commun. Convertir 30 % de la flotte d'autobus de la ville en véhicules hybrides. Encourager les organisations partenaires à inciter leurs employés à utiliser le transport en commun.
+
+#### Transports actifs
+
+Ajouter 20 rues piétonnes ou partagées. Ajouter 270 kilomètres au réseau de voies cyclables.
+
+#### Mobilité électrique
+
+Ajouter 1000 bornes de recharge de véhicules électriques à Montréal. Créer un cadre réglementaire permettant aux entreprises privées de déployer 1000 véhicules électriques en libre-service.
+
+#### Actifs municipaux
+
+Convertir 230 des véhicules de la ville à la propulsion électrique. Remplacer 100 des fourgonnettes de la ville par des modèles à plus petite cylindrée.
+ 
+
+### Plan climat (Administration Plante): 
+
+```{r, echo=FALSE, fig.align = 'left', warning=FALSE, out.width="50%", out.extra='style="float:right; padding:10px"'}
+
+knitr::include_graphics(here::here("dev/data/stories/raw_images/mcp/mobility/metro_1.jpg"))
+
+```
+
+#### Transport en commun
+
+Continuer à soutenir les taxis, le covoiturage et les véhicules en libre-service. Utiliser les grands projets tels que le REM, le prolongement de la ligne bleue, la branche ouest de la ligne orange et la ligne rose pour améliorer le service et réduire les émissions globales. Compléter le BRT Pie-IX. Ajouter 300 autobus hybrides au parc de la STM.
+
+#### Transports actifs
+
+Poursuivre le développement des infrastructures cyclables grâce à des projets tels que le REV. Augmenter la disponibilité des vélos en libre-service, en particulier pour les vélos électriques. Créer des incitations à la pratique du vélo, à la réduction des déplacements en voiture solo et aux services de livraison sans émissions. Rendre les déplacements des employés de la ville neutres en carbone et favoriser le télétravail pour économiser sur l'ensemble des déplacements.
+
+#### Mobilité électrique
+
+Créer une zone zéro émission au centre-ville, en partie en augmentant le nombre de bornes de recharge publiques et privées disponibles dans le secteur. Déployer des investissements importants pour augmenter la part des véhicules électriques dans les rues de Montréal. Augmenter le nombre total de bornes de recharge sur l'île afin que 30 % de l'utilisation des véhicules soit électrique.
+
+#### Actifs municipaux
+
+Soutenir la STM dans la conversion de sa flotte d'autobus à 100% électrique d'ici 2040. Optimiser le parc de véhicules de la ville, en le convertissant à la propulsion électrique lorsque cela est possible et en augmentant l'efficacité globale.
+
+
+### Discussion
+
+Les objectifs de mobilité du PMD sont modestes. Ils visent à améliorer la mobilité des piétons et des cyclistes, et à investir rapidement dans les véhicules électriques. Le PMD n'aborde ni ne propose aucun grand projet de transport public. Le Plan climat est marqué par les ambitieux projets d'infrastructure de transport public promis par l'administration Plante, dont plusieurs ont été réalisés ou sont en cours. Le plan promet également une «mobilité durable universelle» dans tout Montréal et des tarifs de transport en commun plus abordables pour les enfants et les personnes âgées. Il favorise également la mise en place d'infrastructures pour les véhicules électriques, comme une zone zéro émission au centre-ville, adaptée à la mobilité électrique. Le Plan climat en dit peu sur la mobilité piétonne, se concentrant plutôt sur les véhicules électriques et le transport en commun. On peut toutefois en déduire que si les changements apportés à l'utilisation du sol dans le cadre du Plan climat permettent de densifier les quartiers, la mobilité piétonne s'améliorera.
+
+Ces politiques de mobilité reflètent une différence significative d'ordre politique entre les plans climatiques. Les projets de transport constituaient une importante partie de la plateforme électorale de Plante, tandis que Coderre s'est défini contre ces grands projets et a tendance à s'aligner avec les arrondissements plus éloignés et dépendants des infrastructures automobiles. Il est toutefois intéressant de noter que le PMD de Coderre promet un ajout plus important aux infrastructures cyclables que le Plan climat de Plante, étant donné que Coderre et sa base politique sont plutôt tièdes à l'égard de cette sorte de mobilité active.
+
+```{r, echo=FALSE, fig.align = 'center', warning=FALSE, out.width="75%", fig.cap="L'automobile domine encore fortement les déplacements dans la région métropolitaine."}
+
+knitr::include_graphics(here::here("dev/data/stories/raw_images/mcp/mobility/mode_share.png"))
+
+```
+
+## Régionalisme, internationalisme et réseaux
+
+### PMD (Administration Coderre): 
+
+La ville se montrera exemplaire en termes de développement durable à l'échelle nationale et mondiale en réalisant des projets d'envergure comme le campus MIL de l'Université de Montréal et en accueillant de grands événements internationaux sur le développement durable. Elle s'associera également aux réseaux de développement durable et de commerce équitable, tant au Canada qu'à l'étranger. Le plan présente également le désir, non réalisé semble-t-il, de construire un réseau provincial de municipalités pour faciliter l'échange d'idées sur le développement durable.
+
+### Plan climat (Administration Plante): 
+
+Le Plan climat souligne les différents engagements internationaux de Montréal dans le cadre de l'Accord de Paris et de la One Planet Charter. Les objectifs de la ville en matière d'émissions sont conformes aux engagements pris lors du Sommet Action Climat. Le plan a également été créé en partie par le bureau de la transition écologique et de la résilience, né du programme 100 Resilient Cities de la Fondation Rockefeller, que Montréal a rejoint en 2016. Ce réseau transnational semble avoir eu une influence significative sur le Plan climat, notamment en termes de cadrage et de langage. Les engagements en faveur d'un internationalisme tourné vers l'extérieur sont réduits dans ce plan, l'accent étant mis sur la ville en tant qu'exemplaire pour ses citoyens, plutôt que sur l'exemplarité internationale.
+
+### Discussion
+
+Le PMD vise à faire de Montréal une ville internationale en matière de durabilité, non seulement en tant qu'étude de cas, mais aussi en tant que plaque tournante et ville hôte réunissant des entreprises, des gouvernements et des experts du monde de la durabilité. Le Plan climat, quant à lui, est davantage axé sur la ville, non pas en tant qu'exemple international, mais en tant qu'exemple pour ses administrés et ses intervenants. Cela ne signifie pas pour autant que ce plan est moins ancré dans les systèmes et accords internationaux, ni dans le cadre de la compétition mondiale des villes. Les objectifs et les politiques du Plan climat sont ouvertement influencés par l'adhésion de Montréal à l'Accord de Paris, à la One Planet Charter et au C40. Une partie de son contenu, ainsi que certains de ses rédacteurs, sont issus de la participation de Montréal au projet 100 Resilient Cities. Le PMD et le Plan climat abordent différemment les réseaux et accords internationaux et régionaux. La vision de Denis Coderre dans le PMD peut être décrite comme plus audacieuse, promettant de se diversifier, d'adhérer à de nouveaux accords et de donner à Montréal une place sur la scène mondiale. Le Plan climat de Valérie Plante a une vision internationale fondée sur le respect des ententes et le développement de l'infrastructure mise en place par les réseaux dont la ville est déjà membre.
+
+## Développement durable
+
+### PMD (Administration Coderre): 
+
+#### Bâtiment
+
+Atteindre 70 bâtiments municipaux avec une certification LEED ou BOMA BEST. Réduire de 5 % la consommation énergétique des bâtiments municipaux. S'assurer que 75 % des subventions accordées aux entreprises pour la construction, l'agrandissement ou la rénovation de bâtiments respectent des critères environnementaux.
+
+#### Gouvernance
+
+Bonifier les politiques d'approvisionnement socialement responsable de Montréal. Dresser un portrait des investissements de Montréal dans les combustibles fossiles et étudier les possibilités de désinvestissement. 
+
+#### Services
+
+Réduction de 20 % de l'eau potable produite par les stations d'épuration de Montréal par rapport à 2011. Maintenir un taux de renouvellement des aqueducs supérieur à 1 %. Installer une station de désinfection à l'usine de filtration d'eau. Construire un tunnel pour protéger la conduite d'arrivée de l'usine de filtration d'Atwater des dommages causés par la circulation automobile. Corriger 275 raccordements croisés. Construire des bassins de rétention pour une capacité supplémentaire de 130 000 mètres cubes. Mettre en œuvre le plan de gestion de l'eau de la ville. Étendre les services de compostage à 100 % des bâtiments de 8 logements ou moins. Étendre la collecte des déchets, du recyclage et du compost aux zones à forte circulation et aux bâtiments publics municipaux. 
+
+### Plan climat (Administration Plante): 
+
+#### Bâtiment
+
+Améliorer l'efficacité énergétique des bâtiments par la mise en place d'un système de classement et de rapports (pour les bâtiments privés) en commençant par les grands bâtiments commerciaux et institutionnels. Interdire l'utilisation de combustibles fossiles dans tous les bâtiments municipaux, qui seront alimentés exclusivement par des énergies renouvelables. Créer de nouvelles normes pour l'efficacité énergétique et les émissions des bâtiments municipaux. Contrôler les émissions provenant de la climatisation des bâtiments publics. Encourager l'abandon du chauffage au mazout pour les bâtiments commerciaux et résidentiels.
+
+#### Gouvernance
+
+Produire un inventaire complet des émissions de GES provenant des habitudes de consommation de la communauté montréalaise. Mettre en place des mesures permettant à la ville d'atteindre ses objectifs en matière de gestion des déchets, notamment l'élimination des plastiques à usage unique, le don et la réutilisation des textiles et la mobilisation de la communauté. Créer un «test climatique» qui servira à évaluer l'impact de toutes les décisions de la ville. Déployé sur trois ans, ce test s'appliquera d'abord aux grands projets tels que les infrastructures, puis à terme à toutes les décisions. Établissement d'un «budget carbone» pour la collectivité montréalaise, sur la base des repères établis par le C40. Ajout d'un chapitre sur le climat dans le budget annuel de la ville. Créer un plan de travail pour réduire les émissions des chantiers de construction. Créer une zone zéro émission au centre-ville d'ici 2030. Financement des propriétaires de bâtiments résidentiels privés pour qu'ils entreprennent des travaux d'amélioration de la durabilité/de l'efficacité.  
+
+#### Services
+
+Permettre le don et la réutilisation des textiles (les textiles représentent 4% des émissions des grandes villes du monde). Remplacer les incinérateurs de l'usine de filtration d'eau Jean-R.-Marcotte. Installer des filtres pour capter le méthane produit par le Complexe environnemental Saint-Michel.
+
+### Discussion
+
+```{r, echo=FALSE, fig.align = 'center', warning=FALSE, out.width="80%"}
+knitr::include_graphics(here::here("dev/data/stories/raw_images/mcp/sustainability/emissions_sector.png"))
+
+```
+
+Les plus grandes différences entre le PMD et le Plan climat en termes de politiques de développement durable sont l'accent mis par le PMD sur les services (l'eau en particulier), et l'accent mis par le Plan climat sur la réforme de la gouvernance de Montréal pour une meilleure durabilité. En effet, plusieurs des politiques les plus intéressantes proposées dans le Plan climat sont orientées vers la gouvernance et, selon leur mise en œuvre, pourraient apporter de profonds changements.  Les politiques de construction sont en quelque sorte progressives, notamment dans leur façon d'agir sur les actifs municipaux. D'abord l'amélioration de l'efficacité des bâtiments municipaux et l'obtention de certifications dans le PMD, puis l'interdiction de l'utilisation de combustibles fossiles dans ces bâtiments et la mise en place de nouvelles normes d'efficacité énergétique et de climatisation dans le Plan climat. La réglementation de la construction et les programmes de réglementation et de subvention de l'efficacité énergétique des bâtiments du Plan climat pourraient être très efficaces en termes de réduction des émissions si de nouveaux règlements sont effectivement proposés et approuvés et si le programme de financement peut être mis en place. Dans une ville où 28 % des émissions totales proviennent des bâtiments (résidentiels, commerciaux et institutionnels), une réglementation plus stricte en matière d'efficacité énergétique et de construction propre sera très utile. Comme c'est le cas pour de nombreuses politiques du PMD et du Plan climat, les détails sont difficiles à trouver, en particulier pour les mesures de gouvernance les plus radicales. Le PMD ne définit pas l'envergure de ses politiques d'approvisionnement responsable, ni sa promesse d'étudier le désinvestissement des combustibles fossiles. Le Plan climat explique peu les paramètres de son budget carbone et de son test climatique pour les décisions municipales.
+
+```{r, echo=FALSE, fig.align = 'center', warning=FALSE, out.width="80%"}
+knitr::include_graphics(here::here("dev/data/stories/raw_images/mcp/sustainability/emissions_source.png"))
+
+```

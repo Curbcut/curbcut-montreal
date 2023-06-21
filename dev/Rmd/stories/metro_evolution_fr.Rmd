@@ -3,7 +3,6 @@ title: "L'évolution du métro de Montréal"
 author: "Lauren Rosenthal"
 date: "07.2022"
 output: html_document
-runtime: shiny_prerendered
 ---
 
 ```{r setup, include=FALSE}
@@ -13,7 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 Le réseau de transport en commun à Montréal a connu une énorme transformation depuis le début du 20e siècle, et le système de métro étant central et emblématique. Non seulement l'évolution du métro n'a pas été linéaire, mais elle a aussi révélé les priorités de la ville et la perception qu'elle avait d'elle-même. Voici l’histoire du métro de Montréal, comment il est arrivé à son état actuel et ce que l'avernir lui réserve. 
 
 ```{r, out.extra='style="width:60%"', fig.align = "center", warning=FALSE, fig.cap = "The réseau de métro de Montréal. *Crédit photo: Société de transport de Montréal*", echo=FALSE}
-knitr::include_graphics(here("www/stories/visuals/metro_evolution/modern_day_metro.jpeg"))
+knitr::include_graphics(here::here("dev/data/stories/raw_images/metro_evolution/modern_day_metro.jpeg"))
 ```
 
 ### Les débuts du transport en commun à Montréal et la première proposition d’un métro
@@ -40,8 +39,7 @@ En 1953, la Commission de transport de Montréal, un nouvel organisme ayant pour
 Finalement, c’est l’élection de l’administration Jean Drapeau qui a rendu possible l’arrivée d’un métro à Montréal. Drapeau a été maire de Montréal de 1954 à 1957 et de 1960 à 1986; son mandat a été marqué par son ambition et son but de transformer Montréal en une ville plus grande, moderne et prestigieuse. Cet objectif était en grande partie stimulé par la croissance de Toronto, qui était en train de dépasser Montréal en tant que centre économique du Canada, au début des années soixante (Radio-Canada, 2021). Drapeau a initié plusieurs projets iconiques, le métro parmi eux, avec le but de placer Montréal sur la scène mondiale.
 
 ```{r, out.extra='style="width:70%"',fig.align = "center", fig.cap = "Portrait de Jean Drapeau. *Crédit photo: Harry Palmer*", echo=FALSE}
-knitr::include_graphics(here("www/stories/visuals/metro_evolution/jean_drapeau.jpeg"))
-
+knitr::include_graphics(here::here("dev/data/stories/raw_images/metro_evolution/jean_drapeau.jpeg"))
 ```
 
 Au départ, Drapeau était contre la construction d’un métro, car il partageait l’opinion de beaucoup de politiciens à l’époque qu’il s’agissait de l’âge de l’automobile. Cependant, son point de vue a changé avec une visite à Paris en 1960. Le métro de Paris utilisait une nouvelle innovation technologique: des roues en caoutchouc, qui permettaient une accélération du train plus rapide et moins bruyante (Magder, 2018). Comme les trains des systèmes de métro nord-américains utilisaient encore des roues en acier, une nouvelle inspiration est née: un métro avec des roues en caoutchouc pourrait servir de symbole parfait de l’innovation et du progrès à Montréal. 
@@ -52,7 +50,7 @@ Au départ, Drapeau était contre la construction d’un métro, car il partagea
 Avec l’approbation de Drapeau, le gouvernement du Québec a accordé le droit de construire le métro à la ville. La première proposition du réseau a été faite par Drapeau quelques mois plus tard et comprenait trois lignes: orange (ligne 1), verte (ligne 2) et rouge (ligne 3). La ligne orange irait dans une direction nord-sud le long de la rue Berri et la ligne verte suivrait une direction est-ouest à travers le centre-ville. La ligne rouge partirait du centre-ville, passerait à travers Mont-Royal vers le nord et se diviserait en deux parties, une allant vers Cartierville et l’autre vers Montréal-Nord. Elle utiliserait des rails de CN déjà existants et passerait en partie au-dessus du sol (Gilbert, 2021).
 
 ```{r, out.extra='style="width:70%"', fig.align = "center", fig.cap = "Jean Drapeau et Lucien Saulnier, président du comité exécutif de Montréal, présentent le réseau de métro en 1961. *Crédit photo: Archives de Montréal*", echo=FALSE}
-knitr::include_graphics(here("www/stories/visuals/metro_evolution/drapeau_proposal.jpeg"))
+knitr::include_graphics(here::here("dev/data/stories/raw_images/metro_evolution/drapeau_proposal.jpeg"))
 
 ```
 
@@ -71,7 +69,7 @@ Le métro a été inauguré le 14 octobre 1966 à la station Berri-de-Montigny (
 La fin des années soixante a marqué une ère formidable d’optimisme à Montréal après l’inauguration du nouveau métro et l’Expo 67, cette dernière ayant été un succès majeur et l’Exposition Universelle la plus fréquentée du 20e siècle (Musée des beaux-arts de Montréal, 2016). Le sentiment que tout était possible était très répandu et cet optimisme se voit dans l’ambition des plans de métro rédigés à l’époque, qui pouvaient comprendre jusqu’à neuf lignes qui s'étendaient sur 112 km de longueur, à travers toute l'île (Dufour, n.d.-b). Un projet à cette échelle, cependant, n’a jamais été réalisé. 
 
 ```{r, out.width = "700px", fig.align = "center", fig.cap = "Une recréation d'un plan ambitieux de l'époque. *Crédit photo: Marc Dufour*", echo=FALSE}
-knitr::include_graphics(here("www/stories/visuals/metro_evolution/MetroMontreal_FuturPasse.png"))
+knitr::include_graphics(here::here("dev/data/stories/raw_images/metro_evolution/MetroMontreal_FuturPasse.png"))
 ```
 
 L’élan positif généré par les projets majeurs des années soixante a mené à la réélection de Jean Drapeau en octobre 1970, à laquelle il a remporté une majorité de 92.5%. Avec cette victoire est arrivé un de ses projets les plus ambitieux et controversés de son mandat: la tenue des jeux Olympiques de 1976 à Montréal. En mai 1970, la ville a été désignée comme ville organisatrice des Jeux Olympiques d'été de 1976 et a reçu un prêt de $430 millions pour rallonger les lignes orange et verte du métro ainsi que construire une nouvelle ligne bleue. Comme la province allait payer le métro, des plans plus ambitieux pour l’année 1978 ont été proposés (Magder, 2017).
@@ -119,12 +117,189 @@ La seule exception à ce manque de progrès est le prolongement de la ligne bleu
 Même si des nouvelles lignes de métro souterraines demeurent très demandées, le futur du transport en commun à Montréal semble être situé à la surface. En 2016, le Réseau électrique métropolitain (REM) a été annoncé par la Caisse de dépôt et placement du Québec, un partenariat entre le gouvernement provincial et le gérant du régime de rentes du Québec, qui a pris charge du financement des futurs projets d’infrastructure dans la province (CBC News, 2015). Avec sa mission ambitieuse de relier le centre-ville à l’Ouest de l’île, la Rive-Nord et l’aéroport avec une ligne de surface électrique, le REM est le plus grand projet de transport en commun depuis le métro en 1966 (Réseau express métropolitain, 2019). La construction est actuellement en cours et la branche Brossard devrait entrer en service en automne 2022.
 
 ```{r, out.width = "600px", fig.align = "center", fig.cap = "Le réseau de métro avec le trajet planifié du REM, présentement en construction. *Crédit photo: Réseau Express Métropolitain*", echo=FALSE}
-knitr::include_graphics(here("www/stories/visuals/metro_evolution/REM_Carte_reseauMtl_EN.jpeg"))
+knitr::include_graphics(here::here("dev/data/stories/raw_images/metro_evolution/REM_Carte_reseauMtl_EN.jpeg"))
 ```
 
 Le REM ainsi que le tramway sur le Rive-Sud qui remplace une extension de la ligne jaune semblent indiquer une transition vers des projets de surface pour les années à venir. Bien que l'image d'un réseau de métro souterrain étendu soit très forte, aux yeux de ceux qui paient la facture, elle ne semble plus en valoir la peine. Ce qui était autrefois un investissement majeur capable de conférer un statut élevé à Montréal sur la scène mondiale est devenu une source de complications et de coûts extrêmes à la place. Il reste à voir comment les plans pour le métro vont évoluer après la réalisation du prolongement de la ligne bleue vers Anjou, mais il est clair que des projets de surface semblent être prioritaires dans l’avenir immédiat.
 
-Malgré le manque de progrès sur le réseau souterrain dans les années récentes, il représente encore un aspect essentiel de l’essor de Montréal et de sa présence sur la scène mondiale. Peu importe si le métro voit un ou de multiples prolongements de plus, il est certain que son image emblématique et son importance aux yeux de millions de passagers vont garantir son importance comme symbole de la ville pour les années à venir. 
+Malgré le manque de progrès sur le réseau souterrain dans les années récentes, il représente encore un aspect essentiel de l’essor de Montréal et de sa présence sur la scène mondiale. Peu importe si le métro voit un ou de multiples prolongements de plus, il est certain que son image emblématique et son importance aux yeux de millions de passagers vont garantir son importance comme symbole de la ville pour les années à venir.
+
+```{r, echo=FALSE, include = FALSE}
+
+library(tidyverse)
+library(sf)
+library(crosstalk)
+library(htmltools)
+library(leaflet)
+library(plotly)
+
+# MUST HAVE THIS VESRION OF LEAFLET
+# devtools::install_github("dmurdoch/leaflet@crosstalk4")
+
+metro_evolution <- 
+  list.files(here::here("dev/data/stories/shp/metro_evolution/"), full.names = TRUE) |> 
+  stringr::str_subset("\\.shp$")
+
+metro_evolution <-
+  map(set_names(metro_evolution), read_sf)
+
+metro_evolution <-
+  mapply(\(n, d) {
+    d$date <- stringr::str_extract(n, "\\d{4}")
+    d
+  }, names(metro_evolution), metro_evolution, SIMPLIFY = FALSE) |> 
+  reduce(rbind) |> 
+  mutate(fill = case_when(Type == "Proposed extension" ~ "#1263A6",
+                          Type == "Proposed extensions" ~ "#1263A6",
+                          Type == "Proposed line" ~ "#000000",
+                          Type == "Proposed lines" ~ "#000000",
+                          Type == "Proposed orange and green lines" ~ "#000000", 
+                          Type == "Proposed red line" ~ "#8B0000",
+                          Type == "Green line" ~ "#00A650", 
+                          Type == "Orange line" ~ "#F47216", 
+                          Type == "Yellow line" ~ "#FCD300",
+                          Type == "Proposed orange line extension" ~ "#f5D7A4",
+                          Type == "Proposed green line extension" ~ "#76C274",
+                          Type == "Proposed blue line" ~ "#9CC0F0",
+                          Type == "Blue line" ~ "#1082CD",
+                          Type == "Proposed blue line extension" ~ "#9CC0F0",
+                          Type == "Proposed line 10" ~ "#000000",
+                          Type == "Proposed line 11" ~ "#454545",
+                          Type == "Proposed line 6" ~ "#696868",
+                          Type == "Proposed line 7" ~ "#949292",
+                          Type == "Proposed line 8" ~ "#B5B1B1",
+                          Type == "Blue line extension" ~ "#9CC0F0",
+                          Type == "Proposed yellow line extension" ~ "#FAF093",
+                          Type == "Proposed pink line" ~ "#E60E70")) |> 
+  mutate(Type = case_when(Type == "Proposed extension" ~ "Proposition d'extension",
+                          Type == "Proposed extensions" ~ "Proposition d'extension",
+                          Type == "Proposed line" ~ "Ligne proposée",
+                          Type == "Proposed lines" ~ "Ligne proposée",
+                          Type == "Proposed orange and green lines" ~ "Lignes orange et verte proposées", 
+                          Type == "Proposed red line" ~ "Ligne rouge proposée",
+                          Type == "Green line" ~ "Ligne verte", 
+                          Type == "Orange line" ~ "Ligne orange", 
+                          Type == "Yellow line" ~ "Ligne jaune",
+                          Type == "Proposed orange line extension" ~ "Projet d'extension de la ligne orange",
+                          Type == "Proposed green line extension" ~ "Projet d'extension de la ligne verte",
+                          Type == "Proposed blue line" ~ "Proposition de ligne bleue",
+                          Type == "Blue line" ~ "Ligne bleue",
+                          Type == "Proposed blue line extension" ~ "Projet d'extension de la ligne bleue",
+                          Type == "Proposed line 10" ~ "Ligne 10 proposée",
+                          Type == "Proposed line 11" ~ "Ligne 11 proposée",
+                          Type == "Proposed line 6" ~ "Ligne 6 proposée",
+                          Type == "Proposed line 7" ~ "Ligne 7 proposée",
+                          Type == "Proposed line 8" ~ "Ligne 8 proposée",
+                          Type == "Blue line extension" ~ "Extension de la ligne bleue",
+                          Type == "Proposed yellow line extension" ~ "Proposition d'extension de la ligne jaune",
+                          Type == "Proposed pink line" ~ "Ligne rose proposée"))
+
+
+
+nc <- metro_evolution |> 
+  sf::st_cast("MULTILINESTRING") |> 
+  sf::st_cast("LINESTRING") |> 
+  sf::st_make_valid() |> 
+  plotly::highlight_key()
+
+map <-
+  leaflet(nc) %>%
+  addTiles() %>%
+  addPolylines(color = ~fill, opacity = 1, weight = 5, label = ~Type,
+               labelOptions = labelOptions(noHide = TRUE))
+```
+
+```{r, echo = FALSE}
+bscols(map)
+y <- crosstalk::filter_select("metro_date", "Sélectionnez une année", nc, ~date, multiple = FALSE)
+bscols(y)
+```
+
+```{js, echo = FALSE}
+function filter_default() {
+    document.getElementById("metro_date").getElementsByClassName("selectized")
+[0].selectize.setValue("1910", false);
+ }
+window.onload = filter_default;
+```
+
+```{r echo=FALSE}
+# 
+#   metro_evolution <- 
+#     data.frame(type_en = c('Blue line', 'Blue line', 'Blue line \nextension', 
+#                            'Green line', 'Green line', 'Green line', 'Green line', 
+#                            'Green line', 'Orange line', 'Orange line', 'Orange line', 
+#                            'Orange line', 'Orange line', 'Proposed blue line', 
+#                            'Proposed \nblue line \nextension', 'Proposed extension', 
+#                            'Proposed extension', 'Proposed extension', 
+#                            'Proposed extensions', 'Proposed \ngreen line \nextension', 
+#                            'Proposed line', 'Proposed line', 'Proposed \nline 10', 
+#                            'Proposed \nline 11', 'Proposed \nline 6', 'Proposed \nline 7', 
+#                            'Proposed \nline 8', 'Proposed lines', 
+#                            'Proposed \norange and \ngreen lines', 
+#                            'Proposed \norange line \nextension', 
+#                            'Proposed \norange line \nextension', 
+#                            'Proposed \norange line \nextension', 'Proposed \npink line', 
+#                            'Proposed \nred line', 'Proposed \nyellow line \nextension', 
+#                            'Yellow line', 'Yellow line', 'Yellow line', 'Yellow line', 
+#                            'Yellow line'),
+#                type_fr = c('Ligne bleue', 'Ligne bleue', 
+#                            'Prolongement de la \nligne bleue', 'Ligne verte', 
+#                            'Ligne verte', 'Ligne verte', 'Ligne verte', 'Ligne verte', 
+#                            'Ligne orange', 'Ligne orange', 'Ligne orange', 
+#                            'Ligne orange', 'Ligne orange', 'Ligne bleue proposée', 
+#                            'Prolongement \nde la ligne \nbleue proposé', 
+#                            'Prolongements proposé', 'Prolongements proposé', 
+#                            'Prolongements proposé', 'Prolongements proposés', 
+#                            'Prolongement de la \nligne verte proposé', 'Ligne proposée', 
+#                            'Ligne proposée', 'Ligne 10 \nproposée', 'Ligne 11 \nproposée', 
+#                            'Ligne 6 \nproposée', 'Ligne 7 \nproposée', 'Ligne 8 \nproposée', 
+#                            'Lignes proposées', 'Lignes orange and verte proposées', 
+#                            'Prolongement \nde la ligne \norange proposé', 
+#                            'Prolongement \nde la ligne \norange proposé', 
+#                            'Prolongement \nde la ligne \norange proposé', 
+#                            'Ligne rose proposée', 'Ligne rouge proposée', 
+#                            'Prolongement \nde la ligne \njaune proposé', 'Ligne jaune', 
+#                            'Ligne jaune', 'Ligne jaune', 'Ligne jaune', 'Ligne jaune'),
+#                date = c('1970', '2000', '2000', '1967', '1970', '1978', '1981', 
+#                         '2000', '1967', '1970', '1978', '1981', '2000', '1981', 
+#                         '1970', '1910', '1910', '1944', '1961', '1981', '1910', 
+#                         '1944', '1970', '1970', '1970', '1970', '1970', '1953', 
+#                         '1961', '1970', '1981', '2000', '2000', '1961', '2000', 
+#                         '1967', '1970', '1978', '1981', '2000'),
+#                fill = c('#1082CD', '#1082CD', '#9CC0F0', '#00A650', '#00A650', 
+#                         '#00A650', '#00A650', '#00A650', '#F47216', '#F47216', 
+#                         '#F47216', '#F47216', '#F47216', '#9CC0F0', '#9CC0F0', 
+#                         '#1263A6', '#1263A6', '#1263A6', '#1263A6', '#76C274', 
+#                         '#000000', '#000000', '#000000', '#454545', '#696868', 
+#                         '#949292', '#B5B1B1', '#000000', '#000000', '#f5D7A4', 
+#                         '#f5D7A4', '#f5D7A4', '#E60E70', '#8B0000', '#FAF093', 
+#                         '#FCD300', '#FCD300', '#FCD300', '#FCD300', '#FCD300'))
+#   
+#   values <- 
+#     metro_evolution[metro_evolution$date == date, ][[paste0("type_", lang)]] |> 
+#     unique()
+# 
+#   legend <- 
+#     data.frame(x = seq_along(values),
+#                y = 1,
+#                fill = 
+#                  unique(metro_evolution[metro_evolution[[
+#                    paste0("type_", lang)]] %in% values, ]$fill))
+#   
+#   legend |> 
+#     ggplot2::ggplot(ggplot2::aes(xmin = x - 1, xmax = x, ymin = y - 1, ymax = y, 
+#                fill = fill)) +
+#     ggplot2::geom_rect() + 
+#     ggplot2::scale_x_continuous(breaks = seq_along(values) - 0.5, labels = values) +
+#     ggplot2::scale_y_continuous(labels = NULL) +
+#     ggplot2::scale_fill_manual(values = stats::setNames(
+#       legend$fill, legend$fill)) +
+#     ggplot2::theme_minimal() +
+#     ggplot2::theme(text = ggplot2::element_text(family = "SourceSansPro", size = 12),
+#           legend.position = "none", 
+#           panel.grid = ggplot2::element_blank())
+```
 
 ### Références
 Barbeau, A. (2018, May 27). Ligne rose: Valérie Plante réplique au refus de la CAQ. iHeartRadio. Retrieved June 14, 2022, from https://www.iheartradio.ca/rouge-fm/rouge-fm-quebec/ligne-rose-valerie-plante-replique-au-refus-de-la-caq-1.3845501

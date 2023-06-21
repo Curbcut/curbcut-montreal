@@ -1,0 +1,69 @@
+#place_explorer-main_panel {
+  position: absolute;
+  top: 0px;
+  left: var(--w-sidebar);
+  right: 0px;
+  height: calc(100vh - var(--h-navbar));
+  z-index: var(--depth-ui);
+}
+
+div#place_explorer-back {
+  position: absolute;
+  top: 0px;
+  left: var(--w-sidebar);
+  right: 0px;
+  height: var(--h-navbar);
+  z-index: var(--depth-ui-fixed);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  background: var(--c-primary-complement);
+  border-top: 1px solid var(--c-default);
+  padding-left: var(--h-navbar);
+  padding-right: var(--h-navbar);
+  box-shadow: var(--box-shadow-md);
+  clip-path: inset(0px 0px -15px 0px);
+}
+
+a#place_explorer-back ,
+a#place_explorer-back:hover,
+a#place_explorer-back:active,
+a#place_explorer-back:focus {
+  color: var(--c-primary);
+  margin-left: unset !important;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+div#place_explorer-back button {
+  background: none !important;
+  border: none !important;
+  height: 100%;
+  position: absolute;
+  top: 0px;
+  bottom: 0px;
+  width: var(--h-navbar);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+div#place_explorer-back button:first-child {
+  left: 0px;
+}
+
+div#place_explorer-back button:last-child {
+  right: 0px;
+}
+
+.main_panel_popup {
+	max-height: calc(100% - var(--h-navbar)) !important;
+	margin-top: var(--h-navbar) !important;
+  margin-left: unset !important;
+  box-shadow: unset !important;
+  border-left: unset !important;
+  border-right: unset !important;
+  border-bottom: unset !important;
+  border-top: 1px solid var(--c-default) !important;
+}

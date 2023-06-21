@@ -36,7 +36,7 @@ window.addEventListener('load', (evt) => {
 
   const navbar = document.querySelector('.navbar-default');
   const navbarBrand = document.querySelector('.navbar-static-top span.navbar-brand');
-  const navbarLinks = document.querySelector('.navbar-static-top ul#sus_page');
+  const navbarLinks = document.querySelector('.navbar-static-top ul#cc_page');
   const navbarFixed = document.querySelector('.navbar-static-top div.navbar-fixed');
   const navbarCollapse = document.querySelector('.navbar-static-top div.navbar-collapse');
   const mainContainer = document.querySelector('body > .container-fluid');
@@ -155,7 +155,7 @@ window.addEventListener('load', (evt) => {
   .navbar-fixed {
     margin-right: 52px
   }
-  .navbar-collapse > ul#sus_page {
+  .navbar-collapse > ul#cc_page {
     box-shadow: var(--box-shadow-md);
     clip-path: inset(0px 0px -500px 0px);
   }
@@ -170,7 +170,7 @@ window.addEventListener('load', (evt) => {
 
   head.appendChild(style);
 
-  const mapdeckDivs = document.querySelectorAll('.mapdeck_div');
+  const mapdeckDivs = document.querySelectorAll('.map_div');
 
   for (var i = 0; i < mapdeckDivs.length; i++) {
     const mapdeckDiv = mapdeckDivs[i];
@@ -181,7 +181,7 @@ window.addEventListener('load', (evt) => {
     mapdeckDiv.appendChild(shadow);
   }
 
-  const storiesMapdeckDiv = document.querySelector('.tab-pane[data-value="stories"] .mapdeck_div');
+  const storiesMapdeckDiv = document.querySelector('.tab-pane[data-value="stories"] .map_div');
 
   storiesMapdeckDiv.addEventListener('click', () => {
 
@@ -214,6 +214,32 @@ window.addEventListener('load', (evt) => {
   storiesTopBar.style.display = 'none';
 
   storiesContainer.parentElement.appendChild(storiesTopBar);
+  
+  
+  
+  // PLACE EXPLORER START
+  const placeExBack = document.querySelector('#place_explorer-back');
+  const placeExContainer = document.querySelector('#place_explorer-main_panel');
+  const placeExTopBar = document.createElement('div');
+  const placeExBackButton = document.createElement('button');
+  const placeExCloseButton = document.createElement('button');
+
+  placeExBackButton.appendChild(backIcon);
+  placeExCloseButton.appendChild(closeIcon);
+
+  placeExBackButton.addEventListener('click', () => placeExBack.click());
+  placeExCloseButton.addEventListener('click', () => placeExBack.click());
+  
+  placeExTopBar.appendChild(placeExBackButton);
+  placeExTopBar.appendChild(placeExBack);
+  placeExTopBar.appendChild(placeExCloseButton);
+  placeExTopBar.id = 'place_explorer-back';
+  placeExTopBar.style.display = 'none';
+
+  placeExContainer.parentElement.appendChild(placeExTopBar);
+  // PLACEE EXPLORER END
+  
+  
   
   const navbarHeight = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--h-navbar'));
 

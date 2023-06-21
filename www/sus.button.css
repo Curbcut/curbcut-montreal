@@ -184,8 +184,8 @@
   border-radius: var(--border-radius-sm);
 }
 
-.tab-content .dropdown-menu,
-.tab-content .dropdown-menu.open {
+.dropdown-menu,
+.dropdown-menu.open {
   border: 0.5px solid rgba(0, 0, 0, 0.05);
   overflow-x: hidden;
   padding-top: 0px;
@@ -193,35 +193,9 @@
   box-shadow: var(--box-shadow-md);
   min-width: unset !important;
   width: fit-content;
-  position: fixed;
-  top: 0px;
-  right: 0px;
-}
- /* FOR M_AUTO_VARS, FOR SOME REASON THEY ARE BROKEN WITH THOSE ATTRIBUTES */
-#staying_widgets .dropdown-menu.open {
-  position: absolute !important;
-  top: auto !important;
-  right: auto !important;
 }
 
-#auto_additional_drops .dropdown-menu.open {
-  position: absolute !important;
-  top: auto !important;
-  right: auto !important;
-}
-
-/* ONLY TO IMPACT SAFARI 11+ AS THE OTHER CSS DOESN'T WORK CORRECTLY ON THE BRWOSER */
-@media not all and (min-resolution:.001dpcm) { 
-  @supports (-webkit-appearance:none) and (stroke-color:transparent) {
-    .tab-content .dropdown-menu, .tab-content .dropdown-menu.open { 
-        position:sticky
-  }
-}}
-_::-webkit-full-page-media, _:future, :root .tab-content .dropdown-menu, .tab-content .dropdown-menu.open { 
-        position:sticky
-  }
-
-.tab-content .dropdown-menu > li > a {
+.dropdown-menu > li > a {
   font-family: var(--ff-button);
   text-transform: none;
   font-size: 1.25rem;
@@ -229,11 +203,11 @@ _::-webkit-full-page-media, _:future, :root .tab-content .dropdown-menu, .tab-co
   color: var(--c-primary);
 }
 
-.tab-content .dropdown-menu > li > a:hover, 
-.tab-content .dropdown-menu > li > a:focus,
-.tab-content .dropdown-menu > .active > a,
-.tab-content .dropdown-menu > .active > a:hover,
-.tab-content .dropdown-menu > .active > a:focus {
+.dropdown-menu > li > a:hover, 
+.dropdown-menu > li > a:focus,
+.dropdown-menu > .active > a,
+.dropdown-menu > .active > a:hover,
+.dropdown-menu > .active > a:focus {
   background-color: var(--c-primary-complement-hover);
 }
 

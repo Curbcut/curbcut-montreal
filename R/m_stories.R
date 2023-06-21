@@ -3,25 +3,31 @@
 # UI ----------------------------------------------------------------------
 
 stories_UI <- function(id) {
-  ns_id <- "stories"
-  
-  tagList(
-    
+  themes <- unique(unlist(stories$themes))
+  themes <- list(Themes = setNames(themes, themes))
+  shiny::tagList(
+
     # Sidebar
-    sidebar_UI(
-      NS(id, "sidebar"),
-      # hr(id = NS(id, "hr")),
-      actionLink(NS(id, "back"), cc_t(r = r, "Back to the map"))
+    curbcut::sidebar_UI(
+      id = NS(id, id),
+      shiny::actionLink(
+        shiny::NS(id, "back"),
+        curbcut::cc_t("Back to the map")
+      ),
+      curbcut::picker_UI(
+        id = NS(id, id),
+        label = curbcut::cc_t("Choose themes:"),
+        var_list = themes,
+        selected = unlist(themes),
+        multiple = TRUE),
+      shiny::hr(id = shiny::NS(id, "hr"))
     ),
     
     # Map
-    div(class = "mapdeck_div", rdeckOutput(NS(id, paste0(ns_id, "-map")), 
-                                           height = "100%")),
-    
-    # Stories
-    hidden(htmlOutput(
-      NS(id, "stories")))
-    
+    curbcut::map_UI(id = shiny::NS(id, id)),
+
+    # Main panel
+    shiny::htmlOutput(shiny::NS(id, "stories"))
   )
 }
 
@@ -30,25 +36,27 @@ stories_UI <- function(id) {
 
 stories_server <- function(id, r) {
   moduleServer(id, function(input, output, session) {
-    ns_id <- "stories"
-    ns_id_map <- paste0(ns_id, "-map")
-    # 
-    # # Initial reactive
-    # if (is.null(r[[ns_id]]$select_id)) r[[ns_id]]$select_id <- reactiveVal(NA)
-    
+    id_map <- paste0(id, "-map")
+    themes_raw <- unique(unlist(stories$themes))
+    themes_raw <- list(Themes = setNames(themes_raw, themes_raw))
+    themes <- shiny::reactive({
+      v <- cc_t(themes_raw, lang = r$lang())
+      names(v[[1]]) <- sapply(names(v[[1]]), cc_t, lang = r$lang())
+      v
+    })
+
     # Sidebar
-    sidebar_server(
-      id = "sidebar",
-      r = r,
-      x = "stories")
+    curbcut::sidebar_server(id = id, r = r)
     
     # Map
-    output[[ns_id_map]] <- renderRdeck({
-      rdeck(map_style = map_style_building, initial_view_state = view_state(
-        center = map_loc, zoom = map_zoom)) |> 
-        add_mvt_layer(
+    output[[id_map]] <- rdeck::renderRdeck({
+      rdeck::rdeck(map_style = map_style_building, initial_view_state = 
+                     rdeck::view_state(center = map_loc, zoom = map_zoom), 
+                   layer_selector = FALSE) |> 
+        rdeck::add_mvt_layer(
           id = "stories",
-          data = mvt_url("sus-mcgill.stories-stories"),
+          data = rdeck::tile_json(paste0(mapbox_username, ".", tileset_prefix, "_", 
+                                "stories")),
           point_type = "icon",
           get_icon = name,
           icon_atlas = "stories/image_atlas.png",
@@ -58,160 +66,94 @@ stories_server <- function(id, r) {
           auto_highlight = TRUE,
           highlight_color = "#FFFFFF50")
     })
-    
+
     # Click reactive
-    observe({
-      selection <- get_clicked_object(ns_id_map)$ID
-      if (!is.na(r[[ns_id]]$select_id()) && selection == r[[ns_id]]$select_id()) {
-        r[[ns_id]]$select_id(NA)
-      } else r[[ns_id]]$select_id(selection)
-    }) |> bindEvent(get_clicked_object(ns_id_map))
-    
-    # Custom map, legend and source for cycling infrastructure and metro 
-    # evolution stories
-    selected_story <- reactive({
-      if (is.na(r[[ns_id]]$select_id())) return(NA)
-      stories$name[stories$ID == r[[ns_id]]$select_id()]
-    })
-    output$stories_custom_map <-
-      renderRdeck(rdeck(width = "100%", map_style = map_base_style, 
-                        initial_view_state = view_state(
-                          center = map_loc, zoom = as.numeric(map_zoom - 1))))
-    observeEvent(input[["stories-stories_map_slider"]], {
-      if (selected_story() %in% c("cycling_infrastructure", "metro_evolution"))
-      do.call(paste0(selected_story(), "_map"), 
-              list(input[["stories-stories_map_slider"]]))
-    }, ignoreInit = TRUE)
-    observeEvent(selected_story(), {
-      if (selected_story() %in% c("cycling_infrastructure", "metro_evolution"))
-        shinyWidgets::updateSliderTextInput(
-          session = session,
-          inputId = "stories-stories_map_slider",
-          choices = do.call(paste0(selected_story(), "_choices"), list()))
-    }, ignoreInit = TRUE)
-    output$stories_custom_legend <- renderPlot({
-      if (selected_story() %in% c("cycling_infrastructure", "metro_evolution"))
-      do.call(paste0(selected_story(), "_legend"), 
-              list(input[["stories-stories_map_slider"]], r$lang()))
-    })
-    output$stories_custom_source <- renderText({
-      if (selected_story() %in% c("cycling_infrastructure", "metro_evolution"))
-      do.call(paste0(selected_story(), "_source"),
-              list(input[["stories-stories_map_slider"]], r))
-    })
-    
+    curbcut::update_select_id(id = id, r = r)
+
     # Render the story in question, now only in english (_en)
     output$stories <- renderUI({
       
-      if (!is.na(r[[ns_id]]$select_id())) {
+      if (!is.na(r[[id]]$select_id())) {
         
-        rmd_name <- stories$name[stories$ID == r[[ns_id]]$select_id()]
-        bandeau_name <- stories$img[stories$ID == r[[ns_id]]$select_id()]
+        rmd_name <- stories$name_id[stories$ID == r[[id]]$select_id()]
+        story_link <- paste0("stories/", rmd_name, "_", r$lang(), ".html")
         
-        story_link <- paste0("www/stories/", rmd_name, "_", r$lang(),
-                             ".html")
-        
-        # Construct story link, serve en if no translation available.
-        story_link <- if (story_link %in% available_stories) story_link else {
-          paste0("www/stories/", rmd_name, "_", "en",
-                 ".html")
-        }
-        
-        # images <- 
-        #   list.files(paste0("www/stories/visuals/", rmd_name),
-        #              full.names = TRUE) |> 
-        #   str_subset("png$|jpeg$|jpg$|gif$") |> 
-        #   str_remove("^www/")
-        # 
-        # images_tag <-
-        #   lapply(images, \(x)
-        #          paste0("img(src='", x, "', style='width:45%;margin:2px;')"))
-        
-        # SPECIAL CASES FOR THE Mp
-        if (rmd_name %in% c("cycling_infrastructure", "metro_evolution")) {
-          div(class = "main_panel_text_popup",
-              div(class = "row-stories-maps",
-                  div(class = "column-stories-maps",
-                      # Main story
-                      HTML(str_replace(
-                        includeHTML(story_link),
-                        # Adding bandeau img after the first div (title)
-                        "</div>", paste0("</div><img src =", "stories/bandeau_img/",
-                                         bandeau_name,"><br><br>")) |>
-                          str_replace_all('<img src="visuals/',
-                                          '<img src="stories/visuals/') |> 
-                          str_replace('max-width: 940px;', 'max-width:100%;'))),
-                  div(class = "column-stories-maps-map", 
-                      style = "overflow-y:auto;overflow-x:hidden;",
-                      tagList(
-                        rdeckOutput(NS(id, "stories_custom_map"), height = "65%"),
-                        slider_text_UI(id = id,
-                                       slider_id = NS(id, "stories_map_slider"),
-                                       label = NULL,
-                                       choices = do.call(paste0(rmd_name, "_choices"), list()),
-                                       width = "250"),
-                        plotOutput(NS(id, "stories_custom_legend"), height = 60,
-                                   width = "auto"),
-                        br(),
-                        div(style = "text-align: center;", 
-                            textOutput(NS(id, "stories_custom_source"))),
-                      )
-                  )
-              )
+        shiny::div(
+          class = "main_panel_popup",
+          style = "height:100%;overflow:hidden;background-color:rgba(255, 255, 255, 0.975)",
+          shiny::tags$iframe(
+            style = "width:100%;height:100%;",
+            title = "stories",
+            src = story_link,
+            frameborder = 0
           )
-        } else {
-          div(class = "main_panel_text_popup",
-              
-              # Main story
-              div(#style = "margin-right:250px;",
-                HTML(str_replace(
-                  includeHTML(story_link),
-                  # Adding bandeau img after the first div (title)
-                  "</div>", paste0("</div><img src =", "stories/bandeau_img/",
-                                   bandeau_name,"><br><br>")) |>
-                    str_replace_all('<img src="visuals/',
-                                    '<img src="stories/visuals/'))),
-              # # Right panel
-              # absolutePanel(
-              #   id = NS(id, "right_panel"),
-              #   class = "panel panel-default sus-map-panel sus-scroll",
-              #   style = "margin-top:50px;margin-right:20px;padding:10px;",
-              #   div(class = "sus-map-panel-content sus-scroll-content", 
-              #       div(
-              #         h4(cc_t(r = r, "Take a walk"))),
-              #       p("To come!"),
-              #       hr(),
-              #       div(
-              #         h4(cc_t(r = r, "Photos"))),
-              #       lapply(images_tag, \(x) eval(parse(text = x))),
-              #       hr(),
-              #       div(
-              #         h4(cc_t(r = r, "Watch the video"))),
-              #       hr(),
-              #       "Other Content")
-              # )
-          )
-        }
+        )
       }
-      
     })
 
-    # Hide map when "Go back to map" button is clicked
-    observe(r[[ns_id]]$select_id(NA)) |> bindEvent(input$back)
+    # Add stories on the left-hand panel and react on a click
+    themes_c <- curbcut::picker_server(id = id,
+                                       picker_id = "var",
+                                       r = r,
+                                       var_list = themes,
+                                       selected = unlist(themes()))
+    
+    shiny::observeEvent(themes_c(), {
+      in_theme <-
+        stories$ID[which(
+          sapply(sapply(stories$themes, `%in%`, themes_c()), sum) > 0)]
+      
+      show_short <- stories$short_title[stories$ID %in% in_theme]
+      show_short <- sapply(show_short, cc_t, lang = r$lang())
+      show_short <- show_short[order(show_short)]
+      
+      shiny::removeUI(selector = "#bullet_points")
+      shiny::insertUI(paste0("#stories-hr"),
+               where = "afterEnd",
+               shiny::tags$ul(
+                 id = "bullet_points",
+                 lapply(show_short, \(x) {
+                   shiny::tags$li(
+                     x,
+                     style = "cursor: pointer; text-decoration: none;",
+                     title = curbcut::cc_t(lang = r$lang(),
+                                           stories$preview[stories$short_title == x]),
+                     onclick = paste0("Shiny.setInputValue(`",
+                                      NS(id, "clicked_linked"),
+                                      "`, '",
+                                      curbcut::cc_t(lang = r$lang(),
+                                                    stories$ID[stories$short_title == x]),
+                                      "');"),
+                     onmouseover = "$(this).css('text-decoration', 'underline');",
+                     onmouseout = "$(this).css('text-decoration', 'none');"
+                   )
+                 })
+               )
+      )
 
-    observe({
-      toggle("hr", condition = !is.na(r[[ns_id]]$select_id()))
-      toggle("back", condition = !is.na(r[[ns_id]]$select_id()))
-      toggle("stories", condition = !is.na(r[[ns_id]]$select_id()))
-    }) |> bindEvent(r[[ns_id]]$select_id())
+    })
+    shiny::observeEvent(input$clicked_linked, {
+      r[[id]]$select_id(input$clicked_linked)
+    })
+
+    # Update the select_id if clicked on a story title in the top navigation panel
+    shiny::observeEvent(input$select_nav, {
+      r[[id]]$select_id(input$select_nav)
+    })
+
+    # Hide main panel when "Go back to map" button is clicked
+    shiny::observeEvent(input$back, r[[id]]$select_id(NA))
+    shiny::observeEvent(r[[id]]$select_id(), {
+      shinyjs::toggle("back", condition = !is.na(r[[id]]$select_id()))
+      shinyjs::toggle("stories", condition = !is.na(r[[id]]$select_id()))
+    })
 
     # Bookmarking
-    bookmark_server(
-      id = ns_id,
+    curbcut::bookmark_server(
+      id = id,
       r = r,
-      s_id = r[[ns_id]]$select_id,
-      map_viewstate = reactive(
-        input[[paste0(ns_id, "-map_viewstate")]]$viewState)
+      select_id = r[[id]]$select_id,
+      exclude_input = "ccpicker_var"
     )
 
   })

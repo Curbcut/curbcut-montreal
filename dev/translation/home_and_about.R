@@ -1,6 +1,6 @@
 #### `Home`, `About`, `Why dashboard` preparation for translation ##############
 
-home_and_about_translated <- 
+translation_home_and_about <- 
   tibble(en = character(), fr = character()) |>
   add_row(en = paste0("Towards a"),
           fr = paste0("Vers une")) |>
