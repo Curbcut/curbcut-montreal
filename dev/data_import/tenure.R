@@ -428,7 +428,8 @@ build_and_append_tenure <- function(scales_variables_modules, crs) {
     calculate_breaks(
       all_scales = data_interpolated$scales,
       vars = vars,
-      types = types
+      types = types,
+      use_quintiles = TRUE
     )
   
   
@@ -670,7 +671,7 @@ build_and_append_tenure <- function(scales_variables_modules, crs) {
                                       variables$pe_include])
   
   modules <-
-    scales_variables_modules$modules |>
+    modules |>
     add_module(
       id = "tenure",
       theme = "Housing",

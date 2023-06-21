@@ -68,7 +68,7 @@ build_stories <- function() {
       short_title = "Griffintown's water management history",
       preview = paste0("Griffintown’s social and governance history can be ",
                        "defined through the politics of water management."),
-      themes = c("Urban governance ", "Urban transformation"),
+      themes = c("Urban governance", "Urban transformation"),
       lon = -73.560739,
       lat = 45.496812) |> 
     

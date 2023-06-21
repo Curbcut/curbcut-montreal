@@ -324,8 +324,7 @@ alley_server <- function(id, r) {
     cbox <- curbcut::checkbox_server(
       id = id,
       r = r,
-      label = shiny::reactive(curbcut::cc_t(lang = r$lang(),
-                                            "Curbcut’s observational data"))
+      label = shiny::reactive("Curbcut’s observational data")
     )
     
     # WHat is the active view?
@@ -448,7 +447,9 @@ alley_server <- function(id, r) {
       zoom = r[[id]]$zoom,
       zoom_levels = shiny::reactive(zoom_levels()$zoom_levels),
       region = shiny::reactive(zoom_levels()$region),
-      show = shiny::reactive(var_left() != " ")
+      show_buildings = shiny::reactive(var_left() != " "),
+      show_streets = shiny::reactive(var_left() != " "),
+      show_stories = shiny::reactive(var_left() != " ")
     )
     
     # Explore tables

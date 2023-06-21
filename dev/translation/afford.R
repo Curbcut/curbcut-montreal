@@ -48,11 +48,13 @@ translation_afford <-
   add_row(en = "In a situation of poverty",
           fr = "En situation de pauvreté") |> 
   add_row(en = "Not in a situation of poverty",
-          fr = "Pas en situation de pauvreté")
+          fr = "Pas en situation de pauvreté") |> 
+  add_row(en = "Unit of analysis",
+          fr = "Unité d'analyse")
 
 
 # Go over every possible variable
-vars <- variables$var_code[grepl("^afford_", variables$var_code)]
+vars <- variables$var_code[grepl("^affordpop_", variables$var_code)]
 
 additional_vars <- lapply(vars, \(var) {
   

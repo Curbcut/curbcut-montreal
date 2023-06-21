@@ -37,8 +37,13 @@ stories_UI <- function(id) {
 stories_server <- function(id, r) {
   moduleServer(id, function(input, output, session) {
     id_map <- paste0(id, "-map")
-    themes <- unique(unlist(stories$themes))
-    themes <- list(Themes = setNames(themes, themes))
+    themes_raw <- unique(unlist(stories$themes))
+    themes_raw <- list(Themes = setNames(themes_raw, themes_raw))
+    themes <- shiny::reactive({
+      v <- cc_t(themes_raw, lang = r$lang())
+      names(v[[1]]) <- sapply(names(v[[1]]), cc_t, lang = r$lang())
+      v
+    })
 
     # Sidebar
     curbcut::sidebar_server(id = id, r = r)
@@ -90,22 +95,26 @@ stories_server <- function(id, r) {
     themes_c <- curbcut::picker_server(id = id,
                                        picker_id = "var",
                                        r = r,
-                                       var_list = shiny::reactive(themes),
-                                       selected = unlist(themes))
+                                       var_list = themes,
+                                       selected = unlist(themes()))
     
     shiny::observeEvent(themes_c(), {
       in_theme <-
         stories$ID[which(
           sapply(sapply(stories$themes, `%in%`, themes_c()), sum) > 0)]
       
+      show_short <- stories$short_title[stories$ID %in% in_theme]
+      show_short <- sapply(show_short, cc_t, lang = r$lang())
+      show_short <- show_short[order(show_short)]
+      
       shiny::removeUI(selector = "#bullet_points")
       shiny::insertUI(paste0("#stories-hr"),
                where = "afterEnd",
                shiny::tags$ul(
                  id = "bullet_points",
-                 lapply(stories$short_title[stories$ID %in% in_theme], \(x) {
+                 lapply(show_short, \(x) {
                    shiny::tags$li(
-                     curbcut::cc_t(lang = r$lang(), x),
+                     x,
                      style = "cursor: pointer; text-decoration: none;",
                      title = curbcut::cc_t(lang = r$lang(),
                                            stories$preview[stories$short_title == x]),

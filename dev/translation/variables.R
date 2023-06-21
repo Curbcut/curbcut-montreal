@@ -442,6 +442,10 @@ translation_variables <-
       add_row(en = "Canadian census",
               fr = "Recensement canadien") |> 
       
+      # Dropdown title
+      add_row(en = "Housing indicator",
+              fr = "Logement") |> 
+      
       # Rankings chr
       add_row(en = "exceptionally low",
               fr = "exceptionnellement faible") |>
@@ -685,7 +689,7 @@ translation_variables <-
       add_row(en = "density of green alleys measured by square metres per 1000 residents",
               fr = "densité des ruelles vertes mesurée en mètres carrés pour 1000 habitants") |>
       add_row(en = "are living in areas with _X_ potential for active living",
-              fr = "vivent dans des zones ayant un potentiel _X_ pour la vie active") |>
+              fr = "vivent dans des zones ayant un potentiel _X_ en matière de vie active") |>
       add_row(en = "the density of green alleys is _X_ square metres per square kilometres",
               fr = "la densité des ruelles vertes est de _X_ mètres carrés par kilomètre carré") |>
       add_row(en = "the density of green alleys is _X_ square metres per 1,000 residents",
@@ -703,7 +707,38 @@ translation_variables <-
       add_row(en = "unusually dense",
               fr = "anormalement dense") |>
       add_row(en = "exceptionally dense",
-              fr = "exceptionnellement dense") |> 
+              fr = "exceptionnellement dense") |>
+      
+      add_row(en = "Very low",
+              fr = "Très bas") |>
+      add_row(en = "Very high",
+              fr = "Très haut") |>
+      
+      add_row(en = "Can-BICS",
+              fr = "Can-BICS") |> 
+      add_row(en = "Can-BICS metric",
+              fr = "Indice Can-BICS") |> 
+      add_row(en = "are living in areas with _X_ cycling infrastructure comfort and safety",
+              fr = "vivent dans des zones où le confort et la sécurité des infrastructures cyclables sont _X_") |> 
+      add_row(en = "the bikeway comfort and safety classification system",
+              fr = "le système de classification du confort et de la sécurité des pistes cyclables") |> 
+      add_row(en = "bikeway comfort and safety classification system",
+              fr = "système de classification du confort et de la sécurité des pistes cyclables") |> 
+      add_row(en = "Meghan Winters (and her team) at Faculty of Health Sciences, Simon Fraser University",
+              fr = "Meghan Winters (et son équipe) à la Faculté des sciences de la santé de l'Université Simon Fraser") |> 
+      
+      # Sources
+      add_row(en = "DMTI",
+              fr = "DMTI") |> 
+      add_row(en = "Canadian Open Database of Healthcare Facilities (ODHF)",
+              fr = "Base de données ouvertes sur les établissements de soins de santé (BDOESS)") |> 
+      add_row(en = "Canadian Open Database of Educational Facilities (ODEF)",
+              fr = "Base de données ouvertes sur les établissements d'enseignement (BDOEE)") |> 
+      add_row(en = "Canadian Open Database of Cultural and Art Facilities (ODCAF)",
+              fr = "Base de données ouvertes sur les installations culturelles et artistiques (BDOICA)") |> 
+      add_row(en = "Données Québec",
+              fr = "Données Québec") |> 
+      
       
       
       # Climate risk ------------------------------------------------------------
@@ -762,7 +797,7 @@ translation_variables <-
               fr = "Risque climatique") |>
       add_row(en = "City of Montreal's open data website",
               fr = "Site web de données ouvertes de la ville de Montréal") |>
-      add_row(en = "exceptionally invulnérable",
+      add_row(en = "exceptionally unsusceptable",
               fr = "exceptionnellement invulnérable") |>
       add_row(en = "unusually unsusceptable",
               fr = "anormalement invulnérable") |>
@@ -870,7 +905,42 @@ translation_variables <-
               fr = "Écologie") |>
       add_row(en = "David Suzuki Foundation",
               fr = "Fondation David Suzuki")  
-  )
+  ) |> 
+  
+
+# Crash -------------------------------------------------------------------
+
+add_row(en = "Crashes (cyc)",
+        fr = "Collisions (vélo)") |> 
+  add_row(en = "Crashes (ped)",
+          fr = "Collisions (piétons)") |> 
+  add_row(en = "Crashes",
+          fr = "Collisions") |> 
+  add_row(en = "Car crashes involving cyclists",
+          fr = "Collisions de voiture impliquant des cyclistes") |>
+  add_row(en = "Car crashes involving pedestrians",
+          fr = "Collisions de voiture impliquant des piétons") |> 
+  add_row(en = "Car crashes",
+          fr = "Collisions de voiture") |> 
+  add_row(en = "the number of registered car crashes involving cyclists",
+          fr = "le nombre de collisions de voiture enregistrés impliquant des cyclistes") |> 
+  add_row(en = "the number of registered car crashes involving pedestrians",
+          fr = "le nombre de collisions de voiture enregistrés impliquant des piétons") |> 
+  add_row(en = "the number of registered car crashes",
+          fr = "le nombre de collisions de voiture enregistrés") |> 
+  add_row(en = "number of registered car crashes involving cyclists",
+          fr = "nombre de collisions de voiture enregistrés impliquant des cyclistes") |> 
+  add_row(en = "number of registered car crashes involving pedestrians",
+          fr = "nombre d'de collisions de voiture enregistrés impliquant des piétons") |> 
+  add_row(en = "number of registered car crashes",
+          fr = "nombre de collisions de voiture enregistrés") |> 
+  add_row(en = "involving cyclists were registered",
+          fr = "impliquant des cyclistes ont été enregistrés") |> 
+  add_row(en = "involving pedestrians were registered",
+          fr = "impliquant des piétons ont été enregistrés") |> 
+  add_row(en = "were registered",
+          fr = "ont été enregistrés")
+  
   
   
   

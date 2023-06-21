@@ -102,8 +102,6 @@ tileset_upload_grid <- function(region, all_scales, street, map_zoom_levels, max
     })
   }, all_tables, names(all_tables))
   
-  # TKTK CHECK IF ALL SCALES HAVE BEEN CORRECTLY UPLOADED
-  
   # Create recipe, create tileset and publish
   maxzooms <- tibble::tibble(scale = names(max_zoom),
                              maxzoom = unlist(max_zoom))
@@ -213,6 +211,7 @@ tileset_upload_grid <- function(region, all_scales, street, map_zoom_levels, max
         zooms <- calculate_zoom_levels(mzl)
         minzooms <- zooms$min_zoom
         maxzooms <- zooms$max_zoom
+        maxzooms[length(maxzooms)] <- 16
         names(minzooms) <- scale_names
         names(maxzooms) <- scale_names
         
@@ -242,7 +241,7 @@ tileset_upload_grid <- function(region, all_scales, street, map_zoom_levels, max
         )
         # Give some time so the deletion is completed
         Sys.sleep(5)
-        
+
         # New tileset
         tileset_create_tileset(name,
                                recipe = recipe,

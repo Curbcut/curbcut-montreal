@@ -61,13 +61,16 @@ ready_modules_home <- function(mods_rdy) {
 
 stories_dropdown_ui <- function(stories) {
   
-  ind_stories <- lapply(stories$ID, \(x) {
+  stories_translated <- stories
+  stories_translated <- stories_translated[order(stories_translated$short_title), ]
+  
+  ind_stories <- lapply(stories_translated$ID, \(x) {
     bslib::nav_item(tags$a(curbcut::cc_t(
-                                stories$short_title[stories$ID == x]), 
-                           onclick = paste0("openTab('stories');",
-                                            "Shiny.setInputValue(`",
-                                            "stories-select_nav`, '", x, "');"),
-                           style = "cursor: pointer"))
+      stories_translated$short_title[stories_translated$ID == x]), 
+      onclick = paste0("openTab('stories');",
+                       "Shiny.setInputValue(`",
+                       "stories-select_nav`, '", x, "');"),
+      style = "cursor: pointer"))
   })
   
   do.call(bslib::nav_menu, c(

@@ -7,29 +7,6 @@ home_UI <- function(id) {
     susPageSectionFeature(
       susCarousel(
         susCarouselSlide(
-          title = tags$em(nowrap("Centraide x"), 
-                          nowrap("Curbcut")),
-          preview = curbcut::cc_t("Centraide"),
-          tags$p(curbcut::cc_t("In a novel collaboration, Centraide of Greater ",
-                      "Montreal is partnering with Curbcut on a series of ",
-                      "housing maps. Centraide is using its social expertise ",
-                      "and data to help target and interpret housing issues, ",
-                      "a decisive factor in poverty and social exclusion.")),
-          tags$div(class = "sus-button-group",
-                   tags$a(class = "sus-button sus-icon-button sus-button-secondary", 
-                          href = "#", onclick = "openTab('afford')",
-                          curbcut::cc_t("Housing affordability"), 
-                          curbcut::icon_material("location_city")),
-                   tags$a(class = "sus-button sus-icon-button sus-button-primary", 
-                          href = "https://www.centraide-mtl.org/", 
-                          curbcut::cc_t("Centraide"), target = "_blank",
-                          img(src = "centraide_logo/centraide_sm.png",
-                              style = paste0("display:inline; height:20px; ",
-                                             "float:right; margin-top:auto; ",
-                                             "margin-bottom:auto; margin-left:10px")))
-          )
-        ),
-        susCarouselSlide(
           title = tags$em(nowrap(curbcut::cc_t("Towards a")), 
                           nowrap(curbcut::cc_t("sustainable city"))),
           preview = curbcut::cc_t("Welcome"),
@@ -50,24 +27,48 @@ home_UI <- function(id) {
                          curbcut::cc_t("Start Exploring Maps"), 
                          curbcut::icon_material("travel_explore"))
           )
-        ), susCarouselSlide(
-          title = tags$em(tags$em(nowrap(curbcut::cc_t("Get notified about")), 
-                                  nowrap(curbcut::cc_t("the 2021 Census")))),
-          preview = curbcut::cc_t("2021 Census data"),
-          tags$p(curbcut::cc_t("Many of the topics that can be explored on Curbcut draw on data from ",
-                      "the Canadian Census. The Census of Population is conducted ",
-                      "every five years and provides statistical information ",
-                      "about demographic, social and economic characteristics.")),
-          tags$p(curbcut::cc_t("Sign up to our newsletter to get notified when ",
-                      "the 2021 Census data is available on Curbcut!")),
+        ),
+        susCarouselSlide(
+          title = tags$em(nowrap("Centraide x"), 
+                          nowrap("Curbcut")),
+          preview = curbcut::cc_t("Centraide"),
+          tags$p(curbcut::cc_t("In a novel collaboration, Centraide of Greater ",
+                               "Montreal is partnering with Curbcut on a series of ",
+                               "housing maps. Centraide is using its social expertise ",
+                               "and data to help target and interpret housing issues, ",
+                               "a decisive factor in poverty and social exclusion.")),
           tags$div(class = "sus-button-group",
-                   tags$a(class = "sus-button sus-icon-button sus-button-primary",
-                          style = "cursor: pointer;",
-                          id = "sign_up_from_carousel", 
-                          curbcut::cc_t("Sign up!"),
-                          curbcut::icon_material("email"))
+                   tags$a(class = "sus-button sus-icon-button sus-button-secondary", 
+                          href = "#", onclick = "openTab('afford')",
+                          curbcut::cc_t("Housing affordability"), 
+                          curbcut::icon_material("location_city")),
+                   tags$a(class = "sus-button sus-icon-button sus-button-primary", 
+                          href = "https://www.centraide-mtl.org/", 
+                          curbcut::cc_t("Centraide"), target = "_blank",
+                          img(src = "centraide_logo/centraide_sm.png",
+                              style = paste0("display:inline; height:20px; ",
+                                             "float:right; margin-top:auto; ",
+                                             "margin-bottom:auto; margin-left:10px")))
           )
-        )
+        )#,
+        # susCarouselSlide(
+        #   title = tags$em(tags$em(nowrap(curbcut::cc_t("Get notified about")), 
+        #                           nowrap(curbcut::cc_t("the 2021 Census")))),
+        #   preview = curbcut::cc_t("2021 Census data"),
+        #   tags$p(curbcut::cc_t("Many of the topics that can be explored on Curbcut draw on data from ",
+        #               "the Canadian Census. The Census of Population is conducted ",
+        #               "every five years and provides statistical information ",
+        #               "about demographic, social and economic characteristics.")),
+        #   tags$p(curbcut::cc_t("Sign up to our newsletter to get notified when ",
+        #               "the 2021 Census data is available on Curbcut!")),
+        #   tags$div(class = "sus-button-group",
+        #            tags$a(class = "sus-button sus-icon-button sus-button-primary",
+        #                   style = "cursor: pointer;",
+        #                   id = "sign_up_from_carousel", 
+        #                   curbcut::cc_t("Sign up!"),
+        #                   curbcut::icon_material("email"))
+        #   )
+        # )
       )
     ),
     susPageSection(

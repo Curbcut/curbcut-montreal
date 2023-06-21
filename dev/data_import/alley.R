@@ -341,7 +341,8 @@ build_and_append_alley <- function(scales_variables_modules, crs) {
     calculate_breaks(
       all_scales = data_interpolated$scales,
       vars = vars,
-      types = types
+      types = types, 
+      use_quintiles = TRUE
     )
 
 

@@ -1,27 +1,8 @@
-library(tibble)
+## STORIES TRANSLATION #########################################################
 
-# Translation function
-.deepl_key <- "42c0646a-5ebd-ada0-07a0-d27c8eb37613:fx"
-.t <- function(x) deeplr::toFrench2(x, auth_key = .deepl_key)
-translation_fun <- function(strings) {
-  z <- lapply(strings, \(x) {
-    fr <- .t(x)
-    sprintf('add_row(en = "%s",
-          fr = "%s")', x, fr)
-  })
-  paste0(z, collapse = " |>\n") |>
-    writeLines()
-}
-
-# Load stories
-qs::qload("data/stories.qsm")
-
-# Change which column is subset
-strings <- stories$title
-translation_fun(strings)
-
-add_row(en = "Environmental racism and green gentrification in Montreal’s Little Burgundy", 
-        fr = "Racisme environnemental et êco-embourgeoisement dans le quartier de la Petite Bourgogne à Montréal") |>
+translation_stories <- 
+  tibble(en = "Environmental racism and green gentrification in Montreal’s Little Burgundy", 
+         fr = "Racisme environnemental et êco-embourgeoisement dans le quartier de la Petite Bourgogne à Montréal") |>
   add_row(en = "The Miron Quarry: The transformation of an industrial limestone quarry into a flourishing environmental complex", 
           fr = "La carrière Miron : La transformation d'une carrière de calcaire industrielle en un complexe environnemental florissant") |>
   add_row(en = "Understanding what lies beneath Montreal’s Grand Parc de L’Ouest", 
@@ -39,13 +20,9 @@ add_row(en = "Environmental racism and green gentrification in Montreal’s Litt
   add_row(en = "A History of Cycling Infrastructure in Montréal", 
           fr = "Un historique des infrastructures cyclables à Montréal") |>
   add_row(en = "Montreal alleys as a climate emergency adaptation strategy", 
-          fr = "Les ruelles de Montréal comme stratégie d'adaptation aux urgences climatiques")
-
-strings <- stories$short_title
-translation_fun(strings)
-
-add_row(en = "Little burgundy's transformation", 
-        fr = "La transformation de la Petit Bourgogne") |>
+          fr = "Les ruelles de Montréal comme stratégie d'adaptation aux urgences climatiques") |> 
+  add_row(en = "Little Burgundy's Transformation", 
+          fr = "La transformation de la Petit Bourgogne") |>
   add_row(en = "The Miron Quarry", 
           fr = "La carrière Miron") |>
   add_row(en = "Grand Parc de l'Ouest", 
@@ -64,14 +41,10 @@ add_row(en = "Little burgundy's transformation",
           fr = "Infrastructures cyclables") |>
   add_row(en = "Climate Emergency Adaptation Strategy", 
           fr = "Stratégie d'adaptation aux urgences climatiques") |>
-  add_row(en = "Montreal climate plans", 
-          fr = "Les plans climat de Montréal")
-
-strings <- stories$preview
-translation_fun(strings)
-
-add_row(en = "Little Burgundy has been the site of nearly 100 years of social and environmental transformation, and is currently undergoing a wave of green gentrification.", 
-        fr = "Depuis près de 100 ans, la Petite Bourgogne est le lieu d'une transformation sociale et environnementale et connaît actuellement une vague d'éco-gentrification.") |>
+  add_row(en = "Montreal Climate Plans", 
+          fr = "Les plans climat de Montréal") |> 
+  add_row(en = "Little Burgundy has been the site of nearly 100 years of social and environmental transformation, and is currently undergoing a wave of green gentrification.", 
+          fr = "Depuis près de 100 ans, la Petite Bourgogne est le lieu d'une transformation sociale et environnementale et connaît actuellement une vague d'éco-gentrification.") |>
   add_row(en = "Residents and government are coming together to shape the future of the Saint-Michel Environmental Complex, located on the site of the former Miron Quarry.", 
           fr = "Les résidents et le gouvernement se réunissent pour façonner l'avenir du Complexe environnemental de Saint-Michel, situé sur le site de l'ancienne carrière Miron.") |>
   add_row(en = "In the Grand Parc de L’Ouest, a renewed drive to protect biodiversity and create greenspace illustrates the changing politics of development on the island.", 
@@ -89,12 +62,10 @@ add_row(en = "Little Burgundy has been the site of nearly 100 years of social an
   add_row(en = "Montréal is a world-renowned cycling city, but it hasn’t always been this way. Explore how the city’s cycling infrastructure has evolved over time in this interactive story.", 
           fr = "Montréal est une ville cyclable de renommée mondiale, mais il n'en a pas toujours été ainsi. Découvrez comment les infrastructures cyclables de la ville ont évolué au fil du temps dans ce récit interactif.") |>
   add_row(en = "Transforming alleys to improve people's quality of life on a neighbourhood scale can simultaneously enhance urban quality on a larger scale", 
-          fr = "Transformer les ruelles pour améliorer la qualité de vie des habitants à l'échelle d'un quartier peut simultanément améliorer la qualité urbaine à plus grande échelle.")
-
-strings <- unique(unlist(stories$themes))
-translation_fun(strings)
-
-
+          fr = "Transformer les ruelles pour améliorer la qualité de vie des habitants à l'échelle d'un quartier peut simultanément améliorer la qualité urbaine à plus grande échelle.") |> 
+  add_row(en = "Climate action in Montreal: exploring two administrations' strategies for a greener future",
+          fr = "L'action climatique à Montréal : exploration des stratégies de deux administrations pour un avenir plus vert") |> 
+  
   add_row(en = "Community activism", 
           fr = "Activisme communautaire") |>
   add_row(en = "Green space", 
@@ -104,15 +75,23 @@ translation_fun(strings)
   add_row(en = "Biodiversity", 
           fr = "Biodiversité") |>
   add_row(en = "Climate change", 
-          fr = "Changement climatique")
-
-#nav_title
-translation_pages <- 
-  tibble(en = character(),
-         fr = character()) |> 
-  add_row(en = "", 
-          fr = "") |>
-  add_row(en = "", 
-          fr = "")
+          fr = "Changement climatique") |> 
+  add_row(en = "Gentrification", 
+          fr = "Embourgeoisement") |> 
+  add_row(en = "Urban renewal", 
+          fr = "Rénovation urbaine") |> 
+  add_row(en = "Urban governance",
+          fr = "Gouvernance urbaine") |> 
+  add_row(en = "Transportation",
+          fr = "Mobilité") |> 
+  add_row(en = "Policy",
+          fr = "Politiques") |> 
   
+  # Mount-Royal
+  add_row(en = "Mount-Royal: One Consistent Beautiful Mountain",
+          fr = "Le Mont-Royal: Une belle montagne urbaine") |> 
+  add_row(en = "The Mount-Royal",
+          fr = "Le Mont-Royal") |> 
+  add_row(en = "Throughout its evolution, Mount-Royal has played an important role in the city of Montreal’s history and development",
+          fr = "Tout au long de son évolution, le Mont-Royal a joué un rôle important dans l'histoire et le développement de la ville de Montréal")
   

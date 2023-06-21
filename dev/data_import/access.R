@@ -50,20 +50,20 @@ build_and_append_access <- function(scales_variables_modules,
   # })
   # 
   # qs::qsave(daycares, "dev/data/built/daycares.qs")
-  daycares <- qs::qread("dev/data/built/daycares.qs")
-
-  # Add point data to DA ----------------------------------------------------
-
-  point_DA <- accessibility_point_per_DA(point_data = list(daycarespots_2023 = daycares),
-                                         DA_table = census_scales$DA,
-                                         crs = crs)
-
-
-  # Add access to point data by time intervals ------------------------------
-
-  data <- accessibility_add_intervals(point_per_DA = point_DA,
-                                      traveltimes = traveltimes)
-  qs::qsave(data, "dev/data/built/access_data.qs")
+  # daycares <- qs::qread("dev/data/built/daycares.qs")
+  # 
+  # # Add point data to DA ----------------------------------------------------
+  # 
+  # point_DA <- accessibility_point_per_DA(point_data = list(daycarespots_2023 = daycares),
+  #                                        DA_table = census_scales$DA,
+  #                                        crs = crs)
+  # 
+  # 
+  # # Add access to point data by time intervals ------------------------------
+  # 
+  # data <- accessibility_add_intervals(point_per_DA = point_DA,
+  #                                     traveltimes = traveltimes)
+  # qs::qsave(data, "dev/data/built/access_data.qs")
   data <- qs::qread("dev/data/built/access_data.qs")
 
   # Get list of data variables ----------------------------------------------
@@ -95,8 +95,7 @@ build_and_append_access <- function(scales_variables_modules,
   
   # Calculate breaks ONCE for 30 minutes. Use those breaks on all variables
   breaks_base <- sapply(unique_vars, paste, simplify = FALSE, USE.NAMES = TRUE)
-  middle_val <- time_intervals[round(length(time_intervals)/2)]
-  breaks_base <- lapply(breaks_base, \(x) gsub("_\\d{2}_", sprintf("_%s_", middle_val), x))
+  breaks_base <- lapply(breaks_base, \(x) gsub("_\\d{2}_", "_30_", x))
   
   types <- rep(list("avg"), length(unique_vars))
   names(types) <- unique_vars

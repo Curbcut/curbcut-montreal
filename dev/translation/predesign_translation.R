@@ -28,4 +28,6 @@ translation_temp <- tibble(en = character(), fr = character()) |>
   add_row(en = "Authors",
           fr = "Auteurs") |> 
   add_row(en = "Stories",
-          fr = "Histoires")
+          fr = "Histoires") |> 
+  add_row(en = "Themes",
+          fr = "Thèmes")

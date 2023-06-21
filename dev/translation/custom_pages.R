@@ -107,4 +107,10 @@ translation_custom_pages <-
   add_row(en = "Visited green alleys type",
           fr = "Type de ruelles vertes visitées") |>
   add_row(en = "Curbcut’s observational data",
-          fr = "Les données d'observation de Curbcut")
+          fr = "Les données d'observation de Curbcut") |> 
+  
+  # Climate
+  add_row(en = "Climate",
+          fr = "Climat") |> 
+  add_row(en = "View with grids",
+          fr = "Vue avec maillage")

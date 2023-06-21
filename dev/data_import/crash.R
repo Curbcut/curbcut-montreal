@@ -87,7 +87,8 @@ build_and_append_crash <- function(scales_variables_modules, crs) {
     calculate_breaks(
       all_scales = data_interpolated$scales,
       vars = vars,
-      types = types
+      types = types, 
+      use_quintiles = TRUE
     )
 
 
@@ -173,7 +174,7 @@ build_and_append_crash <- function(scales_variables_modules, crs) {
       nav_title = "Road safety",
       title_text_title = "Road safety: Car crashes",
       title_text_main = paste0(
-        "Road safety is an important consideration for wellbeing ",
+        "<p>Road safety is an important consideration for wellbeing ",
         "and safety in cities. This page ",
         "provides an overview and analysis of road collisions ",
         "in the City of Montreal, ranging from 2012 to today."),

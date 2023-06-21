@@ -57,7 +57,10 @@ source("dev/translation/afford.R", encoding = "utf-8")
 source("dev/translation/modules.R", encoding = "utf-8")
 source("dev/translation/tenure.R", encoding = "utf-8")
 source("dev/translation/home_and_about.R", encoding = "utf-8")
+source("dev/translation/stories.R", encoding = "utf-8")
 source("dev/translation/predesign_translation.R", encoding = "utf-8")
+source("dev/translation/misc.R", encoding = "utf-8")
+
 
 
 # Retrieve and bind translated csvs ---------------------------------------
@@ -73,6 +76,8 @@ translation_df <-
             translation_tenure,
             translation_pages,
             translation_home_and_about,
+            translation_stories,
+            translation_misc,
             
             translation_temp) |> 
   dplyr::distinct(en, .keep_all = TRUE)
@@ -83,37 +88,66 @@ if (translation_df$fr |> is.na() |> sum() > 0)
 
 # Test --------------------------------------------------------------------
 
-# if (!exists("title_text")) title_text <- qs::qread("data/title_text.qs")
-# missing_title_text <-
-#   title_text$text[
-#     !sapply(title_text$text, \(x) x %in% translation_fr$en, USE.NAMES = FALSE)]
-# if (length(missing_title_text) > 0) warning("Missing title text translations")
-#
-# if (!exists("variables")) title_text <- qs::qread("data/variables.qs")
-# missing_variables <-
-#   c(variables$var_title[
-#     !sapply(variables$var_title, \(x) x %in% translation_fr$en, USE.NAMES = FALSE)],
-#     variables$var_short[
-#       !sapply(variables$var_short, \(x) x %in% translation_fr$en, USE.NAMES = FALSE)],
-#     variables$explanation[
-#       !sapply(variables$explanation, \(x) x %in% translation_fr$en, USE.NAMES = FALSE)],
-#     variables$source[
-#       !sapply(variables$source, \(x) x %in% translation_fr$en, USE.NAMES = FALSE)]) |>
-#   unique()
-# if (length(missing_variables) > 0) warning("Missing variables translations")
-#
-# if (!exists("modules")) title_text <- qs::qread("data/modules.qs")
-# missing_modules <-
-#   modules$dataset_info[
-#     !sapply(modules$dataset_info, \(x) x %in% translation_fr$en, USE.NAMES = FALSE)]
-# if (length(missing_modules) > 0) warning("Missing modules translations")
+# Search the whole variables table. Is everything translated?
 
-# # .t <- function (x) deeplr::toFrench2(x, auth_key = .deepl_key)
-# purrr::map_dfr(missing_variables, \(x) {
-#     tibble(en = x,
-#            fr = .t(x))
-# }) |> form_translation_tibble()
+is_translated <- function(strings) {
+  strings <- strings[!is.na(strings)]
+  not_there <- strings[!strings %in% translation_df$en]
+  
+  if (length(not_there) > 0) {
+    warning(sprintf("Following strings not translated: \n%s",
+         paste0(unique(not_there), collapse = "\n")))
+  }
+}
 
+# VARIABLES
+is_translated(variables$var_title)
+is_translated(variables$var_short)
+is_translated(variables$exp_q5)
+is_translated(variables$explanation)
+is_translated(variables$explanation_nodet)
+is_translated(unique(unlist(variables$rankings_chr)))
+is_translated(unique(unlist(variables$theme)))
+is_translated(unique(variables$source))
+
+rank_names <- lapply(variables$breaks_q5, \(x) {
+  if ("rank_name" %in% names(x))
+    x[c("rank_name", "rank_name_short")]
+})
+rank_names <- unlist(rank_names[!sapply(rank_names, is.null)])
+is_translated(rank_names)
+
+group_diffs <- unique(c(unname(unlist(variables$group_diff)), names(unlist(variables$group_diff))))
+group_diffs <- group_diffs[!curbcut:::is_numeric(group_diffs)]
+is_translated(unique(variables$group_name))
+
+# PAGES
+is_translated(modules$theme)
+is_translated(modules$nav_title)
+is_translated(modules$title_text_title)
+is_translated(modules$title_text_main)
+is_translated(modules$title_text_extra)
+is_translated(modules$dataset_info)
+is_translated(modules$main_dropdown_title)
+
+# SCALES DICTIONARY
+is_translated(scales_dictionary$sing)
+is_translated(scales_dictionary$plur)
+is_translated(scales_dictionary$slider_title)
+is_translated(scales_dictionary$place_heading)
+is_translated(scales_dictionary$place_name)
+
+# REGIONS DICTIONARY
+is_translated(regions_dictionary$name)
+is_translated(regions_dictionary$to_compare)
+is_translated(regions_dictionary$to_compare_determ)
+is_translated(regions_dictionary$to_compare_short)
+
+# STORIES
+is_translated(unique(unlist(stories$themes)))
+is_translated(stories$title)
+is_translated(stories$short_title)
+is_translated(stories$preview)
 
 # Save to the translation files -------------------------------------------
 

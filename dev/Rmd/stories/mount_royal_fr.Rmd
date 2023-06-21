@@ -1,5 +1,5 @@
 ---
-title: "Mont-Royal : Une belle montagne cohérente"
+title: "Le Mont-Royal: Une belle montagne urbaine"
 author: "Dominique Boulet"
 date: "06.2023"
 output: html_document

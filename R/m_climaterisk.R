@@ -190,7 +190,7 @@ vars_right <- modules$var_right[modules$id == "climaterisk"][[1]]
     grid <- curbcut::checkbox_server(
       id = id,
       r = r,
-      label = shiny::reactive(cc_t("View with grids", lang = r$lang())))
+      label = shiny::reactive("View with grids"))
 
     # Right variable / compare panel
     var_right <- curbcut::compare_server(
