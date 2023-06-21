@@ -1,6 +1,6 @@
 #### Authors translation ####################################################
 
-authors_translation <- 
+translation_authors <- 
   tibble(en = character(), fr = character()) |>
   add_row(en = paste0("Principal investigator and Lead Designer"), 
           fr = paste0("Chercheur principal et concepteur principal")) |> 

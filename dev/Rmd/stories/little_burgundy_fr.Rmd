@@ -3,7 +3,7 @@ title: "Racisme environnemental et éco-embourgeoisement dans le quartier de la 
 subtitle: "Un quartier en transformation"  
 output: html_document
 author: "Sara Hashemi"
-runtime: shiny_prerendered
+
 ---
 
 ```{r setup, include=FALSE}

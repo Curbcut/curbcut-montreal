@@ -3,7 +3,7 @@ title: 'Le Champ des Possibles : Une prairie urbaine communautaire et biodiversi
 author: "Dominique Boulet"
 date: "07.2022"
 output: html_document
-runtime: shiny_prerendered
+
 ---
 
 ```{r setup, include=FALSE}
@@ -20,7 +20,7 @@ Situé dans le quartier du Mile End, le long de la voie ferrée du Canadien Paci
 
 ```{r, echo=FALSE, fig.align = 'left', out.width="100%", fig.cap="Image 1.Champ des Possibles", warning=FALSE}
 
-knitr::include_graphics(here("www/stories/visuals/champs_possibles/Image1_IMG_0648.jpeg"))
+knitr::include_graphics(here::here("dev/data/stories/raw_images/champs_possibles/Image1_IMG_0648.jpeg"))
 
 ```
 
@@ -32,7 +32,7 @@ En 2005, par suite d’une mobilisation citoyenne, le monastère des Carmélites
 
 ```{r, echo=FALSE, fig.align = 'left', out.extra='style="float:left; padding:50px; width:30%"', fig.cap="Image 2.Le projet de jardin Roerich, photo prise de from http://emilyrosemichaud.com/portfolio-item/roerich-garden-project", warning=FALSE}
 
-knitr::include_graphics(here("www/stories/visuals/champs_possibles/Image2_Roerich_4_KevinBrown-1.jpeg"))
+knitr::include_graphics(here::here("dev/data/stories/raw_images/champs_possibles/Image2_Roerich_4_KevinBrown-1.jpeg"))
 
 ```
 
@@ -46,7 +46,7 @@ Depuis 2013, l'ACDP dispose d'une entente formelle de cogestion avec l'arrondiss
 
 ```{r, echo=FALSE, fig.align = 'left', out.width="100%", fig.cap="Image 3.La voie piétonne et cyclable entre l'avenue de Gaspé et la rue Henri-Julien.", warning=FALSE}
 
-knitr::include_graphics(here("www/stories/visuals/champs_possibles/Image3_IMG_0687.jpeg"))
+knitr::include_graphics(here::here("dev/data/stories/raw_images/champs_possibles/Image3_IMG_0687.jpeg"))
 
 ```
 
@@ -58,7 +58,7 @@ L’élimination des barrières physiques du site est un problème permanent dan
 
 ```{r, echo=FALSE, fig.align = 'left', out.width="100%", fig.cap="Image 4.Traversée informelle de la clôture de la voie ferrée du CP", warning=FALSE}
 
-knitr::include_graphics(here("www/stories/visuals/champs_possibles/Image4_IMG_0664.jpeg"))
+knitr::include_graphics(here::here("dev/data/stories/raw_images/champs_possibles/Image4_IMG_0664.jpeg"))
 
 ```
 
@@ -68,7 +68,7 @@ Pour de nombreuses personnes interrogées dans le cadre de la recherche de Potee
 
 ```{r, echo=FALSE, fig.align = 'left', out.width="100%", fig.cap="Image 5.Une fosse à feu et une installation artistique dans le Champ des Possibles", warning=FALSE}
 
-knitr::include_graphics(here("www/stories/visuals/champs_possibles/Image5_IMG_0670.jpeg"))
+knitr::include_graphics(here::here("dev/data/stories/raw_images/champs_possibles/Image5_IMG_0670.jpeg"))
 
 ```
 

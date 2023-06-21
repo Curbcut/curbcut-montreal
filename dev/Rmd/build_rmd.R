@@ -1,46 +1,55 @@
 #### Build Rmd documents  ######################################################
 
 # Processing function -----------------------------------------------------
-
-process_rmd <- function(file, path) {
-  
-  # Error handling
-  stopifnot(sum(str_detect(file, "Rmd")) == length(file))
-  
-  # Prep locations
-  out_file <- str_replace(file, "Rmd", "html")
-  out <- paste0("www/", path, "/", out_file)
-  
-  # Render document
-  rmarkdown::render(paste0("dev/Rmd/", path, "/", file), 
-                    output_dir = paste0("www/", path),
-                    quiet = TRUE)
-  
-  # Remove long script tag
-  # x <- readLines(out)
-  # long_script <- str_which(x, "<script")
-  # long_script <- long_script[nchar(x[long_script]) > 100000]
-  # x <- x[-long_script]
-  
-  # Write ouput
-  # writeLines(x, out)
-  
-  # Take head out, which breaks Curbcut' CSS
-  x <- readLines(out)
-  
-  if (file %in% c(list.files("dev/Rmd/stories"),
-                  list.files("dev/Rmd/news"))) {
-    x <- 
-      str_remove_all(x, "(?<=src=\")../../../www/(?=stories|news)")
-
-  } else {
-    x <-
-      x[-((str_detect(x, "<head") |> which()):(str_detect(x, "</head") |> which()))]
-  }
-  
-  writeLines(x, out)
-}
-
+# process_stories_rmd <- function(file, css_path = here::here("www/sus.css")) {
+#   
+#   # Error handling
+#   if (!sum(str_detect(file, "Rmd")) == length(file)) return(
+#     warning(sprintf("Skipped %s as it's not an Rmd document.", file))
+#   )
+#   
+#   # Prep locations
+#   out_file <- gsub("Rmd", "html", file)
+#   out <- paste0("www/stories/", out_file)
+#   
+#   # Custom output format with the CSS file
+#   custom_html_output_format <- rmarkdown::html_document(css = css_path)
+#   
+#   # Extract image filename
+#   image_filename <- gsub("_en|_fr", "", file)
+#   image_filename <- gsub("\\.Rmd", "", image_filename)
+#   image_filename <- paste0("dev/Rmd/stories/bandeau_img/", image_filename, ".png")
+#   image_filename <- here::here(image_filename)
+#   
+#   # Read RMarkdown content
+#   rmd_content <- readLines(paste0("dev/Rmd/stories/", file))
+#   
+#   # Add image chunk right after the title texts
+#   title_chunk_index <- which(str_detect(rmd_content, "---"))
+#   image_chunk <- paste0(
+#     c(
+#       "",
+#       "```{r echo=FALSE, out.width='100%', fig.align='center'}",
+#       paste0("knitr::include_graphics('", image_filename, "')"),
+#       "```"
+#     ),
+#     collapse = "\n"
+#   )
+#   rmd_content <- append(rmd_content, image_chunk, after = title_chunk_index[length(title_chunk_index)])
+#   
+#   # Save modified RMarkdown content to a temporary file
+#   temp_rmd_file <- tempfile(pattern = "temp_", fileext = ".Rmd")
+#   writeLines(rmd_content, temp_rmd_file)
+#   
+#   # Render temporary RMarkdown document
+#   rmarkdown::render(
+#     temp_rmd_file, 
+#     output_file = out,
+#     output_format = custom_html_output_format,
+#     output_dir = paste0("www/stories"),
+#     quiet = TRUE
+#   )
+# }
 
 # MCP ---------------------------------------------------------------------
 
@@ -48,17 +57,13 @@ mcp_files <- list.files("dev/Rmd/mcp") |> str_subset(".Rmd$")
 purrr::walk(mcp_files, process_rmd, path = "mcp")
 
 
-# Crash -------------------------------------------------------------------
-
-process_rmd("crash.Rmd", "crash")
-
-
 # Montreal stories --------------------------------------------------------
 
-stories_files <- list.files("dev/Rmd/stories")
-library(here)
-purrr::walk(stories_files, process_rmd, path = "stories")
+# stories_files <- list.files("dev/Rmd/stories")
+# library(here)
+# purrr::walk(stories_files, process_stories_rmd)
 
+# NOW IN CC.BUILDR
 
 # News --------------------------------------------------------------------
 

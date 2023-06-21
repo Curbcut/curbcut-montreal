@@ -5,7 +5,7 @@
 meet_the_team_UI <- function(id) {
   ns <- NS(id)
   absolutePanel(
-    h2(cc_t(r = r, "Meet the team")),
+    h2(curbcut::cc_t("Meet the team")),
     uiOutput(outputId = ns("meet_the_team_html")),
     left = "250px",
     style = "max-height: 88vh; overflow-y: auto;"

@@ -2,10 +2,6 @@
 
 # Design functions --------------------------------------------------------
 
-susSidebarWidgets <- function(...) {
-  return(div(class = "sus-sidebar-widgets",...))
-}
-
 nowrap <- function(...) {
   return(tags$span(style = "white-space: nowrap;", ...))
 }
@@ -15,10 +11,6 @@ scrollAnchor <- function(id) {
          tags$span(id = id, style = "display: block;position: absolute;top: calc(var(--h-navbar) * -2);")))
 }
 
-languageButtonLabel <- function(text) {
-  as.character(tags$span(tags$span(class = "material-icons", "language"), 
-                         span(text)))
-}
 
 susNewsExploreArticle <- function(id, type, author, date, title, img, preview) {
   return (div(class='action-button shiny-bound-input', id=id,
@@ -28,7 +20,7 @@ susNewsExploreArticle <- function(id, type, author, date, title, img, preview) {
                 tags$span(class="news-meta-data-type", type),
                 tags$span(class="news-meta-data-date", date)#,
                 # tags$span(class="news-meta-data-author",
-                #           tagList(cc_t(r = r, "by"), " ", author)
+                #           tagList(curbcut::cc_t("by"), " ", author)
                 #           ),
                 ),
         tags$h1(title),
@@ -45,7 +37,7 @@ susNewsExploreArticle <- function(id, type, author, date, title, img, preview) {
 
 susAuthorLink <- function(title, href=NULL, icon=NULL) {
   if (is.null(icon)) {
-    icon = materialIcon("link")
+    icon = curbcut::icon_material("link")
   }
   return(tags$a(class="sus-author-link", href=href, target="_blank", span(class="sus-author-link-icon", icon), title)) 
 }
@@ -70,37 +62,6 @@ navbarPageWithInputs <- function(..., inputs) {
     htmltools::tagAppendChild(
     navbar[[4]][[1]][[1]]$children[[1]], container)
   navbar
-}
-
-# Make a Google fonts Material icon
-# To browse the list of available icons, go to: https://fonts.google.com/icons
-# For exact usage, see the "Inserting the icon" heading on the right hand sidebar,
-# where you should copy the inner text of the <span>...</span> example given.
-materialIcon <- function(icon) {
-  span(class = "material-icons", icon)
-}
-
-# Make a custom icon, styled in the same way as the above Material icons
-# To see the list of available icons, check www/icons/custom
-customIcon <- function(icon) {
-  span(class = "custom-icons", data_custom_icon = icon)
-}
-
-# Replace the inner text of a <button> tag with a Material icon span
-materialIconButton <- function(tag, icon) {
-  tag <- tagSetChildren(tag, .cssSelector = "button", 
-                        materialIcon(icon))
-  tag
-}
-
-# Map module right panel
-right_panel <- function(id, ...) {
-  
-  absolutePanel(
-    id = NS(id, "right_panel"),
-    class = "panel panel-default sus-map-panel sus-scroll",
-    tags$div(class = "sus-map-panel-content sus-scroll-content", ...)
-  )
 }
 
 # Make a link button styled to go inside of a link list group
@@ -138,14 +99,14 @@ susFooter <- function() {
       ),
       tags$div(class = "sus-page-footer-links",
         tags$ul(
-          tags$li(tags$a(href = NULL, HTML("&nbsp;"))),#cc_t(r = r, "Terms & Conditions"))),
+          tags$li(tags$a(href = NULL, HTML("&nbsp;"))),#curbcut::cc_t("Terms & Conditions"))),
           tags$li(tags$a(href = NULL, style = "cursor:pointer;", 
                          onclick = "openTab('about_sus')", 
-                         cc_t(r = r, "About"), materialIcon("info"))),
+                         curbcut::cc_t("About"), curbcut::icon_material("info"))),
           tags$li(tags$a(href = NULL, style = "cursor:pointer;", 
                          onclick = "document.getElementById('contact').click();",
-                         cc_t(r = r, "Contact/feedback"), materialIcon("mail"))),
-          tags$li(tags$a(href = NULL, HTML("&nbsp;")))#cc_t(r = r, "Privacy Policy"))),
+                         curbcut::cc_t("Contact/feedback"), curbcut::icon_material("mail"))),
+          tags$li(tags$a(href = NULL, HTML("&nbsp;")))#curbcut::cc_t("Privacy Policy"))),
         )
       )
     )
@@ -158,7 +119,8 @@ susBanner <- function() {
     tags$div(class = "sus-banner-bg sus-bg-img-map"),
     tags$div(class = "sus-banner-bg sus-bg-img-skyline"),
     tags$h1(class = "sus-brand sus-banner-text", "Curbcut"),
-    tags$h4(class = "sus-brand sus-banner-text-city", cc_t("Montreal"))
+    tags$h4(class = "sus-brand sus-banner-text-city", 
+            cc_t("Montreal"))
   ))
 }
 
@@ -170,20 +132,20 @@ susCarousel <- function(..., id="", class="") {
                # Previous and next have been turned off, as the preview does 
                # not translate correctly
                # style = "cursor: pointer;",
-               # cc_t(r = r, "Previous:"),
+               # curbcut::cc_t("Previous:"),
                # HTML("&nbsp;"),
                tags$span(class="sus-carousel-preview-content")),
       tags$div(class="sus-carousel-preview sus-carousel-preview-next",
                # style = "cursor: pointer;",
-               # cc_t(r = r, "Next:"),
+               # curbcut::cc_t("Next:"),
                # HTML("&nbsp;"),
                tags$span(class="sus-carousel-preview-content")),
       tags$div(class="sus-carousel-nav-bttn sus-carousel-nav-bttn-left", 
                style = "cursor: pointer;",
-               materialIcon("chevron_left")),
+               curbcut::icon_material("chevron_left")),
       tags$div(class="sus-carousel-nav-bttn sus-carousel-nav-bttn-right", 
                style = "cursor: pointer;",
-               materialIcon("chevron_right")),
+               curbcut::icon_material("chevron_right")),
       ...)
   )
 }
@@ -298,30 +260,11 @@ js_links_between_modules <- "
           });
         }
       "
-bookmark_url <- 
-  'function copyUrl(text) {
-       var inputc = document.body.appendChild(document.createElement("input"));
-       inputc.value = window.location.href;
-       inputc.focus();
-       inputc.select();
-       document.execCommand("copy");
-       inputc.parentNode.removeChild(inputc);
-       alert("URL successfully copied.");
-}'
 
 styler <- '
 /* the big panel popup when we show an RMD in a map module */
-  .main_panel_text_popup {
-    max-height: calc(100vh - 155px);
-    overflow: auto;
-    background-color: #fff;
-    border: 1px solid transparent;
-    border-radius: 4px;
-    box-shadow: 0 50px 50px rgba(0,0,0,.6);
-    margin-left: 300px;
-  }
 
-  #sus_page > li:first-child { 
+  #cc_page > li:first-child { 
     display:none;
   }
   
@@ -333,7 +276,7 @@ styler <- '
   font-size: 13px;
   }
     
-  .mapdeck_div {
+  .map_div {
   height: calc(100vh - 85px);
   }
   
@@ -346,6 +289,11 @@ styler <- '
   
   .dropdown-menu > .inner.open {
   max-height:50vh !important;
+  }
+
+  .navbar-nav>li>.dropdown-menu {
+  max-height:345px;
+  overflow-y:auto;
   }
   
   #dropdown-menu-geo_change {
@@ -401,80 +349,7 @@ styler <- '
   padding: 10px;
 }
 
-  tr:nth-child(even) {
-  background-color: #B5C0DA50;
-  }
-
-  tr {
-  border-bottom: 1px solid #ddd;
-  }
-
-  tr:hover {
-  background-color: #B5C0DA50;
-  }
-
-  td {
-  padding:4px;
-  }
-
-  th {
-  padding:4px;
-  }
-
 '
-
-temp_styler <- '
-  #stories-back {
-    z-index: 1000 !important;
-  }
-
-'
-
-set_ui_lang <- "shinyjs.setLanguage = function(language) {
-    document.querySelector('body').className = `user-lang-${language}`;
-  };"
-
-lang_classes <- "
-    .lang-en {
-      visibility: hidden;
-      display: none !important;
-    }
-    .lang-fr {
-      visibility: hidden;
-      display: none !important;
-    }
-    
-    .user-lang-en .lang-en {
-      visibility: visible !important;
-      display: inline !important; 
-    }
-    .user-lang-fr .lang-fr {
-      visibility: visible !important;
-      display: inline !important; 
-    }"
-
-# # Screenshot
-# screenshot_js <- "shinyjs.takeShot = function(params) {
-# 
-#   var defaultParams = {
-#     to_sh_id : null,
-#     output_id : null
-#   };
-#   params = shinyjs.getParams(params, defaultParams);
-# 
-#   let div = document.getElementById(params.to_sh_id);
-# 
-#   html2canvas(div).then(
-#     function (canvas) {
-#       document.
-#       getElementById(params.output_id).
-#       appendChild(canvas).
-#       setAttribute('id', 'map_sh');
-#       
-#     })
-# }"
-
-# WILL NEED THIS https://codepen.io/nathansouza/pen/OXdJbo TO DOWNLOAD
 
 # Severe HTML -------------------------------------------------------------
 
@@ -489,7 +364,7 @@ sever_subtitle_en <-
               "the app bug-free by clicking on “Submit”!",
               "<br>-The Curbcut team."))
 
-create_form <- function(lang, module_id, geo) {
+create_form <- function(lang, module_id, region) {
   
   pre <- 
     paste0("<form id='bug_report_form' action='https://docs.google.com/forms/d/",
@@ -500,8 +375,8 @@ create_form <- function(lang, module_id, geo) {
   module <- 
     paste0("<input type='text' name='entry.1645395961' value='", module_id, 
            "' style = 'display:none;' />")
-  geo <- 
-    paste0("<input type='text' name='entry.1343914403' value='", geo, 
+  region <- 
+    paste0("<input type='text' name='entry.1343914403' value='", region, 
            "' style = 'display:none;' />")
   lang_input <- 
     paste0("<input type='text' name='entry.1443376271' value='", lang, 
@@ -530,15 +405,15 @@ create_form <- function(lang, module_id, geo) {
     paste0("<textarea name='entry.77284970 form='bug_report_form' style ='",
            additional_style, "'>", additional_text, "</textarea>")
   
-  HTML(paste0(pre, module, geo, lang_input, additional, post))
+  HTML(paste0(pre, module, region, lang_input, additional, post))
   
 }
 
-severe_html <- function(lang, module_id, geo) {
+severe_html <- function(lang, module_id, region) {
   tagList(tags$h2("Uh oh..."),
           tags$p(tags$span(class = "lang-fr", sever_subtitle_fr),
                  tags$span(class = "lang-en", sever_subtitle_en)),
-          create_form(lang, module_id, geo),
+          create_form(lang, module_id, region),
           tags$div(class = "sus-button-group",
                    tags$a(class = "sus-button sus-icon-button sus-button-secondary", 
                           style = "cursor: pointer;",

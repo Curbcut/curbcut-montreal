@@ -1,23 +1,38 @@
 #### SUS GLOBALS ###############################################################
 
+
+# Platform dependant ------------------------------------------------------
+
+site_name <- "Curbcut Montréal"
+site_url <- "https://montreal.curbcut.ca"
+stories_page <- "Montréal stories"
+tileset_prefix <- "mtl"
+mapbox_username <- "sus-mcgill"
+
+default_region <- "CMA"
+# For a location lock placeholder in advanced options
+default_random_address <- "845 Sherbrooke Ouest, Montréal, Quebec "
+
+map_zoom <- 10.1
+map_loc <- c(-73.58, 45.53)
+
+
 # Packages ----------------------------------------------------------------
 
 suppressPackageStartupMessages({
-  library(shiny)
-  library(shinyjs)
-  library(shinyWidgets)
+  library(curbcut)
 
-  library(rdeck)
-  library(ggplot2)
-  library(stringr)
+  library(shiny)
+  library(bslib)
+  library(shinyjs)
 
   library(qs)
   library(glue)
   library(metathis)
   
+  library(stringr)
+  library(DBI)
   library(RSQLite)
-  library(curl)
-  library(tableHTML)
   
   library(sever)
 })
@@ -28,76 +43,42 @@ options(shiny.fullstacktrace = TRUE)
 options(shiny.useragg = TRUE)
 shinyOptions(cache = cachem::cache_disk(file.path(dirname(tempdir()), "cache")))
 
+
 # Data --------------------------------------------------------------------
 
-# Load all what is in the root of the data folder
+# Load all .qs and .qsm files that are in the root of the data folder
 data_files <- list.files("data", full.names = TRUE)
 invisible(lapply(data_files[grepl("qsm$", data_files)], 
-                 qload, env = .GlobalEnv))
+                 qs::qload, env = .GlobalEnv))
 invisible(lapply(data_files[grepl("qs$", data_files)], 
                  \(x) {
                    object_name <- gsub("(data/)|(\\.qs)", "", x)
-                   assign(object_name, qread(x), envir = .GlobalEnv)
+                   assign(object_name, qs::qread(x), envir = .GlobalEnv)
                    }))
 
 
-# Global variables --------------------------------------------------------
+# Connect to the dbs ------------------------------------------------------
 
-census_min <- 
-  variables$dates[variables$source == "Canadian census"] |> 
-  unlist() |> 
-  unique() |> 
-  min() |> 
-  as.numeric()
+dbs <- list.files("data", full.names = TRUE)
+dbs <- subset(dbs, grepl(".sqlite$", dbs))
 
-census_max <- 
-  variables$dates[variables$source == "Canadian census"] |> 
-  unlist() |> 
-  unique() |> 
-  max() |> 
-  as.numeric()
+lapply(dbs, \(x) {
+  connection_name <- paste0(stringr::str_extract(x, "(?<=/).*?(?=\\.)"), "_conn")
+  assign(connection_name, DBI::dbConnect(RSQLite::SQLite(), x), envir = .GlobalEnv)
+}) |> invisible()
 
 
 # Modules ready -----------------------------------------------------------
 
-mods_rdy <- list(
-  "Climate" = c(
-    "Climate risk" = "climate_risk"
-  ),
-  "Housing" = c(
-    "Housing system" = "housing",
-    "Vacancy rate" = "vac_rate",
-    "Housing affordability" = "afford",
-    "Tenure status" = "tenure",
-    "Dwelling types" = "dw_types"
-  ),
-  "Policy" = c(
-    "Montréal climate plans" = "mcp"
-  ),
-  "Transport" = c(
-    # "Accessibility" = "access",
-    "Access to amenities" = "amenities",
-    "Short-distance city" = "city_amenities",
-    "Bikeway comfort and safety" = "canbics"#,
-    #   "Road safety" = "crash"
-  ),
-  "Urban life" = c(
-    "Active living potential" = "canale",
-    "Green alleys" = "alley",
-    "Demographics" = "demographics"
-  ),
-  "Ecology" = c(
-    "Natural infrastructure" = "natural_inf"
-  )
-)
-
-stand_alone_tabs <- c(
-  "Montréal stories" = "stories",
-  "Place explorer" = "place_explorer",
-  "How to use" = "how_to_use",
-  "About" = "about_sus",
-  "Authors" = "authors"
-)
+unique_themes <- unique(modules$theme)[!is.na(unique(modules$theme))]
+display_mods <- modules[!is.na(modules$theme), ]
+mods_rdy <- 
+  sapply(unique_themes, \(x) {
+    thm <- display_mods[display_mods$theme == x, ]
+    ids <- thm$id
+    names(ids) <- thm$nav_title
+    ids
+  }, simplify = FALSE, USE.NAMES = TRUE)
 
 
 # Map defaults ------------------------------------------------------------
@@ -107,38 +88,14 @@ map_token <- paste0("pk.eyJ1Ijoic3VzLW1jZ2lsbCIsImEiOiJjbDBxMTcyNWwyNTl0M2",
 options(rdeck.mapbox_access_token = map_token)
 map_base_style <- "mapbox://styles/sus-mcgill/cl0reqoz4000z15pekuh48ld6"
 map_style_building <- "mapbox://styles/sus-mcgill/cl2bwtrsp000516rwyrkt9ior"
-map_zoom <- 10.1
-map_loc <- c(-73.58, 45.53)
-
-map_zoom_levels_CMA <- 
-  c("CSD" = 0, "CT" = 10.5, "DA" = 12.5, "building" = 15.5)
-map_zoom_levels_CMA_max_CT <- c("CSD" = 0, "CT" = 10.5)
-
-map_zoom_levels_island <- 
-  c("CSD" = 0, "CT" = 10.5, "DA" = 12.5, "building" = 15.5)
-map_zoom_levels_island_max_CT <- c("CSD" = 0, "CT" = 10.5)
-
-map_zoom_levels_city <- 
-  c("CSD" = 0, "CT" = 10.5, "DA" = 12.5, "building" = 15.5)
-map_zoom_levels_city_max_CT <- c("CSD" = 0, "CT" = 10.5)
-map_zoom_levels_city_max_DB <- 
-  c("CSD" = 0, "CT" = 10.5, "DA" = 12.5, "DB" = 14.5)
-
-map_zoom_levels_centraide <- 
-  c("centraide" = 0, "CT" = 10.5, "DA" = 12.5, "building" = 15.5)
-map_zoom_levels_centraide_max_CT <- c("centraide" = 0, "CT" = 10.5)
-
-map_zoom_levels_cmhc <- 
-  c("cmhczone" = 0)
 
 first_level_choropleth <- 
   sapply(ls()[grepl("map_zoom_levels_", ls())], \(x) names(get(x)[1]),
          USE.NAMES = FALSE) |> unique()
   
-all_choropleth <- 
-  sapply(sapply(ls()[grepl("map_zoom_levels_", ls())], get,
-                USE.NAMES = FALSE), names,
-         USE.NAMES = FALSE) |> unlist() |> unique()
+all_choropleths <- 
+  sapply(sapply(ls()[grepl("map_zoom_levels_", ls())], get, USE.NAMES = FALSE), 
+         names, USE.NAMES = FALSE) |> unlist() |> unique()
 
 # Set up fonts ------------------------------------------------------------
 
@@ -150,12 +107,12 @@ systemfonts::register_font(
   bolditalic = "www/fonts/SourceSansPro-BoldItalic.ttf")
 
 
-# Connect to the dbs ------------------------------------------------------
+# Declare temporary folder ------------------------------------------------
 
-dbs <- list.files("data", full.names = TRUE)
-dbs <- subset(dbs, grepl(".sqlite$", dbs))
+temp_folder <- tempdir()
+addResourcePath("temp_folder_shortcut", temp_folder)
 
-lapply(dbs, \(x) {
-  connection_name <- paste0(stringr::str_extract(x, "(?<=/).*?(?=\\.)"), "_conn")
-  assign(connection_name, dbConnect(SQLite(), x), envir = .GlobalEnv)
-}) |> invisible()
+
+# Create the UI and server functions for basic modules --------------------
+
+curbcut::create_ui_server_mods(modules = modules)

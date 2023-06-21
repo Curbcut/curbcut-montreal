@@ -40,7 +40,7 @@ news_UI <- function(id) {
                 ),
                 tags$div(
                   id = NS(id, "news-controls"),
-                  actionLink(NS(id, "back"), cc_t(r = r, "Back to explore"))
+                  actionLink(NS(id, "back"), curbcut::cc_t(lang = r$lang(), "Back to explore"))
                 )
               ))),
             susPageSection(

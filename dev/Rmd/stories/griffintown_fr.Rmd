@@ -2,7 +2,7 @@
 title: "Griffintown, d'un cadeau de l'ère de la machine à une roue à eau dans la machine à croissance"
 output: html_document
 author: "Camille Forest"
-runtime: shiny_prerendered
+
 ---
 
 ```{r setup, include=FALSE}
@@ -23,7 +23,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r, echo=FALSE, fig.align = 'center', out.width="50%", fig.cap="Figure 1. Inondations, Bonaventure Depot, Montreal, QC, 1886. Par George Charles Arless. Source: the McCord Museum.", warning=FALSE}
 
-knitr::include_graphics(here("www/stories/visuals/griffintown/figure1.jpg"))
+knitr::include_graphics(here::here("dev/data/stories/raw_images/griffintown/figure1.jpg"))
 
 ```
 
@@ -39,9 +39,9 @@ knitr::include_graphics(here("www/stories/visuals/griffintown/figure1.jpg"))
 
 ```{r, echo=FALSE, fig.show='hold', fig.align = 'center', out.width="30%", fig.cap="Figure 2.&nbsp; Crue &eacute;clair dans le quartier Milton-Parc de Montr&eacute;al, 2012. Cette inondation des eaux pluviales qui n'ont nulle part o&ugrave; aller dans un r&eacute;seau de surfaces imperm&eacute;ables devrait augmenter avec le changement climatique (GIEC, 2019), et la planification de Griffintown. Source: Montreal in Pictures, 2012 (https://montrealinpictures.com/montreal-image-photo-gallery/may-2012/)", warning=FALSE}
 
-knitr::include_graphics(c(here("www/stories/visuals/griffintown/figure2_1.jpg"),
-                         here("www/stories/visuals/griffintown/figure2_2.jpg"),
-                         here("www/stories/visuals/griffintown/figure2_3.jpg")))
+knitr::include_graphics(c(here::here("dev/data/stories/raw_images/griffintown/figure2_1.jpg"),
+                        here::here("dev/data/stories/raw_images/griffintown/figure2_2.jpg"),
+                        here::here("dev/data/stories/raw_images/griffintown/figure2_3.jpg")))
 
 ```
 
@@ -51,8 +51,8 @@ knitr::include_graphics(c(here("www/stories/visuals/griffintown/figure2_1.jpg"),
 <p>Cependant, l'absence initiale de planification globale a entrav&eacute; la capacit&eacute; de la ville &agrave; planifier l'eau dans le quartier &agrave; certains &eacute;gards essentiels. Il est maintenant beaucoup plus co&ucirc;teux pour la ville d'acqu&eacute;rir des terrains pour des espaces verts publics et, par cons&eacute;quent, sa capacit&eacute; &agrave; planifier un r&eacute;seau connexe d'infrastructures urbaines vertes pour optimiser l'hydrologie de la zone a &eacute;t&eacute; consid&eacute;rablement entrav&eacute;e.</p>
 ```{r, echo=FALSE, fig.show='hold', fig.align = 'center', out.width="48%", fig.cap="Figure 3. À gauche : Carte initiale des inondations publiée par la province du Québec le 10 juillet 2019. À droite : Carte actualisée des zones inondables publiée le 15 juillet 2019.", warning=FALSE}
 
-knitr::include_graphics(c(here("www/stories/visuals/griffintown/figure3_1.jpg"),
-                          here("www/stories/visuals/griffintown/figure3_2.jpg")))
+knitr::include_graphics(c(here::here("dev/data/stories/raw_images/griffintown/figure3_1.jpg"),
+                         here::here("dev/data/stories/raw_images/griffintown/figure3_2.jpg")))
 
 ```
 <p>L'&eacute;mergence r&eacute;cente de la gestion de l'eau comme priorit&eacute; absolue pour les purbanistes de Montr&eacute;al et du Qu&eacute;bec est probablement due au co&ucirc;t croissant des inondations pour les infrastructures urbaines. Il s'agit d'une menace directe pour une logique n&eacute;olib&eacute;rale, ax&eacute;e sur le profit, qui exige la croissance de la ville physique et &eacute;conomique. En 2019, des inondations d&eacute;vastatrices ont frapp&eacute; l'Ouest-de-l'&Icirc;le et Laval, incitant la province du Qu&eacute;bec &agrave; interdire la reconstruction des maisons endommag&eacute;es par l'inondation et les nouveaux d&eacute;veloppements &agrave; l'int&eacute;rieur de la ligne d'inondation la plus r&eacute;cente (Anhoury, 2019).</p>

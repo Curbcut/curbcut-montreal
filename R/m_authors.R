@@ -3,7 +3,7 @@
 authors_UI <- function(id) {
   tagList(
     susPage(class = "sus-page-authors", footer = susFooter(), susPageSection(
-      h2(cc_t(r = r, "Authors")),
+      h2(curbcut::cc_t("Authors")),
       # susAuthor("Socrates", "Philosopher", "https://cdn.britannica.com/69/75569-050-7AB67C4B/herm-Socrates-half-original-Greek-Capitoline-Museums.jpg",
       #           susAuthorBio("Socrates was a Greek philosopher from Athens who is credited as the founder of Western philosophy and among the first moral philosophers of the ethical tradition of thought. An enigmatic figure, Socrates authored no texts and is known mainly through the posthumous accounts of classical writers, particularly his students Plato and Xenophon."),
       #           susAuthorLink("Wikipedia", href="https://en.wikipedia.org/wiki/Socrates",
@@ -13,10 +13,10 @@ authors_UI <- function(id) {
       #           susAuthorLink("Stanford Encyclopedia of Philosophy", href="https://plato.stanford.edu/entries/socrates/")
       #           ),
       susAuthor("David Wachsmuth", 
-                cc_t(r = r, "Principal investigator and Lead Designer"), 
+                curbcut::cc_t("Principal investigator and Lead Designer"), 
                 "team/photos/david_wachsmuth.jpeg",
                 susAuthorBio(
-                  cc_t(r = r, "David Wachsmuth is the Canada Research Chair ",
+                  curbcut::cc_t("David Wachsmuth is the Canada Research Chair ",
                                 "in Urban Governance at McGill University, whe",
                                 "re he is also an Associate Professor in the S",
                                 "chool of Urban Planning. He directs UPGo, the",
@@ -45,10 +45,10 @@ authors_UI <- function(id) {
                                 "ngton Post.")
                 )),
       susAuthor("Kevin Manaugh", 
-                cc_t(r = r, "Principal Investigator"), 
+                curbcut::cc_t("Principal Investigator"), 
                 "team/photos/kevin_manaugh.jpg",
                 susAuthorBio(
-                  cc_t(r = r, "Kevin Manaugh is an associate professor joint",
+                  curbcut::cc_t("Kevin Manaugh is an associate professor joint",
                                 "ly appointed in the Department of Geography ",
                                 "and the Bieler School of Environment. He stu",
                                 "dies urban transport systems through the len",
@@ -59,10 +59,10 @@ authors_UI <- function(id) {
                                 "ans and policies at a variety of scales.")
                 )),
       susAuthor("Andrew Gonzalez", 
-                cc_t(r = r, "Principal Investigator"), 
+                curbcut::cc_t("Principal Investigator"), 
                 "team/photos/andrew_gonzalez.jpg",
                 susAuthorBio(
-                  cc_t(r = r, "Andrew Gonzalez is Professor and Liber Ero Ch",
+                  curbcut::cc_t("Andrew Gonzalez is Professor and Liber Ero Ch",
                                 "air in the Department of Biology at McGill Un",
                                 "iversity. He is co-director of the Quebec Cen",
                                 "tre for Biodiversity Science. He is a Fellow ",
@@ -78,10 +78,10 @@ authors_UI <- function(id) {
                                 "hed a spin-off company called Habitat.")
                 )),
       susAuthor("Maxime Bélanger De Blois", 
-                cc_t(r = r, "Senior Designer"), 
+                curbcut::cc_t("Senior Designer"), 
                 "team/photos/maxime_belanger_de_blois.jpg",
                 susAuthorBio(
-                  cc_t(r = r, "Maxime graduated from McGill University in 20",
+                  curbcut::cc_t("Maxime graduated from McGill University in 20",
                                 "21 with a Master's degree in Urban Planning a",
                                 "nd is now Senior Designer at Curbcut. In pursuing",
                                 " urban sustainability goals, Maxime believes ",
@@ -96,10 +96,10 @@ authors_UI <- function(id) {
                                 "nd Housing Corporation.")
                 )),
       susAuthor("Dominique Boulet", 
-                cc_t(r = r, "Qualitative research lead"), 
+                curbcut::cc_t("Qualitative research lead"), 
                 "team/photos/dominique_boulet.jpg",
                 susAuthorBio(
-                  cc_t(r = r, "Dominique graduated from McGill University in",
+                  curbcut::cc_t("Dominique graduated from McGill University in",
                                 " 2022 with a master’s degree in Urban Plannin",
                                 "g and is now Qualitative Research Lead at Curbcut",
                                 ". Her recent research has focused on how to i",
@@ -115,10 +115,10 @@ authors_UI <- function(id) {
                                 "life, through exploratory walks.")
                 )),
       susAuthor("Cloé St-Hilaire", 
-                cc_t(r = r, "Contributor"), 
+                curbcut::cc_t("Contributor"), 
                 "team/photos/cloe_st_hilaire.jpg",
                 susAuthorBio(
-                  cc_t(r = r, "Cloé St-Hilaire is currently a PhD student in",
+                  curbcut::cc_t("Cloé St-Hilaire is currently a PhD student in",
                                 " Planning at the University of Waterloo, stud",
                                 "ying the financialization and digitization of",
                                 " Canada’s rental housing sector. She is worki",
@@ -142,10 +142,10 @@ authors_UI <- function(id) {
                                 "ications of technology.")
                 )),
       susAuthor("Emma Ezvan", 
-                cc_t(r = r, "Contributor"), 
+                curbcut::cc_t("Contributor"), 
                 "team/photos/emma_ezvan.jpg",
                 susAuthorBio(
-                  cc_t(r = r, "Currently a second-year master student in Urb",
+                  curbcut::cc_t("Currently a second-year master student in Urb",
                                 "an Planning at McGill University, Emma comple",
                                 "ted an undergraduate degree in Political and ",
                                 "Social Sciences in France, and a Master’s deg",
@@ -167,10 +167,10 @@ authors_UI <- function(id) {
                                 "cts.")
                 )),
       susAuthor("Daniela Rodriguez", 
-                cc_t(r = r, "Contributor"), 
+                curbcut::cc_t("Contributor"), 
                 "team/photos/daniela_rodriguez.jpg",
                 susAuthorBio(
-                  cc_t(r = r, "Daniela Rodríguez is currently a second-year ",
+                  curbcut::cc_t("Daniela Rodríguez is currently a second-year ",
                                 "master's student in Urban Planning at McGill ",
                                 "University. She completed a Bachelor of Archi",
                                 "tecture. She has worked in landscape architec",
@@ -190,10 +190,10 @@ authors_UI <- function(id) {
                                 ".")
                 )),
       susAuthor("Connor Cordingley", 
-                cc_t(r = r, "Contributor"), 
+                curbcut::cc_t("Contributor"), 
                 "team/photos/connor_cordingley.jpeg",
                 susAuthorBio(
-                  cc_t(r = r, "Connor is a current Master of Urban Planning ",
+                  curbcut::cc_t("Connor is a current Master of Urban Planning ",
                                 "student at McGill University. He completed a ",
                                 "Bachelor of Arts in History and Psychology - ",
                                 "also at McGill - in 2017, studying the social",
@@ -210,10 +210,10 @@ authors_UI <- function(id) {
                                 "d.")
                 )),
       susAuthor("Robin Basalaev-Binder", 
-                cc_t(r = r, "Contributor"), 
+                curbcut::cc_t("Contributor"), 
                 "team/photos/robin_basalaev.jpg",
                 susAuthorBio(
-                  cc_t(r = r, "Robin completed their Master of Urban Plannin",
+                  curbcut::cc_t("Robin completed their Master of Urban Plannin",
                                 "g in 2018 at McGill University. Their passion",
                                 " for social and racial justice, equity, as we",
                                 "ll as affordable and accessible housing has l",
@@ -233,10 +233,10 @@ authors_UI <- function(id) {
                                 "American contexts.")
                 )),
       susAuthor("Josh Medicoff", 
-                cc_t(r = r, "Contributor"), 
+                curbcut::cc_t("Contributor"), 
                 "team/photos/josh_medicoff.jpg",
                 susAuthorBio(
-                  cc_t(r = r, "Josh Medicoff is a master’s candidate in the ",
+                  curbcut::cc_t("Josh Medicoff is a master’s candidate in the ",
                                 "Department of Political Science at McGill Uni",
                                 "versity. Josh previously completed a BA in Hu",
                                 "man Geography and Political Science at the Un",
@@ -257,10 +257,10 @@ authors_UI <- function(id) {
                                 "Institute for the Study of Canada.")
                 )),
       susAuthor("Philip Bligh", 
-                cc_t(r = r, "Contributor"), 
+                curbcut::cc_t("Contributor"), 
                 "team/photos/philip_bligh.jpg",
                 susAuthorBio(
-                  cc_t(r = r, "Philip Bligh is a fourth-year undergra",
+                  curbcut::cc_t("Philip Bligh is a fourth-year undergra",
                                 "duate student at McGill pursuing a Bachelor o",
                                 "f Arts in Urban Studies and History. Through ",
                                 "his Urban Studies major, he has become intere",
@@ -274,10 +274,10 @@ authors_UI <- function(id) {
                                 "planning.")
                 )),
       susAuthor("Lauren Rosenthal", 
-                cc_t(r = r, "Contributor"), 
+                curbcut::cc_t("Contributor"), 
                 "team/photos/lauren_rosenthal.jpg",
                 susAuthorBio(
-                  cc_t(r = r, "Lauren is a third-year Environment stu",
+                  curbcut::cc_t("Lauren is a third-year Environment stu",
                                 "dent specializing in Environmetrics at McGill",
                                 " University. Over the course of her undergrad",
                                 ", she has developed a strong interest in sust",

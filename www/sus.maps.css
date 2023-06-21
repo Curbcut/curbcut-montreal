@@ -3,7 +3,7 @@
   --w-panel: 300px;
 }
 
-.mapdeck_div {
+.map_div {
   height: calc(100vh - var(--h-navbar)) !important;
   position: fixed;
   top: var(--h-navbar);
@@ -14,7 +14,7 @@
   border: unset !important;
 }
 
-.mapdeck_div:first-child {
+.map_div:first-child {
   left: 0px;
 }
 
@@ -110,6 +110,20 @@
   }
 }
 
+/* IN COMBINATION WITH JS, COLLAPSED RIGHT PANEL */
+@media (max-width: 1400px) {
+  .sus-map-panel {
+    opacity: 0.95;
+    transition: opacity 0.95s ease-out, visibility 1s ease-out;
+    transition-delay: visibility 4s;
+  }
+  
+  .sus-map-panel:hover .right-panel-hidden {
+    display: block !important;
+  }
+
+}
+
 .sus-map-panel-content {
   position: relative;
   z-index: calc(20 + var(--depth-ui));
@@ -152,7 +166,7 @@
   padding-bottom: var(--padding-v-md);
 }
 
-.sus-map-panel p, .sus-map-sidebar p {
+.sus-map-panel p, .sus-map-sidebar p, .panel_view p  {
   font-size: 1.45rem;
 }
 
