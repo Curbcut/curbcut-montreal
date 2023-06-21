@@ -268,7 +268,7 @@ alley_server <- function(id, r) {
       zoom_levels = zoom_levels
     )
     tile <- shiny::reactive({
-      if (mode() == "borough") return("city_CSD")
+      if (mode() == "borough") return("city_boroughs_unclipped")
       if (mode() == "alleys") return("alleys")
       return(tile_1())
     })
