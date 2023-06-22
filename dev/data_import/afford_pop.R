@@ -636,7 +636,7 @@ build_and_append_afford_pop <- function(scales_variables_modules, crs) {
   modules <- scales_variables_modules$modules
   
   var_right <- variables$var_code[
-    grepl("^climate|^canale", variables$var_code)
+    grepl("^climate|^alp", variables$var_code)
   ]
   var_right <- c(var_right, 
                  variables$var_code[grepl("^access_", variables$var_code) & 

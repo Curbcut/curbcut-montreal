@@ -104,7 +104,8 @@ build_and_append_access <- function(scales_variables_modules,
     calculate_breaks(
       all_scales = data_interpolated$scales,
       vars = average_vars,
-      types = types
+      types = types,
+      use_quintiles = TRUE
     )
   
   # Calculate region values -------------------------------------------------
