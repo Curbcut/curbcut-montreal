@@ -649,7 +649,7 @@ build_and_append_natural_inf <- function(scales_variables_modules, crs) {
   modules <-
     scales_variables_modules$modules |>
     add_module(
-      id = "naturalinf",
+      id = "natural_inf",
       theme = "Ecology",
       nav_title = "Natural infrastructure",
       title_text_title = "Natural infrastructure",

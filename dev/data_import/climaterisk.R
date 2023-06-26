@@ -511,7 +511,7 @@ build_and_append_climate_risk <- function(scales_variables_modules, crs) {
   modules <-
       scales_variables_modules$modules |>
         add_module(
-          id = "climaterisk",
+          id = "climate_risk",
           theme = "Climate",
           nav_title = "Climate risk",
           title_text_title = "Climate change risk",

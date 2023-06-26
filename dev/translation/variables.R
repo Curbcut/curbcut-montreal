@@ -140,7 +140,12 @@ translation_variables_nodet$en <- gsub("^the ", "", translation_variables$en)
 translation_variables_nodet$fr <- gsub("^le |la ", "", translation_variables$fr)
 
 translation_variables <- rbind(translation_variables,
-                               translation_variables_nodet)
+                               translation_variables_nodet) |> 
+  add_row(en = "median before-tax household incomes",
+          fr = "revenu médian des ménages avant impôt") |>
+  add_row(en = "prevalence of low incomes in private households based on the Low-income measure, after-tax (LIM-AT)",
+          fr = "prévalence des bas revenus dans les ménages privés sur la base de la mesure des bas revenus, après impôts (MFR-AT)")
+  
 
 # OTHER
 translation_variables <- 
@@ -678,19 +683,19 @@ translation_variables <-
               fr = "Ruelles vertes") |>
       add_row(en = "the potential for active living",
               fr = "le potentiel pour une vie active") |>
-      add_row(en = "the density of green alleys measured by square metres per square kilometres",
+      add_row(en = "the density of green alleys measured by square metres per square kilometre",
               fr = "la densité des ruelles vertes mesurée en mètres carrés par kilomètre carré") |>
       add_row(en = "the density of green alleys measured by square metres per 1000 residents",
               fr = "la densité des ruelles vertes mesurée en mètres carrés pour 1000 habitants") |>
       add_row(en = "potential for active living",
               fr = "potentiel pour une vie active") |>
-      add_row(en = "density of green alleys measured by square metres per square kilometres",
+      add_row(en = "density of green alleys measured by square metres per square kilometre",
               fr = "densité des ruelles vertes mesurée en mètres carrés par kilomètre carré") |>
       add_row(en = "density of green alleys measured by square metres per 1000 residents",
               fr = "densité des ruelles vertes mesurée en mètres carrés pour 1000 habitants") |>
       add_row(en = "are living in areas with _X_ potential for active living",
               fr = "vivent dans des zones ayant un potentiel _X_ en matière de vie active") |>
-      add_row(en = "the density of green alleys is _X_ square metres per square kilometres",
+      add_row(en = "the density of green alleys is _X_ square metres per square kilometre",
               fr = "la densité des ruelles vertes est de _X_ mètres carrés par kilomètre carré") |>
       add_row(en = "the density of green alleys is _X_ square metres per 1,000 residents",
               fr = "la densité des ruelles vertes est de _X_ mètres carrés pour 1 000 habitants") |>
@@ -939,7 +944,9 @@ add_row(en = "Crashes (cyc)",
   add_row(en = "involving pedestrians were registered",
           fr = "impliquant des piétons ont été enregistrés") |> 
   add_row(en = "were registered",
-          fr = "ont été enregistrés")
+          fr = "ont été enregistrés") |> 
+  add_row(en = "car crashes",
+          fr = "collisions de voiture")
   
   
   

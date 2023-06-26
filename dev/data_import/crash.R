@@ -54,6 +54,8 @@ build_and_append_crash <- function(scales_variables_modules, crs) {
   average_vars <- c() 
   additive_vars <- names(dat)[!grepl("ID$", names(dat))]
   vars <- c(average_vars, additive_vars)
+  # Total first
+  vars <- vars[order(vars, decreasing = TRUE)]
 
   # Interpolate data to all possible scales ---------------------------------
 
@@ -166,7 +168,7 @@ build_and_append_crash <- function(scales_variables_modules, crs) {
   modules <-
     scales_variables_modules$modules |>
     add_module(
-      id = "crash",
+      id = "safety",
       theme = "Transport",
       nav_title = "Road safety",
       title_text_title = "Road safety: Car crashes",

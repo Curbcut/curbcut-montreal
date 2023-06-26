@@ -4,6 +4,7 @@
 # Load libraries ----------------------------------------------------------
 tictoc::tic()
 library(cc.buildr)
+library(sf)
 
 
 # # Base of the study region and dictionaries -------------------------------
@@ -365,10 +366,10 @@ qs::qload("dev/data/built/empty_scales_variables_modules.qsm")
 
 # Build the datasets ------------------------------------------------------
 
-future::plan(list(future::tweak(future::multisession,
-                                workers = 2),
-                  future::tweak(future::multisession,
-                                workers = length(cc.data::census_years))))
+future::plan(future::tweak(future::multisession,
+                                workers = 4))
+                  # future::tweak(future::multisession,
+                                # workers = length(cc.data::census_years))))
 
 scales_variables_modules <-
   ba_census_data(scales_variables_modules = scales_variables_modules,
@@ -444,15 +445,15 @@ scales_variables_modules <- build_and_append_crash(
   crs = crs
 )
 
+save.image("dev/data/built/before_centraide.RData")
+load("dev/data/built/before_centraide.RData")
+invisible(lapply(list.files("dev/data_import", full.names = TRUE), source))
+
+
 scales_variables_modules <-
   build_and_append_tenure(
     scales_variables_modules = scales_variables_modules,
     crs = crs)
-
-save.image("dev/data/built/before_centraide.RData")
-load("dev/data/built/before_centraide.RData")
-
-invisible(lapply(list.files("dev/data_import", full.names = TRUE), source))
 
 future::plan(future::multisession(), workers = 3)
 scales_variables_modules <-
@@ -551,16 +552,16 @@ map_zoom_levels_save(data_folder = "data/", map_zoom_levels = map_zoom_levels)
 #                    access_token = .cc_mb_token)
 # 
 # source("dev/tiles/grid_tiles.R")
-tileset_upload_grid(region = "grid",
-                    all_scales = scales_variables_modules$scales,
-                    street = street,
-                    map_zoom_levels = map_zoom_levels,
-                    max_zoom = list(grid250 = 13, grid100 = 14, grid50 = 15, grid25 = 16),
-                    vars = c("climate_drought", "climate_flood", "climate_destructive_storms",
-                             "climate_heat_wave", "climate_heavy_rain"),
-                    prefix = "mtl",
-                    username = "sus-mcgill",
-                    access_token = .cc_mb_token)
+# tileset_upload_grid(region = "grid",
+#                     all_scales = scales_variables_modules$scales,
+#                     street = street,
+#                     map_zoom_levels = map_zoom_levels,
+#                     max_zoom = list(grid250 = 13, grid100 = 14, grid50 = 15, grid25 = 16),
+#                     vars = c("climate_drought", "climate_flood", "climate_destructive_storms",
+#                              "climate_heat_wave", "climate_heavy_rain"),
+#                     prefix = "mtl",
+#                     username = "sus-mcgill",
+#                     access_token = .cc_mb_token)
 # 
 # 
 # scales_with_labels <- 
@@ -699,16 +700,9 @@ qs::qsave(scales_dictionary, file = "data/scales_dictionary.qs")
 qs::qsave(regions_dictionary, file = "data/regions_dictionary.qs")
 tictoc::toc()
 
-# Write fresh data to the bucket
-cc.data::bucket_write_folder("data", "curbcut.montreal.data")
-
 # Place explorer content creation -----------------------------------------
 
 # Should be done once the data is saved
-
-library(cc.buildr)
-qs::qload("dev/data/built/scales_variables_modules.qsm")
-
 future::plan(future::multisession(), workers = 4)
 
 # pe_main_card_data <- placeex_main_card_data(scales = scales_variables_modules$scales,
@@ -729,6 +723,7 @@ placeex_main_card_rmd(scales_variables_modules = scales_variables_modules,
                       rev_geocode_from_localhost = TRUE,
                       overwrite = TRUE)
 
+translation_df <- qs::qread("data/translation_df.qs")
 placeex_main_card_rmd(scales_variables_modules = scales_variables_modules,
                       pe_main_card_data = pe_main_card_data,
                       regions_dictionary = regions_dictionary,
@@ -742,6 +737,11 @@ placeex_main_card_rmd(scales_variables_modules = scales_variables_modules,
 # Save the place explorer files, which serves as a 'does it exist' for `curbcut`
 pe_docs <- list.files("www/place_explorer/", full.names = TRUE)
 qs::qsave(pe_docs, "data/pe_docs.qs")
+
+
+# Write the data to the bucket --------------------------------------------
+
+cc.data::bucket_write_folder("data", "curbcut.montreal.data")
 
 
 # Deploy app --------------------------------------------------------------
