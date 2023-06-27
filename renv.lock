@@ -387,7 +387,7 @@
       "RemoteUsername": "MSSI-urban",
       "RemoteRepo": "curbcut",
       "RemoteRef": "main",
-      "RemoteSha": "2fa3258e5ed4242a753bfa6c507407845c013a5f",
+      "RemoteSha": "b304caa424c5f275e723601f6ef4f7260a07ab8e",
       "Remotes": "qfes/rdeck, bdbmax/bslib",
       "Requirements": [
         "DBI",
@@ -414,7 +414,7 @@
         "utils",
         "zip"
       ],
-      "Hash": "9e4950edb5cccc6eba541921a7cf06d5"
+      "Hash": "3ff41e4a0eefee757ffb12a0f62b63bd"
     },
     "curl": {
       "Package": "curl",

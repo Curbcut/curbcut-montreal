@@ -366,8 +366,7 @@ qs::qload("dev/data/built/empty_scales_variables_modules.qsm")
 
 # Build the datasets ------------------------------------------------------
 
-future::plan(future::tweak(future::multisession,
-                                workers = 4))
+future::plan(future::multisession, workers = 4)
                   # future::tweak(future::multisession,
                                 # workers = length(cc.data::census_years))))
 
