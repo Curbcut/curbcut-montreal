@@ -232,7 +232,7 @@ explore_graph_natural_inf <- function(data, vars, lang, ...) {
 
 # UI ----------------------------------------------------------------------
 
-naturalinf_UI <- function(id) {
+natural_inf_UI <- function(id) {
   id_map <- paste0(id, "-map")
   
   shiny::tagList(
@@ -286,7 +286,7 @@ naturalinf_UI <- function(id) {
 
 # Server ------------------------------------------------------------------
 
-naturalinf_server <- function(id, r) {
+natural_inf_server <- function(id, r) {
   moduleServer(id, function(input, output, session) {
     
     # Left variable (theme and indicator)

@@ -1,4 +1,4 @@
-### CLIMATERISK PAGE ###########################################################
+### climate_risk PAGE ###########################################################
 
 map_scale_fill_grid <- function(vars) {
   var <- vars$var_left
@@ -47,16 +47,16 @@ explore_graph_grid <- function(vars, lang, data, select_id) {
 
 # GLOBAL ------------------------------------------------------------------
 
-`climaterisk_default_region` <- unlist(modules$regions[modules$id == "climaterisk"])[1]
-`climaterisk_mzp` <-
-  eval(parse(text = paste0("map_zoom_levels_", `climaterisk_default_region`)))
-default_region <- modules$regions[modules$id == "climaterisk"][[1]][1]
-vars_right <- modules$var_right[modules$id == "climaterisk"][[1]]
+`climate_risk_default_region` <- unlist(modules$regions[modules$id == "climate_risk"])[1]
+`climate_risk_mzp` <-
+  eval(parse(text = paste0("map_zoom_levels_", `climate_risk_default_region`)))
+default_region <- modules$regions[modules$id == "climate_risk"][[1]][1]
+vars_right <- modules$var_right[modules$id == "climate_risk"][[1]]
 
 
 # UI ----------------------------------------------------------------------
 
-`climaterisk_UI` <- function(id) {
+`climate_risk_UI` <- function(id) {
   shiny::tagList(
     # Sidebar
     curbcut::sidebar_UI(
@@ -68,7 +68,7 @@ vars_right <- modules$var_right[modules$id == "climaterisk"][[1]]
       bottom = shiny::tagList(
         curbcut::legend_UI(shiny::NS(id, id)),
         shinyjs::hidden(
-          curbcut::zoom_UI(shiny::NS(id, id), `climaterisk_mzp`)
+          curbcut::zoom_UI(shiny::NS(id, id), `climate_risk_mzp`)
         )
       )
     ),
@@ -98,13 +98,13 @@ vars_right <- modules$var_right[modules$id == "climaterisk"][[1]]
 
 # Server ------------------------------------------------------------------
 
-`climaterisk_server` <- function(id, r) {
+`climate_risk_server` <- function(id, r) {
   shiny::moduleServer(id, function(input, output, session) {
     # Initial reactives
     rv_zoom_string <- reactiveVal(
       curbcut::zoom_get_string(
         zoom = map_zoom,
-        zoom_levels = `climaterisk_mzp`,
+        zoom_levels = `climate_risk_mzp`,
         region = default_region
       )
     )

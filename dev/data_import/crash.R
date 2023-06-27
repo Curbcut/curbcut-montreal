@@ -54,6 +54,8 @@ build_and_append_crash <- function(scales_variables_modules, crs) {
   average_vars <- c() 
   additive_vars <- names(dat)[!grepl("ID$", names(dat))]
   vars <- c(average_vars, additive_vars)
+  # Total first
+  vars <- vars[order(vars, decreasing = TRUE)]
 
   # Interpolate data to all possible scales ---------------------------------
 
@@ -154,10 +156,7 @@ build_and_append_crash <- function(scales_variables_modules, crs) {
       breaks_q5 = with_breaks$q5_breaks_table[[var]],
       region_values = region_vals[[var]],
       source = "City of Montreal's open data website",
-      interpolated = data_interpolated$interpolated_ref,
-      var_measurement = tibble::tibble(
-        df = data_interpolated$avail_df,
-        measurement = rep("ordinal", length(data_interpolated$avail_df)))
+      interpolated = data_interpolated$interpolated_ref
     ) |> (\(x) x[nrow(x), ])()
   })
 
@@ -169,7 +168,7 @@ build_and_append_crash <- function(scales_variables_modules, crs) {
   modules <-
     scales_variables_modules$modules |>
     add_module(
-      id = "crash",
+      id = "safety",
       theme = "Transport",
       nav_title = "Road safety",
       title_text_title = "Road safety: Car crashes",
@@ -198,8 +197,8 @@ build_and_append_crash <- function(scales_variables_modules, crs) {
       regions = data_interpolated$regions,
       metadata = TRUE,
       dataset_info = paste0(""),
-      var_left = vars, 
-      main_dropdown_title = "Car crash", 
+      var_left = c("crash_total", "crash_cyc", "crash_ped"), 
+      main_dropdown_title = "Crash type", 
       dates = with_breaks$avail_dates[[vars[[1]]]],
       var_right = scales_variables_modules$variables$var_code[
         scales_variables_modules$variables$source == "Canadian census" &

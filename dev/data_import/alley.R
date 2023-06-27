@@ -373,7 +373,7 @@ build_and_append_alley <- function(scales_variables_modules, crs) {
       var_title = "Green alleys (m2) per square kilometre",
       var_short = "Green alleys",
       explanation = "the density of green alleys measured by square metres per square kilometre",
-      exp_q5 = "the density of green alleys is _X_ square metres per square kilometres",
+      exp_q5 = "the density of green alleys is _X_ square metres per square kilometre",
       parent_vec = NA,
       pe_include = TRUE,
       theme = "Ecology",

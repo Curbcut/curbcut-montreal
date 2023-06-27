@@ -122,6 +122,7 @@ group_diffs <- group_diffs[!curbcut:::is_numeric(group_diffs)]
 is_translated(unique(variables$group_name))
 
 # PAGES
+is_translated(modules$id)
 is_translated(modules$theme)
 is_translated(modules$nav_title)
 is_translated(modules$title_text_title)

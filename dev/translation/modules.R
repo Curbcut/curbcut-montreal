@@ -178,5 +178,7 @@ add_row(en = "<p>The datasets visualized on this page come from the Canadian Cen
   add_row(en = "Data representation",
           fr = "Représentation de données") |> 
   add_row(en = "Car crash",
-          fr = "Collision de voiture")
+          fr = "Collision de voiture") |> 
+  add_row(en = "Crash type",
+          fr = "Type de collision")
   
