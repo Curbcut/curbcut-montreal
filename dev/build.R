@@ -635,6 +635,8 @@ qs::qsave(colours_dfs, "data/colours_dfs.qs")
 #                        prefix = "mtl",
 #                        username = "sus-mcgill",
 #                        access_token = .cc_mb_token)
+# cc.buildr::resize_image(folder = "www/stories/photos/", max_size_in_MB = 1)
+
 
 # Add Montréal stories
 scales_variables_modules$modules <-
