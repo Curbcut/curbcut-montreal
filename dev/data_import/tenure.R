@@ -678,7 +678,7 @@ build_and_append_tenure <- function(scales_variables_modules, crs) {
       nav_title = "Tenure status",
       title_text_title = "Tenure status",
       title_text_main = paste0(
-        "<p>Understanding housing needs by tenure status can help to inform ",
+        "<p><img src='centraide_logo/centraide_logo_en.png' style='width:60%;margin-left:50px;'><p>Understanding housing needs by tenure status can help to inform ",
         "what is to be improved specifically for tenants or owners as they ",
         "might be experiencing different difficulties and advantages."
       ),

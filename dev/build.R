@@ -614,6 +614,11 @@ scales_variables_modules$modules <-
 # Produce colours ---------------------------------------------------------
 
 colours_dfs <- cc.buildr::build_colours()
+# delta_5 = c("#6D5271",
+#             "#DCD3E2",
+#             "#E8E8E8",
+#             "#FEBD54",
+#             "#F69036"))
 
 # Add natural inf data colours
 colours_dfs$viridis_25 <- 
@@ -633,7 +638,7 @@ qs::qsave(colours_dfs, "data/colours_dfs.qs")
 # qs::qsavem(stories, stories_mapping, file = "data/stories.qsm")
 # stories_create_tileset(stories = stories,
 #                        prefix = "mtl",
-#                        username = "sus-mcgill",
+#                        username = "curbcut",
 #                        access_token = .cc_mb_token)
 # cc.buildr::resize_image(folder = "www/stories/photos/", max_size_in_MB = 1)
 
@@ -743,6 +748,7 @@ qs::qsave(pe_docs, "data/pe_docs.qs")
 # Write the data to the bucket --------------------------------------------
 
 cc.data::bucket_write_folder("data", "curbcut.montreal.data")
+cc.data::bucket_write_folder("dev/data", "curbcut.montreal.dev.data")
 
 
 # Deploy app --------------------------------------------------------------

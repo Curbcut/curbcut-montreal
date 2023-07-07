@@ -275,10 +275,6 @@ styler <- '
   h4 {
   font-size: 13px;
   }
-    
-  .map_div {
-  height: calc(100vh - 85px);
-  }
   
   #dropdown-menu-settings {
   max-height: 250px;

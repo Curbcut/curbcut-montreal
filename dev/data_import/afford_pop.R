@@ -652,7 +652,7 @@ build_and_append_afford_pop <- function(scales_variables_modules, crs) {
       nav_title = "Housing affordability",
       title_text_title = "Housing affordability",
       title_text_main = paste0(
-        "<p>Access to affordable and equitable housing is a fundamental human righ",
+        "<p><img src='centraide_logo/centraide_logo_en.png' style='width:60%;margin-left:50px;'><p>Access to affordable and equitable housing is a fundamental human righ",
         "t, yet it remains a pressing challenge for many communities. While aff",
         "ordable housing is often broadly defined as spending less than 30% of ",
         "household income on shelter, the reality for each household is much mo",
