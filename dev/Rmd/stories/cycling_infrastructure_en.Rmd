@@ -82,7 +82,9 @@ library(leaflet)
 library(plotly)
 
 # MUST HAVE THIS VESRION OF LEAFLET
-# devtools::install_github("dmurdoch/leaflet@crosstalk4")
+if (packageDescription("leaflet")$RemoteUsername != "dmurdoch") {
+  stop("Special version of the leaflet package must be installed to knit this story succesfully. Run devtools::install_github('dmurdoch/leaflet@crosstalk4')")
+}
 
 
 # Import paths
