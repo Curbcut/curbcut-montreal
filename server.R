@@ -1,6 +1,12 @@
 ##### SUS SERVER SCRIPT ########################################################
 
 shinyServer(function(input, output, session) {
+  
+  observe(
+    hide(selector = "#navBar")
+  )
+
+  home_server("home", r = r)
 
   ## If crash, personalized error ----------------------------------------------
   
@@ -27,13 +33,6 @@ shinyServer(function(input, output, session) {
   ## If on mobile, warning! ----------------------------------------------------
   
   curbcut::mobile_warning(r = r)
-
-  
-  ## Home page -----------------------------------------------------------------
-  
-  # When the Curbcut title on the left corner is clicked on
-  shiny::observeEvent(input$title, updateNavbarPage(session, "cc_page", "home"))
-  
 
   ## Newsletter ----------------------------------------------------------------
 
@@ -63,7 +62,6 @@ shinyServer(function(input, output, session) {
   
   curbcut::trigger_pages_server(shiny::reactive(input$cc_page), r = r,
                                 r_folder_envir = r_folder_envir)
-
 
   ## Advanced options ----------------------------------------------------------
 

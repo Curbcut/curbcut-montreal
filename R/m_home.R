@@ -1,134 +1,97 @@
-### CANALE MODULE ##############################################################
-
 # UI ----------------------------------------------------------------------
 
 home_UI <- function(id) {
-  susPage(class = "sus-page-home", header = susBanner(), footer = susFooter(),
-    susPageSectionFeature(
-      susCarousel(
-        susCarouselSlide(
-          title = tags$em(nowrap(curbcut::cc_t("Towards a")), 
-                          nowrap(curbcut::cc_t("sustainable city"))),
-          preview = curbcut::cc_t("Welcome"),
-          tags$p(curbcut::cc_t("Curbcut is a platform for exploring urban ",
-                              "sustainability in the Montreal region across ",
-                              "multiple spatial and temporal scales. Curbcut ",
-                              "offers a justice- and inclusivity-focused ",
-                              "approach to sustainability which integrates ",
-                              "the widest possible range of data sources to ",
-                              "help researchers, policymakers, communities, ",
-                              "and individuals.")),
-          tags$div(class = "sus-button-group",
-                  tags$a(class = "sus-button sus-icon-button sus-button-secondary", 
-                         href = "#learn-more", curbcut::cc_t("Learn more"), 
-                         curbcut::icon_material("auto_stories")),
-                  tags$a(class = "sus-button sus-icon-button sus-button-primary", 
-                         href = "#start-exploring", 
-                         curbcut::cc_t("Start Exploring Maps"), 
-                         curbcut::icon_material("travel_explore"))
-          )
-        ),
-        susCarouselSlide(
-          title = tags$em(nowrap("Centraide x"), 
-                          nowrap("Curbcut")),
-          preview = curbcut::cc_t("Centraide"),
-          tags$p(curbcut::cc_t("In a novel collaboration, Centraide of Greater ",
-                               "Montreal is partnering with Curbcut on a series of ",
-                               "housing maps. Centraide is using its social expertise ",
-                               "and data to help target and interpret housing issues, ",
-                               "a decisive factor in poverty and social exclusion.")),
-          tags$div(class = "sus-button-group",
-                   tags$a(class = "sus-button sus-icon-button sus-button-secondary", 
-                          href = "#", onclick = "openTab('afford')",
-                          curbcut::cc_t("Housing affordability"), 
-                          curbcut::icon_material("location_city")),
-                   tags$a(class = "sus-button sus-icon-button sus-button-primary", 
-                          href = "https://www.centraide-mtl.org/", 
-                          curbcut::cc_t("Centraide"), target = "_blank",
-                          img(src = "centraide_logo/centraide_sm.png",
-                              style = paste0("display:inline; height:20px; ",
-                                             "float:right; margin-top:auto; ",
-                                             "margin-bottom:auto; margin-left:10px")))
-          )
-        )#,
-        # susCarouselSlide(
-        #   title = tags$em(tags$em(nowrap(curbcut::cc_t("Get notified about")), 
-        #                           nowrap(curbcut::cc_t("the 2021 Census")))),
-        #   preview = curbcut::cc_t("2021 Census data"),
-        #   tags$p(curbcut::cc_t("Many of the topics that can be explored on Curbcut draw on data from ",
-        #               "the Canadian Census. The Census of Population is conducted ",
-        #               "every five years and provides statistical information ",
-        #               "about demographic, social and economic characteristics.")),
-        #   tags$p(curbcut::cc_t("Sign up to our newsletter to get notified when ",
-        #               "the 2021 Census data is available on Curbcut!")),
-        #   tags$div(class = "sus-button-group",
-        #            tags$a(class = "sus-button sus-icon-button sus-button-primary",
-        #                   style = "cursor: pointer;",
-        #                   id = "sign_up_from_carousel", 
-        #                   curbcut::cc_t("Sign up!"),
-        #                   curbcut::icon_material("email"))
-        #   )
-        # )
-      )
-    ),
-    susPageSection(
-      tags$h2(curbcut::cc_t("About Curbcut"), 
-              scrollAnchor(id = "learn-more")),
-      tags$p(cc_t( 
-                  "Curbcut embraces an inclusive vision of urban ",
-        "sustainability, allowing users to pose questions ",
-        "about environmental issues and contextualize them ",
-        "within larger frameworks of equity and ",
-        "accessibility. It serves as both a data-exploration ",
-        "tool and a knowledge and information-sharing ",
-        "resource, designed to encourage greater reflection ",
-        "on urban sustainability challenges, and on the ",
-        "communities which are most affected by them.")),
-      tags$p(cc_t( 
-                  "Curbcut is organized into thematic and place-based ",
-        "“modules”, each of which takes a narrow slice of ",
-        "our data and presents it in a way designed to ",
-        "answer existing questions and provoke new ones. ",
-        "What is the relationship between heat risk and ",
-        "housing tenure? Does my neighbourhood have better ",
-        "or worse active transport options than the rest ",
-        "of the city? What is the history of environmental ",
-        "gentrification in Little Burgundy? The majority ",
-        "of the data is publicly available, and over time ",
-        "we will be adding more tools for users to export ",
-        "the data and use it themselves.")),
-      tags$p(HTML(paste0(
-        curbcut::cc_t("See the "),
-        "<a style ='cursor:pointer;' onclick = openTab('how_to_use')>",
-        curbcut::cc_t("“How to use”"),"</a>",
-        curbcut::cc_t("page for more information on ",
-        "how Curbcut works. And see the "),
-        "<a style ='cursor:pointer;' onclick = openTab('authors')>",
-        curbcut::cc_t("“Authors”"), "</a>", 
-        curbcut::cc_t(" page to learn more about our team.")))),
-      tags$p(class = "text-center", tags$em(
-        curbcut::cc_t("An initiative of the "),
-        HTML(paste0("<a href = 'https://www.mcgill.ca/mssi/'>",
-                    curbcut::cc_t("McGill Sustainability Systems Initiative"), 
-                    "</a>."))
-      ))
-    ),
-    susPageSection(
-      tags$h2(curbcut::cc_t("Maps"), 
-              scrollAnchor(id = "start-exploring")),
-      tags$div(
-        class = "text-width", 
-        do.call(linkList, c(
-          ready_modules_home(mods_rdy), 
-          list(linkListGroup(
-            name = curbcut::cc_t("More"), 
-            list(name = curbcut::cc_t("Montréal stories"), 
-                 onclick = "openTab('stories')"),
-            list(name = curbcut::cc_t("Place explorer"), 
-                 onclick = "openTab('place_explorer')"))))
-      ))
-    ), tags$div(style = "width: 250px; height: 50px;", hidden = "", susLegend())
+  
+  pages <- modules[c("id", "theme", "nav_title")]
+  pages$theme[12] <- "Explorer"
+  pages$theme[13] <- "Urban life"
+  
+  c_city_svg <- "www/landing/c-montreal.svg"
+    
+  news_cards <- tibble::tibble(
+    id = c("census", "centraide", "alp"),
+    icon = c("demographics", "urban", "health"),
+    title_en = c("2021 Census", "Centraide x Curbcut", "Active Living Potential"),
+    title_fr = c("Recensement de 2021", "Centraide x Curbcut", "Potentiel de vie active"),
+    text_en = c("We’ve added new data to the site! 2021 Census data is now available on all pages.",
+                "In a novel collaboration, Centraide of Greater Montreal is partnering with Curbcut on a series of housing maps. Centraide is using its social expertise and data to help target and interpret housing issues, a decisive factor in poverty and social exclusion.",
+                "Curbcut has developed its own Active Living Potential index. This index quantifies which areas provide walkable environments to their residents based on street connectivity, building density and points of interest. We developed the index with out internal travel time matrix dataset which uses a 15-minute walk buffer on the street network."),
+    text_fr = c("Nous avons ajouté de nouvelles données au site ! Les données du recensement de 2021 sont maintenant disponibles sur toutes les pages.",
+                "Dans une collaboration inédite, Centraide du Grand Montréal s’associe à Curbcut à travers une série de cartes dédiées au logement. Centraide met son expertise sociale et ses données au profit de la plateforme pour mieux cibler et interpréter les enjeux liés au logement, qui est un facteur déterminant sur la pauvreté et l’exclusion sociale.",
+                "Curbcut a développé son propre indice de potentiel de vie active. Cet indice quantifie les zones qui offrent des environnements propices à la marche à leurs résidents en fonction de la connectivité des rues, de la densité des bâtiments et des points d'intérêt. Nous avons développé cet indice à l'aide de notre matrice interne de données sur les temps de déplacement, qui utilise un tampon de 15 minutes de marche sur le réseau de rues.")
   )
+  
+  discover_cards <- tibble::tibble(
+    id = c('metro', 'alp', 'gentrification', 'access'),
+    img = c("www/landing/discover/pic-five-roses.jpg", 
+            "www/landing/discover/pic-active-living.jpg", 
+            "www/landing/discover/pic-biosphere.jpg",
+            "www/landing/discover/pic-amenities.jpg"),
+    theme = c('ecology', 'health', 'urban', 'transport'),
+    en = c('The Evolution of the Montreal Metro', 'Active Living Potential: The Canale Index', 'Environmental racism and green gentrification', 'Access to Amenities'),
+    fr = c("L'évolution du métro de Montréal", "Potentiel de vie active : L'indice Canale", "Racisme environnemental et embourgeoisement vert", "Accès aux commodités")
+  )
+  
+  team_cards <- tibble::tibble(
+    id = c('davidw', 'kevinm', 'maxbdb', 'dominiqueb'),
+    img = c("www/landing/team/david_wachsmuth.jpeg", 
+            "www/landing/team/kevin_manaugh.jpg", 
+            "www/landing/team/maxime_belanger_de_blois.jpg",
+            "www/landing/team/dominique_boulet.jpg"),
+    name = c('David Wachsmuth', 'Kevin Manaugh', 'Maxime Bélanger De Blois', 'Dominique Boulet'),
+    role_en = c('Co-founder & Co-CEO', 'Co-founder & Co-CEO', 'Head of Technology and Data', 'Qualitative Research Lead'),
+    role_fr = c('Co-fondateur et co-PDG', 'Co-fondateur et co-PDG', 'Responsable technologie et données', 'Responsable de la recherche qualitative'),
+    bio_en = c("David is one of the world’s leading experts on the impacts of short-term rental platforms, such as Airbnb, on cities around the world and consults widely with municipalities and community organizations on designing appropriate regulations. In addition to his work at Curbcut, David is the Canada Research Chair in Urban Governance at McGill University, where he is also an Associate Professor in the School of Urban Planning.",
+               "Kevin is one of the leading experts on the intersection between urban transport systems and social and environmental justice. In addition to his work at Curbcut, Kevin is also an associate professor at McGill University jointly appointed in the Department of Geography and the Bieler School of Environment.",
+               "Maxime is a skilled, resourceful and forward-thinking data scientist, adept at developing and transforming intricate datasets into actionable intelligence. With a master's degree in Urban Planning from McGill University, his extensive understanding of data analysis and geovisualization enables him to extract valuable insights and provide innovative solutions.",
+               "Dominique is driven to create qualitative work that complements quantitative information. She has a master’s degree in Urban Planning from McGill University and a master’s degree in Anthropology from Aarhus University, Copenhagen."),
+    bio_fr = c("David est l'un des plus grands experts mondiaux sur les impacts des plateformes de location à court terme, telles que Airbnb, sur les villes du monde entier et consulte largement les municipalités et les organisations communautaires sur la conception de réglementations appropriées. En plus de son travail chez Curbcut, David est titulaire de la Chaire de recherche du Canada en gouvernance urbaine à l'Université McGill, où il est également professeur associé à l'École d'urbanisme.",
+               "Kevin est l'un des principaux experts de l'intersection entre les systèmes de transport urbain et la justice sociale et environnementale. En plus de son travail chez Curbcut, Kevin est également professeur associé à l'Université McGill, nommé conjointement au département de géographie et à l'école d'environnement Bieler.",
+               "Maxime est un scientifique de données habile, ingénieux et avant-gardiste, capable de concevoir et de transformer des ensembles de données complexes en renseignements exploitables. Diplômé d'une maîtrise en urbanisme de l'Université McGill, sa connaissance approfondie de l'analyse des données et de la géovisualisation lui permet d'extraire des informations précieuses et de proposer des solutions innovantes.",
+               "Dominique est motivée par la nécessité de produire des études qualitatives qui complètent les informations quantitatives. Elle est titulaire d'une maîtrise en urbanisme de l'Université McGill et d'une maîtrise en anthropologie de l'Université d'Aarhus, à Copenhague."),
+    theme = c('housing', 'transport', 'health', 'urban')
+  )
+  
+  contributors <- c(
+    'Cloé St-Hilaire',
+    'Emma Ezvan',
+    'Daniela Rodriguez',
+    'Connor Cordingley',
+    'Robin Basalaev-Binder',
+    'Josh Medicoff',
+    'Philip Bligh',
+    'Lauren Rosenthal'
+  )
+  
+  translation_df <- tibble::tibble(
+    en = c('Hello', 'Goodbye', 'About', 'About Curbcut', 'The Team', 'Contact Us', 'FR', 'CLOSE', 'Climate', 'Climate risk',
+           'Ecology', 'EXPLORE<br />URBAN', 'SUSTAIN&shy;ABILITY', 'About us', 'Curbcut is a platform for deep, dynamic, and intuitive exploration of urban sustainability.',
+           'More about Curbcut', 'Discover', 'View all', 'Latest news', 'Read more', 'Browse themes', 'Newsletter', 'Keep in touch!',
+           'GET UPDATES', 'Our collaborators', 'Curbcut cities', 'by LEEROY. All rights reserved.'),
+    fr = c('Salut', 'Adieux', 'À propos', 'À propos de Curbcut', "L'équipe", 'Contact', 'EN', 'FERMER', 'Climat', 'Risque Climatique',
+           'Écologie', 'EXPLORER LA', 'DURABILITÉ', 'À propos', "Curbcut est une plateforme d'exploration approfondie, dynamique et intuitive de la durabilité urbaine.",
+           'Plus sur Curbcut', 'Découvrez', 'Afficher tout', 'Dernières nouvelles', 'En lire plus', 'Parcourez les thèmes', 'Infolettre', 'Gardons contact!',
+           "S'INSCRIRE", 'Nos partenaires', 'Villes Curbcut', 'by LEEROY. Tous droits réservés.')
+  )
+  
+  collabs <- tibble::tibble(
+    id = c('MSSI', 'centraide'),
+    img = c("www/landing/collab/mcgill-logo.png", 
+            "www/landing/collab/centraide-logo.png"),
+    name = c('The McGill Sustainability Systems Initiative', 'Centraide')
+  )
+  
+  
+  # TKTK LENIS HERE IS INTERFERING WITH THE REST OF THE APP (MOUSE SCROLL)
+  cc.landing::landing_input(inputId = shiny::NS(id, "landing"),
+                            pages = pages,
+                            c_city_svg = c_city_svg,
+                            news_cards = news_cards,
+                            discover_cards = discover_cards,
+                            team_cards = team_cards,
+                            contributors = contributors,
+                            translation_df = translation_df,
+                            collabs = collabs)
 }
 
 
@@ -137,7 +100,28 @@ home_UI <- function(id) {
 home_server <- function(id, r) {
   moduleServer(id, function(input, output, session) {
     
-    bookmark_server(id = "home", r = r)
+    page_click <- shiny::reactive(get_landing_click("landing"))
+
+    shiny::observeEvent(page_click(), {
+        shiny::updateTabsetPanel(session = r$server_session(), inputId = "cc_page",
+                                 selected = page_click())
+    }, ignoreNULL = TRUE)
+    
+    # Follow the active page. If it's `home`, trigger the landing input. If it changes,
+    # unmount it so it doesn't stay in memory.
+    observeEvent(r$server_session()$input$cc_page, {
+      active_page <- r$server_session()$input$cc_page
+      
+      turn_on_off <- if (active_page == "home") "on" else "off"
+      
+      cc.landing::update_landing(session = session,
+                                 inputId = "landing",
+                                 configuration = list(
+                                   turn = turn_on_off
+                                 ))
+    })
+
+    curbcut::bookmark_server(id = "home", r = r)
 
   })
 }

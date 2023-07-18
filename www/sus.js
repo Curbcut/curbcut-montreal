@@ -56,7 +56,6 @@ window.addEventListener('load', (evt) => {
 
   for(var i = 0; i < navbarTabLinks.length; i++) {
     const navbarTabLink = navbarTabLinks[i];
-    console.log(navbarTabLink.innerText);
     navbarTabLink.addEventListener('click', () => {
       collapseTopNav();
     });

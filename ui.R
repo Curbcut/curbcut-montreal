@@ -8,6 +8,21 @@ ui <- function(request) {
     useShinyjs(),
     useSever(),
     
+    
+    # Remove the navbar -------------------------------------------------------
+    
+    tags$style(type='text/css', ".navbar-shadow{display:none;}"),
+    tags$style(type='text/css', ".navbar{display:none;}"),
+    
+    
+    tags$head(tags$script('
+  $(document).ready(function() {
+    $(".scrollable-div").on("wheel", function(e) {
+      e.stopPropagation();
+    });
+  });
+')),
+    
 
     # Styling objects ------------------------------------------------------------
     
@@ -19,17 +34,9 @@ ui <- function(request) {
     tags$head(tags$link(rel = "stylesheet", type = "text/css", 
                         href = "sus.palette.css")),
     tags$head(tags$link(rel = "stylesheet", type = "text/css", 
-                        href = "sus.css")),
-    tags$head(tags$link(rel = "stylesheet", type = "text/css", 
-                        href = "sus.icons.css")),
-    tags$head(tags$link(rel = "stylesheet", type = "text/css", 
-                        href = "sus.navbar.css")),
-    tags$head(tags$link(rel = "stylesheet", type = "text/css", 
-                        href = "sus.footer.css")),
+                        href = "sus.css?id=6")),
     tags$head(tags$link(rel = "stylesheet", type = "text/css", 
                         href = "sus.button.css")),
-    tags$head(tags$link(rel = "stylesheet", type = "text/css",
-                        href = "sus.carousel.css")),
     tags$head(tags$link(rel = "stylesheet", type = "text/css", 
                         href = "sus.pages.css")),
     tags$head(tags$link(rel = "stylesheet", type = "text/css", 
@@ -37,15 +44,9 @@ ui <- function(request) {
     tags$head(tags$link(rel = "stylesheet", type = "text/css", 
                         href = "sus.linklist.css")),
     tags$head(tags$link(rel = "stylesheet", type = "text/css", 
-                        href = "sus.home.css")),
-    tags$head(tags$link(rel = "stylesheet", type = "text/css", 
-                        href = "sus.maps.css")),
-    tags$head(tags$link(rel = "stylesheet", type = "text/css", 
-                        href = "sus.authors.css")),
+                        href = "sus.maps.css?id=5")),
     tags$head(tags$link(rel = "stylesheet", type = "text/css", 
                         href = "sus.stories.css")),
-    tags$head(tags$link(rel = "stylesheet", type = "text/css", 
-                        href = "sus.news.css")),
     tags$head(tags$link(rel = "stylesheet", type = "text/css",
                         href = "sus.place_explorer.css")),
     tags$head(tags$link(rel = "stylesheet", type = "text/css",
@@ -96,12 +97,6 @@ ui <- function(request) {
              tabPanel(curbcut::cc_t("Place explorer"), 
                       place_explorer_UI("place_explorer"),
                       value = "place_explorer"),
-             navbarMenu(curbcut::cc_t("About"),
-                        tabPanel(curbcut::cc_t("About Curbcut"), 
-                                 about_sus_UI("about_sus"), value = "about_sus"),
-                        tabPanel(curbcut::cc_t("How to use"), how_to_use_UI("how_to_use"), 
-                                 value = "how_to_use"),
-                        tabPanel(curbcut::cc_t("Authors"), authors_UI("authors"), value = "authors")),
              collapsible = TRUE,
              inputs = list(
                # Language toggle

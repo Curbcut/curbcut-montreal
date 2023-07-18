@@ -35,6 +35,12 @@ suppressPackageStartupMessages({
   library(RSQLite)
   
   library(sever)
+  
+  
+  
+  
+  
+  library(cc.landing)
 })
 
 # Shiny options -----------------------------------------------------------
@@ -96,15 +102,6 @@ first_level_choropleth <-
 all_choropleths <- 
   sapply(sapply(ls()[grepl("map_zoom_levels_", ls())], get, USE.NAMES = FALSE), 
          names, USE.NAMES = FALSE) |> unlist() |> unique()
-
-# Set up fonts ------------------------------------------------------------
-
-systemfonts::register_font(
-  name = "SourceSansPro",
-  plain = "www/fonts/SourceSansPro-Regular.ttf",
-  italic = "www/fonts/SourceSansPro-Italic.ttf",
-  bold = "www/fonts/SourceSansPro-Bold.ttf",
-  bolditalic = "www/fonts/SourceSansPro-BoldItalic.ttf")
 
 
 # Declare temporary folder ------------------------------------------------
