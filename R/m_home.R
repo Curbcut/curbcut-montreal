@@ -89,7 +89,9 @@ home_UI <- function(id) {
                             team_cards = team_cards,
                             contributors = contributors,
                             translation_df = translation_df,
-                            collabs = collabs)
+                            collabs = collabs,
+                            lang = "fr")
+  
 }
 
 
@@ -100,13 +102,10 @@ home_server <- function(id, r) {
     
     # Detect page clicks on other pages
     page_click <- shiny::reactive(get_landing_click("landing"))
-
     shiny::observeEvent(page_click(), {
         shiny::updateTabsetPanel(session = r$server_session(), inputId = "cc_page",
                                  selected = page_click())
     }, ignoreNULL = TRUE)
-    
-    # TKTK Detect change in language!!!
     
     # Follow the active page. If it's `home`, trigger the landing input. If it changes,
     # unmount it so it doesn't stay in memory.
@@ -121,8 +120,47 @@ home_server <- function(id, r) {
                                    turn = turn_on_off
                                  ))
     })
+    
+    
+    ## DEAL WITH LANGUAGE
+    # Switch the language on a new session if it's in a cookie
+    lang_cookie <- shiny::reactive(cookie_retrieve(
+      input = r$server_session()$input,
+      name = "lang"
+    ))
+    shiny::observeEvent(lang_cookie(), {
+      
+      # Update the website language (span + r$lang)
+      update_lang(r = r, lang = lang_cookie())
+      
+      # Update the language of the landing UI
+      update_landing(session = session,
+                     inputId = "landing",
+                     configuration = list(
+                       lang = lang_cookie()
+                     ))
+    }, once = TRUE, ignoreNULL = TRUE)
+    
+    # Detect lang button click
+    lang_click <- shiny::reactive(get_lang_click("landing"))
+    observeEvent(lang_click(), {
+      
+      # Update the website language (span + r$lang)
+      curbcut::update_lang(r = r, lang_click())
+      
+      print(lang_click())
+      
+      # Set the cookie
+      curbcut::cookie_set(
+        session = r$server_session(), name = "lang",
+        value = lang_click()
+      )
+    }, ignoreNULL = TRUE, ignoreInit = TRUE)
 
+    
+    # Bookmark
     curbcut::bookmark_server(id = "home", r = r)
+
 
   })
 }
