@@ -1,23 +1,9 @@
 ##### SUS SERVER SCRIPT ########################################################
 
 shinyServer(function(input, output, session) {
-  
-  observe(
-    hide(selector = "#navBar")
-  )
 
   home_server("home", r = r)
 
-  ## If crash, personalized error ----------------------------------------------
-  
-  observe({
-      sever(html = severe_html(lang = r$lang(),
-                               module_id = input$cc_page,
-                               region = r$region()),
-            bg_color = "rgba(0,0,0,.5)", box = TRUE)
-  })
-
-  
   ## Reactive variables --------------------------------------------------------
   
   r <- r_init(server_session = session,
@@ -65,11 +51,15 @@ shinyServer(function(input, output, session) {
 
   ## Advanced options ----------------------------------------------------------
 
-  curbcut::settings_server(r = r)
+  curbcut::settings_advanced(r = r, input = input)
 
 
   ## Heartbeat function to keep app alive --------------------------------------
   
   curbcut::heartbeat(input)
+  
+  observeEvent(input$test, {
+    print(hola)
+  })
   
 })

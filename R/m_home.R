@@ -3,8 +3,6 @@
 home_UI <- function(id) {
   
   pages <- modules[c("id", "theme", "nav_title")]
-  pages$theme[12] <- "Explorer"
-  pages$theme[13] <- "Urban life"
   
   c_city_svg <- "www/landing/c-montreal.svg"
     
@@ -100,12 +98,15 @@ home_UI <- function(id) {
 home_server <- function(id, r) {
   moduleServer(id, function(input, output, session) {
     
+    # Detect page clicks on other pages
     page_click <- shiny::reactive(get_landing_click("landing"))
 
     shiny::observeEvent(page_click(), {
         shiny::updateTabsetPanel(session = r$server_session(), inputId = "cc_page",
                                  selected = page_click())
     }, ignoreNULL = TRUE)
+    
+    # TKTK Detect change in language!!!
     
     # Follow the active page. If it's `home`, trigger the landing input. If it changes,
     # unmount it so it doesn't stay in memory.

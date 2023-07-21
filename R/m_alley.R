@@ -182,9 +182,13 @@ alley_legend <- function(lang, ...) {
 alley_UI <- function(id) {
   default_region <- modules$regions[modules$id == id][[1]][1]
   mzp <- eval(parse(text = paste0("map_zoom_levels_", default_region)))
+  page <- modules[modules$id == id, ]
+  theme_lowercased <- gsub(" .*", "", tolower(page$theme))
   
   shiny::tagList(
-    # Sidebar
+    shiny::div(
+      `data-theme` = theme_lowercased,
+      # Sidebar
     curbcut::sidebar_UI(
       id = shiny::NS(id, id),
       curbcut::checkbox_UI(id = shiny::NS(id, id), value = TRUE, 
@@ -213,6 +217,7 @@ alley_UI <- function(id) {
       curbcut::explore_UI(shiny::NS(id, id)),
       curbcut::dyk_UI(shiny::NS(id, id))
     )
+  )
   )
 }
 

@@ -57,8 +57,13 @@ vars_right <- modules$var_right[modules$id == "climate_risk"][[1]]
 # UI ----------------------------------------------------------------------
 
 `climate_risk_UI` <- function(id) {
+  page <- modules[modules$id == id, ]
+  theme_lowercased <- gsub(" .*", "", tolower(page$theme))
+  
   shiny::tagList(
-    # Sidebar
+    shiny::div(
+      `data-theme` = theme_lowercased,
+      # Sidebar
     curbcut::sidebar_UI(
       id = shiny::NS(id, id),
       curbcut::autovars_UI(NS(id, id)),
@@ -92,6 +97,7 @@ vars_right <- modules$var_right[modules$id == "climate_risk"][[1]]
       curbcut::explore_UI(NS(id, id)),
       curbcut::dyk_UI(NS(id, id))
     )
+  )
   )
 }
 

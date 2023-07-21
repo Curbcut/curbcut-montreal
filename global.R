@@ -14,7 +14,7 @@ default_region <- "CMA"
 default_random_address <- "845 Sherbrooke Ouest, Montréal, Quebec "
 
 map_zoom <- 10.1
-map_loc <- c(-73.58, 45.53)
+map_loc <- c(-73.70, 45.53)
 
 
 # Packages ----------------------------------------------------------------
@@ -33,13 +33,7 @@ suppressPackageStartupMessages({
   library(stringr)
   library(DBI)
   library(RSQLite)
-  
-  library(sever)
-  
-  
-  
-  
-  
+
   library(cc.landing)
 })
 
@@ -86,7 +80,6 @@ mods_rdy <-
     ids
   }, simplify = FALSE, USE.NAMES = TRUE)
 
-
 # Map defaults ------------------------------------------------------------
 
 map_token <- paste0("pk.eyJ1Ijoic3VzLW1jZ2lsbCIsImEiOiJjbDBxMTcyNWwyNTl0M2",
@@ -113,3 +106,11 @@ addResourcePath("temp_folder_shortcut", temp_folder)
 # Create the UI and server functions for basic modules --------------------
 
 curbcut::create_ui_server_mods(modules = modules)
+
+
+# Set up fonts ------------------------------------------------------------
+
+systemfonts::register_font(
+  name = "acidgrotesk-book",
+  plain = list("www/fonts/acidgrotesk-book.woff", 0))
+

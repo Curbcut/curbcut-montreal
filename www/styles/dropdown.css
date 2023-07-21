@@ -1,0 +1,114 @@
+:root {
+	--scale-button-hover: 1.02;
+	--scale-button-active: 1;
+	--c-button-content: var(--c-black);
+	--transition-button: transform ease-in-out 0.05s;
+	--tr-button-hover: scale(
+		var(--scale-button-hover),
+		var(--scale-button-hover)
+	);
+	--filter-button-hover: brightness(1.05);
+	--tr-button-active: scale(
+		var(--scale-button-active),
+		var(--scale-button-active)
+	);
+	--filter-button-active: brightness(0.95);
+}
+
+.tab-content .dropdown .dropdown-menu.open {
+	overflow: visible;
+}
+
+.tab-content .dropdown > .btn {
+	background: none;
+	box-shadow: unset;
+	width: 100%;
+}
+
+.tab-content .btn {
+	display: block;
+	text-decoration: none;
+	border: none;
+	border-radius: var(--border-radius-sm);
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	align-content: center;
+	padding: 0px var(--padding-h-md) 0px var(--padding-h-md);
+	width: auto;
+	min-height: 45px;
+	max-height: 45px;
+	text-transform: uppercase;
+	font-family: var(--ff-button);
+	font-size: 1.75rem;
+	transform-origin: center;
+	white-space: nowrap;
+	color: var(--c-button-content);
+	text-shadow: unset;
+	outline: unset;
+}
+
+.tab-content .btn-default,
+.tab-content .dropdown {
+	color: var(--c-black);
+}
+
+.tab-content .btn-default {
+	background: var(--theme-color);
+}
+
+.tab-content .dropdown {
+	background: none;
+	border: 1px solid var(--c-black);
+	border-radius: 5px;
+	text-shadow: unset;
+	box-shadow: unset;
+}
+
+.dropdown-menu {
+	border-radius: var(--border-radius-sm);
+}
+
+.dropdown-menu,
+.dropdown-menu.open {
+	border: 0.5px solid rgba(0, 0, 0, 0.05);
+	overflow-x: hidden;
+	padding-top: 0px;
+	padding-bottom: 0px;
+	box-shadow: var(--box-shadow-md);
+	min-width: unset !important;
+	width: fit-content;
+}
+
+.dropdown-menu > li > a {
+	font-family: var(--ff-button);
+	text-transform: none;
+	font-size: 1.25rem;
+	font-weight: unset;
+}
+
+.dropdown-menu > li > a:hover,
+.dropdown-menu > li > a:focus,
+.dropdown-menu > .active > a,
+.dropdown-menu > .active > a:hover,
+.dropdown-menu > .active > a:focus {
+	background-color: #e8e8e8;
+	color: black;
+}
+
+/* Switch the caret for ours */
+.bs-caret .caret {
+	/* Hide the default caret */
+	display: none;
+}
+
+.bs-caret::after {
+	/* Add the SVG as a background-image */
+	content: '';
+	display: inline-block;
+	width: 12px;
+	height: 12px;
+	background: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMTUiIHZpZXdCb3g9IjAgMCAyNCAxNSIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik0xNC40MDA2IDE0LjQwMDFMMTQuNDAwNiAxMC40ODVDMTQuNDAwNiA5Ljk5NjM4IDE0Ljc5NjkgOS42MDAwNiAxNS4yODU1IDkuNjAwMDZMMTkuMiA5LjYwMDA2TDE5LjIgNS42ODQ5NUMxOS4yIDUuMTk2MzUgMTkuNTk2MyA0LjgwMDAzIDIwLjA4NDkgNC44MDAwM0wyNCA0LjgwMDAzTDI0IDBMMTkuMiAtMi4wOTgxNmUtMDdMMTkuMiAzLjkxNTEyQzE5LjIgNC40MDM3MiAxOC44MDM3IDQuODAwMDMgMTguMzE1MSA0LjgwMDAzTDE1LjI4NDkgNC44MDAwM0MxNC45OTMzIDQuODAwMDMgMTQuNjQwOSA0LjgwMDI3IDE0LjQwNDEgNC44MDA0NkwxNC40MDQxIDYuMjI4MzdMMTQuNDAwNiA2LjIyODM3TDE0LjQwMDYgOC43MTUxNUMxNC40MDA2IDkuMjAzNzUgMTQuMDA0MyA5LjYwMDA2IDEzLjUxNTcgOS42MDAwNkwxMC40ODU1IDkuNjAwMDZDOS45OTY4NiA5LjYwMDA2IDkuNjAwNTQgOS4yMDM3NSA5LjYwMDU0IDguNzE1MTVMOS42MDA1NCA2LjIyODM3TDkuNTk3MTcgNi4yMjgzN0w5LjU5NzE3IDQuODAzOTlMNy44MTY3OCA0LjgwMzk5TDcuODE2NzggNC44MDA2Nkw1LjY4NDc5IDQuODAwNjZDNS4xOTYxOSA0LjgwMDY2IDQuNzk5ODggNC40MDQzNSA0Ljc5OTg4IDMuOTE1NzVMNC43OTk4OCAwLjAwMDYzMDc3TC0wLjAwMDE1NDQ5NSAwLjAwMDYzMDU2TC0wLjAwMDE1NDcwNSA0LjgwMDY2TDMuOTE0OTYgNC44MDA2NkM0LjQwMzU2IDQuODAwNjYgNC43OTk4OCA1LjE5Njk4IDQuNzk5ODggNS42ODU1OEw0Ljc5OTg4IDkuNjAwNjlMOC43MTQ5OSA5LjYwMDY5QzkuMjAzNTkgOS42MDA2OSA5LjU5OTkxIDkuOTk3MDEgOS41OTk5MSAxMC40ODU2TDkuNTk5OTEgMTQuNDAwN0wxNC40MDA2IDE0LjQwMDdMMTQuNDAwNiAxNC40MDAxWiIgZmlsbD0iYmxhY2siLz4KPC9zdmc+Cg==')
+		center/contain no-repeat;
+	vertical-align: middle;
+}

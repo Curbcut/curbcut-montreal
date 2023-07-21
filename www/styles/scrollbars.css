@@ -1,0 +1,33 @@
+/* For WebKit browsers */
+.sus-map-sidebar::-webkit-scrollbar,
+.sus-map-panel::-webkit-scrollbar,
+.sus-title-box::-webkit-scrollbar,
+.panel_view::-webkit-scrollbar {
+	width: 8px;
+}
+
+/* Track */
+.sus-map-sidebar::-webkit-scrollbar-track,
+.sus-map-panel::-webkit-scrollbar-track,
+.sus-title-box::-webkit-scrollbar-track,
+.panel_view::-webkit-scrollbar-track {
+	background-color: transparent;
+}
+
+/* Thumb */
+.sus-map-sidebar::-webkit-scrollbar-thumb,
+.sus-map-panel::-webkit-scrollbar-thumb,
+.sus-title-box::-webkit-scrollbar-thumb,
+.panel_view::-webkit-scrollbar-thumb {
+	background-color: #888;
+	border-radius: 8px;
+	border: 1px solid #888;
+}
+
+/* Hovered thumb */
+.sus-map-sidebar::-webkit-scrollbar-thumb:hover,
+.sus-map-panel::-webkit-scrollbar-thumb:hover,
+.sus-title-box::-webkit-scrollbar-thumb:hover,
+.panel_view::-webkit-scrollbar-thumb:hover {
+	background-color: #666;
+}

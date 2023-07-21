@@ -5,9 +5,13 @@
 stories_UI <- function(id) {
   themes <- unique(unlist(stories$themes))
   themes <- list(Themes = setNames(themes, themes))
+  page <- modules[modules$id == id, ]
+  theme_lowercased <- gsub(" .*", "", tolower(page$theme))
+  
   shiny::tagList(
-
-    # Sidebar
+    shiny::div(
+      `data-theme` = theme_lowercased,
+      # Sidebar
     curbcut::sidebar_UI(
       id = NS(id, id),
       shiny::actionLink(
@@ -28,6 +32,7 @@ stories_UI <- function(id) {
 
     # Main panel
     shiny::htmlOutput(shiny::NS(id, "stories"))
+  )
   )
 }
 
@@ -80,7 +85,6 @@ stories_server <- function(id, r) {
         
         shiny::div(
           class = "main_panel_popup",
-          style = "height:100%;overflow:hidden;background-color:rgba(255, 255, 255, 0.975)",
           shiny::tags$iframe(
             style = "width:100%;height:100%;",
             title = "stories",

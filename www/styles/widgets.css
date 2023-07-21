@@ -1,0 +1,16 @@
+.tab-content .control-label {
+	font-size: small;
+	margin-bottom: 0px;
+}
+
+.tab-content .form-control {
+	border-color: var(--c-black);
+}
+
+.tab-content .form-control:focus {
+	border-color: var(--c-black);
+}
+
+.tab-content .form-control:active {
+	border-color: var(--c-black);
+}

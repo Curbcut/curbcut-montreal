@@ -1,0 +1,54 @@
+.irs {
+	font-family: var(--ff-body);
+}
+
+.irs--shiny {
+	display: block;
+	height: 60px;
+	padding-bottom: 20px;
+}
+
+.irs--shiny > .irs .irs-line,
+.irs--shiny > :not(.irs) {
+	transform: translate(0px, 5px) scale(1, 1);
+}
+
+.irs--shiny .irs-handle {
+	border: unset;
+	background: unset;
+	background-color: var(--c-black);
+	transition: var(--transition-button);
+	box-shadow: var(--box-shadow-md);
+	top: 20px;
+	width: 18px;
+	height: 18px;
+}
+
+.irs--shiny .irs-handle:hover,
+.irs--shiny .irs-handle.state_hover {
+	background: unset;
+	background-color: var(--c-black);
+	filter: var(--filter-button-hover);
+}
+
+.irs--shiny .irs-handle:active,
+.irs--shiny .irs-handle.state_active {
+	background: unset;
+	background-color: var(--c-black);
+	filter: var(--filter-button-active);
+}
+
+.irs--shiny .irs-line {
+	border: unset;
+	background: unset;
+	background-color: var(--c-default);
+}
+
+.irs--shiny .irs-bar,
+.irs--shiny .irs-single,
+.irs--shiny .irs-to,
+.irs--shiny .irs-from {
+	background-color: var(--theme-color);
+	border: 0px;
+	line-height: 1.42857143;
+}

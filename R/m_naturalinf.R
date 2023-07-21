@@ -234,8 +234,12 @@ explore_graph_natural_inf <- function(data, vars, lang, ...) {
 
 natural_inf_UI <- function(id) {
   id_map <- paste0(id, "-map")
+  page <- modules[modules$id == id, ]
+  theme_lowercased <- gsub(" .*", "", tolower(page$theme))
   
   shiny::tagList(
+    shiny::div(
+      `data-theme` = theme_lowercased,
     # Sidebar
     curbcut::sidebar_UI(
       shiny::NS(id, id),
@@ -280,6 +284,7 @@ natural_inf_UI <- function(id) {
     curbcut::right_panel(
       id = id,
       curbcut::explore_UI(NS(id, id)))
+  )
   )
 }
 
