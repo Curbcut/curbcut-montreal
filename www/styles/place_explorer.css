@@ -20,7 +20,7 @@
 	box-sizing: border-box;
 	margin-left: calc(var(--w-sidebar) + var(--padding-h-md) * 2);
 	width: var(--panel-width);
-	background-color: white;
+	background-color: #e9ecef;
 	padding: 0.5rem 1rem 0.5rem 1rem;
 	border-radius: 15px;
 	border: 1px solid #000;

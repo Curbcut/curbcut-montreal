@@ -32,7 +32,7 @@ You'll want to break up your text with images, graphics, maps etc. You need to i
 
 ```{r, echo=FALSE, fig.align = 'left', out.width="100%", fig.cap="Your caption here", warning=FALSE}
 
-knitr::include_graphics(here("www/stories/visuals/champs_possibles/Image1_IMG_0648.jpeg"))
+knitr::include_graphics(here("dev/data/stories/raw_images/champs_possibles/Image1_IMG_0648.jpeg"))
 
 ```
 
