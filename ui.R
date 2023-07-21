@@ -80,7 +80,6 @@ style_tags,
         twitter_card_type = "summary",
         twitter_site = "@susmontreal"
       ),
-    tags$head(tags$script(src = "about_contact.js")),
 
 
     # Navigation bar -------------------------------------------------------------

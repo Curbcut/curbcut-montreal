@@ -2,7 +2,11 @@
 
 home_UI <- function(id) {
   
+  modules <- curbcut:::get_from_globalenv("modules")
   pages <- modules[c("id", "theme", "nav_title")]
+  
+  translation_df <- curbcut:::get_from_globalenv("translation_df")
+  translation_df <- translation_df[translation_df$en %in% unlist(pages), ]
   
   c_city_svg <- "www/landing/c-montreal.svg"
     
@@ -59,17 +63,6 @@ home_UI <- function(id) {
     'Josh Medicoff',
     'Philip Bligh',
     'Lauren Rosenthal'
-  )
-  
-  translation_df <- tibble::tibble(
-    en = c('Hello', 'Goodbye', 'About', 'About Curbcut', 'The Team', 'Contact Us', 'FR', 'CLOSE', 'Climate', 'Climate risk',
-           'Ecology', 'EXPLORE<br />URBAN', 'SUSTAIN&shy;ABILITY', 'About us', 'Curbcut is a platform for deep, dynamic, and intuitive exploration of urban sustainability.',
-           'More about Curbcut', 'Discover', 'View all', 'Latest news', 'Read more', 'Browse themes', 'Newsletter', 'Keep in touch!',
-           'GET UPDATES', 'Our collaborators', 'Curbcut cities', 'by LEEROY. All rights reserved.'),
-    fr = c('Salut', 'Adieux', 'À propos', 'À propos de Curbcut', "L'équipe", 'Contact', 'EN', 'FERMER', 'Climat', 'Risque Climatique',
-           'Écologie', 'EXPLORER LA', 'DURABILITÉ', 'À propos', "Curbcut est une plateforme d'exploration approfondie, dynamique et intuitive de la durabilité urbaine.",
-           'Plus sur Curbcut', 'Découvrez', 'Afficher tout', 'Dernières nouvelles', 'En lire plus', 'Parcourez les thèmes', 'Infolettre', 'Gardons contact!',
-           "S'INSCRIRE", 'Nos partenaires', 'Villes Curbcut', 'by LEEROY. Tous droits réservés.')
   )
   
   collabs <- tibble::tibble(

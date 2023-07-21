@@ -34,11 +34,6 @@ shinyServer(function(input, output, session) {
                           easyClose = TRUE))
   })
   
-  ## Language button -----------------------------------------------------------
-  
-  curbcut::language_server(r = r)
-  
-  
   ## Bookmark ------------------------------------------------------------------
   
   curbcut::use_bookmark(r = r)
