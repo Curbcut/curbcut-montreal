@@ -1,3 +1,7 @@
 .checkbox input[type='checkbox'] {
 	accent-color: var(--theme-color);
 }
+
+.checkbox {
+	margin: 0px;
+}

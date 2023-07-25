@@ -11,9 +11,11 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 <center>
-```{r, echo=FALSE}
-vembedr::embed_youtube("xSVZ8wHa0i8", height = 500)
-```
+<div>
+<iframe width="100%" height="315"
+src="https://www.youtube.com/embed/xSVZ8wHa0i8" frameborder="0" allowfullscreen="" data-external="1">
+</iframe>
+</div>
 </center>
 
 Located in the Mile End neighbourhood along the Canadian Pacific Railroad tracks and delimited by the Carmelites Monastery on the east and old garment factories on the west, the Champ des Possibles is a unique local green space. What is now a protected urban prairie, the Champ des Possibles has had an interesting history that has recently led to its protected status and a unique co-management governance structure between a community-led non-profit organization, Les Amis du Champ des Possible, and the Plateau-Mont-Royal borough. Different from other parks nearby, the name of this space, the “Field of Possibilities” in English, suits it well with the wide array of uses and appropriations that take place. For those who frequent and take care of the Champ des Possibles, it has become an important place to demonstrate how a community can be involved in the official management of a park-like space. It is known for its characteristics of being “wild” and “natural”, but this has not always been the case. The Champ des Possibles has transformed throughout the last 150 years from a quarry to a landfill, to a rail yard, to gradually becoming the space it is today (Desjardins, 2019). Simultaneously, the surrounding area of the Mile End has undergone many changes and has experienced heavy gentrification. In its trajectory to becoming the popular area it is today, it has transformed from a stop on the rail line, to Montreal’s garment district, to a hub for tech companies (Desjardins, 2019; McSwiney & Michaud, 2014). Both the physical and social changes throughout the decades have shaped the current reality of the neighbourhood and its spaces such as the Champ des Possibles. The story of the Champ des Possibles and its current co-management governance structure, which emphasizes community-led decision-making, exemplifies how spontaneity and looseness can be positive in the context of urban planning for both policy and design. 

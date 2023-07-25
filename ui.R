@@ -2,7 +2,7 @@
 
 style_files <- gsub("www/", "", list.files("www/styles", full.names = TRUE))
 
-style_files <- paste0(style_files, "?id=14")
+style_files <- paste0(style_files, "?id=6")
 
 style_tags <- tagList(
   lapply(style_files, function(x) {
@@ -40,7 +40,10 @@ tags$script(HTML("
   });
 ")),
 
-
+# Place the label inside the dropdown
+tags$head(
+  tags$script(src = "app.js")
+),
     # Styling objects ------------------------------------------------------------
 
     tags$head(tags$link(rel = "icon", href = "favicon.ico")),
@@ -58,7 +61,7 @@ style_tags,
     curbcut::use_curbcut_css(lang_init = TRUE),
 
     # Google analytics
-    tags$head(includeHTML("www/google_analytics.html")),
+    # tags$head(includeHTML("www/google_analytics.html")),
 
     # Sharing card ---------------------------------------------------------------
 

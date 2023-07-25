@@ -35,6 +35,7 @@ suppressPackageStartupMessages({
   library(RSQLite)
 
   library(cc.landing)
+  library(cc.map)
 })
 
 # Shiny options -----------------------------------------------------------

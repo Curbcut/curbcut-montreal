@@ -119,3 +119,56 @@
 .show .bs-caret::after {
 	transform: rotate(180deg);
 }
+
+/* Dropdown siderbar related */
+.sus-map-sidebar button.dropdown-toggle,
+.sus-map-panel button.dropdown-toggle {
+	min-height: 25px;
+	max-height: 25px;
+	top: 10px;
+}
+.sus-map-sidebar .compare-dropdown button.dropdown-toggle,
+.sus-map-panel .compare-dropdown button.dropdown-toggle {
+	top: 0px !important;
+}
+
+.sus-map-sidebar button.dropdown-toggle,
+.sus-map-panel button.dropdown-toggle,
+.compare_dropdown .btn,
+.compare_dropdown .dropdown-menu > li > a {
+	font-family: var(--ff-button);
+	text-transform: none;
+	font-size: 1.25rem;
+	font-weight: unset;
+}
+
+.bootstrap-select .dropdown-toggle:focus,
+.bootstrap-select > select.mobile-device:focus + .dropdown-toggle {
+	outline: none !important;
+}
+
+.sus-map-sidebar .dropdown.bootstrap-select.form-control.bs3 {
+	height: 35px;
+	margin-bottom: 15px;
+}
+
+.sus-map-sidebar .compare-dropdown .dropdown.bootstrap-select.form-control.bs3 {
+	height: auto;
+	margin-bottom: auto;
+}
+
+.sus-map-sidebar .dropdown.bootstrap-select.form-control.bs3 .control-label {
+	margin-left: 7px;
+	background-color: white;
+	padding-left: 3px;
+	padding-right: 3px;
+}
+
+.sus-map-sidebar .dropdown.bootstrap-select.form-control.bs3 .control-label {
+	margin-left: 7px;
+	background-color: white;
+	padding-left: 3px;
+	padding-right: 3px;
+	bottom: 35px;
+	position: relative;
+}

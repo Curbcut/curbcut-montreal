@@ -27,6 +27,7 @@
 
 .sus-map-sidebar {
 	position: relative;
+	display: flex;
 	overflow-y: auto;
 	overflow-x: hidden;
 	left: var(--padding-h-md);
@@ -54,6 +55,7 @@
 	max-height: 100%;
 	padding: 0px;
 	margin: 0px;
+	width: var(--w-sidebar);
 }
 
 .sus-map-sidebar-content {
@@ -69,7 +71,7 @@
 	padding-left: var(--padding-h-md);
 	padding-right: var(--padding-h-md);
 	padding-top: var(--padding-v-md);
-	padding-bottom: var(--padding-v-md);
+	/* padding-bottom: var(--padding-v-md); */
 }
 
 .sus-map-panel {
@@ -93,7 +95,7 @@
 
 @media (max-width: 650px) {
 	.sus-map-panel {
-		margin-right: calc(-1 * 100% - 2 * var(--padding-h-md));
+		display: none;
 	}
 }
 
@@ -103,10 +105,6 @@
 		opacity: 0.95;
 		transition: opacity 0.95s ease-out, visibility 1s ease-out;
 		transition-delay: visibility 4s;
-	}
-
-	.sus-map-panel:hover .right-panel-hidden {
-		display: block !important;
 	}
 }
 
@@ -162,24 +160,7 @@
 
 .sus-map-sidebar div.form-group,
 .sus-map-panel div.form-group {
-	margin-top: var(--padding-v-md);
-}
-
-.sus-map-sidebar button.dropdown-toggle,
-.sus-map-panel button.dropdown-toggle,
-.compare_dropdown .btn {
-	min-height: 30px;
-	max-height: 30px;
-}
-
-.sus-map-sidebar button.dropdown-toggle,
-.sus-map-panel button.dropdown-toggle,
-.compare_dropdown .btn,
-.compare_dropdown .dropdown-menu > li > a {
-	font-family: var(--ff-button);
-	text-transform: none;
-	font-size: 1.25rem;
-	font-weight: unset;
+	margin-top: 0px;
 }
 
 .mapboxgl-map .mapboxgl-ctrl a {
@@ -270,6 +251,11 @@
 	margin-left: 10px;
 }
 
+.title_text h3 {
+	font-size: 2.5rem;
+	text-transform: uppercase;
+}
+
 .sus-title-box {
 	position: absolute;
 	z-index: 20;
@@ -287,4 +273,12 @@
 
 .sus-title-box p {
 	margin-bottom: 10px;
+}
+
+.sus-map-sidebar .sidebar-section-title {
+	font-size: smaller;
+	font-weight: bold;
+	white-space: normal;
+	display: flex;
+	align-items: center;
 }

@@ -52,3 +52,37 @@
 	border: 0px;
 	line-height: 1.42857143;
 }
+
+/* YEAR SLIDER */
+.year-slider .irs-min,
+.year-slider .irs-max,
+.year-slider .irs-from,
+.year-slider .irs-to,
+.year-slider .irs-single {
+	display: none !important;
+}
+.year-slider .irs--shiny > .irs .irs-line,
+.year-slider .irs--shiny > :not(.irs) {
+	transform: none;
+}
+.year-slider .irs--shiny .irs-line {
+	top: 0px;
+}
+.year-slider .irs--shiny .irs-bar {
+	top: 0px;
+}
+.year-slider .irs--shiny .irs-handle {
+	top: -5px;
+}
+.year-slider .irs--shiny .irs-grid {
+	height: 20px;
+}
+.year-slider .irs-shiny {
+	height: 45px;
+}
+.year-slider .irs--shiny.irs-with-grid {
+	height: 28px !important;
+}
+.year-slider .irs--shiny .irs-grid-text {
+	bottom: 0px;
+}

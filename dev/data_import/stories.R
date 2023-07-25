@@ -168,7 +168,7 @@ build_stories <- function() {
   # Knit all stories Rmds ---------------------------------------------------
 
   library(here)
-  stories_knit_all()
+  cc.buildr::stories_knit_all()
   
   
   # Return ------------------------------------------------------------------

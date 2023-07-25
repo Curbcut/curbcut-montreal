@@ -11,9 +11,11 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 <center>
-```{r, echo=FALSE}
-vembedr::embed_youtube("QWZ9wbDMDO0", height = 500)
-```
+<div>
+<iframe width="100%" height="315"
+src="https://www.youtube.com/embed/QWZ9wbDMDO0" frameborder="0" allowfullscreen="" data-external="1">
+</iframe>
+</div>
 </center>
 
 <p>(Adapted from Manaugh &amp; Dreszer (2022), <em>Mobilisons-Nous: &ldquo;Violent Infrastructure&rdquo;&nbsp;</em><em>and Pedestrian Space in Montreal </em>in Sustainability, Citizen Participation, and City Governance: Multidisciplinary Perspectives. Edited by Hoi L. Kong and Tanya Monforte. University of Toronto Press)</p>

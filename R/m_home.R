@@ -140,9 +140,6 @@ home_server <- function(id, r) {
       
       # Update the website language (span + r$lang)
       curbcut::update_lang(r = r, lang_click())
-      
-      print(lang_click())
-      
       # Set the cookie
       curbcut::cookie_set(
         session = r$server_session(), name = "lang",

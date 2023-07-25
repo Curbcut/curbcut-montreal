@@ -21,9 +21,11 @@ knitr::opts_chunk$set(echo = TRUE)
 The first thing to include is a link to the corresponding video, if there is one. This should appear under the title and before the text portion of the story. This is the code chunk for linking to the YouTube video, you'll need the video ID: 
 
 <center>
-```{r, echo=FALSE}
-vembedr::embed_youtube("xSVZ8wHa0i8", height = 500)
-```
+<div>
+<iframe width="100%" height="315"
+src="https://www.youtube.com/embed/5Dv91F0xguc" frameborder="0" allowfullscreen="" data-external="1">
+</iframe>
+</div>
 </center>
 
 Broadly speaking, the stories are about urban sustainability and planning in the city of Montreal. They can be about a specific place, a park with an interesting sustainability history for example, or about something that has had an impact on the city as a whole, like the metro system. The story should be somewhere in between a journalistic article and an academic essay. It should be engaging and easy to read but at the same time the research efforts behind the scenes should match academic standards. Although, this doesn't mean you should limit yourself to academic sources! In most cases references will come from varied types of sources. 

@@ -285,6 +285,43 @@
       ],
       "Hash": "c35768291560ce302c0a6589f92e837d"
     },
+    "cc.landing": {
+      "Package": "cc.landing",
+      "Version": "0.0.0.9000",
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteUsername": "Curbcut",
+      "RemoteRepo": "cc.landing",
+      "RemoteRef": "main",
+      "RemoteSha": "f8801c2448af5787884dd49e00ef54963c44c9ec",
+      "Requirements": [
+        "base64enc",
+        "htmltools",
+        "jsonlite",
+        "reactR",
+        "shiny"
+      ],
+      "Hash": "44bf0b85fb48f00bd5618980828fb02c"
+    },
+    "cc.map": {
+      "Package": "cc.map",
+      "Version": "0.0.0.9000",
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteUsername": "Curbcut",
+      "RemoteRepo": "cc.map",
+      "RemoteRef": "master",
+      "RemoteSha": "3986ee94266a96d24cb3a6a304b95efa97e5f705",
+      "Requirements": [
+        "htmltools",
+        "jsonlite",
+        "reactR",
+        "shiny"
+      ],
+      "Hash": "3686f00c26ef4a4aea69c987c62e1c67"
+    },
     "class": {
       "Package": "class",
       "Version": "7.3-22",
@@ -384,11 +421,11 @@
       "Source": "GitHub",
       "RemoteType": "github",
       "RemoteHost": "api.github.com",
-      "RemoteUsername": "MSSI-urban",
+      "RemoteUsername": "Curbcut",
       "RemoteRepo": "curbcut",
-      "RemoteRef": "main",
-      "RemoteSha": "b304caa424c5f275e723601f6ef4f7260a07ab8e",
-      "Remotes": "qfes/rdeck, bdbmax/bslib",
+      "RemoteRef": "map_js",
+      "RemoteSha": "c221d5053adc77a714264ba13a66e1e1eb621e1a",
+      "Remotes": "qfes/rdeck, bdbmax/bslib, Curbcut/cc.map, Curbcut/cc.landing",
       "Requirements": [
         "DBI",
         "DT",
@@ -414,7 +451,7 @@
         "utils",
         "zip"
       ],
-      "Hash": "3ff41e4a0eefee757ffb12a0f62b63bd"
+      "Hash": "0ca1cb87a13e8333fc8f60d71f713a5d"
     },
     "curl": {
       "Package": "curl",
@@ -1058,6 +1095,21 @@
       ],
       "Hash": "049ec37bd96eafa5b819c3775eab429c"
     },
+    "reactR": {
+      "Package": "reactR",
+      "Version": "0.4.4",
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteUsername": "react-R",
+      "RemoteRepo": "reactR",
+      "RemoteRef": "master",
+      "RemoteSha": "7dccb68a0989cf642d4a5a3eb90b59d1ae773002",
+      "Requirements": [
+        "htmltools"
+      ],
+      "Hash": "1451b02e664be382f770db4134ebccb3"
+    },
     "renv": {
       "Package": "renv",
       "Version": "0.17.3",
@@ -1158,18 +1210,6 @@
         "viridisLite"
       ],
       "Hash": "906cb23d2f1c5680b8ce439b44c6fa63"
-    },
-    "sever": {
-      "Package": "sever",
-      "Version": "0.0.7",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Requirements": [
-        "cli",
-        "htmltools",
-        "shiny"
-      ],
-      "Hash": "ed311815f35a5ef4884ae72ae0f86cca"
     },
     "sf": {
       "Package": "sf",
