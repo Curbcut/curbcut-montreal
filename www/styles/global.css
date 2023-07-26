@@ -182,6 +182,10 @@ div[data-theme='explorer'] {
 	);
 }
 
+/* :root {
+	--mobile-width: 1170px;
+} */
+
 .container-fluid {
 	padding-right: var(--padding-h-md);
 	padding-left: var(--padding-h-md);

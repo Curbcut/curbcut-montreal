@@ -294,7 +294,7 @@
       "RemoteUsername": "Curbcut",
       "RemoteRepo": "cc.landing",
       "RemoteRef": "main",
-      "RemoteSha": "f8801c2448af5787884dd49e00ef54963c44c9ec",
+      "RemoteSha": "3cade0e5fb9588e7424467866584c53cc9f8891d",
       "Requirements": [
         "base64enc",
         "htmltools",
@@ -302,7 +302,7 @@
         "reactR",
         "shiny"
       ],
-      "Hash": "44bf0b85fb48f00bd5618980828fb02c"
+      "Hash": "acd477c1fe13b6e00c1671c2279b471f"
     },
     "cc.map": {
       "Package": "cc.map",
@@ -385,10 +385,10 @@
     },
     "cpp11": {
       "Package": "cpp11",
-      "Version": "0.4.3",
+      "Version": "0.4.5",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "ed588261931ee3be2c700d22e94a29ab"
+      "Hash": "f07821e9b0aada6c999d4692e22a2ea7"
     },
     "crayon": {
       "Package": "crayon",
@@ -424,7 +424,7 @@
       "RemoteUsername": "Curbcut",
       "RemoteRepo": "curbcut",
       "RemoteRef": "map_js",
-      "RemoteSha": "c221d5053adc77a714264ba13a66e1e1eb621e1a",
+      "RemoteSha": "97181883de36d4d7e67989063f7c8b1e40ed08aa",
       "Remotes": "qfes/rdeck, bdbmax/bslib, Curbcut/cc.map, Curbcut/cc.landing",
       "Requirements": [
         "DBI",
@@ -451,7 +451,7 @@
         "utils",
         "zip"
       ],
-      "Hash": "0ca1cb87a13e8333fc8f60d71f713a5d"
+      "Hash": "dafc3995f4a2ed789cfa3d071d60adfd"
     },
     "curl": {
       "Package": "curl",
@@ -925,13 +925,13 @@
     },
     "openssl": {
       "Package": "openssl",
-      "Version": "2.0.6",
+      "Version": "2.1.0",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
         "askpass"
       ],
-      "Hash": "0f7cd2962e3044bb940cca4f4b5cecbe"
+      "Hash": "273a6bb4a9844c296a459d2176673270"
     },
     "pillar": {
       "Package": "pillar",
@@ -1101,14 +1101,14 @@
       "Source": "GitHub",
       "RemoteType": "github",
       "RemoteHost": "api.github.com",
-      "RemoteUsername": "react-R",
       "RemoteRepo": "reactR",
-      "RemoteRef": "master",
+      "RemoteUsername": "react-R",
+      "RemoteRef": "HEAD",
       "RemoteSha": "7dccb68a0989cf642d4a5a3eb90b59d1ae773002",
       "Requirements": [
         "htmltools"
       ],
-      "Hash": "1451b02e664be382f770db4134ebccb3"
+      "Hash": "8362b494e3e2332938539c945251e474"
     },
     "renv": {
       "Package": "renv",
@@ -1145,7 +1145,7 @@
     },
     "rmarkdown": {
       "Package": "rmarkdown",
-      "Version": "2.22",
+      "Version": "2.23",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -1165,7 +1165,7 @@
         "xfun",
         "yaml"
       ],
-      "Hash": "75a01be060d800ceb14e32c666cacac9"
+      "Hash": "79f14e53725f28900d936f692bfdd69f"
     },
     "s2": {
       "Package": "s2",
@@ -1181,7 +1181,7 @@
     },
     "sass": {
       "Package": "sass",
-      "Version": "0.4.6",
+      "Version": "0.4.7",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -1191,7 +1191,7 @@
         "rappdirs",
         "rlang"
       ],
-      "Hash": "cc3ec7dd33982ef56570229b62d6388e"
+      "Hash": "6bd4d33b50ff927191ec9acbf52fd056"
     },
     "scales": {
       "Package": "scales",
@@ -1213,7 +1213,7 @@
     },
     "sf": {
       "Package": "sf",
-      "Version": "1.0-13",
+      "Version": "1.0-14",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -1232,11 +1232,11 @@
         "units",
         "utils"
       ],
-      "Hash": "8fb4839843abc03528ff9f86424d6acd"
+      "Hash": "e2111252a76984ca50bf8d6314348681"
     },
     "shiny": {
       "Package": "shiny",
-      "Version": "1.7.4",
+      "Version": "1.7.4.1",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -1266,7 +1266,7 @@
         "withr",
         "xtable"
       ],
-      "Hash": "c2eae3d8c670fa9dfa35a12066f4a1d5"
+      "Hash": "f7f201522eedbc95f10ef323b100ff29"
     },
     "shinyWidgets": {
       "Package": "shinyWidgets",

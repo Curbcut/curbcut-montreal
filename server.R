@@ -15,10 +15,6 @@ shinyServer(function(input, output, session) {
   curbcut::title_page_update(r = r, 
                              active_page = shiny::reactive(input$cc_page), 
                              site_name = site_name)
-  
-  ## If on mobile, warning! ----------------------------------------------------
-  
-  curbcut::mobile_warning(r = r)
 
   ## Newsletter ----------------------------------------------------------------
 
@@ -53,8 +49,7 @@ shinyServer(function(input, output, session) {
   
   curbcut::heartbeat(input)
   
-  observeEvent(input$test, {
-    print(hola)
-  })
-  
 })
+
+
+

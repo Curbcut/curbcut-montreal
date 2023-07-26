@@ -100,3 +100,9 @@ table.dataTable td.selected {
 	color: white;
 	background: var(--c-black);
 }
+
+@media (max-width: 1170px) {
+	.floating-panel {
+		display: none;
+	}
+}
