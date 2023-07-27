@@ -154,7 +154,7 @@
 
 .sus-map-sidebar .compare-dropdown .dropdown.bootstrap-select.form-control.bs3 {
 	height: auto;
-	margin-bottom: auto;
+	margin-bottom: 15px;
 }
 
 .sus-map-sidebar .dropdown.bootstrap-select.form-control.bs3 .control-label {

@@ -282,6 +282,10 @@ body {
 	background-color: #e9ecef;
 }
 
+hr {
+	margin-top: 0px !important;
+}
+
 .noselect {
 	-webkit-touch-callout: none; /* iOS Safari */
 	-webkit-user-select: none; /* Safari */

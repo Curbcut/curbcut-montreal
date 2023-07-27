@@ -2,7 +2,8 @@
 
 # Dropdown
 var_left_dropdown <-
-  list("Borough summary" = " ",
+  list("Curbcut’s observational data" = "observation",
+       "Borough summary" = "summary",
        "Green alleys per square kilometer" = "alley_sqkm",
        "Green alleys per 1,000 residents" = "alley_per1k")
 
@@ -189,31 +190,33 @@ alley_UI <- function(id) {
     shiny::div(
       `data-theme` = theme_lowercased,
       # Sidebar
-    curbcut::sidebar_UI(
-      id = shiny::NS(id, id),
-      curbcut::checkbox_UI(id = shiny::NS(id, id), value = TRUE, 
-                           label = "Curbcut’s observational data"),
-      curbcut::picker_UI(id = shiny::NS(id, id), 
-                         var_list = var_left_dropdown),
-      bottom = shiny::tagList(
-        curbcut::legend_UI(shiny::NS(id, id)),
-        shinyjs::hidden(
-          curbcut::zoom_UI(shiny::NS(id, id), zoom_levels = mzp))
-      )
-    ),
-    
-    # Map
+      curbcut::sidebar_UI(
+        id = shiny::NS(id, id),
+        curbcut::label_indicators(id = shiny::NS(id, "indicators_label")),
+        curbcut::picker_UI(id = shiny::NS(id, id), 
+                           var_list = var_left_dropdown),
+        shinyjs::hidden(shiny::tags$div(
+          id = shiny::NS(id, "pre_compare_panel"),
+          shiny::hr(),
+          curbcut::compare_UI(
+            id = shiny::NS(id, id),
+            var_list = curbcut::dropdown_make(vars = " ", compare = TRUE)
+          ))),
+        shinyjs::hidden(shiny::div(
+          id = shiny::NS(id, "scale_div"),
+          shiny::hr(),
+          curbcut::zoom_UI(shiny::NS(id, id), zoom_levels = mzp))),
+        bottom = shiny::tagList(
+          curbcut::legend_UI(shiny::NS(id, id)),
+        )
+      ),
+      
+      # Map
     curbcut::map_UI(shiny::NS(id, id)),
     
     # Right panel
     curbcut::right_panel(
       id = id,
-      shinyjs::hidden(shiny::tags$div(
-        id = shiny::NS(id, "pre_compare_panel"),
-        curbcut::compare_UI(
-          id = shiny::NS(id, id),
-          var_list = curbcut::dropdown_make(vars = " ", compare = TRUE)
-        ))),
       curbcut::explore_UI(shiny::NS(id, id)),
       curbcut::dyk_UI(shiny::NS(id, id))
     )
@@ -280,7 +283,7 @@ alley_server <- function(id, r) {
     
     # Hide the zoom server when on var_left
     shiny::observeEvent(mode(), {
-      shinyjs::toggle(id = shiny::NS(id, "zoom_div"), condition = mode() == "choropleth")
+      shinyjs::toggle(id = "scale_div", condition = mode() == "choropleth")
     })
     
     # Get df
@@ -304,11 +307,6 @@ alley_server <- function(id, r) {
       var_list = shiny::reactive(var_left_dropdown),
       time = shiny::reactive(2023))
     
-    # Hide the dropdown when on observational data
-    shiny::observeEvent(mode(), {
-      shinyjs::toggle(id = shiny::NS(id, "ccpicker_var"), condition = mode() != "alleys")
-    })
-    
     # Right variable / compare panel
     var_right <- curbcut::compare_server(
       id = id,
@@ -325,20 +323,13 @@ alley_server <- function(id, r) {
       shinyjs::toggle(id = "pre_compare_panel", condition = mode() == "choropleth")
     })
     
-    # Checkbox
-    cbox <- curbcut::checkbox_server(
-      id = id,
-      r = r,
-      label = shiny::reactive("Curbcut’s observational data")
-    )
-    
     # WHat is the active view?
     mode <- shiny::reactive({
       # Revert the selection to NA
       r[[id]]$select_id(NA)
       
-      if (cbox()) return("alleys")
-      if (var_left() == " ") return("borough")
+      if (var_left() == "observation") return("alleys")
+      if (var_left() == "summary") return("borough")
       return("choropleth")
     })
     
@@ -350,9 +341,11 @@ alley_server <- function(id, r) {
       if (mode() == "borough") return(alley_boroughs)
       if (mode() == "alleys") return(alleys)
       
+      df <- r[[id]]$df()
+      if (!grepl("^city_", df)) df <- "city_CSD"
       curbcut::data_get(
         vars = vars(),
-        df = r[[id]]$df()
+        df = df
       )})
     
     # Data for tile coloring
@@ -367,6 +360,7 @@ alley_server <- function(id, r) {
     
     vars <- shiny::reactive({
       if (mode() != "choropleth") return(list())
+
       curbcut::vars_build(var_left(), var_right(), df = r[[id]]$df())
     })
     
@@ -452,9 +446,9 @@ alley_server <- function(id, r) {
       zoom = r[[id]]$zoom,
       zoom_levels = shiny::reactive(zoom_levels()$zoom_levels),
       region = shiny::reactive(zoom_levels()$region),
-      show_buildings = shiny::reactive(var_left() != " "),
-      show_streets = shiny::reactive(var_left() != " "),
-      show_stories = shiny::reactive(var_left() != " ")
+      show_buildings = shiny::reactive(var_left() != "summary"),
+      show_streets = shiny::reactive(var_left() != "summary"),
+      show_stories = shiny::reactive(var_left() != "summary")
     )
     
     # Explore tables

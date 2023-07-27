@@ -160,14 +160,27 @@ build_and_append_access <- function(scales_variables_modules,
     var_title <- stringr::str_to_sentence(paste0(theme, " accessible by ", mode))
     var_short <- stringr::str_to_sentence(theme)
     
-    
+    mode_text <- (\(x) {
+      if (mode == "car") {
+        return("drive")
+      }
+      if (mode == "walking") {
+        return("walk")
+      }
+      if (mode == "bicycle") {
+        return("bike ride")
+      }
+      if (grepl("public transit", mode)) {
+        return(gsub("public transit", "transit journey", mode))
+      }
+    })
     explanation <- paste0(
-      "the number of ", tolower(theme),
-      " an average resident can reach within ", time, " minutes by ", mode
+      "the number of ", tolower(dict$title),
+      " an average resident can reach within a ", time, "-minute ", mode_text
     )
     exp_q5 <- paste0(
-      "the average resident has access to _X_ ", tolower(theme), " within ", time,
-      " minutes by ", mode
+      "the average resident has access to _X_ ", tolower(dict$title), " within a ",
+      time, "-minute ", mode_text
     )
     
     # Cut timing out of the mode

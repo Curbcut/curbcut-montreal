@@ -67,14 +67,18 @@ vars_right <- modules$var_right[modules$id == "climate_risk"][[1]]
     curbcut::sidebar_UI(
       id = shiny::NS(id, id),
       curbcut::autovars_UI(NS(id, id)),
+      curbcut::warnuser_UI(shiny::NS(id, id)),
+      shiny::hr(),
+      curbcut::compare_UI(
+        id = NS(id, id),
+        var_list = curbcut::dropdown_make(vars = " ", compare = TRUE)
+      ),
+      shiny::hr(),
+      curbcut::zoom_UI(shiny::NS(id, id), `climate_risk_mzp`),
       curbcut::checkbox_UI(id = NS(id, id), label = cc_t("View with grids"),
                            value = TRUE),
-      curbcut::warnuser_UI(shiny::NS(id, id)),
       bottom = shiny::tagList(
         curbcut::legend_UI(shiny::NS(id, id)),
-        shinyjs::hidden(
-          curbcut::zoom_UI(shiny::NS(id, id), `climate_risk_mzp`)
-        )
       )
     ),
 
@@ -90,10 +94,6 @@ vars_right <- modules$var_right[modules$id == "climate_risk"][[1]]
     # Right panel
     curbcut::right_panel(
       id = id,
-      curbcut::compare_UI(
-        id = NS(id, id),
-        var_list = curbcut::dropdown_make(vars = " ", compare = TRUE)
-      ),
       curbcut::explore_UI(NS(id, id)),
       curbcut::dyk_UI(NS(id, id))
     )
@@ -124,9 +124,28 @@ vars_right <- modules$var_right[modules$id == "climate_risk"][[1]]
       ))
     })
     
-    # Hide the zoom slider when on 'grid()'
+    # If on grid, hide the slider and the auto-zoom
     shiny::observe({
-      shinyjs::toggle(id = shiny::NS(id, "zoom_div"), condition = !grid())
+      
+      # Add one namespace as these are inside other module servers
+      shinyjs::toggle(shiny::NS(id, "zoom_auto-cccheckbox_cbx"), condition = !grid())
+      # Follow the rest of the slidertext addition ID for the zoom slider
+      shinyjs::toggle(shiny::NS(id, "zoon_slider_div"), condition = !grid())
+      
+      # Get the zoom label
+      zoom_name <- rv_zoom_string()
+      names(zoom_name) <- zoom_name
+      zoom_name <- curbcut::zoom_get_label(zoom_name, lang = r$lang())
+      
+      if (grid()) {
+        shiny::removeUI("#climaterisk_grid_zn")
+        shiny::insertUI(selector = "#climate_risk-climate_risk-zoom_cbx_loc",
+                        where = "beforeEnd",
+                        ui = shiny::div(id = "climaterisk_grid_zn", zoom_name))
+      } else {
+        # Revert to default HTML
+        shiny::removeUI("#climaterisk_grid_zn")
+      }
     })
     
     # Switch the region depending on inputs

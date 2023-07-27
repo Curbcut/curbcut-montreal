@@ -547,7 +547,7 @@ build_and_append_climate_risk <- function(scales_variables_modules, crs) {
             "climate_destructive_storms", "climate_heat_wave"
           ),
           dates = c(2015, 2022),
-          main_dropdown_title = "Climate vulnerability indicator",
+          main_dropdown_title = NA,
           var_right = scales_variables_modules$variables$var_code[
             scales_variables_modules$variables$source == "Canadian census" &
               !is.na(scales_variables_modules$variables$parent_vec)],

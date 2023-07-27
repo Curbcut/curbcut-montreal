@@ -240,42 +240,45 @@ natural_inf_UI <- function(id) {
   shiny::tagList(
     shiny::div(
       `data-theme` = theme_lowercased,
-    # Sidebar
-    curbcut::sidebar_UI(
-      shiny::NS(id, id),
-      curbcut::picker_UI(NS(id, id),
-                         picker_id = "d1",
-                         var_list = var_left_list_1_natural_inf,
-                         label = curbcut::cc_t("Theme")),
-      curbcut::picker_UI(NS(id, id),
-                         picker_id = "d2",
-                         var_list = list("----" = " "),
-                         label = curbcut::cc_t("Indicator")),
-      curbcut::slider_UI(NS(id, id),
-                         label = curbcut::cc_t("Amount of territory to protect"),
-                         min = 0,
-                         max = 25,
-                         step = 1,
-                         value = 17,
-                         post = "%"),
-      curbcut::checkbox_UI(NS(id, id),
-                           label = curbcut::cc_t("Custom priorities")),
-      curbcut::slider_text_UI(NS(id, id),
-                              slider_text_id = "bio",
-                              label = curbcut::cc_t("Biodiversity conservation"),
-                              choices = custom_slider_choices,
-                              selected = "Important"),
-      curbcut::slider_text_UI(NS(id, id),
-                              slider_text_id = "hea",
-                              label = curbcut::cc_t("Heat island reduction"),
-                              choices = custom_slider_choices,
-                              selected = "Important"),
-      curbcut::slider_text_UI(NS(id, id),
-                              slider_text_id = "flo",
-                              label = curbcut::cc_t("Flood prevention"),
-                              choices = custom_slider_choices,
-                              selected = "Important"),
-      bottom = shiny::tagList(legend_UI(NS(id, id)))),
+      # Sidebar
+      curbcut::sidebar_UI(
+        shiny::NS(id, id),
+        curbcut::label_indicators(id = shiny::NS(id, "label")),
+        curbcut::picker_UI(shiny::NS(id, id),
+                           picker_id = "d1",
+                           var_list = var_left_list_1_natural_inf,
+                           label = curbcut::cc_t("Theme")),
+        curbcut::picker_UI(shiny::NS(id, id),
+                           picker_id = "d2",
+                           var_list = list("----" = " "),
+                           label = curbcut::cc_t("Indicator")),
+        curbcut::slider_UI(shiny::NS(id, id),
+                           label = curbcut::cc_t("Amount of territory to protect"),
+                           min = 0,
+                           max = 25,
+                           step = 1,
+                           value = 17,
+                           post = "%"),
+        curbcut::advanced_controls_UI(
+          id = id, 
+          label = curbcut::cc_t("Custom priorities"),
+          curbcut::slider_text_UI(shiny::NS(id, id),
+                                  slider_text_id = "bio",
+                                  label = curbcut::cc_t("Biodiversity conservation"),
+                                  choices = custom_slider_choices,
+                                  selected = "Important"),
+          curbcut::slider_text_UI(shiny::NS(id, id),
+                                  slider_text_id = "hea",
+                                  label = curbcut::cc_t("Heat island reduction"),
+                                  choices = custom_slider_choices,
+                                  selected = "Important"),
+          curbcut::slider_text_UI(shiny::NS(id, id),
+                                  slider_text_id = "flo",
+                                  label = curbcut::cc_t("Flood prevention"),
+                                  choices = custom_slider_choices,
+                                  selected = "Important")
+        ),
+        bottom = shiny::tagList(legend_UI(NS(id, id)))),
     
     # Map
     curbcut::map_UI(shiny::NS(id, id)),
@@ -321,21 +324,18 @@ natural_inf_server <- function(id, r) {
     main_slider <- curbcut::slider_server(id = id)
     
     # Custom priorities
-    custom_priorities <- 
-      curbcut::checkbox_server(
-        id = id, 
-        r = r, 
-        label = shiny::reactive("Custom priorities"))
+    custom_priorities <- advanced_controls_server(
+      id = id,
+      r = r,
+      label = shiny::reactive("Custom priorities"))
+    
+    observe(print(custom_priorities()))
     
     # Hide and show UI elements depending on the picked choices
     shiny::observeEvent(var_left_1(), {
       shinyjs::toggle(NS(id, "ccpicker_d2"), condition = var_left_1() != "c_priority")
       shinyjs::toggle(NS(id, "cccheckbox_cbx"), condition = var_left_1() == "c_priority")
-    })
-    shiny::observeEvent(custom_priorities(), {
-      shinyjs::toggle(shiny::NS(id, "ccslidertext_bio"), condition = custom_priorities())
-      shinyjs::toggle(shiny::NS(id, "ccslidertext_hea"), condition = custom_priorities())
-      shinyjs::toggle(shiny::NS(id, "ccslidertext_flo"), condition = custom_priorities())
+      shinyjs::toggle("advanced_controls", condition = var_left_1() == "c_priority")
     })
     shiny::observeEvent(var_left(), {
       shinyjs::toggle(shiny::NS(id, "ccslider_sld"), condition = var_left() == "c_priority")
@@ -353,7 +353,8 @@ natural_inf_server <- function(id, r) {
       sapply(custom_slider_choices, cc_t, lang = r$lang(), USE.NAMES = FALSE)
     })
     
-    # Custom priority sliders
+    # Custom priority sliders. Addition of a shiny namespace, as these sliders
+    # are now withing the advanced control (Additional namespacing).
     s_bio <- curbcut::slider_text_server(
       id = id, 
       r = r, 

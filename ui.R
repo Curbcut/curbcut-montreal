@@ -42,13 +42,8 @@ tags$script(HTML("
 
 # Place the label inside the dropdown
 tags$head(
-  tags$script(src = "label_placement.js")
+  tags$script(src = "widgets_update.js")
 ),
-
-tags$head(
-  tags$script(src = "wait_idle_show.js")
-),
-
 
 # For mobile, open and close the menus
 tags$head(tags$script("
@@ -80,7 +75,6 @@ tags$head(tags$link(rel = "icon", href = "favicon.ico")),
 style_tags,
 
 # tags$head(tags$script(src = "sus.js")),
-tags$head(tags$script(src = "shinybrowser.js")),
 tags$head(tags$script(js_links_between_modules)),
 tags$head(tags$style(HTML(styler))),
 

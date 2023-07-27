@@ -31,6 +31,49 @@ function moveLabels() {
     });
 }
 
+// Function to adjust grid margin/height for sliders that do NOT have a grid under them
+function adjustGridMargin() {
+    const irsElements = document.querySelectorAll('.irs--shiny');
+    irsElements.forEach(irs => {
+        const gridElement = irs.querySelector('.irs-grid');
+
+        // If the grid element doesn't exist or is empty, remove margin-bottom style
+        if (!gridElement || gridElement.innerHTML.trim() === '') {
+            irs.style.height = '40px';
+        }
+    });
+}
+
+// Function to hide bottom_sidebar if its content is hidden or empty
+function hideBottomSidebarIfEmptyOrHidden() {
+    const bottomSidebars = document.querySelectorAll('.bottom_sidebar');
+
+    bottomSidebars.forEach(bottomSidebar => {
+        // get the children elements of bottom_sidebar
+        const children = bottomSidebar.children;
+
+        let shouldHide = true; // flag to check if bottom_sidebar should be hidden
+
+        // loop through each child element
+        for(let i = 0; i < children.length; i++) {
+            const child = children[i];
+
+            // if the child element is not hidden and is not empty, don't hide bottom_sidebar
+            if(child.style.display !== 'none' && child.innerHTML.trim() !== '') {
+                shouldHide = false;
+                break;
+            }
+        }
+
+        // if shouldHide is still true after checking all children, hide bottom_sidebar
+        if(shouldHide) {
+            bottomSidebar.style.display = 'none';
+        } else {
+            bottomSidebar.style.display = '';
+        }
+    });
+}
+
 document.addEventListener("DOMContentLoaded", function() {
     // The node to be monitored
     let targetNode = document.body; // Adjust this if necessary
@@ -42,8 +85,10 @@ document.addEventListener("DOMContentLoaded", function() {
     let callback = function(mutationsList) {
         for(let mutation of mutationsList) {
             if (mutation.type === 'childList' || mutation.type === 'attributes') {
-                // When a childList or attributes mutation occurs, try to move labels immediately
+                // When a childList or attributes mutation occurs, try to move labels and adjust grid margins immediately
                 moveLabels();
+                adjustGridMargin();
+                hideBottomSidebarIfEmptyOrHidden(); // call the new function here
             }
         }
     };

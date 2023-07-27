@@ -28,15 +28,15 @@
 .sus-map-sidebar {
 	position: relative;
 	display: flex;
+	flex: 1;
 	overflow-y: auto;
 	overflow-x: hidden;
 	left: var(--padding-h-md);
-	min-width: var(---w-sidebar);
+	min-width: var(--w-sidebar);
 	max-width: var(--w-sidebar);
 	width: var(--w-sidebar);
 	min-height: min-content;
 	max-height: calc(100vh - (var(--padding-h-md) * 3 + 35px));
-	height: fit-content;
 	border-radius: 15px;
 	border: 1px solid #000;
 	background: var(--c-primary-complement);
@@ -305,6 +305,7 @@
 .scrollable-div {
 	overflow-y: auto;
 	overflow-x: hidden;
+	-webkit-overflow-scrolling: touch;
 	/* height: 100%; */
 }
 
@@ -401,4 +402,8 @@
 	display: flex;
 	align-items: center;
 	margin-bottom: 10px;
+}
+
+.scale-panel {
+	margin-bottom: 15px;
 }
