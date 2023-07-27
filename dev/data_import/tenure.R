@@ -696,7 +696,10 @@ build_and_append_tenure <- function(scales_variables_modules, crs) {
       main_dropdown_title = "Data representation",
       dates = with_breaks$avail_dates[["tenure_total_total_total_total_count"]],
       var_right = var_right,
-      suffix_zoom_levels = "max_CT"
+      suffix_zoom_levels = "max_CT",
+      add_advanced_controls = c("mnd", "Shelter cost to income ratio", "Suitability and condition",
+                                "Family composition"),
+      default_var = "tenure_tenant_total_total_total_pct"
     )
   
   

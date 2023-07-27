@@ -104,7 +104,7 @@
 
 @media (max-width: 768px) {
 	.mobile-sidebar-menu {
-		display: initial;
+		display: block;
 	}
 
 	.title-text-info {
@@ -137,6 +137,14 @@
 		max-height: 100%;
 		opacity: 1;
 		transition: all 0.5s ease-in-out;
+	}
+
+	.sus-map-sidebar:not(.open) .bottom_sidebar {
+		display: none;
+	}
+
+	.sus-map-sidebar.open .bottom_sidebar {
+		display: block;
 	}
 
 	.sus-map-sidebar:not(.open) h3 {
@@ -184,7 +192,7 @@
 
 @media (max-width: 768px) {
 	.mobile-panel-menu {
-		display: initial;
+		display: block;
 		position: absolute;
 		top: 0px;
 		right: 0px;
@@ -193,7 +201,7 @@
 	}
 
 	.mobile-panel-title {
-		display: initial;
+		display: block;
 		position: absolute;
 		top: 0px;
 		left: 0px;
@@ -387,9 +395,10 @@
 }
 
 .sus-map-sidebar .sidebar-section-title {
-	font-size: smaller;
+	font-size: small;
 	font-weight: bold;
 	white-space: normal;
 	display: flex;
 	align-items: center;
+	margin-bottom: 10px;
 }

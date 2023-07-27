@@ -2,7 +2,7 @@
 
 style_files <- gsub("www/", "", list.files("www/styles", full.names = TRUE))
 
-style_files <- paste0(style_files, "?id=8")
+style_files <- paste0(style_files, "?id=10")
 
 style_tags <- tagList(
   lapply(style_files, function(x) {
@@ -45,19 +45,33 @@ tags$head(
   tags$script(src = "label_placement.js")
 ),
 
+tags$head(
+  tags$script(src = "wait_idle_show.js")
+),
+
+
+# For mobile, open and close the menus
 tags$head(tags$script("
                       $(document).ready(function(){
   $('.mobile-sidebar-menu').on('click', function() {
     $('.sus-map-sidebar').toggleClass('open'); 
   });
 });")),
-
 tags$head(tags$script("
                       $(document).ready(function(){
   $('.mobile-panel-menu').on('click', function() {
     $('.sus-map-panel').toggleClass('open'); 
   });
 });")),
+
+
+tags$head(tags$script("
+$(document).ready(function () {
+  $('#alp-alp-alp-ccslider_slu').data('ionRangeSlider').update({
+    grid_num: 2
+  });
+});
+")),
 
 # Styling objects ------------------------------------------------------------
 

@@ -628,7 +628,9 @@ build_and_append_afford_hou <- function(scales_variables_modules, crs) {
       main_dropdown_title = "Unit of analysis",
       dates = with_breaks$avail_dates[["affordhou_total_total_total_total_pct"]],
       var_right = var_right,
-      suffix_zoom_levels = "max_CT"
+      suffix_zoom_levels = "max_CT",
+      add_advanced_controls = c("mnd", "Data representation", "Tenure status"),
+      default_var = "affordhou_total_sc30_total_total_pct"
     )
   
   

@@ -5,8 +5,13 @@ function moveLabels() {
         const grandParent = dropdown.parentNode.parentNode;
         const label = grandParent.querySelector('.control-label');
 
-        // If the label is not found or it has 'shiny-label-null' class, skip the current loop
-        if (!label || label.classList.contains('shiny-label-null')) return;
+        // If the label is not found or it has 'shiny-label-null' class, adjust button and return
+        if (!label || label.classList.contains('shiny-label-null')) {
+            const button = grandParent.querySelector('.btn.dropdown-toggle.btn-default');
+            if (button) button.style.top = '0px';
+            dropdown.style.height = "auto";
+            return;
+        }
 
         // If a cloned label already exists, skip the current loop
         if (dropdown.querySelector('.cloned-label')) return;

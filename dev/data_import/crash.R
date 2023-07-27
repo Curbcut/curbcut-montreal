@@ -202,7 +202,8 @@ build_and_append_crash <- function(scales_variables_modules, crs) {
       dates = with_breaks$avail_dates[[vars[[1]]]],
       var_right = scales_variables_modules$variables$var_code[
         scales_variables_modules$variables$source == "Canadian census" &
-          !is.na(scales_variables_modules$variables$parent_vec)]
+          !is.na(scales_variables_modules$variables$parent_vec)],
+      default_var = "crash_ped"
     )
 
 
