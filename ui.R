@@ -41,7 +41,7 @@ navbarPageWithInputs <- function(..., inputs) {
 }
 
 ui <- function(request) {
-  tagList(
+  shiny::tagList(
     
     # Import packages dependencies -----------------------------------------------
     
@@ -53,107 +53,61 @@ ui <- function(request) {
     tags$style(type = "text/css", ".navbar-shadow{display:none;}"),
     tags$style(type = "text/css", ".navbar{display:none;}"),
     
-    tags$head(tags$script('
-  $(document).ready(function() {
-    $(document).on("wheel", ".scrollable-div, .dropdown", function(e) {
-      e.stopPropagation();
-    });
-  });
-')),
-
-tags$script(HTML("
-  $(document).ready(function() {
-    $('div[data-theme]').each(function() {
-      var themeColor = getComputedStyle(this).getPropertyValue('--theme-color').trim();
-      $(this).find('.dataTable').css('--dt-row-selected', themeColor);
-    });
-  });
-")),
-
-# Place the label inside the dropdown
-tags$head(
-  tags$script(src = "widgets_update.js")
-),
-
-# For mobile, open and close the menus
-tags$head(tags$script("
-                      $(document).ready(function(){
-  $('.mobile-sidebar-menu').on('click', function() {
-    $('.sus-map-sidebar').toggleClass('open'); 
-  });
-});")),
-tags$head(tags$script("
-                      $(document).ready(function(){
-  $('.mobile-panel-menu').on('click', function() {
-    $('.sus-map-panel').toggleClass('open'); 
-  });
-});")),
-
-
-tags$head(tags$script("
-$(document).ready(function () {
-  $('#alp-alp-alp-ccslider_slu').data('ionRangeSlider').update({
-    grid_num: 2
-  });
-});
-")),
-
-# Styling objects ------------------------------------------------------------
-
-tags$head(tags$link(rel = "icon", href = "favicon.ico")),
-
-# Curbcut scripts
-curbcut::use_curbcut_cookie(),
-curbcut::use_curbcut_js(),
-curbcut::use_curbcut_css(lang_init = TRUE),
-
-# Google analytics
-# tags$head(includeHTML("www/google_analytics.html")),
-
-# Sharing card ---------------------------------------------------------------
-
-meta() |>
-  meta_social(
-    title = paste0(site_name, " | Towards a sustainable city"),
-    description = paste0(
-      "Curbcut is a platform for deep, dynamic, and intuitive ",
-      "exploration of urban sustainability."
-    ),
-    url = "https://montreal.curbcut.ca",
-    image = "share.jpg",
-    image_alt = paste0(
-      "A photo of a winding footpath through a verdant ",
-      "Montreal alley."
-    ),
-    twitter_creator = "@curbcutca",
-    twitter_card_type = "summary",
-    twitter_site = "@curbcutca"
-  ),
-
-
-# Navigation bar -------------------------------------------------------------
-
-shiny::actionButton("proxy_advanced_options", "", style = "display: none;"),
-do.call(
-  navbarPageWithInputs,
-  c(
-    list(
-      id = "cc_page",
-      windowTitle = site_name,
-      title = actionLink("title", "Curbcut"),
-      tabPanel(curbcut::cc_t("Home"), home_UI("home"), value = "home")
-    ),
-    ready_modules_ui(mods_rdy),
-    list(
-      collapsible = TRUE,
-      inputs = list(
-        # Language toggle
-        curbcut::language_UI(),
-        # Actions dropdown
-        curbcut::settings_UI()
+    # Styling objects ------------------------------------------------------------
+    
+    tags$head(tags$link(rel = "icon", href = "favicon.ico")),
+    
+    # Curbcut scripts
+    curbcut::use_curbcut_js(),
+    curbcut::use_curbcut_css(lang_init = TRUE),
+    
+    # Google analytics
+    tags$head(includeHTML("www/google_analytics.html")),
+    
+    # Sharing card ---------------------------------------------------------------
+    
+    meta() |>
+      meta_social(
+        title = paste0(site_name, " | Towards a sustainable city"),
+        description = paste0(
+          "Curbcut is a platform for deep, dynamic, and intuitive ",
+          "exploration of urban sustainability."
+        ),
+        url = "https://montreal.curbcut.ca",
+        image = "share.jpg",
+        image_alt = paste0(
+          "A photo of a winding footpath through a verdant ",
+          "Montreal alley."
+        ),
+        twitter_creator = "@curbcutca",
+        twitter_card_type = "summary",
+        twitter_site = "@curbcutca"
+      ),
+    
+    
+    # Navigation bar -------------------------------------------------------------
+    
+    shiny::actionButton("proxy_advanced_options", "", style = "display: none;"),
+    do.call(
+      navbarPageWithInputs,
+      c(
+        list(
+          id = "cc_page",
+          windowTitle = site_name,
+          title = actionLink("title", "Curbcut"),
+          tabPanel(curbcut::cc_t("Home"), home_UI("home"), value = "home")
+        ),
+        ready_modules_ui(mods_rdy),
+        list(
+          collapsible = TRUE,
+          inputs = list(
+            # Language toggle
+            curbcut::language_UI(),
+            # Actions dropdown
+            curbcut::settings_UI()
+          )
+        )
       )
     )
-  )
-)
   )
 }

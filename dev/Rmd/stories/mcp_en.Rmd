@@ -9,6 +9,14 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+```{css, echo=FALSE}
+.section {
+margin-top: 0px !important;
+width: 100%;
+margin: auto;
+}
+```
+
 # {.tabset} 
 
 ## Introduction

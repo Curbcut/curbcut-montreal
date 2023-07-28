@@ -168,6 +168,9 @@ build_stories <- function() {
   # Knit all stories Rmds ---------------------------------------------------
 
   library(here)
+  if (packageDescription("leaflet")$RemoteUsername != "dmurdoch") {
+    stop("Special version of the leaflet package must be installed to knit this story succesfully. Run devtools::install_github('dmurdoch/leaflet@crosstalk4')")
+  }
   cc.buildr::stories_knit_all()
   
   

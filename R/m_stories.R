@@ -39,12 +39,7 @@ stories_server <- function(id, r) {
   moduleServer(id, function(input, output, session) {
     id_map <- paste0(id, "-map")
     themes_raw <- unique(unlist(stories$themes))
-    themes_raw <- list(Themes = setNames(themes_raw, themes_raw))
-    themes <- shiny::reactive({
-      v <- cc_t(themes_raw, lang = r$lang())
-      names(v[[1]]) <- sapply(names(v[[1]]), cc_t, lang = r$lang())
-      v
-    })
+    themes <- shiny::reactive(list(Themes = setNames(themes_raw, themes_raw)))
 
     # Sidebar
     curbcut::sidebar_server(id = id, r = r)
@@ -108,26 +103,24 @@ stories_server <- function(id, r) {
         stories$ID[which(
           sapply(sapply(stories$themes, `%in%`, themes_c()), sum) > 0)]
       
-      show_short <- stories$short_title[stories$ID %in% in_theme]
-      show_short <- sapply(show_short, cc_t, lang = r$lang())
-      show_short <- show_short[order(show_short)]
+      show_stories <- stories$short_title[stories$ID %in% in_theme]
+      show_stories <- show_stories[order(show_stories)]
       
-      shiny::removeUI(selector = "#bullet_points")
+      shiny::removeUI(selector = "#stories-bullet_points")
       shiny::insertUI(paste0("#stories-hr"),
                where = "afterEnd",
                shiny::tags$ul(
-                 id = "bullet_points",
-                 lapply(show_short, \(x) {
+                 id = "stories-bullet_points",
+                 lapply(show_stories, \(x) {
                    shiny::tags$li(
-                     x,
+                     cc_t(x, lang = r$lang()),
                      style = "cursor: pointer; text-decoration: none;",
                      title = curbcut::cc_t(lang = r$lang(),
                                            stories$preview[stories$short_title == x]),
                      onclick = paste0("Shiny.setInputValue(`",
                                       NS(id, "clicked_linked"),
                                       "`, '",
-                                      curbcut::cc_t(lang = r$lang(),
-                                                    stories$ID[stories$short_title == x]),
+                                      stories$ID[stories$short_title == x],
                                       "');"),
                      onmouseover = "$(this).css('text-decoration', 'underline');",
                      onmouseout = "$(this).css('text-decoration', 'none');"
@@ -137,6 +130,11 @@ stories_server <- function(id, r) {
       )
 
     })
+    
+    # If language changes, update the selection to NA
+    shiny::observeEvent(r$lang(), r[[id]]$select_id(NA))
+    
+    # If there's a click on the story in the sidebar
     shiny::observeEvent(input$clicked_linked, {
       r[[id]]$select_id(input$clicked_linked)
     })
