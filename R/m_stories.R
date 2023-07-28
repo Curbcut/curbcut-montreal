@@ -14,10 +14,6 @@ stories_UI <- function(id) {
       # Sidebar
     curbcut::sidebar_UI(
       id = NS(id, id),
-      shiny::actionLink(
-        shiny::NS(id, "back"),
-        curbcut::cc_t("Back to the map")
-      ),
       curbcut::picker_UI(
         id = NS(id, id),
         label = curbcut::cc_t("Choose themes:"),
@@ -85,6 +81,11 @@ stories_server <- function(id, r) {
         
         shiny::div(
           class = "main_panel_popup",
+          shiny::div(class = "back-to-map", 
+                     shiny::actionLink(
+                       shiny::NS(id, "back"), "X"
+                     )
+          ),
           shiny::tags$iframe(
             style = "width:100%;height:100%;",
             title = "stories",

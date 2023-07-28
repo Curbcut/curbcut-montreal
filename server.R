@@ -15,20 +15,6 @@ shinyServer(function(input, output, session) {
   curbcut::title_page_update(r = r, 
                              active_page = shiny::reactive(input$cc_page), 
                              site_name = site_name)
-
-  ## Newsletter ----------------------------------------------------------------
-
-  # Click here comes from a JS script which appends the Newsletter option
-  # in the `About` navbarMenu (www/acount_contact.js).
-  observeEvent(input$newsletter_click, {
-    showModal(modalDialog(HTML(readLines("www/sus.signupform.html")),
-                          easyClose = TRUE))
-  })
-  
-  onclick("sign_up_from_carousel", {
-    showModal(modalDialog(HTML(readLines("www/sus.signupform.html")),
-                          easyClose = TRUE))
-  })
   
   ## Bookmark ------------------------------------------------------------------
   

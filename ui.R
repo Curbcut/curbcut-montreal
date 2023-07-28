@@ -1,14 +1,44 @@
 ##### SUS UI SCRIPT ############################################################
 
-style_files <- gsub("www/", "", list.files("www/styles", full.names = TRUE))
-
-style_files <- paste0(style_files, "?id=10")
-
-style_tags <- tagList(
-  lapply(style_files, function(x) {
-    tags$head(tags$link(rel = "stylesheet", type = "text/css", href = x))
+ready_modules_ui <- function(mods_rdy, stand_alone_tabs) {
+  
+  # Alphabetical order
+  mods_rdy <- mods_rdy[names(mods_rdy)[order(names(mods_rdy))]]
+  
+  list_args <- 
+    lapply(names(mods_rdy), function(theme) {
+      c(theme,
+        lapply(names(mods_rdy[[theme]]), function(module) {
+          name <- curbcut::cc_t(module)
+          key <- unname(mods_rdy[[theme]][module])
+          tabPanel(name,
+                   do.call(paste0(key, "_UI"), list(key)),
+                   value = key)
+        })
+      )
+    })
+  
+  # navbarMenu creation
+  out <- lapply(list_args, \(x) do.call(navbarMenu, x)) 
+  
+  # Translate and return
+  lapply(out, function(x) {
+    x$title <- curbcut::cc_t(x$title)
+    x$menuName <- curbcut::cc_t(x$menuName)
+    x
   })
-)
+}
+
+
+# Make a standard navbarPage with addition fixed-position controls
+navbarPageWithInputs <- function(..., inputs) {
+  navbar <- navbarPage(...)
+  container <- tags$div(class = "navbar-fixed", inputs)
+  navbar[[4]][[1]][[1]]$children[[1]] <- 
+    htmltools::tagAppendChild(
+      navbar[[4]][[1]][[1]]$children[[1]], container)
+  navbar
+}
 
 ui <- function(request) {
   tagList(
@@ -72,12 +102,6 @@ $(document).ready(function () {
 
 tags$head(tags$link(rel = "icon", href = "favicon.ico")),
 
-style_tags,
-
-# tags$head(tags$script(src = "sus.js")),
-tags$head(tags$script(js_links_between_modules)),
-tags$head(tags$style(HTML(styler))),
-
 # Curbcut scripts
 curbcut::use_curbcut_cookie(),
 curbcut::use_curbcut_js(),
@@ -101,9 +125,9 @@ meta() |>
       "A photo of a winding footpath through a verdant ",
       "Montreal alley."
     ),
-    twitter_creator = "@susmontreal",
+    twitter_creator = "@curbcutca",
     twitter_card_type = "summary",
-    twitter_site = "@susmontreal"
+    twitter_site = "@curbcutca"
   ),
 
 
