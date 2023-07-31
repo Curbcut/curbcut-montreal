@@ -197,7 +197,6 @@ alley_UI <- function(id) {
                            var_list = var_left_dropdown),
         shinyjs::hidden(shiny::tags$div(
           id = shiny::NS(id, "pre_compare_panel"),
-          shiny::hr(),
           curbcut::compare_UI(
             id = shiny::NS(id, id),
             var_list = curbcut::dropdown_make(vars = " ", compare = TRUE)

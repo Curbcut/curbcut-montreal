@@ -68,7 +68,6 @@ vars_right <- modules$var_right[modules$id == "climate_risk"][[1]]
       id = shiny::NS(id, id),
       curbcut::autovars_UI(NS(id, id)),
       curbcut::warnuser_UI(shiny::NS(id, id)),
-      shiny::hr(),
       curbcut::compare_UI(
         id = NS(id, id),
         var_list = curbcut::dropdown_make(vars = " ", compare = TRUE)

@@ -11,7 +11,7 @@ mapbox_username <- "sus-mcgill"
 
 default_region <- "CMA"
 # For a location lock placeholder in advanced options
-default_random_address <- "845 Sherbrooke Ouest, Montréal, Quebec "
+default_random_address <- "845 Sherbrooke Ouest, Montréal, Quebec"
 
 map_zoom <- 10.1
 map_loc <- c(-73.70, 45.53)
@@ -21,16 +21,7 @@ map_loc <- c(-73.70, 45.53)
 
 suppressPackageStartupMessages({
   library(curbcut)
-
-  library(shiny)
-  library(bslib)
-  library(shinyjs)
-
-  library(qs)
-  library(glue)
-  library(metathis)
   
-  library(stringr)
   library(DBI)
   library(RSQLite)
 
@@ -49,13 +40,17 @@ shinyOptions(cache = cachem::cache_disk(file.path(dirname(tempdir()), "cache")))
 
 # Load all .qs and .qsm files that are in the root of the data folder
 data_files <- list.files("data", full.names = TRUE)
-invisible(lapply(data_files[grepl("qsm$", data_files)], 
-                 qs::qload, env = .GlobalEnv))
-invisible(lapply(data_files[grepl("qs$", data_files)], 
-                 \(x) {
-                   object_name <- gsub("(data/)|(\\.qs)", "", x)
-                   assign(object_name, qs::qread(x), envir = .GlobalEnv)
-                   }))
+invisible(lapply(data_files[grepl("qsm$", data_files)],
+  qs::qload,
+  env = .GlobalEnv
+))
+invisible(lapply(
+  data_files[grepl("qs$", data_files)],
+  \(x) {
+    object_name <- gsub("(data/)|(\\.qs)", "", x)
+    assign(object_name, qs::qread(x), envir = .GlobalEnv)
+  }
+))
 
 
 # Connect to the dbs ------------------------------------------------------
@@ -69,33 +64,28 @@ lapply(dbs, \(x) {
 }) |> invisible()
 
 
-# Modules ready -----------------------------------------------------------
-
-unique_themes <- unique(modules$theme)[!is.na(unique(modules$theme))]
-display_mods <- modules[!is.na(modules$theme), ]
-mods_rdy <- 
-  sapply(unique_themes, \(x) {
-    thm <- display_mods[display_mods$theme == x, ]
-    ids <- thm$id
-    names(ids) <- thm$nav_title
-    ids
-  }, simplify = FALSE, USE.NAMES = TRUE)
-
 # Map defaults ------------------------------------------------------------
 
-map_token <- paste0("pk.eyJ1Ijoic3VzLW1jZ2lsbCIsImEiOiJjbDBxMTcyNWwyNTl0M2",
-                    "RtZzRremNxOHA3In0.V2Ah5lxy-3RZlF2QKOvIjg")
+map_token <- paste0(
+  "pk.eyJ1Ijoic3VzLW1jZ2lsbCIsImEiOiJjbDBxMTcyNWwyNTl0M2",
+  "RtZzRremNxOHA3In0.V2Ah5lxy-3RZlF2QKOvIjg"
+)
 options(rdeck.mapbox_access_token = map_token)
 map_base_style <- "mapbox://styles/sus-mcgill/cl0reqoz4000z15pekuh48ld6"
 map_style_building <- "mapbox://styles/sus-mcgill/cl2bwtrsp000516rwyrkt9ior"
 
-first_level_choropleth <- 
+first_level_choropleth <-
   sapply(ls()[grepl("map_zoom_levels_", ls())], \(x) names(get(x)[1]),
-         USE.NAMES = FALSE) |> unique()
-  
-all_choropleths <- 
-  sapply(sapply(ls()[grepl("map_zoom_levels_", ls())], get, USE.NAMES = FALSE), 
-         names, USE.NAMES = FALSE) |> unlist() |> unique()
+    USE.NAMES = FALSE
+  ) |> unique()
+
+all_choropleths <-
+  sapply(sapply(ls()[grepl("map_zoom_levels_", ls())], get, USE.NAMES = FALSE),
+    names,
+    USE.NAMES = FALSE
+  ) |>
+  unlist() |>
+  unique()
 
 
 # Declare temporary folder ------------------------------------------------
@@ -113,5 +103,11 @@ curbcut::create_ui_server_mods(modules = modules)
 
 systemfonts::register_font(
   name = "acidgrotesk-book",
-  plain = list("www/fonts/acidgrotesk-book.woff", 0))
+  plain = list("www/fonts/acidgrotesk-book.woff", 0)
+)
 
+
+# Source the R folder -----------------------------------------------------
+
+# Curbcut works with global environment. Must source to the current global env
+lapply(list.files("R", full.names = TRUE), source, verbose = FALSE)

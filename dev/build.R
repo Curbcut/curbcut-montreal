@@ -5,7 +5,7 @@
 tictoc::tic()
 library(cc.buildr)
 library(sf)
-
+x <- lapply(list.files("dev/data_import", full.names = TRUE), source, verbose = FALSE)
 
 # # Base of the study region and dictionaries -------------------------------
 # 
@@ -668,6 +668,11 @@ qs::qload("data/stories.qsm")
 variables <- scales_variables_modules$variables
 modules <- scales_variables_modules$modules
 source("dev/translation/build_translation.R", encoding = "utf-8")
+
+
+# Home page ---------------------------------------------------------------
+
+home_page()
 
 
 # Save variables ----------------------------------------------------------
