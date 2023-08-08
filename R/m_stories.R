@@ -7,6 +7,7 @@ stories_UI <- function(id) {
   themes <- list(Themes = setNames(themes, themes))
   page <- modules[modules$id == id, ]
   theme_lowercased <- gsub(" .*", "", tolower(page$theme))
+  stories <- get_from_globalenv("stories")
   
   shiny::tagList(
     shiny::div(
@@ -24,7 +25,9 @@ stories_UI <- function(id) {
     ),
     
     # Map
-    curbcut::map_UI(id = shiny::NS(id, id)),
+    curbcut::map_js_UI(id = shiny::NS(id, id), 
+                       stories = stories, 
+                       stories_min_zoom = 2),
 
     # Main panel
     shiny::htmlOutput(shiny::NS(id, "stories"))
@@ -62,6 +65,13 @@ stories_server <- function(id, r) {
           auto_highlight = TRUE,
           highlight_color = "#FFFFFF50")
     })
+    
+    # Map
+    curbcut::map_js_server(id = id, 
+                           r = r, 
+                           tile = shiny::reactive(NULL), 
+                           coords = shiny::reactive(NULL),
+                           zoom = shiny::reactive(NULL))
 
     # Click reactive
     curbcut::update_select_id(id = id, r = r)
