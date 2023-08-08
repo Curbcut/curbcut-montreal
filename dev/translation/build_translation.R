@@ -148,7 +148,7 @@ is_translated(regions_dictionary$to_compare_short)
 is_translated(unique(unlist(stories$themes)))
 is_translated(stories$title)
 is_translated(stories$short_title)
-is_translated(stories$preview)
+is_translated(stories$preview_en)
 
 # Save to the translation files -------------------------------------------
 

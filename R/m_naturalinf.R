@@ -72,12 +72,11 @@ scale_fill_natural_inf <- function(var, natural_inf_colours) {
     colours_dfs$viridis
   } else natural_inf_colours
   
-  rdeck::scale_color_category(
-    col = !!rlang::sym(var), 
-    palette = colour_table$fill,
-    unmapped_color = "#FFFFFF00", 
-    levels = colour_table$group,
-    legend = FALSE)
+  colour_table$fill <- sapply(colour_table$fill, curbcut::hex8_to_rgba)
+  
+  cc.map::map_choropleth_fill_fun(df = colour_table[c("group", "fill")], 
+                                  get_col = var, 
+                                  fallback = curbcut::hex8_to_rgba("#FFFFFF00"))
 }
 
 ni_data_get <- function(var_left, custom_priorities, main_slider, ni_slider) {
@@ -191,7 +190,7 @@ explore_graph_natural_inf <- function(data, vars, lang, ...) {
                                   labels = scales::percent) +
       ggplot2::scale_x_discrete(name = curbcut::cc_t(lang = lang, "Amount protected")) +
       ggplot2::theme_minimal() +
-      ggplot2::theme(text = ggplot2::element_text(family = "SourceSansPro", size = 12),
+      ggplot2::theme(text = ggplot2::element_text(family = "acidgrotesk-book", size = 12),
                      legend.position = "none", 
                      panel.grid.minor.x = ggplot2::element_blank(),
                      panel.grid.major.x = ggplot2::element_blank(), 
@@ -281,7 +280,7 @@ natural_inf_UI <- function(id) {
         bottom = shiny::tagList(legend_UI(NS(id, id)))),
     
     # Map
-    curbcut::map_UI(shiny::NS(id, id)),
+    curbcut::map_js_UI(shiny::NS(id, id), stories = NULL),
     
     # Right panel
     curbcut::right_panel(
@@ -443,20 +442,16 @@ natural_inf_server <- function(id, r) {
       return(paste0("natural_inf-", var_left()))})
 
     # Map
-    map_viewstate <- curbcut::map_server(
+    map_viewstate <- curbcut::map_js_server(
       id = id,
       r = r,
       tile = tile,
       data_colours = data,
-      zoom_levels = shiny::reactive(NULL),
       select_id = r[[id]]$select_id,
       zoom = r[[id]]$zoom,
       coords = r[[id]]$coords,
-      lwd_fun = shiny::reactive(\(...) 0),
       fill_fun = shiny::reactive(scale_fill_natural_inf),
-      fill_args = shiny::reactive(list(map_var(), natural_inf_colours())),
-      colour_fun = shiny::reactive(\(...) "#FFFFFFFF"),
-      auto_highlight = shiny::reactive(FALSE),
+      fill_fun_args = shiny::reactive(list(map_var(), natural_inf_colours())),
       pickable = shiny::reactive(FALSE)
     )
 

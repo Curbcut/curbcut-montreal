@@ -7,14 +7,14 @@ site_name <- "Curbcut Montréal"
 site_url <- "https://montreal.curbcut.ca"
 stories_page <- "Montréal stories"
 tileset_prefix <- "mtl"
-mapbox_username <- "sus-mcgill"
+mapbox_username <- "curbcut"
 
 default_region <- "CMA"
 # For a location lock placeholder in advanced options
 default_random_address <- "845 Sherbrooke Ouest, Montréal, Quebec"
 
 map_zoom <- 10.1
-map_loc <- c(-73.70, 45.53)
+map_loc <- c(lat = -73.70, lon = 45.53)
 
 
 # Packages ----------------------------------------------------------------
@@ -67,12 +67,9 @@ lapply(dbs, \(x) {
 # Map defaults ------------------------------------------------------------
 
 map_token <- paste0(
-  "pk.eyJ1Ijoic3VzLW1jZ2lsbCIsImEiOiJjbDBxMTcyNWwyNTl0M2",
-  "RtZzRremNxOHA3In0.V2Ah5lxy-3RZlF2QKOvIjg"
+  "pk.eyJ1IjoiY3VyYmN1dCIsImEiOiJjbGprYnVwOTQwaDAzM2xwaWdjbTB6bzdlIn0.Ks1cOI6v2i8jiIjk38s_kg"
 )
-options(rdeck.mapbox_access_token = map_token)
-map_base_style <- "mapbox://styles/sus-mcgill/cl0reqoz4000z15pekuh48ld6"
-map_style_building <- "mapbox://styles/sus-mcgill/cl2bwtrsp000516rwyrkt9ior"
+map_base_style <- "mapbox://styles/curbcut/cljkciic3002h01qveq5z1wrp"
 
 first_level_choropleth <-
   sapply(ls()[grepl("map_zoom_levels_", ls())], \(x) names(get(x)[1]),

@@ -9,12 +9,10 @@ map_scale_fill_grid <- function(vars) {
     var <- curbcut::var_remove_time(var)
     var <- sprintf("%s_delta", var)
   }
-
-  rdeck::scale_color_category(col = !!as.name(var), 
-                              palette = clr$fill, 
-                              unmapped_color = "#B3B3BB", 
-                              levels = clr$group, 
-                              legend = FALSE)
+  
+  cc.map::map_choropleth_fill_fun(df = clr[c("group", "fill")], 
+                                  get_col = var, 
+                                  fallback = "#B3B3BB")
 }
 
 explore_graph_grid <- function(vars, lang, data, select_id) {
@@ -82,7 +80,7 @@ vars_right <- modules$var_right[modules$id == "climate_risk"][[1]]
     ),
 
     # Map
-    curbcut::map_UI(shiny::NS(id, id)),
+    curbcut::map_js_UI(shiny::NS(id, id), stories = stories),
     
     # Tutorial
     curbcut::tutorial_UI(id = shiny::NS(id, id)),
@@ -294,12 +292,6 @@ vars_right <- modules$var_right[modules$id == "climate_risk"][[1]]
       poi = r[[id]]$poi,
       df = r[[id]]$df
     )
-
-    # Control the `lwd` of the polygon borders. No borders on grid + high zoom.
-    lwd <- shiny::reactive({
-      if (grid()) return(0)
-      return(1)
-    })
     
     # Switch the fill function of the map server when on grid
     fill_fun_args <- shiny::reactive({
@@ -307,49 +299,24 @@ vars_right <- modules$var_right[modules$id == "climate_risk"][[1]]
         return(list(fun = map_scale_fill_grid,
                     args = list(vars = r[[id]]$vars())))
       } else {
-        return(list(fun = curbcut::map_scale_fill,
-                    args = list(data_colours(), tileset_ID_color = "ID_color")))
-      }
-    })
-    color_fun_args <- shiny::reactive({
-      if (grid() & !grid_compare()) {
-        return(list(fun = map_scale_fill_grid,
-                    args = list(vars = r[[id]]$vars())))
-      } else {
-        return(list(fun = curbcut::map_scale_colour,
-                    args = list(r[[id]]$select_id(), data_colours(), tileset_ID_color = "ID_color")))
+        return(list(fun = cc.map::map_choropleth_fill_fun,
+                    args = list(df = data_colours(), 
+                                get_col = names(data_colours())[1], 
+                                fallback = "#B3B3BB")))
       }
     })
     
     # Update map in response to variable changes or zooming
-    map_viewstate <- curbcut::map_server(
+    map_viewstate <- curbcut::map_js_server(
       id = id,
       r = r,
       tile = tile,
-      data_colours = data_colours,
       select_id = r[[id]]$select_id,
-      zoom_levels = reactive(zoom_levels()$zoom_levels),
-      zoom = r[[id]]$zoom,
       coords = r[[id]]$coords,
-      lwd_args = shiny::reactive(list(select_id = r[[id]]$select_id(),
-                                      tile = tile(),
-                                      zoom = r[[id]]$zoom(),
-                                      zoom_levels = zoom_levels()$zoom_levels,
-                                      lwd = lwd())),
-      fill_fun = shiny::reactive(fill_fun_args()$fun),
-      fill_args = shiny::reactive(fill_fun_args()$args),
-      colour_fun = shiny::reactive(color_fun_args()$fun),
-      colour_args = shiny::reactive(color_fun_args()$args)
-    )
-
-    # Update map labels
-    curbcut::label_server(
-      id = id,
-      tile = tile,
       zoom = r[[id]]$zoom,
-      zoom_levels = reactive(zoom_levels()$zoom_levels),
-      region = reactive(zoom_levels()$region),
-      show_buildings = shiny::reactive(!grid())
+      data_colours = data_colours, 
+      fill_fun = shiny::reactive(fill_fun_args()$fun),
+      fill_fun_args = shiny::reactive(fill_fun_args()$args)
     )
     
     # Switch the graph to a static one when on grid q5

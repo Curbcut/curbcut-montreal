@@ -1,7 +1,34 @@
 ## BUILD AND APPEND CRASH DATA #################################################
 
 build_and_append_crash <- function(scales_variables_modules, crs) {
-
+  
+  
+  # Prepare data for graph. get week of crashes -----------------------------
+  
+  require(lubridate)
+  
+  data <- read.csv("dev/data/crash/collisions_routieres.csv") |> 
+    tibble::as_tibble()
+  
+  cyc <- data[data$NB_VICTIMES_VELO > 0, ]
+  ped <- data[data$NB_VICTIMES_PIETON > 0, ]
+  
+  data <- list(cyc = cyc, ped = ped, all = data)
+  
+  data <- lapply(data, \(dat) {
+    dat <- dat["DT_ACCDN"]
+    dat$DT_ACCDN <-  as.Date(dat$DT_ACCDN)
+    dat$year <- lubridate::year(dat$DT_ACCDN)
+    dat$month <- lubridate::month(dat$DT_ACCDN, label = TRUE, abbr = TRUE)
+    dat$week <- lubridate::week(dat$DT_ACCDN)
+    dat <- dplyr::count(dat, year, month, week, name = "count")
+    
+    sapply(as.character(unique(dat$year)), \(y) dat[dat$year == y, ], 
+           USE.NAMES = TRUE, simplify = FALSE)
+  })
+  
+  qs::qsave(data, file = "data/crash.qs")
+  
   # Read and prepare data ---------------------------------------------------
 
   # Read the data placed in a folder in `dev/data/`

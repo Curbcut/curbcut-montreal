@@ -485,8 +485,8 @@ qs::qload("dev/data/built/scales_variables_modules.qsm")
 
 map_zoom_levels <- map_zoom_levels_create_all(
   all_tables = all_tables,
-  zoom_levels = list(first = 0, CT = 10.5, DA = 12.5, building = 15.5, 
-                     grid100 = 10.5, grid50 = 12.5, grid25 = 13.5))
+  zoom_levels = list(first = 0, CT = 11, DA = 13, building = 16, 
+                     grid100 = 11, grid50 = 13, grid25 = 14))
 
 map_zoom_levels <-
   map_zoom_levels_create_custom(
@@ -494,7 +494,7 @@ map_zoom_levels <-
     all_tables = all_tables,
     region = "CMA",
     suffix = "max_CT",
-    content = c("CSD" = 0, "CT" = 10.5))
+    content = c("CSD" = 0, "CT" = 11))
 
 map_zoom_levels <-
   map_zoom_levels_create_custom(
@@ -502,7 +502,7 @@ map_zoom_levels <-
     all_tables = all_tables,
     region = "city",
     suffix = "max_CT",
-    content = c("CSD" = 0, "CT" = 10.5))
+    content = c("CSD" = 0, "CT" = 10.511))
 
 map_zoom_levels <-
   map_zoom_levels_create_custom(
@@ -510,7 +510,7 @@ map_zoom_levels <-
     all_tables = all_tables,
     region = "island",
     suffix = "max_CT",
-    content = c("CSD" = 0, "CT" = 10.5))
+    content = c("CSD" = 0, "CT" = 11))
 
 map_zoom_levels <-
   map_zoom_levels_create_custom(
@@ -518,7 +518,7 @@ map_zoom_levels <-
     all_tables = all_tables,
     region = "centraide",
     suffix = "max_CT",
-    content = c("centraide" = 0, "CT" = 10.5))
+    content = c("centraide" = 0, "CT" = 11))
 
 map_zoom_levels <-
   map_zoom_levels_create_custom(
@@ -526,7 +526,7 @@ map_zoom_levels <-
     all_tables = all_tables,
     region = "city",
     suffix = "max_DB",
-    content = c("CSD" = 0, "CT" = 10.5, "DA" = 12.5, "DB" = 14.5))
+    content = c("CSD" = 0, "CT" = 11, "DA" = 13, "DB" = 15))
 
 map_zoom_levels_save(data_folder = "data/", map_zoom_levels = map_zoom_levels)
 
@@ -547,7 +547,7 @@ map_zoom_levels_save(data_folder = "data/", map_zoom_levels = map_zoom_levels)
 #                    map_zoom_levels = map_zoom_levels_t,
 #                    street = street,
 #                    prefix = "mtl",
-#                    username = "sus-mcgill",
+#                    username = "curbcut",
 #                    access_token = .cc_mb_token)
 # 
 # source("dev/tiles/grid_tiles.R")
@@ -559,7 +559,7 @@ map_zoom_levels_save(data_folder = "data/", map_zoom_levels = map_zoom_levels)
 #                     vars = c("climate_drought", "climate_flood", "climate_destructive_storms",
 #                              "climate_heat_wave", "climate_heavy_rain"),
 #                     prefix = "mtl",
-#                     username = "sus-mcgill",
+#                     username = "curbcut",
 #                     access_token = .cc_mb_token)
 # 
 # 
@@ -568,14 +568,14 @@ map_zoom_levels_save(data_folder = "data/", map_zoom_levels = map_zoom_levels)
 # tileset_labels(scales = scales_with_labels,
 #                crs = crs, 
 #                prefix = "mtl",
-#                username = "sus-mcgill",
+#                username = "curbcut",
 #                access_token = .cc_mb_token)
 # 
 # tileset_streets(master_polygon = base_polygons$master_polygon,
 #                 street = street,
 #                 crs = crs,
 #                 prefix = "mtl",
-#                 username = "sus-mcgill",
+#                 username = "curbcut",
 #                 access_token = .cc_mb_token)
 
 
@@ -613,12 +613,12 @@ scales_variables_modules$modules <-
 
 # Produce colours ---------------------------------------------------------
 
-colours_dfs <- cc.buildr::build_colours()
-# delta_5 = c("#6D5271",
-#             "#DCD3E2",
-#             "#E8E8E8",
-#             "#FEBD54",
-#             "#F69036"))
+colours_dfs <- cc.buildr::build_colours(
+  delta_5 = c("#6D5271",
+              "#DCD3E2",
+              "#E8E8E8",
+              "#FEBD54",
+              "#F69036"))
 
 # Add natural inf data colours
 colours_dfs$viridis_25 <- 
@@ -632,14 +632,12 @@ qs::qsave(colours_dfs, "data/colours_dfs.qs")
 # # TKTK MAKE SURE YOU HAVE THIS VERSION OF LEAFLET, IF NOT THE MAPS IN THE HTML
 # # DOCUMENTS WON'T BE INTERACTIVES:
 # # devtools::install_github("dmurdoch/leaflet@crosstalk4")
-# stories <- build_stories()
-# stories_mapping <- stories$stories_mapping
-# stories <- stories$stories
-# qs::qsavem(stories, stories_mapping, file = "data/stories.qsm")
-# stories_create_tileset(stories = stories,
-#                        prefix = "mtl",
-#                        username = "curbcut",
-#                        access_token = .cc_mb_token)
+stories <- build_stories()
+qs::qsave(stories, file = "data/stories.qs")
+stories_create_tileset(stories = stories,
+                       prefix = "mtl",
+                       username = "curbcut",
+                       access_token = .cc_mb_token)
 # cc.buildr::resize_image(folder = "www/stories/photos/", max_size_in_MB = 1)
 
 
@@ -730,7 +728,7 @@ placeex_main_card_rmd(scales_variables_modules = scales_variables_modules,
                       scales_dictionary = scales_dictionary,
                       lang = "en",
                       tileset_prefix = "mtl",
-                      mapbox_username = "sus-mcgill",
+                      mapbox_username = "curbcut",
                       rev_geocode_from_localhost = TRUE,
                       overwrite = TRUE)
 
@@ -741,7 +739,7 @@ placeex_main_card_rmd(scales_variables_modules = scales_variables_modules,
                       scales_dictionary = scales_dictionary,
                       lang = "fr",
                       tileset_prefix = "mtl",
-                      mapbox_username = "sus-mcgill",
+                      mapbox_username = "curbcut",
                       rev_geocode_from_localhost = TRUE,
                       overwrite = TRUE)
 
