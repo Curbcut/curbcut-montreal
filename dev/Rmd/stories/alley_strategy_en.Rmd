@@ -117,7 +117,8 @@ knitr::include_graphics(here::here("dev/data/stories/raw_images/alley_strategy/f
 <p>Overall, adapting alleys demonstrates the positive impact that proposals from the community can generate in repurposing unused urban spaces. Therefore, adapting alleys to improve people's quality of life on a neighbourhood scale can simultaneously enhance urban quality on a larger scale, considering the growth that the green alleys initiative has experienced in the last years and the emergence of proposals derived from the green alleys like the Blue-Green Alleys.<p/>
 <p>Consequently, the Green Alley Program and the Blue-Green Alleys can be part of the city's strategy to mitigate adverse climate change effects by increasing green infrastructure and, with it, the opportunity to be in contact with nature and improve climate conditions.<p/>
 
-### Bibliography
+<details>
+<summary>### References</summary>
 
 <ul>
 <li>Alliance Ruelles bleues-vertes (https://www.ruellesbleuesvertes.com/accueil/le-projet/).</li>
@@ -129,3 +130,4 @@ knitr::include_graphics(here::here("dev/data/stories/raw_images/alley_strategy/f
 <li>Ruelle Turquoise (https://www.facebook.com/RBVviauville/photos).</li>
 <li>Taquin, C, Waltz, M. (1982) Le réaménagement des ruelles approche sociale.</li>
 <li>Vibert, J, Rouillé, P. (2018) L’adaptation aux changements climatiques Des toits aux Ruelles bleues-vertes.</li>
+</details>

@@ -122,7 +122,8 @@ knitr::include_graphics(here::here("dev/data/stories/raw_images/alley_strategy/f
 <p>En général, le réaménagement des ruelles démontre l’impact positif que les propositions de la communauté peuvent générer en réaménageant les espaces urbains inutilisés. Par conséquent, le réaménagement des ruelles pour améliorer la qualité de vie des individus à l’échelle d’un quartier peut simultanément améliorer la qualité urbaine à plus grande échelle, compte tenu de la croissance que l’initiative des ruelles vertes a connu ces dernières années et l’émergence de propositions dérivées des ruelles vertes comme les ruelles bleues vertes.<p/>
 <p>Par conséquent, le programme Des ruelles vertes et l’initiative ruelle bleue verte peuvent faire partie de la stratégie de la Ville visant à atténuer les effets néfastes des changements climatiques en augmentant les infrastructures vertes et, avec elles, la possibilité d’être en contact avec la nature et d’améliorer les conditions climatiques.<p/>
 
-### Bibliographie
+<details>
+<summary>### Bibliographie</summary>
 
 <ul>
 <li>Alliance Ruelles bleues-vertes (https://www.ruellesbleuesvertes.com/accueil/le-projet/).</li>
@@ -134,3 +135,4 @@ knitr::include_graphics(here::here("dev/data/stories/raw_images/alley_strategy/f
 <li>Ruelle Turquoise (https://www.facebook.com/RBVviauville/photos).</li>
 <li>Taquin, C, Waltz, M. (1982) Le réaménagement des ruelles approche sociale.</li>
 <li>Vibert, J, Rouillé, P. (2018) L’adaptation aux changements climatiques Des toits aux Ruelles bleues-vertes.</li>
+</details>
