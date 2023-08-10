@@ -89,7 +89,8 @@ Today, the concerns for the park have shifted towards the importance of the moun
 
 Mount-Royal stands as a consistent and beautiful mountain, not only physically shaping Montreal’s landscape but also reflecting the social and cultural shifts that have shaped the city over time. As the mountain enters a new phase, one of expansion and ecological importance, it will be interesting to continue to witness its changes. 
 
-### References
+<details>
+<summary>### References</summary>
 Bellman , D. (1977). Frederick Law Olmsted and a Plan for Mount Royal Park. Canadian Art Review, 4(2), S31–S43. 
 Beveridge, C. E. (2009). Mount royal in the works of Frederick Law Olmsted. Montréal, Direction des grands parcs et de la nature en ville. 
 Bérubé, H. (2022). Les grands parcs urbains : de Central Park au parc du Mont-Royal. In Histoire des villes nord-américaines. essay, Septentrion. 
@@ -98,3 +99,4 @@ Caron, M. (2018). Taming the jungle in the city: Uprooting trees, bushes, and di
 Nadeau, J. (2022, December 13). Le parc du mont royal sera agrandi . Le Devoir. Retrieved April 3, 2023, from https://www.ledevoir.com/societe/transports-urbanisme/774331/le-parc-du-mont-royal-sera-agrandi. 
 Riga, A. (2019, August 3). Mount royal: Saving “the people’s park” from fanciful schemes. Montreal Gazette. https://montrealgazette.com/news/local-news/mount-royal-saving-the-peoples-park-from-fanciful-schemes/ 
 Son Histoire. Les amis de la montagne. (n.d.). https://www.lemontroyal.qc.ca/fr/l-histoire-du-mont-royal 
+</details>

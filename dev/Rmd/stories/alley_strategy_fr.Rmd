@@ -123,7 +123,7 @@ knitr::include_graphics(here::here("dev/data/stories/raw_images/alley_strategy/f
 <p>Par conséquent, le programme Des ruelles vertes et l’initiative ruelle bleue verte peuvent faire partie de la stratégie de la Ville visant à atténuer les effets néfastes des changements climatiques en augmentant les infrastructures vertes et, avec elles, la possibilité d’être en contact avec la nature et d’améliorer les conditions climatiques.<p/>
 
 <details>
-<summary>### Bibliographie</summary>
+<summary>### Références</summary>
 
 <ul>
 <li>Alliance Ruelles bleues-vertes (https://www.ruellesbleuesvertes.com/accueil/le-projet/).</li>
