@@ -51,6 +51,18 @@ translation_access <-
           fr = "Magasins d'alimentation divers") |>
   add_row(en = stringr::str_to_sentence("Food Stores"),
           fr = "Magasins d'alimentation") |>
+  add_row(en = stringr::str_to_sentence("Dance Studios, Schools, And Halls"),
+          fr = "Studios, écoles et salles de danse") |>
+  add_row(en = stringr::str_to_sentence("Theatrical Producers"),
+          fr = "Producteurs de cinéma") |>
+  add_row(en = stringr::str_to_sentence("Bowling Centers"),
+          fr = "Centres de bowling") |>
+  add_row(en = stringr::str_to_sentence("Physical Fitness Facilities"),
+          fr = "Centres de conditionnement physique") |>
+  add_row(en = stringr::str_to_sentence("Miscellaneous Amusement And Recreation"),
+          fr = "Amusement et loisirs divers") |>
+  add_row(en = stringr::str_to_sentence("Recreation Services"),
+          fr = "Services de loisirs") |>
   add_row(en = "Ambulatory health care services",
           fr = "Services de soins de santé ambulatoires") |>
   add_row(en = "Hospitals",
@@ -157,6 +169,14 @@ translation_access <-
           fr = "Places en garderie") |> 
   add_row(en = "Daycare",
           fr = "Garderie") |> 
+  add_row(en = "Dance Studios",
+          fr = "Studios de danse") |>
+  add_row(en = "Bowling",
+          fr = "Bowling") |>
+  add_row(en = "Fitness",
+          fr = "Fitness") |>
+  add_row(en = "Recreation",
+          fr = "Loisir") |> 
   
   add_row(en = "Mode of transport",
           fr = "Mode de transport") |> 
@@ -192,6 +212,10 @@ translation_access <-
           fr = "Accès aux établissements culturels") |> 
   add_row(en = "Access to daycare spots",
           fr = "Accès aux places en garderie") |> 
+  add_row(en = "Access to daycare spots",
+          fr = "Accès aux places en garderie") |> 
+  add_row(en = "Access to recreational services",
+          fr = "Accès aux services de loisirs") |> 
   
   add_row(en = "Walking",
           fr = "À pieds") |> 
@@ -238,8 +262,8 @@ additional_vars <- lapply(vars, \(var) {
   var_title <- stringr::str_to_sentence(paste0(title, " accessibles ", mode))
   var_short <- stringr::str_to_sentence(short)
   explanation <- paste0(
-    "le nombre de/d' ", tolower(title),
-    " qu'un habitant moyen peut atteindre en ", time, " minutes ", mode
+    "le nombre, en moyenne, de/d' ", tolower(title),
+    " qu'un habitant peut atteindre en ", time, " minutes ", mode
   )
   
   explanation <- if (grepl("^(a|e|i|o|u|h)", tolower(title))) {

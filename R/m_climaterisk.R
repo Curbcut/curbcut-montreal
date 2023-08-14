@@ -59,6 +59,14 @@ vars_right <- modules$var_right[modules$id == "climate_risk"][[1]]
   theme_lowercased <- gsub(" .*", "", tolower(page$theme))
   
   shiny::tagList(
+    
+    # Add a piece of CSS to nensure we do not see the small grid ticks on
+    # the time sliders
+    shiny::tags$head(shiny::tags$style(
+      "#climate_risk-climate_risk-year_sliders .irs-grid-pol.small {
+    display: none;
+    }")),
+
     shiny::div(
       `data-theme` = theme_lowercased,
       # Sidebar

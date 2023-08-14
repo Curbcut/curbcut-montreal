@@ -68,7 +68,7 @@ safety_map_js_server <- function(id, r, tile, coords, zoom, select_id, data_colo
         latitude = as.numeric(unname(coords()[2])),
         zoom = zoom()
       )
-    })
+    }, ignoreNULL = TRUE)
 
     # Remove the previous map mode (heatmap vs choropleth)
     shiny::observeEvent(heatmap(), {

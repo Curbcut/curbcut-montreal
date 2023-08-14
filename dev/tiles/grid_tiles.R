@@ -1,4 +1,4 @@
-tileset_upload_grid <- function(region, all_scales, street, map_zoom_levels, max_zoom,
+tileset_upload_grid <- function(region, all_scales, map_zoom_levels, max_zoom,
                                 vars, prefix, username, access_token) {
   tn <- function(geo, scale_name) paste(prefix, geo, scale_name, sep = "_")
   
@@ -103,8 +103,7 @@ tileset_upload_grid <- function(region, all_scales, street, map_zoom_levels, max
           maxzoom = maxzooms_,
           recipe_name = name
         )
-        recipe
-        
+
         tileset_create_tileset(name,
                                recipe = recipe,
                                username = username,
@@ -149,7 +148,7 @@ tileset_upload_grid <- function(region, all_scales, street, map_zoom_levels, max
         if (length(zoom_levels) == 1) {
           10
         } else {
-          ifelse(i == length(zoom_levels), zoom_value, zoom_levels[i + 1])
+          ifelse(i == length(zoom_levels), zoom_value, zoom_levels[i + 1] - 1)
         }
       
       
@@ -161,11 +160,7 @@ tileset_upload_grid <- function(region, all_scales, street, map_zoom_levels, max
     
     return(result)
   }
-  
-  all_sources <- tileset_list_tile_sources(username = username,
-                                           access_token = access_token)
-  all_clipped <- all_sources$id[grepl("_clipped$", all_sources$id)]
-  
+
   auto_zoom_recipes <-
     mapply(\(geo, zoom_levels) {
       mapply(\(mzl_name, mzl) {

@@ -173,13 +173,13 @@ build_and_append_access <- function(scales_variables_modules,
       if (grepl("public transit", mode)) {
         return(gsub("public transit", "transit journey", mode))
       }
-    })
+    })()
     explanation <- paste0(
-      "the number of ", tolower(dict$title),
+      "the number of ", tolower(theme),
       " a resident can reach within a ", time, "-minute ", mode_text
     )
     exp_q5 <- paste0(
-      "a resident has access to, on average,  _X_ ", tolower(dict$title), " within a ",
+      "a resident has access to, on average,  _X_ ", tolower(theme), " within a ",
       time, "-minute ", mode_text
     )
     

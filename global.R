@@ -13,7 +13,7 @@ default_region <- "CMA"
 # For a location lock placeholder in advanced options
 default_random_address <- "845 Sherbrooke Ouest, Montréal, Quebec"
 
-map_zoom <- 10.1
+map_zoom <- 9.9
 map_loc <- c(lat = -73.70, lon = 45.53)
 
 

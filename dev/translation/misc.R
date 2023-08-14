@@ -246,32 +246,4 @@ translation_misc <-
   add_row(en = "Saint-Jérôme", 
           fr = "Saint-Jérôme") |>
   add_row(en = "Gore", 
-          fr = "Gore") |> 
-  
-  # All modules ids
-  add_row(en = "housing", 
-          fr = "logement") |> 
-  add_row(en = "vacancy", 
-          fr = "inoccupation") |> 
-  add_row(en = "alp", 
-          fr = "pva") |> 
-  add_row(en = "canbics", 
-          fr = "canbics") |> 
-  add_row(en = "access", 
-          fr = "acces") |> 
-  add_row(en = "climate_risk", 
-          fr = "risque_climatique") |> 
-  add_row(en = "natural_inf", 
-          fr = "inf_naturelle") |> 
-  add_row(en = "alley", 
-          fr = "ruelle") |> 
-  add_row(en = "safety", 
-          fr = "securite") |> 
-  add_row(en = "tenure", 
-          fr = "occupation") |> 
-  add_row(en = "afford", 
-          fr = "affordabilite") |> 
-  add_row(en = "place_explorer", 
-          fr = "explorateur_lieu") |> 
-  add_row(en = "stories", 
-          fr = "histoires")
+          fr = "Gore")

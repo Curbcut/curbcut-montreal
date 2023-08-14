@@ -113,9 +113,9 @@ build_stories <- function() {
       title = paste0("The Evolution of the Montreal Metro"),
       short_title = "Evolution of the Metro",
       preview_en = paste0("Since its inception in the early 20th century, the ",
-                       "Montreal metro has undergone several major ",
-                       "transformations that mirror the city’s ever-changing ",
-                       "sociopolitical landscape."),
+                          "Montreal metro has undergone several major ",
+                          "transformations that mirror the city’s ever-changing ",
+                          "sociopolitical landscape."),
       preview_fr = paste0("Depuis sa création au début du XXe siècle, le métro ",
                           "de Montréal a subi plusieurs transformations ",
                           "majeures qui reflètent l'évolution constante du ",
@@ -130,9 +130,9 @@ build_stories <- function() {
                      "between beautification and privatisation of public space"),
       short_title = "Green Alley Program in Plateau-Mont-Royal",
       preview_en = paste0("Once redeveloped, green alleys often tend to become ",
-                       "ambiguous spaces, a sort of common, between the public ",
-                       "and the private realm. The case of Le Plateau-Mont-Royal ",
-                       "is particularly interesting."),
+                          "ambiguous spaces, a sort of common, between the public ",
+                          "and the private realm. The case of Le Plateau-Mont-Royal ",
+                          "is particularly interesting."),
       preview_fr = paste0("Une fois réaménagées, les ruelles vertes tendent ",
                           "souvent à devenir des espaces ambigus, des sortes ",
                           "de communs entre le domaine public et le domaine ",
@@ -147,9 +147,9 @@ build_stories <- function() {
       title = paste0("A History of Cycling Infrastructure in Montréal"),
       short_title = "Cycling infrastructure",
       preview_en = paste0("Montréal is a world-renowned cycling city, but it hasn’t ",
-                       "always been this way. Explore how the city’s cycling ",
-                       "infrastructure has evolved over time in this interactive ",
-                       "story."),
+                          "always been this way. Explore how the city’s cycling ",
+                          "infrastructure has evolved over time in this interactive ",
+                          "story."),
       preview_fr = paste0("Montréal est une ville cyclable de renommée mondiale, ",
                           "mais il n'en a pas toujours été ainsi. Découvrez ",
                           "comment les infrastructures cyclables de la ville ont ",
@@ -163,8 +163,8 @@ build_stories <- function() {
       title = paste0("Montreal alleys as a climate emergency adaptation strategy"),
       short_title = "Climate Emergency Adaptation Strategy",
       preview_en = paste0("Transforming alleys to improve people's quality of life ",
-                       "on a neighbourhood scale can simultaneously enhance ",
-                       "urban quality on a larger scale"),
+                          "on a neighbourhood scale can simultaneously enhance ",
+                          "urban quality on a larger scale"),
       preview_fr = paste0("Transformer les ruelles pour améliorer la qualité ",
                           "de vie des habitants à l'échelle d'un quartier peut ",
                           "simultanément améliorer la qualité urbaine à plus ",
@@ -179,7 +179,7 @@ build_stories <- function() {
       title = paste0("Montreal Climate Plans"),
       short_title = "Montreal Climate Plans",
       preview_en = paste0("Climate action in Montreal: exploring two ",
-                       "administrations' strategies for a greener future"),
+                          "administrations' strategies for a greener future"),
       preview_fr = paste0("L'action climatique à Montréal : exploration des ",
                           "stratégies de deux administrations pour un avenir plus vert"),
       themes = c("Transportation", "Community activism", 
@@ -193,8 +193,8 @@ build_stories <- function() {
       title = paste0("Mount-Royal: One Consistent Beautiful Mountain"),
       short_title = "The Mount-Royal",
       preview_en = paste0("Throughout its evolution, Mount-Royal has played an ",
-                       "important role in the city of Montreal’s history and ",
-                       "development"),
+                          "important role in the city of Montreal’s history and ",
+                          "development"),
       preview_fr = paste0("Tout au long de son évolution, le Mont-Royal a ",
                           "joué un rôle important dans l'histoire et le ",
                           "développement de la ville de Montréal"),
@@ -202,7 +202,7 @@ build_stories <- function() {
                  "Biodiversity", "Climate change"),
       lon = -73.593526,
       lat = 45.502604)
-
+  
   
   # Create images and mapping -----------------------------------------------
   
@@ -210,9 +210,10 @@ build_stories <- function() {
   
   
   # Knit all stories Rmds ---------------------------------------------------
-
+  
   library(here)
-  if (packageDescription("leaflet")$RemoteUsername != "dmurdoch") {
+  if (is.null(packageDescription("leaflet")$RemoteUsername) || 
+      packageDescription("leaflet")$RemoteUsername != "dmurdoch") {
     stop("Special version of the leaflet package must be installed to knit this story succesfully. Run devtools::install_github('dmurdoch/leaflet@crosstalk4')")
   }
   cc.buildr::stories_knit_all()

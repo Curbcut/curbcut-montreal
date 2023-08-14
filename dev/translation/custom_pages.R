@@ -113,4 +113,8 @@ translation_custom_pages <-
   add_row(en = "Climate",
           fr = "Climat") |> 
   add_row(en = "View with grids",
-          fr = "Vue avec maillage")
+          fr = "Vue avec maillage") |> 
+  
+  # Crash
+  add_row(en = "Heatmap",
+          fr = "Carte thermique")

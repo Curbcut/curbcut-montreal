@@ -98,14 +98,14 @@ translation_dictionaries <- tibble(en = character(),
           fr = "Secteur de recensement {name}") |>
   add_row(en = "Dissemination area {name}",
           fr = "Aire de diffusion {name}") |>
-  add_row(en = "25m grid area around {name}",
-          fr = "Zone de 25 m autour du {name}") |>
-  add_row(en = "50m grid area around {name}",
-          fr = "Zone de 50 m autour du {name}") |>
-  add_row(en = "100m grid area around {name}",
-          fr = "Zone de 100 m autour du {name}") |>
-  add_row(en = "250m grid area around {name}",
-          fr = "Zone de 250 m autour du {name}") |> 
+  add_row(en = "the 25m grid area around {name}",
+          fr = "la zone de 25 m autour du {name}") |>
+  add_row(en = "the 50m grid area around {name}",
+          fr = "la zone de 50 m autour du {name}") |>
+  add_row(en = "the 100m grid area around {name}",
+          fr = "la zone de 100 m autour du {name}") |>
+  add_row(en = "the 250m grid area around {name}",
+          fr = "la zone de 250 m autour du {name}") |> 
   
   
   # Regions dictionary ------------------------------------------------------
