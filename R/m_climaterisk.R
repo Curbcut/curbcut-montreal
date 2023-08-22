@@ -111,6 +111,7 @@ vars_right <- modules$var_right[modules$id == "climate_risk"][[1]]
 
 `climate_risk_server` <- function(id, r) {
   shiny::moduleServer(id, function(input, output, session) {
+
     # Initial reactives
     rv_zoom_string <- reactiveVal(
       curbcut::zoom_get_string(

@@ -363,7 +363,7 @@ scales_variables_modules <-
 
 qs::qsavem(census_scales, scales_variables_modules, crs,
           scales_dictionary, regions_dictionary, all_tables, base_polygons,
-          cancensus_cma_code, scales_consolidated,
+          cancensus_cma_code, scales_consolidated, all_scales,
           file = "dev/data/built/empty_scales_variables_modules.qsm")
 qs::qload("dev/data/built/empty_scales_variables_modules.qsm")
 
@@ -397,13 +397,16 @@ scales_variables_modules <-
              crs = crs,
              region_DA_IDs = census_scales$DA$ID)
 scales_variables_modules <-
-  ru_ndvi(scales_variables_modules = scales_variables_modules,
-          region_DA_IDs = census_scales$DA$ID,
-          crs = crs)
-scales_variables_modules <-
   ru_lst(scales_variables_modules = scales_variables_modules,
          region_DA_IDs = census_scales$DA$ID,
          crs = crs)
+
+scales_variables_modules <- 
+  ba_ndvi(scales_variables_modules = scales_variables_modules, 
+          master_polygon = base_polygons$master_polygon, 
+          all_scales = all_scales, data_output_path = "dev/data/ndvi/", 
+          skip_scales = c("grid25", "grid50", "grid100", "grid250"), 
+          crs = crs)
 
 # # Add access to amenities module
 # traveltimes <-
@@ -453,10 +456,11 @@ scales_variables_modules <-
     scales_variables_modules = scales_variables_modules,
     crs = crs)
 
-scales_variables_modules <- build_and_append_crash(
-  scales_variables_modules = scales_variables_modules,
-  crs = crs
-)
+scales_variables_modules <- 
+  build_and_append_crash(
+    scales_variables_modules = scales_variables_modules,
+    crs = crs
+  )
 
 save.image("dev/data/built/before_centraide.RData")
 load("dev/data/built/before_centraide.RData")
@@ -485,6 +489,7 @@ scales_variables_modules$scales <-
 
 qs::qsavem(census_scales, scales_variables_modules, crs, census_variables,
            scales_dictionary, regions_dictionary, all_tables, base_polygons,
+           all_scales,
            file = "dev/data/built/scales_variables_modules.qsm")
 qs::qload("dev/data/built/scales_variables_modules.qsm")
 
@@ -533,14 +538,6 @@ map_zoom_levels <-
     region = "centraide",
     suffix = "max_CT",
     content = c("centraide" = 0, "CT" = 10))
-
-# map_zoom_levels <-
-#   map_zoom_levels_create_custom(
-#     map_zoom_levels = map_zoom_levels,
-#     all_tables = all_tables,
-#     region = "city",
-#     suffix = "max_DB",
-#     content = c("CSD" = 0, "CT" = 10, "DA" = 12, "DB" = 15))
 
 map_zoom_levels_save(data_folder = "data/", map_zoom_levels = map_zoom_levels)
 
@@ -697,7 +694,6 @@ scales_variables_modules$modules <-
 
 # Translation -------------------------------------------------------------
 
-qs::qload("data/stories.qs")
 variables <- scales_variables_modules$variables
 modules <- scales_variables_modules$modules
 source("dev/translation/build_translation.R", encoding = "utf-8")

@@ -718,7 +718,7 @@ translation_variables <-
       add_row(en = "the areas that are hotter during the day and more likely to radiate excess heat at night",
               fr = "les zones qui sont plus chaudes pendant la journée et qui sont plus susceptibles d'émettre un excès de chaleur pendant la nuit") |> 
       add_row(en = "presence and intensity of vegetation",
-              fr = "présence et l'intensité de la végétation") |> 
+              fr = "présence et intensité de végétation") |> 
       add_row(en = "areas that are hotter during the day and more likely to radiate excess heat at night",
               fr = "zones qui sont plus chaudes pendant la journée et qui sont plus susceptibles d'émettre un excès de chaleur pendant la nuit") |> 
       add_row(en = "The Canadian Urban Environmental Health Research Consortium",

@@ -111,12 +111,6 @@ add_row(en = "<p>Housing is at the centre of our lives. Our ability to find affo
   ), fr = "<p><img src='centraide_logo/centraide_logo_fr.png' style='width:60%;margin-left:50px;'><p>La compréhension des besoins en matière de logement en fonction du statut d'occupation peut aider à déterminer ce qui doit être amélioré spécifiquement pour les locataires ou les propriétaires, étant donné qu'ils peuvent rencontrer des difficultés et des avantages différents.") |> 
     add_row(en = "Land Surface Temperature (LST) is a crucial indicator of urban heat islands and ecological balance within a region. LST measures the maximum mean warm-season temperature at a specific location. This data represents the highest mean value reported over a three-year span, helping to minimize the impact of missing data or cloud cover. LST is instrumental in identifying areas that are hotter during the day and more likely to radiate excess heat at night, contributing to urban heat phenomena.",
             fr = "La température de surface du sol (TSS) est un indicateur crucial des îlots de chaleur urbains et de l'équilibre écologique au sein d'une région. La TSS mesure la température moyenne maximale en saison chaude à un endroit précis. Ces données représentent la valeur moyenne la plus élevée rapportée sur une période de trois ans, ce qui permet de minimiser l'impact des données manquantes ou de la couverture nuageuse. La TSS permet d'identifier les zones les plus chaudes pendant la journée et les plus susceptibles d'émettre un excès de chaleur pendant la nuit, contribuant ainsi au phénomène d'îlot de chaleur urbain.") |> 
-    add_row(en = "The Normalized Difference Vegetation Index (NDVI) is a vital measurement for understanding the presence and intensity of vegetation in an area. Calculated from MODIS data across Canada, NDVI represents annual maximum vegetation, providing insights into ecological health, land cover, and the effects of human activity on the natural landscape.",
-            fr = "L'indice de végétation par différence normalisée (IVDN) est une mesure essentielle pour comprendre la présence et l'intensité de la végétation dans une région. Calculé à partir des données MODIS à travers le Canada, le IVDN représente la végétation maximale annuelle, ce qui donne un aperçu de la santé écologique, de la couverture des sols et des effets de l'activité humaine sur le paysage naturel.") |> 
-    
-
-    
-    
 #title_text_extra 
 add_row(en = "<p>The datasets visualized on this page come from the Canadian Census from 1996 to the present. There are a few efforts in place to better the housing landscape from the federal and municipal governments. In Canada, the National Housing Strategy aims to address housing needs and houselessness through modernization, new construction, and innovation and research. Within the City of Montreal, important housing initiatives include the Diverse Metropolis by-law and the 12,000-housing unit strategy. For more information on these initiatives visit:<ul><li><a href='https://www.cmhc-schl.gc.ca/en/nhs/', target = '_blank'>CMHC. (n.d.). National Housing Strategy</a><li><a href='https://montreal.ca/articles/metropole-mixte-les-grandes-lignes-du-reglement-7816', target = '_blank'>Ville de Montréal. (4 octobre 2021). Métropole Mixte: Les grandes lignes du règlement.</a>", 
         fr = "<p>Les ensembles de données visualisés sur cette page proviennent du recensement canadien de 1996 à aujourd'hui. Les gouvernements fédéral et municipaux ont déployé quelques efforts pour améliorer le paysage du logement. Au Canada, la stratégie nationale du logement vise à répondre aux besoins en matière de logement et à lutter contre le sans-abrisme par la modernisation, la construction de nouveaux logements, l'innovation et la recherche. Au sein de la ville de Montréal, les initiatives importantes en matière de logement comprennent le règlement Métropole mixte et la stratégie de développment de 12 000 logements. Pour plus d'informations sur ces initiatives, visitez :<ul><li><a href='https://www.cmhc-schl.gc.ca/en/nhs/', target = '_blank'>CMHC. (s.d.). Stratégie nationale sur le logement</a><li><a href='https://montreal.ca/articles/metropole-mixte-les-grandes-lignes-du-reglement-7816', target = '_blank'>Ville de Montréal. (4 octobre 2021). Métropole Mixte : Les grandes lignes du règlement.</a>") |>
@@ -142,9 +136,6 @@ add_row(en = "<p>The datasets visualized on this page come from the Canadian Cen
           fr = "<p>Ces études de cas narratives sont rédigées par l'équipe de Curbcut et ses contributeurs.") |> 
     add_row(en = "<p>Understanding LST is essential for urban planning, health assessments, and environmental protection. To learn more about how LST is calculated, <a href='https://www.canuedata.ca/tmp/CANUE_METADATA_WTLST_AVA_YY.pdf' target='_blank'>click here</a>.</p>",
             fr = "<p>La compréhension de la TSS est essentielle pour la planification urbaine, l'évaluation de la santé et la protection de l'environnement. Pour en savoir plus sur le calcul de la TSS, <a href='https://www.canuedata.ca/tmp/CANUE_METADATA_WTLST_AVA_YY.pdf' target='_blank'>appuyez ici</a>.</p>") |> 
-    add_row(en = "<p>NDVI plays a significant role in various applications, including analyzing urban greenness, monitoring agricultural growth, and assessing wildfire risks It is crucial for environmental conservation, urban planning, and climate change mitigation. For an in-depth understanding of NDVI and its calculation methods, <a href='https://www.canuedata.ca/tmp/CANUE_METADATA_GRMOD_AMX_YY.pdf' target='_blank'>click here</a>.</p>",
-            fr = "<p>L'IVDN joue un rôle important dans diverses applications, notamment l'analyse de la verdure en milieu urbain, le suivi de la croissance agricole et l'évaluation des risques d'incendie de forêt. Il est essentiel pour la conservation de l'environnement, la planification urbaine et l'atténuation du changement climatique. Pour une compréhension approfondie du IVDN et de ses méthodes de calcul, <a href='https://www.canuedata.ca/tmp/CANUE_METADATA_GRMOD_AMX_YY.pdf' target='_blank'>appuyez ici</a>.</p>") |> 
-
 #dataset_info
   add_row(en = "<p>This page presents <a href = 'https://www.statcan.gc.ca/en/census/census-engagement/about'>housing data from the 1996 to the latest, Canadian Censuses</a></p>", 
           fr = "<p>Cette page présente <a href = 'https://www.statcan.gc.ca/en/census/census-engagement/about'>les données d'hébergement des recensements canadiens de 1996 à aujourd'hui.</a>") |>
@@ -166,8 +157,6 @@ add_row(en = "<p>The datasets visualized on this page come from the Canadian Cen
           fr = "<p>Les données du recensement (2016-2021) présentées sur cette page proviennent de tabulations personnalisées commandées par Centraide du Grand Montréal à Statistique Canada.") |> 
   add_row(en = "<p>The census data (2016-2021) on this module comes from custom tabulations ordered by Centraide of Greater Montreal to Statistics Canada.</p>", 
           fr = "<p>Les données du recensement (2016-2021) présentées sur cette page proviennent de tabulations personnalisées commandées par Centraide du Grand Montréal à Statistique Canada.") |> 
-  add_row(en = "<p>The NDVI data visualized on this page comes from the Canadian Urban Environmental Health Research Consortium's collection. Representing vegetation intensity from 2000 onwards, this dataset enables a detailed study of changing vegetation patterns and land cover shifts</p>",
-          fr = "<p>Les données IDVN visualisées sur cette page proviennent de la collection du Consortium canadien de recherche en santé environnementale urbaine. Représentant l'intensité de la végétation depuis 2000, ce jeu de données permet une étude détaillée de l'évolution de la végétation et des changements dans l'occupation des sols.</p>") |> 
   add_row(en = "<p>This dataset, provided by the Canadian Urban Environmental Health Research Consortium, includes annual estimates of LST developed using a public algorithm in Google Earth Engine. The data, derived from LandSat 8 imagery, represents a 3 years annual maximum mean warm-season land surface temperature.</p>",
           fr = "<p>Ce jeu de données, fourni par le Consortium canadien de recherche en santé environnementale urbaine, comprend des estimations annuelles de la température de surface terrestre élaborées à l'aide d'un algorithme public dans Google Earth Engine. Les données, dérivées de l'imagerie LandSat 8, représentent une moyenne annuelle maximale de 3 ans de la température de surface des terres en saison chaude.</p>") |> 
   
@@ -185,7 +174,89 @@ add_row(en = "<p>The datasets visualized on this page come from the Canadian Cen
   add_row(en = "<p><a target = '_blank' href = 'https://www.canada.ca/en/public-health/services/reports-publications/health-promotion-chronic-disease-prevention-canada-research-policy-practice/vol-40-no-9-2020/canbics-classification-system-naming-convention-cycling-infrastructure.html'>The Canadian Bikeway Comfort and Safety (Can-BICS) Classification System</a> dataset is a geographic-based set of measures characterizing the cycling infrastructure of Canadian communities. The data is initially provided at the dissemination area level.</p>",
           fr = "<p><a target = '_blank' href = 'https://www.canada.ca/en/public-health/services/reports-publications/health-promotion-chronic-disease-prevention-canada-research-policy-practice/vol-40-no-9-2020/canbics-classification-system-naming-convention-cycling-infrastructure.html'>Le système de classification du confort et de la sécurité des pistes cyclables au Canada (Can-BICS)</a> est un ensemble de mesures géographiques caractérisant l'infrastructure cyclable des collectivités canadiennes. Les données sont initialement fournies au niveau de l'aire de diffusion.") |> 
   
-  
+  # NDVI
+  add_row(en = paste0(
+    "The Normalized Difference Vegetation Index (NDVI) is a vital measureme", 
+    "nt for understanding the presence and intensity of vegetation in an ar", 
+    "ea."), 
+    fr = paste0(
+      "L'indice de végétation par différence normalisée (NDVI) est une mesure", 
+      " essentielle pour comprendre la présence et l'intensité de la végétati", 
+      "on dans une zone.")) |> 
+  add_row(en = paste0(
+    "<p>NDVI plays a significant role in various applications, including an", 
+    "alyzing urban greenness, monitoring agricultural growth, and assessing", 
+    " wildfire risks It is crucial for environmental conservation, urban pl", 
+    "anning, and climate change mitigation. Calculated from Harmonized Land", 
+    "sat Sentinel-2 (HLS) data, NDVI represents average vegetation during g", 
+    "rowing season (defined as May 1st through August 31st)."), 
+    fr = paste0(
+      "<p>Le NDVI joue un rôle important dans diverses applications, notamment ", 
+      "l'analyse de la verdure en zone urbaine, le suivi de la croissance agricole et", 
+      " l'évaluation des risques d'incendie de forêt. Il est essentiel pour l", 
+      "a conservation de l'environnement, la planification urbaine et l'attén", 
+      "uation du changement climatique. Calculé à partir des données harmonis", 
+      "ées de Landsat Sentinel-2 (HLS), le NDVI représente la végétation moye", 
+      "nne pendant la saison de croissance (définie comme allant du 1er mai a", 
+      "u 31 août).")) |> 
+  add_row(en = paste0(
+    "<p>The NDVI data on this page is derived from the HLSS30.v2.0 and HLSL", 
+    "30.v2.0 satellites, spanning from 2013 to the present. The process inc", 
+    "ludes the following detailed steps:</p><ul><li><strong>Data Retrieval:", 
+    "</strong> Specific NDVI bands are extracted based on the satellite col", 
+    "lection. These bands are used to analyze the vegetation intensity and ", 
+    "are organized into a data frame.</li><li><strong>Raster Stacking:</str", 
+    "ong> Three bands (Red, Near-infrared (NIR), and Fmask) are extracted, cropped, and mas", 
+    "ked according to the area of interest. These bands are essential for a", 
+    "nalyzing vegetation patterns and filtering out cloud contamination.</l", 
+    "i><li><strong>NDVI Calculation:</strong> NDVI is computed using the fo", 
+    "rmula (NIR-Red)/(NIR+Red), quantifying the vegetation's health. This i", 
+    "ndex measures the difference between near-infrared (which vegetation s", 
+    "trongly reflects) and red light (which vegetation absorbs).</li><li><s", 
+    "trong>Quality Filtering with Fmask:</strong> The Fmask (Function of Ma", 
+    "sk) band is utilized to filter out poor quality pixels. Fmask is an al", 
+    "gorithm that identifies and masks unwanted features like clouds, cloud", 
+    " shadows, water, or snow/ice. In the HLS data, values of 0 and 64 in t", 
+    "he Fmask layer indicate clean and useful pixels, ensuring that the res", 
+    "ulting NDVI is free from these artifacts. This filtering is vital for ", 
+    "obtaining a true state of the vegetation and underlying surface.</li><", 
+    "li><strong>Resampling:</strong> All NDVI rasters are resampled to a sp", 
+    "ecific extent to align perfectly, allowing for accurate aggregation.</", 
+    "li></ul><p>This process, with its meticulous handling of NDVI bands an", 
+    "d quality filtering using Fmask, provides a scientifically robust view", 
+    " of vegetation trends, essential for urban sustainability studies and ", 
+    "environmental justice analyses.</p>"), 
+    fr = paste0(
+      "<p>Les données NDVI présentées sur cette page sont dérivées des s", 
+      "atellites HLSS30.v2.0 et HLSL30.v2.0, couvrant une période allant de 2", 
+      "013 à aujourd'hui. Le processus comprend les étapes détaillées suivant", 
+      "es:</p><ul><li><strong>Extraction de données:</strong>Des bandes NDVI spécifi", 
+      "ques sont extraites sur la base de la collecte satellitaire. Ces bande", 
+      "s sont utilisées pour analyser l'intensité de la végétation et sont or", 
+      "ganisées.</li><li><strong>Empilement des bandes", 
+      ":</strong> Trois bandes (Rouge, proche infrarouge (NIR), et Fmask) sont extraites, recadr", 
+      "ées et masquées en fonction de la zone d'intérêt. Ces bandes sont esse", 
+      "ntielles pour analyser les modèles de végétation et filtrer la contami", 
+      "nation par les nuages.</li><li><strong>Calcul du NDVI:</strong> Le NDV", 
+      "I est calculé à l'aide de la formule (NIR-Rouge)/(NIR+Rouge), qui quan", 
+      "tifie l'état de santé de la végétation. Cet indice mesure la différenc", 
+      "e entre le proche infrarouge (que la végétation reflète fortement) et ", 
+      "la lumière rouge (que la végétation absorbe).</li><li><strong>Filtrage", 
+      " de qualité avec Fmask:</strong> La bande Fmask (Function of Mask) est", 
+      " utilisée pour filtrer les pixels de mauvaise qualité. Fmask est un al", 
+      "gorithme qui identifie et masque les caractéristiques indésirables tel", 
+      "les que les nuages, les ombres des nuages, l'eau ou la neige/glace. Da", 
+      "ns les données HLS, les valeurs de 0 et 64 dans la couche Fmask indiqu", 
+      "ent des pixels propres et utiles, ce qui garantit que le NDVI résultan", 
+      "t est exempt de ces artefacts. Ce filtrage est essentiel pour obtenir ", 
+      "un état réel de la végétation et de la surface sous-jacente.</li><li><", 
+      "strong>Réséchantillonnage:</strong> Tous les images matricielles NDVI sont rééchan", 
+      "tillonnés dans une certaine mesure pour s'aligner parfaitement, ce qui", 
+      " permet une agrégation précise.</li></ul><p>Ce processus, avec son tra", 
+      "itement méticuleux des bandes NDVI et son filtrage de qualité à l'aide", 
+      " de Fmask, fournit une vue scientifiquement robuste des tendances de l", 
+      "a végétation, essentielle pour les études de durabilité urbaine et les", 
+      " analyses de la justice environnementale.</p>")) |> 
   
   # Main dropdown titles
   add_row(en = "Vacancy rate distribution",
@@ -232,3 +303,6 @@ add_row(en = "<p>The datasets visualized on this page come from the Canadian Cen
   add_row(en = "stories", 
           fr = "histoires")
   
+
+
+

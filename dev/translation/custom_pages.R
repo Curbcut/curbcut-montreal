@@ -117,4 +117,6 @@ translation_custom_pages <-
   
   # Crash
   add_row(en = "Heatmap",
-          fr = "Carte thermique")
+          fr = "Carte thermique") |> 
+  add_row(en = "Crash locations",
+          fr = "Emplacement des collisions")
