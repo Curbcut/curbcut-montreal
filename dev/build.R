@@ -740,6 +740,16 @@ qs::qsave(scales_dictionary, file = "data/scales_dictionary.qs")
 qs::qsave(regions_dictionary, file = "data/regions_dictionary.qs")
 tictoc::toc()
 
+
+# Create DYKs -------------------------------------------------------------
+
+vars_dyk <- dyk_prep(scales_variables_modules, all_tables)
+dyk <- dyk_uni(vars_dyk, scales_variables_modules)
+dyk <- rbind(dyk, dyk_delta(vars_dyk, scales_variables_modules))
+dyk <- rbind(dyk, dyk_bivar(vars_dyk, scales_variables_modules))
+qs::qsave(dyk, "data/dyk.qs")
+
+
 # Place explorer content creation -----------------------------------------
 
 # Should be done once the data is saved
