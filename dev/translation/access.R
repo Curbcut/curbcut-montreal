@@ -5,6 +5,8 @@ translation_access <-
          fr = character()) |> 
   add_row(en = "Total",
           fr = "Total") |>
+  add_row(en = "All",
+          fr = "Toutes") |>
   add_row(en = "Amenity",
           fr = "Service") |>
   add_row(en = "Retail stores type",

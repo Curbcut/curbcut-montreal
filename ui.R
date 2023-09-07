@@ -12,4 +12,5 @@ curbcut::ui(
   website_url = "https://beta.curbcut.ca", 
   share_jpg = "https://beta.curbcut.ca/share.jpg",
   apple_touch_icon = "https://beta.curbcut.ca/logo192.jpg",
-  lang_init = "fr")
+  lang_init = "fr",
+  show_lang_button = FALSE)

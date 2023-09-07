@@ -706,6 +706,7 @@ home_page()
 
 qs::qsave(scales_variables_modules$variables, file = "data/variables.qs")
 
+
 # Save QS data ------------------------------------------------------------
 
 save_all_scales_qs(data_folder = "data/", 
@@ -782,6 +783,7 @@ pe_main_card_data <- qs::qread("data/pe_main_card_data.qs")
 svm_first_scale <- scales_variables_modules
 svm_first_scale$scales <- lapply(svm_first_scale$scales, `[`, 1)
 
+library(curbcut)
 placeex_main_card_rmd(scales_variables_modules = svm_first_scale,
                       pe_main_card_data = pe_main_card_data,
                       regions_dictionary = regions_dictionary,
@@ -790,7 +792,7 @@ placeex_main_card_rmd(scales_variables_modules = svm_first_scale,
                       tileset_prefix = "mtl",
                       mapbox_username = "curbcut",
                       rev_geocode_from_localhost = TRUE,
-                      overwrite = TRUE)
+                      overwrite = FALSE)
 
 translation_df <- qs::qread("data/translation_df.qs")
 placeex_main_card_rmd(scales_variables_modules = svm_first_scale,
@@ -801,7 +803,7 @@ placeex_main_card_rmd(scales_variables_modules = svm_first_scale,
                       tileset_prefix = "mtl",
                       mapbox_username = "curbcut",
                       rev_geocode_from_localhost = TRUE,
-                      overwrite = TRUE)
+                      overwrite = FALSE)
 
 # Save the place explorer files, which serves as a 'does it exist' for `curbcut`
 pe_docs <- list.files("www/place_explorer/", full.names = TRUE)
