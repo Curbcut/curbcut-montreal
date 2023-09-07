@@ -101,13 +101,19 @@ safety_map_js_server <- function(id, r, tile, coords, zoom, select_id, data_colo
           # If it is a point tileset, make it a heatmap
         } else {
           var <- vars()$var_left[[1]]
+          
+          colours <- colours_dfs$left_5$fill[1:5]
+          colours[1] <- sprintf("%s00", colours[1])
+          colours <- sapply(colours, hex_to_rgb_or_rgba, USE.NAMES = FALSE)
+          
           cc.map::map_heatmap(
             session = session,
             map_ID = "map",
             tileset = tileset_trigger(),
             radius = heatmap_radius(var),
             filter = heatmap_filter(var),
-            pickable = FALSE
+            pickable = FALSE,
+            colours = colours
           )
         }
       },

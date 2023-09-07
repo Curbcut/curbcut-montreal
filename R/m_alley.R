@@ -397,7 +397,7 @@ alley_server <- function(id, r) {
     
     # Customized map functions
     alley_fill_fun <- shiny::reactive({
-      if (mode() == "borough") return(\(...) "#FFFFFF00")
+      if (mode() == "borough") return(\(...) hex8_to_rgba("#AAB6CF90"))
       if (mode() == "alleys") return(scale_fill_alley)
       cc.map::map_choropleth_fill_fun
     })
@@ -424,7 +424,7 @@ alley_server <- function(id, r) {
       coords = r[[id]]$coords, 
       fill_fun = alley_fill_fun,
       outline_width = shiny::reactive(if (mode() == "alleys") 2 else 1),
-      outline_color = shiny::reactive(if (mode() == "alleys") scale_fill_alley() else "tranpsarent")
+      outline_color = shiny::reactive(if (mode() == "alleys") scale_fill_alley() else "transparent")
     )
 
     # Explore tables

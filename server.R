@@ -1,1 +1,1 @@
-curbcut::server()
+curbcut::server(lang_init = "fr")

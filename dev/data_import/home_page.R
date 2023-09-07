@@ -28,17 +28,24 @@ home_page <- function(data_path = "data/") {
 
 
   # Tibble for the discover section -----------------------------------------
+
   discover_cards <- tibble::tibble(
-    id = c("metro", "alp", "gentrification", "access"),
+    id = c("metro", "alp", "gentrification", "safety"),
     img = c(
-      "www/landing/discover/pic-five-roses.jpg",
-      "www/landing/discover/pic-active-living.jpg",
-      "www/landing/discover/pic-biosphere.jpg",
-      "www/landing/discover/pic-amenities.jpg"
+      "www/landing/discover/metro_evolution.png",
+      "www/landing/discover/ALP_Discover.png",
+      "www/landing/discover/mont_royal.png",
+      "www/landing/discover/RoadSafety_Discover.png"
     ),
-    theme = c("ecology", "health", "urban", "transport"),
-    en = c("The Evolution of the Montreal Metro", "Active Living Potential: The Canale Index", "Environmental racism and green gentrification", "Access to Amenities"),
-    fr = c("L'évolution du métro de Montréal", "Potentiel de vie active : L'indice Canale", "Racisme environnemental et embourgeoisement vert", "Accès aux commodités")
+    theme = c("urban", "health", "urban", "transport"),
+    en = c("The Evolution of the Metro", 
+           "ALP and people who drive to work", 
+           "The Mount-Royal", 
+           "Car crashes between 2017 and 2021"),
+    fr = c("L'Évolution du Métro", 
+           "Le PVA et les personnes qui se rendent au travail en voiture", 
+           "Le Mont-Royal", 
+           "Les collisions de voiture entre 2017 et 2021")
   )
 
 

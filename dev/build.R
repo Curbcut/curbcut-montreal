@@ -632,10 +632,8 @@ scales_variables_modules$modules <-
              ),
              title_text_extra = paste0(
                "<p>The data in the Place Explorer is taken from other Curbcut pages with ",
-               "two exceptions: <a href = 'https://www.canuedata.ca/tmp/CANUE_METADATA",
-               "_NO2LUR_A_YY.pdf'>Air pollution</a> and <a href = 'https://www.canueda",
-               "ta.ca/tmp/CANUE_METADATA_GRAVH_AMN_YY.pdf'>green space</a> data are ta",
-               "ken from <a href = 'https://www.canuedata.ca'>CANUE</a>."
+               "the exception of <a href = 'https://www.canuedata.ca/tmp/CANUE_METADATA",
+               "_NO2LUR_A_YY.pdf'>Air pollution</a>."
              ),
              metadata = FALSE,
              dataset_info = "",
@@ -735,6 +733,19 @@ lapply(c("grid25", "grid50", "grid100"), save_bslike_sqlite,
 # Save other global data --------------------------------------------------
 
 qs::qsave(census_variables, file = "data/census_variables.qs")
+
+# For compare, only keep the large brackets of age
+scales_variables_modules$modules$var_right <- lapply(
+  scales_variables_modules$modules$var_right, \(x) {
+    if (is.null(x)) return(NULL)
+    not_age <- x[!grepl("^age_", x)]
+    age <- x[grepl("^age_", x)]
+    
+    age_keep <- age[age %in% c("age_0_14", "age_15_64", "age_65_plus")]
+    
+    c(not_age, age_keep)
+  })
+
 qs::qsave(scales_variables_modules$modules, file = "data/modules.qs")
 qs::qsave(scales_dictionary, file = "data/scales_dictionary.qs")
 qs::qsave(regions_dictionary, file = "data/regions_dictionary.qs")
@@ -750,10 +761,18 @@ future::plan(future::multisession(), workers = 4)
 #                                             region_DA_IDs = census_scales$DA$ID,
 #                                             crs = crs,
 #                                             regions_dictionary = regions_dictionary)
+# 
+# # ONLY KEEP FIRST SCALE
+# pe_main_card_data$main_card_data <- lapply(pe_main_card_data$main_card_data, lapply, `[`, 1)
+# pe_main_card_data$avail_df <- dplyr::distinct(pe_main_card_data$avail_df, region, .keep_all = TRUE)
+# 
 # qs::qsave(pe_main_card_data, file = "data/pe_main_card_data.qs")
 pe_main_card_data <- qs::qread("data/pe_main_card_data.qs")
 
-placeex_main_card_rmd(scales_variables_modules = scales_variables_modules,
+svm_first_scale <- scales_variables_modules
+svm_first_scale$scales <- lapply(svm_first_scale$scales, `[`, 1)
+
+placeex_main_card_rmd(scales_variables_modules = svm_first_scale,
                       pe_main_card_data = pe_main_card_data,
                       regions_dictionary = regions_dictionary,
                       scales_dictionary = scales_dictionary,
@@ -764,7 +783,7 @@ placeex_main_card_rmd(scales_variables_modules = scales_variables_modules,
                       overwrite = TRUE)
 
 translation_df <- qs::qread("data/translation_df.qs")
-placeex_main_card_rmd(scales_variables_modules = scales_variables_modules,
+placeex_main_card_rmd(scales_variables_modules = svm_first_scale,
                       pe_main_card_data = pe_main_card_data,
                       regions_dictionary = regions_dictionary,
                       scales_dictionary = scales_dictionary,

@@ -29,19 +29,20 @@
     },
     "DT": {
       "Package": "DT",
-      "Version": "0.28",
+      "Version": "0.29",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
         "crosstalk",
         "htmltools",
         "htmlwidgets",
+        "httpuv",
         "jquerylib",
         "jsonlite",
         "magrittr",
         "promises"
       ],
-      "Hash": "ab745834dfae7eaf71dd0b90f3b66759"
+      "Hash": "02f42b77a951a5ea7c891ef5c187d774"
     },
     "KernSmooth": {
       "Package": "KernSmooth",
@@ -178,13 +179,13 @@
     },
     "askpass": {
       "Package": "askpass",
-      "Version": "1.1",
+      "Version": "1.2.0",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
         "sys"
       ],
-      "Hash": "e8a22846fff485f0be3770c2da758713"
+      "Hash": "cad6cf7f1d5f6e906700b9d3e718c796"
     },
     "base64enc": {
       "Package": "base64enc",
@@ -241,14 +242,17 @@
     },
     "bsicons": {
       "Package": "bsicons",
-      "Version": "0.1",
+      "Version": "0.1.1",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
         "R",
-        "htmltools"
+        "cli",
+        "htmltools",
+        "rlang",
+        "utils"
       ],
-      "Hash": "6d1f170155965ab16b429a76e1d7dbc1"
+      "Hash": "aa0eb31809987a486969b16a8ea20027"
     },
     "bslib": {
       "Package": "bslib",
@@ -295,7 +299,7 @@
       "RemoteUsername": "Curbcut",
       "RemoteRepo": "cc.landing",
       "RemoteRef": "main",
-      "RemoteSha": "dc4ec78b678a73bdc3d75d490250794b37a70108",
+      "RemoteSha": "427aa9922378a8d6d8ef059095196b8f1a7b8ada",
       "Requirements": [
         "base64enc",
         "htmltools",
@@ -303,7 +307,7 @@
         "reactR",
         "shiny"
       ],
-      "Hash": "d7ebbf105cfef564c2358044abccfcf3"
+      "Hash": "815a1fd809c11ddfdef7a0de584748e0"
     },
     "cc.map": {
       "Package": "cc.map",
@@ -314,14 +318,14 @@
       "RemoteUsername": "Curbcut",
       "RemoteRepo": "cc.map",
       "RemoteRef": "master",
-      "RemoteSha": "660df55743733e669079e4a19565d848a940de25",
+      "RemoteSha": "3b27653959e912ffa3c28093c01970a1ed6aed8a",
       "Requirements": [
         "htmltools",
         "jsonlite",
         "reactR",
         "shiny"
       ],
-      "Hash": "f991d55e7d1e7ffb4637556a30b2442c"
+      "Hash": "2f556f7a0f3af588119444e8c52ad86b"
     },
     "class": {
       "Package": "class",
@@ -386,10 +390,13 @@
     },
     "cpp11": {
       "Package": "cpp11",
-      "Version": "0.4.5",
+      "Version": "0.4.6",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "f07821e9b0aada6c999d4692e22a2ea7"
+      "Requirements": [
+        "R"
+      ],
+      "Hash": "707fae4bbf73697ec8d85f9d7076c061"
     },
     "crayon": {
       "Package": "crayon",
@@ -425,14 +432,16 @@
       "RemoteUsername": "Curbcut",
       "RemoteRepo": "curbcut",
       "RemoteRef": "map_js",
-      "RemoteSha": "c7e1d15b5666107084f9b3b2c205d105fad07ec4",
-      "Remotes": "qfes/rdeck, bdbmax/bslib, Curbcut/cc.map, Curbcut/cc.landing",
+      "RemoteSha": "caf29dda17a8f0cf4241369442ede5c184ac9ee6",
+      "Remotes": "Curbcut/cc.map, Curbcut/cc.landing, bdbmax/bslib, qfes/rdeck",
       "Requirements": [
         "DBI",
         "DT",
         "R",
         "RCurl",
         "bsicons",
+        "cc.landing",
+        "cc.map",
         "ggplot2",
         "glue",
         "htmlwidgets",
@@ -452,17 +461,17 @@
         "utils",
         "zip"
       ],
-      "Hash": "ce37dff400ea97444e6fdcd279a8b9ea"
+      "Hash": "6a97e451520c8d53b7eae9bc5e18e24d"
     },
     "curl": {
       "Package": "curl",
-      "Version": "5.0.1",
+      "Version": "5.0.2",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
         "R"
       ],
-      "Hash": "2118af9cb164c8d2dddc7b89eaf732d9"
+      "Hash": "511bacbfa153a15251166b463b4da4f9"
     },
     "data.table": {
       "Package": "data.table",
@@ -575,7 +584,7 @@
     },
     "fontawesome": {
       "Package": "fontawesome",
-      "Version": "0.5.1",
+      "Version": "0.5.2",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -583,7 +592,7 @@
         "htmltools",
         "rlang"
       ],
-      "Hash": "1e22b8cabbad1eae951a75e9f8b52378"
+      "Hash": "c2efdd5f0bcd1ea861c2d4e2a883a67d"
     },
     "fs": {
       "Package": "fs",
@@ -609,7 +618,7 @@
     },
     "ggplot2": {
       "Package": "ggplot2",
-      "Version": "3.4.2",
+      "Version": "3.4.3",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -630,7 +639,7 @@
         "vctrs",
         "withr"
       ],
-      "Hash": "3a147ee02e85a8941aad9909f1b43b7b"
+      "Hash": "85846544c596e71f8f46483ab165da33"
     },
     "glue": {
       "Package": "glue",
@@ -645,7 +654,7 @@
     },
     "gtable": {
       "Package": "gtable",
-      "Version": "0.3.3",
+      "Version": "0.3.4",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -656,7 +665,7 @@
         "lifecycle",
         "rlang"
       ],
-      "Hash": "b44addadb528a0d227794121c00572a0"
+      "Hash": "b29cf3031f49b04ab9c852c912547eef"
     },
     "highr": {
       "Package": "highr",
@@ -718,7 +727,7 @@
     },
     "httr": {
       "Package": "httr",
-      "Version": "1.4.6",
+      "Version": "1.4.7",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -729,7 +738,7 @@
         "mime",
         "openssl"
       ],
-      "Hash": "7e5e3cbd2a7bc07880c94e22348fb661"
+      "Hash": "ac107251d9d9fd72f0ca8049988f1d7f"
     },
     "isoband": {
       "Package": "isoband",
@@ -780,14 +789,14 @@
     },
     "labeling": {
       "Package": "labeling",
-      "Version": "0.4.2",
+      "Version": "0.4.3",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
         "graphics",
         "stats"
       ],
-      "Hash": "3d5108641f47470611a32d0bdf357a72"
+      "Hash": "b64ec208ac5bc1852b285f665d6368b3"
     },
     "later": {
       "Package": "later",
@@ -1133,7 +1142,7 @@
     },
     "rmarkdown": {
       "Package": "rmarkdown",
-      "Version": "2.23",
+      "Version": "2.24",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -1153,7 +1162,7 @@
         "xfun",
         "yaml"
       ],
-      "Hash": "79f14e53725f28900d936f692bfdd69f"
+      "Hash": "3854c37590717c08c32ec8542a2e0a35"
     },
     "s2": {
       "Package": "s2",
@@ -1224,7 +1233,7 @@
     },
     "shiny": {
       "Package": "shiny",
-      "Version": "1.7.4.1",
+      "Version": "1.7.5",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -1254,11 +1263,11 @@
         "withr",
         "xtable"
       ],
-      "Hash": "f7f201522eedbc95f10ef323b100ff29"
+      "Hash": "438b99792adbe82a8329ad8697d45afe"
     },
     "shinyWidgets": {
       "Package": "shinyWidgets",
-      "Version": "0.7.6",
+      "Version": "0.8.0",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -1272,7 +1281,7 @@
         "sass",
         "shiny"
       ],
-      "Hash": "fd889b32caa37b8ed9b1e9e7ef1564bc"
+      "Hash": "c6acc72327e63668bbc7bd258ee54132"
     },
     "shinyjs": {
       "Package": "shinyjs",
@@ -1449,13 +1458,13 @@
     },
     "tinytex": {
       "Package": "tinytex",
-      "Version": "0.45",
+      "Version": "0.46",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
         "xfun"
       ],
-      "Hash": "e4e357f28c2edff493936b6cb30c3d65"
+      "Hash": "0c41a73214d982f539c56a7773c7afa5"
     },
     "triebeard": {
       "Package": "triebeard",
@@ -1560,14 +1569,14 @@
     },
     "xfun": {
       "Package": "xfun",
-      "Version": "0.39",
+      "Version": "0.40",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
         "stats",
         "tools"
       ],
-      "Hash": "8f56e9acb54fb525e66464d57ab58bcb"
+      "Hash": "be07d23211245fc7d4209f54c4e4ffc8"
     },
     "xtable": {
       "Package": "xtable",

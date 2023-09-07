@@ -1,4 +1,4 @@
-#### SUS GLOBALS ###############################################################
+#### CC GLOBALS ################################################################
 
 
 # Platform dependant ------------------------------------------------------
@@ -9,7 +9,6 @@ stories_page <- "Montréal stories"
 tileset_prefix <- "mtl"
 mapbox_username <- "curbcut"
 
-default_region <- "CMA"
 # For a location lock placeholder in advanced options
 default_random_address <- "845 Sherbrooke Ouest, Montréal, Quebec"
 

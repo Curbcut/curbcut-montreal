@@ -230,7 +230,7 @@ add_row(en = "<p>The datasets visualized on this page come from the Canadian Cen
       "<p>Les données NDVI présentées sur cette page sont dérivées des s", 
       "atellites HLSS30.v2.0 et HLSL30.v2.0, couvrant une période allant de 2", 
       "013 à aujourd'hui. Le processus comprend les étapes détaillées suivant", 
-      "es:</p><ul><li><strong>Extraction de données:</strong>Des bandes NDVI spécifi", 
+      "es:</p><ul><li><strong>Extraction de données:</strong> Des bandes NDVI spécifi", 
       "ques sont extraites sur la base de la collecte satellitaire. Ces bande", 
       "s sont utilisées pour analyser l'intensité de la végétation et sont or", 
       "ganisées.</li><li><strong>Empilement des bandes", 
