@@ -44,8 +44,7 @@ safety_UI <- function(id) {
   mzp <- eval(parse(text = paste0("map_zoom_levels_", default_region)))
   page <- modules[modules$id == id, ]
   theme_lowercased <- gsub(" .*", "", tolower(page$theme))
-  stories <- get_from_globalenv("stories")
-  
+
   shiny::tagList(
     # Sidebar
     shiny::div(
@@ -68,7 +67,7 @@ safety_UI <- function(id) {
       ),
       
       # Map
-      curbcut::map_js_UI(shiny::NS(id, id), stories = stories),
+      curbcut::map_js_UI(shiny::NS(id, id)),
       
       # Tutorial
       curbcut::tutorial_UI(id = shiny::NS(id, id)),
@@ -321,7 +320,8 @@ safety_server <- function(id, r) {
       zoom = r[[id]]$zoom,
       data_colours = data_colours,
       heatmap = heatmap,
-      vars = r[[id]]$vars
+      vars = r[[id]]$vars,
+      stories = stories
     )
     
     # Craft the graph function reactives

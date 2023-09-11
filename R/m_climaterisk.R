@@ -88,7 +88,7 @@ vars_right <- modules$var_right[modules$id == "climate_risk"][[1]]
     ),
 
     # Map
-    curbcut::map_js_UI(shiny::NS(id, id), stories = stories),
+    curbcut::map_js_UI(shiny::NS(id, id)),
     
     # Tutorial
     curbcut::tutorial_UI(id = shiny::NS(id, id)),
@@ -325,7 +325,8 @@ vars_right <- modules$var_right[modules$id == "climate_risk"][[1]]
       zoom = r[[id]]$zoom,
       data_colours = data_colours, 
       fill_fun = shiny::reactive(fill_fun_args()$fun),
-      fill_fun_args = shiny::reactive(fill_fun_args()$args)
+      fill_fun_args = shiny::reactive(fill_fun_args()$args),
+      stories = stories
     )
     
     # Switch the graph to a static one when on grid q5

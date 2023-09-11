@@ -29,7 +29,7 @@ heatmap_radius <- function(var) {
 }
 
 safety_map_js_server <- function(id, r, tile, coords, zoom, select_id, data_colours,
-                                 heatmap, vars,
+                                 heatmap, vars, stories = NULL, stories_min_zoom = 13,
                                  outline_width = shiny::reactive(1),
                                  outline_color = shiny::reactive("transparent"),
                                  pickable = shiny::reactive(TRUE),
@@ -48,6 +48,23 @@ safety_map_js_server <- function(id, r, tile, coords, zoom, select_id, data_colo
     # Form the tileset with stability. Do not get it to trigger the cc.map::map_choropleth
     # if it hasn't changed.
     tileset <- shiny::reactive(sprintf("%s_%s", tileset_prefix, tile()))
+    
+    # Populate the empty container created in map_js_UI
+    output$map_ph <- shiny::renderUI({
+      cc.map::map_input(
+        map_ID = shiny::NS(id, shiny::NS(id, "map")),
+        username = mapbox_username,
+        token = map_token,
+        longitude = map_loc[1],
+        latitude = map_loc[2],
+        zoom = map_zoom,
+        map_style_id = map_base_style,
+        tileset_prefix = tileset_prefix,
+        stories = stories,
+        stories_min_zoom = stories_min_zoom
+      )
+    })
+    
     tileset_trigger <- shiny::reactiveVal(NULL)
     shiny::observeEvent(tileset(), {
       if (is.null(tileset_trigger())) {

@@ -209,7 +209,7 @@ alley_UI <- function(id) {
       ),
       
       # Map
-    curbcut::map_js_UI(shiny::NS(id, id), stories = stories),
+    curbcut::map_js_UI(shiny::NS(id, id)),
     
     # Right panel
     curbcut::right_panel(
@@ -424,7 +424,8 @@ alley_server <- function(id, r) {
       coords = r[[id]]$coords, 
       fill_fun = alley_fill_fun,
       outline_width = shiny::reactive(if (mode() == "alleys") 2 else 1),
-      outline_color = shiny::reactive(if (mode() == "alleys") scale_fill_alley() else "transparent")
+      outline_color = shiny::reactive(if (mode() == "alleys") scale_fill_alley() else "transparent"),
+      stories = stories
     )
 
     # Explore tables

@@ -280,7 +280,7 @@ natural_inf_UI <- function(id) {
         bottom = shiny::tagList(legend_UI(NS(id, id)))),
     
     # Map
-    curbcut::map_js_UI(shiny::NS(id, id), stories = NULL),
+    curbcut::map_js_UI(shiny::NS(id, id)),
     
     # Right panel
     curbcut::right_panel(
@@ -452,7 +452,8 @@ natural_inf_server <- function(id, r) {
       coords = r[[id]]$coords,
       fill_fun = shiny::reactive(scale_fill_natural_inf),
       fill_fun_args = shiny::reactive(list(map_var(), natural_inf_colours())),
-      pickable = shiny::reactive(FALSE)
+      pickable = shiny::reactive(FALSE),
+      stories = NULL
     )
 
     # Explore panel
