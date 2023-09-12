@@ -1,6 +1,6 @@
 ## HOME PAGE TIBBLES ###########################################################
 
-home_page <- function(data_path = "data/") {
+home_page <- function(data_path = "data/", stories, translation_df) {
   ### READ ?cc.landing::landing_input DOCUMENTATION TO CONSTRUCT CORRECTLY
   # EACH OF THESE OBJECTS.
 
@@ -29,25 +29,104 @@ home_page <- function(data_path = "data/") {
 
   # Tibble for the discover section -----------------------------------------
 
-  discover_cards <- tibble::tibble(
-    id = c("metro", "alp", "gentrification", "safety"),
-    img = c(
-      "www/landing/discover/metro_evolution.png",
-      "www/landing/discover/ALP_Discover.png",
-      "www/landing/discover/mont_royal.png",
-      "www/landing/discover/RoadSafety_Discover.png"
-    ),
-    theme = c("urban", "health", "urban", "transport"),
-    en = c("The Evolution of the Metro", 
-           "ALP and people who drive to work", 
-           "The Mount-Royal", 
-           "Car crashes between 2017 and 2021"),
-    fr = c("L'Évolution du Métro", 
-           "Le PVA et les personnes qui se rendent au travail en voiture", 
-           "Le Mont-Royal", 
-           "Les collisions de voiture entre 2017 et 2021")
-  )
+#   discover_cards <- tibble::tibble(
+#     id = c("metro", "alp", "gentrification", "safety"),
+#     img = c(
+#       "www/landing/discover/metro_evolution.png",
+#       "www/landing/discover/ALP_Discover.png",
+#       "www/landing/discover/mont_royal.png",
+#       "www/landing/discover/RoadSafety_Discover.png"
+#     ),
+#     theme = c("urban", "health", "urban", "transport"),
+#     en = c("The Evolution of the Metro", 
+#            "ALP and people who drive to work", 
+#            "The Mount-Royal", 
+#            "Car crashes between 2017 and 2021"),
+#     fr = c("L'Évolution du Métro", 
+#            "Le PVA et les personnes qui se rendent au travail en voiture", 
+#            "Le Mont-Royal", 
+#            "Les collisions de voiture entre 2017 et 2021")
+#   )
+#   discover_cards$preview_en <- paste("English preview for", discover_cards$en)
+#   discover_cards$preview_fr <- paste("Preview français pour", discover_cards$fr)
+  
+  discover_cards <- tibble::tibble(id = character(), 
+                                   img = character(),
+                                   theme = character(),
+                                   en = character(),
+                                   fr = character(),
+                                   preview_en = character(),
+                                   preview_fr = character())
+  
+  discover_cards <- 
+    discover_cards |> 
+    tibble::add_row(id = "climate_risk",
+                    img = "climate_risk.png",
+                    theme = "climate",
+                    en = "Climate change risk",
+                    fr = "Risque climatique",
+                    preview_en = "Climate change will have increasingly negative impacts on communities.",
+                    preview_fr = "Le changement climatique aura des effets de plus en plus négatifs sur les communautés.") |> 
+    tibble::add_row(id = "land_surface",
+                    img = "LST.png",
+                    theme = "climate",
+                    en = "Land surface temperature",
+                    fr = "Température au sol",
+                    preview_en = "LST is a crucial indicator of urban heat islands and ecological balance within a region.",
+                    preview_fr = "La TAS est un indicateur crucial des îlots de chaleur urbains et de l'équilibre écologique au sein d'une région.") |> 
+    tibble::add_row(id = "greenness",
+                    img = "greenness.png",
+                    theme = "ecology",
+                    en = "Greenness",
+                    fr = "Verdure",
+                    preview_en = "The Normalized Difference Vegetation Index (NDVI) is a vital measurement for understanding the presence and intensity of vegetation in an area.",
+                    preview_fr = "L'indice de végétation par différence normalisée (IVDN) est une mesure essentielle pour comprendre la présence et l'intensité de la végétation dans une zone.") |> 
+    tibble::add_row(id = "green_alleys",
+                    img = "green_alleys_map.png",
+                    theme = "ecology",
+                    en = "Green alleys",
+                    fr = "Ruelles vertes",
+                    preview_en = "Public spaces that have been transformed by residents for their own activities.",
+                    preview_fr = "Public spaces that have been transformed by residents for their own activities.") |> 
+    tibble::add_row(id = "natural_infrastructure",
+                    img = "natural_infrastructure.png",
+                    theme = "ecology",
+                    en = "Natural infrastructure",
+                    fr = "Infrastructures naturelles",
+                    preview_en = "Natural ecosystems are necessary for our cities, they contribute to well-being, quality of life and public health.",
+                    preview_fr = "Les écosystèmes naturels sont nécessaires à nos villes, ils contribuent au bien-être, à la qualité de vie et à la santé publique.") |> 
+    tibble::add_row(id = "housing_system",
+                    img = "housing_system.png",
+                    theme = "housing",
+                    en = "The housing system",
+                    fr = "Système de logement",
+                    preview_en = "Housing is at the centre of our lives. Our ability to find affordable, adequate, and healthy accommodations profoundly affects our life chances.",
+                    preview_fr = "Le logement est au cœur de nos vies. Notre capacité à trouver un logement abordable, adéquat et sain affecte profondément nos chances dans la vie.")
+  
+  if (length(unique(discover_cards$id)) != nrow(discover_cards)) {
+    stop("Discover cards do not have unique ids")
+  }
+  
+  
+  # Stories formatting for the discover_cards
+  disc_stories <- stories[c("name_id", "short_title", "preview_en", "preview_fr")]
+  names(disc_stories) <- c("id", "en", "preview_en", "preview_fr")
+  disc_stories$img <- sprintf("%s.png", disc_stories$id)
+  disc_stories$theme <- "urban"
+  disc_stories$fr <- sapply(disc_stories$en, curbcut::cc_t, lang = "fr", USE.NAMES = FALSE)
 
+  # Bind 
+  discover_cards <- rbind(discover_cards, disc_stories)
+  
+  # Filter out missing photos and warn!
+  present_img <- discover_cards$img %in% list.files("www/landing/discover/")
+  missing_img <- discover_cards[!present_img, ]
+  if (nrow(missing_img) > 0){
+    warning(paste0("Missing images for ", missing_img$id, "\n"))
+  }
+  
+  discover_cards <- discover_cards[present_img, ]
+  discover_cards$img <- paste0("www/landing/discover/", discover_cards$img)
 
   # Tibble for team members -------------------------------------------------
   team_cards <- tibble::tibble(

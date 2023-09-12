@@ -432,7 +432,7 @@
       "RemoteUsername": "Curbcut",
       "RemoteRepo": "curbcut",
       "RemoteRef": "map_js",
-      "RemoteSha": "2a96d4961cb68e346c8c668b9745edc5118b44b2",
+      "RemoteSha": "a736bbe7bc23d82376aa7736be884bd19dedf04a",
       "Remotes": "Curbcut/cc.map, Curbcut/cc.landing, bdbmax/bslib, qfes/rdeck",
       "Requirements": [
         "DBI",
@@ -461,7 +461,7 @@
         "utils",
         "zip"
       ],
-      "Hash": "0b4f7865adb53e4848dab17504740d58"
+      "Hash": "13823d9c68b61b9a83c6c3db7af8ffe0"
     },
     "curl": {
       "Package": "curl",

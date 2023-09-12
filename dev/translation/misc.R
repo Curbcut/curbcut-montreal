@@ -15,6 +15,8 @@ translation_misc <-
           fr = "Ville") |> 
   add_row(en = "Borough",
           fr = "Arrondissement") |> 
+  add_row(en = "Sector",
+          fr = "Secteur") |> 
   add_row(en = "Lavaltrie", 
           fr = "Lavaltrie") |>
   add_row(en = "Richelieu", 
