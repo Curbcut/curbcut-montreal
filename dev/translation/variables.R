@@ -713,14 +713,16 @@ translation_variables <-
               fr = "vivent dans des zones où la présence et l'intensité de la végétation est de _X_") |> 
       add_row(en = "are living in areas with _X_ level of land surface temperature",
               fr = "vivent dans des régions où la température à la surface du sol est de _X_") |> 
+      add_row(en = "the average warm-season land surface temperature is _X_ degrees celsius",
+              fr = "la température moyenne au sol en saison chaude est de _X_ degrés celsius") |> 
       add_row(en = "the presence and intensity of vegetation",
               fr = "la présence et l'intensité de la végétation") |> 
-      add_row(en = "the areas that are hotter during the day and more likely to radiate excess heat at night",
-              fr = "les zones qui sont plus chaudes pendant la journée et qui sont plus susceptibles d'émettre un excès de chaleur pendant la nuit") |> 
+      add_row(en = "the average warm-season land surface temperature",
+              fr = "la température moyenne au sol en saison chaude") |> 
       add_row(en = "presence and intensity of vegetation",
               fr = "présence et intensité de végétation") |> 
-      add_row(en = "areas that are hotter during the day and more likely to radiate excess heat at night",
-              fr = "zones qui sont plus chaudes pendant la journée et qui sont plus susceptibles d'émettre un excès de chaleur pendant la nuit") |> 
+      add_row(en = "average warm-season land surface temperature",
+              fr = "température moyenne au sol en saison chaude") |> 
       add_row(en = "The Canadian Urban Environmental Health Research Consortium",
               fr = "Le Consortium canadien de recherche en santé environnementale urbaine") |> 
       
