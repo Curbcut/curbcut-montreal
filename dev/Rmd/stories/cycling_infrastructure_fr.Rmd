@@ -1,5 +1,5 @@
 ---
-title: "Histoire de l'infrastructure cycliste à Montréal"
+title: "Histoire de l'infrastructure cyclable à Montréal"
 author: "Philip Bligh"
 date: "07.2022"
 output: html_document

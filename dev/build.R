@@ -699,7 +699,7 @@ source("dev/translation/build_translation.R", encoding = "utf-8")
 
 # Home page ---------------------------------------------------------------
 
-home_page(stories = stories, translation_df = translation_df)
+home_page(modules = modules, stories = stories, translation_df = translation_df)
 
 
 # Save variables ----------------------------------------------------------
