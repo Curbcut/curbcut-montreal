@@ -755,10 +755,14 @@ tictoc::toc()
 
 # Create DYKs -------------------------------------------------------------
 
+# library(cc.buildr)
+# library(tidyverse)
+# qs::qload("dev/data/built/scales_variables_modules.qsm",
+#           nthreads = future::availableCores())
 vars_dyk <- dyk_prep(scales_variables_modules, all_tables)
 dyk <- dyk_uni(vars_dyk, scales_variables_modules)
-dyk <- rbind(dyk, dyk_delta(vars_dyk, scales_variables_modules))
-dyk <- rbind(dyk, dyk_bivar(vars_dyk, scales_variables_modules))
+# dyk <- rbind(dyk, dyk_delta(vars_dyk, scales_variables_modules))
+# dyk <- rbind(dyk, dyk_bivar(vars_dyk, scales_variables_modules))
 qs::qsave(dyk, "data/dyk.qs")
 
 

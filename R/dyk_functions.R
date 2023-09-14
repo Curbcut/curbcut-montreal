@@ -1,70 +1,152 @@
 #### DYK FUNCTIONS #############################################################
 
-dyk_poi <- function(poi) {
+# dyk_text ----------------------------------------------------------------
+
+#' Generate DYK text for the given variables and region
+#'
+#' This function dispatches to the appropriate text-generating function based on
+#' the type of `vars` and returns the resulting text.
+#'
+#' @param vars <`character`> A list containing the variable names for which the
+#' text needs to be generated. Usually the output of \code{\link{vars_build}}.
+#' @param region_df <`character`> String specifying the name of the region.
+#' Usually equivalent to `r$region()`.
+#' #' @param scale_df <`character`> String specifying the name of the scale.
+#' Usually equivalent to `r$scale()`.
+#' @param select_id <`character`> A string indicating the ID of the currently
+#' selected region (if any). Usually `r[[id]]$select_id()`
+#' @param df <`character`> The combination of the region under study and the
+#' scale at which the user is on, e.g. `CMA_CSD`. The output of
+#' \code{\link{update_df}}.
+#' @param lang <`character`> A string indicating the language in which to
+#' translates the variable. Defaults to NULL. Usually is `r$lang()`.
+#' @param ... Additional arguments passed to the dispatched function.
+#'
+#' @return The resulting text.
+#' @export
+dyk_text <- function(vars, df, select_id, lang, ...) {
+  UseMethod("dyk_text", vars)
+}
+
+#' @rdname dyk_text
+#' @export
+#'
+dyk_text.default <- function(vars, df, select_id, lang, ...) {
   
-  # Get POIs; currently just Stories. Return nothing if the `stories` df is
-  # missing.
-  stories <- get0("stories", envir = .GlobalEnv)
-  if (is.null(stories)) return(NULL)
-  pois <- stories[c("ID", "name_id", "preview_en", "preview_fr")]
-  
-  # Grab two stories
-  out <- pois[pois$name_id %in% poi, ]
-  out <- out[min(1, nrow(out)):min(2, nrow(out)), ]
-  
-  # Construct the preview column
-  preview_lang <- if (is.null(lang)) "en" else lang
-  preview_col <- sprintf("preview_%s", preview_lang)
-  
-  # Make the a tag links as if they were action buttons
-  previews_links <- lapply(seq_along(out$name_id), \(x) {
-    button_id <- ns_doubled(page_id = id, element = sprintf("dyk_%s", x))
-    
-    shiny::tags$li(
-      # Grab the preview column, in the correct language
-      out[[preview_col]][x],
-      shiny::tags$a(
-        id = button_id,
-        href = "#",
-        class = "action-button shiny-bound-input",
-        curbcut::cc_t("[LEARN MORE]", lang = lang)
-      )
-    )
-  })
-  
-  # Arguments necessary for the `link` function (except `r` which is added
-  # subsequently)
-  link_attrs <- lapply(
-    seq_along(out$name_id),
-    \(x) list(page = "stories", select_id = out$ID[x])
-  )
-  
-  # Construct the HTML list
-  previews_links <- shiny::tags$ul(previews_links)
-  
-  # Flag that these are links
-  attr(previews_links, "links") <- link_attrs
-  
-  # Return
-  return(previews_links)
+  return(NULL)
   
 }
 
-
-dyk_text <- function(vars, df) {
+#' @rdname dyk_text
+#' @export
+#'
+dyk_text.q5 <- function(vars, df, select_id, lang, ...) {
   
   # Parse vars and df
   var_left <- vars$var_left
-  var_right <- vars$var_right
+  var <- sub("_\\d{4}", "", var_left)
+  date <- regmatches(var_left, regexpr("\\d{4}", var_left))
   region <- sub("_.*", "", df)
-  scale <- sub(".*_", "", df)
+  # If there's a selection, scale should match it, otherwise default to CSD
+  # TKTK use get_from_global_env to get map_zoom_levels_<<region>> and then take first name
+  scale <- if(is.na(select_id)) "CSD" else sub(".*_", "", df)
+  # Overwrite the building scale with DA TKTK treat_to_DA(scales_as_DA = c("building", "street"), df = df)
+  if (scale == "building") scale <- "DA"
   
   # Subset dyk
-  dyk_df <- dyk[dyk$region == region & dyk$scale == scale,]
+  dyk_df <- dyk[dyk$region == region & dyk$var_left == var,]
   
   # Get the best DYK from each category
-  dyk_high <- dyk_df[dyk_df$dyk_type %in% c("highest", "lowest"),]
+  dyk_high <- dyk_df[dyk_df$dyk_type %in% c("highest", "lowest") &
+                       dyk_df$scale == scale & dyk_df$date == date,]
+  dyk_high <- dyk_high[round(runif(1, 1, 2)),]
+  dyk_change <- dyk_df[dyk_df$dyk_type == "change",]
+  dyk_compare <- dyk_df[dyk_df$dyk_type == "compare" & dyk_df$scale == scale & 
+                          dyk_df$date == date,]
+  dyk_compare <- dyk_compare[
+    sample(length(dyk_compare$dyk_value), 1, prob = dyk_compare$dyk_value ^ 2),]
   
-  return(NULL)
-
+  # Randomly choose one
+  dyk_out <- rbind(dyk_high, dyk_change, dyk_compare)
+  out <- dyk_out$dyk_text[sample(seq_along(dyk_out$dyk_text), 1)]
+  out <- shiny::tags$ul(shiny::tags$li(out))
+  
+  # Return output
+  return(out)
+  
 }
+
+
+# dyk_text.delta <- function(vars, df, select_id, lang, ...) {
+#   
+#   # Parse vars and df
+#   var_left <- vars$var_left
+#   var <- sub("_\\d{4}", "", var_left)
+#   date <- regmatches(var_left, regexpr("\\d{4}", var_left))
+#   region <- sub("_.*", "", df)
+#   # If there's a selection, scale should match it, otherwise default to CSD
+#   scale <- if(is.na(select_id)) "CSD" else sub(".*_", "", df)
+#   # Overwrite the building scale with DA
+#   if (scale == "building") scale <- "DA"
+#   
+#   # Subset dyk
+#   dyk_df <- dyk[dyk$region == region & dyk$var_left == var,]
+#   
+#   # Get the best DYK from each category
+#   dyk_high <- dyk_df[dyk_df$dyk_type %in% c("highest", "lowest") &
+#                        dyk_df$scale == scale & dyk_df$date == date,]
+#   dyk_high <- dyk_high[round(runif(1, 1, 2)),]
+#   dyk_change <- dyk_df[dyk_df$dyk_type == "change",]
+#   dyk_compare <- dyk_df[dyk_df$dyk_type == "compare" & dyk_df$scale == scale & 
+#                           dyk_df$date == date,]
+#   dyk_compare <- dyk_compare[
+#     sample(length(dyk_compare$dyk_value), 1, prob = dyk_compare$dyk_value ^ 2),]
+#   
+#   # Randomly choose one
+#   dyk_out <- rbind(dyk_high, dyk_change, dyk_compare)
+#   out <- dyk_out$dyk_text[sample(1:3, 1)]
+#   out <- shiny::tags$ul(shiny::tags$li(out))
+#   
+#   # Return output
+#   return(out)
+#   
+# }
+
+# dyk_text.bivar <- function(vars, df, select_id, lang, ...) {
+#   
+#   # Parse vars and df
+#   var_left <- vars$var_left
+#   var_right <- vars$var_right
+#   var_1 <- sub("_\\d{4}", "", var_left)
+#   var_2 <- sub("_\\d{4}", "", var_right)
+#   date_1 <- regmatches(var_left, regexpr("\\d{4}", var_left))
+#   date_2 <- regmatches(var_right, regexpr("\\d{4}", var_right))
+#   region <- sub("_.*", "", df)
+#   # If there's a selection, scale should match it, otherwise default to CSD
+#   scale <- if(is.na(select_id)) "CSD" else sub(".*_", "", df)
+#   # Overwrite the building scale with DA
+#   if (scale == "building") scale <- "DA"
+#   
+#   # Subset dyk
+#   dyk_df <- dyk[dyk$region == region & dyk$var_left == var,]
+#   
+#   # Get the best DYK from each category
+#   dyk_high <- dyk_df[dyk_df$dyk_type %in% c("highest", "lowest") &
+#                        dyk_df$scale == scale & dyk_df$date == date,]
+#   dyk_high <- dyk_high[round(runif(1, 1, 2)),]
+#   dyk_change <- dyk_df[dyk_df$dyk_type == "change",]
+#   dyk_compare <- dyk_df[dyk_df$dyk_type == "compare" & dyk_df$scale == scale & 
+#                           dyk_df$date == date,]
+#   dyk_compare <- dyk_compare[
+#     sample(length(dyk_compare$dyk_value), 1, prob = dyk_compare$dyk_value ^ 2),]
+#   
+#   # Randomly choose one
+#   dyk_out <- rbind(dyk_high, dyk_change, dyk_compare)
+#   out <- dyk_out$dyk_text[sample(1:3, 1)]
+#   out <- shiny::tags$ul(shiny::tags$li(out))
+#   
+#   # Return output
+#   return(out)
+#   
+# }
+
