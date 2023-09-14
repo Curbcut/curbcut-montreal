@@ -127,12 +127,11 @@ dyk_text.q5 <- function(vars, df, select_id, lang, region, zoom_levels, scales_a
     sample(length(dyk_compare$dyk_value), 1, prob = dyk_compare$dyk_value ^ 2),]
   
   # Randomly choose one
-  dyk_out <- rbind(dyk_high, dyk_change)#, dyk_compare)
+  dyk_out <- rbind(dyk_high, dyk_change, dyk_compare)
   out <- dyk_out[sample(seq_along(dyk_out$dyk_text), 1), ]
   
   if (nrow(out) > 1) stop("DYK links expect 1 dyk")
   out <- if (out$dyk_type %in% c("highest", "lowest")) {
-    # In this case, no change except the scale + selection
     dyk_link(id = out$module, element_id = 1, text = out$dyk_text, lang = lang, 
              df = sprintf("%s_%s", out$region, out$scale), select_id = out$select_ID,
              # Feed zoom_levels to the link. The zoom will be adjusted using exactly
@@ -141,7 +140,10 @@ dyk_text.q5 <- function(vars, df, select_id, lang, region, zoom_levels, scales_a
              zoom_levels = zoom_levels)
   } else if (out$dyk_type == "change") {
     dyk_link(id = out$module, element_id = 1, text = out$dyk_text, lang = lang, 
-             df = df, date = out$date[[1]])
+             date = out$date[[1]])
+  } else if (out$dyk_type == "compare") {
+    dyk_link(id = out$module, element_id = 1, text = out$dyk_text, lang = lang, 
+             var_right = out$var_right)
   }
   
   # Return output

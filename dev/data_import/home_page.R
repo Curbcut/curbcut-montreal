@@ -25,24 +25,24 @@ home_page <- function(modules, stories, translation_df, data_path = "data/") {
                     title_en = "Curbcut 5@7", 
                     title_fr = "5@7 Curbcut", 
                     text_en = paste0(
-                      "Join us in celebrating Curbcut's latest update! We're hosting a 5@7 e",
-                      "vent at the McGill Engine Centre on October 2nd. Don't miss this oppor",
-                      "tunity to explore our innovative new features and join in-depth discus",
-                      "sions on how Curbcut is shaping the future of urban sustainability. Se",
-                      "e you there!"
+                      "Join us in celebrating Curbcut’s latest update! We’re hosting a 5@7 ev",
+                      "ent at the McGill Engine Centre on October 2nd. Don’t miss this opport",
+                      "unity to explore our innovative new features and join a discussion on ",
+                      "how Curbcut is shaping the future of urban sustainability. See you the",
+                      "re!"
                     ), 
                     text_fr = paste0(
                       "Rejoignez-nous pour célébrer la toute dernière mise à jour de Curbcut ",
                       "! Nous organisons un 5@7 au Centre d'Innovation McGill le 2 octobre. N",
                       "e manquez pas cette occasion de découvrir nos nouvelles fonctionnalité",
-                      "s innovantes et de participer à des discussions approfondies sur la ma",
+                      "s innovantes et de participer à des discussions sur la ma",
                       "nière dont Curbcut façonne l'avenir de la durabilité urbaine. À très b",
                       "ientôt !"
                     ),
                     link = "https://www.eventbrite.ca/e/curbcut-57-tickets-705402857937") |> 
     tibble::add_row(id = "greenness", 
                     icon = "ecology", 
-                    title_en = "Explore Urban Greenery", 
+                    title_en = "Explore urban greenery", 
                     title_fr = "Explorez la verdure urbaine", 
                     text_en = paste0(
                       "Curbcut unveils its cutting-edge page focused on Normalized Difference ",
@@ -68,7 +68,7 @@ home_page <- function(modules, stories, translation_df, data_path = "data/") {
                     link = "ndvi") |> 
     tibble::add_row(id = "lst", 
                     icon = "climat", 
-                    title_en = "Land Surface Temperature", 
+                    title_en = "Land surface temperature", 
                     title_fr = "Température au sol", 
                     text_en = paste0(
                       "Unveiling our latest Land Surface Temperature (LST) analytics! Our new",
@@ -84,7 +84,7 @@ home_page <- function(modules, stories, translation_df, data_path = "data/") {
                     link = "lst") |> 
     tibble::add_row(id = "alp", 
                     icon = "health", 
-                    title_en = "Active Living Potential", 
+                    title_en = "Active living potential", 
                     title_fr = "Potentiel de vie active", 
                     text_en = paste0(
                       "Curbcut has developed its own Active Living Potential index. This inde",
