@@ -63,7 +63,7 @@ dyk_text.q5 <- function(vars, df, select_id, lang, ...) {
   dyk_change <- dyk_df[dyk_df$dyk_type == "change",]
   dyk_compare <- dyk_df[dyk_df$dyk_type == "compare" & dyk_df$scale == scale & 
                           dyk_df$date == date,]
-  dyk_compare <- dyk_compare[
+  if (nrow(dyk_compare) > 0) dyk_compare <- dyk_compare[
     sample(length(dyk_compare$dyk_value), 1, prob = dyk_compare$dyk_value ^ 2),]
   
   # Randomly choose one
