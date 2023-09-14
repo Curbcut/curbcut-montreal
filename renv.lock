@@ -299,7 +299,7 @@
       "RemoteUsername": "Curbcut",
       "RemoteRepo": "cc.landing",
       "RemoteRef": "main",
-      "RemoteSha": "63259d6ba0443b2e906e7ef82e871cf2b928c3c4",
+      "RemoteSha": "d3b29dc62150d003ae534f300e207b85ef069a70",
       "Requirements": [
         "base64enc",
         "htmltools",
@@ -307,7 +307,7 @@
         "reactR",
         "shiny"
       ],
-      "Hash": "165c8606a8627698e9b5c7a2c61e424b"
+      "Hash": "d3017e0a9583a289c92bc2fb87d67364"
     },
     "cc.map": {
       "Package": "cc.map",
@@ -318,14 +318,14 @@
       "RemoteUsername": "Curbcut",
       "RemoteRepo": "cc.map",
       "RemoteRef": "master",
-      "RemoteSha": "3b27653959e912ffa3c28093c01970a1ed6aed8a",
+      "RemoteSha": "8acce4cd7585faeba1aef409b0c0dfe7d4020799",
       "Requirements": [
         "htmltools",
         "jsonlite",
         "reactR",
         "shiny"
       ],
-      "Hash": "2f556f7a0f3af588119444e8c52ad86b"
+      "Hash": "c7f4be5f32868b4b0a81f4600c6379be"
     },
     "class": {
       "Package": "class",
@@ -432,7 +432,7 @@
       "RemoteUsername": "Curbcut",
       "RemoteRepo": "curbcut",
       "RemoteRef": "map_js",
-      "RemoteSha": "a736bbe7bc23d82376aa7736be884bd19dedf04a",
+      "RemoteSha": "acb2a8ebdc00cd62c8bc80ba7bb10272220ca88f",
       "Remotes": "Curbcut/cc.map, Curbcut/cc.landing, bdbmax/bslib, qfes/rdeck",
       "Requirements": [
         "DBI",
@@ -461,7 +461,7 @@
         "utils",
         "zip"
       ],
-      "Hash": "13823d9c68b61b9a83c6c3db7af8ffe0"
+      "Hash": "fdef5e0d2cc885621dd7744d738e18c9"
     },
     "curl": {
       "Package": "curl",
@@ -773,7 +773,7 @@
     },
     "knitr": {
       "Package": "knitr",
-      "Version": "1.43",
+      "Version": "1.44",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -785,7 +785,7 @@
         "xfun",
         "yaml"
       ],
-      "Hash": "9775eb076713f627c07ce41d8199d8f6"
+      "Hash": "60885b9f746c9dfaef110d070b5f7dc0"
     },
     "labeling": {
       "Package": "labeling",
@@ -1479,14 +1479,14 @@
     },
     "units": {
       "Package": "units",
-      "Version": "0.8-3",
+      "Version": "0.8-4",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
         "R",
         "Rcpp"
       ],
-      "Hash": "880ebc99e4d8f7e5f3caeb2f12632583"
+      "Hash": "e0fbcea25008a7540c83c2c294135de0"
     },
     "urltools": {
       "Package": "urltools",

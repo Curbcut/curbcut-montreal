@@ -9,22 +9,113 @@ home_page <- function(modules, stories, translation_df, data_path = "data/") {
 
 
   # Tibble for the news section ---------------------------------------------
-  news_cards <- tibble::tibble(
-    id = c("census", "centraide", "alp"),
-    icon = c("demographics", "urban", "health"),
-    title_en = c("2021 Census", "Centraide x Curbcut", "Active Living Potential"),
-    title_fr = c("Recensement de 2021", "Centraide x Curbcut", "Potentiel de vie active"),
-    text_en = c(
-      "We’ve added new data to the site! 2021 Census data is now available on all pages.",
-      "In a novel collaboration, Centraide of Greater Montreal is partnering with Curbcut on a series of housing maps. Centraide is using its social expertise and data to help target and interpret housing issues, a decisive factor in poverty and social exclusion.",
-      "Curbcut has developed its own Active Living Potential index. This index quantifies which areas provide walkable environments to their residents based on street connectivity, building density and points of interest. We developed the index with out internal travel time matrix dataset which uses a 15-minute walk buffer on the street network."
-    ),
-    text_fr = c(
-      "Nous avons ajouté de nouvelles données au site ! Les données du recensement de 2021 sont maintenant disponibles sur toutes les pages.",
-      "Dans une collaboration inédite, Centraide du Grand Montréal s’associe à Curbcut à travers une série de cartes dédiées au logement. Centraide met son expertise sociale et ses données au profit de la plateforme pour mieux cibler et interpréter les enjeux liés au logement, qui est un facteur déterminant sur la pauvreté et l’exclusion sociale.",
-      "Curbcut a développé son propre indice de potentiel de vie active. Cet indice quantifie les zones qui offrent des environnements propices à la marche à leurs résidents en fonction de la connectivité des rues, de la densité des bâtiments et des points d'intérêt. Nous avons développé cet indice à l'aide de notre matrice interne de données sur les temps de déplacement, qui utilise un tampon de 15 minutes de marche sur le réseau de rues."
-    )
-  )
+
+  news_cards <- tibble::tibble(id = character(),
+                               icon = character(),
+                               title_en = character(),
+                               title_fr = character(),
+                               text_en = character(),
+                               text_fr = character(),
+                               link = character())
+  
+  news_cards <- 
+    news_cards |> 
+    tibble::add_row(id = "curbcut5a7", 
+                    icon = "transport", 
+                    title_en = "Curbcut 5@7", 
+                    title_fr = "5@7 Curbcut", 
+                    text_en = paste0(
+                      "Join us in celebrating Curbcut's latest update! We're hosting a 5@7 e",
+                      "vent at the McGill Engine Centre on October 2nd. Don't miss this oppor",
+                      "tunity to explore our innovative new features and join in-depth discus",
+                      "sions on how Curbcut is shaping the future of urban sustainability. Se",
+                      "e you there!"
+                    ), 
+                    text_fr = paste0(
+                      "Rejoignez-nous pour célébrer la toute dernière mise à jour de Curbcut ",
+                      "! Nous organisons un 5@7 au Centre d'Innovation McGill le 2 octobre. N",
+                      "e manquez pas cette occasion de découvrir nos nouvelles fonctionnalité",
+                      "s innovantes et de participer à des discussions approfondies sur la ma",
+                      "nière dont Curbcut façonne l'avenir de la durabilité urbaine. À très b",
+                      "ientôt !"
+                    ),
+                    link = "https://www.eventbrite.ca/e/curbcut-57-tickets-705402857937") |> 
+    tibble::add_row(id = "greenness", 
+                    icon = "ecology", 
+                    title_en = "Explore Urban Greenery", 
+                    title_fr = "Explorez la verdure urbaine", 
+                    text_en = paste0(
+                      "Curbcut unveils its cutting-edge page focused on Normalized Difference ",
+                      "Vegetation Index (NDVI) analytics for in-depth vegetation analysis. ",
+                      "Leveraging advanced satellite data, the platform offers a c",
+                      "omprehensive look at plant health and density in urban areas. Through ",
+                      "precise calculations and quality filtering, we provide actionable insi",
+                      "ghts for urban planning and environmental conservation. This becomes a",
+                      " crucial asset for stakeholders in urban sustainability and environmen",
+                      "tal justice."
+                    ), 
+                    text_fr = paste0(
+                      "Curbcut dévoile sa nouvelle page innovante axée sur l'analyse approfon",
+                      "die de l'Indice de Différence de Végétation Normalisée (NDVI). En expl",
+                      "oitant des données satellitaires avancées, la plateforme offre un aper",
+                      "çu complet de la santé et de la densité des plantes en milieu urbain. ",
+                      "Grâce à des calculs précis et à un filtrage de qualité, nous offrons d",
+                      "es renseignements concrets utiles pour l'aménagement urbain et la prés",
+                      "ervation de l'environnement. Cet outil devient un atout essentiel pour",
+                      " les acteurs de la durabilité urbaine et de la justice environnemental",
+                      "e."
+                    ),
+                    link = "ndvi") |> 
+    tibble::add_row(id = "lst", 
+                    icon = "climat", 
+                    title_en = "Land Surface Temperature", 
+                    title_fr = "Température au sol", 
+                    text_en = paste0(
+                      "Unveiling our latest Land Surface Temperature (LST) analytics! Our new",
+                      " LST page provides accurate, three-year mean temperature estimates. A ",
+                      "must-see for researchers and policymakers in urban sustainability."
+                    ), 
+                    text_fr = paste0(
+                      "Découvrez nos dernières analyses sur la température au sol ! Notre nou",
+                      "velle page offre des estimations précises de la température moyenne su",
+                      "r une période de trois ans. Un passage obligé pour les chercheurs et l",
+                      "es décideurs en durabilité urbaine."
+                    ),
+                    link = "lst") |> 
+    tibble::add_row(id = "alp", 
+                    icon = "health", 
+                    title_en = "Active Living Potential", 
+                    title_fr = "Potentiel de vie active", 
+                    text_en = paste0(
+                      "Curbcut has developed its own Active Living Potential index. This inde",
+                      "x quantifies which areas provide walkable environments to their reside",
+                      "nts based on street connectivity, building density and points of inter",
+                      "est. We developed the index with out internal travel time matrix datas",
+                      "et which uses a 15-minute walk buffer on the street network."
+                    ), 
+                    text_fr = paste0(
+                      "Curbcut a développé son propre indice de potentiel de vie active. Cet ",
+                      "indice quantifie les zones qui offrent des environnements propices à l",
+                      "a marche à leurs résidents en fonction de la connectivité des rues, de",
+                      " la densité des bâtiments et des points d'intérêt. Nous avons développ",
+                      "é cet indice à l'aide de notre matrice interne de données sur les temp",
+                      "s de déplacement, qui utilise un tampon de 15 minutes de marche sur le",
+                      " réseau de rues."
+                    ),
+                    link = "alp") |> 
+    tibble::add_row(id = "census", 
+                    icon = "demographics", 
+                    title_en = "2021 Census", 
+                    title_fr = "Recensement de 2021", 
+                    text_en = paste0(
+                      "We’ve added new data to the site! 2021 Census data is now available on",
+                      " all pages."
+                    ), 
+                    text_fr = paste0(
+                      "Nous avons ajouté de nouvelles données au site ! Les données du recens",
+                      "ement de 2021 sont maintenant disponibles sur toutes les pages."
+                    ),
+                    link = NA)
 
 
   # Tibble for the discover section -----------------------------------------
