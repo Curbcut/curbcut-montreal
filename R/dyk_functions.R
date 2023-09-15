@@ -17,13 +17,13 @@
 #' @param lang <`character`> A character string specifying the language to
 #' translate the content. Defaults to NULL for no translation.
 #' @param ... Additional attributes to pass to the `link` function. Any of
-#' `select_id`, `var_left`, `var_right`, `dates`, ...
+#' `select_id`, `var_right`, `date`, ...
 #'
 #' @return An HTML list item (`<li>`) with an embedded action link. The list item
 #' will also have attributes specifying that these are links.
 #' @export
 dyk_link <- function(id, element_id, page = id, text, lang = NULL, ...) {
-  if (!element_id %in% c(1,2)) stop("`element_id` must be either 1 or 2.")
+  if (!element_id %in% c(1, 2)) stop("`element_id` must be either 1 or 2.")
   
   # Make the a tag links as if they were action buttons
   button_id <- curbcut:::ns_doubled(page_id = id, element = sprintf("dyk_%s", element_id))
@@ -74,6 +74,14 @@ dyk_link <- function(id, element_id, page = id, text, lang = NULL, ...) {
 #' \code{\link{update_df}}.
 #' @param lang <`character`> A string indicating the language in which to
 #' translates the variable. Defaults to NULL. Usually is `r$lang()`.
+#' @param region <`character`> Character string specifying the name of the region.
+#' Usually equivalent of `r$region()`.
+#' @param zoom_levels <`named numeric vector`> A named numeric vector of zoom
+#' levels. Usually one of the `map_zoom_levels_x`, or the output of
+#' \code{\link{zoom_get_levels}}.
+#' @param scales_as_DA <`character vector`> A character vector of `scales`
+#' that should be handled as a "DA" scale, e.g. `building` and `street`. By default,
+#' their colour will be the one of their DA.
 #' @param ... Additional arguments passed to the dispatched function.
 #'
 #' @return The resulting text.
@@ -107,10 +115,11 @@ dyk_text.q5 <- function(vars, df, select_id, lang, region, zoom_levels, scales_a
   # If there's a selection, scale should match it, otherwise default to CSD
   # select_id can sometimes be at the wrong scale (click and zoom in does not de-select,
   # for it the user zooms back).
-  scale <- if (is.na(select_id) || !select_id %in% get_from_globalenv(df)$ID) {
+  scale <- sub(".*_", "", df)
+  scale_for_highest <- if (is.na(select_id) || !select_id %in% get_from_globalenv(df)$ID) {
     names(zoom_levels)[[1]]
   } else {
-    sub(".*_", "", df)
+    scale
   }
   
   # Subset dyk
@@ -118,7 +127,7 @@ dyk_text.q5 <- function(vars, df, select_id, lang, region, zoom_levels, scales_a
   
   # Get the best DYK from each category
   dyk_high <- dyk_df[dyk_df$dyk_type %in% c("highest", "lowest") &
-                       dyk_df$scale == scale & dyk_df$date == date,]
+                       dyk_df$scale == scale_for_highest & dyk_df$date == date,]
   dyk_high <- dyk_high[round(runif(1, 1, 2)),]
   dyk_change <- dyk_df[dyk_df$dyk_type == "change",]
   dyk_compare <- dyk_df[dyk_df$dyk_type == "compare" & dyk_df$scale == scale & 
@@ -153,37 +162,38 @@ dyk_text.q5 <- function(vars, df, select_id, lang, region, zoom_levels, scales_a
 
 
 # dyk_text.delta <- function(vars, df, select_id, lang, region, zoom_levels, ...) {
+# 
+#   # Parse vars and df
+#   var_left <- vars$var_left
+#   var <- curbcut::var_remove_time(var_left)
+#   date <- var_get_time(var_left)
 #   
-# # Parse vars and df
-# var_left <- vars$var_left
-# var <- curbcut::var_remove_time(var_left)
-# date <- var_get_time(var_left)
 #   # If there's a selection, scale should match it, otherwise default to CSD
 #   scale <- if(is.na(select_id)) "CSD" else sub(".*_", "", df)
 #   # Overwrite the building scale with DA
 #   if (scale == "building") scale <- "DA"
-#   
+# 
 #   # Subset dyk
 #   dyk_df <- dyk[dyk$region == region & dyk$var_left == var,]
-#   
+# 
 #   # Get the best DYK from each category
 #   dyk_high <- dyk_df[dyk_df$dyk_type %in% c("highest", "lowest") &
 #                        dyk_df$scale == scale & dyk_df$date == date,]
 #   dyk_high <- dyk_high[round(runif(1, 1, 2)),]
 #   dyk_change <- dyk_df[dyk_df$dyk_type == "change",]
-#   dyk_compare <- dyk_df[dyk_df$dyk_type == "compare" & dyk_df$scale == scale & 
+#   dyk_compare <- dyk_df[dyk_df$dyk_type == "compare" & dyk_df$scale == scale &
 #                           dyk_df$date == date,]
 #   dyk_compare <- dyk_compare[
 #     sample(length(dyk_compare$dyk_value), 1, prob = dyk_compare$dyk_value ^ 2),]
-#   
+# 
 #   # Randomly choose one
 #   dyk_out <- rbind(dyk_high, dyk_change, dyk_compare)
 #   out <- dyk_out$dyk_text[sample(1:3, 1)]
 #   out <- shiny::tags$ul(shiny::tags$li(out))
-#   
+# 
 #   # Return output
 #   return(out)
-#   
+# 
 # }
 
 # dyk_text.bivar <- function(vars, df, select_id, lang, region, zoom_levels, ...) {
