@@ -101,6 +101,7 @@ scales_dictionary <- census_scales_dictionary(census_scales)
 # Switch the CSD scale for borough/city
 scales_dictionary[1, ] <- list(scale = "CSD",
                                sing = "borough/city",
+                               sing_with_article = "the borough/city",
                                plur = "boroughs or cities",
                                slider_title = "Borough/City",
                                place_heading = "{name_2} of {name}",
@@ -122,6 +123,7 @@ scales_dictionary <-
   append_scale_to_dictionary(scales_dictionary,
                              scale = "building",
                              sing = "building",
+                             sing_with_article = "the building",
                              plur = "buildings",
                              slider_title = "Building",
                              place_heading = "{name}",
@@ -138,6 +140,7 @@ scales_dictionary <-
   append_scale_to_dictionary(scales_dictionary,
                              scale = "cmhczone",
                              sing = "CMHC zone",
+                             sing_with_article = "the CMHC zone",
                              plur = "CMHC zones",
                              slider_title = "CMHC zone",
                              place_heading = "{name}",
@@ -153,8 +156,9 @@ centraide <- additional_scale(additional_table = centraide,
 scales_dictionary <-
   append_scale_to_dictionary(scales_dictionary,
                              scale = "centraide",
-                             sing = "centraide zone",
-                             plur = "centraide zones",
+                             sing = "Centraide zone",
+                             sing_with_article = "the Centraide zone",
+                             plur = "Centraide zones",
                              slider_title = "Centraide zone",
                              place_heading = "Centraide zone of {name}",
                              place_name = "{name}")
@@ -295,6 +299,7 @@ scales_dictionary <-
   append_scale_to_dictionary(scales_dictionary,
                              scale = "grid25",
                              sing = "area at the 25m scale",
+                             sing_with_article = "the area at the 25m scale",
                              plur = "areas at the 25m scale",
                              slider_title = "25m",
                              place_heading = "{name}",
@@ -304,6 +309,7 @@ scales_dictionary <-
   append_scale_to_dictionary(scales_dictionary,
                              scale = "grid50",
                              sing = "area at the 50m scale",
+                             sing_with_article = "the area at the 50m scale",
                              plur = "areas at the 50m scale",
                              slider_title = "50m",
                              place_heading = "{name}",
@@ -313,6 +319,7 @@ scales_dictionary <-
   append_scale_to_dictionary(scales_dictionary,
                              scale = "grid100",
                              sing = "area at the 100m scale",
+                             sing_with_article = "the area at the 100m scale",
                              plur = "areas at the 100m scale",
                              slider_title = "100m",
                              place_heading = "{name}",
@@ -322,6 +329,7 @@ scales_dictionary <-
   append_scale_to_dictionary(scales_dictionary,
                              scale = "grid250",
                              sing = "area at the 250m scale",
+                             sing_with_article = "the area at the 250m scale",
                              plur = "areas at the 250m scale",
                              slider_title = "250m",
                              place_heading = "{name}",
@@ -639,12 +647,6 @@ scales_variables_modules$modules <-
              dataset_info = "",
              regions = regions_dictionary$region[regions_dictionary$pickable])
 
-# Did you know ------------------------------------------------------------
-
-# variables <- scales_variables_modules$variables
-# source("dev/other/dyk.R")
-# qs::qsave(dyk, "data/dyk.qs")
-
 
 # Produce colours ---------------------------------------------------------
 
@@ -695,6 +697,24 @@ scales_variables_modules$modules <-
 variables <- scales_variables_modules$variables
 modules <- scales_variables_modules$modules
 source("dev/translation/build_translation.R", encoding = "utf-8")
+
+# Create DYKs -------------------------------------------------------------
+
+# library(cc.buildr)
+library(tidyverse)
+translation_df <- qs::qread("data/translation_df.qs")
+# qs::qload("dev/data/built/scales_variables_modules.qsm",
+#           nthreads = future::availableCores())
+vars_dyk <- dyk_prep(scales_variables_modules, all_tables)
+dyk <- dyk_uni(vars_dyk, 
+               svm = scales_variables_modules, 
+               translation_df = translation_df,
+               langs = c("en", "fr"), 
+               scales_dictionary = scales_dictionary)
+# dyk <- rbind(dyk, dyk_delta(vars_dyk, scales_variables_modules))
+# dyk <- rbind(dyk, dyk_bivar(vars_dyk, scales_variables_modules))
+qs::qsave(dyk, "data/dyk.qs")
+
 
 
 # Home page ---------------------------------------------------------------
@@ -751,19 +771,6 @@ qs::qsave(scales_variables_modules$modules, file = "data/modules.qs")
 qs::qsave(scales_dictionary, file = "data/scales_dictionary.qs")
 qs::qsave(regions_dictionary, file = "data/regions_dictionary.qs")
 tictoc::toc()
-
-
-# Create DYKs -------------------------------------------------------------
-
-# library(cc.buildr)
-# library(tidyverse)
-# qs::qload("dev/data/built/scales_variables_modules.qsm",
-#           nthreads = future::availableCores())
-vars_dyk <- dyk_prep(scales_variables_modules, all_tables)
-dyk <- dyk_uni(vars_dyk, scales_variables_modules)
-# dyk <- rbind(dyk, dyk_delta(vars_dyk, scales_variables_modules))
-# dyk <- rbind(dyk, dyk_bivar(vars_dyk, scales_variables_modules))
-qs::qsave(dyk, "data/dyk.qs")
 
 
 # Place explorer content creation -----------------------------------------

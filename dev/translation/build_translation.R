@@ -161,6 +161,7 @@ is_translated(modules$main_dropdown_title)
 
 # SCALES DICTIONARY
 is_translated(scales_dictionary$sing)
+is_translated(scales_dictionary$sing_with_article)
 is_translated(scales_dictionary$plur)
 is_translated(scales_dictionary$slider_title)
 is_translated(scales_dictionary$place_heading)
@@ -181,3 +182,4 @@ is_translated(stories$preview_en)
 # Save to the translation files -------------------------------------------
 
 qs::qsave(translation_df, "data/translation_df.qs")
+
