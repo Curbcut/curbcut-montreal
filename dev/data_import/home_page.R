@@ -3,6 +3,16 @@
 home_page <- function(modules, stories, translation_df, data_path = "data/") {
   ### READ ?cc.landing::landing_input DOCUMENTATION TO CONSTRUCT CORRECTLY
   # EACH OF THESE OBJECTS.
+  
+  # Encode images to base64 for the input
+  base64 <- function(x) {
+    # Read the JPG image as raw binary data
+    image_data <- readBin(x, "raw", file.info(x)$size)
+    
+    # Encode the image data to base64
+    paste0("data:image/jpeg;base64,", base64enc::base64encode(image_data))
+  }
+  
 
   # Path to the top-left corner SVG image of  -------------------------------
   c_city_svg <- "www/landing/c-montreal.svg"
@@ -165,6 +175,8 @@ home_page <- function(modules, stories, translation_df, data_path = "data/") {
   if (length(unique(discover_cards$id)) != nrow(discover_cards)) {
     stop("Discover cards do not have unique ids")
   }
+  
+  discover_cards$img <- sapply(discover_cards$img, base64)
 
   # Tibble for team members -------------------------------------------------
   team_cards <- tibble::tibble(
@@ -188,7 +200,8 @@ home_page <- function(modules, stories, translation_df, data_path = "data/") {
     #            "Dominique est motivée par la nécessité de produire des études qualitatives qui complètent les informations quantitatives. Elle est titulaire d'une maîtrise en urbanisme de l'Université McGill et d'une maîtrise en anthropologie de l'Université d'Aarhus, à Copenhague."),
     theme = c("housing", "transport", "health", "urban")
   )
-
+  
+  team_cards$img <- sapply(team_cards$img, base64)
 
   # Character vector for contributors ---------------------------------------
   contributors <- c(
@@ -212,6 +225,8 @@ home_page <- function(modules, stories, translation_df, data_path = "data/") {
     ),
     name = c("The McGill Sustainability Systems Initiative", "Centraide")
   )
+  
+  collabs$img <- sapply(collabs$img, base64)
 
 
   # Save home page information as qsm ---------------------------------------

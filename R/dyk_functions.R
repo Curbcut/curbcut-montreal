@@ -116,18 +116,13 @@ dyk_text.q5 <- function(vars, df, select_id, lang, region, zoom_levels, scales_a
   # select_id can sometimes be at the wrong scale (click and zoom in does not de-select,
   # for it the user zooms back).
   scale <- sub(".*_", "", df)
-  scale_for_highest <- if (is.na(select_id) || !select_id %in% get_from_globalenv(df)$ID) {
-    names(zoom_levels)[[1]]
-  } else {
-    scale
-  }
   
   # Subset dyk
   dyk_df <- dyk[dyk$region == region & dyk$var_left == var,]
   
   # Get the best DYK from each category
   dyk_high <- dyk_df[dyk_df$dyk_type %in% c("highest", "lowest") &
-                       dyk_df$scale == scale_for_highest & dyk_df$date == date,]
+                       dyk_df$scale == scale & dyk_df$date == date,]
   dyk_high <- dyk_high[round(runif(1, 1, 2)),]
   dyk_change <- dyk_df[dyk_df$dyk_type == "change",]
   dyk_compare <- dyk_df[dyk_df$dyk_type == "compare" & dyk_df$scale == scale & 
