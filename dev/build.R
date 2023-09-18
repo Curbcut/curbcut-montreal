@@ -759,8 +759,10 @@ tictoc::toc()
 # library(tidyverse)
 # qs::qload("dev/data/built/scales_variables_modules.qsm",
 #           nthreads = future::availableCores())
+translation_df <- qs::qread("data/translation_df.qs")
 vars_dyk <- dyk_prep(scales_variables_modules, all_tables)
-dyk <- dyk_uni(vars_dyk, scales_variables_modules)
+dyk <- dyk_uni(vars_dyk, scales_variables_modules, c("en", "fr"),
+               translation_df)
 # dyk <- rbind(dyk, dyk_delta(vars_dyk, scales_variables_modules))
 # dyk <- rbind(dyk, dyk_bivar(vars_dyk, scales_variables_modules))
 qs::qsave(dyk, "data/dyk.qs")
