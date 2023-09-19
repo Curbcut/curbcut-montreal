@@ -703,8 +703,8 @@ translation_variables <-
               fr = "Santé") |>
       add_row(en = "Ecology",
               fr = "Écologie") |>
-      add_row(en = "Greenness",
-              fr = "Verdure") |> 
+      add_row(en = "Vegetation",
+              fr = "Végétation") |> 
       add_row(en = "Land surface temperature",
               fr = "Température au sol") |> 
       add_row(en = "Land temp.",

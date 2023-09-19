@@ -161,7 +161,7 @@ build_stories <- function() {
     stories_add_story(
       name_id = "alley_strategy",
       title = paste0("Montreal alleys as a climate emergency adaptation strategy"),
-      short_title = "Climate emergency adaptation strategy",
+      short_title = "Green alleys as climate adaptation",
       preview_en = paste0("Transforming alleys to improve people's quality of life ",
                           "on a neighbourhood scale can simultaneously enhance ",
                           "urban quality on a larger scale"),

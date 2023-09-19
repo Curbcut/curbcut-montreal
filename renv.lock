@@ -299,7 +299,7 @@
       "RemoteUsername": "Curbcut",
       "RemoteRepo": "cc.landing",
       "RemoteRef": "main",
-      "RemoteSha": "80669245f7eb75dc51c323c1aab46e8100408f45",
+      "RemoteSha": "6688fb99cf9bb84ab673dc709a9122f50a1ef79a",
       "Requirements": [
         "base64enc",
         "htmltools",
@@ -307,7 +307,7 @@
         "reactR",
         "shiny"
       ],
-      "Hash": "aca0c6886dd347bbbb15d6902a04f423"
+      "Hash": "07642c28ed4da67d131904f828eb68c2"
     },
     "cc.map": {
       "Package": "cc.map",
@@ -432,7 +432,7 @@
       "RemoteUsername": "Curbcut",
       "RemoteRepo": "curbcut",
       "RemoteRef": "map_js",
-      "RemoteSha": "a00fc7afa0e5ae9e04a8d3daf7db9a8c24a18d09",
+      "RemoteSha": "5b5934c20d8824ff552daf70d62a06ce7df1489b",
       "Remotes": "Curbcut/cc.map, Curbcut/cc.landing, bdbmax/bslib, qfes/rdeck",
       "Requirements": [
         "DBI",
@@ -461,7 +461,7 @@
         "utils",
         "zip"
       ],
-      "Hash": "e28496b555b546d501629964d44115b6"
+      "Hash": "fd2a866f087bcc2e758e858b01ae5425"
     },
     "curl": {
       "Package": "curl",
@@ -1143,7 +1143,7 @@
     },
     "rmarkdown": {
       "Package": "rmarkdown",
-      "Version": "2.24",
+      "Version": "2.25",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -1163,7 +1163,7 @@
         "xfun",
         "yaml"
       ],
-      "Hash": "3854c37590717c08c32ec8542a2e0a35"
+      "Hash": "d65e35823c817f09f4de424fcdfa812a"
     },
     "s2": {
       "Package": "s2",

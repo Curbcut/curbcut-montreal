@@ -118,26 +118,28 @@ dyk_text.q5 <- function(vars, df, select_id, lang, region, zoom_levels, scales_a
   scale <- sub(".*_", "", df)
   
   # Subset dyk
-  dyk_df <- dyk[dyk$region == region & dyk$var_left == var,]
+  dyk_df <- dyk[dyk$region == region & dyk$var_left == var, ]
   
   # Get the best DYK from each category
   dyk_high <- dyk_df[dyk_df$dyk_type %in% c("highest", "lowest") &
-                       dyk_df$scale == scale & dyk_df$date == date,]
-  dyk_high <- dyk_high[round(runif(1, 1, 2)),]
+                       dyk_df$scale == scale & dyk_df$date == date, ]
+  if (nrow(dyk_high) > 0) dyk_high <- dyk_high[round(runif(1, 1, 2)),]
+  
   dyk_change <- dyk_df[dyk_df$dyk_type == "change",]
+  
   dyk_compare <- dyk_df[dyk_df$dyk_type == "compare" & dyk_df$scale == scale & 
                           dyk_df$date == date,]
   if (nrow(dyk_compare) > 0) dyk_compare <- dyk_compare[
-    sample(length(dyk_compare$dyk_value), 1, prob = dyk_compare$dyk_value ^ 2),]
+    sample(length(dyk_compare$dyk_weight), 1, prob = dyk_compare$dyk_weight ^ 2),]
   
   # Randomly choose one
   dyk_out <- rbind(dyk_high, dyk_change, dyk_compare)
+  if (nrow(dyk_out) == 0) return(NULL)
   out <- dyk_out[sample(seq_along(dyk_out$dyk_text_en), 1), ]
-  
+
   # Column to subset
   text_col <- sprintf("dyk_text_%s", lang)
   
-  if (nrow(out) > 1) stop("DYK links expect 1 dyk")
   out <- if (out$dyk_type %in% c("highest", "lowest")) {
     dyk_link(id = out$module, element_id = 1, text = out[[text_col]], lang = lang, 
              df = sprintf("%s_%s", out$region, out$scale), select_id = out$select_ID,
@@ -182,7 +184,7 @@ dyk_text.q5 <- function(vars, df, select_id, lang, region, zoom_levels, scales_a
 #   dyk_compare <- dyk_df[dyk_df$dyk_type == "compare" & dyk_df$scale == scale &
 #                           dyk_df$date == date,]
 #   dyk_compare <- dyk_compare[
-#     sample(length(dyk_compare$dyk_value), 1, prob = dyk_compare$dyk_value ^ 2),]
+#     sample(length(dyk_compare$dyk_weight), 1, prob = dyk_compare$dyk_weight ^ 2),]
 # 
 #   # Randomly choose one
 #   dyk_out <- rbind(dyk_high, dyk_change, dyk_compare)
@@ -220,7 +222,7 @@ dyk_text.q5 <- function(vars, df, select_id, lang, region, zoom_levels, scales_a
 #   dyk_compare <- dyk_df[dyk_df$dyk_type == "compare" & dyk_df$scale == scale & 
 #                           dyk_df$date == date,]
 #   dyk_compare <- dyk_compare[
-#     sample(length(dyk_compare$dyk_value), 1, prob = dyk_compare$dyk_value ^ 2),]
+#     sample(length(dyk_compare$dyk_weight), 1, prob = dyk_compare$dyk_weight ^ 2),]
 #   
 #   # Randomly choose one
 #   dyk_out <- rbind(dyk_high, dyk_change, dyk_compare)

@@ -39,8 +39,8 @@ translation_stories <-
           fr = "Programme de ruelle verte au Plateau-Mont-Royal") |>
   add_row(en = "Cycling infrastructure", 
           fr = "Infrastructures cyclables") |>
-  add_row(en = "Climate emergency adaptation strategy", 
-          fr = "Stratégie d'adaptation aux urgences climatiques") |>
+  add_row(en = "Green alleys as climate adaptation", 
+          fr = "Ruelles vertes : stratégie d'adaptation aux urgences climatiques") |>
   add_row(en = "Montreal climate plans", 
           fr = "Les plans climat de Montréal") |> 
   add_row(en = "Montreal Climate Plans", 

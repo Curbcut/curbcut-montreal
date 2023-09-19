@@ -55,25 +55,19 @@ home_page <- function(modules, stories, translation_df, data_path = "data/") {
                     title_en = "Explore urban greenery", 
                     title_fr = "Explorez la verdure urbaine", 
                     text_en = paste0(
-                      "Curbcut unveils its cutting-edge page focused on Normalized Difference ",
-                      "Vegetation Index (NDVI) analytics for in-depth vegetation analysis. ",
-                      "Leveraging advanced satellite data, the platform offers a c",
-                      "omprehensive look at plant health and density in urban areas. Through ",
-                      "precise calculations and quality filtering, we provide actionable insi",
-                      "ghts for urban planning and environmental conservation. This becomes a",
-                      " crucial asset for stakeholders in urban sustainability and environmen",
-                      "tal justice."
+                      "How green is your neighbourhood? Curbcut’s new Vegetation page uses the",
+                      " Normalized Difference Vegetation Index (NDVI) to explore plant health",
+                      " and density in urban areas. NDVI plays a significant role in various ",
+                      "applications, including analyzing urban greenness, monitoring agricult",
+                      "ural growth, and assessing wildfire risks."
                     ), 
                     text_fr = paste0(
-                      "Curbcut dévoile sa nouvelle page innovante axée sur l'analyse approfon",
-                      "die de l'Indice de Différence de Végétation Normalisée (NDVI). En expl",
-                      "oitant des données satellitaires avancées, la plateforme offre un aper",
-                      "çu complet de la santé et de la densité des plantes en milieu urbain. ",
-                      "Grâce à des calculs précis et à un filtrage de qualité, nous offrons d",
-                      "es renseignements concrets utiles pour l'aménagement urbain et la prés",
-                      "ervation de l'environnement. Cet outil devient un atout essentiel pour",
-                      " les acteurs de la durabilité urbaine et de la justice environnemental",
-                      "e."
+                      "À quel point votre quartier est-il vert ? La nouvelle page Végétation ",
+                      "de Curbcut utilise l'indice de végétation par différence normalisée (N",
+                      "DVI) pour étudier la santé et la densité des plantes dans les zones ur",
+                      "baines. Le NDVI joue un rôle important dans diverses applications, not",
+                      "amment l'analyse de la verdure urbaine, le suivi de la croissance agri",
+                      "cole et l'évaluation des risques d'incendie de forêt."
                     ),
                     link = "ndvi") |> 
     tibble::add_row(id = "lst", 
@@ -81,15 +75,16 @@ home_page <- function(modules, stories, translation_df, data_path = "data/") {
                     title_en = "Land surface temperature", 
                     title_fr = "Température au sol", 
                     text_en = paste0(
-                      "Unveiling our latest Land Surface Temperature (LST) analytics! Our new",
-                      " LST page provides accurate, three-year mean temperature estimates. A ",
-                      "must-see for researchers and policymakers in urban sustainability."
+                      "Curbcut now has land surface temperature (LST) analytics! LST measures",
+                      " the maximum mean warm-season temperature at a specific location, and ",
+                      "it is a crucial indicator of urban heat islands and ecological balance",
+                      " within a region."
                     ), 
                     text_fr = paste0(
-                      "Découvrez nos dernières analyses sur la température au sol ! Notre nou",
-                      "velle page offre des estimations précises de la température moyenne su",
-                      "r une période de trois ans. Un passage obligé pour les chercheurs et l",
-                      "es décideurs en durabilité urbaine."
+                      "Curbcut propose désormais des analyses de la température au sol ! La t",
+                      "empérature au sol mesure la température moyenne maximale en saison cha",
+                      "ude à un endroit précis et constitue un indicateur essentiel des îlots",
+                      " de chaleur urbains et de l'équilibre écologique au sein d'une région."
                     ),
                     link = "lst") |> 
     tibble::add_row(id = "alp", 
@@ -100,8 +95,8 @@ home_page <- function(modules, stories, translation_df, data_path = "data/") {
                       "Curbcut has developed its own Active Living Potential index. This inde",
                       "x quantifies which areas provide walkable environments to their reside",
                       "nts based on street connectivity, building density and points of inter",
-                      "est. We developed the index with out internal travel time matrix datas",
-                      "et which uses a 15-minute walk buffer on the street network."
+                      "est. We developed the index by building a travel time matrix for the e",
+                      "ntire country, using a 15-minute walk buffer on the street network."
                     ), 
                     text_fr = paste0(
                       "Curbcut a développé son propre indice de potentiel de vie active. Cet ",
@@ -149,6 +144,10 @@ home_page <- function(modules, stories, translation_df, data_path = "data/") {
   disc_modules <- disc_modules[c("id", "img", "theme", "en", "fr", "preview_en", "preview_fr")]
   disc_modules$type <- "page"
   disc_modules$select_id <- NA
+  disc_modules$var_left <- NA
+  disc_modules$var_right <- NA
+  disc_modules$page <- NA
+  disc_modules$date <- NA
   
   # Stories formatting for the discover_cards
   disc_stories <- stories[c("name_id", "short_title", "preview_en", "preview_fr", "ID")]
@@ -157,10 +156,90 @@ home_page <- function(modules, stories, translation_df, data_path = "data/") {
   disc_stories$theme <- "urban"
   disc_stories$fr <- sapply(disc_stories$en, curbcut::cc_t, lang = "fr", USE.NAMES = FALSE)
   disc_stories$type <- "stories"
+  disc_stories$var_left <- NA
+  disc_stories$var_right <- NA
+  disc_stories$page <- NA
+  disc_stories$date <- NA
   # disc_stories <- disc_stories[c("id", "img", "theme", "en", "fr", "preview_en", "preview_fr", "type", "select_id")]
 
+  # DYK for discovers
+  dyk_discover_fun <- function(theme, page, var_right = " ", var_left = NULL, date, type, en, fr) {
+    
+    # Filter page, var_right, type
+    this <- dyk[dyk$module == page & dyk$var_right == var_right & dyk$dyk_type == type, ]
+    
+    # Filter var_left if supplied
+    if (!is.null(var_left)) {
+      this <- dyk[dyk$var_left == var_left, ]
+    }
+    
+    # Filter date over the list column
+    this <- this[unlist(sapply(this$date, identical, as.character(date))), ]
+    
+    # Filter region and scale. Use of `identical` for when scale is NA.
+    this <- this[this$region == this$region[1] & unlist(sapply(this$scale, identical, this$scale[1])), ]
+    
+    # Grab last row
+    this <- this[nrow(this), ]
+
+    # Discover columns
+    this$id <- sprintf("%s_dyk1", page)
+    this$img <- sprintf("%s.png", this$id)
+    this$theme <- theme
+    this$en <- en
+    this$fr <- fr
+    names(this)[names(this) == "dyk_text_en"] <- "preview_en"
+    names(this)[names(this) == "dyk_text_fr"] <- "preview_fr"
+    names(this)[names(this) == "module"] <- "page"
+    names(this)[names(this) == "select_ID"] <- "select_id"
+    this$type <- "dyk"
+    
+    # Return
+    this[c("id", "img", "theme", "en", "fr", "preview_en", "preview_fr", "type", 
+           "page", "var_left", "var_right", "select_id", "date")]
+  }
+  
+  disc_dyk <- 
+    tibble::tibble() |> 
+    rbind(dyk_discover_fun(theme = "health", 
+                           page = "alp", 
+                           var_right = "housing_single_detached",
+                           date = 2021,
+                           type = "compare", 
+                           en = "Dense, walkable neighbourhoods", 
+                           fr = "Quartiers denses et accessibles à pied")) |> 
+    rbind(dyk_discover_fun(theme = "climate", 
+                           page = "lst", 
+                           var_right = " ",
+                           date = 2021,
+                           type = "lowest", 
+                           en = "The coolest town in the region", 
+                           fr = "La ville la plus fraîche de la région")) |> 
+    rbind(dyk_discover_fun(theme = "ecology", 
+                           page = "ndvi", 
+                           var_right = "housing_tenant",
+                           date = 2023,
+                           type = "compare", 
+                           en = "Tenants lack green space", 
+                           fr = "Les locataires manquent d'espaces verts")) |> 
+    rbind(dyk_discover_fun(theme = "housing", 
+                           page = "housing", 
+                           var_left = "housing_rent",
+                           date = c("1996", "2021"),
+                           type = "change", 
+                           en = "Skyrocketing housing costs", 
+                           fr = "La flambée des prix du logement")) |> 
+    rbind(dyk_discover_fun(theme = "transport", 
+                           page = "canbics", 
+                           var_right = " ",
+                           date = c("2021"),
+                           type = "highest", 
+                           en = "The best bikelanes", 
+                           fr = "Les meilleures pistes cyclables"))
+  
+  
   # Bindthe modules with the stories and the DYK
-  discover_cards <- rbind(disc_modules, disc_stories)
+  discover_cards <- rbind(disc_modules, disc_stories, disc_dyk)
   
   # Filter out missing photos and warn!
   present_img <- discover_cards$img %in% list.files("www/landing/discover/")

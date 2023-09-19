@@ -634,9 +634,9 @@ scales_variables_modules$modules <-
              nav_title = "Place explorer",
              title_text_title = "Place explorer",
              title_text_main = paste0(
-               "<p>Select a location by entering a postal code or clicking on the ",
-               "map and see how it compares to the rest of the Montreal region ",
-               "or island across a variety of sustainability indicators."
+               "Select a location by entering a postal code or clicking on the map to ",
+               "see how it compares to the rest of the region across a variety of sust",
+               "ainability indicators."
              ),
              title_text_extra = paste0(
                "<p>The data in the Place Explorer is taken from other Curbcut pages with ",
@@ -682,9 +682,8 @@ scales_variables_modules$modules <-
     nav_title = "Montreal stories",
     title_text_title = "Montreal stories",
     title_text_main = paste0(
-      "<p>Explore stories about urban sustainability and planning in Montreal. Learn ",
-      "about stories rooted in specific geographic locations or those that ",
-      "have an impact on the whole city."),
+      "Explore narrative case studies about specific urban sustainability and ",
+      "planning issues in the Montreal region."),
     title_text_extra = paste0(
       "<p>These narrative case studies are written by the Curbcut team and its contributors."),
     metadata = FALSE,

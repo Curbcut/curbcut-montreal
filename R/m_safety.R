@@ -174,14 +174,16 @@ safety_server <- function(id, r) {
         region = r$region(),
         suffix_zoom_levels = suffix_zoom_levels
       ))
+    current_region <- shiny::reactive(zoom_levels()$region)
+    current_zl <- shiny::reactive(zoom_levels()$zoom_levels)
     
     # Zoom string reactive
     shiny::observe({
       rv_zoom_string({
         curbcut::zoom_get_string(
           zoom = r[[id]]$zoom(),
-          zoom_levels = zoom_levels()$zoom_levels,
-          region = zoom_levels()$region
+          zoom_levels = current_zl(),
+          region = current_region()
         )
       })
     })
@@ -273,8 +275,8 @@ safety_server <- function(id, r) {
     # Data for tile coloring
     data_colours <- shiny::reactive(curbcut::data_get_colours(
       vars = r[[id]]$vars(),
-      region = zoom_levels()$region,
-      zoom_levels = zoom_levels()$zoom_levels
+      region = current_region(),
+      zoom_levels = current_zl()
     ))
     
     # Warn user
@@ -302,12 +304,15 @@ safety_server <- function(id, r) {
     )
     
     # Did-you-know panel
-    curbcut::dyk_server(
+    dyk_server(
       id = id,
       r = r,
       vars = r[[id]]$vars,
+      df = r[[id]]$df,
+      select_id = r[[id]]$select_id,
       poi = r[[id]]$poi,
-      df = r[[id]]$df
+      region = current_region,
+      zoom_levels = current_zl
     )
     
     # Update map in response to variable changes or zooming
@@ -329,7 +334,7 @@ safety_server <- function(id, r) {
       if (!heatmap())
         return(list(fun = curbcut::explore_graph,
                     args = list(r = r, data = data(), vars = r[[id]]$vars(), df = r[[id]]$df(),
-                                select_id = r[[id]]$select_id(), region = zoom_levels()$region, 
+                                select_id = r[[id]]$select_id(), region = current_region(), 
                                 scales_as_DA = c("building", "street"), lang = r$lang())))
       
       return(list(fun = safety_graph,
@@ -341,7 +346,7 @@ safety_server <- function(id, r) {
       id = id,
       r = r,
       data = data,
-      region = shiny::reactive(zoom_levels()$region),
+      region = current_region,
       vars = r[[id]]$vars,
       df = r[[id]]$df,
       select_id = r[[id]]$select_id,
@@ -361,10 +366,10 @@ safety_server <- function(id, r) {
     curbcut::panel_view_server(
       id = id,
       r = r,
-      region = shiny::reactive(zoom_levels()$region),
+      region = current_region,
       vars = r[[id]]$vars,
       data = data,
-      zoom_levels = shiny::reactive(zoom_levels()$zoom_levels)
+      zoom_levels = current_zl
     )
   })
 }

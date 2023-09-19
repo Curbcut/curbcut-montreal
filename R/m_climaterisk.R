@@ -163,14 +163,16 @@ vars_right <- modules$var_right[modules$id == "climate_risk"][[1]]
     # Map zoom levels change depending on r$region()
     zoom_levels <-
       shiny::reactive(curbcut::zoom_get_levels(id = id, region = region()))
+    current_region <- shiny::reactive(zoom_levels()$region)
+    current_zl <- shiny::reactive(zoom_levels()$zoom_levels)
 
     # Zoom string reactive
     observe({
       rv_zoom_string({
         curbcut::zoom_get_string(
           zoom = r[[id]]$zoom(),
-          zoom_levels = zoom_levels()$zoom_levels,
-          region = zoom_levels()$region
+          zoom_levels = current_zl(),
+          region = current_region()
         )
       })
     })
@@ -258,12 +260,12 @@ vars_right <- modules$var_right[modules$id == "climate_risk"][[1]]
       zoom_levels <- if (grid_compare()) {
         stats::setNames("grid250", "grid250") 
       } else {
-        zoom_levels()$zoom_levels
+        current_zl()
       }
       
       curbcut::data_get_colours(
         vars = r[[id]]$vars(),
-        region = zoom_levels()$region,
+        region = current_region(),
         zoom_levels = zoom_levels
       )
     })
@@ -294,12 +296,15 @@ vars_right <- modules$var_right[modules$id == "climate_risk"][[1]]
     )
 
     # Did-you-know panel
-    curbcut::dyk_server(
+    dyk_server(
       id = id,
       r = r,
       vars = r[[id]]$vars,
+      df = r[[id]]$df,
+      select_id = r[[id]]$select_id,
       poi = r[[id]]$poi,
-      df = r[[id]]$df
+      region = current_region,
+      zoom_levels = current_zl
     )
     
     # Switch the fill function of the map server when on grid
@@ -344,7 +349,7 @@ vars_right <- modules$var_right[modules$id == "climate_risk"][[1]]
                                 vars = r[[id]]$vars(), 
                                 df = r[[id]]$df(),
                                 select_id = r[[id]]$select_id(), 
-                                region = zoom_levels()$region, 
+                                region = current_region(), 
                                 lang = r$lang())))
       }
     })
@@ -359,7 +364,7 @@ vars_right <- modules$var_right[modules$id == "climate_risk"][[1]]
       id = id,
       r = r,
       data = data,
-      region = reactive(zoom_levels()$region),
+      region = current_region,
       vars = r[[id]]$vars,
       df = r[[id]]$df,
       select_id = r[[id]]$select_id, 
@@ -382,7 +387,7 @@ vars_right <- modules$var_right[modules$id == "climate_risk"][[1]]
       region = reactive(zoom_levels()$region),
       vars = r[[id]]$vars,
       data = data,
-      zoom_levels = reactive(zoom_levels()$zoom_levels)
+      zoom_levels = current_zl
     )
   })
 }
