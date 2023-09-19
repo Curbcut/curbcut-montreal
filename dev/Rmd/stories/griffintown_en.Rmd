@@ -9,6 +9,13 @@ author: "Camille Forest"
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+<center>
+<div>
+<iframe width="100%" height="315"
+src="https://youtu.be/Fk0Bf6nmsus" frameborder="0" allowfullscreen="" data-external="1">
+</iframe>
+</div>
+</center>
 
 <p>The jurisdictional landscape of water management services in Canada is self-conflicting, where all levels of government have responsibilities that depend on actions by other levels of government. In Canada, the federal government is responsible for keeping major waterways clear and maintaining of fisheries through ensuring clean fish habitats (Environment and Climate Change Canada, 2016). Municipalities are responsible for storm water overflow, and the provinces are responsible for most other water quality and management services; all of which can impact fisheries. However, the province of Quebec has both historically and currently delegated maintaining water quality, including storm and wastewater, to municipalities. The distribution of responsibilities across levels of government has historically resulted in jurisdictional gridlock from the federal government and provinces (Boone, 1996). This case study illustrates how in the absence of action by federal and provincial governments, the most local levels of government and community governance define their relationship with water in the city.</p>
 <p>Griffintown is a neighbourhood in Montreal with complex and turbulent history of neglect by local governance, and this essay will tease out how Griffintown&rsquo;s social and governance history can be defined through the politics of water management. In his <em>History of Montreal</em>, Steven Leacock describes Griffintown as:</p>

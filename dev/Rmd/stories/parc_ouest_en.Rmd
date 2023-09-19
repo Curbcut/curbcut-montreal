@@ -9,6 +9,14 @@ author: "Josh Medicoff"
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+<center>
+<div>
+<iframe width="100%" height="315"
+src="https://youtu.be/UEfw4WADhpw" frameborder="0" allowfullscreen="" data-external="1">
+</iframe>
+</div>
+</center>
+
 <p>In Montreal&rsquo;s development of the forthcoming Grand Parc de L&rsquo;Ouest (GPO), a renewed drive to protect biodiversity and create greenspace is illustrating the changing politics of development on the island.</p>
 <p>In response to increasing climate risks and a dire need for more green space on the island, Montreal is conserving and connecting a wide swath of land on the West Island. But the GPO demonstrates the complex tightrope Canadian cities are walking as they look to balance growing populations, soaring housing costs, and climate change.</p>
 <p>More than anything, the GPO is a rare example of urban greenspace trumping development -- and the lessons may indicate a new politics of urban climate action. &nbsp;</p>

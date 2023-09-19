@@ -13,7 +13,7 @@ knitr::opts_chunk$set(echo = TRUE)
 <center>
 <div>
 <iframe width="100%" height="315"
-src="https://www.youtube.com/embed/5Dv91F0xguc" frameborder="0" allowfullscreen="" data-external="1">
+src="https://youtu.be/YFPRsPUrS_Q" frameborder="0" allowfullscreen="" data-external="1">
 </iframe>
 </div>
 </center>

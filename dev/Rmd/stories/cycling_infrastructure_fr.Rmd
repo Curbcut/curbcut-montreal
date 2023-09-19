@@ -9,6 +9,14 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+<center>
+<div>
+<iframe width="100%" height="315"
+src="https://youtu.be/B8lBCC2zD_w" frameborder="0" allowfullscreen="" data-external="1">
+</iframe>
+</div>
+</center>
+
 ### L'ÂGE DE L'AUTOMOBILE : LES PREMIÈRES DIFFICULTÉS DU VÉLO À MONTRÉAL
 Dans les années 1970, le vélo comme mode de transport était presque inexistant à Montréal. Les rues de la ville étaient réservées aux automobiles au détriment des piétons et des cyclistes, créant ainsi des conditions dangereuses pour les modes de transport actifs. Le manque d'infrastructures cyclables s'est avéré mortel pour les rares cyclistes qui bravaient les rues. Les automobiles ont tué en moyenne 68 cyclistes par année à Montréal de 1966 à 1976, dont 86 décès de cyclistes en 1974 seulement (Scott, 2022). Une législation défavorable constitue un fardeau supplémentaire pour les cyclistes potentiels, qui se voient souvent interdire l'accès à des destinations populaires, comme le Jardin botanique et l'Île-Ste-Hélène (Noakes, 2022). De plus, une loi archaïque de 1874 criminalisait le cyclisme dans les parcs de la ville, et était parfois utilisée pour attraper les cyclistes qui utilisaient les sentiers pour éviter le trafic automobile. Ces conditions, ainsi que le mouvement environnemental mondial, les manifestations anti-guerre et le "boom du vélo" des années 70, ont conduit à la formation des premières organisations de défense du vélo, notamment Le Monde à Bicyclette et Vélo Québec.
 

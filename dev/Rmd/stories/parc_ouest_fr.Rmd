@@ -9,6 +9,14 @@ author: "Josh Medicoff"
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+<center>
+<div>
+<iframe width="100%" height="315"
+src="https://youtu.be/UEfw4WADhpw" frameborder="0" allowfullscreen="" data-external="1">
+</iframe>
+</div>
+</center>
+
 <p>Dans le cadre du d&eacute;veloppement du futur Grand Parc de l'Ouest (GPO) de Montr&eacute;al, une volont&eacute; renouvel&eacute;e de prot&eacute;ger la biodiversit&eacute; et de cr&eacute;er des espaces verts illustre l'&eacute;volution des politiques de d&eacute;veloppement sur l'&icirc;le.</p>
 <p>En r&eacute;ponse aux risques climatiques croissants et &agrave; un besoin criant d'espaces verts sur l'&icirc;le, Montr&eacute;al pr&eacute;serve et relie une large bande de terrain dans l'Ouest de l'&icirc;le. Mais le GPO illustre la complexit&eacute; de la situation dans laquelle se trouvent les villes canadiennes lorsqu'elles cherchent &agrave; trouver un &eacute;quilibre entre la croissance d&eacute;mographique, la flamb&eacute;e des co&ucirc;ts du logement et le changement climatique.</p>
 <p>Plus que tout, le GPO est un exemple rare d'espace vert urbain qui l'emporte sur le d&eacute;veloppement - et les le&ccedil;ons tir&eacute;es peuvent indiquer une nouvelle politique d'action climatique urbaine.&nbsp;</p>

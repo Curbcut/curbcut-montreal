@@ -9,6 +9,13 @@ author: "Camille Forest"
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+<center>
+<div>
+<iframe width="100%" height="315"
+src="https://youtu.be/Fk0Bf6nmsus" frameborder="0" allowfullscreen="" data-external="1">
+</iframe>
+</div>
+</center>
 
 <p>Le paysage juridictionnel des services de gestion de l'eau au Canada est auto-conflictuel, o&ugrave; tous les niveaux de gouvernement ont des responsabilit&eacute;s qui d&eacute;pendent des actions des autres niveaux de gouvernement. Au Canada, le gouvernement f&eacute;d&eacute;ral est responsable du maintien de la clart&eacute; des principaux cours d'eau et du maintien des p&ecirc;ches en assurant la propret&eacute; des habitats des poissons (Environnement et Changement climatique Canada, 2016). Les municipalit&eacute;s sont responsables du d&eacute;bordement des eaux pluviales, et les provinces sont responsables de la plupart des autres services de gestion et de qualit&eacute; de l'eau ; tous ces services peuvent avoir un impact sur les p&ecirc;ches. Cependant, la province de Qu&eacute;bec a historiquement et actuellement d&eacute;l&eacute;gu&eacute; le maintien de la qualit&eacute; de l'eau, y compris les eaux pluviales et les eaux us&eacute;es, aux municipalit&eacute;s. La r&eacute;partition des responsabilit&eacute;s entre les diff&eacute;rents niveaux de gouvernement a historiquement donn&eacute; lieu &agrave; une impasse juridictionnelle entre le gouvernement f&eacute;d&eacute;ral et les provinces (Boone, 1996). Cette &eacute;tude de cas illustre comment, en l'absence d'action des gouvernements f&eacute;d&eacute;ral et provinciaux, les niveaux les plus locaux de gouvernement et de gouvernance communautaire d&eacute;finissent leur relation avec l'eau dans la ville.</p>
 <p>Griffintown est un quartier de Montr&eacute;al qui a connu une histoire complexe et turbulente de n&eacute;gligence de la part de la gouvernance locale, et cet essai tentera de montrer comment l'histoire sociale et de gouvernance de Griffintown peut &ecirc;tre d&eacute;finie par la politique de gestion de l'eau. Dans son Histoire de Montr&eacute;al, Steven Leacock d&eacute;crit Griffintown comme suit :</p>

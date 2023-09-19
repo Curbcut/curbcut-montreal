@@ -10,6 +10,14 @@ author: "Sara Hashemi"
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+<center>
+<div>
+<iframe width="100%" height="315"
+src="https://youtu.be/b-xbh4IoUoo" frameborder="0" allowfullscreen="" data-external="1">
+</iframe>
+</div>
+</center>
+
 <p>Depuis plusieurs ann&eacute;es, des organisateurs localis&eacute;s dans la Petite-Bourgogne ont tent&eacute; de faire <a href="https://www.thestar.com/news/canada/2021/02/18/in-montreals-little-burgundy-hopes-of-reviving-a-hub-of-the-citys-black-community.html">revivre le <em>Negro Community Centre</em> (NCC)</a>, qui se trouvait autrefois &agrave; l'angle des rues Coursol et Canning. Fond&eacute; en 1927, le NCC a fourni une s&eacute;rie de services sociaux et de sant&eacute; &agrave; la communaut&eacute; jusqu'&agrave; sa fermeture en 1992. Apr&egrave;s &ecirc;tre rest&eacute; vacant pendant plusieurs ann&eacute;es, le b&acirc;timent qui l'abritait a &eacute;t&eacute; d&eacute;moli en 2014.</p>
 <p>Des organisations telles que le NCC ont lutt&eacute; pour survivre aux multiples vagues d'embourgeoisement qui ont frapp&eacute; la Petite-Bourgogne au cours du si&egrave;cle dernier. Le quartier, situ&eacute; dans le sud-ouest de Montr&eacute;al, a &eacute;t&eacute; en constante transformation, portant divers noms &agrave; travers son existence : Ste-Cun&eacute;gonde, Saint-Antoine, Faubourg St-Joseph. Le nom actuel de &laquo;&nbsp;Petite-Bourgogne&nbsp;&raquo; est apparu dans les ann&eacute;es 1960 lorsque les fonctionnaires de la ville l&rsquo;ont utilis&eacute; pour identifier le grand programme de r&eacute;novation urbaine qu'ils planifiaient adopter pour le secteur.</p>
 <p>Tout comme la Petite-Bourgogne, le NCC a eu plusieurs vies - d'abord &agrave; l'<a href="https://www.unionunitedchurchmtl.ca/history.htm"><em>Union United Church</em></a>, puis au 2035 Coursol, et maintenant comme partie int&eacute;grante d&rsquo;un projet de revitalisation qui esp&egrave;re reconstituer ce qui &eacute;tait autrefois le c&oelig;ur de la communaut&eacute; noire de Montr&eacute;al.</p>

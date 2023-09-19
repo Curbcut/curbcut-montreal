@@ -10,6 +10,14 @@ date: "07.2022"
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+<center>
+<div>
+<iframe width="100%" height="315"
+src="https://youtu.be/jiXBD9mBDsA" frameborder="0" allowfullscreen="" data-external="1">
+</iframe>
+</div>
+</center>
+
 ### The Context of the green alleys
 <p>Alleys have been part of the urban morphology of Montreal since the 1800s when they were conceived as narrow streets to access some dwellings and courtyards. As of 1890, back alleys became widespread in the city's configuration in boroughs like Le Plateau Mont-Royal, Rosemont-La-Petite-Patrie, Villeray, Hochelaga-Maisonneuve, and Notre-Dame-de-Grâce (Centre d'histoire de Montréal). However, around 1950, alleys were eliminated as part of the city's morphology in the new neighbourhoods. Furthermore, the use of the alleys changed as they became dark service streets, mainly unused, filthy and, in some areas, dangerous due to the lack of light and activity.</p>
 <p>However, in 1980 the alleys experienced a revitalization process thanks to two complementary programs: "Opération Tournesol," a subsidy program for demolishing sheds in backyards, and the "Place au Soleil" program that transformed 58 back alleys into small parks.<p/>

@@ -9,6 +9,14 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+<center>
+<div>
+<iframe width="100%" height="315"
+src="https://youtu.be/pLKHlLj4q7c" frameborder="0" allowfullscreen="" data-external="1">
+</iframe>
+</div>
+</center>
+
 Le réseau de transport en commun à Montréal a connu une énorme transformation depuis le début du 20e siècle, et le système de métro étant central et emblématique. Non seulement l'évolution du métro n'a pas été linéaire, mais elle a aussi révélé les priorités de la ville et la perception qu'elle avait d'elle-même. Voici l’histoire du métro de Montréal, comment il est arrivé à son état actuel et ce que l'avernir lui réserve. 
 
 ```{r, out.extra='style="width:60%"', fig.align = "center", warning=FALSE, fig.cap = "The réseau de métro de Montréal. *Crédit photo: Société de transport de Montréal*", echo=FALSE}

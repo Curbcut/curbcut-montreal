@@ -10,6 +10,14 @@ date: "07.2022"
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+<center>
+<div>
+<iframe width="100%" height="315"
+src="https://youtu.be/jiXBD9mBDsA" frameborder="0" allowfullscreen="" data-external="1">
+</iframe>
+</div>
+</center>
+
 <p>La première ruelle verte de Montréal a été créée en 1995 dans le Plateau-Mont-Royal, à l'intersection des rues Napoléon, Roy, du Parc-Lafontaine et Mentana. Le Programme des ruelles vertes permet aux résidents de transformer des ruelles publiques en espaces verts et communautaires, avec le soutien financier et technique des arrondissements et du programme Éco-Quartiers. L'objectif principal est de revitaliser des espaces généralement sous-utilisés ou principalement utilisés par les voitures, et de créer des espaces urbains bénéfiques sur le plan social et environnemental.</p>
 ### Un arrondissement riche en ruelles (vertes)
 <p>Au moment de la rédaction, il y a environ 500 ruelles vertes à Montréal, réparties dans 12 des 19 arrondissements de la ville. Le Plateau-Mont-Royal, qui devrait compter 110 ruelles vertes d'ici la fin de 2022, se classe au deuxième rang ; Rosemont-La Petite-Patrie, avec 136 ruelles vertes, en compte le plus grand nombre. Le programme des ruelles vertes est particulièrement populaire et réussi dans Le Plateau. Alors que certains arrondissements, comme Montréal-Nord et Ville-Marie, peinent à faire participer les résidents au programme, Le Plateau est l'un des arrondissements qui reçoit plus de demandes que le nombre de ruelles vertes qui peuvent être créées. Étant donné le nombre important de ruelles dans le Plateau, il y a un grand potentiel pour la création de ruelles vertes.</p>

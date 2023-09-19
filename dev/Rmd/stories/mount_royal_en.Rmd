@@ -9,6 +9,14 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+<center>
+<div>
+<iframe width="100%" height="315"
+src="https://youtu.be/wy6YiI2ugxM" frameborder="0" allowfullscreen="" data-external="1">
+</iframe>
+</div>
+</center>
+
 The image of the mountain in the city centre with its towering cross has become synonymous with Montreal. Throughout its evolution, Mount-Royal has played an important role in Montreal’s history and development. Its impressive natural environment has always been valuable, but throughout its transformation, Mount-Royal’s story points to larger societal changes that were influential in Montreal becoming the city it is today. Mount-Royal is not only a physically important feature of Montreal, but it is socially emblematic in many ways. Its development into a park in the 19th century was part of a larger movement of the creation of large urban parks across North America (Bérubé, 2022). At the same time as Mount-Royal was transforming into a park, Montreal was becoming the country’s metropolis. Industrialization and urbanization equally had its impacts on the development of the city and the park. Since it’s inauguration in 1876, Mount-Royal Park has experienced many changes and accompanying societal shifts. This story explores the history of Mount-Royal throughout its different phases: its role in Montreal’s settlement, the period and process of design and landscaping, and the challenges and changes it has experienced as a large beloved park. The evolution of the mountain has been parallel to the development of the city and showcases the tensions between the growth of a metropolis and its inhabitants need for access to green space. 
 
 ### Mount-Royal’s Role in Montreal’s Settlement and Development 

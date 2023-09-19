@@ -9,6 +9,14 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+<center>
+<div>
+<iframe width="100%" height="315"
+src="https://youtu.be/pLKHlLj4q7c" frameborder="0" allowfullscreen="" data-external="1">
+</iframe>
+</div>
+</center>
+
 Public transit in Montreal has undergone a tremendous transformation since the early 20th century, with the metro system being central and emblematic. The evolution of the metro has been far from linear, and the decisions that were made often spoke volumes about the city’s priorities and self-perception. This is the history of the Montreal metro, how it arrived at its present state, and what its future holds. 
 
 ```{r, out.extra='style="width:60%"', fig.align = "center", warning=FALSE, fig.cap = "The current metro network. *Credit: Société de transport de Montréal*", echo=FALSE}

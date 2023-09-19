@@ -9,6 +9,14 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+<center>
+<div>
+<iframe width="100%" height="315"
+src="https://youtu.be/B8lBCC2zD_w" frameborder="0" allowfullscreen="" data-external="1">
+</iframe>
+</div>
+</center>
+
 ### The age of the automobile: early cycling difficulties in Montreal
 In the 1970s, cycling as a mode of transport was almost non-existent in Montreal. City streets were prioritised for automobiles at the expense of pedestrians and cyclists, creating dangerous conditions for active transport modes. A lack of cycling infrastructure proved to be deadly for the few cyclists who braved the streets. Automobiles killed an average of 68 cyclists per year in Montreal from 1966 to 1976, including 86 cycling deaths in just 1974 (Scott, 2022). Unfavourable legislation posed an additional burden to potential cyclists, who were often restricted from popular destinations, such as the Botanical Gardens and Île-Ste-Hélène (Noakes, 2022). Furthermore, an archaic 1874 law criminalised cycling in city parks, and was occasionally used to catch cyclists using trails to avoid automobile traffic. These conditions, along with the global environmental movement, anti-war protests, and the “bike boom” of the 70s, led to the formation of early cycling advocacy organisations, including Le Monde à Bicyclette and Vélo Québec.
 
