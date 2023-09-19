@@ -435,15 +435,16 @@ build_and_append_alley <- function(scales_variables_modules, crs) {
       title_text_main = paste0(
         "<p>Green alleys are spaces that have been transformed by residents for th",
         "eir own activities. When adequately designed, these public spaces can ",
-        "help reduce heat island effects, noise, and air pollution. These alley",
-        "s have been classified into four types: green alleys, community-orient",
-        "ed alleys, mixed alleys, and unmaintained alleys."
+        "help reduce heat island effects, noise, and air pollution."
       ),
       title_text_extra = paste0(
-        "<p>The datasets visualized on this page come from the City of Montreal Op",
-        "en Data Portal, and Curbcut. To learn more about the Green Alley Progr",
-        "am in Montreal, visit <a href = ‘https://montreal.ca/en/topics/green-a",
-        "lleyways’ target = ‘_blank’>the city’s green alleyways page</a>. "
+        "<p>Montrea's green alleys have been classified into four types: ",
+        "green alleys, community-oriented alleys, mixed alleys, and ",
+        "unmaintained alleys. The datasets visualized on this page come from ",
+        "the City of Montreal Open Data Portal and Curbcut. To learn more ",
+        "about the Green Alley Program in Montreal, visit <a href = ",
+        "‘https://montreal.ca/en/topics/green-a",
+        "lleyways’ target = ‘_blank’>the City’s green alleyways page</a>. "
       ),
       regions = c("city"),
       metadata = TRUE,
