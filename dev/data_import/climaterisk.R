@@ -527,7 +527,7 @@ build_and_append_climate_risk <- function(scales_variables_modules, crs) {
               "ents-climatiques’ target = ‘_blank’>Montreal Open Data Portal</a>. The",
               "se were developed as part of the City of Montreal’s efforts to examine",
               " potential climate risks for the Montreal region in the <a href = ‘Cli",
-              "mate change adaptaiton plan for the Montréal Urban Agglomeration, 2017",
+              "mate change adaptation plan for the Montréal Urban Agglomeration, 2017",
               " edition (montreal.qc.ca)’ target = ‘_blank’>2015-2020 Urban Agglomera",
               "tion Climate Change Adaptation Plan</a>."
             ),
