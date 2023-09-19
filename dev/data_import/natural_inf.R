@@ -654,10 +654,10 @@ build_and_append_natural_inf <- function(scales_variables_modules, crs) {
       nav_title = "Natural infrastructure",
       title_text_title = "Natural infrastructure",
       title_text_main = paste0(
-        "<p>Natural ecosystems are necessary for our cities, they help contribute ",
-        "to well-being, quality of life and public health. This page quantifies",
-        " the benefits provided by urban trees and wooded areas to biodiversity",
-        " conservation, flood prevention, and heat-island reduction. "
+        "<p>Natural ecosystems contribute to well-being, quality of life and ",
+        "public health in cities. This page quantifies the benefits provided ",
+        "by urban trees and wooded areas to biodiversity ",
+        "conservation, flood prevention, and heat-island reduction. "
       ),
       title_text_extra = paste0(
         "<p>The datasets visualized on this page come from Habitat. Note ",
