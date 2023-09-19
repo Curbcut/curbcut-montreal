@@ -201,9 +201,8 @@ build_and_append_crash <- function(scales_variables_modules, crs) {
       title_text_title = "Road safety: Car crashes",
       title_text_main = paste0(
         "<p>Road safety is an important consideration for wellbeing ",
-        "and safety in cities. This page ",
-        "provides an overview and analysis of road collisions ",
-        "in the City of Montreal, ranging from 2012 to today."),
+        "and safety in cities. This page displays all road collisions ",
+        "in the City of Montreal."),
       title_text_extra = paste0(
         "<p>Data is collected by the Service de Police de la ",
         "Ville de Montréal (SPVM) and compiled by the Société ",
