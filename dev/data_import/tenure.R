@@ -678,9 +678,10 @@ build_and_append_tenure <- function(scales_variables_modules, crs) {
       nav_title = "Tenure status",
       title_text_title = "Tenure status",
       title_text_main = paste0(
-        "<p><img src='centraide_logo/centraide_logo_en.png' style='width:60%;margin-left:50px;'><p>Understanding housing needs by tenure status can help to inform ",
-        "what is to be improved specifically for tenants or owners as they ",
-        "might be experiencing different difficulties and advantages."
+        "<p><img src='centraide_logo/centraide_logo_en.png' ",
+        "style='width:60%;margin-left:50px;'><p>Tenure status measures whether",
+        "a household owns or rents its home. Housing needs can vary ",
+        "dramatically by tenure status."
       ),
       title_text_extra = paste0(
         "<p>The datasets visualized on this page come from the 2016 and 2021 Canad",
