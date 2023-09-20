@@ -10,6 +10,13 @@ date: "07.2022"
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+<center>
+<div>
+<iframe width="100%" height="315"
+src="https://youtube.com/embed/jiXBD9mBDsA" frameborder="0" allowfullscreen="" data-external="1">
+</iframe>
+</div>
+</center>
 
 <p>The first green alley in Montreal was created in 1995 in Le Plateau-Mont-Royal, at the intersection of Napoléon, Roy, du Parc-Lafontaine and Mentana streets. The Green Alley Program (*Programme des ruelles vertes*) enables residents to transform public back alleys into green and community spaces, with financial and technical support from the boroughs and the Éco-Quartiers Program. The main objective is to revitalise spaces that are generally underused or mainly used by cars, and to create urban spaces that are beneficial both socially and environmentally.</p> 
 ### A borough rich in (green) alleys
@@ -66,7 +73,10 @@ knitr::include_graphics(here::here("dev/data/stories/raw_images/green_alleys_pla
 <blockquote><q>But sometimes we don’t install benches as part of our green alley projects because we don’t want to have to manage nuisances. So what we often say… because people almost systematically include benches in their projects. Then we give them advice, we tell them ‘it’s as you wish… we could integrate benches’. If they’re next to Mount-Royal, it’s sure I’m gonna say no. But if they are a bit far away, if there are no adjacent bars, if they don’t already have a problem with night-time nuisances, we could provide them with benches, we have already done so in the past. But I would strongly suggest that they take benches or folding chairs out of their yard when they want to enjoy the alley, and then they can bring them back in at night. That way, there is no problem at night. Usually, citizens are like ‘yeah, you’re right’. I don’t really have to convince them.</q> -Green Alley Program manager in Le Plateau-Mont-Royal</blockquote>
 <p>A resident of ruelle Nelligan, also located next to Square Saint-Louis and created in 2020, indeed had this discussion with the program manager when they started the project. The residents wanted to put benches, *“but the City said ‘be careful with that, it invites people you don’t want in the alley, so if you want to do something, bring your own chairs, have a party, and then take the chairs away”*. This desire to avoid undesirable uses somehow underlines the idea that green alleys are bound to become semi-private spaces that can be protected from the nuisances of regular public space. 
 <p>Green alleys definitely are interesting urban spaces, at the intersection of the public and the private realms. The revitalisation of these spaces that used to be underused contributes to transforming them into usable and attractive spaces that are greener, quieter and cooler alternatives to other streets. Green alleys are ambiguous spaces that offer potential for privatisation and the program encourages that. Indeed, the appropriation of alleys by residents also ensures their involvement in the maintenance of the alley in the long term. But the privatisation of the alleys sometimes results in the exclusion of some persons or groups of people that feel less comfortable using the alleys.</p> 
-### **Bibliography** 
+
+<details>
+<summary>### **Bibliography**</summary>
 <ul>
 <li>Pham, T.-T.-H., Lachapelle, U., & Rocheleau, A. (2022). Greening the alleys: socio-spatial distribution and characteristics of green alleys in Montréal. Landscape and Urban Planning, 226.</li> 
 <li>Le Plateau-Mont-Royal (2022). [Guide d’aménagement d’une ruelle verte.](https://portail-m4s.s3.montreal.ca/pdf/pmr_guide_ruelles_vertes_2022_final.pdf)</li>  
+</details>

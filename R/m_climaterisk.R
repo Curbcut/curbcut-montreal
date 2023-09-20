@@ -9,12 +9,10 @@ map_scale_fill_grid <- function(vars) {
     var <- curbcut::var_remove_time(var)
     var <- sprintf("%s_delta", var)
   }
-
-  rdeck::scale_color_category(col = !!as.name(var), 
-                              palette = clr$fill, 
-                              unmapped_color = "#B3B3BB", 
-                              levels = clr$group, 
-                              legend = FALSE)
+  
+  cc.map::map_choropleth_fill_fun(df = clr[c("group", "fill")], 
+                                  get_col = var, 
+                                  fallback = "#B3B3BB")
 }
 
 explore_graph_grid <- function(vars, lang, data, select_id) {
@@ -57,24 +55,40 @@ vars_right <- modules$var_right[modules$id == "climate_risk"][[1]]
 # UI ----------------------------------------------------------------------
 
 `climate_risk_UI` <- function(id) {
+  page <- modules[modules$id == id, ]
+  theme_lowercased <- gsub(" .*", "", tolower(page$theme))
+  
   shiny::tagList(
-    # Sidebar
+    
+    # Add a piece of CSS to nensure we do not see the small grid ticks on
+    # the time sliders
+    shiny::tags$head(shiny::tags$style(
+      "#climate_risk-climate_risk-year_sliders .irs-grid-pol.small {
+    display: none;
+    }")),
+
+    shiny::div(
+      `data-theme` = theme_lowercased,
+      # Sidebar
     curbcut::sidebar_UI(
       id = shiny::NS(id, id),
       curbcut::autovars_UI(NS(id, id)),
+      curbcut::warnuser_UI(shiny::NS(id, id)),
+      curbcut::compare_UI(
+        id = NS(id, id),
+        var_list = curbcut::dropdown_make(vars = " ", compare = TRUE)
+      ),
+      shiny::hr(),
+      curbcut::zoom_UI(shiny::NS(id, id), `climate_risk_mzp`),
       curbcut::checkbox_UI(id = NS(id, id), label = cc_t("View with grids"),
                            value = TRUE),
-      curbcut::warnuser_UI(shiny::NS(id, id)),
       bottom = shiny::tagList(
         curbcut::legend_UI(shiny::NS(id, id)),
-        shinyjs::hidden(
-          curbcut::zoom_UI(shiny::NS(id, id), `climate_risk_mzp`)
-        )
       )
     ),
 
     # Map
-    curbcut::map_UI(shiny::NS(id, id)),
+    curbcut::map_js_UI(shiny::NS(id, id)),
     
     # Tutorial
     curbcut::tutorial_UI(id = shiny::NS(id, id)),
@@ -85,13 +99,10 @@ vars_right <- modules$var_right[modules$id == "climate_risk"][[1]]
     # Right panel
     curbcut::right_panel(
       id = id,
-      curbcut::compare_UI(
-        id = NS(id, id),
-        var_list = curbcut::dropdown_make(vars = " ", compare = TRUE)
-      ),
       curbcut::explore_UI(NS(id, id)),
       curbcut::dyk_UI(NS(id, id))
     )
+  )
   )
 }
 
@@ -100,6 +111,7 @@ vars_right <- modules$var_right[modules$id == "climate_risk"][[1]]
 
 `climate_risk_server` <- function(id, r) {
   shiny::moduleServer(id, function(input, output, session) {
+
     # Initial reactives
     rv_zoom_string <- reactiveVal(
       curbcut::zoom_get_string(
@@ -118,9 +130,28 @@ vars_right <- modules$var_right[modules$id == "climate_risk"][[1]]
       ))
     })
     
-    # Hide the zoom slider when on 'grid()'
+    # If on grid, hide the slider and the auto-zoom
     shiny::observe({
-      shinyjs::toggle(id = shiny::NS(id, "zoom_div"), condition = !grid())
+      
+      # Add one namespace as these are inside other module servers
+      shinyjs::toggle(shiny::NS(id, "zoom_auto-cccheckbox_cbx"), condition = !grid())
+      # Follow the rest of the slidertext addition ID for the zoom slider
+      shinyjs::toggle(shiny::NS(id, "zoon_slider_div"), condition = !grid())
+      
+      # Get the zoom label
+      zoom_name <- rv_zoom_string()
+      names(zoom_name) <- zoom_name
+      zoom_name <- curbcut::zoom_get_label(zoom_name, lang = r$lang())
+      
+      if (grid()) {
+        shiny::removeUI("#climaterisk_grid_zn")
+        shiny::insertUI(selector = "#climate_risk-climate_risk-zoom_cbx_loc",
+                        where = "beforeEnd",
+                        ui = shiny::div(id = "climaterisk_grid_zn", zoom_name))
+      } else {
+        # Revert to default HTML
+        shiny::removeUI("#climaterisk_grid_zn")
+      }
     })
     
     # Switch the region depending on inputs
@@ -132,14 +163,16 @@ vars_right <- modules$var_right[modules$id == "climate_risk"][[1]]
     # Map zoom levels change depending on r$region()
     zoom_levels <-
       shiny::reactive(curbcut::zoom_get_levels(id = id, region = region()))
+    current_region <- shiny::reactive(zoom_levels()$region)
+    current_zl <- shiny::reactive(zoom_levels()$zoom_levels)
 
     # Zoom string reactive
     observe({
       rv_zoom_string({
         curbcut::zoom_get_string(
           zoom = r[[id]]$zoom(),
-          zoom_levels = zoom_levels()$zoom_levels,
-          region = zoom_levels()$region
+          zoom_levels = current_zl(),
+          region = current_region()
         )
       })
     })
@@ -227,12 +260,12 @@ vars_right <- modules$var_right[modules$id == "climate_risk"][[1]]
       zoom_levels <- if (grid_compare()) {
         stats::setNames("grid250", "grid250") 
       } else {
-        zoom_levels()$zoom_levels
+        current_zl()
       }
       
       curbcut::data_get_colours(
         vars = r[[id]]$vars(),
-        region = zoom_levels()$region,
+        region = current_region(),
         zoom_levels = zoom_levels
       )
     })
@@ -263,19 +296,16 @@ vars_right <- modules$var_right[modules$id == "climate_risk"][[1]]
     )
 
     # Did-you-know panel
-    curbcut::dyk_server(
+    dyk_server(
       id = id,
       r = r,
       vars = r[[id]]$vars,
+      df = r[[id]]$df,
+      select_id = r[[id]]$select_id,
       poi = r[[id]]$poi,
-      df = r[[id]]$df
+      region = current_region,
+      zoom_levels = current_zl
     )
-
-    # Control the `lwd` of the polygon borders. No borders on grid + high zoom.
-    lwd <- shiny::reactive({
-      if (grid()) return(0)
-      return(1)
-    })
     
     # Switch the fill function of the map server when on grid
     fill_fun_args <- shiny::reactive({
@@ -283,49 +313,25 @@ vars_right <- modules$var_right[modules$id == "climate_risk"][[1]]
         return(list(fun = map_scale_fill_grid,
                     args = list(vars = r[[id]]$vars())))
       } else {
-        return(list(fun = curbcut::map_scale_fill,
-                    args = list(data_colours(), tileset_ID_color = "ID_color")))
-      }
-    })
-    color_fun_args <- shiny::reactive({
-      if (grid() & !grid_compare()) {
-        return(list(fun = map_scale_fill_grid,
-                    args = list(vars = r[[id]]$vars())))
-      } else {
-        return(list(fun = curbcut::map_scale_colour,
-                    args = list(r[[id]]$select_id(), data_colours(), tileset_ID_color = "ID_color")))
+        return(list(fun = cc.map::map_choropleth_fill_fun,
+                    args = list(df = data_colours(), 
+                                get_col = names(data_colours())[1], 
+                                fallback = "#B3B3BB")))
       }
     })
     
     # Update map in response to variable changes or zooming
-    map_viewstate <- curbcut::map_server(
+    map_viewstate <- curbcut::map_js_server(
       id = id,
       r = r,
       tile = tile,
-      data_colours = data_colours,
       select_id = r[[id]]$select_id,
-      zoom_levels = reactive(zoom_levels()$zoom_levels),
-      zoom = r[[id]]$zoom,
       coords = r[[id]]$coords,
-      lwd_args = shiny::reactive(list(select_id = r[[id]]$select_id(),
-                                      tile = tile(),
-                                      zoom = r[[id]]$zoom(),
-                                      zoom_levels = zoom_levels()$zoom_levels,
-                                      lwd = lwd())),
-      fill_fun = shiny::reactive(fill_fun_args()$fun),
-      fill_args = shiny::reactive(fill_fun_args()$args),
-      colour_fun = shiny::reactive(color_fun_args()$fun),
-      colour_args = shiny::reactive(color_fun_args()$args)
-    )
-
-    # Update map labels
-    curbcut::label_server(
-      id = id,
-      tile = tile,
       zoom = r[[id]]$zoom,
-      zoom_levels = reactive(zoom_levels()$zoom_levels),
-      region = reactive(zoom_levels()$region),
-      show_buildings = shiny::reactive(!grid())
+      data_colours = data_colours, 
+      fill_fun = shiny::reactive(fill_fun_args()$fun),
+      fill_fun_args = shiny::reactive(fill_fun_args()$args),
+      stories = stories
     )
     
     # Switch the graph to a static one when on grid q5
@@ -343,7 +349,7 @@ vars_right <- modules$var_right[modules$id == "climate_risk"][[1]]
                                 vars = r[[id]]$vars(), 
                                 df = r[[id]]$df(),
                                 select_id = r[[id]]$select_id(), 
-                                region = zoom_levels()$region, 
+                                region = current_region(), 
                                 lang = r$lang())))
       }
     })
@@ -358,7 +364,7 @@ vars_right <- modules$var_right[modules$id == "climate_risk"][[1]]
       id = id,
       r = r,
       data = data,
-      region = reactive(zoom_levels()$region),
+      region = current_region,
       vars = r[[id]]$vars,
       df = r[[id]]$df,
       select_id = r[[id]]$select_id, 
@@ -381,7 +387,7 @@ vars_right <- modules$var_right[modules$id == "climate_risk"][[1]]
       region = reactive(zoom_levels()$region),
       vars = r[[id]]$vars,
       data = data,
-      zoom_levels = reactive(zoom_levels()$zoom_levels)
+      zoom_levels = current_zl
     )
   })
 }

@@ -652,7 +652,7 @@ build_and_append_afford_pop <- function(scales_variables_modules, crs) {
       nav_title = "Housing affordability",
       title_text_title = "Housing affordability",
       title_text_main = paste0(
-        "<p>Access to affordable and equitable housing is a fundamental human righ",
+        "<p><img src='centraide_logo/centraide_logo_en.png' style='width:60%;margin-left:50px;'><p>Access to affordable and equitable housing is a fundamental human righ",
         "t, yet it remains a pressing challenge for many communities. While aff",
         "ordable housing is often broadly defined as spending less than 30% of ",
         "household income on shelter, the reality for each household is much mo",
@@ -664,15 +664,17 @@ build_and_append_afford_pop <- function(scales_variables_modules, crs) {
       regions = c("CMA", "island", "city", "centraide"),
       metadata = TRUE,
       dataset_info = paste0(
-        "<p>The census data (2016-2021) on this page comes from custom tabulations",
-        " ordered by Centraide of Greater Montreal to Statistics Canada.</p>"
+        "<p>The census data (2016-2021) on this page comes from custom tabulations ",
+        "from Statistics Canada ordered by Centraide of Greater Montreal</p>"
       ),
       var_left = variables[grepl("^affordhou_|^affordpop", variables$var_code), 
                            c("var_code", "group_name", "group_diff")],
       main_dropdown_title = "Unit of analysis",
       dates = with_breaks$avail_dates[["affordpop_total_total_total_total_total_pct"]],
       var_right = var_right,
-      suffix_zoom_levels = "max_CT"
+      suffix_zoom_levels = "max_CT",
+      add_advanced_controls = c("mnd", "Data representation", "Tenure status"),
+      default_var = "affordhou_total_sc30_total_total_pct"
     )
 
 

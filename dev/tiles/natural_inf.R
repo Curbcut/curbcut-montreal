@@ -17,7 +17,7 @@ for (i in seq_len(length(natural_inf_tiles_raw))) {
   
   cc.buildr::tileset_upload_tile_source(id = paste0(
     "mtl_natural_inf-", names(natural_inf_tiles_raw)[[i]]),
-    df = df, username = "sus-mcgill", access_token = .cc_mb_token)
+    df = df, username = "curbcut", access_token = .cc_mb_token)
 }
 
 
@@ -31,11 +31,11 @@ natural_inf_recipe <- imap(natural_inf_tiles_raw, \(cat_data, cat) {
                     paste0(cat, "_c")),
     source = c(
       setNames(nm = paste0(cat, "_a"), paste0(
-        "mapbox://tileset-source/sus-mcgill/mtl_natural_inf-", cat)),
+        "mapbox://tileset-source/curbcut/mtl_natural_inf-", cat)),
       setNames(nm = paste0(cat, "_b"), paste0(
-        "mapbox://tileset-source/sus-mcgill/mtl_natural_inf-", cat)),
+        "mapbox://tileset-source/curbcut/mtl_natural_inf-", cat)),
       setNames(nm = paste0(cat, "_c"), paste0(
-        "mapbox://tileset-source/sus-mcgill/mtl_natural_inf-", cat))),
+        "mapbox://tileset-source/curbcut/mtl_natural_inf-", cat))),
     minzoom = c(setNames(nm = paste0(cat, "_a"), 3),
                 setNames(nm = paste0(cat, "_b"), 9),
                 setNames(nm = paste0(cat, "_c"), 11)),
@@ -67,7 +67,7 @@ for (i in seq_len(length(natural_inf_tiles_raw))) {
   cc.buildr::tileset_create_tileset(
     tileset = paste0("mtl_natural_inf-", names(natural_inf_tiles_raw)[[i]]), 
     recipe = natural_inf_recipe[[i]],
-    username = "sus-mcgill", 
+    username = "curbcut", 
     access_token = .cc_mb_token)
   Sys.sleep(5)
 }
@@ -79,7 +79,7 @@ for (i in seq_len(length(natural_inf_tiles_raw))) {
   print(i)
   cc.buildr::tileset_publish_tileset(
     tileset = paste0("mtl_natural_inf-", names(natural_inf_tiles_raw)[[i]]),
-    username = "sus-mcgill", 
+    username = "curbcut", 
     access_token = .cc_mb_token)
   Sys.sleep(35)
 }
@@ -121,7 +121,7 @@ map(1:10, ~{
 
   # Upload to MTS
   out <- paste0('curl -X POST "https://api.mapbox.com/tilesets/v1/sources/',
-                'sus-mcgill/mtl_natural_inf-custom?access_token=', .cc_mb_token,
+                'curbcut/mtl_natural_inf-custom?access_token=', .cc_mb_token,
                 '" -F file=@', tmp,
                 ' --header "Content-Type: multipart/form-data"')
   system(out)
@@ -135,7 +135,7 @@ map(1:10, ~{
 natural_inf_recipe <-
   cc.buildr::tileset_create_recipe(
     layer_names = "mtl_natural_inf-custom",
-    source = paste0("mapbox://tileset-source/sus-mcgill/mtl_natural_inf-custom"),
+    source = paste0("mapbox://tileset-source/curbcut/mtl_natural_inf-custom"),
     minzoom = 3,
     maxzoom = 15,
     simp_zoom = 15,
@@ -144,8 +144,8 @@ natural_inf_recipe <-
     recipe_name = "mtl_natural_inf-custom")
 
 cc.buildr::tileset_create_tileset("mtl_natural_inf-custom", natural_inf_recipe,
-                                username = "sus-mcgill", 
+                                username = "curbcut", 
                                 access_token = .cc_mb_token)
 cc.buildr::tileset_publish_tileset("mtl_natural_inf-custom",
-                                 username = "sus-mcgill", 
+                                 username = "curbcut", 
                                  access_token = .cc_mb_token)

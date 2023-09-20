@@ -10,6 +10,14 @@ date: "07.2022"
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+<center>
+<div>
+<iframe width="100%" height="315"
+src="https://youtube.com/embed/jiXBD9mBDsA" frameborder="0" allowfullscreen="" data-external="1">
+</iframe>
+</div>
+</center>
+
 <p>La première ruelle verte de Montréal a été créée en 1995 dans le Plateau-Mont-Royal, à l'intersection des rues Napoléon, Roy, du Parc-Lafontaine et Mentana. Le Programme des ruelles vertes permet aux résidents de transformer des ruelles publiques en espaces verts et communautaires, avec le soutien financier et technique des arrondissements et du programme Éco-Quartiers. L'objectif principal est de revitaliser des espaces généralement sous-utilisés ou principalement utilisés par les voitures, et de créer des espaces urbains bénéfiques sur le plan social et environnemental.</p>
 ### Un arrondissement riche en ruelles (vertes)
 <p>Au moment de la rédaction, il y a environ 500 ruelles vertes à Montréal, réparties dans 12 des 19 arrondissements de la ville. Le Plateau-Mont-Royal, qui devrait compter 110 ruelles vertes d'ici la fin de 2022, se classe au deuxième rang ; Rosemont-La Petite-Patrie, avec 136 ruelles vertes, en compte le plus grand nombre. Le programme des ruelles vertes est particulièrement populaire et réussi dans Le Plateau. Alors que certains arrondissements, comme Montréal-Nord et Ville-Marie, peinent à faire participer les résidents au programme, Le Plateau est l'un des arrondissements qui reçoit plus de demandes que le nombre de ruelles vertes qui peuvent être créées. Étant donné le nombre important de ruelles dans le Plateau, il y a un grand potentiel pour la création de ruelles vertes.</p>
@@ -65,9 +73,11 @@ knitr::include_graphics(here::here("dev/data/stories/raw_images/green_alleys_pla
 <blockquote><q>Mais parfois, nous, on n'installe pas de bancs dans le cadre de nos projets de ruelles vertes. Parce que justement, on ne veut pas avoir à gérer des nuisances. Donc, ce qu'on dit souvent, en fait presque systématiquement les gens incluent des bancs dans leurs projets, dans leur dépôt de projet. Puis nous, on leur conseille, on leur dit c'est comme vous voulez… on pourrait intégrer des bancs. S’ils sont à côté de Mont-Royal, c'est sûr que je vais leur dire non. Mais, s'ils sont un peu éloignés, qu'il n'y a pas de bars adjacents, qu’ils n'ont pas déjà un problème de nuisances nocturnes, on pourrait leur en fournir, on l'a déjà fait. Mais je leur suggère fortement de plutôt sortir des bancs de leur cour ou des chaises pliantes de leur cour pour quand ils veulent profiter de la ruelle... Puis qu’ils puissent les rentrer le soir. Comme ça, il n'y a pas de problème la nuit. D'habitude, les citoyens sont comme: ‘oui, j’avoue’. Je n'ai pas vraiment besoin de les convaincre.</q> -Responsable des ruelles vertes dans le Plateau-Mont-Royal</blockquote>
 <p>Un résident de la ruelle Nelligan, également située à côté du Square Saint-Louis et créée en 2020, a en effet eu cette discussion avec la responsable du programme lorsqu'ils ont lancé le projet. Les habitants voulaient mettre des bancs, "mais la Ville a dit 'faites attention avec ça, ça invite des gens que vous ne voulez pas dans la ruelle, donc si vous voulez faire quelque chose, apportez vos propres chaises, faites une fête, et ensuite enlevez les chaises". Ce désir d'éviter les usages indésirables de la ruelle souligne en quelque sorte l'idée que les ruelles vertes deviennent des espaces semi-privés qui peuvent être protégés des nuisances de l'espace public ordinaire.</p> 
 <p>Ainsi, les ruelles vertes sont des espaces urbains intéressants, à l'intersection du domaine public et du domaine privé. La revitalisation de ces espaces qui étaient sous-utilisés en fait des espaces utilisables et attrayants qui sont des alternatives plus vertes, plus calmes et plus fraîches aux autres rues. Les ruelles vertes sont des espaces ambigus qui offrent un potentiel de privatisation et le programme encourage cela. En effet, l'appropriation des ruelles par les résidents garantit également leur implication dans l'entretien de la ruelle sur le long terme. Mais la privatisation des ruelles entraîne parfois l'exclusion de certaines personnes ou groupes de personnes qui se sentent moins à l'aise d’utiliser les ruelles.</p> 
-### **Bibliographie**
+
+<details>
+<summary>### **Bibliographie**</summary>
 <ul>
 <li>Pham, T.-T.-H., Lachapelle, U., & Rocheleau, A. (2022). Greening the alleys: socio-spatial distribution and characteristics of green alleys in Montréal. Landscape and Urban Planning, 226.</li> 
 <li>Le Plateau-Mont-Royal (2022). [Guide d’aménagement d’une ruelle verte.](https://portail-m4s.s3.montreal.ca/pdf/pmr_guide_ruelles_vertes_2022_final.pdf)</li>  
-
+</details>
 

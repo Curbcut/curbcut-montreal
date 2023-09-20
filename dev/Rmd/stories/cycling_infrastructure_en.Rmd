@@ -9,6 +9,14 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+<center>
+<div>
+<iframe width="100%" height="315"
+src="https://youtube.com/embed/B8lBCC2zD_w" frameborder="0" allowfullscreen="" data-external="1">
+</iframe>
+</div>
+</center>
+
 ### The age of the automobile: early cycling difficulties in Montreal
 In the 1970s, cycling as a mode of transport was almost non-existent in Montreal. City streets were prioritised for automobiles at the expense of pedestrians and cyclists, creating dangerous conditions for active transport modes. A lack of cycling infrastructure proved to be deadly for the few cyclists who braved the streets. Automobiles killed an average of 68 cyclists per year in Montreal from 1966 to 1976, including 86 cycling deaths in just 1974 (Scott, 2022). Unfavourable legislation posed an additional burden to potential cyclists, who were often restricted from popular destinations, such as the Botanical Gardens and Île-Ste-Hélène (Noakes, 2022). Furthermore, an archaic 1874 law criminalised cycling in city parks, and was occasionally used to catch cyclists using trails to avoid automobile traffic. These conditions, along with the global environmental movement, anti-war protests, and the “bike boom” of the 70s, led to the formation of early cycling advocacy organisations, including Le Monde à Bicyclette and Vélo Québec.
 
@@ -82,7 +90,9 @@ library(leaflet)
 library(plotly)
 
 # MUST HAVE THIS VESRION OF LEAFLET
-# devtools::install_github("dmurdoch/leaflet@crosstalk4")
+if (packageDescription("leaflet")$RemoteUsername != "dmurdoch") {
+  stop("Special version of the leaflet package must be installed to knit this story succesfully. Run devtools::install_github('dmurdoch/leaflet@crosstalk4')")
+}
 
 
 # Import paths
@@ -243,7 +253,8 @@ window.onload = filter_default;
           panel.grid = ggplot2::element_blank())
 ```
 
-### References
+<details>
+<summary>### References</summary>
 
 * Copenhagenize EU Design Co. (2019). 2019 copenhagenize index. Copenhagenize. Retrieved June 21, 2022, from https://copenhagenizeindex.eu/ 
 * Couillard, S. (2019, May 7). Lancement du Rev: Vélo Québec salue l'initiative de Montréal et propose d'accélérer le processus. Vélo Québec. Retrieved June 15, 2022, from https://www.velo.qc.ca/salle-de-presse/lancement-du-rev-velo-quebec-salue-linitiative-de-montreal-et-propose-daccelerer-le-processus/ 
@@ -272,4 +283,4 @@ window.onload = filter_default;
 * Walker, P. (2015, June 17). People power: The secret to Montreal's success as a bike-friendly city. The Guardian. Retrieved June 15, 2022, from https://www.theguardian.com/cities/2015/jun/17/people-power-montreal-north-america-cycle-city
 * What is Vision Zero? Vision Zero Network. (2022). Retrieved June 15, 2022, from https://visionzeronetwork.org/about/what-is-vision-zero/  
 * Wurst, B. (2020, November 1). Montreal reveals New Rev Bike Path Network. Mtltimes.ca. Retrieved June 15, 2022, from https://mtltimes.ca/life/montreal-reveals-new-rev-bike-path-network/ 
-
+</details>

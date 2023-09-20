@@ -678,9 +678,10 @@ build_and_append_tenure <- function(scales_variables_modules, crs) {
       nav_title = "Tenure status",
       title_text_title = "Tenure status",
       title_text_main = paste0(
-        "<p>Understanding housing needs by tenure status can help to inform ",
-        "what is to be improved specifically for tenants or owners as they ",
-        "might be experiencing different difficulties and advantages."
+        "<p><img src='centraide_logo/centraide_logo_en.png' ",
+        "style='width:60%;margin-left:50px;'><p>Tenure status measures whether ",
+        "a household owns or rents its home. Housing needs can vary ",
+        "dramatically by tenure status."
       ),
       title_text_extra = paste0(
         "<p>The datasets visualized on this page come from the 2016 and 2021 Canad",
@@ -688,15 +689,18 @@ build_and_append_tenure <- function(scales_variables_modules, crs) {
       regions = c("CMA", "island", "city", "centraide"),
       metadata = TRUE,
       dataset_info = paste0(
-        "<p>The census data (2016-2021) on this page comes from custom tabulations",
-        " ordered by Centraide of Greater Montreal to Statistics Canada.</p>"
+        "<p>The census data (2016-2021) on this page comes from custom tabulations ",
+        "from Statistics Canada ordered by Centraide of Greater Montreal</p>"
       ),
       var_left = variables[grepl("^tenure_", variables$var_code), 
                            c("var_code", "group_name", "group_diff")],
       main_dropdown_title = "Data representation",
       dates = with_breaks$avail_dates[["tenure_total_total_total_total_count"]],
       var_right = var_right,
-      suffix_zoom_levels = "max_CT"
+      suffix_zoom_levels = "max_CT",
+      add_advanced_controls = c("mnd", "Shelter cost to income ratio", "Suitability and condition",
+                                "Family composition"),
+      default_var = "tenure_tenant_total_total_total_pct"
     )
   
   

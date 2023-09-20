@@ -11,9 +11,11 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 <center>
-```{r, echo=FALSE}
-vembedr::embed_youtube("xSVZ8wHa0i8", height = 500)
-```
+<div>
+<iframe width="100%" height="315"
+src="https://youtube.com/embed/9yPc_DTNvEE" frameborder="0" allowfullscreen="" data-external="1">
+</iframe>
+</div>
 </center>
 
 Located in the Mile End neighbourhood along the Canadian Pacific Railroad tracks and delimited by the Carmelites Monastery on the east and old garment factories on the west, the Champ des Possibles is a unique local green space. What is now a protected urban prairie, the Champ des Possibles has had an interesting history that has recently led to its protected status and a unique co-management governance structure between a community-led non-profit organization, Les Amis du Champ des Possible, and the Plateau-Mont-Royal borough. Different from other parks nearby, the name of this space, the “Field of Possibilities” in English, suits it well with the wide array of uses and appropriations that take place. For those who frequent and take care of the Champ des Possibles, it has become an important place to demonstrate how a community can be involved in the official management of a park-like space. It is known for its characteristics of being “wild” and “natural”, but this has not always been the case. The Champ des Possibles has transformed throughout the last 150 years from a quarry to a landfill, to a rail yard, to gradually becoming the space it is today (Desjardins, 2019). Simultaneously, the surrounding area of the Mile End has undergone many changes and has experienced heavy gentrification. In its trajectory to becoming the popular area it is today, it has transformed from a stop on the rail line, to Montreal’s garment district, to a hub for tech companies (Desjardins, 2019; McSwiney & Michaud, 2014). Both the physical and social changes throughout the decades have shaped the current reality of the neighbourhood and its spaces such as the Champ des Possibles. The story of the Champ des Possibles and its current co-management governance structure, which emphasizes community-led decision-making, exemplifies how spontaneity and looseness can be positive in the context of urban planning for both policy and design. 
@@ -74,7 +76,9 @@ knitr::include_graphics(here::here("dev/data/stories/raw_images/champs_possibles
 
 Its historical trajectory illustrates how community involvement is an important part of the Champ des Possibles’ identity and current co-management governance structure. With the forthcoming decontamination plan of the site, there will be inevitable physical changes. Poteete et al.’s (2021) research points to the importance of this space and its biodiversity to its community and the broader surrounding areas. The management and development of the Champ des Possibles that has taken place over the last decade showcases the complexity as well as the advantages of a non-interventionist approach both for policy and design. Having a co-management agreement between ACDP and the Plateau-Mont-Royal borough has ensured that community voices are part of the management and development processes. Because of this, the Champ des Possibles has not become like other urban parks and has mostly remained “wild” and “natural”. The lack of manicured design is precisely what many enjoy about this green space and wish for it to continue (Poteete et al., 2021). This looseness allows for spontaneity and appropriation which can have both positive and negative outcomes, manifesting in many ways such as care through garbage removal or making bonfires which can be harmful (Poteete et al., 2021). The cooperation between grassroots organizations and eventually the borough has resulted in a space that is less structured both physically and socially. This has led to vegetation growing more liberally and for a multitude of behaviours and activities to take place in the Champ des Possibles. Green spaces such as this are rare, and the Champ des Possibles can serve as an example for the benefits of merging bottom-up and top-down approaches to urban planning. 
 
-### References
+
+<details>
+<summary>### References</summary>
 
 Beaudin, M. 2013. “Mile End Green Space Gets Protected Status,” *Montreal Gazette* (23 May 2013) Retrieved May 30, 2022, from https://www.pressreader.com/canada/montreal-gazette/20130523/281608122963993.
 
@@ -94,4 +98,4 @@ Plateau-Mont-Royal, 2013. Assemblée publique de consultation: Règlement d’ur
 Poteete, A. et al. (2021). (rep.). *Supporting the Possibilities of Urban Commoning in Montréal’s Champ des Possibles* (pp. 1–25). Montreal, QC. 
 
 Samson, F. (2022, March 6). *Montreal's mile end residents fight for pedestrian crossing after Train hits woman | cbc news. CBC news.* Retrieved June 2, 2022, from https://www.cbc.ca/news/canada/montreal/montreal-mile-end-pedestrian-crossing-canadian-pacific-1.6374736 
-
+</details>
