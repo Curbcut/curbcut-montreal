@@ -299,7 +299,7 @@
       "RemoteUsername": "Curbcut",
       "RemoteRepo": "cc.landing",
       "RemoteRef": "main",
-      "RemoteSha": "6688fb99cf9bb84ab673dc709a9122f50a1ef79a",
+      "RemoteSha": "4f401b4299ab8a4b0d489d60d3c8e52315aa2a06",
       "Requirements": [
         "base64enc",
         "htmltools",
@@ -307,7 +307,7 @@
         "reactR",
         "shiny"
       ],
-      "Hash": "07642c28ed4da67d131904f828eb68c2"
+      "Hash": "d1d690ce01b2a89f15751934fe13d272"
     },
     "cc.map": {
       "Package": "cc.map",
@@ -431,8 +431,8 @@
       "RemoteHost": "api.github.com",
       "RemoteUsername": "Curbcut",
       "RemoteRepo": "curbcut",
-      "RemoteRef": "map_js",
-      "RemoteSha": "5b5934c20d8824ff552daf70d62a06ce7df1489b",
+      "RemoteRef": "HEAD",
+      "RemoteSha": "b926ba66e3eaccb4d88c8af9694017d2c4243f24",
       "Remotes": "Curbcut/cc.map, Curbcut/cc.landing, bdbmax/bslib, qfes/rdeck",
       "Requirements": [
         "DBI",
@@ -461,7 +461,7 @@
         "utils",
         "zip"
       ],
-      "Hash": "fd2a866f087bcc2e758e858b01ae5425"
+      "Hash": "257798ca2e8a4376ce3a8a3a8f6a0cc3"
     },
     "curl": {
       "Package": "curl",

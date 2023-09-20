@@ -73,8 +73,9 @@ borough_alley_info_table <- function(data, select_id, lang, mode) {
   title_text <- sprintf("%s<p>%s", title, text_to_display)
   if (is.na(data$photo_ID)) return(title_text)
   
-  img_piece <- paste0("<img src = 'alleys/", data$photo_ID,
-                      "' id = 'alley-alley_img' style = 'width:100%'>")
+  img_piece <- tags$img(src = sprintf("alleys/%s", data$photo_ID),
+                        id = "alley-alley_img",
+                        style = "width:100%")
   span_piece <- sprintf("<p><span style = 'margin-bottom:20px; cursor:pointer;'>%s</span>", 
                         img_piece)
   

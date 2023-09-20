@@ -13,7 +13,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 <center>
 <iframe width="100%" height="315"
-src="https://youtu.be/rNEx7a02hJY">
+src="https://youtube.com/embed/rNEx7a02hJY">
 </iframe>
 </center>
 
