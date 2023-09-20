@@ -257,18 +257,18 @@ build_and_append_alley <- function(scales_variables_modules, crs) {
   # 
   # 
   # Resize images -----------------------------------------------------------
-# 
-#   photos <- list.files("dev/data/alley/raw_images", full.names = TRUE)
-# 
-#   zzz <- sapply(photos, function(photo) {
-#     img <- magick::image_read(photo)
-#     img_info <- magick::image_info(img)
-#     img <- magick::image_resize(img,
-#                                 paste0(1000, "x",
-#                                        1000/img_info$width*img_info$height,"!"))
-#     path <- photo |> stringr::str_replace("dev/data/alley/raw_images/", "www/alleys/")
-#     magick::image_write(img, tolower(path))
-#   })
+
+  photos <- list.files("dev/data/alley/raw_images", full.names = TRUE)
+
+  zzz <- sapply(photos, function(photo) {
+    img <- magick::image_read(photo)
+    img_info <- magick::image_info(img)
+    img <- magick::image_resize(img,
+                                paste0(1000, "x",
+                                       1000/img_info$width*img_info$height,"!"))
+    path <- photo |> stringr::str_replace("dev/data/alley/raw_images/", "www/alleys/")
+    magick::image_write(img, tolower(path))
+  })
 
 
   # Meters square of alleys per DAs -----------------------------------------
