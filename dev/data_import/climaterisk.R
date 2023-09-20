@@ -522,15 +522,15 @@ build_and_append_climate_risk <- function(scales_variables_modules, crs) {
             "ate risks – heat waves, flooding, heavy rain, drought, and destru",
             "ctive storms – is visualized here."),
           title_text_extra = paste0(
-              "<p>The datasets visualized on this page are publicly available through th",
-              "e <a href = ‘https://donnees.montreal.ca/dataset/vulnerabilite-changem",
-              "ents-climatiques’ target = ‘_blank’>Montreal Open Data Portal</a>. The",
-              "se were developed as part of the City of Montreal’s efforts to examine",
-              " potential climate risks for the Montreal region in the <a href = ‘Cli",
-              "mate change adaptation plan for the Montréal Urban Agglomeration, 2017",
-              " edition (montreal.qc.ca)’ target = ‘_blank’>2015-2020 Urban Agglomera",
-              "tion Climate Change Adaptation Plan</a>."
-            ),
+            "<p>The datasets visualized on this page are publicly available through",
+            " the <a href = 'https://donnees.montreal.ca/dataset/vulnerabilite-chan",
+            "gements-climatiques' target = '_blank'>Montreal Open Data Portal</a>. ",
+            "These were developed as part of the City of Montreal's efforts to exam",
+            "ine potential climate risks for the Montreal region in the <a href = '",
+            "https://ville.montreal.qc.ca/pls/portal/docs/page/enviro_fr/media/docu",
+            "ments/paccam_2015-2020_lesconstats.pdf' target = '_blank'>2015-2020 Ur",
+            "ban Agglomeration Climate Change Adaptation Plan</a>."
+          ),
           # Only allow for these specific regions (data is only available for the island)
           regions = c("island", "city", "grid"),
           metadata = TRUE,

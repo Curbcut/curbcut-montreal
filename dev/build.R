@@ -422,7 +422,7 @@ scales_variables_modules <-
 # qs::qsave(traveltimes, "dev/data/built/traveltimes.qs")
 traveltimes <- qs::qread("dev/data/built/traveltimes.qs")
 
-future::plan(future::multisession(), workers = 2)
+future::plan(future::multisession(), workers = 3)
 scales_variables_modules <-
   ba_accessibility_points(scales_variables_modules = scales_variables_modules,
                           region_DA_IDs = census_scales$DA$ID,
@@ -433,6 +433,7 @@ save.image("dev/data/built/svm_after_access.qs")
 load("dev/data/built/svm_after_access.qs")
 
 invisible(lapply(list.files("dev/data_import", full.names = TRUE), source))
+future::plan(future::multisession(), workers = 4)
 
 # Additional access variables
 scales_variables_modules <-
@@ -446,8 +447,7 @@ save.image("dev/data/built/before_mtl.RData")
 load("dev/data/built/before_mtl.RData")
 
 invisible(lapply(list.files("dev/data_import", full.names = TRUE), source))
-
-future::plan(future::multisession(), workers = 3)
+future::plan(future::multisession(), workers = 4)
 
 scales_variables_modules <-
   build_and_append_climate_risk(
@@ -473,14 +473,13 @@ scales_variables_modules <-
 save.image("dev/data/built/before_centraide.RData")
 load("dev/data/built/before_centraide.RData")
 invisible(lapply(list.files("dev/data_import", full.names = TRUE), source))
-
+future::plan(future::multisession(), workers = 4)
 
 scales_variables_modules <-
   build_and_append_tenure(
     scales_variables_modules = scales_variables_modules,
     crs = crs)
 
-future::plan(future::multisession(), workers = 3)
 scales_variables_modules <-
   build_and_append_afford_pop(
     scales_variables_modules = scales_variables_modules,
@@ -663,7 +662,7 @@ qs::qsave(colours_dfs, "data/colours_dfs.qs")
 
 # # TKTK MAKE SURE YOU HAVE THIS VERSION OF LEAFLET, IF NOT THE MAPS IN THE HTML
 # # DOCUMENTS WON'T BE INTERACTIVES:
-# # devtools::install_github("dmurdoch/leaflet@crosstalk4")
+# devtools::install_github("dmurdoch/leaflet@crosstalk4")
 stories <- build_stories()
 qs::qsave(stories, file = "data/stories.qs")
 # stories_create_tileset(stories = stories,

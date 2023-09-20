@@ -940,9 +940,9 @@ translation_variables <-
 # Crash -------------------------------------------------------------------
 
 add_row(en = "Crashes (cyc)",
-        fr = "Collisions (vélo)") |> 
+        fr = "Collisions (pié)") |> 
   add_row(en = "Crashes (ped)",
-          fr = "Collisions (piétons)") |> 
+          fr = "Collisions (vélo)") |> 
   add_row(en = "Crashes",
           fr = "Collisions") |> 
   add_row(en = "Car crashes involving cyclists",

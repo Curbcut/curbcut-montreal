@@ -679,7 +679,7 @@ build_and_append_tenure <- function(scales_variables_modules, crs) {
       title_text_title = "Tenure status",
       title_text_main = paste0(
         "<p><img src='centraide_logo/centraide_logo_en.png' ",
-        "style='width:60%;margin-left:50px;'><p>Tenure status measures whether",
+        "style='width:60%;margin-left:50px;'><p>Tenure status measures whether ",
         "a household owns or rents its home. Housing needs can vary ",
         "dramatically by tenure status."
       ),
@@ -689,8 +689,8 @@ build_and_append_tenure <- function(scales_variables_modules, crs) {
       regions = c("CMA", "island", "city", "centraide"),
       metadata = TRUE,
       dataset_info = paste0(
-        "<p>The census data (2016-2021) on this page comes from custom tabulations",
-        " ordered by Centraide of Greater Montreal to Statistics Canada.</p>"
+        "<p>The census data (2016-2021) on this page comes from custom tabulations ",
+        "from Statistics Canada ordered by Centraide of Greater Montreal</p>"
       ),
       var_left = variables[grepl("^tenure_", variables$var_code), 
                            c("var_code", "group_name", "group_diff")],

@@ -148,6 +148,7 @@ home_page <- function(modules, stories, translation_df, data_path = "data/") {
   disc_modules$var_right <- NA
   disc_modules$page <- NA
   disc_modules$date <- NA
+  disc_modules$df <- NA
   
   # Stories formatting for the discover_cards
   disc_stories <- stories[c("name_id", "short_title", "preview_en", "preview_fr", "ID")]
@@ -160,6 +161,7 @@ home_page <- function(modules, stories, translation_df, data_path = "data/") {
   disc_stories$var_right <- NA
   disc_stories$page <- NA
   disc_stories$date <- NA
+  disc_stories$df <- NA
   # disc_stories <- disc_stories[c("id", "img", "theme", "en", "fr", "preview_en", "preview_fr", "type", "select_id")]
 
   # DYK for discovers
@@ -193,10 +195,11 @@ home_page <- function(modules, stories, translation_df, data_path = "data/") {
     names(this)[names(this) == "module"] <- "page"
     names(this)[names(this) == "select_ID"] <- "select_id"
     this$type <- "dyk"
+    this$df <- if (type %in% c("highest", "lowest")) sprintf("%s_%s", this$region, this$scale) else NA
     
     # Return
     this[c("id", "img", "theme", "en", "fr", "preview_en", "preview_fr", "type", 
-           "page", "var_left", "var_right", "select_id", "date")]
+           "page", "var_left", "var_right", "select_id", "date", "df")]
   }
   
   disc_dyk <- 
@@ -309,6 +312,7 @@ home_page <- function(modules, stories, translation_df, data_path = "data/") {
 
 
   # Save home page information as qsm ---------------------------------------
+  if (!exists("data_path")) data_path <- "data/"
 
   qs::qsavem(c_city_svg, news_cards, discover_cards,
              team_cards, contributors, collabs,
