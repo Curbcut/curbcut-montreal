@@ -703,6 +703,30 @@ translation_variables <-
               fr = "Santé") |>
       add_row(en = "Ecology",
               fr = "Écologie") |>
+      add_row(en = "Vegetation",
+              fr = "Végétation") |> 
+      add_row(en = "Land surface temperature",
+              fr = "Température au sol") |> 
+      add_row(en = "Land temp.",
+              fr = "Temp. sol") |> 
+      add_row(en = "are living in areas with _X_ level of presence and intensity of vegetation",
+              fr = "vivent dans des zones où la présence et l'intensité de la végétation est de _X_") |> 
+      add_row(en = "are living in areas with _X_ level of land surface temperature",
+              fr = "vivent dans des régions où la température à la surface du sol est de _X_") |> 
+      add_row(en = "the average warm-season land surface temperature is _X_ degrees celsius",
+              fr = "la température moyenne au sol en saison chaude est de _X_ degrés celsius") |> 
+      add_row(en = "the presence and intensity of vegetation",
+              fr = "la présence et l'intensité de la végétation") |> 
+      add_row(en = "the average warm-season land surface temperature",
+              fr = "la température moyenne au sol en saison chaude") |> 
+      add_row(en = "presence and intensity of vegetation",
+              fr = "présence et intensité de végétation") |> 
+      add_row(en = "average warm-season land surface temperature",
+              fr = "température moyenne au sol en saison chaude") |> 
+      add_row(en = "The Canadian Urban Environmental Health Research Consortium",
+              fr = "Le Consortium canadien de recherche en santé environnementale urbaine") |> 
+      
+      
       add_row(en = "Curbcut",
               fr = "Curbcut") |>
       add_row(en = "exceptionally sparse",
@@ -725,10 +749,10 @@ translation_variables <-
               fr = "Indice Can-BICS") |> 
       add_row(en = "are living in areas with _X_ cycling infrastructure comfort and safety",
               fr = "vivent dans des zones où le confort et la sécurité des infrastructures cyclables sont _X_") |> 
-      add_row(en = "the bikeway comfort and safety classification system",
-              fr = "le système de classification du confort et de la sécurité des pistes cyclables") |> 
-      add_row(en = "bikeway comfort and safety classification system",
-              fr = "système de classification du confort et de la sécurité des pistes cyclables") |> 
+      add_row(en = "the comfort and safety of bikeways",
+              fr = "le confort et la sécurité des pistes cyclables") |> 
+      add_row(en = "comfort and safety of bikeways",
+              fr = "confort et sécurité des pistes cyclables") |> 
       add_row(en = "Meghan Winters (and her team) at Faculty of Health Sciences, Simon Fraser University",
               fr = "Meghan Winters (et son équipe) à la Faculté des sciences de la santé de l'Université Simon Fraser") |> 
       
@@ -916,9 +940,9 @@ translation_variables <-
 # Crash -------------------------------------------------------------------
 
 add_row(en = "Crashes (cyc)",
-        fr = "Collisions (vélo)") |> 
+        fr = "Collisions (pié)") |> 
   add_row(en = "Crashes (ped)",
-          fr = "Collisions (piétons)") |> 
+          fr = "Collisions (vélo)") |> 
   add_row(en = "Crashes",
           fr = "Collisions") |> 
   add_row(en = "Car crashes involving cyclists",

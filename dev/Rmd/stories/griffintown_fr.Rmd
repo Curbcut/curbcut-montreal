@@ -9,6 +9,13 @@ author: "Camille Forest"
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+<center>
+<div>
+<iframe width="100%" height="315"
+src="https://youtube.com/embed/Fk0Bf6nmsus" frameborder="0" allowfullscreen="" data-external="1">
+</iframe>
+</div>
+</center>
 
 <p>Le paysage juridictionnel des services de gestion de l'eau au Canada est auto-conflictuel, o&ugrave; tous les niveaux de gouvernement ont des responsabilit&eacute;s qui d&eacute;pendent des actions des autres niveaux de gouvernement. Au Canada, le gouvernement f&eacute;d&eacute;ral est responsable du maintien de la clart&eacute; des principaux cours d'eau et du maintien des p&ecirc;ches en assurant la propret&eacute; des habitats des poissons (Environnement et Changement climatique Canada, 2016). Les municipalit&eacute;s sont responsables du d&eacute;bordement des eaux pluviales, et les provinces sont responsables de la plupart des autres services de gestion et de qualit&eacute; de l'eau ; tous ces services peuvent avoir un impact sur les p&ecirc;ches. Cependant, la province de Qu&eacute;bec a historiquement et actuellement d&eacute;l&eacute;gu&eacute; le maintien de la qualit&eacute; de l'eau, y compris les eaux pluviales et les eaux us&eacute;es, aux municipalit&eacute;s. La r&eacute;partition des responsabilit&eacute;s entre les diff&eacute;rents niveaux de gouvernement a historiquement donn&eacute; lieu &agrave; une impasse juridictionnelle entre le gouvernement f&eacute;d&eacute;ral et les provinces (Boone, 1996). Cette &eacute;tude de cas illustre comment, en l'absence d'action des gouvernements f&eacute;d&eacute;ral et provinciaux, les niveaux les plus locaux de gouvernement et de gouvernance communautaire d&eacute;finissent leur relation avec l'eau dans la ville.</p>
 <p>Griffintown est un quartier de Montr&eacute;al qui a connu une histoire complexe et turbulente de n&eacute;gligence de la part de la gouvernance locale, et cet essai tentera de montrer comment l'histoire sociale et de gouvernance de Griffintown peut &ecirc;tre d&eacute;finie par la politique de gestion de l'eau. Dans son Histoire de Montr&eacute;al, Steven Leacock d&eacute;crit Griffintown comme suit :</p>
@@ -62,7 +69,9 @@ knitr::include_graphics(c(here::here("dev/data/stories/raw_images/griffintown/fi
 ### Conclusion
 <p>L'avenir de la planification des inondations &agrave; Griffintown est &agrave; la crois&eacute;e des chemins. Pour la premi&egrave;re fois dans l'histoire de Griffintown, il y a une pression publique importante pour prioriser les besoins de la communaut&eacute;, ce qui a conduit &agrave; la mise en place de certaines infrastructures d'att&eacute;nuation des inondations. Cependant, l'absence de donn&eacute;es sur les inondations dues aux eaux pluviales dans les bases de donn&eacute;es et les cartes gouvernementales incite les municipalit&eacute;s &agrave; n&eacute;gliger les risques d'inondation qui menacent Griffintown. Étant donn&eacute; l'int&eacute;r&ecirc;t des promoteurs pour le d&eacute;veloppement de la zone, il est peu probable que cela change sans demandes sp&eacute;cifiques de la communaut&eacute;.</p>
 <p>Cette &eacute;tude de cas donne un aper&ccedil;u d'une longue histoire de gouvernance motiv&eacute;e par une logique de croissance, qui a laiss&eacute; le bien-&ecirc;tre de la communaut&eacute; en dehors du processus de planification de Griffintown. Les recherches montrant que les inondations dues aux eaux pluviales repr&eacute;sentent &eacute;galement un co&ucirc;t potentiel important &agrave; l'avenir et le plaidoyer de la communaut&eacute; en faveur d'un d&eacute;veloppement r&eacute;silient au climat seront la cl&eacute; de processus de planification efficaces concernant la gestion de l'eau &agrave; Griffintown &agrave; l'avenir.</p>
-### Bibliographie
+
+<details>
+<summary>### Références</summary>
 <ul>
 <li>Ames, H. B. (1972). <em>The city below the hill</em>. Toronto, ON: Franklin Classics Trade Press.</li>
 <li>Anhoury, M. (2019, July 16). Quebec releases updated map of flood zones. <em>Montreal Gazette</em>. Retrieved December 11, 2020, from https://montrealgazette.com/news/quebec/quebec-releases-updated-map-of-flood-zones</li>
@@ -86,3 +95,4 @@ knitr::include_graphics(c(here::here("dev/data/stories/raw_images/griffintown/fi
 <li>Public Safety Canada. (2013). Retrieved 2020, from https://cdd.publicsafety.gc.ca/rslts-eng.aspx?cultureCode=en-Ca&amp;provinces=11&amp;eventTypes=%27FL%27&amp;eventStartDate=%2718250101%27%2c%2720131231%27&amp;normalizedCostYear=2013.</li>
 <li>Solonysznyj, P. (1988) Residential Persistence in an Ethnic Working-Class Community: St. Ann's Ward, Montreal, 1871 to 1891.&nbsp;Master's essay (History). Montreal, Quebec: Concordia University.</li>
 <li>Ville de Montreal. (n/a). Raymond Pr&eacute;fontaine&rsquo;s accomplishments at the municipal level. Retrieved December 13, 2020, from http://www2.ville.montreal.qc.ca/archives/democratie/democratie_fr/media/documents/apprentis/journaux/prefontaine_en.pdf</li></ul>
+</details>

@@ -9,6 +9,13 @@ author: "Camille Forest"
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+<center>
+<div>
+<iframe width="100%" height="315"
+src="https://youtube.com/embed/Fk0Bf6nmsus" frameborder="0" allowfullscreen="" data-external="1">
+</iframe>
+</div>
+</center>
 
 <p>The jurisdictional landscape of water management services in Canada is self-conflicting, where all levels of government have responsibilities that depend on actions by other levels of government. In Canada, the federal government is responsible for keeping major waterways clear and maintaining of fisheries through ensuring clean fish habitats (Environment and Climate Change Canada, 2016). Municipalities are responsible for storm water overflow, and the provinces are responsible for most other water quality and management services; all of which can impact fisheries. However, the province of Quebec has both historically and currently delegated maintaining water quality, including storm and wastewater, to municipalities. The distribution of responsibilities across levels of government has historically resulted in jurisdictional gridlock from the federal government and provinces (Boone, 1996). This case study illustrates how in the absence of action by federal and provincial governments, the most local levels of government and community governance define their relationship with water in the city.</p>
 <p>Griffintown is a neighbourhood in Montreal with complex and turbulent history of neglect by local governance, and this essay will tease out how Griffintown&rsquo;s social and governance history can be defined through the politics of water management. In his <em>History of Montreal</em>, Steven Leacock describes Griffintown as:</p>
@@ -62,7 +69,9 @@ knitr::include_graphics(c(here::here("dev/data/stories/raw_images/griffintown/fi
 ### Conclusion
 <p>The future of planning for water flooding in Griffintown is at a crossroads. There is significant public pressure to prioritize community needs for the first time in Griffintown&rsquo;s history, which has led to some flooding mitigation infrastructure. However, the lack of data for flooding, specifically from storm water, in government databases and maps biases municipalities to neglect the flooding risks that threaten Griffintown. Given developer interest in developing the area this is unlikely to change without specific community demands.</p>
 <p>This case study overviews a long history of governance driven by a logic of growth, which has left community well-being out of Griffintown&rsquo;s planning process. Research showing that storm-water flooding is also a large future potential cost of flooding and community advocacy for climate resilient development will be a key to effective planning processes concerned with water management in Griffintown in the future.</p>
-### Bibliography
+
+<details>
+<summary>### References</summary>
 <ul>
 <li>Ames, H. B. (1972). <em>The city below the hill</em>. Toronto, ON: Franklin Classics Trade Press.</li>
 <li>Anhoury, M. (2019, July 16). Quebec releases updated map of flood zones. <em>Montreal Gazette</em>. Retrieved December 11, 2020, from https://montrealgazette.com/news/quebec/quebec-releases-updated-map-of-flood-zones</li>
@@ -86,3 +95,4 @@ knitr::include_graphics(c(here::here("dev/data/stories/raw_images/griffintown/fi
 <li>Public Safety Canada. (2013). Retrieved 2020, from https://cdd.publicsafety.gc.ca/rslts-eng.aspx?cultureCode=en-Ca&amp;provinces=11&amp;eventTypes=%27FL%27&amp;eventStartDate=%2718250101%27%2c%2720131231%27&amp;normalizedCostYear=2013.</li>
 <li>Solonysznyj, P. (1988) Residential Persistence in an Ethnic Working-Class Community: St. Ann's Ward, Montreal, 1871 to 1891.&nbsp;Master's essay (History). Montreal, Quebec: Concordia University.</li>
 <li>Ville de Montreal. (n/a). Raymond Pr&eacute;fontaine&rsquo;s accomplishments at the municipal level. Retrieved December 13, 2020, from http://www2.ville.montreal.qc.ca/archives/democratie/democratie_fr/media/documents/apprentis/journaux/prefontaine_en.pdf</li></ul>
+</details>

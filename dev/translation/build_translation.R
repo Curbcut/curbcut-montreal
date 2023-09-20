@@ -46,6 +46,34 @@ library(qs)
 # 
 # }
 
+# .t <- deeplr::toFrench2(x, auth_key = .deepl_key)
+# split_string <- function (input_string, split_length = 70) {
+#   num_chunks <- ceiling(nchar(input_string) / split_length)
+#   split_strings <- character(num_chunks)
+#   for (i in 1:num_chunks) {
+#     start_index <- (i - 1) * split_length + 1
+#     end_index <- min(i * split_length, nchar(input_string))
+#     split_strings[i] <- substr(input_string, start_index, end_index)
+#   }
+#   # Concatenating strings using paste0, ensuring no row exceeds 70 characters
+#   result <- paste0("paste0(\n\"", paste0(split_strings, collapse = "\", \n\""), "\")")
+#   return(result)
+# }
+# 
+# t_max <- function(en) {
+#   # Assuming .t function is defined elsewhere
+#   fr <- sapply(en, .t, USE.NAMES = FALSE)
+#   # Creating output strings
+#   out <- character(length(en))
+#   for (i in 1:length(en)) {
+#     en_str <- split_string(en[i])
+#     fr_str <- split_string(fr[i])
+#     out[i] <- paste0('add_row(en = ', en_str, ', \nfr = ', fr_str, ')')
+#   }
+#   # Writing lines with collapse to ensure proper formatting
+#   writeLines(paste0(out, collapse = ' |> \n'))
+# }
+
 
 # Run all the translation preparation -------------------------------------
 source("dev/translation/variables.R", encoding = "utf-8")
@@ -133,6 +161,7 @@ is_translated(modules$main_dropdown_title)
 
 # SCALES DICTIONARY
 is_translated(scales_dictionary$sing)
+is_translated(scales_dictionary$sing_with_article)
 is_translated(scales_dictionary$plur)
 is_translated(scales_dictionary$slider_title)
 is_translated(scales_dictionary$place_heading)
@@ -148,8 +177,9 @@ is_translated(regions_dictionary$to_compare_short)
 is_translated(unique(unlist(stories$themes)))
 is_translated(stories$title)
 is_translated(stories$short_title)
-is_translated(stories$preview)
+is_translated(stories$preview_en)
 
 # Save to the translation files -------------------------------------------
 
 qs::qsave(translation_df, "data/translation_df.qs")
+

@@ -664,15 +664,17 @@ build_and_append_afford_pop <- function(scales_variables_modules, crs) {
       regions = c("CMA", "island", "city", "centraide"),
       metadata = TRUE,
       dataset_info = paste0(
-        "<p>The census data (2016-2021) on this page comes from custom tabulations",
-        " ordered by Centraide of Greater Montreal to Statistics Canada.</p>"
+        "<p>The census data (2016-2021) on this page comes from custom tabulations ",
+        "from Statistics Canada ordered by Centraide of Greater Montreal</p>"
       ),
       var_left = variables[grepl("^affordhou_|^affordpop", variables$var_code), 
                            c("var_code", "group_name", "group_diff")],
       main_dropdown_title = "Unit of analysis",
       dates = with_breaks$avail_dates[["affordpop_total_total_total_total_total_pct"]],
       var_right = var_right,
-      suffix_zoom_levels = "max_CT"
+      suffix_zoom_levels = "max_CT",
+      add_advanced_controls = c("mnd", "Data representation", "Tenure status"),
+      default_var = "affordhou_total_sc30_total_total_pct"
     )
 
 

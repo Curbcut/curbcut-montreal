@@ -9,6 +9,14 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+<center>
+<div>
+<iframe width="100%" height="315"
+src="https://youtube.com/embed/wy6YiI2ugxM" frameborder="0" allowfullscreen="" data-external="1">
+</iframe>
+</div>
+</center>
+
 L'image de la montagne au centre-ville avec sa croix impressionnante est devenue synonyme de Montréal. Tout au long de son évolution, le Mont-Royal a joué un rôle important dans l'histoire et le développement de Montréal. Son environnement naturel a toujours été précieux, mais tout au long de sa transformation, l'histoire du Mont-Royal met en évidence des changements sociétaux plus importants qui ont contribué à faire de Montréal la ville qu'elle est aujourd'hui. Le Mont Royal n'est pas seulement un élément physiquement important de Montréal, il est aussi socialement emblématique à bien des égards. Son aménagement en parc au XIXe siècle s'inscrit dans un mouvement plus large de création de grands parcs urbains à travers l'Amérique du Nord (Bérubé, 2022). Au moment où le Mont-Royal se transforme en parc, Montréal devient la métropole du pays. L'industrialisation et l'urbanisation ont également eu des impacts sur le développement de la ville et du parc. Depuis son inauguration en 1876, le parc du Mont-Royal a connu de nombreux changements et les évolutions sociétales qui les ont accompagnés. Ce récit explore l'histoire du Mont-Royal à travers ses différentes phases : son rôle dans la colonisation de Montréal, la période et le processus de conception et d'aménagement paysager, ainsi que les défis et les changements qu'il a connus en tant que grand parc bien-aimé. L'évolution de la montagne a été parallèle au développement de la ville et met en évidence les tensions entre la croissance d'une métropole et le besoin de ses habitants d'avoir accès à des espaces verts.
 
 ### Le rôle du Mont-Royal dans le peuplement et le développement de Montréal
@@ -91,3 +99,15 @@ knitr::include_graphics(here::here("dev/data/stories/raw_images/mount_royal/Imag
 Aujourd'hui, les préoccupations concernant le parc se sont déplacées vers l'importance de la montagne en tant qu'îlot de fraîcheur, offrant un effet de refroidissement pendant les étés de plus en plus chauds, et protégeant son paysage et sa biodiversité. Dans une perspective d'avenir, la ville de Montréal souhaite protéger la montagne et s'assurer qu'elle continue d'offrir un répit à ses résidents. Le parc du Mont-Royal est appelé à s'agrandir, et il s'agira du plus important ajout depuis plus de 100 ans. Le parc sera agrandi de trois hectares, le terrain de l'ancien hôpital Royal Victoria sera cédé à la ville ainsi que 290 places de stationnement près de la maison Smith (Nadeau, 2022). Tous ces terrains seront transformés en espaces verts.  
 
 Le Mont-Royal est une belle montagne cohérente, qui non seulement façonne physiquement le paysage de Montréal, mais reflète également les changements sociaux et culturels qui ont façonné la ville au fil du temps. Alors que la montagne entre dans une nouvelle phase, une phase d'expansion et d'importance écologique, il sera intéressant de continuer à observer ses changements.
+
+<details>
+<summary>### Références</summary>
+Bellman , D. (1977). Frederick Law Olmsted and a Plan for Mount Royal Park. Canadian Art Review, 4(2), S31–S43. 
+Beveridge, C. E. (2009). Mount royal in the works of Frederick Law Olmsted. Montréal, Direction des grands parcs et de la nature en ville. 
+Bérubé, H. (2022). Les grands parcs urbains : de Central Park au parc du Mont-Royal. In Histoire des villes nord-américaines. essay, Septentrion. 
+Canada’s History. (2019). Montreal Chronicles: The Mountain. YouTube. Retrieved May 24, 2023, from https://www.youtube.com/watch?v=pxFvBtFZTfA&ab_channel=Canada%27sHistory. 
+Caron, M. (2018). Taming the jungle in the city: Uprooting trees, bushes, and disorder from Mount Royal Park. Urban History Review, 47(1–2), 39. https://doi.org/10.7202/1064877ar 
+Nadeau, J. (2022, December 13). Le parc du mont royal sera agrandi . Le Devoir. Retrieved April 3, 2023, from https://www.ledevoir.com/societe/transports-urbanisme/774331/le-parc-du-mont-royal-sera-agrandi. 
+Riga, A. (2019, August 3). Mount royal: Saving “the people’s park” from fanciful schemes. Montreal Gazette. https://montrealgazette.com/news/local-news/mount-royal-saving-the-peoples-park-from-fanciful-schemes/ 
+Son Histoire. Les amis de la montagne. (n.d.). https://www.lemontroyal.qc.ca/fr/l-histoire-du-mont-royal 
+</details>

@@ -5,6 +5,8 @@ translation_access <-
          fr = character()) |> 
   add_row(en = "Total",
           fr = "Total") |>
+  add_row(en = "All",
+          fr = "Toutes") |>
   add_row(en = "Amenity",
           fr = "Service") |>
   add_row(en = "Retail stores type",
@@ -37,8 +39,8 @@ translation_access <-
           fr = "Établissements de crédit non dépositaires") |>
   add_row(en = stringr::str_to_sentence("Financial Institutions"),
           fr = "Institutions financières") |>
-  add_row(en = stringr::str_to_sentence("Grocery Stores"),
-          fr = "Épiceries") |>
+  add_row(en = stringr::str_to_sentence("Grocery and Convenience Stores"),
+          fr = "Épiceries et dépanneurs") |>
   add_row(en = stringr::str_to_sentence("Meat and Fish Markets"),
           fr = "Marchés de viande et de poisson") |>
   add_row(en = stringr::str_to_sentence("Fruit and Vegetable Markets"),
@@ -51,6 +53,18 @@ translation_access <-
           fr = "Magasins d'alimentation divers") |>
   add_row(en = stringr::str_to_sentence("Food Stores"),
           fr = "Magasins d'alimentation") |>
+  add_row(en = stringr::str_to_sentence("Dance Studios, Schools, And Halls"),
+          fr = "Studios, écoles et salles de danse") |>
+  add_row(en = stringr::str_to_sentence("Theatrical Producers"),
+          fr = "Producteurs de cinéma") |>
+  add_row(en = stringr::str_to_sentence("Bowling Centers"),
+          fr = "Centres de bowling") |>
+  add_row(en = stringr::str_to_sentence("Physical Fitness Facilities"),
+          fr = "Centres de conditionnement physique") |>
+  add_row(en = stringr::str_to_sentence("Miscellaneous Amusement And Recreation"),
+          fr = "Amusement et loisirs divers") |>
+  add_row(en = stringr::str_to_sentence("Recreation Services"),
+          fr = "Services de loisirs") |>
   add_row(en = "Ambulatory health care services",
           fr = "Services de soins de santé ambulatoires") |>
   add_row(en = "Hospitals",
@@ -104,7 +118,7 @@ translation_access <-
   add_row(en = "Finance",
           fr = "Finances") |>
   add_row(en = "Groceries",
-          fr = "Épicerie") |>
+          fr = "Épiceries") |>
   add_row(en = "Meat",
           fr = "Viande") |>
   add_row(en = "Fruit/Veg.",
@@ -157,6 +171,14 @@ translation_access <-
           fr = "Places en garderie") |> 
   add_row(en = "Daycare",
           fr = "Garderie") |> 
+  add_row(en = "Dance Studios",
+          fr = "Studios de danse") |>
+  add_row(en = "Bowling",
+          fr = "Bowling") |>
+  add_row(en = "Fitness",
+          fr = "Fitness") |>
+  add_row(en = "Recreation",
+          fr = "Loisir") |> 
   
   add_row(en = "Mode of transport",
           fr = "Mode de transport") |> 
@@ -192,6 +214,10 @@ translation_access <-
           fr = "Accès aux établissements culturels") |> 
   add_row(en = "Access to daycare spots",
           fr = "Accès aux places en garderie") |> 
+  add_row(en = "Access to daycare spots",
+          fr = "Accès aux places en garderie") |> 
+  add_row(en = "Access to recreational services",
+          fr = "Accès aux services de loisirs") |> 
   
   add_row(en = "Walking",
           fr = "À pieds") |> 
@@ -216,6 +242,21 @@ additional_vars <- lapply(vars, \(var) {
                              short = "Daycare")
     }
   }
+  
+  
+  
+  
+  if (dict$title == "Grocery Stores") dict$title <- "Grocery and Convenience Stores"
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   title <- translation_access$fr[tolower(translation_access$en) == tolower(dict$title)]
   title <- unique(title)
   short <- translation_access$fr[tolower(translation_access$en) == tolower(dict$short)]
@@ -239,10 +280,10 @@ additional_vars <- lapply(vars, \(var) {
   var_short <- stringr::str_to_sentence(short)
   explanation <- paste0(
     "le nombre de/d' ", tolower(title),
-    " qu'un habitant moyen peut atteindre en ", time, " minutes ", mode
+    " qu'un résident peut atteindre en ", time, " minutes ", mode
   )
   
-  explanation <- if (grepl("^(a|e|i|o|u|h)", tolower(title))) {
+  explanation <- if (grepl("^(a|e|i|o|u|h|é|à)", tolower(title))) {
     gsub("de/d' ", "d'", explanation)
   } else {
     gsub("de/d' ", "de ", explanation)
@@ -251,7 +292,7 @@ additional_vars <- lapply(vars, \(var) {
   explanation_nodet <- gsub("^le ", "", explanation)
   
   exp_q5 <- paste0(
-    "le résident moyen a accès à _X_ ", tolower(title), " en ", time,
+    "un résident a accès, en moyenne, à _X_ ", tolower(title), " en ", time,
     " minutes ", mode
   )
   

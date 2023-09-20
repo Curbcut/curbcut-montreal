@@ -10,6 +10,13 @@ author: "Sara Hashemi"
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+<center>
+<div>
+<iframe width="100%" height="315"
+src="https://youtube.com/embed/b-xbh4IoUoo" frameborder="0" allowfullscreen="" data-external="1">
+</iframe>
+</div>
+</center>
 
 <p>Over the last several years, organizers in Little Burgundy have been trying to <a href="https://www.thestar.com/news/canada/2021/02/18/in-montreals-little-burgundy-hopes-of-reviving-a-hub-of-the-citys-black-community.html">revive the Negro Community Centre</a> (NCC), which once stood at the corner of Coursol and Canning Streets.</p>
 <p>Established in 1927, the NCC provided a range of health and social services for the community until it closed in 1992. After sitting empty for years, the building that was once its home was demolished in 2014.</p>

@@ -11,10 +11,13 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 <center>
-```{r, echo=FALSE}
-vembedr::embed_youtube("3luHUZoLX4c", height = 500)
-```
+<div>
+<iframe width="100%" height="315"
+src="https://youtube.com/embed/9yPc_DTNvEE" frameborder="0" allowfullscreen="" data-external="1">
+</iframe>
+</div>
 </center>
+
 
 Situé dans le quartier du Mile End, le long de la voie ferrée du Canadien Pacifique et délimité par le monastère des Carmélites à l'est et d'anciens ateliers de confection à l'ouest, le Champ des Possibles est un espace vert local unique. Aujourd'hui une prairie urbaine protégée, le Champ des Possibles a connu une histoire intéressante qui a récemment mené à son statut protégé et à une structure de gouvernance unique de cogestion entre un organisme communautaire sans but lucratif, Les Amis du Champ des Possibles, et l'arrondissement du Plateau-Mont-Royal. Différent des autres parcs avoisinants, le nom de cet espace lui convient bien avec le large éventail d'usages et d'appropriations qui s'y déroulent. Pour ceux qui fréquentent et prennent soin du Champ des Possibles, il est devenu un lieu important pour démontrer comment une communauté peut s'impliquer dans la gestion officielle d'un espace de type parc. Il est connu pour ses caractéristiques "sauvages" et "naturelles", mais cela n'a pas toujours été le cas. Le Champ des Possibles s'est transformé au cours des 150 dernières années, passant d'une carrière à un dépotoir, à une gare de triage, pour devenir progressivement l'espace qu'il est aujourd'hui (Desjardins, 2019). Simultanément, le quartier environnant du Mile End a subi de nombreux changements et a connu une forte gentrification. Dans sa trajectoire pour devenir le quartier populaire qu'il est aujourd'hui, il s'est transformé d'un arrêt sur la ligne ferroviaire, au quartier du vêtement de Montréal, à une plaque tournante pour les entreprises technologiques (Desjardins, 2019 ; McSwiney & Michaud, 2014). Les changements physiques et sociaux au fil des décennies ont façonné la réalité actuelle du quartier et de ses espaces tels que le Champ des Possibles. L'histoire du Champ des Possibles et de sa structure de gouvernance actuelle de cogestion, qui met l'accent sur la prise de décision par la communauté, illustre comment la spontanéité et le relâchement peuvent être positifs dans le contexte de la planification urbaine, tant pour les politiques que pour le design. 
 

@@ -654,10 +654,10 @@ build_and_append_natural_inf <- function(scales_variables_modules, crs) {
       nav_title = "Natural infrastructure",
       title_text_title = "Natural infrastructure",
       title_text_main = paste0(
-        "<p>Natural ecosystems are necessary for our cities, they help contribute ",
-        "to well-being, quality of life and public health. This page quantifies",
-        " the benefits provided by urban trees and wooded areas to biodiversity",
-        " conservation, flood prevention, and heat-island reduction. "
+        "<p>Natural ecosystems contribute to well-being, quality of life and ",
+        "public health in cities. This page quantifies the benefits provided ",
+        "by urban trees and wooded areas to biodiversity ",
+        "conservation, flood prevention, and heat-island reduction. "
       ),
       title_text_extra = paste0(
         "<p>The datasets visualized on this page come from Habitat. Note ",
@@ -684,20 +684,27 @@ build_and_append_natural_inf <- function(scales_variables_modules, crs) {
     )
   
   
-  # Save natural inf in its own sqlite db -----------------------------------
-  
+  # # Save natural inf in its own sqlite db -----------------------------------
+  # 
+  # library(RSQLite)
+  # library(DBI)
   # natural_inf_path <- "data/naturalinf.sqlite"
   # if (natural_inf_path %in% list.files("data", full.names = TRUE))
   #   unlink(natural_inf_path, force = TRUE)
-  # natural_inf_sql <- DBI::dbConnect(RSQLite::SQLite(), natural_inf_path,
+  # natural_inf_sql <- DBI::dbConnect(RSQLite::SQLite(), 
+  #                                   natural_inf_path,
   #                                   overwrite = TRUE)
   # 
-  # DBI::dbWriteTable(natural_inf_sql, "natural_inf_custom", natural_inf_custom)
+  # DBI::dbWriteTable(conn = natural_inf_sql, 
+  #                   name = "natural_inf_custom", 
+  #                   value = as.data.frame(natural_inf_custom))
+  # 
   # purrr::walk2(names(natural_inf), natural_inf, function(name, df) {
   #   if (!is.data.frame(df)) {
   #     purrr::walk2(df, seq_along(df), function(x, y) {
   #       DBI::dbWriteTable(natural_inf_sql,
-  #                         paste("natural_inf", name, y, sep = "_"), x,
+  #                         paste("natural_inf", name, y, sep = "_"), 
+  #                         as.data.frame(x),
   #                         overwrite = TRUE)
   #       DBI::dbExecute(natural_inf_sql,
   #                      paste0("CREATE INDEX index_biodiversity_", y,
@@ -707,7 +714,8 @@ build_and_append_natural_inf <- function(scales_variables_modules, crs) {
   #   }
   #   else {
   #     DBI::dbWriteTable(natural_inf_sql,
-  #                       paste("natural_inf", name, sep = "_"), df,
+  #                       paste("natural_inf", name, sep = "_"), 
+  #                       as.data.frame(df),
   #                       overwrite = TRUE)
   #   }
   # 

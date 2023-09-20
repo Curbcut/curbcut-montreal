@@ -1,7 +1,7 @@
 #### Build Rmd documents  ######################################################
 
 # Processing function -----------------------------------------------------
-# process_stories_rmd <- function(file, css_path = here::here("www/sus.css")) {
+# process_stories_rmd <- function(file, css_path = here::here("www/styles/sus.css")) {
 #   
 #   # Error handling
 #   if (!sum(str_detect(file, "Rmd")) == length(file)) return(

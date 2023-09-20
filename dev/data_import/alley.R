@@ -258,17 +258,17 @@ build_and_append_alley <- function(scales_variables_modules, crs) {
   # 
   # Resize images -----------------------------------------------------------
 
-  photos <- list.files("dev/data/alley/raw_images", full.names = TRUE)
-
-  zzz <- sapply(photos, function(photo) {
-    img <- magick::image_read(photo)
-    img_info <- magick::image_info(img)
-    img <- magick::image_resize(img,
-                                paste0(1000, "x",
-                                       1000/img_info$width*img_info$height,"!"))
-    path <- photo |> stringr::str_replace("dev/data/alley/raw_images/", "www/alleys/")
-    magick::image_write(img, tolower(path))
-  })
+  # photos <- list.files("dev/data/alley/raw_images", full.names = TRUE)
+  # 
+  # zzz <- future.apply::future_sapply(photos, function(photo) {
+  #   img <- magick::image_read(photo)
+  #   img_info <- magick::image_info(img)
+  #   img <- magick::image_resize(img,
+  #                               paste0(1000, "x",
+  #                                      1000/img_info$width*img_info$height,"!"))
+  #   path <- photo |> stringr::str_replace("dev/data/alley/raw_images/", "www/alleys/")
+  #   magick::image_write(img, tolower(path))
+  # })
 
 
   # Meters square of alleys per DAs -----------------------------------------
@@ -435,15 +435,16 @@ build_and_append_alley <- function(scales_variables_modules, crs) {
       title_text_main = paste0(
         "<p>Green alleys are spaces that have been transformed by residents for th",
         "eir own activities. When adequately designed, these public spaces can ",
-        "help reduce heat island effects, noise, and air pollution. These alley",
-        "s have been classified into four types: green alleys, community-orient",
-        "ed alleys, mixed alleys, and unmaintained alleys."
+        "help reduce heat island effects, noise, and air pollution."
       ),
       title_text_extra = paste0(
-        "<p>The datasets visualized on this page come from the City of Montreal Op",
-        "en Data Portal, and Curbcut. To learn more about the Green Alley Progr",
-        "am in Montreal, visit <a href = ‘https://montreal.ca/en/topics/green-a",
-        "lleyways’ target = ‘_blank’>the city’s green alleyways page</a>. "
+        "<p>Montrea's green alleys have been classified into four types: ",
+        "green alleys, community-oriented alleys, mixed alleys, and ",
+        "unmaintained alleys. The datasets visualized on this page come from ",
+        "the City of Montreal Open Data Portal and Curbcut. To learn more ",
+        "about the Green Alley Program in Montreal, visit <a href = ",
+        "‘https://montreal.ca/en/topics/green-a",
+        "lleyways’ target = ‘_blank’>the City’s green alleyways page</a>. "
       ),
       regions = c("city"),
       metadata = TRUE,

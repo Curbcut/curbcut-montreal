@@ -2,9 +2,9 @@
 
 # On launch ---------------------------------------------------------------
 
-install_github("https://github.com/MSSI-urban/cc.data")
-install_github("https://github.com/MSSI-urban/curbcut")
-install_github("https://github.com/MSSI-urban/cc.buildr")
+install_github("https://github.com/Curbcut/cc.data")
+install_github("https://github.com/Curbcut/curbcut")
+install_github("https://github.com/Curbcut/cc.buildr")
 cc.data::bucket_get_folder("data", "curbcut.montreal.data")
 cc.data::bucket_get_folder("dev/data", "curbcut.montreal.dev.data")
 
