@@ -9,7 +9,7 @@ curbcut::ui(
   video_src = list(en = "https://s3.amazonaws.com/curbcut.public.resources/mtl_vid_en.mp4",
                    fr = "https://s3.amazonaws.com/curbcut.public.resources/mtl_vid_fr.mp4"),
   twitter_handler = "@curbcutca", 
-  google_analytics = "www/google_analytics.html", 
+  # google_analytics = "www/# google_analytics.html", 
   website_url = "https://montreal.curbcut.ca", 
   share_jpg = "https://montreal.curbcut.ca/share.jpg",
   apple_touch_icon = "https://montreal.curbcut.ca/logo192.jpg",
