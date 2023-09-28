@@ -76,12 +76,10 @@ first_level_choropleth <-
   ) |> unique()
 
 all_choropleths <-
-  sapply(sapply(ls()[grepl("map_zoom_levels_", ls())], get, USE.NAMES = FALSE),
-    names,
-    USE.NAMES = FALSE
-  ) |>
-  unlist() |>
-  unique()
+  sapply(ls()[grepl("map_zoom_levels_", ls())], get, simplify = FALSE, USE.NAMES = TRUE) |>
+  unname() |> 
+  unlist() |> 
+  names()
 
 
 # Declare temporary folder ------------------------------------------------

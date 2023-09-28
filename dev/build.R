@@ -698,11 +698,8 @@ source("dev/translation/build_translation.R", encoding = "utf-8")
 
 # Create DYKs -------------------------------------------------------------
 
-# library(cc.buildr)
 library(tidyverse)
 translation_df <- qs::qread("data/translation_df.qs")
-# qs::qload("dev/data/built/scales_variables_modules.qsm",
-#           nthreads = future::availableCores())
 vars_dyk <- dyk_prep(scales_variables_modules, all_tables)
 dyk <- dyk_uni(vars_dyk, 
                svm = scales_variables_modules, 
