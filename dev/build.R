@@ -820,6 +820,23 @@ qs::qsave(pe_docs, "data/pe_docs.qs")
 
 cc.data::bucket_write_folder("data", "curbcut.montreal.data")
 cc.data::bucket_write_folder("dev/data", "curbcut.montreal.dev.data")
+cc.data::bucket_write_folder("data", "curbcut.montreal.beta.data")
+
+all_files <- list.files(folder, full.names = TRUE, recursive = TRUE)
+hash_file <- tibble::tibble(file = all_files)
+hash_file$hash <- future.apply::future_sapply(hash_file$file, rlang::hash_file)
+
+hash_temp <- tempfile(fileext = ".qs")
+qs::qsave(hash_file, hash_temp)
+
+aws.s3::put_object(
+  region = Sys.getenv("CURBCUT_BUCKET_DEFAULT_REGION"),
+  key = Sys.getenv("CURBCUT_BUCKET_ACCESS_ID"),
+  secret = Sys.getenv("CURBCUT_BUCKET_ACCESS_KEY"),
+  file = hash_temp,
+  object = "hash.qs",
+  bucket = bucket
+) |> suppressMessages()
 
 
 # Deploy app --------------------------------------------------------------

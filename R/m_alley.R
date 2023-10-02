@@ -499,7 +499,7 @@ alley_server <- function(id, r) {
                            '" width = 100%>')),
         easyClose = TRUE,
         size = "m",
-        footer = NULL
+        footer = modalButton("Close")
       ))})
     
     # Bookmarking

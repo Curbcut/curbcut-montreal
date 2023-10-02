@@ -18,7 +18,7 @@ build_and_append_alley <- function(scales_variables_modules, crs) {
   # alley_boroughs$text_en <- sapply(seq_along(alley_boroughs$name), \(x) {
   #   row <- alley_boroughs[x, ]
   # 
-  #   start <- sprintf("<p>The first green alley inauguration whas in %s.", row$first_alley)
+  #   start <- sprintf("<p>The first green alley inauguration was in %s.", row$first_alley)
   # 
   #   other <- row[c("app_process", "management", "budget")]
   #   other <- sprintf("%s<p>%s", start, paste0(other[!is.na(other)], collapse = " "))

@@ -432,7 +432,7 @@
       "RemoteUsername": "Curbcut",
       "RemoteRepo": "curbcut",
       "RemoteRef": "HEAD",
-      "RemoteSha": "a506808e7830b2e9669c7c6a48fd8c5aaa3e8921",
+      "RemoteSha": "d2e80f10c5d10c3016f36c54520d926792b85a0d",
       "Remotes": "Curbcut/cc.map, Curbcut/cc.landing, bdbmax/bslib, qfes/rdeck",
       "Requirements": [
         "DBI",
@@ -461,7 +461,7 @@
         "utils",
         "zip"
       ],
-      "Hash": "183112aa4f2b5dbdf05bfacc926a61f8"
+      "Hash": "76d2e1b8393191583e575da9f70f3c77"
     },
     "curl": {
       "Package": "curl",
@@ -922,13 +922,13 @@
     },
     "openssl": {
       "Package": "openssl",
-      "Version": "2.1.0",
+      "Version": "2.1.1",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
         "askpass"
       ],
-      "Hash": "273a6bb4a9844c296a459d2176673270"
+      "Hash": "2a0dc8c6adfb6f032e4d4af82d258ab5"
     },
     "pillar": {
       "Package": "pillar",
@@ -1071,8 +1071,8 @@
       "RemoteUsername": "qfes",
       "RemoteRepo": "rdeck",
       "RemoteRef": "master",
-      "RemoteSha": "76b18f3f68d38e3ac02b935b6ec8164376294582",
-      "Remotes": "anthonynorth/roxyglobals, anthonynorth/stylebox, qfes/tidyassert",
+      "RemoteSha": "f4ac0007580c778dd43bc30032c5801569280a33",
+      "Remotes": "anthonynorth/stylebox, qfes/tidyassert",
       "Requirements": [
         "R",
         "R6",
@@ -1091,7 +1091,7 @@
         "tidyselect",
         "uuid"
       ],
-      "Hash": "606746f5f84bbb594ea9e02ebd1de012"
+      "Hash": "0614da947de2928b1e2e9a195c4f71ff"
     },
     "reactR": {
       "Package": "reactR",
@@ -1547,7 +1547,7 @@
     },
     "withr": {
       "Package": "withr",
-      "Version": "2.5.0",
+      "Version": "2.5.1",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -1556,7 +1556,7 @@
         "graphics",
         "stats"
       ],
-      "Hash": "c0e49a9760983e81e55cdd9be92e7182"
+      "Hash": "d77c6f74be05c33164e33fbc85540cae"
     },
     "wk": {
       "Package": "wk",
