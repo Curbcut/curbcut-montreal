@@ -296,6 +296,22 @@ natural_inf_UI <- function(id) {
 natural_inf_server <- function(id, r) {
   moduleServer(id, function(input, output, session) {
     
+    # Populate the empty container created in map_js_UI
+    output[[shiny::NS(id, "map_ph")]] <- shiny::renderUI({
+      cc.map::map_input(
+        map_ID = shiny::NS(id, shiny::NS(id, "map")),
+        username = mapbox_username,
+        token = map_token,
+        longitude = map_loc[1],
+        latitude = map_loc[2],
+        zoom = map_zoom,
+        map_style_id = map_base_style,
+        tileset_prefix = tileset_prefix,
+        stories = stories,
+        stories_min_zoom = 13
+      )
+    })
+    
     # Left variable (theme and indicator)
     var_left_1 <- curbcut::picker_server(
       id = id,
@@ -327,8 +343,6 @@ natural_inf_server <- function(id, r) {
       id = id,
       r = r,
       label = shiny::reactive("Custom priorities"))
-    
-    observe(print(custom_priorities()))
     
     # Hide and show UI elements depending on the picked choices
     shiny::observeEvent(var_left_1(), {
@@ -384,12 +398,17 @@ natural_inf_server <- function(id, r) {
 
     # Map custom colours
     natural_inf_colours <- reactive({
+      
+      ni_colour_table <- colours_dfs$viridis_25
+      # Test with left_5 instead of viridis
+      ni_colour_table$fill <- unlist(sapply(colours_dfs$left_5$fill[2:6], rep, 5, simplify = FALSE))
+      ni_colour_table$fill <- paste0(ni_colour_table$fill, "FF")
+      
       if (var_left() == "c_priority") {
 
         if (!custom_priorities()) {
 
           remove <- 50 - main_slider()
-          ni_colour_table <- colours_dfs$viridis_25
           # ni_colour_table$fill <- gsub("FF$", "", ni_colour_table$fill)
           ni_colour_table$fill[ni_colour_table$group <= remove] <-
             paste0(substr(ni_colour_table$fill[
@@ -407,10 +426,21 @@ natural_inf_server <- function(id, r) {
                               " AND flood = ", ni_slider()[3])
             out <- do.call("dbGetQuery", list(rlang::sym("naturalinf_conn"), db_call))[, c("group", "value")]
             names(out)[2] <- "fill"
+            
+            # Switch the viridis colour scale to the left_5
+            viridis <- colours_dfs$viridis_25
+            names(viridis)[2] <- "fill_viridis"
+            viridis <- merge(viridis, ni_colour_table, by = "group")
+            viridis <- viridis[2:3]
+            out <- merge(out, viridis, by.x = "fill", by.y = "fill_viridis")
+            
+            out <- out[c("group", "fill.y")]
+            names(out)[2] <- "fill"
+            
             out
           }
         }
-      } else colours_dfs$viridis_25
+      } else ni_colour_table
 
     })
 

@@ -818,9 +818,9 @@ qs::qsave(pe_docs, "data/pe_docs.qs")
 
 # Write the data to the bucket --------------------------------------------
 
-cc.data::bucket_write_folder("data", "curbcut.montreal.data")
-cc.data::bucket_write_folder("dev/data", "curbcut.montreal.dev.data")
-cc.data::bucket_write_folder("data", "curbcut.montreal.beta.data")
+# cc.data::bucket_write_folder(folder = "data", bucket = "curbcut.montreal.data")
+cc.data::bucket_write_folder(folder = "dev/data", bucket = "curbcut.montreal.dev.data")
+cc.data::bucket_write_folder(folder = "data", bucket = "curbcut.montreal.beta.data")
 
 all_files <- list.files(folder, full.names = TRUE, recursive = TRUE)
 hash_file <- tibble::tibble(file = all_files)

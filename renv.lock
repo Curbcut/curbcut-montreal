@@ -318,14 +318,14 @@
       "RemoteUsername": "Curbcut",
       "RemoteRepo": "cc.map",
       "RemoteRef": "master",
-      "RemoteSha": "840655292107eb6089f5ef1e0b41b67e6c8454d6",
+      "RemoteSha": "04191903ea126d231b52d2d20bc5ad69be5fdc25",
       "Requirements": [
         "htmltools",
         "jsonlite",
         "reactR",
         "shiny"
       ],
-      "Hash": "e8ef0f0d3f01bc8acbff057a4ef29597"
+      "Hash": "b68a95ac159f693887898a92f6825667"
     },
     "class": {
       "Package": "class",
@@ -432,7 +432,7 @@
       "RemoteUsername": "Curbcut",
       "RemoteRepo": "curbcut",
       "RemoteRef": "HEAD",
-      "RemoteSha": "d2e80f10c5d10c3016f36c54520d926792b85a0d",
+      "RemoteSha": "0fe312a0559b8cf3fe7a4afa1ee59f5f7b2c4585",
       "Remotes": "Curbcut/cc.map, Curbcut/cc.landing, bdbmax/bslib, qfes/rdeck",
       "Requirements": [
         "DBI",
@@ -461,7 +461,7 @@
         "utils",
         "zip"
       ],
-      "Hash": "76d2e1b8393191583e575da9f70f3c77"
+      "Hash": "c155c53d367373a28e773af4f18f98da"
     },
     "curl": {
       "Package": "curl",
