@@ -111,6 +111,21 @@ vars_right <- modules$var_right[modules$id == "climate_risk"][[1]]
 
 `climate_risk_server` <- function(id, r) {
   shiny::moduleServer(id, function(input, output, session) {
+    
+    output[[shiny::NS(id, "map_ph")]] <- shiny::renderUI({
+      cc.map::map_input(
+        map_ID = shiny::NS(id, shiny::NS(id, "map")),
+        username = mapbox_username,
+        token = map_token,
+        longitude = map_loc[1],
+        latitude = map_loc[2],
+        zoom = map_zoom,
+        map_style_id = map_base_style,
+        tileset_prefix = tileset_prefix,
+        stories = stories,
+        stories_min_zoom = 13
+      )
+    })
 
     # Initial reactives
     rv_zoom_string <- reactiveVal(

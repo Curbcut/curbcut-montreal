@@ -698,11 +698,8 @@ source("dev/translation/build_translation.R", encoding = "utf-8")
 
 # Create DYKs -------------------------------------------------------------
 
-# library(cc.buildr)
 library(tidyverse)
 translation_df <- qs::qread("data/translation_df.qs")
-# qs::qload("dev/data/built/scales_variables_modules.qsm",
-#           nthreads = future::availableCores())
 vars_dyk <- dyk_prep(scales_variables_modules, all_tables)
 dyk <- dyk_uni(vars_dyk, 
                svm = scales_variables_modules, 
@@ -821,8 +818,25 @@ qs::qsave(pe_docs, "data/pe_docs.qs")
 
 # Write the data to the bucket --------------------------------------------
 
-cc.data::bucket_write_folder("data", "curbcut.montreal.data")
-cc.data::bucket_write_folder("dev/data", "curbcut.montreal.dev.data")
+# cc.data::bucket_write_folder(folder = "data", bucket = "curbcut.montreal.data")
+cc.data::bucket_write_folder(folder = "dev/data", bucket = "curbcut.montreal.dev.data")
+cc.data::bucket_write_folder(folder = "data", bucket = "curbcut.montreal.beta.data")
+
+all_files <- list.files(folder, full.names = TRUE, recursive = TRUE)
+hash_file <- tibble::tibble(file = all_files)
+hash_file$hash <- future.apply::future_sapply(hash_file$file, rlang::hash_file)
+
+hash_temp <- tempfile(fileext = ".qs")
+qs::qsave(hash_file, hash_temp)
+
+aws.s3::put_object(
+  region = Sys.getenv("CURBCUT_BUCKET_DEFAULT_REGION"),
+  key = Sys.getenv("CURBCUT_BUCKET_ACCESS_ID"),
+  secret = Sys.getenv("CURBCUT_BUCKET_ACCESS_KEY"),
+  file = hash_temp,
+  object = "hash.qs",
+  bucket = bucket
+) |> suppressMessages()
 
 
 # Deploy app --------------------------------------------------------------

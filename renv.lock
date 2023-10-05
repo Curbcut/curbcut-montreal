@@ -318,14 +318,14 @@
       "RemoteUsername": "Curbcut",
       "RemoteRepo": "cc.map",
       "RemoteRef": "master",
-      "RemoteSha": "840655292107eb6089f5ef1e0b41b67e6c8454d6",
+      "RemoteSha": "04191903ea126d231b52d2d20bc5ad69be5fdc25",
       "Requirements": [
         "htmltools",
         "jsonlite",
         "reactR",
         "shiny"
       ],
-      "Hash": "e8ef0f0d3f01bc8acbff057a4ef29597"
+      "Hash": "b68a95ac159f693887898a92f6825667"
     },
     "class": {
       "Package": "class",
@@ -432,7 +432,7 @@
       "RemoteUsername": "Curbcut",
       "RemoteRepo": "curbcut",
       "RemoteRef": "HEAD",
-      "RemoteSha": "c013ef651ad79ba5ee6266b607b12363266d3a32",
+      "RemoteSha": "bdc7271a5a09d2227a2efadbf7db2bbd55387627",
       "Remotes": "Curbcut/cc.map, Curbcut/cc.landing, bdbmax/bslib, qfes/rdeck",
       "Requirements": [
         "DBI",
@@ -461,7 +461,7 @@
         "utils",
         "zip"
       ],
-      "Hash": "d13d78ba89739df581fe5c4cb8a2a8f8"
+      "Hash": "33c411abb531c6b38c7abf57bfb736e0"
     },
     "curl": {
       "Package": "curl",
@@ -547,14 +547,14 @@
     },
     "evaluate": {
       "Package": "evaluate",
-      "Version": "0.21",
+      "Version": "0.22",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
         "R",
         "methods"
       ],
-      "Hash": "d59f3b464e8da1aef82dc04b588b8dfb"
+      "Hash": "66f39c7a21e03c4dcb2c2d21d738d603"
     },
     "fansi": {
       "Package": "fansi",
@@ -922,13 +922,13 @@
     },
     "openssl": {
       "Package": "openssl",
-      "Version": "2.1.0",
+      "Version": "2.1.1",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
         "askpass"
       ],
-      "Hash": "273a6bb4a9844c296a459d2176673270"
+      "Hash": "2a0dc8c6adfb6f032e4d4af82d258ab5"
     },
     "pillar": {
       "Package": "pillar",
@@ -1071,8 +1071,8 @@
       "RemoteUsername": "qfes",
       "RemoteRepo": "rdeck",
       "RemoteRef": "master",
-      "RemoteSha": "76b18f3f68d38e3ac02b935b6ec8164376294582",
-      "Remotes": "anthonynorth/roxyglobals, anthonynorth/stylebox, qfes/tidyassert",
+      "RemoteSha": "f4ac0007580c778dd43bc30032c5801569280a33",
+      "Remotes": "anthonynorth/stylebox, qfes/tidyassert",
       "Requirements": [
         "R",
         "R6",
@@ -1091,7 +1091,7 @@
         "tidyselect",
         "uuid"
       ],
-      "Hash": "606746f5f84bbb594ea9e02ebd1de012"
+      "Hash": "0614da947de2928b1e2e9a195c4f71ff"
     },
     "reactR": {
       "Package": "reactR",
@@ -1459,13 +1459,13 @@
     },
     "tinytex": {
       "Package": "tinytex",
-      "Version": "0.46",
+      "Version": "0.47",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
         "xfun"
       ],
-      "Hash": "0c41a73214d982f539c56a7773c7afa5"
+      "Hash": "8d4ccb733843e513c1c1cdd66a759f0d"
     },
     "triebeard": {
       "Package": "triebeard",
@@ -1547,7 +1547,7 @@
     },
     "withr": {
       "Package": "withr",
-      "Version": "2.5.0",
+      "Version": "2.5.1",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -1556,7 +1556,7 @@
         "graphics",
         "stats"
       ],
-      "Hash": "c0e49a9760983e81e55cdd9be92e7182"
+      "Hash": "d77c6f74be05c33164e33fbc85540cae"
     },
     "wk": {
       "Package": "wk",

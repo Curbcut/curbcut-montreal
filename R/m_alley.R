@@ -210,15 +210,18 @@ alley_UI <- function(id) {
       ),
       
       # Map
-    curbcut::map_js_UI(shiny::NS(id, id)),
-    
-    # Right panel
-    curbcut::right_panel(
-      id = id,
-      curbcut::explore_UI(shiny::NS(id, id)),
-      curbcut::dyk_UI(shiny::NS(id, id))
+      curbcut::map_js_UI(shiny::NS(id, id)),
+      
+      # Popup for photos
+      popup_UI(id = shiny::NS(id, id)),
+      
+      # Right panel
+      curbcut::right_panel(
+        id = id,
+        curbcut::explore_UI(shiny::NS(id, id)),
+        curbcut::dyk_UI(shiny::NS(id, id))
+      )
     )
-  )
   )
 }
 
@@ -229,6 +232,21 @@ alley_server <- function(id, r) {
   shiny::moduleServer(id, function(input, output, session) {
     default_region <- modules$regions[modules$id == id][[1]][1]
     mzp <- eval(parse(text = paste0("map_zoom_levels_", default_region)))
+    
+    output[[shiny::NS(id, "map_ph")]] <- shiny::renderUI({
+      cc.map::map_input(
+        map_ID = shiny::NS(id, shiny::NS(id, "map")),
+        username = mapbox_username,
+        token = map_token,
+        longitude = map_loc[1],
+        latitude = map_loc[2],
+        zoom = map_zoom,
+        map_style_id = map_base_style,
+        tileset_prefix = tileset_prefix,
+        stories = stories,
+        stories_min_zoom = 13
+      )
+    })
     
     # Initial zoom string reactive value
     rv_zoom_string <- shiny::reactiveVal(
@@ -490,17 +508,35 @@ alley_server <- function(id, r) {
       shinyjs::toggle(id = shiny::NS(id, "explore_graph"), condition = cond)
     })
     
-    # When a click on the image
-    shinyjs::onclick("alley_img", {
-      shiny::showModal(shiny::modalDialog(
-        title = alleys$name[alleys$ID == r[[id]]$select_id()],
-        shiny::HTML(paste0('<img src="alleys/',
-                           alleys$photo_ID[alleys$ID == r[[id]]$select_id()],
-                           '" width = 100%>')),
-        easyClose = TRUE,
-        size = "m",
-        footer = NULL
-      ))})
+    content <- shiny::reactive({
+      if (mode() != "alleys") return(NULL)
+      if (is.na(r[[id]]$select_id())) return(NULL)
+      
+      title <- alleys$name[alleys$ID == r[[id]]$select_id()]
+      src <- sprintf("alleys/%s", alleys$photo_ID[alleys$ID == r[[id]]$select_id()])
+      
+      shiny::div(style = "height:100%; overflow:auto; padding: var(--padding-h-md)",
+                 shiny::h2(title),
+                 shiny::img(src = src, width = "100%"))
+    })
+    
+    # On a photo click, trigger the show_popup and make sure it creates a reaction
+    # to TRUE
+    show_popup <- shiny::reactiveVal(FALSE)
+    shiny::observe({
+      shinyjs::onclick("alley_img", {
+        shiny::isolate({
+          show_popup(FALSE)
+          show_popup(TRUE)          
+        })
+      })
+    })
+    shiny::observeEvent(r[[id]]$select_id(), show_popup(FALSE))
+    
+    popup_server(id = id,
+                 content = content,
+                 show_popup = show_popup)
+    
     
     # Bookmarking
     curbcut::bookmark_server(

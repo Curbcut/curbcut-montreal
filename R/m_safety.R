@@ -97,6 +97,22 @@ safety_server <- function(id, r) {
     vars_right <- modules$var_right[modules$id == id][[1]]
     suffix_zoom_levels <- modules$suffix_zoom_levels[modules$id == id]
     
+    # Populate the empty container created in map_js_UI
+    output[[shiny::NS(id, "map_ph")]] <- shiny::renderUI({
+      cc.map::map_input(
+        map_ID = shiny::NS(id, shiny::NS(id, "map")),
+        username = mapbox_username,
+        token = map_token,
+        longitude = map_loc[1],
+        latitude = map_loc[2],
+        zoom = map_zoom,
+        map_style_id = map_base_style,
+        tileset_prefix = tileset_prefix,
+        stories = stories,
+        stories_min_zoom = 13
+      )
+    })
+
     # Initial zoom string reactive value
     rv_zoom_string <- shiny::reactiveVal(
       curbcut::zoom_get_string(

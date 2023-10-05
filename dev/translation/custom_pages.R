@@ -78,8 +78,10 @@ translation_custom_pages <-
           fr = "Extrêmement important") |> 
   add_row(en = "Amount protected",
           fr = "Montant protégé") |> 
-  add_row(en = "Share of MOntreal area",
+  add_row(en = "Share of Montreal area",
           fr = "Part de la région de Montréal") |> 
+  add_row(en = "Flood risk areas",
+          fr = "Zones à risque d'inondation") |> 
   
   # Green alley
   add_row(en = "Borough summary",

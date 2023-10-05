@@ -47,13 +47,13 @@ tileset_upload_grid <- function(region, all_scales, map_zoom_levels, max_zoom,
         v_1 <- paste0(var, "_2015")
         v_2 <- paste0(var, "_2022")
         
-        delta <- (df[[v_2]] - df[[v_1]]) / df[[v_1]]
+        delta <- df[[v_2]] - df[[v_1]]
         
         df[[v]] <- 5
-        df[[v]][delta < 0.1] <- 4
-        df[[v]][delta < 0.02] <- 3
-        df[[v]][delta < -0.02] <- 2
-        df[[v]][delta < -0.1] <- 1
+        df[[v]][delta == 1] <- 4
+        df[[v]][delta == 0] <- 3
+        df[[v]][delta == -1] <- 2
+        df[[v]][delta < -1] <- 1
         df[[v]][is.na(delta)] <- NA
         
         # As characters
