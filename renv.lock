@@ -432,7 +432,7 @@
       "RemoteUsername": "Curbcut",
       "RemoteRepo": "curbcut",
       "RemoteRef": "HEAD",
-      "RemoteSha": "0fe312a0559b8cf3fe7a4afa1ee59f5f7b2c4585",
+      "RemoteSha": "bdc7271a5a09d2227a2efadbf7db2bbd55387627",
       "Remotes": "Curbcut/cc.map, Curbcut/cc.landing, bdbmax/bslib, qfes/rdeck",
       "Requirements": [
         "DBI",
@@ -461,7 +461,7 @@
         "utils",
         "zip"
       ],
-      "Hash": "c155c53d367373a28e773af4f18f98da"
+      "Hash": "33c411abb531c6b38c7abf57bfb736e0"
     },
     "curl": {
       "Package": "curl",
@@ -547,14 +547,14 @@
     },
     "evaluate": {
       "Package": "evaluate",
-      "Version": "0.21",
+      "Version": "0.22",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
         "R",
         "methods"
       ],
-      "Hash": "d59f3b464e8da1aef82dc04b588b8dfb"
+      "Hash": "66f39c7a21e03c4dcb2c2d21d738d603"
     },
     "fansi": {
       "Package": "fansi",
@@ -1459,13 +1459,13 @@
     },
     "tinytex": {
       "Package": "tinytex",
-      "Version": "0.46",
+      "Version": "0.47",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
         "xfun"
       ],
-      "Hash": "0c41a73214d982f539c56a7773c7afa5"
+      "Hash": "8d4ccb733843e513c1c1cdd66a759f0d"
     },
     "triebeard": {
       "Package": "triebeard",
