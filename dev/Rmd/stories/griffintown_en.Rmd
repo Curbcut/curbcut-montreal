@@ -71,7 +71,7 @@ knitr::include_graphics(c(here::here("dev/data/stories/raw_images/griffintown/fi
 <p>This case study overviews a long history of governance driven by a logic of growth, which has left community well-being out of Griffintown&rsquo;s planning process. Research showing that storm-water flooding is also a large future potential cost of flooding and community advocacy for climate resilient development will be a key to effective planning processes concerned with water management in Griffintown in the future.</p>
 
 <details>
-<summary>### References</summary>
+<summary>References</summary>
 <ul>
 <li>Ames, H. B. (1972). <em>The city below the hill</em>. Toronto, ON: Franklin Classics Trade Press.</li>
 <li>Anhoury, M. (2019, July 16). Quebec releases updated map of flood zones. <em>Montreal Gazette</em>. Retrieved December 11, 2020, from https://montrealgazette.com/news/quebec/quebec-releases-updated-map-of-flood-zones</li>

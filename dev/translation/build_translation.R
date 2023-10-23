@@ -4,6 +4,21 @@
 
 library(dplyr)
 library(qs)
+if (is.null(get0("stories"))) {
+  stories <- qs::qread("data/stories.qs")
+}
+if (is.null(get0("variables"))) {
+  variables <- qs::qread("data/variables.qs")
+}
+if (is.null(get0("modules"))) {
+  modules <- qs::qread("data/modules.qs")
+}
+if (is.null(get0("regions_dictionary"))) {
+  regions_dictionary <- qs::qread("data/regions_dictionary.qs")
+}
+if (is.null(get0("scales_dictionary"))) {
+  scales_dictionary <- qs::qread("data/scales_dictionary.qs")
+}
 
 # From a CSV to code to create tibbles ------------------------------------
 # form_translation_tibble <- function(df) {

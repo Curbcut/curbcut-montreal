@@ -291,7 +291,7 @@ window.onload = filter_default;
 ```
 
 <details>
-<summary>### References</summary>
+<summary>References</summary>
 Barbeau, A. (2018, May 27). Ligne rose: Valérie Plante réplique au refus de la CAQ. iHeartRadio. Retrieved June 14, 2022, from https://www.iheartradio.ca/rouge-fm/rouge-fm-quebec/ligne-rose-valerie-plante-replique-au-refus-de-la-caq-1.3845501
 
 The Canadian Press. (2017, May 1). Montreal’s iconic Expo 67 exhibition left lasting impact on country. National Post. Retrieved June 13, 2022, from https://nationalpost.com/travel/montreals-iconic-expo-67-exhibition-left-lasting-impact-on-country

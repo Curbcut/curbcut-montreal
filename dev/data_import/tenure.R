@@ -645,7 +645,7 @@ build_and_append_tenure <- function(scales_variables_modules, crs) {
       group_name = group_name,
       group_diff = group_diff,
       dates = with_breaks$avail_dates[[var]],
-      avail_df = data_interpolated$avail_df,
+      avail_scale = data_interpolated$avail_scale,
       breaks_q3 = with_breaks$q3_breaks_table[[var]],
       breaks_q5 = with_breaks$q5_breaks_table[[var]],
       region_values = region_vals[[var]],

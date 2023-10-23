@@ -64,7 +64,7 @@ build_and_append_climate_risk <- function(scales_variables_modules, crs) {
   data_interpolated$scales$grid$grid25 <- 
     merge(data_interpolated$scales$grid$grid25,
           sf::st_drop_geometry(climate_risk), by = "ID")
-  data_interpolated$avail_df <- c(data_interpolated$avail_df, "grid_grid25")
+  data_interpolated$avail_scale <- c(data_interpolated$avail_scale, "grid_grid25")
   data_interpolated$interpolated_ref <- 
     rbind(data_interpolated$interpolated_ref,
           tibble::tibble(df = "grid_grid25", interpolated_from = FALSE))
@@ -103,7 +103,7 @@ build_and_append_climate_risk <- function(scales_variables_modules, crs) {
   data_interpolated$scales$grid$grid50 <- 
     merge(data_interpolated$scales$grid$grid50,
           climate_risk_50, by = "ID")
-  data_interpolated$avail_df <- c(data_interpolated$avail_df, "grid_grid50")
+  data_interpolated$avail_scale <- c(data_interpolated$avail_scale, "grid_grid50")
   data_interpolated$interpolated_ref <- 
     rbind(data_interpolated$interpolated_ref,
           tibble::tibble(df = "grid_grid50", interpolated_from = "grid25"))
@@ -138,7 +138,7 @@ build_and_append_climate_risk <- function(scales_variables_modules, crs) {
   data_interpolated$scales$grid$grid100 <- 
     merge(data_interpolated$scales$grid$grid100,
           climate_risk_100, by = "ID")
-  data_interpolated$avail_df <- c(data_interpolated$avail_df, "grid_grid100")
+  data_interpolated$avail_scale <- c(data_interpolated$avail_scale, "grid_grid100")
   data_interpolated$interpolated_ref <- 
     rbind(data_interpolated$interpolated_ref,
           tibble::tibble(df = "grid_grid100", interpolated_from = "grid25"))
@@ -173,7 +173,7 @@ build_and_append_climate_risk <- function(scales_variables_modules, crs) {
   data_interpolated$scales$grid$grid250 <- 
     merge(data_interpolated$scales$grid$grid250,
           climate_risk_250, by = "ID")
-  data_interpolated$avail_df <- c(data_interpolated$avail_df, "grid_grid250")
+  data_interpolated$avail_scale <- c(data_interpolated$avail_scale, "grid_grid250")
   data_interpolated$interpolated_ref <- 
     rbind(data_interpolated$interpolated_ref,
           tibble::tibble(df = "grid_grid250", interpolated_from = "grid25"))
@@ -377,8 +377,8 @@ build_and_append_climate_risk <- function(scales_variables_modules, crs) {
   # Prepare the variable measurements ---------------------------------------
   
   var_measurement <- data.frame(
-    df = data_interpolated$avail_df,
-    measurement = rep("scalar", length(data_interpolated$avail_df)))
+    df = data_interpolated$avail_scale,
+    measurement = rep("scalar", length(data_interpolated$avail_scale)))
   var_measurement$measurement[var_measurement$df == "grid_grid25"] <- "ordinal"
   var_measurement$measurement[var_measurement$df == "grid_grid50"] <- "ordinal"
   var_measurement$measurement[var_measurement$df == "grid_grid100"] <- "ordinal"
@@ -399,7 +399,7 @@ build_and_append_climate_risk <- function(scales_variables_modules, crs) {
       theme = "Climate risk",
       private = FALSE,
       dates = with_breaks$avail_dates[["climate_drought"]],
-      avail_df = data_interpolated$avail_df,
+      avail_scale = data_interpolated$avail_scale,
       breaks_q3 = with_breaks$q3_breaks_table[["climate_drought"]],
       breaks_q5 = with_breaks$q5_breaks_table[["climate_drought"]],
       region_values = region_vals$climate_drought,
@@ -422,7 +422,7 @@ build_and_append_climate_risk <- function(scales_variables_modules, crs) {
       theme = "Climate risk",
       private = FALSE,
       dates = with_breaks$avail_dates[["climate_flood"]],
-      avail_df = data_interpolated$avail_df,
+      avail_scale = data_interpolated$avail_scale,
       breaks_q3 = with_breaks$q3_breaks_table[["climate_flood"]],
       breaks_q5 = with_breaks$q5_breaks_table[["climate_flood"]],
       region_values = region_vals$climate_flood,
@@ -445,7 +445,7 @@ build_and_append_climate_risk <- function(scales_variables_modules, crs) {
       theme = "Climate risk",
       private = FALSE,
       dates = with_breaks$avail_dates[["climate_heavy_rain"]],
-      avail_df = data_interpolated$avail_df,
+      avail_scale = data_interpolated$avail_scale,
       breaks_q3 = with_breaks$q3_breaks_table[["climate_heavy_rain"]],
       breaks_q5 = with_breaks$q5_breaks_table[["climate_heavy_rain"]],
       region_values = region_vals$climate_heavy_rain,
@@ -469,7 +469,7 @@ build_and_append_climate_risk <- function(scales_variables_modules, crs) {
       theme = "Climate risk",
       private = FALSE,
       dates = with_breaks$avail_dates[["climate_destructive_storms"]],
-      avail_df = data_interpolated$avail_df,
+      avail_scale = data_interpolated$avail_scale,
       breaks_q3 = with_breaks$q3_breaks_table[["climate_destructive_storms"]],
       breaks_q5 = with_breaks$q5_breaks_table[["climate_destructive_storms"]],
       region_values = region_vals$climate_destructive_storms,
@@ -492,7 +492,7 @@ build_and_append_climate_risk <- function(scales_variables_modules, crs) {
       theme = "Climate risk",
       private = FALSE,
       dates = with_breaks$avail_dates[["climate_heat_wave"]],
-      avail_df = data_interpolated$avail_df,
+      avail_scale = data_interpolated$avail_scale,
       breaks_q3 = with_breaks$q3_breaks_table[["climate_heat_wave"]],
       breaks_q5 = with_breaks$q5_breaks_table[["climate_heat_wave"]],
       region_values = region_vals$climate_heat_wave,

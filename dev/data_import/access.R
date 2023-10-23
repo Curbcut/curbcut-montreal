@@ -131,8 +131,8 @@ build_and_append_access <- function(scales_variables_modules,
   # Variable measurements ----------------------------------------------------
   
   var_measurement <- data.frame(
-    df = data_interpolated$avail_df,
-    measurement = rep("scalar", length(data_interpolated$avail_df)))
+    df = data_interpolated$avail_scale,
+    measurement = rep("scalar", length(data_interpolated$avail_scale)))
   
   var_measurement$measurement[grepl("_DA$", var_measurement$df)] <-
     rep("ordinal", length(var_measurement$measurement[grepl("_DA$", var_measurement$df)]))
@@ -218,7 +218,7 @@ build_and_append_access <- function(scales_variables_modules,
       pe_include = var == "access_foot_20_daycarespots_2023",
       region_values = region_values[[var]],
       dates = with_breaks$avail_dates[[var]],
-      avail_df = data_interpolated$avail_df,
+      avail_scale = data_interpolated$avail_scale,
       breaks_q3 = with_breaks$q3_breaks_table[[var]],
       breaks_q5 = with_breaks$q5_breaks_table[[var]],
       source = "Données Québec",

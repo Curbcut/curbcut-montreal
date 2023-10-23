@@ -318,14 +318,14 @@
       "RemoteUsername": "Curbcut",
       "RemoteRepo": "cc.map",
       "RemoteRef": "master",
-      "RemoteSha": "04191903ea126d231b52d2d20bc5ad69be5fdc25",
+      "RemoteSha": "84a991e181b181cb157d26e5fa98447e728f58de",
       "Requirements": [
         "htmltools",
         "jsonlite",
         "reactR",
         "shiny"
       ],
-      "Hash": "b68a95ac159f693887898a92f6825667"
+      "Hash": "0432854c1c1be27e18f518b023920caf"
     },
     "class": {
       "Package": "class",

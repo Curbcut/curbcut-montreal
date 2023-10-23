@@ -164,85 +164,85 @@ home_page <- function(modules, stories, translation_df, data_path = "data/") {
   disc_stories$df <- NA
   # disc_stories <- disc_stories[c("id", "img", "theme", "en", "fr", "preview_en", "preview_fr", "type", "select_id")]
 
-  # DYK for discovers
-  dyk_discover_fun <- function(theme, page, var_right = " ", var_left = NULL, date, type, en, fr) {
-    
-    # Filter page, var_right, type
-    this <- dyk[dyk$module == page & dyk$var_right == var_right & dyk$dyk_type == type, ]
-    
-    # Filter var_left if supplied
-    if (!is.null(var_left)) {
-      this <- dyk[dyk$var_left == var_left, ]
-    }
-    
-    # Filter date over the list column
-    this <- this[unlist(sapply(this$date, identical, as.character(date))), ]
-    
-    # Filter region and scale. Use of `identical` for when scale is NA.
-    this <- this[this$region == this$region[1] & unlist(sapply(this$scale, identical, this$scale[1])), ]
-    
-    # Grab last row
-    this <- this[nrow(this), ]
-
-    # Discover columns
-    this$id <- sprintf("%s_dyk1", page)
-    this$img <- sprintf("%s.png", this$id)
-    this$theme <- theme
-    this$en <- en
-    this$fr <- fr
-    names(this)[names(this) == "dyk_text_en"] <- "preview_en"
-    names(this)[names(this) == "dyk_text_fr"] <- "preview_fr"
-    names(this)[names(this) == "module"] <- "page"
-    names(this)[names(this) == "select_ID"] <- "select_id"
-    this$type <- "dyk"
-    this$df <- if (type %in% c("highest", "lowest")) sprintf("%s_%s", this$region, this$scale) else NA
-    
-    # Return
-    this[c("id", "img", "theme", "en", "fr", "preview_en", "preview_fr", "type", 
-           "page", "var_left", "var_right", "select_id", "date", "df")]
-  }
-  
-  disc_dyk <- 
-    tibble::tibble() |> 
-    rbind(dyk_discover_fun(theme = "health", 
-                           page = "alp", 
-                           var_right = "housing_single_detached",
-                           date = 2021,
-                           type = "compare", 
-                           en = "Dense, walkable neighbourhoods", 
-                           fr = "Quartiers denses et accessibles à pied")) |> 
-    rbind(dyk_discover_fun(theme = "climate", 
-                           page = "lst", 
-                           var_right = " ",
-                           date = 2021,
-                           type = "lowest", 
-                           en = "The coolest town in the region", 
-                           fr = "La ville la plus fraîche de la région")) |> 
-    rbind(dyk_discover_fun(theme = "ecology", 
-                           page = "ndvi", 
-                           var_right = "housing_tenant",
-                           date = 2023,
-                           type = "compare", 
-                           en = "Tenants lack green space", 
-                           fr = "Les locataires manquent d'espaces verts")) |> 
-    rbind(dyk_discover_fun(theme = "housing", 
-                           page = "housing", 
-                           var_left = "housing_rent",
-                           date = c("1996", "2021"),
-                           type = "change", 
-                           en = "Skyrocketing housing costs", 
-                           fr = "La flambée des prix du logement")) |> 
-    rbind(dyk_discover_fun(theme = "transport", 
-                           page = "canbics", 
-                           var_right = " ",
-                           date = c("2021"),
-                           type = "highest", 
-                           en = "The best bikelanes", 
-                           fr = "Les meilleures pistes cyclables"))
+  # # DYK for discovers
+  # dyk_discover_fun <- function(theme, page, var_right = " ", var_left = NULL, date, type, en, fr) {
+  #   
+  #   # Filter page, var_right, type
+  #   this <- dyk[dyk$module == page & dyk$var_right == var_right & dyk$dyk_type == type, ]
+  #   
+  #   # Filter var_left if supplied
+  #   if (!is.null(var_left)) {
+  #     this <- dyk[dyk$var_left == var_left, ]
+  #   }
+  #   
+  #   # Filter date over the list column
+  #   this <- this[unlist(sapply(this$date, identical, as.character(date))), ]
+  #   
+  #   # Filter region and scale. Use of `identical` for when scale is NA.
+  #   this <- this[this$region == this$region[1] & unlist(sapply(this$scale, identical, this$scale[1])), ]
+  #   
+  #   # Grab last row
+  #   this <- this[nrow(this), ]
+  # 
+  #   # Discover columns
+  #   this$id <- sprintf("%s_dyk1", page)
+  #   this$img <- sprintf("%s.png", this$id)
+  #   this$theme <- theme
+  #   this$en <- en
+  #   this$fr <- fr
+  #   names(this)[names(this) == "dyk_text_en"] <- "preview_en"
+  #   names(this)[names(this) == "dyk_text_fr"] <- "preview_fr"
+  #   names(this)[names(this) == "module"] <- "page"
+  #   names(this)[names(this) == "select_ID"] <- "select_id"
+  #   this$type <- "dyk"
+  #   this$df <- if (type %in% c("highest", "lowest")) sprintf("%s_%s", this$region, this$scale) else NA
+  #   
+  #   # Return
+  #   this[c("id", "img", "theme", "en", "fr", "preview_en", "preview_fr", "type", 
+  #          "page", "var_left", "var_right", "select_id", "date", "df")]
+  # }
+  # 
+  # disc_dyk <- 
+  #   tibble::tibble() |> 
+  #   rbind(dyk_discover_fun(theme = "health", 
+  #                          page = "alp", 
+  #                          var_right = "housing_single_detached",
+  #                          date = 2021,
+  #                          type = "compare", 
+  #                          en = "Dense, walkable neighbourhoods", 
+  #                          fr = "Quartiers denses et accessibles à pied")) |> 
+  #   rbind(dyk_discover_fun(theme = "climate", 
+  #                          page = "lst", 
+  #                          var_right = " ",
+  #                          date = 2021,
+  #                          type = "lowest", 
+  #                          en = "The coolest town in the region", 
+  #                          fr = "La ville la plus fraîche de la région")) |> 
+  #   rbind(dyk_discover_fun(theme = "ecology", 
+  #                          page = "ndvi", 
+  #                          var_right = "housing_tenant",
+  #                          date = 2023,
+  #                          type = "compare", 
+  #                          en = "Tenants lack green space", 
+  #                          fr = "Les locataires manquent d'espaces verts")) |> 
+  #   rbind(dyk_discover_fun(theme = "housing", 
+  #                          page = "housing", 
+  #                          var_left = "housing_rent",
+  #                          date = c("1996", "2021"),
+  #                          type = "change", 
+  #                          en = "Skyrocketing housing costs", 
+  #                          fr = "La flambée des prix du logement")) |> 
+  #   rbind(dyk_discover_fun(theme = "transport", 
+  #                          page = "canbics", 
+  #                          var_right = " ",
+  #                          date = c("2021"),
+  #                          type = "highest", 
+  #                          en = "The best bikelanes", 
+  #                          fr = "Les meilleures pistes cyclables"))
   
   
   # Bindthe modules with the stories and the DYK
-  discover_cards <- rbind(disc_modules, disc_stories, disc_dyk)
+  discover_cards <- rbind(disc_modules, disc_stories)#, disc_dyk)
   
   # Filter out missing photos and warn!
   present_img <- discover_cards$img %in% list.files("www/landing/discover/")
