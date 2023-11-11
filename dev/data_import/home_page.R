@@ -30,26 +30,26 @@ home_page <- function(modules, stories, translation_df, data_path = "data/") {
   
   news_cards <- 
     news_cards |> 
-    tibble::add_row(id = "curbcut5a7", 
-                    icon = "transport", 
-                    title_en = "Curbcut 5@7", 
-                    title_fr = "5@7 Curbcut", 
-                    text_en = paste0(
-                      "Join us in celebrating Curbcut’s latest update! We’re hosting a 5@7 ev",
-                      "ent at the McGill Engine Centre on October 2nd. Don’t miss this opport",
-                      "unity to explore our innovative new features and join a discussion on ",
-                      "how Curbcut is shaping the future of urban sustainability. See you the",
-                      "re!"
-                    ), 
-                    text_fr = paste0(
-                      "Rejoignez-nous pour célébrer la toute dernière mise à jour de Curbcut ",
-                      "! Nous organisons un 5@7 au Centre d'Innovation McGill le 2 octobre. N",
-                      "e manquez pas cette occasion de découvrir nos nouvelles fonctionnalité",
-                      "s innovantes et de participer à des discussions sur la ma",
-                      "nière dont Curbcut façonne l'avenir de la durabilité urbaine. À très b",
-                      "ientôt !"
-                    ),
-                    link = "https://www.eventbrite.ca/e/curbcut-57-tickets-705402857937") |> 
+    # tibble::add_row(id = "curbcut5a7", 
+    #                 icon = "transport", 
+    #                 title_en = "Curbcut 5@7", 
+    #                 title_fr = "5@7 Curbcut", 
+    #                 text_en = paste0(
+    #                   "Join us in celebrating Curbcut’s latest update! We’re hosting a 5@7 ev",
+    #                   "ent at the McGill Engine Centre on October 2nd. Don’t miss this opport",
+    #                   "unity to explore our innovative new features and join a discussion on ",
+    #                   "how Curbcut is shaping the future of urban sustainability. See you the",
+    #                   "re!"
+    #                 ), 
+    #                 text_fr = paste0(
+    #                   "Rejoignez-nous pour célébrer la toute dernière mise à jour de Curbcut ",
+    #                   "! Nous organisons un 5@7 au Centre d'Innovation McGill le 2 octobre. N",
+    #                   "e manquez pas cette occasion de découvrir nos nouvelles fonctionnalité",
+    #                   "s innovantes et de participer à des discussions sur la ma",
+    #                   "nière dont Curbcut façonne l'avenir de la durabilité urbaine. À très b",
+    #                   "ientôt !"
+    #                 ),
+    #                 link = "https://www.eventbrite.ca/e/curbcut-57-tickets-705402857937") |> 
     tibble::add_row(id = "greenness", 
                     icon = "ecology", 
                     title_en = "Explore urban greenery", 

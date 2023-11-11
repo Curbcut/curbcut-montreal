@@ -1,6 +1,6 @@
 ## BUILD AND APPEND AFFORD DATA ################################################
 
-build_and_append_afford_hou <- function(scales_variables_modules, crs) {
+build_and_append_afford_hou <- function(scales_variables_modules, scales_sequences, crs) {
   
   # Read and prepare data ---------------------------------------------------
   
@@ -310,8 +310,8 @@ build_and_append_afford_hou <- function(scales_variables_modules, crs) {
       average_vars = average_vars,
       additive_vars = additive_vars, 
       # All region except Centraide
-      only_regions = names(scales_variables_modules$scales)[
-        names(scales_variables_modules$scales) != "centraide"
+      only_scales = names(scales_variables_modules$scales)[
+        !names(scales_variables_modules$scales) %in% c("centraide", "CT")
       ],
       crs = crs
     )
@@ -348,24 +348,27 @@ build_and_append_afford_hou <- function(scales_variables_modules, crs) {
   names(centraide_dat)[1] <- "name"
   
   # Merge to the data interpolated
-  data_interpolated$scales$centraide$centraide$name[
-    data_interpolated$scales$centraide$centraide$name == "L'Île-Bizard?Sainte-Geneviève"
+  data_interpolated$scales$centraide$name[
+    data_interpolated$scales$centraide$name == "L'Île-Bizard?Sainte-Geneviève"
   ] <- "L'Île-Bizard–Sainte-Geneviève"
-  data_interpolated$scales$centraide$centraide <- 
-    dplyr::left_join(data_interpolated$scales$centraide$centraide,
+  data_interpolated$scales$centraide <- 
+    dplyr::left_join(data_interpolated$scales$centraide,
                      centraide_dat[names(centraide_dat) != "geometry"], by = "name")
   
   # Merge the data to the CT centraide scale
   names(data)[1] <- "ID"
-  data_interpolated$scales$centraide$CT <- 
-    dplyr::left_join(data_interpolated$scales$centraide$CT,
+  data_interpolated$scales$CT <- 
+    dplyr::left_join(data_interpolated$scales$CT,
                      data, by = "ID")
   
   # Rewrite NO interpolation for Centraide region 
   data_interpolated$interpolated_ref <- 
     rbind(data_interpolated$interpolated_ref,
-          tibble::tibble(df = c("centraide_centraide", "centraide_CT"),
+          tibble::tibble(scale = c("centraide", "CT"),
                          interpolated_from = c("FALSE", "FALSE")))
+  
+  # Adding CT and Centraide to available scales
+  data_interpolated$avail_scale <- c("CT", "centraide", data_interpolated$avail_scale)
   
   
   # Make a types named list -------------------------------------------------
@@ -373,10 +376,11 @@ build_and_append_afford_hou <- function(scales_variables_modules, crs) {
   # This will be used to inform which methods to use to calculate breaks and
   # the region values. Percentages, dollars, index, ... get treated differently.
   # See the `add_variable`'s documentation to see possible types.
-  unique_vars <- unique(gsub("_\\d{4}", "", vars))
+  time_regex <- "_\\d{4}$"
+  unique_vars <- unique(gsub(time_regex, "", vars))
   
-  average_vars <- unique(gsub("_\\d{4}$", "", average_vars))
-  additive_vars <- unique(gsub("_\\d{4}$", "", additive_vars))
+  average_vars <- unique(gsub(time_regex, "", average_vars))
+  additive_vars <- unique(gsub(time_regex, "", additive_vars))
   
   types_avg <- lapply(rep("pct", length(average_vars)), c)
   names(types_avg) <- average_vars
@@ -384,19 +388,7 @@ build_and_append_afford_hou <- function(scales_variables_modules, crs) {
   names(types_count) <- additive_vars
   types <- c(types_avg, types_count)
   
-  
-  # Calculate breaks --------------------------------------------------------
-  
-  # Calculate breaks using the `calculate_breaks` function.
-  with_breaks <-
-    calculate_breaks(
-      all_scales = data_interpolated$scales,
-      vars = vars,
-      types = types, 
-      use_quintiles = TRUE
-    )
-  
-  
+
   # Get the variables values per regions ------------------------------------
   
   # Make a parent string the same way as the types
@@ -404,12 +396,13 @@ build_and_append_afford_hou <- function(scales_variables_modules, crs) {
   names(parent_strings) <- unique_vars
   parent_strings[grepl("_count$", names(parent_strings))] <- "households"
   
-  region_vals <- variables_get_region_vals(
-    scales = data_interpolated$scales,
-    vars = unique_vars,
-    types = types,
-    parent_strings = parent_strings,
-    breaks = with_breaks$q5_breaks_table)
+  
+  # Data tibble -------------------------------------------------------------
+  
+  data <- data_construct(svm_data = scales_variables_modules$data,
+                         scales_data = data_interpolated$scales,
+                         unique_var = unique_vars,
+                         time_regex = time_regex)
   
   
   # Variables table ---------------------------------------------------------
@@ -569,11 +562,8 @@ build_and_append_afford_hou <- function(scales_variables_modules, crs) {
       private = FALSE,
       group_name = group_name,
       group_diff = group_diff,
-      dates = with_breaks$avail_dates[[var]],
+      dates = c(2016, 2021),
       avail_scale = data_interpolated$avail_scale,
-      breaks_q3 = with_breaks$q3_breaks_table[[var]],
-      breaks_q5 = with_breaks$q5_breaks_table[[var]],
-      region_values = region_vals[[var]],
       source = "Centraide of Greater Montreal",
       interpolated = data_interpolated$interpolated_ref,
       # Allow title duplicate so that the parent vector is always 'households'
@@ -583,6 +573,13 @@ build_and_append_afford_hou <- function(scales_variables_modules, crs) {
   }) |> (\(x) Reduce(rbind, x))()
   
   variables <- rbind(scales_variables_modules$variables, variables)
+  
+  # Possible sequences ------------------------------------------------------
+  
+  avail_scale_combinations <-
+    get_avail_scale_combinations(scales_sequences = scales_sequences,
+                                 avail_scales = data_interpolated$avail_scale)
+  
   
   # Modules table -----------------------------------------------------------
   
@@ -618,7 +615,6 @@ build_and_append_afford_hou <- function(scales_variables_modules, crs) {
       title_text_extra = paste0(
         "<p>The datasets visualized on this page come from the 2016 and 2021 Canad",
         "ian Censuses."),
-      regions = c("CMA", "island", "city", "centraide"),
       metadata = TRUE,
       dataset_info = paste0(
         "<p>The census data (2016-2021) on this page comes from custom tabulations ",
@@ -627,20 +623,26 @@ build_and_append_afford_hou <- function(scales_variables_modules, crs) {
       var_left = variables[grepl("^affordhou_|^affordpop", variables$var_code), 
                            c("var_code", "group_name", "group_diff")],
       main_dropdown_title = "Unit of analysis",
-      dates = with_breaks$avail_dates[["affordhou_total_total_total_total_pct"]],
+      dates = c(2016, 2021),
       var_right = var_right,
-      suffix_zoom_levels = "max_CT",
       add_advanced_controls = c("mnd", "Data representation", "Tenure status"),
-      default_var = "affordhou_total_sc30_total_total_pct"
+      default_var = "affordhou_total_sc30_total_total_pct",
+      avail_scale_combinations = avail_scale_combinations
     )
   
+   # Possible sequences ------------------------------------------------------
   
+  avail_scale_combinations <-
+    get_avail_scale_combinations(scales_sequences = scales_sequences,
+                                 avail_scales = data_interpolated$avail_scale)
+   
   # Return ------------------------------------------------------------------
   
   return(list(
-    scales = with_breaks$scales,
+    scales = data_interpolated$scales,
     variables = variables,
-    modules = if (exists("modules")) modules else scales_variables_modules$modules
+    modules = if (exists("modules")) modules else scales_variables_modules$modules,
+    data = data
   ))
   
 }

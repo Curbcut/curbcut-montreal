@@ -3,10 +3,11 @@
 build_and_append_access <- function(scales_variables_modules,
                                     DA_table,
                                     traveltimes,
+                                    scales_sequences,
                                     crs) {
 
-  # Read and prepare data ---------------------------------------------------
-
+  # # Read and prepare data ---------------------------------------------------
+  # 
   # ## DAYCARE
   # daycares <- tempfile(fileext = ".csv")
   # download.file("https://www.donneesquebec.ca/recherche/dataset/be36f85e-e419-4978-9c34-cb5795622595/resource/89af3537-4506-488c-8d0e-6d85b4033a0e/download/repertoire-installation.csv",
@@ -51,20 +52,23 @@ build_and_append_access <- function(scales_variables_modules,
   # 
   # qs::qsave(daycares, "dev/data/built/daycares.qs")
   # daycares <- qs::qread("dev/data/built/daycares.qs")
-  # 
-  # # Add point data to DA ----------------------------------------------------
-  # 
-  # point_DA <- accessibility_point_per_DA(point_data = list(daycarespots_2023 = daycares),
-  #                                        DA_table = census_scales$DA,
-  #                                        crs = crs)
-  # 
-  # 
-  # # Add access to point data by time intervals ------------------------------
-  # 
-  # data <- accessibility_add_intervals(point_per_DA = point_DA,
-  #                                     traveltimes = traveltimes)
-  # qs::qsave(data, "dev/data/built/access_data.qs")
+# 
+#   # Add point data to DA ----------------------------------------------------
+# 
+#   point_DA <- accessibility_point_per_DA(point_data = list(daycarespots = daycares),
+#                                          DA_table = census_scales$DA,
+#                                          crs = crs)
+# 
+# 
+#   # Add access to point data by time intervals ------------------------------
+# 
+#   data <- accessibility_add_intervals(point_per_DA = point_DA,
+#                                       traveltimes = traveltimes)
+#   qs::qsave(data, "dev/data/built/access_data.qs")
   data <- qs::qread("dev/data/built/access_data.qs")
+  
+  # 2023 data
+  names(data)[2:ncol(data)] <- paste0(names(data)[2:ncol(data)], "_2023")
 
   # Get list of data variables ----------------------------------------------
 
@@ -89,57 +93,47 @@ build_and_append_access <- function(scales_variables_modules,
     )
 
 
-  # Calculate breaks --------------------------------------------------------
+  # Data tibble -------------------------------------------------------------
   
-  unique_vars <- gsub("_\\d{4}$", "", average_vars)
+  time_regex <- "_\\d{4}$"
+  unique_var <- gsub(time_regex, "", average_vars)
+  unique_var <- gsub("_\\d{1,2}$", "", unique_var)
+  unique_var <- unique(unique_var)
   
-  # Calculate breaks ONCE for 30 minutes. Use those breaks on all variables
-  breaks_base <- sapply(unique_vars, paste, simplify = FALSE, USE.NAMES = TRUE)
-  breaks_base <- lapply(breaks_base, \(x) gsub("_\\d{2}_", "_30_", x))
+  # Construct the breaks_var list (take the breaks from a 20 minutes traject)
+  breaks_var <- lapply(unique_var, paste0, "_20_2023")
+  names(breaks_var) <- unique_var
   
-  types <- rep(list("avg"), length(unique_vars))
-  names(types) <- unique_vars
+  data <- data_construct(svm_data = scales_variables_modules$data,
+                         scales_data = data_interpolated$scales,
+                         unique_var = unique_var,
+                         time_regex = time_regex,
+                         schema = list(time = gsub("^_", "", time_regex),
+                                       transportationtime = "(?<=_)\\d{1,2}(?=_)"),
+                         breaks_var = breaks_var)
   
-  with_breaks <-
-    calculate_breaks(
-      all_scales = data_interpolated$scales,
-      vars = average_vars,
-      types = types,
-      use_quintiles = TRUE
-    )
   
-  # Calculate region values -------------------------------------------------
+  # Types and parent vectors ------------------------------------------------
   
-  # Parent strings
-  vars <- gsub("_2023$", "", average_vars)
-  parent_strings <- rep(list("population"), length(vars))
-  names(parent_strings) <- vars
+  parent_strings <- rep(list("population"), length(unique_var))
+  names(parent_strings) <- unique_var
   
-  types <- rep(list("avg"), length(vars))
-  names(types) <- vars
-  
-  # Region values
-  region_values <- variables_get_region_vals(
-    scales = with_breaks$scales,
-    vars = vars,
-    types = types,
-    parent_strings = parent_strings,
-    breaks = with_breaks$q5_breaks_table,
-    round_closest_5 = FALSE)
+  types <- rep(list("avg"), length(unique_var))
+  names(types) <- unique_var
   
   
   # Variable measurements ----------------------------------------------------
   
   var_measurement <- data.frame(
-    df = data_interpolated$avail_scale,
-    measurement = rep("scalar", length(data_interpolated$avail_scale)))
+    scale = data_interpolated$avail_scale,
+    measurement = rep("scalar", length(data_interpolated$avail_scale))
+  )
   
-  var_measurement$measurement[grepl("_DA$", var_measurement$df)] <-
-    rep("ordinal", length(var_measurement$measurement[grepl("_DA$", var_measurement$df)]))
+  var_measurement$measurement[var_measurement$scale == "DA"] <- "ordinal"
 
   # Variables table ---------------------------------------------------------
   
-  new_variables <- lapply(vars, \(var) {
+  new_variables <- lapply(unique_var, \(var) {
     
     theme <- "daycare spots"
     
@@ -155,7 +149,7 @@ build_and_append_access <- function(scales_variables_modules,
       if (grepl("_transit_pwd_", var)) return("public transit on peak weekdays")
     })()
     
-    time <- gsub("_", "", stringr::str_extract(var, "_\\d*_"))
+    time <- "__schema$transportationtime__"
     
     var_title <- stringr::str_to_sentence(paste0(theme, " accessible by ", mode))
     var_short <- stringr::str_to_sentence(theme)
@@ -216,16 +210,15 @@ build_and_append_access <- function(scales_variables_modules,
       theme = "Transport",
       private = FALSE,
       pe_include = var == "access_foot_20_daycarespots_2023",
-      region_values = region_values[[var]],
-      dates = with_breaks$avail_dates[[var]],
+      dates = "2023",
       avail_scale = data_interpolated$avail_scale,
-      breaks_q3 = with_breaks$q3_breaks_table[[var]],
-      breaks_q5 = with_breaks$q5_breaks_table[[var]],
       source = "Données Québec",
       interpolated = data_interpolated$interpolated_ref,
-      rankings_chr = c("exceptionally sparse", "unusually sparse",
-                       "just about average", "unusually dense",
-                       "exceptionally dense"),
+      rankings_chr = c(
+        "exceptionally sparse", "unusually sparse",
+        "just about average", "unusually dense",
+        "exceptionally dense"
+      ),
       var_measurement = var_measurement
     ) |>
       (\(x) x[nrow(x), ])()
@@ -234,24 +227,20 @@ build_and_append_access <- function(scales_variables_modules,
   variables <- rbind(scales_variables_modules$variables, Reduce(rbind, new_variables))
   
   
-  # Modules table -----------------------------------------------------------
-
-  # Module already added with the `ba_accessibility_points` function
-  # We however need to make sure the new access points are available in it
-  scales_variables_modules$modules$var_left[
-    scales_variables_modules$modules$id == "access"
-  ] <- list(variables[grepl("^access_", variables$var_code),
-                      c("var_code", "group_name", "group_diff")])
+  # Possible sequences ------------------------------------------------------
   
-  modules <- scales_variables_modules$modules
+  avail_scale_combinations <-
+    get_avail_scale_combinations(scales_sequences = scales_sequences,
+                                 avail_scales = data_interpolated$avail_scale)
   
   
   # Return ------------------------------------------------------------------
 
   return(list(
-    scales = with_breaks$scales,
+    scales = data_interpolated$scales,
     variables = variables,
-    modules = if (exists("modules")) modules else scales_variables_modules$modules
+    modules = if (exists("modules")) modules else scales_variables_modules$modules,
+    data = data
   ))
 
 }

@@ -1,6 +1,9 @@
 ## BUILD AND APPEND CLIMATE_RISK DATA ##########################################
 
-build_and_append_climate_risk <- function(scales_variables_modules, crs) {
+build_and_append_climate_risk <- function(scales_variables_modules, crs,
+                                          scales_sequences) {
+  
+  dates <- c(2015, 2022)
 
   # Read and prepare data ---------------------------------------------------
   
@@ -46,8 +49,8 @@ build_and_append_climate_risk <- function(scales_variables_modules, crs) {
   # Interpolate data to all possible scales ---------------------------------
   
   # Do not interpolate for grids
-  only_regions <- names(scales_variables_modules$scales)[
-    names(scales_variables_modules$scales) != "grid"
+  only_scales <- names(scales_variables_modules$scales)[
+    !grepl("^grid", names(scales_variables_modules$scales))
   ]
   
   data_interpolated <-
@@ -55,31 +58,29 @@ build_and_append_climate_risk <- function(scales_variables_modules, crs) {
                            all_scales = scales_variables_modules$scales,
                            average_vars = avg_vars,
                            name_interpolate_from = "grid25",
-                           only_regions = only_regions,
+                           only_scales = only_scales,
                            crs = crs)
   
-  data_interpolated$regions <- c(data_interpolated$regions, "grid")
-  
   # Add the grid25 climate data
-  data_interpolated$scales$grid$grid25 <- 
-    merge(data_interpolated$scales$grid$grid25,
+  data_interpolated$scales$grid25 <- 
+    merge(data_interpolated$scales$grid25,
           sf::st_drop_geometry(climate_risk), by = "ID")
-  data_interpolated$avail_scale <- c(data_interpolated$avail_scale, "grid_grid25")
+  data_interpolated$avail_scale <- c(data_interpolated$avail_scale, "grid25")
   data_interpolated$interpolated_ref <- 
     rbind(data_interpolated$interpolated_ref,
-          tibble::tibble(df = "grid_grid25", interpolated_from = FALSE))
+          tibble::tibble(scale = "grid25", interpolated_from = FALSE))
   
-  # # Create grid50 data
-  # climate_risk <- sf::st_transform(climate_risk, crs = 4326)
-  # centroids <- sf::st_centroid(climate_risk)
-  # int <- sf::st_intersects(centroids, data_interpolated$scales$grid$grid50)
-  # climate_risk$grid50_ID <- sapply(int, \(i) data_interpolated$scales$grid$grid50$ID[[i]])
-  # 
+  # Create grid50 data
+  climate_risk <- sf::st_transform(climate_risk, crs = 4326)
+  centroids <- sf::st_centroid(climate_risk)
+  int <- sf::st_intersects(centroids, data_interpolated$scales$grid50)
+  climate_risk$grid50_ID <- sapply(int, \(i) data_interpolated$scales$grid50$ID[[i]])
+
   # progressr::with_progress({
-  #   pb <- progressr::progressor(length(data_interpolated$scales$grid$grid50$ID))
-  #   climate_risk_50 <- 
-  #     lapply(data_interpolated$scales$grid$grid50$ID, \(x) {
-  #       z <- climate_risk[climate_risk$grid50_ID == x, ]
+  #   pb <- progressr::progressor(length(data_interpolated$scales$grid50$ID))
+  #   climate_risk_50 <-
+  #     lapply(data_interpolated$scales$grid50$ID, \(x) {
+  #       z <- climate_risk[which(climate_risk$grid50_ID == x), ]
   #       modes <- sapply(avg_vars, \(v) {
   #         # Grab the mode. If 2 modes, take the highest value
   #         vals <- z[[v]]
@@ -100,23 +101,24 @@ build_and_append_climate_risk <- function(scales_variables_modules, crs) {
   # qs::qsave(climate_risk_50, "dev/data/built/climate_risk/climate_risk_50.qs")
   climate_risk_50 <- qs::qread("dev/data/built/climate_risk/climate_risk_50.qs")
   
-  data_interpolated$scales$grid$grid50 <- 
-    merge(data_interpolated$scales$grid$grid50,
+  data_interpolated$scales$grid50 <- 
+    merge(data_interpolated$scales$grid50,
           climate_risk_50, by = "ID")
-  data_interpolated$avail_scale <- c(data_interpolated$avail_scale, "grid_grid50")
+  data_interpolated$avail_scale <- c(data_interpolated$avail_scale, "grid50")
   data_interpolated$interpolated_ref <- 
     rbind(data_interpolated$interpolated_ref,
-          tibble::tibble(df = "grid_grid50", interpolated_from = "grid25"))
+          tibble::tibble(scale = "grid50", interpolated_from = "grid25"))
   
-  # # Create grid100 data
-  # climate_risk <- sf::st_transform(climate_risk, crs = 4326)
-  # centroids <- sf::st_centroid(climate_risk)
-  # int <- sf::st_intersects(centroids, data_interpolated$scales$grid$grid100)
-  # climate_risk$grid100_ID <- sapply(int, \(i) data_interpolated$scales$grid$grid100$ID[[i]])
-  # 
-  # climate_risk_100 <- 
-  #   future.apply::future_lapply(data_interpolated$scales$grid$grid100$ID, \(x) {
-  #     z <- climate_risk[climate_risk$grid100_ID == x, ]
+  # Create grid100 data
+  climate_risk <- sf::st_transform(climate_risk, crs = 4326)
+  centroids <- sf::st_centroid(climate_risk)
+  int <- sf::st_intersects(centroids, data_interpolated$scales$grid100)
+  climate_risk$grid100_ID <- sapply(int, \(i) data_interpolated$scales$grid100$ID[[i]])
+
+  # climate_risk_100 <-
+  #   future.apply::future_lapply(data_interpolated$scales$grid100$ID, \(x) {
+  #     z <- climate_risk[which(climate_risk$grid100_ID == x), ] |> 
+  #       sf::st_drop_geometry()
   #     modes <- sapply(avg_vars, \(v) {
   #       # Grab the mode. If 2 modes, take the highest value
   #       vals <- z[[v]]
@@ -135,23 +137,24 @@ build_and_append_climate_risk <- function(scales_variables_modules, crs) {
   # qs::qsave(climate_risk_100, "dev/data/built/climate_risk/climate_risk_100.qs")
   climate_risk_100 <- qs::qread("dev/data/built/climate_risk/climate_risk_100.qs")
   
-  data_interpolated$scales$grid$grid100 <- 
-    merge(data_interpolated$scales$grid$grid100,
+  data_interpolated$scales$grid100 <- 
+    merge(data_interpolated$scales$grid100,
           climate_risk_100, by = "ID")
-  data_interpolated$avail_scale <- c(data_interpolated$avail_scale, "grid_grid100")
+  data_interpolated$avail_scale <- c(data_interpolated$avail_scale, "grid100")
   data_interpolated$interpolated_ref <- 
     rbind(data_interpolated$interpolated_ref,
-          tibble::tibble(df = "grid_grid100", interpolated_from = "grid25"))
+          tibble::tibble(scale = "grid100", interpolated_from = "grid25"))
   
   # # Create grid250 data
   # climate_risk <- sf::st_transform(climate_risk, crs = 4326)
   # centroids <- sf::st_centroid(climate_risk)
-  # int <- sf::st_intersects(centroids, data_interpolated$scales$grid$grid250)
-  # climate_risk$grid250_ID <- sapply(int, \(i) data_interpolated$scales$grid$grid250$ID[[i]])
+  # int <- sf::st_intersects(centroids, data_interpolated$scales$grid250)
+  # climate_risk$grid250_ID <- sapply(int, \(i) data_interpolated$scales$grid250$ID[[i]])
   # 
   # climate_risk_250 <-
-  #   lapply(data_interpolated$scales$grid$grid250$ID, \(x) {
-  #     z <- climate_risk[climate_risk$grid250_ID == x, ]
+  #   lapply(data_interpolated$scales$grid250$ID, \(x) {
+  #     z <- climate_risk[which(climate_risk$grid250_ID == x), ] |> 
+  #       sf::st_drop_geometry()
   #     modes <- sapply(avg_vars, \(v) {
   #       # Grab the mode. If 2 modes, take the highest value
   #       vals <- z[[v]]
@@ -170,219 +173,35 @@ build_and_append_climate_risk <- function(scales_variables_modules, crs) {
   # qs::qsave(climate_risk_250, "dev/data/built/climate_risk/climate_risk_250.qs")
   climate_risk_250 <- qs::qread("dev/data/built/climate_risk/climate_risk_250.qs")
   
-  data_interpolated$scales$grid$grid250 <- 
-    merge(data_interpolated$scales$grid$grid250,
+  data_interpolated$scales$grid250 <- 
+    merge(data_interpolated$scales$grid250,
           climate_risk_250, by = "ID")
-  data_interpolated$avail_scale <- c(data_interpolated$avail_scale, "grid_grid250")
+  data_interpolated$avail_scale <- c(data_interpolated$avail_scale, "grid250")
   data_interpolated$interpolated_ref <- 
     rbind(data_interpolated$interpolated_ref,
-          tibble::tibble(df = "grid_grid250", interpolated_from = "grid25"))
-  
-
-  # Get all the types in a named list ---------------------------------------
-  
-  types <- list(climate_drought = "ind",
-                climate_flood = "ind",
-                climate_heavy_rain = "ind",
-                climate_destructive_storms = "ind",
-                climate_heat_wave = "ind")
-
-
-  # Calculate breaks --------------------------------------------------------
-
-  # Calculate breaks using the `calculate_breaks` function.
-  with_breaks <-
-    calculate_breaks(
-      all_scales = data_interpolated$scales,
-      vars = avg_vars,
-      types = types,
-      rank_name = c("Insignificant", "Minor", "Moderate", "Elevated", "Major"),
-      rank_name_short = c("Insig.", "Minor", "Mod.", "Elev.", "Major")
-    )
-
-  ### ADJUST THE BASE DATA
-  
-  # Update grid q5 to be the same value as the indicator
-  with_breaks$scales$grid$grid25$climate_drought_q5_2015 <- 
-    with_breaks$scales$grid$grid25$climate_drought_2015
-  with_breaks$scales$grid$grid25$climate_flood_q5_2015 <- 
-    with_breaks$scales$grid$grid25$climate_flood_2015
-  with_breaks$scales$grid$grid25$climate_heavy_rain_q5_2015 <- 
-    with_breaks$scales$grid$grid25$climate_heavy_rain_2015
-  with_breaks$scales$grid$grid25$climate_destructive_storms_q5_2015 <- 
-    with_breaks$scales$grid$grid25$climate_destructive_storms_2015
-  with_breaks$scales$grid$grid25$climate_heat_wave_q5_2015 <- 
-    with_breaks$scales$grid$grid25$climate_heat_wave_2015
-  
-  with_breaks$scales$grid$grid25$climate_drought_q5_2022 <- 
-    with_breaks$scales$grid$grid25$climate_drought_2022
-  with_breaks$scales$grid$grid25$climate_flood_q5_2022 <- 
-    with_breaks$scales$grid$grid25$climate_flood_2022
-  with_breaks$scales$grid$grid25$climate_heavy_rain_q5_2022 <- 
-    with_breaks$scales$grid$grid25$climate_heavy_rain_2022
-  with_breaks$scales$grid$grid25$climate_destructive_storms_q5_2022 <- 
-    with_breaks$scales$grid$grid25$climate_destructive_storms_2022
-  with_breaks$scales$grid$grid25$climate_heat_wave_q5_2022 <- 
-    with_breaks$scales$grid$grid25$climate_heat_wave_2022
-  
-  with_breaks$q5_breaks_table$climate_drought$var[
-    with_breaks$q5_breaks_table$climate_drought$df == "grid_grid25"
-  ] <- 0:5
-  with_breaks$q5_breaks_table$climate_flood$var[
-    with_breaks$q5_breaks_table$climate_flood$df == "grid_grid25"
-  ] <- 0:5
-  with_breaks$q5_breaks_table$climate_heavy_rain$var[
-    with_breaks$q5_breaks_table$climate_heavy_rain$df == "grid_grid25"
-  ] <- 0:5
-  with_breaks$q5_breaks_table$climate_destructive_storms$var[
-    with_breaks$q5_breaks_table$climate_destructive_storms$df == "grid_grid25"
-  ] <- 0:5
-  with_breaks$q5_breaks_table$climate_heat_wave$var[
-    with_breaks$q5_breaks_table$climate_heat_wave$df == "grid_grid25"
-  ] <- 0:5
+          tibble::tibble(scale = "grid250", interpolated_from = "grid25"))
   
   
-  with_breaks$scales$grid$grid50$climate_drought_q5_2015 <- 
-    with_breaks$scales$grid$grid50$climate_drought_2015
-  with_breaks$scales$grid$grid50$climate_flood_q5_2015 <- 
-    with_breaks$scales$grid$grid50$climate_flood_2015
-  with_breaks$scales$grid$grid50$climate_heavy_rain_q5_2015 <- 
-    with_breaks$scales$grid$grid50$climate_heavy_rain_2015
-  with_breaks$scales$grid$grid50$climate_destructive_storms_q5_2015 <- 
-    with_breaks$scales$grid$grid50$climate_destructive_storms_2015
-  with_breaks$scales$grid$grid50$climate_heat_wave_q5_2015 <- 
-    with_breaks$scales$grid$grid50$climate_heat_wave_2015
+  # Data tibble -------------------------------------------------------------
   
-  with_breaks$scales$grid$grid50$climate_drought_q5_2022 <- 
-    with_breaks$scales$grid$grid50$climate_drought_2022
-  with_breaks$scales$grid$grid50$climate_flood_q5_2022 <- 
-    with_breaks$scales$grid$grid50$climate_flood_2022
-  with_breaks$scales$grid$grid50$climate_heavy_rain_q5_2022 <- 
-    with_breaks$scales$grid$grid50$climate_heavy_rain_2022
-  with_breaks$scales$grid$grid50$climate_destructive_storms_q5_2022 <- 
-    with_breaks$scales$grid$grid50$climate_destructive_storms_2022
-  with_breaks$scales$grid$grid50$climate_heat_wave_q5_2022 <- 
-    with_breaks$scales$grid$grid50$climate_heat_wave_2022
-  
-  with_breaks$q5_breaks_table$climate_drought$var[
-    with_breaks$q5_breaks_table$climate_drought$df == "grid_grid50"
-  ] <- 0:5
-  with_breaks$q5_breaks_table$climate_flood$var[
-    with_breaks$q5_breaks_table$climate_flood$df == "grid_grid50"
-  ] <- 0:5
-  with_breaks$q5_breaks_table$climate_heavy_rain$var[
-    with_breaks$q5_breaks_table$climate_heavy_rain$df == "grid_grid50"
-  ] <- 0:5
-  with_breaks$q5_breaks_table$climate_destructive_storms$var[
-    with_breaks$q5_breaks_table$climate_destructive_storms$df == "grid_grid50"
-  ] <- 0:5
-  with_breaks$q5_breaks_table$climate_heat_wave$var[
-    with_breaks$q5_breaks_table$climate_heat_wave$df == "grid_grid50"
-  ] <- 0:5
-  
-  with_breaks$scales$grid$grid100$climate_drought_q5_2015 <- 
-    with_breaks$scales$grid$grid100$climate_drought_2015
-  with_breaks$scales$grid$grid100$climate_flood_q5_2015 <- 
-    with_breaks$scales$grid$grid100$climate_flood_2015
-  with_breaks$scales$grid$grid100$climate_heavy_rain_q5_2015 <- 
-    with_breaks$scales$grid$grid100$climate_heavy_rain_2015
-  with_breaks$scales$grid$grid100$climate_destructive_storms_q5_2015 <- 
-    with_breaks$scales$grid$grid100$climate_destructive_storms_2015
-  with_breaks$scales$grid$grid100$climate_heat_wave_q5_2015 <- 
-    with_breaks$scales$grid$grid100$climate_heat_wave_2015
-  
-  with_breaks$scales$grid$grid100$climate_drought_q5_2022 <- 
-    with_breaks$scales$grid$grid100$climate_drought_2022
-  with_breaks$scales$grid$grid100$climate_flood_q5_2022 <- 
-    with_breaks$scales$grid$grid100$climate_flood_2022
-  with_breaks$scales$grid$grid100$climate_heavy_rain_q5_2022 <- 
-    with_breaks$scales$grid$grid100$climate_heavy_rain_2022
-  with_breaks$scales$grid$grid100$climate_destructive_storms_q5_2022 <- 
-    with_breaks$scales$grid$grid100$climate_destructive_storms_2022
-  with_breaks$scales$grid$grid100$climate_heat_wave_q5_2022 <- 
-    with_breaks$scales$grid$grid100$climate_heat_wave_2022
-  
-  with_breaks$q5_breaks_table$climate_drought$var[
-    with_breaks$q5_breaks_table$climate_drought$df == "grid_grid100"
-  ] <- 0:5
-  with_breaks$q5_breaks_table$climate_flood$var[
-    with_breaks$q5_breaks_table$climate_flood$df == "grid_grid100"
-  ] <- 0:5
-  with_breaks$q5_breaks_table$climate_heavy_rain$var[
-    with_breaks$q5_breaks_table$climate_heavy_rain$df == "grid_grid100"
-  ] <- 0:5
-  with_breaks$q5_breaks_table$climate_destructive_storms$var[
-    with_breaks$q5_breaks_table$climate_destructive_storms$df == "grid_grid100"
-  ] <- 0:5
-  with_breaks$q5_breaks_table$climate_heat_wave$var[
-    with_breaks$q5_breaks_table$climate_heat_wave$df == "grid_grid100"
-  ] <- 0:5
-  
-  with_breaks$scales$grid$grid250$climate_drought_q5_2015 <- 
-    with_breaks$scales$grid$grid250$climate_drought_2015
-  with_breaks$scales$grid$grid250$climate_flood_q5_2015 <- 
-    with_breaks$scales$grid$grid250$climate_flood_2015
-  with_breaks$scales$grid$grid250$climate_heavy_rain_q5_2015 <- 
-    with_breaks$scales$grid$grid250$climate_heavy_rain_2015
-  with_breaks$scales$grid$grid250$climate_destructive_storms_q5_2015 <- 
-    with_breaks$scales$grid$grid250$climate_destructive_storms_2015
-  with_breaks$scales$grid$grid250$climate_heat_wave_q5_2015 <- 
-    with_breaks$scales$grid$grid250$climate_heat_wave_2015
-  
-  with_breaks$scales$grid$grid250$climate_drought_q5_2022 <- 
-    with_breaks$scales$grid$grid250$climate_drought_2022
-  with_breaks$scales$grid$grid250$climate_flood_q5_2022 <- 
-    with_breaks$scales$grid$grid250$climate_flood_2022
-  with_breaks$scales$grid$grid250$climate_heavy_rain_q5_2022 <- 
-    with_breaks$scales$grid$grid250$climate_heavy_rain_2022
-  with_breaks$scales$grid$grid250$climate_destructive_storms_q5_2022 <- 
-    with_breaks$scales$grid$grid250$climate_destructive_storms_2022
-  with_breaks$scales$grid$grid250$climate_heat_wave_q5_2022 <- 
-    with_breaks$scales$grid$grid250$climate_heat_wave_2022
-  
-  with_breaks$q5_breaks_table$climate_drought$var[
-    with_breaks$q5_breaks_table$climate_drought$df == "grid_grid250"
-  ] <- 0:5
-  with_breaks$q5_breaks_table$climate_flood$var[
-    with_breaks$q5_breaks_table$climate_flood$df == "grid_grid250"
-  ] <- 0:5
-  with_breaks$q5_breaks_table$climate_heavy_rain$var[
-    with_breaks$q5_breaks_table$climate_heavy_rain$df == "grid_grid250"
-  ] <- 0:5
-  with_breaks$q5_breaks_table$climate_destructive_storms$var[
-    with_breaks$q5_breaks_table$climate_destructive_storms$df == "grid_grid250"
-  ] <- 0:5
-  with_breaks$q5_breaks_table$climate_heat_wave$var[
-    with_breaks$q5_breaks_table$climate_heat_wave$df == "grid_grid250"
-  ] <- 0:5
-  
-
-  # Get the region values ---------------------------------------------------
-  
-  parent_strings <- list(climate_drought = "households",
-                         climate_flood = "households",
-                         climate_heavy_rain = "households",
-                         climate_destructive_storms = "households",
-                         climate_heat_wave = "households")
-  
-  region_vals <- 
-    variables_get_region_vals(scales = data_interpolated$scales,
-                              vars = unique(gsub("_\\d{4}$", "", avg_vars)),
-                              types = types,
-                              parent_strings = parent_strings,
-                              breaks = with_breaks$q5_breaks_table,
-                              time_regex = "_\\d{4}$")
+  time_regex <- "_\\d{4}$"
+  data <- data_construct(svm_data = scales_variables_modules$data,
+                         scales_data = data_interpolated$scales,
+                         unique_var = c("climate_drought", "climate_flood",
+                                        "climate_heavy_rain", "climate_destructive_storms",
+                                        "climate_heat_wave"),
+                         time_regex = time_regex)
   
 
   # Prepare the variable measurements ---------------------------------------
   
   var_measurement <- data.frame(
-    df = data_interpolated$avail_scale,
+    scale = data_interpolated$avail_scale,
     measurement = rep("scalar", length(data_interpolated$avail_scale)))
-  var_measurement$measurement[var_measurement$df == "grid_grid25"] <- "ordinal"
-  var_measurement$measurement[var_measurement$df == "grid_grid50"] <- "ordinal"
-  var_measurement$measurement[var_measurement$df == "grid_grid100"] <- "ordinal"
-  var_measurement$measurement[var_measurement$df == "grid_grid250"] <- "ordinal"
+  var_measurement$measurement[var_measurement$scale == "grid25"] <- "ordinal"
+  var_measurement$measurement[var_measurement$scale == "grid50"] <- "ordinal"
+  var_measurement$measurement[var_measurement$scale == "grid100"] <- "ordinal"
+  var_measurement$measurement[var_measurement$scale == "grid250"] <- "ordinal"
   
 
   # Variables table ---------------------------------------------------------
@@ -398,11 +217,8 @@ build_and_append_climate_risk <- function(scales_variables_modules, crs) {
       exp_q5 = "are living in areas with _X_ vulnerability to climate-change related drought⁠",
       theme = "Climate risk",
       private = FALSE,
-      dates = with_breaks$avail_dates[["climate_drought"]],
+      dates = dates,
       avail_scale = data_interpolated$avail_scale,
-      breaks_q3 = with_breaks$q3_breaks_table[["climate_drought"]],
-      breaks_q5 = with_breaks$q5_breaks_table[["climate_drought"]],
-      region_values = region_vals$climate_drought,
       parent_vec = "households",
       pe_include = TRUE,
       source = "City of Montreal's open data website",
@@ -410,6 +226,8 @@ build_and_append_climate_risk <- function(scales_variables_modules, crs) {
       rankings_chr = c("exceptionally unsusceptable", "unusually unsusceptable", 
                        "just about average vulnerability", "unusually vulnerable", 
                        "exceptionally vulnerable"),
+      rank_name = c("Insignificant", "Minor", "Moderate", "Elevated", "Major"),
+      rank_name_short = c("Insig.", "Minor", "Mod.", "Elev.", "Major"),
       var_measurement = var_measurement
     ) |> 
     add_variable(
@@ -421,11 +239,8 @@ build_and_append_climate_risk <- function(scales_variables_modules, crs) {
       exp_q5 = "are living in areas with _X_ vulnerability to climate-change related flooding⁠",
       theme = "Climate risk",
       private = FALSE,
-      dates = with_breaks$avail_dates[["climate_flood"]],
+      dates = dates,
       avail_scale = data_interpolated$avail_scale,
-      breaks_q3 = with_breaks$q3_breaks_table[["climate_flood"]],
-      breaks_q5 = with_breaks$q5_breaks_table[["climate_flood"]],
-      region_values = region_vals$climate_flood,
       parent_vec = "households",
       pe_include = TRUE,
       source = "City of Montreal's open data website",
@@ -433,6 +248,8 @@ build_and_append_climate_risk <- function(scales_variables_modules, crs) {
       rankings_chr = c("exceptionally unsusceptable", "unusually unsusceptable", 
                        "just about average vulnerability", "unusually vulnerable", 
                        "exceptionally vulnerable"),
+      rank_name = c("Insignificant", "Minor", "Moderate", "Elevated", "Major"),
+      rank_name_short = c("Insig.", "Minor", "Mod.", "Elev.", "Major"),
       var_measurement = var_measurement
     ) |> 
     add_variable(
@@ -444,11 +261,8 @@ build_and_append_climate_risk <- function(scales_variables_modules, crs) {
       exp_q5 = "are living in areas with _X_ vulnerability to climate-change related heavy rain⁠",
       theme = "Climate risk",
       private = FALSE,
-      dates = with_breaks$avail_dates[["climate_heavy_rain"]],
+      dates = dates,
       avail_scale = data_interpolated$avail_scale,
-      breaks_q3 = with_breaks$q3_breaks_table[["climate_heavy_rain"]],
-      breaks_q5 = with_breaks$q5_breaks_table[["climate_heavy_rain"]],
-      region_values = region_vals$climate_heavy_rain,
       parent_vec = "households",
       pe_include = TRUE,
       source = "City of Montreal's open data website",
@@ -456,6 +270,8 @@ build_and_append_climate_risk <- function(scales_variables_modules, crs) {
       rankings_chr = c("exceptionally unsusceptable", "unusually unsusceptable", 
                        "just about average vulnerability", "unusually vulnerable", 
                        "exceptionally vulnerable"),
+      rank_name = c("Insignificant", "Minor", "Moderate", "Elevated", "Major"),
+      rank_name_short = c("Insig.", "Minor", "Mod.", "Elev.", "Major"),
       var_measurement = var_measurement
     ) |> 
     add_variable(
@@ -468,11 +284,8 @@ build_and_append_climate_risk <- function(scales_variables_modules, crs) {
       exp_q5 = "are living in areas with _X_ vulnerability to climate-change related destructive storms⁠",
       theme = "Climate risk",
       private = FALSE,
-      dates = with_breaks$avail_dates[["climate_destructive_storms"]],
+      dates = dates,
       avail_scale = data_interpolated$avail_scale,
-      breaks_q3 = with_breaks$q3_breaks_table[["climate_destructive_storms"]],
-      breaks_q5 = with_breaks$q5_breaks_table[["climate_destructive_storms"]],
-      region_values = region_vals$climate_destructive_storms,
       parent_vec = "households",
       pe_include = TRUE,
       source = "City of Montreal's open data website",
@@ -480,6 +293,8 @@ build_and_append_climate_risk <- function(scales_variables_modules, crs) {
       rankings_chr = c("exceptionally unsusceptable", "unusually unsusceptable", 
                        "just about average vulnerability", "unusually vulnerable", 
                        "exceptionally vulnerable"),
+      rank_name = c("Insignificant", "Minor", "Moderate", "Elevated", "Major"),
+      rank_name_short = c("Insig.", "Minor", "Mod.", "Elev.", "Major"),
       var_measurement = var_measurement
     ) |> 
     add_variable(
@@ -491,11 +306,8 @@ build_and_append_climate_risk <- function(scales_variables_modules, crs) {
       exp_q5 = "are living in areas with _X_ vulnerability to climate-change related heat waves",
       theme = "Climate risk",
       private = FALSE,
-      dates = with_breaks$avail_dates[["climate_heat_wave"]],
+      dates = dates,
       avail_scale = data_interpolated$avail_scale,
-      breaks_q3 = with_breaks$q3_breaks_table[["climate_heat_wave"]],
-      breaks_q5 = with_breaks$q5_breaks_table[["climate_heat_wave"]],
-      region_values = region_vals$climate_heat_wave,
       parent_vec = "households",
       pe_include = TRUE,
       source = "City of Montreal's open data website",
@@ -503,8 +315,16 @@ build_and_append_climate_risk <- function(scales_variables_modules, crs) {
       rankings_chr = c("exceptionally unsusceptable", "unusually unsusceptable", 
                        "just about average vulnerability", "unusually vulnerable", 
                        "exceptionally vulnerable"),
+      rank_name = c("Insignificant", "Minor", "Moderate", "Elevated", "Major"),
+      rank_name_short = c("Insig.", "Minor", "Mod.", "Elev.", "Major"),
       var_measurement = var_measurement,
     )
+  
+  # Possible sequences ------------------------------------------------------
+  
+  avail_scale_combinations <-
+    get_avail_scale_combinations(scales_sequences = scales_sequences,
+                                 avail_scales = data_interpolated$avail_scale)
 
   # Modules table -----------------------------------------------------------
 
@@ -532,7 +352,6 @@ build_and_append_climate_risk <- function(scales_variables_modules, crs) {
             "ban Agglomeration Climate Change Adaptation Plan</a>."
           ),
           # Only allow for these specific regions (data is only available for the island)
-          regions = c("island", "city", "grid"),
           metadata = TRUE,
           dataset_info = paste0(
             "<p><a href = 'https://donnees.montreal.ca/ville-de-montreal/vuln",
@@ -551,16 +370,18 @@ build_and_append_climate_risk <- function(scales_variables_modules, crs) {
           var_right = scales_variables_modules$variables$var_code[
             scales_variables_modules$variables$source == "Canadian census" &
               !is.na(scales_variables_modules$variables$parent_vec)],
-          default_var = "climate_drought"
+          default_var = "climate_drought",
+          avail_scale_combinations = avail_scale_combinations
         )
 
 
   # Return ------------------------------------------------------------------
 
   return(list(
-    scales = with_breaks$scales,
+    scales = data_interpolated$scales,
     variables = variables,
-    modules = if (exists("modules")) modules else scales_variables_modules$modules
+    modules = if (exists("modules")) modules else scales_variables_modules$modules,
+    data = data
   ))
 
 }

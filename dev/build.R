@@ -1,27 +1,34 @@
-#### BUILD ALL CURBCUT DATA ####################################################
-
-
-# Load libraries ----------------------------------------------------------
-tictoc::tic()
-library(cc.buildr)
-library(sf)
-x <- lapply(list.files("dev/data_import", full.names = TRUE), source, verbose = FALSE)
-
+# #### BUILD ALL CURBCUT DATA ####################################################
+# 
+# 
+# # Load libraries ----------------------------------------------------------
+# tictoc::tic()
+# library(cc.buildr)
+# library(sf)
+# x <- lapply(list.files("dev/data_import", full.names = TRUE), source, verbose = FALSE)
+# 
 # # Base of the study region and dictionaries -------------------------------
 # 
 # # Possible sequences for autozooms. Every module must have one or multiple of these
 # # possible scale sequences.
-# scales_sequences <- list(c("CSD", "CT", "DA", "building"),
+# scales_sequences <- list(c("boroughCSD", "CT", "DA", "building"),
+#                          c("boroughCSD", "CT"),
+#                          c("CSD", "CT", "DA", "building"),
 #                          c("CSD", "CT"),
 #                          c("borough", "CT", "DA", "building"),
 #                          c("borough", "CT"),
-#                          c("lavalsector", "CT", "DA", "building"),
-#                          c("lavalsector", "CT"),
-#                          c("tablequartier", "CT", "DA", "building"),
-#                          c("tablequartier", "CT"),
+#                          # c("lavalsector", "CT", "DA", "building"),
+#                          # c("tablequartier", "CT", "DA", "building"),
+#                          # c("tablequartier", "CT"),
 #                          c("centraide", "CT", "DA", "building"),
 #                          c("centraide", "CT"),
+#                          c("cmhczone", "CT", "DA", "building"),
+#                          c("cmhczone", "CT"),
 #                          c("cmhczone"),
+#                          c("CIUSSS", "CT", "DA", "building"),
+#                          c("CIUSSS", "CT"),
+#                          c("CLSC", "CT", "DA", "building"),
+#                          c("CLSC", "CT"),
 #                          c("grid250", "grid100", "grid50", "grid25"))
 # 
 # 
@@ -30,8 +37,7 @@ x <- lapply(list.files("dev/data_import", full.names = TRUE), source, verbose = 
 # all_regions <- list(CMA = list(CMA = cancensus_cma_code),
 #                     city = list(CSD = 2466023),
 #                     island = "dev/data/geometry/island.shp",
-#                     centraide = "dev/data/geometry/centraide_2023.shp",
-#                     cmhc = get_cmhc_zones(list(CMA = cancensus_cma_code)))
+#                     centraide = "dev/data/geometry/centraide_2023.shp")
 # 
 # base_polygons <- create_master_polygon(all_regions = all_regions)
 # crs <- base_polygons$crs
@@ -40,32 +46,27 @@ x <- lapply(list.files("dev/data_import", full.names = TRUE), source, verbose = 
 # regions_dictionary <-
 #   regions_dictionary(
 #     all_regions = all_regions,
-#     region = c("CMA", "island", "city", "centraide", "cmhc"),
+#     region = c("CMA", "island", "city", "centraide"),
 #     name = c(CMA = "Metropolitan Area",
 #              island = "Island of Montreal",
 #              city = "City of Montreal",
-#              centraide = "Centraide of Greater Montreal",
-#              cmhc = "Canada Mortgage and Housing Corporation zones"),
+#              centraide = "Centraide of Greater Montreal"),
 #     to_compare = c(CMA = "in the Montreal region",
 #                    island = "on the island of Montreal",
 #                    city = "in the City of Montreal",
-#                    centraide = "in the Centraide of Greater Montreal territory",
-#                    cmhc = "in the Montreal region"),
+#                    centraide = "in the Centraide of Greater Montreal territory"),
 #     to_compare_determ = c(CMA = "the Montreal region",
 #                    island = "the island of Montreal",
 #                    city = "the City of Montreal",
-#                    centraide = "the Centraide of Greater Montreal territory",
-#                    cmhc = "the Montreal region"),
+#                    centraide = "the Centraide of Greater Montreal territory"),
 #     to_compare_short = c(CMA = "in the region",
 #                    island = "on the island",
 #                    city = "in the City",
-#                    centraide = "in the territory",
-#                    cmhc = "in the region"),
+#                    centraide = "in the territory"),
 #     pickable = c(CMA = TRUE,
 #                  island = TRUE,
 #                  city = TRUE,
-#                  centraide = TRUE,
-#                  cmhc = FALSE))
+#                  centraide = TRUE))
 # 
 # 
 # # Build census scales -----------------------------------------------------
@@ -73,10 +74,8 @@ x <- lapply(list.files("dev/data_import", full.names = TRUE), source, verbose = 
 # census_scales <-
 #   build_census_scales(master_polygon = base_polygons$master_polygon,
 #                       regions = base_polygons$province_cancensus_code,
-#                       crs = crs)
-# 
-# # # Append DA's population weighted centroid
-# # census_scales$DA <- append_DA_popw_centroids(DA_table = census_scales$DA)
+#                       crs = crs,
+#                       DA_carto = base_polygons$DA_carto)
 # 
 # # Create the census scale dictionary
 # scales_dictionary <- census_scales_dictionary(census_scales)
@@ -90,7 +89,8 @@ x <- lapply(list.files("dev/data_import", full.names = TRUE), source, verbose = 
 #                             DA_table = census_scales$DA,
 #                             ID_prefix = "borough",
 #                             name_2 = "Borough",
-#                             crs = crs)
+#                             crs = crs,
+#                             DA_carto = base_polygons$DA_carto)
 # 
 # # Update CSD naming for Montreal
 # scales_dictionary <- append_scale_to_dictionary(
@@ -104,36 +104,127 @@ x <- lapply(list.files("dev/data_import", full.names = TRUE), source, verbose = 
 #   place_name = "{name}")
 # 
 # 
-# # Add a Laval Sector scale ------------------------------------------------
+# # Merge boroughs with CSDs for the boroughCSD scale
+# boroughs <- sf::st_read("dev/data/geometry/arrondissements_mtl.shp")
+# boroughs$type <- "Borough"
 # 
-# # Switch the City of Laval for the Sector
-# lavalsector <- sf::st_read(paste0("dev/data/centraide/shapefiles/",
-#                             "Secteurs_damenagement_Ville_de_Laval.shp")) |>
-#   sf::st_transform(4326)
-# lavalsector$name <- gsub("Secteur \\d - ", "", lavalsector$Secteur)
-# lavalsector$type <- "Sector"
-# lavalsector <- lavalsector[c("name")]
+# boroughCSD <- split_scale(destination = census_scales$CSD,
+#                           cutting_layer = boroughs,
+#                           DA_table = census_scales$DA,
+#                           crs = crs,
+#                           DA_carto = base_polygons$DA_carto)
 # 
-# lavalsector <- additional_scale(additional_table = lavalsector,
-#                                 DA_table = census_scales$DA,
-#                                 ID_prefix = "laval",
-#                                 name_2 = "Sector",
-#                                 crs = crs)
 # 
+# boroughCSD$ID <- paste0("bc_", boroughCSD$ID)
+# 
+# # Switch the CSD scale for borough/city
 # scales_dictionary <- append_scale_to_dictionary(
 #   scales_dictionary,
-#   scale = "lavalsector",
-#   sing = "Laval Sector",
-#   sing_with_article = "the Laval Sector",
-#   plur = "Laval Sectors",
-#   slider_title = "Sector",
-#   place_heading = "Laval Sector of {name}",
+#   scale = "boroughCSD",
+#   sing = "borough/city",
+#   sing_with_article = "the borough/city",
+#   plur = "boroughs or cities",
+#   slider_title = "Borough/City",
+#   place_heading = "{name_2} of {name}",
 #   place_name = "{name}")
 # 
+# # Reorder to place boroughCSD first
+# scales_dictionary <- scales_dictionary[c(5, 1:(nrow(scales_dictionary)-1)), ]
+# 
+# 
+# 
+# # Add a CIUSSS scale ------------------------------------------------------
+# 
+# # source("dev/other/msss_data_ret.R")
+# # CIUSSS <- msss_ret(paste0("https://public.arcgis.msss.rtss.qc.ca/arcgis/rest/services/Car",
+# #                           "to_IPS/IPS_total/MapServer/1/query"))
+# # qs::qsave(CIUSSS, "dev/data/shp/CIUSSS.qs")
+# CIUSSS <- qs::qread("dev/data/shp/CIUSSS.qs")
+# 
+# CIUSSS <- CIUSSS[6:10, ]
+# CIUSSS$name <- CIUSSS$nomEtab
+# CIUSSS <- CIUSSS["name"]
+# 
+# CIUSSS <- additional_scale(additional_table = CIUSSS,
+#                            DA_table = census_scales$DA,
+#                            ID_prefix = "CIUSSS",
+#                            name_2 = "CIUSSS",
+#                            crs = crs,
+#                            DA_carto = base_polygons$DA_carto)
+# 
+# # Switch the CSD scale for borough/city
+# scales_dictionary <- append_scale_to_dictionary(
+#   scales_dictionary,
+#   scale = "CIUSSS",
+#   sing = "Centres intégrés universitaires de santé et de services sociaux",
+#   sing_with_article = "the CIUSSS",
+#   plur = "CIUSSS",
+#   slider_title = "CIUSSS",
+#   place_heading = "{name}",
+#   place_name = "{name}")
+# 
+# # Add a CLSC scale ------------------------------------------------------
+# 
+# # source("dev/other/msss_data_ret.R")
+# # CLSC <- msss_ret(paste0("https://public.arcgis.msss.rtss.qc.ca/arcgis/rest/s",
+# #                           "ervices/LimitesTerritoriales/TerritoiresSociosanita",
+# #                           "ires/MapServer/0/query"))
+# # qs::qsave(CLSC, "dev/data/shp/CLSC.qs")
+# CLSC <- qs::qread("dev/data/shp/CLSC.qs")
+# 
+# CLSC <- sf::st_filter(CLSC, base_polygons$master_polygon)
+# 
+# CLSC$name <- CLSC$CLSC_nom
+# CLSC <- CLSC["name"]
+# 
+# CLSC <- additional_scale(additional_table = CLSC,
+#                            DA_table = census_scales$DA,
+#                            ID_prefix = "CLSC",
+#                            name_2 = "CLSC",
+#                            crs = crs,
+#                          DA_carto = base_polygons$DA_carto)
+# 
+# # Switch the CSD scale for borough/city
+# scales_dictionary <- append_scale_to_dictionary(
+#   scales_dictionary,
+#   scale = "CLSC",
+#   sing = "Centre local de service communautaire",
+#   sing_with_article = "the CLSC",
+#   plur = "CLSC",
+#   slider_title = "CLSC",
+#   place_heading = "CLSC {name}",
+#   place_name = "{name}")
+# 
+# # Add a Laval Sector scale ------------------------------------------------
+# 
+# # # Switch the City of Laval for the Sector
+# # lavalsector <- sf::st_read(paste0("dev/data/centraide/shapefiles/",
+# #                             "Secteurs_damenagement_Ville_de_Laval.shp")) |>
+# #   sf::st_transform(4326)
+# # lavalsector$name <- gsub("Secteur \\d - ", "", lavalsector$Secteur)
+# # lavalsector$type <- "Sector"
+# # lavalsector <- lavalsector[c("name")]
+# #
+# # lavalsector <- additional_scale(additional_table = lavalsector,
+# #                                 DA_table = census_scales$DA,
+# #                                 ID_prefix = "laval",
+# #                                 name_2 = "Sector",
+# #                                 crs = crs)
+# #
+# # scales_dictionary <- append_scale_to_dictionary(
+# #   scales_dictionary,
+# #   scale = "lavalsector",
+# #   sing = "Laval Sector",
+# #   sing_with_article = "the Laval Sector",
+# #   plur = "Laval Sectors",
+# #   slider_title = "Sector",
+# #   place_heading = "Laval Sector of {name}",
+# #   place_name = "{name}")
+# #
 # 
 # # Building scale ----------------------------------------------------------
 # 
-# #Build building scale
+# # # Build building scale
 # # # From MySQL
 # # building <- cc.data::db_read_long_table(table = "buildings",
 # #                                          DA_ID = census_scales$DA$ID)
@@ -161,7 +252,8 @@ x <- lapply(list.files("dev/data_import", full.names = TRUE), source, verbose = 
 #                              DA_table = census_scales$DA,
 #                              ID_prefix = "cmhc",
 #                              name_2 = "CMHC zone",
-#                              crs = crs)
+#                              crs = crs,
+#                              DA_carto = base_polygons$DA_carto)
 # scales_dictionary <-
 #   append_scale_to_dictionary(scales_dictionary,
 #                              scale = "cmhczone",
@@ -178,7 +270,8 @@ x <- lapply(list.files("dev/data_import", full.names = TRUE), source, verbose = 
 #                               DA_table = census_scales$DA,
 #                               ID_prefix = "centraide",
 #                               name_2 = "Centraide zone",
-#                               crs = crs)
+#                               crs = crs,
+#                               DA_carto = base_polygons$DA_carto)
 # scales_dictionary <-
 #   append_scale_to_dictionary(scales_dictionary,
 #                              scale = "centraide",
@@ -189,25 +282,25 @@ x <- lapply(list.files("dev/data_import", full.names = TRUE), source, verbose = 
 #                              place_heading = "Centraide zone of {name}",
 #                              place_name = "{name}")
 # 
-# ### Build table de quartier
-# tablequartier <- sf::st_read("dev/data/geometry/quartiers_sociologiques_2014.shp")
-# tablequartier <- tablequartier["Table"]
-# names(tablequartier)[1] <- "name"
-# tablequartier <- additional_scale(additional_table = tablequartier,
-#                               DA_table = census_scales$DA,
-#                               ID_prefix = "tablequartier",
-#                               name_2 = "Table de quartier",
-#                               crs = crs)
-# 
-# scales_dictionary <-
-#   append_scale_to_dictionary(scales_dictionary,
-#                              scale = "tablequartier",
-#                              sing = "Table de quartier",
-#                              sing_with_article = "the Table de quartier",
-#                              plur = "Table de quartier",
-#                              slider_title = "Table de quartier",
-#                              place_heading = "Table de quartier of {name}",
-#                              place_name = "{name}")
+# # ### Build table de quartier
+# # tablequartier <- sf::st_read("dev/data/geometry/quartiers_sociologiques_2014.shp")
+# # tablequartier <- tablequartier["Table"]
+# # names(tablequartier)[1] <- "name"
+# # tablequartier <- additional_scale(additional_table = tablequartier,
+# #                               DA_table = census_scales$DA,
+# #                               ID_prefix = "tablequartier",
+# #                               name_2 = "Table de quartier",
+# #                               crs = crs)
+# #
+# # scales_dictionary <-
+# #   append_scale_to_dictionary(scales_dictionary,
+# #                              scale = "tablequartier",
+# #                              sing = "Table de quartier",
+# #                              sing_with_article = "the Table de quartier",
+# #                              plur = "Table de quartier",
+# #                              slider_title = "Table de quartier",
+# #                              place_heading = "Table de quartier of {name}",
+# #                              place_name = "{name}")
 # 
 # ### Build 25-m grid scale
 # # grid <-
@@ -234,7 +327,7 @@ x <- lapply(list.files("dev/data_import", full.names = TRUE), source, verbose = 
 # # grid <- cc.buildr::append_DA_ID(DA_table = census_scales$DA,
 # #                                 df = grid, crs = crs)
 # # grid25 <- qs::qread("dev/data/built/grid.qs")
-# #
+# 
 # # grid50_geometry <- sf::st_make_grid(sf::st_transform(grid25, 2950),
 # #                                       cellsize = c(50, 50),
 # #                                       crs = 2950)
@@ -245,7 +338,7 @@ x <- lapply(list.files("dev/data_import", full.names = TRUE), source, verbose = 
 # # index <- sf::st_intersects(centroid, grid50)
 # # centroid$grid50 <- unlist(index)
 # # grouped <- cbind(grid25, sf::st_drop_geometry(centroid["grid50"]))
-# #
+# # 
 # # grid50 <- aggregate(grouped["grid50"], by = list(grouped$grid50),
 # #                       FUN = function(x) length(unique(x)))
 # # grid50 <- sf::st_transform(grid50, crs = crs)
@@ -386,49 +479,59 @@ x <- lapply(list.files("dev/data_import", full.names = TRUE), source, verbose = 
 # 
 # all_scales <- c(census_scales,
 #                 list(borough = borough),
-#                 list(lavalsector = lavalsector),
+#                 list(boroughCSD = boroughCSD),
+#                 # list(lavalsector = lavalsector),
 #                 list(building = building),
 #                 list(centraide = centraide),
 #                 list(cmhczone = cmhczone),
-#                 list(tablequartier = tablequartier),
+#                 list(CIUSSS = CIUSSS),
+#                 list(CLSC = CLSC),
 #                 list(grid250 = grid250),
 #                 list(grid100 = grid100),
 #                 list(grid50 = grid50),
 #                 list(grid25 = grid25))
 # 
-# 
 # save.image("dev/data/built/pre_consolidate.RData")
-load("dev/data/built/pre_consolidate.RData")
-
-scales_consolidated <- consolidate_scales(scales_sequences = scales_sequences,
-                                          all_scales = all_scales,
-                                          regions = base_polygons$regions,
-                                          crs = crs)
-
-regions_dictionary <- regions_dictionary_add_scales(
-  regions_dictionary = regions_dictionary,
-  region_dict_scales = scales_consolidated$for_region_dict_scales)
-
-
-# Verify conformity -------------------------------------------------------
-
-verify_dictionaries(scales = scales_consolidated$scales,
-                    regions_dictionary = regions_dictionary,
-                    scales_dictionary = scales_dictionary)
-
-
-# Create the modules and variables tables ---------------------------------
-
-scales_variables_modules <-
-  append_empty_variables_table(scales_consolidated = scales_consolidated$scales)
-scales_variables_modules <-
-  append_empty_modules_table(scales = scales_variables_modules)
-scales_variables_modules$data <- lapply(scales_consolidated$scales, \(x) list())
-
-qs::qsavem(census_scales, scales_variables_modules, crs,
-          scales_dictionary, regions_dictionary, base_polygons,
-          cancensus_cma_code, scales_consolidated, all_scales, scales_sequences,
-          file = "dev/data/built/empty_scales_variables_modules.qsm")
+# load("dev/data/built/pre_consolidate.RData")
+# 
+# scales_consolidated <- consolidate_scales(scales_sequences = scales_sequences,
+#                                           all_scales = all_scales,
+#                                           regions = base_polygons$regions,
+#                                           crs = crs)
+# 
+# regions_dictionary <- regions_dictionary_add_scales(
+#   regions_dictionary = regions_dictionary,
+#   region_dict_scales = scales_consolidated$for_region_dict_scales)
+# 
+# scales_dictionary <- add_regions_to_scales_dictionary(
+#   scales_dictionary = scales_dictionary, regions = base_polygons$regions,
+#   scales_consolidated = scales_consolidated,
+#   known_regions = list(grid250 = c("island", "city"),
+#                        grid100 = c("island", "city"),
+#                        grid50 = c("island", "city"),
+#                        grid25 = c("island", "city")),
+#   DA_carto = base_polygons$DA_carto)
+# 
+# 
+# # Verify conformity -------------------------------------------------------
+# 
+# verify_dictionaries(scales = scales_consolidated$scales,
+#                     regions_dictionary = regions_dictionary,
+#                     scales_dictionary = scales_dictionary)
+# 
+# 
+# # Create the modules and variables tables ---------------------------------
+# 
+# scales_variables_modules <-
+#   append_empty_variables_table(scales_consolidated = scales_consolidated$scales)
+# scales_variables_modules <-
+#   append_empty_modules_table(scales = scales_variables_modules)
+# scales_variables_modules$data <- lapply(scales_consolidated$scales, \(x) list())
+# 
+# qs::qsavem(census_scales, scales_variables_modules, crs,
+#           scales_dictionary, regions_dictionary, base_polygons,
+#           cancensus_cma_code, scales_consolidated, all_scales, scales_sequences,
+#           file = "dev/data/built/empty_scales_variables_modules.qsm")
 qs::qload("dev/data/built/empty_scales_variables_modules.qsm")
 
 # Build the datasets ------------------------------------------------------
@@ -477,7 +580,6 @@ scales_variables_modules <-
   ba_ndvi(scales_variables_modules = scales_variables_modules,
           master_polygon = base_polygons$master_polygon,
           all_scales = all_scales,
-          data_output_path = "dev/data/ndvi/",
           skip_scales = c("grid25", "grid50", "grid100", "grid250"),
           scales_sequences = scales_sequences,
           crs = crs)
@@ -497,68 +599,74 @@ scales_variables_modules <-
                           crs = crs)
 
 save.image("dev/data/built/svm_after_access.qs")
-# load("dev/data/built/svm_after_access.qs")
-# 
-# stop("WE WILL WANT AREA AS A DATA FILE !! AS IT's PARENT_VEC SOMETIMES.")
-# 
-# 
-# invisible(lapply(list.files("dev/data_import", full.names = TRUE), source))
-# future::plan(future::multisession(), workers = 4)
-# 
-# # Additional access variables
-# scales_variables_modules <-
-#   build_and_append_access(scales_variables_modules = scales_variables_modules,
-#                           DA_table = census_scales$DA,
-#                           traveltimes = traveltimes,
-#                           crs = crs)
-# 
-# # Montreal specific modules
-# save.image("dev/data/built/before_mtl.RData")
-# load("dev/data/built/before_mtl.RData")
-# 
-# invisible(lapply(list.files("dev/data_import", full.names = TRUE), source))
-# future::plan(future::multisession(), workers = 4)
-# 
-# scales_variables_modules <-
-#   build_and_append_climate_risk(
-#     scales_variables_modules = scales_variables_modules,
-#     crs = crs)
-# 
-# scales_variables_modules <-
-#   build_and_append_natural_inf(
-#     scales_variables_modules = scales_variables_modules,
-#     crs = crs)
-# 
-# scales_variables_modules <-
-#   build_and_append_alley(
-#     scales_variables_modules = scales_variables_modules,
-#     crs = crs)
-# 
-# scales_variables_modules <- 
-#   build_and_append_crash(
-#     scales_variables_modules = scales_variables_modules,
-#     crs = crs
-#   )
-# 
-# save.image("dev/data/built/before_centraide.RData")
-# load("dev/data/built/before_centraide.RData")
-# invisible(lapply(list.files("dev/data_import", full.names = TRUE), source))
-# future::plan(future::multisession(), workers = 4)
-# 
-# scales_variables_modules <-
-#   build_and_append_tenure(
-#     scales_variables_modules = scales_variables_modules,
-#     crs = crs)
-# 
-# scales_variables_modules <-
-#   build_and_append_afford_pop(
-#     scales_variables_modules = scales_variables_modules,
-#     crs = crs)
-# 
-# scales_variables_modules <-
-#   build_and_append_afford_hou(
-#     scales_variables_modules = scales_variables_modules,
-#     crs = crs)
+load("dev/data/built/svm_after_access.qs")
+
+invisible(lapply(list.files("dev/data_import", full.names = TRUE), source))
+future::plan(future::multisession(), workers = 4)
+
+# Additional access variables
+scales_variables_modules <-
+  build_and_append_access(scales_variables_modules = scales_variables_modules,
+                          DA_table = census_scales$DA,
+                          traveltimes = traveltimes,
+                          scales_sequences = scales_sequences,
+                          crs = crs)
+
+# Montreal specific modules
+save.image("dev/data/built/before_mtl.RData")
+load("dev/data/built/before_mtl.RData")
+
+invisible(lapply(list.files("dev/data_import", full.names = TRUE), source))
+future::plan(future::multisession(), workers = 4)
+
+scales_variables_modules <-
+  build_and_append_climate_risk(
+    scales_variables_modules = scales_variables_modules,
+    scales_sequences = scales_sequences,
+    crs = crs)
+
+scales_variables_modules <-
+  build_and_append_natural_inf(
+    scales_variables_modules = scales_variables_modules,
+    crs = crs)
+
+scales_variables_modules <-
+  build_and_append_alley(
+    scales_variables_modules = scales_variables_modules,
+    scales_sequences = scales_sequences,
+    crs = crs,
+    city_scales_ID = regions_dictionary$scales[regions_dictionary$region == "city"][[1]])
+
+scales_variables_modules <-
+  build_and_append_crash(
+    scales_variables_modules = scales_variables_modules,
+    scales_sequences = scales_sequences,
+    crs = crs,
+    island_IDs = regions_dictionary$scales[regions_dictionary$region == "island"][[1]]
+  )
+
+save.image("dev/data/built/before_centraide.RData")
+load("dev/data/built/before_centraide.RData")
+invisible(lapply(list.files("dev/data_import", full.names = TRUE), source))
+future::plan(future::multisession(), workers = 4)
+
+scales_variables_modules <-
+  build_and_append_tenure(
+    scales_variables_modules = scales_variables_modules,
+    scales_sequences = scales_sequences,
+    crs = crs)
+
+scales_variables_modules <-
+  build_and_append_afford_pop(
+    scales_variables_modules = scales_variables_modules,
+    scales_sequences = scales_sequences,
+    crs = crs)
+
+scales_variables_modules <-
+  build_and_append_afford_hou(
+    scales_variables_modules = scales_variables_modules,
+    scales_sequences = scales_sequences,
+    crs = crs)
 
 # Post process
 scales_variables_modules$scales <- 
@@ -579,60 +687,37 @@ qs::qload("dev/data/built/scales_variables_modules.qsm")
 
 # Map zoom levels ---------------------------------------------------------
 
-# map_zoom_levels <- map_zoom_levels_create_all(
-#   scales_sequences = scales_sequences,
-#   zoom_levels = list(first = 0, CT = 10, DA = 12, building = 16, 
-#                      grid100 = 11, grid50 = 13, grid25 = 14))
-# 
-# map_zoom_levels_save(data_folder = "data/", map_zoom_levels = map_zoom_levels)
+map_zoom_levels <- map_zoom_levels_create_all(
+  scales_sequences = scales_sequences,
+  zoom_levels = list(first = 0, CT = 10, DA = 12, building = 16,
+                     grid100 = 11, grid50 = 13, grid25 = 14))
+
+map_zoom_levels_save(data_folder = "data/", map_zoom_levels = map_zoom_levels)
 
 
 # Tilesets ----------------------------------------------------------------
 
-# # Prepare by getting the census scales with geometries which spans over water
-# # Build census scales
-# full_census_scales <-
-#   build_census_scales(master_polygon = base_polygons$master_polygon,
-#                       regions = base_polygons$province_cancensus_code,
-#                       levels = c("CSD", "CT", "DA"),
-#                       crs = crs,
-#                       switch_full_geos = TRUE)
-# 
-# qs::qsave(full_census_scales,
-#            file = "dev/data/built/full_census_scales.qs")
-# full_census_scales <- qs::qload("dev/data/built/full_census_scales.qs")
-# 
-# 
-# # Do not upload grids, as there is a function just for it.
-# all_scales_t <- scales_variables_modules$scales[!grepl("^grid", names(scales_variables_modules$scales))]
-# map_zoom_levels_t <- map_zoom_levels[!grepl("_grid", names(map_zoom_levels))]
-# 
-# # Before loading the tilesets, switch the geometries.
-# all_scales_t <-
-#   mapply(\(scale_name, scale_df) {
-#     if (!scale_name %in% names(full_census_scales)) return(scale_df)
-#     df <- sf::st_drop_geometry(scale_df)
-#     merge(df, full_census_scales[[scale_name]]["ID"], by = "ID", all.x = TRUE,
-#           all.y = FALSE)
-#   }, names(all_scales_t), all_scales_t)
-# 
-# 
-# tileset_upload_all(all_scales = all_scales_t,
-#                    map_zoom_levels = map_zoom_levels_t,
-#                    prefix = "mtl",
-#                    username = "curbcut",
-#                    access_token = .cc_mb_token)
-# 
-# source("dev/tiles/grid_tiles.R")
-# tileset_upload_grid(region = "grid",
-#                     all_scales = scales_variables_modules$scales,
-#                     map_zoom_levels = map_zoom_levels,
-#                     max_zoom = list(grid250 = 13, grid100 = 14, grid50 = 15, grid25 = 16),
-#                     vars = c("climate_drought", "climate_flood", "climate_destructive_storms",
-#                              "climate_heat_wave", "climate_heavy_rain"),
-#                     prefix = "mtl",
-#                     username = "curbcut",
-#                     access_token = .cc_mb_token)
+stop("IN TILESET_UPLOAD_ALL, SWITCH GEOMETRY TO GEOMETRY_DIGITAL!!!")
+# Do not upload grids, as there is a function just for it.
+all_scales_t <- scales_variables_modules$scales[!grepl("^grid", names(scales_variables_modules$scales))]
+map_zoom_levels_t <- map_zoom_levels[!grepl("_grid", names(map_zoom_levels))]
+
+tileset_upload_all(all_scales = all_scales_t,
+                   map_zoom_levels = map_zoom_levels_t,
+                   prefix = "mtl",
+                   username = "curbcut",
+                   access_token = .cc_mb_token)
+
+source("dev/tiles/grid_tiles.R")
+tileset_upload_grid(region = "grid",
+                    all_scales = scales_variables_modules$scales,
+                    map_zoom_levels = map_zoom_levels,
+                    max_zoom = list(grid250 = 13, grid100 = 14, grid50 = 15, grid25 = 16),
+                    vars = c("climate_drought", "climate_flood", "climate_destructive_storms",
+                             "climate_heat_wave", "climate_heavy_rain"),
+                    prefix = "mtl",
+                    username = "curbcut",
+                    access_token = .cc_mb_token)
 
 
 
@@ -643,6 +728,7 @@ data <- scales_variables_modules$data
 modules$regions <- lapply(modules$id, \(id) {
   vl <- modules$var_left[modules$id == id][[1]]
   vl <- if (!is.data.frame(vl)) vl else vl$var_code
+  if (length(vl) > 100) vl <- vl[sample(1:length(vl), 50)]
   
   # Go over all possible variables on one module
   every_val_reg <- lapply(vl, \(v) {
@@ -664,11 +750,16 @@ modules$regions <- lapply(modules$id, \(id) {
         if (is.null(dat)) return(NULL)
         
         # Length of IDs from this region present in the scales' data
-        present_in_data <- dat$ID[dat$ID %in% scale_IDs] 
-        present_in_data <- length(present_in_data)
+        present_in_data <- dat[dat$ID %in% scale_IDs, ] 
+        
+        # Do not count if there are missing values (NAs) for more than half of 
+        # the observations!
+        present_in_data <- subset(present_in_data, select = -ID)
+        only_nas <- apply(present_in_data, 1, \(x) all(is.na(x)))
+        present_in_data <- present_in_data[!only_nas, ]
         
         # As a percentage of all the IDs needed to fill in the region
-        present_in_data / length(scale_IDs)
+        nrow(present_in_data) / length(scale_IDs)
       }, names(region_scales), region_scales)
       
       # Remove the scales for which no data was calculated
@@ -677,9 +768,9 @@ modules$regions <- lapply(modules$id, \(id) {
       # from a region that are filled with data for this particular variable.
       scales_presence_avg <- mean(unlist(scales_presence))
       
-      # If less than half, do not include the region as possibly selectable in
-      # the page
-      scales_presence_avg > 0.5
+      # For the region to be valid, it needs to have at least 80% of the
+      # features filled with data.
+      scales_presence_avg > .80
       
     }, simplify = TRUE, USE.NAMES = TRUE)
     
@@ -718,8 +809,7 @@ scales_variables_modules$modules <-
                "_NO2LUR_A_YY.pdf'>Air pollution</a>."
              ),
              metadata = FALSE,
-             dataset_info = "",
-             regions = regions_dictionary$region[regions_dictionary$pickable])
+             dataset_info = "")
 
 
 # Produce colours ---------------------------------------------------------
