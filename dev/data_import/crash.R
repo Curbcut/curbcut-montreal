@@ -107,7 +107,8 @@ build_and_append_crash <- function(scales_variables_modules, crs, scales_sequenc
   all_data <- mapply(\(scale_name, scale_df) {
     if (!scale_name %in% names(dat)) return(scale_df)
     
-    merge(scale_df, dat[[scale_name]], by = c("ID", "area", "population"))
+    merge(scale_df, dat[[scale_name]], by = c("ID", "area", "population"),
+          all.x = TRUE)
     
   }, names(scales_variables_modules$scales), scales_variables_modules$scales,
   SIMPLIFY = FALSE)

@@ -209,8 +209,8 @@ alley_UI <- function(id) {
           ))),
         shinyjs::hidden(shiny::div(
           id = shiny::NS(id, "scale_div"),
-          geography_UI(shiny::NS(id, id), regions = regions,
-                       avail_scale_combinations = avail_scale_combinations),
+          shinyjs::hidden(geography_UI(shiny::NS(id, id), regions = regions,
+                       avail_scale_combinations = avail_scale_combinations)),
           shiny::hr(),
           curbcut::zoom_UI(shiny::NS(id, id), zoom_levels = mzp))),
         bottom = shiny::tagList(
@@ -382,7 +382,7 @@ alley_server <- function(id, r) {
       if (mode() == "borough") return(alley_boroughs)
       if (mode() == "alleys") return(alleys)
       if (r[[id]]$scale() == "alleys") return(alleys)
-      
+
       data_get(
         vars = r[[id]]$vars(),
         scale = r[[id]]$scale(),
@@ -394,13 +394,7 @@ alley_server <- function(id, r) {
     # Data for tile coloring
     data_colours <- shiny::reactive({
       if (mode() != "choropleth") return(data.frame())
-      
-      assign("vars", r[[id]]$vars(), envir = .GlobalEnv)
-      assign("region", r[[id]]$region(), envir = .GlobalEnv)
-      assign("time", r[[id]]$time(), envir = .GlobalEnv)
-      assign("zoom_levels", r[[id]]$zoom_levels(), envir = .GlobalEnv)
-      
-      
+
       data_get_colours(
         vars = r[[id]]$vars(),
         region = r[[id]]$region(),
@@ -447,12 +441,13 @@ alley_server <- function(id, r) {
     # dyk_server(
     #   id = id,
     #   r = r,
-    #   vars = vars,
-    #   df = r[[id]]$df,
+    #   vars = r[[id]]$vars,
+    #   scale = r[[id]]$scale,
+    #   region = r[[id]]$region,
     #   select_id = r[[id]]$select_id,
+    #   time = r[[id]]$time,
     #   poi = r[[id]]$poi,
-    #   region = current_region,
-    #   zoom_levels = current_zl
+    #   zoom_levels = r[[id]]$zoom_levels
     # )
     
     # Customized map functions
@@ -534,6 +529,7 @@ alley_server <- function(id, r) {
       graph_fun = shiny::reactive(alley_graph_fun()$fun),
       graph_args = shiny::reactive(alley_graph_fun()$args)
     )
+    observe(print(r[[id]]$zoom_levels()))
 
     # Hide the graph when an alley is selected
     shiny::observe({
