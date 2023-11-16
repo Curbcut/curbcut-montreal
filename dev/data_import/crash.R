@@ -52,7 +52,7 @@ build_and_append_crash <- function(scales_variables_modules, crs, scales_sequenc
 
   # Add to all scales
   scales <- scales_variables_modules$scales
-  scales <- scales[!grepl("(^grid)|(building)|(street)", names(scales))]
+  scales <- scales[!grepl("(^grd)|(building)|(street)", names(scales))]
   years <- unique(data$AN)
   
   progressr::with_progress({

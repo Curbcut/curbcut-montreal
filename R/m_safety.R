@@ -312,7 +312,8 @@ safety_server <- function(id, r) {
       vars = r[[id]]$vars(),
       scale = r[[id]]$scale(),
       region = r[[id]]$region(),
-      time = r[[id]]$time()
+      time = r[[id]]$time(),
+      schemas = r[[id]]$schemas()
     ))
 
     # Data for tile coloring
@@ -320,7 +321,8 @@ safety_server <- function(id, r) {
       vars = r[[id]]$vars(),
       region = r[[id]]$region(),
       time = r[[id]]$time(),
-      zoom_levels = r[[id]]$zoom_levels()
+      zoom_levels = r[[id]]$zoom_levels(),
+      schemas = r[[id]]$schemas()
     ))
 
     # Warn user
@@ -382,7 +384,8 @@ safety_server <- function(id, r) {
                     args = list(r = r, data = data(), vars = r[[id]]$vars(), 
                                 scale = r[[id]]$scale(), time = r[[id]]$time(), 
                                 select_id = r[[id]]$select_id(), region = r[[id]]$region(),
-                                scales_as_DA = c("building", "street"), lang = r$lang())))
+                                scales_as_DA = c("building", "street"), lang = r$lang(),
+                                schemas = r[[id]]$schemas())))
 
       return(list(fun = safety_graph,
                   args = list(vars = r[[id]]$vars(), year = r[[id]]$time(), lang = r$lang())))
@@ -399,6 +402,7 @@ safety_server <- function(id, r) {
       select_id = r[[id]]$select_id,
       time = r[[id]]$time,
       zoom_levels = r[[id]]$zoom_levels,
+      schemas = r[[id]]$schemas(),
       graph_fun = shiny::reactive(safety_graph_fun()$fun),
       graph_args = shiny::reactive(safety_graph_fun()$args)
     )
@@ -420,7 +424,8 @@ safety_server <- function(id, r) {
       vars = r[[id]]$vars,
       data = data,
       zoom_levels = r[[id]]$zoom_levels,
-      time = r[[id]]$time
+      time = r[[id]]$time,
+      schemas = r[[id]]$schemas
     )
   })
 }

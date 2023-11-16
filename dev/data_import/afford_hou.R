@@ -311,7 +311,9 @@ build_and_append_afford_hou <- function(scales_variables_modules, scales_sequenc
       additive_vars = additive_vars, 
       # All region except Centraide
       only_scales = names(scales_variables_modules$scales)[
-        !names(scales_variables_modules$scales) %in% c("centraide", "CT")
+        !names(scales_variables_modules$scales) %in% c("centraide", "CT", "DA",
+                                                       "grd250", "grd100", "grd50",
+                                                       "grd25", "building")
       ],
       crs = crs
     )

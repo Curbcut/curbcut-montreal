@@ -387,7 +387,8 @@ alley_server <- function(id, r) {
         vars = r[[id]]$vars(),
         scale = r[[id]]$scale(),
         region = r[[id]]$region(),
-        time = r[[id]]$time()
+        time = r[[id]]$time(),
+        schemas = r[[id]]$schemas()
       )
     })
     
@@ -399,7 +400,8 @@ alley_server <- function(id, r) {
         vars = r[[id]]$vars(),
         region = r[[id]]$region(),
         time = r[[id]]$time(),
-        zoom_levels = r[[id]]$zoom_levels()
+        zoom_levels = r[[id]]$zoom_levels(),
+        schemas = r[[id]]$schemas()
       )
     })
     
@@ -491,7 +493,8 @@ alley_server <- function(id, r) {
                                 select_id = r[[id]]$select_id(), region = r[[id]]$region(),
                                 scales_as_DA = c("building", "street"), scale = r[[id]]$scale(),
                                 lang = r$lang(), time = r[[id]]$time(),
-                                zoom_levels = r[[id]]$zoom_levels())))
+                                zoom_levels = r[[id]]$zoom_levels(),
+                                schemas = r[[id]]$schemas())))
       }
 
 
@@ -529,7 +532,6 @@ alley_server <- function(id, r) {
       graph_fun = shiny::reactive(alley_graph_fun()$fun),
       graph_args = shiny::reactive(alley_graph_fun()$args)
     )
-    observe(print(r[[id]]$zoom_levels()))
 
     # Hide the graph when an alley is selected
     shiny::observe({
