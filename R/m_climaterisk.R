@@ -1,7 +1,6 @@
 ### climate_risk PAGE ###########################################################
 
 map_scale_fill_grid <- function(vars, time) {
-  print(time)
   var <- vars$var_left
 
   clr <- if (length(var) == 1) colours_dfs$left_5 else colours_dfs$delta
