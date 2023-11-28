@@ -15,14 +15,14 @@ suppressPackageStartupMessages({
 
 # Data --------------------------------------------------------------------
 
-load_data(site_name = "Curbcut Montréal",
-          site_url = "https://montreal.curbcut.ca",
-          stories_page = "Montréal stories",
-          tileset_prefix = "mtl",
-          mapbox_username = "curbcut",
-          default_random_address = "845 Sherbrooke Ouest, Montréal, Quebec",
-          map_zoom = 9.9,
-          map_loc = c(lat = -73.70, lon = 45.53))
+curbcut::load_data(site_name = "Curbcut Montréal",
+                   site_url = "https://montreal.curbcut.ca",
+                   stories_page = "Montréal stories",
+                   tileset_prefix = "mtl",
+                   mapbox_username = "curbcut",
+                   default_random_address = "845 Sherbrooke Ouest, Montréal, Quebec",
+                   map_zoom = 9.9,
+                   map_loc = c(lat = -73.70, lon = 45.53))
 
 
 # Shiny options -----------------------------------------------------------

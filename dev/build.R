@@ -47,7 +47,7 @@ regions_dictionary <-
   regions_dictionary(
     all_regions = all_regions,
     region = c("CMA", "island", "city", "centraide"),
-    name = c(CMA = "Metropolitan Area",
+    name = c(CMA = "Montreal region",
              island = "Island of Montreal",
              city = "City of Montreal",
              centraide = "Centraide of Greater Montreal"),
@@ -100,7 +100,7 @@ scales_dictionary <- append_scale_to_dictionary(
   sing_with_article = "the borough",
   plur = "boroughs",
   slider_title = "Borough",
-  place_heading = "Borough of {name}",
+  place_heading = "Borough {name}",
   place_name = "{name}")
 
 
@@ -156,9 +156,9 @@ CIUSSS <- additional_scale(additional_table = CIUSSS,
 scales_dictionary <- append_scale_to_dictionary(
   scales_dictionary,
   scale = "CIUSSS",
-  sing = "Centres intégrés universitaires de santé et de services sociaux",
-  sing_with_article = "the CIUSSS",
-  plur = "CIUSSS",
+  sing = "integrated (university) health and social services centre",
+  sing_with_article = "the integrated (university) health and social services centre",
+  plur = "integrated (university) health and social services centres",
   slider_title = "CIUSSS",
   place_heading = "{name}",
   place_name = "{name}")
@@ -188,9 +188,9 @@ CLSC <- additional_scale(additional_table = CLSC,
 scales_dictionary <- append_scale_to_dictionary(
   scales_dictionary,
   scale = "CLSC",
-  sing = "Centre local de service communautaire",
-  sing_with_article = "the CLSC",
-  plur = "CLSC",
+  sing = "local community service centre",
+  sing_with_article = "the local community service centre",
+  plur = "local community services centres",
   slider_title = "CLSC",
   place_heading = "CLSC {name}",
   place_name = "{name}")
@@ -278,7 +278,7 @@ scales_dictionary <-
                              sing = "Centraide zone",
                              sing_with_article = "the Centraide zone",
                              plur = "Centraide zones",
-                             slider_title = "Centraide zone",
+                             slider_title = "Centraide Zone",
                              place_heading = "Centraide zone of {name}",
                              place_name = "{name}")
 

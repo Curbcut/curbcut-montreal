@@ -190,6 +190,9 @@ safety_server <- function(id, r) {
       shinyjs::toggle("safety-compare_panel", condition = !heatmap())
       shinyjs::toggle("safety-compare_widgets", condition = !heatmap())
       shinyjs::toggle("safety-geo_div", condition = !heatmap())
+      shinyjs::toggle("safety-common_widgets_in", condition = !heatmap())
+      shinyjs::toggle("safety-zoom_slider_div", condition = !heatmap())
+      shinyjs::toggle("safety-compare_dates", condition = !heatmap())
     }, once = TRUE)
 
     # If on heatmap, there can be only single year
@@ -200,6 +203,10 @@ safety_server <- function(id, r) {
       shinyjs::toggle("safety-compare_panel", condition = !heatmap())
       shinyjs::toggle("safety-compare_widgets", condition = !heatmap())
       shinyjs::toggle("safety-geo_div", condition = !heatmap())
+      shinyjs::toggle("safety-common_widgets_in", condition = !heatmap())
+      shinyjs::toggle("safety-zoom_slider_div", condition = !heatmap())
+      shinyjs::toggle("safety-compare_dates", condition = !heatmap())
+        
 
       # If on heatmap, turn off the compare dates checkbox
       if (heatmap()) {
@@ -402,7 +409,7 @@ safety_server <- function(id, r) {
       select_id = r[[id]]$select_id,
       time = r[[id]]$time,
       zoom_levels = r[[id]]$zoom_levels,
-      schemas = r[[id]]$schemas(),
+      schemas = r[[id]]$schemas,
       graph_fun = shiny::reactive(safety_graph_fun()$fun),
       graph_args = shiny::reactive(safety_graph_fun()$args)
     )

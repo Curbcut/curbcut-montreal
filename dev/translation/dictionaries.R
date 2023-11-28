@@ -25,9 +25,9 @@ translation_dictionaries <- tibble(en = character(),
   add_row(en = "building",
           fr = "bâtiment") |>
   add_row(en = "CMHC zone",
-          fr = "Zone SCHL") |>
+          fr = "zone SCHL") |>
   add_row(en = "Centraide zone",
-          fr = "Zone centraide") |>
+          fr = "zone Centraide") |>
   add_row(en = "area at the 25m scale",
           fr = "zone à l'échelle de 25m") |>
   add_row(en = "area at the 50m scale",
@@ -36,6 +36,14 @@ translation_dictionaries <- tibble(en = character(),
           fr = "zone à l'échelle de 100m") |>
   add_row(en = "area at the 250m scale",
           fr = "zone à l'échelle de 250m") |> 
+  add_row(en = "city",
+          fr = "ville") |>
+  add_row(en = "borough",
+          fr = "arrondissement") |>
+  add_row(en = "integrated (university) health and social services centre",
+          fr = "centre intégré (universitaire) de santé et de services sociaux") |>
+  add_row(en = "local community service centre",
+          fr = "centre local de service communautaire") |>
   
   # sing_with_article
   add_row(en = "the borough/city",
@@ -58,6 +66,14 @@ translation_dictionaries <- tibble(en = character(),
           fr = "la zone à l'échelle de 100m") |>
   add_row(en = "the area at the 250m scale",
           fr = "la zone à l'échelle de 250m") |> 
+  add_row(en = "the city",
+          fr = "la ville") |>
+  add_row(en = "the borough",
+          fr = "l'arrondissement") |>
+  add_row(en = "the integrated (university) health and social services centre",
+          fr = "le centre intégré (universitaire) de santé et de services sociaux") |>
+  add_row(en = "the local community service centre",
+          fr = "le centre local de service communautaire") |>
   
   # plur
   add_row(en = "boroughs or cities",
@@ -80,6 +96,14 @@ translation_dictionaries <- tibble(en = character(),
           fr = "zones à l'échelle de 100m") |>
   add_row(en = "areas at the 250m scale",
           fr = "zones à l'échelle de 250m") |> 
+  add_row(en = "cities",
+          fr = "villes") |>
+  add_row(en = "boroughs",
+          fr = "arrondissements") |>
+  add_row(en = "integrated (university) health and social services centres",
+          fr = "centres intégrés (universitaires) de santé et de services sociaux") |>
+  add_row(en = "local community services centres",
+          fr = "centres locaux de services communautaires") |>
   
   # slider title
   add_row(en = "Borough/City",
@@ -102,6 +126,16 @@ translation_dictionaries <- tibble(en = character(),
           fr = "100m") |>
   add_row(en = "250m",
           fr = "250m") |> 
+  add_row(en = "City",
+          fr = "Ville") |>
+  add_row(en = "Borough",
+          fr = "Arrondissement") |>
+  add_row(en = "CIUSSS",
+          fr = "CIUSSS") |>
+  add_row(en = "CLSC",
+          fr = "CLSC") |>
+  add_row(en = "Centraide Zone",
+          fr = "Zone Centraide") |> 
   
   # place heading
   add_row(en = "{name_2} of {name}",
@@ -114,6 +148,10 @@ translation_dictionaries <- tibble(en = character(),
           fr = "{name}") |>
   add_row(en = "Centraide zone of {name}",
           fr = "Zone centraide {name}") |>
+  add_row(en = "CLSC {name}",
+          fr = "CLSC {name}") |>
+  add_row(en = "Borough {name}",
+          fr = "Arrondissement {name}") |>
   
   # place name
   add_row(en = "Census tract {name}",

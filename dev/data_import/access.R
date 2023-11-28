@@ -149,7 +149,7 @@ build_and_append_access <- function(scales_variables_modules,
       if (grepl("_transit_pwd_", var)) return("public transit on peak weekdays")
     })()
     
-    time <- "__schema$transportationtime__"
+    time <- "__transportationtime__"
     
     var_title <- stringr::str_to_sentence(paste0(theme, " accessible by ", mode))
     var_short <- stringr::str_to_sentence(theme)

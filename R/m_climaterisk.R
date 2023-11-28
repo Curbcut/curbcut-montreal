@@ -418,6 +418,7 @@ explore_graph_grid <- function(vars, lang, data, select_id, time) {
       select_id = r[[id]]$select_id,
       time = r[[id]]$time,
       zoom_levels = r[[id]]$zoom_levels,
+      schemas = r[[id]]$schemas,
       graph = shiny::reactive(explore_graph_fun_args()$fun),
       graph_args = shiny::reactive(explore_graph_fun_args()$args)
     )

@@ -143,9 +143,10 @@ translation_pages <-
   add_row(en = "Explore narrative case studies about specific urban sustainability and planning issues in the Montreal region.", 
           fr = "Explorer des études de cas narratives sur des questions spécifiques de durabilité urbaine et de planification dans la région de Montréal.") |> 
   add_row(en = paste0(
-    "<p><img src='centraide_logo/centraide_logo_en.png' style='width:60%;ma",
-    "rgin-left:50px;'><p>Tenure status measures whethera household owns or ",
-    "rents its home. Housing needs can vary dramatically by tenure status."
+    "<p><img src='centraide_logo/centraide_logo_en.png' ",
+    "style='width:60%;margin-left:50px;'><p>Tenure status measures whether ",
+    "a household owns or rents its home. Housing needs can vary ",
+    "dramatically by tenure status."
   ), fr = "<p><img src='centraide_logo/centraide_logo_fr.png' style='width:60%;margin-left:50px;'>Le statut d'occupation mesure si un ménage est propriétaire ou locataire de son logement. Les besoins en matière de logement peuvent varier considérablement en fonction du statut d'occupation.") |> 
   add_row(en = "Land surface temperature measures the maximum mean warm-season temperature at a specific location. It is a crucial indicator of urban heat islands and ecological balance within a region.",
           fr = "La température au sol mesure la température moyenne maximale de la saison chaude à un endroit précis. C'est un indicateur essentiel des îlots de chaleur urbains et de l'équilibre écologique au sein d'une région.") |> 

@@ -153,13 +153,6 @@ is_translated(unique(unlist(variables$rankings_chr)))
 is_translated(unique(unlist(variables$theme)))
 is_translated(unique(variables$source))
 
-rank_names <- lapply(variables$breaks_q5, \(x) {
-  if ("rank_name" %in% names(x))
-    x[c("rank_name", "rank_name_short")]
-})
-rank_names <- unlist(rank_names[!sapply(rank_names, is.null)])
-is_translated(rank_names)
-
 group_diffs <- unique(c(unname(unlist(variables$group_diff)), names(unlist(variables$group_diff))))
 group_diffs <- group_diffs[!curbcut:::is_numeric(group_diffs)]
 is_translated(unique(variables$group_name))

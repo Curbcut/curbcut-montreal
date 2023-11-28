@@ -970,7 +970,25 @@ add_row(en = "Crashes (cyc)",
   add_row(en = "were registered",
           fr = "ont été enregistrés") |> 
   add_row(en = "car crashes",
-          fr = "collisions de voiture")
+          fr = "collisions de voiture") |> 
+  
+  add_row(en = "Car crashes per square kilometre",
+          fr = "Collisions de voiture par kilomètre carré") |> 
+  add_row(en = "Car crashes per 1,000 residents",
+          fr = "Collisions de voiture pour 1 000 habitants") |> 
+  add_row(en = "the number of registered car crashes is _X_ per square kilometre",
+          fr = "le nombre de collisions de voiture enregistrés est de _X_ par kilomètre carré") |> 
+  add_row(en = "the number of registered car crashes is _X_ per 1,000 residents",
+          fr = "le nombre de collisions de voiture enregistrés est de _X_ pour 1 000 habitants") |> 
+  add_row(en = "the number of registered car crashes per square kilometre",
+          fr = "le nombre de collisions de voiture enregistrés par kilomètre carré") |> 
+  add_row(en = "the number of registered car crashes per 1,000 residents",
+          fr = "le nombre de collisions de voiture enregistrés pour 1 000 habitants") |> 
+  add_row(en = "number of registered car crashes per square kilometre",
+          fr = "nombre de collisions de voiture enregistrés par kilomètre carré") |> 
+  add_row(en = "number of registered car crashes per 1,000 residents",
+          fr = "nombre de collisions de voiture enregistrés pour 1 000 habitants")
+  
   
   
   

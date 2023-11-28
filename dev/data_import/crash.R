@@ -138,28 +138,28 @@ build_and_append_crash <- function(scales_variables_modules, crs, scales_sequenc
   new_variables <- lapply(vars, \(var) {
     
     title <- (\(x) {
-      if (grepl("_cyc_", var)) return("Car crashes involving cyclists")
-      if (grepl("_pec_", var)) return("Car crashes involving pedestrians")
+      if (grepl("_cyc$", var)) return("Car crashes involving cyclists")
+      if (grepl("_ped$", var)) return("Car crashes involving pedestrians")
       "Car crashes"
     })()
     if (grepl("sqkm_", var)) title <- paste0(title, " per square kilometre")
     if (grepl("per1k_", var)) title <- paste0(title, " per 1,000 residents")
     
     short <- (\(x) {
-      if (grepl("_cyc_", var)) return("Crashes (cyc)")
-      if (grepl("_pec_", var)) return("Crashes (ped)")
+      if (grepl("_cyc$", var)) return("Crashes (cyc)")
+      if (grepl("_ped$", var)) return("Crashes (ped)")
       "Crashes"
     })()
     
     explanation <- (\(x) {
-      if (grepl("_cyc_", var)) return("the number of registered car crashes involving cyclists")
-      if (grepl("_pec_", var)) return("the number of registered car crashes involving pedestrians")
+      if (grepl("_cyc$", var)) return("the number of registered car crashes involving cyclists")
+      if (grepl("_ped$", var)) return("the number of registered car crashes involving pedestrians")
       "the number of registered car crashes"
     })()
     
     exp_q5 <- (\(x) {
-      if (grepl("_cyc_", var)) return("involving cyclists were registered")
-      if (grepl("_pec_", var)) return("involving pedestrians were registered")
+      if (grepl("_cyc$", var)) return("involving cyclists were registered")
+      if (grepl("_ped$", var)) return("involving pedestrians were registered")
       "were registered"
     })()
     exp_q5 <- (\(x) {
@@ -190,8 +190,8 @@ build_and_append_crash <- function(scales_variables_modules, crs, scales_sequenc
     
     # Auto variables
     group_name <- (\(x) {
-      if (grepl("_ped_", var)) return("Car crashes involving pedestrians")
-      if (grepl("_cyc_", var)) return("Car crashes involving cyclists")
+      if (grepl("_ped$", var)) return("Car crashes involving pedestrians")
+      if (grepl("_cyc$", var)) return("Car crashes involving cyclists")
       "Car crashes"
     })()
     group_diff <- list(
