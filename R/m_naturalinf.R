@@ -329,10 +329,12 @@ natural_inf_server <- function(id, r) {
       id = id,
       r = r,
       picker_id = "d2",
+      selected = shiny::reactive(var_left_2_list()[[1]]),
       var_list = var_left_2_list)
 
-    var_left <- shiny::reactive(if (var_left_2() != " ") var_left_2() else
-      var_left_1())
+    var_left <- shiny::reactive({
+      if (var_left_2() != " ") var_left_2() else var_left_1()
+      })
 
 
     # Main slider value
@@ -484,7 +486,8 @@ natural_inf_server <- function(id, r) {
       fill_fun = shiny::reactive(scale_fill_natural_inf),
       fill_fun_args = shiny::reactive(list(map_var(), natural_inf_colours())),
       pickable = shiny::reactive(FALSE),
-      stories = NULL
+      stories = NULL,
+      vars = vars
     )
 
     # Explore panel

@@ -109,7 +109,7 @@ build_and_append_access <- function(scales_variables_modules,
                          unique_var = unique_var,
                          time_regex = time_regex,
                          schema = list(time = gsub("^_", "", time_regex),
-                                       transportationtime = "(?<=_)\\d{1,2}(?=_)"),
+                                       transportationtime = "_\\d{1,2}"),
                          breaks_var = breaks_var)
   
   

@@ -451,6 +451,9 @@ build_and_append_alley <- function(scales_variables_modules, scales_sequences, c
         " alleys. </p>"
       ),
       main_dropdown_title = NA_character_,
+      var_right = scales_variables_modules$variables$var_code[
+        scales_variables_modules$variables$source == "Canadian census" &
+          !is.na(scales_variables_modules$variables$parent_vec)],
       avail_scale_combinations = avail_scale_combinations
     )
 

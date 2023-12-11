@@ -226,6 +226,7 @@ safety_server <- function(id, r) {
     # Region and zoom levels change depending on the geography widget
     zl <- geography_server(id = id,
                            r = r,
+                           var_right = var_right,
                            regions = regions,
                            avail_scale_combinations = avail_scale_combinations)
     update_region(id = id, r = r, new_region = shiny::reactive(zl()$region))

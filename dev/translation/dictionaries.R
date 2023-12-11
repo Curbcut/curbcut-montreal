@@ -36,6 +36,14 @@ translation_dictionaries <- tibble(en = character(),
           fr = "zone à l'échelle de 100m") |>
   add_row(en = "area at the 250m scale",
           fr = "zone à l'échelle de 250m") |> 
+  add_row(en = "area at the 30m scale",
+          fr = "zone à l'échelle de 30m") |>
+  add_row(en = "area at the 60m scale",
+          fr = "zone à l'échelle de 60m") |>
+  add_row(en = "area at the 120m scale",
+          fr = "zone à l'échelle de 120m") |>
+  add_row(en = "area at the 300m scale",
+          fr = "zone à l'échelle de 300m") |> 
   add_row(en = "city",
           fr = "ville") |>
   add_row(en = "borough",
@@ -66,6 +74,14 @@ translation_dictionaries <- tibble(en = character(),
           fr = "la zone à l'échelle de 100m") |>
   add_row(en = "the area at the 250m scale",
           fr = "la zone à l'échelle de 250m") |> 
+  add_row(en = "the area at the 30m scale",
+          fr = "la zone à l'échelle de 30m") |>
+  add_row(en = "the area at the 60m scale",
+          fr = "la zone à l'échelle de 60m") |>
+  add_row(en = "the area at the 120m scale",
+          fr = "la zone à l'échelle de 120m") |>
+  add_row(en = "the area at the 300m scale",
+          fr = "la zone à l'échelle de 300m") |> 
   add_row(en = "the city",
           fr = "la ville") |>
   add_row(en = "the borough",
@@ -96,6 +112,14 @@ translation_dictionaries <- tibble(en = character(),
           fr = "zones à l'échelle de 100m") |>
   add_row(en = "areas at the 250m scale",
           fr = "zones à l'échelle de 250m") |> 
+  add_row(en = "areas at the 30m scale",
+          fr = "zones à l'échelle de 30m") |>
+  add_row(en = "areas at the 60m scale",
+          fr = "zones à l'échelle de 60m") |>
+  add_row(en = "areas at the 120m scale",
+          fr = "zones à l'échelle de 120m") |>
+  add_row(en = "areas at the 300m scale",
+          fr = "zones à l'échelle de 300m") |> 
   add_row(en = "cities",
           fr = "villes") |>
   add_row(en = "boroughs",
@@ -126,12 +150,20 @@ translation_dictionaries <- tibble(en = character(),
           fr = "100m") |>
   add_row(en = "250m",
           fr = "250m") |> 
+  add_row(en = "30m",
+          fr = "30m") |>
+  add_row(en = "60m",
+          fr = "60m") |>
+  add_row(en = "120m",
+          fr = "120m") |>
+  add_row(en = "300m",
+          fr = "300m") |> 
   add_row(en = "City",
           fr = "Ville") |>
   add_row(en = "Borough",
           fr = "Arrondissement") |>
-  add_row(en = "CIUSSS",
-          fr = "CIUSSS") |>
+  add_row(en = "RTS",
+          fr = "RTS") |>
   add_row(en = "CLSC",
           fr = "CLSC") |>
   add_row(en = "Centraide Zone",
@@ -166,6 +198,93 @@ translation_dictionaries <- tibble(en = character(),
           fr = "la zone de 100 m autour du {name}") |>
   add_row(en = "the 250m grid area around {name}",
           fr = "la zone de 250 m autour du {name}") |> 
+  add_row(en = "the 30m grid area around {name}",
+          fr = "la zone de 30 m autour du {name}") |>
+  add_row(en = "the 60m grid area around {name}",
+          fr = "la zone de 60 m autour du {name}") |>
+  add_row(en = "the 120m grid area around {name}",
+          fr = "la zone de 120 m autour du {name}") |>
+  add_row(en = "the 300m grid area around {name}",
+          fr = "la zone de 300 m autour du {name}") |> 
+  
+  # subtext
+  add_row(en = paste0(
+    "Census units"), 
+    fr = paste0(
+      "Unités de recensement")) |> 
+  add_row(en = paste0(
+    "Census units"), 
+    fr = paste0(
+      "Unités de recensement")) |> 
+  add_row(en = paste0(
+    "Municipal administrations (19) in the City of Montreal"), 
+    fr = paste0(
+      "Organisation municipales (19) dans la ville de Montréal")) |> 
+  add_row(en = paste0(
+    "Municipal administrations in the City of Montreal with census subdivis", 
+    "ions in the region"), 
+    fr = paste0(
+      "Organisation municipales de la ville de Montréal et subdivisions de", 
+      " recensement de la région")) |> 
+  add_row(en = paste0(
+    "Territories for which the local integrated center (CISSS/CIUSSS) is re", 
+    "sponsible for ensuring the development and smooth operation of the hea", 
+    "lth and social services network"), 
+    fr = paste0(
+      "Territoires pour lesquels le centre intégré local (CISSS/CIUSSS) a la ", 
+      "responsabilité d'assurer le développement et le bon fonctionnement du ", 
+      "réseau de la santé et des services sociaux.")) |> 
+  add_row(en = paste0(
+    "The territories for which the local community service centre (CLSC) ha", 
+    "s the mission to provide routine, front-line health and social service", 
+    "s to the population"), 
+    fr = paste0(
+      "Les territoires pour lesquels le centre local de services communautair", 
+      "es (CLSC) a pour mission d'offrir des services de santé et des service", 
+      "s sociaux courants et de première ligne à la population.")) |> 
+  add_row(en = paste0(
+    "Designated areas in Canada for housing market analysis by Canada Mortg", 
+    "age and Housing Corporation (CMHC)"), 
+    fr = paste0(
+      "Zones désignées au Canada pour l'analyse du marché du logement par la ", 
+      "Société canadienne d'hypothèques et de logement (SCHL)")) |> 
+  add_row(en = paste0(
+    "Areas for Centraide's community support and development activities"), 
+    fr = paste0(
+      "Zones d'intervention de Centraide en matière de soutien et de dével", 
+      "oppement communautaire")) |> 
+  add_row(en = paste0(
+    "Small square areas, each measuring 30 meters by 30 meters"), 
+    fr = paste0(
+      "Petites zones carrées, mesurant chacune 30 mètres par 30 mètres")) |> 
+  add_row(en = paste0(
+    "Small square areas, each measuring 60 meters by 60 meters"), 
+    fr = paste0(
+      "Petites zones carrées, chacune mesurant 60 mètres par 60 mètres")) |> 
+  add_row(en = paste0(
+    "Small square areas, each measuring 120 meters by 120 meters"), 
+    fr = paste0(
+      "Petites zones carrées, chacune mesurant 120 mètres par 120 mètres")) |> 
+  add_row(en = paste0(
+    "Small square areas, each measuring 300 meters by 300 meters"), 
+    fr = paste0(
+      "Petites zones carrées, chacune mesurant 300 mètres par 300 mètres")) |> 
+  add_row(en = paste0(
+    "Small square areas, each measuring 25 meters by 25 meters"), 
+    fr = paste0(
+      "Petites zones carrées, mesurant chacune 25 mètres par 25 mètres")) |> 
+  add_row(en = paste0(
+    "Small square areas, each measuring 50 meters by 50 meters"), 
+    fr = paste0(
+      "Petites zones carrées, mesurant chacune 50 mètres par 50 mètres")) |> 
+  add_row(en = paste0(
+    "Small square areas, each measuring 100 meters by 100 meters"), 
+    fr = paste0(
+      "Petites zones carrées, chacune mesurant 100 mètres par 100 mètres")) |> 
+  add_row(en = paste0(
+    "Small square areas, each measuring 250 meters by 250 meters"), 
+    fr = paste0(
+      "Petites zones carrées, mesurant chacune 250 mètres sur 250 mètres")) |> 
   
   
   # Regions dictionary ------------------------------------------------------
@@ -178,11 +297,7 @@ add_row(en = "Metropolitan Area",
   add_row(en = "City of Montreal",
           fr = "Ville de Montréal") |>
   add_row(en = "Centraide of Greater Montreal",
-          fr = "Centraide du Grand Montréal") |>
-  add_row(en = "Canada Mortgage and Housing Corporation zones",
-          fr = "Zones de la Société canadienne d'hypothèques et de logement") |>
-  add_row(en = "250-m",
-          fr = "250-m") |> 
+          fr = "Centraide du Grand Montréal") |> 
   
   # to compare
   add_row(en = "in the Montreal region",

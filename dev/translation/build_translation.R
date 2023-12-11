@@ -61,7 +61,7 @@ if (is.null(get0("scales_dictionary"))) {
 # 
 # }
 
-# .t <- deeplr::toFrench2(x, auth_key = .deepl_key)
+# .t <- \(x) deeplr::toFrench2(x, auth_key = .deepl_key)
 # split_string <- function (input_string, split_length = 70) {
 #   num_chunks <- ceiling(nchar(input_string) / split_length)
 #   split_strings <- character(num_chunks)
@@ -174,6 +174,7 @@ is_translated(scales_dictionary$plur)
 is_translated(scales_dictionary$slider_title)
 is_translated(scales_dictionary$place_heading)
 is_translated(scales_dictionary$place_name)
+is_translated(scales_dictionary$subtext)
 
 # REGIONS DICTIONARY
 is_translated(regions_dictionary$name)

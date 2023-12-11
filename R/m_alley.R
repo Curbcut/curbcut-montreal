@@ -84,8 +84,10 @@ borough_alley_info_table <- function(data, select_id, lang, mode) {
 }
 
 # Grab when on borough summary
-borough_alley_graph <- function(lang, mode) {
+borough_alley_graph <- function(lang, mode, ...) {
   if (mode == "borough") {
+    alleys <- alleys[!is.na(alleys$created), ]
+    alleys$created <- s_extract("^\\d{4}", alleys$created)
     alleys$created <- as.numeric(alleys$created)
     alleys[!is.na(alleys$created),] |>
       ggplot2::ggplot(ggplot2::aes(x = created)) +
@@ -287,9 +289,21 @@ alley_server <- function(id, r) {
       ))
     }, ignoreInit = TRUE)
     
+    # Right variable / compare panel
+    var_right <- curbcut::compare_server(
+      id = id,
+      r = r,
+      var_list = shiny::reactive(curbcut::dropdown_make(
+        vars = vars_right,
+        compare = TRUE
+      )),
+      time = shiny::reactive(2021)
+    )
+    
     # Region and zoom levels change depending on the geography widget
     zl <- geography_server(id = id,
                            r = r,
+                           var_right = var_right,
                            regions = regions,
                            avail_scale_combinations = avail_scale_combinations)
     update_region(id = id, r = r, new_region = shiny::reactive(zl()$region))
@@ -347,17 +361,6 @@ alley_server <- function(id, r) {
       r = r,
       var_list = shiny::reactive(var_left_dropdown),
       time = shiny::reactive(2023))
-    
-    # Right variable / compare panel
-    var_right <- curbcut::compare_server(
-      id = id,
-      r = r,
-      var_list = shiny::reactive(curbcut::dropdown_make(
-        vars = vars_right,
-        compare = TRUE
-      )),
-      time = shiny::reactive(2021)
-    )
     
     # Hide the compare panel if there are no
     shiny::observeEvent(mode(), {
@@ -418,7 +421,7 @@ alley_server <- function(id, r) {
     legend <- shiny::reactive({
       if (mode() == "alleys") {
         return(list(fun = alley_legend,
-                    args = list(lang = r$lang())))
+                    args = list(lang = r$lang()), vars = r[[id]]$vars()))
       }
       return(list(fun = curbcut::legend_render,
                   args = list(vars = r[[id]]$vars(), lang = r$lang(), 
@@ -482,7 +485,8 @@ alley_server <- function(id, r) {
       fill_fun = alley_fill_fun,
       outline_width = shiny::reactive(if (mode() == "alleys") 2 else 1),
       outline_color = shiny::reactive(if (mode() == "alleys") scale_fill_alley() else "transparent"),
-      stories = stories
+      stories = stories,
+      vars = r[[id]]$vars
     )
 
     # Explore tables
@@ -509,7 +513,7 @@ alley_server <- function(id, r) {
                     args = list(r = r, data = data(), vars = r[[id]]$vars(), scale = r[[id]]$scale(),
                                 select_id = r[[id]]$select_id(), region = r[[id]]$region(),
                                 scales_as_DA = c("building", "street"), lang = r$lang(),
-                                time = r[[id]]$time())))
+                                time = r[[id]]$time(), schemas = NULL)))
       }
 
       return(list(fun = borough_alley_graph,
