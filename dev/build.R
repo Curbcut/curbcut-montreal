@@ -200,7 +200,7 @@ scales_dictionary <- append_scale_to_dictionary(
   slider_title = "CLSC",
   place_heading = "CLSC {name}",
   place_name = "{name}",
-  subtext = paste0("The territories for which the local community service centre ",
+  subtext = paste0("Territories for which the local community service centre ",
                    "(CLSC) has the mission to provide routine, front-line health ",
                    "and social services to the population"))
 
@@ -363,7 +363,7 @@ grd30$ID <- paste0("grd30_", grd30$ID)
 grd30 <- grd30[, c("ID", "name", "geometry")]
 qs::qsave(grd30, file = "dev/data/built/grd30.qs")
 
-
+# Create larger grids using de 30meters cells
 grd60 <- new_grid(original_grid = grd30, cellsize = 60, crs = crs,
                   DA_table = census_scales$DA)
 qs::qsave(grd100, file = "dev/data/built/grd60.qs")
@@ -372,6 +372,12 @@ grd120 <- new_grid(original_grid = grd30, cellsize = 120, crs = crs,
 qs::qsave(grd100, file = "dev/data/built/grd120.qs")
 grd300 <- new_grid(original_grid = grd30, cellsize = 300, crs = crs,
                    DA_table = census_scales$DA)
+grd300 <- additional_scale(additional_table = grd300[c("ID", "name")],
+                           DA_table = census_scales$DA,
+                           ID_prefix = "",
+                           name_2 = "300-m",
+                           DA_carto = base_polygons$DA_carto,
+                           crs = crs)
 qs::qsave(grd100, file = "dev/data/built/grd300.qs")
 
 qs::qsavem(grd30, grd60, grd120, grd300, file = "dev/data/built/ndvigrids.qsm")
@@ -596,7 +602,6 @@ scales_variables_modules <-
   ba_census_data(scales_variables_modules = scales_variables_modules,
                  region_DA_IDs = census_scales$DA$ID,
                  crs = crs,
-                 housing_module = TRUE,
                  scales_sequences = scales_sequences,
                  scales_to_interpolate = scales_to_interpolate_census)
 census_variables <- get_census_vectors_details()

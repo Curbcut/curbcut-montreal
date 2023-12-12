@@ -26,6 +26,8 @@ translation_pages <-
          fr = character()) |> 
   add_row(en = "Housing system", 
           fr = "Système de logement") |>
+  add_row(en = "Age demographics", 
+          fr = "Démographie par âge") |>
   add_row(en = "Vacancy rate", 
           fr = "Taux d'inoccupation") |>
   add_row(en = "Active living potential", 
@@ -56,6 +58,8 @@ translation_pages <-
   #title_text_title
   add_row(en = "The housing system", 
           fr = "Le système de logement") |>
+  add_row(en = "Age distribution", 
+          fr = "Répartition par âge") |>
   add_row(en = "Vacancy rate", 
           fr = "Taux d'inoccupation") |>
   add_row(en = "Active Living Potential", 

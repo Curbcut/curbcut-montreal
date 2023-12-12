@@ -213,9 +213,9 @@ translation_dictionaries <- tibble(en = character(),
     fr = paste0(
       "Unités de recensement")) |> 
   add_row(en = paste0(
-    "Census units"), 
+    "Census units (Census subdivisions)"), 
     fr = paste0(
-      "Unités de recensement")) |> 
+      "Unités de recensement (Subdivisions de recensement)")) |> 
   add_row(en = paste0(
     "Municipal administrations (19) in the City of Montreal"), 
     fr = paste0(
@@ -235,7 +235,7 @@ translation_dictionaries <- tibble(en = character(),
       "responsabilité d'assurer le développement et le bon fonctionnement du ", 
       "réseau de la santé et des services sociaux.")) |> 
   add_row(en = paste0(
-    "The territories for which the local community service centre (CLSC) ha", 
+    "Territoires for which the local community service centre (CLSC) ha", 
     "s the mission to provide routine, front-line health and social service", 
     "s to the population"), 
     fr = paste0(

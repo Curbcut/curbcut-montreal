@@ -103,6 +103,7 @@ source("dev/translation/home_and_about.R", encoding = "utf-8")
 source("dev/translation/stories.R", encoding = "utf-8")
 source("dev/translation/predesign_translation.R", encoding = "utf-8")
 source("dev/translation/misc.R", encoding = "utf-8")
+source("dev/translation/ages.R", encoding = "utf-8")
 
 
 
@@ -121,6 +122,7 @@ translation_df <-
             translation_home_and_about,
             translation_stories,
             translation_misc,
+            translation_age,
             
             translation_temp) |> 
   dplyr::distinct(en, .keep_all = TRUE)

@@ -82,15 +82,15 @@ build_and_append_climate_risk <- function(scales_variables_modules, crs,
   #     lapply(data_interpolated$scales$grd50$ID, \(x) {
   #       z <- climate_risk[which(climate_risk$grd50_ID == x), ]
   #       modes <- sapply(avg_vars, \(v) {
-  #         # Grab the mode. If 2 modes, take the highest value
-  #         vals <- z[[v]]
-  #         vals <- vals[!is.na(vals)]
-  #         ordered <- sort(-table(vals))
-  #         modes <- which(ordered == min(ordered))
-  #         val <- if (length(modes) == 1) names(modes) else as.numeric(names(modes)) |> max()
-  #         out <- tibble::tibble(v = as.numeric(val))
-  #         names(out)[1] <- v
-  #         out
+          # # Grab the mode. If 2 modes, take the highest value
+          # vals <- z[[v]]
+          # vals <- vals[!is.na(vals)]
+          # ordered <- sort(-table(vals))
+          # modes <- which(ordered == min(ordered))
+          # val <- if (length(modes) == 1) names(modes) else as.numeric(names(modes)) |> max()
+          # out <- tibble::tibble(v = as.numeric(val))
+          # names(out)[1] <- v
+          # out
   #       }, simplify = FALSE, USE.NAMES = TRUE)
   #       modes <- Reduce(cbind, modes)
   #       pb()

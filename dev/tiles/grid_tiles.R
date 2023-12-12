@@ -106,7 +106,8 @@ tileset_upload_grid <- function(all_scales, map_zoom_levels, max_zoom,
         source = sources,
         minzoom = minzooms,
         maxzoom = maxzooms_,
-        recipe_name = source_names
+        recipe_name = source_names,
+        layer_sizes = layer_sizes
       )
       
       tileset_create_tileset(source_names,
