@@ -298,86 +298,101 @@ scales_dictionary <-
     place_name = "{name}",
     subtext = "Areas for Centraide's community support and development activities")
 
-# ### Build table de quartier
-# tablequartier <- sf::st_read("dev/data/geometry/quartiers_sociologiques_2014.shp")
-# tablequartier <- tablequartier["Table"]
-# names(tablequartier)[1] <- "name"
-# tablequartier <- additional_scale(additional_table = tablequartier,
-#                               DA_table = census_scales$DA,
-#                               ID_prefix = "tablequartier",
-#                               name_2 = "Table de quartier",
-#                               crs = crs)
-#
-# scales_dictionary <-
-#   append_scale_to_dictionary(scales_dictionary,
-#                              scale = "tablequartier",
-#                              sing = "Table de quartier",
-#                              sing_with_article = "the Table de quartier",
-#                              plur = "Table de quartier",
-#                              slider_title = "Table de quartier",
-#                              place_heading = "Table de quartier of {name}",
-#                              place_name = "{name}")
+### Build table de quartier
+tablequartier <- sf::st_read("dev/data/geometry/Tables_de_Quartier_32_MTL_2023.shp")
+tablequartier <- tablequartier["FIRST_Nom2"]
+names(tablequartier)[1] <- "name"
+tablequartier <- additional_scale(additional_table = tablequartier,
+                                  DA_table = census_scales$DA,
+                                  ID_prefix = "tq",
+                                  name_2 = "Table de quartier",
+                                  crs = crs)
+
+scales_dictionary <-
+  append_scale_to_dictionary(
+    scales_dictionary,
+    scale = "tablequartier",
+    sing = "Table de quartier",
+    sing_with_article = "the Table de quartier",
+    plur = "Table de quartier",
+    slider_title = "Table de quartier",
+    place_heading = "{name}",
+    place_name = "{name}",
+    subtext = paste0("Territories where local stakeholders collaborate to ",
+                     "enhance neighborhood living quality and conditions."))
 
 
 # NDVI's grid -------------------------------------------------------------
 
-# output_path <- "dev/data/ndvi/"
-# output_path_tmp <- sprintf("%stmp/", output_path)
-# latest_year <- cc.data::ndvi_years()[length(cc.data::ndvi_years())]
-#   
-# cc.data::ndvi_import_from_masterpolygon(
-#   master_polygon = base_polygons$master_polygon,
-#   years = latest_year,
-#   output_path = output_path,
-#   temp_folder = output_path_tmp,
-#   overwrite = FALSE)
-# 
-# alltiles <- list.files(sprintf("%s%s/", output_path, latest_year), full.names = TRUE)
-# grd30 <- lapply(alltiles, qs::qread)
-# grd30 <- Reduce(rbind, grd30)
-# qs::qsave(grd30, file = "dev/data/built/grd30.qs")
-grd30 <- qs::qread("dev/data/built/grd30.qs")
+output_path <- "dev/data/ndvi/"
+output_path_tmp <- sprintf("%stmp/", output_path)
 
-IDs_progress <- grd30$ID[seq_along(grd30$ID) %% 100000 == 0]
-IDs_progress <- c(IDs_progress, grd30$ID[nrow(grd30)])
+cc.data::ndvi_import_from_masterpolygon(
+  master_polygon = base_polygons$DA_carto,
+  years = cc.data::ndvi_years(),
+  output_path = output_path,
+  temp_folder = output_path_tmp,
+  overwrite = FALSE,
+  crs = crs)
 
-grd30_crs <- sf::st_crs(grd30)
-
-progressr::with_progress({
-  pb <- progressr::progressor(length(IDs_progress))
-  grd30$name <- future.apply::future_sapply(grd30$ID, \(x) {
-    
-    # Now that the geometry is a polygon, let's use the ID to grab centroid
-    spl_ID <- strsplit(x, split = "_")[[1]]
-    pt <- sf::st_point(as.numeric(spl_ID))
-    pt_sf <- sf::st_sfc(pt, crs = grd30_crs)
-    pt_transformed <- sf::st_transform(pt_sf, crs = 4326)
-
-    # Use progress only on a few value to not slow down the process
-    if (x %in% IDs_progress) pb()
-    
-    cc.data::rev_geocode_localhost(point_sf = pt_transformed)
-  }, future.seed = NULL)
-})
-grd30$ID <- paste0("grd30_", grd30$ID)
+# 30m grid cells
+grd30 <- qs::qread(sprintf("%sgrd30.qs", output_path))
+grd_geocode <- sf::st_transform(grd30, 4326)
+grd_geocode <- sf::st_centroid(grd_geocode)
+grd30_name <-
+  future.apply::future_sapply(grd_geocode$geometry,
+                              cc.data::rev_geocode_localhost,
+                              future.seed = NULL)
+grd30$name <- grd30_name
 grd30 <- grd30[, c("ID", "name", "geometry")]
 qs::qsave(grd30, file = "dev/data/built/grd30.qs")
 
-# Create larger grids using de 30meters cells
-grd60 <- new_grid(original_grid = grd30, cellsize = 60, crs = crs,
-                  DA_table = census_scales$DA)
-qs::qsave(grd100, file = "dev/data/built/grd60.qs")
-grd120 <- new_grid(original_grid = grd30, cellsize = 120, crs = crs,
-                   DA_table = census_scales$DA)
-qs::qsave(grd100, file = "dev/data/built/grd120.qs")
-grd300 <- new_grid(original_grid = grd30, cellsize = 300, crs = crs,
-                   DA_table = census_scales$DA)
-grd300 <- additional_scale(additional_table = grd300[c("ID", "name")],
+# 60m grid cells
+grd60 <- qs::qread(sprintf("%sgrd60.qs", output_path))
+grd_geocode <- sf::st_transform(grd60, 4326)
+grd_geocode <- sf::st_centroid(grd_geocode)
+grd60_name <-
+  future.apply::future_sapply(grd_geocode$geometry,
+                              cc.data::rev_geocode_localhost,
+                              future.seed = NULL)
+grd60$name <- grd60_name
+grd60 <- grd60[, c("ID", "name", "geometry")]
+qs::qsave(grd60, file = "dev/data/built/grd60.qs")
+
+# 120m grid cells
+grd120 <- qs::qread(sprintf("%sgrd120.qs", output_path))
+grd_geocode <- sf::st_transform(grd120, 4326)
+grd_geocode <- sf::st_centroid(grd_geocode)
+grd120_name <-
+  future.apply::future_sapply(grd_geocode$geometry,
+                              cc.data::rev_geocode_localhost,
+                              future.seed = NULL)
+grd120$name <- grd120_name
+grd120 <- grd120[, c("ID", "name", "geometry")]
+qs::qsave(grd120, file = "dev/data/built/grd120.qs")
+
+# 300m grid cells
+grd300 <- qs::qread(sprintf("%sgrd300.qs", output_path))
+grd_geocode <- sf::st_transform(grd300, 4326)
+grd_geocode <- sf::st_centroid(grd_geocode)
+grd300_name <-
+  future.apply::future_sapply(grd_geocode$geometry,
+                              cc.data::rev_geocode_localhost,
+                              future.seed = NULL)
+grd300$name <- grd300_name
+grd300 <- grd300[, c("ID", "name", "geometry")]
+qs::qsave(grd300, file = "dev/data/built/grd300.qs")
+
+qs::qsavem(grd30, grd60, grd120, grd300, file = "dev/data/built/grds_ndvi.qs")
+qs::qload("dev/data/built/grds_ndvi.qs")
+
+grd300 <- additional_scale(additional_table = grd300,
                            DA_table = census_scales$DA,
                            ID_prefix = "",
                            name_2 = "300-m",
                            DA_carto = base_polygons$DA_carto,
                            crs = crs)
+
 qs::qsave(grd100, file = "dev/data/built/grd300.qs")
 
 qs::qsavem(grd30, grd60, grd120, grd300, file = "dev/data/built/ndvigrids.qsm")
@@ -635,8 +650,6 @@ load("dev/data/built/pre_ndvi.RData")
 
 scales_variables_modules <-
   ba_ndvi(scales_variables_modules = scales_variables_modules,
-          master_polygon = base_polygons$master_polygon,
-          all_scales = all_scales,
           skip_scales = c("grd25", "grd50", "grd100", "grd250"),
           scales_sequences = scales_sequences,
           crs = crs)
@@ -752,30 +765,30 @@ map_zoom_levels <- map_zoom_levels_create_all(
 map_zoom_levels_save(data_folder = "data/", map_zoom_levels = map_zoom_levels)
 
 
-# # Tilesets ----------------------------------------------------------------
-# 
-# # Do not upload grids, as there is a function just for it.
-# all_scales_t <- scales_variables_modules$scales[!grepl("^grd", names(scales_variables_modules$scales))]
-# map_zoom_levels_t <- map_zoom_levels[!grepl("_grd", names(map_zoom_levels))]
-# 
-# tileset_upload_all(all_scales = all_scales_t,
-#                    map_zoom_levels = map_zoom_levels_t,
-#                    prefix = "mtl",
-#                    username = "curbcut",
-#                    access_token = .cc_mb_token,
-#                    no_reset = "building")
-# 
-# source("dev/tiles/grid_tiles.R")
-# grid_scales <- scales_variables_modules$scales[grepl("^grd", names(scales_variables_modules$scales))]
-# grid_mzl <- map_zoom_levels[grepl("_grd", names(map_zoom_levels))]
-# tileset_upload_grid(all_scales = grid_scales,
-#                     map_zoom_levels = grid_mzl,
-#                     max_zoom = list(grd250 = 13, grd100 = 14, grd50 = 15, grd25 = 16),
-#                     vars = c("climate_drought", "climate_flood", "climate_destructive_storms",
-#                              "climate_heat_wave", "climate_heavy_rain"),
-#                     prefix = "mtl",
-#                     username = "curbcut",
-#                     access_token = .cc_mb_token)
+# Tilesets ----------------------------------------------------------------
+
+# Do not upload grids, as there is a function just for it.
+all_scales_t <- scales_variables_modules$scales[!grepl("^grd", names(scales_variables_modules$scales))]
+map_zoom_levels_t <- map_zoom_levels[!grepl("_grd", names(map_zoom_levels))]
+
+tileset_upload_all(all_scales = all_scales_t,
+                   map_zoom_levels = map_zoom_levels_t,
+                   prefix = "mtl",
+                   username = "curbcut",
+                   access_token = .cc_mb_token,
+                   no_reset = "building")
+
+source("dev/tiles/grid_tiles.R")
+grid_scales <- scales_variables_modules$scales[grepl("^grd", names(scales_variables_modules$scales))]
+grid_mzl <- map_zoom_levels[grepl("_grd", names(map_zoom_levels))]
+tileset_upload_grid(all_scales = grid_scales,
+                    map_zoom_levels = grid_mzl,
+                    max_zoom = list(grd250 = 13, grd100 = 14, grd50 = 15, grd25 = 16),
+                    vars = c("climate_drought", "climate_flood", "climate_destructive_storms",
+                             "climate_heat_wave", "climate_heavy_rain"),
+                    prefix = "mtl",
+                    username = "curbcut",
+                    access_token = .cc_mb_token)
 
 
 

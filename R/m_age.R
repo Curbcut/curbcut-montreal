@@ -1,102 +1,4 @@
 
-# AGE GLOBALS -------------------------------------------------------------
-
-age_poss <- c(0:85)[0:85 %% 5 == 0]
-age_poss <- c(age_poss, "85+")
-
-contains_age <- grepl("age_", variables$var_code)
-contains_age_agg <- grepl("age_agg_", variables$var_code)
-matches <- contains_age & !contains_age_agg
-
-age_vars <- variables$var_code[matches]
-age_vars <- age_vars[!age_vars %in% c("age_0_14", "age_15_64", "age_65_plus")]
-
-
-# Function to generate all sequences
-generate_sequences <- function(data) {
-  all_sequences <- list()
-  sequence_id <- 1
-  
-  for (i in 1:length(data)) {
-    for (j in i:length(data)) {
-      all_sequences[[sequence_id]] <- data[i:j]
-      sequence_id <- sequence_id + 1
-    }
-  }
-  
-  return(all_sequences)
-}
-
-# Generate all sequences (variable name and all the variables it holds)
-vars <- generate_sequences(age_vars)
-names(vars) <- sapply(vars, \(x) {
-  if (length(x) == 1 && x == "age_0_4") return("age_agg_0_4")
-  if (length(x) == 1 && x == "age_85") return("age_agg_85plus")
-  start <- stringr::str_extract(x[[1]], "(?<=age_).*(?=_)")
-  
-  last <- x[[length(x)]]
-  end <- if (last == "age_85") "85plus" else stringr::str_extract(last, "(?<=age_\\d{1,2}_).*")
-  
-  sprintf("age_agg_%s_%s", start, end)
-})
-
-
-age_graph_fun <- function(var_left, region, year, lang) {
-  
-  scale <- "DA"
-  ids <- regions_dictionary$scales[regions_dictionary$region == region][[1]][[scale]]
-  
-  all_ages <- lapply(age_vars, \(x) qs::qread(sprintf("data/%s/%s.qs", scale, x)))
-  
-  age_data <- sapply(all_ages, \(x) {
-    out <- x[grepl(sprintf("_%s", year), names(x))]
-    
-    out <- cbind(get_from_globalenv(scale)[c("ID", "population")], out)
-    out <- out[out$ID %in% ids, ]
-    
-    sum(out[[2]] * out[[3]], na.rm = TRUE)
-  })
-  age_data <- data.frame(
-    age_vars = age_vars,
-    age_group = factor(c("0-4", "5-9", "10-14", "15-19", "20-24", 
-                  "25-29", "30-34", "35-39", "40-44", "45-49", 
-                  "50-54", "55-59", "60-64", "65-69", "70-74", 
-                  "75-79", "80-84", "85+"),
-                  levels = c("0-4", "5-9", "10-14", "15-19", "20-24", 
-                             "25-29", "30-34", "35-39", "40-44", "45-49", 
-                             "50-54", "55-59", "60-64", "65-69", "70-74", 
-                             "75-79", "80-84", "85+")),
-    count = age_data
-  )
-  
-  age_data$selected <- ifelse(age_data$age_vars %in% vars[[var_left]], 1, 0)
-
-  theme_default <- list(
-    ggplot2::theme_minimal(),
-    ggplot2::theme(
-      text = ggplot2::element_text(family = "acidgrotesk-book", size = 12),
-      legend.position = "none",
-      panel.grid.minor.x = ggplot2::element_blank(),
-      panel.grid.major.x = ggplot2::element_blank(),
-      panel.grid.minor.y = ggplot2::element_blank()
-    )
-  )
-  
-  # Create the age pyramid plot
-  ggplot2::ggplot(age_data, ggplot2::aes(x = age_group, y = count, alpha = selected)) +
-    ggplot2::geom_bar(stat = "identity", fill = colours_dfs$left_5$fill[5]) +
-    ggplot2::coord_flip() +
-    theme_default +
-    ggplot2::ylab(cc_t("Population", lang = lang)) +
-    ggplot2::xlab(NULL) +
-    ggplot2::scale_x_discrete(breaks = function(limits) {
-      limits[seq(1, length(limits), by = 3)]
-    }) +
-    ggplot2::scale_alpha(range = c(0.3,1)) +
-    ggplot2::theme(panel.grid.major.y = ggplot2::element_blank())
-}
-
-
 # Create the `basic` function
 age_UI <- function(id) {
   page <- modules[modules$id == id, ]
@@ -116,15 +18,32 @@ age_UI <- function(id) {
   # Grab the possible regions for the module
   possible_regions <- page$regions[[1]][1]
   
+  # Necessary for the age module
+  age_poss <- c(0:85)[0:85 %% 5 == 0]
+  age_poss <- c(age_poss, "85+")
+  
+  # Data representation list
+  dat_rep <- list("Data representation" = list("Percentage" = "pct", "Number" = "count"))
+  
   shiny::tagList(
     # Sidebar
     shiny::div(
       `data-theme` = theme_lowercased,
       sidebar_UI(
         id = shiny::NS(id, id),
-        autovars_UI(shiny::NS(id, id)),
-        slider_text_UI(shiny::NS(id, id), label = NULL,
-                       choices = age_poss, selected = c(0, 15)),
+        label_indicators_UI(
+          shiny::NS(id, id), 
+          main_UIs = list(
+            slider_text_UI(shiny::NS(id, id), label = NULL,
+                           choices = age_poss, selected = c(0, 15))
+          ),
+          adv_UIs = list(
+            picker_UI(shiny::NS(id, id), label = cc_t("Data representation"),
+                      var_list = dat_rep))
+        ),
+        time_slider_UI(shiny::NS(id, id),
+                       min = 1996, max = 2021, step = 5,
+                       double_value = c(2016, 2021)),
         warnuser_UI(shiny::NS(id, id)),
         compare_UI(
           id = shiny::NS(id, id),
@@ -188,6 +107,158 @@ age_server <- function(id, r) {
     map_base_style <- get_from_globalenv("map_base_style")
     mapbox_username <- get_from_globalenv("mapbox_username")
     
+    # Necessary for the age module
+    contains_age <- grepl("age_", variables$var_code)
+    contains_age_agg <- grepl("age_agg_", variables$var_code)
+    matches <- contains_age & !contains_age_agg
+    
+    age_vars <- variables$var_code[matches]
+    age_vars <- age_vars[!age_vars %in% c("age_0_14", "age_15_64", "age_65_plus")]
+    
+    # Function to generate all sequences
+    generate_sequences <- function(data) {
+      all_sequences <- list()
+      sequence_id <- 1
+      
+      for (i in 1:length(data)) {
+        for (j in i:length(data)) {
+          all_sequences[[sequence_id]] <- data[i:j]
+          sequence_id <- sequence_id + 1
+        }
+      }
+      
+      return(all_sequences)
+    }
+    
+    # Generate all sequences (variable name and all the variables it holds)
+    age_agg_vars <- generate_sequences(age_vars)
+    names(age_agg_vars) <- sapply(age_agg_vars, \(x) {
+      if (length(x) == 1 && x == "age_0_4") return("age_agg_0_4")
+      if (length(x) == 1 && x == "age_85") return("age_agg_85plus")
+      start <- stringr::str_extract(x[[1]], "(?<=age_).*(?=_)")
+      
+      last <- x[[length(x)]]
+      end <- if (last == "age_85") "85plus" else stringr::str_extract(last, "(?<=age_\\d{1,2}_).*")
+      
+      sprintf("age_agg_%s_%s", start, end)
+    })
+    
+    age_graph_fun <- function(var_left, region, year, lang) {
+      
+      var_left <- gsub("_pct|_count", "", var_left)
+      
+      scale <- "DA"
+      ids <- regions_dictionary$scales[regions_dictionary$region == region][[1]][[scale]]
+      
+      all_ages <- lapply(age_vars, \(x) qs::qread(sprintf("data/%s/%s.qs", scale, x)))
+      
+      age_data <- sapply(all_ages, \(x) {
+        out <- x[grepl(sprintf("_%s", year), names(x))]
+        
+        out <- cbind(get_from_globalenv(scale)[c("ID", "population")], out)
+        out <- out[out$ID %in% ids, ]
+        
+        sum(out[[2]] * out[[3]], na.rm = TRUE)
+      })
+      age_data <- data.frame(
+        age_vars = age_vars,
+        age_group = factor(c("0-4", "5-9", "10-14", "15-19", "20-24",
+                             "25-29", "30-34", "35-39", "40-44", "45-49",
+                             "50-54", "55-59", "60-64", "65-69", "70-74",
+                             "75-79", "80-84", "85+"),
+                           levels = c("0-4", "5-9", "10-14", "15-19", "20-24",
+                                      "25-29", "30-34", "35-39", "40-44", "45-49",
+                                      "50-54", "55-59", "60-64", "65-69", "70-74",
+                                      "75-79", "80-84", "85+")),
+        count = age_data
+      )
+      
+      age_data$selected <- ifelse(age_data$age_vars %in% age_agg_vars[[var_left]], 1, 0)
+      
+      theme_default <- list(
+        ggplot2::theme_minimal(),
+        ggplot2::theme(
+          text = ggplot2::element_text(family = "acidgrotesk-book", size = 12),
+          legend.position = "none",
+          panel.grid.minor.x = ggplot2::element_blank(),
+          panel.grid.major.x = ggplot2::element_blank(),
+          panel.grid.minor.y = ggplot2::element_blank()
+        )
+      )
+      
+      # Create the age pyramid plot
+      ggplot2::ggplot(age_data, ggplot2::aes(x = age_group, y = count, alpha = selected)) +
+        ggplot2::geom_bar(stat = "identity", fill = colours_dfs$left_5$fill[5]) +
+        ggplot2::coord_flip() +
+        theme_default +
+        ggplot2::ylab(cc_t("Population", lang = lang)) +
+        ggplot2::xlab(NULL) +
+        ggplot2::scale_x_discrete(breaks = function(limits) {
+          limits[seq(1, length(limits), by = 3)]
+        }) +
+        ggplot2::scale_alpha(range = c(0.3,1)) +
+        ggplot2::theme(panel.grid.major.y = ggplot2::element_blank()) +
+        explore_graph_scale(var = NULL, x_y = "y", data_vals = age_data$age_vars)
+    }
+    
+    age_graph_selection_fun <- function(var_left, scale, select_id, year, lang) {
+      
+      var_left <- gsub("_pct|_count", "", var_left)
+      
+      all_ages <- lapply(age_vars, \(x) qs::qread(sprintf("data/%s/%s.qs", scale, x)))
+      
+      age_data <- sapply(all_ages, \(x) {
+        out <- x[grepl(sprintf("_%s", year), names(x))]
+        
+        out <- cbind(get_from_globalenv(scale)[c("ID", "population")], out)
+        out <- out[out$ID == select_id, ]
+        
+        sum(out[[2]] * out[[3]], na.rm = TRUE)
+      })
+      age_data <- data.frame(
+        age_vars = age_vars,
+        age_group = factor(c("0-4", "5-9", "10-14", "15-19", "20-24",
+                             "25-29", "30-34", "35-39", "40-44", "45-49",
+                             "50-54", "55-59", "60-64", "65-69", "70-74",
+                             "75-79", "80-84", "85+"),
+                           levels = c("0-4", "5-9", "10-14", "15-19", "20-24",
+                                      "25-29", "30-34", "35-39", "40-44", "45-49",
+                                      "50-54", "55-59", "60-64", "65-69", "70-74",
+                                      "75-79", "80-84", "85+")),
+        count = age_data
+      )
+      
+      age_data$selected <- ifelse(age_data$age_vars %in% age_agg_vars[[var_left]], 1, 0)
+      
+      theme_default <- list(
+        ggplot2::theme_minimal(),
+        ggplot2::theme(
+          text = ggplot2::element_text(family = "acidgrotesk-book", size = 12),
+          legend.position = "none",
+          panel.grid.minor.x = ggplot2::element_blank(),
+          panel.grid.major.x = ggplot2::element_blank(),
+          panel.grid.minor.y = ggplot2::element_blank()
+        )
+      )
+      
+      # Create the age pyramid plot
+      ggplot2::ggplot(age_data, ggplot2::aes(x = age_group, y = count, alpha = selected)) +
+        ggplot2::geom_bar(stat = "identity", fill = colours_dfs$left_5$fill[5]) +
+        ggplot2::coord_flip() +
+        theme_default +
+        ggplot2::ylab(cc_t("Population", lang = lang)) +
+        ggplot2::xlab(NULL) +
+        ggplot2::scale_x_discrete(breaks = function(limits) {
+          limits[seq(1, length(limits), by = 3)]
+        }) +
+        ggplot2::scale_alpha(range = c(0.3,1)) +
+        ggplot2::theme(panel.grid.major.y = ggplot2::element_blank()) +
+        explore_graph_scale(var = NULL, x_y = "y", data_vals = age_data$age_vars)
+    }
+    
+    # Data representation list
+    dat_rep <- list("Data representation" = list("Percentage" = "pct", "Number" = "count"))
+    
     # Initiate the map.
     output[[shiny::NS(id, "map_ph")]] <- shiny::renderUI({
       cc.map::map_input(
@@ -203,6 +274,8 @@ age_server <- function(id, r) {
         stories_min_zoom = 13
       )
     })
+    
+    label_indicators_server(id = id, r = r)
     
     # Initial zoom string reactive value
     rv_zoom_string <- shiny::reactiveVal(
@@ -292,19 +365,12 @@ age_server <- function(id, r) {
       }
     )
     
-    # Construct the left-hand UIs / servers automatically
-    autovars <-
-      autovars_server(
-        id = id,
-        r = r,
-        main_dropdown_title = main_dropdown_title,
-        default_year = default_year
-      )
-    
     # Hide the main dropdown, use a slider text instead
-    shinyjs::hide("age-indicators_label-common_widgets")
     vl <- slider_text_server(id, r = r)
-    var_left <- shiny::reactive({
+    dr <- picker_server(id = id,
+                        r = r,
+                        var_list = shiny::reactive(dat_rep))
+    var_left_1 <- shiny::reactive({
       vvll <- unique(vl())
       # If it's only 85+, return it
       if (length(vvll) == 1 && vvll == "85+") return("age_agg_85plus")
@@ -315,7 +381,8 @@ age_server <- function(id, r) {
       last <- if (vvll[[2]] == "85+") "85plus" else as.numeric(vvll[[2]]) - 1
       sprintf("age_agg_%s_%s", vvll[[1]], last)
     })
-    widget_time <- shiny::reactive(if (is.null(autovars()$time)) "" else autovars()$time)
+    var_left <- shiny::reactive(sprintf("%s_%s", var_left_1(), dr()))
+    widget_time <- time_slider_server(id = id, r = r)
     
     # Update the `r[[id]]$vars` reactive
     update_vars(
@@ -400,11 +467,22 @@ age_server <- function(id, r) {
     # Switch the graph to a static one when on grid q5
     explore_graph_fun_args <- shiny::reactive({
       if ("q5" %in% class(r[[id]]$vars())) {
-        return(list(fun = age_graph_fun,
-                    args = list(var_left = r[[id]]$vars()$var_left,
-                                region = r[[id]]$region(),
-                                year = r[[id]]$time()$var_left,
-                                lang = r$lang())))
+        
+        if (is.na(r[[id]]$select_id())) {
+          return(list(fun = age_graph_fun,
+                      args = list(var_left = r[[id]]$vars()$var_left,
+                                  region = r[[id]]$region(),
+                                  year = r[[id]]$time()$var_left,
+                                  lang = r$lang())))          
+        } else {
+          return(list(fun = age_graph_selection_fun,
+                      args = list(var_left = r[[id]]$vars()$var_left,
+                                  scale = r[[id]]$scale(),
+                                  select_id = r[[id]]$select_id(),
+                                  year = r[[id]]$time()$var_left,
+                                  lang = r$lang())))         
+        }
+        
       } else {
         return(list(fun = curbcut::explore_graph,
                     args = list(r = r,
@@ -433,7 +511,7 @@ age_server <- function(id, r) {
       zoom_levels = r[[id]]$zoom_levels,
       schemas = r[[id]]$schemas,
       graph_fun = shiny::reactive(explore_graph_fun_args()$fun),
-      graph_args = shiny::reactive(explore_graph_fun_args()$args), 
+      graph_args = shiny::reactive(explore_graph_fun_args()$args),
     )
     
     # Bookmarking
@@ -456,5 +534,6 @@ age_server <- function(id, r) {
       time = r[[id]]$time,
       schemas = r[[id]]$schemas
     )
+    
   })
 }
