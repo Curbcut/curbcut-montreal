@@ -4,6 +4,21 @@
 
 library(dplyr)
 library(qs)
+if (is.null(get0("stories"))) {
+  stories <- qs::qread("data/stories.qs")
+}
+if (is.null(get0("variables"))) {
+  variables <- qs::qread("data/variables.qs")
+}
+if (is.null(get0("modules"))) {
+  modules <- qs::qread("data/modules.qs")
+}
+if (is.null(get0("regions_dictionary"))) {
+  regions_dictionary <- qs::qread("data/regions_dictionary.qs")
+}
+if (is.null(get0("scales_dictionary"))) {
+  scales_dictionary <- qs::qread("data/scales_dictionary.qs")
+}
 
 # From a CSV to code to create tibbles ------------------------------------
 # form_translation_tibble <- function(df) {
@@ -46,7 +61,7 @@ library(qs)
 # 
 # }
 
-# .t <- deeplr::toFrench2(x, auth_key = .deepl_key)
+# .t <- \(x) deeplr::toFrench2(x, auth_key = .deepl_key)
 # split_string <- function (input_string, split_length = 70) {
 #   num_chunks <- ceiling(nchar(input_string) / split_length)
 #   split_strings <- character(num_chunks)
@@ -60,19 +75,19 @@ library(qs)
 #   return(result)
 # }
 # 
-# t_max <- function(en) {
-#   # Assuming .t function is defined elsewhere
-#   fr <- sapply(en, .t, USE.NAMES = FALSE)
-#   # Creating output strings
-#   out <- character(length(en))
-#   for (i in 1:length(en)) {
-#     en_str <- split_string(en[i])
-#     fr_str <- split_string(fr[i])
-#     out[i] <- paste0('add_row(en = ', en_str, ', \nfr = ', fr_str, ')')
-#   }
-#   # Writing lines with collapse to ensure proper formatting
-#   writeLines(paste0(out, collapse = ' |> \n'))
-# }
+t_max <- function(en) {
+  # Assuming .t function is defined elsewhere
+  fr <- sapply(en, .t, USE.NAMES = FALSE)
+  # Creating output strings
+  out <- character(length(en))
+  for (i in 1:length(en)) {
+    en_str <- en[i]
+    fr_str <- fr[i]
+    out[i] <- paste0('add_row(en = "', en_str, '", \nfr = "', fr_str, '")')
+  }
+  # Writing lines with collapse to ensure proper formatting
+  writeLines(paste0(out, collapse = ' |> \n'))
+}
 
 
 # Run all the translation preparation -------------------------------------
@@ -88,6 +103,7 @@ source("dev/translation/home_and_about.R", encoding = "utf-8")
 source("dev/translation/stories.R", encoding = "utf-8")
 source("dev/translation/predesign_translation.R", encoding = "utf-8")
 source("dev/translation/misc.R", encoding = "utf-8")
+source("dev/translation/ages.R", encoding = "utf-8")
 
 
 
@@ -106,6 +122,7 @@ translation_df <-
             translation_home_and_about,
             translation_stories,
             translation_misc,
+            translation_age,
             
             translation_temp) |> 
   dplyr::distinct(en, .keep_all = TRUE)
@@ -117,6 +134,19 @@ if (translation_df$fr |> is.na() |> sum() > 0)
 # Test --------------------------------------------------------------------
 
 # Search the whole variables table. Is everything translated?
+t_max <- function(en) {
+  # Assuming .t function is defined elsewhere
+  fr <- sapply(en, .t, USE.NAMES = FALSE)
+  # Creating output strings
+  out <- character(length(en))
+  for (i in 1:length(en)) {
+    en_str <- en[i]
+    fr_str <- fr[i]
+    out[i] <- paste0('add_row(en = "', en_str, '", \nfr = "', fr_str, '")')
+  }
+  # Writing lines with collapse to ensure proper formatting
+  writeLines(paste0(out, collapse = ' |> \n'))
+}
 
 is_translated <- function(strings) {
   strings <- strings[!is.na(strings)]
@@ -125,8 +155,14 @@ is_translated <- function(strings) {
   if (length(not_there) > 0) {
     warning(sprintf("Following strings not translated: \n%s",
          paste0(unique(not_there), collapse = "\n")))
+    t_max(unique(not_there))
   }
 }
+
+int_from <- sapply(variables$interpolated, \(x) {
+  if (!all(is.na(x))) x$interpolated_from
+}) |> unlist() |> unique()
+int_from <- int_from[!int_from %in% c("FALSE", scales_dictionary$scale)]
 
 # VARIABLES
 is_translated(variables$var_title)
@@ -137,13 +173,7 @@ is_translated(variables$explanation_nodet)
 is_translated(unique(unlist(variables$rankings_chr)))
 is_translated(unique(unlist(variables$theme)))
 is_translated(unique(variables$source))
-
-rank_names <- lapply(variables$breaks_q5, \(x) {
-  if ("rank_name" %in% names(x))
-    x[c("rank_name", "rank_name_short")]
-})
-rank_names <- unlist(rank_names[!sapply(rank_names, is.null)])
-is_translated(rank_names)
+is_translated(int_from)
 
 group_diffs <- unique(c(unname(unlist(variables$group_diff)), names(unlist(variables$group_diff))))
 group_diffs <- group_diffs[!curbcut:::is_numeric(group_diffs)]
@@ -166,6 +196,7 @@ is_translated(scales_dictionary$plur)
 is_translated(scales_dictionary$slider_title)
 is_translated(scales_dictionary$place_heading)
 is_translated(scales_dictionary$place_name)
+is_translated(scales_dictionary$subtext)
 
 # REGIONS DICTIONARY
 is_translated(regions_dictionary$name)

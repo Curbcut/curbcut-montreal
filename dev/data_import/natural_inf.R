@@ -461,9 +461,7 @@ build_and_append_natural_inf <- function(scales_variables_modules, crs) {
       private = TRUE,
       pe_include = FALSE,
       dates = NA,
-      avail_df = NA,
-      breaks_q3 = NA,
-      breaks_q5 = NA,
+      avail_scale = NA,
       source = "David Suzuki Foundation",
       interpolated = NA
     ) |>
@@ -481,9 +479,7 @@ build_and_append_natural_inf <- function(scales_variables_modules, crs) {
       private = TRUE,
       pe_include = FALSE,
       dates = NA,
-      avail_df = NA,
-      breaks_q3 = NA,
-      breaks_q5 = NA,
+      avail_scale = NA,
       source = "David Suzuki Foundation",
       interpolated = NA
     ) |>
@@ -500,9 +496,7 @@ build_and_append_natural_inf <- function(scales_variables_modules, crs) {
       private = TRUE,
       pe_include = FALSE,
       dates = NA,
-      avail_df = NA,
-      breaks_q3 = NA,
-      breaks_q5 = NA,
+      avail_scale = NA,
       source = "David Suzuki Foundation",
       interpolated = NA
     ) |>
@@ -519,9 +513,7 @@ build_and_append_natural_inf <- function(scales_variables_modules, crs) {
       private = TRUE,
       pe_include = FALSE,
       dates = NA,
-      avail_df = NA,
-      breaks_q3 = NA,
-      breaks_q5 = NA,
+      avail_scale = NA,
       source = "David Suzuki Foundation",
       interpolated = NA
     ) |>
@@ -538,9 +530,7 @@ build_and_append_natural_inf <- function(scales_variables_modules, crs) {
       private = TRUE,
       pe_include = FALSE,
       dates = NA,
-      avail_df = NA,
-      breaks_q3 = NA,
-      breaks_q5 = NA,
+      avail_scale = NA,
       source = "David Suzuki Foundation",
       interpolated = NA
     ) |>
@@ -557,9 +547,7 @@ build_and_append_natural_inf <- function(scales_variables_modules, crs) {
       private = TRUE,
       pe_include = FALSE,
       dates = NA,
-      avail_df = NA,
-      breaks_q3 = NA,
-      breaks_q5 = NA,
+      avail_scale = NA,
       source = "David Suzuki Foundation",
       interpolated = NA
     ) |>
@@ -578,9 +566,7 @@ build_and_append_natural_inf <- function(scales_variables_modules, crs) {
       private = TRUE,
       pe_include = FALSE,
       dates = NA,
-      avail_df = NA,
-      breaks_q3 = NA,
-      breaks_q5 = NA,
+      avail_scale = NA,
       source = "David Suzuki Foundation",
       interpolated = NA
     ) |>
@@ -596,9 +582,7 @@ build_and_append_natural_inf <- function(scales_variables_modules, crs) {
       private = TRUE,
       pe_include = FALSE,
       dates = NA,
-      avail_df = NA,
-      breaks_q3 = NA,
-      breaks_q5 = NA,
+      avail_scale = NA,
       source = "David Suzuki Foundation",
       interpolated = NA
     ) |>
@@ -616,9 +600,7 @@ build_and_append_natural_inf <- function(scales_variables_modules, crs) {
       private = TRUE,
       pe_include = FALSE,
       dates = NA,
-      avail_df = NA,
-      breaks_q3 = NA,
-      breaks_q5 = NA,
+      avail_scale = NA,
       source = "David Suzuki Foundation",
       interpolated = NA
     ) |>
@@ -636,9 +618,7 @@ build_and_append_natural_inf <- function(scales_variables_modules, crs) {
       private = TRUE,
       pe_include = FALSE,
       dates = NA,
-      avail_df = NA,
-      breaks_q3 = NA,
-      breaks_q5 = NA,
+      avail_scale = NA,
       source = "David Suzuki Foundation",
       interpolated = NA
     )
@@ -684,59 +664,60 @@ build_and_append_natural_inf <- function(scales_variables_modules, crs) {
     )
   
   
-  # # Save natural inf in its own sqlite db -----------------------------------
-  # 
-  # library(RSQLite)
-  # library(DBI)
-  # natural_inf_path <- "data/naturalinf.sqlite"
-  # if (natural_inf_path %in% list.files("data", full.names = TRUE))
-  #   unlink(natural_inf_path, force = TRUE)
-  # natural_inf_sql <- DBI::dbConnect(RSQLite::SQLite(), 
-  #                                   natural_inf_path,
-  #                                   overwrite = TRUE)
-  # 
-  # DBI::dbWriteTable(conn = natural_inf_sql, 
-  #                   name = "natural_inf_custom", 
-  #                   value = as.data.frame(natural_inf_custom))
-  # 
-  # purrr::walk2(names(natural_inf), natural_inf, function(name, df) {
-  #   if (!is.data.frame(df)) {
-  #     purrr::walk2(df, seq_along(df), function(x, y) {
-  #       DBI::dbWriteTable(natural_inf_sql,
-  #                         paste("natural_inf", name, y, sep = "_"), 
-  #                         as.data.frame(x),
-  #                         overwrite = TRUE)
-  #       DBI::dbExecute(natural_inf_sql,
-  #                      paste0("CREATE INDEX index_biodiversity_", y,
-  #                             " ON natural_inf_custom_", y,
-  #                             " (biodiversity)"))
-  #     })
-  #   }
-  #   else {
-  #     DBI::dbWriteTable(natural_inf_sql,
-  #                       paste("natural_inf", name, sep = "_"), 
-  #                       as.data.frame(df),
-  #                       overwrite = TRUE)
-  #   }
-  # 
-  #   if (name == "custom_explore") {
-  #     DBI::dbExecute(
-  #       natural_inf_sql,
-  #       paste0("CREATE INDEX index_natural_inf_custom_explore_slider",
-  #              " ON natural_inf_custom_explore (slider)"))
-  #   }
-  # })
-  # 
-  # DBI::dbListTables(natural_inf_sql)
-  # DBI::dbDisconnect(natural_inf_sql)
+  # Save natural inf in its own sqlite db -----------------------------------
+# 
+#   library(RSQLite)
+#   library(DBI)
+#   natural_inf_path <- "data/naturalinf.sqlite"
+#   if (natural_inf_path %in% list.files("data", full.names = TRUE))
+#     unlink(natural_inf_path, force = TRUE)
+#   natural_inf_sql <- DBI::dbConnect(RSQLite::SQLite(),
+#                                     natural_inf_path,
+#                                     overwrite = TRUE)
+# 
+#   DBI::dbWriteTable(conn = natural_inf_sql,
+#                     name = "natural_inf_custom",
+#                     value = as.data.frame(natural_inf_custom))
+# 
+#   purrr::walk2(names(natural_inf), natural_inf, function(name, df) {
+#     if (!is.data.frame(df)) {
+#       purrr::walk2(df, seq_along(df), function(x, y) {
+#         DBI::dbWriteTable(natural_inf_sql,
+#                           paste("natural_inf", name, y, sep = "_"),
+#                           as.data.frame(x),
+#                           overwrite = TRUE)
+#         DBI::dbExecute(natural_inf_sql,
+#                        paste0("CREATE INDEX index_biodiversity_", y,
+#                               " ON natural_inf_custom_", y,
+#                               " (biodiversity)"))
+#       })
+#     }
+#     else {
+#       DBI::dbWriteTable(natural_inf_sql,
+#                         paste("natural_inf", name, sep = "_"),
+#                         as.data.frame(df),
+#                         overwrite = TRUE)
+#     }
+# 
+#     if (name == "custom_explore") {
+#       DBI::dbExecute(
+#         natural_inf_sql,
+#         paste0("CREATE INDEX index_natural_inf_custom_explore_slider",
+#                " ON natural_inf_custom_explore (slider)"))
+#     }
+#   })
+# 
+#   DBI::dbListTables(natural_inf_sql)
+#   DBI::dbDisconnect(natural_inf_sql)
+# 
 
-  
   # Return ------------------------------------------------------------------
 
   return(list(
     scales = scales_variables_modules$scales,
     variables = variables,
-    modules = if (exists("modules")) modules else scales_variables_modules$modules
+    modules = if (exists("modules")) modules else scales_variables_modules$modules,
+    data = scales_variables_modules$data
   ))
 
 }

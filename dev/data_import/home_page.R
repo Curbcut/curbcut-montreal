@@ -1,6 +1,7 @@
 ## HOME PAGE TIBBLES ###########################################################
 
-home_page <- function(modules, stories, translation_df, data_path = "data/") {
+home_page <- function(modules, stories, translation_df, data_path = "data/", port = 9999,
+                      c_city_svg) {
   ### READ ?cc.landing::landing_input DOCUMENTATION TO CONSTRUCT CORRECTLY
   # EACH OF THESE OBJECTS.
   
@@ -30,26 +31,36 @@ home_page <- function(modules, stories, translation_df, data_path = "data/") {
   
   news_cards <- 
     news_cards |> 
-    tibble::add_row(id = "curbcut5a7", 
-                    icon = "transport", 
-                    title_en = "Curbcut 5@7", 
-                    title_fr = "5@7 Curbcut", 
+    tibble::add_row(id = "new_curbcuts",
+                    icon = "demographics",
+                    title_en = "Curbcut expands to British Columbia!",
+                    title_fr = "Curbcut s'implante en Colombie-Briatnnique!",
                     text_en = paste0(
-                      "Join us in celebrating Curbcut’s latest update! We’re hosting a 5@7 ev",
-                      "ent at the McGill Engine Centre on October 2nd. Don’t miss this opport",
-                      "unity to explore our innovative new features and join a discussion on ",
-                      "how Curbcut is shaping the future of urban sustainability. See you the",
-                      "re!"
-                    ), 
-                    text_fr = paste0(
-                      "Rejoignez-nous pour célébrer la toute dernière mise à jour de Curbcut ",
-                      "! Nous organisons un 5@7 au Centre d'Innovation McGill le 2 octobre. N",
-                      "e manquez pas cette occasion de découvrir nos nouvelles fonctionnalité",
-                      "s innovantes et de participer à des discussions sur la ma",
-                      "nière dont Curbcut façonne l'avenir de la durabilité urbaine. À très b",
-                      "ientôt !"
+                      "Curbcut expands to British Columbia! We're thrilled to announce a coll",
+                      "aborative pilot project with the British Columbia Ministry of Municipa",
+                      "l Affairs and Housing. This initiative brings Curbcut's innovative pla",
+                      "tform to five municipalities across the province: <a href = 'https://c",
+                      "omoxvalley.curbcut.ca' target = '_blank'>Comox Valley</a>, <a href = '",
+                      "https://fraservalley.curbcut.ca' target = '_blank'>Fraser Valley</a>, ",
+                      "<a href = 'https://kelowna.curbcut.ca' target = '_blank'>Kelowna</a>, ",
+                      "<a href = 'https://princegeorge.curbcut.ca' target = '_blank'>Prince G",
+                      "eorge</a>, and <a href = 'https://vancouver.curbcut.ca' target = '_bla",
+                      "nk'>Vancouver</a>. Go check them out!"
                     ),
-                    link = "https://www.eventbrite.ca/e/curbcut-57-tickets-705402857937") |> 
+                    text_fr = paste0(
+                      "Curbcut débarque en Colombie-Britannique ! Nous sommes ravis d'annonce",
+                      "r un projet pilote en collaboration avec le ministère des Affaires mun",
+                      "icipales et du Logement de la Colombie-Britannique. Cette initiative a",
+                      "pporte la plateforme Curbcut à cinq régions de la province: <a href = ",
+                      "'https://comoxvalley.curbcut.ca' target = '_blank'>la District régiona",
+                      "l de Comox Valley</a>, <a href = 'https://fraservalley.curbcut.ca' tar",
+                      "get = '_blank'>la vallée du Fraser</a>, <a href = 'https://kelowna.cur",
+                      "bcut.ca' target = '_blank'>Kelowna</a>, <a href = 'https://princegeorg",
+                      "e.curbcut.ca' target = '_blank'>Prince George</a>, et <a href = 'https",
+                      "://vancouver.curbcut.ca' target = '_blank'>Vancouver</a>. Consultez-le",
+                      "s !"
+                    ),
+                    link = NULL) |>
     tibble::add_row(id = "greenness", 
                     icon = "ecology", 
                     title_en = "Explore urban greenery", 
@@ -107,20 +118,7 @@ home_page <- function(modules, stories, translation_df, data_path = "data/") {
                       "s de déplacement, qui utilise un tampon de 15 minutes de marche sur le",
                       " réseau de rues."
                     ),
-                    link = "alp") |> 
-    tibble::add_row(id = "census", 
-                    icon = "demographics", 
-                    title_en = "2021 Census", 
-                    title_fr = "Recensement de 2021", 
-                    text_en = paste0(
-                      "We’ve added new data to the site! 2021 Census data is now available on",
-                      " all pages."
-                    ), 
-                    text_fr = paste0(
-                      "Nous avons ajouté de nouvelles données au site ! Les données du recens",
-                      "ement de 2021 sont maintenant disponibles sur toutes les pages."
-                    ),
-                    link = NA)
+                    link = "alp")
 
 
   # Tibble for the discover section -----------------------------------------
@@ -143,16 +141,17 @@ home_page <- function(modules, stories, translation_df, data_path = "data/") {
   disc_modules$fr <- sapply(disc_modules$en, curbcut::cc_t, lang = "fr", USE.NAMES = FALSE)
   disc_modules <- disc_modules[c("id", "img", "theme", "en", "fr", "preview_en", "preview_fr")]
   disc_modules$type <- "page"
-  disc_modules$select_id <- NA
+  disc_modules$select_id <- NA_character_
   disc_modules$var_left <- NA
   disc_modules$var_right <- NA
   disc_modules$page <- NA
   disc_modules$date <- NA
-  disc_modules$df <- NA
+  disc_modules$scale <- NA
   
   # Stories formatting for the discover_cards
   disc_stories <- stories[c("name_id", "short_title", "preview_en", "preview_fr", "ID")]
   names(disc_stories) <- c("id", "en", "preview_en", "preview_fr", "select_id")
+  disc_stories$select_id <- as.character(disc_stories$select_id)
   disc_stories$img <- sprintf("%s.png", disc_stories$id)
   disc_stories$theme <- "urban"
   disc_stories$fr <- sapply(disc_stories$en, curbcut::cc_t, lang = "fr", USE.NAMES = FALSE)
@@ -161,26 +160,31 @@ home_page <- function(modules, stories, translation_df, data_path = "data/") {
   disc_stories$var_right <- NA
   disc_stories$page <- NA
   disc_stories$date <- NA
-  disc_stories$df <- NA
+  disc_stories$scale <- NA
   # disc_stories <- disc_stories[c("id", "img", "theme", "en", "fr", "preview_en", "preview_fr", "type", "select_id")]
 
   # DYK for discovers
-  dyk_discover_fun <- function(theme, page, var_right = " ", var_left = NULL, date, type, en, fr) {
-    
+  dyk_discover_fun <- function(theme, page, var_right = " ", var_left = NULL, 
+                               date, type, region = NULL, scale = NULL, en, fr) {
+
     # Filter page, var_right, type
     this <- dyk[dyk$module == page & dyk$var_right == var_right & dyk$dyk_type == type, ]
-    
+
     # Filter var_left if supplied
     if (!is.null(var_left)) {
       this <- dyk[dyk$var_left == var_left, ]
     }
-    
+
     # Filter date over the list column
     this <- this[unlist(sapply(this$date, identical, as.character(date))), ]
-    
+
     # Filter region and scale. Use of `identical` for when scale is NA.
+    if (is.null(region) & is.null(scale)) {
     this <- this[this$region == this$region[1] & unlist(sapply(this$scale, identical, this$scale[1])), ]
-    
+    } else {
+      this <- this[this$region == region & this$scale == scale, ]
+    }
+
     # Grab last row
     this <- this[nrow(this), ]
 
@@ -195,70 +199,64 @@ home_page <- function(modules, stories, translation_df, data_path = "data/") {
     names(this)[names(this) == "module"] <- "page"
     names(this)[names(this) == "select_ID"] <- "select_id"
     this$type <- "dyk"
-    this$df <- if (type %in% c("highest", "lowest")) sprintf("%s_%s", this$region, this$scale) else NA
-    
+
     # Return
-    this[c("id", "img", "theme", "en", "fr", "preview_en", "preview_fr", "type", 
-           "page", "var_left", "var_right", "select_id", "date", "df")]
+    this[c("id", "img", "theme", "en", "fr", "preview_en", "preview_fr", "type",
+           "page", "var_left", "var_right", "select_id", "date", "scale")]
   }
-  
-  disc_dyk <- 
-    tibble::tibble() |> 
-    rbind(dyk_discover_fun(theme = "health", 
-                           page = "alp", 
+
+  disc_dyk <-
+    tibble::tibble() |>
+    rbind(dyk_discover_fun(theme = "health",
+                           page = "alp",
                            var_right = "housing_single_detached",
                            date = 2021,
-                           type = "compare", 
-                           en = "Dense, walkable neighbourhoods", 
-                           fr = "Quartiers denses et accessibles à pied")) |> 
-    rbind(dyk_discover_fun(theme = "climate", 
-                           page = "lst", 
+                           type = "compare",
+                           scale = "boroughCSD",
+                           region = "CMA",
+                           en = "Dense, walkable neighbourhoods",
+                           fr = "Quartiers denses et accessibles à pied")) |>
+    rbind(dyk_discover_fun(theme = "climate",
+                           page = "lst",
                            var_right = " ",
                            date = 2021,
-                           type = "lowest", 
-                           en = "The coolest town in the region", 
-                           fr = "La ville la plus fraîche de la région")) |> 
-    rbind(dyk_discover_fun(theme = "ecology", 
-                           page = "ndvi", 
+                           type = "lowest",
+                           region = "CMA",
+                           scale = "boroughCSD",
+                           en = "The coolest town in the region",
+                           fr = "La ville la plus fraîche de la région")) |>
+    rbind(dyk_discover_fun(theme = "ecology",
+                           page = "ndvi",
                            var_right = "housing_tenant",
-                           date = 2023,
-                           type = "compare", 
-                           en = "Tenants lack green space", 
-                           fr = "Les locataires manquent d'espaces verts")) |> 
-    rbind(dyk_discover_fun(theme = "housing", 
-                           page = "housing", 
+                           date = 2021,
+                           scale = "boroughCSD",
+                           region = "CMA",
+                           type = "compare",
+                           en = "Tenants lack green space",
+                           fr = "Les locataires manquent d'espaces verts")) |>
+    rbind(dyk_discover_fun(theme = "housing",
+                           page = "housing",
                            var_left = "housing_rent",
                            date = c("1996", "2021"),
-                           type = "change", 
-                           en = "Skyrocketing housing costs", 
-                           fr = "La flambée des prix du logement")) |> 
-    rbind(dyk_discover_fun(theme = "transport", 
-                           page = "canbics", 
+                           type = "change",
+                           en = "Skyrocketing housing costs",
+                           fr = "La flambée des prix du logement")) |>
+    rbind(dyk_discover_fun(theme = "transport",
+                           page = "canbics",
                            var_right = " ",
                            date = c("2021"),
-                           type = "highest", 
-                           en = "The best bikelanes", 
+                           type = "highest",
+                           region = "CMA",
+                           scale = "boroughCSD",
+                           en = "The best bikelanes",
                            fr = "Les meilleures pistes cyclables"))
   
-  
-  # Bindthe modules with the stories and the DYK
-  discover_cards <- rbind(disc_modules, disc_stories, disc_dyk)
-  
-  # Filter out missing photos and warn!
-  present_img <- discover_cards$img %in% list.files("www/landing/discover/")
-  missing_img <- discover_cards[!present_img, ]
-  if (nrow(missing_img) > 0){
-    warning(paste0("Missing images for ", missing_img$id, "\n"))
-  }
-  
-  discover_cards <- discover_cards[present_img, ]
-  discover_cards$img <- paste0("www/landing/discover/", discover_cards$img)
-  
+  discover_cards <- rbind(disc_modules, disc_dyk, disc_stories)
+
   if (length(unique(discover_cards$id)) != nrow(discover_cards)) {
     stop("Discover cards do not have unique ids")
   }
   
-  discover_cards$img <- sapply(discover_cards$img, base64)
 
   # Tibble for team members -------------------------------------------------
   team_cards <- tibble::tibble(
@@ -313,7 +311,33 @@ home_page <- function(modules, stories, translation_df, data_path = "data/") {
 
   # Save home page information as qsm ---------------------------------------
   if (!exists("data_path")) data_path <- "data/"
-
+  
+  qs::qsavem(c_city_svg, news_cards, discover_cards,
+             team_cards, contributors, collabs,
+             file = paste0(data_path, "home_page.qsm")
+  )
+  
+  # Filter out missing photos and warn!
+  present_img <- sprintf("%s.png", discover_cards$id) %in% list.files("www/landing/discover/")
+  missing_img <- discover_cards[!present_img, ]
+  
+  # Allow for the user to take images of the discover cards content
+  if (nrow(missing_img) != 0) {
+    tryCatch(cc.buildr::discover_cards_screenshots(port = port, 
+                                        discover_cards = discover_cards, 
+                                        only_ids = missing_img$id),
+             error = function(e) {
+               discover_cards$img <- sapply(discover_cards$img, base64)
+               
+               qs::qsavem(c_city_svg, news_cards, discover_cards,
+                          team_cards, contributors, collabs,
+                          file = paste0(data_path, "home_page.qsm")
+               )
+             })
+  }
+  
+  discover_cards$img <- sapply(paste0("www/landing/discover/", discover_cards$img), base64)
+  
   qs::qsavem(c_city_svg, news_cards, discover_cards,
              team_cards, contributors, collabs,
              file = paste0(data_path, "home_page.qsm")

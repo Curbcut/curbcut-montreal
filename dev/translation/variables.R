@@ -831,27 +831,27 @@ translation_variables <-
       add_row(en = "unusually unsusceptable",
               fr = "anormalement invulnérable") |>
       add_row(en = "just about average vulnerability",
-              fr = "vulnérabilité à peu près moyenne") |>
+              fr = "une vulnérabilité à peu près moyenne") |>
       add_row(en = "unusually vulnerable",
               fr = "anormalement vulnérable") |>
       add_row(en = "exceptionally vulnerable",
               fr = "exceptionnellement vulnérable") |>
       add_row(en = "Insignificant",
-              fr = "Insignifiant") |>
+              fr = "Insignifiante") |>
       add_row(en = "Insig.",
               fr = "Insig.") |>
       add_row(en = "Minor",
-              fr = "Mineur") |>
+              fr = "Mineure") |>
       add_row(en = "Moderate",
-              fr = "Modéré") |>
+              fr = "Modérée") |>
       add_row(en = "Mod.",
               fr = "Mod.") |>
       add_row(en = "Elevated",
-              fr = "Élevé") |>
+              fr = "Élevée") |>
       add_row(en = "Elev.",
-              fr = "Élevé") |>
+              fr = "Élevée") |>
       add_row(en = "Major",
-              fr = "Majeur") |> 
+              fr = "Majeure") |> 
   
     
     # Natural infrastructure --------------------------------------------------
@@ -970,8 +970,54 @@ add_row(en = "Crashes (cyc)",
   add_row(en = "were registered",
           fr = "ont été enregistrés") |> 
   add_row(en = "car crashes",
-          fr = "collisions de voiture")
-  
-  
-  
+          fr = "collisions de voiture") |> 
+  add_row(en = "Car crashes per square kilometre",
+          fr = "Collisions de voiture par kilomètre carré") |> 
+  add_row(en = "Car crashes per 1,000 residents",
+          fr = "Collisions de voiture pour 1 000 habitants") |> 
+  add_row(en = "Car crashes involving cyclists per square kilometre",
+          fr = "Collisions de voiture impliquant des cyclistes par kilomètre carré") |> 
+  add_row(en = "Car crashes involving cyclists per 1,000 residents",
+          fr = "Collisions de voiture impliquant des cyclistes pour 1 000 habitants") |> 
+  add_row(en = "Car crashes involving pedestrians per square kilometre",
+          fr = "Collisions de voiture impliquant des piétons par kilomètre carré") |> 
+  add_row(en = "Car crashes involving pedestrians per 1,000 residents",
+          fr = "Collisions de voiture impliquant des piétons pour 1 000 habitants") |> 
+  add_row(en = "the number of registered car crashes is _X_ per square kilometre",
+          fr = "le nombre de collisions de voiture enregistrés est de _X_ par kilomètre carré") |> 
+  add_row(en = "the number of registered car crashes is _X_ per 1,000 residents",
+          fr = "le nombre de collisions de voiture enregistrés est de _X_ pour 1 000 habitants") |> 
+  add_row(en = "the number of registered car crashes involving cyclists is _X_ per square kilometre",
+          fr = "le nombre de collisions de voiture impliquant des cyclistes enregistrés est de _X_ par kilomètre carré") |> 
+  add_row(en = "the number of registered car crashes involving cyclists is _X_ per 1,000 residents",
+          fr = "le nombre de collisions de voiture impliquant des cyclistes enregistrés est de _X_ pour 1 000 habitants") |> 
+  add_row(en = "the number of registered car crashes involving pedestrians is _X_ per square kilometre",
+          fr = "le nombre de collisions de voiture impliquant des piétons enregistrés est de _X_ par kilomètre carré") |> 
+  add_row(en = "the number of registered car crashes involving pedestrians is _X_ per 1,000 residents",
+          fr = "le nombre de collisions de voiture impliquant des piétons enregistrés est de _X_ pour 1 000 habitants") |> 
+  add_row(en = "the number of registered car crashes per square kilometre",
+          fr = "le nombre de collisions de voiture enregistrés par kilomètre carré") |> 
+  add_row(en = "the number of registered car crashes per 1,000 residents",
+          fr = "le nombre de collisions de voiture enregistrés pour 1 000 habitants") |> 
+  add_row(en = "number of registered car crashes per square kilometre",
+          fr = "nombre de collisions de voiture enregistrés par kilomètre carré") |> 
+  add_row(en = "number of registered car crashes per 1,000 residents",
+          fr = "nombre de collisions de voiture enregistrés pour 1 000 habitants") |> 
+  add_row(en = "the number of registered car crashes involving cyclists per square kilometre",
+          fr = "le nombre de collisions de voiture impliquant des cyclistes par kilomètre carré") |> 
+  add_row(en = "the number of registered car crashes involving pedestrians per square kilometre",
+          fr = "le nombre de collisions de voiture impliquant des piétons par kilomètre carré") |> 
+  add_row(en = "the number of registered car crashes involving cyclists per 1,000 residents",
+          fr = "le nombre de collisions de voiture impliquant des cyclistes pour 1 000 habitants") |> 
+  add_row(en = "the number of registered car crashes involving pedestrians per 1,000 residents",
+          fr = "le nombre de collisions de voiture impliquant des piétons pour 1 000 habitants") |> 
+  add_row(en = "number of registered car crashes involving cyclists per square kilometre",
+          fr = "nombre de collisions de voiture impliquant des cyclistes par kilomètre carré") |> 
+  add_row(en = "number of registered car crashes involving pedestrians per square kilometre",
+          fr = "nombre de collisions de voiture impliquant des piétons par kilomètre carré") |> 
+  add_row(en = "number of registered car crashes involving cyclists per 1,000 residents",
+          fr = "nombre de collisions de voiture impliquant des cyclistes pour 1 000 habitants") |> 
+  add_row(en = "number of registered car crashes involving pedestrians per 1,000 residents",
+          fr = "nombre de collisions de voiture impliquant des piétons pour 1 000 habitants")
+
   

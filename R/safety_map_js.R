@@ -1,15 +1,15 @@
 heatmap_filter <- function(var) {
-  if (grepl("crash_ped", var)) {
+  if (grepl("ped$", var)) {
     return(list("==", list("get", "ped"), TRUE))
   }
-  if (grepl("crash_cyc", var)) {
+  if (grepl("cyc$", var)) {
     return(list("==", list("get", "cyc"), TRUE))
   }
   return(list("all"))
 }
 
 heatmap_radius <- function(var) {
-  if (grepl("crash_ped", var)) {
+  if (grepl("ped$", var)) {
     return(list(
       "interpolate",
       list("linear"),
@@ -17,7 +17,7 @@ heatmap_radius <- function(var) {
       0, 1, 10, 10, 12, 20, 15, 45
     ))
   }
-  if (grepl("crash_cyc", var)) {
+  if (grepl("cyc$", var)) {
     return(list(
       "interpolate",
       list("linear"),
@@ -44,7 +44,7 @@ safety_map_js_server <- function(id, r, tile, coords, zoom, select_id, data_colo
 
   shiny::moduleServer(id, function(input, output, session) {
     tileset_prefix <- get_from_globalenv("tileset_prefix")
-    
+
     # Populate the empty container created in map_js_UI
     output[[shiny::NS(id, "map_ph")]] <- shiny::renderUI({
       cc.map::map_input(
@@ -64,7 +64,7 @@ safety_map_js_server <- function(id, r, tile, coords, zoom, select_id, data_colo
     # Form the tileset with stability. Do not get it to trigger the cc.map::map_choropleth
     # if it hasn't changed.
     tileset <- shiny::reactive(sprintf("%s_%s", tileset_prefix, tile()))
-    
+
     tileset_trigger <- shiny::reactiveVal(NULL)
     shiny::observeEvent(tileset(), {
       if (is.null(tileset_trigger())) {
@@ -118,11 +118,11 @@ safety_map_js_server <- function(id, r, tile, coords, zoom, select_id, data_colo
           # If it is a point tileset, make it a heatmap
         } else {
           var <- vars()$var_left[[1]]
-          
+
           colours <- colours_dfs$left_5$fill[1:5]
           colours[1] <- sprintf("%s00", colours[1])
           colours <- sapply(colours, hex_to_rgb_or_rgba, USE.NAMES = FALSE)
-          
+
           cc.map::map_heatmap(
             session = session,
             map_ID = "map",
@@ -144,7 +144,7 @@ safety_map_js_server <- function(id, r, tile, coords, zoom, select_id, data_colo
       }
 
       var <- vars()$var_left
-      
+
       cc.map::map_heatmap_update_filter(
         session = session,
         map_ID = "map",
@@ -155,7 +155,7 @@ safety_map_js_server <- function(id, r, tile, coords, zoom, select_id, data_colo
         map_ID = "map",
         radius = heatmap_radius(var)
       )
-      
+
     })
 
     # Only update the fill_colour when data_colours change

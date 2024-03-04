@@ -13,16 +13,16 @@ borough_alley_info_table <- function(data, select_id, lang, mode) {
   if (mode == "borough") {
     if (is.na(select_id)) {
       participate <- nrow(data)
-      return(curbcut::cc_t(lang = lang, 
+      return(curbcut::cc_t(lang = lang,
                            "{participate} out of 19 Montreal boroughs ",
                            "have a green alley program."))
     }
     
     row <- data[data$ID == select_id, ]
-
+    
     # If not data
     if (nrow(row) == 0) {
-      borough <- city_CSD$name[city_CSD$ID == select_id]
+      borough <- borough$name[borough$ID == select_id]
       return(curbcut::cc_t(lang = lang,
                            "{borough} does not have a green alley program."))
     }
@@ -76,7 +76,7 @@ borough_alley_info_table <- function(data, select_id, lang, mode) {
   img_piece <- tags$img(src = sprintf("alleys/%s", data$photo_ID),
                         id = "alley-alley_img",
                         style = "width:100%")
-  span_piece <- sprintf("<p><span style = 'margin-bottom:20px; cursor:pointer;'>%s</span>", 
+  span_piece <- sprintf("<p><span style = 'margin-bottom:20px; cursor:pointer;'>%s</span>",
                         img_piece)
   
   # Return the title text and the image
@@ -84,23 +84,25 @@ borough_alley_info_table <- function(data, select_id, lang, mode) {
 }
 
 # Grab when on borough summary
-borough_alley_graph <- function(lang, mode) {
+borough_alley_graph <- function(lang, mode, ...) {
   if (mode == "borough") {
-  alleys$created <- as.numeric(alleys$created)
-  alleys[!is.na(alleys$created),] |> 
-    ggplot2::ggplot(ggplot2::aes(x = created)) +
-    ggplot2::geom_bar(fill = colours_dfs$left_5$fill[5]) +
-    ggplot2::scale_y_continuous(name = NULL) +
-    ggplot2::scale_x_continuous(name = curbcut::cc_t(lang = lang, "Green alley inaugurations")) +
-    ggplot2::theme_minimal() +
-    ggplot2::theme(text = ggplot2::element_text(family = "acidgrotesk-book", size = 12),
-                   legend.position = "none", 
-                   panel.grid.minor.x = ggplot2::element_blank(),
-                   panel.grid.major.x = ggplot2::element_blank(), 
-                   panel.grid.minor.y = ggplot2::element_blank())
+    alleys <- alleys[!is.na(alleys$created), ]
+    alleys$created <- s_extract("^\\d{4}", alleys$created)
+    alleys$created <- as.numeric(alleys$created)
+    alleys[!is.na(alleys$created),] |>
+      ggplot2::ggplot(ggplot2::aes(x = created)) +
+      ggplot2::geom_bar(fill = colours_dfs$left_5$fill[5]) +
+      ggplot2::scale_y_continuous(name = NULL) +
+      ggplot2::scale_x_continuous(name = curbcut::cc_t(lang = lang, "Green alley inaugurations")) +
+      ggplot2::theme_minimal() +
+      ggplot2::theme(text = ggplot2::element_text(family = "acidgrotesk-book", size = 12),
+                     legend.position = "none",
+                     panel.grid.minor.x = ggplot2::element_blank(),
+                     panel.grid.major.x = ggplot2::element_blank(),
+                     panel.grid.minor.y = ggplot2::element_blank())
   } else {
     # Grab labels
-    labels <- sapply(c("Green", "Community", "Mixed", "Unmaintained"), 
+    labels <- sapply(c("Green", "Community", "Mixed", "Unmaintained"),
                      curbcut::cc_t, lang = lang, USE.NAMES = FALSE)
     
     # Format correctly
@@ -110,7 +112,7 @@ borough_alley_graph <- function(lang, mode) {
     df$type <- factor(df$type, levels = new_order)
     
     # Draw plot
-    df |> 
+    df |>
       ggplot2::ggplot(ggplot2::aes(as.factor(type))) +
       ggplot2::geom_bar(fill = c("#73AE80", "#FDE725FF", "#6C83B5", "#5B362A")) +
       ggplot2::scale_y_continuous(name = NULL) +
@@ -118,9 +120,9 @@ borough_alley_graph <- function(lang, mode) {
                                 name = curbcut::cc_t(lang = lang, "Visited green alleys type")) +
       ggplot2::theme_minimal() +
       ggplot2::theme(text = ggplot2::element_text(family = "acidgrotesk-book", size = 12),
-                     legend.position = "none", 
+                     legend.position = "none",
                      panel.grid.minor.x = ggplot2::element_blank(),
-                     panel.grid.major.x = ggplot2::element_blank(), 
+                     panel.grid.major.x = ggplot2::element_blank(),
                      panel.grid.minor.y = ggplot2::element_blank())
   }
 }
@@ -129,8 +131,8 @@ borough_alley_graph <- function(lang, mode) {
 scale_fill_alley <- function(...) {
   cc.map::map_choropleth_fill_fun(
     df = tibble::tibble(group = c("green", "community", "mixed", "unmaintained"),
-                        fill = c("#73AE80", "#FDE725", "#6C83B5", "#5B362A")), 
-    get_col = "type", 
+                        fill = c("#73AE80", "#FDE725", "#6C83B5", "#5B362A")),
+    get_col = "type",
     fallback = "#B3B3BB")
 }
 
@@ -138,19 +140,19 @@ scale_fill_alley <- function(...) {
 # scale_lwd_alley <- function(select_id, ...) {
 #   cc.map::map_choropleth_fill_fun(
 #     df = tibble::tibble(group = c(select_id, "NA"),
-#                         fill = c(6, 3)), 
-#     get_col = "ID", 
+#                         fill = c(6, 3)),
+#     get_col = "ID",
 #     fallback = "#B3B3BB")
 # }
 
 alley_legend <- function(lang, ...) {
   
   # Grab labels
-  breaks <- sapply(c("Green", "Community", "Mixed", "Unmaintained"), 
+  breaks <- sapply(c("Green", "Community", "Mixed", "Unmaintained"),
                    curbcut::cc_t, lang = lang, USE.NAMES = FALSE)
   
   # Construct the dataframe
-  df <- tibble::tibble(group = 1:4, y = 1, 
+  df <- tibble::tibble(group = 1:4, y = 1,
                        fill = c("#73AE80", "#FDE725FF", "#6C83B5", "#5B362A"))
   
   # Make the plot
@@ -170,9 +172,9 @@ alley_legend <- function(lang, ...) {
     )) +
     ggplot2::theme_minimal() +
     ggplot2::theme(text = ggplot2::element_text(family = "acidgrotesk-book", size = 12),
-                   legend.position = "none", 
+                   legend.position = "none",
                    panel.grid = ggplot2::element_blank()) +
-    ggplot2::labs(x = curbcut::cc_t(lang = lang, "Green alleys"), 
+    ggplot2::labs(x = curbcut::cc_t(lang = lang, "Green alleys"),
                   y = NULL)
 }
 
@@ -180,10 +182,17 @@ alley_legend <- function(lang, ...) {
 # UI ----------------------------------------------------------------------
 
 alley_UI <- function(id) {
-  default_region <- modules$regions[modules$id == id][[1]][1]
-  mzp <- eval(parse(text = paste0("map_zoom_levels_", default_region)))
   page <- modules[modules$id == id, ]
+  regions <- page$regions[[1]]
+  if (is.null(regions)) {
+    stop(sprintf(paste0("Page `%s` does not have available regions. Please ",
+                        "check the `regions` column in the `modules` ",
+                        "dataframe."), id))
+  }
+  avail_scale_combinations <- page$avail_scale_combinations[[1]]
+  mzp <- get_from_globalenv(sprintf("mzl_%s", avail_scale_combinations[1]))
   theme_lowercased <- gsub(" .*", "", tolower(page$theme))
+  stories <- get_from_globalenv("stories")
   
   shiny::tagList(
     shiny::div(
@@ -192,7 +201,7 @@ alley_UI <- function(id) {
       curbcut::sidebar_UI(
         id = shiny::NS(id, id),
         curbcut::label_indicators(id = shiny::NS(id, "indicators_label")),
-        curbcut::picker_UI(id = shiny::NS(id, id), 
+        curbcut::picker_UI(id = shiny::NS(id, id),
                            var_list = var_left_dropdown),
         shinyjs::hidden(shiny::tags$div(
           id = shiny::NS(id, "pre_compare_panel"),
@@ -202,6 +211,8 @@ alley_UI <- function(id) {
           ))),
         shinyjs::hidden(shiny::div(
           id = shiny::NS(id, "scale_div"),
+          shinyjs::hidden(geography_UI(shiny::NS(id, id), regions = regions,
+                       avail_scale_combinations = avail_scale_combinations)),
           shiny::hr(),
           curbcut::zoom_UI(shiny::NS(id, id), zoom_levels = mzp))),
         bottom = shiny::tagList(
@@ -230,8 +241,21 @@ alley_UI <- function(id) {
 
 alley_server <- function(id, r) {
   shiny::moduleServer(id, function(input, output, session) {
-    default_region <- modules$regions[modules$id == id][[1]][1]
-    mzp <- eval(parse(text = paste0("map_zoom_levels_", default_region)))
+    page <- modules[modules$id == id, ]
+    regions <- page$regions[[1]]
+    if (is.null(regions)) {
+      stop(sprintf(paste0("Page `%s` does not have available regions. Please ",
+                          "check the `regions` column in the `modules` ",
+                          "dataframe.", id)))
+    }
+    avail_scale_combinations <- page$avail_scale_combinations[[1]]
+    mzp <- get_from_globalenv(sprintf("mzl_%s", avail_scale_combinations[1]))
+    
+    main_dropdown_title <- page$main_dropdown_title
+    default_year <- page$dates[[1]]
+    default_year <- if (is.null(default_year)) NULL else max(default_year)
+    vars_right <- page$var_right[[1]]
+    stories <- get_from_globalenv("stories")
     
     output[[shiny::NS(id, "map_ph")]] <- shiny::renderUI({
       cc.map::map_input(
@@ -250,80 +274,20 @@ alley_server <- function(id, r) {
     
     # Initial zoom string reactive value
     rv_zoom_string <- shiny::reactiveVal(
-      curbcut::zoom_get_string(
+      zoom_get_string(
         zoom = map_zoom,
-        zoom_levels = mzp,
-        region = default_region
+        zoom_levels = mzp
       )
     )
     
     # Zoom and POI reactives when the view state of the map changes.
     shiny::observeEvent(map_viewstate(), {
-      r[[id]]$zoom(curbcut::zoom_get(zoom = map_viewstate()$zoom))
-      r[[id]]$poi(curbcut::update_poi(
+      r[[id]]$zoom(zoom_get(zoom = map_viewstate()$zoom))
+      r[[id]]$poi(update_poi(
         id = id, poi = r[[id]]$poi(),
         map_viewstate = map_viewstate()
       ))
-    })
-    
-    # Map zoom levels change depending on r$region()
-    zoom_levels <-
-      shiny::reactive(curbcut::zoom_get_levels(id = id, region = r$region()))
-    current_region <- shiny::reactive(zoom_levels()$region)
-    current_zl <- shiny::reactive(zoom_levels()$zoom_levels)
-    
-    # Zoom string reactive
-    shiny::observe({
-      rv_zoom_string({
-        curbcut::zoom_get_string(
-          zoom = r[[id]]$zoom(),
-          zoom_levels = current_zl(),
-          region = current_region()
-        )
-      })
-    })
-    
-    # Update selected ID
-    curbcut::update_select_id(id = id, r = r, data = data)
-    
-    # Choose tileset
-    tile_1 <- curbcut::zoom_server(
-      id = id,
-      r = r,
-      zoom_string = rv_zoom_string,
-      zoom_levels = zoom_levels
-    )
-    tile <- shiny::reactive({
-      if (mode() == "borough") return("city_CSD")
-      if (mode() == "alleys") return("alleys")
-      return(tile_1())
-    })
-    
-    # Hide the zoom server when on var_left
-    shiny::observeEvent(mode(), {
-      shinyjs::toggle(id = "scale_div", condition = mode() == "choropleth")
-    })
-    
-    # Get df
-    shiny::observeEvent(
-      {
-        tile()
-        rv_zoom_string()
-      },
-      {
-        r[[id]]$df(curbcut::update_df(
-          tile = tile(),
-          zoom_string = rv_zoom_string()
-        ))
-      }
-    )
-    
-    # Left variable
-    var_left <- picker_server(
-      id = id, 
-      r = r,
-      var_list = shiny::reactive(var_left_dropdown),
-      time = shiny::reactive(2023))
+    }, ignoreInit = TRUE)
     
     # Right variable / compare panel
     var_right <- curbcut::compare_server(
@@ -336,7 +300,69 @@ alley_server <- function(id, r) {
       time = shiny::reactive(2021)
     )
     
-    # Hide the compare panel if there are no 
+    # Region and zoom levels change depending on the geography widget
+    zl <- geography_server(id = id,
+                           r = r,
+                           var_right = var_right,
+                           regions = regions,
+                           avail_scale_combinations = avail_scale_combinations)
+    update_region(id = id, r = r, new_region = shiny::reactive(zl()$region))
+    update_zoom_levels(id = id, r = r, new_zl = shiny::reactive(zl()$zoom_levels))
+    
+    # Zoom string reactive
+    shiny::observe({
+      rv_zoom_string({
+        zoom_get_string(
+          zoom = r[[id]]$zoom(),
+          zoom_levels = r[[id]]$zoom_levels()
+        )
+      })
+    })
+    
+    # Update selected ID
+    curbcut::update_select_id(id = id, r = r, data = data)
+    
+    # Choose tileset
+    tile_1 <- curbcut::zoom_server(
+      id = id,
+      r = r,
+      zoom_string = rv_zoom_string,
+      region = r[[id]]$region,
+      zoom_levels = r[[id]]$zoom_levels
+    )
+    tile <- shiny::reactive({
+      if (mode() == "borough") return("borough")
+      if (mode() == "alleys") return("alleys")
+      return(tile_1())
+    })
+    
+    # Hide the zoom server when on var_left
+    shiny::observeEvent(mode(), {
+      shinyjs::toggle(id = "scale_div", condition = mode() == "choropleth")
+    })
+    
+    # Get scale
+    shiny::observeEvent(
+      {
+        tile()
+        rv_zoom_string()
+      },
+      {
+        r[[id]]$scale(update_scale(
+          tile = tile(),
+          zoom_string = rv_zoom_string()
+        ))
+      }
+    )
+    
+    # Left variable
+    var_left <- picker_server(
+      id = id,
+      r = r,
+      var_list = shiny::reactive(var_left_dropdown),
+      time = shiny::reactive(2023))
+    
+    # Hide the compare panel if there are no
     shiny::observeEvent(mode(), {
       shinyjs::toggle(id = "pre_compare_panel", condition = mode() == "choropleth")
     })
@@ -358,38 +384,48 @@ alley_server <- function(id, r) {
     data <- shiny::reactive({
       if (mode() == "borough") return(alley_boroughs)
       if (mode() == "alleys") return(alleys)
-      if (r[[id]]$df() == "alleys") return(alleys)
-      
-      curbcut::data_get(
-        vars = vars(),
-        df = r[[id]]$df()
-      )})
+      if (r[[id]]$scale() == "alleys") return(alleys)
+
+      data_get(
+        vars = r[[id]]$vars(),
+        scale = r[[id]]$scale(),
+        region = r[[id]]$region(),
+        time = r[[id]]$time(),
+        schemas = r[[id]]$schemas()
+      )
+    })
     
     # Data for tile coloring
     data_colours <- shiny::reactive({
       if (mode() != "choropleth") return(data.frame())
 
-      curbcut::data_get_colours(
-        vars = vars(),
-        region = current_region(),
-        zoom_levels = current_zl()
-      )})
+      data_get_colours(
+        vars = r[[id]]$vars(),
+        region = r[[id]]$region(),
+        time = r[[id]]$time(),
+        zoom_levels = r[[id]]$zoom_levels(),
+        schemas = r[[id]]$schemas()
+      )
+    })
     
-    vars <- shiny::reactive({
+    shiny::observe({
       if (mode() != "choropleth") return(list())
-
-      curbcut::vars_build(var_left(), var_right(), df = r[[id]]$df())
+      
+      vr <- vars_build(var_left = var_left(), var_right = var_right(), 
+                       scale = r[[id]]$scale(), time = 2023)
+      update_rv(id, r, rv_name = "vars", new_val = shiny::reactive(vr$vars))
+      update_rv(id, r, rv_name = "time", new_val = shiny::reactive(vr$time))
     })
     
     # Customized legen function
     legend <- shiny::reactive({
       if (mode() == "alleys") {
         return(list(fun = alley_legend,
-                    args = list(lang = r$lang())))
+                    args = list(lang = r$lang()), vars = r[[id]]$vars()))
       }
       return(list(fun = curbcut::legend_render,
-                  args = list(vars = vars(), lang = r$lang(), df = r[[id]]$df(),
-                              data = data(), breaks = NULL,
+                  args = list(vars = r[[id]]$vars(), lang = r$lang(), 
+                              scale = r[[id]]$scale(), data = data(),
                               scales_as_DA = c("building", "street"))))
     })
     
@@ -397,27 +433,27 @@ alley_server <- function(id, r) {
     curbcut::legend_server(
       id = id,
       r = r,
-      vars = vars,
+      vars = r[[id]]$vars,
       data = data,
-      df = r[[id]]$df,
-      hide = shiny::reactive(mode() == "borough"), 
+      scale = r[[id]]$scale,
+      time = r[[id]]$time,
+      hide = shiny::reactive(mode() == "borough"),
       legend_fun = shiny::reactive(legend()$fun),
       legend_args = shiny::reactive(legend()$args)
     )
     
-    alley_legend
-    
-    # Did-you-know panel
-    dyk_server(
-      id = id,
-      r = r,
-      vars = vars,
-      df = r[[id]]$df,
-      select_id = r[[id]]$select_id,
-      poi = r[[id]]$poi,
-      region = current_region,
-      zoom_levels = current_zl
-    )
+    # # Did-you-know panel
+    # dyk_server(
+    #   id = id,
+    #   r = r,
+    #   vars = r[[id]]$vars,
+    #   scale = r[[id]]$scale,
+    #   region = r[[id]]$region,
+    #   select_id = r[[id]]$select_id,
+    #   time = r[[id]]$time,
+    #   poi = r[[id]]$poi,
+    #   zoom_levels = r[[id]]$zoom_levels
+    # )
     
     # Customized map functions
     alley_fill_fun <- shiny::reactive({
@@ -430,10 +466,10 @@ alley_server <- function(id, r) {
     #     return(list(fun = scale_lwd_alley,
     #                 args = list(select_id = r[[id]]$select_id())))
     #   }
-    #   
+    #
     #   return(list(fun = curbcut::map_scale_lwd,
-    #               args = list(select_id = r[[id]]$select_id(), tile = tile(), 
-    #                           zoom = r[[id]]$zoom(), 
+    #               args = list(select_id = r[[id]]$select_id(), tile = tile(),
+    #                           zoom = r[[id]]$zoom(),
     #                           zoom_levels = current_zl(), lwd = 1)))
     # })
     
@@ -445,81 +481,87 @@ alley_server <- function(id, r) {
       data_colours = data_colours,
       select_id = r[[id]]$select_id,
       zoom = r[[id]]$zoom,
-      coords = r[[id]]$coords, 
+      coords = r[[id]]$coords,
       fill_fun = alley_fill_fun,
       outline_width = shiny::reactive(if (mode() == "alleys") 2 else 1),
       outline_color = shiny::reactive(if (mode() == "alleys") scale_fill_alley() else "transparent"),
-      stories = stories
+      stories = stories,
+      vars = r[[id]]$vars
     )
 
     # Explore tables
     alley_table_fun <- shiny::reactive({
-      if (mode() == "choropleth" & !"alleys" %in% class(vars())) {
+      if (mode() == "choropleth" & !"alleys" %in% class(r[[id]]$vars())) {
         return(list(fun = curbcut::explore_text,
-                    args = list(r = r, data = data(), vars = vars(), 
-                                select_id = r[[id]]$select_id(), region = current_region(), 
-                                scales_as_DA = c("building", "street"), df = r[[id]]$df(), 
-                                lang = r$lang())))
+                    args = list(r = r, data = data(), vars = r[[id]]$vars(),
+                                select_id = r[[id]]$select_id(), region = r[[id]]$region(),
+                                scales_as_DA = c("building", "street"), scale = r[[id]]$scale(),
+                                lang = r$lang(), time = r[[id]]$time(),
+                                zoom_levels = r[[id]]$zoom_levels(),
+                                schemas = r[[id]]$schemas())))
       }
-      
-      
+
+
       return(list(fun = borough_alley_info_table,
                   args = list(data = data(), select_id = r[[id]]$select_id(),
                               lang = r$lang(), mode = mode())))
     })
-    
+
     alley_graph_fun <- shiny::reactive({
-      if (mode() == "choropleth" & !"alleys" %in% class(vars())) {
+      if (mode() == "choropleth" & !"alleys" %in% class(r[[id]]$vars())) {
         return(list(fun = curbcut::explore_graph,
-                    args = list(r = r, data = data(), vars = vars(), df = r[[id]]$df(),
-                                select_id = r[[id]]$select_id(), region = current_region(), 
-                                scales_as_DA = c("building", "street"), lang = r$lang())))
+                    args = list(r = r, data = data(), vars = r[[id]]$vars(), scale = r[[id]]$scale(),
+                                select_id = r[[id]]$select_id(), region = r[[id]]$region(),
+                                scales_as_DA = c("building", "street"), lang = r$lang(),
+                                time = r[[id]]$time(), schemas = NULL)))
       }
-      
+
       return(list(fun = borough_alley_graph,
                   args = list(lang = r$lang(), mode = mode())))
     })
-    
+
     # Explore panel
     curbcut::explore_server(
       id = id,
       r = r,
       data = data,
-      region = current_region,
-      vars = vars,
-      df = r[[id]]$df,
-      select_id = r[[id]]$select_id, 
+      region = r[[id]]$region,
+      vars = r[[id]]$vars,
+      scale = r[[id]]$scale,
+      select_id = r[[id]]$select_id,
+      time = r[[id]]$time,
+      zoom_levels = r[[id]]$zoom_levels,
       table_fun = shiny::reactive(alley_table_fun()$fun),
       table_args = shiny::reactive(alley_table_fun()$args),
       graph_fun = shiny::reactive(alley_graph_fun()$fun),
       graph_args = shiny::reactive(alley_graph_fun()$args)
     )
-    
+
     # Hide the graph when an alley is selected
     shiny::observe({
-      
+
       # If on alleys and there is a selection, hide the pannel
       cond <- (\(x) {
         if (is.na(r[[id]]$select_id())) return(TRUE)
         if (mode() != "alleys") return(TRUE)
         return(FALSE)
       })()
-      
+
       shinyjs::toggle(id = shiny::NS(id, "explore_graph"), condition = cond)
     })
-    
+
     content <- shiny::reactive({
       if (mode() != "alleys") return(NULL)
       if (is.na(r[[id]]$select_id())) return(NULL)
-      
+
       title <- alleys$name[alleys$ID == r[[id]]$select_id()]
       src <- sprintf("alleys/%s", alleys$photo_ID[alleys$ID == r[[id]]$select_id()])
-      
+
       shiny::div(style = "height:100%; overflow:auto; padding: var(--padding-h-md)",
                  shiny::h2(title),
                  shiny::img(src = src, width = "100%"))
     })
-    
+
     # On a photo click, trigger the show_popup and make sure it creates a reaction
     # to TRUE
     show_popup <- shiny::reactiveVal(FALSE)
@@ -527,19 +569,19 @@ alley_server <- function(id, r) {
       shinyjs::onclick("alley_img", {
         shiny::isolate({
           show_popup(FALSE)
-          show_popup(TRUE)          
+          show_popup(TRUE)
         })
       })
     })
     shiny::observeEvent(r[[id]]$select_id(), show_popup(FALSE))
-    
+
     popup_server(id = id,
                  content = content,
                  show_popup = show_popup)
-    
-    
+
+
     # Bookmarking
-    curbcut::bookmark_server(
+    bookmark_server(
       id = id,
       r = r,
       select_id = r[[id]]$select_id,

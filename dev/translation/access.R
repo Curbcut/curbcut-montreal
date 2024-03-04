@@ -243,20 +243,6 @@ additional_vars <- lapply(vars, \(var) {
     }
   }
   
-  
-  
-  
-  if (dict$title == "Grocery Stores") dict$title <- "Grocery and Convenience Stores"
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
   title <- translation_access$fr[tolower(translation_access$en) == tolower(dict$title)]
   title <- unique(title)
   short <- translation_access$fr[tolower(translation_access$en) == tolower(dict$short)]
@@ -274,7 +260,7 @@ additional_vars <- lapply(vars, \(var) {
     if (grepl("_transit_pwd_", var)) return("en transports en commun les jours de semaine à l'heure de pointe")
   })()
   
-  time <- gsub("_", "", stringr::str_extract(var, "_\\d*_"))
+  time <- "__transportationtime__"
   
   var_title <- stringr::str_to_sentence(paste0(title, " accessibles ", mode))
   var_short <- stringr::str_to_sentence(short)
@@ -295,6 +281,7 @@ additional_vars <- lapply(vars, \(var) {
     "un résident a accès, en moyenne, à _X_ ", tolower(title), " en ", time,
     " minutes ", mode
   )
+  
   
   # Construct the table
   tibble(en = variables$var_title[variables$var_code == var],

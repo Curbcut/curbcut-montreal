@@ -126,7 +126,7 @@ knitr::include_graphics(here::here("dev/data/stories/raw_images/alley_strategy/f
 <p>Consequently, the Green Alley Program and the Blue-Green Alleys can be part of the city's strategy to mitigate adverse climate change effects by increasing green infrastructure and, with it, the opportunity to be in contact with nature and improve climate conditions.<p/>
 
 <details>
-<summary>### References</summary>
+<summary>References</summary>
 
 <ul>
 <li>Alliance Ruelles bleues-vertes (https://www.ruellesbleuesvertes.com/accueil/le-projet/).</li>
