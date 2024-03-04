@@ -75,19 +75,19 @@ if (is.null(get0("scales_dictionary"))) {
 #   return(result)
 # }
 # 
-# t_max <- function(en) {
-#   # Assuming .t function is defined elsewhere
-#   fr <- sapply(en, .t, USE.NAMES = FALSE)
-#   # Creating output strings
-#   out <- character(length(en))
-#   for (i in 1:length(en)) {
-#     en_str <- split_string(en[i])
-#     fr_str <- split_string(fr[i])
-#     out[i] <- paste0('add_row(en = ', en_str, ', \nfr = ', fr_str, ')')
-#   }
-#   # Writing lines with collapse to ensure proper formatting
-#   writeLines(paste0(out, collapse = ' |> \n'))
-# }
+t_max <- function(en) {
+  # Assuming .t function is defined elsewhere
+  fr <- sapply(en, .t, USE.NAMES = FALSE)
+  # Creating output strings
+  out <- character(length(en))
+  for (i in 1:length(en)) {
+    en_str <- en[i]
+    fr_str <- fr[i]
+    out[i] <- paste0('add_row(en = "', en_str, '", \nfr = "', fr_str, '")')
+  }
+  # Writing lines with collapse to ensure proper formatting
+  writeLines(paste0(out, collapse = ' |> \n'))
+}
 
 
 # Run all the translation preparation -------------------------------------
@@ -134,6 +134,19 @@ if (translation_df$fr |> is.na() |> sum() > 0)
 # Test --------------------------------------------------------------------
 
 # Search the whole variables table. Is everything translated?
+t_max <- function(en) {
+  # Assuming .t function is defined elsewhere
+  fr <- sapply(en, .t, USE.NAMES = FALSE)
+  # Creating output strings
+  out <- character(length(en))
+  for (i in 1:length(en)) {
+    en_str <- en[i]
+    fr_str <- fr[i]
+    out[i] <- paste0('add_row(en = "', en_str, '", \nfr = "', fr_str, '")')
+  }
+  # Writing lines with collapse to ensure proper formatting
+  writeLines(paste0(out, collapse = ' |> \n'))
+}
 
 is_translated <- function(strings) {
   strings <- strings[!is.na(strings)]
@@ -142,8 +155,14 @@ is_translated <- function(strings) {
   if (length(not_there) > 0) {
     warning(sprintf("Following strings not translated: \n%s",
          paste0(unique(not_there), collapse = "\n")))
+    t_max(unique(not_there))
   }
 }
+
+int_from <- sapply(variables$interpolated, \(x) {
+  if (!all(is.na(x))) x$interpolated_from
+}) |> unlist() |> unique()
+int_from <- int_from[!int_from %in% c("FALSE", scales_dictionary$scale)]
 
 # VARIABLES
 is_translated(variables$var_title)
@@ -154,6 +173,7 @@ is_translated(variables$explanation_nodet)
 is_translated(unique(unlist(variables$rankings_chr)))
 is_translated(unique(unlist(variables$theme)))
 is_translated(unique(variables$source))
+is_translated(int_from)
 
 group_diffs <- unique(c(unname(unlist(variables$group_diff)), names(unlist(variables$group_diff))))
 group_diffs <- group_diffs[!curbcut:::is_numeric(group_diffs)]

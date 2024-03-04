@@ -279,7 +279,6 @@ safety_server <- function(id, r) {
         ))
       }
     )
-    
 
     # Construct the left-hand UIs / servers automatically
     autovars <-
@@ -332,6 +331,7 @@ safety_server <- function(id, r) {
       zoom_levels = r[[id]]$zoom_levels(),
       schemas = r[[id]]$schemas()
     ))
+    observe(print(data_colours()))
 
     # Warn user
     warnuser_server(

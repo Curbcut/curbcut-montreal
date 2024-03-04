@@ -46,7 +46,7 @@ tileset_upload_grid <- function(all_scales, map_zoom_levels, max_zoom,
     
     # Subset
     df <- df[, vars_col]
-    if (scale_name == "grid250") df$ID_color <- df$ID
+    if (scale_name == "grd250") df$ID_color <- df$ID
     
     # Add the delta column
     for (var in vars) {
@@ -178,7 +178,7 @@ tileset_upload_grid <- function(all_scales, map_zoom_levels, max_zoom,
       names(maxzooms) <- scale_names
       
       layer_sizes <-
-        stats::setNames(rep(NA, length(scale_names)), scale_names)
+        stats::setNames(rep(2500, length(scale_names)), scale_names)
       
       recipe <-
         tileset_create_recipe(

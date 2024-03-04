@@ -14,4 +14,8 @@ curbcut::ui(
   share_jpg = "https://montreal.curbcut.ca/share.jpg",
   apple_touch_icon = "https://montreal.curbcut.ca/logo192.jpg",
   lang_init = "fr",
-  show_lang_button = TRUE)
+  show_lang_button = TRUE, 
+  show_cities = TRUE, 
+  h1_first_line = list(en = "MONTREAL", fr = "RÉGION DE"), 
+  h1_second_line = list(en = "REGION", fr = "MONTRÉAL")
+  )

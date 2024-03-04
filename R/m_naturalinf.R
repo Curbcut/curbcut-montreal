@@ -445,7 +445,7 @@ natural_inf_server <- function(id, r) {
       } else ni_colour_table
 
     })
-
+    
     # Update the `r[[id]]$vars` reactive
     vars <- shiny::reactive(vars_build(var_left = var_left(), scale = "raster", time = NULL)$vars)
 
@@ -465,7 +465,7 @@ natural_inf_server <- function(id, r) {
     )
 
     # Composite variable for map
-    map_var <- shiny::reactive(if (custom_priorities()) "ID" else var_left())
+    map_var <- shiny::reactive(if (var_left() == "c_priority" & custom_priorities()) "ID" else var_left())
 
     # Choose tileset
     tile <- shiny::reactive({

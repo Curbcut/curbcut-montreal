@@ -16,53 +16,6 @@ map_scale_fill_grid <- function(vars, time) {
                                   fallback = "transparent")
 }
 
-explore_graph_grid <- function(vars, lang, data, select_id, time) {
-  plot <- curbcut::explore_graph(vars = vars,
-                                 select_id = NA,
-                                 scale = "grd250",
-                                 data = data_get(vars, scale = "grd250", time = time, region = "island"),
-                                 lang = lang,
-                                 time = time,
-                                 schemas = NULL)
-  
-  if (!is.na(select_id)) {
-    if ("q5_ind" %in% class(vars)) {
-      plot <-
-        plot +
-        ggplot2::geom_vline(
-          xintercept = data$var_left[data$ID == select_id] + 1,
-          colour = "black", linewidth = 1.5)
-    }
-    
-    if ("delta_ind" %in% class(vars)) {
-      plot <-
-        plot +
-        ggplot2::geom_tile(data = data[data$ID == select_id, ],
-                           color = "white", fill = "transparent", size = 1.5)
-    }
-  }
-  
-  return(plot)
-  
-}
-
-explore_text_grid <- function(vars, time, lang) {
-  
-  data <- data_get(vars, scale = "grd250", time = time, region = "island")
-  
-  explore_text(
-    vars = vars,
-    region = "island",
-    select_id = NA,
-    scale = "grd250",
-    time = time,
-    data = data,
-    schemas = NULL,
-    zoom_levels = mzl_grd250_grd100_grd50_grd25,
-    lang = lang
-  )
-}
-
 
 # UI ----------------------------------------------------------------------
 
@@ -84,12 +37,13 @@ explore_text_grid <- function(vars, time, lang) {
   
   shiny::tagList(
     
-    # Add a piece of CSS to nensure we do not see the small grid ticks on
+    # Add a piece of CSS to ensure we do not see the small grid ticks on
     # the time sliders
     shiny::tags$head(shiny::tags$style(
+      sprintf(
       "#climate_risk-climate_risk-year_sliders .irs-grid-pol.small {
     display: none;
-    }")),
+    }"))),
     
     shiny::div(
       `data-theme` = theme_lowercased,
@@ -158,6 +112,9 @@ explore_text_grid <- function(vars, time, lang) {
     map_base_style <- get_from_globalenv("map_base_style")
     mapbox_username <- get_from_globalenv("mapbox_username")
     
+    # Highest grid
+    highest_grd <- names(mzp)[1]
+    
     output[[shiny::NS(id, "map_ph")]] <- shiny::renderUI({
       cc.map::map_input(
         map_ID = shiny::NS(id, shiny::NS(id, "map")),
@@ -204,13 +161,13 @@ explore_text_grid <- function(vars, time, lang) {
       zoom_name <- curbcut::zoom_get_label(zoom_name, lang = r$lang())
       
       if (grid()) {
-        shiny::removeUI("#climaterisk_grid_zn")
-        shiny::insertUI(selector = "#climate_risk-climate_risk-zoom_cbx_loc",
+        shiny::removeUI(sprintf("#%s_grid_zn", id))
+        shiny::insertUI(selector = sprintf("#%s-%s-zoom_cbx_loc", id, id),
                         where = "beforeEnd",
-                        ui = shiny::div(id = "climaterisk_grid_zn", zoom_name))
+                        ui = shiny::div(id = sprintf("%s_grid_zn", id), zoom_name))
       } else {
         # Revert to default HTML
-        shiny::removeUI("#climaterisk_grid_zn")
+        shiny::removeUI(sprintf("#%s_grid_zn", id))
       }
     })
     
@@ -238,7 +195,7 @@ explore_text_grid <- function(vars, time, lang) {
     
     
     # Default to tileset values
-    grid <- shiny::reactive(names(r[[id]]$zoom_levels())[1] == "grd250")
+    grid <- shiny::reactive(names(r[[id]]$zoom_levels())[1] == highest_grd)
     grid_compare <- shiny::reactive(grid() && var_right()[1] != " ")
     
     # Choose tileset
@@ -257,10 +214,13 @@ explore_text_grid <- function(vars, time, lang) {
         rv_zoom_string()
       },
       {
-        r[[id]]$scale(update_scale(
+        scale <- update_scale(
           tile = tile(),
           zoom_string = rv_zoom_string()
-        ))
+        )
+        
+        scale <- if (grepl("grd", scale)) highest_grd else scale
+        r[[id]]$scale(scale)
       }
     )
     
@@ -268,10 +228,10 @@ explore_text_grid <- function(vars, time, lang) {
     autovars <-
       curbcut::autovars_server(
         id = id,
-        r = r,
-        main_dropdown_title = "Climate vulnerability indicator",
+        r = r, 
+        main_dropdown_title = main_dropdown_title,
         default_year = 2022)
-    
+
     var_left <- shiny::reactive(autovars()$var)
     widget_time <- shiny::reactive(autovars()$time)
     
@@ -285,13 +245,13 @@ explore_text_grid <- function(vars, time, lang) {
       )),
       time = r[[id]]$time
     )
-    
+
     # Update the `r[[id]]$vars` reactive
     update_vars(
       id = id, r = r, var_left = var_left,
       var_right = var_right, widget_time = widget_time
     )
-    
+
     # Sidebar
     curbcut::sidebar_server(id = id, r = r)
     
@@ -387,50 +347,27 @@ explore_text_grid <- function(vars, time, lang) {
       stories = stories,
       vars = r[[id]]$vars
     )
-    
-    # Switch the graph to a static one when on grid q5
-    explore_graph_fun_args <- shiny::reactive({
-      if (grid() & !grid_compare()) {
-        return(list(fun = explore_graph_grid,
-                    args = list(vars = r[[id]]$vars(),
-                                lang = r$lang(),
-                                data = shiny::isolate(data()),
-                                select_id = r[[id]]$select_id(),
-                                time = r[[id]]$time())))
-      } else {
-        return(list(fun = curbcut::explore_graph,
-                    args = list(r = r,
-                                data = data(),
-                                vars = r[[id]]$vars(),
-                                region = r[[id]]$region(),
-                                scale = r[[id]]$scale(),
-                                select_id = r[[id]]$select_id(),
-                                time = r[[id]]$time(),
-                                lang = r$lang(),
-                                zoom_levels = r[[id]]$zoom_levels(),
-                                schemas = r[[id]]$schemas())))
-      }
+
+    val <- shiny::reactive({
+      val_get_sqlite(vars = r[[id]]$vars(), 
+                     grid = grid(), 
+                     grid_compare = grid_compare(), 
+                     rv_zoom_string = rv_zoom_string(), 
+                     highest_grd = highest_grd,
+                     select_id = r[[id]]$select_id(), 
+                     time = r[[id]]$time())
     })
-    
-    explore_text_fun_args <- shiny::reactive({
-      if (grid() & is.na(r[[id]]$select_id())) {
-        return(list(fun = explore_text_grid,
-                    args = list(vars = r[[id]]$vars(),
-                                time = r[[id]]$time(),
-                                lang = r$lang())))
-      } else {
-        return(list(fun = curbcut::explore_text,
-                    args = list(r = r,
-                                data = data(),
-                                vars = r[[id]]$vars(),
-                                region = r[[id]]$region(),
-                                scale = r[[id]]$scale(),
-                                select_id = r[[id]]$select_id(),
-                                time = r[[id]]$time(),
-                                lang = r$lang(),
-                                zoom_levels = r[[id]]$zoom_levels(),
-                                schemas = r[[id]]$schemas())))
-      }
+
+    shown_scale <- shiny::reactive({
+      # Return nothing if we're not in grid mode
+      if (!grid()) return(NULL)
+      if (grid_compare()) return(NULL)
+      if (rv_zoom_string() == highest_grd) return(NULL)
+      if (is.na(r[[id]]$select_id())) return(NULL)
+      
+      # In grid mode with a selection, make sure to adapt the text for the right
+      # scale.
+      rv_zoom_string()
     })
     
     # Update the selection when on grid() and the `df` changes (to redraw the graph)
@@ -450,10 +387,8 @@ explore_text_grid <- function(vars, time, lang) {
       time = r[[id]]$time,
       zoom_levels = r[[id]]$zoom_levels,
       schemas = r[[id]]$schemas,
-      graph_fun = shiny::reactive(explore_graph_fun_args()$fun),
-      graph_args = shiny::reactive(explore_graph_fun_args()$args), 
-      table_fun = shiny::reactive(explore_text_fun_args()$fun), 
-      table_args = shiny::reactive(explore_text_fun_args()$args)
+      val = val,
+      shown_scale = shown_scale,
     )
     
     # Bookmarking

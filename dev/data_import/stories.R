@@ -205,18 +205,18 @@ build_stories <- function() {
   
   
   # Create images and mapping -----------------------------------------------
-  
+
   stories <- stories_map_images(stories = stories)
-  
-  
-  # Knit all stories Rmds ---------------------------------------------------
-  
-  library(here)
-  if (is.null(packageDescription("leaflet")$RemoteUsername) || 
-      packageDescription("leaflet")$RemoteUsername != "dmurdoch") {
-    stop("Special version of the leaflet package must be installed to knit this story succesfully. Run devtools::install_github('dmurdoch/leaflet@crosstalk4')")
-  }
-  cc.buildr::stories_knit_all()
+
+
+  # # Knit all stories Rmds ---------------------------------------------------
+  # 
+  # library(here)
+  # if (is.null(packageDescription("leaflet")$RemoteUsername) ||
+  #     packageDescription("leaflet")$RemoteUsername != "dmurdoch") {
+  #   stop("Special version of the leaflet package must be installed to knit this story succesfully. Run devtools::install_github('dmurdoch/leaflet@crosstalk4')")
+  # }
+  # cc.buildr::stories_knit_all()
   
   
   # Return ------------------------------------------------------------------

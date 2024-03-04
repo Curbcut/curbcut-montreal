@@ -44,14 +44,24 @@ translation_dictionaries <- tibble(en = character(),
           fr = "zone à l'échelle de 120m") |>
   add_row(en = "area at the 300m scale",
           fr = "zone à l'échelle de 300m") |> 
-  add_row(en = "city",
-          fr = "ville") |>
+  add_row(en = "area at the 600m scale", 
+          fr = "zone à l'échelle de 600m") |> 
+add_row(en = "city",
+        fr = "ville") |>
   add_row(en = "borough",
           fr = "arrondissement") |>
   add_row(en = "integrated (university) health and social services centre",
           fr = "centre intégré (universitaire) de santé et de services sociaux") |>
   add_row(en = "local community service centre",
           fr = "centre local de service communautaire") |>
+  add_row(en = "dissemination block", 
+          fr = "îlot de diffusion") |> 
+  add_row(en = "territorial service network", 
+          fr = "réseau territorial de services") |> 
+  add_row(en = "Table de quartier", 
+          fr = "Table de quartier") |> 
+  add_row(en = "rasters (30m*30m)", 
+          fr = "mailles (30m*30m)") |> 
   
   # sing_with_article
   add_row(en = "the borough/city",
@@ -82,6 +92,8 @@ translation_dictionaries <- tibble(en = character(),
           fr = "la zone à l'échelle de 120m") |>
   add_row(en = "the area at the 300m scale",
           fr = "la zone à l'échelle de 300m") |> 
+  add_row(en = "the area at the 600m scale",
+          fr = "la zone à l'échelle de 600m") |> 
   add_row(en = "the city",
           fr = "la ville") |>
   add_row(en = "the borough",
@@ -90,6 +102,13 @@ translation_dictionaries <- tibble(en = character(),
           fr = "le centre intégré (universitaire) de santé et de services sociaux") |>
   add_row(en = "the local community service centre",
           fr = "le centre local de service communautaire") |>
+  
+  add_row(en = "the dissemination block", 
+          fr = "l'îlot de diffusion") |> 
+  add_row(en = "the territorial service network", 
+          fr = "le réseau territorial de services") |> 
+  add_row(en = "the Table de quartier", 
+          fr = "the Table de quartier") |> 
   
   # plur
   add_row(en = "boroughs or cities",
@@ -120,6 +139,8 @@ translation_dictionaries <- tibble(en = character(),
           fr = "zones à l'échelle de 120m") |>
   add_row(en = "areas at the 300m scale",
           fr = "zones à l'échelle de 300m") |> 
+  add_row(en = "areas at the 600m scale",
+          fr = "zones à l'échelle de 600m") |> 
   add_row(en = "cities",
           fr = "villes") |>
   add_row(en = "boroughs",
@@ -128,6 +149,12 @@ translation_dictionaries <- tibble(en = character(),
           fr = "centres intégrés (universitaires) de santé et de services sociaux") |>
   add_row(en = "local community services centres",
           fr = "centres locaux de services communautaires") |>
+  add_row(en = "dissemination blocks", 
+          fr = "îlots de diffusion") |> 
+  add_row(en = "territorial service networks", 
+          fr = "réseaux territoriaux de services") |> 
+  add_row(en = "Table de quartier", 
+          fr = "Table de quartier") |> 
   
   # slider title
   add_row(en = "Borough/City",
@@ -158,6 +185,8 @@ translation_dictionaries <- tibble(en = character(),
           fr = "120m") |>
   add_row(en = "300m",
           fr = "300m") |> 
+  add_row(en = "600m",
+          fr = "600m") |> 
   add_row(en = "City",
           fr = "Ville") |>
   add_row(en = "Borough",
@@ -168,6 +197,12 @@ translation_dictionaries <- tibble(en = character(),
           fr = "CLSC") |>
   add_row(en = "Centraide Zone",
           fr = "Zone Centraide") |> 
+  add_row(en = "Dissemination block", 
+          fr = "Îlot de diffusion") |> 
+  add_row(en = "Table de quartier", 
+          fr = "Table de quartier") |> 
+  add_row(en = "Territorial service networks", 
+          fr = "Réseaux territoriaux de services") |> 
   
   # place heading
   add_row(en = "{name_2} of {name}",
@@ -184,10 +219,12 @@ translation_dictionaries <- tibble(en = character(),
           fr = "CLSC {name}") |>
   add_row(en = "Borough {name}",
           fr = "Arrondissement {name}") |>
-  
-  # place name
-  add_row(en = "Census tract {name}",
-          fr = "Secteur de recensement {name}") |>
+  add_row(en = "Dissemination block {name} ({name_2})", 
+          fr = "Îlot de diffusion {name} ({name_2})") |> 
+
+# place name
+add_row(en = "Census tract {name}",
+        fr = "Secteur de recensement {name}") |>
   add_row(en = "Dissemination area {name}",
           fr = "Aire de diffusion {name}") |>
   add_row(en = "the 25m grid area around {name}",
@@ -206,6 +243,10 @@ translation_dictionaries <- tibble(en = character(),
           fr = "la zone de 120 m autour du {name}") |>
   add_row(en = "the 300m grid area around {name}",
           fr = "la zone de 300 m autour du {name}") |> 
+  add_row(en = "the 600m grid area around {name}",
+          fr = "la zone de 600 m autour du {name}") |> 
+  add_row(en = "Dissemination block {name}", 
+          fr = "Îlot de diffusion {name}") |> 
   
   # subtext
   add_row(en = paste0(
@@ -219,12 +260,12 @@ translation_dictionaries <- tibble(en = character(),
   add_row(en = paste0(
     "Municipal administrations (19) in the City of Montreal"), 
     fr = paste0(
-      "Organisation municipales (19) dans la ville de Montréal")) |> 
+      "Administrations municipales (19) dans la ville de Montréal")) |> 
   add_row(en = paste0(
     "Municipal administrations in the City of Montreal with census subdivis", 
     "ions in the region"), 
     fr = paste0(
-      "Organisation municipales de la ville de Montréal et subdivisions de", 
+      "Administrations municipales de la ville de Montréal et subdivisions de", 
       " recensement de la région")) |> 
   add_row(en = paste0(
     "Territories for which the local integrated center (CISSS/CIUSSS) is re", 
@@ -235,11 +276,12 @@ translation_dictionaries <- tibble(en = character(),
       "responsabilité d'assurer le développement et le bon fonctionnement du ", 
       "réseau de la santé et des services sociaux.")) |> 
   add_row(en = paste0(
-    "Territoires for which the local community service centre (CLSC) ha", 
-    "s the mission to provide routine, front-line health and social service", 
-    "s to the population"), 
+    "Territories for which the local community service centre (CLSC) has th",
+    "e mission to provide routine, front-line health and social services to",
+    " the population"
+  ), 
     fr = paste0(
-      "Les territoires pour lesquels le centre local de services communautair", 
+      "Territoires pour lesquels le centre local de services communautair", 
       "es (CLSC) a pour mission d'offrir des services de santé et des service", 
       "s sociaux courants et de première ligne à la population.")) |> 
   add_row(en = paste0(
@@ -253,6 +295,8 @@ translation_dictionaries <- tibble(en = character(),
     fr = paste0(
       "Zones d'intervention de Centraide en matière de soutien et de dével", 
       "oppement communautaire")) |> 
+  add_row(en = "Territories where local stakeholders collaborate to enhance neighborhood living quality and conditions.", 
+          fr = "Territoires où les acteurs locaux collaborent pour améliorer la qualité et les conditions de vie dans le quartier") |> 
   add_row(en = paste0(
     "Small square areas, each measuring 30 meters by 30 meters"), 
     fr = paste0(
@@ -285,13 +329,17 @@ translation_dictionaries <- tibble(en = character(),
     "Small square areas, each measuring 250 meters by 250 meters"), 
     fr = paste0(
       "Petites zones carrées, mesurant chacune 250 mètres sur 250 mètres")) |> 
+  add_row(en = paste0(
+    "Small square areas, each measuring 600 meters by 600 meters"), 
+    fr = paste0(
+      "Petites zones carrées, mesurant chacune 600 mètres sur 600 mètres")) |> 
   
   
   # Regions dictionary ------------------------------------------------------
 
 # region name
-add_row(en = "Metropolitan Area",
-        fr = "Région métropolitaine") |>
+add_row(en = "Montreal region",
+        fr = "Région de Montréal") |>
   add_row(en = "Island of Montreal",
           fr = "Île de Montréal") |>
   add_row(en = "City of Montreal",

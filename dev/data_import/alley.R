@@ -332,8 +332,7 @@ build_and_append_alley <- function(scales_variables_modules, scales_sequences, c
   # Data tibble -------------------------------------------------------------
   
   time_regex <- "_\\d{4}$"
-  data <- data_construct(svm_data = scales_variables_modules$data,
-                         scales_data = data_interpolated$scales,
+  data_construct(scales_data = data_interpolated$scales,
                          unique_var = c("alley_sqkm", "alley_per1k"),
                          time_regex = time_regex)
 
@@ -461,7 +460,7 @@ build_and_append_alley <- function(scales_variables_modules, scales_sequences, c
   # Return ------------------------------------------------------------------
 
   return(list(
-    scales = data_interpolated$scales,
+    scales = scales_variables_modules$scales,
     variables = variables,
     modules = if (exists("modules")) modules else scales_variables_modules$modules,
     data = data

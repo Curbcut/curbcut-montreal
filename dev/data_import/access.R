@@ -4,7 +4,8 @@ build_and_append_access <- function(scales_variables_modules,
                                     DA_table,
                                     traveltimes,
                                     scales_sequences,
-                                    crs) {
+                                    crs,
+                                    overwrite = FALSE) {
 
   # # Read and prepare data ---------------------------------------------------
   # 
@@ -89,7 +90,9 @@ build_and_append_access <- function(scales_variables_modules,
       weight_by = "population",
       average_vars = average_vars,
       additive_vars = additive_vars,
-      crs = crs
+      crs = crs,
+      overwrite = overwrite,
+      time_regex = "_\\d{4}$"
     )
 
 
@@ -104,8 +107,7 @@ build_and_append_access <- function(scales_variables_modules,
   breaks_var <- lapply(unique_var, paste0, "_20_2023")
   names(breaks_var) <- unique_var
   
-  data <- data_construct(svm_data = scales_variables_modules$data,
-                         scales_data = data_interpolated$scales,
+  data_construct(scales_data = data_interpolated$scales,
                          unique_var = unique_var,
                          time_regex = time_regex,
                          schema = list(time = gsub("^_", "", time_regex),
@@ -237,7 +239,7 @@ build_and_append_access <- function(scales_variables_modules,
   # Return ------------------------------------------------------------------
 
   return(list(
-    scales = data_interpolated$scales,
+    scales = scales_variables_modules$scales,
     variables = variables,
     modules = if (exists("modules")) modules else scales_variables_modules$modules,
     data = data

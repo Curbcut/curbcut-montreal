@@ -119,6 +119,7 @@ build_and_append_crash <- function(scales_variables_modules, crs, scales_sequenc
   vars <- names(dat$CSD[4:ncol(dat$CSD)])
 
   avail_scale <- names(scales)
+  avail_scale <- avail_scale[!avail_scale %in% c("CSD")]
   interpolated_ref <- 
     tibble::tibble(scale = names(scales), interpolated_from = rep(FALSE, length(scales)))
   
@@ -127,8 +128,7 @@ build_and_append_crash <- function(scales_variables_modules, crs, scales_sequenc
   
   time_regex <- "_\\d{4}$"
   vars <- gsub(time_regex, "", vars) |> unique()
-  data <- data_construct(svm_data = scales_variables_modules$data,
-                         scales_data = all_data,
+  data_construct(scales_data = all_data,
                          unique_var = vars,
                          time_regex = time_regex)
 
@@ -278,7 +278,7 @@ build_and_append_crash <- function(scales_variables_modules, crs, scales_sequenc
   # Return ------------------------------------------------------------------
 
   return(list(
-    scales = all_data,
+    scales = scales_variables_modules$scales,
     variables = variables,
     modules = modules,
     data = data

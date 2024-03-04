@@ -710,7 +710,7 @@ build_and_append_natural_inf <- function(scales_variables_modules, crs) {
 #   DBI::dbListTables(natural_inf_sql)
 #   DBI::dbDisconnect(natural_inf_sql)
 # 
-#   
+
   # Return ------------------------------------------------------------------
 
   return(list(

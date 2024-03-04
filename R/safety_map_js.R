@@ -1,15 +1,15 @@
 heatmap_filter <- function(var) {
-  if (grepl("crash_ped", var)) {
+  if (grepl("ped$", var)) {
     return(list("==", list("get", "ped"), TRUE))
   }
-  if (grepl("crash_cyc", var)) {
+  if (grepl("cyc$", var)) {
     return(list("==", list("get", "cyc"), TRUE))
   }
   return(list("all"))
 }
 
 heatmap_radius <- function(var) {
-  if (grepl("crash_ped", var)) {
+  if (grepl("ped$", var)) {
     return(list(
       "interpolate",
       list("linear"),
@@ -17,7 +17,7 @@ heatmap_radius <- function(var) {
       0, 1, 10, 10, 12, 20, 15, 45
     ))
   }
-  if (grepl("crash_cyc", var)) {
+  if (grepl("cyc$", var)) {
     return(list(
       "interpolate",
       list("linear"),
