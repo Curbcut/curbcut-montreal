@@ -43,7 +43,7 @@ safety_map_js_server <- function(id, r, tile, coords, zoom, select_id, data_colo
   stopifnot(shiny::is.reactive(data_colours))
 
   shiny::moduleServer(id, function(input, output, session) {
-    tileset_prefix <- get_from_globalenv("tileset_prefix")
+    inst_prefix <- get_from_globalenv("inst_prefix")
 
     # Populate the empty container created in map_js_UI
     output[[shiny::NS(id, "map_ph")]] <- shiny::renderUI({
@@ -55,7 +55,7 @@ safety_map_js_server <- function(id, r, tile, coords, zoom, select_id, data_colo
         latitude = map_loc[2],
         zoom = map_zoom,
         map_style_id = map_base_style,
-        tileset_prefix = tileset_prefix,
+        inst_prefix = inst_prefix,
         stories = stories,
         stories_min_zoom = stories_min_zoom
       )
@@ -63,7 +63,7 @@ safety_map_js_server <- function(id, r, tile, coords, zoom, select_id, data_colo
 
     # Form the tileset with stability. Do not get it to trigger the cc.map::map_choropleth
     # if it hasn't changed.
-    tileset <- shiny::reactive(sprintf("%s_%s", tileset_prefix, tile()))
+    tileset <- shiny::reactive(sprintf("%s_%s", inst_prefix, tile()))
 
     tileset_trigger <- shiny::reactiveVal(NULL)
     shiny::observeEvent(tileset(), {

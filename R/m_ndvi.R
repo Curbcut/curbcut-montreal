@@ -98,7 +98,7 @@ map_scale_fill_ndvi <- function(vars, time) {
     
     map_zoom <- get_from_globalenv("map_zoom")
     map_loc <- get_from_globalenv("map_loc")
-    tileset_prefix <- get_from_globalenv("tileset_prefix")
+    inst_prefix <- get_from_globalenv("inst_prefix")
     map_token <- get_from_globalenv("map_token")
     map_base_style <- get_from_globalenv("map_base_style")
     mapbox_username <- get_from_globalenv("mapbox_username")
@@ -115,7 +115,7 @@ map_scale_fill_ndvi <- function(vars, time) {
         latitude = map_loc[2],
         zoom = map_zoom,
         map_style_id = map_base_style,
-        tileset_prefix = tileset_prefix,
+        inst_prefix = inst_prefix,
         stories = stories,
         stories_min_zoom = 13
       )
@@ -199,8 +199,8 @@ map_scale_fill_ndvi <- function(vars, time) {
     )
     
     tile <- shiny::reactive({
-      if (tile_1() == "grd600_grd300_grd120") 
-        return(sprintf("ndvi_autozoommin_%s", r[[id]]$region()))
+      if (tile_1() == "grd600_grd300_grd120_grd60_grd30") 
+        return(sprintf("ndvi_autozoom_%s", r[[id]]$region()))
       
       if (tile_1() == "grd600") return(sprintf("grd600_%s", r[[id]]$region()))
       tile_1()
@@ -348,13 +348,13 @@ map_scale_fill_ndvi <- function(vars, time) {
     )
     
     val <- shiny::reactive({
-      val_get_sqlite(vars = r[[id]]$vars(), 
-                     grid = grid(), 
-                     grid_compare = grid_compare(), 
-                     rv_zoom_string = rv_zoom_string(), 
-                     highest_grd = highest_grd,
-                     select_id = r[[id]]$select_id(), 
-                     time = r[[id]]$time())
+      val_get_db(vars = r[[id]]$vars(), 
+                 grid = grid(), 
+                 grid_compare = grid_compare(), 
+                 rv_zoom_string = rv_zoom_string(), 
+                 highest_grd = highest_grd,
+                 select_id = r[[id]]$select_id(), 
+                 time = r[[id]]$time())
     })
     
     shown_scale <- shiny::reactive({

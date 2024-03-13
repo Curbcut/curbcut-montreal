@@ -1,7 +1,8 @@
 ## BUILD AND APPEND CLIMATE_RISK DATA ##########################################
 
 build_and_append_climate_risk <- function(scales_variables_modules, crs,
-                                          scales_sequences, overwrite = FALSE) {
+                                          scales_sequences, overwrite = FALSE,
+                                          inst_prefix) {
   
   dates <- c(2015, 2022)
   
@@ -58,12 +59,14 @@ build_and_append_climate_risk <- function(scales_variables_modules, crs,
   
   # Do not interpolate for grds
   only_scales <- names(scales_variables_modules$scales)[
-    !grepl("grd600", names(scales_variables_modules$scales))
+    !grepl("grd", names(scales_variables_modules$scales))
   ]
+  only_scales <- c(only_scales, "grd25", "grd50", "grd100", "grd250")
   
   only_scales_exc <- exclude_processed_scales(unique_vars = unique_vars,
                                               scales = only_scales,
-                                              overwrite = overwrite)
+                                              overwrite = overwrite,
+                                              inst_prefix = inst_prefix)
   
   if (length(only_scales_exc) != 0) {
     
@@ -80,7 +83,8 @@ build_and_append_climate_risk <- function(scales_variables_modules, crs,
                              ],
                              crs = crs,
                              overwrite = overwrite,
-                             time_regex = "_\\d{4}$")
+                             time_regex = "_\\d{4}$",
+                             inst_prefix = inst_prefix)
     
     # Add the grd25 climate data
     data_interpolated$scales$grd25 <- 
@@ -209,7 +213,8 @@ build_and_append_climate_risk <- function(scales_variables_modules, crs,
                    unique_var = c("climate_drought", "climate_flood",
                                   "climate_heavy_rain", "climate_destructive_storms",
                                   "climate_heat_wave"),
-                   time_regex = time_regex)
+                   time_regex = time_regex,
+                   inst_prefix = inst_prefix)
     
   }
   

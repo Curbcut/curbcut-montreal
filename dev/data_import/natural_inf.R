@@ -665,59 +665,41 @@ build_and_append_natural_inf <- function(scales_variables_modules, crs) {
   
   
   # Save natural inf in its own sqlite db -----------------------------------
-# 
-#   library(RSQLite)
-#   library(DBI)
-#   natural_inf_path <- "data/naturalinf.sqlite"
-#   if (natural_inf_path %in% list.files("data", full.names = TRUE))
-#     unlink(natural_inf_path, force = TRUE)
-#   natural_inf_sql <- DBI::dbConnect(RSQLite::SQLite(),
-#                                     natural_inf_path,
-#                                     overwrite = TRUE)
-# 
-#   DBI::dbWriteTable(conn = natural_inf_sql,
-#                     name = "natural_inf_custom",
-#                     value = as.data.frame(natural_inf_custom))
-# 
-#   purrr::walk2(names(natural_inf), natural_inf, function(name, df) {
-#     if (!is.data.frame(df)) {
-#       purrr::walk2(df, seq_along(df), function(x, y) {
-#         DBI::dbWriteTable(natural_inf_sql,
-#                           paste("natural_inf", name, y, sep = "_"),
-#                           as.data.frame(x),
-#                           overwrite = TRUE)
-#         DBI::dbExecute(natural_inf_sql,
-#                        paste0("CREATE INDEX index_biodiversity_", y,
-#                               " ON natural_inf_custom_", y,
-#                               " (biodiversity)"))
-#       })
-#     }
-#     else {
-#       DBI::dbWriteTable(natural_inf_sql,
-#                         paste("natural_inf", name, sep = "_"),
-#                         as.data.frame(df),
-#                         overwrite = TRUE)
-#     }
-# 
-#     if (name == "custom_explore") {
-#       DBI::dbExecute(
-#         natural_inf_sql,
-#         paste0("CREATE INDEX index_natural_inf_custom_explore_slider",
-#                " ON natural_inf_custom_explore (slider)"))
-#     }
-#   })
-# 
-#   DBI::dbListTables(natural_inf_sql)
-#   DBI::dbDisconnect(natural_inf_sql)
-# 
+
+  # db_write_prod(natural_inf$original_priorities, 
+  #               table_name = "natural_inf_original_priorities",
+  #               schema = "mtl", primary_key = "slider")
+  # db_write_prod(natural_inf$custom_explore, 
+  #               table_name = "natural_inf_custom_explore",
+  #               schema = "mtl", primary_key = NULL, 
+  #               index = c("slider", "biodiversity", "heat_island", "flood"))
+  # db_write_prod(natural_inf$custom_explore, 
+  #               table_name = "natural_inf_custom_explore",
+  #               schema = "mtl", primary_key = NULL, 
+  #               index = c("slider", "biodiversity", "heat_island", "flood"))
+  # db_write_prod(natural_inf$explore, 
+  #               table_name = "natural_inf_explore",
+  #               schema = "mtl", primary_key = NULL)
+  
+  # custom <- purrr::map_dfr(natural_inf$custom, \(x) {
+  #   out <- dplyr::group_by(x, slider, biodiversity, heat_island, flood) |> 
+  #     dplyr::summarize(group_values = list({setNames(as.list(value), group)}), 
+  #                      .groups = 'drop')
+  #   
+  #   # Make it a JSON for the database
+  #   out$group_values <- lapply(out$group_values, jsonlite::toJSON, auto_unbox = TRUE)
+  #   out
+  # })
+  # db_write_prod(custom, table_name = "natural_inf_custom",
+  #               schema = "mtl", primary_key = NULL)
+
 
   # Return ------------------------------------------------------------------
 
   return(list(
     scales = scales_variables_modules$scales,
     variables = variables,
-    modules = if (exists("modules")) modules else scales_variables_modules$modules,
-    data = scales_variables_modules$data
+    modules = modules
   ))
 
 }

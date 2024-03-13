@@ -4,10 +4,6 @@
 
 suppressPackageStartupMessages({
   library(curbcut)
-  
-  library(DBI)
-  library(RSQLite)
-  
   library(cc.landing)
   library(cc.map)
 })
@@ -18,7 +14,7 @@ suppressPackageStartupMessages({
 curbcut::load_data(site_name = "Curbcut Montréal",
                    site_url = "https://montreal.curbcut.ca",
                    stories_page = "Montréal stories",
-                   tileset_prefix = "mtl",
+                   inst_prefix = "mtl",
                    mapbox_username = "curbcut",
                    default_random_address = "845 Sherbrooke Ouest, Montréal, Quebec",
                    map_zoom = 9.9,
