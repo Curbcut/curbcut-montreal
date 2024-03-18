@@ -43,3 +43,4 @@ renv.lock
 # PowerShell script in root directory
 /*.ps1
 Dockerfile
+*.pem

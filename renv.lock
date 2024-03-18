@@ -267,7 +267,7 @@
       "RemoteUsername": "Curbcut",
       "RemoteRepo": "cc.landing",
       "RemoteRef": "main",
-      "RemoteSha": "202012a5b2d3b2c169185412352c769462e5af2c",
+      "RemoteSha": "bd04fed401e306aaecd077758da6dcc61da7009e",
       "Requirements": [
         "base64enc",
         "htmltools",
@@ -275,7 +275,7 @@
         "reactR",
         "shiny"
       ],
-      "Hash": "9f3dad1a364cba832770af285f4796d2"
+      "Hash": "f082dab0b708838bd81ede478df83a6e"
     },
     "cc.map": {
       "Package": "cc.map",
@@ -400,7 +400,7 @@
       "RemoteUsername": "Curbcut",
       "RemoteRepo": "curbcut",
       "RemoteRef": "db_testing",
-      "RemoteSha": "95ae34840ae6009543d358a69356dd3a50321763",
+      "RemoteSha": "7d42cd634cb9e712e96b38e06717826495ddcbf2",
       "Remotes": "Curbcut/cc.map, Curbcut/cc.landing",
       "Requirements": [
         "DBI",
@@ -425,7 +425,7 @@
         "utils",
         "zip"
       ],
-      "Hash": "4e95e414e69f141e0cba7b97225c1b06"
+      "Hash": "9c81046c9cfe3df1472d2feb4290401a"
     },
     "curl": {
       "Package": "curl",
@@ -1219,36 +1219,6 @@
         "RcppParallel"
       ],
       "Hash": "b7eb79470319ae71d4b5ed9cd7bf7294"
-    },
-    "stringi": {
-      "Package": "stringi",
-      "Version": "1.8.3",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Requirements": [
-        "R",
-        "stats",
-        "tools",
-        "utils"
-      ],
-      "Hash": "058aebddea264f4c99401515182e656a"
-    },
-    "stringr": {
-      "Package": "stringr",
-      "Version": "1.5.1",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Requirements": [
-        "R",
-        "cli",
-        "glue",
-        "lifecycle",
-        "magrittr",
-        "rlang",
-        "stringi",
-        "vctrs"
-      ],
-      "Hash": "960e2ae9e09656611e0b8214ad543207"
     },
     "sys": {
       "Package": "sys",

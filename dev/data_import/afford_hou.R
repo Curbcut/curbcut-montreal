@@ -435,7 +435,7 @@ build_and_append_afford_hou <- function(scales_variables_modules, scales_sequenc
                            tibble::tibble(scale = c("centraide", "CT"),
                                           interpolated_from = c(FALSE, FALSE)))
   
-  only_scales <- c(only_scales, "CT", "centraide")
+  only_scales <- unique(c(only_scales, "CT", "centraide"))
   
   variables <- lapply(unique_vars, \(var) {
     
