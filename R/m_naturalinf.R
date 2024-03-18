@@ -80,22 +80,20 @@ scale_fill_natural_inf <- function(var, natural_inf_colours) {
 }
 
 ni_data_get <- function(var_left, custom_priorities, main_slider, ni_slider) {
-  db_call <-
     if (var_left == "c_priority") {
       if (!custom_priorities) {
-        paste0("SELECT * FROM natural_inf_original_priorities ",
-               "WHERE slider = ", main_slider)
+        db_get(select = "*", from = "natural_inf_original_priorities",
+               where = list(slider = main_slider))
       } else {
-        paste0("SELECT * FROM natural_inf_custom_explore ",
-               "WHERE slider = ", main_slider,
-               " AND biodiversity = ", ni_slider[1],
-               " AND heat_island = ", ni_slider[2],
-               " AND flood = ", ni_slider[3])
+        db_get(select = "*", from = "natural_inf_custom_explore",
+               where = list(slider = main_slider,
+                            biodiversity = ni_slider[1],
+                            heat_island = ni_slider[2],
+                            flood = ni_slider[3]))
       }
     } else {
-      paste0("SELECT * FROM natural_inf_explore")
+      db_get(select = "*", from = "natural_inf_explore")
     }
-  DBI::dbGetQuery(naturalinf_conn, db_call)
 }
 
 info_table_natural_inf <- function(data, vars, lang, ...) {
@@ -306,7 +304,7 @@ natural_inf_server <- function(id, r) {
         latitude = map_loc[2],
         zoom = map_zoom,
         map_style_id = map_base_style,
-        tileset_prefix = tileset_prefix,
+        inst_prefix = inst_prefix,
         stories = stories,
         stories_min_zoom = 13
       )
@@ -422,12 +420,16 @@ natural_inf_server <- function(id, r) {
           if (main_slider() == 0) {
             data.frame(group = "ABCD", fill = "#FFFFFF00")
           } else {
-            db_call <- paste0("SELECT * FROM natural_inf_custom_", main_slider(),
-                              " WHERE biodiversity = ", ni_slider()[1],
-                              " AND heat_island = ", ni_slider()[2],
-                              " AND flood = ", ni_slider()[3])
-            out <- do.call("dbGetQuery", list(rlang::sym("naturalinf_conn"), db_call))[, c("group", "value")]
-            names(out)[2] <- "fill"
+            group_values <- db_get(select = "group_values", from = "natural_inf_custom",
+                                   where = list(slider = main_slider(),
+                                                biodiversity = ni_slider()[1],
+                                                heat_island = ni_slider()[2],
+                                                flood = ni_slider()[3]))[[1]]
+            
+            
+            group_values <- jsonlite::fromJSON(group_values)
+            out <- data.frame(group = names(group_values),
+                              fill = unlist(group_values))
 
             # Switch the viridis colour scale to the left_5
             viridis <- colours_dfs$viridis_25

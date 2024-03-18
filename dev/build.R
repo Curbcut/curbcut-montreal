@@ -9,6 +9,8 @@ x <- lapply(list.files("dev/data_import", full.names = TRUE), source, verbose = 
 
 # Base of the study region and dictionaries -------------------------------
 
+inst_prefix <- "mtl"
+
 # Possible sequences for autozooms. Every module must have one or multiple of these
 # possible scale sequences.
 scales_sequences <- list(c("boroughCSD", "CT", "DA", "building"),
@@ -457,6 +459,12 @@ all_scales <- c(census_scales,
                 list(grd25 = grd25),
                 ndvigrids)
 
+# Character vector of the tables that will be saved in the database instead of
+# in the container. These tables WON'T be available for dynamic filtering using
+# region in the `curbcut::data_get()` function.
+large_tables_db <- c("building", "grd25", "grd50", "grd100", "grd30", "grd60", 
+                     "grd120", "grd300")
+
 save.image("dev/data/built/pre_consolidate.RData")
 load("dev/data/built/pre_consolidate.RData")
 
@@ -465,7 +473,8 @@ future::plan(future::sequential())
 scales_consolidated <- consolidate_scales(scales_sequences = scales_sequences,
                                           all_scales = all_scales,
                                           regions = base_polygons$regions,
-                                          crs = crs)
+                                          crs = crs,
+                                          large_tables_db = large_tables_db)
 
 regions_dictionary <- regions_dictionary_add_scales(
   regions_dictionary = regions_dictionary,
@@ -484,6 +493,9 @@ scales_dictionary <- add_regions_to_scales_dictionary(
   regions_dictionary = regions_dictionary, 
   crs = crs)
 
+save.image("dev/data/built/post_consolidate.RData")
+load("dev/data/built/post_consolidate.RData")
+
 
 # Verify conformity -------------------------------------------------------
 
@@ -494,14 +506,17 @@ verify_dictionaries(scales = scales_consolidated$scales,
 
 # Save pieces that will be untouched from this point ----------------------
 
-save_geometry_export(data_folder = "data/", all_scales = scales_consolidated$scales)
+save_geometry_export(data_folder = "data/", 
+                     all_scales = scales_consolidated$scales,
+                     skip_scales = large_tables_db)
 save_short_tables_qs(data_folder = "data/", 
                      all_scales = scales_consolidated$scales,
-                     skip_scales = c("building", "grd25", "grd50", "grd100", 
-                                     "grd30", "grd60", "grd120", "grd300"))
-lapply(c("building", "grd25", "grd50", "grd100", "grd30", "grd60", "grd120", 
-         "grd300"), save_bslike_sqlite, 
-       all_scales = scales_consolidated$scales)
+                     skip_scales = large_tables_db)
+save_bslike_postgresql(all_scales = scales_consolidated$scales,
+                       tables_to_save_db = large_tables_db,
+                       inst_prefix = inst_prefix,
+                       overwrite = TRUE)
+
 qs::qsave(scales_dictionary, file = "data/scales_dictionary.qs")
 qs::qsave(regions_dictionary, file = "data/regions_dictionary.qs")
 
@@ -517,9 +532,11 @@ scales_variables_modules$data <- lapply(scales_consolidated$scales, \(x) list())
 qs::qsave(scales_consolidated, "dev/data/built/scales_consolidated.qs")
 qs::qsavem(census_scales, scales_variables_modules, crs, base_polygons, 
            cancensus_cma_code, scales_consolidated, scales_sequences, DB_table,
-           scales_dictionary, regions_dictionary,
+           scales_dictionary, regions_dictionary, inst_prefix,
            file = "dev/data/built/empty_scales_variables_modules.qsm")
 rm(list = ls())
+library(cc.buildr)
+library(sf)
 qs::qload("dev/data/built/empty_scales_variables_modules.qsm")
 
 # Build the datasets ------------------------------------------------------
@@ -545,7 +562,8 @@ scales_variables_modules <-
                  crs = crs,
                  scales_sequences = scales_sequences,
                  scales_to_interpolate = scales_to_interpolate_census,
-                 overwrite = FALSE)
+                 overwrite = FALSE,
+                 inst_prefix = inst_prefix)
 census_variables <- get_census_vectors_details()
 
 # Build NDVI first to unload heavy grids
@@ -554,7 +572,8 @@ scales_variables_modules <-
           skip_scales = c("grd25", "grd50", "grd100"),
           scales_sequences = scales_sequences,
           crs = crs,
-          overwrite = FALSE)
+          overwrite = FALSE,
+          inst_prefix = inst_prefix)
 
 scales_variables_modules$scales <-
   unload_scales(scales_variables_modules$scales,
@@ -564,25 +583,29 @@ future::plan(future::multisession(), workers = 6)
 scales_variables_modules <-
   ru_vac_rate(scales_variables_modules = scales_variables_modules,
               scales_sequences = scales_sequences,
-              crs = crs, geo_uid = cancensus_cma_code)
+              crs = crs, geo_uid = cancensus_cma_code,
+              inst_prefix = inst_prefix)
 scales_variables_modules <-
   ru_alp(scales_variables_modules = scales_variables_modules,
          scales_sequences = scales_sequences,
          crs = crs,
          region_DA_IDs = census_scales$DA$ID,
-         overwrite = FALSE)
+         overwrite = FALSE,
+         inst_prefix = inst_prefix)
 scales_variables_modules <-
   ru_canbics(scales_variables_modules = scales_variables_modules,
              scales_sequences = scales_sequences,
              crs = crs,
              region_DA_IDs = census_scales$DA$ID,
-             overwrite = FALSE)
+             overwrite = FALSE,
+             inst_prefix = inst_prefix)
 scales_variables_modules <-
   ru_lst(scales_variables_modules = scales_variables_modules,
          region_DA_IDs = census_scales$DA$ID,
          scales_sequences = scales_sequences,
          crs = crs,
-         overwrite = FALSE)
+         overwrite = FALSE,
+         inst_prefix = inst_prefix)
 
 
 # # Add access to amenities module
@@ -598,7 +621,8 @@ scales_variables_modules <-
                           traveltimes = traveltimes,
                           scales_sequences = scales_sequences,
                           crs = crs,
-                          overwrite = FALSE)
+                          overwrite = FALSE,
+                          inst_prefix = inst_prefix)
 
 invisible(lapply(list.files("dev/data_import", full.names = TRUE), source))
 future::plan(future::multisession(), workers = 4)
@@ -610,7 +634,8 @@ scales_variables_modules <-
                           traveltimes = traveltimes,
                           scales_sequences = scales_sequences,
                           crs = crs,
-                          overwrite = FALSE)
+                          overwrite = FALSE,
+                          inst_prefix = inst_prefix)
 
 future::plan(future::multisession(), workers = 4)
 
@@ -619,7 +644,8 @@ scales_variables_modules <-
     scales_variables_modules = scales_variables_modules,
     scales_sequences = scales_sequences,
     crs = crs,
-    overwrite = FALSE)
+    overwrite = FALSE,
+    inst_prefix = inst_prefix)
 scales_variables_modules$scales <- 
   unload_scales(scales_variables_modules$scales, 
                 unload = c("grd25", "grd50", "grd100", "grd250"))
@@ -629,20 +655,22 @@ scales_variables_modules <-
     scales_variables_modules = scales_variables_modules,
     crs = crs)
 
-regions_dictionary <- qs::qread("data/regions_dictionary.qs")
 scales_variables_modules <-
   build_and_append_alley(
     scales_variables_modules = scales_variables_modules,
     scales_sequences = scales_sequences,
     crs = crs,
-    city_scales_ID = regions_dictionary$scales[regions_dictionary$region == "city"][[1]])
+    city_scales_ID = regions_dictionary$scales[regions_dictionary$region == "city"][[1]],
+    inst_prefix = inst_prefix)
 
 scales_variables_modules <-
   build_and_append_crash(
     scales_variables_modules = scales_variables_modules,
     scales_sequences = scales_sequences,
     crs = crs,
-    island_IDs = regions_dictionary$scales[regions_dictionary$region == "island"][[1]]
+    island_IDs = regions_dictionary$scales[regions_dictionary$region == "island"][[1]],
+    overwrite = FALSE,
+    inst_prefix = inst_prefix
   )
 
 future::plan(future::multisession(), workers = 4)
@@ -652,36 +680,37 @@ scales_variables_modules <-
     scales_variables_modules = scales_variables_modules,
     scales_sequences = scales_sequences,
     crs = crs,
-    overwrite = FALSE)
+    overwrite = FALSE,
+    inst_prefix = inst_prefix)
 
 scales_variables_modules <-
   build_and_append_afford_pop(
     scales_variables_modules = scales_variables_modules,
     scales_sequences = scales_sequences,
     crs = crs,
-    overwrite = FALSE)
+    overwrite = FALSE,
+    inst_prefix = inst_prefix)
 
 scales_variables_modules <-
   build_and_append_afford_hou(
     scales_variables_modules = scales_variables_modules,
     scales_sequences = scales_sequences,
     crs = crs,
-    overwrite = FALSE)
+    overwrite = FALSE,
+    inst_prefix = inst_prefix)
 
 # Post process
 scales_variables_modules$scales <- 
   cc.buildr::post_processing(scales = scales_variables_modules$scales)
 
 qs::qsavem(census_scales, scales_variables_modules, crs, census_variables, 
-           base_polygons, scales_sequences, regions_dictionary,
+           base_polygons, scales_sequences, regions_dictionary, inst_prefix,
            scales_dictionary, file = "dev/data/built/scales_variables_modules.qsm")
 qs::qload("dev/data/built/scales_variables_modules.qsm")
 
-# # Postal codes ------------------------------------------------------------
-# 
-# postal_codes <- build_postal_codes(census_scales$DA$ID)
-# postal_codes <- sf::st_drop_geometry(postal_codes)
-# qs::qsave(postal_codes, "data/postal_codes.qs")
+# Postal codes ------------------------------------------------------------
+
+save_postal_codes(census_scales$DA$ID, overwrite = FALSE)
 
 
 # Map zoom levels ---------------------------------------------------------
@@ -702,14 +731,14 @@ map_zoom_levels_save(data_folder = "data/", map_zoom_levels = map_zoom_levels)
 # map_zoom_levels_t <- map_zoom_levels[!grepl("_grd", names(map_zoom_levels))]
 # 
 # tileset_upload_all(map_zoom_levels = map_zoom_levels_t,
-#                    prefix = "mtl",
+#                    inst_prefix = inst_prefix,
 #                    username = "curbcut",
 #                    access_token = .cc_mb_token,
 #                    no_reset = "building")
 # 
 # tileset_upload_ndvi(map_zoom_levels = map_zoom_levels,
 #                     regions = base_polygons$regions,
-#                     prefix = "mtl",
+#                     inst_prefix = inst_prefix,
 #                     username = "curbcut",
 #                     access_token = .cc_mb_token,
 #                     crs = crs)
@@ -722,7 +751,7 @@ map_zoom_levels_save(data_folder = "data/", map_zoom_levels = map_zoom_levels)
 #                     max_zoom = list(grd250 = 13, grd100 = 14, grd50 = 15, grd25 = 16),
 #                     vars = c("climate_drought", "climate_flood", "climate_destructive_storms",
 #                              "climate_heat_wave", "climate_heavy_rain"),
-#                     prefix = "mtl",
+#                     inst_prefix = inst_prefix,
 #                     username = "curbcut",
 #                     access_token = .cc_mb_token)
 # 
@@ -733,7 +762,8 @@ map_zoom_levels_save(data_folder = "data/", map_zoom_levels = map_zoom_levels)
 # Add possible regions to modules -----------------------------------------
 
 scales_variables_modules <- pages_regions(svm = scales_variables_modules,
-                                          regions_dictionary = regions_dictionary)
+                                          regions_dictionary = regions_dictionary,
+                                          inst_prefix = inst_prefix)
 
 scales_variables_modules$modules[
   scales_variables_modules$modules$id == "climate_risk",
@@ -783,13 +813,13 @@ qs::qsave(colours_dfs, "data/colours_dfs.qs")
 
 # Write stories -----------------------------------------------------------
 
-# # TKTK MAKE SURE YOU HAVE THIS VERSION OF LEAFLET, IF NOT THE MAPS IN THE HTML
-# # DOCUMENTS WON'T BE INTERACTIVES:
-# devtools::install_github("dmurdoch/leaflet@crosstalk4")
+# # # TKTK MAKE SURE YOU HAVE THIS VERSION OF LEAFLET, IF NOT THE MAPS IN THE HTML
+# # # DOCUMENTS WON'T BE INTERACTIVES:
+# # devtools::install_github("dmurdoch/leaflet@crosstalk4")
 # stories <- build_stories()
 # qs::qsave(stories, file = "data/stories.qs")
 # stories_create_tileset(stories = stories,
-#                        prefix = "mtl",
+#                        inst_prefix = inst_prefix,
 #                        username = "curbcut",
 #                        access_token = .cc_mb_token)
 # cc.buildr::resize_image(folder = "www/stories/photos/", max_size_in_MB = 1)
@@ -882,7 +912,8 @@ future::plan(future::multisession(), workers = 4)
 #                                             region_DA_IDs = census_scales$DA$ID,
 #                                             crs = crs,
 #                                             regions_dictionary = regions_dictionary,
-#                                             first_scales = unique(sapply(scales_sequences, `[[`, 1)), 
+#                                             inst_prefix = inst_prefix,
+#                                             first_scales = unique(sapply(scales_sequences, `[[`, 1)),
 #                                             ignore_scales = c("building", "grd250", "grd100", "grd50", "grd25",
 #                                                               "grd600", "grd300", "grd120", "grd60", "grd30"))
 # qs::qsave(pe_main_card_data, file = "data/pe_main_card_data.qs")
@@ -895,7 +926,7 @@ placeex_main_card_rmd(pe_main_card_data = pe_main_card_data,
                       regions_dictionary = regions_dictionary,
                       scales_dictionary = scales_dictionary,
                       lang = c("en", "fr"),
-                      tileset_prefix = "mtl",
+                      tileset_prefix = inst_prefix,
                       mapbox_username = "curbcut",
                       rev_geocode_from_localhost = TRUE,
                       overwrite = FALSE,

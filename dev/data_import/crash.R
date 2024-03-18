@@ -1,137 +1,151 @@
 ## BUILD AND APPEND CRASH DATA #################################################
 
 build_and_append_crash <- function(scales_variables_modules, crs, scales_sequences,
-                                   island_IDs) {
+                                   island_IDs, overwrite, inst_prefix) {
   
   
-  # Prepare data for graph. get week of crashes -----------------------------
-
-  require(lubridate)
-
-  data <- read.csv("dev/data/crash/collisions_routieres.csv") |>
-    tibble::as_tibble()
-
-  cyc <- data[data$NB_VICTIMES_VELO > 0, ]
-  ped <- data[data$NB_VICTIMES_PIETON > 0, ]
-
-  data <- list(cyc = cyc, ped = ped, all = data)
-
-  data <- lapply(data, \(dat) {
-    dat <- dat["DT_ACCDN"]
-    dat$DT_ACCDN <-  as.Date(dat$DT_ACCDN)
-    dat$year <- lubridate::year(dat$DT_ACCDN)
-    dat$month <- lubridate::month(dat$DT_ACCDN, label = TRUE, abbr = TRUE)
-    dat$week <- lubridate::week(dat$DT_ACCDN)
-    dat <- dplyr::count(dat, year, month, week, name = "count")
-
-    sapply(as.character(unique(dat$year)), \(y) dat[dat$year == y, ],
-           USE.NAMES = TRUE, simplify = FALSE)
-  })
-
-  qs::qsave(data, file = "data/crash.qs")
-
-  # Read and prepare data ---------------------------------------------------
-
-  # Read the data placed in a folder in `dev/data/`
-  data <- read.csv("dev/data/crash/collisions_routieres.csv") |> 
-       tibble::as_tibble()
+  # Do not recalculate if no override ---------------------------------------
   
-  cols <- c("AN", "GRAVITE",
-            "NB_VICTIMES_PIETON", "NB_VICTIMES_VELO", "CD_GENRE_ACCDN",
-            "NB_VICTIMES_TOTAL", "LOC_LONG", "LOC_LAT")
-  data <- data[cols]
+  vars <- sapply(sprintf("crash_%s", c("count", "per1k", "sqkm")), \(x) {
+    sprintf("%s_%s", x, c("cyc", "ped", "total"))
+  }, simplify = TRUE, USE.NAMES = FALSE) |> as.vector()
   
-  # As sf
-  data <- data[!is.na(data$LOC_LAT), ]
-  data <- data[!is.na(data$LOC_LONG), ]
-  data <- sf::st_as_sf(data, coords = c("LOC_LONG", "LOC_LAT"), crs = 4326)
+  only_scales <- names(scales_variables_modules$scales)
+  only_scales <- only_scales[!grepl("(^grd)|(building)|(street)", only_scales)]
+  only_scales <- only_scales[only_scales != "CSD"]
   
-  # Including ...
-  cyc <- data[data$NB_VICTIMES_VELO > 0, ]
-  ped <- data[data$NB_VICTIMES_PIETON > 0, ]
-
-  # Add to all scales
-  scales <- scales_variables_modules$scales
-  scales <- scales[!grepl("(^grd)|(building)|(street)", names(scales))]
-  years <- unique(data$AN)
+  missing_scales <- exclude_processed_scales(unique_vars = vars, 
+                                             scales = only_scales,
+                                             overwrite = overwrite,
+                                             inst_prefix = inst_prefix)
   
-  progressr::with_progress({
-    pb <- progressr::progressor(length(years) * 3 * length(scales))
-    dat <- mapply(\(scale_name, scale_df) {
-      if (!scale_name %in% names(island_IDs)) return(scale_df)
-      
-      table <- scale_df[scale_df$ID %in% island_IDs[[scale_name]], c("ID", "area", "population")]
-      
-      dat <- mapply(\(df, mode) {
-        # All possible years
-        lapply(years, \(year) {
-          
-          col_name <- sprintf("crash_count_%s_%s", mode, year)
-          z <- df[df$AN == year, ]
-          table[[col_name]] <- sf::st_intersects(table, z) |> lengths()
-          pb()
-          sf::st_drop_geometry(table)
-          
-        })
-      }, list(cyc, ped, data), c("cyc", "ped", "total"), SIMPLIFY = FALSE)
-      
-      dat <- lapply(dat, \(x) Reduce(\(x, y) merge(x, y, by = c("ID", "area", "population")), x))
-      
-      dat <- Reduce(\(x, y) merge(x, y, by = c("ID", "area", "population")), dat)
-      
-      return(dat)
-      
-    }, names(scales), scales, SIMPLIFY = FALSE)
-  })
-  
-  # Add sqkm and per1k
-  dat <- lapply(dat, \(df) {
-    cols <- names(df)[!names(df) %in% c("ID", "area", "population")]
+  if (length(missing_scales) > 0) {
     
-    # Calcualte per sqkm
-    for (col in cols) {
-      new_col <- gsub("crash_count", "crash_sqkm", col)
-      df[[new_col]] <- df[[col]] / df$area * 1000000      
-    }
+    # Prepare data for graph. get week of crashes -----------------------------
     
-    # Calcualte per 1k residents
-    for (col in cols) {
-      new_col <- gsub("crash_count", "crash_per1k", col)
-      df[[new_col]] <- df[[col]] / df$population * 1000
-    }
+    require(lubridate)
     
-    return(df)
-  })
-  
-  # Bind to the entire scales
-  all_data <- mapply(\(scale_name, scale_df) {
-    if (!scale_name %in% names(dat)) return(scale_df)
+    data <- read.csv("dev/data/crash/collisions_routieres.csv") |>
+      tibble::as_tibble()
     
-    merge(scale_df, dat[[scale_name]], by = c("ID", "area", "population"),
-          all.x = TRUE)
+    cyc <- data[data$NB_VICTIMES_VELO > 0, ]
+    ped <- data[data$NB_VICTIMES_PIETON > 0, ]
     
-  }, names(scales_variables_modules$scales), scales_variables_modules$scales,
-  SIMPLIFY = FALSE)
+    data <- list(cyc = cyc, ped = ped, all = data)
+    
+    data <- lapply(data, \(dat) {
+      dat <- dat["DT_ACCDN"]
+      dat$DT_ACCDN <-  as.Date(dat$DT_ACCDN)
+      dat$year <- lubridate::year(dat$DT_ACCDN)
+      dat$month <- lubridate::month(dat$DT_ACCDN, label = TRUE, abbr = TRUE)
+      dat$week <- lubridate::week(dat$DT_ACCDN)
+      dat <- dplyr::count(dat, year, month, week, name = "count")
+      
+      sapply(as.character(unique(dat$year)), \(y) dat[dat$year == y, ],
+             USE.NAMES = TRUE, simplify = FALSE)
+    })
+    
+    qs::qsave(data, file = "data/crash.qs")
+    
+    # Read and prepare data ---------------------------------------------------
+    
+    # Read the data placed in a folder in `dev/data/`
+    data <- read.csv("dev/data/crash/collisions_routieres.csv") |> 
+      tibble::as_tibble()
+    
+    cols <- c("AN", "GRAVITE",
+              "NB_VICTIMES_PIETON", "NB_VICTIMES_VELO", "CD_GENRE_ACCDN",
+              "NB_VICTIMES_TOTAL", "LOC_LONG", "LOC_LAT")
+    data <- data[cols]
+    
+    # As sf
+    data <- data[!is.na(data$LOC_LAT), ]
+    data <- data[!is.na(data$LOC_LONG), ]
+    data <- sf::st_as_sf(data, coords = c("LOC_LONG", "LOC_LAT"), crs = 4326)
+    
+    # Including ...
+    cyc <- data[data$NB_VICTIMES_VELO > 0, ]
+    ped <- data[data$NB_VICTIMES_PIETON > 0, ]
+    
+    # Add to all scales
+    scales <- scales_variables_modules$scales[
+      names(scales_variables_modules$scales) %in% only_scales
+    ]
+    years <- unique(data$AN)
+    
+    progressr::with_progress({
+      pb <- progressr::progressor(length(years) * 3 * length(scales))
+      dat <- mapply(\(scale_name, scale_df) {
+        if (!scale_name %in% names(island_IDs)) return(scale_df)
+        
+        table <- scale_df[scale_df$ID %in% island_IDs[[scale_name]], c("ID", "area", "population")]
+        
+        dat <- mapply(\(df, mode) {
+          # All possible years
+          lapply(years, \(year) {
+            
+            col_name <- sprintf("crash_count_%s_%s", mode, year)
+            z <- df[df$AN == year, ]
+            table[[col_name]] <- sf::st_intersects(table, z) |> lengths()
+            pb()
+            sf::st_drop_geometry(table)
+            
+          })
+        }, list(cyc, ped, data), c("cyc", "ped", "total"), SIMPLIFY = FALSE)
+        
+        dat <- lapply(dat, \(x) Reduce(\(x, y) merge(x, y, by = c("ID", "area", "population")), x))
+        
+        dat <- Reduce(\(x, y) merge(x, y, by = c("ID", "area", "population")), dat)
+        
+        return(dat)
+        
+      }, names(scales), scales, SIMPLIFY = FALSE)
+    })
+    
+    # Add sqkm and per1k
+    dat <- lapply(dat, \(df) {
+      cols <- names(df)[!names(df) %in% c("ID", "area", "population")]
+      
+      # Calcualte per sqkm
+      for (col in cols) {
+        new_col <- gsub("crash_count", "crash_sqkm", col)
+        df[[new_col]] <- df[[col]] / df$area * 1000000      
+      }
+      
+      # Calcualte per 1k residents
+      for (col in cols) {
+        new_col <- gsub("crash_count", "crash_per1k", col)
+        df[[new_col]] <- df[[col]] / df$population * 1000
+      }
+      
+      return(df)
+    })
+    
+    # Bind to the entire scales
+    all_data <- mapply(\(scale_name, scale_df) {
+      if (!scale_name %in% names(dat)) return(scale_df)
+      
+      merge(scale_df, dat[[scale_name]], by = c("ID", "area", "population"),
+            all.x = TRUE)
+      
+    }, names(scales_variables_modules$scales), scales_variables_modules$scales,
+    SIMPLIFY = FALSE)
+    
+    
+    # Data tibble -------------------------------------------------------------
+    
+    time_regex <- "_\\d{4}$"
+    vars <- gsub(time_regex, "", vars) |> unique()
+    data_construct(scales_data = all_data,
+                   unique_var = vars,
+                   time_regex = time_regex,
+                   inst_prefix = inst_prefix)
+    
+  }
   
-  
-  # Other necessary pieces --------------------------------------------------
-  
-  vars <- names(dat$CSD[4:ncol(dat$CSD)])
-
-  avail_scale <- names(scales)
-  avail_scale <- avail_scale[!avail_scale %in% c("CSD")]
   interpolated_ref <- 
-    tibble::tibble(scale = names(scales), interpolated_from = rep(FALSE, length(scales)))
+    tibble::tibble(scale = names(only_scales), interpolated_from = rep(FALSE, length(only_scales)))
   
-  
-  # Data tibble -------------------------------------------------------------
-  
-  time_regex <- "_\\d{4}$"
-  vars <- gsub(time_regex, "", vars) |> unique()
-  data_construct(scales_data = all_data,
-                         unique_var = vars,
-                         time_regex = time_regex)
-
 
   # Variables table ---------------------------------------------------------
 
@@ -215,7 +229,7 @@ build_and_append_crash <- function(scales_variables_modules, crs, scales_sequenc
       theme = "Transport",
       private = FALSE,
       dates = years,
-      avail_scale = avail_scale,
+      avail_scale = only_scales,
       source = "City of Montreal's open data website",
       interpolated = interpolated_ref,
       group_name = group_name,
@@ -229,7 +243,7 @@ build_and_append_crash <- function(scales_variables_modules, crs, scales_sequenc
   
   avail_scale_combinations <-
     get_avail_scale_combinations(scales_sequences = scales_sequences,
-                                 avail_scales = avail_scale)
+                                 avail_scales = only_scales)
 
   # Modules table -----------------------------------------------------------
 

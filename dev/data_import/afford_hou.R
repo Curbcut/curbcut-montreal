@@ -1,7 +1,7 @@
 ## BUILD AND APPEND AFFORD DATA ################################################
 
 build_and_append_afford_hou <- function(scales_variables_modules, scales_sequences, crs,
-                                        overwrite = FALSE) {
+                                        overwrite = FALSE,inst_prefix) {
   
   # # Read and prepare data ---------------------------------------------------
   # 
@@ -332,7 +332,8 @@ build_and_append_afford_hou <- function(scales_variables_modules, scales_sequenc
   
   only_scales_exc <- exclude_processed_scales(unique_vars = unique_vars,
                                               scales = only_scales,
-                                              overwrite = overwrite)
+                                              overwrite = overwrite,
+                                              inst_prefix = inst_prefix)
   
   if (length(only_scales_exc) != 0) {
     
@@ -353,7 +354,8 @@ build_and_append_afford_hou <- function(scales_variables_modules, scales_sequenc
         only_scales = only_scales_exc[!only_scales_exc %in% c("centraide", "CT")],
         crs = crs,
         overwrite = overwrite,
-        time_regex = "_\\d{4}$"
+        time_regex = "_\\d{4}$",
+        inst_prefix = inst_prefix
       )
     
     # Other scales
@@ -419,7 +421,8 @@ build_and_append_afford_hou <- function(scales_variables_modules, scales_sequenc
     
     data_construct(scales_data = data_interpolated$scales,
                    unique_var = unique_vars,
-                   time_regex = time_regex)
+                   time_regex = time_regex,
+                   inst_prefix = inst_prefix)
     
   }
   
@@ -432,7 +435,7 @@ build_and_append_afford_hou <- function(scales_variables_modules, scales_sequenc
                            tibble::tibble(scale = c("centraide", "CT"),
                                           interpolated_from = c(FALSE, FALSE)))
   
-  only_scales <- c(only_scales, "CT", "centraide")
+  only_scales <- unique(c(only_scales, "CT", "centraide"))
   
   variables <- lapply(unique_vars, \(var) {
     

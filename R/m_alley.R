@@ -266,7 +266,7 @@ alley_server <- function(id, r) {
         latitude = map_loc[2],
         zoom = map_zoom,
         map_style_id = map_base_style,
-        tileset_prefix = tileset_prefix,
+        inst_prefix = inst_prefix,
         stories = stories,
         stories_min_zoom = 13
       )

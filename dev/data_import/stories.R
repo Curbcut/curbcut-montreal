@@ -206,6 +206,7 @@ build_stories <- function() {
   
   # Create images and mapping -----------------------------------------------
 
+  # IMPORTANT ON EVERY STORIES IMPORT!!!!!!!!!!!!!!!!!!!!!!!!!!!!
   stories <- stories_map_images(stories = stories)
 
 

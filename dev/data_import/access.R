@@ -5,8 +5,9 @@ build_and_append_access <- function(scales_variables_modules,
                                     traveltimes,
                                     scales_sequences,
                                     crs,
-                                    overwrite = FALSE) {
-
+                                    overwrite = FALSE,
+                                    inst_prefix) {
+  
   # # Read and prepare data ---------------------------------------------------
   # 
   # ## DAYCARE
@@ -53,32 +54,32 @@ build_and_append_access <- function(scales_variables_modules,
   # 
   # qs::qsave(daycares, "dev/data/built/daycares.qs")
   # daycares <- qs::qread("dev/data/built/daycares.qs")
-# 
-#   # Add point data to DA ----------------------------------------------------
-# 
-#   point_DA <- accessibility_point_per_DA(point_data = list(daycarespots = daycares),
-#                                          DA_table = census_scales$DA,
-#                                          crs = crs)
-# 
-# 
-#   # Add access to point data by time intervals ------------------------------
-# 
-#   data <- accessibility_add_intervals(point_per_DA = point_DA,
-#                                       traveltimes = traveltimes)
-#   qs::qsave(data, "dev/data/built/access_data.qs")
+  # 
+  #   # Add point data to DA ----------------------------------------------------
+  # 
+  #   point_DA <- accessibility_point_per_DA(point_data = list(daycarespots = daycares),
+  #                                          DA_table = census_scales$DA,
+  #                                          crs = crs)
+  # 
+  # 
+  #   # Add access to point data by time intervals ------------------------------
+  # 
+  #   data <- accessibility_add_intervals(point_per_DA = point_DA,
+  #                                       traveltimes = traveltimes)
+  #   qs::qsave(data, "dev/data/built/access_data.qs")
   data <- qs::qread("dev/data/built/access_data.qs")
   
   # 2023 data
   names(data)[2:ncol(data)] <- paste0(names(data)[2:ncol(data)], "_2023")
-
+  
   # Get list of data variables ----------------------------------------------
-
+  
   average_vars <- names(data)[!grepl("ID$", names(data))]
   additive_vars <- c()
   vars <- c(average_vars, additive_vars)
-
+  
   # Interpolate data to all possible scales ---------------------------------
-
+  
   # In the case where the dataset is already aggregated to a census scale,
   # use the `interpolate_from_census_geo` function.
   names(data)[1] <- "DA_ID"
@@ -92,10 +93,11 @@ build_and_append_access <- function(scales_variables_modules,
       additive_vars = additive_vars,
       crs = crs,
       overwrite = overwrite,
-      time_regex = "_\\d{4}$"
+      time_regex = "_\\d{4}$",
+      inst_prefix = inst_prefix
     )
-
-
+  
+  
   # Data tibble -------------------------------------------------------------
   
   time_regex <- "_\\d{4}$"
@@ -108,11 +110,12 @@ build_and_append_access <- function(scales_variables_modules,
   names(breaks_var) <- unique_var
   
   data_construct(scales_data = data_interpolated$scales,
-                         unique_var = unique_var,
-                         time_regex = time_regex,
-                         schema = list(time = gsub("^_", "", time_regex),
-                                       transportationtime = "_\\d{1,2}"),
-                         breaks_var = breaks_var)
+                 unique_var = unique_var,
+                 time_regex = time_regex,
+                 schema = list(time = gsub("^_", "", time_regex),
+                               transportationtime = "_\\d{1,2}"),
+                 breaks_var = breaks_var,
+                 inst_prefix = inst_prefix)
   
   
   # Types and parent vectors ------------------------------------------------
@@ -132,7 +135,7 @@ build_and_append_access <- function(scales_variables_modules,
   )
   
   var_measurement$measurement[var_measurement$scale == "DA"] <- "ordinal"
-
+  
   # Variables table ---------------------------------------------------------
   
   new_variables <- lapply(unique_var, \(var) {
@@ -237,12 +240,12 @@ build_and_append_access <- function(scales_variables_modules,
   
   
   # Return ------------------------------------------------------------------
-
+  
   return(list(
     scales = scales_variables_modules$scales,
     variables = variables,
     modules = if (exists("modules")) modules else scales_variables_modules$modules,
     data = data
   ))
-
+  
 }

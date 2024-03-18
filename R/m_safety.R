@@ -118,7 +118,7 @@ safety_server <- function(id, r) {
     
     map_zoom <- get_from_globalenv("map_zoom")
     map_loc <- get_from_globalenv("map_loc")
-    tileset_prefix <- get_from_globalenv("tileset_prefix")
+    inst_prefix <- get_from_globalenv("inst_prefix")
     map_token <- get_from_globalenv("map_token")
     map_base_style <- get_from_globalenv("map_base_style")
     mapbox_username <- get_from_globalenv("mapbox_username")
@@ -133,7 +133,7 @@ safety_server <- function(id, r) {
         latitude = map_loc[2],
         zoom = map_zoom,
         map_style_id = map_base_style,
-        tileset_prefix = tileset_prefix,
+        inst_prefix = inst_prefix,
         stories = stories,
         stories_min_zoom = 13
       )
@@ -308,7 +308,9 @@ safety_server <- function(id, r) {
     # Update the `r[[id]]$vars` reactive
     update_vars(
       id = id, r = r, var_left = var_left,
-      var_right = var_right, widget_time = widget_time
+      var_right = var_right, 
+      scale = r[[id]]$scale,
+      widget_time = widget_time
     )
 
     # Sidebar
