@@ -213,11 +213,10 @@ build_stories <- function() {
     preview_fr = paste0("L'une des controverses entourant le REM ",
                         "a été le manque de transparence du modèle ",
                         "de gouvernance qui sout-tend le projet"),
-    themes = c("Transportation",
-               "Urban governance",
-               "Urban transformation", "Policy"),
-    lon = -73.4306779583042,
-    lat = 45.438482103374234) |> 
+    themes = c("Transportation", "Urban governance", "Urban transformation", 
+               "Policy"),
+    lon = -73.430677,
+    lat = 45.438482)
   
   
   # Create images and mapping -----------------------------------------------

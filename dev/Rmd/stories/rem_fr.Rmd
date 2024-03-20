@@ -1,10 +1,8 @@
 ---
 title: "Le REM et son partnenariat public-privé"
-subtitle: #only if applicable
-output: html_document
 author: "Dominique Boulet"
 date: "03.2024"
-runtime: shiny_prerendered 
+output: html_document
 ---
 
 ```{r setup, include=FALSE}
