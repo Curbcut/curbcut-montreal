@@ -705,6 +705,8 @@ scales_variables_modules <-
 # Post process
 scales_variables_modules$scales <- 
   cc.buildr::post_processing(scales = scales_variables_modules$scales)
+# Adding right-hand variables
+scales_variables_modules <- add_var_right(scales_variables_modules)
 
 qs::qsavem(census_scales, scales_variables_modules, crs, census_variables, 
            base_polygons, scales_sequences, regions_dictionary, inst_prefix,
@@ -816,16 +818,16 @@ qs::qsave(colours_dfs, "data/colours_dfs.qs")
 
 # Write stories -----------------------------------------------------------
 
-# # # TKTK MAKE SURE YOU HAVE THIS VERSION OF LEAFLET, IF NOT THE MAPS IN THE HTML
-# # # DOCUMENTS WON'T BE INTERACTIVES:
-# # devtools::install_github("dmurdoch/leaflet@crosstalk4")
-# stories <- build_stories()
-# qs::qsave(stories, file = "data/stories.qs")
-# stories_create_tileset(stories = stories,
-#                        inst_prefix = inst_prefix,
-#                        username = "curbcut",
-#                        access_token = .cc_mb_token)
-# cc.buildr::resize_image(folder = "www/stories/photos/", max_size_in_MB = 1)
+# # TKTK MAKE SURE YOU HAVE THIS VERSION OF LEAFLET, IF NOT THE MAPS IN THE HTML
+# # DOCUMENTS WON'T BE INTERACTIVES:
+# devtools::install_github("dmurdoch/leaflet@crosstalk4")
+stories <- build_stories()
+qs::qsave(stories, file = "data/stories.qs")
+stories_create_tileset(stories = stories,
+                       inst_prefix = inst_prefix,
+                       username = "curbcut",
+                       access_token = .cc_mb_token)
+cc.buildr::resize_image(folder = "www/stories/photos/", max_size_in_MB = 1)
 
 
 # Add Montréal stories

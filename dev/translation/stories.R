@@ -95,5 +95,17 @@ translation_stories <-
   add_row(en = "The Mount-Royal",
           fr = "Le Mont-Royal") |> 
   add_row(en = "Throughout its evolution, Mount-Royal has played an important role in the city of Montreal’s history and development",
-          fr = "Tout au long de son évolution, le Mont-Royal a joué un rôle important dans l'histoire et le développement de la ville de Montréal")
+          fr = "Tout au long de son évolution, le Mont-Royal a joué un rôle important dans l'histoire et le développement de la ville de Montréal") |> 
+  
+  # Rem
+  add_row(en = "The REM and the public-private-partnership behind it",
+          fr = "Le REM et son partnenariat public-privé") |> 
+  add_row(en = "The REM's governance model",
+          fr = "Le modèle de gouvernance du REM") |> 
+  add_row(en = paste0("One of the controversies surrounding the REM has ", 
+                      "been the lack of transparency in the governance ", 
+                      "model behind the project"),
+          fr = paste0("L'une des controverses entourant le REM ",
+                      "a été le manque de transparence du modèle ",
+                      "de gouvernance qui sout-tend le projet"))
   

@@ -101,7 +101,7 @@ Aujourd'hui, les préoccupations concernant le parc se sont déplacées vers l'i
 Le Mont-Royal est une belle montagne cohérente, qui non seulement façonne physiquement le paysage de Montréal, mais reflète également les changements sociaux et culturels qui ont façonné la ville au fil du temps. Alors que la montagne entre dans une nouvelle phase, une phase d'expansion et d'importance écologique, il sera intéressant de continuer à observer ses changements.
 
 <details>
-<summary>### Références</summary>
+<summary>Références</summary>
 Bellman , D. (1977). Frederick Law Olmsted and a Plan for Mount Royal Park. Canadian Art Review, 4(2), S31–S43. 
 Beveridge, C. E. (2009). Mount royal in the works of Frederick Law Olmsted. Montréal, Direction des grands parcs et de la nature en ville. 
 Bérubé, H. (2022). Les grands parcs urbains : de Central Park au parc du Mont-Royal. In Histoire des villes nord-américaines. essay, Septentrion. 
