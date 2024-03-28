@@ -19,14 +19,15 @@ build_and_append_crash <- function(scales_variables_modules, crs, scales_sequenc
                                              overwrite = overwrite,
                                              inst_prefix = inst_prefix)
   
+  data <- read.csv("dev/data/crash/collisions_routieres.csv") |>
+    tibble::as_tibble()
+  years <- unique(data$AN)
+  
   if (length(missing_scales) > 0) {
     
     # Prepare data for graph. get week of crashes -----------------------------
     
     require(lubridate)
-    
-    data <- read.csv("dev/data/crash/collisions_routieres.csv") |>
-      tibble::as_tibble()
     
     cyc <- data[data$NB_VICTIMES_VELO > 0, ]
     ped <- data[data$NB_VICTIMES_PIETON > 0, ]
@@ -71,7 +72,6 @@ build_and_append_crash <- function(scales_variables_modules, crs, scales_sequenc
     scales <- scales_variables_modules$scales[
       names(scales_variables_modules$scales) %in% only_scales
     ]
-    years <- unique(data$AN)
     
     progressr::with_progress({
       pb <- progressr::progressor(length(years) * 3 * length(scales))
@@ -227,6 +227,8 @@ build_and_append_crash <- function(scales_variables_modules, crs, scales_sequenc
       exp_q5 = exp_q5,
       parent_vec = parent_vec,
       theme = "Transport",
+      classification = "sociodemo",
+      pe_include = var %in% c("crash_count_total", "crash_sqkm_ped", "crash_per1k_cyc"),
       private = FALSE,
       dates = years,
       avail_scale = only_scales,
@@ -281,9 +283,6 @@ build_and_append_crash <- function(scales_variables_modules, crs, scales_sequenc
                            c("var_code", "group_name", "group_diff")], 
       main_dropdown_title = "Crash type", 
       dates = years,
-      var_right = scales_variables_modules$variables$var_code[
-        scales_variables_modules$variables$source == "Canadian census" &
-          !is.na(scales_variables_modules$variables$parent_vec)],
       default_var = "crash_count_total",
       avail_scale_combinations = avail_scale_combinations
     )

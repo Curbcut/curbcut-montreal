@@ -487,6 +487,7 @@ scales_dictionary <- add_regions_to_scales_dictionary(
                        grd100 = c("island"),
                        grd50 = c("island"),
                        grd25 = c("island"),
+                       tablequartier = c("island", "city"),
                        CLSC = c("island", "CMA", "centraide"),
                        RTS = c("island")),
   DA_carto = base_polygons$DA_carto,
@@ -515,7 +516,7 @@ save_short_tables_qs(data_folder = "data/",
 save_bslike_postgresql(all_scales = scales_consolidated$scales,
                        tables_to_save_db = large_tables_db,
                        inst_prefix = inst_prefix,
-                       overwrite = TRUE)
+                       overwrite = FALSE)
 
 qs::qsave(scales_dictionary, file = "data/scales_dictionary.qs")
 qs::qsave(regions_dictionary, file = "data/regions_dictionary.qs")
@@ -614,6 +615,17 @@ scales_variables_modules <-
 # qs::qsave(traveltimes, "dev/data/built/traveltimes.qs")
 traveltimes <- qs::qread("dev/data/built/traveltimes.qs")
 
+# Additional access variables
+invisible(lapply(list.files("dev/data_import", full.names = TRUE), source))
+scales_variables_modules <-
+  build_and_append_access(scales_variables_modules = scales_variables_modules,
+                          DA_table = census_scales$DA,
+                          traveltimes = traveltimes,
+                          scales_sequences = scales_sequences,
+                          crs = crs,
+                          overwrite = FALSE,
+                          inst_prefix = inst_prefix)
+
 future::plan(future::multisession(), workers = 3)
 scales_variables_modules <-
   ba_accessibility_points(scales_variables_modules = scales_variables_modules,
@@ -624,18 +636,9 @@ scales_variables_modules <-
                           overwrite = FALSE,
                           inst_prefix = inst_prefix)
 
-invisible(lapply(list.files("dev/data_import", full.names = TRUE), source))
+
 future::plan(future::multisession(), workers = 4)
 
-# Additional access variables
-scales_variables_modules <-
-  build_and_append_access(scales_variables_modules = scales_variables_modules,
-                          DA_table = census_scales$DA,
-                          traveltimes = traveltimes,
-                          scales_sequences = scales_sequences,
-                          crs = crs,
-                          overwrite = FALSE,
-                          inst_prefix = inst_prefix)
 
 future::plan(future::multisession(), workers = 4)
 
@@ -863,19 +866,6 @@ save_all_scales_qs(scales_dictionary = scales_dictionary)
 # Save other global data --------------------------------------------------
 
 qs::qsave(census_variables, file = "data/census_variables.qs")
-
-# For compare, only keep the large brackets of age
-scales_variables_modules$modules$var_right <- lapply(
-  scales_variables_modules$modules$var_right, \(x) {
-    if (is.null(x)) return(NULL)
-    not_age <- x[!grepl("^age_", x)]
-    age <- x[grepl("^age_", x)]
-    
-    age_keep <- age[age %in% c("age_0_14", "age_15_64", "age_65_plus")]
-    
-    c(not_age, age_keep)
-  })
-
 qs::qsave(scales_variables_modules$modules, file = "data/modules.qs")
 tictoc::toc()
 
@@ -892,6 +882,31 @@ dyk <- dyk_uni(vars_dyk,
 # dyk <- rbind(dyk, dyk_delta(vars_dyk, scales_variables_modules))
 # dyk <- rbind(dyk, dyk_bivar(vars_dyk, scales_variables_modules))
 qs::qsave(dyk, "data/dyk.qs")
+
+
+
+
+
+
+FIX PLACE EXPLOREEEEEEEEEEEEEEEEEEEERRRRRR
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 # Home page ---------------------------------------------------------------
@@ -940,8 +955,8 @@ qs::qsave(pe_docs, "data/pe_docs.qs")
 # Write the data to the bucket --------------------------------------------
 
 # cc.data::bucket_write_folder(folder = "data", bucket = "curbcut.montreal.data")
-cc.data::bucket_write_folder(folder = "dev/data", bucket = "curbcut.montreal.dev.data")
-cc.data::bucket_write_folder(folder = "data", bucket = "curbcut.montreal.beta.data")
+# cc.data::bucket_write_folder(folder = "dev/data", bucket = "curbcut.montreal.dev.data")
+# cc.data::bucket_write_folder(folder = "data", bucket = "curbcut.montreal.beta.data")
 
 
 # Deploy app --------------------------------------------------------------

@@ -333,7 +333,6 @@ safety_server <- function(id, r) {
       zoom_levels = r[[id]]$zoom_levels(),
       schemas = r[[id]]$schemas()
     ))
-    observe(print(data_colours()))
 
     # Warn user
     warnuser_server(

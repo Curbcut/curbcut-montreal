@@ -666,6 +666,7 @@ build_and_append_tenure <- function(scales_variables_modules, scales_sequences, 
       explanation = explanation,
       exp_q5 = exp_q5,
       parent_vec = parent_strings[[var]],
+      classification = "sociodemo",
       theme = "Housing",
       private = FALSE,
       group_name = group_name,
@@ -692,13 +693,7 @@ build_and_append_tenure <- function(scales_variables_modules, scales_sequences, 
   # Modules table -----------------------------------------------------------
   
   modules <- scales_variables_modules$modules
-  
-  var_right <- variables$var_code[
-    grepl("^climate|^alp", variables$var_code)
-  ]
-  var_right <- c(var_right, 
-                 variables$var_code[grepl("^access_", variables$var_code) & 
-                                      variables$pe_include])
+  modules <- modules[modules$id != "afford", ]
   
   modules <-
     modules |>
@@ -725,7 +720,6 @@ build_and_append_tenure <- function(scales_variables_modules, scales_sequences, 
                            c("var_code", "group_name", "group_diff")],
       main_dropdown_title = "Data representation",
       dates = c(2016, 2021),
-      var_right = var_right,
       add_advanced_controls = c("mnd", "Shelter cost to income ratio", "Suitability and condition",
                                 "Family composition"),
       default_var = "tenure_tenant_total_total_total_pct",

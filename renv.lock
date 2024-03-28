@@ -267,7 +267,7 @@
       "RemoteUsername": "Curbcut",
       "RemoteRepo": "cc.landing",
       "RemoteRef": "main",
-      "RemoteSha": "bd04fed401e306aaecd077758da6dcc61da7009e",
+      "RemoteSha": "f1959f4a09ed64c59d9ecdb212b59de4485523a9",
       "Requirements": [
         "base64enc",
         "htmltools",
@@ -275,7 +275,7 @@
         "reactR",
         "shiny"
       ],
-      "Hash": "f082dab0b708838bd81ede478df83a6e"
+      "Hash": "5f16467786a0bf4112e862d34ddef253"
     },
     "cc.map": {
       "Package": "cc.map",
@@ -399,8 +399,8 @@
       "RemoteHost": "api.github.com",
       "RemoteUsername": "Curbcut",
       "RemoteRepo": "curbcut",
-      "RemoteRef": "db_testing",
-      "RemoteSha": "7d42cd634cb9e712e96b38e06717826495ddcbf2",
+      "RemoteRef": "HEAD",
+      "RemoteSha": "3ade6c33f848705067d06e1f2d8699b540bc061d",
       "Remotes": "Curbcut/cc.map, Curbcut/cc.landing",
       "Requirements": [
         "DBI",
@@ -425,7 +425,7 @@
         "utils",
         "zip"
       ],
-      "Hash": "9c81046c9cfe3df1472d2feb4290401a"
+      "Hash": "b9147a9fb87ca72be87d58feaa7c68d2"
     },
     "curl": {
       "Package": "curl",
@@ -1270,13 +1270,13 @@
     },
     "tinytex": {
       "Package": "tinytex",
-      "Version": "0.49",
+      "Version": "0.50",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
         "xfun"
       ],
-      "Hash": "5ac22900ae0f386e54f1c307eca7d843"
+      "Hash": "be7a76845222ad20adb761f462eed3ea"
     },
     "units": {
       "Package": "units",

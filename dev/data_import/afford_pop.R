@@ -629,6 +629,7 @@ build_and_append_afford_pop <- function(scales_variables_modules, scales_sequenc
       explanation = explanation,
       exp_q5 = exp_q5,
       parent_vec = parent_strings[[var]],
+      classification = "sociodemo",
       theme = "Housing",
       private = FALSE,
       group_name = group_name,
@@ -658,14 +659,6 @@ build_and_append_afford_pop <- function(scales_variables_modules, scales_sequenc
   # description. Read the documentation of `add_module`. If no module is to be
   # created, assign `scales_variables_modules$modules` to modules.
   modules <- scales_variables_modules$modules
-  
-  var_right <- variables$var_code[
-    grepl("^climate|^alp", variables$var_code)
-  ]
-  var_right <- c(var_right, 
-                 variables$var_code[grepl("^access_", variables$var_code) & 
-                                      variables$pe_include])
-  
   modules <- modules[modules$id != "afford", ]
 
   modules <-
@@ -694,7 +687,6 @@ build_and_append_afford_pop <- function(scales_variables_modules, scales_sequenc
                            c("var_code", "group_name", "group_diff")],
       main_dropdown_title = "Unit of analysis",
       dates = c(2016, 2021),
-      var_right = var_right,
       add_advanced_controls = c("mnd", "Data representation", "Tenure status"),
       default_var = "affordhou_total_sc30_total_total_pct",
       avail_scale_combinations = avail_scale_combinations
