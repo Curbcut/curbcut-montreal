@@ -111,7 +111,7 @@ build_and_append_access <- function(scales_variables_modules,
   data_construct(scales_data = data_interpolated$scales,
                  unique_var = unique_var,
                  time_regex = time_regex,
-                 schema = list(time = gsub("^_", "", time_regex),
+                 schema = list(time = time_regex,
                                transportationtime = "_\\d{1,2}"),
                  breaks_var = breaks_var,
                  inst_prefix = inst_prefix)

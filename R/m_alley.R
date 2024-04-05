@@ -293,10 +293,12 @@ alley_server <- function(id, r) {
     var_right <- curbcut::compare_server(
       id = id,
       r = r,
+      var_left = var_left,
       var_list = shiny::reactive(curbcut::dropdown_make(
         vars = vars_right,
         compare = TRUE
       )),
+      zoom_levels = r[[id]]$zoom_levels,
       time = shiny::reactive(2021)
     )
     

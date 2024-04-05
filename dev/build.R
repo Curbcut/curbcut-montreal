@@ -14,22 +14,29 @@ inst_prefix <- "mtl"
 # Possible sequences for autozooms. Every module must have one or multiple of these
 # possible scale sequences.
 scales_sequences <- list(c("boroughCSD", "CT", "DA", "building"),
+                         c("boroughCSD", "CT", "DA", "DB", "building"),
                          c("boroughCSD", "CT"),
                          c("CSD", "CT", "DA", "building"),
+                         c("CSD", "CT", "DA", "DB", "building"),
                          c("CSD", "CT"),
                          c("borough", "CT", "DA", "building"),
+                         c("borough", "CT", "DA", "DB", "building"),
                          c("borough", "CT"),
-                         # c("lavalsector", "CT", "DA", "building"),
                          c("tablequartier", "CT", "DA", "building"),
+                         c("tablequartier", "CT", "DA", "DB", "building"),
                          c("tablequartier", "CT"),
                          c("centraide", "CT", "DA", "building"),
+                         c("centraide", "CT", "DA", "DB", "building"),
                          c("centraide", "CT"),
                          c("cmhczone", "CT", "DA", "building"),
+                         c("cmhczone", "CT", "DA", "DB", "building"),
                          c("cmhczone", "CT"),
                          c("cmhczone"),
                          c("RTS", "CT", "DA", "building"),
+                         c("RTS", "CT", "DA", "DB", "building"),
                          c("RTS", "CT"),
                          c("CLSC", "CT", "DA", "building"),
+                         c("CLSC", "CT", "DA", "DB", "building"),
                          c("CLSC", "CT"),
                          c("grd250", "grd100", "grd50", "grd25"),
                          c("grd600", "grd300", "grd120", "grd60", "grd30"))
@@ -589,8 +596,8 @@ scales_variables_modules <-
 scales_variables_modules <-
   ru_alp(scales_variables_modules = scales_variables_modules,
          scales_sequences = scales_sequences,
-         crs = crs,
-         region_DA_IDs = census_scales$DA$ID,
+         crs = crs, 
+         region_DB_IDs = census_scales$DB$ID,
          overwrite = FALSE,
          inst_prefix = inst_prefix)
 scales_variables_modules <-
@@ -639,8 +646,6 @@ scales_variables_modules <-
 
 future::plan(future::multisession(), workers = 4)
 
-
-future::plan(future::multisession(), workers = 4)
 
 scales_variables_modules <-
   build_and_append_climate_risk(
@@ -707,6 +712,8 @@ scales_variables_modules$scales <-
   cc.buildr::post_processing(scales = scales_variables_modules$scales)
 # Adding right-hand variables
 scales_variables_modules <- add_var_right(scales_variables_modules)
+# Add high correlation combinations
+scales_variables_modules <- add_high_corr_combination(scales_variables_modules)
 
 qs::qsavem(census_scales, scales_variables_modules, crs, census_variables, 
            base_polygons, scales_sequences, regions_dictionary, inst_prefix,
@@ -722,7 +729,7 @@ save_postal_codes(census_scales$DA$ID, overwrite = FALSE)
 
 map_zoom_levels <- map_zoom_levels_create_all(
   scales_sequences = scales_sequences,
-  zoom_levels = list(first = 0, CT = 10, DA = 12, building = 16,
+  zoom_levels = list(first = 0, CT = 10, DA = 12, DB = 14, building = 16,
                      grd100 = 11, grd50 = 13, grd25 = 14,
                      grd300 = 10, grd120 = 11, grd60 = 12, grd30 = 13))
 
@@ -731,38 +738,35 @@ map_zoom_levels_save(data_folder = "data/", map_zoom_levels = map_zoom_levels)
 
 # Tilesets ----------------------------------------------------------------
 
-# Do not upload grids, as there is a function just for it.
-# all_scales_t <- scales_variables_modules$scales[!grepl("^grd", names(scales_variables_modules$scales))]
-# map_zoom_levels_t <- map_zoom_levels[!grepl("_grd", names(map_zoom_levels))]
-# 
-# tileset_upload_all(map_zoom_levels = map_zoom_levels_t,
-#                    inst_prefix = inst_prefix,
-#                    username = "curbcut",
-#                    access_token = .cc_mb_token,
-#                    no_reset = "building")
-# 
-# tileset_upload_ndvi(map_zoom_levels = map_zoom_levels,
-#                     regions = base_polygons$regions,
-#                     inst_prefix = inst_prefix,
-#                     username = "curbcut",
-#                     access_token = .cc_mb_token,
-#                     crs = crs)
-# 
-# source("dev/tiles/grid_tiles.R")
-# grid_scales <- scales_variables_modules$scales[grepl("^grd", names(scales_variables_modules$scales))]
-# grid_mzl <- map_zoom_levels[grepl("_grd", names(map_zoom_levels))]
-# tileset_upload_grid(all_scales = grid_scales,
-#                     map_zoom_levels = grid_mzl,
-#                     max_zoom = list(grd250 = 13, grd100 = 14, grd50 = 15, grd25 = 16),
-#                     vars = c("climate_drought", "climate_flood", "climate_destructive_storms",
-#                              "climate_heat_wave", "climate_heavy_rain"),
-#                     inst_prefix = inst_prefix,
-#                     username = "curbcut",
-#                     access_token = .cc_mb_token)
-# 
-# 
-# 
-# 
+tileset_upload_all(map_zoom_levels = map_zoom_levels,
+                   inst_prefix = inst_prefix,
+                   username = "curbcut",
+                   access_token = .cc_mb_token,
+                   overwrite = FALSE,
+                   no_reset = "building")
+
+tileset_upload_ndvi(map_zoom_levels = map_zoom_levels,
+                    regions = base_polygons$regions,
+                    inst_prefix = inst_prefix,
+                    username = "curbcut",
+                    access_token = .cc_mb_token,
+                    crs = crs)
+
+source("dev/tiles/grid_tiles.R")
+grid_scales <- scales_variables_modules$scales[grepl("^grd", names(scales_variables_modules$scales))]
+grid_mzl <- map_zoom_levels[grepl("_grd", names(map_zoom_levels))]
+tileset_upload_grid(all_scales = grid_scales,
+                    map_zoom_levels = grid_mzl,
+                    max_zoom = list(grd250 = 13, grd100 = 14, grd50 = 15, grd25 = 16),
+                    vars = c("climate_drought", "climate_flood", "climate_destructive_storms",
+                             "climate_heat_wave", "climate_heavy_rain"),
+                    inst_prefix = inst_prefix,
+                    username = "curbcut",
+                    access_token = .cc_mb_token)
+
+
+
+
 
 # Add possible regions to modules -----------------------------------------
 
@@ -818,16 +822,16 @@ qs::qsave(colours_dfs, "data/colours_dfs.qs")
 
 # Write stories -----------------------------------------------------------
 
-# # TKTK MAKE SURE YOU HAVE THIS VERSION OF LEAFLET, IF NOT THE MAPS IN THE HTML
-# # DOCUMENTS WON'T BE INTERACTIVES:
-# devtools::install_github("dmurdoch/leaflet@crosstalk4")
-stories <- build_stories()
-qs::qsave(stories, file = "data/stories.qs")
-stories_create_tileset(stories = stories,
-                       inst_prefix = inst_prefix,
-                       username = "curbcut",
-                       access_token = .cc_mb_token)
-cc.buildr::resize_image(folder = "www/stories/photos/", max_size_in_MB = 1)
+# # # TKTK MAKE SURE YOU HAVE THIS VERSION OF LEAFLET, IF NOT THE MAPS IN THE HTML
+# # # DOCUMENTS WON'T BE INTERACTIVES:
+# # devtools::install_github("dmurdoch/leaflet@crosstalk4")
+# stories <- build_stories()
+# qs::qsave(stories, file = "data/stories.qs")
+# stories_create_tileset(stories = stories,
+#                        inst_prefix = inst_prefix,
+#                        username = "curbcut",
+#                        access_token = .cc_mb_token)
+# cc.buildr::resize_image(folder = "www/stories/photos/", max_size_in_MB = 1)
 
 
 # Add Montréal stories

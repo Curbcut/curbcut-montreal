@@ -45,10 +45,16 @@ build_and_append_climate_risk <- function(scales_variables_modules, crs,
   # for(i in 2:10) {
   #   climate_risk[[i]][climate_risk[[i]] == 0] <- NA
   # }
+  #
+  # # Remove Longueuil and Saint-Lambert from the grids
+  # CSD <- scales_variables_modules$scales$CSD
+  # not_keep <- sf::st_union(CSD[CSD$name %in% c("Saint-Lambert", "Longueuil"), ])
+  # not_keep <- sf::st_transform(not_keep, crs = sf::st_crs(climate_risk))
+  # remove <- sf::st_filter(climate_risk, not_keep)$ID
+  # climate_risk <- climate_risk[!climate_risk$ID %in% remove, ]
   # 
   # qs::qsave(climate_risk, "dev/data/built/climaterisk_data.qs")
   climate_risk <- qs::qread("dev/data/built/climaterisk_data.qs")
-  
   
   # Get list of data variables ----------------------------------------------
   
