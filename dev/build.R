@@ -929,10 +929,6 @@ placeex_main_card_rmd(pe_main_card_data = pe_main_card_data,
                       overwrite = FALSE,
                       scales_sequences = scales_sequences)
 
-# Save the place explorer files, which serves as a 'does it exist' for `curbcut`
-pe_docs <- list.files("www/place_explorer/", full.names = TRUE)
-qs::qsave(pe_docs, "data/pe_docs.qs")
-
 
 # Write the data to the bucket --------------------------------------------
 
