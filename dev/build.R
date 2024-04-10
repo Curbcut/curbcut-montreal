@@ -14,29 +14,29 @@ inst_prefix <- "mtl"
 # Possible sequences for autozooms. Every module must have one or multiple of these
 # possible scale sequences.
 scales_sequences <- list(c("boroughCSD", "CT", "DA", "building"),
-                         c("boroughCSD", "CT", "DA", "DB", "building"),
+                         # c("boroughCSD", "CT", "DA", "DB", "building"),
                          c("boroughCSD", "CT"),
                          c("CSD", "CT", "DA", "building"),
-                         c("CSD", "CT", "DA", "DB", "building"),
+                         # c("CSD", "CT", "DA", "DB", "building"),
                          c("CSD", "CT"),
                          c("borough", "CT", "DA", "building"),
-                         c("borough", "CT", "DA", "DB", "building"),
+                         # c("borough", "CT", "DA", "DB", "building"),
                          c("borough", "CT"),
                          c("tablequartier", "CT", "DA", "building"),
-                         c("tablequartier", "CT", "DA", "DB", "building"),
+                         # c("tablequartier", "CT", "DA", "DB", "building"),
                          c("tablequartier", "CT"),
                          c("centraide", "CT", "DA", "building"),
-                         c("centraide", "CT", "DA", "DB", "building"),
+                         # c("centraide", "CT", "DA", "DB", "building"),
                          c("centraide", "CT"),
                          c("cmhczone", "CT", "DA", "building"),
-                         c("cmhczone", "CT", "DA", "DB", "building"),
+                         # c("cmhczone", "CT", "DA", "DB", "building"),
                          c("cmhczone", "CT"),
                          c("cmhczone"),
                          c("RTS", "CT", "DA", "building"),
-                         c("RTS", "CT", "DA", "DB", "building"),
+                         # c("RTS", "CT", "DA", "DB", "building"),
                          c("RTS", "CT"),
                          c("CLSC", "CT", "DA", "building"),
-                         c("CLSC", "CT", "DA", "DB", "building"),
+                         # c("CLSC", "CT", "DA", "DB", "building"),
                          c("CLSC", "CT"),
                          c("grd250", "grd100", "grd50", "grd25"),
                          c("grd600", "grd300", "grd120", "grd60", "grd30"))
@@ -709,7 +709,7 @@ scales_variables_modules <-
 
 # Post process
 scales_variables_modules$scales <- 
-  cc.buildr::post_processing(scales = scales_variables_modules$scales)
+  post_processing(scales = scales_variables_modules$scales)
 # Adding right-hand variables
 scales_variables_modules <- add_var_right(scales_variables_modules)
 # Add high correlation combinations
@@ -738,31 +738,31 @@ map_zoom_levels_save(data_folder = "data/", map_zoom_levels = map_zoom_levels)
 
 # Tilesets ----------------------------------------------------------------
 
-tileset_upload_all(map_zoom_levels = map_zoom_levels,
-                   inst_prefix = inst_prefix,
-                   username = "curbcut",
-                   access_token = .cc_mb_token,
-                   overwrite = FALSE,
-                   no_reset = "building")
-
-tileset_upload_ndvi(map_zoom_levels = map_zoom_levels,
-                    regions = base_polygons$regions,
-                    inst_prefix = inst_prefix,
-                    username = "curbcut",
-                    access_token = .cc_mb_token,
-                    crs = crs)
-
-source("dev/tiles/grid_tiles.R")
-grid_scales <- scales_variables_modules$scales[grepl("^grd", names(scales_variables_modules$scales))]
-grid_mzl <- map_zoom_levels[grepl("_grd", names(map_zoom_levels))]
-tileset_upload_grid(all_scales = grid_scales,
-                    map_zoom_levels = grid_mzl,
-                    max_zoom = list(grd250 = 13, grd100 = 14, grd50 = 15, grd25 = 16),
-                    vars = c("climate_drought", "climate_flood", "climate_destructive_storms",
-                             "climate_heat_wave", "climate_heavy_rain"),
-                    inst_prefix = inst_prefix,
-                    username = "curbcut",
-                    access_token = .cc_mb_token)
+# tileset_upload_all(map_zoom_levels = map_zoom_levels,
+#                    inst_prefix = inst_prefix,
+#                    username = "curbcut",
+#                    access_token = .cc_mb_token,
+#                    overwrite = FALSE,
+#                    no_reset = "building")
+# 
+# tileset_upload_ndvi(map_zoom_levels = map_zoom_levels,
+#                     regions = base_polygons$regions,
+#                     inst_prefix = inst_prefix,
+#                     username = "curbcut",
+#                     access_token = .cc_mb_token,
+#                     crs = crs)
+# 
+# source("dev/tiles/grid_tiles.R")
+# grid_scales <- scales_variables_modules$scales[grepl("^grd", names(scales_variables_modules$scales))]
+# grid_mzl <- map_zoom_levels[grepl("_grd", names(map_zoom_levels))]
+# tileset_upload_grid(all_scales = grid_scales,
+#                     map_zoom_levels = grid_mzl,
+#                     max_zoom = list(grd250 = 13, grd100 = 14, grd50 = 15, grd25 = 16),
+#                     vars = c("climate_drought", "climate_flood", "climate_destructive_storms",
+#                              "climate_heat_wave", "climate_heavy_rain"),
+#                     inst_prefix = inst_prefix,
+#                     username = "curbcut",
+#                     access_token = .cc_mb_token)
 
 
 
@@ -884,35 +884,11 @@ dyk <- dyk_uni(vars_dyk,
                svm = scales_variables_modules,
                translation_df = translation_df,
                langs = c("en", "fr"),
-               scales_dictionary = scales_dictionary)
+               scales_dictionary = scales_dictionary,
+               regions_dictionary = regions_dictionary)
 # dyk <- rbind(dyk, dyk_delta(vars_dyk, scales_variables_modules))
 # dyk <- rbind(dyk, dyk_bivar(vars_dyk, scales_variables_modules))
 qs::qsave(dyk, "data/dyk.qs")
-
-
-
-
-
-
-FIX PLACE EXPLOREEEEEEEEEEEEEEEEEEEERRRRRR
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 # Home page ---------------------------------------------------------------
@@ -926,7 +902,7 @@ home_page(modules = modules, stories = stories, translation_df = translation_df,
 # Place explorer content creation -----------------------------------------
 
 # Should be done once the data is saved
-future::plan(future::multisession(), workers = 4)
+future::plan(future::multisession(), workers = 12)
 
 # pe_main_card_data <- placeex_main_card_data(scales_dictionary = scales_dictionary,
 #                                             DA_table = census_scales$DA,
