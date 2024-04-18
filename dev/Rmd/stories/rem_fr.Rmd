@@ -1,0 +1,39 @@
+---
+title: "Le REM et son partnenariat public-privé"
+author: "Dominique Boulet"
+date: "03.2024"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+<center>
+<div>
+<iframe width="100%" height="315"
+src="https://youtube.com/embed/9NnLkKlKG9o" frameborder="0" allowfullscreen="" data-external="1">
+</iframe>
+</div>
+</center>
+
+<details>
+<summary>Références</summary>
+
+<ul>
+<li>Kamal, Mohammed, and Éric Champagne. “The Role of Governance Models in the Development of Transport Infrastructure Megaprojects in Greater Montreal: The Case of the Réseau Express Métropolitain.” Frontiers in Political Science, vol. 5, 20 Apr. 2023, https://doi.org/10.3389/fpos.2023.1156096</li>
+
+<li>Lemieux, Anne-Marie. “Un Nouveau Plan Des Réseaux Métropolitains Intégrant La Signalétique Harmonisée.” Autorité Régionale de Transport Métropolitain | ARTM, 10 July 2023, www.artm.quebec/un-nouveau-plan-des-reseaux-metropolitains-integrant-la-signaletique-harmonisee/. Accessed 10 Oct. 2023.</li>
+
+<li>“Works Info.” REM, rem.info/en/under-construction/works-info. Accessed 10 Oct. 2023.</li>
+
+<li>“Network Map.” REM, rem.info/en/map. Accessed 10 Oct. 2023.</li>
+
+<li>“Works Info.” REM, rem.info/en/under-construction/works-info. Accessed 10 Oct. 2023.</li>
+
+<li>“Work Schedule.” REM, rem.info/en/under-construction/work-schedule. Accessed 10 Oct. 2023.</li>
+
+<li>Villafuerte-Diaz, J., Victoriano-Habit, R., Soliz, A., & El-Geneidy, A. (2023). Who Does Light Rail Serve? Examining Gendered Mobilities and Light-Rail Transit in Montreal, Canada. Transportation Research Record, 2677(9), 104-115. https://doi.org/10.1177/03611981231158318</li>
+</ul>
+
+</details>

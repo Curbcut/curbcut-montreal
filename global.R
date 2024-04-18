@@ -28,12 +28,6 @@ curbcut::load_data(site_name = "Curbcut Montréal",
 # shinyOptions(cache = cachem::cache_disk(file.path(dirname(tempdir()), "cache")))
 
 
-# Declare temporary folder ------------------------------------------------
-
-temp_folder <- tempdir()
-addResourcePath("temp_folder_shortcut", temp_folder)
-
-
 # Create the UI and server functions for basic modules --------------------
 
 curbcut::create_ui_server_mods(modules = modules)

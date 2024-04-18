@@ -220,7 +220,7 @@ translation_access <-
           fr = "Accès aux services de loisirs") |> 
   
   add_row(en = "Walking",
-          fr = "À pieds") |> 
+          fr = "À pied") |> 
   add_row(en = "Bicycle",
           fr = "Vélo") |> 
   add_row(en = "Car",
@@ -250,7 +250,7 @@ additional_vars <- lapply(vars, \(var) {
   
   mode <- (\(x) {
     if (grepl("_car_", var)) return("en auto")
-    if (grepl("_foot_", var)) return("à pieds")
+    if (grepl("_foot_", var)) return("à pied")
     if (grepl("_bicycle_", var)) return("à vélo")
     if (grepl("_transit_opwe_", var)) return("en transports en commun les jours de week-end hors pointe")
     if (grepl("_transit_pwe_", var)) return("en transports en commun les jours de week-end à l'heure de pointe")

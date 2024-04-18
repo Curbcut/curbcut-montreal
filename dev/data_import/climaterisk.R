@@ -45,10 +45,16 @@ build_and_append_climate_risk <- function(scales_variables_modules, crs,
   # for(i in 2:10) {
   #   climate_risk[[i]][climate_risk[[i]] == 0] <- NA
   # }
+  #
+  # # Remove Longueuil and Saint-Lambert from the grids
+  # CSD <- scales_variables_modules$scales$CSD
+  # not_keep <- sf::st_union(CSD[CSD$name %in% c("Saint-Lambert", "Longueuil"), ])
+  # not_keep <- sf::st_transform(not_keep, crs = sf::st_crs(climate_risk))
+  # remove <- sf::st_filter(climate_risk, not_keep)$ID
+  # climate_risk <- climate_risk[!climate_risk$ID %in% remove, ]
   # 
   # qs::qsave(climate_risk, "dev/data/built/climaterisk_data.qs")
   climate_risk <- qs::qread("dev/data/built/climaterisk_data.qs")
-  
   
   # Get list of data variables ----------------------------------------------
   
@@ -246,6 +252,7 @@ build_and_append_climate_risk <- function(scales_variables_modules, crs,
       var_short = "Drought",
       explanation = "the vulnerability to climate-change related drought",
       exp_q5 = "are living in areas with _X_ vulnerability to climate-change related drought⁠",
+      classification = "physical",
       theme = "Climate risk",
       private = FALSE,
       dates = dates,
@@ -268,6 +275,7 @@ build_and_append_climate_risk <- function(scales_variables_modules, crs,
       var_short = "Flood",
       explanation = "the vulnerability to climate-change related flooding",
       exp_q5 = "are living in areas with _X_ vulnerability to climate-change related flooding⁠",
+      classification = "physical",
       theme = "Climate risk",
       private = FALSE,
       dates = dates,
@@ -290,6 +298,7 @@ build_and_append_climate_risk <- function(scales_variables_modules, crs,
       var_short = "Heavy rain",
       explanation = "the vulnerability to climate-change related heavy rain",
       exp_q5 = "are living in areas with _X_ vulnerability to climate-change related heavy rain⁠",
+      classification = "physical",
       theme = "Climate risk",
       private = FALSE,
       dates = dates,
@@ -313,6 +322,7 @@ build_and_append_climate_risk <- function(scales_variables_modules, crs,
       explanation = paste0("the vulnerability to climate-change related ",
                            "destructive storms"),
       exp_q5 = "are living in areas with _X_ vulnerability to climate-change related destructive storms⁠",
+      classification = "physical",
       theme = "Climate risk",
       private = FALSE,
       dates = dates,
@@ -335,6 +345,7 @@ build_and_append_climate_risk <- function(scales_variables_modules, crs,
       var_short = "Heat wave",
       explanation = "the vulnerability to climate-change related heat waves",
       exp_q5 = "are living in areas with _X_ vulnerability to climate-change related heat waves",
+      classification = "physical",
       theme = "Climate risk",
       private = FALSE,
       dates = dates,
@@ -401,9 +412,6 @@ build_and_append_climate_risk <- function(scales_variables_modules, crs,
           ),
           dates = c(2015, 2022),
           main_dropdown_title = NA,
-          var_right = scales_variables_modules$variables$var_code[
-            scales_variables_modules$variables$source == "Canadian census" &
-              !is.na(scales_variables_modules$variables$parent_vec)],
           default_var = "climate_drought",
           avail_scale_combinations = avail_scale_combinations
         )

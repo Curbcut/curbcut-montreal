@@ -9,7 +9,7 @@ build_and_append_access <- function(scales_variables_modules,
                                     inst_prefix) {
   
   # # Read and prepare data ---------------------------------------------------
-  # 
+  #
   # ## DAYCARE
   # daycares <- tempfile(fileext = ".csv")
   # download.file("https://www.donneesquebec.ca/recherche/dataset/be36f85e-e419-4978-9c34-cb5795622595/resource/89af3537-4506-488c-8d0e-6d85b4033a0e/download/repertoire-installation.csv",
@@ -21,8 +21,7 @@ build_and_append_access <- function(scales_variables_modules,
   # Encoding(daycares$NOM) <- "latin1"
   # daycares <-
   #   daycares |>
-  #   dplyr::filter(REGION %in% c("6 - Montréal", "15 - Laurentides",
-  #                               "14 - Lanaudière", "16 - Montérégie", "13 - Laval")) |>
+  #   dplyr::filter(REGION %in% c("13 - Laval")) |>
   #   dplyr::mutate(ADRESSE =
   #                   stringr::str_remove_all(ADRESSE,
   #                                           ", (bureau| bureau|rez-de-chaussée|AG-10|local|suite|appartement|porte) .*$") |>
@@ -51,26 +50,26 @@ build_and_append_access <- function(scales_variables_modules,
   #       rbind(a, b)
   #     }, daycares)
   # })
-  # 
+  #
   # qs::qsave(daycares, "dev/data/built/daycares.qs")
   # daycares <- qs::qread("dev/data/built/daycares.qs")
-  # 
-  #   # Add point data to DA ----------------------------------------------------
-  # 
-  #   point_DA <- accessibility_point_per_DA(point_data = list(daycarespots = daycares),
-  #                                          DA_table = census_scales$DA,
-  #                                          crs = crs)
-  # 
-  # 
-  #   # Add access to point data by time intervals ------------------------------
-  # 
-  #   data <- accessibility_add_intervals(point_per_DA = point_DA,
-  #                                       traveltimes = traveltimes)
-  #   qs::qsave(data, "dev/data/built/access_data.qs")
+  #
+  # # Add point data to DA ----------------------------------------------------
+  #
+  # point_DA <- accessibility_point_per_DA(point_data = list(daycarespots = daycares),
+  #                                        DA_table = census_scales$DA,
+  #                                        crs = crs)
+  #
+  #
+  # # Add access to point data by time intervals ------------------------------
+  #
+  # data <- accessibility_add_intervals(point_per_DA = point_DA,
+  #                                     traveltimes = traveltimes)
+  # qs::qsave(data, "dev/data/built/access_data.qs")
   data <- qs::qread("dev/data/built/access_data.qs")
   
-  # 2023 data
-  names(data)[2:ncol(data)] <- paste0(names(data)[2:ncol(data)], "_2023")
+  # 2024 data
+  names(data)[2:ncol(data)] <- paste0(names(data)[2:ncol(data)], "_2024")
   
   # Get list of data variables ----------------------------------------------
   
@@ -106,13 +105,13 @@ build_and_append_access <- function(scales_variables_modules,
   unique_var <- unique(unique_var)
   
   # Construct the breaks_var list (take the breaks from a 20 minutes traject)
-  breaks_var <- lapply(unique_var, paste0, "_20_2023")
+  breaks_var <- lapply(unique_var, paste0, "_20_2024")
   names(breaks_var) <- unique_var
   
   data_construct(scales_data = data_interpolated$scales,
                  unique_var = unique_var,
                  time_regex = time_regex,
-                 schema = list(time = gsub("^_", "", time_regex),
+                 schema = list(time = time_regex,
                                transportationtime = "_\\d{1,2}"),
                  breaks_var = breaks_var,
                  inst_prefix = inst_prefix)
@@ -187,7 +186,7 @@ build_and_append_access <- function(scales_variables_modules,
     
     group_name <- paste("Access to", theme)
     group_diff <- list("Mode of transport" = stringr::str_to_sentence(mode),
-                       "Transportation time" = time)
+                       "Transportation time" = which(1:60 %% 5 == 0))
     
     if (grepl("_transit_", var)) {
       timing <- (\(x) {
@@ -211,11 +210,12 @@ build_and_append_access <- function(scales_variables_modules,
       exp_q5 = exp_q5,
       group_name = group_name,
       group_diff = group_diff,
+      classification = "other",
       parent_vec = "population",
       theme = "Transport",
       private = FALSE,
-      pe_include = var == "access_foot_20_daycarespots_2023",
-      dates = "2023",
+      pe_include = var == "access_foot_daycarespots",
+      dates = "2024",
       avail_scale = data_interpolated$avail_scale,
       source = "Données Québec",
       interpolated = data_interpolated$interpolated_ref,

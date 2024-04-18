@@ -5,9 +5,9 @@ curbcut::ui(
     "intuitive de la durabilité urbaine."
   ), 
   web_title = paste0(site_name, " | Vers une ville durable"), 
-  placeholder_video_src = "https://s3.amazonaws.com/curbcut.public.resources/mtl_vid_placeholder.mp4",
-  video_src = list(en = "https://s3.amazonaws.com/curbcut.public.resources/mtl_vid_en.mp4",
-                   fr = "https://s3.amazonaws.com/curbcut.public.resources/mtl_vid_fr.mp4"),
+  placeholder_video_src = "https://d4ybyhnmc714f.cloudfront.net/mtl_vid_placeholder.mp4",
+  video_src = list(en = "https://d4ybyhnmc714f.cloudfront.net/mtl_vid_en.mp4",
+                   fr = "https://d4ybyhnmc714f.cloudfront.net/mtl_vid_fr.mp4"),
   twitter_handler = "@curbcutca", 
   # google_analytics = "www/# google_analytics.html", 
   website_url = "https://montreal.curbcut.ca", 

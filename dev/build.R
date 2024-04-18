@@ -14,22 +14,29 @@ inst_prefix <- "mtl"
 # Possible sequences for autozooms. Every module must have one or multiple of these
 # possible scale sequences.
 scales_sequences <- list(c("boroughCSD", "CT", "DA", "building"),
+                         c("boroughCSD", "CT", "DA", "DB", "building"),
                          c("boroughCSD", "CT"),
                          c("CSD", "CT", "DA", "building"),
+                         c("CSD", "CT", "DA", "DB", "building"),
                          c("CSD", "CT"),
                          c("borough", "CT", "DA", "building"),
+                         c("borough", "CT", "DA", "DB", "building"),
                          c("borough", "CT"),
-                         # c("lavalsector", "CT", "DA", "building"),
                          c("tablequartier", "CT", "DA", "building"),
+                         c("tablequartier", "CT", "DA", "DB", "building"),
                          c("tablequartier", "CT"),
                          c("centraide", "CT", "DA", "building"),
+                         c("centraide", "CT", "DA", "DB", "building"),
                          c("centraide", "CT"),
                          c("cmhczone", "CT", "DA", "building"),
+                         c("cmhczone", "CT", "DA", "DB", "building"),
                          c("cmhczone", "CT"),
                          c("cmhczone"),
                          c("RTS", "CT", "DA", "building"),
+                         c("RTS", "CT", "DA", "DB", "building"),
                          c("RTS", "CT"),
                          c("CLSC", "CT", "DA", "building"),
+                         c("CLSC", "CT", "DA", "DB", "building"),
                          c("CLSC", "CT"),
                          c("grd250", "grd100", "grd50", "grd25"),
                          c("grd600", "grd300", "grd120", "grd60", "grd30"))
@@ -323,8 +330,8 @@ scales_dictionary <-
     scale = "tablequartier",
     sing = "Table de quartier",
     sing_with_article = "the Table de quartier",
-    plur = "Table de quartier",
-    slider_title = "Table de quartier",
+    plur = "Tables de quartier",
+    slider_title = "Tables de quartier",
     place_heading = "{name}",
     place_name = "{name}",
     subtext = paste0("Territories where local stakeholders collaborate to ",
@@ -333,13 +340,13 @@ scales_dictionary <-
 
 # NDVI's grid -------------------------------------------------------------
 
-ndvigrids <- ndvi_grids(census_scales = census_scales, 
-                        base_polygons = base_polygons,
-                        overwrite_ndvi_tiles = FALSE,
-                        overwrite_final_grids = FALSE, 
-                        crs = crs)
-
-scales_dictionary <- scales_dictionary_ndvi(scales_dictionary)
+# ndvigrids <- ndvi_grids(census_scales = census_scales, 
+#                         base_polygons = base_polygons,
+#                         overwrite_ndvi_tiles = FALSE,
+#                         overwrite_final_grids = FALSE, 
+#                         crs = crs)
+# 
+# scales_dictionary <- scales_dictionary_ndvi(scales_dictionary)
 
 
 # Build vulnerability to climate risk scale -------------------------------
@@ -487,6 +494,7 @@ scales_dictionary <- add_regions_to_scales_dictionary(
                        grd100 = c("island"),
                        grd50 = c("island"),
                        grd25 = c("island"),
+                       tablequartier = c("island", "city"),
                        CLSC = c("island", "CMA", "centraide"),
                        RTS = c("island")),
   DA_carto = base_polygons$DA_carto,
@@ -515,7 +523,7 @@ save_short_tables_qs(data_folder = "data/",
 save_bslike_postgresql(all_scales = scales_consolidated$scales,
                        tables_to_save_db = large_tables_db,
                        inst_prefix = inst_prefix,
-                       overwrite = TRUE)
+                       overwrite = FALSE)
 
 qs::qsave(scales_dictionary, file = "data/scales_dictionary.qs")
 qs::qsave(regions_dictionary, file = "data/regions_dictionary.qs")
@@ -588,8 +596,8 @@ scales_variables_modules <-
 scales_variables_modules <-
   ru_alp(scales_variables_modules = scales_variables_modules,
          scales_sequences = scales_sequences,
-         crs = crs,
-         region_DA_IDs = census_scales$DA$ID,
+         crs = crs, 
+         region_DB_IDs = census_scales$DB$ID,
          overwrite = FALSE,
          inst_prefix = inst_prefix)
 scales_variables_modules <-
@@ -614,6 +622,17 @@ scales_variables_modules <-
 # qs::qsave(traveltimes, "dev/data/built/traveltimes.qs")
 traveltimes <- qs::qread("dev/data/built/traveltimes.qs")
 
+# Additional access variables
+invisible(lapply(list.files("dev/data_import", full.names = TRUE), source))
+scales_variables_modules <-
+  build_and_append_access(scales_variables_modules = scales_variables_modules,
+                          DA_table = census_scales$DA,
+                          traveltimes = traveltimes,
+                          scales_sequences = scales_sequences,
+                          crs = crs,
+                          overwrite = FALSE,
+                          inst_prefix = inst_prefix)
+
 future::plan(future::multisession(), workers = 3)
 scales_variables_modules <-
   ba_accessibility_points(scales_variables_modules = scales_variables_modules,
@@ -624,20 +643,9 @@ scales_variables_modules <-
                           overwrite = FALSE,
                           inst_prefix = inst_prefix)
 
-invisible(lapply(list.files("dev/data_import", full.names = TRUE), source))
-future::plan(future::multisession(), workers = 4)
-
-# Additional access variables
-scales_variables_modules <-
-  build_and_append_access(scales_variables_modules = scales_variables_modules,
-                          DA_table = census_scales$DA,
-                          traveltimes = traveltimes,
-                          scales_sequences = scales_sequences,
-                          crs = crs,
-                          overwrite = FALSE,
-                          inst_prefix = inst_prefix)
 
 future::plan(future::multisession(), workers = 4)
+
 
 scales_variables_modules <-
   build_and_append_climate_risk(
@@ -701,7 +709,11 @@ scales_variables_modules <-
 
 # Post process
 scales_variables_modules$scales <- 
-  cc.buildr::post_processing(scales = scales_variables_modules$scales)
+  post_processing(scales = scales_variables_modules$scales)
+# Adding right-hand variables
+scales_variables_modules <- add_var_right(scales_variables_modules)
+# Add high correlation combinations
+scales_variables_modules <- add_high_corr_combination(scales_variables_modules)
 
 qs::qsavem(census_scales, scales_variables_modules, crs, census_variables, 
            base_polygons, scales_sequences, regions_dictionary, inst_prefix,
@@ -717,7 +729,7 @@ save_postal_codes(census_scales$DA$ID, overwrite = FALSE)
 
 map_zoom_levels <- map_zoom_levels_create_all(
   scales_sequences = scales_sequences,
-  zoom_levels = list(first = 0, CT = 10, DA = 12, building = 16,
+  zoom_levels = list(first = 0, CT = 10, DA = 12, DB = 14, building = 16,
                      grd100 = 11, grd50 = 13, grd25 = 14,
                      grd300 = 10, grd120 = 11, grd60 = 12, grd30 = 13))
 
@@ -726,14 +738,11 @@ map_zoom_levels_save(data_folder = "data/", map_zoom_levels = map_zoom_levels)
 
 # Tilesets ----------------------------------------------------------------
 
-# Do not upload grids, as there is a function just for it.
-# all_scales_t <- scales_variables_modules$scales[!grepl("^grd", names(scales_variables_modules$scales))]
-# map_zoom_levels_t <- map_zoom_levels[!grepl("_grd", names(map_zoom_levels))]
-# 
-# tileset_upload_all(map_zoom_levels = map_zoom_levels_t,
+# tileset_upload_all(map_zoom_levels = map_zoom_levels,
 #                    inst_prefix = inst_prefix,
 #                    username = "curbcut",
 #                    access_token = .cc_mb_token,
+#                    overwrite = FALSE,
 #                    no_reset = "building")
 # 
 # tileset_upload_ndvi(map_zoom_levels = map_zoom_levels,
@@ -754,10 +763,10 @@ map_zoom_levels_save(data_folder = "data/", map_zoom_levels = map_zoom_levels)
 #                     inst_prefix = inst_prefix,
 #                     username = "curbcut",
 #                     access_token = .cc_mb_token)
-# 
-# 
-# 
-# 
+
+
+
+
 
 # Add possible regions to modules -----------------------------------------
 
@@ -863,19 +872,6 @@ save_all_scales_qs(scales_dictionary = scales_dictionary)
 # Save other global data --------------------------------------------------
 
 qs::qsave(census_variables, file = "data/census_variables.qs")
-
-# For compare, only keep the large brackets of age
-scales_variables_modules$modules$var_right <- lapply(
-  scales_variables_modules$modules$var_right, \(x) {
-    if (is.null(x)) return(NULL)
-    not_age <- x[!grepl("^age_", x)]
-    age <- x[grepl("^age_", x)]
-    
-    age_keep <- age[age %in% c("age_0_14", "age_15_64", "age_65_plus")]
-    
-    c(not_age, age_keep)
-  })
-
 qs::qsave(scales_variables_modules$modules, file = "data/modules.qs")
 tictoc::toc()
 
@@ -888,7 +884,8 @@ dyk <- dyk_uni(vars_dyk,
                svm = scales_variables_modules,
                translation_df = translation_df,
                langs = c("en", "fr"),
-               scales_dictionary = scales_dictionary)
+               scales_dictionary = scales_dictionary,
+               regions_dictionary = regions_dictionary)
 # dyk <- rbind(dyk, dyk_delta(vars_dyk, scales_variables_modules))
 # dyk <- rbind(dyk, dyk_bivar(vars_dyk, scales_variables_modules))
 qs::qsave(dyk, "data/dyk.qs")
@@ -905,7 +902,7 @@ home_page(modules = modules, stories = stories, translation_df = translation_df,
 # Place explorer content creation -----------------------------------------
 
 # Should be done once the data is saved
-future::plan(future::multisession(), workers = 4)
+future::plan(future::multisession(), workers = 12)
 
 # pe_main_card_data <- placeex_main_card_data(scales_dictionary = scales_dictionary,
 #                                             DA_table = census_scales$DA,
@@ -940,8 +937,8 @@ qs::qsave(pe_docs, "data/pe_docs.qs")
 # Write the data to the bucket --------------------------------------------
 
 # cc.data::bucket_write_folder(folder = "data", bucket = "curbcut.montreal.data")
-cc.data::bucket_write_folder(folder = "dev/data", bucket = "curbcut.montreal.dev.data")
-cc.data::bucket_write_folder(folder = "data", bucket = "curbcut.montreal.beta.data")
+# cc.data::bucket_write_folder(folder = "dev/data", bucket = "curbcut.montreal.dev.data")
+# cc.data::bucket_write_folder(folder = "data", bucket = "curbcut.montreal.beta.data")
 
 
 # Deploy app --------------------------------------------------------------

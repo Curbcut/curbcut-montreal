@@ -289,17 +289,19 @@ safety_server <- function(id, r) {
         default_year = default_year
       )
     
-    var_left <- shiny::reactive(autovars()$var)
+    update_rv(id, r, rv_name = "var_left", new_val = shiny::reactive(autovars()$var))
     widget_time <- shiny::reactive(if (is.null(autovars()$time)) "" else autovars()$time)
 
     # Right variable / compare panel
     var_right <- curbcut::compare_server(
       id = id,
       r = r,
+      var_left = r[[id]]$var_left,
       var_list = shiny::reactive(curbcut::dropdown_make(
         vars = vars_right,
         compare = TRUE
       )),
+      zoom_levels = r[[id]]$zoom_levels,
       # If there are no time in the page, use the latest census for date of
       # comparisons
       time = if (r[[id]]$time() != "") r[[id]]$time else shiny::reactive(2021)
@@ -307,7 +309,7 @@ safety_server <- function(id, r) {
 
     # Update the `r[[id]]$vars` reactive
     update_vars(
-      id = id, r = r, var_left = var_left,
+      id = id, r = r, var_left = r[[id]]$var_left,
       var_right = var_right, 
       scale = r[[id]]$scale,
       widget_time = widget_time
@@ -333,7 +335,6 @@ safety_server <- function(id, r) {
       zoom_levels = r[[id]]$zoom_levels(),
       schemas = r[[id]]$schemas()
     ))
-    observe(print(data_colours()))
 
     # Warn user
     warnuser_server(
