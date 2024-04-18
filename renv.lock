@@ -1,6 +1,6 @@
 {
   "R": {
-    "Version": "4.3.1",
+    "Version": "4.3.3",
     "Repositories": [
       {
         "Name": "CRAN",
@@ -283,14 +283,14 @@
       "RemoteUsername": "Curbcut",
       "RemoteRepo": "cc.map",
       "RemoteRef": "master",
-      "RemoteSha": "12613ad1566c131d01e8984c6ac2172a2413656b",
+      "RemoteSha": "577cb99f21856308afa623f71fd528c6783d311f",
       "Requirements": [
         "htmltools",
         "jsonlite",
         "reactR",
         "shiny"
       ],
-      "Hash": "7f469586f056eda770401cba7d7d078c"
+      "Hash": "a2d390f3e610d0b64a44044b8c605156"
     },
     "class": {
       "Package": "class",
@@ -397,7 +397,7 @@
       "RemoteUsername": "Curbcut",
       "RemoteRepo": "curbcut",
       "RemoteRef": "HEAD",
-      "RemoteSha": "34a20cdb6e525477b7918c8b0b2dc97427dd99cd",
+      "RemoteSha": "8153a96080a6f0e64b2156abd87bcc83b83c843b",
       "Remotes": "Curbcut/cc.map, Curbcut/cc.landing",
       "Requirements": [
         "DBI",
@@ -422,7 +422,7 @@
         "utils",
         "zip"
       ],
-      "Hash": "2bccfa130996c0f0bbb78d32308db113"
+      "Hash": "fea755b6bc84ad9e4aec7280c50e40fa"
     },
     "curl": {
       "Package": "curl",

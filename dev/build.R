@@ -14,29 +14,29 @@ inst_prefix <- "mtl"
 # Possible sequences for autozooms. Every module must have one or multiple of these
 # possible scale sequences.
 scales_sequences <- list(c("boroughCSD", "CT", "DA", "building"),
-                         # c("boroughCSD", "CT", "DA", "DB", "building"),
+                         c("boroughCSD", "CT", "DA", "DB", "building"),
                          c("boroughCSD", "CT"),
                          c("CSD", "CT", "DA", "building"),
-                         # c("CSD", "CT", "DA", "DB", "building"),
+                         c("CSD", "CT", "DA", "DB", "building"),
                          c("CSD", "CT"),
                          c("borough", "CT", "DA", "building"),
-                         # c("borough", "CT", "DA", "DB", "building"),
+                         c("borough", "CT", "DA", "DB", "building"),
                          c("borough", "CT"),
                          c("tablequartier", "CT", "DA", "building"),
-                         # c("tablequartier", "CT", "DA", "DB", "building"),
+                         c("tablequartier", "CT", "DA", "DB", "building"),
                          c("tablequartier", "CT"),
                          c("centraide", "CT", "DA", "building"),
-                         # c("centraide", "CT", "DA", "DB", "building"),
+                         c("centraide", "CT", "DA", "DB", "building"),
                          c("centraide", "CT"),
                          c("cmhczone", "CT", "DA", "building"),
-                         # c("cmhczone", "CT", "DA", "DB", "building"),
+                         c("cmhczone", "CT", "DA", "DB", "building"),
                          c("cmhczone", "CT"),
                          c("cmhczone"),
                          c("RTS", "CT", "DA", "building"),
-                         # c("RTS", "CT", "DA", "DB", "building"),
+                         c("RTS", "CT", "DA", "DB", "building"),
                          c("RTS", "CT"),
                          c("CLSC", "CT", "DA", "building"),
-                         # c("CLSC", "CT", "DA", "DB", "building"),
+                         c("CLSC", "CT", "DA", "DB", "building"),
                          c("CLSC", "CT"),
                          c("grd250", "grd100", "grd50", "grd25"),
                          c("grd600", "grd300", "grd120", "grd60", "grd30"))
@@ -340,13 +340,13 @@ scales_dictionary <-
 
 # NDVI's grid -------------------------------------------------------------
 
-ndvigrids <- ndvi_grids(census_scales = census_scales, 
-                        base_polygons = base_polygons,
-                        overwrite_ndvi_tiles = FALSE,
-                        overwrite_final_grids = FALSE, 
-                        crs = crs)
-
-scales_dictionary <- scales_dictionary_ndvi(scales_dictionary)
+# ndvigrids <- ndvi_grids(census_scales = census_scales, 
+#                         base_polygons = base_polygons,
+#                         overwrite_ndvi_tiles = FALSE,
+#                         overwrite_final_grids = FALSE, 
+#                         crs = crs)
+# 
+# scales_dictionary <- scales_dictionary_ndvi(scales_dictionary)
 
 
 # Build vulnerability to climate risk scale -------------------------------
@@ -928,6 +928,10 @@ placeex_main_card_rmd(pe_main_card_data = pe_main_card_data,
                       rev_geocode_from_localhost = TRUE,
                       overwrite = FALSE,
                       scales_sequences = scales_sequences)
+
+# Save the place explorer files, which serves as a 'does it exist' for `curbcut`
+pe_docs <- list.files("www/place_explorer/", full.names = TRUE)
+qs::qsave(pe_docs, "data/pe_docs.qs")
 
 
 # Write the data to the bucket --------------------------------------------
