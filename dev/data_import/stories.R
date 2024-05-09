@@ -218,6 +218,23 @@ build_stories <- function() {
     lon = -73.430677,
     lat = 45.438482)
   
+  stories_add_story(
+    name_id = "underground",
+    title = paste0("Montreal's underground city"),
+    short_title = "Montreal's underground city",
+    preview_en = paste0("Montreal’s underground city, or RESO, is a testament ",
+                        "to the complexities and evolution of urban planning, ",
+                        "and especially in mobility planning, highlighting the ",
+                        "balance needed between efficiency and the embodied ",
+                        "experience of our environments."),
+    preview_fr = paste0("La ville souterraine de Montréal, ou RESO, témoigne ",
+                        "de la complexité et de l'évolution de la planification ",
+                        "urbaine, et en particulier de la planification de la ",
+                        "mobilité, soulignant l'équilibre nécessaire entre ",
+                        "l'efficacité et l'expérience donné par nos environnements."),
+    themes = c("Transportation", "Urban transformation"),
+    lon = -73.56886094556103,
+    lat = 45.50128974567965)
   
   # Create images and mapping -----------------------------------------------
 
