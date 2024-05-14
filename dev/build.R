@@ -13,30 +13,30 @@ inst_prefix <- "mtl"
 
 # Possible sequences for autozooms. Every module must have one or multiple of these
 # possible scale sequences.
-scales_sequences <- list(c("boroughCSD", "CT", "DA", "building"),
-                         c("boroughCSD", "CT", "DA", "DB", "building"),
+scales_sequences <- list(c("boroughCSD", "CT", "DA"),
+                         c("boroughCSD", "CT", "DA", "DB"),
                          c("boroughCSD", "CT"),
-                         c("CSD", "CT", "DA", "building"),
-                         c("CSD", "CT", "DA", "DB", "building"),
+                         c("CSD", "CT", "DA"),
+                         c("CSD", "CT", "DA", "DB"),
                          c("CSD", "CT"),
-                         c("borough", "CT", "DA", "building"),
-                         c("borough", "CT", "DA", "DB", "building"),
+                         c("borough", "CT", "DA"),
+                         c("borough", "CT", "DA", "DB"),
                          c("borough", "CT"),
-                         c("tablequartier", "CT", "DA", "building"),
-                         c("tablequartier", "CT", "DA", "DB", "building"),
+                         c("tablequartier", "CT", "DA"),
+                         c("tablequartier", "CT", "DA", "DB"),
                          c("tablequartier", "CT"),
-                         c("centraide", "CT", "DA", "building"),
-                         c("centraide", "CT", "DA", "DB", "building"),
+                         c("centraide", "CT", "DA"),
+                         c("centraide", "CT", "DA", "DB"),
                          c("centraide", "CT"),
-                         c("cmhczone", "CT", "DA", "building"),
-                         c("cmhczone", "CT", "DA", "DB", "building"),
+                         c("cmhczone", "CT", "DA"),
+                         c("cmhczone", "CT", "DA", "DB"),
                          c("cmhczone", "CT"),
                          c("cmhczone"),
-                         c("RTS", "CT", "DA", "building"),
-                         c("RTS", "CT", "DA", "DB", "building"),
+                         c("RTS", "CT", "DA"),
+                         c("RTS", "CT", "DA", "DB"),
                          c("RTS", "CT"),
-                         c("CLSC", "CT", "DA", "building"),
-                         c("CLSC", "CT", "DA", "DB", "building"),
+                         c("CLSC", "CT", "DA"),
+                         c("CLSC", "CT", "DA", "DB"),
                          c("CLSC", "CT"),
                          c("grd250", "grd100", "grd50", "grd25"),
                          c("grd600", "grd300", "grd120", "grd60", "grd30"))
@@ -257,20 +257,20 @@ scales_dictionary <- append_scale_to_dictionary(
 # building <- qs::qread("dev/data/canada_buildings.qs")
 # building <- building[building$DA_ID %in% census_scales$DA$ID, ]
 # building <- qs::qsave(building, "dev/data/built/building.qs")
-building <- qs::qread("dev/data/built/building.qs")
-
-# Add building scale to the dictionary
-scales_dictionary <-
-  append_scale_to_dictionary(
-    scales_dictionary,
-    scale = "building",
-    sing = "building",
-    sing_with_article = "the building",
-    plur = "buildings",
-    slider_title = "Building",
-    place_heading = "{name}",
-    place_name = "{name}",
-    subtext = NA)
+# building <- qs::qread("dev/data/built/building.qs")
+# 
+# # Add building scale to the dictionary
+# scales_dictionary <-
+#   append_scale_to_dictionary(
+#     scales_dictionary,
+#     scale = "building",
+#     sing = "building",
+#     sing_with_article = "the building",
+#     plur = "buildings",
+#     slider_title = "Building",
+#     place_heading = "{name}",
+#     place_name = "{name}",
+#     subtext = NA)
 
 ### Build CMHC scale
 cmhczone <- get_cmhc_zones(list(CMA = cancensus_cma_code))
@@ -340,13 +340,13 @@ scales_dictionary <-
 
 # NDVI's grid -------------------------------------------------------------
 
-# ndvigrids <- ndvi_grids(census_scales = census_scales, 
-#                         base_polygons = base_polygons,
-#                         overwrite_ndvi_tiles = FALSE,
-#                         overwrite_final_grids = FALSE, 
-#                         crs = crs)
-# 
-# scales_dictionary <- scales_dictionary_ndvi(scales_dictionary)
+ndvigrids <- ndvi_grids(census_scales = census_scales,
+                        base_polygons = base_polygons,
+                        overwrite_ndvi_tiles = FALSE,
+                        overwrite_final_grids = FALSE,
+                        crs = crs)
+
+scales_dictionary <- scales_dictionary_ndvi(scales_dictionary)
 
 
 # Build vulnerability to climate risk scale -------------------------------
@@ -454,7 +454,7 @@ scales_dictionary <-
 all_scales <- c(census_scales,
                 list(borough = borough),
                 list(boroughCSD = boroughCSD),
-                list(building = building),
+                # list(building = building),
                 list(centraide = centraide),
                 list(cmhczone = cmhczone),
                 list(RTS = RTS),
@@ -469,7 +469,8 @@ all_scales <- c(census_scales,
 # Character vector of the tables that will be saved in the database instead of
 # in the container. These tables WON'T be available for dynamic filtering using
 # region in the `curbcut::data_get()` function.
-large_tables_db <- c("building", "grd25", "grd50", "grd100", "grd30", "grd60", 
+large_tables_db <- c(#"building", 
+                     "grd25", "grd50", "grd100", "grd30", "grd60", 
                      "grd120", "grd300")
 
 save.image("dev/data/built/pre_consolidate.RData")
@@ -516,12 +517,12 @@ verify_dictionaries(scales = scales_consolidated$scales,
 
 save_geometry_export(data_folder = "data/", 
                      all_scales = scales_consolidated$scales,
-                     skip_scales = large_tables_db)
+                     skip_scales = names(all_scales))
 save_short_tables_qs(data_folder = "data/", 
                      all_scales = scales_consolidated$scales,
-                     skip_scales = large_tables_db)
+                     skip_scales = names(all_scales))
 save_bslike_postgresql(all_scales = scales_consolidated$scales,
-                       tables_to_save_db = large_tables_db,
+                       tables_to_save_db = names(all_scales),
                        inst_prefix = inst_prefix,
                        overwrite = FALSE)
 
@@ -540,7 +541,7 @@ scales_variables_modules$data <- lapply(scales_consolidated$scales, \(x) list())
 qs::qsave(scales_consolidated, "dev/data/built/scales_consolidated.qs")
 qs::qsavem(census_scales, scales_variables_modules, crs, base_polygons, 
            cancensus_cma_code, scales_consolidated, scales_sequences, DB_table,
-           scales_dictionary, regions_dictionary, inst_prefix,
+           scales_dictionary, regions_dictionary, inst_prefix, large_tables_db,
            file = "dev/data/built/empty_scales_variables_modules.qsm")
 rm(list = ls())
 library(cc.buildr)
@@ -551,9 +552,9 @@ qs::qload("dev/data/built/empty_scales_variables_modules.qsm")
 
 future::plan(future::multisession, workers = 4)
 
-# No data is added to the buildings yet, onload it
-scales_variables_modules$scales <- 
-  unload_scales(scales_variables_modules$scales, unload = c("building"))
+# # No data is added to the buildings yet, onload it
+# scales_variables_modules$scales <- 
+#   unload_scales(scales_variables_modules$scales, unload = c("building"))
 
 # Interpolte census, not for smaller scales
 scales_to_interpolate_census <- 
@@ -717,6 +718,7 @@ scales_variables_modules <- add_high_corr_combination(scales_variables_modules)
 
 qs::qsavem(census_scales, scales_variables_modules, crs, census_variables, 
            base_polygons, scales_sequences, regions_dictionary, inst_prefix,
+           large_tables_db,
            scales_dictionary, file = "dev/data/built/scales_variables_modules.qsm")
 qs::qload("dev/data/built/scales_variables_modules.qsm")
 
@@ -742,8 +744,7 @@ map_zoom_levels_save(data_folder = "data/", map_zoom_levels = map_zoom_levels)
 #                    inst_prefix = inst_prefix,
 #                    username = "curbcut",
 #                    access_token = .cc_mb_token,
-#                    overwrite = FALSE,
-#                    no_reset = "building")
+#                    overwrite = FALSE)
 # 
 # tileset_upload_ndvi(map_zoom_levels = map_zoom_levels,
 #                     regions = base_polygons$regions,
@@ -822,16 +823,16 @@ qs::qsave(colours_dfs, "data/colours_dfs.qs")
 
 # Write stories -----------------------------------------------------------
 
-# # # TKTK MAKE SURE YOU HAVE THIS VERSION OF LEAFLET, IF NOT THE MAPS IN THE HTML
-# # # DOCUMENTS WON'T BE INTERACTIVES:
-# # devtools::install_github("dmurdoch/leaflet@crosstalk4")
-# stories <- build_stories()
-# qs::qsave(stories, file = "data/stories.qs")
-# stories_create_tileset(stories = stories,
-#                        inst_prefix = inst_prefix,
-#                        username = "curbcut",
-#                        access_token = .cc_mb_token)
-# cc.buildr::resize_image(folder = "www/stories/photos/", max_size_in_MB = 1)
+# # TKTK MAKE SURE YOU HAVE THIS VERSION OF LEAFLET, IF NOT THE MAPS IN THE HTML
+# # DOCUMENTS WON'T BE INTERACTIVES:
+# devtools::install_github("dmurdoch/leaflet@crosstalk4")
+stories <- build_stories()
+qs::qsave(stories, file = "data/stories.qs")
+stories_create_tileset(stories = stories,
+                       inst_prefix = inst_prefix,
+                       username = "curbcut",
+                       access_token = .cc_mb_token)
+cc.buildr::resize_image(folder = "www/stories/photos/", max_size_in_MB = 1)
 
 
 # Add Montréal stories

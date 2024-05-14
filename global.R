@@ -21,13 +21,6 @@ curbcut::load_data(site_name = "Curbcut Montréal",
                    map_loc = c(lat = -73.70, lon = 45.53))
 
 
-# Shiny options -----------------------------------------------------------
-
-# options(shiny.fullstacktrace = TRUE)
-# options(shiny.useragg = TRUE)
-# shinyOptions(cache = cachem::cache_disk(file.path(dirname(tempdir()), "cache")))
-
-
 # Create the UI and server functions for basic modules --------------------
 
 curbcut::create_ui_server_mods(modules = modules)
