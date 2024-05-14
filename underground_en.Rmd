@@ -1,0 +1,43 @@
+---
+title: "Montreal's underground city"
+subtitle: #only if applicable
+output: html_document
+author: "Dominique Boulet"
+date: "05.2024"
+runtime: shiny_prerendered 
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+<center>
+<div>
+<iframe width="100%" height="315"
+src="https://youtu.be/c0R8J9FYE4s" frameborder="0" allowfullscreen="" data-external="1">
+</iframe>
+</div>
+</center>
+
+###References
+
+<ul>
+<li>Besner, J. (2017). Cities think underground–Underground space (also) for people. Procedia engineering, 209, 49-55.</li>
+
+<li>Chatoney, B. P. (2019). A Tale of Two Tunnels: Exploring the Design and Cultural Differences Between the Houston Tunnel System and Reso (Underground City, Montreal).</li>
+
+<li>El-Geneidy, A., Kastelberger, L., & Abdelhamid, H. T. (2011). Montréal's roots: Exploring the growth of Montréal's Indoor City. Journal of Transport and Land use, 4(2), 33-46.</li>
+
+<li>La Place Ville-Marie sous différents angles, 1977, BAnQ Vieux-Montréal, Fonds Ministère de la Culture et des Communications, (06M,E6,S7,SS1,D772992-773001), Henri Rémillard.</li>
+
+<li>Ouverture de stations du Métro de Montréal, 1966-1978, BAnQ Vieux-Montréal, Fonds La Presse, (06M,P833,S4,D1474), Photographe non identifié.</li>
+
+<li>Radio-Canada. (n.d.). Montréal: Une ville souterraine? [Video]. Retrieved from https://ici.radio-canada.ca/info/videos/media-7750385/montreal-ville-souterraine</li>
+
+<li>Sim, D. (2019). Soft City. Routledge.</li>
+
+<li>Ville de Montréal. (n.d.). RESO : le réseau souterrain de Montréal. Retrieved from https://montreal.ca/articles/reso-le-reseau-souterrain-de-montreal-13713</li>
+
+<li>Zacharias, J. (2015). Underground pedestrian trips—trip generation, spatial distribution and activities in the Montréal underground. Tunnelling and Underground Space Technology, 46, 46-51.</li>
+</ul>
+
