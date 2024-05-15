@@ -595,7 +595,8 @@ build_and_append_afford_hou <- function(scales_variables_modules, scales_sequenc
       interpolated = interpolated_df,
       # Allow title duplicate so that the parent vector is always 'households'
       # which is an already existing variable title for other parent vectors.
-      allow_title_duplicate = TRUE
+      allow_title_duplicate = TRUE,
+      schema = list(time = time_regex)
     ) |> (\(x) x[nrow(x), ])()
   }) |> (\(x) Reduce(rbind, x))()
   

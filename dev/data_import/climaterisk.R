@@ -59,8 +59,9 @@ build_and_append_climate_risk <- function(scales_variables_modules, crs,
   # Get list of data variables ----------------------------------------------
   
   avg_vars <- names(climate_risk)[grepl("^climate_", names(climate_risk))]
-  unique_vars <- gsub("_\\d{4}$", "", avg_vars)
-
+  time_regex <- "_\\d{4}$"
+  unique_vars <- gsub(time_regex, "", avg_vars)
+  
   # Interpolate data to all possible scales ---------------------------------
   
   # Do not interpolate for grds
@@ -214,7 +215,6 @@ build_and_append_climate_risk <- function(scales_variables_modules, crs,
     
     # Data tibble -------------------------------------------------------------
     
-    time_regex <- "_\\d{4}$"
     data_construct(scales_data = data_interpolated$scales,
                    unique_var = c("climate_drought", "climate_flood",
                                   "climate_heavy_rain", "climate_destructive_storms",
@@ -266,7 +266,8 @@ build_and_append_climate_risk <- function(scales_variables_modules, crs,
                        "exceptionally vulnerable"),
       rank_name = c("Insignificant", "Minor", "Moderate", "Elevated", "Major"),
       rank_name_short = c("Insig.", "Minor", "Mod.", "Elev.", "Major"),
-      var_measurement = var_measurement
+      var_measurement = var_measurement,
+      schema = list(time = time_regex)
     ) |> 
     add_variable(
       var_code = "climate_flood",
@@ -289,7 +290,8 @@ build_and_append_climate_risk <- function(scales_variables_modules, crs,
                        "exceptionally vulnerable"),
       rank_name = c("Insignificant", "Minor", "Moderate", "Elevated", "Major"),
       rank_name_short = c("Insig.", "Minor", "Mod.", "Elev.", "Major"),
-      var_measurement = var_measurement
+      var_measurement = var_measurement,
+      schema = list(time = time_regex)
     ) |> 
     add_variable(
       var_code = "climate_heavy_rain",
@@ -312,7 +314,8 @@ build_and_append_climate_risk <- function(scales_variables_modules, crs,
                        "exceptionally vulnerable"),
       rank_name = c("Insignificant", "Minor", "Moderate", "Elevated", "Major"),
       rank_name_short = c("Insig.", "Minor", "Mod.", "Elev.", "Major"),
-      var_measurement = var_measurement
+      var_measurement = var_measurement,
+      schema = list(time = time_regex)
     ) |> 
     add_variable(
       var_code = "climate_destructive_storms",
@@ -336,7 +339,8 @@ build_and_append_climate_risk <- function(scales_variables_modules, crs,
                        "exceptionally vulnerable"),
       rank_name = c("Insignificant", "Minor", "Moderate", "Elevated", "Major"),
       rank_name_short = c("Insig.", "Minor", "Mod.", "Elev.", "Major"),
-      var_measurement = var_measurement
+      var_measurement = var_measurement,
+      schema = list(time = time_regex)
     ) |> 
     add_variable(
       var_code = "climate_heat_wave",
@@ -360,6 +364,7 @@ build_and_append_climate_risk <- function(scales_variables_modules, crs,
       rank_name = c("Insignificant", "Minor", "Moderate", "Elevated", "Major"),
       rank_name_short = c("Insig.", "Minor", "Mod.", "Elev.", "Major"),
       var_measurement = var_measurement,
+      schema = list(time = time_regex)
     )
   
   # Possible sequences ------------------------------------------------------

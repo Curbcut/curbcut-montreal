@@ -14,29 +14,29 @@ inst_prefix <- "mtl"
 # Possible sequences for autozooms. Every module must have one or multiple of these
 # possible scale sequences.
 scales_sequences <- list(c("boroughCSD", "CT", "DA"),
-                         c("boroughCSD", "CT", "DA", "DB"),
+                         # c("boroughCSD", "CT", "DA", "DB"),
                          c("boroughCSD", "CT"),
                          c("CSD", "CT", "DA"),
-                         c("CSD", "CT", "DA", "DB"),
+                         # c("CSD", "CT", "DA", "DB"),
                          c("CSD", "CT"),
                          c("borough", "CT", "DA"),
-                         c("borough", "CT", "DA", "DB"),
+                         # c("borough", "CT", "DA", "DB"),
                          c("borough", "CT"),
                          c("tablequartier", "CT", "DA"),
-                         c("tablequartier", "CT", "DA", "DB"),
+                         # c("tablequartier", "CT", "DA", "DB"),
                          c("tablequartier", "CT"),
                          c("centraide", "CT", "DA"),
-                         c("centraide", "CT", "DA", "DB"),
+                         # c("centraide", "CT", "DA", "DB"),
                          c("centraide", "CT"),
                          c("cmhczone", "CT", "DA"),
-                         c("cmhczone", "CT", "DA", "DB"),
+                         # c("cmhczone", "CT", "DA", "DB"),
                          c("cmhczone", "CT"),
                          c("cmhczone"),
                          c("RTS", "CT", "DA"),
-                         c("RTS", "CT", "DA", "DB"),
+                         # c("RTS", "CT", "DA", "DB"),
                          c("RTS", "CT"),
                          c("CLSC", "CT", "DA"),
-                         c("CLSC", "CT", "DA", "DB"),
+                         # c("CLSC", "CT", "DA", "DB"),
                          c("CLSC", "CT"),
                          c("grd250", "grd100", "grd50", "grd25"),
                          c("grd600", "grd300", "grd120", "grd60", "grd30"))
@@ -517,12 +517,12 @@ verify_dictionaries(scales = scales_consolidated$scales,
 
 save_geometry_export(data_folder = "data/", 
                      all_scales = scales_consolidated$scales,
-                     skip_scales = names(all_scales))
+                     skip_scales = large_tables_db)#names(all_scales))
 save_short_tables_qs(data_folder = "data/", 
                      all_scales = scales_consolidated$scales,
-                     skip_scales = names(all_scales))
+                     skip_scales = large_tables_db)#names(all_scales))
 save_bslike_postgresql(all_scales = scales_consolidated$scales,
-                       tables_to_save_db = names(all_scales),
+                       tables_to_save_db = large_tables_db,#names(all_scales),
                        inst_prefix = inst_prefix,
                        overwrite = FALSE)
 
@@ -828,10 +828,10 @@ qs::qsave(colours_dfs, "data/colours_dfs.qs")
 # devtools::install_github("dmurdoch/leaflet@crosstalk4")
 stories <- build_stories()
 qs::qsave(stories, file = "data/stories.qs")
-stories_create_tileset(stories = stories,
-                       inst_prefix = inst_prefix,
-                       username = "curbcut",
-                       access_token = .cc_mb_token)
+# stories_create_tileset(stories = stories,
+#                        inst_prefix = inst_prefix,
+#                        username = "curbcut",
+#                        access_token = .cc_mb_token)
 cc.buildr::resize_image(folder = "www/stories/photos/", max_size_in_MB = 1)
 
 

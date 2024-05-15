@@ -22,6 +22,7 @@ build_and_append_crash <- function(scales_variables_modules, crs, scales_sequenc
   data <- read.csv("dev/data/crash/collisions_routieres.csv") |>
     tibble::as_tibble()
   years <- unique(data$AN)
+  time_regex <- "_\\d{4}$"
   
   if (length(missing_scales) > 0) {
     
@@ -134,7 +135,6 @@ build_and_append_crash <- function(scales_variables_modules, crs, scales_sequenc
     
     # Data tibble -------------------------------------------------------------
     
-    time_regex <- "_\\d{4}$"
     vars <- gsub(time_regex, "", vars) |> unique()
     data_construct(scales_data = all_data,
                    unique_var = vars,
@@ -235,7 +235,8 @@ build_and_append_crash <- function(scales_variables_modules, crs, scales_sequenc
       source = "City of Montreal's open data website",
       interpolated = interpolated_ref,
       group_name = group_name,
-      group_diff = group_diff
+      group_diff = group_diff,
+      schema = list(time = time_regex)
     ) |> (\(x) x[nrow(x), ])()
   })
 

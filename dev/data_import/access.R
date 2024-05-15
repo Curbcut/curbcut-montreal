@@ -224,7 +224,10 @@ build_and_append_access <- function(scales_variables_modules,
         "just about average", "unusually dense",
         "exceptionally dense"
       ),
-      var_measurement = var_measurement
+      var_measurement = var_measurement,
+      schema = list(time = time_regex,
+                    transportationtime = "_\\d{1,2}"),
+      breaks_var = paste0(var, "_20_2024")
     ) |>
       (\(x) x[nrow(x), ])()
   })

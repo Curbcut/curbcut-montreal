@@ -367,7 +367,8 @@ build_and_append_alley <- function(scales_variables_modules, scales_sequences, c
                                     interpolated_from = c("FALSE", "FALSE", "FALSE")),
       rankings_chr = c("exceptionally sparse", "unusually sparse",
                        "just about average", "unusually dense",
-                       "exceptionally dense")
+                       "exceptionally dense"),
+      schema = list(time = time_regex)
     )
   
   variables <-
@@ -391,7 +392,8 @@ build_and_append_alley <- function(scales_variables_modules, scales_sequences, c
                                     interpolated_from = c("FALSE", "FALSE", "FALSE")),
       rankings_chr = c("exceptionally sparse", "unusually sparse",
                        "just about average", "unusually dense",
-                       "exceptionally dense")
+                       "exceptionally dense"),
+      schema = list(time = time_regex)
     )
   
   # Possible sequences ------------------------------------------------------

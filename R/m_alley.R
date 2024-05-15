@@ -293,7 +293,7 @@ alley_server <- function(id, r) {
     var_right <- curbcut::compare_server(
       id = id,
       r = r,
-      var_left = var_left,
+      var_left = r[[id]]$var_left,
       var_list = shiny::reactive(curbcut::dropdown_make(
         vars = vars_right,
         compare = TRUE
@@ -363,6 +363,7 @@ alley_server <- function(id, r) {
       r = r,
       var_list = shiny::reactive(var_left_dropdown),
       time = shiny::reactive(2023))
+    shiny::observeEvent(var_left(), r[[id]]$var_left(var_left()))
     
     # Hide the compare panel if there are no
     shiny::observeEvent(mode(), {
@@ -374,8 +375,8 @@ alley_server <- function(id, r) {
       # Revert the selection to NA
       r[[id]]$select_id(NA)
       
-      if (var_left() == "observation") return("alleys")
-      if (var_left() == "summary") return("borough")
+      if (r[[id]]$var_left() == "observation") return("alleys")
+      if (r[[id]]$var_left() == "summary") return("borough")
       return("choropleth")
     })
     
@@ -387,6 +388,7 @@ alley_server <- function(id, r) {
       if (mode() == "borough") return(alley_boroughs)
       if (mode() == "alleys") return(alleys)
       if (r[[id]]$scale() == "alleys") return(alleys)
+      if ("alleys" %in% class(r[[id]]$vars())) return(alleys)
 
       data_get(
         vars = r[[id]]$vars(),
@@ -413,7 +415,7 @@ alley_server <- function(id, r) {
     shiny::observe({
       if (mode() != "choropleth") return(list())
       
-      vr <- vars_build(var_left = var_left(), var_right = var_right(), 
+      vr <- vars_build(var_left = r[[id]]$var_left(), var_right = var_right(), 
                        scale = r[[id]]$scale(), time = 2023)
       update_rv(id, r, rv_name = "vars", new_val = shiny::reactive(vr$vars))
       update_rv(id, r, rv_name = "time", new_val = shiny::reactive(vr$time))
