@@ -425,10 +425,8 @@ natural_inf_server <- function(id, r) {
                                                 biodiversity = ni_slider()[1],
                                                 heat_island = ni_slider()[2],
                                                 flood = ni_slider()[3]))[[1]]
-            
-            
-            group_values <- jsonlite::fromJSON(group_values)
-            out <- data.frame(group = names(group_values),
+
+            out <- data.frame(group = names(group_values[[1]]),
                               fill = unlist(group_values))
 
             # Switch the viridis colour scale to the left_5

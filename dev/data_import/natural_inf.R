@@ -464,7 +464,8 @@ build_and_append_natural_inf <- function(scales_variables_modules, crs) {
       dates = NA,
       avail_scale = NA,
       source = "David Suzuki Foundation",
-      interpolated = NA
+      interpolated = NA,
+      schema = list(NULL)
     ) |>
     add_variable(
       var_code = "habitat_con",
@@ -483,7 +484,8 @@ build_and_append_natural_inf <- function(scales_variables_modules, crs) {
       dates = NA,
       avail_scale = NA,
       source = "David Suzuki Foundation",
-      interpolated = NA
+      interpolated = NA,
+      schema = list(NULL)
     ) |>
     add_variable(
       var_code = "favorable_cc",
@@ -501,7 +503,8 @@ build_and_append_natural_inf <- function(scales_variables_modules, crs) {
       dates = NA,
       avail_scale = NA,
       source = "David Suzuki Foundation",
-      interpolated = NA
+      interpolated = NA,
+      schema = list(NULL)
     ) |>
     add_variable(
       var_code = "c_flood",
@@ -519,7 +522,8 @@ build_and_append_natural_inf <- function(scales_variables_modules, crs) {
       dates = NA,
       avail_scale = NA,
       source = "David Suzuki Foundation",
-      interpolated = NA
+      interpolated = NA,
+      schema = list(NULL)
     ) |>
     add_variable(
       var_code = "c_bio",
@@ -537,7 +541,8 @@ build_and_append_natural_inf <- function(scales_variables_modules, crs) {
       dates = NA,
       avail_scale = NA,
       source = "David Suzuki Foundation",
-      interpolated = NA
+      interpolated = NA,
+      schema = list(NULL)
     ) |>
     add_variable(
       var_code = "c_heat",
@@ -555,7 +560,8 @@ build_and_append_natural_inf <- function(scales_variables_modules, crs) {
       dates = NA,
       avail_scale = NA,
       source = "David Suzuki Foundation",
-      interpolated = NA
+      interpolated = NA,
+      schema = list(NULL)
     ) |>
     add_variable(
       var_code = "c_priority",
@@ -575,7 +581,8 @@ build_and_append_natural_inf <- function(scales_variables_modules, crs) {
       dates = NA,
       avail_scale = NA,
       source = "David Suzuki Foundation",
-      interpolated = NA
+      interpolated = NA,
+      schema = list(NULL)
     ) |>
     add_variable(
       var_code = "flood",
@@ -592,7 +599,8 @@ build_and_append_natural_inf <- function(scales_variables_modules, crs) {
       dates = NA,
       avail_scale = NA,
       source = "David Suzuki Foundation",
-      interpolated = NA
+      interpolated = NA,
+      schema = list(NULL)
     ) |>
     add_variable(
       var_code = "heat",
@@ -611,7 +619,8 @@ build_and_append_natural_inf <- function(scales_variables_modules, crs) {
       dates = NA,
       avail_scale = NA,
       source = "David Suzuki Foundation",
-      interpolated = NA
+      interpolated = NA,
+      schema = list(NULL)
     ) |>
     add_variable(
       var_code = "cool",
@@ -630,7 +639,8 @@ build_and_append_natural_inf <- function(scales_variables_modules, crs) {
       dates = NA,
       avail_scale = NA,
       source = "David Suzuki Foundation",
-      interpolated = NA
+      interpolated = NA,
+      schema = list(NULL)
     )
 
 
@@ -676,26 +686,26 @@ build_and_append_natural_inf <- function(scales_variables_modules, crs) {
   
   # Save natural inf in its own sqlite db -----------------------------------
 
-  # db_write_prod(natural_inf$original_priorities, 
+  # db_write_prod(natural_inf$original_priorities,
   #               table_name = "natural_inf_original_priorities",
   #               schema = "mtl", primary_key = "slider")
-  # db_write_prod(natural_inf$custom_explore, 
+  # db_write_prod(natural_inf$custom_explore,
   #               table_name = "natural_inf_custom_explore",
-  #               schema = "mtl", primary_key = NULL, 
+  #               schema = "mtl", primary_key = NULL,
   #               index = c("slider", "biodiversity", "heat_island", "flood"))
-  # db_write_prod(natural_inf$custom_explore, 
+  # db_write_prod(natural_inf$custom_explore,
   #               table_name = "natural_inf_custom_explore",
-  #               schema = "mtl", primary_key = NULL, 
+  #               schema = "mtl", primary_key = NULL,
   #               index = c("slider", "biodiversity", "heat_island", "flood"))
-  # db_write_prod(natural_inf$explore, 
+  # db_write_prod(natural_inf$explore,
   #               table_name = "natural_inf_explore",
   #               schema = "mtl", primary_key = NULL)
-  
+  # 
   # custom <- purrr::map_dfr(natural_inf$custom, \(x) {
-  #   out <- dplyr::group_by(x, slider, biodiversity, heat_island, flood) |> 
-  #     dplyr::summarize(group_values = list({setNames(as.list(value), group)}), 
+  #   out <- dplyr::group_by(x, slider, biodiversity, heat_island, flood) |>
+  #     dplyr::summarize(group_values = list({setNames(as.list(value), group)}),
   #                      .groups = 'drop')
-  #   
+  # 
   #   # Make it a JSON for the database
   #   out$group_values <- lapply(out$group_values, jsonlite::toJSON, auto_unbox = TRUE)
   #   out

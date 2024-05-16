@@ -3,331 +3,331 @@
 build_and_append_tenure <- function(scales_variables_modules, scales_sequences, crs,
                                     overwrite = FALSE, inst_prefix) {
   
-  # # Read and prepare data ---------------------------------------------------
-  # 
-  # # Read the data placed in the centraide folder
-  # csvs <- list.files("dev/data/centraide/tenure_status", full.names = TRUE)
-  # csvs_2016 <- stringr::str_subset(csvs, "2016.csv$")
-  # csvs_2021 <- stringr::str_subset(csvs, "2021.csv$")
-  # 
-  # 
-  # # 2016 data --------------------------------------------------------------
-  # 
-  # data <- lapply(csvs_2016, read.csv, header = FALSE, fileEncoding = "ISO-8859-1")
-  # data <- lapply(data, tibble::as_tibble)
-  # # Check if header are all the same
-  # data_check <- lapply(data, \(x) x[1:4, 2:ncol(x)])
-  # data_check <- sapply(seq_along(data_check), \(x) {
-  #   if (x == 1) return(TRUE)
-  #   identical(data_check[[x - 1]], data_check[[x]])
-  # })
-  # if (!all(data_check)) {
-  #   stop("The data you are going to rbind is not arranged the same way.")
-  # }
-  # 
-  # data_init <- data[[1]]
-  # data_rest <- lapply(data[2:length(data)], \(x) x[5:nrow(x), ])
-  # data_2016 <- Reduce(rbind, data_rest, init = data_init)
-  # 
-  # # data_2016 <- data_2016[c(1:4, 6:nrow(data_2016)), ]
-  # 
-  # # Clean up the table
-  # data_2016[1,] <- lapply(data_2016[1,], \(x) {
-  #   if (x == "") return("ID")
-  #   x <- stringr::str_trim(x)
-  #   if (grepl("^Total", x)) return("total")
-  #   if (grepl("^Propriétaire", x)) return("owner")
-  #   if (grepl("^Locataire", x)) return("tenant")
-  #   "FILTEROUT"   
-  # })
-  # 
-  # data_2016[2,] <- lapply(data_2016[2,], \(x) {
-  #   if (x == "") return("ID")
-  #   x <- stringr::str_trim(x)
-  #   if (grepl("^Total", x)) return("total")
-  #   if (grepl("^30 % ou plus du revenu est consacré aux frais de logement", x)) return("sc30")
-  #   if (grepl("^50 % au plus du revenu est consacré aux frais de logement", x)) return("sc50")
-  #   if (grepl("^80 % ou plus du revenu est consacré aux frais de logement", x)) return("sc80")
-  #   "FILTEROUT"    
-  # })
-  # 
-  # data_2016[3,] <- lapply(data_2016[3,], \(x) {
-  #   if (x == "") return("ID")
-  #   x <- stringr::str_trim(x)
-  #   if (grepl("^Total - Taille convenable du logement", x)) return("total")
-  #   if (grepl("^De taille convenable", x)) return("suit")
-  #   if (grepl("^De taille insuffisante", x)) return("unsuit")
-  #   if (grepl("^Seulement entretien régulier ou réparations mineures requises", x)) return("minorrep")
-  #   if (grepl("^Réparations majeures requises", x)) return("majorrep")
-  #   
-  #   if (grepl("^Total - État du logement", x)) return("FILTEROUT")
-  #   "FILTEROUT"    
-  # })
-  # 
-  # data_2016[4,] <- lapply(data_2016[4,], \(x) {
-  #   if (x == "Géographie") return("ID")
-  #   x <- stringr::str_trim(x)
-  #   if (grepl("^Total \u0096 Genre de ménage incluant la structure de la famille de recensement", x)) return("total")
-  #   # Census families
-  #   if (grepl("^Ménages comptant une famille de recensement", x)) return("family")
-  #   if (grepl("^Une famille de recensement monoparentale", x)) return("monop")
-  #   if (grepl("^Avec un parent seul de sexe masculin", x)) return("monopmen")
-  #   if (grepl("^Avec un parent seul de sexe féminin", x)) return("monopwomen")
-  #   
-  #   if (grepl("^Un couple, avec ou sans enfants dans leur famille de recensement", x)) return("couple")
-  #   if (grepl("^Couples sans enfants", x)) return("nochildren")
-  #   if (grepl("^Avec enfants", x)) return("withchildren")
-  #   if (grepl("^1 ou 2 enfants", x)) return("12children")
-  #   if (grepl("^3 enfants ou plus", x)) return("3pluschildren")
-  #   
-  #   # No census families
-  #   if (grepl("^Total \u0096 Ménages composés d\u0092une personne seule (18 ans et plus)", x)) return("livingalone")
-  #   if (grepl("^Personnes vivant seules de 18 à 64 ans", x)) return("la1864")
-  #   if (grepl("^65 ans et plus", x)) return("la65")
-  #   
-  #   "FILTEROUT"
-  # })
-  # 
-  # # Change the name
-  # names(data_2016) <-
-  #   sapply(seq_len(ncol(data_2016)), \(x) {
-  #     # Grab the right column
-  #     dt <- data_2016[1:4, x]
-  #     # Glue together spaced by an underscore
-  #     paste0(unlist(dt), collapse = "_")
-  #   })
-  # 
-  # # Filter out 
-  # data_2016 <- data_2016[!grepl("FILTEROUT", names(data_2016))]
-  # 
-  # # Clean up
-  # data_2016 <- data_2016[5:nrow(data_2016), ]
-  # names(data_2016)[1] <- "ID"
-  # data_2016$ID <- gsub(" (.*)$", "", data_2016$ID)
-  # data_2016[, -1] <- suppressWarnings(sapply(data_2016[, -1], as.numeric))
-  # 
-  # # Add the Laval secteur number
-  # data_2016$ID[data_2016$ID == "Secteur"] <- 
-  #   paste0("Secteur ", 1:6)
-  # 
-  # # Les deux centre-ville
-  # data_2016$ID[data_2016$ID == "2031"] <- 
-  #   c("2031 | Centre-ville : Faubourg Saint- Laurent",
-  #     "2031 | Centre-ville : Peter-McGill")
-  # 
-  # # Aggregate territories
-  # agg <- data_2016[data_2016$ID %in% c(710, 708), 2:ncol(data_2016)] |> 
-  #   colSums()
-  # agg <- mapply(\(n, v) {
-  #   out <- tibble::tibble(v)
-  #   names(out) <- n
-  #   out
-  # }, names(agg), agg, SIMPLIFY = FALSE) |> (\(x) Reduce(cbind, x))() |> 
-  #   tibble::as_tibble()
-  # new_1 <- cbind(tibble::tibble(ID = as.character(716)), agg) |> tibble::as_tibble()
-  # 
-  # agg <- data_2016[data_2016$ID %in% c(706, 707), 2:ncol(data_2016)] |> 
-  #   colSums()
-  # agg <- mapply(\(n, v) {
-  #   out <- tibble::tibble(v)
-  #   names(out) <- n
-  #   out
-  # }, names(agg), agg, SIMPLIFY = FALSE) |> (\(x) Reduce(cbind, x))() |> 
-  #   tibble::as_tibble()
-  # new_2 <- cbind(tibble::tibble(ID = as.character(715)), agg) |> tibble::as_tibble()
-  # 
-  # data_2016 <- rbind(data_2016[!data_2016$ID %in% c(710, 708, 706, 707), ],
-  #                    new_1, new_2) |> tibble::as_tibble()
-  # 
-  # # Add geometries so we can interpolate data to 2021 geometries
-  # census_2016 <- cancensus::get_census("CA16", regions = list(CMA = 24462), 
-  #                                      level = "CT", geo_format = "sf")
-  # census_2021 <- cancensus::get_census("CA21", regions = list(CMA = 24462), 
-  #                                      level = "CT", geo_format = "sf")
-  # 
-  # census_2016 <- census_2016["GeoUID"]
-  # names(census_2016)[1] <- "ID"
-  # census_2021 <- census_2021["GeoUID"]
-  # names(census_2021)[1] <- "ID"
-  # 
-  # census_2016 <- merge(census_2016, data_2016, by = "ID")
-  # 
-  # ct_data_2016 <- cc.buildr::interpolate_from_area(to = census_2021, 
-  #                                                  from = census_2016, 
-  #                                                  round_additive = TRUE, 
-  #                                                  additive_vars = names(data_2016)[2:ncol(data_2016)], 
-  #                                                  crs = crs)
-  # ct_data_2016 <- dplyr::mutate(ct_data_2016, 
-  #                               dplyr::across(dplyr::where(is.numeric), ~round(.x/5)*5))
-  # 
-  # centraide_data_2016 <- data_2016[!data_2016$ID %in% census_2016$ID, ]
-  # 
-  # data_2016 <- rbind(sf::st_drop_geometry(ct_data_2016), centraide_data_2016)
-  # 
-  # # 2021 data ---------------------------------------------------------------
-  # 
-  # data <- lapply(csvs_2021, read.csv, header = FALSE, fileEncoding = "ISO-8859-1")
-  # data <- lapply(data, tibble::as_tibble)
-  # # Check if header are all the same
-  # data_check <- lapply(data, \(x) x[1:4, 2:ncol(x)])
-  # data_check <- sapply(seq_along(data_check), \(x) {
-  #   if (x == 1) return(TRUE)
-  #   identical(data_check[[x - 1]], data_check[[x]])
-  # })
-  # if (!all(data_check)) {
-  #   stop("The data you are going to rbind is not arranged the same way.")
-  # }
-  # 
-  # data_init <- data[[1]]
-  # data_rest <- lapply(data[2:length(data)], \(x) x[5:nrow(x), ])
-  # data_2021 <- Reduce(rbind, data_rest, init = data_init)
-  # 
-  # # Clean up the table
-  # data_2021[1,] <- lapply(data_2021[1,], \(x) {
-  #   if (x == "") return("ID")
-  #   x <- stringr::str_trim(x)
-  #   if (grepl("^Total", x)) return("total")
-  #   if (grepl("^Propriétaire", x)) return("owner")
-  #   if (grepl("^Locataire", x)) return("tenant")
-  #   "FILTEROUT"   
-  # })
-  # 
-  # data_2021[2,] <- lapply(data_2021[2,], \(x) {
-  #   if (x == "") return("ID")
-  #   x <- stringr::str_trim(x)
-  #   if (grepl("^Total", x)) return("total")
-  #   if (grepl("^30 % ou plus du revenu est consacré aux frais de logement", x)) return("sc30")
-  #   if (grepl("^50 % ou plus du revenu est consacré aux frais de logement", x)) return("sc50")
-  #   if (grepl("^80 % ou plus du revenu est consacré aux frais de logement", x)) return("sc80")
-  #   "FILTEROUT"    
-  # })
-  # 
-  # data_2021[3,] <- lapply(data_2021[3,], \(x) {
-  #   if (x == "") return("ID")
-  #   x <- stringr::str_trim(x)
-  #   if (grepl("^Total - Taille convenable du logement", x)) return("total")
-  #   if (grepl("^Logement de taille convenable", x)) return("suit")
-  #   if (grepl("^Logement de taille non convenable", x)) return("unsuit")
-  #   if (grepl("^Seulement entretien régulier ou réparations mineures requises", x)) return("minorrep")
-  #   if (grepl("^Réparations majeures requises", x)) return("majorrep")
-  #   
-  #   if (grepl("^Total - État du logement", x)) return("FILTEROUT")
-  #   "FILTEROUT"    
-  # })
-  # 
-  # data_2021[4,] <- lapply(data_2021[4,], \(x) {
-  #   if (x == "Géographie") return("ID")
-  #   x <- stringr::str_trim(x)
-  #   if (grepl("^Total \u0096 Genre de ménage incluant la structure de la famille de recensement", x)) return("total")
-  #   # Census families
-  #   if (grepl("^Ménages comptant une famille de recensement", x)) return("family")
-  #   if (grepl("^Une famille de recensement monoparentale", x)) return("monop")
-  #   if (grepl("^Avec un parent qui est un homme+", x)) return("monopmen")
-  #   if (grepl("^Avec un parent qui est une femme+", x)) return("monopwomen")
-  #   
-  #   if (grepl("^Un couple, avec ou sans enfants dans leur famille de recensement", x)) return("couple")
-  #   if (grepl("^Sans enfants", x)) return("nochildren")
-  #   if (grepl("^Avec enfants", x)) return("withchildren")
-  #   if (grepl("^1 ou 2 enfants", x)) return("12children")
-  #   if (grepl("^3 enfants ou plus", x)) return("3pluschildren")
-  #   
-  #   # No census families
-  #   if (grepl("^Total \u0096 Ménages composés d\u0092une personne seule (18 ans et plus)", x)) return("livingalone")
-  #   if (grepl("^Personnes vivant seules de 18 à 64 ans", x)) return("la1864")
-  #   if (grepl("^65 ans et plus", x)) return("la65")
-  #   
-  #   "FILTEROUT"
-  # })
-  # 
-  # # Change the name
-  # names(data_2021) <-
-  #   sapply(seq_len(ncol(data_2021)), \(x) {
-  #     # Grab the right column
-  #     dt <- data_2021[1:4, x]
-  #     # Glue together spaced by an underscore
-  #     paste0(unlist(dt), collapse = "_")
-  #   })
-  # 
-  # # Filter out 
-  # data_2021 <- data_2021[!grepl("FILTEROUT", names(data_2021))]
-  # 
-  # # Clean up
-  # data_2021 <- data_2021[5:nrow(data_2021), ]
-  # names(data_2021)[1] <- "ID"
-  # data_2021$ID <- gsub(" (.*)$", "", data_2021$ID)
-  # data_2021[, -1] <- suppressWarnings(sapply(data_2021[, -1], as.numeric))
-  # 
-  # # Add the Laval secteur number
-  # data_2021$ID[data_2021$ID == "Secteur"] <- 
-  #   paste0("Secteur ", 1:6)
-  # 
-  # data_2021$ID[data_2021$ID == "2031"] <- 
-  #   c("2031 | Centre-ville : Faubourg Saint- Laurent",
-  #     "2031 | Centre-ville : Peter-McGill")
-  # 
-  # # Aggregate territories
-  # agg <- data_2021[data_2021$ID %in% c(710, 708), 2:ncol(data_2021)] |> 
-  #   colSums()
-  # agg <- mapply(\(n, v) {
-  #   out <- tibble::tibble(v)
-  #   names(out) <- n
-  #   out
-  # }, names(agg), agg, SIMPLIFY = FALSE) |> (\(x) Reduce(cbind, x))() |> 
-  #   tibble::as_tibble()
-  # new_1 <- cbind(tibble::tibble(ID = as.character(716)), agg) |> tibble::as_tibble()
-  # 
-  # agg <- data_2021[data_2021$ID %in% c(706, 707), 2:ncol(data_2021)] |> 
-  #   colSums()
-  # agg <- mapply(\(n, v) {
-  #   out <- tibble::tibble(v)
-  #   names(out) <- n
-  #   out
-  # }, names(agg), agg, SIMPLIFY = FALSE) |> (\(x) Reduce(cbind, x))() |> 
-  #   tibble::as_tibble()
-  # new_2 <- cbind(tibble::tibble(ID = as.character(715)), agg) |> tibble::as_tibble()
-  # 
-  # data_2021 <- rbind(data_2021[!data_2021$ID %in% c(710, 708, 706, 707), ],
-  #                    new_1, new_2) |> tibble::as_tibble()
-  # 
-  # 
-  # # Add normalization -------------------------------------------------------
-  # 
-  # names(data_2016)[2:ncol(data_2016)] <- 
-  #   paste0(names(data_2016)[2:ncol(data_2016)], "_count")
-  # result <- lapply(data_2016[, 2:ncol(data_2016)], \(x) {
-  #   x / data_2016$total_total_total_total_count
-  # })
-  # names(result) <- gsub("_count$", "_pct", names(result))
-  # result <- tibble::as_tibble(as.data.frame(result))
-  # data_2016 <- cbind(tibble::tibble(ID = data_2016$ID), result) |> 
-  #   merge(data_2016, by = "ID")
-  # 
-  # names(data_2021)[2:ncol(data_2021)] <- 
-  #   paste0(names(data_2021)[2:ncol(data_2021)], "_count")
-  # result <- lapply(data_2021[, 2:ncol(data_2021)], \(x) {
-  #   x / data_2021$total_total_total_total_count
-  # })
-  # names(result) <- gsub("_count$", "_pct", names(result))
-  # result <- tibble::as_tibble(as.data.frame(result))
-  # data_2021 <- cbind(tibble::tibble(ID = data_2021$ID), result) |> 
-  #   merge(data_2021, by = "ID")
-  # 
-  # 
-  # # Merge the two years -----------------------------------------------------
-  # 
-  # names(data_2016)[2:ncol(data_2016)] <- 
-  #   paste0(names(data_2016)[2:ncol(data_2016)], "_2016")
-  # 
-  # names(data_2021)[2:ncol(data_2021)] <- 
-  #   paste0(names(data_2021)[2:ncol(data_2021)], "_2021")
-  # 
-  # data <- merge(data_2016, data_2021, by = "ID")
-  # names(data)[2:ncol(data)] <- paste0("tenure_", names(data)[2:ncol(data)])
-  # 
-  # data[is.na(data)] <- NA
-  # 
-  # 
-  # qs::qsave(data, "dev/data/centraide/tenure.qs")
+  # Read and prepare data ---------------------------------------------------
+# 
+#   # Read the data placed in the centraide folder
+#   csvs <- list.files("dev/data/centraide/tenure_status", full.names = TRUE)
+#   csvs_2016 <- stringr::str_subset(csvs, "2016.csv$")
+#   csvs_2021 <- stringr::str_subset(csvs, "2021.csv$")
+# 
+# 
+#   # 2016 data --------------------------------------------------------------
+# 
+#   data <- lapply(csvs_2016, read.csv, header = FALSE, fileEncoding = "ISO-8859-1")
+#   data <- lapply(data, tibble::as_tibble)
+#   # Check if header are all the same
+#   data_check <- lapply(data, \(x) x[1:4, 2:ncol(x)])
+#   data_check <- sapply(seq_along(data_check), \(x) {
+#     if (x == 1) return(TRUE)
+#     identical(data_check[[x - 1]], data_check[[x]])
+#   })
+#   if (!all(data_check)) {
+#     stop("The data you are going to rbind is not arranged the same way.")
+#   }
+# 
+#   data_init <- data[[1]]
+#   data_rest <- lapply(data[2:length(data)], \(x) x[5:nrow(x), ])
+#   data_2016 <- Reduce(rbind, data_rest, init = data_init)
+# 
+#   # data_2016 <- data_2016[c(1:4, 6:nrow(data_2016)), ]
+# 
+#   # Clean up the table
+#   data_2016[1,] <- lapply(data_2016[1,], \(x) {
+#     if (x == "") return("ID")
+#     x <- stringr::str_trim(x)
+#     if (grepl("^Total", x)) return("tot")
+#     if (grepl("^Propriétaire", x)) return("owner")
+#     if (grepl("^Locataire", x)) return("tenant")
+#     "FILTEROUT"
+#   })
+# 
+#   data_2016[2,] <- lapply(data_2016[2,], \(x) {
+#     if (x == "") return("ID")
+#     x <- stringr::str_trim(x)
+#     if (grepl("^Total", x)) return("tot")
+#     if (grepl("^30 % ou plus du revenu est consacré aux frais de logement", x)) return("sc30")
+#     if (grepl("^50 % au plus du revenu est consacré aux frais de logement", x)) return("sc50")
+#     if (grepl("^80 % ou plus du revenu est consacré aux frais de logement", x)) return("sc80")
+#     "FILTEROUT"
+#   })
+# 
+#   data_2016[3,] <- lapply(data_2016[3,], \(x) {
+#     if (x == "") return("ID")
+#     x <- stringr::str_trim(x)
+#     if (grepl("^Total - Taille convenable du logement", x)) return("tot")
+#     if (grepl("^De taille convenable", x)) return("suit")
+#     if (grepl("^De taille insuffisante", x)) return("unsuit")
+#     if (grepl("^Seulement entretien régulier ou réparations mineures requises", x)) return("minorrep")
+#     if (grepl("^Réparations majeures requises", x)) return("majorrep")
+# 
+#     if (grepl("^Total - État du logement", x)) return("FILTEROUT")
+#     "FILTEROUT"
+#   })
+# 
+#   data_2016[4,] <- lapply(data_2016[4,], \(x) {
+#     if (x == "Géographie") return("ID")
+#     x <- stringr::str_trim(x)
+#     if (grepl("^Total \u0096 Genre de ménage incluant la structure de la famille de recensement", x)) return("tot")
+#     # Census families
+#     if (grepl("^Ménages comptant une famille de recensement", x)) return("family")
+#     if (grepl("^Une famille de recensement monoparentale", x)) return("monop")
+#     if (grepl("^Avec un parent seul de sexe masculin", x)) return("monopmen")
+#     if (grepl("^Avec un parent seul de sexe féminin", x)) return("monopwomen")
+# 
+#     if (grepl("^Un couple, avec ou sans enfants dans leur famille de recensement", x)) return("couple")
+#     if (grepl("^Couples sans enfants", x)) return("nochldrn")
+#     if (grepl("^Avec enfants", x)) return("withchldrn")
+#     if (grepl("^1 ou 2 enfants", x)) return("12chldrn")
+#     if (grepl("^3 enfants ou plus", x)) return("3pluschldrn")
+# 
+#     # No census families
+#     if (grepl("^Total \u0096 Ménages composés d\u0092une personne seule (18 ans et plus)", x)) return("livaln")
+#     if (grepl("^Personnes vivant seules de 18 à 64 ans", x)) return("la1864")
+#     if (grepl("^65 ans et plus", x)) return("la65")
+# 
+#     "FILTEROUT"
+#   })
+# 
+#   # Change the name
+#   names(data_2016) <-
+#     sapply(seq_len(ncol(data_2016)), \(x) {
+#       # Grab the right column
+#       dt <- data_2016[1:4, x]
+#       # Glue together spaced by an underscore
+#       paste0(unlist(dt), collapse = "_")
+#     })
+# 
+#   # Filter out
+#   data_2016 <- data_2016[!grepl("FILTEROUT", names(data_2016))]
+# 
+#   # Clean up
+#   data_2016 <- data_2016[5:nrow(data_2016), ]
+#   names(data_2016)[1] <- "ID"
+#   data_2016$ID <- gsub(" (.*)$", "", data_2016$ID)
+#   data_2016[, -1] <- suppressWarnings(sapply(data_2016[, -1], as.numeric))
+# 
+#   # Add the Laval secteur number
+#   data_2016$ID[data_2016$ID == "Secteur"] <-
+#     paste0("Secteur ", 1:6)
+# 
+#   # Les deux centre-ville
+#   data_2016$ID[data_2016$ID == "2031"] <-
+#     c("2031 | Centre-ville : Faubourg Saint- Laurent",
+#       "2031 | Centre-ville : Peter-McGill")
+# 
+#   # Aggregate territories
+#   agg <- data_2016[data_2016$ID %in% c(710, 708), 2:ncol(data_2016)] |>
+#     colSums()
+#   agg <- mapply(\(n, v) {
+#     out <- tibble::tibble(v)
+#     names(out) <- n
+#     out
+#   }, names(agg), agg, SIMPLIFY = FALSE) |> (\(x) Reduce(cbind, x))() |>
+#     tibble::as_tibble()
+#   new_1 <- cbind(tibble::tibble(ID = as.character(716)), agg) |> tibble::as_tibble()
+# 
+#   agg <- data_2016[data_2016$ID %in% c(706, 707), 2:ncol(data_2016)] |>
+#     colSums()
+#   agg <- mapply(\(n, v) {
+#     out <- tibble::tibble(v)
+#     names(out) <- n
+#     out
+#   }, names(agg), agg, SIMPLIFY = FALSE) |> (\(x) Reduce(cbind, x))() |>
+#     tibble::as_tibble()
+#   new_2 <- cbind(tibble::tibble(ID = as.character(715)), agg) |> tibble::as_tibble()
+# 
+#   data_2016 <- rbind(data_2016[!data_2016$ID %in% c(710, 708, 706, 707), ],
+#                      new_1, new_2) |> tibble::as_tibble()
+# 
+#   # Add geometries so we can interpolate data to 2021 geometries
+#   census_2016 <- cancensus::get_census("CA16", regions = list(CMA = 24462),
+#                                        level = "CT", geo_format = "sf")
+#   census_2021 <- cancensus::get_census("CA21", regions = list(CMA = 24462),
+#                                        level = "CT", geo_format = "sf")
+# 
+#   census_2016 <- census_2016["GeoUID"]
+#   names(census_2016)[1] <- "ID"
+#   census_2021 <- census_2021["GeoUID"]
+#   names(census_2021)[1] <- "ID"
+# 
+#   census_2016 <- merge(census_2016, data_2016, by = "ID")
+# 
+#   ct_data_2016 <- cc.buildr::interpolate_from_area(to = census_2021,
+#                                                    from = census_2016,
+#                                                    round_additive = TRUE,
+#                                                    additive_vars = names(data_2016)[2:ncol(data_2016)],
+#                                                    crs = crs)
+#   ct_data_2016 <- dplyr::mutate(ct_data_2016,
+#                                 dplyr::across(dplyr::where(is.numeric), ~round(.x/5)*5))
+# 
+#   centraide_data_2016 <- data_2016[!data_2016$ID %in% census_2016$ID, ]
+# 
+#   data_2016 <- rbind(sf::st_drop_geometry(ct_data_2016), centraide_data_2016)
+# 
+#   # 2021 data ---------------------------------------------------------------
+# 
+#   data <- lapply(csvs_2021, read.csv, header = FALSE, fileEncoding = "ISO-8859-1")
+#   data <- lapply(data, tibble::as_tibble)
+#   # Check if header are all the same
+#   data_check <- lapply(data, \(x) x[1:4, 2:ncol(x)])
+#   data_check <- sapply(seq_along(data_check), \(x) {
+#     if (x == 1) return(TRUE)
+#     identical(data_check[[x - 1]], data_check[[x]])
+#   })
+#   if (!all(data_check)) {
+#     stop("The data you are going to rbind is not arranged the same way.")
+#   }
+# 
+#   data_init <- data[[1]]
+#   data_rest <- lapply(data[2:length(data)], \(x) x[5:nrow(x), ])
+#   data_2021 <- Reduce(rbind, data_rest, init = data_init)
+# 
+#   # Clean up the table
+#   data_2021[1,] <- lapply(data_2021[1,], \(x) {
+#     if (x == "") return("ID")
+#     x <- stringr::str_trim(x)
+#     if (grepl("^Total", x)) return("tot")
+#     if (grepl("^Propriétaire", x)) return("owner")
+#     if (grepl("^Locataire", x)) return("tenant")
+#     "FILTEROUT"
+#   })
+# 
+#   data_2021[2,] <- lapply(data_2021[2,], \(x) {
+#     if (x == "") return("ID")
+#     x <- stringr::str_trim(x)
+#     if (grepl("^Total", x)) return("tot")
+#     if (grepl("^30 % ou plus du revenu est consacré aux frais de logement", x)) return("sc30")
+#     if (grepl("^50 % ou plus du revenu est consacré aux frais de logement", x)) return("sc50")
+#     if (grepl("^80 % ou plus du revenu est consacré aux frais de logement", x)) return("sc80")
+#     "FILTEROUT"
+#   })
+# 
+#   data_2021[3,] <- lapply(data_2021[3,], \(x) {
+#     if (x == "") return("ID")
+#     x <- stringr::str_trim(x)
+#     if (grepl("^Total - Taille convenable du logement", x)) return("tot")
+#     if (grepl("^Logement de taille convenable", x)) return("suit")
+#     if (grepl("^Logement de taille non convenable", x)) return("unsuit")
+#     if (grepl("^Seulement entretien régulier ou réparations mineures requises", x)) return("minorrep")
+#     if (grepl("^Réparations majeures requises", x)) return("majorrep")
+# 
+#     if (grepl("^Total - État du logement", x)) return("FILTEROUT")
+#     "FILTEROUT"
+#   })
+# 
+#   data_2021[4,] <- lapply(data_2021[4,], \(x) {
+#     if (x == "Géographie") return("ID")
+#     x <- stringr::str_trim(x)
+#     if (grepl("^Total \u0096 Genre de ménage incluant la structure de la famille de recensement", x)) return("tot")
+#     # Census families
+#     if (grepl("^Ménages comptant une famille de recensement", x)) return("family")
+#     if (grepl("^Une famille de recensement monoparentale", x)) return("monop")
+#     if (grepl("^Avec un parent qui est un homme+", x)) return("monopmen")
+#     if (grepl("^Avec un parent qui est une femme+", x)) return("monopwomen")
+# 
+#     if (grepl("^Un couple, avec ou sans enfants dans leur famille de recensement", x)) return("couple")
+#     if (grepl("^Sans enfants", x)) return("nochldrn")
+#     if (grepl("^Avec enfants", x)) return("withchldrn")
+#     if (grepl("^1 ou 2 enfants", x)) return("12chldrn")
+#     if (grepl("^3 enfants ou plus", x)) return("3pluschldrn")
+# 
+#     # No census families
+#     if (grepl("^Total \u0096 Ménages composés d\u0092une personne seule (18 ans et plus)", x)) return("livaln")
+#     if (grepl("^Personnes vivant seules de 18 à 64 ans", x)) return("la1864")
+#     if (grepl("^65 ans et plus", x)) return("la65")
+# 
+#     "FILTEROUT"
+#   })
+# 
+#   # Change the name
+#   names(data_2021) <-
+#     sapply(seq_len(ncol(data_2021)), \(x) {
+#       # Grab the right column
+#       dt <- data_2021[1:4, x]
+#       # Glue together spaced by an underscore
+#       paste0(unlist(dt), collapse = "_")
+#     })
+# 
+#   # Filter out
+#   data_2021 <- data_2021[!grepl("FILTEROUT", names(data_2021))]
+# 
+#   # Clean up
+#   data_2021 <- data_2021[5:nrow(data_2021), ]
+#   names(data_2021)[1] <- "ID"
+#   data_2021$ID <- gsub(" (.*)$", "", data_2021$ID)
+#   data_2021[, -1] <- suppressWarnings(sapply(data_2021[, -1], as.numeric))
+# 
+#   # Add the Laval secteur number
+#   data_2021$ID[data_2021$ID == "Secteur"] <-
+#     paste0("Secteur ", 1:6)
+# 
+#   data_2021$ID[data_2021$ID == "2031"] <-
+#     c("2031 | Centre-ville : Faubourg Saint- Laurent",
+#       "2031 | Centre-ville : Peter-McGill")
+# 
+#   # Aggregate territories
+#   agg <- data_2021[data_2021$ID %in% c(710, 708), 2:ncol(data_2021)] |>
+#     colSums()
+#   agg <- mapply(\(n, v) {
+#     out <- tibble::tibble(v)
+#     names(out) <- n
+#     out
+#   }, names(agg), agg, SIMPLIFY = FALSE) |> (\(x) Reduce(cbind, x))() |>
+#     tibble::as_tibble()
+#   new_1 <- cbind(tibble::tibble(ID = as.character(716)), agg) |> tibble::as_tibble()
+# 
+#   agg <- data_2021[data_2021$ID %in% c(706, 707), 2:ncol(data_2021)] |>
+#     colSums()
+#   agg <- mapply(\(n, v) {
+#     out <- tibble::tibble(v)
+#     names(out) <- n
+#     out
+#   }, names(agg), agg, SIMPLIFY = FALSE) |> (\(x) Reduce(cbind, x))() |>
+#     tibble::as_tibble()
+#   new_2 <- cbind(tibble::tibble(ID = as.character(715)), agg) |> tibble::as_tibble()
+# 
+#   data_2021 <- rbind(data_2021[!data_2021$ID %in% c(710, 708, 706, 707), ],
+#                      new_1, new_2) |> tibble::as_tibble()
+# 
+# 
+#   # Add normalization -------------------------------------------------------
+# 
+#   names(data_2016)[2:ncol(data_2016)] <-
+#     paste0(names(data_2016)[2:ncol(data_2016)], "_count")
+#   result <- lapply(data_2016[, 2:ncol(data_2016)], \(x) {
+#     x / data_2016$tot_tot_tot_tot_count
+#   })
+#   names(result) <- gsub("_count$", "_pct", names(result))
+#   result <- tibble::as_tibble(as.data.frame(result))
+#   data_2016 <- cbind(tibble::tibble(ID = data_2016$ID), result) |>
+#     merge(data_2016, by = "ID")
+# 
+#   names(data_2021)[2:ncol(data_2021)] <-
+#     paste0(names(data_2021)[2:ncol(data_2021)], "_count")
+#   result <- lapply(data_2021[, 2:ncol(data_2021)], \(x) {
+#     x / data_2021$tot_tot_tot_tot_count
+#   })
+#   names(result) <- gsub("_count$", "_pct", names(result))
+#   result <- tibble::as_tibble(as.data.frame(result))
+#   data_2021 <- cbind(tibble::tibble(ID = data_2021$ID), result) |>
+#     merge(data_2021, by = "ID")
+# 
+# 
+#   # Merge the two years -----------------------------------------------------
+# 
+#   names(data_2016)[2:ncol(data_2016)] <-
+#     paste0(names(data_2016)[2:ncol(data_2016)], "_2016")
+# 
+#   names(data_2021)[2:ncol(data_2021)] <-
+#     paste0(names(data_2021)[2:ncol(data_2021)], "_2021")
+# 
+#   data <- merge(data_2016, data_2021, by = "ID")
+#   names(data)[2:ncol(data)] <- paste0("tenure_", names(data)[2:ncol(data)])
+# 
+#   data[is.na(data)] <- NA
+# 
+# 
+#   qs::qsave(data, "dev/data/centraide/tenure.qs")
   data <- qs::qread("dev/data/centraide/tenure.qs")
   
   
@@ -356,7 +356,7 @@ build_and_append_tenure <- function(scales_variables_modules, scales_sequences, 
   types <- c(types_avg, types_count)
   
   # Make a parent string the same way as the types
-  parent_strings <- lapply(unique_vars, \(x) "tenure_total_total_total_total_count")
+  parent_strings <- lapply(unique_vars, \(x) "tenure_tot_tot_tot_tot_count")
   names(parent_strings) <- unique_vars
   parent_strings[grepl("_count$", names(parent_strings))] <- "population"
   
@@ -677,7 +677,8 @@ build_and_append_tenure <- function(scales_variables_modules, scales_sequences, 
       interpolated = interpolated_df,
       # Allow title duplicate so that the parent vector is always 'households'
       # which is an already existing variable title for other parent vectors.
-      allow_title_duplicate = TRUE
+      allow_title_duplicate = TRUE,
+      schema = list(time = time_regex)
     ) |> (\(x) x[nrow(x), ])()
   }) |> (\(x) Reduce(rbind, x))()
   
@@ -722,7 +723,7 @@ build_and_append_tenure <- function(scales_variables_modules, scales_sequences, 
       dates = c(2016, 2021),
       add_advanced_controls = c("mnd", "Shelter cost to income ratio", "Suitability and condition",
                                 "Family composition"),
-      default_var = "tenure_tenant_total_total_total_pct",
+      default_var = "tenure_tenant_tot_tot_tot_pct",
       avail_scale_combinations = avail_scale_combinations
     )
   
