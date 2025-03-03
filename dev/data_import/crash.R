@@ -144,7 +144,7 @@ build_and_append_crash <- function(scales_variables_modules, crs, scales_sequenc
   }
   
   interpolated_ref <- 
-    tibble::tibble(scale = names(only_scales), interpolated_from = rep(FALSE, length(only_scales)))
+    tibble::tibble(scale = only_scales, interpolated_from = rep(FALSE, length(only_scales)))
   
 
   # Variables table ---------------------------------------------------------
@@ -227,7 +227,7 @@ build_and_append_crash <- function(scales_variables_modules, crs, scales_sequenc
       exp_q5 = exp_q5,
       parent_vec = parent_vec,
       theme = "Transport",
-      classification = "sociodemo",
+      classification = "other",
       pe_include = var %in% c("crash_count_total", "crash_sqkm_ped", "crash_per1k_cyc"),
       private = FALSE,
       dates = years,

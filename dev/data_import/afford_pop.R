@@ -476,14 +476,14 @@ build_and_append_afford_pop <- function(scales_variables_modules, scales_sequenc
       if (grepl("_nimm_", var)) out <- c(out, "are not immigrants")
       if (grepl("_ref_", var)) out <- c(out, "are refugees")
       if (grepl("_nper_", var)) out <- c(out, "are non-permanent residents")
-      if (grepl("_nrecentimm_", var)) out <- c(out, "immigrated more than 5 years ago")
-      if (grepl("_recentimm_", var)) out <- c(out, "immigrated in the past 5 years")
+      if (grepl("_nrcetimm_", var)) out <- c(out, "immigrated more than 5 years ago")
+      if (grepl("_rcetimm_", var)) out <- c(out, "immigrated in the past 5 years")
       
       if (grepl("_men_", var)) out <- c(out, "are men+")
       if (grepl("_women_", var)) out <- c(out, "are women+")
       
-      if (grepl("_poverty_", var)) out <- c(out, "are in a situation of poverty")
-      if (grepl("_nopoverty_", var)) out <- c(out, "are not in a situation of poverty")
+      if (grepl("_pov_", var)) out <- c(out, "are in a situation of poverty")
+      if (grepl("_nopov_", var)) out <- c(out, "are not in a situation of poverty")
       
       return(out)
     })()
@@ -503,14 +503,14 @@ build_and_append_afford_pop <- function(scales_variables_modules, scales_sequenc
       if (grepl("_nimm_", var)) out <- c(out, "Not immigrants")
       if (grepl("_ref_", var)) out <- c(out, "Refugees")
       if (grepl("_nper_", var)) out <- c(out, "Non-permanent residents")
-      if (grepl("_nrecentimm_", var)) out <- c(out, "Immigrated more than 5 years ago")
-      if (grepl("_recentimm_", var)) out <- c(out, "Immigrated in the past 5 years")
+      if (grepl("_nrcetimm_", var)) out <- c(out, "Immigrated more than 5 years ago")
+      if (grepl("_rcetimm_", var)) out <- c(out, "Immigrated in the past 5 years")
       
       if (grepl("_men_", var)) out <- c(out, "Men+")
       if (grepl("_women_", var)) out <- c(out, "Women+")
       
-      if (grepl("_poverty_", var)) out <- c(out, "In a situation of poverty")
-      if (grepl("_nopoverty_", var)) out <- c(out, "Not in a situation of poverty")
+      if (grepl("_pov_", var)) out <- c(out, "In a situation of poverty")
+      if (grepl("_nopov_", var)) out <- c(out, "Not in a situation of poverty")
       
       if (length(out) == 0) return({
         if (grepl("_pct", var)) return("All individuals")
@@ -533,14 +533,14 @@ build_and_append_afford_pop <- function(scales_variables_modules, scales_sequenc
       if (grepl("_nimm_", var)) out <- c(out, "Not imm.")
       if (grepl("_ref_", var)) out <- c(out, "Ref.")
       if (grepl("_nper_", var)) out <- c(out, "Non-perm.")
-      if (grepl("_nrecentimm_", var)) out <- c(out, "Imm >5.")
-      if (grepl("_recentimm_", var)) out <- c(out, "Imm <5.")
+      if (grepl("_nrcetimm_", var)) out <- c(out, "Imm >5.")
+      if (grepl("_rcetimm_", var)) out <- c(out, "Imm <5.")
       
       if (grepl("_men_", var)) out <- c(out, "Men+")
       if (grepl("_women_", var)) out <- c(out, "Women+")
       
-      if (grepl("_poverty_", var)) out <- c(out, "Pov.")
-      if (grepl("_nopoverty_", var)) out <- c(out, "Not pov.")
+      if (grepl("_pov_", var)) out <- c(out, "Pov.")
+      if (grepl("_nopov_", var)) out <- c(out, "Not pov.")
       
       if (length(out) == 0) return({
         if (grepl("_pct", var)) return("All ind.")
@@ -602,8 +602,8 @@ build_and_append_afford_pop <- function(scales_variables_modules, scales_sequenc
         if (grepl("_nimm_", var)) return("Not immigrants")
         if (grepl("_ref_", var)) return("Refugees")
         if (grepl("_nper_", var)) return("Non-permanent residents")
-        if (grepl("_nrecentimm_", var)) return("Immigrated more than 5 years ago")
-        if (grepl("_recentimm_", var)) return("Immigrated in the past 5 years")
+        if (grepl("_nrcetimm_", var)) return("Immigrated more than 5 years ago")
+        if (grepl("_rcetimm_", var)) return("Immigrated in the past 5 years")
         return("Total")
       })(),
       
@@ -614,8 +614,8 @@ build_and_append_afford_pop <- function(scales_variables_modules, scales_sequenc
       })(),
       
       "Poverty status" = (\(x) {
-        if (grepl("_poverty_", var)) return("In a situation of poverty")
-        if (grepl("_nopoverty_", var)) return("Not in a situation of poverty")
+        if (grepl("_pov_", var)) return("In a situation of poverty")
+        if (grepl("_nopov_", var)) return("Not in a situation of poverty")
         return("Total")
       })()
     )

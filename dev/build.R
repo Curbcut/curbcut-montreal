@@ -343,7 +343,7 @@ scales_dictionary <-
 ndvigrids <- ndvi_grids(census_scales = census_scales,
                         base_polygons = base_polygons,
                         overwrite_ndvi_tiles = FALSE,
-                        overwrite_final_grids = FALSE,
+                        overwrite_final_grids = TRUE,
                         crs = crs)
 
 scales_dictionary <- scales_dictionary_ndvi(scales_dictionary)
@@ -502,6 +502,39 @@ scales_dictionary <- add_regions_to_scales_dictionary(
   regions_dictionary = regions_dictionary, 
   crs = crs)
 
+
+# save.image("dev/data/built/post_consolidate_FULLREGIONSDICT.RData")
+# load("dev/data/built/post_consolidate_FULLREGIONSDICT.RData")
+
+
+# lapply(names(scales_consolidated$scales), \(sc) {
+#   df <- scales_consolidated$scales[[sc]]
+#   names(df) <- tolower(names(df))
+#   
+#   if ("geometry_digital" %in% names(df)) {
+#     df <- sf::st_drop_geometry(df)
+#     names(df)[names(df) == "geometry_digital"] <- "geometry"
+#     df <- sf::st_as_sf(df)
+#   }
+#   
+#   cc.pipe::db_write_scale(df = df, table_name = tolower(sc), schema = "mtl")
+# })
+# 
+# sd <- scales_dictionary
+# sd$scale <- tolower(sd$scale)
+# sd$regions <- lapply(sd$regions, tolower)
+# cc.pipe::db_write(df = sd, table_name = "scales_dictionary", schema = "mtl", primary_key = "scale")
+# 
+# 
+# rd <- regions_dictionary
+# rd$region <- tolower(rd$region)
+# rd$scales <- lapply(rd$scales, function(x) {
+#   names(x) <- tolower(names(x))
+#   x
+# })
+# cc.pipe::db_write(df = rd, table_name = "regions_dictionary", schema = "mtl", primary_key = "region")
+
+
 save.image("dev/data/built/post_consolidate.RData")
 load("dev/data/built/post_consolidate.RData")
 
@@ -518,6 +551,96 @@ verify_dictionaries(scales = scales_consolidated$scales,
 save_geometry_export(data_folder = "data/", 
                      all_scales = scales_consolidated$scales,
                      skip_scales = large_tables_db)#names(all_scales))
+
+# # TKTK FOR FUTURE 
+# pmtiles_create <- function(sf_feature, scale_name) {
+#   # Try running 'tippecanoe --version' to check if it's installed
+#   tippecanoe_check <- system("tippecanoe --version")
+#   pmtiles_check <- system("pmtiles")
+#   
+#   # Check if the command executed successfully
+#   if (tippecanoe_check != 0) {
+#     # If Tippecanoe isn't found or doesn't work, guide the user
+#     message("Tippecanoe is not installed or not found in the system PATH.")
+#     message("Please download Tippecanoe from https://github.com/mapbox/tippecanoe.")
+#     message("If you have Tippecanoe installed via Cygwin, add its bin directory to your PATH.")
+#     message("To do this, update the PATH in .Renviron to include C:/cygwin64/usr/local/bin and C:/cygwin64/bin")
+#     
+#     return()
+#   }
+#   
+#   if (pmtiles_check != 0) {
+#     # If Tippecanoe isn't found or doesn't work, guide the user
+#     message("pmtiles is not installed or not found in the system PATH.")
+#     message("Please download https://github.com/protomaps/go-pmtiles/releases")
+#     message("Then update the PATH in .Renviron to include the folder of its executable")
+#     
+#     return()
+#   }
+#   
+#   # Transform to 4326
+#   sf_feature <- sf::st_transform(sf_feature, crs = 4326)
+#   
+#   # Convert shapefile to a temporary GeoJSON file
+#   temp_geojson <- tempfile(fileext = ".geojson")
+#   sf::st_write(sf_feature, temp_geojson, delete_dsn = TRUE)
+#   
+#   # Create a temporary file for MBTiles output
+#   temp_mbtiles <- tempfile(fileext = ".mbtiles")
+#   
+#   # Construct the Tippecanoe command to create the MBTiles
+#   tippecanoe_cmd <- paste(
+#     "tippecanoe",
+#     "-o", temp_mbtiles,  # Specify the output MBTiles file
+#     "--layer", scale_name,
+#     "--no-tile-size-limit",     # Remove tile size limit (optional)
+#     "--no-feature-limit",       # Remove feature limit (optional)
+#     temp_geojson                # Input GeoJSON file
+#   )
+#   
+#   # Run Tippecanoe to generate the MBTiles
+#   system(tippecanoe_cmd, intern = TRUE, ignore.stderr = TRUE)
+#   
+#   # Create a temporary file for the PMTiles output
+#   output_pmtiles <- tempfile(fileext = ".pmtiles")
+#   
+#   # Construct the PMTiles conversion command
+#   pmtiles_convert_cmd <- paste(
+#     "pmtiles convert",  # Command for converting MBTiles to PMTiles
+#     temp_mbtiles,       # Input MBTiles file
+#     output_pmtiles      # Output PMTiles file
+#   )
+#   
+#   # Run the PMTiles conversion
+#   system(pmtiles_convert_cmd, intern = TRUE, ignore.stderr = TRUE)
+#   
+#   # Return the path to the generated PMTiles
+#   return(output_pmtiles)
+# }
+# 
+# mapply(\(scale, scale_name) {
+#   
+#   # Switch to the geometry_digital to send it for tileset
+#   if ("geometry_digital" %in% names(scale)) {
+#     scale$geometry <- scale$geometry_digital
+#     sf::st_geometry(scale) <- "geometry"
+#   }
+#   
+#   names(scale) <- tolower(names(scale))
+#   # scale <- scale[grepl("^id$|\\_id$", names(scale))]
+#   scale <- scale[names(scale) == "id"]
+#   
+#   output_path <- pmtiles_create(scale, scale_name)
+#   aws.s3::put_object(region = Sys.getenv("CURBCUT_BUCKET_DEFAULT_REGION"), 
+#                      key = Sys.getenv("CURBCUT_BUCKET_ACCESS_ID"), 
+#                      secret = Sys.getenv("CURBCUT_BUCKET_ACCESS_KEY"), 
+#                      file = output_path, 
+#                      object = paste0("tilesets/", scale_name, ".pmtiles"), 
+#                      bucket = "curbcut.tiles")
+#   
+#  }, scales_consolidated$scales, names(scales_consolidated$scales))
+
+
 save_short_tables_qs(data_folder = "data/", 
                      all_scales = scales_consolidated$scales,
                      skip_scales = large_tables_db)#names(all_scales))
@@ -572,7 +695,8 @@ scales_variables_modules <-
                  scales_sequences = scales_sequences,
                  scales_to_interpolate = scales_to_interpolate_census,
                  overwrite = FALSE,
-                 inst_prefix = inst_prefix)
+                 inst_prefix = inst_prefix,
+                 large_tables_db = large_tables_db)
 census_variables <- get_census_vectors_details()
 
 # Build NDVI first to unload heavy grids
@@ -737,6 +861,14 @@ map_zoom_levels <- map_zoom_levels_create_all(
 
 map_zoom_levels_save(data_folder = "data/", map_zoom_levels = map_zoom_levels)
 
+# # Send it to the database
+# mzl_df <- tibble::tibble(zoom_levels_scales = names(map_zoom_levels),
+#                          zoom_levels = map_zoom_levels)
+# mzl_df$zoom_levels_scales <- gsub("mzl_", "", mzl_df$zoom_levels_scales)
+# 
+# 
+# mzl_df$zoom_levels <- lapply(mzl_df$zoom_levels, \(x) jsonlite::toJSON(as.list(x), auto_unbox = TRUE))
+# db_write_prod(df = mzl_df, table_name = "mzl", schema = "mtl", primary_key = "zoom_levels_scales")
 
 # Tilesets ----------------------------------------------------------------
 
@@ -826,8 +958,8 @@ qs::qsave(colours_dfs, "data/colours_dfs.qs")
 # # TKTK MAKE SURE YOU HAVE THIS VERSION OF LEAFLET, IF NOT THE MAPS IN THE HTML
 # # DOCUMENTS WON'T BE INTERACTIVES:
 # devtools::install_github("dmurdoch/leaflet@crosstalk4")
-stories <- build_stories()
-qs::qsave(stories, file = "data/stories.qs")
+# stories <- build_stories()
+# qs::qsave(stories, file = "data/stories.qs")
 # stories_create_tileset(stories = stories,
 #                        inst_prefix = inst_prefix,
 #                        username = "curbcut",

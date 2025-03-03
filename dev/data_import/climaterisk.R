@@ -367,6 +367,35 @@ build_and_append_climate_risk <- function(scales_variables_modules, crs,
       schema = list(time = time_regex)
     )
   
+  # Force a breaks for q5, scale dependent
+  breaks_q5 <- scales_variables_modules$variables$breaks_q5[
+    scales_variables_modules$variables$var_code == "climate_heat_wave"
+  ]
+  breaks_q5 <- var_measurement[[1]]
+  names(breaks_q5)[2] <- "breaks"
+  breaks_q5$breaks <- lapply(1:nrow(breaks_q5), \(x) NULL)
+  breaks_q5$breaks[breaks_q5$scale == "grd250"] <- list(c(0.5, 1.5, 2.5, 3.5, 4.5, 5.5))
+  breaks_q5$breaks[breaks_q5$scale == "grd100"] <- list(c(0.5, 1.5, 2.5, 3.5, 4.5, 5.5))
+  breaks_q5$breaks[breaks_q5$scale == "grd50"] <- list(c(0.5, 1.5, 2.5, 3.5, 4.5, 5.5))
+  breaks_q5$breaks[breaks_q5$scale == "grd25"] <- list(c(0.5, 1.5, 2.5, 3.5, 4.5, 5.5))
+  
+  variables$breaks_q5[
+    variables$var_code == "climate_drought"
+  ] <- list(breaks_q5)
+  variables$breaks_q5[
+    variables$var_code == "climate_flood"
+  ] <- list(breaks_q5)
+  variables$breaks_q5[
+    variables$var_code == "climate_heavy_rain"
+  ] <- list(breaks_q5)
+  variables$breaks_q5[
+    variables$var_code == "climate_destructive_storms"
+  ] <- list(breaks_q5)
+  variables$breaks_q5[
+    variables$var_code == "climate_heat_wave"
+  ] <- list(breaks_q5)
+
+  
   # Possible sequences ------------------------------------------------------
   
   avail_scale_combinations <-

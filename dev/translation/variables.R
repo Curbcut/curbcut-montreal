@@ -179,7 +179,7 @@ translation_variables <-
       add_row(en = "the median household income is",
               fr = "le revenu médian des ménages est de") |>
       add_row(en = "have an income of less than $50,000",
-              fr = "ont un revenu inférieur à 50 000 euros") |>
+              fr = "ont un revenu inférieur à 50 000 dollars") |>
       add_row(en = "have an income between $50,000 and $100,000",
               fr = "ont un revenu compris entre 50 000 et 100 000 dollars") |>
       add_row(en = "have an income higher than $100,000",

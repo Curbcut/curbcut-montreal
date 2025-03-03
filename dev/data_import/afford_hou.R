@@ -52,14 +52,14 @@ build_and_append_afford_hou <- function(scales_variables_modules, scales_sequenc
 #   })
 # 
 #   data_2016[3,] <- lapply(data_2016[3,], \(x) {
-#     if (x == "") return("ID")
-#     x <- stringr::str_trim(x)
-#     if (grepl("^Total – Genre de ménage", x)) return("tot")
-#     if (grepl("^Ménages composés d'une seule famille de", x)) return("fam")
-#     if (grepl("^Avec enfants", x)) return("wchldrn")
-#     if (grepl("^Une famille de recensement monoparentale", x)) return("monop")
-#     if (grepl("^Total – Ménages composés d’une personne seule (18 ans et plus)", x)) return("livaln")
-#     "FILTEROUT"
+    # if (x == "") return("ID")
+    # x <- stringr::str_trim(x)
+    # if (grepl("^Total – Genre de ménage", x)) return("tot")
+    # if (grepl("^Ménages composés d'une seule famille de", x)) return("fam")
+    # if (grepl("^Avec enfants", x)) return("wchldrn")
+    # if (grepl("^Une famille de recensement monoparentale", x)) return("monop")
+    # if (grepl("^Total – Ménages composés d’une personne seule (18 ans et plus)", x)) return("livaln")
+    # "FILTEROUT"
 #   })
 # 
 #   data_2016[4,] <- lapply(data_2016[4,], \(x) {
@@ -453,10 +453,10 @@ build_and_append_afford_hou <- function(scales_variables_modules, scales_sequenc
       if (grepl("_unsuit_", var)) out <- c(out, "live in unsuitable accommodations (not enough bedrooms for the size and composition of the households)")
       if (grepl("_majorrep_", var)) out <- c(out, "live in dwellings needing major repairs (defective plumbing or electrical wiring; needing structural repairs to walls, floors or ceilings)")
       
-      if (grepl("_family_", var)) out <- c(out, "are census families in private households")
+      if (grepl("_fam_", var)) out <- c(out, "are census families in private households")
       if (grepl("_monop_", var)) out <- c(out, "are one-parent families")
-      if (grepl("_withchildren_", var)) out <- c(out, "are families with children")
-      if (grepl("_livingalone_", var)) out <- c(out, "live alone")
+      if (grepl("_wchldrn_", var)) out <- c(out, "are families with children")
+      if (grepl("_livaln_", var)) out <- c(out, "live alone")
 
       return(out)
     })()
@@ -475,10 +475,10 @@ build_and_append_afford_hou <- function(scales_variables_modules, scales_sequenc
       if (grepl("_unsuit_", var)) out <- c(out, "Unsuitable accommodations")
       if (grepl("_majorrep_", var)) out <- c(out, "Dwellings needing major repairs")
       
-      if (grepl("_family_", var)) out <- c(out, "Census families in private households")
+      if (grepl("_fam_", var)) out <- c(out, "Census families in private households")
       if (grepl("_monop_", var)) out <- c(out, "One-parent families")
-      if (grepl("_withchildren_", var)) out <- c(out, "Families with children")
-      if (grepl("_livingalone_", var)) out <- c(out, "Individuals living alone")
+      if (grepl("_wchldrn_", var)) out <- c(out, "Families with children")
+      if (grepl("_livaln_", var)) out <- c(out, "Individuals living alone")
 
       if (length(out) == 0) return({
         if (grepl("_pct", var)) return("All households")
@@ -500,10 +500,10 @@ build_and_append_afford_hou <- function(scales_variables_modules, scales_sequenc
       if (grepl("_unsuit_", var)) out <- c(out, "Unsuit.")
       if (grepl("_majorrep_", var)) out <- c(out, "Maj.")
       
-      if (grepl("_family_", var)) out <- c(out, "Fam.")
+      if (grepl("_fam_", var)) out <- c(out, "Fam.")
       if (grepl("_monop_", var)) out <- c(out, "1-p fam.")
-      if (grepl("_withchildren_", var)) out <- c(out, "With child.")
-      if (grepl("_livingalone_", var)) out <- c(out, "Alone.")
+      if (grepl("_wchldrn_", var)) out <- c(out, "With child.")
+      if (grepl("_livaln_", var)) out <- c(out, "Alone.")
 
       if (length(out) == 0) return({
         if (grepl("_pct", var)) return("All hou.")
@@ -566,10 +566,10 @@ build_and_append_afford_hou <- function(scales_variables_modules, scales_sequenc
       })(),
       
       "Family composition" = (\(x) {
-        if (grepl("_family_", var)) return("Census families in private households")
+        if (grepl("_fam_", var)) return("Census families in private households")
         if (grepl("_monop_", var)) return("One-parent")
-        if (grepl("_withchildren_", var)) return("Families with children")
-        if (grepl("_livingalone_", var)) return("Living alone")
+        if (grepl("_wchldrn_", var)) return("Families with children")
+        if (grepl("_livaln_", var)) return("Living alone")
         return("Total")
       })()
       
